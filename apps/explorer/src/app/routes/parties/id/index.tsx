@@ -8,12 +8,19 @@ import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
-import { Icon, Intent, Notification, Splash } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  Icon,
+  Intent,
+  Notification,
+  Splash,
+} from '@vegaprotocol/ui-toolkit';
 import { aggregatedAccountsDataProvider } from '@vegaprotocol/accounts';
 import { PartyBlockStake } from './components/party-block-stake';
 import { PartyBlockAccounts } from './components/party-block-accounts';
 import { isValidPartyId } from './components/party-id-error';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { TxsFilter } from '../../../components/txs/tx-filter';
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
@@ -25,10 +32,11 @@ const Party = () => {
   const { isMobile } = useScreenDimensions();
   const visibleChars = useMemo(() => (isMobile ? 10 : 14), [isMobile]);
   const filters = `filters[tx.submitter]=${partyId}`;
-  const { hasMoreTxs, nextPage, error, txsData, loading } = useTxsData({
-    limit: 10,
-    filters,
-  });
+  const { hasMoreTxs, nextPage, previousPage, error, txsData, loading } =
+    useTxsData({
+      limit: 25,
+      filters,
+    });
 
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const {
@@ -81,6 +89,26 @@ const Party = () => {
       </div>
 
       <SubHeading>{t('Transactions')}</SubHeading>
+      <menu className="mb-2">
+        <div className="right">
+          <Button
+            size="xs"
+            onClick={() => {
+              previousPage();
+            }}
+          >
+            Previous
+          </Button>
+          <Button
+            size="xs"
+            onClick={() => {
+              nextPage();
+            }}
+          >
+            Next
+          </Button>
+        </div>
+      </menu>
       {!error && txsData ? (
         <TxsInfiniteList
           hasMoreTxs={hasMoreTxs}
@@ -88,7 +116,7 @@ const Party = () => {
           txs={txsData}
           loadMoreTxs={nextPage}
           error={error}
-          className="mb-28"
+          className="mb-28 w-full"
         />
       ) : (
         <Splash>

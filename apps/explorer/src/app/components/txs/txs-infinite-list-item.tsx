@@ -5,6 +5,7 @@ import type { BlockExplorerTransactionResult } from '../../routes/types/block-ex
 import { toHex } from '../search/detect-search';
 import { ChainResponseCode } from './details/chain-response-code/chain-reponse.code';
 import isNumber from 'lodash/isNumber';
+import { PartyLink } from '../links';
 
 const TRUNCATE_LENGTH = 10;
 
@@ -30,15 +31,15 @@ export const TxsInfiniteListItem = ({
   return (
     <tr
       data-testid="transaction-row"
-      className="flex items-center h-full border-t border-neutral-600 dark:border-neutral-800 txs-infinite-list-item grid grid-cols-10 py-[2px]"
+      className="text-left items-center h-full border-t border-neutral-600 dark:border-neutral-800 txs-infinite-list-item py-[2px]"
     >
-      <td
-        className="text-sm col-span-10 md:col-span-3 leading-none"
-        data-testid="tx-hash"
-      >
-        <span className="md:hidden uppercase text-vega-dark-300">
-          ID:&nbsp;
-        </span>
+      <td className="text-sm leading-none font-mono" data-testid="tx-hash">
+        {isNumber(code) ? (
+          <ChainResponseCode code={code} hideLabel={true} hideIfOk={true} />
+        ) : (
+          code
+        )}
+
         <TruncatedLink
           to={`/${Routes.TX}/${toHex(hash)}`}
           text={hash}
@@ -46,49 +47,19 @@ export const TxsInfiniteListItem = ({
           endChars={0}
         />
       </td>
-      <td
-        className="text-sm col-span-10 md:col-span-3 leading-none"
-        data-testid="pub-key"
-      >
-        <span className="md:hidden uppercase text-vega-dark-300">
-          By:&nbsp;
-        </span>
-        <TruncatedLink
-          to={`/${Routes.PARTIES}/${submitter}`}
-          text={submitter}
-          startChars={TRUNCATE_LENGTH}
-          endChars={TRUNCATE_LENGTH}
-        />
+      <td className="text-sm leading-none" data-testid="pub-key">
+        <PartyLink truncate={true} id={submitter} />
       </td>
-      <td className="text-sm col-span-5 md:col-span-2 leading-none	flex items-center">
+      <td className="text-sm leading-none">
         <TxOrderType orderType={type} command={command} />
       </td>
-      <td
-        className="text-sm col-span-3 md:col-span-1 leading-none flex items-center"
-        data-testid="tx-block"
-      >
-        <span className="md:hidden uppercase text-vega-dark-300">
-          Block:&nbsp;
-        </span>
+      <td className="text-sm items-center font-mono" data-testid="tx-block">
         <TruncatedLink
           to={`/${Routes.BLOCKS}/${block}`}
           text={block}
           startChars={TRUNCATE_LENGTH}
           endChars={TRUNCATE_LENGTH}
         />
-      </td>
-      <td
-        className="text-sm col-span-2 md:col-span-1 leading-none flex items-center"
-        data-testid="tx-success"
-      >
-        <span className="md:hidden uppercase text-vega-dark-300">
-          Success&nbsp;
-        </span>
-        {isNumber(code) ? (
-          <ChainResponseCode code={code} hideLabel={true} />
-        ) : (
-          code
-        )}
       </td>
     </tr>
   );

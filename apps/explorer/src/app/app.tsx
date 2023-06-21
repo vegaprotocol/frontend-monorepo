@@ -14,6 +14,7 @@ import { RouterProvider } from 'react-router-dom';
 import { router } from './routes/router-config';
 import { t } from '@vegaprotocol/i18n';
 import { Suspense } from 'react';
+import { useExplorerNodeNamesLazyQuery } from './routes/validators/__generated__/NodeNames';
 
 const splashLoading = (
   <Splash>

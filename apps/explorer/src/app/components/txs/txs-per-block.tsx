@@ -10,6 +10,7 @@ import { ChainResponseCode } from './details/chain-response-code/chain-reponse.c
 import { getTxsDataUrl } from '../../hooks/use-txs-data';
 import { AsyncRenderer, Loader } from '@vegaprotocol/ui-toolkit';
 import EmptyList from '../empty-list/empty-list';
+import { PartyLink } from '../links';
 
 interface TxsPerBlockProps {
   blockHeight: string;
@@ -62,12 +63,7 @@ export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
                         modifier="bordered"
                         className="pr-12 font-mono"
                       >
-                        <TruncatedLink
-                          to={`/${Routes.PARTIES}/${submitter}`}
-                          text={submitter}
-                          startChars={truncateLength}
-                          endChars={truncateLength}
-                        />
+                        <PartyLink id={submitter} truncate={true} />
                       </TableCell>
                       <TableCell modifier="bordered">
                         <TxOrderType orderType={type} command={command} />

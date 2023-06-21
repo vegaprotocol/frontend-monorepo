@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
 import { Button } from '@vegaprotocol/ui-toolkit';
 
-const BE_TXS_PER_REQUEST = 15;
+const BE_TXS_PER_REQUEST = 25;
 
 export const TxsList = () => {
   useDocumentTitle(['Transactions']);
@@ -73,7 +73,7 @@ export const TxsListFiltered = () => {
         txs={txsData}
         loadMoreTxs={nextPage}
         error={error}
-        className="mb-28"
+        className="mb-28 w-full min-w-[400px]"
       />
     </>
   );

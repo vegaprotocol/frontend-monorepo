@@ -66,28 +66,14 @@ export const useTxsData = ({ limit, filters }: IUseTxsData) => {
   useEffect(() => {
     if (data && isNumber(data?.transactions?.length)) {
       setTxsState((prev) => {
-        const cursor =
-          data.transactions[data.transactions.length - 1]?.cursor || '';
-        const previousCursor = prev.cursor;
         return {
+          ...prev,
+          cursor: data.transactions.at(-1)?.cursor || '',
           txsData: data.transactions,
-          hasMoreTxs: data.transactions.length > 0,
-          previousCursor,
-          cursor,
         };
       });
     }
   }, [cursor, setTxsState, data]);
-
-  useEffect(() => {
-    l('', '', 'Initial reset');
-    setTxsState((prev) => ({
-      txsData: [],
-      hasMoreTxs: false,
-      cursor: '',
-      previousCursor: '',
-    }));
-  }, [filters, limit, refetch]);
 
   const nextPage = useCallback(() => {
     return refetch({

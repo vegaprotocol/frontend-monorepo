@@ -36,9 +36,11 @@ const displayString: StringMap = {
   UndelegateSubmission: 'Undelegation',
   KeyRotateSubmission: 'Key Rotation',
   StateVariableProposal: 'State Variable',
+  'State Variable Proposal': 'State Variable',
   Transfer: 'Transfer',
   CancelTransfer: 'Cancel Transfer',
   ValidatorHeartbeat: 'Heartbeat',
+  'Validator Heartbeat': 'Heartbeat',
   'Batch Market Instructions': 'Batch',
 };
 
@@ -172,7 +174,7 @@ export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
   return (
     <div
       data-testid="tx-type"
-      className={`text-sm rounded-md leading-none px-2 py-2 inline-block ${colours}`}
+      className={`text-sm rounded-md leading-tight px-2 inline-block whitespace-nowrap ${colours}`}
     >
       {type}
     </div>
