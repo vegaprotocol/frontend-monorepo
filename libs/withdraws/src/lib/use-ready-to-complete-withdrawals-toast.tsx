@@ -5,7 +5,6 @@ import {
 } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
-import { CLOSE_AFTER } from '@vegaprotocol/ui-toolkit';
 import { Button, Intent, Panel, ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useEffect, useMemo, useState } from 'react';
