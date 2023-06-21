@@ -1,6 +1,5 @@
 const dialogContent = 'dialog-content';
 const nodeHealth = 'node-health';
-const statusIncidentsLink = 'footer [data-testid=external-link]';
 
 describe('home', { tags: '@regression' }, () => {
   before(() => {
