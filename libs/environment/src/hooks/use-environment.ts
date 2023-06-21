@@ -412,5 +412,5 @@ export function windowOrDefault(key: string, defaultValue?: string) {
       return window._env_[key];
     }
   }
-  return defaultValue || '';
+  return defaultValue || undefined;
 }
