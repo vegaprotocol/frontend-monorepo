@@ -56,7 +56,8 @@ const feedbackError = '[data-testid="Error"]';
 const viewProposalBtn = 'view-proposal-btn';
 const liquidityVoteStatus = 'liquidity-votes-status';
 const tokenVoteStatus = 'token-votes-status';
-const proposalTermsSection = 'proposal';
+const proposalJsonToggle = 'proposal-json-toggle';
+const proposalJsonSection = 'proposal-json';
 const vegaWalletPublicKey = Cypress.env('vegaWalletPublicKey');
 const fUSDCId =
   '816af99af60d684502a40824758f6b5377e6af48e50a9ee8ef478ecb879ea8bc';
@@ -187,7 +188,7 @@ context(
       cy.get(maxVoteDeadline).click();
       cy.get(enactmentDeadlineError).should(
         'have.text',
-        'Proposal will fail if enactment is earlier than the voting deadline'
+        'The proposal will fail if enactment is earlier than the voting deadline'
       );
       cy.get(proposalDownloadBtn)
         .should('be.visible')
@@ -473,8 +474,8 @@ context(
         .within(() => {
           cy.getByTestId(viewProposalBtn).click();
         });
-      cy.getByTestId('proposal-terms-toggle').click();
-      cy.getByTestId(proposalTermsSection).within(() => {
+      cy.getByTestId(proposalJsonToggle).click();
+      cy.getByTestId(proposalJsonSection).within(() => {
         cy.contains('USDT Coin').should('be.visible');
         cy.contains('USDT').should('be.visible');
       });
@@ -520,13 +521,11 @@ context(
         .invoke('text')
         .should('not.be.empty');
       // 3001-VOTE-030 3001-VOTE-031
-      cy.getByTestId('proposal-terms-toggle').click();
-      cy.getByTestId('proposal-terms').within(() => {
-        getProposalInformationFromTable('assetId').should('have.text', assetId);
-        getProposalInformationFromTable('lifetimeLimit').should(
-          'have.text',
-          '10'
-        );
+      cy.getByTestId(proposalJsonToggle).click();
+      cy.getByTestId(proposalJsonSection).within(() => {
+        cy.contains(assetId).should('be.visible');
+        cy.contains('lifetimeLimit').should('be.visible');
+        cy.contains('10').should('be.visible');
       });
     });
 
