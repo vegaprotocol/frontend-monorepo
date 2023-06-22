@@ -16,7 +16,7 @@ import type { ColumnState } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 import { useEffect, useRef } from 'react';
 import { create } from 'zustand';
-import { persist, subscribeWithSelector } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 
 export const LiquidityContainer = ({
   marketId,
@@ -97,7 +97,7 @@ const useLiquidityStore = create<{
   update: (gridStore: Store) => void;
 }>()(
   persist(
-    subscribeWithSelector((set) => ({
+    (set) => ({
       gridStore: {},
       update: (newStore) => {
         set((curr) => ({
@@ -107,7 +107,7 @@ const useLiquidityStore = create<{
           },
         }));
       },
-    })),
+    }),
     {
       name: 'vega_ledger_store',
     }

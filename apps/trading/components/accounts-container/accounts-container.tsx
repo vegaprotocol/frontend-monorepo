@@ -9,7 +9,7 @@ import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { AccountManager, useTransferDialog } from '@vegaprotocol/accounts';
 import { useDepositDialog } from '@vegaprotocol/deposits';
 import { create } from 'zustand';
-import { persist, subscribeWithSelector } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 import type { ColumnState } from 'ag-grid-community';
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
 
@@ -96,8 +96,7 @@ const useAccountStore = create<{
   gridStore: Store;
   update: (gridStore: Store) => void;
 }>()(
-  persist(
-    subscribeWithSelector((set) => ({
+  persist((set) => ({
       gridStore: {},
       update: (newStore) => {
         set((curr) => ({
@@ -107,7 +106,7 @@ const useAccountStore = create<{
           },
         }));
       },
-    })),
+    }),
     {
       name: 'vega_accounts_store',
     }

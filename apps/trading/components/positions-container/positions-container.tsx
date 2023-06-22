@@ -5,7 +5,7 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { ColumnState } from 'ag-grid-community';
 import { create } from 'zustand';
-import { persist, subscribeWithSelector } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 
 export const PositionsContainer = ({
   onMarketClick,
@@ -62,7 +62,7 @@ const usePositionsStore = create<{
   update: (gridStore: Store) => void;
 }>()(
   persist(
-    subscribeWithSelector((set) => ({
+    (set) => ({
       gridStore: {},
       update: (newStore) => {
         set((curr) => ({
@@ -72,7 +72,7 @@ const usePositionsStore = create<{
           },
         }));
       },
-    })),
+    }),
     {
       name: 'vega_positions_store',
     }

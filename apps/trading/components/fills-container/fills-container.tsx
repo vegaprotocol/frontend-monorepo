@@ -3,7 +3,7 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { FillsManager } from '@vegaprotocol/fills';
 import { create } from 'zustand';
-import { persist, subscribeWithSelector } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 import type { ColumnState } from 'ag-grid-community';
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
 
@@ -53,8 +53,7 @@ const useFillsStore = create<{
   gridStore: Store;
   update: (gridStore: Store) => void;
 }>()(
-  persist(
-    subscribeWithSelector((set) => ({
+  persist((set) => ({
       gridStore: {},
       update: (newStore) => {
         set((curr) => ({
@@ -64,7 +63,7 @@ const useFillsStore = create<{
           },
         }));
       },
-    })),
+    }),
     {
       name: 'vega_fills_store',
     }
