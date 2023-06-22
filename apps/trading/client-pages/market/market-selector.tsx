@@ -8,7 +8,7 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import type { CSSProperties } from 'react';
-import { useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -184,7 +184,6 @@ const MarketList = ({
   if (error) {
     return <div>{error.message}</div>;
   }
-
   return (
     <AutoSizer>
       {({ width, height }) => (
@@ -204,6 +203,29 @@ const MarketList = ({
   );
 };
 
+interface ListItemData {
+  data: MarketMaybeWithDataAndCandles[];
+  onSelect?: (marketId: string) => void;
+  currentMarketId?: string;
+}
+
+const ListItem = ({
+  index,
+  style,
+  data,
+}: {
+  index: number;
+  style: CSSProperties;
+  data: ListItemData;
+}) => (
+  <MarketSelectorItem
+    market={data.data[index]}
+    currentMarketId={data.currentMarketId}
+    style={style}
+    onSelect={data.onSelect}
+  />
+);
+
 const List = ({
   data,
   loading,
@@ -212,28 +234,20 @@ const List = ({
   onSelect,
   noItems,
   currentMarketId,
-}: {
-  data: MarketMaybeWithDataAndCandles[];
+}: ListItemData & {
   loading: boolean;
   width: number;
   height: number;
   noItems: string;
-  onSelect?: (marketId: string) => void;
-  currentMarketId?: string;
 }) => {
-  const row = ({ index, style }: { index: number; style: CSSProperties }) => {
-    const market = data[index];
-
-    return (
-      <MarketSelectorItem
-        market={market}
-        currentMarketId={currentMarketId}
-        style={style}
-        onSelect={onSelect}
-      />
-    );
-  };
-
+  const itemKey = useCallback(
+    (index: number, data: ListItemData) => data.data[index].id,
+    []
+  );
+  const itemData = useMemo(
+    () => ({ data, onSelect, currentMarketId }),
+    [data, onSelect, currentMarketId]
+  );
   if (!data || loading) {
     return (
       <div style={{ width, height }}>
@@ -259,11 +273,13 @@ const List = ({
     <FixedSizeList
       className="virtualized-list"
       itemCount={data.length}
+      itemData={itemData}
       itemSize={130}
+      itemKey={itemKey}
       width={width}
       height={height}
     >
-      {row}
+      {ListItem}
     </FixedSizeList>
   );
 };
