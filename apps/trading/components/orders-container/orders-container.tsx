@@ -4,13 +4,13 @@ import { Filter } from '@vegaprotocol/orders';
 import { OrderListManager } from '@vegaprotocol/orders';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { ColumnState } from 'ag-grid-community';
 import {
   useMarketClickHandler,
   useMarketLiquidityClickHandler,
 } from '../../lib/hooks/use-market-click-handler';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { DataGridStore } from '../../stores/datagrid-store-slice';
 
 export interface OrderContainerProps {
   marketId?: string;
@@ -58,18 +58,13 @@ export const OrdersContainer = ({ marketId, filter }: OrderContainerProps) => {
   );
 };
 
-type Store = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  filterModel?: { [key: string]: any };
-  columnState?: ColumnState[];
-};
 
 const useOrderListStore = create<{
-  open: Store;
-  closed: Store;
-  rejected: Store;
-  all: Store;
-  update: (filter: Filter | undefined, gridStore: Store) => void;
+  open: DataGridStore;
+  closed: DataGridStore;
+  rejected: DataGridStore;
+  all: DataGridStore;
+  update: (filter: Filter | undefined, gridStore: DataGridStore) => void;
 }>()(
   persist(
     (set) => ({
