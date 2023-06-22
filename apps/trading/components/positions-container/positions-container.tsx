@@ -3,7 +3,8 @@ import { t } from '@vegaprotocol/i18n';
 import { PositionsManager } from '@vegaprotocol/positions';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { ColumnState } from 'ag-grid-community';
+import type { DataGridSlice } from '../../stores/datagrid-store-slice';
+import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -18,7 +19,7 @@ export const PositionsContainer = ({
 
   const [gridStore, update] = usePositionsStore((store) => [
     store.gridStore,
-    store.update,
+    store.updateGridStore,
   ]);
   const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
     update(colState);
@@ -51,27 +52,10 @@ export const PositionsContainer = ({
   );
 };
 
-type Store = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  filterModel?: { [key: string]: any };
-  columnState?: ColumnState[];
-};
-
-const usePositionsStore = create<{
-  gridStore: Store;
-  update: (gridStore: Store) => void;
-}>()(
+const usePositionsStore = create<DataGridSlice>()(
   persist(
-    (set) => ({
-      gridStore: {},
-      update: (newStore) => {
-        set((curr) => ({
-          gridStore: {
-            ...curr.gridStore,
-            ...newStore,
-          },
-        }));
-      },
+    (...args) => ({
+      ...createDataGridSlice(...args),
     }),
     {
       name: 'vega_positions_store',

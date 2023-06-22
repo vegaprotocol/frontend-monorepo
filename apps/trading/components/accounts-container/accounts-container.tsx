@@ -10,8 +10,9 @@ import { AccountManager, useTransferDialog } from '@vegaprotocol/accounts';
 import { useDepositDialog } from '@vegaprotocol/deposits';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { ColumnState } from 'ag-grid-community';
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
+import type { DataGridSlice } from '../../stores/datagrid-store-slice';
+import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 
 export const AccountsContainer = ({
   pinnedAsset,
@@ -30,7 +31,7 @@ export const AccountsContainer = ({
 
   const [gridStore, update] = useAccountStore((store) => [
     store.gridStore,
-    store.update,
+    store.updateGridStore,
   ]);
   const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
     update(colState);
@@ -86,26 +87,10 @@ export const AccountsContainer = ({
   );
 };
 
-type Store = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  filterModel?: { [key: string]: any };
-  columnState?: ColumnState[];
-};
-
-const useAccountStore = create<{
-  gridStore: Store;
-  update: (gridStore: Store) => void;
-}>()(
-  persist((set) => ({
-      gridStore: {},
-      update: (newStore) => {
-        set((curr) => ({
-          gridStore: {
-            ...curr.gridStore,
-            ...newStore,
-          },
-        }));
-      },
+const useAccountStore = create<DataGridSlice>()(
+  persist(
+    (...args) => ({
+      ...createDataGridSlice(...args),
     }),
     {
       name: 'vega_accounts_store',

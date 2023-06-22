@@ -12,8 +12,9 @@ import {
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
-import type { ColumnState } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
+import type { DataGridSlice } from '../../stores/datagrid-store-slice';
+import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { useEffect, useRef } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -29,7 +30,7 @@ export const LiquidityContainer = ({
 
   const [gridStore, update] = useLiquidityStore((store) => [
     store.gridStore,
-    store.update,
+    store.updateGridStore,
   ]);
 
   const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
@@ -48,7 +49,8 @@ export const LiquidityContainer = ({
 
   const assetDecimalPlaces =
     market?.tradableInstrument.instrument.product.settlementAsset.decimals || 0;
-  const quantum = market?.tradableInstrument.instrument.product.settlementAsset.quantum || 0;
+  const quantum =
+    market?.tradableInstrument.instrument.product.settlementAsset.quantum || 0;
   const symbol =
     market?.tradableInstrument.instrument.product.settlementAsset.symbol;
 
@@ -86,27 +88,10 @@ const useReloadLiquidityData = (marketId: string | undefined) => {
   }, [reload]);
 };
 
-type Store = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  filterModel?: { [key: string]: any };
-  columnState?: ColumnState[];
-};
-
-const useLiquidityStore = create<{
-  gridStore: Store;
-  update: (gridStore: Store) => void;
-}>()(
+const useLiquidityStore = create<DataGridSlice>()(
   persist(
-    (set) => ({
-      gridStore: {},
-      update: (newStore) => {
-        set((curr) => ({
-          gridStore: {
-            ...curr.gridStore,
-            ...newStore,
-          },
-        }));
-      },
+    (...args) => ({
+      ...createDataGridSlice(...args),
     }),
     {
       name: 'vega_ledger_store',

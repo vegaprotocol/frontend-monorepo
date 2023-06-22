@@ -3,7 +3,8 @@ import { t } from '@vegaprotocol/i18n';
 import { LedgerManager } from '@vegaprotocol/ledger';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { ColumnState } from 'ag-grid-community';
+import type { DataGridSlice } from '../../stores/datagrid-store-slice';
+import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -12,7 +13,7 @@ export const LedgerContainer = () => {
 
   const [gridStore, update] = useLedgerStore((store) => [
     store.gridStore,
-    store.update,
+    store.updateGridStore,
   ]);
 
   const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
@@ -30,27 +31,10 @@ export const LedgerContainer = () => {
   return <LedgerManager partyId={pubKey} gridProps={gridStoreCallbacks} />;
 };
 
-type Store = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  filterModel?: { [key: string]: any };
-  columnState?: ColumnState[];
-};
-
-const useLedgerStore = create<{
-  gridStore: Store;
-  update: (gridStore: Store) => void;
-}>()(
+const useLedgerStore = create<DataGridSlice>()(
   persist(
-    (set) => ({
-      gridStore: {},
-      update: (newStore) => {
-        set((curr) => ({
-          gridStore: {
-            ...curr.gridStore,
-            ...newStore,
-          },
-        }));
-      },
+    (...args) => ({
+      ...createDataGridSlice(...args),
     }),
     {
       name: 'vega_ledger_store',
