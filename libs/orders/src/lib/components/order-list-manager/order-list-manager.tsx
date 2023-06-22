@@ -52,6 +52,13 @@ export const OrderListManager = ({
   const { data, error } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
     variables,
+    update: ({ data }) => {
+      if (data && gridRef.current?.api) {
+        gridRef.current.api.setRowData(data);
+        return true;
+      }
+      return false;
+    },
   });
 
   const cancel = useCallback(
