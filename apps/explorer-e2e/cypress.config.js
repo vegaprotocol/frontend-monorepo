@@ -1,4 +1,10 @@
 const { defineConfig } = require('cypress');
+const webpack = require('webpack');
+const webpackPreprocessor = require('@cypress/webpack-batteries-included-preprocessor');
+const path = require('path');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 module.exports = defineConfig({
   reporter: '../../node_modules/cypress-mochawesome-reporter',
@@ -7,6 +13,29 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on);
       require('@cypress/grep/src/plugin')(config);
+
+      const defaultConfig = webpackPreprocessor.defaultOptions;
+      defaultConfig.webpackOptions.context = path.resolve(__dirname, './');
+      defaultConfig.webpackOptions.module.rules[1].test = /(\.tsx?|\.jsx?)$/;
+      defaultConfig.webpackOptions.module.rules[1].exclude = [
+        /node_modules\/(?!(@vegaprotocol\/protos|protobuf-codec))/,
+        /browserslist/,
+      ];
+      defaultConfig.webpackOptions.module.rules.push({
+        test: /(\.css|\.s[ac]ss)$/i,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+      });
+      defaultConfig.webpackOptions.plugins =
+        defaultConfig.webpackOptions.plugins || [];
+      defaultConfig.webpackOptions.plugins.push(
+        new webpack.DefinePlugin({
+          'process.env': JSON.stringify(process.env),
+        })
+      );
+      defaultConfig.typescript = require.resolve('typescript');
+
+      on('file:preprocessor', webpackPreprocessor(defaultConfig));
+
       return config;
     },
     baseUrl: 'http://localhost:3000',

@@ -79,8 +79,7 @@ describe(
         price: '100000',
         postOnly: false,
         reduceOnly: false,
-        expiresAt:
-          new Date(order.expiresAt as string).getTime().toString() + '000000',
+        expiresAt: order.expiresAt as string,
       });
     });
   }

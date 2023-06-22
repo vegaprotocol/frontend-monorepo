@@ -15,8 +15,7 @@ module.exports = defineConfig({
 
       const defaultConfig = webpackPreprocessor.defaultOptions;
       defaultConfig.webpackOptions.context = path.resolve(__dirname, './');
-      defaultConfig.webpackOptions.module.rules[1].test =
-        /(\.tsx?|\.jsx?|\.mjs)$/;
+      defaultConfig.webpackOptions.module.rules[1].test = /(\.tsx?|\.jsx?)$/;
       defaultConfig.webpackOptions.module.rules[1].exclude = [
         /node_modules\/(?!(@vegaprotocol\/protos|protobuf-codec))/,
         /browserslist/,
