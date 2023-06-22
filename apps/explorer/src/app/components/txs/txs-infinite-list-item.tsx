@@ -6,8 +6,22 @@ import { toHex } from '../search/detect-search';
 import { ChainResponseCode } from './details/chain-response-code/chain-reponse.code';
 import isNumber from 'lodash/isNumber';
 import { PartyLink } from '../links';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import type { Screen } from '@vegaprotocol/react-helpers';
+import { useMemo } from 'react';
 
-const TRUNCATE_LENGTH = 7;
+
+const DEFAULT_TRUNCATE_LENGTH = 7;
+
+export function getIdTruncateLength(screen: Screen): number {
+  if (['xxxl', 'xxl'].includes(screen)) {
+    return 64
+  } else if (['xl', 'lg', 'md'].includes(screen)) {
+    return 32
+  }
+  return DEFAULT_TRUNCATE_LENGTH
+}
+
 
 export const TxsInfiniteListItem = ({
   hash,
@@ -17,6 +31,10 @@ export const TxsInfiniteListItem = ({
   block,
   command,
 }: Partial<BlockExplorerTransactionResult>) => {
+ 
+  const { screenSize } = useScreenDimensions()
+  const idTruncateLength = useMemo( () => getIdTruncateLength(screenSize), [screenSize])
+
   if (
     !hash ||
     !submitter ||
@@ -45,7 +63,7 @@ export const TxsInfiniteListItem = ({
         <TruncatedLink
           to={`/${Routes.TX}/${toHex(hash)}`}
           text={hash}
-          startChars={TRUNCATE_LENGTH}
+          startChars={idTruncateLength}
           endChars={0}
         />
       </td>
@@ -59,8 +77,8 @@ export const TxsInfiniteListItem = ({
         <TruncatedLink
           to={`/${Routes.BLOCKS}/${block}`}
           text={block}
-          startChars={TRUNCATE_LENGTH}
-          endChars={TRUNCATE_LENGTH}
+          startChars={5}
+          endChars={5}
         />
       </td>
     </tr>

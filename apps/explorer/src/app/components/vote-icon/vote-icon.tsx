@@ -56,10 +56,10 @@ export function VoteIcon({
 
   return (
     <div
-      className={`voteicon inline-block my-1 py-1 px-2 py rounded-md text-white leading-one sm align-top ${bg}`}
+      className={`voteicon inline-block py-0 px-2 py rounded-md text-white leading-tight sm align-top ${bg}`}
     >
-      <Icon name={icon} size={3} className={`mr-2 p-0 fill-${fill}`} />
-      <span className={`text-base text-${text}`} data-testid="label">
+      <Icon name={icon} size={3} className={`mr-2 p-0 mb-[-1px] fill-${fill}`} />
+      <span className={`text-${text}`} data-testid="label">
         {label}
       </span>
     </div>
