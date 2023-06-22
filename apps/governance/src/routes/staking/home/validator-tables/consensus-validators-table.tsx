@@ -36,6 +36,7 @@ import {
   toBigNum,
 } from '@vegaprotocol/utils';
 import { VALIDATOR_LOGO_MAP } from './logo-map';
+import { getMultisigStatusInfo } from '../../../../lib/get-multisig-status-info';
 
 interface CanonisedConsensusNodeProps {
   id: string;
@@ -137,6 +138,10 @@ export const ConsensusValidatorsTable = ({
     [totalStake]
   );
 
+  const multisigStatus = previousEpochData
+    ? getMultisigStatusInfo(previousEpochData)
+    : undefined;
+
   const allNodesInPreviousEpoch = removePaginationWrapper(
     previousEpochData?.epoch.validatorsConnection?.edges
   );
@@ -223,6 +228,8 @@ export const ConsensusValidatorsTable = ({
             [ValidatorFields.USER_STAKE_SHARE]: userStakeShare
               ? formatNumberPercentage(new BigNumber(userStakeShare), 2)
               : undefined,
+            [ValidatorFields.MULTISIG_ERROR]:
+              multisigStatus?.showMultisigStatusError,
           };
         }
       );
@@ -332,6 +339,7 @@ export const ConsensusValidatorsTable = ({
     data,
     decimals,
     hideTopThird,
+    multisigStatus?.showMultisigStatusError,
     previousEpochData,
     thirdOfTotalStake,
     validatorsView,

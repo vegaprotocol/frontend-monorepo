@@ -283,13 +283,6 @@ context(
       describe('Vega wallet with assets', function () {
         const assets = [
           {
-            id: '816af99af60d684502a40824758f6b5377e6af48e50a9ee8ef478ecb879ea8bc',
-            name: 'USDC (fake)',
-            symbol: 'fUSDC',
-            amount: '1000000',
-            expectedAmount: '10.00',
-          },
-          {
             id: '8566db7257222b5b7ef2886394ad28b938b28680a54a169bbc795027b89d6665',
             name: 'DAI (fake)',
             symbol: 'fDAI',
@@ -309,6 +302,13 @@ context(
             symbol: 'fEURO',
             amount: '800000',
             expectedAmount: '8.00',
+          },
+          {
+            id: '816af99af60d684502a40824758f6b5377e6af48e50a9ee8ef478ecb879ea8bc',
+            name: 'USDC (fake)',
+            symbol: 'fUSDC',
+            amount: '1000000',
+            expectedAmount: '10.00',
           },
         ];
 

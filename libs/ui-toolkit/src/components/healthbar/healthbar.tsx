@@ -82,12 +82,12 @@ const Level = ({
     : '-';
 
   const tooltipContent = (
-    <>
+    <div className="text-vega-dark-100 dark:text-vega-light-200">
       <div className="mt-1.5 inline-flex">
         <Indicator variant={intent} />
       </div>
       <span>
-        {formattedFee}% {t('Fee')}
+        {formattedFee} {t('Fee')}
       </span>
       <div className="flex  flex-col">
         <span>
@@ -95,7 +95,7 @@ const Level = ({
           {addDecimalsFormatNumber(commitmentAmount, decimals)}
         </span>
       </div>
-    </>
+    </div>
   );
 
   return (
