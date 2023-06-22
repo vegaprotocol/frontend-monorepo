@@ -35,9 +35,10 @@ export const TxsListFiltered = () => {
     nextPage,
     previousPage,
     error,
-    txsData,
     refreshTxs,
     loading,
+    txsData,
+    hasPreviousPage
   } = useTxsData({
     limit: BE_TXS_PER_REQUEST,
     filters: f,
@@ -51,6 +52,7 @@ export const TxsListFiltered = () => {
         <div className="right">
           <Button
             size="xs"
+            disabled={!hasPreviousPage}
             onClick={() => {
               previousPage();
             }}

@@ -10,18 +10,16 @@ import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import type { Screen } from '@vegaprotocol/react-helpers';
 import { useMemo } from 'react';
 
-
 const DEFAULT_TRUNCATE_LENGTH = 7;
 
 export function getIdTruncateLength(screen: Screen): number {
   if (['xxxl', 'xxl'].includes(screen)) {
-    return 64
+    return 64;
   } else if (['xl', 'lg', 'md'].includes(screen)) {
-    return 32
+    return 32;
   }
-  return DEFAULT_TRUNCATE_LENGTH
+  return DEFAULT_TRUNCATE_LENGTH;
 }
-
 
 export const TxsInfiniteListItem = ({
   hash,
@@ -31,9 +29,11 @@ export const TxsInfiniteListItem = ({
   block,
   command,
 }: Partial<BlockExplorerTransactionResult>) => {
- 
-  const { screenSize } = useScreenDimensions()
-  const idTruncateLength = useMemo( () => getIdTruncateLength(screenSize), [screenSize])
+  const { screenSize } = useScreenDimensions();
+  const idTruncateLength = useMemo(
+    () => getIdTruncateLength(screenSize),
+    [screenSize]
+  );
 
   if (
     !hash ||
@@ -52,7 +52,7 @@ export const TxsInfiniteListItem = ({
       className="text-left items-center h-full border-t border-neutral-600 dark:border-neutral-800 txs-infinite-list-item py-[2px]"
     >
       <td
-        className="text-sm leading-none whitepsace-nowrap font-mono"
+        className="text-sm leading-none whitespace-nowrap font-mono"
         data-testid="tx-hash"
       >
         {isNumber(code) ? (

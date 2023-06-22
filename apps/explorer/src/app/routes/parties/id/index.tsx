@@ -20,7 +20,6 @@ import { PartyBlockStake } from './components/party-block-stake';
 import { PartyBlockAccounts } from './components/party-block-accounts';
 import { isValidPartyId } from './components/party-id-error';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { TxsFilter } from '../../../components/txs/tx-filter';
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();

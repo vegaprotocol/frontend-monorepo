@@ -11,6 +11,7 @@ import { getTxsDataUrl } from '../../hooks/use-txs-data';
 import { AsyncRenderer, Loader } from '@vegaprotocol/ui-toolkit';
 import EmptyList from '../empty-list/empty-list';
 import { PartyLink } from '../links';
+import { TxsInfiniteListItem } from './txs-infinite-list-item';
 
 interface TxsPerBlockProps {
   blockHeight: string;
@@ -34,48 +35,16 @@ export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
             <thead>
               <TableRow modifier="bordered" className="font-mono">
                 <td>{t('Transaction')}</td>
-                <td>{t('From')}</td>
                 <td>{t('Type')}</td>
-                <td>{t('Status')}</td>
+                <td>{t('From')}</td>
+                <td>{t('Block')}</td>
               </TableRow>
             </thead>
             <tbody>
               {data.transactions.map(
-                ({ hash, submitter, type, command, code }) => {
+                ({ hash, submitter, type, command, code, block }) => {
                   return (
-                    <TableRow
-                      modifier="bordered"
-                      key={hash}
-                      data-testid="transaction-row"
-                    >
-                      <TableCell
-                        modifier="bordered"
-                        className="pr-12 font-mono"
-                      >
-                        <TruncatedLink
-                          to={`/${Routes.TX}/${hash}`}
-                          text={hash}
-                          startChars={truncateLength}
-                          endChars={truncateLength}
-                        />
-                      </TableCell>
-                      <TableCell
-                        modifier="bordered"
-                        className="pr-12 font-mono"
-                      >
-                        <PartyLink id={submitter} truncate={true} />
-                      </TableCell>
-                      <TableCell modifier="bordered">
-                        <TxOrderType orderType={type} command={command} />
-                      </TableCell>
-                      <TableCell modifier="bordered" className="text">
-                        {isNumber(code) ? (
-                          <ChainResponseCode code={code} hideLabel={true} />
-                        ) : (
-                          code
-                        )}
-                      </TableCell>
-                    </TableRow>
+                    <TxsInfiniteListItem block={block} hash={hash} submitter={submitter} type={type} command={command} code={code} />
                   );
                 }
               )}

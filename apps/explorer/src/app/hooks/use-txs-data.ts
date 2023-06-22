@@ -5,13 +5,13 @@ import type {
   BlockExplorerTransactions,
 } from '../routes/types/block-explorer-response';
 import { DATA_SOURCES } from '../config';
-import isNumber from 'lodash/isNumber';
 
 export interface TxsStateProps {
-  txsData: BlockExplorerTransactionResult[];
+  txsData: BlockExplorerTransactionResult[],
   hasMoreTxs: boolean;
   cursor: string;
-  previousCursor: string;
+  previousCursors: string[];
+  hasPreviousPage: boolean
 }
 
 export interface IUseTxsData {
@@ -40,20 +40,14 @@ export const getTxsDataUrl = ({ limit, filters }: IGetTxsDataUrl) => {
   return urlAsString;
 };
 
-function l(cursor: string | number, previousCursor: string | number, e = '') {
-  console.group(`Cursor update: ${e}`);
-  console.log(`Cursor: ${cursor}`);
-  console.log(`Previous cursor: ${previousCursor}`);
-  console.groupEnd();
-}
-
 export const useTxsData = ({ limit, filters }: IUseTxsData) => {
-  const [{ txsData, hasMoreTxs, cursor, previousCursor }, setTxsState] =
+  const [{ txsData, hasMoreTxs, cursor, previousCursors, hasPreviousPage }, setTxsState] =
     useState<TxsStateProps>({
       txsData: [],
       hasMoreTxs: false,
-      previousCursor: '',
+      previousCursors: [],
       cursor: '',
+      hasPreviousPage: false
     });
 
   const url = getTxsDataUrl({ limit: limit?.toString(), filters });
@@ -64,49 +58,68 @@ export const useTxsData = ({ limit, filters }: IUseTxsData) => {
   } = useFetch<BlockExplorerTransactions>(url, {}, true);
 
   useEffect(() => {
-    if (data && isNumber(data?.transactions?.length)) {
+    if (!loading && data && data.transactions.length > 0) {
       setTxsState((prev) => {
-        return {
-          ...prev,
-          cursor: data.transactions.at(-1)?.cursor || '',
-          txsData: data.transactions,
-        };
-      });
-    }
-  }, [cursor, setTxsState, data]);
+    
+          return {
+            ...prev,
+            txsData: data.transactions,
+            hasMoreTxs: data.transactions.length === limit,
+            cursor: data?.transactions.at(-1)?.cursor || '',
+          };
+        })
+      }
+  }, [loading, setTxsState, data, limit]);
 
   const nextPage = useCallback(() => {
+    const c = data?.transactions.at(0)?.cursor 
+    const newPreviousCursors = c ? [...previousCursors, c] : previousCursors
+
+    setTxsState(prev => ({
+      ...prev,
+      hasPreviousPage: true,
+      previousCursors: newPreviousCursors
+    }))
+
     return refetch({
       limit,
       before: cursor,
     });
-  }, [cursor, limit, refetch]);
+  }, [data, previousCursors, cursor, limit, refetch]);
 
   const previousPage = useCallback(() => {
+    const previousCursor = [...previousCursors].pop()
+    const newPreviousCursors = previousCursors.slice(0, -1) 
+    setTxsState(prev => ({
+      ...prev,
+      hasPreviousPage: newPreviousCursors.length > 0,
+      previousCursors: newPreviousCursors 
+    }))
     return refetch({
       limit,
-      before: cursor,
+      before: previousCursor,
     });
-  }, [cursor, limit, refetch]);
+  }, [previousCursors, limit, refetch]);
 
   const refreshTxs = useCallback(async () => {
     setTxsState((prev) => ({
-      cursor: '',
-      previousCursor: '',
-      hasMoreTxs: false,
       txsData: [],
+      cursor: '',
+      previousCursors: [],
+      hasMoreTxs: false,
+      hasPreviousPage: false
     }));
 
     refetch({ limit });
   }, [setTxsState, limit, refetch]);
 
   return {
-    data,
+    txsData,
     loading,
     error,
-    txsData,
     hasMoreTxs,
-    previousCursor,
+    hasPreviousPage,
+    previousCursors,
     cursor,
     refreshTxs,
     nextPage,

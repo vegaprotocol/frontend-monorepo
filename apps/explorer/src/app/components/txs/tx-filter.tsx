@@ -14,6 +14,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { Dispatch, SetStateAction } from 'react';
 import { FilterLabel } from './tx-filter-label';
+import { DropdownMenuPortal } from '@radix-ui/react-dropdown-menu';
 
 // All possible transaction types. Should be generated.
 export type FilterOption =
@@ -91,7 +92,7 @@ export interface TxFilterProps {
  * types. It allows a user to select one transaction type to view. Later
  * it will support multiple selection, but until the API supports that it is
  * one or all.
- * @param filters null or Set of tranaction types
+ * @param filters null or Set of transaction types
  * @param setFilters A function to update the filters prop
  * @returns
  */
@@ -107,58 +108,58 @@ export const TxsFilter = ({ filters, setFilters }: TxFilterProps) => {
         </DropdownMenuTrigger>
       }
     >
-      <DropdownMenuContent>
-        {filters.size > 1 ? null : (
-          <>
-            <DropdownMenuCheckboxItem
-              onCheckedChange={() => setFilters(new Set(AllFilterOptions))}
-            >
-              {t('Clear filters')} <Icon name="cross" />
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuSeparator />
-          </>
-        )}
-        {PrimaryFilterOptions.map((f) => (
-          <DropdownMenuCheckboxItem
-            key={f}
-            checked={filters.has(f)}
-            onCheckedChange={() => {
-              // NOTE: These act like radio buttons until the API supports multiple filters
-              setFilters(new Set([f]));
-            }}
-            id={`radio-${f}`}
-          >
-            {f}
-            <DropdownMenuItemIndicator>
-              <Icon name="tick-circle" />
-            </DropdownMenuItemIndicator>
-          </DropdownMenuCheckboxItem>
-        ))}
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            {t('More Types')}
-            <Icon name="chevron-right" />
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            {SecondaryFilterOptions.map((f) => (
+        <DropdownMenuContent>
+          {filters.size > 1 ? null : (
+            <>
               <DropdownMenuCheckboxItem
-                key={f}
-                checked={filters.has(f)}
-                onCheckedChange={(checked) => {
-                  // NOTE: These act like radio buttons until the API supports multiple filters
-                  setFilters(new Set([f]));
-                }}
-                id={`radio-${f}`}
+                onCheckedChange={() => setFilters(new Set(AllFilterOptions))}
               >
-                {f}
-                <DropdownMenuItemIndicator>
-                  <Icon name="tick-circle" className="inline" />
-                </DropdownMenuItemIndicator>
+                {t('Clear filters')} <Icon name="cross" />
               </DropdownMenuCheckboxItem>
-            ))}
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-      </DropdownMenuContent>
+              <DropdownMenuSeparator />
+            </>
+          )}
+          {PrimaryFilterOptions.map((f) => (
+            <DropdownMenuCheckboxItem
+              key={f}
+              checked={filters.has(f)}
+              onCheckedChange={() => {
+                // NOTE: These act like radio buttons until the API supports multiple filters
+                setFilters(new Set([f]));
+              }}
+              id={`radio-${f}`}
+            >
+              {f}
+              <DropdownMenuItemIndicator>
+                <Icon name="tick-circle" />
+              </DropdownMenuItemIndicator>
+            </DropdownMenuCheckboxItem>
+          ))}
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              {t('More Types')}
+              <Icon name="chevron-right" />
+            </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {SecondaryFilterOptions.map((f) => (
+                  <DropdownMenuCheckboxItem
+                    key={f}
+                    checked={filters.has(f)}
+                    onCheckedChange={(checked) => {
+                      // NOTE: These act like radio buttons until the API supports multiple filters
+                      setFilters(new Set([f]));
+                    }}
+                    id={`radio-${f}`}
+                  >
+                    {f}
+                    <DropdownMenuItemIndicator>
+                      <Icon name="tick-circle" className="inline" />
+                    </DropdownMenuItemIndicator>
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuSubContent>
+          </DropdownMenuSub>
+        </DropdownMenuContent>
     </DropdownMenu>
   );
 };
