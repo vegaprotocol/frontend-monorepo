@@ -19,6 +19,7 @@ export const useInjectedConnector = (onConnect: () => void) => {
   const attemptConnect = useCallback(
     async (connector: InjectedConnector, appChainId: string) => {
       try {
+        console.log('here');
         if (!('vega' in window)) {
           throw new Error('window.vega not found');
         }

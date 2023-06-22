@@ -78,7 +78,7 @@ context(
           cy.getByTestId('connector-jsonRpc')
             .should('be.visible')
             .and('have.text', 'Connect Vega wallet');
-          cy.getByTestId('rest')
+          cy.getByTestId('connector-rest')
             .should('be.visible')
             .and('have.text', 'Hosted Fairground wallet');
         });
