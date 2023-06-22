@@ -32,6 +32,13 @@ module.exports = defineConfig({
           'process.env': JSON.stringify(process.env),
         })
       );
+      defaultConfig.webpackOptions.cache = {
+        type: 'filesystem',
+        allowCollectingMemory: true,
+        buildDependencies: {
+          config: [__filename],
+        },
+      };
       defaultConfig.typescript = require.resolve('typescript');
 
       on('file:preprocessor', webpackPreprocessor(defaultConfig));

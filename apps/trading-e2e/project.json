@@ -7,8 +7,7 @@
       "executor": "@nrwl/cypress:cypress",
       "options": {
         "cypressConfig": "apps/trading-e2e/cypress.config.js",
-        "devServerTarget": "trading:serve",
-        "tsConfig": "apps/trading-e2e/tsconfig.json"
+        "devServerTarget": "trading:serve"
       },
       "configurations": {
         "production": {
