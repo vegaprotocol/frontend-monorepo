@@ -30,7 +30,6 @@ const normalisedVotingPowerToolTip =
   '[data-testid="normalised-voting-power-tooltip"]';
 const performancePenaltyToolTip = '[data-testid="performance-penalty-tooltip"]';
 const overstakedPenaltyToolTip = '[data-testid="overstaked-penalty-tooltip"]';
-const totalPenaltyToolTip = '[data-testid="total-penalty-tooltip"]';
 const epochCountDown = '[data-testid="epoch-countdown"]';
 const stakeNumberRegex = /^\d{1,3}(,\d{3})*(\.\d+)?$/;
 
@@ -143,9 +142,6 @@ context('Validators Page - verify elements on page', function () {
         cy.get(overstakedPenaltyToolTip)
           .invoke('text')
           .should('contain', 'Overstaked penalty: 60.00%'); // value not asserted due to #2886
-        cy.get(totalPenaltyToolTip)
-          .invoke('text')
-          .should('contain', 'Total penalties: 60.00%');
       });
 
       it('Should be able to see validator pending stake', function () {

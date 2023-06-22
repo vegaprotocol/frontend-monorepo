@@ -39,6 +39,7 @@ export enum ValidatorFields {
   STAKED_BY_USER = 'stakedByUser',
   PENDING_USER_STAKE = 'pendingUserStake',
   USER_STAKE_SHARE = 'userStakeShare',
+  MULTISIG_ERROR = 'multisigError',
 }
 
 export const addUserDataToValidator = (
@@ -326,6 +327,7 @@ interface TotalPenaltiesRendererProps {
     overstakedAmount: string;
     overstakingPenalty: string;
     totalPenalties: string;
+    multisigError?: boolean;
   };
 }
 
@@ -344,10 +346,11 @@ export const TotalPenaltiesRenderer = ({
           <div data-testid="overstaked-penalty-tooltip">
             {t('overstakedPenalty')}: {data.overstakingPenalty}
           </div>
-          <div data-testid="total-penalty-tooltip">
-            {t('totalPenalties')}:{' '}
-            <span className="font-bold">{data.totalPenalties}</span>
-          </div>
+          {data.multisigError && (
+            <div data-testid="multisig-error-tooltip">
+              {t('multisigPenalty')}: 100%
+            </div>
+          )}
         </>
       }
     >
