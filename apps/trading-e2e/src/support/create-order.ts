@@ -5,7 +5,7 @@ const orderPriceField = 'order-price';
 const orderTIFDropDown = 'order-tif';
 const placeOrderBtn = 'place-order';
 
-export const createOrder = (order: Omit<OrderObj, 'persist'>): void => {
+export const createOrder = (order: OrderObj): void => {
   cy.log('Placing order', order);
   const { type, side, size, price, timeInForce, expiresAt } = order;
 

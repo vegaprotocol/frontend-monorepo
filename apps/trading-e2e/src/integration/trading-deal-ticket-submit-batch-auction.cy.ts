@@ -31,7 +31,7 @@ describe(
 
     it('successfully places limit buy order', () => {
       cy.mockVegaWalletTransaction();
-      const order: Omit<OrderObj, 'persist'> = {
+      const order: OrderObj = {
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_BUY,
@@ -47,7 +47,7 @@ describe(
 
     it('successfully places limit sell order', () => {
       cy.mockVegaWalletTransaction();
-      const order: Omit<OrderObj, 'persist'> = {
+      const order: OrderObj = {
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_SELL,
@@ -63,7 +63,7 @@ describe(
 
     it('successfully places GTT limit buy order', () => {
       cy.mockVegaWalletTransaction();
-      const order: Omit<OrderObj, 'persist'> = {
+      const order: OrderObj = {
         marketId: 'market-0',
         type: Schema.OrderType.TYPE_LIMIT,
         side: Schema.Side.SIDE_SELL,

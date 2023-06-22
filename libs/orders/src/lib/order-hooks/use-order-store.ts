@@ -12,7 +12,7 @@ export type OrderObj = {
   timeInForce: OrderTimeInForce;
   price?: string;
   expiresAt?: string | undefined;
-  persist: boolean; // key used to determine if order should be kept in localStorage
+  persist?: boolean; // key used to determine if order should be kept in localStorage
   postOnly?: boolean;
   reduceOnly?: boolean;
 };

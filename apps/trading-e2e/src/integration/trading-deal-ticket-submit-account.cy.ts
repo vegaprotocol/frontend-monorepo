@@ -94,7 +94,7 @@ describe(
       it('must see a prompt to check connected vega wallet to approve transaction', () => {
         // 0003-WTXN-002
         cy.mockVegaWalletTransaction(1000);
-        const order: Omit<OrderObj, 'persist'> = {
+        const order: OrderObj = {
           marketId: 'market-0',
           type: Schema.OrderType.TYPE_MARKET,
           side: Schema.Side.SIDE_BUY,
@@ -124,7 +124,7 @@ describe(
           });
         });
 
-        const order: Omit<OrderObj, 'persist'> = {
+        const order: OrderObj = {
           marketId: 'market-0',
           type: Schema.OrderType.TYPE_MARKET,
           side: Schema.Side.SIDE_BUY,
@@ -160,7 +160,7 @@ describe(
           });
         });
 
-        const order: Omit<OrderObj, 'persist'> = {
+        const order: OrderObj = {
           marketId: 'market-0',
           type: Schema.OrderType.TYPE_MARKET,
           side: Schema.Side.SIDE_BUY,

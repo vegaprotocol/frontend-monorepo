@@ -49,7 +49,7 @@ export const useOrderForm = (marketId: string) => {
     }
   }, [order, isSubmitted, getValues, setValue]);
 
-  const handleSubmitWrapper = (cb: (o: Omit<OrderObj, 'persist'>) => void) => {
+  const handleSubmitWrapper = (cb: (o: OrderObj) => void) => {
     return handleSubmit(() => {
       // remove the persist key from the order in the store, the wallet will reject
       // an order that contains unrecognized additional keys

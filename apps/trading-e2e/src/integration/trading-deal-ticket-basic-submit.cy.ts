@@ -22,7 +22,7 @@ describe('must submit order', { tags: '@smoke' }, () => {
     // 0003-WTXN-012
     // 0003-WTXN-003
     cy.mockVegaWalletTransaction();
-    const order: Omit<OrderObj, 'persist'> = {
+    const order: OrderObj = {
       marketId: 'market-0',
       type: Schema.OrderType.TYPE_MARKET,
       side: Schema.Side.SIDE_BUY,
@@ -37,7 +37,7 @@ describe('must submit order', { tags: '@smoke' }, () => {
 
   it('successfully places market sell order', () => {
     cy.mockVegaWalletTransaction();
-    const order: Omit<OrderObj, 'persist'> = {
+    const order: OrderObj = {
       marketId: 'market-0',
       type: Schema.OrderType.TYPE_MARKET,
       side: Schema.Side.SIDE_SELL,
@@ -53,7 +53,7 @@ describe('must submit order', { tags: '@smoke' }, () => {
   it('successfully places limit buy order', () => {
     // 7002-SORD-017
     cy.mockVegaWalletTransaction();
-    const order: Omit<OrderObj, 'persist'> = {
+    const order: OrderObj = {
       marketId: 'market-0',
       type: Schema.OrderType.TYPE_LIMIT,
       side: Schema.Side.SIDE_BUY,
@@ -69,7 +69,7 @@ describe('must submit order', { tags: '@smoke' }, () => {
 
   it('successfully places limit sell order', () => {
     cy.mockVegaWalletTransaction();
-    const order: Omit<OrderObj, 'persist'> = {
+    const order: OrderObj = {
       marketId: 'market-0',
       type: Schema.OrderType.TYPE_LIMIT,
       side: Schema.Side.SIDE_SELL,
@@ -86,7 +86,7 @@ describe('must submit order', { tags: '@smoke' }, () => {
   it('successfully places GTT limit buy order', () => {
     cy.mockVegaWalletTransaction();
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    const order: Omit<OrderObj, 'persist'> = {
+    const order: OrderObj = {
       marketId: 'market-0',
       type: Schema.OrderType.TYPE_LIMIT,
       side: Schema.Side.SIDE_SELL,

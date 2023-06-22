@@ -10,7 +10,7 @@ import { normalizeOrderSubmission } from '@vegaprotocol/deal-ticket';
 import type { OrderObj } from '@vegaprotocol/orders';
 
 export const testOrderSubmission = (
-  order: Omit<OrderObj, 'persist'>,
+  order: OrderObj,
   expected?: Partial<OrderObj>
 ) => {
   const expectedOrder = {

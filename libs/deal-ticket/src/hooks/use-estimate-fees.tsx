@@ -3,7 +3,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useEstimateFeesQuery } from './__generated__/EstimateOrder';
 import type { OrderObj } from '@vegaprotocol/orders';
 
-export const useEstimateFees = (order?: Omit<OrderObj, 'persist'>) => {
+export const useEstimateFees = (order?: OrderObj) => {
   const { pubKey } = useVegaWallet();
 
   const { data } = useEstimateFeesQuery({

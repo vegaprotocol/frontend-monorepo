@@ -63,7 +63,7 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { vega as vegaProtos } from '@vegaprotocol/protos';
 
 export const normalizeOrderSubmission = (
-  order: Omit<OrderObj, 'persist'>,
+  order: OrderObj,
   decimalPlaces: number,
   positionDecimalPlaces: number
 ): OrderSubmission => ({
@@ -281,7 +281,7 @@ export const DealTicket = ({
   }, [order]);
 
   const onSubmit = useCallback(
-    (order: Omit<OrderObj, 'persist'>) => {
+    (order: OrderObj) => {
       const now = new Date().getTime();
       if (lastSubmitTime.current && now - lastSubmitTime.current < 1000) {
         return;
