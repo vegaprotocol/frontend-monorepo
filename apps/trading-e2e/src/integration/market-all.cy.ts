@@ -199,6 +199,7 @@ describe('no all markets', { tags: '@smoke', testIsolation: true }, () => {
     });
     cy.mockSubscription();
     cy.visit('/#/markets/all');
+    cy.wait('@Markets');
   });
 
   it('can see no markets message', () => {
