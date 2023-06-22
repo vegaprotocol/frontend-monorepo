@@ -154,7 +154,7 @@ describe('markets all table', { tags: '@smoke' }, () => {
       .find(dropdownContentItem)
       .eq(2)
       .should('have.text', 'View asset');
-    cy.getByTestId('market-actions-content').click();
+    cy.getByTestId('market-actions-content').should('be.visible');
   });
 
   it('able to open and sort full market list - market page', () => {
