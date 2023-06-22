@@ -34,46 +34,9 @@ export const OrdersContainer = ({ marketId, filter }: OrderContainerProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const onMarketClick = useMarketClickHandler(true);
   const onOrderTypeClick = useMarketLiquidityClickHandler();
-  const gridStore = useOrderListStore((store) => {
-    switch (filter) {
-      case Filter.Open: {
-        return {
-          columnState: store.open.columnState,
-          filterModel: {
-            status: {
-              value: FilterStatusValue[Filter.Open],
-            },
-          },
-        };
-      }
-      case Filter.Closed: {
-        return {
-          columnState: store.closed.columnState,
-          filterModel: {
-            status: {
-              value: FilterStatusValue[Filter.Closed],
-            },
-          },
-        };
-      }
-      case Filter.Rejected: {
-        return {
-          columnState: store.rejected.columnState,
-          filterModel: {
-            status: {
-              value: FilterStatusValue[Filter.Rejected],
-            },
-          },
-        };
-      }
-      default: {
-        return store.all;
-      }
-    }
-  });
-  const update = useOrderListStore((store) => store.update);
-  const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
-    update(filter, colState);
+  const { gridState, updateGridState } = useOrderListGridState(filter);
+  const gridStoreCallbacks = useDataGridEvents(gridState, (newState) => {
+    updateGridState(filter, newState);
   });
 
   if (!pubKey) {
@@ -152,3 +115,51 @@ const useOrderListStore = create<{
     }
   )
 );
+
+const useOrderListGridState = (filter: Filter | undefined) => {
+  const updateGridState = useOrderListStore((store) => store.update);
+  const gridState = useOrderListStore((store) => {
+    // Return the column/filter state for the given filter but ensuring that
+    // each filter controlled by the tab is always applied
+    switch (filter) {
+      case Filter.Open: {
+        return {
+          columnState: store.open.columnState,
+          filterModel: {
+            ...store.open.filterModel,
+            status: {
+              value: FilterStatusValue[Filter.Open],
+            },
+          },
+        };
+      }
+      case Filter.Closed: {
+        return {
+          columnState: store.closed.columnState,
+          filterModel: {
+            ...store.closed.filterModel,
+            status: {
+              value: FilterStatusValue[Filter.Closed],
+            },
+          },
+        };
+      }
+      case Filter.Rejected: {
+        return {
+          columnState: store.rejected.columnState,
+          filterModel: {
+            ...store.rejected.filterModel,
+            status: {
+              value: FilterStatusValue[Filter.Rejected],
+            },
+          },
+        };
+      }
+      default: {
+        return store.all;
+      }
+    }
+  });
+
+  return { gridState, updateGridState };
+};
