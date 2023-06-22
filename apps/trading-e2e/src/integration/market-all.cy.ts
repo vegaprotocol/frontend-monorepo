@@ -197,7 +197,6 @@ describe('no all markets', { tags: '@smoke', testIsolation: true }, () => {
     cy.mockGQL((req) => {
       aliasGQLQuery(req, 'Markets', markets);
     });
-    cy.mockSubscription();
     cy.visit('/#/markets/all');
     cy.wait('@Markets');
   });
