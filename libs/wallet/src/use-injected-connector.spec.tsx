@@ -51,7 +51,7 @@ describe('useInjectedConnector', () => {
 
   it('errors if connection throws', async () => {
     const callback = jest.fn();
-    const vega = mockBrowserWallet({
+    mockBrowserWallet({
       getChainId: () => Promise.reject('failed'),
     });
     const { result } = setup(callback);
