@@ -39,10 +39,8 @@ export function addVegaWalletTopUpRewardsPool() {
 
         const transactionBody: TransferBody = {
           transfer: {
-            fromAccountType:
-            vegaProtos.AccountType.ACCOUNT_TYPE_GENERAL,
-            toAccountType:
-              vegaProtos.AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+            fromAccountType: vegaProtos.AccountType.ACCOUNT_TYPE_GENERAL,
+            toAccountType: vegaProtos.AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
             to: '0000000000000000000000000000000000000000000000000000000000000000',
             asset: assetAddress,
             amount: '1000000000000000000',
