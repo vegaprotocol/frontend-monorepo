@@ -3,7 +3,7 @@ import type {
   ColumnResizedEvent,
   ColumnState,
   FilterChangedEvent,
-  GridColumnsChangedEvent,
+  GridReadyEvent,
   SortChangedEvent,
 } from 'ag-grid-community';
 import { useCallback, useMemo } from 'react';
@@ -37,7 +37,7 @@ export const useDataGridEvents = (
 
   // check if we have stored column states or filter models and apply if we do
   const onGridReady = useCallback(
-    ({ api, columnApi }: GridColumnsChangedEvent) => {
+    ({ api, columnApi }: GridReadyEvent) => {
       if (!api || !columnApi) return;
 
       if (state.columnState) {

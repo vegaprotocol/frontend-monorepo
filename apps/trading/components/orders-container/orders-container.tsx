@@ -11,6 +11,19 @@ import {
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { DataGridStore } from '../../stores/datagrid-store-slice';
+import { OrderStatus } from '@vegaprotocol/types';
+
+const FilterStatusValue = {
+  [Filter.Open]: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
+  [Filter.Closed]: [
+    OrderStatus.STATUS_CANCELLED,
+    OrderStatus.STATUS_EXPIRED,
+    OrderStatus.STATUS_FILLED,
+    OrderStatus.STATUS_PARTIALLY_FILLED,
+    OrderStatus.STATUS_STOPPED,
+  ],
+  [Filter.Rejected]: [OrderStatus.STATUS_REJECTED],
+};
 
 export interface OrderContainerProps {
   marketId?: string;
@@ -24,13 +37,34 @@ export const OrdersContainer = ({ marketId, filter }: OrderContainerProps) => {
   const gridStore = useOrderListStore((store) => {
     switch (filter) {
       case Filter.Open: {
-        return store.open;
+        return {
+          columnState: store.open.columnState,
+          filterModel: {
+            status: {
+              value: FilterStatusValue[Filter.Open],
+            },
+          },
+        };
       }
       case Filter.Closed: {
-        return store.closed;
+        return {
+          columnState: store.closed.columnState,
+          filterModel: {
+            status: {
+              value: FilterStatusValue[Filter.Closed],
+            },
+          },
+        };
       }
       case Filter.Rejected: {
-        return store.rejected;
+        return {
+          columnState: store.rejected.columnState,
+          filterModel: {
+            status: {
+              value: FilterStatusValue[Filter.Rejected],
+            },
+          },
+        };
       }
       default: {
         return store.all;
