@@ -13,12 +13,16 @@ import { useMemo } from 'react';
 const DEFAULT_TRUNCATE_LENGTH = 7;
 
 export function getIdTruncateLength(screen: Screen): number {
-  if (['xxxl', 'xxl'].includes(screen)) {
+  if (['xxxl', 'xxl', 'xl', 'lg'].includes(screen)) {
     return 64;
-  } else if (['xl', 'lg', 'md'].includes(screen)) {
+  } else if (['md'].includes(screen)) {
     return 32;
   }
   return DEFAULT_TRUNCATE_LENGTH;
+}
+
+export function shouldTruncateParty(screen: Screen): boolean {
+  return !['xxxl', 'xxl', 'xl'].includes(screen);
 }
 
 export const TxsInfiniteListItem = ({
@@ -71,7 +75,7 @@ export const TxsInfiniteListItem = ({
         <TxOrderType orderType={type} command={command} />
       </td>
       <td className="text-sm leading-none" data-testid="pub-key">
-        <PartyLink truncate={true} id={submitter} />
+        <PartyLink truncate={shouldTruncateParty(screenSize)} id={submitter} />
       </td>
       <td className="text-sm items-center font-mono" data-testid="tx-block">
         <TruncatedLink

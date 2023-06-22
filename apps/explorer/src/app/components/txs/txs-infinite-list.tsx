@@ -17,7 +17,6 @@ interface ItemProps {
   tx: BlockExplorerTransactionResult;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 const Item = ({ tx }: ItemProps) => {
   const { hash, submitter, type, command, block, code, index: blockIndex } = tx;
   return (

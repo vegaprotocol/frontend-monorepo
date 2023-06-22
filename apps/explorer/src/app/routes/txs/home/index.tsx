@@ -7,7 +7,7 @@ import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 import { useState } from 'react';
 import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Icon } from '@vegaprotocol/ui-toolkit';
 
 const BE_TXS_PER_REQUEST = 25;
 
@@ -22,6 +22,11 @@ export const TxsList = () => {
   );
 };
 
+/**
+ * Displays a list of transactions with filters and controls to navigate through the list.
+ *
+ * @returns {JSX.Element} Transaction List and controls
+ */
 export const TxsListFiltered = () => {
   const [filters, setFilters] = useState(new Set(AllFilterOptions));
 
@@ -38,7 +43,7 @@ export const TxsListFiltered = () => {
     refreshTxs,
     loading,
     txsData,
-    hasPreviousPage
+    hasPreviousPage,
   } = useTxsData({
     limit: BE_TXS_PER_REQUEST,
     filters: f,
@@ -46,27 +51,34 @@ export const TxsListFiltered = () => {
 
   return (
     <>
-      <menu className="mb-2">
-        <BlocksRefetch refetch={refreshTxs} />
+      <menu className="mb-2 w-full ">
         <TxsFilter filters={filters} setFilters={setFilters} />
-        <div className="right">
+      </menu>
+      <menu className="mb-2 w-full">
+        <BlocksRefetch refetch={refreshTxs} />
+        <div className="float-right">
           <Button
+            className="mr-2"
             size="xs"
-            disabled={!hasPreviousPage}
+            disabled={!hasPreviousPage || loading}
             onClick={() => {
               previousPage();
             }}
           >
-            Previous
+            Newer
           </Button>
           <Button
             size="xs"
+            disabled={!hasMoreTxs || loading}
             onClick={() => {
               nextPage();
             }}
           >
-            Next
+            Older
           </Button>
+        </div>
+        <div className="float-right mr-2">
+          {loading ? <Icon name="more" /> : null}
         </div>
       </menu>
       <TxsInfiniteList

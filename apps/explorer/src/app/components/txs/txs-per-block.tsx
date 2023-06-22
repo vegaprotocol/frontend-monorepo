@@ -44,7 +44,14 @@ export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
               {data.transactions.map(
                 ({ hash, submitter, type, command, code, block }) => {
                   return (
-                    <TxsInfiniteListItem block={block} hash={hash} submitter={submitter} type={type} command={command} code={code} />
+                    <TxsInfiniteListItem
+                      block={block}
+                      hash={hash}
+                      submitter={submitter}
+                      type={type}
+                      command={command}
+                      code={code}
+                    />
                   );
                 }
               )}

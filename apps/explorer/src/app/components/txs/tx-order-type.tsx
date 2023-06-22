@@ -39,7 +39,7 @@ const displayString: StringMap = {
   StateVariableProposal: 'State Variable',
   'State Variable Proposal': 'State Variable',
   Transfer: 'Transfer',
-  'CancelTransfer': 'Cancel Transfer',
+  CancelTransfer: 'Cancel Transfer',
   'Cancel Transfer Funds': 'Cancel Transfer',
   ValidatorHeartbeat: 'Heartbeat',
   'Validator Heartbeat': 'Heartbeat',

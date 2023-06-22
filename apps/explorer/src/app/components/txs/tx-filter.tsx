@@ -101,65 +101,65 @@ export const TxsFilter = ({ filters, setFilters }: TxFilterProps) => {
     <DropdownMenu
       modal={false}
       trigger={
-        <DropdownMenuTrigger className="ml-2">
+        <DropdownMenuTrigger className="ml-0">
           <Button size="xs">
             <FilterLabel filters={filters} />
           </Button>
         </DropdownMenuTrigger>
       }
     >
-        <DropdownMenuContent>
-          {filters.size > 1 ? null : (
-            <>
-              <DropdownMenuCheckboxItem
-                onCheckedChange={() => setFilters(new Set(AllFilterOptions))}
-              >
-                {t('Clear filters')} <Icon name="cross" />
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuSeparator />
-            </>
-          )}
-          {PrimaryFilterOptions.map((f) => (
+      <DropdownMenuContent>
+        {filters.size > 1 ? null : (
+          <>
             <DropdownMenuCheckboxItem
-              key={f}
-              checked={filters.has(f)}
-              onCheckedChange={() => {
-                // NOTE: These act like radio buttons until the API supports multiple filters
-                setFilters(new Set([f]));
-              }}
-              id={`radio-${f}`}
+              onCheckedChange={() => setFilters(new Set(AllFilterOptions))}
             >
-              {f}
-              <DropdownMenuItemIndicator>
-                <Icon name="tick-circle" />
-              </DropdownMenuItemIndicator>
+              {t('Clear filters')} <Icon name="cross" />
             </DropdownMenuCheckboxItem>
-          ))}
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              {t('More Types')}
-              <Icon name="chevron-right" />
-            </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent>
-                {SecondaryFilterOptions.map((f) => (
-                  <DropdownMenuCheckboxItem
-                    key={f}
-                    checked={filters.has(f)}
-                    onCheckedChange={(checked) => {
-                      // NOTE: These act like radio buttons until the API supports multiple filters
-                      setFilters(new Set([f]));
-                    }}
-                    id={`radio-${f}`}
-                  >
-                    {f}
-                    <DropdownMenuItemIndicator>
-                      <Icon name="tick-circle" className="inline" />
-                    </DropdownMenuItemIndicator>
-                  </DropdownMenuCheckboxItem>
-                ))}
-              </DropdownMenuSubContent>
-          </DropdownMenuSub>
-        </DropdownMenuContent>
+            <DropdownMenuSeparator />
+          </>
+        )}
+        {PrimaryFilterOptions.map((f) => (
+          <DropdownMenuCheckboxItem
+            key={f}
+            checked={filters.has(f)}
+            onCheckedChange={() => {
+              // NOTE: These act like radio buttons until the API supports multiple filters
+              setFilters(new Set([f]));
+            }}
+            id={`radio-${f}`}
+          >
+            {f}
+            <DropdownMenuItemIndicator>
+              <Icon name="tick-circle" />
+            </DropdownMenuItemIndicator>
+          </DropdownMenuCheckboxItem>
+        ))}
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            {t('More Types')}
+            <Icon name="chevron-right" />
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            {SecondaryFilterOptions.map((f) => (
+              <DropdownMenuCheckboxItem
+                key={f}
+                checked={filters.has(f)}
+                onCheckedChange={(checked) => {
+                  // NOTE: These act like radio buttons until the API supports multiple filters
+                  setFilters(new Set([f]));
+                }}
+                id={`radio-${f}`}
+              >
+                {f}
+                <DropdownMenuItemIndicator>
+                  <Icon name="tick-circle" className="inline" />
+                </DropdownMenuItemIndicator>
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+      </DropdownMenuContent>
     </DropdownMenu>
   );
 };
