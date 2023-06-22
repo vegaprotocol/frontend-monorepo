@@ -130,7 +130,7 @@ context(
       createRawProposal();
     });
 
-    it.skip('Creating a proposal - proposal rejected - when closing time sooner than system default', function () {
+    it('Creating a proposal - proposal rejected - when closing time sooner than system default', function () {
       goToMakeNewProposal(governanceProposalType.FREEFORM);
       enterUniqueFreeFormProposalBody('0.1', generateFreeFormProposalTitle());
       cy.get('input:invalid')
@@ -138,7 +138,7 @@ context(
         .should('equal', 'Value must be greater than or equal to 1.');
     });
 
-    it.skip('Creating a proposal - proposal rejected - when closing time later than system default', function () {
+    it('Creating a proposal - proposal rejected - when closing time later than system default', function () {
       goToMakeNewProposal(governanceProposalType.FREEFORM);
       enterUniqueFreeFormProposalBody(
         '100000',

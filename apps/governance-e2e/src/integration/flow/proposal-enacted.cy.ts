@@ -89,8 +89,14 @@ context(
       });
       cy.get(proposalStatus).should('have.text', 'Open');
       voteForProposal('for');
-      cy.get(proposalStatus, proposalTimeout).should('have.text', 'Passed');
-      cy.get(proposalStatus, proposalTimeout).should('have.text', 'Enacted');
+      cy.get(proposalStatus, proposalTimeout)
+        .should('have.text', 'Passed')
+        .then(() => {
+          cy.get(proposalStatus, proposalTimeout).should(
+            'have.text',
+            'Enacted'
+          );
+        });
       cy.get(votesTable).within(() => {
         cy.contains('Vote passed.').should('be.visible');
         cy.contains('Voting has ended.').should('be.visible');

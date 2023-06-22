@@ -1,5 +1,6 @@
-import { createWalletClient, sendVegaTx } from '../capsule/wallet-client';
+import { createWalletClient } from '../capsule/wallet-client';
 import type { ProposalSubmissionBody } from '@vegaprotocol/wallet';
+import { submitProposal } from '../capsule/submit-proposal';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -15,11 +16,8 @@ export const addVegaWalletSubmitProposal = () => {
   Cypress.Commands.add('VegaWalletSubmitProposal', (proposalTx) => {
     const vegaWalletUrl = Cypress.env('VEGA_WALLET_URL');
     const token = Cypress.env('VEGA_WALLET_API_TOKEN');
-    const vegaPubKey = Cypress.env('VEGA_PUBLIC_KEY');
 
     createWalletClient(vegaWalletUrl, token);
-
-    cy.highlight('Submitting proposal');
-    sendVegaTx(vegaPubKey, proposalTx);
+    cy.wrap(submitProposal(proposalTx));
   });
 };
