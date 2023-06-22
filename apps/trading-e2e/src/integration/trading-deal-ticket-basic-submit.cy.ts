@@ -97,12 +97,10 @@ describe('must submit order', { tags: '@smoke' }, () => {
       postOnly: false,
       reduceOnly: false,
     };
-
     createOrder(order);
     testOrderSubmission(order, {
       price: '100000',
-      expiresAt:
-        new Date(order.expiresAt as string).getTime().toString() + '000000',
+      expiresAt: order.expiresAt as string,
       postOnly: false,
       reduceOnly: false,
     });

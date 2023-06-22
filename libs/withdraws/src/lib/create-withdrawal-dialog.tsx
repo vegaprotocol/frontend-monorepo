@@ -35,7 +35,7 @@ export const CreateWithdrawalDialog = () => {
                 },
               },
             },
-          } as Transaction);
+          });
           close();
         }}
       />

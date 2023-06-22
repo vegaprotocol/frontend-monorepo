@@ -64,7 +64,7 @@ const vegaWalletTransaction = (transaction: Transaction) => {
       expect(req.body.params).to.deep.equal({
         publicKey: Cypress.env('VEGA_PUBLIC_KEY'),
         sendingMode: 'TYPE_SYNC',
-        transaction,
+        transaction: JSON.parse(JSON.stringify(transaction)), // this is because BigInt needs to be serialized
       });
       expect(req.headers.authorization).to.equal(
         `VWT ${Cypress.env('VEGA_WALLET_API_TOKEN')}`

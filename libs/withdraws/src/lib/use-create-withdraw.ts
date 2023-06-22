@@ -53,7 +53,7 @@ export const useCreateWithdraw = () => {
             },
           },
         },
-      } as Transaction);
+      });
 
       if (res) {
         const withdrawalId = determineId(res.signature);

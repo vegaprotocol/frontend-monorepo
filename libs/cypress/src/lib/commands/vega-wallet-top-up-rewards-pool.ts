@@ -1,3 +1,4 @@
+import { vega as vegaProtos } from '@vegaprotocol/protos';
 import type { TransferBody } from '@vegaprotocol/wallet';
 import { createWalletClient, sendVegaTx } from '../capsule/wallet-client';
 
@@ -38,8 +39,10 @@ export function addVegaWalletTopUpRewardsPool() {
 
         const transactionBody: TransferBody = {
           transfer: {
-            fromAccountType: 4, //ProtoAccountType.ACCOUNT_TYPE_GENERAL,
-            toAccountType: 12, // ProtoAccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+            fromAccountType:
+              vegaProtos.Account.AccountType.ACCOUNT_TYPE_GENERAL,
+            toAccountType:
+              vegaProtos.Account.AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
             to: '0000000000000000000000000000000000000000000000000000000000000000',
             asset: assetAddress,
             amount: '1000000000000000000',

@@ -31,7 +31,12 @@ import {
   useEstimatePositionQuery,
   useOpenVolume,
 } from '@vegaprotocol/positions';
-import { toBigNum, removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
+import {
+  toBigNum,
+  removeDecimal,
+  toNanoSeconds,
+  isNumeric,
+} from '@vegaprotocol/utils';
 import type { OrderObj } from '@vegaprotocol/orders';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useEstimateFees } from '../../hooks/use-estimate-fees';
@@ -72,7 +77,9 @@ export const normalizeOrderSubmission = (
       : '',
   size: BigInt(removeDecimal(order.size, positionDecimalPlaces)),
   expiresAt: BigInt(
-    order.expiresAt && order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
+    order.expiresAt &&
+      order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT &&
+      isNumeric(new Date(order.expiresAt).getTime())
       ? toNanoSeconds(order.expiresAt)
       : 0
   ),
