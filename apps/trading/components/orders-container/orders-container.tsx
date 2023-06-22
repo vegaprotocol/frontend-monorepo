@@ -10,7 +10,7 @@ import {
   useMarketLiquidityClickHandler,
 } from '../../lib/hooks/use-market-click-handler';
 import { create } from 'zustand';
-import { persist, subscribeWithSelector } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 
 export interface OrderContainerProps {
   marketId?: string;
@@ -20,7 +20,7 @@ export interface OrderContainerProps {
 export const OrdersContainer = ({ marketId, filter }: OrderContainerProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const onMarketClick = useMarketClickHandler(true);
-  const onOrderTypeClick = useMarketLiquidityClickHandler(true);
+  const onOrderTypeClick = useMarketLiquidityClickHandler();
   const [gridStore, update] = useOrderListStore((store) => {
     switch (filter) {
       case Filter.Open: {
@@ -72,7 +72,7 @@ const useOrderListStore = create<{
   update: (filter: Filter | undefined, gridStore: Store) => void;
 }>()(
   persist(
-    subscribeWithSelector((set, get) => ({
+    (set) => ({
       open: {},
       closed: {},
       rejected: {},
@@ -117,7 +117,7 @@ const useOrderListStore = create<{
           }
         }
       },
-    })),
+    }),
     {
       name: 'vega_order_list_store',
     }
