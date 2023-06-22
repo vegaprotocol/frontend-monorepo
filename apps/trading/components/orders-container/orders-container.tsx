@@ -21,22 +21,23 @@ export const OrdersContainer = ({ marketId, filter }: OrderContainerProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const onMarketClick = useMarketClickHandler(true);
   const onOrderTypeClick = useMarketLiquidityClickHandler();
-  const [gridStore, update] = useOrderListStore((store) => {
+  const gridStore = useOrderListStore((store) => {
     switch (filter) {
       case Filter.Open: {
-        return [store.open, store.update];
+        return store.open;
       }
       case Filter.Closed: {
-        return [store.closed, store.update];
+        return store.closed;
       }
       case Filter.Rejected: {
-        return [store.rejected, store.update];
+        return store.rejected;
       }
       default: {
-        return [store.all, store.update];
+        return store.all;
       }
     }
   });
+  const update = useOrderListStore((store) => store.update);
   const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
     update(filter, colState);
   });
@@ -57,7 +58,6 @@ export const OrdersContainer = ({ marketId, filter }: OrderContainerProps) => {
     />
   );
 };
-
 
 const useOrderListStore = create<{
   open: DataGridStore;
