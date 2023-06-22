@@ -17,12 +17,10 @@ export const PositionsContainer = ({
 }) => {
   const { pubKey, pubKeys, isReadOnly } = useVegaWallet();
 
-  const [gridStore, update] = usePositionsStore((store) => [
-    store.gridStore,
-    store.updateGridStore,
-  ]);
+  const gridStore = usePositionsStore((store) => store.gridStore);
+  const updateGridStore = usePositionsStore((store) => store.updateGridStore);
   const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
-    update(colState);
+    updateGridStore(colState);
   });
 
   if (!pubKey) {

@@ -11,13 +11,11 @@ import { persist } from 'zustand/middleware';
 export const LedgerContainer = () => {
   const { pubKey } = useVegaWallet();
 
-  const [gridStore, update] = useLedgerStore((store) => [
-    store.gridStore,
-    store.updateGridStore,
-  ]);
+  const gridStore = useLedgerStore((store) => store.gridStore);
+  const updateGridStore = useLedgerStore((store) => store.updateGridStore);
 
   const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
-    update(colState);
+    updateGridStore(colState);
   });
 
   if (!pubKey) {

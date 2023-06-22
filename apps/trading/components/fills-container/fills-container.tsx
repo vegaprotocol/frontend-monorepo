@@ -17,13 +17,11 @@ export const FillsContainer = ({
 }) => {
   const { pubKey } = useVegaWallet();
 
-  const [gridStore, update] = useFillsStore((store) => [
-    store.gridStore,
-    store.updateGridStore,
-  ]);
+  const gridStore = useFillsStore((store) => store.gridStore);
+  const updateGridStore = useFillsStore((store) => store.updateGridStore);
 
   const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
-    update(colState);
+    updateGridStore(colState);
   });
 
   if (!pubKey) {

@@ -28,13 +28,11 @@ export const LiquidityContainer = ({
 }) => {
   const gridRef = useRef<AgGridReact | null>(null);
 
-  const [gridStore, update] = useLiquidityStore((store) => [
-    store.gridStore,
-    store.updateGridStore,
-  ]);
+  const gridStore = useLiquidityStore((store) => store.gridStore);
+  const updateGridStore = useLiquidityStore((store) => store.updateGridStore);
 
   const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
-    update(colState);
+    updateGridStore(colState);
   });
   const { data: market } = useMarket(marketId);
 

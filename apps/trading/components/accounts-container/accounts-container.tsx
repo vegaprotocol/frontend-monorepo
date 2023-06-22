@@ -29,12 +29,10 @@ export const AccountsContainer = ({
   const openDepositDialog = useDepositDialog((store) => store.open);
   const openTransferDialog = useTransferDialog((store) => store.open);
 
-  const [gridStore, update] = useAccountStore((store) => [
-    store.gridStore,
-    store.updateGridStore,
-  ]);
+  const gridStore = useAccountStore((store) => store.gridStore);
+  const updateGridStore = useAccountStore((store) => store.updateGridStore);
   const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
-    update(colState);
+    updateGridStore(colState);
   });
 
   const onClickAsset = useCallback(
