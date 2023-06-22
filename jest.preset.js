@@ -6,4 +6,5 @@ module.exports = {
     ...(nxPreset?.transformIgnorePatterns || []),
     'node_modules/(?!(@vegaprotocol/protos|protobuf-codec))',
   ],
+  setupFilesAfterEnv: ['./setup-tests.ts'],
 };

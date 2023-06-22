@@ -1,4 +1,3 @@
-import type { Transaction } from '@vegaprotocol/wallet';
 import {
   useVegaTransaction,
   useVegaWallet,
