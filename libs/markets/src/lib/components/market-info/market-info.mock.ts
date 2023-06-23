@@ -94,7 +94,7 @@ export const marketInfoQuery = (
       },
       lpPriceRange: '0.02',
       liquidityMonitoringParameters: {
-        triggeringRatio: '0',
+        triggeringRatio: '0.7',
         targetStakeParameters: {
           timeWindow: 3600,
           scalingFactor: 10,
