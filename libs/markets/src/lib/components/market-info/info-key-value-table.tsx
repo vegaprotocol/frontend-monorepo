@@ -1,6 +1,5 @@
 import {
   addDecimalsFormatNumber,
-  formatNumber,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
