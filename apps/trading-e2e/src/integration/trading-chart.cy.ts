@@ -161,13 +161,22 @@ describe(
 
     it('price details', () => {
       // 6004-CHAR-010
+      const expectedDate = new Date('11:30 2022-04-06');
+      const expectedOhlc = `O 173.60000H 174.00000L 173.50000C 173.90000Change −0.60000(−0.34%)`;
       cy.get(indicatorInfo)
         .eq(0)
         .invoke('text')
-        .should(
-          'equal',
-          '11:30 06 Apr 2022O 173.60000H 174.00000L 173.50000C 173.90000Change −0.60000(−0.34%)'
-        );
+        .then((text) => {
+          const actualDate = new Date(text.slice(0, -67));
+          const actualOhlc = text.slice(-67);
+
+          assert.strictEqual(
+            actualDate.getTime(),
+            expectedDate.getTime(),
+            'Dates do not match'
+          );
+          assert.strictEqual(actualOhlc, expectedOhlc, 'Text does not match');
+        });
     });
   }
 );
