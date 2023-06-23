@@ -5,7 +5,7 @@ import {
   useOrderListGridState,
 } from './orders-container';
 import { Filter } from '@vegaprotocol/orders';
-import { OrderStatus, OrderType } from '@vegaprotocol/types';
+import { OrderType } from '@vegaprotocol/types';
 
 describe('useOrderListGridState', () => {
   afterAll(() => {
