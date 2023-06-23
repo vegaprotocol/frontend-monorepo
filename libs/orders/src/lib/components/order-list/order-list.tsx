@@ -2,14 +2,13 @@ import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
   isNumeric,
+  toBigNum,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
-import { AgGridColumn } from 'ag-grid-react';
-import BigNumber from 'bignumber.js';
 import type { ForwardedRef } from 'react';
-import { memo, forwardRef } from 'react';
+import { memo, forwardRef, useMemo } from 'react';
 import {
   AgGridLazy as AgGrid,
   SetFilter,
@@ -24,11 +23,13 @@ import type {
   TypedDataAgGrid,
   VegaICellRendererParams,
   VegaValueFormatterParams,
+  VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
 import { OrderActionsDropdown } from '../order-actions-dropdown';
 import { Filter } from '../order-list-manager';
+import type { ColDef } from 'ag-grid-community';
 
 export type OrderListTableProps = TypedDataAgGrid<Order> & {
   marketId?: string;
@@ -54,49 +55,40 @@ export const OrderListTable = memo<
         : filter === undefined || filter === Filter.Open
         ? true
         : false;
-
-      return (
-        <AgGrid
-          ref={ref}
-          defaultColDef={{
-            resizable: true,
-            sortable: true,
-            filterParams: { buttons: ['reset'] },
-          }}
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-          getRowId={({ data }) => data.id}
-          components={{ MarketNameCell, OrderTypeCell }}
-          {...props}
-        >
-          <AgGridColumn
-            headerName={t('Market')}
-            field="market.tradableInstrument.instrument.code"
-            cellRenderer="MarketNameCell"
-            cellRendererParams={{ idPath: 'market.id', onMarketClick }}
-            minWidth={150}
-          />
-          <AgGridColumn
-            headerName={t('Size')}
-            field="size"
-            cellClass="font-mono text-right"
-            type="rightAligned"
-            cellClassRules={{
+      const columnDefs: ColDef[] = useMemo(
+        () => [
+          {
+            headerName: t('Market'),
+            field: 'market.tradableInstrument.instrument.code',
+            cellRenderer: 'MarketNameCell',
+            cellRendererParams: { idPath: 'market.id', onMarketClick },
+            minWidth: 150,
+          },
+          {
+            headerName: t('Size'),
+            field: 'size',
+            cellClass: 'font-mono text-right',
+            type: 'rightAligned',
+            cellClassRules: {
               [positiveClassNames]: ({ data }: { data: Order }) =>
                 data?.side === Schema.Side.SIDE_BUY,
               [negativeClassNames]: ({ data }: { data: Order }) =>
                 data?.side === Schema.Side.SIDE_SELL,
-            }}
-            valueFormatter={({
-              value,
+            },
+            valueGetter: ({ data }: VegaValueGetterParams<Order>) => {
+              return data?.size && data.market
+                ? toBigNum(data.size, data.market.positionDecimalPlaces ?? 0)
+                    .multipliedBy(data.side === Schema.Side.SIDE_SELL ? -1 : 1)
+                    .toNumber()
+                : undefined;
+            },
+            valueFormatter: ({
               data,
             }: VegaValueFormatterParams<Order, 'size'>) => {
               if (!data) {
-                return undefined;
+                return '';
               }
-              if (!data?.market || !isNumeric(value)) {
+              if (!data?.market || !isNumeric(data.size)) {
                 return '-';
               }
               const prefix = data
@@ -107,33 +99,33 @@ export const OrderListTable = memo<
               return (
                 prefix +
                 addDecimalsFormatNumber(
-                  value,
+                  data.size,
                   data.market.positionDecimalPlaces
                 )
               );
-            }}
-            minWidth={80}
-          />
-          <AgGridColumn
-            field="type"
-            filter={SetFilter}
-            filterParams={{
+            },
+            minWidth: 80,
+          },
+          {
+            field: 'type',
+            filter: SetFilter,
+            filterParams: {
               set: Schema.OrderTypeMapping,
-            }}
-            cellRenderer="OrderTypeCell"
-            cellRendererParams={{
+            },
+            cellRenderer: 'OrderTypeCell',
+            cellRendererParams: {
               onClick: onOrderTypeClick,
-            }}
-            minWidth={80}
-          />
-          <AgGridColumn
-            field="status"
-            filter={SetFilter}
-            filterParams={{
+            },
+            minWidth: 80,
+          },
+          {
+            field: 'status',
+            filter: SetFilter,
+            filterParams: {
               set: Schema.OrderStatusMapping,
               readonly: filter !== undefined,
-            }}
-            valueFormatter={({
+            },
+            valueFormatter: ({
               value,
               data,
             }: VegaValueFormatterParams<Order, 'status'>) => {
@@ -145,8 +137,8 @@ export const OrderListTable = memo<
                 }`;
               }
               return value ? Schema.OrderStatusMapping[value] : '';
-            }}
-            cellRenderer={({
+            },
+            cellRenderer: ({
               valueFormatted,
               data,
             }: {
@@ -156,45 +148,51 @@ export const OrderListTable = memo<
               <span data-testid={`order-status-${data?.id}`}>
                 {valueFormatted}
               </span>
-            )}
-            minWidth={100}
-          />
-          <AgGridColumn
-            headerName={t('Filled')}
-            field="remaining"
-            cellClass="font-mono text-right"
-            type="rightAligned"
-            valueFormatter={({
+            ),
+            minWidth: 100,
+          },
+          {
+            headerName: t('Filled'),
+            field: 'remaining',
+            cellClass: 'font-mono text-right',
+            type: 'rightAligned',
+            valueGetter: ({ data }: VegaValueGetterParams<Order>) => {
+              return data?.size && data.market
+                ? toBigNum(
+                    (BigInt(data.size) - BigInt(data.remaining)).toString(),
+                    data.market.positionDecimalPlaces ?? 0
+                  ).toNumber()
+                : undefined;
+            },
+            valueFormatter: ({
               data,
               value,
-            }: VegaValueFormatterParams<Order, 'remaining'>) => {
+            }: VegaValueFormatterParams<Order, 'remaining'>): string => {
               if (!data) {
-                return undefined;
+                return '';
               }
               if (!data?.market || !isNumeric(value) || !isNumeric(data.size)) {
                 return '-';
               }
-              const dps = data.market.positionDecimalPlaces;
-              const size = new BigNumber(data.size);
-              const remaining = new BigNumber(value);
-              const fills = size.minus(remaining);
+              const { positionDecimalPlaces } = data.market;
+              const filled = BigInt(data.size) - BigInt(data.remaining);
               return `${addDecimalsFormatNumber(
-                fills.toString(),
-                dps
-              )}/${addDecimalsFormatNumber(size.toString(), dps)}`;
-            }}
-            minWidth={100}
-          />
-          <AgGridColumn
-            field="price"
-            type="rightAligned"
-            cellClass="font-mono text-right"
-            valueFormatter={({
+                filled.toString(),
+                positionDecimalPlaces
+              )}/${addDecimalsFormatNumber(data.size, positionDecimalPlaces)}`;
+            },
+            minWidth: 100,
+          },
+          {
+            field: 'price',
+            type: 'rightAligned',
+            cellClass: 'font-mono text-right',
+            valueFormatter: ({
               value,
               data,
             }: VegaValueFormatterParams<Order, 'price'>) => {
               if (!data) {
-                return undefined;
+                return '';
               }
               if (
                 !data?.market ||
@@ -204,16 +202,16 @@ export const OrderListTable = memo<
                 return '-';
               }
               return addDecimalsFormatNumber(value, data.market.decimalPlaces);
-            }}
-            minWidth={100}
-          />
-          <AgGridColumn
-            field="timeInForce"
-            filter={SetFilter}
-            filterParams={{
+            },
+            minWidth: 100,
+          },
+          {
+            field: 'timeInForce',
+            filter: SetFilter,
+            filterParams: {
               set: Schema.OrderTimeInForceMapping,
-            }}
-            valueFormatter={({
+            },
+            valueFormatter: ({
               value,
               data,
             }: VegaValueFormatterParams<Order, 'timeInForce'>) => {
@@ -235,13 +233,13 @@ export const OrderListTable = memo<
               }${data?.reduceOnly ? t('. Reduce only') : ''}`;
 
               return label;
-            }}
-            minWidth={150}
-          />
-          <AgGridColumn
-            field="createdAt"
-            filter={DateRangeFilter}
-            cellRenderer={({
+            },
+            minWidth: 150,
+          },
+          {
+            field: 'createdAt',
+            filter: DateRangeFilter,
+            cellRenderer: ({
               value,
             }: VegaICellRendererParams<Order, 'createdAt'>) => {
               return (
@@ -249,12 +247,12 @@ export const OrderListTable = memo<
                   {value ? getDateTimeFormat().format(new Date(value)) : value}
                 </span>
               );
-            }}
-            minWidth={150}
-          />
-          <AgGridColumn
-            field="updatedAt"
-            cellRenderer={({
+            },
+            minWidth: 150,
+          },
+          {
+            field: 'updatedAt',
+            cellRenderer: ({
               data,
               value,
             }: VegaICellRendererParams<Order, 'updatedAt'>) => {
@@ -266,15 +264,15 @@ export const OrderListTable = memo<
                   {value ? getDateTimeFormat().format(new Date(value)) : '-'}
                 </span>
               );
-            }}
-            minWidth={150}
-          />
-          <AgGridColumn
-            colId="amend"
-            {...COL_DEFS.actions}
-            minWidth={showAllActions ? 120 : COL_DEFS.actions.minWidth}
-            maxWidth={showAllActions ? 120 : COL_DEFS.actions.minWidth}
-            cellRenderer={({ data }: { data?: Order }) => {
+            },
+            minWidth: 150,
+          },
+          {
+            colId: 'amend',
+            ...COL_DEFS.actions,
+            minWidth: showAllActions ? 120 : COL_DEFS.actions.minWidth,
+            maxWidth: showAllActions ? 120 : COL_DEFS.actions.minWidth,
+            cellRenderer: ({ data }: { data?: Order }) => {
               if (!data) return null;
 
               return (
@@ -298,9 +296,37 @@ export const OrderListTable = memo<
                   <OrderActionsDropdown id={data?.id} />
                 </div>
               );
-            }}
-          />
-        </AgGrid>
+            },
+          },
+        ],
+        [
+          filter,
+          onCancel,
+          onEdit,
+          onMarketClick,
+          onOrderTypeClick,
+          props.isReadOnly,
+          showAllActions,
+        ]
+      );
+
+      return (
+        <AgGrid
+          ref={ref}
+          defaultColDef={{
+            resizable: true,
+            sortable: true,
+            filterParams: { buttons: ['reset'] },
+          }}
+          columnDefs={columnDefs}
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+          getRowId={({ data }) => data.id}
+          components={{ MarketNameCell, OrderTypeCell }}
+          {...props}
+        />
       );
     }
   )
