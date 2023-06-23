@@ -1,13 +1,12 @@
 import { t } from '@vegaprotocol/i18n';
 import { RouteTitle } from '../../../components/route-title';
-import { BlocksRefetch } from '../../../components/blocks';
 import { TxsInfiniteList } from '../../../components/txs';
 import { useTxsData } from '../../../hooks/use-txs-data';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 import { useState } from 'react';
 import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
-import { Button, Icon } from '@vegaprotocol/ui-toolkit';
+import { TxsListNavigation } from '../../../components/txs/tx-list-navigation';
 
 const BE_TXS_PER_REQUEST = 25;
 
@@ -51,37 +50,18 @@ export const TxsListFiltered = () => {
 
   return (
     <>
-      <menu className="mb-2 w-full ">
+      <TxsListNavigation
+        refreshTxs={refreshTxs}
+        nextPage={nextPage}
+        previousPage={previousPage}
+        hasPreviousPage={hasPreviousPage}
+        loading={loading}
+        hasMoreTxs={hasMoreTxs}
+      >
         <TxsFilter filters={filters} setFilters={setFilters} />
-      </menu>
-      <menu className="mb-2 w-full">
-        <BlocksRefetch refetch={refreshTxs} />
-        <div className="float-right">
-          <Button
-            className="mr-2"
-            size="xs"
-            disabled={!hasPreviousPage || loading}
-            onClick={() => {
-              previousPage();
-            }}
-          >
-            Newer
-          </Button>
-          <Button
-            size="xs"
-            disabled={!hasMoreTxs || loading}
-            onClick={() => {
-              nextPage();
-            }}
-          >
-            Older
-          </Button>
-        </div>
-        <div className="float-right mr-2">
-          {loading ? <Icon name="more" /> : null}
-        </div>
-      </menu>
+      </TxsListNavigation>
       <TxsInfiniteList
+        hasFilters={filters.size > 0}
         hasMoreTxs={hasMoreTxs}
         areTxsLoading={loading}
         txs={txsData}

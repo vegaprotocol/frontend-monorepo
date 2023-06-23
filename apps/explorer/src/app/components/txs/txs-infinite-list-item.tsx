@@ -13,9 +13,9 @@ import { useMemo } from 'react';
 const DEFAULT_TRUNCATE_LENGTH = 7;
 
 export function getIdTruncateLength(screen: Screen): number {
-  if (['xxxl', 'xxl', 'xl', 'lg'].includes(screen)) {
+  if (['xxxl', 'xxl'].includes(screen)) {
     return 64;
-  } else if (['md'].includes(screen)) {
+  } else if (['xl', 'lg', 'md'].includes(screen)) {
     return 32;
   }
   return DEFAULT_TRUNCATE_LENGTH;

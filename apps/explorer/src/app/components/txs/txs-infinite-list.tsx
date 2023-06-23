@@ -11,6 +11,7 @@ interface TxsInfiniteListProps {
   loadMoreTxs: () => void;
   error: Error | undefined;
   className?: string;
+  hasFilters?: boolean;
 }
 
 interface ItemProps {
@@ -36,13 +37,16 @@ export const TxsInfiniteList = ({
   areTxsLoading,
   txs,
   className,
+  hasFilters = false,
 }: TxsInfiniteListProps) => {
-  if (!txs) {
+  if (!txs || txs.length === 0) {
     if (!areTxsLoading) {
       return (
         <EmptyList
-          heading={t('This chain has 0 transactions')}
-          label={t('Check back soon')}
+          heading={t('No transactions found')}
+          label={
+            hasFilters ? t('Try a different filter') : t('Check back soon')
+          }
         />
       );
     } else {
