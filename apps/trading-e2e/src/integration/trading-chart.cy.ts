@@ -114,11 +114,20 @@ describe(
       // 6004-CHAR-041
 
       const overlayInfo: ItemInfoType[] = [
-        { name: 'Bollinger bands', infoText: 'Bollinger: Upper 174.78590Lower 173.38014' },
-        { name: 'Envelope', infoText: 'Envelope: Upper 191.29000Lower 156.51000'},
+        {
+          name: 'Bollinger bands',
+          infoText: 'Bollinger: Upper 174.78590Lower 173.38014',
+        },
+        {
+          name: 'Envelope',
+          infoText: 'Envelope: Upper 191.29000Lower 156.51000',
+        },
         { name: 'EMA', infoText: 'EMA: 174.06793' },
         { name: 'Moving average', infoText: 'Moving average: 174.08302' },
-        { name: 'Price monitoring bounds', infoText: 'Price Monitoring Bounds: Min -Max -Reference -'},
+        {
+          name: 'Price monitoring bounds',
+          infoText: 'Price Monitoring Bounds: Min -Max -Reference -',
+        },
       ];
 
       checkMenuItemCheckbox('Overlays', overlayInfo);
@@ -134,7 +143,10 @@ describe(
       // 6004-CHAR-049
       // 6004-CHAR-051
       const studyInfo: ItemInfoType[] = [
-        { name: 'Eldar-ray',infoText: 'Eldar-ray: Bull -0.08376Bear -0.58376' },
+        {
+          name: 'Eldar-ray',
+          infoText: 'Eldar-ray: Bull -0.08376Bear -0.58376',
+        },
         { name: 'Force index', infoText: 'Force index: 987.48858' },
         { name: 'MACD', infoText: 'MACD: S -0.06420D 0.00359MACD -0.06062' },
         { name: 'RSI', infoText: 'RSI: 47.08648' },

@@ -78,7 +78,7 @@ const candles: CandleFieldsFragment[] = [
     close: '17376455',
     volume: '60259',
   },
-   {
+  {
     __typename: 'Candle',
     periodStart: '2022-04-06T09:00:00Z',
     lastUpdateInPeriod: '2022-04-06T09:01:00Z',
@@ -277,8 +277,7 @@ const candles: CandleFieldsFragment[] = [
     open: '17360000',
     close: '17390000',
     volume: '55000',
-  }
-  ,
+  },
   {
     __typename: 'Candle',
     periodStart: '2022-04-06T02:00:00Z',
@@ -318,5 +317,5 @@ const candles: CandleFieldsFragment[] = [
     open: '17360000',
     close: '17390000',
     volume: '55000',
-  }
+  },
 ];
