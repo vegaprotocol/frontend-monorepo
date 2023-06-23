@@ -13,7 +13,7 @@ import { persist } from 'zustand/middleware';
 import type { DataGridStore } from '../../stores/datagrid-store-slice';
 import { OrderStatus } from '@vegaprotocol/types';
 
-const FilterStatusValue = {
+export const FilterStatusValue = {
   [Filter.Open]: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
   [Filter.Closed]: [
     OrderStatus.STATUS_CANCELLED,
@@ -56,6 +56,7 @@ export const OrdersContainer = ({ marketId, filter }: OrderContainerProps) => {
   );
 };
 
+export const STORAGE_KEY = 'vega_order_list_store';
 const useOrderListStore = create<{
   open: DataGridStore;
   closed: DataGridStore;
@@ -111,12 +112,12 @@ const useOrderListStore = create<{
       },
     }),
     {
-      name: 'vega_order_list_store',
+      name: STORAGE_KEY,
     }
   )
 );
 
-const useOrderListGridState = (filter: Filter | undefined) => {
+export const useOrderListGridState = (filter: Filter | undefined) => {
   const updateGridState = useOrderListStore((store) => store.update);
   const gridState = useOrderListStore((store) => {
     // Return the column/filter state for the given filter but ensuring that

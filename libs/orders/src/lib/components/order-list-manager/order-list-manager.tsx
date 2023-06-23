@@ -16,9 +16,9 @@ import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order } from '../order-data-provider';
 
 export enum Filter {
-  'Open',
-  'Closed',
-  'Rejected',
+  'Open' = 'Open',
+  'Closed' = 'Closed',
+  'Rejected' = 'Rejected',
 }
 
 export interface OrderListManagerProps {
