@@ -6,7 +6,7 @@ export const AnnouncementBanner = () => {
   // Return an empty div so that the grid layout in _app.page.ts
   // renders correctly
   if (!ANNOUNCEMENTS_CONFIG_URL) {
-    return <div />;
+    return null;
   }
 
   return <Banner app="console" configUrl={ANNOUNCEMENTS_CONFIG_URL} />;

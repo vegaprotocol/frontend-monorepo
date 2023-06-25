@@ -24,11 +24,12 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 
 import { Links, Routes } from '../../pages/client-router';
-import { SettingsButton } from '../../client-pages/settings';
+// import { SettingsButton } from '../../client-pages/settings';
 import {
   ProtocolUpgradeCountdown,
   ProtocolUpgradeCountdownMode,
 } from '@vegaprotocol/proposals';
+import { Link, NavLink } from 'react-router-dom';
 
 export const Navbar = ({
   theme = 'system',
@@ -43,6 +44,17 @@ export const Navbar = ({
     ? Links[Routes.MARKET](marketId)
     : Links[Routes.MARKET]();
 
+  // return (
+  //   <nav className="flex items-center gap-4 py-2">
+  //     <div>Network switcher</div>
+  //     <NavLink to={Links[Routes.MARKETS]()}>Markets</NavLink>
+  //     <NavLink to={tradingPath} end>
+  //       Trading
+  //     </NavLink>
+  //     <NavLink to={Links[Routes.PORTFOLIO]()}>Portfolio</NavLink>
+  //   </nav>
+  // );
+
   return (
     <Navigation
       appName="Console"
@@ -52,7 +64,7 @@ export const Navbar = ({
           <ProtocolUpgradeCountdown
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
           />
-          <SettingsButton />
+          {/* <SettingsButton /> */}
           <VegaWalletConnectButton />
         </>
       }
@@ -129,7 +141,7 @@ export const Navbar = ({
         ]}
       >
         <NavigationItem className="[.drawer-content_&]:w-full">
-          <SettingsButton withMobile />
+          {/* <SettingsButton withMobile /> */}
         </NavigationItem>
       </NavigationList>
     </Navigation>

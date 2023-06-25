@@ -11,3 +11,4 @@ export * from './transfer-dialog';
 export * from './__generated__/Margins';
 export { MarginHealthChart } from './margin-health-chart';
 export * from './margin-data-provider';
+export * from './transfer-container';
