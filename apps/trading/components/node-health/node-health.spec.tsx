@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { NodeHealth, NodeUrl, HealthIndicator } from './footer';
+import { NodeHealth, NodeUrl, HealthIndicator } from './node-health';
 import { MockedProvider } from '@apollo/client/testing';
 import { Intent } from '@vegaprotocol/ui-toolkit';
 
