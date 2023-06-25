@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import classNames from 'classnames';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { t } from '@vegaprotocol/i18n';
@@ -17,7 +16,6 @@ import {
 } from '@vegaprotocol/web3';
 import {
   envTriggerMapping,
-  Networks,
   NodeSwitcherDialog,
   useEnvironment,
   useInitializeEnv,
@@ -25,22 +23,14 @@ import {
 } from '@vegaprotocol/environment';
 import './styles.css';
 import { usePageTitleStore } from '../stores';
-import { Footer } from '../components/footer';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
-import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
+import { HashRouter, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
-import { ViewingBanner } from '../components/viewing-banner';
-import { AnnouncementBanner, UpgradeBanner } from '../components/banner';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
-import { Navbar } from '../components/navbar';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
-import {
-  ProtocolUpgradeCountdownMode,
-  ProtocolUpgradeProposalNotification,
-} from '@vegaprotocol/proposals';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -75,14 +65,6 @@ const InitializeHandlers = () => {
 };
 
 function AppBody({ Component }: AppProps) {
-  const location = useLocation();
-  const { VEGA_ENV } = useEnvironment();
-
-  const gridClasses = classNames(
-    'h-full relative z-0 grid',
-    'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
-  );
-
   return (
     <div className="h-full dark:bg-black dark:text-white">
       <Head>
@@ -90,21 +72,7 @@ function AppBody({ Component }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Title />
-      <div className={gridClasses}>
-        <AnnouncementBanner />
-        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'} />
-        <div data-testid="banners">
-          <ProtocolUpgradeProposalNotification
-            mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
-          />
-          <ViewingBanner />
-          <UpgradeBanner showVersionChange={true} />
-        </div>
-        <main data-testid={location.pathname}>
-          <Component />
-        </main>
-        <Footer />
-      </div>
+      <Component />
       <DialogsContainer />
       <ToastsManager />
       <InitializeHandlers />
