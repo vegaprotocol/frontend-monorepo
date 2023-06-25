@@ -6,12 +6,13 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { t } from '@vegaprotocol/i18n';
 import { OracleBanner } from '@vegaprotocol/markets';
-import type { Market } from '@vegaprotocol/markets';
+import type { Market, MarketFieldsFragment } from '@vegaprotocol/markets';
 import { Filter } from '@vegaprotocol/orders';
 import {
   Popover,
   Tab,
   LocalStoragePersistTabs as Tabs,
+  Tooltip,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';

@@ -28,6 +28,7 @@ import {
   ProtocolUpgradeCountdown,
   ProtocolUpgradeCountdownMode,
 } from '@vegaprotocol/proposals';
+import { Link, NavLink } from 'react-router-dom';
 
 export const Navbar = ({
   theme = 'system',
@@ -41,6 +42,17 @@ export const Navbar = ({
   const tradingPath = marketId
     ? Links[Routes.MARKET](marketId)
     : Links[Routes.MARKET]();
+
+  // return (
+  //   <nav className="flex items-center gap-4 py-2">
+  //     <div>Network switcher</div>
+  //     <NavLink to={Links[Routes.MARKETS]()}>Markets</NavLink>
+  //     <NavLink to={tradingPath} end>
+  //       Trading
+  //     </NavLink>
+  //     <NavLink to={Links[Routes.PORTFOLIO]()}>Portfolio</NavLink>
+  //   </nav>
+  // );
 
   return (
     <Navigation
