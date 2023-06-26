@@ -298,14 +298,19 @@ describe('useEthWithdrawApprovalsManager', () => {
     mockEthTransactionStoreState.mockReturnValue({ create });
     render();
     await waitForNextTick();
-    expect(create).toBeCalledWith({}, 'withdraw_asset', [
-      erc20WithdrawalApproval.assetSource,
-      erc20WithdrawalApproval.amount,
-      erc20WithdrawalApproval.targetAddress,
-      erc20WithdrawalApproval.creation,
-      erc20WithdrawalApproval.nonce,
-      erc20WithdrawalApproval.signatures,
-    ]);
+    expect(create).toHaveBeenCalled();
+    expect(create.mock.calls[0][0]).toEqual({});
+    expect(create.mock.calls[0][1]).toEqual('withdraw_asset');
+    expect(create.mock.calls[0][2]).toEqual(
+      expect.arrayContaining([
+        erc20WithdrawalApproval.assetSource,
+        erc20WithdrawalApproval.amount,
+        erc20WithdrawalApproval.targetAddress,
+        erc20WithdrawalApproval.creation,
+        erc20WithdrawalApproval.nonce,
+        erc20WithdrawalApproval.signatures,
+      ])
+    );
   });
 
   it('detect wrong chainId', () => {

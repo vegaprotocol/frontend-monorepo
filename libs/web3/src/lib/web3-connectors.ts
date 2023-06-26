@@ -9,6 +9,11 @@ import { initializeUrlConnector } from './url-connector';
 import { WALLETCONNECT_PROJECT_ID } from './constants';
 import { useWeb3ConnectStore } from './web3-connect-store';
 import { theme } from '@vegaprotocol/tailwindcss-config';
+import { ethers } from 'ethers';
+
+export const createDefaultProvider = (providerUrl: string, chainId: number) => {
+  return new ethers.providers.JsonRpcProvider(providerUrl, chainId);
+};
 
 export const initializeCoinbaseConnector = (providerUrl: string) =>
   initializeConnector<CoinbaseWallet>(

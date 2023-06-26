@@ -23,6 +23,19 @@ import {
   ResizableGrid,
   ResizableGridPanel,
 } from '../../components/resizable-grid';
+import { useIncompleteWithdrawals } from '@vegaprotocol/withdraws';
+
+const WithdrawalsIndicator = () => {
+  const { ready } = useIncompleteWithdrawals();
+  if (!ready || ready.length === 0) {
+    return null;
+  }
+  return (
+    <span className="bg-vega-blue-450 text-white text-[10px] rounded p-[3px] pb-[2px] leading-none">
+      {ready.length}
+    </span>
+  );
+};
 
 export const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
@@ -103,7 +116,11 @@ export const Portfolio = () => {
                   <DepositsContainer />
                 </VegaWalletContainer>
               </Tab>
-              <Tab id="withdrawals" name={t('Withdrawals')}>
+              <Tab
+                id="withdrawals"
+                name={t('Withdrawals')}
+                indicator={<WithdrawalsIndicator />}
+              >
                 <WithdrawalsContainer />
               </Tab>
             </Tabs>
