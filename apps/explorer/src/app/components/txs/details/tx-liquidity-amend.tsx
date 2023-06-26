@@ -63,7 +63,7 @@ export const TxDetailsLiquidityAmendment = ({
         {amendment.fee ? (
           <TableRow modifier="bordered">
             <TableCell>{t('Fee')}</TableCell>
-            <TableCell>{amendment.fee}%</TableCell>
+            <TableCell>{(amendment.fee * 100).toFixed(2)}%</TableCell>
           </TableRow>
         ) : null}
       </TableWithTbody>
