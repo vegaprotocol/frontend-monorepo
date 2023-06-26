@@ -4,4 +4,3 @@ export * from './lib/positions-data-providers';
 export * from './lib/positions-table';
 export * from './lib/use-market-margin';
 export * from './lib/use-open-volume';
-export * from './lib/use-positions-data';

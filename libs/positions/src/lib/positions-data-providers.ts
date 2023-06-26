@@ -14,7 +14,7 @@ import type {
   MarketMaybeWithData,
   MarketDataQueryVariables,
 } from '@vegaprotocol/markets';
-import { allMarketsWithDataProvider } from '@vegaprotocol/markets';
+import { allMarketsWithLiveDataProvider } from '@vegaprotocol/markets';
 import type {
   PositionsQuery,
   PositionFieldsFragment,
@@ -144,8 +144,9 @@ export const update = (
   data: PositionFieldsFragment[] | null,
   deltas: PositionsSubscriptionSubscription['positions']
 ) => {
-  return produce(data || [], (draft) => {
+  const updatedData = produce(data || [], (draft) => {
     deltas.forEach((delta) => {
+      const { marketId, partyId, __typename, ...position } = delta;
       const index = draft.findIndex(
         (node) =>
           node.market.id === delta.marketId && node.party.id === delta.partyId
@@ -154,29 +155,25 @@ export const update = (
         const currNode = draft[index];
         draft[index] = {
           ...currNode,
-          realisedPNL: delta.realisedPNL,
-          unrealisedPNL: delta.unrealisedPNL,
-          openVolume: delta.openVolume,
-          averageEntryPrice: delta.averageEntryPrice,
-          updatedAt: delta.updatedAt,
-          lossSocializationAmount: delta.lossSocializationAmount,
-          positionStatus: delta.positionStatus,
+          ...position,
         };
       } else {
         draft.unshift({
-          ...delta,
+          ...position,
           __typename: 'Position',
           market: {
             __typename: 'Market',
             id: delta.marketId,
           },
           party: {
+            __typename: 'Party',
             id: delta.partyId,
           },
         });
       }
     });
   });
+  return updatedData;
 };
 
 const getSubscriptionVariables = (
@@ -242,41 +239,54 @@ export const rejoinPositionData = (
   | null => {
   if (positions && marketsData) {
     return positions.map((node) => {
+      const market =
+        marketsData?.find((market) => market.id === node.market.id) || null;
       return {
         ...node,
-        market:
-          marketsData?.find((market) => market.id === node.market.id) || null,
+        market,
       };
     });
   }
   return null;
 };
 
+export const positionsMarketsProvider = makeDerivedDataProvider<
+  string[],
+  never,
+  PositionsQueryVariables
+>([positionsDataProvider], ([positions]) => {
+  return Array.from(
+    new Set(
+      (positions as PositionFieldsFragment[]).map(
+        (position) => position.market.id
+      )
+    )
+  ).sort();
+});
+
 export const positionsMetricsProvider = makeDerivedDataProvider<
   Position[],
   Position[],
-  PositionsQueryVariables
+  PositionsQueryVariables & { marketIds: string[] }
 >(
   [
-    positionsDataProvider,
+    (callback, client, variables) =>
+      positionsDataProvider(callback, client, { partyIds: variables.partyIds }),
     (callback, client, variables) =>
       accountsDataProvider(callback, client, {
         partyId: Array.isArray(variables.partyIds)
           ? variables.partyIds[0]
           : variables.partyIds,
       }),
-    (callback, client) =>
-      allMarketsWithDataProvider(callback, client, undefined),
+    (callback, client, variables) =>
+      allMarketsWithLiveDataProvider(callback, client, {
+        marketIds: variables.marketIds,
+      }),
   ],
-  ([positions, accounts, marketsData], variables) => {
+  ([positions, accounts, marketsData]) => {
     const positionsData = rejoinPositionData(positions, marketsData);
-    if (!variables) {
-      return [];
-    }
-    return sortBy(
-      getMetrics(positionsData, accounts as Account[] | null),
-      'marketName'
-    );
+    const metrics = getMetrics(positionsData, accounts as Account[] | null);
+    return sortBy(metrics, 'marketName');
   },
   (data, delta, previousData) =>
     data.filter((row) => {

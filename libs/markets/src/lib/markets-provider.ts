@@ -10,10 +10,15 @@ import type {
 } from './__generated__/markets';
 import type { MarketsCandlesQueryVariables } from './__generated__/markets-candles';
 
-import { marketsDataProvider } from './markets-data-provider';
+import {
+  marketsDataProvider,
+  marketsLiveDataProvider,
+  mapMarketDataUpdateToMarketData,
+} from './markets-data-provider';
 import { marketDataProvider } from './market-data-provider';
 import { marketsCandlesProvider } from './markets-candles-provider';
 import type { MarketData } from './market-data-provider';
+import type { MarketDataUpdateFieldsFragment } from './__generated__';
 import type { MarketCandles } from './markets-candles-provider';
 import { useMemo } from 'react';
 import * as Schema from '@vegaprotocol/types';
@@ -158,6 +163,44 @@ export const allMarketsWithDataProvider = makeDerivedDataProvider<
   never
 >([marketsProvider, marketsDataProvider], (parts) =>
   addData(parts[0] as Market[], parts[1] as MarketData[])
+);
+
+export const allMarketsWithLiveDataProvider = makeDerivedDataProvider<
+  MarketMaybeWithData[],
+  MarketMaybeWithData,
+  { marketIds: string[] }
+>(
+  [
+    (callback, client, variables) =>
+      marketsProvider(callback, client, undefined),
+    marketsLiveDataProvider,
+  ],
+  (partsData, variables, prevData, parts) => {
+    if (prevData && parts[1].isUpdate) {
+      const data = mapMarketDataUpdateToMarketData(parts[1].delta);
+      const index = prevData.findIndex(
+        (market) => market.id === data.market.id
+      );
+      if (index !== -1) {
+        const updatedData = [...prevData];
+        updatedData[index] = { ...updatedData[index], data };
+        return updatedData;
+      } else {
+        return prevData;
+      }
+    }
+    return addData(partsData[0] as Market[], partsData[1] as MarketData[]);
+  },
+  (data, parts) => {
+    if (!parts[1].isUpdate && parts[1].delta) {
+      return;
+    }
+    return data.find(
+      (market) =>
+        market.id ===
+        (parts[1].delta as MarketDataUpdateFieldsFragment).marketId
+    );
+  }
 );
 
 export type MarketMaybeWithDataAndCandles = MarketMaybeWithData &

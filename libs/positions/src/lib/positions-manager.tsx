@@ -1,11 +1,13 @@
-import { useRef } from 'react';
-import { usePositionsData } from './use-positions-data';
+import { useCallback } from 'react';
 import { PositionsTable } from './positions-table';
-import type { AgGridReact } from 'ag-grid-react';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
-import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
+import { useDataProvider } from '@vegaprotocol/data-provider';
+import {
+  positionsMetricsProvider,
+  positionsMarketsProvider,
+} from './positions-data-providers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
 interface PositionsManagerProps {
@@ -24,42 +26,43 @@ export const PositionsManager = ({
   storeKey,
 }: PositionsManagerProps) => {
   const { pubKeys, pubKey } = useVegaWallet();
-  const gridRef = useRef<AgGridReact | null>(null);
-  const { data, error } = usePositionsData(partyIds, gridRef);
   const create = useVegaTransactionStore((store) => store.create);
-  const onClose = ({
-    marketId,
-    openVolume,
-  }: {
-    marketId: string;
-    openVolume: string;
-  }) =>
-    create({
-      batchMarketInstructions: {
-        cancellations: [
-          {
-            marketId,
-            orderId: '', // omit order id to cancel all active orders
-          },
-        ],
-        submissions: [
-          {
-            marketId: marketId,
-            type: Schema.OrderType.TYPE_MARKET as const,
-            timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC as const,
-            side: openVolume.startsWith('-')
-              ? Schema.Side.SIDE_BUY
-              : Schema.Side.SIDE_SELL,
-            size: openVolume.replace('-', ''),
-            reduceOnly: true,
-          },
-        ],
-      },
-    });
+  const onClose = useCallback(
+    ({ marketId, openVolume }: { marketId: string; openVolume: string }) =>
+      create({
+        batchMarketInstructions: {
+          cancellations: [
+            {
+              marketId,
+              orderId: '', // omit order id to cancel all active orders
+            },
+          ],
+          submissions: [
+            {
+              marketId: marketId,
+              type: Schema.OrderType.TYPE_MARKET as const,
+              timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC as const,
+              side: openVolume.startsWith('-')
+                ? Schema.Side.SIDE_BUY
+                : Schema.Side.SIDE_SELL,
+              size: openVolume.replace('-', ''),
+              reduceOnly: true,
+            },
+          ],
+        },
+      }),
+    [create]
+  );
 
-  const bottomPlaceholderProps = useBottomPlaceholder({
-    gridRef,
-    disabled: noBottomPlaceholder,
+  const { data: marketIds } = useDataProvider({
+    dataProvider: positionsMarketsProvider,
+    variables: { partyIds },
+  });
+
+  const { data, error } = useDataProvider({
+    dataProvider: positionsMetricsProvider,
+    variables: { partyIds, marketIds: marketIds || [] },
+    skip: !marketIds,
   });
 
   return (
@@ -68,11 +71,9 @@ export const PositionsManager = ({
         pubKey={pubKey}
         pubKeys={pubKeys}
         rowData={error ? [] : data}
-        ref={gridRef}
         onMarketClick={onMarketClick}
         onClose={onClose}
         isReadOnly={isReadOnly}
-        {...bottomPlaceholderProps}
         storeKey={storeKey}
         multipleKeys={partyIds.length > 1}
         overlayNoRowsTemplate={error ? error.message : t('No positions')}

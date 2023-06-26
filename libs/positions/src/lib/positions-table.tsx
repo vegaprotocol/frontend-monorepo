@@ -36,7 +36,6 @@ import { t } from '@vegaprotocol/i18n';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
-import { getRowId } from './use-positions-data';
 import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { PositionTableActions } from './position-actions-dropdown';
@@ -85,6 +84,9 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
 };
 
 AmountCell.displayName = 'AmountCell';
+
+export const getRowId = ({ data }: { data: Position }) =>
+  `${data.partyId}-${data.marketId}`;
 
 export const PositionsTable = forwardRef<AgGridReact, Props>(
   (
