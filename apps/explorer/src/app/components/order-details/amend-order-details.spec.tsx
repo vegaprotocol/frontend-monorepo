@@ -32,7 +32,6 @@ function renderExistingAmend(id: string, version: number, amend: Amend) {
         query: ExplorerDeterministicOrderDocument,
         variables: {
           orderId: '123',
-          version: 1,
         },
       },
       result: {
