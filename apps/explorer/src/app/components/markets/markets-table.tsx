@@ -1,8 +1,9 @@
+import { useMemo } from 'react';
 import type { MarketFieldsFragment } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
-import { AgGridColumn } from 'ag-grid-react';
+import type { ColDef } from 'ag-grid-community';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import type {
   VegaICellRendererParams,
@@ -39,54 +40,34 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
     };
   }, []);
 
-  return (
-    <AgGrid
-      ref={gridRef}
-      rowData={data}
-      getRowId={({ data }: { data: MarketFieldsFragment }) => data.id}
-      overlayNoRowsTemplate={t('This chain has no markets')}
-      domLayout="autoHeight"
-      defaultColDef={{
-        flex: 1,
-        resizable: true,
-        sortable: true,
-        filter: true,
-        filterParams: { buttons: ['reset'] },
-        autoHeight: true,
-      }}
-      suppressCellFocus={true}
-      onRowClicked={({ data, event }: RowClickedEvent) => {
-        if ((event?.target as HTMLElement).tagName.toUpperCase() !== 'BUTTON') {
-          navigate(data.id);
-        }
-      }}
-    >
-      <AgGridColumn
-        colId="code"
-        headerName={t('Code')}
-        field="tradableInstrument.instrument.code"
-      />
-      <AgGridColumn
-        colId="name"
-        headerName={t('Name')}
-        field="tradableInstrument.instrument.name"
-      />
-      <AgGridColumn
-        headerName={t('Status')}
-        field="state"
-        hide={window.innerWidth <= BREAKPOINT_MD}
-        valueGetter={({
+  const columnDefs = useMemo<ColDef[]>(
+    () => [
+      {
+        colId: 'code',
+        headerName: t('Code'),
+        field: 'tradableInstrument.instrument.code',
+      },
+      {
+        colId: 'name',
+        headerName: t('Name'),
+        field: 'tradableInstrument.instrument.name',
+      },
+      {
+        headerName: t('Status'),
+        field: 'state',
+        hide: window.innerWidth <= BREAKPOINT_MD,
+        valueGetter: ({
           data,
         }: VegaValueGetterParams<MarketFieldsFragment>) => {
           return data?.state ? MarketStateMapping[data?.state] : '-';
-        }}
-      />
-      <AgGridColumn
-        colId="asset"
-        headerName={t('Settlement asset')}
-        field="tradableInstrument.instrument.product.settlementAsset.symbol"
-        hide={window.innerWidth <= BREAKPOINT_MD}
-        cellRenderer={({
+        },
+      },
+      {
+        colId: 'asset',
+        headerName: t('Settlement asset'),
+        field: 'tradableInstrument.instrument.product.settlementAsset.symbol',
+        hide: window.innerWidth <= BREAKPOINT_MD,
+        cellRenderer: ({
           data,
         }: VegaICellRendererParams<
           MarketFieldsFragment,
@@ -105,19 +86,19 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
           ) : (
             ''
           );
-        }}
-      />
-      <AgGridColumn
-        flex={2}
-        headerName={t('Market ID')}
-        field="id"
-        hide={window.innerWidth <= BREAKPOINT_MD}
-      />
-      <AgGridColumn
-        colId="actions"
-        headerName=""
-        field="id"
-        cellRenderer={({
+        },
+      },
+      {
+        flex: 2,
+        headerName: t('Market ID'),
+        field: 'id',
+        hide: window.innerWidth <= BREAKPOINT_MD,
+      },
+      {
+        colId: 'actions',
+        headerName: '',
+        field: 'id',
+        cellRenderer: ({
           value,
         }: VegaICellRendererParams<MarketFieldsFragment, 'id'>) =>
           value ? (
@@ -126,9 +107,34 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
             </Link>
           ) : (
             ''
-          )
+          ),
+      },
+    ],
+    [openAssetDetailsDialog]
+  );
+
+  return (
+    <AgGrid
+      ref={gridRef}
+      rowData={data}
+      getRowId={({ data }: { data: MarketFieldsFragment }) => data.id}
+      overlayNoRowsTemplate={t('This chain has no markets')}
+      domLayout="autoHeight"
+      defaultColDef={{
+        flex: 1,
+        resizable: true,
+        sortable: true,
+        filter: true,
+        filterParams: { buttons: ['reset'] },
+        autoHeight: true,
+      }}
+      columnDefs={columnDefs}
+      suppressCellFocus={true}
+      onRowClicked={({ data, event }: RowClickedEvent) => {
+        if ((event?.target as HTMLElement).tagName.toUpperCase() !== 'BUTTON') {
+          navigate(data.id);
         }
-      />
-    </AgGrid>
+      }}
+    />
   );
 };
