@@ -158,7 +158,7 @@ describe(
 
       checkMenuItemCheckbox('Studies', studyInfo);
     });
-    
+
     it('price details', () => {
       // 6004-CHAR-010
       const expectedDate = new Date('11:30 2022-04-06');
