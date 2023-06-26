@@ -158,7 +158,7 @@ describe(
 
       checkMenuItemCheckbox('Studies', studyInfo);
     });
-
+    
     it('price details', () => {
       // 6004-CHAR-010
       const expectedDate = new Date('11:30 2022-04-06');
@@ -167,15 +167,13 @@ describe(
         .eq(0)
         .invoke('text')
         .then((text) => {
-          const actualDate = new Date(text.slice(0, -67));
-          const actualOhlc = text.slice(-67);
+          const slicedOhlc = new Date(text.slice(0, -67));
+          const last67Chars = text.slice(-67);
 
-          assert.strictEqual(
-            actualDate.getTime(),
-            expectedDate.getTime(),
-            'Dates do not match'
+          assert.deepEqual(
+            slicedOhlc + last67Chars,
+            expectedDate + expectedOhlc
           );
-          assert.strictEqual(actualOhlc, expectedOhlc, 'Text does not match');
         });
     });
   }
