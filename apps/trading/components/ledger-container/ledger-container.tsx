@@ -30,12 +30,7 @@ export const LedgerContainer = () => {
 };
 
 const useLedgerStore = create<DataGridSlice>()(
-  persist(
-    (...args) => ({
-      ...createDataGridSlice(...args),
-    }),
-    {
-      name: 'vega_ledger_store',
-    }
-  )
+  persist(createDataGridSlice, {
+    name: 'vega_ledger_store',
+  })
 );

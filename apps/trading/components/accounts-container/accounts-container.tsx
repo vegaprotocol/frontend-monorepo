@@ -86,12 +86,7 @@ export const AccountsContainer = ({
 };
 
 const useAccountStore = create<DataGridSlice>()(
-  persist(
-    (...args) => ({
-      ...createDataGridSlice(...args),
-    }),
-    {
-      name: 'vega_accounts_store',
-    }
-  )
+  persist(createDataGridSlice, {
+    name: 'vega_accounts_store',
+  })
 );

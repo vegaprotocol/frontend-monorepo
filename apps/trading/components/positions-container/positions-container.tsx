@@ -51,12 +51,7 @@ export const PositionsContainer = ({
 };
 
 const usePositionsStore = create<DataGridSlice>()(
-  persist(
-    (...args) => ({
-      ...createDataGridSlice(...args),
-    }),
-    {
-      name: 'vega_positions_store',
-    }
-  )
+  persist(createDataGridSlice, {
+    name: 'vega_positions_store',
+  })
 );

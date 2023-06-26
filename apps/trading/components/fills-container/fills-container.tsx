@@ -43,12 +43,7 @@ export const FillsContainer = ({
 };
 
 const useFillsStore = create<DataGridSlice>()(
-  persist(
-    (...args) => ({
-      ...createDataGridSlice(...args),
-    }),
-    {
-      name: 'vega_fills_store',
-    }
-  )
+  persist(createDataGridSlice, {
+    name: 'vega_fills_store',
+  })
 );

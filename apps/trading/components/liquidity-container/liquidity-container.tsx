@@ -87,12 +87,7 @@ const useReloadLiquidityData = (marketId: string | undefined) => {
 };
 
 const useLiquidityStore = create<DataGridSlice>()(
-  persist(
-    (...args) => ({
-      ...createDataGridSlice(...args),
-    }),
-    {
-      name: 'vega_ledger_store',
-    }
-  )
+  persist(createDataGridSlice, {
+    name: 'vega_ledger_store',
+  })
 );
