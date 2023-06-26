@@ -113,39 +113,44 @@ context(
         validateValidatorListTotalStakeAndShare('0', '3,002.00', '50.02%');
       });
 
-      it('Able to view validators staked by me', function () {
-        ensureSpecifiedUnstakedTokensAreAssociated('4');
-        cy.get('button').contains('Select a validator to nominate').click();
-        clickOnValidatorFromList(0);
-        stakingValidatorPageAddStake('2');
-        closeStakingDialog();
-        navigateTo(navigation.validators);
-        cy.getByTestId(userStake, epochTimeout)
-          .first()
-          .should('have.text', '2.00');
-        waitForBeginningOfEpoch();
-        cy.getByTestId('total-stake').first().realHover();
-        cy.getByTestId('staked-by-user-tooltip')
-          .first()
-          .should('have.text', 'Staked by me: 2.00');
-        cy.getByTestId('total-pending-stake').first().realHover();
-        cy.getByTestId('pending-user-stake-tooltip')
-          .first()
-          .should('have.text', 'My pending stake: 0.00');
-        cy.getByTestId(userStakeShare).invoke('text').should('not.be.empty'); // Adjust when #3286 is resolved
-        cy.getByTestId(userStakeBtn).should('exist').click();
-        verifyThisEpochValue(2.0);
-        navigateTo(navigation.validators);
-        cy.getByTestId(viewStakedByMeToggle).click();
-        cy.getByTestId(userStakeBtn).should('have.length', 1);
-        cy.getByTestId(viewAllValidatorsToggle).click();
-        clickOnValidatorFromList(1);
-        stakingValidatorPageAddStake('2');
-        closeStakingDialog();
-        navigateTo(navigation.validators);
-        cy.getByTestId(viewStakedByMeToggle).click();
-        cy.getByTestId(userStakeBtn).should('have.length', 2);
-      });
+      it(
+        'Able to view validators staked by me',
+        { tags: '@staking' },
+        function () {
+          ensureSpecifiedUnstakedTokensAreAssociated('4');
+          cy.get('button').contains('Select a validator to nominate').click();
+          clickOnValidatorFromList(0);
+          stakingValidatorPageAddStake('2');
+          closeStakingDialog();
+          navigateTo(navigation.validators);
+          cy.getByTestId(userStake, epochTimeout)
+            .first()
+            .should('have.text', '2.00');
+          waitForBeginningOfEpoch();
+          cy.getByTestId('total-stake').first().realHover();
+          cy.getByTestId('staked-by-user-tooltip')
+            .first()
+            .should('have.text', 'Staked by me: 2.00');
+          waitForBeginningOfEpoch();
+          cy.getByTestId('total-pending-stake').first().realHover();
+          cy.getByTestId('pending-user-stake-tooltip')
+            .first()
+            .should('have.text', 'My pending stake: 0.00');
+          cy.getByTestId(userStakeShare).invoke('text').should('not.be.empty'); // Adjust when #3286 is resolved
+          cy.getByTestId(userStakeBtn).should('exist').click();
+          verifyThisEpochValue(2.0);
+          navigateTo(navigation.validators);
+          cy.getByTestId(viewStakedByMeToggle).click();
+          cy.getByTestId(userStakeBtn).should('have.length', 1);
+          cy.getByTestId(viewAllValidatorsToggle).click();
+          clickOnValidatorFromList(1);
+          stakingValidatorPageAddStake('2');
+          closeStakingDialog();
+          navigateTo(navigation.validators);
+          cy.getByTestId(viewStakedByMeToggle).click();
+          cy.getByTestId(userStakeBtn).should('have.length', 2);
+        }
+      );
 
       it('Able to stake against a validator - using vega from vesting contract', function () {
         stakingPageAssociateTokens('3', { type: 'contract' });
