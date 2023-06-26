@@ -1,3 +1,5 @@
+import { getDateTimeFormat } from '@vegaprotocol/utils';
+
 interface ItemInfoType {
   name: string;
   infoText: string;
@@ -161,20 +163,26 @@ describe(
 
     it('price details', () => {
       // 6004-CHAR-010
-      const expectedDate = new Date('11:30 2022-04-06');
+      const now = new Date(Date.parse('11:30 2022-04-06')).getTime();
+      cy.clock(now, ['Date']);
+      cy.reload();
+      const expectedDate = getDateTimeFormat().format(
+        new Date('11:30 2022-04-06')
+      );
       const expectedOhlc = `O 173.60000H 174.00000L 173.50000C 173.90000Change −0.60000(−0.34%)`;
       cy.get(indicatorInfo)
         .eq(0)
         .invoke('text')
         .then((text) => {
-          const slicedOhlc = new Date(text.slice(0, -67));
-          const last67Chars = text.slice(-67);
-
-          assert.deepEqual(
-            slicedOhlc + last67Chars,
-            expectedDate + expectedOhlc
+          const actualDate = getDateTimeFormat().format(
+            new Date(text.slice(0, -67))
           );
+          const actualOhlc = text.slice(-67);
+          assert.equal(actualDate + actualOhlc, expectedDate + expectedOhlc);
         });
+      cy.clock().then((clock) => {
+        clock.restore();
+      });
     });
   }
 );
