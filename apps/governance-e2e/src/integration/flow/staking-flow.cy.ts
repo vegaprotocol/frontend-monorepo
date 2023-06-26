@@ -58,8 +58,6 @@ context(
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
       ethereumWalletConnect();
-      // this is a workaround for #2422 which can be removed once issue is resolved
-      cy.associateTokensToVegaWallet('4');
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
