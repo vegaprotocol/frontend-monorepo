@@ -7,7 +7,12 @@ import { ProposalsListItem } from '../proposals-list-item';
 import { ProtocolUpgradeProposalsListItem } from '../protocol-upgrade-proposals-list-item/protocol-upgrade-proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
 import Routes from '../../../routes';
-import { Button, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  Toggle,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
@@ -54,6 +59,11 @@ export const orderByUpgradeBlockHeight = (
     ['desc', 'desc']
   );
 
+enum ClosedProposalsViewOptions {
+  NetworkGovernance = 'networkGovernance',
+  NetworkUpgrades = 'networkUpgrades',
+}
+
 export const ProposalsList = ({
   proposals,
   protocolUpgradeProposals,
@@ -61,6 +71,10 @@ export const ProposalsList = ({
 }: ProposalsListProps) => {
   const { t } = useTranslation();
   const [filterString, setFilterString] = useState('');
+  const [closedProposalsView, setClosedProposalsView] =
+    useState<ClosedProposalsViewOptions>(
+      ClosedProposalsViewOptions.NetworkGovernance
+    );
 
   const sortedProposals: SortedProposalsProps = useMemo(() => {
     const initialSorting = proposals.reduce(
@@ -176,22 +190,77 @@ export const ProposalsList = ({
           </p>
         )}
       </section>
-      <section>
+      <section className="relative">
         <SubHeading title={t('closedProposals')} />
         {sortedProposals.closed.length > 0 ||
         sortedProtocolUpgradeProposals.closed.length > 0 ? (
-          <ul data-testid="closed-proposals">
-            {sortedProtocolUpgradeProposals.closed.map((proposal) => (
-              <ProtocolUpgradeProposalsListItem
-                key={proposal.upgradeBlockHeight}
-                proposal={proposal}
-              />
-            ))}
+          <>
+            {
+              // We need both the closed proposals and closed protocol upgrade
+              // proposals to be present for there to be a toggle.
+              sortedProposals.closed.length > 0 &&
+                sortedProtocolUpgradeProposals.closed.length > 0 && (
+                  <div
+                    className="grid w-full justify-end xl:-mt-12 pb-6"
+                    data-testid="toggle-closed-proposals"
+                  >
+                    <div className="w-[440px]">
+                      <Toggle
+                        name="validators-view-toggle"
+                        toggles={[
+                          {
+                            label: t(
+                              ClosedProposalsViewOptions.NetworkGovernance
+                            ),
+                            value: ClosedProposalsViewOptions.NetworkGovernance,
+                          },
+                          {
+                            label: t(
+                              ClosedProposalsViewOptions.NetworkUpgrades
+                            ),
+                            value: ClosedProposalsViewOptions.NetworkUpgrades,
+                          },
+                        ]}
+                        checkedValue={closedProposalsView}
+                        onChange={(e) =>
+                          setClosedProposalsView(
+                            e.target.value as ClosedProposalsViewOptions
+                          )
+                        }
+                      />
+                    </div>
+                  </div>
+                )
+            }
 
-            {sortedProposals.closed.filter(filterPredicate).map((proposal) => (
-              <ProposalsListItem key={proposal?.id} proposal={proposal} />
-            ))}
-          </ul>
+            <ul data-testid="closed-proposals">
+              {closedProposalsView ===
+                ClosedProposalsViewOptions.NetworkUpgrades && (
+                <div data-testid="closed-upgrade-proposals">
+                  {sortedProtocolUpgradeProposals.closed.map((proposal) => (
+                    <ProtocolUpgradeProposalsListItem
+                      key={proposal.upgradeBlockHeight}
+                      proposal={proposal}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {closedProposalsView ===
+                ClosedProposalsViewOptions.NetworkGovernance && (
+                <div data-testid="closed-governance-proposals">
+                  {sortedProposals.closed
+                    .filter(filterPredicate)
+                    .map((proposal) => (
+                      <ProposalsListItem
+                        key={proposal?.id}
+                        proposal={proposal}
+                      />
+                    ))}
+                </div>
+              )}
+            </ul>
+          </>
         ) : (
           <p className="mb-0" data-testid="no-closed-proposals">
             {t('noClosedProposals')}
