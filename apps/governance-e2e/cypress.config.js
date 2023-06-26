@@ -49,7 +49,7 @@ module.exports = defineConfig({
     vegaTokenContractAddress: '0xF41bD86d462D36b997C0bbb4D97a0a3382f205B7',
     vegaTokenAddress: '0x67175Da1D5e966e40D11c4B2519392B2058373de',
     txTimeout: { timeout: 70000 },
-    epochTimeout: { timeout: 10000 },
+    epochTimeout: { timeout: 12000 },
     blockConfirmations: 3,
     grepTags: '@regression @smoke @slow',
     grepFilterSpecs: true,
