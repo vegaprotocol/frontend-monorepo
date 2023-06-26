@@ -7,6 +7,7 @@ import { TableCell, TableRow, TableWithTbody } from '../../table';
 import type { components } from '../../../../types/explorer';
 import { LiquidityProvisionDetails } from './liquidity-provision/liquidity-provision-details';
 import PriceInMarket from '../../price-in-market/price-in-market';
+import BigNumber from 'bignumber.js';
 
 export type LiquiditySubmission =
   components['schemas']['v1LiquidityProvisionSubmission'];
@@ -32,6 +33,10 @@ export const TxDetailsLiquiditySubmission = ({
   const submission: LiquiditySubmission =
     txData.command.liquidityProvisionSubmission;
   const marketId: string = submission.marketId || '-';
+
+  const fee = submission.fee
+    ? new BigNumber(submission.fee).times(100).toString()
+    : '-';
 
   return (
     <>
@@ -62,7 +67,7 @@ export const TxDetailsLiquiditySubmission = ({
         {submission.fee ? (
           <TableRow modifier="bordered">
             <TableCell>{t('Fee')}</TableCell>
-            <TableCell>{(submission.fee * 100).toFixed(2)}%</TableCell>
+            <TableCell>{fee}%</TableCell>
           </TableRow>
         ) : null}
       </TableWithTbody>
