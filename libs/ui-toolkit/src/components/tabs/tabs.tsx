@@ -59,13 +59,7 @@ export const Tabs = ({
                 value={child.props.id}
                 className={triggerClass}
               >
-                {child.props.indicator ? (
-                  <>
-                    <span className="bg-vega-blue-450 text-white text-[10px] rounded p-[3px] pb-[2px] leading-none">
-                      {child.props.indicator}
-                    </span>{' '}
-                  </>
-                ) : undefined}
+                {child.props.indicator}
                 {child.props.name}
                 <span className={borderClass} />
               </TabsPrimitive.Trigger>
@@ -95,7 +89,7 @@ interface TabProps {
   children: ReactNode;
   id: string;
   name: string;
-  indicator?: string;
+  indicator?: ReactNode;
   hidden?: boolean;
 }
 

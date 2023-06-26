@@ -25,6 +25,18 @@ import {
 } from '../../components/resizable-grid';
 import { useIncompleteWithdrawals } from '@vegaprotocol/withdraws';
 
+const WithdrawalsIndicator = () => {
+  const { ready } = useIncompleteWithdrawals();
+  if (!ready || ready.length === 0) {
+    return null;
+  }
+  return (
+    <span className="bg-vega-blue-450 text-white text-[10px] rounded p-[3px] pb-[2px] leading-none">
+      {ready.length}
+    </span>
+  );
+};
+
 export const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
@@ -33,8 +45,6 @@ export const Portfolio = () => {
   useEffect(() => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle]);
-
-  const { ready } = useIncompleteWithdrawals();
 
   const onMarketClick = useMarketClickHandler(true);
   const onOrderTypeClick = useMarketLiquidityClickHandler(true);
@@ -106,9 +116,7 @@ export const Portfolio = () => {
               <Tab
                 id="withdrawals"
                 name={t('Withdrawals')}
-                indicator={
-                  ready.length > 0 ? ready.length.toString() : undefined
-                }
+                indicator={<WithdrawalsIndicator />}
               >
                 <WithdrawalsContainer />
               </Tab>

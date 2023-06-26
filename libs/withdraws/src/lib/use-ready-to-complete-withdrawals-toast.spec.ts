@@ -1,12 +1,7 @@
 import * as Types from '@vegaprotocol/types';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import BigNumber from 'bignumber.js';
-import {
-  addr,
-  useGetWithdrawDelay,
-  useGetWithdrawThreshold,
-  useWithdrawDataStore,
-} from '@vegaprotocol/web3';
+import * as web3 from '@vegaprotocol/web3';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useIncompleteWithdrawals } from './use-ready-to-complete-withdrawals-toast';
 import { MockedProvider } from '@apollo/client/testing';
@@ -161,22 +156,20 @@ describe('useIncompleteWithdrawals', () => {
       isReadOnly: false,
     });
 
-    (useGetWithdrawThreshold as jest.Mock).mockImplementation(
+    (web3.useGetWithdrawThreshold as jest.Mock).mockImplementation(
       () => (asset: Asset) => {
         if (asset.source.__typename === 'ERC20') {
-          return Promise.resolve(THRESHOLDS[asset.source.contractAddress]);
+          return Promise.resolve(
+            THRESHOLDS[asset.source.contractAddress].value
+          );
         }
         return Promise.resolve(Infinity);
       }
     );
-    (useGetWithdrawDelay as jest.Mock).mockImplementation(() => () => {
+    (web3.useGetWithdrawDelay as jest.Mock).mockImplementation(() => () => {
       return Promise.resolve(DELAY.value);
     });
-    (useWithdrawDataStore as unknown as jest.Mock).mockReturnValue([
-      THRESHOLDS,
-      DELAY,
-    ]);
-    (addr as jest.Mock).mockImplementation((asset: Asset | undefined) =>
+    (web3.addr as jest.Mock).mockImplementation((asset: Asset | undefined) =>
       asset && asset.source.__typename === 'ERC20'
         ? asset.source.contractAddress
         : 'builtin'

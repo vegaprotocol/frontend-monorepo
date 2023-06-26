@@ -67,8 +67,8 @@ export const useIncompleteWithdrawals = () => {
     ]).then(([delay, ...thresholds]) => ({
       delay,
       thresholds: assets.reduce<Record<string, BigNumber | undefined>>(
-        (thresholdsMap, asset, index) =>
-          Object.assign(thresholdsMap, { [asset.id]: thresholds[index] }),
+        (all, asset, index) =>
+          Object.assign(all, { [asset.id]: thresholds[index] }),
         {}
       ),
     }));

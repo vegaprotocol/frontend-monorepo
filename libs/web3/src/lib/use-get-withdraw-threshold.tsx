@@ -4,11 +4,6 @@ import BigNumber from 'bignumber.js';
 import { addDecimal } from '@vegaprotocol/utils';
 import type { WithdrawalBusEventFieldsFragment } from '@vegaprotocol/wallet';
 import { localLoggerFactory } from '@vegaprotocol/logger';
-import {
-  BUILTIN_ASSET_ADDRESS,
-  BUILTIN_ASSET_THRESHOLD,
-  useWithdrawDataStore,
-} from './use-withdraw-data-store';
 
 type Asset = Pick<
   WithdrawalBusEventFieldsFragment['asset'],
@@ -22,6 +17,13 @@ type Asset = Pick<
  */
 
 const MAX_AGE = 5 * 60 * 1000; // 5 minutes
+
+export const BUILTIN_ASSET_ADDRESS = 'builtin';
+export const BUILTIN_ASSET_THRESHOLD = new BigNumber(Infinity);
+type TimestampedThreshold = { value: BigNumber; ts: number };
+const THRESHOLDS: Record<string, TimestampedThreshold> = {};
+const setThreshold = (address: string, value: BigNumber) =>
+  (THRESHOLDS[address] = { value, ts: Date.now() });
 
 export const addr = (asset: Asset | undefined) =>
   asset && asset.source.__typename === 'ERC20'
@@ -37,13 +39,12 @@ export const addr = (asset: Asset | undefined) =>
 export const useGetWithdrawThreshold = () => {
   const logger = localLoggerFactory({ application: 'web3' });
   const contract = useBridgeContract(true);
-  const thresholds = useWithdrawDataStore((state) => state.thresholds);
-  const setThreshold = useWithdrawDataStore((state) => state.setThreshold);
+
   const getThreshold = useCallback(
     async (asset: Asset | undefined) => {
       const contractAddress = addr(asset);
       // return cached value if still valid
-      const thr = thresholds[contractAddress];
+      const thr = THRESHOLDS[contractAddress];
       if (thr && Date.now() - thr.ts <= MAX_AGE) {
         return thr.value;
       }
@@ -69,7 +70,7 @@ export const useGetWithdrawThreshold = () => {
         return undefined;
       }
     },
-    [contract, logger, setThreshold, thresholds]
+    [contract, logger]
   );
 
   return getThreshold;
