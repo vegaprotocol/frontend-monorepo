@@ -12,11 +12,9 @@ import { t } from '@vegaprotocol/i18n';
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import { useNavigate } from 'react-router-dom';
 import {
-  addr,
   useEthWithdrawApprovalsStore,
   useGetWithdrawDelay,
   useGetWithdrawThreshold,
-  useWithdrawDataStore,
 } from '@vegaprotocol/web3';
 import { withdrawalProvider } from './withdrawals-provider';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
@@ -36,11 +34,6 @@ export type TimestampedWithdrawals = {
 export const useIncompleteWithdrawals = () => {
   const [ready, setReady] = useState<TimestampedWithdrawals>([]);
   const [delayed, setDelayed] = useState<TimestampedWithdrawals>([]);
-
-  const [thresholds, delay] = useWithdrawDataStore((state) => [
-    state.thresholds,
-    state.delay,
-  ]);
   const { pubKey, isReadOnly } = useVegaWallet();
   const { data } = useDataProvider({
     dataProvider: withdrawalProvider,
@@ -57,7 +50,7 @@ export const useIncompleteWithdrawals = () => {
     () =>
       uniqBy(
         incompleteWithdrawals?.map((w) => w.asset),
-        (a) => addr(a)
+        (a) => a.id
       ),
     [incompleteWithdrawals]
   );
@@ -71,23 +64,34 @@ export const useIncompleteWithdrawals = () => {
     return await Promise.all([
       getDelay(),
       ...assets.map((asset) => getThreshold(asset)),
-    ]);
+    ]).then(([delay, ...thresholds]) => ({
+      delay,
+      thresholds: assets.reduce<Record<string, BigNumber | undefined>>(
+        (thresholdsMap, asset, index) =>
+          Object.assign(thresholdsMap, { [asset.id]: thresholds[index] }),
+        {}
+      ),
+    }));
   }, [assets, getDelay, getThreshold]);
 
   useEffect(() => {
     checkWithdraws().then((retrieved) => {
-      if (!retrieved || delay.value === undefined || !incompleteWithdrawals) {
+      if (
+        !retrieved ||
+        retrieved.delay === undefined ||
+        !incompleteWithdrawals
+      ) {
         return;
       }
+      const { thresholds, delay } = retrieved;
       const timestamped = incompleteWithdrawals.map((w) => {
         let timestamp = undefined;
-        const threshold = thresholds[addr(w.asset)];
+        const threshold = thresholds[w.asset.id];
         if (threshold) {
           timestamp = 0;
-          if (new BigNumber(w.amount).isGreaterThan(threshold.value)) {
+          if (new BigNumber(w.amount).isGreaterThan(threshold)) {
             const created = w.createdTimestamp;
-            timestamp =
-              new Date(created).getTime() + (delay.value as number) * 1000;
+            timestamp = new Date(created).getTime() + (delay as number) * 1000;
           }
         }
         return {
@@ -106,7 +110,7 @@ export const useIncompleteWithdrawals = () => {
       setReady(ready);
       setDelayed(delayed);
     });
-  }, [checkWithdraws, delay.value, incompleteWithdrawals, thresholds]);
+  }, [checkWithdraws, incompleteWithdrawals]);
 
   return { ready, delayed };
 };
