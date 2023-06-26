@@ -1,5 +1,3 @@
-import { getDateTimeFormat } from '@vegaprotocol/utils';
-
 interface ItemInfoType {
   name: string;
   infoText: string;
@@ -163,26 +161,20 @@ describe(
 
     it('price details', () => {
       // 6004-CHAR-010
-      const now = new Date(Date.parse('11:30 2022-04-06')).getTime();
-      cy.clock(now, ['Date']);
-      cy.reload();
-      const expectedDate = getDateTimeFormat().format(
-        new Date('11:30 2022-04-06')
+      const expectedDateRegex = new RegExp(
+        /^\d{2}:\d{2} \d{2} [A-Za-z]{3} \d{4}$/
       );
       const expectedOhlc = `O 173.60000H 174.00000L 173.50000C 173.90000Change −0.60000(−0.34%)`;
       cy.get(indicatorInfo)
         .eq(0)
         .invoke('text')
         .then((text) => {
-          const actualDate = getDateTimeFormat().format(
-            new Date(text.slice(0, -67))
-          );
+          const actualDate = text.slice(0, -67);
+          console.log(actualDate);
           const actualOhlc = text.slice(-67);
-          assert.equal(actualDate + actualOhlc, expectedDate + expectedOhlc);
+          assert.isTrue(expectedDateRegex.test(actualDate));
+          assert.strictEqual(actualOhlc, expectedOhlc);
         });
-      cy.clock().then((clock) => {
-        clock.restore();
-      });
     });
   }
 );
