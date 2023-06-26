@@ -62,7 +62,7 @@ export const TxDetailsLiquiditySubmission = ({
         {submission.fee ? (
           <TableRow modifier="bordered">
             <TableCell>{t('Fee')}</TableCell>
-            <TableCell>{submission.fee}%</TableCell>
+            <TableCell>{(submission.fee * 100).toFixed(2)}%</TableCell>
           </TableRow>
         ) : null}
       </TableWithTbody>
