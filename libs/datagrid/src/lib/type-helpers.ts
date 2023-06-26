@@ -4,7 +4,7 @@ import type {
   ValueFormatterParams,
   ValueGetterParams,
 } from 'ag-grid-community';
-import type { IDatasource, IGetRowsParams, RowNode } from 'ag-grid-community';
+import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { AgGridReactProps } from 'ag-grid-react';
 
 type Field = string | readonly string[];
