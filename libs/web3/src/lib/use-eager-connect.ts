@@ -7,6 +7,7 @@ import type { Connector } from '@web3-react/types';
 import { WalletConnect } from '@web3-react/walletconnect-v2';
 import { useEffect, useRef } from 'react';
 import { useWeb3ConnectStore } from './web3-connect-store';
+import { isTestEnv } from '@vegaprotocol/utils';
 
 export const ETHEREUM_EAGER_CONNECT = 'ethereum-eager-connect';
 
@@ -18,7 +19,7 @@ export const useEagerConnect = (loggerConf: LoggerProps) => {
   const logger = localLoggerFactory(loggerConf);
 
   useEffect(() => {
-    if (attemptedRef.current || 'Cypress' in window) return;
+    if (attemptedRef.current || isTestEnv()) return;
 
     const stored = getConnector(connectors, eagerConnector);
 

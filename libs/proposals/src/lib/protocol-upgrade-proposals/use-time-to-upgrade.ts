@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useBlockStatisticsQuery } from './__generated__/BlockStatistics';
 import sum from 'lodash/sum';
+import { isTestEnv } from '@vegaprotocol/utils';
 
 const DEFAULT_POLLS = 10;
 const INTERVAL = 1000;
@@ -20,7 +21,7 @@ const useAverageBlockDuration = (polls = DEFAULT_POLLS) => {
       return;
     }
 
-    if (!('Cypress' in window) && window.location.hostname !== 'localhost') {
+    if (!isTestEnv() && window.location.hostname !== 'localhost') {
       startPolling(INTERVAL);
     }
   }, [error, startPolling, stopPolling]);
