@@ -34,13 +34,9 @@ export function getSideDeltaColour(delta: string): string {
  * @param param0
  * @returns
  */
-const AmendOrderDetails = ({
-  id,
-  version = 0,
-  amend,
-}: AmendOrderDetailsProps) => {
+const AmendOrderDetails = ({ id, amend }: AmendOrderDetailsProps) => {
   const { data, error } = useExplorerDeterministicOrderQuery({
-    variables: { orderId: id, version },
+    variables: { orderId: id },
   });
 
   if (error || (data && !data.orderByID)) {
