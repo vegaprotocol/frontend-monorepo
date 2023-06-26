@@ -34,6 +34,8 @@ export const TxDetailsLiquidityAmendment = ({
     txData.command.liquidityProvisionAmendment;
   const marketId: string = amendment.marketId || '-';
 
+  const fee = amendment.fee ? parseFloat(amendment.fee) * 100 : '-';
+
   return (
     <>
       <TableWithTbody className="mb-8" allowWrap={true}>
@@ -63,7 +65,7 @@ export const TxDetailsLiquidityAmendment = ({
         {amendment.fee ? (
           <TableRow modifier="bordered">
             <TableCell>{t('Fee')}</TableCell>
-            <TableCell>{amendment.fee}%</TableCell>
+            <TableCell>{fee}%</TableCell>
           </TableRow>
         ) : null}
       </TableWithTbody>
