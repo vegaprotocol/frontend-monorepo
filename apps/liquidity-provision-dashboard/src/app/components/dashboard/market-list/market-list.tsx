@@ -22,8 +22,8 @@ import {
   TooltipCellComponent,
 } from '@vegaprotocol/ui-toolkit';
 import type { GetRowIdParams, RowClickedEvent } from 'ag-grid-community';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { AgGridColumn } from 'ag-grid-react';
 import { useCallback, useState } from 'react';
 

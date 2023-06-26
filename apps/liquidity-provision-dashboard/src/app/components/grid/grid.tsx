@@ -7,7 +7,7 @@ import type {
   AgGridReact as AgGridReactType,
 } from 'ag-grid-react';
 import classNames from 'classnames';
-import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 import './grid.scss';
