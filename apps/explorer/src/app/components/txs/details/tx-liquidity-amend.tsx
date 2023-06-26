@@ -7,6 +7,7 @@ import { TableCell, TableRow, TableWithTbody } from '../../table';
 import type { components } from '../../../../types/explorer';
 import { LiquidityProvisionDetails } from './liquidity-provision/liquidity-provision-details';
 import PriceInMarket from '../../price-in-market/price-in-market';
+import BigNumber from 'bignumber.js';
 
 export type LiquidityAmendment =
   components['schemas']['v1LiquidityProvisionAmendment'];
@@ -34,7 +35,9 @@ export const TxDetailsLiquidityAmendment = ({
     txData.command.liquidityProvisionAmendment;
   const marketId: string = amendment.marketId || '-';
 
-  const fee = amendment.fee ? parseFloat(amendment.fee) * 100 : '-';
+  const fee = amendment.fee
+    ? new BigNumber(amendment.fee).times(100).toString()
+    : '-';
 
   return (
     <>
