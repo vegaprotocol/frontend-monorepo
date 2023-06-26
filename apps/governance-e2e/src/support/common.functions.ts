@@ -1,4 +1,3 @@
-import { trueGray } from 'tailwindcss/colors';
 import { stakingPageDisassociateAllTokens } from './staking.functions';
 
 const tokenDropDown = 'state-trigger';
