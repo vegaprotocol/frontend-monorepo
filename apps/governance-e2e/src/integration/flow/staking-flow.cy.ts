@@ -58,6 +58,7 @@ context(
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
       ethereumWalletConnect();
+      cy.connectVegaWallet();
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
@@ -67,10 +68,9 @@ context(
         function () {
           cy.clearLocalStorage();
           turnTelemetryOff();
-          cy.reload();
-          waitForSpinner();
-          cy.connectVegaWallet();
-          ethereumWalletConnect();
+          // Go to homepage to allow wallet teardown without epoch timer refreshing page
+          navigateTo(navigation.home);
+          vegaWalletTeardown();
           navigateTo(navigation.validators);
         }
       );
@@ -399,6 +399,7 @@ context(
         vegaWalletSetSpecifiedApprovalAmount('1000');
         cy.reload();
         ethereumWalletConnect();
+        cy.connectVegaWallet();
         stakingPageAssociateTokens('3');
         verifyUnstakedBalance(3.0);
         cy.get('button').contains('Select a validator to nominate').click();
@@ -502,11 +503,6 @@ context(
           'contain',
           'Add 1 $VEGA tokens'
         );
-      });
-
-      afterEach('Teardown Wallet', function () {
-        navigateTo(navigation.home);
-        vegaWalletTeardown();
       });
 
       function verifyNextEpochValue(amount: number) {
