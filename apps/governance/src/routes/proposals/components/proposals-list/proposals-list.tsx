@@ -1,6 +1,6 @@
 import orderBy from 'lodash/orderBy';
 import { isFuture } from 'date-fns';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Heading, SubHeading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
@@ -75,6 +75,14 @@ export const ProposalsList = ({
     useState<ClosedProposalsViewOptions>(
       ClosedProposalsViewOptions.NetworkGovernance
     );
+
+  useEffect(() => {
+    if (filterString.length > 0) {
+      // If the filter is engaged, ensure the user is viewing governance proposals,
+      // as network upgrades do not have IDs to filter by and will be excluded.
+      setClosedProposalsView(ClosedProposalsViewOptions.NetworkGovernance);
+    }
+  }, [filterString]);
 
   const sortedProposals: SortedProposalsProps = useMemo(() => {
     const initialSorting = proposals.reduce(
@@ -207,9 +215,12 @@ export const ProposalsList = ({
           <>
             {
               // We need both the closed proposals and closed protocol upgrade
-              // proposals to be present for there to be a toggle.
+              // proposals to be present for there to be a toggle. It also gets
+              // hidden if the user has filtered the list, as the upgrade proposals
+              // do not have the necessary fields for filtering.
               sortedProposals.closed.length > 0 &&
-                sortedProtocolUpgradeProposals.closed.length > 0 && (
+                sortedProtocolUpgradeProposals.closed.length > 0 &&
+                filterString.length < 1 && (
                   <div
                     className="grid w-full justify-end xl:-mt-12 pb-6"
                     data-testid="toggle-closed-proposals"

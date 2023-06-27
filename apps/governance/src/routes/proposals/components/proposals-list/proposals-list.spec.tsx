@@ -249,6 +249,22 @@ describe('Proposals list', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('Does not display a toggle for closed proposals if the proposal filter is engaged', () => {
+    render(
+      renderComponent(
+        [enactedProposalClosedLastWeek],
+        [closedProtocolUpgradeProposal]
+      )
+    );
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
+    fireEvent.change(screen.getByTestId('filter-input'), {
+      target: { value: 'test' },
+    });
+    expect(
+      screen.queryByTestId('toggle-closed-proposals')
+    ).not.toBeInTheDocument();
+  });
+
   it('Displays closed governance proposals by default due to default for the toggle', () => {
     render(
       renderComponent(
