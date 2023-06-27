@@ -11,9 +11,8 @@
  *
  * You can run the test suite with `npm run test:human` (nice formatting) or just `npm test)`
  */
-import { readFileSync, appendFileSync } from 'fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+const { readFileSync, appendFileSync } = require('fs');
+const path = require('path');
 
 const domains = {
   mainnet: 'vega.xyz',
@@ -21,20 +20,20 @@ const domains = {
   default: 'vega.rocks',
 };
 
-export const AppsThatDeployToMainnetFromDevelop = new Set([
+const AppsThatDeployToMainnetFromDevelop = new Set([
   'multisig-signer',
   'static',
   'ui-toolkit',
 ]);
-export const AppsThatDoNotDeployToMainnet = new Set(['trading']);
-export const S3BucketNameForApp = {
+const AppsThatDoNotDeployToMainnet = new Set(['trading']);
+const S3BucketNameForApp = {
   'multisig-signer': 'tools.vega.xyz',
   static: 'static.vega.xyz',
   'ui-toolkit': 'ui.vega.rocks',
 };
-const DEFAULT_ENVIRONMENT = 'stagnet1';
+DEFAULT_ENVIRONMENT = 'stagnet1';
 
-const IS_TEST = process.env.npm_lifecycle_script === 'tape';
+const IS_TEST = process.env.NODE_ENV === 'test';
 
 const errorPrefix = '❌  ';
 
@@ -77,16 +76,15 @@ function fail(message, e) {
  * @param {string} app the name of the NX application or lib
  * @returns
  */
-export function validateAppName(app) {
+function validateAppName(app) {
   if (!app || app.trim() === '') {
     return fail('Empty app name');
   }
 
   const NX_WORKSPACE_FILE = 'workspace.json';
-  const __filename = fileURLToPath(import.meta.url);
-  const appDir = path.dirname(__filename);
+  const appDir = path.dirname(__dirname);
 
-  const f = `${appDir}/../../${NX_WORKSPACE_FILE}`;
+  const f = `${appDir}/../${NX_WORKSPACE_FILE}`;
   const workspace = JSON.parse(readFileSync(f), { encoding: 'utf-8' });
   const projects = [...Object.keys(workspace.projects)];
 
@@ -142,7 +140,7 @@ function getRef() {
  * @see getRef
  * @returns {string} full S3 storage bucket name
  */
-export function getBucketName(app, envName) {
+function getBucketName(app, envName) {
   if (AppsThatDoNotDeployToMainnet.has(app) && envName === 'mainnet') {
     return fail(`${app} does not deploy to mainnet`);
   }
@@ -168,7 +166,7 @@ export function getBucketName(app, envName) {
  * @param {string} environment name
  * @returns {string} environment name
  */
-export function getEnvironmentFromDevelop(app) {
+function getEnvironmentFromDevelop(app) {
   if (AppsThatDeployToMainnetFromDevelop.has(app)) {
     return 'mainnet';
   }
@@ -227,3 +225,11 @@ if (!IS_TEST) {
   output('BUCKET_NAME', bucketName);
   output('ENV_NAME', envName);
 }
+
+module.exports = {
+  validateAppName,
+  AppsThatDeployToMainnetFromDevelop,
+  S3BucketNameForApp,
+  getBucketName,
+  getEnvironmentFromDevelop,
+};

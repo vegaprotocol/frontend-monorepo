@@ -64,7 +64,7 @@ jobs:
       # https://docs.github.com/en/actions/learn-github-actions/contexts
       - name: Define dist variables
         if: ${{ github.event_name == 'push' }}
-        run: node tools/scripts/publish-dist-set-vars.js --app=${{ matrix.app }} --ref=${{ github.ref }}
+        run: node tools/scripts/publish-dist-set-vars.js --app=${{ matrix.app }}
 
       - name: Build local dist
         run: |
