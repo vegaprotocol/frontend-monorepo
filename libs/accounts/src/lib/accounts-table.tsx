@@ -17,7 +17,7 @@ import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import type {
   IGetRowsParams,
-  RowNode,
+  IRowNode,
   RowHeightParams,
   ColDef,
 } from 'ag-grid-community';
@@ -45,8 +45,8 @@ export const percentageValue = (part: string, total: string) => {
 export const accountValuesComparator = (
   valueA: string,
   valueB: string,
-  nodeA: RowNode,
-  nodeB: RowNode
+  nodeA: IRowNode,
+  nodeB: IRowNode
 ) => {
   if (isNumeric(valueA) && isNumeric(valueB)) {
     const a = toBigNum(valueA, nodeA.data.asset?.decimals);
