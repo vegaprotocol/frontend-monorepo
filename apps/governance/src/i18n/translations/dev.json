@@ -834,6 +834,7 @@
   "learnMore": "Learn more",
   "AllValidators": "All validators",
   "AllProposals": "All proposals",
+  "RejectedProposals": "Rejected proposals",
   "networkGovernance": "Network governance",
   "networkUpgrades": "Network upgrades"
 }
