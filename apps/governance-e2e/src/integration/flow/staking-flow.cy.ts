@@ -4,7 +4,6 @@ import {
   verifyStakedBalance,
   verifyEthWalletTotalAssociatedBalance,
   verifyEthWalletAssociatedBalance,
-  waitForSpinner,
   navigateTo,
   navigation,
   turnTelemetryOff,
