@@ -170,7 +170,10 @@ export const ProposalsList = ({
       </p>
 
       {proposals.length > 0 && (
-        <ProposalsListFilter setFilterString={setFilterString} />
+        <ProposalsListFilter
+          filterString={filterString}
+          setFilterString={setFilterString}
+        />
       )}
 
       <section className="-mx-4 p-4 mb-8 bg-vega-dark-100">

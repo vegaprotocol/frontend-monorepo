@@ -157,17 +157,15 @@ describe('Proposals list', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
-    fireEvent.click(screen.getByTestId('set-proposals-filter-visible'));
-    expect(
-      screen.getByTestId('open-proposals-list-filter')
-    ).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
+    expect(screen.getByTestId('proposals-list-filter')).toBeInTheDocument();
   });
 
   it('Filters list by text - party id', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
-    fireEvent.click(screen.getByTestId('set-proposals-filter-visible'));
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
     fireEvent.change(screen.getByTestId('filter-input'), {
       target: { value: 'bvcx' },
     });
@@ -180,7 +178,7 @@ describe('Proposals list', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
-    fireEvent.click(screen.getByTestId('set-proposals-filter-visible'));
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
     fireEvent.change(screen.getByTestId('filter-input'), {
       target: { value: 'proposal1' },
     });
@@ -193,13 +191,38 @@ describe('Proposals list', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
-    fireEvent.click(screen.getByTestId('set-proposals-filter-visible'));
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
     fireEvent.change(screen.getByTestId('filter-input'), {
       target: { value: 'osal1' },
     });
     const container = screen.getByTestId('open-proposals');
     expect(container.querySelector('#proposal1')).toBeInTheDocument();
     expect(container.querySelector('#proposal2')).not.toBeInTheDocument();
+  });
+
+  it('When filter is used, clear button is visible', () => {
+    render(
+      renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
+    );
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
+    fireEvent.change(screen.getByTestId('filter-input'), {
+      target: { value: 'test' },
+    });
+    expect(screen.getByTestId('clear-filter')).toBeInTheDocument();
+  });
+
+  it('When clear filter button is used, input is cleared', () => {
+    render(
+      renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
+    );
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
+    fireEvent.change(screen.getByTestId('filter-input'), {
+      target: { value: 'test' },
+    });
+    fireEvent.click(screen.getByTestId('clear-filter'));
+    expect((screen.getByTestId('filter-input') as HTMLInputElement).value).toBe(
+      ''
+    );
   });
 
   it('Displays a toggle for closed proposals if there are both closed governance proposals and closed upgrade proposals', () => {
