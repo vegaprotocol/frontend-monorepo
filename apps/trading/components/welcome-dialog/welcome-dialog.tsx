@@ -11,6 +11,7 @@ import { WelcomeNoticeDialog } from './welcome-notice-dialog';
 import { useGlobalStore } from '../../stores';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Networks } from '@vegaprotocol/environment';
+import { isTestEnv } from '@vegaprotocol/utils';
 
 export const WelcomeDialog = () => {
   const { VEGA_ENV } = useEnvironment();
@@ -31,9 +32,7 @@ export const WelcomeDialog = () => {
   );
 
   const isRiskDialogNeeded =
-    riskAccepted !== 'true' &&
-    VEGA_ENV !== Networks.MAINNET &&
-    !('Cypress' in window);
+    riskAccepted !== 'true' && VEGA_ENV !== Networks.MAINNET && !isTestEnv();
 
   const isWelcomeDialogNeeded = pathname === '/' || shouldDisplayWelcomeDialog;
 

@@ -22,7 +22,6 @@
           "echo $NX_VEGA_URL",
           "echo $NX_TENDERMINT_URL",
           "echo $NX_TENDERMINT_WEBSOCKET_URL",
-          "echo $NX_USE_ENV_OVERRIDES",
           "echo $NX_ETHEREUM_PROVIDER_URL"
         ],
         "url": "https://cloud.nx.app"

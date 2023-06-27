@@ -12,22 +12,26 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
     .fn()
     .mockImplementation(() => [false, mockSetValue, mockRemoveValue]),
 }));
+jest.mock('@vegaprotocol/environment', () => ({
+  useEnvironment: () => ({ VEGA_ENV: 'test', SENTRY_DSN: 'sentry-dsn' }),
+}));
 
 describe('useTelemetryApproval', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
   it('hook should return proper array', () => {
-    const res = renderHook(() => useTelemetryApproval());
-    expect(res.result.current[0]).toEqual(false);
-    expect(res.result.current[1]).toEqual(expect.any(Function));
+    const { result } = renderHook(() => useTelemetryApproval());
+    expect(result.current[0]).toEqual(false);
+    expect(result.current[1]).toEqual(expect.any(Function));
     expect(useLocalStorage).toHaveBeenCalledWith(STORAGE_KEY);
   });
 
   it('hook should init stuff properly', async () => {
-    const res = renderHook(() => useTelemetryApproval());
+    const { result } = renderHook(() => useTelemetryApproval());
     await act(() => {
-      res.result.current[1](true);
+      result.current[1](true);
     });
     await waitFor(() => {
       expect(SentryInit).toHaveBeenCalled();
@@ -36,9 +40,9 @@ describe('useTelemetryApproval', () => {
   });
 
   it('hook should close stuff properly', async () => {
-    const res = renderHook(() => useTelemetryApproval());
+    const { result } = renderHook(() => useTelemetryApproval());
     await act(() => {
-      res.result.current[1](false);
+      result.current[1](false);
     });
     await waitFor(() => {
       expect(SentryClose).toHaveBeenCalled();
