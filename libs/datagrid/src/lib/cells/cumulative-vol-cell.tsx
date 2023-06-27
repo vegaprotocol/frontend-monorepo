@@ -1,8 +1,10 @@
 import { memo } from 'react';
-import { BID_COLOR, ASK_COLOR } from './vol-cell';
 import { addDecimalsFixedFormatNumber } from '@vegaprotocol/utils';
 import { NumericCell } from './numeric-cell';
+import { theme } from '@vegaprotocol/tailwindcss-config';
 
+const BID_COLOR = theme.colors.vega.green.DEFAULT;
+const ASK_COLOR = theme.colors.vega.pink.DEFAULT;
 export interface CumulativeVolProps {
   ask?: number;
   bid?: number;

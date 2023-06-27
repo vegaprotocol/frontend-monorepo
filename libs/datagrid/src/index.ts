@@ -8,7 +8,6 @@ export * from './lib/cells/numeric-cell';
 export * from './lib/cells/price-cell';
 export * from './lib/cells/price-change-cell';
 export * from './lib/cells/price-flash-cell';
-export * from './lib/cells/vol-cell';
 export * from './lib/cells/centered-grid-cell';
 export * from './lib/cells/market-name-cell';
 export * from './lib/cells/order-type-cell';
