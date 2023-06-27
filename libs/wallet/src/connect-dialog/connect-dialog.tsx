@@ -207,7 +207,7 @@ const ConnectorList = ({
             onClick={() => onSelect('jsonRpc')}
           />
         </li>
-        {'vega' in window && (
+        {'vega' in window && !isMainnet && (
           <li className="mb-4 last:mb-0">
             <ConnectionOption
               type="injected"
