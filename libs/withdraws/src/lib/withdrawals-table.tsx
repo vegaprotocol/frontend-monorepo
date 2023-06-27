@@ -8,7 +8,6 @@ import {
   isNumeric,
   truncateByChars,
 } from '@vegaprotocol/utils';
-import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import {
   ButtonLink,
@@ -47,11 +46,10 @@ export const WithdrawalsTable = (
     (store) => store.create
   );
 
-  const bottomPlaceholderProps = useBottomPlaceholder({ gridRef });
   return (
     <AgGrid
       overlayNoRowsTemplate={t('No withdrawals')}
-      defaultColDef={{ resizable: true }}
+      defaultColDef={{ flex: 1 }}
       style={{ width: '100%', height: '100%' }}
       components={{
         RecipientCell,
@@ -61,8 +59,6 @@ export const WithdrawalsTable = (
       }}
       suppressCellFocus
       ref={gridRef}
-      storeKey="withdrawals"
-      {...bottomPlaceholderProps}
       {...props}
     >
       <AgGridColumn headerName="Asset" field="asset.symbol" />

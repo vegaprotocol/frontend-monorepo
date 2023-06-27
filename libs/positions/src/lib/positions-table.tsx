@@ -48,7 +48,6 @@ interface Props extends TypedDataAgGrid<Position> {
   onMarketClick?: (id: string, metaKey?: boolean) => void;
   style?: CSSProperties;
   isReadOnly: boolean;
-  storeKey?: string;
   multipleKeys?: boolean;
   pubKeys?: VegaWalletContextShape['pubKeys'];
   pubKey?: VegaWalletContextShape['pubKey'];
