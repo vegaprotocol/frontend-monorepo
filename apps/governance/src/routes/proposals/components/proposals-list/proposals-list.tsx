@@ -123,7 +123,7 @@ export const ProposalsList = ({
       );
       return {
         open: orderByUpgradeBlockHeight(initialSorting.open),
-        closed: orderByUpgradeBlockHeight(initialSorting.closed).reverse(),
+        closed: orderByUpgradeBlockHeight(initialSorting.closed),
       };
     }, [protocolUpgradeProposals, lastBlockHeight]);
 
@@ -141,6 +141,7 @@ export const ProposalsList = ({
           marginBottom={false}
           title={t('pageTitleProposals')}
         />
+
         {DocsLinks && (
           <div className="xs:justify-self-end" data-testid="new-proposal-link">
             <ExternalLink href={DocsLinks.PROPOSALS_GUIDE}>
@@ -154,6 +155,7 @@ export const ProposalsList = ({
           </div>
         )}
       </div>
+
       <p className="mb-8">
         {t(
           `The Vega network is governed by the community. View active proposals, vote on them or propose changes to the network. Network upgrades are proposed and approved by validators.`
@@ -166,11 +168,14 @@ export const ProposalsList = ({
           {t(`Find out more about Vega governance`)}
         </ExternalLink>
       </p>
+
       {proposals.length > 0 && (
         <ProposalsListFilter setFilterString={setFilterString} />
       )}
+
       <section className="-mx-4 p-4 mb-8 bg-vega-dark-100">
         <SubHeading title={t('openProposals')} />
+
         {sortedProposals.open.length > 0 ||
         sortedProtocolUpgradeProposals.open.length > 0 ? (
           <ul data-testid="open-proposals">
@@ -180,6 +185,7 @@ export const ProposalsList = ({
                 proposal={proposal}
               />
             ))}
+
             {sortedProposals.open.filter(filterPredicate).map((proposal) => (
               <ProposalsListItem key={proposal?.id} proposal={proposal} />
             ))}
@@ -190,6 +196,7 @@ export const ProposalsList = ({
           </p>
         )}
       </section>
+
       <section className="relative">
         <SubHeading title={t('closedProposals')} />
         {sortedProposals.closed.length > 0 ||
