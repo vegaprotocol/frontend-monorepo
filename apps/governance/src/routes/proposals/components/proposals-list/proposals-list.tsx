@@ -216,7 +216,7 @@ export const ProposalsList = ({
                   >
                     <div className="w-[440px]">
                       <Toggle
-                        name="validators-view-toggle"
+                        name="closed-proposals-toggle"
                         toggles={[
                           {
                             label: t(

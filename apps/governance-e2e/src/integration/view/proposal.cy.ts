@@ -165,9 +165,7 @@ context(
             );
           });
       });
-      cy.getByTestId('toggle-closed-proposals').within(() => {
-        cy.find('Network upgrades').click();
-      });
+      cy.get('[data-testid="closed-proposals-toggle-networkUpgrades"]').click();
       cy.getByTestId('closed-proposals').within(() => {
         cy.getByTestId('protocol-upgrade-proposals-list-item').should(
           'have.length',
