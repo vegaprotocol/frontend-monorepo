@@ -5,11 +5,11 @@ const walletContainer = 'aside [data-testid="ethereum-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
 const connectToEthButton =
   '[data-testid="connect-to-eth-wallet-button"]:visible';
-const connectorList = '[data-testid="web3-connector-list"]';
+const connectorList = 'web3-connector-list';
 const associate = '[href="/token/associate"]';
 const disassociate = '[href="/token/disassociate"]';
-const disconnect = '[data-testid="disconnect-from-eth-wallet-button"]';
-const accountNo = '[data-testid="ethereum-account-truncated"]';
+const disconnect = 'disconnect-from-eth-wallet-button';
+const accountNo = 'ethereum-account-truncated';
 const currencyTitle = '[data-testid="currency-title"]:visible';
 const currencyValue = '[data-testid="currency-value"]:visible';
 const vegaInVesting = '[data-testid="vega-in-vesting-contract"]:visible';
@@ -18,8 +18,8 @@ const progressBar = '[data-testid="progress-bar"]:visible';
 const currencyLocked = '[data-testid="currency-locked"]:visible';
 const currencyUnlocked = '[data-testid="currency-unlocked"]:visible';
 const dialog = '[role="dialog"]:visible';
-const dialogHeader = '[data-testid="dialog-title"]';
-const dialogCloseBtn = '[data-testid="dialog-close"]';
+const dialogHeader = 'dialog-title';
+const dialogCloseBtn = 'dialog-close';
 
 context(
   'Ethereum Wallet - verify elements on widget',
@@ -59,7 +59,7 @@ context(
 
       it('should have Connect Ethereum header visible', function () {
         cy.get(dialog).within(() => {
-          cy.get(dialogHeader)
+          cy.getByTestId(dialogHeader)
             .should('be.visible')
             .and('have.text', 'Connect to your Ethereum wallet');
         });
@@ -73,7 +73,7 @@ context(
           'WalletConnect',
           'WalletConnect Legacy',
         ];
-        cy.get(connectorList).within(() => {
+        cy.getByTestId(connectorList).within(() => {
           cy.get('button').each(($btn, i) => {
             cy.wrap($btn).should('be.visible').and('have.text', connectList[i]);
           });
@@ -83,7 +83,7 @@ context(
       after('close popup', function () {
         cy.get(dialog)
           .within(() => {
-            cy.get(dialogCloseBtn).click();
+            cy.getByTestId(dialogCloseBtn).click();
           })
           .should('not.exist');
       });
@@ -106,7 +106,7 @@ context(
       // 0004-EWAL-005
       it('should have account number visible', function () {
         cy.get(walletContainer).within(() => {
-          cy.get(accountNo)
+          cy.getByTestId(accountNo)
             .should('be.visible')
             .and('have.text', Cypress.env('ethWalletPublicKeyTruncated'));
         });
@@ -129,7 +129,7 @@ context(
       // 0004-EWAL-007
       it('should have Disconnect button visible', function () {
         cy.get(walletContainer).within(() => {
-          cy.get(disconnect)
+          cy.getByTestId(disconnect)
             .should('be.visible')
             .and('have.text', 'Disconnect');
         });
