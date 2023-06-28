@@ -23,6 +23,13 @@ export const OrderTypeCell = ({
       return undefined;
     }
     if (!value) return '-';
+
+    console.log(order);
+
+    if (order?.icebergOrder) {
+      return t('%s (Iceberg)', [Schema.OrderTypeMapping[value]]);
+    }
+
     if (order?.peggedOrder) {
       const reference =
         Schema.PeggedReferenceMapping[order.peggedOrder?.reference];
@@ -34,6 +41,7 @@ export const OrderTypeCell = ({
       );
       return t('%s %s %s Peg limit', [reference, side, offset]);
     }
+
     if (order?.liquidityProvision) {
       return t('Liquidity provision');
     }

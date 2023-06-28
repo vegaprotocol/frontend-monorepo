@@ -24,6 +24,12 @@ fragment OrderFields on Order {
     reference
     offset
   }
+  icebergOrder {
+    __typename
+    peakSize
+    minimumVisibleSize
+    reservedRemaining
+  }
 }
 
 query OrderById($orderId: ID!) {

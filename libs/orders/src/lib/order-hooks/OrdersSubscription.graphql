@@ -10,6 +10,7 @@ fragment OrderSubFields on OrderUpdate {
   expiresAt
   side
   marketId
+  remaining
 }
 
 subscription OrderSub($partyId: ID!) {
