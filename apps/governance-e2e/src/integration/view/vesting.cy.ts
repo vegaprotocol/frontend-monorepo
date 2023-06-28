@@ -6,7 +6,7 @@ import {
 } from '../../support/common.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 
-const connectButton = '[data-testid="connect-to-eth-btn"]';
+const connectButton = 'connect-to-eth-btn';
 const lockedTokensInVestingContract = '6,499,972.30';
 
 context(
@@ -29,7 +29,7 @@ context(
 
       // 1005-VEST-018
       it('should have connect Eth wallet button', function () {
-        cy.get(connectButton)
+        cy.getByTestId(connectButton)
           .should('be.visible')
           .and('have.text', 'Connect Ethereum wallet');
       });

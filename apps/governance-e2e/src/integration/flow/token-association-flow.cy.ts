@@ -21,25 +21,24 @@ import {
   vegaWalletTeardown,
 } from '../../support/wallet-functions';
 
-const ethWalletContainer = '[data-testid="ethereum-wallet"]';
-const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
-const vegaWalletUnstakedBalance =
-  '[data-testid="vega-wallet-balance-unstaked"]';
-const txTimeout = Cypress.env('txTimeout');
-const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
+const ethWalletContainer = 'ethereum-wallet';
+const vegaWalletAssociatedBalance = 'currency-value';
+const vegaWalletUnstakedBalance = 'vega-wallet-balance-unstaked';
 const ethWalletAssociateButton = '[data-testid="associate-btn"]:visible';
-const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
-const tokenAmountInputBox = '[data-testid="token-amount-input"]';
-const tokenSubmitButton = '[data-testid="token-input-submit-button"]';
+const associateWalletRadioButton = 'associate-radio-wallet';
+const tokenAmountInputBox = 'token-amount-input';
+const tokenSubmitButton = 'token-input-submit-button';
 const ethWalletDissociateButton = '[href="/token/disassociate"]:visible';
-const vestingContractSection = '[data-testid="vega-in-vesting-contract"]';
-const vegaInWalletSection = '[data-testid="vega-in-wallet"]';
-const connectedVegaKey = '[data-testid="connected-vega-key"]';
-const associatedKey = '[data-testid="associated-key"]';
-const associatedAmount = '[data-testid="associated-amount"]';
-const associateCompleteText = '[data-testid="transaction-complete-body"]';
-const disassociationWarning = '[data-testid="disassociation-warning"]';
+const vestingContractSection = 'vega-in-vesting-contract';
+const vegaInWalletSection = 'vega-in-wallet';
+const connectedVegaKey = 'connected-vega-key';
+const associatedKey = 'associated-key';
+const associatedAmount = 'associated-amount';
+const associateCompleteText = 'transaction-complete-body';
+const disassociationWarning = 'disassociation-warning';
 const vegaWallet = 'aside [data-testid="vega-wallet"]';
+const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
+const txTimeout = Cypress.env('txTimeout');
 
 context(
   'Token association flow - with eth and vega wallets connected',
@@ -89,12 +88,15 @@ context(
           verifyEthWalletAssociatedBalance('2.0');
           verifyEthWalletTotalAssociatedBalance('2.0');
           cy.get(vegaWallet).within(() => {
-            cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+            cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
               'contain',
               2.0
             );
           });
-          cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', 2.0);
+          cy.getByTestId(vegaWalletUnstakedBalance, txTimeout).should(
+            'contain',
+            2.0
+          );
         }
       );
 
@@ -127,7 +129,7 @@ context(
         verifyEthWalletAssociatedBalance('1,001.00');
         verifyEthWalletTotalAssociatedBalance('7,001.00');
         cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
             '1,001.00'
           );
@@ -137,14 +139,20 @@ context(
       it('Able to disassociate a partial amount of tokens currently associated', function () {
         stakingPageAssociateTokens('2');
         cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
+            'contain',
+            2.0
+          );
         });
         cy.get('button').contains('Select a validator to nominate').click();
         cy.getByTestId('epoch-countdown').should('be.visible');
         stakingPageDisassociateTokens('1');
         verifyEthWalletAssociatedBalance('1.0');
         cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 1.0);
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
+            'contain',
+            1.0
+          );
         });
       });
 
@@ -154,21 +162,24 @@ context(
           'Warning: Any tokens that have been nominated to a node will sacrifice rewards they are due for the current epoch. If you do not wish to sacrifice these, you should remove stake from a node at the end of an epoch before disassociation.';
         stakingPageAssociateTokens('2');
         cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
+            'contain',
+            2.0
+          );
         });
         cy.get('button').contains('Select a validator to nominate').click();
         cy.getByTestId('epoch-countdown').should('be.visible');
         cy.get(ethWalletDissociateButton).click();
-        cy.get(disassociationWarning).should('contain', warningText);
+        cy.getByTestId(disassociationWarning).should('contain', warningText);
         stakingPageDisassociateAllTokens();
-        cy.get(ethWalletContainer)
+        cy.getByTestId(ethWalletContainer)
           .first()
           .within(() => {
             cy.contains(vegaWalletPublicKeyShort, { timeout: 20000 }).should(
               'not.exist'
             );
           });
-        cy.get(ethWalletContainer)
+        cy.getByTestId(ethWalletContainer)
           .first()
           .within(() => {
             cy.contains(vegaWalletPublicKeyShort, { timeout: 20000 }).should(
@@ -176,7 +187,10 @@ context(
             );
           });
         cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 0.0);
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
+            'contain',
+            0.0
+          );
         });
       });
 
@@ -198,9 +212,15 @@ context(
         verifyEthWalletAssociatedBalance('2.0');
         verifyEthWalletTotalAssociatedBalance('2.0');
         cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
+            'contain',
+            2.0
+          );
         });
-        cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', 2.0);
+        cy.getByTestId(vegaWalletUnstakedBalance, txTimeout).should(
+          'contain',
+          2.0
+        );
         stakingPageDisassociateTokens('1', {
           type: 'contract',
           skipConfirmation: true,
@@ -221,45 +241,54 @@ context(
         cy.get('button').contains('Select a validator to nominate').click();
         cy.getByTestId('epoch-countdown').should('be.visible');
         stakingPageAssociateTokens('37', { type: 'contract' });
-        cy.get(vestingContractSection)
+        cy.getByTestId(vestingContractSection)
           .first()
           .within(() => {
-            cy.get(associatedKey).should(
+            cy.getByTestId(associatedKey).should(
               'contain',
               Cypress.env('vegaWalletPublicKeyShort')
             );
-            cy.get(associatedAmount, txTimeout).should('contain', 37);
+            cy.getByTestId(associatedAmount, txTimeout).should('contain', 37);
           });
-        cy.get(vegaInWalletSection)
+        cy.getByTestId(vegaInWalletSection)
           .first()
           .within(() => {
-            cy.get(associatedKey).should(
+            cy.getByTestId(associatedKey).should(
               'contain',
               Cypress.env('vegaWalletPublicKeyShort')
             );
-            cy.get(associatedAmount, txTimeout).should('contain', 21);
+            cy.getByTestId(associatedAmount, txTimeout).should('contain', 21);
           });
         cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 58);
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
+            'contain',
+            58
+          );
         });
         stakingPageDisassociateTokens('6', { type: 'contract' });
-        cy.get(vestingContractSection)
+        cy.getByTestId(vestingContractSection)
           .first()
           .within(() => {
-            cy.get(associatedAmount, txTimeout).should('contain', 31);
+            cy.getByTestId(associatedAmount, txTimeout).should('contain', 31);
           });
         cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 52);
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
+            'contain',
+            52
+          );
         });
         navigateTo(navigation.validators);
         stakingPageDisassociateTokens('9', { type: 'wallet' });
-        cy.get(vegaInWalletSection)
+        cy.getByTestId(vegaInWalletSection)
           .first()
           .within(() => {
-            cy.get(associatedAmount, txTimeout).should('contain', 12);
+            cy.getByTestId(associatedAmount, txTimeout).should('contain', 12);
           });
         cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 43);
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
+            'contain',
+            43
+          );
         });
       });
 
@@ -268,10 +297,10 @@ context(
         // 1004-ASSO-010
         // No warning visible as described in AC, but the button is disabled
         cy.get(ethWalletAssociateButton).click();
-        cy.get(associateWalletRadioButton, { timeout: 30000 }).click();
-        cy.get(tokenSubmitButton, txTimeout).should('be.disabled'); // button disabled with no input
-        cy.get(tokenAmountInputBox, { timeout: 10000 }).type('6500000');
-        cy.get(tokenSubmitButton, txTimeout).should('be.disabled');
+        cy.getByTestId(associateWalletRadioButton, { timeout: 30000 }).click();
+        cy.getByTestId(tokenSubmitButton, txTimeout).should('be.disabled'); // button disabled with no input
+        cy.getByTestId(tokenAmountInputBox, { timeout: 10000 }).type('6500000');
+        cy.getByTestId(tokenSubmitButton, txTimeout).should('be.disabled');
       });
 
       // 1004-ASSO-004
@@ -296,22 +325,25 @@ context(
 
       it('Able to associate tokens to different public key of connected vega wallet', function () {
         cy.get(ethWalletAssociateButton).click();
-        cy.get(associateWalletRadioButton).click();
-        cy.get(connectedVegaKey).should(
+        cy.getByTestId(associateWalletRadioButton).click();
+        cy.getByTestId(connectedVegaKey).should(
           'have.text',
           Cypress.env('vegaWalletPublicKey')
         );
 
         switchVegaWalletPubKey();
-        cy.get(connectedVegaKey).should(
+        cy.getByTestId(connectedVegaKey).should(
           'have.text',
           Cypress.env('vegaWalletPublicKey2')
         );
         stakingPageAssociateTokens('2');
         cy.get(vegaWallet).within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
+            'contain',
+            2.0
+          );
         });
-        cy.get(associateCompleteText).should(
+        cy.getByTestId(associateCompleteText).should(
           'have.text',
           `Vega key ${Cypress.env(
             'vegaWalletPublicKey2Short'

@@ -5,8 +5,6 @@ import {
   verifyTabHighlighted,
 } from '../../support/common.functions';
 
-const connectToVegaBtn = '[data-testid="connect-to-vega-wallet-btn"]';
-
 context(
   'Withdraw Page - verify elements on page',
   { tags: '@smoke' },
@@ -26,7 +24,7 @@ context(
       });
 
       it('should have connect Vega wallet button', function () {
-        cy.get(connectToVegaBtn)
+        cy.getByTestId('connect-to-vega-wallet-btn')
           .should('be.visible')
           .and('have.text', 'Connect Vega wallet');
       });

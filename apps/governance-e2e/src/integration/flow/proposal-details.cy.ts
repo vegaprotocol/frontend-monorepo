@@ -28,18 +28,17 @@ import type { testFreeformProposal } from '../../support/common-interfaces';
 import { formatDateWithLocalTimezone } from '@vegaprotocol/utils';
 
 const proposalVoteProgressForPercentage =
-  '[data-testid="vote-progress-indicator-percentage-for"]';
+  'vote-progress-indicator-percentage-for';
 const proposalVoteProgressAgainstPercentage =
-  '[data-testid="vote-progress-indicator-percentage-against"]';
-const proposalVoteProgressForTokens =
-  '[data-testid="vote-progress-indicator-tokens-for"]';
+  'vote-progress-indicator-percentage-against';
+const proposalVoteProgressForTokens = 'vote-progress-indicator-tokens-for';
 const proposalVoteProgressAgainstTokens =
-  '[data-testid="vote-progress-indicator-tokens-against"]';
-const changeVoteButton = '[data-testid="change-vote-button"]';
-const proposalDetailsTitle = '[data-testid="proposal-title"]';
-const proposalDetailsDescription = '[data-testid="proposal-description"]';
-const openProposals = '[data-testid="open-proposals"]';
-const viewProposalButton = '[data-testid="view-proposal-btn"]';
+  'vote-progress-indicator-tokens-against';
+const changeVoteButton = 'change-vote-button';
+const proposalDetailsTitle = 'proposal-title';
+const proposalDetailsDescription = 'proposal-description';
+const openProposals = 'open-proposals';
+const viewProposalButton = 'view-proposal-btn';
 const proposalDescriptionToggle = 'proposal-description-toggle';
 const voteBreakdownToggle = 'vote-breakdown-toggle';
 const proposalTermsToggle = 'proposal-json-toggle';
@@ -72,18 +71,18 @@ describe(
 
       createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-        cy.get(openProposals).within(() => {
+        cy.getByTestId(openProposals).within(() => {
           getProposalFromTitle(rawProposal.rationale.title).within(() => {
-            cy.get(viewProposalButton).should('be.visible').click();
+            cy.getByTestId(viewProposalButton).should('be.visible').click();
           });
         });
-        cy.get(proposalDetailsTitle).should(
+        cy.getByTestId(proposalDetailsTitle).should(
           'contain.text',
           rawProposal.rationale.title
         );
         cy.getByTestId(proposalDescriptionToggle).click();
         cy.getByTestId('proposal-description-toggle');
-        cy.get(proposalDetailsDescription)
+        cy.getByTestId(proposalDetailsDescription)
           .find('p')
           .should('have.text', proposalDescription);
       });
@@ -117,7 +116,7 @@ describe(
       });
       navigateTo(navigation.proposals);
       getProposalFromTitle(proposalTitle).within(() =>
-        cy.get(viewProposalButton).click()
+        cy.getByTestId(viewProposalButton).click()
       );
       cy.wrap(
         formatDateWithLocalTimezone(new Date(proposalTimeStamp * 1000))
@@ -139,7 +138,7 @@ describe(
       createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         getProposalFromTitle(rawProposal.rationale.title).within(() =>
-          cy.get(viewProposalButton).click()
+          cy.getByTestId(viewProposalButton).click()
         );
       });
       cy.contains('Participation: Not Met 0.00 0.00%(0.00% Required)').should(
@@ -166,7 +165,7 @@ describe(
       createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         getProposalFromTitle(rawProposal.rationale.title).within(() =>
-          cy.get(viewProposalButton).click()
+          cy.getByTestId(viewProposalButton).click()
         );
       });
       // 3001-VOTE-080
@@ -183,14 +182,16 @@ describe(
           .contains(votedDate)
           .should('be.visible');
       });
-      cy.get(proposalVoteProgressForPercentage) // 3001-VOTE-072
+      cy.getByTestId(proposalVoteProgressForPercentage) // 3001-VOTE-072
         .contains('100.00%')
         .and('be.visible');
-      cy.get(proposalVoteProgressAgainstPercentage)
+      cy.getByTestId(proposalVoteProgressAgainstPercentage)
         .contains('0.00%')
         .and('be.visible');
-      cy.get(proposalVoteProgressForTokens).contains('1.00').and('be.visible');
-      cy.get(proposalVoteProgressAgainstTokens)
+      cy.getByTestId(proposalVoteProgressForTokens)
+        .contains('1.00')
+        .and('be.visible');
+      cy.getByTestId(proposalVoteProgressAgainstTokens)
         .contains('0.00')
         .and('be.visible');
       cy.getByTestId(voteBreakdownToggle).click();
@@ -211,15 +212,15 @@ describe(
       getProposalInformationFromTable('Number of voting parties')
         .should('have.text', '1')
         .and('be.visible');
-      cy.get(changeVoteButton).should('be.visible').click();
+      cy.getByTestId(changeVoteButton).should('be.visible').click();
       voteForProposal('for');
       // 3001-VOTE-064
       getProposalInformationFromTable('Tokens for proposal')
         .should('have.text', (1).toFixed(2))
         .and('be.visible');
-      cy.get(changeVoteButton).should('be.visible').click();
+      cy.getByTestId(changeVoteButton).should('be.visible').click();
       voteForProposal('against');
-      cy.get(proposalVoteProgressAgainstPercentage)
+      cy.getByTestId(proposalVoteProgressAgainstPercentage)
         .contains('100.00%')
         .and('be.visible');
       getProposalInformationFromTable('Tokens against proposal')
@@ -236,13 +237,15 @@ describe(
       createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         getProposalFromTitle(rawProposal.rationale.title).within(() =>
-          cy.get(viewProposalButton).click()
+          cy.getByTestId(viewProposalButton).click()
         );
       });
       voteForProposal('for');
       // 3001-VOTE-079
       cy.contains('You voted: For').should('be.visible');
-      cy.get(proposalVoteProgressForTokens).contains('1').and('be.visible');
+      cy.getByTestId(proposalVoteProgressForTokens)
+        .contains('1')
+        .and('be.visible');
       cy.getByTestId(voteBreakdownToggle).click();
       getProposalInformationFromTable('Total Supply')
         .invoke('text')
@@ -258,22 +261,22 @@ describe(
           navigateTo(navigation.proposals);
           cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
             getProposalFromTitle(rawProposal.rationale.title).within(() =>
-              cy.get(viewProposalButton).click()
+              cy.getByTestId(viewProposalButton).click()
             );
           });
-          cy.get(proposalVoteProgressForPercentage)
+          cy.getByTestId(proposalVoteProgressForPercentage)
             .contains('100.00%')
             .and('be.visible');
-          cy.get(proposalVoteProgressAgainstPercentage)
+          cy.getByTestId(proposalVoteProgressAgainstPercentage)
             .contains('0.00%')
             .and('be.visible');
           // 3001-VOTE-065
-          cy.get(changeVoteButton).should('be.visible').click();
+          cy.getByTestId(changeVoteButton).should('be.visible').click();
           voteForProposal('for');
-          cy.get(proposalVoteProgressForTokens)
+          cy.getByTestId(proposalVoteProgressForTokens)
             .contains(tokensRequiredToAchieveResult)
             .and('be.visible');
-          cy.get(proposalVoteProgressAgainstTokens)
+          cy.getByTestId(proposalVoteProgressAgainstTokens)
             .contains('0.00')
             .and('be.visible');
           cy.getByTestId(voteBreakdownToggle).click();
@@ -310,7 +313,7 @@ describe(
       createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         getProposalFromTitle(rawProposal.rationale.title).within(() =>
-          cy.get(viewProposalButton).click()
+          cy.getByTestId(viewProposalButton).click()
         );
         voteForProposal('for');
         cy.contains('You voted: For').should('be.visible');
@@ -319,13 +322,16 @@ describe(
         stakingPageAssociateTokens('2');
         navigateTo(navigation.proposals);
         getProposalFromTitle(rawProposal.rationale.title).within(() =>
-          cy.get(viewProposalButton).click()
+          cy.getByTestId(viewProposalButton).click()
         );
         cy.getByTestId('you-voted').should('not.exist');
         voteForProposal('against');
         cy.contains('You voted: Against').should('be.visible');
         switchVegaWalletPubKey();
-        cy.get(proposalVoteProgressForTokens).should('contain.text', '1.00');
+        cy.getByTestId(proposalVoteProgressForTokens).should(
+          'contain.text',
+          '1.00'
+        );
         // Checking vote status for different public keys is displayed correctly
         cy.contains('You voted: For').should('be.visible');
       });
