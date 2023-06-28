@@ -92,6 +92,8 @@ export enum AccountType {
   ACCOUNT_TYPE_GLOBAL_INSURANCE = 'ACCOUNT_TYPE_GLOBAL_INSURANCE',
   /** GlobalReward - a global account for the reward pool */
   ACCOUNT_TYPE_GLOBAL_REWARD = 'ACCOUNT_TYPE_GLOBAL_REWARD',
+  /** AccountTypeHolding - an account for holding funds covering for active unfilled orders */
+  ACCOUNT_TYPE_HOLDING = 'ACCOUNT_TYPE_HOLDING',
   /** Insurance pool account - only for 'system' party */
   ACCOUNT_TYPE_INSURANCE = 'ACCOUNT_TYPE_INSURANCE',
   /**
@@ -1134,6 +1136,17 @@ export type HistorySegment = {
   toHeight: Scalars['Int'];
 };
 
+/** Details of the iceberg order */
+export type IcebergOrder = {
+  __typename?: 'IcebergOrder';
+  /** If the visible size of the order falls below this value, it will be replenished back to the peak size using the reserved amount */
+  minimumVisibleSize: Scalars['String'];
+  /** Size of the order that will be made visible if the iceberg order is replenished after trading */
+  peakSize: Scalars['String'];
+  /** Size of the order that is reserved and used to restore the iceberg's peak when it is refreshed */
+  reservedRemaining: Scalars['String'];
+};
+
 /** Describes something that can be traded on Vega */
 export type Instrument = {
   __typename?: 'Instrument';
@@ -1323,7 +1336,7 @@ export type LiquidityProvision = {
   /** Nominated liquidity fee factor, which is an input to the calculation of liquidity fees on the market, as per setting fees and rewarding liquidity providers. */
   fee: Scalars['String'];
   /** Unique identifier for the order (set by the system after consensus) */
-  id?: Maybe<Scalars['ID']>;
+  id: Scalars['ID'];
   /** Market for the order */
   market: Market;
   /** The party making this commitment */
@@ -1372,7 +1385,7 @@ export type LiquidityProvisionUpdate = {
   /** Nominated liquidity fee factor, which is an input to the calculation of liquidity fees on the market, as per setting fees and rewarding liquidity providers. */
   fee: Scalars['String'];
   /** Unique identifier for the order (set by the system after consensus) */
-  id?: Maybe<Scalars['ID']>;
+  id: Scalars['ID'];
   /** Market for the order */
   marketID: Scalars['ID'];
   /** The party making this commitment */
@@ -1546,6 +1559,8 @@ export type Market = {
   fees: Fees;
   /** Market ID */
   id: Scalars['ID'];
+  /** Optional: When a successor market is created, a fraction of the parent market's insurance pool can be transferred to the successor market */
+  insurancePoolFraction?: Maybe<Scalars['String']>;
   /** Linear slippage factor is used to cap the slippage component of maintainence margin - it is applied to the slippage volume */
   linearSlippageFactor: Scalars['String'];
   /** Liquidity monitoring parameters for the market */
@@ -1564,6 +1579,11 @@ export type Market = {
   /** Orders on a market */
   ordersConnection?: Maybe<OrderConnection>;
   /**
+   * Optional: Parent market ID. A market can be a successor to another market. If this market is a successor to a previous market,
+   * this field will be populated with the ID of the previous market.
+   */
+  parentMarketID?: Maybe<Scalars['ID']>;
+  /**
    * The number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
@@ -1580,6 +1600,8 @@ export type Market = {
   riskFactors?: Maybe<RiskFactor>;
   /** Current state of the market */
   state: MarketState;
+  /** Optional: Market ID of the successor to this market if one exists */
+  successorMarketID?: Maybe<Scalars['ID']>;
   /** An instance of, or reference to, a tradable instrument. */
   tradableInstrument: TradableInstrument;
   /** @deprecated Simplify and consolidate trades query and remove nesting. Use trades query instead */
@@ -1775,7 +1797,7 @@ export type MarketDepthUpdate = {
   sequenceNumber: Scalars['String'];
 };
 
-/** Edge type containing the order and cursor information returned by a OrderConnection */
+/** Edge type containing the market and cursor information returned by a MarketConnection */
 export type MarketEdge = {
   __typename?: 'MarketEdge';
   /** The cursor for this market */
@@ -1932,7 +1954,7 @@ export type NewMarket = {
   decimalPlaces: Scalars['Int'];
   /** New market instrument configuration */
   instrument: InstrumentConfiguration;
-  /** Linear slippage factor is used to cap the slippage component of maintainence margin - it is applied to the slippage volume */
+  /** Linear slippage factor is used to cap the slippage component of maintenance margin - it is applied to the slippage volume */
   linearSlippageFactor: Scalars['String'];
   /** Liquidity monitoring parameters */
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
@@ -1944,10 +1966,12 @@ export type NewMarket = {
   positionDecimalPlaces: Scalars['Int'];
   /** Price monitoring parameters */
   priceMonitoringParameters: PriceMonitoringParameters;
-  /** Quadratic slippage factor is used to cap the slippage component of maintainence margin - it is applied to the square of the slippage volume */
+  /** Quadratic slippage factor is used to cap the slippage component of maintenance margin - it is applied to the square of the slippage volume */
   quadraticSlippageFactor: Scalars['String'];
   /** New market risk configuration */
   riskParameters: RiskModel;
+  /** Successor market configuration. If this proposed market is meant to succeed a given market, then this needs to be set. */
+  successorConfiguration?: Maybe<SuccessorConfiguration>;
 };
 
 /** Information available for a node */
@@ -2293,6 +2317,8 @@ export type Order = {
   createdAt: Scalars['Timestamp'];
   /** Expiration time of this order (ISO-8601 RFC3339+Nano formatted date) */
   expiresAt?: Maybe<Scalars['Timestamp']>;
+  /** Details of an iceberg order */
+  icebergOrder?: Maybe<IcebergOrder>;
   /** Hash of the order data */
   id: Scalars['ID'];
   /** The liquidity provision this order was created from */
@@ -3160,6 +3186,12 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_ENACT_TIME_TOO_SOON = 'PROPOSAL_ERROR_ENACT_TIME_TOO_SOON',
   /** The ERC-20 address specified by this proposal is already in use by another asset */
   PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE = 'PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE',
+  /** The proposal for cancellation of an active governance transfer has failed */
+  PROPOSAL_ERROR_GOVERNANCE_CANCEL_TRANSFER_PROPOSAL_INVALID = 'PROPOSAL_ERROR_GOVERNANCE_CANCEL_TRANSFER_PROPOSAL_INVALID',
+  /** The governance transfer proposal has failed */
+  PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_FAILED = 'PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_FAILED',
+  /** The governance transfer proposal is invalid */
+  PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_INVALID = 'PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_INVALID',
   /** Proposal terms timestamps are not compatible (Validation < Closing < Enactment) */
   PROPOSAL_ERROR_INCOMPATIBLE_TIMESTAMPS = 'PROPOSAL_ERROR_INCOMPATIBLE_TIMESTAMPS',
   /** The proposal is rejected because the party does not have enough equity like share in the market */
@@ -3184,6 +3216,10 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_INVALID_RISK_PARAMETER = 'PROPOSAL_ERROR_INVALID_RISK_PARAMETER',
   /** Market proposal has one or more invalid liquidity shapes */
   PROPOSAL_ERROR_INVALID_SHAPE = 'PROPOSAL_ERROR_INVALID_SHAPE',
+  /** Validation of spot market proposal failed */
+  PROPOSAL_ERROR_INVALID_SPOT = 'PROPOSAL_ERROR_INVALID_SPOT',
+  /** Validation of successor market has failed */
+  PROPOSAL_ERROR_INVALID_SUCCESSOR_MARKET = 'PROPOSAL_ERROR_INVALID_SUCCESSOR_MARKET',
   /** Proposal declined because the majority threshold was not reached */
   PROPOSAL_ERROR_MAJORITY_THRESHOLD_NOT_REACHED = 'PROPOSAL_ERROR_MAJORITY_THRESHOLD_NOT_REACHED',
   /** Market proposal is missing a liquidity commitment */
@@ -3214,6 +3250,8 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_OPENING_AUCTION_DURATION_TOO_SMALL = 'PROPOSAL_ERROR_OPENING_AUCTION_DURATION_TOO_SMALL',
   /** Proposal declined because the participation threshold was not reached */
   PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED = 'PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED',
+  /** Spot trading is disabled */
+  PROPOSAL_ERROR_SPOT_PRODUCT_DISABLED = 'PROPOSAL_ERROR_SPOT_PRODUCT_DISABLED',
   /** Too many decimal places specified in market */
   PROPOSAL_ERROR_TOO_MANY_MARKET_DECIMAL_PLACES = 'PROPOSAL_ERROR_TOO_MANY_MARKET_DECIMAL_PLACES',
   /** Too many price monitoring triggers specified in market */
@@ -3499,6 +3537,8 @@ export type Query = {
   protocolUpgradeStatus?: Maybe<ProtocolUpgradeStatus>;
   /** Get statistics about the Vega node */
   statistics: Statistics;
+  /** List markets in a succession line */
+  successorMarkets?: Maybe<SuccessorMarketConnection>;
   /** Get a list of all trades and apply any given filters to the results */
   trades?: Maybe<TradeConnection>;
   /** Get a list of all transfers for a public key */
@@ -3558,6 +3598,7 @@ export type QueryentitiesArgs = {
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryepochArgs = {
+  block?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['ID']>;
 };
 
@@ -3799,6 +3840,14 @@ export type QueryproposalsConnectionArgs = {
 export type QueryprotocolUpgradeProposalsArgs = {
   approvedBy?: InputMaybe<Scalars['String']>;
   inState?: InputMaybe<ProtocolUpgradeProposalStatus>;
+  pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerysuccessorMarketsArgs = {
+  fullHistory?: InputMaybe<Scalars['Boolean']>;
+  marketId: Scalars['ID'];
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -4314,6 +4363,40 @@ export type SubscriptionvotesArgs = {
   proposalId?: InputMaybe<Scalars['ID']>;
 };
 
+export type SuccessorConfiguration = {
+  __typename?: 'SuccessorConfiguration';
+  /** Decimal value between 0 and 1, specifying the fraction of the insurance pool balance is carried over from the parent market to the successor. */
+  insurancePoolFraction: Scalars['String'];
+  /** ID of the market this proposal will succeed */
+  parentMarketId: Scalars['String'];
+};
+
+export type SuccessorMarket = {
+  __typename?: 'SuccessorMarket';
+  /** The market */
+  market: Market;
+  /** Proposals for child markets */
+  proposals?: Maybe<Array<Maybe<Proposal>>>;
+};
+
+/** Connection type for retrieving cursor-based paginated market information */
+export type SuccessorMarketConnection = {
+  __typename?: 'SuccessorMarketConnection';
+  /** The markets in this connection */
+  edges: Array<SuccessorMarketEdge>;
+  /** The pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing the market and cursor information returned by a MarketConnection */
+export type SuccessorMarketEdge = {
+  __typename?: 'SuccessorMarketEdge';
+  /** The cursor for this market */
+  cursor: Scalars['String'];
+  /** The market */
+  node: SuccessorMarket;
+};
+
 /** TargetStakeParameters contains parameters used in target stake calculation */
 export type TargetStakeParameters = {
   __typename?: 'TargetStakeParameters';
@@ -4593,6 +4676,10 @@ export enum TransferType {
   TRANSFER_TYPE_CLEAR_ACCOUNT = 'TRANSFER_TYPE_CLEAR_ACCOUNT',
   /** Funds deposited to general account */
   TRANSFER_TYPE_DEPOSIT = 'TRANSFER_TYPE_DEPOSIT',
+  /** An internal instruction to transfer a quantity corresponding to an active spot order from a general account into a party holding account */
+  TRANSFER_TYPE_HOLDING_LOCK = 'TRANSFER_TYPE_HOLDING_LOCK',
+  /** An internal instruction to transfer an excess quantity corresponding to an active spot order from a holding account into a party general account */
+  TRANSFER_TYPE_HOLDING_RELEASE = 'TRANSFER_TYPE_HOLDING_RELEASE',
   /** Infrastructure fee received into general account */
   TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE = 'TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE',
   /** Infrastructure fee paid from general account */
@@ -4619,6 +4706,8 @@ export enum TransferType {
   TRANSFER_TYPE_MTM_WIN = 'TRANSFER_TYPE_MTM_WIN',
   /** Reward payout received */
   TRANSFER_TYPE_REWARD_PAYOUT = 'TRANSFER_TYPE_REWARD_PAYOUT',
+  /** Spot trade delivery */
+  TRANSFER_TYPE_SPOT = 'TRANSFER_TYPE_SPOT',
   /** A network internal instruction for the collateral engine to move funds from the pending transfers pool account into the destination account */
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE = 'TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE',
   /** A network internal instruction for the collateral engine to move funds from a user's general account into the pending transfers pool */

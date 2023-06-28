@@ -18,7 +18,7 @@ export type LiquidityProvisionsUpdateSubscriptionVariables = Types.Exact<{
 }>;
 
 
-export type LiquidityProvisionsUpdateSubscription = { __typename?: 'Subscription', liquidityProvisions?: Array<{ __typename?: 'LiquidityProvisionUpdate', id?: string | null, partyID: string, createdAt: any, updatedAt?: any | null, marketID: string, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus }> | null };
+export type LiquidityProvisionsUpdateSubscription = { __typename?: 'Subscription', liquidityProvisions?: Array<{ __typename?: 'LiquidityProvisionUpdate', id: string, partyID: string, createdAt: any, updatedAt?: any | null, marketID: string, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus }> | null };
 
 export type LiquidityProviderFeeShareFieldsFragment = { __typename?: 'LiquidityProviderFeeShare', equityLikeShare: string, averageEntryValuation: string, party: { __typename?: 'Party', id: string } };
 

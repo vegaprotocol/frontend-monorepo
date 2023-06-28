@@ -26,13 +26,16 @@ export type Order = Omit<OrderFieldsFragment, 'market'> & {
 };
 export type OrderEdge = Edge<Order>;
 
+export type OrderFullUpdateFieldsFragment = OrderUpdateFieldsFragment &
+  Pick<OrderFieldsFragment, 'icebergOrder'>;
+
 const liveOnlyOrderStatuses = [
   OrderStatus.STATUS_ACTIVE,
   OrderStatus.STATUS_PARKED,
 ];
 
 const orderMatchFilters = (
-  order: OrderUpdateFieldsFragment,
+  order: OrderFullUpdateFieldsFragment,
   variables: OrdersQueryVariables
 ) => {
   if (!order) {
@@ -85,7 +88,7 @@ const orderMatchFilters = (
 };
 
 export const mapOrderUpdateToOrder = (
-  orderUpdate: OrderUpdateFieldsFragment
+  orderUpdate: OrderFullUpdateFieldsFragment
 ): OrderFieldsFragment => {
   const { marketId, liquidityProvisionId, ...order } = orderUpdate;
   // If there is a liquidity provision id add the object to the resulting order
@@ -108,7 +111,7 @@ export const mapOrderUpdateToOrder = (
 
 const mapOrderUpdateToOrderWithMarket =
   (markets: Record<string, Market>) =>
-  (orderUpdate: OrderUpdateFieldsFragment): Order => {
+  (orderUpdate: OrderFullUpdateFieldsFragment): Order => {
     const { market, ...order } = mapOrderUpdateToOrder(orderUpdate);
     return {
       ...order,
@@ -121,7 +124,10 @@ const getData = (
 ): (OrderFieldsFragment & Cursor)[] =>
   responseData?.party?.ordersConnection?.edges?.map<
     OrderFieldsFragment & Cursor
-  >((edge) => ({ ...edge.node, cursor: edge.cursor })) || [];
+  >((edge) => {
+    console.log('edge', edge);
+    return { ...edge.node, cursor: edge.cursor };
+  }) || [];
 
 export const filterOrderUpdates = (
   orders: OrdersUpdateSubscription['orders']
@@ -152,7 +158,7 @@ export const update = <T extends Omit<OrderFieldsFragment, 'market'> & Cursor>(
   data: T[] | null,
   delta: ReturnType<typeof getDelta>,
   variables: OrdersQueryVariables,
-  mapDeltaToData: (delta: OrderUpdateFieldsFragment) => T
+  mapDeltaToData: (delta: OrderFullUpdateFieldsFragment) => T
 ): T[] => {
   const updatedData = data ? [...data] : ([] as T[]);
   delta.forEach((orderUpdate) => {
