@@ -1,15 +1,16 @@
 const {
-  triggerTestRuns,
-  getDeployPreviewLinkForAppBranch,
+  testRunsToTrigger,
+  getDeployPreviewLink,
   generateDeployPreviewLinks,
+  mapTestsToDeploy,
 } = require('./ci-cd-trigger-affected');
 
-describe('getDeployPreviewLinkForAppBranch', () => {
+describe('getDeployPreviewLink', () => {
   test('should return the deploy preview link if the app name is valid and branch is provided', () => {
     const app = 'governance';
     const branch = 'feature-branch';
 
-    expect(getDeployPreviewLinkForAppBranch(app, branch)).toBe(
+    expect(getDeployPreviewLink(app, branch)).toBe(
       'https://governance.feature-branch.vega.rocks'
     );
   });
@@ -18,14 +19,14 @@ describe('getDeployPreviewLinkForAppBranch', () => {
     const app = 'invalid-app';
     const branch = 'feature-branch';
 
-    expect(getDeployPreviewLinkForAppBranch(app, branch)).toStrictEqual(false);
+    expect(getDeployPreviewLink(app, branch)).toStrictEqual(false);
   });
 
   test('should fail if the branch is not provided or empty', () => {
     const app = 'governance';
     const branch = '';
 
-    expect(getDeployPreviewLinkForAppBranch(app, branch)).toStrictEqual(false);
+    expect(getDeployPreviewLink(app, branch)).toStrictEqual(false);
   });
 });
 
@@ -123,5 +124,77 @@ describe('generateDeployPreviewLinks', () => {
       preview_trading: 'https://trading.feature-branch.vega.rocks',
       preview_explorer: 'https://explorer.feature-branch.vega.rocks',
     });
+  });
+});
+
+describe('mapTestsToDeploy', () => {
+  test('should add affected "TESTLESS_TOOLS_THAT_DEPLOY_ON_ALL_PRS" to deploy queue on pull request', () => {
+    const projectsToTest = ['project1-e2e', 'project2-e2e'];
+    const affected = ['project1', 'project2', 'multisig-signer'];
+    const branch = 'main';
+
+    const result = mapTestsToDeploy(projectsToTest, branch, affected, true);
+
+    expect(result).toContain('project1');
+    expect(result).toContain('project2');
+    expect(result).toContain('multisig-signer');
+  });
+
+  test('even if a special case is already affected', () => {
+    const projectsToTest = [];
+    const affected = ['multisig-signer'];
+    const branch = 'main';
+
+    const result = mapTestsToDeploy(projectsToTest, branch, affected, true);
+
+    expect(result).toContain('multisig-signer');
+    expect(result.length).toStrictEqual(1);
+  });
+
+  test('IS_PULL_REQUEST special case should not be deployed on non-prs', () => {
+    const projectsToTest = [];
+    const affected = ['multisig-signer'];
+    const branch = 'main';
+
+    const result = mapTestsToDeploy(projectsToTest, branch, affected, false);
+
+    expect(result).not.toContain('multisig-signer');
+    expect(result.length).toStrictEqual(0);
+  });
+
+  test('should add affected "AppsThatDeployToMainnetFromDevelop" to deploy queue on develop branch', () => {
+    const projectsToTest = ['libs/accounts', 'libs-apollo-client'];
+    const branch = 'develop';
+    const affected = ['multisig-signer', 'static', 'ui-toolkit'];
+
+    const result = mapTestsToDeploy(projectsToTest, branch, affected, false);
+
+    expect(result).toContain('multisig-signer');
+    expect(result).toContain('static');
+    expect(result).toContain('ui-toolkit');
+  });
+
+  test('should not add affected "AppsThatDeployToMainnetFromDevelop" to deploy queue on any other branch', () => {
+    const projectsToTest = ['trading', 'explorer'];
+    const branch = 'main';
+    const affected = ['multisig-signer', 'static', 'ui-toolkit'];
+
+    const result = mapTestsToDeploy(projectsToTest, branch, affected, false);
+
+    expect(result).not.toContain('multisig-signer');
+    expect(result).not.toContain('static');
+    expect(result).not.toContain('ui-toolkit');
+  });
+
+  test('should not add any other item to the deploy queue', () => {
+    const projectsToTest = ['trading-e2e', 'explorer-e2e'];
+    const branch = 'develop';
+    const affected = ['trading', 'explorer'];
+
+    const result = mapTestsToDeploy(projectsToTest, branch, affected);
+
+    expect(result.length).toEqual(2);
+    expect(result).toContain('trading');
+    expect(result).toContain('explorer');
   });
 });

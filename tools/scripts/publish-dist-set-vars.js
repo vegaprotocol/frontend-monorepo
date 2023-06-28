@@ -23,18 +23,17 @@ const {
   specialCasePrefix,
 } = require('./lib/ci-functions');
 
+const {
+  AppsThatDeployToMainnetFromDevelop,
+  AppsThatDoNotDeployToMainnet,
+} = require('./config');
+
 const domains = {
   mainnet: 'vega.xyz',
   testnet: 'fairground.wtf',
   default: 'vega.rocks',
 };
 
-const AppsThatDeployToMainnetFromDevelop = new Set([
-  'multisig-signer',
-  'static',
-  'ui-toolkit',
-]);
-const AppsThatDoNotDeployToMainnet = new Set(['trading']);
 const S3BucketNameForApp = {
   'multisig-signer': 'tools.vega.xyz',
   static: 'static.vega.xyz',

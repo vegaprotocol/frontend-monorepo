@@ -6,7 +6,7 @@ const {
   AppsThatDeployToMainnetFromDevelop,
 } = require('../publish-dist-set-vars');
 
-describe('getValidAppName', () => {
+describe('validAppName', () => {
   test(`getValidAppName returns true for major apps, because they exist in '../../workspace.json'`, () => {
     expect(validateAppName('trading')).toBe(true);
     expect(validateAppName('explorer')).toBe(true);
@@ -37,7 +37,7 @@ describe('getBranchNameFromGithubRef', () => {
 
   test('Replaces /s with -s', () => {
     expect(getBranchNameFromGithubRef('refs/heads/fix/123-test')).toStrictEqual(
-      'refs-heads-fix-123'
+      'refs-heads-fix-123-test'
     );
   });
 
