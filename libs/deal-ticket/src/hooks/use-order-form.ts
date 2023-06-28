@@ -55,9 +55,9 @@ export const useOrderForm = (marketId: string) => {
     cb: <T>(o: Exact<OrderSubmission, T>) => void
   ) => {
     return handleSubmit(() => {
-      // remove the persist key from the order in the store, the wallet will reject
+      // remove the persist and iceberg key from the order in the store, the wallet will reject
       // an order that contains unrecognized additional keys
-      cb(omit(order, 'persist'));
+      cb(omit(order, 'persist', 'iceberg'));
     });
   };
 

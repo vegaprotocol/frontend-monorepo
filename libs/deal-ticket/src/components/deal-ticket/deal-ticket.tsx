@@ -30,7 +30,7 @@ import {
   useOpenVolume,
 } from '@vegaprotocol/positions';
 import { toBigNum, removeDecimal } from '@vegaprotocol/utils';
-import { OrderObj, activeOrdersProvider } from '@vegaprotocol/orders';
+import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useEstimateFees } from '../../hooks/use-estimate-fees';
 import { getDerivedPrice } from '../../utils/get-price';
 import type { OrderInfo } from '@vegaprotocol/types';
@@ -293,6 +293,22 @@ export const DealTicket = ({
                   timeInForce: lastTIF[type] || order.timeInForce,
                   postOnly:
                     type === OrderType.TYPE_MARKET ? false : order.postOnly,
+                  iceberg:
+                    type === OrderType.TYPE_MARKET ||
+                    [
+                      OrderTimeInForce.TIME_IN_FORCE_FOK,
+                      OrderTimeInForce.TIME_IN_FORCE_IOC,
+                    ].includes(lastTIF[type] || order.timeInForce)
+                      ? false
+                      : order.iceberg,
+                  icebergOpts:
+                    type === OrderType.TYPE_MARKET ||
+                    [
+                      OrderTimeInForce.TIME_IN_FORCE_FOK,
+                      OrderTimeInForce.TIME_IN_FORCE_IOC,
+                    ].includes(lastTIF[type] || order.timeInForce)
+                      ? undefined
+                      : order.icebergOpts,
                   reduceOnly:
                     type === OrderType.TYPE_LIMIT &&
                     ![
@@ -474,33 +490,17 @@ export const DealTicket = ({
                   name="iceberg"
                   checked={order.iceberg}
                   onCheckedChange={() => {
-                    update({ iceberg: !order.iceberg });
+                    update({ iceberg: !order.iceberg, icebergOpts: undefined });
                   }}
                   label={
                     <Tooltip
                       description={
-                        <div>
-                          <p>
-                            {t(
-                              'Trade only a fraction of the order size at once.'
-                            )}
-                          </p>
-                          <p>
-                            {t(
-                              'After the displayed portion of the order has traded, its size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away.'
-                            )}
-                          </p>
-                          <p>
-                            {t(
-                              'For example, an order with a size of 1000 and a display size of 100 will effectively be split into 10 orders with a size of 100 each.'
-                            )}
-                          </p>
-                          <p>
-                            {t(
-                              'Note that the full volume of the order is not hidden and is still reflected in the order book.'
-                            )}
-                          </p>
-                        </div>
+                        <p>
+                          {t(`Trade only a fraction of the order size at once.
+                            After the displayed portion of the order has traded, its size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away.
+                            For example, an order with a size of 1000 and a display size of 100 will effectively be split into 10 orders with a size of 100 each.
+                            Note that the full volume of the order is not hidden and is still reflected in the order book.`)}
+                        </p>
                       }
                     >
                       <span className="text-xs">{t('Iceberg')}</span>
@@ -511,17 +511,20 @@ export const DealTicket = ({
             />
           )}
         </div>
-        <div className="flex gap-2 pb-2 justify-between">
-          {order.iceberg && (
-            <DealTicketSizeIceberg
-              update={update}
-              market={market}
-              sizeError={errors.icebergOpts?.peakSize?.message}
-              control={control}
-              size={order.size}
-            />
-          )}
-        </div>
+        {order.iceberg && (
+          <DealTicketSizeIceberg
+            update={update}
+            market={market}
+            peakSizeError={errors.icebergOpts?.peakSize?.message}
+            minimumVisibleSizeError={
+              errors.icebergOpts?.minimumVisibleSize?.message
+            }
+            control={control}
+            size={order.size}
+            peakSize={order.icebergOpts?.peakSize || ''}
+            minimumVisibleSize={order.icebergOpts?.minimumVisibleSize || ''}
+          />
+        )}
         <SummaryMessage
           errorMessage={errors.summary?.message}
           asset={asset}
