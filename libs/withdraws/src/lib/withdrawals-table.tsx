@@ -15,7 +15,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  Icon,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -193,9 +192,8 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
               }
             }}
           >
-            <span>
-              <Icon name="info-sign" size={4} /> {t('View withdrawal details')}
-            </span>
+            <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
+            {t('View withdrawal details')}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

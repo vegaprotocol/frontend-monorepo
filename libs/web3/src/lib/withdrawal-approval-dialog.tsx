@@ -32,7 +32,7 @@ export const WithdrawalApprovalDialog = ({
   return (
     <Dialog
       title={t('Save withdrawal details')}
-      icon={<Icon name="info-sign"></Icon>}
+      icon={<VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />}
       open={open}
       onChange={(isOpen) => onChange(isOpen)}
       onCloseAutoFocus={(e) => {
