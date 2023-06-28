@@ -18,6 +18,7 @@ const {
   output,
   fail,
   IS_TEST,
+  specialCasePrefix,
 } = require('./lib/ci-functions');
 
 const domains = {
@@ -37,7 +38,7 @@ const S3BucketNameForApp = {
   static: 'static.vega.xyz',
   'ui-toolkit': 'ui.vega.rocks',
 };
-DEFAULT_ENVIRONMENT = 'stagnet1';
+const DEFAULT_ENVIRONMENT = 'stagnet1';
 
 /**
  * Extract the app name from the command line
@@ -82,7 +83,7 @@ function getRef() {
  */
 function getBucketName(app, envName) {
   if (AppsThatDoNotDeployToMainnet.has(app) && envName === 'mainnet') {
-    return fail(`${app} does not deploy to mainnet`);
+    return fail(`${specialCasePrefix} ${app} does not deploy to mainnet`);
   }
 
   if (AppsThatDeployToMainnetFromDevelop.has(app)) {
@@ -159,7 +160,7 @@ if (!IS_TEST) {
   const bucketName = getBucketName(app, envName);
 
   if (AppsThatDoNotDeployToMainnet.has(app) && envName === 'mainnet') {
-    fail(`${app} does not deploy to ${envName}`);
+    fail(`${specialCasePrefix} ${app} does not deploy to ${envName}`);
   }
 
   output('BUCKET_NAME', bucketName);

@@ -4,7 +4,8 @@ const path = require('path');
 
 const IS_TEST = process.env.NODE_ENV === 'test';
 const IS_PULL_REQUEST = process.env.GITHUB_EVENT_NAME === 'pull_request';
-const errorPrefix = '❌  ';
+const errorPrefix = '❌ [fail]';
+const specialCasePrefix = '🌟 [special-case]';
 
 /**
  * Returns a trimmed, sanitised version of a full github ref
@@ -119,4 +120,5 @@ module.exports = {
   validateAppName,
   IS_TEST,
   IS_PULL_REQUEST,
+  specialCasePrefix,
 };

@@ -6,10 +6,14 @@ const {
   IS_TEST,
   validateAppName,
   IS_PULL_REQUEST,
+  specialCasePrefix,
 } = require('./lib/ci-functions');
 
-const TOOLS_THAT_DEPLOY_FROM_DEVELOP = ['multisig-signer', 'static', 'ui-toolkit'];
-const ICON_SPECIAL_CASE = '🌟';
+const TOOLS_THAT_DEPLOY_FROM_DEVELOP = [
+  'multisig-signer',
+  'static',
+  'ui-toolkit',
+];
 /**
  * Ensures that E2E test run pipelines are triggered
  *
@@ -165,7 +169,9 @@ if (!IS_TEST) {
     // SPECIAL CASE: multisig-signer has no e2e test but should
     // run on every pull request. Unsure why.
     if (affected.includes('multisig-signer')) {
-      console.log(`${ICON_SPECIAL_CASE} tools is not affected, but deploys on ever pull request. Adding to deploy queue...`);
+      console.log(
+        `${specialCasePrefix} tools is not affected, but deploys on every pull request. Adding to deploy queue...`
+      );
       environmentVariablesToSet['preview_tools'] =
         getDeployPreviewLinkForAppBranch('multisig-signer', branch);
       projects.push('multisig-signer');
@@ -173,12 +179,14 @@ if (!IS_TEST) {
   } else if (BRANCH_IS_DEVELOP) {
     // On merge to develop, updated these 3 things automatically
     // Only validated app names get here
-    TOOLS_THAT_DEPLOY_FROM_DEVELOP.forEach(tool => {
+    TOOLS_THAT_DEPLOY_FROM_DEVELOP.forEach((tool) => {
       if (affected.includes(tool)) {
-        console.log(`${ICON_SPECIAL_CASE} ${tool} is not affected, but deploys from develop. Adding to deploy queue...`);
+        console.log(
+          `${specialCasePrefix} ${tool} is not affected, but deploys from develop. Adding to deploy queue...`
+        );
         projects.push(tool);
       }
-    })
+    });
   }
 
   try {
