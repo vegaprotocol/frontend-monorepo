@@ -12,6 +12,8 @@
  * You can run the test suite with `npm run test:human` (nice formatting) or just `npm test)`
  *
  * In CI this is run by `publish-dist.yml`
+ * @author Miko
+ * @author Edd
  */
 const {
   validateAppName,

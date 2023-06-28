@@ -1,3 +1,10 @@
+/**
+ * Using `nx affected` as a starting point, decide which test suites must
+ * run and where required generate preview links for the affected apps.
+ *
+ * @author Miko
+ * @author Edd
+ */
 const execSync = require('child_process').execSync;
 const {
   output,
@@ -33,6 +40,10 @@ function testRunsToTrigger(affected) {
   }
   // By default, trigger everything
   if (projects_e2e.length === 0) {
+    console.log(
+      `${specialCasePrefix} no apps are affected, but let's run the tests anyway`
+    );
+
     projects_e2e = ['governance-e2e', 'trading-e2e', 'explorer-e2e'];
   }
 
@@ -90,6 +101,10 @@ function generateDeployPreviewLinks(affected, branch) {
 
   // By default, a deploy for everything is created
   if (countMajorAppsAffected === 0) {
+    console.log(
+      `${specialCasePrefix} No apps are affected, but let's output preview links anyway`
+    );
+
     outputVariables['preview_governance'] = getDeployPreviewLinkForAppBranch(
       'governance',
       branch
@@ -132,28 +147,31 @@ if (!IS_TEST) {
       affectedAppsString.trim() === '' ||
       affectedAppsString.indexOf(',') === -1
     ) {
-      console.log('Nothing is affected. Nothing to do.');
-      process.exit(0);
+      console.debug(
+        'Nothing is affected. Nothing to do, unless there are special cases.'
+      );
+    } else {
+      affectedAppsString.split(',').forEach((app) => {
+        const a = app.trim();
+        if (validateAppName(a)) {
+          affected.push(a);
+        }
+      });
     }
-    affectedAppsString.split(',').forEach((app) => {
-      const a = app.trim();
-      if (validateAppName(a)) {
-        affected.push(a);
-      }
-    });
   } catch (e) {
     fail(`Error running nx print-affected: ${e}`);
   }
 
-  console.group('>>>> debug');
-  console.debug(`NX_BASE: ${process.env.NX_BASE}`);
-  console.debug(`NX_HEAD: ${process.env.NX_HEAD}`);
-  console.debug(`Affected: ${affected}`);
-  console.debug(`Branch slug: ${branch}`);
-  console.debug(`Is pull request: ${IS_PULL_REQUEST}`);
-
-  console.debug('>>>> eof debug');
-  console.groupEnd();
+  if (process.env.DEBUG) {
+    console.group('>>>> debug');
+    console.debug(`NX_BASE: ${process.env.NX_BASE}`);
+    console.debug(`NX_HEAD: ${process.env.NX_HEAD}`);
+    console.debug(`Affected: ${affected}`);
+    console.debug(`Branch slug: ${branch}`);
+    console.debug(`Is pull request: ${IS_PULL_REQUEST}`);
+    console.groupEnd();
+    console.debug('>>>> eof debug');
+  }
 
   const projects_e2e = testRunsToTrigger(affected);
   const environmentVariablesToSet = generateDeployPreviewLinks(
