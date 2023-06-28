@@ -204,7 +204,7 @@ jobs:
   cypress:
     needs: lint-test-build
     name: '(CI) cypress'
-    if: ${{ needs.lint-test-build.outputs.projects-e2e != '[]' }}
+    # if: ${{ needs.lint-test-build.outputs.projects-e2e != '[]' }}
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
     with:
@@ -214,7 +214,7 @@ jobs:
   publish-dist:
     needs: lint-test-build
     name: '(CD) publish dist'
-    if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
+    # if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
     uses: ./.github/workflows/publish-dist.yml
     secrets: inherit
     with:
