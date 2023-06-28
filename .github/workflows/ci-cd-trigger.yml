@@ -49,7 +49,7 @@ jobs:
 
   lint-pr-title:
     needs: node-modules
-    if: ${{ ( github.event_name == 'pull_request' || github.event_name == 'pull_request_target' ) }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
     name: Verify PR title
     uses: ./.github/workflows/lint-pr.yml
     secrets: inherit
@@ -225,7 +225,7 @@ jobs:
     needs:
       - publish-dist
       - lint-test-build
-    if: ${{ ( github.event_name == 'pull_request' || github.event_name == 'pull_request_target' ) }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
     timeout-minutes: 60
     name: '(CD) comment preview links'
     steps:
