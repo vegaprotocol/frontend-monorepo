@@ -1,6 +1,6 @@
 import orderBy from 'lodash/orderBy';
 import { isFuture } from 'date-fns';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Heading, SubHeading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
@@ -75,14 +75,6 @@ export const ProposalsList = ({
     useState<ClosedProposalsViewOptions>(
       ClosedProposalsViewOptions.NetworkGovernance
     );
-
-  useEffect(() => {
-    if (filterString.length > 0) {
-      // If the filter is engaged, ensure the user is viewing governance proposals,
-      // as network upgrades do not have IDs to filter by and will be excluded.
-      setClosedProposalsView(ClosedProposalsViewOptions.NetworkGovernance);
-    }
-  }, [filterString]);
 
   const sortedProposals: SortedProposalsProps = useMemo(() => {
     const initialSorting = proposals.reduce(
@@ -180,7 +172,16 @@ export const ProposalsList = ({
       {proposals.length > 0 && (
         <ProposalsListFilter
           filterString={filterString}
-          setFilterString={setFilterString}
+          setFilterString={(value) => {
+            setFilterString(value);
+            if (value.length > 0) {
+              // If the filter is engaged, ensure the user is viewing governance proposals,
+              // as network upgrades do not have IDs to filter by and will be excluded.
+              setClosedProposalsView(
+                ClosedProposalsViewOptions.NetworkGovernance
+              );
+            }
+          }}
         />
       )}
 
