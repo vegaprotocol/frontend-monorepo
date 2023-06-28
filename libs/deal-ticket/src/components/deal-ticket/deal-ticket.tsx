@@ -30,7 +30,7 @@ import {
   useOpenVolume,
 } from '@vegaprotocol/positions';
 import { toBigNum, removeDecimal } from '@vegaprotocol/utils';
-import { activeOrdersProvider } from '@vegaprotocol/orders';
+import { OrderObj, activeOrdersProvider } from '@vegaprotocol/orders';
 import { useEstimateFees } from '../../hooks/use-estimate-fees';
 import { getDerivedPrice } from '../../utils/get-price';
 import type { OrderInfo } from '@vegaprotocol/types';
@@ -54,6 +54,7 @@ import {
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 
 export interface DealTicketProps {
   market: Market;
@@ -124,7 +125,7 @@ export const DealTicket = ({
           normalizedOrder.size,
           market.positionDecimalPlaces
         ).multipliedBy(toBigNum(price, market.decimalPlaces)),
-        asset.decimals
+        market.decimalPlaces
       );
     }
     return null;
@@ -133,7 +134,6 @@ export const DealTicket = ({
     normalizedOrder?.size,
     market.decimalPlaces,
     market.positionDecimalPlaces,
-    asset.decimals,
   ]);
 
   const feeEstimate = useEstimateFees(
@@ -463,6 +463,64 @@ export const DealTicket = ({
               />
             )}
           />
+        </div>
+        <div className="flex gap-2 pb-2 justify-between">
+          {order.type === Schema.OrderType.TYPE_LIMIT && (
+            <Controller
+              name="iceberg"
+              control={control}
+              render={() => (
+                <Checkbox
+                  name="iceberg"
+                  checked={order.iceberg}
+                  onCheckedChange={() => {
+                    update({ iceberg: !order.iceberg });
+                  }}
+                  label={
+                    <Tooltip
+                      description={
+                        <div>
+                          <p>
+                            {t(
+                              'Trade only a fraction of the order size at once.'
+                            )}
+                          </p>
+                          <p>
+                            {t(
+                              'After the displayed portion of the order has traded, its size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away.'
+                            )}
+                          </p>
+                          <p>
+                            {t(
+                              'For example, an order with a size of 1000 and a display size of 100 will effectively be split into 10 orders with a size of 100 each.'
+                            )}
+                          </p>
+                          <p>
+                            {t(
+                              'Note that the full volume of the order is not hidden and is still reflected in the order book.'
+                            )}
+                          </p>
+                        </div>
+                      }
+                    >
+                      <span className="text-xs">{t('Iceberg')}</span>
+                    </Tooltip>
+                  }
+                />
+              )}
+            />
+          )}
+        </div>
+        <div className="flex gap-2 pb-2 justify-between">
+          {order.iceberg && (
+            <DealTicketSizeIceberg
+              update={update}
+              market={market}
+              sizeError={errors.icebergOpts?.peakSize?.message}
+              control={control}
+              size={order.size}
+            />
+          )}
         </div>
         <SummaryMessage
           errorMessage={errors.summary?.message}

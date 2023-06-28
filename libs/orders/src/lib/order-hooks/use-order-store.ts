@@ -15,7 +15,13 @@ export type OrderObj = {
   persist: boolean; // key used to determine if order should be kept in localStorage
   postOnly?: boolean;
   reduceOnly?: boolean;
+  iceberg?: boolean;
+  icebergOpts?: {
+    peakSize: string;
+    minimumVisibleSize: string;
+  };
 };
+
 type OrderMap = { [marketId: string]: OrderObj | undefined };
 
 type UpdateOrder = (
