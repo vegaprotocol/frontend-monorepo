@@ -3,7 +3,6 @@ import {
   Button,
   CopyWithTooltip,
   Dialog,
-  Icon,
   KeyValueTable,
   KeyValueTableRow,
   Splash,
