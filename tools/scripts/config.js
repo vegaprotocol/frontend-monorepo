@@ -1,5 +1,5 @@
 // Add a valid nx project here if you want it to deploy and be tested
-// for all commits to develop
+// for all commits to develop. Apps must be valid NX projects.
 const AppsThatDeployToMainnetFromDevelop = new Set([
   'multisig-signer',
   'static',
