@@ -91,10 +91,7 @@ const MarketBottomPanel = memo(
               </Tab>
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
-                  <TradingViews.fills.component
-                    marketId={marketId}
-                    onMarketClick={onMarketClick}
-                  />
+                  <TradingViews.fills.component onMarketClick={onMarketClick} />
                 </VegaWalletContainer>
               </Tab>
             </Tabs>
@@ -166,10 +163,7 @@ const MarketBottomPanel = memo(
           </Tab>
           <Tab id="fills" name={t('Fills')}>
             <VegaWalletContainer>
-              <TradingViews.fills.component
-                marketId={marketId}
-                onMarketClick={onMarketClick}
-              />
+              <TradingViews.fills.component onMarketClick={onMarketClick} />
             </VegaWalletContainer>
           </Tab>
           <Tab id="accounts" name={t('Collateral')}>
