@@ -8,11 +8,104 @@ const {
   IS_PULL_REQUEST,
 } = require('./lib/ci-functions');
 
-let affected = [];
-let branch = getBranch();
-const BRANCH_IS_DEVELOP = branch.match(/.*develop$/);
+/**
+ * Ensures that E2E test run pipelines are triggered
+ *
+ * @param {string[]} affected
+ * @returns
+ */
+function triggerTestRuns(affected) {
+  let projects_e2e = [];
+  if (affected.includes('governance')) {
+    projects_e2e.push('governance-e2e');
+  }
+  if (affected.includes('trading')) {
+    projects_e2e.push('trading-e2e');
+  }
+  if (affected.includes('explorer')) {
+    projects_e2e.push('explorer-e2e');
+  }
+  // By default, trigger everything
+  if (projects_e2e.length === 0) {
+    projects_e2e = ['governance-e2e', 'trading-e2e', 'explorer-e2e'];
+  }
+
+  return projects_e2e;
+}
+
+/**
+ * Preview links are deployed to S3 buckset, and domain names map on to
+ * those S3 buckets. To see which bucket is used to store an application,
+ * check out `publish-dist-set-vars.js`. This function generates the predictable
+ * URL for a given app and branch.
+ *
+ * @param {string} app
+ * @param {string} branch
+ * @returns
+ */
+function getDeployPreviewLinkForAppBranch(app, branch) {
+  if (!validateAppName(app)) {
+    return fail('Cannot generate preview link for unknown app: ' + app);
+  }
+  if (!branch || branch.trim().length === 0) {
+    return fail(
+      `Invalid branch name specified for '${app}' preview link: ${branch}`
+    );
+  }
+
+  return `https://${app}.${branch}.vega.rocks`;
+}
+
+function generateDeployPreviewLinks(affected, branch) {
+  let countMajorAppsAffected = 0;
+
+  let outputVariables = {};
+  if (affected.includes('governance')) {
+    outputVariables['preview_governance'] = getDeployPreviewLinkForAppBranch(
+      'governance',
+      branch
+    );
+    countMajorAppsAffected++;
+  }
+  if (affected.includes('trading')) {
+    outputVariables['preview_trading'] = getDeployPreviewLinkForAppBranch(
+      'trading',
+      branch
+    );
+    countMajorAppsAffected++;
+  }
+  if (affected.includes('explorer')) {
+    outputVariables['preview_explorer'] = getDeployPreviewLinkForAppBranch(
+      'explorer',
+      branch
+    );
+    countMajorAppsAffected++;
+  }
+
+  // By default, a deploy for everything is created
+  if (countMajorAppsAffected === 0) {
+    outputVariables['preview_governance'] = getDeployPreviewLinkForAppBranch(
+      'governance',
+      branch
+    );
+    outputVariables['preview_trading'] = getDeployPreviewLinkForAppBranch(
+      'trading',
+      branch
+    );
+    outputVariables['preview_explorer'] = getDeployPreviewLinkForAppBranch(
+      'explorer',
+      branch
+    );
+  }
+
+  return outputVariables;
+}
 
 if (!IS_TEST) {
+  let affected = [];
+  let branch = getBranch();
+  const BRANCH_IS_DEVELOP = branch.match(/.*develop$/);
+
   if (!process.env.NX_BASE || !process.env.NX_HEAD) {
     fail('Environment variables NX_BASE and NX_HEAD must be set');
   }
@@ -52,116 +145,53 @@ if (!IS_TEST) {
   console.debug(`Affected: ${affected}`);
   console.debug(`Branch slug: ${branch}`);
   console.debug('>>>> eof debug');
-}
 
-function triggerTestRuns(affected) {
-  let projects_e2e = [];
-  if (affected.includes('governance')) {
-    projects_e2e.push('governance-e2e');
-  }
-  if (affected.includes('trading')) {
-    projects_e2e.push('trading-e2e');
-  }
-  if (affected.includes('explorer')) {
-    projects_e2e.push('explorer-e2e');
-  }
-  // By default, trigger everything
-  if (projects_e2e.length === 0) {
-    projects_e2e = ['governance-e2e', 'trading-e2e', 'explorer-e2e'];
-  }
+  const projects_e2e = triggerTestRuns(affected);
+  const environmentVariablesToSet = generateDeployPreviewLinks(
+    affected,
+    branch
+  );
 
-  return projects_e2e;
-}
+  let projects = projects_e2e.map((p) => p.replace(/-e2e/g, ''));
 
-function getDeployPreviewLinkForAppBranch(app, branch) {
-  if (!validateAppName(app)) {
-    fail('Cannot generate preview link for unknown app: ' + app);
-  }
-
-  return `https://${app}.${branch}.vega.rocks`;
-}
-
-function generateDeployPreviewLinks(affected, branch) {
-  let countMajorAppsAffected = 0;
-
-  let outputVariables = {};
-  if (affected.includes('governance')) {
-    outputVariables['preview_governance'] = getDeployPreviewLinkForAppBranch(
-      'governance',
-      branch
-    );
-    countMajorAppsAffected++;
-  }
-  if (affected.includes('trading')) {
-    outputVariables['preview_trading'] = getDeployPreviewLinkForAppBranch(
-      'trading',
-      branch
-    );
-    countMajorAppsAffected++;
-  }
-  if (affected.includes('explorer')) {
-    outputVariables['preview_explorer'] = getDeployPreviewLinkForAppBranch(
-      'explorer',
-      branch
-    );
-    countMajorAppsAffected++;
+  if (IS_PULL_REQUEST) {
+    // Ensure that these are deployed for all pull requests
+    if (affected.includes('multisig-signer')) {
+      console.log('Tools are affected');
+      console.log('Deploying tools on preview');
+      environmentVariablesToSet['preview_tools'] =
+        getDeployPreviewLinkForAppBranch('multisig-signer', branch);
+      projects.push('multisig-signer');
+    }
+  } else if (BRANCH_IS_DEVELOP) {
+    //
+    if (affected.includes('multisig-signer')) {
+      console.log('Tools are affected');
+      console.log('Deploying tools on s3');
+      projects.push('multisig-signer');
+    }
+    if (affected.includes('static')) {
+      console.log('Static is affected');
+      console.log('Deploying static on s3');
+      projects.push('static');
+    }
+    if (affected.includes('ui-toolkit')) {
+      console.log('UI Toolkit is affected');
+      console.log('Deploying UI Toolkit on s3');
+      projects.push('ui-toolkit');
+    }
   }
 
-  // By default, a deploy for everything is created
-  if (countMajorAppsAffected.length === 0) {
-    outputVariables['preview_governance'] = getDeployPreviewLinkForAppBranch(
-      'governance',
-      branch
-    );
-    outputVariables['preview_trading'] = getDeployPreviewLinkForAppBranch(
-      'trading',
-      branch
-    );
-    outputVariables['preview_explorer'] = getDeployPreviewLinkForAppBranch(
-      'explorer',
-      branch
-    );
-  }
-
-  return outputVariables;
-}
-
-const projects_e2e = triggerTestRuns(affected);
-const environmentVariablesToSet = generateDeployPreviewLinks(affected, branch);
-
-let projects = projects_e2e.map(p => p.replace(/-e2e/g, ''))
-
-if (IS_PULL_REQUEST) {
-  if (affected.includes('multisig-signer')) {
-    console.log('Tools are affected');
-    console.log('Deploying tools on preview');
-    environmentVariablesToSet['preview_tools'] =
-      getDeployPreviewLinkForAppBranch('multisig-signer', branch);
-    projects.push('multisig-signer');
-  }
-} else if (BRANCH_IS_DEVELOP) {
-  if (affected.includes('multisig-signer')) {
-    console.log('Tools are affected');
-    console.log('Deploying tools on s3');
-    projects.push('multisig-signer');
-  }
-  if (affected.includes('static')) {
-    console.log('Static is affected');
-    console.log('Deploying static on s3');
-    projects.push('static');
-  }
-  if (affected.includes('ui-toolkit')) {
-    console.log('UI Toolkit is affected');
-    console.log('Deploying UI Toolkit on s3');
-    projects.push('ui-toolkit');
+  try {
+    output('PROJECTS_E2E', JSON.stringify(projects_e2e));
+    output('PROJECTS', JSON.stringify(projects));
+  } catch (e) {
+    fail('Error stringifying/exporting output', e);
   }
 }
 
-try {
-  output('PROJECTS_E2E', JSON.stringify(projects_e2e));
-  output('PROJECTS', JSON.stringify(projects));
-} catch (e) {
-  fail('Error stringifying/exporting output', e)
-}
-//projects_e2e = "[" + projects_e2e.join(",") + "]";
-//projects = "[" + projects + "]";
+module.exports = {
+  getDeployPreviewLinkForAppBranch,
+  triggerTestRuns,
+  generateDeployPreviewLinks,
+};
