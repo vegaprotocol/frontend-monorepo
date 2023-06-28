@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { FormGroup, Icon, Input } from '@vegaprotocol/ui-toolkit';
+import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import type { Dispatch, SetStateAction } from 'react';
-import { collapsibleToggleStyles } from '../../../../lib/collapsible-toggle-styles';
 
 interface ProposalsListFilterProps {
   filterString: string;
@@ -18,17 +18,13 @@ export const ProposalsListFilter = ({
 
   return (
     <div data-testid="proposals-list-filter" className="mb-4">
-      <button
-        onClick={() => setFilterVisible(!filterVisible)}
-        data-testid="proposal-filter-toggle"
+      <CollapsibleToggle
+        toggleState={filterVisible}
+        setToggleState={setFilterVisible}
+        dataTestId={'proposal-filter-toggle'}
       >
-        <div className="flex items-center gap-3">
-          <div className="text-xl mb-4">{t('FilterProposals')}</div>
-          <div className={collapsibleToggleStyles(filterVisible)}>
-            <Icon name="chevron-down" size={8} />
-          </div>
-        </div>
-      </button>
+        <div className="text-xl mb-4">{t('FilterProposals')}</div>
+      </CollapsibleToggle>
 
       {filterVisible && (
         <div data-testid="proposals-list-filter-visible">
