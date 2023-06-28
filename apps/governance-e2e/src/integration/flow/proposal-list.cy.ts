@@ -77,7 +77,7 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
     const proposalTitle = generateFreeFormProposalTitle();
 
     submitUniqueRawProposal({ proposalTitle: proposalTitle });
-    cy.get('[data-testid="set-proposals-filter-visible"]').click();
+    cy.get('[data-testid="proposal-filter-toggle"]').click();
     cy.get('[data-testid="filter-input"]').type(proposerId);
     // cy.get(`#${proposalId}`).should('contain', proposalId);
     cy.contains(proposalTitle).should('be.visible');

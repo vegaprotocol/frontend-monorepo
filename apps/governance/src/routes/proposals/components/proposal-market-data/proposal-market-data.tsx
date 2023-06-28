@@ -24,7 +24,7 @@ import {
   SyntaxHighlighter,
 } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../../../components/heading';
-import { collapsibleToggleStyles } from '../../../../lib/collapsible-toggle-styles';
+import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import type { MarketInfoWithData } from '@vegaprotocol/markets';
 import type { DataSourceDefinition } from '@vegaprotocol/types';
 import { create } from 'zustand';
@@ -77,17 +77,13 @@ export const ProposalMarketData = ({
 
   return (
     <section className="relative" data-testid="proposal-market-data">
-      <button
-        onClick={() => setShowDetails(!showDetails)}
-        data-testid="proposal-market-data-toggle"
+      <CollapsibleToggle
+        toggleState={showDetails}
+        setToggleState={setShowDetails}
+        dataTestId="proposal-market-data-toggle"
       >
-        <div className="flex items-center gap-3">
-          <SubHeading title={t('marketSpecification')} />
-          <div className={collapsibleToggleStyles(showDetails)}>
-            <Icon name="chevron-down" size={8} />
-          </div>
-        </div>
-      </button>
+        <SubHeading title={t('marketSpecification')} />
+      </CollapsibleToggle>
 
       {showDetails && (
         <>
