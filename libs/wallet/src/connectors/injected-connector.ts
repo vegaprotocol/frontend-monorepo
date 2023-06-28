@@ -4,7 +4,7 @@ import type { Transaction, VegaConnector } from './vega-connector';
 declare global {
   interface Vega {
     getChainId: () => Promise<{ chainID: string }>;
-    connectWallet: (params: { hostname: string }) => Promise<null>;
+    connectWallet: () => Promise<null>;
     disconnectWallet: () => Promise<void>;
     listKeys: () => Promise<{
       keys: Array<{ name: string; publicKey: string }>;
@@ -49,9 +49,7 @@ export class InjectedConnector implements VegaConnector {
   }
 
   connectWallet() {
-    return window.vega.connectWallet({
-      hostname: window.location.host,
-    });
+    return window.vega.connectWallet();
   }
 
   async connect() {
