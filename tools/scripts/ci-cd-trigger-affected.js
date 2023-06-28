@@ -1,5 +1,6 @@
 const execSync = require('child_process').execSync;
 const {
+  output,
   getBranch,
   fail,
   IS_TEST,
@@ -128,35 +129,39 @@ function generateDeployPreviewLinks(affected, branch) {
 const projects_e2e = triggerTestRuns(affected);
 const environmentVariablesToSet = generateDeployPreviewLinks(affected, branch);
 
-let projects = projects_e2e.map((p) => p.replace(/-e2e/g, '')).join();
+let projects = projects_e2e.map(p => p.replace(/-e2e/g, ''))
 
 if (IS_PULL_REQUEST) {
   if (affected.includes('multisig-signer')) {
     console.log('Tools are affected');
     console.log('Deploying tools on preview');
     environmentVariablesToSet['preview_tools'] =
-      getDeployPreviewLinkForAppBranch(tools, branch);
-    projects += ', multisig-signer';
+      getDeployPreviewLinkForAppBranch('multisig-signer', branch);
+    projects.push('multisig-signer');
   }
 } else if (BRANCH_IS_DEVELOP) {
   if (affected.includes('multisig-signer')) {
     console.log('Tools are affected');
     console.log('Deploying tools on s3');
-    projects += ', multisig-signer';
+    projects.push('multisig-signer');
   }
   if (affected.includes('static')) {
     console.log('Static is affected');
     console.log('Deploying static on s3');
-    projects += ', static';
+    projects.push('static');
   }
   if (affected.includes('ui-toolkit')) {
     console.log('UI Toolkit is affected');
     console.log('Deploying UI Toolkit on s3');
-    projects += ', ui-toolkit';
+    projects.push('ui-toolkit');
   }
 }
 
-console.dir(projects_e2e);
+try {
+  output('PROJECTS_E2E', JSON.stringify(projects_e2e));
+  output('PROJECTS', JSON.stringify(projects));
+} catch (e) {
+  fail('Error stringifying/exporting output', e)
+}
 //projects_e2e = "[" + projects_e2e.join(",") + "]";
 //projects = "[" + projects + "]";
-console.dir(projects);
