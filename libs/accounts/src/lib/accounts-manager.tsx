@@ -11,6 +11,7 @@ import type { PinnedAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import BreakdownTable from './breakdown-table';
+import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 
 const AccountBreakdown = ({
   assetId,
@@ -72,7 +73,6 @@ export const AccountBreakdownDialog = memo(
     onClose: () => void;
     onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   }) => {
-    console.log('render');
     return (
       <Dialog
         size="medium"
@@ -103,7 +103,7 @@ interface AccountManagerProps {
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
-  storeKey?: string;
+  gridProps?: ReturnType<typeof useDataGridEvents>;
 }
 
 export const AccountManager = ({
@@ -113,12 +113,11 @@ export const AccountManager = ({
   partyId,
   isReadOnly,
   pinnedAsset,
-  storeKey,
   onMarketClick,
+  gridProps,
 }: AccountManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [breakdownAssetId, setBreakdownAssetId] = useState<string>();
-
   const { data, error } = useDataProvider({
     dataProvider: aggregatedAccountsDataProvider,
     variables: { partyId },
@@ -145,8 +144,8 @@ export const AccountManager = ({
         onClickBreakdown={setBreakdownAssetId}
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}
-        storeKey={storeKey}
         overlayNoRowsTemplate={error ? error.message : t('No accounts')}
+        {...gridProps}
       />
       <AccountBreakdownDialog
         assetId={breakdownAssetId}

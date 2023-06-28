@@ -1,5 +1,8 @@
 import classNames from 'classnames';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  formatNumberPercentage,
+} from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { BigNumber } from 'bignumber.js';
 import { getIntentBackground, Intent } from '../../utils/intent';
@@ -74,13 +77,17 @@ const Level = ({
     .multipliedBy(100)
     .toNumber();
 
+  const formattedFee = fee
+    ? formatNumberPercentage(new BigNumber(fee).times(100), 2)
+    : '-';
+
   const tooltipContent = (
-    <>
+    <div className="text-vega-dark-100 dark:text-vega-light-200">
       <div className="mt-1.5 inline-flex">
         <Indicator variant={intent} />
       </div>
       <span>
-        {fee}% {t('Fee')}
+        {formattedFee} {t('Fee')}
       </span>
       <div className="flex  flex-col">
         <span>
@@ -88,7 +95,7 @@ const Level = ({
           {addDecimalsFormatNumber(commitmentAmount, decimals)}
         </span>
       </div>
-    </>
+    </div>
   );
 
   return (
@@ -179,7 +186,7 @@ export const HealthBar = ({
                   opacity={opacity}
                   fee={fee}
                   prevLevel={prevLevel}
-                  decimals={0}
+                  decimals={decimals}
                   intent={intent}
                   key={'healthbar-segment-' + index}
                 />

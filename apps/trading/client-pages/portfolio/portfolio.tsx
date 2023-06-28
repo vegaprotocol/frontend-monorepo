@@ -1,28 +1,38 @@
+import { useEffect } from 'react';
+import type { ReactNode } from 'react';
+import { LayoutPriority } from 'allotment';
 import { titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { PositionsContainer } from '@vegaprotocol/positions';
-import { OrderListContainer } from '@vegaprotocol/orders';
-import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
-import { WithdrawalsContainer } from './withdrawals-container';
-import { FillsContainer } from '@vegaprotocol/fills';
-import type { ReactNode } from 'react';
-import { useEffect } from 'react';
+import { useIncompleteWithdrawals } from '@vegaprotocol/withdraws';
 import { usePaneLayout } from '@vegaprotocol/react-helpers';
-import { VegaWalletContainer } from '../../components/vega-wallet-container';
-import { DepositsContainer } from './deposits-container';
-import { LayoutPriority } from 'allotment';
+import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import { usePageTitleStore } from '../../stores';
-import { LedgerContainer } from '@vegaprotocol/ledger';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { AccountsContainer } from '../../components/accounts-container';
+import { DepositsContainer } from './deposits-container';
+import { FillsContainer } from '../../components/fills-container';
+import { PositionsContainer } from '../../components/positions-container';
+import { WithdrawalsContainer } from './withdrawals-container';
+import { OrdersContainer } from '../../components/orders-container';
+import { VegaWalletContainer } from '../../components/vega-wallet-container';
+import { LedgerContainer } from '../../components/ledger-container';
 import { AccountHistoryContainer } from './account-history-container';
-import {
-  useMarketClickHandler,
-  useMarketLiquidityClickHandler,
-} from '../../lib/hooks/use-market-click-handler';
 import {
   ResizableGrid,
   ResizableGridPanel,
 } from '../../components/resizable-grid';
+
+const WithdrawalsIndicator = () => {
+  const { ready } = useIncompleteWithdrawals();
+  if (!ready || ready.length === 0) {
+    return null;
+  }
+  return (
+    <span className="bg-vega-blue-450 text-white text-[10px] rounded p-[3px] pb-[2px] leading-none">
+      {ready.length}
+    </span>
+  );
+};
 
 export const Portfolio = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
@@ -34,7 +44,6 @@ export const Portfolio = () => {
   }, [updateTitle]);
 
   const onMarketClick = useMarketClickHandler(true);
-  const onOrderTypeClick = useMarketLiquidityClickHandler(true);
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (
@@ -50,29 +59,17 @@ export const Portfolio = () => {
               </Tab>
               <Tab id="positions" name={t('Positions')}>
                 <VegaWalletContainer>
-                  <PositionsContainer
-                    onMarketClick={onMarketClick}
-                    noBottomPlaceholder
-                    storeKey="portfolioPositions"
-                    allKeys
-                  />
+                  <PositionsContainer onMarketClick={onMarketClick} allKeys />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="orders" name={t('Orders')}>
                 <VegaWalletContainer>
-                  <OrderListContainer
-                    onMarketClick={onMarketClick}
-                    onOrderTypeClick={onOrderTypeClick}
-                    storeKey="portfolioOrders"
-                  />
+                  <OrdersContainer />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
-                  <FillsContainer
-                    onMarketClick={onMarketClick}
-                    storeKey="portfolioFills"
-                  />
+                  <FillsContainer onMarketClick={onMarketClick} />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="ledger-entries" name={t('Ledger entries')}>
@@ -92,10 +89,7 @@ export const Portfolio = () => {
             <Tabs storageKey="console-portfolio-bottom">
               <Tab id="collateral" name={t('Collateral')}>
                 <VegaWalletContainer>
-                  <AccountsContainer
-                    storeKey="portfolioCollateral"
-                    onMarketClick={onMarketClick}
-                  />
+                  <AccountsContainer />
                 </VegaWalletContainer>
               </Tab>
               <Tab id="deposits" name={t('Deposits')}>
@@ -103,7 +97,11 @@ export const Portfolio = () => {
                   <DepositsContainer />
                 </VegaWalletContainer>
               </Tab>
-              <Tab id="withdrawals" name={t('Withdrawals')}>
+              <Tab
+                id="withdrawals"
+                name={t('Withdrawals')}
+                indicator={<WithdrawalsIndicator />}
+              >
                 <WithdrawalsContainer />
               </Tab>
             </Tabs>

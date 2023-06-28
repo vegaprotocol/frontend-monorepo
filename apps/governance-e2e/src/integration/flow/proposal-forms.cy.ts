@@ -8,6 +8,7 @@ import {
 } from '../../support/common.functions';
 import {
   getDownloadedProposalJsonPath,
+  getProposalFromTitle,
   submitUniqueRawProposal,
 } from '../../support/governance.functions';
 import {
@@ -23,10 +24,11 @@ import {
 } from '../../support/staking.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import {
+  switchVegaWalletPubKey,
+  vegaWalletFaucetAssetsWithoutCheck,
   vegaWalletSetSpecifiedApprovalAmount,
   vegaWalletTeardown,
-} from '../../support/wallet-teardown.functions';
-import { vegaWalletFaucetAssetsWithoutCheck } from '../../support/wallet-vega.functions';
+} from '../../support/wallet-functions';
 
 const proposalListItem = '[data-testid="proposals-list-item"]';
 const openProposals = '[data-testid="open-proposals"]';
@@ -54,7 +56,8 @@ const feedbackError = '[data-testid="Error"]';
 const viewProposalBtn = 'view-proposal-btn';
 const liquidityVoteStatus = 'liquidity-votes-status';
 const tokenVoteStatus = 'token-votes-status';
-const proposalTermsSection = 'proposal';
+const proposalJsonToggle = 'proposal-json-toggle';
+const proposalJsonSection = 'proposal-json';
 const vegaWalletPublicKey = Cypress.env('vegaWalletPublicKey');
 const fUSDCId =
   '816af99af60d684502a40824758f6b5377e6af48e50a9ee8ef478ecb879ea8bc';
@@ -185,7 +188,7 @@ context(
       cy.get(maxVoteDeadline).click();
       cy.get(enactmentDeadlineError).should(
         'have.text',
-        'Proposal will fail if enactment is earlier than the voting deadline'
+        'The proposal will fail if enactment is earlier than the voting deadline'
       );
       cy.get(proposalDownloadBtn)
         .should('be.visible')
@@ -209,6 +212,7 @@ context(
       'Able to submit valid new market proposal',
       { tags: '@smoke' },
       function () {
+        const proposalTitle = 'Test new market proposal';
         goToMakeNewProposal(governanceProposalType.NEW_MARKET);
         cy.get(newProposalTitle).type('Test new market proposal');
         cy.get(newProposalDescription).type('E2E test for proposals');
@@ -230,6 +234,23 @@ context(
               submitUniqueRawProposal({ proposalBody: filePath }); // 3003-PMAN-003
             });
           });
+        navigateTo(navigation.proposals);
+        getProposalFromTitle(proposalTitle).within(() =>
+          cy.getByTestId('view-proposal-btn').click()
+        );
+        cy.getByTestId('proposal-market-data').within(() => {
+          cy.getByTestId('proposal-market-data-toggle').click();
+          cy.contains('Key details').click();
+          getMarketProposalDetailsFromTable('Name').should(
+            'have.text',
+            'Token test market'
+          );
+          cy.contains('Settlement asset').click();
+          // Settlement asset symbol
+          cy.getByTestId('3_value').should('have.text', 'fBTC');
+          cy.contains('Oracle').click();
+          cy.getByTestId('oracle-spec-links').should('have.attr', 'href');
+        });
       }
     );
 
@@ -269,8 +290,7 @@ context(
     // Will fail if run after 'Able to submit update market proposal and vote for proposal'
     // 3002-PROP-022
     it('Unable to submit update market proposal without equity-like share in the market', function () {
-      cy.get('[data-testid="manage-vega-wallet"]:visible').click();
-      cy.get('[data-testid="select-keypair-button"]').eq(0).click(); // switch to second wallet pub key
+      switchVegaWalletPubKey();
       stakingPageAssociateTokens('1');
       goToMakeNewProposal(governanceProposalType.UPDATE_MARKET);
       cy.get(newProposalTitle).type('Test update market proposal - rejected');
@@ -300,8 +320,7 @@ context(
       closeDialog();
       ethereumWalletConnect();
       stakingPageDisassociateAllTokens();
-      cy.get('[data-testid="manage-vega-wallet"]:visible').click();
-      cy.get('[data-testid="select-keypair-button"]').eq(0).click();
+      switchVegaWalletPubKey();
     });
 
     // 3002-PROP-020
@@ -455,8 +474,8 @@ context(
         .within(() => {
           cy.getByTestId(viewProposalBtn).click();
         });
-      cy.getByTestId('proposal-terms-toggle').click();
-      cy.getByTestId(proposalTermsSection).within(() => {
+      cy.getByTestId(proposalJsonToggle).click();
+      cy.getByTestId(proposalJsonSection).within(() => {
         cy.contains('USDT Coin').should('be.visible');
         cy.contains('USDT').should('be.visible');
       });
@@ -502,13 +521,11 @@ context(
         .invoke('text')
         .should('not.be.empty');
       // 3001-VOTE-030 3001-VOTE-031
-      cy.getByTestId('proposal-terms-toggle').click();
-      cy.getByTestId('proposal-terms').within(() => {
-        getProposalInformationFromTable('assetId').should('have.text', assetId);
-        getProposalInformationFromTable('lifetimeLimit').should(
-          'have.text',
-          '10'
-        );
+      cy.getByTestId(proposalJsonToggle).click();
+      cy.getByTestId(proposalJsonSection).within(() => {
+        cy.contains(assetId).should('be.visible');
+        cy.contains('lifetimeLimit').should('be.visible');
+        cy.contains('10').should('be.visible');
       });
     });
 
@@ -605,6 +622,14 @@ context(
           delay: 2,
         });
       });
+    }
+
+    function getMarketProposalDetailsFromTable(heading: string) {
+      return cy
+        .getByTestId('key-value-table-row')
+        .contains(heading)
+        .parent()
+        .siblings();
     }
   }
 );

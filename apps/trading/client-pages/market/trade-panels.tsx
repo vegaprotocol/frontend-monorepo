@@ -39,7 +39,7 @@ export const TradePanels = ({
 }: TradePanelsProps) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const onMarketClick = useMarketClickHandler(true);
-  const onOrderTypeClick = useMarketLiquidityClickHandler(true);
+  const onOrderTypeClick = useMarketLiquidityClickHandler();
 
   const [view, setView] = useState<TradingView>('candles');
   const renderView = () => {

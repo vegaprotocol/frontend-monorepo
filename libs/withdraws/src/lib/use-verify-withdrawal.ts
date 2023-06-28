@@ -82,16 +82,19 @@ export const useVerifyWithdrawal = () => {
 
         if (threshold && amount.isGreaterThan(threshold)) {
           const delaySecs = await getDelay();
-          const completeTimestamp =
-            new Date(withdrawal.createdTimestamp).getTime() + delaySecs * 1000;
+          if (delaySecs != null) {
+            const completeTimestamp =
+              new Date(withdrawal.createdTimestamp).getTime() +
+              delaySecs * 1000;
 
-          if (Date.now() < completeTimestamp) {
-            setState({
-              status: ApprovalStatus.Delayed,
-              threshold,
-              completeTimestamp,
-            });
-            return false;
+            if (Date.now() < completeTimestamp) {
+              setState({
+                status: ApprovalStatus.Delayed,
+                threshold,
+                completeTimestamp,
+              });
+              return false;
+            }
           }
         }
 

@@ -1,6 +1,5 @@
 import {
   addDecimalsFormatNumber,
-  formatNumber,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -47,7 +46,10 @@ const Row = ({
     if (asPercentage) {
       return formatNumberPercentage(new BigNumber(value).times(100));
     }
-    return `${formatNumber(Number(value))} ${assetSymbol}`;
+    if (assetSymbol) {
+      return `${Number(value).toLocaleString()} ${assetSymbol}`;
+    }
+    return Number(value).toLocaleString();
   };
 
   const formattedValue = getFormattedValue(value);

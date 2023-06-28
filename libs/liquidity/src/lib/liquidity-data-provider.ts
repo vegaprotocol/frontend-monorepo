@@ -38,8 +38,7 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
   ) => {
     return produce(data || [], (draft) => {
       deltas?.forEach((delta) => {
-        const id = delta.id;
-        const index = draft.findIndex((a) => delta.id === id);
+        const index = draft.findIndex((a) => delta.id === a.id);
         if (index !== -1) {
           draft[index].commitmentAmount = delta.commitmentAmount;
           draft[index].fee = delta.fee;
@@ -47,6 +46,7 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
           draft[index].status = delta.status;
         } else {
           draft.unshift({
+            id: delta.id,
             commitmentAmount: delta.commitmentAmount,
             fee: delta.fee,
             status: delta.status,

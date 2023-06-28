@@ -61,7 +61,6 @@ export const MarketListTable = forwardRef<
       columnDefs={columnDefs}
       suppressCellFocus
       components={{ PriceFlashCell, MarketName }}
-      storeKey="allMarkets"
       {...props}
     />
   );

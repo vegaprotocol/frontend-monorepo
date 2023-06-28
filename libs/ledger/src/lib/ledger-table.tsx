@@ -49,7 +49,7 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
   (props, ref) => {
     return (
       <AgGrid
-        style={{ width: '100%', height: 'calc(100% - 50px)' }}
+        style={{ width: '100%', height: '100%' }}
         ref={ref}
         tooltipShowDelay={500}
         defaultColDef={{
@@ -61,9 +61,6 @@ export const LedgerTable = forwardRef<AgGridReact, LedgerEntryProps>(
             buttons: ['reset'],
           },
         }}
-        storeKey="ledgerTable"
-        suppressLoadingOverlay
-        suppressNoRowsOverlay
         {...props}
       >
         <AgGridColumn

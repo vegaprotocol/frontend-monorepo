@@ -16,7 +16,7 @@ import {
 } from '../../support/proposal.functions';
 import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../support/staking.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
-import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-teardown.functions';
+import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-functions';
 
 const proposalListItem = '[data-testid="proposals-list-item"]';
 const closedProposals = '[data-testid="closed-proposals"]';
@@ -89,8 +89,14 @@ context(
       });
       cy.get(proposalStatus).should('have.text', 'Open');
       voteForProposal('for');
-      cy.get(proposalStatus, proposalTimeout).should('have.text', 'Passed');
-      cy.get(proposalStatus, proposalTimeout).should('have.text', 'Enacted');
+      cy.get(proposalStatus, proposalTimeout)
+        .should('have.text', 'Passed')
+        .then(() => {
+          cy.get(proposalStatus, proposalTimeout).should(
+            'have.text',
+            'Enacted'
+          );
+        });
       cy.get(votesTable).within(() => {
         cy.contains('Vote passed.').should('be.visible');
         cy.contains('Voting has ended.').should('be.visible');

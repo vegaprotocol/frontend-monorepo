@@ -1,20 +1,27 @@
+import { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
+import { PositionsManager } from '@vegaprotocol/positions';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { PositionsManager } from './positions-manager';
+import type { DataGridSlice } from '../../stores/datagrid-store-slice';
+import { createDataGridSlice } from '../../stores/datagrid-store-slice';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 export const PositionsContainer = ({
   onMarketClick,
-  noBottomPlaceholder,
-  storeKey,
   allKeys,
 }: {
   onMarketClick?: (marketId: string) => void;
-  noBottomPlaceholder?: boolean;
-  storeKey?: string;
   allKeys?: boolean;
 }) => {
   const { pubKey, pubKeys, isReadOnly } = useVegaWallet();
+
+  const gridStore = usePositionsStore((store) => store.gridStore);
+  const updateGridStore = usePositionsStore((store) => store.updateGridStore);
+  const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
+    updateGridStore(colState);
+  });
 
   if (!pubKey) {
     return (
@@ -38,8 +45,13 @@ export const PositionsContainer = ({
       partyIds={partyIds}
       onMarketClick={onMarketClick}
       isReadOnly={isReadOnly}
-      noBottomPlaceholder={noBottomPlaceholder}
-      storeKey={storeKey}
+      gridProps={gridStoreCallbacks}
     />
   );
 };
+
+const usePositionsStore = create<DataGridSlice>()(
+  persist(createDataGridSlice, {
+    name: 'vega_positions_store',
+  })
+);

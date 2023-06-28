@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Set up QEMU
         id: quemu
@@ -265,7 +267,7 @@ jobs:
           fi
 
       - name: Check out ipfs-redirect
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && endsWith(github.ref, 'main') }}
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( endsWith(github.ref, 'main') || endsWith(github.ref, 'testnet') ) }}
         uses: actions/checkout@v3
         with:
           repository: 'vegaprotocol/ipfs-redirect'
@@ -273,11 +275,12 @@ jobs:
           fetch-depth: '0'
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
-      - name: Update console.vega.xyz DNS to redirect to the new console
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && endsWith(github.ref, 'main') }}
+      - name: Update interstitial page to point to the new console
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( endsWith(github.ref, 'main') || endsWith(github.ref, 'testnet') ) }}
         env:
           GH_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
         run: |
+          # set CID
           curl -L https://dist.ipfs.tech/kubo/v0.20.0/kubo_v0.20.0_linux-amd64.tar.gz -o kubo.tgz
           tar -xzf kubo.tgz
           export PATH="$PATH:$PWD/kubo"
@@ -285,75 +288,28 @@ jobs:
           new_hash=$(cat ${{ matrix.app }}-ipfs-hash)
           new_cid=$(ipfs cid format -v 1 -b base32 $new_hash)
 
-          ls -al ipfs-redirect
-
-          echo $new_hash > ipfs-redirect/cidv0.txt
-          echo $new_cid > ipfs-redirect/cidv1.txt
-
           (
             cd ipfs-redirect
 
+            # configure git
             git status
             cat .git/config
             git config --global user.email "vega-ci-bot@vega.xyz"
             git config --global user.name "vega-ci-bot"
 
-            branch_name="update-hash-${{ github.ref }}"
-            git checkout -b "$branch_name"
+            # update CID files
+            if echo ${{ github.ref }} | grep -q main; then
+              echo $new_hash > cidv0-mainnet.txt
+              echo $new_cid > cidv1-mainnet.txt
+              git add cidv0-mainnet.txt cidv1-mainnet.txt
+            elif echo ${{ github.ref }} | grep -q release/testnet; then
+              echo $new_hash > cidv0-fairground.txt
+              echo $new_cid > cidv1-fairground.txt
+              git add cidv0-fairground.txt cidv1-fairground.txt
+            fi
+
+            # create commit
             commit_msg="Automated hash update from ${{ github.ref }}"
-            git add cidv0.txt cidv1.txt
             git commit -m "$commit_msg"
-            git push -u origin "$branch_name"
-            pr_url="$(gh pr create --title "${commit_msg}" --body 'automated pull request to update CIDs')"
-            echo $pr_url
-            # once auto merge get's enabled on documentation repo let's do follow up
-            sleep 5
-            gh pr merge "${pr_url}" --delete-branch --squash --admin
+            git push -u origin "main"
           )
-
-      - name: Update console.fairground.wtf DNS to redirect to the new console
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && endsWith(github.ref, 'testnet') }}
-        run: |
-          curl -L https://dist.ipfs.tech/kubo/v0.20.0/kubo_v0.20.0_linux-amd64.tar.gz -o kubo.tgz
-          tar -xzf kubo.tgz
-          export PATH="$PATH:$PWD/kubo"
-          which ipfs
-          new_hash=$(cat ${{ matrix.app }}-ipfs-hash)
-          new_cid=$(ipfs cid format -v 1 -b base32 $new_hash)
-
-          # Generate console URL
-
-          new_console_url_type=ipfs
-          # new_console_url_type=ipns
-
-          new_console_url_domain=cf-ipfs.com
-          # new_console_url_domain=dweb.link
-
-          new_console_url="http://${new_cid}.${new_console_url_type}.${new_console_url_domain}/"
-          echo "new_console_url=${new_console_url}"
-
-          # Update record in DNSimple
-          # docs: https://developer.dnsimple.com/v2/zones/records/#updateZoneRecord
-          dnsimple_account_id=84895
-          dnsimple_zone_name=fairground.wtf
-          dnsimple_record_id=45300615
-          # see: https://dnsimple.com/a/84895/domains/fairground.wtf/records/45300615/edit
-          curl --fail -H 'Authorization: Bearer ${{ secrets.DNSIMPLE_API_TOKEN }}' \
-                -H 'Accept: application/json' \
-                -H 'Content-Type: application/json' \
-                -X PATCH \
-                -d "{
-                      \"content\": \"${new_console_url}\"
-                }" \
-                https://api.dnsimple.com/v2/${dnsimple_account_id}/zones/${dnsimple_zone_name}/records/${dnsimple_record_id}
-
-          # trading.fairground.wtf
-          dnsimple_record_id=45302531
-          curl --fail -H 'Authorization: Bearer ${{ secrets.DNSIMPLE_API_TOKEN }}' \
-                -H 'Accept: application/json' \
-                -H 'Content-Type: application/json' \
-                -X PATCH \
-                -d "{
-                      \"content\": \"${new_console_url}\"
-                }" \
-                https://api.dnsimple.com/v2/${dnsimple_account_id}/zones/${dnsimple_zone_name}/records/${dnsimple_record_id}

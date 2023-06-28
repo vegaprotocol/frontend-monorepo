@@ -301,6 +301,25 @@ describe('useEnvironment', () => {
     expect(fetch).toHaveBeenCalledWith(configUrl);
   });
 
+  it('uses env vars from window._env_ if set', async () => {
+    const url = 'http://foo.bar.com';
+    // @ts-ignore _env_ is declared in app
+    window._env_ = {
+      VEGA_URL: url,
+    };
+
+    const { result } = setup();
+
+    await act(async () => {
+      result.current.initialize();
+    });
+
+    expect(result.current.VEGA_URL).toBe(url);
+
+    // @ts-ignore delete _env_
+    delete window['_env_'];
+  });
+
   it('sets error if environment is invalid', async () => {
     const error = console.error;
     console.error = noop;

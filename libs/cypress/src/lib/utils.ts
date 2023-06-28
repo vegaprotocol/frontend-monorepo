@@ -44,27 +44,35 @@ export const checkSorting = (
   orderTabDesc: string[]
 ) => {
   checkSortChange(orderTabDefault, column);
-  cy.get('.ag-header-container').within(() => {
-    cy.get(`[col-id="${column}"]`).click();
-  });
+  cy.get('.ag-header-container')
+    .last()
+    .within(() => {
+      cy.get(`[col-id="${column}"]`).last().click();
+    });
   checkSortChange(orderTabAsc, column);
-  cy.get('.ag-header-container').within(() => {
-    cy.get(`[col-id="${column}"]`).click();
-  });
+  cy.get('.ag-header-container')
+    .last()
+    .within(() => {
+      cy.get(`[col-id="${column}"]`).click();
+    });
   checkSortChange(orderTabDesc, column);
-  cy.get('.ag-header-container').within(() => {
-    cy.get(`[col-id="${column}"]`).click();
-  });
+  cy.get('.ag-header-container')
+    .last()
+    .within(() => {
+      cy.get(`[col-id="${column}"]`).click();
+    });
 };
 
 const checkSortChange = (tabsArr: string[], column: string) => {
-  cy.get('.ag-center-cols-container').within(() => {
-    tabsArr.forEach((entry, i) => {
-      cy.get(`[row-index="${i}"]`).within(() => {
-        cy.get(`[col-id="${column}"]`).should('have.text', tabsArr[i]);
+  cy.get('.ag-center-cols-container')
+    .last()
+    .within(() => {
+      tabsArr.forEach((entry, i) => {
+        cy.get(`[row-index="${i}"]`).within(() => {
+          cy.get(`[col-id="${column}"]`).should('have.text', tabsArr[i]);
+        });
       });
     });
-  });
 };
 
 type Edges = { node: unknown }[];

@@ -8,16 +8,19 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { AccountManager, useTransferDialog } from '@vegaprotocol/accounts';
 import { useDepositDialog } from '@vegaprotocol/deposits';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { useDataGridEvents } from '@vegaprotocol/datagrid';
+import type { DataGridSlice } from '../../stores/datagrid-store-slice';
+import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 
 export const AccountsContainer = ({
   pinnedAsset,
   hideButtons,
-  storeKey,
   onMarketClick,
 }: {
   pinnedAsset?: PinnedAsset;
   hideButtons?: boolean;
-  storeKey?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
@@ -25,6 +28,12 @@ export const AccountsContainer = ({
   const openWithdrawalDialog = useWithdrawalDialog((store) => store.open);
   const openDepositDialog = useDepositDialog((store) => store.open);
   const openTransferDialog = useTransferDialog((store) => store.open);
+
+  const gridStore = useAccountStore((store) => store.gridStore);
+  const updateGridStore = useAccountStore((store) => store.updateGridStore);
+  const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
+    updateGridStore(colState);
+  });
 
   const onClickAsset = useCallback(
     (assetId?: string) => {
@@ -51,7 +60,7 @@ export const AccountsContainer = ({
         onMarketClick={onMarketClick}
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}
-        storeKey={storeKey}
+        gridProps={gridStoreCallbacks}
       />
       {!isReadOnly && !hideButtons && (
         <div className="flex gap-2 justify-end p-2 px-[11px] absolute lg:fixed bottom-0 right-3 dark:bg-black/75 bg-white/75 rounded">
@@ -75,3 +84,9 @@ export const AccountsContainer = ({
     </div>
   );
 };
+
+const useAccountStore = create<DataGridSlice>()(
+  persist(createDataGridSlice, {
+    name: 'vega_accounts_store',
+  })
+);

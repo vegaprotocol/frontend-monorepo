@@ -290,6 +290,14 @@ export const TransferFee = ({
   decimals?: number;
 }) => {
   if (!feeFactor || !amount || !transferAmount || !fee) return null;
+  if (
+    isNaN(Number(feeFactor)) ||
+    isNaN(Number(amount)) ||
+    isNaN(Number(transferAmount)) ||
+    isNaN(Number(fee))
+  ) {
+    return null;
+  }
 
   const totalValue = new BigNumber(transferAmount).plus(fee).toString();
 

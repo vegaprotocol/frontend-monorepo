@@ -125,14 +125,19 @@ export const MarketLiquiditySupplied = ({
         </KeyValueTableRow>
       </KeyValueTable>
       <br />
-      <Link href={`/#/liquidity/${marketId}`} data-testid="view-liquidity-link">
-        {t('View liquidity provision table')}
-      </Link>
-      {DocsLinks && (
-        <ExternalLink href={DocsLinks.LIQUIDITY} className="mt-2">
-          {t('Learn about providing liquidity')}
-        </ExternalLink>
-      )}
+      <div className="flex flex-col gap-2">
+        <Link
+          href={`/#/liquidity/${marketId}`}
+          data-testid="view-liquidity-link"
+        >
+          {t('View liquidity provision table')}
+        </Link>
+        {DocsLinks && (
+          <ExternalLink href={DocsLinks.LIQUIDITY} className="mt-2">
+            {t('Learn about providing liquidity')}
+          </ExternalLink>
+        )}
+      </div>
       {showMessage && (
         <p className="mt-4">
           {t(

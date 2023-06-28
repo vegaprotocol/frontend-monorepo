@@ -5,6 +5,7 @@ import { useEnvironment } from './use-environment';
 import { useNavigatorOnline } from '@vegaprotocol/react-helpers';
 import { Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
+import { isTestEnv } from '@vegaprotocol/utils';
 
 const POLL_INTERVAL = 1000;
 const BLOCK_THRESHOLD = 3;
@@ -38,7 +39,7 @@ export const useNodeHealth = () => {
       return;
     }
 
-    if (!('Cypress' in window) && window.location.hostname !== 'localhost') {
+    if (!isTestEnv() && window.location.hostname !== 'localhost') {
       startPolling(POLL_INTERVAL);
     }
   }, [error, startPolling, stopPolling]);

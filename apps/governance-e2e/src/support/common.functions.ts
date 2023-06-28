@@ -37,7 +37,7 @@ export function navigateTo(page: navigation) {
       });
   } else {
     return cy.get(navigation.section, { timeout: 10000 }).within(() => {
-      cy.get(page).eq(0).click();
+      cy.get(page).eq(0).click({ force: true });
     });
   }
 }

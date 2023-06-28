@@ -182,7 +182,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
       .contains('Liquidity monitoring parameters')
       .click();
 
-    validateMarketDataRow(0, 'Triggering Ratio', '0');
+    validateMarketDataRow(0, 'Triggering Ratio', '0.7');
     validateMarketDataRow(1, 'Time Window', '3,600');
     validateMarketDataRow(2, 'Scaling Factor', '10');
   });

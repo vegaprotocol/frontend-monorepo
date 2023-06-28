@@ -21,7 +21,7 @@ import {
 } from '../../support/governance.functions';
 import { ensureSpecifiedUnstakedTokensAreAssociated } from '../../support/staking.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
-import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-teardown.functions';
+import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-functions';
 
 const proposalListItem = 'proposals-list-item';
 const openProposals = '[data-testid="open-proposals"]';
