@@ -8,13 +8,15 @@ const {
   IS_PULL_REQUEST,
 } = require('./lib/ci-functions');
 
+const TOOLS_THAT_DEPLOY_FROM_DEVELOP = ['multisig-signer', 'static', 'ui-toolkit'];
+const ICON_SPECIAL_CASE = '🌟';
 /**
  * Ensures that E2E test run pipelines are triggered
  *
  * @param {string[]} affected
  * @returns
  */
-function triggerTestRuns(affected) {
+function testRunsToTrigger(affected) {
   let projects_e2e = [];
   if (affected.includes('governance')) {
     projects_e2e.push('governance-e2e');
@@ -139,14 +141,17 @@ if (!IS_TEST) {
     fail(`Error running nx print-affected: ${e}`);
   }
 
-  console.debug('>>>> debug');
+  console.group('>>>> debug');
   console.debug(`NX_BASE: ${process.env.NX_BASE}`);
   console.debug(`NX_HEAD: ${process.env.NX_HEAD}`);
   console.debug(`Affected: ${affected}`);
   console.debug(`Branch slug: ${branch}`);
-  console.debug('>>>> eof debug');
+  console.debug(`Is pull request: ${IS_PULL_REQUEST}`);
 
-  const projects_e2e = triggerTestRuns(affected);
+  console.debug('>>>> eof debug');
+  console.groupEnd();
+
+  const projects_e2e = testRunsToTrigger(affected);
   const environmentVariablesToSet = generateDeployPreviewLinks(
     affected,
     branch
@@ -154,37 +159,34 @@ if (!IS_TEST) {
 
   let projects = projects_e2e.map((p) => p.replace(/-e2e/g, ''));
 
+  //
+  // Special Cases
   if (IS_PULL_REQUEST) {
-    // Ensure that these are deployed for all pull requests
+    // SPECIAL CASE: multisig-signer has no e2e test but should
+    // run on every pull request. Unsure why.
     if (affected.includes('multisig-signer')) {
-      console.log('Tools are affected');
-      console.log('Deploying tools on preview');
+      console.log(`${ICON_SPECIAL_CASE} tools is not affected, but deploys on ever pull request. Adding to deploy queue...`);
       environmentVariablesToSet['preview_tools'] =
         getDeployPreviewLinkForAppBranch('multisig-signer', branch);
       projects.push('multisig-signer');
     }
   } else if (BRANCH_IS_DEVELOP) {
-    //
-    if (affected.includes('multisig-signer')) {
-      console.log('Tools are affected');
-      console.log('Deploying tools on s3');
-      projects.push('multisig-signer');
-    }
-    if (affected.includes('static')) {
-      console.log('Static is affected');
-      console.log('Deploying static on s3');
-      projects.push('static');
-    }
-    if (affected.includes('ui-toolkit')) {
-      console.log('UI Toolkit is affected');
-      console.log('Deploying UI Toolkit on s3');
-      projects.push('ui-toolkit');
-    }
+    // On merge to develop, updated these 3 things automatically
+    // Only validated app names get here
+    TOOLS_THAT_DEPLOY_FROM_DEVELOP.forEach(tool => {
+      if (affected.includes(tool)) {
+        console.log(`${ICON_SPECIAL_CASE} ${tool} is not affected, but deploys from develop. Adding to deploy queue...`);
+        projects.push(tool);
+      }
+    })
   }
 
   try {
     output('PROJECTS_E2E', JSON.stringify(projects_e2e));
     output('PROJECTS', JSON.stringify(projects));
+    Object.entries(environmentVariablesToSet).forEach(([key, value]) => {
+      output(key, value);
+    });
   } catch (e) {
     fail('Error stringifying/exporting output', e);
   }
@@ -192,6 +194,6 @@ if (!IS_TEST) {
 
 module.exports = {
   getDeployPreviewLinkForAppBranch,
-  triggerTestRuns,
+  triggerTestRuns: testRunsToTrigger,
   generateDeployPreviewLinks,
 };
