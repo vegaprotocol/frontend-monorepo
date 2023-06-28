@@ -1,5 +1,4 @@
 const {
-  validateAppName,
   AppsThatDeployToMainnetFromDevelop,
   S3BucketNameForApp,
   getBucketName,
@@ -7,24 +6,6 @@ const {
 } = require('./publish-dist-set-vars.js');
 
 describe('Tests for publish-dist-set-vars', () => {
-  test(`getValidAppName returns true for major apps, because they exist in '../../workspace.json'`, () => {
-    expect(validateAppName('trading')).toBe(true);
-    expect(validateAppName('explorer')).toBe(true);
-    expect(validateAppName('governance')).toBe(true);
-  });
-
-  test(`getValidAppName returns true for all AppsThatDeployToMainnet, because they exist in '../../workspace.json'`, () => {
-    AppsThatDeployToMainnetFromDevelop.forEach((a) => {
-      expect(validateAppName(a)).toBe(true);
-    });
-  });
-
-  test(`getValidAppName returns false for apps that have invalid names or are not in workspace.json, '../../workspace.json'`, () => {
-    expect(validateAppName('')).toBe(false);
-    expect(validateAppName('❌')).toBe(false);
-    expect(validateAppName('random-made-up-app')).toBe(false);
-  });
-
   test('Every app that deploys to mainnet from develop has an explicit bucket set', () => {
     AppsThatDeployToMainnetFromDevelop.forEach((a) => {
       expect(!!S3BucketNameForApp[a]).toBe(true);
@@ -88,5 +69,11 @@ describe('Tests for publish-dist-set-vars', () => {
       'stagnet1'
     );
     expect(getEnvironmentFromDevelop('static')).toEqual('mainnet');
+  });
+
+  test('Every app that deploys to mainnet from develop has an explicit bucket set', () => {
+    AppsThatDeployToMainnetFromDevelop.forEach((a) => {
+      expect(!!S3BucketNameForApp[a]).toBe(true);
+    });
   });
 });

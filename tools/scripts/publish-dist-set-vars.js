@@ -10,9 +10,15 @@
  * top of the script
  *
  * You can run the test suite with `npm run test:human` (nice formatting) or just `npm test)`
+ *
+ * In CI this is run by `publish-dist.yml`
  */
-const { readFileSync, appendFileSync } = require('fs');
-const path = require('path');
+const {
+  validateAppName,
+  output,
+  fail,
+  IS_TEST,
+} = require('./lib/ci-functions');
 
 const domains = {
   mainnet: 'vega.xyz',
@@ -32,72 +38,6 @@ const S3BucketNameForApp = {
   'ui-toolkit': 'ui.vega.rocks',
 };
 DEFAULT_ENVIRONMENT = 'stagnet1';
-
-const IS_TEST = process.env.NODE_ENV === 'test';
-
-const errorPrefix = '❌  ';
-
-/**
- * Simple wrapper function to either set a Github environment variable
- * or just log it out for testing
- */
-function output(key, value) {
-  const isRunningOnGithub = process.env.CI && process.env.GITHUB_ENV;
-  if (isRunningOnGithub) {
-    // share env vars across steps https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-of-writing-an-environment-variable-to-github_env
-    appendFileSync(process.env.GITHUB_ENV, `${key}=${value}`);
-  } else {
-    console.log(`${key} = ${value}`);
-
-    // Just here for testing
-    return [key, value];
-  }
-}
-
-/**
- * Log out an error message and quit with an error code
- */
-function fail(message, e) {
-  if (IS_TEST) {
-    return false;
-  }
-
-  console.error(`${errorPrefix}${message}`);
-
-  if (e) {
-    console.dir(e);
-  }
-
-  process.exit(1);
-}
-
-/**
- * Validates that the
- * @param {string} app the name of the NX application or lib
- * @returns
- */
-function validateAppName(app) {
-  if (!app || app.trim() === '') {
-    return fail('Empty app name');
-  }
-
-  const NX_WORKSPACE_FILE = 'workspace.json';
-  const appDir = path.dirname(__dirname);
-
-  const f = `${appDir}/../${NX_WORKSPACE_FILE}`;
-  const workspace = JSON.parse(readFileSync(f), { encoding: 'utf-8' });
-  const projects = [...Object.keys(workspace.projects)];
-
-  if (!app) {
-    return fail('`app` parameter was not set (should be an NX app/lib name)');
-  }
-
-  if (projects.indexOf(app) == -1) {
-    return fail(`Project "${app}" does not exist in workspace.json`);
-  }
-
-  return true;
-}
 
 /**
  * Extract the app name from the command line
