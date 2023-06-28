@@ -6,6 +6,8 @@ on:
       - release/*
       - develop
       - main
+  # uncomment pull_request and comment pull_request_target to test CI changes against feature branch not target branch (develop)
+  # pull_request:
   pull_request_target:
     types:
       - opened
@@ -47,7 +49,7 @@ jobs:
 
   lint-pr-title:
     needs: node-modules
-    if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
     name: Verify PR title
     uses: ./.github/workflows/lint-pr.yml
     secrets: inherit
@@ -112,7 +114,7 @@ jobs:
   cypress:
     needs: lint-test-build
     name: '(CI) cypress'
-    if: ${{ needs.lint-test-build.outputs.projects-e2e != '[]' }}
+    # if: ${{ needs.lint-test-build.outputs.projects-e2e != '[]' }}
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
     with:
@@ -122,7 +124,7 @@ jobs:
   publish-dist:
     needs: lint-test-build
     name: '(CD) publish dist'
-    if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
+    # if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
     uses: ./.github/workflows/publish-dist.yml
     secrets: inherit
     with:
@@ -133,7 +135,7 @@ jobs:
     needs:
       - publish-dist
       - lint-test-build
-    if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
     timeout-minutes: 60
     name: '(CD) comment preview links'
     steps:
