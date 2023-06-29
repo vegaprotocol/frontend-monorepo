@@ -17,17 +17,16 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
-import { HeaderTitle } from '../../components/header';
+import { Header, HeaderTitle } from '../../components/header';
 import {
   ResizableGrid,
   ResizableGridPanel,
   usePaneLayout,
 } from '../../components/resizable-grid';
 import { TradingViews } from './trade-views';
-import { HeaderStats } from './header-stats';
 import { MarketSuccessorBanner } from '../../components/market-banner';
 import { MarketSelector } from './market-selector';
-
+import { MarketHeaderStats } from './market-header-stats';
 interface TradeGridProps {
   market: Market | null;
   onSelect: (marketId: string, metaKey?: boolean) => void;
@@ -169,26 +168,27 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
 
   return (
     <div className={wrapperClasses}>
-      <div className="pl-1">
-        <div className="flex items-center px-4 border-l border-b border-default bg-vega-light-100 dark:bg-vega-dark-100">
-          <div className="flex items-center gap-2">
-            <HeaderTitle
-              primaryContent={market?.tradableInstrument.instrument.code}
-            />
-            <Popover trigger={<VegaIcon name={VegaIconNames.CHEVRON_DOWN} />}>
-              <MarketSelector currentMarketId={market?.id} />
-            </Popover>
-          </div>
-          <div className="flex-1">
-            <HeaderStats market={market} />
-          </div>
-        </div>
-      </div>
-      <div>
+      <Header
+        title={
+          <Popover
+            trigger={
+              <HeaderTitle>
+                {market?.tradableInstrument.instrument.code}
+                <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+              </HeaderTitle>
+            }
+          >
+            <MarketSelector currentMarketId={market?.id} />
+          </Popover>
+        }
+      >
+        <MarketHeaderStats market={market} />
+      </Header>
+      <div className="bg-vega-green">
         <MarketSuccessorBanner market={market} />
         <OracleBanner marketId={market?.id || ''} />
       </div>
-      <div className="min-h-0 py-1">
+      <div className="min-h-0 py-0.5">
         <MainGrid marketId={market?.id || ''} pinnedAsset={pinnedAsset} />
       </div>
     </div>
