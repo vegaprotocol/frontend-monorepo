@@ -33,7 +33,7 @@ export const Layout = () => {
         <Sidebar />
       </div>
       {sidebarOpen && (
-        <div className="row-span-full row-start-4 col-start-2 border-r border-default p-4">
+        <div className="row-span-full row-start-4 col-start-2 p-4">
           <SidebarContent />
         </div>
       )}

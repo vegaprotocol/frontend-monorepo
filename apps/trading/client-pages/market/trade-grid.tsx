@@ -164,31 +164,31 @@ MainGrid.displayName = 'MainGrid';
 export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
   const wrapperClasses = classNames(
     'h-full grid',
-    'grid-rows-[min-content_min-content_1fr]',
-    'grid-cols-[350px_1fr]'
+    'grid-rows-[min-content_min-content_1fr]'
   );
 
   return (
     <div className={wrapperClasses}>
-      <div className="border-b border-r border-default">
-        <div className="h-full flex gap-2 justify-between items-end px-4 pt-1 pb-3">
-          <HeaderTitle
-            primaryContent={market?.tradableInstrument.instrument.code}
-            secondaryContent={market?.tradableInstrument.instrument.name}
-          />
-          <Popover trigger={<VegaIcon name={VegaIconNames.CHEVRON_DOWN} />}>
-            <MarketSelector currentMarketId={market?.id} />
-          </Popover>
+      <div className="pl-1">
+        <div className="flex items-center px-4 border-l border-b border-default bg-vega-light-100 dark:bg-vega-dark-100">
+          <div className="flex items-center gap-2">
+            <HeaderTitle
+              primaryContent={market?.tradableInstrument.instrument.code}
+            />
+            <Popover trigger={<VegaIcon name={VegaIconNames.CHEVRON_DOWN} />}>
+              <MarketSelector currentMarketId={market?.id} />
+            </Popover>
+          </div>
+          <div className="flex-1">
+            <HeaderStats market={market} />
+          </div>
         </div>
       </div>
-      <div className="border-b border-default min-w-0">
-        <HeaderStats market={market} />
-      </div>
-      <div className="col-span-2">
+      <div>
         <MarketSuccessorBanner market={market} />
         <OracleBanner marketId={market?.id || ''} />
       </div>
-      <div className="min-h-0 col-span-full">
+      <div className="min-h-0 py-1">
         <MainGrid marketId={market?.id || ''} pinnedAsset={pinnedAsset} />
       </div>
     </div>
@@ -201,9 +201,13 @@ interface TradeGridChildProps {
 
 const TradeGridChild = ({ children }: TradeGridChildProps) => {
   return (
-    <section className="h-full">
+    <section className="h-full p-1">
       <AutoSizer>
-        {({ width, height }) => <div style={{ width, height }}>{children}</div>}
+        {({ width, height }) => (
+          <div style={{ width, height }} className="border border-default">
+            {children}
+          </div>
+        )}
       </AutoSizer>
     </section>
   );
