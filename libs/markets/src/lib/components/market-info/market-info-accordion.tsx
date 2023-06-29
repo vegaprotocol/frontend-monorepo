@@ -106,7 +106,7 @@ export const MarketInfoAccordion = ({
   };
 
   return (
-    <div>
+    <div className="p-4">
       <div className="mb-8">
         <h3 className={headerClassName}>{t('Market data')}</h3>
         <Accordion>
