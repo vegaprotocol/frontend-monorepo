@@ -1,7 +1,6 @@
 import { Button } from '@vegaprotocol/ui-toolkit';
 import {
   withdrawalProvider,
-  useWithdrawalDialog,
   WithdrawalsTable,
   useIncompleteWithdrawals,
 } from '@vegaprotocol/withdraws';
@@ -9,6 +8,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
+import { useSidebar } from '../../components/sidebar';
 
 export const WithdrawalsContainer = () => {
   const { pubKey, isReadOnly } = useVegaWallet();
@@ -17,7 +17,7 @@ export const WithdrawalsContainer = () => {
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });
-  const openWithdrawDialog = useWithdrawalDialog((state) => state.open);
+  const { setView } = useSidebar();
   const { ready, delayed } = useIncompleteWithdrawals();
 
   return (
@@ -36,7 +36,7 @@ export const WithdrawalsContainer = () => {
           <Button
             variant="primary"
             size="sm"
-            onClick={() => openWithdrawDialog()}
+            onClick={() => setView('withdraw')}
             data-testid="withdraw-dialog-button"
           >
             {t('Make withdrawal')}
