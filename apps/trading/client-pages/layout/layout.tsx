@@ -40,7 +40,7 @@ export const Layout = () => {
         </div>
       )}
       <div className="col-span-full col-start-2 row-start-2 bg-vega-yellow">
-        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'} />
+        <Navbar theme="dark" />
       </div>
       <div
         className="col-span-full col-start-2 row-start-3 bg-vega-pink-350"
