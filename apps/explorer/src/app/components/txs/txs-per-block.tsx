@@ -12,8 +12,6 @@ interface TxsPerBlockProps {
   txCount: number;
 }
 
-const truncateLength = 5;
-
 export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
   const filters = `filters[block.height]=${blockHeight}`;
   const url = getTxsDataUrl({ limit: txCount.toString(), filters });
