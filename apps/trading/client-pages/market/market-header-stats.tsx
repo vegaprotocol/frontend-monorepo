@@ -5,92 +5,85 @@ import { MarketProposalNotification } from '@vegaprotocol/proposals';
 import type { Market } from '@vegaprotocol/markets';
 import { getExpiryDate, getMarketExpiryDate } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
+import { Last24hPriceChange, Last24hVolume } from '@vegaprotocol/markets';
+import { MarketState as State } from '@vegaprotocol/types';
 import { HeaderStat } from '../../components/header';
 import { MarketMarkPrice } from '../../components/market-mark-price';
-import { Last24hPriceChange, Last24hVolume } from '@vegaprotocol/markets';
-import { MarketState } from '../../components/market-state';
 import { HeaderStatMarketTradingMode } from '../../components/market-trading-mode';
+import { MarketState } from '../../components/market-state';
 import { MarketLiquiditySupplied } from '../../components/liquidity-supplied';
-import { MarketState as State } from '@vegaprotocol/types';
 
-interface HeaderStatsProps {
+interface MarketHeaderStatsProps {
   market: Market | null;
 }
 
-export const HeaderStats = ({ market }: HeaderStatsProps) => {
+export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
   const asset = market?.tradableInstrument.instrument.product?.settlementAsset;
 
   return (
-    <div className="flex flex-col justify-end lg:pt-4">
-      <div className="xl:flex xl:gap-4 items-end">
-        <div
-          data-testid="header-summary"
-          className="flex flex-nowrap items-end xl:flex-1 w-full overflow-x-auto text-xs"
+    <>
+      <HeaderStat
+        heading={t('Expiry')}
+        description={
+          market && (
+            <ExpiryTooltipContent
+              market={market}
+              explorerUrl={VEGA_EXPLORER_URL}
+            />
+          )
+        }
+        testId="market-expiry"
+      >
+        <ExpiryLabel market={market} />
+      </HeaderStat>
+      <HeaderStat heading={t('Price')} testId="market-price">
+        <MarketMarkPrice
+          marketId={market?.id}
+          decimalPlaces={market?.decimalPlaces}
+        />
+      </HeaderStat>
+      <HeaderStat heading={t('Change (24h)')} testId="market-change">
+        <Last24hPriceChange
+          marketId={market?.id}
+          decimalPlaces={market?.decimalPlaces}
+        />
+      </HeaderStat>
+      <HeaderStat heading={t('Volume (24h)')} testId="market-volume">
+        <Last24hVolume
+          marketId={market?.id}
+          positionDecimalPlaces={market?.positionDecimalPlaces}
+        />
+      </HeaderStat>
+      <HeaderStatMarketTradingMode
+        marketId={market?.id}
+        initialTradingMode={market?.tradingMode}
+      />
+      <MarketState market={market} />
+      {asset ? (
+        <HeaderStat
+          heading={t('Settlement asset')}
+          testId="market-settlement-asset"
         >
-          <HeaderStat
-            heading={t('Expiry')}
-            description={
-              market && (
-                <ExpiryTooltipContent
-                  market={market}
-                  explorerUrl={VEGA_EXPLORER_URL}
-                />
-              )
-            }
-            testId="market-expiry"
-          >
-            <ExpiryLabel market={market} />
-          </HeaderStat>
-          <HeaderStat heading={t('Price')} testId="market-price">
-            <MarketMarkPrice
-              marketId={market?.id}
-              decimalPlaces={market?.decimalPlaces}
-            />
-          </HeaderStat>
-          <HeaderStat heading={t('Change (24h)')} testId="market-change">
-            <Last24hPriceChange
-              marketId={market?.id}
-              decimalPlaces={market?.decimalPlaces}
-            />
-          </HeaderStat>
-          <HeaderStat heading={t('Volume (24h)')} testId="market-volume">
-            <Last24hVolume
-              marketId={market?.id}
-              positionDecimalPlaces={market?.positionDecimalPlaces}
-            />
-          </HeaderStat>
-          <HeaderStatMarketTradingMode
-            marketId={market?.id}
-            initialTradingMode={market?.tradingMode}
-          />
-          <MarketState market={market} />
-          {asset ? (
-            <HeaderStat
-              heading={t('Settlement asset')}
-              testId="market-settlement-asset"
+          <div>
+            <ButtonLink
+              onClick={(e) => {
+                openAssetDetailsDialog(asset.id, e.target as HTMLElement);
+              }}
             >
-              <div>
-                <ButtonLink
-                  onClick={(e) => {
-                    openAssetDetailsDialog(asset.id, e.target as HTMLElement);
-                  }}
-                >
-                  {asset.symbol}
-                </ButtonLink>
-              </div>
-            </HeaderStat>
-          ) : null}
-          <MarketLiquiditySupplied
-            marketId={market?.id}
-            assetDecimals={asset?.decimals || 0}
-          />
-          <MarketProposalNotification marketId={market?.id} />
-        </div>
-      </div>
-    </div>
+              {asset.symbol}
+            </ButtonLink>
+          </div>
+        </HeaderStat>
+      ) : null}
+      <MarketLiquiditySupplied
+        marketId={market?.id}
+        assetDecimals={asset?.decimals || 0}
+      />
+      <MarketProposalNotification marketId={market?.id} />
+    </>
   );
 };
 

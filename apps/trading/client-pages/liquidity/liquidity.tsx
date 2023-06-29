@@ -14,20 +14,13 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import {
-  Tab,
-  Tabs,
-  Link as UiToolkitLink,
-  Indicator,
-  ExternalLink,
-} from '@vegaprotocol/ui-toolkit';
+import { Tab, Tabs, Indicator, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { memo, useEffect, useState } from 'react';
 
 import { Header, HeaderStat, HeaderTitle } from '../../components/header';
 
-import { Link, useParams } from 'react-router-dom';
-import { Links, Routes } from '../../pages/client-router';
+import { useParams } from 'react-router-dom';
 
 import { useMarket, useStaticMarketData } from '@vegaprotocol/markets';
 import { DocsLinks } from '@vegaprotocol/environment';
@@ -74,16 +67,10 @@ const LiquidityViewHeader = memo(({ marketId }: { marketId?: string }) => {
         market?.tradableInstrument.instrument.name &&
         market?.tradableInstrument.instrument.code &&
         marketId && (
-          <HeaderTitle
-            primaryContent={`${market.tradableInstrument.instrument.code} ${t(
-              'liquidity provision'
-            )}`}
-            secondaryContent={
-              <Link to={Links[Routes.MARKET](marketId)}>
-                <UiToolkitLink>{t('Go to trading')}</UiToolkitLink>
-              </Link>
-            }
-          />
+          <HeaderTitle>
+            {market.tradableInstrument.instrument.code &&
+              t('liquidity provision')}
+          </HeaderTitle>
         )
       }
     >
@@ -116,9 +103,7 @@ const LiquidityViewHeader = memo(({ marketId }: { marketId?: string }) => {
         </div>
       </HeaderStat>
       <HeaderStat heading={t('Liquidity supplied')} testId="liquidity-supplied">
-        <Indicator variant={status} />
-
-        {formatNumberPercentage(percentage, 2)}
+        <Indicator variant={status} /> {formatNumberPercentage(percentage, 2)}
       </HeaderStat>
       <HeaderStat heading={t('Market ID')} testId="liquidity-market-id">
         <div className="break-word">{marketId}</div>
@@ -169,24 +154,34 @@ export const LiquidityViewContainer = ({
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
       <LiquidityViewHeader marketId={marketId} />
-      <Tabs value={tab || LiquidityTabs.Active} onValueChange={setTab}>
-        <Tab
-          id={LiquidityTabs.MyLiquidityProvision}
-          name={t('My liquidity provision')}
-          hidden={!pubKey}
-        >
-          <LiquidityContainer
-            marketId={marketId}
-            filter={{ partyId: pubKey || undefined }}
-          />
-        </Tab>
-        <Tab id={LiquidityTabs.Active} name={t('Active')}>
-          <LiquidityContainer marketId={marketId} filter={{ active: true }} />
-        </Tab>
-        <Tab id={LiquidityTabs.Inactive} name={t('Inactive')}>
-          <LiquidityContainer marketId={marketId} filter={{ active: false }} />
-        </Tab>
-      </Tabs>
+      <div className="p-1">
+        <div className="h-full border border-default">
+          <Tabs value={tab || LiquidityTabs.Active} onValueChange={setTab}>
+            <Tab
+              id={LiquidityTabs.MyLiquidityProvision}
+              name={t('My liquidity provision')}
+              hidden={!pubKey}
+            >
+              <LiquidityContainer
+                marketId={marketId}
+                filter={{ partyId: pubKey || undefined }}
+              />
+            </Tab>
+            <Tab id={LiquidityTabs.Active} name={t('Active')}>
+              <LiquidityContainer
+                marketId={marketId}
+                filter={{ active: true }}
+              />
+            </Tab>
+            <Tab id={LiquidityTabs.Inactive} name={t('Inactive')}>
+              <LiquidityContainer
+                marketId={marketId}
+                filter={{ active: false }}
+              />
+            </Tab>
+          </Tabs>
+        </div>
+      </div>
     </div>
   );
 };

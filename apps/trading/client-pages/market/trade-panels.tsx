@@ -17,10 +17,10 @@ import {
 import { NO_MARKET } from './constants';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
-import { HeaderStats } from './header-stats';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import { HeaderTitle } from '../../components/header';
 import { MarketSelector } from './market-selector';
+import { MarketHeaderStats } from './market-header-stats';
 
 interface TradePanelsProps {
   market: Market | null;
@@ -74,10 +74,9 @@ export const TradePanels = ({
     <div className="h-full grid grid-rows-[min-content_min-content_1fr_min-content]">
       <div className="border-b border-default min-w-0">
         <div className="flex gap-4 items-center px-4 py-2">
-          <HeaderTitle
-            primaryContent={market?.tradableInstrument.instrument.code}
-            secondaryContent={market?.tradableInstrument.instrument.name}
-          />
+          <HeaderTitle>
+            {market?.tradableInstrument.instrument.code}
+          </HeaderTitle>
           <button onClick={() => setDrawerOpen((x) => !x)} className="p-2">
             <span
               className={classNames('block', {
@@ -89,7 +88,7 @@ export const TradePanels = ({
             </span>
           </button>
         </div>
-        <HeaderStats market={market} />
+        <MarketHeaderStats market={market} />
       </div>
       <div>
         <OracleBanner marketId={market?.id || ''} />
