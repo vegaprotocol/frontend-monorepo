@@ -118,8 +118,8 @@ interface PortfolioGridChildProps {
 
 const PortfolioGridChild = ({ children }: PortfolioGridChildProps) => {
   return (
-    <section className="bg-white dark:bg-black w-full h-full">
-      {children}
+    <section className="h-full p-1">
+      <div className="border border-default h-full">{children}</div>
     </section>
   );
 };
