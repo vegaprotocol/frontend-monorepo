@@ -6,7 +6,7 @@ interface TradeMarketHeaderProps {
   title: ReactNode;
   children: ReactNode;
 }
-
+/*
 export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   const headerClasses = classNames(
     'grid',
@@ -23,6 +23,31 @@ export const Header = ({ title, children }: TradeMarketHeaderProps) => {
         </div>
         <div data-testid="header-summary" className="min-w-0">
           <div className="px-3 lg:px-4 py-2 flex flex-nowrap gap-4 items-center text-xs overflow-x-auto">
+            {children}
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
+*/
+
+export const Header = ({ title, children }: TradeMarketHeaderProps) => {
+  const headerClasses = classNames(
+    'grid',
+    'grid-rows-[min-content_min-content]',
+    'xl:grid-cols-[min-content_1fr]',
+    'border-l border-b border-default',
+    'bg-vega-light-100 dark:bg-vega-dark-100'
+  );
+  return (
+    <header className="pl-1">
+      <div className={headerClasses}>
+        <div className="flex flex-col justify-center pl-4 pt-2 xl:pb-2 pb-0 xl:border-r border-default xl:pr-4">
+          {title}
+        </div>
+        <div data-testid="header-summary" className="min-w-0">
+          <div className="px-4 py-2 flex flex-nowrap gap-4 items-center text-xs overflow-x-auto">
             {children}
           </div>
         </div>
