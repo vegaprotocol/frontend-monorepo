@@ -46,7 +46,6 @@ export const Sidebar = () => {
           icon={VegaIconNames.TRANSFER}
           tooltip="Transfer"
         />
-
         {/* buttons for specific routes */}
         <Routes>
           <Route path="/markets/all" element={null} />
@@ -54,6 +53,7 @@ export const Sidebar = () => {
             path="/markets/:marketId"
             element={
               <>
+                <SidebarDivider />
                 <SidebarButton
                   view="order"
                   icon={VegaIconNames.TREND_UP}
@@ -109,6 +109,10 @@ const SidebarButton = ({
   );
 };
 
+const SidebarDivider = () => {
+  return <div className="border-b border-default mx-2" />;
+};
+
 export const SidebarContent = () => {
   const { view } = useSidebar();
   const params = useParams();
@@ -150,7 +154,7 @@ export const SidebarContent = () => {
 
 export const useSidebar = create<{
   view: SidebarView | null;
-  setView: (view: SidebarView) => void;
+  setView: (view: SidebarView | null) => void;
 }>()((set) => ({
   view: null,
   setView: (view) =>

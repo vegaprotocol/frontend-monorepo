@@ -269,6 +269,7 @@ export const DealTicket = ({
     <TinyScroll className="h-full overflow-auto">
       <form
         onSubmit={isReadOnly ? undefined : handleSubmit(onSubmit)}
+        className="p-4"
         noValidate
       >
         <Controller

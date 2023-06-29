@@ -28,7 +28,7 @@ html.dark {
 }
 
 .border-default {
-  @apply border-vega-light-150 dark:border-vega-dark-150;
+  @apply border-vega-light-200 dark:border-vega-dark-200;
 }
 
 /* PENNANT */
