@@ -40,7 +40,7 @@ export const Layout = () => {
   const isHome = Boolean(useMatch(Routes.HOME));
   const { ANNOUNCEMENTS_CONFIG_URL } = useEnvironment();
   const fixedWidthClasses = 'w-full max-w-[1500px] mx-auto';
-  const _ = useExplorerNodeNamesLazyQuery();
+  useExplorerNodeNamesLazyQuery();
 
   return (
     <>

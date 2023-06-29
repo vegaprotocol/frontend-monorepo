@@ -8,13 +8,7 @@ import { useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
-import {
-  Button,
-  Icon,
-  Intent,
-  Notification,
-  Splash,
-} from '@vegaprotocol/ui-toolkit';
+import { Icon, Intent, Notification, Splash } from '@vegaprotocol/ui-toolkit';
 import { aggregatedAccountsDataProvider } from '@vegaprotocol/accounts';
 import { PartyBlockStake } from './components/party-block-stake';
 import { PartyBlockAccounts } from './components/party-block-accounts';

@@ -1,16 +1,10 @@
-import { Routes } from '../../routes/route-names';
-import { TruncatedLink } from '../truncate/truncated-link';
-import { TxOrderType } from './tx-order-type';
-import { Table, TableRow, TableCell } from '../table';
+import { Table, TableRow } from '../table';
 import { t } from '@vegaprotocol/i18n';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import type { BlockExplorerTransactions } from '../../routes/types/block-explorer-response';
-import isNumber from 'lodash/isNumber';
-import { ChainResponseCode } from './details/chain-response-code/chain-reponse.code';
 import { getTxsDataUrl } from '../../hooks/use-txs-data';
 import { AsyncRenderer, Loader } from '@vegaprotocol/ui-toolkit';
 import EmptyList from '../empty-list/empty-list';
-import { PartyLink } from '../links';
 import { TxsInfiniteListItem } from './txs-infinite-list-item';
 
 interface TxsPerBlockProps {

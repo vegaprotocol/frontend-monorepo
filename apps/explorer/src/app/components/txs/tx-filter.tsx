@@ -14,7 +14,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { Dispatch, SetStateAction } from 'react';
 import { FilterLabel } from './tx-filter-label';
-import { DropdownMenuPortal } from '@radix-ui/react-dropdown-menu';
 
 // All possible transaction types. Should be generated.
 export type FilterOption =
