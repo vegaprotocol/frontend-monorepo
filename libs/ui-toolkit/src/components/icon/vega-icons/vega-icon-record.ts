@@ -17,10 +17,11 @@ import { IconMoon } from './svg-icons/icon-moon';
 import { IconOpenExternal } from './svg-icons/icon-open-external';
 import { IconQuestionMark } from './svg-icons/icon-question-mark';
 import { IconTick } from './svg-icons/icon-tick';
-import { IconTransfer } from './svg-icons/icon-transfer';
-import { IconTrendUp } from './svg-icons/icon-trend-up';
+import { IconCog } from './svg-icons/icon-cog';
 import { IconTwitter } from './svg-icons/icon-twitter';
+import { IconTransfer } from './svg-icons/icon-transfer';
 import { IconWithdraw } from './svg-icons/icon-withdraw';
+import { IconTrendUp } from './svg-icons/icon-trend-up';
 
 export enum VegaIconNames {
   ARROW_DOWN = 'arrow-down',
@@ -29,6 +30,7 @@ export enum VegaIconNames {
   CHEVRON_DOWN = 'chevron-down',
   CHEVRON_LEFT = 'chevron-left',
   CHEVRON_UP = 'chevron-up',
+  COG = 'cog',
   COPY = 'copy',
   CROSS = 'cross',
   DEPOSIT = 'deposit',
@@ -54,13 +56,11 @@ export const VegaIconNameMap: Record<
 > = {
   'arrow-down': IconArrowDown,
   'arrow-right': IconArrowRight,
+  breakdown: IconBreakdown,
   'chevron-down': IconChevronDown,
   'chevron-left': IconChevronLeft,
   'chevron-up': IconChevronUp,
-  'open-external': IconOpenExternal,
-  'question-mark': IconQuestionMark,
-  'trend-up': IconTrendUp,
-  breakdown: IconBreakdown,
+  cog: IconCog,
   copy: IconCopy,
   cross: IconCross,
   deposit: IconDeposit,
@@ -71,8 +71,11 @@ export const VegaIconNameMap: Record<
   kebab: IconKebab,
   linkedin: IconLinkedIn,
   moon: IconMoon,
-  tick: IconTick,
+  'open-external': IconOpenExternal,
+  'question-mark': IconQuestionMark,
   transfer: IconTransfer,
+  'trend-up': IconTrendUp,
   twitter: IconTwitter,
+  tick: IconTick,
   withdraw: IconWithdraw,
 };
