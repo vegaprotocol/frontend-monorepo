@@ -1,11 +1,12 @@
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { useDepositDialog, DepositsTable } from '@vegaprotocol/deposits';
+import { DepositsTable } from '@vegaprotocol/deposits';
 import { depositsProvider } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
+import { useSidebar } from '../../components/sidebar';
 
 export const DepositsContainer = () => {
   const gridRef = useRef<AgGridReact | null>(null);
@@ -15,7 +16,7 @@ export const DepositsContainer = () => {
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });
-  const openDepositDialog = useDepositDialog((state) => state.open);
+  const { setView } = useSidebar();
   return (
     <div className="h-full">
       <DepositsTable
@@ -28,7 +29,7 @@ export const DepositsContainer = () => {
           <Button
             variant="primary"
             size="sm"
-            onClick={() => openDepositDialog()}
+            onClick={() => setView('deposit')}
             data-testid="deposit-button"
           >
             {t('Deposit')}
