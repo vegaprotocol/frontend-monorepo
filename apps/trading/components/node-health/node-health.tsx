@@ -37,7 +37,7 @@ export const NodeHealthContainer = () => {
         className="flex justify-center items-center py-3 rounded hover:bg-vega-light-200 hover:dark:bg-vega-dark-200"
         onClick={() => setNodeSwitcher(true)}
       >
-        <Indicator variant={intent} />
+        <Indicator variant={intent} size="lg" />
       </button>
     </Tooltip>
   );
