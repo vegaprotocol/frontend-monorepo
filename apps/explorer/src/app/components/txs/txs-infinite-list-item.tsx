@@ -53,7 +53,7 @@ export const TxsInfiniteListItem = ({
   return (
     <tr
       data-testid="transaction-row"
-      className="text-left items-center h-full border-t border-neutral-600 dark:border-neutral-800 txs-infinite-list-item py-[2px]"
+      className="transaction-row text-left items-center h-full border-t border-neutral-600 dark:border-neutral-800 txs-infinite-list-item py-[2px]"
     >
       <td
         className="text-sm leading-none whitespace-nowrap font-mono"
