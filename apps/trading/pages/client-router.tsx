@@ -62,6 +62,10 @@ const routerConfig: RouteObject[] = [
     element: <Layout />,
     children: [
       {
+        index: true,
+        element: <LazyHome />,
+      },
+      {
         path: 'markets',
         element: <Outlet />,
         children: [
