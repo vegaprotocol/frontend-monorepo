@@ -17,6 +17,7 @@ import { ProposalMarketData } from '../proposal-market-data';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { MarketInfoWithData } from '@vegaprotocol/markets';
+import { ProposalState } from '@vegaprotocol/types';
 
 export enum ProposalType {
   PROPOSAL_NEW_MARKET = 'PROPOSAL_NEW_MARKET',
@@ -91,14 +92,22 @@ export const Proposal = ({
   return (
     <AsyncRenderer data={params} loading={loading} error={error}>
       <section data-testid="proposal">
-        <div
-          className="flex items-center gap-1"
-          data-testid="all-proposals-link"
-        >
+        <div className="flex items-center gap-1">
           <Icon name={'chevron-left'} />
-          <Link className="underline" to={Routes.PROPOSALS}>
-            {t('AllProposals')}
-          </Link>
+
+          {proposal.state === ProposalState.STATE_REJECTED ? (
+            <div data-testid="rejected-proposals-link">
+              <Link className="underline" to={Routes.PROPOSALS_REJECTED}>
+                {t('RejectedProposals')}
+              </Link>
+            </div>
+          ) : (
+            <div data-testid="all-proposals-link">
+              <Link className="underline" to={Routes.PROPOSALS}>
+                {t('AllProposals')}
+              </Link>
+            </div>
+          )}
         </div>
         <ProposalHeader proposal={proposal} isListItem={false} />
 

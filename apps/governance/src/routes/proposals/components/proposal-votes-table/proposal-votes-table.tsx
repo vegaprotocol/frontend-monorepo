@@ -5,14 +5,13 @@ import {
   KeyValueTableRow,
   Thumbs,
   RoundedWrapper,
-  Icon,
 } from '@vegaprotocol/ui-toolkit';
 import { formatNumber, formatNumberPercentage } from '@vegaprotocol/utils';
 import { SubHeading } from '../../../../components/heading';
 import { useVoteInformation } from '../../hooks';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { ProposalType } from '../proposal/proposal';
-import { collapsibleToggleStyles } from '../../../../lib/collapsible-toggle-styles';
+import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
@@ -59,17 +58,13 @@ export const ProposalVotesTable = ({
 
   return (
     <>
-      <button
-        onClick={() => setShowDetails(!showDetails)}
-        data-testid="vote-breakdown-toggle"
+      <CollapsibleToggle
+        toggleState={showDetails}
+        setToggleState={setShowDetails}
+        dataTestId="vote-breakdown-toggle"
       >
-        <div className="flex items-center gap-3">
-          <SubHeading title={t('voteBreakdown')} />
-          <div className={collapsibleToggleStyles(showDetails)}>
-            <Icon name="chevron-down" size={8} />
-          </div>
-        </div>
-      </button>
+        <SubHeading title={t('voteBreakdown')} />
+      </CollapsibleToggle>
 
       {showDetails && (
         <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>

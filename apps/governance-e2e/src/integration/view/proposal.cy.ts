@@ -10,9 +10,10 @@ import {
 } from '../../support/governance.functions';
 import { mockNetworkUpgradeProposal } from '../../support/proposal.functions';
 
-const proposalDocumentationLink = '[data-testid="proposal-documentation-link"]';
+const proposalDocsLink = 'proposal-docs-link';
+const proposalDocumentationLink = 'proposal-documentation-link';
+const connectToVegaWalletButton = 'connect-to-vega-wallet-btn';
 const governanceDocsUrl = 'https://vega.xyz/governance';
-const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]';
 
 context(
   'Governance Page - verify elements on page',
@@ -41,7 +42,7 @@ context(
 
     it('should be able to see a working link for - find out more about Vega governance', function () {
       // 3001-VOTE-001
-      cy.get(proposalDocumentationLink)
+      cy.getByTestId(proposalDocumentationLink)
         .should('be.visible')
         .and('have.text', 'Find out more about Vega governance')
         .and('have.attr', 'href')
@@ -64,7 +65,7 @@ context(
     // 3007-PNE-021
     it('should have documentation links for network parameter proposal', function () {
       goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
-      cy.getByTestId('proposal-docs-link')
+      cy.getByTestId(proposalDocsLink)
         .find('a')
         .should('have.attr', 'href')
         .and('contain', '/tutorials/proposals/network-parameter-proposal');
@@ -73,7 +74,7 @@ context(
     // 3003-PMAN-002 3003-PMAN-005
     it('should have documentation links for new market proposal', function () {
       goToMakeNewProposal(governanceProposalType.NEW_MARKET);
-      cy.getByTestId('proposal-docs-link')
+      cy.getByTestId(proposalDocsLink)
         .find('a')
         .should('have.attr', 'href')
         .and('contain', '/tutorials/proposals/new-market-proposal');
@@ -82,7 +83,7 @@ context(
     // 3004-PMAC-005
     it('should have documentation links for update market proposal', function () {
       goToMakeNewProposal(governanceProposalType.UPDATE_MARKET);
-      cy.getByTestId('proposal-docs-link')
+      cy.getByTestId(proposalDocsLink)
         .find('a')
         .should('have.attr', 'href')
         .and('contain', '/tutorials/proposals/update-market-proposal');
@@ -91,7 +92,7 @@ context(
     // 3005-PASN-002 005-PASN-005
     it('should have documentation links for new asset proposal', function () {
       goToMakeNewProposal(governanceProposalType.NEW_ASSET);
-      cy.getByTestId('proposal-docs-link')
+      cy.getByTestId(proposalDocsLink)
         .find('a')
         .should('have.attr', 'href')
         .and('contain', '/tutorials/proposals/new-asset-proposal');
@@ -100,7 +101,7 @@ context(
     // 3006-PASC-002 3006-PASC-005
     it('should have documentation links for update asset proposal', function () {
       goToMakeNewProposal(governanceProposalType.UPDATE_ASSET);
-      cy.getByTestId('proposal-docs-link')
+      cy.getByTestId(proposalDocsLink)
         .find('a')
         .should('have.attr', 'href')
         .and('contain', '/tutorials/proposals/update-asset-proposal');
@@ -109,7 +110,7 @@ context(
     // 3008-PFRO-003 3008-PFRO-017
     it('should have documentation links for freeform proposal', function () {
       goToMakeNewProposal(governanceProposalType.FREEFORM);
-      cy.getByTestId('proposal-docs-link')
+      cy.getByTestId(proposalDocsLink)
         .find('a')
         .should('have.attr', 'href')
         .and('contain', '/tutorials/proposals/freeform-proposal');
@@ -117,7 +118,7 @@ context(
 
     it('should be able to see a connect wallet button - if vega wallet disconnected and user is submitting new proposal', function () {
       goToMakeNewProposal(governanceProposalType.RAW);
-      cy.get(connectToVegaWalletButton)
+      cy.getByTestId(connectToVegaWalletButton)
         .should('be.visible')
         .and('have.text', 'Connect Vega wallet');
     });
@@ -165,6 +166,7 @@ context(
             );
           });
       });
+      cy.get('[data-testid="closed-proposals-toggle-networkUpgrades"]').click();
       cy.getByTestId('closed-proposals').within(() => {
         cy.getByTestId('protocol-upgrade-proposals-list-item').should(
           'have.length',
