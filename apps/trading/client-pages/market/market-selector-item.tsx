@@ -21,30 +21,14 @@ export const MarketSelectorItem = ({
   market,
   style,
   currentMarketId,
-  onSelect,
 }: {
   market: MarketMaybeWithDataAndCandles;
   style: CSSProperties;
   currentMarketId?: string;
-  onSelect?: (marketId: string) => void;
 }) => {
-  const wrapperClasses = classNames(
-    'block bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg p-4',
-    'min-h-[120px]',
-    {
-      'ring-1 ring-vega-light-300 dark:ring-vega-dark-300':
-        currentMarketId === market.id,
-    }
-  );
   return (
     <div style={style} className="my-0.5 px-4">
-      <Link
-        to={`/markets/${market.id}`}
-        className={wrapperClasses}
-        onClick={() => {
-          onSelect && onSelect(market.id);
-        }}
-      >
+      <Link to={`/markets/${market.id}`} className="block">
         <MarketData market={market} />
       </Link>
     </div>
@@ -88,6 +72,37 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
     vol && vol !== '0'
       ? addDecimalsFormatNumber(vol, market.positionDecimalPlaces)
       : '0.00';
+
+  return (
+    <div className="grid gap-2 grid-cols-[120px_1fr_120px]">
+      <div>
+        <div className="text-ellipsis">
+          {market.tradableInstrument.instrument.code}
+        </div>
+        {mode && (
+          <p className="text-xs text-vega-orange-500 dark:text-vega-orange-550 whitespace-nowrap">
+            {mode}
+          </p>
+        )}
+      </div>
+      <div>
+        <DataRow value={volume} label={t('24h vol')} />
+        <DataRow
+          value={price}
+          label={instrument.product.settlementAsset.symbol}
+        />
+      </div>
+      <div>
+        {oneDayCandles && (
+          <Sparkline
+            width={120}
+            height={20}
+            data={oneDayCandles.map((c) => Number(c.close))}
+          />
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <>

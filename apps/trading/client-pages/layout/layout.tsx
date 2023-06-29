@@ -1,5 +1,4 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { Sidebar, SidebarContent, useSidebar } from '../../components/sidebar';
 import classNames from 'classnames';
 import { Navbar } from '../../components/navbar';
@@ -12,7 +11,6 @@ import {
 
 export const Layout = () => {
   const location = useLocation();
-  const { VEGA_ENV } = useEnvironment();
   const { view } = useSidebar();
   const sidebarOpen = view !== null;
 
@@ -40,7 +38,7 @@ export const Layout = () => {
         </div>
       )}
       <div className="col-span-full col-start-2 row-start-2 bg-vega-yellow">
-        <Navbar theme="dark" />
+        <Navbar theme="system" />
       </div>
       <div
         className="col-span-full col-start-2 row-start-3 bg-vega-pink-350"
