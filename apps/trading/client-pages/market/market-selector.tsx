@@ -173,7 +173,7 @@ const MarketList = ({
       <List
         data={data}
         loading={loading}
-        width={400}
+        width={430}
         height={400}
         currentMarketId={currentMarketId}
         onSelect={onSelect}

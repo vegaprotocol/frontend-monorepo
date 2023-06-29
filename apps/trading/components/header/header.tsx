@@ -69,16 +69,18 @@ export const HeaderTitle = ({
   secondaryContent,
 }: {
   primaryContent: ReactNode;
-  secondaryContent: ReactNode;
+  secondaryContent?: ReactNode;
 }) => {
   return (
     <div className="text-left" data-testid="header-title">
       <div className="text-sm md:text-md lg:text-lg whitespace-nowrap !leading-[1]">
         {primaryContent}
       </div>
-      <div className="text-xs whitespace-nowrap text-vega-light-300 dark:text-vega-dark-300">
-        {secondaryContent}
-      </div>
+      {secondaryContent && (
+        <div className="text-xs whitespace-nowrap text-vega-light-300 dark:text-vega-dark-300">
+          {secondaryContent}
+        </div>
+      )}
     </div>
   );
 };

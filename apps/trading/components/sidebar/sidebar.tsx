@@ -58,7 +58,7 @@ export const Sidebar = () => {
       <nav className="mt-auto flex flex-col items-stretch gap-2 p-1">
         <SidebarButton
           view="settings"
-          icon={VegaIconNames.QUESTION_MARK}
+          icon={VegaIconNames.COG}
           tooltip="Settings"
         />
         <NodeHealthContainer />

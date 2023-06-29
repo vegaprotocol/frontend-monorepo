@@ -74,9 +74,9 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
       : '0.00';
 
   return (
-    <div className="grid gap-2 grid-cols-[120px_1fr_120px]">
+    <div className="grid gap-2 grid-cols-[150px_1fr_120px]">
       <div>
-        <div className="text-ellipsis">
+        <div className="text-ellipsis whitespace-nowrap overflow-hidden">
           {market.tradableInstrument.instrument.code}
         </div>
         {mode && (
@@ -159,14 +159,14 @@ const DataRow = ({
 }) => {
   return (
     <div
-      className="text-ellipsis whitespace-nowrap overflow-hidden leading-tight"
+      className="text-ellipsis whitespace-nowrap overflow-hidden leading-tight text-right"
       data-testid="market-selector-data-row"
     >
-      <span title={label} className="text-sm mr-1">
-        {value}
-      </span>
       <span className="text-xs text-vega-light-300 dark:text-vega-light-300">
         {label}
+      </span>
+      <span title={label} className="text-sm ml-1">
+        {value}
       </span>
     </div>
   );
