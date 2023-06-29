@@ -73,7 +73,6 @@ export interface AccountTableProps extends AgGridReactProps {
   onClickBreakdown?: (assetId: string) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
-  storeKey?: string;
 }
 
 export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
@@ -307,7 +306,6 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
       <AgGrid
         {...props}
         style={{ width: '100%', height: '100%' }}
-        overlayNoRowsTemplate={t('No accounts')}
         getRowId={({ data }: { data: AccountFields }) => data.asset.id}
         ref={ref}
         tooltipShowDelay={500}

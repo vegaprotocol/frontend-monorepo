@@ -12,7 +12,7 @@ import { wrapperClasses } from './deterministic-order-details';
 export interface AmendOrderDetailsProps {
   id: string;
   amend: components['schemas']['v1OrderAmendment'];
-  // Version to fetch, with 0 being 'latest' and 1 being 'first'. Defaults to 0
+  // Version to fetch. Latest is provided by default
   version?: number;
 }
 
@@ -34,13 +34,11 @@ export function getSideDeltaColour(delta: string): string {
  * @param param0
  * @returns
  */
-const AmendOrderDetails = ({
-  id,
-  version = 0,
-  amend,
-}: AmendOrderDetailsProps) => {
+const AmendOrderDetails = ({ id, version, amend }: AmendOrderDetailsProps) => {
+  const variables = version ? { orderId: id, version } : { orderId: id };
+
   const { data, error } = useExplorerDeterministicOrderQuery({
-    variables: { orderId: id, version },
+    variables,
   });
 
   if (error || (data && !data.orderByID)) {

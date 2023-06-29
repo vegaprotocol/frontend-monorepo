@@ -38,7 +38,6 @@ export const ProposalsList = () => {
         columnDefs={columnDefs}
         rowData={filteredData}
         defaultColDef={defaultColDef}
-        storeKey="proposedMarkets"
         getRowId={({ data }) => data.id}
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={error ? error.message : t('No markets')}

@@ -27,3 +27,4 @@ export * from './lib/web3-connectors';
 export * from './lib/web3-provider';
 export * from './lib/withdrawal-approval-dialog';
 export * from './lib/withdrawal-approval-status';
+export * from './lib/default-web3-provider';

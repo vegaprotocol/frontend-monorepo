@@ -12,7 +12,7 @@
   },
   "tasksRunnerOptions": {
     "default": {
-      "runner": "nx/tasks-runners/default",
+      "runner": "@nrwl/nx-cloud",
       "options": {
         "cacheableOperations": ["build", "lint", "test", "e2e"],
         "accessToken": "OTY4ZjdlZTItNGIwNy00NDcyLTllZjctOWIzYTg1NWE0Yzg1fHJlYWQtd3JpdGU=",
@@ -22,7 +22,6 @@
           "echo $NX_VEGA_URL",
           "echo $NX_TENDERMINT_URL",
           "echo $NX_TENDERMINT_WEBSOCKET_URL",
-          "echo $NX_USE_ENV_OVERRIDES",
           "echo $NX_ETHEREUM_PROVIDER_URL"
         ],
         "url": "https://cloud.nx.app"

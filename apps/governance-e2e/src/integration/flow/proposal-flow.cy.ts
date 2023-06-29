@@ -36,20 +36,19 @@ import {
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import type { testFreeformProposal } from '../../support/common-interfaces';
 
-const vegaWalletStakedBalances =
-  '[data-testid="vega-wallet-balance-staked-validators"]';
-const vegaWalletAssociatedBalance = '[data-testid="associated-amount"]';
-const vegaWalletNameElement = '[data-testid="wallet-name"]';
-const vegaWallet = '[data-testid="vega-wallet"]';
-const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]';
-const newProposalSubmitButton = '[data-testid="proposal-submit"]';
-const viewProposalButton = '[data-testid="view-proposal-btn"]';
-const rawProposalData = '[data-testid="proposal-data"]';
-const voteButtons = '[data-testid="vote-buttons"]';
+const vegaWalletStakedBalances = 'vega-wallet-balance-staked-validators';
+const vegaWalletAssociatedBalance = 'associated-amount';
+const vegaWalletNameElement = 'wallet-name';
+const vegaWallet = 'vega-wallet';
+const connectToVegaWalletButton = 'connect-to-vega-wallet-btn';
+const newProposalSubmitButton = 'proposal-submit';
+const viewProposalButton = 'view-proposal-btn';
+const rawProposalData = 'proposal-data';
+const voteButtons = 'vote-buttons';
 const rejectProposalsLink = '[href="/proposals/rejected"]';
-const feedbackError = '[data-testid="Error"]';
-const noOpenProposals = '[data-testid="no-open-proposals"]';
-const noClosedProposals = '[data-testid="no-closed-proposals"]';
+const feedbackError = 'Error';
+const noOpenProposals = 'no-open-proposals';
+const noClosedProposals = 'no-closed-proposals';
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 const proposalTimeout = { timeout: 14000 };
@@ -93,10 +92,10 @@ context(
     // Test can only pass if run before other proposal tests.
     it.skip('Should be able to see that no proposals exist', function () {
       // 3001-VOTE-003
-      cy.get(noOpenProposals)
+      cy.getByTestId(noOpenProposals)
         .should('be.visible')
         .and('have.text', 'There are no open or yet to enact proposals');
-      cy.get(noClosedProposals)
+      cy.getByTestId(noClosedProposals)
         .should('be.visible')
         .and('have.text', 'There are no enacted or rejected proposals');
     });
@@ -126,7 +125,10 @@ context(
       stakingValidatorPageAddStake('2');
       closeStakingDialog();
 
-      cy.get(vegaWalletStakedBalances, txTimeout).should('contain', '2');
+      cy.getByTestId(vegaWalletStakedBalances, txTimeout).should(
+        'contain',
+        '2'
+      );
       createRawProposal();
     });
 
@@ -168,7 +170,7 @@ context(
         getProposalFromTitle(rawProposal.rationale.title).within(() => {
           cy.contains('Rejected').should('be.visible');
           cy.contains('Close time too late').should('be.visible');
-          cy.get(viewProposalButton).click();
+          cy.getByTestId(viewProposalButton).click();
         });
       });
       cy.getByTestId('proposal-status').should('have.text', 'Rejected');
@@ -185,14 +187,14 @@ context(
       const errorMsg =
         'Network error: the network blocked the transaction through the spam protection: party has insufficient associated governance tokens in their staking account to submit proposal request (ABCI code 89)';
       vegaWalletTeardown();
-      cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
+      cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).contains(
         '0.00',
         txTimeout
       );
       goToMakeNewProposal(governanceProposalType.RAW);
       enterRawProposalBody(createTenDigitUnixTimeStampForSpecifiedDays(8));
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
-      cy.get(feedbackError).should('have.text', errorMsg);
+      cy.getByTestId(feedbackError).should('have.text', errorMsg);
       closeDialog();
     });
 
@@ -205,7 +207,7 @@ context(
       goToMakeNewProposal(governanceProposalType.RAW);
       enterRawProposalBody(createTenDigitUnixTimeStampForSpecifiedDays(8));
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
-      cy.get(feedbackError).should('have.text', errorMsg);
+      cy.getByTestId(feedbackError).should('have.text', errorMsg);
       closeDialog();
     });
 
@@ -221,17 +223,17 @@ context(
           createTenDigitUnixTimeStampForSpecifiedDays(8);
         freeformProposal.unexpected = `i shouldn't be here`;
         const proposalPayload = JSON.stringify(freeformProposal);
-        cy.get(rawProposalData).type(proposalPayload, {
+        cy.getByTestId(rawProposalData).type(proposalPayload, {
           parseSpecialCharSequences: false,
           delay: 2,
         });
       });
-      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.getByTestId(newProposalSubmitButton).should('be.visible').click();
 
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
-      cy.get(feedbackError).should('have.text', errorMsg);
+      cy.getByTestId(feedbackError).should('have.text', errorMsg);
       closeDialog();
-      cy.get(rawProposalData)
+      cy.getByTestId(rawProposalData)
         .invoke('val')
         .should('contain', "i shouldn't be here");
     });
@@ -249,15 +251,15 @@ context(
         rawProposal.terms.unexpectedField = `i shouldn't be here`;
         const proposalPayload = JSON.stringify(rawProposal);
 
-        cy.get(rawProposalData).type(proposalPayload, {
+        cy.getByTestId(rawProposalData).type(proposalPayload, {
           parseSpecialCharSequences: false,
           delay: 2,
         });
       });
-      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.getByTestId(newProposalSubmitButton).should('be.visible').click();
 
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
-      cy.get(feedbackError).should('have.text', errorMsg);
+      cy.getByTestId(feedbackError).should('have.text', errorMsg);
       closeDialog();
     });
 
@@ -265,10 +267,10 @@ context(
     // 3006-PASC-006 3006-PASC-007 3008-PFRO-018 3008-PFRO-019 3003-PMAN-006 3003-PMAN-007
     it('Unable to submit proposal without valid json', function () {
       goToMakeNewProposal(governanceProposalType.RAW);
-      cy.get(newProposalSubmitButton).click();
+      cy.getByTestId(newProposalSubmitButton).click();
       cy.getByTestId('input-error-text').should('have.text', 'Required');
-      cy.get(rawProposalData).type('Not a valid json string');
-      cy.get(newProposalSubmitButton).click();
+      cy.getByTestId(rawProposalData).type('Not a valid json string');
+      cy.getByTestId(newProposalSubmitButton).click();
       cy.getByTestId('input-error-text').should(
         'have.text',
         'Must be valid JSON'
@@ -283,22 +285,22 @@ context(
       submitUniqueRawProposal({ proposalTitle: proposalTitle });
       ethereumWalletConnect();
       stakingPageDisassociateTokens('0.0001');
-      cy.get(vegaWallet)
+      cy.getByTestId(vegaWallet)
         .first()
         .within(() => {
-          cy.get(vegaWalletAssociatedBalance, txTimeout).should(
+          cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).should(
             'contain',
             '0.9999'
           );
         });
       navigateTo(navigation.proposals);
       getProposalFromTitle(proposalTitle).within(() =>
-        cy.get(viewProposalButton).click()
+        cy.getByTestId(viewProposalButton).click()
       );
       cy.contains('Vote breakdown').should('be.visible', {
         timeout: 10000,
       });
-      cy.get(voteButtons).should('not.exist');
+      cy.getByTestId(voteButtons).should('not.exist');
       cy.getByTestId('min-proposal-requirements').should(
         'have.text',
         `You must have at least ${this.minVoterBalance} VEGA associated to vote on this proposal`
@@ -311,20 +313,20 @@ context(
       cy.get('[data-testid="disconnect"]').click();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         getProposalFromTitle(rawProposal.rationale.title).within(() =>
-          cy.get(viewProposalButton).click()
+          cy.getByTestId(viewProposalButton).click()
         );
       });
       // 3001-VOTE-075
       // 3001-VOTE-076
-      cy.get(connectToVegaWalletButton)
+      cy.getByTestId(connectToVegaWalletButton)
         .should('be.visible')
         .and('have.text', 'Connect Vega wallet')
         .click();
       cy.getByTestId('connector-jsonRpc').click();
-      cy.get(vegaWalletNameElement).should('be.visible');
-      cy.get(connectToVegaWalletButton).should('not.exist');
+      cy.getByTestId(vegaWalletNameElement).should('be.visible');
+      cy.getByTestId(connectToVegaWalletButton).should('not.exist');
       // 3001-VOTE-100
-      cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
+      cy.getByTestId(vegaWalletAssociatedBalance, txTimeout).contains(
         '1.00',
         txTimeout
       );

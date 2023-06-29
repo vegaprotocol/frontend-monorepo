@@ -19,7 +19,6 @@ describe('useOracleMarkets', () => {
   it('returns correct market list for the given provider', () => {
     mockMarkets.mockReturnValueOnce({ data: marketsData });
     const { result } = renderHook(() => useOracleMarkets(mockProvider));
-    console.log(JSON.stringify(result.current));
     expect(result.current).toStrictEqual(oracleMarkets);
   });
 });

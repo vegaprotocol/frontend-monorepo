@@ -39,7 +39,6 @@ export type OrderListTableProps = TypedDataAgGrid<Order> & {
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   filter?: Filter;
   isReadOnly: boolean;
-  storeKey?: string;
 };
 
 export const OrderListTable = memo<

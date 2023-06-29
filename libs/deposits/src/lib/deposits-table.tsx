@@ -24,10 +24,8 @@ export const DepositsTable = forwardRef<
   return (
     <AgGrid
       ref={ref}
-      defaultColDef={{ resizable: true }}
+      defaultColDef={{ flex: 1 }}
       style={{ width: '100%', height: '100%' }}
-      suppressCellFocus={true}
-      storeKey="depositTable"
       {...props}
     >
       <AgGridColumn headerName="Asset" field="asset.symbol" />

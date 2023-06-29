@@ -5,8 +5,8 @@ import {
 } from '../../support/common.functions';
 import { waitForBeginningOfEpoch } from '../../support/staking.functions';
 
-const viewToggle = '[data-testid="epoch-reward-view-toggle-total"]';
-const warning = '[data-testid="callout"]';
+const viewToggle = 'epoch-reward-view-toggle-total';
+const warning = 'callout';
 
 context(
   'Rewards Page - verify elements on page',
@@ -27,7 +27,7 @@ context(
       });
 
       it('should have epoch warning', function () {
-        cy.get(warning)
+        cy.getByTestId(warning)
           .should('be.visible')
           .and(
             'have.text',
@@ -36,7 +36,7 @@ context(
       });
 
       it('should have toggle for seeing total vs individual rewards', function () {
-        cy.get(viewToggle).should('be.visible');
+        cy.getByTestId(viewToggle).should('be.visible');
       });
 
       // Skipping due to bug #3471 causing flaky failuress

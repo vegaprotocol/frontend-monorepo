@@ -1,13 +1,13 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import {
   addDecimalsFormatNumber,
+  convertToCountdownString,
   getDateTimeFormat,
   isNumeric,
   truncateByChars,
 } from '@vegaprotocol/utils';
-import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import {
   ButtonLink,
@@ -32,20 +32,24 @@ import {
   useWithdrawalApprovalDialog,
 } from '@vegaprotocol/web3';
 import * as Schema from '@vegaprotocol/types';
+import type { TimestampedWithdrawals } from './use-ready-to-complete-withdrawals-toast';
+import classNames from 'classnames';
 
 export const WithdrawalsTable = (
-  props: TypedDataAgGrid<WithdrawalFieldsFragment>
+  props: TypedDataAgGrid<WithdrawalFieldsFragment> & {
+    ready?: TimestampedWithdrawals;
+    delayed?: TimestampedWithdrawals;
+  }
 ) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const createWithdrawApproval = useEthWithdrawApprovalsStore(
     (store) => store.create
   );
 
-  const bottomPlaceholderProps = useBottomPlaceholder({ gridRef });
   return (
     <AgGrid
       overlayNoRowsTemplate={t('No withdrawals')}
-      defaultColDef={{ resizable: true }}
+      defaultColDef={{ flex: 1 }}
       style={{ width: '100%', height: '100%' }}
       components={{
         RecipientCell,
@@ -55,8 +59,6 @@ export const WithdrawalsTable = (
       }}
       suppressCellFocus
       ref={gridRef}
-      storeKey="withdrawals"
-      {...bottomPlaceholderProps}
       {...props}
     >
       <AgGridColumn headerName="Asset" field="asset.symbol" />
@@ -125,6 +127,7 @@ export const WithdrawalsTable = (
       <AgGridColumn
         headerName={t('Status')}
         field="status"
+        cellRendererParams={{ ready: props.ready, delayed: props.delayed }}
         cellRenderer="StatusCell"
       />
       <AgGridColumn
@@ -211,20 +214,74 @@ export const EtherscanLinkCell = ({
   );
 };
 
-export const StatusCell = ({ data }: { data: WithdrawalFieldsFragment }) => {
-  if (!data) {
-    return null;
-  }
-  if (data.pendingOnForeignChain || !data.txHash) {
-    return <span>{t('Pending')}</span>;
-  }
-  if (data.status === Schema.WithdrawalStatus.STATUS_FINALIZED) {
-    return <span>{t('Completed')}</span>;
-  }
-  if (data.status === Schema.WithdrawalStatus.STATUS_REJECTED) {
-    return <span>{t('Rejected')}</span>;
-  }
-  return <span>{t('Failed')}</span>;
+export const StatusCell = ({
+  data,
+  ready,
+  delayed,
+}: {
+  data: WithdrawalFieldsFragment;
+  ready?: TimestampedWithdrawals;
+  delayed?: TimestampedWithdrawals;
+}) => {
+  const READY_TO_COMPLETE = t('Ready to complete');
+  const DELAYED = (readyIn: string) => t('Delayed (ready in %s)', readyIn);
+  const PENDING = t('Pending');
+  const COMPLETED = t('Completed');
+  const REJECTED = t('Rejected');
+  const FAILED = t('Failed');
+
+  const isPending = data.pendingOnForeignChain || !data.txHash;
+  const isReady = ready?.find((w) => w.data.id === data.id);
+  const isDelayed = delayed?.find((w) => w.data.id === data.id);
+
+  const determineLabel = () => {
+    if (isPending) {
+      if (isReady) {
+        return READY_TO_COMPLETE;
+      }
+      return PENDING;
+    }
+    if (data.status === Schema.WithdrawalStatus.STATUS_FINALIZED) {
+      return COMPLETED;
+    }
+    if (data.status === Schema.WithdrawalStatus.STATUS_REJECTED) {
+      return REJECTED;
+    }
+    return FAILED;
+  };
+
+  const [label, setLabel] = useState<string | undefined>(determineLabel());
+  useEffect(() => {
+    // handle countdown for delayed withdrawals
+    let interval: NodeJS.Timer;
+    if (!data || !isDelayed || isDelayed.timestamp == null || !isPending) {
+      return;
+    }
+
+    // eslint-disable-next-line prefer-const
+    interval = setInterval(() => {
+      if (isDelayed.timestamp == null) return;
+      const remaining = Date.now() - isDelayed.timestamp;
+      if (remaining < 0) {
+        setLabel(DELAYED(convertToCountdownString(remaining, '0:00:00:00')));
+      } else {
+        setLabel(READY_TO_COMPLETE);
+      }
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [READY_TO_COMPLETE, data, delayed, isDelayed, isPending]);
+
+  return data ? (
+    <span
+      className={classNames({
+        'text-vega-blue-450': label === READY_TO_COMPLETE,
+      })}
+    >
+      {label}
+    </span>
+  ) : null;
 };
 
 const RecipientCell = ({

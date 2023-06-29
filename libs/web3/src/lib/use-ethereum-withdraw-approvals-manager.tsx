@@ -91,7 +91,8 @@ export const useEthWithdrawApprovalsManager = () => {
       if (threshold && amount.isGreaterThan(threshold)) {
         const delaySecs = await getDelay();
         const completeTimestamp =
-          new Date(withdrawal.createdTimestamp).getTime() + delaySecs * 1000;
+          new Date(withdrawal.createdTimestamp).getTime() +
+          (delaySecs as number) * 1000;
         const now = Date.now();
         if (now < completeTimestamp) {
           update(transaction.id, {
@@ -139,7 +140,11 @@ export const useEthWithdrawApprovalsManager = () => {
           approval.creation,
           approval.nonce,
           approval.signatures,
-        ]
+        ],
+        undefined,
+        undefined,
+        undefined,
+        transaction.withdrawal || undefined
       );
     })().catch((err) => {
       localLoggerFactory({ application: 'web3' }).error(

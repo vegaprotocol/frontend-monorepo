@@ -5,6 +5,11 @@ import { useAccountBalance } from '@vegaprotocol/accounts';
 import { WithdrawFormContainer } from './withdraw-form-container';
 import * as Types from '@vegaprotocol/types';
 import { useWeb3React } from '@web3-react/core';
+import {
+  useGetWithdrawDelay,
+  useGetWithdrawThreshold,
+} from '@vegaprotocol/web3';
+import BigNumber from 'bignumber.js';
 let mockData: Account[] | null = null;
 
 jest.mock('@vegaprotocol/data-provider', () => ({
@@ -27,6 +32,7 @@ jest.mock('@vegaprotocol/network-parameters', () => {
     }),
   };
 });
+jest.mock('@vegaprotocol/web3');
 
 describe('WithdrawFormContainer', () => {
   const props = {
@@ -110,6 +116,12 @@ describe('WithdrawFormContainer', () => {
       accountBalance: 0,
       accountDecimals: null,
     });
+    (useGetWithdrawThreshold as jest.Mock).mockReturnValue(() =>
+      Promise.resolve(new BigNumber(Infinity))
+    );
+    (useGetWithdrawDelay as jest.Mock).mockReturnValue(() =>
+      Promise.resolve(60)
+    );
   });
   afterAll(() => {
     jest.resetAllMocks();

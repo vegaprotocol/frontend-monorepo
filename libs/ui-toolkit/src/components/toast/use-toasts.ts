@@ -46,12 +46,20 @@ type Actions = {
    * Arbitrary removes all toasts
    */
   removeAll: () => void;
+  /**
+   * Checks if a given toasts exists in the collection
+   */
+  hasToast: (id: string) => boolean;
+  /**
+   * Closes toast by meta
+   */
+  closeBy: (meta: Toast['meta']) => void;
 };
 
 type ToastsStore = State & Actions;
 
 export const useToasts = create<ToastsStore>()(
-  immer((set) => ({
+  immer((set, get) => ({
     toasts: {},
     count: 0,
     add: (toast) =>
@@ -97,6 +105,18 @@ export const useToasts = create<ToastsStore>()(
         }
       }),
     removeAll: () => set({ toasts: {}, count: 0 }),
+    hasToast: (id) => get().toasts[id] != null,
+    closeBy: (meta) => {
+      if (!meta) return;
+      set((state) => {
+        const found = Object.values(state.toasts).find((t) =>
+          isEqual(t.meta, meta)
+        );
+        if (found) {
+          found.signal = 'close';
+        }
+      });
+    },
   }))
 );
 

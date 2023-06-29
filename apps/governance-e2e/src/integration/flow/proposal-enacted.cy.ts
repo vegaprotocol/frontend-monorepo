@@ -19,13 +19,13 @@ import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-functions';
 
 const proposalListItem = '[data-testid="proposals-list-item"]';
-const closedProposals = '[data-testid="closed-proposals"]';
-const proposalStatus = '[data-testid="proposal-status"]';
-const viewProposalButton = '[data-testid="view-proposal-btn"]';
-const votesTable = '[data-testid="votes-table"]';
-const openProposals = '[data-testid="open-proposals"]';
+const closedProposals = 'closed-proposals';
+const proposalStatus = 'proposal-status';
+const viewProposalButton = 'view-proposal-btn';
+const votesTable = 'votes-table';
+const openProposals = 'open-proposals';
 const proposalVoteProgressForPercentage =
-  '[data-testid="vote-progress-indicator-percentage-for"]';
+  'vote-progress-indicator-percentage-for';
 const proposalTimeout = { timeout: 8000 };
 
 context(
@@ -55,18 +55,18 @@ context(
       cy.createMarket();
       cy.reload();
       waitForSpinner();
-      cy.get(closedProposals).within(() => {
+      cy.getByTestId(closedProposals).within(() => {
         cy.contains(proposalTitle)
           .parentsUntil(proposalListItem)
           .last()
           .within(() => {
-            cy.get(proposalStatus).should('have.text', 'Enacted');
-            cy.get(viewProposalButton).click();
+            cy.getByTestId(proposalStatus).should('have.text', 'Enacted');
+            cy.getByTestId(viewProposalButton).click();
           });
       });
       cy.getByTestId('proposal-type').should('have.text', 'New market');
-      cy.get(proposalStatus).should('have.text', 'Enacted');
-      cy.get(votesTable).within(() => {
+      cy.getByTestId(proposalStatus).should('have.text', 'Enacted');
+      cy.getByTestId(votesTable).within(() => {
         cy.contains('Vote passed.').should('be.visible');
         cy.contains('Voting has ended.').should('be.visible');
       });
@@ -81,27 +81,27 @@ context(
       navigateTo(navigation.proposals);
       cy.reload();
       waitForSpinner();
-      cy.get(openProposals).within(() => {
+      cy.getByTestId(openProposals).within(() => {
         cy.contains(proposalTitle)
           .parentsUntil(proposalListItem)
           .last()
-          .within(() => cy.get(viewProposalButton).click());
+          .within(() => cy.getByTestId(viewProposalButton).click());
       });
-      cy.get(proposalStatus).should('have.text', 'Open');
+      cy.getByTestId(proposalStatus).should('have.text', 'Open');
       voteForProposal('for');
-      cy.get(proposalStatus, proposalTimeout)
+      cy.getByTestId(proposalStatus, proposalTimeout)
         .should('have.text', 'Passed')
         .then(() => {
-          cy.get(proposalStatus, proposalTimeout).should(
+          cy.getByTestId(proposalStatus, proposalTimeout).should(
             'have.text',
             'Enacted'
           );
         });
-      cy.get(votesTable).within(() => {
+      cy.getByTestId(votesTable).within(() => {
         cy.contains('Vote passed.').should('be.visible');
         cy.contains('Voting has ended.').should('be.visible');
       });
-      cy.get(proposalVoteProgressForPercentage)
+      cy.getByTestId(proposalVoteProgressForPercentage)
         .contains('100.00%')
         .and('be.visible');
     });
@@ -115,15 +115,18 @@ context(
       navigateTo(navigation.proposals);
       cy.reload();
       waitForSpinner();
-      cy.get(openProposals, { timeout: 6000 }).within(() => {
+      cy.getByTestId(openProposals, { timeout: 6000 }).within(() => {
         cy.contains(proposalTitle)
           .parentsUntil(proposalListItem)
           .last()
-          .within(() => cy.get(viewProposalButton).click());
+          .within(() => cy.getByTestId(viewProposalButton).click());
       });
-      cy.get(proposalStatus).should('have.text', 'Open');
+      cy.getByTestId(proposalStatus).should('have.text', 'Open');
       voteForProposal('for');
-      cy.get(proposalStatus, proposalTimeout).should('have.text', 'Enacted');
+      cy.getByTestId(proposalStatus, proposalTimeout).should(
+        'have.text',
+        'Enacted'
+      );
     });
 
     // 3001-VOTE-048 3001-VOTE-049 3001-VOTE-050
@@ -134,14 +137,17 @@ context(
       navigateTo(navigation.proposals);
       cy.reload();
       waitForSpinner();
-      cy.get(openProposals).within(() => {
+      cy.getByTestId(openProposals).within(() => {
         cy.contains(proposalTitle)
           .parentsUntil(proposalListItem)
           .last()
-          .within(() => cy.get(viewProposalButton).click());
+          .within(() => cy.getByTestId(viewProposalButton).click());
       });
-      cy.get(proposalStatus).should('have.text', 'Open');
-      cy.get(proposalStatus, proposalTimeout).should('have.text', 'Declined');
+      cy.getByTestId(proposalStatus).should('have.text', 'Open');
+      cy.getByTestId(proposalStatus, proposalTimeout).should(
+        'have.text',
+        'Declined'
+      );
       getProposalInformationFromTable('Rejection reason')
         .contains('PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED')
         .and('be.visible');

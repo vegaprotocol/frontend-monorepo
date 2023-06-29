@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Icon, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
+import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../../../components/heading';
-import { collapsibleToggleStyles } from '../../../../lib/collapsible-toggle-styles';
+import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
@@ -16,17 +16,13 @@ export const ProposalJson = ({
 
   return (
     <section data-testid="proposal-json">
-      <button
-        onClick={() => setShowDetails(!showDetails)}
-        data-testid="proposal-json-toggle"
+      <CollapsibleToggle
+        toggleState={showDetails}
+        setToggleState={setShowDetails}
+        dataTestId="proposal-json-toggle"
       >
-        <div className="flex items-center gap-3">
-          <SubHeading title={t('proposalJson')} />
-          <div className={collapsibleToggleStyles(showDetails)}>
-            <Icon name="chevron-down" size={8} />
-          </div>
-        </div>
-      </button>
+        <SubHeading title={t('proposalJson')} />
+      </CollapsibleToggle>
 
       {showDetails && <SyntaxHighlighter data={proposal} />}
     </section>
