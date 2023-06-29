@@ -80,4 +80,14 @@ describe('AssetDetailsTable', () => {
       }
     }
   );
+  it('omits specified rows when omitRows prop is provided', async () => {
+    const asset = generateERC20Asset(1, Schema.AssetStatus.STATUS_ENABLED);
+    const omittedKeys = [AssetDetail.TYPE, AssetDetail.DECIMALS];
+    render(<AssetDetailsTable asset={asset} omitRows={omittedKeys} />);
+
+    for (const key of omittedKeys) {
+      expect(screen.queryByTestId(testId(key, 'label'))).toBeNull();
+      expect(screen.queryByTestId(testId(key, 'value'))).toBeNull();
+    }
+  });
 });

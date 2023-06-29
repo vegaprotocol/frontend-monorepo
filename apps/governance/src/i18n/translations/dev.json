@@ -836,5 +836,6 @@
   "AllProposals": "All proposals",
   "RejectedProposals": "Rejected proposals",
   "networkGovernance": "Network governance",
-  "networkUpgrades": "Network upgrades"
+  "networkUpgrades": "Network upgrades",
+  "assetSpecification": "Asset specification"
 }

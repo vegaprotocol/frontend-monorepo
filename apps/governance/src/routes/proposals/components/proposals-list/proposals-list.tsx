@@ -191,12 +191,13 @@ export const ProposalsList = ({
         {sortedProposals.open.length > 0 ||
         sortedProtocolUpgradeProposals.open.length > 0 ? (
           <ul data-testid="open-proposals">
-            {sortedProtocolUpgradeProposals.open.map((proposal) => (
-              <ProtocolUpgradeProposalsListItem
-                key={proposal.upgradeBlockHeight}
-                proposal={proposal}
-              />
-            ))}
+            {filterString.length < 1 &&
+              sortedProtocolUpgradeProposals.open.map((proposal) => (
+                <ProtocolUpgradeProposalsListItem
+                  key={proposal.upgradeBlockHeight}
+                  proposal={proposal}
+                />
+              ))}
 
             {sortedProposals.open.filter(filterPredicate).map((proposal) => (
               <ProposalsListItem key={proposal?.id} proposal={proposal} />

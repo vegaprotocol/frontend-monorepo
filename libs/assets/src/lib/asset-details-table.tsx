@@ -224,9 +224,11 @@ export const testId = (detail: AssetDetail, field: 'label' | 'value') =>
 
 export type AssetDetailsTableProps = {
   asset: Asset;
+  omitRows?: AssetDetail[];
 } & Omit<KeyValueTableRowProps, 'children'>;
 export const AssetDetailsTable = ({
   asset,
+  omitRows = [],
   ...props
 }: AssetDetailsTableProps) => {
   const longStringModifiers = (key: AssetDetail, value: string) =>
@@ -243,7 +245,7 @@ export const AssetDetailsTable = ({
   return (
     <KeyValueTable>
       {details
-        .filter(({ value }) => Boolean(value))
+        .filter(({ key, value }) => Boolean(value) && !omitRows.includes(key))
         .map(({ key, label, value, tooltip, valueTooltip }) => (
           <KeyValueTableRow key={key} {...props}>
             <div
