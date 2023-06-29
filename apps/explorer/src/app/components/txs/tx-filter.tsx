@@ -101,14 +101,14 @@ export const TxsFilter = ({ filters, setFilters }: TxFilterProps) => {
       modal={false}
       trigger={
         <DropdownMenuTrigger className="ml-0">
-          <Button size="xs">
+          <Button size="xs" data-testid="filter-trigger">
             <FilterLabel filters={filters} />
           </Button>
         </DropdownMenuTrigger>
       }
     >
       <DropdownMenuContent>
-        {filters.size > 1 ? null : (
+        {filters.size > 0 ? null : (
           <>
             <DropdownMenuCheckboxItem
               onCheckedChange={() => setFilters(new Set(AllFilterOptions))}
