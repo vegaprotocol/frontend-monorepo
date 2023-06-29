@@ -6,13 +6,14 @@ import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
-import { AccountManager, useTransferDialog } from '@vegaprotocol/accounts';
+import { AccountManager } from '@vegaprotocol/accounts';
 import { useDepositDialog } from '@vegaprotocol/deposits';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
 import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
+import { useSidebar } from '../sidebar';
 
 export const AccountsContainer = ({
   pinnedAsset,
@@ -27,7 +28,7 @@ export const AccountsContainer = ({
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const openWithdrawalDialog = useWithdrawalDialog((store) => store.open);
   const openDepositDialog = useDepositDialog((store) => store.open);
-  const openTransferDialog = useTransferDialog((store) => store.open);
+  const { setView } = useSidebar();
 
   const gridStore = useAccountStore((store) => store.gridStore);
   const updateGridStore = useAccountStore((store) => store.updateGridStore);
@@ -68,14 +69,14 @@ export const AccountsContainer = ({
             variant="primary"
             size="sm"
             data-testid="open-transfer-dialog"
-            onClick={() => openTransferDialog()}
+            onClick={() => setView('transfer')}
           >
             {t('Transfer')}
           </Button>
           <Button
             variant="primary"
             size="sm"
-            onClick={() => openDepositDialog()}
+            onClick={() => setView('deposit')}
           >
             {t('Deposit')}
           </Button>
