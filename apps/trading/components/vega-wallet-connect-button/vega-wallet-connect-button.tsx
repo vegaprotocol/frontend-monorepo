@@ -21,8 +21,8 @@ import type { PubKey } from '@vegaprotocol/wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { WalletIcon } from '../icons/wallet';
-import { useTransferDialog } from '@vegaprotocol/accounts';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
+import { useSidebar } from '../sidebar';
 
 const MobileWalletButton = ({
   isConnected,
@@ -35,7 +35,6 @@ const MobileWalletButton = ({
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const openTransferDialog = useTransferDialog((store) => store.open);
   const { VEGA_ENV } = useEnvironment();
   const isYellow = VEGA_ENV === Networks.TESTNET;
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -128,7 +127,8 @@ const MobileWalletButton = ({
             <Button
               onClick={() => {
                 setDrawerOpen(false);
-                openTransferDialog(true);
+                // openTransferDialog(true);
+                alert('TODO: handle transfer on mobile');
               }}
               fill
             >
@@ -149,7 +149,7 @@ export const VegaWalletConnectButton = () => {
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const openTransferDialog = useTransferDialog((store) => store.open);
+  const { setView } = useSidebar();
   const {
     pubKey,
     pubKeys,
@@ -209,7 +209,7 @@ export const VegaWalletConnectButton = () => {
                 {!isReadOnly && (
                   <DropdownMenuItem
                     data-testid="wallet-transfer"
-                    onClick={() => openTransferDialog(true)}
+                    onClick={() => setView('transfer')}
                   >
                     {t('Transfer')}
                   </DropdownMenuItem>

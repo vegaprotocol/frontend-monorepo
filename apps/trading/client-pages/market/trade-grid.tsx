@@ -1,22 +1,14 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import type { ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { t } from '@vegaprotocol/i18n';
 import { OracleBanner } from '@vegaprotocol/markets';
-import type { Market, MarketFieldsFragment } from '@vegaprotocol/markets';
+import type { Market } from '@vegaprotocol/markets';
 import { Filter } from '@vegaprotocol/orders';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
-import {
-  Tab,
-  LocalStoragePersistTabs as Tabs,
-  Tooltip,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { HeaderTitle } from '../../components/header';
@@ -26,167 +18,14 @@ import {
   usePaneLayout,
 } from '../../components/resizable-grid';
 import { TradingViews } from './trade-views';
-import { MarketSelector } from './market-selector';
 import { HeaderStats } from './header-stats';
 import { MarketSuccessorBanner } from '../../components/market-banner';
-import { DepositContainer } from '@vegaprotocol/deposits';
-import {
-  WithdrawFormContainer,
-  WithdrawManager,
-} from '@vegaprotocol/withdraws';
-import { TransferContainer } from '@vegaprotocol/accounts';
 
 interface TradeGridProps {
   market: Market | null;
   onSelect: (marketId: string, metaKey?: boolean) => void;
   pinnedAsset?: PinnedAsset;
 }
-
-interface BottomPanelProps {
-  marketId: string;
-  pinnedAsset?: PinnedAsset;
-}
-
-const MarketBottomPanel = memo(
-  ({ marketId, pinnedAsset }: BottomPanelProps) => {
-    const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'bottom' });
-    const { screenSize } = useScreenDimensions();
-    const onMarketClick = useMarketClickHandler(true);
-
-    return 'xxxl' === screenSize ? (
-      <ResizableGrid
-        proportionalLayout
-        minSize={200}
-        onChange={handleOnLayoutChange}
-      >
-        <ResizableGridPanel
-          priority={LayoutPriority.Low}
-          preferredSize={sizes[0] || '50%'}
-          minSize={50}
-        >
-          <TradeGridChild>
-            <Tabs storageKey="console-trade-grid-bottom-left">
-              <Tab id="open-orders" name={t('Open')}>
-                <VegaWalletContainer>
-                  <TradingViews.orders.component
-                    marketId={marketId}
-                    filter={Filter.Open}
-                  />
-                </VegaWalletContainer>
-              </Tab>
-              <Tab id="closed-orders" name={t('Closed')}>
-                <VegaWalletContainer>
-                  <TradingViews.orders.component
-                    marketId={marketId}
-                    filter={Filter.Closed}
-                  />
-                </VegaWalletContainer>
-              </Tab>
-              <Tab id="rejected-orders" name={t('Rejected')}>
-                <VegaWalletContainer>
-                  <TradingViews.orders.component
-                    marketId={marketId}
-                    filter={Filter.Rejected}
-                  />
-                </VegaWalletContainer>
-              </Tab>
-              <Tab id="orders" name={t('All')}>
-                <VegaWalletContainer>
-                  <TradingViews.orders.component marketId={marketId} />
-                </VegaWalletContainer>
-              </Tab>
-              <Tab id="fills" name={t('Fills')}>
-                <VegaWalletContainer>
-                  <TradingViews.fills.component onMarketClick={onMarketClick} />
-                </VegaWalletContainer>
-              </Tab>
-            </Tabs>
-          </TradeGridChild>
-        </ResizableGridPanel>
-        <ResizableGridPanel
-          priority={LayoutPriority.Low}
-          preferredSize={sizes[1] || '50%'}
-          minSize={50}
-        >
-          <TradeGridChild>
-            <Tabs storageKey="console-trade-grid-bottom-right">
-              <Tab id="positions" name={t('Positions')}>
-                <VegaWalletContainer>
-                  <TradingViews.positions.component
-                    onMarketClick={onMarketClick}
-                  />
-                </VegaWalletContainer>
-              </Tab>
-              <Tab id="accounts" name={t('Collateral')}>
-                <VegaWalletContainer>
-                  <TradingViews.collateral.component
-                    pinnedAsset={pinnedAsset}
-                    onMarketClick={onMarketClick}
-                    hideButtons
-                  />
-                </VegaWalletContainer>
-              </Tab>
-            </Tabs>
-          </TradeGridChild>
-        </ResizableGridPanel>
-      </ResizableGrid>
-    ) : (
-      <TradeGridChild>
-        <Tabs storageKey="console-trade-grid-bottom">
-          <Tab id="positions" name={t('Positions')}>
-            <VegaWalletContainer>
-              <TradingViews.positions.component onMarketClick={onMarketClick} />
-            </VegaWalletContainer>
-          </Tab>
-          <Tab id="open-orders" name={t('Open')}>
-            <VegaWalletContainer>
-              <TradingViews.orders.component
-                marketId={marketId}
-                filter={Filter.Open}
-              />
-            </VegaWalletContainer>
-          </Tab>
-          <Tab id="closed-orders" name={t('Closed')}>
-            <VegaWalletContainer>
-              <TradingViews.orders.component
-                marketId={marketId}
-                filter={Filter.Closed}
-              />
-            </VegaWalletContainer>
-          </Tab>
-          <Tab id="rejected-orders" name={t('Rejected')}>
-            <VegaWalletContainer>
-              <TradingViews.orders.component
-                marketId={marketId}
-                filter={Filter.Rejected}
-              />
-            </VegaWalletContainer>
-          </Tab>
-          <Tab id="orders" name={t('All')}>
-            <VegaWalletContainer>
-              <TradingViews.orders.component marketId={marketId} />
-            </VegaWalletContainer>
-          </Tab>
-          <Tab id="fills" name={t('Fills')}>
-            <VegaWalletContainer>
-              <TradingViews.fills.component onMarketClick={onMarketClick} />
-            </VegaWalletContainer>
-          </Tab>
-          <Tab id="accounts" name={t('Collateral')}>
-            <VegaWalletContainer>
-              <TradingViews.collateral.component
-                pinnedAsset={pinnedAsset}
-                onMarketClick={onMarketClick}
-                hideButtons
-              />
-            </VegaWalletContainer>
-          </Tab>
-        </Tabs>
-      </TradeGridChild>
-    );
-  }
-);
-MarketBottomPanel.displayName = 'MarketBottomPanel';
 
 const MainGrid = memo(
   ({
@@ -196,7 +35,6 @@ const MainGrid = memo(
     marketId: string;
     pinnedAsset?: PinnedAsset;
   }) => {
-    const navigate = useNavigate();
     const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });
     const [sizesMiddle, handleOnMiddleLayoutChange] = usePaneLayout({
       id: 'middle-1',
@@ -252,7 +90,63 @@ const MainGrid = memo(
           preferredSize={sizes[1] || '25%'}
           minSize={50}
         >
-          <MarketBottomPanel marketId={marketId} pinnedAsset={pinnedAsset} />
+          <TradeGridChild>
+            <Tabs storageKey="console-trade-grid-bottom">
+              <Tab id="positions" name={t('Positions')}>
+                <VegaWalletContainer>
+                  <TradingViews.positions.component
+                    onMarketClick={onMarketClick}
+                  />
+                </VegaWalletContainer>
+              </Tab>
+              <Tab id="open-orders" name={t('Open')}>
+                <VegaWalletContainer>
+                  <TradingViews.orders.component
+                    marketId={marketId}
+                    filter={Filter.Open}
+                  />
+                </VegaWalletContainer>
+              </Tab>
+              <Tab id="closed-orders" name={t('Closed')}>
+                <VegaWalletContainer>
+                  <TradingViews.orders.component
+                    marketId={marketId}
+                    filter={Filter.Closed}
+                  />
+                </VegaWalletContainer>
+              </Tab>
+              <Tab id="rejected-orders" name={t('Rejected')}>
+                <VegaWalletContainer>
+                  <TradingViews.orders.component
+                    marketId={marketId}
+                    filter={Filter.Rejected}
+                  />
+                </VegaWalletContainer>
+              </Tab>
+              <Tab id="orders" name={t('All')}>
+                <VegaWalletContainer>
+                  <TradingViews.orders.component marketId={marketId} />
+                </VegaWalletContainer>
+              </Tab>
+              <Tab id="fills" name={t('Fills')}>
+                <VegaWalletContainer>
+                  <TradingViews.fills.component
+                    marketId={marketId}
+                    onMarketClick={onMarketClick}
+                  />
+                </VegaWalletContainer>
+              </Tab>
+              <Tab id="accounts" name={t('Collateral')}>
+                <VegaWalletContainer>
+                  <TradingViews.collateral.component
+                    pinnedAsset={pinnedAsset}
+                    onMarketClick={onMarketClick}
+                    hideButtons
+                  />
+                </VegaWalletContainer>
+              </Tab>
+            </Tabs>
+          </TradeGridChild>
         </ResizableGridPanel>
       </ResizableGrid>
     );
