@@ -13,8 +13,15 @@ import { Route, Routes, useParams } from 'react-router-dom';
 import { Settings } from '../settings';
 import classNames from 'classnames';
 import { NodeHealthContainer } from '../node-health';
+import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 
-type SidebarView = 'order' | 'deposit' | 'withdraw' | 'transfer' | 'settings';
+type SidebarView =
+  | 'order'
+  | 'info'
+  | 'deposit'
+  | 'withdraw'
+  | 'transfer'
+  | 'settings';
 
 export const Sidebar = () => {
   return (
@@ -46,11 +53,18 @@ export const Sidebar = () => {
           <Route
             path="/markets/:marketId"
             element={
-              <SidebarButton
-                view="order"
-                icon={VegaIconNames.TREND_UP}
-                tooltip="Order"
-              />
+              <>
+                <SidebarButton
+                  view="order"
+                  icon={VegaIconNames.TREND_UP}
+                  tooltip="Order"
+                />
+                <SidebarButton
+                  view="info"
+                  icon={VegaIconNames.BREAKDOWN}
+                  tooltip="Market specification"
+                />
+              </>
             }
           />
         </Routes>
@@ -78,8 +92,8 @@ const SidebarButton = ({
 }) => {
   const { view: currView, setView } = useSidebar();
   const buttonClasses = classNames('flex items-center p-2 rounded', {
-    'hover:bg-vega-light-200 hover:dark:bg-vega-dark-200': view !== currView,
-    'bg-vega-blue hover:bg-vega-blue-550': view === currView,
+    'hover:bg-vega-yellow hover:text-black': view !== currView,
+    'bg-vega-yellow hover:bg-vega-yellow-550 text-black': view === currView,
   });
   return (
     <Tooltip
@@ -121,6 +135,14 @@ export const SidebarContent = () => {
 
   if (view === 'settings') {
     return <Settings />;
+  }
+
+  if (view === 'info') {
+    if (params.marketId) {
+      return <MarketInfoAccordionContainer marketId={params.marketId} />;
+    }
+
+    return <div>No marke selected</div>;
   }
 
   return null;
