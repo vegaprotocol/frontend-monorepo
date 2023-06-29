@@ -11,7 +11,6 @@ import type { CSSProperties } from 'react';
 import { useCallback, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FixedSizeList } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import { useMarketSelectorList } from './use-market-selector-list';
 import type { ProductType } from './product-selector';
 import { Product, ProductSelector } from './product-selector';
@@ -48,11 +47,8 @@ export const MarketSelector = ({
   const { markets, data, loading, error } = useMarketSelectorList(filter);
 
   return (
-    <div
-      className="grid grid-rows-[min-content_1fr_min-content] h-full"
-      data-testid="market-selector"
-    >
-      <div className="px-4 pt-2 pb-4">
+    <div data-testid="market-selector">
+      <div className="pt-2 px-4 mb-2">
         <ProductSelector
           product={filter.product}
           onSelect={(product) => {
@@ -149,18 +145,6 @@ export const MarketSelector = ({
           }
         />
       </div>
-      <div className="px-4 py-2">
-        <span className="inline-block border-b border-black dark:border-white">
-          <Link
-            to={'/markets/all'}
-            data-testid="all-markets-link"
-            className="flex items-center gap-x-2"
-          >
-            {t('All markets')}
-            <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
-          </Link>
-        </span>
-      </div>
     </div>
   );
 };
@@ -185,21 +169,17 @@ const MarketList = ({
     return <div>{error.message}</div>;
   }
   return (
-    <AutoSizer>
-      {({ width, height }) => (
-        <TinyScroll>
-          <List
-            data={data}
-            loading={loading}
-            width={width}
-            height={height}
-            currentMarketId={currentMarketId}
-            onSelect={onSelect}
-            noItems={noItems}
-          />
-        </TinyScroll>
-      )}
-    </AutoSizer>
+    <TinyScroll>
+      <List
+        data={data}
+        loading={loading}
+        width={400}
+        height={400}
+        currentMarketId={currentMarketId}
+        onSelect={onSelect}
+        noItems={noItems}
+      />
+    </TinyScroll>
   );
 };
 
@@ -274,7 +254,7 @@ const List = ({
       className="virtualized-list"
       itemCount={data.length}
       itemData={itemData}
-      itemSize={130}
+      itemSize={50}
       itemKey={itemKey}
       width={width}
       height={height}
