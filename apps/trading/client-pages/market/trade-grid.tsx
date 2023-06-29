@@ -8,7 +8,13 @@ import { t } from '@vegaprotocol/i18n';
 import { OracleBanner } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
 import { Filter } from '@vegaprotocol/orders';
-import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
+import {
+  Popover,
+  Tab,
+  LocalStoragePersistTabs as Tabs,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { HeaderTitle } from '../../components/header';
@@ -19,6 +25,7 @@ import {
 } from '../../components/resizable-grid';
 import { TradingViews } from './trade-views';
 import { HeaderStats } from './header-stats';
+import { MarketSelector } from './market-selector';
 interface TradeGridProps {
   market: Market | null;
   onSelect: (marketId: string, metaKey?: boolean) => void;
@@ -167,6 +174,9 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
             primaryContent={market?.tradableInstrument.instrument.code}
             secondaryContent={market?.tradableInstrument.instrument.name}
           />
+          <Popover trigger={<VegaIcon name={VegaIconNames.CHEVRON_DOWN} />}>
+            <MarketSelector currentMarketId={market?.id} />
+          </Popover>
         </div>
       </div>
       <div className="border-b border-default min-w-0">
