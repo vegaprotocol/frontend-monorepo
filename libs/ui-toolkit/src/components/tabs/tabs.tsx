@@ -40,18 +40,18 @@ export const Tabs = ({
             if (!isValidElement(child) || child.props.hidden) return null;
             const isActive = child.props.id === (value || activeTab);
             const triggerClass = classNames(
-              'relative px-4 py-1 border-r border-default',
-              'uppercase',
+              'relative px-4 py-2 border-l border-r first:border-l-0',
               {
-                'cursor-default': isActive,
-                'text-neutral-400 hover:text-neutral-500 dark:hover:text-neutral-300':
+                'cursor-default border-default bg-vega-light-100 dark:bg-vega-dark-100':
+                  isActive,
+                'text-neutral-400 border-transparent hover:text-neutral-500 dark:hover:text-neutral-300':
                   !isActive,
               },
               'flex items-center gap-2'
             );
             const borderClass = classNames(
               'absolute bottom-[-1px] left-0 w-full h-0 border-b',
-              'border-b-white dark:border-b-black',
+              'border-b-vega-light-100 dark:border-b-vega-dark-100',
               { hidden: !isActive }
             );
             return (
