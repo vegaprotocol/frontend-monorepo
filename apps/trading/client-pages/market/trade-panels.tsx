@@ -9,7 +9,7 @@ import type { TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
 import { memo, useState } from 'react';
 import {
-  Icon,
+  Popover,
   Splash,
   VegaIcon,
   VegaIconNames,
@@ -17,8 +17,7 @@ import {
 import { NO_MARKET } from './constants';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
-import * as DialogPrimitives from '@radix-ui/react-dialog';
-import { HeaderTitle } from '../../components/header';
+import { Header, HeaderTitle } from '../../components/header';
 import { MarketSelector } from './market-selector';
 import { MarketSuccessorBanner } from '../../components/market-banner';
 import { MarketHeaderStats } from './market-header-stats';
@@ -38,7 +37,6 @@ export const TradePanels = ({
   onClickCollateral,
   pinnedAsset,
 }: TradePanelsProps) => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const onMarketClick = useMarketClickHandler(true);
   const onOrderTypeClick = useMarketLiquidityClickHandler();
 
@@ -73,24 +71,22 @@ export const TradePanels = ({
 
   return (
     <div className="h-full grid grid-rows-[min-content_min-content_1fr_min-content]">
-      <div className="border-b border-default min-w-0">
-        <div className="flex gap-4 items-center px-4 py-2">
-          <HeaderTitle>
-            {market?.tradableInstrument.instrument.code}
-          </HeaderTitle>
-          <button onClick={() => setDrawerOpen((x) => !x)} className="p-2">
-            <span
-              className={classNames('block', {
-                'rotate-90 translate-x-1': !drawerOpen,
-                '-rotate-90 -translate-x-1': drawerOpen,
-              })}
-            >
-              <VegaIcon name={VegaIconNames.CHEVRON_UP} />
-            </span>
-          </button>
-        </div>
+      <Header
+        title={
+          <Popover
+            trigger={
+              <HeaderTitle>
+                {market?.tradableInstrument.instrument.code}
+                <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+              </HeaderTitle>
+            }
+          >
+            <MarketSelector currentMarketId={market?.id} />
+          </Popover>
+        }
+      >
         <MarketHeaderStats market={market} />
-      </div>
+      </Header>
       <div>
         <MarketSuccessorBanner market={market} />
         <OracleBanner marketId={market?.id || ''} />
@@ -123,25 +119,6 @@ export const TradePanels = ({
           );
         })}
       </div>
-      <DialogPrimitives.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <DialogPrimitives.Portal>
-          <DialogPrimitives.Overlay />
-          <DialogPrimitives.Content
-            className={classNames(
-              'fixed h-full max-w-[500px] w-[90vw] z-10 top-0 left-0 transition-transform',
-              'bg-white dark:bg-black',
-              'border-r border-default'
-            )}
-          >
-            <DialogPrimitives.Close className="absolute top-0 right-0 p-2">
-              <Icon name="cross" />
-            </DialogPrimitives.Close>
-            {drawerOpen && (
-              <MarketSelector onSelect={() => setDrawerOpen(false)} />
-            )}
-          </DialogPrimitives.Content>
-        </DialogPrimitives.Portal>
-      </DialogPrimitives.Root>
     </div>
   );
 };
