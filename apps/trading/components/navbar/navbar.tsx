@@ -57,7 +57,6 @@ export const Navbar = ({
 
   return (
     <Navigation
-      appName="Console"
       theme={theme}
       actions={
         <>
