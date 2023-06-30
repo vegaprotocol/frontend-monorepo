@@ -188,9 +188,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No liquidity provisions')}
-        getRowId={({ data }: { data: LiquidityProvisionData }) =>
-          `${data.party.id}-${data.status}`
-        }
+        getRowId={({ data }: { data: LiquidityProvisionData }) => data.id || ''}
         ref={ref}
         tooltipShowDelay={500}
         defaultColDef={{
