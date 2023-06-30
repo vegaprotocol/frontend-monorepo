@@ -19,7 +19,7 @@ export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
 
 export const ProposalsList = () => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const { data, error } = useProposalsListQuery({
+  const { data } = useProposalsListQuery({
     variables: {
       proposalType: Types.ProposalType.TYPE_NEW_MARKET,
     },
@@ -28,6 +28,7 @@ export const ProposalsList = () => {
   const filteredData = getNewMarketProposals(
     removePaginationWrapper(data?.proposalsConnection?.edges)
   );
+  console.log(data, filteredData);
   const { columnDefs, defaultColDef } = useColumnDefs();
 
   return (
@@ -40,7 +41,7 @@ export const ProposalsList = () => {
         defaultColDef={defaultColDef}
         getRowId={({ data }) => data.id}
         style={{ width: '100%', height: '100%' }}
-        overlayNoRowsTemplate={error ? error.message : t('No markets')}
+        overlayNoRowsTemplate={t('No markets')}
       />
     </div>
   );
