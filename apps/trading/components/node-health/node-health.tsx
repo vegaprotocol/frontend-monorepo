@@ -14,7 +14,7 @@ export const NodeHealthContainer = () => {
   return (
     <Tooltip
       description={
-        <div className="text-xs p-1">
+        <div className="flex flex-col gap-2 p-1 text-base">
           <p>Status: {text}</p>
           {VEGA_URL && (
             <p>
