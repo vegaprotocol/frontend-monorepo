@@ -117,39 +117,42 @@ export const SidebarContent = () => {
   const { view } = useSidebar();
   const params = useParams();
 
+  let content = null;
+
   if (view === 'order') {
     if (params.marketId) {
-      return <TradingViews.ticket.component marketId={params.marketId} />;
+      content = <TradingViews.ticket.component marketId={params.marketId} />;
     }
-
-    return <div>No marke selected</div>;
   }
 
   if (view === 'deposit') {
-    return <DepositContainer />;
+    content = <DepositContainer />;
   }
 
   if (view === 'withdraw') {
-    return <WithdrawFormContainer submit={() => alert('TODO')} />;
+    content = <WithdrawFormContainer submit={() => alert('TODO')} />;
   }
 
   if (view === 'transfer') {
-    return <TransferContainer />;
+    content = <TransferContainer />;
   }
 
   if (view === 'settings') {
-    return <Settings />;
+    content = <Settings />;
   }
 
   if (view === 'info') {
     if (params.marketId) {
-      return <MarketInfoAccordionContainer marketId={params.marketId} />;
+      content = <MarketInfoAccordionContainer marketId={params.marketId} />;
     }
-
-    return <div>No marke selected</div>;
   }
 
-  return null;
+  return (
+    <div>
+      <h2 className="capitalize mb-2">{view}</h2>
+      {content}
+    </div>
+  );
 };
 
 export const useSidebar = create<{
