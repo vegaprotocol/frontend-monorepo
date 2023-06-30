@@ -239,8 +239,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'eu-west-1'
         run: |
-          id=$(aws cloudfront list-distributions | jq -Mc '.DistributionList.Items | .[] | select(.DefaultCacheBehavior.TargetOriginId == "${{ env.BUCKET_NAME }}") | .Id')
-          aws cloudfront create-invalidation --distribution-id "${id}" --paths "/*"
+          echo "Looking for distribution for bucket: ${{ env.BUCKET_NAME }}"
+          id=$(aws cloudfront list-distributions | jq -Mrc '.DistributionList.Items | .[] | select(.DefaultCacheBehavior.TargetOriginId == "${{ env.BUCKET_NAME }}") | .Id')
+          echo "Found id is: ${id}"
+          aws cloudfront create-invalidation --distribution-id $id --paths "/*"
 
       - name: Add preview label
         uses: actions-ecosystem/action-add-labels@v1
