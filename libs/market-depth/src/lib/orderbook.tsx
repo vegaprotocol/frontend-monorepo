@@ -164,7 +164,7 @@ export const Orderbook = ({
   };
 
   return (
-    <div className="h-full pl-1 text-xs grid grid-rows-[1fr_min-content]">
+    <div className="h-full text-xs grid grid-rows-[1fr_min-content]">
       <div>
         <ReactVirtualizedAutoSizer>
           {({ width, height }) => {
