@@ -228,6 +228,20 @@ jobs:
           AWS_REGION: 'eu-west-1'
           SOURCE_DIR: 'dist-result'
 
+      - name: Install aws CLI
+        if: ${{ github.event_name == 'push' && ( matrix.app != 'trading' || (matrix.app == 'trading' && !( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) ) ) }}
+        uses: unfor19/install-aws-cli-action@master
+
+      - name: Perform cache invalidation
+        if: ${{ github.event_name == 'push' && ( matrix.app != 'trading' || (matrix.app == 'trading' && !( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) ) ) }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'eu-west-1'
+        run: |
+          id=$(aws cloudfront list-distributions | jq -Mc '.DistributionList.Items | .[] | select(.DefaultCacheBehavior.TargetOriginId == "${{ env.BUCKET_NAME }}") | .Id')
+          aws cloudfront create-invalidation --distribution-id "${id}" --paths "/*"
+
       - name: Add preview label
         uses: actions-ecosystem/action-add-labels@v1
         if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
