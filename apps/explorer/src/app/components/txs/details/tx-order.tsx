@@ -7,6 +7,7 @@ import { TableCell, TableRow, TableWithTbody } from '../../table';
 import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 import DeterministicOrderDetails from '../../order-details/deterministic-order-details';
 import Hash from '../../links/hash';
+import { TxOrderPeggedReferenceRow } from './order/tx-order-peg';
 
 interface TxDetailsOrderProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -29,6 +30,8 @@ export const TxDetailsOrder = ({
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
   const marketId = txData.command.orderSubmission.marketId || '-';
+
+  const reference = txData.command.orderSubmission.peggedOrder;
 
   let deterministicId = '';
 
@@ -63,6 +66,13 @@ export const TxDetailsOrder = ({
             <MarketLink id={marketId} />
           </TableCell>
         </TableRow>
+        {reference ? (
+          <TxOrderPeggedReferenceRow
+            offset={reference.offset}
+            reference={reference.reference}
+            marketId={marketId}
+          />
+        ) : null}
       </TableWithTbody>
 
       {deterministicId.length > 0 ? (
