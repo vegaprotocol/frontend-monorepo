@@ -120,7 +120,7 @@ describe('FillsTable', () => {
     });
 
     const amountCell = cells.find((c) => c.getAttribute('col-id') === 'size');
-    expect(amountCell).toHaveClass('text-vega-pink');
+    expect(amountCell).toHaveClass('text-market-red');
   });
 
   it('should format cells correctly for side unspecified', async () => {

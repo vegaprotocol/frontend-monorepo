@@ -160,8 +160,8 @@ const DataRow = ({
 const PriceChange = ({ candles }: { candles: string[] }) => {
   const priceChange = candles ? priceChangePercentage(candles) : undefined;
   const priceChangeClasses = classNames('text-xs', {
-    'text-vega-pink': priceChange && priceChange < 0,
-    'text-vega-green': priceChange && priceChange > 0,
+    'text-market-red': priceChange && priceChange < 0,
+    'text-market-green': priceChange && priceChange > 0,
   });
   let prefix = '';
   if (priceChange && priceChange > 0) {
