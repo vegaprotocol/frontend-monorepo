@@ -1,8 +1,7 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { NodeHealth, NodeUrl, HealthIndicator } from './node-health';
+import { NodeHealthContainer, NodeUrl } from './node-health';
 import { MockedProvider } from '@apollo/client/testing';
-import { Intent } from '@vegaprotocol/ui-toolkit';
 
 const mockSetNodeSwitcher = jest.fn();
 
@@ -15,9 +14,9 @@ jest.mock('@vegaprotocol/environment', () => ({
   useNodeSwitcherStore: jest.fn(() => mockSetNodeSwitcher),
 }));
 
-describe('NodeHealth', () => {
+describe('NodeHealthContainer', () => {
   it('controls the node switcher dialog', async () => {
-    render(<NodeHealth />, { wrapper: MockedProvider });
+    render(<NodeHealthContainer />, { wrapper: MockedProvider });
     await waitFor(() => {
       expect(screen.getByRole('button')).toBeInTheDocument();
     });
@@ -25,11 +24,29 @@ describe('NodeHealth', () => {
     expect(mockSetNodeSwitcher).toHaveBeenCalled();
   });
 
-  it('External link to blog should be present', () => {
-    render(<NodeHealth />, { wrapper: MockedProvider });
-    expect(
-      screen.getByRole('link', { name: /^Mainnet status & incidents/ })
-    ).toBeInTheDocument();
+  it('Shows node health data on hover', async () => {
+    render(<NodeHealthContainer />, { wrapper: MockedProvider });
+    await waitFor(() => {
+      expect(screen.getByRole('button')).toBeInTheDocument();
+    });
+    await userEvent.hover(screen.getByRole('button'));
+    await waitFor(() => {
+      const portal = within(
+        document.querySelector(
+          '[data-radix-popper-content-wrapper]'
+        ) as HTMLElement
+      );
+      // two tooltips get rendered, I believe for animation purposes
+      const tooltip = within(portal.getAllByTestId('tooltip-content')[0]);
+      expect(
+        tooltip.getByRole('link', { name: /^Mainnet status & incidents/ })
+      ).toBeInTheDocument();
+      expect(tooltip.getByText(/Status:/)).toBeInTheDocument();
+      expect(tooltip.getByTitle('Connected node')).toHaveTextContent(
+        'vega-url.wtf'
+      );
+      expect(tooltip.getByText(/Block height:/)).toBeInTheDocument();
+    });
   });
 });
 
@@ -43,28 +60,4 @@ describe('NodeUrl', () => {
       screen.getByText('api.n99.somenetwork.vega.xyz')
     ).toBeInTheDocument();
   });
-});
-
-describe('HealthIndicator', () => {
-  const cases = [
-    {
-      intent: Intent.Success,
-      text: 'Operational',
-      classname: 'bg-vega-green-550',
-    },
-    {
-      intent: Intent.Warning,
-      text: '5 Blocks behind',
-      classname: 'bg-warning',
-    },
-    { intent: Intent.Danger, text: 'Non operational', classname: 'bg-danger' },
-  ];
-  it.each(cases)(
-    'renders correct text and indicator color for $diff block difference',
-    (elem) => {
-      render(<HealthIndicator text={elem.text} intent={elem.intent} />);
-      expect(screen.getByTestId('indicator')).toHaveClass(elem.classname);
-      expect(screen.getByText(elem.text)).toBeInTheDocument();
-    }
-  );
 });
