@@ -5,7 +5,7 @@ export type NavigationProps = {
   /**
    * The display name of the dApp, e.g. "Console", "Explorer"
    */
-  appName: string;
+  appName?: string;
   /**
    * URL pointing to the home page.
    */
