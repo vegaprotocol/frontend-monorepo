@@ -1,39 +1,46 @@
 import { t } from '@vegaprotocol/i18n';
-import { TelemetryApproval } from '../../components/welcome-dialog/telemetry-approval';
-import {
-  Divider,
-  Switch,
-  ThemeSwitcher,
-  ToastPositionSetter,
-} from '@vegaprotocol/ui-toolkit';
+import { Switch, ToastPositionSetter } from '@vegaprotocol/ui-toolkit';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
+import type { ReactNode } from 'react';
 
 export const Settings = () => {
   const { theme, setTheme } = useThemeSwitcher();
-  const text = t(theme === 'dark' ? 'Light mode' : 'Dark mode');
+  const [isApproved, setIsApproved] = useTelemetryApproval();
   return (
     <div>
-      <div className="flex justify-between py-3">
-        <div className="flex shrink">
-          <ThemeSwitcher />
-          <label htmlFor="theme-switcher" className="self-center text-lg">
-            {text}
-          </label>
-        </div>
+      <SettingsGroup label={t('Dark mode')}>
         <Switch
           name="settings-theme-switch"
           onCheckedChange={() => setTheme()}
           checked={theme === 'dark'}
         />
-      </div>
-      <Divider />
-      <TelemetryApproval
-        helpText={t(
-          'Help identify bugs and improve the service by sharing anonymous usage data.'
-        )}
-      />
-      <Divider />
-      <ToastPositionSetter />
+      </SettingsGroup>
+      <SettingsGroup label={t('Share usage data')}>
+        <Switch
+          name="settings-theme-switch"
+          onCheckedChange={(isOn) => setIsApproved(isOn)}
+          checked={isApproved}
+        />
+      </SettingsGroup>
+      <SettingsGroup label={t('Toast location')}>
+        <ToastPositionSetter />
+      </SettingsGroup>
+    </div>
+  );
+};
+
+const SettingsGroup = ({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}) => {
+  return (
+    <div className="flex justify-between mb-4">
+      <label className="text-neutral-500 dark:text-neutral-400">{label}</label>
+      {children}
     </div>
   );
 };

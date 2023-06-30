@@ -41,7 +41,7 @@ export const Layout = () => {
           <Sidebar />
         </div>
         {largeScreen && sidebarOpen && (
-          <div className="row-span-full row-start-4 col-start-2 p-4">
+          <div className="row-span-full row-start-4 col-start-2 p-4 overflow-y-auto">
             <SidebarContent />
           </div>
         )}
