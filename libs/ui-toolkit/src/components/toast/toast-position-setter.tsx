@@ -25,26 +25,21 @@ export const ToastPositionSetter = () => {
     },
     [setToast, setPostion]
   );
-  const iconCssClasses = 'absolute top-[4px] left-[4px]';
+  // const iconCssClasses = 'absolute top-[4px] left-[4px]';
+  const iconCssClasses = '';
   const buttonCssClasses =
-    'relative border-none bg-neutral-500/20 dark:bg-neutral-500/40';
+    'flex items-center px-1 py-1 relative rounded bg-neutral-500/20 dark:bg-neutral-500/40';
   const activeButton = 'bg-neutral-800/80 dark:bg-neutral-200/40';
   const activeIcon = 'fill-white dark:fill-black';
   return (
-    <div className="flex justify-between py-3 items-center">
-      <span>{t('Toast location')}</span>
-      <div
-        className={classNames(
-          'grid grid-cols-3 grid-rows-2 w-[64px] h-[42px] gap-[2px]'
-        )}
-      >
-        <Button
+    <div className="flex justify-between">
+      <div className={classNames('grid grid-cols-3 grid-rows-2 gap-1')}>
+        <button
           className={classNames(
             buttonCssClasses,
             position === ToastPosition.TopLeft && activeButton
           )}
           onClick={() => handleChange(ToastPosition.TopLeft)}
-          size="xs"
         >
           <Icon
             className={classNames(
@@ -54,14 +49,13 @@ export const ToastPositionSetter = () => {
             size={3}
             name={IconNames.ARROW_TOP_LEFT}
           />{' '}
-        </Button>
-        <Button
+        </button>
+        <button
           className={classNames(
             buttonCssClasses,
             position === ToastPosition.TopCenter && activeButton
           )}
           onClick={() => handleChange(ToastPosition.TopCenter)}
-          size="xs"
         >
           <Icon
             className={classNames(
@@ -71,14 +65,13 @@ export const ToastPositionSetter = () => {
             size={3}
             name={IconNames.ARROW_UP}
           />
-        </Button>
-        <Button
+        </button>
+        <button
           className={classNames(
             buttonCssClasses,
             position === ToastPosition.TopRight && activeButton
           )}
           onClick={() => handleChange(ToastPosition.TopRight)}
-          size="xs"
         >
           <Icon
             className={classNames(
@@ -88,14 +81,13 @@ export const ToastPositionSetter = () => {
             size={3}
             name={IconNames.ARROW_TOP_RIGHT}
           />
-        </Button>
-        <Button
+        </button>
+        <button
           className={classNames(
             buttonCssClasses,
             position === ToastPosition.BottomLeft && activeButton
           )}
           onClick={() => handleChange(ToastPosition.BottomLeft)}
-          size="xs"
         >
           <Icon
             className={classNames(
@@ -105,14 +97,13 @@ export const ToastPositionSetter = () => {
             size={3}
             name={IconNames.ARROW_BOTTOM_LEFT}
           />
-        </Button>
-        <Button
+        </button>
+        <button
           className={classNames(
             buttonCssClasses,
             position === ToastPosition.BottomCenter && activeButton
           )}
           onClick={() => handleChange(ToastPosition.BottomCenter)}
-          size="xs"
         >
           <Icon
             className={classNames(
@@ -122,14 +113,13 @@ export const ToastPositionSetter = () => {
             size={3}
             name={IconNames.ARROW_DOWN}
           />
-        </Button>
-        <Button
+        </button>
+        <button
           className={classNames(
             buttonCssClasses,
             position === ToastPosition.BottomRight && activeButton
           )}
           onClick={() => handleChange(ToastPosition.BottomRight)}
-          size="xs"
         >
           <Icon
             className={classNames(
@@ -139,7 +129,7 @@ export const ToastPositionSetter = () => {
             size={3}
             name={IconNames.ARROW_BOTTOM_RIGHT}
           />
-        </Button>
+        </button>
       </div>
     </div>
   );
