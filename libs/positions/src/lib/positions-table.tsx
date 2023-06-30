@@ -364,14 +364,20 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
                 return !data
                   ? undefined
-                  : toBigNum(data.realisedPNL, data.decimals).toNumber();
+                  : toBigNum(
+                      data.realisedPNL,
+                      data.marketDecimalPlaces
+                    ).toNumber();
               },
               valueFormatter: ({
                 data,
               }: VegaValueFormatterParams<Position, 'realisedPNL'>) => {
                 return !data
                   ? ''
-                  : addDecimalsFormatNumber(data.realisedPNL, data.decimals);
+                  : addDecimalsFormatNumber(
+                      data.realisedPNL,
+                      data.marketDecimalPlaces
+                    );
               },
               headerTooltip: t(
                 'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
@@ -389,14 +395,20 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
                 return !data
                   ? undefined
-                  : toBigNum(data.unrealisedPNL, data.decimals).toNumber();
+                  : toBigNum(
+                      data.unrealisedPNL,
+                      data.marketDecimalPlaces
+                    ).toNumber();
               },
               valueFormatter: ({
                 data,
               }: VegaValueFormatterParams<Position, 'unrealisedPNL'>) =>
                 !data
                   ? ''
-                  : addDecimalsFormatNumber(data.unrealisedPNL, data.decimals),
+                  : addDecimalsFormatNumber(
+                      data.unrealisedPNL,
+                      data.marketDecimalPlaces
+                    ),
               headerTooltip: t(
                 'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
               ),
