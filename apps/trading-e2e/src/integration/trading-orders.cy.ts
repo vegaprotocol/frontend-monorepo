@@ -90,7 +90,7 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
     cy.getByTestId('All').click();
 
     cy.get(`[row-id="${partiallyFilledId}"]`)
-      .eq(1)
+      .eq(0)
       .within(() => {
         cy.get(`[col-id='${orderStatus}']`).should(
           'have.text',

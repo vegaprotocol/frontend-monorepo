@@ -1,5 +1,4 @@
 import { useRef, useCallback, useEffect } from 'react';
-import type { ReactNode } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import type {
   AgGridReactProps,
@@ -7,18 +6,17 @@ import type {
   AgGridReact as AgGridReactType,
 } from 'ag-grid-react';
 import classNames from 'classnames';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 import './grid.scss';
 
 type Props = (AgGridReactProps | AgReactUiProps) & {
   isRowClickable?: boolean;
   style?: React.CSSProperties;
-  children: ReactNode;
 };
 
-export const Grid = ({ isRowClickable, children, ...props }: Props) => {
+export const Grid = ({ isRowClickable, ...props }: Props) => {
   const gridRef = useRef<AgGridReactType | null>(null);
 
   const resizeGrid = useCallback(() => {
@@ -44,8 +42,6 @@ export const Grid = ({ isRowClickable, children, ...props }: Props) => {
       onGridReady={handleOnGridReady}
       suppressRowClickSelection
       {...props}
-    >
-      {children}
-    </AgGridReact>
+    />
   );
 };

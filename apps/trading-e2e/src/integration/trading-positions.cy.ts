@@ -108,7 +108,7 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
         cy.get(
           '[row-id="02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65-market-2"]'
         )
-          .eq(1)
+          .eq(0)
           .within(() => {
             emptyCells.forEach((cell) => {
               cy.get(`[col-id="${cell}"]`).should('contain.text', '-');

@@ -17,7 +17,7 @@ import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import type {
   IGetRowsParams,
-  RowNode,
+  IRowNode,
   RowHeightParams,
   ColDef,
 } from 'ag-grid-community';
@@ -45,8 +45,8 @@ export const percentageValue = (part: string, total: string) => {
 export const accountValuesComparator = (
   valueA: string,
   valueB: string,
-  nodeA: RowNode,
-  nodeB: RowNode
+  nodeA: IRowNode,
+  nodeB: IRowNode
 ) => {
   if (isNumeric(valueA) && isNumeric(valueB)) {
     const a = toBigNum(valueA, nodeA.data.asset?.decimals);
@@ -83,20 +83,22 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
       onClickDeposit,
       onClickBreakdown,
       rowData,
+      isReadOnly,
+      pinnedAsset,
       ...props
     },
     ref
   ) => {
-    const pinnedAsset = useMemo(() => {
-      if (!props.pinnedAsset) {
+    const pinnedRow = useMemo(() => {
+      if (!pinnedAsset) {
         return;
       }
       const currentPinnedAssetRow = rowData?.find(
-        (row) => row.asset.id === props.pinnedAsset?.id
+        (row) => row.asset.id === pinnedAsset?.id
       );
       if (!currentPinnedAssetRow) {
         return {
-          asset: props.pinnedAsset,
+          asset: pinnedAsset,
           available: '0',
           used: '0',
           total: '0',
@@ -104,7 +106,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
         };
       }
       return currentPinnedAssetRow;
-    }, [props.pinnedAsset, rowData]);
+    }, [pinnedAsset, rowData]);
 
     const { getRowHeight } = props;
 
@@ -112,17 +114,17 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
       (params: RowHeightParams) => {
         if (
           params.node.rowPinned &&
-          params.data.asset.id === props.pinnedAsset?.id &&
+          params.data.asset.id === pinnedAsset?.id &&
           new BigNumber(params.data.total).isLessThanOrEqualTo(0)
         ) {
           return 32;
         }
         return getRowHeight ? getRowHeight(params) : undefined;
       },
-      [props.pinnedAsset?.id, getRowHeight]
+      [pinnedAsset?.id, getRowHeight]
     );
 
-    const showDepositButton = pinnedAsset?.balance === '0';
+    const showDepositButton = pinnedRow?.balance === '0';
 
     const colDefs = useMemo(() => {
       const defs: ColDef[] = [
@@ -266,7 +268,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                 </CenteredGridCellWrapper>
               );
             }
-            return props.isReadOnly ? null : (
+            return isReadOnly ? null : (
               <AccountsActionsDropdown
                 assetId={assetId}
                 assetContractAddress={
@@ -294,13 +296,11 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
       onClickBreakdown,
       onClickDeposit,
       onClickWithdraw,
-      props.isReadOnly,
+      isReadOnly,
       showDepositButton,
     ]);
 
-    const data = rowData?.filter(
-      (data) => data.asset.id !== props.pinnedAsset?.id
-    );
+    const data = rowData?.filter((data) => data.asset.id !== pinnedAsset?.id);
 
     return (
       <AgGrid
@@ -318,7 +318,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
         }}
         columnDefs={colDefs}
         getRowHeight={getPinnedAssetRowHeight}
-        pinnedTopRowData={pinnedAsset ? [pinnedAsset] : undefined}
+        pinnedTopRowData={pinnedRow ? [pinnedRow] : undefined}
       />
     );
   }
