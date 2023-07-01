@@ -26,8 +26,11 @@ export const MarketSelectorItem = ({
   style: CSSProperties;
   currentMarketId?: string;
 }) => {
+  const wrapperClasses = classNames('py-1 px-4', {
+    'bg-vega-light-100 dark:bg-vega-dark-100': market.id === currentMarketId,
+  });
   return (
-    <div style={style} className="my-0.5 px-4">
+    <div style={style} className={wrapperClasses}>
       <Link to={`/markets/${market.id}`} className="block">
         <MarketData market={market} />
       </Link>
