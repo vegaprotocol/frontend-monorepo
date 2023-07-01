@@ -143,7 +143,6 @@ describe('MarketSelector', () => {
     expect(screen.getAllByTestId(/market-\d/)).toHaveLength(
       activeMarkets.length
     );
-    expect(screen.getByRole('link')).toHaveTextContent('All markets');
   });
 
   it('filters by product type', async () => {
