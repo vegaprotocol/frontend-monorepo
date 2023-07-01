@@ -9,7 +9,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { CSSProperties } from 'react';
 import { useCallback, useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
 import { FixedSizeList } from 'react-window';
 import { useMarketSelectorList } from './use-market-selector-list';
 import type { ProductType } from './product-selector';
@@ -202,7 +201,6 @@ const ListItem = ({
     market={data.data[index]}
     currentMarketId={data.currentMarketId}
     style={style}
-    onSelect={data.onSelect}
   />
 );
 

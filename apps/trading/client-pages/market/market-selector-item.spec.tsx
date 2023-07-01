@@ -173,7 +173,7 @@ describe('MarketSelectorItem', () => {
     // link renders and is styled
     expect(link).toHaveAttribute('href', '/markets/' + market.id);
 
-    expect(link).toHaveClass('ring-1');
+    expect(link.parentNode).toHaveClass('bg-vega-light-100');
 
     expect(screen.getByTitle('24h vol')).toHaveTextContent('0.00');
     expect(screen.getByTitle(symbol)).toHaveTextContent('-');
@@ -183,13 +183,11 @@ describe('MarketSelectorItem', () => {
       expect(screen.getByTitle(symbol)).toHaveTextContent(
         addDecimalsFormatNumber(marketData.markPrice, market.decimalPlaces)
       );
-      expect(screen.getByTestId('market-item-change')).toHaveTextContent(
-        '+100.00%'
-      );
+      // TODO: re add if we use price change value
+
+      // expect(screen.getByTestId('market-item-change')).toHaveTextContent(
+      //   '+100.00%'
+      // );
     });
-
-    await userEvent.click(link);
-
-    expect(mockOnSelect).toHaveBeenCalledWith(market.id);
   });
 });
