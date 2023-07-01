@@ -14,6 +14,7 @@ import { Settings } from '../settings';
 import classNames from 'classnames';
 import { NodeHealthContainer } from '../node-health';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
+import { t } from '@vegaprotocol/i18n';
 
 type SidebarView =
   | 'order'
@@ -114,14 +115,16 @@ const SidebarDivider = () => {
 };
 
 export const SidebarContent = () => {
-  const { view } = useSidebar();
   const params = useParams();
+  const { view } = useSidebar();
 
   let content = null;
 
   if (view === 'order') {
     if (params.marketId) {
       content = <TradingViews.ticket.component marketId={params.marketId} />;
+    } else {
+      content = <p>{t('No market selected')}</p>;
     }
   }
 
@@ -144,6 +147,8 @@ export const SidebarContent = () => {
   if (view === 'info') {
     if (params.marketId) {
       content = <MarketInfoAccordionContainer marketId={params.marketId} />;
+    } else {
+      content = <p>{t('No market selected')}</p>;
     }
   }
 

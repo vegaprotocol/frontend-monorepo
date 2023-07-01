@@ -127,13 +127,19 @@ export const MarketInfoAccordion = ({
           />
           {marketAccounts
             .filter((a) => a.type === Schema.AccountType.ACCOUNT_TYPE_INSURANCE)
-            .map((a) => (
-              <AccordionItem
-                itemId={`${a.type}:${a.asset.id}`}
-                title={t('Insurance pool')}
-                content={<InsurancePoolInfoPanel market={market} account={a} />}
-              />
-            ))}
+            .map((a) => {
+              const id = `${a.type}:${a.asset.id}`;
+              return (
+                <AccordionItem
+                  key={id}
+                  itemId={id}
+                  title={t('Insurance pool')}
+                  content={
+                    <InsurancePoolInfoPanel market={market} account={a} />
+                  }
+                />
+              );
+            })}
         </Accordion>
       </div>
       <div className="mb-8">
@@ -201,18 +207,22 @@ export const MarketInfoAccordion = ({
             content={<RiskFactorsInfoPanel market={market} />}
           />
           {(market.priceMonitoringSettings?.parameters?.triggers || []).map(
-            (_, triggerIndex) => (
-              <AccordionItem
-                itemId={`trigger-${triggerIndex}`}
-                title={t(`Price monitoring bounds ${triggerIndex + 1}`)}
-                content={
-                  <PriceMonitoringBoundsInfoPanel
-                    market={market}
-                    triggerIndex={triggerIndex}
-                  />
-                }
-              />
-            )
+            (_, triggerIndex) => {
+              const id = `trigger-${triggerIndex}`;
+              return (
+                <AccordionItem
+                  key={id}
+                  itemId={id}
+                  title={t(`Price monitoring bounds ${triggerIndex + 1}`)}
+                  content={
+                    <PriceMonitoringBoundsInfoPanel
+                      market={market}
+                      triggerIndex={triggerIndex}
+                    />
+                  }
+                />
+              );
+            }
           )}
           <AccordionItem
             itemId="liqudity-monitoring-parameters"
