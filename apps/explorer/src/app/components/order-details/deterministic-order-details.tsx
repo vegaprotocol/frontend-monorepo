@@ -5,7 +5,6 @@ import PriceInMarket from '../price-in-market/price-in-market';
 import { Time } from '../time';
 import { sideText, statusText, tifFull, tifShort } from './lib/order-labels';
 import SizeInMarket from '../size-in-market/size-in-market';
-import { PeggedReference } from '@vegaprotocol/types';
 import { TxOrderPeggedReference } from '../txs/details/order/tx-order-peg';
 
 export interface DeterministicOrderDetailsProps {
@@ -77,6 +76,7 @@ const DeterministicOrderDetails = ({
             <p className="text-gray-200">
               {t('Price peg')}:{' '}
               <TxOrderPeggedReference
+                side={o.side}
                 reference={o.peggedOrder.reference}
                 offset={o.peggedOrder.offset}
                 marketId={o.market.id}

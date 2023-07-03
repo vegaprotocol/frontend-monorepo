@@ -1,17 +1,16 @@
 import { render } from '@testing-library/react';
 import type { TxDetailsOrderProps } from './tx-order-peg';
-import {
-  TxOrderPeggedReference,
-  TxOrderPeggedReferenceRow,
-  getSettlementAsset,
-} from './tx-order-peg';
+import { TxOrderPeggedReference, getSettlementAsset } from './tx-order-peg';
 import { useExplorerMarketQuery } from '../../../links/market-link/__generated__/Market';
-import { PeggedReference } from '@vegaprotocol/types';
+import { PeggedReference, Side } from '@vegaprotocol/types';
 
 // Mock the useExplorerMarketQuery hook
 jest.mock('../../../links/market-link/__generated__/Market', () => ({
   useExplorerMarketQuery: jest.fn().mockReturnValue({
-    data: {},
+    data: {
+      market: { decimalPlaces: 0 },
+    },
+    loading: false,
   }),
 }));
 
@@ -19,6 +18,8 @@ describe('getSettlementAsset', () => {
   it('should return the decimal places if data is defined', () => {
     const data = {
       market: {
+        __typename: 'Market',
+        id: '123',
         decimalPlaces: 8,
       },
     };
@@ -52,18 +53,20 @@ describe('TxOrderPeggedReference', () => {
 
   it('should render the offset and reference correctly', () => {
     const props: TxDetailsOrderProps = {
+      side: Side.SIDE_BUY,
       offset: '10',
       reference: PeggedReference.PEGGED_REFERENCE_MID,
       marketId: 'some-market-id',
     };
 
-    const { getByText } = render(<TxOrderPeggedReference {...props} />);
+    const { getByTestId } = render(<TxOrderPeggedReference {...props} />);
 
-    expect(getByText('10 from Mid')).toBeInTheDocument();
+    expect(getByTestId('pegged-reference')).toHaveTextContent('Mid + 10');
   });
 
   it('should return null if the reference is "PEGGED_REFERENCE_UNSPECIFIED"', () => {
     const props: TxDetailsOrderProps = {
+      side: Side.SIDE_BUY,
       offset: '10',
       reference: 'PEGGED_REFERENCE_UNSPECIFIED',
       marketId: 'some-market-id',
@@ -76,6 +79,7 @@ describe('TxOrderPeggedReference', () => {
 
   it('should render the offset without formatting initially, then render the formatted version', () => {
     const props: TxDetailsOrderProps = {
+      side: Side.SIDE_BUY,
       offset: '10',
       reference: PeggedReference.PEGGED_REFERENCE_BEST_ASK,
       marketId: 'some-market-id',
@@ -87,7 +91,9 @@ describe('TxOrderPeggedReference', () => {
     });
 
     const screen = render(<TxOrderPeggedReference {...props} />);
-    expect(screen.getByText('10 from Ask')).toBeInTheDocument();
+    expect(screen.getByTestId('pegged-reference')).toHaveTextContent(
+      'Ask + 10'
+    );
 
     (useExplorerMarketQuery as jest.Mock).mockReturnValue({
       data: {
@@ -98,30 +104,9 @@ describe('TxOrderPeggedReference', () => {
       loading: false,
     });
 
-    const screenTwo = render(<TxOrderPeggedReference {...props} />);
-    expect(screenTwo.getByText('0.000000001 from Ask')).toBeInTheDocument();
-  });
-});
-
-describe('TxOrderPeggedReferenceRow', () => {
-  it('should render the component correctly', () => {
-    // Arrange
-    const props = {
-      offset: '1',
-      reference: PeggedReference.PEGGED_REFERENCE_BEST_BID,
-      marketId: '123',
-    };
-
-    const screen = render(
-      <table>
-        <tbody>
-          <TxOrderPeggedReferenceRow {...props} />
-        </tbody>
-      </table>
+    screen.rerender(<TxOrderPeggedReference {...props} />);
+    expect(screen.getByTestId('pegged-reference')).toHaveTextContent(
+      'Ask + 0.000000001'
     );
-
-    // Assert
-    expect(screen.getByText('Pegged order')).toBeInTheDocument();
-    expect(screen.getByText('1 from Bid')).toBeInTheDocument();
   });
 });
