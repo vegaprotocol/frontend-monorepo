@@ -264,6 +264,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                 if (!data) return null;
                 return (
                   <ButtonLink
+                    title={t('View settlement asset details')}
                     onClick={(e) => {
                       openAssetDetailsDialog(
                         data.assetId,

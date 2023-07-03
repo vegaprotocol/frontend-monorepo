@@ -50,8 +50,8 @@ export const MarketTableActions = ({
             open(assetId, e.target as HTMLElement);
           }}
         >
-          <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
-          {t('View asset')}
+          <VegaIcon name={VegaIconNames.INFO} size={16} />
+          {t('View settlement asset details')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

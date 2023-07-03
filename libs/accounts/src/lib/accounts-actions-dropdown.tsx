@@ -78,8 +78,8 @@ export const AccountsActionsDropdown = ({
             openAssetDialog(assetId, e.target as HTMLElement);
           }}
         >
-          <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
-          {t('View asset')}
+          <VegaIcon name={VegaIconNames.INFO} size={16} />
+          {t('View asset details')}
         </DropdownMenuItem>
         <DropdownMenuCopyItem value={assetId} text={t('Copy asset ID')} />
         {assetContractAddress && (
