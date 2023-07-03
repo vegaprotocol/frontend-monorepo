@@ -129,7 +129,7 @@ export const DealTicketSizeIceberg = ({
                 description={
                   <div>
                     {t(
-                      'When the order trades and its size falls below this threshold, it will be reset to the display size and moved to the back of the priority order. Must be less than display size.'
+                      'When the order trades and its size falls below this threshold, it will be reset to the peak size and moved to the back of the priority order. Must be less than peak size.'
                     )}
                   </div>
                 }

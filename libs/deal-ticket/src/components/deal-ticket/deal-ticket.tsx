@@ -498,7 +498,7 @@ export const DealTicket = ({
                         <p>
                           {t(`Trade only a fraction of the order size at once.
                             After the displayed portion of the order has traded, its size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away.
-                            For example, an order with a size of 1000 and a display size of 100 will effectively be split into 10 orders with a size of 100 each.
+                            For example, an order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each.
                             Note that the full volume of the order is not hidden and is still reflected in the order book.`)}
                         </p>
                       }
