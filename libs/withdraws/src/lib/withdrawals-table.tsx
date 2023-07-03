@@ -160,7 +160,7 @@ export type CompleteCellProps = {
 };
 export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
   const open = useWithdrawalApprovalDialog((state) => state.open);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLButtonElement>(null);
 
   if (!data) {
     return null;
@@ -177,10 +177,15 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
       </ButtonLink>
 
       <DropdownMenu
+        onOpenChange={(open) => {
+          if (open) ref.current?.classList.add('open');
+          if (!open) ref.current?.classList.remove('open');
+        }}
         trigger={
           <DropdownMenuTrigger
-            className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 p-0.5 focus:rounded-full hover:rounded-full"
+            className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 [&.open]:bg-vega-light-200 dark:[&.open]:bg-vega-dark-200 p-0.5 rounded-full"
             data-testid="dropdown-menu"
+            ref={ref}
           >
             <VegaIcon name={VegaIconNames.KEBAB} />
           </DropdownMenuTrigger>
@@ -190,7 +195,6 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
           <DropdownMenuItem
             key={'withdrawal-approval'}
             data-testid="withdrawal-approval"
-            ref={ref}
             onClick={() => {
               if (data.id) {
                 open(data.id, ref.current, false);

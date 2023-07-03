@@ -38,7 +38,7 @@ import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
 import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import { DocsLinks } from '@vegaprotocol/environment';
-import { PositionTableActions } from './position-actions-dropdown';
+import { PositionActionsDropdown } from './position-actions-dropdown';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { LiquidationPrice } from './liquidation-price';
@@ -450,7 +450,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                           </ButtonLink>
                         ) : null}
                         {data?.assetId && (
-                          <PositionTableActions assetId={data?.assetId} />
+                          <PositionActionsDropdown assetId={data?.assetId} />
                         )}
                       </div>
                     );

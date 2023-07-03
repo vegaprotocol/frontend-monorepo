@@ -12,7 +12,7 @@ import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { MarketMaybeWithData } from '../../markets-provider';
-import { MarketTableActions } from './market-table-actions';
+import { MarketActionsDropdown } from './market-table-actions';
 
 interface Props {
   onMarketClick: (marketId: string, metaKey?: boolean) => void;
@@ -172,7 +172,7 @@ export const useColumnDefs = ({ onMarketClick }: Props) => {
         }: VegaICellRendererParams<MarketMaybeWithData>) => {
           if (!data) return null;
           return (
-            <MarketTableActions
+            <MarketActionsDropdown
               marketId={data.id}
               assetId={
                 data.tradableInstrument.instrument.product.settlementAsset.id

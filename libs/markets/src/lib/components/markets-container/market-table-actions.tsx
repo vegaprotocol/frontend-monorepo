@@ -11,8 +11,9 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { DApp, EXPLORER_MARKET, useLinks } from '@vegaprotocol/environment';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import { useRef } from 'react';
 
-export const MarketTableActions = ({
+export const MarketActionsDropdown = ({
   marketId,
   assetId,
 }: {
@@ -21,12 +22,18 @@ export const MarketTableActions = ({
 }) => {
   const open = useAssetDetailsDialogStore((store) => store.open);
   const linkCreator = useLinks(DApp.Explorer);
+  const ref = useRef<HTMLButtonElement>(null);
   return (
     <DropdownMenu
+      onOpenChange={(open) => {
+        if (open) ref.current?.classList.add('open');
+        if (!open) ref.current?.classList.remove('open');
+      }}
       trigger={
         <DropdownMenuTrigger
-          className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 p-0.5 focus:rounded-full hover:rounded-full"
+          className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200  [&.open]:bg-vega-light-200 dark:[&.open]:bg-vega-dark-200 p-0.5 rounded-full"
           data-testid="dropdown-menu"
+          ref={ref}
         >
           <VegaIcon name={VegaIconNames.KEBAB} />
         </DropdownMenuTrigger>

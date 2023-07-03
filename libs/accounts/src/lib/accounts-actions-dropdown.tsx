@@ -12,6 +12,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useTransferDialog } from './transfer-dialog';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import { useRef } from 'react';
 
 export const AccountsActionsDropdown = ({
   assetId,
@@ -19,22 +20,30 @@ export const AccountsActionsDropdown = ({
   onClickDeposit,
   onClickWithdraw,
   onClickBreakdown,
+  onOpenChange,
 }: {
   assetId: string;
   assetContractAddress?: string;
   onClickDeposit: () => void;
   onClickWithdraw: () => void;
   onClickBreakdown: () => void;
+  onOpenChange?: (open: boolean) => void;
 }) => {
   const etherscanLink = useEtherscanLink();
   const openTransferDialog = useTransferDialog((store) => store.open);
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
+  const ref = useRef<HTMLButtonElement>(null);
   return (
     <DropdownMenu
+      onOpenChange={(open) => {
+        if (open) ref.current?.classList.add('open');
+        if (!open) ref.current?.classList.remove('open');
+      }}
       trigger={
         <DropdownMenuTrigger
-          className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 p-0.5 focus:rounded-full hover:rounded-full"
+          className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 [&.open]:bg-vega-light-200 dark:[&.open]:bg-vega-dark-200 p-0.5 rounded-full"
           data-testid="dropdown-menu"
+          ref={ref}
         >
           <VegaIcon name={VegaIconNames.KEBAB} />
         </DropdownMenuTrigger>
