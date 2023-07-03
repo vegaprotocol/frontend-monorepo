@@ -12,7 +12,6 @@ import {
   FormGroup,
   Input,
   InputError,
-  Option,
   RichSelect,
   Select,
   Tooltip,
