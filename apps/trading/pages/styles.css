@@ -31,9 +31,6 @@ html.dark {
 
 html [data-theme='dark'],
 html [data-theme='light'] {
-  /* candles */
-  --pennant-color-buy-fill: theme('colors.market.green.600');
-  --pennant-color-buy-stroke: theme('colors.market.green.500');
   /* sell candles only use stroke as the candle is solid (without border) */
   --pennant-color-sell-stroke: theme('colors.market.red.500');
 
@@ -46,14 +43,35 @@ html [data-theme='light'] {
   --pennant-color-macd-signal: theme('colors.vega.blue.500');
   --pennant-color-macd-macd: theme('colors.vega.yellow.500');
 
-  --pennant-color-volume-buy: theme('colors.market.green.600');
   --pennant-color-volume-sell: theme('colors.market.red.500');
+}
+
+html [data-theme='light'] {
+  /* candles */
+  --pennant-color-buy-fill: theme('colors.market.green.500');
+  --pennant-color-buy-stroke: theme('colors.market.green.600');
+
+  /* depth chart */
+  --pennant-color-depth-buy-fill: theme('colors.market.green.500');
+  --pennant-color-depth-buy-stroke: theme('colors.market.green.600');
+  --pennant-color-depth-sell-fill: theme('colors.market.red.500');
+  --pennant-color-depth-sell-stroke: theme('colors.market.red.600');
+
+  --pennant-color-volume-buy: theme('colors.market.green.500');
+}
+
+html [data-theme='dark'] {
+  /* candles */
+  --pennant-color-buy-fill: theme('colors.market.green.600');
+  --pennant-color-buy-stroke: theme('colors.market.green.500');
 
   /* depth chart */
   --pennant-color-depth-buy-fill: theme('colors.market.green.600');
   --pennant-color-depth-buy-stroke: theme('colors.market.green.500');
   --pennant-color-depth-sell-fill: theme('colors.market.red.600');
   --pennant-color-depth-sell-stroke: theme('colors.market.red.500');
+
+  --pennant-color-volume-buy: theme('colors.market.green.600');
 }
 
 /* AG GRID - Do not edit without updating other global stylesheets for each app */
