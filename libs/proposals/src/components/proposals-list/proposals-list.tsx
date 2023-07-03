@@ -28,7 +28,6 @@ export const ProposalsList = () => {
   const filteredData = getNewMarketProposals(
     removePaginationWrapper(data?.proposalsConnection?.edges)
   );
-  console.log(data, filteredData);
   const { columnDefs, defaultColDef } = useColumnDefs();
 
   return (
