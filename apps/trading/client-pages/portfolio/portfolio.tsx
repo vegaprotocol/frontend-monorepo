@@ -4,7 +4,6 @@ import { LayoutPriority } from 'allotment';
 import { titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useIncompleteWithdrawals } from '@vegaprotocol/withdraws';
-import { usePaneLayout } from '@vegaprotocol/react-helpers';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import { usePageTitleStore } from '../../stores';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
@@ -20,6 +19,7 @@ import { AccountHistoryContainer } from './account-history-container';
 import {
   ResizableGrid,
   ResizableGridPanel,
+  usePaneLayout,
 } from '../../components/resizable-grid';
 
 const WithdrawalsIndicator = () => {

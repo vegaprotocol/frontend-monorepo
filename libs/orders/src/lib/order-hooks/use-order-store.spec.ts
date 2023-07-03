@@ -2,16 +2,19 @@ import {
   getDefaultOrder,
   STORAGE_KEY,
   useOrder,
-  useOrderStore,
+  useCreateOrderStore,
 } from './use-order-store';
 import { act, renderHook } from '@testing-library/react';
 import { OrderType } from '@vegaprotocol/types';
 
 jest.mock('zustand');
 
-describe('useOrderStore', () => {
+describe('useCreateOrderStore', () => {
   const setup = () => {
-    return renderHook(() => useOrderStore());
+    const { result: useOrderStoreRef } = renderHook(() =>
+      useCreateOrderStore()
+    );
+    return { result: useOrderStoreRef.current() };
   };
 
   afterEach(() => {
@@ -20,7 +23,7 @@ describe('useOrderStore', () => {
 
   it('has a empty default state', async () => {
     const { result } = setup();
-    expect(result.current).toEqual({
+    expect(result).toEqual({
       orders: {},
       update: expect.any(Function),
     });
@@ -35,10 +38,10 @@ describe('useOrderStore', () => {
     };
     const { result } = setup();
     act(() => {
-      result.current.update(marketId, { type: OrderType.TYPE_LIMIT });
+      result.update(marketId, { type: OrderType.TYPE_LIMIT });
     });
     // order should be stored in memory
-    expect(result.current.orders).toEqual({
+    expect(result.orders).toEqual({
       [marketId]: expectedOrder,
     });
     // order SHOULD also be in localStorage
@@ -61,10 +64,10 @@ describe('useOrderStore', () => {
     };
     const { result } = setup();
     act(() => {
-      result.current.update(marketId, { type: OrderType.TYPE_LIMIT }, false);
+      result.update(marketId, { type: OrderType.TYPE_LIMIT }, false);
     });
     // order should be stored in memory
-    expect(result.current.orders).toEqual({
+    expect(result.orders).toEqual({
       [marketId]: expectedOrder,
     });
     // order should NOT be in localStorage

@@ -1,8 +1,9 @@
 import { OrderTimeInForce, Side } from '@vegaprotocol/types';
 import { OrderType } from '@vegaprotocol/types';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
+import type { StateCreator } from 'zustand';
 
 export type OrderObj = {
   marketId: string;
@@ -31,58 +32,63 @@ interface Store {
 
 export const STORAGE_KEY = 'vega_order_store';
 
-export const useOrderStore = create<Store>()(
-  persist(
-    subscribeWithSelector((set) => ({
-      orders: {},
-      update: (marketId, order, persist = true) => {
-        set((state) => {
-          const curr = state.orders[marketId];
-          const defaultOrder = getDefaultOrder(marketId);
+const orderStateCreator: StateCreator<Store> = (set) => ({
+  orders: {},
+  update: (marketId, order, persist = true) => {
+    set((state) => {
+      const curr = state.orders[marketId];
+      const defaultOrder = getDefaultOrder(marketId);
+
+      return {
+        orders: {
+          ...state.orders,
+          [marketId]: {
+            ...defaultOrder,
+            ...curr,
+            ...order,
+            persist,
+          },
+        },
+      };
+    });
+  },
+});
+
+export const useCreateOrderStore = () => {
+  const useOrderStoreRef = useRef(
+    create<Store>()(
+      persist(subscribeWithSelector(orderStateCreator), {
+        name: STORAGE_KEY,
+        partialize: (state) => {
+          // only store the order in localStorage if user has edited, this avoids
+          // bloating localStorage if a user just visits the page but does not
+          // edit the ticket
+          const partializedOrders: OrderMap = {};
+          for (const o in state.orders) {
+            const order = state.orders[o];
+            if (order && order.persist) {
+              partializedOrders[order.marketId] = order;
+            }
+          }
 
           return {
-            orders: {
-              ...state.orders,
-              [marketId]: {
-                ...defaultOrder,
-                ...curr,
-                ...order,
-                persist,
-              },
-            },
+            ...state,
+            orders: partializedOrders,
           };
-        });
-      },
-    })),
-    {
-      name: STORAGE_KEY,
-      partialize: (state) => {
-        // only store the order in localStorage if user has edited, this avoids
-        // bloating localStorage if a user just visits the page but does not
-        // edit the ticket
-        const partializedOrders: OrderMap = {};
-        for (const o in state.orders) {
-          const order = state.orders[o];
-          if (order && order.persist) {
-            partializedOrders[order.marketId] = order;
-          }
-        }
-
-        return {
-          ...state,
-          orders: partializedOrders,
-        };
-      },
-    }
-  )
-);
+        },
+      })
+    )
+  );
+  return useOrderStoreRef.current;
+};
 
 /**
  * Retrieves an order from the store for a market and
  * creates one if it doesn't already exist
  */
 export const useOrder = (marketId: string) => {
-  const [order, _update] = useOrderStore((store) => {
+  const useOrderStoreRef = useCreateOrderStore();
+  const [order, _update] = useOrderStoreRef((store) => {
     return [store.orders[marketId], store.update];
   });
 

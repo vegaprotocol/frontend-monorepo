@@ -9,10 +9,7 @@ import { t } from '@vegaprotocol/i18n';
 import { OracleBanner } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
 import { Filter } from '@vegaprotocol/orders';
-import {
-  usePaneLayout,
-  useScreenDimensions,
-} from '@vegaprotocol/react-helpers';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import {
   Tab,
   LocalStoragePersistTabs as Tabs,
@@ -25,6 +22,7 @@ import { HeaderTitle } from '../../components/header';
 import {
   ResizableGrid,
   ResizableGridPanel,
+  usePaneLayout,
 } from '../../components/resizable-grid';
 import { TradingViews } from './trade-views';
 import { MarketSelector } from './market-selector';

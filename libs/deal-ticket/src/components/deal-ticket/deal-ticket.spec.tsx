@@ -7,7 +7,7 @@ import { DealTicket } from './deal-ticket';
 import * as Schema from '@vegaprotocol/types';
 import { MockedProvider } from '@apollo/client/testing';
 import { addDecimal } from '@vegaprotocol/utils';
-import { useOrderStore } from '@vegaprotocol/orders';
+import { useCreateOrderStore } from '@vegaprotocol/orders';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
@@ -28,6 +28,9 @@ function generateJsx() {
     </MockedProvider>
   );
 }
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const useOrderStore = useCreateOrderStore();
 
 describe('DealTicket', () => {
   beforeEach(() => {

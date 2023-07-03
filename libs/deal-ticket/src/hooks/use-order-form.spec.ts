@@ -1,9 +1,12 @@
 import omit from 'lodash/omit';
 import { act, renderHook } from '@testing-library/react';
-import { getDefaultOrder, useOrderStore } from '@vegaprotocol/orders';
+import { getDefaultOrder, useCreateOrderStore } from '@vegaprotocol/orders';
 import { useOrderForm } from './use-order-form';
 
 jest.mock('zustand');
+
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const useOrderStore = useCreateOrderStore();
 
 describe('useOrderForm', () => {
   const marketId = 'market-id';
