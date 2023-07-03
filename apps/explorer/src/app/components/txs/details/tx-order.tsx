@@ -30,8 +30,8 @@ export const TxDetailsOrder = ({
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
   const marketId = txData.command.orderSubmission.marketId || '-';
-
   const reference = txData.command.orderSubmission.peggedOrder;
+  const side = txData.command.orderSubmission.side;
 
   let deterministicId = '';
 
@@ -68,6 +68,7 @@ export const TxDetailsOrder = ({
         </TableRow>
         {reference ? (
           <TxOrderPeggedReferenceRow
+            side={side}
             offset={reference.offset}
             reference={reference.reference}
             marketId={marketId}

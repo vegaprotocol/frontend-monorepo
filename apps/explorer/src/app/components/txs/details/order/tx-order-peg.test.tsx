@@ -2,6 +2,7 @@ import { render } from '@testing-library/react';
 import type { TxDetailsOrderProps } from './tx-order-peg';
 import { TxOrderPeggedReference, getSettlementAsset } from './tx-order-peg';
 import { useExplorerMarketQuery } from '../../../links/market-link/__generated__/Market';
+import type { ExplorerMarketQuery } from '../../../links/market-link/__generated__/Market';
 import { PeggedReference, Side } from '@vegaprotocol/types';
 
 // Mock the useExplorerMarketQuery hook
@@ -24,7 +25,7 @@ describe('getSettlementAsset', () => {
       },
     };
 
-    const result = getSettlementAsset(data);
+    const result = getSettlementAsset(data as Partial<ExplorerMarketQuery>);
 
     expect(result).toEqual(8);
   });
