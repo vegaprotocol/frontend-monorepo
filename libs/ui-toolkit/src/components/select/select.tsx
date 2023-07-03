@@ -48,24 +48,12 @@ export const RichSelect = forwardRef<
   const containerRef = useRef<HTMLDivElement>();
   const contentRef = useRef<HTMLDivElement>();
 
-  const setWidth = () => {
-    if (contentRef.current) {
-      contentRef.current.style.width = containerRef.current ? `450px` : 'auto';
-    }
-  };
-
   return (
     <div
       ref={containerRef as Ref<HTMLDivElement>}
       className="flex items-center relative"
     >
-      <SelectPrimitive.Root
-        {...props}
-        onOpenChange={() => {
-          setWidth();
-        }}
-        defaultOpen={false}
-      >
+      <SelectPrimitive.Root {...props} defaultOpen={false}>
         <SelectPrimitive.Trigger
           data-testid={props['data-testid'] || 'rich-select-trigger'}
           className={classNames(
@@ -85,9 +73,10 @@ export const RichSelect = forwardRef<
           <SelectPrimitive.Content
             ref={contentRef as Ref<HTMLDivElement>}
             className={classNames(
+              'relative',
               'z-20',
               'bg-white dark:bg-black',
-              'border border-neutral-500 focus:border-black dark:focus:border-white',
+              'border border-neutral-500 focus:border-black dark:focus:border-white rounded',
               'overflow-hidden',
               'shadow-lg'
             )}
@@ -95,11 +84,11 @@ export const RichSelect = forwardRef<
             side={'bottom'}
             align={'center'}
           >
-            <SelectPrimitive.ScrollUpButton className="flex items-center justify-center p-1 absolute w-full h-6 z-20 bg-gradient-to-t from-transparent to-neutral-50 dark:to-neutral-900">
+            <SelectPrimitive.ScrollUpButton className="flex items-center justify-center py-1 absolute w-full h-6 z-20 bg-gradient-to-t from-transparent to-neutral-50 dark:to-neutral-900">
               <Icon name="chevron-up" />
             </SelectPrimitive.ScrollUpButton>
             <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
-            <SelectPrimitive.ScrollDownButton className="flex items-center justify-center p-1 absolute bottom-0 w-full h-6 z-20 bg-gradient-to-b from-transparent to-neutral-50 dark:to-neutral-900">
+            <SelectPrimitive.ScrollDownButton className="flex items-center justify-center py-1 absolute bottom-0 w-full h-6 z-20 bg-gradient-to-b from-transparent to-neutral-50 dark:to-neutral-900">
               <Icon name="chevron-down" />
             </SelectPrimitive.ScrollDownButton>
           </SelectPrimitive.Content>

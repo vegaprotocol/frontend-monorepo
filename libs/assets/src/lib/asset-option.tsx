@@ -5,7 +5,7 @@ import { t } from '@vegaprotocol/i18n';
 import type { ReactNode } from 'react';
 
 type AssetOptionProps = {
-  asset: AssetFieldsFragment;
+  asset: Pick<AssetFieldsFragment, 'id' | 'name' | 'symbol'>;
   balance?: ReactNode;
 };
 
