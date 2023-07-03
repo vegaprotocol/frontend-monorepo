@@ -154,7 +154,7 @@ describe('markets all table', { tags: '@smoke' }, () => {
       .find(dropdownContentItem)
       .eq(2)
       .should('have.text', 'View asset');
-    cy.getByTestId('market-actions-content').click();
+    cy.getByTestId('market-actions-content').should('be.visible');
   });
 
   it('able to open and sort full market list - market page', () => {
@@ -197,8 +197,8 @@ describe('no all markets', { tags: '@smoke', testIsolation: true }, () => {
     cy.mockGQL((req) => {
       aliasGQLQuery(req, 'Markets', markets);
     });
-    cy.mockSubscription();
     cy.visit('/#/markets/all');
+    cy.wait('@Markets');
   });
 
   it('can see no markets message', () => {
