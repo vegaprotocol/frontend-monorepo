@@ -23,7 +23,7 @@ import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { AssetOption } from '@vegaprotocol/assets';
+import { AssetOption, Balance } from '@vegaprotocol/assets';
 
 interface FormFields {
   toAddress: string;
@@ -39,7 +39,7 @@ interface TransferFormProps {
     symbol: string;
     name: string;
     decimals: number;
-    balance: string;
+    balance: BigNumber;
   }>;
   assetId?: string;
   feeFactor: string | null;
@@ -198,7 +198,13 @@ export const TransferForm = ({
               value={field.value}
             >
               {assets.map((a) => (
-                <AssetOption key={a.id} asset={a} balance={a.balance} />
+                <AssetOption
+                  key={a.id}
+                  asset={a}
+                  balance={
+                    <Balance balance={a.balance.toString()} symbol={a.symbol} />
+                  }
+                />
               ))}
             </RichSelect>
           )}

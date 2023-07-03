@@ -1,5 +1,5 @@
 import * as Schema from '@vegaprotocol/types';
-import { addDecimal, truncateByChars } from '@vegaprotocol/utils';
+import { toBigNum, truncateByChars } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   NetworkParams,
@@ -13,6 +13,7 @@ import { accountsDataProvider } from './accounts-data-provider';
 import { TransferForm } from './transfer-form';
 import { useTransferDialog } from './transfer-dialog';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
+import sortBy from 'lodash/sortBy';
 
 export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   const { pubKey, pubKeys } = useVegaWallet();
@@ -44,7 +45,7 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
         symbol: account.asset.symbol,
         name: account.asset.name,
         decimals: account.asset.decimals,
-        balance: addDecimal(account.balance, account.asset.decimals),
+        balance: toBigNum(account.balance, account.asset.decimals),
       }));
   }, [data]);
 
@@ -58,7 +59,7 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
       <TransferForm
         pubKey={pubKey}
         pubKeys={pubKeys ? pubKeys?.map((pk) => pk.publicKey) : null}
-        assets={assets}
+        assets={sortBy(assets, 'name')}
         assetId={assetId}
         feeFactor={param}
         submitTransfer={transfer}
