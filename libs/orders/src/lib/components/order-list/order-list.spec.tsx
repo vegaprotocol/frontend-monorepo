@@ -53,10 +53,8 @@ describe('OrderListTable', () => {
       'Size',
       'Type',
       'Status',
-      'Filled',
       'Price',
       'Time In Force',
-      'Created At',
       'Updated At',
       '', // no cell header for edit/cancel
     ];
@@ -73,14 +71,12 @@ describe('OrderListTable', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues: string[] = [
       marketOrder.market?.tradableInstrument.instrument.code || '',
-      '+0.10',
+      '+0.05/0.10',
       Schema.OrderTypeMapping[marketOrder.type as Schema.OrderType] || '',
       Schema.OrderStatusMapping[marketOrder.status],
-      '5',
       '-',
-      Schema.OrderTimeInForceMapping[marketOrder.timeInForce],
+      Schema.OrderTimeInForceCode[marketOrder.timeInForce],
       getDateTimeFormat().format(new Date(marketOrder.createdAt)),
-      '-',
       'Edit',
     ];
     expectedValues.forEach((expectedValue, i) =>
@@ -96,16 +92,14 @@ describe('OrderListTable', () => {
 
     const expectedValues: string[] = [
       limitOrder.market?.tradableInstrument.instrument.code || '',
-      '+0.10',
+      '+0.05/0.10',
       Schema.OrderTypeMapping[limitOrder.type || Schema.OrderType.TYPE_LIMIT],
       Schema.OrderStatusMapping[limitOrder.status],
-      '5',
       '-',
       `${
-        Schema.OrderTimeInForceMapping[limitOrder.timeInForce]
+        Schema.OrderTimeInForceCode[limitOrder.timeInForce]
       }: ${getDateTimeFormat().format(new Date(limitOrder.expiresAt ?? ''))}`,
       getDateTimeFormat().format(new Date(limitOrder.createdAt)),
-      '-',
       'Edit',
     ];
     expectedValues.forEach((expectedValue, i) =>

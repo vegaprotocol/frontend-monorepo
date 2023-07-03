@@ -10,13 +10,12 @@ import {
 } from '../support/order-validation';
 
 const orderSymbol = 'market.tradableInstrument.instrument.code';
-const orderSize = 'size';
 const orderType = 'type';
 const orderStatus = 'status';
 const orderRemaining = 'remaining';
 const orderPrice = 'price';
 const orderTimeInForce = 'timeInForce';
-const orderCreatedAt = 'createdAt';
+const orderUpdatedAt = 'updatedAt';
 const cancelOrderBtn = 'cancel';
 const cancelAllOrdersBtn = 'cancelAll';
 const editOrderBtn = 'edit';
@@ -46,8 +45,8 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
             cy.wrap($symbol).invoke('text').should('not.be.empty');
           });
 
-          cy.get(`[col-id='${orderSize}']`).each(($size) => {
-            cy.wrap($size).invoke('text').should('not.be.empty');
+          cy.get(`[col-id='${orderRemaining}']`).each(($remaining) => {
+            cy.wrap($remaining).invoke('text').should('not.be.empty');
           });
 
           cy.get(`[col-id='${orderType}']`).each(($type) => {
@@ -58,10 +57,6 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
             cy.wrap($status).invoke('text').should('not.be.empty');
           });
 
-          cy.get(`[col-id='${orderRemaining}']`).each(($remaining) => {
-            cy.wrap($remaining).invoke('text').should('not.be.empty');
-          });
-
           cy.get(`[col-id='${orderPrice}']`).each(($price) => {
             cy.wrap($price).invoke('text').should('not.be.empty');
           });
@@ -70,7 +65,7 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
             cy.wrap($timeInForce).invoke('text').should('not.be.empty');
           });
 
-          cy.get(`[col-id='${orderCreatedAt}']`).each(($dateTime) => {
+          cy.get(`[col-id='${orderUpdatedAt}']`).each(($dateTime) => {
             cy.wrap($dateTime).invoke('text').should('not.be.empty');
           });
         });
@@ -96,7 +91,7 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
           'have.text',
           'Partially Filled'
         );
-        cy.get(`[col-id='${orderRemaining}']`).should('have.text', '7/10');
+        cy.get(`[col-id='${orderRemaining}']`).should('have.text', '-7/10');
         cy.getByTestId(cancelOrderBtn).should('not.exist');
         cy.getByTestId(editOrderBtn).should('not.exist');
       });
@@ -219,7 +214,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     cy.getByTestId(`order-status-${orderId}`)
       .parentsUntil(`.ag-row`)
       .siblings(`[col-id=${orderRemaining}]`)
-      .should('have.text', '4/5');
+      .should('have.text', '+4/5');
   });
 
   it('must see a filled order', () => {
@@ -267,8 +262,8 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       status: Schema.OrderStatus.STATUS_ACTIVE,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find('[col-id="size"]')
-      .should('have.text', '-15');
+      .find(`[col-id="${orderRemaining}"]`)
+      .should('have.text', '-14/15');
   });
 
   it('must see the size of the order and direction/side +', () => {
@@ -281,8 +276,8 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       status: Schema.OrderStatus.STATUS_ACTIVE,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find('[col-id="size"]')
-      .should('have.text', '+5');
+      .find(`[col-id="${orderRemaining}"]`)
+      .should('have.text', '+4/5');
   });
 
   it('for limit typy must see the Limit price that was set on the order', () => {
@@ -364,7 +359,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     });
     cy.get(`[row-id=${orderId}]`)
       .find(`[col-id='${orderTimeInForce}']`)
-      .should('have.text', "Good 'til Cancelled (GTC)");
+      .should('have.text', 'GTC');
   });
 
   it('for Active order when is part of a liquidity or peg shape, must not see an option to amend the individual order ', () => {
