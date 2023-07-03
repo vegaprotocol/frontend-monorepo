@@ -13,7 +13,7 @@ export type DelegateSubmission =
   vegaProtos.commands.v1.DelegateSubmission.DelegateSubmission;
 export type UndelegateSubmission =
   vegaProtos.commands.v1.UndelegateSubmission.UndelegateSubmission;
-export type OriginalOrderAmendment =
+export type OrderAmendment =
   vegaProtos.commands.v1.OrderAmendment.OrderAmendment;
 export type VoteSubmission =
   vegaProtos.commands.v1.VoteSubmission.VoteSubmission;
@@ -238,10 +238,6 @@ export interface ProposalSubmission {
 export type WithdrawSubmission = Omit<OriginalWithdrawSubmission, 'ext'> &
   WithdrawExt;
 
-export type OrderAmendment = SetOptional<
-  OriginalOrderAmendment,
-  'price' | 'sizeDelta' | 'expiresAt' | 'peggedOffset' | 'peggedReference'
->;
 export type OrderCancellation = SetOptional<
   OriginalOrderCancellation,
   'orderId' | 'marketId'

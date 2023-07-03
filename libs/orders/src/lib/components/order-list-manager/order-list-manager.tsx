@@ -14,9 +14,10 @@ import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order } from '../order-data-provider';
 import type { Exact } from 'type-fest';
-import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
+import { isNumeric, removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import * as Schema from '@vegaprotocol/types';
+import { vega as vegaProtos } from '@vegaprotocol/protos';
 
 export enum Filter {
   'Open',
@@ -67,9 +68,13 @@ export const normalizeOrderAmendment = <T extends Exact<OrderAmendment, T>>(
           .toNumber()
       : 0
   ),
-  expiresAt: order.expiresAt
-    ? BigInt(toNanoSeconds(order.expiresAt)) // Wallet expects timestamp in nanoseconds
-    : undefined,
+  expiresAt: BigInt(
+    order.expiresAt && isNumeric(new Date(order.expiresAt).getTime())
+      ? toNanoSeconds(order.expiresAt) // Wallet expects timestamp in nanoseconds
+      : 0
+  ),
+  peggedOffset: '',
+  peggedReference: vegaProtos.PeggedReference.PEGGED_REFERENCE_UNSPECIFIED,
 });
 
 const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (
