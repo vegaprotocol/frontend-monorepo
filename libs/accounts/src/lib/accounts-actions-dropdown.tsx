@@ -71,7 +71,7 @@ export const AccountsActionsDropdown = ({
           onClick={onClickBreakdown}
         >
           <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
-          {t('Breakdown')}
+          {t('View usage breakdown')}
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={(e) => {
