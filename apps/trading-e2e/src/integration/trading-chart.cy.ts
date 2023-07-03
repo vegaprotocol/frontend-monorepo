@@ -126,7 +126,8 @@ describe(
         { name: 'Moving average', infoText: 'Moving average: 174.08302' },
         {
           name: 'Price monitoring bounds',
-          infoText: 'Price Monitoring Bounds: Min 162.56291Max 182.96869Reference 172.47489',
+          infoText:
+            'Price Monitoring Bounds: Min 162.56291Max 182.96869Reference 172.47489',
         },
       ];
 
