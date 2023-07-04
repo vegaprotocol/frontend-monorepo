@@ -37,7 +37,7 @@ export const Layout = () => {
         <div className="col-span-full row-start-1 bg-vega-pink">
           <AnnouncementBanner />
         </div>
-        <div className="row-span-full row-start-2 bg-vega-light-100 dark:bg-vega-dark-100 border-r border-default">
+        <div className="row-span-full row-start-2 bg-vega-clight-800 dark:bg-vega-cdark-800 border-r border-default">
           <Sidebar />
         </div>
         {largeScreen && sidebarOpen && (
@@ -45,11 +45,11 @@ export const Layout = () => {
             <SidebarContent />
           </div>
         )}
-        <div className="col-span-full col-start-2 row-start-2 bg-vega-yellow">
+        <div className="col-span-full col-start-2 row-start-2">
           <Navbar theme="system" />
         </div>
         <div
-          className="col-span-full col-start-2 row-start-3 bg-vega-pink-350"
+          className="col-span-full col-start-2 row-start-3"
           data-testid="banners"
         >
           <ProtocolUpgradeProposalNotification
@@ -62,7 +62,7 @@ export const Layout = () => {
           <Outlet />
         </main>
       </div>
-      {!largeScreen && (
+      {/* {!largeScreen && (
         <DialogPrimitives.Root
           open={sidebarOpen}
           onOpenChange={(isOpen) => {
@@ -76,7 +76,7 @@ export const Layout = () => {
             <DialogPrimitives.Content
               className={classNames(
                 'fixed h-full max-w-[500px] w-[90vw] z-10 top-0 left-0 transition-transform',
-                'bg-white dark:bg-black',
+                'bg-white dark:bg-black', // TODO: colors
                 'border-r border-default'
               )}
             >
@@ -91,7 +91,7 @@ export const Layout = () => {
             </DialogPrimitives.Content>
           </DialogPrimitives.Portal>
         </DialogPrimitives.Root>
-      )}
+      )} */}
     </>
   );
 };

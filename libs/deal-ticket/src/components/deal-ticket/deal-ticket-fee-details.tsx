@@ -48,14 +48,11 @@ export const DealTicketFeeDetail = ({
 }: DealTicketFeeDetailPros) => {
   const displayValue = `${formattedValue ?? '-'} ${symbol || ''}`;
   const valueElement = onClick ? (
-    <button
-      onClick={onClick}
-      className="text-neutral-500 dark:text-neutral-300"
-    >
+    <button onClick={onClick} className="text-muted">
       {displayValue}
     </button>
   ) : (
-    <div className="text-neutral-500 dark:text-neutral-300">{displayValue}</div>
+    <div className="text-muted">{displayValue}</div>
   );
   return (
     <div

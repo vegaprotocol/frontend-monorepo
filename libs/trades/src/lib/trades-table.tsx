@@ -80,7 +80,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>(
                   onClick &&
                   onClick(addDecimal(value, data.market?.decimalPlaces || 0))
                 }
-                className="hover:dark:bg-neutral-800 hover:bg-neutral-200"
+                className="hover:dark:bg-vega-cdark-800 hover:bg-vega-clight-800"
               >
                 {addDecimalsFormatNumber(value, data.market.decimalPlaces)}
               </button>

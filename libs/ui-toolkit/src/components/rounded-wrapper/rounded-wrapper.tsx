@@ -18,7 +18,7 @@ export const RoundedWrapper = ({
 }: RoundedWrapperProps) => (
   <div
     className={classnames('rounded-xl pt-4 px-4 overflow-hidden', {
-      'border border-neutral-700': border,
+      'border border-default': border,
       'pb-4': paddingBottom,
       'mb-10': marginBottomLarge,
       'mb-4': !marginBottomLarge,

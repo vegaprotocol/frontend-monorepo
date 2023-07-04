@@ -19,14 +19,14 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
     const wrapperClasses = classNames(
       'rounded-full relative outline-none cursor-default',
       'w-[41px] h-[18px]',
-      'bg-vega-light-200 dark:bg-neutral-700',
-      'data-[state=checked]:bg-vega-light-200 dark:data-[state=checked]:bg-neutral-700'
+      'bg-vega-clight-500 dark:bg-vega-cdark-500',
+      'data-[state=checked]:bg-vega-clight-300 dark:data-[state=checked]:bg-vega-cdark-300'
     );
 
     const thumbClasses = classNames(
       'cursor-pointer',
       'block w-[18px] h-[18px]',
-      'bg-black dark:bg-white',
+      'bg-vega-clight-50 dark:bg-vega-cdark-50',
       'rounded-full transition-transform duration-100 translate-x-0.3 will-change-transform',
       'data-[state=checked]:translate-x-[23px]'
     );

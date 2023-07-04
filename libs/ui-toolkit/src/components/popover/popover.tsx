@@ -23,7 +23,7 @@ export const Popover = ({
         <PopoverPrimitive.Content
           data-testid="popover-content"
           align="start"
-          className="rounded bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-200 border border-neutral-400"
+          className="rounded bg-vega-clight-600 dark:bg-vega-cdark-600 border border-default text-default"
           sideOffset={10}
         >
           <PopoverPrimitive.Close

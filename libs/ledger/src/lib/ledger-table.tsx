@@ -32,7 +32,7 @@ export const TransferTooltipCellComponent = ({
   value: Types.TransferType;
 }) => {
   return (
-    <p className="max-w-sm bg-neutral-200 px-4 py-2 z-20 rounded text-sm break-word text-black">
+    <p className="max-w-sm px-4 py-2 z-20 rounded text-sm break-word">
       {value ? DescriptionTransferTypeMapping[value] : ''}
     </p>
   );

@@ -260,9 +260,7 @@ const KeypairItem = ({ pk }: { pk: PubKey }) => {
               <VegaIcon name={VegaIconNames.COPY} />
             </button>
           </CopyToClipboard>
-          {copied && (
-            <span className="text-xs text-neutral-500">{t('Copied')}</span>
-          )}
+          {copied && <span className="text-xs">{t('Copied')}</span>}
         </span>
       </div>
       <DropdownMenuItemIndicator />
@@ -303,9 +301,7 @@ const KeypairListItem = ({
             <VegaIcon name={VegaIconNames.COPY} />
           </button>
         </CopyToClipboard>
-        {copied && (
-          <span className="text-xs text-neutral-500">{t('Copied')}</span>
-        )}
+        {copied && <span className="text-xs">{t('Copied')}</span>}
       </span>
     </div>
   );

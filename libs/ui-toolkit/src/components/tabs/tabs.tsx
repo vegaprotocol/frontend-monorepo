@@ -41,16 +41,16 @@ export const Tabs = ({
             const triggerClass = classNames(
               'relative px-4 py-2 border-l border-r first:border-l-0',
               {
-                'cursor-default border-default bg-vega-light-100 dark:bg-vega-dark-100':
+                'cursor-default border-default bg-vega-clight-700 dark:bg-vega-cdark-700':
                   isActive,
-                'text-neutral-400 border-transparent hover:text-neutral-500 dark:hover:text-neutral-300':
-                  !isActive,
+                'text-default': isActive,
+                'text-muted border-transparent': !isActive,
               },
               'flex items-center gap-2'
             );
             const borderClass = classNames(
               'absolute bottom-[-1px] left-0 w-full h-0 border-b',
-              'border-b-vega-light-100 dark:border-b-vega-dark-100',
+              'border-vega-clight-700 dark:border-vega-cdark-700',
               { hidden: !isActive }
             );
             return (
@@ -73,7 +73,7 @@ export const Tabs = ({
           return (
             <TabsPrimitive.Content
               value={child.props.id}
-              className="h-full bg-white dark:bg-black"
+              className="h-full"
               data-testid={`tab-${child.props.id}`}
             >
               {child.props.children}

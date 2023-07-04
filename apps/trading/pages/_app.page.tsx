@@ -66,7 +66,7 @@ const InitializeHandlers = () => {
 
 function AppBody({ Component }: AppProps) {
   return (
-    <div className="h-full dark:bg-black dark:text-white">
+    <div className="font-alpha h-full bg-white dark:bg-vega-cdark-900 text-default">
       <Head>
         {/* Cannot use meta tags in _document.page.tsx see https://nextjs.org/docs/messages/no-document-viewport-meta */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />

@@ -312,10 +312,7 @@ export const TransferFee = ({
           <div>{t('Transfer fee')}</div>
         </Tooltip>
 
-        <div
-          data-testid="transfer-fee"
-          className="text-neutral-500 dark:text-neutral-300"
-        >
+        <div data-testid="transfer-fee" className="text-muted">
           {formatNumber(fee, decimals)}
         </div>
       </div>
@@ -328,10 +325,7 @@ export const TransferFee = ({
           <div>{t('Amount to be transferred')}</div>
         </Tooltip>
 
-        <div
-          data-testid="transfer-amount"
-          className="text-neutral-500 dark:text-neutral-300"
-        >
+        <div data-testid="transfer-amount" className="text-muted">
           {formatNumber(amount, decimals)}
         </div>
       </div>
@@ -344,10 +338,7 @@ export const TransferFee = ({
           <div>{t('Total amount (with fee)')}</div>
         </Tooltip>
 
-        <div
-          data-testid="total-transfer-fee"
-          className="text-neutral-500 dark:text-neutral-300"
-        >
+        <div data-testid="total-transfer-fee" className="text-muted">
           {formatNumber(totalValue, decimals)}
         </div>
       </div>
