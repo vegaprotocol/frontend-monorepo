@@ -21,6 +21,9 @@ export const ENV = {
     vegaRepoUrl: windowOrDefault('NX_VEGA_REPO_URL'),
   },
   flags: {
+    successorMarkets: truthy.includes(
+      windowOrDefault('NX_EXPLORER_SUPPORTS_SUCCESSOR_MARKETS')
+    ),
     assets: truthy.includes(windowOrDefault('NX_EXPLORER_ASSETS')),
     genesis: truthy.includes(windowOrDefault('NX_EXPLORER_GENESIS')),
     governance: truthy.includes(windowOrDefault('NX_EXPLORER_GOVERNANCE')),

@@ -1434,7 +1434,14 @@ export interface components {
       /** @description Configuration of the new market. */
       readonly changes?: components['schemas']['vegaNewMarketConfiguration'];
     };
-    /** Configuration for a new futures market on Vega */
+    /** Configuration for a new market successor */
+    readonly vegaSuccessorConfiguration: {
+      /** @description ID of the market that this market is a successor to. */
+      readonly parentMarketId?: string;
+      /** @description proportion of the insurance pool to be allocated to the successor market. */
+      readonly insurancePoolFraction?: number;
+    };
+    /** Configuration for a new market on Vega */
     readonly vegaNewMarketConfiguration: {
       /**
        * Format: uint64
@@ -1447,6 +1454,8 @@ export interface components {
       readonly linearSlippageFactor?: string;
       /** @description Liquidity monitoring parameters. */
       readonly liquidityMonitoringParameters?: components['schemas']['vegaLiquidityMonitoringParameters'];
+      /** @description manual addition - successorMarketConfiguration  */
+      readonly successorConfiguration?: components['schemas']['vegaSuccessorConfiguration'];
       /** @description Log normal risk model parameters, valid only if MODEL_LOG_NORMAL is selected. */
       readonly logNormal?: components['schemas']['vegaLogNormalRiskModel'];
       /**

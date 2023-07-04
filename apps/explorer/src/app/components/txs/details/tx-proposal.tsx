@@ -76,6 +76,7 @@ export const TxProposal = ({ txData, pubKey, blockData }: TxProposalProps) => {
   if (!txData || !txData.command.proposalSubmission) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
+
   let deterministicId = '';
 
   const proposal: Proposal = txData.command.proposalSubmission;

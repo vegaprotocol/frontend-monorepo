@@ -8,6 +8,9 @@ import { ProposalStatusIcon } from './proposal-status-icon';
 import ReactMarkdown from 'react-markdown';
 import { ProposalDate } from './proposal-date';
 import { t } from '@vegaprotocol/i18n';
+import flags from '../../../../config/flags';
+import { MarketLink } from '../../../links';
+import classNames from 'classnames';
 
 type Rationale = components['schemas']['vegaProposalRationale'];
 
@@ -56,10 +59,25 @@ export const ProposalSummary = ({
         })
       : '';
 
+  const newMarketSuccessorId = flags.successorMarkets
+    ? terms?.newMarket?.changes?.successorConfiguration?.parentMarketId
+    : undefined;
+  console.dir(flags);
+  console.dir(newMarketSuccessorId);
+  const successorMarketClasses = classNames({
+    'text-xs leading-tight pb-2': true,
+  });
+
   return (
     <div className="w-auto max-w-lg border-2 border-solid border-vega-light-100 dark:border-vega-dark-200 p-5">
       {id && <ProposalStatusIcon id={id} />}
       {rationale?.title && <h1 className="text-xl pb-1">{rationale.title}</h1>}
+      {flags.successorMarkets && newMarketSuccessorId && (
+        <p data-testId="successor-link" className={successorMarketClasses}>
+          <span>{t('Successor market to: ')}</span>
+          <MarketLink id={newMarketSuccessorId} showMarketName={true} />
+        </p>
+      )}
       {rationale?.description && (
         <div className="pt-2 text-sm leading-tight">
           <ReactMarkdown
