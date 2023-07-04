@@ -31,6 +31,7 @@ const mock = {
         side: 'SIDE_BUY',
         remaining: '100',
         size: '100',
+        peggedOrder: null,
         party: {
           id: '456',
         },
