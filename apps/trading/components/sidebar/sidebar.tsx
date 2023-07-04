@@ -11,6 +11,7 @@ import classNames from 'classnames';
 import { NodeHealthContainer } from '../node-health';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
+import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 
 type SidebarView =
   | 'order'
@@ -22,59 +23,61 @@ type SidebarView =
 
 export const Sidebar = () => {
   return (
-    <div className="flex flex-col items-center gap-2 py-2 px-1 h-full">
-      <div>
-        <VLogo className="w-[20px]" />
-      </div>
-      <nav className="flex flex-col items-stretch gap-2 p-1">
-        {/* sidebar options that always show */}
-        <SidebarButton
-          view="deposit"
-          icon={VegaIconNames.DEPOSIT}
-          tooltip="Deposit"
-        />
-        <SidebarButton
-          view="withdraw"
-          icon={VegaIconNames.WITHDRAW}
-          tooltip="Withdraw"
-        />
-        <SidebarButton
-          view="transfer"
-          icon={VegaIconNames.TRANSFER}
-          tooltip="Transfer"
-        />
-        {/* buttons for specific routes */}
-        <Routes>
-          <Route path="/markets/all" element={null} />
-          <Route
-            path="/markets/:marketId"
-            element={
-              <>
-                <SidebarDivider />
-                <SidebarButton
-                  view="order"
-                  icon={VegaIconNames.TREND_UP}
-                  tooltip="Order"
-                />
-                <SidebarButton
-                  view="info"
-                  icon={VegaIconNames.BREAKDOWN}
-                  tooltip="Market specification"
-                />
-              </>
-            }
+    <>
+      <div className="flex flex-col items-center gap-2 py-2 px-1 h-full">
+        <div>
+          <VLogo className="w-[20px]" />
+        </div>
+        <nav className="flex flex-col items-stretch gap-2 p-1">
+          {/* sidebar options that always show */}
+          <SidebarButton
+            view="deposit"
+            icon={VegaIconNames.DEPOSIT}
+            tooltip="Deposit"
           />
-        </Routes>
-      </nav>
-      <nav className="mt-auto flex flex-col items-stretch gap-2 p-1">
-        <SidebarButton
-          view="settings"
-          icon={VegaIconNames.COG}
-          tooltip="Settings"
-        />
-        <NodeHealthContainer />
-      </nav>
-    </div>
+          <SidebarButton
+            view="withdraw"
+            icon={VegaIconNames.WITHDRAW}
+            tooltip="Withdraw"
+          />
+          <SidebarButton
+            view="transfer"
+            icon={VegaIconNames.TRANSFER}
+            tooltip="Transfer"
+          />
+          {/* buttons for specific routes */}
+          <Routes>
+            <Route path="/markets/all" element={null} />
+            <Route
+              path="/markets/:marketId"
+              element={
+                <>
+                  <SidebarDivider />
+                  <SidebarButton
+                    view="order"
+                    icon={VegaIconNames.TREND_UP}
+                    tooltip="Order"
+                  />
+                  <SidebarButton
+                    view="info"
+                    icon={VegaIconNames.BREAKDOWN}
+                    tooltip="Market specification"
+                  />
+                </>
+              }
+            />
+          </Routes>
+        </nav>
+        <nav className="mt-auto flex flex-col items-stretch gap-2 p-1">
+          <SidebarButton
+            view="settings"
+            icon={VegaIconNames.COG}
+            tooltip="Settings"
+          />
+          <NodeHealthContainer />
+        </nav>
+      </div>
+    </>
   );
 };
 
@@ -110,46 +113,40 @@ export const SidebarContent = () => {
   const params = useParams();
   const { view } = useSidebar();
 
-  let content = null;
-
   if (view === 'order') {
     if (params.marketId) {
-      content = <TradingViews.ticket.component marketId={params.marketId} />;
+      return <DealTicketContainer marketId={params.marketId} />;
     } else {
-      content = <p>{t('No market selected')}</p>;
+      return <p>{t('No market selected')}</p>;
     }
   }
 
   if (view === 'deposit') {
-    content = <DepositContainer />;
+    return <DepositContainer />;
   }
 
   if (view === 'withdraw') {
-    content = <WithdrawFormContainer submit={() => alert('TODO')} />;
+    return <WithdrawFormContainer submit={() => alert('TODO')} />;
   }
 
   if (view === 'transfer') {
-    content = <TransferContainer />;
+    return <TransferContainer />;
   }
 
   if (view === 'settings') {
-    content = <Settings />;
+    return <Settings />;
   }
 
   if (view === 'info') {
     if (params.marketId) {
-      content = <MarketInfoAccordionContainer marketId={params.marketId} />;
+      return <MarketInfoAccordionContainer marketId={params.marketId} />;
     } else {
-      content = <p>{t('No market selected')}</p>;
+      return <p>{t('No market selected')}</p>;
     }
   }
 
-  return (
-    <div>
-      {/* <h2 className="capitalize mb-2">{view}</h2> */}
-      {content}
-    </div>
-  );
+  // sidebar not open
+  return null;
 };
 
 export const useSidebar = create<{

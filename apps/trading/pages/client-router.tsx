@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { t } from '@vegaprotocol/i18n';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import trimEnd from 'lodash/trimEnd';
-import { Layout } from '../client-pages/layout';
+import { Layout } from '../components/layout';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
