@@ -24,8 +24,6 @@ export const OrderTypeCell = ({
     }
     if (!value) return '-';
 
-    console.log(order);
-
     if (order?.icebergOrder) {
       return t('%s (Iceberg)', [Schema.OrderTypeMapping[value]]);
     }
