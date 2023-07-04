@@ -2,7 +2,6 @@ import { TransferContainer } from '@vegaprotocol/accounts';
 import { DepositContainer } from '@vegaprotocol/deposits';
 import { VLogo, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { Tooltip } from '../../components/tooltip';
-import { WithdrawFormContainer } from '@vegaprotocol/withdraws';
 import { create } from 'zustand';
 import { Route, Routes, useParams } from 'react-router-dom';
 import { Settings } from '../settings';
@@ -12,6 +11,7 @@ import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { WithdrawContainer } from '../withdraw-container';
+import { useEffect } from 'react';
 
 export enum ViewType {
   Order = 'Order',
@@ -158,7 +158,15 @@ export const SidebarContent = () => {
         />
       );
     } else {
-      return <p>{t('No market selected')}</p>;
+      return <CloseSidebar />;
+    }
+  }
+
+  if (view.type === ViewType.Info) {
+    if (params.marketId) {
+      return <MarketInfoAccordionContainer marketId={params.marketId} />;
+    } else {
+      return <CloseSidebar />;
     }
   }
 
@@ -184,7 +192,7 @@ export const SidebarContent = () => {
     return (
       <div className="py-1">
         <h2 className="mb-4">{t('Transfer')}</h2>
-        <TransferContainer assetId={view.assetId} />;
+        <TransferContainer assetId={view.assetId} />
       </div>
     );
   }
@@ -198,28 +206,31 @@ export const SidebarContent = () => {
     );
   }
 
-  if (view.type === ViewType.Info) {
-    if (params.marketId) {
-      return <MarketInfoAccordionContainer marketId={params.marketId} />;
-    } else {
-      return <p>{t('No market selected')}</p>;
-    }
-  }
-
   throw new Error('invalid sidebar');
 };
 
+/** If rendered will close sidebar */
+const CloseSidebar = () => {
+  const { setView } = useSidebar();
+  useEffect(() => {
+    setView(null);
+  }, [setView]);
+  return null;
+};
+
 export const useSidebar = create<{
+  init: boolean;
   view: SidebarView | null;
   setView: (view: SidebarView | null) => void;
 }>()((set) => ({
+  init: true,
   view: null,
   setView: (x) =>
     set(() => {
       if (x === null) {
-        return { view: null };
+        return { view: null, init: false };
       }
 
-      return { view: x };
+      return { view: x, init: false };
     }),
 }));
