@@ -1,7 +1,7 @@
 import type { ComponentProps } from 'react';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
-import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
+import type { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import type { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { TradesContainer } from '@vegaprotocol/trades';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
@@ -46,14 +46,6 @@ export const TradingViews = {
   liquidity: {
     label: 'Liquidity',
     component: requiresMarket(LiquidityContainer),
-  },
-  ticket: {
-    label: 'Ticket',
-    component: requiresMarket(DealTicketContainer),
-  },
-  info: {
-    label: 'Info',
-    component: requiresMarket(MarketInfoAccordionContainer),
   },
   orderbook: {
     label: 'Orderbook',
