@@ -16,7 +16,12 @@ export const Settings = () => {
           checked={theme === 'dark'}
         />
       </SettingsGroup>
-      <SettingsGroup label={t('Share usage data')}>
+      <SettingsGroup
+        label={t('Share usage data')}
+        helpText={t(
+          'Help identify bugs and improve the service by sharing anonymous usage data.'
+        )}
+      >
         <Switch
           name="settings-theme-switch"
           onCheckedChange={(isOn) => setIsApproved(isOn)}
@@ -32,14 +37,19 @@ export const Settings = () => {
 
 const SettingsGroup = ({
   label,
+  helpText,
   children,
 }: {
   label: string;
+  helpText?: string;
   children: ReactNode;
 }) => {
   return (
-    <div className="flex justify-between mb-4">
-      <label className="text-neutral-500 dark:text-neutral-400">{label}</label>
+    <div className="flex justify-between items-start mb-4">
+      <div className="w-3/4">
+        <label>{label}</label>
+        {helpText && <p className="text-muted text-xs">{helpText}</p>}
+      </div>
       {children}
     </div>
   );

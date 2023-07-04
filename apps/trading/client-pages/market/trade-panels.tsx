@@ -104,8 +104,7 @@ export const TradePanels = ({
         {Object.keys(TradingViews).map((key) => {
           const isActive = view === key;
           const className = classNames('p-4 min-w-[100px] capitalize', {
-            'text-black dark:text-vega-yellow': isActive,
-            'bg-neutral-200 dark:bg-neutral-800': isActive,
+            'bg-vega-clight-500 dark:bg-vega-cdark-500': isActive,
           });
           return (
             <button
