@@ -14,6 +14,9 @@ const proposalDocsLink = 'proposal-docs-link';
 const proposalDocumentationLink = 'proposal-documentation-link';
 const connectToVegaWalletButton = 'connect-to-vega-wallet-btn';
 const governanceDocsUrl = 'https://vega.xyz/governance';
+const networkUpgradeProposalListItem = 'protocol-upgrade-proposals-list-item';
+const closedProposals = 'closed-proposals';
+const closedProposalToggle = 'closed-proposals-toggle-networkUpgrades';
 
 context(
   'Governance Page - verify elements on page',
@@ -127,7 +130,7 @@ context(
       mockNetworkUpgradeProposal();
       cy.visit('/');
       cy.getByTestId('home-proposal-list').within(() => {
-        cy.getByTestId('protocol-upgrade-proposals-list-item').should('exist');
+        cy.getByTestId(networkUpgradeProposalListItem).should('exist');
         cy.getByTestId('protocol-upgrade-proposal-title').should(
           'have.text',
           'Vega release v1'
@@ -146,11 +149,7 @@ context(
          **/
         cy.get('li')
           .eq(0)
-          .should(
-            'have.attr',
-            'data-testid',
-            'protocol-upgrade-proposals-list-item'
-          )
+          .should('have.attr', 'data-testid', networkUpgradeProposalListItem)
           .within(() => {
             cy.get('h2').should('have.text', 'Vega release v1');
             cy.getByTestId('protocol-upgrade-proposal-type').should(
@@ -171,19 +170,19 @@ context(
             );
           });
       });
-      cy.get('[data-testid="closed-proposals-toggle-networkUpgrades"]').click();
-      cy.getByTestId('closed-proposals').within(() => {
-        cy.getByTestId('protocol-upgrade-proposals-list-item').should(
-          'have.length',
-          1
-        );
+      cy.getByTestId(closedProposals).within(() => {
+        cy.getByTestId(networkUpgradeProposalListItem).should('not.exist');
+      });
+      cy.getByTestId(closedProposalToggle).click();
+      cy.getByTestId(closedProposals).within(() => {
+        cy.getByTestId(networkUpgradeProposalListItem).should('have.length', 1);
       });
     });
 
     it('should see details of network upgrade proposal', function () {
       mockNetworkUpgradeProposal();
       navigateTo(navigation.proposals);
-      cy.getByTestId('protocol-upgrade-proposals-list-item')
+      cy.getByTestId(networkUpgradeProposalListItem)
         .first()
         .find('[data-testid="view-proposal-btn"]')
         .click();
@@ -224,6 +223,19 @@ context(
           }
         );
       });
+    });
+
+    it('filtering proposal should not display any network upgrade proposals', function () {
+      const proposalId =
+        'd848fc7881f13d366df5f61ab139d5fcfa72bf838151bb51b54381870e357931';
+
+      mockNetworkUpgradeProposal();
+      navigateTo(navigation.proposals);
+      cy.get('[data-testid="proposal-filter-toggle"]').click();
+      cy.get('[data-testid="filter-input"]').type(proposalId);
+      cy.getByTestId(closedProposals).should('have.length', 1);
+      cy.getByTestId(networkUpgradeProposalListItem).should('not.exist');
+      cy.getByTestId(closedProposalToggle).should('not.exist');
     });
   }
 );
