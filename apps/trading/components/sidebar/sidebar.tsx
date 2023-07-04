@@ -163,19 +163,39 @@ export const SidebarContent = () => {
   }
 
   if (view.type === ViewType.Deposit) {
-    return <DepositContainer assetId={view.assetId} />;
+    return (
+      <div className="py-1">
+        <h2 className="mb-4">{t('Deposit')}</h2>
+        <DepositContainer assetId={view.assetId} />
+      </div>
+    );
   }
 
   if (view.type === ViewType.Withdraw) {
-    return <WithdrawContainer assetId={view.assetId} />;
+    return (
+      <div className="py-1">
+        <h2 className="mb-4">{t('Withdraw')}</h2>
+        <WithdrawContainer assetId={view.assetId} />
+      </div>
+    );
   }
 
   if (view.type === ViewType.Transfer) {
-    return <TransferContainer assetId={view.assetId} />;
+    return (
+      <div className="py-1">
+        <h2 className="mb-4">{t('Transfer')}</h2>
+        <TransferContainer assetId={view.assetId} />;
+      </div>
+    );
   }
 
   if (view.type === ViewType.Settings) {
-    return <Settings />;
+    return (
+      <div className="py-1">
+        <h2 className="mb-4">{t('Settings')}</h2>
+        <Settings />
+      </div>
+    );
   }
 
   if (view.type === ViewType.Info) {
