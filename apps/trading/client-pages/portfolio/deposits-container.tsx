@@ -6,7 +6,7 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
-import { useSidebar } from '../../components/sidebar';
+import { useSidebar, ViewType } from '../../components/sidebar';
 
 export const DepositsContainer = () => {
   const gridRef = useRef<AgGridReact | null>(null);
@@ -29,7 +29,7 @@ export const DepositsContainer = () => {
           <Button
             variant="primary"
             size="sm"
-            onClick={() => setView('deposit')}
+            onClick={() => setView({ type: ViewType.Deposit })}
             data-testid="deposit-button"
           >
             {t('Deposit')}

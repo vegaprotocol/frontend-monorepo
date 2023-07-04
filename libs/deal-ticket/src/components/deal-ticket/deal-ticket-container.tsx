@@ -9,12 +9,14 @@ export interface DealTicketContainerProps {
   marketId: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onClickCollateral?: () => void;
+  onDeposit: (assetId: string) => void;
 }
 
 export const DealTicketContainer = ({
   marketId,
   onMarketClick,
   onClickCollateral,
+  onDeposit,
 }: DealTicketContainerProps) => {
   const {
     data: market,
@@ -50,6 +52,7 @@ export const DealTicketContainer = ({
           submit={(orderSubmission) => create({ orderSubmission })}
           onClickCollateral={onClickCollateral}
           onMarketClick={onMarketClick}
+          onDeposit={onDeposit}
         />
       ) : (
         <Splash>

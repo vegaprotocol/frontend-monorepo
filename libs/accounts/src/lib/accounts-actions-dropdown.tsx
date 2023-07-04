@@ -8,7 +8,6 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { useTransferDialog } from './transfer-dialog';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 export const AccountsActionsDropdown = ({
@@ -17,15 +16,16 @@ export const AccountsActionsDropdown = ({
   onClickDeposit,
   onClickWithdraw,
   onClickBreakdown,
+  onClickTransfer,
 }: {
   assetId: string;
   assetContractAddress?: string;
   onClickDeposit: () => void;
   onClickWithdraw: () => void;
   onClickBreakdown: () => void;
+  onClickTransfer: () => void;
 }) => {
   const etherscanLink = useEtherscanLink();
-  const openTransferDialog = useTransferDialog((store) => store.open);
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
 
   return (
@@ -49,7 +49,7 @@ export const AccountsActionsDropdown = ({
       <DropdownMenuItem
         key={'transfer'}
         data-testid="transfer"
-        onClick={() => openTransferDialog(true, assetId)}
+        onClick={onClickTransfer}
       >
         <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
         {t('Transfer')}

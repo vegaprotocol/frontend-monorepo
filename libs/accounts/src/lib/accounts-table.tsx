@@ -70,6 +70,7 @@ export interface AccountTableProps extends AgGridReactProps {
   onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
   onClickBreakdown?: (assetId: string) => void;
+  onClickTransfer?: (assetId: string) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
 }
@@ -81,6 +82,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
       onClickWithdraw,
       onClickDeposit,
       onClickBreakdown,
+      onClickTransfer,
       rowData,
       isReadOnly,
       pinnedAsset,
@@ -284,6 +286,9 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                 onClickBreakdown={() => {
                   onClickBreakdown && onClickBreakdown(assetId);
                 }}
+                onClickTransfer={() => {
+                  onClickTransfer && onClickTransfer(assetId);
+                }}
               />
             );
           },
@@ -295,6 +300,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
       onClickBreakdown,
       onClickDeposit,
       onClickWithdraw,
+      onClickTransfer,
       isReadOnly,
       showDepositButton,
     ]);

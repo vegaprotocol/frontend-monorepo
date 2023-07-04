@@ -1,19 +1,17 @@
 import { useCallback } from 'react';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
-import { useWithdrawalDialog } from '@vegaprotocol/withdraws';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { AccountManager } from '@vegaprotocol/accounts';
-import { useDepositDialog } from '@vegaprotocol/deposits';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
 import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
-import { useSidebar } from '../sidebar';
+import { ViewType, useSidebar } from '../sidebar';
 
 export const AccountsContainer = ({
   pinnedAsset,
@@ -26,8 +24,6 @@ export const AccountsContainer = ({
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
-  const openWithdrawalDialog = useWithdrawalDialog((store) => store.open);
-  const openDepositDialog = useDepositDialog((store) => store.open);
   const { setView } = useSidebar();
 
   const gridStore = useAccountStore((store) => store.gridStore);
@@ -56,8 +52,15 @@ export const AccountsContainer = ({
       <AccountManager
         partyId={pubKey}
         onClickAsset={onClickAsset}
-        onClickWithdraw={openWithdrawalDialog}
-        onClickDeposit={openDepositDialog}
+        onClickWithdraw={(assetId) => {
+          setView({ type: ViewType.Withdraw, assetId });
+        }}
+        onClickDeposit={(assetId) => {
+          setView({ type: ViewType.Deposit, assetId });
+        }}
+        onClickTransfer={(assetId) => {
+          setView({ type: ViewType.Transfer, assetId });
+        }}
         onMarketClick={onMarketClick}
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}
@@ -69,14 +72,14 @@ export const AccountsContainer = ({
             variant="primary"
             size="sm"
             data-testid="open-transfer-dialog"
-            onClick={() => setView('transfer')}
+            onClick={() => setView({ type: ViewType.Transfer })}
           >
             {t('Transfer')}
           </Button>
           <Button
             variant="primary"
             size="sm"
-            onClick={() => setView('deposit')}
+            onClick={() => setView({ type: ViewType.Deposit })}
           >
             {t('Deposit')}
           </Button>
