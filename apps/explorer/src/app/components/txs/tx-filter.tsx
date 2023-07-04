@@ -91,7 +91,7 @@ export interface TxFilterProps {
  * types. It allows a user to select one transaction type to view. Later
  * it will support multiple selection, but until the API supports that it is
  * one or all.
- * @param filters null or Set of tranaction types
+ * @param filters null or Set of transaction types
  * @param setFilters A function to update the filters prop
  * @returns
  */
@@ -100,15 +100,15 @@ export const TxsFilter = ({ filters, setFilters }: TxFilterProps) => {
     <DropdownMenu
       modal={false}
       trigger={
-        <DropdownMenuTrigger className="ml-2">
-          <Button size="xs">
+        <DropdownMenuTrigger className="ml-0">
+          <Button size="xs" data-testid="filter-trigger">
             <FilterLabel filters={filters} />
           </Button>
         </DropdownMenuTrigger>
       }
     >
       <DropdownMenuContent>
-        {filters.size > 1 ? null : (
+        {filters.size > 0 ? null : (
           <>
             <DropdownMenuCheckboxItem
               onCheckedChange={() => setFilters(new Set(AllFilterOptions))}

@@ -2,12 +2,15 @@ import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import type { SourceType } from './oracle';
 import { OracleSigners } from './oracle-signers';
+import { MockedProvider } from '@apollo/client/testing';
 
 function renderComponent(sourceType: SourceType) {
   return (
-    <MemoryRouter>
-      <OracleSigners sourceType={sourceType} />
-    </MemoryRouter>
+    <MockedProvider>
+      <MemoryRouter>
+        <OracleSigners sourceType={sourceType} />
+      </MemoryRouter>
+    </MockedProvider>
   );
 }
 

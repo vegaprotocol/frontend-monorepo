@@ -1,5 +1,4 @@
 import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
-import React from 'react';
 
 export interface InfoBlockProps {
   title: string;
