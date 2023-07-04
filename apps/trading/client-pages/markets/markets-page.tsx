@@ -15,16 +15,20 @@ export const MarketsPage = () => {
     updateTitle(titlefy(['Markets']));
   }, [updateTitle]);
   return (
-    <Tabs storageKey="console-markets">
-      <Tab id="all-markets" name={t('All markets')}>
-        <Markets />
-      </Tab>
-      <Tab id="proposed-markets" name={t('Proposed markets')}>
-        <Proposed />
-      </Tab>
-      <Tab id="closed-markets" name={t('Closed markets')}>
-        <Closed />
-      </Tab>
-    </Tabs>
+    <div className="h-full pt-3 pb-1 px-1">
+      <div className="border border-default">
+        <Tabs storageKey="console-markets">
+          <Tab id="all-markets" name={t('All markets')}>
+            <Markets />
+          </Tab>
+          <Tab id="proposed-markets" name={t('Proposed markets')}>
+            <Proposed />
+          </Tab>
+          <Tab id="closed-markets" name={t('Closed markets')}>
+            <Closed />
+          </Tab>
+        </Tabs>
+      </div>
+    </div>
   );
 };
