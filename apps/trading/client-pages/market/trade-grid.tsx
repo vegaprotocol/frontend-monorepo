@@ -204,7 +204,10 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
     <section className="h-full p-1">
       <AutoSizer>
         {({ width, height }) => (
-          <div style={{ width, height }} className="border border-default">
+          <div
+            style={{ width, height }}
+            className="border border-default rounded-sm"
+          >
             {children}
           </div>
         )}

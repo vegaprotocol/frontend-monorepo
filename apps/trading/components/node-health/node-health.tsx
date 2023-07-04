@@ -4,30 +4,27 @@ import {
   useNodeSwitcherStore,
 } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
-import {
-  Indicator,
-  ExternalLink,
-  Tooltip,
-  Intent,
-} from '@vegaprotocol/ui-toolkit';
+import { Indicator, ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { Tooltip } from '../../components/tooltip';
 
 export const NodeHealthContainer = () => {
   const { VEGA_URL, VEGA_INCIDENT_URL } = useEnvironment();
   const setNodeSwitcher = useNodeSwitcherStore((store) => store.setDialogOpen);
-  const { datanodeBlockHeight, text, intent } = useNodeHealth();
-  console.log(intent);
+  const { text, intent } = useNodeHealth();
 
   return (
     <Tooltip
       description={
-        <div className="flex flex-col gap-2 p-1 text-base">
-          <p>Status: {text}</p>
+        <div className="flex flex-col gap-2 p-4">
+          <p className="flex items-center gap-2">
+            <Indicator variant={intent} />
+            {text}
+          </p>
           {VEGA_URL && (
             <p>
-              Node: <NodeUrl url={VEGA_URL} />
+              <NodeUrl url={VEGA_URL} />
             </p>
           )}
-          <p>Block height: {datanodeBlockHeight}</p>
           {VEGA_INCIDENT_URL && (
             <ExternalLink href={VEGA_INCIDENT_URL}>
               {t('Mainnet status & incidents')}
@@ -43,7 +40,7 @@ export const NodeHealthContainer = () => {
         className="flex justify-center items-center py-3 rounded hover:bg-vega-light-200 hover:dark:bg-vega-dark-200"
         onClick={() => setNodeSwitcher(true)}
       >
-        <Indicator variant={Intent.Danger} size="lg" />
+        <Indicator variant={intent} size="lg" />
       </button>
     </Tooltip>
   );
