@@ -1,9 +1,9 @@
 import { OrderTimeInForce, Side } from '@vegaprotocol/types';
 import { OrderType } from '@vegaprotocol/types';
 import { useCallback, useEffect, useRef } from 'react';
+import type { StateCreator, UseBoundStore, Mutate, StoreApi } from 'zustand';
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
-import type { StateCreator } from 'zustand';
 
 export type OrderObj = {
   marketId: string;
@@ -54,9 +54,10 @@ const orderStateCreator: StateCreator<Store> = (set) => ({
   },
 });
 
-export const useCreateOrderStore = () => {
-  const useOrderStoreRef = useRef(
-    create<Store>()(
+let store: UseBoundStore<Mutate<StoreApi<Store>, []>> | null = null;
+const getOrderStore = () => {
+  if (!store) {
+    store = create<Store>()(
       persist(subscribeWithSelector(orderStateCreator), {
         name: STORAGE_KEY,
         partialize: (state) => {
@@ -77,8 +78,13 @@ export const useCreateOrderStore = () => {
           };
         },
       })
-    )
-  );
+    );
+  }
+  return store as UseBoundStore<Mutate<StoreApi<Store>, []>>;
+};
+
+export const useCreateOrderStore = () => {
+  const useOrderStoreRef = useRef(getOrderStore());
   return useOrderStoreRef.current;
 };
 
