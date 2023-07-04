@@ -1,6 +1,6 @@
 import omit from 'lodash/omit';
 import { act, renderHook } from '@testing-library/react';
-import { getDefaultOrder, useOrderStore } from '@vegaprotocol/orders';
+import { getDefaultOrder, useCreateOrderStore } from '@vegaprotocol/orders';
 import { useOrderForm } from './use-order-form';
 
 jest.mock('zustand');
@@ -10,6 +10,8 @@ describe('useOrderForm', () => {
   const setup = (marketId: string) => {
     return renderHook(() => useOrderForm(marketId));
   };
+  const { result } = renderHook(() => useCreateOrderStore());
+  const useOrderStore = result.current;
 
   it('updates form fields when the order changes', async () => {
     const order = getDefaultOrder(marketId);

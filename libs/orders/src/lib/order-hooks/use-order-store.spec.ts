@@ -2,16 +2,17 @@ import {
   getDefaultOrder,
   STORAGE_KEY,
   useOrder,
-  useOrderStore,
+  useCreateOrderStore,
 } from './use-order-store';
 import { act, renderHook } from '@testing-library/react';
 import { OrderType } from '@vegaprotocol/types';
 
 jest.mock('zustand');
 
-describe('useOrderStore', () => {
+describe('useCreateOrderStore', () => {
   const setup = () => {
-    return renderHook(() => useOrderStore());
+    const { result } = renderHook(() => useCreateOrderStore());
+    return renderHook(() => result.current());
   };
 
   afterEach(() => {

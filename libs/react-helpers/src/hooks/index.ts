@@ -11,5 +11,4 @@ export * from './use-theme-switcher';
 export * from './use-storybook-theme-observer';
 export * from './use-yesterday';
 export * from './use-previous';
-export * from './use-pane-layout';
 export * from './use-copy-timeout';
