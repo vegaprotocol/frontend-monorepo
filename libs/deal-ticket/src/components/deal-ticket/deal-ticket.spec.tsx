@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket, generateMarketData } from '../../test-helpers';
 import { DealTicket } from './deal-ticket';
@@ -29,10 +29,10 @@ function generateJsx() {
   );
 }
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const useOrderStore = useCreateOrderStore();
-
 describe('DealTicket', () => {
+  const { result } = renderHook(() => useCreateOrderStore());
+  const useOrderStore = result.current;
+
   beforeEach(() => {
     localStorage.clear();
   });
@@ -141,7 +141,6 @@ describe('DealTicket', () => {
       reduceOnly: true,
       postOnly: false,
     };
-
     useOrderStore.setState({
       orders: {
         [expectedOrder.marketId]: expectedOrder,

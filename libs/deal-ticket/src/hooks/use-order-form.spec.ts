@@ -5,14 +5,13 @@ import { useOrderForm } from './use-order-form';
 
 jest.mock('zustand');
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const useOrderStore = useCreateOrderStore();
-
 describe('useOrderForm', () => {
   const marketId = 'market-id';
   const setup = (marketId: string) => {
     return renderHook(() => useOrderForm(marketId));
   };
+  const { result } = renderHook(() => useCreateOrderStore());
+  const useOrderStore = result.current;
 
   it('updates form fields when the order changes', async () => {
     const order = getDefaultOrder(marketId);

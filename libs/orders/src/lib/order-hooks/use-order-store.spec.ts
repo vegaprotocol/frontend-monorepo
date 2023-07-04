@@ -11,10 +11,8 @@ jest.mock('zustand');
 
 describe('useCreateOrderStore', () => {
   const setup = () => {
-    const { result: useOrderStoreRef } = renderHook(() =>
-      useCreateOrderStore()
-    );
-    return { result: useOrderStoreRef.current() };
+    const { result } = renderHook(() => useCreateOrderStore());
+    return renderHook(() => result.current());
   };
 
   afterEach(() => {
@@ -23,7 +21,7 @@ describe('useCreateOrderStore', () => {
 
   it('has a empty default state', async () => {
     const { result } = setup();
-    expect(result).toEqual({
+    expect(result.current).toEqual({
       orders: {},
       update: expect.any(Function),
     });
@@ -38,10 +36,10 @@ describe('useCreateOrderStore', () => {
     };
     const { result } = setup();
     act(() => {
-      result.update(marketId, { type: OrderType.TYPE_LIMIT });
+      result.current.update(marketId, { type: OrderType.TYPE_LIMIT });
     });
     // order should be stored in memory
-    expect(result.orders).toEqual({
+    expect(result.current.orders).toEqual({
       [marketId]: expectedOrder,
     });
     // order SHOULD also be in localStorage
@@ -64,10 +62,10 @@ describe('useCreateOrderStore', () => {
     };
     const { result } = setup();
     act(() => {
-      result.update(marketId, { type: OrderType.TYPE_LIMIT }, false);
+      result.current.update(marketId, { type: OrderType.TYPE_LIMIT }, false);
     });
     // order should be stored in memory
-    expect(result.orders).toEqual({
+    expect(result.current.orders).toEqual({
       [marketId]: expectedOrder,
     });
     // order should NOT be in localStorage
