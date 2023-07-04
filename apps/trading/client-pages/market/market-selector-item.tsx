@@ -1,11 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import {
-  addDecimalsFormatNumber,
-  formatNumber,
-  priceChangePercentage,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { calcCandleVolume } from '@vegaprotocol/markets';
 import { useCandles } from '@vegaprotocol/markets';
@@ -77,7 +73,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
       : '0.00';
 
   return (
-    <div className="grid gap-2 grid-cols-[150px_1fr_120px]">
+    <div className="flex gap-2">
       <div>
         <div className="text-ellipsis whitespace-nowrap overflow-hidden">
           {market.tradableInstrument.instrument.code}
@@ -88,68 +84,23 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
           </p>
         )}
       </div>
-      <div>
+      <div className="flex-1">
         <DataRow value={volume} label={t('24h vol')} />
         <DataRow
           value={price}
           label={instrument.product.settlementAsset.symbol}
         />
       </div>
-      <div>
+      <div className="hidden lg:block w-[70px]">
         {oneDayCandles && (
           <Sparkline
-            width={120}
-            height={20}
+            width={70}
+            height={15}
             data={oneDayCandles.map((c) => Number(c.close))}
           />
         )}
       </div>
     </div>
-  );
-
-  return (
-    <>
-      <div className="flex items-end gap-1 mb-1">
-        <h3
-          className={classNames(
-            'overflow-hidden text-ellipsis whitespace-nowrap',
-            {
-              'w-1/2': mode, // make space for showing the trading mode
-            }
-          )}
-        >
-          {market.tradableInstrument.instrument.code}
-        </h3>
-        {mode && (
-          <p className="w-1/2 text-xs text-right text-vega-orange-500 dark:text-vega-orange-550">
-            {mode}
-          </p>
-        )}
-      </div>
-      <DataRow value={volume} label={t('24h vol')} />
-      <DataRow
-        value={price}
-        label={instrument.product.settlementAsset.symbol}
-      />
-      <div className="relative text-xs p-1">
-        {oneDayCandles && (
-          <PriceChange candles={oneDayCandles.map((c) => c.close)} />
-        )}
-
-        <div
-          // absolute so height is not larger than price change value
-          className="absolute right-0 bottom-0 w-[120px]"
-        >
-          {oneDayCandles && (
-            <Sparkline
-              width={120}
-              height={20}
-              data={oneDayCandles.map((c) => Number(c.close))}
-            />
-          )}
-        </div>
-      </div>
-    </>
   );
 };
 
@@ -175,21 +126,20 @@ const DataRow = ({
   );
 };
 
-const PriceChange = ({ candles }: { candles: string[] }) => {
-  const priceChange = candles ? priceChangePercentage(candles) : undefined;
-  const priceChangeClasses = classNames('text-xs', {
-    'text-market-red': priceChange && priceChange < 0,
-    'text-market-green-600 dark:text-market-green':
-      priceChange && priceChange > 0,
-  });
-  let prefix = '';
-  if (priceChange && priceChange > 0) {
-    prefix = '+';
-  }
-  const formattedChange = formatNumber(Number(priceChange), 2);
-  return (
-    <div className={priceChangeClasses} data-testid="market-item-change">
-      {priceChange ? `${prefix}${formattedChange}%` : '-'}
-    </div>
-  );
-};
+// const PriceChange = ({ candles }: { candles: string[] }) => {
+//   const priceChange = candles ? priceChangePercentage(candles) : undefined;
+//   const priceChangeClasses = classNames('text-xs', {
+//     'text-vega-pink': priceChange && priceChange < 0,
+//     'text-vega-green': priceChange && priceChange > 0,
+//   });
+//   let prefix = '';
+//   if (priceChange && priceChange > 0) {
+//     prefix = '+';
+//   }
+//   const formattedChange = formatNumber(Number(priceChange), 2);
+//   return (
+//     <div className={priceChangeClasses} data-testid="market-item-change">
+//       {priceChange ? `${prefix}${formattedChange}%` : '-'}
+//     </div>
+//   );
+// };

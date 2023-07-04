@@ -47,7 +47,7 @@ export const MarketSelector = ({
 
   return (
     <div data-testid="market-selector">
-      <div className="pt-2 px-4 mb-2">
+      <div className="pt-2 px-4 mb-2 w-[320px] lg:w-[400px]">
         <ProductSelector
           product={filter.product}
           onSelect={(product) => {
@@ -172,7 +172,6 @@ const MarketList = ({
       <List
         data={data}
         loading={loading}
-        width={430}
         height={400}
         currentMarketId={currentMarketId}
         onSelect={onSelect}
@@ -207,14 +206,12 @@ const ListItem = ({
 const List = ({
   data,
   loading,
-  width,
   height,
   onSelect,
   noItems,
   currentMarketId,
 }: ListItemData & {
   loading: boolean;
-  width: number;
   height: number;
   noItems: string;
 }) => {
@@ -228,7 +225,7 @@ const List = ({
   );
   if (!data || loading) {
     return (
-      <div style={{ width, height }}>
+      <div style={{ height }}>
         <Skeleton />
         <Skeleton />
       </div>
@@ -237,7 +234,7 @@ const List = ({
 
   if (!data.length) {
     return (
-      <div style={{ width, height }} data-testid="no-items">
+      <div style={{ height }} data-testid="no-items">
         <div className="mb-2 px-4">
           <div className="text-sm bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg px-4 py-2">
             {noItems}
@@ -254,7 +251,7 @@ const List = ({
       itemData={itemData}
       itemSize={50}
       itemKey={itemKey}
-      width={width}
+      width="100%"
       height={height}
     >
       {ListItem}
