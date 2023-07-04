@@ -47,7 +47,7 @@ const SettingsGroup = ({
   return (
     <div className="flex justify-between items-start mb-4">
       <div className="w-3/4">
-        <label>{label}</label>
+        <label className="text-sm">{label}</label>
         {helpText && <p className="text-muted text-xs">{helpText}</p>}
       </div>
       {children}
