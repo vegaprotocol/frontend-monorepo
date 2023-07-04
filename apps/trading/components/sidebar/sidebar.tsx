@@ -11,6 +11,7 @@ import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { WithdrawContainer } from '../withdraw-container';
+import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 
 export enum ViewType {
@@ -152,10 +153,14 @@ export const SidebarContent = () => {
   if (view.type === ViewType.Order) {
     if (params.marketId) {
       return (
-        <DealTicketContainer
-          marketId={params.marketId}
-          onDeposit={(assetId) => setView({ type: ViewType.Deposit, assetId })}
-        />
+        <ContentWrapper>
+          <DealTicketContainer
+            marketId={params.marketId}
+            onDeposit={(assetId) =>
+              setView({ type: ViewType.Deposit, assetId })
+            }
+          />
+        </ContentWrapper>
       );
     } else {
       return <CloseSidebar />;
@@ -172,41 +177,52 @@ export const SidebarContent = () => {
 
   if (view.type === ViewType.Deposit) {
     return (
-      <div className="py-1">
-        <h2 className="mb-4">{t('Deposit')}</h2>
+      <ContentWrapper title={t('Deposit')}>
         <DepositContainer assetId={view.assetId} />
-      </div>
+      </ContentWrapper>
     );
   }
 
   if (view.type === ViewType.Withdraw) {
     return (
-      <div className="py-1">
-        <h2 className="mb-4">{t('Withdraw')}</h2>
+      <ContentWrapper title={t('Withdraw')}>
         <WithdrawContainer assetId={view.assetId} />
-      </div>
+      </ContentWrapper>
     );
   }
 
   if (view.type === ViewType.Transfer) {
     return (
-      <div className="py-1">
-        <h2 className="mb-4">{t('Transfer')}</h2>
+      <ContentWrapper title={t('Transfer')}>
         <TransferContainer assetId={view.assetId} />
-      </div>
+      </ContentWrapper>
     );
   }
 
   if (view.type === ViewType.Settings) {
     return (
-      <div className="py-1">
-        <h2 className="mb-4">{t('Settings')}</h2>
+      <ContentWrapper title={t('Settings')}>
         <Settings />
-      </div>
+      </ContentWrapper>
     );
   }
 
   throw new Error('invalid sidebar');
+};
+
+const ContentWrapper = ({
+  children,
+  title,
+}: {
+  children: ReactNode;
+  title?: string;
+}) => {
+  return (
+    <div className="p-4">
+      {title && <h2 className="mb-4">{title}</h2>}
+      {children}
+    </div>
+  );
 };
 
 /** If rendered will close sidebar */
