@@ -13,7 +13,7 @@ export interface TxDetailsOrderProps {
   side: Side;
 }
 
-export function getSettlementAsset(
+export function getMarketDecimals(
   data: ExplorerMarketQuery | undefined
 ): number {
   return data?.market?.decimalPlaces || 0;
@@ -54,7 +54,7 @@ export const TxOrderPeggedReference = ({
   });
 
   const direction = side === Side.SIDE_BUY ? '+' : '-';
-  const decimalPlaces = getSettlementAsset(data);
+  const decimalPlaces = getMarketDecimals(data);
 
   if (reference === 'PEGGED_REFERENCE_UNSPECIFIED') {
     return null;

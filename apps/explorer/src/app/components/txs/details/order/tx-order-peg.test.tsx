@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import type { TxDetailsOrderProps } from './tx-order-peg';
-import { TxOrderPeggedReference, getSettlementAsset } from './tx-order-peg';
+import { TxOrderPeggedReference, getMarketDecimals } from './tx-order-peg';
 import { useExplorerMarketQuery } from '../../../links/market-link/__generated__/Market';
 import type { ExplorerMarketQuery } from '../../../links/market-link/__generated__/Market';
 import { PeggedReference, Side } from '@vegaprotocol/types';
@@ -25,13 +25,13 @@ describe('getSettlementAsset', () => {
       },
     };
 
-    const result = getSettlementAsset(data as Partial<ExplorerMarketQuery>);
+    const result = getMarketDecimals(data as Partial<ExplorerMarketQuery>);
 
     expect(result).toEqual(8);
   });
 
   it('should return 0 if data is undefined', () => {
-    const result = getSettlementAsset(undefined);
+    const result = getMarketDecimals(undefined);
 
     expect(result).toEqual(0);
   });
