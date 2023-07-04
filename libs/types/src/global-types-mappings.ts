@@ -429,6 +429,9 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE: 'Transfer received',
   TRANSFER_TYPE_CLEAR_ACCOUNT: 'Market accounts cleared',
   TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE: 'Balances restored',
+  TRANSFER_TYPE_HOLDING_LOCK: 'Holding locked',
+  TRANSFER_TYPE_HOLDING_RELEASE: 'Holding released',
+  TRANSFER_TYPE_SPOT: 'Spot',
 };
 
 export const DescriptionTransferTypeMapping: TransferTypeMap = {
@@ -456,6 +459,9 @@ export const DescriptionTransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_CLEAR_ACCOUNT: `Market-related accounts emptied, and balances moved, because the market has closed`,
   TRANSFER_TYPE_UNSPECIFIED: 'Default value, always invalid',
   TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE: `Balances are being restored to the user's account following a checkpoint restart of the network`,
+  TRANSFER_TYPE_HOLDING_LOCK: 'Holdings locked',
+  TRANSFER_TYPE_HOLDING_RELEASE: 'Holdings released',
+  TRANSFER_TYPE_SPOT: 'Spot',
 };
 
 type DispatchMetricLabel = {
