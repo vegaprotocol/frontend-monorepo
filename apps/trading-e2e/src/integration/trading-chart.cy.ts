@@ -126,7 +126,8 @@ describe(
         { name: 'Moving average', infoText: 'Moving average: 174.08302' },
         {
           name: 'Price monitoring bounds',
-          infoText: 'Price Monitoring Bounds: Min -Max -Reference -',
+          infoText:
+            'Price Monitoring Bounds: Min 162.56291Max 182.96869Reference 172.47489',
         },
       ];
 
@@ -150,7 +151,7 @@ describe(
         { name: 'Force index', infoText: 'Force index: 987.48858' },
         { name: 'MACD', infoText: 'MACD: S -0.06420D 0.00359MACD -0.06062' },
         { name: 'RSI', infoText: 'RSI: 47.08648' },
-        { name: 'Volume', infoText: 'Volume: 55,000.00000' },
+        { name: 'Volume', infoText: 'Volume: 55,000' },
       ];
       cy.get(indicatorInfo).eq(1).realHover();
       cy.get('.close-button-module_closeButton__2ifkl').click({ force: true });
