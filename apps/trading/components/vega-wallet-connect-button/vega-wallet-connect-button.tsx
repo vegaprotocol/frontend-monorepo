@@ -22,7 +22,7 @@ import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { WalletIcon } from '../icons/wallet';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
-import { useSidebar } from '../sidebar';
+import { ViewType, useSidebar } from '../sidebar';
 
 const MobileWalletButton = ({
   isConnected,
@@ -209,7 +209,7 @@ export const VegaWalletConnectButton = () => {
                 {!isReadOnly && (
                   <DropdownMenuItem
                     data-testid="wallet-transfer"
-                    onClick={() => setView('transfer')}
+                    onClick={() => setView({ type: ViewType.Transfer })}
                   >
                     {t('Transfer')}
                   </DropdownMenuItem>

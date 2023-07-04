@@ -11,13 +11,11 @@ import { useVegaTransactionStore, useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useMemo } from 'react';
 import { accountsDataProvider } from './accounts-data-provider';
 import { TransferForm } from './transfer-form';
-import { useTransferDialog } from './transfer-dialog';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
 import sortBy from 'lodash/sortBy';
 
 export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   const { pubKey, pubKeys } = useVegaWallet();
-  const open = useTransferDialog((store) => store.open);
   const { param } = useNetworkParam(NetworkParams.transfer_fee_factor);
   const { data } = useDataProvider({
     dataProvider: accountsDataProvider,
@@ -29,9 +27,8 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   const transfer = useCallback(
     (transfer: Transfer) => {
       create({ transfer });
-      open(false);
     },
-    [create, open]
+    [create]
   );
 
   const assets = useMemo(() => {

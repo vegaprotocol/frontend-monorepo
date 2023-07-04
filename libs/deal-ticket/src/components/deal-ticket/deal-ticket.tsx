@@ -62,6 +62,7 @@ export interface DealTicketProps {
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   submit: (order: OrderSubmission) => void;
   onClickCollateral?: () => void;
+  onDeposit: (assetId: string) => void;
 }
 
 export const DealTicket = ({
@@ -70,6 +71,7 @@ export const DealTicket = ({
   marketData,
   submit,
   onClickCollateral,
+  onDeposit,
 }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   // store last used tif for market so that when changing OrderType the previous TIF
@@ -536,6 +538,7 @@ export const DealTicket = ({
           isReadOnly={isReadOnly}
           pubKey={pubKey}
           onClickCollateral={onClickCollateral}
+          onDeposit={onDeposit}
         />
         <DealTicketButton side={order.side} />
         <DealTicketFeeDetails
@@ -566,6 +569,7 @@ interface SummaryMessageProps {
   isReadOnly: boolean;
   pubKey: string | null;
   onClickCollateral?: () => void;
+  onDeposit: (assetId: string) => void;
 }
 const SummaryMessage = memo(
   ({
@@ -577,6 +581,7 @@ const SummaryMessage = memo(
     isReadOnly,
     pubKey,
     onClickCollateral,
+    onDeposit,
   }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
     // render a deposit dialog
@@ -626,6 +631,7 @@ const SummaryMessage = memo(
           <ZeroBalanceError
             asset={asset}
             onClickCollateral={onClickCollateral}
+            onDeposit={onDeposit}
           />
         </div>
       );
@@ -648,7 +654,12 @@ const SummaryMessage = memo(
     if (BigInt(balance) < BigInt(margin) && BigInt(balance) > BigInt(0)) {
       return (
         <div className="mb-2">
-          <MarginWarning balance={balance} margin={margin} asset={asset} />
+          <MarginWarning
+            balance={balance}
+            margin={margin}
+            asset={asset}
+            onDeposit={onDeposit}
+          />
         </div>
       );
     }
