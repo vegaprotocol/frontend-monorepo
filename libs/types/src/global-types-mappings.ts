@@ -44,6 +44,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Reward Market Proposers',
   ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: 'Reward Maker paid fees',
   ACCOUNT_TYPE_SETTLEMENT: 'Settlement',
+  ACCOUNT_TYPE_HOLDING: 'Holding',
 };
 
 /**
