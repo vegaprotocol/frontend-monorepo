@@ -117,6 +117,11 @@ context(
           cy.getByTestId(submitWithdrawalButton).click();
         });
         // assert withdrawal request
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId(toast)
           .first(txTimeout)
           .should('contain.text', 'Funds unlocked')
@@ -130,6 +135,11 @@ context(
             cy.getByTestId(toastClose).click();
           });
         // withdrawal complete
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId(toast)
           .first(txTimeout)
           .should('contain.text', 'The withdrawal has been approved.')
@@ -139,6 +149,11 @@ context(
               'Withdraw 120.00 tUSDC'
             );
           });
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId(toast)
           .last(txTimeout)
           .should('contain.text', 'Transaction confirmed')
@@ -146,6 +161,11 @@ context(
             cy.getByTestId('external-link').should('exist');
           });
         // withdrawal history for complete withdrawal displayed
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.get(tableWithdrawnStatus)
           .eq(1, txTimeout)
           .should('have.text', 'Completed')
@@ -187,6 +207,11 @@ context(
         cy.getByTestId(submitWithdrawalButton).click();
       });
 
+      /**
+       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+       * You should use .then() to chain commands instead.
+       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+       **/
       cy.getByTestId(toast)
         .first(txTimeout)
         .should('contain.text', 'Funds unlocked')
@@ -198,6 +223,11 @@ context(
           );
           cy.getByTestId(toastClose).click();
         });
+      /**
+       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+       * You should use .then() to chain commands instead.
+       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+       **/
       cy.get(tableTxHash)
         .eq(1)
         .should('have.text', 'Complete withdrawal')
@@ -213,18 +243,33 @@ context(
         });
       ethereumWalletConnect();
       cy.getByTestId(completeWithdrawalButton).first().click();
+      /**
+       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+       * You should use .then() to chain commands instead.
+       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+       **/
       cy.getByTestId(toast)
         .last(txTimeout)
         .should('contain.text', 'Awaiting confirmation')
         .within(() => {
           cy.getByTestId('external-link').should('exist');
         });
+      /**
+       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+       * You should use .then() to chain commands instead.
+       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+       **/
       cy.getByTestId(toast)
         .first(txTimeout)
         .should('contain.text', 'The withdrawal has been approved.')
         .within(() => {
           cy.getByTestId(toastPanel).should('contain.text', '110.00', 'tUSDC');
         });
+      /**
+       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+       * You should use .then() to chain commands instead.
+       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+       **/
       cy.getByTestId(toast)
         .last(txTimeout)
         .should('contain.text', 'Transaction confirmed')
@@ -248,6 +293,11 @@ context(
         cy.getByTestId(amountInput).click().type('50');
         cy.getByTestId(submitWithdrawalButton).click();
       });
+      /**
+       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+       * You should use .then() to chain commands instead.
+       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+       **/
       cy.getByTestId(toast)
         .first(txTimeout)
         .should('contain.text', 'Funds unlocked')

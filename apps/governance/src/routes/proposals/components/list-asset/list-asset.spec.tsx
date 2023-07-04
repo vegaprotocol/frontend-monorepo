@@ -5,13 +5,11 @@ import { MockedProvider } from '@apollo/client/testing';
 import type {
   AssetListBundleQuery,
   ProposalAssetQuery,
-} from './__generated___/Asset';
-import { AssetListBundleDocument } from './__generated___/Asset';
-import { ProposalAssetDocument } from './__generated___/Asset';
+} from './__generated__/Asset';
+import { AssetListBundleDocument } from './__generated__/Asset';
+import { ProposalAssetDocument } from './__generated__/Asset';
 import * as Schema from '@vegaprotocol/types';
 import type { useWeb3React } from '@web3-react/core';
-import BigNumber from 'bignumber.js';
-import type { AppState } from '../../../../contexts/app-state/app-state-context';
 
 const mockUseEthTx = {
   perform: jest.fn(),
@@ -46,23 +44,6 @@ jest.mock('@web3-react/core', () => {
     useWeb3React: jest.fn(() => mockHookValue),
   };
 });
-
-const mockAppState: AppState = {
-  totalAssociated: new BigNumber('50063005'),
-  decimals: 18,
-  totalSupply: new BigNumber(65000000),
-  vegaWalletOverlay: false,
-  vegaWalletManageOverlay: false,
-  transactionOverlay: false,
-  bannerMessage: '',
-  disconnectNotice: false,
-};
-
-jest.mock('../../../contexts/app-state/app-state-context', () => ({
-  useAppState: () => ({
-    appState: mockAppState,
-  }),
-}));
 
 const ASSET_ID = 'foo';
 

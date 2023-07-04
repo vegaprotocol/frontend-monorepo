@@ -5,6 +5,7 @@ import PriceInMarket from '../price-in-market/price-in-market';
 import { Time } from '../time';
 import { sideText, statusText, tifFull, tifShort } from './lib/order-labels';
 import SizeInMarket from '../size-in-market/size-in-market';
+import { TxOrderPeggedReference } from '../txs/details/order/tx-order-peg';
 
 export interface DeterministicOrderDetailsProps {
   id: string;
@@ -68,25 +69,35 @@ const DeterministicOrderDetails = ({
             <span className="mx-5 text-base">@</span>
             <PriceInMarket price={o.price} marketId={o.market.id} />
           </h2>
-          <p className="text-gray-500 mb-4">
+          <p className="text-gray-200">
             In <MarketLink id={o.market.id} /> at <Time date={o.createdAt} />.
           </p>
+          {o.peggedOrder ? (
+            <p className="text-gray-200">
+              {t('Price peg')}:{' '}
+              <TxOrderPeggedReference
+                side={o.side}
+                reference={o.peggedOrder.reference}
+                offset={o.peggedOrder.offset}
+                marketId={o.market.id}
+              />
+            </p>
+          ) : null}
+
           {o.reference ? (
-            <p className="text-gray-500 mb-4">
+            <p className="text-gray-500 mt-4">
               <span>{t('Reference')}</span>: {o.reference}
             </p>
           ) : null}
-          <div className="grid md:grid-cols-4 gap-x-6">
-            {version !== 0 ? null : (
-              <div className="mb-12 md:mb-0">
-                <h2 className="text-2xl font-bold text-dark mb-4">
-                  {t('Status')}
-                </h2>
-                <h5 className="text-lg font-medium text-gray-500 mb-0 capitalize">
-                  {statusText[o.status]}
-                </h5>
-              </div>
-            )}
+          <div className="grid md:grid-cols-4 gap-x-6 mt-4">
+            <div className="mb-12 md:mb-0">
+              <h2 className="text-2xl font-bold text-dark mb-4">
+                {t('Status')}
+              </h2>
+              <h5 className="text-lg font-medium text-gray-500 mb-0 capitalize">
+                {statusText[o.status]}
+              </h5>
+            </div>
 
             <div className="mb-12 md:mb-0">
               <h2 className="text-2xl font-bold text-dark mb-4">{t('Size')}</h2>
@@ -94,17 +105,6 @@ const DeterministicOrderDetails = ({
                 <SizeInMarket size={o.size} marketId={o.market.id} />
               </h5>
             </div>
-
-            {version !== 0 ? null : (
-              <div className="">
-                <h2 className="text-2xl font-bold text-dark mb-4">
-                  {t('Remaining')}
-                </h2>
-                <h5 className="text-lg font-medium text-gray-500 mb-0">
-                  <SizeInMarket size={o.remaining} marketId={o.market.id} />
-                </h5>
-              </div>
-            )}
 
             <div className="">
               <h2 className="text-2xl font-bold text-dark mb-4">

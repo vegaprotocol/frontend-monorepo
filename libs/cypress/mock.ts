@@ -1,4 +1,4 @@
-/* eslint-disable @nrwl/nx/enforce-module-boundaries */
+/* eslint-disable @nx/enforce-module-boundaries */
 export * from '../accounts/src/lib/accounts.mock';
 export * from '../assets/src/lib/asset.mock';
 export * from '../assets/src/lib/assets.mock';

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   useAssetListBundleQuery,
   useProposalAssetQuery,
-} from './__generated___/Asset';
+} from './__generated__/Asset';
 import { EthWalletContainer } from '../../../../components/eth-wallet-container';
 
 const useListAsset = (assetId: string) => {

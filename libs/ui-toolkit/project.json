@@ -1,11 +1,12 @@
 {
+  "name": "ui-toolkit",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ui-toolkit/src",
   "projectType": "library",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "buildableProjectDepsInPackageJsonType": "dependencies",
@@ -14,7 +15,7 @@
         "project": "libs/ui-toolkit/package.json",
         "entryFile": "libs/ui-toolkit/src/index.ts",
         "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "babel",
         "format": ["esm", "cjs"],
         "assets": [
@@ -27,28 +28,31 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/ui-toolkit/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/ui-toolkit"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/ui-toolkit"],
       "options": {
         "jestConfig": "libs/ui-toolkit/jest.config.ts",
         "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     },
     "storybook": {
-      "executor": "@nrwl/storybook:storybook",
+      "executor": "@nx/storybook:storybook",
       "options": {
-        "uiFramework": "@storybook/react",
         "port": 4400,
-        "config": {
-          "configFolder": "libs/ui-toolkit/.storybook"
-        }
+        "configDir": "libs/ui-toolkit/.storybook"
       },
       "configurations": {
         "ci": {
@@ -57,14 +61,11 @@
       }
     },
     "build-storybook": {
-      "executor": "@nrwl/storybook:build",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nx/storybook:build",
+      "outputs": ["{options.outputDir}"],
       "options": {
-        "uiFramework": "@storybook/react",
-        "outputPath": "dist/storybook/ui-toolkit",
-        "config": {
-          "configFolder": "libs/ui-toolkit/.storybook"
-        }
+        "configDir": "libs/ui-toolkit/.storybook",
+        "outputDir": "dist/storybook/ui-toolkit"
       },
       "configurations": {
         "ci": {
@@ -73,7 +74,7 @@
       }
     },
     "build-spec": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "command": "yarn tsc --project ./libs/ui-toolkit/tsconfig.spec.json"

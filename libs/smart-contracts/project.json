@@ -1,9 +1,10 @@
 {
+  "name": "smart-contracts",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/smart-contracts/src",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/smart-contracts",
@@ -13,22 +14,28 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/smart-contracts/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/smart-contracts"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/smart-contracts"],
       "options": {
         "jestConfig": "libs/smart-contracts/jest.config.ts",
         "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     },
     "build-spec": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "command": "yarn tsc --project ./libs/smart-contracts/tsconfig.spec.json"
