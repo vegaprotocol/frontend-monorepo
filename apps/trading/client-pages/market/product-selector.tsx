@@ -28,9 +28,8 @@ export const ProductSelector = ({
     <div className="flex gap-3 mb-3">
       {Object.keys(Product).map((t) => {
         const classes = classNames('py-1 border-b-2', {
-          'border-vega-yellow text-black dark:text-white': t === product,
-          'border-transparent text-vega-light-300 dark:text-vega-dark-300':
-            t !== product,
+          'border-vega-yellow text-default': t === product,
+          'border-transparent text-muted': t !== product,
         });
         return (
           <button
