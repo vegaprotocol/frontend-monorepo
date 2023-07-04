@@ -29,7 +29,7 @@ const WithdrawalsIndicator = () => {
     return null;
   }
   return (
-    <span className="bg-vega-blue-450 text-white text-[10px] rounded p-[3px] pb-[2px] leading-none">
+    <span className="bg-vega-clight-500 dark:bg-vega-cdark-500 text-default rounded p-1 leading-none">
       {ready.length}
     </span>
   );

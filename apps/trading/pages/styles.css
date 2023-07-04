@@ -119,6 +119,10 @@ html [data-theme='dark'] {
   border-width: 0;
 }
 
+.vega-ag-grid .ag-header-row {
+  @apply font-alpha font-normal;
+}
+
 /* Light variables */
 .ag-theme-balham {
   --ag-background-color: theme(colors.white);
