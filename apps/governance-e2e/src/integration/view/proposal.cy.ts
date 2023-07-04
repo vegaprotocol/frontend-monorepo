@@ -10,9 +10,13 @@ import {
 } from '../../support/governance.functions';
 import { mockNetworkUpgradeProposal } from '../../support/proposal.functions';
 
-const proposalDocumentationLink = '[data-testid="proposal-documentation-link"]';
+const proposalDocsLink = 'proposal-docs-link';
+const proposalDocumentationLink = 'proposal-documentation-link';
+const connectToVegaWalletButton = 'connect-to-vega-wallet-btn';
 const governanceDocsUrl = 'https://vega.xyz/governance';
-const connectToVegaWalletButton = '[data-testid="connect-to-vega-wallet-btn"]';
+const networkUpgradeProposalListItem = 'protocol-upgrade-proposals-list-item';
+const closedProposals = 'closed-proposals';
+const closedProposalToggle = 'closed-proposals-toggle-networkUpgrades';
 
 context(
   'Governance Page - verify elements on page',
@@ -41,7 +45,7 @@ context(
 
     it('should be able to see a working link for - find out more about Vega governance', function () {
       // 3001-VOTE-001
-      cy.get(proposalDocumentationLink)
+      cy.getByTestId(proposalDocumentationLink)
         .should('be.visible')
         .and('have.text', 'Find out more about Vega governance')
         .and('have.attr', 'href')
@@ -64,7 +68,7 @@ context(
     // 3007-PNE-021
     it('should have documentation links for network parameter proposal', function () {
       goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
-      cy.getByTestId('proposal-docs-link')
+      cy.getByTestId(proposalDocsLink)
         .find('a')
         .should('have.attr', 'href')
         .and('contain', '/tutorials/proposals/network-parameter-proposal');
@@ -73,7 +77,7 @@ context(
     // 3003-PMAN-002 3003-PMAN-005
     it('should have documentation links for new market proposal', function () {
       goToMakeNewProposal(governanceProposalType.NEW_MARKET);
-      cy.getByTestId('proposal-docs-link')
+      cy.getByTestId(proposalDocsLink)
         .find('a')
         .should('have.attr', 'href')
         .and('contain', '/tutorials/proposals/new-market-proposal');
@@ -82,7 +86,7 @@ context(
     // 3004-PMAC-005
     it('should have documentation links for update market proposal', function () {
       goToMakeNewProposal(governanceProposalType.UPDATE_MARKET);
-      cy.getByTestId('proposal-docs-link')
+      cy.getByTestId(proposalDocsLink)
         .find('a')
         .should('have.attr', 'href')
         .and('contain', '/tutorials/proposals/update-market-proposal');
@@ -91,7 +95,7 @@ context(
     // 3005-PASN-002 005-PASN-005
     it('should have documentation links for new asset proposal', function () {
       goToMakeNewProposal(governanceProposalType.NEW_ASSET);
-      cy.getByTestId('proposal-docs-link')
+      cy.getByTestId(proposalDocsLink)
         .find('a')
         .should('have.attr', 'href')
         .and('contain', '/tutorials/proposals/new-asset-proposal');
@@ -100,7 +104,7 @@ context(
     // 3006-PASC-002 3006-PASC-005
     it('should have documentation links for update asset proposal', function () {
       goToMakeNewProposal(governanceProposalType.UPDATE_ASSET);
-      cy.getByTestId('proposal-docs-link')
+      cy.getByTestId(proposalDocsLink)
         .find('a')
         .should('have.attr', 'href')
         .and('contain', '/tutorials/proposals/update-asset-proposal');
@@ -109,7 +113,7 @@ context(
     // 3008-PFRO-003 3008-PFRO-017
     it('should have documentation links for freeform proposal', function () {
       goToMakeNewProposal(governanceProposalType.FREEFORM);
-      cy.getByTestId('proposal-docs-link')
+      cy.getByTestId(proposalDocsLink)
         .find('a')
         .should('have.attr', 'href')
         .and('contain', '/tutorials/proposals/freeform-proposal');
@@ -117,7 +121,7 @@ context(
 
     it('should be able to see a connect wallet button - if vega wallet disconnected and user is submitting new proposal', function () {
       goToMakeNewProposal(governanceProposalType.RAW);
-      cy.get(connectToVegaWalletButton)
+      cy.getByTestId(connectToVegaWalletButton)
         .should('be.visible')
         .and('have.text', 'Connect Vega wallet');
     });
@@ -126,7 +130,7 @@ context(
       mockNetworkUpgradeProposal();
       cy.visit('/');
       cy.getByTestId('home-proposal-list').within(() => {
-        cy.getByTestId('protocol-upgrade-proposals-list-item').should('exist');
+        cy.getByTestId(networkUpgradeProposalListItem).should('exist');
         cy.getByTestId('protocol-upgrade-proposal-title').should(
           'have.text',
           'Vega release v1'
@@ -138,13 +142,14 @@ context(
       mockNetworkUpgradeProposal();
       navigateTo(navigation.proposals);
       cy.getByTestId('open-proposals').within(() => {
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.get('li')
           .eq(0)
-          .should(
-            'have.attr',
-            'data-testid',
-            'protocol-upgrade-proposals-list-item'
-          )
+          .should('have.attr', 'data-testid', networkUpgradeProposalListItem)
           .within(() => {
             cy.get('h2').should('have.text', 'Vega release v1');
             cy.getByTestId('protocol-upgrade-proposal-type').should(
@@ -165,18 +170,19 @@ context(
             );
           });
       });
-      cy.getByTestId('closed-proposals').within(() => {
-        cy.getByTestId('protocol-upgrade-proposals-list-item').should(
-          'have.length',
-          1
-        );
+      cy.getByTestId(closedProposals).within(() => {
+        cy.getByTestId(networkUpgradeProposalListItem).should('not.exist');
+      });
+      cy.getByTestId(closedProposalToggle).click();
+      cy.getByTestId(closedProposals).within(() => {
+        cy.getByTestId(networkUpgradeProposalListItem).should('have.length', 1);
       });
     });
 
     it('should see details of network upgrade proposal', function () {
       mockNetworkUpgradeProposal();
       navigateTo(navigation.proposals);
-      cy.getByTestId('protocol-upgrade-proposals-list-item')
+      cy.getByTestId(networkUpgradeProposalListItem)
         .first()
         .find('[data-testid="view-proposal-btn"]')
         .click();
@@ -199,6 +205,11 @@ context(
           .should('contain.text', '99.98% approval (% validator voting power)')
           .and('contain.text', '(67% voting power required)');
         cy.get('h2').should('contain.text', 'Approvers (4/4 validators)');
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId('validator-name')
           .should('have.length', 4)
           .each(($validator) => {
@@ -212,6 +223,19 @@ context(
           }
         );
       });
+    });
+
+    it('filtering proposal should not display any network upgrade proposals', function () {
+      const proposalId =
+        'd848fc7881f13d366df5f61ab139d5fcfa72bf838151bb51b54381870e357931';
+
+      mockNetworkUpgradeProposal();
+      navigateTo(navigation.proposals);
+      cy.get('[data-testid="proposal-filter-toggle"]').click();
+      cy.get('[data-testid="filter-input"]').type(proposalId);
+      cy.getByTestId(closedProposals).should('have.length', 1);
+      cy.getByTestId(networkUpgradeProposalListItem).should('not.exist');
+      cy.getByTestId(closedProposalToggle).should('not.exist');
     });
   }
 );

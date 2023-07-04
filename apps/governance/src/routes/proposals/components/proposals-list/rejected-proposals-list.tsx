@@ -23,7 +23,10 @@ export const RejectedProposalsList = ({ proposals }: ProposalsListProps) => {
   return (
     <>
       <Heading title={t('pageTitleRejectedProposals')} />
-      <ProposalsListFilter setFilterString={setFilterString} />
+      <ProposalsListFilter
+        filterString={filterString}
+        setFilterString={setFilterString}
+      />
       <section>
         {proposals.length > 0 ? (
           <ul data-testid="rejected-proposals">

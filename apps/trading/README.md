@@ -25,7 +25,7 @@ Example configurations are provided here:
 For convenience, you can boot the app injecting one of the configurations above by running:
 
 ```bash
-yarn nx run token:serve --env={env} # e.g. stagnet1
+yarn env-cmd -f .\apps\token\.env.{env} yarn nx run token:serve # e.g. stagnet1
 ```
 
 There are a few different configuration options offered for this app:

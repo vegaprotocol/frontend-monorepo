@@ -1,19 +1,20 @@
 {
+  "name": "announcements",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/announcements/src",
   "projectType": "library",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/web:rollup",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/accounts",
+        "outputPath": "dist/libs/announcements",
         "tsConfig": "libs/announcements/tsconfig.lib.json",
         "project": "libs/announcements/package.json",
         "entryFile": "libs/announcements/src/index.ts",
         "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
           {
@@ -25,28 +26,31 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/announcements/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/announcements"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/announcements"],
       "options": {
         "jestConfig": "libs/announcements/jest.config.ts",
         "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     },
     "storybook": {
-      "executor": "@nrwl/storybook:storybook",
+      "executor": "@nx/storybook:storybook",
       "options": {
-        "uiFramework": "@storybook/react",
         "port": 4400,
-        "config": {
-          "configFolder": "libs/announcements/.storybook"
-        }
+        "configDir": "libs/announcements/.storybook"
       },
       "configurations": {
         "ci": {
@@ -55,14 +59,11 @@
       }
     },
     "build-storybook": {
-      "executor": "@nrwl/storybook:build",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nx/storybook:build",
+      "outputs": ["{options.outputDir}"],
       "options": {
-        "uiFramework": "@storybook/react",
-        "outputPath": "dist/storybook/announcements",
-        "config": {
-          "configFolder": "libs/announcements/.storybook"
-        }
+        "configDir": "libs/announcements/.storybook",
+        "outputDir": "dist/storybook/announcements"
       },
       "configurations": {
         "ci": {
@@ -71,7 +72,7 @@
       }
     },
     "build-spec": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "command": "yarn tsc --project ./libs/announcements/tsconfig.spec.json"

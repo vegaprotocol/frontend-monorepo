@@ -33,6 +33,7 @@ jobs:
         with:
           fetch-depth: 0
           path: './frontend-monorepo'
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       # Restore node_modules from cache if possible
       - name: Restore node_modules from cache

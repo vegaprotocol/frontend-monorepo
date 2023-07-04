@@ -97,8 +97,8 @@ describe('useNodeHealth', () => {
       request: {
         query: NodeCheckDocument,
       },
+      // @ts-ignore failed query with no result
       result: {
-        // @ts-ignore failed query with no result
         data: {},
       },
     };
@@ -131,9 +131,8 @@ describe('useNodeHealth', () => {
   it('Warning latency', async () => {
     const now = 1678800900087;
     const headerTimestamp = now - 4000;
-    const dateNow = new Date(now);
     const dateHeaderTimestamp = new Date(headerTimestamp);
-    jest.useFakeTimers().setSystemTime(dateNow);
+    jest.useFakeTimers({ now });
 
     const { result } = setup(createStatsMock(2), {
       blockHeight: 2,
@@ -149,9 +148,8 @@ describe('useNodeHealth', () => {
   it('Erroneous latency', async () => {
     const now = 1678800900087;
     const headerTimestamp = now - 11000;
-    const dateNow = new Date(now);
     const dateHeaderTimestamp = new Date(headerTimestamp);
-    jest.useFakeTimers().setSystemTime(dateNow);
+    jest.useFakeTimers({ now });
 
     const { result } = setup(createStatsMock(2), {
       blockHeight: 2,

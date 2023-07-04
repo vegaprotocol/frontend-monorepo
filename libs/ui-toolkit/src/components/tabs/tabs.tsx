@@ -45,7 +45,8 @@ export const Tabs = ({
                 'cursor-default': isActive,
                 'text-neutral-400 hover:text-neutral-500 dark:hover:text-neutral-300':
                   !isActive,
-              }
+              },
+              'flex items-center gap-2'
             );
             const borderClass = classNames(
               'absolute bottom-[-1px] left-0 w-full h-0 border-b',
@@ -58,6 +59,7 @@ export const Tabs = ({
                 value={child.props.id}
                 className={triggerClass}
               >
+                {child.props.indicator}
                 {child.props.name}
                 <span className={borderClass} />
               </TabsPrimitive.Trigger>
@@ -87,6 +89,7 @@ interface TabProps {
   children: ReactNode;
   id: string;
   name: string;
+  indicator?: ReactNode;
   hidden?: boolean;
 }
 

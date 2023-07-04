@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
 
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import {
   navigation,
   verifyPageHeader,
@@ -9,28 +10,28 @@ import {
   clickOnValidatorFromList,
   waitForBeginningOfEpoch,
 } from '../../support/staking.functions';
+import { previousEpochData } from '../../fixtures/mocks/previous-epoch';
 
-const guideLink = '[data-testid="staking-guide-link"]';
-const validatorTitle = '[data-testid="validator-node-title"]';
-const validatorId = '[data-testid="validator-id"]';
-const validatorPubKey = '[data-testid="validator-public-key"]';
-const ethAddressLink = '[data-testid="link"]';
-const validatorStatus = '[data-testid="validator-status"]';
-const totalStake = '[data-testid="total-stake"]';
-const pendingStake = '[data-testid="pending-stake"]';
-const stakedByOperator = '[data-testid="staked-by-operator"]';
-const stakedByDelegates = '[data-testid="staked-by-delegates"]';
-const stakeShare = '[data-testid="stake-percentage"]';
-const stakedByOperatorToolTip = '[data-testid="staked-operator-tooltip"]';
-const stakedByDelegatesToolTip = '[data-testid="staked-delegates-tooltip"]';
-const totalStakedToolTip = '[data-testid="total-staked-tooltip"]';
-const unnormalisedVotingPowerToolTip =
-  '[data-testid="unnormalised-voting-power-tooltip"]';
-const normalisedVotingPowerToolTip =
-  '[data-testid="normalised-voting-power-tooltip"]';
-const performancePenaltyToolTip = '[data-testid="performance-penalty-tooltip"]';
-const overstakedPenaltyToolTip = '[data-testid="overstaked-penalty-tooltip"]';
-const epochCountDown = '[data-testid="epoch-countdown"]';
+const guideLink = 'staking-guide-link';
+const validatorTitle = 'validator-node-title';
+const validatorId = 'validator-id';
+const validatorPubKey = 'validator-public-key';
+const ethAddressLink = 'link';
+const validatorStatus = 'validator-status';
+const totalStake = 'total-stake';
+const pendingStake = 'pending-stake';
+const stakedByOperator = 'staked-by-operator';
+const stakedByDelegates = 'staked-by-delegates';
+const stakeShare = 'stake-percentage';
+const stakedByOperatorToolTip = 'staked-operator-tooltip';
+const stakedByDelegatesToolTip = 'staked-delegates-tooltip';
+const totalStakedToolTip = 'total-staked-tooltip';
+const unnormalisedVotingPowerToolTip = 'unnormalised-voting-power-tooltip';
+const normalisedVotingPowerToolTip = 'normalised-voting-power-tooltip';
+const performancePenaltyToolTip = 'performance-penalty-tooltip';
+const overstakedPenaltyToolTip = 'overstaked-penalty-tooltip';
+const multisigPenaltyToolTip = 'multisig-error-tooltip';
+const epochCountDown = 'epoch-countdown';
 const stakeNumberRegex = /^\d{1,3}(,\d{3})*(\.\d+)?$/;
 
 context('Validators Page - verify elements on page', function () {
@@ -49,7 +50,7 @@ context('Validators Page - verify elements on page', function () {
 
     it('Should have Staking Guide link visible', function () {
       // 1002-STKE-003
-      cy.get(guideLink)
+      cy.getByTestId(guideLink)
         .should('be.visible')
         .and('have.text', 'Read more about staking on Vega')
         .and(
@@ -73,6 +74,11 @@ context('Validators Page - verify elements on page', function () {
     function () {
       // 1002-STKE-050
       it('Should be able to see validator names', function () {
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.get('[col-id="validator"] > div > span')
           .should('have.length.at.least', 1)
           .each(($name) => {
@@ -81,6 +87,11 @@ context('Validators Page - verify elements on page', function () {
       });
 
       it('Should be able to see validator stake', function () {
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId('total-stake')
           .should('have.length.at.least', 1)
           .each(($stake) => {
@@ -92,18 +103,23 @@ context('Validators Page - verify elements on page', function () {
         waitForBeginningOfEpoch();
         cy.getByTestId('total-stake').first().realHover();
 
-        cy.get(stakedByOperatorToolTip)
+        cy.getByTestId(stakedByOperatorToolTip)
           .invoke('text')
           .should('contain', 'Staked by operator: 3,000.00');
-        cy.get(stakedByDelegatesToolTip)
+        cy.getByTestId(stakedByDelegatesToolTip)
           .invoke('text')
           .should('contain', 'Staked by delegates: 0.00');
-        cy.get(totalStakedToolTip)
+        cy.getByTestId(totalStakedToolTip)
           .invoke('text')
           .should('contain', 'Total stake: 3,000.00');
       });
 
       it('Should be able to see validator normalised voting power', function () {
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId('normalised-voting-power')
           .should('have.length.at.least', 1)
           .each(($vPower) => {
@@ -115,16 +131,21 @@ context('Validators Page - verify elements on page', function () {
         waitForBeginningOfEpoch();
         cy.getByTestId('normalised-voting-power').first().realHover();
 
-        cy.get(unnormalisedVotingPowerToolTip)
+        cy.getByTestId(unnormalisedVotingPowerToolTip)
           .invoke('text')
           .should('contain', 'Unnormalised voting power: 20.00%');
-        cy.get(normalisedVotingPowerToolTip)
+        cy.getByTestId(normalisedVotingPowerToolTip)
           .invoke('text')
           .should('contain', 'Normalised voting power: 50.00%');
       });
 
       // 2002-SINC-018
       it('Should be able to see validator total penalties', function () {
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId('total-penalty')
           .should('have.length.at.least', 1)
           .each(($penalties) => {
@@ -136,20 +157,41 @@ context('Validators Page - verify elements on page', function () {
         waitForBeginningOfEpoch();
         cy.getByTestId('total-penalty').realHover();
 
-        cy.get(performancePenaltyToolTip)
+        cy.getByTestId(performancePenaltyToolTip)
           .invoke('text')
           .should('contain', 'Performance penalty: 0.00%');
-        cy.get(overstakedPenaltyToolTip)
+        cy.getByTestId(overstakedPenaltyToolTip)
           .invoke('text')
           .should('contain', 'Overstaked penalty: 60.00%'); // value not asserted due to #2886
       });
 
       it('Should be able to see validator pending stake', function () {
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId('total-pending-stake')
           .should('have.length.at.least', 1)
           .each(($pendingStake) => {
             cy.wrap($pendingStake).should('contain.text', '0.00');
           });
+      });
+
+      it('Should be able to see multisig error', function () {
+        cy.mockGQL((req) => {
+          aliasGQLQuery(req, 'PreviousEpoch', previousEpochData);
+        });
+        waitForBeginningOfEpoch();
+        cy.getByTestId('total-penalty').first().realHover();
+        cy.getByTestId(multisigPenaltyToolTip)
+          .invoke('text')
+          .should('contain', 'Multisig penalty: 100%');
+
+        cy.getByTestId('total-penalty').eq(1).realHover();
+        cy.getByTestId(multisigPenaltyToolTip)
+          .invoke('text')
+          .should('contain', 'Multisig penalty: 100%');
       });
     }
   );
@@ -166,53 +208,59 @@ context('Validators Page - verify elements on page', function () {
 
       // 1002-STKE-006
       it('Should be able to see validator name', function () {
-        cy.get(validatorTitle).should('not.be.empty');
+        cy.getByTestId(validatorTitle).should('not.be.empty');
       });
 
       // 1002-STKE-007
       it('Should be able to see validator id', function () {
-        cy.get(validatorId).should('not.be.empty');
+        cy.getByTestId(validatorId).should('not.be.empty');
       });
 
       // 1002-STKE-008
       it('Should be able to see validator public key', function () {
-        cy.get(validatorPubKey).should('not.be.empty');
+        cy.getByTestId(validatorPubKey).should('not.be.empty');
       });
 
       // 1002-STKE-010
       it('Should be able to see Ethereum address', function () {
-        cy.get(ethAddressLink).should('not.be.empty').and('have.attr', 'href');
+        cy.getByTestId(ethAddressLink)
+          .should('not.be.empty')
+          .and('have.attr', 'href');
       });
       // TODO validators missing url for more information about them 1002-STKE-09
 
       it('Should be able to see validator status', function () {
-        cy.get(validatorStatus).should('have.text', 'Consensus');
+        cy.getByTestId(validatorStatus).should('have.text', 'Consensus');
       });
 
       // 1002-STKE-012
       it('Should be able to see total stake', function () {
-        cy.get(totalStake).invoke('text').should('match', stakeNumberRegex);
+        cy.getByTestId(totalStake)
+          .invoke('text')
+          .should('match', stakeNumberRegex);
       });
 
       it('Should be able to see pending stake', function () {
-        cy.get(pendingStake).invoke('text').should('match', stakeNumberRegex);
+        cy.getByTestId(pendingStake)
+          .invoke('text')
+          .should('match', stakeNumberRegex);
       });
 
       it('Should be able to see staked by operator', function () {
-        cy.get(stakedByOperator)
+        cy.getByTestId(stakedByOperator)
           .invoke('text')
           .should('match', stakeNumberRegex);
       });
 
       it('Should be able to see staked by delegates', function () {
-        cy.get(stakedByDelegates)
+        cy.getByTestId(stakedByDelegates)
           .invoke('text')
           .should('match', stakeNumberRegex);
       });
 
       // 1002-STKE-051
       it('Should be able to see stake share in percentage', function () {
-        cy.get(stakeShare)
+        cy.getByTestId(stakeShare)
           .invoke('text')
           .then(($stakePercentage) => {
             // The pattern must start at a word boundary (\b).
@@ -238,7 +286,7 @@ context('Validators Page - verify elements on page', function () {
         const epochTitle = 'h3';
         const nextEpochInfo = 'p';
 
-        cy.get(epochCountDown).within(() => {
+        cy.getByTestId(epochCountDown).within(() => {
           cy.get(epochTitle).should('not.be.empty');
           cy.get(nextEpochInfo).should('contain.text', 'Next epoch');
         });

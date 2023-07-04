@@ -666,6 +666,12 @@ export const useVegaTransactionToasts = () => {
     const closeAfter =
       isFinal(tx) && !isWithdrawTransaction(tx.body) ? CLOSE_AFTER : undefined;
 
+    // marks "Funds unlocked" toast so it can be found in eth toasts
+    const meta =
+      isFinal(tx) && isWithdrawTransaction(tx.body)
+        ? { withdrawalId: tx.withdrawal?.id }
+        : undefined;
+
     return {
       id: `vega-${tx.id}`,
       intent,
@@ -673,6 +679,7 @@ export const useVegaTransactionToasts = () => {
       loader: tx.status === VegaTxStatus.Pending,
       content,
       closeAfter,
+      meta,
     };
   };
 

@@ -17,8 +17,7 @@ import {
 } from '../../support/wallet-functions';
 
 const vegaAssetAddress = '0x67175Da1D5e966e40D11c4B2519392B2058373de';
-const vegaWalletUnstakedBalance =
-  '[data-testid="vega-wallet-balance-unstaked"]';
+const vegaWalletUnstakedBalance = 'vega-wallet-balance-unstaked';
 const rewardsTable = 'epoch-total-rewards-table';
 const txTimeout = Cypress.env('txTimeout');
 const rewardsTimeOut = { timeout: 60000 };
@@ -40,7 +39,7 @@ context('rewards - flow', { tags: '@slow' }, function () {
     cy.associateTokensToVegaWallet('6000');
     navigateTo(navigation.validators);
     cy.VegaWalletTopUpRewardsPool();
-    cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+    cy.getByTestId(vegaWalletUnstakedBalance, txTimeout).should(
       'contain',
       '6,000.0',
       txTimeout

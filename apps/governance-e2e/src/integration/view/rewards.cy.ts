@@ -5,8 +5,8 @@ import {
 } from '../../support/common.functions';
 import { waitForBeginningOfEpoch } from '../../support/staking.functions';
 
-const viewToggle = '[data-testid="epoch-reward-view-toggle-total"]';
-const warning = '[data-testid="callout"]';
+const viewToggle = 'epoch-reward-view-toggle-total';
+const warning = 'callout';
 
 context(
   'Rewards Page - verify elements on page',
@@ -27,7 +27,7 @@ context(
       });
 
       it('should have epoch warning', function () {
-        cy.get(warning)
+        cy.getByTestId(warning)
           .should('be.visible')
           .and(
             'have.text',
@@ -36,12 +36,17 @@ context(
       });
 
       it('should have toggle for seeing total vs individual rewards', function () {
-        cy.get(viewToggle).should('be.visible');
+        cy.getByTestId(viewToggle).should('be.visible');
       });
 
       // Skipping due to bug #3471 causing flaky failuress
       it.skip('should have option to view go to next and previous page', function () {
         waitForBeginningOfEpoch();
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId('page-info')
           .should('contain.text', 'Page ')
           .invoke('text')

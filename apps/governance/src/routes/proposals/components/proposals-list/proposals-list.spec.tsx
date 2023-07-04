@@ -1,4 +1,7 @@
-import { generateProposal } from '../../test-helpers/generate-proposals';
+import {
+  generateProposal,
+  generateProtocolUpgradeProposal,
+} from '../../test-helpers/generate-proposals';
 import { MockedProvider } from '@apollo/client/testing';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -15,6 +18,7 @@ import {
   nextMonth,
 } from '../../test-helpers/mocks';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 
 const openProposalClosesNextMonth = generateProposal({
   id: 'proposal1',
@@ -54,12 +58,22 @@ const failedProposalClosedLastMonth = generateProposal({
   },
 });
 
-const renderComponent = (proposals: ProposalQuery['proposal'][]) => (
+const closedProtocolUpgradeProposal = generateProtocolUpgradeProposal({
+  upgradeBlockHeight: '1',
+});
+
+const renderComponent = (
+  proposals: ProposalQuery['proposal'][],
+  protocolUpgradeProposals?: ProtocolUpgradeProposalFieldsFragment[]
+) => (
   <Router>
     <MockedProvider mocks={[networkParamsQueryMock]}>
       <AppStateProvider>
         <VegaWalletContext.Provider value={mockWalletContext}>
-          <ProposalsList proposals={proposals} protocolUpgradeProposals={[]} />
+          <ProposalsList
+            proposals={proposals}
+            protocolUpgradeProposals={protocolUpgradeProposals || []}
+          />
         </VegaWalletContext.Provider>
       </AppStateProvider>
     </MockedProvider>
@@ -143,17 +157,15 @@ describe('Proposals list', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
-    fireEvent.click(screen.getByTestId('set-proposals-filter-visible'));
-    expect(
-      screen.getByTestId('open-proposals-list-filter')
-    ).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
+    expect(screen.getByTestId('proposals-list-filter')).toBeInTheDocument();
   });
 
   it('Filters list by text - party id', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
-    fireEvent.click(screen.getByTestId('set-proposals-filter-visible'));
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
     fireEvent.change(screen.getByTestId('filter-input'), {
       target: { value: 'bvcx' },
     });
@@ -166,7 +178,7 @@ describe('Proposals list', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
-    fireEvent.click(screen.getByTestId('set-proposals-filter-visible'));
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
     fireEvent.change(screen.getByTestId('filter-input'), {
       target: { value: 'proposal1' },
     });
@@ -179,12 +191,100 @@ describe('Proposals list', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
-    fireEvent.click(screen.getByTestId('set-proposals-filter-visible'));
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
     fireEvent.change(screen.getByTestId('filter-input'), {
       target: { value: 'osal1' },
     });
     const container = screen.getByTestId('open-proposals');
     expect(container.querySelector('#proposal1')).toBeInTheDocument();
     expect(container.querySelector('#proposal2')).not.toBeInTheDocument();
+  });
+
+  it('When filter is used, clear button is visible', () => {
+    render(
+      renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
+    );
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
+    fireEvent.change(screen.getByTestId('filter-input'), {
+      target: { value: 'test' },
+    });
+    expect(screen.getByTestId('clear-filter')).toBeInTheDocument();
+  });
+
+  it('When clear filter button is used, input is cleared', () => {
+    render(
+      renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
+    );
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
+    fireEvent.change(screen.getByTestId('filter-input'), {
+      target: { value: 'test' },
+    });
+    fireEvent.click(screen.getByTestId('clear-filter'));
+    expect((screen.getByTestId('filter-input') as HTMLInputElement).value).toBe(
+      ''
+    );
+  });
+
+  it('Displays a toggle for closed proposals if there are both closed governance proposals and closed upgrade proposals', () => {
+    render(
+      renderComponent(
+        [enactedProposalClosedLastWeek],
+        [closedProtocolUpgradeProposal]
+      )
+    );
+    expect(screen.getByTestId('toggle-closed-proposals')).toBeInTheDocument();
+  });
+
+  it('Does not display a toggle for closed proposals if there are only closed upgrade proposals', () => {
+    render(renderComponent([], [closedProtocolUpgradeProposal]));
+    expect(
+      screen.queryByTestId('toggle-closed-proposals')
+    ).not.toBeInTheDocument();
+  });
+
+  it('Does not display a toggle for closed proposals if there are only closed governance proposals', () => {
+    render(renderComponent([enactedProposalClosedLastWeek]));
+    expect(
+      screen.queryByTestId('toggle-closed-proposals')
+    ).not.toBeInTheDocument();
+  });
+
+  it('Does not display a toggle for closed proposals if the proposal filter is engaged', () => {
+    render(
+      renderComponent(
+        [enactedProposalClosedLastWeek],
+        [closedProtocolUpgradeProposal]
+      )
+    );
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
+    fireEvent.change(screen.getByTestId('filter-input'), {
+      target: { value: 'test' },
+    });
+    expect(
+      screen.queryByTestId('toggle-closed-proposals')
+    ).not.toBeInTheDocument();
+  });
+
+  it('Displays closed governance proposals by default due to default for the toggle', () => {
+    render(
+      renderComponent(
+        [enactedProposalClosedLastWeek],
+        [closedProtocolUpgradeProposal]
+      )
+    );
+    expect(
+      screen.getByTestId('closed-governance-proposals')
+    ).toBeInTheDocument();
+  });
+
+  it('Displays closed upgrade proposals when the toggle is clicked', () => {
+    render(
+      renderComponent(
+        [enactedProposalClosedLastWeek],
+        [closedProtocolUpgradeProposal]
+      )
+    );
+    fireEvent.click(screen.getByText('Network upgrades'));
+    expect(screen.getByTestId('closed-upgrade-proposals')).toBeInTheDocument();
   });
 });

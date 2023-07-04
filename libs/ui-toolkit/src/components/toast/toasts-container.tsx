@@ -13,11 +13,13 @@ import { Portal } from '@radix-ui/react-portal';
 type ToastsContainerProps = {
   toasts: Toasts;
   order: 'asc' | 'desc';
+  showHidden?: boolean;
 };
 
 export const ToastsContainer = ({
   toasts,
   order = 'asc',
+  showHidden = false,
 }: ToastsContainerProps) => {
   const ref = useRef<HTMLDivElement>();
   const closeAll = useToasts((store) => store.closeAll);
@@ -40,6 +42,10 @@ export const ToastsContainer = ({
       clearTimeout(t);
     };
   }, [count, order, toasts]);
+
+  const validToasts = Object.values(toasts).filter(
+    (t) => !t.hidden || showHidden
+  );
 
   return (
     <Portal
@@ -71,14 +77,16 @@ export const ToastsContainer = ({
           'flex-col-reverse': order === 'desc',
         })}
       >
-        {toasts &&
-          Object.values(toasts).map((toast) => {
-            return (
-              <li key={toast.id}>
-                <Toast {...toast} />
-              </li>
-            );
-          })}
+        {validToasts.length > 0 &&
+          validToasts
+            .filter((t) => !t.hidden || showHidden)
+            .map((toast) => {
+              return (
+                <li key={toast.id}>
+                  <Toast {...toast} />
+                </li>
+              );
+            })}
         <Button
           title={t('Dismiss all toasts')}
           size="sm"
@@ -89,7 +97,7 @@ export const ToastsContainer = ({
             'opacity-0 group-hover:opacity-50 hover:!opacity-100',
             'text-sm text-black dark:text-white bg-white dark:bg-black hover:!bg-white hover:dark:!bg-black',
             {
-              hidden: Object.keys(toasts).length === 0,
+              hidden: validToasts.length === 0,
             }
           )}
           onClick={() => {

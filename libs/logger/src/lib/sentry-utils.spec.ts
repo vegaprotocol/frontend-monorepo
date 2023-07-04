@@ -1,7 +1,7 @@
-import * as Sentry from '@sentry/nextjs';
+import * as Sentry from '@sentry/react';
 import { SentryInit, SentryClose } from './sentry-utils';
 
-jest.mock('@sentry/nextjs');
+jest.mock('@sentry/react');
 
 describe('Sentry utlis', () => {
   describe('SentryInit', () => {

@@ -6,7 +6,9 @@ on:
       - release/*
       - develop
       - main
-  pull_request:
+  # uncomment pull_request and comment pull_request_target to test CI changes against feature branch not target branch (develop)
+  # pull_request:
+  pull_request_target:
     types:
       - opened
       - ready_for_review
@@ -20,6 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Cache node modules
         id: cache
@@ -45,7 +49,7 @@ jobs:
 
   lint-pr-title:
     needs: node-modules
-    if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
     name: Verify PR title
     uses: ./.github/workflows/lint-pr.yml
     secrets: inherit
@@ -60,6 +64,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup node
         uses: actions/setup-node@v3
@@ -107,65 +112,82 @@ jobs:
           echo "Branch slug: ${branch_slug}"
           echo ">>>> eof debug"
 
-          projects_e2e=""
+          projects_array=()
+
           preview_governance="not deployed"
           preview_trading="not deployed"
           preview_explorer="not deployed"
           preview_tools="not deployed"
+
+          # parse if affected is any of three main applications, if none - use all of them
           if echo "$affected" | grep -q governance; then
             echo "Governance is affected"
-            projects_e2e+='"governance-e2e" '
+            projects_array+=("governance")
             preview_governance=$(printf "https://%s.%s.vega.rocks" "governance" "$branch_slug")
           fi
           if echo "$affected" | grep -q trading; then
             echo "Trading is affected"
-            projects_e2e+='"trading-e2e" '
+            projects_array+=("trading")
             preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
           fi
           if echo "$affected" | grep -q explorer; then
             echo "Explorer is affected"
-            projects_e2e+='"explorer-e2e" '
+            projects_array+=("explorer")
             preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
           fi
-          if [[ -z "$projects_e2e" ]]; then
-            projects_e2e+='"governance-e2e" "trading-e2e" "explorer-e2e" '
+          if [[ ${#projects_array[@]} -eq 0 ]]; then
+            projects_array=("governance" "trading" "explorer")
             preview_governance=$(printf "https://%s.%s.vega.rocks" "governance" "$branch_slug")
             preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
             preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
           fi
-          projects="$(echo $projects_e2e | sed 's|-e2e||g')"
+
+          # applications parsed before this loop are applicable for running e2e-tests
+          projects_e2e_array=()
+          for project in "${projects_array[@]}"; do
+            projects_e2e_array+=("${project}-e2e")
+          done
+          # all applications below this loop are not applicable for running e2e-test
+
+          # check if pull request event to deploy tools
           if [[ "${{ github.event_name }}" = "pull_request" ]]; then
             if echo "$affected" | grep -q multisig-signer; then
               echo "Tools are affected"
-              # tools are only applicable to check previews or deploy from develop to mainnet
               echo "Deploying tools on preview"
               preview_tools=$(printf "https://%s.%s.vega.rocks" "tools" "$branch_slug")
-              projects+=' "multisig-signer" '
+
+              projects_array+=("multisig-signer")
             fi
+          # those apps deploy only from develop to mainnet
           elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
             if echo "$affected" | grep -q multisig-signer; then
               echo "Tools are affected"
-              # tools are only applicable to check previews or deploy from develop to mainnet
               echo "Deploying tools on s3"
-              projects+=' "multisig-signer" '
+
+              projects_array+=("multisig-signer")
             fi
             if echo "$affected" | grep -q static; then
               echo "static is affected"
               echo "Deploying static on s3"
-              projects+=' "static" '
+
+              projects_array+=("static")
             fi
             if echo "$affected" | grep -q ui-toolkit; then
               echo "ui-toolkit is affected"
               echo "Deploying ui-toolkit on s3"
-              projects+=' "ui-toolkit" '
+
+              projects_array+=("ui-toolkit")
             fi
           fi
 
-          projects_e2e=${projects_e2e%?}
-          projects_e2e=[${projects_e2e// /,}]
-          projects=[${projects// /,}]
-          echo PROJECTS_E2E=$projects_e2e >> $GITHUB_ENV
-          echo PROJECTS=$projects >> $GITHUB_ENV
+          echo "Projects: ${projects_array[@]}"
+          echo "Projects E2E: ${projects_e2e_array[@]}"
+          projects_json=$(jq -M --compact-output --null-input '$ARGS.positional' --args -- "${projects_array[@]}")
+          projects_e2e_json=$(jq -M --compact-output --null-input '$ARGS.positional' --args -- "${projects_e2e_array[@]}")
+
+          echo PROJECTS_E2E=$projects_e2e_json >> $GITHUB_ENV
+          echo PROJECTS=$projects_json >> $GITHUB_ENV
+
           echo PREVIEW_GOVERNANCE=$preview_governance >> $GITHUB_ENV
           echo PREVIEW_TRADING=$preview_trading >> $GITHUB_ENV
           echo PREVIEW_EXPLORER=$preview_explorer >> $GITHUB_ENV
@@ -182,7 +204,7 @@ jobs:
   cypress:
     needs: lint-test-build
     name: '(CI) cypress'
-    if: ${{ needs.lint-test-build.outputs.projects-e2e != '[]' }}
+    # if: ${{ needs.lint-test-build.outputs.projects-e2e != '[]' }}
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
     with:
@@ -192,7 +214,7 @@ jobs:
   publish-dist:
     needs: lint-test-build
     name: '(CD) publish dist'
-    if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
+    # if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
     uses: ./.github/workflows/publish-dist.yml
     secrets: inherit
     with:
@@ -203,7 +225,7 @@ jobs:
     needs:
       - publish-dist
       - lint-test-build
-    if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
     timeout-minutes: 60
     name: '(CD) comment preview links'
     steps:

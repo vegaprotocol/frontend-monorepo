@@ -313,7 +313,6 @@ const ClosedMarketsDataGrid = ({
         minWidth: 100,
       }}
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
-      storeKey="closedMarkets"
     />
   );
 };

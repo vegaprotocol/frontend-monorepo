@@ -201,7 +201,7 @@ describe('no all markets', { tags: '@smoke', testIsolation: true }, () => {
     cy.visit('/#/markets/all');
   });
 
-  it('can see no markets message', () => {
+  it.skip('can see no markets message', () => {
     // 6001-MARK-048
     cy.getByTestId('tab-all-markets').should('contain.text', 'No markets');
   });

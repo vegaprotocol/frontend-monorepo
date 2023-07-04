@@ -24,12 +24,12 @@ import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-functions';
 
 const proposalListItem = 'proposals-list-item';
-const openProposals = '[data-testid="open-proposals"]';
+const openProposals = 'open-proposals';
 const voteStatus = 'vote-status';
 const proposalType = 'proposal-type';
 const proposalStatus = 'proposal-status';
-const proposalClosingDate = '[data-testid="vote-details"]';
-const viewProposalButton = '[data-testid="view-proposal-btn"]';
+const proposalClosingDate = 'vote-details';
+const viewProposalButton = 'view-proposal-btn';
 const voteBreakDownToggle = 'vote-breakdown-toggle';
 
 describe('Governance flow for proposal list', { tags: '@slow' }, function () {
@@ -62,13 +62,13 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
     }
 
     navigateTo(navigation.proposals);
-    cy.get(openProposals).within(() => {
-      cy.get(proposalClosingDate)
+    cy.getByTestId(openProposals).within(() => {
+      cy.getByTestId(proposalClosingDate)
         .first()
         .invoke('text')
         .should('match', /days|minutes/);
-      cy.get(proposalClosingDate).should('contain.text', 'months');
-      cy.get(proposalClosingDate).last().should('contain.text', 'year');
+      cy.getByTestId(proposalClosingDate).should('contain.text', 'months');
+      cy.getByTestId(proposalClosingDate).last().should('contain.text', 'year');
     });
   });
 
@@ -77,7 +77,7 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
     const proposalTitle = generateFreeFormProposalTitle();
 
     submitUniqueRawProposal({ proposalTitle: proposalTitle });
-    cy.get('[data-testid="set-proposals-filter-visible"]').click();
+    cy.get('[data-testid="proposal-filter-toggle"]').click();
     cy.get('[data-testid="filter-input"]').type(proposerId);
     // cy.get(`#${proposalId}`).should('contain', proposalId);
     cy.contains(proposalTitle).should('be.visible');
@@ -106,7 +106,7 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
     createRawProposal(this.minProposerBalance);
     cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
       getProposalFromTitle(rawProposal.rationale.title).within(() => {
-        cy.get(viewProposalButton).should('be.visible');
+        cy.getByTestId(viewProposalButton).should('be.visible');
         cy.getByTestId(proposalType).should('have.text', 'Freeform');
         cy.getByTestId(proposalStatus).should('have.text', 'Open');
       });
@@ -124,13 +124,13 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
         'have.text',
         'Participation not reached'
       );
-      cy.get(viewProposalButton).click();
+      cy.getByTestId(viewProposalButton).click();
     });
     voteForProposal('for');
     navigateTo(navigation.proposals);
     getProposalFromTitle(proposalTitle).within(() => {
       cy.getByTestId(voteStatus).should('have.text', 'Set to pass');
-      cy.get(viewProposalButton).click();
+      cy.getByTestId(viewProposalButton).click();
     });
     cy.getByTestId(voteBreakDownToggle).click();
     getProposalInformationFromTable('Token participation met')

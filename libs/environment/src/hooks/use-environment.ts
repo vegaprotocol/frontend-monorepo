@@ -269,34 +269,96 @@ const testSubscription = (client: Client) => {
  * here to appease the environment store interface
  */
 function compileEnvVars() {
-  const VEGA_ENV = process.env['NX_VEGA_ENV'] as Networks;
+  const VEGA_ENV = windowOrDefault(
+    'VEGA_ENV',
+    process.env['NX_VEGA_ENV']
+  ) as Networks;
   const env: Environment = {
-    VEGA_URL: process.env['NX_VEGA_URL'],
+    VEGA_URL: windowOrDefault('VEGA_URL', process.env['NX_VEGA_URL']),
     VEGA_ENV,
-    VEGA_CONFIG_URL: process.env['NX_VEGA_CONFIG_URL'] as string,
-    VEGA_NETWORKS: parseNetworks(process.env['NX_VEGA_NETWORKS']),
-    VEGA_WALLET_URL: process.env['NX_VEGA_WALLET_URL'] as string,
-    HOSTED_WALLET_URL: process.env['NX_HOSTED_WALLET_URL'],
-    ETHERSCAN_URL: getEtherscanUrl(VEGA_ENV, process.env['NX_ETHERSCAN_URL']),
+    VEGA_CONFIG_URL: windowOrDefault(
+      'VEGA_CONFIG_URL',
+      process.env['NX_VEGA_CONFIG_URL'] as string
+    ),
+    VEGA_NETWORKS: parseNetworks(
+      windowOrDefault('VEGA_NETWORKS', process.env['NX_VEGA_NETWORKS'])
+    ),
+    VEGA_WALLET_URL: windowOrDefault(
+      'VEGA_WALLET_URL',
+      process.env['NX_VEGA_WALLET_URL'] as string
+    ),
+    HOSTED_WALLET_URL: windowOrDefault(
+      'HOSTED_WALLET_URL',
+      process.env['NX_HOSTED_WALLET_URL']
+    ),
+    ETHERSCAN_URL: getEtherscanUrl(
+      VEGA_ENV,
+      windowOrDefault('ETHERSCAN_URL', process.env['NX_ETHERSCAN_URL'])
+    ),
     ETHEREUM_PROVIDER_URL: getEthereumProviderUrl(
       VEGA_ENV,
-      process.env['NX_ETHEREUM_PROVIDER_URL']
+      windowOrDefault(
+        'ETHEREUM_PROVIDER_URL',
+        process.env['NX_ETHEREUM_PROVIDER_URL']
+      )
     ),
-    ETH_LOCAL_PROVIDER_URL: process.env['NX_ETH_LOCAL_PROVIDER_URL'],
-    ETH_WALLET_MNEMONIC: process.env['NX_ETH_WALLET_MNEMONIC'],
-    ORACLE_PROOFS_URL: process.env['NX_ORACLE_PROOFS_URL'],
-    VEGA_DOCS_URL: process.env['NX_VEGA_DOCS_URL'],
-    VEGA_CONSOLE_URL: process.env['NX_VEGA_CONSOLE_URL'],
-    VEGA_EXPLORER_URL: process.env['NX_VEGA_EXPLORER_URL'],
-    VEGA_TOKEN_URL: process.env['NX_VEGA_TOKEN_URL'],
-    GITHUB_FEEDBACK_URL: process.env['NX_GITHUB_FEEDBACK_URL'],
-    MAINTENANCE_PAGE: parseBoolean(process.env['NX_MAINTENANCE_PAGE']),
-    GIT_BRANCH: process.env['GIT_COMMIT_BRANCH'],
-    GIT_COMMIT_HASH: process.env['GIT_COMMIT_HASH'],
-    GIT_ORIGIN_URL: process.env['GIT_ORIGIN_URL'],
-    ANNOUNCEMENTS_CONFIG_URL: process.env['NX_ANNOUNCEMENTS_CONFIG_URL'],
-    VEGA_INCIDENT_URL: process.env['NX_VEGA_INCIDENT_URL'],
-    APP_VERSION: process.env['NX_APP_VERSION'],
+    ETH_LOCAL_PROVIDER_URL: windowOrDefault(
+      'ETH_LOCAL_PROVIDER_URL',
+      process.env['NX_ETH_LOCAL_PROVIDER_URL']
+    ),
+    ETH_WALLET_MNEMONIC: windowOrDefault(
+      'ETH_WALLET_MNEMONIC',
+      process.env['NX_ETH_WALLET_MNEMONIC']
+    ),
+    ORACLE_PROOFS_URL: windowOrDefault(
+      'ORACLE_PROOFS_URL',
+      process.env['NX_ORACLE_PROOFS_URL']
+    ),
+    VEGA_DOCS_URL: windowOrDefault(
+      'VEGA_DOCS_URL',
+      process.env['NX_VEGA_DOCS_URL']
+    ),
+    VEGA_CONSOLE_URL: windowOrDefault(
+      'VEGA_CONSOLE_URL',
+      process.env['NX_VEGA_CONSOLE_URL']
+    ),
+    VEGA_EXPLORER_URL: windowOrDefault(
+      'VEGA_EXPLORER_URL',
+      process.env['NX_VEGA_EXPLORER_URL']
+    ),
+    VEGA_TOKEN_URL: windowOrDefault(
+      'VEGA_TOKEN_URL',
+      process.env['NX_VEGA_TOKEN_URL']
+    ),
+    GITHUB_FEEDBACK_URL: windowOrDefault(
+      'GITHUB_FEEDBACK_URL',
+      process.env['NX_GITHUB_FEEDBACK_URL']
+    ),
+    MAINTENANCE_PAGE: parseBoolean(
+      windowOrDefault('MAINTENANCE_PAGE', process.env['NX_MAINTENANCE_PAGE'])
+    ),
+    GIT_BRANCH: windowOrDefault(
+      'GIT_COMMIT_BRANCH',
+      process.env['GIT_COMMIT_BRANCH']
+    ),
+    GIT_COMMIT_HASH: windowOrDefault(
+      'GIT_COMMIT_HASH',
+      process.env['GIT_COMMIT_HASH']
+    ),
+    GIT_ORIGIN_URL: windowOrDefault(
+      'GIT_ORIGIN_URL',
+      process.env['GIT_ORIGIN_URL']
+    ),
+    ANNOUNCEMENTS_CONFIG_URL: windowOrDefault(
+      'ANNOUNCEMENTS_CONFIG_URL',
+      process.env['NX_ANNOUNCEMENTS_CONFIG_URL']
+    ),
+    VEGA_INCIDENT_URL: windowOrDefault(
+      'VEGA_INCIDENT_URL',
+      process.env['NX_VEGA_INCIDENT_URL']
+    ),
+    APP_VERSION: windowOrDefault('APP_VERSION', process.env['NX_APP_VERSION']),
+    SENTRY_DSN: windowOrDefault('SENTRY_DSN', process.env['NX_SENTRY_DSN']),
   };
 
   return env;
@@ -340,4 +402,15 @@ function getEtherscanUrl(
   return network === Networks.MAINNET
     ? 'https://etherscan.io'
     : 'https://sepolia.etherscan.io';
+}
+
+export function windowOrDefault(key: string, defaultValue?: string) {
+  if (typeof window !== 'undefined') {
+    // @ts-ignore avoid conflic in env
+    if (window._env_ && window._env_[key]) {
+      // @ts-ignore presence has been check above
+      return window._env_[key];
+    }
+  }
+  return defaultValue || undefined;
 }

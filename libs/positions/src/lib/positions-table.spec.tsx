@@ -181,7 +181,8 @@ it('displays realised and unrealised PNL', async () => {
     render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[10].textContent).toEqual('4.56');
+  expect(cells[9].textContent).toEqual('12.3');
+  expect(cells[10].textContent).toEqual('45.6');
 });
 
 it('displays close button', async () => {

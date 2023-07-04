@@ -2,11 +2,9 @@ import { t } from '@vegaprotocol/i18n';
 import { useCallback, useRef, useState } from 'react';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
-import type { GridReadyEvent, FilterChangedEvent } from 'ag-grid-community';
-
 import { OrderListTable } from '../order-list/order-list';
 import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order';
-import { useBottomPlaceholder } from '@vegaprotocol/datagrid';
+import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
 import {
@@ -16,25 +14,12 @@ import {
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order } from '../order-data-provider';
-import { OrderStatus } from '@vegaprotocol/types';
 
 export enum Filter {
-  'Open',
-  'Closed',
-  'Rejected',
+  'Open' = 'Open',
+  'Closed' = 'Closed',
+  'Rejected' = 'Rejected',
 }
-
-const FilterStatusValue = {
-  [Filter.Open]: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
-  [Filter.Closed]: [
-    OrderStatus.STATUS_CANCELLED,
-    OrderStatus.STATUS_EXPIRED,
-    OrderStatus.STATUS_FILLED,
-    OrderStatus.STATUS_PARTIALLY_FILLED,
-    OrderStatus.STATUS_STOPPED,
-  ],
-  [Filter.Rejected]: [OrderStatus.STATUS_REJECTED],
-};
 
 export interface OrderListManagerProps {
   partyId: string;
@@ -42,23 +27,9 @@ export interface OrderListManagerProps {
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
-  enforceBottomPlaceholder?: boolean;
   filter?: Filter;
-  storeKey?: string;
+  gridProps?: ReturnType<typeof useDataGridEvents>;
 }
-
-const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (
-  <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end px-[11px] py-2 absolute bottom-0 right-3 rounded">
-    <Button
-      variant="primary"
-      size="sm"
-      onClick={onClick}
-      data-testid="cancelAll"
-    >
-      {t('Cancel all')}
-    </Button>
-  </div>
-);
 
 export const OrderListManager = ({
   partyId,
@@ -66,9 +37,8 @@ export const OrderListManager = ({
   onMarketClick,
   onOrderTypeClick,
   isReadOnly,
-  enforceBottomPlaceholder,
   filter,
-  storeKey,
+  gridProps,
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
@@ -91,14 +61,6 @@ export const OrderListManager = ({
     },
   });
 
-  const {
-    onFilterChanged: bottomPlaceholderOnFilterChanged,
-    ...bottomPlaceholderProps
-  } = useBottomPlaceholder({
-    gridRef,
-    disabled: !enforceBottomPlaceholder && !isReadOnly && !hasAmendableOrder,
-  });
-
   const cancel = useCallback(
     (order: Order) => {
       if (!order.market) return;
@@ -112,26 +74,6 @@ export const OrderListManager = ({
     [create]
   );
 
-  const onGridReady = useCallback(
-    ({ api }: GridReadyEvent) => {
-      if (filter !== undefined) {
-        api.setFilterModel({
-          status: {
-            value: FilterStatusValue[filter],
-          },
-        });
-      }
-    },
-    [filter]
-  );
-
-  const onFilterChanged = useCallback(
-    (event: FilterChangedEvent) => {
-      bottomPlaceholderOnFilterChanged?.();
-    },
-    [bottomPlaceholderOnFilterChanged]
-  );
-
   const cancelAll = useCallback(() => {
     create({
       orderCancellation: {},
@@ -142,20 +84,17 @@ export const OrderListManager = ({
     <>
       <div className="h-full relative">
         <OrderListTable
-          rowData={data as Order[]}
+          rowData={data}
           ref={gridRef}
           filter={filter}
-          onGridReady={onGridReady}
           onCancel={cancel}
           onEdit={setEditOrder}
           onMarketClick={onMarketClick}
           onOrderTypeClick={onOrderTypeClick}
-          onFilterChanged={onFilterChanged}
           isReadOnly={isReadOnly}
-          storeKey={storeKey}
           suppressAutoSize
           overlayNoRowsTemplate={error ? error.message : t('No orders')}
-          {...bottomPlaceholderProps}
+          {...gridProps}
         />
       </div>
       {!isReadOnly && hasAmendableOrder && (
@@ -198,3 +137,16 @@ export const OrderListManager = ({
     </>
   );
 };
+
+const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (
+  <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end px-[11px] py-2 absolute bottom-0 right-3 rounded">
+    <Button
+      variant="primary"
+      size="sm"
+      onClick={onClick}
+      data-testid="cancelAll"
+    >
+      {t('Cancel all')}
+    </Button>
+  </div>
+);

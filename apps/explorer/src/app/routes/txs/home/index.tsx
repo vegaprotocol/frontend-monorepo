@@ -1,14 +1,14 @@
 import { t } from '@vegaprotocol/i18n';
 import { RouteTitle } from '../../../components/route-title';
-import { BlocksRefetch } from '../../../components/blocks';
 import { TxsInfiniteList } from '../../../components/txs';
 import { useTxsData } from '../../../hooks/use-txs-data';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 import { useState } from 'react';
 import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
+import { TxsListNavigation } from '../../../components/txs/tx-list-navigation';
 
-const BE_TXS_PER_REQUEST = 15;
+const BE_TXS_PER_REQUEST = 25;
 
 export const TxsList = () => {
   useDocumentTitle(['Transactions']);
@@ -21,6 +21,11 @@ export const TxsList = () => {
   );
 };
 
+/**
+ * Displays a list of transactions with filters and controls to navigate through the list.
+ *
+ * @returns {JSX.Element} Transaction List and controls
+ */
 export const TxsListFiltered = () => {
   const [filters, setFilters] = useState(new Set(AllFilterOptions));
 
@@ -29,26 +34,40 @@ export const TxsListFiltered = () => {
       ? `filters[cmd.type]=${Array.from(filters)[0]}`
       : '';
 
-  const { hasMoreTxs, loadTxs, error, txsData, refreshTxs, loading } =
-    useTxsData({
-      limit: BE_TXS_PER_REQUEST,
-      filters: f,
-    });
+  const {
+    hasMoreTxs,
+    nextPage,
+    previousPage,
+    error,
+    refreshTxs,
+    loading,
+    txsData,
+    hasPreviousPage,
+  } = useTxsData({
+    limit: BE_TXS_PER_REQUEST,
+    filters: f,
+  });
 
   return (
     <>
-      <menu className="mb-2">
-        <BlocksRefetch refetch={refreshTxs} />
+      <TxsListNavigation
+        refreshTxs={refreshTxs}
+        nextPage={nextPage}
+        previousPage={previousPage}
+        hasPreviousPage={hasPreviousPage}
+        loading={loading}
+        hasMoreTxs={hasMoreTxs}
+      >
         <TxsFilter filters={filters} setFilters={setFilters} />
-      </menu>
-
+      </TxsListNavigation>
       <TxsInfiniteList
+        hasFilters={filters.size > 0}
         hasMoreTxs={hasMoreTxs}
         areTxsLoading={loading}
         txs={txsData}
-        loadMoreTxs={loadTxs}
+        loadMoreTxs={nextPage}
         error={error}
-        className="mb-28"
+        className="mb-28 w-full min-w-[400px]"
       />
     </>
   );

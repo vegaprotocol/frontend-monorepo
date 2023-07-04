@@ -4,7 +4,6 @@ import {
   verifyStakedBalance,
   verifyEthWalletTotalAssociatedBalance,
   verifyEthWalletAssociatedBalance,
-  waitForSpinner,
   navigateTo,
   navigation,
   turnTelemetryOff,
@@ -58,8 +57,7 @@ context(
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
       ethereumWalletConnect();
-      // this is a workaround for #2422 which can be removed once issue is resolved
-      cy.associateTokensToVegaWallet('4');
+      cy.connectVegaWallet();
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
@@ -69,10 +67,9 @@ context(
         function () {
           cy.clearLocalStorage();
           turnTelemetryOff();
-          cy.reload();
-          waitForSpinner();
-          cy.connectVegaWallet();
-          ethereumWalletConnect();
+          // Go to homepage to allow wallet teardown without epoch timer refreshing page
+          navigateTo(navigation.home);
+          vegaWalletTeardown();
           navigateTo(navigation.validators);
         }
       );
@@ -130,6 +127,7 @@ context(
         cy.getByTestId('staked-by-user-tooltip')
           .first()
           .should('have.text', 'Staked by me: 2.00');
+        waitForBeginningOfEpoch();
         cy.getByTestId('total-pending-stake').first().realHover();
         cy.getByTestId('pending-user-stake-tooltip')
           .first()
@@ -400,6 +398,7 @@ context(
         vegaWalletSetSpecifiedApprovalAmount('1000');
         cy.reload();
         ethereumWalletConnect();
+        cy.connectVegaWallet();
         stakingPageAssociateTokens('3');
         verifyUnstakedBalance(3.0);
         cy.get('button').contains('Select a validator to nominate').click();
@@ -503,11 +502,6 @@ context(
           'contain',
           'Add 1 $VEGA tokens'
         );
-      });
-
-      afterEach('Teardown Wallet', function () {
-        navigateTo(navigation.home);
-        vegaWalletTeardown();
       });
 
       function verifyNextEpochValue(amount: number) {

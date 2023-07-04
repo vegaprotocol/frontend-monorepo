@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Set up QEMU
         id: quemu
@@ -31,7 +33,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Log in to the Container registry (ghcr)
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -111,19 +113,19 @@ jobs:
 
       - name: Build local dist
         run: |
-          flags=""
+          envCmd=""
           if [[ ! -z "${{ env.ENV_NAME }}" ]]; then
-            flags="--env=${{ env.ENV_NAME }}"
+            envCmd="yarn env-cmd -f ./apps/${{ matrix.app }}/.env.${{ env.ENV_NAME }}"
           fi
 
           if [ "${{ matrix.app }}" = "trading" ]; then
-            yarn nx export trading $flags || (yarn install && yarn nx export trading $flags)
+            $envCmd yarn nx export trading || (yarn install && $envCmd yarn nx export trading)
             DIST_LOCATION=dist/apps/trading/exported
           elif [ "${{ matrix.app }}" = "ui-toolkit" ]; then
             NODE_ENV=production yarn nx run ui-toolkit:build-storybook
             DIST_LOCATION=dist/storybook/ui-toolkit
           else
-            yarn nx build ${{ matrix.app }} $flags || (yarn install && yarn nx build ${{ matrix.app }} $flags)
+            $envCmd yarn nx build ${{ matrix.app }} || (yarn install && $envCmd yarn nx build ${{ matrix.app }})
             DIST_LOCATION=dist/apps/${{ matrix.app }}
           fi
           mv $DIST_LOCATION dist-result
@@ -143,7 +145,7 @@ jobs:
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
 
       - name: Image digest
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
         run: echo ${{ steps.docker_build.outputs.digest }}
 
       - name: Sanity check docker image
@@ -158,7 +160,7 @@ jobs:
         uses: docker/build-push-action@v3
         continue-on-error: true
         id: ghcr-push
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
         with:
           context: .
           file: docker/node-outside-docker.Dockerfile
@@ -226,9 +228,25 @@ jobs:
           AWS_REGION: 'eu-west-1'
           SOURCE_DIR: 'dist-result'
 
+      - name: Install aws CLI
+        if: ${{ github.event_name == 'push' && ( matrix.app != 'trading' || (matrix.app == 'trading' && !( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) ) ) }}
+        uses: unfor19/install-aws-cli-action@master
+
+      - name: Perform cache invalidation
+        if: ${{ github.event_name == 'push' && ( matrix.app != 'trading' || (matrix.app == 'trading' && !( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) ) ) }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'eu-west-1'
+        run: |
+          echo "Looking for distribution for bucket: ${{ env.BUCKET_NAME }}"
+          id=$(aws cloudfront list-distributions | jq -Mrc '.DistributionList.Items | .[] | select(.DefaultCacheBehavior.TargetOriginId == "${{ env.BUCKET_NAME }}") | .Id')
+          echo "Found id is: ${id}"
+          aws cloudfront create-invalidation --distribution-id $id --paths "/*"
+
       - name: Add preview label
         uses: actions-ecosystem/action-add-labels@v1
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
         with:
           labels: ${{ matrix.app }}-preview
           number: ${{ github.event.number }}

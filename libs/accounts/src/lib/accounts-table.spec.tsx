@@ -44,62 +44,79 @@ describe('AccountsTable', () => {
   });
 
   it('should apply correct formatting', async () => {
-    await act(async () => {
-      render(
-        <AccountTable
-          rowData={singleRowData}
-          onClickAsset={() => null}
-          isReadOnly={false}
-        />
-      );
-    });
+    const { container } = render(
+      <AccountTable
+        rowData={singleRowData}
+        onClickAsset={() => null}
+        isReadOnly={false}
+      />
+    );
+
     const cells = await screen.findAllByRole('gridcell');
     const expectedValues = ['tBTC', '1,256.00', '1,256.00', '2,512.00', ''];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
     });
-    const rows = await screen.findAllByRole('row');
-    expect(rows.length).toBe(6);
+    const rows = container.querySelector('.ag-center-cols-container');
+    expect(rows?.childElementCount).toBe(1);
   });
 
   it('should apply correct formatting in view as user mode', async () => {
-    await act(async () => {
-      render(
-        <AccountTable
-          rowData={singleRowData}
-          onClickAsset={() => null}
-          isReadOnly={true}
-        />
-      );
-    });
+    const { container } = render(
+      <AccountTable
+        rowData={singleRowData}
+        onClickAsset={() => null}
+        isReadOnly={true}
+      />
+    );
+
     const cells = await screen.findAllByRole('gridcell');
     const expectedValues = ['tBTC', '1,256.00', '1,256.00', '2,512.00', ''];
     expect(cells.length).toBe(expectedValues.length);
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
     });
-    const rows = await screen.findAllByRole('row');
-    expect(rows.length).toBe(6);
+    const rows = container.querySelector('.ag-center-cols-container');
+    expect(rows?.childElementCount).toBe(1);
   });
 
-  it('should not add first asset as pinned', async () => {
-    await act(async () => {
-      render(
-        <AccountTable
-          rowData={singleRowData}
-          onClickAsset={() => null}
-          isReadOnly={false}
-          pinnedAsset={{
-            decimals: 5,
-            id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
-            symbol: 'tBTC',
-            name: 'tBTC',
-          }}
-        />
-      );
-    });
-    const rows = await screen.findAllByRole('row');
-    expect(rows.length).toBe(6);
+  it('should add asset as pinned', async () => {
+    const { container, rerender } = render(
+      <AccountTable
+        rowData={singleRowData}
+        onClickAsset={() => null}
+        isReadOnly={false}
+        pinnedAsset={{
+          decimals: 5,
+          id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+          symbol: 'tBTC',
+          name: 'tBTC',
+        }}
+      />
+    );
+    await screen.findAllByRole('rowgroup');
+    let rows = container.querySelector('.ag-center-cols-container');
+    expect(rows?.childElementCount).toBe(0);
+    let pinnedRows = container.querySelector('.ag-floating-top-container');
+    expect(pinnedRows?.childElementCount ?? 0).toBe(1);
+
+    rerender(
+      <AccountTable
+        rowData={singleRowData}
+        onClickAsset={() => null}
+        isReadOnly={false}
+        pinnedAsset={{
+          decimals: 5,
+          id: '',
+          symbol: 'tBTC',
+          name: 'tBTC',
+        }}
+      />
+    );
+    rows = container.querySelector('.ag-center-cols-container');
+    expect(rows?.childElementCount ?? 0).toBe(1);
+    pinnedRows = container.querySelector('.ag-floating-top-container');
+    expect(pinnedRows?.childElementCount ?? 0).toBe(1);
   });
 
   it('should get correct account data', () => {

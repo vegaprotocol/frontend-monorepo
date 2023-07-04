@@ -1,5 +1,5 @@
 import './styles.scss';
-import { useStorybookThemeObserver } from '@vegaprotocol/utils';
+import { useStorybookThemeObserver } from '@vegaprotocol/react-helpers';
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
   backgrounds: { disable: true },

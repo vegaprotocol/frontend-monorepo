@@ -1,15 +1,15 @@
+import { useMemo } from 'react';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { AssetTypeMapping, AssetStatusMapping } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
-import { AgGridColumn } from 'ag-grid-react';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import type { VegaICellRendererParams } from '@vegaprotocol/datagrid';
 import { useRef, useLayoutEffect } from 'react';
 import { BREAKPOINT_MD } from '../../config/breakpoints';
 import { useNavigate } from 'react-router-dom';
-import type { RowClickedEvent } from 'ag-grid-community';
+import type { RowClickedEvent, ColDef } from 'ag-grid-community';
 
 type AssetsTableProps = {
   data: AssetFieldsFragment[] | null;
@@ -31,6 +31,58 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
     };
   }, []);
 
+  const columnDefs = useMemo<ColDef[]>(
+    () => [
+      { headerName: t('Symbol'), field: 'symbol' },
+      { headerName: t('Name'), field: 'name' },
+      {
+        flex: 2,
+        headerName: t('ID'),
+        field: 'id',
+        hide: window.innerWidth < BREAKPOINT_MD,
+      },
+      {
+        colId: 'type',
+        headerName: t('Type'),
+        field: 'source.__typename',
+        hide: window.innerWidth < BREAKPOINT_MD,
+        valueFormatter: ({ value }: { value?: string }) =>
+          value ? AssetTypeMapping[value].value : '',
+      },
+      {
+        headerName: t('Status'),
+        field: 'status',
+        hide: window.innerWidth < BREAKPOINT_MD,
+        valueFormatter: ({ value }: { value?: string }) =>
+          value ? AssetStatusMapping[value].value : '',
+      },
+      {
+        colId: 'actions',
+        headerName: '',
+        sortable: false,
+        filter: false,
+        resizable: false,
+        wrapText: true,
+        field: 'id',
+        cellRenderer: ({
+          value,
+        }: VegaICellRendererParams<AssetFieldsFragment, 'id'>) =>
+          value ? (
+            <ButtonLink
+              onClick={(e) => {
+                navigate(value);
+              }}
+            >
+              {t('View details')}
+            </ButtonLink>
+          ) : (
+            ''
+          ),
+      },
+    ],
+    [navigate]
+  );
+
   return (
     <AgGrid
       ref={ref}
@@ -46,60 +98,11 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
         filterParams: { buttons: ['reset'] },
         autoHeight: true,
       }}
+      columnDefs={columnDefs}
       suppressCellFocus={true}
       onRowClicked={({ data }: RowClickedEvent) => {
         navigate(data.id);
       }}
-    >
-      <AgGridColumn headerName={t('Symbol')} field="symbol" />
-      <AgGridColumn headerName={t('Name')} field="name" />
-      <AgGridColumn
-        flex="2"
-        headerName={t('ID')}
-        field="id"
-        hide={window.innerWidth < BREAKPOINT_MD}
-      />
-      <AgGridColumn
-        colId="type"
-        headerName={t('Type')}
-        field="source.__typename"
-        hide={window.innerWidth < BREAKPOINT_MD}
-        valueFormatter={({ value }: { value?: string }) =>
-          value && AssetTypeMapping[value].value
-        }
-      />
-      <AgGridColumn
-        headerName={t('Status')}
-        field="status"
-        hide={window.innerWidth < BREAKPOINT_MD}
-        valueFormatter={({ value }: { value?: string }) =>
-          value && AssetStatusMapping[value].value
-        }
-      />
-      <AgGridColumn
-        colId="actions"
-        headerName=""
-        sortable={false}
-        filter={false}
-        resizable={false}
-        wrapText={true}
-        field="id"
-        cellRenderer={({
-          value,
-        }: VegaICellRendererParams<AssetFieldsFragment, 'id'>) =>
-          value ? (
-            <ButtonLink
-              onClick={(e) => {
-                navigate(value);
-              }}
-            >
-              {t('View details')}
-            </ButtonLink>
-          ) : (
-            ''
-          )
-        }
-      />
-    </AgGrid>
+    />
   );
 };

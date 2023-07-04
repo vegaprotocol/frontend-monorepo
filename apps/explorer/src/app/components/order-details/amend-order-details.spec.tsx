@@ -12,7 +12,7 @@ type Amend = components['schemas']['v1OrderAmendment'];
 
 function renderAmendOrderDetails(
   id: string,
-  version: number,
+  version: number | undefined,
   amend: Amend,
   mocks: MockedResponse[]
 ) {
@@ -25,7 +25,11 @@ function renderAmendOrderDetails(
   );
 }
 
-function renderExistingAmend(id: string, version: number, amend: Amend) {
+function renderExistingAmend(
+  id: string,
+  version: number | undefined,
+  amend: Amend
+) {
   const mocks = [
     {
       request: {
@@ -49,6 +53,7 @@ function renderExistingAmend(id: string, version: number, amend: Amend) {
             timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
             price: '200',
             side: 'BUY',
+            peggedOrder: null,
             remaining: '99',
             rejectionReason: 'rejection',
             reference: '123',
@@ -66,6 +71,56 @@ function renderExistingAmend(id: string, version: number, amend: Amend) {
               tradableInstrument: {
                 instrument: {
                   name: 'test',
+                  product: {
+                    __typename: 'Future',
+                    quoteName: '123',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      request: {
+        query: ExplorerDeterministicOrderDocument,
+        variables: {
+          orderId: '123',
+        },
+      },
+      result: {
+        data: {
+          orderByID: {
+            __typename: 'Order',
+            id: '123',
+            type: 'GTT',
+            status: Schema.OrderStatus.STATUS_ACTIVE,
+            version: 100,
+            createdAt: '123',
+            updatedAt: '456',
+            expiresAt: '789',
+            timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+            peggedOrder: null,
+            price: '200',
+            side: 'BUY',
+            remaining: '99',
+            rejectionReason: 'rejection',
+            reference: '123',
+            size: '200',
+            party: {
+              __typename: 'Party',
+              id: '234',
+            },
+            market: {
+              __typename: 'Market',
+              id: 'amend-to-order-latest-version',
+              state: 'STATUS_ACTIVE',
+              positionDecimalPlaces: 2,
+              decimalPlaces: '5',
+              tradableInstrument: {
+                instrument: {
+                  name: 'amend-to-order-latest-version-test',
                   product: {
                     __typename: 'Future',
                     quoteName: '123',
@@ -156,5 +211,16 @@ describe('Amend order details', () => {
     const res = renderExistingAmend('123', 1, amend);
     expect(await res.findByText('New price')).toBeInTheDocument();
     expect(await res.findByText('-7879')).toBeInTheDocument();
+  });
+
+  it('Fetches latest version when version is not specified', async () => {
+    const amend: Amend = {
+      price: '-7879',
+    };
+
+    const res = renderExistingAmend('123', undefined, amend);
+    expect(
+      await res.findByText('amend-to-order-latest-version')
+    ).toBeInTheDocument();
   });
 });

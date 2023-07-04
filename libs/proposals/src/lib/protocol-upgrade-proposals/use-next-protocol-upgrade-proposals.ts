@@ -1,6 +1,6 @@
 import { useMemo, useEffect } from 'react';
 import * as Schema from '@vegaprotocol/types';
-import { removePaginationWrapper } from '@vegaprotocol/utils';
+import { removePaginationWrapper, isTestEnv } from '@vegaprotocol/utils';
 import { useProtocolUpgradeProposalsQuery } from './__generated__/ProtocolUpgradeProposals';
 
 export const useNextProtocolUpgradeProposals = (since?: number) => {
@@ -21,7 +21,7 @@ export const useNextProtocolUpgradeProposals = (since?: number) => {
       return;
     }
 
-    if (!('Cypress' in window) && window.location.hostname !== 'localhost') {
+    if (!isTestEnv() && window.location.hostname !== 'localhost') {
       startPolling(5000);
     }
   }, [error, startPolling, stopPolling]);

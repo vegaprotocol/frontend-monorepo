@@ -124,7 +124,7 @@ export const DealTicket = ({
           normalizedOrder.size,
           market.positionDecimalPlaces
         ).multipliedBy(toBigNum(price, market.decimalPlaces)),
-        asset.decimals
+        market.decimalPlaces
       );
     }
     return null;
@@ -133,7 +133,6 @@ export const DealTicket = ({
     normalizedOrder?.size,
     market.decimalPlaces,
     market.positionDecimalPlaces,
-    asset.decimals,
   ]);
 
   const feeEstimate = useEstimateFees(

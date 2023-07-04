@@ -1,10 +1,11 @@
-import { BrowserRouter as Router } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { TxDetails } from './tx-details';
 import type {
   BlockExplorerTransactionResult,
   ValidatorHeartbeat,
 } from '../../../routes/types/block-explorer-response';
+import { MemoryRouter } from 'react-router-dom';
+import { MockedProvider } from '@apollo/client/testing';
 
 // Note: Long enough that there is a truncated output and a full output
 const pubKey =
@@ -27,9 +28,11 @@ const txData: BlockExplorerTransactionResult = {
 };
 
 const renderComponent = (txData: BlockExplorerTransactionResult) => (
-  <Router>
-    <TxDetails txData={txData} pubKey={pubKey} />
-  </Router>
+  <MemoryRouter>
+    <MockedProvider>
+      <TxDetails txData={txData} pubKey={pubKey} />
+    </MockedProvider>
+  </MemoryRouter>
 );
 
 describe('Transaction details', () => {

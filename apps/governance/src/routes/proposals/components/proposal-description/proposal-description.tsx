@@ -1,9 +1,9 @@
 import ReactMarkdown from 'react-markdown';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Icon, RoundedWrapper } from '@vegaprotocol/ui-toolkit';
+import { RoundedWrapper } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../../../components/heading';
-import { collapsibleToggleStyles } from '../../../../lib/collapsible-toggle-styles';
+import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 
 export const ProposalDescription = ({
   description,
@@ -15,17 +15,13 @@ export const ProposalDescription = ({
 
   return (
     <section data-testid="proposal-description">
-      <button
-        onClick={() => setShowDescription(!showDescription)}
-        data-testid="proposal-description-toggle"
+      <CollapsibleToggle
+        toggleState={showDescription}
+        setToggleState={setShowDescription}
+        dataTestId={'proposal-description-toggle'}
       >
-        <div className="flex items-center gap-3">
-          <SubHeading title={t('proposalDescription')} />
-          <div className={collapsibleToggleStyles(showDescription)}>
-            <Icon name="chevron-down" size={8} />
-          </div>
-        </div>
-      </button>
+        <SubHeading title={t('proposalDescription')} />
+      </CollapsibleToggle>
 
       {showDescription && (
         <RoundedWrapper paddingBottom={true} marginBottomLarge={true}>

@@ -62,8 +62,8 @@ export const useWithdrawAsset = (
       try {
         logger.info('get withdraw asset data', { asset: asset?.id });
         const result = await Promise.all([getThreshold(asset), getDelay()]);
-        threshold = result[0];
-        delay = result[1];
+        if (result[0] != null) threshold = result[0];
+        if (result[1] != null) delay = result[1];
       } catch (err) {
         logger.error('get withdraw asset data', err);
       }
