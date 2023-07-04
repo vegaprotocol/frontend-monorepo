@@ -1,4 +1,4 @@
-import { Icon } from '@vegaprotocol/ui-toolkit';
+import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
 
 // https://github.com/vegaprotocol/vega/blob/develop/core/blockchain/response.go
 export const ErrorCodes = new Map([
@@ -17,6 +17,8 @@ interface ChainResponseCodeProps {
   code: number;
   hideLabel?: boolean;
   error?: string;
+  hideIfOk?: boolean;
+  small?: boolean;
 }
 
 /**
@@ -28,14 +30,21 @@ export const ChainResponseCode = ({
   code,
   hideLabel = false,
   error,
+  hideIfOk = false,
+  small = false,
 }: ChainResponseCodeProps) => {
+  if (hideIfOk && code === 0) {
+    return null;
+  }
+
   const isSuccess = successCodes.has(code);
+  const size = small ? 3 : 4;
   const successColour =
-    code === 71 ? 'fill-vega-orange' : 'fill-vega-green-600';
+    code === 71 ? '!fill-vega-orange' : '!fill-vega-green-600';
   const icon = isSuccess ? (
-    <Icon name="tick-circle" className={successColour} />
+    <Icon size={size} name="tick-circle" className={`${successColour}`} />
   ) : (
-    <Icon name="cross" className="fill-vega-pink-600" />
+    <Icon size={size} name="cross" className="!fill-vega-pink-500" />
   );
   const label = ErrorCodes.get(code) || 'Unknown response code';
 
@@ -44,18 +53,28 @@ export const ChainResponseCode = ({
     error && error.length > 100 ? error.replace(/,/g, ',\r\n') : error;
 
   return (
-    <div title={`Response code: ${code} - ${label}`} className=" inline-block">
-      <span
-        className="mr-2"
-        aria-label={isSuccess ? 'Success' : 'Warning'}
-        role="img"
-      >
-        {icon}
-      </span>
-      {hideLabel ? null : <span>{label}</span>}
-      {!hideLabel && !!displayError ? (
-        <span className="ml-1 whitespace-pre">&mdash;&nbsp;{displayError}</span>
-      ) : null}
-    </div>
+    <Tooltip
+      description={
+        <span>
+          Response code: {code} - {label}
+        </span>
+      }
+    >
+      <div className="mt-[-1px] inline-block">
+        <span
+          className="mr-2"
+          aria-label={isSuccess ? 'Success' : 'Warning'}
+          role="img"
+        >
+          {icon}
+        </span>
+        {hideLabel ? null : <span>{label}</span>}
+        {!hideLabel && !!displayError ? (
+          <span className="ml-1 whitespace-pre">
+            &mdash;&nbsp;{displayError}
+          </span>
+        ) : null}
+      </div>
+    </Tooltip>
   );
 };

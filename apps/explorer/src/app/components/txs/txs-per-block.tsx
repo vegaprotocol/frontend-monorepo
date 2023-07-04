@@ -1,22 +1,16 @@
-import { Routes } from '../../routes/route-names';
-import { TruncatedLink } from '../truncate/truncated-link';
-import { TxOrderType } from './tx-order-type';
-import { Table, TableRow, TableCell } from '../table';
+import { Table, TableRow } from '../table';
 import { t } from '@vegaprotocol/i18n';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import type { BlockExplorerTransactions } from '../../routes/types/block-explorer-response';
-import isNumber from 'lodash/isNumber';
-import { ChainResponseCode } from './details/chain-response-code/chain-reponse.code';
 import { getTxsDataUrl } from '../../hooks/use-txs-data';
 import { AsyncRenderer, Loader } from '@vegaprotocol/ui-toolkit';
 import EmptyList from '../empty-list/empty-list';
+import { TxsInfiniteListItem } from './txs-infinite-list-item';
 
 interface TxsPerBlockProps {
   blockHeight: string;
   txCount: number;
 }
-
-const truncateLength = 5;
 
 export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
   const filters = `filters[block.height]=${blockHeight}`;
@@ -33,53 +27,23 @@ export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
             <thead>
               <TableRow modifier="bordered" className="font-mono">
                 <td>{t('Transaction')}</td>
-                <td>{t('From')}</td>
                 <td>{t('Type')}</td>
-                <td>{t('Status')}</td>
+                <td>{t('From')}</td>
+                <td>{t('Block')}</td>
               </TableRow>
             </thead>
             <tbody>
               {data.transactions.map(
-                ({ hash, submitter, type, command, code }) => {
+                ({ hash, submitter, type, command, code, block }) => {
                   return (
-                    <TableRow
-                      modifier="bordered"
-                      key={hash}
-                      data-testid="transaction-row"
-                    >
-                      <TableCell
-                        modifier="bordered"
-                        className="pr-12 font-mono"
-                      >
-                        <TruncatedLink
-                          to={`/${Routes.TX}/${hash}`}
-                          text={hash}
-                          startChars={truncateLength}
-                          endChars={truncateLength}
-                        />
-                      </TableCell>
-                      <TableCell
-                        modifier="bordered"
-                        className="pr-12 font-mono"
-                      >
-                        <TruncatedLink
-                          to={`/${Routes.PARTIES}/${submitter}`}
-                          text={submitter}
-                          startChars={truncateLength}
-                          endChars={truncateLength}
-                        />
-                      </TableCell>
-                      <TableCell modifier="bordered">
-                        <TxOrderType orderType={type} command={command} />
-                      </TableCell>
-                      <TableCell modifier="bordered" className="text">
-                        {isNumber(code) ? (
-                          <ChainResponseCode code={code} hideLabel={true} />
-                        ) : (
-                          code
-                        )}
-                      </TableCell>
-                    </TableRow>
+                    <TxsInfiniteListItem
+                      block={block}
+                      hash={hash}
+                      submitter={submitter}
+                      type={type}
+                      command={command}
+                      code={code}
+                    />
                   );
                 }
               )}

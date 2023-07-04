@@ -16,7 +16,8 @@ describe('truncateByChars', () => {
     },
     { i: '12345678901234567890', s: 0, e: 10, o: `${ELLIPSIS}1234567890` },
     { i: '123', s: 0, e: 4, o: '123' },
-  ])('should truncate given string by specific chars', ({ i, s, e, o }) => {
+    { i: '12345678901234567890', s: 3, e: 0, o: `123${ELLIPSIS}` },
+  ])('should truncate given string by specific chars: %s', ({ i, s, e, o }) => {
     expect(truncateByChars(i, s, e)).toStrictEqual(o);
   });
 });
@@ -28,7 +29,7 @@ describe('shorten', () => {
     { i: '12345678901234567890', l: 10, o: `123456789${ELLIPSIS}` },
     { i: '12345678901234567890', l: 20, o: `1234567890123456789${ELLIPSIS}` },
     { i: '12345678901234567890', l: 30, o: `12345678901234567890` },
-  ])('should shorten given string by specific limit', ({ i, l, o }) => {
+  ])('should shorten given string by specific limit: %s', ({ i, l, o }) => {
     const output = shorten(i, l);
     expect(output).toStrictEqual(o);
   });
@@ -51,7 +52,7 @@ describe('titlefy', () => {
       words: ['VEGAUSD', '123.22'],
       o: 'VEGAUSD - 123.22 - Vega',
     },
-  ])('should convert to title-like string', ({ words, o }) => {
+  ])('should convert to title-like string: %s', ({ words, o }) => {
     expect(titlefy(words)).toEqual(o);
   });
 });
