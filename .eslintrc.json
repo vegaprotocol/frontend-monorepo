@@ -1,7 +1,7 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nrwl/nx", "eslint-plugin-unicorn", "jsx-a11y", "jest"],
+  "plugins": ["@nx", "eslint-plugin-unicorn", "jsx-a11y", "jest"],
   "settings": {
     "jsx-a11y": {
       "components": {
@@ -18,7 +18,7 @@
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "extends": ["plugin:jsx-a11y/strict"],
       "rules": {
-        "@nrwl/nx/enforce-module-boundaries": [
+        "@nx/enforce-module-boundaries": [
           "error",
           {
             "enforceBuildableLibDependency": true,
@@ -56,7 +56,7 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "extends": ["plugin:@nrwl/nx/typescript"],
+      "extends": ["plugin:@nx/typescript"],
       "rules": {
         "@typescript-eslint/ban-ts-comment": [
           "error",
@@ -80,14 +80,19 @@
     },
     {
       "files": ["*.spec.ts", "*.spec.tsx"],
-      "extends": ["plugin:@nrwl/nx/typescript", "plugin:jest/recommended"],
+      "extends": ["plugin:@nx/typescript", "plugin:jest/recommended"],
       "rules": {
-        "jest/consistent-test-it": ["error", { "fn": "it" }]
+        "jest/consistent-test-it": [
+          "error",
+          {
+            "fn": "it"
+          }
+        ]
       }
     },
     {
       "files": ["*.js", "*.jsx"],
-      "extends": ["plugin:@nrwl/nx/javascript"],
+      "extends": ["plugin:@nx/javascript"],
       "rules": {}
     }
   ]

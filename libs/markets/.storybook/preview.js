@@ -1,7 +1,7 @@
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
 import { useEffect } from 'react';
-import '../src/styles.css';
+import '../src/styles.scss';
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
   backgrounds: { disable: true },

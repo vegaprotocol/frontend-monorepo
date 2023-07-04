@@ -1,10 +1,11 @@
 {
+  "name": "liquidity-provision-dashboard",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/liquidity-provision-dashboard/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:webpack",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -21,7 +22,7 @@
         ],
         "styles": ["apps/liquidity-provision-dashboard/src/styles.scss"],
         "scripts": [],
-        "webpackConfig": "@nrwl/react/plugins/webpack"
+        "webpackConfig": "@nx/react/plugins/webpack"
       },
       "configurations": {
         "development": {
@@ -47,7 +48,7 @@
       }
     },
     "serve": {
-      "executor": "./tools/executors/webpack:serve",
+      "executor": "@nx/webpack:dev-server",
       "options": {
         "buildTarget": "liquidity-provision-dashboard:build",
         "hmr": true,
@@ -64,7 +65,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
@@ -73,15 +74,23 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/liquidity-provision-dashboard"],
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/liquidity-provision-dashboard"
+      ],
       "options": {
         "jestConfig": "apps/liquidity-provision-dashboard/jest.config.ts",
         "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     },
     "build-netlify": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "cp apps/liquidity-provision-dashboard/netlify.toml netlify.toml",
@@ -90,7 +99,7 @@
       }
     },
     "build-spec": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "command": "yarn tsc --project ./apps/liquidity-provision-dashboard/tsconfig.spec.json"
