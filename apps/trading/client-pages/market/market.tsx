@@ -82,12 +82,6 @@ export const MarketPage = () => {
     }
   }, [update, lastMarketId, data?.id]);
 
-  useEffect(() => {
-    if (view === null) {
-      setView('order');
-    }
-  }, [view, setView]);
-
   const tradeView = useMemo(() => {
     if (largeScreen) {
       return (

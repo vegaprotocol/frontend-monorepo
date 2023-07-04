@@ -1,11 +1,7 @@
 import { TransferContainer } from '@vegaprotocol/accounts';
 import { DepositContainer } from '@vegaprotocol/deposits';
-import {
-  VLogo,
-  Tooltip,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { VLogo, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { Tooltip } from '../../components/tooltip';
 import { WithdrawFormContainer } from '@vegaprotocol/withdraws';
 import { TradingViews } from '../../client-pages/market/trade-views';
 import { create } from 'zustand';
@@ -93,7 +89,7 @@ const SidebarButton = ({
 }) => {
   const { view: currView, setView } = useSidebar();
   const buttonClasses = classNames('flex items-center p-2 rounded', {
-    'text-vega-clight-200 dark:text-vega-cdark-200 hover:bg-vega-yellow hover:text-black dark:hover:text-black':
+    'text-vega-clight-200 dark:text-vega-cdark-200 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500':
       view !== currView,
     'bg-vega-yellow hover:bg-vega-yellow-550 text-black': view === currView,
   });
