@@ -8,7 +8,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
-import { useSidebar } from '../../components/sidebar';
+import { ViewType, useSidebar } from '../../components/sidebar';
 
 export const WithdrawalsContainer = () => {
   const { pubKey, isReadOnly } = useVegaWallet();
@@ -36,7 +36,7 @@ export const WithdrawalsContainer = () => {
           <Button
             variant="primary"
             size="sm"
-            onClick={() => setView('withdraw')}
+            onClick={() => setView({ type: ViewType.Withdraw })}
             data-testid="withdraw-dialog-button"
           >
             {t('Make withdrawal')}

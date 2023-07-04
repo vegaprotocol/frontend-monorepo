@@ -3,7 +3,6 @@ import { DepositContainer } from '@vegaprotocol/deposits';
 import { VLogo, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { Tooltip } from '../../components/tooltip';
 import { WithdrawFormContainer } from '@vegaprotocol/withdraws';
-import { TradingViews } from '../../client-pages/market/trade-views';
 import { create } from 'zustand';
 import { Route, Routes, useParams } from 'react-router-dom';
 import { Settings } from '../settings';
@@ -12,14 +11,39 @@ import { NodeHealthContainer } from '../node-health';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import { WithdrawContainer } from '../withdraw-container';
+
+export enum ViewType {
+  Order = 'Order',
+  Info = 'Info',
+  Deposit = 'Deposit',
+  Withdraw = 'Withdraw',
+  Transfer = 'Transfer',
+  Settings = 'Settings',
+}
 
 type SidebarView =
-  | 'order'
-  | 'info'
-  | 'deposit'
-  | 'withdraw'
-  | 'transfer'
-  | 'settings';
+  | {
+      type: ViewType.Deposit;
+      assetId?: string;
+    }
+  | {
+      type: ViewType.Withdraw;
+      assetId?: string;
+    }
+  | {
+      type: ViewType.Transfer;
+      assetId?: string;
+    }
+  | {
+      type: ViewType.Order;
+    }
+  | {
+      type: ViewType.Info;
+    }
+  | {
+      type: ViewType.Settings;
+    };
 
 export const Sidebar = () => {
   return (
@@ -31,17 +55,17 @@ export const Sidebar = () => {
         <nav className="flex flex-col items-stretch gap-2 p-1">
           {/* sidebar options that always show */}
           <SidebarButton
-            view="deposit"
+            view={ViewType.Deposit}
             icon={VegaIconNames.DEPOSIT}
             tooltip="Deposit"
           />
           <SidebarButton
-            view="withdraw"
+            view={ViewType.Withdraw}
             icon={VegaIconNames.WITHDRAW}
             tooltip="Withdraw"
           />
           <SidebarButton
-            view="transfer"
+            view={ViewType.Transfer}
             icon={VegaIconNames.TRANSFER}
             tooltip="Transfer"
           />
@@ -54,12 +78,12 @@ export const Sidebar = () => {
                 <>
                   <SidebarDivider />
                   <SidebarButton
-                    view="order"
+                    view={ViewType.Order}
                     icon={VegaIconNames.TREND_UP}
                     tooltip="Order"
                   />
                   <SidebarButton
-                    view="info"
+                    view={ViewType.Info}
                     icon={VegaIconNames.BREAKDOWN}
                     tooltip="Market specification"
                   />
@@ -70,7 +94,7 @@ export const Sidebar = () => {
         </nav>
         <nav className="mt-auto flex flex-col items-stretch gap-2 p-1">
           <SidebarButton
-            view="settings"
+            view={ViewType.Settings}
             icon={VegaIconNames.COG}
             tooltip="Settings"
           />
@@ -86,19 +110,29 @@ const SidebarButton = ({
   icon,
   tooltip,
 }: {
-  view: SidebarView;
+  view: ViewType;
   icon: VegaIconNames;
   tooltip: string;
 }) => {
   const { view: currView, setView } = useSidebar();
   const buttonClasses = classNames('flex items-center p-2 rounded', {
     'text-vega-clight-200 dark:text-vega-cdark-200 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500':
-      view !== currView,
-    'bg-vega-yellow hover:bg-vega-yellow-550 text-black': view === currView,
+      view !== currView?.type,
+    'bg-vega-yellow hover:bg-vega-yellow-550 text-black':
+      view === currView?.type,
   });
   return (
     <Tooltip description={tooltip} align="center" side="right" sideOffset={10}>
-      <button className={buttonClasses} onClick={() => setView(view)}>
+      <button
+        className={buttonClasses}
+        onClick={() => {
+          if (view === currView?.type) {
+            setView(null);
+          } else {
+            setView({ type: view });
+          }
+        }}
+      >
         <VegaIcon name={icon} size={20} />
       </button>
     </Tooltip>
@@ -111,33 +145,40 @@ const SidebarDivider = () => {
 
 export const SidebarContent = () => {
   const params = useParams();
-  const { view } = useSidebar();
+  const { view, setView } = useSidebar();
 
-  if (view === 'order') {
+  if (!view) return null;
+
+  if (view.type === ViewType.Order) {
     if (params.marketId) {
-      return <DealTicketContainer marketId={params.marketId} />;
+      return (
+        <DealTicketContainer
+          marketId={params.marketId}
+          onDeposit={(assetId) => setView({ type: ViewType.Deposit, assetId })}
+        />
+      );
     } else {
       return <p>{t('No market selected')}</p>;
     }
   }
 
-  if (view === 'deposit') {
-    return <DepositContainer />;
+  if (view.type === ViewType.Deposit) {
+    return <DepositContainer assetId={view.assetId} />;
   }
 
-  if (view === 'withdraw') {
-    return <WithdrawFormContainer submit={() => alert('TODO')} />;
+  if (view.type === ViewType.Withdraw) {
+    return <WithdrawContainer assetId={view.assetId} />;
   }
 
-  if (view === 'transfer') {
-    return <TransferContainer />;
+  if (view.type === ViewType.Transfer) {
+    return <TransferContainer assetId={view.assetId} />;
   }
 
-  if (view === 'settings') {
+  if (view.type === ViewType.Settings) {
     return <Settings />;
   }
 
-  if (view === 'info') {
+  if (view.type === ViewType.Info) {
     if (params.marketId) {
       return <MarketInfoAccordionContainer marketId={params.marketId} />;
     } else {
@@ -145,8 +186,7 @@ export const SidebarContent = () => {
     }
   }
 
-  // sidebar not open
-  return null;
+  throw new Error('invalid sidebar');
 };
 
 export const useSidebar = create<{
@@ -154,11 +194,12 @@ export const useSidebar = create<{
   setView: (view: SidebarView | null) => void;
 }>()((set) => ({
   view: null,
-  setView: (view) =>
-    set((state) => {
-      if (view === state.view) {
+  setView: (x) =>
+    set(() => {
+      if (x === null) {
         return { view: null };
       }
-      return { view };
+
+      return { view: x };
     }),
 }));
