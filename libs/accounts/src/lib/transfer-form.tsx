@@ -190,7 +190,6 @@ export const TransferForm = ({
               data-testid="select-asset"
               id={field.name}
               name={field.name}
-              required
               onValueChange={(value) => {
                 field.onChange(value);
               }}
