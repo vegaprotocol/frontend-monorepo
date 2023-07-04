@@ -21,6 +21,7 @@ import {
   ResizableGridPanel,
   usePaneLayout,
 } from '../../components/resizable-grid';
+import { ViewType, useSidebar } from '../../components/sidebar';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -35,6 +36,7 @@ const WithdrawalsIndicator = () => {
 };
 
 export const Portfolio = () => {
+  const { init, view, setView } = useSidebar();
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
@@ -42,6 +44,12 @@ export const Portfolio = () => {
   useEffect(() => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle]);
+
+  useEffect(() => {
+    if (init && view === null) {
+      setView({ type: ViewType.Transfer });
+    }
+  }, [init, view, setView]);
 
   const onMarketClick = useMarketClickHandler(true);
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });

@@ -14,7 +14,7 @@ import { TradePanels } from './trade-panels';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
-import { useSidebar } from '../../components/sidebar';
+import { ViewType, useSidebar } from '../../components/sidebar';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -62,7 +62,7 @@ const TitleUpdater = ({
 export const MarketPage = () => {
   const { marketId } = useParams();
   const navigate = useNavigate();
-  const { view, setView } = useSidebar();
+  const { init, view, setView } = useSidebar();
   const { screenSize } = useScreenDimensions();
   const largeScreen = ['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize);
   const update = useGlobalStore((store) => store.update);
@@ -81,6 +81,12 @@ export const MarketPage = () => {
       update({ marketId: data.id });
     }
   }, [update, lastMarketId, data?.id]);
+
+  useEffect(() => {
+    if (init && view === null) {
+      setView({ type: ViewType.Order });
+    }
+  }, [init, view, setView]);
 
   const tradeView = useMemo(() => {
     if (largeScreen) {
