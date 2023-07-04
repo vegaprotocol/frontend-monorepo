@@ -84,7 +84,6 @@ const getOrderStore = () => {
 };
 
 export const useCreateOrderStore = () => {
-  // console.log('getOrderStore()', getOrderStore())
   const useOrderStoreRef = useRef(getOrderStore());
   return useOrderStoreRef.current;
 };
