@@ -131,7 +131,7 @@ export const CandlesChartContainer = ({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="px-4 py-2 flex flex-row flex-wrap gap-2 bg-vega-clight-700 dark:bg-vega-cdark-700">
+      <div className="px-3 lg:px-4 py-2 flex flex-row flex-wrap gap-2 bg-vega-clight-700 dark:bg-vega-cdark-700">
         <DropdownMenu
           trigger={
             <DropdownMenuTrigger>
