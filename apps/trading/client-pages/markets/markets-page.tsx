@@ -16,7 +16,7 @@ export const MarketsPage = () => {
   }, [updateTitle]);
   return (
     <div className="h-full pt-3 pb-1 px-1">
-      <div className="border border-default">
+      <div className="h-full border border-default rounded-sm">
         <Tabs storageKey="console-markets">
           <Tab id="all-markets" name={t('All markets')}>
             <Markets />
