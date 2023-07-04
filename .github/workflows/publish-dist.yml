@@ -113,19 +113,19 @@ jobs:
 
       - name: Build local dist
         run: |
-          flags=""
+          envCmd=""
           if [[ ! -z "${{ env.ENV_NAME }}" ]]; then
-            flags="--env=${{ env.ENV_NAME }}"
+            envCmd="yarn env-cmd -f ./apps/${{ matrix.app }}/.env.${{ env.ENV_NAME }}"
           fi
 
           if [ "${{ matrix.app }}" = "trading" ]; then
-            yarn nx export trading $flags || (yarn install && yarn nx export trading $flags)
+            $envCmd yarn nx export trading || (yarn install && $envCmd yarn nx export trading)
             DIST_LOCATION=dist/apps/trading/exported
           elif [ "${{ matrix.app }}" = "ui-toolkit" ]; then
             NODE_ENV=production yarn nx run ui-toolkit:build-storybook
             DIST_LOCATION=dist/storybook/ui-toolkit
           else
-            yarn nx build ${{ matrix.app }} $flags || (yarn install && yarn nx build ${{ matrix.app }} $flags)
+            $envCmd yarn nx build ${{ matrix.app }} || (yarn install && $envCmd yarn nx build ${{ matrix.app }})
             DIST_LOCATION=dist/apps/${{ matrix.app }}
           fi
           mv $DIST_LOCATION dist-result

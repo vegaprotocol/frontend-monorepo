@@ -1,10 +1,11 @@
 {
+  "name": "governance",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/governance/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "./tools/executors/webpack:build",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -41,7 +42,7 @@
       }
     },
     "serve": {
-      "executor": "./tools/executors/webpack:serve",
+      "executor": "@nx/webpack:dev-server",
       "options": {
         "port": 4210,
         "buildTarget": "governance:build:development",
@@ -55,22 +56,28 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/governance/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/governance"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/governance"],
       "options": {
         "jestConfig": "apps/governance/jest.config.ts",
         "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     },
     "build-netlify": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "cp apps/governance/netlify.toml netlify.toml",
@@ -79,7 +86,7 @@
       }
     },
     "build-spec": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "command": "yarn tsc --project ./apps/governance/tsconfig.spec.json"

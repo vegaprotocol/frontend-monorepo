@@ -1,14 +1,14 @@
 {
+  "name": "trading",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/trading",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "./tools/executors/next:build",
+      "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "root": "apps/trading",
         "outputPath": "dist/apps/trading"
       },
       "configurations": {
@@ -19,7 +19,7 @@
       }
     },
     "serve": {
-      "executor": "./tools/executors/next:serve",
+      "executor": "@nx/next:server",
       "options": {
         "buildTarget": "trading:build",
         "dev": true
@@ -32,28 +32,34 @@
       }
     },
     "export": {
-      "executor": "./tools/executors/next:export",
+      "executor": "@nx/next:export",
       "options": {
         "buildTarget": "trading:build:production"
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/trading"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/trading"],
       "options": {
         "jestConfig": "apps/trading/jest.config.ts",
         "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/trading/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "build-netlify": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "cp apps/trading/netlify.toml netlify.toml",
@@ -62,7 +68,7 @@
       }
     },
     "build-spec": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "command": "yarn tsc --project ./apps/trading/tsconfig.spec.json"

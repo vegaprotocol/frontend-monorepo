@@ -34,6 +34,11 @@ context('Network parameters page', { tags: '@smoke' }, function () {
           const parameterName = network_parameter[0];
           const parameterValue = network_parameter[1];
           if (this.networkParameterFormat.json.includes(parameterName)) {
+            /**
+             * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+             * You should use .then() to chain commands instead.
+             * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+             **/
             cy.get(tableRows)
               .contains(parameterName)
               .should('be.visible')
@@ -65,6 +70,11 @@ context('Network parameters page', { tags: '@smoke' }, function () {
           if (this.networkParameterFormat.percentage.includes(parameterName)) {
             const formattedPercentageParameter =
               (parseFloat(parameterValue) * 100).toFixed(0) + '%';
+            /**
+             * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+             * You should use .then() to chain commands instead.
+             * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+             **/
             cy.get(tableRows)
               .contains(parameterName)
               .should('be.visible')
@@ -148,6 +158,11 @@ context('Network parameters page', { tags: '@smoke' }, function () {
             cy.convert_number_to_max_four_decimal(parameterValue)
               .add_commas_to_number_if_large_enough()
               .then((parameterValueFormatted) => {
+                /**
+                 * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+                 * You should use .then() to chain commands instead.
+                 * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+                 **/
                 cy.get(tableRows)
                   .contains(parameterName)
                   .should('be.visible')
@@ -179,6 +194,11 @@ context('Network parameters page', { tags: '@smoke' }, function () {
             cy.convert_number_to_max_eighteen_decimal(parameterValue)
               .add_commas_to_number_if_large_enough()
               .then((parameterValueFormatted) => {
+                /**
+                 * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+                 * You should use .then() to chain commands instead.
+                 * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+                 **/
                 cy.get(tableRows)
                   .contains(parameterName)
                   .should('be.visible')

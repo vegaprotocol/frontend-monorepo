@@ -98,6 +98,11 @@ describe(
         .and('have.length', 64);
       cy.getByTestId(proposalTermsToggle).click();
       // 3001-VOTE-052 3001-VOTE-010
+      /**
+       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+       * You should use .then() to chain commands instead.
+       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+       **/
       cy.get('code.language-json')
         .should('exist')
         .within(() => {

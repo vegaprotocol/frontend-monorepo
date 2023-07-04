@@ -74,6 +74,11 @@ context('Validators Page - verify elements on page', function () {
     function () {
       // 1002-STKE-050
       it('Should be able to see validator names', function () {
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.get('[col-id="validator"] > div > span')
           .should('have.length.at.least', 1)
           .each(($name) => {
@@ -82,6 +87,11 @@ context('Validators Page - verify elements on page', function () {
       });
 
       it('Should be able to see validator stake', function () {
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId('total-stake')
           .should('have.length.at.least', 1)
           .each(($stake) => {
@@ -105,6 +115,11 @@ context('Validators Page - verify elements on page', function () {
       });
 
       it('Should be able to see validator normalised voting power', function () {
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId('normalised-voting-power')
           .should('have.length.at.least', 1)
           .each(($vPower) => {
@@ -126,6 +141,11 @@ context('Validators Page - verify elements on page', function () {
 
       // 2002-SINC-018
       it('Should be able to see validator total penalties', function () {
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId('total-penalty')
           .should('have.length.at.least', 1)
           .each(($penalties) => {
@@ -146,6 +166,11 @@ context('Validators Page - verify elements on page', function () {
       });
 
       it('Should be able to see validator pending stake', function () {
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId('total-pending-stake')
           .should('have.length.at.least', 1)
           .each(($pendingStake) => {

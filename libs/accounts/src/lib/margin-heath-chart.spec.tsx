@@ -23,8 +23,8 @@ const margins: MarginFieldsFragment = {
   },
 };
 
-const getMargins = jest.fn(() => margins);
-const getBalance = jest.fn(() => '0');
+const mockGetMargins = jest.fn(() => margins);
+const mockGetBalance = jest.fn(() => '0');
 
 jest.mock('./margin-data-provider', () => ({}));
 
@@ -49,7 +49,7 @@ jest.mock('@vegaprotocol/wallet', () => ({
 jest.mock('@vegaprotocol/data-provider', () => ({
   useDataProvider: () => {
     return {
-      data: getMargins(),
+      data: mockGetMargins(),
     };
   },
 }));
@@ -57,7 +57,7 @@ jest.mock('@vegaprotocol/data-provider', () => ({
 jest.mock('./use-account-balance', () => ({
   useAccountBalance: () => {
     return {
-      accountBalance: getBalance(),
+      accountBalance: mockGetBalance(),
     };
   },
 }));
@@ -88,7 +88,7 @@ describe('MarginHealthChart', () => {
   });
 
   it('should use correct scale', async () => {
-    getBalance.mockReturnValueOnce('1300');
+    mockGetBalance.mockReturnValueOnce('1300');
     await act(async () => {
       render(<MarginHealthChart marketId="marketId" assetId="assetId" />);
     });
