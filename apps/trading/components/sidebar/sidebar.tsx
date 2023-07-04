@@ -93,7 +93,8 @@ const SidebarButton = ({
 }) => {
   const { view: currView, setView } = useSidebar();
   const buttonClasses = classNames('flex items-center p-2 rounded', {
-    'hover:bg-vega-yellow hover:text-black': view !== currView,
+    'text-vega-clight-200 dark:text-vega-cdark-200 hover:bg-vega-yellow hover:text-black dark:hover:text-black':
+      view !== currView,
     'bg-vega-yellow hover:bg-vega-yellow-550 text-black': view === currView,
   });
   return (
@@ -154,7 +155,7 @@ export const SidebarContent = () => {
 
   return (
     <div>
-      <h2 className="capitalize mb-2">{view}</h2>
+      {/* <h2 className="capitalize mb-2">{view}</h2> */}
       {content}
     </div>
   );

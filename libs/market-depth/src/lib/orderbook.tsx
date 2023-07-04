@@ -162,13 +162,13 @@ export const Orderbook = ({
           }}
         </ReactVirtualizedAutoSizer>
       </div>
-      <div className="border-t border-default">
+      <div className="border-t border-default bg-vega-clight-700 dark:bg-vega-cdark-700">
         <select
           onChange={(e) => {
             setResolution(Number(e.currentTarget.value));
           }}
           value={resolution}
-          className="block bg-neutral-100 dark:bg-neutral-700 font-mono text-right"
+          className="block bg-transparent font-mono text-right"
           data-testid="resolution"
         >
           {resolutions.map((r) => (

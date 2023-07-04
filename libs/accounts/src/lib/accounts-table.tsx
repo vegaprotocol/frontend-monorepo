@@ -31,7 +31,6 @@ import { AccountsActionsDropdown } from './accounts-actions-dropdown';
 
 const colorClass = (percentageUsed: number, neutral = false) => {
   return classNames('text-right', {
-    'text-neutral-500 dark:text-neutral-400': percentageUsed < 75 && !neutral,
     'text-vega-orange': percentageUsed >= 75 && percentageUsed < 90,
     'text-vega-red': percentageUsed >= 90,
   });
@@ -183,7 +182,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             ) : (
               <>
                 <span className="underline">{valueFormatted}</span>
-                <span className="ml-2 inline-block w-14 text-vega-light-200 dark:text-vega-dark-200">
+                <span className="ml-2 inline-block w-14 text-muted">
                   {t('0.00%')}'
                 </span>
               </>

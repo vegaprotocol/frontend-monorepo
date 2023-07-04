@@ -27,8 +27,16 @@ html.dark {
   display: none;
 }
 
+.text-default {
+  @apply text-vega-clight-50 dark:text-vega-cdark-50;
+}
+
+.text-muted {
+  @apply text-vega-clight-200 dark:text-vega-cdark-200;
+}
+
 .border-default {
-  @apply border-vega-light-200 dark:border-vega-dark-200;
+  @apply border-vega-clight-600 dark:border-vega-cdark-600;
 }
 
 /* PENNANT */
@@ -51,6 +59,8 @@ html [data-theme='light'] {
 }
 
 html [data-theme='light'] {
+  --pennant-background-surface-color: theme('colors.vega.clight.900');
+
   /* candles */
   --pennant-color-buy-fill: theme(colors.market.green.500);
   --pennant-color-buy-stroke: theme(colors.market.green.600);
@@ -69,6 +79,8 @@ html [data-theme='light'] {
 }
 
 html [data-theme='dark'] {
+  --pennant-background-surface-color: theme('colors.vega.cdark.900');
+
   /* candles */
   --pennant-color-buy-fill: theme(colors.market.green.600);
   --pennant-color-buy-stroke: theme(colors.market.green.500);
@@ -110,23 +122,23 @@ html [data-theme='dark'] {
 /* Light variables */
 .ag-theme-balham {
   --ag-background-color: theme(colors.white);
-  --ag-border-color: theme(colors.vega.light[150]);
-  --ag-header-background-color: theme(colors.vega.light[100]);
+  --ag-border-color: theme(colors.vega.clight[600]);
+  --ag-header-background-color: theme(colors.vega.clight[700]);
   --ag-odd-row-background-color: theme(colors.white);
-  --ag-header-column-separator-color: theme(colors.neutral[300]);
-  --ag-row-border-color: theme(colors.vega.light[150]);
-  --ag-row-hover-color: theme(colors.neutral[100]);
+  --ag-header-column-separator-color: theme(colors.vega.clight[500]);
+  --ag-row-border-color: theme(colors.vega.clight[600]);
+  --ag-row-hover-color: theme(colors.vega.clight[800]);
 }
 
 /* Dark variables */
 .ag-theme-balham-dark {
-  --ag-background-color: theme(colors.black);
-  --ag-border-color: theme(colors.vega.dark[150]);
-  --ag-header-background-color: theme(colors.vega.dark[100]);
-  --ag-odd-row-background-color: theme(colors.black);
-  --ag-header-column-separator-color: theme(colors.neutral[600]);
-  --ag-row-border-color: theme(colors.vega.dark[150]);
-  --ag-row-hover-color: theme(colors.neutral[800]);
+  --ag-background-color: theme(colors.vega.cdark[900]);
+  --ag-border-color: theme(colors.vega.cdark[600]);
+  --ag-header-background-color: theme(colors.vega.cdark[700]);
+  --ag-odd-row-background-color: theme(colors.vega.cdark[900]);
+  --ag-header-column-separator-color: theme(colors.vega.cdark[500]);
+  --ag-row-border-color: theme(colors.vega.cdark[600]);
+  --ag-row-hover-color: theme(colors.vega.cdark[800]);
 }
 .ag-theme-balham-dark .ag-row.no-hover,
 .ag-theme-balham-dark .ag-row.no-hover:hover,

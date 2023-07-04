@@ -183,7 +183,7 @@ export const NetworkSwitcher = ({
           </>
         )}
         <div
-          className="relative flex items-center justify-between mx-2 py-2 border-t border-neutral-400 pt-2 text-sm"
+          className="relative flex items-center justify-between mx-2 py-2 border-t border-default pt-2 text-sm"
           key="propose-network-param"
         >
           <ExternalLink href={tokenLink(TOKEN_NEW_NETWORK_PARAM_PROPOSAL)}>

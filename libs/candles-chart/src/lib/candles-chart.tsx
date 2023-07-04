@@ -131,7 +131,7 @@ export const CandlesChartContainer = ({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="px-4 py-2 flex flex-row flex-wrap gap-2 bg-vega-light-100 dark:bg-vega-dark-100">
+      <div className="px-4 py-2 flex flex-row flex-wrap gap-2 bg-vega-clight-700 dark:bg-vega-cdark-700">
         <DropdownMenu
           trigger={
             <DropdownMenuTrigger>
@@ -241,9 +241,7 @@ export const CandlesChartContainer = ({
             overlays: overlays,
             studies: studies,
             notEnoughDataText: (
-              <span className="text-xs text-center text-neutral-800 dark:text-neutral-200">
-                {t('No data')}
-              </span>
+              <span className="text-xs text-center">{t('No data')}</span>
             ),
           }}
           interval={interval}
