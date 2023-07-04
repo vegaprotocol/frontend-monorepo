@@ -62,7 +62,9 @@ export const MarketInfoAccordionContainer = ({
     <AsyncRenderer data={data} loading={loading} error={error} reload={reload}>
       {data ? (
         <TinyScroll className="h-full overflow-auto">
-          <MarketInfoAccordion market={data} onSelect={onSelect} />
+          <div className="p-4">
+            <MarketInfoAccordion market={data} onSelect={onSelect} />
+          </div>
         </TinyScroll>
       ) : (
         <Splash>

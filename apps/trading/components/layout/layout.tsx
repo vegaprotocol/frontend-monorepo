@@ -30,12 +30,9 @@ export const Layout = () => {
         <Sidebar />
       </div>
       <div
-        className={classNames(
-          'row-span-full row-start-4 col-start-2 p-4 overflow-y-auto',
-          {
-            hidden: !sidebarOpen,
-          }
-        )}
+        className={classNames('row-span-full row-start-4 col-start-2', {
+          hidden: !sidebarOpen,
+        })}
       >
         <SidebarContent />
       </div>

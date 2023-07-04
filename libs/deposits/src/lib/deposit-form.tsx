@@ -166,7 +166,7 @@ export const DepositForm = ({
             if (isActive && account) {
               return (
                 <div className="text-sm" aria-describedby="ethereum-address">
-                  <p className="mb-1" data-testid="ethereum-address">
+                  <p className="mb-1 break-all" data-testid="ethereum-address">
                     {account}
                   </p>
                   <DisconnectEthereumButton
