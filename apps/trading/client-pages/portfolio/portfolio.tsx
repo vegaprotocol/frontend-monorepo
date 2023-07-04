@@ -21,7 +21,6 @@ import {
   ResizableGridPanel,
   usePaneLayout,
 } from '../../components/resizable-grid';
-import { useSidebar } from '../../components/sidebar';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -36,7 +35,6 @@ const WithdrawalsIndicator = () => {
 };
 
 export const Portfolio = () => {
-  const { view, setView } = useSidebar();
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
@@ -121,7 +119,7 @@ interface PortfolioGridChildProps {
 const PortfolioGridChild = ({ children }: PortfolioGridChildProps) => {
   return (
     <section className="h-full p-1">
-      <div className="border border-default h-full">{children}</div>
+      <div className="border border-default h-full rounded-sm">{children}</div>
     </section>
   );
 };

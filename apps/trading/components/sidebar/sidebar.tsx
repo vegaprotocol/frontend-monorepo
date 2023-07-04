@@ -94,12 +94,7 @@ const SidebarButton = ({
     'bg-vega-yellow hover:bg-vega-yellow-550 text-black': view === currView,
   });
   return (
-    <Tooltip
-      description={<span className="text-base p-1">{tooltip}</span>}
-      align="center"
-      side="right"
-      sideOffset={10}
-    >
+    <Tooltip description={tooltip} align="center" side="right" sideOffset={10}>
       <button className={buttonClasses} onClick={() => setView(view)}>
         <VegaIcon name={icon} size={20} />
       </button>
