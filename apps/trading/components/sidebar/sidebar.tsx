@@ -123,6 +123,7 @@ const SidebarButton = ({
   icon: VegaIconNames;
   tooltip: string;
 }) => {
+<<<<<<< HEAD
   const { currView, setView } = useSidebar((store) => ({
     currView: store.view,
     setView: store.setView,
@@ -132,6 +133,13 @@ const SidebarButton = ({
       view !== currView?.type,
     'bg-vega-yellow hover:bg-vega-yellow-550 text-black':
       view === currView?.type,
+=======
+  const { view: currView, setView } = useSidebar();
+  const buttonClasses = classNames('flex items-center p-2 rounded', {
+    'text-vega-clight-200 dark:text-vega-cdark-200 hover:bg-vega-yellow hover:text-black dark:hover:text-black':
+      view !== currView,
+    'bg-vega-yellow hover:bg-vega-yellow-550 text-black': view === currView,
+>>>>>>> 76e9811e0 (feat: update colors)
   });
   return (
     <Tooltip

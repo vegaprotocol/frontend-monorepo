@@ -47,7 +47,11 @@ const SettingsGroup = ({
   return (
     <div className="flex justify-between items-start mb-4">
       <div className="w-3/4">
+<<<<<<< HEAD
         <label className="text-sm">{label}</label>
+=======
+        <label>{label}</label>
+>>>>>>> 76e9811e0 (feat: update colors)
         {helpText && <p className="text-muted text-xs">{helpText}</p>}
       </div>
       {children}

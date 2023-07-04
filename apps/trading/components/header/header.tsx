@@ -6,6 +6,7 @@ interface TradeMarketHeaderProps {
   title: ReactNode;
   children: ReactNode;
 }
+<<<<<<< HEAD
 /*
 export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   const headerClasses = classNames(
@@ -31,6 +32,8 @@ export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   );
 };
 */
+=======
+>>>>>>> 76e9811e0 (feat: update colors)
 
 export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   const headerClasses = classNames(
@@ -38,7 +41,7 @@ export const Header = ({ title, children }: TradeMarketHeaderProps) => {
     'grid-rows-[min-content_min-content]',
     'xl:grid-cols-[min-content_1fr]',
     'border-l border-b border-default',
-    'bg-vega-light-100 dark:bg-vega-dark-100'
+    'bg-vega-clight-800 dark:bg-vega-cdark-800'
   );
   return (
     <header className="pl-1">
