@@ -132,6 +132,7 @@ html [data-theme='dark'] {
   --ag-header-column-separator-color: theme(colors.vega.clight[500]);
   --ag-row-border-color: theme(colors.vega.clight[600]);
   --ag-row-hover-color: theme(colors.vega.clight[800]);
+  --ag-modal-overlay-background-color: rgb(244 244 244 / 50%);
 }
 
 /* Dark variables */
@@ -143,6 +144,7 @@ html [data-theme='dark'] {
   --ag-header-column-separator-color: theme(colors.vega.cdark[500]);
   --ag-row-border-color: theme(colors.vega.cdark[600]);
   --ag-row-hover-color: theme(colors.vega.cdark[800]);
+  --ag-modal-overlay-background-color: rgb(9 11 16 / 50%);
 }
 .ag-theme-balham-dark .ag-row.no-hover,
 .ag-theme-balham-dark .ag-row.no-hover:hover,
