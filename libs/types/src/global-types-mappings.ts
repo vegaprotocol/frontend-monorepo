@@ -44,6 +44,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Reward Market Proposers',
   ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: 'Reward Maker paid fees',
   ACCOUNT_TYPE_SETTLEMENT: 'Settlement',
+  ACCOUNT_TYPE_HOLDING: 'Holding',
 };
 
 /**
@@ -321,6 +322,15 @@ export const ProposalRejectionReasonMapping: {
   PROPOSAL_ERROR_UNSUPPORTED_TRADING_MODE: 'Unsupported trading mode',
   PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE:
     'ERC20 address already in use by an existing asset',
+  PROPOSAL_ERROR_GOVERNANCE_CANCEL_TRANSFER_PROPOSAL_INVALID:
+    'Governance cancel transfer proposal invalid',
+  PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_FAILED:
+    'Governance transfer proposal failed',
+  PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_INVALID:
+    'Governance transfer proposal invalid',
+  PROPOSAL_ERROR_INVALID_SPOT: 'Invalid spot',
+  PROPOSAL_ERROR_INVALID_SUCCESSOR_MARKET: 'Invalid successor market',
+  PROPOSAL_ERROR_SPOT_PRODUCT_DISABLED: 'Spot product disabled',
 };
 
 /**
