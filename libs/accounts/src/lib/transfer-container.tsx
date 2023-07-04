@@ -1,5 +1,5 @@
 import * as Schema from '@vegaprotocol/types';
-import { toBigNum, truncateByChars } from '@vegaprotocol/utils';
+import { addDecimal, truncateByChars } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   NetworkParams,
@@ -45,7 +45,7 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
         symbol: account.asset.symbol,
         name: account.asset.name,
         decimals: account.asset.decimals,
-        balance: toBigNum(account.balance, account.asset.decimals),
+        balance: addDecimal(account.balance, account.asset.decimals),
       }));
   }, [data]);
 

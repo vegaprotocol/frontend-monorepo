@@ -122,7 +122,7 @@ const AccountHistoryManager = ({
   );
 
   const asset = useMemo(
-    () => assets.find((a) => a.id === assetId),
+    () => assets.find((a) => a.id === assetId) || assets[0],
     [assetId, assets]
   );
 
@@ -178,11 +178,6 @@ const AccountHistoryManager = ({
     variables,
     skip: !asset || !pubKey,
   });
-
-  useEffect(() => {
-    // arbitrary sets first asset as a default if none selected
-    if (!assetId && assets) setAssetId(assets[0]?.id);
-  }, [assetId, assets, setAssetId]);
 
   const accountTypeMenu = useMemo(() => {
     return (

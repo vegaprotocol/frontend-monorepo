@@ -10,11 +10,9 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
+  ActionsDropdown,
   ButtonLink,
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -176,36 +174,20 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
         {t('Complete withdrawal')}
       </ButtonLink>
 
-      <DropdownMenu
-        onOpenChange={(open) => {
-          if (open) ref.current?.classList.add('open');
-          if (!open) ref.current?.classList.remove('open');
-        }}
-        trigger={
-          <DropdownMenuTrigger
-            className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 [&.open]:bg-vega-light-200 dark:[&.open]:bg-vega-dark-200 p-0.5 rounded-full"
-            data-testid="dropdown-menu"
-            ref={ref}
-          >
-            <VegaIcon name={VegaIconNames.KEBAB} />
-          </DropdownMenuTrigger>
-        }
-      >
-        <DropdownMenuContent>
-          <DropdownMenuItem
-            key={'withdrawal-approval'}
-            data-testid="withdrawal-approval"
-            onClick={() => {
-              if (data.id) {
-                open(data.id, ref.current, false);
-              }
-            }}
-          >
-            <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
-            {t('View withdrawal details')}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <ActionsDropdown>
+        <DropdownMenuItem
+          key={'withdrawal-approval'}
+          data-testid="withdrawal-approval"
+          onClick={() => {
+            if (data.id) {
+              open(data.id, ref.current, false);
+            }
+          }}
+        >
+          <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
+          {t('View withdrawal details')}
+        </DropdownMenuItem>
+      </ActionsDropdown>
     </div>
   );
 };

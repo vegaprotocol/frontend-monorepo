@@ -39,7 +39,7 @@ interface TransferFormProps {
     symbol: string;
     name: string;
     decimals: number;
-    balance: BigNumber;
+    balance: string;
   }>;
   assetId?: string;
   feeFactor: string | null;
@@ -201,7 +201,10 @@ export const TransferForm = ({
                   key={a.id}
                   asset={a}
                   balance={
-                    <Balance balance={a.balance.toString()} symbol={a.symbol} />
+                    <Balance
+                      balance={formatNumber(a.balance, a.decimals)}
+                      symbol={a.symbol}
+                    />
                   }
                 />
               ))}

@@ -8,7 +8,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { AddressField, TransferFee, TransferForm } from './transfer-form';
 import { AccountType } from '@vegaprotocol/types';
-import { removeDecimal, toBigNum } from '@vegaprotocol/utils';
+import { addDecimal, formatNumber, removeDecimal } from '@vegaprotocol/utils';
 
 describe('TransferForm', () => {
   const submit = () => fireEvent.submit(screen.getByTestId('transfer-form'));
@@ -20,7 +20,7 @@ describe('TransferForm', () => {
     symbol: '€',
     name: 'EUR',
     decimals: 2,
-    balance: toBigNum(100000, 2), // 1000
+    balance: addDecimal(100000, 2), // 1000
   };
   const props = {
     pubKey,
@@ -93,7 +93,7 @@ describe('TransferForm', () => {
       asset.name
     );
     expect(await screen.findByTestId('asset-balance')).toHaveTextContent(
-      asset.balance.toString()
+      formatNumber(asset.balance, asset.decimals)
     );
 
     const amountInput = screen.getByLabelText('Amount');
@@ -169,7 +169,7 @@ describe('TransferForm', () => {
         asset.name
       );
       expect(await screen.findByTestId('asset-balance')).toHaveTextContent(
-        asset.balance.toString()
+        formatNumber(asset.balance, asset.decimals)
       );
 
       const amountInput = screen.getByLabelText('Amount');
@@ -245,7 +245,7 @@ describe('TransferForm', () => {
         asset.name
       );
       expect(await screen.findByTestId('asset-balance')).toHaveTextContent(
-        asset.balance.toString()
+        formatNumber(asset.balance, asset.decimals)
       );
 
       const amountInput = screen.getByLabelText('Amount');
