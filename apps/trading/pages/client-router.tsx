@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { t } from '@vegaprotocol/i18n';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import trimEnd from 'lodash/trimEnd';
-import { Layout } from '../components/layout';
+import { LayoutWithSidebar } from '../components/layouts';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
@@ -56,7 +56,7 @@ export const Links: ConsoleLinks = {
 const routerConfig: RouteObject[] = [
   {
     path: '/*',
-    element: <Layout />,
+    element: <LayoutWithSidebar />,
     children: [
       // all pages that require the Layout component (Sidebar)
       {
