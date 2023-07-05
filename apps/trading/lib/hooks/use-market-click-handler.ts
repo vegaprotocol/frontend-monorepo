@@ -7,6 +7,7 @@ export const useMarketClickHandler = (replace = false) => {
   const { marketId } = useParams();
   const { pathname } = useLocation();
   const isMarketPage = pathname.match(/^\/markets\/(.+)/);
+
   return useCallback(
     (selectedId: string, metaKey?: boolean) => {
       const link = Links[Routes.MARKET](selectedId);

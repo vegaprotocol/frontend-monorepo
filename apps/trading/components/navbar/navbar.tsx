@@ -24,7 +24,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 
 import { Links, Routes } from '../../pages/client-router';
-// import { SettingsButton } from '../../client-pages/settings';
 import {
   ProtocolUpgradeCountdown,
   ProtocolUpgradeCountdownMode,
