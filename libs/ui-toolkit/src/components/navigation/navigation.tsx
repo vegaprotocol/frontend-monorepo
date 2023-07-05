@@ -344,9 +344,7 @@ export const Navigation = ({
         )}
         data-testid="navigation"
       >
-        {appName && (
-          <Logo appName={appName} theme={theme} homeLink={homeLink} />
-        )}
+        <Logo appName={appName} theme={theme} homeLink={homeLink} />
         <div
           className={classNames(
             'navbar',

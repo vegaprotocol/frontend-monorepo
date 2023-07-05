@@ -67,7 +67,7 @@ export const ToastsContainer = ({
         },
         'max-w-full max-h-full overflow-x-hidden overflow-y-auto',
         {
-          'p-4': validToasts.length > 0,
+          'p-4': validToasts.length > 0, // only apply padding when toasts showing, otherwise a small section of the screen is covered
           hidden: validToasts.length === 0,
         }
       )}

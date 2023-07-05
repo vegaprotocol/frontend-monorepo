@@ -149,7 +149,7 @@ export const VegaWalletConnectButton = () => {
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const { setView } = useSidebar();
+  const setView = useSidebar((store) => store.setView);
   const {
     pubKey,
     pubKeys,
