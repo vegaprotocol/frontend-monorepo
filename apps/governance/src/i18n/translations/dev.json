@@ -837,5 +837,6 @@
   "RejectedProposals": "Rejected proposals",
   "networkGovernance": "Network governance",
   "networkUpgrades": "Network upgrades",
-  "assetSpecification": "Asset specification"
+  "assetSpecification": "Asset specification",
+  "dataIsIdentical": "Data is identical"
 }

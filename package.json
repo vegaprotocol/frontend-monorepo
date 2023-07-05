@@ -67,6 +67,7 @@
     "immer": "^9.0.12",
     "iso8601-duration": "^2.1.1",
     "js-sha3": "^0.8.0",
+    "jsondiffpatch": "^0.4.1",
     "lodash": "^4.17.21",
     "next": "13.3.0",
     "pennant": "1.9.0",
