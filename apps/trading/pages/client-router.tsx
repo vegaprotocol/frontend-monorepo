@@ -33,34 +33,32 @@ const LazyDisclaimer = dynamic(() => import('../client-pages/disclaimer'), {
 
 export enum Routes {
   HOME = '/',
-  MARKET = '/markets',
+  MARKET = '/markets/:marketId',
   MARKETS = '/markets/all',
   PORTFOLIO = '/portfolio',
-  LIQUIDITY = 'liquidity/:marketId',
-  SETTINGS = 'settings',
-  DISCLAIMER = 'disclaimer',
+  LIQUIDITY = '/liquidity/:marketId',
+  DISCLAIMER = '/disclaimer',
 }
 
 type ConsoleLinks = { [r in Routes]: (...args: string[]) => string };
+
 export const Links: ConsoleLinks = {
   [Routes.HOME]: () => Routes.HOME,
-  [Routes.MARKET]: (marketId: string | null | undefined) =>
-    marketId ? trimEnd(`${Routes.MARKET}/${marketId}`, '/') : Routes.MARKET,
+  [Routes.MARKET]: (marketId: string) =>
+    trimEnd(Routes.MARKET.replace(':marketId', marketId)),
   [Routes.MARKETS]: () => Routes.MARKETS,
   [Routes.PORTFOLIO]: () => Routes.PORTFOLIO,
-  [Routes.LIQUIDITY]: (marketId: string | null | undefined) =>
-    marketId
-      ? trimEnd(`${Routes.LIQUIDITY}/${marketId}`, '/')
-      : Routes.LIQUIDITY,
-  [Routes.SETTINGS]: () => Routes.SETTINGS,
+  [Routes.LIQUIDITY]: (marketId: string) =>
+    trimEnd(Routes.LIQUIDITY.replace(':marketId', marketId)),
   [Routes.DISCLAIMER]: () => Routes.DISCLAIMER,
 };
 
 const routerConfig: RouteObject[] = [
   {
-    path: '/',
+    path: '/*',
     element: <Layout />,
     children: [
+      // all pages that require the Layout component (Sidebar)
       {
         index: true,
         element: <LazyHome />,
