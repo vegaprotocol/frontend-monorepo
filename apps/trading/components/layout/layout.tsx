@@ -17,30 +17,30 @@ export const Layout = () => {
   const gridClasses = classNames(
     'h-full relative z-0 grid',
     'grid-rows-[repeat(4,min-content),minmax(0,1fr)]',
-    'grid-cols-[45px_1fr]',
-    'lg:grid-cols-[45px_350px_1fr]'
+    'grid-cols-[1fr_45px]',
+    'lg:grid-cols-[1fr_350px_45px]'
   );
 
   return (
     <div className={gridClasses}>
-      <div className="bg-vega-yellow col-start-2 col-span-full row-start-1">
-        {/* <AnnouncementBanner /> */}
+      <div className="col-start-1 col-span-full row-start-1">
+        <AnnouncementBanner />
       </div>
-      <div className="col-start-1 row-span-full bg-vega-clight-800 dark:bg-vega-cdark-800 border-r border-default">
-        <Sidebar />
+      <div className="col-start-1 col-end-2 lg:col-end-3 row-start-2">
+        <Navbar theme="system" />
       </div>
       <div
-        className={classNames('row-span-full row-start-4 col-start-2', {
+        className={classNames('row-start-4 col-start-1 lg:col-start-2', {
           hidden: !sidebarOpen,
         })}
       >
         <SidebarContent />
       </div>
-      <div className="col-span-full col-start-2 row-start-2">
-        <Navbar theme="system" />
+      <div className="col-start-2 lg:col-start-3 row-span-full bg-vega-clight-800 dark:bg-vega-cdark-800 border-l border-default">
+        <Sidebar />
       </div>
       <div
-        className="bg-vega-pink col-span-full col-start-2 row-start-3"
+        className="col-start-1 col-end-2 lg:col-end-3 col-span-full row-start-3"
         data-testid="banners"
       >
         <ProtocolUpgradeProposalNotification
@@ -51,10 +51,10 @@ export const Layout = () => {
       </div>
       <main
         className={classNames(
-          'row-start-4 row-span-full col-start-2 col-span-full',
+          'row-start-4 row-span-full col-start-1 col-end-1',
           {
-            'col-start-2': !sidebarOpen,
-            'col-start-3': sidebarOpen,
+            'lg:col-end-3': !sidebarOpen,
+            'lg:col-end-2': sidebarOpen,
             'hidden lg:block': sidebarOpen,
           }
         )}
