@@ -82,6 +82,11 @@ export const Sidebar = () => {
             element={null}
           />
           <Route
+            // render nothing for portfolio
+            path={AppRoutes.PORTFOLIO}
+            element={null}
+          />
+          <Route
             path={AppRoutes.MARKET}
             element={
               <>
@@ -134,6 +139,7 @@ const SidebarButton = ({
     >
       <button
         className={buttonClasses}
+        data-testid={view}
         onClick={() => {
           if (view === currView?.type) {
             setView(null);
