@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { AppNameType, Announcement } from './schema';
-import { useAnnouncement } from './hooks/use-announcement';
+import {
+  useAnnouncement,
+  useDismissedAnnouncement,
+} from './hooks/use-announcement';
 import {
   AnnouncementBanner as Banner,
   ExternalLink,
@@ -36,6 +39,7 @@ export const AnnouncementBanner = ({
 }: AnnouncementBannerProps) => {
   const [isVisible, setVisible] = useState(false);
   const { data, reload } = useAnnouncement(app, configUrl);
+  const [, setDismissed] = useDismissedAnnouncement();
 
   useEffect(() => {
     const now = new Date();
@@ -88,7 +92,10 @@ export const AnnouncementBanner = ({
       <button
         className="absolute right-0 top-0 p-4 w-10 h-full flex items-center justify-center text-white"
         data-testid="app-announcement-close"
-        onClick={() => setVisible(false)}
+        onClick={() => {
+          setVisible(false);
+          setDismissed(data);
+        }}
       >
         <VegaIcon name={VegaIconNames.CROSS} size={24} />
       </button>
