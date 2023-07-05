@@ -3,8 +3,8 @@ import { Sidebar, SidebarContent, useSidebar } from '../sidebar';
 import classNames from 'classnames';
 
 export const LayoutWithSidebar = () => {
-  const { view } = useSidebar();
-  const sidebarOpen = view !== null;
+  const sidebarView = useSidebar((store) => store.view);
+  const sidebarOpen = sidebarView !== null;
 
   const gridClasses = classNames(
     'h-full relative z-0 grid',

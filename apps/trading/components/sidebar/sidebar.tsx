@@ -122,7 +122,10 @@ const SidebarButton = ({
   icon: VegaIconNames;
   tooltip: string;
 }) => {
-  const { view: currView, setView } = useSidebar();
+  const { currView, setView } = useSidebar((store) => ({
+    currView: store.view,
+    setView: store.setView,
+  }));
   const buttonClasses = classNames('flex items-center p-2 rounded', {
     'text-vega-clight-200 dark:text-vega-cdark-200 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500':
       view !== currView?.type,
@@ -244,7 +247,7 @@ const ContentWrapper = ({
 
 /** If rendered will close sidebar */
 const CloseSidebar = () => {
-  const { setView } = useSidebar();
+  const setView = useSidebar((store) => store.setView);
   useEffect(() => {
     setView(null);
   }, [setView]);

@@ -24,7 +24,7 @@ export const AccountsContainer = ({
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
-  const { setView } = useSidebar();
+  const setView = useSidebar((store) => store.setView);
 
   const gridStore = useAccountStore((store) => store.gridStore);
   const updateGridStore = useAccountStore((store) => store.updateGridStore);

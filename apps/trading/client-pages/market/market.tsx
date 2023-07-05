@@ -82,6 +82,7 @@ export const MarketPage = () => {
     }
   }, [update, lastMarketId, data?.id]);
 
+  // Make sidebar open on deal ticket by default
   useEffect(() => {
     if (init && view === null) {
       setView({ type: ViewType.Order });

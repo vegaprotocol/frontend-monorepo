@@ -125,21 +125,3 @@ const DataRow = ({
     </div>
   );
 };
-
-// const PriceChange = ({ candles }: { candles: string[] }) => {
-//   const priceChange = candles ? priceChangePercentage(candles) : undefined;
-//   const priceChangeClasses = classNames('text-xs', {
-//     'text-vega-pink': priceChange && priceChange < 0,
-//     'text-vega-green': priceChange && priceChange > 0,
-//   });
-//   let prefix = '';
-//   if (priceChange && priceChange > 0) {
-//     prefix = '+';
-//   }
-//   const formattedChange = formatNumber(Number(priceChange), 2);
-//   return (
-//     <div className={priceChangeClasses} data-testid="market-item-change">
-//       {priceChange ? `${prefix}${formattedChange}%` : '-'}
-//     </div>
-//   );
-// };
