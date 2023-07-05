@@ -68,7 +68,7 @@ export const DealTicketSizeIceberg = ({
                 description={
                   <div>
                     {t(
-                      'The maximum amount of volume that can be traded at once. Must be less than the total size of the order.'
+                      'The maximum volume that can be traded at once. Must be less than the total size of the order.'
                     )}
                   </div>
                 }
@@ -90,7 +90,10 @@ export const DealTicketSizeIceberg = ({
                 },
                 max: {
                   value: size,
-                  message: t('Peak size cannot be greater than ' + size),
+                  message: t(
+                    'Peak size cannot be greater than the size (%s) ',
+                    [size]
+                  ),
                 },
                 validate: validateAmount(sizeStep, 'peakSize'),
               }}
@@ -129,7 +132,7 @@ export const DealTicketSizeIceberg = ({
                 description={
                   <div>
                     {t(
-                      'When the order trades and its size falls below this threshold, it will be reset to the peak size and moved to the back of the priority order. Must be less than peak size.'
+                      'When the order trades and its size falls below this threshold, it will be reset to the peak size and moved to the back of the priority order. Must be less than or equal to peak size, and greater than 0.'
                     )}
                   </div>
                 }
@@ -154,7 +157,8 @@ export const DealTicketSizeIceberg = ({
                 max: {
                   value: peakSize,
                   message: t(
-                    'Minimum visible size cannot be greater than ' + peakSize
+                    'Minimum visible size cannot be greater than the peak size (%s)',
+                    [peakSize]
                   ),
                 },
                 validate: validateAmount(sizeStep, 'minimumVisibleSize'),

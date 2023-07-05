@@ -278,12 +278,14 @@ export const OrderListTable = memo<
                 <div className="flex gap-2 items-center justify-end">
                   {isOrderAmendable(data) && !props.isReadOnly && (
                     <>
-                      <ButtonLink
-                        data-testid="edit"
-                        onClick={() => onEdit(data)}
-                      >
-                        {t('Edit')}
-                      </ButtonLink>
+                      {!data.icebergOrder && (
+                        <ButtonLink
+                          data-testid="edit"
+                          onClick={() => onEdit(data)}
+                        >
+                          {t('Edit')}
+                        </ButtonLink>
+                      )}
                       <ButtonLink
                         data-testid="cancel"
                         onClick={() => onCancel(data)}
