@@ -16,7 +16,7 @@ export const DepositsContainer = () => {
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });
-  const { setView } = useSidebar();
+  const setView = useSidebar((store) => store.setView);
   return (
     <div className="h-full">
       <DepositsTable
