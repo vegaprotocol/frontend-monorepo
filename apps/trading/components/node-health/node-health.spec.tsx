@@ -41,11 +41,10 @@ describe('NodeHealthContainer', () => {
       expect(
         tooltip.getByRole('link', { name: /^Mainnet status & incidents/ })
       ).toBeInTheDocument();
-      expect(tooltip.getByText(/Status:/)).toBeInTheDocument();
+      expect(tooltip.getByText('Non operational')).toBeInTheDocument();
       expect(tooltip.getByTitle('Connected node')).toHaveTextContent(
         'vega-url.wtf'
       );
-      expect(tooltip.getByText(/Block height:/)).toBeInTheDocument();
     });
   });
 });
