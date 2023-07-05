@@ -1,18 +1,19 @@
-import { TransferContainer } from '@vegaprotocol/accounts';
-import { DepositContainer } from '@vegaprotocol/deposits';
-import { VLogo, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import { Tooltip } from '../../components/tooltip';
-import { create } from 'zustand';
-import { Route, Routes, useParams } from 'react-router-dom';
-import { Settings } from '../settings';
 import classNames from 'classnames';
-import { NodeHealthContainer } from '../node-health';
-import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
-import { t } from '@vegaprotocol/i18n';
-import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
-import { WithdrawContainer } from '../withdraw-container';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
+import { Route, Routes, useParams } from 'react-router-dom';
+import { create } from 'zustand';
+import { TransferContainer } from '@vegaprotocol/accounts';
+import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import { DepositContainer } from '@vegaprotocol/deposits';
+import { t } from '@vegaprotocol/i18n';
+import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
+import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { NodeHealthContainer } from '../node-health';
+import { Settings } from '../settings';
+import { Tooltip } from '../../components/tooltip';
+import { WithdrawContainer } from '../withdraw-container';
+import { Routes as AppRoutes } from '../../pages/client-router';
 
 export enum ViewType {
   Order = 'Order',
@@ -53,7 +54,7 @@ export const Sidebar = () => {
         <SidebarButton
           view={ViewType.Settings}
           icon={VegaIconNames.COG}
-          tooltip="Settings"
+          tooltip={t('Settings')}
         />
       </div>
       <nav className="flex flex-col items-stretch gap-2 p-1">
@@ -61,35 +62,39 @@ export const Sidebar = () => {
         <SidebarButton
           view={ViewType.Deposit}
           icon={VegaIconNames.DEPOSIT}
-          tooltip="Deposit"
+          tooltip={t('Deposit')}
         />
         <SidebarButton
           view={ViewType.Withdraw}
           icon={VegaIconNames.WITHDRAW}
-          tooltip="Withdraw"
+          tooltip={t('Withdraw')}
         />
         <SidebarButton
           view={ViewType.Transfer}
           icon={VegaIconNames.TRANSFER}
-          tooltip="Transfer"
+          tooltip={t('Transfer')}
         />
         {/* buttons for specific routes */}
         <Routes>
-          <Route path="/markets/all" element={null} />
           <Route
-            path="/markets/:marketId"
+            path={AppRoutes.MARKETS}
+            // render nothing for markets/all, otherwise markets/:marketId will match with markets/all
+            element={null}
+          />
+          <Route
+            path={AppRoutes.MARKET}
             element={
               <>
                 <SidebarDivider />
                 <SidebarButton
                   view={ViewType.Order}
                   icon={VegaIconNames.TICKET}
-                  tooltip="Order"
+                  tooltip={t('Order')}
                 />
                 <SidebarButton
                   view={ViewType.Info}
                   icon={VegaIconNames.BREAKDOWN}
-                  tooltip="Market specification"
+                  tooltip={t('Market specification')}
                 />
               </>
             }
