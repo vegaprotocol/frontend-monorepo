@@ -8,7 +8,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { AddressField, TransferFee, TransferForm } from './transfer-form';
 import { AccountType } from '@vegaprotocol/types';
-import { formatNumber, removeDecimal } from '@vegaprotocol/utils';
+import { addDecimal, formatNumber, removeDecimal } from '@vegaprotocol/utils';
 
 describe('TransferForm', () => {
   const submit = () => fireEvent.submit(screen.getByTestId('transfer-form'));
@@ -16,11 +16,11 @@ describe('TransferForm', () => {
   const pubKey =
     '70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680';
   const asset = {
-    id: 'asset-0',
-    symbol: 'ASSET 0',
-    name: 'Asset 0',
+    id: 'eur',
+    symbol: '€',
+    name: 'EUR',
     decimals: 2,
-    balance: '1000',
+    balance: addDecimal(100000, 2), // 1000
   };
   const props = {
     pubKey,
@@ -92,7 +92,7 @@ describe('TransferForm', () => {
     expect(await screen.findByTestId('select-asset')).toHaveTextContent(
       asset.name
     );
-    expect(screen.getByTestId('asset-balance')).toHaveTextContent(
+    expect(await screen.findByTestId('asset-balance')).toHaveTextContent(
       formatNumber(asset.balance, asset.decimals)
     );
 
@@ -168,7 +168,7 @@ describe('TransferForm', () => {
       expect(await screen.findByTestId('select-asset')).toHaveTextContent(
         asset.name
       );
-      expect(screen.getByTestId('asset-balance')).toHaveTextContent(
+      expect(await screen.findByTestId('asset-balance')).toHaveTextContent(
         formatNumber(asset.balance, asset.decimals)
       );
 
@@ -244,7 +244,7 @@ describe('TransferForm', () => {
       expect(await screen.findByTestId('select-asset')).toHaveTextContent(
         asset.name
       );
-      expect(screen.getByTestId('asset-balance')).toHaveTextContent(
+      expect(await screen.findByTestId('asset-balance')).toHaveTextContent(
         formatNumber(asset.balance, asset.decimals)
       );
 

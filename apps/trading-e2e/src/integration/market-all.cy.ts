@@ -153,7 +153,7 @@ describe('markets all table', { tags: '@smoke' }, () => {
     cy.get(dropdownContent)
       .find(dropdownContentItem)
       .eq(2)
-      .should('have.text', 'View asset');
+      .should('have.text', 'View settlement asset details');
     cy.getByTestId('market-actions-content').click();
   });
 
