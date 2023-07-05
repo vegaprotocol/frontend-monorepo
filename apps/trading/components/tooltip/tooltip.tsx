@@ -19,6 +19,7 @@ export interface TooltipProps {
   align?: 'start' | 'center' | 'end';
   side?: 'top' | 'right' | 'bottom' | 'left';
   sideOffset?: number;
+  delayDuration?: number;
 }
 
 // Conditionally rendered tooltip if description content is provided.
@@ -29,9 +30,10 @@ export const Tooltip = ({
   sideOffset,
   align = 'start',
   side = 'bottom',
+  delayDuration = 200,
 }: TooltipProps) =>
   description ? (
-    <Provider delayDuration={200} skipDelayDuration={100}>
+    <Provider delayDuration={delayDuration} skipDelayDuration={100}>
       <Root open={open}>
         <Trigger
           asChild
