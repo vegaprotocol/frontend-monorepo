@@ -87,6 +87,11 @@ fragment OrderUpdateFields on OrderUpdate {
     reference
     offset
   }
+  icebergOrder {
+    peakSize
+    minimumVisibleSize
+    reservedRemaining
+  }
 }
 
 subscription OrdersUpdate($partyId: ID!, $marketIds: [ID!]) {
