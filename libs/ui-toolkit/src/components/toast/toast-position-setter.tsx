@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import { t } from '@vegaprotocol/i18n';
 import { IconNames } from '@blueprintjs/icons';
 import { Icon } from '../icon';
-import { Button } from '../button';
 import { ToastPosition, useToastsConfiguration, useToasts } from './use-toasts';
 import { useCallback } from 'react';
 import { Intent } from '../../utils/intent';
@@ -25,8 +24,6 @@ export const ToastPositionSetter = () => {
     },
     [setToast, setPostion]
   );
-  // const iconCssClasses = 'absolute top-[4px] left-[4px]';
-  const iconCssClasses = '';
   const buttonCssClasses =
     'flex items-center px-1 py-1 relative rounded bg-vega-clight-400 dark:bg-vega-cdark-400';
   const activeIcon = 'fill-vega-clight-900 dark:fill-vega-cdark-900';
@@ -39,7 +36,6 @@ export const ToastPositionSetter = () => {
         >
           <Icon
             className={classNames(
-              iconCssClasses,
               position === ToastPosition.TopLeft && activeIcon
             )}
             size={3}
@@ -52,7 +48,6 @@ export const ToastPositionSetter = () => {
         >
           <Icon
             className={classNames(
-              iconCssClasses,
               position === ToastPosition.TopCenter && activeIcon
             )}
             size={3}
@@ -65,7 +60,6 @@ export const ToastPositionSetter = () => {
         >
           <Icon
             className={classNames(
-              iconCssClasses,
               position === ToastPosition.TopRight && activeIcon
             )}
             size={3}
@@ -78,7 +72,6 @@ export const ToastPositionSetter = () => {
         >
           <Icon
             className={classNames(
-              iconCssClasses,
               position === ToastPosition.BottomLeft && activeIcon
             )}
             size={3}
@@ -91,7 +84,6 @@ export const ToastPositionSetter = () => {
         >
           <Icon
             className={classNames(
-              iconCssClasses,
               position === ToastPosition.BottomCenter && activeIcon
             )}
             size={3}
@@ -104,7 +96,6 @@ export const ToastPositionSetter = () => {
         >
           <Icon
             className={classNames(
-              iconCssClasses,
               position === ToastPosition.BottomRight && activeIcon
             )}
             size={3}

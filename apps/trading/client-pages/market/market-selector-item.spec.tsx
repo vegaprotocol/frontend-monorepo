@@ -1,5 +1,4 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { createMarketFragment } from '@vegaprotocol/mock';
 import { MarketSelectorItem } from './market-selector-item';
 import { MemoryRouter } from 'react-router-dom';
@@ -183,11 +182,6 @@ describe('MarketSelectorItem', () => {
       expect(screen.getByTitle(symbol)).toHaveTextContent(
         addDecimalsFormatNumber(marketData.markPrice, market.decimalPlaces)
       );
-      // TODO: re add if we use price change value
-
-      // expect(screen.getByTestId('market-item-change')).toHaveTextContent(
-      //   '+100.00%'
-      // );
     });
   });
 });

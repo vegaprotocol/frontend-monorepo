@@ -45,6 +45,7 @@ export const Portfolio = () => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle]);
 
+  // Make transfer sidebar open by default
   useEffect(() => {
     if (init && view === null) {
       setView({ type: ViewType.Transfer });
