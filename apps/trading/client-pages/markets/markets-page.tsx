@@ -15,8 +15,8 @@ export const MarketsPage = () => {
     updateTitle(titlefy(['Markets']));
   }, [updateTitle]);
   return (
-    <div className="h-full pt-3 pb-1 px-1">
-      <div className="h-full border border-default rounded-sm">
+    <div className="h-full pt-0.5 pb-3 px-1">
+      <div className="h-full my-1 border border-default rounded-sm">
         <Tabs storageKey="console-markets">
           <Tab id="all-markets" name={t('All markets')}>
             <Markets />
