@@ -21,6 +21,11 @@ context(
     // 1005-VEST-001
     // 1005-VEST-002
     it('Able to view tranches', function () {
+      /**
+       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+       * You should use .then() to chain commands instead.
+       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+       **/
       cy.getByTestId('tranche-item')
         .should('have.length', 2)
         .first()
@@ -51,6 +56,11 @@ context(
         cy.get('span').eq(1).should('have.text', 0);
       });
       cy.getByTestId('key-value-table').within(() => {
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId('link')
           .should('have.length', 8)
           .each((ethLink) => {
@@ -58,6 +68,11 @@ context(
               .should('have.attr', 'href')
               .and('contain', 'https://sepolia.etherscan.io/address/');
           });
+        /**
+         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+         * You should use .then() to chain commands instead.
+         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+         **/
         cy.getByTestId('redeem-link')
           .should('have.length', 8)
           .each((redeemLink) => {
@@ -71,6 +86,11 @@ context(
     it('Able to view tranches with less than 10 vega', function () {
       navigateTo(navigation.supply);
       cy.getByTestId('show-all-tranches').click();
+      /**
+       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
+       * You should use .then() to chain commands instead.
+       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
+       **/
       cy.getByTestId('tranche-item')
         .should('have.length', 8)
         .first()

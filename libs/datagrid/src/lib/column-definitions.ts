@@ -7,6 +7,6 @@ export const COL_DEFS = {
     minWidth: 45,
     maxWidth: 45,
     type: 'rightAligned',
-    pinned: 'right',
+    pinned: 'right' as const,
   },
 };

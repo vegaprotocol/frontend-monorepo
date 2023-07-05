@@ -1,12 +1,12 @@
 import { Button } from '../button';
 import { t } from '@vegaprotocol/i18n';
 
-export function truncateMiddle(address: string) {
+export function truncateMiddle(address: string, start = 6, end = 4) {
   if (address.length < 11) return address;
   return (
-    address.slice(0, 6) +
+    address.slice(0, start) +
     '\u2026' +
-    address.slice(address.length - 4, address.length)
+    address.slice(address.length - end, address.length)
   );
 }
 

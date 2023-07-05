@@ -1,7 +1,8 @@
 {
+  "sourceType": "unambiguous",
   "presets": [
     [
-      "@nrwl/next/babel",
+      "@nx/react/babel",
       {
         "runtime": "automatic",
         "useBuiltIns": "usage"

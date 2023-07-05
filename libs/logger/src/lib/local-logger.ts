@@ -96,8 +96,8 @@ export class LocalLogger {
     args: ConsoleArg[]
   ) {
     if (
-      this.numberLogLevel <= LocalLogger.levelLogMap[level] &&
-      !global.__LOGGER_SILENT_MODE__
+      this.numberLogLevel <= LocalLogger.levelLogMap[level] // &&
+      //!global.__LOGGER_SILENT_MODE__
     ) {
       console[logMethod].apply(console, [
         `${this._application}:${level}: `,

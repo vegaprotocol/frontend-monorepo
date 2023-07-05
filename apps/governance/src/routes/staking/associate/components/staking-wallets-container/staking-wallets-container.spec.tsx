@@ -6,7 +6,7 @@ jest.mock('../../../../../components/connect-to-vega', () => ({
   ConnectToVega: () => <div data-testid="connect-to-vega" />,
 }));
 
-jest.mock('../../../../components/eth-connect-prompt', () => ({
+jest.mock('../../../../../components/eth-connect-prompt', () => ({
   EthConnectPrompt: () => <div data-testid="eth-connect-prompt" />,
 }));
 

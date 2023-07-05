@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs';
+import * as Sentry from '@sentry/react';
 import { BrowserTracing } from '@sentry/tracing';
 
 export const SentryInit = (dsn: string, env?: string) => {

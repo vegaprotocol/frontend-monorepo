@@ -1,11 +1,11 @@
-import { forwardRef } from 'react';
-import { AgGridColumn } from 'ag-grid-react';
+import { forwardRef, useMemo } from 'react';
 import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
   truncateByChars,
   isNumeric,
 } from '@vegaprotocol/utils';
+import type { ColDef } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import type {
@@ -21,51 +21,46 @@ export const DepositsTable = forwardRef<
   AgGridReact,
   TypedDataAgGrid<DepositFieldsFragment>
 >((props, ref) => {
-  return (
-    <AgGrid
-      ref={ref}
-      defaultColDef={{ flex: 1 }}
-      style={{ width: '100%', height: '100%' }}
-      {...props}
-    >
-      <AgGridColumn headerName="Asset" field="asset.symbol" />
-      <AgGridColumn
-        headerName="Amount"
-        field="amount"
-        valueFormatter={({
+  const columnDefs = useMemo<ColDef[]>(
+    () => [
+      { headerName: 'Asset', field: 'asset.symbol' },
+      {
+        headerName: 'Amount',
+        field: 'amount',
+        valueFormatter: ({
           value,
           data,
         }: VegaValueFormatterParams<DepositFieldsFragment, 'amount'>) => {
           return isNumeric(value) && data
             ? addDecimalsFormatNumber(value, data.asset.decimals)
-            : null;
-        }}
-      />
-      <AgGridColumn
-        headerName="Created at"
-        field="createdTimestamp"
-        valueFormatter={({
+            : '';
+        },
+      },
+      {
+        headerName: 'Created at',
+        field: 'createdTimestamp',
+        valueFormatter: ({
           value,
         }: VegaValueFormatterParams<
           DepositFieldsFragment,
           'createdTimestamp'
         >) => {
           return value ? getDateTimeFormat().format(new Date(value)) : '';
-        }}
-      />
-      <AgGridColumn
-        headerName="Status"
-        field="status"
-        valueFormatter={({
+        },
+      },
+      {
+        headerName: 'Status',
+        field: 'status',
+        valueFormatter: ({
           value,
         }: VegaValueFormatterParams<DepositFieldsFragment, 'status'>) => {
           return value ? DepositStatusMapping[value] : '';
-        }}
-      />
-      <AgGridColumn
-        headerName="Tx hash"
-        field="txHash"
-        cellRenderer={({
+        },
+      },
+      {
+        headerName: 'Tx hash',
+        field: 'txHash',
+        cellRenderer: ({
           value,
           data,
         }: VegaICellRendererParams<DepositFieldsFragment, 'txHash'>) => {
@@ -76,9 +71,19 @@ export const DepositsTable = forwardRef<
               {truncateByChars(value)}
             </EtherscanLink>
           );
-        }}
-        flex={1}
-      />
-    </AgGrid>
+        },
+        flex: 1,
+      },
+    ],
+    []
+  );
+  return (
+    <AgGrid
+      ref={ref}
+      defaultColDef={{ flex: 1 }}
+      columnDefs={columnDefs}
+      style={{ width: '100%', height: '100%' }}
+      {...props}
+    />
   );
 });

@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
-import { AgGridColumn } from 'ag-grid-react';
+import type { ColDef } from 'ag-grid-community';
 import {
   addDecimalsFormatNumber,
   convertToCountdownString,
@@ -15,7 +15,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  Icon,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -35,20 +34,111 @@ import * as Schema from '@vegaprotocol/types';
 import type { TimestampedWithdrawals } from './use-ready-to-complete-withdrawals-toast';
 import classNames from 'classnames';
 
-export const WithdrawalsTable = (
-  props: TypedDataAgGrid<WithdrawalFieldsFragment> & {
-    ready?: TimestampedWithdrawals;
-    delayed?: TimestampedWithdrawals;
-  }
-) => {
+export const WithdrawalsTable = ({
+  delayed,
+  ready,
+  ...props
+}: TypedDataAgGrid<WithdrawalFieldsFragment> & {
+  ready?: TimestampedWithdrawals;
+  delayed?: TimestampedWithdrawals;
+}) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const createWithdrawApproval = useEthWithdrawApprovalsStore(
     (store) => store.create
   );
 
+  const columnDefs = useMemo<ColDef[]>(
+    () => [
+      { headerName: 'Asset', field: 'asset.symbol' },
+      {
+        headerName: t('Amount'),
+        field: 'amount',
+        valueFormatter: ({
+          value,
+          data,
+        }: VegaValueFormatterParams<WithdrawalFieldsFragment, 'amount'>) => {
+          return isNumeric(value) && data?.asset
+            ? addDecimalsFormatNumber(value, data.asset.decimals)
+            : '';
+        },
+      },
+      {
+        headerName: t('Recipient'),
+        field: 'details.receiverAddress',
+        cellRenderer: 'RecipientCell',
+        valueFormatter: ({
+          value,
+          data,
+        }: VegaValueFormatterParams<
+          WithdrawalFieldsFragment,
+          'details.receiverAddress'
+        >) => {
+          if (!data) return '';
+          if (!value) return '-';
+          return truncateByChars(value);
+        },
+      },
+      {
+        headerName: t('Created'),
+        field: 'createdTimestamp',
+        valueFormatter: ({
+          value,
+          data,
+        }: VegaValueFormatterParams<
+          WithdrawalFieldsFragment,
+          'createdTimestamp'
+        >) =>
+          data
+            ? value
+              ? getDateTimeFormat().format(new Date(value))
+              : '-'
+            : '',
+      },
+      {
+        headerName: t('Completed'),
+        field: 'withdrawnTimestamp',
+        valueFormatter: ({
+          value,
+          data,
+        }: VegaValueFormatterParams<
+          WithdrawalFieldsFragment,
+          'withdrawnTimestamp'
+        >) =>
+          data
+            ? value
+              ? getDateTimeFormat().format(new Date(value))
+              : '-'
+            : '',
+      },
+      {
+        headerName: t('Status'),
+        field: 'status',
+        cellRenderer: 'StatusCell',
+        cellRendererParams: { ready, delayed },
+      },
+      {
+        headerName: t('Transaction'),
+        field: 'txHash',
+        flex: 2,
+        type: 'rightAligned',
+        cellRendererParams: {
+          complete: (withdrawal: WithdrawalFieldsFragment) => {
+            createWithdrawApproval(withdrawal);
+          },
+        },
+        cellRendererSelector: ({
+          data,
+        }: VegaICellRendererParams<WithdrawalFieldsFragment>) => ({
+          component: data?.txHash ? 'EtherscanLinkCell' : 'CompleteCell',
+        }),
+      },
+    ],
+    [createWithdrawApproval, delayed, ready]
+  );
   return (
     <AgGrid
       overlayNoRowsTemplate={t('No withdrawals')}
+      columnDefs={columnDefs}
       defaultColDef={{ flex: 1 }}
       style={{ width: '100%', height: '100%' }}
       components={{
@@ -60,93 +150,7 @@ export const WithdrawalsTable = (
       suppressCellFocus
       ref={gridRef}
       {...props}
-    >
-      <AgGridColumn headerName="Asset" field="asset.symbol" />
-      <AgGridColumn
-        headerName={t('Amount')}
-        field="amount"
-        valueFormatter={({
-          value,
-          data,
-        }: VegaValueFormatterParams<WithdrawalFieldsFragment, 'amount'>) => {
-          return isNumeric(value) && data?.asset
-            ? addDecimalsFormatNumber(value, data.asset.decimals)
-            : '';
-        }}
-      />
-      <AgGridColumn
-        headerName={t('Recipient')}
-        field="details.receiverAddress"
-        cellRenderer="RecipientCell"
-        valueFormatter={({
-          value,
-          data,
-        }: VegaValueFormatterParams<
-          WithdrawalFieldsFragment,
-          'details.receiverAddress'
-        >) => {
-          if (!data) return null;
-          if (!value) return '-';
-          return truncateByChars(value);
-        }}
-      />
-      <AgGridColumn
-        headerName={t('Created')}
-        field="createdTimestamp"
-        valueFormatter={({
-          value,
-          data,
-        }: VegaValueFormatterParams<
-          WithdrawalFieldsFragment,
-          'createdTimestamp'
-        >) =>
-          data
-            ? value
-              ? getDateTimeFormat().format(new Date(value))
-              : '-'
-            : null
-        }
-      />
-      <AgGridColumn
-        headerName={t('Completed')}
-        field="withdrawnTimestamp"
-        valueFormatter={({
-          value,
-          data,
-        }: VegaValueFormatterParams<
-          WithdrawalFieldsFragment,
-          'withdrawnTimestamp'
-        >) =>
-          data
-            ? value
-              ? getDateTimeFormat().format(new Date(value))
-              : '-'
-            : null
-        }
-      />
-      <AgGridColumn
-        headerName={t('Status')}
-        field="status"
-        cellRendererParams={{ ready: props.ready, delayed: props.delayed }}
-        cellRenderer="StatusCell"
-      />
-      <AgGridColumn
-        headerName={t('Transaction')}
-        field="txHash"
-        flex={2}
-        type="rightAligned"
-        cellRendererParams={{
-          complete: (withdrawal: WithdrawalFieldsFragment) => {
-            createWithdrawApproval(withdrawal);
-          },
-        }}
-        cellRendererSelector={({
-          data,
-        }: VegaICellRendererParams<WithdrawalFieldsFragment>) => ({
-          component: data?.txHash ? 'EtherscanLinkCell' : 'CompleteCell',
-        })}
-      />
-    </AgGrid>
+    />
   );
 };
 
@@ -193,9 +197,8 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
               }
             }}
           >
-            <span>
-              <Icon name="info-sign" size={4} /> {t('View withdrawal details')}
-            </span>
+            <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
+            {t('View withdrawal details')}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

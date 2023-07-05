@@ -1,3 +1,4 @@
+import { MockedProvider } from '@apollo/client/testing';
 import { TxsInfiniteListItem } from './txs-infinite-list-item';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
@@ -83,21 +84,22 @@ describe('Txs infinite list item', () => {
 
   it('renders data correctly', () => {
     render(
-      <MemoryRouter>
-        <TxsInfiniteListItem
-          type="testType"
-          submitter="testPubKey"
-          hash="testTxHash"
-          block="1"
-          code={0}
-          command={{}}
-        />
-      </MemoryRouter>
+      <MockedProvider>
+        <MemoryRouter>
+          <TxsInfiniteListItem
+            type="testType"
+            submitter="testPubKey"
+            hash="testTxHash"
+            block="1"
+            code={0}
+            command={{}}
+          />
+        </MemoryRouter>
+      </MockedProvider>
     );
     expect(screen.getByTestId('tx-hash')).toHaveTextContent('testTxHash');
     expect(screen.getByTestId('pub-key')).toHaveTextContent('testPubKey');
     expect(screen.getByTestId('tx-type')).toHaveTextContent('testType');
     expect(screen.getByTestId('tx-block')).toHaveTextContent('1');
-    expect(screen.getByTestId('tx-success')).toHaveTextContent('Success');
   });
 });

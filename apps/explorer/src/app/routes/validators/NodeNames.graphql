@@ -1,0 +1,13 @@
+query ExplorerNodeNames {
+  nodesConnection {
+    edges {
+      node {
+        id
+        name
+        pubkey
+        tmPubkey
+        ethereumAddress
+      }
+    }
+  }
+}

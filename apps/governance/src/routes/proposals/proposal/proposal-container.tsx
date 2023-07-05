@@ -9,6 +9,7 @@ import { useFetch } from '@vegaprotocol/react-helpers';
 import { ENV } from '../../../config';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketInfoWithDataProvider } from '@vegaprotocol/markets';
+import { useAssetQuery } from '@vegaprotocol/assets';
 
 export const ProposalContainer = () => {
   const params = useParams<{ proposalId: string }>();
@@ -35,6 +36,25 @@ export const ProposalContainer = () => {
     },
   });
 
+  const {
+    data: assetData,
+    loading: assetLoading,
+    error: assetError,
+  } = useAssetQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      assetId:
+        (data?.proposal?.terms.change.__typename === 'NewAsset' &&
+          data?.proposal?.id) ||
+        (data?.proposal?.terms.change.__typename === 'UpdateAsset' &&
+          data.proposal.terms.change.assetId) ||
+        '',
+    },
+    skip: !['NewAsset', 'UpdateAsset'].includes(
+      data?.proposal?.terms?.change?.__typename || ''
+    ),
+  });
+
   useEffect(() => {
     const interval = setInterval(refetch, 2000);
     return () => clearInterval(interval);
@@ -42,15 +62,20 @@ export const ProposalContainer = () => {
 
   return (
     <AsyncRenderer
-      loading={loading || newMarketLoading}
-      error={error || newMarketError}
-      data={newMarketData ? { newMarketData, data } : data}
+      loading={loading || newMarketLoading || assetLoading}
+      error={error || newMarketError || assetError}
+      data={{
+        ...data,
+        ...(newMarketData ? { newMarketData } : {}),
+        ...(assetData ? { assetData } : {}),
+      }}
     >
       {data?.proposal ? (
         <Proposal
           proposal={data.proposal}
           restData={restData}
           newMarketData={newMarketData}
+          assetData={assetData}
         />
       ) : (
         <ProposalNotFound />

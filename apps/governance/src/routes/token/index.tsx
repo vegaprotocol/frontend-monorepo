@@ -11,7 +11,7 @@ import type { RouteChildProps } from '..';
 import Routes from '../routes';
 import { TokenDetails } from './token-details';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { useNodeDataQuery } from './__generated___/NodeData';
+import { useNodeDataQuery } from './__generated__/NodeData';
 
 const Home = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
