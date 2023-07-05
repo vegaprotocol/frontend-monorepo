@@ -48,61 +48,58 @@ type SidebarView =
 
 export const Sidebar = () => {
   return (
-    <>
-      <div className="flex flex-col items-center gap-2 py-2 px-1 h-full">
-        <div>
-          <VLogo className="w-[20px]" />
-        </div>
-        <nav className="flex flex-col items-stretch gap-2 p-1">
-          {/* sidebar options that always show */}
-          <SidebarButton
-            view={ViewType.Deposit}
-            icon={VegaIconNames.DEPOSIT}
-            tooltip="Deposit"
-          />
-          <SidebarButton
-            view={ViewType.Withdraw}
-            icon={VegaIconNames.WITHDRAW}
-            tooltip="Withdraw"
-          />
-          <SidebarButton
-            view={ViewType.Transfer}
-            icon={VegaIconNames.TRANSFER}
-            tooltip="Transfer"
-          />
-          {/* buttons for specific routes */}
-          <Routes>
-            <Route path="/markets/all" element={null} />
-            <Route
-              path="/markets/:marketId"
-              element={
-                <>
-                  <SidebarDivider />
-                  <SidebarButton
-                    view={ViewType.Order}
-                    icon={VegaIconNames.TREND_UP}
-                    tooltip="Order"
-                  />
-                  <SidebarButton
-                    view={ViewType.Info}
-                    icon={VegaIconNames.BREAKDOWN}
-                    tooltip="Market specification"
-                  />
-                </>
-              }
-            />
-          </Routes>
-        </nav>
-        <nav className="mt-auto flex flex-col items-stretch gap-2 p-1">
-          <SidebarButton
-            view={ViewType.Settings}
-            icon={VegaIconNames.COG}
-            tooltip="Settings"
-          />
-          <NodeHealthContainer />
-        </nav>
+    <div className="flex flex-col gap-2 h-full">
+      <div className="h-12 flex justify-center items-center border-b border-default">
+        <SidebarButton
+          view={ViewType.Settings}
+          icon={VegaIconNames.COG}
+          tooltip="Settings"
+        />
       </div>
-    </>
+      <nav className="flex flex-col items-stretch gap-2 p-1">
+        {/* sidebar options that always show */}
+        <SidebarButton
+          view={ViewType.Deposit}
+          icon={VegaIconNames.DEPOSIT}
+          tooltip="Deposit"
+        />
+        <SidebarButton
+          view={ViewType.Withdraw}
+          icon={VegaIconNames.WITHDRAW}
+          tooltip="Withdraw"
+        />
+        <SidebarButton
+          view={ViewType.Transfer}
+          icon={VegaIconNames.TRANSFER}
+          tooltip="Transfer"
+        />
+        {/* buttons for specific routes */}
+        <Routes>
+          <Route path="/markets/all" element={null} />
+          <Route
+            path="/markets/:marketId"
+            element={
+              <>
+                <SidebarDivider />
+                <SidebarButton
+                  view={ViewType.Order}
+                  icon={VegaIconNames.TREND_UP}
+                  tooltip="Order"
+                />
+                <SidebarButton
+                  view={ViewType.Info}
+                  icon={VegaIconNames.BREAKDOWN}
+                  tooltip="Market specification"
+                />
+              </>
+            }
+          />
+        </Routes>
+      </nav>
+      <nav className="mt-auto flex flex-col items-stretch gap-2 p-1">
+        <NodeHealthContainer />
+      </nav>
+    </div>
   );
 };
 
@@ -218,7 +215,10 @@ const ContentWrapper = ({
   title?: string;
 }) => {
   return (
-    <div className="p-4">
+    <div
+      // panes have p-1, since sidebar is on the right make pl less to account for additional pane space
+      className="py-4 pl-3 pr-4"
+    >
       {title && <h2 className="mb-4">{title}</h2>}
       {children}
     </div>
