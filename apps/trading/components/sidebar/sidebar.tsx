@@ -83,7 +83,7 @@ export const Sidebar = () => {
                 <SidebarDivider />
                 <SidebarButton
                   view={ViewType.Order}
-                  icon={VegaIconNames.TREND_UP}
+                  icon={VegaIconNames.TICKET}
                   tooltip="Order"
                 />
                 <SidebarButton
