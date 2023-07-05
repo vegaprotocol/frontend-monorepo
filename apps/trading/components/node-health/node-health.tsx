@@ -15,11 +15,11 @@ export const NodeHealthContainer = () => {
   return (
     <Tooltip
       description={
-        <div className="flex flex-col gap-2 p-4">
-          <p className="flex items-center gap-2">
+        <div className="flex flex-col gap-2 p-4 text-sm">
+          <div className="flex items-center gap-2">
             <Indicator variant={intent} />
-            {text}
-          </p>
+            <p>{text}</p>
+          </div>
           {VEGA_URL && (
             <p>
               <NodeUrl url={VEGA_URL} />
