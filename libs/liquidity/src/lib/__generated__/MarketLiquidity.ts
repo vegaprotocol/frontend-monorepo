@@ -3,14 +3,14 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type LiquidityProvisionFieldsFragment = { __typename?: 'LiquidityProvision', id?: string | null, createdAt: any, updatedAt?: any | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string } } | null> | null } | null } };
+export type LiquidityProvisionFieldsFragment = { __typename?: 'LiquidityProvision', id: string, createdAt: any, updatedAt?: any | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string } } | null> | null } | null } };
 
 export type LiquidityProvisionsQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
 
 
-export type LiquidityProvisionsQuery = { __typename?: 'Query', market?: { __typename?: 'Market', liquidityProvisionsConnection?: { __typename?: 'LiquidityProvisionsConnection', edges?: Array<{ __typename?: 'LiquidityProvisionsEdge', node: { __typename?: 'LiquidityProvision', id?: string | null, createdAt: any, updatedAt?: any | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string } } | null> | null } | null } } } | null> | null } | null } | null };
+export type LiquidityProvisionsQuery = { __typename?: 'Query', market?: { __typename?: 'Market', liquidityProvisionsConnection?: { __typename?: 'LiquidityProvisionsConnection', edges?: Array<{ __typename?: 'LiquidityProvisionsEdge', node: { __typename?: 'LiquidityProvision', id: string, createdAt: any, updatedAt?: any | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string } } | null> | null } | null } } } | null> | null } | null } | null };
 
 export type LiquidityProvisionsUpdateSubscriptionVariables = Types.Exact<{
   partyId?: Types.InputMaybe<Types.Scalars['ID']>;

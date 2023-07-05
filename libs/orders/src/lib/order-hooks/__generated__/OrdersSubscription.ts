@@ -3,14 +3,14 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type OrderSubFieldsFragment = { __typename?: 'OrderUpdate', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: any, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, side: Types.Side, marketId: string, remaining: string };
+export type OrderSubFieldsFragment = { __typename?: 'OrderUpdate', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: any, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, side: Types.Side, marketId: string };
 
 export type OrderSubSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type OrderSubSubscription = { __typename?: 'Subscription', orders?: Array<{ __typename?: 'OrderUpdate', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: any, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, side: Types.Side, marketId: string, remaining: string }> | null };
+export type OrderSubSubscription = { __typename?: 'Subscription', orders?: Array<{ __typename?: 'OrderUpdate', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: any, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, side: Types.Side, marketId: string }> | null };
 
 export const OrderSubFieldsFragmentDoc = gql`
     fragment OrderSubFields on OrderUpdate {
@@ -25,7 +25,6 @@ export const OrderSubFieldsFragmentDoc = gql`
   expiresAt
   side
   marketId
-  remaining
 }
     `;
 export const OrderSubDocument = gql`
