@@ -120,7 +120,13 @@ const SidebarButton = ({
       view === currView?.type,
   });
   return (
-    <Tooltip description={tooltip} align="center" side="right" sideOffset={10}>
+    <Tooltip
+      description={tooltip}
+      align="center"
+      side="right"
+      sideOffset={10}
+      delayDuration={0}
+    >
       <button
         className={buttonClasses}
         onClick={() => {
