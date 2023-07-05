@@ -25,12 +25,20 @@ import './styles.css';
 import { usePageTitleStore } from '../stores';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
-import { HashRouter, useSearchParams } from 'react-router-dom';
+import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
+import { AnnouncementBanner, UpgradeBanner } from '../components/banner';
+import { Navbar } from '../components/navbar';
+import classNames from 'classnames';
+import {
+  ProtocolUpgradeCountdownMode,
+  ProtocolUpgradeProposalNotification,
+} from '@vegaprotocol/proposals';
+import { ViewingBanner } from '../components/viewing-banner';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -65,6 +73,11 @@ const InitializeHandlers = () => {
 };
 
 function AppBody({ Component }: AppProps) {
+  const location = useLocation();
+  const gridClasses = classNames(
+    'h-full relative z-0 grid',
+    'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
+  );
   return (
     <div className="font-alpha h-full bg-white dark:bg-vega-cdark-900 text-default">
       <Head>
@@ -72,7 +85,20 @@ function AppBody({ Component }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Title />
-      <Component />
+      <div className={gridClasses}>
+        <AnnouncementBanner />
+        <Navbar theme="system" />
+        <div data-testid="banners">
+          <ProtocolUpgradeProposalNotification
+            mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
+          />
+          <ViewingBanner />
+          <UpgradeBanner showVersionChange={true} />
+        </div>
+        <main data-testid={location.pathname}>
+          <Component />
+        </main>
+      </div>
       <DialogsContainer />
       <ToastsManager />
       <InitializeHandlers />
