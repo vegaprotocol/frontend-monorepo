@@ -4,7 +4,6 @@ import * as dataProviders from '@vegaprotocol/data-provider';
 import { MarketSuccessorBanner } from './market-successor-banner';
 import * as Types from '@vegaprotocol/types';
 import * as allUtils from '@vegaprotocol/utils';
-import * as marketsTools from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
 import type { PartialDeep } from 'type-fest';
 
