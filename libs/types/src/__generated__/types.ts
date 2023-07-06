@@ -92,8 +92,6 @@ export enum AccountType {
   ACCOUNT_TYPE_GLOBAL_INSURANCE = 'ACCOUNT_TYPE_GLOBAL_INSURANCE',
   /** GlobalReward - a global account for the reward pool */
   ACCOUNT_TYPE_GLOBAL_REWARD = 'ACCOUNT_TYPE_GLOBAL_REWARD',
-  /** AccountTypeHolding - an account for holding funds covering for active unfilled orders */
-  ACCOUNT_TYPE_HOLDING = 'ACCOUNT_TYPE_HOLDING',
   /** Insurance pool account - only for 'system' party */
   ACCOUNT_TYPE_INSURANCE = 'ACCOUNT_TYPE_INSURANCE',
   /**
@@ -3340,8 +3338,6 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_OPENING_AUCTION_DURATION_TOO_SMALL = 'PROPOSAL_ERROR_OPENING_AUCTION_DURATION_TOO_SMALL',
   /** Proposal declined because the participation threshold was not reached */
   PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED = 'PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED',
-  /** Spot trading is disabled */
-  PROPOSAL_ERROR_SPOT_PRODUCT_DISABLED = 'PROPOSAL_ERROR_SPOT_PRODUCT_DISABLED',
   /** Too many decimal places specified in market */
   PROPOSAL_ERROR_TOO_MANY_MARKET_DECIMAL_PLACES = 'PROPOSAL_ERROR_TOO_MANY_MARKET_DECIMAL_PLACES',
   /** Too many price monitoring triggers specified in market */

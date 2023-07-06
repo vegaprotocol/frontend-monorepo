@@ -39,7 +39,7 @@ export const MarketSuccessorBanner = () => {
   const { data: successorData } = useDataProvider({
     dataProvider: marketProvider,
     variables: {
-      marketId: data?.successorMarketID,
+      marketId: data?.successorMarketID || '',
     },
     skip: !data?.successorMarketID,
   });
@@ -73,7 +73,7 @@ export const MarketSuccessorBanner = () => {
     candleVolume && isNumeric(successorData?.positionDecimalPlaces)
       ? addDecimalsFormatNumber(
           candleVolume,
-          successorData?.positionDecimalPlaces
+          successorData?.positionDecimalPlaces as number
         )
       : null;
 
