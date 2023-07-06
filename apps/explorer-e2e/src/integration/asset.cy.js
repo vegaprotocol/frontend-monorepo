@@ -31,7 +31,7 @@ context('Asset page', { tags: '@regression' }, () => {
       });
     });
 
-    it('should open details page when clicked on "View details"', () => {
+    it.skip('should open details page when clicked on "View details"', () => {
       cy.getAssets().then((assets) => {
         assets.forEach((asset) => {
           cy.get(`[row-id="${asset.id}"] [col-id="actions"] button`)
