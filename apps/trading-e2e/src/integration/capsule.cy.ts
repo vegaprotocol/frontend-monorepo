@@ -187,19 +187,21 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     // 0006-NETW-010
     const market = this.market;
     cy.visit(`/#/markets/${market.id}`);
+    cy.getByTestId('node-health-trigger').realHover();
     cy.getByTestId('node-health')
       .children()
       .first()
       .should('contain.text', 'Operational')
-      .next()
-      .should('contain.text', new URL(Cypress.env('VEGA_URL')).hostname)
-      .next()
       .then(($el) => {
         const blockHeight = parseInt($el.text());
         // block height will increase over the course of the test run so best
         // we can do here is check that its showing something sensible
         expect(blockHeight).to.be.greaterThan(0);
       });
+    cy.getByTestId('node-health')
+      .children()
+      .eq(1)
+      .should('contain.text', new URL(Cypress.env('VEGA_URL')).hostname);
   });
 
   it('can place and receive an order', function () {
