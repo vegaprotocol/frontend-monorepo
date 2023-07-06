@@ -75,9 +75,9 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
   return (
     <div className="flex gap-2">
       <div>
-        <div className="text-ellipsis whitespace-nowrap overflow-hidden">
+        <h3 className="text-ellipsis whitespace-nowrap overflow-hidden">
           {market.tradableInstrument.instrument.code}
-        </div>
+        </h3>
         {mode && (
           <p className="text-xs text-vega-orange-500 dark:text-vega-orange-550 whitespace-nowrap">
             {mode}
