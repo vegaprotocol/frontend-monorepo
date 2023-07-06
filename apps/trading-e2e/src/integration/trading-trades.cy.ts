@@ -72,6 +72,7 @@ describe('trades', { tags: '@smoke' }, () => {
   });
 
   it.skip('copy price to deal ticket form', () => {
+    cy.getByTestId('order-type-TYPE_LIMIT').click(); // make sure on limit
     // 6005-THIS-007
     cy.get(colIdPrice).last().should('be.visible').click();
     cy.getByTestId('order-price').should('have.value', '171.16898');

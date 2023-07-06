@@ -64,12 +64,14 @@ const LiquidityViewHeader = memo(({ marketId }: { marketId?: string }) => {
   return (
     <Header
       title={
-        market?.tradableInstrument.instrument.name &&
         market?.tradableInstrument.instrument.code &&
         marketId && (
           <HeaderTitle>
             {market.tradableInstrument.instrument.code &&
-              t('Liquidity provision')}
+              t(
+                '%s liquidity provision',
+                market.tradableInstrument.instrument.code
+              )}
           </HeaderTitle>
         )
       }
