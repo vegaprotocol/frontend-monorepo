@@ -23,7 +23,7 @@ export const Settings = () => {
         )}
       >
         <Switch
-          name="settings-theme-switch"
+          name="settings-telemetry-switch"
           onCheckedChange={(isOn) => setIsApproved(isOn)}
           checked={isApproved}
         />

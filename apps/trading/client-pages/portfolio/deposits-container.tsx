@@ -25,7 +25,7 @@ export const DepositsContainer = () => {
         overlayNoRowsTemplate={error ? error.message : t('No deposits')}
       />
       {!isReadOnly && (
-        <div className="h-auto flex justify-end px-[11px] py-2 bottom-0 right-3 absolute dark:bg-black/75 bg-white/75 rounded">
+        <div className="h-auto flex justify-end p-2 bottom-0 right-0 absolute dark:bg-black/75 bg-white/75 rounded">
           <Button
             variant="primary"
             size="sm"

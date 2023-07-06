@@ -238,6 +238,7 @@ const ContentWrapper = ({
     <div
       // panes have p-1, since sidebar is on the right make pl less to account for additional pane space
       className="py-4 pl-3 pr-4"
+      data-testid="sidebar-content"
     >
       {title && <h2 className="mb-4">{title}</h2>}
       {children}
