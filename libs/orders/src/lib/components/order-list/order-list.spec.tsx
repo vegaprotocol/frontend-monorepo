@@ -50,6 +50,7 @@ describe('OrderListTable', () => {
     });
     const expectedHeaders = [
       'Market',
+      'Filled',
       'Size',
       'Type',
       'Status',
@@ -71,7 +72,8 @@ describe('OrderListTable', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues: string[] = [
       marketOrder.market?.tradableInstrument.instrument.code || '',
-      '+0.05/0.10',
+      '0.05',
+      '0.10',
       Schema.OrderTypeMapping[marketOrder.type as Schema.OrderType] || '',
       Schema.OrderStatusMapping[marketOrder.status],
       '-',
@@ -92,7 +94,8 @@ describe('OrderListTable', () => {
 
     const expectedValues: string[] = [
       limitOrder.market?.tradableInstrument.instrument.code || '',
-      '+0.05/0.10',
+      '0.05',
+      '0.10',
       Schema.OrderTypeMapping[limitOrder.type || Schema.OrderType.TYPE_LIMIT],
       Schema.OrderStatusMapping[limitOrder.status],
       '-',
@@ -118,7 +121,7 @@ describe('OrderListTable', () => {
       render(generateJsx({ rowData: [rejectedOrder] }));
     });
     const cells = screen.getAllByRole('gridcell');
-    expect(cells[3]).toHaveTextContent(
+    expect(cells[4]).toHaveTextContent(
       `${Schema.OrderStatusMapping[rejectedOrder.status]}: ${
         Schema.OrderRejectionReasonMapping[rejectedOrder.rejectionReason]
       }`
@@ -187,7 +190,7 @@ describe('OrderListTable', () => {
       });
 
       const amendCell = getAmendCell();
-      const typeCell = screen.getAllByRole('gridcell')[2];
+      const typeCell = screen.getAllByRole('gridcell')[3];
       expect(typeCell).toHaveTextContent('Liquidity provision');
       expect(amendCell.queryByTestId('edit')).not.toBeInTheDocument();
       expect(amendCell.queryByTestId('cancel')).not.toBeInTheDocument();
@@ -209,7 +212,7 @@ describe('OrderListTable', () => {
       });
 
       const amendCell = getAmendCell();
-      const typeCell = screen.getAllByRole('gridcell')[2];
+      const typeCell = screen.getAllByRole('gridcell')[3];
       expect(typeCell).toHaveTextContent('Mid - 10.0 Peg limit');
       expect(amendCell.queryByTestId('edit')).toBeInTheDocument();
       expect(amendCell.queryByTestId('cancel')).toBeInTheDocument();

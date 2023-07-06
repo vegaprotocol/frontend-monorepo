@@ -10,6 +10,7 @@ import {
 } from '../support/order-validation';
 
 const orderSymbol = 'market.tradableInstrument.instrument.code';
+const orderSize = 'size';
 const orderType = 'type';
 const orderStatus = 'status';
 const orderRemaining = 'remaining';
@@ -47,6 +48,10 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
 
           cy.get(`[col-id='${orderRemaining}']`).each(($remaining) => {
             cy.wrap($remaining).invoke('text').should('not.be.empty');
+          });
+
+          cy.get(`[col-id='${orderSize}']`).each(($size) => {
+            cy.wrap($size).invoke('text').should('not.be.empty');
           });
 
           cy.get(`[col-id='${orderType}']`).each(($type) => {
@@ -91,7 +96,8 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
           'have.text',
           'Partially Filled'
         );
-        cy.get(`[col-id='${orderRemaining}']`).should('have.text', '-7/10');
+        cy.get(`[col-id='${orderRemaining}']`).should('have.text', '7');
+        cy.get(`[col-id='${orderSize}']`).should('have.text', '-10');
         cy.getByTestId(cancelOrderBtn).should('not.exist');
         cy.getByTestId(editOrderBtn).should('not.exist');
       });
@@ -214,7 +220,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     cy.getByTestId(`order-status-${orderId}`)
       .parentsUntil(`.ag-row`)
       .siblings(`[col-id=${orderRemaining}]`)
-      .should('have.text', '+4/5');
+      .should('have.text', '4');
   });
 
   it('must see a filled order', () => {
@@ -262,8 +268,8 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       status: Schema.OrderStatus.STATUS_ACTIVE,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find(`[col-id="${orderRemaining}"]`)
-      .should('have.text', '-14/15');
+      .find(`[col-id="${orderSize}"]`)
+      .should('have.text', '-15');
   });
 
   it('must see the size of the order and direction/side +', () => {
@@ -276,8 +282,8 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       status: Schema.OrderStatus.STATUS_ACTIVE,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find(`[col-id="${orderRemaining}"]`)
-      .should('have.text', '+4/5');
+      .find(`[col-id="${orderSize}"]`)
+      .should('have.text', '+5');
   });
 
   it('for limit typy must see the Limit price that was set on the order', () => {

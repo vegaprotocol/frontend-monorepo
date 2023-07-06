@@ -64,15 +64,9 @@ export const OrderListTable = memo<
             minWidth: 150,
           },
           {
-            headerName: t('Size'),
+            headerName: t('Filled'),
             field: 'remaining',
             cellClass: 'font-mono text-right',
-            cellClassRules: {
-              [positiveClassNames]: ({ data }: { data: Order }) =>
-                data?.side === Schema.Side.SIDE_BUY,
-              [negativeClassNames]: ({ data }: { data: Order }) =>
-                data?.side === Schema.Side.SIDE_SELL,
-            },
             type: 'rightAligned',
             valueGetter: ({ data }: VegaValueGetterParams<Order>) => {
               return data?.size && data.market
@@ -92,19 +86,58 @@ export const OrderListTable = memo<
               if (!data?.market || !isNumeric(value) || !isNumeric(data.size)) {
                 return '-';
               }
+              return addDecimalsFormatNumber(
+                (BigInt(data.size) - BigInt(data.remaining)).toString(),
+                data.market.positionDecimalPlaces
+              );
+            },
+            minWidth: 50,
+            width: 90,
+            flex: 0,
+          },
+          {
+            headerName: t('Size'),
+            field: 'size',
+            cellClass: 'font-mono text-right',
+            type: 'rightAligned',
+            cellClassRules: {
+              [positiveClassNames]: ({ data }: { data: Order }) =>
+                data?.side === Schema.Side.SIDE_BUY,
+              [negativeClassNames]: ({ data }: { data: Order }) =>
+                data?.side === Schema.Side.SIDE_SELL,
+            },
+            valueGetter: ({ data }: VegaValueGetterParams<Order>) => {
+              return data?.size && data.market
+                ? toBigNum(data.size, data.market.positionDecimalPlaces ?? 0)
+                    .multipliedBy(data.side === Schema.Side.SIDE_SELL ? -1 : 1)
+                    .toNumber()
+                : undefined;
+            },
+            valueFormatter: ({
+              data,
+            }: VegaValueFormatterParams<Order, 'size'>) => {
+              if (!data) {
+                return '';
+              }
+              if (!data?.market || !isNumeric(data.size)) {
+                return '-';
+              }
               const prefix = data
                 ? data.side === Schema.Side.SIDE_BUY
                   ? '+'
                   : '-'
                 : '';
-              const { positionDecimalPlaces } = data.market;
-              const filled = BigInt(data.size) - BigInt(data.remaining);
-              return `${prefix}${addDecimalsFormatNumber(
-                filled.toString(),
-                positionDecimalPlaces
-              )}/${addDecimalsFormatNumber(data.size, positionDecimalPlaces)}`;
+              return (
+                prefix +
+                addDecimalsFormatNumber(
+                  data.size,
+                  data.market.positionDecimalPlaces
+                )
+              );
             },
-            minWidth: 100,
+            minWidth: 50,
+            width: 80,
+            flex: 0,
           },
           {
             field: 'type',
