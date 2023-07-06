@@ -27,7 +27,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes, ChangeEvent, ReactNode } from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useWatch, Controller, useForm } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
@@ -90,17 +90,18 @@ export const DepositForm = ({
   const [approveNotificationIntent, setApproveNotificationIntent] =
     useState<Intent>(Intent.Warning);
   const [persistedDeposit] = usePersistentDeposit(selectedAsset?.id);
-
+  console.log('deposit-form', account);
   const {
     register,
     handleSubmit,
     setValue,
     clearErrors,
+    trigger,
     control,
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      from: account,
+      from: account || '',
       to: pubKey ? pubKey : undefined,
       asset: selectedAsset?.id,
       amount: persistedDeposit?.amount,
@@ -136,6 +137,11 @@ export const DepositForm = ({
   const pubKeys = useMemo(() => {
     return _pubKeys ? _pubKeys.map((pk) => pk.publicKey) : [];
   }, [_pubKeys]);
+
+  useEffect(() => {
+    setValue('from', account || '');
+    trigger('from');
+  }, [account]);
 
   const approved =
     balances && balances.allowance.isGreaterThan(0) ? true : false;

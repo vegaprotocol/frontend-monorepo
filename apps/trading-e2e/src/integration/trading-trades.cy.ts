@@ -10,6 +10,7 @@ describe('trades', { tags: '@smoke' }, () => {
     cy.mockTradingPage();
     cy.mockSubscription();
   });
+
   before(() => {
     cy.mockTradingPage();
     cy.mockSubscription();
@@ -60,11 +61,8 @@ describe('trades', { tags: '@smoke' }, () => {
       /(\d{1,2})\/(\d{1,2})\/(\d{4}), (\d{1,2}):(\d{1,2}):(\d{1,2})/gm;
     cy.getByTestId(tradesTable)
       .get(`.ag-center-cols-container ${colIdCreatedAt}`)
-      .each(($tradeDateTime, index) => {
-        if (index != 0) {
-          //ignore header
-          cy.wrap($tradeDateTime).invoke('text').should('match', dateTimeRegex);
-        }
+      .each(($tradeDateTime) => {
+        cy.wrap($tradeDateTime).invoke('text').should('match', dateTimeRegex);
       });
   });
 
