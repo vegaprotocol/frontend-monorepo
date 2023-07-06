@@ -161,7 +161,8 @@ const PriceChange = ({ candles }: { candles: string[] }) => {
   const priceChange = candles ? priceChangePercentage(candles) : undefined;
   const priceChangeClasses = classNames('text-xs', {
     'text-market-red': priceChange && priceChange < 0,
-    'text-market-green': priceChange && priceChange > 0,
+    'text-market-green-600 dark:text-market-green':
+      priceChange && priceChange > 0,
   });
   let prefix = '';
   if (priceChange && priceChange > 0) {

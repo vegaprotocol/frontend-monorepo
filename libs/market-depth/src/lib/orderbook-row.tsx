@@ -94,7 +94,7 @@ export const OrderbookRow = React.memo(
             className={
               type === VolumeType.ask
                 ? 'text-market-red dark:text-market-red'
-                : 'text-market-green dark:text-market-green'
+                : 'text-market-green-600 dark:text-market-green'
             }
           />
           <NumericCell

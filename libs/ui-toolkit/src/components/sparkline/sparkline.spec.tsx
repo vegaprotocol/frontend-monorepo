@@ -48,7 +48,7 @@ it('Renders a green line if the last value is greater than the first', () => {
   const paths = screen.getAllByTestId('sparkline-path');
   const path = paths[0];
   expect(path).toHaveClass(
-    '[vector-effect:non-scaling-stroke] stroke-market-green dark:stroke-market-green'
+    '[vector-effect:non-scaling-stroke] stroke-market-green-600 dark:stroke-market-green'
   );
 });
 

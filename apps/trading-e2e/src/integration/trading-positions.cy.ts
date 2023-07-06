@@ -267,22 +267,22 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
     cy.get('.ag-center-cols-container').within(() => {
       assertPNLColor(
         '[col-id="realisedPNL"]',
-        'text-market-green',
-        'text-market-pink'
+        'text-market-green-600',
+        'text-market-red'
       );
     });
     cy.get('.ag-center-cols-container').within(() => {
       assertPNLColor(
         '[col-id="unrealisedPNL"]',
-        'text-market-green',
-        'text-market-pink'
+        'text-market-green-600',
+        'text-market-red'
       );
     });
     cy.get('.ag-center-cols-container').within(() => {
       assertPNLColor(
         '[col-id="openVolume"]',
-        'text-market-green',
-        'text-market-pink'
+        'text-market-green-600',
+        'text-market-red'
       );
     });
   });

@@ -19,7 +19,7 @@ import type { AgGridReactProps } from 'ag-grid-react';
 import type { Trade } from './trades-data-provider';
 import { Side } from '@vegaprotocol/types';
 
-export const BUY_CLASS = 'text-market-green dark:text-market-green';
+export const BUY_CLASS = 'text-market-green-600 dark:text-market-green';
 export const SELL_CLASS = 'text-market-red dark:text-market-red';
 
 const changeCellClass = ({ node }: CellClassParams) => {

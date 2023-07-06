@@ -102,7 +102,7 @@ it('add color and sign to amount, displays positive notional value', async () =>
   });
   let cells = screen.getAllByRole('gridcell');
 
-  expect(cells[2].classList.contains('text-market-green')).toBeTruthy();
+  expect(cells[2].classList.contains('text-market-green-600')).toBeTruthy();
   expect(cells[2].classList.contains('text-market-red')).toBeFalsy();
   expect(cells[2].textContent).toEqual('+100');
   expect(cells[1].textContent).toEqual('1,230.0');
@@ -115,7 +115,7 @@ it('add color and sign to amount, displays positive notional value', async () =>
     );
   });
   cells = screen.getAllByRole('gridcell');
-  expect(cells[2].classList.contains('text-market-green')).toBeFalsy();
+  expect(cells[2].classList.contains('text-market-green-600')).toBeFalsy();
   expect(cells[2].classList.contains('text-market-red')).toBeTruthy();
   expect(cells[2].textContent?.startsWith('-100')).toBeTruthy();
   expect(cells[1].textContent).toEqual('1,230.0');

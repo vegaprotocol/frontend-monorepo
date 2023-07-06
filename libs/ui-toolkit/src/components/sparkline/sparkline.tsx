@@ -9,7 +9,7 @@ function colorByChange(a: number, b: number) {
   return a === b
     ? 'stroke-black/40 dark:stroke-white/40'
     : a < b
-    ? 'stroke-market-green dark:stroke-market-green'
+    ? 'stroke-market-green-600 dark:stroke-market-green'
     : 'stroke-market-red dark:stroke-market-red';
 }
 

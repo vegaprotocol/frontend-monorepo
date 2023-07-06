@@ -85,7 +85,7 @@ describe('FillsTable', () => {
     });
 
     const amountCell = cells.find((c) => c.getAttribute('col-id') === 'size');
-    expect(amountCell).toHaveClass('text-market-green');
+    expect(amountCell).toHaveClass('text-market-green-600');
   });
 
   it('should format cells correctly for seller fill', async () => {
