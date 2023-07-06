@@ -177,7 +177,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
   });
 });
 
-describe.skip('capsule', { tags: '@slow', testIsolation: true }, () => {
+describe('capsule', { tags: '@slow', testIsolation: true }, () => {
   before(() => {
     cy.updateCapsuleMultiSig();
   });
