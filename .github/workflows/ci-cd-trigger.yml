@@ -277,6 +277,14 @@ jobs:
             * trading: ${{ needs.lint-test-build.outputs.preview_trading }}
             * tools: ${{ needs.lint-test-build.outputs.preview_tools }}
 
+  console-test:
+    needs: dist-check
+    name: '(CI) console-test'
+    uses: ./.github/workflows/console-test-run.yml
+    secrets: inherit
+    with:
+      github-sha: ${{ github.sha }}
+
   # Report single result at the end, to avoid mess with required checks in PR
   cypress-check:
     name: '(CI) cypress - check'
@@ -291,41 +299,3 @@ jobs:
           else
             exit 1
           fi
-
-  console-test:
-    needs: dist-check
-    timeout-minutes: 5
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10.11'
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-
-      - name: Install dependencies
-        run: |
-          poetry install --no-root
-
-      - name: load Binaries
-        run: |
-          poetry run python -m vega_sim.tools.load_binaries
-
-      - name: pull console
-        run: |
-          poetry run docker pull ghcr.io/vegaprotocol/frontend/trading:${{ github.sha }}
-
-      - name: install playwright
-        run: poetry run playwright install
-      - name: run tests
-        run: poetry run pytest --numprocesses auto
-
-      - name: Upload Playwright Trace
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-trace
-          path: ./traces/
-          retention-days: 15
