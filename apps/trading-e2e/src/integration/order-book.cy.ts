@@ -1,10 +1,10 @@
 const orderbookTab = 'Orderbook';
 const orderbookTable = 'tab-orderbook';
-const askPrice = 'price-9894585';
+const askPrice = 'price-9894185';
 const bidPrice = 'price-9889001';
-const askVolume = 'ask-vol-9894585';
+const askVolume = 'ask-vol-9894185';
 const bidVolume = 'bid-vol-9889001';
-const askCumulative = 'cumulative-vol-9894585';
+const askCumulative = 'cumulative-vol-9894185';
 const bidCumulative = 'cumulative-vol-9889001';
 const midPrice = 'middle-mark-price-4612690000';
 const priceResolution = 'resolution';
@@ -33,7 +33,7 @@ describe('order book', { tags: '@smoke' }, () => {
 
   it('show orders prices', () => {
     // 6003-ORDB-003
-    cy.getByTestId(askPrice).should('have.text', '98.94585');
+    cy.getByTestId(askPrice).should('have.text', '98.94185');
     cy.getByTestId(bidPrice).should('have.text', '98.89001');
   });
 
@@ -45,7 +45,7 @@ describe('order book', { tags: '@smoke' }, () => {
 
   it('show prices cumulative volumes', () => {
     // 6003-ORDB-005
-    cy.getByTestId(askCumulative).should('have.text', '39');
+    cy.getByTestId(askCumulative).should('have.text', '38');
     cy.getByTestId(bidCumulative).should('have.text', '7');
   });
 
@@ -71,7 +71,7 @@ describe('order book', { tags: '@smoke' }, () => {
   it('copy price to deal ticket form', () => {
     // 6003-ORDB-009
     cy.getByTestId(askPrice).click();
-    cy.getByTestId(dealTicketPrice).should('have.value', '98.94585');
+    cy.getByTestId(dealTicketPrice).should('have.value', '98.94185');
   });
 
   it('change price resolution', () => {

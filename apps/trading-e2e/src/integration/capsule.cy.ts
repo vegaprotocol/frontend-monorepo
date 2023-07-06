@@ -120,7 +120,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     cy.get('main[data-testid="/portfolio"]').should('exist');
 
     cy.getByTestId(collateralTab).click();
-    cy.getByTestId('open-transfer-dialog').click();
+    cy.getByTestId('open-transfer').click();
     cy.getByTestId('transfer-form').should('be.visible');
     cy.getByTestId('transfer-form').find('[name="toAddress"]').select(1);
     cy.get('select option')
