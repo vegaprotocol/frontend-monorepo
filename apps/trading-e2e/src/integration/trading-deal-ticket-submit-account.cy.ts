@@ -74,8 +74,8 @@ describe(
           'You may not have enough margin available to open this position. 5.00 tDAI is currently required. You have only 0.01001 tDAI available.'
         );
         cy.getByTestId('deal-ticket-deposit-dialog-button').click();
-        cy.getByTestId('dialog-content')
-          .find('h1')
+        cy.getByTestId('sidebar-content')
+          .find('h2')
           .eq(0)
           .should('have.text', 'Deposit');
       });
