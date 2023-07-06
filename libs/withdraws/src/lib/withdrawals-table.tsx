@@ -10,11 +10,9 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
+  ActionsDropdown,
   ButtonLink,
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -160,7 +158,7 @@ export type CompleteCellProps = {
 };
 export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
   const open = useWithdrawalApprovalDialog((state) => state.open);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLButtonElement>(null);
 
   if (!data) {
     return null;
@@ -176,32 +174,20 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
         {t('Complete withdrawal')}
       </ButtonLink>
 
-      <DropdownMenu
-        trigger={
-          <DropdownMenuTrigger
-            className="hover:bg-vega-light-200 dark:hover:bg-vega-dark-200 p-0.5 focus:rounded-full hover:rounded-full"
-            data-testid="dropdown-menu"
-          >
-            <VegaIcon name={VegaIconNames.KEBAB} />
-          </DropdownMenuTrigger>
-        }
-      >
-        <DropdownMenuContent>
-          <DropdownMenuItem
-            key={'withdrawal-approval'}
-            data-testid="withdrawal-approval"
-            ref={ref}
-            onClick={() => {
-              if (data.id) {
-                open(data.id, ref.current, false);
-              }
-            }}
-          >
-            <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
-            {t('View withdrawal details')}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <ActionsDropdown>
+        <DropdownMenuItem
+          key={'withdrawal-approval'}
+          data-testid="withdrawal-approval"
+          onClick={() => {
+            if (data.id) {
+              open(data.id, ref.current, false);
+            }
+          }}
+        >
+          <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
+          {t('View withdrawal details')}
+        </DropdownMenuItem>
+      </ActionsDropdown>
     </div>
   );
 };

@@ -25,6 +25,7 @@ yarn nx serve governance
 Example configurations are provided here:
 
 - [Mainnet](./.env.mainnet)
+- [Mainnet-mirror](./.env.mainnet-mirror)
 - [Devnet](./.env.devnet)
 - [Testnet](./.env.testnet)
 

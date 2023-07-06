@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket, generateMarketData } from '../../test-helpers';
 import { DealTicket } from './deal-ticket';
 import * as Schema from '@vegaprotocol/types';
 import { MockedProvider } from '@apollo/client/testing';
 import { addDecimal } from '@vegaprotocol/utils';
-import { useOrderStore } from '@vegaprotocol/orders';
+import { useCreateOrderStore } from '@vegaprotocol/orders';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
@@ -30,6 +30,9 @@ function generateJsx() {
 }
 
 describe('DealTicket', () => {
+  const { result } = renderHook(() => useCreateOrderStore());
+  const useOrderStore = result.current;
+
   beforeEach(() => {
     localStorage.clear();
   });
@@ -138,7 +141,6 @@ describe('DealTicket', () => {
       reduceOnly: true,
       postOnly: false,
     };
-
     useOrderStore.setState({
       orders: {
         [expectedOrder.marketId]: expectedOrder,

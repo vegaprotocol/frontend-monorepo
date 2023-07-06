@@ -37,11 +37,10 @@ const UpdateNetworkParameterToastContent = ({
     <div>
       <ToastHeading>{title}</ToastHeading>
       <p className="italic">
-        '
-        {t(
-          `Update ${change.networkParameter.key} to ${change.networkParameter.value}`
-        )}
-        '
+        '{t('Update ')}
+        <span className="break-all">{change.networkParameter.key}</span>
+        {t(' to ')}
+        <span>{change.networkParameter.value}</span>'
       </p>
       {!isNaN(enactment) && (
         <p>

@@ -32,6 +32,7 @@ yarn nx serve explorer
 Example configurations are provided here:
 
 - [Mainnet](./.env.mainnet)
+- [Mainnet-mirror](./.env.mainnet-mirror)
 - [Devnet](./.env.devnet)
 - [Capsule](./.env.capsule)
 - [Testnet](./.env.testnet)

@@ -13,6 +13,7 @@ import { accountsDataProvider } from './accounts-data-provider';
 import { TransferForm } from './transfer-form';
 import { useTransferDialog } from './transfer-dialog';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
+import sortBy from 'lodash/sortBy';
 
 export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   const { pubKey, pubKeys } = useVegaWallet();
@@ -58,7 +59,7 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
       <TransferForm
         pubKey={pubKey}
         pubKeys={pubKeys ? pubKeys?.map((pk) => pk.publicKey) : null}
-        assets={assets}
+        assets={sortBy(assets, 'name')}
         assetId={assetId}
         feeFactor={param}
         submitTransfer={transfer}
