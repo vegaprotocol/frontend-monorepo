@@ -35,6 +35,7 @@ const MobileWalletButton = ({
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
+  const setView = useSidebar((store) => store.setView);
   const { VEGA_ENV } = useEnvironment();
   const isYellow = VEGA_ENV === Networks.TESTNET;
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -127,8 +128,7 @@ const MobileWalletButton = ({
             <Button
               onClick={() => {
                 setDrawerOpen(false);
-                // openTransferDialog(true);
-                alert('TODO: handle transfer on mobile');
+                setView({ type: ViewType.Transfer });
               }}
               fill
             >
@@ -193,6 +193,7 @@ export const VegaWalletConnectButton = () => {
               sideOffset={20}
               side="bottom"
               align="end"
+              onEscapeKeyDown={() => setDropdownOpen(false)}
             >
               <div className="min-w-[340px]" data-testid="keypair-list">
                 <DropdownMenuRadioGroup
@@ -209,7 +210,10 @@ export const VegaWalletConnectButton = () => {
                 {!isReadOnly && (
                   <DropdownMenuItem
                     data-testid="wallet-transfer"
-                    onClick={() => setView({ type: ViewType.Transfer })}
+                    onClick={() => {
+                      setView({ type: ViewType.Transfer });
+                      setDropdownOpen(false);
+                    }}
                   >
                     {t('Transfer')}
                   </DropdownMenuItem>

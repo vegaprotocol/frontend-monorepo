@@ -4,39 +4,21 @@ describe('Settings page', { tags: '@smoke' }, () => {
       cy.mockTradingPage();
       cy.mockSubscription();
       cy.visit('/');
-      cy.get('[aria-label="cog icon"]').click();
+      cy.getByTestId('Settings').click();
     });
   });
   it('telemetry checkbox should work well', () => {
-    cy.location('hash').should('equal', '#/settings');
-    cy.getByTestId('telemetry-approval').should(
-      'have.attr',
-      'data-state',
-      'unchecked'
-    );
-    cy.get('[for="telemetry-approval"]').click();
-    cy.getByTestId('telemetry-approval').should(
-      'have.attr',
-      'data-state',
-      'checked'
-    );
+    const telemetrySwitch = '#switch-settings-telemetry-switch';
+    cy.get(telemetrySwitch).should('have.attr', 'data-state', 'unchecked');
+    cy.get(telemetrySwitch).click();
+    cy.get(telemetrySwitch).should('have.attr', 'data-state', 'checked');
     cy.reload();
-    cy.getByTestId('telemetry-approval').should(
-      'have.attr',
-      'data-state',
-      'checked'
-    );
-    cy.get('[for="telemetry-approval"]').click();
-    cy.getByTestId('telemetry-approval').should(
-      'have.attr',
-      'data-state',
-      'unchecked'
-    );
+    cy.getByTestId('Settings').click();
+    cy.get(telemetrySwitch).should('have.attr', 'data-state', 'checked');
+    cy.get(telemetrySwitch).click();
+    cy.get(telemetrySwitch).should('have.attr', 'data-state', 'unchecked');
     cy.reload();
-    cy.getByTestId('telemetry-approval').should(
-      'have.attr',
-      'data-state',
-      'unchecked'
-    );
+    cy.getByTestId('Settings').click();
+    cy.get(telemetrySwitch).should('have.attr', 'data-state', 'unchecked');
   });
 });

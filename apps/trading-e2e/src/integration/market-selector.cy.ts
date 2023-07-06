@@ -22,15 +22,12 @@ describe('markets selector', { tags: '@smoke' }, () => {
 
     cy.wait('@Markets');
     cy.wait('@MarketsData');
-    cy.wait('@MarketsCandles');
   });
 
   // 6001-MARK-066
-  it('can toggle the sidebar', () => {
-    cy.getByTestId('market-selector').should('be.visible');
-    cy.getByTestId('sidebar-toggle').click();
+  it('can open popover to view markets', () => {
     cy.getByTestId('market-selector').should('not.exist');
-    cy.getByTestId('sidebar-toggle').click();
+    cy.getByTestId('header-title').should('be.visible').click();
     cy.getByTestId('market-selector').should('be.visible');
   });
 
@@ -40,29 +37,30 @@ describe('markets selector', { tags: '@smoke' }, () => {
     const data = [
       {
         code: 'SOLUSD',
-        markPrice: '84.41XYZalpha',
+        markPrice: 'XYZalpha84.41',
         change: '',
-        vol: '0.0024h vol',
+        vol: '24h vol0.00',
       },
       {
         code: 'ETHBTC.QM21',
-        markPrice: '46,126.90058tBTC',
+        markPrice: 'tBTC46,126.90058',
         change: '',
-        vol: '0.0024h vol',
+        vol: '24h vol0.00',
       },
       {
         code: 'BTCUSD.MF21',
-        markPrice: '46,126.90058tDAI',
+        markPrice: 'tDAI46,126.90058',
         change: '',
-        vol: '0.0024h vol',
+        vol: '24h vol0.00',
       },
       {
         code: 'AAPL.MF21',
-        markPrice: '46,126.90058tUSDC',
+        markPrice: 'tUSDC46,126.90058',
         change: '',
-        vol: '0.0024h vol',
+        vol: '24h vol0.00',
       },
     ];
+    cy.getByTestId('header-title').should('be.visible').click();
     cy.getByTestId(list)
       .find('a')
       .each((item, i) => {
@@ -86,18 +84,9 @@ describe('markets selector', { tags: '@smoke' }, () => {
       });
   });
 
-  it('can see all markets link', () => {
-    // 6001-MARK-026
-    cy.getByTestId('market-selector').within(() => {
-      cy.getByTestId('all-markets-link')
-        .should('be.visible')
-        .and('have.text', 'All markets')
-        .and('have.attr', 'href')
-        .and('contain', '#/markets/all');
-    });
-  });
-
   it('can use the filter options', () => {
+    cy.getByTestId('header-title').should('be.visible').click();
+
     // 6001-MARK-027
     // product type
     cy.getByTestId('product-Spot').click();
@@ -118,6 +107,8 @@ describe('markets selector', { tags: '@smoke' }, () => {
   });
 
   it('can sort by by top gaining and top losing market', () => {
+    cy.getByTestId('header-title').should('be.visible').click();
+
     // 6001-MARK-030
     // 6001-MARK-031
     // 6001-MARK-032
@@ -135,6 +126,8 @@ describe('markets selector', { tags: '@smoke' }, () => {
   });
 
   it('can filter by settlement asset', () => {
+    cy.getByTestId('header-title').should('be.visible').click();
+
     // 6001-MARK-028
     cy.getByTestId('asset-trigger').click();
     cy.getByTestId('asset-id-asset-3').contains('tBTC').click();
