@@ -5,7 +5,6 @@ const amountShortName = 'input[name="amount"] + div + span.text-xs';
 const assetSelection = 'select-asset';
 const assetBalance = 'asset-balance';
 const assetOption = 'rich-select-option';
-const sidebarButton = 'Transfer';
 const transferText = 'transfer-intro-text';
 const dropdownMenu = 'dropdown-menu';
 const errorText = 'input-error-text';
