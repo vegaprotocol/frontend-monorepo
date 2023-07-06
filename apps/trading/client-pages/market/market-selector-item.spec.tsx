@@ -90,8 +90,6 @@ describe('MarketSelectorItem', () => {
     },
   ];
 
-  const mockOnSelect = jest.fn();
-
   const renderJsx = (mocks: MockedResponse[]) => {
     return render(
       <MemoryRouter>
@@ -100,7 +98,6 @@ describe('MarketSelectorItem', () => {
             market={market}
             currentMarketId={market.id}
             style={{}}
-            onSelect={mockOnSelect}
           />
         </MockedProvider>
       </MemoryRouter>

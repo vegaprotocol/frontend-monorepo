@@ -23,7 +23,12 @@ function generateJsx() {
   return (
     <MockedProvider>
       <VegaWalletContext.Provider value={{ pubKey, isReadOnly: false } as any}>
-        <DealTicket market={market} marketData={marketData} submit={submit} />
+        <DealTicket
+          market={market}
+          marketData={marketData}
+          submit={submit}
+          onDeposit={jest.fn()}
+        />
       </VegaWalletContext.Provider>
     </MockedProvider>
   );

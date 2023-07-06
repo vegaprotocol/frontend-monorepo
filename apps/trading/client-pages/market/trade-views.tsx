@@ -18,8 +18,6 @@ import { OrdersContainer } from '../../components/orders-container';
 type MarketDependantView =
   | typeof CandlesChartContainer
   | typeof DepthChartContainer
-  | typeof DealTicketContainer
-  | typeof MarketInfoAccordionContainer
   | typeof OrderbookContainer
   | typeof TradesContainer;
 
