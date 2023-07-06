@@ -100,6 +100,7 @@ export const DepositForm = ({
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
+      from: account,
       to: pubKey ? pubKey : undefined,
       asset: selectedAsset?.id,
       amount: persistedDeposit?.amount,
