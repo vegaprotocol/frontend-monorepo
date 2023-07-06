@@ -89,24 +89,29 @@ export const MarketSuccessorBanner = () => {
           {t('This market has been succeeded')}
         </div>
         <div>
-          {duration &&
-            t('This market expires in %s.', [
-              formatDuration(duration, {
-                format: [
-                  'years',
-                  'months',
-                  'weeks',
-                  'days',
-                  'hours',
-                  'minutes',
-                ],
-              }),
-            ])}{' '}
+          {duration && (
+            <span>
+              {t('This market expires in %s.', [
+                formatDuration(duration, {
+                  format: [
+                    'years',
+                    'months',
+                    'weeks',
+                    'days',
+                    'hours',
+                    'minutes',
+                  ],
+                }),
+              ])}
+            </span>
+          )}{' '}
           {t('The successor market')}{' '}
           <ExternalLink href={`/markets/${successorData?.id}`}>
             {successorData?.tradableInstrument.instrument.name}
           </ExternalLink>
-          {successorVolume && ' ' + t('has %s 24h vol.', [successorVolume])}
+          {successorVolume && (
+            <span> {t('has %s 24h vol.', [successorVolume])}</span>
+          )}
         </div>
       </NotificationBanner>
     );
