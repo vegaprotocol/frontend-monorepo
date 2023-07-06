@@ -58,7 +58,7 @@ describe('home', { tags: '@regression' }, () => {
       // 0006-NETW-018
       // 0006-NETW-019
       // 0006-NETW-020
-      cy.getByTestId(nodeHealth).click();
+      cy.getByTestId(nodeHealthTrigger).click();
       cy.getByTestId('connect').should('be.disabled');
       cy.getByTestId('node-url-custom').click();
       cy.getByTestId('connect').should('be.disabled');

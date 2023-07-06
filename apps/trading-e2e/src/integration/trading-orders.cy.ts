@@ -431,6 +431,8 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
   });
 
   const orderId = '1234567890';
+
+  // this test is flakey
   it('must be able to amend the price of an order', () => {
     // 7003-MORD-007
     // 7003-MORD-012
