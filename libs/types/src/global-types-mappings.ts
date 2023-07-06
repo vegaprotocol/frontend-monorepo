@@ -321,6 +321,15 @@ export const ProposalRejectionReasonMapping: {
   PROPOSAL_ERROR_UNSUPPORTED_TRADING_MODE: 'Unsupported trading mode',
   PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE:
     'ERC20 address already in use by an existing asset',
+  PROPOSAL_ERROR_GOVERNANCE_CANCEL_TRANSFER_PROPOSAL_INVALID:
+    'PROPOSAL_ERROR_GOVERNANCE_CANCEL_TRANSFER_PROPOSAL_INVALID',
+  PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_FAILED:
+    'PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_FAILED',
+  PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_INVALID:
+    'PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_INVALID',
+  PROPOSAL_ERROR_INVALID_SPOT: 'PROPOSAL_ERROR_INVALID_SPOT',
+  PROPOSAL_ERROR_INVALID_SUCCESSOR_MARKET:
+    'PROPOSAL_ERROR_INVALID_SUCCESSOR_MARKET',
 };
 
 /**
@@ -419,6 +428,9 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE: 'Transfer received',
   TRANSFER_TYPE_CLEAR_ACCOUNT: 'Market accounts cleared',
   TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE: 'Balances restored',
+  TRANSFER_TYPE_HOLDING_LOCK: 'TRANSFER_TYPE_HOLDING_LOCK',
+  TRANSFER_TYPE_HOLDING_RELEASE: 'TRANSFER_TYPE_HOLDING_RELEASE',
+  TRANSFER_TYPE_SPOT: 'TRANSFER_TYPE_SPOT',
 };
 
 export const DescriptionTransferTypeMapping: TransferTypeMap = {
@@ -446,6 +458,9 @@ export const DescriptionTransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_CLEAR_ACCOUNT: `Market-related accounts emptied, and balances moved, because the market has closed`,
   TRANSFER_TYPE_UNSPECIFIED: 'Default value, always invalid',
   TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE: `Balances are being restored to the user's account following a checkpoint restart of the network`,
+  TRANSFER_TYPE_HOLDING_LOCK: '-',
+  TRANSFER_TYPE_HOLDING_RELEASE: '-',
+  TRANSFER_TYPE_SPOT: '-',
 };
 
 type DispatchMetricLabel = {
