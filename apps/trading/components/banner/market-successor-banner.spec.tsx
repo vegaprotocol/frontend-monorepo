@@ -1,9 +1,10 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/react-testing';
 import * as dataProviders from '@vegaprotocol/data-provider';
 import { MarketSuccessorBanner } from './market-successor-banner';
 import * as Types from '@vegaprotocol/types';
 import * as allUtils from '@vegaprotocol/utils';
+import * as marketsTools from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
 import type { PartialDeep } from 'type-fest';
 
@@ -32,7 +33,15 @@ jest.mock('@vegaprotocol/data-provider', () => ({
     };
   }),
 }));
-jest.mock('@vegaprotocol/utils');
+jest.mock('@vegaprotocol/utils', () => ({
+  ...jest.requireActual('@vegaprotocol/utils'),
+  getMarketExpiryDate: jest.fn(),
+}));
+let mockCandles = {};
+jest.mock('@vegaprotocol/markets', () => ({
+  ...jest.requireActual('@vegaprotocol/markets'),
+  useCandles: () => mockCandles,
+}));
 
 describe('MarketSuccessorBanner', () => {
   beforeEach(() => {
@@ -221,7 +230,7 @@ describe('MarketSuccessorBanner', () => {
   });
 
   describe('should be displayed', () => {
-    it('should be rendered', () => {
+    beforeAll(() => {
       mockLocations = { pathname: '/markets/marketId' };
       mockParams = { marketId: 'marketId' };
       mockDataMarket = {
@@ -244,15 +253,55 @@ describe('MarketSuccessorBanner', () => {
         tradingMode: Types.MarketTradingMode.TRADING_MODE_CONTINUOUS,
         tradableInstrument: {
           instrument: {
-            name: 'Successor Name',
+            name: 'Successor Market Name',
           },
         },
       };
-      jest.spyOn(allUtils, 'getMarketExpiryDate');
-      const { container } = render(<MarketSuccessorBanner />, {
+    });
+    it('should be rendered', () => {
+      render(<MarketSuccessorBanner />, {
         wrapper: MockedProvider,
       });
-      expect(container).toBeInTheDocument();
+      expect(
+        screen.getByText('This market has been succeeded')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', { name: 'Successor Market Name' })
+      ).toHaveAttribute('href', '/markets/successorMarketID');
+    });
+
+    it('should display optionally successor volume ', () => {
+      mockDataSuccessorMarket = {
+        ...mockDataSuccessorMarket,
+        positionDecimalPlaces: 3,
+      };
+      mockCandles = {
+        oneDayCandles: [
+          { volume: 123 },
+          { volume: 456 },
+          { volume: 789 },
+          { volume: 99999 },
+        ],
+      };
+
+      const { container, debug } = render(<MarketSuccessorBanner />, {
+        wrapper: MockedProvider,
+      });
+      debug(container);
+      expect(screen.getByText('has 101.367 24h vol.')).toBeInTheDocument();
+    });
+
+    it('should display optionally duration', () => {
+      jest
+        .spyOn(allUtils, 'getMarketExpiryDate')
+        .mockReturnValue(new Date(Date.now() - 24 * 60 * 60 * 1000));
+      const { container, debug } = render(<MarketSuccessorBanner />, {
+        wrapper: MockedProvider,
+      });
+      debug(container);
+      expect(
+        screen.getByText('This market expires in 1 day.')
+      ).toBeInTheDocument();
     });
   });
 });
