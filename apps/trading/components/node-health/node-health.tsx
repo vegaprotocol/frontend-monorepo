@@ -10,15 +10,19 @@ import { Tooltip } from '../../components/tooltip';
 export const NodeHealthContainer = () => {
   const { VEGA_URL, VEGA_INCIDENT_URL } = useEnvironment();
   const setNodeSwitcher = useNodeSwitcherStore((store) => store.setDialogOpen);
-  const { text, intent } = useNodeHealth();
+  const { text, intent, datanodeBlockHeight } = useNodeHealth();
 
   return (
     <Tooltip
       description={
-        <div className="flex flex-col gap-2 p-4 text-sm">
+        <div
+          className="flex flex-col gap-2 p-4 text-sm"
+          data-testid="node-health"
+        >
           <div className="flex items-center gap-2">
             <Indicator variant={intent} />
             <p>{text}</p>
+            <p>{datanodeBlockHeight}</p>
           </div>
           {VEGA_URL && (
             <p>
@@ -39,6 +43,7 @@ export const NodeHealthContainer = () => {
       <button
         className="flex justify-center items-center py-3 rounded hover:bg-vega-light-200 hover:dark:bg-vega-dark-200"
         onClick={() => setNodeSwitcher(true)}
+        data-testid="node-health-trigger"
       >
         <Indicator variant={intent} size="lg" />
       </button>
