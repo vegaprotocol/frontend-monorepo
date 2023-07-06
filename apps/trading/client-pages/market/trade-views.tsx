@@ -1,7 +1,5 @@
 import type { ComponentProps } from 'react';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import type { DealTicketContainer } from '@vegaprotocol/deal-ticket';
-import type { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { TradesContainer } from '@vegaprotocol/trades';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
