@@ -67,11 +67,11 @@ export const AccountsContainer = ({
         gridProps={gridStoreCallbacks}
       />
       {!isReadOnly && !hideButtons && (
-        <div className="flex gap-2 justify-end p-2 px-[11px] absolute lg:fixed bottom-0 right-3 dark:bg-black/75 bg-white/75 rounded">
+        <div className="flex gap-2 justify-end p-2 absolute bottom-0 right-0 dark:bg-black/75 bg-white/75 rounded">
           <Button
             variant="primary"
             size="sm"
-            data-testid="open-transfer-dialog"
+            data-testid="open-transfer"
             onClick={() => setView({ type: ViewType.Transfer })}
           >
             {t('Transfer')}
