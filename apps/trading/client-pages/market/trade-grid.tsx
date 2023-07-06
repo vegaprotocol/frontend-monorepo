@@ -87,6 +87,11 @@ const MarketBottomPanel = memo(
                   <TradingViews.orders.component marketId={marketId} />
                 </VegaWalletContainer>
               </Tab>
+              <Tab id="stop-orders" name={t('Stop Orders')}>
+                <VegaWalletContainer>
+                  <TradingViews.stopOrders.component />
+                </VegaWalletContainer>
+              </Tab>
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
                   <TradingViews.fills.component onMarketClick={onMarketClick} />
@@ -159,6 +164,11 @@ const MarketBottomPanel = memo(
               <TradingViews.orders.component marketId={marketId} />
             </VegaWalletContainer>
           </Tab>
+          <Tab id="stop-orders" name={t('Stop Orders')}>
+            <VegaWalletContainer>
+              <TradingViews.stopOrders.component />
+            </VegaWalletContainer>
+          </Tab>
           <Tab id="fills" name={t('Fills')}>
             <VegaWalletContainer>
               <TradingViews.fills.component onMarketClick={onMarketClick} />
@@ -215,6 +225,9 @@ const MainGrid = memo(
                       onMarketClick={onMarketClick}
                       onClickCollateral={() => navigate('/portfolio')}
                     />
+                  </Tab>
+                  <Tab id="stopOrder" name={t('Stop order')}>
+                    <TradingViews.stopOrder.component marketId={marketId} />
                   </Tab>
                   <Tab id="info" name={t('Info')}>
                     <TradingViews.info.component marketId={marketId} />

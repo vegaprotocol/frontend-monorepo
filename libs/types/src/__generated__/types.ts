@@ -1134,6 +1134,17 @@ export type HistorySegment = {
   toHeight: Scalars['Int'];
 };
 
+/** Details of the iceberg order */
+export type IcebergOrder = {
+  __typename?: 'IcebergOrder';
+  /** If the visible size of the order falls below this value, it will be replenished back to the peak size using the reserved amount */
+  minimumVisibleSize: Scalars['String'];
+  /** Size of the order that will be made visible if the iceberg order is replenished after trading */
+  peakSize: Scalars['String'];
+  /** Size of the order that is reserved and used to restore the iceberg's peak when it is refreshed */
+  reservedRemaining: Scalars['String'];
+};
+
 /** Describes something that can be traded on Vega */
 export type Instrument = {
   __typename?: 'Instrument';
@@ -2293,6 +2304,8 @@ export type Order = {
   createdAt: Scalars['Timestamp'];
   /** Expiration time of this order (ISO-8601 RFC3339+Nano formatted date) */
   expiresAt?: Maybe<Scalars['Timestamp']>;
+  /** Details of an iceberg order */
+  icebergOrder?: Maybe<IcebergOrder>;
   /** Hash of the order data */
   id: Scalars['ID'];
   /** The liquidity provision this order was created from */
@@ -2537,6 +2550,35 @@ export enum OrderStatus {
   STATUS_STOPPED = 'STATUS_STOPPED'
 }
 
+/** Details of the order that will be submitted when the stop order is triggered. */
+export type OrderSubmission = {
+  __typename?: 'OrderSubmission';
+  /** Expiration time of this order (ISO-8601 RFC3339+Nano formatted date) */
+  expiresAt: Scalars['Timestamp'];
+  /** Details of an iceberg order */
+  icebergOrder?: Maybe<IcebergOrder>;
+  /** Market the order is for. */
+  marketId: Scalars['ID'];
+  /** PeggedOrder contains the details about a pegged order */
+  peggedOrder?: Maybe<PeggedOrder>;
+  /** Is this a post only order */
+  postOnly?: Maybe<Scalars['Boolean']>;
+  /** The worst price the order will trade at (e.g. buy for price or less, sell for price or more) (uint64) */
+  price: Scalars['String'];
+  /** Is this a reduce only order */
+  reduceOnly?: Maybe<Scalars['Boolean']>;
+  /** The external reference (if available) for the order */
+  reference?: Maybe<Scalars['String']>;
+  /** Whether the order is to buy or sell */
+  side: Side;
+  /** Total number of units that may be bought or sold (immutable) (uint64) */
+  size: Scalars['String'];
+  /** The timeInForce of order (determines how and if it executes, and whether it persists on the book) */
+  timeInForce: OrderTimeInForce;
+  /** The order type */
+  type: OrderType;
+};
+
 /** Valid order types, these determine what happens when an order is added to the book */
 export enum OrderTimeInForce {
   /** Fill or Kill: The order either trades completely (remainingSize == 0 after adding) or not at all, does not remain on the book if it doesn't trade */
@@ -2576,6 +2618,8 @@ export type OrderUpdate = {
   createdAt: Scalars['Timestamp'];
   /** Expiration time of this order (ISO-8601 RFC3339+Nano formatted date) */
   expiresAt?: Maybe<Scalars['Timestamp']>;
+  /** Details of an iceberg order */
+  icebergOrder?: Maybe<IcebergOrder>;
   /** Hash of the order data */
   id: Scalars['ID'];
   /** The liquidity provision this order was created from */
@@ -3499,6 +3543,10 @@ export type Query = {
   protocolUpgradeStatus?: Maybe<ProtocolUpgradeStatus>;
   /** Get statistics about the Vega node */
   statistics: Statistics;
+  /** Get stop order by ID */
+  stopOrder?: Maybe<StopOrder>;
+  /** Get a list of stop orders. If provided, the filter will be applied to the list of stop orders to restrict the results. */
+  stopOrders?: Maybe<StopOrderConnection>;
   /** Get a list of all trades and apply any given filters to the results */
   trades?: Maybe<TradeConnection>;
   /** Get a list of all transfers for a public key */
@@ -3799,6 +3847,19 @@ export type QueryproposalsConnectionArgs = {
 export type QueryprotocolUpgradeProposalsArgs = {
   approvedBy?: InputMaybe<Scalars['String']>;
   inState?: InputMaybe<ProtocolUpgradeProposalStatus>;
+  pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerystopOrderArgs = {
+  id: Scalars['ID'];
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerystopOrdersArgs = {
+  filter?: InputMaybe<StopOrderFilter>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -4181,6 +4242,117 @@ export type Statistics = {
   /** RFC3339Nano current time of the chain (decided through consensus) */
   vegaTime: Scalars['Timestamp'];
 };
+
+/** A stop order in Vega */
+export type StopOrder = {
+  __typename?: 'StopOrder';
+  /** Time the stop order was created. */
+  createdAt: Scalars['Timestamp'];
+  /** Time at which the order will expire if an expiry time is set. */
+  expiresAt?: Maybe<Scalars['Timestamp']>;
+  /** If an expiry is set, what should the stop order do when it expires. */
+  expiryStrategy?: Maybe<StopOrderExpiryStrategy>;
+  /** Hash of the stop order data */
+  id: Scalars['ID'];
+  /** Market the stop order is for. */
+  marketId: Scalars['ID'];
+  /** If OCO (one-cancels-other) order, the ID of the associated order. */
+  ocoLinkId?: Maybe<Scalars['ID']>;
+  /** Party that submitted the stop order. */
+  partyId: Scalars['ID'];
+  /** Status of the stop order */
+  status: StopOrderStatus;
+  /** Order to submit when the stop order is triggered. */
+  submission: OrderSubmission;
+  /** Price movement that will trigger the stop order */
+  trigger?: Maybe<StopOrderTrigger>;
+  /** Direction the price is moving to trigger the stop order. */
+  triggerDirection: StopOrderTriggerDirection;
+  /** Time the stop order was last updated. */
+  updatedAt?: Maybe<Scalars['Timestamp']>;
+};
+
+/** Connection type for retrieving cursory-based paginated stop order information */
+export type StopOrderConnection = {
+  __typename?: 'StopOrderConnection';
+  /** The stop orders in this connection */
+  edges?: Maybe<Array<StopOrderEdge>>;
+  /** The pagination information */
+  pageInfo?: Maybe<PageInfo>;
+};
+
+/** Edge type containing the stop order and cursor information returned by a StopOrderConnection */
+export type StopOrderEdge = {
+  __typename?: 'StopOrderEdge';
+  /** The cursor for this stop order */
+  cursor?: Maybe<Scalars['String']>;
+  /** The stop order */
+  node?: Maybe<StopOrder>;
+};
+
+/** Valid stop order expiry strategies. The expiry strategy determines what happens to a stop order when it expires. */
+export enum StopOrderExpiryStrategy {
+  /** The stop order will be cancelled when it expires. */
+  EXPIRY_STRATEGY_CANCELS = 'EXPIRY_STRATEGY_CANCELS',
+  /** The stop order will be submitted when the expiry time is reached. */
+  EXPIRY_STRATEGY_SUBMIT = 'EXPIRY_STRATEGY_SUBMIT',
+  /** The stop order expiry strategy has not been specified by the trader. */
+  EXPIRY_STRATEGY_UNSPECIFIED = 'EXPIRY_STRATEGY_UNSPECIFIED'
+}
+
+/** Filter to be applied when querying a list of stop orders. If multiple criteria are specified, e.g. parties and markets, then the filter is applied as an AND. */
+export type StopOrderFilter = {
+  /** Date range to retrieve order from/to. Start and end time should be expressed as an integer value of nano-seconds past the Unix epoch */
+  dateRange?: InputMaybe<DateRange>;
+  /** Zero or more expiry strategies to filter by */
+  expiryStrategy?: InputMaybe<Array<StopOrderExpiryStrategy>>;
+  /** Zero or more market IDs to filter by */
+  markets?: InputMaybe<Array<Scalars['ID']>>;
+  /** Zero or more party IDs to filter by */
+  parties?: InputMaybe<Array<Scalars['ID']>>;
+  /** Zero or more order status to filter by */
+  status?: InputMaybe<Array<StopOrderStatus>>;
+};
+
+/** Price at which a stop order will trigger */
+export type StopOrderPrice = {
+  __typename?: 'StopOrderPrice';
+  price: Scalars['String'];
+};
+
+/** Valid stop order statuses, these determine several states for a stop order that cannot be expressed with other fields in StopOrder. */
+export enum StopOrderStatus {
+  /** Stop order has been cancelled. This could be by the trader or by the network. */
+  STATUS_CANCELLED = 'STATUS_CANCELLED',
+  /** Stop order has expired. This means the trigger conditions have not been met and the stop order has expired. */
+  STATUS_EXPIRED = 'STATUS_EXPIRED',
+  /** Stop order is pending. This means the stop order has been accepted in the network, but the trigger conditions have not been met. */
+  STATUS_PENDING = 'STATUS_PENDING',
+  /** Stop order has been rejected. This means the stop order was not accepted by the network. */
+  STATUS_REJECTED = 'STATUS_REJECTED',
+  /** Stop order has been stopped. This means the trigger conditions have been met, but the stop order was not executed, and stopped. */
+  STATUS_STOPPED = 'STATUS_STOPPED',
+  /** Stop order has been triggered. This means the trigger conditions have been met, and the stop order was executed. */
+  STATUS_TRIGGERED = 'STATUS_TRIGGERED',
+  /** Stop order has been submitted to the network but does not have a status yet */
+  STATUS_UNSPECIFIED = 'STATUS_UNSPECIFIED'
+}
+
+/** Percentage movement in the price at which a stop order will trigger. */
+export type StopOrderTrailingPercentOffset = {
+  __typename?: 'StopOrderTrailingPercentOffset';
+  trailingPercentOffset: Scalars['String'];
+};
+
+export type StopOrderTrigger = StopOrderPrice | StopOrderTrailingPercentOffset;
+
+/** Valid stop order trigger direction. The trigger direction determines whether the price should rise above or fall below the stop order trigger. */
+export enum StopOrderTriggerDirection {
+  /** The price should fall below the trigger. */
+  TRIGGER_DIRECTION_FALLS_BELOW = 'TRIGGER_DIRECTION_FALLS_BELOW',
+  /** The price should rise above the trigger. */
+  TRIGGER_DIRECTION_RISES_ABOVE = 'TRIGGER_DIRECTION_RISES_ABOVE'
+}
 
 /** Subscriptions allow a caller to receive new information as it is available from the Vega network. */
 export type Subscription = {

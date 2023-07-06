@@ -32,6 +32,17 @@ export type OrdersUpdateSubscriptionVariables = Types.Exact<{
 
 export type OrdersUpdateSubscription = { __typename?: 'Subscription', orders?: Array<{ __typename?: 'OrderUpdate', id: string, marketId: string, type?: Types.OrderType | null, side: Types.Side, size: string, remaining: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, liquidityProvisionId?: string | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null }> | null };
 
+export type OrderSubmissionFieldsFragment = { __typename?: 'OrderSubmission', marketId: string, price: string, size: string, side: Types.Side, timeInForce: Types.OrderTimeInForce, expiresAt: any, type: Types.OrderType, reference?: string | null, postOnly?: boolean | null, reduceOnly?: boolean | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename?: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null };
+
+export type StopOrderFieldsFragment = { __typename?: 'StopOrder', id: string, ocoLinkId?: string | null, expiresAt?: any | null, expiryStrategy?: Types.StopOrderExpiryStrategy | null, triggerDirection: Types.StopOrderTriggerDirection, status: Types.StopOrderStatus, createdAt: any, updatedAt?: any | null, partyId: string, marketId: string, trigger?: { __typename?: 'StopOrderPrice', price: string } | { __typename?: 'StopOrderTrailingPercentOffset', trailingPercentOffset: string } | null, submission: { __typename?: 'OrderSubmission', marketId: string, price: string, size: string, side: Types.Side, timeInForce: Types.OrderTimeInForce, expiresAt: any, type: Types.OrderType, reference?: string | null, postOnly?: boolean | null, reduceOnly?: boolean | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename?: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null } };
+
+export type StopOrdersQueryVariables = Types.Exact<{
+  partyId: Types.Scalars['ID'];
+}>;
+
+
+export type StopOrdersQuery = { __typename?: 'Query', stopOrders?: { __typename?: 'StopOrderConnection', edges?: Array<{ __typename?: 'StopOrderEdge', node?: { __typename?: 'StopOrder', id: string, ocoLinkId?: string | null, expiresAt?: any | null, expiryStrategy?: Types.StopOrderExpiryStrategy | null, triggerDirection: Types.StopOrderTriggerDirection, status: Types.StopOrderStatus, createdAt: any, updatedAt?: any | null, partyId: string, marketId: string, trigger?: { __typename?: 'StopOrderPrice', price: string } | { __typename?: 'StopOrderTrailingPercentOffset', trailingPercentOffset: string } | null, submission: { __typename?: 'OrderSubmission', marketId: string, price: string, size: string, side: Types.Side, timeInForce: Types.OrderTimeInForce, expiresAt: any, type: Types.OrderType, reference?: string | null, postOnly?: boolean | null, reduceOnly?: boolean | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename?: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null } } | null }> | null } | null };
+
 export const OrderFieldsFragmentDoc = gql`
     fragment OrderFields on Order {
   id
@@ -85,6 +96,54 @@ export const OrderUpdateFieldsFragmentDoc = gql`
   }
 }
     `;
+export const OrderSubmissionFieldsFragmentDoc = gql`
+    fragment OrderSubmissionFields on OrderSubmission {
+  marketId
+  price
+  size
+  side
+  timeInForce
+  expiresAt
+  type
+  reference
+  peggedOrder {
+    reference
+    offset
+  }
+  postOnly
+  reduceOnly
+  icebergOrder {
+    peakSize
+    minimumVisibleSize
+    reservedRemaining
+  }
+}
+    `;
+export const StopOrderFieldsFragmentDoc = gql`
+    fragment StopOrderFields on StopOrder {
+  id
+  ocoLinkId
+  expiresAt
+  expiryStrategy
+  triggerDirection
+  status
+  createdAt
+  updatedAt
+  partyId
+  marketId
+  trigger {
+    ... on StopOrderPrice {
+      price
+    }
+    ... on StopOrderTrailingPercentOffset {
+      trailingPercentOffset
+    }
+  }
+  submission {
+    ...OrderSubmissionFields
+  }
+}
+    ${OrderSubmissionFieldsFragmentDoc}`;
 export const OrderByIdDocument = gql`
     query OrderById($orderId: ID!) {
   orderByID(id: $orderId) {
@@ -206,3 +265,42 @@ export function useOrdersUpdateSubscription(baseOptions: Apollo.SubscriptionHook
       }
 export type OrdersUpdateSubscriptionHookResult = ReturnType<typeof useOrdersUpdateSubscription>;
 export type OrdersUpdateSubscriptionResult = Apollo.SubscriptionResult<OrdersUpdateSubscription>;
+export const StopOrdersDocument = gql`
+    query StopOrders($partyId: ID!) {
+  stopOrders(filter: {parties: [$partyId]}) {
+    edges {
+      node {
+        ...StopOrderFields
+      }
+    }
+  }
+}
+    ${StopOrderFieldsFragmentDoc}`;
+
+/**
+ * __useStopOrdersQuery__
+ *
+ * To run a query within a React component, call `useStopOrdersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStopOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStopOrdersQuery({
+ *   variables: {
+ *      partyId: // value for 'partyId'
+ *   },
+ * });
+ */
+export function useStopOrdersQuery(baseOptions: Apollo.QueryHookOptions<StopOrdersQuery, StopOrdersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<StopOrdersQuery, StopOrdersQueryVariables>(StopOrdersDocument, options);
+      }
+export function useStopOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StopOrdersQuery, StopOrdersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<StopOrdersQuery, StopOrdersQueryVariables>(StopOrdersDocument, options);
+        }
+export type StopOrdersQueryHookResult = ReturnType<typeof useStopOrdersQuery>;
+export type StopOrdersLazyQueryHookResult = ReturnType<typeof useStopOrdersLazyQuery>;
+export type StopOrdersQueryResult = Apollo.QueryResult<StopOrdersQuery, StopOrdersQueryVariables>;

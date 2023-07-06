@@ -1,6 +1,9 @@
 import type { ComponentProps } from 'react';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import {
+  DealTicketContainer,
+  StopOrderContainer,
+} from '@vegaprotocol/deal-ticket';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { TradesContainer } from '@vegaprotocol/trades';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
@@ -14,6 +17,7 @@ import { AccountsContainer } from '../../components/accounts-container';
 import { LiquidityContainer } from '../../components/liquidity-container';
 import type { OrderContainerProps } from '../../components/orders-container';
 import { OrdersContainer } from '../../components/orders-container';
+import { StopOrdersContainer } from '../../components/stop-orders-container';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -51,6 +55,10 @@ export const TradingViews = {
     label: 'Ticket',
     component: requiresMarket(DealTicketContainer),
   },
+  stopOrder: {
+    label: 'Stop order',
+    component: requiresMarket(StopOrderContainer),
+  },
   info: {
     label: 'Info',
     component: requiresMarket(MarketInfoAccordionContainer),
@@ -85,6 +93,10 @@ export const TradingViews = {
   orders: {
     label: 'All',
     component: OrdersContainer,
+  },
+  stopOrders: {
+    label: 'Stop',
+    component: StopOrdersContainer,
   },
   collateral: { label: 'Collateral', component: AccountsContainer },
   fills: { label: 'Fills', component: FillsContainer },

@@ -23,6 +23,7 @@ import type {
   VoteValue,
   WithdrawalStatus,
   DispatchMetric,
+  StopOrderStatus,
 } from './__generated__/types';
 
 export const AccountTypeMapping: {
@@ -230,6 +231,21 @@ export const OrderStatusMapping: {
   STATUS_PARTIALLY_FILLED: 'Partially Filled',
   STATUS_REJECTED: 'Rejected',
   STATUS_STOPPED: 'Stopped',
+};
+
+/**
+ * Stop order statuses, these determine several states for an stop order that cannot be expressed with other fields in StopOrder.
+ */
+export const StopOrderStatusMapping: {
+  [T in StopOrderStatus]: string;
+} = {
+  STATUS_CANCELLED: 'Cancelled',
+  STATUS_EXPIRED: 'Expired',
+  STATUS_PENDING: 'Pending',
+  STATUS_REJECTED: 'Rejected',
+  STATUS_STOPPED: 'Stopped',
+  STATUS_TRIGGERED: 'Triggered',
+  STATUS_UNSPECIFIED: 'Unspecified',
 };
 
 /**

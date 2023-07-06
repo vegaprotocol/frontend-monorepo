@@ -88,3 +88,59 @@ subscription OrdersUpdate($partyId: ID!, $marketIds: [ID!]) {
     ...OrderUpdateFields
   }
 }
+
+fragment OrderSubmissionFields on OrderSubmission {
+  marketId
+  price
+  size
+  side
+  timeInForce
+  expiresAt
+  type
+  reference
+  peggedOrder {
+    reference
+    offset
+  }
+  postOnly
+  reduceOnly
+  icebergOrder {
+    peakSize
+    minimumVisibleSize
+    reservedRemaining
+  }
+}
+
+fragment StopOrderFields on StopOrder {
+  id
+  ocoLinkId
+  expiresAt
+  expiryStrategy
+  triggerDirection
+  status
+  createdAt
+  updatedAt
+  partyId
+  marketId
+  trigger {
+    ... on StopOrderPrice {
+      price
+    }
+    ... on StopOrderTrailingPercentOffset {
+      trailingPercentOffset
+    }
+  }
+  submission {
+    ...OrderSubmissionFields
+  }
+}
+
+query StopOrders($partyId: ID!) {
+  stopOrders(filter: { parties: [$partyId] }) {
+    edges {
+      node {
+        ...StopOrderFields
+      }
+    }
+  }
+}
