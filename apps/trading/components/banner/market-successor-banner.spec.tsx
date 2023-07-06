@@ -270,7 +270,7 @@ describe('MarketSuccessorBanner', () => {
       ).toHaveAttribute('href', '/markets/successorMarketID');
     });
 
-    it('should display optionally successor volume ', () => {
+    it('should display optionally successor volume', () => {
       mockDataSuccessorMarket = {
         ...mockDataSuccessorMarket,
         positionDecimalPlaces: 3,
