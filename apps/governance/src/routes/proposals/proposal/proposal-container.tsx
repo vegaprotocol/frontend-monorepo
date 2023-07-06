@@ -13,9 +13,11 @@ import { useAssetQuery } from '@vegaprotocol/assets';
 
 export const ProposalContainer = () => {
   const params = useParams<{ proposalId: string }>();
+
   const {
     state: { data: restData },
   } = useFetch(`${ENV.rest}governance?proposalId=${params.proposalId}`);
+
   const { data, loading, error, refetch } = useProposalQuery({
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
@@ -33,6 +35,24 @@ export const ProposalContainer = () => {
     variables: {
       marketId: data?.proposal?.id || '',
       skip: !data?.proposal?.id,
+    },
+  });
+
+  const {
+    data: originalMarketData,
+    loading: originalMarketLoading,
+    error: originalMarketError,
+  } = useDataProvider({
+    dataProvider: marketInfoWithDataProvider,
+    skipUpdates: true,
+    variables: {
+      marketId:
+        (data?.proposal?.terms.change.__typename === 'UpdateMarket' &&
+          data?.proposal?.terms?.change?.marketId) ||
+        '',
+      skip:
+        data?.proposal?.terms.change.__typename !== 'UpdateMarket' ||
+        !data?.proposal?.id,
     },
   });
 
@@ -62,11 +82,14 @@ export const ProposalContainer = () => {
 
   return (
     <AsyncRenderer
-      loading={loading || newMarketLoading || assetLoading}
-      error={error || newMarketError || assetError}
+      loading={
+        loading || newMarketLoading || originalMarketLoading || assetLoading
+      }
+      error={error || newMarketError || originalMarketError || assetError}
       data={{
         ...data,
         ...(newMarketData ? { newMarketData } : {}),
+        ...(originalMarketData ? { originalMarketData } : {}),
         ...(assetData ? { assetData } : {}),
       }}
     >
@@ -75,6 +98,7 @@ export const ProposalContainer = () => {
           proposal={data.proposal}
           restData={restData}
           newMarketData={newMarketData}
+          originalMarketData={originalMarketData}
           assetData={assetData}
         />
       ) : (

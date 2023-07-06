@@ -33,6 +33,7 @@ export enum ProposalType {
 export interface ProposalProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
   newMarketData?: MarketInfoWithData | null;
+  originalMarketData?: MarketInfoWithData | null;
   assetData?: AssetQuery | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   restData: any;
@@ -42,6 +43,7 @@ export const Proposal = ({
   proposal,
   restData,
   newMarketData,
+  originalMarketData,
   assetData,
 }: ProposalProps) => {
   const { t } = useTranslation();
@@ -159,6 +161,23 @@ export const Proposal = ({
               <ProposalMarketData marketData={newMarketData} />
             </div>
           )}
+
+          {/*{proposal.terms.change.__typename === 'UpdateMarket' &&*/}
+          {/*  originalMarketData &&*/}
+          {/*  ('updateMarketConfiguration' in proposal.terms.change ? (*/}
+          {/*    <ProposalMarketData*/}
+          {/*      marketData={{*/}
+          {/*        ...originalMarketData,*/}
+          {/*        tradableInstrument: {*/}
+          {/*          ...originalMarketData.tradableInstrument,*/}
+          {/*          instrument:*/}
+          {/*            proposal.terms.change.updateMarketConfiguration*/}
+          {/*              .instrument ||*/}
+          {/*            originalMarketData.tradableInstrument.instrument,*/}
+          {/*        },*/}
+          {/*      }}*/}
+          {/*    />*/}
+          {/*  ) : null)}*/}
 
           {(proposal.terms.change.__typename === 'NewAsset' ||
             proposal.terms.change.__typename === 'UpdateAsset') &&
