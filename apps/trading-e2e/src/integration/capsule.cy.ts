@@ -100,11 +100,6 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     cy.get('.ag-cell-value', txTimeout).should('contain.text', btcSymbol);
     cy.get('[col-id="status"]').should('not.have.text', 'Open', txTimeout);
 
-    /**
-     * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-     * You should use .then() to chain commands instead.
-     * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-     **/
     cy.get('[col-id="txHash"]')
       .should('have.length.above', 2)
       .eq(1)
@@ -411,11 +406,6 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
       .eq(0, txTimeout)
       .should('contain.text', 'Completed');
 
-    /**
-     * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-     * You should use .then() to chain commands instead.
-     * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-     **/
     cy.get('[col-id="txHash"]', txTimeout)
       .should('have.length.above', 1)
       .eq(1)
@@ -497,11 +487,6 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     cy.get('.ag-cell-value', txTimeout).should('contain.text', vegaSymbol);
     cy.get('[col-id="status"]').should('not.have.text', 'Open', txTimeout);
 
-    /**
-     * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-     * You should use .then() to chain commands instead.
-     * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-     **/
     cy.get('[col-id="txHash"]')
       .should('have.length.above', 2)
       .eq(1)
