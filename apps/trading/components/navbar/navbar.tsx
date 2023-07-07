@@ -34,11 +34,16 @@ import {
 import classNames from 'classnames';
 import { ViewType, useSidebar } from '../sidebar';
 import { VegaWalletMenu } from '../vega-wallet';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 
 export const Navbar = () => {
   const [menu, setMenu] = useState<'wallet' | 'nav' | null>(null);
   const { view, setView } = useSidebar();
-
+  const { pubKey } = useVegaWallet();
+  const isConnected = pubKey !== null;
+  const openVegaWalletDialog = useVegaWalletDialogStore(
+    (store) => store.openVegaWalletDialog
+  );
   return (
     <N.Root>
       <div className="flex items-center gap-2 h-10 pl-3 lg:pl-5 pr-1 border-b border-default bg-vega-clight-800 dark:bg-vega-cdark-800">
@@ -51,13 +56,21 @@ export const Navbar = () => {
         <div className="ml-auto flex justify-end items-center gap-2">
           <button
             className="lg:hidden"
-            onClick={() => setMenu((x) => (x === 'wallet' ? null : 'wallet'))}
+            onClick={() => {
+              if (isConnected) {
+                setMenu((x) => (x === 'wallet' ? null : 'wallet'));
+              } else {
+                openVegaWalletDialog();
+              }
+            }}
           >
             Wallet
           </button>
           <button
             className="lg:hidden"
-            onClick={() => setMenu((x) => (x === 'nav' ? null : 'nav'))}
+            onClick={() => {
+              setMenu((x) => (x === 'nav' ? null : 'nav'));
+            }}
           >
             Menu
           </button>
