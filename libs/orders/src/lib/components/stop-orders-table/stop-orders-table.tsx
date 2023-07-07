@@ -16,7 +16,6 @@ import {
   negativeClassNames,
   positiveClassNames,
   MarketNameCell,
-  OrderTypeCell,
   COL_DEFS,
 } from '@vegaprotocol/datagrid';
 import type {
@@ -104,7 +103,10 @@ export const StopOrdersTable = memo<
             filterParams: {
               set: Schema.OrderTypeMapping,
             },
-            cellRenderer: 'OrderTypeCell',
+            cellRenderer: ({
+              value,
+            }: VegaValueFormatterParams<StopOrder, 'submission.type'>) =>
+              value ? `${t('Stop')} ${Schema.OrderTypeMapping[value]}` : '',
             minWidth: 80,
           },
           {
@@ -272,7 +274,7 @@ export const StopOrdersTable = memo<
             height: '100%',
           }}
           getRowId={({ data }) => data.id}
-          components={{ MarketNameCell, OrderTypeCell }}
+          components={{ MarketNameCell }}
           {...props}
         />
       );
