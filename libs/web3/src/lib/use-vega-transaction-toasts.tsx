@@ -22,6 +22,8 @@ import {
   isWithdrawTransaction,
   useVegaTransactionStore,
   VegaTxStatus,
+  isStopOrdersSubmissionTransaction,
+  isStopOrdersCancellationTransaction,
 } from '@vegaprotocol/wallet';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
@@ -85,6 +87,8 @@ const isTransactionTypeSupported = (tx: VegaStoredTxState) => {
   const withdraw = isWithdrawTransaction(tx.body);
   const submitOrder = isOrderSubmissionTransaction(tx.body);
   const cancelOrder = isOrderCancellationTransaction(tx.body);
+  const submitStopOrder = isStopOrdersSubmissionTransaction(tx.body);
+  const cancelStopOrder = isStopOrdersCancellationTransaction(tx.body);
   const editOrder = isOrderAmendmentTransaction(tx.body);
   const batchMarketInstructions = isBatchMarketInstructionsTransaction(tx.body);
   const transfer = isTransferTransaction(tx.body);
@@ -92,6 +96,8 @@ const isTransactionTypeSupported = (tx: VegaStoredTxState) => {
     withdraw ||
     submitOrder ||
     cancelOrder ||
+    submitStopOrder ||
+    cancelStopOrder ||
     editOrder ||
     batchMarketInstructions ||
     transfer
