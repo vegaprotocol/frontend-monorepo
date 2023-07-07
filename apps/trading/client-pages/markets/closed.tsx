@@ -4,7 +4,11 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { AgGridLazy as AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
+import {
+  AgGridLazy as AgGrid,
+  COL_DEFS,
+  MarketNameCell,
+} from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
@@ -20,6 +24,7 @@ import type {
 import {
   MarketActionsDropdown,
   closedMarketsWithDataProvider,
+  marketProvider,
 } from '@vegaprotocol/markets';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
@@ -27,6 +32,7 @@ import type { ColDef } from 'ag-grid-community';
 import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
 type SettlementAsset =
   MarketMaybeWithData['tradableInstrument']['instrument']['product']['settlementAsset'];
@@ -109,6 +115,7 @@ export const Closed = () => {
         instrument.product.dataSourceSpecForTradingTermination.id,
       settlementAsset: instrument.product.settlementAsset,
       realisedPNL: position?.node.realisedPNL,
+      successorMarketID: market.successorMarketID,
     };
 
     return row;
@@ -117,6 +124,28 @@ export const Closed = () => {
     <div className="h-full relative">
       <ClosedMarketsDataGrid rowData={rowData} error={error} reload={reload} />
     </div>
+  );
+};
+
+export const SuccessorMarketRenderer = ({
+  value,
+}: VegaICellRendererParams<Row, 'successorMarketID'>) => {
+  const { data } = useDataProvider({
+    dataProvider: marketProvider,
+    variables: {
+      marketId: value || '',
+    },
+    skip: !value,
+  });
+  const onMarketClick = useMarketClickHandler();
+  return data ? (
+    <MarketNameCell
+      value={data.tradableInstrument.instrument.code}
+      data={data}
+      onMarketClick={onMarketClick}
+    />
+  ) : (
+    ' - '
   );
 };
 
@@ -198,6 +227,11 @@ const ClosedMarketsDataGrid = ({
             return false;
           },
         },
+      },
+      {
+        headerName: t('Successor market'),
+        field: 'successorMarketID',
+        cellRenderer: 'SuccessorMarketRenderer',
       },
       {
         headerName: t('Best bid'),
@@ -312,6 +346,7 @@ const ClosedMarketsDataGrid = ({
         resizable: true,
         minWidth: 100,
       }}
+      components={{ SuccessorMarketRenderer }}
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
     />
   );
