@@ -38,9 +38,10 @@ describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
     cy.setVegaWallet();
 
     cy.visit('/');
+    // eslint-disable-next-line
+    cy.wait(500);
 
     cy.getByTestId(collateralTab).click();
-
     cy.getByTestId(dropdownMenu).first().click();
     cy.getByTestId(transfer).click();
 

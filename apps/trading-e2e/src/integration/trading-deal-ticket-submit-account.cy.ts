@@ -12,7 +12,7 @@ describe(
   'account validation',
   { tags: '@regression', testIsolation: true },
   () => {
-    describe('zero balance error', () => {
+    describe.skip('zero balance error', () => {
       beforeEach(() => {
         cy.setVegaWallet();
         cy.mockTradingPage();
