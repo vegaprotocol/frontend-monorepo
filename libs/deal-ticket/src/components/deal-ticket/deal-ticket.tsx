@@ -301,14 +301,6 @@ export const DealTicket = ({
                     ].includes(lastTIF[type] || order.timeInForce)
                       ? false
                       : order.iceberg,
-                  icebergOpts:
-                    type === OrderType.TYPE_MARKET ||
-                    [
-                      OrderTimeInForce.TIME_IN_FORCE_FOK,
-                      OrderTimeInForce.TIME_IN_FORCE_IOC,
-                    ].includes(lastTIF[type] || order.timeInForce)
-                      ? undefined
-                      : order.icebergOpts,
                   reduceOnly:
                     type === OrderType.TYPE_LIMIT &&
                     ![
@@ -490,7 +482,7 @@ export const DealTicket = ({
                   name="iceberg"
                   checked={order.iceberg}
                   onCheckedChange={() => {
-                    update({ iceberg: !order.iceberg, icebergOpts: undefined });
+                    update({ iceberg: !order.iceberg });
                   }}
                   label={
                     <Tooltip
