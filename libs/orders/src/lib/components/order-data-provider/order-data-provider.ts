@@ -103,7 +103,7 @@ export const mapOrderUpdateToOrder = (
       id: marketId,
     },
     __typename: 'Order',
-  };
+  } as OrderFieldsFragment;
 };
 
 const mapOrderUpdateToOrderWithMarket =
