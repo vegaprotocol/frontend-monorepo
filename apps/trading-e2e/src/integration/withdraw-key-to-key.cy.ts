@@ -38,13 +38,14 @@ describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
     cy.setVegaWallet();
 
     cy.visit('/');
-    cy.wait('@Assets');
 
     cy.getByTestId(collateralTab).click();
-    cy.wait('@Accounts');
 
     cy.getByTestId(dropdownMenu).first().click();
     cy.getByTestId(transfer).click();
+
+    cy.wait('@Assets');
+    cy.wait('@Accounts');
 
     cy.mockVegaWalletTransaction();
   });
