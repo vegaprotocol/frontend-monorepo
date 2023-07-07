@@ -8,11 +8,9 @@ import type { Market } from '@vegaprotocol/markets';
 import type { PartialDeep } from 'type-fest';
 
 let mockLocations = {};
-let mockParams = {};
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: jest.fn(() => mockLocations),
-  useParams: jest.fn(() => mockParams),
 }));
 
 let mockDataMarket: PartialDeep<Market> | null = null;
@@ -20,6 +18,12 @@ let mockDataSuccessorMarket: PartialDeep<Market> | null = null;
 jest.mock('@vegaprotocol/data-provider', () => ({
   ...jest.requireActual('@vegaprotocol/data-provider'),
   useDataProvider: jest.fn().mockImplementation((args) => {
+    if (args.skip) {
+      return {
+        data: null,
+        error: null,
+      };
+    }
     if (args.variables.marketId === 'marketId') {
       return {
         data: mockDataMarket,
@@ -45,11 +49,33 @@ jest.mock('@vegaprotocol/markets', () => ({
 describe('MarketSuccessorBanner', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLocations = { pathname: '/markets/marketId' };
+    mockDataMarket = {
+      id: 'marketId',
+      tradableInstrument: {
+        instrument: {
+          metadata: {
+            tags: [],
+          },
+        },
+      },
+      marketTimestamps: {
+        close: null,
+      },
+      successorMarketID: 'successorMarketID',
+    };
+    mockDataSuccessorMarket = {
+      id: 'successorMarketID',
+      state: Types.MarketState.STATE_ACTIVE,
+      tradingMode: Types.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      tradableInstrument: {
+        instrument: {
+          name: 'Successor Market Name',
+        },
+      },
+    };
   });
   describe('should be hidden', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
     it('on other pages than market', () => {
       mockLocations = { pathname: '/portfolio' };
       const { container } = render(<MarketSuccessorBanner />, {
@@ -65,7 +91,7 @@ describe('MarketSuccessorBanner', () => {
       expect(container).toBeEmptyDOMElement();
     });
     it('when no marketID', () => {
-      mockLocations = { pathname: '/markets/marketId' };
+      mockLocations = { pathname: '/markets/' };
       const { container } = render(<MarketSuccessorBanner />, {
         wrapper: MockedProvider,
       });
@@ -73,22 +99,7 @@ describe('MarketSuccessorBanner', () => {
     });
 
     it('when no successorMarketID', () => {
-      mockLocations = { pathname: '/markets/marketId' };
-      mockParams = { marketId: 'marketId' };
-      mockDataMarket = {
-        id: 'marketId',
-        tradableInstrument: {
-          instrument: {
-            metadata: {
-              tags: [],
-            },
-          },
-        },
-        marketTimestamps: {
-          close: null,
-        },
-      };
-
+      delete mockDataMarket?.successorMarketID;
       const { container } = render(<MarketSuccessorBanner />, {
         wrapper: MockedProvider,
       });
@@ -106,22 +117,7 @@ describe('MarketSuccessorBanner', () => {
     });
 
     it('no successor market data', () => {
-      mockLocations = { pathname: '/markets/marketId' };
-      mockParams = { marketId: 'marketId' };
-      mockDataMarket = {
-        id: 'marketId',
-        tradableInstrument: {
-          instrument: {
-            metadata: {
-              tags: [],
-            },
-          },
-        },
-        marketTimestamps: {
-          close: null,
-        },
-        successorMarketID: 'successorMarketID',
-      };
+      mockDataSuccessorMarket = null;
       const { container } = render(<MarketSuccessorBanner />, {
         wrapper: MockedProvider,
       });
@@ -142,28 +138,10 @@ describe('MarketSuccessorBanner', () => {
     });
 
     it('successor market not in continuous mode', () => {
-      mockLocations = { pathname: '/markets/marketId' };
-      mockParams = { marketId: 'marketId' };
-      mockDataMarket = {
-        id: 'marketId',
-        tradableInstrument: {
-          instrument: {
-            metadata: {
-              tags: [],
-            },
-          },
-        },
-        marketTimestamps: {
-          close: null,
-        },
-        successorMarketID: 'successorMarketID',
-      };
       mockDataSuccessorMarket = {
-        id: 'successorMarketID',
-        state: Types.MarketState.STATE_ACTIVE,
+        ...mockDataSuccessorMarket,
         tradingMode: Types.MarketTradingMode.TRADING_MODE_NO_TRADING,
       };
-      jest.spyOn(allUtils, 'getMarketExpiryDate');
       const { container } = render(<MarketSuccessorBanner />, {
         wrapper: MockedProvider,
       });
@@ -185,28 +163,10 @@ describe('MarketSuccessorBanner', () => {
     });
 
     it('successor market is not active', () => {
-      mockLocations = { pathname: '/markets/marketId' };
-      mockParams = { marketId: 'marketId' };
-      mockDataMarket = {
-        id: 'marketId',
-        tradableInstrument: {
-          instrument: {
-            metadata: {
-              tags: [],
-            },
-          },
-        },
-        marketTimestamps: {
-          close: null,
-        },
-        successorMarketID: 'successorMarketID',
-      };
       mockDataSuccessorMarket = {
-        id: 'successorMarketID',
+        ...mockDataSuccessorMarket,
         state: Types.MarketState.STATE_PENDING,
-        tradingMode: Types.MarketTradingMode.TRADING_MODE_CONTINUOUS,
       };
-      jest.spyOn(allUtils, 'getMarketExpiryDate');
       const { container } = render(<MarketSuccessorBanner />, {
         wrapper: MockedProvider,
       });
@@ -229,34 +189,6 @@ describe('MarketSuccessorBanner', () => {
   });
 
   describe('should be displayed', () => {
-    beforeAll(() => {
-      mockLocations = { pathname: '/markets/marketId' };
-      mockParams = { marketId: 'marketId' };
-      mockDataMarket = {
-        id: 'marketId',
-        tradableInstrument: {
-          instrument: {
-            metadata: {
-              tags: [],
-            },
-          },
-        },
-        marketTimestamps: {
-          close: null,
-        },
-        successorMarketID: 'successorMarketID',
-      };
-      mockDataSuccessorMarket = {
-        id: 'successorMarketID',
-        state: Types.MarketState.STATE_ACTIVE,
-        tradingMode: Types.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-        tradableInstrument: {
-          instrument: {
-            name: 'Successor Market Name',
-          },
-        },
-      };
-    });
     it('should be rendered', () => {
       render(<MarketSuccessorBanner />, {
         wrapper: MockedProvider,

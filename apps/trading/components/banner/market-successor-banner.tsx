@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { isBefore, formatDuration, intervalToDuration } from 'date-fns';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
@@ -18,6 +18,7 @@ import {
   isNumeric,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
+import { useLocalStorageSnapshot } from '@vegaprotocol/react-helpers';
 import * as Types from '@vegaprotocol/types';
 
 const getExpiryDate = (tags: string[], close?: string): Date | null => {
@@ -26,25 +27,28 @@ const getExpiryDate = (tags: string[], close?: string): Date | null => {
 };
 
 export const MarketSuccessorBanner = () => {
-  const { marketId } = useParams();
   const { pathname } = useLocation();
   const isMarketPage = pathname.match(/^\/markets\/(?!(all)).+/);
+  const marketId = isMarketPage ? pathname.split('/').pop() : '';
+
+  const [dismissed, setDismissedInStorage] = useLocalStorageSnapshot(
+    `dismissed-successor-${marketId}`
+  );
 
   const { data } = useDataProvider({
     dataProvider: marketProvider,
-    variables: { marketId: marketId || '' },
+    variables: { marketId },
     skip: !isMarketPage || !marketId,
   });
 
   const { data: successorData } = useDataProvider({
     dataProvider: marketProvider,
     variables: {
-      marketId: data?.successorMarketID || '',
+      marketId: data?.successorMarketID,
     },
     skip: !data?.successorMarketID,
   });
-
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(!dismissed);
 
   const expiry = data
     ? getExpiryDate(
@@ -83,6 +87,7 @@ export const MarketSuccessorBanner = () => {
         intent={Intent.Primary}
         onClose={() => {
           setVisible(false);
+          setDismissedInStorage('true');
         }}
       >
         <div className="uppercase mb-1">
