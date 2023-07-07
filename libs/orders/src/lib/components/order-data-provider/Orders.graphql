@@ -87,6 +87,7 @@ fragment OrderUpdateFields on OrderUpdate {
     offset
   }
   icebergOrder {
+    __typename
     peakSize
     minimumVisibleSize
     reservedRemaining
