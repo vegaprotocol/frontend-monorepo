@@ -44,10 +44,14 @@ export const stopOrdersWithMarketProvider = makeDerivedDataProvider<
   ],
   (partsData): StopOrder[] => {
     return ((partsData[0] as ReturnType<typeof getData>) || []).map(
-      (stopOrder) => ({
-        ...stopOrder,
-        market: (partsData[1] as Record<string, Market>)[stopOrder.marketId],
-      })
+      (stopOrder) => {
+        return {
+          ...stopOrder,
+          market: (partsData[1] as Record<string, Market>)[
+            stopOrder.submission.marketId
+          ],
+        };
+      }
     );
   }
 );

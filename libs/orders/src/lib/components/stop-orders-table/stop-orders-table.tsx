@@ -99,7 +99,7 @@ export const StopOrdersTable = memo<
             minWidth: 80,
           },
           {
-            field: 'type',
+            field: 'submission.type',
             filter: SetFilter,
             filterParams: {
               set: Schema.OrderTypeMapping,
@@ -160,7 +160,7 @@ export const StopOrdersTable = memo<
                   Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
                     ? '+'
                     : '-'
-                } ${value.trailingPercentOffset}%`;
+                }${value.trailingPercentOffset}%`;
               }
               return '-';
             },
