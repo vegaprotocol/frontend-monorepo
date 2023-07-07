@@ -141,7 +141,7 @@ export const DepositForm = ({
   useEffect(() => {
     setValue('from', account || '');
     trigger('from');
-  }, [account]);
+  }, [account, setValue, trigger]);
 
   const approved =
     balances && balances.allowance.isGreaterThan(0) ? true : false;

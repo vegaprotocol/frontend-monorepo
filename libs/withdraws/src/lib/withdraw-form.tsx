@@ -142,7 +142,7 @@ export const WithdrawForm = ({
   useEffect(() => {
     setValue('to', address || '');
     trigger('to');
-  }, [address]);
+  }, [address, setValue, trigger]);
 
   const renderAssetsSelector = ({
     field,
