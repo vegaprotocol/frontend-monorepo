@@ -96,6 +96,8 @@ export enum AccountType {
   ACCOUNT_TYPE_HOLDING = 'ACCOUNT_TYPE_HOLDING',
   /** Insurance pool account - only for 'system' party */
   ACCOUNT_TYPE_INSURANCE = 'ACCOUNT_TYPE_INSURANCE',
+  /** Per liquidity provider, per market account for holding LPs' fees before distribution */
+  ACCOUNT_TYPE_LP_LIQUIDITY_FEES = 'ACCOUNT_TYPE_LP_LIQUIDITY_FEES',
   /**
    * Margin - The leverage account for parties, contains funds set aside for the margin needed to support
    * a party's open positions. Each party will have a margin account for each market they have traded in.
