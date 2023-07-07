@@ -119,11 +119,6 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
     cy.contains('Reset').click();
     cy.getByTestId('All').click();
 
-    /**
-     * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-     * You should use .then() to chain commands instead.
-     * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-     **/
     cy.getByTestId('tab-orders')
       .get(`.ag-center-cols-container [col-id='${orderSymbol}']`)
       .should('have.length.at.least', expectedOrderList.length)
@@ -447,11 +442,6 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       peggedOrder: null,
       liquidityProvisionId: null,
     });
-    /**
-     * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-     * You should use .then() to chain commands instead.
-     * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-     **/
     cy.get(`[row-id=${orderId}]`)
       .find('[data-testid="edit"]')
       .should('have.text', 'Edit')
@@ -481,11 +471,6 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       peggedOrder: null,
       liquidityProvisionId: null,
     });
-    /**
-     * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-     * You should use .then() to chain commands instead.
-     * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-     **/
     cy.get(`[row-id=${orderId}]`)
       .find(`[data-testid="cancel"]`)
       .should('have.text', 'Cancel')
@@ -508,11 +493,6 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       peggedOrder: null,
       liquidityProvisionId: null,
     });
-    /**
-     * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-     * You should use .then() to chain commands instead.
-     * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-     **/
     cy.get(`[data-testid="cancelAll"]`)
       .should('have.text', 'Cancel all')
       .then(($btn) => {
@@ -529,11 +509,6 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       peggedOrder: null,
       liquidityProvisionId: null,
     });
-    /**
-     * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-     * You should use .then() to chain commands instead.
-     * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-     **/
     cy.get(`[row-id=${orderId}]`)
       .find('[data-testid="edit"]')
       .should('have.text', 'Edit')

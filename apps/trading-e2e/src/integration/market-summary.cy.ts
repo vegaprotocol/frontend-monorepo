@@ -137,11 +137,6 @@ describe('Market trading page', () => {
             .realHover();
         });
       });
-      /**
-       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-       * You should use .then() to chain commands instead.
-       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-       **/
       cy.getByTestId(expirtyTooltip)
         .eq(0)
         .should(
@@ -175,11 +170,6 @@ describe('Market trading page', () => {
             .realHover();
         });
       });
-      /**
-       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-       * You should use .then() to chain commands instead.
-       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-       **/
       cy.getByTestId(tradingModeTooltip)
         .should(
           'contain.text',
@@ -206,11 +196,6 @@ describe('Market trading page', () => {
           cy.getByTestId(itemValue).realHover();
         });
       });
-      /**
-       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-       * You should use .then() to chain commands instead.
-       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-       **/
       cy.getByTestId(liquiditySuppliedTooltip)
         .should('contain.text', 'Supplied stake')
         .and('contain.text', 'Target stake')
