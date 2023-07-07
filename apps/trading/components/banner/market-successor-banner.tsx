@@ -29,7 +29,7 @@ const getExpiryDate = (tags: string[], close?: string): Date | null => {
 export const MarketSuccessorBanner = () => {
   const { pathname } = useLocation();
   const isMarketPage = pathname.match(/^\/markets\/(?!(all)).+/);
-  const marketId = isMarketPage ? pathname.split('/').pop() : '';
+  const marketId = isMarketPage ? (pathname.split('/').pop() as string) : '';
 
   const [dismissed, setDismissedInStorage] = useLocalStorageSnapshot(
     `dismissed-successor-${marketId}`
@@ -44,7 +44,7 @@ export const MarketSuccessorBanner = () => {
   const { data: successorData } = useDataProvider({
     dataProvider: marketProvider,
     variables: {
-      marketId: data?.successorMarketID,
+      marketId: data?.successorMarketID || '',
     },
     skip: !data?.successorMarketID,
   });
