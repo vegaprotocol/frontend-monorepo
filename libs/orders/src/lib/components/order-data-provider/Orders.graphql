@@ -72,7 +72,6 @@ fragment OrderUpdateFields on OrderUpdate {
   type
   side
   size
-  remaining
   status
   rejectionReason
   price
@@ -88,6 +87,7 @@ fragment OrderUpdateFields on OrderUpdate {
     offset
   }
   icebergOrder {
+    __typename
     peakSize
     minimumVisibleSize
     reservedRemaining

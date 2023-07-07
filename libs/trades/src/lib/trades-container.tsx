@@ -3,7 +3,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import { useRef } from 'react';
 import { tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
-import { useOrderStore } from '@vegaprotocol/orders';
+import { useCreateOrderStore } from '@vegaprotocol/orders';
 import { t } from '@vegaprotocol/i18n';
 
 interface TradesContainerProps {
@@ -12,7 +12,8 @@ interface TradesContainerProps {
 
 export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const updateOrder = useOrderStore((store) => store.update);
+  const useOrderStoreRef = useCreateOrderStore();
+  const updateOrder = useOrderStoreRef((store) => store.update);
 
   const { data, error } = useDataProvider({
     dataProvider: tradesWithMarketProvider,
