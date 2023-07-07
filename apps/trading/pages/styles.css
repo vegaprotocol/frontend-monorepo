@@ -15,7 +15,6 @@ body,
   @apply h-full;
 }
 
-
 .text-default {
   @apply text-vega-clight-50 dark:text-vega-cdark-50;
 }
