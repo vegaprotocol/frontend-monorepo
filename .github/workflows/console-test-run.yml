@@ -38,6 +38,10 @@ jobs:
         run: |
           poetry run docker pull ghcr.io/vegaprotocol/frontend/trading:${{ inputs.github-sha }}
 
+      - name: Update container_name in config.py
+        run: |
+          sed -i "s/container_name = \".*\"/container_name = \"vegaprotocol\/frontend\/trading:${{ inputs.github-sha }}\"/g" config.py
+
       - name: install playwright
         run: poetry run playwright install
         working-directory: ./console-test
