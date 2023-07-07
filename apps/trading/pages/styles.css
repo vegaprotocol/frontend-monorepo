@@ -5,27 +5,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * TAILWIND HELPERS
+ */
+
 html,
 body,
 #__next {
   @apply h-full;
 }
 
-/* Styles for allotment */
-html {
-  --focus-border: theme('colors.vega.pink.500');
-  --separator-border: theme('colors.vega.light.200');
-  --pennant-color-danger: theme('colors.vega.pink.500');
-}
-
-html.dark {
-  --focus-border: theme('colors.vega.yellow.500');
-  --separator-border: theme('colors.vega.dark.200');
-}
-
-.split-view-view::before {
-  display: none;
-}
 
 .text-default {
   @apply text-vega-clight-50 dark:text-vega-cdark-50;
@@ -39,7 +28,29 @@ html.dark {
   @apply border-vega-clight-600 dark:border-vega-cdark-600;
 }
 
-/* PENNANT */
+/**
+ * ALLOTMENT 
+ */
+
+html {
+  --focus-border: theme('colors.vega.pink.500');
+  --separator-border: theme('colors.vega.light.200');
+  --pennant-color-danger: theme('colors.vega.pink.500');
+}
+
+html.dark {
+  --focus-border: theme('colors.vega.yellow.500');
+  --separator-border: theme('colors.vega.dark.200');
+}
+
+/* hide pane separation border, we leave it blank so border is applied within a padded area */
+.split-view-view::before {
+  display: none;
+}
+
+/**
+ * PENNANT
+ */
 
 html [data-theme='dark'],
 html [data-theme='light'] {
@@ -98,7 +109,11 @@ html [data-theme='dark'] {
   --pennant-color-volume-sell: theme(colors.market.red.600);
 }
 
-/* AG GRID - Do not edit without updating other global stylesheets for each app */
+/**
+ * AG GRID
+ *
+ * - Do not edit without updating other global stylesheets for each app
+ */
 
 .vega-ag-grid .ag-root-wrapper {
   border: solid 0px;
@@ -153,23 +168,26 @@ html [data-theme='dark'] {
   background: var(--ag-background-color);
 }
 
-.virtualized-list {
+/**
+ * REACT VIRTUALIZED list
+ */
+.vega-scrollbar {
   /* Works on Firefox */
   scrollbar-width: thin;
   scrollbar-color: #999 #333;
 }
 
 /* Works on Chrome, Edge, and Safari */
-.virtualized-list::-webkit-scrollbar {
+.vega-scrollbar::-webkit-scrollbar {
   width: 6px;
   background-color: #999;
 }
 
-.virtualized-list::-webkit-scrollbar-thumb {
+.vega-scrollbar::-webkit-scrollbar-thumb {
   width: 6px;
   background-color: #333;
 }
-.virtualized-list::-webkit-scrollbar-track {
+.vega-scrollbar::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px rgb(0 0 0 / 30%);
   background-color: #999;
 }
