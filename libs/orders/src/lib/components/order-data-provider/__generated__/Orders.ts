@@ -30,11 +30,7 @@ export type OrdersUpdateSubscriptionVariables = Types.Exact<{
 }>;
 
 
-<<<<<<< HEAD
-export type OrdersUpdateSubscription = { __typename?: 'Subscription', orders?: Array<{ __typename?: 'OrderUpdate', id: string, marketId: string, type?: Types.OrderType | null, side: Types.Side, size: string, remaining: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, liquidityProvisionId?: string | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename?: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null }> | null };
-=======
 export type OrdersUpdateSubscription = { __typename?: 'Subscription', orders?: Array<{ __typename?: 'OrderUpdate', id: string, marketId: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, liquidityProvisionId?: string | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename?: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null }> | null };
->>>>>>> 381c1d34c8a4c7d75e64e91e9709fdcb2f938c1a
 
 export const OrderFieldsFragmentDoc = gql`
     fragment OrderFields on Order {
