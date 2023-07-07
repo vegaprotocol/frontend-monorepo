@@ -104,11 +104,6 @@ fragment OrderSubmissionFields on OrderSubmission {
   }
   postOnly
   reduceOnly
-  icebergOrder {
-    peakSize
-    minimumVisibleSize
-    reservedRemaining
-  }
 }
 
 fragment StopOrderFields on StopOrder {

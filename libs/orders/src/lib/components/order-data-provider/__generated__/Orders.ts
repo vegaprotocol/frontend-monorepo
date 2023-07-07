@@ -32,16 +32,16 @@ export type OrdersUpdateSubscriptionVariables = Types.Exact<{
 
 export type OrdersUpdateSubscription = { __typename?: 'Subscription', orders?: Array<{ __typename?: 'OrderUpdate', id: string, marketId: string, type?: Types.OrderType | null, side: Types.Side, size: string, remaining: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, liquidityProvisionId?: string | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null }> | null };
 
-export type OrderSubmissionFieldsFragment = { __typename?: 'OrderSubmission', marketId: string, price: string, size: string, side: Types.Side, timeInForce: Types.OrderTimeInForce, expiresAt: any, type: Types.OrderType, reference?: string | null, postOnly?: boolean | null, reduceOnly?: boolean | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename?: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null };
+export type OrderSubmissionFieldsFragment = { __typename?: 'OrderSubmission', marketId: string, price: string, size: string, side: Types.Side, timeInForce: Types.OrderTimeInForce, expiresAt: any, type: Types.OrderType, reference?: string | null, postOnly?: boolean | null, reduceOnly?: boolean | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null};
 
-export type StopOrderFieldsFragment = { __typename?: 'StopOrder', id: string, ocoLinkId?: string | null, expiresAt?: any | null, expiryStrategy?: Types.StopOrderExpiryStrategy | null, triggerDirection: Types.StopOrderTriggerDirection, status: Types.StopOrderStatus, createdAt: any, updatedAt?: any | null, partyId: string, marketId: string, trigger?: { __typename?: 'StopOrderPrice', price: string } | { __typename?: 'StopOrderTrailingPercentOffset', trailingPercentOffset: string } | null, submission: { __typename?: 'OrderSubmission', marketId: string, price: string, size: string, side: Types.Side, timeInForce: Types.OrderTimeInForce, expiresAt: any, type: Types.OrderType, reference?: string | null, postOnly?: boolean | null, reduceOnly?: boolean | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename?: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null } };
+export type StopOrderFieldsFragment = { __typename?: 'StopOrder', id: string, ocoLinkId?: string | null, expiresAt?: any | null, expiryStrategy?: Types.StopOrderExpiryStrategy | null, triggerDirection: Types.StopOrderTriggerDirection, status: Types.StopOrderStatus, createdAt: any, updatedAt?: any | null, partyId: string, marketId: string, trigger?: { __typename?: 'StopOrderPrice', price: string } | { __typename?: 'StopOrderTrailingPercentOffset', trailingPercentOffset: string } | null, submission: { __typename?: 'OrderSubmission', marketId: string, price: string, size: string, side: Types.Side, timeInForce: Types.OrderTimeInForce, expiresAt: any, type: Types.OrderType, reference?: string | null, postOnly?: boolean | null, reduceOnly?: boolean | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null } };
 
 export type StopOrdersQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type StopOrdersQuery = { __typename?: 'Query', stopOrders?: { __typename?: 'StopOrderConnection', edges?: Array<{ __typename?: 'StopOrderEdge', node?: { __typename?: 'StopOrder', id: string, ocoLinkId?: string | null, expiresAt?: any | null, expiryStrategy?: Types.StopOrderExpiryStrategy | null, triggerDirection: Types.StopOrderTriggerDirection, status: Types.StopOrderStatus, createdAt: any, updatedAt?: any | null, partyId: string, marketId: string, trigger?: { __typename?: 'StopOrderPrice', price: string } | { __typename?: 'StopOrderTrailingPercentOffset', trailingPercentOffset: string } | null, submission: { __typename?: 'OrderSubmission', marketId: string, price: string, size: string, side: Types.Side, timeInForce: Types.OrderTimeInForce, expiresAt: any, type: Types.OrderType, reference?: string | null, postOnly?: boolean | null, reduceOnly?: boolean | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename?: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null } } | null }> | null } | null };
+export type StopOrdersQuery = { __typename?: 'Query', stopOrders?: { __typename?: 'StopOrderConnection', edges?: Array<{ __typename?: 'StopOrderEdge', node?: { __typename?: 'StopOrder', id: string, ocoLinkId?: string | null, expiresAt?: any | null, expiryStrategy?: Types.StopOrderExpiryStrategy | null, triggerDirection: Types.StopOrderTriggerDirection, status: Types.StopOrderStatus, createdAt: any, updatedAt?: any | null, partyId: string, marketId: string, trigger?: { __typename?: 'StopOrderPrice', price: string } | { __typename?: 'StopOrderTrailingPercentOffset', trailingPercentOffset: string } | null, submission: { __typename?: 'OrderSubmission', marketId: string, price: string, size: string, side: Types.Side, timeInForce: Types.OrderTimeInForce, expiresAt: any, type: Types.OrderType, reference?: string | null, postOnly?: boolean | null, reduceOnly?: boolean | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null } } | null }> | null } | null };
 
 export const OrderFieldsFragmentDoc = gql`
     fragment OrderFields on Order {
@@ -112,11 +112,6 @@ export const OrderSubmissionFieldsFragmentDoc = gql`
   }
   postOnly
   reduceOnly
-  icebergOrder {
-    peakSize
-    minimumVisibleSize
-    reservedRemaining
-  }
 }
     `;
 export const StopOrderFieldsFragmentDoc = gql`
