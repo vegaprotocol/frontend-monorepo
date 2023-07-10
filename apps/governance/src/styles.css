@@ -98,7 +98,8 @@
   list-style: circle;
 }
 
-.jsondiffpatch-delta, .jsondiffpatch-delta pre {
+.jsondiffpatch-delta,
+.jsondiffpatch-delta pre {
   font-family: 'Roboto Mono', monospace !important;
 }
 
