@@ -272,7 +272,7 @@ export const WithdrawForm = ({
               {t('Use maximum')}
             </UseButton>
           )}
-          {showWithdrawDelayNotification && (
+          {selectedAsset && showWithdrawDelayNotification && (
             <div className="mt-2">
               <WithdrawDelayNotification
                 threshold={threshold}
