@@ -41,7 +41,7 @@ export const NodeHealthContainer = () => {
       sideOffset={10}
     >
       <button
-        className="flex justify-center items-center py-3 rounded hover:bg-vega-light-200 hover:dark:bg-vega-dark-200"
+        className="flex justify-center items-center p-2 rounded hover:bg-vega-light-200 hover:dark:bg-vega-dark-200"
         onClick={() => setNodeSwitcher(true)}
         data-testid="node-health-trigger"
       >
