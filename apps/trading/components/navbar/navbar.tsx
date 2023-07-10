@@ -51,7 +51,7 @@ export const Navbar = () => {
     <N.Root className="text-vega-clight-200 dark:text-vega-cdark-200 ">
       <div className="flex items-center gap-2 h-10 px-3 lg:pl-5 pr-2 border-b border-default bg-vega-clight-800 dark:bg-vega-cdark-800">
         <div className="pr-2">
-          <VLogo className="w-5" />
+          <VLogo className="w-5 text-default" />
         </div>
         <div className="hidden lg:block">
           <NavbarMenu />
@@ -114,7 +114,7 @@ export const Navbar = () => {
                 onClick={() => setMenu(null)}
                 className="flex flex-col justify-center p-2 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500 rounded"
               >
-                <VegaIcon name={VegaIconNames.CROSS} />
+                <VegaIcon name={VegaIconNames.CROSS} size={24} />
               </button>
             </div>
             {menu === 'nav' && <NavbarMenu />}
@@ -129,7 +129,6 @@ export const Navbar = () => {
 const NavbarMenu = () => {
   const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
   const marketId = useGlobalStore((store) => store.marketId);
-  const tokenLink = useLinks(DApp.Token);
   const tradingPath = marketId
     ? Links[Routes.MARKET](marketId)
     : Links[Routes.MARKET]();
@@ -164,11 +163,6 @@ const NavbarMenu = () => {
       <N.Item>
         <NavbarLink to={Links[Routes.PORTFOLIO]()}>{t('Portfolio')}</NavbarLink>
       </N.Item>
-      {/* <N.Item>
-        <NavbarLink to={tokenLink(TOKEN_GOVERNANCE)}>
-          {t('Governance')}
-        </NavbarLink>
-      </N.Item> */}
       <N.Item>
         <NavbarTrigger>{t('Resources')}</NavbarTrigger>
         <NavbarContent>
@@ -202,7 +196,10 @@ const NavbarTrigger = ({ children }: { children: ReactNode }) => {
     <N.Trigger
       onPointerMove={preventHover}
       onPointerLeave={preventHover}
-      className="relative flex items-center gap-2 py-2 px-6 lg:px-0 text-lg lg:text-base"
+      className={classNames(
+        'relative flex items-center gap-2 py-2 px-6 lg:px-0',
+        'text-lg lg:text-base hover:text-vega-clight-50 dark:hover:text-vega-cdark-50'
+      )}
     >
       {children}
       <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
@@ -225,7 +222,15 @@ const NavbarLink = ({ children, to }: { children: ReactNode; to: string }) => {
           };
           return (
             <>
-              <span className={classNames('lg:border-0', borderClasses)}>
+              <span
+                className={classNames(
+                  'hover:text-vega-clight-50 dark:hover:text-vega-cdark-50 lg:border-0',
+                  borderClasses,
+                  {
+                    'text-vega-clight-50 dark:text-vega-cdark-50': isActive,
+                  }
+                )}
+              >
                 {children}
               </span>
               <span
@@ -246,7 +251,7 @@ const NavbarContent = ({ children }: { children: ReactNode }) => {
   return (
     <N.Content
       className={classNames(
-        'lg:absolute pl-6 lg:pl-0 z-20 lg:min-w-[290px]',
+        'lg:absolute pl-2 lg:pl-0 z-20 lg:min-w-[290px]',
         'lg:bg-vega-clight-800 lg:dark:bg-vega-cdark-800',
         'lg:border border-default lg:rounded'
       )}
@@ -393,8 +398,8 @@ const BurgerIcon = () => (
 
 const NavbarDivider = () => {
   return (
-    <li className="py-2" role="separator">
-      <div className="h-full w-px bg-vega-clight-600 dark:bg-vega-cdark-600" />
+    <li className="lg:py-2" role="separator">
+      <div className="h-px lg:h-full w-full lg:w-px bg-vega-clight-600 dark:bg-vega-cdark-600" />
     </li>
   );
 };
