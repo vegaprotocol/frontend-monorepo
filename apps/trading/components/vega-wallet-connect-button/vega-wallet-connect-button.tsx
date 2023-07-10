@@ -192,7 +192,7 @@ export const VegaWalletConnectButton = () => {
               onInteractOutside={() => setDropdownOpen(false)}
               onEscapeKeyDown={() => setDropdownOpen(false)}
               align="end"
-              sideOffset={17}
+              sideOffset={3}
             >
               <div className="min-w-[340px]" data-testid="keypair-list">
                 <DropdownMenuRadioGroup
