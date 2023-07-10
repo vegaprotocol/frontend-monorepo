@@ -3,12 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import { SubHeading } from '../../../../components/heading';
+import type { JsonValue } from '../../../../components/json-diff';
 
 interface ProposalMarketChangesProps {
-  // These have to be unknown, as the purpose of this component is to compare
-  // two objects which may have different shapes.
-  left: unknown;
-  right: unknown;
+  left: JsonValue;
+  right: JsonValue;
   objectHash?: (obj: unknown) => string | undefined;
 }
 

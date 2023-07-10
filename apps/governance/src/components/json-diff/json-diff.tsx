@@ -4,11 +4,17 @@ import { formatters, create } from 'jsondiffpatch';
 import 'jsondiffpatch/dist/formatters-styles/html.css';
 import 'jsondiffpatch/dist/formatters-styles/annotated.css';
 
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
+
 interface JsonDiffProps {
-  // These have to be unknown, as the purpose of this component is to compare
-  // two objects which may have different shapes.
-  left: unknown;
-  right: unknown;
+  left: JsonValue;
+  right: JsonValue;
   objectHash?: (obj: unknown) => string | undefined;
 }
 
