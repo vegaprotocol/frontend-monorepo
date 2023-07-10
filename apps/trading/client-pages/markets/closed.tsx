@@ -54,6 +54,7 @@ interface Row {
   tradingTerminationOracleId: string;
   settlementAsset: SettlementAsset;
   realisedPNL: string | undefined;
+  successorMarketID: string | undefined | null;
 }
 
 export const Closed = () => {
