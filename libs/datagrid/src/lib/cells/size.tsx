@@ -19,19 +19,14 @@ export const Size = ({
       data-testid="size"
       className={classNames('text-right', {
         // BUY
-        'text-vega-green-550 dark:text-vega-green':
+        'text-market-green-600 dark:text-market-green':
           side === Schema.Side.SIDE_BUY && !forceTheme,
-        'text-vega-green-550':
+        'text-market-green-600':
           side === Schema.Side.SIDE_BUY && forceTheme === 'light',
-        'text-vega-green':
+        'text-market-green':
           side === Schema.Side.SIDE_BUY && forceTheme === 'dark',
         // SELL
-        'text-vega-pink-550 dark:text-vega-pink':
-          side === Schema.Side.SIDE_SELL && !forceTheme,
-        'text-vega-pink-550':
-          side === Schema.Side.SIDE_SELL && forceTheme === 'light',
-        'text-vega-pink':
-          side === Schema.Side.SIDE_SELL && forceTheme === 'dark',
+        'text-market-red': side === Schema.Side.SIDE_SELL,
       })}
     >
       {side === Schema.Side.SIDE_BUY
