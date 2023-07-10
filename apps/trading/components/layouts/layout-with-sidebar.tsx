@@ -23,7 +23,8 @@ export const LayoutWithSidebar = () => {
         <Outlet />
       </section>
       <div
-        className={classNames('col-start-1 lg:col-start-2', {
+        // min-h-0 is needed as this element is part of a grid, we want the content to be scrollable, without it it will push the grid element taller
+        className={classNames('col-start-1 lg:col-start-2 min-h-0', {
           hidden: !sidebarOpen,
         })}
       >
