@@ -3,21 +3,21 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type PriceLevelFieldsFragment = { __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string };
+export type PriceLevelFieldsFragment = { __typename: 'PriceLevel', price: string, volume: string, numberOfOrders: string };
 
 export type MarketDepthQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
 
 
-export type MarketDepthQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, depth: { __typename?: 'MarketDepth', sequenceNumber: string, sell?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null, buy?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null } } | null };
+export type MarketDepthQuery = { __typename: 'Query', market?: { __typename: 'Market', id: string, depth: { __typename: 'MarketDepth', sequenceNumber: string, sell?: Array<{ __typename: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null, buy?: Array<{ __typename: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null } } | null };
 
 export type MarketDepthUpdateSubscriptionVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
 
 
-export type MarketDepthUpdateSubscription = { __typename?: 'Subscription', marketsDepthUpdate: Array<{ __typename?: 'ObservableMarketDepthUpdate', marketId: string, sequenceNumber: string, previousSequenceNumber: string, sell?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null, buy?: Array<{ __typename?: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null }> };
+export type MarketDepthUpdateSubscription = { __typename: 'Subscription', marketsDepthUpdate: Array<{ __typename: 'ObservableMarketDepthUpdate', marketId: string, sequenceNumber: string, previousSequenceNumber: string, sell?: Array<{ __typename: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null, buy?: Array<{ __typename: 'PriceLevel', price: string, volume: string, numberOfOrders: string }> | null }> };
 
 export const PriceLevelFieldsFragmentDoc = gql`
     fragment PriceLevelFields on PriceLevel {

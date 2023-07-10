@@ -8,7 +8,7 @@ export type ExplorerNodeVoteQueryVariables = Types.Exact<{
 }>;
 
 
-export type ExplorerNodeVoteQuery = { __typename?: 'Query', withdrawal?: { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, createdTimestamp: any, withdrawnTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, name: string, decimals: number }, party: { __typename?: 'Party', id: string } } | null, deposit?: { __typename?: 'Deposit', id: string, status: Types.DepositStatus, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, name: string, decimals: number }, party: { __typename?: 'Party', id: string } } | null };
+export type ExplorerNodeVoteQuery = { __typename: 'Query', withdrawal?: { __typename: 'Withdrawal', id: string, status: Types.WithdrawalStatus, createdTimestamp: any, withdrawnTimestamp?: any | null, txHash?: string | null, asset: { __typename: 'Asset', id: string, name: string, decimals: number }, party: { __typename: 'Party', id: string } } | null, deposit?: { __typename: 'Deposit', id: string, status: Types.DepositStatus, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename: 'Asset', id: string, name: string, decimals: number }, party: { __typename: 'Party', id: string } } | null };
 
 
 export const ExplorerNodeVoteDocument = gql`

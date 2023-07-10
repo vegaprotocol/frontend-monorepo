@@ -8,12 +8,12 @@ export type ExplorerEpochQueryVariables = Types.Exact<{
 }>;
 
 
-export type ExplorerEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string, timestamps: { __typename?: 'EpochTimestamps', start?: any | null, end?: any | null, firstBlock: string, lastBlock?: string | null } } };
+export type ExplorerEpochQuery = { __typename: 'Query', epoch: { __typename: 'Epoch', id: string, timestamps: { __typename: 'EpochTimestamps', start?: any | null, end?: any | null, firstBlock: string, lastBlock?: string | null } } };
 
 export type ExplorerFutureEpochQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type ExplorerFutureEpochQuery = { __typename?: 'Query', networkParameter?: { __typename?: 'NetworkParameter', value: string } | null, epoch: { __typename?: 'Epoch', id: string, timestamps: { __typename?: 'EpochTimestamps', start?: any | null } } };
+export type ExplorerFutureEpochQuery = { __typename: 'Query', networkParameter?: { __typename: 'NetworkParameter', value: string } | null, epoch: { __typename: 'Epoch', id: string, timestamps: { __typename: 'EpochTimestamps', start?: any | null } } };
 
 
 export const ExplorerEpochDocument = gql`

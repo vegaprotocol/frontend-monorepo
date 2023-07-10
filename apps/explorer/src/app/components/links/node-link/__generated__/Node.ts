@@ -8,7 +8,7 @@ export type ExplorerNodeQueryVariables = Types.Exact<{
 }>;
 
 
-export type ExplorerNodeQuery = { __typename?: 'Query', node?: { __typename?: 'Node', id: string, name: string, status: Types.NodeStatus } | null };
+export type ExplorerNodeQuery = { __typename: 'Query', node?: { __typename: 'Node', id: string, name: string, status: Types.NodeStatus } | null };
 
 
 export const ExplorerNodeDocument = gql`

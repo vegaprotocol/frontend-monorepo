@@ -3,9 +3,9 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type FillFieldsFragment = { __typename?: 'Trade', id: string, createdAt: any, price: string, size: string, buyOrder: string, sellOrder: string, aggressor: Types.Side, market: { __typename?: 'Market', id: string }, buyer: { __typename?: 'Party', id: string }, seller: { __typename?: 'Party', id: string }, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } };
+export type FillFieldsFragment = { __typename: 'Trade', id: string, createdAt: any, price: string, size: string, buyOrder: string, sellOrder: string, aggressor: Types.Side, market: { __typename: 'Market', id: string }, buyer: { __typename: 'Party', id: string }, seller: { __typename: 'Party', id: string }, buyerFee: { __typename: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } };
 
-export type FillEdgeFragment = { __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, createdAt: any, price: string, size: string, buyOrder: string, sellOrder: string, aggressor: Types.Side, market: { __typename?: 'Market', id: string }, buyer: { __typename?: 'Party', id: string }, seller: { __typename?: 'Party', id: string }, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } } };
+export type FillEdgeFragment = { __typename: 'TradeEdge', cursor: string, node: { __typename: 'Trade', id: string, createdAt: any, price: string, size: string, buyOrder: string, sellOrder: string, aggressor: Types.Side, market: { __typename: 'Market', id: string }, buyer: { __typename: 'Party', id: string }, seller: { __typename: 'Party', id: string }, buyerFee: { __typename: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } } };
 
 export type FillsQueryVariables = Types.Exact<{
   filter?: Types.InputMaybe<Types.TradesFilter>;
@@ -13,16 +13,16 @@ export type FillsQueryVariables = Types.Exact<{
 }>;
 
 
-export type FillsQuery = { __typename?: 'Query', trades?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, createdAt: any, price: string, size: string, buyOrder: string, sellOrder: string, aggressor: Types.Side, market: { __typename?: 'Market', id: string }, buyer: { __typename?: 'Party', id: string }, seller: { __typename?: 'Party', id: string }, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null };
+export type FillsQuery = { __typename: 'Query', trades?: { __typename: 'TradeConnection', edges: Array<{ __typename: 'TradeEdge', cursor: string, node: { __typename: 'Trade', id: string, createdAt: any, price: string, size: string, buyOrder: string, sellOrder: string, aggressor: Types.Side, market: { __typename: 'Market', id: string }, buyer: { __typename: 'Party', id: string }, seller: { __typename: 'Party', id: string }, buyerFee: { __typename: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } } }>, pageInfo: { __typename: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null };
 
-export type FillUpdateFieldsFragment = { __typename?: 'TradeUpdate', id: string, marketId: string, buyOrder: string, sellOrder: string, buyerId: string, sellerId: string, aggressor: Types.Side, price: string, size: string, createdAt: any, type: Types.TradeType, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } };
+export type FillUpdateFieldsFragment = { __typename: 'TradeUpdate', id: string, marketId: string, buyOrder: string, sellOrder: string, buyerId: string, sellerId: string, aggressor: Types.Side, price: string, size: string, createdAt: any, type: Types.TradeType, buyerFee: { __typename: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } };
 
 export type FillsEventSubscriptionVariables = Types.Exact<{
   filter: Types.TradesSubscriptionFilter;
 }>;
 
 
-export type FillsEventSubscription = { __typename?: 'Subscription', tradesStream?: Array<{ __typename?: 'TradeUpdate', id: string, marketId: string, buyOrder: string, sellOrder: string, buyerId: string, sellerId: string, aggressor: Types.Side, price: string, size: string, createdAt: any, type: Types.TradeType, buyerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } }> | null };
+export type FillsEventSubscription = { __typename: 'Subscription', tradesStream?: Array<{ __typename: 'TradeUpdate', id: string, marketId: string, buyOrder: string, sellOrder: string, buyerId: string, sellerId: string, aggressor: Types.Side, price: string, size: string, createdAt: any, type: Types.TradeType, buyerFee: { __typename: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string }, sellerFee: { __typename: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } }> | null };
 
 export const FillFieldsFragmentDoc = gql`
     fragment FillFields on Trade {

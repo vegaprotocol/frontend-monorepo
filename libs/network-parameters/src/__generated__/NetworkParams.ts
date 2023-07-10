@@ -6,14 +6,14 @@ const defaultOptions = {} as const;
 export type NetworkParamsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type NetworkParamsQuery = { __typename?: 'Query', networkParametersConnection: { __typename?: 'NetworkParametersConnection', edges?: Array<{ __typename?: 'NetworkParameterEdge', node: { __typename?: 'NetworkParameter', key: string, value: string } } | null> | null } };
+export type NetworkParamsQuery = { __typename: 'Query', networkParametersConnection: { __typename: 'NetworkParametersConnection', edges?: Array<{ __typename: 'NetworkParameterEdge', node: { __typename: 'NetworkParameter', key: string, value: string } } | null> | null } };
 
 export type NetworkParamQueryVariables = Types.Exact<{
   key: Types.Scalars['String'];
 }>;
 
 
-export type NetworkParamQuery = { __typename?: 'Query', networkParameter?: { __typename?: 'NetworkParameter', key: string, value: string } | null };
+export type NetworkParamQuery = { __typename: 'Query', networkParameter?: { __typename: 'NetworkParameter', key: string, value: string } | null };
 
 
 export const NetworkParamsDocument = gql`

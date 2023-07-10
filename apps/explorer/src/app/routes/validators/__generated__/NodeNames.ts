@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type ExplorerNodeNamesQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type ExplorerNodeNamesQuery = { __typename?: 'Query', nodesConnection: { __typename?: 'NodesConnection', edges?: Array<{ __typename?: 'NodeEdge', node: { __typename?: 'Node', id: string, name: string, pubkey: string, tmPubkey: string, ethereumAddress: string } } | null> | null } };
+export type ExplorerNodeNamesQuery = { __typename: 'Query', nodesConnection: { __typename: 'NodesConnection', edges?: Array<{ __typename: 'NodeEdge', node: { __typename: 'Node', id: string, name: string, pubkey: string, tmPubkey: string, ethereumAddress: string } } | null> | null } };
 
 
 export const ExplorerNodeNamesDocument = gql`

@@ -3,14 +3,14 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type ExplorerWithdrawalPropertiesFragment = { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, createdTimestamp: any, withdrawnTimestamp?: any | null, ref: string, txHash?: string | null, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null };
+export type ExplorerWithdrawalPropertiesFragment = { __typename: 'Withdrawal', id: string, status: Types.WithdrawalStatus, createdTimestamp: any, withdrawnTimestamp?: any | null, ref: string, txHash?: string | null, details?: { __typename: 'Erc20WithdrawalDetails', receiverAddress: string } | null };
 
 export type ExplorerWithdrawalQueryVariables = Types.Exact<{
   id: Types.Scalars['ID'];
 }>;
 
 
-export type ExplorerWithdrawalQuery = { __typename?: 'Query', withdrawal?: { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, createdTimestamp: any, withdrawnTimestamp?: any | null, ref: string, txHash?: string | null, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null } | null };
+export type ExplorerWithdrawalQuery = { __typename: 'Query', withdrawal?: { __typename: 'Withdrawal', id: string, status: Types.WithdrawalStatus, createdTimestamp: any, withdrawnTimestamp?: any | null, ref: string, txHash?: string | null, details?: { __typename: 'Erc20WithdrawalDetails', receiverAddress: string } | null } | null };
 
 export const ExplorerWithdrawalPropertiesFragmentDoc = gql`
     fragment ExplorerWithdrawalProperties on Withdrawal {

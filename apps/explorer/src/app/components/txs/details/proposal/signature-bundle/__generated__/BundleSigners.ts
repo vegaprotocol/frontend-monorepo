@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type ExplorerBundleSignersQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type ExplorerBundleSignersQuery = { __typename?: 'Query', networkParameter?: { __typename?: 'NetworkParameter', value: string } | null, nodesConnection: { __typename?: 'NodesConnection', edges?: Array<{ __typename?: 'NodeEdge', node: { __typename?: 'Node', id: string, name: string, status: Types.NodeStatus, ethereumAddress: string, pubkey: string, tmPubkey: string } } | null> | null } };
+export type ExplorerBundleSignersQuery = { __typename: 'Query', networkParameter?: { __typename: 'NetworkParameter', value: string } | null, nodesConnection: { __typename: 'NodesConnection', edges?: Array<{ __typename: 'NodeEdge', node: { __typename: 'Node', id: string, name: string, status: Types.NodeStatus, ethereumAddress: string, pubkey: string, tmPubkey: string } } | null> | null } };
 
 
 export const ExplorerBundleSignersDocument = gql`

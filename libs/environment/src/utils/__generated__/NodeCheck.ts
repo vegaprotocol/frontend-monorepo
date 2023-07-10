@@ -6,12 +6,12 @@ const defaultOptions = {} as const;
 export type NodeCheckQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type NodeCheckQuery = { __typename?: 'Query', statistics: { __typename?: 'Statistics', chainId: string, blockHeight: string, vegaTime: any } };
+export type NodeCheckQuery = { __typename: 'Query', statistics: { __typename: 'Statistics', chainId: string, blockHeight: string, vegaTime: any } };
 
 export type NodeCheckTimeUpdateSubscriptionVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type NodeCheckTimeUpdateSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', id: string }> | null };
+export type NodeCheckTimeUpdateSubscription = { __typename: 'Subscription', busEvents?: Array<{ __typename: 'BusEvent', id: string }> | null };
 
 
 export const NodeCheckDocument = gql`

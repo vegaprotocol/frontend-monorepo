@@ -3,12 +3,12 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type ExplorerStatsFieldsFragment = { __typename?: 'Statistics', averageOrdersPerBlock: string, ordersPerSecond: string, txPerBlock: string, tradesPerSecond: string };
+export type ExplorerStatsFieldsFragment = { __typename: 'Statistics', averageOrdersPerBlock: string, ordersPerSecond: string, txPerBlock: string, tradesPerSecond: string };
 
 export type ExplorerStatsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type ExplorerStatsQuery = { __typename?: 'Query', statistics: { __typename?: 'Statistics', averageOrdersPerBlock: string, ordersPerSecond: string, txPerBlock: string, tradesPerSecond: string } };
+export type ExplorerStatsQuery = { __typename: 'Query', statistics: { __typename: 'Statistics', averageOrdersPerBlock: string, ordersPerSecond: string, txPerBlock: string, tradesPerSecond: string } };
 
 export const ExplorerStatsFieldsFragmentDoc = gql`
     fragment ExplorerStatsFields on Statistics {

@@ -10,7 +10,7 @@ export type MarketsCandlesQueryVariables = Types.Exact<{
 }>;
 
 
-export type MarketsCandlesQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, candlesConnection?: { __typename?: 'CandleDataConnection', edges?: Array<{ __typename?: 'CandleEdge', node: { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string, periodStart: any } } | null> | null } | null } }> } | null };
+export type MarketsCandlesQuery = { __typename: 'Query', marketsConnection?: { __typename: 'MarketConnection', edges: Array<{ __typename: 'MarketEdge', node: { __typename: 'Market', id: string, candlesConnection?: { __typename: 'CandleDataConnection', edges?: Array<{ __typename: 'CandleEdge', node: { __typename: 'Candle', high: string, low: string, open: string, close: string, volume: string, periodStart: any } } | null> | null } | null } }> } | null };
 
 
 export const MarketsCandlesDocument = gql`

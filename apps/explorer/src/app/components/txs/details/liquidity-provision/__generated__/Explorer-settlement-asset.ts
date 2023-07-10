@@ -8,7 +8,7 @@ export type ExplorerSettlementAssetForMarketQueryVariables = Types.Exact<{
 }>;
 
 
-export type ExplorerSettlementAssetForMarketQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number } | null };
+export type ExplorerSettlementAssetForMarketQuery = { __typename: 'Query', market?: { __typename: 'Market', id: string, decimalPlaces: number } | null };
 
 
 export const ExplorerSettlementAssetForMarketDocument = gql`

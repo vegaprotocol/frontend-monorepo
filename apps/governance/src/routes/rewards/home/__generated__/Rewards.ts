@@ -3,11 +3,11 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type RewardFieldsFragment = { __typename?: 'Reward', rewardType: Types.AccountType, amount: string, percentageOfTotal: string, receivedAt: any, asset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number }, party: { __typename?: 'Party', id: string }, epoch: { __typename?: 'Epoch', id: string } };
+export type RewardFieldsFragment = { __typename: 'Reward', rewardType: Types.AccountType, amount: string, percentageOfTotal: string, receivedAt: any, asset: { __typename: 'Asset', id: string, symbol: string, name: string, decimals: number }, party: { __typename: 'Party', id: string }, epoch: { __typename: 'Epoch', id: string } };
 
-export type DelegationFieldsFragment = { __typename?: 'Delegation', amount: string, epoch: number };
+export type DelegationFieldsFragment = { __typename: 'Delegation', amount: string, epoch: number };
 
-export type EpochRewardSummaryFieldsFragment = { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType };
+export type EpochRewardSummaryFieldsFragment = { __typename: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType };
 
 export type RewardsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -18,7 +18,7 @@ export type RewardsQueryVariables = Types.Exact<{
 }>;
 
 
-export type RewardsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, rewardsConnection?: { __typename?: 'RewardsConnection', edges?: Array<{ __typename?: 'RewardEdge', node: { __typename?: 'Reward', rewardType: Types.AccountType, amount: string, percentageOfTotal: string, receivedAt: any, asset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number }, party: { __typename?: 'Party', id: string }, epoch: { __typename?: 'Epoch', id: string } } } | null> | null } | null, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amount: string, epoch: number } } | null> | null } | null } | null, epochRewardSummaries?: { __typename?: 'EpochRewardSummaryConnection', edges?: Array<{ __typename?: 'EpochRewardSummaryEdge', node: { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType } } | null> | null } | null };
+export type RewardsQuery = { __typename: 'Query', party?: { __typename: 'Party', id: string, rewardsConnection?: { __typename: 'RewardsConnection', edges?: Array<{ __typename: 'RewardEdge', node: { __typename: 'Reward', rewardType: Types.AccountType, amount: string, percentageOfTotal: string, receivedAt: any, asset: { __typename: 'Asset', id: string, symbol: string, name: string, decimals: number }, party: { __typename: 'Party', id: string }, epoch: { __typename: 'Epoch', id: string } } } | null> | null } | null, delegationsConnection?: { __typename: 'DelegationsConnection', edges?: Array<{ __typename: 'DelegationEdge', node: { __typename: 'Delegation', amount: string, epoch: number } } | null> | null } | null } | null, epochRewardSummaries?: { __typename: 'EpochRewardSummaryConnection', edges?: Array<{ __typename: 'EpochRewardSummaryEdge', node: { __typename: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType } } | null> | null } | null };
 
 export type EpochAssetsRewardsQueryVariables = Types.Exact<{
   epochRewardSummariesFilter?: Types.InputMaybe<Types.RewardSummaryFilter>;
@@ -26,14 +26,14 @@ export type EpochAssetsRewardsQueryVariables = Types.Exact<{
 }>;
 
 
-export type EpochAssetsRewardsQuery = { __typename?: 'Query', assetsConnection?: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string, decimals: number } } | null> | null } | null, epochRewardSummaries?: { __typename?: 'EpochRewardSummaryConnection', edges?: Array<{ __typename?: 'EpochRewardSummaryEdge', node: { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType } } | null> | null } | null };
+export type EpochAssetsRewardsQuery = { __typename: 'Query', assetsConnection?: { __typename: 'AssetsConnection', edges?: Array<{ __typename: 'AssetEdge', node: { __typename: 'Asset', id: string, name: string, decimals: number } } | null> | null } | null, epochRewardSummaries?: { __typename: 'EpochRewardSummaryConnection', edges?: Array<{ __typename: 'EpochRewardSummaryEdge', node: { __typename: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType } } | null> | null } | null };
 
-export type EpochFieldsFragment = { __typename?: 'Epoch', id: string, timestamps: { __typename?: 'EpochTimestamps', start?: any | null, end?: any | null, expiry?: any | null } };
+export type EpochFieldsFragment = { __typename: 'Epoch', id: string, timestamps: { __typename: 'EpochTimestamps', start?: any | null, end?: any | null, expiry?: any | null } };
 
 export type EpochQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type EpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string, timestamps: { __typename?: 'EpochTimestamps', start?: any | null, end?: any | null, expiry?: any | null } } };
+export type EpochQuery = { __typename: 'Query', epoch: { __typename: 'Epoch', id: string, timestamps: { __typename: 'EpochTimestamps', start?: any | null, end?: any | null, expiry?: any | null } } };
 
 export const RewardFieldsFragmentDoc = gql`
     fragment RewardFields on Reward {

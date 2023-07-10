@@ -3,7 +3,7 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type LedgerEntryFragment = { __typename?: 'AggregatedLedgerEntry', vegaTime: any, quantity: string, assetId?: string | null, transferType?: Types.TransferType | null, toAccountType?: Types.AccountType | null, toAccountMarketId?: string | null, toAccountPartyId?: string | null, toAccountBalance: string, fromAccountType?: Types.AccountType | null, fromAccountMarketId?: string | null, fromAccountPartyId?: string | null, fromAccountBalance: string };
+export type LedgerEntryFragment = { __typename: 'AggregatedLedgerEntry', vegaTime: any, quantity: string, assetId?: string | null, transferType?: Types.TransferType | null, toAccountType?: Types.AccountType | null, toAccountMarketId?: string | null, toAccountPartyId?: string | null, toAccountBalance: string, fromAccountType?: Types.AccountType | null, fromAccountMarketId?: string | null, fromAccountPartyId?: string | null, fromAccountBalance: string };
 
 export type LedgerEntriesQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -14,7 +14,7 @@ export type LedgerEntriesQueryVariables = Types.Exact<{
 }>;
 
 
-export type LedgerEntriesQuery = { __typename?: 'Query', ledgerEntries: { __typename?: 'AggregatedLedgerEntriesConnection', edges: Array<{ __typename?: 'AggregatedLedgerEntriesEdge', cursor: string, node: { __typename?: 'AggregatedLedgerEntry', vegaTime: any, quantity: string, assetId?: string | null, transferType?: Types.TransferType | null, toAccountType?: Types.AccountType | null, toAccountMarketId?: string | null, toAccountPartyId?: string | null, toAccountBalance: string, fromAccountType?: Types.AccountType | null, fromAccountMarketId?: string | null, fromAccountPartyId?: string | null, fromAccountBalance: string } } | null>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } };
+export type LedgerEntriesQuery = { __typename: 'Query', ledgerEntries: { __typename: 'AggregatedLedgerEntriesConnection', edges: Array<{ __typename: 'AggregatedLedgerEntriesEdge', cursor: string, node: { __typename: 'AggregatedLedgerEntry', vegaTime: any, quantity: string, assetId?: string | null, transferType?: Types.TransferType | null, toAccountType?: Types.AccountType | null, toAccountMarketId?: string | null, toAccountPartyId?: string | null, toAccountBalance: string, fromAccountType?: Types.AccountType | null, fromAccountMarketId?: string | null, fromAccountPartyId?: string | null, fromAccountBalance: string } } | null>, pageInfo: { __typename: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } };
 
 export const LedgerEntryFragmentDoc = gql`
     fragment LedgerEntry on AggregatedLedgerEntry {

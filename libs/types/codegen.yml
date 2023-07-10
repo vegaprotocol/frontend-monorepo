@@ -6,6 +6,8 @@ documents: '{apps,libs}/**/*.graphql'
 config:
   preResolveTypes: true
   namingConvention: keep
+  addTypename: true
+  nonOptionalTypename: true
 generates:
   libs/types/src/__generated__/types.ts:
     - typescript

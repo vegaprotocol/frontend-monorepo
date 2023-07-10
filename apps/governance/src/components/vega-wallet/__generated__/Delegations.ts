@@ -3,7 +3,7 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type WalletDelegationFieldsFragment = { __typename?: 'Delegation', amount: string, epoch: number, node: { __typename?: 'Node', id: string, name: string } };
+export type WalletDelegationFieldsFragment = { __typename: 'Delegation', amount: string, epoch: number, node: { __typename: 'Node', id: string, name: string } };
 
 export type DelegationsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -11,7 +11,7 @@ export type DelegationsQueryVariables = Types.Exact<{
 }>;
 
 
-export type DelegationsQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string }, party?: { __typename?: 'Party', id: string, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amount: string, epoch: number, node: { __typename?: 'Node', id: string, name: string } } } | null> | null } | null, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string }, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', name: string, id: string, decimals: number, symbol: string, source: { __typename: 'BuiltinAsset' } | { __typename: 'ERC20', contractAddress: string } } } } | null> | null } | null } | null };
+export type DelegationsQuery = { __typename: 'Query', epoch: { __typename: 'Epoch', id: string }, party?: { __typename: 'Party', id: string, delegationsConnection?: { __typename: 'DelegationsConnection', edges?: Array<{ __typename: 'DelegationEdge', node: { __typename: 'Delegation', amount: string, epoch: number, node: { __typename: 'Node', id: string, name: string } } } | null> | null } | null, stakingSummary: { __typename: 'StakingSummary', currentStakeAvailable: string }, accountsConnection?: { __typename: 'AccountsConnection', edges?: Array<{ __typename: 'AccountEdge', node: { __typename: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename: 'Asset', name: string, id: string, decimals: number, symbol: string, source: { __typename: 'BuiltinAsset' } | { __typename: 'ERC20', contractAddress: string } } } } | null> | null } | null } | null };
 
 export const WalletDelegationFieldsFragmentDoc = gql`
     fragment WalletDelegationFields on Delegation {

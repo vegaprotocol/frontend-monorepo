@@ -3,14 +3,14 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type ProtocolUpgradeProposalFieldsFragment = { __typename?: 'ProtocolUpgradeProposal', upgradeBlockHeight: string, vegaReleaseTag: string, approvers: Array<string>, status: Types.ProtocolUpgradeProposalStatus };
+export type ProtocolUpgradeProposalFieldsFragment = { __typename: 'ProtocolUpgradeProposal', upgradeBlockHeight: string, vegaReleaseTag: string, approvers: Array<string>, status: Types.ProtocolUpgradeProposalStatus };
 
 export type ProtocolUpgradeProposalsQueryVariables = Types.Exact<{
   inState?: Types.InputMaybe<Types.ProtocolUpgradeProposalStatus>;
 }>;
 
 
-export type ProtocolUpgradeProposalsQuery = { __typename?: 'Query', lastBlockHeight: string, protocolUpgradeProposals?: { __typename?: 'ProtocolUpgradeProposalConnection', edges?: Array<{ __typename?: 'ProtocolUpgradeProposalEdge', node: { __typename?: 'ProtocolUpgradeProposal', upgradeBlockHeight: string, vegaReleaseTag: string, approvers: Array<string>, status: Types.ProtocolUpgradeProposalStatus } }> | null } | null };
+export type ProtocolUpgradeProposalsQuery = { __typename: 'Query', lastBlockHeight: string, protocolUpgradeProposals?: { __typename: 'ProtocolUpgradeProposalConnection', edges?: Array<{ __typename: 'ProtocolUpgradeProposalEdge', node: { __typename: 'ProtocolUpgradeProposal', upgradeBlockHeight: string, vegaReleaseTag: string, approvers: Array<string>, status: Types.ProtocolUpgradeProposalStatus } }> | null } | null };
 
 export const ProtocolUpgradeProposalFieldsFragmentDoc = gql`
     fragment ProtocolUpgradeProposalFields on ProtocolUpgradeProposal {

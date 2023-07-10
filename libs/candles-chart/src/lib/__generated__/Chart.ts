@@ -8,7 +8,7 @@ export type ChartQueryVariables = Types.Exact<{
 }>;
 
 
-export type ChartQuery = { __typename?: 'Query', market?: { __typename?: 'Market', decimalPlaces: number, positionDecimalPlaces: number, data?: { __typename?: 'MarketData', priceMonitoringBounds?: Array<{ __typename?: 'PriceMonitoringBounds', minValidPrice: string, maxValidPrice: string, referencePrice: string }> | null } | null } | null };
+export type ChartQuery = { __typename: 'Query', market?: { __typename: 'Market', decimalPlaces: number, positionDecimalPlaces: number, data?: { __typename: 'MarketData', priceMonitoringBounds?: Array<{ __typename: 'PriceMonitoringBounds', minValidPrice: string, maxValidPrice: string, referencePrice: string }> | null } | null } | null };
 
 
 export const ChartDocument = gql`

@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type ExplorerGovernanceAssetQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type ExplorerGovernanceAssetQuery = { __typename?: 'Query', networkParameter?: { __typename?: 'NetworkParameter', value: string } | null };
+export type ExplorerGovernanceAssetQuery = { __typename: 'Query', networkParameter?: { __typename: 'NetworkParameter', value: string } | null };
 
 
 export const ExplorerGovernanceAssetDocument = gql`

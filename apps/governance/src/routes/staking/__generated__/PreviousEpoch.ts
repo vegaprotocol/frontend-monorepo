@@ -8,7 +8,7 @@ export type PreviousEpochQueryVariables = Types.Exact<{
 }>;
 
 
-export type PreviousEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string, validatorsConnection?: { __typename?: 'NodesConnection', edges?: Array<{ __typename?: 'NodeEdge', node: { __typename?: 'Node', id: string, stakedTotal: string, rewardScore?: { __typename?: 'RewardScore', rawValidatorScore: string, performanceScore: string, multisigScore: string, validatorScore: string, normalisedScore: string, validatorStatus: Types.ValidatorStatus } | null, rankingScore: { __typename?: 'RankingScore', status: Types.ValidatorStatus, previousStatus: Types.ValidatorStatus, rankingScore: string, stakeScore: string, performanceScore: string, votingPower: string } } } | null> | null } | null } };
+export type PreviousEpochQuery = { __typename: 'Query', epoch: { __typename: 'Epoch', id: string, validatorsConnection?: { __typename: 'NodesConnection', edges?: Array<{ __typename: 'NodeEdge', node: { __typename: 'Node', id: string, stakedTotal: string, rewardScore?: { __typename: 'RewardScore', rawValidatorScore: string, performanceScore: string, multisigScore: string, validatorScore: string, normalisedScore: string, validatorStatus: Types.ValidatorStatus } | null, rankingScore: { __typename: 'RankingScore', status: Types.ValidatorStatus, previousStatus: Types.ValidatorStatus, rankingScore: string, stakeScore: string, performanceScore: string, votingPower: string } } } | null> | null } | null } };
 
 
 export const PreviousEpochDocument = gql`

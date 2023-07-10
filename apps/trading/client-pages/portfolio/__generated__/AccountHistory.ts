@@ -12,7 +12,7 @@ export type AccountHistoryQueryVariables = Types.Exact<{
 }>;
 
 
-export type AccountHistoryQuery = { __typename?: 'Query', balanceChanges: { __typename?: 'AggregatedBalanceConnection', edges: Array<{ __typename?: 'AggregatedBalanceEdge', node: { __typename?: 'AggregatedBalance', timestamp: any, partyId?: string | null, balance: string, marketId?: string | null, assetId?: string | null, accountType?: Types.AccountType | null } } | null> } };
+export type AccountHistoryQuery = { __typename: 'Query', balanceChanges: { __typename: 'AggregatedBalanceConnection', edges: Array<{ __typename: 'AggregatedBalanceEdge', node: { __typename: 'AggregatedBalance', timestamp: any, partyId?: string | null, balance: string, marketId?: string | null, assetId?: string | null, accountType?: Types.AccountType | null } } | null> } };
 
 export type AccountsWithBalanceQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -20,7 +20,7 @@ export type AccountsWithBalanceQueryVariables = Types.Exact<{
 }>;
 
 
-export type AccountsWithBalanceQuery = { __typename?: 'Query', balanceChanges: { __typename?: 'AggregatedBalanceConnection', edges: Array<{ __typename?: 'AggregatedBalanceEdge', node: { __typename?: 'AggregatedBalance', assetId?: string | null, accountType?: Types.AccountType | null } } | null> } };
+export type AccountsWithBalanceQuery = { __typename: 'Query', balanceChanges: { __typename: 'AggregatedBalanceConnection', edges: Array<{ __typename: 'AggregatedBalanceEdge', node: { __typename: 'AggregatedBalance', assetId?: string | null, accountType?: Types.AccountType | null } } | null> } };
 
 
 export const AccountHistoryDocument = gql`

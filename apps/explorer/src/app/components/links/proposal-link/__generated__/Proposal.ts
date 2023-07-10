@@ -8,7 +8,7 @@ export type ExplorerProposalQueryVariables = Types.Exact<{
 }>;
 
 
-export type ExplorerProposalQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, rationale: { __typename?: 'ProposalRationale', title: string, description: string } } | null };
+export type ExplorerProposalQuery = { __typename: 'Query', proposal?: { __typename: 'Proposal', id?: string | null, rationale: { __typename: 'ProposalRationale', title: string, description: string } } | null };
 
 
 export const ExplorerProposalDocument = gql`

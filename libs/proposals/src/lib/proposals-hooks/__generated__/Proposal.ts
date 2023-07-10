@@ -4,28 +4,28 @@ import { gql } from '@apollo/client';
 import { UpdateNetworkParameterFielsFragmentDoc } from '../../proposals-data-provider/__generated__/Proposals';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type ProposalEventFieldsFragment = { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null };
+export type ProposalEventFieldsFragment = { __typename: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null };
 
 export type ProposalEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type ProposalEventSubscription = { __typename?: 'Subscription', proposals: { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null } };
+export type ProposalEventSubscription = { __typename: 'Subscription', proposals: { __typename: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null } };
 
-export type UpdateNetworkParameterProposalFragment = { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null, change: { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } } };
+export type UpdateNetworkParameterProposalFragment = { __typename: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, terms: { __typename: 'ProposalTerms', enactmentDatetime?: any | null, change: { __typename: 'NewAsset' } | { __typename: 'NewFreeform' } | { __typename: 'NewMarket' } | { __typename: 'UpdateAsset' } | { __typename: 'UpdateMarket' } | { __typename: 'UpdateNetworkParameter', networkParameter: { __typename: 'NetworkParameter', key: string, value: string } } } };
 
 export type OnUpdateNetworkParametersSubscriptionVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type OnUpdateNetworkParametersSubscription = { __typename?: 'Subscription', proposals: { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null, change: { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } } } };
+export type OnUpdateNetworkParametersSubscription = { __typename: 'Subscription', proposals: { __typename: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, terms: { __typename: 'ProposalTerms', enactmentDatetime?: any | null, change: { __typename: 'NewAsset' } | { __typename: 'NewFreeform' } | { __typename: 'NewMarket' } | { __typename: 'UpdateAsset' } | { __typename: 'UpdateMarket' } | { __typename: 'UpdateNetworkParameter', networkParameter: { __typename: 'NetworkParameter', key: string, value: string } } } } };
 
 export type ProposalOfMarketQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
 
 
-export type ProposalOfMarketQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null } } | null };
+export type ProposalOfMarketQuery = { __typename: 'Query', proposal?: { __typename: 'Proposal', id?: string | null, terms: { __typename: 'ProposalTerms', enactmentDatetime?: any | null } } | null };
 
 export const ProposalEventFieldsFragmentDoc = gql`
     fragment ProposalEventFields on Proposal {

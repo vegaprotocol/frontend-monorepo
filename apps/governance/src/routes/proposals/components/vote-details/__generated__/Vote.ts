@@ -8,7 +8,7 @@ export type UserVoteQueryVariables = Types.Exact<{
 }>;
 
 
-export type UserVoteQuery = { __typename?: 'Query', party?: { __typename?: 'Party', votesConnection?: { __typename?: 'ProposalVoteConnection', edges?: Array<{ __typename?: 'ProposalVoteEdge', node: { __typename?: 'ProposalVote', proposalId: string, vote: { __typename?: 'Vote', value: Types.VoteValue, datetime: any } } }> | null } | null } | null };
+export type UserVoteQuery = { __typename: 'Query', party?: { __typename: 'Party', votesConnection?: { __typename: 'ProposalVoteConnection', edges?: Array<{ __typename: 'ProposalVoteEdge', node: { __typename: 'ProposalVote', proposalId: string, vote: { __typename: 'Vote', value: Types.VoteValue, datetime: any } } }> | null } | null } | null };
 
 
 export const UserVoteDocument = gql`

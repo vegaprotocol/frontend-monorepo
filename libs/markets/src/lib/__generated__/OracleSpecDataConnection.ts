@@ -8,7 +8,7 @@ export type OracleSpecDataConnectionQueryVariables = Types.Exact<{
 }>;
 
 
-export type OracleSpecDataConnectionQuery = { __typename?: 'Query', oracleSpec?: { __typename?: 'OracleSpec', dataConnection: { __typename?: 'OracleDataConnection', edges?: Array<{ __typename?: 'OracleDataEdge', node: { __typename?: 'OracleData', externalData: { __typename?: 'ExternalData', data: { __typename?: 'Data', data?: Array<{ __typename?: 'Property', name: string, value: string }> | null } } } } | null> | null } } | null };
+export type OracleSpecDataConnectionQuery = { __typename: 'Query', oracleSpec?: { __typename: 'OracleSpec', dataConnection: { __typename: 'OracleDataConnection', edges?: Array<{ __typename: 'OracleDataEdge', node: { __typename: 'OracleData', externalData: { __typename: 'ExternalData', data: { __typename: 'Data', data?: Array<{ __typename: 'Property', name: string, value: string }> | null } } } } | null> | null } } | null };
 
 
 export const OracleSpecDataConnectionDocument = gql`

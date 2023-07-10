@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type ChainIdQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type ChainIdQuery = { __typename?: 'Query', statistics: { __typename?: 'Statistics', chainId: string } };
+export type ChainIdQuery = { __typename: 'Query', statistics: { __typename: 'Statistics', chainId: string } };
 
 
 export const ChainIdDocument = gql`

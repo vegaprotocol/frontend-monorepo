@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type BlockStatisticsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type BlockStatisticsQuery = { __typename?: 'Query', statistics: { __typename?: 'Statistics', blockHeight: string, blockDuration: string } };
+export type BlockStatisticsQuery = { __typename: 'Query', statistics: { __typename: 'Statistics', blockHeight: string, blockDuration: string } };
 
 
 export const BlockStatisticsDocument = gql`

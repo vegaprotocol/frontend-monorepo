@@ -3,14 +3,14 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type VoteEventFieldsFragment = { __typename?: 'ProposalVote', proposalId: string, vote: { __typename?: 'Vote', value: Types.VoteValue, datetime: any } };
+export type VoteEventFieldsFragment = { __typename: 'ProposalVote', proposalId: string, vote: { __typename: 'Vote', value: Types.VoteValue, datetime: any } };
 
 export type VoteEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type VoteEventSubscription = { __typename?: 'Subscription', votes: { __typename?: 'ProposalVote', proposalId: string, vote: { __typename?: 'Vote', value: Types.VoteValue, datetime: any } } };
+export type VoteEventSubscription = { __typename: 'Subscription', votes: { __typename: 'ProposalVote', proposalId: string, vote: { __typename: 'Vote', value: Types.VoteValue, datetime: any } } };
 
 export const VoteEventFieldsFragmentDoc = gql`
     fragment VoteEventFields on ProposalVote {

@@ -15,7 +15,7 @@ export type EstimateFeesQueryVariables = Types.Exact<{
 }>;
 
 
-export type EstimateFeesQuery = { __typename?: 'Query', estimateFees: { __typename?: 'FeeEstimate', totalFeeAmount: string, fees: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } } };
+export type EstimateFeesQuery = { __typename: 'Query', estimateFees: { __typename: 'FeeEstimate', totalFeeAmount: string, fees: { __typename: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } } };
 
 
 export const EstimateFeesDocument = gql`

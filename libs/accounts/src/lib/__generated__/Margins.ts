@@ -3,21 +3,21 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type MarginFieldsFragment = { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string, asset: { __typename?: 'Asset', id: string }, market: { __typename?: 'Market', id: string } };
+export type MarginFieldsFragment = { __typename: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string, asset: { __typename: 'Asset', id: string }, market: { __typename: 'Market', id: string } };
 
 export type MarginsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type MarginsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, marginsConnection?: { __typename?: 'MarginConnection', edges?: Array<{ __typename?: 'MarginEdge', node: { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string, asset: { __typename?: 'Asset', id: string }, market: { __typename?: 'Market', id: string } } }> | null } | null } | null };
+export type MarginsQuery = { __typename: 'Query', party?: { __typename: 'Party', id: string, marginsConnection?: { __typename: 'MarginConnection', edges?: Array<{ __typename: 'MarginEdge', node: { __typename: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string, asset: { __typename: 'Asset', id: string }, market: { __typename: 'Market', id: string } } }> | null } | null } | null };
 
 export type MarginsSubscriptionSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type MarginsSubscriptionSubscription = { __typename?: 'Subscription', margins: { __typename?: 'MarginLevelsUpdate', marketId: string, asset: string, partyId: string, maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string, timestamp: any } };
+export type MarginsSubscriptionSubscription = { __typename: 'Subscription', margins: { __typename: 'MarginLevelsUpdate', marketId: string, asset: string, partyId: string, maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string, timestamp: any } };
 
 export const MarginFieldsFragmentDoc = gql`
     fragment MarginFields on MarginLevels {

@@ -3,7 +3,7 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type StakingDelegationsFieldsFragment = { __typename?: 'Delegation', amount: string, epoch: number, node: { __typename?: 'Node', id: string } };
+export type StakingDelegationsFieldsFragment = { __typename: 'Delegation', amount: string, epoch: number, node: { __typename: 'Node', id: string } };
 
 export type PartyDelegationsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -11,7 +11,7 @@ export type PartyDelegationsQueryVariables = Types.Exact<{
 }>;
 
 
-export type PartyDelegationsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amount: string, epoch: number, node: { __typename?: 'Node', id: string } } } | null> | null } | null } | null, epoch: { __typename?: 'Epoch', id: string } };
+export type PartyDelegationsQuery = { __typename: 'Query', party?: { __typename: 'Party', id: string, delegationsConnection?: { __typename: 'DelegationsConnection', edges?: Array<{ __typename: 'DelegationEdge', node: { __typename: 'Delegation', amount: string, epoch: number, node: { __typename: 'Node', id: string } } } | null> | null } | null } | null, epoch: { __typename: 'Epoch', id: string } };
 
 export const StakingDelegationsFieldsFragmentDoc = gql`
     fragment StakingDelegationsFields on Delegation {

@@ -16,7 +16,7 @@ export type Scalars = {
 
 /** An account record */
 export type AccountBalance = {
-  __typename?: 'AccountBalance';
+  __typename: 'AccountBalance';
   /** Asset, the 'currency' */
   asset: Asset;
   /** Balance as string - current account balance (approx. as balances can be updated several times per second) */
@@ -31,7 +31,7 @@ export type AccountBalance = {
 
 /** An account record */
 export type AccountDetails = {
-  __typename?: 'AccountDetails';
+  __typename: 'AccountDetails';
   /** Asset, the 'currency' */
   assetId: Scalars['ID'];
   /** Market (only relevant to margin accounts) */
@@ -44,7 +44,7 @@ export type AccountDetails = {
 
 /** Edge type containing the account and cursor information returned by an AccountsConnection */
 export type AccountEdge = {
-  __typename?: 'AccountEdge';
+  __typename: 'AccountEdge';
   /** Cursor identifying the account */
   cursor: Scalars['String'];
   /** The account */
@@ -53,7 +53,7 @@ export type AccountEdge = {
 
 /** An account record */
 export type AccountEvent = {
-  __typename?: 'AccountEvent';
+  __typename: 'AccountEvent';
   /** Asset, the 'currency' */
   asset: Asset;
   /** Balance as string - current account balance (approx. as balances can be updated several times per second) */
@@ -119,7 +119,7 @@ export enum AccountType {
 
 /** An account record used for subscriptions */
 export type AccountUpdate = {
-  __typename?: 'AccountUpdate';
+  __typename: 'AccountUpdate';
   /** Asset id, the 'currency' */
   assetId: Scalars['ID'];
   /** Balance as string - current account balance (approx. as balances can be updated several times per second) */
@@ -134,7 +134,7 @@ export type AccountUpdate = {
 
 /** Connection type for retrieving cursor-based paginated list of account */
 export type AccountsConnection = {
-  __typename?: 'AccountsConnection';
+  __typename: 'AccountsConnection';
   /** List of accounts available for the connection */
   edges?: Maybe<Array<Maybe<AccountEdge>>>;
   /** Page information for the connection */
@@ -142,7 +142,7 @@ export type AccountsConnection = {
 };
 
 export type AggregatedBalance = {
-  __typename?: 'AggregatedBalance';
+  __typename: 'AggregatedBalance';
   /** Account type, if query was grouped by account type - else null */
   accountType?: Maybe<AccountType>;
   /** Asset identifier, if query was grouped by asset - else null */
@@ -158,32 +158,32 @@ export type AggregatedBalance = {
 };
 
 export type AggregatedBalanceConnection = {
-  __typename?: 'AggregatedBalanceConnection';
+  __typename: 'AggregatedBalanceConnection';
   edges: Array<Maybe<AggregatedBalanceEdge>>;
   pageInfo: PageInfo;
 };
 
 export type AggregatedBalanceEdge = {
-  __typename?: 'AggregatedBalanceEdge';
+  __typename: 'AggregatedBalanceEdge';
   cursor: Scalars['String'];
   /** The aggregated balance */
   node: AggregatedBalance;
 };
 
 export type AggregatedLedgerEntriesConnection = {
-  __typename?: 'AggregatedLedgerEntriesConnection';
+  __typename: 'AggregatedLedgerEntriesConnection';
   edges: Array<Maybe<AggregatedLedgerEntriesEdge>>;
   pageInfo: PageInfo;
 };
 
 export type AggregatedLedgerEntriesEdge = {
-  __typename?: 'AggregatedLedgerEntriesEdge';
+  __typename: 'AggregatedLedgerEntriesEdge';
   cursor: Scalars['String'];
   node: AggregatedLedgerEntry;
 };
 
 export type AggregatedLedgerEntry = {
-  __typename?: 'AggregatedLedgerEntry';
+  __typename: 'AggregatedLedgerEntry';
   /** Asset identifier, if query was grouped by asset - else null */
   assetId?: Maybe<Scalars['ID']>;
   /** Sender account balance after the transfer */
@@ -212,7 +212,7 @@ export type AggregatedLedgerEntry = {
 
 /** Represents an asset in Vega */
 export type Asset = {
-  __typename?: 'Asset';
+  __typename: 'Asset';
   /** The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18 */
   decimals: Scalars['Int'];
   /** The global reward pool account for this asset */
@@ -243,7 +243,7 @@ export type Asset = {
 
 /** Edge type containing the asset and cursor information returned by a AssetsConnection */
 export type AssetEdge = {
-  __typename?: 'AssetEdge';
+  __typename: 'AssetEdge';
   /** The cursor for the asset */
   cursor: Scalars['String'];
   /** The asset information */
@@ -267,7 +267,7 @@ export enum AssetStatus {
 
 /** Connection type for retrieving cursor-based paginated assets information */
 export type AssetsConnection = {
-  __typename?: 'AssetsConnection';
+  __typename: 'AssetsConnection';
   /** The assets */
   edges?: Maybe<Array<Maybe<AssetEdge>>>;
   /** The pagination information */
@@ -284,7 +284,7 @@ export type AssetsConnection = {
  * The auction will take at least N seconds, but can end sooner if the market can trade a certain volume.
  */
 export type AuctionDuration = {
-  __typename?: 'AuctionDuration';
+  __typename: 'AuctionDuration';
   /** Duration of the auction in seconds */
   durationSecs: Scalars['Int'];
   /** Target uncrossing trading volume */
@@ -292,7 +292,7 @@ export type AuctionDuration = {
 };
 
 export type AuctionEvent = {
-  __typename?: 'AuctionEvent';
+  __typename: 'AuctionEvent';
   /** RFC3339Nano optional end time of auction */
   auctionEnd: Scalars['Timestamp'];
   /** RFC3339Nano start time of auction */
@@ -327,13 +327,13 @@ export enum AuctionTrigger {
 
 /** A Vega builtin asset, mostly for testing purpose */
 export type BuiltinAsset = {
-  __typename?: 'BuiltinAsset';
+  __typename: 'BuiltinAsset';
   /** Maximum amount that can be requested by a party through the built-in asset faucet at a time */
   maxFaucetAmountMint: Scalars['String'];
 };
 
 export type BusEvent = {
-  __typename?: 'BusEvent';
+  __typename: 'BusEvent';
   /** The block hash */
   block: Scalars['String'];
   /** The payload - the wrapped event */
@@ -358,7 +358,7 @@ export enum BusEventType {
 
 /** Candle stick representation of trading */
 export type Candle = {
-  __typename?: 'Candle';
+  __typename: 'Candle';
   /** Close price (uint64) */
   close: Scalars['String'];
   /** High price (uint64) */
@@ -377,7 +377,7 @@ export type Candle = {
 
 /** Connection type for retrieving cursor-based paginated candle information */
 export type CandleDataConnection = {
-  __typename?: 'CandleDataConnection';
+  __typename: 'CandleDataConnection';
   /** The candles */
   edges?: Maybe<Array<Maybe<CandleEdge>>>;
   /** The pagination information */
@@ -386,7 +386,7 @@ export type CandleDataConnection = {
 
 /** Edge type containing the candle and cursor information returned by a CandleDataConnection */
 export type CandleEdge = {
-  __typename?: 'CandleEdge';
+  __typename: 'CandleEdge';
   /** The cursor for the candle */
   cursor: Scalars['String'];
   /** The candle */
@@ -395,7 +395,7 @@ export type CandleEdge = {
 
 /** Condition describes the condition that must be validated by the data source engine */
 export type Condition = {
-  __typename?: 'Condition';
+  __typename: 'Condition';
   /** The type of comparison to make on the value. */
   operator: ConditionOperator;
   /** The value to compare against. */
@@ -424,14 +424,14 @@ export enum ConditionOperator {
 
 /** A mode where Vega tries to execute orders as soon as they are received */
 export type ContinuousTrading = {
-  __typename?: 'ContinuousTrading';
+  __typename: 'ContinuousTrading';
   /** Size of an increment in price in terms of the quote currency */
   tickSize: Scalars['String'];
 };
 
 /** Connection type for retrieving cursor-based paginated core snapshot data */
 export type CoreSnapshotConnection = {
-  __typename?: 'CoreSnapshotConnection';
+  __typename: 'CoreSnapshotConnection';
   /** The positions in this connection */
   edges?: Maybe<Array<CoreSnapshotEdge>>;
   /** The pagination information */
@@ -440,7 +440,7 @@ export type CoreSnapshotConnection = {
 
 /** A snapshot taken by the core */
 export type CoreSnapshotData = {
-  __typename?: 'CoreSnapshotData';
+  __typename: 'CoreSnapshotData';
   /** The block hash at the snapshot block height */
   blockHash: Scalars['String'];
   /** At which block the snapshot was taken */
@@ -451,7 +451,7 @@ export type CoreSnapshotData = {
 
 /** Edge type containing the core snapshot cursor information */
 export type CoreSnapshotEdge = {
-  __typename?: 'CoreSnapshotEdge';
+  __typename: 'CoreSnapshotEdge';
   /** Cursor identifying the core snapshot data */
   cursor: Scalars['String'];
   /** The core snapshot data */
@@ -460,7 +460,7 @@ export type CoreSnapshotEdge = {
 
 /** A data source contains the data sent by a data source */
 export type Data = {
-  __typename?: 'Data';
+  __typename: 'Data';
   /**
    * RFC3339Nano formatted date and time for when the data was broadcast to the markets
    * with a matching data spec.
@@ -484,7 +484,7 @@ export type Data = {
  * for each type in the child objects below.
  */
 export type DataSourceDefinition = {
-  __typename?: 'DataSourceDefinition';
+  __typename: 'DataSourceDefinition';
   sourceType: DataSourceKind;
 };
 
@@ -493,7 +493,7 @@ export type DataSourceDefinition = {
  * It contains one of any of the defined `SourceType` variants.
  */
 export type DataSourceDefinitionExternal = {
-  __typename?: 'DataSourceDefinitionExternal';
+  __typename: 'DataSourceDefinitionExternal';
   sourceType: ExternalDataSourceKind;
 };
 
@@ -502,7 +502,7 @@ export type DataSourceDefinitionExternal = {
  * It contains one of any of the defined `SourceType` variants.
  */
 export type DataSourceDefinitionInternal = {
-  __typename?: 'DataSourceDefinitionInternal';
+  __typename: 'DataSourceDefinitionInternal';
   sourceType: InternalDataSourceKind;
 };
 
@@ -513,7 +513,7 @@ export type DataSourceKind = DataSourceDefinitionExternal | DataSourceDefinition
  * wants to get from the oracle engine.
  */
 export type DataSourceSpec = {
-  __typename?: 'DataSourceSpec';
+  __typename: 'DataSourceSpec';
   /** RFC3339Nano creation date time */
   createdAt: Scalars['Timestamp'];
   data: DataSourceDefinition;
@@ -530,7 +530,7 @@ export type DataSourceSpec = {
  * sourcing engine.
  */
 export type DataSourceSpecConfiguration = {
-  __typename?: 'DataSourceSpecConfiguration';
+  __typename: 'DataSourceSpecConfiguration';
   /**
    * Filters describes which source data are considered of interest or not for
    * the product (or the risk model).
@@ -546,7 +546,7 @@ export type DataSourceSpecConfiguration = {
 
 /** DataSourceSpecConfigurationTime is the internal data source used for emitting timestamps. */
 export type DataSourceSpecConfigurationTime = {
-  __typename?: 'DataSourceSpecConfigurationTime';
+  __typename: 'DataSourceSpecConfigurationTime';
   conditions: Array<Maybe<Condition>>;
 };
 
@@ -566,7 +566,7 @@ export enum DataSourceSpecStatus {
  * used as settlement data and trading termination.
  */
 export type DataSourceSpecToFutureBinding = {
-  __typename?: 'DataSourceSpecToFutureBinding';
+  __typename: 'DataSourceSpecToFutureBinding';
   settlementDataProperty: Scalars['String'];
   tradingTerminationProperty: Scalars['String'];
 };
@@ -585,7 +585,7 @@ export type DateRange = {
 };
 
 export type Delegation = {
-  __typename?: 'Delegation';
+  __typename: 'Delegation';
   /** Amount delegated */
   amount: Scalars['String'];
   /** Epoch of delegation */
@@ -598,7 +598,7 @@ export type Delegation = {
 
 /** Edge type containing the delegation and cursor information returned by a DelegationsConnection */
 export type DelegationEdge = {
-  __typename?: 'DelegationEdge';
+  __typename: 'DelegationEdge';
   /** The cursor for the data item */
   cursor: Scalars['String'];
   /** The delegation information */
@@ -607,7 +607,7 @@ export type DelegationEdge = {
 
 /** Connection type for retrieving cursor-based paginated delegation information */
 export type DelegationsConnection = {
-  __typename?: 'DelegationsConnection';
+  __typename: 'DelegationsConnection';
   /** The delegation information available on this connection */
   edges?: Maybe<Array<Maybe<DelegationEdge>>>;
   /** The pagination information */
@@ -616,7 +616,7 @@ export type DelegationsConnection = {
 
 /** The details of a deposit processed by Vega */
 export type Deposit = {
-  __typename?: 'Deposit';
+  __typename: 'Deposit';
   /** The amount to be withdrawn */
   amount: Scalars['String'];
   /** The asset to be withdrawn */
@@ -637,7 +637,7 @@ export type Deposit = {
 
 /** Edge type containing the deposit and cursor information returned by a DepositsConnection */
 export type DepositEdge = {
-  __typename?: 'DepositEdge';
+  __typename: 'DepositEdge';
   cursor: Scalars['String'];
   node: Deposit;
 };
@@ -654,7 +654,7 @@ export enum DepositStatus {
 
 /** Connection type for retrieving cursor-based paginated deposits information */
 export type DepositsConnection = {
-  __typename?: 'DepositsConnection';
+  __typename: 'DepositsConnection';
   /** The deposits */
   edges?: Maybe<Array<Maybe<DepositEdge>>>;
   /** The pagination information */
@@ -663,7 +663,7 @@ export type DepositsConnection = {
 
 /** Frequent batch auctions trading mode */
 export type DiscreteTrading = {
-  __typename?: 'DiscreteTrading';
+  __typename: 'DiscreteTrading';
   /** Duration of the discrete trading batch in nanoseconds. Maximum 1 month. */
   duration: Scalars['Int'];
   /** Size of an increment in price in terms of the quote currency */
@@ -684,7 +684,7 @@ export enum DispatchMetric {
 
 /** Dispatch strategy for a recurring transfer */
 export type DispatchStrategy = {
-  __typename?: 'DispatchStrategy';
+  __typename: 'DispatchStrategy';
   /** Defines the data that will be used to compare markets so as to distribute rewards appropriately */
   dispatchMetric: DispatchMetric;
   /** The asset to use for measuring contribution to the metric */
@@ -695,7 +695,7 @@ export type DispatchStrategy = {
 
 /** An asset originated from an Ethereum ERC20 Token */
 export type ERC20 = {
-  __typename?: 'ERC20';
+  __typename: 'ERC20';
   /** The address of the ERC20 contract */
   contractAddress: Scalars['String'];
   /**
@@ -712,7 +712,7 @@ export type ERC20 = {
 };
 
 export type ERC20MultiSigSignerAddedBundle = {
-  __typename?: 'ERC20MultiSigSignerAddedBundle';
+  __typename: 'ERC20MultiSigSignerAddedBundle';
   /** The epoch in which the validator was added */
   epochSeq: Scalars['String'];
   /** The ethereum address of the signer to be added */
@@ -728,20 +728,20 @@ export type ERC20MultiSigSignerAddedBundle = {
 };
 
 export type ERC20MultiSigSignerAddedBundleEdge = {
-  __typename?: 'ERC20MultiSigSignerAddedBundleEdge';
+  __typename: 'ERC20MultiSigSignerAddedBundleEdge';
   cursor: Scalars['String'];
   node: ERC20MultiSigSignerAddedBundle;
 };
 
 /** Response for the signature bundle to add a particular validator to the signer list of the multisig contract */
 export type ERC20MultiSigSignerAddedConnection = {
-  __typename?: 'ERC20MultiSigSignerAddedConnection';
+  __typename: 'ERC20MultiSigSignerAddedConnection';
   edges?: Maybe<Array<Maybe<ERC20MultiSigSignerAddedBundleEdge>>>;
   pageInfo?: Maybe<PageInfo>;
 };
 
 export type ERC20MultiSigSignerRemovedBundle = {
-  __typename?: 'ERC20MultiSigSignerRemovedBundle';
+  __typename: 'ERC20MultiSigSignerRemovedBundle';
   /** The epoch in which the validator was removed */
   epochSeq: Scalars['String'];
   /** The nonce used in the signing operation */
@@ -757,14 +757,14 @@ export type ERC20MultiSigSignerRemovedBundle = {
 };
 
 export type ERC20MultiSigSignerRemovedBundleEdge = {
-  __typename?: 'ERC20MultiSigSignerRemovedBundleEdge';
+  __typename: 'ERC20MultiSigSignerRemovedBundleEdge';
   cursor: Scalars['String'];
   node: ERC20MultiSigSignerRemovedBundle;
 };
 
 /** Response for the signature bundle to remove a particular validator from the signer list of the multisig contract */
 export type ERC20MultiSigSignerRemovedConnection = {
-  __typename?: 'ERC20MultiSigSignerRemovedConnection';
+  __typename: 'ERC20MultiSigSignerRemovedConnection';
   /** The list of signer bundles for that validator */
   edges?: Maybe<Array<Maybe<ERC20MultiSigSignerRemovedBundleEdge>>>;
   /** The pagination information */
@@ -773,7 +773,7 @@ export type ERC20MultiSigSignerRemovedConnection = {
 
 /** Response for the signature bundle to update the token limits (maxLifetimeDeposit and withdrawThreshold) for a given ERC20 token (already allowlisted) in the collateral bridge */
 export type ERC20SetAssetLimitsBundle = {
-  __typename?: 'ERC20SetAssetLimitsBundle';
+  __typename: 'ERC20SetAssetLimitsBundle';
   /** The address of the asset on ethereum */
   assetSource: Scalars['String'];
   /** The lifetime limit deposit for this asset */
@@ -792,13 +792,13 @@ export type ERC20SetAssetLimitsBundle = {
 };
 
 export type ETHAddress = {
-  __typename?: 'ETHAddress';
+  __typename: 'ETHAddress';
   address?: Maybe<Scalars['String']>;
 };
 
 /** List of all entities created by transaction hash */
 export type Entities = {
-  __typename?: 'Entities';
+  __typename: 'Entities';
   /** List of accounts created by the transaction hash */
   accounts?: Maybe<Array<Maybe<AccountEvent>>>;
   /** List of assets created by the transaction hash */
@@ -859,7 +859,7 @@ export type Entities = {
 
 /** Epoch describes a specific period of time in the Vega network */
 export type Epoch = {
-  __typename?: 'Epoch';
+  __typename: 'Epoch';
   /** Delegations data for this epoch */
   delegationsConnection?: Maybe<DelegationsConnection>;
   /** Numeric sequence number used to identify the epoch */
@@ -886,7 +886,7 @@ export type EpochvalidatorsConnectionArgs = {
 
 /** Summary of all epochs for a node */
 export type EpochData = {
-  __typename?: 'EpochData';
+  __typename: 'EpochData';
   /** Total number of offline epochs since node was created */
   offline: Scalars['Int'];
   /** Total number of online epochs since node was created */
@@ -897,7 +897,7 @@ export type EpochData = {
 
 /** Summary of a node's rewards for a given epoch */
 export type EpochParticipation = {
-  __typename?: 'EpochParticipation';
+  __typename: 'EpochParticipation';
   epoch?: Maybe<Epoch>;
   /** RFC3339 timestamp */
   offline?: Maybe<Scalars['Timestamp']>;
@@ -909,7 +909,7 @@ export type EpochParticipation = {
 
 /** an aggregated reward summary for a combination of epoch/asset/market/reward type */
 export type EpochRewardSummary = {
-  __typename?: 'EpochRewardSummary';
+  __typename: 'EpochRewardSummary';
   /** Total quantity of rewards awarded in this asset/market/reward type in this epoch */
   amount: Scalars['String'];
   /** ID of the Asset */
@@ -923,20 +923,20 @@ export type EpochRewardSummary = {
 };
 
 export type EpochRewardSummaryConnection = {
-  __typename?: 'EpochRewardSummaryConnection';
+  __typename: 'EpochRewardSummaryConnection';
   edges?: Maybe<Array<Maybe<EpochRewardSummaryEdge>>>;
   pageInfo?: Maybe<PageInfo>;
 };
 
 export type EpochRewardSummaryEdge = {
-  __typename?: 'EpochRewardSummaryEdge';
+  __typename: 'EpochRewardSummaryEdge';
   cursor: Scalars['String'];
   node: EpochRewardSummary;
 };
 
 /** Describes in both human readable and block time when an epoch spans. */
 export type EpochTimestamps = {
-  __typename?: 'EpochTimestamps';
+  __typename: 'EpochTimestamps';
   /** RFC3339 timestamp - Vega time of epoch end, null if not ended */
   end?: Maybe<Scalars['Timestamp']>;
   /** RFC3339 timestamp - Vega time of epoch expiry */
@@ -951,7 +951,7 @@ export type EpochTimestamps = {
 
 /** Response for the signature bundle to allowlist an ERC20 token in the collateral bridge */
 export type Erc20ListAssetBundle = {
-  __typename?: 'Erc20ListAssetBundle';
+  __typename: 'Erc20ListAssetBundle';
   /** The source asset in the ethereum network */
   assetSource: Scalars['String'];
   /** The nonce to be used in the request */
@@ -967,7 +967,7 @@ export type Erc20ListAssetBundle = {
 
 /** All the data related to the approval of a withdrawal from the network */
 export type Erc20WithdrawalApproval = {
-  __typename?: 'Erc20WithdrawalApproval';
+  __typename: 'Erc20WithdrawalApproval';
   /** The amount to be withdrawn */
   amount: Scalars['String'];
   /** The source asset in the ethereum network */
@@ -987,14 +987,14 @@ export type Erc20WithdrawalApproval = {
 
 /** Specific details for an erc20 withdrawal */
 export type Erc20WithdrawalDetails = {
-  __typename?: 'Erc20WithdrawalDetails';
+  __typename: 'Erc20WithdrawalDetails';
   /** The ethereum address of the receiver of the asset funds */
   receiverAddress: Scalars['String'];
 };
 
 /** An Ethereum data source */
 export type EthereumEvent = {
-  __typename?: 'EthereumEvent';
+  __typename: 'EthereumEvent';
   /** The ID of the ethereum contract to use (string) */
   contractId: Scalars['ID'];
   /** Name of the Ethereum event to listen to. (string) */
@@ -1003,7 +1003,7 @@ export type EthereumEvent = {
 
 /** Describes the ethereum key rotations of nodes on the vega network */
 export type EthereumKeyRotation = {
-  __typename?: 'EthereumKeyRotation';
+  __typename: 'EthereumKeyRotation';
   /** Block height when the rotation took place */
   blockHeight: Scalars['String'];
   /** New ethereum address */
@@ -1016,14 +1016,14 @@ export type EthereumKeyRotation = {
 
 /** An Ethereum key rotation record that is returned in a paginated Ethereum key rotation connection */
 export type EthereumKeyRotationEdge = {
-  __typename?: 'EthereumKeyRotationEdge';
+  __typename: 'EthereumKeyRotationEdge';
   cursor?: Maybe<Scalars['String']>;
   node: EthereumKeyRotation;
 };
 
 /** A paginated type for returning Ethereum key rotation records */
 export type EthereumKeyRotationsConnection = {
-  __typename?: 'EthereumKeyRotationsConnection';
+  __typename: 'EthereumKeyRotationsConnection';
   /** The ethereum key rotations in this connection */
   edges: Array<EthereumKeyRotationEdge>;
   /** The pagination information */
@@ -1034,7 +1034,7 @@ export type EthereumKeyRotationsConnection = {
 export type Event = Deposit | TimeUpdate | TransactionResult | Withdrawal;
 
 export type ExternalData = {
-  __typename?: 'ExternalData';
+  __typename: 'ExternalData';
   data: Data;
 };
 
@@ -1045,13 +1045,13 @@ export type ExternalDataSourceKind = DataSourceSpecConfiguration;
  * by the OracleSpec
  */
 export type ExternalDataSourceSpec = {
-  __typename?: 'ExternalDataSourceSpec';
+  __typename: 'ExternalDataSourceSpec';
   spec: DataSourceSpec;
 };
 
 /** An estimate of the fee to be paid for the order */
 export type FeeEstimate = {
-  __typename?: 'FeeEstimate';
+  __typename: 'FeeEstimate';
   /** The estimated fees if the order was to trade */
   fees: TradeFee;
   /** The total estimated amount of fees if the order was to trade */
@@ -1060,7 +1060,7 @@ export type FeeEstimate = {
 
 /** The factors applied to calculate the fees */
 export type FeeFactors = {
-  __typename?: 'FeeFactors';
+  __typename: 'FeeFactors';
   /** The factor applied to calculate InfrastructureFees, a non-negative float */
   infrastructureFee: Scalars['String'];
   /** The factor applied to calculate LiquidityFees, a non-negative float */
@@ -1071,7 +1071,7 @@ export type FeeFactors = {
 
 /** The fees applicable to a market */
 export type Fees = {
-  __typename?: 'Fees';
+  __typename: 'Fees';
   /** The factors used to calculate the different fees */
   factors: FeeFactors;
 };
@@ -1081,7 +1081,7 @@ export type Fees = {
  * interest or not.
  */
 export type Filter = {
-  __typename?: 'Filter';
+  __typename: 'Filter';
   /**
    * The conditions that should be matched by the data to be
    * considered of interest.
@@ -1093,7 +1093,7 @@ export type Filter = {
 
 /** A Future product */
 export type Future = {
-  __typename?: 'Future';
+  __typename: 'Future';
   /** The binding between the data source specification and the settlement data */
   dataSourceSpecBinding: DataSourceSpecToFutureBinding;
   /** The data source specification that describes the data of interest for settlement. */
@@ -1107,7 +1107,7 @@ export type Future = {
 };
 
 export type FutureProduct = {
-  __typename?: 'FutureProduct';
+  __typename: 'FutureProduct';
   /**
    * DataSourceSpecToFutureBinding tells on which property source data should be
    * used as settlement data.
@@ -1125,7 +1125,7 @@ export type FutureProduct = {
 
 /** A segment of data node history */
 export type HistorySegment = {
-  __typename?: 'HistorySegment';
+  __typename: 'HistorySegment';
   /** From block height of the history segment */
   fromHeight: Scalars['Int'];
   /** ID of the history segment */
@@ -1136,7 +1136,7 @@ export type HistorySegment = {
 
 /** Describes something that can be traded on Vega */
 export type Instrument = {
-  __typename?: 'Instrument';
+  __typename: 'Instrument';
   /** A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string) */
   code: Scalars['String'];
   /** Uniquely identifies an instrument across all instruments available on Vega (string) */
@@ -1150,7 +1150,7 @@ export type Instrument = {
 };
 
 export type InstrumentConfiguration = {
-  __typename?: 'InstrumentConfiguration';
+  __typename: 'InstrumentConfiguration';
   /** A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) */
   code: Scalars['String'];
   /** Future product specification */
@@ -1161,7 +1161,7 @@ export type InstrumentConfiguration = {
 
 /** A set of metadata to associate to an instrument */
 export type InstrumentMetadata = {
-  __typename?: 'InstrumentMetadata';
+  __typename: 'InstrumentMetadata';
   /** An arbitrary list of tags to associated to associate to the Instrument (string list) */
   tags?: Maybe<Array<Scalars['String']>>;
 };
@@ -1188,7 +1188,7 @@ export enum Interval {
 
 /** A node's key rotation event */
 export type KeyRotation = {
-  __typename?: 'KeyRotation';
+  __typename: 'KeyRotation';
   /** Block height when the rotation took place */
   blockHeight: Scalars['String'];
   /** New public key rotated to */
@@ -1201,7 +1201,7 @@ export type KeyRotation = {
 
 /** Connection type for retrieving cursor-based paginated key rotation information */
 export type KeyRotationConnection = {
-  __typename?: 'KeyRotationConnection';
+  __typename: 'KeyRotationConnection';
   /** List of key rotations available for the connection */
   edges?: Maybe<Array<Maybe<KeyRotationEdge>>>;
   /** Page information for the connection */
@@ -1210,7 +1210,7 @@ export type KeyRotationConnection = {
 
 /** Edge type containing the key rotation and cursor information returned by a KeyRotationConnection */
 export type KeyRotationEdge = {
-  __typename?: 'KeyRotationEdge';
+  __typename: 'KeyRotationEdge';
   /** Cursor identifying the key rotation */
   cursor: Scalars['String'];
   /** The key rotation */
@@ -1218,7 +1218,7 @@ export type KeyRotationEdge = {
 };
 
 export type LedgerEntry = {
-  __typename?: 'LedgerEntry';
+  __typename: 'LedgerEntry';
   /** The amount transferred */
   amount: Scalars['String'];
   /** Sender account balance after the transfer */
@@ -1250,7 +1250,7 @@ export type LedgerEntryFilter = {
 
 /** Liquidation estimate for both worst and best case possible */
 export type LiquidationEstimate = {
-  __typename?: 'LiquidationEstimate';
+  __typename: 'LiquidationEstimate';
   /** Liquidation price estimate assuming no slippage */
   bestCase: LiquidationPrice;
   /** Liquidation price estimate assuming slippage cap is applied */
@@ -1259,7 +1259,7 @@ export type LiquidationEstimate = {
 
 /** Liquidation price estimate for either only the current open volume and position given some or all buy orders get filled, or position given some or all sell orders get filled */
 export type LiquidationPrice = {
-  __typename?: 'LiquidationPrice';
+  __typename: 'LiquidationPrice';
   /** Liquidation price assuming buy orders start getting filled */
   including_buy_orders: Scalars['String'];
   /** Liquidation price assuming sell orders start getting filled */
@@ -1270,7 +1270,7 @@ export type LiquidationPrice = {
 
 /** Configuration of a market liquidity monitoring parameters */
 export type LiquidityMonitoringParameters = {
-  __typename?: 'LiquidityMonitoringParameters';
+  __typename: 'LiquidityMonitoringParameters';
   /** Specifies by how many seconds an auction should be extended if leaving the auction were to trigger a liquidity auction */
   auctionExtensionSecs: Scalars['Int'];
   /** Specifies parameters related to target stake calculation */
@@ -1281,7 +1281,7 @@ export type LiquidityMonitoringParameters = {
 
 /** A special order type for liquidity providers */
 export type LiquidityOrder = {
-  __typename?: 'LiquidityOrder';
+  __typename: 'LiquidityOrder';
   /** Offset from the pegged reference */
   offset: Scalars['String'];
   /** The proportion of the commitment allocated to this order */
@@ -1291,7 +1291,7 @@ export type LiquidityOrder = {
 };
 
 export type LiquidityOrderReference = {
-  __typename?: 'LiquidityOrderReference';
+  __typename: 'LiquidityOrderReference';
   /** The liquidity order */
   liquidityOrder: LiquidityOrder;
   /** The pegged order generated to fulfill this commitment */
@@ -1300,7 +1300,7 @@ export type LiquidityOrderReference = {
 
 /** The equity like share of liquidity fee for each liquidity provider */
 export type LiquidityProviderFeeShare = {
-  __typename?: 'LiquidityProviderFeeShare';
+  __typename: 'LiquidityProviderFeeShare';
   /** The average entry valuation of the liquidity provider for the market */
   averageEntryValuation: Scalars['String'];
   /** The average liquidity score */
@@ -1313,7 +1313,7 @@ export type LiquidityProviderFeeShare = {
 
 /** The command to be sent to the chain for a liquidity provision submission */
 export type LiquidityProvision = {
-  __typename?: 'LiquidityProvision';
+  __typename: 'LiquidityProvision';
   /** A set of liquidity buy orders to meet the liquidity provision obligation. */
   buys: Array<LiquidityOrderReference>;
   /** Specified as a unit-less number that represents the amount of settlement asset of the market. */
@@ -1362,7 +1362,7 @@ export enum LiquidityProvisionStatus {
 
 /** The command to be sent to the chain for a liquidity provision submission */
 export type LiquidityProvisionUpdate = {
-  __typename?: 'LiquidityProvisionUpdate';
+  __typename: 'LiquidityProvisionUpdate';
   /** A set of liquidity buy orders to meet the liquidity provision obligation. */
   buys: Array<LiquidityOrderReference>;
   /** Specified as a unit-less number that represents the amount of settlement asset of the market. */
@@ -1391,21 +1391,21 @@ export type LiquidityProvisionUpdate = {
 
 /** Connection type for retrieving cursor-based paginated liquidity provision information */
 export type LiquidityProvisionsConnection = {
-  __typename?: 'LiquidityProvisionsConnection';
+  __typename: 'LiquidityProvisionsConnection';
   edges?: Maybe<Array<Maybe<LiquidityProvisionsEdge>>>;
   pageInfo: PageInfo;
 };
 
 /** Edge type containing the liquidity provision and cursor information returned by a LiquidityProvisionsConnection */
 export type LiquidityProvisionsEdge = {
-  __typename?: 'LiquidityProvisionsEdge';
+  __typename: 'LiquidityProvisionsEdge';
   cursor: Scalars['String'];
   node: LiquidityProvision;
 };
 
 /** Parameters for the log normal risk model */
 export type LogNormalModelParams = {
-  __typename?: 'LogNormalModelParams';
+  __typename: 'LogNormalModelParams';
   /** Mu parameter, annualised growth rate of the underlying asset */
   mu: Scalars['Float'];
   /** R parameter, annualised growth rate of the risk-free asset, used for discounting of future cash flows, can be any real number */
@@ -1416,7 +1416,7 @@ export type LogNormalModelParams = {
 
 /** A type of risk model for futures trading */
 export type LogNormalRiskModel = {
-  __typename?: 'LogNormalRiskModel';
+  __typename: 'LogNormalRiskModel';
   /** Parameters for the log normal risk model */
   params: LogNormalModelParams;
   /** Lambda parameter of the risk model, probability confidence level used in expected shortfall calculation when obtaining the maintenance margin level, must be strictly greater than 0 and strictly smaller than 1 */
@@ -1426,7 +1426,7 @@ export type LogNormalRiskModel = {
 };
 
 export type LossSocialization = {
-  __typename?: 'LossSocialization';
+  __typename: 'LossSocialization';
   /** The amount lost */
   amount: Scalars['String'];
   /** The market ID where loss socialization happened */
@@ -1436,14 +1436,14 @@ export type LossSocialization = {
 };
 
 export type MarginCalculator = {
-  __typename?: 'MarginCalculator';
+  __typename: 'MarginCalculator';
   /** The scaling factors that will be used for margin calculation */
   scalingFactors: ScalingFactors;
 };
 
 /** Connection type for retrieving cursor-based paginated margin information */
 export type MarginConnection = {
-  __typename?: 'MarginConnection';
+  __typename: 'MarginConnection';
   /** The margin levels in this connection */
   edges?: Maybe<Array<MarginEdge>>;
   /** The pagination information */
@@ -1452,14 +1452,14 @@ export type MarginConnection = {
 
 /** Edge type containing the margin and cursor information returned by a MarginConnection */
 export type MarginEdge = {
-  __typename?: 'MarginEdge';
+  __typename: 'MarginEdge';
   cursor?: Maybe<Scalars['String']>;
   node: MarginLevels;
 };
 
 /** Margin level estimate for both worst and best case possible */
 export type MarginEstimate = {
-  __typename?: 'MarginEstimate';
+  __typename: 'MarginEstimate';
   /** Margin level estimate assuming no slippage */
   bestCase: MarginLevels;
   /** Margin level estimate assuming slippage cap is applied */
@@ -1468,7 +1468,7 @@ export type MarginEstimate = {
 
 /** Margins for a given a party */
 export type MarginLevels = {
-  __typename?: 'MarginLevels';
+  __typename: 'MarginLevels';
   /** Asset for the current margins */
   asset: Asset;
   /**
@@ -1492,7 +1492,7 @@ export type MarginLevels = {
 
 /** Margins for a given a party */
 export type MarginLevelsUpdate = {
-  __typename?: 'MarginLevelsUpdate';
+  __typename: 'MarginLevelsUpdate';
   /** Asset for the current margins */
   asset: Scalars['ID'];
   /**
@@ -1516,7 +1516,7 @@ export type MarginLevelsUpdate = {
 
 /** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
 export type Market = {
-  __typename?: 'Market';
+  __typename: 'Market';
   /** Get account for a party or market */
   accountsConnection?: Maybe<AccountsConnection>;
   /** Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters using cursor based pagination */
@@ -1634,7 +1634,7 @@ export type MarkettradesConnectionArgs = {
 
 /** Connection type for retrieving cursor-based paginated market information */
 export type MarketConnection = {
-  __typename?: 'MarketConnection';
+  __typename: 'MarketConnection';
   /** The markets in this connection */
   edges: Array<MarketEdge>;
   /** The pagination information */
@@ -1643,7 +1643,7 @@ export type MarketConnection = {
 
 /** Live data of a Market */
 export type MarketData = {
-  __typename?: 'MarketData';
+  __typename: 'MarketData';
   /** RFC3339Nano time at which the auction will stop (null if not in auction mode) */
   auctionEnd?: Maybe<Scalars['String']>;
   /** RFC3339Nano time at which the next auction will start (null if none is scheduled) */
@@ -1706,7 +1706,7 @@ export type MarketData = {
 
 /** The liquidity commitments for this market */
 export type MarketDataCommitments = {
-  __typename?: 'MarketDataCommitments';
+  __typename: 'MarketDataCommitments';
   /** A set of liquidity buy orders to meet the liquidity provision obligation. */
   buys?: Maybe<Array<LiquidityOrderReference>>;
   /** A set of liquidity sell orders to meet the liquidity provision obligation. */
@@ -1715,7 +1715,7 @@ export type MarketDataCommitments = {
 
 /** Connection type for retrieving cursor-based paginated market data information */
 export type MarketDataConnection = {
-  __typename?: 'MarketDataConnection';
+  __typename: 'MarketDataConnection';
   /** The market data elements for the requested page */
   edges?: Maybe<Array<Maybe<MarketDataEdge>>>;
   /** The pagination information */
@@ -1724,7 +1724,7 @@ export type MarketDataConnection = {
 
 /** Edge type containing the reward and cursor information returned by a MarketDataConnection */
 export type MarketDataEdge = {
-  __typename?: 'MarketDataEdge';
+  __typename: 'MarketDataEdge';
   cursor?: Maybe<Scalars['String']>;
   node: MarketData;
 };
@@ -1734,7 +1734,7 @@ export type MarketDataEdge = {
  * The depth of market measure provides an indication of the liquidity and depth for the instrument.
  */
 export type MarketDepth = {
-  __typename?: 'MarketDepth';
+  __typename: 'MarketDepth';
   /** Buy side price levels (if available) */
   buy?: Maybe<Array<PriceLevel>>;
   /** Last trade for the given market (if available) */
@@ -1748,7 +1748,7 @@ export type MarketDepth = {
 };
 
 export type MarketDepthTrade = {
-  __typename?: 'MarketDepthTrade';
+  __typename: 'MarketDepthTrade';
   /** ID of the trade for the given market (if available) */
   id: Scalars['ID'];
   /** Price of the trade */
@@ -1762,7 +1762,7 @@ export type MarketDepthTrade = {
  * market depth structure to keep it correct
  */
 export type MarketDepthUpdate = {
-  __typename?: 'MarketDepthUpdate';
+  __typename: 'MarketDepthUpdate';
   /** Buy side price levels (if available) */
   buy?: Maybe<Array<PriceLevel>>;
   /** Market */
@@ -1777,7 +1777,7 @@ export type MarketDepthUpdate = {
 
 /** Edge type containing the order and cursor information returned by a OrderConnection */
 export type MarketEdge = {
-  __typename?: 'MarketEdge';
+  __typename: 'MarketEdge';
   /** The cursor for this market */
   cursor: Scalars['String'];
   /** The market */
@@ -1785,7 +1785,7 @@ export type MarketEdge = {
 };
 
 export type MarketEvent = {
-  __typename?: 'MarketEvent';
+  __typename: 'MarketEvent';
   /** The market ID */
   marketId: Scalars['ID'];
   /** The message - market events are used for logging */
@@ -1821,7 +1821,7 @@ export enum MarketState {
 }
 
 export type MarketTick = {
-  __typename?: 'MarketTick';
+  __typename: 'MarketTick';
   /** The market ID */
   marketId: Scalars['ID'];
   /** The block time */
@@ -1830,7 +1830,7 @@ export type MarketTick = {
 
 /** Timestamps for when the market changes state */
 export type MarketTimestamps = {
-  __typename?: 'MarketTimestamps';
+  __typename: 'MarketTimestamps';
   /** Time when the market is closed */
   close: Scalars['Timestamp'];
   /** Time when the market is open and ready to accept trades */
@@ -1857,7 +1857,7 @@ export enum MarketTradingMode {
 
 /** Information about whether proposals are enabled, if the markets are still bootstrapping, etc.. */
 export type NetworkLimits = {
-  __typename?: 'NetworkLimits';
+  __typename: 'NetworkLimits';
   /** Are asset proposals allowed at this point in time */
   canProposeAsset: Scalars['Boolean'];
   /** Are market proposals allowed at this point in time */
@@ -1876,7 +1876,7 @@ export type NetworkLimits = {
 
 /** Representation of a network parameter */
 export type NetworkParameter = {
-  __typename?: 'NetworkParameter';
+  __typename: 'NetworkParameter';
   /** The name of the network parameter */
   key: Scalars['String'];
   /** The value of the network parameter */
@@ -1885,7 +1885,7 @@ export type NetworkParameter = {
 
 /** Edge type containing the network parameter and cursor information returned by a NetworkParametersConnection */
 export type NetworkParameterEdge = {
-  __typename?: 'NetworkParameterEdge';
+  __typename: 'NetworkParameterEdge';
   /** Cursor identifying the network parameter */
   cursor: Scalars['String'];
   /** The network parameter */
@@ -1894,7 +1894,7 @@ export type NetworkParameterEdge = {
 
 /** Connection type for retrieving cursor-based paginated network parameters information */
 export type NetworkParametersConnection = {
-  __typename?: 'NetworkParametersConnection';
+  __typename: 'NetworkParametersConnection';
   /** List of network parameters available for the connection */
   edges?: Maybe<Array<Maybe<NetworkParameterEdge>>>;
   /** Page information for the connection */
@@ -1903,7 +1903,7 @@ export type NetworkParametersConnection = {
 
 /** A new asset proposal change */
 export type NewAsset = {
-  __typename?: 'NewAsset';
+  __typename: 'NewAsset';
   /** The precision of the asset */
   decimals: Scalars['Int'];
   /** The full name of the asset (e.g: Great British Pound) */
@@ -1921,13 +1921,13 @@ export type NewAsset = {
  * rationale, instead.
  */
 export type NewFreeform = {
-  __typename?: 'NewFreeform';
+  __typename: 'NewFreeform';
   /** A placeholder to please graphQL */
   _doNotUse?: Maybe<Scalars['Boolean']>;
 };
 
 export type NewMarket = {
-  __typename?: 'NewMarket';
+  __typename: 'NewMarket';
   /** Decimal places used for the new market, sets the smallest price increment on the book */
   decimalPlaces: Scalars['Int'];
   /** New market instrument configuration */
@@ -1952,7 +1952,7 @@ export type NewMarket = {
 
 /** Information available for a node */
 export type Node = {
-  __typename?: 'Node';
+  __typename: 'Node';
   avatarUrl?: Maybe<Scalars['String']>;
   /** All delegation for a node by a given party if specified, or all delegations. */
   delegationsConnection?: Maybe<DelegationsConnection>;
@@ -1995,7 +1995,7 @@ export type NodedelegationsConnectionArgs = {
 };
 
 export type NodeBasic = {
-  __typename?: 'NodeBasic';
+  __typename: 'NodeBasic';
   /** The URL of an avatar */
   avatarUrl?: Maybe<Scalars['String']>;
   /** Ethereum public key of the node */
@@ -2018,7 +2018,7 @@ export type NodeBasic = {
 
 /** Summary of data across all nodes */
 export type NodeData = {
-  __typename?: 'NodeData';
+  __typename: 'NodeData';
   /** Details on the set of ersatz (standby) nodes in the network */
   ersatzNodes?: Maybe<NodeSet>;
   /** Total number of nodes that had a performance score of 0 at the end of the last epoch */
@@ -2037,7 +2037,7 @@ export type NodeData = {
 
 /** Edge type containing the node and cursor information returned by a NodesConnection */
 export type NodeEdge = {
-  __typename?: 'NodeEdge';
+  __typename: 'NodeEdge';
   /** Cursor identifying the node */
   cursor: Scalars['String'];
   /** The node */
@@ -2046,7 +2046,7 @@ export type NodeEdge = {
 
 /** Details on the collection of nodes for particular validator status */
 export type NodeSet = {
-  __typename?: 'NodeSet';
+  __typename: 'NodeSet';
   /** IDs of the nodes that were demoted into this node set at the start of the epoch */
   demoted?: Maybe<Array<Scalars['String']>>;
   /** Number of nodes in the node set that had a performance score of 0 at the end of the last epoch */
@@ -2061,7 +2061,7 @@ export type NodeSet = {
 
 /** Represents a signature for the approval of a resource from a validator */
 export type NodeSignature = {
-  __typename?: 'NodeSignature';
+  __typename: 'NodeSignature';
   /** The ID of the resource being signed for */
   id: Scalars['ID'];
   /** The kind of signature this is (e.g: withdrawal, new asset, etc) */
@@ -2072,7 +2072,7 @@ export type NodeSignature = {
 
 /** Edge type containing the node signature and cursor information returned by a NodeSignatureConnection */
 export type NodeSignatureEdge = {
-  __typename?: 'NodeSignatureEdge';
+  __typename: 'NodeSignatureEdge';
   /** Cursor identifying the node signature */
   cursor: Scalars['String'];
   /** The node signature */
@@ -2095,7 +2095,7 @@ export enum NodeSignatureKind {
 
 /** Connection type for retrieving cursor-based paginated node signature information */
 export type NodeSignaturesConnection = {
-  __typename?: 'NodeSignaturesConnection';
+  __typename: 'NodeSignaturesConnection';
   /** List of node signatures available for the connection */
   edges: Array<NodeSignatureEdge>;
   /** Page information for the connection */
@@ -2112,7 +2112,7 @@ export enum NodeStatus {
 
 /** Connection type for retrieving cursor-based paginated node information */
 export type NodesConnection = {
-  __typename?: 'NodesConnection';
+  __typename: 'NodesConnection';
   /** List of nodes available for the connection */
   edges?: Maybe<Array<Maybe<NodeEdge>>>;
   /** Page information for the connection */
@@ -2121,7 +2121,7 @@ export type NodesConnection = {
 
 /** The equity like share of liquidity fee for each liquidity provider */
 export type ObservableLiquidityProviderFeeShare = {
-  __typename?: 'ObservableLiquidityProviderFeeShare';
+  __typename: 'ObservableLiquidityProviderFeeShare';
   /** The average entry valuation of the liquidity provider for the market */
   averageEntryValuation: Scalars['String'];
   /** The average liquidity score */
@@ -2134,7 +2134,7 @@ export type ObservableLiquidityProviderFeeShare = {
 
 /** Live data of a Market */
 export type ObservableMarketData = {
-  __typename?: 'ObservableMarketData';
+  __typename: 'ObservableMarketData';
   /** RFC3339Nano time at which the auction will stop (null if not in auction mode) */
   auctionEnd?: Maybe<Scalars['String']>;
   /** RFC3339Nano time at which the next auction will start (null if none is scheduled) */
@@ -2198,7 +2198,7 @@ export type ObservableMarketData = {
  * The depth of market measure provides an indication of the liquidity and depth for the instrument.
  */
 export type ObservableMarketDepth = {
-  __typename?: 'ObservableMarketDepth';
+  __typename: 'ObservableMarketDepth';
   /** Buy side price levels (if available) */
   buy?: Maybe<Array<PriceLevel>>;
   /** Last trade for the given market (if available) */
@@ -2216,7 +2216,7 @@ export type ObservableMarketDepth = {
  * market depth structure to keep it correct
  */
 export type ObservableMarketDepthUpdate = {
-  __typename?: 'ObservableMarketDepthUpdate';
+  __typename: 'ObservableMarketDepthUpdate';
   /** Buy side price levels (if available) */
   buy?: Maybe<Array<PriceLevel>>;
   /** Market ID */
@@ -2231,7 +2231,7 @@ export type ObservableMarketDepthUpdate = {
 
 /** The specific details for a one-off transfer */
 export type OneOffTransfer = {
-  __typename?: 'OneOffTransfer';
+  __typename: 'OneOffTransfer';
   /** An optional time when the transfer should be delivered */
   deliverOn?: Maybe<Scalars['Timestamp']>;
 };
@@ -2240,12 +2240,12 @@ export type Oracle = EthereumEvent;
 
 /** An oracle data contains the data sent by an oracle */
 export type OracleData = {
-  __typename?: 'OracleData';
+  __typename: 'OracleData';
   externalData: ExternalData;
 };
 
 export type OracleDataConnection = {
-  __typename?: 'OracleDataConnection';
+  __typename: 'OracleDataConnection';
   /** The oracle data spec */
   edges?: Maybe<Array<Maybe<OracleDataEdge>>>;
   /** The pagination information */
@@ -2253,7 +2253,7 @@ export type OracleDataConnection = {
 };
 
 export type OracleDataEdge = {
-  __typename?: 'OracleDataEdge';
+  __typename: 'OracleDataEdge';
   /** The cursor for the data item */
   cursor: Scalars['String'];
   /** The oracle data source */
@@ -2261,7 +2261,7 @@ export type OracleDataEdge = {
 };
 
 export type OracleSpec = {
-  __typename?: 'OracleSpec';
+  __typename: 'OracleSpec';
   /** Data lists all the oracle data broadcast to this spec */
   dataConnection: OracleDataConnection;
   dataSourceSpec: ExternalDataSourceSpec;
@@ -2273,7 +2273,7 @@ export type OracleSpecdataConnectionArgs = {
 };
 
 export type OracleSpecEdge = {
-  __typename?: 'OracleSpecEdge';
+  __typename: 'OracleSpecEdge';
   /** The cursor for the external data */
   cursor: Scalars['String'];
   /** The external data spec */
@@ -2281,14 +2281,14 @@ export type OracleSpecEdge = {
 };
 
 export type OracleSpecsConnection = {
-  __typename?: 'OracleSpecsConnection';
+  __typename: 'OracleSpecsConnection';
   edges?: Maybe<Array<Maybe<OracleSpecEdge>>>;
   pageInfo: PageInfo;
 };
 
 /** An order in Vega, if active it will be on the order book for the market */
 export type Order = {
-  __typename?: 'Order';
+  __typename: 'Order';
   /** RFC3339Nano formatted date and time for when the order was created (timestamp) */
   createdAt: Scalars['Timestamp'];
   /** Expiration time of this order (ISO-8601 RFC3339+Nano formatted date) */
@@ -2361,7 +2361,7 @@ export type OrderByPartyIdsFilter = {
 
 /** Connection type for retrieving cursor-based paginated order information */
 export type OrderConnection = {
-  __typename?: 'OrderConnection';
+  __typename: 'OrderConnection';
   /** The orders in this connection */
   edges?: Maybe<Array<OrderEdge>>;
   /** The pagination information */
@@ -2370,7 +2370,7 @@ export type OrderConnection = {
 
 /** Edge type containing the order and cursor information returned by a OrderConnection */
 export type OrderEdge = {
-  __typename?: 'OrderEdge';
+  __typename: 'OrderEdge';
   /** The cursor for this order */
   cursor?: Maybe<Scalars['String']>;
   /** The order */
@@ -2379,7 +2379,7 @@ export type OrderEdge = {
 
 /** An estimate of the fee to be paid by the order */
 export type OrderEstimate = {
-  __typename?: 'OrderEstimate';
+  __typename: 'OrderEstimate';
   /** The estimated fee if the order was to trade */
   fee: TradeFee;
   /** The margin requirement for this order */
@@ -2571,7 +2571,7 @@ export enum OrderType {
 
 /** An order update in Vega, if active it will be on the order book for the market */
 export type OrderUpdate = {
-  __typename?: 'OrderUpdate';
+  __typename: 'OrderUpdate';
   /** RFC3339Nano formatted date and time for when the order was created (timestamp) */
   createdAt: Scalars['Timestamp'];
   /** Expiration time of this order (ISO-8601 RFC3339+Nano formatted date) */
@@ -2612,7 +2612,7 @@ export type OrderUpdate = {
 
 /** Paging information returned with each page of a connection */
 export type PageInfo = {
-  __typename?: 'PageInfo';
+  __typename: 'PageInfo';
   /** The last cursor in the current page */
   endCursor: Scalars['String'];
   /** The connection has more pages to fetch when traversing forward through the connection */
@@ -2637,7 +2637,7 @@ export type Pagination = {
 
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type Party = {
-  __typename?: 'Party';
+  __typename: 'Party';
   /** Collateral accounts relating to a party */
   accountsConnection?: Maybe<AccountsConnection>;
   delegationsConnection?: Maybe<DelegationsConnection>;
@@ -2786,7 +2786,7 @@ export type PartywithdrawalsConnectionArgs = {
 
 /** Connection type for retrieving cursor-based paginated party information */
 export type PartyConnection = {
-  __typename?: 'PartyConnection';
+  __typename: 'PartyConnection';
   /** The parties in this connection */
   edges: Array<PartyEdge>;
   /** The pagination information */
@@ -2795,7 +2795,7 @@ export type PartyConnection = {
 
 /** Edge type containing the party and cursor information returned by a PartyConnection */
 export type PartyEdge = {
-  __typename?: 'PartyEdge';
+  __typename: 'PartyEdge';
   /** The cursor for this party */
   cursor: Scalars['String'];
   /** The party */
@@ -2808,7 +2808,7 @@ export type PartyEdge = {
  * all the StakeLink/Unlink seen by the network
  */
 export type PartyStake = {
-  __typename?: 'PartyStake';
+  __typename: 'PartyStake';
   /** The stake currently available for the party */
   currentStakeAvailable: Scalars['String'];
   /** The list of all stake link/unlink for the party */
@@ -2817,7 +2817,7 @@ export type PartyStake = {
 
 /** Create an order linked to an index rather than a price */
 export type PeggedOrder = {
-  __typename?: 'PeggedOrder';
+  __typename: 'PeggedOrder';
   /** Price offset from the peg */
   offset: Scalars['String'];
   /** Index to link this order to */
@@ -2841,7 +2841,7 @@ export enum PeggedReference {
  * remaining as open volume. This is why we don't refer to positions being comprised of trades, rather of volume.
  */
 export type Position = {
-  __typename?: 'Position';
+  __typename: 'Position';
   /** Average entry price for this position */
   averageEntryPrice: Scalars['String'];
   /** The total amount of profit and loss that was not transferred due to loss socialisation */
@@ -2877,7 +2877,7 @@ export type PositionmarginsConnectionArgs = {
 
 /** Connection type for retrieving cursor-based paginated position information */
 export type PositionConnection = {
-  __typename?: 'PositionConnection';
+  __typename: 'PositionConnection';
   /** The positions in this connection */
   edges?: Maybe<Array<PositionEdge>>;
   /** The pagination information */
@@ -2886,7 +2886,7 @@ export type PositionConnection = {
 
 /** Edge type containing the position and cursor information returned by a PositionConnection */
 export type PositionEdge = {
-  __typename?: 'PositionEdge';
+  __typename: 'PositionEdge';
   /** The cursor for this position */
   cursor?: Maybe<Scalars['String']>;
   /** The position */
@@ -2895,7 +2895,7 @@ export type PositionEdge = {
 
 /** Response for the estimate of the margin level and, if available, collateral was provided in the request, liqudation price for the specified position */
 export type PositionEstimate = {
-  __typename?: 'PositionEstimate';
+  __typename: 'PositionEstimate';
   /** Liquidation price range estimate for the specified position. Only populated if available collateral was specified in the request */
   liquidation?: Maybe<LiquidationEstimate>;
   /** Margin level range estimate for the specified position */
@@ -2903,7 +2903,7 @@ export type PositionEstimate = {
 };
 
 export type PositionResolution = {
-  __typename?: 'PositionResolution';
+  __typename: 'PositionResolution';
   /** Number of parties closed out */
   closed: Scalars['Int'];
   /** Number of distressed parties on market */
@@ -2933,7 +2933,7 @@ export enum PositionStatus {
  * remaining as open volume. This is why we don't refer to positions being comprised of trades, rather of volume.
  */
 export type PositionUpdate = {
-  __typename?: 'PositionUpdate';
+  __typename: 'PositionUpdate';
   /** Average entry price for this position */
   averageEntryPrice: Scalars['String'];
   /** The total amount of profit and loss that was not transferred due to loss socialisation */
@@ -2962,7 +2962,7 @@ export type PositionsFilter = {
 
 /** Represents a price on either the buy or sell side and all the orders at that price */
 export type PriceLevel = {
-  __typename?: 'PriceLevel';
+  __typename: 'PriceLevel';
   /** The number of orders at this price level (uint64) */
   numberOfOrders: Scalars['String'];
   /** The price of all the orders at this level (uint64) */
@@ -2973,7 +2973,7 @@ export type PriceLevel = {
 
 /** Range of valid prices and the associated price monitoring trigger */
 export type PriceMonitoringBounds = {
-  __typename?: 'PriceMonitoringBounds';
+  __typename: 'PriceMonitoringBounds';
   /** Maximum price that isn't currently breaching the specified price monitoring trigger */
   maxValidPrice: Scalars['String'];
   /** Minimum price that isn't currently breaching the specified price monitoring trigger */
@@ -2986,21 +2986,21 @@ export type PriceMonitoringBounds = {
 
 /** PriceMonitoringParameters holds a list of triggers */
 export type PriceMonitoringParameters = {
-  __typename?: 'PriceMonitoringParameters';
+  __typename: 'PriceMonitoringParameters';
   /** The list of triggers for this price monitoring */
   triggers?: Maybe<Array<PriceMonitoringTrigger>>;
 };
 
 /** Configuration of a market price monitoring auctions triggers */
 export type PriceMonitoringSettings = {
-  __typename?: 'PriceMonitoringSettings';
+  __typename: 'PriceMonitoringSettings';
   /** Specified a set of PriceMonitoringParameters to be use for price monitoring purposes */
   parameters?: Maybe<PriceMonitoringParameters>;
 };
 
 /** PriceMonitoringTrigger holds together price projection horizon τ, probability level p, and auction extension duration */
 export type PriceMonitoringTrigger = {
-  __typename?: 'PriceMonitoringTrigger';
+  __typename: 'PriceMonitoringTrigger';
   /**
    * Price monitoring auction extension duration in seconds should the price
    * breach its theoretical level over the specified horizon at the specified
@@ -3017,7 +3017,7 @@ export type Product = Future;
 
 /** A property associates a name to a value */
 export type Property = {
-  __typename?: 'Property';
+  __typename: 'Property';
   /** Name of the property */
   name: Scalars['String'];
   /** Value of the property */
@@ -3026,7 +3026,7 @@ export type Property = {
 
 /** PropertyKey describes the property key contained in a source data. */
 export type PropertyKey = {
-  __typename?: 'PropertyKey';
+  __typename: 'PropertyKey';
   /** The name of the property. */
   name?: Maybe<Scalars['String']>;
   /**
@@ -3058,7 +3058,7 @@ export enum PropertyKeyType {
 }
 
 export type Proposal = {
-  __typename?: 'Proposal';
+  __typename: 'Proposal';
   /** RFC3339Nano time and date when the proposal reached Vega network */
   datetime: Scalars['Timestamp'];
   /** Error details of the rejectionReason */
@@ -3092,7 +3092,7 @@ export type Proposal = {
 export type ProposalChange = NewAsset | NewFreeform | NewMarket | UpdateAsset | UpdateMarket | UpdateNetworkParameter;
 
 export type ProposalDetail = {
-  __typename?: 'ProposalDetail';
+  __typename: 'ProposalDetail';
   /** RFC3339Nano time and date when the proposal reached the Vega network */
   datetime: Scalars['Timestamp'];
   /** Error details of the rejectionReason */
@@ -3123,7 +3123,7 @@ export type ProposalDetail = {
 
 /** Edge type containing the proposals and cursor information returned by a ProposalsConnection */
 export type ProposalEdge = {
-  __typename?: 'ProposalEdge';
+  __typename: 'ProposalEdge';
   /** Cursor identifying the proposal */
   cursor: Scalars['String'];
   /** The proposal data */
@@ -3131,7 +3131,7 @@ export type ProposalEdge = {
 };
 
 export type ProposalRationale = {
-  __typename?: 'ProposalRationale';
+  __typename: 'ProposalRationale';
   /**
    * Description to show a short title / something in case the link goes offline.
    * This is to be between 0 and 20k unicode characters.
@@ -3254,7 +3254,7 @@ export enum ProposalState {
 
 /** The rationale behind the proposal */
 export type ProposalTerms = {
-  __typename?: 'ProposalTerms';
+  __typename: 'ProposalTerms';
   /** Actual change being introduced by the proposal - action the proposal triggers if passed and enacted. */
   change: ProposalChange;
   /**
@@ -3289,7 +3289,7 @@ export enum ProposalType {
 }
 
 export type ProposalVote = {
-  __typename?: 'ProposalVote';
+  __typename: 'ProposalVote';
   /** Proposal ID the vote is cast on */
   proposalId: Scalars['ID'];
   /** Cast vote */
@@ -3298,7 +3298,7 @@ export type ProposalVote = {
 
 /** Connection type for retrieving cursor-based paginated proposal vote information */
 export type ProposalVoteConnection = {
-  __typename?: 'ProposalVoteConnection';
+  __typename: 'ProposalVoteConnection';
   /** The proposal votes in this connection */
   edges?: Maybe<Array<ProposalVoteEdge>>;
   /** The pagination information */
@@ -3307,7 +3307,7 @@ export type ProposalVoteConnection = {
 
 /** Edge type containing the proposal vote and cursor information returned by a ProposalVoteConnection */
 export type ProposalVoteEdge = {
-  __typename?: 'ProposalVoteEdge';
+  __typename: 'ProposalVoteEdge';
   /** The cursor for this proposal vote */
   cursor?: Maybe<Scalars['String']>;
   /** The proposal vote */
@@ -3315,7 +3315,7 @@ export type ProposalVoteEdge = {
 };
 
 export type ProposalVoteSide = {
-  __typename?: 'ProposalVoteSide';
+  __typename: 'ProposalVoteSide';
   /** Total equity like share weight for this side (only for UpdateMarket Proposals) */
   totalEquityLikeShareWeight: Scalars['String'];
   /** Total number of votes cast for this side */
@@ -3329,7 +3329,7 @@ export type ProposalVoteSide = {
 };
 
 export type ProposalVotes = {
-  __typename?: 'ProposalVotes';
+  __typename: 'ProposalVotes';
   /** No votes cast for this proposal */
   no: ProposalVoteSide;
   /** Yes votes cast for this proposal */
@@ -3338,7 +3338,7 @@ export type ProposalVotes = {
 
 /** Connection type for retrieving cursor-based paginated proposals information */
 export type ProposalsConnection = {
-  __typename?: 'ProposalsConnection';
+  __typename: 'ProposalsConnection';
   /** List of proposals available for the connection */
   edges?: Maybe<Array<Maybe<ProposalEdge>>>;
   /** Page information for the connection */
@@ -3347,7 +3347,7 @@ export type ProposalsConnection = {
 
 /** A proposal to upgrade the vega protocol (i.e. which version of the vega software nodes will run) */
 export type ProtocolUpgradeProposal = {
-  __typename?: 'ProtocolUpgradeProposal';
+  __typename: 'ProtocolUpgradeProposal';
   /** Tendermint validators that have agreed to the upgrade */
   approvers: Array<Scalars['String']>;
   /** the status of the proposal */
@@ -3360,7 +3360,7 @@ export type ProtocolUpgradeProposal = {
 
 /** Connection type for retrieving cursor-based paginated protocol upgrade proposals */
 export type ProtocolUpgradeProposalConnection = {
-  __typename?: 'ProtocolUpgradeProposalConnection';
+  __typename: 'ProtocolUpgradeProposalConnection';
   /** The positions in this connection */
   edges?: Maybe<Array<ProtocolUpgradeProposalEdge>>;
   /** The pagination information */
@@ -3369,7 +3369,7 @@ export type ProtocolUpgradeProposalConnection = {
 
 /** Edge type containing the protocol upgrade protocol cursor information */
 export type ProtocolUpgradeProposalEdge = {
-  __typename?: 'ProtocolUpgradeProposalEdge';
+  __typename: 'ProtocolUpgradeProposalEdge';
   /** Cursor identifying the protocol upgrade proposal */
   cursor: Scalars['String'];
   /** The protocol upgrade proposal */
@@ -3390,18 +3390,18 @@ export enum ProtocolUpgradeProposalStatus {
 
 /** Indicator showing whether the data-node is ready for the protocol upgrade to begin. */
 export type ProtocolUpgradeStatus = {
-  __typename?: 'ProtocolUpgradeStatus';
+  __typename: 'ProtocolUpgradeStatus';
   ready: Scalars['Boolean'];
 };
 
 export type PubKey = {
-  __typename?: 'PubKey';
+  __typename: 'PubKey';
   key?: Maybe<Scalars['String']>;
 };
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type Query = {
-  __typename?: 'Query';
+  __typename: 'Query';
   /** An asset which is used in the vega network */
   asset?: Maybe<Asset>;
   /** The list of all assets in use in the Vega network or the specified asset if ID is provided */
@@ -3832,7 +3832,7 @@ export type QuerywithdrawalsArgs = {
 };
 
 export type RankingScore = {
-  __typename?: 'RankingScore';
+  __typename: 'RankingScore';
   /** The performance score of the validator */
   performanceScore: Scalars['String'];
   /** The former validation status of the validator */
@@ -3849,7 +3849,7 @@ export type RankingScore = {
 
 /** The specific details for a recurring transfer */
 export type RecurringTransfer = {
-  __typename?: 'RecurringTransfer';
+  __typename: 'RecurringTransfer';
   /** An optional dispatch strategy for the recurring transfer */
   dispatchStrategy?: Maybe<DispatchStrategy>;
   /** An optional epoch at which this transfer will stop */
@@ -3862,7 +3862,7 @@ export type RecurringTransfer = {
 
 /** Reward information for a single party */
 export type Reward = {
-  __typename?: 'Reward';
+  __typename: 'Reward';
   /** Amount received for this reward */
   amount: Scalars['String'];
   /** The asset this reward is paid in */
@@ -3883,7 +3883,7 @@ export type Reward = {
 
 /** Edge type containing the reward and cursor information returned by a RewardsConnection */
 export type RewardEdge = {
-  __typename?: 'RewardEdge';
+  __typename: 'RewardEdge';
   /** The cursor for this reward */
   cursor: Scalars['String'];
   /** The reward information */
@@ -3891,7 +3891,7 @@ export type RewardEdge = {
 };
 
 export type RewardScore = {
-  __typename?: 'RewardScore';
+  __typename: 'RewardScore';
   /** The multisig score of the validator */
   multisigScore: Scalars['String'];
   /** The normalised score of the validator */
@@ -3907,7 +3907,7 @@ export type RewardScore = {
 };
 
 export type RewardSummary = {
-  __typename?: 'RewardSummary';
+  __typename: 'RewardSummary';
   /** Total quantity of rewards awarded in this asset */
   amount: Scalars['String'];
   /** The asset for which these rewards are associated */
@@ -3924,7 +3924,7 @@ export type RewardSummaryrewardsConnectionArgs = {
 
 /** Connection type for retrieving cursor-based paginated reward summary information */
 export type RewardSummaryConnection = {
-  __typename?: 'RewardSummaryConnection';
+  __typename: 'RewardSummaryConnection';
   /** List of reward summaries available for the connection */
   edges?: Maybe<Array<Maybe<RewardSummaryEdge>>>;
   /** Page information for the connection */
@@ -3933,7 +3933,7 @@ export type RewardSummaryConnection = {
 
 /** Edge type containing the reward summary and cursor information returned by a RewardSummaryConnection */
 export type RewardSummaryEdge = {
-  __typename?: 'RewardSummaryEdge';
+  __typename: 'RewardSummaryEdge';
   /** Cursor identifying the reward summary */
   cursor: Scalars['String'];
   /** The reward summary */
@@ -3950,7 +3950,7 @@ export type RewardSummaryFilter = {
 
 /** Connection type for retrieving cursor-based paginated rewards information */
 export type RewardsConnection = {
-  __typename?: 'RewardsConnection';
+  __typename: 'RewardsConnection';
   /** The rewards */
   edges?: Maybe<Array<Maybe<RewardEdge>>>;
   /** The pagination information */
@@ -3959,7 +3959,7 @@ export type RewardsConnection = {
 
 /** A risk factor emitted by the risk model for a given market */
 export type RiskFactor = {
-  __typename?: 'RiskFactor';
+  __typename: 'RiskFactor';
   /** Long factor */
   long: Scalars['String'];
   /** Market the risk factor was emitted for */
@@ -3971,7 +3971,7 @@ export type RiskFactor = {
 export type RiskModel = LogNormalRiskModel | SimpleRiskModel;
 
 export type ScalingFactors = {
-  __typename?: 'ScalingFactors';
+  __typename: 'ScalingFactors';
   /** The scaling factor that determines the overflow margin level */
   collateralRelease: Scalars['Float'];
   /** The scaling factor that determines the optimal margin level */
@@ -3981,7 +3981,7 @@ export type ScalingFactors = {
 };
 
 export type SettleDistressed = {
-  __typename?: 'SettleDistressed';
+  __typename: 'SettleDistressed';
   /** The margin taken from distressed party */
   margin: Scalars['String'];
   /** The market in which a position was closed out */
@@ -3993,7 +3993,7 @@ export type SettleDistressed = {
 };
 
 export type SettlePosition = {
-  __typename?: 'SettlePosition';
+  __typename: 'SettlePosition';
   /** The market in which a position was settled */
   marketId: Scalars['ID'];
   /** The party who settled a position */
@@ -4016,7 +4016,7 @@ export enum Side {
 
 /** Signer is the authorized signature used for the data. */
 export type Signer = {
-  __typename?: 'Signer';
+  __typename: 'Signer';
   signer: SignerKind;
 };
 
@@ -4024,14 +4024,14 @@ export type SignerKind = ETHAddress | PubKey;
 
 /** A type of simple/dummy risk model where you can specify the risk factor long and short in params */
 export type SimpleRiskModel = {
-  __typename?: 'SimpleRiskModel';
+  __typename: 'SimpleRiskModel';
   /** Params for the simple risk model */
   params: SimpleRiskModelParams;
 };
 
 /** Parameters for the simple risk model */
 export type SimpleRiskModelParams = {
-  __typename?: 'SimpleRiskModelParams';
+  __typename: 'SimpleRiskModelParams';
   /** Risk factor for long */
   factorLong: Scalars['Float'];
   /** Risk factor for short */
@@ -4040,7 +4040,7 @@ export type SimpleRiskModelParams = {
 
 /** A stake linking represent the intent from a party to deposit / remove stake on their account */
 export type StakeLinking = {
-  __typename?: 'StakeLinking';
+  __typename: 'StakeLinking';
   /** The amount linked or unlinked */
   amount: Scalars['String'];
   /** The (ethereum) block height of the link/unlink */
@@ -4062,7 +4062,7 @@ export type StakeLinking = {
 
 /** Edge type containing the stake linking and cursor information returned by a StakesConnection */
 export type StakeLinkingEdge = {
-  __typename?: 'StakeLinkingEdge';
+  __typename: 'StakeLinkingEdge';
   /** Cursor identifying the stake linking */
   cursor: Scalars['String'];
   /** The stake linking */
@@ -4093,7 +4093,7 @@ export enum StakeLinkingType {
 
 /** Connection type for retrieving cursor-based paginated stake linking information */
 export type StakesConnection = {
-  __typename?: 'StakesConnection';
+  __typename: 'StakesConnection';
   /** List of stake links available for the connection */
   edges?: Maybe<Array<Maybe<StakeLinkingEdge>>>;
   /** Page information for the connection */
@@ -4106,7 +4106,7 @@ export type StakesConnection = {
  * all the StakeLink/Unlink seen by the network
  */
 export type StakingSummary = {
-  __typename?: 'StakingSummary';
+  __typename: 'StakingSummary';
   /** The stake currently available for the party */
   currentStakeAvailable: Scalars['String'];
   /** The list of all stake link/unlink for the party */
@@ -4125,7 +4125,7 @@ export type StakingSummarylinkingsArgs = {
 
 /** Statistics about the node */
 export type Statistics = {
-  __typename?: 'Statistics';
+  __typename: 'Statistics';
   /** Version of the Vega node (semver) */
   appVersion: Scalars['String'];
   /** Version commit hash of the Vega node */
@@ -4184,7 +4184,7 @@ export type Statistics = {
 
 /** Subscriptions allow a caller to receive new information as it is available from the Vega network. */
 export type Subscription = {
-  __typename?: 'Subscription';
+  __typename: 'Subscription';
   /** Subscribe to the accounts updates */
   accounts: Array<AccountUpdate>;
   /** Subscribe to event data from the event bus */
@@ -4316,7 +4316,7 @@ export type SubscriptionvotesArgs = {
 
 /** TargetStakeParameters contains parameters used in target stake calculation */
 export type TargetStakeParameters = {
-  __typename?: 'TargetStakeParameters';
+  __typename: 'TargetStakeParameters';
   /** Specifies scaling factors used in target stake calculation */
   scalingFactor: Scalars['Float'];
   /** Specifies length of time window expressed in seconds for target stake calculation */
@@ -4324,14 +4324,14 @@ export type TargetStakeParameters = {
 };
 
 export type TimeUpdate = {
-  __typename?: 'TimeUpdate';
+  __typename: 'TimeUpdate';
   /** RFC3339Nano time of new block time */
   timestamp: Scalars['Timestamp'];
 };
 
 /** A tradable instrument is a combination of an instrument and a risk model */
 export type TradableInstrument = {
-  __typename?: 'TradableInstrument';
+  __typename: 'TradableInstrument';
   /** An instance of, or reference to, a fully specified instrument. */
   instrument: Instrument;
   /** Margin calculation info, currently only the scaling factors (search, initial, release) for this tradable instrument */
@@ -4342,7 +4342,7 @@ export type TradableInstrument = {
 
 /** A trade on Vega, the result of two orders being 'matched' in the market */
 export type Trade = {
-  __typename?: 'Trade';
+  __typename: 'Trade';
   /** The aggressor indicates whether this trade was related to a BUY or SELL */
   aggressor: Side;
   /** The order that bought */
@@ -4377,7 +4377,7 @@ export type Trade = {
 
 /** Connection type for retrieving cursor-based paginated trade information */
 export type TradeConnection = {
-  __typename?: 'TradeConnection';
+  __typename: 'TradeConnection';
   /** The trade in this connection */
   edges: Array<TradeEdge>;
   /** The pagination information */
@@ -4386,7 +4386,7 @@ export type TradeConnection = {
 
 /** Edge type containing the trade and cursor information returned by a TradeConnection */
 export type TradeEdge = {
-  __typename?: 'TradeEdge';
+  __typename: 'TradeEdge';
   /** The cursor for this trade */
   cursor: Scalars['String'];
   /** The trade */
@@ -4395,7 +4395,7 @@ export type TradeEdge = {
 
 /** The fee paid by the party when a trade occurs */
 export type TradeFee = {
-  __typename?: 'TradeFee';
+  __typename: 'TradeFee';
   /** The infrastructure fee, a fee paid to the validators to maintain the Vega network */
   infrastructureFee: Scalars['String'];
   /** The fee paid to the liquidity providers that committed liquidity to the market */
@@ -4405,7 +4405,7 @@ export type TradeFee = {
 };
 
 export type TradeSettlement = {
-  __typename?: 'TradeSettlement';
+  __typename: 'TradeSettlement';
   /** The price of the trade */
   price: Scalars['String'];
   /** The size of the trade */
@@ -4424,7 +4424,7 @@ export enum TradeType {
 
 /** A trade on Vega, the result of two orders being 'matched' in the market */
 export type TradeUpdate = {
-  __typename?: 'TradeUpdate';
+  __typename: 'TradeUpdate';
   /** The aggressor indicates whether this trade was related to a BUY or SELL */
   aggressor: Side;
   /** The order that bought */
@@ -4472,7 +4472,7 @@ export type TradesSubscriptionFilter = {
 
 /** The result from processing a transaction */
 export type TransactionResult = {
-  __typename?: 'TransactionResult';
+  __typename: 'TransactionResult';
   /** The error emitted by the transaction, will be null if the transaction succeeded */
   error?: Maybe<Scalars['String']>;
   /** The hash of the transaction */
@@ -4484,13 +4484,13 @@ export type TransactionResult = {
 };
 
 export type TransactionSubmitted = {
-  __typename?: 'TransactionSubmitted';
+  __typename: 'TransactionSubmitted';
   success: Scalars['Boolean'];
 };
 
 /** A user initiated transfer */
 export type Transfer = {
-  __typename?: 'Transfer';
+  __typename: 'Transfer';
   /** The amount sent */
   amount: Scalars['String'];
   /** The asset */
@@ -4518,7 +4518,7 @@ export type Transfer = {
 };
 
 export type TransferBalance = {
-  __typename?: 'TransferBalance';
+  __typename: 'TransferBalance';
   /** Account involved in transfer */
   account: AccountDetails;
   /** The new balance of the account */
@@ -4527,7 +4527,7 @@ export type TransferBalance = {
 
 /** Connection type for retrieving cursor-based paginated transfers information */
 export type TransferConnection = {
-  __typename?: 'TransferConnection';
+  __typename: 'TransferConnection';
   edges?: Maybe<Array<Maybe<TransferEdge>>>;
   pageInfo: PageInfo;
 };
@@ -4541,7 +4541,7 @@ export enum TransferDirection {
 
 /** Edge type containing the transfer and cursor information returned by a TransferConnection */
 export type TransferEdge = {
-  __typename?: 'TransferEdge';
+  __typename: 'TransferEdge';
   cursor: Scalars['String'];
   node: Transfer;
 };
@@ -4549,7 +4549,7 @@ export type TransferEdge = {
 export type TransferKind = OneOffTransfer | RecurringTransfer;
 
 export type TransferResponse = {
-  __typename?: 'TransferResponse';
+  __typename: 'TransferResponse';
   /** The balances of accounts involved in the transfer */
   balances?: Maybe<Array<TransferBalance>>;
   /** The ledger entries and balances resulting from a transfer request */
@@ -4557,7 +4557,7 @@ export type TransferResponse = {
 };
 
 export type TransferResponses = {
-  __typename?: 'TransferResponses';
+  __typename: 'TransferResponses';
   /** A group of transfer responses - events from core */
   responses?: Maybe<Array<TransferResponse>>;
 };
@@ -4633,7 +4633,7 @@ export enum TransferType {
 
 /** A proposal to update an asset's details */
 export type UpdateAsset = {
-  __typename?: 'UpdateAsset';
+  __typename: 'UpdateAsset';
   /** The asset to update */
   assetId: Scalars['ID'];
   /** The minimum economically meaningful amount of this specific asset */
@@ -4647,7 +4647,7 @@ export type UpdateAssetSource = UpdateERC20;
 
 /** An asset originated from an Ethereum ERC20 Token */
 export type UpdateERC20 = {
-  __typename?: 'UpdateERC20';
+  __typename: 'UpdateERC20';
   /**
    * The lifetime limits deposit per address
    * Note: this is a temporary measure that can be changed by governance
@@ -4662,7 +4662,7 @@ export type UpdateERC20 = {
 };
 
 export type UpdateFutureProduct = {
-  __typename?: 'UpdateFutureProduct';
+  __typename: 'UpdateFutureProduct';
   dataSourceSpecBinding: DataSourceSpecToFutureBinding;
   dataSourceSpecForSettlementData: DataSourceDefinition;
   dataSourceSpecForTradingTermination: DataSourceDefinition;
@@ -4670,7 +4670,7 @@ export type UpdateFutureProduct = {
 };
 
 export type UpdateInstrumentConfiguration = {
-  __typename?: 'UpdateInstrumentConfiguration';
+  __typename: 'UpdateInstrumentConfiguration';
   code: Scalars['String'];
   product: UpdateFutureProduct;
 };
@@ -4680,13 +4680,13 @@ export type UpdateInstrumentConfiguration = {
  * TODO: complete the type
  */
 export type UpdateMarket = {
-  __typename?: 'UpdateMarket';
+  __typename: 'UpdateMarket';
   marketId: Scalars['ID'];
   updateMarketConfiguration: UpdateMarketConfiguration;
 };
 
 export type UpdateMarketConfiguration = {
-  __typename?: 'UpdateMarketConfiguration';
+  __typename: 'UpdateMarketConfiguration';
   instrument: UpdateInstrumentConfiguration;
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
   metadata?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -4695,20 +4695,20 @@ export type UpdateMarketConfiguration = {
 };
 
 export type UpdateMarketLogNormalRiskModel = {
-  __typename?: 'UpdateMarketLogNormalRiskModel';
+  __typename: 'UpdateMarketLogNormalRiskModel';
   logNormal?: Maybe<LogNormalRiskModel>;
 };
 
 export type UpdateMarketRiskParameters = UpdateMarketLogNormalRiskModel | UpdateMarketSimpleRiskModel;
 
 export type UpdateMarketSimpleRiskModel = {
-  __typename?: 'UpdateMarketSimpleRiskModel';
+  __typename: 'UpdateMarketSimpleRiskModel';
   simple?: Maybe<SimpleRiskModelParams>;
 };
 
 /** Allows submitting a proposal for changing network parameters */
 export type UpdateNetworkParameter = {
-  __typename?: 'UpdateNetworkParameter';
+  __typename: 'UpdateNetworkParameter';
   networkParameter: NetworkParameter;
 };
 
@@ -4723,7 +4723,7 @@ export enum ValidatorStatus {
 }
 
 export type Vote = {
-  __typename?: 'Vote';
+  __typename: 'Vote';
   /** RFC3339Nano time and date when the vote reached Vega network */
   datetime: Scalars['Timestamp'];
   /** The weight of this vote based on the total equity like share */
@@ -4742,7 +4742,7 @@ export type Vote = {
 
 /** Connection type for retrieving cursor-based paginated vote information */
 export type VoteConnection = {
-  __typename?: 'VoteConnection';
+  __typename: 'VoteConnection';
   /** The votes in this connection */
   edges?: Maybe<Array<VoteEdge>>;
   /** The pagination information */
@@ -4751,7 +4751,7 @@ export type VoteConnection = {
 
 /** Edge type containing the vote and cursor information returned by a VoteConnection */
 export type VoteEdge = {
-  __typename?: 'VoteEdge';
+  __typename: 'VoteEdge';
   /** The cursor for this vote */
   cursor?: Maybe<Scalars['String']>;
   /** The vote */
@@ -4768,7 +4768,7 @@ export enum VoteValue {
 
 /** The details of a withdrawal processed by Vega */
 export type Withdrawal = {
-  __typename?: 'Withdrawal';
+  __typename: 'Withdrawal';
   /** The amount to be withdrawn */
   amount: Scalars['String'];
   /** The asset to be withdrawn */
@@ -4797,7 +4797,7 @@ export type WithdrawalDetails = Erc20WithdrawalDetails;
 
 /** Edge type containing the withdrawal and cursor information returned by a WithdrawalsConnection */
 export type WithdrawalEdge = {
-  __typename?: 'WithdrawalEdge';
+  __typename: 'WithdrawalEdge';
   /** The cursor for the withdrawal */
   cursor: Scalars['String'];
   /** The withdrawal */
@@ -4816,7 +4816,7 @@ export enum WithdrawalStatus {
 
 /** Connection type for retrieving cursor-based paginated withdrawals information */
 export type WithdrawalsConnection = {
-  __typename?: 'WithdrawalsConnection';
+  __typename: 'WithdrawalsConnection';
   /** The withdrawals */
   edges?: Maybe<Array<Maybe<WithdrawalEdge>>>;
   /** The pagination information */

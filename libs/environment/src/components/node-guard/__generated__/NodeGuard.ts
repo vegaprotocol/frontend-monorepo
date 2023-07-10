@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type NodeGuardQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type NodeGuardQuery = { __typename?: 'Query', lastBlockHeight: string, networkParametersConnection: { __typename?: 'NetworkParametersConnection', edges?: Array<{ __typename?: 'NetworkParameterEdge', node: { __typename?: 'NetworkParameter', key: string, value: string } } | null> | null } };
+export type NodeGuardQuery = { __typename: 'Query', lastBlockHeight: string, networkParametersConnection: { __typename: 'NetworkParametersConnection', edges?: Array<{ __typename: 'NetworkParameterEdge', node: { __typename: 'NetworkParameter', key: string, value: string } } | null> | null } };
 
 
 export const NodeGuardDocument = gql`

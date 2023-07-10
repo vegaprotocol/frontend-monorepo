@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type ProposalMarketsQueryQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type ProposalMarketsQueryQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, code: string } }, proposal?: { __typename?: 'Proposal', state: Types.ProposalState } | null } }> } | null };
+export type ProposalMarketsQueryQuery = { __typename: 'Query', marketsConnection?: { __typename: 'MarketConnection', edges: Array<{ __typename: 'MarketEdge', node: { __typename: 'Market', id: string, tradableInstrument: { __typename: 'TradableInstrument', instrument: { __typename: 'Instrument', name: string, code: string } }, proposal?: { __typename: 'Proposal', state: Types.ProposalState } | null } }> } | null };
 
 
 export const ProposalMarketsQueryDocument = gql`

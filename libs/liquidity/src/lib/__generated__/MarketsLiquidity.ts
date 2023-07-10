@@ -3,12 +3,12 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type MarketNodeFragment = { __typename?: 'Market', id: string, liquidityProvisionsConnection?: { __typename?: 'LiquidityProvisionsConnection', edges?: Array<{ __typename?: 'LiquidityProvisionsEdge', node: { __typename?: 'LiquidityProvision', commitmentAmount: string, fee: string } } | null> | null } | null, data?: { __typename?: 'MarketData', targetStake?: string | null } | null };
+export type MarketNodeFragment = { __typename: 'Market', id: string, liquidityProvisionsConnection?: { __typename: 'LiquidityProvisionsConnection', edges?: Array<{ __typename: 'LiquidityProvisionsEdge', node: { __typename: 'LiquidityProvision', commitmentAmount: string, fee: string } } | null> | null } | null, data?: { __typename: 'MarketData', targetStake?: string | null } | null };
 
 export type LiquidityProvisionMarketsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type LiquidityProvisionMarketsQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, liquidityProvisionsConnection?: { __typename?: 'LiquidityProvisionsConnection', edges?: Array<{ __typename?: 'LiquidityProvisionsEdge', node: { __typename?: 'LiquidityProvision', commitmentAmount: string, fee: string } } | null> | null } | null, data?: { __typename?: 'MarketData', targetStake?: string | null } | null } }> } | null };
+export type LiquidityProvisionMarketsQuery = { __typename: 'Query', marketsConnection?: { __typename: 'MarketConnection', edges: Array<{ __typename: 'MarketEdge', node: { __typename: 'Market', id: string, liquidityProvisionsConnection?: { __typename: 'LiquidityProvisionsConnection', edges?: Array<{ __typename: 'LiquidityProvisionsEdge', node: { __typename: 'LiquidityProvision', commitmentAmount: string, fee: string } } | null> | null } | null, data?: { __typename: 'MarketData', targetStake?: string | null } | null } }> } | null };
 
 export const MarketNodeFragmentDoc = gql`
     fragment MarketNode on Market {
