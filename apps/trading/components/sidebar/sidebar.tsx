@@ -158,7 +158,12 @@ const SidebarButton = ({
 };
 
 const SidebarDivider = () => {
-  return <div className="border-b border-default mx-2" />;
+  return (
+    <div
+      className="bg-vega-clight-600 dark:bg-vega-cdark-600 w-4 h-px"
+      role="separator"
+    />
+  );
 };
 
 export const SidebarContent = () => {
