@@ -49,7 +49,7 @@ type SidebarView =
 
 export const Sidebar = () => {
   return (
-    <div className="flex flex-col gap-2 h-full">
+    <div className="flex flex-col gap-2 h-full" data-testid="sidebar">
       <div className="h-12 flex justify-center items-center border-b border-default">
         <SidebarButton
           view={ViewType.Settings}
