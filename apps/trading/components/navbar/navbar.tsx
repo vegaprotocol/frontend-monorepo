@@ -6,6 +6,7 @@ import {
   useEnvironment,
   useLinks,
   DocsLinks,
+  Networks,
 } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import { useGlobalStore } from '../../stores';
@@ -24,6 +25,7 @@ import {
   VLogo,
 } from '@vegaprotocol/ui-toolkit';
 import * as N from '@radix-ui/react-navigation-menu';
+import * as D from '@radix-ui/react-dialog';
 import { NavLink } from 'react-router-dom';
 
 import { Links, Routes } from '../../pages/client-router';
@@ -35,6 +37,7 @@ import classNames from 'classnames';
 import { ViewType, useSidebar } from '../sidebar';
 import { VegaWalletMenu } from '../vega-wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { WalletIcon } from '../icons/wallet';
 
 export const Navbar = () => {
   const [menu, setMenu] = useState<'wallet' | 'nav' | null>(null);
@@ -45,17 +48,17 @@ export const Navbar = () => {
     (store) => store.openVegaWalletDialog
   );
   return (
-    <N.Root>
-      <div className="flex items-center gap-2 h-10 pl-3 lg:pl-5 pr-1 border-b border-default bg-vega-clight-800 dark:bg-vega-cdark-800">
+    <N.Root className="text-vega-clight-200 dark:text-vega-cdark-200 ">
+      <div className="flex items-center gap-2 h-10 px-3 lg:pl-5 pr-2 border-b border-default bg-vega-clight-800 dark:bg-vega-cdark-800">
         <div className="pr-2">
           <VLogo className="w-5" />
         </div>
         <div className="hidden lg:block">
           <NavbarMenu />
         </div>
-        <div className="ml-auto flex justify-end items-center gap-2">
+        <div className="ml-auto flex justify-end items-center gap-1 lg:gap-2">
           <button
-            className="lg:hidden"
+            className="lg:hidden flex itesm-center p-1 rounded hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500"
             onClick={() => {
               if (isConnected) {
                 setMenu((x) => (x === 'wallet' ? null : 'wallet'));
@@ -64,22 +67,22 @@ export const Navbar = () => {
               }
             }}
           >
-            Wallet
+            <WalletIcon />
           </button>
           <button
-            className="lg:hidden"
+            className="lg:hidden flex itesm-center p-1 rounded hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500"
             onClick={() => {
               setMenu((x) => (x === 'nav' ? null : 'nav'));
             }}
           >
-            Menu
+            <BurgerIcon />
           </button>
           <div className="hidden lg:block">
             <VegaWalletConnectButton />
           </div>
           <button
-            className={classNames('flex items-center p-2 rounded', {
-              'text-vega-clight-200 dark:text-vega-cdark-200 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500':
+            className={classNames('flex items-center p-1 rounded', {
+              'hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500':
                 view?.type !== ViewType.Settings,
               'bg-vega-yellow hover:bg-vega-yellow-550 text-black':
                 view?.type === ViewType.Settings,
@@ -97,20 +100,34 @@ export const Navbar = () => {
         </div>
       </div>
       {menu !== null && (
-        <div className="fixed top-0 right-0 z-20 w-3/4 h-screen border-l border-default bg-vega-clight-700 dark:bg-vega-cdark-700">
-          <div className="flex justify-end items-center h-10 px-3">
-            <button onClick={() => setMenu(null)}>Close</button>
-          </div>
-          {menu === 'nav' && <NavbarMenu />}
-          {menu === 'wallet' && <VegaWalletMenu setMenu={setMenu} />}
-        </div>
+        <D.Root
+          open={menu !== null}
+          onOpenChange={(open) => setMenu((x) => (open ? x : null))}
+        >
+          <D.Overlay
+            className="fixed inset-0 dark:bg-black/80 bg-black/50 z-20"
+            data-testid="dialog-overlay"
+          />
+          <D.Content className="fixed top-0 right-0 z-20 w-3/4 h-screen border-l border-default bg-vega-clight-700 dark:bg-vega-cdark-700">
+            <div className="flex justify-end items-center h-10 p-1">
+              <button
+                onClick={() => setMenu(null)}
+                className="flex flex-col justify-center p-2 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500 rounded"
+              >
+                <VegaIcon name={VegaIconNames.CROSS} />
+              </button>
+            </div>
+            {menu === 'nav' && <NavbarMenu />}
+            {menu === 'wallet' && <VegaWalletMenu setMenu={setMenu} />}
+          </D.Content>
+        </D.Root>
       )}
     </N.Root>
   );
 };
 
 const NavbarMenu = () => {
-  const { GITHUB_FEEDBACK_URL } = useEnvironment();
+  const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
   const marketId = useGlobalStore((store) => store.marketId);
   const tokenLink = useLinks(DApp.Token);
   const tradingPath = marketId
@@ -118,6 +135,25 @@ const NavbarMenu = () => {
     : Links[Routes.MARKET]();
   return (
     <N.List className="lg:flex gap-4">
+      <N.Item>
+        <NavbarTrigger>
+          {envNameMapping[VEGA_ENV]}
+          <NavbarDivider />
+        </NavbarTrigger>
+        <NavbarContent>
+          <ul className="lg:px-4 lg:py-2">
+            {[Networks.MAINNET, Networks.TESTNET].map((n) => {
+              const url = VEGA_NETWORKS[n];
+              if (!url) return;
+              return (
+                <li key={n}>
+                  <NavbarLink to={url}>{envNameMapping[n]}</NavbarLink>
+                </li>
+              );
+            })}
+          </ul>
+        </NavbarContent>
+      </N.Item>
       <N.Item>
         <NavbarLink to={Links[Routes.MARKETS]()}>{t('Markets')}</NavbarLink>
       </N.Item>
@@ -132,7 +168,7 @@ const NavbarMenu = () => {
       <N.Item>
         <NavbarTrigger>{t('Resources')}</NavbarTrigger>
         <NavbarContent>
-          <ul className="lg:p-4">
+          <ul className="lg:px-4 lg:py-2">
             {DocsLinks?.NEW_TO_VEGA && (
               <li>
                 <NavbarLink to={DocsLinks?.NEW_TO_VEGA}>{t('Docs')}</NavbarLink>
@@ -162,7 +198,7 @@ const NavbarTrigger = ({ children }: { children: ReactNode }) => {
     <N.Trigger
       onPointerMove={preventHover}
       onPointerLeave={preventHover}
-      className="flex items-center gap-2 py-2 px-6 lg:px-2 text-lg lg:text-base"
+      className="relative flex items-center gap-2 py-2 px-6 lg:px-2 text-lg lg:text-base"
     >
       {children}
       <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
@@ -175,7 +211,7 @@ const NavbarLink = ({ children, to }: { children: ReactNode; to: string }) => {
     <N.Link asChild={true}>
       <NavLink
         to={to}
-        className="relative block py-2 px-6 lg:px-0 text-lg lg:text-base"
+        className="relative block lg:inline-block py-2 px-6 lg:px-0 text-lg lg:text-base"
       >
         {({ isActive }) => {
           const borderClasses = {
@@ -206,7 +242,7 @@ const NavbarContent = ({ children }: { children: ReactNode }) => {
   return (
     <N.Content
       className={classNames(
-        'lg:absolute lg:mt-4 pl-6 lg:pl-0 z-20 lg:min-w-[290px]',
+        'lg:absolute lg:mt-2 pl-6 lg:pl-0 z-20 lg:min-w-[290px]',
         'lg:bg-vega-clight-800 lg:dark:bg-vega-cdark-800',
         'lg:border border-default lg:rounded'
       )}
@@ -342,4 +378,28 @@ const NavExternalLink = ({
       </span>
     </ExternalLink>
   );
+};
+
+const BurgerIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" className="stroke-current">
+    <line x1={0.5} x2={15.5} y1={3.5} y2={3.5} />
+    <line x1={0.5} x2={15.5} y1={11.5} y2={11.5} />
+  </svg>
+);
+
+const NavbarDivider = () => {
+  return (
+    <div className="absolute right-0 py-2" role="separator">
+      <div className="h-full w-px border-r border-default" />
+    </div>
+  );
+};
+
+const envNameMapping: Record<Networks, string> = {
+  [Networks.VALIDATOR_TESTNET]: t('VALIDATOR_TESTNET'),
+  [Networks.CUSTOM]: t('Custom'),
+  [Networks.DEVNET]: t('Devnet'),
+  [Networks.STAGNET1]: t('Stagnet'),
+  [Networks.TESTNET]: t('Fairground testnet'),
+  [Networks.MAINNET]: t('Mainnet'),
 };

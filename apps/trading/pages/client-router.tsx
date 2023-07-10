@@ -91,11 +91,11 @@ const routerConfig: RouteObject[] = [
           },
         ],
       },
+      {
+        path: 'disclaimer',
+        element: <LazyDisclaimer />,
+      },
     ],
-  },
-  {
-    path: Routes.DISCLAIMER,
-    element: <LazyDisclaimer />,
   },
   {
     path: '*',
