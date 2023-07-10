@@ -12,7 +12,6 @@ import {
   FormGroup,
   Input,
   InputError,
-  Option,
   RichSelect,
   Select,
   Tooltip,
@@ -24,6 +23,7 @@ import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { AssetOption, Balance } from '@vegaprotocol/assets';
 
 interface FormFields {
   toAddress: string;
@@ -193,21 +193,20 @@ export const TransferForm = ({
               onValueChange={(value) => {
                 field.onChange(value);
               }}
-              placeholder={t('Please select')}
+              placeholder={t('Please select an asset')}
               value={field.value}
             >
               {assets.map((a) => (
-                <Option key={a.id} value={a.id}>
-                  <div className="text-left" data-testid={`asset-${a.id}`}>
-                    <div>{a.name}</div>
-                    <div className="text-xs">
-                      <span className="font-mono" data-testid="asset-balance">
-                        {formatNumber(a.balance, a.decimals)}
-                      </span>{' '}
-                      <span>{a.symbol}</span>
-                    </div>
-                  </div>
-                </Option>
+                <AssetOption
+                  key={a.id}
+                  asset={a}
+                  balance={
+                    <Balance
+                      balance={formatNumber(a.balance, a.decimals)}
+                      symbol={a.symbol}
+                    />
+                  }
+                />
               ))}
             </RichSelect>
           )}

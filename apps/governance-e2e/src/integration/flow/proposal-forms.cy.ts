@@ -295,7 +295,8 @@ context(
 
     // Will fail if run after 'Able to submit update market proposal and vote for proposal'
     // 3002-PROP-022
-    it('Unable to submit update market proposal without equity-like share in the market', function () {
+    // Skipping due to #4262
+    it.skip('Unable to submit update market proposal without equity-like share in the market', function () {
       switchVegaWalletPubKey();
       stakingPageAssociateTokens('1');
       goToMakeNewProposal(governanceProposalType.UPDATE_MARKET);

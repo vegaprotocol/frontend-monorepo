@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { AppNameType, Announcement } from '../schema';
 import { AnnouncementsSchema } from '../schema';
+import { sha256 } from 'ethers/lib/utils';
+import { useLocalStorageSnapshot } from '@vegaprotocol/react-helpers';
 
 const getData = async (name: AppNameType, url: string) => {
   const now = new Date();
@@ -31,6 +33,22 @@ type State = {
   error: null | string;
 };
 
+const checksum = (data: object) => sha256(Buffer.from(JSON.stringify(data)));
+
+export const useDismissedAnnouncement = (): [
+  string | null | undefined,
+  (data: object) => void
+] => {
+  const [dismissed, setDismissedInStorage] = useLocalStorageSnapshot(
+    'dismissed-announcement'
+  );
+  const setDismissed = useCallback(
+    (data: object) => setDismissedInStorage(checksum(data)),
+    [setDismissedInStorage]
+  );
+  return [dismissed, setDismissed];
+};
+
 export const useAnnouncement = (name: AppNameType, url: string) => {
   const [state, setState] = useState<State>({
     loading: true,
@@ -38,12 +56,14 @@ export const useAnnouncement = (name: AppNameType, url: string) => {
     error: null,
   });
 
+  const [dismissed] = useDismissedAnnouncement();
+
   const fetchData = useCallback(() => {
     let mounted = true;
 
     getData(name, url)
       .then((data) => {
-        if (mounted) {
+        if (mounted && dismissed !== checksum(data)) {
           setState({
             loading: false,
             data,
@@ -64,7 +84,7 @@ export const useAnnouncement = (name: AppNameType, url: string) => {
     return () => {
       mounted = false;
     };
-  }, [name, url, setState]);
+  }, [name, url, dismissed]);
 
   useEffect(() => {
     fetchData();

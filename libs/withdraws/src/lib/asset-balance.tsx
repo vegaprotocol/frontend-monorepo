@@ -2,7 +2,7 @@ import { useAccountBalance } from '@vegaprotocol/accounts';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { useBalancesStore } from '@vegaprotocol/assets';
 import { Balance } from '@vegaprotocol/assets';
-import { addDecimal } from '@vegaprotocol/utils';
+import { addDecimal, formatNumber } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { useEffect } from 'react';
 
@@ -23,7 +23,10 @@ export const AssetBalance = ({ asset }: { asset: AssetFieldsFragment }) => {
 
   return (
     <Balance
-      balance={getBalance(asset.id)?.balanceOnVega?.toString()}
+      balance={formatNumber(
+        getBalance(asset.id)?.balanceOnVega || 0,
+        accountDecimals || 0
+      )}
       symbol={asset.symbol}
     />
   );
