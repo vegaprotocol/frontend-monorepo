@@ -161,6 +161,9 @@ const NavbarMenu = () => {
         <NavbarLink to={tradingPath}>{t('Trading')}</NavbarLink>
       </N.Item>
       <N.Item>
+        <NavbarLink to={Links[Routes.PORTFOLIO]()}>{t('Portfolio')}</NavbarLink>
+      </N.Item>
+      <N.Item>
         <NavbarLink to={tokenLink(TOKEN_GOVERNANCE)}>
           {t('Governance')}
         </NavbarLink>
@@ -201,7 +204,7 @@ const NavbarTrigger = ({ children }: { children: ReactNode }) => {
       className="relative flex items-center gap-2 py-2 px-6 lg:px-2 text-lg lg:text-base"
     >
       {children}
-      <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+      <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
     </N.Trigger>
   );
 };
@@ -242,7 +245,7 @@ const NavbarContent = ({ children }: { children: ReactNode }) => {
   return (
     <N.Content
       className={classNames(
-        'lg:absolute lg:mt-2 pl-6 lg:pl-0 z-20 lg:min-w-[290px]',
+        'lg:absolute pl-6 lg:pl-0 z-20 lg:min-w-[290px]',
         'lg:bg-vega-clight-800 lg:dark:bg-vega-cdark-800',
         'lg:border border-default lg:rounded'
       )}
