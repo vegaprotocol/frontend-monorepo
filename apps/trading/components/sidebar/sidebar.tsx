@@ -57,7 +57,7 @@ export const Sidebar = () => {
           tooltip={t('Settings')}
         />
       </div>
-      <nav className="flex flex-col items-stretch gap-2 p-1">
+      <nav className="flex flex-col items-center gap-4 p-1">
         {/* sidebar options that always show */}
         <SidebarButton
           view={ViewType.Deposit}
@@ -106,7 +106,7 @@ export const Sidebar = () => {
           />
         </Routes>
       </nav>
-      <nav className="mt-auto flex flex-col items-stretch gap-2 p-1">
+      <nav className="mt-auto flex flex-col items-center gap-4 p-1">
         <NodeHealthContainer />
       </nav>
     </div>
@@ -126,7 +126,7 @@ const SidebarButton = ({
     currView: store.view,
     setView: store.setView,
   }));
-  const buttonClasses = classNames('flex items-center p-2 rounded', {
+  const buttonClasses = classNames('flex items-center p-1 rounded', {
     'text-vega-clight-200 dark:text-vega-cdark-200 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500':
       view !== currView?.type,
     'bg-vega-yellow hover:bg-vega-yellow-550 text-black':
