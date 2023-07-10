@@ -154,6 +154,7 @@ const NavbarMenu = () => {
           </ul>
         </NavbarContent>
       </N.Item>
+      <NavbarDivider />
       <N.Item>
         <NavbarLink to={Links[Routes.MARKETS]()}>{t('Markets')}</NavbarLink>
       </N.Item>
@@ -163,11 +164,11 @@ const NavbarMenu = () => {
       <N.Item>
         <NavbarLink to={Links[Routes.PORTFOLIO]()}>{t('Portfolio')}</NavbarLink>
       </N.Item>
-      <N.Item>
+      {/* <N.Item>
         <NavbarLink to={tokenLink(TOKEN_GOVERNANCE)}>
           {t('Governance')}
         </NavbarLink>
-      </N.Item>
+      </N.Item> */}
       <N.Item>
         <NavbarTrigger>{t('Resources')}</NavbarTrigger>
         <NavbarContent>
@@ -201,7 +202,7 @@ const NavbarTrigger = ({ children }: { children: ReactNode }) => {
     <N.Trigger
       onPointerMove={preventHover}
       onPointerLeave={preventHover}
-      className="relative flex items-center gap-2 py-2 px-6 lg:px-2 text-lg lg:text-base"
+      className="relative flex items-center gap-2 py-2 px-6 lg:px-0 text-lg lg:text-base"
     >
       {children}
       <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
@@ -392,9 +393,9 @@ const BurgerIcon = () => (
 
 const NavbarDivider = () => {
   return (
-    <div className="absolute right-0 py-2" role="separator">
-      <div className="h-full w-px border-r border-default" />
-    </div>
+    <li className="py-2" role="separator">
+      <div className="h-full w-px bg-vega-clight-600 dark:bg-vega-cdark-600" />
+    </li>
   );
 };
 
