@@ -185,7 +185,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
               <>
                 <span className="underline">{valueFormatted}</span>
                 <span className="ml-2 inline-block w-14 text-muted">
-                  {t('0.00%')}'
+                  {t('0.00%')}
                 </span>
               </>
             );
