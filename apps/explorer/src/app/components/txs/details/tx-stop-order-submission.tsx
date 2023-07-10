@@ -5,9 +5,8 @@ import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
-import DeterministicOrderDetails from '../../order-details/deterministic-order-details';
 import Hash from '../../links/hash';
-import { TxOrderPeggedReferenceRow } from './order/tx-order-peg';
+import type { components } from '../../../../types/explorer';
 
 interface TxDetailsOrderProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -26,9 +25,9 @@ export const TxDetailsStopOrderSubmission = ({
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const tx = txData.command.stopOrdersSubmission;
-  console.dir(txData.command);
-  const marketId = tx.marketId || '-';
+  const tx: components['schemas']['v1StopOrdersSubmission'] =
+    txData.command.stopOrdersSubmission;
+  const marketId = tx.risesAbove?.orderSubmission?.marketId || '-';
 
   let deterministicId = '';
 
