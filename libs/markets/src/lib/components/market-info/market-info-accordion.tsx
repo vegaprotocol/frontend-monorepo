@@ -9,7 +9,6 @@ import {
   ExternalLink,
   Link as UILink,
   Splash,
-  TinyScroll,
   AccordionItem,
 } from '@vegaprotocol/ui-toolkit';
 import { generatePath, Link } from 'react-router-dom';
