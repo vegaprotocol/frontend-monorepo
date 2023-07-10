@@ -122,7 +122,7 @@ export const NetworkSwitcher = ({
         </DropdownMenuTrigger>
       }
     >
-      <DropdownMenuContent align="start">
+      <DropdownMenuContent align="start" sideOffset={17}>
         {!isAdvancedView && (
           <>
             {standardNetworkKeys.map((key) => (
