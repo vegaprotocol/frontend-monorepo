@@ -6,7 +6,6 @@ const assetSelection = 'select-asset';
 const assetBalance = 'asset-balance';
 const assetOption = 'rich-select-option';
 const transferText = 'transfer-intro-text';
-const dropdownMenu = 'dropdown-menu';
 const errorText = 'input-error-text';
 const formFieldError = 'input-error-text';
 const includeTransferFeeRadioBtn = 'include-transfer-fee';
@@ -16,7 +15,6 @@ const openTransferButton = 'open-transfer';
 const submitTransferBtn = '[type="submit"]';
 const toAddressField = '[name="toAddress"]';
 const totalTransferfee = 'total-transfer-fee';
-const transfer = 'transfer';
 const transferAmount = 'transfer-amount';
 const transferForm = 'transfer-form';
 const transferFee = 'transfer-fee';
@@ -38,12 +36,13 @@ describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
     cy.setVegaWallet();
 
     cy.visit('/');
-    // eslint-disable-next-line
-    cy.wait(500);
 
-    cy.getByTestId(collateralTab).click();
-    cy.getByTestId(dropdownMenu).first().click();
-    cy.getByTestId(transfer).click();
+    // Only click if not already active otherwise sidebar will close
+    cy.get('[data-testid="sidebar-content"]').then(($sidebarContent) => {
+      if ($sidebarContent.find('h2').text() !== 'Transfer') {
+        cy.get('[data-testid="sidebar"] [data-testid="Transfer"]').click();
+      }
+    });
 
     cy.wait('@Assets');
     cy.wait('@Accounts');
