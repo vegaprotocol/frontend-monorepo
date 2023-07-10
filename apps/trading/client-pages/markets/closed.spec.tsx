@@ -388,7 +388,6 @@ describe('Closed', () => {
           ...createMarketFragment({
             id: 'successorMarketID',
             state: MarketState.STATE_ACTIVE,
-            parentMarketID: 'include-0',
           }),
           tradableInstrument: {
             ...createMarketFragment().tradableInstrument,
