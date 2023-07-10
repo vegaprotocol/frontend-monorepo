@@ -79,7 +79,7 @@ function AppBody({ Component }: AppProps) {
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
   );
   return (
-    <div className="font-alpha h-full bg-white dark:bg-vega-cdark-900 text-default">
+    <div className="font-alpha h-full bg-white dark:bg-vega-cdark-900 text-default overflow-hidden">
       <Head>
         {/* Cannot use meta tags in _document.page.tsx see https://nextjs.org/docs/messages/no-document-viewport-meta */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />

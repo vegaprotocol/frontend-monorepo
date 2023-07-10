@@ -8,7 +8,7 @@ import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { DepositContainer } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/i18n';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
-import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { TinyScroll, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { NodeHealthContainer } from '../node-health';
 import { Settings } from '../settings';
 import { Tooltip } from '../../components/tooltip';
@@ -186,7 +186,11 @@ export const SidebarContent = () => {
 
   if (view.type === ViewType.Info) {
     if (params.marketId) {
-      return <MarketInfoAccordionContainer marketId={params.marketId} />;
+      return (
+        <ContentWrapper>
+          <MarketInfoAccordionContainer marketId={params.marketId} />
+        </ContentWrapper>
+      );
     } else {
       return <CloseSidebar />;
     }
@@ -235,14 +239,14 @@ const ContentWrapper = ({
   title?: string;
 }) => {
   return (
-    <div
+    <TinyScroll
+      className="h-full overflow-auto py-4 pl-3 pr-4"
       // panes have p-1, since sidebar is on the right make pl less to account for additional pane space
-      className="py-4 pl-3 pr-4"
       data-testid="sidebar-content"
     >
       {title && <h2 className="mb-4">{title}</h2>}
       {children}
-    </div>
+    </TinyScroll>
   );
 };
 
