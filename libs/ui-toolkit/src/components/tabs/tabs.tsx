@@ -40,7 +40,7 @@ export const Tabs = ({
             if (!isValidElement(child) || child.props.hidden) return null;
             const isActive = child.props.id === (value || activeTab);
             const triggerClass = classNames(
-              'relative px-4 py-2 border-l border-r first:border-l-0',
+              'relative text-xs p-2 border-l border-r first:border-l-0',
               {
                 'cursor-default border-default bg-vega-clight-700 dark:bg-vega-cdark-700':
                   isActive,
