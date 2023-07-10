@@ -7,10 +7,10 @@ import * as allUtils from '@vegaprotocol/utils';
 import type { Market } from '@vegaprotocol/markets';
 import type { PartialDeep } from 'type-fest';
 
-let mockLocations = {};
+let mockParams = {};
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(() => mockLocations),
+  useParams: jest.fn(() => mockParams),
 }));
 
 let mockDataMarket: PartialDeep<Market> | null = null;
@@ -49,7 +49,7 @@ jest.mock('@vegaprotocol/markets', () => ({
 describe('MarketSuccessorBanner', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockLocations = { pathname: '/markets/marketId' };
+    mockParams = { marketId: 'marketId' };
     mockDataMarket = {
       id: 'marketId',
       tradableInstrument: {
@@ -76,22 +76,8 @@ describe('MarketSuccessorBanner', () => {
     };
   });
   describe('should be hidden', () => {
-    it('on other pages than market', () => {
-      mockLocations = { pathname: '/portfolio' };
-      const { container } = render(<MarketSuccessorBanner />, {
-        wrapper: MockedProvider,
-      });
-      expect(container).toBeEmptyDOMElement();
-    });
-    it('on markets page', () => {
-      mockLocations = { pathname: '/markets/all' };
-      const { container } = render(<MarketSuccessorBanner />, {
-        wrapper: MockedProvider,
-      });
-      expect(container).toBeEmptyDOMElement();
-    });
     it('when no marketID', () => {
-      mockLocations = { pathname: '/markets/' };
+      mockParams = {};
       const { container } = render(<MarketSuccessorBanner />, {
         wrapper: MockedProvider,
       });

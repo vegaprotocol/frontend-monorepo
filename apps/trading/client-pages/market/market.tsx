@@ -14,6 +14,7 @@ import { TradePanels } from './trade-panels';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
+import { MarketSuccessorBanner } from '../../components/banner';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -132,7 +133,10 @@ export const MarketPage = () => {
         marketName={data?.tradableInstrument.instrument.name}
         decimalPlaces={data?.decimalPlaces}
       />
-      {tradeView}
+      <div className="flex flex-col h-full">
+        <MarketSuccessorBanner />
+        {tradeView}
+      </div>
     </AsyncRenderer>
   );
 };
