@@ -15,7 +15,7 @@ export const ProposalContainer = () => {
   const params = useParams<{ proposalId: string }>();
 
   const {
-    state: { data: restData },
+    state: { data: restData, loading: restLoading, error: restError },
   } = useFetch(`${ENV.rest}governance?proposalId=${params.proposalId}`);
 
   const { data, loading, error, refetch } = useProposalQuery({
@@ -24,6 +24,22 @@ export const ProposalContainer = () => {
     variables: { proposalId: params.proposalId || '' },
     skip: !params.proposalId,
   });
+
+  const {
+    state: {
+      data: originalMarketProposalRestData,
+      loading: originalMarketProposalRestLoading,
+      error: originalMarketProposalRestError,
+    },
+  } = useFetch(
+    `${ENV.rest}governance?proposalId=${
+      data?.proposal?.terms.change.__typename === 'UpdateMarket' &&
+      data?.proposal.terms.change.marketId
+    }`,
+    undefined,
+    true,
+    data?.proposal?.terms.change.__typename !== 'UpdateMarket'
+  );
 
   const {
     data: newMarketData,
@@ -35,24 +51,6 @@ export const ProposalContainer = () => {
     variables: {
       marketId: data?.proposal?.id || '',
       skip: !data?.proposal?.id,
-    },
-  });
-
-  const {
-    data: originalMarketData,
-    loading: originalMarketLoading,
-    error: originalMarketError,
-  } = useDataProvider({
-    dataProvider: marketInfoWithDataProvider,
-    skipUpdates: true,
-    variables: {
-      marketId:
-        (data?.proposal?.terms.change.__typename === 'UpdateMarket' &&
-          data?.proposal?.terms?.change?.marketId) ||
-        '',
-      skip:
-        data?.proposal?.terms.change.__typename !== 'UpdateMarket' ||
-        !data?.proposal?.id,
     },
   });
 
@@ -83,14 +81,29 @@ export const ProposalContainer = () => {
   return (
     <AsyncRenderer
       loading={
-        loading || newMarketLoading || originalMarketLoading || assetLoading
+        loading ||
+        newMarketLoading ||
+        assetLoading ||
+        (restLoading ? (restLoading as boolean) : false) ||
+        (originalMarketProposalRestLoading
+          ? (originalMarketProposalRestLoading as boolean)
+          : false)
       }
-      error={error || newMarketError || originalMarketError || assetError}
+      error={
+        error ||
+        newMarketError ||
+        assetError ||
+        restError ||
+        originalMarketProposalRestError
+      }
       data={{
         ...data,
         ...(newMarketData ? { newMarketData } : {}),
-        ...(originalMarketData ? { originalMarketData } : {}),
         ...(assetData ? { assetData } : {}),
+        ...(restData ? { restData } : {}),
+        ...(originalMarketProposalRestData
+          ? { originalMarketProposalRestData }
+          : {}),
       }}
     >
       {data?.proposal ? (
@@ -98,8 +111,8 @@ export const ProposalContainer = () => {
           proposal={data.proposal}
           restData={restData}
           newMarketData={newMarketData}
-          originalMarketData={originalMarketData}
           assetData={assetData}
+          originalMarketProposalRestData={originalMarketProposalRestData}
         />
       ) : (
         <ProposalNotFound />

@@ -838,5 +838,6 @@
   "networkGovernance": "Network governance",
   "networkUpgrades": "Network upgrades",
   "assetSpecification": "Asset specification",
-  "dataIsIdentical": "Data is identical"
+  "dataIsIdentical": "Data is identical",
+  "updatesToMarket": "Updates to market"
 }

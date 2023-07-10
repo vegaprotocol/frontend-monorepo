@@ -21,6 +21,7 @@ import type { MarketInfoWithData } from '@vegaprotocol/markets';
 import type { AssetQuery } from '@vegaprotocol/assets';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
+import { ProposalMarketChanges } from '../proposal-market-changes';
 
 export enum ProposalType {
   PROPOSAL_NEW_MARKET = 'PROPOSAL_NEW_MARKET',
@@ -33,18 +34,19 @@ export enum ProposalType {
 export interface ProposalProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
   newMarketData?: MarketInfoWithData | null;
-  originalMarketData?: MarketInfoWithData | null;
   assetData?: AssetQuery | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   restData: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  originalMarketProposalRestData?: any;
 }
 
 export const Proposal = ({
   proposal,
   restData,
   newMarketData,
-  originalMarketData,
   assetData,
+  originalMarketProposalRestData,
 }: ProposalProps) => {
   const { t } = useTranslation();
   const { params, loading, error } = useNetworkParams([
@@ -162,22 +164,19 @@ export const Proposal = ({
             </div>
           )}
 
-          {/*{proposal.terms.change.__typename === 'UpdateMarket' &&*/}
-          {/*  originalMarketData &&*/}
-          {/*  ('updateMarketConfiguration' in proposal.terms.change ? (*/}
-          {/*    <ProposalMarketData*/}
-          {/*      marketData={{*/}
-          {/*        ...originalMarketData,*/}
-          {/*        tradableInstrument: {*/}
-          {/*          ...originalMarketData.tradableInstrument,*/}
-          {/*          instrument:*/}
-          {/*            proposal.terms.change.updateMarketConfiguration*/}
-          {/*              .instrument ||*/}
-          {/*            originalMarketData.tradableInstrument.instrument,*/}
-          {/*        },*/}
-          {/*      }}*/}
-          {/*    />*/}
-          {/*  ) : null)}*/}
+          {proposal.terms.change.__typename === 'UpdateMarket' && (
+            <div className="mb-4">
+              <ProposalMarketChanges
+                left={
+                  originalMarketProposalRestData?.data?.proposal?.terms
+                    ?.newMarket?.changes || {}
+                }
+                right={
+                  restData?.data?.proposal?.terms?.updateMarket?.changes || {}
+                }
+              />
+            </div>
+          )}
 
           {(proposal.terms.change.__typename === 'NewAsset' ||
             proposal.terms.change.__typename === 'UpdateAsset') &&
