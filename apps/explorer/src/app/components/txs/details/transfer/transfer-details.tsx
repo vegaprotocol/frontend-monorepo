@@ -3,7 +3,7 @@ import { TransferRepeat } from './blocks/transfer-repeat';
 import { TransferRewards } from './blocks/transfer-rewards';
 import { TransferParticipants } from './blocks/transfer-participants';
 
-export type Recurring = components['schemas']['v1RecurringTransfer'];
+export type Recurring = components['schemas']['commandsv1RecurringTransfer'];
 export type Metric = components['schemas']['vegaDispatchMetric'];
 
 export const wrapperClasses =
