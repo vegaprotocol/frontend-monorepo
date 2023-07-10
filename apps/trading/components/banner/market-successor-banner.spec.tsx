@@ -201,10 +201,9 @@ describe('MarketSuccessorBanner', () => {
         ],
       };
 
-      const { container, debug } = render(<MarketSuccessorBanner />, {
+      render(<MarketSuccessorBanner />, {
         wrapper: MockedProvider,
       });
-      debug(container);
       expect(screen.getByText('has 101.367 24h vol.')).toBeInTheDocument();
     });
 
@@ -214,10 +213,9 @@ describe('MarketSuccessorBanner', () => {
         .mockReturnValue(
           new Date(Date.now() + 24 * 60 * 60 * 1000 + 60 * 1000)
         );
-      const { container, debug } = render(<MarketSuccessorBanner />, {
+      render(<MarketSuccessorBanner />, {
         wrapper: MockedProvider,
       });
-      debug(container);
       expect(
         screen.getByText(/^This market expires in 1 day/)
       ).toBeInTheDocument();
