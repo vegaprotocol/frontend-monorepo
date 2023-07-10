@@ -24,7 +24,7 @@ export const ProposalMarketChanges = ({
       <CollapsibleToggle
         toggleState={showChanges}
         setToggleState={setShowChanges}
-        dataTestId={'proposal-description-toggle'}
+        dataTestId={'proposal-market-changes-toggle'}
       >
         <SubHeading title={t('updatesToMarket')} />
       </CollapsibleToggle>
