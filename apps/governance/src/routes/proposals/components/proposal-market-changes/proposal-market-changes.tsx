@@ -6,14 +6,14 @@ import { SubHeading } from '../../../../components/heading';
 import type { JsonValue } from '../../../../components/json-diff';
 
 interface ProposalMarketChangesProps {
-  left: JsonValue;
-  right: JsonValue;
+  previousProposal: JsonValue;
+  updatedProposal: JsonValue;
   objectHash?: (obj: unknown) => string | undefined;
 }
 
 export const ProposalMarketChanges = ({
-  right,
-  left,
+  previousProposal,
+  updatedProposal,
   objectHash,
 }: ProposalMarketChangesProps) => {
   const { t } = useTranslation();
@@ -32,8 +32,8 @@ export const ProposalMarketChanges = ({
       {showChanges && (
         <div className="mb-6">
           <JsonDiff
-            left={left || {}}
-            right={right || {}}
+            left={previousProposal}
+            right={updatedProposal}
             objectHash={objectHash}
           />
         </div>

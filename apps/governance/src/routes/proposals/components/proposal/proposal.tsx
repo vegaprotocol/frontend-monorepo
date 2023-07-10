@@ -167,11 +167,11 @@ export const Proposal = ({
           {proposal.terms.change.__typename === 'UpdateMarket' && (
             <div className="mb-4">
               <ProposalMarketChanges
-                left={
+                previousProposal={
                   originalMarketProposalRestData?.data?.proposal?.terms
                     ?.newMarket?.changes || {}
                 }
-                right={
+                updatedProposal={
                   restData?.data?.proposal?.terms?.updateMarket?.changes || {}
                 }
               />
