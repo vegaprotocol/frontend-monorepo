@@ -174,7 +174,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
             trigger={
               <HeaderTitle>
                 {market?.tradableInstrument.instrument.code}
-                <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+                <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
               </HeaderTitle>
             }
           >
