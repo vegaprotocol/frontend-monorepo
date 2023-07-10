@@ -31,11 +31,7 @@ import ToastsManager from './toasts-manager';
 import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 import { ViewingBanner } from '../components/viewing-banner';
-import {
-  AnnouncementBanner,
-  UpgradeBanner,
-  MarketSuccessorBanner,
-} from '../components/banner';
+import { AnnouncementBanner, UpgradeBanner } from '../components/banner';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { Navbar } from '../components/navbar';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -103,7 +99,6 @@ function AppBody({ Component }: AppProps) {
           />
           <ViewingBanner />
           <UpgradeBanner showVersionChange={true} />
-          <MarketSuccessorBanner />
         </div>
         <main data-testid={location.pathname}>
           <Component />
