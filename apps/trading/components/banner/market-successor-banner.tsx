@@ -58,7 +58,7 @@ export const MarketSuccessorBanner = () => {
     : null;
 
   const duration =
-    expiry && isBefore(expiry, new Date())
+    expiry && isBefore(new Date(), expiry)
       ? intervalToDuration({ start: new Date(), end: expiry })
       : null;
 
@@ -71,7 +71,9 @@ export const MarketSuccessorBanner = () => {
     marketId: successorData?.id,
   });
 
-  const candleVolume = oneDayCandles ? calcCandleVolume(oneDayCandles) : null;
+  const candleVolume = oneDayCandles?.length
+    ? calcCandleVolume(oneDayCandles)
+    : null;
 
   const successorVolume =
     candleVolume && isNumeric(successorData?.positionDecimalPlaces)
@@ -111,7 +113,7 @@ export const MarketSuccessorBanner = () => {
             </span>
           )}{' '}
           {t('The successor market')}{' '}
-          <ExternalLink href={`/markets/${successorData?.id}`}>
+          <ExternalLink href={`/#/markets/${successorData?.id}`}>
             {successorData?.tradableInstrument.instrument.name}
           </ExternalLink>
           {successorVolume && (

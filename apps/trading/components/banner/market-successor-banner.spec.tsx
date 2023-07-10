@@ -198,7 +198,7 @@ describe('MarketSuccessorBanner', () => {
       ).toBeInTheDocument();
       expect(
         screen.getByRole('link', { name: 'Successor Market Name' })
-      ).toHaveAttribute('href', '/markets/successorMarketID');
+      ).toHaveAttribute('href', '/#/markets/successorMarketID');
     });
 
     it('should display optionally successor volume', () => {
@@ -225,13 +225,15 @@ describe('MarketSuccessorBanner', () => {
     it('should display optionally duration', () => {
       jest
         .spyOn(allUtils, 'getMarketExpiryDate')
-        .mockReturnValue(new Date(Date.now() - 24 * 60 * 60 * 1000));
+        .mockReturnValue(
+          new Date(Date.now() + 24 * 60 * 60 * 1000 + 60 * 1000)
+        );
       const { container, debug } = render(<MarketSuccessorBanner />, {
         wrapper: MockedProvider,
       });
       debug(container);
       expect(
-        screen.getByText('This market expires in 1 day.')
+        screen.getByText(/^This market expires in 1 day/)
       ).toBeInTheDocument();
     });
   });
