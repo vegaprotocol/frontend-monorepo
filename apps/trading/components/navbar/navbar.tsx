@@ -55,7 +55,7 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
         </div>
         <div className="lg:hidden">{children}</div>
         <div className="hidden lg:block">
-          <NavbarMenu />
+          <NavbarMenu onClick={() => setMenu(null)} />
         </div>
         <div className="ml-auto flex justify-end items-center gap-2">
           <button
@@ -101,7 +101,7 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
                 <VegaIcon name={VegaIconNames.CROSS} size={24} />
               </button>
             </div>
-            {menu === 'nav' && <NavbarMenu />}
+            {menu === 'nav' && <NavbarMenu onClick={() => setMenu(null)} />}
             {menu === 'wallet' && <VegaWalletMenu setMenu={setMenu} />}
           </D.Content>
         </D.Root>
@@ -110,12 +110,13 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
   );
 };
 
-const NavbarMenu = () => {
+const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
   const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
   const marketId = useGlobalStore((store) => store.marketId);
   const tradingPath = marketId
     ? Links[Routes.MARKET](marketId)
     : Links[Routes.MARKET]();
+
   return (
     <N.List className="lg:flex gap-4">
       <N.Item>
@@ -139,13 +140,19 @@ const NavbarMenu = () => {
       </N.Item>
       <NavbarDivider />
       <N.Item>
-        <NavbarLink to={Links[Routes.MARKETS]()}>{t('Markets')}</NavbarLink>
+        <NavbarLink to={Links[Routes.MARKETS]()} onClick={onClick}>
+          {t('Markets')}
+        </NavbarLink>
       </N.Item>
       <N.Item>
-        <NavbarLink to={tradingPath}>{t('Trading')}</NavbarLink>
+        <NavbarLink to={tradingPath} onClick={onClick}>
+          {t('Trading')}
+        </NavbarLink>
       </N.Item>
       <N.Item>
-        <NavbarLink to={Links[Routes.PORTFOLIO]()}>{t('Portfolio')}</NavbarLink>
+        <NavbarLink to={Links[Routes.PORTFOLIO]()} onClick={onClick}>
+          {t('Portfolio')}
+        </NavbarLink>
       </N.Item>
       <N.Item>
         <NavbarTrigger>{t('Resources')}</NavbarTrigger>
@@ -164,7 +171,7 @@ const NavbarMenu = () => {
               </li>
             )}
             <li>
-              <NavbarLink to={Links[Routes.DISCLAIMER]()}>
+              <NavbarLink to={Links[Routes.DISCLAIMER]()} onClick={onClick}>
                 {t('Disclaimer')}
               </NavbarLink>
             </li>
@@ -191,12 +198,21 @@ const NavbarTrigger = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const NavbarLink = ({ children, to }: { children: ReactNode; to: string }) => {
+const NavbarLink = ({
+  children,
+  to,
+  onClick,
+}: {
+  children: ReactNode;
+  to: string;
+  onClick?: () => void;
+}) => {
   return (
     <N.Link asChild={true}>
       <NavLink
         to={to}
         className="relative block lg:inline-block py-2 px-6 lg:px-0 text-lg lg:text-base"
+        onClick={onClick}
       >
         {({ isActive }) => {
           const borderClasses = {

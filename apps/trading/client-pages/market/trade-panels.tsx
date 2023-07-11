@@ -98,10 +98,10 @@ export const TradePanels = ({
           )}
         </AutoSizer>
       </div>
-      <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
+      <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default bg-vega-clight-800 dark:bg-vega-cdark-800">
         {Object.keys(TradingViews).map((key) => {
           const isActive = view === key;
-          const className = classNames('p-4 min-w-[100px] capitalize', {
+          const className = classNames('p-2 px-3 capitalize', {
             'bg-vega-clight-500 dark:bg-vega-cdark-500': isActive,
           });
           return (

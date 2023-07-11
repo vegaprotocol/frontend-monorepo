@@ -15,6 +15,7 @@ import { Tooltip } from '../../components/tooltip';
 import { WithdrawContainer } from '../withdraw-container';
 import { Routes as AppRoutes } from '../../pages/client-router';
 import { persist } from 'zustand/middleware';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 const STORAGE_KEY = 'vega_sidebar_store';
 
@@ -52,8 +53,8 @@ type SidebarView =
 
 export const Sidebar = () => {
   return (
-    <div className="flex flex-col gap-2 h-full py-1" data-testid="sidebar">
-      <nav className="flex flex-col items-center gap-4 p-1">
+    <div className="flex lg:flex-col gap-2 h-full py-1" data-testid="sidebar">
+      <nav className="flex-1 flex lg:flex-col items-center gap-4 p-1">
         {/* sidebar options that always show */}
         <SidebarButton
           view={ViewType.Deposit}
@@ -102,7 +103,7 @@ export const Sidebar = () => {
           />
         </Routes>
       </nav>
-      <nav className="mt-auto flex flex-col items-center gap-4 p-1">
+      <nav className="ml-auto lg:mt-auto lg:ml-0 flex flex-col items-center gap-4 p-1">
         <SidebarButton
           view={ViewType.Settings}
           icon={VegaIconNames.COG}
@@ -118,26 +119,34 @@ const SidebarButton = ({
   view,
   icon,
   tooltip,
+  className,
 }: {
   view: ViewType;
   icon: VegaIconNames;
   tooltip: string;
+  className?: string;
 }) => {
   const { currView, setView } = useSidebar((store) => ({
     currView: store.view,
     setView: store.setView,
   }));
-  const buttonClasses = classNames('flex items-center p-1 rounded', {
-    'text-vega-clight-200 dark:text-vega-cdark-200 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500':
-      view !== currView?.type,
-    'bg-vega-yellow hover:bg-vega-yellow-550 text-black':
-      view === currView?.type,
-  });
+  const buttonClasses = classNames(
+    'flex items-center p-1 rounded',
+    {
+      'text-vega-clight-200 dark:text-vega-cdark-200 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500':
+        view !== currView?.type,
+      'bg-vega-yellow hover:bg-vega-yellow-550 text-black':
+        view === currView?.type,
+    },
+    className
+  );
+  const { isMobile } = useScreenDimensions();
+
   return (
     <Tooltip
       description={tooltip}
       align="center"
-      side="right"
+      side={isMobile ? 'top' : 'right'}
       sideOffset={10}
       delayDuration={0}
     >
@@ -161,7 +170,7 @@ const SidebarButton = ({
 const SidebarDivider = () => {
   return (
     <div
-      className="bg-vega-clight-600 dark:bg-vega-cdark-600 w-4 h-px"
+      className="hidden lg:block bg-vega-clight-600 dark:bg-vega-cdark-600 w-4 h-px"
       role="separator"
     />
   );
