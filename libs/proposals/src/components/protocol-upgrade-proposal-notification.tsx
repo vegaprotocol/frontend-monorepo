@@ -44,7 +44,10 @@ export const ProtocolUpgradeProposalNotification = ({
     case ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING:
       countdown =
         time !== undefined ? (
-          <span className="text-vega-orange-500">
+          <span
+            title={t('estimated time to protocol upgrade')}
+            className="text-vega-orange-500"
+          >
             {convertToCountdownString(time, '0:00:00:00')}
           </span>
         ) : (

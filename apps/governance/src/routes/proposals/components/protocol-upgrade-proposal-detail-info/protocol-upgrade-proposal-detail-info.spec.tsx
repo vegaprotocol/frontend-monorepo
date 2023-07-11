@@ -4,16 +4,20 @@ import { render } from '@testing-library/react';
 import { ProtocolUpgradeProposalStatus } from '@vegaprotocol/types';
 import { ProtocolUpgradeProposalDetailInfo } from './protocol-upgrade-proposal-detail-info';
 
-const renderComponent = () =>
+const PROPOSAL = {
+  vegaReleaseTag: 'v0.1.234',
+  status:
+    ProtocolUpgradeProposalStatus.PROTOCOL_UPGRADE_PROPOSAL_STATUS_PENDING,
+  upgradeBlockHeight: '12345',
+  approvers: [],
+};
+
+const renderComponent = (lastBlockHeight?: string, time?: string) =>
   render(
     <ProtocolUpgradeProposalDetailInfo
-      proposal={{
-        vegaReleaseTag: 'v0.1.234',
-        status:
-          ProtocolUpgradeProposalStatus.PROTOCOL_UPGRADE_PROPOSAL_STATUS_PENDING,
-        upgradeBlockHeight: '12345',
-        approvers: [],
-      }}
+      proposal={PROPOSAL}
+      lastBlockHeight={lastBlockHeight}
+      time={time}
     />
   );
 
@@ -42,5 +46,29 @@ describe('ProtocolUpgradeProposalDetailInfo', () => {
     expect(getByTestId('protocol-upgrade-release-tag')).toHaveTextContent(
       'v0.1.234'
     );
+  });
+
+  it('should display estimated time if proposal is still pending', () => {
+    const { getByTestId } = renderComponent('12', 'time');
+    expect(getByTestId('protocol-upgrade-time-label')).toHaveTextContent(
+      'Estimated time to upgrade'
+    );
+    expect(getByTestId('protocol-upgrade-time')).toHaveTextContent('time');
+  });
+
+  it('should display upgraded at if proposal is done', () => {
+    const { getByTestId } = renderComponent('123456', 'time');
+    expect(getByTestId('protocol-upgrade-time-label')).toHaveTextContent(
+      'Upgraded at'
+    );
+    expect(getByTestId('protocol-upgrade-time')).toHaveTextContent('time');
+  });
+
+  it('should not display time if none provided', () => {
+    const { queryByTestId } = renderComponent('123456', undefined);
+    expect(
+      queryByTestId('protocol-upgrade-time-label')
+    ).not.toBeInTheDocument();
+    expect(queryByTestId('protocol-upgrade-time')).not.toBeInTheDocument();
   });
 });
