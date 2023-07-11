@@ -362,13 +362,16 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       .first()
       .find('[col-id="settlementAsset"]')
       .should('have.text', product.settlementAsset.symbol);
-
     // 6001-MARK-020
     cy.get('.ag-pinned-right-cols-container')
       .find('[col-id="market-actions"]')
       .first()
       .find('button svg')
       .should('exist');
+    cy.get(rowSelector)
+      .find('[col-id="successorMarketID"]')
+      .first()
+      .should('have.text', ' - ');
   });
 
   // test market list for market in terminated state

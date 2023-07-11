@@ -346,6 +346,7 @@ const ClosedMarketsDataGrid = ({
       defaultColDef={{
         resizable: true,
         minWidth: 100,
+        flex: 1,
       }}
       components={{ SuccessorMarketRenderer }}
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
