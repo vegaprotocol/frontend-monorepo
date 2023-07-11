@@ -6,6 +6,7 @@ import {
   GITHUB_VEGA_DEV_RELEASES_DATA,
 } from './mocks/github-releases';
 import { useVegaRelease } from './use-vega-release';
+import { act } from 'react-dom/test-utils';
 
 describe('useVegaRelease', () => {
   beforeEach(() => {
@@ -31,8 +32,11 @@ describe('useVegaRelease', () => {
 
   it('should return undefined when a release cannot be found', async () => {
     const { result } = renderHook(() => useVegaRelease('v0.70.1'));
-    await waitFor(() => {
-      expect(result.current).toEqual(undefined);
-    });
+    await act(
+      async () =>
+        await waitFor(() => {
+          expect(result.current).toEqual(undefined);
+        })
+    );
   });
 });

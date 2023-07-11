@@ -14,3 +14,4 @@ export * from './lib/remove-pagination-wrapper';
 export * from './lib/time';
 export * from './lib/validate';
 export * from './lib/resolve-network-name';
+export * from './lib/is-test-env';

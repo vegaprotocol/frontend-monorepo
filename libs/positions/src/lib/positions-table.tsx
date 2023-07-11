@@ -36,10 +36,9 @@ import { t } from '@vegaprotocol/i18n';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
-import { getRowId } from './use-positions-data';
 import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import { DocsLinks } from '@vegaprotocol/environment';
-import { PositionTableActions } from './position-actions-dropdown';
+import { PositionActionsDropdown } from './position-actions-dropdown';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { LiquidationPrice } from './liquidation-price';
@@ -49,7 +48,6 @@ interface Props extends TypedDataAgGrid<Position> {
   onMarketClick?: (id: string, metaKey?: boolean) => void;
   style?: CSSProperties;
   isReadOnly: boolean;
-  storeKey?: string;
   multipleKeys?: boolean;
   pubKeys?: VegaWalletContextShape['pubKeys'];
   pubKey?: VegaWalletContextShape['pubKey'];
@@ -85,6 +83,9 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
 };
 
 AmountCell.displayName = 'AmountCell';
+
+export const getRowId = ({ data }: { data: Position }) =>
+  `${data.partyId}-${data.marketId}`;
 
 export const PositionsTable = forwardRef<AgGridReact, Props>(
   (
@@ -263,6 +264,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                 if (!data) return null;
                 return (
                   <ButtonLink
+                    title={t('View settlement asset details')}
                     onClick={(e) => {
                       openAssetDetailsDialog(
                         data.assetId,
@@ -363,14 +365,20 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
                 return !data
                   ? undefined
-                  : toBigNum(data.realisedPNL, data.decimals).toNumber();
+                  : toBigNum(
+                      data.realisedPNL,
+                      data.marketDecimalPlaces
+                    ).toNumber();
               },
               valueFormatter: ({
                 data,
               }: VegaValueFormatterParams<Position, 'realisedPNL'>) => {
                 return !data
                   ? ''
-                  : addDecimalsFormatNumber(data.realisedPNL, data.decimals);
+                  : addDecimalsFormatNumber(
+                      data.realisedPNL,
+                      data.marketDecimalPlaces
+                    );
               },
               headerTooltip: t(
                 'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
@@ -388,14 +396,20 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
                 return !data
                   ? undefined
-                  : toBigNum(data.unrealisedPNL, data.decimals).toNumber();
+                  : toBigNum(
+                      data.unrealisedPNL,
+                      data.marketDecimalPlaces
+                    ).toNumber();
               },
               valueFormatter: ({
                 data,
               }: VegaValueFormatterParams<Position, 'unrealisedPNL'>) =>
                 !data
                   ? ''
-                  : addDecimalsFormatNumber(data.unrealisedPNL, data.decimals),
+                  : addDecimalsFormatNumber(
+                      data.unrealisedPNL,
+                      data.marketDecimalPlaces
+                    ),
               headerTooltip: t(
                 'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
               ),
@@ -436,7 +450,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
                           </ButtonLink>
                         ) : null}
                         {data?.assetId && (
-                          <PositionTableActions assetId={data?.assetId} />
+                          <PositionActionsDropdown assetId={data?.assetId} />
                         )}
                       </div>
                     );

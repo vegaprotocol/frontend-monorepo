@@ -139,6 +139,9 @@ async function vegaWalletTeardownStaking(stakingBridgeContract: StakingBridge) {
                       $associatedAmount
                     );
                   });
+                // Wait needed to allow Eth transaction to complete - otherwise could result in nonce error
+                // eslint-disable-next-line cypress/no-unnecessary-waiting
+                cy.wait(2000);
               }
             });
           });

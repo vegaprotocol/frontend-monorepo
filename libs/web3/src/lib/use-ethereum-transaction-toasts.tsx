@@ -162,9 +162,10 @@ const isFinal = (tx: EthStoredTxState) =>
   [EthTxStatus.Confirmed, EthTxStatus.Error].includes(tx.status);
 
 export const useEthereumTransactionToasts = () => {
-  const [setToast, removeToast] = useToasts((store) => [
+  const [setToast, removeToast, closeToastBy] = useToasts((store) => [
     store.setToast,
     store.remove,
+    store.closeBy,
   ]);
 
   const dismissTx = useEthTransactionStore((state) => state.dismiss);
@@ -173,8 +174,16 @@ export const useEthereumTransactionToasts = () => {
     (tx: EthStoredTxState) => () => {
       dismissTx(tx.id);
       removeToast(`eth-${tx.id}`);
+      // closes related "Funds released" toast after successful withdrawal
+      if (
+        isWithdrawTransaction(tx) &&
+        tx.status === EthTxStatus.Confirmed &&
+        tx.withdrawal
+      ) {
+        closeToastBy({ withdrawalId: tx.withdrawal.id });
+      }
     },
-    [dismissTx, removeToast]
+    [closeToastBy, dismissTx, removeToast]
   );
 
   const fromEthTransaction = useCallback(

@@ -16,7 +16,7 @@ interface StringMap {
 const displayString: StringMap = {
   OrderSubmission: 'Order Submission',
   'Submit Order': 'Order',
-  OrderCancellation: 'Order Cancellation',
+  OrderCancellation: 'Cancel order',
   OrderAmendment: 'Order Amendment',
   VoteSubmission: 'Vote Submission',
   WithdrawSubmission: 'Withdraw Submission',
@@ -24,6 +24,7 @@ const displayString: StringMap = {
   LiquidityProvisionSubmission: 'LP order',
   'Liquidity Provision Order': 'LP order',
   LiquidityProvisionCancellation: 'LP cancel',
+  'Cancel LiquidityProvision Order': 'LP cancel',
   LiquidityProvisionAmendment: 'LP update',
   'Amend LiquidityProvision Order': 'Amend LP',
   ProposalSubmission: 'Governance Proposal',
@@ -36,11 +37,33 @@ const displayString: StringMap = {
   UndelegateSubmission: 'Undelegation',
   KeyRotateSubmission: 'Key Rotation',
   StateVariableProposal: 'State Variable',
+  'State Variable Proposal': 'State Variable',
   Transfer: 'Transfer',
   CancelTransfer: 'Cancel Transfer',
+  'Cancel Transfer Funds': 'Cancel Transfer',
   ValidatorHeartbeat: 'Heartbeat',
+  'Validator Heartbeat': 'Heartbeat',
   'Batch Market Instructions': 'Batch',
+  'Stop Orders Submission': 'Stop',
+  StopOrdersSubmission: 'Stop',
+  StopOrdersCancellation: 'Cancel stop',
+  'Stop Orders Cancellation': 'Cancel stop',
 };
+
+export function getLabelForOrderType(
+  orderType: string,
+  command: components['schemas']['v1InputData']
+): string {
+  if (command.orderSubmission) {
+    if (command.orderSubmission.peggedOrder) {
+      return 'Peg';
+    }
+    if (command.orderSubmission.icebergOpts) {
+      return 'Iceberg';
+    }
+  }
+  return 'Order';
+}
 
 /**
  * Given a proposal, will return a specific label
@@ -113,6 +136,8 @@ export function getLabelForChainEvent(
       return t('Signer threshold');
     }
     return t('Multisig update');
+  } else if (chainEvent.contractCall) {
+    return t('Contract call');
   }
   return t('Chain Event');
 }
@@ -172,7 +197,7 @@ export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
   return (
     <div
       data-testid="tx-type"
-      className={`text-sm rounded-md leading-none px-2 py-2 inline-block ${colours}`}
+      className={`text-sm rounded-md leading-tight px-2 inline-block whitespace-nowrap ${colours}`}
     >
       {type}
     </div>

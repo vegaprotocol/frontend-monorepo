@@ -5,7 +5,7 @@ import { t } from '@vegaprotocol/i18n';
 import type { ReactNode } from 'react';
 
 type AssetOptionProps = {
-  asset: AssetFieldsFragment;
+  asset: Pick<AssetFieldsFragment, 'id' | 'name' | 'symbol'>;
   balance?: ReactNode;
 };
 
@@ -17,11 +17,13 @@ export const Balance = ({
   symbol: string;
 }) =>
   balance ? (
-    <div className="mt-1 font-alpha">
+    <div className="mt-1 font-alpha" data-testid="asset-balance">
       {balance} {symbol}
     </div>
   ) : (
-    <div className="text-vega-orange-500">{t('Fetching balance…')}</div>
+    <div className="text-vega-orange-500" data-testid="asset-balance">
+      {t('Fetching balance…')}
+    </div>
   );
 
 export const AssetOption = ({ asset, balance }: AssetOptionProps) => {

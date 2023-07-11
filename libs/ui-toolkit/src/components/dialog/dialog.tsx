@@ -3,7 +3,7 @@ import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
 
 import { getIntentBorder } from '../../utils/intent';
-import { Icon } from '../icon';
+import { VegaIcon, VegaIconNames } from '../icon';
 
 import type { ReactNode } from 'react';
 import type { Intent } from '../../utils/intent';
@@ -77,7 +77,7 @@ export function Dialog({
                 className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
                 data-testid="dialog-close"
               >
-                <Icon name="cross" />
+                <VegaIcon name={VegaIconNames.CROSS} />
               </DialogPrimitives.Close>
             )}
             <div className="flex gap-4 max-w-full">

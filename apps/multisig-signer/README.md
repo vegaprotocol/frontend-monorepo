@@ -26,7 +26,7 @@ Example configurations are provided here:
 For convenience, you can boot the app injecting one of the configurations above by running:
 
 ```bash
-yarn nx run multisig-signer:serve --env={env} # e.g. stagnet1
+yarn env-cmd -f .\apps\multisig-signer\.env.{env} yarn nx run multisig-signer:serve # e.g. stagnet1
 ```
 
 There are a few different configuration options offered for this app:

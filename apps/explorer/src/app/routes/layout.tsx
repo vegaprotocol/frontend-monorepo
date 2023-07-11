@@ -21,6 +21,7 @@ import {
 import { Footer } from '../components/footer/footer';
 import { Header } from '../components/header';
 import { Routes } from './route-names';
+import { useExplorerNodeNamesLazyQuery } from './validators/__generated__/NodeNames';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, asJson, setOpen } = useAssetDetailsDialogStore();
@@ -39,6 +40,7 @@ export const Layout = () => {
   const isHome = Boolean(useMatch(Routes.HOME));
   const { ANNOUNCEMENTS_CONFIG_URL } = useEnvironment();
   const fixedWidthClasses = 'w-full max-w-[1500px] mx-auto';
+  useExplorerNodeNamesLazyQuery();
 
   return (
     <>
@@ -49,7 +51,7 @@ export const Layout = () => {
           'grid grid-rows-[auto_1fr_auto] grid-cols-1',
           'border-vega-light-200 dark:border-vega-dark-200',
           'antialiased text-black dark:text-white',
-          'overflow-hidden relative'
+          'relative'
         )}
       >
         <div>

@@ -39,7 +39,6 @@ export type OrderListTableProps = TypedDataAgGrid<Order> & {
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   filter?: Filter;
   isReadOnly: boolean;
-  storeKey?: string;
 };
 
 export const OrderListTable = memo<
@@ -63,6 +62,38 @@ export const OrderListTable = memo<
             cellRenderer: 'MarketNameCell',
             cellRendererParams: { idPath: 'market.id', onMarketClick },
             minWidth: 150,
+          },
+          {
+            headerName: t('Filled'),
+            field: 'remaining',
+            cellClass: 'font-mono text-right',
+            type: 'rightAligned',
+            valueGetter: ({ data }: VegaValueGetterParams<Order>) => {
+              return data?.size && data.market
+                ? toBigNum(
+                    (BigInt(data.size) - BigInt(data.remaining)).toString(),
+                    data.market.positionDecimalPlaces ?? 0
+                  ).toNumber()
+                : undefined;
+            },
+            valueFormatter: ({
+              data,
+              value,
+            }: VegaValueFormatterParams<Order, 'remaining'>): string => {
+              if (!data) {
+                return '';
+              }
+              if (!data?.market || !isNumeric(value) || !isNumeric(data.size)) {
+                return '-';
+              }
+              return addDecimalsFormatNumber(
+                (BigInt(data.size) - BigInt(data.remaining)).toString(),
+                data.market.positionDecimalPlaces
+              );
+            },
+            minWidth: 50,
+            width: 90,
+            flex: 0,
           },
           {
             headerName: t('Size'),
@@ -104,7 +135,9 @@ export const OrderListTable = memo<
                 )
               );
             },
-            minWidth: 80,
+            minWidth: 50,
+            width: 80,
+            flex: 0,
           },
           {
             field: 'type',
@@ -152,38 +185,6 @@ export const OrderListTable = memo<
             minWidth: 100,
           },
           {
-            headerName: t('Filled'),
-            field: 'remaining',
-            cellClass: 'font-mono text-right',
-            type: 'rightAligned',
-            valueGetter: ({ data }: VegaValueGetterParams<Order>) => {
-              return data?.size && data.market
-                ? toBigNum(
-                    (BigInt(data.size) - BigInt(data.remaining)).toString(),
-                    data.market.positionDecimalPlaces ?? 0
-                  ).toNumber()
-                : undefined;
-            },
-            valueFormatter: ({
-              data,
-              value,
-            }: VegaValueFormatterParams<Order, 'remaining'>): string => {
-              if (!data) {
-                return '';
-              }
-              if (!data?.market || !isNumeric(value) || !isNumeric(data.size)) {
-                return '-';
-              }
-              const { positionDecimalPlaces } = data.market;
-              const filled = BigInt(data.size) - BigInt(data.remaining);
-              return `${addDecimalsFormatNumber(
-                filled.toString(),
-                positionDecimalPlaces
-              )}/${addDecimalsFormatNumber(data.size, positionDecimalPlaces)}`;
-            },
-            minWidth: 100,
-          },
-          {
             field: 'price',
             type: 'rightAligned',
             cellClass: 'font-mono text-right',
@@ -222,12 +223,10 @@ export const OrderListTable = memo<
                 const expiry = getDateTimeFormat().format(
                   new Date(data.expiresAt)
                 );
-                return `${Schema.OrderTimeInForceMapping[value]}: ${expiry}`;
+                return `${Schema.OrderTimeInForceCode[value]}: ${expiry}`;
               }
 
-              const tifLabel = value
-                ? Schema.OrderTimeInForceMapping[value]
-                : '';
+              const tifLabel = value ? Schema.OrderTimeInForceCode[value] : '';
               const label = `${tifLabel}${
                 data?.postOnly ? t('. Post Only') : ''
               }${data?.reduceOnly ? t('. Reduce only') : ''}`;
@@ -237,28 +236,17 @@ export const OrderListTable = memo<
             minWidth: 150,
           },
           {
-            field: 'createdAt',
-            filter: DateRangeFilter,
-            cellRenderer: ({
-              value,
-            }: VegaICellRendererParams<Order, 'createdAt'>) => {
-              return (
-                <span data-value={value}>
-                  {value ? getDateTimeFormat().format(new Date(value)) : value}
-                </span>
-              );
-            },
-            minWidth: 150,
-          },
-          {
             field: 'updatedAt',
+            filter: DateRangeFilter,
+            valueGetter: ({ data }: VegaValueGetterParams<Order>) =>
+              data?.updatedAt || data?.createdAt,
             cellRenderer: ({
               data,
-              value,
             }: VegaICellRendererParams<Order, 'updatedAt'>) => {
               if (!data) {
                 return undefined;
               }
+              const value = data.updatedAt || data.createdAt;
               return (
                 <span data-value={value}>
                   {value ? getDateTimeFormat().format(new Date(value)) : '-'}

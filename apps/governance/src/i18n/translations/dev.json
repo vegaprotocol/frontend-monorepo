@@ -833,5 +833,9 @@
   "multisigContractIncorrect": "is incorrectly configured. Validator and delegator rewards will be penalised until this is resolved.",
   "learnMore": "Learn more",
   "AllValidators": "All validators",
-  "AllProposals": "All proposals"
+  "AllProposals": "All proposals",
+  "RejectedProposals": "Rejected proposals",
+  "networkGovernance": "Network governance",
+  "networkUpgrades": "Network upgrades",
+  "assetSpecification": "Asset specification"
 }

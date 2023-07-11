@@ -3,8 +3,8 @@ export default {
   displayName: 'governance',
   preset: '../../jest.preset.js',
   transform: {
-    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
-    '^.+\\.[tj]sx?$': 'babel-jest',
+    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
+    '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/react/babel'] }],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/apps/governance',
@@ -16,6 +16,5 @@ export default {
     '**/*.{ts,tsx}',
     '!**/node_modules/**',
     '!**/__generated__/**',
-    '!**/__generated___/**',
   ],
 };

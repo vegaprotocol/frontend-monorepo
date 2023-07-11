@@ -320,20 +320,17 @@ const SelectedForm = ({
 
   if (connector instanceof JsonRpcConnector) {
     return (
-      <>
-        <ConnectDialogContent>
-          <JsonRpcConnectorForm
-            connector={connector}
-            status={jsonRpcState.status}
-            error={jsonRpcState.error}
-            onConnect={onConnect}
-            appChainId={appChainId}
-            reset={reset}
-            riskMessage={riskMessage}
-          />
-        </ConnectDialogContent>
-        <ConnectDialogFooter />
-      </>
+      <ConnectDialogContent>
+        <JsonRpcConnectorForm
+          connector={connector}
+          status={jsonRpcState.status}
+          error={jsonRpcState.error}
+          onConnect={onConnect}
+          appChainId={appChainId}
+          reset={reset}
+          riskMessage={riskMessage}
+        />
+      </ConnectDialogContent>
     );
   }
 

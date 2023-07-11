@@ -1,4 +1,5 @@
 import * as Schema from '@vegaprotocol/types';
+import { ProtocolUpgradeProposalStatus } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import * as faker from 'faker';
 import isArray from 'lodash/isArray';
@@ -6,6 +7,40 @@ import mergeWith from 'lodash/mergeWith';
 
 import type { PartialDeep } from 'type-fest';
 import type { ProposalQuery } from '../proposal/__generated__/Proposal';
+import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
+
+export function generateProtocolUpgradeProposal(
+  override: PartialDeep<ProtocolUpgradeProposalFieldsFragment> = {}
+): ProtocolUpgradeProposalFieldsFragment {
+  const defaultProposal: ProtocolUpgradeProposalFieldsFragment = {
+    __typename: 'ProtocolUpgradeProposal',
+    upgradeBlockHeight: '3917600',
+    vegaReleaseTag: 'v0.71.6',
+    approvers: [
+      '0ac70c4ccc7f961614fe49b93e639ddf916269b7dcf8391db264cefeadf5a6b7',
+      '63a1755006642bda9ab1bfa84660f944d30a113d1609590ca90c50b24aede472',
+      '68ed0770fc3e67b74d09c05443243d27e29a8513dc0e8628beb98338cd509159',
+      'a6e6f7daf8610f9242ab6ab46b394f6fb79cf9533d48051ca7a2f142b8b700a8',
+      'aad2be546ba83cbcab4c1d57ebe22b4a942f294f54333f1a7c2c9ef0e9fe19bb',
+      'acc55c7205cfcd5480e0235acab56a01487a39dc858a641fc04df6ba016870ee',
+      'b7e500deb24cc19bd6ebb2311997f0904ca0d9e51541249e9650ab41fd8ac376',
+      'cf295dff6d9506e8a905d168a44dfcff2f64bd0a6671783a469f8322959c62e2',
+      'f4686749895bf51c6df4092ef6be4279c384a3c380c24ea7a2fd20afc602a35d',
+    ],
+    status:
+      ProtocolUpgradeProposalStatus.PROTOCOL_UPGRADE_PROPOSAL_STATUS_APPROVED,
+  };
+
+  return mergeWith<
+    ProtocolUpgradeProposalFieldsFragment,
+    PartialDeep<ProtocolUpgradeProposalFieldsFragment>
+  >(defaultProposal, override, (objValue, srcValue) => {
+    if (!isArray(objValue)) {
+      return;
+    }
+    return srcValue;
+  });
+}
 
 export function generateProposal(
   override: PartialDeep<ProposalQuery['proposal']> = {}

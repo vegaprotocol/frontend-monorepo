@@ -4,7 +4,8 @@ import { Networks } from '../types';
 import { useEnvironment } from './use-environment';
 import { stripFullStops } from '@vegaprotocol/utils';
 
-const VEGA_DOCS_URL = process.env['NX_VEGA_DOCS_URL'] || '';
+const VEGA_DOCS_URL =
+  process.env['NX_VEGA_DOCS_URL'] || 'https://docs.vega.xyz/mainnet';
 
 type Net = Exclude<Networks, 'CUSTOM'>;
 export enum DApp {

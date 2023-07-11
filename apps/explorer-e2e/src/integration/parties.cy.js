@@ -169,7 +169,6 @@ context.skip('Parties page', { tags: '@regression' }, function () {
       const jsonFields = '.hljs';
       const sideMenuBackground = '.absolute';
 
-      // Engage dark mode if not allready set
       cy.get(sideMenuBackground)
         .should('have.css', 'background-color')
         .then((background_color) => {

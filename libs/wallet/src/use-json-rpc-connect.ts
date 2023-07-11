@@ -3,6 +3,7 @@ import { WalletClientError } from '@vegaprotocol/wallet-client';
 import type { JsonRpcConnector } from './connectors';
 import { ClientErrors } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
+import { isTestEnv } from '@vegaprotocol/utils';
 
 export enum Status {
   Idle = 'Idle',
@@ -34,7 +35,7 @@ export const useJsonRpcConnect = (onConnect: () => void) => {
         // Do not throw in when cypress is running as trading app relies on
         // mocks which result in a mismatch between chainId for app and
         // chainId for wallet
-        if (!('Cypress' in window)) {
+        if (!isTestEnv()) {
           const chainIdResult = await connector.getChainId();
           if (chainIdResult.chainID !== appChainId) {
             // Throw wallet error for consistent error handling

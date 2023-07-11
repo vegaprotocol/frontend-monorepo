@@ -1,7 +1,6 @@
 import type { ProposalListFieldsFragment } from '@vegaprotocol/proposals';
 import { VoteProgress } from '@vegaprotocol/proposals';
 import type { AgGridReact } from 'ag-grid-react';
-import { AgGridColumn } from 'ag-grid-react';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import type {
@@ -9,7 +8,7 @@ import type {
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { RowClickedEvent } from 'ag-grid-community';
+import type { RowClickedEvent, ColDef } from 'ag-grid-community';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
@@ -64,7 +63,128 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
     title: '',
     content: null,
   });
-
+  const columnDefs = useMemo<ColDef[]>(
+    () => [
+      {
+        colId: 'title',
+        headerName: t('Title'),
+        field: 'rationale.title',
+        flex: 2,
+        wrapText: true,
+      },
+      {
+        colId: 'type',
+        maxWidth: 180,
+        hide: window.innerWidth <= BREAKPOINT_MD,
+        headerName: t('Type'),
+        field: 'terms.change.__typename',
+      },
+      {
+        maxWidth: 100,
+        headerName: t('State'),
+        field: 'state',
+        valueFormatter: ({
+          value,
+        }: VegaValueFormatterParams<ProposalListFieldsFragment, 'state'>) => {
+          return value ? ProposalStateMapping[value] : '-';
+        },
+      },
+      {
+        colId: 'voting',
+        maxWidth: 100,
+        hide: window.innerWidth <= BREAKPOINT_MD,
+        headerName: t('Voting'),
+        cellRenderer: ({
+          data,
+        }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
+          if (data) {
+            const yesTokens = new BigNumber(data.votes.yes.totalTokens);
+            const noTokens = new BigNumber(data.votes.no.totalTokens);
+            const totalTokensVoted = yesTokens.plus(noTokens);
+            const yesPercentage = totalTokensVoted.isZero()
+              ? new BigNumber(0)
+              : yesTokens.multipliedBy(100).dividedBy(totalTokensVoted);
+            return (
+              <div className="uppercase flex h-full items-center justify-center pt-2">
+                <VoteProgress
+                  threshold={requiredMajorityPercentage}
+                  progress={yesPercentage}
+                />
+              </div>
+            );
+          }
+          return '-';
+        },
+      },
+      {
+        colId: 'cDate',
+        maxWidth: 150,
+        hide: window.innerWidth <= BREAKPOINT_MD,
+        headerName: t('Closing date'),
+        field: 'terms.closingDatetime',
+        valueFormatter: ({
+          value,
+        }: VegaValueFormatterParams<
+          ProposalListFieldsFragment,
+          'terms.closingDatetime'
+        >) => {
+          return value ? getDateTimeFormat().format(new Date(value)) : '-';
+        },
+      },
+      {
+        colId: 'eDate',
+        maxWidth: 150,
+        hide: window.innerWidth <= BREAKPOINT_MD,
+        headerName: t('Enactment date'),
+        field: 'terms.enactmentDatetime',
+        valueFormatte: ({
+          value,
+        }: VegaValueFormatterParams<
+          ProposalListFieldsFragment,
+          'terms.enactmentDatetime'
+        >) => {
+          return value ? getDateTimeFormat().format(new Date(value)) : '-';
+        },
+      },
+      {
+        colId: 'actions',
+        minWidth: window.innerWidth > BREAKPOINT_MD ? 221 : 80,
+        maxWidth: 221,
+        sortable: false,
+        filter: false,
+        resizable: false,
+        cellRenderer: ({
+          data,
+        }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
+          const proposalPage = tokenLink(
+            TOKEN_PROPOSAL.replace(':id', data?.id || '')
+          );
+          const openDialog = () => {
+            if (!data) return;
+            setDialog({
+              open: true,
+              title: data.rationale.title,
+              content: data.terms,
+            });
+          };
+          return (
+            <div className="pb-1">
+              <button className="underline max-md:hidden" onClick={openDialog}>
+                {t('View terms')}
+              </button>{' '}
+              <ExternalLink className="max-md:hidden" href={proposalPage}>
+                {t('Open in Governance')}
+              </ExternalLink>
+              <ExternalLink className="md:hidden" href={proposalPage}>
+                {t('Open')}
+              </ExternalLink>
+            </div>
+          );
+        },
+      },
+    ],
+    [requiredMajorityPercentage, tokenLink]
+  );
   return (
     <>
       <AgGrid
@@ -83,6 +203,7 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
           filterParams: { buttons: ['reset'] },
           autoHeight: true,
         }}
+        columnDefs={columnDefs}
         suppressCellFocus={true}
         onRowClicked={({ data, event }: RowClickedEvent) => {
           if (
@@ -94,128 +215,7 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
             window.open(proposalPage, '_blank');
           }
         }}
-      >
-        <AgGridColumn
-          colId="title"
-          headerName={t('Title')}
-          field="rationale.title"
-          flex={2}
-          wrapText={true}
-        />
-        <AgGridColumn
-          colId="type"
-          maxWidth={180}
-          hide={window.innerWidth <= BREAKPOINT_MD}
-          headerName={t('Type')}
-          field="terms.change.__typename"
-        />
-        <AgGridColumn
-          maxWidth={100}
-          headerName={t('State')}
-          field="state"
-          valueFormatter={({
-            value,
-          }: VegaValueFormatterParams<ProposalListFieldsFragment, 'state'>) => {
-            return value ? ProposalStateMapping[value] : '-';
-          }}
-        />
-        <AgGridColumn
-          colId="voting"
-          maxWidth={100}
-          hide={window.innerWidth <= BREAKPOINT_MD}
-          headerName={t('Voting')}
-          cellRenderer={({
-            data,
-          }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
-            if (data) {
-              const yesTokens = new BigNumber(data.votes.yes.totalTokens);
-              const noTokens = new BigNumber(data.votes.no.totalTokens);
-              const totalTokensVoted = yesTokens.plus(noTokens);
-              const yesPercentage = totalTokensVoted.isZero()
-                ? new BigNumber(0)
-                : yesTokens.multipliedBy(100).dividedBy(totalTokensVoted);
-              return (
-                <div className="uppercase flex h-full items-center justify-center pt-2">
-                  <VoteProgress
-                    threshold={requiredMajorityPercentage}
-                    progress={yesPercentage}
-                  />
-                </div>
-              );
-            }
-            return '-';
-          }}
-        />
-        <AgGridColumn
-          colId="cDate"
-          maxWidth={150}
-          hide={window.innerWidth <= BREAKPOINT_MD}
-          headerName={t('Closing date')}
-          field="terms.closingDatetime"
-          valueFormatter={({
-            value,
-          }: VegaValueFormatterParams<
-            ProposalListFieldsFragment,
-            'terms.closingDatetime'
-          >) => {
-            return value ? getDateTimeFormat().format(new Date(value)) : '-';
-          }}
-        />
-        <AgGridColumn
-          colId="eDate"
-          maxWidth={150}
-          hide={window.innerWidth <= BREAKPOINT_MD}
-          headerName={t('Enactment date')}
-          field="terms.enactmentDatetime"
-          valueFormatter={({
-            value,
-          }: VegaValueFormatterParams<
-            ProposalListFieldsFragment,
-            'terms.enactmentDatetime'
-          >) => {
-            return value ? getDateTimeFormat().format(new Date(value)) : '-';
-          }}
-        />
-        <AgGridColumn
-          colId="actions"
-          minWidth={window.innerWidth > BREAKPOINT_MD ? 221 : 80}
-          maxWidth={221}
-          sortable={false}
-          filter={false}
-          resizable={false}
-          cellRenderer={({
-            data,
-          }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
-            const proposalPage = tokenLink(
-              TOKEN_PROPOSAL.replace(':id', data?.id || '')
-            );
-            const openDialog = () => {
-              if (!data) return;
-              setDialog({
-                open: true,
-                title: data.rationale.title,
-                content: data.terms,
-              });
-            };
-            return (
-              <div className="pb-1">
-                <button
-                  className="underline max-md:hidden"
-                  onClick={openDialog}
-                >
-                  {t('View terms')}
-                </button>{' '}
-                <ExternalLink className="max-md:hidden" href={proposalPage}>
-                  {t('Open in Governance')}
-                </ExternalLink>
-                <ExternalLink className="md:hidden" href={proposalPage}>
-                  {t('Open')}
-                </ExternalLink>
-              </div>
-            );
-          }}
-        />
-      </AgGrid>
+      />
       <JsonViewerDialog
         open={dialog.open}
         onChange={(isOpen) => setDialog({ ...dialog, open: isOpen })}

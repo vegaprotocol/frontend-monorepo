@@ -26,9 +26,12 @@ describe('Announcements', () => {
     const { container } = render(
       <AnnouncementBanner app="console" configUrl={MOCK_URL} />
     );
-    await waitFor(() => {
-      expect(container.firstChild).toBeEmptyDOMElement();
-    });
+    await act(
+      async () =>
+        await waitFor(() => {
+          expect(container.firstChild).toBeEmptyDOMElement();
+        })
+    );
   });
 
   it('does not display the banner when there are no announcements', async () => {
@@ -42,9 +45,12 @@ describe('Announcements', () => {
     const { container } = render(
       <AnnouncementBanner app="console" configUrl={MOCK_URL} />
     );
-    await waitFor(() => {
-      expect(container.firstChild).toBeEmptyDOMElement();
-    });
+    await act(
+      async () =>
+        await waitFor(() => {
+          expect(container.firstChild).toBeEmptyDOMElement();
+        })
+    );
   });
 
   it('shows the correct announcement', async () => {
@@ -200,8 +206,11 @@ describe('Announcements', () => {
       jest.runOnlyPendingTimers();
     });
 
-    await waitFor(() => {
-      expect(queryByText('Live text')).not.toBeInTheDocument();
-    });
+    await act(
+      async () =>
+        await waitFor(() => {
+          expect(queryByText('Live text')).not.toBeInTheDocument();
+        })
+    );
   });
 });

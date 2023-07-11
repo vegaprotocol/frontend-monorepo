@@ -1,6 +1,7 @@
 # Liquidity Provisions
 
 fragment LiquidityProvisionFields on LiquidityProvision {
+  id
   party {
     id
     accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {

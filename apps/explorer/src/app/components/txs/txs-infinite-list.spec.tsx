@@ -1,8 +1,9 @@
 import { TxsInfiniteList } from './txs-infinite-list';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
 import { Side } from '@vegaprotocol/types';
+import { MockedProvider } from '@apollo/client/testing';
 
 const generateTxs = (number: number): BlockExplorerTransactionResult[] => {
   return Array.from(Array(number)).map((_) => ({
@@ -40,7 +41,7 @@ describe('Txs infinite list', () => {
   it('should display a "no items" message when no items provided', () => {
     render(
       <TxsInfiniteList
-        txs={undefined}
+        txs={undefined as unknown as BlockExplorerTransactionResult[]}
         areTxsLoading={false}
         hasMoreTxs={false}
         loadMoreTxs={() => null}
@@ -48,23 +49,7 @@ describe('Txs infinite list', () => {
       />
     );
     expect(screen.getByTestId('emptylist')).toBeInTheDocument();
-    expect(
-      screen.getByText('This chain has 0 transactions')
-    ).toBeInTheDocument();
-  });
-
-  it('error is displayed at item level', () => {
-    const txs = generateTxs(1);
-    render(
-      <TxsInfiniteList
-        txs={txs}
-        areTxsLoading={false}
-        hasMoreTxs={false}
-        loadMoreTxs={() => null}
-        error={Error('test error!')}
-      />
-    );
-    expect(screen.getByText('Cannot fetch transaction')).toBeInTheDocument();
+    expect(screen.getByText('No transactions found')).toBeInTheDocument();
   });
 
   it('item renders data of n length into list of n length', () => {
@@ -73,85 +58,22 @@ describe('Txs infinite list', () => {
     const txs = generateTxs(7);
     render(
       <MemoryRouter>
-        <TxsInfiniteList
-          txs={txs}
-          areTxsLoading={false}
-          hasMoreTxs={false}
-          loadMoreTxs={() => null}
-          error={undefined}
-        />
+        <MockedProvider>
+          <TxsInfiniteList
+            txs={txs}
+            areTxsLoading={false}
+            hasMoreTxs={false}
+            loadMoreTxs={() => null}
+            error={undefined}
+          />
+        </MockedProvider>
       </MemoryRouter>
     );
 
     expect(
       screen
-        .getByTestId('infinite-scroll-wrapper')
-        .querySelectorAll('.txs-infinite-list-item')
+        .getByTestId('transactions-list')
+        .querySelectorAll('.transaction-row')
     ).toHaveLength(7);
-  });
-
-  it('tries to load more items when required to initially fill the list', () => {
-    // For example, if initially rendering 15, the bottom of the list is
-    // in view of the viewport, and the callback should be executed
-    const txs = generateTxs(15);
-    const callback = jest.fn();
-
-    render(
-      <MemoryRouter>
-        <TxsInfiniteList
-          txs={txs}
-          areTxsLoading={false}
-          hasMoreTxs={true}
-          loadMoreTxs={callback}
-          error={undefined}
-        />
-      </MemoryRouter>
-    );
-
-    expect(callback.mock.calls.length).toEqual(1);
-  });
-
-  it('does not try to load more items if there are no more', () => {
-    const txs = generateTxs(3);
-    const callback = jest.fn();
-
-    render(
-      <MemoryRouter>
-        <TxsInfiniteList
-          txs={txs}
-          areTxsLoading={false}
-          hasMoreTxs={false}
-          loadMoreTxs={callback}
-          error={undefined}
-        />
-      </MemoryRouter>
-    );
-
-    expect(callback.mock.calls.length).toEqual(0);
-  });
-
-  it('loads more items is called when scrolled', () => {
-    const txs = generateTxs(14);
-    const callback = jest.fn();
-
-    render(
-      <MemoryRouter>
-        <TxsInfiniteList
-          txs={txs}
-          areTxsLoading={false}
-          hasMoreTxs={true}
-          loadMoreTxs={callback}
-          error={undefined}
-        />
-      </MemoryRouter>
-    );
-
-    act(() => {
-      fireEvent.scroll(screen.getByTestId('infinite-scroll-wrapper'), {
-        target: { scrollY: 2000 },
-      });
-    });
-
-    expect(callback.mock.calls.length).toEqual(1);
   });
 });

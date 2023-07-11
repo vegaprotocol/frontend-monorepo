@@ -1,10 +1,11 @@
 {
+  "name": "multisig-signer",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/multisig-signer/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "./tools/executors/webpack:build",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -38,7 +39,7 @@
       }
     },
     "serve": {
-      "executor": "./tools/executors/webpack:serve",
+      "executor": "@nx/webpack:dev-server",
       "options": {
         "port": 3000,
         "buildTarget": "multisig-signer:build:development",
@@ -52,22 +53,28 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/multisig-signer/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/multisig-signer"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/multisig-signer"],
       "options": {
         "jestConfig": "apps/multisig-signer/jest.config.ts",
         "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     },
     "build-netlify": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "cp apps/multisig-signer/netlify.toml netlify.toml",
@@ -76,7 +83,7 @@
       }
     },
     "build-spec": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "command": "yarn tsc --project ./apps/multisig-signer/tsconfig.spec.json"

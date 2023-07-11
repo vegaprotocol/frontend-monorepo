@@ -67,6 +67,7 @@ export const liquidityProviderFeeShareQuery = (
 
 export const liquidityFields: LiquidityProvisionFieldsFragment[] = [
   {
+    id: '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
     party: {
       id: '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
       accountsConnection: {
@@ -92,6 +93,7 @@ export const liquidityFields: LiquidityProvisionFieldsFragment[] = [
     __typename: 'LiquidityProvision',
   },
   {
+    id: 'cc464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
     party: {
       id: 'cc464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
       accountsConnection: {

@@ -1,5 +1,4 @@
-import { checkSorting } from '@vegaprotocol/cypress';
-import { aliasGQLQuery } from '@vegaprotocol/cypress';
+import { checkSorting, aliasGQLQuery } from '@vegaprotocol/cypress';
 import { marketsDataQuery } from '@vegaprotocol/mock';
 import { positionsQuery } from '@vegaprotocol/mock';
 
@@ -15,13 +14,12 @@ const toastContent = 'toast-content';
 const tooltipContent = 'tooltip-content';
 // #endregion
 
-beforeEach(() => {
-  cy.mockTradingPage();
-  cy.mockSubscription();
-  cy.setVegaWallet();
-});
-
 describe('positions', { tags: '@smoke', testIsolation: true }, () => {
+  beforeEach(() => {
+    cy.mockTradingPage();
+    cy.mockSubscription();
+    cy.setVegaWallet();
+  });
   it('renders positions on trading page', () => {
     visitAndClickPositions();
     // 7004-POSI-001
@@ -64,7 +62,14 @@ describe('positions', { tags: '@smoke', testIsolation: true }, () => {
     );
   });
 });
+
 describe('positions', { tags: '@regression', testIsolation: true }, () => {
+  beforeEach(() => {
+    cy.mockTradingPage();
+    cy.mockSubscription();
+    cy.setVegaWallet();
+  });
+
   it('rows should be displayed despite errors', () => {
     const errors = [
       {
@@ -103,7 +108,7 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
         cy.get(
           '[row-id="02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65-market-2"]'
         )
-          .eq(1)
+          .eq(0)
           .within(() => {
             emptyCells.forEach((cell) => {
               cy.get(`[col-id="${cell}"]`).should('contain.text', '-');
@@ -164,8 +169,9 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
     );
   });
 
+  // let elementWidth: number;
+
   it('Resize column', () => {
-    let elementWidth: number;
     visitAndClickPositions();
     cy.get('.ag-overlay-loading-wrapper').should('not.be.visible');
     cy.get('.ag-header-container').within(() => {
@@ -180,29 +186,33 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
     cy.get(`[col-id="marketName"]`)
       .invoke('width')
       .should('be.greaterThan', 250);
-    cy.get(`[col-id="marketName"]`)
-      .invoke('width')
-      .then((width) => {
-        elementWidth = width as number;
-      })
-      .then(() => {
-        let localStorageCopy: Record<string, string>;
-        cy.window().then((win) => {
-          localStorageCopy = { ...win.localStorage };
-        });
+  });
 
-        cy.reload();
-        cy.window().then((win) => {
-          Object.keys(localStorageCopy).forEach((key) => {
-            win.localStorage.setItem(key, localStorageCopy[key]);
-          });
-        });
+  // This test depends on the previous one
+  it('Has persisted column widths', () => {
+    const width = 400;
 
-        // 7004-POSI-012
-        cy.get('[col-id="marketName"]')
-          .invoke('width')
-          .should('equal', elementWidth);
-      });
+    cy.window().then((win) => {
+      win.localStorage.setItem(
+        'vega_positions_store',
+        JSON.stringify({
+          state: {
+            gridStore: {
+              columnState: [{ colId: 'marketName', width }],
+            },
+          },
+        })
+      );
+    });
+
+    visitAndClickPositions();
+
+    // 7004-POSI-012
+    cy.get('.ag-center-cols-container .ag-row')
+      .first()
+      .find('[col-id="marketName"]')
+      .invoke('outerWidth')
+      .should('equal', width);
   });
 
   it('Scroll horizontally', () => {
@@ -257,22 +267,22 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
     cy.get('.ag-center-cols-container').within(() => {
       assertPNLColor(
         '[col-id="realisedPNL"]',
-        'text-vega-green',
-        'text-vega-pink'
+        'text-market-green-600',
+        'text-market-red'
       );
     });
     cy.get('.ag-center-cols-container').within(() => {
       assertPNLColor(
         '[col-id="unrealisedPNL"]',
-        'text-vega-green',
-        'text-vega-pink'
+        'text-market-green-600',
+        'text-market-red'
       );
     });
     cy.get('.ag-center-cols-container').within(() => {
       assertPNLColor(
         '[col-id="openVolume"]',
-        'text-vega-green',
-        'text-vega-pink'
+        'text-market-green-600',
+        'text-market-red'
       );
     });
   });
@@ -291,6 +301,7 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
     cy.getByTestId(dialogContent).should('be.visible');
   });
 });
+
 function validatePositionsDisplayed(multiKey = false) {
   cy.getByTestId('tab-positions').should('be.visible');
   cy.getByTestId('tab-positions')
@@ -326,6 +337,7 @@ function validatePositionsDisplayed(multiKey = false) {
 
   cy.getByTestId('close-position').should('be.visible').and('have.length', 3);
 }
+
 function assertPNLColor(
   pnlSelector: string,
   positiveClass: string,
@@ -347,6 +359,7 @@ function assertPNLColor(
     }
   });
 }
+
 function visitAndClickPositions() {
   cy.visit('/#/markets/market-0');
   cy.getByTestId(positions).click();

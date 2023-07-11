@@ -1,10 +1,11 @@
 {
+  "name": "explorer",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/explorer/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "./tools/executors/webpack:build",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -38,7 +39,7 @@
       }
     },
     "serve": {
-      "executor": "./tools/executors/webpack:serve",
+      "executor": "@nx/webpack:dev-server",
       "options": {
         "port": 3000,
         "buildTarget": "explorer:build:development",
@@ -52,30 +53,36 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/explorer/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/explorer"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/explorer"],
       "options": {
         "jestConfig": "apps/explorer/jest.config.ts",
         "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     },
     "generate-types": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx openapi-typescript https://raw.githubusercontent.com/vegaprotocol/documentation/main/specs/v0.71.4/blockexplorer.openapi.json --output apps/explorer/src/types/explorer.d.ts --immutable-types"
+          "npx openapi-typescript https://raw.githubusercontent.com/vegaprotocol/documentation/spec-update-v0.72.0-preview.2/specs/v0.72.0-preview.2/blockexplorer.openapi.json --output apps/explorer/src/types/explorer.d.ts --immutable-types"
         ]
       }
     },
     "build-netlify": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "commands": [
           "cp apps/explorer/netlify.toml netlify.toml",
@@ -84,7 +91,7 @@
       }
     },
     "build-spec": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "command": "yarn tsc --project ./apps/explorer/tsconfig.spec.json"

@@ -24,7 +24,10 @@ import { PriceChart } from 'pennant';
 import 'pennant/dist/style.css';
 import type { Account } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import {
+  useLocalStorageSnapshot,
+  useThemeSwitcher,
+} from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { Market } from '@vegaprotocol/markets';
 
@@ -68,7 +71,7 @@ export const AccountHistoryContainer = () => {
   const { data: assets } = useAssetsDataProvider();
 
   if (!pubKey) {
-    return <Splash>Connect wallet</Splash>;
+    return <Splash>{t('Connect wallet')}</Splash>;
   }
 
   return (
@@ -114,7 +117,15 @@ const AccountHistoryManager = ({
         .sort((a, b) => a.name.localeCompare(b.name)),
     [assetData, assetIds]
   );
-  const [asset, setAsset] = useState<AssetFieldsFragment>(assets[0]);
+  const [assetId, setAssetId] = useLocalStorageSnapshot(
+    'account-history-active-asset-id'
+  );
+
+  const asset = useMemo(
+    () => assets.find((a) => a.id === assetId) || assets[0],
+    [assetId, assets]
+  );
+
   const [range, setRange] = useState<typeof DateRange[keyof typeof DateRange]>(
     DateRange.RANGE_1M
   );
@@ -146,10 +157,10 @@ const AccountHistoryManager = ({
         m.tradableInstrument.instrument.product.settlementAsset.id;
       const newAsset = assets.find((item) => item.id === newAssetId);
       if ((!asset || (assets && newAssetId !== asset.id)) && newAsset) {
-        setAsset(newAsset);
+        setAssetId(newAsset.id);
       }
     },
-    [asset, assets]
+    [asset, assets, setAssetId]
   );
 
   const variables = useMemo(
@@ -211,14 +222,14 @@ const AccountHistoryManager = ({
       >
         <DropdownMenuContent>
           {assets.map((a) => (
-            <DropdownMenuItem key={a.id} onClick={() => setAsset(a)}>
+            <DropdownMenuItem key={a.id} onClick={() => setAssetId(a.id)}>
               {a.symbol}
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
     );
-  }, [assets, asset]);
+  }, [asset, assets, setAssetId]);
   const marketsMenu = useMemo(() => {
     return accountType === Schema.AccountType.ACCOUNT_TYPE_MARGIN &&
       markets?.length ? (

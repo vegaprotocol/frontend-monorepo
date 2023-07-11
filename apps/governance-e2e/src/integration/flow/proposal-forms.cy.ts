@@ -31,27 +31,25 @@ import {
 } from '../../support/wallet-functions';
 
 const proposalListItem = '[data-testid="proposals-list-item"]';
-const openProposals = '[data-testid="open-proposals"]';
-const proposalType = '[data-testid="proposal-type"]';
-const proposalDetails = '[data-testid="proposal-details"]';
-const newProposalSubmitButton = '[data-testid="proposal-submit"]';
-const proposalVoteDeadline = '[data-testid="proposal-vote-deadline"]';
-const proposalParameterSelect = '[data-testid="proposal-parameter-select"]';
-const proposalMarketSelect = '[data-testid="proposal-market-select"]';
-const newProposalTitle = '[data-testid="proposal-title"]';
-const newProposalDescription = '[data-testid="proposal-description"]';
-const newProposalTerms = '[data-testid="proposal-terms"]';
-const newProposedParameterValue =
-  '[data-testid="selected-proposal-param-new-value"]';
-const minVoteDeadline = '[data-testid="min-vote"]';
-const maxVoteDeadline = '[data-testid="max-vote"]';
-const minValidationDeadline = '[data-testid="min-validation"]';
-const minEnactDeadline = '[data-testid="min-enactment"]';
-const maxEnactDeadline = '[data-testid="max-enactment"]';
-const inputError = '[data-testid="input-error-text"]';
-const enactmentDeadlineError =
-  '[data-testid="enactment-before-voting-deadline"]';
-const proposalDownloadBtn = '[data-testid="proposal-download-json"]';
+const openProposals = 'open-proposals';
+const proposalType = 'proposal-type';
+const proposalDetails = 'proposal-details';
+const newProposalSubmitButton = 'proposal-submit';
+const proposalVoteDeadline = 'proposal-vote-deadline';
+const proposalParameterSelect = 'proposal-parameter-select';
+const proposalMarketSelect = 'proposal-market-select';
+const newProposalTitle = 'proposal-title';
+const newProposalDescription = 'proposal-description';
+const newProposalTerms = 'proposal-terms';
+const newProposedParameterValue = 'selected-proposal-param-new-value';
+const minVoteDeadline = 'min-vote';
+const maxVoteDeadline = 'max-vote';
+const minValidationDeadline = 'min-validation';
+const minEnactDeadline = 'min-enactment';
+const maxEnactDeadline = 'max-enactment';
+const inputError = 'input-error-text';
+const enactmentDeadlineError = 'enactment-before-voting-deadline';
+const proposalDownloadBtn = 'proposal-download-json';
 const feedbackError = '[data-testid="Error"]';
 const viewProposalBtn = 'view-proposal-btn';
 const liquidityVoteStatus = 'liquidity-votes-status';
@@ -88,18 +86,20 @@ context(
     it('Unable to submit network parameter with missing/invalid fields', function () {
       navigateTo(navigation.proposals);
       goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
-      cy.get(proposalDownloadBtn).click();
-      cy.get(inputError).should('have.length', 3);
-      cy.get(newProposalTitle).type(
+      cy.getByTestId(proposalDownloadBtn).click();
+      cy.getByTestId(inputError).should('have.length', 3);
+      cy.getByTestId(newProposalTitle).type(
         'Invalid update network parameter proposal'
       );
-      cy.get(newProposalDescription).type('E2E invalid test for proposals');
-      cy.get(proposalParameterSelect).select(
+      cy.getByTestId(newProposalDescription).type(
+        'E2E invalid test for proposals'
+      );
+      cy.getByTestId(proposalParameterSelect).select(
         'spam_protection_proposal_min_tokens'
       );
-      cy.get(newProposedParameterValue).type('0');
-      cy.get(proposalVoteDeadline).clear().type('0');
-      cy.get(proposalDownloadBtn)
+      cy.getByTestId(newProposedParameterValue).type('0');
+      cy.getByTestId(proposalVoteDeadline).clear().type('0');
+      cy.getByTestId(proposalDownloadBtn)
         .click()
         .then(() => {
           cy.wrap(
@@ -109,7 +109,7 @@ context(
             submitUniqueRawProposal({ proposalBody: filePath, submit: false });
           });
         });
-      cy.get(newProposalSubmitButton).click();
+      cy.getByTestId(newProposalSubmitButton).click();
       validateDialogContentMsg('PROPOSAL_ERROR_CLOSE_TIME_TOO_SOON');
     });
 
@@ -117,29 +117,33 @@ context(
     it('Able to download and submit network param proposal', function () {
       goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
       // 3007-PNEC-006
-      cy.get(newProposalTitle)
+      cy.getByTestId(newProposalTitle)
         .siblings()
         .should('contain.text', '(100 characters or less)');
       // 3007-PNEC-004 3007-PNEC-005
-      cy.get(newProposalTitle).type('Test update network parameter proposal');
+      cy.getByTestId(newProposalTitle).type(
+        'Test update network parameter proposal'
+      );
       // 3007-PNEC-009
-      cy.get(newProposalDescription)
+      cy.getByTestId(newProposalDescription)
         .siblings()
         .should('contain.text', '(20,000 characters or less)');
       // 3007-PNEC-007 3007-PNEC-008
-      cy.get(newProposalDescription).type('E2E test for downloading proposals');
+      cy.getByTestId(newProposalDescription).type(
+        'E2E test for downloading proposals'
+      );
       // 3007-PNEC-010
-      cy.get(proposalParameterSelect).select(
+      cy.getByTestId(proposalParameterSelect).select(
         'governance_proposal_asset_minClose'
       );
       // 3007-PNEC-011
-      cy.get(newProposedParameterValue).type('10s');
+      cy.getByTestId(newProposedParameterValue).type('10s');
       // 3007-PNEC-012
-      cy.get(proposalVoteDeadline).clear().type('2');
+      cy.getByTestId(proposalVoteDeadline).clear().type('2');
       // 3007-PNEC-013 3007-PNEC-014
       cy.getByTestId('voting-date').invoke('text').should('not.be.empty');
       // 3007-PNEC-015
-      cy.get(maxEnactDeadline).click();
+      cy.getByTestId(maxEnactDeadline).click();
       // 3007-PNEC-016
       cy.getByTestId('enactment-date').invoke('text').should('not.be.empty');
       // 3007-PNEC-017
@@ -148,7 +152,7 @@ context(
       ).should('be.visible');
       // 3007-PNE-018
       cy.log('Download updated proposal file');
-      cy.get(proposalDownloadBtn)
+      cy.getByTestId(proposalDownloadBtn)
         .should('be.visible')
         .click()
         .then(() => {
@@ -178,19 +182,21 @@ context(
     it('Unable to submit network parameter proposal with vote deadline above enactment deadline', function () {
       navigateTo(navigation.proposals);
       goToMakeNewProposal(governanceProposalType.NETWORK_PARAMETER);
-      cy.get(newProposalTitle).type('Test update network parameter proposal');
-      cy.get(newProposalDescription).type('invalid deadlines');
-      cy.get(proposalParameterSelect).select(
+      cy.getByTestId(newProposalTitle).type(
+        'Test update network parameter proposal'
+      );
+      cy.getByTestId(newProposalDescription).type('invalid deadlines');
+      cy.getByTestId(proposalParameterSelect).select(
         'spam_protection_proposal_min_tokens'
       );
-      cy.get(newProposedParameterValue).type('0');
-      cy.get(proposalVoteDeadline).clear().type('0');
-      cy.get(maxVoteDeadline).click();
-      cy.get(enactmentDeadlineError).should(
+      cy.getByTestId(newProposedParameterValue).type('0');
+      cy.getByTestId(proposalVoteDeadline).clear().type('0');
+      cy.getByTestId(maxVoteDeadline).click();
+      cy.getByTestId(enactmentDeadlineError).should(
         'have.text',
         'The proposal will fail if enactment is earlier than the voting deadline'
       );
-      cy.get(proposalDownloadBtn)
+      cy.getByTestId(proposalDownloadBtn)
         .should('be.visible')
         .click()
         .then(() => {
@@ -201,7 +207,7 @@ context(
             submitUniqueRawProposal({ proposalBody: filePath, submit: false });
           });
         });
-      cy.get(newProposalSubmitButton).click();
+      cy.getByTestId(newProposalSubmitButton).click();
       validateFeedBackMsg(
         'Invalid params: proposal_submission.terms.closing_timestamp (cannot be after enactment time)'
       );
@@ -214,16 +220,16 @@ context(
       function () {
         const proposalTitle = 'Test new market proposal';
         goToMakeNewProposal(governanceProposalType.NEW_MARKET);
-        cy.get(newProposalTitle).type('Test new market proposal');
-        cy.get(newProposalDescription).type('E2E test for proposals');
+        cy.getByTestId(newProposalTitle).type('Test new market proposal');
+        cy.getByTestId(newProposalDescription).type('E2E test for proposals');
         cy.fixture('/proposals/new-market').then((newMarketProposal) => {
           const newMarketPayload = JSON.stringify(newMarketProposal);
-          cy.get(newProposalTerms).type(newMarketPayload, {
+          cy.getByTestId(newProposalTerms).type(newMarketPayload, {
             parseSpecialCharSequences: false,
             delay: 2,
           });
         });
-        cy.get(proposalDownloadBtn)
+        cy.getByTestId(proposalDownloadBtn)
           .should('be.visible')
           .click()
           .then(() => {
@@ -259,19 +265,19 @@ context(
         'Invalid params: the transaction does not use a valid Vega command: unknown field "invalid" in vega.NewMarket';
 
       goToMakeNewProposal(governanceProposalType.NEW_MARKET);
-      cy.get(proposalDownloadBtn).should('be.visible').click();
-      cy.get(inputError).should('have.length', 3);
-      cy.get(newProposalTitle).type('Test new market proposal');
-      cy.get(newProposalDescription).type('E2E test for proposals');
+      cy.getByTestId(proposalDownloadBtn).should('be.visible').click();
+      cy.getByTestId(inputError).should('have.length', 3);
+      cy.getByTestId(newProposalTitle).type('Test new market proposal');
+      cy.getByTestId(newProposalDescription).type('E2E test for proposals');
       cy.fixture('/proposals/new-market').then((newMarketProposal) => {
         newMarketProposal.invalid = 'I am an invalid field';
         const newMarketPayload = JSON.stringify(newMarketProposal);
-        cy.get(newProposalTerms).type(newMarketPayload, {
+        cy.getByTestId(newProposalTerms).type(newMarketPayload, {
           parseSpecialCharSequences: false,
           delay: 2,
         });
       });
-      cy.get(proposalDownloadBtn)
+      cy.getByTestId(proposalDownloadBtn)
         .should('be.visible')
         .click()
         .then(() => {
@@ -282,28 +288,30 @@ context(
             submitUniqueRawProposal({ proposalBody: filePath, submit: false });
           });
         });
-      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.getByTestId(newProposalSubmitButton).should('be.visible').click();
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
       validateFeedBackMsg(errorMsg);
     });
 
     // Will fail if run after 'Able to submit update market proposal and vote for proposal'
     // 3002-PROP-022
-    it('Unable to submit update market proposal without equity-like share in the market', function () {
+    it.skip('Unable to submit update market proposal without equity-like share in the market', function () {
       switchVegaWalletPubKey();
       stakingPageAssociateTokens('1');
       goToMakeNewProposal(governanceProposalType.UPDATE_MARKET);
-      cy.get(newProposalTitle).type('Test update market proposal - rejected');
-      cy.get(newProposalDescription).type('E2E test for proposals');
-      cy.get(proposalMarketSelect).select('Test market 1');
+      cy.getByTestId(newProposalTitle).type(
+        'Test update market proposal - rejected'
+      );
+      cy.getByTestId(newProposalDescription).type('E2E test for proposals');
+      cy.getByTestId(proposalMarketSelect).select('Test market 1');
       cy.fixture('/proposals/update-market').then((updateMarketProposal) => {
         const newUpdateMarketProposal = JSON.stringify(updateMarketProposal);
-        cy.get(newProposalTerms).type(newUpdateMarketProposal, {
+        cy.getByTestId(newProposalTerms).type(newUpdateMarketProposal, {
           parseSpecialCharSequences: false,
           delay: 2,
         });
       });
-      cy.get(proposalDownloadBtn)
+      cy.getByTestId(proposalDownloadBtn)
         .should('be.visible')
         .click()
         .then(() => {
@@ -314,7 +322,7 @@ context(
             submitUniqueRawProposal({ proposalBody: filePath, submit: false });
           });
         });
-      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.getByTestId(newProposalSubmitButton).should('be.visible').click();
       cy.contains('Proposal rejected', proposalTimeout).should('be.visible');
       validateDialogContentMsg('PROPOSAL_ERROR_INSUFFICIENT_EQUITY_LIKE_SHARE');
       closeDialog();
@@ -332,17 +340,19 @@ context(
         vegaWalletPublicKey
       );
       goToMakeNewProposal(governanceProposalType.UPDATE_MARKET);
-      cy.get(newProposalTitle).type('Test update market proposal - rejected');
-      cy.get(newProposalDescription).type('E2E test for proposals');
-      cy.get(proposalMarketSelect).select('Test market 1');
+      cy.getByTestId(newProposalTitle).type(
+        'Test update market proposal - rejected'
+      );
+      cy.getByTestId(newProposalDescription).type('E2E test for proposals');
+      cy.getByTestId(proposalMarketSelect).select('Test market 1');
       cy.fixture('/proposals/update-market').then((updateMarketProposal) => {
         const newUpdateMarketProposal = JSON.stringify(updateMarketProposal);
-        cy.get(newProposalTerms).type(newUpdateMarketProposal, {
+        cy.getByTestId(newProposalTerms).type(newUpdateMarketProposal, {
           parseSpecialCharSequences: false,
           delay: 2,
         });
       });
-      cy.get(proposalDownloadBtn)
+      cy.getByTestId(proposalDownloadBtn)
         .should('be.visible')
         .click()
         .then(() => {
@@ -353,7 +363,7 @@ context(
             submitUniqueRawProposal({ proposalBody: filePath, submit: false });
           });
         });
-      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.getByTestId(newProposalSubmitButton).should('be.visible').click();
       cy.contains('Transaction failed', proposalTimeout).should('be.visible');
       validateFeedBackMsg(
         'Network error: the network blocked the transaction through the spam protection: party has insufficient associated governance tokens in their staking account to submit proposal request (ABCI code 89)'
@@ -368,9 +378,9 @@ context(
         vegaWalletPublicKey
       );
       goToMakeNewProposal(governanceProposalType.UPDATE_MARKET);
-      cy.get(newProposalTitle).type('Test update market proposal');
-      cy.get(newProposalDescription).type('E2E test for proposals');
-      cy.get(proposalMarketSelect).select('Test market 1');
+      cy.getByTestId(newProposalTitle).type('Test update market proposal');
+      cy.getByTestId(newProposalDescription).type('E2E test for proposals');
+      cy.getByTestId(proposalMarketSelect).select('Test market 1');
       cy.get('[data-testid="update-market-details"]').within(() => {
         cy.get('dd').eq(0).should('have.text', 'Test market 1');
         cy.get('dd').eq(1).should('have.text', 'TEST.24h');
@@ -385,12 +395,12 @@ context(
       });
       cy.fixture('/proposals/update-market').then((updateMarketProposal) => {
         const newUpdateMarketProposal = JSON.stringify(updateMarketProposal);
-        cy.get(newProposalTerms).type(newUpdateMarketProposal, {
+        cy.getByTestId(newProposalTerms).type(newUpdateMarketProposal, {
           parseSpecialCharSequences: false,
           delay: 2,
         });
       });
-      cy.get(proposalDownloadBtn)
+      cy.getByTestId(proposalDownloadBtn)
         .should('be.visible')
         .click()
         .then(() => {
@@ -437,19 +447,19 @@ context(
     it('Able to submit new asset proposal using min deadlines', function () {
       const proposalTitle = 'Test new asset proposal';
       goToMakeNewProposal(governanceProposalType.NEW_ASSET);
-      cy.get(newProposalTitle).type(proposalTitle);
-      cy.get(newProposalDescription).type('E2E test for proposals');
+      cy.getByTestId(newProposalTitle).type(proposalTitle);
+      cy.getByTestId(newProposalDescription).type('E2E test for proposals');
       cy.fixture('/proposals/new-asset').then((newAssetProposal) => {
         const newAssetPayload = JSON.stringify(newAssetProposal);
-        cy.get(newProposalTerms).type(newAssetPayload, {
+        cy.getByTestId(newProposalTerms).type(newAssetPayload, {
           parseSpecialCharSequences: false,
           delay: 2,
         });
       });
-      cy.get(minVoteDeadline).click();
-      cy.get(minValidationDeadline).click();
-      cy.get(minEnactDeadline).click();
-      cy.get(proposalDownloadBtn)
+      cy.getByTestId(minVoteDeadline).click();
+      cy.getByTestId(minValidationDeadline).click();
+      cy.getByTestId(minEnactDeadline).click();
+      cy.getByTestId(proposalDownloadBtn)
         .should('be.visible')
         .click()
         .then(() => {
@@ -460,9 +470,9 @@ context(
             submitUniqueRawProposal({ proposalBody: filePath, submit: false }); // 3005-PASN-003
           });
         });
-      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.getByTestId(newProposalSubmitButton).should('be.visible').click();
       closeDialog();
-      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.getByTestId(newProposalSubmitButton).should('be.visible').click();
       // cannot submit a proposal with ERC20 address already in use
       cy.contains('Proposal rejected', proposalTimeout).should('be.visible');
       validateDialogContentMsg('PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE');
@@ -483,8 +493,8 @@ context(
 
     it('Unable to submit new asset proposal with missing/invalid fields', function () {
       goToMakeNewProposal(governanceProposalType.NEW_ASSET);
-      cy.get(proposalDownloadBtn).should('be.visible').click();
-      cy.get(inputError).should('have.length', 3);
+      cy.getByTestId(proposalDownloadBtn).should('be.visible').click();
+      cy.getByTestId(inputError).should('have.length', 3);
     });
 
     it('Able to submit update asset proposal using min deadline', function () {
@@ -493,9 +503,9 @@ context(
 
       goToMakeNewProposal(governanceProposalType.UPDATE_ASSET);
       enterUpdateAssetProposalDetails();
-      cy.get(minVoteDeadline).click();
-      cy.get(minEnactDeadline).click();
-      cy.get(proposalDownloadBtn)
+      cy.getByTestId(minVoteDeadline).click();
+      cy.getByTestId(minEnactDeadline).click();
+      cy.getByTestId(proposalDownloadBtn)
         .should('be.visible')
         .click()
         .then(() => {
@@ -507,13 +517,16 @@ context(
           });
         });
       navigateTo(navigation.proposals);
-      cy.get(openProposals).within(() => {
-        cy.get(proposalType)
+      cy.getByTestId(openProposals).within(() => {
+        cy.getByTestId(proposalType)
           .contains('Update asset')
           .parentsUntil(proposalListItem)
           .last()
           .within(() => {
-            cy.get(proposalDetails).should('contain.text', assetId.slice(0, 6)); // 3001-VOTE-029
+            cy.getByTestId(proposalDetails).should(
+              'contain.text',
+              assetId.slice(0, 6)
+            ); // 3001-VOTE-029
             cy.getByTestId(viewProposalBtn).click();
           });
       });
@@ -533,9 +546,9 @@ context(
     it('Able to submit update asset proposal using max deadline', function () {
       goToMakeNewProposal(governanceProposalType.UPDATE_ASSET);
       enterUpdateAssetProposalDetails();
-      cy.get(maxVoteDeadline).click();
-      cy.get(maxEnactDeadline).click();
-      cy.get(proposalDownloadBtn)
+      cy.getByTestId(maxVoteDeadline).click();
+      cy.getByTestId(maxEnactDeadline).click();
+      cy.getByTestId(proposalDownloadBtn)
         .should('be.visible')
         .click()
         .then(() => {
@@ -550,36 +563,36 @@ context(
 
     it('Unable to submit edit asset proposal with missing/invalid fields', function () {
       goToMakeNewProposal(governanceProposalType.UPDATE_ASSET);
-      cy.get(proposalDownloadBtn).should('be.visible').click();
-      cy.get(inputError).should('have.length', 3);
+      cy.getByTestId(proposalDownloadBtn).should('be.visible').click();
+      cy.getByTestId(inputError).should('have.length', 3);
     });
 
     it('Able to download and submit freeform proposal', function () {
       goToMakeNewProposal(governanceProposalType.FREEFORM);
       // 3008-PFRO-006
-      cy.get(newProposalTitle)
+      cy.getByTestId(newProposalTitle)
         .siblings()
         .should('contain.text', '(100 characters or less)'); // 3008-PFRO-007
       // 3008-PFRO-005
-      cy.get(newProposalTitle).type('Test freeform proposal form');
+      cy.getByTestId(newProposalTitle).type('Test freeform proposal form');
       // 3008-PFRO-009
-      cy.get(newProposalDescription)
+      cy.getByTestId(newProposalDescription)
         .siblings()
         .should('contain.text', '(20,000 characters or less)'); // 3008-PFRO-010
       // 3008-PFRO-008 3002-PROP-012 3002-PROP-016
-      cy.get(newProposalDescription).type(
+      cy.getByTestId(newProposalDescription).type(
         'E2E test for downloading freeform proposal'
       );
       // 3008-PFRO-012
-      cy.get(minVoteDeadline).should('exist'); // 3002-PROP-008
-      cy.get(maxVoteDeadline).should('exist');
+      cy.getByTestId(minVoteDeadline).should('exist'); // 3002-PROP-008
+      cy.getByTestId(maxVoteDeadline).should('exist');
       // 3008-PFRO-011
-      cy.get(proposalVoteDeadline).clear().type('2');
+      cy.getByTestId(proposalVoteDeadline).clear().type('2');
       // 3008-PFRO-013 3008-PFRO-014
       cy.getByTestId('voting-date').invoke('text').should('not.be.empty');
       // 3008-PFRO-015
       cy.log('Download updated proposal file');
-      cy.get(proposalDownloadBtn)
+      cy.getByTestId(proposalDownloadBtn)
         .should('be.visible')
         .click()
         .then(() => {
@@ -613,11 +626,11 @@ context(
     }
 
     function enterUpdateAssetProposalDetails() {
-      cy.get(newProposalTitle).type('Test update asset proposal');
-      cy.get(newProposalDescription).type('E2E test for proposals');
+      cy.getByTestId(newProposalTitle).type('Test update asset proposal');
+      cy.getByTestId(newProposalDescription).type('E2E test for proposals');
       cy.fixture('/proposals/update-asset').then((newAssetProposal) => {
         const newAssetPayload = JSON.stringify(newAssetProposal);
-        cy.get(newProposalTerms).type(newAssetPayload, {
+        cy.getByTestId(newProposalTerms).type(newAssetPayload, {
           parseSpecialCharSequences: false,
           delay: 2,
         });

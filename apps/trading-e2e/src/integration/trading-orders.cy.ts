@@ -16,7 +16,7 @@ const orderStatus = 'status';
 const orderRemaining = 'remaining';
 const orderPrice = 'price';
 const orderTimeInForce = 'timeInForce';
-const orderCreatedAt = 'createdAt';
+const orderUpdatedAt = 'updatedAt';
 const cancelOrderBtn = 'cancel';
 const cancelAllOrdersBtn = 'cancelAll';
 const editOrderBtn = 'edit';
@@ -46,6 +46,10 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
             cy.wrap($symbol).invoke('text').should('not.be.empty');
           });
 
+          cy.get(`[col-id='${orderRemaining}']`).each(($remaining) => {
+            cy.wrap($remaining).invoke('text').should('not.be.empty');
+          });
+
           cy.get(`[col-id='${orderSize}']`).each(($size) => {
             cy.wrap($size).invoke('text').should('not.be.empty');
           });
@@ -58,10 +62,6 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
             cy.wrap($status).invoke('text').should('not.be.empty');
           });
 
-          cy.get(`[col-id='${orderRemaining}']`).each(($remaining) => {
-            cy.wrap($remaining).invoke('text').should('not.be.empty');
-          });
-
           cy.get(`[col-id='${orderPrice}']`).each(($price) => {
             cy.wrap($price).invoke('text').should('not.be.empty');
           });
@@ -70,7 +70,7 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
             cy.wrap($timeInForce).invoke('text').should('not.be.empty');
           });
 
-          cy.get(`[col-id='${orderCreatedAt}']`).each(($dateTime) => {
+          cy.get(`[col-id='${orderUpdatedAt}']`).each(($dateTime) => {
             cy.wrap($dateTime).invoke('text').should('not.be.empty');
           });
         });
@@ -90,13 +90,14 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
     cy.getByTestId('All').click();
 
     cy.get(`[row-id="${partiallyFilledId}"]`)
-      .eq(1)
+      .eq(0)
       .within(() => {
         cy.get(`[col-id='${orderStatus}']`).should(
           'have.text',
           'Partially Filled'
         );
-        cy.get(`[col-id='${orderRemaining}']`).should('have.text', '7/10');
+        cy.get(`[col-id='${orderRemaining}']`).should('have.text', '7');
+        cy.get(`[col-id='${orderSize}']`).should('have.text', '-10');
         cy.getByTestId(cancelOrderBtn).should('not.exist');
         cy.getByTestId(editOrderBtn).should('not.exist');
       });
@@ -214,7 +215,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     cy.getByTestId(`order-status-${orderId}`)
       .parentsUntil(`.ag-row`)
       .siblings(`[col-id=${orderRemaining}]`)
-      .should('have.text', '4/5');
+      .should('have.text', '4');
   });
 
   it('must see a filled order', () => {
@@ -262,7 +263,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       status: Schema.OrderStatus.STATUS_ACTIVE,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find('[col-id="size"]')
+      .find(`[col-id="${orderSize}"]`)
       .should('have.text', '-15');
   });
 
@@ -276,7 +277,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       status: Schema.OrderStatus.STATUS_ACTIVE,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find('[col-id="size"]')
+      .find(`[col-id="${orderSize}"]`)
       .should('have.text', '+5');
   });
 
@@ -359,7 +360,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
     });
     cy.get(`[row-id=${orderId}]`)
       .find(`[col-id='${orderTimeInForce}']`)
-      .should('have.text', "Good 'til Cancelled (GTC)");
+      .should('have.text', 'GTC');
   });
 
   it('for Active order when is part of a liquidity or peg shape, must not see an option to amend the individual order ', () => {

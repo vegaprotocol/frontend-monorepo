@@ -9,7 +9,7 @@ import type {
   MarketDepthUpdateSubscription,
   PriceLevelFieldsFragment,
 } from './__generated__/MarketDepth';
-import { useOrderStore } from '@vegaprotocol/orders';
+import { useCreateOrderStore } from '@vegaprotocol/orders';
 
 export type OrderbookData = {
   asks: PriceLevelFieldsFragment[];
@@ -50,8 +50,8 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     dataProvider: marketDataProvider,
     variables,
   });
-
-  const updateOrder = useOrderStore((store) => store.update);
+  const useOrderStoreRef = useCreateOrderStore();
+  const updateOrder = useOrderStoreRef((store) => store.update);
 
   return (
     <AsyncRenderer

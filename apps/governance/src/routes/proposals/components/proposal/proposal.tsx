@@ -10,6 +10,7 @@ import { ProposalDescription } from '../proposal-description';
 import { ProposalChangeTable } from '../proposal-change-table';
 import { ProposalJson } from '../proposal-json';
 import { ProposalVotesTable } from '../proposal-votes-table';
+import { ProposalAssetDetails } from '../proposal-asset-details';
 import { VoteDetails } from '../vote-details';
 import { ListAsset } from '../list-asset';
 import Routes from '../../../routes';
@@ -17,6 +18,9 @@ import { ProposalMarketData } from '../proposal-market-data';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { MarketInfoWithData } from '@vegaprotocol/markets';
+import type { AssetQuery } from '@vegaprotocol/assets';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
+import { ProposalState } from '@vegaprotocol/types';
 
 export enum ProposalType {
   PROPOSAL_NEW_MARKET = 'PROPOSAL_NEW_MARKET',
@@ -29,6 +33,7 @@ export enum ProposalType {
 export interface ProposalProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
   newMarketData?: MarketInfoWithData | null;
+  assetData?: AssetQuery | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   restData: any;
 }
@@ -37,6 +42,7 @@ export const Proposal = ({
   proposal,
   restData,
   newMarketData,
+  assetData,
 }: ProposalProps) => {
   const { t } = useTranslation();
   const { params, loading, error } = useNetworkParams([
@@ -51,6 +57,23 @@ export const Proposal = ({
 
   if (!proposal) {
     return null;
+  }
+
+  let asset = assetData
+    ? removePaginationWrapper(assetData.assetsConnection?.edges)[0]
+    : undefined;
+
+  if (proposal.terms.change.__typename === 'UpdateAsset' && asset) {
+    asset = {
+      ...asset,
+      quantum: proposal.terms.change.quantum,
+    };
+
+    if (asset.source.__typename === 'ERC20') {
+      asset.source.lifetimeLimit = proposal.terms.change.source.lifetimeLimit;
+      asset.source.withdrawThreshold =
+        proposal.terms.change.source.withdrawThreshold;
+    }
   }
 
   let minVoterBalance = null;
@@ -91,14 +114,22 @@ export const Proposal = ({
   return (
     <AsyncRenderer data={params} loading={loading} error={error}>
       <section data-testid="proposal">
-        <div
-          className="flex items-center gap-1"
-          data-testid="all-proposals-link"
-        >
+        <div className="flex items-center gap-1">
           <Icon name={'chevron-left'} />
-          <Link className="underline" to={Routes.PROPOSALS}>
-            {t('AllProposals')}
-          </Link>
+
+          {proposal.state === ProposalState.STATE_REJECTED ? (
+            <div data-testid="rejected-proposals-link">
+              <Link className="underline" to={Routes.PROPOSALS_REJECTED}>
+                {t('RejectedProposals')}
+              </Link>
+            </div>
+          ) : (
+            <div data-testid="all-proposals-link">
+              <Link className="underline" to={Routes.PROPOSALS}>
+                {t('AllProposals')}
+              </Link>
+            </div>
+          )}
         </div>
         <ProposalHeader proposal={proposal} isListItem={false} />
 
@@ -128,6 +159,14 @@ export const Proposal = ({
               <ProposalMarketData marketData={newMarketData} />
             </div>
           )}
+
+          {(proposal.terms.change.__typename === 'NewAsset' ||
+            proposal.terms.change.__typename === 'UpdateAsset') &&
+            asset && (
+              <div className="mb-4">
+                <ProposalAssetDetails asset={asset} />
+              </div>
+            )}
 
           <div className="mb-6">
             <ProposalJson proposal={restData?.data?.proposal} />

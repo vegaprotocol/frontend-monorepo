@@ -18,7 +18,7 @@ import type {
   MarketMaybeWithData,
 } from '@vegaprotocol/markets';
 import {
-  MarketTableActions,
+  MarketActionsDropdown,
   closedMarketsWithDataProvider,
 } from '@vegaprotocol/markets';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -291,7 +291,7 @@ const ClosedMarketsDataGrid = ({
         cellRenderer: ({ data }: VegaICellRendererParams<Row>) => {
           if (!data) return null;
           return (
-            <MarketTableActions
+            <MarketActionsDropdown
               marketId={data.id}
               assetId={data.settlementAsset.id}
             />
@@ -313,7 +313,6 @@ const ClosedMarketsDataGrid = ({
         minWidth: 100,
       }}
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
-      storeKey="closedMarkets"
     />
   );
 };

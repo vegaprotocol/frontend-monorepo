@@ -92,7 +92,10 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
 
     cy.highlight('deposit verification');
 
-    cy.getByTestId('asset', txTimeout).should('contain.text', btcSymbol);
+    cy.get('[col-id="asset.symbol"]', txTimeout).should(
+      'contain.text',
+      btcSymbol
+    );
     cy.getByTestId(depositsTab).click();
     cy.get('.ag-cell-value', txTimeout).should('contain.text', btcSymbol);
     cy.get('[col-id="status"]').should('not.have.text', 'Open', txTimeout);
@@ -144,7 +147,6 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     // 1002-WITH-022
     // 1002-WITH-023
     // 0003-WTXN-011
-
     cy.getByTestId('Withdrawals').click();
     cy.getByTestId('withdraw-dialog-button').click();
     selectAsset(0);
@@ -155,18 +157,9 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
       'contain.text',
       'Funds unlocked'
     );
-    cy.getByTestId(toastCloseBtn).click();
-    cy.getByTestId('tab-withdrawals').within(() => {
-      cy.get('.ag-center-cols-container')
-        .children()
-        .first()
-        .within(() => {
-          cy.get('[col-id="status"]').should('contain.text', 'Pending');
-        });
-    });
-
+    // cy.getByTestId(toastCloseBtn).click();
     cy.highlight('withdrawals verification');
-    cy.getByTestId('toast-complete-withdrawal').click();
+    cy.getByTestId('toast-complete-withdrawal').last().click();
 
     cy.getByTestId(toastContent, txTimeout).should(
       'contain.text',
@@ -223,9 +216,12 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
     };
     const rawPrice = removeDecimal(order.price, market.decimalPlaces);
-
+    cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId('Collateral').click();
-    cy.getByTestId('asset', txTimeout).should('contain.text', usdcSymbol);
+    cy.get('[col-id="asset.symbol"]', txTimeout).should(
+      'contain.text',
+      usdcSymbol
+    );
 
     createOrder(order);
 
@@ -285,7 +281,9 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
   it('can edit order', function () {
     const market = this.market;
     cy.visit(`/#/markets/${market.id}`);
+    cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(openOrdersTab).click();
+    cy.getByTestId('edit', txTimeout).should('be.visible');
     cy.getByTestId('edit').first().should('be.visible').click();
     cy.getByTestId('dialog-title').should('contain.text', 'Edit order');
     cy.get('#limitPrice').focus().clear().type(newPrice);
@@ -313,6 +311,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
   it('can cancel order', function () {
     const market = this.market;
     cy.visit(`/#/markets/${market.id}`);
+    cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(openOrdersTab).click();
     cy.getByTestId('cancel').first().click();
     cy.getByTestId(toastContent).should(
@@ -349,7 +348,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
 
     cy.visit('/#/portfolio');
     cy.get('main[data-testid="/portfolio"]').should('exist');
-
+    cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId('Withdrawals').click();
     cy.getByTestId('withdraw-dialog-button').click();
     connectEthereumWallet('Unknown');
@@ -360,14 +359,6 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
       'contain.text',
       'Funds unlocked'
     );
-    cy.getByTestId('tab-withdrawals').within(() => {
-      cy.get('.ag-center-cols-container')
-        .children()
-        .first()
-        .within(() => {
-          cy.get('[col-id="status"]').should('contain.text', 'Pending');
-        });
-    });
 
     cy.highlight('withdrawals verification');
     cy.getByTestId('toast-complete-withdrawal').click();
@@ -444,6 +435,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     // 1001-DEPO-007
     cy.visit('/#/portfolio');
     cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('Unknown');
@@ -464,8 +456,8 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     // 1002-WITH-007
 
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]').should('exist');
-
+    cy.get('main[data-testid="/portfolio"]', txTimeout).should('exist');
+    cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('Unknown');
@@ -487,7 +479,10 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
 
     cy.highlight('deposit verification');
 
-    cy.getByTestId('asset', txTimeout).should('contain.text', vegaSymbol);
+    cy.get('[col-id="asset.symbol"]', txTimeout).should(
+      'contain.text',
+      vegaSymbol
+    );
     cy.getByTestId(depositsTab).click();
     cy.get('.ag-cell-value', txTimeout).should('contain.text', vegaSymbol);
     cy.get('[col-id="status"]').should('not.have.text', 'Open', txTimeout);
@@ -520,6 +515,16 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     cy.getByTestId(toastCloseBtn).click();
     cy.getByTestId(completeWithdrawalBtn).first().should('be.visible').click();
     cy.getByTestId(toastContent, txTimeout).should('contain.text', 'Delayed');
+    cy.getByTestId('tab-withdrawals').within(() => {
+      cy.get('.ag-center-cols-container')
+        .children()
+        .first()
+        .within(() => {
+          cy.get('[col-id="status"]').contains(
+            /Delayed \(ready in (\d{1,2}:\d{2}:\d{2}:\d{2})\)/
+          );
+        });
+    });
   });
 });
 

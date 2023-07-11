@@ -1,9 +1,10 @@
+import { useMemo } from 'react';
 import type {
   AgGridReact,
   AgGridReactProps,
   AgReactUiProps,
 } from 'ag-grid-react';
-import type { ITooltipParams } from 'ag-grid-community';
+import type { ITooltipParams, ColDef } from 'ag-grid-community';
 import {
   addDecimal,
   addDecimalsFormatNumber,
@@ -13,7 +14,6 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
-import { AgGridColumn } from 'ag-grid-react';
 import {
   AgGridLazy as AgGrid,
   positiveClassNames,
@@ -39,34 +39,23 @@ export type Role = typeof TAKER | typeof MAKER | '-';
 export type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-  storeKey?: string;
 };
 
 export const FillsTable = forwardRef<AgGridReact, Props>(
   ({ partyId, onMarketClick, ...props }, ref) => {
-    return (
-      <AgGrid
-        ref={ref}
-        overlayNoRowsTemplate={t('No fills')}
-        defaultColDef={{ resizable: true }}
-        style={{ width: '100%', height: '100%' }}
-        getRowId={({ data }) => data?.id}
-        tooltipShowDelay={0}
-        tooltipHideDelay={2000}
-        components={{ MarketNameCell }}
-        {...props}
-      >
-        <AgGridColumn
-          headerName={t('Market')}
-          field="market.tradableInstrument.instrument.name"
-          cellRenderer="MarketNameCell"
-          cellRendererParams={{ idPath: 'market.id', onMarketClick }}
-        />
-        <AgGridColumn
-          headerName={t('Size')}
-          type="rightAligned"
-          field="size"
-          cellClassRules={{
+    const columnDefs = useMemo<ColDef[]>(
+      () => [
+        {
+          headerName: t('Market'),
+          field: 'market.tradableInstrument.instrument.name',
+          cellRenderer: 'MarketNameCell',
+          cellRendererParams: { idPath: 'market.id', onMarketClick },
+        },
+        {
+          headerName: t('Size'),
+          type: 'rightAligned',
+          field: 'size',
+          cellClassRules: {
             [positiveClassNames]: ({ data }: { data: Trade }) => {
               const partySide = getPartySide(data, partyId);
               return partySide === 'buyer';
@@ -75,48 +64,47 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
               const partySide = getPartySide(data, partyId);
               return partySide === 'seller';
             },
-          }}
-          valueFormatter={formatSize(partyId)}
-        />
-        <AgGridColumn
-          headerName={t('Price')}
-          field="price"
-          valueFormatter={formatPrice}
-          type="rightAligned"
-        />
-        <AgGridColumn
-          headerName={t('Notional')}
-          field="price"
-          valueFormatter={formatTotal}
-          type="rightAligned"
-        />
-        <AgGridColumn
-          headerName={t('Role')}
-          field="aggressor"
-          valueFormatter={formatRole(partyId)}
-        />
-        <AgGridColumn
-          headerName={t('Fee')}
-          field="market.tradableInstrument.instrument.product"
-          valueFormatter={formatFee(partyId)}
-          type="rightAligned"
-          tooltipField="market.tradableInstrument.instrument.product"
-          tooltipComponent={FeesBreakdownTooltip}
-          tooltipComponentParams={{ partyId }}
-        />
-        <AgGridColumn
-          headerName={t('Date')}
-          field="createdAt"
-          valueFormatter={({
+          },
+          valueFormatter: formatSize(partyId),
+        },
+        {
+          headerName: t('Price'),
+          field: 'price',
+          valueFormatter: formatPrice,
+          type: 'rightAligned',
+        },
+        {
+          headerName: t('Notional'),
+          field: 'price',
+          valueFormatter: formatTotal,
+          type: 'rightAligned',
+        },
+        {
+          headerName: t('Role'),
+          field: 'aggressor',
+          valueFormatter: formatRole(partyId),
+        },
+        {
+          headerName: t('Fee'),
+          field: 'market.tradableInstrument.instrument.product',
+          valueFormatter: formatFee(partyId),
+          type: 'rightAligned',
+          tooltipField: 'market.tradableInstrument.instrument.product',
+          tooltipComponent: FeesBreakdownTooltip,
+          tooltipComponentParams: { partyId },
+        },
+        {
+          headerName: t('Date'),
+          field: 'createdAt',
+          valueFormatter: ({
             value,
           }: VegaValueFormatterParams<Trade, 'createdAt'>) => {
             return value ? getDateTimeFormat().format(new Date(value)) : '';
-          }}
-        />
-        <AgGridColumn
-          colId="fill-actions"
-          {...COL_DEFS.actions}
-          cellRenderer={({ data }: VegaICellRendererParams<Trade, 'id'>) => {
+          },
+        },
+        {
+          colId: 'fill-actions',
+          cellRenderer: ({ data }: VegaICellRendererParams<Trade, 'id'>) => {
             if (!data) return null;
             return (
               <FillActionsDropdown
@@ -125,9 +113,25 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
                 tradeId={data.id}
               />
             );
-          }}
-        />
-      </AgGrid>
+          },
+          ...COL_DEFS.actions,
+        },
+      ],
+      [onMarketClick, partyId]
+    );
+    return (
+      <AgGrid
+        ref={ref}
+        columnDefs={columnDefs}
+        overlayNoRowsTemplate={t('No fills')}
+        defaultColDef={{ resizable: true }}
+        style={{ width: '100%', height: '100%' }}
+        getRowId={({ data }) => data?.id}
+        tooltipShowDelay={0}
+        tooltipHideDelay={2000}
+        components={{ MarketNameCell }}
+        {...props}
+      />
     );
   }
 );

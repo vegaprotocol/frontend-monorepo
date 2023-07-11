@@ -25,14 +25,14 @@ const Target = ({
   return (
     <Tooltip
       description={
-        <>
+        <div className="text-vega-dark-100 dark:text-vega-light-200">
           <div className="mt-1.5 inline-flex">
             <Indicator variant={Intent.None} />
           </div>
           <span>
             {t('Target stake')} {addDecimalsFormatNumber(target, decimals)}
           </span>
-        </>
+        </div>
       }
     >
       <div
@@ -195,9 +195,11 @@ export const HealthBar = ({
             {showRemainder && <Remainder />}
             {showOverflow && (
               <Tooltip
-                description={t(
-                  'Providers greater than 2x target stake not shown'
-                )}
+                description={
+                  <div className="text-vega-dark-100 dark:text-vega-light-200">
+                    t( 'Providers greater than 2x target stake not shown' )
+                  </div>
+                }
               >
                 <div className="h-[inherit] relative flex-1 leading-4">...</div>
               </Tooltip>

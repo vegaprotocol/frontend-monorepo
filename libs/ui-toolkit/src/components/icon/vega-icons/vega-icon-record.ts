@@ -1,69 +1,75 @@
-import { IconBreakdown } from './svg-icons/icon-breakdown';
-import { IconCopy } from './svg-icons/icon-copy';
-import { IconDeposit } from './svg-icons/icon-deposit';
-import { IconWithdraw } from './svg-icons/icon-withdraw';
-import { IconTransfer } from './svg-icons/icon-transfer';
-import { IconEdit } from './svg-icons/icon-edit';
-import { IconMoon } from './svg-icons/icon-moon';
-import { IconGlobe } from './svg-icons/icon-globe';
-import { IconLinkedIn } from './svg-icons/icon-linkedin';
-import { IconTwitter } from './svg-icons/icon-twitter';
-import { IconQuestionMark } from './svg-icons/icon-question-mark';
-import { IconForum } from './svg-icons/icon-forum';
-import { IconOpenExternal } from './svg-icons/icon-open-external';
-import { IconArrowRight } from './svg-icons/icon-arrow-right';
-import { IconChevronUp } from './svg-icons/icon-chevron-up';
-import { IconTrendUp } from './svg-icons/icon-trend-up';
-import { IconCross } from './svg-icons/icon-cross';
-import { IconKebab } from './svg-icons/icon-kebab';
 import { IconArrowDown } from './svg-icons/icon-arrow-down';
+import { IconArrowRight } from './svg-icons/icon-arrow-right';
+import { IconBreakdown } from './svg-icons/icon-breakdown';
 import { IconChevronDown } from './svg-icons/icon-chevron-down';
+import { IconChevronUp } from './svg-icons/icon-chevron-up';
+import { IconCopy } from './svg-icons/icon-copy';
+import { IconCross } from './svg-icons/icon-cross';
+import { IconDeposit } from './svg-icons/icon-deposit';
+import { IconEdit } from './svg-icons/icon-edit';
+import { IconForum } from './svg-icons/icon-forum';
+import { IconGlobe } from './svg-icons/icon-globe';
+import { IconInfo } from './svg-icons/icon-info';
+import { IconKebab } from './svg-icons/icon-kebab';
+import { IconLinkedIn } from './svg-icons/icon-linkedin';
+import { IconMoon } from './svg-icons/icon-moon';
+import { IconOpenExternal } from './svg-icons/icon-open-external';
+import { IconQuestionMark } from './svg-icons/icon-question-mark';
+import { IconTick } from './svg-icons/icon-tick';
+import { IconTransfer } from './svg-icons/icon-transfer';
+import { IconTrendUp } from './svg-icons/icon-trend-up';
+import { IconTwitter } from './svg-icons/icon-twitter';
+import { IconWithdraw } from './svg-icons/icon-withdraw';
 
 export enum VegaIconNames {
+  ARROW_DOWN = 'arrow-down',
+  ARROW_RIGHT = 'arrow-right',
   BREAKDOWN = 'breakdown',
+  CHEVRON_DOWN = 'chevron-down',
+  CHEVRON_UP = 'chevron-up',
   COPY = 'copy',
+  CROSS = 'cross',
   DEPOSIT = 'deposit',
-  WITHDRAW = 'withdraw',
   EDIT = 'edit',
-  TRANSFER = 'transfer',
   FORUM = 'forum',
   GLOBE = 'globe',
+  INFO = 'info',
+  KEBAB = 'kebab',
   LINKEDIN = 'linkedin',
-  TWITTER = 'twitter',
   MOON = 'moon',
   OPEN_EXTERNAL = 'open-external',
   QUESTION_MARK = 'question-mark',
-  ARROW_RIGHT = 'arrow-right',
-  ARROW_DOWN = 'arrow-down',
-  CHEVRON_UP = 'chevron-up',
-  CHEVRON_DOWN = 'chevron-down',
+  TICK = 'tick',
+  TRANSFER = 'transfer',
   TREND_UP = 'trend-up',
-  CROSS = 'cross',
-  KEBAB = 'kebab',
+  TWITTER = 'twitter',
+  WITHDRAW = 'withdraw',
 }
 
 export const VegaIconNameMap: Record<
   VegaIconNames,
   ({ size }: { size: number }) => JSX.Element
 > = {
+  'arrow-down': IconArrowDown,
+  'arrow-right': IconArrowRight,
+  'chevron-down': IconChevronDown,
+  'chevron-up': IconChevronUp,
+  'open-external': IconOpenExternal,
+  'question-mark': IconQuestionMark,
+  'trend-up': IconTrendUp,
   breakdown: IconBreakdown,
   copy: IconCopy,
-  deposit: IconDeposit,
-  withdraw: IconWithdraw,
-  transfer: IconTransfer,
-  edit: IconEdit,
-  moon: IconMoon,
-  globe: IconGlobe,
-  linkedin: IconLinkedIn,
-  twitter: IconTwitter,
-  'question-mark': IconQuestionMark,
-  forum: IconForum,
-  'open-external': IconOpenExternal,
-  'arrow-right': IconArrowRight,
-  'arrow-down': IconArrowDown,
-  'chevron-up': IconChevronUp,
-  'chevron-down': IconChevronDown,
-  'trend-up': IconTrendUp,
   cross: IconCross,
+  deposit: IconDeposit,
+  edit: IconEdit,
+  forum: IconForum,
+  globe: IconGlobe,
+  info: IconInfo,
   kebab: IconKebab,
+  linkedin: IconLinkedIn,
+  moon: IconMoon,
+  tick: IconTick,
+  transfer: IconTransfer,
+  twitter: IconTwitter,
+  withdraw: IconWithdraw,
 };

@@ -7,28 +7,28 @@ import {
 
 const walletContainer = 'aside [data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
-const connectButton = '[data-testid="connect-vega-wallet"]';
-const getVegaLink = '[data-testid="link"]';
+const connectButton = 'connect-vega-wallet';
+const getVegaLink = 'link';
 const dialog = '[role="dialog"]:visible';
-const dialogHeader = '[data-testid="dialog-title"]';
-const walletDialogHeader = '[data-testid="wallet-dialog-title"]';
-const connectorsList = '[data-testid="connectors-list"]';
-const dialogCloseBtn = '[data-testid="dialog-close"]';
-const restConnectorForm = '[data-testid="rest-connector-form"]';
+const dialogHeader = 'dialog-title';
+const walletDialogHeader = 'wallet-dialog-title';
+const connectorsList = 'connectors-list';
+const dialogCloseBtn = 'dialog-close';
+const restConnectorForm = 'rest-connector-form';
 const restWallet = '#wallet';
 const restPassphrase = '#passphrase';
 const restConnectBtn = '[type="submit"]';
-const accountNo = '[data-testid="vega-account-truncated"]';
-const currencyTitle = '[data-testid="currency-title"]';
-const currencyValue = '[data-testid="currency-value"]';
+const accountNo = 'vega-account-truncated';
+const currencyTitle = 'currency-title';
+const currencyValue = 'currency-value';
 const vegaUnstaked = '[data-testid="vega-wallet-balance-unstaked"] .text-right';
 const governanceBtn = '[href="/proposals"]';
 const stakingBtn = '[href="/validators"]';
-const manageLink = '[data-testid="manage-vega-wallet"]';
-const dialogVegaKey = '[data-testid="vega-public-key-full"]';
-const dialogDisconnectBtn = '[data-testid="disconnect"]';
-const copyPublicKeyBtn = '[data-testid="copy-vega-public-key"]';
-const vegaWalletCurrencyTitle = '[data-testid="currency-title"]';
+const manageLink = 'manage-vega-wallet';
+const dialogVegaKey = 'vega-public-key-full';
+const dialogDisconnectBtn = 'disconnect';
+const copyPublicKeyBtn = 'copy-vega-public-key';
+const vegaWalletCurrencyTitle = 'currency-title';
 const vegaWalletPublicKey = Cypress.env('vegaWalletPublicKey');
 const txTimeout = Cypress.env('txTimeout');
 
@@ -47,10 +47,10 @@ context(
           cy.get(walletHeader)
             .should('be.visible')
             .and('have.text', 'Vega Wallet');
-          cy.get(connectButton)
+          cy.getByTestId(connectButton)
             .should('be.visible')
             .and('have.text', 'Connect Vega wallet to use associated $VEGA');
-          cy.get(getVegaLink)
+          cy.getByTestId(getVegaLink)
             .should('be.visible')
             .and('have.text', 'Get a Vega wallet')
             .and('have.attr', 'href', 'https://vega.xyz/wallet');
@@ -61,20 +61,20 @@ context(
     describe('when connect button clicked', () => {
       before('click connect vega wallet button', () => {
         cy.get(walletContainer).within(() => {
-          cy.get(connectButton).click();
+          cy.getByTestId(connectButton).click();
         });
       });
 
       it('should have Connect Vega header visible', () => {
         cy.get(dialog).within(() => {
-          cy.get(walletDialogHeader)
+          cy.getByTestId(walletDialogHeader)
             .should('be.visible')
             .and('have.text', 'Connect');
         });
       });
 
       it('should have jsonRpc and hosted connection options visible on list', function () {
-        cy.get(connectorsList).within(() => {
+        cy.getByTestId(connectorsList).within(() => {
           cy.getByTestId('connector-jsonRpc')
             .should('be.visible')
             .and('have.text', 'Connect Vega wallet');
@@ -86,33 +86,33 @@ context(
 
       it('should have close button visible', function () {
         cy.get(dialog).within(() => {
-          cy.get(dialogCloseBtn).should('be.visible');
+          cy.getByTestId(dialogCloseBtn).should('be.visible');
         });
       });
     });
 
     describe('when rest connector form opened', function () {
       before('click hosted wallet app button', function () {
-        cy.get(connectorsList).within(() => {
+        cy.getByTestId(connectorsList).within(() => {
           cy.getByTestId('connector-hosted').click();
         });
       });
 
       // 0002-WCON-002
       it('should have wallet field visible', function () {
-        cy.get(restConnectorForm).within(() => {
+        cy.getByTestId(restConnectorForm).within(() => {
           cy.get(restWallet).should('be.visible');
         });
       });
 
       it('should have password field visible', function () {
-        cy.get(restConnectorForm).within(() => {
+        cy.getByTestId(restConnectorForm).within(() => {
           cy.get(restPassphrase).should('be.visible');
         });
       });
 
       it('should have connect button visible', function () {
-        cy.get(restConnectorForm).within(() => {
+        cy.getByTestId(restConnectorForm).within(() => {
           cy.get(restConnectBtn)
             .should('be.visible')
             .and('have.text', 'Connect');
@@ -121,12 +121,12 @@ context(
 
       it('should have close button visible', function () {
         cy.get(dialog).within(() => {
-          cy.get(dialogCloseBtn).should('be.visible');
+          cy.getByTestId(dialogCloseBtn).should('be.visible');
         });
       });
 
       after('close dialog', function () {
-        cy.get(dialogCloseBtn).click().should('not.exist');
+        cy.getByTestId(dialogCloseBtn).click().should('not.exist');
       });
     });
 
@@ -152,7 +152,7 @@ context(
         { tags: '@smoke' },
         function () {
           cy.get(walletContainer).within(() => {
-            cy.get(accountNo)
+            cy.getByTestId(accountNo)
               .should('be.visible')
               .and('have.text', Cypress.env('vegaWalletPublicKeyShort'));
           });
@@ -161,7 +161,7 @@ context(
 
       it('should have Vega Associated currency title visible', function () {
         cy.get(walletContainer).within(() => {
-          cy.get(currencyTitle)
+          cy.getByTestId(currencyTitle)
             .should('be.visible')
             .and('contain.text', `VEGAAssociated`);
         });
@@ -172,7 +172,7 @@ context(
         { tags: '@smoke' },
         function () {
           cy.get(walletContainer).within(() => {
-            cy.get(currencyValue)
+            cy.getByTestId(currencyValue)
               .should('be.visible')
               .and('contain.text', `0.00`);
           });
@@ -204,21 +204,23 @@ context(
 
       it('should have Manage link visible', function () {
         cy.get(walletContainer).within(() => {
-          cy.get(manageLink).should('be.visible').and('have.text', 'Manage');
+          cy.getByTestId(manageLink)
+            .should('be.visible')
+            .and('have.text', 'Manage');
         });
       });
 
       describe('when Manage dialog opened', function () {
         before('click Manage link', function () {
           cy.get(walletContainer).within(() => {
-            cy.get(manageLink).click();
+            cy.getByTestId(manageLink).click();
           });
         });
 
         // 0002-WCON-025, 0002-WCON-026
         it('should have SELECT A VEGA KEY dialog title visible', function () {
           cy.get(dialog).within(() => {
-            cy.get(dialogHeader)
+            cy.getByTestId(dialogHeader)
               .should('be.visible')
               .and('have.text', 'SELECT A VEGA KEY');
           });
@@ -238,7 +240,7 @@ context(
               'contain.text',
               truncatedPubKey1
             );
-            cy.get(dialogVegaKey)
+            cy.getByTestId(dialogVegaKey)
               .should('be.visible')
               .and('contain.text', truncatedPubKey1)
               .and('contain.text', truncatedPubKey2);
@@ -248,7 +250,7 @@ context(
         // 0002-WCON-029
         it('should have copy public key button visible', function () {
           cy.get(dialog).within(() => {
-            cy.get(copyPublicKeyBtn)
+            cy.getByTestId(copyPublicKeyBtn)
               .should('be.visible')
               .and('contain.text', 'Copy');
           });
@@ -256,13 +258,13 @@ context(
 
         it('should have close button visible', function () {
           cy.get(dialog).within(() => {
-            cy.get(dialogCloseBtn).should('be.visible');
+            cy.getByTestId(dialogCloseBtn).should('be.visible');
           });
         });
 
         it('should have vega Disconnect all keys button visible', function () {
           cy.get(dialog).within(() => {
-            cy.get(dialogDisconnectBtn)
+            cy.getByTestId(dialogDisconnectBtn)
               .should('be.visible')
               .and('have.text', 'Disconnect all keys');
           });
@@ -271,10 +273,10 @@ context(
         // 0002-WCON-022
         it('should be able to disconnect all keys', function () {
           cy.get(dialog).within(() => {
-            cy.get(dialogDisconnectBtn).click();
+            cy.getByTestId(dialogDisconnectBtn).click();
           });
           cy.get(walletContainer).within(() => {
-            cy.get(connectButton).should('be.visible'); // 0002-WCON-023
+            cy.getByTestId(connectButton).should('be.visible'); // 0002-WCON-023
           });
         });
       });
@@ -283,32 +285,32 @@ context(
       describe('Vega wallet with assets', function () {
         const assets = [
           {
+            id: '816af99af60d684502a40824758f6b5377e6af48e50a9ee8ef478ecb879ea8bc',
+            name: 'USDC (fake)',
+            symbol: 'fUSDC',
+            amount: '1000000',
+            expectedAmount: 10.0,
+          },
+          {
             id: '8566db7257222b5b7ef2886394ad28b938b28680a54a169bbc795027b89d6665',
             name: 'DAI (fake)',
             symbol: 'fDAI',
             amount: '200000',
-            expectedAmount: '2.00',
+            expectedAmount: 2.0,
           },
           {
             id: '73174a6fb1d5802ba0ac7bd7ab79e0a3a4837b262de0a4e80815a55442692bd0',
             name: 'BTC (fake)',
             symbol: 'fBTC',
             amount: '600000',
-            expectedAmount: '6.00',
+            expectedAmount: 6.0,
           },
           {
             id: 'e02d4c15d790d1d2dffaf2dcd1cf06a1fe656656cf4ed18c8ce99f9e83643567',
             name: 'EURO (fake)',
             symbol: 'fEURO',
             amount: '800000',
-            expectedAmount: '8.00',
-          },
-          {
-            id: '816af99af60d684502a40824758f6b5377e6af48e50a9ee8ef478ecb879ea8bc',
-            name: 'USDC (fake)',
-            symbol: 'fUSDC',
-            amount: '1000000',
-            expectedAmount: '10.00',
+            expectedAmount: 8.0,
           },
         ];
 
@@ -330,20 +332,20 @@ context(
         for (const { name, symbol, expectedAmount } of assets) {
           it(`should see ${name} within vega wallet`, () => {
             cy.get(walletContainer).within(() => {
-              cy.get(vegaWalletCurrencyTitle)
+              cy.getByTestId(vegaWalletCurrencyTitle)
                 .contains(name, txTimeout)
                 .should('be.visible');
 
-              cy.get(vegaWalletCurrencyTitle)
+              cy.getByTestId(vegaWalletCurrencyTitle)
                 .contains(name)
                 .parent()
                 .siblings()
-                .invoke('text')
-                .should('have.length.at.least', 4)
-                .then(parseFloat)
-                .should('be.gte', parseFloat(expectedAmount));
+                .should((elementAmount) => {
+                  const displayedAmount = parseFloat(elementAmount.text());
+                  expect(displayedAmount).be.gte(expectedAmount);
+                });
 
-              cy.get(vegaWalletCurrencyTitle)
+              cy.getByTestId(vegaWalletCurrencyTitle)
                 .contains(name)
                 .parent()
                 .contains(symbol);

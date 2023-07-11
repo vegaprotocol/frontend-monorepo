@@ -1,4 +1,13 @@
 {
-  "presets": ["@nrwl/next/babel"],
+  "sourceType": "unambiguous",
+  "presets": [
+    [
+      "@nx/react/babel",
+      {
+        "runtime": "automatic",
+        "useBuiltIns": "usage"
+      }
+    ]
+  ],
   "plugins": []
 }

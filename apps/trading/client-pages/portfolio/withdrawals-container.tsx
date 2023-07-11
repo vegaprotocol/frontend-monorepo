@@ -3,6 +3,7 @@ import {
   withdrawalProvider,
   useWithdrawalDialog,
   WithdrawalsTable,
+  useIncompleteWithdrawals,
 } from '@vegaprotocol/withdraws';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
@@ -17,6 +18,7 @@ export const WithdrawalsContainer = () => {
     skip: !pubKey,
   });
   const openWithdrawDialog = useWithdrawalDialog((state) => state.open);
+  const { ready, delayed } = useIncompleteWithdrawals();
 
   return (
     <VegaWalletContainer>
@@ -25,6 +27,8 @@ export const WithdrawalsContainer = () => {
           data-testid="withdrawals-history"
           rowData={data}
           overlayNoRowsTemplate={error ? error.message : t('No withdrawals')}
+          ready={ready}
+          delayed={delayed}
         />
       </div>
       {!isReadOnly && (

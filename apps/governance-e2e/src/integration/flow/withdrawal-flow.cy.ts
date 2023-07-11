@@ -116,7 +116,6 @@ context(
           cy.getByTestId(amountInput).click().type('120');
           cy.getByTestId(submitWithdrawalButton).click();
         });
-        // assert withdrawal request
         cy.getByTestId(toast)
           .first(txTimeout)
           .should('contain.text', 'Funds unlocked')

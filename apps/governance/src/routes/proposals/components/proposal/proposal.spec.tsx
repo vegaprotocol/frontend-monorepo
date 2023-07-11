@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { Proposal } from './proposal';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import { ProposalState } from '@vegaprotocol/types';
 
 jest.mock('@vegaprotocol/network-parameters', () => ({
   ...jest.requireActual('@vegaprotocol/network-parameters'),
@@ -62,6 +63,17 @@ it('Renders with a link back to "all proposals"', async () => {
   renderComponent(proposal);
 
   expect(await screen.findByTestId('all-proposals-link')).toBeInTheDocument();
+});
+
+it('Renders a rejected proposals with a link back to "rejected proposals"', async () => {
+  const proposal = generateProposal({
+    state: ProposalState.STATE_REJECTED,
+  });
+  renderComponent(proposal);
+
+  expect(
+    await screen.findByTestId('rejected-proposals-link')
+  ).toBeInTheDocument();
 });
 
 it('renders each section', async () => {
