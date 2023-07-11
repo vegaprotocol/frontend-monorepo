@@ -1,7 +1,9 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, Route, Routes } from 'react-router-dom';
 import { Sidebar, SidebarContent, useSidebar } from '../sidebar';
 import classNames from 'classnames';
 import { Navbar } from '../navbar';
+import { NavHeader } from '../nav-header';
+import { Routes as AppRoutes } from '../../pages/client-router';
 
 export const LayoutWithSidebar = () => {
   const sidebarView = useSidebar((store) => store.view);
@@ -9,14 +11,24 @@ export const LayoutWithSidebar = () => {
 
   const gridClasses = classNames(
     'h-full relative z-0 grid',
-    'grid-cols-[1fr_45px] grid-rows-[min-content_1fr]',
+    'grid-rows-[min-content_1fr]',
+    'lg:grid-rows-[min-content_1fr]',
     'lg:grid-cols-[1fr_350px_45px]'
   );
 
   return (
     <div className={gridClasses}>
       <div className="col-start-1 col-end-2 lg:col-end-3">
-        <Navbar />
+        <Navbar>
+          <Routes>
+            <Route
+              path={AppRoutes.MARKETS}
+              // render nothing for markets/all, otherwise markets/:marketId will match with markets/all
+              element={null}
+            />
+            <Route path={AppRoutes.MARKET} element={<NavHeader />} />
+          </Routes>
+        </Navbar>
       </div>
       <section
         className={classNames('col-start-1 col-end-1', {

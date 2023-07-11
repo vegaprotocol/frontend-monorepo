@@ -12,13 +12,13 @@ export const Header = ({ title, children }: TradeMarketHeaderProps) => {
     'grid',
     'grid-rows-[min-content_min-content]',
     'xl:grid-cols-[min-content_1fr]',
-    'border-l border-b border-default',
+    'lg:border-l border-b border-default',
     'bg-vega-clight-800 dark:bg-vega-cdark-800'
   );
   return (
-    <header className="pl-1">
+    <header className="lg:pl-1">
       <div className={headerClasses}>
-        <div className="flex flex-col justify-center pl-4 pt-2 xl:pb-2 pb-0 xl:border-r border-default xl:pr-4">
+        <div className="hidden lg:flex flex-col justify-center pl-4 pt-2 xl:pb-2 pb-0 xl:border-r border-default xl:pr-4">
           {title}
         </div>
         <div data-testid="header-summary" className="min-w-0">

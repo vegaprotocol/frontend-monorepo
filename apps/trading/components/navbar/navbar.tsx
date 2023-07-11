@@ -38,8 +38,10 @@ import { VegaWalletMenu } from '../vega-wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { WalletIcon } from '../icons/wallet';
 
-export const Navbar = () => {
-  const [menu, setMenu] = useState<'wallet' | 'nav' | null>(null);
+type MenuState = 'wallet' | 'nav' | null;
+
+export const Navbar = ({ children }: { children?: ReactNode }) => {
+  const [menu, setMenu] = useState<MenuState>(null);
   const { pubKey } = useVegaWallet();
   const isConnected = pubKey !== null;
   const openVegaWalletDialog = useVegaWalletDialogStore(
@@ -49,14 +51,15 @@ export const Navbar = () => {
     <N.Root className="text-vega-clight-200 dark:text-vega-cdark-200 ">
       <div className="flex items-center gap-2 h-10 px-3 lg:pl-5 pr-2 border-b border-default bg-vega-clight-800 dark:bg-vega-cdark-800">
         <div className="pr-2">
-          <VLogo className="w-5 text-default" />
+          <VLogo className="w-4 text-default" />
         </div>
+        <div className="lg:hidden">{children}</div>
         <div className="hidden lg:block">
           <NavbarMenu />
         </div>
         <div className="ml-auto flex justify-end items-center gap-2">
           <button
-            className="lg:hidden flex itesm-center p-1 rounded hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500"
+            className="lg:hidden flex items-center p-1 rounded hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500"
             onClick={() => {
               if (isConnected) {
                 setMenu((x) => (x === 'wallet' ? null : 'wallet'));
