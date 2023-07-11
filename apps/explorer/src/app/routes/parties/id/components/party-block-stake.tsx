@@ -54,7 +54,7 @@ export const PartyBlockStake = ({
       {p?.stakingSummary.currentStakeAvailable ? (
         <KeyValueTable>
           <KeyValueTableRow noBorder={true}>
-            <div>{t('Available stake')}</div>
+            <div>{t('Associated to key')}</div>
             <div>
               <GovernanceAssetBalance
                 price={p.stakingSummary.currentStakeAvailable}
@@ -62,7 +62,7 @@ export const PartyBlockStake = ({
             </div>
           </KeyValueTableRow>
           <KeyValueTableRow noBorder={true}>
-            <div>{t('Active stake')}</div>
+            <div>{t('Staked to validator')}</div>
             <div>
               <GovernanceAssetBalance price={linkedStake || '0'} />
             </div>
