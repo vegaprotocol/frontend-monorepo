@@ -2,7 +2,6 @@ import { removeDecimal } from '@vegaprotocol/cypress';
 import * as Schema from '@vegaprotocol/types';
 import {
   OrderStatusMapping,
-  OrderTimeInForceMapping,
   OrderTypeMapping,
   Side,
 } from '@vegaprotocol/types';
