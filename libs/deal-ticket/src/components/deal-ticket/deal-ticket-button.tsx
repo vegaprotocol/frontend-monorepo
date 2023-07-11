@@ -1,17 +1,24 @@
 import { t } from '@vegaprotocol/i18n';
-import type { ButtonVariant } from '@vegaprotocol/ui-toolkit';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Side } from '@vegaprotocol/types';
+import classNames from 'classnames';
 
 interface Props {
-  variant: ButtonVariant;
+  side: Side;
 }
 
-export const DealTicketButton = ({ variant }: Props) => {
+export const DealTicketButton = ({ side }: Props) => {
+  const buttonClasses = classNames(
+    'px-10 py-2 uppercase rounded-md text-white w-full',
+    {
+      'bg-market-red-500': side === Side.SIDE_SELL,
+      'bg-market-green-550': side === Side.SIDE_BUY,
+    }
+  );
   return (
     <div className="mb-2">
-      <Button variant={variant} fill type="submit" data-testid="place-order">
+      <button type="submit" data-testid="place-order" className={buttonClasses}>
         {t('Place order')}
-      </Button>
+      </button>
     </div>
   );
 };

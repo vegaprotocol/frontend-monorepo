@@ -38,14 +38,12 @@ export const Toggle = ({
     'relative inline-flex w-full h-full text-center items-center justify-center',
     'peer-checked:rounded-full',
     {
-      'peer-checked:bg-neutral-400 dark:peer-checked:bg-white dark:peer-checked:text-black':
+      'peer-checked:bg-neutral-400 dark:peer-checked:bg-white peer-checked:text-white dark:peer-checked:text-black':
         type === 'primary',
-      'dark:peer-checked:bg-vega-green peer-checked:bg-vega-green-550':
+      'peer-checked:bg-market-green-550 peer-checked:text-white':
         type === 'buy',
-      'dark:peer-checked:bg-vega-pink peer-checked:bg-vega-pink-550':
-        type === 'sell',
+      'peer-checked:bg-market-red-500 peer-checked:text-white': type === 'sell',
     },
-    'peer-checked:text-white dark:peer-checked:text-black',
     'cursor-pointer peer-checked:cursor-auto select-none',
     {
       'px-10 py-2': size === 'lg',

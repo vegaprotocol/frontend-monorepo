@@ -33,7 +33,7 @@ const colorClass = (percentageUsed: number, neutral = false) => {
   return classNames('text-right', {
     'text-neutral-500 dark:text-neutral-400': percentageUsed < 75 && !neutral,
     'text-vega-orange': percentageUsed >= 75 && percentageUsed < 90,
-    'text-vega-pink': percentageUsed >= 90,
+    'text-vega-red': percentageUsed >= 90,
   });
 };
 

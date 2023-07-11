@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import { memo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LayoutPriority } from 'allotment';
@@ -317,7 +317,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
       <div className="border-b border-default min-w-0">
         <HeaderStats market={market} />
       </div>
-      <div className="col-span-2 bg-vega-green">
+      <div className="col-span-2">
         <MarketSuccessorBanner market={market} />
         <OracleBanner marketId={market?.id || ''} />
       </div>

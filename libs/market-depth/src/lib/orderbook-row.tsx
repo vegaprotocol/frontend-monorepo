@@ -28,8 +28,8 @@ const CumulationBar = ({
       className={classNames(
         'absolute top-0 left-0 h-full transition-all',
         type === VolumeType.bid
-          ? 'bg-market-green/20 dark:bg-market-green/50'
-          : 'bg-market-red/20 dark:bg-market-red/30'
+          ? 'bg-market-green-300 dark:bg-market-green/50'
+          : 'bg-market-red-300 dark:bg-market-red/30'
       )}
       style={{
         width: `${cumulativeValue}%`,
