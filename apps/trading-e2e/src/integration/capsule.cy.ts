@@ -16,7 +16,6 @@ const orderStatus = 'status';
 const orderRemaining = 'remaining';
 const orderPrice = 'price';
 const orderTimeInForce = 'timeInForce';
-const orderCreatedAt = 'createdAt';
 const orderUpdatedAt = 'updatedAt';
 const assetSelectField = 'select[name="asset"]';
 const amountField = 'input[name="amount"]';
