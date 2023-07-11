@@ -16,7 +16,7 @@ interface StringMap {
 const displayString: StringMap = {
   OrderSubmission: 'Order Submission',
   'Submit Order': 'Order',
-  OrderCancellation: 'Order Cancellation',
+  OrderCancellation: 'Cancel order',
   OrderAmendment: 'Order Amendment',
   VoteSubmission: 'Vote Submission',
   WithdrawSubmission: 'Withdraw Submission',
@@ -44,7 +44,26 @@ const displayString: StringMap = {
   ValidatorHeartbeat: 'Heartbeat',
   'Validator Heartbeat': 'Heartbeat',
   'Batch Market Instructions': 'Batch',
+  'Stop Orders Submission': 'Stop',
+  StopOrdersSubmission: 'Stop',
+  StopOrdersCancellation: 'Cancel stop',
+  'Stop Orders Cancellation': 'Cancel stop',
 };
+
+export function getLabelForOrderType(
+  orderType: string,
+  command: components['schemas']['v1InputData']
+): string {
+  if (command.orderSubmission) {
+    if (command.orderSubmission.peggedOrder) {
+      return 'Peg';
+    }
+    if (command.orderSubmission.icebergOpts) {
+      return 'Iceberg';
+    }
+  }
+  return 'Order';
+}
 
 /**
  * Given a proposal, will return a specific label
@@ -117,6 +136,8 @@ export function getLabelForChainEvent(
       return t('Signer threshold');
     }
     return t('Multisig update');
+  } else if (chainEvent.contractCall) {
+    return t('Contract call');
   }
   return t('Chain Event');
 }

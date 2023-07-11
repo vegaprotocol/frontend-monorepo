@@ -241,26 +241,26 @@ jobs:
           # https://stackoverflow.com/questions/3183444/check-for-valid-link-url
           regex='(https?|ftp|file)://[-[:alnum:]\+&@#/%?=~_|!:,.;]*[-[:alnum:]\+&@#/%=~_|]'
           if [[ "${{ needs.lint-test-build.outputs.preview_governance }}" =~ $regex ]]; then
-            until curl -L --fail "${{ needs.lint-test-build.outputs.preview_governance }}"; do
-              echo "waiting for governance preview"
+            until curl --insecure --location --fail "${{ needs.lint-test-build.outputs.preview_governance }}"; do
+              echo "waiting for governance preview: ${{ needs.lint-test-build.outputs.preview_governance }}"
               sleep 5
             done
           fi
           if [[ "${{ needs.lint-test-build.outputs.preview_explorer }}" =~ $regex ]]; then
-            until curl -L --fail "${{ needs.lint-test-build.outputs.preview_explorer }}"; do
-              echo "waiting for explorer preview"
+            until curl --insecure --location --fail "${{ needs.lint-test-build.outputs.preview_explorer }}"; do
+              echo "waiting for explorer preview: ${{ needs.lint-test-build.outputs.preview_explorer }}"
               sleep 5
             done
           fi
           if [[ "${{ needs.lint-test-build.outputs.preview_trading }}" =~ $regex ]]; then
-            until curl -L --fail "${{ needs.lint-test-build.outputs.preview_trading }}"; do
-              echo "waiting for trading preview"
+            until curl --insecure --location --fail "${{ needs.lint-test-build.outputs.preview_trading }}"; do
+              echo "waiting for trading preview: ${{ needs.lint-test-build.outputs.preview_trading }}"
               sleep 5
             done
           fi
           if [[ "${{ needs.lint-test-build.outputs.preview_tools }}" =~ $regex ]]; then
-            until curl -L --fail "${{ needs.lint-test-build.outputs.preview_tools }}"; do
-              echo "waiting for tools preview"
+            until curl --insecure --location --fail "${{ needs.lint-test-build.outputs.preview_tools }}"; do
+              echo "waiting for tools preview: ${{ needs.lint-test-build.outputs.preview_tools }}"
               sleep 5
             done
           fi
