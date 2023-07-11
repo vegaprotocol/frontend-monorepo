@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import React, { memo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LayoutPriority } from 'allotment';
@@ -27,6 +27,7 @@ import {
 import { TradingViews } from './trade-views';
 import { MarketSelector } from './market-selector';
 import { HeaderStats } from './header-stats';
+import { MarketSuccessorBanner } from '../../components/market-banner';
 
 interface TradeGridProps {
   market: Market | null;
@@ -317,6 +318,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
         <HeaderStats market={market} />
       </div>
       <div className="col-span-2 bg-vega-green">
+        <MarketSuccessorBanner market={market} />
         <OracleBanner marketId={market?.id || ''} />
       </div>
       {sidebarOpen && (

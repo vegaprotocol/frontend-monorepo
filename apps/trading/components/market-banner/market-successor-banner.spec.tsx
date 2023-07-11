@@ -7,13 +7,21 @@ import * as allUtils from '@vegaprotocol/utils';
 import type { Market } from '@vegaprotocol/markets';
 import type { PartialDeep } from 'type-fest';
 
-let mockParams = {};
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: jest.fn(() => mockParams),
-}));
+const market = {
+  id: 'marketId',
+  tradableInstrument: {
+    instrument: {
+      metadata: {
+        tags: [],
+      },
+    },
+  },
+  marketTimestamps: {
+    close: null,
+  },
+  successorMarketID: 'successorMarketID',
+} as unknown as Market;
 
-let mockDataMarket: PartialDeep<Market> | null = null;
 let mockDataSuccessorMarket: PartialDeep<Market> | null = null;
 jest.mock('@vegaprotocol/data-provider', () => ({
   ...jest.requireActual('@vegaprotocol/data-provider'),
@@ -21,12 +29,6 @@ jest.mock('@vegaprotocol/data-provider', () => ({
     if (args.skip) {
       return {
         data: null,
-        error: null,
-      };
-    }
-    if (args.variables.marketId === 'marketId') {
-      return {
-        data: mockDataMarket,
         error: null,
       };
     }
@@ -49,21 +51,6 @@ jest.mock('@vegaprotocol/markets', () => ({
 describe('MarketSuccessorBanner', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockParams = { marketId: 'marketId' };
-    mockDataMarket = {
-      id: 'marketId',
-      tradableInstrument: {
-        instrument: {
-          metadata: {
-            tags: [],
-          },
-        },
-      },
-      marketTimestamps: {
-        close: null,
-      },
-      successorMarketID: 'successorMarketID',
-    };
     mockDataSuccessorMarket = {
       id: 'successorMarketID',
       state: Types.MarketState.STATE_ACTIVE,
@@ -76,27 +63,25 @@ describe('MarketSuccessorBanner', () => {
     };
   });
   describe('should be hidden', () => {
-    it('when no marketID', () => {
-      mockParams = {};
-      const { container } = render(<MarketSuccessorBanner />, {
+    it('when no market', () => {
+      const { container } = render(<MarketSuccessorBanner market={null} />, {
         wrapper: MockedProvider,
       });
       expect(container).toBeEmptyDOMElement();
     });
 
     it('when no successorMarketID', () => {
-      delete mockDataMarket?.successorMarketID;
-      const { container } = render(<MarketSuccessorBanner />, {
-        wrapper: MockedProvider,
-      });
-      expect(container).toBeEmptyDOMElement();
-      expect(dataProviders.useDataProvider).nthCalledWith(
-        1,
-        expect.objectContaining({
-          variables: { marketId: 'marketId' },
-          skip: false,
-        })
+      const amendedMarket = {
+        ...market,
+        successorMarketID: null,
+      };
+      const { container } = render(
+        <MarketSuccessorBanner market={amendedMarket} />,
+        {
+          wrapper: MockedProvider,
+        }
       );
+      expect(container).toBeEmptyDOMElement();
       expect(dataProviders.useDataProvider).lastCalledWith(
         expect.objectContaining({ skip: true })
       );
@@ -104,17 +89,10 @@ describe('MarketSuccessorBanner', () => {
 
     it('no successor market data', () => {
       mockDataSuccessorMarket = null;
-      const { container } = render(<MarketSuccessorBanner />, {
+      const { container } = render(<MarketSuccessorBanner market={market} />, {
         wrapper: MockedProvider,
       });
       expect(container).toBeEmptyDOMElement();
-      expect(dataProviders.useDataProvider).nthCalledWith(
-        1,
-        expect.objectContaining({
-          variables: { marketId: 'marketId' },
-          skip: false,
-        })
-      );
       expect(dataProviders.useDataProvider).lastCalledWith(
         expect.objectContaining({
           variables: { marketId: 'successorMarketID' },
@@ -128,17 +106,10 @@ describe('MarketSuccessorBanner', () => {
         ...mockDataSuccessorMarket,
         tradingMode: Types.MarketTradingMode.TRADING_MODE_NO_TRADING,
       };
-      const { container } = render(<MarketSuccessorBanner />, {
+      const { container } = render(<MarketSuccessorBanner market={market} />, {
         wrapper: MockedProvider,
       });
       expect(container).toBeEmptyDOMElement();
-      expect(dataProviders.useDataProvider).nthCalledWith(
-        1,
-        expect.objectContaining({
-          variables: { marketId: 'marketId' },
-          skip: false,
-        })
-      );
       expect(dataProviders.useDataProvider).lastCalledWith(
         expect.objectContaining({
           variables: { marketId: 'successorMarketID' },
@@ -153,17 +124,10 @@ describe('MarketSuccessorBanner', () => {
         ...mockDataSuccessorMarket,
         state: Types.MarketState.STATE_PENDING,
       };
-      const { container } = render(<MarketSuccessorBanner />, {
+      const { container } = render(<MarketSuccessorBanner market={market} />, {
         wrapper: MockedProvider,
       });
       expect(container).toBeEmptyDOMElement();
-      expect(dataProviders.useDataProvider).nthCalledWith(
-        1,
-        expect.objectContaining({
-          variables: { marketId: 'marketId' },
-          skip: false,
-        })
-      );
       expect(dataProviders.useDataProvider).lastCalledWith(
         expect.objectContaining({
           variables: { marketId: 'successorMarketID' },
@@ -176,7 +140,7 @@ describe('MarketSuccessorBanner', () => {
 
   describe('should be displayed', () => {
     it('should be rendered', () => {
-      render(<MarketSuccessorBanner />, {
+      render(<MarketSuccessorBanner market={market} />, {
         wrapper: MockedProvider,
       });
       expect(
@@ -201,7 +165,7 @@ describe('MarketSuccessorBanner', () => {
         ],
       };
 
-      render(<MarketSuccessorBanner />, {
+      render(<MarketSuccessorBanner market={market} />, {
         wrapper: MockedProvider,
       });
       expect(screen.getByText('has 101.367 24h vol.')).toBeInTheDocument();
@@ -213,7 +177,7 @@ describe('MarketSuccessorBanner', () => {
         .mockReturnValue(
           new Date(Date.now() + 24 * 60 * 60 * 1000 + 60 * 1000)
         );
-      render(<MarketSuccessorBanner />, {
+      render(<MarketSuccessorBanner market={market} />, {
         wrapper: MockedProvider,
       });
       expect(
