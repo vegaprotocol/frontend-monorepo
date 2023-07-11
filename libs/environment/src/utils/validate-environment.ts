@@ -2,6 +2,7 @@ import z from 'zod';
 
 export enum Networks {
   VALIDATOR_TESTNET = 'VALIDATOR_TESTNET',
+  MAINNET_MIRROR = 'MAINNET-MIRROR',
   CUSTOM = 'CUSTOM',
   TESTNET = 'TESTNET',
   STAGNET1 = 'STAGNET1',
