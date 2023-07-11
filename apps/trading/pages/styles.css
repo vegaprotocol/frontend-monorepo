@@ -48,30 +48,38 @@ html [data-theme='light'] {
 
 html [data-theme='light'] {
   /* candles */
-  --pennant-color-buy-fill: theme('colors.market.green.500');
-  --pennant-color-buy-stroke: theme('colors.market.green.600');
+  --pennant-color-buy-fill: theme(colors.market.green.500);
+  --pennant-color-buy-stroke: theme(colors.market.green.600);
+
+  /* sell uses stroke for fill and stroke */
+  --pennant-color-sell-stroke: theme(colors.market.red.500);
 
   /* depth chart */
-  --pennant-color-depth-buy-fill: theme('colors.market.green.500');
-  --pennant-color-depth-buy-stroke: theme('colors.market.green.600');
-  --pennant-color-depth-sell-fill: theme('colors.market.red.500');
-  --pennant-color-depth-sell-stroke: theme('colors.market.red.600');
+  --pennant-color-depth-buy-fill: theme(colors.market.green.500);
+  --pennant-color-depth-buy-stroke: theme(colors.market.green.600);
+  --pennant-color-depth-sell-fill: theme(colors.market.red.500);
+  --pennant-color-depth-sell-stroke: theme(colors.market.red.600);
 
-  --pennant-color-volume-buy: theme('colors.market.green.500');
+  --pennant-color-volume-buy: theme(colors.market.green.400);
+  --pennant-color-volume-sell: theme(colors.market.red.400);
 }
 
 html [data-theme='dark'] {
   /* candles */
-  --pennant-color-buy-fill: theme('colors.market.green.600');
-  --pennant-color-buy-stroke: theme('colors.market.green.500');
+  --pennant-color-buy-fill: theme(colors.market.green.600);
+  --pennant-color-buy-stroke: theme(colors.market.green.500);
+
+  /* sell uses stroke for fill and stroke */
+  --pennant-color-sell-stroke: theme(colors.market.red.500);
 
   /* depth chart */
-  --pennant-color-depth-buy-fill: theme('colors.market.green.600');
-  --pennant-color-depth-buy-stroke: theme('colors.market.green.500');
-  --pennant-color-depth-sell-fill: theme('colors.market.red.600');
-  --pennant-color-depth-sell-stroke: theme('colors.market.red.500');
+  --pennant-color-depth-buy-fill: theme(colors.market.green.600);
+  --pennant-color-depth-buy-stroke: theme(colors.market.green.500);
+  --pennant-color-depth-sell-fill: theme(colors.market.red.600);
+  --pennant-color-depth-sell-stroke: theme(colors.market.red.500);
 
-  --pennant-color-volume-buy: theme('colors.market.green.600');
+  --pennant-color-volume-buy: theme(colors.market.green.600);
+  --pennant-color-volume-sell: theme(colors.market.red.600);
 }
 
 /* AG GRID - Do not edit without updating other global stylesheets for each app */
