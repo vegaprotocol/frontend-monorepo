@@ -32,8 +32,7 @@ const ExplorerLinks = {
   [Networks.TESTNET]: 'https://explorer.fairground.wtf',
   [Networks.VALIDATOR_TESTNET]:
     'https://explorer.validators-testnet.vega.rocks',
-    [Networks.MAINNET_MIRROR]:
-      'https://explorer.mainnet-mirror.vega.rocks/',
+  [Networks.MAINNET_MIRROR]: 'https://explorer.mainnet-mirror.vega.rocks/',
   [Networks.MAINNET]: 'https://explorer.vega.xyz',
 };
 
@@ -42,8 +41,7 @@ const ConsoleLinks = {
   [Networks.STAGNET1]: 'https://trading.stagnet1.vega.rocks',
   [Networks.TESTNET]: 'https://console.fairground.wtf',
   [Networks.MAINNET]: 'https://console.vega.xyz',
-  [Networks.MAINNET_MIRROR]:
-    'https://console.mainnet-mirror.vega.rocks/',
+  [Networks.MAINNET_MIRROR]: 'https://console.mainnet-mirror.vega.rocks/',
 };
 
 const TokenLinks = {
@@ -52,8 +50,7 @@ const TokenLinks = {
   [Networks.TESTNET]: 'https://governance.fairground.wtf',
   [Networks.VALIDATOR_TESTNET]:
     'https://governance.validators-testnet.vega.rocks',
-  [Networks.MAINNET_MIRROR]:
-    'https://governance.mainnet-mirror.vega.rocks/',
+  [Networks.MAINNET_MIRROR]: 'https://governance.mainnet-mirror.vega.rocks/',
   [Networks.MAINNET]: 'https://governance.vega.xyz',
 };
 
