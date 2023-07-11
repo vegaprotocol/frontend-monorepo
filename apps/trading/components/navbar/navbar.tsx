@@ -54,7 +54,7 @@ export const Navbar = () => {
         <div className="hidden lg:block">
           <NavbarMenu />
         </div>
-        <div className="ml-auto flex justify-end items-center gap-1 lg:gap-2">
+        <div className="ml-auto flex justify-end items-center gap-2">
           <button
             className="lg:hidden flex itesm-center p-1 rounded hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500"
             onClick={() => {

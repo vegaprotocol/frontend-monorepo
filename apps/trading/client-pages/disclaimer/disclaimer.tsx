@@ -3,7 +3,7 @@ import { t } from '@vegaprotocol/i18n';
 export const Disclaimer = () => {
   return (
     <div className="py-16 px-8 flex w-full justify-center">
-      <div className="lg:min-w-[700px] min-w-[300px] max-w-[700px]">
+      <div className="lg:min-w-[800px]">
         <h1 className="text-4xl xl:text-5xl uppercase font-alpha calt">
           {t('Disclaimer')}
         </h1>
