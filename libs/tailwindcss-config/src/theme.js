@@ -21,6 +21,8 @@ module.exports = {
         550: '#B3002E',
         DEFAULT: '#EC003C',
         500: '#EC003C',
+        400: '#F57382',
+        300: '#FDD9DC',
       },
       green: {
         // same as vega-green
@@ -29,6 +31,8 @@ module.exports = {
         550: '#01C566',
         DEFAULT: '#00F780',
         500: '#00F780',
+        400: '#74BE8E',
+        300: '#DDFEE8',
       },
     },
     vega: {
