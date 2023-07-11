@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar, SidebarContent, useSidebar } from '../sidebar';
 import classNames from 'classnames';
+import { Navbar } from '../navbar';
 
 export const LayoutWithSidebar = () => {
   const sidebarView = useSidebar((store) => store.view);
@@ -8,12 +9,15 @@ export const LayoutWithSidebar = () => {
 
   const gridClasses = classNames(
     'h-full relative z-0 grid',
-    'grid-cols-[1fr_45px]',
+    'grid-cols-[1fr_45px] grid-rows-[min-content_1fr]',
     'lg:grid-cols-[1fr_350px_45px]'
   );
 
   return (
     <div className={gridClasses}>
+      <div className="col-start-1 col-end-2 lg:col-end-3">
+        <Navbar />
+      </div>
       <section
         className={classNames('col-start-1 col-end-1', {
           'lg:col-end-3': !sidebarOpen,
@@ -30,7 +34,7 @@ export const LayoutWithSidebar = () => {
       >
         <SidebarContent />
       </div>
-      <div className="col-start-2 lg:col-start-3 bg-vega-clight-800 dark:bg-vega-cdark-800 border-l border-default">
+      <div className="row-start-1 row-span-full col-start-2 lg:col-start-3 bg-vega-clight-800 dark:bg-vega-cdark-800 border-l border-default">
         <Sidebar />
       </div>
     </div>

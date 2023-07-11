@@ -76,7 +76,7 @@ function AppBody({ Component }: AppProps) {
   const location = useLocation();
   const gridClasses = classNames(
     'h-full relative z-0 grid',
-    'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
+    'grid-rows-[repeat(2,min-content),minmax(0,1fr)]'
   );
   return (
     <div className="font-alpha h-full bg-white dark:bg-vega-cdark-900 text-default overflow-hidden">
@@ -87,7 +87,6 @@ function AppBody({ Component }: AppProps) {
       <Title />
       <div className={gridClasses}>
         <AnnouncementBanner />
-        <Navbar />
         <div data-testid="banners">
           <ProtocolUpgradeProposalNotification
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}

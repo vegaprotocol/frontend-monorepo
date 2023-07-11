@@ -34,14 +34,12 @@ import {
   ProtocolUpgradeCountdownMode,
 } from '@vegaprotocol/proposals';
 import classNames from 'classnames';
-import { ViewType, useSidebar } from '../sidebar';
 import { VegaWalletMenu } from '../vega-wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { WalletIcon } from '../icons/wallet';
 
 export const Navbar = () => {
   const [menu, setMenu] = useState<'wallet' | 'nav' | null>(null);
-  const { view, setView } = useSidebar();
   const { pubKey } = useVegaWallet();
   const isConnected = pubKey !== null;
   const openVegaWalletDialog = useVegaWalletDialogStore(
@@ -80,23 +78,6 @@ export const Navbar = () => {
           <div className="hidden lg:block">
             <VegaWalletConnectButton />
           </div>
-          <button
-            className={classNames('flex items-center p-1 rounded', {
-              'hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500':
-                view?.type !== ViewType.Settings,
-              'bg-vega-yellow hover:bg-vega-yellow-550 text-black':
-                view?.type === ViewType.Settings,
-            })}
-            onClick={() => {
-              if (view?.type === ViewType.Settings) {
-                setView(null);
-              } else {
-                setView({ type: ViewType.Settings });
-              }
-            }}
-          >
-            <VegaIcon name={VegaIconNames.COG} size={20} />
-          </button>
         </div>
       </div>
       {menu !== null && (
