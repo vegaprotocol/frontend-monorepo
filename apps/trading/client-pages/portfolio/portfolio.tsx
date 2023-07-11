@@ -36,7 +36,7 @@ const WithdrawalsIndicator = () => {
 };
 
 export const Portfolio = () => {
-  const { view, setView } = useSidebar();
+  const { init, view, setView } = useSidebar();
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
@@ -47,10 +47,10 @@ export const Portfolio = () => {
 
   // Make transfer sidebar open by default
   useEffect(() => {
-    if (view === null) {
+    if (init && view === null) {
       setView({ type: ViewType.Transfer });
     }
-  }, [view, setView]);
+  }, [init, view, setView]);
 
   const onMarketClick = useMarketClickHandler(true);
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
