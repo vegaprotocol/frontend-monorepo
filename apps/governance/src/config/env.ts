@@ -25,7 +25,7 @@ export const ContractAddresses: {
     claimAddress: customClaimAddress ?? '0x0',
     lockedAddress: customLockedAddress ?? '0x0',
   },
-  'MAINNET-MIRROR': {
+  MAINNET_MIRROR: {
     claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
     lockedAddress: '0x0', // TODO not deployed to this env
   },
