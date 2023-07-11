@@ -62,7 +62,7 @@ const TitleUpdater = ({
 export const MarketPage = () => {
   const { marketId } = useParams();
   const navigate = useNavigate();
-  const { view, setView } = useSidebar();
+  const { init, view, setView } = useSidebar();
   const { screenSize } = useScreenDimensions();
   const largeScreen = ['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize);
   const update = useGlobalStore((store) => store.update);
@@ -84,10 +84,10 @@ export const MarketPage = () => {
 
   // Make sidebar open on deal ticket by default
   useEffect(() => {
-    if (view === null) {
+    if (init && view === null) {
       setView({ type: ViewType.Order });
     }
-  }, [view, setView]);
+  }, [init, view, setView]);
 
   const tradeView = useMemo(() => {
     if (largeScreen) {
