@@ -316,7 +316,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
       <div className="border-b border-default min-w-0">
         <HeaderStats market={market} />
       </div>
-      <div className="col-span-2 bg-vega-green">
+      <div className="col-span-2">
         <OracleBanner marketId={market?.id || ''} />
       </div>
       {sidebarOpen && (

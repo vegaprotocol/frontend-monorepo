@@ -538,11 +538,7 @@ export const DealTicket = ({
           pubKey={pubKey}
           onClickCollateral={onClickCollateral}
         />
-        <DealTicketButton
-          variant={
-            order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'
-          }
-        />
+        <DealTicketButton side={order.side} />
         <DealTicketFeeDetails
           onMarketClick={onMarketClick}
           feeEstimate={feeEstimate}
