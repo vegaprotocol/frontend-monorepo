@@ -340,7 +340,7 @@ context(
                 .contains(name)
                 .parent()
                 .siblings()
-                .then((elementAmount) => {
+                .should((elementAmount) => {
                   const displayedAmount = parseFloat(elementAmount.text());
                   expect(displayedAmount).be.gte(expectedAmount);
                 });

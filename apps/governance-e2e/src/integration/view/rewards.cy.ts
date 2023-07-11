@@ -42,11 +42,6 @@ context(
       // Skipping due to bug #3471 causing flaky failuress
       it.skip('should have option to view go to next and previous page', function () {
         waitForBeginningOfEpoch();
-        /**
-         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-         * You should use .then() to chain commands instead.
-         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-         **/
         cy.getByTestId('page-info')
           .should('contain.text', 'Page ')
           .invoke('text')
