@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { isBefore, formatDuration, intervalToDuration } from 'date-fns';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import type { Market } from '@vegaprotocol/markets';
 import {
   calcCandleVolume,
   marketProvider,
@@ -25,28 +25,24 @@ const getExpiryDate = (tags: string[], close?: string): Date | null => {
   return expiryDate || (close && new Date(close)) || null;
 };
 
-export const MarketSuccessorBanner = () => {
-  const { marketId } = useParams();
-
-  const { data } = useDataProvider({
-    dataProvider: marketProvider,
-    variables: { marketId: marketId || '' },
-    skip: !marketId,
-  });
-
+export const MarketSuccessorBanner = ({
+  market,
+}: {
+  market: Market | null;
+}) => {
   const { data: successorData } = useDataProvider({
     dataProvider: marketProvider,
     variables: {
-      marketId: data?.successorMarketID || '',
+      marketId: market?.successorMarketID || '',
     },
-    skip: !data?.successorMarketID,
+    skip: !market?.successorMarketID,
   });
   const [visible, setVisible] = useState(true);
 
-  const expiry = data
+  const expiry = market
     ? getExpiryDate(
-        data.tradableInstrument.instrument.metadata.tags || [],
-        data.marketTimestamps.close
+        market.tradableInstrument.instrument.metadata.tags || [],
+        market.marketTimestamps.close
       )
     : null;
 

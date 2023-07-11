@@ -14,5 +14,6 @@ module.exports = composePlugins(withNx(), withReact(), (config, context) => {
   return {
     ...config,
     plugins: [...additionalPlugins, ...config.plugins],
+    ignoreWarnings: [/Failed to parse source map/],
   };
 });

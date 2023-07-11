@@ -11,7 +11,7 @@ cp .env.[environment] .env.local
 Starting the app:
 
 ```bash
-yarn nx serve explorer
+yarn nx serve trading
 ```
 
 ### Configuration
@@ -26,7 +26,7 @@ Example configurations are provided here:
 For convenience, you can boot the app injecting one of the configurations above by running:
 
 ```bash
-yarn env-cmd -f .\apps\token\.env.{env} yarn nx run token:serve # e.g. stagnet1
+yarn env-cmd -f .\apps\trading\.env.{env} yarn nx run trading:serve # e.g. stagnet1
 ```
 
 There are a few different configuration options offered for this app:
