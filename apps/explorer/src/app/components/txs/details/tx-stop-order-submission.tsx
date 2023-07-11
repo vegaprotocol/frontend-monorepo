@@ -7,11 +7,63 @@ import { TableCell, TableRow, TableWithTbody } from '../../table';
 import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 import Hash from '../../links/hash';
 import type { components } from '../../../../types/explorer';
+import { StopOrderSetup } from './order/stop-order-setup';
+
+type StopOrderSetup = components['schemas']['v1StopOrderSetup'];
 
 interface TxDetailsOrderProps {
   txData: BlockExplorerTransactionResult | undefined;
   pubKey: string | undefined;
   blockData: TendermintBlocksResponse | undefined;
+}
+
+export function getStopTypeLabel(
+  risesAbove: StopOrderSetup | undefined,
+  fallsBelow: StopOrderSetup | undefined
+): string {
+  if (risesAbove && fallsBelow) {
+    return t('OCO (One Cancels Other)');
+  } else if (fallsBelow) {
+    return t('Falls Below');
+  } else if (risesAbove) {
+    return t('Rises Above');
+  } else {
+    return t('Stop Order');
+  }
+}
+
+export interface StopMarketIdProps {
+  risesAbove: StopOrderSetup | undefined;
+  fallsBelow: StopOrderSetup | undefined;
+  showMarketName?: boolean;
+}
+
+export function StopMarketId({
+  risesAbove,
+  fallsBelow,
+  showMarketName = false,
+}: StopMarketIdProps) {
+  const raMarketId = risesAbove?.orderSubmission?.marketId;
+  const fbMarketId = fallsBelow?.orderSubmission?.marketId;
+
+  if (raMarketId && fbMarketId) {
+    if (raMarketId === fbMarketId) {
+      return <MarketLink id={raMarketId} showMarketName={showMarketName} />;
+    } else {
+      return (
+        <>
+          <MarketLink id={raMarketId} showMarketName={showMarketName} />,
+          <MarketLink id={fbMarketId} showMarketName={showMarketName} />
+        </>
+      );
+    }
+  } else if (raMarketId) {
+    return <MarketLink id={raMarketId} showMarketName={showMarketName} />;
+  } else if (fbMarketId) {
+    return <MarketLink id={fbMarketId} showMarketName={showMarketName} />;
+  } else {
+    return '-';
+  }
 }
 
 /**
@@ -27,7 +79,6 @@ export const TxDetailsStopOrderSubmission = ({
 
   const tx: components['schemas']['v1StopOrdersSubmission'] =
     txData.command.stopOrdersSubmission;
-  const marketId = tx.risesAbove?.orderSubmission?.marketId || '-';
 
   let deterministicId = '';
 
@@ -37,26 +88,51 @@ export const TxDetailsStopOrderSubmission = ({
   }
 
   return (
-    <TableWithTbody className="mb-8" allowWrap={true}>
-      <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
-      <TableRow modifier="bordered">
-        <TableCell>{t('Order')}</TableCell>
-        <TableCell>
-          <Hash text={deterministicId} />
-        </TableCell>
-      </TableRow>
-      <TableRow modifier="bordered">
-        <TableCell>{t('Market ID')}</TableCell>
-        <TableCell>
-          <MarketLink id={marketId} showMarketName={false} />
-        </TableCell>
-      </TableRow>
-      <TableRow modifier="bordered">
-        <TableCell>{t('Market')}</TableCell>
-        <TableCell>
-          <MarketLink id={marketId} />
-        </TableCell>
-      </TableRow>
-    </TableWithTbody>
+    <>
+      <TableWithTbody className="mb-8" allowWrap={true}>
+        <TxDetailsShared
+          txData={txData}
+          pubKey={pubKey}
+          blockData={blockData}
+        />
+        <TableRow modifier="bordered">
+          <TableCell>{t('Order')}</TableCell>
+          <TableCell>
+            <Hash text={deterministicId} />
+          </TableCell>
+        </TableRow>
+        <TableRow modifier="bordered">
+          <TableCell>{t('Market ID')}</TableCell>
+          <TableCell>
+            <StopMarketId
+              risesAbove={tx.risesAbove}
+              fallsBelow={tx.fallsBelow}
+            />
+          </TableCell>
+        </TableRow>
+        <TableRow modifier="bordered">
+          <TableCell>{t('Market')}</TableCell>
+          <TableCell>
+            <StopMarketId
+              risesAbove={tx.risesAbove}
+              fallsBelow={tx.fallsBelow}
+              showMarketName={true}
+            />
+          </TableCell>
+        </TableRow>
+        <TableRow modifier="bordered">
+          <TableCell>{t('Stop Order Type')}</TableCell>
+          <TableCell>
+            {getStopTypeLabel(tx.risesAbove, tx.fallsBelow)}
+          </TableCell>
+        </TableRow>
+      </TableWithTbody>
+      {tx.risesAbove && (
+        <StopOrderSetup type={'RisesAbove'} {...tx.risesAbove} />
+      )}
+      {tx.fallsBelow && (
+        <StopOrderSetup type={'FallsBelow'} {...tx.fallsBelow} />
+      )}
+    </>
   );
 };
