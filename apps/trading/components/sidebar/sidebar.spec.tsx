@@ -97,13 +97,13 @@ describe('SidebarContent', () => {
     expect(container).toBeEmptyDOMElement();
 
     act(() => {
-      useSidebar.setState({ init: false, view: { type: ViewType.Transfer } });
+      useSidebar.setState({ view: { type: ViewType.Transfer } });
     });
 
     expect(screen.getByTestId('transfer')).toBeInTheDocument();
 
     act(() => {
-      useSidebar.setState({ init: false, view: { type: ViewType.Deposit } });
+      useSidebar.setState({ view: { type: ViewType.Deposit } });
     });
 
     expect(screen.getByTestId('deposit')).toBeInTheDocument();
@@ -119,19 +119,19 @@ describe('SidebarContent', () => {
     );
 
     act(() => {
-      useSidebar.setState({ init: false, view: { type: ViewType.Order } });
+      useSidebar.setState({ view: { type: ViewType.Order } });
     });
 
     expect(container).toBeEmptyDOMElement();
 
     act(() => {
-      useSidebar.setState({ init: false, view: { type: ViewType.Settings } });
+      useSidebar.setState({ view: { type: ViewType.Settings } });
     });
 
     expect(screen.getByTestId('settings')).toBeInTheDocument();
 
     act(() => {
-      useSidebar.setState({ init: false, view: { type: ViewType.Info } });
+      useSidebar.setState({ view: { type: ViewType.Info } });
     });
 
     expect(container).toBeEmptyDOMElement();
