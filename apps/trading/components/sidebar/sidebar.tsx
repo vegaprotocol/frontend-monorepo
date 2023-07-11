@@ -268,19 +268,21 @@ const CloseSidebar = () => {
 };
 
 export const useSidebar = create<{
+  init: boolean;
   view: SidebarView | null;
   setView: (view: SidebarView | null) => void;
 }>()(
   persist(
     (set) => ({
+      init: true,
       view: null,
       setView: (x) =>
         set(() => {
           if (x === null) {
-            return { view: null };
+            return { view: null, init: false };
           }
 
-          return { view: x };
+          return { view: x, init: false };
         }),
     }),
     {
