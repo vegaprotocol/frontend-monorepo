@@ -22,6 +22,33 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
+      - name: Init variables
+        run: |
+          echo IS_PR=false >> $GITHUB_ENV
+          echo IS_MAINNET_RELEASE=false >> $GITHUB_ENV
+          echo IS_TESTNET_RELEASE=false >> $GITHUB_ENV
+          echo IS_IPFS_RELEASE=false >> $GITHUB_ENV
+
+      - name: Is PR
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
+        run: |
+          echo IS_PR=true >> $GITHUB_ENV
+
+      - name: Is mainnet release
+        if: ${{ contains(github.ref, 'release/mainnnet') && !contains(github.ref, 'mirror') }}
+        run: |
+          echo IS_MAINNET_RELEASE=true >> $GITHUB_ENV
+
+      - name: Is testnet release
+        if: ${{ contains(github.ref, 'release/testnet') }}
+        run: |
+          echo IS_TESTNET_RELEASE=true >> $GITHUB_ENV
+
+      - name: Is IPFS Release
+        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( env.IS_MAINNET_RELEASE == 'true' || env.IS_TESTNET_RELEASE == 'true' ) }}
+        run: |
+          echo IS_IPFS_RELEASE=true >> $GITHUB_ENV
+
       - name: Set up QEMU
         id: quemu
         uses: docker/setup-qemu-action@v2
@@ -33,7 +60,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Log in to the Container registry (ghcr)
-        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
+        if: ${{ env.IS_PR == 'true' }}
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -42,9 +69,8 @@ jobs:
 
       - name: Log in to the Container registry (docker hub)
         uses: docker/login-action@v2
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) }}
+        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
         with:
-          # registry: registry.hub.docker.com
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
@@ -70,7 +96,8 @@ jobs:
           bucketName=''
 
           if [[ "${{ github.ref }}" =~ .*release/.* ]]; then
-            envName="$(echo ${{ github.ref }} | rev | cut -d '/' -f 1 | rev)"
+            # remove prefixing release/ and take the first string limited by / which is supposed to be name of the environment for releasing
+            envName="$(echo ${{ github.ref }} | sed -e "s|release/||" | cut -d '/' -f 1 )"
           elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
             envName="stagnet1"
             if [[ "${{ matrix.app }}" = "multisig-signer" ]]; then
@@ -145,7 +172,7 @@ jobs:
             ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
 
       - name: Image digest
-        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
+        if: ${{ env.IS_PR == 'true' }}
         run: echo ${{ steps.docker_build.outputs.digest }}
 
       - name: Sanity check docker image
@@ -160,7 +187,7 @@ jobs:
         uses: docker/build-push-action@v3
         continue-on-error: true
         id: ghcr-push
-        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
+        if: ${{ env.IS_PR == 'true' }}
         with:
           context: .
           file: docker/node-outside-docker.Dockerfile
@@ -175,7 +202,7 @@ jobs:
         uses: docker/build-push-action@v3
         continue-on-error: true
         id: dockerhub-push
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) }}
+        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
         with:
           context: .
           file: docker/node-outside-docker.Dockerfile
@@ -185,7 +212,7 @@ jobs:
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             vegaprotocol/${{ matrix.app }}:${{ github.sha }}
-            vegaprotocol/${{ matrix.app }}:${{ endsWith(github.ref, 'main') && 'mainnet' || endsWith(github.ref, 'release/testnet') && 'testnet' || '' }}
+            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || '' }}
 
       - name: Publish dist as docker image (ghcr - retry)
         uses: docker/build-push-action@v3
@@ -212,13 +239,13 @@ jobs:
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             vegaprotocol/${{ matrix.app }}:${{ github.sha }}
-            vegaprotocol/${{ matrix.app }}:${{ endsWith(github.ref, 'main') && 'mainnet' || endsWith(github.ref, 'release/testnet') && 'testnet' || '' }}
+            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || '' }}
 
       # bucket creation in github.com/vegaprotocol/terraform//frontend
       - name: Publish dist to s3
         uses: jakejarvis/s3-sync-action@master
         # s3 releases are not happening for trading on mainnet - it's IPFS
-        if: ${{ github.event_name == 'push' && ( matrix.app != 'trading' || (matrix.app == 'trading' && !( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) ) ) }}
+        if: ${{ env.IS_IPFS_RELEASE == 'false' }}
         with:
           args: --acl private --follow-symlinks --delete
         env:
@@ -229,11 +256,11 @@ jobs:
           SOURCE_DIR: 'dist-result'
 
       - name: Install aws CLI
-        if: ${{ github.event_name == 'push' && ( matrix.app != 'trading' || (matrix.app == 'trading' && !( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) ) ) }}
+        if: ${{ env.IS_IPFS_RELEASE == 'false' }}
         uses: unfor19/install-aws-cli-action@master
 
       - name: Perform cache invalidation
-        if: ${{ github.event_name == 'push' && ( matrix.app != 'trading' || (matrix.app == 'trading' && !( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) ) ) }}
+        if: ${{ env.IS_IPFS_RELEASE == 'false' }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -246,14 +273,14 @@ jobs:
 
       - name: Add preview label
         uses: actions-ecosystem/action-add-labels@v1
-        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
+        if: ${{ env.IS_PR == 'true' }}
         with:
           labels: ${{ matrix.app }}-preview
           number: ${{ github.event.number }}
 
       - name: Trigger fleek deployment
         # release to ipfs happens only on mainnet (represented by main branch) for trading
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( endsWith(github.ref, 'main') || endsWith(github.ref, 'release/testnet') ) }}
+        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
         run: |
           if echo ${{ github.ref }} | grep -q main; then
             # display info about app
@@ -283,7 +310,7 @@ jobs:
           fi
 
       - name: Check out ipfs-redirect
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( endsWith(github.ref, 'main') || endsWith(github.ref, 'testnet') ) }}
+        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
         uses: actions/checkout@v3
         with:
           repository: 'vegaprotocol/ipfs-redirect'
@@ -292,7 +319,7 @@ jobs:
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
       - name: Update interstitial page to point to the new console
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( endsWith(github.ref, 'main') || endsWith(github.ref, 'testnet') ) }}
+        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
         run: |
@@ -314,11 +341,11 @@ jobs:
             git config --global user.name "vega-ci-bot"
 
             # update CID files
-            if echo ${{ github.ref }} | grep -q main; then
+            if [[ "${{ env.IS_MAINNET_RELEASE }}" = "true" ]]; then
               echo $new_hash > cidv0-mainnet.txt
               echo $new_cid > cidv1-mainnet.txt
               git add cidv0-mainnet.txt cidv1-mainnet.txt
-            elif echo ${{ github.ref }} | grep -q release/testnet; then
+            elif [[ "${{ env.IS_TESTNET_RELEASE }}" = "true" ]]; then
               echo $new_hash > cidv0-fairground.txt
               echo $new_cid > cidv1-fairground.txt
               git add cidv0-fairground.txt cidv1-fairground.txt

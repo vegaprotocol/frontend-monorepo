@@ -5,7 +5,6 @@ on:
     branches:
       - release/*
       - develop
-      - main
   # uncomment pull_request and comment pull_request_target to test CI changes against feature branch not target branch (develop)
   # pull_request:
   pull_request_target:
@@ -178,6 +177,22 @@ jobs:
 
               projects_array+=("ui-toolkit")
             fi
+          fi
+
+          if [[ "${{ github.ref }}" == release* ]]; then
+            case "${{ github.ref }}" in
+            *trading)
+              projects_array=(trading)
+              projects_e2e_array=(trading)
+            ;;
+            *governance)
+              projects_array=(governance)
+              projects_e2e_array=(governance)
+            ;;
+            *explorer)
+              projects_array=(explorer)
+              projects_e2e_array=(explorer)
+            ;;
           fi
 
           echo "Projects: ${projects_array[@]}"
