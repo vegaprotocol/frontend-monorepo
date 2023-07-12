@@ -1,15 +1,12 @@
 /// <reference types="cypress" />
 
 import {
-  navigateTo,
-  navigation,
   turnTelemetryOff,
   waitForSpinner,
 } from '../../support/common.functions';
 import {
   createTenDigitUnixTimeStampForSpecifiedDays,
   enterRawProposalBody,
-  enterUniqueFreeFormProposalBody,
   goToMakeNewProposal,
   governanceProposalType,
 } from '../../support/governance.functions';
