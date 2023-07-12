@@ -182,18 +182,19 @@ jobs:
           # if branch starts with release/ and ends with trading / governance or explorer - overwrite the array of affected projects with fixed single application
           if [[ "${{ github.ref }}" == release* ]]; then
             case "${{ github.ref }}" in
-            *trading)
-              projects_array=(trading)
-              projects_e2e_array=(trading)
-            ;;
-            *governance)
-              projects_array=(governance)
-              projects_e2e_array=(governance)
-            ;;
-            *explorer)
-              projects_array=(explorer)
-              projects_e2e_array=(explorer)
-            ;;
+              *trading)
+                projects_array=(trading)
+                projects_e2e_array=(trading)
+              ;;
+              *governance)
+                projects_array=(governance)
+                projects_e2e_array=(governance)
+              ;;
+              *explorer)
+                projects_array=(explorer)
+                projects_e2e_array=(explorer)
+              ;;
+            esac
           fi
 
           echo "Projects: ${projects_array[@]}"
