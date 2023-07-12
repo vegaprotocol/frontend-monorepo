@@ -4,6 +4,7 @@ The front-end monorepo provides a toolkit for building apps that interact with V
 
 This repository is managed using [Nx](https://nx.dev).
 
+
 # 🔎 Applications in this repo
 
 ### [Block explorer](./apps/explorer)
