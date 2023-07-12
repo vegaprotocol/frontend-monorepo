@@ -15,9 +15,11 @@ import { IconGlobe } from './svg-icons/icon-globe';
 import { IconInfo } from './svg-icons/icon-info';
 import { IconKebab } from './svg-icons/icon-kebab';
 import { IconLinkedIn } from './svg-icons/icon-linkedin';
+import { IconMinus } from './svg-icons/icon-minus';
 import { IconMoon } from './svg-icons/icon-moon';
 import { IconOpenExternal } from './svg-icons/icon-open-external';
 import { IconQuestionMark } from './svg-icons/icon-question-mark';
+import { IconPlus } from './svg-icons/icon-plus';
 import { IconTick } from './svg-icons/icon-tick';
 import { IconTransfer } from './svg-icons/icon-transfer';
 import { IconTrendUp } from './svg-icons/icon-trend-up';
@@ -42,9 +44,11 @@ export enum VegaIconNames {
   INFO = 'info',
   KEBAB = 'kebab',
   LINKEDIN = 'linkedin',
+  MINUS = 'minus',
   MOON = 'moon',
   OPEN_EXTERNAL = 'open-external',
   QUESTION_MARK = 'question-mark',
+  PLUS = 'plus',
   TICK = 'tick',
   TRANSFER = 'transfer',
   TREND_UP = 'trend-up',
@@ -76,7 +80,9 @@ export const VegaIconNameMap: Record<
   info: IconInfo,
   kebab: IconKebab,
   linkedin: IconLinkedIn,
+  minus: IconMinus,
   moon: IconMoon,
+  plus: IconPlus,
   tick: IconTick,
   transfer: IconTransfer,
   twitter: IconTwitter,
