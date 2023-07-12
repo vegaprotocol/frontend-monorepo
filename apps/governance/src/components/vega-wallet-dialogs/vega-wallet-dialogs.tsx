@@ -13,12 +13,6 @@ export const VegaWalletDialogs = () => {
     <>
       <VegaConnectDialog
         connectors={Connectors}
-        onChangeOpen={(open) =>
-          appDispatch({
-            type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
-            isOpen: open,
-          })
-        }
         riskMessage={<RiskMessage />}
       />
 
