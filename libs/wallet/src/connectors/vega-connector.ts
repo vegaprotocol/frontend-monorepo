@@ -415,7 +415,7 @@ export interface PubKey {
 }
 
 export interface VegaConnector {
-  url: string | null;
+  url?: string | null;
 
   /** Connect to wallet and return keys */
   connect(): Promise<PubKey[] | null>;
