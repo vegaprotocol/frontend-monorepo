@@ -215,3 +215,5 @@ vega wallet service run -n DV --load-tokens --tokens-passphrase-file passphrase 
 # 📑 License
 
 [MIT](./LICENSE)
+
+#### Security Test Proof.
