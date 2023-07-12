@@ -179,6 +179,7 @@ jobs:
             fi
           fi
 
+          # if branch starts with release/ and ends with trading / governance or explorer - overwrite the array of affected projects with fixed single application
           if [[ "${{ github.ref }}" == release* ]]; then
             case "${{ github.ref }}" in
             *trading)
