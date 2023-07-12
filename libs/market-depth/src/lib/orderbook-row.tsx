@@ -26,7 +26,7 @@ const CumulationBar = ({
     <div
       data-testid={`${VolumeType.bid === type ? 'bid' : 'ask'}-bar`}
       className={classNames(
-        'absolute top-0 left-0 h-full transition-all',
+        'absolute top-0 left-0 h-full',
         type === VolumeType.bid
           ? 'bg-market-green-300 dark:bg-market-green/50'
           : 'bg-market-red-300 dark:bg-market-red/30'

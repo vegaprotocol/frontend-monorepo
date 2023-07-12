@@ -1,14 +1,15 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import ReactVirtualizedAutoSizer from 'react-virtualized-auto-sizer';
 import {
   addDecimalsFormatNumber,
   formatNumberFixed,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
+import { usePrevious } from '@vegaprotocol/react-helpers';
 import { OrderbookRow } from './orderbook-row';
 import type { OrderbookRowData } from './orderbook-data';
 import { compactRows, VolumeType } from './orderbook-data';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { Splash, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import { useState } from 'react';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
@@ -99,12 +100,40 @@ export const Orderbook = ({
   const groupedBids = useMemo(() => {
     return compactRows(bids, VolumeType.bid, resolution);
   }, [bids, resolution]);
+  const previousMidPrice = usePrevious(midPrice);
+  const iconRef = useRef(
+    <span className="text-vega-blue-500 dark:text-vega-blue-500">
+      <VegaIcon name={VegaIconNames.BULLET} />
+    </span>
+  );
+  const arrowIcon = useMemo(() => {
+    if (previousMidPrice !== midPrice) {
+      iconRef.current = (
+        <span
+          className={classNames(
+            previousMidPrice > midPrice
+              ? 'text-market-red dark:text-market-red'
+              : 'text-market-green-600 dark:text-market-green'
+          )}
+        >
+          <VegaIcon
+            name={
+              previousMidPrice > midPrice
+                ? VegaIconNames.ARROW_DOWN
+                : VegaIconNames.ARROW_UP
+            }
+          />
+        </span>
+      );
+    }
+    return iconRef.current;
+  }, [previousMidPrice, midPrice]);
 
   return (
     <div className="h-full pl-1 text-xs grid grid-rows-[1fr_min-content]">
       <div>
-        <ReactVirtualizedAutoSizer disableWidth>
-          {({ height }) => {
+        <ReactVirtualizedAutoSizer>
+          {({ width, height }) => {
             const limit = Math.max(
               1,
               Math.floor((height - midHeight) / 2 / (rowHeight + rowGap))
@@ -116,6 +145,7 @@ export const Orderbook = ({
                 className="overflow-hidden grid"
                 data-testid="orderbook-grid-element"
                 style={{
+                  width: width + 'px',
                   height: height + 'px',
                   gridTemplateRows: `1fr ${midHeight}px 1fr`, // cannot use tailwind here as tailwind will not parse a class string with interpolation
                 }}
@@ -140,6 +170,7 @@ export const Orderbook = ({
                             {addDecimalsFormatNumber(midPrice, decimalPlaces)}
                           </span>
                           <span className="text-base">{assetSymbol}</span>
+                          {arrowIcon}
                         </>
                       )}
                     </div>
