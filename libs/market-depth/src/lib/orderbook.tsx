@@ -1,14 +1,24 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import ReactVirtualizedAutoSizer from 'react-virtualized-auto-sizer';
 import {
   addDecimalsFormatNumber,
   formatNumberFixed,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
+import { usePrevious } from '@vegaprotocol/react-helpers';
 import { OrderbookRow } from './orderbook-row';
 import type { OrderbookRowData } from './orderbook-data';
 import { compactRows, VolumeType } from './orderbook-data';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import {
+  Splash,
+  VegaIcon,
+  VegaIconNames,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Button,
+} from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import { useState } from 'react';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
@@ -26,13 +36,15 @@ const OrderbookTable = ({
   decimalPlaces,
   positionDecimalPlaces,
   onClick,
+  width,
 }: {
   rows: OrderbookRowData[];
   resolution: number;
   decimalPlaces: number;
   positionDecimalPlaces: number;
   type: VolumeType;
-  onClick?: (price: string) => void;
+  onClick?: (args: { price?: string; size?: string }) => void;
+  width: number;
 }) => {
   return (
     <div
@@ -59,6 +71,7 @@ const OrderbookTable = ({
             cumulativeValue={data.cumulativeVol.value}
             cumulativeRelativeValue={data.cumulativeVol.relativeValue}
             type={type}
+            width={width}
           />
         ))}
       </div>
@@ -69,7 +82,7 @@ const OrderbookTable = ({
 interface OrderbookProps {
   decimalPlaces: number;
   positionDecimalPlaces: number;
-  onClick?: (price: string) => void;
+  onClick?: (args: { price?: string; size?: string }) => void;
   midPrice?: string;
   bids: PriceLevelFieldsFragment[];
   asks: PriceLevelFieldsFragment[];
@@ -99,12 +112,67 @@ export const Orderbook = ({
   const groupedBids = useMemo(() => {
     return compactRows(bids, VolumeType.bid, resolution);
   }, [bids, resolution]);
+  const [isOpen, setOpen] = useState(false);
+  const previousMidPrice = usePrevious(midPrice);
+  const iconRef = useRef(
+    <span className="text-vega-blue-500 dark:text-vega-blue-500">
+      <VegaIcon name={VegaIconNames.BULLET} />
+    </span>
+  );
+  const arrowIcon = useMemo(() => {
+    if (midPrice && previousMidPrice !== midPrice) {
+      iconRef.current = (
+        <span
+          className={classNames(
+            (previousMidPrice || '') > midPrice
+              ? 'text-market-red dark:text-market-red'
+              : 'text-market-green-600 dark:text-market-green'
+          )}
+        >
+          <VegaIcon
+            name={
+              (previousMidPrice || '') > midPrice
+                ? VegaIconNames.ARROW_DOWN
+                : VegaIconNames.ARROW_UP
+            }
+          />
+        </span>
+      );
+    }
+    return iconRef.current;
+  }, [previousMidPrice, midPrice]);
+
+  const formatResolution = useCallback(
+    (r: number) => {
+      return formatNumberFixed(
+        Math.log10(r) - decimalPlaces > 0
+          ? Math.pow(10, Math.log10(r) - decimalPlaces)
+          : 0,
+        decimalPlaces - Math.log10(r)
+      );
+    },
+    [decimalPlaces]
+  );
+
+  const increaseResolution = useCallback(() => {
+    const index = resolutions.indexOf(resolution);
+    if (index < resolutions.length - 1) {
+      setResolution(resolutions[index + 1]);
+    }
+  }, [setResolution, resolution, resolutions]);
+
+  const decreaseResolution = useCallback(() => {
+    const index = resolutions.indexOf(resolution);
+    if (index > 0) {
+      setResolution(resolutions[index - 1]);
+    }
+  }, [setResolution, resolution, resolutions]);
 
   return (
     <div className="h-full pl-1 text-xs grid grid-rows-[1fr_min-content]">
       <div>
-        <ReactVirtualizedAutoSizer disableWidth>
-          {({ height }) => {
+        <ReactVirtualizedAutoSizer>
+          {({ width, height }) => {
             const limit = Math.max(
               1,
               Math.floor((height - midHeight) / 2 / (rowHeight + rowGap))
@@ -116,6 +184,7 @@ export const Orderbook = ({
                 className="overflow-hidden grid"
                 data-testid="orderbook-grid-element"
                 style={{
+                  width: width + 'px',
                   height: height + 'px',
                   gridTemplateRows: `1fr ${midHeight}px 1fr`, // cannot use tailwind here as tailwind will not parse a class string with interpolation
                 }}
@@ -129,6 +198,7 @@ export const Orderbook = ({
                       decimalPlaces={decimalPlaces}
                       positionDecimalPlaces={positionDecimalPlaces}
                       onClick={onClick}
+                      width={width}
                     />
                     <div className="flex items-center justify-center gap-2">
                       {midPrice && (
@@ -140,6 +210,7 @@ export const Orderbook = ({
                             {addDecimalsFormatNumber(midPrice, decimalPlaces)}
                           </span>
                           <span className="text-base">{assetSymbol}</span>
+                          {arrowIcon}
                         </>
                       )}
                     </div>
@@ -150,6 +221,7 @@ export const Orderbook = ({
                       decimalPlaces={decimalPlaces}
                       positionDecimalPlaces={positionDecimalPlaces}
                       onClick={onClick}
+                      width={width}
                     />
                   </>
                 ) : (
@@ -162,26 +234,59 @@ export const Orderbook = ({
           }}
         </ReactVirtualizedAutoSizer>
       </div>
-      <div className="border-t border-default">
-        <select
-          onChange={(e) => {
-            setResolution(Number(e.currentTarget.value));
-          }}
-          value={resolution}
-          className="block bg-neutral-100 dark:bg-neutral-700 font-mono text-right"
-          data-testid="resolution"
+      <div className="border-t border-default flex">
+        <Button
+          onClick={increaseResolution}
+          size="xs"
+          disabled={resolutions.indexOf(resolution) >= resolutions.length - 1}
+          className="text-black dark:text-white rounded-none border-y-0 border-l-0 flex items-center border-r-1"
         >
-          {resolutions.map((r) => (
-            <option key={r} value={r}>
-              {formatNumberFixed(
-                Math.log10(r) - decimalPlaces > 0
-                  ? Math.pow(10, Math.log10(r) - decimalPlaces)
-                  : 0,
-                decimalPlaces - Math.log10(r)
-              )}
-            </option>
-          ))}
-        </select>
+          <VegaIcon size={12} name={VegaIconNames.PLUS} />
+        </Button>
+        <DropdownMenu
+          open={isOpen}
+          onOpenChange={(open) => setOpen(open)}
+          trigger={
+            <DropdownMenuTrigger
+              data-testid="resolution"
+              className="flex justify-between px-1 items-center"
+              style={{
+                width: `${
+                  Math.max.apply(
+                    null,
+                    resolutions.map((item) => formatResolution(item).length)
+                  ) + 3
+                }ch`,
+              }}
+            >
+              <VegaIcon
+                size={12}
+                name={
+                  isOpen ? VegaIconNames.CHEVRON_UP : VegaIconNames.CHEVRON_DOWN
+                }
+              />
+              <div className="text-xs text-left">
+                {formatResolution(resolution)}
+              </div>
+            </DropdownMenuTrigger>
+          }
+        >
+          <DropdownMenuContent align="start">
+            {resolutions.map((r) => (
+              <DropdownMenuItem key={r} onClick={() => setResolution(r)}>
+                {formatResolution(r)}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Button
+          onClick={decreaseResolution}
+          size="xs"
+          disabled={resolutions.indexOf(resolution) <= 0}
+          className="text-black dark:text-white rounded-none border-y-0 border-l-1 flex items-center"
+        >
+          <VegaIcon size={12} name={VegaIconNames.MINUS} />
+        </Button>
       </div>
     </div>
   );
