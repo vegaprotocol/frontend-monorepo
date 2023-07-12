@@ -144,6 +144,7 @@ export const KeyDetailsInfoPanel = ({ market }: MarketInfoProps) => {
       data={{
         name: market.tradableInstrument.instrument.name,
         marketID: market.id,
+        parentMarketID: market.parentMarketID,
         tradingMode:
           market.tradingMode && MarketTradingModeMapping[market.tradingMode],
         marketDecimalPlaces: market.decimalPlaces,
