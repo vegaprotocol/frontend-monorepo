@@ -68,14 +68,15 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
 
     validateMarketDataRow(0, 'Name', 'BTCUSD Monthly (30 Jun 2022)');
     validateMarketDataRow(1, 'Market ID', 'market-0');
+    validateMarketDataRow(2, 'Parent Market ID', 'market-1');
     validateMarketDataRow(
-      2,
+      3,
       'Trading Mode',
       MarketTradingModeMapping.TRADING_MODE_CONTINUOUS
     );
-    validateMarketDataRow(3, 'Market Decimal Places', '5');
-    validateMarketDataRow(4, 'Position Decimal Places', '0');
-    validateMarketDataRow(5, 'Settlement Asset Decimal Places', '5');
+    validateMarketDataRow(4, 'Market Decimal Places', '5');
+    validateMarketDataRow(5, 'Position Decimal Places', '0');
+    validateMarketDataRow(6, 'Settlement Asset Decimal Places', '5');
   });
 
   it('instrument displayed', () => {

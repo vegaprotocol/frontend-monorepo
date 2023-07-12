@@ -152,5 +152,6 @@ query MarketInfo($marketId: ID!) {
         }
       }
     }
+    parentMarketID
   }
 }

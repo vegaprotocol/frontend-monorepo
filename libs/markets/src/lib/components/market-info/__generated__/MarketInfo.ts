@@ -168,6 +168,7 @@ export const MarketInfoDocument = gql`
         }
       }
     }
+    parentMarketID
   }
 }
     ${DataSourceFragmentDoc}`;

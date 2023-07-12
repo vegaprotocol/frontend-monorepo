@@ -2,6 +2,7 @@ import { IconArrowDown } from './svg-icons/icon-arrow-down';
 import { IconArrowRight } from './svg-icons/icon-arrow-right';
 import { IconBreakdown } from './svg-icons/icon-breakdown';
 import { IconChevronDown } from './svg-icons/icon-chevron-down';
+import { IconChevronLeft } from './svg-icons/icon-chevron-left';
 import { IconChevronUp } from './svg-icons/icon-chevron-up';
 import { IconCopy } from './svg-icons/icon-copy';
 import { IconCross } from './svg-icons/icon-cross';
@@ -26,6 +27,7 @@ export enum VegaIconNames {
   ARROW_RIGHT = 'arrow-right',
   BREAKDOWN = 'breakdown',
   CHEVRON_DOWN = 'chevron-down',
+  CHEVRON_LEFT = 'chevron-left',
   CHEVRON_UP = 'chevron-up',
   COPY = 'copy',
   CROSS = 'cross',
@@ -53,6 +55,7 @@ export const VegaIconNameMap: Record<
   'arrow-down': IconArrowDown,
   'arrow-right': IconArrowRight,
   'chevron-down': IconChevronDown,
+  'chevron-left': IconChevronLeft,
   'chevron-up': IconChevronUp,
   'open-external': IconOpenExternal,
   'question-mark': IconQuestionMark,

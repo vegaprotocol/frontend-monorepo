@@ -63,7 +63,7 @@ describe(
       cy.contains('Hosted Fairground wallet');
 
       cy.getByTestId('connectors-list')
-        .find('[data-testid="connector-hosted"]')
+        .find('[data-testid="connector-rest"]')
         .click();
       cy.getByTestId(form).find('#wallet').click().type('user');
       cy.getByTestId(form).find('#passphrase').click().type('pass');
@@ -89,7 +89,7 @@ describe(
       );
       cy.getByTestId(connectVegaBtn).click();
       cy.getByTestId('connectors-list')
-        .find('[data-testid="connector-hosted"]')
+        .find('[data-testid="connector-rest"]')
         .click();
       cy.getByTestId(form).find('#wallet').click().type('invalid name');
       cy.getByTestId(form).find('#passphrase').click().type('invalid password');
@@ -100,7 +100,7 @@ describe(
     it('doesnt connect with empty fields', () => {
       cy.getByTestId(connectVegaBtn).click();
       cy.getByTestId('connectors-list')
-        .find('[data-testid="connector-hosted"]')
+        .find('[data-testid="connector-rest"]')
         .click();
 
       cy.getByTestId('rest-connector-form').find('button[type=submit]').click();
