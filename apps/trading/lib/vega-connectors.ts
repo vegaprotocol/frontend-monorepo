@@ -2,10 +2,12 @@ import {
   RestConnector,
   JsonRpcConnector,
   ViewConnector,
+  InjectedConnector,
 } from '@vegaprotocol/wallet';
 
 export const rest = new RestConnector();
 export const jsonRpc = new JsonRpcConnector();
+export const injected = new InjectedConnector();
 
 let view: ViewConnector;
 if (typeof window !== 'undefined') {
@@ -16,6 +18,7 @@ if (typeof window !== 'undefined') {
 }
 
 export const Connectors = {
+  injected,
   rest,
   jsonRpc,
   view,

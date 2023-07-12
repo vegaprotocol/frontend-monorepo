@@ -16,6 +16,7 @@ import {
 import type { VegaConnectDialogProps } from '..';
 import {
   ClientErrors,
+  InjectedConnector,
   JsonRpcConnector,
   RestConnector,
   ViewConnector,
@@ -24,6 +25,12 @@ import {
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { ChainIdQuery } from './__generated__/ChainId';
 import { ChainIdDocument } from './__generated__/ChainId';
+import {
+  mockBrowserWallet,
+  clearBrowserWallet,
+  delayedReject,
+  delayedResolve,
+} from '../test-helpers';
 
 const mockUpdateDialogOpen = jest.fn();
 const mockCloseVegaDialog = jest.fn();
@@ -49,10 +56,12 @@ const INITIAL_KEY = 'some-key';
 const rest = new RestConnector();
 const jsonRpc = new JsonRpcConnector();
 const view = new ViewConnector(INITIAL_KEY);
+const injected = new InjectedConnector();
 const connectors = {
   rest,
   jsonRpc,
   view,
+  injected,
 };
 beforeEach(() => {
   jest.clearAllMocks();
@@ -105,12 +114,23 @@ describe('VegaConnectDialog', () => {
     expect(screen.getByTestId('connector-jsonRpc')).toHaveTextContent(
       'Connect Vega wallet'
     );
-    expect(screen.getByTestId('connector-hosted')).toHaveTextContent(
+    expect(screen.getByTestId('connector-rest')).toHaveTextContent(
       'Hosted Fairground wallet'
     );
     expect(screen.getByTestId('connector-view')).toHaveTextContent(
       'View as vega user'
     );
+  });
+
+  it('displays browser wallet option if detected on window object', async () => {
+    mockBrowserWallet();
+    render(generateJSX());
+    const list = await screen.findByTestId('connectors-list');
+    expect(list.children).toHaveLength(4);
+    expect(screen.getByTestId('connector-injected')).toHaveTextContent(
+      'Connect Web wallet'
+    );
+    clearBrowserWallet();
   });
 
   describe('RestConnector', () => {
@@ -229,17 +249,19 @@ describe('VegaConnectDialog', () => {
     beforeEach(() => {
       spyOnCheckCompat = jest
         .spyOn(connectors.jsonRpc, 'checkCompat')
-        .mockImplementation(() => delayedResolve(true));
+        .mockImplementation(() => delayedResolve(true, delay));
       spyOnGetChainId = jest
         .spyOn(connectors.jsonRpc, 'getChainId')
-        .mockImplementation(() => delayedResolve({ chainID: mockChainId }));
+        .mockImplementation(() =>
+          delayedResolve({ chainID: mockChainId }, delay)
+        );
       spyOnConnectWallet = jest
         .spyOn(connectors.jsonRpc, 'connectWallet')
-        .mockImplementation(() => delayedResolve(null));
+        .mockImplementation(() => delayedResolve(null, delay));
       spyOnConnect = jest
         .spyOn(connectors.jsonRpc, 'connect')
         .mockImplementation(() =>
-          delayedResolve([{ publicKey: 'pubkey', name: 'test key 1' }])
+          delayedResolve([{ publicKey: 'pubkey', name: 'test key 1' }], delay)
         );
     });
 
@@ -351,18 +373,6 @@ describe('VegaConnectDialog', () => {
       expect(screen.getByText('An unknown error occurred')).toBeInTheDocument();
     });
 
-    function delayedResolve<T>(result: T): Promise<T> {
-      return new Promise((resolve) => {
-        setTimeout(() => resolve(result), delay);
-      });
-    }
-
-    function delayedReject<T>(result: T): Promise<T> {
-      return new Promise((_, reject) => {
-        setTimeout(() => reject(result), delay);
-      });
-    }
-
     async function selectJsonRpc() {
       expect(await screen.findByRole('dialog')).toBeInTheDocument();
       fireEvent.click(await screen.findByTestId('connector-jsonRpc'));
@@ -438,5 +448,110 @@ describe('VegaConnectDialog', () => {
         );
       });
     });
+  });
+
+  describe('InjectedConnector', () => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+      localStorage.clear();
+    });
+
+    afterEach(() => {
+      clearBrowserWallet();
+    });
+
+    it('connects', async () => {
+      const delay = 100;
+      const vegaWindow = {
+        getChainId: jest.fn(() =>
+          delayedResolve({ chainID: mockChainId }, delay)
+        ),
+        connectWallet: jest.fn(() => delayedResolve(null, delay)),
+        disconnectWallet: jest.fn(() => delayedResolve(undefined, delay)),
+        listKeys: jest.fn(() =>
+          delayedResolve(
+            {
+              keys: [{ name: 'test key', publicKey: '0x123' }],
+            },
+            100
+          )
+        ),
+      };
+      mockBrowserWallet(vegaWindow);
+      render(generateJSX());
+      await selectInjected();
+
+      // Chain check
+      expect(screen.getByText('Verifying chain')).toBeInTheDocument();
+      expect(vegaWindow.getChainId).toHaveBeenCalled();
+      await act(async () => {
+        jest.advanceTimersByTime(delay);
+      });
+
+      // Await user connect
+      expect(screen.getByText('Connecting...')).toBeInTheDocument();
+      expect(vegaWindow.connectWallet).toHaveBeenCalled();
+      await act(async () => {
+        jest.advanceTimersByTime(delay);
+      });
+
+      // Connect (list keys)
+      expect(vegaWindow.listKeys).toHaveBeenCalled();
+      await act(async () => {
+        jest.advanceTimersByTime(delay);
+      });
+      expect(screen.getByText('Successfully connected')).toBeInTheDocument();
+
+      await act(async () => {
+        jest.advanceTimersByTime(CLOSE_DELAY);
+      });
+      expect(mockCloseVegaDialog).toHaveBeenCalledWith();
+    });
+
+    it('handles invalid chain', async () => {
+      const delay = 100;
+      const invalidChain = 'invalid chain';
+      const vegaWindow = {
+        getChainId: jest.fn(() =>
+          delayedResolve({ chainID: invalidChain }, delay)
+        ),
+        connectWallet: jest.fn(() => delayedResolve(null, delay)),
+        disconnectWallet: jest.fn(() => delayedResolve(undefined, delay)),
+        listKeys: jest.fn(() =>
+          delayedResolve(
+            {
+              keys: [{ name: 'test key', publicKey: '0x123' }],
+            },
+            100
+          )
+        ),
+      };
+      mockBrowserWallet(vegaWindow);
+      render(generateJSX());
+      await selectInjected();
+
+      // Chain check
+      expect(screen.getByText('Verifying chain')).toBeInTheDocument();
+      expect(vegaWindow.getChainId).toHaveBeenCalled();
+      await act(async () => {
+        jest.advanceTimersByTime(delay);
+      });
+
+      expect(screen.getByText('Wrong network')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          new RegExp(`set your wallet network in your app to "${mockChainId}"`)
+        )
+      ).toBeInTheDocument();
+    });
+
+    async function selectInjected() {
+      expect(await screen.findByRole('dialog')).toBeInTheDocument();
+      fireEvent.click(await screen.findByTestId('connector-injected'));
+    }
   });
 });

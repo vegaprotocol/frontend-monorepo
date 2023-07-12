@@ -28,8 +28,8 @@ const CumulationBar = ({
       className={classNames(
         'absolute top-0 left-0 h-full transition-all',
         type === VolumeType.bid
-          ? 'bg-vega-green/20 dark:bg-vega-green/50'
-          : 'bg-vega-pink/20 dark:bg-vega-pink/30'
+          ? 'bg-market-green-300 dark:bg-market-green/50'
+          : 'bg-market-red-300 dark:bg-market-red/30'
       )}
       style={{
         width: `${cumulativeValue}%`,
@@ -93,8 +93,8 @@ export const OrderbookRow = React.memo(
             valueFormatted={addDecimalsFixedFormatNumber(price, decimalPlaces)}
             className={
               type === VolumeType.ask
-                ? '!text-vega-pink dark:text-vega-pink'
-                : 'text-vega-green-550 dark:text-vega-green'
+                ? 'text-market-red dark:text-market-red'
+                : 'text-market-green-600 dark:text-market-green'
             }
           />
           <NumericCell

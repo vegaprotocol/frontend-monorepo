@@ -27,11 +27,6 @@ context('Home Page', function () {
         16: 'Chain ID',
       };
 
-      /**
-       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-       * You should use .then() to chain commands instead.
-       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-       **/
       cy.get('[data-testid="stats-title"]')
         .each(($list, index) => {
           cy.wrap($list).should('contain.text', statTitles[index]);

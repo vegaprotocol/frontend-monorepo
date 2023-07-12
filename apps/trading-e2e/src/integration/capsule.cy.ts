@@ -2,7 +2,6 @@ import { removeDecimal } from '@vegaprotocol/cypress';
 import * as Schema from '@vegaprotocol/types';
 import {
   OrderStatusMapping,
-  OrderTimeInForceMapping,
   OrderTypeMapping,
   Side,
 } from '@vegaprotocol/types';
@@ -17,7 +16,6 @@ const orderStatus = 'status';
 const orderRemaining = 'remaining';
 const orderPrice = 'price';
 const orderTimeInForce = 'timeInForce';
-const orderCreatedAt = 'createdAt';
 const orderUpdatedAt = 'updatedAt';
 const assetSelectField = 'select[name="asset"]';
 const amountField = 'input[name="amount"]';
@@ -92,16 +90,14 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
 
     cy.highlight('deposit verification');
 
-    cy.getByTestId('asset', txTimeout).should('contain.text', btcSymbol);
+    cy.get('[col-id="asset.symbol"]', txTimeout).should(
+      'contain.text',
+      btcSymbol
+    );
     cy.getByTestId(depositsTab).click();
     cy.get('.ag-cell-value', txTimeout).should('contain.text', btcSymbol);
     cy.get('[col-id="status"]').should('not.have.text', 'Open', txTimeout);
 
-    /**
-     * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-     * You should use .then() to chain commands instead.
-     * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-     **/
     cy.get('[col-id="txHash"]')
       .should('have.length.above', 2)
       .eq(1)
@@ -149,7 +145,6 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     // 1002-WITH-022
     // 1002-WITH-023
     // 0003-WTXN-011
-
     cy.getByTestId('Withdrawals').click();
     cy.getByTestId('withdraw-dialog-button').click();
     selectAsset(0);
@@ -160,18 +155,9 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
       'contain.text',
       'Funds unlocked'
     );
-    cy.getByTestId(toastCloseBtn).click();
-    cy.getByTestId('tab-withdrawals').within(() => {
-      cy.get('.ag-center-cols-container')
-        .children()
-        .first()
-        .within(() => {
-          cy.get('[col-id="status"]').should('contain.text', 'Pending');
-        });
-    });
-
+    // cy.getByTestId(toastCloseBtn).click();
     cy.highlight('withdrawals verification');
-    cy.getByTestId('toast-complete-withdrawal').click();
+    cy.getByTestId('toast-complete-withdrawal').last().click();
 
     cy.getByTestId(toastContent, txTimeout).should(
       'contain.text',
@@ -228,9 +214,12 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
     };
     const rawPrice = removeDecimal(order.price, market.decimalPlaces);
-
+    cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId('Collateral').click();
-    cy.getByTestId('asset', txTimeout).should('contain.text', usdcSymbol);
+    cy.get('[col-id="asset.symbol"]', txTimeout).should(
+      'contain.text',
+      usdcSymbol
+    );
 
     createOrder(order);
 
@@ -269,10 +258,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
             OrderStatusMapping.STATUS_ACTIVE
           );
 
-          cy.get(`[col-id='${orderRemaining}']`).should(
-            'contain.text',
-            `0.00/${order.size}`
-          );
+          cy.get(`[col-id='${orderRemaining}']`).should('contain.text', '0.00');
 
           cy.get(`[col-id='${orderPrice}']`).then(($price) => {
             expect(parseFloat($price.text())).to.equal(parseFloat(order.price));
@@ -280,17 +266,19 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
 
           cy.get(`[col-id='${orderTimeInForce}']`).should(
             'contain.text',
-            OrderTimeInForceMapping[order.timeInForce]
+            'GTC'
           );
 
-          checkIfDataAndTimeOfCreationAndUpdateIsEqual(orderCreatedAt);
+          checkIfDataAndTimeOfCreationAndUpdateIsEqual(orderUpdatedAt);
         });
     });
   });
   it('can edit order', function () {
     const market = this.market;
     cy.visit(`/#/markets/${market.id}`);
+    cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(openOrdersTab).click();
+    cy.getByTestId('edit', txTimeout).should('be.visible');
     cy.getByTestId('edit').first().should('be.visible').click();
     cy.getByTestId('dialog-title').should('contain.text', 'Edit order');
     cy.get('#limitPrice').focus().clear().type(newPrice);
@@ -318,6 +306,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
   it('can cancel order', function () {
     const market = this.market;
     cy.visit(`/#/markets/${market.id}`);
+    cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(openOrdersTab).click();
     cy.getByTestId('cancel').first().click();
     cy.getByTestId(toastContent).should(
@@ -354,7 +343,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
 
     cy.visit('/#/portfolio');
     cy.get('main[data-testid="/portfolio"]').should('exist');
-
+    cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId('Withdrawals').click();
     cy.getByTestId('withdraw-dialog-button').click();
     connectEthereumWallet('Unknown');
@@ -365,14 +354,6 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
       'contain.text',
       'Funds unlocked'
     );
-    cy.getByTestId('tab-withdrawals').within(() => {
-      cy.get('.ag-center-cols-container')
-        .children()
-        .first()
-        .within(() => {
-          cy.get('[col-id="status"]').should('contain.text', 'Pending');
-        });
-    });
 
     cy.highlight('withdrawals verification');
     cy.getByTestId('toast-complete-withdrawal').click();
@@ -420,11 +401,6 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
       .eq(0, txTimeout)
       .should('contain.text', 'Completed');
 
-    /**
-     * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-     * You should use .then() to chain commands instead.
-     * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-     **/
     cy.get('[col-id="txHash"]', txTimeout)
       .should('have.length.above', 1)
       .eq(1)
@@ -454,6 +430,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     // 1001-DEPO-007
     cy.visit('/#/portfolio');
     cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('Unknown');
@@ -474,8 +451,8 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     // 1002-WITH-007
 
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]').should('exist');
-
+    cy.get('main[data-testid="/portfolio"]', txTimeout).should('exist');
+    cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('Unknown');
@@ -497,16 +474,14 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
 
     cy.highlight('deposit verification');
 
-    cy.getByTestId('asset', txTimeout).should('contain.text', vegaSymbol);
+    cy.get('[col-id="asset.symbol"]', txTimeout).should(
+      'contain.text',
+      vegaSymbol
+    );
     cy.getByTestId(depositsTab).click();
     cy.get('.ag-cell-value', txTimeout).should('contain.text', vegaSymbol);
     cy.get('[col-id="status"]').should('not.have.text', 'Open', txTimeout);
 
-    /**
-     * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-     * You should use .then() to chain commands instead.
-     * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-     **/
     cy.get('[col-id="txHash"]')
       .should('have.length.above', 2)
       .eq(1)
@@ -535,6 +510,16 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     cy.getByTestId(toastCloseBtn).click();
     cy.getByTestId(completeWithdrawalBtn).first().should('be.visible').click();
     cy.getByTestId(toastContent, txTimeout).should('contain.text', 'Delayed');
+    cy.getByTestId('tab-withdrawals').within(() => {
+      cy.get('.ag-center-cols-container')
+        .children()
+        .first()
+        .within(() => {
+          cy.get('[col-id="status"]').contains(
+            /Delayed \(ready in (\d{1,2}:\d{2}:\d{2}:\d{2})\)/
+          );
+        });
+    });
   });
 });
 

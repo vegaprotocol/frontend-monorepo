@@ -13,6 +13,28 @@ module.exports = {
     current: 'currentColor',
     black: '#000000',
     white: '#FFFFFF',
+    market: {
+      red: {
+        // same as vega-red
+        700: '#2F000C',
+        600: '#7B001F',
+        550: '#B3002E',
+        DEFAULT: '#EC003C',
+        500: '#EC003C',
+        400: '#F57382',
+        300: '#FDD9DC',
+      },
+      green: {
+        // same as vega-green
+        700: '#012915',
+        600: '#01914B',
+        550: '#01C566',
+        DEFAULT: '#00F780',
+        500: '#00F780',
+        400: '#74BE8E',
+        300: '#DDFEE8',
+      },
+    },
     vega: {
       // YELLOW
       yellow: {
@@ -32,7 +54,7 @@ module.exports = {
       green: {
         700: '#012915',
         650: '#015D30',
-        600: '#01914B',
+        600: '#008545',
         550: '#01C566',
         DEFAULT: '#00F780',
         500: '#00F780',
@@ -82,6 +104,20 @@ module.exports = {
         400: '#FF70B5',
         350: '#FFA3D0',
         300: '#FFD7EA',
+      },
+
+      // RED
+      red: {
+        700: '#2F000C',
+        650: '#550016',
+        600: '#7B001F',
+        550: '#B3002E',
+        DEFAULT: '#EC003C',
+        500: '#EC003C',
+        450: '#F03D6B',
+        400: '#F4668A',
+        350: '#F78FA9',
+        300: '#F8A3B9',
       },
 
       // ORANGE

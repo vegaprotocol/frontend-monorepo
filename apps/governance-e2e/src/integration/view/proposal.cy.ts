@@ -142,11 +142,6 @@ context(
       mockNetworkUpgradeProposal();
       navigateTo(navigation.proposals);
       cy.getByTestId('open-proposals').within(() => {
-        /**
-         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-         * You should use .then() to chain commands instead.
-         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-         **/
         cy.get('li')
           .eq(0)
           .should('have.attr', 'data-testid', networkUpgradeProposalListItem)
@@ -205,11 +200,6 @@ context(
           .should('contain.text', '99.98% approval (% validator voting power)')
           .and('contain.text', '(67% voting power required)');
         cy.get('h2').should('contain.text', 'Approvers (4/4 validators)');
-        /**
-         * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-         * You should use .then() to chain commands instead.
-         * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-         **/
         cy.getByTestId('validator-name')
           .should('have.length', 4)
           .each(($validator) => {

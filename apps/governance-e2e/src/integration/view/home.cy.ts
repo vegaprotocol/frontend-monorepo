@@ -16,11 +16,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
     });
 
     it('should display announcement banner', function () {
-      /**
-       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-       * You should use .then() to chain commands instead.
-       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-       **/
       cy.getByTestId('app-announcement')
         .should('contain.text', 'TEST ANNOUNCEMENT!')
         .within(() => {
@@ -40,11 +35,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           waitForSpinner();
         }
       });
-      /**
-       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-       * You should use .then() to chain commands instead.
-       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-       **/
       cy.getByTestId('proposals-list-item')
         .should('have.length.at.least', 1)
         .first()
@@ -104,11 +94,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
     });
 
     it('should contain link to specific validators', function () {
-      /**
-       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-       * You should use .then() to chain commands instead.
-       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-       **/
       cy.getByTestId('validators')
         .should('have.length', '2')
         .each(($validator) => {
@@ -135,11 +120,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
     });
 
     it('should display network data', function () {
-      /**
-       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-       * You should use .then() to chain commands instead.
-       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-       **/
       cy.getByTestId('git-network-data')
         .should('contain.text', 'Reading network data from')
         .within(() => {
@@ -151,11 +131,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
     });
 
     it('should display eth data', function () {
-      /**
-       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-       * You should use .then() to chain commands instead.
-       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-       **/
       cy.getByTestId('git-eth-data')
         .should('contain.text', 'Reading Ethereum data from')
         .within(() => {
