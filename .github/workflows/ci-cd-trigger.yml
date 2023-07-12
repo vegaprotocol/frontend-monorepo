@@ -277,6 +277,14 @@ jobs:
             * trading: ${{ needs.lint-test-build.outputs.preview_trading }}
             * tools: ${{ needs.lint-test-build.outputs.preview_tools }}
 
+  console-test:
+    needs: dist-check
+    name: '(CI) console-test'
+    uses: ./.github/workflows/console-test-run.yml
+    secrets: inherit
+    with:
+      github-sha: ${{ github.sha }}
+
   # Report single result at the end, to avoid mess with required checks in PR
   cypress-check:
     name: '(CI) cypress - check'
