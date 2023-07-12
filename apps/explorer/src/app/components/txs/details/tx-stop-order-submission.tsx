@@ -4,7 +4,11 @@ import { MarketLink } from '../../links/';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
-import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
+import {
+  stopOrdersSignatureToDeterministicId,
+  stopSignatures,
+  txSignatureToDeterministicId,
+} from '../lib/deterministic-ids';
 import Hash from '../../links/hash';
 import type { components } from '../../../../types/explorer';
 import { StopOrderSetup } from './order/stop-order-setup';
@@ -80,12 +84,9 @@ export const TxDetailsStopOrderSubmission = ({
   const tx: components['schemas']['v1StopOrdersSubmission'] =
     txData.command.stopOrdersSubmission;
 
-  let deterministicId = '';
-
-  const sig = txData?.signature?.value;
-  if (sig) {
-    deterministicId = txSignatureToDeterministicId(sig);
-  }
+  const { risesAboveId, fallsBelowId } = stopOrdersSignatureToDeterministicId(
+    txData?.signature?.value
+  );
 
   return (
     <>
@@ -95,12 +96,6 @@ export const TxDetailsStopOrderSubmission = ({
           pubKey={pubKey}
           blockData={blockData}
         />
-        <TableRow modifier="bordered">
-          <TableCell>{t('Order')}</TableCell>
-          <TableCell>
-            <Hash text={deterministicId} />
-          </TableCell>
-        </TableRow>
         <TableRow modifier="bordered">
           <TableCell>{t('Market ID')}</TableCell>
           <TableCell>
@@ -121,17 +116,25 @@ export const TxDetailsStopOrderSubmission = ({
           </TableCell>
         </TableRow>
         <TableRow modifier="bordered">
-          <TableCell>{t('Stop Order Type')}</TableCell>
+          <TableCell>{t('Trigger')}</TableCell>
           <TableCell>
             {getStopTypeLabel(tx.risesAbove, tx.fallsBelow)}
           </TableCell>
         </TableRow>
       </TableWithTbody>
       {tx.risesAbove && (
-        <StopOrderSetup type={'RisesAbove'} {...tx.risesAbove} />
+        <StopOrderSetup
+          type={'RisesAbove'}
+          {...tx.risesAbove}
+          deterministicId={risesAboveId}
+        />
       )}
       {tx.fallsBelow && (
-        <StopOrderSetup type={'FallsBelow'} {...tx.fallsBelow} />
+        <StopOrderSetup
+          type={'FallsBelow'}
+          {...tx.fallsBelow}
+          deterministicId={fallsBelowId}
+        />
       )}
     </>
   );

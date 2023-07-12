@@ -1,6 +1,8 @@
 import { t } from '@vegaprotocol/i18n';
 import type { components } from '../../../../../types/explorer';
-import { wrapperClasses } from '../../../order-details/deterministic-order-details';
+import DeterministicOrderDetails, {
+  wrapperClasses,
+} from '../../../order-details/deterministic-order-details';
 import { formatNumberPercentage } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import OrderTxSummary from '../../../order-summary/order-tx-summary';
@@ -11,6 +13,7 @@ type V1OrderSetup = components['schemas']['v1StopOrderSetup'];
 
 interface StopOrderSetupProps extends V1OrderSetup {
   type: StopOrderType;
+  deterministicId: string;
 }
 
 export function getExpiryTypeLabel(
@@ -43,7 +46,7 @@ export function ExpiryTrigger({
   if (trailingPercentOffset) {
     return (
       <span>
-        {formatNumberPercentage(new BigNumber(trailingPercentOffset))}
+        {formatNumberPercentage(new BigNumber(trailingPercentOffset))}%
       </span>
     );
   }
@@ -66,6 +69,7 @@ export const StopOrderSetup = ({
   expiresAt,
   expiryStrategy,
   trailingPercentOffset,
+  deterministicId,
 }: StopOrderSetupProps) => {
   return (
     <div className={wrapperClasses}>
@@ -84,25 +88,16 @@ export const StopOrderSetup = ({
               <OrderTxSummary order={orderSubmission} />
             </p>
           )}
+          <DeterministicOrderDetails id={deterministicId} />
           {expiresAt && expiryStrategy ? (
-            <>
-              <div className="">
-                <h2 className="text-2xl font-bold text-dark mb-4">
-                  {t('Expiry Type')}
-                </h2>
-                <h5 className="text-lg font-medium text-gray-500 mb-0">
-                  {getExpiryTypeLabel(expiryStrategy)}
-                </h5>
-              </div>
-              <div className="">
-                <h2 className="text-2xl font-bold text-dark mb-4">
-                  {t('Expiry Type')}
-                </h2>
-                <h5 className="text-lg font-medium text-gray-500 mb-0">
-                  {getExpiryTypeLabel(expiryStrategy)}
-                </h5>
-              </div>
-            </>
+            <div className="">
+              <h2 className="text-2xl font-bold text-dark mb-4">
+                {t('Expiry Type')}
+              </h2>
+              <h5 className="text-lg font-medium text-gray-500 mb-0">
+                {getExpiryTypeLabel(expiryStrategy)}
+              </h5>
+            </div>
           ) : null}
         </div>
       </div>
