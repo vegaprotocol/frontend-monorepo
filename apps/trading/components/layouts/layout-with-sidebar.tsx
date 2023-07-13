@@ -11,7 +11,6 @@ export const LayoutWithSidebar = () => {
 
   const gridClasses = classNames(
     'h-full relative z-0 grid',
-    'grid-cols-[1fr]',
     'grid-rows-[min-content_1fr_min-content]',
     'lg:grid-rows-[min-content_1fr]',
     'lg:grid-cols-[1fr_350px_45px]'
@@ -19,7 +18,7 @@ export const LayoutWithSidebar = () => {
 
   return (
     <div className={gridClasses}>
-      <div className="col-start-1 col-end-2 lg:col-end-3">
+      <div className="col-start-1 col-span-full">
         <Navbar>
           <Routes>
             <Route
@@ -50,9 +49,9 @@ export const LayoutWithSidebar = () => {
       <div
         className={classNames(
           'bg-vega-clight-800 dark:bg-vega-cdark-800',
-          'border-t lg:border-l border-default',
+          'border-t lg:border-l lg:border-t-0 border-default',
           'row-start-3 col-start-1 cols-span-full',
-          'lg:row-start-1 lg:row-span-full lg:col-start-3'
+          'lg:row-start-2 lg:row-span-full lg:col-start-3'
         )}
       >
         <Sidebar />

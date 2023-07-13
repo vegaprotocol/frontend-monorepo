@@ -52,9 +52,11 @@ type SidebarView =
     };
 
 export const Sidebar = () => {
+  const navClasses =
+    'flex-1 flex lg:flex-col items-center gap-4 px-2 py-1 lg:px-1 lg:py-2';
   return (
-    <div className="flex lg:flex-col gap-2 h-full py-1" data-testid="sidebar">
-      <nav className="flex-1 flex lg:flex-col items-center gap-4 p-1">
+    <div className="flex lg:flex-col gap-2 h-full" data-testid="sidebar">
+      <nav className={navClasses}>
         {/* sidebar options that always show */}
         <SidebarButton
           view={ViewType.Deposit}
@@ -103,7 +105,7 @@ export const Sidebar = () => {
           />
         </Routes>
       </nav>
-      <nav className="ml-auto lg:mt-auto lg:ml-0 flex flex-col items-center gap-4 p-1">
+      <nav className="ml-auto lg:mt-auto lg:ml-0 flex lg:flex-col items-center gap-4 p-1">
         <SidebarButton
           view={ViewType.Settings}
           icon={VegaIconNames.COG}
