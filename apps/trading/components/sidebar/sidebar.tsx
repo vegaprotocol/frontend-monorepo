@@ -52,14 +52,7 @@ type SidebarView =
 
 export const Sidebar = () => {
   return (
-    <div className="flex flex-col gap-2 h-full" data-testid="sidebar">
-      <div className="h-12 flex justify-center items-center border-b border-default">
-        <SidebarButton
-          view={ViewType.Settings}
-          icon={VegaIconNames.COG}
-          tooltip={t('Settings')}
-        />
-      </div>
+    <div className="flex flex-col gap-2 h-full py-1" data-testid="sidebar">
       <nav className="flex flex-col items-center gap-4 p-1">
         {/* sidebar options that always show */}
         <SidebarButton
@@ -110,6 +103,11 @@ export const Sidebar = () => {
         </Routes>
       </nav>
       <nav className="mt-auto flex flex-col items-center gap-4 p-1">
+        <SidebarButton
+          view={ViewType.Settings}
+          icon={VegaIconNames.COG}
+          tooltip={t('Settings')}
+        />
         <NodeHealthContainer />
       </nav>
     </div>
