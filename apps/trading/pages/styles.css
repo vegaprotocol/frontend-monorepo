@@ -32,19 +32,22 @@ body,
  */
 
 html {
-  --focus-border: theme('colors.vega.pink.500');
-  --separator-border: theme('colors.vega.light.200');
-  --pennant-color-danger: theme('colors.vega.pink.500');
+  --focus-border: theme(colors.vega.pink.500);
+  --pennant-color-danger: theme(colors.vega.pink.500);
 }
 
 html.dark {
-  --focus-border: theme('colors.vega.yellow.500');
-  --separator-border: theme('colors.vega.dark.200');
+  --focus-border: theme(colors.vega.yellow.500);
 }
 
 /* hide pane separation border, we leave it blank so border is applied within a padded area */
 .split-view-view::before {
   display: none;
+}
+
+/* re show separator border within chart */
+.plot-container__chart .split-view-view::before {
+  display: block;
 }
 
 /**
@@ -69,7 +72,8 @@ html [data-theme='light'] {
 }
 
 html [data-theme='light'] {
-  --pennant-background-surface-color: theme('colors.vega.clight.900');
+  --separator-border: theme(colors.vega.clight.400);
+  --pennant-background-surface-color: theme(colors.vega.clight.900);
 
   /* candles */
   --pennant-color-buy-fill: theme(colors.market.green.500);
@@ -89,6 +93,7 @@ html [data-theme='light'] {
 }
 
 html [data-theme='dark'] {
+  --separator-border: theme(colors.vega.cdark.400);
   --pennant-background-surface-color: theme('colors.vega.cdark.900');
 
   /* candles */
