@@ -30,7 +30,7 @@ jobs:
           echo IS_IPFS_RELEASE=false >> $GITHUB_ENV
 
       - name: Is PR
-        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           echo IS_PR=true >> $GITHUB_ENV
 
@@ -96,8 +96,8 @@ jobs:
           bucketName=''
 
           if [[ "${{ github.ref }}" =~ .*release/.* ]]; then
-            # remove prefixing release/ and take the first string limited by / which is supposed to be name of the environment for releasing
-            envName="$(echo ${{ github.ref }} | sed -e "s|release/||" | cut -d '/' -f 1 )"
+            # remove prefixing release/ and take the first string limited by - which is supposed to be name of the environment for releasing (format: release/testnet-trading)
+            envName="$(echo ${{ github.ref }} | sed -e "s|release/||" | cut -d '-' -f 1 )"
           elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
             envName="stagnet1"
             if [[ "${{ matrix.app }}" = "multisig-signer" ]]; then
