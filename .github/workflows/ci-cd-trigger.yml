@@ -107,6 +107,7 @@ jobs:
           echo "NX_HEAD: ${{ env.NX_HEAD }}"
           echo "Affected: ${affected}"
           echo "Branch slug: ${branch_slug}"
+          echo "Current ref: ${{ github.ref }}"
           echo ">>>> eof debug"
 
           projects_array=()
@@ -178,19 +179,26 @@ jobs:
           fi
 
           # if branch starts with release/ and ends with trading / governance or explorer - overwrite the array of affected projects with fixed single application
-          if [[ "${{ github.ref }}" == release* ]]; then
+          if [[ "${{ github.ref }}" == *release* ]]; then
+            echo ">> This is a relase branch"
             case "${{ github.ref }}" in
               *trading)
+                echo ">> Only trading will be deployed"
                 projects_array=(trading)
                 projects_e2e_array=(trading)
               ;;
               *governance)
+                echo ">> Only governance will be deployed"
                 projects_array=(governance)
                 projects_e2e_array=(governance)
               ;;
               *explorer)
+                echo ">> Only explorer will be deployed"
                 projects_array=(explorer)
                 projects_e2e_array=(explorer)
+              ;;
+              *)
+                echo ">> All apps will be deployed"
               ;;
             esac
           fi
