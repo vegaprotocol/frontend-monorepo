@@ -5,9 +5,7 @@ on:
     branches:
       - release/*
       - develop
-  # uncomment pull_request and comment pull_request_target to test CI changes against feature branch not target branch (develop)
-  # pull_request:
-  pull_request_target:
+  pull_request:
     types:
       - opened
       - ready_for_review
@@ -48,7 +46,7 @@ jobs:
 
   lint-pr-title:
     needs: node-modules
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
+    if: ${{ github.event_name == 'pull_request' }}
     name: Verify PR title
     uses: ./.github/workflows/lint-pr.yml
     secrets: inherit
@@ -231,7 +229,7 @@ jobs:
   publish-dist:
     needs: lint-test-build
     name: '(CD) publish dist'
-    # if: ${{ needs.lint-test-build.outputs.projects != '[]' }}
+    if: ${{ (github.event_name == 'pull_request' &&  github.event.pull_request.head.repo.full_name == 'vegaprotocol/frontend-monorepo') || github.event_name == 'push' }}
     uses: ./.github/workflows/publish-dist.yml
     secrets: inherit
     with:
@@ -242,7 +240,7 @@ jobs:
     needs:
       - publish-dist
       - lint-test-build
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
+    if: ${{ github.event_name == 'pull_request' &&  github.event.pull_request.head.repo.full_name == 'vegaprotocol/frontend-monorepo' }}
     timeout-minutes: 60
     name: '(CD) comment preview links'
     steps:
@@ -288,7 +286,7 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            Previews:
+            Previews
             * governance: ${{ needs.lint-test-build.outputs.preview_governance }}
             * explorer: ${{ needs.lint-test-build.outputs.preview_explorer  }}
             * trading: ${{ needs.lint-test-build.outputs.preview_trading }}
