@@ -18,7 +18,7 @@ export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   return (
     <header className="lg:px-1">
       <div className={headerClasses}>
-        <div className="hidden lg:flex flex-col justify-center pl-4 pt-2 xl:pb-2 pb-0 xl:border-r border-default xl:pr-4">
+        <div className="hidden lg:flex flex-col justify-center pl-4 pt-2 xl:pb-2 pb-0">
           {title}
         </div>
         <div data-testid="header-summary" className="min-w-0">
