@@ -16,8 +16,8 @@ interface OrderbookRowProps {
   width: number;
 }
 
-const HIDE_VOL_WIDTH = 200;
-const HIDE_CUMULATIVE_VOL_WIDTH = 250;
+const HIDE_VOL_WIDTH = 150;
+const HIDE_CUMULATIVE_VOL_WIDTH = 220;
 
 const CumulationBar = ({
   cumulativeValue = 0,
@@ -100,9 +100,10 @@ export const OrderbookRow = React.memo(
     const cols =
       width >= HIDE_CUMULATIVE_VOL_WIDTH ? 3 : width >= HIDE_VOL_WIDTH ? 2 : 1;
     return (
-      <div className="relative">
+      <div className="relative pr-1">
         <CumulationBar cumulativeValue={cumulativeRelativeValue} type={type} />
         <div
+          data-testid={`${txtId}-rows-container`}
           className={classNames('grid gap-1 text-right', `grid-cols-${cols}`)}
         >
           <PriceCell

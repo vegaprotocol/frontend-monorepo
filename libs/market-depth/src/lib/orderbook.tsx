@@ -240,6 +240,7 @@ export const Orderbook = ({
           size="xs"
           disabled={resolutions.indexOf(resolution) >= resolutions.length - 1}
           className="text-black dark:text-white rounded-none border-y-0 border-l-0 flex items-center border-r-1"
+          data-testid="plus-button"
         >
           <VegaIcon size={12} name={VegaIconNames.PLUS} />
         </Button>
@@ -284,6 +285,7 @@ export const Orderbook = ({
           size="xs"
           disabled={resolutions.indexOf(resolution) <= 0}
           className="text-black dark:text-white rounded-none border-y-0 border-l-1 flex items-center"
+          data-testid="minus-button"
         >
           <VegaIcon size={12} name={VegaIconNames.MINUS} />
         </Button>
