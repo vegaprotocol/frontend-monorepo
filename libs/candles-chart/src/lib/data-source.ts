@@ -6,7 +6,13 @@ import {
   differenceInHours,
   differenceInMinutes,
 } from 'date-fns';
-import type { Candle, DataSource, PriceMonitoringBounds } from 'pennant';
+import type {
+  Annotation,
+  Candle,
+  DataSource,
+  LabelAnnotation,
+  PriceMonitoringBounds,
+} from 'pennant';
 import { Interval as PennantInterval } from 'pennant';
 
 import { addDecimal } from '@vegaprotocol/utils';
@@ -25,6 +31,14 @@ import type {
 } from './__generated__/Candles';
 import type { Subscription } from 'zen-observable-ts';
 import * as Schema from '@vegaprotocol/types';
+import { OrdersDocument, OrdersUpdateDocument } from '@vegaprotocol/orders';
+
+import type {
+  OrdersQuery,
+  OrdersQueryVariables,
+  OrdersUpdateSubscription,
+  OrdersUpdateSubscriptionVariables,
+} from '@vegaprotocol/orders';
 
 const INTERVAL_TO_PENNANT_MAP = {
   [PennantInterval.I1M]: Schema.Interval.INTERVAL_I1M,
@@ -58,6 +72,7 @@ export class VegaDataSource implements DataSource {
   _positionDecimalPlaces = 0;
 
   candlesSub: Subscription | null = null;
+  ordersSub: Subscription | null = null;
 
   /**
    * Indicates the number of decimal places that an integer must be shifted by in order to get a correct
@@ -222,6 +237,112 @@ export class VegaDataSource implements DataSource {
    */
   unsubscribeData() {
     this.candlesSub && this.candlesSub.unsubscribe();
+  }
+
+  async subscribeAnnotations(
+    onSubscriptionAnnotations: (annotations: LabelAnnotation[]) => void
+  ) {
+    try {
+      const { data } = await this.client.query<
+        OrdersQuery,
+        OrdersQueryVariables
+      >({
+        query: OrdersDocument,
+        variables: {
+          marketIds: this.marketId,
+          partyId:
+            this.partyId ??
+            'c20b8de94b17685a17ca5d4e3da848ce3b82166fadba0e7b071eead303999fb0',
+        },
+        fetchPolicy: 'no-cache',
+      });
+
+      if (data.party?.ordersConnection?.edges) {
+        console.log(data.party?.ordersConnection?.edges);
+
+        const annotations = data.party.ordersConnection.edges.map(
+          (edge) =>
+            ({
+              type: 'label',
+              id: edge.node.id,
+              cells: [
+                { label: 'Position' },
+                { label: edge.node.price },
+                {
+                  label: `PnL ${-10000000000}`,
+                  stroke: true,
+                  intent: 'danger',
+                },
+                {
+                  label: 'Close',
+                  onClick: () => {
+                    console.log({ type: 'position', id: '0' });
+                  },
+                },
+              ],
+              intent: edge.node.side === 'SIDE_BUY' ? 'success' : 'danger',
+              y: Number(addDecimal(edge.node.price, this.decimalPlaces)),
+            } as Annotation)
+        );
+
+        console.log(annotations);
+
+        onSubscriptionAnnotations(annotations);
+      }
+    } catch (error) {
+      return [];
+    }
+
+    const res = this.client.subscribe<
+      OrdersUpdateSubscription,
+      OrdersUpdateSubscriptionVariables
+    >({
+      query: OrdersUpdateDocument,
+      variables: {
+        marketIds: this.marketId,
+        partyId:
+          this.partyId ??
+          'c20b8de94b17685a17ca5d4e3da848ce3b82166fadba0e7b071eead303999fb0',
+      },
+    });
+
+    console.log(this.marketId, this.partyId);
+
+    this.ordersSub = res.subscribe(({ data }) => {
+      if (data) {
+        console.log(data);
+
+        // onSubscriptionData(candle);
+      }
+    });
+
+    /*  onSubscriptionAnnotations([
+      {
+        type: 'label',
+        id: '0',
+        cells: [
+          { label: 'Position' },
+          { label: `200` },
+          {
+            label: `PnL ${-10000000000}`,
+            stroke: true,
+            intent: 'danger',
+          },
+          {
+            label: 'Close',
+            onClick: () => {
+              console.log({ type: 'position', id: '0' });
+            },
+          },
+        ],
+        intent: 'success',
+        y: 0.06401,
+      },
+    ]); */
+  }
+
+  unsubscribeAnnotations(): void {
+    this.ordersSub && this.ordersSub.unsubscribe();
   }
 }
 
