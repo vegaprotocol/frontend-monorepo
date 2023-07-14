@@ -153,15 +153,15 @@ module.exports = {
       },
 
       cdark: {
-        50: '#DCDEE3',
-        100: '#94969B',
+        50: '#DCDEE3', // text-primary-light
+        100: '#94969B', // text-secondary
         200: '#7C7E83',
         300: '#626469',
         400: '#44464B',
-        500: '#323339',
+        500: '#323339', // surface-container-highest
         600: '#292B30',
         700: '#202227',
-        800: '#17191E',
+        800: '#17191E', // surface-container
         900: '#05060C',
       },
 

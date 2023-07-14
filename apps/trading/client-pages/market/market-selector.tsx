@@ -17,6 +17,7 @@ import { AssetDropdown } from './asset-dropdown';
 import type { SortType } from './sort-dropdown';
 import { Sort, SortDropdown } from './sort-dropdown';
 import { MarketSelectorItem } from './market-selector-item';
+import classNames from 'classnames';
 
 export type Filter = {
   searchTerm: string;
@@ -47,14 +48,14 @@ export const MarketSelector = ({
 
   return (
     <div data-testid="market-selector">
-      <div className="pt-2 px-4 mb-2 w-[320px] lg:w-[400px]">
+      <div className="pt-2 px-2 mb-2 w-[320px] lg:w-[584px]">
         <ProductSelector
           product={filter.product}
           onSelect={(product) => {
             setFilter((curr) => ({ ...curr, product }));
           }}
         />
-        <div className="text-sm flex gap-1 items-stretch">
+        <div className="text-sm grid grid-cols-[2fr_1fr_1fr] gap-1 ">
           <div className="flex-1">
             <Input
               onChange={(e) =>
@@ -71,7 +72,7 @@ export const MarketSelector = ({
                     onClick={() =>
                       setFilter((curr) => ({ ...curr, searchTerm: '' }))
                     }
-                    className="text-vega-light-200 dark:text-vega-dark-200"
+                    className="text-secondary"
                   >
                     <VegaIcon name={VegaIconNames.CROSS} />
                   </button>
@@ -169,6 +170,24 @@ const MarketList = ({
   }
   return (
     <TinyScroll>
+      <div
+        className={classNames(
+          'flex gap-2',
+          'bg-vega-clight-700 dark:bg-vega-cdark-700',
+          'p-2 mx-2 border-b border-default text-xs text-secondary'
+        )}
+      >
+        <div className="w-1/4" role="columnheader">
+          {t('Name')}
+        </div>
+        <div className="w-1/4" role="columnheader">
+          {t('Price')}
+        </div>
+        <div className="w-1/4 text-right" role="columnheader">
+          {t('24h volume')}
+        </div>
+        <div className="w-1/4" role="columnheader" />
+      </div>
       <List
         data={data}
         loading={loading}
@@ -235,11 +254,7 @@ const List = ({
   if (!data.length) {
     return (
       <div style={{ height }} data-testid="no-items">
-        <div className="mb-2 px-4">
-          <div className="text-sm bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg px-4 py-2">
-            {noItems}
-          </div>
-        </div>
+        <div className="mx-4 my-2 text-sm">{noItems}</div>
       </div>
     );
   }
@@ -249,7 +264,7 @@ const List = ({
       className="vega-scrollbar"
       itemCount={data.length}
       itemData={itemData}
-      itemSize={50}
+      itemSize={45}
       itemKey={itemKey}
       width="100%"
       height={height}
