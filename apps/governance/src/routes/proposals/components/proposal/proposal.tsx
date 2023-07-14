@@ -106,7 +106,7 @@ export const Proposal = ({
 
   return (
     <section data-testid="proposal">
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 mb-6">
         <Icon name={'chevron-left'} />
 
         {proposal.state === ProposalState.STATE_REJECTED ? (
