@@ -840,5 +840,14 @@
   "assetSpecification": "Asset specification",
   "viewDetails": "View details",
   "vegaGovernance": "Vega Governance",
-  "latestProposals": "Latest proposals"
+  "latestProposals": "Latest proposals",
+  "vegaToken": "VEGA Token",
+  "majorityVotedForProposal": "majority voted for this proposal",
+  "majorityNotVotedForProposal": "majority not voted for this proposal",
+  "requiredMajorityVotedForProposal": "Required majority voted for this proposal",
+  "requiredMajorityNotVotedForProposal": "Required majority not voted for this proposal",
+  "minParticipationReached": "Min. participation reached",
+  "minParticipationNotReached": "Min. participation not reached",
+  "consensusNodes": "consensus nodes",
+  "activeNodes": "active nodes"
 }

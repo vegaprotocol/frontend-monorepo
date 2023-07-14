@@ -114,8 +114,8 @@ const HomeNodes = ({
   const { t } = useTranslation();
 
   const highlightedNodeData = [
-    { title: t('active nodes'), length: activeNodes.length },
-    { title: t('consensus nodes'), length: consensusNodes.length },
+    { title: t('activeNodes'), length: activeNodes.length },
+    { title: t('consensusNodes'), length: consensusNodes.length },
   ];
 
   return (
@@ -315,7 +315,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
         </div>
 
         <div data-testid="home-vega-token">
-          <Heading title={t('VEGA Token')} marginTop={false} />
+          <Heading title={t('vegaToken')} marginTop={false} />
           <h3 className="mb-6">{t('homeVegaTokenIntro')}</h3>
           <div className="flex items-center mb-8 gap-4">
             <Link to={Routes.WITHDRAWALS}>

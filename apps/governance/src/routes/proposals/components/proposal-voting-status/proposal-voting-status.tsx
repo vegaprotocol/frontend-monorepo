@@ -33,10 +33,10 @@ const MajorityStatus = ({
           {requiredMajority ? (
             <>
               {new BigNumber(requiredMajority).times(100).toString()}%{' '}
-              {t('majority voted for this proposal')}
+              {t('majorityVotedForProposal')}
             </>
           ) : (
-            t('Required majority voted for this proposal')
+            t('requiredMajorityVotedForProposal')
           )}
         </div>
       ) : (
@@ -44,10 +44,10 @@ const MajorityStatus = ({
           {requiredMajority ? (
             <>
               {new BigNumber(requiredMajority).times(100).toString()}%{' '}
-              {t('majority not voted for this proposal')}
+              {t('majorityNotVotedForProposal')}
             </>
           ) : (
-            t('Required majority not voted for this proposal')
+            t('requiredMajorityNotVotedForProposal')
           )}
         </div>
       )}
@@ -64,14 +64,14 @@ const ParticipationStatus = ({ reached }: { reached: boolean }) => {
         <>
           <Icon name="tick" />
           <div data-testid="participation-reached">
-            {t('Min. participation reached')}
+            {t('minParticipationReached')}
           </div>
         </>
       ) : (
         <>
           <Icon name="cross" />
           <div data-testid="participation-not-reached">
-            {t('Min. participation not reached')}
+            {t('minParticipationNotReached')}
           </div>
         </>
       )}
