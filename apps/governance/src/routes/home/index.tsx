@@ -20,7 +20,7 @@ import {
   getNotRejectedProposals,
   getNotRejectedProtocolUpgradeProposals,
 } from '../proposals/proposals/proposals-container';
-import { Heading } from '../../components/heading';
+import { Heading, SubHeading } from '../../components/heading';
 import * as Schema from '@vegaprotocol/types';
 import type { RouteChildProps } from '..';
 import type { ProposalFieldsFragment } from '../proposals/proposals/__generated__/Proposals';
@@ -67,21 +67,16 @@ const HomeProposals = ({
       data={networkParams}
     >
       <section className="mb-16" data-testid="home-proposals">
-        <Heading title={t('Proposals')} />
+        <Heading title={t('vegaGovernance')} />
         <h3 className="mb-6">{t('homeProposalsIntro')}</h3>
-        <div className="flex items-center mb-8 gap-8">
-          <Link to={`${Routes.PROPOSALS}`}>
-            <Button size="md">{t('homeProposalsButtonText')}</Button>
-          </Link>
-
+        <div className="mb-8">
           <ExternalLink href={ExternalLinks.GOVERNANCE_PAGE}>
             {t(`readMoreGovernance`)}
           </ExternalLink>
         </div>
-        <ul
-          data-testid="home-proposal-list"
-          className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-6"
-        >
+
+        <SubHeading title={t('latestProposals')} />
+        <ul data-testid="home-proposal-list" className="grid gap-6">
           {protocolUpgradeProposals.map((proposal, index) => (
             <ProtocolUpgradeProposalsListItem key={index} proposal={proposal} />
           ))}
@@ -94,6 +89,12 @@ const HomeProposals = ({
             />
           ))}
         </ul>
+
+        <div className="mt-6">
+          <Link to={`${Routes.PROPOSALS}`}>
+            <Button size="md">{t('homeProposalsButtonText')}</Button>
+          </Link>
+        </div>
       </section>
     </AsyncRenderer>
   );
@@ -260,7 +261,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
     [protocolUpgradeProposals]
   );
 
-  const totalProposalsDesired = 4;
+  const totalProposalsDesired = 3;
   const protocolUpgradeProposalsToShow = sortedProtocolUpgradeProposals.slice(
     0,
     totalProposalsDesired
