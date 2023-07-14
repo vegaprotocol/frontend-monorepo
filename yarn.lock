@@ -9714,6 +9714,18 @@ allotment@1.18.1:
     lodash.isequal "^4.5.0"
     use-resize-observer "^9.0.0"
 
+allotment@1.19.0:
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.19.0.tgz#8241a2e3db45e6b1e23f6ade29e392eab4297958"
+  integrity sha512-qL/1faHUoCOvMstCFGkaGSK/nVoSAVN6NLFuIW4P6D5fvKdgxV8/KNfMFeuQUXReodILp4I6z+5a9zmuqK5t4g==
+  dependencies:
+    classnames "^2.3.0"
+    eventemitter3 "^5.0.0"
+    lodash.clamp "^4.0.0"
+    lodash.debounce "^4.0.0"
+    lodash.isequal "^4.5.0"
+    use-resize-observer "^9.0.0"
+
 alpha-lyrae@vegaprotocol/alpha-lyrae:
   version "1.0.0"
   resolved "https://codeload.github.com/vegaprotocol/alpha-lyrae/tar.gz/d7d51ca6945aebeca57077320535362a959b2ca8"
@@ -19975,10 +19987,10 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
 
-pennant@1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/pennant/-/pennant-1.9.0.tgz#d7332548e17d5140e6655905e41bd6671bd37fc3"
-  integrity sha512-HgM82NnjH94Hc0dhq9knZMOyGT0QyMfMsGFtB4S6UMe2wlSxMpnmQKjtVYmug4PYAkXXprqPrb+mUhjcsPtm5g==
+pennant@1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/pennant/-/pennant-1.10.0.tgz#c30bcc62f1da5a166785b9bce87727715fa28455"
+  integrity sha512-y3Oi2c8QdW6ovH+NeSwtGcEPZNr7rrHGhDIpWnYulCTEC5RvUUzRyPfOpVM2jL/D3iPUQvkSdC9hZ0jNHCyiuw==
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@d3fc/d3fc-technical-indicator" "^8.0.1"
@@ -19999,7 +20011,7 @@ pennant@1.9.0:
     "@types/react" "^18.0.14"
     "@types/react-dom" "^18.0.5"
     "@types/react-virtualized-auto-sizer" "^1.0.0"
-    allotment "1.18.1"
+    allotment "1.19.0"
     chroma-js "^2.4.2"
     classnames "^2.2.6"
     d3-array "2.8.0"
