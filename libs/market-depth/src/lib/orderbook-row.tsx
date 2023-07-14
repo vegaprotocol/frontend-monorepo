@@ -11,7 +11,7 @@ interface OrderbookRowProps {
   decimalPlaces: number;
   positionDecimalPlaces: number;
   price: string;
-  onClick?: (price: string) => void;
+  onClick?: (args: { price?: string; size?: string }) => void;
   type: VolumeType;
 }
 
@@ -43,6 +43,7 @@ const CumulativeVol = memo(
     testId,
     positionDecimalPlaces,
     cumulativeValue,
+    onClick,
   }: {
     ask?: number;
     bid?: number;
@@ -50,6 +51,7 @@ const CumulativeVol = memo(
     testId?: string;
     className?: string;
     positionDecimalPlaces: number;
+    onClick?: (size?: string | number) => void;
   }) => {
     const volume = cumulativeValue ? (
       <NumericCell
@@ -61,7 +63,15 @@ const CumulativeVol = memo(
       />
     ) : null;
 
-    return (
+    return onClick && volume ? (
+      <button
+        data-testid={testId}
+        onClick={() => onClick(cumulativeValue)}
+        className="hover:dark:bg-neutral-800 hover:bg-neutral-200 text-right pr-1"
+      >
+        {volume}
+      </button>
+    ) : (
       <div className="pr-1" data-testid={testId}>
         {volume}
       </div>
@@ -89,7 +99,9 @@ export const OrderbookRow = React.memo(
           <PriceCell
             testId={`price-${price}`}
             value={BigInt(price)}
-            onClick={() => onClick && onClick(addDecimal(price, decimalPlaces))}
+            onClick={() =>
+              onClick && onClick({ price: addDecimal(price, decimalPlaces) })
+            }
             valueFormatted={addDecimalsFixedFormatNumber(price, decimalPlaces)}
             className={
               type === VolumeType.ask
@@ -107,6 +119,13 @@ export const OrderbookRow = React.memo(
           />
           <CumulativeVol
             testId={`cumulative-vol-${price}`}
+            onClick={() =>
+              onClick &&
+              cumulativeValue &&
+              onClick({
+                size: addDecimal(cumulativeValue, positionDecimalPlaces),
+              })
+            }
             positionDecimalPlaces={positionDecimalPlaces}
             cumulativeValue={cumulativeValue}
           />

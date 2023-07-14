@@ -42,7 +42,7 @@ const OrderbookTable = ({
   decimalPlaces: number;
   positionDecimalPlaces: number;
   type: VolumeType;
-  onClick?: (price: string) => void;
+  onClick?: (args: { price?: string; size?: string }) => void;
 }) => {
   return (
     <div
@@ -79,7 +79,7 @@ const OrderbookTable = ({
 interface OrderbookProps {
   decimalPlaces: number;
   positionDecimalPlaces: number;
-  onClick?: (price: string) => void;
+  onClick?: (args: { price?: string; size?: string }) => void;
   midPrice?: string;
   bids: PriceLevelFieldsFragment[];
   asks: PriceLevelFieldsFragment[];
