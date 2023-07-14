@@ -30,7 +30,7 @@ parser.add_argument('--event-name', help='name of event in CI')
 args = parser.parse_args()
 
 # run yarn affected command
-affected=check_output(f'yarn nx print-affected --base={environ["NX_BASE"]} --head={environ["NX_HEAD"]} --select=projects'.split())
+affected=check_output(f'yarn nx print-affected --base={environ["NX_BASE"]} --head={environ["NX_HEAD"]} --select=projects'.split()).decode('utf-8')
 
 
 # print useful information

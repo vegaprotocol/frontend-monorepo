@@ -87,6 +87,15 @@ jobs:
           branch_slug="$(echo '${{ github.head_ref || github.ref_name }}' | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | cut -c 1-50 )"
           python3 tools/ci/check-affected.py --github-ref="${{ github.ref }}" --branch-slug="$branch_slug" --event-name="${{ github.event_name }}"
 
+          echo "Check outputs from script"
+
+          echo "projects: ${{ env.PROJECTS }}"
+          echo "projects-e2e: ${{ env.PROJECTS_E2E }}"
+          echo "preview_governance: ${{ env.PREVIEW_GOVERNANCE }}"
+          echo "preview_trading: ${{ env.PREVIEW_TRADING }}"
+          echo "preview_explorer: ${{ env.PREVIEW_EXPLORER }}"
+          echo "preview_tools: ${{ env.PREVIEW_TOOLS }}"
+
       - name: Check formatting
         run: yarn nx format:check
 
