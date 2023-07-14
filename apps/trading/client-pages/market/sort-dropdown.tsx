@@ -43,7 +43,9 @@ export const SortDropdown = ({
     <DropdownMenu
       trigger={
         <DropdownMenuTrigger data-testid="sort-trigger">
-          <VegaIcon name={VegaIconNames.TREND_UP} />
+          {currentSort === SortTypeMapping.None
+            ? t('Sort')
+            : SortTypeMapping[currentSort]}
         </DropdownMenuTrigger>
       }
     >

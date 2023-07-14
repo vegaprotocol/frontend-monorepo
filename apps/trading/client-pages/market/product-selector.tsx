@@ -1,4 +1,8 @@
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
+import { Routes } from '../../pages/client-router';
+import { t } from '@vegaprotocol/i18n';
+import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 
 // Make sure these match the available __typename properties on product
 export const Product = {
@@ -25,11 +29,12 @@ export const ProductSelector = ({
   onSelect: (product: ProductType) => void;
 }) => {
   return (
-    <div className="flex gap-3 mb-3">
+    <div className="flex mb-2">
       {Object.keys(Product).map((t) => {
-        const classes = classNames('py-1 border-b-2', {
-          'border-vega-yellow text-default': t === product,
-          'border-transparent text-muted': t !== product,
+        const classes = classNames('px-3 py-1.5 rounded', {
+          'bg-vega-clight-500 dark:bg-vega-cdark-500 text-default':
+            t === product,
+          'text-secondary': t !== product,
         });
         return (
           <button
@@ -44,6 +49,10 @@ export const ProductSelector = ({
           </button>
         );
       })}
+      <Link to={Routes.MARKETS} className="flex items-center gap-2 ml-auto">
+        <span className="underline underline-offset-4">{t('All markets')}</span>
+        <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
+      </Link>
     </div>
   );
 };
