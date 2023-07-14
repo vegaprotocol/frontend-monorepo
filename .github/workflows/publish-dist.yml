@@ -28,6 +28,7 @@ jobs:
           echo IS_MAINNET_RELEASE=false >> $GITHUB_ENV
           echo IS_TESTNET_RELEASE=false >> $GITHUB_ENV
           echo IS_IPFS_RELEASE=false >> $GITHUB_ENV
+          echo IS_S3_RELASE=false >> $GITHUB_ENV
 
       - name: Is PR
         if: ${{ github.event_name == 'pull_request' }}
@@ -48,6 +49,11 @@ jobs:
         if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( env.IS_MAINNET_RELEASE == 'true' || env.IS_TESTNET_RELEASE == 'true' ) }}
         run: |
           echo IS_IPFS_RELEASE=true >> $GITHUB_ENV
+
+      - name: Is S3 Release
+        if: ${{ env.IS_IPFS_RELASE == 'false' && github.event_name == 'push' }}
+        run: |
+          echo IS_S3_RELASE=true >> $GITHUB_ENV
 
       - name: Set up QEMU
         id: quemu
@@ -245,7 +251,7 @@ jobs:
       - name: Publish dist to s3
         uses: jakejarvis/s3-sync-action@master
         # s3 releases are not happening for trading on mainnet - it's IPFS
-        if: ${{ env.IS_IPFS_RELEASE == 'false' }}
+        if: ${{ env.IS_S3_RELASE == 'true' }}
         with:
           args: --acl private --follow-symlinks --delete
         env:
@@ -256,11 +262,11 @@ jobs:
           SOURCE_DIR: 'dist-result'
 
       - name: Install aws CLI
-        if: ${{ env.IS_IPFS_RELEASE == 'false' }}
+        if: ${{ env.IS_S3_RELASE == 'true' }}
         uses: unfor19/install-aws-cli-action@master
 
       - name: Perform cache invalidation
-        if: ${{ env.IS_IPFS_RELEASE == 'false' }}
+        if: ${{ env.IS_S3_RELASE == 'true' }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
