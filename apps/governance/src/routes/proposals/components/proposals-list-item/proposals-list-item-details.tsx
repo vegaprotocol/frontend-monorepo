@@ -122,7 +122,7 @@ export const ProposalsListItemDetails = ({
 
       {proposal?.id && (
         <Link to={`${Routes.PROPOSALS}/${proposal.id}`}>
-          <Button data-testid="view-proposal-btn">{t('View details')}</Button>
+          <Button data-testid="view-proposal-btn">{t('viewDetails')}</Button>
         </Link>
       )}
     </div>
