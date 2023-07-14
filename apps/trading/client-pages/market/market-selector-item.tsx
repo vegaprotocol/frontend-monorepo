@@ -22,12 +22,18 @@ export const MarketSelectorItem = ({
   style: CSSProperties;
   currentMarketId?: string;
 }) => {
-  const wrapperClasses = classNames('py-1 px-4', {
-    'bg-vega-light-100 dark:bg-vega-dark-100': market.id === currentMarketId,
-  });
+  // 'py-1 px-2',
   return (
-    <div style={style} className={wrapperClasses}>
-      <Link to={`/markets/${market.id}`} className="block">
+    <div style={style} role="row">
+      <Link
+        to={`/markets/${market.id}`}
+        className={classNames('h-full flex items-center gap-2 px-4', {
+          'hover:bg-vega-clight-700 dark:hover:bg-vega-cdark-700':
+            market.id !== currentMarketId,
+          'bg-vega-clight-600 dark:bg-vega-cdark-600':
+            market.id === currentMarketId,
+        })}
+      >
         <MarketData market={market} />
       </Link>
     </div>
@@ -73,8 +79,8 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
       : '0.00';
 
   return (
-    <div className="flex gap-2">
-      <div>
+    <>
+      <div className="w-1/4" role="gridcell">
         <h3 className="text-ellipsis whitespace-nowrap overflow-hidden">
           {market.tradableInstrument.instrument.code}
         </h3>
@@ -84,14 +90,23 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
           </p>
         )}
       </div>
-      <div className="flex-1">
-        <DataRow value={volume} label={t('24h vol')} />
-        <DataRow
-          value={price}
-          label={instrument.product.settlementAsset.symbol}
-        />
+      <div
+        className="w-1/4 text-sm"
+        title={instrument.product.settlementAsset.symbol}
+        data-testid="market-selector-data-row"
+        role="gridcell"
+      >
+        {price} {instrument.product.settlementAsset.symbol}
       </div>
-      <div className="hidden lg:block w-[70px]">
+      <div
+        className="w-1/4 text-sm text-right"
+        title={t('24h vol')}
+        data-testid="market-selector-data-row"
+        role="gridcell"
+      >
+        {volume}
+      </div>
+      <div className="w-1/4" role="gridcell">
         {oneDayCandles && (
           <Sparkline
             width={70}
@@ -100,28 +115,6 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
           />
         )}
       </div>
-    </div>
-  );
-};
-
-const DataRow = ({
-  value,
-  label,
-}: {
-  value: string | ReactNode;
-  label: string;
-}) => {
-  return (
-    <div
-      className="text-ellipsis whitespace-nowrap overflow-hidden leading-tight text-right"
-      data-testid="market-selector-data-row"
-    >
-      <span className="text-xs text-vega-light-300 dark:text-vega-light-300">
-        {label}
-      </span>
-      <span title={label} className="text-sm ml-1">
-        {value}
-      </span>
-    </div>
+    </>
   );
 };

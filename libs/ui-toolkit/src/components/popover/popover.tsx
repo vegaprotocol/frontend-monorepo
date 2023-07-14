@@ -1,5 +1,4 @@
 import * as PopoverPrimitive from '@radix-ui/react-popover';
-import { VegaIcon, VegaIconNames } from '../icon';
 
 export interface PopoverProps extends PopoverPrimitive.PopoverProps {
   trigger: React.ReactNode | string;
@@ -23,15 +22,9 @@ export const Popover = ({
         <PopoverPrimitive.Content
           data-testid="popover-content"
           align="start"
-          className="rounded bg-vega-clight-600 dark:bg-vega-cdark-600 border border-default text-default"
-          sideOffset={10}
+          className="rounded bg-vega-clight-800 dark:bg-vega-cdark-800 text-default"
+          sideOffset={17}
         >
-          <PopoverPrimitive.Close
-            className="px-4 py-2 absolute top-0 right-0 z-20"
-            data-testid="dialog-close"
-          >
-            <VegaIcon name={VegaIconNames.CROSS} />
-          </PopoverPrimitive.Close>
           {children}
         </PopoverPrimitive.Content>
       </PopoverPrimitive.Portal>

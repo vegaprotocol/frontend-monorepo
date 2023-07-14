@@ -9,13 +9,15 @@ import {
   DropdownMenuSeparator,
 } from '@vegaprotocol/ui-toolkit';
 
+type Assets = Array<{ id: string; symbol: string }>;
+
 export const AssetDropdown = ({
   assets,
   checkedAssets,
   onSelect,
   onReset,
 }: {
-  assets: Array<{ id: string; symbol: string }> | undefined;
+  assets: Assets | undefined;
   checkedAssets: string[];
   onSelect: (id: string, checked: boolean) => void;
   onReset: () => void;
@@ -28,7 +30,7 @@ export const AssetDropdown = ({
     <DropdownMenu
       trigger={
         <DropdownMenuTrigger data-testid="asset-trigger">
-          <span className="px-1">$</span>
+          <TriggerText assets={assets} checkedAssets={checkedAssets} />
         </DropdownMenuTrigger>
       }
     >
@@ -55,4 +57,24 @@ export const AssetDropdown = ({
       </DropdownMenuContent>
     </DropdownMenu>
   );
+};
+
+const TriggerText = ({
+  assets,
+  checkedAssets,
+}: {
+  assets: Assets;
+  checkedAssets: string[];
+}) => {
+  let text = t('Asset');
+
+  if (checkedAssets.length === 1) {
+    const assetId = checkedAssets[0];
+    const asset = assets.find((a) => a.id === assetId);
+    text = asset ? asset.symbol : t('Asset (1)');
+  } else if (checkedAssets.length > 1) {
+    text = t(`Asset (${checkedAssets.length})`);
+  }
+
+  return <span className="px-1">{text}</span>;
 };

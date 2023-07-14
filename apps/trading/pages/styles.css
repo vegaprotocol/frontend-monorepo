@@ -19,6 +19,10 @@ body,
   @apply text-vega-clight-50 dark:text-vega-cdark-50;
 }
 
+.text-secondary {
+  @apply text-vega-clight-100 dark:text-vega-cdark-100;
+}
+
 .text-muted {
   @apply text-vega-clight-200 dark:text-vega-cdark-200;
 }
