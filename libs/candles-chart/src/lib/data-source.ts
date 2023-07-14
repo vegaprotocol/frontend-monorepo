@@ -15,7 +15,12 @@ import type {
 } from 'pennant';
 import { Interval as PennantInterval } from 'pennant';
 
-import { addDecimal } from '@vegaprotocol/utils';
+import {
+  addDecimal,
+  addDecimalsFormatNumber,
+  getDateTimeFormat,
+  toBigNum,
+} from '@vegaprotocol/utils';
 import { ChartDocument } from './__generated__/Chart';
 import type { ChartQuery, ChartQueryVariables } from './__generated__/Chart';
 import {
@@ -39,6 +44,7 @@ import type {
   OrdersUpdateSubscription,
   OrdersUpdateSubscriptionVariables,
 } from '@vegaprotocol/orders';
+import { t } from '@vegaprotocol/i18n';
 
 const INTERVAL_TO_PENNANT_MAP = {
   [PennantInterval.I1M]: Schema.Interval.INTERVAL_I1M,
@@ -260,30 +266,58 @@ export class VegaDataSource implements DataSource {
       if (data.party?.ordersConnection?.edges) {
         console.log(data.party?.ordersConnection?.edges);
 
-        const annotations = data.party.ordersConnection.edges.map(
-          (edge) =>
-            ({
-              type: 'label',
-              id: edge.node.id,
-              cells: [
-                { label: 'Position' },
-                { label: edge.node.price },
-                {
-                  label: `PnL ${-10000000000}`,
-                  stroke: true,
-                  intent: 'danger',
-                },
-                {
-                  label: 'Close',
-                  onClick: () => {
-                    console.log({ type: 'position', id: '0' });
-                  },
-                },
-              ],
-              intent: edge.node.side === 'SIDE_BUY' ? 'success' : 'danger',
-              y: Number(addDecimal(edge.node.price, this.decimalPlaces)),
-            } as Annotation)
-        );
+        const annotations = data.party.ordersConnection.edges.map((edge) => {
+          const order = edge.node;
+
+          const prefix = data
+            ? order.side === Schema.Side.SIDE_BUY
+              ? '+'
+              : '-'
+            : '';
+
+          const label =
+            prefix +
+            addDecimalsFormatNumber(order.size, this.positionDecimalPlaces);
+
+          let tif = '-';
+
+          if (
+            order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
+            order?.expiresAt
+          ) {
+            const expiry = getDateTimeFormat().format(
+              new Date(order.expiresAt)
+            );
+            tif = `${
+              Schema.OrderTimeInForceCode[order.timeInForce]
+            }: ${expiry}`;
+          } else {
+            const tifLabel = order.timeInForce
+              ? Schema.OrderTimeInForceCode[order.timeInForce]
+              : '';
+
+            tif = `${tifLabel}${order?.postOnly ? t('. Post Only') : ''}${
+              order?.reduceOnly ? t('. Reduce only') : ''
+            }`;
+          }
+
+          return {
+            type: 'label',
+            id: order.id,
+            cells: [
+              {
+                label: tif,
+                intent:
+                  order.side === Schema.Side.SIDE_BUY ? 'success' : 'danger',
+              },
+              {
+                label: label,
+              },
+            ],
+            intent: edge.node.side === 'SIDE_BUY' ? 'success' : 'danger',
+            y: Number(addDecimal(order.price, this.decimalPlaces)),
+          } as Annotation;
+        });
 
         console.log(annotations);
 
