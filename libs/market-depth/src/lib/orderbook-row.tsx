@@ -13,7 +13,11 @@ interface OrderbookRowProps {
   price: string;
   onClick?: (args: { price?: string; size?: string }) => void;
   type: VolumeType;
+  width: number;
 }
+
+const HIDE_VOL_WIDTH = 200;
+const HIDE_CUMULATIVE_VOL_WIDTH = 250;
 
 const CumulationBar = ({
   cumulativeValue = 0,
@@ -90,12 +94,17 @@ export const OrderbookRow = React.memo(
     price,
     onClick,
     type,
+    width,
   }: OrderbookRowProps) => {
     const txtId = type === VolumeType.bid ? 'bid' : 'ask';
+    const cols =
+      width >= HIDE_CUMULATIVE_VOL_WIDTH ? 3 : width >= HIDE_VOL_WIDTH ? 2 : 1;
     return (
       <div className="relative">
         <CumulationBar cumulativeValue={cumulativeRelativeValue} type={type} />
-        <div className="grid gap-1 text-right grid-cols-3">
+        <div
+          className={classNames('grid gap-1 text-right', `grid-cols-${cols}`)}
+        >
           <PriceCell
             testId={`price-${price}`}
             value={BigInt(price)}
@@ -109,26 +118,30 @@ export const OrderbookRow = React.memo(
                 : 'text-market-green-600 dark:text-market-green'
             }
           />
-          <NumericCell
-            testId={`${txtId}-vol-${price}`}
-            value={value}
-            valueFormatted={addDecimalsFixedFormatNumber(
-              value,
-              positionDecimalPlaces
-            )}
-          />
-          <CumulativeVol
-            testId={`cumulative-vol-${price}`}
-            onClick={() =>
-              onClick &&
-              cumulativeValue &&
-              onClick({
-                size: addDecimal(cumulativeValue, positionDecimalPlaces),
-              })
-            }
-            positionDecimalPlaces={positionDecimalPlaces}
-            cumulativeValue={cumulativeValue}
-          />
+          {width >= HIDE_VOL_WIDTH && (
+            <NumericCell
+              testId={`${txtId}-vol-${price}`}
+              value={value}
+              valueFormatted={addDecimalsFixedFormatNumber(
+                value,
+                positionDecimalPlaces
+              )}
+            />
+          )}
+          {width >= HIDE_CUMULATIVE_VOL_WIDTH && (
+            <CumulativeVol
+              testId={`cumulative-vol-${price}`}
+              onClick={() =>
+                onClick &&
+                cumulativeValue &&
+                onClick({
+                  size: addDecimal(cumulativeValue, positionDecimalPlaces),
+                })
+              }
+              positionDecimalPlaces={positionDecimalPlaces}
+              cumulativeValue={cumulativeValue}
+            />
+          )}
         </div>
       </div>
     );

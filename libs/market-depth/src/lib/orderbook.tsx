@@ -36,6 +36,7 @@ const OrderbookTable = ({
   decimalPlaces,
   positionDecimalPlaces,
   onClick,
+  width,
 }: {
   rows: OrderbookRowData[];
   resolution: number;
@@ -43,6 +44,7 @@ const OrderbookTable = ({
   positionDecimalPlaces: number;
   type: VolumeType;
   onClick?: (args: { price?: string; size?: string }) => void;
+  width: number;
 }) => {
   return (
     <div
@@ -69,6 +71,7 @@ const OrderbookTable = ({
             cumulativeValue={data.cumulativeVol.value}
             cumulativeRelativeValue={data.cumulativeVol.relativeValue}
             type={type}
+            width={width}
           />
         ))}
       </div>
@@ -117,18 +120,18 @@ export const Orderbook = ({
     </span>
   );
   const arrowIcon = useMemo(() => {
-    if (previousMidPrice !== midPrice) {
+    if (midPrice && previousMidPrice !== midPrice) {
       iconRef.current = (
         <span
           className={classNames(
-            previousMidPrice > midPrice
+            (previousMidPrice || '') > midPrice
               ? 'text-market-red dark:text-market-red'
               : 'text-market-green-600 dark:text-market-green'
           )}
         >
           <VegaIcon
             name={
-              previousMidPrice > midPrice
+              (previousMidPrice || '') > midPrice
                 ? VegaIconNames.ARROW_DOWN
                 : VegaIconNames.ARROW_UP
             }
@@ -195,6 +198,7 @@ export const Orderbook = ({
                       decimalPlaces={decimalPlaces}
                       positionDecimalPlaces={positionDecimalPlaces}
                       onClick={onClick}
+                      width={width}
                     />
                     <div className="flex items-center justify-center gap-2">
                       {midPrice && (
@@ -217,6 +221,7 @@ export const Orderbook = ({
                       decimalPlaces={decimalPlaces}
                       positionDecimalPlaces={positionDecimalPlaces}
                       onClick={onClick}
+                      width={width}
                     />
                   </>
                 ) : (
@@ -229,52 +234,38 @@ export const Orderbook = ({
           }}
         </ReactVirtualizedAutoSizer>
       </div>
-      <div className="border-t border-default">
+      <div className="border-t border-default flex">
         <Button
           onClick={increaseResolution}
           size="xs"
           disabled={resolutions.indexOf(resolution) >= resolutions.length - 1}
-          className="text-black dark:text-white"
+          className="text-black dark:text-white rounded-none border-y-0 border-l-0 flex items-center border-r-1"
         >
-          <VegaIcon name={VegaIconNames.PLUS} />
+          <VegaIcon size={12} name={VegaIconNames.PLUS} />
         </Button>
         <DropdownMenu
-          style={{
-            width: `${Math.max.call(
-              null,
-              resolutions.map((item) => formatResolution(item).length)
-            )}ch`,
-          }}
           open={isOpen}
           onOpenChange={(open) => setOpen(open)}
-          className="block bg-neutral-100 dark:bg-neutral-700 font-mono text-right"
           trigger={
             <DropdownMenuTrigger
               data-testid="resolution"
+              className="flex justify-between px-1 items-center"
               style={{
-                width: `${Math.max.call(
-                  null,
-                  resolutions.map((item) => formatResolution(item).length)
-                )}ch`,
+                width: `${
+                  Math.max.apply(
+                    null,
+                    resolutions.map((item) => formatResolution(item).length)
+                  ) + 3
+                }ch`,
               }}
             >
-              <div
-                style={{
-                  width: `${
-                    Math.max.call(
-                      null,
-                      resolutions.map((item) => formatResolution(item).length)
-                    ) + 30
-                  }ch`,
-                }}
-              >
-                <VegaIcon
-                  name={
-                    isOpen
-                      ? VegaIconNames.CHEVRON_UP
-                      : VegaIconNames.CHEVRON_DOWN
-                  }
-                />{' '}
+              <VegaIcon
+                size={12}
+                name={
+                  isOpen ? VegaIconNames.CHEVRON_UP : VegaIconNames.CHEVRON_DOWN
+                }
+              />
+              <div className="text-xs text-left">
                 {formatResolution(resolution)}
               </div>
             </DropdownMenuTrigger>
@@ -292,9 +283,9 @@ export const Orderbook = ({
           onClick={decreaseResolution}
           size="xs"
           disabled={resolutions.indexOf(resolution) <= 0}
-          className="text-black dark:text-white"
+          className="text-black dark:text-white rounded-none border-y-0 border-l-1 flex items-center"
         >
-          <VegaIcon name={VegaIconNames.MINUS} />
+          <VegaIcon size={12} name={VegaIconNames.MINUS} />
         </Button>
       </div>
     </div>
