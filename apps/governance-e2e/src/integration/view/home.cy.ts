@@ -161,7 +161,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       cy.getByTestId('menu-drawer').should('be.visible');
     });
 
-    it.skip('should have link for proposal page', function () {
+    it('should have link for proposal page', function () {
       cy.getByTestId('menu-drawer').within(() => {
         cy.get('[href="/proposals"]')
           .should('exist')
