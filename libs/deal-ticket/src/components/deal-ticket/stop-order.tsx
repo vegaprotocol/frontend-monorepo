@@ -1,12 +1,14 @@
 import { useRef, useCallback } from 'react';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import type { StopOrdersSubmission } from '@vegaprotocol/wallet';
+import { toNanoSeconds } from '@vegaprotocol/utils';
 import type { Control } from 'react-hook-form';
 import { useForm, Controller } from 'react-hook-form';
 import * as Schema from '@vegaprotocol/types';
 import type { OrderTimeInForce, Side } from '@vegaprotocol/types';
 import type { OrderType } from '@vegaprotocol/types';
 import {
+  Button,
   Radio,
   RadioGroup,
   Input,
@@ -109,13 +111,14 @@ export const mapInputToStopOrdersSubmission = (
     }
   }
   if (data.expires) {
+    const expiresAt = data.expiresAt && toNanoSeconds(data.expiresAt);
     if (data.expiryStrategy === 'cancel') {
       if (submission.fallsBelow) {
-        submission.fallsBelow.expiresAt = data.expiresAt;
+        submission.fallsBelow.expiresAt = expiresAt;
         submission.fallsBelow.expiryStrategy =
           Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS;
       } else if (submission.risesAbove) {
-        submission.risesAbove.expiresAt = data.expiresAt;
+        submission.risesAbove.expiresAt = expiresAt;
         submission.risesAbove.expiryStrategy =
           Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS;
       }
@@ -124,7 +127,7 @@ export const mapInputToStopOrdersSubmission = (
         data.expiryStrategy === 'submitfallsBelow') &&
       submission.fallsBelow
     ) {
-      submission.fallsBelow.expiresAt = data.expiresAt;
+      submission.fallsBelow.expiresAt = expiresAt;
       submission.fallsBelow.expiryStrategy =
         Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT;
     } else if (
@@ -132,7 +135,7 @@ export const mapInputToStopOrdersSubmission = (
         data.expiryStrategy === 'submitfallsBelow') &&
       submission.risesAbove
     ) {
-      submission.risesAbove.expiresAt = data.expiresAt;
+      submission.risesAbove.expiresAt = expiresAt;
       submission.risesAbove.expiryStrategy =
         Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT;
     }
@@ -550,7 +553,14 @@ export const StopOrder = ({ market, marketData, submit }: StopOrderProps) => {
           />
         </fieldset>
       )}
-      <input type="submit" />
+      <Button
+        variant={side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
+        fill
+        type="submit"
+        data-testid="place-order"
+      >
+        {t('Submit')}
+      </Button>
     </form>
   );
 };

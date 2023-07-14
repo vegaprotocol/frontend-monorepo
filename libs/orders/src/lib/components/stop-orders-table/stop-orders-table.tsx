@@ -105,8 +105,8 @@ export const StopOrdersTable = memo<
             },
             cellRenderer: ({
               value,
-            }: VegaValueFormatterParams<StopOrder, 'submission.type'>) =>
-              value ? `${t('Stop')} ${Schema.OrderTypeMapping[value]}` : '',
+            }: VegaICellRendererParams<StopOrder, 'submission.type'>) =>
+              value ? Schema.OrderTypeMapping[value] : '',
             minWidth: 80,
           },
           {
@@ -143,7 +143,7 @@ export const StopOrdersTable = memo<
               value,
             }: VegaValueFormatterParams<StopOrder, 'trigger'>): string => {
               if (data && value?.__typename === 'StopOrderPrice') {
-                return `${t('Mark')}: ${
+                return `${t('Mark')} ${
                   data?.triggerDirection ===
                   Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
                     ? '<'
@@ -157,7 +157,7 @@ export const StopOrdersTable = memo<
                 data &&
                 value?.__typename === 'StopOrderTrailingPercentOffset'
               ) {
-                return `${t('Mark')}: ${
+                return `${t('Mark')} ${
                   data?.triggerDirection ===
                   Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
                     ? '+'
@@ -198,17 +198,11 @@ export const StopOrdersTable = memo<
             },
             valueFormatter: ({
               value,
-              data,
             }: VegaValueFormatterParams<
               StopOrder,
               'submission.timeInForce'
             >) => {
-              const tifLabel = value ? Schema.OrderTimeInForceCode[value] : '';
-              const label = `${tifLabel}${
-                data?.submission.postOnly ? t('. Post Only') : ''
-              }${data?.submission.reduceOnly ? t('. Reduce only') : ''}`;
-
-              return label;
+              return value ? Schema.OrderTimeInForceCode[value] : '';
             },
             minWidth: 150,
           },
