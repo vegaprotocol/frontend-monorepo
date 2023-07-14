@@ -70,7 +70,7 @@ describe('Orderbook', () => {
     ).toBeInTheDocument();
     // Before resolution change the price is 122.934
     await fireEvent.click(await screen.getByTestId('price-122901'));
-    expect(onClickSpy).toBeCalledWith('122.901');
+    expect(onClickSpy).toBeCalledWith({ price: '122.901' });
     const resolutionSelect = screen.getByTestId(
       'resolution'
     ) as HTMLSelectElement;
@@ -86,6 +86,6 @@ describe('Orderbook', () => {
       10
     );
     await fireEvent.click(await screen.getByTestId('price-12294'));
-    expect(onClickSpy).toBeCalledWith('122.94');
+    expect(onClickSpy).toBeCalledWith({ price: '122.94' });
   });
 });

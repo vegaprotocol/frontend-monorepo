@@ -67,7 +67,6 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
         positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
         assetSymbol={market?.tradableInstrument.instrument.product.quoteName}
         onClick={({ price, size }) => {
-          console.log({ price, size });
           if (price) {
             updateOrder(marketId, { price });
           }
