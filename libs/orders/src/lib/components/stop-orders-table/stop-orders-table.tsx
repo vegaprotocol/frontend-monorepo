@@ -51,6 +51,65 @@ export const StopOrdersTable = memo<
             minWidth: 150,
           },
           {
+            headerName: t('Trigger'),
+            field: 'trigger',
+            cellClass: 'font-mono text-right',
+            type: 'rightAligned',
+            valueFormatter: ({
+              data,
+              value,
+            }: VegaValueFormatterParams<StopOrder, 'trigger'>): string => {
+              if (data && value?.__typename === 'StopOrderPrice') {
+                return `${t('Mark')} ${
+                  data?.triggerDirection ===
+                  Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
+                    ? '<'
+                    : '>'
+                } ${addDecimalsFormatNumber(
+                  value.price,
+                  data.market.decimalPlaces
+                )}`;
+              }
+              if (
+                data &&
+                value?.__typename === 'StopOrderTrailingPercentOffset'
+              ) {
+                return `${t('Mark')} ${
+                  data?.triggerDirection ===
+                  Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
+                    ? '+'
+                    : '-'
+                }${value.trailingPercentOffset}%`;
+              }
+              return '-';
+            },
+            minWidth: 100,
+          },
+          {
+            field: 'expiresAt',
+            valueFormatter: ({
+              value,
+              data,
+            }: VegaValueFormatterParams<StopOrder, 'expiresAt'>) => {
+              if (
+                data &&
+                value &&
+                data?.expiryStrategy !==
+                  Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED
+              ) {
+                const expiresAt = getDateTimeFormat().format(new Date(value));
+                const expiryStrategy =
+                  data.expiryStrategy ===
+                  Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT
+                    ? t('Submit')
+                    : t('Cancels');
+                return `${expiryStrategy} ${expiresAt}`;
+              }
+              return '';
+            },
+            minWidth: 150,
+          },
+          {
             headerName: t('Size'),
             field: 'submission.size',
             cellClass: 'font-mono text-right',
@@ -131,41 +190,6 @@ export const StopOrdersTable = memo<
                 {valueFormatted}
               </span>
             ),
-            minWidth: 100,
-          },
-          {
-            headerName: t('Trigger'),
-            field: 'trigger',
-            cellClass: 'font-mono text-right',
-            type: 'rightAligned',
-            valueFormatter: ({
-              data,
-              value,
-            }: VegaValueFormatterParams<StopOrder, 'trigger'>): string => {
-              if (data && value?.__typename === 'StopOrderPrice') {
-                return `${t('Mark')} ${
-                  data?.triggerDirection ===
-                  Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
-                    ? '<'
-                    : '>'
-                } ${addDecimalsFormatNumber(
-                  value.price,
-                  data.market.decimalPlaces
-                )}`;
-              }
-              if (
-                data &&
-                value?.__typename === 'StopOrderTrailingPercentOffset'
-              ) {
-                return `${t('Mark')} ${
-                  data?.triggerDirection ===
-                  Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
-                    ? '+'
-                    : '-'
-                }${value.trailingPercentOffset}%`;
-              }
-              return '-';
-            },
             minWidth: 100,
           },
           {
