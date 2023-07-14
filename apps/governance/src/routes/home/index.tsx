@@ -31,6 +31,10 @@ import {
   orderByDate,
   orderByUpgradeBlockHeight,
 } from '../proposals/components/proposals-list/proposals-list';
+import {
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/network-parameters';
 
 const nodesToShow = 6;
 
@@ -42,33 +46,56 @@ const HomeProposals = ({
   protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
 }) => {
   const { t } = useTranslation();
+  const {
+    params: networkParams,
+    loading: networkParamsLoading,
+    error: networkParamsError,
+  } = useNetworkParams([
+    NetworkParams.governance_proposal_market_requiredMajority,
+    NetworkParams.governance_proposal_updateMarket_requiredMajority,
+    NetworkParams.governance_proposal_updateMarket_requiredMajorityLP,
+    NetworkParams.governance_proposal_asset_requiredMajority,
+    NetworkParams.governance_proposal_updateAsset_requiredMajority,
+    NetworkParams.governance_proposal_updateNetParam_requiredMajority,
+    NetworkParams.governance_proposal_freeform_requiredMajority,
+  ]);
 
   return (
-    <section className="mb-16" data-testid="home-proposals">
-      <Heading title={t('Proposals')} />
-      <h3 className="mb-6">{t('homeProposalsIntro')}</h3>
-      <div className="flex items-center mb-8 gap-8">
-        <Link to={`${Routes.PROPOSALS}`}>
-          <Button size="md">{t('homeProposalsButtonText')}</Button>
-        </Link>
+    <AsyncRenderer
+      loading={networkParamsLoading}
+      error={networkParamsError}
+      data={networkParams}
+    >
+      <section className="mb-16" data-testid="home-proposals">
+        <Heading title={t('Proposals')} />
+        <h3 className="mb-6">{t('homeProposalsIntro')}</h3>
+        <div className="flex items-center mb-8 gap-8">
+          <Link to={`${Routes.PROPOSALS}`}>
+            <Button size="md">{t('homeProposalsButtonText')}</Button>
+          </Link>
 
-        <ExternalLink href={ExternalLinks.GOVERNANCE_PAGE}>
-          {t(`readMoreGovernance`)}
-        </ExternalLink>
-      </div>
-      <ul
-        data-testid="home-proposal-list"
-        className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-6"
-      >
-        {protocolUpgradeProposals.map((proposal, index) => (
-          <ProtocolUpgradeProposalsListItem key={index} proposal={proposal} />
-        ))}
+          <ExternalLink href={ExternalLinks.GOVERNANCE_PAGE}>
+            {t(`readMoreGovernance`)}
+          </ExternalLink>
+        </div>
+        <ul
+          data-testid="home-proposal-list"
+          className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-6"
+        >
+          {protocolUpgradeProposals.map((proposal, index) => (
+            <ProtocolUpgradeProposalsListItem key={index} proposal={proposal} />
+          ))}
 
-        {proposals.map((proposal) => (
-          <ProposalsListItem key={proposal.id} proposal={proposal} />
-        ))}
-      </ul>
-    </section>
+          {proposals.map((proposal) => (
+            <ProposalsListItem
+              key={proposal.id}
+              proposal={proposal}
+              networkParams={networkParams}
+            />
+          ))}
+        </ul>
+      </section>
+    </AsyncRenderer>
   );
 };
 
