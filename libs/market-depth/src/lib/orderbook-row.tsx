@@ -16,8 +16,8 @@ interface OrderbookRowProps {
   width: number;
 }
 
-const HIDE_VOL_WIDTH = 200;
-const HIDE_CUMULATIVE_VOL_WIDTH = 250;
+const HIDE_VOL_WIDTH = 150;
+const HIDE_CUMULATIVE_VOL_WIDTH = 220;
 
 const CumulationBar = ({
   cumulativeValue = 0,

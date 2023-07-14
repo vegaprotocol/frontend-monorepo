@@ -23,6 +23,9 @@ export const Tabs = ({
     }
     return children[0].props.id;
   });
+  const tabLength = Children.map(children, (child) =>
+    isValidElement(child)
+  ).filter((item) => item).length;
   return (
     <TabsPrimitive.Root
       {...props}
@@ -32,7 +35,12 @@ export const Tabs = ({
     >
       <div className="border-b border-default">
         <TabsPrimitive.List
-          className="flex flex-nowrap overflow-visible"
+          className="grid"
+          style={{
+            gridTemplateColumns: `repeat(${tabLength}, fit-content(${
+              tabLength ? 100 / tabLength : '100'
+            }%))`,
+          }}
           role="tablist"
         >
           {Children.map(children, (child) => {
@@ -42,26 +50,21 @@ export const Tabs = ({
               'relative px-4 py-1 border-r border-default',
               'uppercase',
               {
-                'cursor-default': isActive,
+                'cursor-default bg-white dark:bg-black': isActive,
                 'text-neutral-400 hover:text-neutral-500 dark:hover:text-neutral-300':
                   !isActive,
               },
-              'flex items-center gap-2'
-            );
-            const borderClass = classNames(
-              'absolute bottom-[-1px] left-0 w-full h-0 border-b',
-              'border-b-white dark:border-b-black',
-              { hidden: !isActive }
+              'text-ellipsis overflow-hidden'
             );
             return (
               <TabsPrimitive.Trigger
                 data-testid={child.props.name}
                 value={child.props.id}
                 className={triggerClass}
+                style={{ height: 'calc(100% + 1px)' }}
               >
                 {child.props.indicator}
                 {child.props.name}
-                <span className={borderClass} />
               </TabsPrimitive.Trigger>
             );
           })}
