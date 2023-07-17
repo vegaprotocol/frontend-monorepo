@@ -30,14 +30,14 @@ const primary = [
   'enabled:active:bg-vega-yellow-550 enabled:active:border-vega-yellow-550',
 ];
 const secondary = [
-  'text-white dark:text-black',
+  'text-white',
   'border-vega-pink',
   'dark:bg-vega-pink bg-vega-pink-550',
   'enabled:hover:bg-vega-pink enabled:hover:border-vega-pink',
   'enabled:active:bg-vega-pink enabled:active:border-vega-pink',
 ];
 const ternary = [
-  'text-white dark:text-black',
+  'text-black',
   'border-vega-green',
   'dark:bg-vega-green bg-vega-green-550',
   'enabled:hover:bg-vega-green enabled:hover:border-vega-green',
