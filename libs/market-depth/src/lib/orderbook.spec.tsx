@@ -4,7 +4,7 @@ import { generateMockData, VolumeType } from './orderbook-data';
 import { Orderbook } from './orderbook';
 import * as orderbookData from './orderbook-data';
 
-function mockOffsetSize(width, height) {
+function mockOffsetSize(width: number, height: number) {
   Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', {
     configurable: true,
     value: () => ({ height, width }),
