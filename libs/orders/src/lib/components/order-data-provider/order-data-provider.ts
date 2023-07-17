@@ -65,7 +65,6 @@ export const mapOrderUpdateToOrder = (
     liquidityProvision: liquidityProvision,
     icebergOrder: order.icebergOrder
       ? {
-          __typename: 'IcebergOrder',
           ...order.icebergOrder,
         }
       : undefined,

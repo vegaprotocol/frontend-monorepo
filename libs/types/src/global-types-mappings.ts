@@ -45,6 +45,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: 'Reward Maker paid fees',
   ACCOUNT_TYPE_SETTLEMENT: 'Settlement',
   ACCOUNT_TYPE_HOLDING: 'Holding',
+  ACCOUNT_TYPE_LP_LIQUIDITY_FEES: 'LP Liquidity Fees',
 };
 
 /**
