@@ -104,7 +104,7 @@ export const OracleBasicProfile = ({
               'text-vega-blue': intent === Intent.Primary,
               'text-vega-green dark:text-vega-green': intent === Intent.Success,
               'text-yellow-600 dark:text-yellow': intent === Intent.Warning,
-              'text-vega-pink': intent === Intent.Danger,
+              'text-vega-red': intent === Intent.Danger,
             },
             'flex items-start align-text-bottom p-1'
           )}

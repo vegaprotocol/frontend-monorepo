@@ -14,7 +14,6 @@ const initialAppState: AppState = {
   totalAssociated: new BigNumber(0),
   decimals: 0,
   totalSupply: new BigNumber(0),
-  vegaWalletOverlay: false,
   vegaWalletManageOverlay: false,
   transactionOverlay: false,
   bannerMessage: '',
@@ -31,23 +30,10 @@ function appStateReducer(state: AppState, action: AppStateAction): AppState {
         totalAssociated: action.totalAssociated,
       };
     }
-    case AppStateActionType.SET_VEGA_WALLET_OVERLAY: {
-      return {
-        ...state,
-        vegaWalletOverlay: action.isOpen,
-      };
-    }
     case AppStateActionType.SET_VEGA_WALLET_MANAGE_OVERLAY: {
       return {
         ...state,
         vegaWalletManageOverlay: action.isOpen,
-        vegaWalletOverlay: action.isOpen ? false : state.vegaWalletOverlay,
-      };
-    }
-    case AppStateActionType.SET_DRAWER: {
-      return {
-        ...state,
-        vegaWalletOverlay: false,
       };
     }
     case AppStateActionType.SET_TRANSACTION_OVERLAY: {

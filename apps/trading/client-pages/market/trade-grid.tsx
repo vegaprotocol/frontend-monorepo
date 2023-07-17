@@ -27,6 +27,7 @@ import {
 import { TradingViews } from './trade-views';
 import { MarketSelector } from './market-selector';
 import { HeaderStats } from './header-stats';
+import { MarketSuccessorBanner } from '../../components/market-banner';
 
 interface TradeGridProps {
   market: Market | null;
@@ -316,7 +317,8 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
       <div className="border-b border-default min-w-0">
         <HeaderStats market={market} />
       </div>
-      <div className="col-span-2 bg-vega-green">
+      <div className="col-span-2">
+        <MarketSuccessorBanner market={market} />
         <OracleBanner marketId={market?.id || ''} />
       </div>
       {sidebarOpen && (
