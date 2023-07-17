@@ -1,4 +1,5 @@
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { generateMockData, VolumeType } from './orderbook-data';
 import { Orderbook } from './orderbook';
 import * as orderbookData from './orderbook-data';
@@ -69,12 +70,17 @@ describe('Orderbook', () => {
       await screen.findByTestId(`middle-mark-price-${params.midPrice}`)
     ).toBeInTheDocument();
     // Before resolution change the price is 122.934
-    await fireEvent.click(await screen.getByTestId('price-122901'));
+    await userEvent.click(await screen.getByTestId('price-122901'));
     expect(onClickSpy).toBeCalledWith({ price: '122.901' });
-    const resolutionSelect = screen.getByTestId(
-      'resolution'
-    ) as HTMLSelectElement;
-    await fireEvent.change(resolutionSelect, { target: { value: '10' } });
+
+    await userEvent.click(screen.getByTestId('resolution'));
+
+    await waitFor(() => {
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+    });
+
+    await userEvent.click(screen.getAllByRole('menuitem')[1]);
+
     expect(orderbookData.compactRows).toHaveBeenCalledWith(
       mockedData.bids,
       VolumeType.bid,
@@ -85,7 +91,7 @@ describe('Orderbook', () => {
       VolumeType.ask,
       10
     );
-    await fireEvent.click(await screen.getByTestId('price-12294'));
+    await userEvent.click(await screen.getByTestId('price-12294'));
     expect(onClickSpy).toBeCalledWith({ price: '122.94' });
   });
 });
