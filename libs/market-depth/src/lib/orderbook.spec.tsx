@@ -4,9 +4,8 @@ import { generateMockData, VolumeType } from './orderbook-data';
 import { Orderbook } from './orderbook';
 import * as orderbookData from './orderbook-data';
 
-
-let widthMock = 800
-const heightMock = 768
+const widthMock = 800;
+const heightMock = 768;
 function mockOffsetSize() {
   Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', {
     configurable: true,
@@ -112,17 +111,23 @@ describe('Orderbook', () => {
         assetSymbol="USD"
       />
     );
-    expect((orderbookData.compactRows as jest.Mock).mock.lastCall[2]).toEqual(1);
+    expect((orderbookData.compactRows as jest.Mock).mock.lastCall[2]).toEqual(
+      1
+    );
     expect(screen.getByTestId('minus-button')).toBeDisabled();
     userEvent.click(screen.getByTestId('plus-button'));
     await waitFor(() => {
-      expect((orderbookData.compactRows as jest.Mock).mock.lastCall[2]).toEqual(10);
-    })
+      expect((orderbookData.compactRows as jest.Mock).mock.lastCall[2]).toEqual(
+        10
+      );
+    });
     expect(screen.getByTestId('minus-button')).not.toBeDisabled();
     userEvent.click(screen.getByTestId('minus-button'));
     await waitFor(() => {
-      expect((orderbookData.compactRows as jest.Mock).mock.lastCall[2]).toEqual(1);
-    })
+      expect((orderbookData.compactRows as jest.Mock).mock.lastCall[2]).toEqual(
+        1
+      );
+    });
     expect(screen.getByTestId('minus-button')).toBeDisabled();
     await userEvent.click(screen.getByTestId('resolution'));
 
@@ -131,9 +136,10 @@ describe('Orderbook', () => {
     });
     await userEvent.click(screen.getAllByRole('menuitem')[5]);
     await waitFor(() => {
-      expect((orderbookData.compactRows as jest.Mock).mock.lastCall[2]).toEqual(100000);
+      expect((orderbookData.compactRows as jest.Mock).mock.lastCall[2]).toEqual(
+        100000
+      );
     });
     expect(screen.getByTestId('plus-button')).toBeDisabled();
   });
-
 });

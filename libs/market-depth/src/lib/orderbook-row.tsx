@@ -103,6 +103,7 @@ export const OrderbookRow = React.memo(
       <div className="relative pr-1">
         <CumulationBar cumulativeValue={cumulativeRelativeValue} type={type} />
         <div
+          data-testid={`${txtId}-rows-container`}
           className={classNames('grid gap-1 text-right', `grid-cols-${cols}`)}
         >
           <PriceCell
