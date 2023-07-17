@@ -4,20 +4,18 @@ import { generateMockData, VolumeType } from './orderbook-data';
 import { Orderbook } from './orderbook';
 import * as orderbookData from './orderbook-data';
 
-const widthMock = 800;
-const heightMock = 768;
-function mockOffsetSize() {
+function mockOffsetSize(width, height) {
   Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', {
     configurable: true,
-    value: () => ({ height: heightMock, width: widthMock }),
+    value: () => ({ height, width }),
   });
   Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
     configurable: true,
-    value: heightMock,
+    value: height,
   });
   Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
     configurable: true,
-    value: widthMock,
+    value: width,
   });
 }
 
@@ -37,7 +35,7 @@ describe('Orderbook', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockOffsetSize();
+    mockOffsetSize(800, 768);
   });
   it('markPrice should be in the middle', async () => {
     render(
@@ -141,5 +139,41 @@ describe('Orderbook', () => {
       );
     });
     expect(screen.getByTestId('plus-button')).toBeDisabled();
+  });
+
+  it('two columns', () => {
+    mockOffsetSize(200, 768);
+    const onClickSpy = jest.fn();
+    const mockedData = generateMockData(params);
+    render(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
+        onClick={onClickSpy}
+        {...mockedData}
+        assetSymbol="USD"
+      />
+    );
+    screen.getAllByTestId('bid-rows-container').forEach((item) => {
+      expect(item).toHaveClass('grid-cols-2');
+    });
+  });
+
+  it('one column', () => {
+    mockOffsetSize(140, 768);
+    const onClickSpy = jest.fn();
+    const mockedData = generateMockData(params);
+    render(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
+        onClick={onClickSpy}
+        {...mockedData}
+        assetSymbol="USD"
+      />
+    );
+    screen.getAllByTestId('ask-rows-container').forEach((item) => {
+      expect(item).toHaveClass('grid-cols-1');
+    });
   });
 });
