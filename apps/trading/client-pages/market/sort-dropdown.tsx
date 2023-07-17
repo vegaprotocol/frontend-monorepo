@@ -8,8 +8,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-  VegaIcon,
-  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 
 export const Sort = {
