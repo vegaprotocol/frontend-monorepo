@@ -4,7 +4,6 @@ import { getDefaultOrder, useOrder } from '@vegaprotocol/orders';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
-import type { Exact } from 'type-fest';
 
 export type OrderFormFields = OrderObj & {
   summary: string;
@@ -51,13 +50,11 @@ export const useOrderForm = (marketId: string) => {
     }
   }, [order, isSubmitted, getValues, setValue]);
 
-  const handleSubmitWrapper = (
-    cb: <T>(o: Exact<OrderSubmission, T>) => void
-  ) => {
+  const handleSubmitWrapper = (cb: (o: OrderSubmission) => void) => {
     return handleSubmit(() => {
-      // remove the persist key from the order in the store, the wallet will reject
+      // remove the persist and iceberg key from the order in the store, the wallet will reject
       // an order that contains unrecognized additional keys
-      cb(omit(order, 'persist'));
+      cb(omit(order, 'persist', 'iceberg'));
     });
   };
 
