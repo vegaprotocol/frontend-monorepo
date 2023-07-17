@@ -7,7 +7,7 @@ import {
 export const formatValue = (
   value: string | number | null | undefined,
   decimalPlaces: number,
-  quantum?: string,
+  quantum?: string | number,
   formatDecimals?: number,
   emptyValue = '-'
 ): string => {

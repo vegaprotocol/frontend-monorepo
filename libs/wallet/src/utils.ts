@@ -50,6 +50,13 @@ export const normalizeOrderSubmission = (
       : undefined,
   postOnly: order.postOnly,
   reduceOnly: order.reduceOnly,
+  icebergOpts: order.icebergOpts && {
+    peakSize: removeDecimal(order.icebergOpts.peakSize, positionDecimalPlaces),
+    minimumVisibleSize: removeDecimal(
+      order.icebergOpts.minimumVisibleSize,
+      positionDecimalPlaces
+    ),
+  },
 });
 
 export const normalizeOrderAmendment = <T extends Exact<OrderAmendment, T>>(
