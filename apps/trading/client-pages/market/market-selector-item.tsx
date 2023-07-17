@@ -22,7 +22,6 @@ export const MarketSelectorItem = ({
   style: CSSProperties;
   currentMarketId?: string;
 }) => {
-  // 'py-1 px-2',
   return (
     <div style={style} role="row">
       <Link
