@@ -23,9 +23,7 @@ export const Tabs = ({
     }
     return children[0].props.id;
   });
-  const tabLength = Children.map(children, (child) =>
-    isValidElement(child)
-  ).filter((item) => item).length;
+
   return (
     <TabsPrimitive.Root
       {...props}
@@ -33,14 +31,9 @@ export const Tabs = ({
       onValueChange={onValueChange || setActiveTab}
       className="h-full grid grid-rows-[min-content_1fr]"
     >
-      <div className="border-b border-default">
+      <div className="border-b border-default min-w-0">
         <TabsPrimitive.List
-          className="grid"
-          style={{
-            gridTemplateColumns: `repeat(${tabLength}, fit-content(${
-              tabLength ? 100 / tabLength : '100'
-            }%))`,
-          }}
+          className="flex flex-nowrap overflow-visible"
           role="tablist"
         >
           {Children.map(children, (child) => {
@@ -50,21 +43,26 @@ export const Tabs = ({
               'relative px-4 py-1 border-r border-default',
               'uppercase',
               {
-                'cursor-default bg-white dark:bg-black': isActive,
+                'cursor-default': isActive,
                 'text-neutral-400 hover:text-neutral-500 dark:hover:text-neutral-300':
                   !isActive,
               },
-              'text-ellipsis overflow-hidden'
+              'flex items-center gap-2'
+            );
+            const borderClass = classNames(
+              'absolute bottom-[-1px] left-0 w-full h-0 border-b',
+              'border-b-white dark:border-b-black',
+              { hidden: !isActive }
             );
             return (
               <TabsPrimitive.Trigger
                 data-testid={child.props.name}
                 value={child.props.id}
                 className={triggerClass}
-                style={{ height: 'calc(100% + 1px)' }}
               >
                 {child.props.indicator}
                 {child.props.name}
+                <span className={borderClass} />
               </TabsPrimitive.Trigger>
             );
           })}
