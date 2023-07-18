@@ -120,8 +120,15 @@ export const OrderbookRow = React.memo(
             }
           />
           {width >= HIDE_VOL_WIDTH && (
-            <NumericCell
+            <PriceCell
               testId={`${txtId}-vol-${price}`}
+              onClick={(value) =>
+                onClick &&
+                value &&
+                onClick({
+                  size: addDecimal(value, positionDecimalPlaces),
+                })
+              }
               value={value}
               valueFormatted={addDecimalsFixedFormatNumber(
                 value,

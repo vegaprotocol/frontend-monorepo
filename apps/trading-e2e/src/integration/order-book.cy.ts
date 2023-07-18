@@ -81,6 +81,12 @@ describe('order book', { tags: '@smoke' }, () => {
     cy.getByTestId(dealTicketSize).should('have.value', '7');
   });
 
+  it('copy size to deal ticket form', () => {
+    // 6003-ORDB-009
+    cy.getByTestId(bidVolume).click();
+    cy.getByTestId(dealTicketSize).should('have.value', '1');
+  });
+
   it('change price resolution', () => {
     // 6003-ORDB-008
     const resolutions = [

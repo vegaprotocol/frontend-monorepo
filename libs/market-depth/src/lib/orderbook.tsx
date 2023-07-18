@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import ReactVirtualizedAutoSizer from 'react-virtualized-auto-sizer';
 import {
   addDecimalsFormatNumber,
