@@ -39,6 +39,7 @@ const VERSION = 1;
 export const STORAGE_KEY = `vega_url_${VERSION}`;
 const SUBSCRIPTION_TIMEOUT = 3000;
 
+export const ENV = compileEnvVars();
 export const FLAGS = compileFeatureFlags();
 
 export const useEnvironment = create<EnvStore>()((set, get) => ({
@@ -376,19 +377,49 @@ function compileEnvVars() {
 }
 
 function compileFeatureFlags(): FeatureFlags {
-  return {
-    CONSOLE_ICEBERG_ORDERS: truthy.includes(
+  const CONSOLE_FLAGS = {
+    CONSOLE_ICEBERG_ORDERS: TRUTHY.includes(
       windowOrDefault('NX_CONSOLE_ICEBERG_ORDERS')
     ),
-    CONSOLE_STOP_ORDERS: truthy.includes(
+    CONSOLE_STOP_ORDERS: TRUTHY.includes(
       windowOrDefault('NX_CONSOLE_STOP_ORDERS')
     ),
-    CONSOLE_SUCCESSOR_MARKETS: truthy.includes(
+    CONSOLE_SUCCESSOR_MARKETS: TRUTHY.includes(
       windowOrDefault('NX_CONSOLE_SUCCESSOR_MARKETS')
     ),
-    CONSOLE_PRODUCT_PERPETUALS: truthy.includes(
+    CONSOLE_PRODUCT_PERPETUALS: TRUTHY.includes(
       windowOrDefault('NX_CONSOLE_PRODUCT_PERPETUALS')
     ),
+  };
+  const EXPLORER_FLAGS = {
+    EXPLORER_ASSETS: TRUTHY.includes(windowOrDefault('NX_EXPLORER_ASSETS')),
+    EXPLORER_GENESIS: TRUTHY.includes(windowOrDefault('NX_EXPLORER_GENESIS')),
+    EXPLORER_GOVERNANCE: TRUTHY.includes(
+      windowOrDefault('NX_EXPLORER_GOVERNANCE')
+    ),
+    EXPLORER_MARKETS: TRUTHY.includes(windowOrDefault('NX_EXPLORER_MARKETS')),
+    EXPLORER_ORACLES: TRUTHY.includes(windowOrDefault('NX_EXPLORER_ORACLES')),
+    EXPLORER_TXS_LIST: TRUTHY.includes(windowOrDefault('NX_EXPLORER_TXS_LIST')),
+    EXPLORER_NETWORK_PARAMETERS: TRUTHY.includes(
+      windowOrDefault('NX_EXPLORER_NETWORK_PARAMETERS')
+    ),
+    EXPLORER_PARTIES: TRUTHY.includes(windowOrDefault('NX_EXPLORER_PARTIES')),
+    EXPLORER_VALIDATORS: TRUTHY.includes(
+      windowOrDefault('NX_EXPLORER_VALIDATORS')
+    ),
+  };
+  const GOVERNANCE_FLAGS = {
+    GOVERNANCE_NETWORK_DOWN: TRUTHY.includes(
+      windowOrDefault('NX_NETWORK_DOWN')
+    ),
+    GOVERNANCE_NETWORK_LIMITS: TRUTHY.includes(
+      windowOrDefault('NX_GOVERNANCE_NETWORK_LIMITS')
+    ),
+  };
+  return {
+    ...CONSOLE_FLAGS,
+    ...EXPLORER_FLAGS,
+    ...GOVERNANCE_FLAGS,
   };
 }
 
@@ -443,4 +474,4 @@ export function windowOrDefault(key: string, defaultValue?: string) {
   return defaultValue || undefined;
 }
 
-const truthy = ['1', 'true'];
+const TRUTHY = ['1', 'true'];
