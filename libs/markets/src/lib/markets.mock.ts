@@ -141,6 +141,7 @@ export const createMarketFragment = (
       },
       __typename: 'TradableInstrument',
     },
+    successorMarketID: null,
     __typename: 'Market',
   };
 
