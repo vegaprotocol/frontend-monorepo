@@ -12,7 +12,7 @@ import {
   NodeCheckDocument,
   NodeCheckTimeUpdateDocument,
 } from '../utils/__generated__/NodeCheck';
-import type { Environment } from '../types';
+import type { Environment, FeatureFlags } from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
@@ -39,8 +39,11 @@ const VERSION = 1;
 export const STORAGE_KEY = `vega_url_${VERSION}`;
 const SUBSCRIPTION_TIMEOUT = 3000;
 
+export const FLAGS = compileFeatureFlags();
+
 export const useEnvironment = create<EnvStore>()((set, get) => ({
   ...compileEnvVars(),
+  ...compileFeatureFlags(),
   nodes: [],
   status: 'default',
   error: null,
@@ -372,6 +375,23 @@ function compileEnvVars() {
   return env;
 }
 
+function compileFeatureFlags(): FeatureFlags {
+  return {
+    CONSOLE_ICEBERG_ORDERS: truthy.includes(
+      windowOrDefault('NX_CONSOLE_ICEBERG_ORDERS')
+    ),
+    CONSOLE_STOP_ORDERS: truthy.includes(
+      windowOrDefault('NX_CONSOLE_STOP_ORDERS')
+    ),
+    CONSOLE_SUCCESSOR_MARKETS: truthy.includes(
+      windowOrDefault('NX_CONSOLE_SUCCESSOR_MARKETS')
+    ),
+    CONSOLE_PRODUCT_PERPETUALS: truthy.includes(
+      windowOrDefault('NX_CONSOLE_PRODUCT_PERPETUALS')
+    ),
+  };
+}
+
 function parseNetworks(value?: string) {
   if (value) {
     try {
@@ -414,7 +434,7 @@ function getEtherscanUrl(
 
 export function windowOrDefault(key: string, defaultValue?: string) {
   if (typeof window !== 'undefined') {
-    // @ts-ignore avoid conflic in env
+    // @ts-ignore avoid conflict in env
     if (window._env_ && window._env_[key]) {
       // @ts-ignore presence has been check above
       return window._env_[key];
@@ -422,3 +442,5 @@ export function windowOrDefault(key: string, defaultValue?: string) {
   }
   return defaultValue || undefined;
 }
+
+const truthy = ['1', 'true'];
