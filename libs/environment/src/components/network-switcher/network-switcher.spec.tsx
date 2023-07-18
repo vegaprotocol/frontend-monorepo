@@ -163,6 +163,7 @@ describe('Network switcher', () => {
         [Networks.MAINNET]: 'https://main.net',
         [Networks.TESTNET]: 'https://test.net',
         [Networks.VALIDATOR_TESTNET]: 'https://validator-test.net',
+        [Networks.MAINNET_MIRROR]: 'https://mainnet-mirror.net',
         [Networks.DEVNET]: 'https://dev.net',
         [Networks.STAGNET1]: 'https://stag1.net',
       };
@@ -209,6 +210,7 @@ describe('Network switcher', () => {
       [Networks.CUSTOM]: undefined,
       [Networks.MAINNET]: 'https://main.net',
       [Networks.VALIDATOR_TESTNET]: 'https://validator-test.net',
+      [Networks.MAINNET_MIRROR]: 'https://mainnet-mirror.net',
       [Networks.TESTNET]: 'https://test.net',
       [Networks.DEVNET]: 'https://dev.net',
       [Networks.STAGNET1]: 'https://stag1.net',
@@ -240,6 +242,7 @@ describe('Network switcher', () => {
       [Networks.CUSTOM]: undefined,
       [Networks.MAINNET]: undefined,
       [Networks.VALIDATOR_TESTNET]: 'https://validator-test.net',
+      [Networks.MAINNET_MIRROR]: 'https://mainnet-mirror.net',
       [Networks.TESTNET]: 'https://test.net',
       [Networks.DEVNET]: 'https://dev.net',
       [Networks.STAGNET1]: 'https://stag1.net',
