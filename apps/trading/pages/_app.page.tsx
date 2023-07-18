@@ -25,7 +25,7 @@ import './styles.css';
 import { usePageTitleStore } from '../stores';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
-import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
+import { HashRouter, useSearchParams } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -73,7 +73,6 @@ const InitializeHandlers = () => {
 };
 
 function AppBody({ Component }: AppProps) {
-  const location = useLocation();
   const gridClasses = classNames(
     'h-full relative z-0 grid',
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
@@ -95,9 +94,9 @@ function AppBody({ Component }: AppProps) {
           <ViewingBanner />
           <UpgradeBanner showVersionChange={true} />
         </div>
-        <main data-testid={location.pathname}>
+        <div>
           <Component />
-        </main>
+        </div>
       </div>
       <DialogsContainer />
       <ToastsManager />

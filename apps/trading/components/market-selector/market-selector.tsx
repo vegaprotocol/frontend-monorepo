@@ -10,12 +10,15 @@ import {
 import type { CSSProperties } from 'react';
 import { useCallback, useState, useMemo } from 'react';
 import { FixedSizeList } from 'react-window';
-import { useMarketSelectorList } from './use-market-selector-list';
-import type { ProductType } from './product-selector';
-import { Product, ProductSelector } from './product-selector';
-import { AssetDropdown } from './asset-dropdown';
-import type { SortType } from './sort-dropdown';
-import { Sort, SortDropdown } from './sort-dropdown';
+import { useMarketSelectorList } from '../../client-pages/market/use-market-selector-list';
+import type { ProductType } from '../../client-pages/market/product-selector';
+import {
+  Product,
+  ProductSelector,
+} from '../../client-pages/market/product-selector';
+import { AssetDropdown } from '../../client-pages/market/asset-dropdown';
+import type { SortType } from '../../client-pages/market/sort-dropdown';
+import { Sort, SortDropdown } from '../../client-pages/market/sort-dropdown';
 import { MarketSelectorItem } from './market-selector-item';
 import classNames from 'classnames';
 

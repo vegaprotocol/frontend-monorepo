@@ -18,7 +18,7 @@ import { NO_MARKET } from './constants';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
 import { Header, HeaderTitle } from '../../components/header';
-import { MarketSelector } from './market-selector';
+import { MarketSelector } from '../../components/market-selector/market-selector';
 import { MarketSuccessorBanner } from '../../components/market-banner';
 import { MarketHeaderStats } from './market-header-stats';
 

@@ -9,7 +9,7 @@ import { Sort } from './sort-dropdown';
 import { createMarketFragment } from '@vegaprotocol/mock';
 import { MarketState } from '@vegaprotocol/types';
 import { useMarketList } from '@vegaprotocol/markets';
-import type { Filter } from './market-selector';
+import type { Filter } from '../../components/market-selector/market-selector';
 import { subDays } from 'date-fns';
 
 jest.mock('@vegaprotocol/markets');

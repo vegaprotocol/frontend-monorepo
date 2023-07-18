@@ -54,7 +54,7 @@ export const Portfolio = () => {
 
   const onMarketClick = useMarketClickHandler(true);
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
-  const wrapperClasses = 'py-0.5 h-full max-h-full flex flex-col';
+  const wrapperClasses = 'p-0.5 h-full max-h-full flex flex-col';
   return (
     <div className={wrapperClasses}>
       <ResizableGrid vertical onChange={handleOnLayoutChange}>

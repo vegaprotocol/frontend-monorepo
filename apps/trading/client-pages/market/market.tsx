@@ -7,7 +7,11 @@ import {
   useThrottledDataProvider,
 } from '@vegaprotocol/data-provider';
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
-import { marketProvider, marketDataProvider } from '@vegaprotocol/markets';
+import {
+  marketProvider,
+  marketDataProvider,
+  useMarket,
+} from '@vegaprotocol/markets';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid } from './trade-grid';
 import { TradePanels } from './trade-panels';
@@ -70,11 +74,7 @@ export const MarketPage = () => {
 
   const onSelect = useMarketClickHandler();
 
-  const { data, error, loading } = useDataProvider({
-    dataProvider: marketProvider,
-    variables: { marketId: marketId || '' },
-    skip: !marketId,
-  });
+  const { data, error, loading } = useMarket(marketId);
 
   useEffect(() => {
     if (data?.id && data.id !== lastMarketId) {

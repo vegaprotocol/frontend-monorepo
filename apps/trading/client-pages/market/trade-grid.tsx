@@ -25,7 +25,7 @@ import {
 } from '../../components/resizable-grid';
 import { TradingViews } from './trade-views';
 import { MarketSuccessorBanner } from '../../components/market-banner';
-import { MarketSelector } from './market-selector';
+import { MarketSelector } from '../../components/market-selector/market-selector';
 import { MarketHeaderStats } from './market-header-stats';
 interface TradeGridProps {
   market: Market | null;
@@ -163,32 +163,16 @@ MainGrid.displayName = 'MainGrid';
 export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
   const wrapperClasses = classNames(
     'h-full grid',
-    'grid-rows-[min-content_min-content_1fr]'
+    'grid-rows-[min-content_1fr]'
   );
 
   return (
     <div className={wrapperClasses}>
-      <Header
-        title={
-          <Popover
-            trigger={
-              <HeaderTitle>
-                {market?.tradableInstrument.instrument.code}
-                <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
-              </HeaderTitle>
-            }
-          >
-            <MarketSelector currentMarketId={market?.id} />
-          </Popover>
-        }
-      >
-        <MarketHeaderStats market={market} />
-      </Header>
-      <div className="bg-vega-green">
+      <div>
         <MarketSuccessorBanner market={market} />
         <OracleBanner marketId={market?.id || ''} />
       </div>
-      <div className="min-h-0 py-0.5">
+      <div className="min-h-0 p-0.5">
         <MainGrid marketId={market?.id || ''} pinnedAsset={pinnedAsset} />
       </div>
     </div>
