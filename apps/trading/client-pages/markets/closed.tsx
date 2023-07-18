@@ -129,8 +129,8 @@ export const Closed = () => {
 };
 
 export const SuccessorMarketRenderer = ({
-                                          value,
-                                        }: VegaICellRendererParams<Row, 'successorMarketID'>) => {
+  value,
+}: VegaICellRendererParams<Row, 'successorMarketID'>) => {
   const { data } = useDataProvider({
     dataProvider: marketProvider,
     variables: {
