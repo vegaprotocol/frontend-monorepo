@@ -30,7 +30,7 @@ export const MarginWarning = ({ margin, balance, asset, onDeposit }: Props) => {
         text: t(`Deposit ${asset.symbol}`),
         action: () => onDeposit(asset.id),
         dataTestId: 'deal-ticket-deposit-dialog-button',
-        size: 'sm',
+        size: 'small',
       }}
     />
   );

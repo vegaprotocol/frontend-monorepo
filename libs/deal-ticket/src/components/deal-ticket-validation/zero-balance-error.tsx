@@ -37,7 +37,7 @@ export const ZeroBalanceError = ({
         text: t(`Make a deposit`),
         action: () => onDeposit(asset.id),
         dataTestId: 'deal-ticket-deposit-dialog-button',
-        size: 'sm',
+        size: 'small',
       }}
     />
   );
