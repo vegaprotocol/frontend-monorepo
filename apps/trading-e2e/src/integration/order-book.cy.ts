@@ -9,6 +9,7 @@ const bidCumulative = 'cumulative-vol-9889001';
 const midPrice = 'middle-mark-price-4612690000';
 const priceResolution = 'resolution';
 const dealTicketPrice = 'order-price';
+const dealTicketSize = 'order-size';
 const resPrice = 'price-990';
 
 describe('order book', { tags: '@smoke' }, () => {
@@ -72,6 +73,18 @@ describe('order book', { tags: '@smoke' }, () => {
     // 6003-ORDB-009
     cy.getByTestId(askPrice).click();
     cy.getByTestId(dealTicketPrice).should('have.value', '98.94585');
+  });
+
+  it('copy size to deal ticket form', () => {
+    // 6003-ORDB-009
+    cy.getByTestId(bidCumulative).click();
+    cy.getByTestId(dealTicketSize).should('have.value', '7');
+  });
+
+  it('copy size to deal ticket form', () => {
+    // 6003-ORDB-009
+    cy.getByTestId(bidVolume).click();
+    cy.getByTestId(dealTicketSize).should('have.value', '1');
   });
 
   it('change price resolution', () => {
