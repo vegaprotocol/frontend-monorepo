@@ -70,9 +70,32 @@ export const envSchema = z
     }
   );
 
-export const featureFlagsSchema = z.object({
+const CONSOLE_FLAGS = {
   CONSOLE_SUCCESSOR_MARKETS: z.optional(z.boolean()),
   CONSOLE_STOP_ORDERS: z.optional(z.boolean()),
   CONSOLE_ICEBERG_ORDERS: z.optional(z.boolean()),
   CONSOLE_PRODUCT_PERPETUALS: z.optional(z.boolean()),
+};
+
+const EXPLORER_FLAGS = {
+  EXPLORER_ASSETS: z.optional(z.boolean()),
+  EXPLORER_GENESIS: z.optional(z.boolean()),
+  EXPLORER_GOVERNANCE: z.optional(z.boolean()),
+  EXPLORER_NETWORK_PARAMETERS: z.optional(z.boolean()),
+  EXPLORER_PARTIES: z.optional(z.boolean()),
+  EXPLORER_VALIDATORS: z.optional(z.boolean()),
+  EXPLORER_MARKETS: z.optional(z.boolean()),
+  EXPLORER_ORACLES: z.optional(z.boolean()),
+  EXPLORER_TXS_LIST: z.optional(z.boolean()),
+};
+
+const GOVERNANCE_FLAGS = {
+  GOVERNANCE_NETWORK_DOWN: z.optional(z.boolean()),
+  GOVERNANCE_NETWORK_LIMITS: z.optional(z.boolean()),
+};
+
+export const featureFlagsSchema = z.object({
+  ...CONSOLE_FLAGS,
+  ...EXPLORER_FLAGS,
+  ...GOVERNANCE_FLAGS,
 });

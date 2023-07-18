@@ -67,12 +67,6 @@ export const ENV = {
   localProviderUrl: windowOrDefault('NX_LOCAL_PROVIDER_URL'),
   delegationsPagination: windowOrDefault('NX_DELEGATIONS_PAGINATION'),
   rest: windowOrDefault('NX_VEGA_REST_URL'),
-  flags: {
-    NETWORK_DOWN: TRUTHY.includes(windowOrDefault('NX_NETWORK_DOWN')),
-    MOCK: TRUTHY.includes(windowOrDefault('NX_MOCKED')),
-    FAIRGROUND: TRUTHY.includes(windowOrDefault('NX_FAIRGROUND')),
-    NETWORK_LIMITS: TRUTHY.includes(windowOrDefault('NX_NETWORK_LIMITS')),
-  },
   addresses:
     ContractAddresses[(envName === 'local' ? 'CUSTOM' : envName) as Networks],
 };
