@@ -104,7 +104,7 @@ export const MarketFieldsFragmentDoc = gql`
     open
     close
   }
-  #successorMarketID
+  successorMarketID
 }
     ${DataSourceSpecFragmentDoc}`;
 export const MarketsDocument = gql`
