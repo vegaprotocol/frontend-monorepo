@@ -23,6 +23,7 @@ export const Tabs = ({
     }
     return children[0].props.id;
   });
+
   return (
     <TabsPrimitive.Root
       {...props}
@@ -30,7 +31,7 @@ export const Tabs = ({
       onValueChange={onValueChange || setActiveTab}
       className="h-full grid grid-rows-[min-content_1fr]"
     >
-      <div className="border-b border-default">
+      <div className="border-b border-default min-w-0">
         <TabsPrimitive.List
           className="flex flex-nowrap overflow-visible"
           role="tablist"
