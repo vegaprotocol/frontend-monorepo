@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import ReactVirtualizedAutoSizer from 'react-virtualized-auto-sizer';
 import {
   addDecimalsFormatNumber,
@@ -10,17 +10,16 @@ import { OrderbookRow } from './orderbook-row';
 import type { OrderbookRowData } from './orderbook-data';
 import { compactRows, VolumeType } from './orderbook-data';
 import {
-  Splash,
-  VegaIcon,
-  VegaIconNames,
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  Button,
+  Splash,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
-import { useState } from 'react';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 
 // Sets row height, will be used to calculate number of rows that can be
@@ -28,6 +27,19 @@ import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 export const rowHeight = 17;
 const rowGap = 1;
 const midHeight = 30;
+
+type PriceChange = 'up' | 'down' | 'none';
+
+const PRICE_CHANGE_ICON_MAP: Readonly<Record<PriceChange, VegaIconNames>> = {
+  up: VegaIconNames.ARROW_UP,
+  down: VegaIconNames.ARROW_DOWN,
+  none: VegaIconNames.BULLET,
+};
+const PRICE_CHANGE_CLASS_MAP: Readonly<Record<PriceChange, string>> = {
+  up: 'text-market-green-600 dark:text-market-green',
+  down: 'text-market-red dark:text-market-red',
+  none: 'text-vega-blue-500',
+};
 
 const OrderbookTable = ({
   rows,
@@ -114,33 +126,19 @@ export const Orderbook = ({
   }, [bids, resolution]);
   const [isOpen, setOpen] = useState(false);
   const previousMidPrice = usePrevious(midPrice);
-  const iconRef = useRef(
-    <span className="text-vega-blue-500 dark:text-vega-blue-500">
-      <VegaIcon name={VegaIconNames.BULLET} />
+  const priceChangeRef = useRef<'up' | 'down' | 'none'>('none');
+  if (midPrice && previousMidPrice !== midPrice) {
+    priceChangeRef.current =
+      (previousMidPrice || '') > midPrice ? 'down' : 'up';
+  }
+
+  const priceChangeIcon = (
+    <span
+      className={classNames(PRICE_CHANGE_CLASS_MAP[priceChangeRef.current])}
+    >
+      <VegaIcon name={PRICE_CHANGE_ICON_MAP[priceChangeRef.current]} />
     </span>
   );
-  const arrowIcon = useMemo(() => {
-    if (midPrice && previousMidPrice !== midPrice) {
-      iconRef.current = (
-        <span
-          className={classNames(
-            (previousMidPrice || '') > midPrice
-              ? 'text-market-red dark:text-market-red'
-              : 'text-market-green-600 dark:text-market-green'
-          )}
-        >
-          <VegaIcon
-            name={
-              (previousMidPrice || '') > midPrice
-                ? VegaIconNames.ARROW_DOWN
-                : VegaIconNames.ARROW_UP
-            }
-          />
-        </span>
-      );
-    }
-    return iconRef.current;
-  }, [previousMidPrice, midPrice]);
 
   const formatResolution = useCallback(
     (r: number) => {
@@ -154,19 +152,19 @@ export const Orderbook = ({
     [decimalPlaces]
   );
 
-  const increaseResolution = useCallback(() => {
+  const increaseResolution = () => {
     const index = resolutions.indexOf(resolution);
     if (index < resolutions.length - 1) {
       setResolution(resolutions[index + 1]);
     }
-  }, [setResolution, resolution, resolutions]);
+  };
 
-  const decreaseResolution = useCallback(() => {
+  const decreaseResolution = () => {
     const index = resolutions.indexOf(resolution);
     if (index > 0) {
       setResolution(resolutions[index - 1]);
     }
-  }, [setResolution, resolution, resolutions]);
+  };
 
   return (
     <div className="h-full pl-1 text-xs grid grid-rows-[1fr_min-content]">
@@ -210,7 +208,7 @@ export const Orderbook = ({
                             {addDecimalsFormatNumber(midPrice, decimalPlaces)}
                           </span>
                           <span className="text-base">{assetSymbol}</span>
-                          {arrowIcon}
+                          {priceChangeIcon}
                         </>
                       )}
                     </div>
