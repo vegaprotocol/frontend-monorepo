@@ -140,17 +140,14 @@ export const Orderbook = ({
     </span>
   );
 
-  const formatResolution = useCallback(
-    (r: number) => {
-      return formatNumberFixed(
-        Math.log10(r) - decimalPlaces > 0
-          ? Math.pow(10, Math.log10(r) - decimalPlaces)
-          : 0,
-        decimalPlaces - Math.log10(r)
-      );
-    },
-    [decimalPlaces]
-  );
+  const formatResolution = (r: number) => {
+    return formatNumberFixed(
+      Math.log10(r) - decimalPlaces > 0
+        ? Math.pow(10, Math.log10(r) - decimalPlaces)
+        : 0,
+      decimalPlaces - Math.log10(r)
+    );
+  };
 
   const increaseResolution = () => {
     const index = resolutions.indexOf(resolution);
