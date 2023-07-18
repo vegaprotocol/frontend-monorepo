@@ -16,6 +16,7 @@ import classNames from 'classnames';
 
 export const envNameMapping: Record<Networks, string> = {
   [Networks.VALIDATOR_TESTNET]: t('VALIDATOR_TESTNET'),
+  [Networks.MAINNET_MIRROR]: t('Mainnet-mirror'),
   [Networks.CUSTOM]: t('Custom'),
   [Networks.DEVNET]: t('Devnet'),
   [Networks.STAGNET1]: t('Stagnet'),
@@ -31,6 +32,7 @@ export const envTriggerMapping: Record<Networks, string> = {
 export const envDescriptionMapping: Record<Networks, string> = {
   [Networks.CUSTOM]: '',
   [Networks.VALIDATOR_TESTNET]: t('The validator deployed testnet'),
+  [Networks.MAINNET_MIRROR]: t('The mainnet-mirror network'),
   [Networks.DEVNET]: t('The latest Vega code auto-deployed'),
   [Networks.STAGNET1]: t('A release candidate for the staging environment'),
   [Networks.TESTNET]: t(

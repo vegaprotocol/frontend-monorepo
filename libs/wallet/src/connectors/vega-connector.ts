@@ -47,6 +47,10 @@ export interface OrderSubmission {
   expiresAt?: string;
   postOnly?: boolean;
   reduceOnly?: boolean;
+  icebergOpts?: {
+    peakSize: string;
+    minimumVisibleSize: string;
+  };
 }
 
 export interface OrderCancellation {
