@@ -84,6 +84,11 @@ export const useColumnDefs = () => {
         },
       },
       {
+        headerName: t('Parent market'),
+        field: 'terms.change.successor.parent_market_id',
+        cellRenderer: 'SuccessorMarketRenderer',
+      },
+      {
         colId: 'voting',
         headerName: t('Voting'),
         cellClass: 'flex justify-between leading-tight font-mono',

@@ -6,6 +6,7 @@ import {
 } from '@vegaprotocol/environment';
 import { ProposalsList } from '@vegaprotocol/proposals';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { SuccessorMarketRenderer } from './successor-market-cell';
 
 export const Proposed = () => {
   const tokenLink = useLinks(DApp.Token);
@@ -13,7 +14,7 @@ export const Proposed = () => {
   return (
     <>
       <div className="h-[400px]">
-        <ProposalsList />
+        <ProposalsList components={{ SuccessorMarketRenderer }} />
       </div>
       <ExternalLink className="py-4 px-[11px] text-sm" href={externalLink}>
         {t('Propose a new market')}

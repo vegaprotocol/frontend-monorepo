@@ -1,3 +1,4 @@
+import React from 'react';
 import { useRef } from 'react';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
@@ -17,7 +18,11 @@ export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
     ].includes(proposal.state)
   );
 
-export const ProposalsList = () => {
+interface ProposalListProps {
+  components?: Readonly<Record<string, React.FC>>;
+}
+
+export const ProposalsList = ({ components }: ProposalListProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const { data } = useProposalsListQuery({
     variables: {
@@ -41,6 +46,7 @@ export const ProposalsList = () => {
         getRowId={({ data }) => data.id}
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No markets')}
+        components={components}
       />
     </div>
   );
