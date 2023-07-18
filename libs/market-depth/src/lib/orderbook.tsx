@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import ReactVirtualizedAutoSizer from 'react-virtualized-auto-sizer';
 import {
   addDecimalsFormatNumber,
@@ -114,59 +114,51 @@ export const Orderbook = ({
   }, [bids, resolution]);
   const [isOpen, setOpen] = useState(false);
   const previousMidPrice = usePrevious(midPrice);
-  const iconRef = useRef(
-    <span className="text-vega-blue-500 dark:text-vega-blue-500">
-      <VegaIcon name={VegaIconNames.BULLET} />
-    </span>
-  );
-  const arrowIcon = useMemo(() => {
-    if (midPrice && previousMidPrice !== midPrice) {
-      iconRef.current = (
-        <span
-          className={classNames(
+  const icon =
+    midPrice && previousMidPrice !== midPrice ? (
+      <span
+        className={classNames(
+          (previousMidPrice || '') > midPrice
+            ? 'text-market-red dark:text-market-red'
+            : 'text-market-green-600 dark:text-market-green'
+        )}
+      >
+        <VegaIcon
+          name={
             (previousMidPrice || '') > midPrice
-              ? 'text-market-red dark:text-market-red'
-              : 'text-market-green-600 dark:text-market-green'
-          )}
-        >
-          <VegaIcon
-            name={
-              (previousMidPrice || '') > midPrice
-                ? VegaIconNames.ARROW_DOWN
-                : VegaIconNames.ARROW_UP
-            }
-          />
-        </span>
-      );
-    }
-    return iconRef.current;
-  }, [previousMidPrice, midPrice]);
+              ? VegaIconNames.ARROW_DOWN
+              : VegaIconNames.ARROW_UP
+          }
+        />
+      </span>
+    ) : (
+      <span className="text-vega-blue-500 dark:text-vega-blue-500">
+        <VegaIcon name={VegaIconNames.BULLET} />
+      </span>
+    );
 
-  const formatResolution = useCallback(
-    (r: number) => {
-      return formatNumberFixed(
-        Math.log10(r) - decimalPlaces > 0
-          ? Math.pow(10, Math.log10(r) - decimalPlaces)
-          : 0,
-        decimalPlaces - Math.log10(r)
-      );
-    },
-    [decimalPlaces]
-  );
+  const formatResolution = (r: number) => {
+    return formatNumberFixed(
+      Math.log10(r) - decimalPlaces > 0
+        ? Math.pow(10, Math.log10(r) - decimalPlaces)
+        : 0,
+      decimalPlaces - Math.log10(r)
+    );
+  };
 
-  const increaseResolution = useCallback(() => {
+  const increaseResolution = () => {
     const index = resolutions.indexOf(resolution);
     if (index < resolutions.length - 1) {
       setResolution(resolutions[index + 1]);
     }
-  }, [setResolution, resolution, resolutions]);
+  };
 
-  const decreaseResolution = useCallback(() => {
+  const decreaseResolution = () => {
     const index = resolutions.indexOf(resolution);
     if (index > 0) {
       setResolution(resolutions[index - 1]);
     }
-  }, [setResolution, resolution, resolutions]);
+  };
 
   return (
     <div className="h-full pl-1 text-xs grid grid-rows-[1fr_min-content]">
@@ -210,7 +202,7 @@ export const Orderbook = ({
                             {addDecimalsFormatNumber(midPrice, decimalPlaces)}
                           </span>
                           <span className="text-base">{assetSymbol}</span>
-                          {arrowIcon}
+                          {icon}
                         </>
                       )}
                     </div>
