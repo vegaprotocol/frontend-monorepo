@@ -8,6 +8,7 @@ import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { truncateMiddle } from '../../../../lib/truncate-middle';
 import { CurrentProposalState } from '../current-proposal-state';
 import { ProposalInfoLabel } from '../proposal-info-label';
+import { useMarketInfoQuery } from '@vegaprotocol/markets';
 
 export const ProposalHeader = ({
   proposal,
@@ -23,6 +24,17 @@ export const ProposalHeader = ({
   let proposalType = '';
   let fallbackTitle = '';
 
+  const parentMarketId =
+    change?.__typename === 'NewMarket' &&
+    change.successorConfiguration?.parentMarketId;
+
+  const { data: marketInfo } = useMarketInfoQuery({
+    variables: {
+      marketId: parentMarketId || '',
+    },
+    skip: !parentMarketId,
+  });
+
   const title = proposal?.rationale.title.trim();
 
   const titleContent = shorten(title ?? '', 100);
@@ -31,7 +43,15 @@ export const ProposalHeader = ({
     case 'NewMarket': {
       proposalType = 'NewMarket';
       fallbackTitle = t('NewMarketProposal');
-      details = (
+      details = change.successorConfiguration?.parentMarketId ? (
+        <span>
+          {t('Successor market to')}:{' '}
+          <Lozenge>
+            {marketInfo?.market?.tradableInstrument.instrument.code ||
+              change.successorConfiguration.parentMarketId}
+          </Lozenge>
+        </span>
+      ) : (
         <>
           <span>
             {t('Code')}: {change.instrument.code}.

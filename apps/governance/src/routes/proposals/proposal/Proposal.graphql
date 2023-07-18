@@ -155,6 +155,10 @@ query Proposal($proposalId: ID!) {
           lpPriceRange
           linearSlippageFactor
           quadraticSlippageFactor
+          successorConfiguration {
+            parentMarketId
+            insurancePoolFraction
+          }
         }
         ... on UpdateMarket {
           marketId

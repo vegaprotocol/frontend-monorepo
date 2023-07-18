@@ -26,6 +26,9 @@ fragment ProposalFields on Proposal {
             }
           }
         }
+        successorConfiguration {
+          parentMarketId
+        }
       }
       ... on UpdateMarket {
         marketId

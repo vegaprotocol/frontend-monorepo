@@ -4,7 +4,14 @@ import {
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
-import { AsyncRenderer, Icon, RoundedWrapper } from '@vegaprotocol/ui-toolkit';
+import {
+  AsyncRenderer,
+  Icon,
+  KeyValueTable,
+  KeyValueTableRow,
+  RoundedWrapper,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import { ProposalDescription } from '../proposal-description';
 import { ProposalChangeTable } from '../proposal-change-table';
@@ -20,7 +27,8 @@ import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { MarketInfoWithData } from '@vegaprotocol/markets';
 import type { AssetQuery } from '@vegaprotocol/assets';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
-import { ProposalState } from '@vegaprotocol/types';
+import { MarketTradingModeMapping, ProposalState } from '@vegaprotocol/types';
+import { TradingModeTooltip } from '@vegaprotocol/deal-ticket';
 
 export enum ProposalType {
   PROPOSAL_NEW_MARKET = 'PROPOSAL_NEW_MARKET',
@@ -149,6 +157,31 @@ export const Proposal = ({
               lifetimeLimit={proposal.terms.change.source.lifetimeLimit}
             />
           ) : null}
+
+          {/** CURRENT MARKET STATE TABLE */}
+          {newMarketData?.tradingMode && (
+            <div className="mb-4">
+              <RoundedWrapper paddingBottom={true}>
+                <h2 className="text-2xl font-alpha calt uppercase break-words mb-4">
+                  {t('Current market status')}
+                </h2>
+                <KeyValueTable data-testid="proposal-current-market-state">
+                  <KeyValueTableRow>
+                    {t('Trading Mode')}
+                    <Tooltip
+                      description={
+                        <TradingModeTooltip marketId={newMarketData.id} />
+                      }
+                    >
+                      <span>
+                        {MarketTradingModeMapping[newMarketData.tradingMode]}
+                      </span>
+                    </Tooltip>
+                  </KeyValueTableRow>
+                </KeyValueTable>
+              </RoundedWrapper>
+            </div>
+          )}
 
           <div className="mb-4">
             <ProposalDescription description={proposal.rationale.description} />
