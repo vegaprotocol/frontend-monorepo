@@ -369,6 +369,10 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       .first()
       .find('button svg')
       .should('exist');
+    cy.get(rowSelector)
+      .find('[col-id="successorMarketID"]')
+      .first()
+      .should('have.text', ' - ');
   });
 
   // test market list for market in terminated state

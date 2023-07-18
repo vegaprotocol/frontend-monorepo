@@ -1,4 +1,5 @@
-import { act, render, screen, within } from '@testing-library/react';
+import { act, render, screen, within, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { Closed } from './closed';
 import { MarketStateMapping, PropertyKeyType } from '@vegaprotocol/types';
 import { PositionStatus } from '@vegaprotocol/types';
@@ -211,15 +212,22 @@ describe('Closed', () => {
   it('renders correctly formatted and filtered rows', async () => {
     await act(async () => {
       render(
-        <MockedProvider
-          mocks={[marketsMock, marketsDataMock, positionsMock, oracleDataMock]}
-        >
-          <VegaWalletContext.Provider
-            value={{ pubKey } as VegaWalletContextShape}
+        <MemoryRouter>
+          <MockedProvider
+            mocks={[
+              marketsMock,
+              marketsDataMock,
+              positionsMock,
+              oracleDataMock,
+            ]}
           >
-            <Closed />
-          </VegaWalletContext.Provider>
-        </MockedProvider>
+            <VegaWalletContext.Provider
+              value={{ pubKey } as VegaWalletContextShape}
+            >
+              <Closed />
+            </VegaWalletContext.Provider>
+          </MockedProvider>
+        </MemoryRouter>
       );
     });
     // screen.debug(document, Infinity);
@@ -230,6 +238,7 @@ describe('Closed', () => {
       'Description',
       'Status',
       'Settlement date',
+      'Successor market',
       'Best bid',
       'Best offer',
       'Mark price',
@@ -247,6 +256,7 @@ describe('Closed', () => {
       market.tradableInstrument.instrument.name,
       MarketStateMapping[market.state],
       '3 days ago',
+      '-',
       /* eslint-disable @typescript-eslint/no-non-null-assertion */
       addDecimalsFormatNumber(marketsData.bestBidPrice, market.decimalPlaces),
       addDecimalsFormatNumber(
@@ -315,20 +325,22 @@ describe('Closed', () => {
     };
     await act(async () => {
       render(
-        <MockedProvider
-          mocks={[
-            mixedMarketsMock,
-            marketsDataMock,
-            positionsMock,
-            oracleDataMock,
-          ]}
-        >
-          <VegaWalletContext.Provider
-            value={{ pubKey } as VegaWalletContextShape}
+        <MemoryRouter>
+          <MockedProvider
+            mocks={[
+              mixedMarketsMock,
+              marketsDataMock,
+              positionsMock,
+              oracleDataMock,
+            ]}
           >
-            <Closed />
-          </VegaWalletContext.Provider>
-        </MockedProvider>
+            <VegaWalletContext.Provider
+              value={{ pubKey } as VegaWalletContextShape}
+            >
+              <Closed />
+            </VegaWalletContext.Provider>
+          </MockedProvider>
+        </MemoryRouter>
       );
     });
 
@@ -358,5 +370,75 @@ describe('Closed', () => {
         return marketId;
       });
     expect(cells).toEqual(expectedRows.map((m) => m.node.id));
+  });
+
+  it('successor marked should be visible', async () => {
+    const mixedMarkets = [
+      {
+        __typename: 'MarketEdge' as const,
+        node: createMarketFragment({
+          id: 'include-0',
+          state: MarketState.STATE_SETTLED,
+          successorMarketID: 'successorMarketID',
+        }),
+      },
+      {
+        __typename: 'MarketEdge' as const,
+        node: {
+          ...createMarketFragment({
+            id: 'successorMarketID',
+            state: MarketState.STATE_ACTIVE,
+          }),
+          tradableInstrument: {
+            ...createMarketFragment().tradableInstrument,
+            instrument: {
+              ...createMarketFragment().tradableInstrument.instrument,
+              id: 'successorAssset',
+              name: 'Successor Market Name',
+              code: 'SuccessorCode',
+            },
+          },
+        },
+      },
+    ];
+
+    const mixedMarketsMock: MockedResponse<MarketsQuery> = {
+      request: {
+        query: MarketsDocument,
+      },
+      result: {
+        data: {
+          marketsConnection: {
+            __typename: 'MarketConnection',
+            edges: mixedMarkets,
+          },
+        },
+      },
+    };
+
+    render(
+      <MemoryRouter>
+        <MockedProvider
+          mocks={[
+            mixedMarketsMock,
+            marketsDataMock,
+            positionsMock,
+            oracleDataMock,
+          ]}
+        >
+          <VegaWalletContext.Provider
+            value={{ pubKey } as VegaWalletContextShape}
+          >
+            <Closed />
+          </VegaWalletContext.Provider>
+        </MockedProvider>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'SuccessorCode' })
+      ).toBeInTheDocument();
+    });
   });
 });
