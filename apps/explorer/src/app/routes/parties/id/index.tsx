@@ -67,7 +67,7 @@ const Party = () => {
             text: t('Go back'),
             action: () => navigate(-1),
             className: 'py-1',
-            size: 'sm',
+            size: 'small',
           }}
         />
       </div>

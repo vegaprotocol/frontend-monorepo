@@ -7,58 +7,71 @@ import type {
 } from 'react';
 import { Intent } from '../../utils/intent';
 
-type Size = 'large' | 'medium' | 'small';
-export interface Props {
-  size: Size;
+type TradingButtonProps = {
+  size: 'large' | 'medium' | 'small';
   intent?: Intent;
   children?: ReactNode;
   icon?: ReactNode;
   subLabel?: ReactNode;
-}
+};
 
 const getClassName = (
-  { size, subLabel, intent }: Pick<Props, 'size' | 'subLabel' | 'intent'>,
+  {
+    size,
+    subLabel,
+    intent,
+  }: Pick<TradingButtonProps, 'size' | 'subLabel' | 'intent'>,
   className?: string
 ) =>
   classNames(
     'flex items-center justify-center rounded',
+    // size
     {
       'h-12': !subLabel && size === 'large',
       'h-10': !subLabel && (!size || size === 'medium'),
       'h-8': !subLabel && size === 'small',
-      'bg-vega-yellow': intent === Intent.Primary,
-      'bg-vega-cdark-500': intent === Intent.None,
-      'bg-vega-blue-650': intent === Intent.Info,
-      'bg-vega-orange-650': intent === Intent.Warning,
-      'bg-vega-red-650': intent === Intent.Danger,
-      'bg-vega-green-650': intent === Intent.Success,
-      'text-vega-cdark-50': intent !== Intent.Primary,
-      'text-vega-cdark-900': intent === Intent.Primary,
-      'px-3 text-xs': !subLabel && size === 'small',
+      'px-3 text-sm': !subLabel && size === 'small',
       'px-4 text-base': !subLabel && size !== 'small',
       'flex-col items-center justify-center px-3 pt-2.5 pb-2': subLabel,
     },
+    // colours
+    {
+      'bg-vega-yellow dark:bg-vega-yellow': intent === Intent.Primary,
+      'bg-vega-clight-500 dark:bg-vega-cdark-500': intent === Intent.None,
+      'bg-vega-blue-350 dark:bg-vega-blue-650': intent === Intent.Info,
+      'bg-vega-orange-350 dark:bg-vega-orange-650': intent === Intent.Warning,
+      'bg-vega-red-350 dark:bg-vega-red-650': intent === Intent.Danger,
+      'bg-vega-green-350 dark:bg-vega-green-650': intent === Intent.Success,
+      'text-vega-clight-50 dark:text-vega-cdark-50': intent !== Intent.Primary,
+      'text-vega-clight-900 dark:text-vega-cdark-900':
+        intent === Intent.Primary,
+    },
+    // text
+    {
+      'text-vega-clight-50 dark:text-vega-cdark-50': intent !== Intent.Primary,
+      '!text-vega-clight-50': intent === Intent.Primary,
+      'text-vega-clight-100 dark:text-vega-cdark-100':
+        intent === Intent.Primary,
+      '[&_[data-sub-label]]:text-vega-clight-100': intent === Intent.Primary,
+    },
     className
   );
-
-export interface TradingButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
-    Props {}
 
 const Content = ({
   icon,
   subLabel,
   children,
-}: Pick<Props, 'icon' | 'subLabel' | 'children'>) => (
+}: Pick<TradingButtonProps, 'icon' | 'subLabel' | 'children'>) => (
   <>
-    <span className="font-alpha text-base leading-none" key="children">
+    <span data-label className="font-alpha leading-none" key="children">
       {children}
     </span>
     {icon}
     {subLabel && (
       <span
-        className="font-mono text-xs leading-tight mt-0.5 text-vega-cdark-100"
-        key={'subLabel'}
+        data-sub-label
+        className="font-mono text-xs leading-tight mt-0.5"
+        key="trading-button-sub-label"
       >
         {subLabel}
       </span>
@@ -66,7 +79,10 @@ const Content = ({
   </>
 );
 
-export const TradingButton = forwardRef<HTMLButtonElement, TradingButtonProps>(
+export const TradingButton = forwardRef<
+  HTMLButtonElement,
+  ButtonHTMLAttributes<HTMLButtonElement> & TradingButtonProps
+>(
   (
     {
       size = 'medium',
@@ -82,6 +98,7 @@ export const TradingButton = forwardRef<HTMLButtonElement, TradingButtonProps>(
     <button
       ref={ref}
       type={type}
+      data-trading-button
       className={getClassName({ size, subLabel, intent }, className)}
     >
       <Content icon={icon} subLabel={subLabel} children={children} />
@@ -89,13 +106,9 @@ export const TradingButton = forwardRef<HTMLButtonElement, TradingButtonProps>(
   )
 );
 
-export interface TradingAnchorButtonProps
-  extends AnchorHTMLAttributes<HTMLAnchorElement>,
-    Props {}
-
 export const TradingAnchorButton = forwardRef<
   HTMLAnchorElement,
-  TradingAnchorButtonProps
+  AnchorHTMLAttributes<HTMLAnchorElement> & TradingButtonProps
 >(
   (
     {
