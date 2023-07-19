@@ -12,7 +12,7 @@ import {
   NodeCheckDocument,
   NodeCheckTimeUpdateDocument,
 } from '../utils/__generated__/NodeCheck';
-import type { Environment, FeatureFlags } from '../types';
+import type { CosmicELevatorFlags, Environment, FeatureFlags } from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
@@ -377,18 +377,13 @@ function compileEnvVars() {
 }
 
 function compileFeatureFlags(): FeatureFlags {
-  const CONSOLE_FLAGS = {
-    CONSOLE_ICEBERG_ORDERS: TRUTHY.includes(
-      windowOrDefault('NX_CONSOLE_ICEBERG_ORDERS')
-    ),
-    CONSOLE_STOP_ORDERS: TRUTHY.includes(
-      windowOrDefault('NX_CONSOLE_STOP_ORDERS')
-    ),
-    CONSOLE_SUCCESSOR_MARKETS: TRUTHY.includes(
-      windowOrDefault('NX_CONSOLE_SUCCESSOR_MARKETS')
-    ),
-    CONSOLE_PRODUCT_PERPETUALS: TRUTHY.includes(
-      windowOrDefault('NX_CONSOLE_PRODUCT_PERPETUALS')
+  const TRUTHY = ['1', 'true'];
+  const COSMIC_ELEVATOR_FLAGS: CosmicELevatorFlags = {
+    ICEBERG_ORDERS: TRUTHY.includes(windowOrDefault('NX_ICEBERG_ORDERS')),
+    STOP_ORDERS: TRUTHY.includes(windowOrDefault('NX_STOP_ORDERS')),
+    SUCCESSOR_MARKETS: TRUTHY.includes(windowOrDefault('NX_SUCCESSOR_MARKETS')),
+    PRODUCT_PERPETUALS: TRUTHY.includes(
+      windowOrDefault('NX_PRODUCT_PERPETUALS')
     ),
   };
   const EXPLORER_FLAGS = {
@@ -417,7 +412,7 @@ function compileFeatureFlags(): FeatureFlags {
     ),
   };
   return {
-    ...CONSOLE_FLAGS,
+    ...COSMIC_ELEVATOR_FLAGS,
     ...EXPLORER_FLAGS,
     ...GOVERNANCE_FLAGS,
   };
@@ -473,5 +468,3 @@ export function windowOrDefault(key: string, defaultValue?: string) {
   }
   return defaultValue || undefined;
 }
-
-const TRUTHY = ['1', 'true'];

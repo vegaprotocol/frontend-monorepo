@@ -85,7 +85,6 @@ fragment MarketFields on Market {
     open
     close
   }
-  successorMarketID
 }
 
 query Markets {
