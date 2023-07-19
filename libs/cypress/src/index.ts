@@ -3,7 +3,6 @@ import { addMockGQLCommand } from './lib/mock-gql';
 import { addMockSubscription } from './lib/mock-ws';
 import { addMockWalletCommand } from './lib/mock-rest';
 import { addMockWeb3ProviderCommand } from './lib/commands/mock-web3-provider';
-import { addSlackCommand } from './lib/commands/slack';
 import { addHighlightLog } from './lib/commands/highlight-log';
 import { addGetAssets } from './lib/commands/get-assets';
 import { addVegaWalletReceiveFaucetedAsset } from './lib/commands/vega-wallet-receive-fauceted-asset';
@@ -26,7 +25,6 @@ import { addVegaWalletTopUpRewardsPool } from './lib/commands/vega-wallet-top-up
 import { addAssociateTokensToVegaWallet } from './lib/commands/associate-tokens-to-vega-wallet';
 
 addGetTestIdcommand();
-addSlackCommand();
 addMockGQLCommand();
 addMockSubscription();
 addMockWalletCommand();
