@@ -174,16 +174,16 @@ const MarketList = ({
           'p-2 mx-2 border-b border-default text-xs text-secondary'
         )}
       >
-        <div className="w-1/4" role="columnheader">
+        <div className="w-2/5" role="columnheader">
           {t('Name')}
         </div>
-        <div className="w-1/4" role="columnheader">
+        <div className="w-1/5" role="columnheader">
           {t('Price')}
         </div>
-        <div className="w-1/4 text-right" role="columnheader">
+        <div className="w-1/5 text-right" role="columnheader">
           {t('24h volume')}
         </div>
-        <div className="w-1/4" role="columnheader" />
+        <div className="w-1/5" role="columnheader" />
       </div>
       <div ref={listRef}>
         <List

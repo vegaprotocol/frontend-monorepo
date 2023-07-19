@@ -92,7 +92,7 @@ export const SparklineView = ({
   return (
     <svg
       data-testid="sparkline-svg"
-      className={classNames('w-full', className)}
+      className={className}
       width={width}
       height={height}
       viewBox="0 0 100 100"

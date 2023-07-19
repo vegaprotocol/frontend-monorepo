@@ -79,7 +79,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
 
   return (
     <>
-      <div className="w-1/4" role="gridcell">
+      <div className="w-2/5" role="gridcell">
         <h3 className="text-ellipsis whitespace-nowrap overflow-hidden">
           {market.tradableInstrument.instrument.code}
         </h3>
@@ -90,7 +90,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
         )}
       </div>
       <div
-        className="w-1/4 text-sm"
+        className="w-1/5 text-sm"
         title={instrument.product.settlementAsset.symbol}
         data-testid="market-selector-data-row"
         role="gridcell"
@@ -98,17 +98,17 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
         {price} {instrument.product.settlementAsset.symbol}
       </div>
       <div
-        className="w-1/4 text-sm text-right"
+        className="w-1/5 text-sm text-right"
         title={t('24h vol')}
         data-testid="market-selector-data-row"
         role="gridcell"
       >
         {volume}
       </div>
-      <div className="w-1/4" role="gridcell">
+      <div className="w-1/5 flex justify-end" role="gridcell">
         {oneDayCandles && (
           <Sparkline
-            width={70}
+            width={64}
             height={15}
             data={oneDayCandles.map((c) => Number(c.close))}
           />
