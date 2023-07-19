@@ -240,7 +240,7 @@ describe('MarketSelector', () => {
 
     await userEvent.click(screen.getByTestId('sort-trigger'));
     const options = screen.getAllByTestId(/sort-item/);
-    expect(options.map((o) => o.textContent)).toEqual(
+    expect(options.map((o) => o.textContent?.trim())).toEqual(
       Object.entries(Sort)
         .filter(([key]) => key !== Sort.None)
         .map(([key]) => SortTypeMapping[key as SortType])

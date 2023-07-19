@@ -19,7 +19,6 @@ describe('AssetDropdown', () => {
         checkedAssets={[]}
         assets={assets}
         onSelect={mockOnSelect}
-        onReset={jest.fn()}
       />
     );
     await userEvent.click(screen.getByRole('button'));
@@ -39,7 +38,6 @@ describe('AssetDropdown', () => {
         checkedAssets={[assets[0].id]}
         assets={assets}
         onSelect={mockOnSelect}
-        onReset={jest.fn()}
       />
     );
     await userEvent.click(screen.getByRole('button'));
@@ -48,35 +46,9 @@ describe('AssetDropdown', () => {
     expect(mockOnSelect).toHaveBeenCalledWith(assets[0].id, false);
   });
 
-  it('can be reset clearing all assets', async () => {
-    const mockOnSelect = jest.fn();
-    const mockOnReset = jest.fn();
-    render(
-      <AssetDropdown
-        checkedAssets={assets.map((a) => a.id)}
-        assets={assets}
-        onSelect={mockOnSelect}
-        onReset={mockOnReset}
-      />
-    );
-    await userEvent.click(screen.getByRole('button'));
-    const items = screen.getAllByRole('menuitemcheckbox');
-    // all should be checked
-    items.forEach((item) => {
-      expect(item).toBeChecked();
-    });
-    await userEvent.click(screen.getByText('Reset'));
-    expect(mockOnReset).toHaveBeenCalled();
-  });
-
   it('doesnt render if no assets provided', async () => {
     const { container } = render(
-      <AssetDropdown
-        checkedAssets={[]}
-        assets={[]}
-        onSelect={jest.fn()}
-        onReset={jest.fn()}
-      />
+      <AssetDropdown checkedAssets={[]} assets={[]} onSelect={jest.fn()} />
     );
     expect(container).toBeEmptyDOMElement();
   });

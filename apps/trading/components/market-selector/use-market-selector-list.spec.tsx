@@ -4,7 +4,7 @@ import {
   isMarketActive,
   useMarketSelectorList,
 } from './use-market-selector-list';
-import { Product } from './product-selector';
+import { Product } from '../../components/market-selector/product-selector';
 import { Sort } from './sort-dropdown';
 import { createMarketFragment } from '@vegaprotocol/mock';
 import { MarketState } from '@vegaprotocol/types';
