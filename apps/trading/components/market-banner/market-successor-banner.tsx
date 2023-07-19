@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { isBefore, formatDuration, intervalToDuration } from 'date-fns';
-import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { Market } from '@vegaprotocol/markets';
 import {
   calcCandleVolume,
-  marketProvider,
   useCandles,
+  useSuccessorMarket,
 } from '@vegaprotocol/markets';
 import {
   ExternalLink,
@@ -30,13 +29,8 @@ export const MarketSuccessorBanner = ({
 }: {
   market: Market | null;
 }) => {
-  const { data: successorData } = useDataProvider({
-    dataProvider: marketProvider,
-    variables: {
-      marketId: market?.successorMarketID || '',
-    },
-    skip: !market?.successorMarketID,
-  });
+  const { data: successorData } = useSuccessorMarket(market?.id);
+
   const [visible, setVisible] = useState(true);
 
   const expiry = market

@@ -70,11 +70,11 @@ export const envSchema = z
     }
   );
 
-const CONSOLE_FLAGS = {
-  CONSOLE_SUCCESSOR_MARKETS: z.optional(z.boolean()),
-  CONSOLE_STOP_ORDERS: z.optional(z.boolean()),
-  CONSOLE_ICEBERG_ORDERS: z.optional(z.boolean()),
-  CONSOLE_PRODUCT_PERPETUALS: z.optional(z.boolean()),
+const COSMIC_ELEVATOR_FLAGS = {
+  SUCCESSOR_MARKETS: z.optional(z.boolean()),
+  STOP_ORDERS: z.optional(z.boolean()),
+  ICEBERG_ORDERS: z.optional(z.boolean()),
+  PRODUCT_PERPETUALS: z.optional(z.boolean()),
 };
 
 const EXPLORER_FLAGS = {
@@ -95,7 +95,7 @@ const GOVERNANCE_FLAGS = {
 };
 
 export const featureFlagsSchema = z.object({
-  ...CONSOLE_FLAGS,
+  ...COSMIC_ELEVATOR_FLAGS,
   ...EXPLORER_FLAGS,
   ...GOVERNANCE_FLAGS,
 });
