@@ -5,6 +5,10 @@ import { MockedProvider } from '@apollo/react-testing';
 import type { MarketMaybeWithData } from '../../markets-provider';
 import { MarketsContainer } from './markets-container';
 
+const SuccessorMarketRenderer = ({ value }: { value: string }) => {
+  return '-';
+};
+
 const market = {
   id: 'id-1',
   tradableInstrument: {
@@ -39,7 +43,10 @@ describe('MarketsContainer', () => {
     await act(async () => {
       const { rerender } = render(
         <MockedProvider>
-          <MarketsContainer onSelect={spyOnSelect} />
+          <MarketsContainer
+            onSelect={spyOnSelect}
+            SuccessorMarketRenderer={SuccessorMarketRenderer}
+          />
         </MockedProvider>
       );
       rerenderRef = rerender;
@@ -63,7 +70,7 @@ describe('MarketsContainer', () => {
       screen.getByRole('button', {
         name: (_name, element) =>
           (element.parentNode as Element)?.getAttribute('id') ===
-          'cell-market-actions-8',
+          'cell-market-actions-9',
       })
     );
 

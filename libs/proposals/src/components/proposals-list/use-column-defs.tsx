@@ -85,7 +85,7 @@ export const useColumnDefs = () => {
       },
       {
         headerName: t('Parent market'),
-        field: 'terms.change.successor.parent_market_id',
+        field: 'terms.change.successorConfiguration.parentMarketId',
         cellRenderer: 'SuccessorMarketRenderer',
       },
       {

@@ -114,8 +114,8 @@ fragment NewMarketFields on NewMarket {
   lpPriceRange
   # linearSlippageFactor
   # quadraticSlippageFactor
-  successor {
-    parent_market_id
+  successorConfiguration {
+    parentMarketId
   }
 }
 

@@ -11,7 +11,7 @@ import type { MarketMaybeWithData } from '../../markets-provider';
 const POLLING_TIME = 2000;
 interface MarketsContainerProps {
   onSelect: (marketId: string, metaKey?: boolean) => void;
-  SuccessorMarketRenderer: React.FC<{ value: string }>;
+  SuccessorMarketRenderer?: React.FC<{ value: string }>;
 }
 
 export const MarketsContainer = ({
