@@ -90,7 +90,6 @@ export const DepositForm = ({
   const [approveNotificationIntent, setApproveNotificationIntent] =
     useState<Intent>(Intent.Warning);
   const [persistedDeposit] = usePersistentDeposit(selectedAsset?.id);
-  console.log('deposit-form', account);
   const {
     register,
     handleSubmit,
