@@ -8,7 +8,7 @@ import { DispatchMetricLabels } from '@vegaprotocol/types';
 export type Metric = components['schemas']['vegaDispatchMetric'];
 export type Strategy = components['schemas']['vegaDispatchStrategy'];
 
-const metricLabels = {
+const metricLabels: Record<Metric, string> = {
   DISPATCH_METRIC_UNSPECIFIED: 'Unknown metric',
   ...DispatchMetricLabels,
 };

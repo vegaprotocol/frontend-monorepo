@@ -320,8 +320,8 @@ context(
       // 3001-VOTE-076
       cy.getByTestId(connectToVegaWalletButton)
         .should('be.visible')
-        .and('have.text', 'Connect Vega wallet')
-        .click();
+        .and('have.text', 'Connect Vega wallet');
+      cy.getByTestId(connectToVegaWalletButton).click();
       cy.getByTestId('connector-jsonRpc').click();
       cy.getByTestId(vegaWalletNameElement).should('be.visible');
       cy.getByTestId(connectToVegaWalletButton).should('not.exist');

@@ -6,10 +6,32 @@ import {
   SPECIAL_CASE_NETWORK_ID,
 } from '../../../../links/party-link/party-link';
 import SizeInAsset from '../../../../size-in-asset/size-in-asset';
-import { AccountTypeMapping } from '@vegaprotocol/types';
-import { AccountType } from '@vegaprotocol/types';
 import { headerClasses, wrapperClasses } from '../transfer-details';
-import type { Transfer } from '../transfer-details';
+import type { components } from '../../../../../../types/explorer';
+
+type Transfer = components['schemas']['commandsv1Transfer'];
+type AccountTypes = components['schemas']['vegaAccountType'];
+
+const AccountType: Record<AccountTypes, string> = {
+  ACCOUNT_TYPE_UNSPECIFIED: 'Unspecified',
+  ACCOUNT_TYPE_INSURANCE: 'Insurance',
+  ACCOUNT_TYPE_SETTLEMENT: 'Settlement',
+  ACCOUNT_TYPE_MARGIN: 'Margin',
+  ACCOUNT_TYPE_GENERAL: 'General',
+  ACCOUNT_TYPE_FEES_INFRASTRUCTURE: 'Infrastructure',
+  ACCOUNT_TYPE_FEES_LIQUIDITY: 'Liquidity',
+  ACCOUNT_TYPE_FEES_MAKER: 'Maker',
+  ACCOUNT_TYPE_BOND: 'Bond',
+  ACCOUNT_TYPE_EXTERNAL: 'External',
+  ACCOUNT_TYPE_GLOBAL_INSURANCE: 'Global Insurance',
+  ACCOUNT_TYPE_GLOBAL_REWARD: 'Global Reward',
+  ACCOUNT_TYPE_PENDING_TRANSFERS: 'Pending Transfers',
+  ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: 'Maker Paid Fees',
+  ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: 'Maker Received Fees',
+  ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: 'LP Received Fees',
+  ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Market Proposers',
+  ACCOUNT_TYPE_HOLDING: 'Holding',
+};
 
 interface TransferParticipantsProps {
   transfer: Transfer;
@@ -30,22 +52,22 @@ export function TransferParticipants({
 }: TransferParticipantsProps) {
   // This mapping is required as the global account types require a type to be set, while
   // the underlying protobufs allow for every field to be undefined.
-  const fromAcct =
+  const fromAcct: AccountTypes =
     transfer.fromAccountType &&
     transfer.fromAccountType !== 'ACCOUNT_TYPE_UNSPECIFIED'
-      ? AccountType[transfer.fromAccountType]
-      : AccountType.ACCOUNT_TYPE_GENERAL;
-  const fromAccountTypeLabel = transfer.fromAccountType
-    ? AccountTypeMapping[fromAcct]
+      ? transfer.fromAccountType
+      : 'ACCOUNT_TYPE_GENERAL';
+  const fromAccountTypeLabel: string = transfer.fromAccountType
+    ? AccountType[fromAcct]
     : 'Unknown';
 
-  const toAcct =
+  const toAcct: AccountTypes =
     transfer.toAccountType &&
     transfer.toAccountType !== 'ACCOUNT_TYPE_UNSPECIFIED'
-      ? AccountType[transfer.toAccountType]
-      : AccountType.ACCOUNT_TYPE_GENERAL;
+      ? transfer.toAccountType
+      : 'ACCOUNT_TYPE_GENERAL';
   const toAccountTypeLabel = transfer.fromAccountType
-    ? AccountTypeMapping[toAcct]
+    ? AccountType[toAcct]
     : 'Unknown';
 
   return (

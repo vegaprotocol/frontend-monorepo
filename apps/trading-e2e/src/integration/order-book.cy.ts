@@ -9,6 +9,7 @@ const bidCumulative = 'cumulative-vol-9889001';
 const midPrice = 'middle-mark-price-4612690000';
 const priceResolution = 'resolution';
 const dealTicketPrice = 'order-price';
+const dealTicketSize = 'order-size';
 const resPrice = 'price-990';
 
 describe('order book', { tags: '@smoke' }, () => {
@@ -74,6 +75,18 @@ describe('order book', { tags: '@smoke' }, () => {
     cy.getByTestId(dealTicketPrice).should('have.value', '98.94585');
   });
 
+  it('copy size to deal ticket form', () => {
+    // 6003-ORDB-009
+    cy.getByTestId(bidCumulative).click();
+    cy.getByTestId(dealTicketSize).should('have.value', '7');
+  });
+
+  it('copy size to deal ticket form', () => {
+    // 6003-ORDB-009
+    cy.getByTestId(bidVolume).click();
+    cy.getByTestId(dealTicketSize).should('have.value', '1');
+  });
+
   it('change price resolution', () => {
     // 6003-ORDB-008
     const resolutions = [
@@ -88,13 +101,14 @@ describe('order book', { tags: '@smoke' }, () => {
       '1,000',
       '10,000',
     ];
-    cy.getByTestId(priceResolution)
-      .find('option')
+    cy.getByTestId(priceResolution).click();
+    cy.get('[role="menu"]')
+      .find('[role="menuitem"]')
       .each(($el, index) => {
         expect($el.text()).to.equal(resolutions[index]);
       });
 
-    cy.getByTestId(priceResolution).select('0.0');
+    cy.get('[role="menuitem"]').eq(4).click();
     cy.getByTestId(resPrice).should('have.text', '99.0');
     cy.getByTestId(askPrice).should('not.exist');
     cy.getByTestId(bidPrice).should('not.exist');

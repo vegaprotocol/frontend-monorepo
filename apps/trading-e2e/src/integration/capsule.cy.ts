@@ -2,7 +2,6 @@ import { removeDecimal } from '@vegaprotocol/cypress';
 import * as Schema from '@vegaprotocol/types';
 import {
   OrderStatusMapping,
-  OrderTimeInForceMapping,
   OrderTypeMapping,
   Side,
 } from '@vegaprotocol/types';
@@ -17,7 +16,6 @@ const orderStatus = 'status';
 const orderRemaining = 'remaining';
 const orderPrice = 'price';
 const orderTimeInForce = 'timeInForce';
-const orderCreatedAt = 'createdAt';
 const orderUpdatedAt = 'updatedAt';
 const assetSelectField = 'select[name="asset"]';
 const amountField = 'input[name="amount"]';
@@ -260,10 +258,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
             OrderStatusMapping.STATUS_ACTIVE
           );
 
-          cy.get(`[col-id='${orderRemaining}']`).should(
-            'contain.text',
-            `0.00/${order.size}`
-          );
+          cy.get(`[col-id='${orderRemaining}']`).should('contain.text', '0.00');
 
           cy.get(`[col-id='${orderPrice}']`).then(($price) => {
             expect(parseFloat($price.text())).to.equal(parseFloat(order.price));
@@ -271,10 +266,10 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
 
           cy.get(`[col-id='${orderTimeInForce}']`).should(
             'contain.text',
-            OrderTimeInForceMapping[order.timeInForce]
+            'GTC'
           );
 
-          checkIfDataAndTimeOfCreationAndUpdateIsEqual(orderCreatedAt);
+          checkIfDataAndTimeOfCreationAndUpdateIsEqual(orderUpdatedAt);
         });
     });
   });

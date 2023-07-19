@@ -54,6 +54,7 @@ import {
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 
 export interface DealTicketProps {
   market: Market;
@@ -292,6 +293,22 @@ export const DealTicket = ({
                   timeInForce: lastTIF[type] || order.timeInForce,
                   postOnly:
                     type === OrderType.TYPE_MARKET ? false : order.postOnly,
+                  iceberg:
+                    type === OrderType.TYPE_MARKET ||
+                    [
+                      OrderTimeInForce.TIME_IN_FORCE_FOK,
+                      OrderTimeInForce.TIME_IN_FORCE_IOC,
+                    ].includes(lastTIF[type] || order.timeInForce)
+                      ? false
+                      : order.iceberg,
+                  icebergOpts:
+                    type === OrderType.TYPE_MARKET ||
+                    [
+                      OrderTimeInForce.TIME_IN_FORCE_FOK,
+                      OrderTimeInForce.TIME_IN_FORCE_IOC,
+                    ].includes(lastTIF[type] || order.timeInForce)
+                      ? undefined
+                      : order.icebergOpts,
                   reduceOnly:
                     type === OrderType.TYPE_LIMIT &&
                     ![
@@ -463,6 +480,51 @@ export const DealTicket = ({
             )}
           />
         </div>
+        <div className="flex gap-2 pb-2 justify-between">
+          {order.type === Schema.OrderType.TYPE_LIMIT && (
+            <Controller
+              name="iceberg"
+              control={control}
+              render={() => (
+                <Checkbox
+                  name="iceberg"
+                  checked={order.iceberg}
+                  onCheckedChange={() => {
+                    update({ iceberg: !order.iceberg, icebergOpts: undefined });
+                  }}
+                  label={
+                    <Tooltip
+                      description={
+                        <p>
+                          {t(`Trade only a fraction of the order size at once.
+                            After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away.
+                            For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each.
+                            Note that the full volume of the order is not hidden and is still reflected in the order book.`)}
+                        </p>
+                      }
+                    >
+                      <span className="text-xs">{t('Iceberg')}</span>
+                    </Tooltip>
+                  }
+                />
+              )}
+            />
+          )}
+        </div>
+        {order.iceberg && (
+          <DealTicketSizeIceberg
+            update={update}
+            market={market}
+            peakSizeError={errors.icebergOpts?.peakSize?.message}
+            minimumVisibleSizeError={
+              errors.icebergOpts?.minimumVisibleSize?.message
+            }
+            control={control}
+            size={order.size}
+            peakSize={order.icebergOpts?.peakSize || ''}
+            minimumVisibleSize={order.icebergOpts?.minimumVisibleSize || ''}
+          />
+        )}
         <SummaryMessage
           errorMessage={errors.summary?.message}
           asset={asset}
@@ -476,11 +538,7 @@ export const DealTicket = ({
           pubKey={pubKey}
           onClickCollateral={onClickCollateral}
         />
-        <DealTicketButton
-          variant={
-            order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'
-          }
-        />
+        <DealTicketButton side={order.side} />
         <DealTicketFeeDetails
           onMarketClick={onMarketClick}
           feeEstimate={feeEstimate}

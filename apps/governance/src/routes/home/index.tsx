@@ -35,6 +35,7 @@ import {
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
+import { BigNumber } from '../../lib/bignumber';
 
 const nodesToShow = 6;
 
@@ -276,6 +277,8 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
 
   const activeNodes = removePaginationWrapper(
     validatorsData?.nodesConnection.edges
+  ).filter((node) =>
+    new BigNumber(node.rankingScore.performanceScore).isGreaterThan(0)
   );
 
   const trimmedActiveNodes = activeNodes?.slice(0, nodesToShow);

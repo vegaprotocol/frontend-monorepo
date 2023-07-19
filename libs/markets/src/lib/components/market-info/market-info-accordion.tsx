@@ -129,6 +129,7 @@ export const MarketInfoAccordion = ({
             .filter((a) => a.type === Schema.AccountType.ACCOUNT_TYPE_INSURANCE)
             .map((a) => (
               <AccordionItem
+                key={`${a.type}:${a.asset.id}`}
                 itemId={`${a.type}:${a.asset.id}`}
                 title={t('Insurance pool')}
                 content={<InsurancePoolInfoPanel market={market} account={a} />}
@@ -203,6 +204,7 @@ export const MarketInfoAccordion = ({
           {(market.priceMonitoringSettings?.parameters?.triggers || []).map(
             (_, triggerIndex) => (
               <AccordionItem
+                key={`trigger-${triggerIndex}`}
                 itemId={`trigger-${triggerIndex}`}
                 title={t(`Price monitoring bounds ${triggerIndex + 1}`)}
                 content={

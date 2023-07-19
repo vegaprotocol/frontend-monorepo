@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 export interface FormGroupProps {
   children: ReactNode;
   className?: string;
-  label: string; // For accessibility reasons this must always be set for screen readers. If you want it to not show, then use the hideLabel prop"
+  label: string | ReactNode; // For accessibility reasons this must always be set for screen readers. If you want it to not show, then use the hideLabel prop"
   labelFor: string; // Same as above
   hideLabel?: boolean;
   labelDescription?: string;
