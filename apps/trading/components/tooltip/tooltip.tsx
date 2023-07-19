@@ -20,6 +20,7 @@ export interface TooltipProps {
   side?: 'top' | 'right' | 'bottom' | 'left';
   sideOffset?: number;
   delayDuration?: number;
+  arrow?: boolean;
 }
 
 // Conditionally rendered tooltip if description content is provided.
@@ -31,6 +32,7 @@ export const Tooltip = ({
   align = 'start',
   side = 'bottom',
   delayDuration = 200,
+  arrow = true,
 }: TooltipProps) =>
   description ? (
     <Provider delayDuration={delayDuration} skipDelayDuration={100}>
@@ -53,11 +55,13 @@ export const Tooltip = ({
               <div className="relative z-0" data-testid="tooltip-content">
                 {description}
               </div>
-              <Arrow
-                width={16}
-                height={8}
-                className="fill-vega-clight-500 dark:fill-vega-cdark-500"
-              />
+              {arrow && (
+                <Arrow
+                  width={16}
+                  height={8}
+                  className="fill-vega-clight-500 dark:fill-vega-cdark-500"
+                />
+              )}
             </Content>
           </Portal>
         )}

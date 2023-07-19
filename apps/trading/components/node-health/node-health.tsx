@@ -16,7 +16,7 @@ export const NodeHealthContainer = () => {
     <Tooltip
       description={
         <div
-          className="flex flex-col gap-2 p-4 text-sm"
+          className="flex flex-col gap-2 p-2 text-sm"
           data-testid="node-health"
         >
           <div className="flex items-center gap-2">
@@ -37,8 +37,9 @@ export const NodeHealthContainer = () => {
         </div>
       }
       align="end"
-      side="right"
-      sideOffset={10}
+      side="left"
+      sideOffset={18}
+      arrow={false}
     >
       <button
         className="flex justify-center items-center p-2 rounded hover:bg-vega-light-200 hover:dark:bg-vega-dark-200"
