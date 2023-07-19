@@ -35,7 +35,9 @@ export const ZeroBalanceError = ({
       }
       buttonProps={{
         text: t(`Make a deposit`),
-        action: () => onDeposit(asset.id),
+        action: () => {
+          onDeposit(asset.id);
+        },
         dataTestId: 'deal-ticket-deposit-dialog-button',
         size: 'small',
       }}

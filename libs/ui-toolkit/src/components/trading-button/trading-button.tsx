@@ -92,6 +92,7 @@ export const TradingButton = forwardRef<
       children,
       className,
       subLabel,
+      ...props
     },
     ref
   ) => (
@@ -100,6 +101,7 @@ export const TradingButton = forwardRef<
       type={type}
       data-trading-button
       className={getClassName({ size, subLabel, intent }, className)}
+      {...props}
     >
       <Content icon={icon} subLabel={subLabel} children={children} />
     </button>
