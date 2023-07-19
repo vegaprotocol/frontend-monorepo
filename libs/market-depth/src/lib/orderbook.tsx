@@ -232,7 +232,7 @@ export const Orderbook = ({
         <button
           onClick={increaseResolution}
           disabled={resolutions.indexOf(resolution) >= resolutions.length - 1}
-          className="flex items-center border-r px-2 cursor-pointer"
+          className="flex items-center border-r border-default px-2 cursor-pointer"
           data-testid="plus-button"
         >
           <VegaIcon size={12} name={VegaIconNames.PLUS} />
@@ -276,7 +276,7 @@ export const Orderbook = ({
         <button
           onClick={decreaseResolution}
           disabled={resolutions.indexOf(resolution) <= 0}
-          className="flex items-center border-x px-2 cursor-pointer"
+          className="flex items-center border-x border-default px-2 cursor-pointer"
           data-testid="minus-button"
         >
           <VegaIcon size={12} name={VegaIconNames.MINUS} />
