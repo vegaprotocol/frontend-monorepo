@@ -28,9 +28,6 @@ export interface AppState {
   /** Total number of VEGA Tokens, both vesting and unlocked, associated for staking */
   totalAssociated: BigNumber;
 
-  /** Whether or not the connect to VEGA wallet overlay is open */
-  vegaWalletOverlay: boolean;
-
   /** Whether or not the manage VEGA wallet overlay is open */
   vegaWalletManageOverlay: boolean;
 
@@ -52,9 +49,7 @@ export enum AppStateActionType {
   SET_TOKEN,
   SET_ALLOWANCE,
   REFRESH_BALANCES,
-  SET_VEGA_WALLET_OVERLAY,
   SET_VEGA_WALLET_MANAGE_OVERLAY,
-  SET_DRAWER,
   REFRESH_ASSOCIATED_BALANCES,
   SET_ASSOCIATION_BREAKDOWN,
   SET_TRANSACTION_OVERLAY,
@@ -70,15 +65,7 @@ export type AppStateAction =
       totalAssociated: BigNumber;
     }
   | {
-      type: AppStateActionType.SET_VEGA_WALLET_OVERLAY;
-      isOpen: boolean;
-    }
-  | {
       type: AppStateActionType.SET_VEGA_WALLET_MANAGE_OVERLAY;
-      isOpen: boolean;
-    }
-  | {
-      type: AppStateActionType.SET_DRAWER;
       isOpen: boolean;
     }
   | {

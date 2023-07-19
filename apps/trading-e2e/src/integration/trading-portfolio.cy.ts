@@ -47,15 +47,10 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
       cy.get(
         '[role="columnheader"][col-id="fromAccountType"] .ag-header-cell-menu-button'
       ).click();
-      /**
-       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-       * You should use .then() to chain commands instead.
-       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-       **/
       cy.get('fieldset.ag-simple-filter-body-wrapper')
         .should('be.visible')
         .within((fields) => {
-          cy.wrap(fields).find('label').should('have.length', 16);
+          cy.wrap(fields).find('label').should('have.length', 18);
         });
       cy.getByTestId('"Ledger entries"').click();
       cy.get('fieldset.ag-simple-filter-body-wrapper').should('not.exist');

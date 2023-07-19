@@ -169,12 +169,6 @@ context.skip('Parties page', { tags: '@regression' }, function () {
       const jsonFields = '.hljs';
       const sideMenuBackground = '.absolute';
 
-      // Engage dark mode if not allready set
-      /**
-       * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-       * You should use .then() to chain commands instead.
-       * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-       **/
       cy.get(sideMenuBackground)
         .should('have.css', 'background-color')
         .then((background_color) => {

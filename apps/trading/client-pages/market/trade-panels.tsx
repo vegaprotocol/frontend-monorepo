@@ -21,6 +21,7 @@ import { HeaderStats } from './header-stats';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import { HeaderTitle } from '../../components/header';
 import { MarketSelector } from './market-selector';
+import { MarketSuccessorBanner } from '../../components/market-banner';
 
 interface TradePanelsProps {
   market: Market | null;
@@ -92,6 +93,7 @@ export const TradePanels = ({
         <HeaderStats market={market} />
       </div>
       <div>
+        <MarketSuccessorBanner market={market} />
         <OracleBanner marketId={market?.id || ''} />
       </div>
       <div className="h-full">

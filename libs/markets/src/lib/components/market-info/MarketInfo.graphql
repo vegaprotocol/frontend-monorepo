@@ -16,6 +16,16 @@ fragment DataSource on DataSourceDefinition {
         }
       }
     }
+    ... on DataSourceDefinitionInternal {
+      sourceType {
+        ... on DataSourceSpecConfigurationTime {
+          conditions {
+            operator
+            value
+          }
+        }
+      }
+    }
   }
 }
 
@@ -142,5 +152,6 @@ query MarketInfo($marketId: ID!) {
         }
       }
     }
+    parentMarketID
   }
 }

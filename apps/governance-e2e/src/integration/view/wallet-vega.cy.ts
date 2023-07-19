@@ -78,7 +78,7 @@ context(
           cy.getByTestId('connector-jsonRpc')
             .should('be.visible')
             .and('have.text', 'Connect Vega wallet');
-          cy.getByTestId('connector-hosted')
+          cy.getByTestId('connector-rest')
             .should('be.visible')
             .and('have.text', 'Hosted Fairground wallet');
         });
@@ -94,7 +94,7 @@ context(
     describe('when rest connector form opened', function () {
       before('click hosted wallet app button', function () {
         cy.getByTestId(connectorsList).within(() => {
-          cy.getByTestId('connector-hosted').click();
+          cy.getByTestId('connector-rest').click();
         });
       });
 
@@ -340,7 +340,7 @@ context(
                 .contains(name)
                 .parent()
                 .siblings()
-                .then((elementAmount) => {
+                .should((elementAmount) => {
                   const displayedAmount = parseFloat(elementAmount.text());
                   expect(displayedAmount).be.gte(expectedAmount);
                 });

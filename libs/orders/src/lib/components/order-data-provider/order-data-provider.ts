@@ -40,43 +40,8 @@ const orderMatchFilters = (
   }
 
   if (
-    variables?.filter?.status &&
-    !(order.status && variables.filter.status.includes(order.status))
-  ) {
-    return false;
-  }
-
-  if (
     variables?.filter?.liveOnly &&
     !(order.status && liveOnlyOrderStatuses.includes(order.status))
-  ) {
-    return false;
-  }
-
-  if (
-    variables?.filter?.types &&
-    !(order.type && variables.filter.types.includes(order.type))
-  ) {
-    return false;
-  }
-  if (
-    variables?.filter?.timeInForce &&
-    !variables.filter.timeInForce.includes(order.timeInForce)
-  ) {
-    return false;
-  }
-  if (variables?.filter?.excludeLiquidity && order.liquidityProvisionId) {
-    return false;
-  }
-  if (
-    variables?.filter?.dateRange?.start &&
-    !(order.createdAt && variables.filter.dateRange.start < order.createdAt)
-  ) {
-    return false;
-  }
-  if (
-    variables?.filter?.dateRange?.end &&
-    !(order.createdAt && variables.filter.dateRange.end > order.createdAt)
   ) {
     return false;
   }
@@ -98,6 +63,11 @@ export const mapOrderUpdateToOrder = (
   return {
     ...order,
     liquidityProvision: liquidityProvision,
+    icebergOrder: order.icebergOrder
+      ? {
+          ...order.icebergOrder,
+        }
+      : undefined,
     market: {
       __typename: 'Market',
       id: marketId,

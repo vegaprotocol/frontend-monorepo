@@ -189,7 +189,7 @@ export const MarginHealthChart = ({
         >
           <div
             data-testid="margin-health-chart-red"
-            className="bg-vega-pink-550"
+            className="bg-vega-red-550"
             style={{
               height: '100%',
               width: `${red * 100}%`,
