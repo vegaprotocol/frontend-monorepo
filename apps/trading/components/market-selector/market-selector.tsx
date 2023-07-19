@@ -8,7 +8,7 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import type { CSSProperties } from 'react';
-import { useCallback, useState, useMemo } from 'react';
+import { useCallback, useState, useMemo, useRef } from 'react';
 import { FixedSizeList } from 'react-window';
 import { useMarketSelectorList } from './use-market-selector-list';
 import type { ProductType } from './product-selector';
@@ -66,20 +66,7 @@ export const MarketSelector = ({
               placeholder={t('Search')}
               data-testid="search-term"
               className="w-full"
-              appendElement={
-                filter.searchTerm.length ? (
-                  <button
-                    onClick={() =>
-                      setFilter((curr) => ({ ...curr, searchTerm: '' }))
-                    }
-                    className="text-secondary"
-                  >
-                    <VegaIcon name={VegaIconNames.CROSS} />
-                  </button>
-                ) : (
-                  <span />
-                )
-              }
+              prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
             />
           </div>
           <AssetDropdown
@@ -163,9 +150,21 @@ const MarketList = ({
   onSelect?: (marketId: string) => void;
   noItems: string;
 }) => {
+  let height = 400;
+  const itemSize = 45;
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const rect = listRef.current?.getBoundingClientRect();
+
+  // allow virtualized list to grow until it runs out of space
+  if (rect) {
+    height = window.innerHeight - rect.y;
+    height = Math.min(data.length * itemSize, height);
+  }
+
   if (error) {
     return <div>{error.message}</div>;
   }
+
   return (
     <TinyScroll>
       <div
@@ -186,14 +185,17 @@ const MarketList = ({
         </div>
         <div className="w-1/4" role="columnheader" />
       </div>
-      <List
-        data={data}
-        loading={loading}
-        height={400}
-        currentMarketId={currentMarketId}
-        onSelect={onSelect}
-        noItems={noItems}
-      />
+      <div ref={listRef}>
+        <List
+          data={data}
+          loading={loading}
+          height={height}
+          itemSize={itemSize}
+          currentMarketId={currentMarketId}
+          onSelect={onSelect}
+          noItems={noItems}
+        />
+      </div>
     </TinyScroll>
   );
 };
@@ -224,12 +226,14 @@ const List = ({
   data,
   loading,
   height,
+  itemSize,
   onSelect,
   noItems,
   currentMarketId,
 }: ListItemData & {
   loading: boolean;
   height: number;
+  itemSize: number;
   noItems: string;
 }) => {
   const itemKey = useCallback(
@@ -262,7 +266,7 @@ const List = ({
       className="vega-scrollbar"
       itemCount={data.length}
       itemData={itemData}
-      itemSize={45}
+      itemSize={itemSize}
       itemKey={itemKey}
       width="100%"
       height={height}

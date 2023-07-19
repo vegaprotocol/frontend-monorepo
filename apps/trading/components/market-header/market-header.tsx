@@ -21,6 +21,7 @@ export const MarketHeader = () => {
               <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
             </HeaderTitle>
           }
+          alignOffset={-10}
         >
           <MarketSelector currentMarketId={marketId} />
         </Popover>

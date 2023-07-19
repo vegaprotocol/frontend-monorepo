@@ -29,6 +29,7 @@ import { IconTrendUp } from './svg-icons/icon-trend-up';
 import { IconTrendDown } from './svg-icons/icon-trend-down';
 import { IconTwitter } from './svg-icons/icon-twitter';
 import { IconWithdraw } from './svg-icons/icon-withdraw';
+import { IconSearch } from './svg-icons/icon-search';
 
 export enum VegaIconNames {
   ARROW_DOWN = 'arrow-down',
@@ -54,6 +55,7 @@ export enum VegaIconNames {
   OPEN_EXTERNAL = 'open-external',
   QUESTION_MARK = 'question-mark',
   PLUS = 'plus',
+  SEARCH = 'search',
   STAR = 'star',
   TICK = 'tick',
   TICKET = 'ticket',
@@ -91,6 +93,7 @@ export const VegaIconNameMap: Record<
   'open-external': IconOpenExternal,
   plus: IconPlus,
   'question-mark': IconQuestionMark,
+  search: IconSearch,
   star: IconStar,
   tick: IconTick,
   transfer: IconTransfer,
