@@ -22,6 +22,7 @@ import * as DialogPrimitives from '@radix-ui/react-dialog';
 import { HeaderTitle } from '../../components/header';
 import { MarketSelector } from './market-selector';
 import { MarketSuccessorBanner } from '../../components/market-banner';
+import { FLAGS } from '@vegaprotocol/environment';
 
 interface TradePanelsProps {
   market: Market | null;
@@ -93,7 +94,7 @@ export const TradePanels = ({
         <HeaderStats market={market} />
       </div>
       <div>
-        <MarketSuccessorBanner market={market} />
+        {FLAGS.SUCCESSOR_MARKETS && <MarketSuccessorBanner market={market} />}
         <OracleBanner marketId={market?.id || ''} />
       </div>
       <div className="h-full">

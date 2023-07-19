@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/react-testing';
-import * as dataProviders from '@vegaprotocol/data-provider';
 import { MarketSuccessorBanner } from './market-successor-banner';
 import * as Types from '@vegaprotocol/types';
 import * as allUtils from '@vegaprotocol/utils';
@@ -19,7 +18,6 @@ const market = {
   marketTimestamps: {
     close: null,
   },
-  successorMarketID: 'successorMarketID',
 } as unknown as Market;
 
 let mockDataSuccessorMarket: PartialDeep<Market> | null = null;
@@ -45,6 +43,12 @@ jest.mock('@vegaprotocol/utils', () => ({
 let mockCandles = {};
 jest.mock('@vegaprotocol/markets', () => ({
   ...jest.requireActual('@vegaprotocol/markets'),
+  useSuccessorMarket: (marketId: string) =>
+    marketId
+      ? {
+          data: mockDataSuccessorMarket,
+        }
+      : { data: undefined },
   useCandles: () => mockCandles,
 }));
 
@@ -70,35 +74,12 @@ describe('MarketSuccessorBanner', () => {
       expect(container).toBeEmptyDOMElement();
     });
 
-    it('when no successorMarketID', () => {
-      const amendedMarket = {
-        ...market,
-        successorMarketID: null,
-      };
-      const { container } = render(
-        <MarketSuccessorBanner market={amendedMarket} />,
-        {
-          wrapper: MockedProvider,
-        }
-      );
-      expect(container).toBeEmptyDOMElement();
-      expect(dataProviders.useDataProvider).lastCalledWith(
-        expect.objectContaining({ skip: true })
-      );
-    });
-
     it('no successor market data', () => {
       mockDataSuccessorMarket = null;
       const { container } = render(<MarketSuccessorBanner market={market} />, {
         wrapper: MockedProvider,
       });
       expect(container).toBeEmptyDOMElement();
-      expect(dataProviders.useDataProvider).lastCalledWith(
-        expect.objectContaining({
-          variables: { marketId: 'successorMarketID' },
-          skip: false,
-        })
-      );
     });
 
     it('successor market not in continuous mode', () => {
@@ -110,12 +91,6 @@ describe('MarketSuccessorBanner', () => {
         wrapper: MockedProvider,
       });
       expect(container).toBeEmptyDOMElement();
-      expect(dataProviders.useDataProvider).lastCalledWith(
-        expect.objectContaining({
-          variables: { marketId: 'successorMarketID' },
-          skip: false,
-        })
-      );
       expect(allUtils.getMarketExpiryDate).toHaveBeenCalled();
     });
 
@@ -128,12 +103,6 @@ describe('MarketSuccessorBanner', () => {
         wrapper: MockedProvider,
       });
       expect(container).toBeEmptyDOMElement();
-      expect(dataProviders.useDataProvider).lastCalledWith(
-        expect.objectContaining({
-          variables: { marketId: 'successorMarketID' },
-          skip: false,
-        })
-      );
       expect(allUtils.getMarketExpiryDate).toHaveBeenCalled();
     });
   });
