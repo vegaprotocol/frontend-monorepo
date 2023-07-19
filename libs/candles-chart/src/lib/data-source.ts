@@ -7,7 +7,6 @@ import {
   differenceInMinutes,
 } from 'date-fns';
 import type {
-  Annotation,
   Candle,
   DataSource,
   LabelAnnotation,
@@ -19,7 +18,6 @@ import {
   addDecimal,
   addDecimalsFormatNumber,
   getDateTimeFormat,
-  toBigNum,
 } from '@vegaprotocol/utils';
 import { ChartDocument } from './__generated__/Chart';
 import type { ChartQuery, ChartQueryVariables } from './__generated__/Chart';
@@ -39,11 +37,14 @@ import * as Schema from '@vegaprotocol/types';
 import { OrdersDocument, OrdersUpdateDocument } from '@vegaprotocol/orders';
 
 import type {
+  OrderFieldsFragment,
+  OrderUpdateFieldsFragment,
   OrdersQuery,
   OrdersQueryVariables,
   OrdersUpdateSubscription,
   OrdersUpdateSubscriptionVariables,
 } from '@vegaprotocol/orders';
+import { filterOrderUpdates } from '@vegaprotocol/orders';
 import { t } from '@vegaprotocol/i18n';
 
 const INTERVAL_TO_PENNANT_MAP = {
@@ -67,6 +68,23 @@ const defaultConfig = {
   ],
 };
 
+type AnnotationOrder = Pick<
+  OrderFieldsFragment,
+  | 'id'
+  | 'expiresAt'
+  | 'price'
+  | 'side'
+  | 'size'
+  | 'status'
+  | 'timeInForce'
+  | 'type'
+>;
+
+const liveOnlyOrderStatuses = [
+  Schema.OrderStatus.STATUS_ACTIVE,
+  Schema.OrderStatus.STATUS_PARKED,
+];
+
 /**
  * A data access object that provides access to the Vega GraphQL API.
  */
@@ -76,6 +94,7 @@ export class VegaDataSource implements DataSource {
   partyId: null | string;
   _decimalPlaces = 0;
   _positionDecimalPlaces = 0;
+  orders: AnnotationOrder[] = [];
 
   candlesSub: Subscription | null = null;
   ordersSub: Subscription | null = null;
@@ -187,6 +206,7 @@ export class VegaDataSource implements DataSource {
         },
         fetchPolicy: 'no-cache',
       });
+
       if (data?.market?.candlesConnection?.edges) {
         const decimalPlaces = data.market.decimalPlaces;
         const positionDecimalPlaces = data.market.positionDecimalPlaces;
@@ -248,11 +268,8 @@ export class VegaDataSource implements DataSource {
   async subscribeAnnotations(
     onSubscriptionAnnotations: (annotations: LabelAnnotation[]) => void
   ) {
-    try {
-      const { data } = await this.client.query<
-        OrdersQuery,
-        OrdersQueryVariables
-      >({
+    const { data } = await this.client.query<OrdersQuery, OrdersQueryVariables>(
+      {
         query: OrdersDocument,
         variables: {
           marketIds: this.marketId,
@@ -261,70 +278,26 @@ export class VegaDataSource implements DataSource {
             'c20b8de94b17685a17ca5d4e3da848ce3b82166fadba0e7b071eead303999fb0',
         },
         fetchPolicy: 'no-cache',
-      });
-
-      if (data.party?.ordersConnection?.edges) {
-        console.log(data.party?.ordersConnection?.edges);
-
-        const annotations = data.party.ordersConnection.edges.map((edge) => {
-          const order = edge.node;
-
-          const prefix = data
-            ? order.side === Schema.Side.SIDE_BUY
-              ? '+'
-              : '-'
-            : '';
-
-          const label =
-            prefix +
-            addDecimalsFormatNumber(order.size, this.positionDecimalPlaces);
-
-          let tif = '-';
-
-          if (
-            order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
-            order?.expiresAt
-          ) {
-            const expiry = getDateTimeFormat().format(
-              new Date(order.expiresAt)
-            );
-            tif = `${
-              Schema.OrderTimeInForceCode[order.timeInForce]
-            }: ${expiry}`;
-          } else {
-            const tifLabel = order.timeInForce
-              ? Schema.OrderTimeInForceCode[order.timeInForce]
-              : '';
-
-            tif = `${tifLabel}${order?.postOnly ? t('. Post Only') : ''}${
-              order?.reduceOnly ? t('. Reduce only') : ''
-            }`;
-          }
-
-          return {
-            type: 'label',
-            id: order.id,
-            cells: [
-              {
-                label: tif,
-                intent:
-                  order.side === Schema.Side.SIDE_BUY ? 'success' : 'danger',
-              },
-              {
-                label: label,
-              },
-            ],
-            intent: edge.node.side === 'SIDE_BUY' ? 'success' : 'danger',
-            y: Number(addDecimal(order.price, this.decimalPlaces)),
-          } as Annotation;
-        });
-
-        console.log(annotations);
-
-        onSubscriptionAnnotations(annotations);
       }
-    } catch (error) {
-      return [];
+    );
+
+    if (data.party?.ordersConnection?.edges) {
+      console.log(
+        'query',
+        data.party.ordersConnection?.edges.map((edge) => edge.node)
+      );
+
+      this.orders = data.party.ordersConnection.edges
+        .map((edge) => edge.node)
+        .filter((order) => liveOnlyOrderStatuses.includes(order.status));
+
+      console.log(this.orders);
+
+      const annotations = this.orders.map((order) =>
+        parseOrder(order, this.decimalPlaces, this.positionDecimalPlaces)
+      );
+
+      onSubscriptionAnnotations(annotations);
     }
 
     const res = this.client.subscribe<
@@ -336,43 +309,38 @@ export class VegaDataSource implements DataSource {
         marketIds: this.marketId,
         partyId:
           this.partyId ??
-          'c20b8de94b17685a17ca5d4e3da848ce3b82166fadba0e7b071eead303999fb0',
+          'c20b8de94b17685a17ca5d4e3da848ce3b82166fadba0e7b071eead303999fb0', // FIXME: Remove null coalescing operator
       },
     });
-
-    console.log(this.marketId, this.partyId);
 
     this.ordersSub = res.subscribe(({ data }) => {
-      if (data) {
-        console.log(data);
+      if (data && data.orders) {
+        console.log('subscription', data.orders);
 
-        // onSubscriptionData(candle);
+        for (const orderUpdate of filterOrderUpdates(data.orders)) {
+          const matchingOrder = this.orders.find(
+            (order) => order.id === orderUpdate.id
+          );
+
+          if (matchingOrder) {
+            Object.assign(matchingOrder, orderUpdate);
+          } else {
+            this.orders.push(orderUpdate);
+          }
+        }
+
+        this.orders = this.orders.filter((order) =>
+          liveOnlyOrderStatuses.includes(order.status)
+        );
+
+        const annotations =
+          this.orders.map((order) =>
+            parseOrder(order, this.decimalPlaces, this.positionDecimalPlaces)
+          ) ?? [];
+
+        onSubscriptionAnnotations(annotations);
       }
     });
-
-    /*  onSubscriptionAnnotations([
-      {
-        type: 'label',
-        id: '0',
-        cells: [
-          { label: 'Position' },
-          { label: `200` },
-          {
-            label: `PnL ${-10000000000}`,
-            stroke: true,
-            intent: 'danger',
-          },
-          {
-            label: 'Close',
-            onClick: () => {
-              console.log({ type: 'position', id: '0' });
-            },
-          },
-        ],
-        intent: 'success',
-        y: 0.06401,
-      },
-    ]); */
   }
 
   unsubscribeAnnotations(): void {
@@ -471,5 +439,54 @@ function parseCandle(
     open: Number(addDecimal(candle.open, decimalPlaces)),
     close: Number(addDecimal(candle.close, decimalPlaces)),
     volume: Number(addDecimal(candle.volume, positionDecimalPlaces)),
+  };
+}
+
+function parseOrder(
+  order: AnnotationOrder,
+  decimalPlaces: number,
+  positionDecimalPlaces: number
+): LabelAnnotation {
+  const prefix = order ? (order.side === Schema.Side.SIDE_BUY ? '+' : '-') : '';
+
+  const label =
+    prefix + addDecimalsFormatNumber(order.size, positionDecimalPlaces);
+
+  let tif = '-';
+
+  if (
+    order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
+    order?.expiresAt
+  ) {
+    const expiry = getDateTimeFormat().format(new Date(order.expiresAt));
+    tif = `${Schema.OrderTimeInForceCode[order.timeInForce]}: ${expiry}`;
+  } else {
+    const tifLabel = order.timeInForce
+      ? Schema.OrderTimeInForceCode[order.timeInForce]
+      : '';
+
+    tif = tifLabel;
+  }
+
+  return {
+    type: 'label',
+    id: order.id,
+    cells: [
+      { label: order.type ? Schema.OrderTypeMapping[order.type] : '-' },
+      {
+        label: tif,
+      },
+      {
+        label: addDecimalsFormatNumber(order.price, decimalPlaces),
+        numeric: true,
+      },
+      {
+        label: label,
+        numeric: true,
+        stroke: true,
+      },
+    ],
+    intent: order.side === Schema.Side.SIDE_BUY ? 'success' : 'danger',
+    y: Number(addDecimal(order.price, decimalPlaces)),
   };
 }
