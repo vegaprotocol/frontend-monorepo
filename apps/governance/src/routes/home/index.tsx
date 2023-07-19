@@ -31,6 +31,7 @@ import {
   orderByDate,
   orderByUpgradeBlockHeight,
 } from '../proposals/components/proposals-list/proposals-list';
+import { BigNumber } from '../../lib/bignumber';
 
 const nodesToShow = 6;
 
@@ -248,6 +249,8 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
 
   const activeNodes = removePaginationWrapper(
     validatorsData?.nodesConnection.edges
+  ).filter((node) =>
+    new BigNumber(node.rankingScore.performanceScore).isGreaterThan(0)
   );
 
   const trimmedActiveNodes = activeNodes?.slice(0, nodesToShow);
