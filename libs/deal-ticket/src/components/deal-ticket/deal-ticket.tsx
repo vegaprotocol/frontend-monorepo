@@ -268,11 +268,7 @@ export const DealTicket = ({
   if (!order || !normalizedOrder) return null;
 
   return (
-    <form
-      onSubmit={isReadOnly ? undefined : handleSubmit(onSubmit)}
-      className="p-4"
-      noValidate
-    >
+    <form onSubmit={isReadOnly ? undefined : handleSubmit(onSubmit)} noValidate>
       <Controller
         name="type"
         control={control}
