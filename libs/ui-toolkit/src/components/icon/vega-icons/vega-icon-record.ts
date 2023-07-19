@@ -21,10 +21,12 @@ import { IconMoon } from './svg-icons/icon-moon';
 import { IconOpenExternal } from './svg-icons/icon-open-external';
 import { IconQuestionMark } from './svg-icons/icon-question-mark';
 import { IconPlus } from './svg-icons/icon-plus';
+import { IconStar } from './svg-icons/icon-star';
 import { IconTick } from './svg-icons/icon-tick';
 import { IconTicket } from './svg-icons/icon-ticket';
 import { IconTransfer } from './svg-icons/icon-transfer';
 import { IconTrendUp } from './svg-icons/icon-trend-up';
+import { IconTrendDown } from './svg-icons/icon-trend-down';
 import { IconTwitter } from './svg-icons/icon-twitter';
 import { IconWithdraw } from './svg-icons/icon-withdraw';
 
@@ -52,10 +54,12 @@ export enum VegaIconNames {
   OPEN_EXTERNAL = 'open-external',
   QUESTION_MARK = 'question-mark',
   PLUS = 'plus',
+  STAR = 'star',
   TICK = 'tick',
   TICKET = 'ticket',
   TRANSFER = 'transfer',
   TREND_UP = 'trend-up',
+  TREND_DOWN = 'trend-down',
   TWITTER = 'twitter',
   WITHDRAW = 'withdraw',
 }
@@ -87,9 +91,11 @@ export const VegaIconNameMap: Record<
   'open-external': IconOpenExternal,
   plus: IconPlus,
   'question-mark': IconQuestionMark,
+  star: IconStar,
   tick: IconTick,
   transfer: IconTransfer,
   'trend-up': IconTrendUp,
+  'trend-down': IconTrendDown,
   twitter: IconTwitter,
   ticket: IconTicket,
   withdraw: IconWithdraw,

@@ -112,7 +112,6 @@ export const MarketSelector = ({
                 return curr;
               });
             }}
-            onReset={() => setFilter((curr) => ({ ...curr, assets: [] }))}
           />
           <SortDropdown
             currentSort={filter.sort}
@@ -127,7 +126,6 @@ export const MarketSelector = ({
                 };
               });
             }}
-            onReset={() => setFilter((curr) => ({ ...curr, sort: Sort.None }))}
           />
         </div>
       </div>

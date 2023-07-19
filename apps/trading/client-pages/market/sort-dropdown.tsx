@@ -2,12 +2,12 @@ import { t } from '@vegaprotocol/i18n';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuItemIndicator,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 
 export const Sort = {
@@ -28,22 +28,32 @@ export const SortTypeMapping: {
   [Sort.New]: 'New markets',
 };
 
+const SortIconMapping: {
+  [key in SortType]: VegaIconNames;
+} = {
+  [Sort.None]: null as unknown as VegaIconNames, // not shown in list
+  [Sort.Gained]: VegaIconNames.TREND_UP,
+  [Sort.Lost]: VegaIconNames.TREND_DOWN,
+  [Sort.New]: VegaIconNames.STAR,
+};
+
 export const SortDropdown = ({
   currentSort,
   onSelect,
-  onReset,
 }: {
   currentSort: SortType;
   onSelect: (sort: SortType) => void;
-  onReset: () => void;
 }) => {
   return (
     <DropdownMenu
       trigger={
         <DropdownMenuTrigger data-testid="sort-trigger">
-          {currentSort === SortTypeMapping.None
-            ? t('Sort')
-            : SortTypeMapping[currentSort]}
+          <span className="flex justify-between items-center">
+            {currentSort === SortTypeMapping.None
+              ? t('Sort')
+              : SortTypeMapping[currentSort]}{' '}
+            <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+          </span>
         </DropdownMenuTrigger>
       }
     >
@@ -52,8 +62,6 @@ export const SortDropdown = ({
           value={currentSort}
           onValueChange={(value) => onSelect(value as SortType)}
         >
-          <DropdownMenuItem onClick={onReset}>{t('Reset')}</DropdownMenuItem>
-          <DropdownMenuSeparator />
           {Object.keys(Sort)
             .filter((s) => s !== Sort.None)
             .map((key) => {
@@ -64,7 +72,10 @@ export const SortDropdown = ({
                   value={key}
                   data-testid={`sort-item-${key}`}
                 >
-                  {SortTypeMapping[key as SortType]}
+                  <span className="flex gap-2">
+                    <VegaIcon name={SortIconMapping[key as SortType]} />{' '}
+                    {SortTypeMapping[key as SortType]}
+                  </span>
                   <DropdownMenuItemIndicator />
                 </DropdownMenuRadioItem>
               );

@@ -3,10 +3,10 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuItemIndicator,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 
 type Assets = Array<{ id: string; symbol: string }>;
@@ -15,12 +15,10 @@ export const AssetDropdown = ({
   assets,
   checkedAssets,
   onSelect,
-  onReset,
 }: {
   assets: Assets | undefined;
   checkedAssets: string[];
   onSelect: (id: string, checked: boolean) => void;
-  onReset: () => void;
 }) => {
   if (!assets?.length) {
     return null;
@@ -35,8 +33,6 @@ export const AssetDropdown = ({
       }
     >
       <DropdownMenuContent>
-        <DropdownMenuItem onClick={onReset}>{t('Reset')}</DropdownMenuItem>
-        <DropdownMenuSeparator />
         {assets?.map((a) => {
           return (
             <DropdownMenuCheckboxItem
@@ -66,15 +62,19 @@ const TriggerText = ({
   assets: Assets;
   checkedAssets: string[];
 }) => {
-  let text = t('Asset');
+  let text = t('Assets');
 
   if (checkedAssets.length === 1) {
     const assetId = checkedAssets[0];
     const asset = assets.find((a) => a.id === assetId);
     text = asset ? asset.symbol : t('Asset (1)');
   } else if (checkedAssets.length > 1) {
-    text = t(`Asset (${checkedAssets.length})`);
+    text = t(`${checkedAssets.length} Assets`);
   }
 
-  return <span className="px-1">{text}</span>;
+  return (
+    <span className="flex justify-between items-center">
+      {text} <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+    </span>
+  );
 };
