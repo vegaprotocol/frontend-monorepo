@@ -71,6 +71,11 @@ export const useColumnDefs = ({ onMarketClick }: Props) => {
         },
       },
       {
+        headerName: t('Successor market'),
+        field: 'successorMarketID',
+        cellRenderer: 'SuccessorMarketRenderer',
+      },
+      {
         headerName: t('Best bid'),
         field: 'data.bestBidPrice',
         type: 'rightAligned',

@@ -19,10 +19,12 @@ export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
   );
 
 interface ProposalListProps {
-  components?: Readonly<Record<string, React.FC>>;
+  SuccessorMarketRenderer?: React.FC<{ value: string }>;
 }
 
-export const ProposalsList = ({ components }: ProposalListProps) => {
+export const ProposalsList = ({
+  SuccessorMarketRenderer,
+}: ProposalListProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const { data } = useProposalsListQuery({
     variables: {
@@ -46,7 +48,7 @@ export const ProposalsList = ({ components }: ProposalListProps) => {
         getRowId={({ data }) => data.id}
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No markets')}
-        components={components}
+        components={{ SuccessorMarketRenderer }}
       />
     </div>
   );

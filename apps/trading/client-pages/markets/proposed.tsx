@@ -14,7 +14,7 @@ export const Proposed = () => {
   return (
     <>
       <div className="h-[400px]">
-        <ProposalsList components={{ SuccessorMarketRenderer }} />
+        <ProposalsList SuccessorMarketRenderer={SuccessorMarketRenderer} />
       </div>
       <ExternalLink className="py-4 px-[11px] text-sm" href={externalLink}>
         {t('Propose a new market')}

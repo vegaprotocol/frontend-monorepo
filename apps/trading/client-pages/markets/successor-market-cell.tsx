@@ -1,17 +1,10 @@
-import type { VegaICellRendererParams } from '@vegaprotocol/datagrid';
 import { MarketNameCell } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketProvider } from '@vegaprotocol/markets';
-import type { ProposalListFieldsFragment } from '@vegaprotocol/proposals';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
-import type { Row } from './closed';
+import React from 'react';
 
-export const SuccessorMarketRenderer = ({
-  value,
-}: VegaICellRendererParams<
-  Row | ProposalListFieldsFragment,
-  'successorMarketID'
->) => {
+export const SuccessorMarketRenderer = ({ value }: { value: string }) => {
   const { data } = useDataProvider({
     dataProvider: marketProvider,
     variables: {
