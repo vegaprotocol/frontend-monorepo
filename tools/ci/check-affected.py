@@ -94,12 +94,17 @@ for preview, preview_value in previews.items():
   print(f'{preview}: {preview_value}')
 print('>> EOF Previews')
 
-with open(environ['GITHUB_ENV'], 'a') as _f:
-  _f.writelines([
-    f'PREVIEW_GOVERNANCE={previews["governance"]}',
-    f'PREVIEW_EXPLORER={previews["explorer"]}',
-    f'PREVIEW_TRADING={previews["trading"]}',
-    f'PREVIEW_TOOLS={previews["tools"]}',
-    f'PROJECTS={projects}',
-    f'PROJECTS_E2E={projects_e2e}',
-  ])
+
+lines_to_write = [
+  f'PREVIEW_GOVERNANCE={previews["governance"]}',
+  f'PREVIEW_EXPLORER={previews["explorer"]}',
+  f'PREVIEW_TRADING={previews["trading"]}',
+  f'PREVIEW_TOOLS={previews["tools"]}',
+  f'PROJECTS={projects}',
+  f'PROJECTS_E2E={projects_e2e}',
+]
+env_file = environ['GITHUB_ENV']
+print(f'Line to add to GITHUB_ENV file: {env_file}')
+print(lines_to_write)
+with open(env_file, 'a') as _f:
+  _f.write('\n'.join(lines_to_write))
