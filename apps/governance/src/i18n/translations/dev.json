@@ -837,5 +837,7 @@
   "RejectedProposals": "Rejected proposals",
   "networkGovernance": "Network governance",
   "networkUpgrades": "Network upgrades",
-  "assetSpecification": "Asset specification"
+  "assetSpecification": "Asset specification",
+  "Estimated time to upgrade": "Estimated time to upgrade",
+  "Upgraded at": "Upgraded at"
 }
