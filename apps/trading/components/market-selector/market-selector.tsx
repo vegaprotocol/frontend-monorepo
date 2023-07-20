@@ -48,7 +48,7 @@ export const MarketSelector = ({
 
   return (
     <div data-testid="market-selector">
-      <div className="pt-2 px-2 mb-2 w-[320px] lg:w-[584px]">
+      <div className="pt-2 px-2 mb-2">
         <ProductSelector
           product={filter.product}
           onSelect={(product) => {
@@ -154,9 +154,10 @@ const MarketList = ({
   const listRef = useRef<HTMLDivElement | null>(null);
   const rect = listRef.current?.getBoundingClientRect();
   // allow virtualized list to grow until it runs out of space
-  const height = rect
+  const computedHeight = rect
     ? Math.min(data.length * itemSize, window.innerHeight - rect.y)
     : 400;
+  const height = Math.max(computedHeight, 45);
 
   if (error) {
     return <div>{error.message}</div>;
@@ -252,7 +253,11 @@ const List = ({
 
   if (!data.length) {
     return (
-      <div style={{ height }} data-testid="no-items">
+      <div
+        style={{ height }}
+        className="flex items-center"
+        data-testid="no-items"
+      >
         <div className="mx-4 my-2 text-sm">{noItems}</div>
       </div>
     );

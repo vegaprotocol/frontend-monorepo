@@ -11,8 +11,8 @@ export const LayoutWithSidebar = () => {
 
   const gridClasses = classNames(
     'h-full relative z-0 grid',
-    'grid-rows-[min-content_1fr]',
-    'grid-cols-[1fr_45px]',
+    'grid-rows-[min-content_1fr_min-content]',
+    'lg:grid-rows-[min-content_1fr]',
     'lg:grid-cols-[1fr_350px_45px]'
   );
 
@@ -40,7 +40,14 @@ export const LayoutWithSidebar = () => {
       >
         <SidebarContent />
       </aside>
-      <div className="col-start-2 lg:col-start-3 bg-vega-clight-800 dark:bg-vega-cdark-800 border-l border-default">
+      <div
+        className={classNames(
+          'bg-vega-clight-800 dark:bg-vega-cdark-800',
+          'border-t lg:border-l lg:border-t-0 border-default',
+          'row-start-3 col-start-1 cols-span-full',
+          'lg:row-start-2 lg:row-span-full lg:col-start-3'
+        )}
+      >
         <Sidebar />
       </div>
     </div>
