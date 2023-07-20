@@ -8,19 +8,11 @@ import {
 import type { TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
 import { memo, useState } from 'react';
-import {
-  Popover,
-  Splash,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 import { NO_MARKET } from './constants';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
-import { Header, HeaderTitle } from '../../components/header';
-import { MarketSelector } from '../../components/market-selector/market-selector';
 import { MarketSuccessorBanner } from '../../components/market-banner';
-import { MarketHeaderStats } from './market-header-stats';
 
 interface TradePanelsProps {
   market: Market | null;
