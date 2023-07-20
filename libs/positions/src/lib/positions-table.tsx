@@ -365,10 +365,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
                 return !data
                   ? undefined
-                  : toBigNum(
-                      data.realisedPNL,
-                      data.marketDecimalPlaces
-                    ).toNumber();
+                  : toBigNum(data.realisedPNL, data.decimals).toNumber();
               },
               valueFormatter: ({
                 data,
