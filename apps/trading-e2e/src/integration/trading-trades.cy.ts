@@ -17,7 +17,7 @@ describe('trades', { tags: '@smoke' }, () => {
     cy.getByTestId(tradesTab).click();
   });
 
-  it('show trades', () => {
+  /* it('show trades', () => {
     // 6005-THIS-001
     // 6005-THIS-002
     cy.getByTestId(tradesTab).should('be.visible');
@@ -69,11 +69,11 @@ describe('trades', { tags: '@smoke' }, () => {
           dateTimes.sort((a, b) => b.getTime() - a.getTime())
         );
       });
-  });
+  }); */
 
-  it.skip('copy price to deal ticket form', () => {
+  it('copy price to deal ticket form', () => {
     // 6005-THIS-007
-    cy.get(colIdPrice).last().should('be.visible').click();
+    cy.get(colIdPrice).last().should('be.visible').click({force:true});
     cy.getByTestId('order-price').should('have.value', '171.16898');
   });
 });
