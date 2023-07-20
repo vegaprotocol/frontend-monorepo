@@ -5,13 +5,11 @@ import type {
   StopOrdersSubmission,
 } from '@vegaprotocol/wallet';
 import {
-  addDecimalsFormatNumber,
   formatNumber,
   toDecimal,
   toNanoSeconds,
   validateAmount,
 } from '@vegaprotocol/utils';
-import type { Control } from 'react-hook-form';
 import { useForm, Controller } from 'react-hook-form';
 import * as Schema from '@vegaprotocol/types';
 import type { OrderTimeInForce, Side } from '@vegaprotocol/types';
@@ -84,7 +82,7 @@ export const mapInputToStopOrdersSubmission = (
   } else if (data.trigger === 'trailingPercentOffset') {
     stopOrderSetup.trailingPercentOffset = (
       Number(data.triggerTrailingPercentOffset) / 100
-    ).toString();
+    ).toFixed(3);
   }
 
   if (data.expire) {
@@ -165,16 +163,18 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
     handleSubmit,
     watch,
     control,
-    setValue,
-    formState: { errors },
+    formState,
   } = useForm<StopOrderFormValues>({
     defaultValues: {
       type: Schema.OrderType.TYPE_MARKET,
       side: Schema.Side.SIDE_SELL,
+      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
       trigger: 'price',
       direction: 'risesAbove',
+      expiryStrategy: 'submit',
     },
   });
+  const { errors } = formState;
   const lastSubmitTime = useRef(0);
   const onSubmit = useCallback(
     (data: StopOrderFormValues) => {
@@ -199,12 +199,14 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
   const trigger = watch('trigger');
   const triggerPrice = watch('triggerPrice');
   const type = watch('type');
-  const assetSymbol =
-    market.tradableInstrument.instrument.product.settlementAsset.symbol;
-  const { quoteName } = market.tradableInstrument.instrument.product;
+
+  const { quoteName, settlementAsset } =
+    market.tradableInstrument.instrument.product;
+  const { symbol: assetSymbol } = settlementAsset;
 
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
   const priceStep = toDecimal(market?.decimalPlaces);
+  const trailingPercentOffsetStep = '0.1';
 
   const priceFormatted =
     trigger === 'price' && triggerPrice
@@ -212,7 +214,6 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
       : undefined;
 
   return (
-    /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
     <form onSubmit={handleSubmit(onSubmit)} className="p-4">
       <FormGroup label={t('Order type')} labelFor="order-type" compact={true}>
         <Controller
@@ -230,11 +231,11 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
             />
           )}
         />
-        {/*errorMessage && (
-          <InputError testId="deal-ticket-error-message-type">
-            {renderError(errorMessage as MarketModeValidationType)}
+        {errors.type && (
+          <InputError testId="stop-order-error-message-type">
+            {errors.type.message}
           </InputError>
-        )*/}
+        )}
       </FormGroup>
       <Controller
         name="side"
@@ -271,46 +272,86 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
           }}
         />
         {trigger === 'price' && (
-          <Controller
-            name="triggerPrice"
-            control={control}
-            render={({ field }) => {
-              const { onChange, value } = field;
-              return (
-                <div className="mb-2">
-                  <Input
-                    type="number"
-                    onChange={onChange}
-                    value={value || ''}
-                    appendElement={assetSymbol}
-                  />
-                </div>
-              );
-            }}
-          />
+          <div className="mb-2">
+            <Controller
+              name="triggerPrice"
+              rules={{
+                required: t('You need provide a price'),
+                min: {
+                  value: priceStep,
+                  message: t('Price cannot be lower than ' + priceStep),
+                },
+                validate: validateAmount(priceStep, 'Price'),
+              }}
+              control={control}
+              render={({ field }) => {
+                return (
+                  <div className="mb-2">
+                    <Input
+                      type="number"
+                      appendElement={assetSymbol}
+                      {...field}
+                    />
+                  </div>
+                );
+              }}
+            />
+            {errors.triggerPrice && (
+              <InputError testId="stop-order-error-message-trigger-price">
+                {errors.triggerPrice.message}
+              </InputError>
+            )}
+          </div>
         )}
         {trigger === 'trailingPercentOffset' && (
-          <Controller
-            name="triggerTrailingPercentOffset"
-            control={control}
-            render={({ field }) => {
-              const { onChange, value } = field;
-              return (
-                <div className="mb-2">
-                  <Input
-                    type="number"
-                    onChange={onChange}
-                    value={value || ''}
-                    appendElement="%"
-                  />
-                </div>
-              );
-            }}
-          />
+          <div className="mb-2">
+            <Controller
+              name="triggerTrailingPercentOffset"
+              control={control}
+              rules={{
+                required: t('You need provide a trailing percent offset'),
+                min: {
+                  value: trailingPercentOffsetStep,
+                  message: t(
+                    'Trailing percent offset cannot be lower than ' +
+                      trailingPercentOffsetStep
+                  ),
+                },
+                max: {
+                  value: '99.9',
+                  message: t(
+                    'Trailing percent offset cannot be higher than 99'
+                  ),
+                },
+                validate: validateAmount(
+                  trailingPercentOffsetStep,
+                  'Trailing percentage offset'
+                ),
+              }}
+              render={({ field }) => {
+                return (
+                  <div className="mb-2">
+                    <Input
+                      type="number"
+                      step={trailingPercentOffsetStep}
+                      appendElement="%"
+                      {...field}
+                    />
+                  </div>
+                );
+              }}
+            />
+            {errors.triggerTrailingPercentOffset && (
+              <InputError testId="stop-order-error-message-trigger-trailing-percent-offset">
+                {errors.triggerTrailingPercentOffset.message}
+              </InputError>
+            )}
+          </div>
         )}
         <Controller
           name="trigger"
           control={control}
+          rules={{ deps: ['triggerTrailingPercentOffset', 'triggerPrice'] }}
           render={({ field }) => {
             const { onChange, value } = field;
             return (
@@ -408,53 +449,55 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
             )}
           </div>
         </div>
-        {/*sizeError && (
+        {errors.size && (
           <InputError testId="deal-ticket-error-message-size-limit">
-            {sizeError}
+            {errors.size.message}
           </InputError>
         )}
 
-        {priceError && (
+        {errors.price && (
           <InputError testId="deal-ticket-error-message-price-limit">
-            {priceError}
+            {errors.price.message}
           </InputError>
-        )*/}
+        )}
       </div>
-      <FormGroup
-        label={t('Time in force')}
-        labelFor="select-time-in-force"
-        compact={true}
-      >
-        <Controller
-          name="timeInForce"
-          control={control}
-          render={({ field }) => (
-            <Select
-              id="select-time-in-force"
-              className="w-full"
-              data-testid="order-tif"
-            >
-              <option
-                key={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
-                value={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
+      <div className="mb-2">
+        <FormGroup
+          label={t('Time in force')}
+          labelFor="select-time-in-force"
+          compact={true}
+        >
+          <Controller
+            name="timeInForce"
+            control={control}
+            render={({ field }) => (
+              <Select
+                id="select-time-in-force"
+                className="w-full"
+                data-testid="order-tif"
               >
-                {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_IOC)}
-              </option>
-              <option
-                key={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
-                value={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
-              >
-                {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_FOK)}
-              </option>
-            </Select>
-          )}
-        />
-        {/*errorMessage && (
-          <InputError testId="deal-ticket-error-message-tif">
-            {renderError(errorMessage)}
+                <option
+                  key={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
+                  value={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
+                >
+                  {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_IOC)}
+                </option>
+                <option
+                  key={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
+                  value={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
+                >
+                  {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_FOK)}
+                </option>
+              </Select>
+            )}
+          />
+        </FormGroup>
+        {errors.timeInForce && (
+          <InputError testId="stop-error-message-tif">
+            {errors.timeInForce.message}
           </InputError>
-        )*/}
-      </FormGroup>
+        )}
+      </div>
       <div className="mb-2">
         <Controller
           name="expire"
@@ -505,20 +548,27 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
               }}
             />
           </FormGroup>
-          <Controller
-            name="expiresAt"
-            control={control}
-            render={({ field }) => {
-              const { value, onChange: onSelect } = field;
-              return (
-                <ExpirySelector
-                  value={value}
-                  onSelect={onSelect}
-                  errorMessage={errors.expiresAt?.message}
-                />
-              );
-            }}
-          />
+          <div className="mb-2">
+            <Controller
+              name="expiresAt"
+              control={control}
+              render={({ field }) => {
+                const { value, onChange: onSelect } = field;
+                return (
+                  <ExpirySelector
+                    value={value}
+                    onSelect={onSelect}
+                    errorMessage={errors.expiresAt?.message}
+                  />
+                );
+              }}
+            />
+            {errors.expiresAt && (
+              <InputError testId="stop-error-message-expiresAt">
+                {errors.expiresAt.message}
+              </InputError>
+            )}
+          </div>
         </>
       )}
       <Button
