@@ -28,6 +28,7 @@ import { TradingViews } from './trade-views';
 import { MarketSelector } from './market-selector';
 import { HeaderStats } from './header-stats';
 import { MarketSuccessorBanner } from '../../components/market-banner';
+import { FLAGS } from '@vegaprotocol/environment';
 
 interface TradeGridProps {
   market: Market | null;
