@@ -17,7 +17,7 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.mockTradingPage();
     cy.setVegaWallet();
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
     cy.getByTestId('Deposits').click();
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('MetaMask');

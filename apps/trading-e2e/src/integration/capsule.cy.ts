@@ -54,7 +54,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
 
   it('can deposit', function () {
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
 
     // 1001-DEPO-001
     // 1001-DEPO-002
@@ -117,7 +117,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
   it('can key to key transfers', function () {
     // 1003-TRAN-023
     // 1003-TRAN-006
-    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
 
     cy.getByTestId(collateralTab).click();
     cy.getByTestId('open-transfer').click();
@@ -344,7 +344,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     const ethWalletAddress = Cypress.env('ETHEREUM_WALLET_ADDRESS');
 
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
     cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId('Withdrawals').click();
     cy.getByTestId('withdraw-dialog-button').click();
@@ -431,7 +431,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     // 1001-DEPO-006
     // 1001-DEPO-007
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
     cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
@@ -453,7 +453,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     // 1002-WITH-007
 
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]', txTimeout).should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]', txTimeout).should('exist');
     cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();

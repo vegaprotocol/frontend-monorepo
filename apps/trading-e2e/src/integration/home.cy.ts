@@ -106,7 +106,7 @@ describe('home', { tags: '@regression' }, () => {
       cy.visit('/');
       cy.wait('@Markets');
 
-      cy.get('main[data-testid^="/markets/"]');
+      cy.get('[data-testid^="pathname-/markets/"]');
 
       // the choose market overlay is no longer showing
       cy.contains('Loading...').should('not.exist');
