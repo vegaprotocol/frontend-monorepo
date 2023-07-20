@@ -9,20 +9,28 @@ context('Market page', { tags: '@regression' }, function () {
       cy.createMarket();
     });
 
+    beforeEach('Get market id', function () {
+      cy.navigate_to('markets');
+      cy.get('[col-id="id"]').eq(1).invoke('text').as('createdMarketId');
+    });
+
     it('Market displayed on market page', function () {
       cy.navigate_to('markets');
       cy.getByTestId(marketHeaders).should('be.visible');
-      cy.get(`[row-id="${createdMarketId}"]`)
+      cy.get(`[row-id="${this.createdMarketId}"]`)
         .should('be.visible')
         .within(() => {
           cy.get_element_by_col_id('code').should('have.text', 'TEST.24h');
           cy.get_element_by_col_id('name').should('have.text', 'Test market 1');
           cy.get_element_by_col_id('state').should('have.text', 'Pending');
           cy.get_element_by_col_id('asset').should('have.text', 'fUSDC');
-          cy.get_element_by_col_id('id').should('have.text', createdMarketId);
+          cy.get_element_by_col_id('id').should(
+            'have.text',
+            this.createdMarketId
+          );
           cy.get_element_by_col_id('actions')
             .find('a')
-            .should('have.attr', 'href', `/markets/${createdMarketId}`);
+            .should('have.attr', 'href', `/markets/${this.createdMarketId}`);
         });
     });
 
@@ -31,7 +39,7 @@ context('Market page', { tags: '@regression' }, function () {
       cy.get_element_by_col_id('actions').eq(1).click();
       cy.getByTestId(marketHeaders).should('have.text', 'Test market 1');
       cy.validate_element_from_table('Name', 'Test market 1');
-      cy.validate_element_from_table('Market ID', createdMarketId);
+      cy.validate_element_from_table('Market ID', this.createdMarketId);
       cy.validate_element_from_table('Trading Mode', 'Opening auction');
       cy.validate_element_from_table('Market Decimal Places', '5');
       cy.validate_element_from_table('Position Decimal Places', '5');
@@ -42,8 +50,6 @@ context('Market page', { tags: '@regression' }, function () {
       cy.validate_element_from_table('Product Type', 'Future');
       cy.validate_element_from_table('Quote Name', 'fUSDC');
       // Settlement Asset
-      // cy.validate_element_from_table('ID', '816af99af60d684502a40824758f6b5377e6af48e50a9ee8ef478ecb879ea8bc')
-      // cy.validate_element_from_table('Type', 'Builtin asset')
       cy.validate_element_from_table('Quote Name', 'fUSDC');
       cy.validate_element_from_table('Symbol', 'fUSDC');
       cy.validate_element_from_table('Decimals', '5');
