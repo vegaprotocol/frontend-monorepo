@@ -1,5 +1,5 @@
-import { useRef, useCallback } from 'react';
-import { useVegaTransactionStore } from '@vegaprotocol/wallet';
+import { useRef, useCallback, useEffect } from 'react';
+import { useVegaTransactionStore, useVegaWallet } from '@vegaprotocol/wallet';
 import type {
   StopOrderSetup,
   StopOrdersSubmission,
@@ -35,6 +35,8 @@ import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { timeInForceLabel } from '@vegaprotocol/orders';
+import { SummaryValidationType } from '../../constants';
+import { NoWalletWarning } from './deal-ticket';
 
 export interface StopOrderFormValues {
   side: Side;
@@ -53,6 +55,8 @@ export interface StopOrderFormValues {
   expire: boolean;
   expiryStrategy?: 'submit' | 'cancel';
   expiresAt?: string;
+
+  summary: undefined;
 }
 
 export const mapInputToStopOrdersSubmission = (
@@ -158,12 +162,15 @@ const toggles = [
 ];
 
 export const StopOrder = ({ market, submit }: StopOrderProps) => {
+  const { pubKey, isReadOnly } = useVegaWallet();
   const {
     // register,
     handleSubmit,
     watch,
     control,
     formState,
+    setError,
+    clearErrors,
   } = useForm<StopOrderFormValues>({
     defaultValues: {
       type: Schema.OrderType.TYPE_MARKET,
@@ -212,9 +219,25 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
     trigger === 'price' && triggerPrice
       ? formatNumber(triggerPrice, market.decimalPlaces)
       : undefined;
+  useEffect(() => {
+    if (!pubKey) {
+      setError('summary', {
+        message: t('No public key selected'),
+        type: SummaryValidationType.NoPubKey,
+      });
+      return;
+    }
+
+    // No error found above clear the error in case it was active on a previous render
+    clearErrors('summary');
+  }, [pubKey, setError, clearErrors]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-4">
+    <form
+      onSubmit={isReadOnly || !pubKey ? undefined : handleSubmit(onSubmit)}
+      className="p-4"
+      noValidate
+    >
       <FormGroup label={t('Order type')} labelFor="order-type" compact={true}>
         <Controller
           name="type"
@@ -571,6 +594,11 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
           </div>
         </>
       )}
+      <NoWalletWarning
+        pubKey={pubKey}
+        isReadOnly={isReadOnly}
+        assetSymbol={assetSymbol}
+      />
       <Button
         variant={side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
         fill

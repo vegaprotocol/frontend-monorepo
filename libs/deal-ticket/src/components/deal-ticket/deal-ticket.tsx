@@ -465,7 +465,7 @@ export const DealTicket = ({
         </div>
         <SummaryMessage
           errorMessage={errors.summary?.message}
-          asset={asset}
+          assetSymbol={asset.symbol}
           marketTradingMode={marketData.marketTradingMode}
           balance={balance}
           margin={
@@ -502,7 +502,7 @@ export const DealTicket = ({
  */
 interface SummaryMessageProps {
   errorMessage?: string;
-  asset: { id: string; symbol: string; name: string; decimals: number };
+  assetSymbol: string;
   marketTradingMode: MarketData['marketTradingMode'];
   balance: string;
   margin: string;
@@ -510,10 +510,58 @@ interface SummaryMessageProps {
   pubKey: string | null;
   onClickCollateral?: () => void;
 }
+
+export const NoWalletWarning = ({
+  isReadOnly,
+  pubKey,
+  assetSymbol,
+}: Pick<SummaryMessageProps, 'isReadOnly' | 'pubKey' | 'assetSymbol'>) => {
+  const openVegaWalletDialog = useVegaWalletDialogStore(
+    (store) => store.openVegaWalletDialog
+  );
+  if (isReadOnly) {
+    return (
+      <div className="mb-2">
+        <InputError testId="deal-ticket-error-message-summary">
+          {
+            'You need to connect your own wallet to start trading on this market'
+          }
+        </InputError>
+      </div>
+    );
+  }
+  if (!pubKey) {
+    return (
+      <div className="mb-2">
+        <Notification
+          testId={'deal-ticket-connect-wallet'}
+          intent={Intent.Warning}
+          message={
+            <p className="text-sm pb-2">
+              You need a{' '}
+              <ExternalLink href="https://vega.xyz/wallet">
+                Vega wallet
+              </ExternalLink>{' '}
+              with {assetSymbol} to start trading in this market.
+            </p>
+          }
+          buttonProps={{
+            text: t('Connect wallet'),
+            action: openVegaWalletDialog,
+            dataTestId: 'order-connect-wallet',
+            size: 'sm',
+          }}
+        />
+      </div>
+    );
+  }
+  return null;
+};
+
 const SummaryMessage = memo(
   ({
     errorMessage,
-    asset,
+    assetSymbol,
     marketTradingMode,
     balance,
     margin,
@@ -521,48 +569,16 @@ const SummaryMessage = memo(
     pubKey,
     onClickCollateral,
   }: SummaryMessageProps) => {
-    // Specific error UI for if balance is so we can
-    // render a deposit dialog
-    const assetSymbol = asset.symbol;
-    const openVegaWalletDialog = useVegaWalletDialogStore(
-      (store) => store.openVegaWalletDialog
-    );
-    if (isReadOnly) {
+    if (isReadOnly || !pubKey) {
       return (
-        <div className="mb-2">
-          <InputError testId="deal-ticket-error-message-summary">
-            {
-              'You need to connect your own wallet to start trading on this market'
-            }
-          </InputError>
-        </div>
+        <NoWalletWarning
+          isReadOnly={isReadOnly}
+          assetSymbol={assetSymbol}
+          pubKey={pubKey}
+        />
       );
     }
-    if (!pubKey) {
-      return (
-        <div className="mb-2">
-          <Notification
-            testId={'deal-ticket-connect-wallet'}
-            intent={Intent.Warning}
-            message={
-              <p className="text-sm pb-2">
-                You need a{' '}
-                <ExternalLink href="https://vega.xyz/wallet">
-                  Vega wallet
-                </ExternalLink>{' '}
-                with {assetSymbol} to start trading in this market.
-              </p>
-            }
-            buttonProps={{
-              text: t('Connect wallet'),
-              action: openVegaWalletDialog,
-              dataTestId: 'order-connect-wallet',
-              size: 'sm',
-            }}
-          />
-        </div>
-      );
-    }
+
     if (errorMessage === SummaryValidationType.NoCollateral) {
       return (
         <div className="mb-2">
