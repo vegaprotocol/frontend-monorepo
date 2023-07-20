@@ -2,16 +2,9 @@ import React, { useEffect, useMemo } from 'react';
 import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
-import {
-  useDataProvider,
-  useThrottledDataProvider,
-} from '@vegaprotocol/data-provider';
+import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
-import {
-  marketProvider,
-  marketDataProvider,
-  useMarket,
-} from '@vegaprotocol/markets';
+import { marketDataProvider, useMarket } from '@vegaprotocol/markets';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid } from './trade-grid';
 import { TradePanels } from './trade-panels';

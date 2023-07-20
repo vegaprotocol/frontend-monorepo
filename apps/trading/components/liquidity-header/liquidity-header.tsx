@@ -3,7 +3,6 @@ import {
   useMarket,
   useStaticMarketData,
 } from '@vegaprotocol/markets';
-import { memo } from 'react';
 import { Header, HeaderStat, HeaderTitle } from '../header';
 import {
   addDecimalsFormatNumber,

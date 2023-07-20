@@ -1,7 +1,6 @@
 import { extent } from 'd3-array';
 import { scaleLinear } from 'd3-scale';
 import { line } from 'd3-shape';
-import classNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import React from 'react';
 
