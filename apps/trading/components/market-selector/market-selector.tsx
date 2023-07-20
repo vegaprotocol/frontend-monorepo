@@ -150,16 +150,13 @@ const MarketList = ({
   onSelect?: (marketId: string) => void;
   noItems: string;
 }) => {
-  let height = 400;
   const itemSize = 45;
   const listRef = useRef<HTMLDivElement | null>(null);
   const rect = listRef.current?.getBoundingClientRect();
-
   // allow virtualized list to grow until it runs out of space
-  if (rect) {
-    height = window.innerHeight - rect.y;
-    height = Math.min(data.length * itemSize, height);
-  }
+  const height = rect
+    ? Math.min(data.length * itemSize, window.innerHeight - rect.y)
+    : 400;
 
   if (error) {
     return <div>{error.message}</div>;
