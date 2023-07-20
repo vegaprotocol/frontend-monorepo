@@ -35,8 +35,15 @@ import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { timeInForceLabel } from '@vegaprotocol/orders';
-import { SummaryValidationType } from '../../constants';
 import { NoWalletWarning } from './deal-ticket';
+import {
+  create,
+  type Mutate,
+  type StateCreator,
+  type StoreApi,
+  type UseBoundStore,
+} from 'zustand';
+import { persist, subscribeWithSelector } from 'zustand/middleware';
 
 export interface StopOrderFormValues {
   side: Side;
@@ -55,9 +62,53 @@ export interface StopOrderFormValues {
   expire: boolean;
   expiryStrategy?: 'submit' | 'cancel';
   expiresAt?: string;
-
-  summary: undefined;
 }
+
+type StopOrderFormValuesMap = {
+  [marketId: string]: Partial<StopOrderFormValues> | undefined;
+};
+
+type Update = (
+  marketId: string,
+  formValues: Partial<StopOrderFormValues>,
+  persist?: boolean
+) => void;
+
+interface Store {
+  formValues: StopOrderFormValuesMap;
+  update: Update;
+}
+
+export const STORAGE_KEY = 'vega_stop_order_store';
+
+const orderStateCreator: StateCreator<Store> = (set) => ({
+  formValues: {},
+  update: (marketId, formValues, persist = true) => {
+    set((state) => {
+      return {
+        formValues: {
+          ...state.formValues,
+          [marketId]: {
+            ...state.formValues[marketId],
+            ...formValues,
+          },
+        },
+      };
+    });
+  },
+});
+
+let store: UseBoundStore<Mutate<StoreApi<Store>, []>> | null = null;
+const getFormValuesStore = () => {
+  if (!store) {
+    store = create<Store>()(
+      persist(subscribeWithSelector(orderStateCreator), {
+        name: STORAGE_KEY,
+      })
+    );
+  }
+  return store as UseBoundStore<Mutate<StoreApi<Store>, []>>;
+};
 
 export const mapInputToStopOrdersSubmission = (
   data: StopOrderFormValues,
@@ -161,25 +212,32 @@ const toggles = [
   { label: t('Market'), value: Schema.OrderType.TYPE_MARKET },
 ];
 
+const defaultValues: Partial<StopOrderFormValues> = {
+  type: Schema.OrderType.TYPE_MARKET,
+  side: Schema.Side.SIDE_SELL,
+  timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+  trigger: 'price',
+  direction: 'risesAbove',
+  expiryStrategy: 'submit',
+};
+
 export const StopOrder = ({ market, submit }: StopOrderProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
+  const useFormValuesStoreRef = useRef(getFormValuesStore());
+  const updateStoredFormValues = useFormValuesStoreRef.current(
+    (state) => state.update
+  );
+  const storedFormValues = useFormValuesStoreRef.current(
+    (state) => state.formValues[market.id]
+  );
   const {
     // register,
     handleSubmit,
     watch,
     control,
     formState,
-    setError,
-    clearErrors,
   } = useForm<StopOrderFormValues>({
-    defaultValues: {
-      type: Schema.OrderType.TYPE_MARKET,
-      side: Schema.Side.SIDE_SELL,
-      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-      trigger: 'price',
-      direction: 'risesAbove',
-      expiryStrategy: 'submit',
-    },
+    defaultValues: { ...defaultValues, ...storedFormValues },
   });
   const { errors } = formState;
   const lastSubmitTime = useRef(0);
@@ -207,6 +265,13 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
   const triggerPrice = watch('triggerPrice');
   const type = watch('type');
 
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      updateStoredFormValues(market.id, value);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, market.id, updateStoredFormValues]);
+
   const { quoteName, settlementAsset } =
     market.tradableInstrument.instrument.product;
   const { symbol: assetSymbol } = settlementAsset;
@@ -219,18 +284,6 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
     trigger === 'price' && triggerPrice
       ? formatNumber(triggerPrice, market.decimalPlaces)
       : undefined;
-  useEffect(() => {
-    if (!pubKey) {
-      setError('summary', {
-        message: t('No public key selected'),
-        type: SummaryValidationType.NoPubKey,
-      });
-      return;
-    }
-
-    // No error found above clear the error in case it was active on a previous render
-    clearErrors('summary');
-  }, [pubKey, setError, clearErrors]);
 
   return (
     <form
