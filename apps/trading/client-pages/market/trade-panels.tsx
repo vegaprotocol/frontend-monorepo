@@ -70,23 +70,7 @@ export const TradePanels = ({
   };
 
   return (
-    <div className="h-full grid grid-rows-[min-content_min-content_1fr_min-content]">
-      <Header
-        title={
-          <Popover
-            trigger={
-              <HeaderTitle>
-                {market?.tradableInstrument.instrument.code}
-                <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
-              </HeaderTitle>
-            }
-          >
-            <MarketSelector currentMarketId={market?.id} />
-          </Popover>
-        }
-      >
-        <MarketHeaderStats market={market} />
-      </Header>
+    <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
       <div>
         <MarketSuccessorBanner market={market} />
         <OracleBanner marketId={market?.id || ''} />
