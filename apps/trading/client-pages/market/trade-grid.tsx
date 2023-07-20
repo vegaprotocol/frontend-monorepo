@@ -19,6 +19,7 @@ import {
 import { TradingViews } from './trade-views';
 import { MarketSuccessorBanner } from '../../components/market-banner';
 import { FLAGS } from '@vegaprotocol/environment';
+
 interface TradeGridProps {
   market: Market | null;
   onSelect: (marketId: string, metaKey?: boolean) => void;
