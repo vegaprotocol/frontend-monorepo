@@ -12,7 +12,7 @@ import {
   NodeCheckDocument,
   NodeCheckTimeUpdateDocument,
 } from '../utils/__generated__/NodeCheck';
-import type { Environment } from '../types';
+import type { CosmicELevatorFlags, Environment, FeatureFlags } from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
@@ -39,8 +39,12 @@ const VERSION = 1;
 export const STORAGE_KEY = `vega_url_${VERSION}`;
 const SUBSCRIPTION_TIMEOUT = 3000;
 
+export const ENV = compileEnvVars();
+export const FLAGS = compileFeatureFlags();
+
 export const useEnvironment = create<EnvStore>()((set, get) => ({
   ...compileEnvVars(),
+  ...compileFeatureFlags(),
   nodes: [],
   status: 'default',
   error: null,
@@ -372,6 +376,48 @@ function compileEnvVars() {
   return env;
 }
 
+function compileFeatureFlags(): FeatureFlags {
+  const TRUTHY = ['1', 'true'];
+  const COSMIC_ELEVATOR_FLAGS: CosmicELevatorFlags = {
+    ICEBERG_ORDERS: TRUTHY.includes(windowOrDefault('NX_ICEBERG_ORDERS')),
+    STOP_ORDERS: TRUTHY.includes(windowOrDefault('NX_STOP_ORDERS')),
+    SUCCESSOR_MARKETS: TRUTHY.includes(windowOrDefault('NX_SUCCESSOR_MARKETS')),
+    PRODUCT_PERPETUALS: TRUTHY.includes(
+      windowOrDefault('NX_PRODUCT_PERPETUALS')
+    ),
+  };
+  const EXPLORER_FLAGS = {
+    EXPLORER_ASSETS: TRUTHY.includes(windowOrDefault('NX_EXPLORER_ASSETS')),
+    EXPLORER_GENESIS: TRUTHY.includes(windowOrDefault('NX_EXPLORER_GENESIS')),
+    EXPLORER_GOVERNANCE: TRUTHY.includes(
+      windowOrDefault('NX_EXPLORER_GOVERNANCE')
+    ),
+    EXPLORER_MARKETS: TRUTHY.includes(windowOrDefault('NX_EXPLORER_MARKETS')),
+    EXPLORER_ORACLES: TRUTHY.includes(windowOrDefault('NX_EXPLORER_ORACLES')),
+    EXPLORER_TXS_LIST: TRUTHY.includes(windowOrDefault('NX_EXPLORER_TXS_LIST')),
+    EXPLORER_NETWORK_PARAMETERS: TRUTHY.includes(
+      windowOrDefault('NX_EXPLORER_NETWORK_PARAMETERS')
+    ),
+    EXPLORER_PARTIES: TRUTHY.includes(windowOrDefault('NX_EXPLORER_PARTIES')),
+    EXPLORER_VALIDATORS: TRUTHY.includes(
+      windowOrDefault('NX_EXPLORER_VALIDATORS')
+    ),
+  };
+  const GOVERNANCE_FLAGS = {
+    GOVERNANCE_NETWORK_DOWN: TRUTHY.includes(
+      windowOrDefault('NX_NETWORK_DOWN')
+    ),
+    GOVERNANCE_NETWORK_LIMITS: TRUTHY.includes(
+      windowOrDefault('NX_GOVERNANCE_NETWORK_LIMITS')
+    ),
+  };
+  return {
+    ...COSMIC_ELEVATOR_FLAGS,
+    ...EXPLORER_FLAGS,
+    ...GOVERNANCE_FLAGS,
+  };
+}
+
 function parseNetworks(value?: string) {
   if (value) {
     try {
@@ -414,7 +460,7 @@ function getEtherscanUrl(
 
 export function windowOrDefault(key: string, defaultValue?: string) {
   if (typeof window !== 'undefined') {
-    // @ts-ignore avoid conflic in env
+    // @ts-ignore avoid conflict in env
     if (window._env_ && window._env_[key]) {
       // @ts-ignore presence has been check above
       return window._env_[key];

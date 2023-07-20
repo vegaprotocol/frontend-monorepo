@@ -1,6 +1,9 @@
 import type z from 'zod';
 import type { tomlConfigSchema } from './utils/validate-configuration';
-import type { envSchema } from './utils/validate-environment';
+import type {
+  envSchema,
+  featureFlagsSchema,
+} from './utils/validate-environment';
 
 export enum Networks {
   VALIDATOR_TESTNET = 'VALIDATOR_TESTNET',
@@ -12,5 +15,10 @@ export enum Networks {
   MAINNET = 'MAINNET',
 }
 export type Environment = z.infer<typeof envSchema>;
+export type FeatureFlags = z.infer<typeof featureFlagsSchema>;
+export type CosmicELevatorFlags = Pick<
+  FeatureFlags,
+  'ICEBERG_ORDERS' | 'STOP_ORDERS' | 'SUCCESSOR_MARKETS' | 'PRODUCT_PERPETUALS'
+>;
 export type Configuration = z.infer<typeof tomlConfigSchema>;
 export const CUSTOM_NODE_KEY = 'custom' as const;
