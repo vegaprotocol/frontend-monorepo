@@ -375,10 +375,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               }: VegaValueFormatterParams<Position, 'realisedPNL'>) => {
                 return !data
                   ? ''
-                  : addDecimalsFormatNumber(
-                      data.realisedPNL,
-                      data.marketDecimalPlaces
-                    );
+                  : addDecimalsFormatNumber(data.realisedPNL, data.decimals);
               },
               headerTooltip: t(
                 'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
@@ -396,20 +393,14 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
                 return !data
                   ? undefined
-                  : toBigNum(
-                      data.unrealisedPNL,
-                      data.marketDecimalPlaces
-                    ).toNumber();
+                  : toBigNum(data.unrealisedPNL, data.decimals).toNumber();
               },
               valueFormatter: ({
                 data,
               }: VegaValueFormatterParams<Position, 'unrealisedPNL'>) =>
                 !data
                   ? ''
-                  : addDecimalsFormatNumber(
-                      data.unrealisedPNL,
-                      data.marketDecimalPlaces
-                    ),
+                  : addDecimalsFormatNumber(data.unrealisedPNL, data.decimals),
               headerTooltip: t(
                 'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
               ),

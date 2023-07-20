@@ -12,7 +12,6 @@ import {
   addDecimalsFormatNumber,
   getMarketExpiryDate,
 } from '@vegaprotocol/utils';
-import { usePositionsQuery } from '@vegaprotocol/positions';
 import type {
   DataSourceFilterFragment,
   MarketMaybeWithData,
@@ -21,7 +20,6 @@ import {
   MarketActionsDropdown,
   closedMarketsWithDataProvider,
 } from '@vegaprotocol/markets';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { ColDef } from 'ag-grid-community';
 import { SettlementDateCell } from './settlement-date-cell';
@@ -48,34 +46,18 @@ interface Row {
   setlementDataSourceFilter: DataSourceFilterFragment | undefined;
   tradingTerminationOracleId: string;
   settlementAsset: SettlementAsset;
-  realisedPNL: string | undefined;
   successorMarketID: string | undefined | null;
 }
 
 export const Closed = () => {
-  const { pubKey } = useVegaWallet();
-  const {
-    data: marketData,
-    error,
-    reload,
-  } = useDataProvider({
+  const { data: marketData, error } = useDataProvider({
     dataProvider: closedMarketsWithDataProvider,
     variables: undefined,
-  });
-  const { data: positionData } = usePositionsQuery({
-    variables: {
-      partyIds: pubKey ? [pubKey] : [],
-    },
-    skip: !pubKey,
   });
 
   // find a position for each market and add the realised pnl to
   // a normalized object
   const rowData = compact(marketData).map((market) => {
-    const position = positionData?.positions?.edges?.find((edge) => {
-      return edge.node.market.id === market.id;
-    });
-
     const instrument = market.tradableInstrument.instrument;
 
     const spec =
@@ -110,7 +92,6 @@ export const Closed = () => {
       tradingTerminationOracleId:
         instrument.product.dataSourceSpecForTradingTermination.id,
       settlementAsset: instrument.product.settlementAsset,
-      realisedPNL: position?.node.realisedPNL,
       successorMarketID: market.successorMarketID,
     };
 
@@ -118,7 +99,7 @@ export const Closed = () => {
   });
   return (
     <div className="h-full relative">
-      <ClosedMarketsDataGrid rowData={rowData} error={error} reload={reload} />
+      <ClosedMarketsDataGrid rowData={rowData} error={error} />
     </div>
   );
 };
@@ -126,11 +107,9 @@ export const Closed = () => {
 const ClosedMarketsDataGrid = ({
   rowData,
   error,
-  reload,
 }: {
   rowData: Row[];
   error: Error | undefined;
-  reload: () => void;
 }) => {
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
   const colDefs = useMemo(() => {
@@ -263,24 +242,10 @@ const ClosedMarketsDataGrid = ({
         ),
       },
       {
-        headerName: t('Realised PNL'),
-        field: 'realisedPNL',
-        cellClass: 'font-mono ag-right-aligned-cell',
-        type: 'numericColumn',
-        valueFormatter: ({
-          value,
-          data,
-        }: VegaValueFormatterParams<Row, 'realisedPNL'>) => {
-          if (!value || !data) return '-';
-          return addDecimalsFormatNumber(value, data.decimalPlaces);
-        },
-      },
-      {
         headerName: t('Settlement asset'),
         field: 'settlementAsset',
         cellRenderer: ({
           value,
-          data,
         }: VegaValueFormatterParams<Row, 'settlementAsset'>) => (
           <button
             className="underline"
