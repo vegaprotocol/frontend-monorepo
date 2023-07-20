@@ -251,7 +251,7 @@ const NavbarContent = ({ children }: { children: ReactNode }) => {
   return (
     <N.Content
       className={classNames(
-        'lg:absolute pl-2 lg:pl-0 z-20 lg:min-w-[290px]',
+        'lg:absolute lg:mt-2 pl-2 lg:pl-0 z-20 lg:min-w-[290px]',
         'lg:bg-vega-clight-800 lg:dark:bg-vega-cdark-800',
         'lg:border border-default lg:rounded'
       )}

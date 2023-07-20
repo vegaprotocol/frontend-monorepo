@@ -35,7 +35,7 @@ export const MarketSelector = ({
   onSelect,
 }: {
   currentMarketId?: string;
-  onSelect?: (marketId: string) => void;
+  onSelect: (marketId: string) => void;
 }) => {
   const [filter, setFilter] = useState<Filter>({
     searchTerm: '',
@@ -147,7 +147,7 @@ const MarketList = ({
   loading: boolean;
   searchTerm: string;
   currentMarketId?: string;
-  onSelect?: (marketId: string) => void;
+  onSelect: (marketId: string) => void;
   noItems: string;
 }) => {
   const itemSize = 45;
@@ -200,7 +200,7 @@ const MarketList = ({
 
 interface ListItemData {
   data: MarketMaybeWithDataAndCandles[];
-  onSelect?: (marketId: string) => void;
+  onSelect: (marketId: string) => void;
   currentMarketId?: string;
 }
 
@@ -217,6 +217,7 @@ const ListItem = ({
     market={data.data[index]}
     currentMarketId={data.currentMarketId}
     style={style}
+    onSelect={data.onSelect}
   />
 );
 

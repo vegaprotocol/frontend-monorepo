@@ -4,6 +4,7 @@ import { useMarket } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { useParams } from 'react-router-dom';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
+import { useState } from 'react';
 
 /**
  * This is only rendered for the mobile navigation
@@ -11,11 +12,17 @@ import * as PopoverPrimitive from '@radix-ui/react-popover';
 export const NavHeader = () => {
   const { marketId } = useParams();
   const { data } = useMarket(marketId);
+  const [open, setOpen] = useState(false);
 
   if (!marketId) return null;
 
   return (
     <FullScreenPopover
+      open={open}
+      onOpenChange={(x) => {
+        console.log(x);
+        setOpen(x);
+      }}
       trigger={
         <h1 className="flex gap-4 items-center text-default text-lg whitespace-nowrap xl:pr-4 xl:border-r border-default">
           {data ? data.tradableInstrument.instrument.code : t('Select market')}
@@ -23,7 +30,10 @@ export const NavHeader = () => {
         </h1>
       }
     >
-      <MarketSelector currentMarketId={marketId} />
+      <MarketSelector
+        currentMarketId={marketId}
+        onSelect={() => setOpen(false)}
+      />
     </FullScreenPopover>
   );
 };
@@ -32,9 +42,14 @@ export interface PopoverProps extends PopoverPrimitive.PopoverProps {
   trigger: React.ReactNode | string;
 }
 
-export const FullScreenPopover = ({ trigger, children }: PopoverProps) => {
+export const FullScreenPopover = ({
+  trigger,
+  children,
+  open,
+  onOpenChange,
+}: PopoverProps) => {
   return (
-    <PopoverPrimitive.Root>
+    <PopoverPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <PopoverPrimitive.Trigger data-testid="popover-trigger">
         {trigger}
       </PopoverPrimitive.Trigger>

@@ -17,10 +17,12 @@ export const MarketSelectorItem = ({
   market,
   style,
   currentMarketId,
+  onSelect,
 }: {
   market: MarketMaybeWithDataAndCandles;
   style: CSSProperties;
   currentMarketId?: string;
+  onSelect: (marketId: string) => void;
 }) => {
   return (
     <div style={style} role="row">
@@ -32,6 +34,7 @@ export const MarketSelectorItem = ({
           'bg-vega-clight-600 dark:bg-vega-cdark-600':
             market.id === currentMarketId,
         })}
+        onClick={() => onSelect(market.id)}
       >
         <MarketData market={market} />
       </Link>
