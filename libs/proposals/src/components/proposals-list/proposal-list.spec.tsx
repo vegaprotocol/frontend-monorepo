@@ -15,6 +15,11 @@ import type { ProposalsListQuery } from '../../lib';
 import { ProposalsListDocument } from '../../lib';
 import type { PartialDeep } from 'type-fest';
 
+const successorMarketName = 'Successor Market Name';
+const spySuccessorMarketRenderer = jest
+  .fn()
+  .mockReturnValue(successorMarketName);
+
 describe('ProposalsList', () => {
   const createProposalsMock = (override?: PartialDeep<ProposalsListQuery>) => {
     const defaultProposalEdges = [
@@ -64,13 +69,15 @@ describe('ProposalsList', () => {
 
     return mock;
   };
-
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   it('should be properly rendered', async () => {
     const mock = createProposalsMock();
     await act(() => {
       render(
         <MockedProvider mocks={[mock]}>
-          <ProposalsList />
+          <ProposalsList SuccessorMarketRenderer={spySuccessorMarketRenderer} />
         </MockedProvider>
       );
     });
@@ -82,23 +89,36 @@ describe('ProposalsList', () => {
   });
 
   it('some of states should be filtered out', async () => {
+    const proposalNode = createProposalListFieldsFragment({
+      id: 'id-1',
+      state: Types.ProposalState.STATE_ENACTED,
+    });
+
     const mock = createProposalsMock({
       proposalsConnection: {
         edges: [
           {
             __typename: 'ProposalEdge',
-            node: createProposalListFieldsFragment({
-              id: 'id-1',
-              state: Types.ProposalState.STATE_ENACTED,
-            }),
+            node: {
+              ...proposalNode,
+              terms: {
+                ...proposalNode.terms,
+                change: {
+                  ...proposalNode.terms.change,
+                  successorConfiguration: {
+                    parentMarketId: 'parentMarketId',
+                  },
+                },
+              },
+            },
           },
         ],
       },
-    });
+    } as PartialDeep<ProposalsListQuery>);
     await act(() => {
       render(
         <MockedProvider mocks={[mock]}>
-          <ProposalsList />
+          <ProposalsList SuccessorMarketRenderer={spySuccessorMarketRenderer} />
         </MockedProvider>
       );
     });
@@ -107,6 +127,22 @@ describe('ProposalsList', () => {
       expect(container).toBeInTheDocument();
     });
     expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
+
+    expect(spySuccessorMarketRenderer).toHaveBeenCalled();
+    expect(
+      screen.getByRole('columnheader', {
+        name: (_name, element) =>
+          element.getAttribute('col-id') ===
+          'terms.change.successorConfiguration.parentMarketId',
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByRole('gridcell', {
+        name: (name, element) =>
+          element.getAttribute('col-id') ===
+          'terms.change.successorConfiguration.parentMarketId',
+      })[0]
+    ).toHaveTextContent(successorMarketName);
   });
 
   it('empty response should causes no data message display', async () => {
@@ -129,7 +165,7 @@ describe('ProposalsList', () => {
     await act(() => {
       render(
         <MockedProvider mocks={[mock]}>
-          <ProposalsList />
+          <ProposalsList SuccessorMarketRenderer={spySuccessorMarketRenderer} />
         </MockedProvider>
       );
     });

@@ -19,7 +19,7 @@ export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
   );
 
 interface ProposalListProps {
-  SuccessorMarketRenderer?: React.FC<{ value: string }>;
+  SuccessorMarketRenderer: React.FC<{ value: string }>;
 }
 
 export const ProposalsList = ({
