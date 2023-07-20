@@ -9,6 +9,7 @@ export interface RadioGroupProps {
   value?: string;
   orientation?: 'horizontal' | 'vertical';
   onChange?: (value: string) => void;
+  className?: string;
 }
 
 export const RadioGroup = ({
@@ -17,11 +18,16 @@ export const RadioGroup = ({
   value,
   orientation = 'vertical',
   onChange,
+  className,
 }: RadioGroupProps) => {
-  const groupClasses = classNames('flex text-sm', {
-    'flex-col gap-2': orientation === 'vertical',
-    'flex-row gap-4': orientation === 'horizontal',
-  });
+  const groupClasses = classNames(
+    'flex text-sm',
+    {
+      'flex-col gap-2': orientation === 'vertical',
+      'flex-row gap-4': orientation === 'horizontal',
+    },
+    className
+  );
   return (
     <RadioGroupPrimitive.Root
       name={name}
