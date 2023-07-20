@@ -26,8 +26,10 @@ const market = {
 } as unknown as MarketMaybeWithData;
 
 describe('MarketsContainer', () => {
-  it('context menu should stay open', async () => {
-    const spyOnSelect = jest.fn();
+  const spyOnSelect = jest.fn();
+  beforeEach(() => {
+    jest.clearAllMocks();
+
     jest
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .spyOn<typeof DataProviders, any>(DataProviders, 'useDataProvider')
@@ -38,6 +40,18 @@ describe('MarketsContainer', () => {
           data: [market],
         };
       });
+  });
+  it('context menu should stay open', async () => {
+    /*jest
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .spyOn<typeof DataProviders, any>(DataProviders, 'useDataProvider')
+      .mockImplementation(() => {
+        return {
+          error: null,
+          reload: jest.fn(),
+          data: [market],
+        };
+      });*/
 
     let rerenderRef: (ui: React.ReactElement) => void;
     await act(async () => {
@@ -110,5 +124,35 @@ describe('MarketsContainer', () => {
         })
       ).toBeInTheDocument();
     }
+  });
+
+  it('SuccessorMarketRenderer should be rendered', async () => {
+    const successorMarketName = 'Successor Market Name';
+    const spySuccessorMarketRenderer = jest
+      .fn()
+      .mockReturnValue(successorMarketName);
+
+    render(
+      <MockedProvider>
+        <MarketsContainer
+          onSelect={spyOnSelect}
+          SuccessorMarketRenderer={spySuccessorMarketRenderer}
+        />
+      </MockedProvider>
+    );
+
+    expect(spySuccessorMarketRenderer).toHaveBeenCalled();
+    expect(
+      screen.getByRole('columnheader', {
+        name: (_name, element) =>
+          element.getAttribute('col-id') === 'successorMarketID',
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('presentation', {
+        name: (_name, element) =>
+          element.getAttribute('id') === 'cell-successorMarketID-14',
+      })
+    ).toHaveTextContent(successorMarketName);
   });
 });

@@ -32,7 +32,7 @@ import { SuccessorMarketRenderer } from './successor-market-cell';
 type SettlementAsset =
   MarketMaybeWithData['tradableInstrument']['instrument']['product']['settlementAsset'];
 
-export interface Row {
+interface Row {
   id: string;
   code: string;
   name: string;
