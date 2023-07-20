@@ -39,6 +39,7 @@ import {
   ProtocolUpgradeProposalNotification,
 } from '@vegaprotocol/proposals';
 import { ViewingBanner } from '../components/viewing-banner';
+import { NavHeader } from '../components/navbar/nav-header';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -87,7 +88,9 @@ function AppBody({ Component }: AppProps) {
       <Title />
       <div className={gridClasses}>
         <AnnouncementBanner />
-        <Navbar theme="system" />
+        <Navbar>
+          <NavHeader />
+        </Navbar>
         <div data-testid="banners">
           <ProtocolUpgradeProposalNotification
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
