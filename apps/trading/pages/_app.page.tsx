@@ -25,7 +25,13 @@ import './styles.css';
 import { usePageTitleStore } from '../stores';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
-import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
+import {
+  HashRouter,
+  useLocation,
+  Route,
+  Routes,
+  useSearchParams,
+} from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -40,6 +46,7 @@ import {
 } from '@vegaprotocol/proposals';
 import { ViewingBanner } from '../components/viewing-banner';
 import { NavHeader } from '../components/navbar/nav-header';
+import { Routes as AppRoutes } from './client-router';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -89,7 +96,14 @@ function AppBody({ Component }: AppProps) {
       <div className={gridClasses}>
         <AnnouncementBanner />
         <Navbar>
-          <NavHeader />
+          <Routes>
+            <Route
+              path={AppRoutes.MARKETS}
+              // render nothing for markets/all, otherwise markets/:marketId will match with markets/all
+              element={null}
+            />
+            <Route path={AppRoutes.MARKET} element={<NavHeader />} />
+          </Routes>
         </Navbar>
         <div data-testid="banners">
           <ProtocolUpgradeProposalNotification
