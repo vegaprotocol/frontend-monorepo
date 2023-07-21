@@ -23,7 +23,7 @@ export const SuccessorMarketRenderer = ({
   const { data } = useDataProvider({
     dataProvider: marketProvider,
     variables: {
-      marketId: lookupValue,
+      marketId: lookupValue || '',
     },
     skip: !lookupValue,
   });

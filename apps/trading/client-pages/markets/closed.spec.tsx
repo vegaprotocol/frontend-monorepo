@@ -336,7 +336,6 @@ describe('Closed', () => {
         node: createMarketFragment({
           id: 'include-0',
           state: MarketState.STATE_SETTLED,
-          successorMarketID: 'successorMarketID',
         }),
       },
       {
@@ -434,7 +433,6 @@ describe('Closed', () => {
         node: createMarketFragment({
           id: 'include-0',
           state: MarketState.STATE_SETTLED,
-          successorMarketID: 'successorMarketID',
         }),
       },
       {
