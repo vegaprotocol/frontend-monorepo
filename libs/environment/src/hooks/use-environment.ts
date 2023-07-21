@@ -12,7 +12,7 @@ import {
   NodeCheckDocument,
   NodeCheckTimeUpdateDocument,
 } from '../utils/__generated__/NodeCheck';
-import type { CosmicELevatorFlags, Environment, FeatureFlags } from '../types';
+import type { CosmicElevatorFlags, Environment, FeatureFlags } from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
@@ -378,37 +378,55 @@ function compileEnvVars() {
 
 function compileFeatureFlags(): FeatureFlags {
   const TRUTHY = ['1', 'true'];
-  const COSMIC_ELEVATOR_FLAGS: CosmicELevatorFlags = {
-    ICEBERG_ORDERS: TRUTHY.includes(windowOrDefault('NX_ICEBERG_ORDERS')),
-    STOP_ORDERS: TRUTHY.includes(windowOrDefault('NX_STOP_ORDERS')),
-    SUCCESSOR_MARKETS: TRUTHY.includes(windowOrDefault('NX_SUCCESSOR_MARKETS')),
+  const COSMIC_ELEVATOR_FLAGS: CosmicElevatorFlags = {
+    ICEBERG_ORDERS: TRUTHY.includes(
+      windowOrDefault('NX_ICEBERG_ORDERS', '') as string
+    ),
+    STOP_ORDERS: TRUTHY.includes(
+      windowOrDefault('NX_STOP_ORDERS', '') as string
+    ),
+    SUCCESSOR_MARKETS: TRUTHY.includes(
+      windowOrDefault('NX_SUCCESSOR_MARKETS', '') as string
+    ),
     PRODUCT_PERPETUALS: TRUTHY.includes(
-      windowOrDefault('NX_PRODUCT_PERPETUALS')
+      windowOrDefault('NX_PRODUCT_PERPETUALS', '') as string
     ),
   };
   const EXPLORER_FLAGS = {
-    EXPLORER_ASSETS: TRUTHY.includes(windowOrDefault('NX_EXPLORER_ASSETS')),
-    EXPLORER_GENESIS: TRUTHY.includes(windowOrDefault('NX_EXPLORER_GENESIS')),
+    EXPLORER_ASSETS: TRUTHY.includes(
+      windowOrDefault('NX_EXPLORER_ASSETS', '') as string
+    ),
+    EXPLORER_GENESIS: TRUTHY.includes(
+      windowOrDefault('NX_EXPLORER_GENESIS', '') as string
+    ),
     EXPLORER_GOVERNANCE: TRUTHY.includes(
-      windowOrDefault('NX_EXPLORER_GOVERNANCE')
+      windowOrDefault('NX_EXPLORER_GOVERNANCE', '') as string
     ),
-    EXPLORER_MARKETS: TRUTHY.includes(windowOrDefault('NX_EXPLORER_MARKETS')),
-    EXPLORER_ORACLES: TRUTHY.includes(windowOrDefault('NX_EXPLORER_ORACLES')),
-    EXPLORER_TXS_LIST: TRUTHY.includes(windowOrDefault('NX_EXPLORER_TXS_LIST')),
+    EXPLORER_MARKETS: TRUTHY.includes(
+      windowOrDefault('NX_EXPLORER_MARKETS', '') as string
+    ),
+    EXPLORER_ORACLES: TRUTHY.includes(
+      windowOrDefault('NX_EXPLORER_ORACLES', '') as string
+    ),
+    EXPLORER_TXS_LIST: TRUTHY.includes(
+      windowOrDefault('NX_EXPLORER_TXS_LIST', '') as string
+    ),
     EXPLORER_NETWORK_PARAMETERS: TRUTHY.includes(
-      windowOrDefault('NX_EXPLORER_NETWORK_PARAMETERS')
+      windowOrDefault('NX_EXPLORER_NETWORK_PARAMETERS', '') as string
     ),
-    EXPLORER_PARTIES: TRUTHY.includes(windowOrDefault('NX_EXPLORER_PARTIES')),
+    EXPLORER_PARTIES: TRUTHY.includes(
+      windowOrDefault('NX_EXPLORER_PARTIES', '') as string
+    ),
     EXPLORER_VALIDATORS: TRUTHY.includes(
-      windowOrDefault('NX_EXPLORER_VALIDATORS')
+      windowOrDefault('NX_EXPLORER_VALIDATORS', '') as string
     ),
   };
   const GOVERNANCE_FLAGS = {
     GOVERNANCE_NETWORK_DOWN: TRUTHY.includes(
-      windowOrDefault('NX_NETWORK_DOWN')
+      windowOrDefault('NX_NETWORK_DOWN', '') as string
     ),
     GOVERNANCE_NETWORK_LIMITS: TRUTHY.includes(
-      windowOrDefault('NX_GOVERNANCE_NETWORK_LIMITS')
+      windowOrDefault('NX_GOVERNANCE_NETWORK_LIMITS', '') as string
     ),
   };
   return {
