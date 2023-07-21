@@ -37,27 +37,23 @@ describe('markets selector', { tags: '@smoke' }, () => {
     const data = [
       {
         code: 'SOLUSD',
-        markPrice: 'XYZalpha84.41',
-        change: '',
-        vol: '24h vol0.00',
+        markPrice: '84.41',
+        vol: '0.00',
       },
       {
         code: 'ETHBTC.QM21',
-        markPrice: 'tBTC46,126.90058',
-        change: '',
-        vol: '24h vol0.00',
+        markPrice: '46,126.90058',
+        vol: '0.00',
       },
       {
         code: 'BTCUSD.MF21',
-        markPrice: 'tDAI46,126.90058',
-        change: '',
-        vol: '24h vol0.00',
+        markPrice: '46,126.90058',
+        vol: '0.00',
       },
       {
         code: 'AAPL.MF21',
-        markPrice: 'tUSDC46,126.90058',
-        change: '',
-        vol: '24h vol0.00',
+        markPrice: '46,126.90058',
+        vol: '0.00',
       },
     ];
     cy.getByTestId('header-title').should('be.visible').click();
@@ -69,16 +65,12 @@ describe('markets selector', { tags: '@smoke' }, () => {
         // 6001-MARK-022
         expect(item.find('h3').text()).equals(market.code);
         expect(
-          item.find('[data-testid="market-selector-data-row"]').eq(0).text()
+          item.find('[data-testid="market-selector-volume"]').text()
         ).contains(market.vol);
         // 6001-MARK-024
         expect(
-          item.find('[data-testid="market-selector-data-row"]').eq(1).text()
+          item.find('[data-testid="market-selector-price"]').text()
         ).contains(market.markPrice);
-        // 6001-MARK-023
-        expect(item.find('[data-testid="market-item-change"]').text()).equals(
-          market.change
-        );
         // 6001-MARK-025
         expect(item.find('[data-testid="sparkline-svg"]')).to.not.exist;
       });

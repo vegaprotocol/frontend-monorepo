@@ -90,17 +90,17 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
         )}
       </div>
       <div
-        className="w-1/5 text-sm"
+        className="w-1/5 text-sm whitespace-nowrap text-ellipsis overflow-hidden"
         title={instrument.product.settlementAsset.symbol}
-        data-testid="market-selector-data-row"
+        data-testid="market-selector-price"
         role="gridcell"
       >
         {price} {instrument.product.settlementAsset.symbol}
       </div>
       <div
-        className="w-1/5 text-sm text-right"
+        className="w-1/5 text-sm text-right whitespace-nowrap text-ellipsis overflow-hidden"
         title={t('24h vol')}
-        data-testid="market-selector-data-row"
+        data-testid="market-selector-volume"
         role="gridcell"
       >
         {volume}
