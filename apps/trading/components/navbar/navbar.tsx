@@ -120,10 +120,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
   return (
     <N.List className="lg:flex gap-4">
       <N.Item>
-        <NavbarTrigger>
-          {envNameMapping[VEGA_ENV]}
-          <NavbarDivider />
-        </NavbarTrigger>
+        <NavbarTrigger>{envNameMapping[VEGA_ENV]}</NavbarTrigger>
         <NavbarContent>
           <ul className="lg:px-4 lg:py-2">
             {[Networks.MAINNET, Networks.TESTNET].map((n) => {
@@ -264,6 +261,7 @@ const NavbarContent = ({ children }: { children: ReactNode }) => {
 };
 
 // https://github.com/radix-ui/primitives/issues/1630
+// eslint-disable-next-line
 const preventHover = (e: any) => {
   e.preventDefault();
 };
@@ -410,5 +408,6 @@ const envNameMapping: Record<Networks, string> = {
   [Networks.DEVNET]: t('Devnet'),
   [Networks.STAGNET1]: t('Stagnet'),
   [Networks.TESTNET]: t('Fairground testnet'),
+  [Networks.MAINNET_MIRROR]: t('Mirror'),
   [Networks.MAINNET]: t('Mainnet'),
 };
