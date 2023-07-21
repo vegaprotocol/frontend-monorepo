@@ -1,38 +1,15 @@
-import { useState, type ComponentProps, type ReactNode } from 'react';
-import {
-  DApp,
-  NetworkSwitcher,
-  TOKEN_GOVERNANCE,
-  useEnvironment,
-  useLinks,
-  DocsLinks,
-  Networks,
-} from '@vegaprotocol/environment';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import { useState } from 'react';
+import { useEnvironment, DocsLinks, Networks } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
-import {
-  Navigation,
-  NavigationList,
-  NavigationItem,
-  NavigationLink,
-  ExternalLink,
-  NavigationBreakpoint,
-  NavigationTrigger,
-  NavigationContent,
-  VegaIconNames,
-  VegaIcon,
-  VLogo,
-} from '@vegaprotocol/ui-toolkit';
+import { VegaIconNames, VegaIcon, VLogo } from '@vegaprotocol/ui-toolkit';
 import * as N from '@radix-ui/react-navigation-menu';
 import * as D from '@radix-ui/react-dialog';
 import { NavLink } from 'react-router-dom';
 
 import { Links, Routes } from '../../pages/client-router';
-import {
-  ProtocolUpgradeCountdown,
-  ProtocolUpgradeCountdownMode,
-} from '@vegaprotocol/proposals';
 import classNames from 'classnames';
 import { VegaWalletMenu } from '../vega-wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
@@ -58,8 +35,7 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
           <NavbarMenu onClick={() => setMenu(null)} />
         </div>
         <div className="ml-auto flex justify-end items-center gap-2">
-          <button
-            className="w-8 h-8 lg:hidden flex items-center p-1 rounded hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500"
+          <NavbarMobileButton
             onClick={() => {
               if (isConnected) {
                 setMenu((x) => (x === 'wallet' ? null : 'wallet'));
@@ -69,15 +45,14 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
             }}
           >
             <WalletIcon className="w-6" />
-          </button>
-          <button
-            className="w-8 h-8 lg:hidden flex items-center p-1 rounded hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500"
+          </NavbarMobileButton>
+          <NavbarMobileButton
             onClick={() => {
               setMenu((x) => (x === 'nav' ? null : 'nav'));
             }}
           >
             <BurgerIcon />
-          </button>
+          </NavbarMobileButton>
           <div className="hidden lg:block">
             <VegaWalletConnectButton />
           </div>
@@ -94,12 +69,9 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
           />
           <D.Content className="fixed top-0 right-0 z-20 w-3/4 h-screen border-l border-default bg-vega-clight-700 dark:bg-vega-cdark-700">
             <div className="flex justify-end items-center h-10 p-1">
-              <button
-                onClick={() => setMenu(null)}
-                className="w-8 h-8 flex flex-col justify-center p-1 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500 rounded"
-              >
+              <NavbarMobileButton onClick={() => setMenu(null)}>
                 <VegaIcon name={VegaIconNames.CROSS} size={24} />
-              </button>
+              </NavbarMobileButton>
             </div>
             {menu === 'nav' && <NavbarMenu onClick={() => setMenu(null)} />}
             {menu === 'wallet' && <VegaWalletMenu setMenu={setMenu} />}
@@ -157,20 +129,25 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           <ul className="lg:px-4 lg:py-2">
             {DocsLinks?.NEW_TO_VEGA && (
               <li>
-                <NavbarLink to={DocsLinks?.NEW_TO_VEGA}>{t('Docs')}</NavbarLink>
+                <NavbarLinkExternal to={DocsLinks?.NEW_TO_VEGA}>
+                  {t('Docs')}
+                </NavbarLinkExternal>
               </li>
             )}
             {GITHUB_FEEDBACK_URL && (
               <li>
-                <NavbarLink to={GITHUB_FEEDBACK_URL}>
+                <NavbarLinkExternal to={GITHUB_FEEDBACK_URL}>
                   {t('Give Feedback')}
-                </NavbarLink>
+                </NavbarLinkExternal>
               </li>
             )}
             <li>
-              <NavbarLink to={Links[Routes.DISCLAIMER]()} onClick={onClick}>
+              <NavbarLinkExternal
+                to={Links[Routes.DISCLAIMER]()}
+                onClick={onClick}
+              >
                 {t('Disclaimer')}
-              </NavbarLink>
+              </NavbarLinkExternal>
             </li>
           </ul>
         </NavbarContent>
@@ -260,130 +237,41 @@ const NavbarContent = ({ children }: { children: ReactNode }) => {
   );
 };
 
+const NavbarMobileButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+  return (
+    <button
+      {...props}
+      className="w-8 h-8 lg:hidden flex items-center p-1 rounded hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500"
+    />
+  );
+};
+
 // https://github.com/radix-ui/primitives/issues/1630
 // eslint-disable-next-line
 const preventHover = (e: any) => {
   e.preventDefault();
 };
 
-export const Navbar2 = ({
-  theme = 'system',
-}: {
-  theme: ComponentProps<typeof Navigation>['theme'];
-}) => {
-  const { GITHUB_FEEDBACK_URL } = useEnvironment();
-  const tokenLink = useLinks(DApp.Token);
-  const marketId = useGlobalStore((store) => store.marketId);
-
-  const tradingPath = marketId
-    ? Links[Routes.MARKET](marketId)
-    : Links[Routes.MARKET]();
-
-  // return (
-  //   <nav className="flex items-center gap-4 py-2">
-  //     <div>Network switcher</div>
-  //     <NavLink to={Links[Routes.MARKETS]()}>Markets</NavLink>
-  //     <NavLink to={tradingPath} end>
-  //       Trading
-  //     </NavLink>
-  //     <NavLink to={Links[Routes.PORTFOLIO]()}>Portfolio</NavLink>
-  //   </nav>
-  // );
-
-  return (
-    <Navigation
-      appName="console"
-      theme={theme}
-      actions={
-        <>
-          <ProtocolUpgradeCountdown
-            mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
-          />
-          <VegaWalletConnectButton />
-        </>
-      }
-      breakpoints={[521, 1122]}
-    >
-      <NavigationList
-        className="[.drawer-content_&]:border-b [.drawer-content_&]:border-b-vega-light-200 dark:[.drawer-content_&]:border-b-vega-dark-200 [.drawer-content_&]:pb-8 [.drawer-content_&]:mb-2"
-        hide={[NavigationBreakpoint.Small]}
-      >
-        <NavigationItem className="[.drawer-content_&]:w-full">
-          <NetworkSwitcher className="[.drawer-content_&]:w-full" />
-        </NavigationItem>
-      </NavigationList>
-      <NavigationList
-        hide={[NavigationBreakpoint.Narrow, NavigationBreakpoint.Small]}
-      >
-        <NavigationItem>
-          <NavigationLink data-testid="Markets" to={Links[Routes.MARKETS]()}>
-            {t('Markets')}
-          </NavigationLink>
-        </NavigationItem>
-        <NavigationItem>
-          <NavigationLink data-testid="Trading" to={tradingPath} end>
-            {t('Trading')}
-          </NavigationLink>
-        </NavigationItem>
-        <NavigationItem>
-          <NavigationLink
-            data-testid="Portfolio"
-            to={Links[Routes.PORTFOLIO]()}
-          >
-            {t('Portfolio')}
-          </NavigationLink>
-        </NavigationItem>
-        <NavigationItem>
-          <NavExternalLink href={tokenLink(TOKEN_GOVERNANCE)}>
-            {t('Governance')}
-          </NavExternalLink>
-        </NavigationItem>
-        {DocsLinks?.NEW_TO_VEGA && GITHUB_FEEDBACK_URL && (
-          <NavigationItem>
-            <NavigationTrigger>{t('Resources')}</NavigationTrigger>
-            <NavigationContent>
-              <NavigationList>
-                <NavigationItem>
-                  <NavExternalLink href={DocsLinks.NEW_TO_VEGA}>
-                    {t('Docs')}
-                  </NavExternalLink>
-                </NavigationItem>
-                <NavigationItem>
-                  <NavExternalLink href={GITHUB_FEEDBACK_URL}>
-                    {t('Give Feedback')}
-                  </NavExternalLink>
-                </NavigationItem>
-                <NavigationItem>
-                  <NavigationLink
-                    data-testid="Disclaimer"
-                    to={Links[Routes.DISCLAIMER]()}
-                  >
-                    {t('Disclaimer')}
-                  </NavigationLink>
-                </NavigationItem>
-              </NavigationList>
-            </NavigationContent>
-          </NavigationItem>
-        )}
-      </NavigationList>
-    </Navigation>
-  );
-};
-
-const NavExternalLink = ({
+const NavbarLinkExternal = ({
   children,
-  href,
+  to,
+  onClick,
 }: {
   children: ReactNode;
-  href: string;
+  to: string;
+  onClick?: () => void;
 }) => {
   return (
-    <ExternalLink href={href}>
-      <span className="flex items-center gap-2">
+    <N.Link asChild={true}>
+      <NavLink
+        to={to}
+        className="w-full flex justify-between items-center relative py-2 px-6 lg:px-0 text-lg lg:text-base"
+        onClick={onClick}
+      >
         <span>{children}</span>
         <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
-      </span>
-    </ExternalLink>
+      </NavLink>
+    </N.Link>
   );
 };
 
