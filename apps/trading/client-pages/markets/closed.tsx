@@ -55,8 +55,6 @@ export const Closed = () => {
     variables: undefined,
   });
 
-  // find a position for each market and add the realised pnl to
-  // a normalized object
   const rowData = compact(marketData).map((market) => {
     const instrument = market.tradableInstrument.instrument;
 
