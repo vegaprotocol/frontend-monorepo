@@ -363,6 +363,24 @@ describe('Closed', () => {
           state: MarketState.STATE_SETTLED,
         }),
       },
+      {
+        __typename: 'MarketEdge' as const,
+        node: {
+          ...createMarketFragment({
+            id: 'successorMarketID',
+            state: MarketState.STATE_ACTIVE,
+          }),
+          tradableInstrument: {
+            ...createMarketFragment().tradableInstrument,
+            instrument: {
+              ...createMarketFragment().tradableInstrument.instrument,
+              id: 'successorAssset',
+              name: 'Successor Market Name',
+              code: 'SuccessorCode',
+            },
+          },
+        },
+      },
     ];
     const mixedMarketsMock: MockedResponse<MarketsQuery> = {
       request: {
