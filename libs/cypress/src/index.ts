@@ -61,3 +61,10 @@ Cypress.on(
   'uncaught:exception',
   (err) => !err.message.includes('ResizeObserver loop limit exceeded')
 );
+
+Cypress.on('window:before:load', (win) => {
+  // @ts-ignore avoid conflict in env
+  win._env_ = {
+    NX_SUCCESSOR_MARKETS: 'true',
+  };
+});
