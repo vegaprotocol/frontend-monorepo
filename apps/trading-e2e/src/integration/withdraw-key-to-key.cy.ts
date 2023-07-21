@@ -1,5 +1,5 @@
 import { selectAsset } from '../support/helpers';
-// #region consts
+
 const amountField = 'input[name="amount"]';
 const amountShortName = 'input[name="amount"] + div + span.text-xs';
 const assetSelection = 'select-asset';
@@ -26,7 +26,6 @@ const ASSET_SEPOLIA_TBTC = 2;
 const collateralTab = 'Collateral';
 const toastCloseBtn = 'toast-close';
 const toastContent = 'toast-content';
-// #endregion
 
 describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
   beforeEach(() => {
@@ -35,7 +34,14 @@ describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
     cy.mockSubscription();
     cy.setVegaWallet();
 
-    cy.visit('/');
+    cy.visit('/#/portfolio');
+    cy.getByTestId(manageVegaWallet).click();
+    cy.getByTestId(walletTransfer).click();
+
+    cy.wait('@Accounts');
+    cy.wait('@Assets');
+
+    cy.mockVegaWalletTransaction();
 
     // Only click if not already active otherwise sidebar will close
     cy.get('[data-testid="sidebar-content"]').then(($sidebarContent) => {
@@ -43,11 +49,6 @@ describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
         cy.get('[data-testid="sidebar"] [data-testid="Transfer"]').click();
       }
     });
-
-    cy.wait('@Assets');
-    cy.wait('@Accounts');
-
-    cy.mockVegaWalletTransaction();
   });
 
   it('transfer fees tooltips', () => {
