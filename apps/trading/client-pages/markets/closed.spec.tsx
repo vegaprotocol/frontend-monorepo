@@ -31,6 +31,31 @@ import {
   marketsDataQuery,
   createMarketsDataFragment,
 } from '@vegaprotocol/mock';
+import type { FeatureFlags } from '@vegaprotocol/environment';
+
+jest.mock('@vegaprotocol/markets', () => ({
+  ...jest.requireActual('@vegaprotocol/markets'),
+  useSuccessorMarket: (marketId: string) =>
+    marketId === 'include-0'
+      ? {
+          data: {
+            id: 'successorMarketID',
+            state: 'STATE_ACTIVE',
+            tradableInstrument: {
+              instrument: {
+                name: 'Successor Market Name',
+                code: 'SuccessorCode',
+              },
+            },
+          },
+        }
+      : { data: undefined },
+}));
+
+jest.mock('@vegaprotocol/environment', () => ({
+  ...jest.requireActual('@vegaprotocol/environment'),
+  FLAGS: { SUCCESSOR_MARKETS: true } as Partial<FeatureFlags>,
+}));
 
 describe('Closed', () => {
   let originalNow: typeof Date.now;
@@ -379,26 +404,7 @@ describe('Closed', () => {
         node: createMarketFragment({
           id: 'include-0',
           state: MarketState.STATE_SETTLED,
-          successorMarketID: 'successorMarketID',
         }),
-      },
-      {
-        __typename: 'MarketEdge' as const,
-        node: {
-          ...createMarketFragment({
-            id: 'successorMarketID',
-            state: MarketState.STATE_ACTIVE,
-          }),
-          tradableInstrument: {
-            ...createMarketFragment().tradableInstrument,
-            instrument: {
-              ...createMarketFragment().tradableInstrument.instrument,
-              id: 'successorAssset',
-              name: 'Successor Market Name',
-              code: 'SuccessorCode',
-            },
-          },
-        },
       },
     ];
 

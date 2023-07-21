@@ -27,7 +27,7 @@ export type SuccessorMarketQueryVariables = Types.Exact<{
 }>;
 
 
-export type SuccessorMarketQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, state: Types.MarketState, tradingMode: Types.MarketTradingMode, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } | null };
+export type SuccessorMarketQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, state: Types.MarketState, tradingMode: Types.MarketTradingMode, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, code: string } } } | null };
 
 
 export const SuccessorMarketIdDocument = gql`
@@ -149,6 +149,7 @@ export const SuccessorMarketDocument = gql`
     tradableInstrument {
       instrument {
         name
+        code
       }
     }
   }
