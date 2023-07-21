@@ -6,7 +6,8 @@ const tradesTab = 'Trades';
 const tradesTable = 'tab-trades';
 
 describe('trades', { tags: '@smoke' }, () => {
-  beforeEach(() => {
+  /* beforeEach(() => {
+    
     cy.mockTradingPage();
     cy.mockSubscription();
   });
@@ -16,6 +17,8 @@ describe('trades', { tags: '@smoke' }, () => {
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.getByTestId(tradesTab).click();
+    
+    
   });
 
   /* it('show trades', () => {
