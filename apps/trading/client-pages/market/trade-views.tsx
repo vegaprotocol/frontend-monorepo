@@ -1,9 +1,6 @@
 import type { ComponentProps } from 'react';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import {
-  DealTicketContainer,
-  StopOrderContainer,
-} from '@vegaprotocol/deal-ticket';
+import { DealTicketSelector } from '@vegaprotocol/deal-ticket';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { TradesContainer } from '@vegaprotocol/trades';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
@@ -22,7 +19,7 @@ import { StopOrdersContainer } from '../../components/stop-orders-container';
 type MarketDependantView =
   | typeof CandlesChartContainer
   | typeof DepthChartContainer
-  | typeof DealTicketContainer
+  | typeof DealTicketSelector
   | typeof MarketInfoAccordionContainer
   | typeof OrderbookContainer
   | typeof TradesContainer;
@@ -53,11 +50,7 @@ export const TradingViews = {
   },
   ticket: {
     label: 'Ticket',
-    component: requiresMarket(DealTicketContainer),
-  },
-  stopOrder: {
-    label: 'Stop order',
-    component: requiresMarket(StopOrderContainer),
+    component: requiresMarket(DealTicketSelector),
   },
   info: {
     label: 'Info',

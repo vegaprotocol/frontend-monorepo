@@ -54,6 +54,11 @@ import {
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import {
+  DealTicketType,
+  useDealTicketTypeStore,
+} from '../../hooks/use-type-store';
+import { useStopOrderFormValuesStore } from './deal-ticket-stop-order';
 
 export interface DealTicketProps {
   market: Market;
@@ -71,6 +76,10 @@ export const DealTicket = ({
   onClickCollateral,
 }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
+  const setDealTicketType = useDealTicketTypeStore((state) => state.set);
+  const updateStopOrderFormValues = useStopOrderFormValuesStore(
+    (state) => state.update
+  );
   // store last used tif for market so that when changing OrderType the previous TIF
   // selection for that type is used when switching back
 
@@ -283,21 +292,43 @@ export const DealTicket = ({
           }}
           render={() => (
             <TypeSelector
-              value={order.type}
+              value={
+                order.type === OrderType.TYPE_LIMIT
+                  ? DealTicketType.Limit
+                  : DealTicketType.Market
+              }
               onSelect={(type) => {
-                if (type === OrderType.TYPE_NETWORK) return;
+                setDealTicketType(market.id, type);
+                if (
+                  type !== DealTicketType.Limit &&
+                  type !== DealTicketType.Market
+                ) {
+                  updateStopOrderFormValues(market.id, {
+                    type:
+                      type === DealTicketType.StopLimit
+                        ? OrderType.TYPE_LIMIT
+                        : OrderType.TYPE_MARKET,
+                  });
+                  return;
+                }
+                const orderType =
+                  type === DealTicketType.Limit
+                    ? OrderType.TYPE_LIMIT
+                    : OrderType.TYPE_MARKET;
                 update({
-                  type,
+                  type: orderType,
                   // when changing type also update the TIF to what was last used of new type
-                  timeInForce: lastTIF[type] || order.timeInForce,
+                  timeInForce: lastTIF[orderType] || order.timeInForce,
                   postOnly:
-                    type === OrderType.TYPE_MARKET ? false : order.postOnly,
+                    orderType === OrderType.TYPE_MARKET
+                      ? false
+                      : order.postOnly,
                   reduceOnly:
-                    type === OrderType.TYPE_LIMIT &&
+                    orderType === OrderType.TYPE_LIMIT &&
                     ![
                       OrderTimeInForce.TIME_IN_FORCE_FOK,
                       OrderTimeInForce.TIME_IN_FORCE_IOC,
-                    ].includes(lastTIF[type] || order.timeInForce)
+                    ].includes(lastTIF[orderType] || order.timeInForce)
                       ? false
                       : order.postOnly,
                   expiresAt: undefined,
@@ -465,7 +496,7 @@ export const DealTicket = ({
         </div>
         <SummaryMessage
           errorMessage={errors.summary?.message}
-          assetSymbol={asset.symbol}
+          asset={asset}
           marketTradingMode={marketData.marketTradingMode}
           balance={balance}
           margin={
@@ -502,7 +533,7 @@ export const DealTicket = ({
  */
 interface SummaryMessageProps {
   errorMessage?: string;
-  assetSymbol: string;
+  asset: { id: string; symbol: string; name: string; decimals: number };
   marketTradingMode: MarketData['marketTradingMode'];
   balance: string;
   margin: string;
@@ -514,8 +545,9 @@ interface SummaryMessageProps {
 export const NoWalletWarning = ({
   isReadOnly,
   pubKey,
-  assetSymbol,
-}: Pick<SummaryMessageProps, 'isReadOnly' | 'pubKey' | 'assetSymbol'>) => {
+  asset,
+}: Pick<SummaryMessageProps, 'isReadOnly' | 'pubKey' | 'asset'>) => {
+  const assetSymbol = asset.symbol;
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
@@ -561,7 +593,7 @@ export const NoWalletWarning = ({
 const SummaryMessage = memo(
   ({
     errorMessage,
-    assetSymbol,
+    asset,
     marketTradingMode,
     balance,
     margin,
@@ -569,11 +601,13 @@ const SummaryMessage = memo(
     pubKey,
     onClickCollateral,
   }: SummaryMessageProps) => {
+    // Specific error UI for if balance is so we can
+    // render a deposit dialog
     if (isReadOnly || !pubKey) {
       return (
         <NoWalletWarning
           isReadOnly={isReadOnly}
-          assetSymbol={assetSymbol}
+          asset={asset}
           pubKey={pubKey}
         />
       );

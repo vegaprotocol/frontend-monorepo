@@ -226,9 +226,6 @@ const MainGrid = memo(
                       onClickCollateral={() => navigate('/portfolio')}
                     />
                   </Tab>
-                  <Tab id="stopOrder" name={t('Stop order')}>
-                    <TradingViews.stopOrder.component marketId={marketId} />
-                  </Tab>
                   <Tab id="info" name={t('Info')}>
                     <TradingViews.info.component marketId={marketId} />
                   </Tab>

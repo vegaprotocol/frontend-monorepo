@@ -5,24 +5,43 @@ import {
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
-import * as Schema from '@vegaprotocol/types';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
 import type { Market, MarketData } from '@vegaprotocol/markets';
 import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
+import type { ChangeEvent } from 'react';
+import { DealTicketType } from '../../hooks/use-type-store';
 
 interface TypeSelectorProps {
-  value: Schema.OrderType;
-  onSelect: (type: Schema.OrderType) => void;
+  value: DealTicketType;
+  onSelect: (type: DealTicketType) => void;
   market: Market;
   marketData: MarketData;
   errorMessage?: string;
 }
 
 const toggles = [
-  { label: t('Limit'), value: Schema.OrderType.TYPE_LIMIT },
-  { label: t('Market'), value: Schema.OrderType.TYPE_MARKET },
+  { label: t('L'), value: DealTicketType.Limit },
+  { label: t('M'), value: DealTicketType.Market },
+  { label: t('SL'), value: DealTicketType.StopLimit },
+  { label: t('SM'), value: DealTicketType.StopMarket },
 ];
+
+export const TypeToggle = ({
+  onChange,
+  value,
+}: {
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  value?: DealTicketType;
+}) => (
+  <Toggle
+    id="order-type"
+    name="order-type"
+    toggles={toggles}
+    checkedValue={value}
+    onChange={onChange}
+  />
+);
 
 export const TypeSelector = ({
   value,
@@ -75,12 +94,11 @@ export const TypeSelector = ({
 
   return (
     <FormGroup label={t('Order type')} labelFor="order-type" compact={true}>
-      <Toggle
-        id="order-type"
-        name="order-type"
-        toggles={toggles}
-        checkedValue={value}
-        onChange={(e) => onSelect(e.target.value as Schema.OrderType)}
+      <TypeToggle
+        onChange={(e) => {
+          onSelect(e.target.value as DealTicketType);
+        }}
+        value={value}
       />
       {errorMessage && (
         <InputError testId="deal-ticket-error-message-type">

@@ -34,7 +34,7 @@ import { t } from '@vegaprotocol/i18n';
 import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
-import { timeInForceLabel } from '@vegaprotocol/orders';
+import { timeInForceLabel, useOrder } from '@vegaprotocol/orders';
 import { NoWalletWarning } from './deal-ticket';
 import {
   create,
@@ -44,6 +44,11 @@ import {
   type UseBoundStore,
 } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
+import { TypeSelector, TypeToggle } from './type-selector';
+import {
+  DealTicketType,
+  useDealTicketTypeStore,
+} from '../../hooks/use-type-store';
 
 export interface StopOrderFormValues {
   side: Side;
@@ -79,36 +84,29 @@ interface Store {
   update: Update;
 }
 
-export const STORAGE_KEY = 'vega_stop_order_store';
-
-const orderStateCreator: StateCreator<Store> = (set) => ({
-  formValues: {},
-  update: (marketId, formValues, persist = true) => {
-    set((state) => {
-      return {
-        formValues: {
-          ...state.formValues,
-          [marketId]: {
-            ...state.formValues[marketId],
-            ...formValues,
-          },
-        },
-      };
-    });
-  },
-});
-
-let store: UseBoundStore<Mutate<StoreApi<Store>, []>> | null = null;
-const getFormValuesStore = () => {
-  if (!store) {
-    store = create<Store>()(
-      persist(subscribeWithSelector(orderStateCreator), {
-        name: STORAGE_KEY,
-      })
-    );
-  }
-  return store as UseBoundStore<Mutate<StoreApi<Store>, []>>;
-};
+export const useStopOrderFormValuesStore = create<Store>()(
+  persist(
+    subscribeWithSelector((set) => ({
+      formValues: {},
+      update: (marketId, formValues, persist = true) => {
+        set((state) => {
+          return {
+            formValues: {
+              ...state.formValues,
+              [marketId]: {
+                ...state.formValues[marketId],
+                ...formValues,
+              },
+            },
+          };
+        });
+      },
+    })),
+    {
+      name: 'vega_stop_order_store',
+    }
+  )
+);
 
 export const mapInputToStopOrdersSubmission = (
   data: StopOrderFormValues,
@@ -181,6 +179,7 @@ export const StopOrderContainer = ({ marketId }: { marketId: string }) => {
     1000
   );
   const create = useVegaTransactionStore((state) => state.create);
+  console.log({ marketLoading, marketDataLoading });
   return (
     <AsyncRenderer
       data={market && marketData}
@@ -207,11 +206,6 @@ export interface StopOrderProps {
   submit: (order: StopOrdersSubmission) => void;
 }
 
-const toggles = [
-  { label: t('Limit'), value: Schema.OrderType.TYPE_LIMIT },
-  { label: t('Market'), value: Schema.OrderType.TYPE_MARKET },
-];
-
 const defaultValues: Partial<StopOrderFormValues> = {
   type: Schema.OrderType.TYPE_MARKET,
   side: Schema.Side.SIDE_SELL,
@@ -223,16 +217,18 @@ const defaultValues: Partial<StopOrderFormValues> = {
 
 export const StopOrder = ({ market, submit }: StopOrderProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
-  const useFormValuesStoreRef = useRef(getFormValuesStore());
-  const updateStoredFormValues = useFormValuesStoreRef.current(
+  const setDealTicketType = useDealTicketTypeStore((state) => state.set);
+  const [, updateOrder] = useOrder(market.id);
+  const updateStoredFormValues = useStopOrderFormValuesStore(
     (state) => state.update
   );
-  const storedFormValues = useFormValuesStoreRef.current(
+  const storedFormValues = useStopOrderFormValuesStore(
     (state) => state.formValues[market.id]
   );
   const {
     // register,
     handleSubmit,
+    setValue,
     watch,
     control,
     formState,
@@ -272,9 +268,8 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
     return () => subscription.unsubscribe();
   }, [watch, market.id, updateStoredFormValues]);
 
-  const { quoteName, settlementAsset } =
+  const { quoteName, settlementAsset: asset } =
     market.tradableInstrument.instrument.product;
-  const { symbol: assetSymbol } = settlementAsset;
 
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
   const priceStep = toDecimal(market?.decimalPlaces);
@@ -295,17 +290,40 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
         <Controller
           name="type"
           control={control}
-          render={({ field }) => (
-            <Toggle
-              id="order-type"
-              name="order-type"
-              toggles={toggles}
-              checkedValue={field.value}
-              onChange={(e) =>
-                field.onChange(e.target.value as Schema.OrderType)
-              }
-            />
-          )}
+          render={({ field }) => {
+            const { value } = field;
+            return (
+              <TypeToggle
+                value={
+                  value === OrderType.TYPE_LIMIT
+                    ? DealTicketType.StopLimit
+                    : DealTicketType.StopMarket
+                }
+                onChange={(e) => {
+                  const type = e.target.value as DealTicketType;
+                  setDealTicketType(market.id, type);
+                  if (
+                    type === DealTicketType.Limit ||
+                    type === DealTicketType.Market
+                  ) {
+                    updateOrder({
+                      type:
+                        type === DealTicketType.Limit
+                          ? OrderType.TYPE_LIMIT
+                          : OrderType.TYPE_MARKET,
+                    });
+                    return;
+                  }
+                  setValue(
+                    'type',
+                    type === DealTicketType.StopLimit
+                      ? OrderType.TYPE_LIMIT
+                      : OrderType.TYPE_MARKET
+                  );
+                }}
+              />
+            );
+          }}
         />
         {errors.type && (
           <InputError testId="stop-order-error-message-type">
@@ -365,7 +383,7 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
                   <div className="mb-2">
                     <Input
                       type="number"
-                      appendElement={assetSymbol}
+                      appendElement={asset.symbol}
                       {...field}
                     />
                   </div>
@@ -551,6 +569,7 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
                 id="select-time-in-force"
                 className="w-full"
                 data-testid="order-tif"
+                {...field}
               >
                 <option
                   key={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
@@ -602,13 +621,8 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
               name="expiryStrategy"
               control={control}
               render={({ field }) => {
-                const { onChange, value } = field;
                 return (
-                  <RadioGroup
-                    onChange={onChange}
-                    value={value}
-                    orientation="horizontal"
-                  >
+                  <RadioGroup orientation="horizontal" {...field}>
                     <Radio
                       value="submit"
                       id="expiryStrategySubmit"
@@ -647,11 +661,7 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
           </div>
         </>
       )}
-      <NoWalletWarning
-        pubKey={pubKey}
-        isReadOnly={isReadOnly}
-        assetSymbol={assetSymbol}
-      />
+      <NoWalletWarning pubKey={pubKey} isReadOnly={isReadOnly} asset={asset} />
       <Button
         variant={side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
         fill
