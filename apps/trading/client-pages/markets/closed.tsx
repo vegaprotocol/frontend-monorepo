@@ -23,7 +23,7 @@ import type {
 import {
   MarketActionsDropdown,
   closedMarketsWithDataProvider,
-  marketProvider,
+  useSuccessorMarket,
 } from '@vegaprotocol/markets';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { ColDef } from 'ag-grid-community';
@@ -31,6 +31,7 @@ import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
+import { FLAGS } from '@vegaprotocol/environment';
 
 type SettlementAsset =
   MarketMaybeWithData['tradableInstrument']['instrument']['product']['settlementAsset'];
@@ -51,7 +52,7 @@ interface Row {
   setlementDataSourceFilter: DataSourceFilterFragment | undefined;
   tradingTerminationOracleId: string;
   settlementAsset: SettlementAsset;
-  successorMarketID: string | undefined | null;
+  realisedPNL: string | undefined;
 }
 
 export const Closed = () => {
@@ -97,7 +98,7 @@ export const Closed = () => {
       tradingTerminationOracleId:
         instrument.product.dataSourceSpecForTradingTermination.id,
       settlementAsset: instrument.product.settlementAsset,
-      successorMarketID: market.successorMarketID,
+      realisedPNL: position?.node.realisedPNL,
     };
 
     return row;
@@ -111,14 +112,8 @@ export const Closed = () => {
 
 export const SuccessorMarketRenderer = ({
   value,
-}: VegaICellRendererParams<Row, 'successorMarketID'>) => {
-  const { data } = useDataProvider({
-    dataProvider: marketProvider,
-    variables: {
-      marketId: value || '',
-    },
-    skip: !value,
-  });
+}: VegaICellRendererParams<Row, 'id'>) => {
+  const { data } = useSuccessorMarket(value);
   const onMarketClick = useMarketClickHandler();
   return data ? (
     <MarketNameCell
@@ -139,8 +134,9 @@ const ClosedMarketsDataGrid = ({
   error: Error | undefined;
 }) => {
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
+
   const colDefs = useMemo(() => {
-    const cols: ColDef[] = [
+    const cols: ColDef[] = compact([
       {
         headerName: t('Market'),
         field: 'code',
@@ -208,9 +204,9 @@ const ClosedMarketsDataGrid = ({
           },
         },
       },
-      {
+      FLAGS.SUCCESSOR_MARKETS && {
         headerName: t('Successor market'),
-        field: 'successorMarketID',
+        field: 'id',
         cellRenderer: 'SuccessorMarketRenderer',
       },
       {
@@ -298,7 +294,7 @@ const ClosedMarketsDataGrid = ({
           );
         },
       },
-    ];
+    ]);
     return cols;
   }, [openAssetDialog]);
 

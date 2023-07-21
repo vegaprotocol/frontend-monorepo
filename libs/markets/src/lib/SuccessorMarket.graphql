@@ -30,6 +30,7 @@ query SuccessorMarket($marketId: ID!) {
     tradableInstrument {
       instrument {
         name
+        code
       }
     }
   }
