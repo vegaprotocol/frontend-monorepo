@@ -16,7 +16,7 @@ export enum Networks {
 }
 export type Environment = z.infer<typeof envSchema>;
 export type FeatureFlags = z.infer<typeof featureFlagsSchema>;
-export type CosmicELevatorFlags = Pick<
+export type CosmicElevatorFlags = Pick<
   FeatureFlags,
   'ICEBERG_ORDERS' | 'STOP_ORDERS' | 'SUCCESSOR_MARKETS' | 'PRODUCT_PERPETUALS'
 >;
