@@ -1,5 +1,5 @@
 import { useRef, useCallback, useEffect } from 'react';
-import { useVegaTransactionStore, useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import type {
   StopOrderSetup,
   StopOrdersSubmission,
@@ -20,31 +20,20 @@ import {
   RadioGroup,
   Input,
   Checkbox,
-  AsyncRenderer,
-  Splash,
   FormGroup,
-  Toggle,
   InputError,
   Select,
 } from '@vegaprotocol/ui-toolkit';
 import type { Market } from '@vegaprotocol/markets';
-import { marketDataProvider, useMarket } from '@vegaprotocol/markets';
-import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 import { t } from '@vegaprotocol/i18n';
 import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { timeInForceLabel, useOrder } from '@vegaprotocol/orders';
 import { NoWalletWarning } from './deal-ticket';
-import {
-  create,
-  type Mutate,
-  type StateCreator,
-  type StoreApi,
-  type UseBoundStore,
-} from 'zustand';
+import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
-import { TypeSelector, TypeToggle } from './type-selector';
+import { TypeToggle } from './type-selector';
 import {
   DealTicketType,
   useDealTicketTypeStore,
@@ -158,49 +147,6 @@ export const mapInputToStopOrdersSubmission = (
 
   return submission;
 };
-
-export const StopOrderContainer = ({ marketId }: { marketId: string }) => {
-  const {
-    data: market,
-    error: marketError,
-    loading: marketLoading,
-  } = useMarket(marketId);
-
-  const {
-    data: marketData,
-    error: marketDataError,
-    loading: marketDataLoading,
-    reload,
-  } = useThrottledDataProvider(
-    {
-      dataProvider: marketDataProvider,
-      variables: { marketId },
-    },
-    1000
-  );
-  const create = useVegaTransactionStore((state) => state.create);
-  console.log({ marketLoading, marketDataLoading });
-  return (
-    <AsyncRenderer
-      data={market && marketData}
-      loading={marketLoading || marketDataLoading}
-      error={marketError || marketDataError}
-      reload={reload}
-    >
-      {market && marketData ? (
-        <StopOrder
-          market={market}
-          submit={(stopOrdersSubmission) => create({ stopOrdersSubmission })}
-        />
-      ) : (
-        <Splash>
-          <p>{t('Could not load market')}</p>
-        </Splash>
-      )}
-    </AsyncRenderer>
-  );
-};
-
 export interface StopOrderProps {
   market: Market;
   submit: (order: StopOrdersSubmission) => void;

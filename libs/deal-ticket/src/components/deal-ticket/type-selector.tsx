@@ -6,7 +6,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
-import type { Market, MarketData } from '@vegaprotocol/markets';
+import type { Market, StaticMarketData } from '@vegaprotocol/markets';
 import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
 import type { ChangeEvent } from 'react';
@@ -16,7 +16,7 @@ interface TypeSelectorProps {
   value: DealTicketType;
   onSelect: (type: DealTicketType) => void;
   market: Market;
-  marketData: MarketData;
+  marketData: StaticMarketData;
   errorMessage?: string;
 }
 

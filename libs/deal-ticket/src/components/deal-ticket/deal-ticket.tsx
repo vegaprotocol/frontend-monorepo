@@ -32,7 +32,7 @@ import {
 import { toBigNum, removeDecimal } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useEstimateFees } from '../../hooks/use-estimate-fees';
-import { getDerivedPrice } from '../../utils/get-price';
+import { getDerivedPrice, marketPriceProvider } from '@vegaprotocol/markets';
 import type { OrderInfo } from '@vegaprotocol/types';
 
 import {
@@ -44,7 +44,11 @@ import {
 } from '../../utils';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
-import type { Market, MarketData } from '@vegaprotocol/markets';
+import type {
+  Market,
+  MarketData,
+  StaticMarketData,
+} from '@vegaprotocol/markets';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
 import {
   useMarketAccountBalance,
@@ -62,7 +66,7 @@ import { useStopOrderFormValuesStore } from './deal-ticket-stop-order';
 
 export interface DealTicketProps {
   market: Market;
-  marketData: MarketData;
+  marketData: StaticMarketData;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   submit: (order: OrderSubmission) => void;
   onClickCollateral?: () => void;
@@ -80,6 +84,10 @@ export const DealTicket = ({
   const updateStopOrderFormValues = useStopOrderFormValuesStore(
     (state) => state.update
   );
+  const { data: marketPrice } = useDataProvider({
+    dataProvider: marketPriceProvider,
+    variables: { marketId: market.id },
+  });
   // store last used tif for market so that when changing OrderType the previous TIF
   // selection for that type is used when switching back
 
@@ -123,8 +131,12 @@ export const DealTicket = ({
     );
 
   const price = useMemo(() => {
-    return normalizedOrder && getDerivedPrice(normalizedOrder, marketData);
-  }, [normalizedOrder, marketData]);
+    return (
+      normalizedOrder &&
+      marketPrice &&
+      getDerivedPrice(normalizedOrder, marketPrice)
+    );
+  }, [normalizedOrder, marketPrice]);
 
   const notionalSize = useMemo(() => {
     if (price && normalizedOrder?.size) {
@@ -145,7 +157,7 @@ export const DealTicket = ({
   ]);
 
   const feeEstimate = useEstimateFees(
-    normalizedOrder && { ...normalizedOrder, price }
+    normalizedOrder && { ...normalizedOrder, price: price || undefined }
   );
   const { data: activeOrders } = useDataProvider({
     dataProvider: activeOrdersProvider,
@@ -358,6 +370,7 @@ export const DealTicket = ({
           orderType={order.type}
           market={market}
           marketData={marketData}
+          marketPrice={marketPrice || undefined}
           sizeError={errors.size?.message}
           priceError={errors.price?.message}
           update={update}

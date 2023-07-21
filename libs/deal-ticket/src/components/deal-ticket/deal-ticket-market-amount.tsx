@@ -7,8 +7,8 @@ import { t } from '@vegaprotocol/i18n';
 import { Input, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { isMarketInAuction } from '../../utils';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
-import { getMarketPrice } from '../../utils/get-price';
 import { Controller } from 'react-hook-form';
+import classNames from 'classnames';
 
 export type DealTicketMarketAmountProps = Omit<
   DealTicketAmountProps,
@@ -19,37 +19,26 @@ export const DealTicketMarketAmount = ({
   control,
   market,
   marketData,
+  marketPrice,
   sizeError,
   update,
   size,
 }: DealTicketMarketAmountProps) => {
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
-  const price = getMarketPrice(marketData);
+  const price = marketPrice;
 
   const priceFormatted = price
     ? addDecimalsFormatNumber(price, market.decimalPlaces)
     : undefined;
 
+  const inAuction = isMarketInAuction(marketData.marketTradingMode);
+
   return (
     <div className="mb-2">
-      <div className="flex items-end gap-4 mb-2">
-        <div className="flex-1 text-sm">{t('Size')}</div>
-        <div />
-        <div className="flex-2 text-sm text-right">
-          {isMarketInAuction(marketData.marketTradingMode) && (
-            <Tooltip
-              description={t(
-                'This market is in auction. The uncrossing price is an indication of what the price is expected to be when the auction ends.'
-              )}
-            >
-              <div>{t(`Indicative price`)}</div>
-            </Tooltip>
-          )}
-        </div>
-      </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-start gap-4">
         <div className="flex-1">
+          <div className="mb-2 text-sm">{t('Size')}</div>
           <Controller
             name="size"
             control={control}
@@ -76,15 +65,29 @@ export const DealTicketMarketAmount = ({
             )}
           />
         </div>
-        <div>@</div>
-        <div className="flex-1 text-sm text-right" data-testid="last-price">
-          {priceFormatted && quoteName ? (
-            <>
-              ~{priceFormatted} {quoteName}
-            </>
-          ) : (
-            '-'
+        <div className="pt-7 leading-10">@</div>
+        <div className="flex-1 text-sm text-right">
+          {inAuction && (
+            <Tooltip
+              description={t(
+                'This market is in auction. The uncrossing price is an indication of what the price is expected to be when the auction ends.'
+              )}
+            >
+              <div className="mb-2">{t(`Indicative price`)}</div>
+            </Tooltip>
           )}
+          <div
+            data-testid="last-price"
+            className={classNames('leading-10', { 'pt-7': !inAuction })}
+          >
+            {priceFormatted && quoteName ? (
+              <>
+                ~{priceFormatted} {quoteName}
+              </>
+            ) : (
+              '-'
+            )}
+          </div>
         </div>
       </div>
       {sizeError && (

@@ -1,11 +1,16 @@
+import { useVegaTransactionStore } from '@vegaprotocol/wallet';
+import {
+  DealTicketType,
+  useDealTicketTypeStore,
+} from '../../hooks/use-type-store';
+import { StopOrder } from './deal-ticket-stop-order';
+import { useDataProvider } from '@vegaprotocol/data-provider';
+import { staticMarketDataProvider, useMarket } from '@vegaprotocol/markets';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
-import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
-import { useVegaTransactionStore } from '@vegaprotocol/wallet';
-import { useMarket, marketDataProvider } from '@vegaprotocol/markets';
 import { DealTicket } from './deal-ticket';
 
-export interface DealTicketContainerProps {
+interface DealTicketContainerProps {
   marketId: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onClickCollateral?: () => void;
@@ -13,9 +18,9 @@ export interface DealTicketContainerProps {
 
 export const DealTicketContainer = ({
   marketId,
-  onMarketClick,
-  onClickCollateral,
+  ...props
 }: DealTicketContainerProps) => {
+  const type = useDealTicketTypeStore((state) => state.type[marketId]);
   const {
     data: market,
     error: marketError,
@@ -27,15 +32,11 @@ export const DealTicketContainer = ({
     error: marketDataError,
     loading: marketDataLoading,
     reload,
-  } = useThrottledDataProvider(
-    {
-      dataProvider: marketDataProvider,
-      variables: { marketId },
-    },
-    1000
-  );
+  } = useDataProvider({
+    dataProvider: staticMarketDataProvider,
+    variables: { marketId },
+  });
   const create = useVegaTransactionStore((state) => state.create);
-
   return (
     <AsyncRenderer
       data={market && marketData}
@@ -44,13 +45,20 @@ export const DealTicketContainer = ({
       reload={reload}
     >
       {market && marketData ? (
-        <DealTicket
-          market={market}
-          marketData={marketData}
-          submit={(orderSubmission) => create({ orderSubmission })}
-          onClickCollateral={onClickCollateral}
-          onMarketClick={onMarketClick}
-        />
+        type === DealTicketType.StopLimit ||
+        type === DealTicketType.StopMarket ? (
+          <StopOrder
+            market={market}
+            submit={(stopOrdersSubmission) => create({ stopOrdersSubmission })}
+          />
+        ) : (
+          <DealTicket
+            {...props}
+            market={market}
+            marketData={marketData}
+            submit={(orderSubmission) => create({ orderSubmission })}
+          />
+        )
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>

@@ -4,7 +4,7 @@ export * from './deal-ticket-limit-amount';
 export * from './deal-ticket-market-amount';
 export * from './deal-ticket';
 export * from './deal-ticket-stop-order';
-export * from './deal-ticket-selector';
+export * from './deal-ticket-container';
 export * from './expiry-selector';
 export * from './side-selector';
 export * from './time-in-force-selector';
