@@ -1,18 +1,33 @@
 import { MarketNameCell } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { marketProvider } from '@vegaprotocol/markets';
+import { marketProvider, useSuccessorMarketIds } from '@vegaprotocol/markets';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import React from 'react';
 
-export const SuccessorMarketRenderer = ({ value }: { value: string }) => {
+export const SuccessorMarketRenderer = ({
+  value,
+  parent,
+}: {
+  value: string;
+  parent?: boolean;
+}) => {
+  const successors = useSuccessorMarketIds(value);
+  const onMarketClick = useMarketClickHandler();
+
+  const lookupValue = successors
+    ? parent
+      ? successors.parentMarketID
+      : successors.successorMarketID
+    : '';
+
   const { data } = useDataProvider({
     dataProvider: marketProvider,
     variables: {
-      marketId: value || '',
+      marketId: lookupValue,
     },
-    skip: !value,
+    skip: !lookupValue,
   });
-  const onMarketClick = useMarketClickHandler();
+
   return data ? (
     <MarketNameCell
       value={data.tradableInstrument.instrument.code}
@@ -20,6 +35,6 @@ export const SuccessorMarketRenderer = ({ value }: { value: string }) => {
       onMarketClick={onMarketClick}
     />
   ) : (
-    ' - '
+    '-'
   );
 };

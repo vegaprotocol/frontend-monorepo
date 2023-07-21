@@ -14,6 +14,18 @@ import { createProposalListFieldsFragment } from '../../lib/proposals-data-provi
 import type { ProposalsListQuery } from '../../lib';
 import { ProposalsListDocument } from '../../lib';
 import type { PartialDeep } from 'type-fest';
+import { FLAGS } from '@vegaprotocol/environment';
+
+jest.mock('@vegaprotocol/environment', () => {
+  const actual = jest.requireActual('@vegaprotocol/environment');
+  return {
+    ...actual,
+    FLAGS: {
+      ...actual.FLAGS,
+      SUCCESSOR_MARKETS: true,
+    },
+  };
+});
 
 const successorMarketName = 'Successor Market Name';
 const spySuccessorMarketRenderer = jest
@@ -105,9 +117,6 @@ describe('ProposalsList', () => {
                 ...proposalNode.terms,
                 change: {
                   ...proposalNode.terms.change,
-                  successorConfiguration: {
-                    parentMarketId: 'parentMarketId',
-                  },
                 },
               },
             },
@@ -132,15 +141,13 @@ describe('ProposalsList', () => {
     expect(
       screen.getByRole('columnheader', {
         name: (_name, element) =>
-          element.getAttribute('col-id') ===
-          'terms.change.successorConfiguration.parentMarketId',
+          element.getAttribute('col-id') === 'parentMarket',
       })
     ).toBeInTheDocument();
     expect(
       screen.getAllByRole('gridcell', {
         name: (name, element) =>
-          element.getAttribute('col-id') ===
-          'terms.change.successorConfiguration.parentMarketId',
+          element.getAttribute('col-id') === 'parentMarket',
       })[0]
     ).toHaveTextContent(successorMarketName);
   });
@@ -170,5 +177,50 @@ describe('ProposalsList', () => {
       );
     });
     expect(await screen.findByText('No markets')).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('columnheader', {
+        name: (_name, element) =>
+          element.getAttribute('col-id') === 'parentMarket',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('feature flag should hide parent marketcolumn', async () => {
+    const mockedFlags = jest.mocked(FLAGS);
+    mockedFlags.SUCCESSOR_MARKETS = false;
+    const mock: MockedResponse<ProposalsListQuery> = {
+      request: {
+        query: ProposalsListDocument,
+        variables: {
+          proposalType: Types.ProposalType.TYPE_NEW_MARKET,
+        },
+      },
+      result: {
+        data: {
+          proposalsConnection: {
+            __typename: 'ProposalsConnection',
+            edges: [],
+          },
+        },
+      },
+    };
+    await act(() => {
+      render(
+        <MockedProvider mocks={[mock]}>
+          <ProposalsList SuccessorMarketRenderer={spySuccessorMarketRenderer} />
+        </MockedProvider>
+      );
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByRole('columnheader', {
+          name: (_name, element) => element.getAttribute('col-id') === 'market',
+        })
+      ).toBeInTheDocument();
+    });
+    screen.getAllByRole('columnheader').forEach((element) => {
+      expect(element.getAttribute('col-id')).not.toEqual('parentMarket');
+    });
   });
 });

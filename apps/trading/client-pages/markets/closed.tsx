@@ -22,6 +22,7 @@ import {
 } from '@vegaprotocol/markets';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { ColDef } from 'ag-grid-community';
+import { FLAGS } from '@vegaprotocol/environment';
 import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -46,7 +47,6 @@ interface Row {
   setlementDataSourceFilter: DataSourceFilterFragment | undefined;
   tradingTerminationOracleId: string;
   settlementAsset: SettlementAsset;
-  successorMarketID: string | undefined | null;
 }
 
 export const Closed = () => {
@@ -92,7 +92,6 @@ export const Closed = () => {
       tradingTerminationOracleId:
         instrument.product.dataSourceSpecForTradingTermination.id,
       settlementAsset: instrument.product.settlementAsset,
-      successorMarketID: market.successorMarketID,
     };
 
     return row;
@@ -113,7 +112,7 @@ const ClosedMarketsDataGrid = ({
 }) => {
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
   const colDefs = useMemo(() => {
-    const cols: ColDef[] = [
+    const cols: ColDef[] = compact([
       {
         headerName: t('Market'),
         field: 'code',
@@ -181,9 +180,10 @@ const ClosedMarketsDataGrid = ({
           },
         },
       },
-      {
+      FLAGS.SUCCESSOR_MARKETS && {
         headerName: t('Successor market'),
-        field: 'successorMarketID',
+        field: 'id',
+        colId: 'successorMarket',
         cellRenderer: 'SuccessorMarketRenderer',
       },
       {
@@ -271,7 +271,7 @@ const ClosedMarketsDataGrid = ({
           );
         },
       },
-    ];
+    ]);
     return cols;
   }, [openAssetDialog]);
 

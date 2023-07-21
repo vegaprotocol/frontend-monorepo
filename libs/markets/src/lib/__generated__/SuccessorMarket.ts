@@ -20,7 +20,7 @@ export type ParentMarketIdQuery = { __typename?: 'Query', market?: { __typename?
 export type SuccessorMarketIdsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type SuccessorMarketIdsQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, successorMarketID?: string | null } }> } | null };
+export type SuccessorMarketIdsQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, successorMarketID?: string | null, parentMarketID?: string | null } }> } | null };
 
 export type SuccessorMarketQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
@@ -107,6 +107,7 @@ export const SuccessorMarketIdsDocument = gql`
       node {
         id
         successorMarketID
+        parentMarketID
       }
     }
   }

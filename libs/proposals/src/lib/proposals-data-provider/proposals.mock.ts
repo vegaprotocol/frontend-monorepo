@@ -192,9 +192,6 @@ export const createProposalListFieldsFragment = (
           },
           __typename: 'InstrumentConfiguration',
         },
-        successorConfiguration: {
-          parentMarketId: '',
-        },
         __typename: 'NewMarket',
       },
       __typename: 'ProposalTerms',

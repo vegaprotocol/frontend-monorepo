@@ -4,7 +4,18 @@ import * as DataProviders from '@vegaprotocol/data-provider';
 import { MockedProvider } from '@apollo/react-testing';
 import type { MarketMaybeWithData } from '../../markets-provider';
 import { MarketsContainer } from './markets-container';
+import { FLAGS } from '@vegaprotocol/environment';
 
+jest.mock('@vegaprotocol/environment', () => {
+  const actual = jest.requireActual('@vegaprotocol/environment');
+  return {
+    ...actual,
+    FLAGS: {
+      ...actual.FLAGS,
+      SUCCESSOR_MARKETS: true,
+    },
+  };
+});
 const SuccessorMarketRenderer = ({ value }: { value: string }) => {
   return '-';
 };
@@ -154,5 +165,26 @@ describe('MarketsContainer', () => {
           element.getAttribute('id') === 'cell-successorMarketID-14',
       })
     ).toHaveTextContent(successorMarketName);
+  });
+
+  it('feature flag should hide successorMarketID column', async () => {
+    const mockedFlags = jest.mocked(FLAGS);
+    mockedFlags.SUCCESSOR_MARKETS = false;
+
+    const spySuccessorMarketRenderer = jest.fn();
+
+    render(
+      <MockedProvider>
+        <MarketsContainer
+          onSelect={spyOnSelect}
+          SuccessorMarketRenderer={spySuccessorMarketRenderer}
+        />
+      </MockedProvider>
+    );
+
+    expect(spySuccessorMarketRenderer).not.toHaveBeenCalled();
+    screen.getAllByRole('columnheader').forEach((element) => {
+      expect(element.getAttribute('col-id')).not.toEqual('successorMarketID');
+    });
   });
 });
