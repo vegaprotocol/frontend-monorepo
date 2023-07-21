@@ -8,7 +8,7 @@ import type {
 import { Intent } from '../../utils/intent';
 
 type TradingButtonProps = {
-  size: 'large' | 'medium' | 'small';
+  size?: 'large' | 'medium' | 'small';
   intent?: Intent;
   children?: ReactNode;
   icon?: ReactNode;

@@ -49,7 +49,7 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
   );
   return (
     <N.Root className="text-vega-clight-200 dark:text-vega-cdark-200 ">
-      <div className="flex items-center gap-2 h-10 px-3 lg:pl-5 pr-2 border-b border-default bg-vega-clight-800 dark:bg-vega-cdark-800">
+      <div className="flex items-center gap-2 h-10 pl-3 pr-1 border-b border-default bg-vega-clight-800 dark:bg-vega-cdark-800">
         <div className="pr-2">
           <VLogo className="w-4 text-default" />
         </div>
@@ -59,7 +59,7 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
         </div>
         <div className="ml-auto flex justify-end items-center gap-2">
           <button
-            className="lg:hidden flex items-center p-1 rounded hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500"
+            className="w-8 h-8 lg:hidden flex items-center p-1 rounded hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500"
             onClick={() => {
               if (isConnected) {
                 setMenu((x) => (x === 'wallet' ? null : 'wallet'));
@@ -68,10 +68,10 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
               }
             }}
           >
-            <WalletIcon />
+            <WalletIcon className="w-6" />
           </button>
           <button
-            className="lg:hidden flex itesm-center p-1 rounded hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500"
+            className="w-8 h-8 lg:hidden flex items-center p-1 rounded hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500"
             onClick={() => {
               setMenu((x) => (x === 'nav' ? null : 'nav'));
             }}
@@ -96,7 +96,7 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
             <div className="flex justify-end items-center h-10 p-1">
               <button
                 onClick={() => setMenu(null)}
-                className="flex flex-col justify-center p-2 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500 rounded"
+                className="w-8 h-8 flex flex-col justify-center p-1 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500 rounded"
               >
                 <VegaIcon name={VegaIconNames.CROSS} size={24} />
               </button>
@@ -388,7 +388,12 @@ const NavExternalLink = ({
 };
 
 const BurgerIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" className="stroke-current">
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 16 16"
+    className="w-full stroke-current"
+  >
     <line x1={0.5} x2={15.5} y1={3.5} y2={3.5} />
     <line x1={0.5} x2={15.5} y1={11.5} y2={11.5} />
   </svg>

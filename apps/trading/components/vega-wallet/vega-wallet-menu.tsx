@@ -1,6 +1,10 @@
 import { t } from '@vegaprotocol/i18n';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
-import { Button, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import {
+  TradingButton as Button,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { truncateByChars } from '@vegaprotocol/utils';
 import { useVegaWallet, type PubKey } from '@vegaprotocol/wallet';
 import { useCallback, useMemo } from 'react';
@@ -45,7 +49,6 @@ export const VegaWalletMenu = ({
             setView({ type: ViewType.Transfer });
             setMenu(null);
           }}
-          fill
         >
           {t('Transfer')}
         </Button>
@@ -54,7 +57,6 @@ export const VegaWalletMenu = ({
             await disconnect();
             setMenu(null);
           }}
-          fill
         >
           {t('Disconnect')}
         </Button>
