@@ -59,6 +59,12 @@ describe(
         cy.mockSubscription();
         cy.visit('/#/markets/market-0');
         cy.wait('@Markets');
+
+        cy.get('[data-testid="deal-ticket-form"]').then(($form) => {
+          if (!$form.length) {
+            cy.getByTestId('Order').click();
+          }
+        });
       });
 
       it('should display info and button for deposit', () => {
