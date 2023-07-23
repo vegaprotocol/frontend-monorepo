@@ -134,8 +134,8 @@ describe('ProposalsList', () => {
     const container = document.querySelector('.ag-center-cols-container');
     await waitFor(() => {
       expect(container).toBeInTheDocument();
+      expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
     });
-    expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
 
     expect(spySuccessorMarketRenderer).toHaveBeenCalled();
     expect(
