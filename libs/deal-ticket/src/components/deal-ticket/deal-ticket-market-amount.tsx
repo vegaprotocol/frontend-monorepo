@@ -5,7 +5,7 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { Input, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
-import { isMarketInAuction } from '../../utils';
+import { isMarketInAuction } from '@vegaprotocol/markets';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { Controller } from 'react-hook-form';
 import classNames from 'classnames';

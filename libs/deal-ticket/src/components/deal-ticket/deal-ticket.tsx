@@ -62,7 +62,7 @@ import {
   DealTicketType,
   useDealTicketTypeStore,
 } from '../../hooks/use-type-store';
-import { useStopOrderFormValuesStore } from './deal-ticket-stop-order';
+import { useStopOrderFormValues } from '../../hooks/use-stop-order-form-values';
 
 export interface DealTicketProps {
   market: Market;
@@ -81,7 +81,7 @@ export const DealTicket = ({
 }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const setDealTicketType = useDealTicketTypeStore((state) => state.set);
-  const updateStopOrderFormValues = useStopOrderFormValuesStore(
+  const updateStopOrderFormValues = useStopOrderFormValues(
     (state) => state.update
   );
   const { data: marketPrice } = useDataProvider({

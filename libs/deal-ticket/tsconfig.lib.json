@@ -20,5 +20,5 @@
     "jest.config.ts",
     "__mocks__"
   ],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "../markets/src/lib/is-market-in-auction.ts", "../markets/src/lib/get-price.ts"]
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
 }

@@ -1,19 +1,9 @@
 import { useRef, useCallback, useEffect } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type {
-  StopOrderSetup,
-  StopOrdersSubmission,
-} from '@vegaprotocol/wallet';
-import {
-  formatNumber,
-  toDecimal,
-  toNanoSeconds,
-  validateAmount,
-} from '@vegaprotocol/utils';
+import type { StopOrdersSubmission } from '@vegaprotocol/wallet';
+import { formatNumber, toDecimal, validateAmount } from '@vegaprotocol/utils';
 import { useForm, Controller } from 'react-hook-form';
 import * as Schema from '@vegaprotocol/types';
-import type { OrderTimeInForce, Side } from '@vegaprotocol/types';
-import { OrderType } from '@vegaprotocol/types';
 import {
   Button,
   Radio,
@@ -26,127 +16,21 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { Market } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
-import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { timeInForceLabel, useOrder } from '@vegaprotocol/orders';
 import { NoWalletWarning } from './deal-ticket';
-import { create } from 'zustand';
-import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { TypeToggle } from './type-selector';
+import {
+  useStopOrderFormValues,
+  type StopOrderFormValues,
+} from '../../hooks/use-stop-order-form-values';
 import {
   DealTicketType,
   useDealTicketTypeStore,
 } from '../../hooks/use-type-store';
+import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values-to-stop-order-submission';
 
-export interface StopOrderFormValues {
-  side: Side;
-
-  direction: 'fallsBelow' | 'risesAbove';
-
-  trigger: 'price' | 'trailingPercentOffset';
-  triggerPrice: string;
-  triggerTrailingPercentOffset: string;
-
-  type: OrderType;
-  size: string;
-  timeInForce: OrderTimeInForce;
-  price?: string;
-
-  expire: boolean;
-  expiryStrategy?: 'submit' | 'cancel';
-  expiresAt?: string;
-}
-
-type StopOrderFormValuesMap = {
-  [marketId: string]: Partial<StopOrderFormValues> | undefined;
-};
-
-type Update = (
-  marketId: string,
-  formValues: Partial<StopOrderFormValues>,
-  persist?: boolean
-) => void;
-
-interface Store {
-  formValues: StopOrderFormValuesMap;
-  update: Update;
-}
-
-export const useStopOrderFormValuesStore = create<Store>()(
-  persist(
-    subscribeWithSelector((set) => ({
-      formValues: {},
-      update: (marketId, formValues, persist = true) => {
-        set((state) => {
-          return {
-            formValues: {
-              ...state.formValues,
-              [marketId]: {
-                ...state.formValues[marketId],
-                ...formValues,
-              },
-            },
-          };
-        });
-      },
-    })),
-    {
-      name: 'vega_stop_order_store',
-    }
-  )
-);
-
-export const mapInputToStopOrdersSubmission = (
-  data: StopOrderFormValues,
-  marketId: string,
-  decimalPlaces: number,
-  positionDecimalPlaces: number
-): StopOrdersSubmission => {
-  const submission: StopOrdersSubmission = {};
-  const stopOrderSetup: StopOrderSetup = {
-    orderSubmission: normalizeOrderSubmission(
-      {
-        marketId,
-        type: data.type,
-        side: data.side,
-        size: data.size,
-        timeInForce: data.timeInForce,
-        price: data.price,
-        reduceOnly: true,
-      },
-      decimalPlaces,
-      positionDecimalPlaces
-    ),
-  };
-  if (data.trigger === 'price') {
-    stopOrderSetup.price = data.triggerPrice;
-  } else if (data.trigger === 'trailingPercentOffset') {
-    stopOrderSetup.trailingPercentOffset = (
-      Number(data.triggerTrailingPercentOffset) / 100
-    ).toFixed(3);
-  }
-
-  if (data.expire) {
-    stopOrderSetup.expiresAt = data.expiresAt && toNanoSeconds(data.expiresAt);
-    if (data.expiryStrategy === 'cancel') {
-      stopOrderSetup.expiryStrategy =
-        Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS;
-    } else if (data.expiryStrategy === 'submit') {
-      stopOrderSetup.expiryStrategy =
-        Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT;
-    }
-  }
-
-  if (data.direction === 'risesAbove') {
-    submission.risesAbove = stopOrderSetup;
-  }
-  if (data.direction === 'fallsBelow') {
-    submission.fallsBelow = stopOrderSetup;
-  }
-
-  return submission;
-};
 export interface StopOrderProps {
   market: Market;
   submit: (order: StopOrdersSubmission) => void;
@@ -165,10 +49,10 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const setDealTicketType = useDealTicketTypeStore((state) => state.set);
   const [, updateOrder] = useOrder(market.id);
-  const updateStoredFormValues = useStopOrderFormValuesStore(
+  const updateStoredFormValues = useStopOrderFormValues(
     (state) => state.update
   );
-  const storedFormValues = useStopOrderFormValuesStore(
+  const storedFormValues = useStopOrderFormValues(
     (state) => state.formValues[market.id]
   );
   const {
@@ -190,7 +74,7 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
         return;
       }
       submit(
-        mapInputToStopOrdersSubmission(
+        mapFormValuesToStopOrdersSubmission(
           data,
           market.id,
           market.decimalPlaces,
@@ -241,7 +125,7 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
             return (
               <TypeToggle
                 value={
-                  value === OrderType.TYPE_LIMIT
+                  value === Schema.OrderType.TYPE_LIMIT
                     ? DealTicketType.StopLimit
                     : DealTicketType.StopMarket
                 }
@@ -255,16 +139,16 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
                     updateOrder({
                       type:
                         type === DealTicketType.Limit
-                          ? OrderType.TYPE_LIMIT
-                          : OrderType.TYPE_MARKET,
+                          ? Schema.OrderType.TYPE_LIMIT
+                          : Schema.OrderType.TYPE_MARKET,
                     });
                     return;
                   }
                   setValue(
                     'type',
                     type === DealTicketType.StopLimit
-                      ? OrderType.TYPE_LIMIT
-                      : OrderType.TYPE_MARKET
+                      ? Schema.OrderType.TYPE_LIMIT
+                      : Schema.OrderType.TYPE_MARKET
                   );
                 }}
               />
@@ -360,7 +244,7 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
                 max: {
                   value: '99.9',
                   message: t(
-                    'Trailing percent offset cannot be higher than 99'
+                    'Trailing percent offset cannot be higher than 99.9'
                   ),
                 },
                 validate: validateAmount(
@@ -449,7 +333,7 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
           </FormGroup>
           <div className="pt-5">@</div>
           <div className="flex-1">
-            {type === OrderType.TYPE_LIMIT ? (
+            {type === Schema.OrderType.TYPE_LIMIT ? (
               <FormGroup
                 labelFor="input-price-quote"
                 label={t(`Price (${quoteName})`)}
