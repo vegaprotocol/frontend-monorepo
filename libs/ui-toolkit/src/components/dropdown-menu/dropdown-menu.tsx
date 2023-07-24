@@ -72,12 +72,12 @@ export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
 export const DropdownMenuContent = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Content>,
   React.ComponentProps<typeof DropdownMenuPrimitive.Content>
->(({ className, ...contentProps }, forwardedRef) => (
+>(({ className, sideOffset = 10, ...contentProps }, forwardedRef) => (
   <DropdownMenuPrimitive.Content
     ref={forwardedRef}
-    sideOffset={10}
     className="min-w-[290px] bg-vega-light-100 dark:bg-vega-dark-100 p-2 rounded z-20 text-black dark:text-white border border-vega-light-200 dark:border-vega-dark-200"
     align="start"
+    sideOffset={sideOffset}
     {...contentProps}
   />
 ));
