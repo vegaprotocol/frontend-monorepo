@@ -6,14 +6,14 @@ const tradesTab = 'Trades';
 const tradesTable = 'tab-trades';
 
 describe('trades', { tags: '@smoke' }, () => {
-  before(() => {
+  beforeEach(() => {
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.getByTestId(tradesTab).click();
   });
 
-  /* it('show trades', () => {
+  it('show trades', () => {
     // 6005-THIS-001
     // 6005-THIS-002
     cy.getByTestId(tradesTab).should('be.visible');
@@ -78,7 +78,7 @@ describe('trades', { tags: '@smoke' }, () => {
           dateTimes.sort((a, b) => b.getTime() - a.getTime())
         );
       });
-  }); */
+  });
 
   it('copy price to deal ticket form', () => {
     // 6005-THIS-007
