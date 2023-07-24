@@ -63,6 +63,10 @@ import {
 } from '../../hooks/use-type-store';
 import { useStopOrderFormValues } from '../../hooks/use-stop-order-form-values';
 import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
+import noop from 'lodash/noop';
+
+export const REDUCE_ONLY_TOOLTIP =
+  '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
 
 export interface DealTicketProps {
   market: Market;
@@ -287,7 +291,7 @@ export const DealTicket = ({
 
   return (
     <form
-      onSubmit={isReadOnly ? undefined : handleSubmit(onSubmit)}
+      onSubmit={isReadOnly ? noop : handleSubmit(onSubmit)}
       noValidate
       data-testid="deal-ticket-form"
     >
@@ -506,9 +510,7 @@ export const DealTicket = ({
                         ? t(
                             '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
                           )
-                        : t(
-                            '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.'
-                          )}
+                        : t(REDUCE_ONLY_TOOLTIP)}
                     </span>
                   }
                 >

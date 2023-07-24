@@ -5,7 +5,6 @@ import { formatNumber, toDecimal, validateAmount } from '@vegaprotocol/utils';
 import { useForm, Controller } from 'react-hook-form';
 import * as Schema from '@vegaprotocol/types';
 import {
-  Button,
   Radio,
   RadioGroup,
   Input,
@@ -13,13 +12,14 @@ import {
   FormGroup,
   InputError,
   Select,
+  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import type { Market } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { timeInForceLabel, useOrder } from '@vegaprotocol/orders';
-import { NoWalletWarning } from './deal-ticket';
+import { NoWalletWarning, REDUCE_ONLY_TOOLTIP } from './deal-ticket';
 import { TypeToggle } from './type-selector';
 import {
   useStopOrderFormValues,
@@ -30,6 +30,8 @@ import {
   useDealTicketTypeStore,
 } from '../../hooks/use-type-store';
 import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values-to-stop-order-submission';
+import { DealTicketButton } from './deal-ticket-button';
+import noop from 'lodash/noop';
 
 export interface StopOrderProps {
   market: Market;
@@ -112,7 +114,7 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
 
   return (
     <form
-      onSubmit={isReadOnly || !pubKey ? undefined : handleSubmit(onSubmit)}
+      onSubmit={isReadOnly || !pubKey ? noop : handleSubmit(onSubmit)}
       noValidate
     >
       <FormGroup label={t('Order type')} labelFor="order-type" compact={true}>
@@ -128,8 +130,8 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
                     ? DealTicketType.StopLimit
                     : DealTicketType.StopMarket
                 }
-                onChange={(e) => {
-                  const type = e.target.value as DealTicketType;
+                onChange={(value) => {
+                  const type = value as DealTicketType;
                   setDealTicketType(market.id, type);
                   if (
                     type === DealTicketType.Limit ||
@@ -168,7 +170,7 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
         )}
       />
       <div className="mb-2">
-        <div className="flex items-center gap-4">
+        <div className="flex items-start gap-4">
           <FormGroup
             labelFor="input-price-quote"
             label={t(`Size`)}
@@ -290,6 +292,18 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
             {errors.timeInForce.message}
           </InputError>
         )}
+      </div>
+      <div className="flex gap-2 pb-2 justify-end">
+        <Checkbox
+          name="reduce-only"
+          checked={true}
+          disabled={true}
+          label={
+            <Tooltip description={<span>{t(REDUCE_ONLY_TOOLTIP)}</span>}>
+              <span className="text-xs">{t('Reduce only')}</span>
+            </Tooltip>
+          }
+        />
       </div>
       <FormGroup label={t('Trigger')} compact={true} labelFor="">
         <Controller
@@ -491,14 +505,7 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
         </>
       )}
       <NoWalletWarning pubKey={pubKey} isReadOnly={isReadOnly} asset={asset} />
-      <Button
-        variant={side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'}
-        fill
-        type="submit"
-        data-testid="place-order"
-      >
-        {t('Submit Stop Order')}
-      </Button>
+      <DealTicketButton side={side} label={t('Submit Stop Order')} />
     </form>
   );
 };
