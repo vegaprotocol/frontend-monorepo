@@ -1,13 +1,12 @@
 /// <reference types="cypress" />
 
 import {
-  navigateTo,
-  navigation,
   turnTelemetryOff,
   waitForSpinner,
 } from '../../support/common.functions';
 import {
-  enterUniqueFreeFormProposalBody,
+  createTenDigitUnixTimeStampForSpecifiedDays,
+  enterRawProposalBody,
   goToMakeNewProposal,
   governanceProposalType,
 } from '../../support/governance.functions';
@@ -47,12 +46,11 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
       .and('contain.text', 'USDC (fake)');
   });
 
-  it.skip('Unable to submit proposal with public key', function () {
+  it('Unable to submit proposal with public key', function () {
     const expectedErrorTxt = `You are connected in a view only state for public key: ${vegaWalletPubKey}. In order to send transactions you must connect to a real wallet.`;
 
-    navigateTo(navigation.proposals);
-    goToMakeNewProposal(governanceProposalType.FREEFORM);
-    enterUniqueFreeFormProposalBody('50', 'pub key proposal test');
+    goToMakeNewProposal(governanceProposalType.RAW);
+    enterRawProposalBody(createTenDigitUnixTimeStampForSpecifiedDays(8));
     cy.getByTestId('dialog-content')
       .first()
       .within(() => {

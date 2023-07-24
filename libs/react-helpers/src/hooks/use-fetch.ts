@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
 
-interface State<T> {
+export interface State<T> {
   data?: T;
   error?: Error;
   loading?: boolean;

@@ -1,4 +1,5 @@
-import { render, fireEvent, waitFor, screen } from '@testing-library/react';
+import { render, waitFor, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { generateMockData, VolumeType } from './orderbook-data';
 import { Orderbook } from './orderbook';
 import * as orderbookData from './orderbook-data';
@@ -33,6 +34,7 @@ describe('Orderbook', () => {
   const decimalPlaces = 3;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     mockOffsetSize(800, 768);
   });
   it('markPrice should be in the middle', async () => {
@@ -69,12 +71,17 @@ describe('Orderbook', () => {
       await screen.findByTestId(`middle-mark-price-${params.midPrice}`)
     ).toBeInTheDocument();
     // Before resolution change the price is 122.934
-    await fireEvent.click(await screen.getByTestId('price-122901'));
-    expect(onClickSpy).toBeCalledWith('122.901');
-    const resolutionSelect = screen.getByTestId(
-      'resolution'
-    ) as HTMLSelectElement;
-    await fireEvent.change(resolutionSelect, { target: { value: '10' } });
+    await userEvent.click(await screen.getByTestId('price-122901'));
+    expect(onClickSpy).toBeCalledWith({ price: '122.901' });
+
+    await userEvent.click(screen.getByTestId('resolution'));
+
+    await waitFor(() => {
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+    });
+
+    await userEvent.click(screen.getAllByRole('menuitem')[1]);
+
     expect(orderbookData.compactRows).toHaveBeenCalledWith(
       mockedData.bids,
       VolumeType.bid,
@@ -85,7 +92,88 @@ describe('Orderbook', () => {
       VolumeType.ask,
       10
     );
-    await fireEvent.click(await screen.getByTestId('price-12294'));
-    expect(onClickSpy).toBeCalledWith('122.94');
+    await userEvent.click(await screen.getByTestId('price-12294'));
+    expect(onClickSpy).toBeCalledWith({ price: '122.94' });
+  });
+
+  it('plus - minus buttons should change resolution', async () => {
+    const onClickSpy = jest.fn();
+    jest.spyOn(orderbookData, 'compactRows');
+    const mockedData = generateMockData(params);
+    render(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
+        onClick={onClickSpy}
+        {...mockedData}
+        assetSymbol="USD"
+      />
+    );
+    expect((orderbookData.compactRows as jest.Mock).mock.lastCall[2]).toEqual(
+      1
+    );
+    expect(screen.getByTestId('minus-button')).toBeDisabled();
+    userEvent.click(screen.getByTestId('plus-button'));
+    await waitFor(() => {
+      expect((orderbookData.compactRows as jest.Mock).mock.lastCall[2]).toEqual(
+        10
+      );
+    });
+    expect(screen.getByTestId('minus-button')).not.toBeDisabled();
+    userEvent.click(screen.getByTestId('minus-button'));
+    await waitFor(() => {
+      expect((orderbookData.compactRows as jest.Mock).mock.lastCall[2]).toEqual(
+        1
+      );
+    });
+    expect(screen.getByTestId('minus-button')).toBeDisabled();
+    await userEvent.click(screen.getByTestId('resolution'));
+
+    await waitFor(() => {
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+    });
+    await userEvent.click(screen.getAllByRole('menuitem')[5]);
+    await waitFor(() => {
+      expect((orderbookData.compactRows as jest.Mock).mock.lastCall[2]).toEqual(
+        100000
+      );
+    });
+    expect(screen.getByTestId('plus-button')).toBeDisabled();
+  });
+
+  it('two columns', () => {
+    mockOffsetSize(200, 768);
+    const onClickSpy = jest.fn();
+    const mockedData = generateMockData(params);
+    render(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
+        onClick={onClickSpy}
+        {...mockedData}
+        assetSymbol="USD"
+      />
+    );
+    screen.getAllByTestId('bid-rows-container').forEach((item) => {
+      expect(item).toHaveClass('grid-cols-2');
+    });
+  });
+
+  it('one column', () => {
+    mockOffsetSize(140, 768);
+    const onClickSpy = jest.fn();
+    const mockedData = generateMockData(params);
+    render(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
+        onClick={onClickSpy}
+        {...mockedData}
+        assetSymbol="USD"
+      />
+    );
+    screen.getAllByTestId('ask-rows-container').forEach((item) => {
+      expect(item).toHaveClass('grid-cols-1');
+    });
   });
 });

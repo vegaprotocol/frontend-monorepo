@@ -23,6 +23,7 @@ export const Tabs = ({
     }
     return children[0].props.id;
   });
+
   return (
     <TabsPrimitive.Root
       {...props}
@@ -30,7 +31,7 @@ export const Tabs = ({
       onValueChange={onValueChange || setActiveTab}
       className="h-full grid grid-rows-[min-content_1fr]"
     >
-      <div className="border-b border-default">
+      <div className="border-b border-default min-w-0">
         <TabsPrimitive.List
           className="flex flex-nowrap overflow-visible"
           role="tablist"
@@ -39,18 +40,18 @@ export const Tabs = ({
             if (!isValidElement(child) || child.props.hidden) return null;
             const isActive = child.props.id === (value || activeTab);
             const triggerClass = classNames(
-              'relative px-4 py-1 border-r border-default',
-              'uppercase',
+              'relative text-xs py-2 px-3 border-l border-r first:border-l-0',
               {
-                'cursor-default': isActive,
-                'text-neutral-400 hover:text-neutral-500 dark:hover:text-neutral-300':
-                  !isActive,
+                'cursor-default border-default bg-vega-clight-700 dark:bg-vega-cdark-700':
+                  isActive,
+                'text-default': isActive,
+                'text-muted border-transparent': !isActive,
               },
               'flex items-center gap-2'
             );
             const borderClass = classNames(
               'absolute bottom-[-1px] left-0 w-full h-0 border-b',
-              'border-b-white dark:border-b-black',
+              'border-vega-clight-700 dark:border-vega-cdark-700',
               { hidden: !isActive }
             );
             return (
@@ -73,7 +74,7 @@ export const Tabs = ({
           return (
             <TabsPrimitive.Content
               value={child.props.id}
-              className="h-full bg-white dark:bg-black"
+              className="h-full"
               data-testid={`tab-${child.props.id}`}
             >
               {child.props.children}

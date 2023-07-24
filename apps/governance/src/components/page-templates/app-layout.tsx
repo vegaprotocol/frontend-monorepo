@@ -4,7 +4,11 @@ import type { ReactNode } from 'react';
 import { AnnouncementBanner } from '@vegaprotocol/announcements';
 import { Nav } from '../nav';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
-import React from 'react';
+import {
+  ProtocolUpgradeCountdownMode,
+  ProtocolUpgradeProposalNotification,
+} from '@vegaprotocol/proposals';
+import { ViewingAsBanner } from '@vegaprotocol/ui-toolkit';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -31,8 +35,23 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           />
         )}
         <Nav theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'} />
+        <NotificationsContainer />
       </div>
       <div className={AppLayoutClasses}>{children}</div>
+    </div>
+  );
+};
+
+const NotificationsContainer = () => {
+  const { isReadOnly, pubKey, disconnect } = useVegaWallet();
+  return (
+    <div data-testid="banners">
+      <ProtocolUpgradeProposalNotification
+        mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
+      />
+      {isReadOnly ? (
+        <ViewingAsBanner pubKey={pubKey} disconnect={disconnect} />
+      ) : null}
     </div>
   );
 };

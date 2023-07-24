@@ -1,13 +1,11 @@
 import type { ComponentProps } from 'react';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
-import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { TradesContainer } from '@vegaprotocol/trades';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { Filter } from '@vegaprotocol/orders';
 import { NO_MARKET } from './constants';
+import { OrderbookContainer } from '../../components/orderbook-container';
 import { FillsContainer } from '../../components/fills-container';
 import { PositionsContainer } from '../../components/positions-container';
 import { AccountsContainer } from '../../components/accounts-container';
@@ -18,8 +16,6 @@ import { OrdersContainer } from '../../components/orders-container';
 type MarketDependantView =
   | typeof CandlesChartContainer
   | typeof DepthChartContainer
-  | typeof DealTicketContainer
-  | typeof MarketInfoAccordionContainer
   | typeof OrderbookContainer
   | typeof TradesContainer;
 
@@ -46,14 +42,6 @@ export const TradingViews = {
   liquidity: {
     label: 'Liquidity',
     component: requiresMarket(LiquidityContainer),
-  },
-  ticket: {
-    label: 'Ticket',
-    component: requiresMarket(DealTicketContainer),
-  },
-  info: {
-    label: 'Info',
-    component: requiresMarket(MarketInfoAccordionContainer),
   },
   orderbook: {
     label: 'Orderbook',

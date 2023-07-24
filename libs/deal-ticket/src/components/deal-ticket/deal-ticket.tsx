@@ -22,7 +22,6 @@ import {
   Intent,
   Notification,
   Tooltip,
-  TinyScroll,
 } from '@vegaprotocol/ui-toolkit';
 
 import {
@@ -54,6 +53,7 @@ import {
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 
 export interface DealTicketProps {
   market: Market;
@@ -61,6 +61,7 @@ export interface DealTicketProps {
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   submit: (order: OrderSubmission) => void;
   onClickCollateral?: () => void;
+  onDeposit: (assetId: string) => void;
 }
 
 export const DealTicket = ({
@@ -69,6 +70,7 @@ export const DealTicket = ({
   marketData,
   submit,
   onClickCollateral,
+  onDeposit,
 }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   // store last used tif for market so that when changing OrderType the previous TIF
@@ -266,233 +268,289 @@ export const DealTicket = ({
   if (!order || !normalizedOrder) return null;
 
   return (
-    <TinyScroll className="h-full overflow-auto">
-      <form
-        onSubmit={isReadOnly ? undefined : handleSubmit(onSubmit)}
-        className="p-4"
-        noValidate
-      >
-        <Controller
-          name="type"
-          control={control}
-          rules={{
-            validate: validateType(
-              marketData.marketTradingMode,
-              marketData.trigger
-            ),
-          }}
-          render={() => (
-            <TypeSelector
-              value={order.type}
-              onSelect={(type) => {
-                if (type === OrderType.TYPE_NETWORK) return;
-                update({
-                  type,
-                  // when changing type also update the TIF to what was last used of new type
-                  timeInForce: lastTIF[type] || order.timeInForce,
-                  postOnly:
-                    type === OrderType.TYPE_MARKET ? false : order.postOnly,
-                  reduceOnly:
-                    type === OrderType.TYPE_LIMIT &&
-                    ![
-                      OrderTimeInForce.TIME_IN_FORCE_FOK,
-                      OrderTimeInForce.TIME_IN_FORCE_IOC,
-                    ].includes(lastTIF[type] || order.timeInForce)
-                      ? false
-                      : order.postOnly,
-                  expiresAt: undefined,
-                });
-                clearErrors(['expiresAt', 'price']);
-              }}
-              market={market}
-              marketData={marketData}
-              errorMessage={errors.type?.message}
-            />
-          )}
-        />
-        <Controller
-          name="side"
-          control={control}
-          render={() => (
-            <SideSelector
-              value={order.side}
-              onSelect={(side) => {
-                update({ side });
-              }}
-            />
-          )}
-        />
-        <DealTicketAmount
-          control={control}
-          orderType={order.type}
-          market={market}
-          marketData={marketData}
-          sizeError={errors.size?.message}
-          priceError={errors.price?.message}
-          update={update}
-          size={order.size}
-          price={order.price}
-        />
-        <Controller
-          name="timeInForce"
-          control={control}
-          rules={{
-            validate: validateTimeInForce(
-              marketData.marketTradingMode,
-              marketData.trigger
-            ),
-          }}
-          render={() => (
-            <TimeInForceSelector
-              value={order.timeInForce}
-              orderType={order.type}
-              onSelect={(timeInForce) => {
-                // Reset post only and reduce only when changing TIF
-                update({
-                  timeInForce,
-                  postOnly: [
+    <form
+      onSubmit={isReadOnly ? undefined : handleSubmit(onSubmit)}
+      noValidate
+      data-testid="deal-ticket-form"
+    >
+      <Controller
+        name="type"
+        control={control}
+        rules={{
+          validate: validateType(
+            marketData.marketTradingMode,
+            marketData.trigger
+          ),
+        }}
+        render={() => (
+          <TypeSelector
+            value={order.type}
+            onSelect={(type) => {
+              if (type === OrderType.TYPE_NETWORK) return;
+              update({
+                type,
+                // when changing type also update the TIF to what was last used of new type
+                timeInForce: lastTIF[type] || order.timeInForce,
+                postOnly:
+                  type === OrderType.TYPE_MARKET ? false : order.postOnly,
+                iceberg:
+                  type === OrderType.TYPE_MARKET ||
+                  [
                     OrderTimeInForce.TIME_IN_FORCE_FOK,
                     OrderTimeInForce.TIME_IN_FORCE_IOC,
-                  ].includes(timeInForce)
+                  ].includes(lastTIF[type] || order.timeInForce)
+                    ? false
+                    : order.iceberg,
+                icebergOpts:
+                  type === OrderType.TYPE_MARKET ||
+                  [
+                    OrderTimeInForce.TIME_IN_FORCE_FOK,
+                    OrderTimeInForce.TIME_IN_FORCE_IOC,
+                  ].includes(lastTIF[type] || order.timeInForce)
+                    ? undefined
+                    : order.icebergOpts,
+                reduceOnly:
+                  type === OrderType.TYPE_LIMIT &&
+                  ![
+                    OrderTimeInForce.TIME_IN_FORCE_FOK,
+                    OrderTimeInForce.TIME_IN_FORCE_IOC,
+                  ].includes(lastTIF[type] || order.timeInForce)
                     ? false
                     : order.postOnly,
-                  reduceOnly: ![
-                    OrderTimeInForce.TIME_IN_FORCE_FOK,
-                    OrderTimeInForce.TIME_IN_FORCE_IOC,
-                  ].includes(timeInForce)
-                    ? false
-                    : order.reduceOnly,
-                });
-                // Set TIF value for the given order type, so that when switching
-                // types we know the last used TIF for the given order type
-                setLastTIF((curr) => ({
-                  ...curr,
-                  [order.type]: timeInForce,
-                  expiresAt: undefined,
-                }));
-                clearErrors('expiresAt');
+                expiresAt: undefined,
+              });
+              clearErrors(['expiresAt', 'price']);
+            }}
+            market={market}
+            marketData={marketData}
+            errorMessage={errors.type?.message}
+          />
+        )}
+      />
+      <Controller
+        name="side"
+        control={control}
+        render={() => (
+          <SideSelector
+            value={order.side}
+            onSelect={(side) => {
+              update({ side });
+            }}
+          />
+        )}
+      />
+      <DealTicketAmount
+        control={control}
+        orderType={order.type}
+        market={market}
+        marketData={marketData}
+        sizeError={errors.size?.message}
+        priceError={errors.price?.message}
+        update={update}
+        size={order.size}
+        price={order.price}
+      />
+      <Controller
+        name="timeInForce"
+        control={control}
+        rules={{
+          validate: validateTimeInForce(
+            marketData.marketTradingMode,
+            marketData.trigger
+          ),
+        }}
+        render={() => (
+          <TimeInForceSelector
+            value={order.timeInForce}
+            orderType={order.type}
+            onSelect={(timeInForce) => {
+              // Reset post only and reduce only when changing TIF
+              update({
+                timeInForce,
+                postOnly: [
+                  OrderTimeInForce.TIME_IN_FORCE_FOK,
+                  OrderTimeInForce.TIME_IN_FORCE_IOC,
+                ].includes(timeInForce)
+                  ? false
+                  : order.postOnly,
+                reduceOnly: ![
+                  OrderTimeInForce.TIME_IN_FORCE_FOK,
+                  OrderTimeInForce.TIME_IN_FORCE_IOC,
+                ].includes(timeInForce)
+                  ? false
+                  : order.reduceOnly,
+              });
+              // Set TIF value for the given order type, so that when switching
+              // types we know the last used TIF for the given order type
+              setLastTIF((curr) => ({
+                ...curr,
+                [order.type]: timeInForce,
+                expiresAt: undefined,
+              }));
+              clearErrors('expiresAt');
+            }}
+            market={market}
+            marketData={marketData}
+            errorMessage={errors.timeInForce?.message}
+          />
+        )}
+      />
+      {order.type === Schema.OrderType.TYPE_LIMIT &&
+        order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
+          <Controller
+            name="expiresAt"
+            control={control}
+            rules={{
+              validate: validateExpiration,
+            }}
+            render={() => (
+              <ExpirySelector
+                value={order.expiresAt}
+                onSelect={(expiresAt) =>
+                  update({
+                    expiresAt: expiresAt || undefined,
+                  })
+                }
+                errorMessage={errors.expiresAt?.message}
+              />
+            )}
+          />
+        )}
+      <div className="flex gap-2 pb-2 justify-between">
+        <Controller
+          name="postOnly"
+          control={control}
+          render={() => (
+            <Checkbox
+              name="post-only"
+              checked={order.postOnly}
+              disabled={disablePostOnlyCheckbox}
+              onCheckedChange={() => {
+                update({ postOnly: !order.postOnly, reduceOnly: false });
               }}
-              market={market}
-              marketData={marketData}
-              errorMessage={errors.timeInForce?.message}
-            />
-          )}
-        />
-        {order.type === Schema.OrderType.TYPE_LIMIT &&
-          order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
-            <Controller
-              name="expiresAt"
-              control={control}
-              rules={{
-                validate: validateExpiration,
-              }}
-              render={() => (
-                <ExpirySelector
-                  value={order.expiresAt}
-                  onSelect={(expiresAt) =>
-                    update({
-                      expiresAt: expiresAt || undefined,
-                    })
+              label={
+                <Tooltip
+                  description={
+                    <span>
+                      {disablePostOnlyCheckbox
+                        ? t(
+                            '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
+                          )
+                        : t(
+                            '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
+                          )}
+                    </span>
                   }
-                  errorMessage={errors.expiresAt?.message}
-                />
-              )}
+                >
+                  <span className="text-xs">{t('Post only')}</span>
+                </Tooltip>
+              }
             />
           )}
-        <div className="flex gap-2 pb-2 justify-between">
+        />
+        <Controller
+          name="reduceOnly"
+          control={control}
+          render={() => (
+            <Checkbox
+              name="reduce-only"
+              checked={order.reduceOnly}
+              disabled={disableReduceOnlyCheckbox}
+              onCheckedChange={() => {
+                update({ postOnly: false, reduceOnly: !order.reduceOnly });
+              }}
+              label={
+                <Tooltip
+                  description={
+                    <span>
+                      {disableReduceOnlyCheckbox
+                        ? t(
+                            '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
+                          )
+                        : t(
+                            '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.'
+                          )}
+                    </span>
+                  }
+                >
+                  <span className="text-xs">{t('Reduce only')}</span>
+                </Tooltip>
+              }
+            />
+          )}
+        />
+      </div>
+      <div className="flex gap-2 pb-2 justify-between">
+        {order.type === Schema.OrderType.TYPE_LIMIT && (
           <Controller
-            name="postOnly"
+            name="iceberg"
             control={control}
             render={() => (
               <Checkbox
-                name="post-only"
-                checked={order.postOnly}
-                disabled={disablePostOnlyCheckbox}
+                name="iceberg"
+                checked={order.iceberg}
                 onCheckedChange={() => {
-                  update({ postOnly: !order.postOnly, reduceOnly: false });
+                  update({ iceberg: !order.iceberg, icebergOpts: undefined });
                 }}
                 label={
                   <Tooltip
                     description={
-                      <span>
-                        {disablePostOnlyCheckbox
-                          ? t(
-                              '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
-                            )
-                          : t(
-                              '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
-                            )}
-                      </span>
+                      <p>
+                        {t(`Trade only a fraction of the order size at once.
+                            After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away.
+                            For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each.
+                            Note that the full volume of the order is not hidden and is still reflected in the order book.`)}
+                      </p>
                     }
                   >
-                    <span className="text-xs">{t('Post only')}</span>
+                    <span className="text-xs">{t('Iceberg')}</span>
                   </Tooltip>
                 }
               />
             )}
           />
-          <Controller
-            name="reduceOnly"
-            control={control}
-            render={() => (
-              <Checkbox
-                name="reduce-only"
-                checked={order.reduceOnly}
-                disabled={disableReduceOnlyCheckbox}
-                onCheckedChange={() => {
-                  update({ postOnly: false, reduceOnly: !order.reduceOnly });
-                }}
-                label={
-                  <Tooltip
-                    description={
-                      <span>
-                        {disableReduceOnlyCheckbox
-                          ? t(
-                              '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
-                            )
-                          : t(
-                              '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.'
-                            )}
-                      </span>
-                    }
-                  >
-                    <span className="text-xs">{t('Reduce only')}</span>
-                  </Tooltip>
-                }
-              />
-            )}
-          />
-        </div>
-        <SummaryMessage
-          errorMessage={errors.summary?.message}
-          asset={asset}
-          marketTradingMode={marketData.marketTradingMode}
-          balance={balance}
-          margin={
-            positionEstimate?.estimatePosition?.margin.bestCase.initialLevel ||
-            '0'
-          }
-          isReadOnly={isReadOnly}
-          pubKey={pubKey}
-          onClickCollateral={onClickCollateral}
-        />
-        <DealTicketButton
-          variant={
-            order.side === Schema.Side.SIDE_BUY ? 'ternary' : 'secondary'
-          }
-        />
-        <DealTicketFeeDetails
-          onMarketClick={onMarketClick}
-          feeEstimate={feeEstimate}
-          notionalSize={notionalSize}
-          assetSymbol={assetSymbol}
-          marginAccountBalance={marginAccountBalance}
-          generalAccountBalance={generalAccountBalance}
-          positionEstimate={positionEstimate?.estimatePosition}
+        )}
+      </div>
+      {order.iceberg && (
+        <DealTicketSizeIceberg
+          update={update}
           market={market}
+          peakSizeError={errors.icebergOpts?.peakSize?.message}
+          minimumVisibleSizeError={
+            errors.icebergOpts?.minimumVisibleSize?.message
+          }
+          control={control}
+          size={order.size}
+          peakSize={order.icebergOpts?.peakSize || ''}
+          minimumVisibleSize={order.icebergOpts?.minimumVisibleSize || ''}
         />
-      </form>
-    </TinyScroll>
+      )}
+      <SummaryMessage
+        errorMessage={errors.summary?.message}
+        asset={asset}
+        marketTradingMode={marketData.marketTradingMode}
+        balance={balance}
+        margin={
+          positionEstimate?.estimatePosition?.margin.bestCase.initialLevel ||
+          '0'
+        }
+        isReadOnly={isReadOnly}
+        pubKey={pubKey}
+        onClickCollateral={onClickCollateral}
+        onDeposit={onDeposit}
+      />
+      <DealTicketButton side={order.side} />
+      <DealTicketFeeDetails
+        onMarketClick={onMarketClick}
+        feeEstimate={feeEstimate}
+        notionalSize={notionalSize}
+        assetSymbol={assetSymbol}
+        marginAccountBalance={marginAccountBalance}
+        generalAccountBalance={generalAccountBalance}
+        positionEstimate={positionEstimate?.estimatePosition}
+        market={market}
+      />
+    </form>
   );
 };
 
@@ -509,6 +567,7 @@ interface SummaryMessageProps {
   isReadOnly: boolean;
   pubKey: string | null;
   onClickCollateral?: () => void;
+  onDeposit: (assetId: string) => void;
 }
 const SummaryMessage = memo(
   ({
@@ -520,6 +579,7 @@ const SummaryMessage = memo(
     isReadOnly,
     pubKey,
     onClickCollateral,
+    onDeposit,
   }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
     // render a deposit dialog
@@ -557,7 +617,7 @@ const SummaryMessage = memo(
               text: t('Connect wallet'),
               action: openVegaWalletDialog,
               dataTestId: 'order-connect-wallet',
-              size: 'sm',
+              size: 'small',
             }}
           />
         </div>
@@ -569,6 +629,7 @@ const SummaryMessage = memo(
           <ZeroBalanceError
             asset={asset}
             onClickCollateral={onClickCollateral}
+            onDeposit={onDeposit}
           />
         </div>
       );
@@ -591,7 +652,12 @@ const SummaryMessage = memo(
     if (BigInt(balance) < BigInt(margin) && BigInt(balance) > BigInt(0)) {
       return (
         <div className="mb-2">
-          <MarginWarning balance={balance} margin={margin} asset={asset} />
+          <MarginWarning
+            balance={balance}
+            margin={margin}
+            asset={asset}
+            onDeposit={onDeposit}
+          />
         </div>
       );
     }

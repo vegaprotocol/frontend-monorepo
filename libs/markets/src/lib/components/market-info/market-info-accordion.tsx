@@ -9,7 +9,6 @@ import {
   ExternalLink,
   Link as UILink,
   Splash,
-  TinyScroll,
   AccordionItem,
 } from '@vegaprotocol/ui-toolkit';
 import { generatePath, Link } from 'react-router-dom';
@@ -61,9 +60,7 @@ export const MarketInfoAccordionContainer = ({
   return (
     <AsyncRenderer data={data} loading={loading} error={error} reload={reload}>
       {data ? (
-        <TinyScroll className="h-full overflow-auto">
-          <MarketInfoAccordion market={data} onSelect={onSelect} />
-        </TinyScroll>
+        <MarketInfoAccordion market={data} onSelect={onSelect} />
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>
@@ -106,7 +103,7 @@ export const MarketInfoAccordion = ({
   };
 
   return (
-    <div className="p-4">
+    <div>
       <div className="mb-8">
         <h3 className={headerClassName}>{t('Market data')}</h3>
         <Accordion>
@@ -127,13 +124,19 @@ export const MarketInfoAccordion = ({
           />
           {marketAccounts
             .filter((a) => a.type === Schema.AccountType.ACCOUNT_TYPE_INSURANCE)
-            .map((a) => (
-              <AccordionItem
-                itemId={`${a.type}:${a.asset.id}`}
-                title={t('Insurance pool')}
-                content={<InsurancePoolInfoPanel market={market} account={a} />}
-              />
-            ))}
+            .map((a) => {
+              const id = `${a.type}:${a.asset.id}`;
+              return (
+                <AccordionItem
+                  key={id}
+                  itemId={id}
+                  title={t('Insurance pool')}
+                  content={
+                    <InsurancePoolInfoPanel market={market} account={a} />
+                  }
+                />
+              );
+            })}
         </Accordion>
       </div>
       <div className="mb-8">
@@ -201,18 +204,22 @@ export const MarketInfoAccordion = ({
             content={<RiskFactorsInfoPanel market={market} />}
           />
           {(market.priceMonitoringSettings?.parameters?.triggers || []).map(
-            (_, triggerIndex) => (
-              <AccordionItem
-                itemId={`trigger-${triggerIndex}`}
-                title={t(`Price monitoring bounds ${triggerIndex + 1}`)}
-                content={
-                  <PriceMonitoringBoundsInfoPanel
-                    market={market}
-                    triggerIndex={triggerIndex}
-                  />
-                }
-              />
-            )
+            (_, triggerIndex) => {
+              const id = `trigger-${triggerIndex}`;
+              return (
+                <AccordionItem
+                  key={id}
+                  itemId={id}
+                  title={t(`Price monitoring bounds ${triggerIndex + 1}`)}
+                  content={
+                    <PriceMonitoringBoundsInfoPanel
+                      market={market}
+                      triggerIndex={triggerIndex}
+                    />
+                  }
+                />
+              );
+            }
           )}
           <AccordionItem
             itemId="liqudity-monitoring-parameters"

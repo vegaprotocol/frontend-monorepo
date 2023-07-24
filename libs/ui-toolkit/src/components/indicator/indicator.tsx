@@ -4,12 +4,20 @@ import { getIntentTextAndBackground } from '../../utils/intent';
 
 interface IndicatorProps {
   variant?: Intent;
+  size?: 'md' | 'lg';
 }
 
-export const Indicator = ({ variant = Intent.None }: IndicatorProps) => {
+export const Indicator = ({
+  variant = Intent.None,
+  size = 'md',
+}: IndicatorProps) => {
   const names = classNames(
-    'inline-block w-2 h-2 mt-1 mr-2 rounded-full',
-    getIntentTextAndBackground(variant)
+    'inline-block rounded-full',
+    getIntentTextAndBackground(variant),
+    {
+      'w-2 h-2': size === 'md',
+      'w-3 h-3': size === 'lg',
+    }
   );
   return <div className={names} data-testid="indicator" />;
 };

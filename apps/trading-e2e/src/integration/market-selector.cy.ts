@@ -22,15 +22,12 @@ describe('markets selector', { tags: '@smoke' }, () => {
 
     cy.wait('@Markets');
     cy.wait('@MarketsData');
-    cy.wait('@MarketsCandles');
   });
 
   // 6001-MARK-066
-  it('can toggle the sidebar', () => {
-    cy.getByTestId('market-selector').should('be.visible');
-    cy.getByTestId('sidebar-toggle').click();
+  it('can open popover to view markets', () => {
     cy.getByTestId('market-selector').should('not.exist');
-    cy.getByTestId('sidebar-toggle').click();
+    cy.getByTestId('header-title').should('be.visible').click();
     cy.getByTestId('market-selector').should('be.visible');
   });
 
@@ -40,29 +37,26 @@ describe('markets selector', { tags: '@smoke' }, () => {
     const data = [
       {
         code: 'SOLUSD',
-        markPrice: '84.41XYZalpha',
-        change: '',
-        vol: '0.0024h vol',
+        markPrice: '84.41',
+        vol: '0.00',
       },
       {
         code: 'ETHBTC.QM21',
-        markPrice: '46,126.90058tBTC',
-        change: '',
-        vol: '0.0024h vol',
+        markPrice: '46,126.90058',
+        vol: '0.00',
       },
       {
         code: 'BTCUSD.MF21',
-        markPrice: '46,126.90058tDAI',
-        change: '',
-        vol: '0.0024h vol',
+        markPrice: '46,126.90058',
+        vol: '0.00',
       },
       {
         code: 'AAPL.MF21',
-        markPrice: '46,126.90058tUSDC',
-        change: '',
-        vol: '0.0024h vol',
+        markPrice: '46,126.90058',
+        vol: '0.00',
       },
     ];
+    cy.getByTestId('header-title').should('be.visible').click();
     cy.getByTestId(list)
       .find('a')
       .each((item, i) => {
@@ -71,33 +65,20 @@ describe('markets selector', { tags: '@smoke' }, () => {
         // 6001-MARK-022
         expect(item.find('h3').text()).equals(market.code);
         expect(
-          item.find('[data-testid="market-selector-data-row"]').eq(0).text()
+          item.find('[data-testid="market-selector-volume"]').text()
         ).contains(market.vol);
         // 6001-MARK-024
         expect(
-          item.find('[data-testid="market-selector-data-row"]').eq(1).text()
+          item.find('[data-testid="market-selector-price"]').text()
         ).contains(market.markPrice);
-        // 6001-MARK-023
-        expect(item.find('[data-testid="market-item-change"]').text()).equals(
-          market.change
-        );
         // 6001-MARK-025
         expect(item.find('[data-testid="sparkline-svg"]')).to.not.exist;
       });
   });
 
-  it('can see all markets link', () => {
-    // 6001-MARK-026
-    cy.getByTestId('market-selector').within(() => {
-      cy.getByTestId('all-markets-link')
-        .should('be.visible')
-        .and('have.text', 'All markets')
-        .and('have.attr', 'href')
-        .and('contain', '#/markets/all');
-    });
-  });
-
   it('can use the filter options', () => {
+    cy.getByTestId('header-title').should('be.visible').click();
+
     // 6001-MARK-027
     // product type
     cy.getByTestId('product-Spot').click();
@@ -118,6 +99,8 @@ describe('markets selector', { tags: '@smoke' }, () => {
   });
 
   it('can sort by by top gaining and top losing market', () => {
+    cy.getByTestId('header-title').should('be.visible').click();
+
     // 6001-MARK-030
     // 6001-MARK-031
     // 6001-MARK-032
@@ -135,6 +118,8 @@ describe('markets selector', { tags: '@smoke' }, () => {
   });
 
   it('can filter by settlement asset', () => {
+    cy.getByTestId('header-title').should('be.visible').click();
+
     // 6001-MARK-028
     cy.getByTestId('asset-trigger').click();
     cy.getByTestId('asset-id-asset-3').contains('tBTC').click();

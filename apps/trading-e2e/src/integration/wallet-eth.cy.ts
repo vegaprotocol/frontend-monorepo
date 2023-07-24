@@ -10,7 +10,7 @@ describe('ethereum wallet', { tags: '@smoke', testIsolation: true }, () => {
     cy.mockSubscription();
     cy.setVegaWallet();
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
     cy.getByTestId('Withdrawals').click();
   });
 

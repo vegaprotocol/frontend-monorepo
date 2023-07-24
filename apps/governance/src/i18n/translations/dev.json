@@ -839,5 +839,7 @@
   "networkUpgrades": "Network upgrades",
   "assetSpecification": "Asset specification",
   "dataIsIdentical": "Data is identical",
-  "updatesToMarket": "Updates to market"
+  "updatesToMarket": "Updates to market",
+  "Estimated time to upgrade": "Estimated time to upgrade",
+  "Upgraded at": "Upgraded at"
 }

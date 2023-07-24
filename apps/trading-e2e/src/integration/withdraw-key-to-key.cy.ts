@@ -1,24 +1,20 @@
 import { selectAsset } from '../support/helpers';
-// #region consts
+
 const amountField = 'input[name="amount"]';
 const amountShortName = 'input[name="amount"] + div + span.text-xs';
 const assetSelection = 'select-asset';
 const assetBalance = 'asset-balance';
 const assetOption = 'rich-select-option';
-const closeDialog = 'dialog-close';
-const dialogTitle = 'dialog-title';
-const dialogTransferText = 'dialog-transfer-text';
-const dropdownMenu = 'dropdown-menu';
+const transferText = 'transfer-intro-text';
 const errorText = 'input-error-text';
 const formFieldError = 'input-error-text';
 const includeTransferFeeRadioBtn = 'include-transfer-fee';
-const keyID = '[data-testid="dialog-transfer-text"] > .rounded-md';
+const keyID = `[data-testid="${transferText}"] > .rounded-md`;
 const manageVegaWallet = 'manage-vega-wallet';
-const openTransferDialog = 'open-transfer-dialog';
+const openTransferButton = 'open-transfer';
 const submitTransferBtn = '[type="submit"]';
 const toAddressField = '[name="toAddress"]';
 const totalTransferfee = 'total-transfer-fee';
-const transfer = 'transfer';
 const transferAmount = 'transfer-amount';
 const transferForm = 'transfer-form';
 const transferFee = 'transfer-fee';
@@ -30,7 +26,6 @@ const ASSET_SEPOLIA_TBTC = 2;
 const collateralTab = 'Collateral';
 const toastCloseBtn = 'toast-close';
 const toastContent = 'toast-content';
-// #endregion
 
 describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
   beforeEach(() => {
@@ -39,15 +34,19 @@ describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
     cy.mockSubscription();
     cy.setVegaWallet();
 
-    cy.visit('/#/portfolio');
-    cy.getByTestId('Trading').first().click();
-    cy.getByTestId(collateralTab).click();
-    cy.getByTestId(dropdownMenu).first().click();
-    cy.getByTestId(transfer).click();
+    cy.visit('/');
 
-    cy.wait('@Accounts');
     cy.wait('@Assets');
+    cy.wait('@Accounts');
+
     cy.mockVegaWalletTransaction();
+
+    // Only click if not already active otherwise sidebar will close
+    cy.get('[data-testid="sidebar-content"]').then(($sidebarContent) => {
+      if ($sidebarContent.find('h2').text() !== 'Transfer') {
+        cy.get('[data-testid="sidebar"] [data-testid="Transfer"]').click();
+      }
+    });
   });
 
   it('transfer fees tooltips', () => {
@@ -72,21 +71,18 @@ describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
     cy.get('[data-side="bottom"] div')
       .should('be.visible')
       .should('not.be.empty');
-    cy.getByTestId(dialogTitle).click();
 
     //Check Transfer Fee tooltip
     cy.contains('div', 'Transfer fee').realHover();
     cy.get('[data-side="bottom"] div')
       .should('be.visible')
       .should('not.be.empty');
-    cy.getByTestId(dialogTitle).click();
 
     //Check Amount to be transferred tooltip
     cy.contains('div', 'Amount to be transferred').realHover();
     cy.get('[data-side="bottom"] div')
       .should('be.visible')
       .should('not.be.empty');
-    cy.getByTestId(dialogTitle).click();
 
     //Check Total amount (with fee) tooltip
     cy.contains('div', 'Total amount (with fee)').realHover();
@@ -134,6 +130,7 @@ describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
       .should('contain.text', '1.00');
   });
 });
+
 describe(
   'transfer form validation',
   { tags: '@regression', testIsolation: true },
@@ -154,7 +151,7 @@ describe(
 
     it('transfer Text', () => {
       // 1003-TRAN-003
-      cy.getByTestId(dialogTransferText)
+      cy.getByTestId(transferText)
         .should('exist')
         .get(keyID)
         .invoke('text')
@@ -204,7 +201,6 @@ describe(
         'contain.text',
         'You cannot transfer more than your available collateral'
       );
-      cy.getByTestId(closeDialog).click();
     });
   }
 );
@@ -217,7 +213,7 @@ describe('withdraw actions', { tags: '@smoke', testIsolation: true }, () => {
 
     cy.visit('/#/portfolio');
     cy.getByTestId(collateralTab).click();
-    cy.getByTestId(openTransferDialog).click();
+    cy.getByTestId(openTransferButton).click();
 
     cy.wait('@Accounts');
     cy.wait('@Assets');
