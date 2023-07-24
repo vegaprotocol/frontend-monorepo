@@ -55,7 +55,7 @@ export const ApproveNotification = ({
           selectedAsset?.symbol
         )}
         buttonProps={{
-          size: 'sm',
+          size: 'small',
           text: t('Approve %s', selectedAsset?.symbol),
           action: onApprove,
           dataTestId: 'approve-submit',
@@ -73,7 +73,7 @@ export const ApproveNotification = ({
           formatNumber(balances.allowance.toString())
         )}
         buttonProps={{
-          size: 'sm',
+          size: 'small',
           text: t('Approve %s', selectedAsset?.symbol),
           action: onApprove,
           dataTestId: 'reapprove-submit',

@@ -21,7 +21,7 @@ export default function Document() {
         />
         <script src="/theme-setter.js" type="text/javascript" async />
       </Head>
-      <body className="font-alpha dark:bg-black dark:text-white">
+      <body className="bg-white dark:bg-vega-cdark-900 text-default font-alpha">
         <Main />
         <NextScript />
       </body>

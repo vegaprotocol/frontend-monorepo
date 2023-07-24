@@ -27,7 +27,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes, ChangeEvent, ReactNode } from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useWatch, Controller, useForm } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
@@ -90,16 +90,17 @@ export const DepositForm = ({
   const [approveNotificationIntent, setApproveNotificationIntent] =
     useState<Intent>(Intent.Warning);
   const [persistedDeposit] = usePersistentDeposit(selectedAsset?.id);
-
   const {
     register,
     handleSubmit,
     setValue,
     clearErrors,
+    trigger,
     control,
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
+      from: account || '',
       to: pubKey ? pubKey : undefined,
       asset: selectedAsset?.id,
       amount: persistedDeposit?.amount,
@@ -136,6 +137,11 @@ export const DepositForm = ({
     return _pubKeys ? _pubKeys.map((pk) => pk.publicKey) : [];
   }, [_pubKeys]);
 
+  useEffect(() => {
+    setValue('from', account || '');
+    trigger('from');
+  }, [account, setValue, trigger]);
+
   const approved =
     balances && balances.allowance.isGreaterThan(0) ? true : false;
 
@@ -166,7 +172,7 @@ export const DepositForm = ({
             if (isActive && account) {
               return (
                 <div className="text-sm" aria-describedby="ethereum-address">
-                  <p className="mb-1" data-testid="ethereum-address">
+                  <p className="mb-1 break-all" data-testid="ethereum-address">
                     {account}
                   </p>
                   <DisconnectEthereumButton

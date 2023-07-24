@@ -54,6 +54,8 @@ const schemaObject = {
   VEGA_INCIDENT_URL: z.optional(z.string()),
   APP_VERSION: z.optional(z.string()),
   SENTRY_DSN: z.optional(z.string()),
+  TENDERMINT_URL: z.optional(z.string()),
+  TENDERMINT_WEBSOCKET_URL: z.optional(z.string()),
 };
 
 // combine schema above with custom rule to ensure either

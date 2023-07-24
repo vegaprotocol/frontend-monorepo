@@ -24,7 +24,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 
 import { Links, Routes } from '../../pages/client-router';
-import { SettingsButton } from '../../client-pages/settings';
 import {
   ProtocolUpgradeCountdown,
   ProtocolUpgradeCountdownMode,
@@ -45,14 +44,13 @@ export const Navbar = ({
 
   return (
     <Navigation
-      appName="Console"
+      appName="console"
       theme={theme}
       actions={
         <>
           <ProtocolUpgradeCountdown
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
           />
-          <SettingsButton />
           <VegaWalletConnectButton />
         </>
       }
@@ -119,18 +117,6 @@ export const Navbar = ({
             </NavigationContent>
           </NavigationItem>
         )}
-      </NavigationList>
-      <NavigationList
-        className="[.drawer-content_&]:border-t [.drawer-content_&]:border-t-vega-light-200 dark:[.drawer-content_&]:border-t-vega-dark-200 [.drawer-content_&]:pt-4 [.drawer-content_&]:mt-4"
-        hide={[
-          NavigationBreakpoint.Small,
-          NavigationBreakpoint.Narrow,
-          NavigationBreakpoint.Full,
-        ]}
-      >
-        <NavigationItem className="[.drawer-content_&]:w-full">
-          <SettingsButton withMobile />
-        </NavigationItem>
       </NavigationList>
     </Navigation>
   );

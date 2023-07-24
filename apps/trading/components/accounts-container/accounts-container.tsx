@@ -1,18 +1,17 @@
 import { useCallback } from 'react';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
-import { useWithdrawalDialog } from '@vegaprotocol/withdraws';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
-import { AccountManager, useTransferDialog } from '@vegaprotocol/accounts';
-import { useDepositDialog } from '@vegaprotocol/deposits';
+import { AccountManager } from '@vegaprotocol/accounts';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
 import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
+import { ViewType, useSidebar } from '../sidebar';
 
 export const AccountsContainer = ({
   pinnedAsset,
@@ -25,9 +24,7 @@ export const AccountsContainer = ({
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
-  const openWithdrawalDialog = useWithdrawalDialog((store) => store.open);
-  const openDepositDialog = useDepositDialog((store) => store.open);
-  const openTransferDialog = useTransferDialog((store) => store.open);
+  const setView = useSidebar((store) => store.setView);
 
   const gridStore = useAccountStore((store) => store.gridStore);
   const updateGridStore = useAccountStore((store) => store.updateGridStore);
@@ -55,27 +52,34 @@ export const AccountsContainer = ({
       <AccountManager
         partyId={pubKey}
         onClickAsset={onClickAsset}
-        onClickWithdraw={openWithdrawalDialog}
-        onClickDeposit={openDepositDialog}
+        onClickWithdraw={(assetId) => {
+          setView({ type: ViewType.Withdraw, assetId });
+        }}
+        onClickDeposit={(assetId) => {
+          setView({ type: ViewType.Deposit, assetId });
+        }}
+        onClickTransfer={(assetId) => {
+          setView({ type: ViewType.Transfer, assetId });
+        }}
         onMarketClick={onMarketClick}
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}
         gridProps={gridStoreCallbacks}
       />
       {!isReadOnly && !hideButtons && (
-        <div className="flex gap-2 justify-end p-2 px-[11px] absolute lg:fixed bottom-0 right-3 dark:bg-black/75 bg-white/75 rounded">
+        <div className="flex gap-2 justify-end p-2 absolute bottom-0 right-0 dark:bg-black/75 bg-white/75 rounded">
           <Button
             variant="primary"
             size="sm"
-            data-testid="open-transfer-dialog"
-            onClick={() => openTransferDialog()}
+            data-testid="open-transfer"
+            onClick={() => setView({ type: ViewType.Transfer })}
           >
             {t('Transfer')}
           </Button>
           <Button
             variant="primary"
             size="sm"
-            onClick={() => openDepositDialog()}
+            onClick={() => setView({ type: ViewType.Deposit })}
           >
             {t('Deposit')}
           </Button>

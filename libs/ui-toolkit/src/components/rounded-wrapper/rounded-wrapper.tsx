@@ -17,11 +17,11 @@ export const RoundedWrapper = ({
   heightFull = false,
 }: RoundedWrapperProps) => (
   <div
-    className={classnames('rounded-xl pt-5 px-5 overflow-hidden', {
-      'border border-neutral-700': border,
-      'pb-5': paddingBottom,
+    className={classnames('rounded-xl pt-4 px-4 overflow-hidden', {
+      'border border-default': border,
+      'pb-4': paddingBottom,
       'mb-10': marginBottomLarge,
-      'mb-6': !marginBottomLarge,
+      'mb-4': !marginBottomLarge,
       'h-full': heightFull,
     })}
   >
