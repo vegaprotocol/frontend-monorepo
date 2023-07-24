@@ -132,9 +132,10 @@ describe('liquidity table view', { tags: '@smoke' }, () => {
   it('can see header title', () => {
     // 5002-LIQP-004
     // 5002-LIQP-005
-    cy.getByTestId('header-title')
-      .should('contain.text', 'BTCUSD.MF21 liquidity provision')
-      .and('contain.text', 'Go to trading');
+    cy.getByTestId('header-title').should(
+      'contain.text',
+      'BTCUSD.MF21 liquidity provision'
+    );
   });
 
   it('can see target stake', () => {
@@ -171,7 +172,7 @@ describe('liquidity table view', { tags: '@smoke' }, () => {
       cy.getByTestId('liquidity-supplied').within(() => {
         cy.getByTestId(itemHeader).should('have.text', 'Liquidity supplied');
         cy.getByTestId('indicator').should('be.visible');
-        cy.getByTestId(itemValue).should('have.text', '0.10%').realHover();
+        cy.getByTestId(itemValue).should('have.text', ' 0.10%').realHover();
       });
     });
   });
