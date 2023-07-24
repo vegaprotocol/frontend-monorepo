@@ -4,6 +4,7 @@ import type { envSchema } from './utils/validate-environment';
 
 export enum Networks {
   VALIDATOR_TESTNET = 'VALIDATOR_TESTNET',
+  MAINNET_MIRROR = 'MAINNET_MIRROR',
   CUSTOM = 'CUSTOM',
   TESTNET = 'TESTNET',
   STAGNET1 = 'STAGNET1',

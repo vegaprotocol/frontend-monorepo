@@ -50,13 +50,12 @@ describe('OrderListTable', () => {
     });
     const expectedHeaders = [
       'Market',
+      'Filled',
       'Size',
       'Type',
       'Status',
-      'Filled',
       'Price',
       'Time In Force',
-      'Created At',
       'Updated At',
       '', // no cell header for edit/cancel
     ];
@@ -73,14 +72,13 @@ describe('OrderListTable', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues: string[] = [
       marketOrder.market?.tradableInstrument.instrument.code || '',
-      '+0.10',
+      '0.05',
+      '0.10',
       Schema.OrderTypeMapping[marketOrder.type as Schema.OrderType] || '',
       Schema.OrderStatusMapping[marketOrder.status],
-      '5',
       '-',
-      Schema.OrderTimeInForceMapping[marketOrder.timeInForce],
+      Schema.OrderTimeInForceCode[marketOrder.timeInForce],
       getDateTimeFormat().format(new Date(marketOrder.createdAt)),
-      '-',
       'Edit',
     ];
     expectedValues.forEach((expectedValue, i) =>
@@ -96,16 +94,15 @@ describe('OrderListTable', () => {
 
     const expectedValues: string[] = [
       limitOrder.market?.tradableInstrument.instrument.code || '',
-      '+0.10',
+      '0.05',
+      '0.10',
       Schema.OrderTypeMapping[limitOrder.type || Schema.OrderType.TYPE_LIMIT],
       Schema.OrderStatusMapping[limitOrder.status],
-      '5',
       '-',
       `${
-        Schema.OrderTimeInForceMapping[limitOrder.timeInForce]
+        Schema.OrderTimeInForceCode[limitOrder.timeInForce]
       }: ${getDateTimeFormat().format(new Date(limitOrder.expiresAt ?? ''))}`,
       getDateTimeFormat().format(new Date(limitOrder.createdAt)),
-      '-',
       'Edit',
     ];
     expectedValues.forEach((expectedValue, i) =>
@@ -124,7 +121,7 @@ describe('OrderListTable', () => {
       render(generateJsx({ rowData: [rejectedOrder] }));
     });
     const cells = screen.getAllByRole('gridcell');
-    expect(cells[3]).toHaveTextContent(
+    expect(cells[4]).toHaveTextContent(
       `${Schema.OrderStatusMapping[rejectedOrder.status]}: ${
         Schema.OrderRejectionReasonMapping[rejectedOrder.rejectionReason]
       }`
@@ -193,7 +190,7 @@ describe('OrderListTable', () => {
       });
 
       const amendCell = getAmendCell();
-      const typeCell = screen.getAllByRole('gridcell')[2];
+      const typeCell = screen.getAllByRole('gridcell')[3];
       expect(typeCell).toHaveTextContent('Liquidity provision');
       expect(amendCell.queryByTestId('edit')).not.toBeInTheDocument();
       expect(amendCell.queryByTestId('cancel')).not.toBeInTheDocument();
@@ -215,7 +212,7 @@ describe('OrderListTable', () => {
       });
 
       const amendCell = getAmendCell();
-      const typeCell = screen.getAllByRole('gridcell')[2];
+      const typeCell = screen.getAllByRole('gridcell')[3];
       expect(typeCell).toHaveTextContent('Mid - 10.0 Peg limit');
       expect(amendCell.queryByTestId('edit')).toBeInTheDocument();
       expect(amendCell.queryByTestId('cancel')).toBeInTheDocument();

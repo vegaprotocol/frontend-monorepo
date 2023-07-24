@@ -21,8 +21,8 @@ import type { PubKey } from '@vegaprotocol/wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { WalletIcon } from '../icons/wallet';
-import { useTransferDialog } from '@vegaprotocol/accounts';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
+import { ViewType, useSidebar } from '../sidebar';
 
 const MobileWalletButton = ({
   isConnected,
@@ -35,7 +35,7 @@ const MobileWalletButton = ({
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const openTransferDialog = useTransferDialog((store) => store.open);
+  const setView = useSidebar((store) => store.setView);
   const { VEGA_ENV } = useEnvironment();
   const isYellow = VEGA_ENV === Networks.TESTNET;
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -128,7 +128,7 @@ const MobileWalletButton = ({
             <Button
               onClick={() => {
                 setDrawerOpen(false);
-                openTransferDialog(true);
+                setView({ type: ViewType.Transfer });
               }}
               fill
             >
@@ -149,7 +149,7 @@ export const VegaWalletConnectButton = () => {
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const openTransferDialog = useTransferDialog((store) => store.open);
+  const setView = useSidebar((store) => store.setView);
   const {
     pubKey,
     pubKeys,
@@ -190,6 +190,10 @@ export const VegaWalletConnectButton = () => {
           >
             <DropdownMenuContent
               onInteractOutside={() => setDropdownOpen(false)}
+              sideOffset={17}
+              side="bottom"
+              align="end"
+              onEscapeKeyDown={() => setDropdownOpen(false)}
             >
               <div className="min-w-[340px]" data-testid="keypair-list">
                 <DropdownMenuRadioGroup
@@ -206,7 +210,10 @@ export const VegaWalletConnectButton = () => {
                 {!isReadOnly && (
                   <DropdownMenuItem
                     data-testid="wallet-transfer"
-                    onClick={() => openTransferDialog(true)}
+                    onClick={() => {
+                      setView({ type: ViewType.Transfer });
+                      setDropdownOpen(false);
+                    }}
                   >
                     {t('Transfer')}
                   </DropdownMenuItem>
@@ -260,9 +267,7 @@ const KeypairItem = ({ pk }: { pk: PubKey }) => {
               <VegaIcon name={VegaIconNames.COPY} />
             </button>
           </CopyToClipboard>
-          {copied && (
-            <span className="text-xs text-neutral-500">{t('Copied')}</span>
-          )}
+          {copied && <span className="text-xs">{t('Copied')}</span>}
         </span>
       </div>
       <DropdownMenuItemIndicator />
@@ -303,9 +308,7 @@ const KeypairListItem = ({
             <VegaIcon name={VegaIconNames.COPY} />
           </button>
         </CopyToClipboard>
-        {copied && (
-          <span className="text-xs text-neutral-500">{t('Copied')}</span>
-        )}
+        {copied && <span className="text-xs">{t('Copied')}</span>}
       </span>
     </div>
   );

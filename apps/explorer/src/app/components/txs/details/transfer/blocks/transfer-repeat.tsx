@@ -27,9 +27,9 @@ export function TransferRepeat({ recurring }: TransferRepeatProps) {
     <div className={wrapperClasses}>
       <h2 className={headerClasses}>{t('Active epochs')}</h2>
       <div className="relative block rounded-lg py-6 text-center p-6">
-        <p>
+        <div>
           <EpochOverview id={recurring.startEpoch} />
-        </p>
+        </div>
         <p className="leading-10 my-2">
           <IconForEpoch
             start={recurring.startEpoch}
@@ -37,13 +37,13 @@ export function TransferRepeat({ recurring }: TransferRepeatProps) {
             current={data?.epoch.id}
           />
         </p>
-        <p>
+        <div>
           {recurring.endEpoch ? (
             <EpochOverview id={recurring.endEpoch} />
           ) : (
             <span>{t('Forever')}</span>
           )}
-        </p>
+        </div>
       </div>
     </div>
   );

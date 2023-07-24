@@ -2,18 +2,22 @@ import classNames from 'classnames';
 import { toastIconMapping } from '../toast';
 import { Intent } from '../../utils/intent';
 import { Icon } from '../icon';
+import type { HTMLAttributes } from 'react';
 
 interface NotificationBannerProps {
   intent?: Intent;
   children?: React.ReactNode;
   onClose?: () => void;
+  className?: classNames.Argument;
 }
 
 export const NotificationBanner = ({
   intent = Intent.None,
   children,
   onClose,
-}: NotificationBannerProps) => {
+  className,
+  ...props
+}: NotificationBannerProps & HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
       className={classNames(
@@ -25,7 +29,7 @@ export const NotificationBanner = ({
           'bg-vega-green-300 dark:bg-vega-green-700': intent === Intent.Success,
           'bg-vega-orange-300 dark:bg-vega-orange-700':
             intent === Intent.Warning,
-          'bg-vega-pink-300 dark:bg-vega-pink-700': intent === Intent.Danger,
+          'bg-vega-red-300 dark:bg-vega-red-700': intent === Intent.Danger,
         },
         {
           'border-b-vega-light-200 dark:border-b-vega-dark-200 ':
@@ -40,10 +44,12 @@ export const NotificationBanner = ({
           'border-b-vega-orange-500 dark:border-b-vega-orange-500':
             intent === Intent.Warning,
 
-          'border-b-vega-pink-500 dark:border-b-vega-pink-500':
+          'border-b-vega-red-500 dark:border-b-vega-red-500':
             intent === Intent.Danger,
-        }
+        },
+        className
       )}
+      {...props}
     >
       {intent === Intent.None ? null : (
         <Icon
@@ -59,7 +65,7 @@ export const NotificationBanner = ({
             'text-vega-orange-500 dark:text-vega-orange-500':
               intent === Intent.Warning,
 
-            'text-vega-pink-500 dark:text-vega-pink-500':
+            'text-vega-red-500 dark:text-vega-red-500':
               intent === Intent.Danger,
           })}
         />

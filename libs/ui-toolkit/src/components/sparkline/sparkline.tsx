@@ -1,7 +1,6 @@
 import { extent } from 'd3-array';
 import { scaleLinear } from 'd3-scale';
 import { line } from 'd3-shape';
-import classNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import React from 'react';
 
@@ -9,8 +8,8 @@ function colorByChange(a: number, b: number) {
   return a === b
     ? 'stroke-black/40 dark:stroke-white/40'
     : a < b
-    ? 'stroke-vega-green dark:stroke-vega-green'
-    : 'stroke-vega-pink dark:stroke-vega-pink';
+    ? 'stroke-market-green-600 dark:stroke-market-green'
+    : 'stroke-market-red dark:stroke-market-red';
 }
 
 export interface SparklineProps {
@@ -92,7 +91,7 @@ export const SparklineView = ({
   return (
     <svg
       data-testid="sparkline-svg"
-      className={classNames('w-full', className)}
+      className={className}
       width={width}
       height={height}
       viewBox="0 0 100 100"

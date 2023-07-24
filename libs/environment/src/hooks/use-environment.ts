@@ -359,6 +359,14 @@ function compileEnvVars() {
     ),
     APP_VERSION: windowOrDefault('APP_VERSION', process.env['NX_APP_VERSION']),
     SENTRY_DSN: windowOrDefault('SENTRY_DSN', process.env['NX_SENTRY_DSN']),
+    TENDERMINT_URL: windowOrDefault(
+      'NX_TENDERMINT_URL',
+      process.env['NX_TENDERMINT_URL']
+    ),
+    TENDERMINT_WEBSOCKET_URL: windowOrDefault(
+      'NX_TENDERMINT_WEBSOCKET_URL',
+      process.env['NX_TENDERMINT_WEBSOCKET_URL']
+    ),
   };
 
   return env;

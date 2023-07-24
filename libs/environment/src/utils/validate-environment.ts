@@ -2,6 +2,7 @@ import z from 'zod';
 
 export enum Networks {
   VALIDATOR_TESTNET = 'VALIDATOR_TESTNET',
+  MAINNET_MIRROR = 'MAINNET_MIRROR',
   CUSTOM = 'CUSTOM',
   TESTNET = 'TESTNET',
   STAGNET1 = 'STAGNET1',
@@ -53,6 +54,8 @@ const schemaObject = {
   VEGA_INCIDENT_URL: z.optional(z.string()),
   APP_VERSION: z.optional(z.string()),
   SENTRY_DSN: z.optional(z.string()),
+  TENDERMINT_URL: z.optional(z.string()),
+  TENDERMINT_WEBSOCKET_URL: z.optional(z.string()),
 };
 
 // combine schema above with custom rule to ensure either

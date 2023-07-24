@@ -13,6 +13,22 @@ module.exports = {
     current: 'currentColor',
     black: '#000000',
     white: '#FFFFFF',
+    market: {
+      red: {
+        // same as vega-red
+        650: '#550016',
+        DEFAULT: '#EC003C',
+        300: '#FDD9DC',
+      },
+      green: {
+        // same as vega-green
+        650: '#015D30',
+        600: '#01914B',
+        550: '#01C566',
+        DEFAULT: '#00F780',
+        300: '#DDFEE8',
+      },
+    },
     vega: {
       // YELLOW
       yellow: {
@@ -32,7 +48,7 @@ module.exports = {
       green: {
         700: '#012915',
         650: '#015D30',
-        600: '#01914B',
+        600: '#008545',
         550: '#01C566',
         DEFAULT: '#00F780',
         500: '#00F780',
@@ -84,6 +100,20 @@ module.exports = {
         300: '#FFD7EA',
       },
 
+      // RED
+      red: {
+        700: '#2F000C',
+        650: '#550016',
+        600: '#7B001F',
+        550: '#B3002E',
+        DEFAULT: '#EC003C',
+        500: '#EC003C',
+        450: '#F03D6B',
+        400: '#F4668A',
+        350: '#F78FA9',
+        300: '#F8A3B9',
+      },
+
       // ORANGE
       orange: {
         700: '#2A1701',
@@ -114,6 +144,32 @@ module.exports = {
         200: '#D2D2D2',
         300: '#939393',
         400: '#626262',
+      },
+
+      cdark: {
+        50: '#DCDEE3', // text-primary-light
+        100: '#94969B', // text-secondary
+        200: '#7C7E83',
+        300: '#626469',
+        400: '#44464B',
+        500: '#323339', // surface-container-highest
+        600: '#292B30',
+        700: '#202227',
+        800: '#17191E', // surface-container
+        900: '#05060C',
+      },
+
+      clight: {
+        50: '#040405',
+        100: '#4C4E51',
+        200: '#65676B',
+        300: '#818388',
+        400: '#AAABAE',
+        500: '#D1D2D3',
+        600: '#E9E9EA',
+        700: '#EEEEEF',
+        800: '#F4F4F4',
+        900: '#F9FAFA',
       },
     },
     danger: '#FF077F',

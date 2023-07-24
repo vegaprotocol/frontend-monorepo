@@ -31,9 +31,8 @@ import { AccountsActionsDropdown } from './accounts-actions-dropdown';
 
 const colorClass = (percentageUsed: number, neutral = false) => {
   return classNames('text-right', {
-    'text-neutral-500 dark:text-neutral-400': percentageUsed < 75 && !neutral,
     'text-vega-orange': percentageUsed >= 75 && percentageUsed < 90,
-    'text-vega-pink': percentageUsed >= 90,
+    'text-vega-red': percentageUsed >= 90,
   });
 };
 
@@ -71,6 +70,7 @@ export interface AccountTableProps extends AgGridReactProps {
   onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
   onClickBreakdown?: (assetId: string) => void;
+  onClickTransfer?: (assetId: string) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
 }
@@ -82,6 +82,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
       onClickWithdraw,
       onClickDeposit,
       onClickBreakdown,
+      onClickTransfer,
       rowData,
       isReadOnly,
       pinnedAsset,
@@ -183,8 +184,8 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
             ) : (
               <>
                 <span className="underline">{valueFormatted}</span>
-                <span className="ml-2 inline-block w-14 text-vega-light-200 dark:text-vega-dark-200">
-                  {t('0.00%')}'
+                <span className="ml-2 inline-block w-14 text-muted">
+                  {t('0.00%')}
                 </span>
               </>
             );
@@ -285,6 +286,9 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
                 onClickBreakdown={() => {
                   onClickBreakdown && onClickBreakdown(assetId);
                 }}
+                onClickTransfer={() => {
+                  onClickTransfer && onClickTransfer(assetId);
+                }}
               />
             );
           },
@@ -296,6 +300,7 @@ export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
       onClickBreakdown,
       onClickDeposit,
       onClickWithdraw,
+      onClickTransfer,
       isReadOnly,
       showDepositButton,
     ]);

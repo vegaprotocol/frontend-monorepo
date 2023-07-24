@@ -40,7 +40,7 @@ context.skip('Transactions page', function () {
             .first()
             .click({ force: true });
         } else {
-          cy.slack('Unable to find any transactions on page');
+          cy.log('Unable to find any transactions on page');
           cy.screenshot();
         }
       });
@@ -60,31 +60,16 @@ context.skip('Transactions page', function () {
             });
           cy.get('block').should('not.be.empty');
           cy.get('encoded-tnx').should('not.be.empty');
-          /**
-           * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-           * You should use .then() to chain commands instead.
-           * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-           **/
           cy.get('tx-type')
             .should('not.be.empty')
             .invoke('text')
             .then((txTypeTxt) => {
               if (txTypeTxt == 'Order Submission') {
-                /**
-                 * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-                 * You should use .then() to chain commands instead.
-                 * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-                 **/
                 cy.get('.hljs-attr')
                   .should('have.length.at.least', 8)
                   .each(($propertyName) => {
                     cy.wrap($propertyName).should('not.be.empty');
                   });
-                /**
-                 * TODO(@nx/cypress): Nesting Cypress commands in a should assertion now throws.
-                 * You should use .then() to chain commands instead.
-                 * More Info: https://docs.cypress.io/guides/references/migration-guide#-should
-                 **/
                 cy.get('.hljs-string')
                   .should('have.length.at.least', 8)
                   .each(($propertyValue) => {
@@ -93,7 +78,7 @@ context.skip('Transactions page', function () {
               }
             });
         } else {
-          cy.slack('Unable to find any transactions on page');
+          cy.log('Unable to find any transactions on page');
           cy.screenshot();
         }
       });

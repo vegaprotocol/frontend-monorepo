@@ -6,6 +6,7 @@ import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
 import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 jest.mock('./liquidation-price', () => ({
   LiquidationPrice: () => (
@@ -19,7 +20,7 @@ const singleRow: Position = {
   assetSymbol: 'BTC',
   averageEntryPrice: '133',
   currentLeverage: 1.1,
-  decimals: 2,
+  decimals: 2, // this is settlementAsset.decimals
   quantum: '0.1',
   lossSocializationAmount: '0',
   marginAccountBalance: '12345600',
@@ -102,8 +103,8 @@ it('add color and sign to amount, displays positive notional value', async () =>
   });
   let cells = screen.getAllByRole('gridcell');
 
-  expect(cells[2].classList.contains('text-vega-green-550')).toBeTruthy();
-  expect(cells[2].classList.contains('text-vega-pink')).toBeFalsy();
+  expect(cells[2].classList.contains('text-market-green-600')).toBeTruthy();
+  expect(cells[2].classList.contains('text-market-red')).toBeFalsy();
   expect(cells[2].textContent).toEqual('+100');
   expect(cells[1].textContent).toEqual('1,230.0');
   await act(async () => {
@@ -115,8 +116,8 @@ it('add color and sign to amount, displays positive notional value', async () =>
     );
   });
   cells = screen.getAllByRole('gridcell');
-  expect(cells[2].classList.contains('text-vega-green-550')).toBeFalsy();
-  expect(cells[2].classList.contains('text-vega-pink')).toBeTruthy();
+  expect(cells[2].classList.contains('text-market-green-600')).toBeFalsy();
+  expect(cells[2].classList.contains('text-market-red')).toBeTruthy();
   expect(cells[2].textContent?.startsWith('-100')).toBeTruthy();
   expect(cells[1].textContent).toEqual('1,230.0');
 });
@@ -177,12 +178,23 @@ it('displays allocated margin', async () => {
 });
 
 it('displays realised and unrealised PNL', async () => {
+  // pnl cells should be rendered with asset dps
+  const expectedRealised = addDecimalsFormatNumber(
+    singleRow.realisedPNL,
+    singleRow.decimals
+  );
+  const expectedUnrealised = addDecimalsFormatNumber(
+    singleRow.unrealisedPNL,
+    singleRow.decimals
+  );
+
   await act(async () => {
     render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
   });
+
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[9].textContent).toEqual('12.3');
-  expect(cells[10].textContent).toEqual('45.6');
+  expect(cells[9].textContent).toEqual(expectedRealised);
+  expect(cells[10].textContent).toEqual(expectedUnrealised);
 });
 
 it('displays close button', async () => {

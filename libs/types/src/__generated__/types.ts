@@ -92,8 +92,12 @@ export enum AccountType {
   ACCOUNT_TYPE_GLOBAL_INSURANCE = 'ACCOUNT_TYPE_GLOBAL_INSURANCE',
   /** GlobalReward - a global account for the reward pool */
   ACCOUNT_TYPE_GLOBAL_REWARD = 'ACCOUNT_TYPE_GLOBAL_REWARD',
+  /** AccountTypeHolding - an account for holding funds covering for active unfilled orders */
+  ACCOUNT_TYPE_HOLDING = 'ACCOUNT_TYPE_HOLDING',
   /** Insurance pool account - only for 'system' party */
   ACCOUNT_TYPE_INSURANCE = 'ACCOUNT_TYPE_INSURANCE',
+  /** Per liquidity provider, per market account for holding LPs' fees before distribution */
+  ACCOUNT_TYPE_LP_LIQUIDITY_FEES = 'ACCOUNT_TYPE_LP_LIQUIDITY_FEES',
   /**
    * Margin - The leverage account for parties, contains funds set aside for the margin needed to support
    * a party's open positions. Each party will have a margin account for each market they have traded in.
@@ -356,6 +360,13 @@ export enum BusEventType {
   Withdrawal = 'Withdrawal'
 }
 
+/** Allows for cancellation of an existing governance transfer */
+export type CancelTransfer = {
+  __typename?: 'CancelTransfer';
+  /** The governance transfer to cancel */
+  transferId: Scalars['ID'];
+};
+
 /** Candle stick representation of trading */
 export type Candle = {
   __typename?: 'Candle';
@@ -367,6 +378,8 @@ export type Candle = {
   lastUpdateInPeriod: Scalars['Timestamp'];
   /** Low price (uint64) */
   low: Scalars['String'];
+  /** Total notional value of trades (uint64) */
+  notional: Scalars['String'];
   /** Open price (uint64) */
   open: Scalars['String'];
   /** RFC3339Nano formatted date and time for the candle start time */
@@ -1123,6 +1136,17 @@ export type FutureProduct = {
   settlementAsset: Asset;
 };
 
+export type GovernanceTransferKind = OneOffGovernanceTransfer | RecurringGovernanceTransfer;
+
+export enum GovernanceTransferType {
+  /** Transfers the specified amount or does not transfer anything */
+  GOVERNANCE_TRANSFER_TYPE_ALL_OR_NOTHING = 'GOVERNANCE_TRANSFER_TYPE_ALL_OR_NOTHING',
+  /** Transfers the specified amount or the max allowable amount if this is less than the specified amount */
+  GOVERNANCE_TRANSFER_TYPE_BEST_EFFORT = 'GOVERNANCE_TRANSFER_TYPE_BEST_EFFORT',
+  /** Default value, always invalid */
+  GOVERNANCE_TRANSFER_TYPE_UNSPECIFIED = 'GOVERNANCE_TRANSFER_TYPE_UNSPECIFIED'
+}
+
 /** A segment of data node history */
 export type HistorySegment = {
   __typename?: 'HistorySegment';
@@ -1316,10 +1340,12 @@ export type LiquidityProviderFeeShare = {
   averageEntryValuation: Scalars['String'];
   /** The average liquidity score */
   averageScore: Scalars['String'];
-  /** The share owned by this liquidity provider (float) */
+  /** The share owned by this liquidity provider */
   equityLikeShare: Scalars['String'];
   /** The liquidity provider party ID */
   party: Party;
+  /** The virtual stake for this liquidity provider */
+  virtualStake: Scalars['String'];
 };
 
 /** The command to be sent to the chain for a liquidity provision submission */
@@ -1334,7 +1360,7 @@ export type LiquidityProvision = {
   /** Nominated liquidity fee factor, which is an input to the calculation of liquidity fees on the market, as per setting fees and rewarding liquidity providers. */
   fee: Scalars['String'];
   /** Unique identifier for the order (set by the system after consensus) */
-  id?: Maybe<Scalars['ID']>;
+  id: Scalars['ID'];
   /** Market for the order */
   market: Market;
   /** The party making this commitment */
@@ -1383,7 +1409,7 @@ export type LiquidityProvisionUpdate = {
   /** Nominated liquidity fee factor, which is an input to the calculation of liquidity fees on the market, as per setting fees and rewarding liquidity providers. */
   fee: Scalars['String'];
   /** Unique identifier for the order (set by the system after consensus) */
-  id?: Maybe<Scalars['ID']>;
+  id: Scalars['ID'];
   /** Market for the order */
   marketID: Scalars['ID'];
   /** The party making this commitment */
@@ -1557,6 +1583,8 @@ export type Market = {
   fees: Fees;
   /** Market ID */
   id: Scalars['ID'];
+  /** Optional: When a successor market is created, a fraction of the parent market's insurance pool can be transferred to the successor market */
+  insurancePoolFraction?: Maybe<Scalars['String']>;
   /** Linear slippage factor is used to cap the slippage component of maintainence margin - it is applied to the slippage volume */
   linearSlippageFactor: Scalars['String'];
   /** Liquidity monitoring parameters for the market */
@@ -1575,6 +1603,11 @@ export type Market = {
   /** Orders on a market */
   ordersConnection?: Maybe<OrderConnection>;
   /**
+   * Optional: Parent market ID. A market can be a successor to another market. If this market is a successor to a previous market,
+   * this field will be populated with the ID of the previous market.
+   */
+  parentMarketID?: Maybe<Scalars['ID']>;
+  /**
    * The number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
@@ -1591,6 +1624,8 @@ export type Market = {
   riskFactors?: Maybe<RiskFactor>;
   /** Current state of the market */
   state: MarketState;
+  /** Optional: Market ID of the successor to this market if one exists */
+  successorMarketID?: Maybe<Scalars['ID']>;
   /** An instance of, or reference to, a tradable instrument. */
   tradableInstrument: TradableInstrument;
   /** @deprecated Simplify and consolidate trades query and remove nesting. Use trades query instead */
@@ -1683,12 +1718,16 @@ export type MarketData = {
   indicativePrice: Scalars['String'];
   /** Indicative volume if the auction ended now, 0 if not in auction mode */
   indicativeVolume: Scalars['String'];
+  /** The last traded price (an unsigned integer) */
+  lastTradedPrice: Scalars['String'];
   /** The equity like share of liquidity fee for each liquidity provider */
   liquidityProviderFeeShare?: Maybe<Array<LiquidityProviderFeeShare>>;
   /** The mark price (an unsigned integer) */
   markPrice: Scalars['String'];
   /** Market of the associated mark price */
   market: Market;
+  /** The market growth factor for the last market time window */
+  marketGrowth: Scalars['String'];
   /** Current state of the market */
   marketState: MarketState;
   /** What mode the market is in (auction, continuous, etc) */
@@ -1786,7 +1825,7 @@ export type MarketDepthUpdate = {
   sequenceNumber: Scalars['String'];
 };
 
-/** Edge type containing the order and cursor information returned by a OrderConnection */
+/** Edge type containing the market and cursor information returned by a MarketConnection */
 export type MarketEdge = {
   __typename?: 'MarketEdge';
   /** The cursor for this market */
@@ -1943,7 +1982,7 @@ export type NewMarket = {
   decimalPlaces: Scalars['Int'];
   /** New market instrument configuration */
   instrument: InstrumentConfiguration;
-  /** Linear slippage factor is used to cap the slippage component of maintainence margin - it is applied to the slippage volume */
+  /** Linear slippage factor is used to cap the slippage component of maintenance margin - it is applied to the slippage volume */
   linearSlippageFactor: Scalars['String'];
   /** Liquidity monitoring parameters */
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
@@ -1955,10 +1994,34 @@ export type NewMarket = {
   positionDecimalPlaces: Scalars['Int'];
   /** Price monitoring parameters */
   priceMonitoringParameters: PriceMonitoringParameters;
-  /** Quadratic slippage factor is used to cap the slippage component of maintainence margin - it is applied to the square of the slippage volume */
+  /** Quadratic slippage factor is used to cap the slippage component of maintenance margin - it is applied to the square of the slippage volume */
   quadraticSlippageFactor: Scalars['String'];
   /** New market risk configuration */
   riskParameters: RiskModel;
+  /** Successor market configuration. If this proposed market is meant to succeed a given market, then this needs to be set. */
+  successorConfiguration?: Maybe<SuccessorConfiguration>;
+};
+
+export type NewTransfer = {
+  __typename?: 'NewTransfer';
+  /** The maximum amount to be transferred */
+  amount: Scalars['String'];
+  /** The asset to transfer */
+  asset: Asset;
+  /** The destination account */
+  destination: Scalars['String'];
+  /** The type of destination account */
+  destinationType: AccountType;
+  /** The fraction of the balance to be transferred */
+  fraction_of_balance: Scalars['String'];
+  /** The type of governance transfer being made, i.e. a one-off or recurring transfer */
+  kind: GovernanceTransferKind;
+  /** The source account */
+  source: Scalars['String'];
+  /** The type of source account */
+  sourceType: AccountType;
+  /** The type of the governance transfer */
+  transferType: GovernanceTransferType;
 };
 
 /** Information available for a node */
@@ -2172,10 +2235,14 @@ export type ObservableMarketData = {
   indicativePrice: Scalars['String'];
   /** Indicative volume if the auction ended now, 0 if not in auction mode */
   indicativeVolume: Scalars['String'];
+  /** The last traded price (an unsigned integer) */
+  lastTradedPrice: Scalars['String'];
   /** The equity like share of liquidity fee for each liquidity provider */
   liquidityProviderFeeShare?: Maybe<Array<ObservableLiquidityProviderFeeShare>>;
   /** The mark price (an unsigned integer) */
   markPrice: Scalars['String'];
+  /** The market growth factor for the last market time window */
+  marketGrowth: Scalars['String'];
   /** Market ID of the associated mark price */
   marketId: Scalars['ID'];
   /** Current state of the market */
@@ -2238,6 +2305,13 @@ export type ObservableMarketDepthUpdate = {
   sell?: Maybe<Array<PriceLevel>>;
   /** Sequence number for the current snapshot of the market depth. It is always increasing but not monotonic. */
   sequenceNumber: Scalars['String'];
+};
+
+/** The specific details for a one-off governance transfer */
+export type OneOffGovernanceTransfer = {
+  __typename?: 'OneOffGovernanceTransfer';
+  /** An optional time when the transfer should be delivered */
+  deliverOn?: Maybe<Scalars['Timestamp']>;
 };
 
 /** The specific details for a one-off transfer */
@@ -3133,7 +3207,7 @@ export type Proposal = {
   votes: ProposalVotes;
 };
 
-export type ProposalChange = NewAsset | NewFreeform | NewMarket | UpdateAsset | UpdateMarket | UpdateNetworkParameter;
+export type ProposalChange = CancelTransfer | NewAsset | NewFreeform | NewMarket | NewTransfer | UpdateAsset | UpdateMarket | UpdateNetworkParameter;
 
 export type ProposalDetail = {
   __typename?: 'ProposalDetail';
@@ -3204,6 +3278,12 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_ENACT_TIME_TOO_SOON = 'PROPOSAL_ERROR_ENACT_TIME_TOO_SOON',
   /** The ERC-20 address specified by this proposal is already in use by another asset */
   PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE = 'PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE',
+  /** The proposal for cancellation of an active governance transfer has failed */
+  PROPOSAL_ERROR_GOVERNANCE_CANCEL_TRANSFER_PROPOSAL_INVALID = 'PROPOSAL_ERROR_GOVERNANCE_CANCEL_TRANSFER_PROPOSAL_INVALID',
+  /** The governance transfer proposal has failed */
+  PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_FAILED = 'PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_FAILED',
+  /** The governance transfer proposal is invalid */
+  PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_INVALID = 'PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_INVALID',
   /** Proposal terms timestamps are not compatible (Validation < Closing < Enactment) */
   PROPOSAL_ERROR_INCOMPATIBLE_TIMESTAMPS = 'PROPOSAL_ERROR_INCOMPATIBLE_TIMESTAMPS',
   /** The proposal is rejected because the party does not have enough equity like share in the market */
@@ -3228,6 +3308,10 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_INVALID_RISK_PARAMETER = 'PROPOSAL_ERROR_INVALID_RISK_PARAMETER',
   /** Market proposal has one or more invalid liquidity shapes */
   PROPOSAL_ERROR_INVALID_SHAPE = 'PROPOSAL_ERROR_INVALID_SHAPE',
+  /** Validation of spot market proposal failed */
+  PROPOSAL_ERROR_INVALID_SPOT = 'PROPOSAL_ERROR_INVALID_SPOT',
+  /** Validation of successor market has failed */
+  PROPOSAL_ERROR_INVALID_SUCCESSOR_MARKET = 'PROPOSAL_ERROR_INVALID_SUCCESSOR_MARKET',
   /** Proposal declined because the majority threshold was not reached */
   PROPOSAL_ERROR_MAJORITY_THRESHOLD_NOT_REACHED = 'PROPOSAL_ERROR_MAJORITY_THRESHOLD_NOT_REACHED',
   /** Market proposal is missing a liquidity commitment */
@@ -3258,6 +3342,8 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_OPENING_AUCTION_DURATION_TOO_SMALL = 'PROPOSAL_ERROR_OPENING_AUCTION_DURATION_TOO_SMALL',
   /** Proposal declined because the participation threshold was not reached */
   PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED = 'PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED',
+  /** Spot trading is disabled */
+  PROPOSAL_ERROR_SPOT_PRODUCT_DISABLED = 'PROPOSAL_ERROR_SPOT_PRODUCT_DISABLED',
   /** Too many decimal places specified in market */
   PROPOSAL_ERROR_TOO_MANY_MARKET_DECIMAL_PLACES = 'PROPOSAL_ERROR_TOO_MANY_MARKET_DECIMAL_PLACES',
   /** Too many price monitoring triggers specified in market */
@@ -3547,6 +3633,8 @@ export type Query = {
   stopOrder?: Maybe<StopOrder>;
   /** Get a list of stop orders. If provided, the filter will be applied to the list of stop orders to restrict the results. */
   stopOrders?: Maybe<StopOrderConnection>;
+  /** List markets in a succession line */
+  successorMarkets?: Maybe<SuccessorMarketConnection>;
   /** Get a list of all trades and apply any given filters to the results */
   trades?: Maybe<TradeConnection>;
   /** Get a list of all transfers for a public key */
@@ -3606,6 +3694,7 @@ export type QueryentitiesArgs = {
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryepochArgs = {
+  block?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['ID']>;
 };
 
@@ -3865,6 +3954,14 @@ export type QuerystopOrdersArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerysuccessorMarketsArgs = {
+  fullHistory?: InputMaybe<Scalars['Boolean']>;
+  marketId: Scalars['ID'];
+  pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerytradesArgs = {
   dateRange?: InputMaybe<DateRange>;
   filter?: InputMaybe<TradesFilter>;
@@ -3906,6 +4003,15 @@ export type RankingScore = {
   status: ValidatorStatus;
   /** The Tendermint voting power of the validator (uint32) */
   votingPower: Scalars['String'];
+};
+
+/** The specific details for a recurring governance transfer */
+export type RecurringGovernanceTransfer = {
+  __typename?: 'RecurringGovernanceTransfer';
+  /** An optional epoch at which this transfer will stop */
+  endEpoch?: Maybe<Scalars['Int']>;
+  /** The epoch at which this recurring transfer will start */
+  startEpoch: Scalars['Int'];
 };
 
 /** The specific details for a recurring transfer */
@@ -4486,6 +4592,40 @@ export type SubscriptionvotesArgs = {
   proposalId?: InputMaybe<Scalars['ID']>;
 };
 
+export type SuccessorConfiguration = {
+  __typename?: 'SuccessorConfiguration';
+  /** Decimal value between 0 and 1, specifying the fraction of the insurance pool balance is carried over from the parent market to the successor. */
+  insurancePoolFraction: Scalars['String'];
+  /** ID of the market this proposal will succeed */
+  parentMarketId: Scalars['String'];
+};
+
+export type SuccessorMarket = {
+  __typename?: 'SuccessorMarket';
+  /** The market */
+  market: Market;
+  /** Proposals for child markets */
+  proposals?: Maybe<Array<Maybe<Proposal>>>;
+};
+
+/** Connection type for retrieving cursor-based paginated market information */
+export type SuccessorMarketConnection = {
+  __typename?: 'SuccessorMarketConnection';
+  /** The markets in this connection */
+  edges: Array<SuccessorMarketEdge>;
+  /** The pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing the market and cursor information returned by a MarketConnection */
+export type SuccessorMarketEdge = {
+  __typename?: 'SuccessorMarketEdge';
+  /** The cursor for this market */
+  cursor: Scalars['String'];
+  /** The market */
+  node: SuccessorMarket;
+};
+
 /** TargetStakeParameters contains parameters used in target stake calculation */
 export type TargetStakeParameters = {
   __typename?: 'TargetStakeParameters';
@@ -4718,7 +4858,7 @@ export type TransferEdge = {
   node: Transfer;
 };
 
-export type TransferKind = OneOffTransfer | RecurringTransfer;
+export type TransferKind = OneOffGovernanceTransfer | OneOffTransfer | RecurringGovernanceTransfer | RecurringTransfer;
 
 export type TransferResponse = {
   __typename?: 'TransferResponse';
@@ -4765,6 +4905,10 @@ export enum TransferType {
   TRANSFER_TYPE_CLEAR_ACCOUNT = 'TRANSFER_TYPE_CLEAR_ACCOUNT',
   /** Funds deposited to general account */
   TRANSFER_TYPE_DEPOSIT = 'TRANSFER_TYPE_DEPOSIT',
+  /** An internal instruction to transfer a quantity corresponding to an active spot order from a general account into a party holding account */
+  TRANSFER_TYPE_HOLDING_LOCK = 'TRANSFER_TYPE_HOLDING_LOCK',
+  /** An internal instruction to transfer an excess quantity corresponding to an active spot order from a holding account into a party general account */
+  TRANSFER_TYPE_HOLDING_RELEASE = 'TRANSFER_TYPE_HOLDING_RELEASE',
   /** Infrastructure fee received into general account */
   TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE = 'TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE',
   /** Infrastructure fee paid from general account */
@@ -4791,6 +4935,8 @@ export enum TransferType {
   TRANSFER_TYPE_MTM_WIN = 'TRANSFER_TYPE_MTM_WIN',
   /** Reward payout received */
   TRANSFER_TYPE_REWARD_PAYOUT = 'TRANSFER_TYPE_REWARD_PAYOUT',
+  /** Spot trade delivery */
+  TRANSFER_TYPE_SPOT = 'TRANSFER_TYPE_SPOT',
   /** A network internal instruction for the collateral engine to move funds from the pending transfers pool account into the destination account */
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE = 'TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE',
   /** A network internal instruction for the collateral engine to move funds from a user's general account into the pending transfers pool */

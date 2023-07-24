@@ -17,7 +17,7 @@ describe(
       cy.visit('/#/portfolio');
       cy.mockTradingPage();
       cy.mockSubscription();
-      cy.get('main[data-testid="/portfolio"]').should('exist');
+      cy.get('[data-testid="pathname-/portfolio"]').should('exist');
     });
 
     it('can connect', () => {
@@ -63,7 +63,7 @@ describe(
       cy.contains('Hosted Fairground wallet');
 
       cy.getByTestId('connectors-list')
-        .find('[data-testid="connector-hosted"]')
+        .find('[data-testid="connector-rest"]')
         .click();
       cy.getByTestId(form).find('#wallet').click().type('user');
       cy.getByTestId(form).find('#passphrase').click().type('pass');
@@ -89,7 +89,7 @@ describe(
       );
       cy.getByTestId(connectVegaBtn).click();
       cy.getByTestId('connectors-list')
-        .find('[data-testid="connector-hosted"]')
+        .find('[data-testid="connector-rest"]')
         .click();
       cy.getByTestId(form).find('#wallet').click().type('invalid name');
       cy.getByTestId(form).find('#passphrase').click().type('invalid password');
@@ -100,7 +100,7 @@ describe(
     it('doesnt connect with empty fields', () => {
       cy.getByTestId(connectVegaBtn).click();
       cy.getByTestId('connectors-list')
-        .find('[data-testid="connector-hosted"]')
+        .find('[data-testid="connector-rest"]')
         .click();
 
       cy.getByTestId('rest-connector-form').find('button[type=submit]').click();
@@ -122,7 +122,7 @@ describe('connect vega wallet', { tags: '@smoke', testIsolation: true }, () => {
     cy.visit('/#/portfolio');
     cy.mockTradingPage();
     cy.mockSubscription();
-    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
   });
 
   it('can connect', () => {

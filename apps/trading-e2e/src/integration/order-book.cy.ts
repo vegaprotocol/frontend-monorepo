@@ -1,14 +1,15 @@
 const orderbookTab = 'Orderbook';
 const orderbookTable = 'tab-orderbook';
-const askPrice = 'price-9894585';
+const askPrice = 'price-9894185';
 const bidPrice = 'price-9889001';
-const askVolume = 'ask-vol-9894585';
+const askVolume = 'ask-vol-9894185';
 const bidVolume = 'bid-vol-9889001';
-const askCumulative = 'cumulative-vol-9894585';
+const askCumulative = 'cumulative-vol-9894185';
 const bidCumulative = 'cumulative-vol-9889001';
 const midPrice = 'middle-mark-price-4612690000';
 const priceResolution = 'resolution';
 const dealTicketPrice = 'order-price';
+const dealTicketSize = 'order-size';
 const resPrice = 'price-990';
 
 describe('order book', { tags: '@smoke' }, () => {
@@ -33,7 +34,7 @@ describe('order book', { tags: '@smoke' }, () => {
 
   it('show orders prices', () => {
     // 6003-ORDB-003
-    cy.getByTestId(askPrice).should('have.text', '98.94585');
+    cy.getByTestId(askPrice).should('have.text', '98.94185');
     cy.getByTestId(bidPrice).should('have.text', '98.89001');
   });
 
@@ -45,7 +46,7 @@ describe('order book', { tags: '@smoke' }, () => {
 
   it('show prices cumulative volumes', () => {
     // 6003-ORDB-005
-    cy.getByTestId(askCumulative).should('have.text', '39');
+    cy.getByTestId(askCumulative).should('have.text', '38');
     cy.getByTestId(bidCumulative).should('have.text', '7');
   });
 
@@ -71,7 +72,19 @@ describe('order book', { tags: '@smoke' }, () => {
   it('copy price to deal ticket form', () => {
     // 6003-ORDB-009
     cy.getByTestId(askPrice).click();
-    cy.getByTestId(dealTicketPrice).should('have.value', '98.94585');
+    cy.getByTestId(dealTicketPrice).should('have.value', '98.94185');
+  });
+
+  it('copy size to deal ticket form', () => {
+    // 6003-ORDB-009
+    cy.getByTestId(bidCumulative).click();
+    cy.getByTestId(dealTicketSize).should('have.value', '7');
+  });
+
+  it('copy size to deal ticket form', () => {
+    // 6003-ORDB-009
+    cy.getByTestId(bidVolume).click();
+    cy.getByTestId(dealTicketSize).should('have.value', '1');
   });
 
   it('change price resolution', () => {
@@ -88,13 +101,14 @@ describe('order book', { tags: '@smoke' }, () => {
       '1,000',
       '10,000',
     ];
-    cy.getByTestId(priceResolution)
-      .find('option')
+    cy.getByTestId(priceResolution).click();
+    cy.get('[role="menu"]')
+      .find('[role="menuitem"]')
       .each(($el, index) => {
         expect($el.text()).to.equal(resolutions[index]);
       });
 
-    cy.getByTestId(priceResolution).select('0.0');
+    cy.get('[role="menuitem"]').eq(4).click();
     cy.getByTestId(resPrice).should('have.text', '99.0');
     cy.getByTestId(askPrice).should('not.exist');
     cy.getByTestId(bidPrice).should('not.exist');

@@ -16,6 +16,7 @@ import classNames from 'classnames';
 
 export const envNameMapping: Record<Networks, string> = {
   [Networks.VALIDATOR_TESTNET]: t('VALIDATOR_TESTNET'),
+  [Networks.MAINNET_MIRROR]: t('Mainnet-mirror'),
   [Networks.CUSTOM]: t('Custom'),
   [Networks.DEVNET]: t('Devnet'),
   [Networks.STAGNET1]: t('Stagnet'),
@@ -31,6 +32,7 @@ export const envTriggerMapping: Record<Networks, string> = {
 export const envDescriptionMapping: Record<Networks, string> = {
   [Networks.CUSTOM]: '',
   [Networks.VALIDATOR_TESTNET]: t('The validator deployed testnet'),
+  [Networks.MAINNET_MIRROR]: t('The mainnet-mirror network'),
   [Networks.DEVNET]: t('The latest Vega code auto-deployed'),
   [Networks.STAGNET1]: t('A release candidate for the staging environment'),
   [Networks.TESTNET]: t(
@@ -120,7 +122,7 @@ export const NetworkSwitcher = ({
         </DropdownMenuTrigger>
       }
     >
-      <DropdownMenuContent align="start">
+      <DropdownMenuContent align="start" sideOffset={17}>
         {!isAdvancedView && (
           <>
             {standardNetworkKeys.map((key) => (
@@ -183,7 +185,7 @@ export const NetworkSwitcher = ({
           </>
         )}
         <div
-          className="relative flex items-center justify-between mx-2 py-2 border-t border-neutral-400 pt-2 text-sm"
+          className="relative flex items-center justify-between mx-2 py-2 border-t border-default pt-2 text-sm"
           key="propose-network-param"
         >
           <ExternalLink href={tokenLink(TOKEN_NEW_NETWORK_PARAM_PROPOSAL)}>

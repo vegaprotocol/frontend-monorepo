@@ -82,6 +82,7 @@ export const marketProvider = makeDerivedDataProvider<
 );
 
 export const useMarket = (marketId?: string) => {
+  console.log(marketId);
   const variables = useMemo(() => ({ marketId: marketId || '' }), [marketId]);
   return useDataProvider({
     dataProvider: marketProvider,

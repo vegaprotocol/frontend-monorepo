@@ -24,6 +24,12 @@ fragment OrderFields on Order {
     reference
     offset
   }
+  icebergOrder {
+    __typename
+    peakSize
+    minimumVisibleSize
+    reservedRemaining
+  }
 }
 
 query OrderById($orderId: ID!) {
@@ -66,7 +72,6 @@ fragment OrderUpdateFields on OrderUpdate {
   type
   side
   size
-  remaining
   status
   rejectionReason
   price
@@ -80,6 +85,12 @@ fragment OrderUpdateFields on OrderUpdate {
     __typename
     reference
     offset
+  }
+  icebergOrder {
+    __typename
+    peakSize
+    minimumVisibleSize
+    reservedRemaining
   }
 }
 

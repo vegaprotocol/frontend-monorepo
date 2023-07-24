@@ -13,6 +13,7 @@ interface DealTicketContainerProps {
   marketId: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onClickCollateral?: () => void;
+  onDeposit: (assetId: string) => void;
 }
 
 export const DealTicketContainer = ({

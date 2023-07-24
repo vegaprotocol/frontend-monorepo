@@ -351,12 +351,6 @@ describe('Closed markets', { tags: '@smoke' }, () => {
         )
       );
 
-    // 6001-MARK-017
-    cy.get(rowSelector)
-      .first()
-      .find('[col-id="realisedPNL"]')
-      .should('have.text', '-');
-
     // 6001-MARK-018
     cy.get(rowSelector)
       .first()
@@ -369,6 +363,10 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       .first()
       .find('button svg')
       .should('exist');
+    cy.get(rowSelector)
+      .find('[col-id="successorMarketID"]')
+      .first()
+      .should('have.text', ' - ');
   });
 
   // test market list for market in terminated state

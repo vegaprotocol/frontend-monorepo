@@ -1,42 +1,29 @@
 describe('Settings page', { tags: '@smoke' }, () => {
   beforeEach(() => {
-    cy.clearLocalStorage().then(() => {
-      cy.mockTradingPage();
-      cy.mockSubscription();
-      cy.visit('/');
-      cy.get('[aria-label="cog icon"]').click();
+    cy.clearLocalStorage();
+
+    cy.mockTradingPage();
+    cy.mockSubscription();
+    cy.visit('/');
+
+    // Only click if not already active otherwise sidebar will close
+    cy.get('[data-testid="sidebar-content"]').then(($sidebarContent) => {
+      if ($sidebarContent.find('h2').text() !== 'Settings') {
+        cy.get('[data-testid="sidebar"] [data-testid="Settings"]').click();
+      }
     });
   });
+
   it('telemetry checkbox should work well', () => {
-    cy.location('hash').should('equal', '#/settings');
-    cy.getByTestId('telemetry-approval').should(
-      'have.attr',
-      'data-state',
-      'unchecked'
-    );
-    cy.get('[for="telemetry-approval"]').click();
-    cy.getByTestId('telemetry-approval').should(
-      'have.attr',
-      'data-state',
-      'checked'
-    );
+    const telemetrySwitch = '#switch-settings-telemetry-switch';
+    cy.get(telemetrySwitch).should('have.attr', 'data-state', 'unchecked');
+    cy.get(telemetrySwitch).click();
+    cy.get(telemetrySwitch).should('have.attr', 'data-state', 'checked');
     cy.reload();
-    cy.getByTestId('telemetry-approval').should(
-      'have.attr',
-      'data-state',
-      'checked'
-    );
-    cy.get('[for="telemetry-approval"]').click();
-    cy.getByTestId('telemetry-approval').should(
-      'have.attr',
-      'data-state',
-      'unchecked'
-    );
+    cy.get(telemetrySwitch).should('have.attr', 'data-state', 'checked');
+    cy.get(telemetrySwitch).click();
+    cy.get(telemetrySwitch).should('have.attr', 'data-state', 'unchecked');
     cy.reload();
-    cy.getByTestId('telemetry-approval').should(
-      'have.attr',
-      'data-state',
-      'unchecked'
-    );
+    cy.get(telemetrySwitch).should('have.attr', 'data-state', 'unchecked');
   });
 });

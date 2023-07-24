@@ -19,8 +19,8 @@ import type { AgGridReactProps } from 'ag-grid-react';
 import type { Trade } from './trades-data-provider';
 import { Side } from '@vegaprotocol/types';
 
-export const BUY_CLASS = 'text-vega-green dark:text-vega-green';
-export const SELL_CLASS = 'text-vega-pink dark:text-vega-pink';
+export const BUY_CLASS = 'text-market-green-600 dark:text-market-green';
+export const SELL_CLASS = 'text-market-red dark:text-market-red';
 
 const changeCellClass = ({ node }: CellClassParams) => {
   let colorClass = '';
@@ -80,7 +80,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>(
                   onClick &&
                   onClick(addDecimal(value, data.market?.decimalPlaces || 0))
                 }
-                className="hover:dark:bg-neutral-800 hover:bg-neutral-200"
+                className="hover:dark:bg-vega-cdark-800 hover:bg-vega-clight-800"
               >
                 {addDecimalsFormatNumber(value, data.market.decimalPlaces)}
               </button>

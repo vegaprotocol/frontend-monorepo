@@ -1,28 +1,28 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import type { ReactElement, ReactNode } from 'react';
-import { Children } from 'react';
-import { cloneElement } from 'react';
+import classNames from 'classnames';
+import type { ReactNode } from 'react';
 
 interface TradeMarketHeaderProps {
   title: ReactNode;
-  children: Array<ReactElement | null>;
+  children: ReactNode;
 }
 
 export const Header = ({ title, children }: TradeMarketHeaderProps) => {
+  const headerClasses = classNames(
+    'grid',
+    'grid-rows-[min-content_min-content]',
+    'xl:grid-cols-[min-content_1fr]',
+    'border-b border-default',
+    'bg-vega-clight-800 dark:bg-vega-cdark-800'
+  );
   return (
-    <header className="w-screen xl:px-4 pt-2 border-b border-default">
-      <div className="xl:flex xl:gap-4 items-end">
-        <div className="px-4 xl:px-0 pb-2 xl:pb-3">{title}</div>
-        <div
-          data-testid="header-summary"
-          className="flex flex-nowrap items-end xl:flex-1 w-full overflow-x-auto text-xs"
-        >
-          {Children.map(children, (child, index) => {
-            if (!child) return null;
-            return cloneElement(child, {
-              id: `header-stat-${index}`,
-            });
-          })}
+    <header className={headerClasses}>
+      <div className="flex flex-col justify-center items-start pl-3 lg:pl-4 pt-2 xl:pb-2 pb-0">
+        {title}
+      </div>
+      <div data-testid="header-summary" className="min-w-0">
+        <div className="px-3 lg:px-4 py-2 flex flex-nowrap gap-4 items-center text-xs overflow-x-auto">
+          {children}
         </div>
       </div>
     </header>
@@ -42,9 +42,11 @@ export const HeaderStat = ({
   description?: string | ReactNode;
   testId?: string;
 }) => {
-  const itemClass =
-    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-default first:border-none text-neutral-500 dark:text-neutral-400';
-  const itemHeading = 'text-black dark:text-white';
+  const itemClass = classNames(
+    'text-muted',
+    'min-w-min last:pr-0 whitespace-nowrap'
+  );
+  const itemValueClasses = 'text-default';
 
   return (
     <div data-testid={testId} className={itemClass}>
@@ -55,7 +57,7 @@ export const HeaderStat = ({
         <div
           data-testid="item-value"
           aria-labelledby={id}
-          className={itemHeading}
+          className={itemValueClasses}
         >
           {children}
         </div>
@@ -64,21 +66,13 @@ export const HeaderStat = ({
   );
 };
 
-export const HeaderTitle = ({
-  primaryContent,
-  secondaryContent,
-}: {
-  primaryContent: ReactNode;
-  secondaryContent: ReactNode;
-}) => {
+export const HeaderTitle = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="text-left" data-testid="header-title">
-      <div className="text-sm md:text-md lg:text-lg whitespace-nowrap !leading-[1]">
-        {primaryContent}
-      </div>
-      <div className="text-xs whitespace-nowrap text-vega-light-300 dark:text-vega-dark-300">
-        {secondaryContent}
-      </div>
-    </div>
+    <h1
+      data-testid="header-title"
+      className="flex gap-4 items-center text-lg whitespace-nowrap xl:pr-4 xl:border-r border-default"
+    >
+      {children}
+    </h1>
   );
 };

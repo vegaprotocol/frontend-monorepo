@@ -113,7 +113,6 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
   return (
     <form
       onSubmit={isReadOnly || !pubKey ? undefined : handleSubmit(onSubmit)}
-      className="p-4"
       noValidate
     >
       <FormGroup label={t('Order type')} labelFor="order-type" compact={true}>
