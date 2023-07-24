@@ -6,7 +6,7 @@ const tradesTab = 'Trades';
 const tradesTable = 'tab-trades';
 
 describe('trades', { tags: '@smoke' }, () => {
-  before(() => {
+  beforeEach(() => {
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
