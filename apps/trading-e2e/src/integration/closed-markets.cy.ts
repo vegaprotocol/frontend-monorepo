@@ -23,6 +23,7 @@ import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
 } from '@vegaprotocol/utils';
+import { FLAGS } from '@vegaprotocol/environment';
 
 describe('Closed markets', { tags: '@smoke' }, () => {
   const settlementDataProperty = 'settlement-data-property';
@@ -363,10 +364,13 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       .first()
       .find('button svg')
       .should('exist');
-    cy.get(rowSelector)
-      .find('[col-id="successorMarketID"]')
-      .first()
-      .should('have.text', ' - ');
+
+    if (FLAGS.SUCCESSOR_MARKETS) {
+      cy.get(rowSelector)
+        .find('[col-id="successorMarketID"]')
+        .first()
+        .should('have.text', ' - ');
+    }
   });
 
   // test market list for market in terminated state
