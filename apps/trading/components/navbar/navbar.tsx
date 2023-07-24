@@ -61,13 +61,16 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
             }
           }}
         >
+          <span className="sr-only">{t('Wallet')}</span>
           <WalletIcon className="w-6" />
         </NavbarMobileButton>
         <NavbarMobileButton
           onClick={() => {
             setMenu((x) => (x === 'nav' ? null : 'nav'));
           }}
+          data-testid="navbar-burger"
         >
+          <span className="sr-only">{t('Menu')}</span>
           <BurgerIcon />
         </NavbarMobileButton>
         <div className="hidden lg:block">
@@ -81,7 +84,7 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
         >
           <D.Overlay
             className="lg:hidden fixed inset-0 dark:bg-black/80 bg-black/50 z-20"
-            data-testid="dialog-overlay"
+            data-testid="navbar-menu-overlay"
           />
           <D.Content
             className={classNames(
@@ -89,9 +92,11 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
               'fixed top-0 right-0 z-20 w-3/4 h-screen border-l border-default bg-vega-clight-700 dark:bg-vega-cdark-700',
               navTextClasses
             )}
+            data-testid="navbar-menu-content"
           >
             <div className="flex justify-end items-center h-10 p-1">
               <NavbarMobileButton onClick={() => setMenu(null)}>
+                <span className="sr-only">{t('Close menu')}</span>
                 <VegaIcon name={VegaIconNames.CROSS} size={24} />
               </NavbarMobileButton>
             </div>
@@ -111,9 +116,12 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
 const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
   const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
   const marketId = useGlobalStore((store) => store.marketId);
+
+  // If we have a stored marketId make Trade link go to that market
+  // otherwise always go to /markets/all
   const tradingPath = marketId
     ? Links[Routes.MARKET](marketId)
-    : Links[Routes.MARKET]();
+    : Routes.MARKETS;
 
   return (
     <div className="lg:flex gap-3">
