@@ -5,84 +5,123 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * TAILWIND HELPERS
+ */
+
 html,
 body,
 #__next {
   @apply h-full;
 }
 
-/* Styles for allotment */
-html {
-  --focus-border: theme('colors.vega.pink.500');
-  --separator-border: theme('colors.vega.light.200');
-  --pennant-color-danger: theme('colors.vega.pink.500');
+.text-default {
+  @apply text-vega-clight-50 dark:text-vega-cdark-50;
 }
 
-html.dark {
-  --focus-border: theme('colors.vega.yellow.500');
-  --separator-border: theme('colors.vega.dark.200');
+.text-secondary {
+  @apply text-vega-clight-100 dark:text-vega-cdark-100;
+}
+
+.text-muted {
+  @apply text-vega-clight-200 dark:text-vega-cdark-200;
 }
 
 .border-default {
-  @apply border-vega-light-200 dark:border-vega-dark-200;
+  @apply border-vega-clight-600 dark:border-vega-cdark-600;
 }
 
-/* PENNANT */
+/**
+ * ALLOTMENT 
+ */
+
+html {
+  --focus-border: theme(colors.vega.pink.500);
+  --pennant-color-danger: theme(colors.vega.pink.500);
+}
+
+html.dark {
+  --focus-border: theme(colors.vega.yellow.500);
+}
+
+/* hide pane separation border, we leave it blank so border is applied within a padded area */
+.split-view-view::before {
+  display: none;
+}
+
+/* re show separator border within chart */
+.plot-container__chart .split-view-view::before {
+  display: block;
+}
+
+/**
+ * PENNANT
+ */
 
 html [data-theme='dark'],
 html [data-theme='light'] {
   /* sell candles only use stroke as the candle is solid (without border) */
-  --pennant-color-sell-stroke: theme('colors.market.red.500');
+  --pennant-color-sell-stroke: theme(colors.market.red.DEFAULT);
 
   /* studies */
-  --pennant-color-eldar-ray-bear-power: theme('colors.market.red.500');
-  --pennant-color-eldar-ray-bull-power: theme('colors.market.green.600');
+  --pennant-color-eldar-ray-bear-power: theme(colors.market.red.DEFAULT);
+  --pennant-color-eldar-ray-bull-power: theme(colors.market.green.600);
 
-  --pennant-color-macd-divergence-buy: theme('colors.market.green.600');
-  --pennant-color-macd-divergence-sell: theme('colors.market.red.500');
-  --pennant-color-macd-signal: theme('colors.vega.blue.500');
-  --pennant-color-macd-macd: theme('colors.vega.yellow.500');
+  --pennant-color-macd-divergence-buy: theme(colors.market.green.600);
+  --pennant-color-macd-divergence-sell: theme(colors.market.red.DEFAULT);
+  --pennant-color-macd-signal: theme(colors.vega.blue.DEFAULT);
+  --pennant-color-macd-macd: theme(colors.vega.yellow.500);
 
-  --pennant-color-volume-sell: theme('colors.market.red.500');
+  --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
 }
 
 html [data-theme='light'] {
+  --separator-border: theme(colors.vega.clight.400);
+  --pennant-background-surface-color: theme(colors.vega.clight.900);
+
   /* candles */
-  --pennant-color-buy-fill: theme(colors.market.green.500);
+  --pennant-color-buy-fill: theme(colors.market.green.DEFAULT);
   --pennant-color-buy-stroke: theme(colors.market.green.600);
 
   /* sell uses stroke for fill and stroke */
-  --pennant-color-sell-stroke: theme(colors.market.red.500);
+  --pennant-color-sell-stroke: theme(colors.market.red.DEFAULT);
 
   /* depth chart */
-  --pennant-color-depth-buy-fill: theme(colors.market.green.500);
+  --pennant-color-depth-buy-fill: theme(colors.market.green.DEFAULT);
   --pennant-color-depth-buy-stroke: theme(colors.market.green.600);
-  --pennant-color-depth-sell-fill: theme(colors.market.red.500);
-  --pennant-color-depth-sell-stroke: theme(colors.market.red.600);
+  --pennant-color-depth-sell-fill: theme(colors.market.red.DEFAULT);
+  --pennant-color-depth-sell-stroke: theme(colors.market.red.650);
 
-  --pennant-color-volume-buy: theme(colors.market.green.400);
-  --pennant-color-volume-sell: theme(colors.market.red.400);
+  --pennant-color-volume-buy: theme(colors.market.green.300);
+  --pennant-color-volume-sell: theme(colors.market.red.300);
 }
 
 html [data-theme='dark'] {
+  --separator-border: theme(colors.vega.cdark.400);
+  --pennant-background-surface-color: theme('colors.vega.cdark.900');
+
   /* candles */
   --pennant-color-buy-fill: theme(colors.market.green.600);
-  --pennant-color-buy-stroke: theme(colors.market.green.500);
+  --pennant-color-buy-stroke: theme(colors.market.green.DEFAULT);
 
   /* sell uses stroke for fill and stroke */
-  --pennant-color-sell-stroke: theme(colors.market.red.500);
+  --pennant-color-sell-stroke: theme(colors.market.red.DEFAULT);
 
   /* depth chart */
   --pennant-color-depth-buy-fill: theme(colors.market.green.600);
-  --pennant-color-depth-buy-stroke: theme(colors.market.green.500);
-  --pennant-color-depth-sell-fill: theme(colors.market.red.600);
-  --pennant-color-depth-sell-stroke: theme(colors.market.red.500);
+  --pennant-color-depth-buy-stroke: theme(colors.market.green.DEFAULT);
+  --pennant-color-depth-sell-fill: theme(colors.market.red.650);
+  --pennant-color-depth-sell-stroke: theme(colors.market.red.DEFAULT);
 
   --pennant-color-volume-buy: theme(colors.market.green.600);
-  --pennant-color-volume-sell: theme(colors.market.red.600);
+  --pennant-color-volume-sell: theme(colors.market.red.650);
 }
 
-/* AG GRID - Do not edit without updating other global stylesheets for each app */
+/**
+ * AG GRID
+ *
+ * - Do not edit without updating other global stylesheets for each app
+ */
 
 .vega-ag-grid .ag-root-wrapper {
   border: solid 0px;
@@ -103,26 +142,32 @@ html [data-theme='dark'] {
   border-width: 0;
 }
 
+.vega-ag-grid .ag-header-row {
+  @apply font-alpha font-normal;
+}
+
 /* Light variables */
 .ag-theme-balham {
   --ag-background-color: theme(colors.white);
-  --ag-border-color: theme(colors.neutral[300]);
-  --ag-header-background-color: theme(colors.white);
+  --ag-border-color: theme(colors.vega.clight.600);
+  --ag-header-background-color: theme(colors.vega.clight.700);
   --ag-odd-row-background-color: theme(colors.white);
-  --ag-header-column-separator-color: theme(colors.neutral[300]);
-  --ag-row-border-color: theme(colors.white);
-  --ag-row-hover-color: theme(colors.neutral[100]);
+  --ag-header-column-separator-color: theme(colors.vega.clight.500);
+  --ag-row-border-color: theme(colors.vega.clight.600);
+  --ag-row-hover-color: theme(colors.vega.clight.800);
+  --ag-modal-overlay-background-color: rgb(244 244 244 / 50%);
 }
 
 /* Dark variables */
 .ag-theme-balham-dark {
-  --ag-background-color: theme(colors.black);
-  --ag-border-color: theme(colors.neutral[700]);
-  --ag-header-background-color: theme(colors.black);
-  --ag-odd-row-background-color: theme(colors.black);
-  --ag-header-column-separator-color: theme(colors.neutral[600]);
-  --ag-row-border-color: theme(colors.black);
-  --ag-row-hover-color: theme(colors.neutral[800]);
+  --ag-background-color: theme(colors.vega.cdark.900);
+  --ag-border-color: theme(colors.vega.cdark.600);
+  --ag-header-background-color: theme(colors.vega.cdark.700);
+  --ag-odd-row-background-color: theme(colors.vega.cdark.900);
+  --ag-header-column-separator-color: theme(colors.vega.cdark.500);
+  --ag-row-border-color: theme(colors.vega.cdark.600);
+  --ag-row-hover-color: theme(colors.vega.cdark.800);
+  --ag-modal-overlay-background-color: rgb(9 11 16 / 50%);
 }
 .ag-theme-balham-dark .ag-row.no-hover,
 .ag-theme-balham-dark .ag-row.no-hover:hover,
@@ -131,23 +176,26 @@ html [data-theme='dark'] {
   background: var(--ag-background-color);
 }
 
-.virtualized-list {
+/**
+ * REACT VIRTUALIZED list
+ */
+.vega-scrollbar {
   /* Works on Firefox */
   scrollbar-width: thin;
   scrollbar-color: #999 #333;
 }
 
 /* Works on Chrome, Edge, and Safari */
-.virtualized-list::-webkit-scrollbar {
+.vega-scrollbar::-webkit-scrollbar {
   width: 6px;
   background-color: #999;
 }
 
-.virtualized-list::-webkit-scrollbar-thumb {
+.vega-scrollbar::-webkit-scrollbar-thumb {
   width: 6px;
   background-color: #333;
 }
-.virtualized-list::-webkit-scrollbar-track {
+.vega-scrollbar::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px rgb(0 0 0 / 30%);
   background-color: #999;
 }

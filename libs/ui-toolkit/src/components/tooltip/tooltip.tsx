@@ -17,6 +17,7 @@ export interface TooltipProps {
   open?: boolean;
   align?: 'start' | 'center' | 'end';
   side?: 'top' | 'right' | 'bottom' | 'left';
+  sideOffset?: number;
 }
 
 // Conditionally rendered tooltip if description content is provided.
@@ -24,6 +25,7 @@ export const Tooltip = ({
   children,
   description,
   open,
+  sideOffset,
   align = 'start',
   side = 'bottom',
 }: TooltipProps) =>
@@ -43,6 +45,7 @@ export const Tooltip = ({
               side={side}
               alignOffset={8}
               className={tooltipContentClasses}
+              sideOffset={sideOffset}
             >
               <div className="relative z-0" data-testid="tooltip-content">
                 {description}

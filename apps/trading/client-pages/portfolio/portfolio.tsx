@@ -21,6 +21,7 @@ import {
   ResizableGridPanel,
   usePaneLayout,
 } from '../../components/resizable-grid';
+import { ViewType, useSidebar } from '../../components/sidebar';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -28,13 +29,14 @@ const WithdrawalsIndicator = () => {
     return null;
   }
   return (
-    <span className="bg-vega-blue-450 text-white text-[10px] rounded p-[3px] pb-[2px] leading-none">
+    <span className="bg-vega-clight-500 dark:bg-vega-cdark-500 text-default rounded p-1 leading-none">
       {ready.length}
     </span>
   );
 };
 
 export const Portfolio = () => {
+  const { init, view, setView } = useSidebar();
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
@@ -43,9 +45,16 @@ export const Portfolio = () => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle]);
 
+  // Make transfer sidebar open by default
+  useEffect(() => {
+    if (init && view === null) {
+      setView({ type: ViewType.Transfer });
+    }
+  }, [init, view, setView]);
+
   const onMarketClick = useMarketClickHandler(true);
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
-  const wrapperClasses = 'h-full max-h-full flex flex-col';
+  const wrapperClasses = 'p-0.5 h-full max-h-full flex flex-col';
   return (
     <div className={wrapperClasses}>
       <ResizableGrid vertical onChange={handleOnLayoutChange}>
@@ -118,8 +127,8 @@ interface PortfolioGridChildProps {
 
 const PortfolioGridChild = ({ children }: PortfolioGridChildProps) => {
   return (
-    <section className="bg-white dark:bg-black w-full h-full">
-      {children}
+    <section className="h-full p-1">
+      <div className="border border-default h-full rounded-sm">{children}</div>
     </section>
   );
 };

@@ -37,7 +37,7 @@ describe('fills', { tags: '@regression' }, () => {
 
   it('renders fills on portfolio page', () => {
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
     cy.getByTestId('Fills').click();
     validateFillsDisplayed();
   });

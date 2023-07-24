@@ -22,7 +22,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
-import type { ButtonHTMLAttributes } from 'react';
+import { useEffect, type ButtonHTMLAttributes } from 'react';
 import type { ControllerRenderProps } from 'react-hook-form';
 import { formatDistanceToNow } from 'date-fns';
 import { useForm, Controller, useWatch } from 'react-hook-form';
@@ -111,6 +111,7 @@ export const WithdrawForm = ({
     register,
     handleSubmit,
     setValue,
+    trigger,
     clearErrors,
     control,
     formState: { errors },
@@ -137,6 +138,11 @@ export const WithdrawForm = ({
           : null,
     });
   };
+
+  useEffect(() => {
+    setValue('to', address || '');
+    trigger('to');
+  }, [address, setValue, trigger]);
 
   const renderAssetsSelector = ({
     field,
@@ -169,7 +175,9 @@ export const WithdrawForm = ({
   };
 
   const showWithdrawDelayNotification =
-    delay && selectedAsset && new BigNumber(amount).isGreaterThan(threshold);
+    Boolean(delay) &&
+    Boolean(selectedAsset) &&
+    new BigNumber(amount).isGreaterThan(threshold);
 
   return (
     <>
@@ -264,7 +272,7 @@ export const WithdrawForm = ({
               {t('Use maximum')}
             </UseButton>
           )}
-          {showWithdrawDelayNotification && (
+          {selectedAsset && showWithdrawDelayNotification && (
             <div className="mt-2">
               <WithdrawDelayNotification
                 threshold={threshold}
