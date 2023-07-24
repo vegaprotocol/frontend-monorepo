@@ -168,6 +168,130 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
           <SideSelector value={field.value} onSelect={field.onChange} />
         )}
       />
+      <div className="mb-2">
+        <div className="flex items-center gap-4">
+          <FormGroup
+            labelFor="input-price-quote"
+            label={t(`Size`)}
+            className="!mb-0 flex-1"
+          >
+            <Controller
+              name="size"
+              control={control}
+              rules={{
+                required: t('You need to provide a size'),
+                min: {
+                  value: sizeStep,
+                  message: t('Size cannot be lower than ' + sizeStep),
+                },
+                validate: validateAmount(sizeStep, 'Size'),
+              }}
+              render={({ field }) => (
+                <Input
+                  id="input-order-size-market"
+                  className="w-full"
+                  type="number"
+                  step={sizeStep}
+                  min={sizeStep}
+                  onWheel={(e) => e.currentTarget.blur()}
+                  data-testid="order-size"
+                  {...field}
+                />
+              )}
+            />
+          </FormGroup>
+          <div className="pt-7 leading-10">@</div>
+          <div className="flex-1">
+            {type === Schema.OrderType.TYPE_LIMIT ? (
+              <FormGroup
+                labelFor="input-price-quote"
+                label={t(`Price (${quoteName})`)}
+                labelAlign="right"
+                className="!mb-0"
+              >
+                <Controller
+                  name="price"
+                  control={control}
+                  rules={{
+                    required: t('You need provide a price'),
+                    min: {
+                      value: priceStep,
+                      message: t('Price cannot be lower than ' + priceStep),
+                    },
+                    validate: validateAmount(priceStep, 'Price'),
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      id="input-price-quote"
+                      className="w-full"
+                      type="number"
+                      step={priceStep}
+                      data-testid="order-price"
+                      onWheel={(e) => e.currentTarget.blur()}
+                      {...field}
+                    />
+                  )}
+                />
+              </FormGroup>
+            ) : (
+              <div className="text-sm text-right pt-5" data-testid="price">
+                {priceFormatted && quoteName
+                  ? `~${priceFormatted} ${quoteName}`
+                  : '-'}
+              </div>
+            )}
+          </div>
+        </div>
+        {errors.size && (
+          <InputError testId="deal-ticket-error-message-size-limit">
+            {errors.size.message}
+          </InputError>
+        )}
+
+        {errors.price && (
+          <InputError testId="deal-ticket-error-message-price-limit">
+            {errors.price.message}
+          </InputError>
+        )}
+      </div>
+      <div className="mb-2">
+        <FormGroup
+          label={t('Time in force')}
+          labelFor="select-time-in-force"
+          compact={true}
+        >
+          <Controller
+            name="timeInForce"
+            control={control}
+            render={({ field }) => (
+              <Select
+                id="select-time-in-force"
+                className="w-full"
+                data-testid="order-tif"
+                {...field}
+              >
+                <option
+                  key={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
+                  value={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
+                >
+                  {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_IOC)}
+                </option>
+                <option
+                  key={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
+                  value={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
+                >
+                  {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_FOK)}
+                </option>
+              </Select>
+            )}
+          />
+        </FormGroup>
+        {errors.timeInForce && (
+          <InputError testId="stop-error-message-tif">
+            {errors.timeInForce.message}
+          </InputError>
+        )}
+      </div>
       <FormGroup label={t('Trigger')} compact={true} labelFor="">
         <Controller
           name="direction"
@@ -299,130 +423,6 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
           }}
         />
       </FormGroup>
-      <div className="mb-2">
-        <div className="flex items-center gap-4">
-          <FormGroup
-            labelFor="input-price-quote"
-            label={t(`Size`)}
-            className="!mb-1 flex-1"
-          >
-            <Controller
-              name="size"
-              control={control}
-              rules={{
-                required: t('You need to provide a size'),
-                min: {
-                  value: sizeStep,
-                  message: t('Size cannot be lower than ' + sizeStep),
-                },
-                validate: validateAmount(sizeStep, 'Size'),
-              }}
-              render={({ field }) => (
-                <Input
-                  id="input-order-size-market"
-                  className="w-full"
-                  type="number"
-                  step={sizeStep}
-                  min={sizeStep}
-                  onWheel={(e) => e.currentTarget.blur()}
-                  data-testid="order-size"
-                  {...field}
-                />
-              )}
-            />
-          </FormGroup>
-          <div className="pt-5">@</div>
-          <div className="flex-1">
-            {type === Schema.OrderType.TYPE_LIMIT ? (
-              <FormGroup
-                labelFor="input-price-quote"
-                label={t(`Price (${quoteName})`)}
-                labelAlign="right"
-                className="!mb-1"
-              >
-                <Controller
-                  name="price"
-                  control={control}
-                  rules={{
-                    required: t('You need provide a price'),
-                    min: {
-                      value: priceStep,
-                      message: t('Price cannot be lower than ' + priceStep),
-                    },
-                    validate: validateAmount(priceStep, 'Price'),
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      id="input-price-quote"
-                      className="w-full"
-                      type="number"
-                      step={priceStep}
-                      data-testid="order-price"
-                      onWheel={(e) => e.currentTarget.blur()}
-                      {...field}
-                    />
-                  )}
-                />
-              </FormGroup>
-            ) : (
-              <div className="text-sm text-right pt-5" data-testid="price">
-                {priceFormatted && quoteName
-                  ? `~${priceFormatted} ${quoteName}`
-                  : '-'}
-              </div>
-            )}
-          </div>
-        </div>
-        {errors.size && (
-          <InputError testId="deal-ticket-error-message-size-limit">
-            {errors.size.message}
-          </InputError>
-        )}
-
-        {errors.price && (
-          <InputError testId="deal-ticket-error-message-price-limit">
-            {errors.price.message}
-          </InputError>
-        )}
-      </div>
-      <div className="mb-2">
-        <FormGroup
-          label={t('Time in force')}
-          labelFor="select-time-in-force"
-          compact={true}
-        >
-          <Controller
-            name="timeInForce"
-            control={control}
-            render={({ field }) => (
-              <Select
-                id="select-time-in-force"
-                className="w-full"
-                data-testid="order-tif"
-                {...field}
-              >
-                <option
-                  key={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
-                  value={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
-                >
-                  {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_IOC)}
-                </option>
-                <option
-                  key={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
-                  value={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
-                >
-                  {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_FOK)}
-                </option>
-              </Select>
-            )}
-          />
-        </FormGroup>
-        {errors.timeInForce && (
-          <InputError testId="stop-error-message-tif">
-            {errors.timeInForce.message}
-          </InputError>
-        )}
-      </div>
       <div className="mb-2">
         <Controller
           name="expire"
