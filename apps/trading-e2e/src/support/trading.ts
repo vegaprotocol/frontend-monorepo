@@ -33,6 +33,9 @@ import {
   networkParamQuery,
   liquidityProvisionsQuery,
   liquidityProviderFeeShareQuery,
+  successorMarketQuery,
+  parentMarketIdQuery,
+  successorMarketIdsQuery,
 } from '@vegaprotocol/mock';
 import type { PartialDeep } from 'type-fest';
 import type { MarketDataQuery, MarketsQuery } from '@vegaprotocol/markets';
@@ -180,6 +183,9 @@ const mockTradingPage = (
     protocolUpgradeProposalsQuery()
   );
   aliasGQLQuery(req, 'BlockStatistics', blockStatisticsQuery());
+  aliasGQLQuery(req, 'SuccessorMarket', successorMarketQuery());
+  aliasGQLQuery(req, 'ParentMarketId', parentMarketIdQuery());
+  aliasGQLQuery(req, 'SuccessorMarketIds', successorMarketIdsQuery());
 };
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

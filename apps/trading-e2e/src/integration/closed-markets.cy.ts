@@ -23,7 +23,6 @@ import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
 } from '@vegaprotocol/utils';
-import { FLAGS } from '@vegaprotocol/environment';
 
 describe('Closed markets', { tags: '@smoke' }, () => {
   const settlementDataProperty = 'settlement-data-property';
@@ -365,7 +364,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       .find('button svg')
       .should('exist');
 
-    if (FLAGS.SUCCESSOR_MARKETS) {
+    if (Cypress.env('NX_SUCCESSOR_MARKETS')) {
       cy.get(rowSelector)
         .find('[col-id="successorMarketID"]')
         .first()

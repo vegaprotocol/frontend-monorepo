@@ -202,6 +202,7 @@ const ClosedMarketsDataGrid = ({
       },
       FLAGS.SUCCESSOR_MARKETS && {
         headerName: t('Successor market'),
+        colId: 'successorMarketID',
         field: 'id',
         cellRenderer: 'SuccessorMarketRenderer',
       },
