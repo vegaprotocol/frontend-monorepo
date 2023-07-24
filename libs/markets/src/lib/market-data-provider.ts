@@ -67,6 +67,13 @@ export const marketPriceProvider = makeDerivedDataProvider<
   getMarketPrice(marketData as MarketData)
 );
 
+export const useMarketPrice = (marketId?: string, skip?: boolean) =>
+  useDataProvider({
+    dataProvider: marketPriceProvider,
+    variables: { marketId: marketId || '' },
+    skip: skip || !marketId,
+  });
+
 export type StaticMarketData = Pick<
   MarketData,
   | 'marketTradingMode'

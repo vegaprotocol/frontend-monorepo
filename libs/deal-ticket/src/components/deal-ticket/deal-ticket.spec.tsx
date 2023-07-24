@@ -14,6 +14,13 @@ jest.mock('./deal-ticket-fee-details', () => ({
   DealTicketFeeDetails: () => <div data-testid="deal-ticket-fee-details" />,
 }));
 
+const marketPrice = '200';
+
+jest.mock('@vegaprotocol/markets', () => ({
+  ...jest.requireActual('@vegaprotocol/markets'),
+  useMarketPrice: jest.fn(() => ({ data: marketPrice })),
+}));
+
 const pubKey = 'pubKey';
 const market = generateMarket();
 const marketData = generateMarketData();
@@ -49,15 +56,11 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('place-order')).toBeEnabled();
 
     // Assert defaults are used
-    expect(
-      screen.getByTestId(`order-type-${Schema.OrderType.TYPE_MARKET}`)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('order-type-Market')).toBeInTheDocument();
+    expect(screen.getByTestId('order-type-Limit')).toBeInTheDocument();
 
     const oderTypeLimitToggle = container.querySelector(
-      `[data-testid="order-type-${Schema.OrderType.TYPE_LIMIT}"] input[type="radio"]`
+      '[data-testid="order-type-Limit"] input[type="radio"]'
     );
     expect(oderTypeLimitToggle).toBeChecked();
 
@@ -76,12 +79,12 @@ describe('DealTicket', () => {
   it('should display last price for market type order', () => {
     render(generateJsx());
     act(() => {
-      screen.getByTestId(`order-type-${Schema.OrderType.TYPE_MARKET}`).click();
+      screen.getByTestId('order-type-Market').click();
     });
     // Assert last price is shown
     expect(screen.getByTestId('last-price')).toHaveTextContent(
       // eslint-disable-next-line
-      `~${addDecimal(marketData.markPrice, market.decimalPlaces)} ${
+      `~${addDecimal(marketPrice, market.decimalPlaces)} ${
         market.tradableInstrument.instrument.product.quoteName
       }`
     );
@@ -108,9 +111,7 @@ describe('DealTicket', () => {
 
     // Assert correct defaults are used from store
     expect(
-      screen
-        .getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
-        .querySelector('input')
+      screen.getByTestId('order-type-Limit').querySelector('input')
     ).toBeChecked();
     expect(
       screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
@@ -151,9 +152,7 @@ describe('DealTicket', () => {
 
     // Assert correct defaults are used from store
     expect(
-      screen
-        .getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
-        .querySelector('input')
+      screen.getByTestId('order-type-Limit').querySelector('input')
     ).toBeChecked();
     expect(
       screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
@@ -199,9 +198,7 @@ describe('DealTicket', () => {
 
     // Assert correct defaults are used from store
     expect(
-      screen
-        .getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
-        .querySelector('input')
+      screen.getByTestId('order-type-Limit').querySelector('input')
     ).toBeChecked();
     expect(
       screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
@@ -228,7 +225,7 @@ describe('DealTicket', () => {
     render(generateJsx());
 
     act(() => {
-      screen.getByTestId(`order-type-${Schema.OrderType.TYPE_MARKET}`).click();
+      screen.getByTestId('order-type-Market').click();
     });
 
     // Only FOK and IOC should be present for type market order
@@ -253,7 +250,7 @@ describe('DealTicket', () => {
     );
 
     // Switch to type limit order -> all TIF options should be shown
-    await userEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
+    await userEvent.click(screen.getByTestId('order-type-Limit'));
     expect(screen.getByTestId('order-tif').children).toHaveLength(
       Object.keys(Schema.OrderTimeInForce).length
     );
@@ -273,7 +270,7 @@ describe('DealTicket', () => {
     );
 
     // Switch back to type market order -> FOK should be preserved from previous selection
-    await userEvent.click(screen.getByTestId('order-type-TYPE_MARKET'));
+    await userEvent.click(screen.getByTestId('order-type-Market'));
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
     );
@@ -288,7 +285,7 @@ describe('DealTicket', () => {
     );
 
     // Switch back type limit order -> GTT should be preserved
-    await userEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
+    await userEvent.click(screen.getByTestId('order-type-Limit'));
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
     );
@@ -303,7 +300,7 @@ describe('DealTicket', () => {
     );
 
     // Switch to type market order -> IOC should be preserved
-    await userEvent.click(screen.getByTestId('order-type-TYPE_MARKET'));
+    await userEvent.click(screen.getByTestId('order-type-Market'));
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
@@ -330,7 +327,7 @@ describe('DealTicket', () => {
     );
 
     // Switch to limit order
-    await userEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
+    await userEvent.click(screen.getByTestId('order-type-Limit'));
 
     // Check all TIF options shown
     expect(screen.getByTestId('order-tif').children).toHaveLength(

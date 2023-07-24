@@ -4,8 +4,7 @@ import {
   useDealTicketTypeStore,
 } from '../../hooks/use-type-store';
 import { StopOrder } from './deal-ticket-stop-order';
-import { useDataProvider } from '@vegaprotocol/data-provider';
-import { staticMarketDataProvider, useMarket } from '@vegaprotocol/markets';
+import { useStaticMarketData, useMarket } from '@vegaprotocol/markets';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { DealTicket } from './deal-ticket';
@@ -32,10 +31,7 @@ export const DealTicketContainer = ({
     error: marketDataError,
     loading: marketDataLoading,
     reload,
-  } = useDataProvider({
-    dataProvider: staticMarketDataProvider,
-    variables: { marketId },
-  });
+  } = useStaticMarketData(marketId);
   const create = useVegaTransactionStore((state) => state.create);
   return (
     <AsyncRenderer

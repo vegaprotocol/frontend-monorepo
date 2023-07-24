@@ -32,7 +32,7 @@ import {
 import { toBigNum, removeDecimal } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useEstimateFees } from '../../hooks/use-estimate-fees';
-import { getDerivedPrice, marketPriceProvider } from '@vegaprotocol/markets';
+import { getDerivedPrice, useMarketPrice } from '@vegaprotocol/markets';
 import type { OrderInfo } from '@vegaprotocol/types';
 
 import {
@@ -84,10 +84,7 @@ export const DealTicket = ({
   const updateStopOrderFormValues = useStopOrderFormValues(
     (state) => state.update
   );
-  const { data: marketPrice } = useDataProvider({
-    dataProvider: marketPriceProvider,
-    variables: { marketId: market.id },
-  });
+  const { data: marketPrice } = useMarketPrice(market.id);
   // store last used tif for market so that when changing OrderType the previous TIF
   // selection for that type is used when switching back
 
