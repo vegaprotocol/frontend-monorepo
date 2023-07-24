@@ -11,9 +11,9 @@ export const LayoutWithSidebar = () => {
 
   const gridClasses = classNames(
     'h-full relative z-0 grid',
-    'grid-rows-[min-content_1fr_min-content]',
+    'grid-rows-[min-content_1fr_40px]',
     'lg:grid-rows-[min-content_1fr]',
-    'lg:grid-cols-[1fr_350px_45px]'
+    'lg:grid-cols-[1fr_350px_40px]'
   );
 
   return (

@@ -18,44 +18,59 @@ import { WalletIcon } from '../icons/wallet';
 type MenuState = 'wallet' | 'nav' | null;
 
 export const Navbar = ({ children }: { children?: ReactNode }) => {
+  // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
+
   const { pubKey } = useVegaWallet();
-  const isConnected = pubKey !== null;
+
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
+
+  const isConnected = pubKey !== null;
+
+  const navTextClasses = 'text-vega-clight-100 dark:text-vega-cdark-100';
+  const rootClasses = classNames(
+    navTextClasses,
+    'flex items-center gap-2 h-10 px-1',
+    'border-b border-default',
+    'bg-vega-clight-800 dark:bg-vega-cdark-800'
+  );
   return (
-    <N.Root className="text-vega-clight-200 dark:text-vega-cdark-200 ">
-      <div className="flex items-center gap-2 h-10 pl-3 pr-1 border-b border-default bg-vega-clight-800 dark:bg-vega-cdark-800">
-        <div className="pr-2">
-          <VLogo className="w-4 text-default" />
-        </div>
-        <div className="lg:hidden">{children}</div>
+    <N.Root className={rootClasses}>
+      <NavLink to="/" className="block px-2">
+        <VLogo className="w-4 text-default" />
+      </NavLink>
+
+      {/* Left section */}
+      <div className="lg:hidden">{children}</div>
+      {/* Used to show header in nav on mobile */}
+      <div className="hidden lg:block">
+        <NavbarMenu onClick={() => setMenu(null)} />
+      </div>
+
+      {/* Right section */}
+      <div className="ml-auto flex justify-end items-center gap-2">
+        <NavbarMobileButton
+          onClick={() => {
+            if (isConnected) {
+              setMenu((x) => (x === 'wallet' ? null : 'wallet'));
+            } else {
+              openVegaWalletDialog();
+            }
+          }}
+        >
+          <WalletIcon className="w-6" />
+        </NavbarMobileButton>
+        <NavbarMobileButton
+          onClick={() => {
+            setMenu((x) => (x === 'nav' ? null : 'nav'));
+          }}
+        >
+          <BurgerIcon />
+        </NavbarMobileButton>
         <div className="hidden lg:block">
-          <NavbarMenu onClick={() => setMenu(null)} />
-        </div>
-        <div className="ml-auto flex justify-end items-center gap-2">
-          <NavbarMobileButton
-            onClick={() => {
-              if (isConnected) {
-                setMenu((x) => (x === 'wallet' ? null : 'wallet'));
-              } else {
-                openVegaWalletDialog();
-              }
-            }}
-          >
-            <WalletIcon className="w-6" />
-          </NavbarMobileButton>
-          <NavbarMobileButton
-            onClick={() => {
-              setMenu((x) => (x === 'nav' ? null : 'nav'));
-            }}
-          >
-            <BurgerIcon />
-          </NavbarMobileButton>
-          <div className="hidden lg:block">
-            <VegaWalletConnectButton />
-          </div>
+          <VegaWalletConnectButton />
         </div>
       </div>
       {menu !== null && (
@@ -64,10 +79,16 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
           onOpenChange={(open) => setMenu((x) => (open ? x : null))}
         >
           <D.Overlay
-            className="fixed inset-0 dark:bg-black/80 bg-black/50 z-20"
+            className="lg:hidden fixed inset-0 dark:bg-black/80 bg-black/50 z-20"
             data-testid="dialog-overlay"
           />
-          <D.Content className="fixed top-0 right-0 z-20 w-3/4 h-screen border-l border-default bg-vega-clight-700 dark:bg-vega-cdark-700">
+          <D.Content
+            className={classNames(
+              'lg:hidden',
+              'fixed top-0 right-0 z-20 w-3/4 h-screen border-l border-default bg-vega-clight-700 dark:bg-vega-cdark-700',
+              navTextClasses
+            )}
+          >
             <div className="flex justify-end items-center h-10 p-1">
               <NavbarMobileButton onClick={() => setMenu(null)}>
                 <VegaIcon name={VegaIconNames.CROSS} size={24} />
@@ -82,6 +103,10 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
   );
 };
 
+/**
+ * List of links or dropdown triggers to show in the main section
+ * of the navigation
+ */
 const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
   const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
   const marketId = useGlobalStore((store) => store.marketId);
@@ -142,12 +167,9 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
               </li>
             )}
             <li>
-              <NavbarLinkExternal
-                to={Links[Routes.DISCLAIMER]()}
-                onClick={onClick}
-              >
+              <NavbarLink to={Links[Routes.DISCLAIMER]()} onClick={onClick}>
                 {t('Disclaimer')}
-              </NavbarLinkExternal>
+              </NavbarLink>
             </li>
           </ul>
         </NavbarContent>
@@ -156,6 +178,9 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
   );
 };
 
+/**
+ * Wrapper for radix-ux Trigger for consistent styles
+ */
 const NavbarTrigger = ({ children }: { children: ReactNode }) => {
   return (
     <N.Trigger
@@ -172,6 +197,9 @@ const NavbarTrigger = ({ children }: { children: ReactNode }) => {
   );
 };
 
+/**
+ * Wrapper for react-router-dom NavLink for consistent styles
+ */
 const NavbarLink = ({
   children,
   to,
@@ -221,6 +249,9 @@ const NavbarLink = ({
   );
 };
 
+/**
+ * Content that gets rendered when a sub section of the navbar is shown
+ */
 const NavbarContent = ({ children }: { children: ReactNode }) => {
   return (
     <N.Content
@@ -237,21 +268,9 @@ const NavbarContent = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const NavbarMobileButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
-  return (
-    <button
-      {...props}
-      className="w-8 h-8 lg:hidden flex items-center p-1 rounded hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500"
-    />
-  );
-};
-
-// https://github.com/radix-ui/primitives/issues/1630
-// eslint-disable-next-line
-const preventHover = (e: any) => {
-  e.preventDefault();
-};
-
+/**
+ * NavbarLink with OPEN_EXTERNAL icon
+ */
 const NavbarLinkExternal = ({
   children,
   to,
@@ -265,7 +284,11 @@ const NavbarLinkExternal = ({
     <N.Link asChild={true}>
       <NavLink
         to={to}
-        className="w-full flex justify-between items-center relative py-2 px-6 lg:px-0 text-lg lg:text-base"
+        className={classNames(
+          'flex lg:inline-flex gap-2 justify-between items-center relative',
+          'py-2 px-6 lg:px-0 text-lg lg:text-base',
+          'hover:text-vega-clight-50 dark:hover:text-vega-cdark-50'
+        )}
         onClick={onClick}
       >
         <span>{children}</span>
@@ -289,9 +312,25 @@ const BurgerIcon = () => (
 
 const NavbarDivider = () => {
   return (
-    <li className="lg:py-2" role="separator">
+    <li className="py-2 px-6 lg:px-0" role="separator">
       <div className="h-px lg:h-full w-full lg:w-px bg-vega-clight-600 dark:bg-vega-cdark-600" />
     </li>
+  );
+};
+
+/**
+ * Button component to avoid repeating styles for buttons shown on small screens
+ */
+const NavbarMobileButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+  return (
+    <button
+      {...props}
+      className={classNames(
+        'w-8 h-8 lg:hidden flex items-center p-1 rounded ',
+        'hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500',
+        'hover:text-vega-clight-50 dark:hover:text-vega-cdark-50'
+      )}
+    />
   );
 };
 
@@ -303,4 +342,10 @@ const envNameMapping: Record<Networks, string> = {
   [Networks.TESTNET]: t('Fairground testnet'),
   [Networks.MAINNET_MIRROR]: t('Mirror'),
   [Networks.MAINNET]: t('Mainnet'),
+};
+
+// https://github.com/radix-ui/primitives/issues/1630
+// eslint-disable-next-line
+const preventHover = (e: any) => {
+  e.preventDefault();
 };
