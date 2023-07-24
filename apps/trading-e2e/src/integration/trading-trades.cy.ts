@@ -47,8 +47,7 @@ describe('trades', { tags: '@smoke' }, () => {
       });
   });
 
-  // This won't pass in CI, but does locally
-  it.skip('show trades date and time', () => {
+  it('show trades date and time', () => {
     // 6005-THIS-005
     cy.getByTestId(tradesTable) // order table shares identical col id
       .find(`${colIdCreatedAt} ${colHeader}`)
