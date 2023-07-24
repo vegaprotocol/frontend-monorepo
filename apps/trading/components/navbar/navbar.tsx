@@ -38,10 +38,11 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
   );
   return (
     <N.Root className={rootClasses}>
-      <NavLink to="/" className="block px-2">
-        <VLogo className="w-4 text-default" />
-      </NavLink>
-
+      <div className="lg:mr-2">
+        <NavLink to="/" className="block px-2">
+          <VLogo className="w-4 text-default" />
+        </NavLink>
+      </div>
       {/* Left section */}
       <div className="lg:hidden">{children}</div>
       {/* Used to show header in nav on mobile */}
@@ -115,66 +116,70 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
     : Links[Routes.MARKET]();
 
   return (
-    <N.List className="lg:flex gap-4">
-      <N.Item>
-        <NavbarTrigger>{envNameMapping[VEGA_ENV]}</NavbarTrigger>
-        <NavbarContent>
-          <ul className="lg:px-4 lg:py-2">
-            {[Networks.MAINNET, Networks.TESTNET].map((n) => {
-              const url = VEGA_NETWORKS[n];
-              if (!url) return;
-              return (
-                <li key={n}>
-                  <NavbarLink to={url}>{envNameMapping[n]}</NavbarLink>
+    <div className="lg:flex gap-3">
+      <NavbarList>
+        <NavbarItem>
+          <NavbarTrigger>{envNameMapping[VEGA_ENV]}</NavbarTrigger>
+          <NavbarContent>
+            <ul className="lg:px-4 lg:py-2">
+              {[Networks.MAINNET, Networks.TESTNET].map((n) => {
+                const url = VEGA_NETWORKS[n];
+                if (!url) return;
+                return (
+                  <li key={n}>
+                    <NavbarLink to={url}>{envNameMapping[n]}</NavbarLink>
+                  </li>
+                );
+              })}
+            </ul>
+          </NavbarContent>
+        </NavbarItem>
+      </NavbarList>
+      <NavbarListDivider />
+      <NavbarList>
+        <NavbarItem>
+          <NavbarLink to={Links[Routes.MARKETS]()} onClick={onClick}>
+            {t('Markets')}
+          </NavbarLink>
+        </NavbarItem>
+        <NavbarItem>
+          <NavbarLink to={tradingPath} onClick={onClick}>
+            {t('Trading')}
+          </NavbarLink>
+        </NavbarItem>
+        <NavbarItem>
+          <NavbarLink to={Links[Routes.PORTFOLIO]()} onClick={onClick}>
+            {t('Portfolio')}
+          </NavbarLink>
+        </NavbarItem>
+        <NavbarItem>
+          <NavbarTrigger>{t('Resources')}</NavbarTrigger>
+          <NavbarContent>
+            <ul className="lg:px-4 lg:py-2">
+              {DocsLinks?.NEW_TO_VEGA && (
+                <li>
+                  <NavbarLinkExternal to={DocsLinks?.NEW_TO_VEGA}>
+                    {t('Docs')}
+                  </NavbarLinkExternal>
                 </li>
-              );
-            })}
-          </ul>
-        </NavbarContent>
-      </N.Item>
-      <NavbarDivider />
-      <N.Item>
-        <NavbarLink to={Links[Routes.MARKETS]()} onClick={onClick}>
-          {t('Markets')}
-        </NavbarLink>
-      </N.Item>
-      <N.Item>
-        <NavbarLink to={tradingPath} onClick={onClick}>
-          {t('Trading')}
-        </NavbarLink>
-      </N.Item>
-      <N.Item>
-        <NavbarLink to={Links[Routes.PORTFOLIO]()} onClick={onClick}>
-          {t('Portfolio')}
-        </NavbarLink>
-      </N.Item>
-      <N.Item>
-        <NavbarTrigger>{t('Resources')}</NavbarTrigger>
-        <NavbarContent>
-          <ul className="lg:px-4 lg:py-2">
-            {DocsLinks?.NEW_TO_VEGA && (
+              )}
+              {GITHUB_FEEDBACK_URL && (
+                <li>
+                  <NavbarLinkExternal to={GITHUB_FEEDBACK_URL}>
+                    {t('Give Feedback')}
+                  </NavbarLinkExternal>
+                </li>
+              )}
               <li>
-                <NavbarLinkExternal to={DocsLinks?.NEW_TO_VEGA}>
-                  {t('Docs')}
-                </NavbarLinkExternal>
+                <NavbarLink to={Links[Routes.DISCLAIMER]()} onClick={onClick}>
+                  {t('Disclaimer')}
+                </NavbarLink>
               </li>
-            )}
-            {GITHUB_FEEDBACK_URL && (
-              <li>
-                <NavbarLinkExternal to={GITHUB_FEEDBACK_URL}>
-                  {t('Give Feedback')}
-                </NavbarLinkExternal>
-              </li>
-            )}
-            <li>
-              <NavbarLink to={Links[Routes.DISCLAIMER]()} onClick={onClick}>
-                {t('Disclaimer')}
-              </NavbarLink>
-            </li>
-          </ul>
-        </NavbarContent>
-      </N.Item>
-    </N.List>
+            </ul>
+          </NavbarContent>
+        </NavbarItem>
+      </NavbarList>
+    </div>
   );
 };
 
@@ -187,6 +192,7 @@ const NavbarTrigger = ({ children }: { children: ReactNode }) => {
       onPointerMove={preventHover}
       onPointerLeave={preventHover}
       className={classNames(
+        'w-full lg:w-auto',
         'relative flex items-center gap-2 py-2 px-6 lg:px-0',
         'text-lg lg:text-base hover:text-vega-clight-50 dark:hover:text-vega-cdark-50'
       )}
@@ -247,6 +253,14 @@ const NavbarLink = ({
       </NavLink>
     </N.Link>
   );
+};
+
+const NavbarItem = (props: N.NavigationMenuItemProps) => {
+  return <N.Item {...props} />;
+};
+
+const NavbarList = (props: N.NavigationMenuListProps) => {
+  return <N.List {...props} className="lg:flex gap-6" />;
 };
 
 /**
@@ -310,11 +324,11 @@ const BurgerIcon = () => (
   </svg>
 );
 
-const NavbarDivider = () => {
+const NavbarListDivider = () => {
   return (
-    <li className="py-2 px-6 lg:px-0" role="separator">
+    <div className="py-2 px-6 lg:px-0" role="separator">
       <div className="h-px lg:h-full w-full lg:w-px bg-vega-clight-600 dark:bg-vega-cdark-600" />
-    </li>
+    </div>
   );
 };
 

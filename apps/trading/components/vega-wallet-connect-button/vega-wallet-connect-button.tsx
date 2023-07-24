@@ -63,7 +63,7 @@ export const VegaWalletConnectButton = () => {
       >
         <DropdownMenuContent
           onInteractOutside={() => setDropdownOpen(false)}
-          sideOffset={17}
+          sideOffset={12}
           side="bottom"
           align="end"
           onEscapeKeyDown={() => setDropdownOpen(false)}
