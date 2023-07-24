@@ -17,32 +17,32 @@ export const CurrentProposalState = ({
 
   switch (proposal?.state) {
     case ProposalState.STATE_ENACTED: {
-      proposalStatus = <>{t('voteState_Enacted')}</>;
+      proposalStatus = t('voteState_Enacted');
       break;
     }
     case ProposalState.STATE_PASSED: {
-      proposalStatus = <>{t('voteState_Passed')}</>;
+      proposalStatus = t('voteState_Passed');
       break;
     }
     case ProposalState.STATE_WAITING_FOR_NODE_VOTE: {
-      proposalStatus = <>{t('voteState_WaitingForNodeVote')}</>;
+      proposalStatus = t('voteState_WaitingForNodeVote');
       break;
     }
     case ProposalState.STATE_OPEN: {
       variant = 'primary' as ProposalInfoLabelVariant;
-      proposalStatus = <>{t('voteState_Open')}</>;
+      proposalStatus = t('voteState_Open');
       break;
     }
     case ProposalState.STATE_DECLINED: {
-      proposalStatus = <>{t('voteState_Declined')}</>;
+      proposalStatus = t('voteState_Declined');
       break;
     }
     case ProposalState.STATE_REJECTED: {
-      proposalStatus = <>{t('voteState_Rejected')}</>;
+      proposalStatus = t('voteState_Rejected');
       break;
     }
     case ProposalState.STATE_FAILED: {
-      proposalStatus = <>{t('voteState_Failed')}</>;
+      proposalStatus = t('voteState_Failed');
       break;
     }
   }

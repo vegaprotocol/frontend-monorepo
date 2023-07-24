@@ -59,15 +59,15 @@ const renderComponent = (
     </Router>
   );
 
-beforeAll(() => {
-  jest.useFakeTimers();
-  jest.setSystemTime(0);
-});
-afterAll(() => {
-  jest.useRealTimers();
-});
-
 describe('ProposalVotingStatus', () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(0);
+  });
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   it('Renders majority reached', () => {
     const yesVotes = 100;
     const noVotes = 0;

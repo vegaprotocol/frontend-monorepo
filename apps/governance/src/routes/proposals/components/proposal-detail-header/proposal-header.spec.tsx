@@ -18,7 +18,6 @@ import {
   nextWeek,
   mockNetworkParams,
   mockWalletContext,
-  networkParamsQueryMock,
   createUserVoteQueryMock,
 } from '../../test-helpers/mocks';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
@@ -27,8 +26,7 @@ import type { MockedResponse } from '@apollo/client/testing';
 const renderComponent = (
   proposal: ProposalQuery['proposal'],
   isListItem = true,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mocks: MockedResponse<any>[] = [networkParamsQueryMock]
+  mocks: MockedResponse[] = []
 ) =>
   render(
     <AppStateProvider>

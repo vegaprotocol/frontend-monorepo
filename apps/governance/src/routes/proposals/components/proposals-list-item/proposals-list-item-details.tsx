@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { differenceInHours, format, formatDistanceToNowStrict } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
@@ -38,41 +38,42 @@ export const ProposalsListItemDetails = ({
 
   switch (state) {
     case ProposalState.STATE_ENACTED: {
-      voteDetails = proposal?.terms.enactmentDatetime && (
-        <>
-          {t('enactedOn')}{' '}
-          {format(
-            new Date(proposal?.terms.enactmentDatetime),
-            DATE_FORMAT_DETAILED
-          )}
-        </>
-      );
+      voteDetails =
+        proposal?.terms.enactmentDatetime &&
+        t('enactedOn{{date}}', {
+          enactmentDate:
+            proposal?.terms.enactmentDatetime &&
+            format(
+              new Date(proposal?.terms.enactmentDatetime),
+              DATE_FORMAT_DETAILED
+            ),
+        });
       break;
     }
     case ProposalState.STATE_PASSED: {
-      voteDetails = proposal?.terms.change.__typename !== 'NewFreeform' && (
-        <>
-          {t('toEnactOn')}{' '}
-          {proposal?.terms.enactmentDatetime &&
+      voteDetails =
+        proposal?.terms.change.__typename !== 'NewFreeform' &&
+        t('enactsOn{{date}}', {
+          enactmentDate:
+            proposal?.terms.enactmentDatetime &&
             format(
               new Date(proposal.terms.enactmentDatetime),
               DATE_FORMAT_DETAILED
-            )}
-        </>
-      );
+            ),
+        });
       break;
     }
     case ProposalState.STATE_WAITING_FOR_NODE_VOTE: {
-      voteDetails = proposal?.terms.change.__typename !== 'NewFreeform' && (
-        <>
-          {t('toEnactOn')}{' '}
-          {proposal?.terms.enactmentDatetime &&
+      voteDetails =
+        proposal?.terms.change.__typename !== 'NewFreeform' &&
+        t('enactsOn{{date}}', {
+          enactmentDate:
+            proposal?.terms.enactmentDatetime &&
             format(
               new Date(proposal.terms.enactmentDatetime),
               DATE_FORMAT_DETAILED
-            )}
-        </>
-      );
+            ),
+        });
       break;
     }
     case ProposalState.STATE_OPEN: {
@@ -114,6 +115,10 @@ export const ProposalsListItemDetails = ({
 
   return (
     <div className="mt-4 items-start text-sm">
+      <div className="text-vega-green">
+        <VegaIcon size={16} name={VegaIconNames.VOTE} />
+        <VegaIcon size={16} name={VegaIconNames.TICKET} />
+      </div>
       <div className="flex items-center gap-2 text-vega-light-300 mb-2">
         {voteDetails && <span data-testid="vote-details">{voteDetails}</span>}
         {voteDetails && voteStatus && <span>&middot;</span>}

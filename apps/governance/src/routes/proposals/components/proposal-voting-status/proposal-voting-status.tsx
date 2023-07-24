@@ -132,8 +132,8 @@ export const ProposalVotingStatus = ({
     }
   }
 
-  return (
-    (isUpdateMarket && (
+  if (isUpdateMarket) {
+    return (
       <div className="mb-6">
         <p>{t('Token vote')}</p>
         <div
@@ -159,14 +159,16 @@ export const ProposalVotingStatus = ({
           <ParticipationStatus reached={participationLPMet} />
         </div>
       </div>
-    )) || (
-      <div className="grid grid-cols-2 gap-4 items-center mb-6">
-        <MajorityStatus
-          reached={majorityMet}
-          requiredMajority={requiredVotingMajority}
-        />{' '}
-        <ParticipationStatus reached={participationMet} />
-      </div>
-    )
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-4 items-center mb-6">
+      <MajorityStatus
+        reached={majorityMet}
+        requiredMajority={requiredVotingMajority}
+      />{' '}
+      <ParticipationStatus reached={participationMet} />
+    </div>
   );
 };

@@ -79,7 +79,7 @@ export const nextMonth = new Date(oneMonth);
 export const createUserVoteQueryMock = (
   proposalId: string | undefined | null,
   value: VoteValue
-) => ({
+): MockedResponse => ({
   request: {
     query: UserVoteDocument,
     variables: {
