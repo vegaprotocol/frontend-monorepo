@@ -29,7 +29,6 @@ const mockAppState: AppState = {
   totalAssociated: new BigNumber('50063005'),
   decimals: 18,
   totalSupply: mockTotalSupply,
-  vegaWalletOverlay: false,
   vegaWalletManageOverlay: false,
   transactionOverlay: false,
   bannerMessage: '',
