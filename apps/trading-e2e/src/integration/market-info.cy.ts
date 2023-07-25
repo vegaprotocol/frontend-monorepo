@@ -68,6 +68,10 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
 
     validateMarketDataRow(0, 'Name', 'BTCUSD Monthly (30 Jun 2022)');
     validateMarketDataRow(1, 'Market ID', 'market-0');
+
+    if (Cypress.env('NX_SUCCESSOR_MARKETS')) {
+      validateMarketDataRow(2, 'Parent Market ID', 'PARENT-A');
+    }
     validateMarketDataRow(
       3,
       'Trading Mode',
