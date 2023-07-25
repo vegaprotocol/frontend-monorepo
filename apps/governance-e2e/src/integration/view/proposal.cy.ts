@@ -161,7 +161,7 @@ context(
             );
             cy.getByTestId('protocol-upgrade-proposal-status').should(
               'have.text',
-              'Approved by validators '
+              'Approved by validators'
             );
           });
       });
