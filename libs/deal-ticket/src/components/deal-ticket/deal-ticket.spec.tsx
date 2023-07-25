@@ -1,13 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { act, render, renderHook, screen } from '@testing-library/react';
+import {
+  act,
+  render,
+  renderHook,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket, generateMarketData } from '../../test-helpers';
 import { DealTicket } from './deal-ticket';
 import * as Schema from '@vegaprotocol/types';
+import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { addDecimal } from '@vegaprotocol/utils';
+import type { OrdersQuery } from '@vegaprotocol/orders';
 import { useCreateOrderStore } from '@vegaprotocol/orders';
+import * as positionsTools from '@vegaprotocol/positions';
+import { OrdersDocument } from '@vegaprotocol/orders';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
@@ -19,9 +29,9 @@ const market = generateMarket();
 const marketData = generateMarketData();
 const submit = jest.fn();
 
-function generateJsx() {
+function generateJsx(mocks: MockedResponse[] = []) {
   return (
-    <MockedProvider>
+    <MockedProvider mocks={[...mocks]}>
       <VegaWalletContext.Provider value={{ pubKey, isReadOnly: false } as any}>
         <DealTicket
           market={market}
@@ -39,12 +49,68 @@ describe('DealTicket', () => {
   const useOrderStore = result.current;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     localStorage.clear();
   });
 
-  afterEach(() => {
-    localStorage.clear();
-    jest.clearAllMocks();
+  it('check filtering of active orders', async () => {
+    const mockOrders: OrdersQuery = {
+      party: {
+        id: 'pubKey',
+        ordersConnection: {
+          edges: [
+            {
+              node: {
+                id: 'order-id-1',
+                remaining: '101010',
+                market: {
+                  id: 'market-id',
+                },
+              },
+            },
+            {
+              node: {
+                id: 'order-id-2',
+                remaining: '1111',
+                market: {
+                  id: 'other-market-id',
+                },
+              },
+            },
+          ],
+        },
+      },
+    } as unknown as OrdersQuery;
+    const orderMocks = {
+      request: {
+        query: OrdersDocument,
+        variables: {
+          partyId: 'pubKey',
+          filter: { liveOnly: true },
+          pagination: { first: 5000 },
+        },
+      },
+      result: {
+        data: mockOrders,
+      },
+    };
+    jest.spyOn(positionsTools, 'useEstimatePositionQuery');
+    render(generateJsx([orderMocks]));
+    await waitFor(() => {
+      expect(screen.getByTestId('deal-ticket-fee-details')).toBeInTheDocument();
+      expect(
+        (positionsTools.useEstimatePositionQuery as jest.Mock).mock.lastCall[0]
+          .variables.orders
+      ).toHaveLength(2);
+      expect(
+        (positionsTools.useEstimatePositionQuery as jest.Mock).mock.lastCall[0]
+          .variables.orders[0].remaining
+      ).toEqual('101010');
+      expect(
+        (positionsTools.useEstimatePositionQuery as jest.Mock).mock.lastCall[0]
+          .variables.orders[1].remaining
+      ).toEqual('0');
+    });
   });
 
   it('should display ticket defaults', () => {
