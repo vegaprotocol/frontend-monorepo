@@ -40,11 +40,9 @@ const Party = () => {
     error,
     refreshTxs,
     loading,
-    txsData,
-    hasPreviousPage,
+    txsData
   } = useTxsData({
-    limit: 25,
-    filters: f,
+    filters: f
   });
 
   const variables = useMemo(() => ({ partyId }), [partyId]);
@@ -102,9 +100,9 @@ const Party = () => {
         refreshTxs={refreshTxs}
         nextPage={nextPage}
         previousPage={previousPage}
-        hasPreviousPage={hasPreviousPage}
+        hasPreviousPage={true}
         loading={loading}
-        hasMoreTxs={hasMoreTxs}
+        hasMoreTxs={true}
       >
         <TxsFilter filters={filters} setFilters={setFilters} />
       </TxsListNavigation>

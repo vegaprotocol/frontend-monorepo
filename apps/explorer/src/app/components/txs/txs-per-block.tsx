@@ -14,7 +14,7 @@ interface TxsPerBlockProps {
 
 export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
   const filters = `filters[block.height]=${blockHeight}`;
-  const url = getTxsDataUrl({ limit: txCount.toString(), filters });
+  const url = getTxsDataUrl({ filters });
   const {
     state: { data, loading, error },
   } = useFetch<BlockExplorerTransactions>(url);

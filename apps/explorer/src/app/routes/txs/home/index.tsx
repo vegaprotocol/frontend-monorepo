@@ -8,7 +8,6 @@ import { useState } from 'react';
 import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
 import { TxsListNavigation } from '../../../components/txs/tx-list-navigation';
 
-const BE_TXS_PER_REQUEST = 25;
 
 export const TxsList = () => {
   useDocumentTitle(['Transactions']);
@@ -42,9 +41,7 @@ export const TxsListFiltered = () => {
     refreshTxs,
     loading,
     txsData,
-    hasPreviousPage,
   } = useTxsData({
-    limit: BE_TXS_PER_REQUEST,
     filters: f,
   });
 
@@ -54,9 +51,9 @@ export const TxsListFiltered = () => {
         refreshTxs={refreshTxs}
         nextPage={nextPage}
         previousPage={previousPage}
-        hasPreviousPage={hasPreviousPage}
+        hasPreviousPage={true}
         loading={loading}
-        hasMoreTxs={hasMoreTxs}
+        hasMoreTxs={true}
       >
         <TxsFilter filters={filters} setFilters={setFilters} />
       </TxsListNavigation>
