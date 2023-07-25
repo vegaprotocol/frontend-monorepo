@@ -135,11 +135,15 @@ export const DealTicket = ({
 
   const asset = market.tradableInstrument.instrument.product.settlementAsset;
 
-  const { accountBalance: marginAccountBalance } = useMarketAccountBalance(
-    market.id
-  );
+  const {
+    accountBalance: marginAccountBalance,
+    loading: loadingMarginAccountBalance,
+  } = useMarketAccountBalance(market.id);
 
-  const { accountBalance: generalAccountBalance } = useAccountBalance(asset.id);
+  const {
+    accountBalance: generalAccountBalance,
+    loading: loadingGeneralAccountBalance,
+  } = useAccountBalance(asset.id);
 
   const balance = (
     BigInt(marginAccountBalance) + BigInt(generalAccountBalance)
@@ -227,7 +231,10 @@ export const DealTicket = ({
 
     const hasNoBalance =
       !BigInt(generalAccountBalance) && !BigInt(marginAccountBalance);
-    if (hasNoBalance) {
+    if (
+      hasNoBalance &&
+      !(loadingMarginAccountBalance || loadingGeneralAccountBalance)
+    ) {
       setError('summary', {
         message: SummaryValidationType.NoCollateral,
         type: SummaryValidationType.NoCollateral,
@@ -251,6 +258,8 @@ export const DealTicket = ({
     marketTradingMode,
     generalAccountBalance,
     marginAccountBalance,
+    loadingMarginAccountBalance,
+    loadingGeneralAccountBalance,
     pubKey,
     setError,
     clearErrors,
