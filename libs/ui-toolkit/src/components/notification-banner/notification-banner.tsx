@@ -2,18 +2,22 @@ import classNames from 'classnames';
 import { toastIconMapping } from '../toast';
 import { Intent } from '../../utils/intent';
 import { Icon } from '../icon';
+import type { HTMLAttributes } from 'react';
 
 interface NotificationBannerProps {
   intent?: Intent;
   children?: React.ReactNode;
   onClose?: () => void;
+  className?: classNames.Argument;
 }
 
 export const NotificationBanner = ({
   intent = Intent.None,
   children,
   onClose,
-}: NotificationBannerProps) => {
+  className,
+  ...props
+}: NotificationBannerProps & HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
       className={classNames(
@@ -42,8 +46,10 @@ export const NotificationBanner = ({
 
           'border-b-vega-red-500 dark:border-b-vega-red-500':
             intent === Intent.Danger,
-        }
+        },
+        className
       )}
+      {...props}
     >
       {intent === Intent.None ? null : (
         <Icon

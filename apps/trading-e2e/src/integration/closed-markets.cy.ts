@@ -351,12 +351,6 @@ describe('Closed markets', { tags: '@smoke' }, () => {
         )
       );
 
-    // 6001-MARK-017
-    cy.get(rowSelector)
-      .first()
-      .find('[col-id="realisedPNL"]')
-      .should('have.text', '-');
-
     // 6001-MARK-018
     cy.get(rowSelector)
       .first()

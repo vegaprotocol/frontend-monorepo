@@ -10,7 +10,6 @@ import { OrderbookRow } from './orderbook-row';
 import type { OrderbookRowData } from './orderbook-data';
 import { compactRows, VolumeType } from './orderbook-data';
 import {
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -164,7 +163,7 @@ export const Orderbook = ({
   };
 
   return (
-    <div className="h-full pl-1 text-xs grid grid-rows-[1fr_min-content]">
+    <div className="h-full text-xs grid grid-rows-[1fr_min-content]">
       <div>
         <ReactVirtualizedAutoSizer>
           {({ width, height }) => {
@@ -230,15 +229,14 @@ export const Orderbook = ({
         </ReactVirtualizedAutoSizer>
       </div>
       <div className="border-t border-default flex">
-        <Button
+        <button
           onClick={increaseResolution}
-          size="xs"
           disabled={resolutions.indexOf(resolution) >= resolutions.length - 1}
-          className="text-black dark:text-white rounded-none border-y-0 border-l-0 flex items-center border-r-1"
+          className="flex items-center border-r border-default px-2 cursor-pointer"
           data-testid="plus-button"
         >
           <VegaIcon size={12} name={VegaIconNames.PLUS} />
-        </Button>
+        </button>
         <DropdownMenu
           open={isOpen}
           onOpenChange={(open) => setOpen(open)}
@@ -275,15 +273,14 @@ export const Orderbook = ({
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <Button
+        <button
           onClick={decreaseResolution}
-          size="xs"
           disabled={resolutions.indexOf(resolution) <= 0}
-          className="text-black dark:text-white rounded-none border-y-0 border-l-1 flex items-center"
+          className="flex items-center border-x border-default px-2 cursor-pointer"
           data-testid="minus-button"
         >
           <VegaIcon size={12} name={VegaIconNames.MINUS} />
-        </Button>
+        </button>
       </div>
     </div>
   );

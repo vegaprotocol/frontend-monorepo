@@ -14,6 +14,12 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Markets');
+
+    cy.get('[data-testid="deal-ticket-form"]').then(($form) => {
+      if (!$form.length) {
+        cy.getByTestId('Order').click();
+      }
+    });
   });
 
   beforeEach(() => {

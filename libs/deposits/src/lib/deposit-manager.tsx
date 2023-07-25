@@ -7,7 +7,6 @@ import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
 import { useCallback, useState } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
-import { useDepositDialog } from './deposit-dialog';
 import type { Asset } from '@vegaprotocol/assets';
 import {
   useEthTransactionStore,
@@ -34,7 +33,6 @@ export const DepositManager = ({
   const [assetId, setAssetId] = useState(persistentDeposit?.assetId);
   const asset = assets.find((a) => a.id === assetId);
   const bridgeContract = useBridgeContract();
-  const closeDepositDialog = useDepositDialog((state) => state.close);
 
   const { getBalances, reset, balances } = useDepositBalances(asset);
 
@@ -62,7 +60,6 @@ export const DepositManager = ({
       config?.confirmations ?? 1,
       true
     );
-    closeDepositDialog();
   };
 
   const onAmountChange = useCallback(

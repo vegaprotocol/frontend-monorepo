@@ -42,7 +42,7 @@ export const Toggle = ({
         type === 'primary',
       'peer-checked:bg-market-green-550 peer-checked:text-white':
         type === 'buy',
-      'peer-checked:bg-market-red-500 peer-checked:text-white': type === 'sell',
+      'peer-checked:bg-market-red peer-checked:text-white': type === 'sell',
     },
     'cursor-pointer peer-checked:cursor-auto select-none',
     {

@@ -57,7 +57,14 @@ export { aliasGQLQuery } from './lib/mock-gql';
 export { aliasWalletQuery } from './lib/mock-rest';
 export * from './lib/utils';
 
-Cypress.on(
-  'uncaught:exception',
-  (err) => !err.message.includes('ResizeObserver loop limit exceeded')
-);
+Cypress.on('uncaught:exception', (err) => {
+  if (
+    err.message.includes('ResizeObserver loop limit exceeded') ||
+    err.message.includes(
+      'ResizeObserver loop completed with undelivered notifications'
+    )
+  ) {
+    return false;
+  }
+  return true;
+});
