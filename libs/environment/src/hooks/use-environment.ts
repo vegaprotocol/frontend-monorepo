@@ -12,7 +12,7 @@ import {
   NodeCheckDocument,
   NodeCheckTimeUpdateDocument,
 } from '../utils/__generated__/NodeCheck';
-import type { Environment } from '../types';
+import type { CosmicElevatorFlags, Environment, FeatureFlags } from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
@@ -39,8 +39,12 @@ const VERSION = 1;
 export const STORAGE_KEY = `vega_url_${VERSION}`;
 const SUBSCRIPTION_TIMEOUT = 3000;
 
+export const ENV = compileEnvVars();
+export const FLAGS = compileFeatureFlags();
+
 export const useEnvironment = create<EnvStore>()((set, get) => ({
   ...compileEnvVars(),
+  ...compileFeatureFlags(),
   nodes: [],
   status: 'default',
   error: null,
@@ -372,6 +376,108 @@ function compileEnvVars() {
   return env;
 }
 
+function compileFeatureFlags(): FeatureFlags {
+  const TRUTHY = ['1', 'true'];
+  const COSMIC_ELEVATOR_FLAGS: CosmicElevatorFlags = {
+    ICEBERG_ORDERS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_ICEBERG_ORDERS',
+        process.env['NX_ICEBERG_ORDERS']
+      ) as string
+    ),
+    STOP_ORDERS: TRUTHY.includes(
+      windowOrDefault('NX_STOP_ORDERS', process.env['NX_STOP_ORDERS']) as string
+    ),
+    SUCCESSOR_MARKETS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_SUCCESSOR_MARKETS',
+        process.env['NX_SUCCESSOR_MARKETS']
+      ) as string
+    ),
+    PRODUCT_PERPETUALS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_PRODUCT_PERPETUALS',
+        process.env['NX_PRODUCT_PERPETUALS']
+      ) as string
+    ),
+  };
+  const EXPLORER_FLAGS = {
+    EXPLORER_ASSETS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_EXPLORER_ASSETS',
+        process.env['NX_EXPLORER_ASSETS']
+      ) as string
+    ),
+    EXPLORER_GENESIS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_EXPLORER_GENESIS',
+        process.env['NX_EXPLORER_GENESIS']
+      ) as string
+    ),
+    EXPLORER_GOVERNANCE: TRUTHY.includes(
+      windowOrDefault(
+        'NX_EXPLORER_GOVERNANCE',
+        process.env['NX_EXPLORER_GOVERNANCE']
+      ) as string
+    ),
+    EXPLORER_MARKETS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_EXPLORER_MARKETS',
+        process.env['NX_EXPLORER_MARKETS']
+      ) as string
+    ),
+    EXPLORER_ORACLES: TRUTHY.includes(
+      windowOrDefault(
+        'NX_EXPLORER_ORACLES',
+        process.env['NX_EXPLORER_ORACLES']
+      ) as string
+    ),
+    EXPLORER_TXS_LIST: TRUTHY.includes(
+      windowOrDefault(
+        'NX_EXPLORER_TXS_LIST',
+        process.env['NX_EXPLORER_TXS_LIST']
+      ) as string
+    ),
+    EXPLORER_NETWORK_PARAMETERS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_EXPLORER_NETWORK_PARAMETERS',
+        process.env['NX_EXPLORER_NETWORK_PARAMETERS']
+      ) as string
+    ),
+    EXPLORER_PARTIES: TRUTHY.includes(
+      windowOrDefault(
+        'NX_EXPLORER_PARTIES',
+        process.env['NX_EXPLORER_PARTIES']
+      ) as string
+    ),
+    EXPLORER_VALIDATORS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_EXPLORER_VALIDATORS',
+        process.env['NX_EXPLORER_VALIDATORS']
+      ) as string
+    ),
+  };
+  const GOVERNANCE_FLAGS = {
+    GOVERNANCE_NETWORK_DOWN: TRUTHY.includes(
+      windowOrDefault(
+        'NX_NETWORK_DOWN',
+        process.env['NX_NETWORK_DOWN']
+      ) as string
+    ),
+    GOVERNANCE_NETWORK_LIMITS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_GOVERNANCE_NETWORK_LIMITS',
+        process.env['NX_GOVERNANCE_NETWORK_LIMITS']
+      ) as string
+    ),
+  };
+  return {
+    ...COSMIC_ELEVATOR_FLAGS,
+    ...EXPLORER_FLAGS,
+    ...GOVERNANCE_FLAGS,
+  };
+}
+
 function parseNetworks(value?: string) {
   if (value) {
     try {
@@ -414,7 +520,7 @@ function getEtherscanUrl(
 
 export function windowOrDefault(key: string, defaultValue?: string) {
   if (typeof window !== 'undefined') {
-    // @ts-ignore avoid conflic in env
+    // @ts-ignore avoid conflict in env
     if (window._env_ && window._env_[key]) {
       // @ts-ignore presence has been check above
       return window._env_[key];

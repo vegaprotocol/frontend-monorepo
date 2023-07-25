@@ -191,7 +191,6 @@ export const marketInfoQuery = (
           },
         },
       },
-      parentMarketID: 'market-1',
     },
   };
 

@@ -18,6 +18,8 @@ import {
 } from '../../components/resizable-grid';
 import { TradingViews } from './trade-views';
 import { MarketSuccessorBanner } from '../../components/market-banner';
+import { FLAGS } from '@vegaprotocol/environment';
+
 interface TradeGridProps {
   market: Market | null;
   onSelect: (marketId: string, metaKey?: boolean) => void;
@@ -160,7 +162,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
   return (
     <div className={wrapperClasses}>
       <div>
-        <MarketSuccessorBanner market={market} />
+        {FLAGS.SUCCESSOR_MARKETS && <MarketSuccessorBanner market={market} />}
         <OracleBanner marketId={market?.id || ''} />
       </div>
       <div className="min-h-0 p-0.5">
