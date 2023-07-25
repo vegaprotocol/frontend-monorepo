@@ -1,7 +1,12 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback, useEffect, useMemo } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { StopOrdersSubmission } from '@vegaprotocol/wallet';
-import { formatNumber, toDecimal, validateAmount } from '@vegaprotocol/utils';
+import {
+  formatNumber,
+  removeDecimal,
+  toDecimal,
+  validateAmount,
+} from '@vegaprotocol/utils';
 import { useForm, Controller } from 'react-hook-form';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -14,12 +19,16 @@ import {
   Select,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import type { Market } from '@vegaprotocol/markets';
+import { getDerivedPrice, type Market } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { timeInForceLabel, useOrder } from '@vegaprotocol/orders';
-import { NoWalletWarning, REDUCE_ONLY_TOOLTIP } from './deal-ticket';
+import {
+  NoWalletWarning,
+  REDUCE_ONLY_TOOLTIP,
+  useNotionalSize,
+} from './deal-ticket';
 import { TypeToggle } from './type-selector';
 import {
   useStopOrderFormValues,
@@ -32,22 +41,25 @@ import {
 import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values-to-stop-order-submission';
 import { DealTicketButton } from './deal-ticket-button';
 import noop from 'lodash/noop';
+import { useEstimateFees } from '../../hooks';
+import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 
 export interface StopOrderProps {
   market: Market;
+  marketPrice?: string | null;
   submit: (order: StopOrdersSubmission) => void;
 }
 
 const defaultValues: Partial<StopOrderFormValues> = {
   type: Schema.OrderType.TYPE_MARKET,
-  side: Schema.Side.SIDE_SELL,
+  side: Schema.Side.SIDE_BUY,
   timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
   trigger: 'price',
   direction: 'risesAbove',
   expiryStrategy: 'submit',
 };
 
-export const StopOrder = ({ market, submit }: StopOrderProps) => {
+export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const setDealTicketType = useDealTicketTypeStore((state) => state.set);
   const [, updateOrder] = useOrder(market.id);
@@ -91,7 +103,42 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
   const expire = watch('expire');
   const trigger = watch('trigger');
   const triggerPrice = watch('triggerPrice');
+  const timeInForce = watch('timeInForce');
   const type = watch('type');
+  const rawPrice = watch('price');
+  const rawSize = watch('size');
+
+  const size = removeDecimal(rawSize, market.positionDecimalPlaces);
+  const price = useMemo(() => {
+    return (
+      marketPrice &&
+      getDerivedPrice(
+        {
+          type,
+          price: rawPrice && removeDecimal(rawPrice, market.decimalPlaces),
+        },
+        type === Schema.OrderType.TYPE_MARKET &&
+          trigger === 'price' &&
+          triggerPrice
+          ? removeDecimal(triggerPrice, market.decimalPlaces)
+          : marketPrice
+      )
+    );
+  }, [
+    market.decimalPlaces,
+    marketPrice,
+    rawPrice,
+    trigger,
+    triggerPrice,
+    type,
+  ]);
+
+  const notionalSize = useNotionalSize(
+    price,
+    size,
+    market.decimalPlaces,
+    market.positionDecimalPlaces
+  );
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
@@ -235,7 +282,10 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
                 />
               </FormGroup>
             ) : (
-              <div className="text-sm text-right pt-5" data-testid="price">
+              <div
+                className="text-sm text-right pt-7 leading-10"
+                data-testid="price"
+              >
                 {priceFormatted && quoteName
                   ? `~${priceFormatted} ${quoteName}`
                   : '-'}
@@ -506,6 +556,19 @@ export const StopOrder = ({ market, submit }: StopOrderProps) => {
       )}
       <NoWalletWarning pubKey={pubKey} isReadOnly={isReadOnly} asset={asset} />
       <DealTicketButton side={side} label={t('Submit Stop Order')} />
+      <DealTicketFeeDetails
+        order={{
+          marketId: market.id,
+          price: price || undefined,
+          side,
+          size,
+          timeInForce,
+          type,
+        }}
+        notionalSize={notionalSize}
+        assetSymbol={asset.symbol}
+        market={market}
+      />
     </form>
   );
 };

@@ -5,7 +5,7 @@ import type {
 import { normalizeOrderSubmission } from '@vegaprotocol/wallet';
 import type { StopOrderFormValues } from '../hooks/use-stop-order-form-values';
 import * as Schema from '@vegaprotocol/types';
-import { toNanoSeconds } from '@vegaprotocol/utils';
+import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
 
 export const mapFormValuesToStopOrdersSubmission = (
   data: StopOrderFormValues,
@@ -30,7 +30,7 @@ export const mapFormValuesToStopOrdersSubmission = (
     ),
   };
   if (data.trigger === 'price') {
-    stopOrderSetup.price = data.triggerPrice;
+    stopOrderSetup.price = removeDecimal(data.triggerPrice, decimalPlaces);
   } else if (data.trigger === 'trailingPercentOffset') {
     stopOrderSetup.trailingPercentOffset = (
       Number(data.triggerTrailingPercentOffset) / 100

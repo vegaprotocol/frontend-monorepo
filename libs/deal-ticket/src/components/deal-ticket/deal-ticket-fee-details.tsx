@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { FeesBreakdown } from '@vegaprotocol/markets';
+import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
 import type { Market } from '@vegaprotocol/markets';
@@ -24,6 +25,7 @@ import {
   EST_TOTAL_MARGIN_TOOLTIP_TEXT,
   MARGIN_ACCOUNT_TOOLTIP_TEXT,
 } from '../../constants';
+import { useEstimateFees } from '../../hooks';
 
 const emptyValue = '-';
 
@@ -76,26 +78,82 @@ export const DealTicketFeeDetail = ({
 };
 
 export interface DealTicketFeeDetailsProps {
+  assetSymbol: string;
+  order: OrderSubmissionBody['orderSubmission'];
+  market: Market;
+  notionalSize: string | null;
+}
+
+export const DealTicketFeeDetails = ({
+  assetSymbol,
+  order,
+  market,
+  notionalSize,
+}: DealTicketFeeDetailsProps) => {
+  const feeEstimate = useEstimateFees(order);
+  const { settlementAsset: asset } =
+    market.tradableInstrument.instrument.product;
+  const { decimals: assetDecimals, quantum } = asset;
+  const marketDecimals = market.decimalPlaces;
+  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+
+  return (
+    <>
+      <DealTicketFeeDetail
+        label={t('Notional')}
+        value={formatValue(notionalSize, marketDecimals)}
+        formattedValue={formatValue(notionalSize, marketDecimals)}
+        symbol={quoteName}
+        labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName)}
+      />
+      <DealTicketFeeDetail
+        label={t('Fees')}
+        value={
+          feeEstimate?.totalFeeAmount &&
+          `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals)}`
+        }
+        formattedValue={
+          feeEstimate?.totalFeeAmount &&
+          `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals, quantum)}`
+        }
+        labelDescription={
+          <>
+            <span>
+              {t(
+                `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}.`
+              )}
+            </span>
+            <FeesBreakdown
+              fees={feeEstimate?.fees}
+              feeFactors={market.fees.factors}
+              symbol={assetSymbol}
+              decimals={assetDecimals}
+            />
+          </>
+        }
+        symbol={assetSymbol}
+      />
+    </>
+  );
+};
+
+export interface DealTicketMarginDetailsProps {
   generalAccountBalance?: string;
   marginAccountBalance?: string;
   market: Market;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   assetSymbol: string;
-  notionalSize: string | null;
-  feeEstimate: EstimateFeesQuery['estimateFees'] | undefined;
   positionEstimate: EstimatePositionQuery['estimatePosition'];
 }
 
-export const DealTicketFeeDetails = ({
+export const DealTicketMarginDetails = ({
   marginAccountBalance,
   generalAccountBalance,
   assetSymbol,
-  feeEstimate,
   market,
   onMarketClick,
-  notionalSize,
   positionEstimate,
-}: DealTicketFeeDetailsProps) => {
+}: DealTicketMarginDetailsProps) => {
   const [breakdownDialog, setBreakdownDialog] = useState(false);
   const { pubKey: partyId } = useVegaWallet();
   const { data: currentMargins } = useDataProvider({
@@ -110,7 +168,6 @@ export const DealTicketFeeDetails = ({
   const { settlementAsset: asset } =
     market.tradableInstrument.instrument.product;
   const { decimals: assetDecimals, quantum } = asset;
-  const marketDecimals = market.decimalPlaces;
   let marginRequiredBestCase: string | undefined = undefined;
   let marginRequiredWorstCase: string | undefined = undefined;
   if (marginEstimate) {
@@ -251,41 +308,7 @@ export const DealTicketFeeDetails = ({
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
 
   return (
-    <div>
-      <DealTicketFeeDetail
-        label={t('Notional')}
-        value={formatValue(notionalSize, marketDecimals)}
-        formattedValue={formatValue(notionalSize, marketDecimals)}
-        symbol={quoteName}
-        labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName)}
-      />
-      <DealTicketFeeDetail
-        label={t('Fees')}
-        value={
-          feeEstimate?.totalFeeAmount &&
-          `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals)}`
-        }
-        formattedValue={
-          feeEstimate?.totalFeeAmount &&
-          `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals, quantum)}`
-        }
-        labelDescription={
-          <>
-            <span>
-              {t(
-                `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}.`
-              )}
-            </span>
-            <FeesBreakdown
-              fees={feeEstimate?.fees}
-              feeFactors={market.fees.factors}
-              symbol={assetSymbol}
-              decimals={assetDecimals}
-            />
-          </>
-        }
-        symbol={assetSymbol}
-      />
+    <>
       <DealTicketFeeDetail
         label={t('Margin required')}
         value={formatRange(
@@ -351,6 +374,6 @@ export const DealTicketFeeDetails = ({
           onClose={onAccountBreakdownDialogClose}
         />
       )}
-    </div>
+    </>
   );
 };

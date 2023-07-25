@@ -4,7 +4,10 @@ import { memo, useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
-import { DealTicketFeeDetails } from './deal-ticket-fee-details';
+import {
+  DealTicketFeeDetails,
+  DealTicketMarginDetails,
+} from './deal-ticket-fee-details';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
@@ -71,16 +74,36 @@ export const REDUCE_ONLY_TOOLTIP =
 export interface DealTicketProps {
   market: Market;
   marketData: StaticMarketData;
+  marketPrice?: string | null;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   submit: (order: OrderSubmission) => void;
   onClickCollateral?: () => void;
   onDeposit: (assetId: string) => void;
 }
 
+export const useNotionalSize = (
+  price: string | null | undefined,
+  size: string | undefined,
+  decimalPlaces: number,
+  positionDecimalPlaces: number
+) =>
+  useMemo(() => {
+    if (price && size) {
+      return removeDecimal(
+        toBigNum(size, positionDecimalPlaces).multipliedBy(
+          toBigNum(price, decimalPlaces)
+        ),
+        decimalPlaces
+      );
+    }
+    return null;
+  }, [price, size, decimalPlaces, positionDecimalPlaces]);
+
 export const DealTicket = ({
   market,
   onMarketClick,
   marketData,
+  marketPrice,
   submit,
   onClickCollateral,
   onDeposit,
@@ -90,7 +113,6 @@ export const DealTicket = ({
   const updateStopOrderFormValues = useStopOrderFormValues(
     (state) => state.update
   );
-  const { data: marketPrice } = useMarketPrice(market.id);
   // store last used tif for market so that when changing OrderType the previous TIF
   // selection for that type is used when switching back
 
@@ -141,27 +163,13 @@ export const DealTicket = ({
     );
   }, [normalizedOrder, marketPrice]);
 
-  const notionalSize = useMemo(() => {
-    if (price && normalizedOrder?.size) {
-      return removeDecimal(
-        toBigNum(
-          normalizedOrder.size,
-          market.positionDecimalPlaces
-        ).multipliedBy(toBigNum(price, market.decimalPlaces)),
-        market.decimalPlaces
-      );
-    }
-    return null;
-  }, [
+  const notionalSize = useNotionalSize(
     price,
     normalizedOrder?.size,
     market.decimalPlaces,
-    market.positionDecimalPlaces,
-  ]);
-
-  const feeEstimate = useEstimateFees(
-    normalizedOrder && { ...normalizedOrder, price: price || undefined }
+    market.positionDecimalPlaces
   );
+
   const { data: activeOrders } = useDataProvider({
     dataProvider: activeOrdersProvider,
     variables: { partyId: pubKey || '' },
@@ -582,9 +590,15 @@ export const DealTicket = ({
       />
       <DealTicketButton side={order.side} />
       <DealTicketFeeDetails
-        onMarketClick={onMarketClick}
-        feeEstimate={feeEstimate}
+        order={
+          normalizedOrder && { ...normalizedOrder, price: price || undefined }
+        }
         notionalSize={notionalSize}
+        assetSymbol={assetSymbol}
+        market={market}
+      />
+      <DealTicketMarginDetails
+        onMarketClick={onMarketClick}
         assetSymbol={assetSymbol}
         marginAccountBalance={marginAccountBalance}
         generalAccountBalance={generalAccountBalance}
