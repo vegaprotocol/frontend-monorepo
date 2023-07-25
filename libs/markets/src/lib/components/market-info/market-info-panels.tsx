@@ -30,6 +30,7 @@ import { useOracleProofs } from '../../hooks';
 import { OracleDialog } from '../oracle-dialog/oracle-dialog';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useParentMarketIdQuery } from '../../__generated__';
+import { useSuccessorMarketProposalDetailsQuery } from '@vegaprotocol/proposals';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -144,6 +145,14 @@ export const KeyDetailsInfoPanel = ({ market }: MarketInfoProps) => {
     },
     skip: !FLAGS.SUCCESSOR_MARKETS,
   });
+
+  const { data: successor } = useSuccessorMarketProposalDetailsQuery({
+    variables: {
+      proposalId: market.proposal?.id || '',
+    },
+    skip: !FLAGS.SUCCESSOR_MARKETS || !market.proposal?.id,
+  });
+
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
 
@@ -155,6 +164,11 @@ export const KeyDetailsInfoPanel = ({ market }: MarketInfoProps) => {
               name: market.tradableInstrument.instrument.name,
               marketID: market.id,
               parentMarketID: parentData?.market?.parentMarketID || '-',
+              insurancePoolFraction:
+                (successor?.proposal?.terms.change.__typename === 'NewMarket' &&
+                  successor.proposal.terms.change.successorConfiguration
+                    ?.insurancePoolFraction) ||
+                '-',
               tradingMode:
                 market.tradingMode &&
                 MarketTradingModeMapping[market.tradingMode],

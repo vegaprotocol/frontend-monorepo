@@ -22,6 +22,16 @@ import {
 } from '../../test-helpers/mocks';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { MockedResponse } from '@apollo/client/testing';
+import { FLAGS } from '@vegaprotocol/environment';
+import { BrowserRouter } from 'react-router-dom';
+
+jest.mock('@vegaprotocol/proposals', () => ({
+  ...jest.requireActual('@vegaprotocol/proposals'),
+  useSuccessorMarketProposalDetails: () => ({
+    code: 'PARENT_CODE',
+    parentMarketId: 'PARENT_ID',
+  }),
+}));
 
 const renderComponent = (
   proposal: ProposalQuery['proposal'],
@@ -30,20 +40,27 @@ const renderComponent = (
 ) =>
   render(
     <AppStateProvider>
-      <MockedProvider mocks={mocks}>
-        <VegaWalletContext.Provider value={mockWalletContext}>
-          <ProposalHeader
-            proposal={proposal}
-            isListItem={isListItem}
-            networkParams={mockNetworkParams}
-          />
-        </VegaWalletContext.Provider>
-      </MockedProvider>
+      <BrowserRouter>
+        <MockedProvider mocks={mocks}>
+          <VegaWalletContext.Provider value={mockWalletContext}>
+            <ProposalHeader
+              proposal={proposal}
+              isListItem={isListItem}
+              networkParams={mockNetworkParams}
+            />
+          </VegaWalletContext.Provider>
+        </MockedProvider>
+      </BrowserRouter>
     </AppStateProvider>
   );
 
 describe('Proposal header', () => {
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
   it('Renders New market proposal', () => {
+    const mockedFlags = jest.mocked(FLAGS);
+    mockedFlags.SUCCESSOR_MARKETS = true;
     renderComponent(
       generateProposal({
         rationale: {
@@ -75,6 +92,9 @@ describe('Proposal header', () => {
     expect(screen.getByTestId('proposal-type')).toHaveTextContent('New market');
     expect(screen.getByTestId('proposal-details')).toHaveTextContent(
       'tGBP settled future.'
+    );
+    expect(screen.getByTestId('proposal-successor-info')).toHaveTextContent(
+      'PARENT_CODE'
     );
   });
 

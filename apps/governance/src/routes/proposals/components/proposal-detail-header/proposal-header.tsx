@@ -11,6 +11,10 @@ import { ProposalInfoLabel } from '../proposal-info-label';
 import { useUserVote } from '../vote-details/use-user-vote';
 import { ProposalVotingStatus } from '../proposal-voting-status';
 import type { NetworkParamsResult } from '@vegaprotocol/network-parameters';
+import { useSuccessorMarketProposalDetails } from '@vegaprotocol/proposals';
+import { FLAGS } from '@vegaprotocol/environment';
+import Routes from '../../../routes';
+import { Link } from 'react-router-dom';
 
 export const ProposalHeader = ({
   proposal,
@@ -39,6 +43,9 @@ export const ProposalHeader = ({
       fallbackTitle = t('NewMarketProposal');
       details = (
         <>
+          {FLAGS.SUCCESSOR_MARKETS && (
+            <SuccessorCode proposalId={proposal?.id} />
+          )}
           <span>
             {t('Code')}: {change.instrument.code}.
           </span>{' '}
@@ -180,4 +187,21 @@ export const ProposalHeader = ({
       <ProposalVotingStatus proposal={proposal} networkParams={networkParams} />
     </>
   );
+};
+
+const SuccessorCode = ({ proposalId }: { proposalId?: string | null }) => {
+  const { t } = useTranslation();
+  const successor = useSuccessorMarketProposalDetails(proposalId);
+
+  return successor.parentMarketId || successor.code ? (
+    <span className="block" data-testid="proposal-successor-info">
+      {t('Successor market to')}:{' '}
+      <Link
+        to={`${Routes.PROPOSALS}/${successor.parentMarketId}`}
+        className="hover:underline"
+      >
+        {successor.code || successor.parentMarketId}
+      </Link>
+    </span>
+  ) : null;
 };
