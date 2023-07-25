@@ -5,11 +5,7 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, screen } from '@testing-library/react';
 import { format } from 'date-fns';
-import {
-  ProposalRejectionReason,
-  ProposalState,
-  VoteValue,
-} from '@vegaprotocol/types';
+import { ProposalRejectionReason, ProposalState } from '@vegaprotocol/types';
 import {
   generateNoVotes,
   generateProposal,
@@ -18,7 +14,6 @@ import {
 import { ProposalsListItemDetails } from './proposals-list-item-details';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import {
-  mockPubkey,
   mockWalletContext,
   networkParamsQueryMock,
   fiveMinutes,
@@ -28,39 +23,6 @@ import {
   nextWeek,
 } from '../../test-helpers/mocks';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
-import { UserVoteDocument } from '../vote-details/__generated__/Vote';
-import faker from 'faker';
-
-const createUserVoteQueryMock = (
-  proposalId: string | undefined | null,
-  value: VoteValue
-) => ({
-  request: {
-    query: UserVoteDocument,
-    variables: {
-      partyId: mockPubkey.publicKey,
-    },
-  },
-  result: {
-    data: {
-      party: {
-        votesConnection: {
-          edges: [
-            {
-              node: {
-                proposalId,
-                vote: {
-                  value,
-                  datetime: faker.date.past().toISOString(),
-                },
-              },
-            },
-          ],
-        },
-      },
-    },
-  },
-});
 
 const renderComponent = (
   proposal: ProposalQuery['proposal'],
@@ -131,7 +93,7 @@ describe('Proposals list item details', () => {
     );
   });
 
-  it('Renders proposal state: Update market proposal - set to pass by LP vote', () => {
+  it('Renders proposal state: Update market proposal - Currently expected to pass by LP vote', () => {
     renderComponent(
       generateProposal({
         state: ProposalState.STATE_OPEN,
@@ -153,11 +115,11 @@ describe('Proposals list item details', () => {
       })
     );
     expect(screen.getByTestId('vote-status')).toHaveTextContent(
-      'Set to pass by LP vote'
+      'Currently expected to pass by LP vote'
     );
   });
 
-  it('Renders proposal state: Update market proposal - set to pass by token vote', () => {
+  it('Renders proposal state: Update market proposal - Currently expected to pass by token vote', () => {
     renderComponent(
       generateProposal({
         state: ProposalState.STATE_OPEN,
@@ -179,11 +141,11 @@ describe('Proposals list item details', () => {
       })
     );
     expect(screen.getByTestId('vote-status')).toHaveTextContent(
-      'Set to pass by token vote'
+      'Currently expected to pass by token vote'
     );
   });
 
-  it('Renders proposal state: Update market proposal - set to fail', () => {
+  it('Renders proposal state: Update market proposal - Currently expected to fail', () => {
     renderComponent(
       generateProposal({
         state: ProposalState.STATE_OPEN,
@@ -204,7 +166,9 @@ describe('Proposals list item details', () => {
         },
       })
     );
-    expect(screen.getByTestId('vote-status')).toHaveTextContent('Set to fail');
+    expect(screen.getByTestId('vote-status')).toHaveTextContent(
+      'Currently expected to fail'
+    );
   });
 
   it('Renders proposal state: Open - 5 minutes left to vote', () => {
@@ -249,52 +213,6 @@ describe('Proposals list item details', () => {
     );
   });
 
-  it('Renders proposal state: Open - user voted for', async () => {
-    const proposal = generateProposal({
-      state: ProposalState.STATE_OPEN,
-      terms: {
-        closingDatetime: nextWeek.toString(),
-      },
-    });
-    renderComponent(proposal, [
-      networkParamsQueryMock,
-      createUserVoteQueryMock(proposal?.id, VoteValue.VALUE_YES),
-    ]);
-    expect(await screen.findByText('You voted For')).toBeInTheDocument();
-  });
-
-  it('Renders proposal state: Open - user voted against', async () => {
-    const proposal = generateProposal({
-      state: ProposalState.STATE_OPEN,
-      terms: {
-        closingDatetime: nextWeek.toString(),
-      },
-    });
-    renderComponent(proposal, [
-      networkParamsQueryMock,
-      createUserVoteQueryMock(proposal?.id, VoteValue.VALUE_NO),
-    ]);
-    expect(await screen.findByText('You voted Against')).toBeInTheDocument();
-  });
-
-  it('Renders proposal state: Open - participation not reached', () => {
-    renderComponent(
-      generateProposal({
-        state: ProposalState.STATE_OPEN,
-        terms: {
-          enactmentDatetime: nextWeek.toString(),
-        },
-        votes: {
-          no: generateNoVotes(0),
-          yes: generateYesVotes(0),
-        },
-      })
-    );
-    expect(screen.getByTestId('vote-status')).toHaveTextContent(
-      'Participation not reached'
-    );
-  });
-
   it('Renders proposal state: Open - majority not reached', () => {
     renderComponent(
       generateProposal({
@@ -309,7 +227,7 @@ describe('Proposals list item details', () => {
       })
     );
     expect(screen.getByTestId('vote-status')).toHaveTextContent(
-      'Majority not reached'
+      'Currently expected to fail'
     );
   });
 
@@ -327,42 +245,8 @@ describe('Proposals list item details', () => {
         },
       })
     );
-    expect(screen.getByTestId('vote-status')).toHaveTextContent('Set to pass');
-  });
-
-  it('Renders proposal state: Declined - participation not reached', () => {
-    renderComponent(
-      generateProposal({
-        state: ProposalState.STATE_DECLINED,
-        terms: {
-          enactmentDatetime: lastWeek.toString(),
-        },
-        votes: {
-          no: generateNoVotes(0),
-          yes: generateYesVotes(0),
-        },
-      })
-    );
     expect(screen.getByTestId('vote-status')).toHaveTextContent(
-      'Participation not reached'
-    );
-  });
-
-  it('Renders proposal state: Declined - majority not reached', () => {
-    renderComponent(
-      generateProposal({
-        state: ProposalState.STATE_DECLINED,
-        terms: {
-          enactmentDatetime: lastWeek.toString(),
-        },
-        votes: {
-          no: generateNoVotes(1, 1000000000000000000),
-          yes: generateYesVotes(1, 1000000000000000000),
-        },
-      })
-    );
-    expect(screen.getByTestId('vote-status')).toHaveTextContent(
-      'Majority not reached'
+      'Currently expected to pass'
     );
   });
 

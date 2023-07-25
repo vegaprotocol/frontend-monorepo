@@ -60,6 +60,11 @@ const mockConsensusValidators: NodesFragmentFragment[] = [
   },
 ];
 
+jest.mock('@vegaprotocol/environment', () => ({
+  useVegaRelease: jest.fn(),
+  useVegaReleases: jest.fn(),
+}));
+
 const renderComponent = () =>
   render(
     <ProtocolUpgradeProposal proposal={mockProposal} consensusValidators={[]} />
