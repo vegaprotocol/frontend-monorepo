@@ -36,6 +36,7 @@ import {
   successorMarketQuery,
   parentMarketIdQuery,
   successorMarketIdsQuery,
+  successorMarketProposalDetailsQuery,
 } from '@vegaprotocol/mock';
 import type { PartialDeep } from 'type-fest';
 import type { MarketDataQuery, MarketsQuery } from '@vegaprotocol/markets';
@@ -186,6 +187,11 @@ const mockTradingPage = (
   aliasGQLQuery(req, 'SuccessorMarket', successorMarketQuery());
   aliasGQLQuery(req, 'ParentMarketId', parentMarketIdQuery());
   aliasGQLQuery(req, 'SuccessorMarketIds', successorMarketIdsQuery());
+  aliasGQLQuery(
+    req,
+    'SuccessorMarketProposalDetails',
+    successorMarketProposalDetailsQuery()
+  );
 };
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
