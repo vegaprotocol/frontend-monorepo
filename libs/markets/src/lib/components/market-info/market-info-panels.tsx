@@ -23,12 +23,13 @@ import BigNumber from 'bignumber.js';
 import type { DataSourceDefinition, SignerKind } from '@vegaprotocol/types';
 import { ConditionOperatorMapping } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { FLAGS, useEnvironment } from '@vegaprotocol/environment';
 import type { Provider } from '../../oracle-schema';
 import { OracleBasicProfile } from '../../components/oracle-basic-profile';
 import { useOracleProofs } from '../../hooks';
 import { OracleDialog } from '../oracle-dialog/oracle-dialog';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { useParentMarketIdQuery } from '../../__generated__';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -137,20 +138,41 @@ export const InsurancePoolInfoPanel = ({
 };
 
 export const KeyDetailsInfoPanel = ({ market }: MarketInfoProps) => {
+  const { data: parentData } = useParentMarketIdQuery({
+    variables: {
+      marketId: market.id,
+    },
+    skip: !FLAGS.SUCCESSOR_MARKETS,
+  });
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
+
   return (
     <MarketInfoTable
-      data={{
-        name: market.tradableInstrument.instrument.name,
-        marketID: market.id,
-        parentMarketID: market.parentMarketID,
-        tradingMode:
-          market.tradingMode && MarketTradingModeMapping[market.tradingMode],
-        marketDecimalPlaces: market.decimalPlaces,
-        positionDecimalPlaces: market.positionDecimalPlaces,
-        settlementAssetDecimalPlaces: assetDecimals,
-      }}
+      data={
+        FLAGS.SUCCESSOR_MARKETS
+          ? {
+              name: market.tradableInstrument.instrument.name,
+              marketID: market.id,
+              parentMarketID: parentData?.market?.parentMarketID || '-',
+              tradingMode:
+                market.tradingMode &&
+                MarketTradingModeMapping[market.tradingMode],
+              marketDecimalPlaces: market.decimalPlaces,
+              positionDecimalPlaces: market.positionDecimalPlaces,
+              settlementAssetDecimalPlaces: assetDecimals,
+            }
+          : {
+              name: market.tradableInstrument.instrument.name,
+              marketID: market.id,
+              tradingMode:
+                market.tradingMode &&
+                MarketTradingModeMapping[market.tradingMode],
+              marketDecimalPlaces: market.decimalPlaces,
+              positionDecimalPlaces: market.positionDecimalPlaces,
+              settlementAssetDecimalPlaces: assetDecimals,
+            }
+      }
     />
   );
 };
