@@ -10,15 +10,18 @@ import type {
   OracleSpecDataConnectionQuery,
   MarketsDataQuery,
   MarketsQuery,
+  SuccessorMarketIdsQuery,
 } from '@vegaprotocol/markets';
 import {
   OracleSpecDataConnectionDocument,
   MarketsDataDocument,
   MarketsDocument,
+  SuccessorMarketIdsDocument,
 } from '@vegaprotocol/markets';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { FLAGS } from '@vegaprotocol/environment';
 import {
   createMarketFragment,
   marketsQuery,
@@ -50,6 +53,17 @@ jest.mock('@vegaprotocol/environment', () => ({
   ...jest.requireActual('@vegaprotocol/environment'),
   FLAGS: { SUCCESSOR_MARKETS: true } as Partial<FeatureFlags>,
 }));
+
+jest.mock('@vegaprotocol/environment', () => {
+  const actual = jest.requireActual('@vegaprotocol/environment');
+  return {
+    ...actual,
+    FLAGS: {
+      ...actual.FLAGS,
+      SUCCESSOR_MARKETS: true,
+    },
+  };
+});
 
 describe('Closed', () => {
   let originalNow: typeof Date.now;
@@ -349,8 +363,25 @@ describe('Closed', () => {
           state: MarketState.STATE_SETTLED,
         }),
       },
+      {
+        __typename: 'MarketEdge' as const,
+        node: {
+          ...createMarketFragment({
+            id: 'successorMarketID',
+            state: MarketState.STATE_ACTIVE,
+          }),
+          tradableInstrument: {
+            ...createMarketFragment().tradableInstrument,
+            instrument: {
+              ...createMarketFragment().tradableInstrument.instrument,
+              id: 'successorAssset',
+              name: 'Successor Market Name',
+              code: 'SuccessorCode',
+            },
+          },
+        },
+      },
     ];
-
     const mixedMarketsMock: MockedResponse<MarketsQuery> = {
       request: {
         query: MarketsDocument,
@@ -364,11 +395,36 @@ describe('Closed', () => {
         },
       },
     };
-
+    const successorMarketsMock: MockedResponse<SuccessorMarketIdsQuery> = {
+      request: {
+        query: SuccessorMarketIdsDocument,
+      },
+      result: {
+        data: {
+          marketsConnection: {
+            __typename: 'MarketConnection',
+            edges: [
+              {
+                node: {
+                  id: 'include-0',
+                  successorMarketID: 'successorMarketID',
+                  parentMarketID: '',
+                },
+              },
+            ],
+          },
+        },
+      },
+    };
     render(
       <MemoryRouter>
         <MockedProvider
-          mocks={[mixedMarketsMock, marketsDataMock, oracleDataMock]}
+          mocks={[
+            mixedMarketsMock,
+            marketsDataMock,
+            oracleDataMock,
+            successorMarketsMock,
+          ]}
         >
           <VegaWalletContext.Provider
             value={{ pubKey } as VegaWalletContextShape}
@@ -383,6 +439,108 @@ describe('Closed', () => {
       expect(
         screen.getByRole('button', { name: 'SuccessorCode' })
       ).toBeInTheDocument();
+    });
+    expect(
+      screen.getByRole('columnheader', {
+        name: (_name, element) =>
+          element.getAttribute('col-id') === 'successorMarket',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('feature flag should hide successors', async () => {
+    const mockedFlags = jest.mocked(FLAGS);
+    mockedFlags.SUCCESSOR_MARKETS = false;
+
+    const mixedMarkets = [
+      {
+        __typename: 'MarketEdge' as const,
+        node: createMarketFragment({
+          id: 'include-0',
+          state: MarketState.STATE_SETTLED,
+        }),
+      },
+      {
+        __typename: 'MarketEdge' as const,
+        node: {
+          ...createMarketFragment({
+            id: 'successorMarketID',
+            state: MarketState.STATE_ACTIVE,
+          }),
+          tradableInstrument: {
+            ...createMarketFragment().tradableInstrument,
+            instrument: {
+              ...createMarketFragment().tradableInstrument.instrument,
+              id: 'successorAssset',
+              name: 'Successor Market Name',
+              code: 'SuccessorCode',
+            },
+          },
+        },
+      },
+    ];
+    const mixedMarketsMock: MockedResponse<MarketsQuery> = {
+      request: {
+        query: MarketsDocument,
+      },
+      result: {
+        data: {
+          marketsConnection: {
+            __typename: 'MarketConnection',
+            edges: mixedMarkets,
+          },
+        },
+      },
+    };
+    const successorMarketsMock: MockedResponse<SuccessorMarketIdsQuery> = {
+      request: {
+        query: SuccessorMarketIdsDocument,
+      },
+      result: {
+        data: {
+          marketsConnection: {
+            __typename: 'MarketConnection',
+            edges: [
+              {
+                node: {
+                  id: 'include-0',
+                  successorMarketID: 'successorMarketID',
+                  parentMarketID: '',
+                },
+              },
+            ],
+          },
+        },
+      },
+    };
+    render(
+      <MemoryRouter>
+        <MockedProvider
+          mocks={[
+            mixedMarketsMock,
+            marketsDataMock,
+            oracleDataMock,
+            successorMarketsMock,
+          ]}
+        >
+          <VegaWalletContext.Provider
+            value={{ pubKey } as VegaWalletContextShape}
+          >
+            <Closed />
+          </VegaWalletContext.Provider>
+        </MockedProvider>
+      </MemoryRouter>
+    );
+    await waitFor(() => {
+      expect(
+        screen.getByRole('columnheader', {
+          name: (_name, element) =>
+            element.getAttribute('col-id') === 'settlementDate',
+        })
+      ).toBeInTheDocument();
+    });
+    screen.getAllByRole('columnheader').forEach((element) => {
+      expect(element.getAttribute('col-id')).not.toEqual('successorMarket');
     });
   });
 });

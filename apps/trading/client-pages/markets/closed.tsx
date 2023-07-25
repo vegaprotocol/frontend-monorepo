@@ -4,11 +4,7 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import {
-  AgGridLazy as AgGrid,
-  COL_DEFS,
-  MarketNameCell,
-} from '@vegaprotocol/datagrid';
+import { AgGridLazy as AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
@@ -23,15 +19,14 @@ import type {
 import {
   MarketActionsDropdown,
   closedMarketsWithDataProvider,
-  useSuccessorMarket,
 } from '@vegaprotocol/markets';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { ColDef } from 'ag-grid-community';
+import { FLAGS } from '@vegaprotocol/environment';
 import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
-import { FLAGS } from '@vegaprotocol/environment';
+import { SuccessorMarketRenderer } from './successor-market-cell';
 
 type SettlementAsset =
   MarketMaybeWithData['tradableInstrument']['instrument']['product']['settlementAsset'];
@@ -103,22 +98,6 @@ export const Closed = () => {
     <div className="h-full relative">
       <ClosedMarketsDataGrid rowData={rowData} error={error} />
     </div>
-  );
-};
-
-export const SuccessorMarketRenderer = ({
-  value,
-}: VegaICellRendererParams<Row, 'id'>) => {
-  const { data } = useSuccessorMarket(value);
-  const onMarketClick = useMarketClickHandler();
-  return data ? (
-    <MarketNameCell
-      value={data.tradableInstrument.instrument.code}
-      data={data}
-      onMarketClick={onMarketClick}
-    />
-  ) : (
-    ' - '
   );
 };
 
@@ -202,8 +181,8 @@ const ClosedMarketsDataGrid = ({
       },
       FLAGS.SUCCESSOR_MARKETS && {
         headerName: t('Successor market'),
-        colId: 'successorMarketID',
         field: 'id',
+        colId: 'successorMarket',
         cellRenderer: 'SuccessorMarketRenderer',
       },
       {

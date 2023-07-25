@@ -1,3 +1,4 @@
+import React from 'react';
 import { useRef } from 'react';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
@@ -17,7 +18,13 @@ export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
     ].includes(proposal.state)
   );
 
-export const ProposalsList = () => {
+interface ProposalListProps {
+  SuccessorMarketRenderer: React.FC<{ value: string }>;
+}
+
+export const ProposalsList = ({
+  SuccessorMarketRenderer,
+}: ProposalListProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const { data } = useProposalsListQuery({
     variables: {
@@ -41,6 +48,7 @@ export const ProposalsList = () => {
         getRowId={({ data }) => data.id}
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No markets')}
+        components={{ SuccessorMarketRenderer }}
       />
     </div>
   );

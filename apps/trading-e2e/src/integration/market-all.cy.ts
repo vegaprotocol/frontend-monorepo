@@ -27,6 +27,7 @@ describe('markets all table', { tags: '@smoke' }, () => {
       'Description',
       'Trading mode',
       'Status',
+      'Successor market',
       'Best bid',
       'Best offer',
       'Mark price',

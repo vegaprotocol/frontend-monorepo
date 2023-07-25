@@ -19,6 +19,7 @@ describe('markets proposed table', { tags: '@smoke' }, () => {
       'Description',
       'Settlement asset',
       'State',
+      'Parent market',
       'Voting',
       'Closing date',
       'Enactment date',
