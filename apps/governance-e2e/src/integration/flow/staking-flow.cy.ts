@@ -144,7 +144,7 @@ context(
         closeStakingDialog();
         navigateTo(navigation.validators);
         cy.getByTestId(viewStakedByMeToggle).click();
-        cy.getByTestId(userStakeBtn).should('have.length', 2);
+        cy.getByTestId(userStakeBtn, epochTimeout).should('have.length', 2);
       });
 
       it('Able to stake against a validator - using vega from vesting contract', function () {
