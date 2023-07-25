@@ -367,7 +367,8 @@ describe('Proposal header', () => {
       },
     });
     renderComponent(proposal, true, [
-      createUserVoteQueryMock(proposal?.id, VoteValue.VALUE_NO),
+      // @ts-ignore generateProposal always creates an id
+      createUserVoteQueryMock(proposal.id, VoteValue.VALUE_NO),
     ]);
     expect(await screen.findByTestId('user-voted-no')).toBeInTheDocument();
   });
@@ -380,7 +381,8 @@ describe('Proposal header', () => {
       },
     });
     renderComponent(proposal, true, [
-      createUserVoteQueryMock(proposal?.id, VoteValue.VALUE_YES),
+      // @ts-ignore generateProposal always creates an id
+      createUserVoteQueryMock(proposal.id, VoteValue.VALUE_YES),
     ]);
     expect(await screen.findByTestId('user-voted-yes')).toBeInTheDocument();
   });

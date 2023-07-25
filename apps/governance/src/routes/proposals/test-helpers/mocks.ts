@@ -3,6 +3,7 @@ import type { MockedResponse } from '@apollo/client/testing';
 import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import type { PubKey } from '@vegaprotocol/wallet';
 import type { VoteValue } from '@vegaprotocol/types';
+import type { UserVoteQuery } from '../components/vote-details/__generated__/Vote';
 import { UserVoteDocument } from '../components/vote-details/__generated__/Vote';
 import faker from 'faker';
 
@@ -77,9 +78,9 @@ export const lastMonth = new Date(-oneMonth);
 export const nextMonth = new Date(oneMonth);
 
 export const createUserVoteQueryMock = (
-  proposalId: string | undefined | null,
+  proposalId: string,
   value: VoteValue
-): MockedResponse => ({
+): MockedResponse<UserVoteQuery> => ({
   request: {
     query: UserVoteDocument,
     variables: {
