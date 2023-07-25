@@ -28,7 +28,7 @@ Cypress.Commands.add('switchToMobile', () => {
 Cypress.Commands.add('common_switch_to_mobile_and_click_toggle', function () {
   cy.viewport('iphone-x');
   cy.visit('/');
-  cy.get('[data-testid="open-menu"]').click();
+  cy.get('[data-testid="button-menu-drawer"]').click();
 });
 
 Cypress.Commands.add('monitor_clipboard', () => {
@@ -88,3 +88,42 @@ Cypress.Commands.add('convert_number_to_max_four_decimal', (number) => {
     maximumFractionDigits: 4,
   });
 });
+
+Cypress.Commands.add('navigate_to', (page, mobileView = false) => {
+  const navigation = {
+    transactions: '/txs',
+    blocks: '/blocks',
+    oracles: '/oracles',
+    validators: '/validators',
+    parties: '/parties',
+    assets: '/assets',
+    markets: '/markets',
+    governanceProposals: '/governance',
+    networkParameters: '/network-parameters',
+    genesisParameters: '/genesis',
+  };
+
+  const topLevelRoutes = ['transactions', 'blocks', 'oracles', 'validators'];
+
+  cy.getByTestId('navigation').within(() => {
+    if (!topLevelRoutes.includes(page) && mobileView === false) {
+      cy.getByTestId('other').first().click();
+    }
+    cy.get(`[href="${navigation[page]}"]`).first().click();
+  });
+  cy.url().should('include', navigation[page]);
+});
+
+Cypress.Commands.add('get_element_by_col_id', (elementName) => {
+  cy.get(`[col-id="${elementName}"]`);
+});
+
+Cypress.Commands.add(
+  'validate_element_from_table',
+  (tableRowName, tableRowValue) => {
+    cy.contains(tableRowName)
+      .parentsUntil("[data-testid='key-value-table-row']")
+      .siblings()
+      .should('have.text', tableRowValue);
+  }
+);
