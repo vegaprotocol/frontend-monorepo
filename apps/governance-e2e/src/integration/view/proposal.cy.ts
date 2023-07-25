@@ -227,5 +227,42 @@ context(
       cy.getByTestId(networkUpgradeProposalListItem).should('not.exist');
       cy.getByTestId(closedProposalToggle).should('not.exist');
     });
+
+    it('should display network upgrade banner with estimate', function () {
+      mockNetworkUpgradeProposal();
+      cy.visit('/');
+      cy.getByTestId('banners').within(() => {
+        cy.get('div')
+          .should('contain.text', 'The network will upgrade to v1 in ')
+          .and(
+            'contain.text',
+            'Trading activity will be interrupted, manage your risk appropriately.'
+          );
+        cy.getByTestId('external-link')
+          .should('have.attr', 'href')
+          .and('contain', '/proposals/protocol-upgrade/v1');
+      });
+
+      // estimate does not display possibly due to mocks or Cypress unless the proposal is clicked on several times
+      // By default the application waits for 10 blocks until showing estimate - roughly 10 seconds
+      for (let i = 0; i < 3; i++) {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(3000);
+        navigateTo(navigation.proposals);
+        cy.getByTestId(networkUpgradeProposalListItem)
+          .first()
+          .find('[data-testid="view-proposal-btn"]')
+          .click();
+      }
+      cy.getByTestId('upgrade-proposal-estimate')
+        .invoke('text')
+        .as('displayedEstimate');
+      cy.get('@displayedEstimate').then((estimateText) => {
+        // Estimated time should automatically update every second
+        cy.getByTestId('protocol-upgrade-time')
+          .invoke('text')
+          .should('not.eq', estimateText);
+      });
+    });
   }
 );
