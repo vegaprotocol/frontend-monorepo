@@ -60,6 +60,7 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
               openVegaWalletDialog();
             }
           }}
+          data-testid="navbar-mobile-wallet"
         >
           <span className="sr-only">{t('Wallet')}</span>
           <WalletIcon className="w-6" />
@@ -68,7 +69,7 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
           onClick={() => {
             setMenu((x) => (x === 'nav' ? null : 'nav'));
           }}
-          data-testid="navbar-burger"
+          data-testid="navbar-mobile-burger"
         >
           <span className="sr-only">{t('Menu')}</span>
           <BurgerIcon />
@@ -121,14 +122,14 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
   // otherwise always go to /markets/all
   const tradingPath = marketId
     ? Links[Routes.MARKET](marketId)
-    : Routes.MARKETS;
+    : Links[Routes.MARKET]('');
 
   return (
     <div className="lg:flex gap-3">
       <NavbarList>
         <NavbarItem>
           <NavbarTrigger>{envNameMapping[VEGA_ENV]}</NavbarTrigger>
-          <NavbarContent>
+          <NavbarContent data-testid="navbar-content-network-switcher">
             <ul className="lg:px-4 lg:py-2">
               {[Networks.MAINNET, Networks.TESTNET].map((n) => {
                 const url = VEGA_NETWORKS[n];
@@ -162,7 +163,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
         </NavbarItem>
         <NavbarItem>
           <NavbarTrigger>{t('Resources')}</NavbarTrigger>
-          <NavbarContent>
+          <NavbarContent data-testid="navbar-content-resources">
             <ul className="lg:px-4 lg:py-2">
               {DocsLinks?.NEW_TO_VEGA && (
                 <li>
@@ -274,9 +275,10 @@ const NavbarList = (props: N.NavigationMenuListProps) => {
 /**
  * Content that gets rendered when a sub section of the navbar is shown
  */
-const NavbarContent = ({ children }: { children: ReactNode }) => {
+const NavbarContent = (props: N.NavigationMenuContentProps) => {
   return (
     <N.Content
+      {...props}
       className={classNames(
         'lg:absolute lg:mt-2 pl-2 lg:pl-0 z-20 lg:min-w-[290px]',
         'lg:bg-vega-clight-800 lg:dark:bg-vega-cdark-800',
@@ -284,9 +286,7 @@ const NavbarContent = ({ children }: { children: ReactNode }) => {
       )}
       onPointerEnter={preventHover}
       onPointerLeave={preventHover}
-    >
-      {children}
-    </N.Content>
+    />
   );
 };
 
@@ -312,6 +312,7 @@ const NavbarLinkExternal = ({
           'hover:text-vega-clight-50 dark:hover:text-vega-cdark-50'
         )}
         onClick={onClick}
+        target="_blank"
       >
         <span>{children}</span>
         <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
