@@ -303,7 +303,9 @@ export const DealTicket = ({
   );
 
   // if an order doesn't exist one will be created by the store immediately
-  if (!order || !normalizedOrder) return null;
+  if (!order || !normalizedOrder) {
+    return null;
+  }
 
   return (
     <form

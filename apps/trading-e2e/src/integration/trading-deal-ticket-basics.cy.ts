@@ -36,8 +36,8 @@ describe('deal ticket basics', { tags: '@smoke' }, () => {
     // 7002-SORD-005
     // 7002-SORD-006
     // 7002-SORD-007
-    cy.getByTestId(toggleLimit).click().children('input').should('be.checked');
-    cy.getByTestId(toggleMarket).click().children('input').should('be.checked');
+    cy.getByTestId(toggleLimit).click().next('input').should('be.checked');
+    cy.getByTestId(toggleMarket).click().next('input').should('be.checked');
   });
 
   it('order connect vega wallet button should connect', () => {
@@ -51,7 +51,7 @@ describe('deal ticket basics', { tags: '@smoke' }, () => {
       .click();
     cy.wait('@walletReq');
     cy.getByTestId(placeOrderBtn).should('be.visible');
-    cy.getByTestId(toggleLimit).children('input').should('be.checked');
+    cy.getByTestId(toggleLimit).next('input').should('be.checked');
     cy.getByTestId(orderPriceField).should('have.value', '101');
   });
 });

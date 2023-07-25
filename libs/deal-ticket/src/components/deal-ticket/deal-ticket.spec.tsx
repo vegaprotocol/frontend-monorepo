@@ -12,15 +12,12 @@ import { useCreateOrderStore } from '@vegaprotocol/orders';
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
   DealTicketFeeDetails: () => <div data-testid="deal-ticket-fee-details" />,
+  DealTicketMarginDetails: () => (
+    <div data-testid="deal-ticket-margin-details" />
+  ),
 }));
 
 const marketPrice = '200';
-
-jest.mock('@vegaprotocol/markets', () => ({
-  ...jest.requireActual('@vegaprotocol/markets'),
-  useMarketPrice: jest.fn(() => ({ data: marketPrice })),
-}));
-
 const pubKey = 'pubKey';
 const market = generateMarket();
 const marketData = generateMarketData();
@@ -33,6 +30,7 @@ function generateJsx() {
         <DealTicket
           market={market}
           marketData={marketData}
+          marketPrice={marketPrice}
           submit={submit}
           onDeposit={jest.fn()}
         />
@@ -64,10 +62,11 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('order-type-Market')).toBeInTheDocument();
     expect(screen.getByTestId('order-type-Limit')).toBeInTheDocument();
 
-    const oderTypeLimitToggle = container.querySelector(
-      '[data-testid="order-type-Limit"] input[type="radio"]'
-    );
-    expect(oderTypeLimitToggle).toBeChecked();
+    expect(
+      container.querySelector(
+        '[data-testid="order-type-Limit"] + input[type="radio"]'
+      )
+    ).toBeChecked();
 
     expect(
       screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
@@ -112,11 +111,13 @@ describe('DealTicket', () => {
       },
     });
 
-    render(generateJsx());
+    const { container } = render(generateJsx());
 
     // Assert correct defaults are used from store
     expect(
-      screen.getByTestId('order-type-Limit').querySelector('input')
+      container.querySelector(
+        '[data-testid="order-type-Limit"] + input[type="radio"]'
+      )
     ).toBeChecked();
     expect(
       screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
@@ -153,11 +154,13 @@ describe('DealTicket', () => {
       },
     });
 
-    render(generateJsx());
+    const { container } = render(generateJsx());
 
     // Assert correct defaults are used from store
     expect(
-      screen.getByTestId('order-type-Limit').querySelector('input')
+      container.querySelector(
+        '[data-testid="order-type-Limit"] + input[type="radio"]'
+      )
     ).toBeChecked();
     expect(
       screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
@@ -199,11 +202,13 @@ describe('DealTicket', () => {
       },
     });
 
-    render(generateJsx());
+    const { container } = render(generateJsx());
 
     // Assert correct defaults are used from store
     expect(
-      screen.getByTestId('order-type-Limit').querySelector('input')
+      container.querySelector(
+        '[data-testid="order-type-Limit"] + input[type="radio"]'
+      )
     ).toBeChecked();
     expect(
       screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
@@ -250,13 +255,13 @@ describe('DealTicket', () => {
       },
     });
 
-    render(generateJsx());
+    const { container } = render(generateJsx());
 
     // Assert correct defaults are used from store
     expect(
-      screen
-        .getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
-        .querySelector('input')
+      container.querySelector(
+        '[data-testid="order-type-Limit"] + input[type="radio"]'
+      )
     ).toBeChecked();
     expect(
       screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
@@ -299,13 +304,13 @@ describe('DealTicket', () => {
       },
     });
 
-    render(generateJsx());
+    const { container } = render(generateJsx());
 
     // Assert correct defaults are used from store
     expect(
-      screen
-        .getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
-        .querySelector('input')
+      container.querySelector(
+        '[data-testid="order-type-Limit"] + input[type="radio"]'
+      )
     ).toBeChecked();
     expect(
       screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
