@@ -17,8 +17,8 @@ import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 interface VoteDetailsProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
-  minVoterBalance: string | null;
-  spamProtectionMinTokens: string | null;
+  minVoterBalance: string | null | undefined;
+  spamProtectionMinTokens: string | null | undefined;
   proposalType: ProposalType | null;
 }
 

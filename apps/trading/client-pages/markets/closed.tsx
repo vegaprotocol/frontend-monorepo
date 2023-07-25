@@ -109,6 +109,7 @@ const ClosedMarketsDataGrid = ({
   error: Error | undefined;
 }) => {
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
+
   const colDefs = useMemo(() => {
     const cols: ColDef[] = compact([
       {
