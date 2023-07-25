@@ -41,7 +41,6 @@ import {
 import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values-to-stop-order-submission';
 import { DealTicketButton } from './deal-ticket-button';
 import noop from 'lodash/noop';
-import { useEstimateFees } from '../../hooks';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 
 export interface StopOrderProps {

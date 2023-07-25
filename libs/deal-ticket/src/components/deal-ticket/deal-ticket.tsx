@@ -33,8 +33,7 @@ import {
 } from '@vegaprotocol/positions';
 import { toBigNum, removeDecimal } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
-import { useEstimateFees } from '../../hooks/use-estimate-fees';
-import { getDerivedPrice, useMarketPrice } from '@vegaprotocol/markets';
+import { getDerivedPrice } from '@vegaprotocol/markets';
 import type { OrderInfo } from '@vegaprotocol/types';
 
 import {

@@ -9,7 +9,6 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 
 import type { Market } from '@vegaprotocol/markets';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
-import type { EstimateFeesQuery } from '../../hooks/__generated__/EstimateOrder';
 import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
 
 import { formatRange, formatValue } from '@vegaprotocol/utils';
