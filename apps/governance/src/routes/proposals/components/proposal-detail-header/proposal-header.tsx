@@ -138,7 +138,7 @@ export const ProposalHeader = ({
               className="flex items-center gap-2"
               data-testid={`user-voted-${voteState.toLowerCase()}`}
             >
-              <div className="text-vega-green">
+              <div className="text-vega-green" data-testid="you-voted-icon">
                 <VegaIcon name={VegaIconNames.VOTE} size={24} />
               </div>
               <div>
