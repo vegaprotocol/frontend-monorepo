@@ -53,17 +53,6 @@ describe('MarketsContainer', () => {
       });
   });
   it('context menu should stay open', async () => {
-    /*jest
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .spyOn<typeof DataProviders, any>(DataProviders, 'useDataProvider')
-      .mockImplementation(() => {
-        return {
-          error: null,
-          reload: jest.fn(),
-          data: [market],
-        };
-      });*/
-
     let rerenderRef: (ui: React.ReactElement) => void;
     await act(async () => {
       const { rerender } = render(
