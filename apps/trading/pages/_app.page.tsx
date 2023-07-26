@@ -16,6 +16,7 @@ import {
 } from '@vegaprotocol/web3';
 import {
   envTriggerMapping,
+  Networks,
   NodeSwitcherDialog,
   useEnvironment,
   useInitializeEnv,
@@ -82,6 +83,7 @@ const InitializeHandlers = () => {
 
 function AppBody({ Component }: AppProps) {
   const location = useLocation();
+  const { VEGA_ENV } = useEnvironment();
   const gridClasses = classNames(
     'h-full relative z-0 grid',
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
@@ -95,7 +97,7 @@ function AppBody({ Component }: AppProps) {
       <Title />
       <div className={gridClasses}>
         <AnnouncementBanner />
-        <Navbar>
+        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'}>
           <Routes>
             <Route
               path={AppRoutes.MARKETS}

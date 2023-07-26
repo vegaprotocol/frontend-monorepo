@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, LiHTMLAttributes, ReactNode } from 'react';
 import { useState } from 'react';
 import { useEnvironment, DocsLinks, Networks } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
@@ -16,8 +16,15 @@ import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { WalletIcon } from '../icons/wallet';
 
 type MenuState = 'wallet' | 'nav' | null;
+type Theme = 'system' | 'yellow';
 
-export const Navbar = ({ children }: { children?: ReactNode }) => {
+export const Navbar = ({
+  children,
+  theme = 'system',
+}: {
+  children?: ReactNode;
+  theme?: Theme;
+}) => {
   // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
 
@@ -32,19 +39,23 @@ export const Navbar = ({ children }: { children?: ReactNode }) => {
   const navTextClasses = 'text-vega-clight-100 dark:text-vega-cdark-100';
   const rootClasses = classNames(
     navTextClasses,
-    'flex items-center gap-2 h-10 px-1',
+    'flex gap-3 h-10 pr-1',
     'border-b border-default',
     'bg-vega-clight-800 dark:bg-vega-cdark-800'
   );
   return (
     <N.Root className={rootClasses}>
-      <div className="lg:mr-2">
-        <NavLink to="/" className="block px-2">
-          <VLogo className="w-4 text-default" />
-        </NavLink>
-      </div>
+      <NavLink
+        to="/"
+        className={classNames('flex items-center px-3', {
+          'bg-vega-yellow text-vega-clight-50': theme === 'yellow',
+          'text-default': theme === 'system',
+        })}
+      >
+        <VLogo className="w-4" />
+      </NavLink>
       {/* Left section */}
-      <div className="lg:hidden">{children}</div>
+      <div className="lg:hidden flex items-center">{children}</div>
       {/* Used to show header in nav on mobile */}
       <div className="hidden lg:block">
         <NavbarMenu onClick={() => setMenu(null)} />
@@ -125,19 +136,19 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
     : Links[Routes.MARKET]('');
 
   return (
-    <div className="lg:flex gap-3">
+    <div className="lg:flex lg:h-full gap-3">
       <NavbarList>
         <NavbarItem>
           <NavbarTrigger>{envNameMapping[VEGA_ENV]}</NavbarTrigger>
           <NavbarContent data-testid="navbar-content-network-switcher">
-            <ul className="lg:px-4 lg:py-2">
+            <ul className="lg:p-4">
               {[Networks.MAINNET, Networks.TESTNET].map((n) => {
                 const url = VEGA_NETWORKS[n];
                 if (!url) return;
                 return (
-                  <li key={n}>
+                  <NavbarSubItem key={n}>
                     <NavbarLink to={url}>{envNameMapping[n]}</NavbarLink>
-                  </li>
+                  </NavbarSubItem>
                 );
               })}
             </ul>
@@ -164,26 +175,26 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
         <NavbarItem>
           <NavbarTrigger>{t('Resources')}</NavbarTrigger>
           <NavbarContent data-testid="navbar-content-resources">
-            <ul className="lg:px-4 lg:py-2">
+            <ul className="lg:p-4">
               {DocsLinks?.NEW_TO_VEGA && (
-                <li>
+                <NavbarSubItem>
                   <NavbarLinkExternal to={DocsLinks?.NEW_TO_VEGA}>
                     {t('Docs')}
                   </NavbarLinkExternal>
-                </li>
+                </NavbarSubItem>
               )}
               {GITHUB_FEEDBACK_URL && (
-                <li>
+                <NavbarSubItem>
                   <NavbarLinkExternal to={GITHUB_FEEDBACK_URL}>
                     {t('Give Feedback')}
                   </NavbarLinkExternal>
-                </li>
+                </NavbarSubItem>
               )}
-              <li>
+              <NavbarSubItem>
                 <NavbarLink to={Links[Routes.DISCLAIMER]()} onClick={onClick}>
                   {t('Disclaimer')}
                 </NavbarLink>
-              </li>
+              </NavbarSubItem>
             </ul>
           </NavbarContent>
         </NavbarItem>
@@ -201,9 +212,9 @@ const NavbarTrigger = ({ children }: { children: ReactNode }) => {
       onPointerMove={preventHover}
       onPointerLeave={preventHover}
       className={classNames(
-        'w-full lg:w-auto',
-        'relative flex items-center gap-2 py-2 px-6 lg:px-0',
-        'text-lg lg:text-base hover:text-vega-clight-50 dark:hover:text-vega-cdark-50'
+        'w-full lg:w-auto lg:h-full',
+        'flex items-center justify-between lg:justify-center gap-2 px-6 py-2 lg:p-0',
+        'text-lg lg:text-sm hover:text-vega-clight-50 dark:hover:text-vega-cdark-50'
       )}
     >
       {children}
@@ -228,7 +239,7 @@ const NavbarLink = ({
     <N.Link asChild={true}>
       <NavLink
         to={to}
-        className="relative block lg:inline-block py-2 px-6 lg:px-0 text-lg lg:text-base"
+        className="block lg:flex lg:h-full flex-col justify-center px-6 py-2 lg:p-0 text-lg lg:text-sm"
         onClick={onClick}
       >
         {({ isActive }) => {
@@ -241,11 +252,9 @@ const NavbarLink = ({
             <>
               <span
                 className={classNames(
-                  'hover:text-vega-clight-50 dark:hover:text-vega-cdark-50 lg:border-0',
-                  borderClasses,
-                  {
-                    'text-vega-clight-50 dark:text-vega-cdark-50': isActive,
-                  }
+                  'lg:border-0',
+                  'hover:text-vega-clight-50 dark:hover:text-vega-cdark-50',
+                  borderClasses
                 )}
               >
                 {children}
@@ -265,11 +274,15 @@ const NavbarLink = ({
 };
 
 const NavbarItem = (props: N.NavigationMenuItemProps) => {
-  return <N.Item {...props} />;
+  return <N.Item {...props} className="relative" />;
+};
+
+const NavbarSubItem = (props: LiHTMLAttributes<HTMLElement>) => {
+  return <li {...props} className="lg:mb-4 lg:last:mb-0" />;
 };
 
 const NavbarList = (props: N.NavigationMenuListProps) => {
-  return <N.List {...props} className="lg:flex gap-6" />;
+  return <N.List {...props} className="lg:flex lg:h-full gap-6" />;
 };
 
 /**
@@ -281,7 +294,7 @@ const NavbarContent = (props: N.NavigationMenuContentProps) => {
       {...props}
       className={classNames(
         'lg:absolute lg:mt-2 pl-2 lg:pl-0 z-20 lg:min-w-[290px]',
-        'lg:bg-vega-clight-800 lg:dark:bg-vega-cdark-800',
+        'lg:bg-vega-clight-700 lg:dark:bg-vega-cdark-700',
         'lg:border border-default lg:rounded'
       )}
       onPointerEnter={preventHover}
@@ -308,7 +321,7 @@ const NavbarLinkExternal = ({
         to={to}
         className={classNames(
           'flex lg:inline-flex gap-2 justify-between items-center relative',
-          'py-2 px-6 lg:px-0 text-lg lg:text-base',
+          'px-6 py-2 lg:p-0 text-lg lg:text-sm',
           'hover:text-vega-clight-50 dark:hover:text-vega-cdark-50'
         )}
         onClick={onClick}
