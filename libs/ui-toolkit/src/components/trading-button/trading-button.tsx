@@ -24,7 +24,7 @@ const getClassName = (
   className?: string
 ) =>
   classNames(
-    'flex items-center justify-center rounded',
+    'flex gap-2 items-center justify-center rounded',
     // size
     {
       'h-12': !subLabel && size === 'large',

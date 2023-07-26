@@ -295,7 +295,7 @@ const NavbarContent = (props: N.NavigationMenuContentProps) => {
       className={classNames(
         'lg:absolute lg:mt-2 pl-2 lg:pl-0 z-20 lg:min-w-[290px]',
         'lg:bg-vega-clight-700 lg:dark:bg-vega-cdark-700',
-        'lg:border border-default lg:rounded'
+        'lg:border border-vega-clight-500 dark:border-vega-cdark-500 lg:rounded'
       )}
       onPointerEnter={preventHover}
       onPointerLeave={preventHover}
@@ -349,7 +349,7 @@ const BurgerIcon = () => (
 const NavbarListDivider = () => {
   return (
     <div className="py-2 px-6 lg:px-0" role="separator">
-      <div className="h-px lg:h-full w-full lg:w-px bg-vega-clight-600 dark:bg-vega-cdark-600" />
+      <div className="h-px lg:h-full w-full lg:w-px bg-vega-clight-500 dark:bg-vega-cdark-500" />
     </div>
   );
 };
