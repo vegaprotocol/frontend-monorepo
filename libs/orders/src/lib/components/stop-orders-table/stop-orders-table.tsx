@@ -79,7 +79,7 @@ export const StopOrdersTable = memo<
                   Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
                     ? '+'
                     : '-'
-                }${(Number(value.trailingPercentOffset) * 100).toFixed(3)}%`;
+                }${(Number(value.trailingPercentOffset) * 100).toFixed(1)}%`;
               }
               return '-';
             },
