@@ -8,7 +8,6 @@ import { useState } from 'react';
 import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
 import { TxsListNavigation } from '../../../components/txs/tx-list-navigation';
 
-
 export const TxsList = () => {
   useDocumentTitle(['Transactions']);
 
@@ -33,17 +32,10 @@ export const TxsListFiltered = () => {
       ? `filters[cmd.type]=${Array.from(filters)[0]}`
       : '';
 
-  const {
-    hasMoreTxs,
-    nextPage,
-    previousPage,
-    error,
-    refreshTxs,
-    loading,
-    txsData,
-  } = useTxsData({
-    filters: f,
-  });
+  const { nextPage, previousPage, error, refreshTxs, loading, txsData } =
+    useTxsData({
+      filters: f,
+    });
 
   return (
     <>
@@ -59,7 +51,7 @@ export const TxsListFiltered = () => {
       </TxsListNavigation>
       <TxsInfiniteList
         hasFilters={filters.size > 0}
-        hasMoreTxs={hasMoreTxs}
+        hasMoreTxs={true}
         areTxsLoading={loading}
         txs={txsData}
         loadMoreTxs={nextPage}

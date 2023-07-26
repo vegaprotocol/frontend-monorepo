@@ -7,19 +7,6 @@ import type {
 import { DATA_SOURCES } from '../config';
 import isNumber from 'lodash/isNumber';
 
-export interface TxsStateProps {
-  txsData: BlockExplorerTransactionResult[];
-  hasMoreTxs: boolean;
-  url: string
-}
-
-export interface IUseTxsData {
-  count?: number;
-  before?: string;
-  after?: string;
-  filters?: string;
-}
-
 interface IGetTxsDataUrl {
   count?: number;
   before?: string;
@@ -28,8 +15,17 @@ interface IGetTxsDataUrl {
 }
 const BE_TXS_PER_REQUEST = 25;
 
-export const getTxsDataUrl = ({ count = BE_TXS_PER_REQUEST, before, after, filters }: IGetTxsDataUrl) => {
+export const getTxsDataUrl = ({
+  count = BE_TXS_PER_REQUEST,
+  before,
+  after,
+  filters,
+}: IGetTxsDataUrl) => {
   const url = new URL(`${DATA_SOURCES.blockExplorerUrl}/transactions`);
+
+  if (before && after) {
+    throw new Error('before and after cannot be used together');
+  }
 
   if (before) {
     url.searchParams.append('last', count.toString());
@@ -37,8 +33,12 @@ export const getTxsDataUrl = ({ count = BE_TXS_PER_REQUEST, before, after, filte
   }
 
   if (after) {
-    url.searchParams.append('last', count.toString());
+    url.searchParams.append('first', count.toString());
     url.searchParams.append('after', after);
+  }
+
+  if (!before && !after && count) {
+    url.searchParams.append('first', count.toString());
   }
 
   // Hacky fix for param as array
@@ -50,16 +50,25 @@ export const getTxsDataUrl = ({ count = BE_TXS_PER_REQUEST, before, after, filte
   return urlAsString;
 };
 
+export interface TxsStateProps {
+  txsData: BlockExplorerTransactionResult[];
+  hasMoreTxs: boolean;
+  url: string;
+}
+
+export interface IUseTxsData {
+  count?: number;
+  before?: string;
+  after?: string;
+  filters?: string;
+}
+
 export const useTxsData = ({ count, before, after, filters }: IUseTxsData) => {
-  const [
-    { txsData, hasMoreTxs, url },
-    setTxsState,
-  ] = useState<TxsStateProps>({
+  const [{ txsData, hasMoreTxs, url }, setTxsState] = useState<TxsStateProps>({
     txsData: [],
     hasMoreTxs: false,
-    url: getTxsDataUrl({ filters, count, before, after })
+    url: getTxsDataUrl({ filters, count, before, after }),
   });
-
 
   const {
     state: { data, error, loading },
@@ -71,30 +80,39 @@ export const useTxsData = ({ count, before, after, filters }: IUseTxsData) => {
       setTxsState((prev) => {
         return {
           ...prev,
-          txsData: data.transactions
+          txsData: data.transactions,
         };
       });
     }
-  }, [loading, setTxsState, data ]);
+  }, [loading, setTxsState, data]);
 
   const nextPage = useCallback(() => {
-    return refetch({
-      before: data?.transactions.at(-1)?.cursor || '',
-    });
-  }, [data, refetch]);
+    const after = data?.transactions.at(-1)?.cursor || '';
+    const before = undefined;
+    setTxsState((prev) => ({
+      ...prev,
+      url: getTxsDataUrl({ count, after, before, filters }),
+    }));
+  }, [count, filters, data]);
 
   const previousPage = useCallback(() => {
-    return refetch({
-      before: data?.transactions.at(0)?.cursor || '',
-    });
-  }, [data, refetch]);
+    const before = data?.transactions[0]?.cursor || '';
+    const after = undefined;
+
+    setTxsState((prev) => ({
+      ...prev,
+      url: getTxsDataUrl({ count, after, before, filters }),
+    }));
+  }, [count, filters, data]);
 
   const refreshTxs = useCallback(async () => {
-    setTxsState(() => ({
+    const before = undefined;
+    const after = undefined;
+
+    setTxsState((prev) => ({
+      ...prev,
       txsData: [],
-      previousCursors: [],
-      hasMoreTxs: false,
-      hasPreviousPage: false,
+      url: getTxsDataUrl({ count, after, before, filters }),
     }));
 
     refetch({ count: BE_TXS_PER_REQUEST });

@@ -33,17 +33,10 @@ const Party = () => {
       ? `${baseFilters}&filters[cmd.type]=${Array.from(filters)[0]}`
       : baseFilters;
 
-  const {
-    hasMoreTxs,
-    nextPage,
-    previousPage,
-    error,
-    refreshTxs,
-    loading,
-    txsData
-  } = useTxsData({
-    filters: f
-  });
+  const { nextPage, refreshTxs, previousPage, error, loading, txsData } =
+    useTxsData({
+      filters: f,
+    });
 
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const {
@@ -108,7 +101,7 @@ const Party = () => {
       </TxsListNavigation>
       {!error && txsData ? (
         <TxsInfiniteList
-          hasMoreTxs={hasMoreTxs}
+          hasMoreTxs={true}
           areTxsLoading={loading}
           txs={txsData}
           loadMoreTxs={nextPage}
