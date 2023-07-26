@@ -12,7 +12,10 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 import { NO_MARKET } from './constants';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
-import { MarketSuccessorBanner } from '../../components/market-banner';
+import {
+  MarketSuccessorBanner,
+  MarketSuccessorProposalBanner,
+} from '../../components/market-banner';
 import { FLAGS } from '@vegaprotocol/environment';
 
 interface TradePanelsProps {
@@ -66,6 +69,9 @@ export const TradePanels = ({
     <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
       <div>
         {FLAGS.SUCCESSOR_MARKETS && <MarketSuccessorBanner market={market} />}
+        {FLAGS.SUCCESSOR_MARKETS && (
+          <MarketSuccessorProposalBanner marketId={market.id} />
+        )}
         <OracleBanner marketId={market?.id || ''} />
       </div>
       <div className="h-full">
