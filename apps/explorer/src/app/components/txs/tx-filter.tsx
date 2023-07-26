@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSubContent,
   Icon,
-  Button,
 } from '@vegaprotocol/ui-toolkit';
 import type { Dispatch, SetStateAction } from 'react';
 import { FilterLabel } from './tx-filter-label';
@@ -100,15 +99,13 @@ export const TxsFilter = ({ filters, setFilters }: TxFilterProps) => {
     <DropdownMenu
       modal={false}
       trigger={
-        <DropdownMenuTrigger className="ml-0">
-          <Button size="xs" data-testid="filter-trigger">
-            <FilterLabel filters={filters} />
-          </Button>
+        <DropdownMenuTrigger>
+          <FilterLabel filters={filters} />
         </DropdownMenuTrigger>
       }
     >
       <DropdownMenuContent>
-        {filters.size > 0 ? null : (
+        {filters.size > 1 ? null : (
           <>
             <DropdownMenuCheckboxItem
               onCheckedChange={() => setFilters(new Set(AllFilterOptions))}

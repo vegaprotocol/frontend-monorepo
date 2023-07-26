@@ -4,9 +4,10 @@ import { TxsInfiniteList } from '../../../components/txs';
 import { useTxsData } from '../../../hooks/use-txs-data';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
 import { TxsListNavigation } from '../../../components/txs/tx-list-navigation';
+import { useSearchParams } from 'react-router-dom';
 
 export const TxsList = () => {
   useDocumentTitle(['Transactions']);
@@ -26,15 +27,15 @@ export const TxsList = () => {
  */
 export const TxsListFiltered = () => {
   const [filters, setFilters] = useState(new Set(AllFilterOptions));
-
-  const f =
-    filters && filters.size === 1
-      ? `filters[cmd.type]=${Array.from(filters)[0]}`
-      : '';
+  const [params] = useSearchParams();
 
   const { nextPage, previousPage, error, refreshTxs, loading, txsData } =
     useTxsData({
-      filters: f,
+      filters: filters.size === 1 ? filters : undefined,
+      before: params.get('before') || undefined,
+      after: !params.get('before')
+        ? params.get('after') || undefined
+        : undefined,
     });
 
   return (
