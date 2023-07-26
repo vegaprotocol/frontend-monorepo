@@ -1,5 +1,6 @@
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
 import { MarketState } from '@vegaprotocol/types';
+import compact from 'lodash/compact';
 
 const accordionContent = 'accordion-content';
 const blockExplorerLink = 'block-explorer-link';
@@ -66,20 +67,24 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     // 6002-MDET-201
     cy.getByTestId(marketTitle).contains('Key details').click();
 
-    validateMarketDataRow(0, 'Name', 'BTCUSD Monthly (30 Jun 2022)');
-    validateMarketDataRow(1, 'Market ID', 'market-0');
+    const rows: [string, string][] = compact([
+      ['Name', 'BTCUSD Monthly (30 Jun 2022)'],
+      ['Market ID', 'market-0'],
+      Cypress.env('NX_SUCCESSOR_MARKETS') && ['Parent Market ID', 'PARENT-A'],
+      Cypress.env('NX_SUCCESSOR_MARKETS') && [
+        'Insurance Pool Fraction',
+        '0.75',
+      ],
+      ['Trading Mode', MarketTradingModeMapping.TRADING_MODE_CONTINUOUS],
+      ['Market Decimal Places', '5'],
+      ['Position Decimal Places', '0'],
+      ['Settlement Asset Decimal Places', '5'],
+    ]);
 
-    if (Cypress.env('NX_SUCCESSOR_MARKETS')) {
-      validateMarketDataRow(2, 'Parent Market ID', 'PARENT-A');
+    for (const rowNumber in rows) {
+      const [name, value] = rows[rowNumber];
+      validateMarketDataRow(Number(rowNumber), name, value);
     }
-    validateMarketDataRow(
-      3,
-      'Trading Mode',
-      MarketTradingModeMapping.TRADING_MODE_CONTINUOUS
-    );
-    validateMarketDataRow(4, 'Market Decimal Places', '5');
-    validateMarketDataRow(5, 'Position Decimal Places', '0');
-    validateMarketDataRow(6, 'Settlement Asset Decimal Places', '5');
   });
 
   it('instrument displayed', () => {

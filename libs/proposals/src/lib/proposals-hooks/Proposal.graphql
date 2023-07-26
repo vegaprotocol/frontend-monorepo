@@ -40,3 +40,30 @@ query ProposalOfMarket($marketId: ID!) {
     }
   }
 }
+
+query SuccessorMarketProposalDetails($proposalId: ID!) {
+  proposal(id: $proposalId) {
+    id
+    terms {
+      change {
+        ... on NewMarket {
+          successorConfiguration {
+            parentMarketId
+            insurancePoolFraction
+          }
+        }
+      }
+    }
+  }
+}
+
+query InstrumentDetails($marketId: ID!) {
+  market(id: $marketId) {
+    tradableInstrument {
+      instrument {
+        code
+        name
+      }
+    }
+  }
+}

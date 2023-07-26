@@ -49,11 +49,6 @@ jest.mock('@vegaprotocol/markets', () => ({
       : { data: undefined },
 }));
 
-jest.mock('@vegaprotocol/environment', () => ({
-  ...jest.requireActual('@vegaprotocol/environment'),
-  FLAGS: { SUCCESSOR_MARKETS: true } as Partial<FeatureFlags>,
-}));
-
 jest.mock('@vegaprotocol/environment', () => {
   const actual = jest.requireActual('@vegaprotocol/environment');
   return {
@@ -61,7 +56,7 @@ jest.mock('@vegaprotocol/environment', () => {
     FLAGS: {
       ...actual.FLAGS,
       SUCCESSOR_MARKETS: true,
-    },
+    } as FeatureFlags,
   };
 });
 
