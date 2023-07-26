@@ -125,7 +125,7 @@ jobs:
     name: '(CI) console python'
     uses: ./.github/workflows/console-tests-run.yml
     secrets: inherit
-    if: ${{ contains(fromJSON(needs.lint-test-build.outputs.projects), "trading") }}
+    if: ${{ contains(fromJSON(needs.lint-test-build.outputs.projects), 'trading') && github.event_name == 'pull_request' }}
 
   cypress:
     needs: lint-test-build
