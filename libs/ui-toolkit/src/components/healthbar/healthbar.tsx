@@ -43,7 +43,55 @@ const Target = ({
       >
         <div
           className={classNames(
-            'health-target w-0.5 bg-black group-hover:scale-x-150 group-hover:scale-y-108',
+            'health-target w-0.5 bg-vega-dark-100 dark:bg-vega-light-100 group-hover:scale-x-150 group-hover:scale-y-108',
+            {
+              'h-6': !isLarge,
+              'h-12': isLarge,
+            }
+          )}
+        />
+      </div>
+    </Tooltip>
+  );
+};
+
+const AuctionTarget = ({
+  trigger,
+  isLarge,
+  rangeLimit,
+  decimals,
+}: {
+  isLarge: boolean;
+  trigger: number;
+  rangeLimit: number;
+  decimals: number;
+}) => {
+  const leftPosition = new BigNumber(trigger).div(rangeLimit).multipliedBy(100);
+  return (
+    <Tooltip
+      description={
+        <div className="text-vega-dark-100 dark:text-vega-light-200">
+          <div className="mt-1.5 inline-flex">
+            <Indicator variant={Intent.None} />
+          </div>
+          <span>
+            {t('Auction Trigger stake')}{' '}
+            {addDecimalsFormatNumber(trigger, decimals)}
+          </span>
+        </div>
+      }
+    >
+      <div
+        className={classNames(
+          'absolute top-1/2 left-1/2 -translate-x-2/4 -translate-y-1/2 px-1.5 group'
+        )}
+        style={{
+          left: `${leftPosition}%`,
+        }}
+      >
+        <div
+          className={classNames(
+            'health-target w-0.5 group-hover:scale-x-150 group-hover:scale-y-108 dashed-background',
             {
               'h-6': !isLarge,
               'h-12': isLarge,
@@ -129,12 +177,14 @@ interface Levels {
 
 export const HealthBar = ({
   target = '0',
+  triggerRatio,
   decimals,
   levels,
   size = 'small',
   intent,
 }: {
   target: string;
+  triggerRatio: string;
   decimals: number;
   levels: Levels[];
   size?: 'small' | 'large';
@@ -142,6 +192,9 @@ export const HealthBar = ({
 }) => {
   const targetNumber = parseInt(target, 10);
   const rangeLimit = targetNumber * 2;
+
+  const triggerRatioNumber = parseFloat(triggerRatio);
+  const auctionTrigger = targetNumber * triggerRatioNumber;
 
   let lastVisibleLevel = 0;
   const committedNumber = levels
@@ -174,7 +227,10 @@ export const HealthBar = ({
         >
           <Full />
 
-          <div className="health-bars h-[inherit] flex w-full gap-0.5">
+          <div
+            className="health-bars h-[inherit] flex w-full
+              gap-0.5 outline outline-vega-light-200 dark:outline-vega-dark-200"
+          >
             {levels.map((p, index) => {
               const { commitmentAmount, fee } = p;
               const prevLevel = levels[index - 1]?.commitmentAmount;
@@ -206,6 +262,12 @@ export const HealthBar = ({
             )}
           </div>
         </div>
+        <AuctionTarget
+          isLarge={isLarge}
+          trigger={auctionTrigger}
+          rangeLimit={rangeLimit}
+          decimals={decimals}
+        />
         <Target isLarge={isLarge} target={target} decimals={decimals} />
       </div>
     </div>
