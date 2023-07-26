@@ -177,23 +177,23 @@ interface Levels {
 
 export const HealthBar = ({
   target = '0',
-  triggerRatio,
   decimals,
   levels,
   size = 'small',
   intent,
+  triggerRatio,
 }: {
   target: string;
-  triggerRatio: string;
   decimals: number;
   levels: Levels[];
   size?: 'small' | 'large';
   intent: Intent;
+  triggerRatio?: string;
 }) => {
   const targetNumber = parseInt(target, 10);
   const rangeLimit = targetNumber * 2;
 
-  const triggerRatioNumber = parseFloat(triggerRatio);
+  const triggerRatioNumber = triggerRatio ? parseFloat(triggerRatio) : 0;
   const auctionTrigger = targetNumber * triggerRatioNumber;
 
   let lastVisibleLevel = 0;
@@ -262,12 +262,15 @@ export const HealthBar = ({
             )}
           </div>
         </div>
-        <AuctionTarget
-          isLarge={isLarge}
-          trigger={auctionTrigger}
-          rangeLimit={rangeLimit}
-          decimals={decimals}
-        />
+        {triggerRatio && (
+          <AuctionTarget
+            isLarge={isLarge}
+            trigger={auctionTrigger}
+            rangeLimit={rangeLimit}
+            decimals={decimals}
+          />
+        )}
+
         <Target isLarge={isLarge} target={target} decimals={decimals} />
       </div>
     </div>
