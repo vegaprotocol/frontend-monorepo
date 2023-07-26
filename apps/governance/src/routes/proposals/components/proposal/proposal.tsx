@@ -39,6 +39,8 @@ export interface ProposalProps {
   restData: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   originalMarketProposalRestData?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mostRecentlyEnactedAssociatedMarketProposal?: any;
 }
 
 export const Proposal = ({
@@ -47,6 +49,7 @@ export const Proposal = ({
   newMarketData,
   assetData,
   originalMarketProposalRestData,
+  mostRecentlyEnactedAssociatedMarketProposal,
 }: ProposalProps) => {
   const { t } = useTranslation();
   const { params, loading, error } = useNetworkParams([
@@ -167,9 +170,13 @@ export const Proposal = ({
           {proposal.terms.change.__typename === 'UpdateMarket' && (
             <div className="mb-4">
               <ProposalMarketChanges
-                previousProposal={
+                originalProposal={
                   originalMarketProposalRestData?.data?.proposal?.terms
                     ?.newMarket?.changes || {}
+                }
+                latestEnactedProposal={
+                  mostRecentlyEnactedAssociatedMarketProposal?.node?.proposal
+                    ?.terms?.updateMarket?.changes || {}
                 }
                 updatedProposal={
                   restData?.data?.proposal?.terms?.updateMarket?.changes || {}
