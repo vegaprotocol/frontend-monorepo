@@ -17,6 +17,7 @@ const governanceDocsUrl = 'https://vega.xyz/governance';
 const networkUpgradeProposalListItem = 'protocol-upgrade-proposals-list-item';
 const closedProposals = 'closed-proposals';
 const closedProposalToggle = 'closed-proposals-toggle-networkUpgrades';
+const protocolUpgradeTime = 'protocol-upgrade-time';
 
 context(
   'Governance Page - verify elements on page',
@@ -174,6 +175,7 @@ context(
       });
     });
 
+    // 3009-NTWU-003 3009-NTWU-004 3009-NTWU-007
     it('should see details of network upgrade proposal', function () {
       mockNetworkUpgradeProposal();
       navigateTo(navigation.proposals);
@@ -228,6 +230,7 @@ context(
       cy.getByTestId(closedProposalToggle).should('not.exist');
     });
 
+    // 3009-NTWU-001 3009-NTWU-002 3009-NTWU-006 3009-NTWU-009
     it('should display network upgrade banner with estimate', function () {
       mockNetworkUpgradeProposal();
       cy.visit('/');
@@ -259,9 +262,17 @@ context(
         .as('displayedEstimate');
       cy.get('@displayedEstimate').then((estimateText) => {
         // Estimated time should automatically update every second
-        cy.getByTestId('protocol-upgrade-time')
+        cy.getByTestId(protocolUpgradeTime)
           .invoke('text')
           .should('not.eq', estimateText);
+      });
+      // time estimate on proposal detail
+      cy.getByTestId('protocol-upgrade-proposal').within(() => {
+        cy.get('@displayedEstimate').then((estimateText) => {
+          cy.getByTestId(protocolUpgradeTime)
+            .invoke('text')
+            .should('not.eq', estimateText);
+        });
       });
     });
   }
