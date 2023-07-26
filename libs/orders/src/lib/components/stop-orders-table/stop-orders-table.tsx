@@ -26,7 +26,6 @@ import type {
 } from '@vegaprotocol/datagrid';
 import type { AgGridReact } from 'ag-grid-react';
 import type { StopOrder } from '../order-data-provider/stop-orders-data-provider';
-import { OrderActionsDropdown } from '../order-actions-dropdown';
 import type { ColDef } from 'ag-grid-community';
 
 export type StopOrdersTableProps = TypedDataAgGrid<StopOrder> & {
@@ -55,6 +54,7 @@ export const StopOrdersTable = memo<
             field: 'trigger',
             cellClass: 'font-mono text-right',
             type: 'rightAligned',
+            sortable: false,
             valueFormatter: ({
               data,
               value,
@@ -79,7 +79,7 @@ export const StopOrdersTable = memo<
                   Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
                     ? '+'
                     : '-'
-                }${value.trailingPercentOffset}%`;
+                }${(Number(value.trailingPercentOffset) * 100).toFixed(3)}%`;
               }
               return '-';
             },
@@ -269,7 +269,6 @@ export const StopOrdersTable = memo<
                         {t('Cancel')}
                       </ButtonLink>
                     )}
-                  <OrderActionsDropdown id={data?.id} />
                 </div>
               );
             },

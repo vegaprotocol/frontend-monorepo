@@ -42,6 +42,7 @@ import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values
 import { DealTicketButton } from './deal-ticket-button';
 import noop from 'lodash/noop';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
+import { validateExpiration } from '../../utils';
 
 export interface StopOrderProps {
   market: Market;
@@ -68,16 +69,10 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const storedFormValues = useStopOrderFormValues(
     (state) => state.formValues[market.id]
   );
-  const {
-    // register,
-    handleSubmit,
-    setValue,
-    watch,
-    control,
-    formState,
-  } = useForm<StopOrderFormValues>({
-    defaultValues: { ...defaultValues, ...storedFormValues },
-  });
+  const { clearErrors, handleSubmit, setValue, watch, control, formState } =
+    useForm<StopOrderFormValues>({
+      defaultValues: { ...defaultValues, ...storedFormValues },
+    });
   const { errors } = formState;
   const lastSubmitTime = useRef(0);
   const onSubmit = useCallback(
@@ -190,6 +185,9 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                           : Schema.OrderType.TYPE_MARKET,
                     });
                     return;
+                  }
+                  if (type === DealTicketType.StopMarket) {
+                    clearErrors('price');
                   }
                   setValue(
                     'type',
@@ -375,7 +373,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 <Radio
                   value="fallsBelow"
                   id="triggerFallsBelow"
-                  label={'Falls above'}
+                  label={'Falls below'}
                 />
               </RadioGroup>
             );
@@ -534,6 +532,9 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             <Controller
               name="expiresAt"
               control={control}
+              rules={{
+                validate: validateExpiration,
+              }}
               render={({ field }) => {
                 const { value, onChange: onSelect } = field;
                 return (

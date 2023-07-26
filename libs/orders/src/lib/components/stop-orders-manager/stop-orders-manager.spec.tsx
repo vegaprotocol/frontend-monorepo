@@ -8,7 +8,7 @@ import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
 
-// @ts-ignore OrderList is read only but we need to override with the forwardRef to
+// @ts-ignore StopOrdersTable is read only but we need to override with the forwardRef to
 // avoid warnings about padding refs
 stopOrdersTableMock.StopOrdersTable = forwardRef(() => (
   <div>StopOrdersTable</div>
