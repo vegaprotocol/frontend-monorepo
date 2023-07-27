@@ -1,55 +1,128 @@
-name: console-test-run
+name: (CI) Console tests
+
 on:
   workflow_call:
     inputs:
       github-sha:
         required: true
         type: string
+
 jobs:
-  console-test:
-    timeout-minutes: 5
-    runs-on: self-hosted-runner
+  run-tests:
+    name: run-tests
+    runs-on: self-hosted
+    timeout-minutes: 25
     steps:
+      #----------------------------------------------
+      #       check-out frontend-monorepo
+      #----------------------------------------------
+      - name: Checkout console test repo
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.github-sha }}
+      #----------------------------------------------
+      #       setup node
+      #----------------------------------------------
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
+          cache: yarn
+      #----------------------------------------------
+      #       cache node modules
+      #----------------------------------------------
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+      #----------------------------------------------
+      #       build trading
+      #----------------------------------------------
+      - name: Build affected spec
+        run: |
+          yarn env-cmd -f ./apps/trading/.env.stagnet1 yarn nx export trading
+      #----------------------------------------------
+      #       run trading server
+      #----------------------------------------------
+      - name: Run trading server
+        run: |
+          docker run -d -p 80:4200 -v $PWD/docker/nginx.conf:/etc/nginx/conf.d/default.conf -v $PWD/dist/apps/trading/exported:/usr/share/nginx/html nginx:1.23-alpine@sha256:6318314189b40e73145a48060bff4783a116c34cc7241532d0d94198fb2c9629
+          sleep 5
+          docker ps
+      #----------------------------------------------
+      #       check if container persists between runs
+      #----------------------------------------------
+      - name: Check server
+        run: |
+          docker ps
+      #----------------------------------------------
+      #       check-out tests repo
+      #----------------------------------------------
       - name: Checkout console test repo
         uses: actions/checkout@v3
         with:
           repository: vegaprotocol/console-test
           path: './console-test'
-
-      - name: Set up Python
+      #----------------------------------------------
+      #       set-up python
+      #----------------------------------------------
+      - name: Set up python
+        id: setup-python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10.11'
-
+      #----------------------------------------------
+      #  -----  install & configure poetry  -----
+      #----------------------------------------------
       - name: Install Poetry
         uses: snok/install-poetry@v1
-
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          virtualenvs-path: console-test/.venv
+      #----------------------------------------------
+      #       load cached venv if cache exists
+      #----------------------------------------------
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: console-test/.venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      #----------------------------------------------
+      # install dependencies if cache does not exist
+      #----------------------------------------------
       - name: Install dependencies
-        run: |
-          poetry install --no-root
         working-directory: ./console-test
-
-      - name: load Binaries
-        run: |
-          poetry run python -m vega_sim.tools.load_binaries
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+      #----------------------------------------------
+      # install vega binaries
+      #----------------------------------------------
+      - name: Install vega binaries
         working-directory: ./console-test
-
-      - name: pull console
-        run: |
-          poetry run docker pull ghcr.io/vegaprotocol/frontend/trading:${{ inputs.github-sha }}
-
-      - name: Update container_name in config.py
-        run: |
-          sed -i "s/container_name = \".*\"/container_name = \"vegaprotocol\/frontend\/trading:${{ inputs.github-sha }}\"/g" config.py
-
+        run: poetry run python -m vega_sim.tools.load_binaries --force
+      #----------------------------------------------
+      # install playwright
+      #----------------------------------------------
       - name: install playwright
         run: poetry run playwright install
         working-directory: ./console-test
-
-      - name: run tests
-        run: poetry run pytest --numprocesses auto
+      #----------------------------------------------
+      # run tests
+      #----------------------------------------------
+      - name: Run tests
         working-directory: ./console-test
-
+        run: poetry run pytest --numprocesses auto
+      - name: Check files
+        run: |
+          ls -al .
+          ls -al console-test
+      #----------------------------------------------
+      # upload traces
+      #----------------------------------------------
       - name: Upload Playwright Trace
         uses: actions/upload-artifact@v3
         if: always()
