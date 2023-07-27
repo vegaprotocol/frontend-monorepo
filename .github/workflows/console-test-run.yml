@@ -10,7 +10,7 @@ on:
 jobs:
   run-tests:
     name: run-tests
-    runs-on: self-hosted
+    runs-on: ubuntu-22.04
     timeout-minutes: 25
     steps:
       #----------------------------------------------
