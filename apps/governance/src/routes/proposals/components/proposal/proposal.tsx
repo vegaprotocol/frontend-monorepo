@@ -165,8 +165,8 @@ export const Proposal = ({
           <div className="mb-4">
             <ProposalMarketChanges
               originalProposal={
-                originalMarketProposalRestData?.data?.proposal?.terms
-                  ?.newMarket?.changes || {}
+                originalMarketProposalRestData?.data?.proposal?.terms?.newMarket
+                  ?.changes || {}
               }
               latestEnactedProposal={
                 mostRecentlyEnactedAssociatedMarketProposal?.node?.proposal
