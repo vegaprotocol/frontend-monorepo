@@ -47,6 +47,10 @@ export interface OrderSubmission {
   expiresAt?: string;
   postOnly?: boolean;
   reduceOnly?: boolean;
+  icebergOpts?: {
+    peakSize: string;
+    minimumVisibleSize: string;
+  };
 }
 
 export interface OrderCancellation {
@@ -411,7 +415,7 @@ export interface PubKey {
 }
 
 export interface VegaConnector {
-  url: string | null;
+  url?: string | null;
 
   /** Connect to wallet and return keys */
   connect(): Promise<PubKey[] | null>;
