@@ -28,7 +28,7 @@ describe('VegaWalletConnectButton', () => {
     render(generateJsx({ pubKey: null } as VegaWalletContextShape));
 
     const button = screen.getByTestId('connect-vega-wallet');
-    expect(button).toHaveTextContent('Connect Vega wallet');
+    expect(button).toHaveTextContent('Connect');
     fireEvent.click(button);
     expect(mockUpdateDialogOpen).toHaveBeenCalled();
   });
