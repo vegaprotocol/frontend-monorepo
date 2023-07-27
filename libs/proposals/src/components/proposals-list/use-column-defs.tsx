@@ -1,7 +1,12 @@
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef } from 'ag-grid-community';
-import { COL_DEFS, DateRangeFilter, SetFilter } from '@vegaprotocol/datagrid';
+import {
+  CenteredGridCellWrapper,
+  COL_DEFS,
+  DateRangeFilter,
+  SetFilter,
+} from '@vegaprotocol/datagrid';
 import compact from 'lodash/compact';
 import { useEnvironment, FLAGS } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
@@ -31,7 +36,6 @@ export const useColumnDefs = () => {
     return new BigNumber(requiredMajority).times(100);
   }, [params?.governance_proposal_market_requiredMajority]);
 
-  const cellCss = 'grid h-full items-center';
   const columnDefs: ColDef[] = useMemo(() => {
     return compact([
       {
@@ -94,7 +98,6 @@ export const useColumnDefs = () => {
       {
         colId: 'voting',
         headerName: t('Voting'),
-        cellClass: 'flex justify-between leading-tight font-mono',
         cellRenderer: ({
           data,
         }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
@@ -106,12 +109,12 @@ export const useColumnDefs = () => {
               ? new BigNumber(0)
               : yesTokens.multipliedBy(100).dividedBy(totalTokensVoted);
             return (
-              <div className="uppercase flex h-full items-center justify-center">
+              <CenteredGridCellWrapper>
                 <VoteProgress
                   threshold={requiredMajorityPercentage}
                   progress={yesPercentage}
                 />
-              </div>
+              </CenteredGridCellWrapper>
             );
           }
           return '-';
@@ -160,7 +163,6 @@ export const useColumnDefs = () => {
   const defaultColDef: ColDef = useMemo(() => {
     return {
       sortable: true,
-      cellClass: cellCss,
       resizable: true,
       filter: true,
       filterParams: { buttons: ['reset'] },

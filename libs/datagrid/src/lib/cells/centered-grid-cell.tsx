@@ -11,6 +11,6 @@ export const CenteredGridCellWrapper = ({
   <div
     className={classNames('flex h-[20px] p-0 justify-items-center', className)}
   >
-    <div className="self-center">{children}</div>
+    <div className="w-full self-center">{children}</div>
   </div>
 );

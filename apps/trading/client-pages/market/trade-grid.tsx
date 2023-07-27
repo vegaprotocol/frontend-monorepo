@@ -17,7 +17,10 @@ import {
   usePaneLayout,
 } from '../../components/resizable-grid';
 import { TradingViews } from './trade-views';
-import { MarketSuccessorBanner } from '../../components/market-banner';
+import {
+  MarketSuccessorBanner,
+  MarketSuccessorProposalBanner,
+} from '../../components/market-banner';
 import { FLAGS } from '@vegaprotocol/environment';
 
 interface TradeGridProps {
@@ -162,7 +165,12 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
   return (
     <div className={wrapperClasses}>
       <div>
-        {FLAGS.SUCCESSOR_MARKETS && <MarketSuccessorBanner market={market} />}
+        {FLAGS.SUCCESSOR_MARKETS && (
+          <>
+            <MarketSuccessorBanner market={market} />
+            <MarketSuccessorProposalBanner marketId={market?.id} />
+          </>
+        )}
         <OracleBanner marketId={market?.id || ''} />
       </div>
       <div className="min-h-0 p-0.5">

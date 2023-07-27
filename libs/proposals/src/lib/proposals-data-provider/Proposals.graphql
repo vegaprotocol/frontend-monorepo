@@ -327,3 +327,33 @@ query ProposalsList($proposalType: ProposalType, $inState: ProposalState) {
     }
   }
 }
+
+fragment NewMarketSuccessorFields on NewMarket {
+  instrument {
+    name
+  }
+  successorConfiguration {
+    parentMarketId
+  }
+}
+
+fragment SuccessorProposalListFields on Proposal {
+  id
+  terms {
+    change {
+      ... on NewMarket {
+        ...NewMarketSuccessorFields
+      }
+    }
+  }
+}
+
+query SuccessorProposalsList {
+  proposalsConnection(proposalType: TYPE_NEW_MARKET, inState: STATE_OPEN) {
+    edges {
+      node {
+        ...SuccessorProposalListFields
+      }
+    }
+  }
+}
