@@ -67,19 +67,25 @@ export const TradingDropdownRadioGroup = DropdownMenuPrimitive.RadioGroup;
 export const TradingDropdownContent = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Content>,
   React.ComponentProps<typeof DropdownMenuPrimitive.Content>
->(({ className, sideOffset = 10, ...contentProps }, forwardedRef) => (
-  <DropdownMenuPrimitive.Content
-    ref={forwardedRef}
-    className={classNames(
-      'min-w-[290px] bg-vega-clight-700 dark:bg-vega-cdark-700',
-      'border border-vega-clight-500 dark:border-vega-cdark-500',
-      'p-2 rounded z-20 text-default'
-    )}
-    align="start"
-    sideOffset={sideOffset}
-    {...contentProps}
-  />
-));
+>(
+  (
+    { className, align = 'start', side, sideOffset = 10, ...contentProps },
+    forwardedRef
+  ) => (
+    <DropdownMenuPrimitive.Content
+      ref={forwardedRef}
+      className={classNames(
+        'min-w-[290px] bg-vega-clight-700 dark:bg-vega-cdark-700',
+        'border border-vega-clight-500 dark:border-vega-cdark-500',
+        'p-2 rounded z-20 text-default'
+      )}
+      align={align}
+      sideOffset={sideOffset}
+      side={side}
+      {...contentProps}
+    />
+  )
+);
 TradingDropdownContent.displayName = 'DropdownMenuContent';
 
 /**
