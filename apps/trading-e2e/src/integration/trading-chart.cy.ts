@@ -127,7 +127,7 @@ describe(
         {
           name: 'Price monitoring bounds',
           infoText:
-            'Price Monitoring Bounds: Min 162.56291Max 182.96869Reference 172.47489',
+            'Price Monitoring Bounds 1: Min 162.56291Max 182.96869Reference 172.47489',
         },
       ];
 

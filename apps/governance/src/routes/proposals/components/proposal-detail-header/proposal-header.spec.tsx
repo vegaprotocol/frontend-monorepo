@@ -1,21 +1,66 @@
 import { render, screen } from '@testing-library/react';
+import { MockedProvider } from '@apollo/client/testing';
+import {
+  ProposalRejectionReason,
+  ProposalState,
+  VoteValue,
+} from '@vegaprotocol/types';
+import { VegaWalletContext } from '@vegaprotocol/wallet';
+import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import {
   generateNoVotes,
   generateProposal,
   generateYesVotes,
 } from '../../test-helpers/generate-proposals';
 import { ProposalHeader } from './proposal-header';
+import {
+  lastWeek,
+  nextWeek,
+  mockNetworkParams,
+  mockWalletContext,
+  createUserVoteQueryMock,
+} from '../../test-helpers/mocks';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
-import { ProposalRejectionReason, ProposalState } from '@vegaprotocol/types';
-import { lastWeek, nextWeek } from '../../test-helpers/mocks';
+import type { MockedResponse } from '@apollo/client/testing';
+import { FLAGS } from '@vegaprotocol/environment';
+import { BrowserRouter } from 'react-router-dom';
+
+jest.mock('@vegaprotocol/proposals', () => ({
+  ...jest.requireActual('@vegaprotocol/proposals'),
+  useSuccessorMarketProposalDetails: () => ({
+    code: 'PARENT_CODE',
+    parentMarketId: 'PARENT_ID',
+  }),
+}));
 
 const renderComponent = (
   proposal: ProposalQuery['proposal'],
-  isListItem = true
-) => render(<ProposalHeader proposal={proposal} isListItem={isListItem} />);
+  isListItem = true,
+  mocks: MockedResponse[] = []
+) =>
+  render(
+    <AppStateProvider>
+      <BrowserRouter>
+        <MockedProvider mocks={mocks}>
+          <VegaWalletContext.Provider value={mockWalletContext}>
+            <ProposalHeader
+              proposal={proposal}
+              isListItem={isListItem}
+              networkParams={mockNetworkParams}
+            />
+          </VegaWalletContext.Provider>
+        </MockedProvider>
+      </BrowserRouter>
+    </AppStateProvider>
+  );
 
 describe('Proposal header', () => {
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
   it('Renders New market proposal', () => {
+    const mockedFlags = jest.mocked(FLAGS);
+    mockedFlags.SUCCESSOR_MARKETS = true;
     renderComponent(
       generateProposal({
         rationale: {
@@ -47,6 +92,9 @@ describe('Proposal header', () => {
     expect(screen.getByTestId('proposal-type')).toHaveTextContent('New market');
     expect(screen.getByTestId('proposal-details')).toHaveTextContent(
       'tGBP settled future.'
+    );
+    expect(screen.getByTestId('proposal-successor-info')).toHaveTextContent(
+      'PARENT_CODE'
     );
   });
 
@@ -317,22 +365,6 @@ describe('Proposal header', () => {
     expect(screen.getByTestId('proposal-status')).toHaveTextContent('Open');
   });
 
-  it('Renders proposal state: Declined - majority not reached', () => {
-    renderComponent(
-      generateProposal({
-        state: ProposalState.STATE_DECLINED,
-        terms: {
-          enactmentDatetime: lastWeek.toString(),
-        },
-        votes: {
-          no: generateNoVotes(1, 1000000000000000000),
-          yes: generateYesVotes(1, 1000000000000000000),
-        },
-      })
-    );
-    expect(screen.getByTestId('proposal-status')).toHaveTextContent('Declined');
-  });
-
   it('Renders proposal state: Rejected', () => {
     renderComponent(
       generateProposal({
@@ -345,5 +377,33 @@ describe('Proposal header', () => {
       })
     );
     expect(screen.getByTestId('proposal-status')).toHaveTextContent('Rejected');
+  });
+
+  it('Renders proposal state: Open - user voted against', async () => {
+    const proposal = generateProposal({
+      state: ProposalState.STATE_OPEN,
+      terms: {
+        closingDatetime: nextWeek.toString(),
+      },
+    });
+    renderComponent(proposal, true, [
+      // @ts-ignore generateProposal always creates an id
+      createUserVoteQueryMock(proposal.id, VoteValue.VALUE_NO),
+    ]);
+    expect(await screen.findByTestId('user-voted-no')).toBeInTheDocument();
+  });
+
+  it('Renders proposal state: Open - user voted for', async () => {
+    const proposal = generateProposal({
+      state: ProposalState.STATE_OPEN,
+      terms: {
+        closingDatetime: nextWeek.toString(),
+      },
+    });
+    renderComponent(proposal, true, [
+      // @ts-ignore generateProposal always creates an id
+      createUserVoteQueryMock(proposal.id, VoteValue.VALUE_YES),
+    ]);
+    expect(await screen.findByTestId('user-voted-yes')).toBeInTheDocument();
   });
 });

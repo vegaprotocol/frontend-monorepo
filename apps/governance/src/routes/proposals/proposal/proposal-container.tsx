@@ -10,6 +10,10 @@ import { ENV } from '../../../config';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketInfoWithDataProvider } from '@vegaprotocol/markets';
 import { useAssetQuery } from '@vegaprotocol/assets';
+import {
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/network-parameters';
 
 export const ProposalContainer = () => {
   const [
@@ -17,6 +21,27 @@ export const ProposalContainer = () => {
     setMostRecentlyEnactedAssociatedMarketProposal,
   ] = useState(undefined);
   const params = useParams<{ proposalId: string }>();
+
+  const {
+    params: networkParams,
+    loading: networkParamsLoading,
+    error: networkParamsError,
+  } = useNetworkParams([
+    NetworkParams.governance_proposal_market_minVoterBalance,
+    NetworkParams.governance_proposal_updateMarket_minVoterBalance,
+    NetworkParams.governance_proposal_asset_minVoterBalance,
+    NetworkParams.governance_proposal_updateAsset_minVoterBalance,
+    NetworkParams.governance_proposal_updateNetParam_minVoterBalance,
+    NetworkParams.governance_proposal_freeform_minVoterBalance,
+    NetworkParams.spam_protection_voting_min_tokens,
+    NetworkParams.governance_proposal_market_requiredMajority,
+    NetworkParams.governance_proposal_updateMarket_requiredMajority,
+    NetworkParams.governance_proposal_updateMarket_requiredMajorityLP,
+    NetworkParams.governance_proposal_asset_requiredMajority,
+    NetworkParams.governance_proposal_updateAsset_requiredMajority,
+    NetworkParams.governance_proposal_updateNetParam_requiredMajority,
+    NetworkParams.governance_proposal_freeform_requiredMajority,
+  ]);
 
   const {
     state: { data: restData, loading: restLoading, error: restError },
@@ -134,6 +159,7 @@ export const ProposalContainer = () => {
         loading ||
         newMarketLoading ||
         assetLoading ||
+        networkParamsLoading ||
         (restLoading ? (restLoading as boolean) : false) ||
         (originalMarketProposalRestLoading
           ? (originalMarketProposalRestLoading as boolean)
@@ -148,10 +174,12 @@ export const ProposalContainer = () => {
         assetError ||
         restError ||
         originalMarketProposalRestError ||
-        previouslyEnactedMarketProposalsRestError
+        previouslyEnactedMarketProposalsRestError ||
+        networkParamsError
       }
       data={{
         ...data,
+        ...networkParams,
         ...(newMarketData ? { newMarketData } : {}),
         ...(assetData ? { assetData } : {}),
         ...(restData ? { restData } : {}),
@@ -166,6 +194,7 @@ export const ProposalContainer = () => {
       {data?.proposal ? (
         <Proposal
           proposal={data.proposal}
+          networkParams={networkParams}
           restData={restData}
           newMarketData={newMarketData}
           assetData={assetData}

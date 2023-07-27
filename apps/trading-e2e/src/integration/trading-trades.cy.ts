@@ -6,16 +6,17 @@ const tradesTab = 'Trades';
 const tradesTable = 'tab-trades';
 
 describe('trades', { tags: '@smoke' }, () => {
-  beforeEach(() => {
-    cy.mockTradingPage();
-    cy.mockSubscription();
-  });
-
   before(() => {
     cy.mockTradingPage();
     cy.mockSubscription();
+    cy.intercept('POST', '/graphql', (req) => {
+      if (req.body.operationName === 'Trades') {
+        req.alias = '@Trades';
+      }
+    });
     cy.visit('/#/markets/market-0');
     cy.getByTestId(tradesTab).click();
+    cy.wait('@Trades');
   });
 
   it('show trades', () => {
@@ -52,8 +53,7 @@ describe('trades', { tags: '@smoke' }, () => {
       });
   });
 
-  // This won't pass in CI, but does locally
-  it.skip('show trades date and time', () => {
+  it('show trades date and time', () => {
     // 6005-THIS-005
     cy.getByTestId(tradesTable) // order table shares identical col id
       .find(`${colIdCreatedAt} ${colHeader}`)
@@ -85,15 +85,9 @@ describe('trades', { tags: '@smoke' }, () => {
       });
   });
 
-  // this passes locally but doesn't in CI
-  it.skip('copy price to deal ticket form', () => {
-    cy.getByTestId('order-type-TYPE_LIMIT').click(); // make sure on limit
+  it('copy price to deal ticket form', () => {
     // 6005-THIS-007
-    cy.getByTestId(tradesTable)
-      .find(colIdPrice)
-      .last()
-      .should('be.visible')
-      .click();
+    cy.get(colIdPrice).last().should('be.visible').click();
     cy.getByTestId('order-price').should('have.value', '171.16898');
   });
 });

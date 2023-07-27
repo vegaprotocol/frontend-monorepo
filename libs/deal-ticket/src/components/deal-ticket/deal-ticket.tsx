@@ -142,7 +142,7 @@ export const DealTicket = ({
   );
   const { data: activeOrders } = useDataProvider({
     dataProvider: activeOrdersProvider,
-    variables: { partyId: pubKey || '' },
+    variables: { partyId: pubKey || '', marketId: market.id },
     skip: !pubKey,
   });
   const openVolume = useOpenVolume(pubKey, market.id) ?? '0';

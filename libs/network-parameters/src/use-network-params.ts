@@ -16,6 +16,12 @@ export const NetworkParams = {
   governance_proposal_market_maxClose: 'governance_proposal_market_maxClose',
   governance_proposal_market_minEnact: 'governance_proposal_market_minEnact',
   governance_proposal_market_maxEnact: 'governance_proposal_market_maxEnact',
+  governance_proposal_market_requiredMajority:
+    'governance_proposal_market_requiredMajority',
+  governance_proposal_market_requiredParticipation:
+    'governance_proposal_market_requiredParticipation',
+  governance_proposal_market_minProposerBalance:
+    'governance_proposal_market_minProposerBalance',
   governance_proposal_updateMarket_minVoterBalance:
     'governance_proposal_updateMarket_minVoterBalance',
   governance_proposal_updateMarket_requiredMajority:
@@ -30,12 +36,24 @@ export const NetworkParams = {
     'governance_proposal_updateMarket_minEnact',
   governance_proposal_updateMarket_maxEnact:
     'governance_proposal_updateMarket_maxEnact',
+  governance_proposal_updateMarket_requiredParticipation:
+    'governance_proposal_updateMarket_requiredParticipation',
+  governance_proposal_updateMarket_requiredParticipationLP:
+    'governance_proposal_updateMarket_requiredParticipationLP',
+  governance_proposal_updateMarket_minProposerBalance:
+    'governance_proposal_updateMarket_minProposerBalance',
   governance_proposal_asset_minVoterBalance:
     'governance_proposal_asset_minVoterBalance',
   governance_proposal_asset_minClose: 'governance_proposal_asset_minClose',
   governance_proposal_asset_maxClose: 'governance_proposal_asset_maxClose',
   governance_proposal_asset_minEnact: 'governance_proposal_asset_minEnact',
   governance_proposal_asset_maxEnact: 'governance_proposal_asset_maxEnact',
+  governance_proposal_asset_requiredMajority:
+    'governance_proposal_asset_requiredMajority',
+  governance_proposal_asset_requiredParticipation:
+    'governance_proposal_asset_requiredParticipation',
+  governance_proposal_asset_minProposerBalance:
+    'governance_proposal_asset_minProposerBalance',
   governance_proposal_updateAsset_minVoterBalance:
     'governance_proposal_updateAsset_minVoterBalance',
   governance_proposal_updateAsset_minClose:
@@ -46,6 +64,12 @@ export const NetworkParams = {
     'governance_proposal_updateAsset_minEnact',
   governance_proposal_updateAsset_maxEnact:
     'governance_proposal_updateAsset_maxEnact',
+  governance_proposal_updateAsset_requiredMajority:
+    'governance_proposal_updateAsset_requiredMajority',
+  governance_proposal_updateAsset_requiredParticipation:
+    'governance_proposal_updateAsset_requiredParticipation',
+  governance_proposal_updateAsset_minProposerBalance:
+    'governance_proposal_updateAsset_minProposerBalance',
   governance_proposal_updateNetParam_minClose:
     'governance_proposal_updateNetParam_minClose',
   governance_proposal_updateNetParam_minVoterBalance:
@@ -56,42 +80,18 @@ export const NetworkParams = {
     'governance_proposal_updateNetParam_minEnact',
   governance_proposal_updateNetParam_maxEnact:
     'governance_proposal_updateNetParam_maxEnact',
-  governance_proposal_freeform_minVoterBalance:
-    'governance_proposal_freeform_minVoterBalance',
-  governance_proposal_freeform_minClose:
-    'governance_proposal_freeform_minClose',
-  governance_proposal_freeform_maxClose:
-    'governance_proposal_freeform_maxClose',
-  governance_proposal_updateMarket_requiredParticipation:
-    'governance_proposal_updateMarket_requiredParticipation',
-  governance_proposal_updateMarket_requiredParticipationLP:
-    'governance_proposal_updateMarket_requiredParticipationLP',
-  governance_proposal_updateMarket_minProposerBalance:
-    'governance_proposal_updateMarket_minProposerBalance',
-  governance_proposal_market_requiredMajority:
-    'governance_proposal_market_requiredMajority',
-  governance_proposal_market_requiredParticipation:
-    'governance_proposal_market_requiredParticipation',
-  governance_proposal_market_minProposerBalance:
-    'governance_proposal_market_minProposerBalance',
-  governance_proposal_asset_requiredMajority:
-    'governance_proposal_asset_requiredMajority',
-  governance_proposal_asset_requiredParticipation:
-    'governance_proposal_asset_requiredParticipation',
-  governance_proposal_updateAsset_requiredMajority:
-    'governance_proposal_updateAsset_requiredMajority',
-  governance_proposal_updateAsset_requiredParticipation:
-    'governance_proposal_updateAsset_requiredParticipation',
-  governance_proposal_asset_minProposerBalance:
-    'governance_proposal_asset_minProposerBalance',
-  governance_proposal_updateAsset_minProposerBalance:
-    'governance_proposal_updateAsset_minProposerBalance',
   governance_proposal_updateNetParam_requiredMajority:
     'governance_proposal_updateNetParam_requiredMajority',
   governance_proposal_updateNetParam_requiredParticipation:
     'governance_proposal_updateNetParam_requiredParticipation',
   governance_proposal_updateNetParam_minProposerBalance:
     'governance_proposal_updateNetParam_minProposerBalance',
+  governance_proposal_freeform_minVoterBalance:
+    'governance_proposal_freeform_minVoterBalance',
+  governance_proposal_freeform_minClose:
+    'governance_proposal_freeform_minClose',
+  governance_proposal_freeform_maxClose:
+    'governance_proposal_freeform_maxClose',
   governance_proposal_freeform_requiredParticipation:
     'governance_proposal_freeform_requiredParticipation',
   governance_proposal_freeform_requiredMajority:
@@ -111,7 +111,7 @@ export const NetworkParams = {
 
 type Params = typeof NetworkParams;
 export type NetworkParamsKey = keyof Params;
-type Result = {
+export type NetworkParamsResult = {
   [key in keyof Params]: string;
 };
 
@@ -137,7 +137,7 @@ export const useNetworkParams = <T extends NetworkParamsKey[]>(params?: T) => {
   }, [data, params]);
 
   return {
-    params: paramsObj as Pick<Result, T[number]>,
+    params: paramsObj as Pick<NetworkParamsResult, T[number]>,
     loading,
     error,
   };

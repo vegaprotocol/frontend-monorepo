@@ -4,6 +4,7 @@ import { generateProposal } from '../../test-helpers/generate-proposals';
 import { Proposal } from './proposal';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { ProposalState } from '@vegaprotocol/types';
+import { mockNetworkParams } from '../../test-helpers/mocks';
 
 jest.mock('@vegaprotocol/network-parameters', () => ({
   ...jest.requireActual('@vegaprotocol/network-parameters'),
@@ -46,6 +47,7 @@ const renderComponent = (proposal: ProposalQuery['proposal']) => {
       <Proposal
         restData={{}}
         proposal={proposal as ProposalQuery['proposal']}
+        networkParams={mockNetworkParams}
       />
     </MemoryRouter>
   );

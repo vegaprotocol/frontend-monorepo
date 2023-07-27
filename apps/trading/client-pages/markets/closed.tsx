@@ -4,11 +4,7 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import {
-  AgGridLazy as AgGrid,
-  COL_DEFS,
-  MarketNameCell,
-} from '@vegaprotocol/datagrid';
+import { AgGridLazy as AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
@@ -23,14 +19,14 @@ import type {
 import {
   MarketActionsDropdown,
   closedMarketsWithDataProvider,
-  marketProvider,
 } from '@vegaprotocol/markets';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { ColDef } from 'ag-grid-community';
+import { FLAGS } from '@vegaprotocol/environment';
 import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
+import { SuccessorMarketRenderer } from './successor-market-cell';
 
 type SettlementAsset =
   MarketMaybeWithData['tradableInstrument']['instrument']['product']['settlementAsset'];
@@ -51,7 +47,6 @@ interface Row {
   setlementDataSourceFilter: DataSourceFilterFragment | undefined;
   tradingTerminationOracleId: string;
   settlementAsset: SettlementAsset;
-  successorMarketID: string | undefined | null;
 }
 
 export const Closed = () => {
@@ -60,8 +55,6 @@ export const Closed = () => {
     variables: undefined,
   });
 
-  // find a position for each market and add the realised pnl to
-  // a normalized object
   const rowData = compact(marketData).map((market) => {
     const instrument = market.tradableInstrument.instrument;
 
@@ -97,7 +90,6 @@ export const Closed = () => {
       tradingTerminationOracleId:
         instrument.product.dataSourceSpecForTradingTermination.id,
       settlementAsset: instrument.product.settlementAsset,
-      successorMarketID: market.successorMarketID,
     };
 
     return row;
@@ -109,28 +101,6 @@ export const Closed = () => {
   );
 };
 
-export const SuccessorMarketRenderer = ({
-  value,
-}: VegaICellRendererParams<Row, 'successorMarketID'>) => {
-  const { data } = useDataProvider({
-    dataProvider: marketProvider,
-    variables: {
-      marketId: value || '',
-    },
-    skip: !value,
-  });
-  const onMarketClick = useMarketClickHandler();
-  return data ? (
-    <MarketNameCell
-      value={data.tradableInstrument.instrument.code}
-      data={data}
-      onMarketClick={onMarketClick}
-    />
-  ) : (
-    ' - '
-  );
-};
-
 const ClosedMarketsDataGrid = ({
   rowData,
   error,
@@ -139,8 +109,9 @@ const ClosedMarketsDataGrid = ({
   error: Error | undefined;
 }) => {
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
+
   const colDefs = useMemo(() => {
-    const cols: ColDef[] = [
+    const cols: ColDef[] = compact([
       {
         headerName: t('Market'),
         field: 'code',
@@ -208,9 +179,10 @@ const ClosedMarketsDataGrid = ({
           },
         },
       },
-      {
+      FLAGS.SUCCESSOR_MARKETS && {
         headerName: t('Successor market'),
-        field: 'successorMarketID',
+        field: 'id',
+        colId: 'successorMarket',
         cellRenderer: 'SuccessorMarketRenderer',
       },
       {
@@ -298,7 +270,7 @@ const ClosedMarketsDataGrid = ({
           );
         },
       },
-    ];
+    ]);
     return cols;
   }, [openAssetDialog]);
 

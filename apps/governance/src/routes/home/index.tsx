@@ -20,7 +20,7 @@ import {
   getNotRejectedProposals,
   getNotRejectedProtocolUpgradeProposals,
 } from '../proposals/proposals/proposals-container';
-import { Heading } from '../../components/heading';
+import { Heading, SubHeading } from '../../components/heading';
 import * as Schema from '@vegaprotocol/types';
 import type { RouteChildProps } from '..';
 import type { ProposalFieldsFragment } from '../proposals/proposals/__generated__/Proposals';
@@ -31,6 +31,10 @@ import {
   orderByDate,
   orderByUpgradeBlockHeight,
 } from '../proposals/components/proposals-list/proposals-list';
+import {
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/network-parameters';
 import { BigNumber } from '../../lib/bignumber';
 
 const nodesToShow = 6;
@@ -43,33 +47,57 @@ const HomeProposals = ({
   protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
 }) => {
   const { t } = useTranslation();
+  const {
+    params: networkParams,
+    loading: networkParamsLoading,
+    error: networkParamsError,
+  } = useNetworkParams([
+    NetworkParams.governance_proposal_market_requiredMajority,
+    NetworkParams.governance_proposal_updateMarket_requiredMajority,
+    NetworkParams.governance_proposal_updateMarket_requiredMajorityLP,
+    NetworkParams.governance_proposal_asset_requiredMajority,
+    NetworkParams.governance_proposal_updateAsset_requiredMajority,
+    NetworkParams.governance_proposal_updateNetParam_requiredMajority,
+    NetworkParams.governance_proposal_freeform_requiredMajority,
+  ]);
 
   return (
-    <section className="mb-16" data-testid="home-proposals">
-      <Heading title={t('Proposals')} />
-      <h3 className="mb-6">{t('homeProposalsIntro')}</h3>
-      <div className="flex items-center mb-8 gap-8">
-        <Link to={`${Routes.PROPOSALS}`}>
-          <Button size="md">{t('homeProposalsButtonText')}</Button>
-        </Link>
+    <AsyncRenderer
+      loading={networkParamsLoading}
+      error={networkParamsError}
+      data={networkParams}
+    >
+      <section className="mb-16" data-testid="home-proposals">
+        <Heading title={t('vegaGovernance')} />
+        <h3 className="mb-6">{t('homeProposalsIntro')}</h3>
+        <div className="mb-8">
+          <ExternalLink href={ExternalLinks.GOVERNANCE_PAGE}>
+            {t(`readMoreGovernance`)}
+          </ExternalLink>
+        </div>
 
-        <ExternalLink href={ExternalLinks.GOVERNANCE_PAGE}>
-          {t(`readMoreGovernance`)}
-        </ExternalLink>
-      </div>
-      <ul
-        data-testid="home-proposal-list"
-        className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-6"
-      >
-        {protocolUpgradeProposals.map((proposal, index) => (
-          <ProtocolUpgradeProposalsListItem key={index} proposal={proposal} />
-        ))}
+        <SubHeading title={t('latestProposals')} />
+        <ul data-testid="home-proposal-list" className="grid gap-6">
+          {protocolUpgradeProposals.map((proposal, index) => (
+            <ProtocolUpgradeProposalsListItem key={index} proposal={proposal} />
+          ))}
 
-        {proposals.map((proposal) => (
-          <ProposalsListItem key={proposal.id} proposal={proposal} />
-        ))}
-      </ul>
-    </section>
+          {proposals.map((proposal) => (
+            <ProposalsListItem
+              key={proposal.id}
+              proposal={proposal}
+              networkParams={networkParams}
+            />
+          ))}
+        </ul>
+
+        <div className="mt-6">
+          <Link to={`${Routes.PROPOSALS}`}>
+            <Button size="md">{t('homeProposalsButtonText')}</Button>
+          </Link>
+        </div>
+      </section>
+    </AsyncRenderer>
   );
 };
 
@@ -87,8 +115,8 @@ const HomeNodes = ({
   const { t } = useTranslation();
 
   const highlightedNodeData = [
-    { title: t('active nodes'), length: activeNodes.length },
-    { title: t('consensus nodes'), length: consensusNodes.length },
+    { title: t('activeNodes'), length: activeNodes.length },
+    { title: t('consensusNodes'), length: consensusNodes.length },
   ];
 
   return (
@@ -234,7 +262,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
     [protocolUpgradeProposals]
   );
 
-  const totalProposalsDesired = 4;
+  const totalProposalsDesired = 3;
   const protocolUpgradeProposalsToShow = sortedProtocolUpgradeProposals.slice(
     0,
     totalProposalsDesired
@@ -290,7 +318,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
         </div>
 
         <div data-testid="home-vega-token">
-          <Heading title={t('VEGA Token')} marginTop={false} />
+          <Heading title={t('vegaToken')} marginTop={false} />
           <h3 className="mb-6">{t('homeVegaTokenIntro')}</h3>
           <div className="flex items-center mb-8 gap-4">
             <Link to={Routes.WITHDRAWALS}>

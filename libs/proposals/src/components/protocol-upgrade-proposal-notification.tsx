@@ -47,6 +47,7 @@ export const ProtocolUpgradeProposalNotification = ({
           <span
             title={t('estimated time to protocol upgrade')}
             className="text-vega-orange-500"
+            data-testid="upgrade-proposal-estimate"
           >
             {convertToCountdownString(time, '0:00:00:00')}
           </span>

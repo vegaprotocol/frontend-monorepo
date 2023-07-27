@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import React, { forwardRef } from 'react';
 import type { TypedDataAgGrid } from '@vegaprotocol/datagrid';
 import {
   AgGridLazy as AgGrid,
@@ -48,10 +48,15 @@ export const MarketListTable = forwardRef<
   AgGridReact,
   TypedDataAgGrid<MarketMaybeWithData> & {
     onMarketClick: (marketId: string, metaKey?: boolean) => void;
+    SuccessorMarketRenderer?: React.FC<{ value: string }>;
   }
->(({ onMarketClick, ...props }, ref) => {
+>(({ onMarketClick, SuccessorMarketRenderer, ...props }, ref) => {
   const columnDefs = useColumnDefs({ onMarketClick });
-
+  const components = {
+    PriceFlashCell,
+    MarketName,
+    ...(SuccessorMarketRenderer ? { SuccessorMarketRenderer } : null),
+  };
   return (
     <AgGrid
       style={{ width: '100%', height: '100%' }}
@@ -60,7 +65,7 @@ export const MarketListTable = forwardRef<
       defaultColDef={defaultColDef}
       columnDefs={columnDefs}
       suppressCellFocus
-      components={{ PriceFlashCell, MarketName }}
+      components={components}
       {...props}
     />
   );
