@@ -122,7 +122,7 @@ describe('StopOrdersTable', () => {
     expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
   });
 
-  it('should apply correct formatting to trigger column', async () => {
+  it('formats trigger column', async () => {
     await act(async () => {
       render(generateJsx({ rowData }));
     });
@@ -140,7 +140,7 @@ describe('StopOrdersTable', () => {
     );
   });
 
-  it('should apply correct formatting to expires at column', async () => {
+  it('formats expires at column', async () => {
     await act(async () => {
       render(generateJsx({ rowData }));
     });
@@ -156,7 +156,7 @@ describe('StopOrdersTable', () => {
     );
   });
 
-  it('should apply correct formatting to size column', async () => {
+  it('formats size column', async () => {
     await act(async () => {
       render(generateJsx({ rowData }));
     });
@@ -169,7 +169,7 @@ describe('StopOrdersTable', () => {
     );
   });
 
-  it('should apply correct formatting to type column', async () => {
+  it('formats type column', async () => {
     await act(async () => {
       render(generateJsx({ rowData }));
     });
@@ -181,7 +181,7 @@ describe('StopOrdersTable', () => {
       expect(cells[i]).toHaveTextContent(expectedValue)
     );
   });
-  it('should apply correct formatting to status column', async () => {
+  it('formats status column', async () => {
     await act(async () => {
       render(generateJsx({ rowData }));
     });
@@ -201,7 +201,7 @@ describe('StopOrdersTable', () => {
     );
   });
 
-  it('should apply correct formatting to price column', async () => {
+  it('formats price column', async () => {
     await act(async () => {
       render(generateJsx({ rowData }));
     });
@@ -212,5 +212,19 @@ describe('StopOrdersTable', () => {
     expectedValues.forEach((expectedValue, i) =>
       expect(cells[i]).toHaveTextContent(expectedValue)
     );
+  });
+
+  it('shows cancel button only for pending stop orders', async () => {
+    await act(async () => {
+      render(generateJsx({ rowData }));
+    });
+    const cancelButtons = screen.getAllByTestId('cancel');
+    expect(cancelButtons).toHaveLength(1);
+    cancelButtons.forEach((cancelButton) => {
+      const id = cancelButton.closest('[role="row"]')?.getAttribute('row-id');
+      expect(rowData.find((row) => row.id === id)?.status).toEqual(
+        Schema.StopOrderStatus.STATUS_PENDING
+      );
+    });
   });
 });

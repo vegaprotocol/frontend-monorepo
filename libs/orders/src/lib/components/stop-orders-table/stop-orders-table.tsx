@@ -251,7 +251,7 @@ export const StopOrdersTable = memo<
             minWidth: 150,
           },
           {
-            colId: 'amend',
+            colId: 'actions',
             ...COL_DEFS.actions,
             minWidth: showAllActions ? 120 : COL_DEFS.actions.minWidth,
             maxWidth: showAllActions ? 120 : COL_DEFS.actions.minWidth,
