@@ -1,3 +1,4 @@
+import type { FormEventHandler } from 'react';
 import { useRef, useCallback, useEffect, useMemo } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { StopOrdersSubmission } from '@vegaprotocol/wallet';
@@ -51,13 +52,17 @@ export interface StopOrderProps {
 }
 
 const defaultValues: Partial<StopOrderFormValues> = {
-  type: Schema.OrderType.TYPE_MARKET,
+  type: Schema.OrderType.TYPE_LIMIT,
   side: Schema.Side.SIDE_BUY,
   timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-  trigger: 'price',
-  direction: 'risesAbove',
-  expiryStrategy: 'submit',
+  triggerType: 'price',
+  triggerDirection:
+    Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+  expiryStrategy: Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT,
+  size: '0',
 };
+
+const stopSubmit: FormEventHandler = (e) => e.preventDefault();
 
 export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
@@ -95,13 +100,14 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   );
   const side = watch('side');
   const expire = watch('expire');
-  const trigger = watch('trigger');
+  const triggerType = watch('triggerType');
   const triggerPrice = watch('triggerPrice');
   const timeInForce = watch('timeInForce');
   const type = watch('type');
   const rawPrice = watch('price');
   const rawSize = watch('size');
 
+  const isPriceTrigger = triggerType === 'price';
   const size = removeDecimal(rawSize, market.positionDecimalPlaces);
   const price = useMemo(() => {
     return (
@@ -111,9 +117,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           type,
           price: rawPrice && removeDecimal(rawPrice, market.decimalPlaces),
         },
-        type === Schema.OrderType.TYPE_MARKET &&
-          trigger === 'price' &&
-          triggerPrice
+        type === Schema.OrderType.TYPE_MARKET && isPriceTrigger && triggerPrice
           ? removeDecimal(triggerPrice, market.decimalPlaces)
           : marketPrice
       )
@@ -122,7 +126,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     market.decimalPlaces,
     marketPrice,
     rawPrice,
-    trigger,
+    isPriceTrigger,
     triggerPrice,
     type,
   ]);
@@ -149,13 +153,13 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const trailingPercentOffsetStep = '0.1';
 
   const priceFormatted =
-    trigger === 'price' && triggerPrice
+    isPriceTrigger && triggerPrice
       ? formatNumber(triggerPrice, market.decimalPlaces)
       : undefined;
 
   return (
     <form
-      onSubmit={isReadOnly || !pubKey ? noop : handleSubmit(onSubmit)}
+      onSubmit={isReadOnly || !pubKey ? stopSubmit : handleSubmit(onSubmit)}
       noValidate
     >
       <FormGroup label={t('Order type')} labelFor="order-type" compact={true}>
@@ -354,32 +358,39 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
       </div>
       <FormGroup label={t('Trigger')} compact={true} labelFor="">
         <Controller
-          name="direction"
+          name="triggerDirection"
           control={control}
           render={({ field }) => {
             const { onChange, value } = field;
             return (
               <RadioGroup
+                name="triggerDirection"
                 onChange={onChange}
                 value={value}
                 orientation="horizontal"
                 className="mb-2"
               >
                 <Radio
-                  value="risesAbove"
-                  id="triggerRisesAbove"
+                  value={
+                    Schema.StopOrderTriggerDirection
+                      .TRIGGER_DIRECTION_RISES_ABOVE
+                  }
+                  id="triggerDirection-risesAbove"
                   label={'Rises above'}
                 />
                 <Radio
-                  value="fallsBelow"
-                  id="triggerFallsBelow"
+                  value={
+                    Schema.StopOrderTriggerDirection
+                      .TRIGGER_DIRECTION_FALLS_BELOW
+                  }
+                  id="triggerDirection-fallsBelow"
                   label={'Falls below'}
                 />
               </RadioGroup>
             );
           }}
         />
-        {trigger === 'price' && (
+        {isPriceTrigger && (
           <div className="mb-2">
             <Controller
               name="triggerPrice"
@@ -396,6 +407,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 return (
                   <div className="mb-2">
                     <Input
+                      data-testid="triggerPrice"
                       type="number"
                       appendElement={asset.symbol}
                       {...field}
@@ -411,7 +423,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             )}
           </div>
         )}
-        {trigger === 'trailingPercentOffset' && (
+        {!isPriceTrigger && (
           <div className="mb-2">
             <Controller
               name="triggerTrailingPercentOffset"
@@ -457,7 +469,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           </div>
         )}
         <Controller
-          name="trigger"
+          name="triggerType"
           control={control}
           rules={{ deps: ['triggerTrailingPercentOffset', 'triggerPrice'] }}
           render={({ field }) => {
@@ -468,14 +480,10 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 value={value}
                 orientation="horizontal"
               >
-                <Radio
-                  value="price"
-                  id={`${side}TriggerPrice`}
-                  label={'Price'}
-                />
+                <Radio value="price" id="triggerType-price" label={'Price'} />
                 <Radio
                   value="trailingPercentOffset"
-                  id={`${side}TriggerTrailingPercentOffset`}
+                  id="triggerType-trailingPercentOffset"
                   label={'Trailing Percent Offset'}
                 />
               </RadioGroup>
@@ -504,7 +512,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         <>
           <FormGroup
             label={t('Strategy')}
-            labelFor="expiry-strategy"
+            labelFor="expiryStrategy"
             compact={true}
           >
             <Controller
@@ -514,13 +522,17 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 return (
                   <RadioGroup orientation="horizontal" {...field}>
                     <Radio
-                      value="submit"
-                      id="expiryStrategySubmit"
+                      value={
+                        Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT
+                      }
+                      id="expiryStrategy-submit"
                       label={'Submit'}
                     />
                     <Radio
-                      value="cancel"
-                      id="expiryStrategyCancel"
+                      value={
+                        Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS
+                      }
+                      id="expiryStrategy-cancel"
                       label={'Cancel'}
                     />
                   </RadioGroup>
@@ -546,11 +558,6 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 );
               }}
             />
-            {errors.expiresAt && (
-              <InputError testId="stop-error-message-expiresAt">
-                {errors.expiresAt.message}
-              </InputError>
-            )}
           </div>
         </>
       )}

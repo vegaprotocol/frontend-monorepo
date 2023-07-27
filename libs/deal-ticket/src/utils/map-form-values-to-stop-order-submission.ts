@@ -29,9 +29,9 @@ export const mapFormValuesToStopOrdersSubmission = (
       positionDecimalPlaces
     ),
   };
-  if (data.trigger === 'price') {
+  if (data.triggerType === 'price') {
     stopOrderSetup.price = removeDecimal(data.triggerPrice, decimalPlaces);
-  } else if (data.trigger === 'trailingPercentOffset') {
+  } else if (data.triggerType === 'trailingPercentOffset') {
     stopOrderSetup.trailingPercentOffset = (
       Number(data.triggerTrailingPercentOffset) / 100
     ).toFixed(3);
@@ -48,10 +48,16 @@ export const mapFormValuesToStopOrdersSubmission = (
     }
   }
 
-  if (data.direction === 'risesAbove') {
+  if (
+    data.triggerDirection ===
+    Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
+  ) {
     submission.risesAbove = stopOrderSetup;
   }
-  if (data.direction === 'fallsBelow') {
+  if (
+    data.triggerDirection ===
+    Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
+  ) {
     submission.fallsBelow = stopOrderSetup;
   }
 

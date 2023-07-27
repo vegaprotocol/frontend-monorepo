@@ -1,13 +1,14 @@
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 import type { OrderTimeInForce, Side, OrderType } from '@vegaprotocol/types';
+import type * as Schema from '@vegaprotocol/types';
 
 export interface StopOrderFormValues {
   side: Side;
 
-  direction: 'fallsBelow' | 'risesAbove';
+  triggerDirection: Schema.StopOrderTriggerDirection;
 
-  trigger: 'price' | 'trailingPercentOffset';
+  triggerType: 'price' | 'trailingPercentOffset';
   triggerPrice: string;
   triggerTrailingPercentOffset: string;
 
@@ -17,7 +18,7 @@ export interface StopOrderFormValues {
   price?: string;
 
   expire: boolean;
-  expiryStrategy?: 'submit' | 'cancel';
+  expiryStrategy?: Schema.StopOrderExpiryStrategy;
   expiresAt?: string;
 }
 
