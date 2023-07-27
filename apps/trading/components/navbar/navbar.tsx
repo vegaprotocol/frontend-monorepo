@@ -139,7 +139,9 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
     <div className="lg:flex lg:h-full gap-3">
       <NavbarList>
         <NavbarItem>
-          <NavbarTrigger>{envNameMapping[VEGA_ENV]}</NavbarTrigger>
+          <NavbarTrigger data-testid="navbar-network-switcher-trigger">
+            {envNameMapping[VEGA_ENV]}
+          </NavbarTrigger>
           <NavbarContent data-testid="navbar-content-network-switcher">
             <ul className="lg:p-4">
               {[Networks.MAINNET, Networks.TESTNET].map((n) => {
@@ -206,9 +208,13 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
 /**
  * Wrapper for radix-ux Trigger for consistent styles
  */
-const NavbarTrigger = ({ children }: { children: ReactNode }) => {
+const NavbarTrigger = ({
+  children,
+  ...props
+}: N.NavigationMenuTriggerProps) => {
   return (
     <N.Trigger
+      {...props}
       onPointerMove={preventHover}
       onPointerLeave={preventHover}
       className={classNames(
