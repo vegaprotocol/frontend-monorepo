@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type ExplorerNodesQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type ExplorerNodesQuery = { __typename?: 'Query', nodesConnection: { __typename?: 'NodesConnection', edges?: Array<{ __typename?: 'NodeEdge', node: { __typename?: 'Node', id: string, name: string, infoUrl: string, avatarUrl?: string | null, pubkey: string, tmPubkey: string, ethereumAddress: string, location: string, status: Types.NodeStatus, stakedByOperator: string, stakedByDelegates: string, stakedTotal: string, pendingStake: string, epochData?: { __typename?: 'EpochData', total: number, offline: number, online: number } | null } } | null> | null } };
+export type ExplorerNodesQuery = { __typename?: 'Query', nodesConnection: { __typename?: 'NodesConnection', edges?: Array<{ __typename?: 'NodeEdge', node: { __typename?: 'Node', id: string, name: string, infoUrl: string, avatarUrl?: string | null, pubkey: string, tmPubkey: string, ethereumAddress: string, location: string, status: Types.NodeStatus, stakedByOperator: string, stakedByDelegates: string, stakedTotal: string, pendingStake: string, rankingScore: { __typename?: 'RankingScore', performanceScore: string }, epochData?: { __typename?: 'EpochData', total: number, offline: number, online: number } | null } } | null> | null } };
 
 
 export const ExplorerNodesDocument = gql`
@@ -27,6 +27,9 @@ export const ExplorerNodesDocument = gql`
         stakedByDelegates
         stakedTotal
         pendingStake
+        rankingScore {
+          performanceScore
+        }
         epochData {
           total
           offline

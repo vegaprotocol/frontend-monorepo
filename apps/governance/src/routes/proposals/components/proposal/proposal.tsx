@@ -17,6 +17,7 @@ import type { MarketInfoWithData } from '@vegaprotocol/markets';
 import type { AssetQuery } from '@vegaprotocol/assets';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
+import { ProposalMarketChanges } from '../proposal-market-changes';
 import type { NetworkParamsResult } from '@vegaprotocol/network-parameters';
 
 export enum ProposalType {
@@ -34,6 +35,10 @@ export interface ProposalProps {
   assetData?: AssetQuery | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   restData: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  originalMarketProposalRestData?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mostRecentlyEnactedAssociatedMarketProposal?: any;
 }
 
 export const Proposal = ({
@@ -42,6 +47,8 @@ export const Proposal = ({
   restData,
   newMarketData,
   assetData,
+  originalMarketProposalRestData,
+  mostRecentlyEnactedAssociatedMarketProposal,
 }: ProposalProps) => {
   const { t } = useTranslation();
 
@@ -151,6 +158,24 @@ export const Proposal = ({
         {newMarketData && (
           <div className="mb-4">
             <ProposalMarketData marketData={newMarketData} />
+          </div>
+        )}
+
+        {proposal.terms.change.__typename === 'UpdateMarket' && (
+          <div className="mb-4">
+            <ProposalMarketChanges
+              originalProposal={
+                originalMarketProposalRestData?.data?.proposal?.terms?.newMarket
+                  ?.changes || {}
+              }
+              latestEnactedProposal={
+                mostRecentlyEnactedAssociatedMarketProposal?.node?.proposal
+                  ?.terms?.updateMarket?.changes || {}
+              }
+              updatedProposal={
+                restData?.data?.proposal?.terms?.updateMarket?.changes || {}
+              }
+            />
           </div>
         )}
 
