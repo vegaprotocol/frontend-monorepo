@@ -54,7 +54,7 @@ describe('MarketSuccessorProposalBanner', () => {
       screen
         .getByRole('link')
         .getAttribute('href')
-        .endsWith('/proposals/proposal-1')
+        ?.endsWith('/proposals/proposal-1') ?? false
     ).toBe(true);
   });
   it('should display plural proposals', async () => {
@@ -106,13 +106,13 @@ describe('MarketSuccessorProposalBanner', () => {
       screen
         .getAllByRole('link')[0]
         .getAttribute('href')
-        .endsWith('/proposals/proposal-1')
+        ?.endsWith('/proposals/proposal-1') ?? false
     ).toBe(true);
     expect(
       screen
         .getAllByRole('link')[1]
         .getAttribute('href')
-        .endsWith('/proposals/proposal-2')
+        ?.endsWith('/proposals/proposal-2') ?? false
     ).toBe(true);
   });
 
