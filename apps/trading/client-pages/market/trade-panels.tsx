@@ -68,9 +68,11 @@ export const TradePanels = ({
   return (
     <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
       <div>
-        {FLAGS.SUCCESSOR_MARKETS && <MarketSuccessorBanner market={market} />}
         {FLAGS.SUCCESSOR_MARKETS && (
-          <MarketSuccessorProposalBanner marketId={market?.id} />
+          <>
+            <MarketSuccessorBanner market={market} />
+            <MarketSuccessorProposalBanner marketId={market?.id} />
+          </>
         )}
         <OracleBanner marketId={market?.id || ''} />
       </div>
