@@ -28,7 +28,7 @@ export const MarketSuccessorProposalBanner = ({
           (item.terms?.change as NewMarketSuccessorFieldsFragment)
             ?.successorConfiguration?.parentMarketId === marketId
       ) ?? [];
-  const [visible, setVisible] = useState<boolean>(true);
+  const [visible, setVisible] = useState(true);
   const tokenLink = useLinks(DApp.Token);
   if (visible && successors.length) {
     return (
