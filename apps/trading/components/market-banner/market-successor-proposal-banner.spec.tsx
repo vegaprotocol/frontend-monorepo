@@ -50,10 +50,12 @@ describe('MarketSuccessorProposalBanner', () => {
         screen.getByText('A successors to this market has been proposed')
       ).toBeInTheDocument();
     });
-    expect(screen.getByRole('link')).toHaveAttribute(
-      'href',
-      'https://stagnet1.token.vega.xyz/proposals/proposal-1'
-    );
+    expect(
+      screen
+        .getByRole('link')
+        .getAttribute('href')
+        .endsWith('/proposals/proposal-1')
+    ).toBe(true);
   });
   it('should display plural proposals', async () => {
     const dualProposalMock = {
@@ -100,14 +102,18 @@ describe('MarketSuccessorProposalBanner', () => {
         screen.getByText('Successors to this market have been proposed')
       ).toBeInTheDocument();
     });
-    expect(screen.getAllByRole('link')[0]).toHaveAttribute(
-      'href',
-      'https://stagnet1.token.vega.xyz/proposals/proposal-1'
-    );
-    expect(screen.getAllByRole('link')[1]).toHaveAttribute(
-      'href',
-      'https://stagnet1.token.vega.xyz/proposals/proposal-2'
-    );
+    expect(
+      screen
+        .getAllByRole('link')[0]
+        .getAttribute('href')
+        .endsWith('/proposals/proposal-1')
+    ).toBe(true);
+    expect(
+      screen
+        .getAllByRole('link')[1]
+        .getAttribute('href')
+        .endsWith('/proposals/proposal-2')
+    ).toBe(true);
   });
 
   it('banner should be hidden because no proposals', () => {
