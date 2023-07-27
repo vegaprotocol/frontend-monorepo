@@ -36,7 +36,7 @@ export const Navbar = ({
 
   const isConnected = pubKey !== null;
 
-  const navTextClasses = 'text-vega-clight-100 dark:text-vega-cdark-100';
+  const navTextClasses = 'text-vega-clight-200 dark:text-vega-cdark-200';
   const rootClasses = classNames(
     navTextClasses,
     'flex gap-3 h-10 pr-1',
@@ -214,7 +214,8 @@ const NavbarTrigger = ({ children }: { children: ReactNode }) => {
       className={classNames(
         'w-full lg:w-auto lg:h-full',
         'flex items-center justify-between lg:justify-center gap-2 px-6 py-2 lg:p-0',
-        'text-lg lg:text-sm hover:text-vega-clight-50 dark:hover:text-vega-cdark-50'
+        'text-lg lg:text-sm',
+        'hover:text-vega-clight-100 dark:hover:text-vega-cdark-100'
       )}
     >
       {children}
@@ -239,7 +240,11 @@ const NavbarLink = ({
     <N.Link asChild={true}>
       <NavLink
         to={to}
-        className="block lg:flex lg:h-full flex-col justify-center px-6 py-2 lg:p-0 text-lg lg:text-sm"
+        className={classNames(
+          'block lg:flex lg:h-full flex-col justify-center',
+          'px-6 py-2 lg:p-0 text-lg lg:text-sm',
+          'hover:text-vega-clight-100 dark:hover:text-vega-cdark-100'
+        )}
         onClick={onClick}
       >
         {({ isActive }) => {
@@ -252,11 +257,9 @@ const NavbarLink = ({
           return (
             <>
               <span
-                className={classNames(
-                  'lg:border-0',
-                  'hover:text-vega-clight-50 dark:hover:text-vega-cdark-50',
-                  borderClasses
-                )}
+                className={classNames('lg:border-0', borderClasses, {
+                  'text-vega-clight-50 dark:text-vega-cdark-50': isActive,
+                })}
               >
                 {children}
               </span>
@@ -324,7 +327,7 @@ const NavbarLinkExternal = ({
         className={classNames(
           'flex lg:inline-flex gap-2 justify-between items-center relative',
           'px-6 py-2 lg:p-0 text-lg lg:text-sm',
-          'hover:text-vega-clight-50 dark:hover:text-vega-cdark-50'
+          'hover:text-vega-clight-100 dark:hover:text-vega-cdark-100'
         )}
         onClick={onClick}
         target="_blank"
