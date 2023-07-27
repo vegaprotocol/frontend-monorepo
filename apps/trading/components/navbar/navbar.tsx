@@ -246,7 +246,8 @@ const NavbarLink = ({
           const borderClasses = {
             'border-b-2': true,
             'border-transparent': !isActive,
-            'border-vega-yellow': isActive,
+            'border-vega-yellow lg:group-[.navbar-content]:border-transparent':
+              isActive,
           };
           return (
             <>
@@ -293,6 +294,7 @@ const NavbarContent = (props: N.NavigationMenuContentProps) => {
     <N.Content
       {...props}
       className={classNames(
+        'group navbar-content',
         'lg:absolute lg:mt-2 pl-2 lg:pl-0 z-20 lg:min-w-[290px]',
         'lg:bg-vega-clight-700 lg:dark:bg-vega-cdark-700',
         'lg:border border-vega-clight-500 dark:border-vega-cdark-500 lg:rounded'
