@@ -62,7 +62,7 @@
   cursor: pointer;
 }
 
-/* Styles required to (effectively) un-override the 
+/* Styles required to (effectively) un-override the
  * reset styles so that the Proposal description fields
  * render as you'd expect them to.
  *
@@ -96,4 +96,34 @@
 
 .react-markdown-container ul li {
   list-style: circle;
+}
+
+.jsondiffpatch-delta,
+.jsondiffpatch-delta pre {
+  font-family: 'Roboto Mono', monospace !important;
+}
+
+.jsondiffpatch-delta pre {
+  padding: 0 0.25em !important;
+}
+
+.jsondiffpatch-added .jsondiffpatch-property-name,
+.jsondiffpatch-added .jsondiffpatch-value pre,
+.jsondiffpatch-modified .jsondiffpatch-right-value pre,
+.jsondiffpatch-textdiff-added {
+  background: theme(colors.vega.green[650]) !important;
+  color: theme(colors.white) !important;
+}
+
+.jsondiffpatch-deleted .jsondiffpatch-property-name,
+.jsondiffpatch-deleted pre,
+.jsondiffpatch-modified .jsondiffpatch-left-value pre,
+.jsondiffpatch-textdiff-deleted {
+  background: theme(colors.vega.pink[650]) !important;
+  color: theme(colors.white) !important;
+}
+
+.jsondiffpatch-moved .jsondiffpatch-moved-destination {
+  background: theme(colors.vega.yellow[350]) !important;
+  color: theme(colors.vega.dark[200]) !important;
 }
