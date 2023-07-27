@@ -21,6 +21,18 @@ jobs:
         with:
           ref: ${{ inputs.github-sha }}
       #----------------------------------------------
+      #       cache node modules
+      #----------------------------------------------
+      - name: Cache node modules
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+          # comment out "restore-keys" if you need to rebuild yarn from 0
+          restore-keys: |
+            ${{ runner.os }}-cache-node-modules-
+      #----------------------------------------------
       #       setup node
       #----------------------------------------------
       - name: Setup node
@@ -30,13 +42,11 @@ jobs:
           # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
           cache: yarn
       #----------------------------------------------
-      #       cache node modules
+      #       install deps if cache missing
       #----------------------------------------------
-      - name: Cache node modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+      - name: yarn install
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install --pure-lockfile
       #----------------------------------------------
       #       build trading
       #----------------------------------------------
