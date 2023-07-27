@@ -15,6 +15,7 @@ import { PartyBlockAccounts } from './components/party-block-accounts';
 import { isValidPartyId } from './components/party-id-error';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { TxsListNavigation } from '../../../components/txs/tx-list-navigation';
+import type { FilterOption } from '../../../components/txs/tx-filter';
 import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
 
 const Party = () => {
@@ -27,10 +28,17 @@ const Party = () => {
   const partyId = toNonHex(party ? party : '');
   const { isMobile } = useScreenDimensions();
   const visibleChars = useMemo(() => (isMobile ? 10 : 14), [isMobile]);
-  const baseFilters = `filters[tx.submitter]=${partyId}`;
 
-  const { nextPage, refreshTxs, previousPage, error, loading, txsData } =
-    useTxsData({});
+  const {
+    nextPage,
+    refreshTxs,
+    previousPage,
+    error,
+    loading,
+    txsData,
+    hasMoreTxs,
+    updateFilters,
+  } = useTxsData({ party: partyId });
 
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const {
@@ -89,9 +97,15 @@ const Party = () => {
         previousPage={previousPage}
         hasPreviousPage={true}
         loading={loading}
-        hasMoreTxs={true}
+        hasMoreTxs={hasMoreTxs}
       >
-        <TxsFilter filters={filters} setFilters={setFilters} />
+        <TxsFilter
+          filters={filters}
+          setFilters={(f) => {
+            setFilters(f);
+            updateFilters(f as Set<FilterOption>);
+          }}
+        />
       </TxsListNavigation>
       {!error && txsData ? (
         <TxsInfiniteList

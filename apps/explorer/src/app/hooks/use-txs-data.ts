@@ -24,6 +24,7 @@ interface IGetTxsDataUrl {
   before?: string;
   after?: string;
   filters?: string;
+  party?: string;
 }
 const BE_TXS_PER_REQUEST = 25;
 
@@ -32,24 +33,21 @@ export const getTxsDataUrl = ({
   before,
   after,
   filters,
+  party,
 }: IGetTxsDataUrl) => {
-  const url = new URL(`${DATA_SOURCES.blockExplorerUrl}/transactions`);
-
   if (before && after) {
     throw new Error('before and after cannot be used together');
   }
 
+  const url = new URL(`${DATA_SOURCES.blockExplorerUrl}/transactions`);
+
   if (before) {
     url.searchParams.append('last', count.toString());
     url.searchParams.append('before', before);
-  }
-
-  if (after) {
+  } else if (after) {
     url.searchParams.append('first', count.toString());
     url.searchParams.append('after', after);
-  }
-
-  if (!before && !after && count) {
+  } else {
     url.searchParams.append('first', count.toString());
   }
 
@@ -57,6 +55,9 @@ export const getTxsDataUrl = ({
   let urlAsString = url.toString();
   if (filters) {
     urlAsString += '&' + filters.replace(' ', '%20');
+  }
+  if (party) {
+    urlAsString += `&filters[tx.submitter]=${party}`;
   }
 
   return urlAsString;
@@ -72,6 +73,7 @@ export interface IUseTxsData {
   count?: number;
   before?: string;
   after?: string;
+  party?: string;
   filters?: Set<FilterOption>;
 }
 
@@ -80,6 +82,7 @@ export const useTxsData = ({
   before,
   after,
   filters,
+  party,
 }: IUseTxsData) => {
   const [params, setSearchParams] = useSearchParams();
 
@@ -91,6 +94,7 @@ export const useTxsData = ({
       count,
       before,
       after,
+      party,
     }),
   });
 
@@ -104,23 +108,12 @@ export const useTxsData = ({
       setTxsState((prev) => {
         return {
           ...prev,
+          hasMoreTxs: data.transactions.length === count,
           txsData: data.transactions,
         };
       });
     }
-  }, [loading, setTxsState, data, after, before, count]);
-
-  useEffect(() => {
-    setTxsState((prev) => ({
-      ...prev,
-      url: getTxsDataUrl({
-        count,
-        before: undefined,
-        after: undefined,
-        filters: getTypeFilters(filters),
-      }),
-    }));
-  }, [filters]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [loading, data, count]);
 
   const nextPage = useCallback(() => {
     const after = data?.transactions.at(-1)?.cursor || '';
@@ -133,13 +126,14 @@ export const useTxsData = ({
     setTxsState((prev) => ({
       ...prev,
       url: getTxsDataUrl({
+        party,
         count,
         after,
         before,
         filters: getTypeFilters(filters),
       }),
     }));
-  }, [count, filters, data, setSearchParams]);
+  }, [count, party, filters, data, setSearchParams]);
 
   const previousPage = useCallback(() => {
     const before = data?.transactions[0]?.cursor || '';
@@ -153,13 +147,14 @@ export const useTxsData = ({
     setTxsState((prev) => ({
       ...prev,
       url: getTxsDataUrl({
+        party,
         count,
         after,
         before,
         filters: getTypeFilters(filters),
       }),
     }));
-  }, [count, filters, data, setSearchParams]);
+  }, [count, party, filters, data, setSearchParams]);
 
   const refreshTxs = useCallback(async () => {
     const before = undefined;
@@ -174,6 +169,7 @@ export const useTxsData = ({
       ...prev,
       txsData: [],
       url: getTxsDataUrl({
+        party,
         count,
         after,
         before,
@@ -182,9 +178,26 @@ export const useTxsData = ({
     }));
 
     refetch({ count: BE_TXS_PER_REQUEST });
-  }, [setTxsState, refetch, filters]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [party, setTxsState, refetch, filters]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const updateFilters = useCallback(
+    (newFilters: Set<FilterOption>) => {
+      setTxsState((prev) => ({
+        ...prev,
+        url: getTxsDataUrl({
+          party,
+          count,
+          after,
+          before,
+          filters: getTypeFilters(newFilters),
+        }),
+      }));
+    },
+    [party, count, after, before]
+  );
 
   return {
+    updateFilters,
     txsData,
     loading,
     error,
