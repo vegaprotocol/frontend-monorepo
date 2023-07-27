@@ -167,7 +167,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
       <div>
         {FLAGS.SUCCESSOR_MARKETS && <MarketSuccessorBanner market={market} />}
         {FLAGS.SUCCESSOR_MARKETS && (
-          <MarketSuccessorProposalBanner marketId={market.id} />
+          <MarketSuccessorProposalBanner marketId={market?.id} />
         )}
         <OracleBanner marketId={market?.id || ''} />
       </div>

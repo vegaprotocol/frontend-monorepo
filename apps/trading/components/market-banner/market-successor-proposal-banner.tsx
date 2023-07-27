@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import type { SuccessorProposalListFieldsFragment } from '@vegaprotocol/proposals';
+import type {
+  SuccessorProposalListFieldsFragment,
+  NewMarketSuccessorFieldsFragment,
+} from '@vegaprotocol/proposals';
 import { useSuccessorProposalsListQuery } from '@vegaprotocol/proposals';
 import {
   ExternalLink,
@@ -19,11 +22,11 @@ export const MarketSuccessorProposalBanner = ({
   });
   const successors =
     proposals?.proposalsConnection?.edges
-      ?.map((item: { node: SuccessorProposalListFieldsFragment }) => item.node)
+      ?.map((item) => item?.node as SuccessorProposalListFieldsFragment)
       .filter(
         (item: SuccessorProposalListFieldsFragment) =>
-          item.terms?.change?.successorConfiguration?.parentMarketId ===
-          marketId
+          (item.terms?.change as NewMarketSuccessorFieldsFragment)
+            ?.successorConfiguration?.parentMarketId === marketId
       ) ?? [];
   const [visible, setVisible] = useState<boolean>(true);
   const tokenLink = useLinks(DApp.Token);
@@ -51,7 +54,10 @@ export const MarketSuccessorProposalBanner = ({
             return (
               <>
                 <ExternalLink href={externalLink} key={i}>
-                  {item.terms?.change?.instrument.name}
+                  {
+                    (item.terms?.change as NewMarketSuccessorFieldsFragment)
+                      ?.instrument.name
+                  }
                 </ExternalLink>
                 {i < successors.length - 1 && ', '}
               </>

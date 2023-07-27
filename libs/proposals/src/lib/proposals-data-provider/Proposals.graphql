@@ -328,25 +328,21 @@ query ProposalsList($proposalType: ProposalType, $inState: ProposalState) {
   }
 }
 
+fragment NewMarketSuccessorFields on NewMarket {
+  instrument {
+    name
+  }
+  successorConfiguration {
+    parentMarketId
+  }
+}
+
 fragment SuccessorProposalListFields on Proposal {
   id
-  rationale {
-    title
-    description
-  }
-  reference
-  state
-  datetime
-  rejectionReason
   terms {
-    closingDatetime
-    enactmentDatetime
     change {
       ... on NewMarket {
-        ...NewMarketFields
-        successorConfiguration {
-          parentMarketId
-        }
+        ...NewMarketSuccessorFields
       }
     }
   }
