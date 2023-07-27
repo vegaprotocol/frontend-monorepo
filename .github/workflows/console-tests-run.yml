@@ -95,12 +95,6 @@ jobs:
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
       #----------------------------------------------
-      # install your root project, if required
-      #----------------------------------------------
-      - name: Install library
-        working-directory: ./console-test
-        run: poetry install --no-interaction
-      #----------------------------------------------
       # install vega binaries
       #----------------------------------------------
       - name: Install vega binaries
