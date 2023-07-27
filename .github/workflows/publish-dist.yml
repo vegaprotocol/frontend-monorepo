@@ -118,8 +118,12 @@ jobs:
           elif [ "${{ matrix.app }}" = "ui-toolkit" ]; then
             NODE_ENV=production yarn nx run ui-toolkit:build-storybook
             DIST_LOCATION=dist/storybook/ui-toolkit
+          elif [ "${{ matrix.app }}" = "static" ]; then
+            yarn nx build static || (yarn install && yarn nx build static)
           else
             $envCmd yarn nx build ${{ matrix.app }} || (yarn install && $envCmd yarn nx build ${{ matrix.app }})
+          fi
+          if [[ -z "$DIST_LOCATION" ]]; then
             DIST_LOCATION=dist/apps/${{ matrix.app }}
           fi
           mv $DIST_LOCATION dist-result
