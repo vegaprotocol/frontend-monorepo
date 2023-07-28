@@ -1,11 +1,11 @@
 import { t } from '@vegaprotocol/i18n';
 import { RouteTitle } from '../../../components/route-title';
 import { TxsInfiniteList } from '../../../components/txs';
-import { useTxsData } from '../../../hooks/use-txs-data';
+import { useTxsData, getInitialFilters } from '../../../hooks/use-txs-data';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 import { useState } from 'react';
-import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
+import { TxsFilter } from '../../../components/txs/tx-filter';
 import type { FilterOption } from '../../../components/txs/tx-filter';
 import { TxsListNavigation } from '../../../components/txs/tx-list-navigation';
 import { useSearchParams } from 'react-router-dom';
@@ -20,35 +20,6 @@ export const TxsList = () => {
     </section>
   );
 };
-
-/**
- * Returns a Set of filters based on the URLSearchParams, or
- * defaults to all.
- * @param params
- * @returns Set
- */
-export function getInitialFilters(params: URLSearchParams): Set<FilterOption> {
-  const defaultFilters = new Set(AllFilterOptions);
-
-  const p = params.get('filters');
-
-  if (!p) {
-    return defaultFilters;
-  }
-
-  const filters = new Set<FilterOption>();
-  p.split(',').forEach((f) => {
-    if (AllFilterOptions.includes(f as FilterOption)) {
-      filters.add(f as FilterOption);
-    }
-  });
-
-  if (filters.size === 0) {
-    return defaultFilters;
-  }
-
-  return filters;
-}
 
 /**
  * Displays a list of transactions with filters and controls to navigate through the list.

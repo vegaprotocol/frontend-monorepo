@@ -17,8 +17,11 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { TxsListNavigation } from '../../../components/txs/tx-list-navigation';
 import type { FilterOption } from '../../../components/txs/tx-filter';
 import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
+import { useSearchParams } from 'react-router-dom';
 
 const Party = () => {
+  const [params] = useSearchParams();
+
   const [filters, setFilters] = useState(new Set(AllFilterOptions));
   const { party } = useParams<{ party: string }>();
 
@@ -38,7 +41,12 @@ const Party = () => {
     txsData,
     hasMoreTxs,
     updateFilters,
-  } = useTxsData({ party: partyId });
+  } = useTxsData({
+    filters: filters.size === 1 ? filters : undefined,
+    before: params.get('before') || undefined,
+    after: !params.get('before') ? params.get('after') || undefined : undefined,
+    party: partyId,
+  });
 
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const {

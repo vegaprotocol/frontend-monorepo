@@ -8,10 +8,13 @@ import type {
 } from '../routes/types/block-explorer-response';
 import { DATA_SOURCES } from '../config';
 import isNumber from 'lodash/isNumber';
+import { AllFilterOptions } from '../components/txs/tx-filter';
 import type { FilterOption } from '../components/txs/tx-filter';
 
 export function getTypeFilters(filters?: Set<FilterOption>) {
   if (!filters) {
+    return '';
+  } else if (filters.size > 1) {
     return '';
   }
 
@@ -182,6 +185,15 @@ export const useTxsData = ({
 
   const updateFilters = useCallback(
     (newFilters: Set<FilterOption>) => {
+      const params: URLSearchParamsInit = {};
+      if (newFilters && newFilters.size === 1) {
+        params.filters = Array.from(newFilters)[0];
+      }
+
+      setSearchParams(params);
+
+      console.dir(newFilters);
+
       setTxsState((prev) => ({
         ...prev,
         url: getTxsDataUrl({
@@ -207,3 +219,32 @@ export const useTxsData = ({
     previousPage,
   };
 };
+
+/**
+ * Returns a Set of filters based on the URLSearchParams, or
+ * defaults to all.
+ * @param params
+ * @returns Set
+ */
+export function getInitialFilters(params: URLSearchParams): Set<FilterOption> {
+  const defaultFilters = new Set(AllFilterOptions);
+
+  const p = params.get('filters');
+
+  if (!p) {
+    return defaultFilters;
+  }
+
+  const filters = new Set<FilterOption>();
+  p.split(',').forEach((f) => {
+    if (AllFilterOptions.includes(f as FilterOption)) {
+      filters.add(f as FilterOption);
+    }
+  });
+
+  if (filters.size === 0) {
+    return defaultFilters;
+  }
+
+  return filters;
+}
