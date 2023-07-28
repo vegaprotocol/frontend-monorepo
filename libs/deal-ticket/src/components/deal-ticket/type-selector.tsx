@@ -1,19 +1,21 @@
 import {
-  FormGroup,
+  Icon,
   InputError,
   SimpleGrid,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
-import { RadioGroup, Radio } from '@vegaprotocol/ui-toolkit';
 import type { Market, StaticMarketData } from '@vegaprotocol/markets';
 import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
 import { DealTicketType } from '../../hooks/use-type-store';
+import * as RadioGroup from '@radix-ui/react-radio-group';
+import * as Select from '@radix-ui/react-select';
+import classNames from 'classnames';
 
 interface TypeSelectorProps {
   value: DealTicketType;
-  onSelect: (type: DealTicketType) => void;
+  onValueChange: (type: DealTicketType) => void;
   market: Market;
   marketData: StaticMarketData;
   errorMessage?: string;
@@ -22,29 +24,76 @@ interface TypeSelectorProps {
 const toggles = [
   { label: t('Limit'), value: DealTicketType.Limit },
   { label: t('Market'), value: DealTicketType.Market },
-  { label: t('Stop Limit'), value: DealTicketType.StopLimit },
-  { label: t('Stop Market'), value: DealTicketType.StopMarket },
+];
+const options = [
+  { label: t('Limit'), value: DealTicketType.StopLimit },
+  { label: t('Market'), value: DealTicketType.StopMarket },
 ];
 
-export const TypeToggle = (props: {
-  onChange: (value: string) => void;
-  value?: DealTicketType;
-}) => (
-  <RadioGroup name="order-type" className="mb-2" {...props}>
-    {toggles.map(({ label, value }) => (
-      <Radio
-        value={value}
-        key={value}
+export const TypeToggle = ({
+  value,
+  onValueChange,
+}: Pick<TypeSelectorProps, 'onValueChange' | 'value'>) => (
+  <RadioGroup.Root
+    name="order-type"
+    className="mb-2 flex h-10 leading-10 font-alpha text-sm"
+    value={toggles.find((t) => t.value === value) ? value : undefined}
+    onValueChange={onValueChange}
+  >
+    {toggles.map(({ label, value: itemValue }) => (
+      <RadioGroup.Item
+        value={itemValue}
+        key={itemValue}
         id={`order-type-${value}`}
-        label={label}
-      />
+        asChild
+      >
+        <button
+          className={classNames('flex-1 relative rounded', {
+            'bg-vega-cdark-500': value === itemValue,
+          })}
+        >
+          {label}
+        </button>
+      </RadioGroup.Item>
     ))}
-  </RadioGroup>
+    <Select.Root
+      onValueChange={onValueChange}
+      value={options.find((t) => t.value === value) ? value : undefined}
+    >
+      <Select.Trigger
+        className={classNames('flex-1 rounded', {
+          'bg-vega-cdark-500': options.some((t) => t.value === value),
+        })}
+      >
+        <Select.Value placeholder={t('Stop')} />
+        <Select.Icon>
+          <Icon name="chevron-down" className="ml-2" />
+        </Select.Icon>
+      </Select.Trigger>
+
+      <Select.Portal>
+        <Select.Content className="bg-vega-cdark-50 leading-10 font-alpha text-sm rounded shadow">
+          <Select.Viewport className="p-2">
+            {options.map(({ label, value }) => (
+              <Select.Item
+                value={value}
+                textValue={label}
+                className="hover:bg-vega-cdark-200 text-vega-cdark-900 bg-vega-cdark-50 text-center rounded"
+              >
+                <Select.ItemText>{label}</Select.ItemText>
+              </Select.Item>
+            ))}
+          </Select.Viewport>
+          <Select.Arrow />
+        </Select.Content>
+      </Select.Portal>
+    </Select.Root>
+  </RadioGroup.Root>
 );
 
 export const TypeSelector = ({
   value,
-  onSelect,
+  onValueChange,
   market,
   marketData,
   errorMessage,
@@ -92,10 +141,10 @@ export const TypeSelector = ({
   };
 
   return (
-    <FormGroup label={t('Order type')} labelFor="order-type" compact={true}>
+    <>
       <TypeToggle
-        onChange={(value) => {
-          onSelect(value as DealTicketType);
+        onValueChange={(value) => {
+          onValueChange(value as DealTicketType);
         }}
         value={value}
       />
@@ -104,6 +153,6 @@ export const TypeSelector = ({
           {renderError(errorMessage as MarketModeValidationType)}
         </InputError>
       )}
-    </FormGroup>
+    </>
   );
 };

@@ -168,56 +168,55 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
       onSubmit={isReadOnly || !pubKey ? stopSubmit : handleSubmit(onSubmit)}
       noValidate
     >
-      <FormGroup label={t('Order type')} labelFor="order-type" compact={true}>
-        <Controller
-          name="type"
-          control={control}
-          render={({ field }) => {
-            const { value } = field;
-            return (
-              <TypeToggle
-                value={
-                  value === Schema.OrderType.TYPE_LIMIT
-                    ? DealTicketType.StopLimit
-                    : DealTicketType.StopMarket
+      <Controller
+        name="type"
+        control={control}
+        render={({ field }) => {
+          const { value } = field;
+          return (
+            <TypeToggle
+              value={
+                value === Schema.OrderType.TYPE_LIMIT
+                  ? DealTicketType.StopLimit
+                  : DealTicketType.StopMarket
+              }
+              onValueChange={(value) => {
+                const type = value as DealTicketType;
+                setDealTicketType(market.id, type);
+                if (
+                  type === DealTicketType.Limit ||
+                  type === DealTicketType.Market
+                ) {
+                  updateOrder({
+                    type:
+                      type === DealTicketType.Limit
+                        ? Schema.OrderType.TYPE_LIMIT
+                        : Schema.OrderType.TYPE_MARKET,
+                  });
+                  return;
                 }
-                onChange={(value) => {
-                  const type = value as DealTicketType;
-                  setDealTicketType(market.id, type);
-                  if (
-                    type === DealTicketType.Limit ||
-                    type === DealTicketType.Market
-                  ) {
-                    updateOrder({
-                      type:
-                        type === DealTicketType.Limit
-                          ? Schema.OrderType.TYPE_LIMIT
-                          : Schema.OrderType.TYPE_MARKET,
-                    });
-                    return;
-                  }
-                  setValue(
-                    'type',
-                    type === DealTicketType.StopLimit
-                      ? Schema.OrderType.TYPE_LIMIT
-                      : Schema.OrderType.TYPE_MARKET
-                  );
-                }}
-              />
-            );
-          }}
-        />
-        {errors.type && (
-          <InputError testId="stop-order-error-message-type">
-            {errors.type.message}
-          </InputError>
-        )}
-      </FormGroup>
+                setValue(
+                  'type',
+                  type === DealTicketType.StopLimit
+                    ? Schema.OrderType.TYPE_LIMIT
+                    : Schema.OrderType.TYPE_MARKET
+                );
+              }}
+            />
+          );
+        }}
+      />
+      {errors.type && (
+        <InputError testId="stop-order-error-message-type">
+          {errors.type.message}
+        </InputError>
+      )}
+
       <Controller
         name="side"
         control={control}
         render={({ field }) => (
-          <SideSelector value={field.value} onSelect={field.onChange} />
+          <SideSelector value={field.value} onValueChange={field.onChange} />
         )}
       />
       <FormGroup label={t('Trigger')} compact={true} labelFor="">

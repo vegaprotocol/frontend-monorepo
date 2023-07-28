@@ -329,7 +329,7 @@ export const DealTicket = ({
                 ? DealTicketType.Limit
                 : DealTicketType.Market
             }
-            onSelect={(dealTicketType) => {
+            onValueChange={(dealTicketType) => {
               setDealTicketType(market.id, dealTicketType);
               if (
                 dealTicketType !== DealTicketType.Limit &&
@@ -393,7 +393,7 @@ export const DealTicket = ({
         render={() => (
           <SideSelector
             value={order.side}
-            onSelect={(side) => {
+            onValueChange={(side) => {
               update({ side });
             }}
           />
