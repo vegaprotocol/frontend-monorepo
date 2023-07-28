@@ -217,6 +217,141 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           <SideSelector value={field.value} onSelect={field.onChange} />
         )}
       />
+      <FormGroup label={t('Trigger')} compact={true} labelFor="">
+        <Controller
+          name="triggerDirection"
+          control={control}
+          render={({ field }) => {
+            const { onChange, value } = field;
+            return (
+              <RadioGroup
+                name="triggerDirection"
+                onChange={onChange}
+                value={value}
+                orientation="horizontal"
+                className="mb-2"
+              >
+                <Radio
+                  value={
+                    Schema.StopOrderTriggerDirection
+                      .TRIGGER_DIRECTION_RISES_ABOVE
+                  }
+                  id="triggerDirection-risesAbove"
+                  label={'Rises above'}
+                />
+                <Radio
+                  value={
+                    Schema.StopOrderTriggerDirection
+                      .TRIGGER_DIRECTION_FALLS_BELOW
+                  }
+                  id="triggerDirection-fallsBelow"
+                  label={'Falls below'}
+                />
+              </RadioGroup>
+            );
+          }}
+        />
+        {isPriceTrigger && (
+          <div className="mb-2">
+            <Controller
+              name="triggerPrice"
+              rules={{
+                required: t('You need provide a price'),
+                min: {
+                  value: priceStep,
+                  message: t('Price cannot be lower than ' + priceStep),
+                },
+                validate: validateAmount(priceStep, 'Price'),
+              }}
+              control={control}
+              render={({ field }) => {
+                return (
+                  <div className="mb-2">
+                    <Input
+                      data-testid="triggerPrice"
+                      type="number"
+                      appendElement={asset.symbol}
+                      {...field}
+                    />
+                  </div>
+                );
+              }}
+            />
+            {errors.triggerPrice && (
+              <InputError testId="stop-order-error-message-trigger-price">
+                {errors.triggerPrice.message}
+              </InputError>
+            )}
+          </div>
+        )}
+        {!isPriceTrigger && (
+          <div className="mb-2">
+            <Controller
+              name="triggerTrailingPercentOffset"
+              control={control}
+              rules={{
+                required: t('You need provide a trailing percent offset'),
+                min: {
+                  value: trailingPercentOffsetStep,
+                  message: t(
+                    'Trailing percent offset cannot be lower than ' +
+                      trailingPercentOffsetStep
+                  ),
+                },
+                max: {
+                  value: '99.9',
+                  message: t(
+                    'Trailing percent offset cannot be higher than 99.9'
+                  ),
+                },
+                validate: validateAmount(
+                  trailingPercentOffsetStep,
+                  'Trailing percentage offset'
+                ),
+              }}
+              render={({ field }) => {
+                return (
+                  <div className="mb-2">
+                    <Input
+                      type="number"
+                      step={trailingPercentOffsetStep}
+                      appendElement="%"
+                      {...field}
+                    />
+                  </div>
+                );
+              }}
+            />
+            {errors.triggerTrailingPercentOffset && (
+              <InputError testId="stop-order-error-message-trigger-trailing-percent-offset">
+                {errors.triggerTrailingPercentOffset.message}
+              </InputError>
+            )}
+          </div>
+        )}
+        <Controller
+          name="triggerType"
+          control={control}
+          rules={{ deps: ['triggerTrailingPercentOffset', 'triggerPrice'] }}
+          render={({ field }) => {
+            const { onChange, value } = field;
+            return (
+              <RadioGroup
+                onChange={onChange}
+                value={value}
+                orientation="horizontal"
+              >
+                <Radio value="price" id="triggerType-price" label={'Price'} />
+                <Radio
+                  value="trailingPercentOffset"
+                  id="triggerType-trailingPercentOffset"
+                  label={'Trailing Percent Offset'}
+                />
+              </RadioGroup>
+            );
+          }}
+        />
+      </FormGroup>
       <div className="mb-2">
         <div className="flex items-start gap-4">
           <FormGroup
@@ -356,141 +491,6 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           }
         />
       </div>
-      <FormGroup label={t('Trigger')} compact={true} labelFor="">
-        <Controller
-          name="triggerDirection"
-          control={control}
-          render={({ field }) => {
-            const { onChange, value } = field;
-            return (
-              <RadioGroup
-                name="triggerDirection"
-                onChange={onChange}
-                value={value}
-                orientation="horizontal"
-                className="mb-2"
-              >
-                <Radio
-                  value={
-                    Schema.StopOrderTriggerDirection
-                      .TRIGGER_DIRECTION_RISES_ABOVE
-                  }
-                  id="triggerDirection-risesAbove"
-                  label={'Rises above'}
-                />
-                <Radio
-                  value={
-                    Schema.StopOrderTriggerDirection
-                      .TRIGGER_DIRECTION_FALLS_BELOW
-                  }
-                  id="triggerDirection-fallsBelow"
-                  label={'Falls below'}
-                />
-              </RadioGroup>
-            );
-          }}
-        />
-        {isPriceTrigger && (
-          <div className="mb-2">
-            <Controller
-              name="triggerPrice"
-              rules={{
-                required: t('You need provide a price'),
-                min: {
-                  value: priceStep,
-                  message: t('Price cannot be lower than ' + priceStep),
-                },
-                validate: validateAmount(priceStep, 'Price'),
-              }}
-              control={control}
-              render={({ field }) => {
-                return (
-                  <div className="mb-2">
-                    <Input
-                      data-testid="triggerPrice"
-                      type="number"
-                      appendElement={asset.symbol}
-                      {...field}
-                    />
-                  </div>
-                );
-              }}
-            />
-            {errors.triggerPrice && (
-              <InputError testId="stop-order-error-message-trigger-price">
-                {errors.triggerPrice.message}
-              </InputError>
-            )}
-          </div>
-        )}
-        {!isPriceTrigger && (
-          <div className="mb-2">
-            <Controller
-              name="triggerTrailingPercentOffset"
-              control={control}
-              rules={{
-                required: t('You need provide a trailing percent offset'),
-                min: {
-                  value: trailingPercentOffsetStep,
-                  message: t(
-                    'Trailing percent offset cannot be lower than ' +
-                      trailingPercentOffsetStep
-                  ),
-                },
-                max: {
-                  value: '99.9',
-                  message: t(
-                    'Trailing percent offset cannot be higher than 99.9'
-                  ),
-                },
-                validate: validateAmount(
-                  trailingPercentOffsetStep,
-                  'Trailing percentage offset'
-                ),
-              }}
-              render={({ field }) => {
-                return (
-                  <div className="mb-2">
-                    <Input
-                      type="number"
-                      step={trailingPercentOffsetStep}
-                      appendElement="%"
-                      {...field}
-                    />
-                  </div>
-                );
-              }}
-            />
-            {errors.triggerTrailingPercentOffset && (
-              <InputError testId="stop-order-error-message-trigger-trailing-percent-offset">
-                {errors.triggerTrailingPercentOffset.message}
-              </InputError>
-            )}
-          </div>
-        )}
-        <Controller
-          name="triggerType"
-          control={control}
-          rules={{ deps: ['triggerTrailingPercentOffset', 'triggerPrice'] }}
-          render={({ field }) => {
-            const { onChange, value } = field;
-            return (
-              <RadioGroup
-                onChange={onChange}
-                value={value}
-                orientation="horizontal"
-              >
-                <Radio value="price" id="triggerType-price" label={'Price'} />
-                <Radio
-                  value="trailingPercentOffset"
-                  id="triggerType-trailingPercentOffset"
-                  label={'Trailing Percent Offset'}
-                />
-              </RadioGroup>
-            );
-          }}
-        />
-      </FormGroup>
       <div className="mb-2">
         <Controller
           name="expire"
