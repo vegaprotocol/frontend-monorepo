@@ -8,9 +8,10 @@ import { TxState } from '../../../hooks/transaction-reducer';
 import { useTransaction } from '../../../hooks/use-transaction';
 import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
-import { removeDecimal, toBigNum } from '@vegaprotocol/utils';
+import { toBigNum } from '@vegaprotocol/utils';
 import type { EthereumConfig } from '@vegaprotocol/web3';
 import { useBalances } from '../../../lib/balances/balances-store';
+import { MaxUint256 } from '@ethersproject/constants';
 
 export const WalletAssociate = ({
   perform,
@@ -42,7 +43,7 @@ export const WalletAssociate = ({
   } = useTransaction(() => {
     return token.approve(
       ethereumConfig.staking_bridge_contract.address,
-      removeDecimal('1000000', decimals).toString()
+      MaxUint256.toString()
     );
   });
 
