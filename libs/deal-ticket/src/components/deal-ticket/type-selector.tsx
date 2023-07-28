@@ -10,7 +10,7 @@ import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
 import { DealTicketType } from '../../hooks/use-type-store';
 import * as RadioGroup from '@radix-ui/react-radio-group';
-import * as Select from '@radix-ui/react-select';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import classNames from 'classnames';
 
 interface TypeSelectorProps {
@@ -56,38 +56,37 @@ export const TypeToggle = ({
         </button>
       </RadioGroup.Item>
     ))}
-    <Select.Root
-      onValueChange={onValueChange}
-      value={options.find((t) => t.value === value) ? value : undefined}
-    >
-      <Select.Trigger
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger
         className={classNames('flex-1 rounded', {
           'bg-vega-cdark-500': options.some((t) => t.value === value),
         })}
       >
-        <Select.Value placeholder={t('Stop')} />
-        <Select.Icon>
-          <Icon name="chevron-down" className="ml-2" />
-        </Select.Icon>
-      </Select.Trigger>
+        {t('Stop')}
+      </DropdownMenu.Trigger>
 
-      <Select.Portal>
-        <Select.Content className="bg-vega-cdark-50 leading-10 font-alpha text-sm rounded shadow">
-          <Select.Viewport className="p-2">
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content className="bg-vega-cdark-50 leading-10 font-alpha text-sm rounded shadow p-1">
+          <DropdownMenu.RadioGroup
+            onValueChange={(value) => onValueChange(value as DealTicketType)}
+            value={options.find((t) => t.value === value) ? value : undefined}
+          >
             {options.map(({ label, value }) => (
-              <Select.Item
+              <DropdownMenu.RadioItem
                 value={value}
                 textValue={label}
-                className="hover:bg-vega-cdark-200 text-vega-cdark-900 bg-vega-cdark-50 text-center rounded"
+                className="hover:bg-vega-cdark-200 text-vega-cdark-900 bg-vega-cdark-50 rounded pl-1 pr-10 relative"
               >
-                <Select.ItemText>{label}</Select.ItemText>
-              </Select.Item>
+                <DropdownMenu.ItemIndicator className="absolute right-0 top-0 bottom-0 inline-flex items-center justify-center pr-1">
+                  <Icon name="tick" />
+                </DropdownMenu.ItemIndicator>
+                {label}
+              </DropdownMenu.RadioItem>
             ))}
-          </Select.Viewport>
-          <Select.Arrow />
-        </Select.Content>
-      </Select.Portal>
-    </Select.Root>
+          </DropdownMenu.RadioGroup>
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
   </RadioGroup.Root>
 );
 
