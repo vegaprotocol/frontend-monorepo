@@ -107,6 +107,13 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const rawPrice = watch('price');
   const rawSize = watch('size');
 
+  if (storedFormValues?.size && rawSize !== storedFormValues?.size) {
+    setValue('size', storedFormValues.size);
+  }
+  if (storedFormValues?.price && rawPrice !== storedFormValues?.price) {
+    setValue('price', storedFormValues.price);
+  }
+
   const isPriceTrigger = triggerType === 'price';
   const size = removeDecimal(rawSize, market.positionDecimalPlaces);
   const price = useMemo(() => {
