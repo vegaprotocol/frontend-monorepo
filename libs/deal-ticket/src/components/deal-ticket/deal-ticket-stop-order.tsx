@@ -196,9 +196,6 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                     });
                     return;
                   }
-                  if (type === DealTicketType.StopMarket) {
-                    clearErrors('price');
-                  }
                   setValue(
                     'type',
                     type === DealTicketType.StopLimit
@@ -277,6 +274,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                     <Input
                       data-testid="triggerPrice"
                       type="number"
+                      step={priceStep}
                       appendElement={asset.symbol}
                       value={value || ''}
                       {...props}
@@ -318,13 +316,16 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 ),
               }}
               render={({ field }) => {
+                const { value, ...props } = field;
                 return (
                   <div className="mb-2">
                     <Input
                       type="number"
                       step={trailingPercentOffsetStep}
                       appendElement="%"
-                      {...field}
+                      data-testid="triggerTrailingPercentOffset"
+                      value={value || ''}
+                      {...props}
                     />
                   </div>
                 );
@@ -378,18 +379,22 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 },
                 validate: validateAmount(sizeStep, 'Size'),
               }}
-              render={({ field }) => (
-                <Input
-                  id="input-order-size-market"
-                  className="w-full"
-                  type="number"
-                  step={sizeStep}
-                  min={sizeStep}
-                  onWheel={(e) => e.currentTarget.blur()}
-                  data-testid="order-size"
-                  {...field}
-                />
-              )}
+              render={({ field }) => {
+                const { value, ...props } = field;
+                return (
+                  <Input
+                    id="order-size"
+                    className="w-full"
+                    type="number"
+                    step={sizeStep}
+                    min={sizeStep}
+                    onWheel={(e) => e.currentTarget.blur()}
+                    data-testid="order-size"
+                    value={value || ''}
+                    {...props}
+                  />
+                );
+              }}
             />
           </FormGroup>
           <div className="pt-7 leading-10">@</div>
@@ -405,6 +410,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                   name="price"
                   control={control}
                   rules={{
+                    deps: 'type',
                     required: t('You need provide a price'),
                     min: {
                       value: priceStep,
@@ -412,17 +418,21 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                     },
                     validate: validateAmount(priceStep, 'Price'),
                   }}
-                  render={({ field }) => (
-                    <Input
-                      id="input-price-quote"
-                      className="w-full"
-                      type="number"
-                      step={priceStep}
-                      data-testid="order-price"
-                      onWheel={(e) => e.currentTarget.blur()}
-                      {...field}
-                    />
-                  )}
+                  render={({ field }) => {
+                    const { value, ...props } = field;
+                    return (
+                      <Input
+                        id="input-price-quote"
+                        className="w-full"
+                        type="number"
+                        step={priceStep}
+                        data-testid="order-price"
+                        onWheel={(e) => e.currentTarget.blur()}
+                        value={value || ''}
+                        {...props}
+                      />
+                    );
+                  }}
                 />
               </FormGroup>
             ) : (
@@ -438,16 +448,18 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           </div>
         </div>
         {errors.size && (
-          <InputError testId="deal-ticket-error-message-size-limit">
+          <InputError testId="stop-order-error-message-size">
             {errors.size.message}
           </InputError>
         )}
 
-        {!errors.size && errors.price && (
-          <InputError testId="deal-ticket-error-message-price-limit">
-            {errors.price.message}
-          </InputError>
-        )}
+        {!errors.size &&
+          errors.price &&
+          type === Schema.OrderType.TYPE_LIMIT && (
+            <InputError testId="stop-order-error-message-price">
+              {errors.price.message}
+            </InputError>
+          )}
       </div>
       <div className="mb-2">
         <FormGroup
