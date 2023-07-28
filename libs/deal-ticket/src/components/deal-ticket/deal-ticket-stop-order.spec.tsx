@@ -1,12 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import {
-  act,
-  render,
-  renderHook,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket } from '../../test-helpers';
 import { StopOrder } from './deal-ticket-stop-order';
@@ -24,7 +18,7 @@ const marketPrice = '200';
 const market = generateMarket();
 const submit = jest.fn();
 
-function generateJsx(pubKey = 'pubKey', isReadOnly = false) {
+function generateJsx(pubKey: string | null = 'pubKey', isReadOnly = false) {
   return (
     <MockedProvider>
       <VegaWalletContext.Provider value={{ pubKey, isReadOnly } as any}>
@@ -97,7 +91,7 @@ describe('StopOrder', () => {
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
       expire: true,
       expiryStrategy: Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS,
-      expiresAt: '2023-07-27T16:43:27',
+      expiresAt: '2023-07-27T16:43:27.000',
     };
 
     useStopOrderFormValues.setState({
@@ -126,8 +120,20 @@ describe('StopOrder', () => {
     expect(screen.getByTestId('expiryStrategy-cancel').dataset.state).toEqual(
       'checked'
     );
-    expect(screen.getByTestId('order-size')).toHaveDisplayValue(
-      values.size as string
+    expect(screen.getByTestId('date-picker-field')).toHaveDisplayValue(
+      values.expiresAt as string
     );
+  });
+
+  it('shows no wallet warning and do not submit', async () => {
+    render(generateJsx(null));
+    await userEvent.type(screen.getByTestId('order-size'), '1');
+    await userEvent.type(screen.getByTestId('order-price'), '1');
+    await userEvent.type(screen.getByTestId('triggerPrice'), '1');
+    await userEvent.click(screen.getByTestId('place-order'));
+    expect(submit).not.toBeCalled();
+    expect(
+      screen.getByTestId('deal-ticket-connect-wallet')
+    ).toBeInTheDocument();
   });
 });

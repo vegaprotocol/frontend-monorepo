@@ -41,7 +41,6 @@ import {
 } from '../../hooks/use-type-store';
 import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values-to-stop-order-submission';
 import { DealTicketButton } from './deal-ticket-button';
-import noop from 'lodash/noop';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { validateExpiration } from '../../utils';
 
@@ -272,13 +271,15 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
               }}
               control={control}
               render={({ field }) => {
+                const { value, ...props } = field;
                 return (
                   <div className="mb-2">
                     <Input
                       data-testid="triggerPrice"
                       type="number"
                       appendElement={asset.symbol}
-                      {...field}
+                      value={value || ''}
+                      {...props}
                     />
                   </div>
                 );
@@ -442,7 +443,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           </InputError>
         )}
 
-        {errors.price && (
+        {!errors.size && errors.price && (
           <InputError testId="deal-ticket-error-message-price-limit">
             {errors.price.message}
           </InputError>
