@@ -81,6 +81,22 @@ jobs:
         with:
           main-branch-name: develop
 
+      # See affected apps
+      - name: See affected apps
+        run: |
+          branch_slug="$(echo '${{ github.head_ref || github.ref_name }}' | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | cut -c 1-50 )"
+          python3 tools/ci/check-affected.py --github-ref="${{ github.ref }}" --branch-slug="$branch_slug" --event-name="${{ github.event_name }}"
+
+      - name: Verify script result
+        run: |
+          echo "Check outputs from script"
+          echo "projects: ${{ env.PROJECTS }}"
+          echo "projects-e2e: ${{ env.PROJECTS_E2E }}"
+          echo "preview_governance: ${{ env.PREVIEW_GOVERNANCE }}"
+          echo "preview_trading: ${{ env.PREVIEW_TRADING }}"
+          echo "preview_explorer: ${{ env.PREVIEW_EXPLORER }}"
+          echo "preview_tools: ${{ env.PREVIEW_TOOLS }}"
+
       - name: Check formatting
         run: yarn nx format:check
 
@@ -96,118 +112,6 @@ jobs:
       - name: Build affected
         run: yarn nx affected:build || (yarn install && yarn nx affected:build)
 
-      # See affected apps
-      - name: See affected apps
-        run: |
-          affected="$(yarn nx print-affected --base=${{ env.NX_BASE }} --head=${{ env.NX_HEAD }} --select=projects)"
-          branch_slug="$(echo '${{ github.head_ref || github.ref_name }}' | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | cut -c 1-50 )"
-
-          echo ">>>> debug"
-          echo "NX_BASE: ${{ env.NX_BASE }}"
-          echo "NX_HEAD: ${{ env.NX_HEAD }}"
-          echo "Affected: ${affected}"
-          echo "Branch slug: ${branch_slug}"
-          echo ">>>> eof debug"
-
-          projects_array=()
-
-          preview_governance="not deployed"
-          preview_trading="not deployed"
-          preview_explorer="not deployed"
-          preview_tools="not deployed"
-
-          # parse if affected is any of three main applications, if none - use all of them
-          if echo "$affected" | grep -q governance; then
-            echo "Governance is affected"
-            projects_array+=("governance")
-            preview_governance=$(printf "https://%s.%s.vega.rocks" "governance" "$branch_slug")
-          fi
-          if echo "$affected" | grep -q trading; then
-            echo "Trading is affected"
-            projects_array+=("trading")
-            preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
-          fi
-          if echo "$affected" | grep -q explorer; then
-            echo "Explorer is affected"
-            projects_array+=("explorer")
-            preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
-          fi
-          if [[ ${#projects_array[@]} -eq 0 ]]; then
-            projects_array=("governance" "trading" "explorer")
-            preview_governance=$(printf "https://%s.%s.vega.rocks" "governance" "$branch_slug")
-            preview_trading=$(printf "https://%s.%s.vega.rocks" "trading" "$branch_slug")
-            preview_explorer=$(printf "https://%s.%s.vega.rocks" "explorer" "$branch_slug")
-          fi
-
-          # applications parsed before this loop are applicable for running e2e-tests
-          projects_e2e_array=()
-          for project in "${projects_array[@]}"; do
-            projects_e2e_array+=("${project}-e2e")
-          done
-          # all applications below this loop are not applicable for running e2e-test
-
-          # check if pull request event to deploy tools
-          if [[ "${{ github.event_name }}" = "pull_request" ]]; then
-            if echo "$affected" | grep -q multisig-signer; then
-              echo "Tools are affected"
-              echo "Deploying tools on preview"
-              preview_tools=$(printf "https://%s.%s.vega.rocks" "tools" "$branch_slug")
-
-              projects_array+=("multisig-signer")
-            fi
-          # those apps deploy only from develop to mainnet
-          elif [[ "${{ github.ref }}" =~ .*develop$ ]]; then
-            if echo "$affected" | grep -q multisig-signer; then
-              echo "Tools are affected"
-              echo "Deploying tools on s3"
-
-              projects_array+=("multisig-signer")
-            fi
-            if echo "$affected" | grep -q static; then
-              echo "static is affected"
-              echo "Deploying static on s3"
-
-              projects_array+=("static")
-            fi
-            if echo "$affected" | grep -q ui-toolkit; then
-              echo "ui-toolkit is affected"
-              echo "Deploying ui-toolkit on s3"
-
-              projects_array+=("ui-toolkit")
-            fi
-          fi
-
-          # if branch starts with release/ and ends with trading / governance or explorer - overwrite the array of affected projects with fixed single application
-          if [[ "${{ github.ref }}" == release* ]]; then
-            case "${{ github.ref }}" in
-              *trading)
-                projects_array=(trading)
-                projects_e2e_array=(trading)
-              ;;
-              *governance)
-                projects_array=(governance)
-                projects_e2e_array=(governance)
-              ;;
-              *explorer)
-                projects_array=(explorer)
-                projects_e2e_array=(explorer)
-              ;;
-            esac
-          fi
-
-          echo "Projects: ${projects_array[@]}"
-          echo "Projects E2E: ${projects_e2e_array[@]}"
-          projects_json=$(jq -M --compact-output --null-input '$ARGS.positional' --args -- "${projects_array[@]}")
-          projects_e2e_json=$(jq -M --compact-output --null-input '$ARGS.positional' --args -- "${projects_e2e_array[@]}")
-
-          echo PROJECTS_E2E=$projects_e2e_json >> $GITHUB_ENV
-          echo PROJECTS=$projects_json >> $GITHUB_ENV
-
-          echo PREVIEW_GOVERNANCE=$preview_governance >> $GITHUB_ENV
-          echo PREVIEW_TRADING=$preview_trading >> $GITHUB_ENV
-          echo PREVIEW_EXPLORER=$preview_explorer >> $GITHUB_ENV
-          echo PREVIEW_TOOLS=$preview_tools >> $GITHUB_ENV
-
     outputs:
       projects: ${{ env.PROJECTS }}
       projects-e2e: ${{ env.PROJECTS_E2E }}
@@ -215,6 +119,15 @@ jobs:
       preview_trading: ${{ env.PREVIEW_TRADING }}
       preview_explorer: ${{ env.PREVIEW_EXPLORER }}
       preview_tools: ${{ env.PREVIEW_TOOLS }}
+
+  console-e2e:
+    needs: lint-test-build
+    name: '(CI) console python'
+    uses: ./.github/workflows/console-test-run.yml
+    secrets: inherit
+    if: ${{ contains(fromJSON(needs.lint-test-build.outputs.projects), 'trading') && github.event_name == 'pull_request' }}
+    with:
+      github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
   cypress:
     needs: lint-test-build
