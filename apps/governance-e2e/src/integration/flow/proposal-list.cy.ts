@@ -49,8 +49,8 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
     navigateTo(navigation.proposals);
   });
 
+  // 3001-VOTE-018
   it('Newly created proposals list - proposals closest to closing date appear higher in list', function () {
-    // 3001-VOTE-005
     const proposalDays = [364, 50, 2];
     for (let index = 0; index < proposalDays.length; index++) {
       goToMakeNewProposal(governanceProposalType.RAW);
