@@ -87,7 +87,7 @@ export const useTxsData = ({
   filters,
   party,
 }: IUseTxsData) => {
-  const [params, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
 
   const [{ txsData, hasMoreTxs, url }, setTxsState] = useState<TxsStateProps>({
     txsData: [],
@@ -205,7 +205,7 @@ export const useTxsData = ({
         }),
       }));
     },
-    [party, count, after, before]
+    [party, count, after, before, setSearchParams]
   );
 
   return {
