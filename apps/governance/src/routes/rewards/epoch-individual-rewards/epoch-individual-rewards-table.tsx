@@ -39,23 +39,12 @@ const DisplayReward = ({
       description={
         <div className="flex flex-col items-start">
           <span>{formatNumber(toBigNum(reward, decimals), decimals)}</span>
-          {percentageOfTotal && (
-            <span className="text-vega-dark-300">
-              ({percentageOfTotal}% {t('ofTotalDistributed')})
-            </span>
-          )}
         </div>
       }
     >
       <button>
         <div className="flex flex-col items-start">
           <span>{formatNumber(toBigNum(reward, decimals), 4)}</span>
-          {percentageOfTotal && (
-            <span className="text-vega-dark-300">
-              ({formatNumber(percentageOfTotal, 4).toString()}
-              %)
-            </span>
-          )}
         </div>
       </button>
     </Tooltip>

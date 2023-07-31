@@ -106,14 +106,7 @@ export const generateEpochIndividualRewardsList = ({
 
       asset.rewardTypes[rewardType] = {
         amount: newAmount,
-        percentageOfTotal: matchingTotalRewardAmount
-          ? new BigNumber(newAmount)
-              .dividedBy(matchingTotalRewardAmount)
-              .multipliedBy(100)
-              .toString()
-          : // this should never be reached, if there's an individual reward there should
-            // always be a reward total from the api too, but set it as a fallback just in case
-            percentageOfTotal,
+        percentageOfTotal: percentageOfTotal,
       };
     }
 
