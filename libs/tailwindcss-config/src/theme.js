@@ -152,7 +152,7 @@ module.exports = {
         200: '#7C7E83',
         300: '#626469',
         400: '#44464B',
-        500: '#323339', // surface-container-highest
+        500: '#323339', // surface-container-highest, outline-surface-default
         600: '#292B30',
         700: '#202227',
         800: '#17191E', // surface-container

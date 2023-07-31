@@ -20,6 +20,6 @@ export const downloadJson = (jsonString: string, proposalTitle: string) => {
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
