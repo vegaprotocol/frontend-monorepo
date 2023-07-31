@@ -24,8 +24,8 @@ interface VoteButtonsContainerProps {
   voteDatetime: Date | null;
   proposalId: string | null;
   proposalState: ProposalState;
-  minVoterBalance: string | null;
-  spamProtectionMinTokens: string | null;
+  minVoterBalance: string | null | undefined;
+  spamProtectionMinTokens: string | null | undefined;
   submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
   dialog: (props: DialogProps) => JSX.Element;
   className?: string;

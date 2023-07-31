@@ -28,6 +28,7 @@ import { IconTransfer } from './svg-icons/icon-transfer';
 import { IconTrendUp } from './svg-icons/icon-trend-up';
 import { IconTrendDown } from './svg-icons/icon-trend-down';
 import { IconTwitter } from './svg-icons/icon-twitter';
+import { IconVote } from './svg-icons/icon-vote';
 import { IconWithdraw } from './svg-icons/icon-withdraw';
 import { IconSearch } from './svg-icons/icon-search';
 
@@ -63,6 +64,7 @@ export enum VegaIconNames {
   TREND_UP = 'trend-up',
   TREND_DOWN = 'trend-down',
   TWITTER = 'twitter',
+  VOTE = 'vote',
   WITHDRAW = 'withdraw',
 }
 
@@ -96,10 +98,11 @@ export const VegaIconNameMap: Record<
   search: IconSearch,
   star: IconStar,
   tick: IconTick,
+  ticket: IconTicket,
   transfer: IconTransfer,
   'trend-up': IconTrendUp,
   'trend-down': IconTrendDown,
   twitter: IconTwitter,
-  ticket: IconTicket,
+  vote: IconVote,
   withdraw: IconWithdraw,
 };

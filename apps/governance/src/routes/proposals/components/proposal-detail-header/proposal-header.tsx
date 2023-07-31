@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Lozenge } from '@vegaprotocol/ui-toolkit';
+import { Lozenge, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { shorten } from '@vegaprotocol/utils';
 import { Heading, SubHeading } from '../../../../components/heading';
 import type { ReactNode } from 'react';
@@ -8,15 +8,25 @@ import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { truncateMiddle } from '../../../../lib/truncate-middle';
 import { CurrentProposalState } from '../current-proposal-state';
 import { ProposalInfoLabel } from '../proposal-info-label';
+import { useUserVote } from '../vote-details/use-user-vote';
+import { ProposalVotingStatus } from '../proposal-voting-status';
+import type { NetworkParamsResult } from '@vegaprotocol/network-parameters';
+import { useSuccessorMarketProposalDetails } from '@vegaprotocol/proposals';
+import { FLAGS } from '@vegaprotocol/environment';
+import Routes from '../../../routes';
+import { Link } from 'react-router-dom';
 
 export const ProposalHeader = ({
   proposal,
+  networkParams,
   isListItem = true,
 }: {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  networkParams: Partial<NetworkParamsResult>;
   isListItem?: boolean;
 }) => {
   const { t } = useTranslation();
+  const { voteState } = useUserVote(proposal?.id);
   const change = proposal?.terms.change;
 
   let details: ReactNode;
@@ -33,6 +43,9 @@ export const ProposalHeader = ({
       fallbackTitle = t('NewMarketProposal');
       details = (
         <>
+          {FLAGS.SUCCESSOR_MARKETS && (
+            <SuccessorCode proposalId={proposal?.id} />
+          )}
           <span>
             {t('Code')}: {change.instrument.code}.
           </span>{' '}
@@ -119,6 +132,35 @@ export const ProposalHeader = ({
 
   return (
     <>
+      <div className="flex items-center justify-between gap-4 mb-6 text-sm">
+        <div data-testid="proposal-type">
+          <ProposalInfoLabel variant="secondary">
+            {t(`${proposalType}`)}
+          </ProposalInfoLabel>
+        </div>
+
+        <div className="flex items-center gap-6">
+          {(voteState === 'Yes' || voteState === 'No') && (
+            <div
+              className="flex items-center gap-2"
+              data-testid={`user-voted-${voteState.toLowerCase()}`}
+            >
+              <div className="text-vega-green" data-testid="you-voted-icon">
+                <VegaIcon name={VegaIconNames.VOTE} size={24} />
+              </div>
+              <div>
+                {t('voted')}{' '}
+                <span className="uppercase">{t(`voteState_${voteState}`)}</span>
+              </div>
+            </div>
+          )}
+
+          <div data-testid="proposal-status">
+            <CurrentProposalState proposal={proposal} />
+          </div>
+        </div>
+      </div>
+
       <div data-testid="proposal-title">
         {isListItem ? (
           <header>
@@ -133,23 +175,33 @@ export const ProposalHeader = ({
         )}
       </div>
 
-      <div className="flex items-center gap-2 mb-4">
-        <div data-testid="proposal-type">
-          <ProposalInfoLabel variant="secondary">
-            {t(`${proposalType}`)}
-          </ProposalInfoLabel>
-        </div>
-
-        <div data-testid="proposal-status">
-          <CurrentProposalState proposal={proposal} />
-        </div>
-      </div>
-
       {details && (
-        <div data-testid="proposal-details" className="break-words my-10">
+        <div
+          data-testid="proposal-details"
+          className="break-words mb-6 text-vega-light-200"
+        >
           {details}
         </div>
       )}
+
+      <ProposalVotingStatus proposal={proposal} networkParams={networkParams} />
     </>
   );
+};
+
+const SuccessorCode = ({ proposalId }: { proposalId?: string | null }) => {
+  const { t } = useTranslation();
+  const successor = useSuccessorMarketProposalDetails(proposalId);
+
+  return successor.parentMarketId || successor.code ? (
+    <span className="block" data-testid="proposal-successor-info">
+      {t('Successor market to')}:{' '}
+      <Link
+        to={`${Routes.PROPOSALS}/${successor.parentMarketId}`}
+        className="hover:underline"
+      >
+        {successor.code || successor.parentMarketId}
+      </Link>
+    </span>
+  ) : null;
 };

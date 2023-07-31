@@ -29,6 +29,9 @@ export function addGetNodes() {
               location
               name
               pendingStake
+              rankingScore {
+                performanceScore
+              }
               pubkey
               stakedByDelegates
               stakedByOperator

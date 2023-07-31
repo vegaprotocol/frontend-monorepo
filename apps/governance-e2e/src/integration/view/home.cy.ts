@@ -11,7 +11,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       cy.getByTestId('home-proposals').within(() => {
         cy.get('[href="/proposals"]')
           .should('exist')
-          .and('have.text', 'Browse, vote, and propose');
+          .and('have.text', 'See all proposals');
       });
     });
 

@@ -351,6 +351,12 @@ context(
         );
         stakingPageDisassociateAllTokens();
       });
+
+      it('Able to associate over 1 million tokens', function () {
+        cy.get(ethWalletAssociateButton).click();
+        stakingPageAssociateTokens('2000000', { approve: true });
+        stakingPageDisassociateAllTokens();
+      });
     });
   }
 );
