@@ -1,20 +1,17 @@
 import React, { useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
-import { useDataProvider } from '@vegaprotocol/data-provider';
-import { activeMarketsProvider } from '@vegaprotocol/markets';
 import * as constants from '../constants';
 import { OnboardingDialog } from './onboarding-dialog';
-import { WelcomeNoticeDialog } from './welcome-notice-dialog';
-import { useGlobalStore } from '../../stores';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { isTestEnv } from '@vegaprotocol/utils';
+import { Links, Routes } from '../../pages/client-router';
+import { useGlobalStore } from '../../stores';
 
 export const WelcomeDialog = () => {
   const { VEGA_ENV } = useEnvironment();
-  const { pathname } = useLocation();
   let dialogContent: React.ReactNode;
   let title: string | React.ReactNode = '';
   let size: 'small' | 'medium' = 'small';
@@ -22,41 +19,28 @@ export const WelcomeDialog = () => {
   const [onBoardingViewed, setOnboardingViewed] = useLocalStorage(
     constants.ONBOARDING_VIEWED_KEY
   );
-  const { data } = useDataProvider({
-    dataProvider: activeMarketsProvider,
-    variables: undefined,
-  });
-
-  const update = useGlobalStore((store) => store.update);
-  const shouldDisplayWelcomeDialog = useGlobalStore(
-    (store) => store.shouldDisplayWelcomeDialog
-  );
-
+  const navigate = useNavigate();
   const isOnboardingDialogNeeded = onBoardingViewed !== 'true' && !isTestEnv();
-
-  const isWelcomeDialogNeeded = pathname === '/' || shouldDisplayWelcomeDialog;
-
-  const onCloseDialog = useCallback(() => {
-    update({
-      shouldDisplayWelcomeDialog: isOnboardingDialogNeeded,
-    });
-  }, [update, isOnboardingDialogNeeded]);
+  const marketId = useGlobalStore((store) => store.marketId);
 
   if (isOnboardingDialogNeeded) {
-    dialogContent = <OnboardingDialog network={VEGA_ENV} />;
-    onClose = () => setOnboardingViewed('true');
+    dialogContent = <OnboardingDialog />;
+    onClose = () => {
+      setOnboardingViewed('true');
+      const link = marketId
+        ? Links[Routes.MARKET](marketId)
+        : Links[Routes.HOME]();
+      navigate(link);
+    };
     title = (
-      <h3 className="font-alpha calt">
+      <span className="font-alpha calt">
         {t('Console')}{' '}
         <span className="text-vega-clight-50 dark:text-vega-cdark-50">
           {VEGA_ENV}
         </span>
-      </h3>
+      </span>
     );
     size = 'medium';
-  } else if (isWelcomeDialogNeeded && data?.length === 0) {
-    dialogContent = <WelcomeNoticeDialog />;
-    onClose = onCloseDialog;
   } else {
     dialogContent = null as React.ReactNode;
   }

@@ -15,6 +15,7 @@ import { Tooltip } from '../../components/tooltip';
 import { WithdrawContainer } from '../withdraw-container';
 import { Routes as AppRoutes } from '../../pages/client-router';
 import { persist } from 'zustand/middleware';
+import { GetStarted } from '../welcome-dialog';
 
 const STORAGE_KEY = 'vega_sidebar_store';
 
@@ -252,6 +253,7 @@ const ContentWrapper = ({
     >
       {title && <h2 className="mb-4">{title}</h2>}
       {children}
+      <GetStarted />
     </TinyScroll>
   );
 };

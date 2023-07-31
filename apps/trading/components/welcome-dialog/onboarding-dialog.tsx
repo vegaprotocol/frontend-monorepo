@@ -7,7 +7,7 @@ import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import * as constants from '../constants';
 
 export const OnboardingDialog = () => {
-  const [_onBoardingViewed, setOnboardingViewed] = useLocalStorage(
+  const [, setOnboardingViewed] = useLocalStorage(
     constants.ONBOARDING_VIEWED_KEY
   );
   const navigate = useNavigate();
@@ -67,7 +67,7 @@ export const OnboardingDialog = () => {
           </Button>
         </div>
         <div className="w-1/2 -mr-3 flex flex-grow">
-          <GetStarted />
+          <GetStarted showLead />
         </div>
       </div>
     </div>
