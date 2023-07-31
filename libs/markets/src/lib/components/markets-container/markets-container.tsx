@@ -50,6 +50,7 @@ export const MarketsContainer = ({
               'tradableInstrument.instrument.code',
               'tradableInstrument.instrument.product.settlementAsset',
               'tradableInstrument.instrument.product.settlementAsset.symbol',
+              'market-actions',
             ].includes(colId)
           ) {
             return;
