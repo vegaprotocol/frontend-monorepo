@@ -6,7 +6,6 @@ import { Proposal } from '../components/proposal';
 import { ProposalNotFound } from '../components/proposal-not-found';
 import { useProposalQuery } from './__generated__/Proposal';
 import { useFetch } from '@vegaprotocol/react-helpers';
-import { ENV } from '../../../config';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketInfoWithDataProvider } from '@vegaprotocol/markets';
 import { useAssetQuery } from '@vegaprotocol/assets';
@@ -14,8 +13,11 @@ import {
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 export const ProposalContainer = () => {
+  const { VEGA_REST_URL } = useEnvironment();
+  const REST_ENDPOINT = VEGA_REST_URL;
   const [
     mostRecentlyEnactedAssociatedMarketProposal,
     setMostRecentlyEnactedAssociatedMarketProposal,
@@ -45,7 +47,7 @@ export const ProposalContainer = () => {
 
   const {
     state: { data: restData, loading: restLoading, error: restError },
-  } = useFetch(`${ENV.rest}governance?proposalId=${params.proposalId}`);
+  } = useFetch(`${REST_ENDPOINT}governance?proposalId=${params.proposalId}`);
 
   const { data, loading, error, refetch } = useProposalQuery({
     fetchPolicy: 'network-only',
@@ -61,7 +63,7 @@ export const ProposalContainer = () => {
       error: originalMarketProposalRestError,
     },
   } = useFetch(
-    `${ENV.rest}governance?proposalId=${
+    `${REST_ENDPOINT}governance?proposalId=${
       data?.proposal?.terms.change.__typename === 'UpdateMarket' &&
       data?.proposal.terms.change.marketId
     }`,
@@ -77,7 +79,7 @@ export const ProposalContainer = () => {
       error: previouslyEnactedMarketProposalsRestError,
     },
   } = useFetch(
-    `${ENV.rest}governances?proposalState=STATE_ENACTED&proposalType=TYPE_UPDATE_MARKET`,
+    `${REST_ENDPOINT}governances?proposalState=STATE_ENACTED&proposalType=TYPE_UPDATE_MARKET`,
     undefined,
     true,
     data?.proposal?.terms.change.__typename !== 'UpdateMarket'

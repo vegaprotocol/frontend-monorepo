@@ -15,6 +15,7 @@ export enum Networks {
 export const envSchema = z
   .object({
     VEGA_URL: z.optional(z.string()),
+    VEGA_REST_URL: z.optional(z.string()),
     VEGA_WALLET_URL: z.optional(z.string()),
     VEGA_CONFIG_URL: z.optional(z.string()),
     GIT_BRANCH: z.optional(z.string()),

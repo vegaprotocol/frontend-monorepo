@@ -39,6 +39,11 @@ const VERSION = 1;
 export const STORAGE_KEY = `vega_url_${VERSION}`;
 const SUBSCRIPTION_TIMEOUT = 3000;
 
+const restApiVersion = 'v2';
+function replaceGQLWithRESTUrl(inputURL: string) {
+  return inputURL.replace('/graphql', `/api/${restApiVersion}/`);
+}
+
 export const ENV = compileEnvVars();
 export const FLAGS = compileFeatureFlags();
 
@@ -89,6 +94,10 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
     if (storedUrl) {
       if (isValidUrl(storedUrl)) {
         set({ VEGA_URL: storedUrl, status: 'success' });
+        set({
+          VEGA_REST_URL: replaceGQLWithRESTUrl(storedUrl),
+          status: 'success',
+        });
         return;
       } else {
         LocalStorage.removeItem(STORAGE_KEY);
@@ -279,6 +288,10 @@ function compileEnvVars() {
   ) as Networks;
   const env: Environment = {
     VEGA_URL: windowOrDefault('VEGA_URL', process.env['NX_VEGA_URL']),
+    VEGA_REST_URL: windowOrDefault(
+      'VEGA_REST_URL',
+      process.env['NX_VEGA_REST_URL']
+    ),
     VEGA_ENV,
     VEGA_CONFIG_URL: windowOrDefault(
       'VEGA_CONFIG_URL',
