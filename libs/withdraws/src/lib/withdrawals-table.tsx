@@ -12,7 +12,7 @@ import { t } from '@vegaprotocol/i18n';
 import {
   ActionsDropdown,
   ButtonLink,
-  DropdownMenuItem,
+  TradingDropdownItem,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -175,7 +175,7 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
       </ButtonLink>
 
       <ActionsDropdown>
-        <DropdownMenuItem
+        <TradingDropdownItem
           key={'withdrawal-approval'}
           data-testid="withdrawal-approval"
           onClick={() => {
@@ -186,7 +186,7 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
         >
           <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
           {t('View withdrawal details')}
-        </DropdownMenuItem>
+        </TradingDropdownItem>
       </ActionsDropdown>
     </div>
   );

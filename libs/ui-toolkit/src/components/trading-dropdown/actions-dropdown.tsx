@@ -21,6 +21,7 @@ export const ActionsDropdownTrigger = () => {
 type ActionMenuContentProps = React.ComponentProps<
   typeof TradingDropdownContent
 >;
+
 export const ActionsDropdown = (props: ActionMenuContentProps) => {
   return (
     <TradingDropdown trigger={<ActionsDropdownTrigger />}>
