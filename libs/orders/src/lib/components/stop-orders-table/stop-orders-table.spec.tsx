@@ -19,6 +19,13 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
   }),
 }));
 
+jest.mock('@vegaprotocol/utils', () => ({
+  ...jest.requireActual('@vegaprotocol/utils'),
+  getDateTimeFormat: jest.fn(() => ({
+    format: (date: Date) => date.toISOString(),
+  })),
+}));
+
 const defaultProps: StopOrdersTableProps = {
   rowData: [],
   onCancel: jest.fn(),
@@ -148,8 +155,8 @@ describe('StopOrdersTable', () => {
     const cells = grid.querySelectorAll('.ag-body [col-id="expiresAt"]');
 
     const expectedValues: string[] = [
-      'Submit 26/08/2023, 10:31:22',
-      'Cancels 26/08/2023, 10:31:22',
+      'Submit 2023-08-26T08:31:22.000Z',
+      'Cancels 2023-08-26T08:31:22.000Z',
     ];
     expectedValues.forEach((expectedValue, i) =>
       expect(cells[i]).toHaveTextContent(expectedValue)
