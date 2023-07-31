@@ -2,10 +2,11 @@ import * as TabsPrimitive from '@radix-ui/react-tabs';
 import {
   useLocalStorageSnapshot,
   getValidItem,
+  useResizeObserver,
 } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
 import type { ReactElement, ReactNode } from 'react';
-import { Children, isValidElement, useState } from 'react';
+import { Children, isValidElement, useRef, useState } from 'react';
 export interface TabsProps extends TabsPrimitive.TabsProps {
   children: (ReactElement<TabProps> | null)[];
 }
@@ -24,6 +25,19 @@ export const Tabs = ({
     return children.find((v) => v)?.props.id;
   });
 
+  // Bunch of refs in order to detect wrapping in side the tabs so that we
+  // can apply a bg color
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const tabsRef = useRef<HTMLDivElement | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const [wrapped, setWrapped] = useState(() =>
+    isWrapped(tabsRef.current, menuRef.current)
+  );
+
+  useResizeObserver(wrapperRef.current, () => {
+    setWrapped(isWrapped(tabsRef.current, menuRef.current));
+  });
+
   return (
     <TabsPrimitive.Root
       {...props}
@@ -31,10 +45,14 @@ export const Tabs = ({
       onValueChange={onValueChange || setActiveTab}
       className="h-full grid grid-rows-[min-content_1fr]"
     >
-      <div className="flex border-b border-default min-w-0">
+      <div
+        ref={wrapperRef}
+        className="flex flex-wrap justify-between border-b border-default min-w-0"
+      >
         <TabsPrimitive.List
           className="flex flex-nowrap overflow-visible"
           role="tablist"
+          ref={tabsRef}
         >
           {Children.map(children, (child) => {
             if (!isValidElement(child) || child.props.hidden) return null;
@@ -67,13 +85,21 @@ export const Tabs = ({
             );
           })}
         </TabsPrimitive.List>
-        <div className="ml-auto p-1">
+        <div
+          ref={menuRef}
+          className={classNames('flex-1 p-1', {
+            'bg-vega-clight-700 dark:bg-vega-cdark-700': wrapped,
+            '': wrapped,
+          })}
+        >
           {Children.map(children, (child) => {
             if (!isValidElement(child) || child.props.hidden) return null;
             return (
               <TabsPrimitive.Content
                 value={child.props.id}
-                className="flex flex-nowrap gap-1 justify-end"
+                className={classNames('flex flex-nowrap gap-1', {
+                  'justify-end': !wrapped,
+                })}
               >
                 {child.props.menu}
               </TabsPrimitive.Content>
@@ -135,4 +161,14 @@ export const LocalStoragePersistTabs = ({
       onValueChange={onValueChange}
     />
   );
+};
+
+const isWrapped = (
+  tabs: HTMLDivElement | null,
+  menu: HTMLDivElement | null
+) => {
+  if (!tabs || !menu) return;
+  const listRect = tabs.getBoundingClientRect();
+  const menuRect = menu.getBoundingClientRect();
+  return menuRect.y > listRect.y;
 };
