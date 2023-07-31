@@ -60,6 +60,7 @@ export const CandlesMenu = () => {
   );
 
   const triggerClasses = 'text-xs';
+  const contentAlign = 'end';
 
   return (
     <>
@@ -70,7 +71,7 @@ export const CandlesMenu = () => {
           </DropdownMenuTrigger>
         }
       >
-        <DropdownMenuContent>
+        <DropdownMenuContent align={contentAlign}>
           <DropdownMenuRadioGroup
             value={interval}
             onValueChange={(value) => {
@@ -97,7 +98,7 @@ export const CandlesMenu = () => {
           </DropdownMenuTrigger>
         }
       >
-        <DropdownMenuContent>
+        <DropdownMenuContent align={contentAlign}>
           <DropdownMenuRadioGroup
             value={chartType}
             onValueChange={(value) => {
@@ -120,7 +121,7 @@ export const CandlesMenu = () => {
           </DropdownMenuTrigger>
         }
       >
-        <DropdownMenuContent>
+        <DropdownMenuContent align={contentAlign}>
           {Object.values(Overlay).map((overlay) => (
             <DropdownMenuCheckboxItem
               key={overlay}
@@ -149,7 +150,7 @@ export const CandlesMenu = () => {
           </DropdownMenuTrigger>
         }
       >
-        <DropdownMenuContent>
+        <DropdownMenuContent align={contentAlign}>
           {Object.values(Study).map((study) => (
             <DropdownMenuCheckboxItem
               key={study}
