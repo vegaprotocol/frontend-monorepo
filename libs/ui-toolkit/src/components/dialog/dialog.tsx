@@ -16,7 +16,7 @@ interface DialogProps {
   title?: string | ReactNode;
   icon?: ReactNode;
   intent?: Intent;
-  size?: 'small' | 'medium';
+  size?: 'small' | 'medium' | 'large';
   dataTestId?: string;
 }
 
@@ -46,7 +46,8 @@ export function Dialog({
     getIntentBorder(intent),
     {
       'w-[520px]': size === 'small',
-      'w-[720px] lg:w-[940px]': size === 'medium',
+      'w-[680px]': size === 'medium',
+      'w-[720px] lg:w-[940px]': size === 'large',
     }
   );
 

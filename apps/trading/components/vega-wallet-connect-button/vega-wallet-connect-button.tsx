@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import classNames from 'classnames';
-import { truncateByChars } from '@vegaprotocol/utils';
+import { isBrowserWalletInstalled, truncateByChars } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   Button,
@@ -159,7 +159,7 @@ export const VegaWalletConnectButton = () => {
     fetchPubKeys,
   } = useVegaWallet();
   const isConnected = pubKey !== null;
-
+  const walletInstalled = isBrowserWalletInstalled();
   const activeKey = useMemo(() => {
     return pubKeys?.find((pk) => pk.publicKey === pubKey);
   }, [pubKey, pubKeys]);
@@ -238,7 +238,9 @@ export const VegaWalletConnectButton = () => {
         size="sm"
         className="hidden lg:block"
       >
-        <span className="whitespace-nowrap">{t('Connect Vega wallet')}</span>
+        <span className="whitespace-nowrap">
+          {walletInstalled ? t('Connect Vega wallet') : t('Get started')}
+        </span>
       </Button>
       <MobileWalletButton />
     </>
