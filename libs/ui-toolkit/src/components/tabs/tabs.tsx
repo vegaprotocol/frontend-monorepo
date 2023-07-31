@@ -24,12 +24,6 @@ export const Tabs = ({
     return children.find((v) => v)?.props.id;
   });
 
-  console.log(activeTab);
-  // const activeChild = Children.toArray(children).find(
-  //   (child) => child.props.id === activeTab
-  // );
-  // const menu = activeChild.props.menu;
-
   return (
     <TabsPrimitive.Root
       {...props}
