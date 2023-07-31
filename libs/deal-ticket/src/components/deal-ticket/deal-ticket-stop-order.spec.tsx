@@ -34,6 +34,7 @@ const priceInput = 'order-price';
 const triggerPriceInput = 'triggerPrice';
 const triggerTrailingPercentOffsetInput = 'triggerTrailingPercentOffset';
 
+const orderTypeTrigger = 'order-type-Stop';
 const orderTypeLimit = 'order-type-StopLimit';
 const orderTypeMarket = 'order-type-StopMarket';
 
@@ -75,14 +76,9 @@ describe('StopOrder', () => {
     expect(screen.getByTestId(submitButton)).toBeEnabled();
 
     // Assert defaults are used
+    await userEvent.click(screen.getByTestId(orderTypeTrigger));
     expect(screen.getByTestId(orderTypeLimit).dataset.state).toEqual('checked');
-
-    expect(
-      screen.queryByTestId(orderSideBuy)?.querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId(orderSideSell)?.querySelector('input')
-    ).not.toBeChecked();
+    expect(screen.getByTestId(orderSideBuy).dataset.state).toEqual('checked');
     expect(screen.getByTestId(sizeInput)).toHaveDisplayValue('0');
     expect(screen.getByTestId(timeInForce)).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
@@ -106,12 +102,13 @@ describe('StopOrder', () => {
 
   it('should display trigger price as price for market type order', async () => {
     render(generateJsx());
-    screen.getByTestId(orderTypeMarket).click();
+    await userEvent.click(screen.getByTestId(orderTypeTrigger));
+    await userEvent.click(screen.getByTestId(orderTypeMarket));
     await userEvent.type(screen.getByTestId(triggerPriceInput), '10');
     expect(screen.getByTestId('price')).toHaveTextContent('10.0');
   });
 
-  it('should use local storage state for initial values', () => {
+  it('should use local storage state for initial values', async () => {
     const values: Partial<StopOrderFormValues> = {
       type: Schema.OrderType.TYPE_LIMIT,
       side: Schema.Side.SIDE_SELL,
@@ -131,13 +128,9 @@ describe('StopOrder', () => {
 
     render(generateJsx());
     // Assert correct defaults are used from store
+    await userEvent.click(screen.getByTestId(orderTypeTrigger));
     expect(screen.queryByTestId(orderTypeLimit)).toBeChecked();
-    expect(
-      screen.queryByTestId(orderSideSell)?.querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId(orderSideBuy)?.querySelector('input')
-    ).not.toBeChecked();
+    expect(screen.getByTestId(orderSideSell).dataset.state).toEqual('checked');
     expect(screen.getByTestId(sizeInput)).toHaveDisplayValue(
       values.size as string
     );
@@ -204,10 +197,12 @@ describe('StopOrder', () => {
     expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
 
     // switch to market order type error should disappear
+    await userEvent.click(screen.getByTestId(orderTypeTrigger));
     await userEvent.click(screen.getByTestId(orderTypeMarket));
     expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
 
     // switch back to limit type
+    await userEvent.click(screen.getByTestId(orderTypeTrigger));
     await userEvent.click(screen.getByTestId(orderTypeLimit));
     expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
 

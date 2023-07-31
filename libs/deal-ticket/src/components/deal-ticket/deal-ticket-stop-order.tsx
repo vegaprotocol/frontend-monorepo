@@ -73,7 +73,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const storedFormValues = useStopOrderFormValues(
     (state) => state.formValues[market.id]
   );
-  const { clearErrors, handleSubmit, setValue, watch, control, formState } =
+  const { handleSubmit, setValue, watch, control, formState } =
     useForm<StopOrderFormValues>({
       defaultValues: { ...defaultValues, ...storedFormValues },
     });

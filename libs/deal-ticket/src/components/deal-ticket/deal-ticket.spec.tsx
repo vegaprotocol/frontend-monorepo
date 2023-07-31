@@ -53,7 +53,7 @@ describe('DealTicket', () => {
   });
 
   it('should display ticket defaults', () => {
-    const { container } = render(generateJsx());
+    render(generateJsx());
 
     // place order button should always be enabled
     expect(screen.getByTestId('place-order')).toBeEnabled();
@@ -62,18 +62,13 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('order-type-Market')).toBeInTheDocument();
     expect(screen.getByTestId('order-type-Limit')).toBeInTheDocument();
 
-    expect(
-      container.querySelector(
-        '[data-testid="order-type-Limit"] + input[type="radio"]'
-      )
-    ).toBeChecked();
+    expect(screen.getByTestId('order-type-Limit').dataset.state).toEqual(
+      'checked'
+    );
 
-    expect(
-      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
-    ).not.toBeChecked();
+    expect(screen.getByTestId('order-side-SIDE_BUY').dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId('order-size')).toHaveDisplayValue('0');
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
@@ -111,20 +106,15 @@ describe('DealTicket', () => {
       },
     });
 
-    const { container } = render(generateJsx());
+    render(generateJsx());
 
     // Assert correct defaults are used from store
-    expect(
-      container.querySelector(
-        '[data-testid="order-type-Limit"] + input[type="radio"]'
-      )
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).not.toBeChecked();
+    expect(screen.getByTestId('order-type-Limit').dataset.state).toEqual(
+      'checked'
+    );
+    expect(screen.getByTestId('order-side-SIDE_SELL').dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId('order-size')).toHaveDisplayValue(
       expectedOrder.size
     );
@@ -154,20 +144,15 @@ describe('DealTicket', () => {
       },
     });
 
-    const { container } = render(generateJsx());
+    render(generateJsx());
 
     // Assert correct defaults are used from store
-    expect(
-      container.querySelector(
-        '[data-testid="order-type-Limit"] + input[type="radio"]'
-      )
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).not.toBeChecked();
+    expect(screen.getByTestId('order-type-Limit').dataset.state).toEqual(
+      'checked'
+    );
+    expect(screen.getByTestId('order-side-SIDE_SELL').dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId('order-size')).toHaveDisplayValue(
       expectedOrder.size
     );
@@ -202,20 +187,15 @@ describe('DealTicket', () => {
       },
     });
 
-    const { container } = render(generateJsx());
+    render(generateJsx());
 
     // Assert correct defaults are used from store
-    expect(
-      container.querySelector(
-        '[data-testid="order-type-Limit"] + input[type="radio"]'
-      )
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).not.toBeChecked();
+    expect(screen.getByTestId('order-type-Limit').dataset.state).toEqual(
+      'checked'
+    );
+    expect(screen.getByTestId('order-side-SIDE_SELL').dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId('order-size')).toHaveDisplayValue(
       expectedOrder.size
     );
@@ -255,20 +235,15 @@ describe('DealTicket', () => {
       },
     });
 
-    const { container } = render(generateJsx());
+    render(generateJsx());
 
     // Assert correct defaults are used from store
-    expect(
-      container.querySelector(
-        '[data-testid="order-type-Limit"] + input[type="radio"]'
-      )
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).not.toBeChecked();
+    expect(screen.getByTestId('order-type-Limit').dataset.state).toEqual(
+      'checked'
+    );
+    expect(screen.getByTestId('order-side-SIDE_SELL').dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId('order-size')).toHaveDisplayValue(
       expectedOrder.size
     );
@@ -304,20 +279,15 @@ describe('DealTicket', () => {
       },
     });
 
-    const { container } = render(generateJsx());
+    render(generateJsx());
 
     // Assert correct defaults are used from store
-    expect(
-      container.querySelector(
-        '[data-testid="order-type-Limit"] + input[type="radio"]'
-      )
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).not.toBeChecked();
+    expect(screen.getByTestId('order-type-Limit').dataset.state).toEqual(
+      'checked'
+    );
+    expect(screen.getByTestId('order-side-SIDE_SELL').dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId('order-size')).toHaveDisplayValue(
       expectedOrder.size
     );
@@ -423,9 +393,9 @@ describe('DealTicket', () => {
     render(generateJsx());
 
     // BUY is selected by default
-    expect(
-      screen.getByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).toBeChecked();
+    expect(screen.getByTestId('order-side-SIDE_BUY').dataset.state).toEqual(
+      'checked'
+    );
 
     await userEvent.type(screen.getByTestId('order-size'), '200');
 

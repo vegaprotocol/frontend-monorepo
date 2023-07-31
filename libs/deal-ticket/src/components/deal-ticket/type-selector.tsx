@@ -44,7 +44,8 @@ export const TypeToggle = ({
       <RadioGroup.Item
         value={itemValue}
         key={itemValue}
-        id={`order-type-${value}`}
+        id={`order-type-${itemValue}`}
+        data-testid={`order-type-${itemValue}`}
         asChild
       >
         <button
@@ -58,6 +59,7 @@ export const TypeToggle = ({
     ))}
     <DropdownMenu.Root>
       <DropdownMenu.Trigger
+        data-testid="order-type-Stop"
         className={classNames('flex-1 rounded', {
           'bg-vega-cdark-500': options.some((t) => t.value === value),
         })}
@@ -73,8 +75,11 @@ export const TypeToggle = ({
           >
             {options.map(({ label, value }) => (
               <DropdownMenu.RadioItem
+                key={value}
                 value={value}
                 textValue={label}
+                id={`order-type-${value}`}
+                data-testid={`order-type-${value}`}
                 className="hover:bg-vega-cdark-200 text-vega-cdark-900 bg-vega-cdark-50 rounded pl-1 pr-10 relative"
               >
                 <DropdownMenu.ItemIndicator className="absolute right-0 top-0 bottom-0 inline-flex items-center justify-center pr-1">
