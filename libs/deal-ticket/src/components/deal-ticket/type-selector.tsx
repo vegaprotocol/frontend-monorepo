@@ -37,7 +37,7 @@ export const TypeToggle = ({
 }: Pick<TypeSelectorProps, 'onValueChange' | 'value'>) => (
   <RadioGroup.Root
     name="order-type"
-    className="mb-2 flex h-10 leading-10 font-alpha text-sm"
+    className="mb-2 flex h-8 leading-8 font-alpha text-sm"
     value={toggles.find((t) => t.value === value) ? value : undefined}
     onValueChange={onValueChange}
   >
