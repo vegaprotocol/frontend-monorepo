@@ -8,11 +8,23 @@ import * as Schema from '@vegaprotocol/types';
 import { MockedProvider } from '@apollo/client/testing';
 import type { StopOrderFormValues } from '../../hooks/use-stop-order-form-values';
 import { useStopOrderFormValues } from '../../hooks/use-stop-order-form-values';
+import type { FeatureFlags } from '@vegaprotocol/environment';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
   DealTicketFeeDetails: () => <div data-testid="deal-ticket-fee-details" />,
 }));
+
+jest.mock('@vegaprotocol/environment', () => {
+  const actual = jest.requireActual('@vegaprotocol/environment');
+  return {
+    ...actual,
+    FLAGS: {
+      ...actual.FLAGS,
+      STOP_ORDERS: true,
+    } as FeatureFlags,
+  };
+});
 
 const marketPrice = '200';
 const market = generateMarket();

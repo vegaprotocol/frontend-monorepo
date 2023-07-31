@@ -12,6 +12,7 @@ import { DealTicketType } from '../../hooks/use-type-store';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import classNames from 'classnames';
+import { FLAGS } from '@vegaprotocol/environment';
 
 interface TypeSelectorProps {
   value: DealTicketType;
@@ -50,48 +51,50 @@ export const TypeToggle = ({
       >
         <button
           className={classNames('flex-1 relative rounded', {
-            'bg-vega-cdark-500': value === itemValue,
+            'bg-vega-clight-500 dark:bg-vega-cdark-500': value === itemValue,
           })}
         >
           {label}
         </button>
       </RadioGroup.Item>
     ))}
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger
-        data-testid="order-type-Stop"
-        className={classNames('flex-1 rounded', {
-          'bg-vega-cdark-500': options.some((t) => t.value === value),
-        })}
-      >
-        {t('Stop')}
-      </DropdownMenu.Trigger>
+    {FLAGS.STOP_ORDERS && (
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger
+          data-testid="order-type-Stop"
+          className={classNames('flex-1 rounded', {
+            'bg-vega-cdark-500': options.some((t) => t.value === value),
+          })}
+        >
+          {t('Stop')}
+        </DropdownMenu.Trigger>
 
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content className="bg-vega-cdark-50 leading-10 font-alpha text-sm rounded shadow p-1">
-          <DropdownMenu.RadioGroup
-            onValueChange={(value) => onValueChange(value as DealTicketType)}
-            value={options.find((t) => t.value === value) ? value : undefined}
-          >
-            {options.map(({ label, value }) => (
-              <DropdownMenu.RadioItem
-                key={value}
-                value={value}
-                textValue={label}
-                id={`order-type-${value}`}
-                data-testid={`order-type-${value}`}
-                className="hover:bg-vega-cdark-200 text-vega-cdark-900 bg-vega-cdark-50 rounded pl-1 pr-10 relative"
-              >
-                <DropdownMenu.ItemIndicator className="absolute right-0 top-0 bottom-0 inline-flex items-center justify-center pr-1">
-                  <Icon name="tick" />
-                </DropdownMenu.ItemIndicator>
-                {label}
-              </DropdownMenu.RadioItem>
-            ))}
-          </DropdownMenu.RadioGroup>
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+        <DropdownMenu.Portal>
+          <DropdownMenu.Content className="bg-vega-cdark-50 leading-10 font-alpha text-sm rounded shadow p-1">
+            <DropdownMenu.RadioGroup
+              onValueChange={(value) => onValueChange(value as DealTicketType)}
+              value={options.find((t) => t.value === value) ? value : undefined}
+            >
+              {options.map(({ label, value }) => (
+                <DropdownMenu.RadioItem
+                  key={value}
+                  value={value}
+                  textValue={label}
+                  id={`order-type-${value}`}
+                  data-testid={`order-type-${value}`}
+                  className="hover:bg-vega-cdark-200 text-vega-cdark-900 bg-vega-cdark-50 rounded pl-1 pr-10 relative"
+                >
+                  <DropdownMenu.ItemIndicator className="absolute right-0 top-0 bottom-0 inline-flex items-center justify-center pr-1">
+                    <Icon name="tick" />
+                  </DropdownMenu.ItemIndicator>
+                  {label}
+                </DropdownMenu.RadioItem>
+              ))}
+            </DropdownMenu.RadioGroup>
+          </DropdownMenu.Content>
+        </DropdownMenu.Portal>
+      </DropdownMenu.Root>
+    )}
   </RadioGroup.Root>
 );
 

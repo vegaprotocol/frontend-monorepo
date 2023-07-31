@@ -130,11 +130,13 @@ const MainGrid = memo(
                   <TradingViews.orders.component marketId={marketId} />
                 </VegaWalletContainer>
               </Tab>
-              <Tab id="stop-orders" name={t('Stop orders')}>
-                <VegaWalletContainer>
-                  <TradingViews.stopOrders.component />
-                </VegaWalletContainer>
-              </Tab>
+              {FLAGS.STOP_ORDERS ? (
+                <Tab id="stop-orders" name={t('Stop orders')}>
+                  <VegaWalletContainer>
+                    <TradingViews.stopOrders.component />
+                  </VegaWalletContainer>
+                </Tab>
+              ) : null}
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
                   <TradingViews.fills.component

@@ -12,6 +12,7 @@ import {
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { DealTicket } from './deal-ticket';
+import { FLAGS } from '@vegaprotocol/environment';
 
 interface DealTicketContainerProps {
   marketId: string;
@@ -47,8 +48,9 @@ export const DealTicketContainer = ({
       reload={reload}
     >
       {market && marketData ? (
-        type === DealTicketType.StopLimit ||
-        type === DealTicketType.StopMarket ? (
+        FLAGS.STOP_ORDERS &&
+        (type === DealTicketType.StopLimit ||
+          type === DealTicketType.StopMarket) ? (
           <StopOrder
             market={market}
             marketPrice={marketPrice}
