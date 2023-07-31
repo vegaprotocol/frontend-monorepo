@@ -23,7 +23,7 @@ export const NavHeader = () => {
         setOpen(x);
       }}
       trigger={
-        <h1 className="flex gap-4 items-center text-default text-lg whitespace-nowrap xl:pr-4 xl:border-r border-default">
+        <h1 className="flex gap-1 sm:gap-2 md:gap-4 items-center text-default text-lg whitespace-nowrap xl:pr-4 xl:border-r border-default">
           {data ? data.tradableInstrument.instrument.code : t('Select market')}
           <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={20} />
         </h1>
