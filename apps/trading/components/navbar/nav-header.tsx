@@ -20,7 +20,6 @@ export const NavHeader = () => {
     <FullScreenPopover
       open={open}
       onOpenChange={(x) => {
-        console.log(x);
         setOpen(x);
       }}
       trigger={
