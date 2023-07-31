@@ -14,10 +14,7 @@ import classNames from 'classnames';
 import { VegaWalletMenu } from '../vega-wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { WalletIcon } from '../icons/wallet';
-import {
-  ProtocolUpgradeCountdown,
-  ProtocolUpgradeCountdownMode,
-} from '@vegaprotocol/proposals';
+import { ProtocolUpgradeCountdown } from '@vegaprotocol/proposals';
 
 type MenuState = 'wallet' | 'nav' | null;
 type Theme = 'system' | 'yellow';
@@ -67,9 +64,7 @@ export const Navbar = ({
 
       {/* Right section */}
       <div className="ml-auto flex justify-end items-center gap-2">
-        <ProtocolUpgradeCountdown
-          mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
-        />
+        <ProtocolUpgradeCountdown />
         <NavbarMobileButton
           onClick={() => {
             if (isConnected) {

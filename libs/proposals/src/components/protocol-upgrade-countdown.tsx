@@ -9,15 +9,17 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useProtocolUpgradeProposalLink } from '@vegaprotocol/environment';
 import { useContext } from 'react';
+
 export enum ProtocolUpgradeCountdownMode {
   IN_BLOCKS,
   IN_ESTIMATED_TIME_REMAINING,
 }
+
 type ProtocolUpgradeCountdownProps = {
   mode?: ProtocolUpgradeCountdownMode;
 };
 export const ProtocolUpgradeCountdown = ({
-  mode = ProtocolUpgradeCountdownMode.IN_BLOCKS,
+  mode = ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING,
 }: ProtocolUpgradeCountdownProps) => {
   const { theme } = useContext(NavigationContext);
   const { data, lastBlockHeight } = useNextProtocolUpgradeProposal();

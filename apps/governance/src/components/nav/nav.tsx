@@ -18,10 +18,7 @@ import { VegaWallet } from '../vega-wallet';
 import { useLocation, useMatch } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useTelemetryDialog } from '../telemetry-dialog/telemetry-dialog';
-import {
-  ProtocolUpgradeCountdown,
-  ProtocolUpgradeCountdownMode,
-} from '@vegaprotocol/proposals';
+import { ProtocolUpgradeCountdown } from '@vegaprotocol/proposals';
 
 export const SettingsLink = () => {
   const { open, isOpen, close } = useTelemetryDialog();
@@ -68,9 +65,7 @@ export const Nav = ({ theme }: Pick<NavigationProps, 'theme'>) => {
       actions={
         <>
           <SettingsLink />
-          <ProtocolUpgradeCountdown
-            mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
-          />
+          <ProtocolUpgradeCountdown />
         </>
       }
     >

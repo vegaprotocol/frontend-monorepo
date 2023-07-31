@@ -6,6 +6,10 @@ import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { Navbar } from './navbar';
 import { useGlobalStore } from '../../stores';
 
+jest.mock('@vegaprotocol/proposals', () => ({
+  ProtocolUpgradeCountdown: () => null,
+}));
+
 describe('Navbar', () => {
   const pubKey = '000';
   const pubKeys = [
