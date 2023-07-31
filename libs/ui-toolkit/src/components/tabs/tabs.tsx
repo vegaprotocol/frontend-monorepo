@@ -79,7 +79,7 @@ export const Tabs = ({
             return (
               <TabsPrimitive.Content
                 value={child.props.id}
-                className="flex flex-nowrap gap-2 justify-end"
+                className="flex flex-nowrap gap-1 justify-end"
               >
                 {child.props.menu}
               </TabsPrimitive.Content>

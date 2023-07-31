@@ -59,11 +59,13 @@ export const CandlesMenu = () => {
     [Study.VOLUME]
   );
 
+  const triggerClasses = 'text-xs';
+
   return (
     <>
       <DropdownMenu
         trigger={
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger className={triggerClasses}>
             {t(`Interval: ${intervalLabels[interval]}`)}
           </DropdownMenuTrigger>
         }
@@ -90,7 +92,7 @@ export const CandlesMenu = () => {
       </DropdownMenu>
       <DropdownMenu
         trigger={
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger className={triggerClasses}>
             <Icon name={chartTypeIcon.get(chartType) as IconName} />
           </DropdownMenuTrigger>
         }
@@ -112,7 +114,11 @@ export const CandlesMenu = () => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DropdownMenu
-        trigger={<DropdownMenuTrigger>{t('Overlays')}</DropdownMenuTrigger>}
+        trigger={
+          <DropdownMenuTrigger className={triggerClasses}>
+            {t('Overlays')}
+          </DropdownMenuTrigger>
+        }
       >
         <DropdownMenuContent>
           {Object.values(Overlay).map((overlay) => (
@@ -137,7 +143,11 @@ export const CandlesMenu = () => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DropdownMenu
-        trigger={<DropdownMenuTrigger>{t('Studies')}</DropdownMenuTrigger>}
+        trigger={
+          <DropdownMenuTrigger className={triggerClasses}>
+            {t('Studies')}
+          </DropdownMenuTrigger>
+        }
       >
         <DropdownMenuContent>
           {Object.values(Study).map((study) => (
