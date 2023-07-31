@@ -39,10 +39,16 @@ export const mapFormValuesToStopOrdersSubmission = (
 
   if (data.expire) {
     stopOrderSetup.expiresAt = data.expiresAt && toNanoSeconds(data.expiresAt);
-    if (data.expiryStrategy === 'cancel') {
+    if (
+      data.expiryStrategy ===
+      Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS
+    ) {
       stopOrderSetup.expiryStrategy =
         Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS;
-    } else if (data.expiryStrategy === 'submit') {
+    } else if (
+      data.expiryStrategy ===
+      Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT
+    ) {
       stopOrderSetup.expiryStrategy =
         Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT;
     }
