@@ -120,16 +120,24 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
     submitUniqueRawProposal({ proposalTitle: proposalTitle });
     getProposalFromTitle(proposalTitle).within(() => {
       // 3001-VOTE-039
-      cy.getByTestId(voteStatus).should(
+      cy.getByTestId('participation-not-reached').should(
         'have.text',
-        'Participation not reached'
+        'Min. participation not reached'
       );
       cy.getByTestId(viewProposalButton).click();
     });
     voteForProposal('for');
     navigateTo(navigation.proposals);
     getProposalFromTitle(proposalTitle).within(() => {
-      cy.getByTestId(voteStatus).should('have.text', 'Set to pass');
+      cy.getByTestId(voteStatus).should(
+        'have.text',
+        'Currently expected to  pass'
+      );
+      cy.getByTestId('user-voted-yes').should('exist');
+      cy.getByTestId('participation-reached').should(
+        'have.text',
+        'Min. participation reached'
+      );
       cy.getByTestId(viewProposalButton).click();
     });
     cy.getByTestId(voteBreakDownToggle).click();
