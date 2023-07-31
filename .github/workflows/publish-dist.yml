@@ -36,7 +36,7 @@ jobs:
           echo IS_PR=true >> $GITHUB_ENV
 
       - name: Is mainnet release
-        if: ${{ contains(github.ref, 'release/mainnnet') && !contains(github.ref, 'mirror') }}
+        if: ${{ contains(github.ref, 'release/mainnet') && !contains(github.ref, 'mirror') }}
         run: |
           echo IS_MAINNET_RELEASE=true >> $GITHUB_ENV
 
