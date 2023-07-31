@@ -24,6 +24,12 @@ export const Tabs = ({
     return children.find((v) => v)?.props.id;
   });
 
+  console.log(activeTab);
+  // const activeChild = Children.toArray(children).find(
+  //   (child) => child.props.id === activeTab
+  // );
+  // const menu = activeChild.props.menu;
+
   return (
     <TabsPrimitive.Root
       {...props}
@@ -31,7 +37,7 @@ export const Tabs = ({
       onValueChange={onValueChange || setActiveTab}
       className="h-full grid grid-rows-[min-content_1fr]"
     >
-      <div className="border-b border-default min-w-0">
+      <div className="flex border-b border-default min-w-0">
         <TabsPrimitive.List
           className="flex flex-nowrap overflow-visible"
           role="tablist"
@@ -67,6 +73,19 @@ export const Tabs = ({
             );
           })}
         </TabsPrimitive.List>
+        <div className="ml-auto p-1">
+          {Children.map(children, (child) => {
+            if (!isValidElement(child) || child.props.hidden) return null;
+            return (
+              <TabsPrimitive.Content
+                value={child.props.id}
+                className="flex flex-nowrap gap-2 justify-end"
+              >
+                {child.props.menu}
+              </TabsPrimitive.Content>
+            );
+          })}
+        </div>
       </div>
       <div className="h-full overflow-auto">
         {Children.map(children, (child) => {
@@ -92,6 +111,7 @@ interface TabProps {
   name: string;
   indicator?: ReactNode;
   hidden?: boolean;
+  menu?: ReactNode;
 }
 
 export const Tab = ({ children, ...props }: TabProps) => {
