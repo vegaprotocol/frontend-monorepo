@@ -95,57 +95,43 @@ const MainGrid = memo(
           <TradeGridChild>
             <Tabs storageKey="console-trade-grid-bottom">
               <Tab id="positions" name={t('Positions')}>
-                <VegaWalletContainer>
-                  <TradingViews.positions.component
-                    onMarketClick={onMarketClick}
-                  />
-                </VegaWalletContainer>
+                <TradingViews.positions.component
+                  onMarketClick={onMarketClick}
+                />
               </Tab>
               <Tab id="open-orders" name={t('Open')}>
-                <VegaWalletContainer>
-                  <TradingViews.orders.component
-                    marketId={marketId}
-                    filter={Filter.Open}
-                  />
-                </VegaWalletContainer>
+                <TradingViews.orders.component
+                  marketId={marketId}
+                  filter={Filter.Open}
+                />
               </Tab>
               <Tab id="closed-orders" name={t('Closed')}>
-                <VegaWalletContainer>
-                  <TradingViews.orders.component
-                    marketId={marketId}
-                    filter={Filter.Closed}
-                  />
-                </VegaWalletContainer>
+                <TradingViews.orders.component
+                  marketId={marketId}
+                  filter={Filter.Closed}
+                />
               </Tab>
               <Tab id="rejected-orders" name={t('Rejected')}>
-                <VegaWalletContainer>
-                  <TradingViews.orders.component
-                    marketId={marketId}
-                    filter={Filter.Rejected}
-                  />
-                </VegaWalletContainer>
+                <TradingViews.orders.component
+                  marketId={marketId}
+                  filter={Filter.Rejected}
+                />
               </Tab>
               <Tab id="orders" name={t('All')}>
-                <VegaWalletContainer>
-                  <TradingViews.orders.component marketId={marketId} />
-                </VegaWalletContainer>
+                <TradingViews.orders.component marketId={marketId} />
               </Tab>
               <Tab id="fills" name={t('Fills')}>
-                <VegaWalletContainer>
-                  <TradingViews.fills.component
-                    marketId={marketId}
-                    onMarketClick={onMarketClick}
-                  />
-                </VegaWalletContainer>
+                <TradingViews.fills.component
+                  marketId={marketId}
+                  onMarketClick={onMarketClick}
+                />
               </Tab>
               <Tab id="accounts" name={t('Collateral')}>
-                <VegaWalletContainer>
-                  <TradingViews.collateral.component
-                    pinnedAsset={pinnedAsset}
-                    onMarketClick={onMarketClick}
-                    hideButtons
-                  />
-                </VegaWalletContainer>
+                <TradingViews.collateral.component
+                  pinnedAsset={pinnedAsset}
+                  onMarketClick={onMarketClick}
+                  hideButtons
+                />
               </Tab>
             </Tabs>
           </TradeGridChild>

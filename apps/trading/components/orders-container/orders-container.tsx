@@ -40,7 +40,7 @@ export const OrdersContainer = ({ marketId, filter }: OrderContainerProps) => {
   });
 
   if (!pubKey) {
-    return <Splash>{t('Please connect Vega wallet')}</Splash>;
+    return null;
   }
 
   return (

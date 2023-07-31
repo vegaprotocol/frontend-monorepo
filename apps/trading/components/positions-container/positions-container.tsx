@@ -24,11 +24,7 @@ export const PositionsContainer = ({
   });
 
   if (!pubKey) {
-    return (
-      <Splash>
-        <p>{t('Please connect Vega wallet')}</p>
-      </Splash>
-    );
+    return null;
   }
 
   const partyIds = [pubKey];

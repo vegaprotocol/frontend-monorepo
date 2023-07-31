@@ -40,11 +40,7 @@ export const AccountsContainer = ({
   );
 
   if (!pubKey) {
-    return (
-      <Splash>
-        <p>{t('Please connect Vega wallet')}</p>
-      </Splash>
-    );
+    return null;
   }
 
   return (
