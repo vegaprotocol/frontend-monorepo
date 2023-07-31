@@ -42,8 +42,6 @@ export const LiquidityHeader = () => {
     triggeringRatio,
   });
 
-  console.log(market);
-
   return (
     <Header
       title={

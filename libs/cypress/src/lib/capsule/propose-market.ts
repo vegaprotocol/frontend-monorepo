@@ -160,7 +160,7 @@ export function waitForProposal(id: string): Promise<{ id: string }> {
           resolve(res.proposal);
         }
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
 
       tick++;

@@ -99,6 +99,7 @@ export class LocalLogger {
       this.numberLogLevel <= LocalLogger.levelLogMap[level] // &&
       //!global.__LOGGER_SILENT_MODE__
     ) {
+      // eslint-disable-next-line no-console
       console[logMethod].apply(console, [
         `${this._application}:${level}: `,
         ...args,
