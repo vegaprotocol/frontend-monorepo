@@ -82,7 +82,7 @@ const KeypairListItem = ({
       data-testid={`key-${pk.publicKey}-mobile`}
     >
       <span className="flex gap-2 items-center mr-2">
-        <button onClick={() => onSelectItem(pk.publicKey)}>
+        <button type="button" onClick={() => onSelectItem(pk.publicKey)}>
           <span className="uppercase">{pk.name}</span>
         </button>
         {isActive && <VegaIcon name={VegaIconNames.TICK} />}
@@ -91,6 +91,7 @@ const KeypairListItem = ({
         {truncateByChars(pk.publicKey)}{' '}
         <CopyToClipboard text={pk.publicKey} onCopy={() => setCopied(true)}>
           <button
+            type="button"
             data-testid="copy-vega-public-key"
             onClick={(e) => e.stopPropagation()}
           >
