@@ -28,8 +28,8 @@ describe('deal ticket basics', { tags: '@smoke' }, () => {
 
   it('must be able to select order direction - long/short', function () {
     // 7002-SORD-004
-    cy.getByTestId(toggleShort).click().children('input').should('be.checked');
-    cy.getByTestId(toggleLong).click().children('input').should('be.checked');
+    cy.getByTestId(toggleShort).click().next('input').should('be.checked');
+    cy.getByTestId(toggleLong).click().next('input').should('be.checked');
   });
 
   it('must be able to select order type - limit/market', function () {
