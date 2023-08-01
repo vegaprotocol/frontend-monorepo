@@ -88,9 +88,12 @@ export const TradePanels = ({
       <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
         {Object.keys(TradingViews).map((key) => {
           const isActive = view === key;
-          const className = classNames('p-4 min-w-[100px] capitalize', {
-            'bg-vega-clight-500 dark:bg-vega-cdark-500': isActive,
-          });
+          const className = classNames(
+            'py-2 px-4 min-w-[100px] capitalize text-sm',
+            {
+              'bg-vega-clight-500 dark:bg-vega-cdark-500': isActive,
+            }
+          );
           return (
             <button
               data-testid={key}

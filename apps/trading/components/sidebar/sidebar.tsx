@@ -52,9 +52,10 @@ type SidebarView =
     };
 
 export const Sidebar = () => {
+  const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
   return (
-    <div className="flex flex-col gap-2 h-full py-1" data-testid="sidebar">
-      <nav className="flex flex-col items-center gap-4 p-1">
+    <div className="flex lg:flex-col gap-2 h-full p-1" data-testid="sidebar">
+      <nav className={navClasses}>
         {/* sidebar options that always show */}
         <SidebarButton
           view={ViewType.Deposit}
@@ -103,7 +104,7 @@ export const Sidebar = () => {
           />
         </Routes>
       </nav>
-      <nav className="mt-auto flex flex-col items-center gap-4 p-1">
+      <nav className={classNames(navClasses, 'ml-auto lg:mt-auto lg:ml-0')}>
         <SidebarButton
           view={ViewType.Settings}
           icon={VegaIconNames.COG}
@@ -162,7 +163,7 @@ const SidebarButton = ({
 const SidebarDivider = () => {
   return (
     <div
-      className="bg-vega-clight-600 dark:bg-vega-cdark-600 w-4 h-px"
+      className="bg-vega-clight-600 dark:bg-vega-cdark-600 w-px h-4 lg:w-4 lg:h-px"
       role="separator"
     />
   );

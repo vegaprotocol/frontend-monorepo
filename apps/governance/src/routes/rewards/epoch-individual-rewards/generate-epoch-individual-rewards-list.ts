@@ -59,7 +59,6 @@ export const generateEpochIndividualRewardsList = ({
   const epochIndividualRewards = rewards.reduce((acc, reward) => {
     const epochId = reward.epoch.id;
     const assetName = reward.asset.name;
-    const assetId = reward.asset.id;
     const assetDecimals = reward.asset.decimals;
     const rewardType = reward.rewardType;
     const amount = reward.amount;
@@ -77,13 +76,6 @@ export const generateEpochIndividualRewardsList = ({
     const epoch = acc.get(epochId);
 
     // matchingTotalReward is the total awarded for all users for the reward type in the epoch of the asset
-    const matchingTotalRewardAmount = epochRewardSummaries.find(
-      (summary) =>
-        summary.epoch === Number(epochId) &&
-        summary.assetId === assetId &&
-        summary.rewardType === rewardType
-    )?.amount;
-
     let asset = epoch?.rewards.find((r) => r.asset === assetName);
 
     if (!asset) {
@@ -106,14 +98,7 @@ export const generateEpochIndividualRewardsList = ({
 
       asset.rewardTypes[rewardType] = {
         amount: newAmount,
-        percentageOfTotal: matchingTotalRewardAmount
-          ? new BigNumber(newAmount)
-              .dividedBy(matchingTotalRewardAmount)
-              .multipliedBy(100)
-              .toString()
-          : // this should never be reached, if there's an individual reward there should
-            // always be a reward total from the api too, but set it as a fallback just in case
-            percentageOfTotal,
+        percentageOfTotal: percentageOfTotal,
       };
     }
 

@@ -51,7 +51,8 @@
             "ul": ["list"],
             "ol": ["list"]
           }
-        ]
+        ],
+        "no-console": ["error", { "allow": ["warn", "error"] }]
       }
     },
     {

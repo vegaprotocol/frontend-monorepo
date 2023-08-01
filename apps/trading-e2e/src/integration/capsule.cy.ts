@@ -535,6 +535,7 @@ function checkIfDataAndTimeOfCreationAndUpdateIsEqual(date: string) {
       // unexpected latency
       const minBefore = subSeconds(new Date(), 5);
       const maxAfter = addSeconds(new Date(), 5);
+      // eslint-disable-next-line no-console
       console.log(maxAfter);
       const date = new Date($dateTime.toString());
       expect(isAfter(date, minBefore) && isBefore(date, maxAfter)).to.equal(

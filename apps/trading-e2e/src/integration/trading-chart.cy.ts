@@ -171,6 +171,7 @@ describe(
         .invoke('text')
         .then((text) => {
           const actualDate = text.slice(0, -67);
+          // eslint-disable-next-line no-console
           console.log(actualDate);
           const actualOhlc = text.slice(-67);
           assert.isTrue(expectedDateRegex.test(actualDate));

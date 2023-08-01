@@ -137,7 +137,7 @@ describe('MarketSelector', () => {
   it('renders only active markets', () => {
     render(
       <MemoryRouter>
-        <MarketSelector currentMarketId="market-0" />
+        <MarketSelector currentMarketId="market-0" onSelect={jest.fn()} />
       </MemoryRouter>
     );
     expect(screen.getAllByTestId(/market-\d/)).toHaveLength(
@@ -148,7 +148,7 @@ describe('MarketSelector', () => {
   it('filters by product type', async () => {
     render(
       <MemoryRouter>
-        <MarketSelector currentMarketId="market-0" />
+        <MarketSelector currentMarketId="market-0" onSelect={jest.fn()} />
       </MemoryRouter>
     );
 
@@ -174,7 +174,7 @@ describe('MarketSelector', () => {
   it('filters by search term', async () => {
     render(
       <MemoryRouter>
-        <MarketSelector currentMarketId="market-0" />
+        <MarketSelector currentMarketId="market-0" onSelect={jest.fn()} />
       </MemoryRouter>
     );
 
@@ -202,7 +202,7 @@ describe('MarketSelector', () => {
   it('filters by asset', async () => {
     render(
       <MemoryRouter>
-        <MarketSelector currentMarketId="market-0" />
+        <MarketSelector currentMarketId="market-0" onSelect={jest.fn()} />
       </MemoryRouter>
     );
 
@@ -234,7 +234,7 @@ describe('MarketSelector', () => {
   it('sorts by gained', async () => {
     render(
       <MemoryRouter>
-        <MarketSelector currentMarketId="market-0" />
+        <MarketSelector currentMarketId="market-0" onSelect={jest.fn()} />
       </MemoryRouter>
     );
 
@@ -256,7 +256,7 @@ describe('MarketSelector', () => {
   it('sorts by lost', async () => {
     render(
       <MemoryRouter>
-        <MarketSelector currentMarketId="market-0" />
+        <MarketSelector currentMarketId="market-0" onSelect={jest.fn()} />
       </MemoryRouter>
     );
 
@@ -272,7 +272,7 @@ describe('MarketSelector', () => {
   it('sorts by new', async () => {
     render(
       <MemoryRouter>
-        <MarketSelector currentMarketId="market-0" />
+        <MarketSelector currentMarketId="market-0" onSelect={jest.fn()} />
       </MemoryRouter>
     );
 
