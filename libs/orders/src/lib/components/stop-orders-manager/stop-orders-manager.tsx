@@ -1,6 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
-import { useCallback, useRef, useEffect } from 'react';
-import type { AgGridReact } from 'ag-grid-react';
+import { useCallback, useEffect } from 'react';
 import { StopOrdersTable } from '../stop-orders-table/stop-orders-table';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
@@ -23,20 +22,12 @@ export const StopOrdersManager = ({
   isReadOnly,
   gridProps,
 }: StopOrdersManagerProps) => {
-  const gridRef = useRef<AgGridReact | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
   const variables = { partyId };
 
   const { data, error, reload } = useDataProvider({
     dataProvider: stopOrdersWithMarketProvider,
     variables,
-    update: ({ data }) => {
-      if (data && gridRef.current?.api) {
-        gridRef.current.api.setRowData(data);
-        return true;
-      }
-      return false;
-    },
   });
 
   useEffect(() => {
@@ -64,7 +55,6 @@ export const StopOrdersManager = ({
   return (
     <StopOrdersTable
       rowData={data}
-      ref={gridRef}
       onCancel={cancel}
       onMarketClick={onMarketClick}
       isReadOnly={isReadOnly}

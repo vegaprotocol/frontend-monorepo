@@ -3,10 +3,13 @@ import {
   InputError,
   SimpleGrid,
   Tooltip,
+  TradingDropdown,
   TradingDropdownContent,
   TradingDropdownItemIndicator,
+  TradingDropdownPortal,
   TradingDropdownRadioGroup,
   TradingDropdownRadioItem,
+  TradingDropdownTrigger,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import type { Market, StaticMarketData } from '@vegaprotocol/markets';
@@ -14,7 +17,6 @@ import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
 import { DealTicketType } from '../../hooks/use-type-store';
 import * as RadioGroup from '@radix-ui/react-radio-group';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import classNames from 'classnames';
 import { FLAGS } from '@vegaprotocol/environment';
 
@@ -43,7 +45,10 @@ export const TypeToggle = ({
   return (
     <RadioGroup.Root
       name="order-type"
-      className="mb-2 grid grid-cols-3 h-8 leading-8 font-alpha text-sm"
+      className={classNames('mb-2 grid h-8 leading-8 font-alpha text-sm', {
+        'grid-cols-3': FLAGS.STOP_ORDERS,
+        'grid-cols-2': !FLAGS.STOP_ORDERS,
+      })}
       value={value}
       onValueChange={onValueChange}
     >
@@ -65,23 +70,27 @@ export const TypeToggle = ({
         </RadioGroup.Item>
       ))}
       {FLAGS.STOP_ORDERS && (
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger
-            data-testid="order-type-Stop"
-            className={classNames(
-              'rounded px-3 flex flex-nowrap items-center justify-center',
-              {
-                'bg-vega-clight-500 dark:bg-vega-cdark-500': selectedOption,
-              }
-            )}
-          >
-            <span className="text-ellipsis whitespace-nowrap shrink overflow-hidden">
-              {t(selectedOption ? selectedOption.label : 'Stop')}
-            </span>
-            <Icon name="chevron-down" className="ml-1" />
-          </DropdownMenu.Trigger>
-
-          <DropdownMenu.Portal>
+        <TradingDropdown
+          trigger={
+            <TradingDropdownTrigger
+              data-testid="order-type-Stop"
+              className={classNames(
+                'rounded px-3 flex flex-nowrap items-center justify-center',
+                {
+                  'bg-vega-clight-500 dark:bg-vega-cdark-500': selectedOption,
+                }
+              )}
+            >
+              <button>
+                <span className="text-ellipsis whitespace-nowrap shrink overflow-hidden">
+                  {t(selectedOption ? selectedOption.label : 'Stop')}
+                </span>
+                <Icon name="chevron-down" className="ml-1" />
+              </button>
+            </TradingDropdownTrigger>
+          }
+        >
+          <TradingDropdownPortal>
             <TradingDropdownContent>
               <TradingDropdownRadioGroup
                 onValueChange={(value) =>
@@ -103,8 +112,8 @@ export const TypeToggle = ({
                 ))}
               </TradingDropdownRadioGroup>
             </TradingDropdownContent>
-          </DropdownMenu.Portal>
-        </DropdownMenu.Root>
+          </TradingDropdownPortal>
+        </TradingDropdown>
       )}
     </RadioGroup.Root>
   );

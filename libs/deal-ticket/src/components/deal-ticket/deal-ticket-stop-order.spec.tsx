@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket } from '../../test-helpers';
 import { StopOrder } from './deal-ticket-stop-order';
@@ -90,6 +90,7 @@ describe('StopOrder', () => {
     // Assert defaults are used
     await userEvent.click(screen.getByTestId(orderTypeTrigger));
     expect(screen.getByTestId(orderTypeLimit).dataset.state).toEqual('checked');
+    await userEvent.click(screen.getByTestId(orderTypeLimit));
     expect(screen.getByTestId(orderSideBuy).dataset.state).toEqual('checked');
     expect(screen.getByTestId(sizeInput)).toHaveDisplayValue('0');
     expect(screen.getByTestId(timeInForce)).toHaveValue(
@@ -102,9 +103,7 @@ describe('StopOrder', () => {
       'checked'
     );
     expect(screen.getByTestId(expire).dataset.state).toEqual('unchecked');
-    act(() => {
-      screen.getByTestId(expire).click();
-    });
+    await userEvent.click(screen.getByTestId(expire));
     await waitFor(() => {
       expect(screen.getByTestId(expiryStrategySubmit).dataset.state).toEqual(
         'checked'
@@ -150,7 +149,7 @@ describe('StopOrder', () => {
     expect(screen.getByTestId(priceInput)).toHaveDisplayValue(
       values.price as string
     );
-    expect(screen.getByTestId('expire').dataset.state).toEqual('checked');
+    expect(screen.getByTestId(expire).dataset.state).toEqual('checked');
     expect(screen.getByTestId(expiryStrategyCancel).dataset.state).toEqual(
       'checked'
     );
