@@ -44,7 +44,7 @@ export const TxsListNavigation = ({
           </Button>
           <Button
             size="xs"
-            disabled={!hasMoreTxs || loading}
+            disabled={!hasMoreTxs}
             onClick={() => {
               nextPage();
             }}
