@@ -55,7 +55,7 @@ export const useTxsData = ({
   } = useFetch<BlockExplorerTransactions>(url, {}, true);
 
   if (!loading && data && isNumber(data.transactions.length)) {
-    hasMoreTxs = data.transactions.length === count;
+    hasMoreTxs = data.transactions.length >= count;
     txsData = data.transactions;
   }
 

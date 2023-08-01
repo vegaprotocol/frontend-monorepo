@@ -1,24 +1,19 @@
 import { DATA_SOURCES } from '../config';
 
-type IGetTxsDataPrevious = {
-  count?: number;
-  before: string;
-  filters?: string;
-  party?: string;
-};
-
-type IGetTxsDataNext = {
-  count?: number;
-  after: string;
-  filters?: string;
-  party?: string;
-};
-
 type IGetTxsDataFirstPage = {
+  baseUrl?: string;
   count?: number;
   party?: string;
   filters?: string;
 };
+
+interface IGetTxsDataPrevious extends IGetTxsDataFirstPage {
+  before: string;
+}
+
+interface IGetTxsDataNext extends IGetTxsDataFirstPage {
+  after: string;
+}
 
 type IGetTxsDataUrl =
   | IGetTxsDataPrevious
@@ -36,13 +31,15 @@ export const BE_TXS_PER_REQUEST = 25;
  * @returns string URL to call
  */
 export const getTxsDataUrl = (params: IGetTxsDataUrl) => {
-  const url = new URL(`${DATA_SOURCES.blockExplorerUrl}/transactions`);
+  const baseUrl =
+    params.baseUrl || `${DATA_SOURCES.blockExplorerUrl}/transactions`;
+  const url = new URL(baseUrl);
   const count = `${params.count || BE_TXS_PER_REQUEST}`;
 
-  if ('before' in params) {
+  if ('before' in params && params.before?.length > 0) {
     url.searchParams.append('last', count);
     url.searchParams.append('before', params.before);
-  } else if ('after' in params) {
+  } else if ('after' in params && params.after?.length > 0) {
     url.searchParams.append('first', count);
     url.searchParams.append('after', params.after);
   } else {
@@ -51,10 +48,10 @@ export const getTxsDataUrl = (params: IGetTxsDataUrl) => {
 
   // Hacky fix for param as array
   let urlAsString = url.toString();
-  if ('filters' in params && typeof params.filters === 'string') {
-    urlAsString += '&' + params.filters.replace(' ', '%20');
+  if (params.filters && params.filters?.length > 0) {
+    urlAsString += '&' + params.filters.replaceAll(' ', '%20');
   }
-  if ('party' in params) {
+  if (params.party && params.party?.length > 0) {
     urlAsString += `&filters[tx.submitter]=${params.party}`;
   }
 
