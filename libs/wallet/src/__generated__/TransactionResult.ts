@@ -28,7 +28,7 @@ export type OrderTxUpdateSubscriptionVariables = Types.Exact<{
 }>;
 
 
-export type OrderTxUpdateSubscription = { __typename?: 'Subscription', orders?: Array<{ __typename?: 'OrderUpdate', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: any, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, side: Types.Side, marketId: string  }> | null };
+export type OrderTxUpdateSubscription = { __typename?: 'Subscription', orders?: Array<{ __typename?: 'OrderUpdate', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: any, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, side: Types.Side, marketId: string }> | null };
 
 export type DepositBusEventFieldsFragment = { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } };
 
@@ -88,7 +88,6 @@ export const OrderTxUpdateFieldsFragmentDoc = gql`
   expiresAt
   side
   marketId
-  remaining
 }
     `;
 export const DepositBusEventFieldsFragmentDoc = gql`
