@@ -12,5 +12,6 @@ export * from './vega-transaction-dialog';
 export * from './provider';
 export * from './connect-dialog';
 export * from './utils';
+export * from './storage';
 export * from './__generated__/TransactionResult';
 export * from './__generated__/WithdrawalApproval';

@@ -8,10 +8,10 @@ import * as constants from '../constants';
 import { isBrowserWalletInstalled } from '@vegaprotocol/utils';
 
 interface Props {
-  showLead?: boolean;
+  lead?: string;
 }
 
-export const GetStarted = ({ showLead }: Props) => {
+export const GetStarted = ({ lead }: Props) => {
   const { pubKey } = useVegaWallet();
 
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
@@ -35,16 +35,10 @@ export const GetStarted = ({ showLead }: Props) => {
       <div
         className={classNames(
           'flex flex-col bg-vega-blue-300 dark:bg-vega-blue-700 border border-vega-blue-350 dark:border-vega-blue-650 px-6 py-8 gap-4',
-          { 'mt-8': !showLead }
+          { 'mt-8': !lead }
         )}
       >
-        {showLead && (
-          <div>
-            {t(
-              'Start trading on the worlds most advanced decentralised exchange.'
-            )}
-          </div>
-        )}
+        {lead && <div>{lead}</div>}
         <div>{t('Get started')}</div>
         <div>
           <ul className="list-decimal list-inside">
@@ -64,7 +58,7 @@ export const GetStarted = ({ showLead }: Props) => {
           </TradingButton>
         </div>
         {VEGA_ENV === 'MAINNET' && (
-          <div className="">
+          <div className="text-sm">
             {t('Experiment for free with virtual assets on')}{' '}
             <ExternalLink href={CANONICAL_URL}>
               {t('Fairground Testnet')}
@@ -72,7 +66,7 @@ export const GetStarted = ({ showLead }: Props) => {
           </div>
         )}
         {VEGA_ENV === 'TESTNET' && (
-          <div className="">
+          <div className="text-sm">
             {t('Ready to trade with real funds?')}{' '}
             <ExternalLink href={CANONICAL_URL}>
               {t('Switch to Mainnet')}

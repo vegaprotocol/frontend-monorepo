@@ -185,6 +185,7 @@ export const SidebarContent = () => {
               setView({ type: ViewType.Deposit, assetId })
             }
           />
+          <GetStarted />
         </ContentWrapper>
       );
     } else {
@@ -208,6 +209,7 @@ export const SidebarContent = () => {
     return (
       <ContentWrapper title={t('Deposit')}>
         <DepositContainer assetId={view.assetId} />
+        <GetStarted />
       </ContentWrapper>
     );
   }
@@ -216,6 +218,7 @@ export const SidebarContent = () => {
     return (
       <ContentWrapper title={t('Withdraw')}>
         <WithdrawContainer assetId={view.assetId} />
+        <GetStarted />
       </ContentWrapper>
     );
   }
@@ -224,6 +227,7 @@ export const SidebarContent = () => {
     return (
       <ContentWrapper title={t('Transfer')}>
         <TransferContainer assetId={view.assetId} />
+        <GetStarted />
       </ContentWrapper>
     );
   }
@@ -254,7 +258,6 @@ const ContentWrapper = ({
     >
       {title && <h2 className="mb-4">{title}</h2>}
       {children}
-      <GetStarted />
     </TinyScroll>
   );
 };

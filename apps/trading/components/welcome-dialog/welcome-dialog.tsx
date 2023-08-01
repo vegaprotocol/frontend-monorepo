@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/environment';
+import { isBrowserWalletInstalled, isTestEnv } from '@vegaprotocol/utils';
 import * as constants from '../constants';
 import { OnboardingDialog } from './onboarding-dialog';
-import { useEnvironment } from '@vegaprotocol/environment';
-import { isTestEnv } from '@vegaprotocol/utils';
+import { getConfig } from '@vegaprotocol/wallet';
 import { Links, Routes } from '../../pages/client-router';
 import { useGlobalStore } from '../../stores';
 
@@ -20,7 +21,11 @@ export const WelcomeDialog = () => {
     constants.ONBOARDING_VIEWED_KEY
   );
   const navigate = useNavigate();
-  const isOnboardingDialogNeeded = onBoardingViewed !== 'true' && !isTestEnv();
+  const isOnboardingDialogNeeded =
+    onBoardingViewed !== 'true' &&
+    !isTestEnv() &&
+    !isBrowserWalletInstalled() &&
+    !getConfig();
   const marketId = useGlobalStore((store) => store.marketId);
 
   if (isOnboardingDialogNeeded) {

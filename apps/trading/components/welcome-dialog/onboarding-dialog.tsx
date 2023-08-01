@@ -5,8 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import * as constants from '../constants';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 export const OnboardingDialog = () => {
+  const { VEGA_ENV } = useEnvironment();
   const [, setOnboardingViewed] = useLocalStorage(
     constants.ONBOARDING_VIEWED_KEY
   );
@@ -16,6 +18,12 @@ export const OnboardingDialog = () => {
     navigate(link);
     setOnboardingViewed('true');
   };
+  const lead =
+    VEGA_ENV === 'MAINNET'
+      ? t('Start trading on the worlds most advanced decentralised exchange.')
+      : t(
+          'Free from the risks of real trading, Fairground is a safe and fun place to try out Vega yourself with virtual assets.'
+        );
   return (
     <div className="flex flex-col py-2">
       <div className="flex gap-8">
@@ -64,7 +72,7 @@ export const OnboardingDialog = () => {
           </TradingButton>
         </div>
         <div className="w-1/2 -mr-3 flex flex-grow">
-          <GetStarted showLead />
+          <GetStarted lead={lead} />
         </div>
       </div>
     </div>
