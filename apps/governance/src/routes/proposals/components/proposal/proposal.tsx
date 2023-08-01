@@ -19,6 +19,7 @@ import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
 import { ProposalMarketChanges } from '../proposal-market-changes';
 import type { NetworkParamsResult } from '@vegaprotocol/network-parameters';
+import { useSuccessorMarketProposalDetails } from '@vegaprotocol/proposals';
 
 export enum ProposalType {
   PROPOSAL_NEW_MARKET = 'PROPOSAL_NEW_MARKET',
@@ -51,10 +52,13 @@ export const Proposal = ({
   mostRecentlyEnactedAssociatedMarketProposal,
 }: ProposalProps) => {
   const { t } = useTranslation();
+  const successor = useSuccessorMarketProposalDetails(proposal?.id);
 
   if (!proposal) {
     return null;
   }
+
+  const isSuccessor = !!successor?.parentMarketId || !!successor.code;
 
   let asset = assetData
     ? removePaginationWrapper(assetData.assetsConnection?.edges)[0]
@@ -157,7 +161,10 @@ export const Proposal = ({
 
         {newMarketData && (
           <div className="mb-4">
-            <ProposalMarketData marketData={newMarketData} />
+            <ProposalMarketData
+              marketData={newMarketData}
+              isSuccessor={isSuccessor}
+            />
           </div>
         )}
 

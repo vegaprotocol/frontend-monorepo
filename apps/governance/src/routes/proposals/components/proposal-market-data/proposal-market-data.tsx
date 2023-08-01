@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   InstrumentInfoPanel,
+  ChangesFromParentMarketInfoPanel,
   KeyDetailsInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
   LiquidityPriceRangeInfoPanel,
@@ -45,8 +46,10 @@ export const useMarketDataDialogStore = create<MarketDataDialogState>(
 
 export const ProposalMarketData = ({
   marketData,
+  isSuccessor,
 }: {
   marketData: MarketInfoWithData;
+  isSuccessor?: boolean;
 }) => {
   const { t } = useTranslation();
   const { isOpen, open, close } = useMarketDataDialogStore();
@@ -94,6 +97,15 @@ export const ProposalMarketData = ({
           </div>
           <div className="mb-10">
             <Accordion>
+              {isSuccessor && (
+                <AccordionItem
+                  itemId="changes-from-parent-market"
+                  title={t('Changes from parent market')}
+                  content={
+                    <ChangesFromParentMarketInfoPanel market={marketData} />
+                  }
+                />
+              )}
               <AccordionItem
                 itemId="key-details"
                 title={t('Key details')}

@@ -5,7 +5,7 @@ import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
 import { marketDataProvider } from '../../market-data-provider';
 import { totalFeesPercentage } from '../../market-utils';
-import { ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink, KeyValueTable, Splash } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
   formatNumber,
@@ -31,6 +31,8 @@ import { OracleDialog } from '../oracle-dialog/oracle-dialog';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useParentMarketIdQuery } from '../../__generated__';
 import { useSuccessorMarketProposalDetailsQuery } from '@vegaprotocol/proposals';
+import { useSuccessorMarketQuery } from '../../__generated__';
+import { Row } from './info-key-value-table';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -135,6 +137,67 @@ export const InsurancePoolInfoPanel = ({
         market.tradableInstrument.instrument.product.settlementAsset.decimals
       }
     />
+  );
+};
+
+export const ChangesFromParentMarketInfoPanel = ({
+  market,
+}: MarketInfoProps) => {
+  const { data: parentData } = useParentMarketIdQuery({
+    variables: {
+      marketId: market.id,
+    },
+    skip: !FLAGS.SUCCESSOR_MARKETS,
+  });
+
+  const { data: successorData } = useSuccessorMarketQuery({
+    variables: {
+      marketId: market.id,
+    },
+    skip: !FLAGS.SUCCESSOR_MARKETS,
+  });
+
+  const { data: successorProposal } = useSuccessorMarketProposalDetailsQuery({
+    variables: {
+      proposalId: market.proposal?.id || '',
+    },
+    skip: !FLAGS.SUCCESSOR_MARKETS || !market.proposal?.id,
+  });
+
+  const hasSuccessorPositionDecimalPlacesChanged =
+    successorData &&
+    successorData.market?.positionDecimalPlaces !==
+      market.positionDecimalPlaces;
+
+  return (
+    <KeyValueTable>
+      <Row
+        key={'parentMarketID'}
+        field={'parentMarketID'}
+        value={parentData?.market?.parentMarketID || '-'}
+        isNewValue={true}
+      />
+      <Row
+        key={'insurancePoolFraction'}
+        field={'insurancePoolFraction'}
+        value={
+          (successorProposal?.proposal?.terms.change.__typename ===
+            'NewMarket' &&
+            successorProposal.proposal.terms.change.successorConfiguration
+              ?.insurancePoolFraction) ||
+          '-'
+        }
+        isNewValue={true}
+      />
+      {hasSuccessorPositionDecimalPlacesChanged && (
+        <Row
+          key={'positionDecimalPlaces'}
+          field={'positionDecimalPlaces'}
+          value={successorData?.market?.positionDecimalPlaces || '-'}
+          oldValue={market.positionDecimalPlaces}
+        />
+      )}
+    </KeyValueTable>
   );
 };
 
