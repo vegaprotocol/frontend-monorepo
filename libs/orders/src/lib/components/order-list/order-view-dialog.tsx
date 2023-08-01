@@ -4,7 +4,6 @@ import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import {
   Dialog,
-  ExternalLink,
   KeyValueTable,
   KeyValueTableRow,
   Tooltip,
@@ -16,7 +15,6 @@ import type { Order } from '../order-data-provider';
 import { Link } from 'react-router-dom';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
-import { useEnvironment } from '@vegaprotocol/environment';
 
 interface OrderViewDialogProps {
   isOpen: boolean;
@@ -30,7 +28,6 @@ export const OrderViewDialog = ({
   onChange,
 }: OrderViewDialogProps) => {
   const [, setCopied] = useCopyTimeout();
-  const { VEGA_EXPLORER_URL } = useEnvironment();
   return (
     <Dialog open={isOpen} title={t('Order details')} onChange={onChange}>
       <KeyValueTable>
@@ -104,12 +101,7 @@ export const OrderViewDialog = ({
         <KeyValueTableRow key={'order-id'}>
           <div data-testid={'order-id-label'}>{t('Order ID')}</div>
           <div data-testid={`order-id-value`}>
-            <ExternalLink
-              href={`${VEGA_EXPLORER_URL}/orders/${order.id}`}
-              data-testid={`order-id-link`}
-            >
-              {truncateMiddle(order.id, 10)}
-            </ExternalLink>
+            {truncateMiddle(order.id, 10)}
             <CopyToClipboard text={order.id} onCopy={() => setCopied(true)}>
               <button
                 type="button"
