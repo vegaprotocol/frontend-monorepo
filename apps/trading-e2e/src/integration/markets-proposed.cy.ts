@@ -84,7 +84,7 @@ describe('markets proposed table', { tags: '@smoke' }, () => {
       .find('button')
       .click();
 
-    const dropdownContent = '[data-testid="market-actions-content"]';
+    const dropdownContent = '[data-testid="proposal-actions-content"]';
     const dropdownContentItem = '[role="menuitem"]';
 
     // 6001-MARK-059
@@ -100,7 +100,7 @@ describe('markets proposed table', { tags: '@smoke' }, () => {
           'VEGA_TOKEN_URL'
         )}/proposals/e9ec6d5c46a7e7bcabf9ba7a893fa5a5eeeec08b731f06f7a6eb7bf0e605b829`
       );
-    cy.getByTestId('market-actions-content').click();
+    cy.getByTestId('proposal-actions-content').click();
   });
 
   // 6001-MARK-060
