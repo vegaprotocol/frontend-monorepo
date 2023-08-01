@@ -4,7 +4,7 @@ import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { isBrowserWalletInstalled, isTestEnv } from '@vegaprotocol/utils';
+import { isBrowserWalletInstalled } from '@vegaprotocol/utils';
 import * as constants from '../constants';
 import { OnboardingDialog } from './onboarding-dialog';
 import { getConfig } from '@vegaprotocol/wallet';
