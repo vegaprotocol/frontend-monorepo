@@ -1,17 +1,22 @@
-import {
-  getDateTimeFormat,
-  addDecimalsFormatNumber,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import {
   Dialog,
+  ExternalLink,
   KeyValueTable,
   KeyValueTableRow,
+  Tooltip,
+  VegaIcon,
+  VegaIconNames,
+  truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import type { Order } from '../order-data-provider';
-import startCase from 'lodash/startCase';
+import { Link } from 'react-router-dom';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import { useCopyTimeout } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 interface OrderViewDialogProps {
   isOpen: boolean;
@@ -24,63 +29,243 @@ export const OrderViewDialog = ({
   order,
   onChange,
 }: OrderViewDialogProps) => {
-  const headerClassName = 'text-lg font-bold text-black dark:text-white';
-
-  console.log({ order });
-
+  const [, setCopied] = useCopyTimeout();
+  const { VEGA_EXPLORER_URL } = useEnvironment();
   return (
-    <Dialog open={isOpen} title={t('View order')} onChange={onChange}>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-        {order.market && (
-          <div className="md:col-span-2">
-            <p className={headerClassName}>{t(`Market`)}</p>
-            <p>{t(`${order.market.tradableInstrument.instrument.name}`)}</p>
-          </div>
-        )}
-        {order.type === Schema.OrderType.TYPE_LIMIT && order.market && (
-          <div className="md:col-span-1">
-            <p className={headerClassName}>{t(`Price`)}</p>
-            <p>
-              {addDecimalsFormatNumber(order.price, order.market.decimalPlaces)}
-            </p>
-          </div>
-        )}
-        <div className="md:col-span-1">
-          <p className={headerClassName}>{t(`Size`)}</p>
-          <p>
-            {order.market && (
-              <Size
-                value={order.size}
-                side={order.side}
-                positionDecimalPlaces={order.market.positionDecimalPlaces}
-              />
-            )}
-          </p>
-        </div>
-      </div>
-      {order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
-        order.expiresAt && (
-          <div>
-            <p className={headerClassName}>{t(`Expires at`)}</p>
-            <p>{getDateTimeFormat().format(new Date(order.expiresAt))}</p>
-          </div>
-        )}
+    <Dialog open={isOpen} title={t('Order details')} onChange={onChange}>
       <KeyValueTable>
-        {Object.entries(order).map(([key, value], i) => (
-          <KeyValueTableRow key={key}>
-            <div data-testid={key}>{startCase(key)}</div>
-            <div data-testid={`${key}-${i}`}>
-              {typeof value === 'string'
-                ? value
-                : typeof value === 'boolean'
-                ? value === true
-                  ? 'Yes'
-                  : 'No'
-                : '-'}
+        <KeyValueTableRow key={'order-market'}>
+          <div data-testid={'order-market-label'}>{t('Market')}</div>
+          <div data-testid={`order-market-value`}>
+            <Link to={`/markets/${order.market?.id}`}>
+              {order.market?.tradableInstrument.instrument.name}
+            </Link>
+          </div>
+        </KeyValueTableRow>
+        <KeyValueTableRow key={'order-type'}>
+          <div data-testid={'order-type-label'}>{t('Type')}</div>
+          <div data-testid={`order-type-value`}>
+            {Schema.OrderTypeMapping[order.type as Schema.OrderType]}
+          </div>
+        </KeyValueTableRow>
+        <KeyValueTableRow key={'order-price'}>
+          <div data-testid={'order-price-label'}>{t('Price')}</div>
+          <div data-testid={`order-price-value`}>
+            {addDecimalsFormatNumber(
+              order.price,
+              order.market?.decimalPlaces as number
+            )}
+          </div>
+        </KeyValueTableRow>
+        <KeyValueTableRow key={'order-size'}>
+          <div data-testid={'order-size-label'}>{t('Size')}</div>
+          <div data-testid={`order-size-value`}>
+            <Size
+              value={order.size}
+              side={order.side}
+              positionDecimalPlaces={
+                order.market?.positionDecimalPlaces as number
+              }
+            />
+          </div>
+        </KeyValueTableRow>
+        <KeyValueTableRow key={'order-remaining'} className="mb-4">
+          <div data-testid={'order-remaining-label'}>{t('Remaining')}</div>
+          <div data-testid={`order-remaining-value`}>
+            <Size
+              value={order.remaining}
+              side={order.side}
+              positionDecimalPlaces={
+                order.market?.positionDecimalPlaces as number
+              }
+            />
+          </div>
+        </KeyValueTableRow>
+        <KeyValueTableRow key={'order-status'}>
+          <div data-testid={'order-status-label'}>{t('Status')}</div>
+          <div data-testid={`order-status-value`}>
+            {Schema.OrderStatusMapping[order.status as Schema.OrderStatus]}
+          </div>
+        </KeyValueTableRow>
+        {order.rejectionReason && (
+          <KeyValueTableRow key={'order-rejection-reason'}>
+            <div data-testid={'order-rejection-reason-label'}>
+              {t('rejection reason')}
+            </div>
+            <div data-testid={`order-rejection-reason-value`}>
+              {
+                Schema.OrderRejectionReasonMapping[
+                  order.rejectionReason as Schema.OrderRejectionReason
+                ]
+              }
             </div>
           </KeyValueTableRow>
-        ))}
+        )}
+        <KeyValueTableRow key={'order-id'}>
+          <div data-testid={'order-id-label'}>{t('Order ID')}</div>
+          <div data-testid={`order-id-value`}>
+            <ExternalLink
+              href={`${VEGA_EXPLORER_URL}/orders/${order.id}`}
+              data-testid={`order-id-link`}
+            >
+              {truncateMiddle(order.id, 10)}
+            </ExternalLink>
+            <CopyToClipboard text={order.id} onCopy={() => setCopied(true)}>
+              <button
+                type="button"
+                data-testid="copy-vega-public-key"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className="sr-only">{t('Copy')}</span>
+                <VegaIcon name={VegaIconNames.COPY} />
+              </button>
+            </CopyToClipboard>
+          </div>
+        </KeyValueTableRow>
+        <KeyValueTableRow key={'order-created'}>
+          <div data-testid={'order-created-label'}>{t('Created')}</div>
+          <div data-testid={`order-created-value`}>
+            {new Date(order.createdAt).toLocaleString()}
+          </div>
+        </KeyValueTableRow>
+        {order.updatedAt && (
+          <KeyValueTableRow key={'order-updated'}>
+            <div data-testid={'order-updated-label'}>{t('Updated')}</div>
+            <div data-testid={`order-updated-value`}>
+              {new Date(order.updatedAt).toLocaleString()}
+            </div>
+          </KeyValueTableRow>
+        )}
+        {order.expiresAt && (
+          <KeyValueTableRow key={'order-expires'}>
+            <div data-testid={'order-expires-label'}>{t('Expires')}</div>
+            <div data-testid={`order-expires-value`}>
+              {new Date(order.expiresAt).toLocaleString()}
+            </div>
+          </KeyValueTableRow>
+        )}
+
+        <KeyValueTableRow key={'order-time-in-force'} className="mt-4">
+          <div data-testid={'order-time-in-force-label'}>
+            {t('Time in force')}
+          </div>
+          <div data-testid={`order-time-in-force-value`}>
+            {
+              Schema.OrderTimeInForceMapping[
+                order.timeInForce as Schema.OrderTimeInForce
+              ]
+            }
+          </div>
+        </KeyValueTableRow>
+
+        <KeyValueTableRow key={'order-post-only'}>
+          <div data-testid={'order-post-only-label'}>{t('Post only')}</div>
+          <div data-testid={`order-post-only-value`}>
+            {order.postOnly ? t('Yes') : t('-')}
+          </div>
+        </KeyValueTableRow>
+
+        <KeyValueTableRow key={'order-reduce-only'}>
+          <div data-testid={'order-reduce-only-label'}>{t('Reduce only')}</div>
+          <div data-testid={`order-reduce-only-value`}>
+            {order.reduceOnly ? t('Yes') : t('-')}
+          </div>
+        </KeyValueTableRow>
+
+        <KeyValueTableRow key={'order-pegged'}>
+          <div data-testid={'order-pegged-label'}>{t('Pegged')}</div>
+          <div data-testid={`order-pegged-value`}>
+            {order.peggedOrder ? t('Yes') : t('-')}
+          </div>
+        </KeyValueTableRow>
+
+        <KeyValueTableRow key={'order-liquidity-provision'}>
+          <div data-testid={'order-liquidity-provision-label'}>
+            {t('Liquidity provision')}
+          </div>
+          <div data-testid={`order-liquidity-provision-value`}>
+            {order.liquidityProvision ? t('Yes') : t('-')}
+          </div>
+        </KeyValueTableRow>
       </KeyValueTable>
+
+      <KeyValueTableRow key={'order-iceberg-order'}>
+        <div data-testid={'order-iceberg-order-label'}>
+          {t('Iceberg order')}
+        </div>
+        <div data-testid={`order-iceberg-order-value`}>
+          {order.icebergOrder ? t('Yes') : t('-')}
+        </div>
+      </KeyValueTableRow>
+      {order.icebergOrder && (
+        <KeyValueTableRow
+          key={'order-iceberg-order-peak-size'}
+          className="ml-4"
+        >
+          <div data-testid={'order-iceberg-order-peak-size-label'}>
+            <Tooltip
+              description={t(
+                'The maximum volume that can be traded at once. Must be less than the total size of the order.'
+              )}
+            >
+              <span>{t('Peak size')}</span>
+            </Tooltip>
+          </div>
+          <div data-testid={`order-iceberg-order-peak-size-value`}>
+            <Size
+              value={order.icebergOrder.peakSize}
+              side={order.side}
+              positionDecimalPlaces={
+                order.market?.positionDecimalPlaces as number
+              }
+            />
+          </div>
+        </KeyValueTableRow>
+      )}
+      {order.icebergOrder && (
+        <KeyValueTableRow
+          key={'order-iceberg-order-minimum-visible-size'}
+          className="ml-4"
+        >
+          <div data-testid={'order-iceberg-order-minimum-visible-size-label'}>
+            <Tooltip
+              description={t(
+                'When the order trades and its size falls below this threshold, it will be reset to the peak size and moved to the back of the priority order. Must be less than or equal to peak size, and greater than 0.'
+              )}
+            >
+              <span>{t('Minimum size')}</span>
+            </Tooltip>
+          </div>
+          <div data-testid={`order-iceberg-order-minimum-visible-size-value`}>
+            <Size
+              value={order.icebergOrder.minimumVisibleSize}
+              side={order.side}
+              positionDecimalPlaces={
+                order.market?.positionDecimalPlaces as number
+              }
+            />
+          </div>
+        </KeyValueTableRow>
+      )}
+      {order.icebergOrder && (
+        <KeyValueTableRow
+          key={'order-iceberg-order-reserved-remaining'}
+          className="ml-4"
+        >
+          <div data-testid={'order-iceberg-order-reserved-remaining-label'}>
+            {t('Reserved remaining')}
+          </div>
+          <div data-testid={`order-iceberg-order-reserved-remaining-value`}>
+            <Size
+              value={order.icebergOrder.reservedRemaining}
+              side={order.side}
+              positionDecimalPlaces={
+                order.market?.positionDecimalPlaces as number
+              }
+            />
+          </div>
+        </KeyValueTableRow>
+      )}
     </Dialog>
   );
 };
