@@ -3,6 +3,10 @@ import {
   InputError,
   SimpleGrid,
   Tooltip,
+  TradingDropdownContent,
+  TradingDropdownItemIndicator,
+  TradingDropdownRadioGroup,
+  TradingDropdownRadioItem,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import type { Market, StaticMarketData } from '@vegaprotocol/markets';
@@ -27,76 +31,84 @@ const toggles = [
   { label: t('Market'), value: DealTicketType.Market },
 ];
 const options = [
-  { label: t('Limit'), value: DealTicketType.StopLimit },
-  { label: t('Market'), value: DealTicketType.StopMarket },
+  { label: t('Stop Limit'), value: DealTicketType.StopLimit },
+  { label: t('Stop Market'), value: DealTicketType.StopMarket },
 ];
 
 export const TypeToggle = ({
   value,
   onValueChange,
-}: Pick<TypeSelectorProps, 'onValueChange' | 'value'>) => (
-  <RadioGroup.Root
-    name="order-type"
-    className="mb-2 flex h-8 leading-8 font-alpha text-sm"
-    value={toggles.find((t) => t.value === value) ? value : undefined}
-    onValueChange={onValueChange}
-  >
-    {toggles.map(({ label, value: itemValue }) => (
-      <RadioGroup.Item
-        value={itemValue}
-        key={itemValue}
-        id={`order-type-${itemValue}`}
-        data-testid={`order-type-${itemValue}`}
-        asChild
-      >
-        <button
-          className={classNames('flex-1 relative rounded', {
-            'bg-vega-clight-500 dark:bg-vega-cdark-500': value === itemValue,
-          })}
+}: Pick<TypeSelectorProps, 'onValueChange' | 'value'>) => {
+  const selectedOption = options.find((t) => t.value === value);
+  return (
+    <RadioGroup.Root
+      name="order-type"
+      className="mb-2 grid grid-cols-3 h-8 leading-8 font-alpha text-sm"
+      value={value}
+      onValueChange={onValueChange}
+    >
+      {toggles.map(({ label, value: itemValue }) => (
+        <RadioGroup.Item
+          value={itemValue}
+          key={itemValue}
+          id={`order-type-${itemValue}`}
+          data-testid={`order-type-${itemValue}`}
+          asChild
         >
-          {label}
-        </button>
-      </RadioGroup.Item>
-    ))}
-    {FLAGS.STOP_ORDERS && (
-      <DropdownMenu.Root>
-        <DropdownMenu.Trigger
-          data-testid="order-type-Stop"
-          className={classNames('flex-1 rounded', {
-            'bg-vega-cdark-500': options.some((t) => t.value === value),
-          })}
-        >
-          {t('Stop')}
-        </DropdownMenu.Trigger>
+          <button
+            className={classNames('rounded', {
+              'bg-vega-clight-500 dark:bg-vega-cdark-500': value === itemValue,
+            })}
+          >
+            {label}
+          </button>
+        </RadioGroup.Item>
+      ))}
+      {FLAGS.STOP_ORDERS && (
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger
+            data-testid="order-type-Stop"
+            className={classNames(
+              'rounded px-3 flex flex-nowrap items-center justify-center',
+              {
+                'bg-vega-clight-500 dark:bg-vega-cdark-500': selectedOption,
+              }
+            )}
+          >
+            <span className="text-ellipsis whitespace-nowrap shrink overflow-hidden">
+              {t(selectedOption ? selectedOption.label : 'Stop')}
+            </span>
+            <Icon name="chevron-down" className="ml-1" />
+          </DropdownMenu.Trigger>
 
-        <DropdownMenu.Portal>
-          <DropdownMenu.Content className="bg-vega-cdark-50 leading-10 font-alpha text-sm rounded shadow p-1">
-            <DropdownMenu.RadioGroup
-              onValueChange={(value) => onValueChange(value as DealTicketType)}
-              value={options.find((t) => t.value === value) ? value : undefined}
-            >
-              {options.map(({ label, value }) => (
-                <DropdownMenu.RadioItem
-                  key={value}
-                  value={value}
-                  textValue={label}
-                  id={`order-type-${value}`}
-                  data-testid={`order-type-${value}`}
-                  className="hover:bg-vega-cdark-200 text-vega-cdark-900 bg-vega-cdark-50 rounded pl-1 pr-10 relative"
-                >
-                  <DropdownMenu.ItemIndicator className="absolute right-0 top-0 bottom-0 inline-flex items-center justify-center pr-1">
-                    <Icon name="tick" />
-                  </DropdownMenu.ItemIndicator>
-                  {label}
-                </DropdownMenu.RadioItem>
-              ))}
-            </DropdownMenu.RadioGroup>
-          </DropdownMenu.Content>
-        </DropdownMenu.Portal>
-      </DropdownMenu.Root>
-    )}
-  </RadioGroup.Root>
-);
+          <DropdownMenu.Portal>
+            <TradingDropdownContent>
+              <TradingDropdownRadioGroup
+                onValueChange={(value) =>
+                  onValueChange(value as DealTicketType)
+                }
+                value={value}
+              >
+                {options.map(({ label, value: itemValue }) => (
+                  <TradingDropdownRadioItem
+                    key={itemValue}
+                    value={itemValue}
+                    textValue={itemValue}
+                    id={`order-type-${itemValue}`}
+                    data-testid={`order-type-${itemValue}`}
+                  >
+                    {t(label)}
+                    <TradingDropdownItemIndicator />
+                  </TradingDropdownRadioItem>
+                ))}
+              </TradingDropdownRadioGroup>
+            </TradingDropdownContent>
+          </DropdownMenu.Portal>
+        </DropdownMenu.Root>
+      )}
+    </RadioGroup.Root>
+  );
+};
 
 export const TypeSelector = ({
   value,
