@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react';
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { CellClickedEvent } from 'ag-grid-community';
 import { t } from '@vegaprotocol/i18n';
@@ -11,9 +11,13 @@ import type { MarketMaybeWithData } from '../../markets-provider';
 const POLLING_TIME = 2000;
 interface MarketsContainerProps {
   onSelect: (marketId: string, metaKey?: boolean) => void;
+  SuccessorMarketRenderer?: React.FC<{ value: string }>;
 }
 
-export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
+export const MarketsContainer = ({
+  onSelect,
+  SuccessorMarketRenderer,
+}: MarketsContainerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
 
   const { data, error, reload } = useDataProvider({
@@ -46,6 +50,7 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
               'tradableInstrument.instrument.code',
               'tradableInstrument.instrument.product.settlementAsset',
               'tradableInstrument.instrument.product.settlementAsset.symbol',
+              'market-actions',
             ].includes(colId)
           ) {
             return;
@@ -58,6 +63,7 @@ export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
         }}
         onMarketClick={onSelect}
         overlayNoRowsTemplate={error ? error.message : t('No markets')}
+        SuccessorMarketRenderer={SuccessorMarketRenderer}
       />
     </div>
   );

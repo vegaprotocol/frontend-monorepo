@@ -1,14 +1,23 @@
 import { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { removePaginationWrapper, stripFullStops } from '@vegaprotocol/utils';
+import {
+  convertToCountdownString,
+  formatDateWithLocalTimezone,
+  removePaginationWrapper,
+  stripFullStops,
+} from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 
 import { ProtocolUpgradeProposal } from './protocol-upgrade-proposal';
 import { ProposalNotFound } from '../components/proposal-not-found';
 import { useNodesQuery } from '../../staking/home/__generated__/Nodes';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
-import { useProtocolUpgradeProposalsQuery } from '@vegaprotocol/proposals';
+import {
+  useProtocolUpgradeProposalsQuery,
+  useTimeToUpgrade,
+} from '@vegaprotocol/proposals';
+import { useBlockInfo } from '@vegaprotocol/tendermint';
 
 export const ProtocolUpgradeProposalContainer = () => {
   const params = useParams<{ proposalReleaseTag: string }>();
@@ -58,6 +67,20 @@ export const ProtocolUpgradeProposalContainer = () => {
     );
   }, [nodesData]);
 
+  const pending =
+    Number(protocolUpgradeProposal?.upgradeBlockHeight) >
+    Number(data?.lastBlockHeight);
+
+  const {
+    state: { data: blockInfo },
+  } = useBlockInfo(
+    Number(protocolUpgradeProposal?.upgradeBlockHeight),
+    !pending
+  );
+  const time = useTimeToUpgrade(
+    Number(protocolUpgradeProposal?.upgradeBlockHeight)
+  );
+
   return (
     <AsyncRenderer
       loading={loading || nodesLoading}
@@ -69,6 +92,19 @@ export const ProtocolUpgradeProposalContainer = () => {
           proposal={protocolUpgradeProposal}
           lastBlockHeight={data?.lastBlockHeight}
           consensusValidators={consensusValidators}
+          time={
+            pending && time ? (
+              convertToCountdownString(time, '0:00:00:00')
+            ) : blockInfo?.result ? (
+              <span title={blockInfo.result.block.header.time}>
+                {formatDateWithLocalTimezone(
+                  new Date(blockInfo.result.block.header.time)
+                )}
+              </span>
+            ) : (
+              '-'
+            )
+          }
         />
       ) : (
         <ProposalNotFound />

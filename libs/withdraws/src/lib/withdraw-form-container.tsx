@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { toBigNum } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawManager } from './withdraw-manager';
@@ -36,8 +36,9 @@ export const WithdrawFormContainer = ({
     [data]
   );
   const assets = filteredAsset?.length ? filteredAsset : null;
+
   return (
-    <AsyncRenderer
+    <AsyncRendererInline
       loading={loading}
       error={error}
       data={assets}
@@ -51,6 +52,6 @@ export const WithdrawFormContainer = ({
           submit={submit}
         />
       )}
-    </AsyncRenderer>
+    </AsyncRendererInline>
   );
 };

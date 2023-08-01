@@ -15,6 +15,9 @@ query ExplorerNodes {
         stakedByDelegates
         stakedTotal
         pendingStake
+        rankingScore {
+          performanceScore
+        }
         epochData {
           total
           offline

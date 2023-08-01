@@ -3,11 +3,11 @@ import { forwardRef } from 'react';
 import classNames from 'classnames';
 import type { HTMLAttributes, ReactNode } from 'react';
 
-export interface Props extends HTMLAttributes<HTMLDivElement> {
+export type TinyScrollProps = HTMLAttributes<HTMLDivElement> & {
   children: ReactNode;
-}
+};
 
-export const TinyScroll = forwardRef<HTMLDivElement, Props>(
+export const TinyScroll = forwardRef<HTMLDivElement, TinyScrollProps>(
   ({ children, className, ...props }, ref) => (
     <div
       ref={ref}

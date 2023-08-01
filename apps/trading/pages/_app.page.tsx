@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import classNames from 'classnames';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { t } from '@vegaprotocol/i18n';
@@ -25,22 +24,30 @@ import {
 } from '@vegaprotocol/environment';
 import './styles.css';
 import { usePageTitleStore } from '../stores';
-import { Footer } from '../components/footer';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
-import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
+import {
+  HashRouter,
+  useLocation,
+  Route,
+  Routes,
+  useSearchParams,
+} from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
-import { ViewingBanner } from '../components/viewing-banner';
-import { AnnouncementBanner, UpgradeBanner } from '../components/banner';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
-import { Navbar } from '../components/navbar';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
+import { AnnouncementBanner, UpgradeBanner } from '../components/banner';
+import { Navbar } from '../components/navbar';
+import classNames from 'classnames';
 import {
   ProtocolUpgradeCountdownMode,
   ProtocolUpgradeProposalNotification,
 } from '@vegaprotocol/proposals';
+import { ViewingBanner } from '../components/viewing-banner';
+import { NavHeader } from '../components/navbar/nav-header';
+import { Routes as AppRoutes } from './client-router';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -77,14 +84,12 @@ const InitializeHandlers = () => {
 function AppBody({ Component }: AppProps) {
   const location = useLocation();
   const { VEGA_ENV } = useEnvironment();
-
   const gridClasses = classNames(
     'h-full relative z-0 grid',
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
   );
-
   return (
-    <div className="h-full dark:bg-black dark:text-white">
+    <div className="h-full overflow-hidden">
       <Head>
         {/* Cannot use meta tags in _document.page.tsx see https://nextjs.org/docs/messages/no-document-viewport-meta */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -92,7 +97,16 @@ function AppBody({ Component }: AppProps) {
       <Title />
       <div className={gridClasses}>
         <AnnouncementBanner />
-        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'} />
+        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'}>
+          <Routes>
+            <Route
+              path={AppRoutes.MARKETS}
+              // render nothing for markets/all, otherwise markets/:marketId will match with markets/all
+              element={null}
+            />
+            <Route path={AppRoutes.MARKET} element={<NavHeader />} />
+          </Routes>
+        </Navbar>
         <div data-testid="banners">
           <ProtocolUpgradeProposalNotification
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
@@ -100,10 +114,9 @@ function AppBody({ Component }: AppProps) {
           <ViewingBanner />
           <UpgradeBanner showVersionChange={true} />
         </div>
-        <main data-testid={location.pathname}>
+        <div data-testid={`pathname-${location.pathname}`}>
           <Component />
-        </main>
-        <Footer />
+        </div>
       </div>
       <DialogsContainer />
       <ToastsManager />

@@ -4,6 +4,21 @@ import * as DataProviders from '@vegaprotocol/data-provider';
 import { MockedProvider } from '@apollo/react-testing';
 import type { MarketMaybeWithData } from '../../markets-provider';
 import { MarketsContainer } from './markets-container';
+import { FLAGS } from '@vegaprotocol/environment';
+
+jest.mock('@vegaprotocol/environment', () => {
+  const actual = jest.requireActual('@vegaprotocol/environment');
+  return {
+    ...actual,
+    FLAGS: {
+      ...actual.FLAGS,
+      SUCCESSOR_MARKETS: true,
+    },
+  };
+});
+const SuccessorMarketRenderer = ({ value }: { value: string }) => {
+  return '-';
+};
 
 const market = {
   id: 'id-1',
@@ -22,8 +37,10 @@ const market = {
 } as unknown as MarketMaybeWithData;
 
 describe('MarketsContainer', () => {
-  it('context menu should stay open', async () => {
-    const spyOnSelect = jest.fn();
+  const spyOnSelect = jest.fn();
+  beforeEach(() => {
+    jest.clearAllMocks();
+
     jest
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .spyOn<typeof DataProviders, any>(DataProviders, 'useDataProvider')
@@ -34,12 +51,16 @@ describe('MarketsContainer', () => {
           data: [market],
         };
       });
-
+  });
+  it('context menu should stay open', async () => {
     let rerenderRef: (ui: React.ReactElement) => void;
     await act(async () => {
       const { rerender } = render(
         <MockedProvider>
-          <MarketsContainer onSelect={spyOnSelect} />
+          <MarketsContainer
+            onSelect={spyOnSelect}
+            SuccessorMarketRenderer={SuccessorMarketRenderer}
+          />
         </MockedProvider>
       );
       rerenderRef = rerender;
@@ -63,7 +84,7 @@ describe('MarketsContainer', () => {
       screen.getByRole('button', {
         name: (_name, element) =>
           (element.parentNode as Element)?.getAttribute('id') ===
-          'cell-market-actions-8',
+          'cell-market-actions-9',
       })
     );
 
@@ -103,5 +124,56 @@ describe('MarketsContainer', () => {
         })
       ).toBeInTheDocument();
     }
+  });
+
+  it('SuccessorMarketRenderer should be rendered', async () => {
+    const successorMarketName = 'Successor Market Name';
+    const spySuccessorMarketRenderer = jest
+      .fn()
+      .mockReturnValue(successorMarketName);
+
+    render(
+      <MockedProvider>
+        <MarketsContainer
+          onSelect={spyOnSelect}
+          SuccessorMarketRenderer={spySuccessorMarketRenderer}
+        />
+      </MockedProvider>
+    );
+
+    expect(spySuccessorMarketRenderer).toHaveBeenCalled();
+    expect(
+      screen.getByRole('columnheader', {
+        name: (_name, element) =>
+          element.getAttribute('col-id') === 'successorMarketID',
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('presentation', {
+        name: (_name, element) =>
+          element.getAttribute('id') === 'cell-successorMarketID-14',
+      })
+    ).toHaveTextContent(successorMarketName);
+  });
+
+  it('feature flag should hide successorMarketID column', async () => {
+    const mockedFlags = jest.mocked(FLAGS);
+    mockedFlags.SUCCESSOR_MARKETS = false;
+
+    const spySuccessorMarketRenderer = jest.fn();
+
+    render(
+      <MockedProvider>
+        <MarketsContainer
+          onSelect={spyOnSelect}
+          SuccessorMarketRenderer={spySuccessorMarketRenderer}
+        />
+      </MockedProvider>
+    );
+
+    expect(spySuccessorMarketRenderer).not.toHaveBeenCalled();
+    screen.getAllByRole('columnheader').forEach((element) => {
+      expect(element.getAttribute('col-id')).not.toEqual('successorMarketID');
+    });
   });
 });

@@ -48,6 +48,8 @@ export * from './tiny-scroll';
 export * from './toast';
 export * from './toggle';
 export * from './tooltip';
+export * from './trading-button';
+export * from './trading-dropdown';
 export * from './traffic-light';
 export * from './vega-icons';
 export * from './vega-logo';

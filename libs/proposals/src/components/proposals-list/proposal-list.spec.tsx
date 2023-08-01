@@ -14,6 +14,23 @@ import { createProposalListFieldsFragment } from '../../lib/proposals-data-provi
 import type { ProposalsListQuery } from '../../lib';
 import { ProposalsListDocument } from '../../lib';
 import type { PartialDeep } from 'type-fest';
+import { FLAGS } from '@vegaprotocol/environment';
+
+jest.mock('@vegaprotocol/environment', () => {
+  const actual = jest.requireActual('@vegaprotocol/environment');
+  return {
+    ...actual,
+    FLAGS: {
+      ...actual.FLAGS,
+      SUCCESSOR_MARKETS: true,
+    },
+  };
+});
+
+const successorMarketName = 'Successor Market Name';
+const spySuccessorMarketRenderer = jest
+  .fn()
+  .mockReturnValue(successorMarketName);
 
 describe('ProposalsList', () => {
   const createProposalsMock = (override?: PartialDeep<ProposalsListQuery>) => {
@@ -64,13 +81,15 @@ describe('ProposalsList', () => {
 
     return mock;
   };
-
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   it('should be properly rendered', async () => {
     const mock = createProposalsMock();
     await act(() => {
       render(
         <MockedProvider mocks={[mock]}>
-          <ProposalsList />
+          <ProposalsList SuccessorMarketRenderer={spySuccessorMarketRenderer} />
         </MockedProvider>
       );
     });
@@ -82,31 +101,55 @@ describe('ProposalsList', () => {
   });
 
   it('some of states should be filtered out', async () => {
+    const proposalNode = createProposalListFieldsFragment({
+      id: 'id-1',
+      state: Types.ProposalState.STATE_ENACTED,
+    });
+
     const mock = createProposalsMock({
       proposalsConnection: {
         edges: [
           {
             __typename: 'ProposalEdge',
-            node: createProposalListFieldsFragment({
-              id: 'id-1',
-              state: Types.ProposalState.STATE_ENACTED,
-            }),
+            node: {
+              ...proposalNode,
+              terms: {
+                ...proposalNode.terms,
+                change: {
+                  ...proposalNode.terms.change,
+                },
+              },
+            },
           },
         ],
       },
-    });
+    } as PartialDeep<ProposalsListQuery>);
     await act(() => {
       render(
         <MockedProvider mocks={[mock]}>
-          <ProposalsList />
+          <ProposalsList SuccessorMarketRenderer={spySuccessorMarketRenderer} />
         </MockedProvider>
       );
     });
     const container = document.querySelector('.ag-center-cols-container');
     await waitFor(() => {
       expect(container).toBeInTheDocument();
+      expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
     });
-    expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
+
+    expect(spySuccessorMarketRenderer).toHaveBeenCalled();
+    expect(
+      screen.getByRole('columnheader', {
+        name: (_name, element) =>
+          element.getAttribute('col-id') === 'parentMarket',
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByRole('gridcell', {
+        name: (name, element) =>
+          element.getAttribute('col-id') === 'parentMarket',
+      })[0]
+    ).toHaveTextContent(successorMarketName);
   });
 
   it('empty response should causes no data message display', async () => {
@@ -129,10 +172,55 @@ describe('ProposalsList', () => {
     await act(() => {
       render(
         <MockedProvider mocks={[mock]}>
-          <ProposalsList />
+          <ProposalsList SuccessorMarketRenderer={spySuccessorMarketRenderer} />
         </MockedProvider>
       );
     });
     expect(await screen.findByText('No markets')).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('columnheader', {
+        name: (_name, element) =>
+          element.getAttribute('col-id') === 'parentMarket',
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('feature flag should hide parent marketcolumn', async () => {
+    const mockedFlags = jest.mocked(FLAGS);
+    mockedFlags.SUCCESSOR_MARKETS = false;
+    const mock: MockedResponse<ProposalsListQuery> = {
+      request: {
+        query: ProposalsListDocument,
+        variables: {
+          proposalType: Types.ProposalType.TYPE_NEW_MARKET,
+        },
+      },
+      result: {
+        data: {
+          proposalsConnection: {
+            __typename: 'ProposalsConnection',
+            edges: [],
+          },
+        },
+      },
+    };
+    await act(() => {
+      render(
+        <MockedProvider mocks={[mock]}>
+          <ProposalsList SuccessorMarketRenderer={spySuccessorMarketRenderer} />
+        </MockedProvider>
+      );
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByRole('columnheader', {
+          name: (_name, element) => element.getAttribute('col-id') === 'market',
+        })
+      ).toBeInTheDocument();
+    });
+    screen.getAllByRole('columnheader').forEach((element) => {
+      expect(element.getAttribute('col-id')).not.toEqual('parentMarket');
+    });
   });
 });

@@ -54,7 +54,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
 
   it('can deposit', function () {
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
 
     // 1001-DEPO-001
     // 1001-DEPO-002
@@ -117,10 +117,10 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
   it('can key to key transfers', function () {
     // 1003-TRAN-023
     // 1003-TRAN-006
-    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
 
     cy.getByTestId(collateralTab).click();
-    cy.getByTestId('open-transfer-dialog').click();
+    cy.getByTestId('open-transfer').click();
     cy.getByTestId('transfer-form').should('be.visible');
     cy.getByTestId('transfer-form').find('[name="toAddress"]').select(1);
     cy.get('select option')
@@ -187,19 +187,21 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     // 0006-NETW-010
     const market = this.market;
     cy.visit(`/#/markets/${market.id}`);
+    cy.getByTestId('node-health-trigger').realHover();
     cy.getByTestId('node-health')
       .children()
       .first()
       .should('contain.text', 'Operational')
-      .next()
-      .should('contain.text', new URL(Cypress.env('VEGA_URL')).hostname)
-      .next()
       .then(($el) => {
         const blockHeight = parseInt($el.text());
         // block height will increase over the course of the test run so best
         // we can do here is check that its showing something sensible
         expect(blockHeight).to.be.greaterThan(0);
       });
+    cy.getByTestId('node-health')
+      .children()
+      .eq(1)
+      .should('contain.text', new URL(Cypress.env('VEGA_URL')).hostname);
   });
 
   it('can place and receive an order', function () {
@@ -342,7 +344,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     const ethWalletAddress = Cypress.env('ETHEREUM_WALLET_ADDRESS');
 
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
     cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId('Withdrawals').click();
     cy.getByTestId('withdraw-dialog-button').click();
@@ -429,7 +431,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     // 1001-DEPO-006
     // 1001-DEPO-007
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
     cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
@@ -451,7 +453,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     // 1002-WITH-007
 
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]', txTimeout).should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]', txTimeout).should('exist');
     cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
@@ -533,6 +535,7 @@ function checkIfDataAndTimeOfCreationAndUpdateIsEqual(date: string) {
       // unexpected latency
       const minBefore = subSeconds(new Date(), 5);
       const maxAfter = addSeconds(new Date(), 5);
+      // eslint-disable-next-line no-console
       console.log(maxAfter);
       const date = new Date($dateTime.toString());
       expect(isAfter(date, minBefore) && isBefore(date, maxAfter)).to.equal(

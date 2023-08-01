@@ -89,7 +89,7 @@ const ConnectButton = ({
           setEagerConnector(info.name);
           onClick?.();
         } catch (err) {
-          console.log('could not connect to the wallet', info.name, err);
+          console.warn('could not connect to the wallet', info.name, err);
           // NOOP - cancelled wallet connector
         }
       }}

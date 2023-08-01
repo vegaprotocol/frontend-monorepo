@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
 
-interface State<T> {
+export interface State<T> {
   data?: T;
   error?: Error;
   loading?: boolean;
@@ -21,7 +21,8 @@ type Action<T> =
 export const useFetch = <T>(
   url: string,
   options?: RequestInit,
-  initialFetch = true
+  initialFetch = true,
+  skip?: boolean
 ): {
   state: State<T>;
   refetch: (
@@ -105,10 +106,10 @@ export const useFetch = <T>(
 
   useEffect(() => {
     cancelRequest.current = false;
-    if (initialFetch) {
+    if (initialFetch && !skip) {
       fetchCallback();
     }
-  }, [fetchCallback, initialFetch, url]);
+  }, [fetchCallback, initialFetch, skip, url]);
 
   useEffect(() => {
     // Use the cleanup function for avoiding a possibly...

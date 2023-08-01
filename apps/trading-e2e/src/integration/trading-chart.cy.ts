@@ -127,7 +127,7 @@ describe(
         {
           name: 'Price monitoring bounds',
           infoText:
-            'Price Monitoring Bounds: Min 162.56291Max 182.96869Reference 172.47489',
+            'Price Monitoring Bounds 1: Min 162.56291Max 182.96869Reference 172.47489',
         },
       ];
 
@@ -171,6 +171,7 @@ describe(
         .invoke('text')
         .then((text) => {
           const actualDate = text.slice(0, -67);
+          // eslint-disable-next-line no-console
           console.log(actualDate);
           const actualOhlc = text.slice(-67);
           assert.isTrue(expectedDateRegex.test(actualDate));

@@ -100,6 +100,7 @@ interface AccountManagerProps {
   onClickAsset: (assetId: string) => void;
   onClickWithdraw?: (assetId?: string) => void;
   onClickDeposit?: (assetId?: string) => void;
+  onClickTransfer?: (assetId?: string) => void;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
@@ -110,6 +111,7 @@ export const AccountManager = ({
   onClickAsset,
   onClickWithdraw,
   onClickDeposit,
+  onClickTransfer,
   partyId,
   isReadOnly,
   pinnedAsset,
@@ -141,6 +143,7 @@ export const AccountManager = ({
         onClickAsset={onClickAsset}
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
+        onClickTransfer={onClickTransfer}
         onClickBreakdown={setBreakdownAssetId}
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}

@@ -17,7 +17,7 @@ describe(
       cy.visit('/#/portfolio');
       cy.mockTradingPage();
       cy.mockSubscription();
-      cy.get('main[data-testid="/portfolio"]').should('exist');
+      cy.get('[data-testid="pathname-/portfolio"]').should('exist');
     });
 
     it('can connect', () => {
@@ -122,7 +122,7 @@ describe('connect vega wallet', { tags: '@smoke', testIsolation: true }, () => {
     cy.visit('/#/portfolio');
     cy.mockTradingPage();
     cy.mockSubscription();
-    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
   });
 
   it('can connect', () => {

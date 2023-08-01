@@ -1,0 +1,38 @@
+query SuccessorMarketId($marketId: ID!) {
+  market(id: $marketId) {
+    successorMarketID
+  }
+}
+
+query ParentMarketId($marketId: ID!) {
+  market(id: $marketId) {
+    parentMarketID
+  }
+}
+
+query SuccessorMarketIds {
+  marketsConnection {
+    edges {
+      node {
+        id
+        successorMarketID
+        parentMarketID
+      }
+    }
+  }
+}
+
+query SuccessorMarket($marketId: ID!) {
+  market(id: $marketId) {
+    id
+    state
+    tradingMode
+    positionDecimalPlaces
+    tradableInstrument {
+      instrument {
+        name
+        code
+      }
+    }
+  }
+}

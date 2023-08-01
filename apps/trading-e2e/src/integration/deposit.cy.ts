@@ -17,11 +17,11 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.mockTradingPage();
     cy.setVegaWallet();
     cy.visit('/#/portfolio');
-    cy.get('main[data-testid="/portfolio"]').should('exist');
+    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
     cy.getByTestId('Deposits').click();
     cy.getByTestId('deposit-button').click();
-    cy.wait('@Assets');
     connectEthereumWallet('MetaMask');
+    cy.wait('@Assets');
   }
 
   before(() => {
@@ -102,8 +102,6 @@ describe('deposit actions', { tags: '@smoke' }, () => {
     cy.mockSubscription();
     cy.setVegaWallet();
     cy.visit('/#/markets/market-1');
-    cy.wait('@MarketsCandles');
-    cy.getByTestId('dialog-close').click();
   });
 
   it('Deposit to trade is visble', () => {

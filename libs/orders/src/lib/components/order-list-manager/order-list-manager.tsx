@@ -149,7 +149,7 @@ export const OrderListManager = ({
 };
 
 const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (
-  <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end px-[11px] py-2 absolute bottom-0 right-3 rounded">
+  <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end p-2 absolute bottom-0 right-0 rounded">
     <Button
       variant="primary"
       size="sm"

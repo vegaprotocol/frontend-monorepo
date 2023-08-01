@@ -64,3 +64,59 @@ export function AsyncRenderer<T = object>({
   // eslint-disable-next-line react/jsx-no-useless-fragment
   return <>{render ? render(data as T) : children}</>;
 }
+
+export function AsyncRendererInline<T>({
+  loading,
+  loadingMessage,
+  error,
+  errorMessage,
+  data,
+  noDataMessage,
+  noDataCondition,
+  children,
+  render,
+  reload,
+}: AsyncRendererProps<T>) {
+  const wrapperClasses = 'text-sm';
+  if (error) {
+    if (!data) {
+      return (
+        <div className={wrapperClasses}>
+          <p>
+            {errorMessage
+              ? errorMessage
+              : t(`Something went wrong: ${error.message}`)}
+          </p>
+          {reload && error.message === 'Timeout exceeded' && (
+            <Button
+              size="sm"
+              className="pointer-events-auto"
+              type="button"
+              onClick={reload}
+            >
+              {t('Try again')}
+            </Button>
+          )}
+        </div>
+      );
+    }
+  }
+
+  if (loading) {
+    return (
+      <p className={wrapperClasses}>
+        {loadingMessage ? loadingMessage : t('Loading...')}
+      </p>
+    );
+  }
+
+  if (noDataCondition ? noDataCondition(data) : !data) {
+    return (
+      <p className={wrapperClasses}>
+        {noDataMessage ? noDataMessage : t('No data')}
+      </p>
+    );
+  }
+  // eslint-disable-next-line react/jsx-no-useless-fragment
+  return <>{render ? render(data as T) : children}</>;
+}
