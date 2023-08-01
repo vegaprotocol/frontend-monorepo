@@ -97,21 +97,23 @@ export class SnapConnector implements VegaConnector {
 
   async sendTx(pubKey: string, transaction: Transaction) {
     if (!this.nodeAddress) throw new Error('nodeAddress not set');
-    const payload = {
-      method: 'wallet_invokeSnap',
-      params: {
-        snapId: defaultSnapOrigin,
-        request: {
-          method: 'client.send_transaction',
-          params: {
-            publicKey: pubKey,
-            transaction,
-            sendingMode: 'TYPE_SYNC',
-            networkEndpoints: [this.nodeAddress],
+    const payload = JSON.parse(
+      JSON.stringify({
+        method: 'wallet_invokeSnap',
+        params: {
+          snapId: defaultSnapOrigin,
+          request: {
+            method: 'client.send_transaction',
+            params: {
+              publicKey: pubKey,
+              transaction,
+              sendingMode: 'TYPE_SYNC',
+              networkEndpoints: [this.nodeAddress],
+            },
           },
         },
-      },
-    };
+      })
+    );
     console.log(payload);
     const result = await window.ethereum.request(payload);
 
