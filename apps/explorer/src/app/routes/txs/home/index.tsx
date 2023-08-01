@@ -1,14 +1,14 @@
 import { t } from '@vegaprotocol/i18n';
 import { RouteTitle } from '../../../components/route-title';
 import { TxsInfiniteList } from '../../../components/txs';
-import { useTxsData } from '../../../hooks/use-txs-data';
+import { useTxsData, getInitialFilters } from '../../../hooks/use-txs-data';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 
 import { useState } from 'react';
-import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
+import { TxsFilter } from '../../../components/txs/tx-filter';
+import type { FilterOption } from '../../../components/txs/tx-filter';
 import { TxsListNavigation } from '../../../components/txs/tx-list-navigation';
-
-const BE_TXS_PER_REQUEST = 25;
+import { useSearchParams } from 'react-router-dom';
 
 export const TxsList = () => {
   useDocumentTitle(['Transactions']);
@@ -27,25 +27,22 @@ export const TxsList = () => {
  * @returns {JSX.Element} Transaction List and controls
  */
 export const TxsListFiltered = () => {
-  const [filters, setFilters] = useState(new Set(AllFilterOptions));
-
-  const f =
-    filters && filters.size === 1
-      ? `filters[cmd.type]=${Array.from(filters)[0]}`
-      : '';
+  const [params] = useSearchParams();
+  const [filters, setFilters] = useState(getInitialFilters(params));
 
   const {
-    hasMoreTxs,
     nextPage,
     previousPage,
     error,
     refreshTxs,
     loading,
     txsData,
-    hasPreviousPage,
+    hasMoreTxs,
+    updateFilters,
   } = useTxsData({
-    limit: BE_TXS_PER_REQUEST,
-    filters: f,
+    filters: filters.size === 1 ? filters : undefined,
+    before: params.get('before') || undefined,
+    after: !params.get('before') ? params.get('after') || undefined : undefined,
   });
 
   return (
@@ -54,15 +51,21 @@ export const TxsListFiltered = () => {
         refreshTxs={refreshTxs}
         nextPage={nextPage}
         previousPage={previousPage}
-        hasPreviousPage={hasPreviousPage}
+        hasPreviousPage={true}
         loading={loading}
         hasMoreTxs={hasMoreTxs}
       >
-        <TxsFilter filters={filters} setFilters={setFilters} />
+        <TxsFilter
+          filters={filters}
+          setFilters={(f) => {
+            setFilters(f);
+            updateFilters(f as Set<FilterOption>);
+          }}
+        />
       </TxsListNavigation>
       <TxsInfiniteList
         hasFilters={filters.size > 0}
-        hasMoreTxs={hasMoreTxs}
+        hasMoreTxs={true}
         areTxsLoading={loading}
         txs={txsData}
         loadMoreTxs={nextPage}
