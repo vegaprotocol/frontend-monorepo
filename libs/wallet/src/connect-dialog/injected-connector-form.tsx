@@ -20,7 +20,6 @@ export const InjectedConnectorForm = ({
   reset,
   error,
 }: {
-  // connector: JsonRpcConnector;
   appChainId: string;
   status: Status;
   error: Error | null;

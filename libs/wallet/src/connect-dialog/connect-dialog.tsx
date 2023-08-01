@@ -7,11 +7,17 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { t } from '@vegaprotocol/i18n';
 import type { VegaConnector } from '../connectors';
-import { InjectedConnector } from '../connectors';
+import {
+  InjectedConnector,
+  SnapConnector,
+  connectSnap,
+  defaultSnapOrigin,
+  getSnap,
+} from '../connectors';
 import { ViewConnector } from '../connectors';
 import { JsonRpcConnector, RestConnector } from '../connectors';
 import { RestConnectorForm } from './rest-connector-form';
@@ -33,7 +39,7 @@ import { InjectedConnectorForm } from './injected-connector-form';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
-export type WalletType = 'injected' | 'jsonRpc' | 'rest' | 'view';
+export type WalletType = 'injected' | 'jsonRpc' | 'rest' | 'view' | 'snap';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
@@ -152,7 +158,10 @@ const ConnectDialogContainer = ({
     // for rest because we need to show an authentication form
     if (connector instanceof JsonRpcConnector) {
       jsonRpcConnect(connector, appChainId);
-    } else if (connector instanceof InjectedConnector) {
+    } else if (
+      connector instanceof InjectedConnector ||
+      connector instanceof SnapConnector
+    ) {
       injectedConnect(connector, appChainId);
     }
   };
@@ -195,6 +204,20 @@ const ConnectorList = ({
   setWalletUrl: (value: string) => void;
   isMainnet: boolean;
 }) => {
+  const [snapInstalled, setSnapInstalled] = useState(false);
+
+  useEffect(() => {
+    const getSnapStatus = async () => {
+      const result = await getSnap(defaultSnapOrigin);
+      if (result.enabled) {
+        setSnapInstalled(true);
+      } else {
+        alert('Vega snap not installed');
+      }
+    };
+
+    getSnapStatus();
+  }, []);
   return (
     <>
       <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
@@ -216,6 +239,32 @@ const ConnectorList = ({
             />
           </li>
         )}
+
+        <li className="mb-4 last:mb-0">
+          {snapInstalled ? (
+            <ConnectionOption
+              type="snap"
+              text={t('MetaMask Snap')}
+              onClick={() => onSelect('snap')}
+            />
+          ) : (
+            <Button
+              fill={true}
+              onClick={async () => {
+                try {
+                  await connectSnap(defaultSnapOrigin);
+                  const installedSnap = await getSnap(defaultSnapOrigin);
+                  console.log(installedSnap);
+                  setSnapInstalled(true);
+                } catch (err) {
+                  console.error(err);
+                }
+              }}
+            >
+              {t('Install Vega MetaMask Snap')}
+            </Button>
+          )}
+        </li>
         {!isMainnet && (
           <li className="mb-4 last:mb-0">
             <ConnectionOption
@@ -261,7 +310,10 @@ const SelectedForm = ({
   onConnect: () => void;
   riskMessage?: React.ReactNode;
 }) => {
-  if (connector instanceof InjectedConnector) {
+  if (
+    connector instanceof InjectedConnector ||
+    connector instanceof SnapConnector
+  ) {
     return (
       <InjectedConnectorForm
         status={injectedState.status}
