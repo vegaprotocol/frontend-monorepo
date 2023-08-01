@@ -9,6 +9,7 @@ const colInstrumentCode = '[col-id="tradableInstrument.instrument.code"]';
 describe('markets all table', { tags: '@smoke' }, () => {
   beforeEach(() => {
     cy.clearLocalStorage().then(() => {
+      cy.setOnBoardingViewed();
       cy.mockTradingPage(
         Schema.MarketState.STATE_ACTIVE,
         Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
@@ -199,6 +200,7 @@ describe('no all markets', { tags: '@smoke', testIsolation: true }, () => {
       aliasGQLQuery(req, 'Markets', markets);
     });
     cy.mockSubscription();
+    cy.setOnBoardingViewed();
     cy.visit('/#/markets/all');
   });
 

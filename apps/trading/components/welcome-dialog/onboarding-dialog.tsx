@@ -67,7 +67,11 @@ export const OnboardingDialog = () => {
               </div>
             </li>
           </ul>
-          <TradingButton onClick={browseMarkets} className="block w-full">
+          <TradingButton
+            onClick={browseMarkets}
+            className="block w-full"
+            data-testid="browse-markets-button"
+          >
             {t('Browse the markets')}
           </TradingButton>
         </div>

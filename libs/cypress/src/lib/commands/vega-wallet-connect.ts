@@ -14,6 +14,10 @@ declare global {
     interface Chainable<Subject> {
       setVegaWallet(): void;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    interface Chainable<Subject> {
+      setOnBoardingViewed(): void;
+    }
   }
 }
 
@@ -60,7 +64,7 @@ export function addVegaWalletConnect() {
 export function addSetVegaWallet() {
   Cypress.Commands.add('setVegaWallet', () => {
     cy.window().then((win) => {
-      win.localStorage.setItem('vega_risk_accepted', 'true');
+      win.localStorage.setItem('vega_onboarding_viewed', 'true');
       win.localStorage.setItem(
         'vega_wallet_config',
         JSON.stringify({
@@ -69,6 +73,14 @@ export function addSetVegaWallet() {
           url: 'http://localhost:1789',
         })
       );
+    });
+  });
+}
+
+export function addSetOnBoardingViewed() {
+  Cypress.Commands.add('setOnBoardingViewed', () => {
+    cy.window().then((win) => {
+      win.localStorage.setItem('vega_onboarding_viewed', 'true');
     });
   });
 }

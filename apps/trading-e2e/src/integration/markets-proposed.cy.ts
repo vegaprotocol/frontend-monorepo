@@ -9,6 +9,7 @@ describe('markets proposed table', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockTradingPage();
     cy.mockSubscription();
+    cy.setOnBoardingViewed();
     cy.visit('/#/markets/all');
     cy.get('[data-testid="Proposed markets"]').click();
   });
@@ -214,6 +215,7 @@ describe('no markets proposed', { tags: '@smoke', testIsolation: true }, () => {
       aliasGQLQuery(req, 'ProposalsList', proposal);
     });
     cy.mockSubscription();
+    cy.setOnBoardingViewed();
     cy.visit('/#/markets/all');
     cy.get('[data-testid="Proposed markets"]').click();
   });

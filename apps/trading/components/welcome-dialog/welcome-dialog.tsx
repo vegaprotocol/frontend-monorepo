@@ -22,10 +22,8 @@ export const WelcomeDialog = () => {
   );
   const navigate = useNavigate();
   const isOnboardingDialogNeeded =
-    onBoardingViewed !== 'true' &&
-    !isTestEnv() &&
-    !isBrowserWalletInstalled() &&
-    !getConfig();
+    onBoardingViewed !== 'true' && !isBrowserWalletInstalled() && !getConfig();
+
   const marketId = useGlobalStore((store) => store.marketId);
 
   if (isOnboardingDialogNeeded) {
@@ -38,7 +36,7 @@ export const WelcomeDialog = () => {
       navigate(link);
     };
     title = (
-      <span className="font-alpha calt">
+      <span className="font-alpha calt" data-testid="welcome-title">
         {t('Console')}{' '}
         <span className="text-vega-clight-50 dark:text-vega-cdark-50">
           {VEGA_ENV}
@@ -57,6 +55,7 @@ export const WelcomeDialog = () => {
       size={size}
       onChange={onClose}
       intent={Intent.None}
+      dataTestId="welcome-dialog"
     >
       {dialogContent}
     </Dialog>

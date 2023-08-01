@@ -202,6 +202,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
   const specDataConnection = createDataConnection();
 
   before(() => {
+    cy.setOnBoardingViewed();
     cy.mockGQL((req) => {
       aliasGQLQuery(req, 'ChainId', chainIdQuery());
       aliasGQLQuery(req, 'Statistics', statisticsQuery());

@@ -37,6 +37,7 @@ export const GetStarted = ({ lead }: Props) => {
           'flex flex-col bg-vega-blue-300 dark:bg-vega-blue-700 border border-vega-blue-350 dark:border-vega-blue-650 px-6 py-8 gap-4',
           { 'mt-8': !lead }
         )}
+        data-testid="get-started-banner"
       >
         {lead && <div>{lead}</div>}
         <div>{t('Get started')}</div>
@@ -53,6 +54,7 @@ export const GetStarted = ({ lead }: Props) => {
             intent={Intent.Info}
             onClick={onButtonClick}
             className="block w-full"
+            data-testid="get-started-button"
           >
             {t('Get started')}
           </TradingButton>
