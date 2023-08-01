@@ -24,7 +24,7 @@ const getClassName = (
   className?: string
 ) =>
   classNames(
-    'flex items-center justify-center rounded',
+    'flex items-center justify-center rounded disabled:opacity-40',
     // size
     {
       'h-12': !subLabel && size === 'large',
@@ -36,12 +36,18 @@ const getClassName = (
     },
     // colours
     {
-      'bg-vega-yellow dark:bg-vega-yellow': intent === Intent.Primary,
-      'bg-vega-clight-500 dark:bg-vega-cdark-500': intent === Intent.None,
-      'bg-vega-blue-350 dark:bg-vega-blue-650': intent === Intent.Info,
-      'bg-vega-orange-350 dark:bg-vega-orange-650': intent === Intent.Warning,
-      'bg-vega-red-350 dark:bg-vega-red-650': intent === Intent.Danger,
-      'bg-vega-green-350 dark:bg-vega-green-650': intent === Intent.Success,
+      'bg-vega-yellow hover:bg-vega-yellow-550 dark:bg-vega-yellow dark:hover:bg-vega-yellow-450':
+        intent === Intent.Primary,
+      'bg-vega-clight-500 hover:bg-vega-clight-400 dark:bg-vega-cdark-500 dark:hover:bg-vega-cdark-400':
+        intent === Intent.None,
+      'bg-vega-blue-350 hover:bg-vega-blue-400 dark:bg-vega-blue-650 dark:hover:bg-vega-blue-600':
+        intent === Intent.Info,
+      'bg-vega-orange-350 hover:bg-vega-orange-400 dark:bg-vega-orange-650 dark:hover:bg-vega-orange-600':
+        intent === Intent.Warning,
+      'bg-vega-red-350 hover:bg-vega-red-400 dark:bg-vega-red-650 dark:hover:bg-vega-red-600':
+        intent === Intent.Danger,
+      'bg-vega-green-350 hover:bg-vega-green-400 dark:bg-vega-green-650 dark:hover:bg-vega-green-600':
+        intent === Intent.Success,
       'text-vega-clight-50 dark:text-vega-cdark-50': intent !== Intent.Primary,
       'text-vega-clight-900 dark:text-vega-cdark-900':
         intent === Intent.Primary,

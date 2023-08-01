@@ -1,7 +1,5 @@
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
-import { t } from '@vegaprotocol/i18n';
 import { PositionsManager } from '@vegaprotocol/positions';
-import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';

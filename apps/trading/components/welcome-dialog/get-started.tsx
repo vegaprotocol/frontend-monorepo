@@ -1,10 +1,10 @@
+import classNames from 'classnames';
 import { t } from '@vegaprotocol/i18n';
-import { Button, ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink, Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import type { Networks } from '@vegaprotocol/environment';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import * as constants from '../constants';
-import { useEnvironment } from '@vegaprotocol/environment';
 import { isBrowserWalletInstalled } from '@vegaprotocol/utils';
 
 interface Props {
@@ -30,18 +30,23 @@ export const GetStarted = ({ showLead }: Props) => {
     setOnboardingViewed('true');
   };
 
-  if (!pubKey && isBrowserWalletInstalled()) {
+  if (!pubKey && !isBrowserWalletInstalled()) {
     return (
-      <div className="flex flex-col bg-vega-blue-300 dark:bg-vega-blue-700 border border-vega-blue-350 dark:border-vega-blue-650 px-6 py-8 gap-4 text-vega-clight-50 dark:text-vega-cdark-50 mt-8">
+      <div
+        className={classNames(
+          'flex flex-col bg-vega-blue-300 dark:bg-vega-blue-700 border border-vega-blue-350 dark:border-vega-blue-650 px-6 py-8 gap-4',
+          { 'mt-8': !showLead }
+        )}
+      >
         {showLead && (
-          <div className="">
+          <div>
             {t(
               'Start trading on the worlds most advanced decentralised exchange.'
             )}
           </div>
         )}
-        <div className="">{t('Get started')}</div>
-        <div className="">
+        <div>{t('Get started')}</div>
+        <div>
           <ul className="list-decimal list-inside">
             <li>{t('Get a Vega wallet')}</li>
             <li>{t('Connect')}</li>
@@ -49,14 +54,14 @@ export const GetStarted = ({ showLead }: Props) => {
             <li>{t('Open a position')}</li>
           </ul>
         </div>
-        <div className="">
-          <Button
-            fill
+        <div>
+          <TradingButton
+            intent={Intent.Info}
             onClick={onButtonClick}
-            className="bg-vega-blue-350 hover:bg-vega-blue-350 border-vega-blue-350 dark:bg-vega-blue-650 dark:border-vega-blue-650 dark:hover:bg-vega-blue-650 hover:border-vega-blue-650 dark:hover:bg-vega-blue-650 dark:hover:border-vega-blue-650"
+            className="block w-full"
           >
             {t('Get started')}
-          </Button>
+          </TradingButton>
         </div>
         {VEGA_ENV === 'MAINNET' && (
           <div className="">

@@ -10,7 +10,6 @@ import type { Market } from '@vegaprotocol/markets';
 import { Filter } from '@vegaprotocol/orders';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
-import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import {
   ResizableGrid,
   ResizableGridPanel,

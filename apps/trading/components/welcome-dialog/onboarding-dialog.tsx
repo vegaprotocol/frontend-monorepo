@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import { GetStarted } from './get-started';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { TradingButton } from '@vegaprotocol/ui-toolkit';
 import { useNavigate } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
@@ -59,12 +59,9 @@ export const OnboardingDialog = () => {
               </div>
             </li>
           </ul>
-          <Button
-            onClick={browseMarkets}
-            className="bg-vega-clight-400 border-vega-clight-400 hover:bg-vega-clight-600 dark:border-vega-cdark-400 dark:bg-vega-cdark-400 dark:hover:bg-vega-cdark-600"
-          >
+          <TradingButton onClick={browseMarkets} className="block w-full">
             {t('Browse the markets')}
-          </Button>
+          </TradingButton>
         </div>
         <div className="w-1/2 -mr-3 flex flex-grow">
           <GetStarted showLead />
