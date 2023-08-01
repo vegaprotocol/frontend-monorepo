@@ -1,5 +1,5 @@
 import type { FormEventHandler } from 'react';
-import { useRef, useCallback, useEffect, useMemo } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { StopOrdersSubmission } from '@vegaprotocol/wallet';
 import {
@@ -115,27 +115,17 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
 
   const isPriceTrigger = triggerType === 'price';
   const size = removeDecimal(rawSize, market.positionDecimalPlaces);
-  const price = useMemo(() => {
-    return (
-      marketPrice &&
-      getDerivedPrice(
-        {
-          type,
-          price: rawPrice && removeDecimal(rawPrice, market.decimalPlaces),
-        },
-        type === Schema.OrderType.TYPE_MARKET && isPriceTrigger && triggerPrice
-          ? removeDecimal(triggerPrice, market.decimalPlaces)
-          : marketPrice
-      )
+  const price =
+    marketPrice &&
+    getDerivedPrice(
+      {
+        type,
+        price: rawPrice && removeDecimal(rawPrice, market.decimalPlaces),
+      },
+      type === Schema.OrderType.TYPE_MARKET && isPriceTrigger && triggerPrice
+        ? removeDecimal(triggerPrice, market.decimalPlaces)
+        : marketPrice
     );
-  }, [
-    market.decimalPlaces,
-    marketPrice,
-    rawPrice,
-    isPriceTrigger,
-    triggerPrice,
-    type,
-  ]);
 
   const notionalSize = useNotionalSize(
     price,
