@@ -213,11 +213,12 @@ describe('no markets proposed', { tags: '@smoke', testIsolation: true }, () => {
       aliasGQLQuery(req, 'ProposalsList', proposal);
     });
     cy.mockSubscription();
-    cy.visit('/#/markets/all');
-    cy.get('[data-testid="Proposed markets"]').click();
   });
 
   it('can see no markets message', () => {
+    cy.visit('/#/markets/all');
+    cy.get('[data-testid="Proposed markets"]').click();
+
     // 6001-MARK-061
     cy.getByTestId('tab-proposed-markets').should('contain.text', 'No markets');
   });
