@@ -34,8 +34,9 @@ export const GetStarted = ({ lead }: Props) => {
     return (
       <div
         className={classNames(
-          'flex flex-col bg-vega-blue-300 dark:bg-vega-blue-700 border border-vega-blue-350 dark:border-vega-blue-650 px-6 py-8 gap-4',
-          { 'mt-8': !lead }
+          'flex flex-col bg-vega-blue-300 dark:bg-vega-blue-700 border border-vega-blue-350 dark:border-vega-blue-650 px-6 gap-4',
+          { 'py-8': lead },
+          { 'mt-8 py-6': !lead }
         )}
         data-testid="get-started-banner"
       >

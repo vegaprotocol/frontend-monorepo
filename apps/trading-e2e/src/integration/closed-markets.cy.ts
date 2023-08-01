@@ -456,6 +456,7 @@ describe('no closed markets', { tags: '@smoke', testIsolation: true }, () => {
   before(() => {
     cy.mockTradingPage();
     cy.mockSubscription();
+    cy.setOnBoardingViewed();
     cy.visit('/#/markets/all');
     cy.get('[data-testid="Closed markets"]').click();
   });
