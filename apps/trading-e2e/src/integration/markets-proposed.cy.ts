@@ -100,7 +100,6 @@ describe('markets proposed table', { tags: '@smoke' }, () => {
           'VEGA_TOKEN_URL'
         )}/proposals/e9ec6d5c46a7e7bcabf9ba7a893fa5a5eeeec08b731f06f7a6eb7bf0e605b829`
       );
-    cy.getByTestId('proposal-actions-content').click();
   });
 
   // 6001-MARK-060
