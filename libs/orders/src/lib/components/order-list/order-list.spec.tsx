@@ -27,6 +27,7 @@ const defaultProps: OrderListTableProps = {
   rowData: [],
   onEdit: jest.fn(),
   onCancel: jest.fn(),
+  onView: jest.fn(),
   isReadOnly: false,
 };
 
