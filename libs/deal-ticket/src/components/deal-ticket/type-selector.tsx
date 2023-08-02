@@ -45,7 +45,7 @@ export const TypeToggle = ({
   return (
     <RadioGroup.Root
       name="order-type"
-      className={classNames('mb-2 grid h-8 leading-8 font-alpha text-sm', {
+      className={classNames('mb-2 grid h-8 leading-8 font-alpha text-xs', {
         'grid-cols-3': FLAGS.STOP_ORDERS,
         'grid-cols-2': !FLAGS.STOP_ORDERS,
       })}
