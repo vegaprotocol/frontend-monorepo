@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { OrderViewDialog } from './order-view-dialog';
 import type { Order } from '../order-data-provider';
 import { BrowserRouter } from 'react-router-dom';
@@ -151,46 +151,32 @@ describe('OrderViewDialog', () => {
       __typename: 'Order',
     };
 
-    await act(async () => {
-      render(
-        <BrowserRouter>
-          <OrderViewDialog order={order} onChange={jest.fn()} isOpen={true} />
-        </BrowserRouter>
-      );
-    });
+    render(
+      <BrowserRouter>
+        <OrderViewDialog order={order} onChange={jest.fn()} isOpen={true} />
+      </BrowserRouter>
+    );
 
-    expect(await screen.getByTestId('order-market-label')).toHaveTextContent(
+    expect(screen.getByTestId('order-market-label')).toHaveTextContent(
       'Market'
     );
-    expect(await screen.getByTestId('order-market-value')).toHaveTextContent(
+    expect(screen.getByTestId('order-market-value')).toHaveTextContent(
       'Tesla Quarterly (Sep 2023)'
     );
-    expect(await screen.getByTestId('order-type-label')).toHaveTextContent(
-      'Type'
-    );
-    expect(await screen.getByTestId('order-type-value')).toHaveTextContent(
-      'Limit'
-    );
-    expect(await screen.getByTestId('order-price-label')).toHaveTextContent(
-      'Price'
-    );
-    expect(await screen.getByTestId('order-price-value')).toHaveTextContent(
-      '150.00'
-    );
-    expect(await screen.getByTestId('order-size-label')).toHaveTextContent(
-      'Size'
-    );
-    expect(await screen.getByTestId('order-size-value')).toHaveTextContent(
-      '+10.00'
-    );
-    expect(await screen.getByTestId('order-remaining-label')).toHaveTextContent(
+    expect(screen.getByTestId('order-type-label')).toHaveTextContent('Type');
+    expect(screen.getByTestId('order-type-value')).toHaveTextContent('Limit');
+    expect(screen.getByTestId('order-price-label')).toHaveTextContent('Price');
+    expect(screen.getByTestId('order-price-value')).toHaveTextContent('150.00');
+    expect(screen.getByTestId('order-size-label')).toHaveTextContent('Size');
+    expect(screen.getByTestId('order-size-value')).toHaveTextContent('+10.00');
+    expect(screen.getByTestId('order-remaining-label')).toHaveTextContent(
       'Remaining'
     );
-    expect(await screen.getByTestId('order-remaining-value')).toHaveTextContent(
+    expect(screen.getByTestId('order-remaining-value')).toHaveTextContent(
       '+5.00'
     );
     expect(
-      await screen.getByTestId('order-iceberg-order-reserved-remaining-value')
+      screen.getByTestId('order-iceberg-order-reserved-remaining-value')
     ).toHaveTextContent('5.00');
   });
 });

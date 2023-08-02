@@ -1,4 +1,7 @@
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  getDateTimeFormat,
+} from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
@@ -45,39 +48,45 @@ export const OrderViewDialog = ({
             {Schema.OrderTypeMapping[order.type as Schema.OrderType]}
           </div>
         </KeyValueTableRow>
-        <KeyValueTableRow key={'order-price'}>
-          <div data-testid={'order-price-label'}>{t('Price')}</div>
-          <div data-testid={`order-price-value`}>
-            {addDecimalsFormatNumber(
-              order.price,
-              order.market?.decimalPlaces as number
-            )}
-          </div>
-        </KeyValueTableRow>
-        <KeyValueTableRow key={'order-size'}>
-          <div data-testid={'order-size-label'}>{t('Size')}</div>
-          <div data-testid={`order-size-value`}>
-            <Size
-              value={order.size}
-              side={order.side}
-              positionDecimalPlaces={
-                order.market?.positionDecimalPlaces as number
-              }
-            />
-          </div>
-        </KeyValueTableRow>
-        <KeyValueTableRow key={'order-remaining'} className="mb-4">
-          <div data-testid={'order-remaining-label'}>{t('Remaining')}</div>
-          <div data-testid={`order-remaining-value`}>
-            <Size
-              value={order.remaining}
-              side={order.side}
-              positionDecimalPlaces={
-                order.market?.positionDecimalPlaces as number
-              }
-            />
-          </div>
-        </KeyValueTableRow>
+        {order.market && (
+          <KeyValueTableRow key={'order-price'}>
+            <div data-testid={'order-price-label'}>{t('Price')}</div>
+            <div data-testid={`order-price-value`}>
+              {addDecimalsFormatNumber(
+                order.price,
+                order.market.decimalPlaces as number
+              )}
+            </div>
+          </KeyValueTableRow>
+        )}
+        {order.market && (
+          <KeyValueTableRow key={'order-size'}>
+            <div data-testid={'order-size-label'}>{t('Size')}</div>
+            <div data-testid={`order-size-value`}>
+              <Size
+                value={order.size}
+                side={order.side}
+                positionDecimalPlaces={
+                  order.market.positionDecimalPlaces as number
+                }
+              />
+            </div>
+          </KeyValueTableRow>
+        )}
+        {order.market && (
+          <KeyValueTableRow key={'order-remaining'} className="mb-4">
+            <div data-testid={'order-remaining-label'}>{t('Remaining')}</div>
+            <div data-testid={`order-remaining-value`}>
+              <Size
+                value={order.remaining}
+                side={order.side}
+                positionDecimalPlaces={
+                  order.market.positionDecimalPlaces as number
+                }
+              />
+            </div>
+          </KeyValueTableRow>
+        )}
         <KeyValueTableRow key={'order-status'}>
           <div data-testid={'order-status-label'}>{t('Status')}</div>
           <div data-testid={`order-status-value`}>
@@ -105,7 +114,7 @@ export const OrderViewDialog = ({
             <CopyToClipboard text={order.id} onCopy={() => setCopied(true)}>
               <button
                 type="button"
-                data-testid="copy-vega-public-key"
+                data-testid="copy-order-id"
                 onClick={(e) => e.stopPropagation()}
               >
                 <span className="sr-only">{t('Copy')}</span>
@@ -117,14 +126,14 @@ export const OrderViewDialog = ({
         <KeyValueTableRow key={'order-created'}>
           <div data-testid={'order-created-label'}>{t('Created')}</div>
           <div data-testid={`order-created-value`}>
-            {new Date(order.createdAt).toLocaleString()}
+            {getDateTimeFormat().format(new Date(order.createdAt))}
           </div>
         </KeyValueTableRow>
         {order.updatedAt && (
           <KeyValueTableRow key={'order-updated'}>
             <div data-testid={'order-updated-label'}>{t('Updated')}</div>
             <div data-testid={`order-updated-value`}>
-              {new Date(order.updatedAt).toLocaleString()}
+              {getDateTimeFormat().format(new Date(order.updatedAt))}
             </div>
           </KeyValueTableRow>
         )}
@@ -132,7 +141,7 @@ export const OrderViewDialog = ({
           <KeyValueTableRow key={'order-expires'}>
             <div data-testid={'order-expires-label'}>{t('Expires')}</div>
             <div data-testid={`order-expires-value`}>
-              {new Date(order.expiresAt).toLocaleString()}
+              {getDateTimeFormat().format(new Date(order.expiresAt))}
             </div>
           </KeyValueTableRow>
         )}

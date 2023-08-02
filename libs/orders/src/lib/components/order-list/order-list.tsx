@@ -9,7 +9,7 @@ import * as Schema from '@vegaprotocol/types';
 import {
   ActionsDropdown,
   ButtonLink,
-  DropdownMenuCopyItem,
+  TradingDropdownCopyItem,
   DropdownMenuItem,
   VegaIcon,
   VegaIconNames,
@@ -299,7 +299,7 @@ export const OrderListTable = memo<
                     </>
                   )}
                   <ActionsDropdown data-testid="market-actions-content">
-                    <DropdownMenuCopyItem
+                    <TradingDropdownCopyItem
                       value={data.id}
                       text={t('Copy order ID')}
                     />
