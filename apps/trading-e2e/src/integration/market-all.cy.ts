@@ -3,7 +3,7 @@ import type { MarketsQuery } from '@vegaprotocol/markets';
 import * as Schema from '@vegaprotocol/types';
 
 const rowSelector =
-  '[data-testid="tab-all-markets"] .ag-center-cols-container .ag-row';
+  '[data-testid="tab-open-markets"] .ag-center-cols-container .ag-row';
 const colInstrumentCode = '[col-id="tradableInstrument.instrument.code"]';
 
 describe('markets all table', { tags: '@smoke' }, () => {
@@ -35,7 +35,7 @@ describe('markets all table', { tags: '@smoke' }, () => {
       'Settlement asset',
       '',
     ];
-    cy.getByTestId('tab-all-markets').within(($headers) => {
+    cy.getByTestId('tab-open-markets').within(($headers) => {
       cy.wrap($headers)
         .get('.ag-header-cell-text')
         .each(($header, i) => {
@@ -45,7 +45,7 @@ describe('markets all table', { tags: '@smoke' }, () => {
   });
 
   it('markets tab should be rendered properly', () => {
-    cy.get('[data-testid="All markets"]').should(
+    cy.get('[data-testid="Open markets"]').should(
       'have.attr',
       'data-state',
       'active'
@@ -167,7 +167,7 @@ describe('markets all table', { tags: '@smoke' }, () => {
       'ETHBTC.QM21',
       'SOLUSD',
     ];
-    cy.get('[data-testid="All markets"]').click({ force: true });
+    cy.get('[data-testid="Open markets"]').click({ force: true });
     cy.url().should('eq', Cypress.config('baseUrl') + '/#/markets/all');
     cy.contains('AAPL.MF21').should('be.visible');
     cy.get('.ag-header-cell-label').contains('Market').click(); // sort by market name
@@ -192,7 +192,7 @@ describe('markets all table', { tags: '@smoke' }, () => {
   });
 });
 
-describe('no all markets', { tags: '@smoke', testIsolation: true }, () => {
+describe('no open markets', { tags: '@smoke', testIsolation: true }, () => {
   before(() => {
     cy.mockTradingPage();
     const markets: MarketsQuery = {};
@@ -206,6 +206,6 @@ describe('no all markets', { tags: '@smoke', testIsolation: true }, () => {
 
   it.skip('can see no markets message', () => {
     // 6001-MARK-048
-    cy.getByTestId('tab-all-markets').should('contain.text', 'No markets');
+    cy.getByTestId('tab-open-markets').should('contain.text', 'No markets');
   });
 });
