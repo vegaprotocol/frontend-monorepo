@@ -32,7 +32,16 @@ const chartTypeIcon = new Map<ChartType, IconName>([
 ]);
 
 export const CandlesMenu = () => {
-  const settings = useCandlesChartSettings();
+  const {
+    interval,
+    chartType,
+    studies,
+    overlays,
+    setInterval,
+    setType,
+    setStudies,
+    setOverlays,
+  } = useCandlesChartSettings();
   const triggerClasses = 'text-xs';
   const contentAlign = 'end';
 
@@ -41,15 +50,15 @@ export const CandlesMenu = () => {
       <DropdownMenu
         trigger={
           <DropdownMenuTrigger className={triggerClasses}>
-            {t(`Interval: ${intervalLabels[settings.interval]}`)}
+            {t(`Interval: ${intervalLabels[interval]}`)}
           </DropdownMenuTrigger>
         }
       >
         <DropdownMenuContent align={contentAlign}>
           <DropdownMenuRadioGroup
-            value={settings.interval}
+            value={interval}
             onValueChange={(value) => {
-              settings.setInterval(value as Interval);
+              setInterval(value as Interval);
             }}
           >
             {Object.values(Interval).map((timeInterval) => (
@@ -68,15 +77,15 @@ export const CandlesMenu = () => {
       <DropdownMenu
         trigger={
           <DropdownMenuTrigger className={triggerClasses}>
-            <Icon name={chartTypeIcon.get(settings.type) as IconName} />
+            <Icon name={chartTypeIcon.get(chartType) as IconName} />
           </DropdownMenuTrigger>
         }
       >
         <DropdownMenuContent align={contentAlign}>
           <DropdownMenuRadioGroup
-            value={settings.type}
+            value={chartType}
             onValueChange={(value) => {
-              settings.setType(value as ChartType);
+              setType(value as ChartType);
             }}
           >
             {Object.values(ChartType).map((type) => (
@@ -99,18 +108,16 @@ export const CandlesMenu = () => {
           {Object.values(Overlay).map((overlay) => (
             <DropdownMenuCheckboxItem
               key={overlay}
-              checked={settings.overlays.includes(overlay)}
+              checked={overlays.includes(overlay)}
               onCheckedChange={() => {
-                const newOverlays = [...settings.overlays];
-                const index = settings.overlays.findIndex(
-                  (item) => item === overlay
-                );
+                const newOverlays = [...overlays];
+                const index = overlays.findIndex((item) => item === overlay);
 
                 index !== -1
                   ? newOverlays.splice(index, 1)
                   : newOverlays.push(overlay);
 
-                settings.setOverlays(newOverlays);
+                setOverlays(newOverlays);
               }}
             >
               {overlayLabels[overlay]}
@@ -130,18 +137,16 @@ export const CandlesMenu = () => {
           {Object.values(Study).map((study) => (
             <DropdownMenuCheckboxItem
               key={study}
-              checked={settings.studies.includes(study)}
+              checked={studies.includes(study)}
               onCheckedChange={() => {
-                const newStudies = [...settings.studies];
-                const index = settings.studies.findIndex(
-                  (item) => item === study
-                );
+                const newStudies = [...studies];
+                const index = studies.findIndex((item) => item === study);
 
                 index !== -1
                   ? newStudies.splice(index, 1)
                   : newStudies.push(study);
 
-                settings.setStudies(newStudies);
+                setStudies(newStudies);
               }}
             >
               {studyLabels[study]}

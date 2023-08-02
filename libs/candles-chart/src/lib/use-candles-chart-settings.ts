@@ -1,5 +1,6 @@
+import { getValidItem, getValidSubset } from '@vegaprotocol/react-helpers';
 import { ChartType, Interval, Study } from 'pennant';
-import type { Overlay } from 'pennant';
+import { Overlay } from 'pennant';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
@@ -18,7 +19,7 @@ const DEFAULT_CHART_SETTINGS = {
   studies: [Study.VOLUME],
 };
 
-export const useCandlesChartSettings = create<
+export const useCandlesChartSettingsStore = create<
   StoredSettings & {
     merge: (settings: Partial<StoredSettings>) => void;
     setType: (type: ChartType) => void;
@@ -56,3 +57,43 @@ export const useCandlesChartSettings = create<
     }
   )
 );
+
+export const useCandlesChartSettings = () => {
+  const settings = useCandlesChartSettingsStore();
+
+  const interval: Interval = getValidItem(
+    settings.interval,
+    Object.values(Interval),
+    Interval.I15M
+  );
+
+  const chartType: ChartType = getValidItem(
+    settings.type,
+    Object.values(ChartType),
+    ChartType.CANDLE
+  );
+
+  const overlays: Overlay[] = getValidSubset(
+    settings.overlays,
+    Object.values(Overlay),
+    []
+  );
+
+  const studies: Study[] = getValidSubset(
+    settings.studies,
+    Object.values(Study),
+    [Study.VOLUME]
+  );
+
+  return {
+    interval,
+    chartType,
+    overlays,
+    studies,
+    setInterval: settings.setInterval,
+    setType: settings.setType,
+    setStudies: settings.setStudies,
+    setOverlays: settings.setOverlays,
+    merge: settings.merge,
+  };
+};

@@ -19,7 +19,8 @@ export const CandlesChartContainer = ({
   const { pubKey } = useVegaWallet();
   const { theme } = useThemeSwitcher();
 
-  const settings = useCandlesChartSettings();
+  const { interval, chartType, overlays, studies, merge } =
+    useCandlesChartSettings();
 
   const dataSource = useMemo(() => {
     return new VegaDataSource(client, marketId, pubKey);
@@ -29,17 +30,17 @@ export const CandlesChartContainer = ({
     <CandlestickChart
       dataSource={dataSource}
       options={{
-        chartType: settings.type,
-        overlays: settings.overlays,
-        studies: settings.studies,
+        chartType,
+        overlays,
+        studies,
         notEnoughDataText: (
           <span className="text-xs text-center">{t('No data')}</span>
         ),
       }}
-      interval={settings.interval}
+      interval={interval}
       theme={theme}
       onOptionsChanged={(options) => {
-        settings.merge({
+        merge({
           overlays: options.overlays,
           studies: options.studies,
         });
