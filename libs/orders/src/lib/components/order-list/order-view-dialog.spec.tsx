@@ -11,11 +11,6 @@ import {
   Side,
 } from '@vegaprotocol/types';
 
-jest.mock('@vegaprotocol/react-helpers', () => ({
-  ...jest.requireActual('@vegaprotocol/react-helpers'),
-  useCopyTimeout: jest.fn().mockReturnValue([false, jest.fn()]),
-}));
-
 describe('OrderViewDialog', () => {
   it('should render the order view dialog if the order is provided', async () => {
     const order: Order = {
