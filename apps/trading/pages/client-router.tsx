@@ -31,6 +31,10 @@ const LazyDisclaimer = dynamic(() => import('../client-pages/disclaimer'), {
   ssr: false,
 });
 
+const LazyDeposit = dynamic(() => import('../client-pages/deposit'), {
+  ssr: false,
+});
+
 export enum Routes {
   HOME = '/',
   MARKET = '/markets/:marketId',
@@ -38,6 +42,7 @@ export enum Routes {
   PORTFOLIO = '/portfolio',
   LIQUIDITY = '/liquidity/:marketId',
   DISCLAIMER = '/disclaimer',
+  DEPOSIT = '/deposit',
 }
 
 type ConsoleLinks = { [r in Routes]: (...args: string[]) => string };
@@ -51,6 +56,7 @@ export const Links: ConsoleLinks = {
   [Routes.LIQUIDITY]: (marketId: string) =>
     trimEnd(Routes.LIQUIDITY.replace(':marketId', marketId)),
   [Routes.DISCLAIMER]: () => Routes.DISCLAIMER,
+  [Routes.DEPOSIT]: () => Routes.DEPOSIT,
 };
 
 const routerConfig: RouteObject[] = [
@@ -97,6 +103,7 @@ const routerConfig: RouteObject[] = [
     path: Routes.DISCLAIMER,
     element: <LazyDisclaimer />,
   },
+  { path: Routes.DEPOSIT, element: <LazyDeposit /> },
   {
     path: '*',
     element: (
