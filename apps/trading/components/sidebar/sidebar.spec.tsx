@@ -1,7 +1,14 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Sidebar, SidebarContent, ViewType, useSidebar } from './sidebar';
+import {
+  Sidebar,
+  SidebarButton,
+  SidebarContent,
+  ViewType,
+  useSidebar,
+} from './sidebar';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { VegaIconNames } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('../node-health', () => ({
   NodeHealthContainer: () => <span data-testid="node-health" />,
@@ -33,6 +40,7 @@ describe('Sidebar', () => {
         </MemoryRouter>
       );
 
+      expect(screen.getByTestId(ViewType.ViewAs)).toBeInTheDocument();
       expect(screen.getByTestId(ViewType.Settings)).toBeInTheDocument();
       expect(screen.getByTestId(ViewType.Transfer)).toBeInTheDocument();
       expect(screen.getByTestId(ViewType.Deposit)).toBeInTheDocument();
@@ -52,6 +60,7 @@ describe('Sidebar', () => {
       </MemoryRouter>
     );
 
+    expect(screen.getByTestId(ViewType.ViewAs)).toBeInTheDocument();
     expect(screen.getByTestId(ViewType.Settings)).toBeInTheDocument();
     expect(screen.getByTestId(ViewType.Transfer)).toBeInTheDocument();
     expect(screen.getByTestId(ViewType.Deposit)).toBeInTheDocument();
@@ -140,4 +149,26 @@ describe('SidebarContent', () => {
 
     expect(container).toBeEmptyDOMElement();
   });
+});
+
+describe('SidebarButton', () => {
+  it.each([ViewType.Info, ViewType.Deposit, ViewType.ViewAs])(
+    'runs given action when clicked regardless of requested view (%s)',
+    async (view) => {
+      const actionFn = jest.fn();
+      render(
+        <SidebarButton
+          icon={VegaIconNames.INFO}
+          tooltip="INFO"
+          action={actionFn}
+          view={view}
+        />
+      );
+
+      const btn = screen.getByTestId(view);
+      await userEvent.click(btn);
+
+      expect(actionFn).toBeCalled();
+    }
+  );
 });

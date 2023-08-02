@@ -24,14 +24,14 @@ export const ViewingAsBanner = ({
     <NotificationBanner
       data-testid="view-banner"
       intent={Intent.None}
-      className="py-2 min-h-fit"
+      className="py-1 min-h-fit"
     >
       <div className="flex justify-between items-baseline">
         <span>
           {t('Viewing as Vega user:')} {pubKey && truncateMiddle(pubKey)}{' '}
         </span>
         <button
-          className="p-2 bg-light-dark-150 dark:bg-vega-dark-150 rounded uppercase"
+          className="p-2 bg-vega-light-150 dark:bg-vega-dark-150 rounded uppercase"
           data-testid="exit-view"
           onClick={disconnect}
         >

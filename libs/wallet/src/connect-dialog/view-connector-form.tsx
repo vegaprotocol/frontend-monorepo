@@ -17,7 +17,7 @@ interface FormFields {
 interface RestConnectorFormProps {
   connector: ViewConnector;
   onConnect: (connector: ViewConnector) => void;
-  reset: () => void;
+  reset?: () => void;
 }
 
 export function ViewConnectorForm({
@@ -50,13 +50,15 @@ export function ViewConnectorForm({
 
   return (
     <>
-      <button
-        onClick={reset}
-        className="absolute p-2 top-0 left-0 md:top-2 md:left-2"
-        data-testid="back-button"
-      >
-        <Icon name={'chevron-left'} ariaLabel="back" size={4} />
-      </button>
+      {reset && (
+        <button
+          onClick={reset}
+          className="absolute p-2 top-0 left-0 md:top-2 md:left-2"
+          data-testid="back-button"
+        >
+          <Icon name={'chevron-left'} ariaLabel="back" size={4} />
+        </button>
+      )}
       <form onSubmit={handleSubmit(onSubmit)} data-testid="view-connector-form">
         <h1 className="text-2xl uppercase mb-6 text-center font-alpha calt">
           {t('VIEW AS VEGA USER')}
