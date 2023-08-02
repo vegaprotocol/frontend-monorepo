@@ -17,6 +17,7 @@ import {
   positiveClassNames,
   MarketNameCell,
   COL_DEFS,
+  formatTrigger,
 } from '@vegaprotocol/datagrid';
 import type {
   TypedDataAgGrid,
@@ -55,29 +56,8 @@ export const StopOrdersTable = memo<
         sortable: false,
         valueFormatter: ({
           data,
-          value,
-        }: VegaValueFormatterParams<StopOrder, 'trigger'>): string => {
-          if (data && value?.__typename === 'StopOrderPrice') {
-            return `${t('Mark')} ${
-              data?.triggerDirection ===
-              Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
-                ? '<'
-                : '>'
-            } ${addDecimalsFormatNumber(
-              value.price,
-              data.market.decimalPlaces
-            )}`;
-          }
-          if (data && value?.__typename === 'StopOrderTrailingPercentOffset') {
-            return `${t('Mark')} ${
-              data?.triggerDirection ===
-              Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
-                ? '+'
-                : '-'
-            }${(Number(value.trailingPercentOffset) * 100).toFixed(1)}%`;
-          }
-          return '-';
-        },
+        }: VegaValueFormatterParams<StopOrder, 'trigger'>): string =>
+          data ? formatTrigger(data, data.market.decimalPlaces) : '',
         minWidth: 100,
       },
       {

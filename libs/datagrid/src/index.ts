@@ -12,6 +12,7 @@ export * from './lib/cells/centered-grid-cell';
 export * from './lib/cells/market-name-cell';
 export * from './lib/cells/order-type-cell';
 export * from './lib/cells/size';
+export * from './lib/cells/trigger';
 
 export * from './lib/filters/date-range-filter';
 export * from './lib/filters/set-filter';
