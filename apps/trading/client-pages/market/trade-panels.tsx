@@ -37,6 +37,7 @@ export const TradePanels = ({
   const onOrderTypeClick = useMarketLiquidityClickHandler();
 
   const [view, setView] = useState<TradingView>('candles');
+
   const renderView = () => {
     const Component = memo<{
       marketId: string;
@@ -65,8 +66,23 @@ export const TradePanels = ({
     );
   };
 
+  const renderMenu = () => {
+    const viewCfg = TradingViews[view];
+
+    if ('menu' in viewCfg) {
+      const Menu = viewCfg.menu;
+      return (
+        <div className="flex gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
+          <Menu />
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   return (
-    <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
+    <div className="h-full grid grid-rows-[min-content_min-content_1fr_min-content]">
       <div>
         {FLAGS.SUCCESSOR_MARKETS && (
           <>
@@ -76,6 +92,7 @@ export const TradePanels = ({
         )}
         <OracleBanner marketId={market?.id || ''} />
       </div>
+      <div>{renderMenu()}</div>
       <div className="h-full">
         <AutoSizer>
           {({ width, height }) => (

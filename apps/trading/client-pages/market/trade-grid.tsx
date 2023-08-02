@@ -57,7 +57,11 @@ const MainGrid = memo(
             >
               <TradeGridChild>
                 <Tabs storageKey="console-trade-grid-main-left">
-                  <Tab id="chart" name={t('Chart')}>
+                  <Tab
+                    id="chart"
+                    name={t('Chart')}
+                    menu={<TradingViews.candles.menu />}
+                  >
                     <TradingViews.candles.component marketId={marketId} />
                   </Tab>
                   <Tab id="depth" name={t('Depth')}>
