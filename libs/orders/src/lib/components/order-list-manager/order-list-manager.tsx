@@ -142,6 +142,7 @@ export const OrderListManager = ({
           isOpen={Boolean(viewOrder)}
           order={viewOrder}
           onChange={() => setViewOrder(null)}
+          onMarketClick={onMarketClick}
         />
       )}
     </>

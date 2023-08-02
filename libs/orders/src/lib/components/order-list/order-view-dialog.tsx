@@ -6,6 +6,7 @@ import { t } from '@vegaprotocol/i18n';
 import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import {
+  ButtonLink,
   Dialog,
   KeyValueTable,
   KeyValueTableRow,
@@ -15,7 +16,6 @@ import {
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import type { Order } from '../order-data-provider';
-import { Link } from 'react-router-dom';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 
@@ -23,12 +23,14 @@ interface OrderViewDialogProps {
   isOpen: boolean;
   order: Order;
   onChange: (open: boolean) => void;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }
 
 export const OrderViewDialog = ({
   isOpen,
   order,
   onChange,
+  onMarketClick,
 }: OrderViewDialogProps) => {
   const [, setCopied] = useCopyTimeout();
   return (
@@ -37,9 +39,15 @@ export const OrderViewDialog = ({
         <KeyValueTableRow key={'order-market'}>
           <div data-testid={'order-market-label'}>{t('Market')}</div>
           <div data-testid={`order-market-value`}>
-            <Link to={`/markets/${order.market?.id}`}>
-              {order.market?.tradableInstrument.instrument.name}
-            </Link>
+            {onMarketClick ? (
+              <ButtonLink
+                onClick={() => order.market && onMarketClick(order.market?.id)}
+              >
+                {order.market?.tradableInstrument.instrument.name}
+              </ButtonLink>
+            ) : (
+              order.market?.tradableInstrument.instrument.name
+            )}
           </div>
         </KeyValueTableRow>
         <KeyValueTableRow key={'order-type'}>
