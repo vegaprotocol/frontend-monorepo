@@ -1,4 +1,5 @@
 import { DepositContainer } from '@vegaprotocol/deposits';
+import { GetStarted } from '../../components/welcome-dialog';
 import { t } from '@vegaprotocol/i18n';
 
 export const Deposit = () => {
@@ -10,6 +11,7 @@ export const Deposit = () => {
         </h1>
         <div className="mt-10">
           <DepositContainer />
+          <GetStarted />
         </div>
       </div>
     </div>
