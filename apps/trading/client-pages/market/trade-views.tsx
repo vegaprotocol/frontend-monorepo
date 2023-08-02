@@ -2,7 +2,10 @@ import type { ComponentProps } from 'react';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { TradesContainer } from '@vegaprotocol/trades';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
-import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
+import {
+  CandlesChartContainer,
+  CandlesMenu,
+} from '@vegaprotocol/candles-chart';
 import { Filter } from '@vegaprotocol/orders';
 import { NO_MARKET } from './constants';
 import { OrderbookContainer } from '../../components/orderbook-container';
@@ -35,6 +38,7 @@ export const TradingViews = {
   candles: {
     label: 'Candles',
     component: requiresMarket(CandlesChartContainer),
+    menu: CandlesMenu,
   },
   depth: {
     label: 'Depth',
