@@ -29,6 +29,12 @@ jobs:
           echo IS_TESTNET_RELEASE=false >> $GITHUB_ENV
           echo IS_IPFS_RELEASE=false >> $GITHUB_ENV
           echo IS_S3_RELEASE=false >> $GITHUB_ENV
+          echo IS_DEV_IMAGE=false >> $GITHUB_ENV
+
+      - name: Is dev image
+        if: ${{ contains(github.ref, 'develop') && github.event_name == 'push' && matrix.app == 'trading' }}
+        run: |
+          echo IS_DEV_IMAGE=true >> $GITHUB_ENV
 
       - name: Is PR
         if: ${{ github.event_name == 'pull_request' }}
@@ -75,7 +81,7 @@ jobs:
 
       - name: Log in to the Container registry (docker hub)
         uses: docker/login-action@v2
-        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
+        if: ${{ env.IS_IPFS_RELEASE == 'true' || env.IS_DEV_IMAGE == 'true' }}
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -173,7 +179,7 @@ jobs:
         uses: docker/build-push-action@v3
         continue-on-error: true
         id: dockerhub-push
-        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
+        if: ${{ env.IS_IPFS_RELEASE == 'true' || env.IS_DEV_IMAGE == 'true'  }}
         with:
           context: .
           file: docker/node-outside-docker.Dockerfile
@@ -183,7 +189,7 @@ jobs:
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             vegaprotocol/${{ matrix.app }}:${{ github.sha }}
-            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || '' }}
+            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || env.IS_DEV_IMAGE == 'true' && 'develop' || '' }}
 
       - name: Publish dist as docker image (ghcr - retry)
         uses: docker/build-push-action@v3
