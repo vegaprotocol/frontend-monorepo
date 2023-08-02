@@ -65,7 +65,7 @@ export const TxsListFiltered = () => {
       </TxsListNavigation>
       <TxsInfiniteList
         hasFilters={filters.size > 0}
-        hasMoreTxs={true}
+        hasMoreTxs={hasMoreTxs}
         areTxsLoading={loading}
         txs={txsData}
         loadMoreTxs={nextPage}
