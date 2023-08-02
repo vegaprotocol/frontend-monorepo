@@ -31,7 +31,14 @@ export function useEagerConnect(Connectors: {
         return;
       }
       try {
-        await connect(Connectors[cfg.connector]);
+        if (cfg.connector === 'injected') {
+          const injectedInstance = Connectors[cfg.connector];
+          // @ts-ignore only injected wallet has connectWallet method
+          await injectedInstance.connectWallet();
+          await connect(injectedInstance);
+        } else {
+          await connect(Connectors[cfg.connector]);
+        }
       } catch {
         console.warn(`Failed to connect with connector: ${cfg.connector}`);
       } finally {
