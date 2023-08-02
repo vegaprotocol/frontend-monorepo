@@ -22,8 +22,7 @@ import {
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import { t } from '@vegaprotocol/i18n';
-import { useCandlesChartSettings } from './candles-chart';
-import { getValidItem, getValidSubset } from '@vegaprotocol/react-helpers';
+import { useCandlesChartSettings } from './use-candles-chart-settings';
 
 const chartTypeIcon = new Map<ChartType, IconName>([
   [ChartType.AREA, IconNames.TIMELINE_AREA_CHART],
@@ -34,31 +33,6 @@ const chartTypeIcon = new Map<ChartType, IconName>([
 
 export const CandlesMenu = () => {
   const settings = useCandlesChartSettings();
-
-  const interval: Interval = getValidItem(
-    settings.interval,
-    Object.values(Interval),
-    Interval.I15M
-  );
-
-  const chartType: ChartType = getValidItem(
-    settings.type,
-    Object.values(ChartType),
-    ChartType.CANDLE
-  );
-
-  const overlays: Overlay[] = getValidSubset(
-    settings.overlays,
-    Object.values(Overlay),
-    []
-  );
-
-  const studies: Study[] = getValidSubset(
-    settings.studies,
-    Object.values(Study),
-    [Study.VOLUME]
-  );
-
   const triggerClasses = 'text-xs';
   const contentAlign = 'end';
 
@@ -67,13 +41,13 @@ export const CandlesMenu = () => {
       <DropdownMenu
         trigger={
           <DropdownMenuTrigger className={triggerClasses}>
-            {t(`Interval: ${intervalLabels[interval]}`)}
+            {t(`Interval: ${intervalLabels[settings.interval]}`)}
           </DropdownMenuTrigger>
         }
       >
         <DropdownMenuContent align={contentAlign}>
           <DropdownMenuRadioGroup
-            value={interval}
+            value={settings.interval}
             onValueChange={(value) => {
               settings.setInterval(value as Interval);
             }}
@@ -94,13 +68,13 @@ export const CandlesMenu = () => {
       <DropdownMenu
         trigger={
           <DropdownMenuTrigger className={triggerClasses}>
-            <Icon name={chartTypeIcon.get(chartType) as IconName} />
+            <Icon name={chartTypeIcon.get(settings.type) as IconName} />
           </DropdownMenuTrigger>
         }
       >
         <DropdownMenuContent align={contentAlign}>
           <DropdownMenuRadioGroup
-            value={chartType}
+            value={settings.type}
             onValueChange={(value) => {
               settings.setType(value as ChartType);
             }}
@@ -125,10 +99,12 @@ export const CandlesMenu = () => {
           {Object.values(Overlay).map((overlay) => (
             <DropdownMenuCheckboxItem
               key={overlay}
-              checked={overlays.includes(overlay)}
+              checked={settings.overlays.includes(overlay)}
               onCheckedChange={() => {
-                const newOverlays = [...overlays];
-                const index = overlays.findIndex((item) => item === overlay);
+                const newOverlays = [...settings.overlays];
+                const index = settings.overlays.findIndex(
+                  (item) => item === overlay
+                );
 
                 index !== -1
                   ? newOverlays.splice(index, 1)
@@ -154,10 +130,12 @@ export const CandlesMenu = () => {
           {Object.values(Study).map((study) => (
             <DropdownMenuCheckboxItem
               key={study}
-              checked={studies.includes(study)}
+              checked={settings.studies.includes(study)}
               onCheckedChange={() => {
-                const newStudies = [...studies];
-                const index = studies.findIndex((item) => item === study);
+                const newStudies = [...settings.studies];
+                const index = settings.studies.findIndex(
+                  (item) => item === study
+                );
 
                 index !== -1
                   ? newStudies.splice(index, 1)
