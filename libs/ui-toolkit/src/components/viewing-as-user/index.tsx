@@ -1,6 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import { NotificationBanner } from '../notification-banner';
 import { Intent } from '../../utils/intent';
+import { TradingButton } from '../trading-button';
 
 export function truncateMiddle(address: string, start = 6, end = 4) {
   if (address.length < 11) return address;
@@ -24,19 +25,20 @@ export const ViewingAsBanner = ({
     <NotificationBanner
       data-testid="view-banner"
       intent={Intent.None}
-      className="py-1 min-h-fit"
+      className="!px-1 !py-1 min-h-fit"
     >
       <div className="flex justify-between items-baseline">
         <span>
           {t('Viewing as Vega user:')} {pubKey && truncateMiddle(pubKey)}{' '}
         </span>
-        <button
-          className="p-2 bg-vega-light-150 dark:bg-vega-dark-150 rounded uppercase"
+        <TradingButton
+          intent={Intent.None}
+          size="extra-small"
           data-testid="exit-view"
           onClick={disconnect}
         >
           {t('Exit view as')}
-        </button>
+        </TradingButton>
       </div>
     </NotificationBanner>
   );
