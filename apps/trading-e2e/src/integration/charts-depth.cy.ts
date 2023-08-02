@@ -2,6 +2,7 @@ describe('charts', { tags: '@smoke' }, () => {
   before(() => {
     cy.mockTradingPage();
     cy.mockSubscription();
+    cy.setOnBoardingViewed();
     cy.visit('/#/markets/market-0');
     cy.wait('@Markets');
     cy.getByTestId('Depth').click();

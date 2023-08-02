@@ -2,7 +2,7 @@ import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import type { ProposalListFieldsFragment } from '@vegaprotocol/proposals';
 import * as Schema from '@vegaprotocol/types';
 
-const dialogContent = 'dialog-content';
+const dialogContent = 'welcome-dialog';
 
 const generateProposal = (code: string): ProposalListFieldsFragment => ({
   __typename: 'Proposal',
@@ -140,43 +140,43 @@ describe('home', { tags: '@regression' }, () => {
       cy.wait('@MarketsData');
     });
 
-    it('redirects to market/all and displays welcome notice', () => {
+    it('close welcome dialog should redirect to market/all', () => {
       cy.url().should('eq', Cypress.config().baseUrl + `/#/markets/all`);
-      cy.getByTestId('welcome-notice-title').should(
-        'contain.text',
-        'Welcome to Console'
-      );
-    });
-  });
-
-  describe('no proposal nor markets found', () => {
-    it('there are welcome text and a link to propose market', () => {
-      cy.mockGQL((req) => {
-        const data = {
-          marketsConnection: {
-            __typename: 'MarketConnection',
-            edges: [],
-          },
-        };
-        aliasGQLQuery(req, 'Markets', data);
-        aliasGQLQuery(req, 'MarketsData', data);
-        aliasGQLQuery(req, 'ProposalsList', {
-          proposalsConnection: {
-            __typename: 'ProposalsConnection',
-            edges: null,
-          },
-        });
+      cy.getByTestId('welcome-dialog').should('be.visible');
+      cy.getByTestId('welcome-title').should('contain.text', 'Console CUSTOM');
+      cy.getByTestId('browse-markets-button').should('not.be.disabled');
+      cy.getByTestId('get-started-banner').should('be.visible');
+      cy.getByTestId('get-started-button').should('not.be.disabled');
+      cy.getByTestId('dialog-close').click();
+      cy.url().should('eq', Cypress.config().baseUrl + `/#/markets/all`);
+      cy.window().then((window) => {
+        expect(window.localStorage.getItem('vega_onboarding_viewed')).to.equal(
+          'true'
+        );
       });
-      cy.visit('/');
-      cy.wait('@Markets');
-      cy.wait('@MarketsData');
-      cy.getByTestId('welcome-notice-title').should(
-        'contain.text',
-        'Welcome to Console'
-      );
-      cy.getByTestId('external-link')
-        .contains('Propose a market')
-        .should('exist');
+    });
+
+    it('click browse markets button should redirect to market/all', () => {
+      cy.getByTestId('welcome-dialog').should('be.visible');
+      cy.getByTestId('browse-markets-button').click();
+      cy.url().should('eq', Cypress.config().baseUrl + `/#/markets/all`);
+      cy.window().then((window) => {
+        expect(window.localStorage.getItem('vega_onboarding_viewed')).to.equal(
+          'true'
+        );
+      });
+    });
+
+    it('click get started button should open connect dialog', () => {
+      cy.getByTestId('welcome-dialog').should('be.visible');
+      cy.getByTestId('get-started-button').click();
+      cy.url().should('eq', Cypress.config().baseUrl + `/#/markets/all`);
+      cy.window().then((window) => {
+        expect(window.localStorage.getItem('vega_onboarding_viewed')).to.equal(
+          'true'
+        );
+      });
+      cy.getByTestId('wallet-dialog-title').should('contain.text', 'Connect');
     });
   });
 
@@ -185,7 +185,7 @@ describe('home', { tags: '@regression' }, () => {
       cy.window().then((window) => {
         window.localStorage.setItem('marketId', 'market-1');
         cy.visit('/');
-        cy.wait('@Markets');
+        cy.getByTestId('dialog-close').click();
         cy.location('hash').should('equal', '#/markets/market-1');
         cy.getByTestId(dialogContent).should('not.exist');
       });
@@ -199,6 +199,7 @@ describe('home', { tags: '@regression' }, () => {
         });
         cy.visit('/');
         cy.wait('@Markets');
+        cy.getByTestId('dialog-close').click();
         cy.location('hash').should('equal', '#/markets/market-not-existing');
         cy.getByTestId(dialogContent).should('not.exist');
       });

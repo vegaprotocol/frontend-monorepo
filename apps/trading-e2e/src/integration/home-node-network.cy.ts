@@ -4,6 +4,7 @@ const nodeHealthTrigger = 'node-health-trigger';
 
 describe('home', { tags: '@regression' }, () => {
   before(() => {
+    cy.setOnBoardingViewed();
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/');

@@ -1,10 +1,10 @@
-import { t } from '@vegaprotocol/i18n';
-import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { FillsManager } from '@vegaprotocol/fills';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
+import { t } from '@vegaprotocol/i18n';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 

@@ -1,7 +1,6 @@
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
+import { Filter, OrderListManager } from '@vegaprotocol/orders';
 import { t } from '@vegaprotocol/i18n';
-import { Filter } from '@vegaprotocol/orders';
-import { OrderListManager } from '@vegaprotocol/orders';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import {

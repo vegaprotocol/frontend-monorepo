@@ -21,6 +21,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   before(() => {
+    cy.setOnBoardingViewed();
     cy.mockTradingPage(MarketState.STATE_ACTIVE);
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');

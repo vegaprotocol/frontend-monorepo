@@ -202,6 +202,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
   const specDataConnection = createDataConnection();
 
   before(() => {
+    cy.setOnBoardingViewed();
     cy.mockGQL((req) => {
       aliasGQLQuery(req, 'ChainId', chainIdQuery());
       aliasGQLQuery(req, 'Statistics', statisticsQuery());
@@ -455,6 +456,7 @@ describe('no closed markets', { tags: '@smoke', testIsolation: true }, () => {
   before(() => {
     cy.mockTradingPage();
     cy.mockSubscription();
+    cy.setOnBoardingViewed();
     cy.visit('/#/markets/all');
     cy.get('[data-testid="Closed markets"]').click();
   });

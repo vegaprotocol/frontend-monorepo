@@ -28,6 +28,16 @@ describe('VegaWalletConnectButton', () => {
     render(generateJsx({ pubKey: null } as VegaWalletContextShape));
 
     const button = screen.getByTestId('connect-vega-wallet');
+    expect(button).toHaveTextContent('Get started');
+    fireEvent.click(button);
+    expect(mockUpdateDialogOpen).toHaveBeenCalled();
+  });
+
+  it('should render "Connect" when browser wallet is detected', () => {
+    window.vega = window.vega || ({} as Vega);
+    render(generateJsx({ pubKey: null } as VegaWalletContextShape));
+
+    const button = screen.getByTestId('connect-vega-wallet');
     expect(button).toHaveTextContent('Connect');
     fireEvent.click(button);
     expect(mockUpdateDialogOpen).toHaveBeenCalled();

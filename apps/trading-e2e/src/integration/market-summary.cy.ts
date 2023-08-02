@@ -30,6 +30,7 @@ describe('Market trading page', () => {
       Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
     );
     cy.mockSubscription();
+    cy.setOnBoardingViewed();
     cy.visit('/#/markets/market-0');
     cy.wait('@MarketData');
     cy.getByTestId(marketSummaryBlock).should('be.visible');

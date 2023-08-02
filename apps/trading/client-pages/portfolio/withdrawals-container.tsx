@@ -7,7 +7,6 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { ViewType, useSidebar } from '../../components/sidebar';
 
 export const WithdrawalsContainer = () => {
@@ -21,7 +20,7 @@ export const WithdrawalsContainer = () => {
   const { ready, delayed } = useIncompleteWithdrawals();
 
   return (
-    <VegaWalletContainer>
+    <>
       <div className="h-full relative">
         <WithdrawalsTable
           data-testid="withdrawals-history"
@@ -43,6 +42,6 @@ export const WithdrawalsContainer = () => {
           </Button>
         </div>
       )}
-    </VegaWalletContainer>
+    </>
   );
 };
