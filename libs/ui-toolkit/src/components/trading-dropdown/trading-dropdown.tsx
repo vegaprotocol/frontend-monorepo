@@ -75,7 +75,7 @@ export const TradingDropdownContent = forwardRef<
     <DropdownMenuPrimitive.Content
       ref={forwardedRef}
       className={classNames(
-        'min-w-[290px] bg-vega-clight-700 dark:bg-vega-cdark-700',
+        'bg-vega-clight-700 dark:bg-vega-cdark-700',
         'border border-vega-clight-500 dark:border-vega-cdark-500',
         'p-2 rounded z-20 text-default'
       )}

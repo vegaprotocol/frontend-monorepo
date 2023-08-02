@@ -119,6 +119,11 @@ const MainGrid = memo(
               <Tab id="orders" name={t('All')}>
                 <TradingViews.orders.component marketId={marketId} />
               </Tab>
+              {FLAGS.STOP_ORDERS ? (
+                <Tab id="stop-orders" name={t('Stop orders')}>
+                  <TradingViews.stopOrders.component />
+                </Tab>
+              ) : null}
               <Tab id="fills" name={t('Fills')}>
                 <TradingViews.fills.component
                   marketId={marketId}

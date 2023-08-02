@@ -44,12 +44,12 @@ export const DealTicketLimitAmount = ({
 
   return (
     <div className="mb-2">
-      <div className="flex items-center gap-4">
+      <div className="flex items-start gap-4">
         <div className="flex-1">
           <FormGroup
             label={t('Size')}
             labelFor="input-order-size-limit"
-            className="!mb-1"
+            className="!mb-0"
           >
             <Controller
               name="size"
@@ -78,16 +78,13 @@ export const DealTicketLimitAmount = ({
             />
           </FormGroup>
         </div>
-        <div className="flex-0 items-center">
-          <div className="flex">&nbsp;</div>
-          <div className="flex">@</div>
-        </div>
+        <div className="pt-7 leading-10">@</div>
         <div className="flex-1">
           <FormGroup
             labelFor="input-price-quote"
             label={t(`Price (${quoteName})`)}
             labelAlign="right"
-            className="!mb-1"
+            className="!mb-0"
           >
             <Controller
               name="price"

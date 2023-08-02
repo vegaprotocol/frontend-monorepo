@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import get from 'lodash/get';
 
 interface MarketNameCellProps {
-  value?: string;
+  value?: string | null;
   data?: { id?: string; marketId?: string; market?: { id: string } };
   idPath?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;

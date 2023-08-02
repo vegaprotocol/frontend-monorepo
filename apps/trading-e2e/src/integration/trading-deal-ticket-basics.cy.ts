@@ -29,16 +29,16 @@ describe('deal ticket basics', { tags: '@smoke' }, () => {
 
   it('must be able to select order direction - long/short', function () {
     // 7002-SORD-004
-    cy.getByTestId(toggleShort).click().children('input').should('be.checked');
-    cy.getByTestId(toggleLong).click().children('input').should('be.checked');
+    cy.getByTestId(toggleShort).click().next('input').should('be.checked');
+    cy.getByTestId(toggleLong).click().next('input').should('be.checked');
   });
 
   it('must be able to select order type - limit/market', function () {
     // 7002-SORD-005
     // 7002-SORD-006
     // 7002-SORD-007
-    cy.getByTestId(toggleLimit).click().children('input').should('be.checked');
-    cy.getByTestId(toggleMarket).click().children('input').should('be.checked');
+    cy.getByTestId(toggleLimit).click().next('input').should('be.checked');
+    cy.getByTestId(toggleMarket).click().next('input').should('be.checked');
   });
 
   it('order connect vega wallet button should connect', () => {
@@ -52,7 +52,7 @@ describe('deal ticket basics', { tags: '@smoke' }, () => {
       .click();
     cy.wait('@walletReq');
     cy.getByTestId(placeOrderBtn).should('be.visible');
-    cy.getByTestId(toggleLimit).children('input').should('be.checked');
+    cy.getByTestId(toggleLimit).next('input').should('be.checked');
     cy.getByTestId(orderPriceField).should('have.value', '101');
   });
 });
