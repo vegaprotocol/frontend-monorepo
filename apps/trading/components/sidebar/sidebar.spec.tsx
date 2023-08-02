@@ -153,14 +153,14 @@ describe('SidebarContent', () => {
 
 describe('SidebarButton', () => {
   it.each([ViewType.Info, ViewType.Deposit, ViewType.ViewAs])(
-    'runs given action when clicked regardless of requested view (%s)',
+    'runs given callback regardless of requested view (%s)',
     async (view) => {
-      const actionFn = jest.fn();
+      const onClick = jest.fn();
       render(
         <SidebarButton
           icon={VegaIconNames.INFO}
           tooltip="INFO"
-          action={actionFn}
+          onClick={onClick}
           view={view}
         />
       );
@@ -168,7 +168,7 @@ describe('SidebarButton', () => {
       const btn = screen.getByTestId(view);
       await userEvent.click(btn);
 
-      expect(actionFn).toBeCalled();
+      expect(onClick).toBeCalled();
     }
   );
 });

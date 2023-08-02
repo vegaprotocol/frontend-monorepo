@@ -53,10 +53,6 @@ type SidebarView =
       type: ViewType.Settings;
     };
 
-const ZERO_CONTENT_VIEWS = [ViewType.ViewAs];
-const hasContent = (view?: ViewType): view is SidebarView['type'] =>
-  Boolean(view && !ZERO_CONTENT_VIEWS.includes(view));
-
 export const Sidebar = () => {
   const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
   const setViewAsDialogOpen = useViewAsDialog((state) => state.setOpen);
@@ -114,11 +110,11 @@ export const Sidebar = () => {
       <nav className={classNames(navClasses, 'ml-auto lg:mt-auto lg:ml-0')}>
         <SidebarButton
           view={ViewType.ViewAs}
-          action={() => {
+          onClick={() => {
             setViewAsDialogOpen(true);
           }}
           icon={VegaIconNames.EYE}
-          tooltip={t('View as')}
+          tooltip={t('View as party')}
         />
         <SidebarButton
           view={ViewType.Settings}
@@ -135,17 +131,26 @@ export const SidebarButton = ({
   view,
   icon,
   tooltip,
-  action,
+  onClick,
 }: {
   view?: ViewType;
   icon: VegaIconNames;
   tooltip: string;
-  action?: () => void;
+  onClick?: () => void;
 }) => {
   const { currView, setView } = useSidebar((store) => ({
     currView: store.view,
     setView: store.setView,
   }));
+
+  const onSelect = (view: SidebarView['type']) => {
+    if (view === currView?.type) {
+      setView(null);
+    } else {
+      setView({ type: view });
+    }
+  };
+
   const buttonClasses = classNames('flex items-center p-1 rounded', {
     'text-vega-clight-200 dark:text-vega-cdark-200 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500':
       !view || view !== currView?.type,
@@ -163,15 +168,7 @@ export const SidebarButton = ({
       <button
         className={buttonClasses}
         data-testid={view}
-        onClick={() => {
-          if (action) action();
-
-          if (!hasContent(view) || view === currView?.type) {
-            setView(null);
-          } else {
-            setView({ type: view });
-          }
-        }}
+        onClick={onClick || (() => onSelect(view as SidebarView['type']))}
       >
         <VegaIcon name={icon} size={20} />
       </button>
