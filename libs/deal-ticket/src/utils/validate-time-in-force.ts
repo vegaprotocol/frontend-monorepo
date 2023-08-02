@@ -1,6 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
 import { MarketModeValidationType } from '../constants';
-import { isMarketInAuction } from './is-market-in-auction';
+import { isMarketInAuction } from '@vegaprotocol/markets';
 
 export const validateTimeInForce = (
   marketTradingMode: Schema.MarketTradingMode,

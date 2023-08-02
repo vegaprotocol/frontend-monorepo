@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import type { ReactElement, ReactNode } from 'react';
 import { Children, isValidElement, useState } from 'react';
 export interface TabsProps extends TabsPrimitive.TabsProps {
-  children: ReactElement<TabProps>[];
+  children: (ReactElement<TabProps> | null)[];
 }
 
 export const Tabs = ({
@@ -17,11 +17,11 @@ export const Tabs = ({
   onValueChange,
   ...props
 }: TabsProps) => {
-  const [activeTab, setActiveTab] = useState<string>(() => {
+  const [activeTab, setActiveTab] = useState<string | undefined>(() => {
     if (defaultValue) {
       return defaultValue;
     }
-    return children[0].props.id;
+    return children.find((v) => v)?.props.id;
   });
 
   return (
@@ -112,7 +112,10 @@ export const LocalStoragePersistTabs = ({
       children={children}
       value={getValidItem(
         value,
-        Children.map(children, (child) => child.props.id),
+        Children.map(
+          children.filter((c): c is ReactElement<TabProps> => c !== null),
+          (child) => child.props.id
+        ),
         undefined
       )}
       onValueChange={onValueChange}
