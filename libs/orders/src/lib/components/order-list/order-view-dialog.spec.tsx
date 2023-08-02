@@ -189,5 +189,8 @@ describe('OrderViewDialog', () => {
     expect(await screen.getByTestId('order-remaining-value')).toHaveTextContent(
       '+5.00'
     );
+    expect(
+      await screen.getByTestId('order-iceberg-order-reserved-remaining-value')
+    ).toHaveTextContent('5.00');
   });
 });
