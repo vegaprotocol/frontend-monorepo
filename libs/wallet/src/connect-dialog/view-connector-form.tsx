@@ -2,9 +2,10 @@ import { t } from '@vegaprotocol/i18n';
 import {
   Button,
   FormGroup,
-  Icon,
   Input,
   InputError,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import type { ViewConnector } from '../connectors';
@@ -56,7 +57,11 @@ export function ViewConnectorForm({
           className="absolute p-2 top-0 left-0 md:top-2 md:left-2"
           data-testid="back-button"
         >
-          <Icon name={'chevron-left'} ariaLabel="back" size={4} />
+          <VegaIcon
+            name={VegaIconNames.CHEVRON_LEFT}
+            aria-label="back"
+            size={16}
+          />
         </button>
       )}
       <form onSubmit={handleSubmit(onSubmit)} data-testid="view-connector-form">
