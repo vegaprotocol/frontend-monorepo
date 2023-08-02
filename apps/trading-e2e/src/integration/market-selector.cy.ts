@@ -12,6 +12,7 @@ describe('markets selector', { tags: '@smoke' }, () => {
     cy.window().then((window) => {
       window.localStorage.setItem('marketId', 'market-1');
     });
+    cy.setOnBoardingViewed();
     cy.mockTradingPage(
       MarketState.STATE_ACTIVE,
       MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,

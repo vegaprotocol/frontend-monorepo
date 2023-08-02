@@ -17,11 +17,11 @@ const verifiedProofs = 'verified-proofs';
 
 describe('market info is displayed', { tags: '@smoke' }, () => {
   beforeEach(() => {
-    cy.setOnBoardingViewed();
     cy.mockTradingPage();
   });
 
   before(() => {
+    cy.setOnBoardingViewed();
     cy.mockTradingPage(MarketState.STATE_ACTIVE);
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
