@@ -100,7 +100,6 @@ describe('markets proposed table', { tags: '@smoke' }, () => {
           'VEGA_TOKEN_URL'
         )}/proposals/e9ec6d5c46a7e7bcabf9ba7a893fa5a5eeeec08b731f06f7a6eb7bf0e605b829`
       );
-    cy.getByTestId('proposal-actions-content').click();
   });
 
   // 6001-MARK-060
@@ -214,11 +213,12 @@ describe('no markets proposed', { tags: '@smoke', testIsolation: true }, () => {
       aliasGQLQuery(req, 'ProposalsList', proposal);
     });
     cy.mockSubscription();
-    cy.visit('/#/markets/all');
-    cy.get('[data-testid="Proposed markets"]').click();
   });
 
   it('can see no markets message', () => {
+    cy.visit('/#/markets/all');
+    cy.get('[data-testid="Proposed markets"]').click();
+
     // 6001-MARK-061
     cy.getByTestId('tab-proposed-markets').should('contain.text', 'No markets');
   });

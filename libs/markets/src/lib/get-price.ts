@@ -1,6 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
 import { isMarketInAuction } from './is-market-in-auction';
-import type { MarketData } from '@vegaprotocol/markets';
+import type { MarketData } from './market-data-provider';
 
 /**
  * Get the market price based on market mode (auction or not auction)
@@ -33,19 +33,16 @@ export const getDerivedPrice = (
     type: Schema.OrderType;
     price?: string | undefined;
   },
-  marketData: MarketData
+  marketPrice: string
 ) => {
   // If order type is market we should use either the mark price
   // or the uncrossing price. If order type is limit use the price
   // the user has input
 
   // Use the market price if order is a market order
-  let price;
-  if (order.type === Schema.OrderType.TYPE_LIMIT && order.price) {
-    price = order.price;
-  } else {
-    price = getMarketPrice(marketData);
-  }
-
+  const price =
+    order.type === Schema.OrderType.TYPE_LIMIT && order.price
+      ? order.price
+      : marketPrice;
   return price === '0' ? undefined : price;
 };

@@ -4,9 +4,10 @@ import classNames from 'classnames';
 
 interface Props {
   side: Side;
+  label?: string;
 }
 
-export const DealTicketButton = ({ side }: Props) => {
+export const DealTicketButton = ({ side, label }: Props) => {
   const buttonClasses = classNames(
     'px-10 py-2 uppercase rounded-md text-white w-full',
     {
@@ -17,7 +18,7 @@ export const DealTicketButton = ({ side }: Props) => {
   return (
     <div className="mb-2">
       <button type="submit" data-testid="place-order" className={buttonClasses}>
-        {t('Place order')}
+        {label || t('Place order')}
       </button>
     </div>
   );
