@@ -69,6 +69,18 @@ export const OrderListTable = memo<
             cellClass: 'font-mono text-right',
             type: 'rightAligned',
             valueGetter: ({ data }: VegaValueGetterParams<Order>) => {
+              if (data?.icebergOrder) {
+                return data?.size && data.market
+                  ? toBigNum(
+                      (
+                        BigInt(data.size) -
+                        BigInt(data.remaining) -
+                        BigInt(data.icebergOrder.reservedRemaining)
+                      ).toString(),
+                      data.market.positionDecimalPlaces ?? 0
+                    ).toNumber()
+                  : undefined;
+              }
               return data?.size && data.market
                 ? toBigNum(
                     (BigInt(data.size) - BigInt(data.remaining)).toString(),
