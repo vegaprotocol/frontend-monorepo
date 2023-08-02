@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { t } from '@vegaprotocol/i18n';
 import { ExternalLink, Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import * as constants from '../constants';
 import { isBrowserWalletInstalled } from '@vegaprotocol/utils';
@@ -40,8 +40,8 @@ export const GetStarted = ({ lead }: Props) => {
         )}
         data-testid="get-started-banner"
       >
-        {lead && <div>{lead}</div>}
-        <div>{t('Get started')}</div>
+        {lead && <h2>{lead}</h2>}
+        <h3>{t('Get started')}</h3>
         <div>
           <ul className="list-decimal list-inside">
             <li>{t('Get a Vega wallet')}</li>
@@ -60,7 +60,7 @@ export const GetStarted = ({ lead }: Props) => {
             {t('Get started')}
           </TradingButton>
         </div>
-        {VEGA_ENV === 'MAINNET' && (
+        {VEGA_ENV === Networks.MAINNET && (
           <div className="text-sm">
             {t('Experiment for free with virtual assets on')}{' '}
             <ExternalLink href={CANONICAL_URL}>
@@ -68,7 +68,7 @@ export const GetStarted = ({ lead }: Props) => {
             </ExternalLink>
           </div>
         )}
-        {VEGA_ENV === 'TESTNET' && (
+        {VEGA_ENV === Networks.TESTNET && (
           <div className="text-sm">
             {t('Ready to trade with real funds?')}{' '}
             <ExternalLink href={CANONICAL_URL}>

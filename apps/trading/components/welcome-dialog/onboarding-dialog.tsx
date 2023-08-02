@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import * as constants from '../constants';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { Networks, useEnvironment } from '@vegaprotocol/environment';
 
 export const OnboardingDialog = () => {
   const { VEGA_ENV } = useEnvironment();
@@ -19,7 +19,7 @@ export const OnboardingDialog = () => {
     setOnboardingViewed('true');
   };
   const lead =
-    VEGA_ENV === 'MAINNET'
+    VEGA_ENV === Networks.MAINNET
       ? t('Start trading on the worlds most advanced decentralised exchange.')
       : t(
           'Free from the risks of real trading, Fairground is a safe and fun place to try out Vega yourself with virtual assets.'
@@ -29,14 +29,13 @@ export const OnboardingDialog = () => {
       <div className="flex gap-8">
         <div className="w-1/2 flex flex-col justify-between pt-3">
           <ul className="ml-0">
-            <li className="my-3 flex gap-3 text-vega-clight-50 dark:text-vega-cdark-50">
-              <div className="w-[48px] h-[48px] shrink-0 pt-1.5">
+            <li className="my-3 flex gap-3 text-default">
+              <div className="shrink-0 pt-1.5">
                 <svg
                   width="40"
                   height="40"
                   viewBox="0 0 30 30"
                   fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <rect x="14" y="20" width="2" height="2" />
                   <rect x="12" y="18" width="2" height="2" />
@@ -71,13 +70,12 @@ export const OnboardingDialog = () => {
               </div>
             </li>
             <li className="my-3 flex gap-3 text-vega-clight-50 dark:text-vega-cdark-50">
-              <div className="w-[48px] h-[48px] shrink-0 pt-1.5">
+              <div className="shrink-0 pt-1.5">
                 <svg
                   width="40"
                   height="40"
                   viewBox="0 0 30 30"
                   fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <g clip-path="url(#clip0_5168_49089)">
                     <path d="M22 7H18V9H22V7Z" />
@@ -115,13 +113,12 @@ export const OnboardingDialog = () => {
               </div>
             </li>
             <li className="my-3 flex gap-3 text-vega-clight-50 dark:text-vega-cdark-50">
-              <div className="w-[48px] h-[48px] shrink-0 pt-1.5">
+              <div className="shrink-0 pt-1.5">
                 <svg
                   width="40"
                   height="40"
                   viewBox="0 0 30 30"
                   fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <rect x="6" y="16" width="4" height="2" />
                   <rect x="10" y="14" width="2" height="2" />

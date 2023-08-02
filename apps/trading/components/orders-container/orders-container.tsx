@@ -1,6 +1,7 @@
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
-import { Filter } from '@vegaprotocol/orders';
-import { OrderListManager } from '@vegaprotocol/orders';
+import { Filter, OrderListManager } from '@vegaprotocol/orders';
+import { t } from '@vegaprotocol/i18n';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
   useMarketClickHandler,
@@ -38,7 +39,7 @@ export const OrdersContainer = ({ marketId, filter }: OrderContainerProps) => {
   });
 
   if (!pubKey) {
-    return null;
+    return <Splash>{t('Please connect Vega wallet')}</Splash>;
   }
 
   return (

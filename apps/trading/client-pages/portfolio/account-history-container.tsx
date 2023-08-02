@@ -71,7 +71,7 @@ export const AccountHistoryContainer = () => {
   const { data: assets } = useAssetsDataProvider();
 
   if (!pubKey) {
-    return <Splash>{t('Connect wallet')}</Splash>;
+    return <Splash>{t('Please connect Vega wallet')}</Splash>;
   }
 
   return (

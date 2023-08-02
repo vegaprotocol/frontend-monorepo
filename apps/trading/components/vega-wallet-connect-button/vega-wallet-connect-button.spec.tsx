@@ -33,7 +33,7 @@ describe('VegaWalletConnectButton', () => {
     expect(mockUpdateDialogOpen).toHaveBeenCalled();
   });
 
-  it('should be "Connect" in the button', () => {
+  it('should render "Connect" when browser wallet is detected', () => {
     window.vega = window.vega || ({} as Vega);
     render(generateJsx({ pubKey: null } as VegaWalletContextShape));
 
