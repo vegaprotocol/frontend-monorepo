@@ -64,20 +64,20 @@ export const GetStarted = ({ lead }: Props) => {
           </TradingButton>
         </div>
         {VEGA_ENV === Networks.MAINNET && (
-          <div className="text-sm">
+          <p className="text-sm">
             {t('Experiment for free with virtual assets on')}{' '}
             <ExternalLink href={CANONICAL_URL}>
               {t('Fairground Testnet')}
             </ExternalLink>
-          </div>
+          </p>
         )}
         {VEGA_ENV === Networks.TESTNET && (
-          <div className="text-sm">
+          <p className="text-sm">
             {t('Ready to trade with real funds?')}{' '}
             <ExternalLink href={CANONICAL_URL}>
               {t('Switch to Mainnet')}
             </ExternalLink>
-          </div>
+          </p>
         )}
       </div>
     );
