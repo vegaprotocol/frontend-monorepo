@@ -36,6 +36,7 @@ const headers = [
 
 describe('liquidity table - trading', { tags: '@smoke' }, () => {
   before(() => {
+    cy.setOnBoardingViewed();
     cy.mockSubscription();
     cy.mockTradingPage(
       Schema.MarketState.STATE_ACTIVE,
@@ -119,6 +120,7 @@ describe('liquidity table - trading', { tags: '@smoke' }, () => {
 
 describe('liquidity table view', { tags: '@smoke' }, () => {
   before(() => {
+    cy.setOnBoardingViewed();
     cy.mockSubscription();
     cy.mockTradingPage(
       Schema.MarketState.STATE_ACTIVE,

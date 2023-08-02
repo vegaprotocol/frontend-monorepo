@@ -17,6 +17,7 @@ const verifiedProofs = 'verified-proofs';
 
 describe('market info is displayed', { tags: '@smoke' }, () => {
   beforeEach(() => {
+    cy.setOnBoardingViewed();
     cy.mockTradingPage();
   });
 
