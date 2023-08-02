@@ -101,26 +101,24 @@ export const CandlesChartContainer = ({
   }, [client, marketId, pubKey]);
 
   return (
-    <div className="h-full">
-      <CandlestickChart
-        dataSource={dataSource}
-        options={{
-          chartType: chartType,
-          overlays: overlays,
-          studies: studies,
-          notEnoughDataText: (
-            <span className="text-xs text-center">{t('No data')}</span>
-          ),
-        }}
-        interval={interval}
-        theme={theme}
-        onOptionsChanged={(options) => {
-          settings.merge({
-            overlays: options.overlays,
-            studies: options.studies,
-          });
-        }}
-      />
-    </div>
+    <CandlestickChart
+      dataSource={dataSource}
+      options={{
+        chartType: chartType,
+        overlays: overlays,
+        studies: studies,
+        notEnoughDataText: (
+          <span className="text-xs text-center">{t('No data')}</span>
+        ),
+      }}
+      interval={interval}
+      theme={theme}
+      onOptionsChanged={(options) => {
+        settings.merge({
+          overlays: options.overlays,
+          studies: options.studies,
+        });
+      }}
+    />
   );
 };
