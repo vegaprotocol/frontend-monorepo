@@ -16,7 +16,7 @@ import { WithdrawContainer } from '../withdraw-container';
 import { Routes as AppRoutes } from '../../pages/client-router';
 import { persist } from 'zustand/middleware';
 import { GetStarted } from '../welcome-dialog';
-import { useViewAsDialog } from '@vegaprotocol/wallet';
+import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
 
 const STORAGE_KEY = 'vega_sidebar_store';
 
@@ -56,6 +56,7 @@ type SidebarView =
 export const Sidebar = () => {
   const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
   const setViewAsDialogOpen = useViewAsDialog((state) => state.setOpen);
+  const { pubKeys } = useVegaWallet();
   return (
     <div className="flex lg:flex-col gap-2 h-full p-1" data-testid="sidebar">
       <nav className={navClasses}>
@@ -115,7 +116,9 @@ export const Sidebar = () => {
           }}
           icon={VegaIconNames.EYE}
           tooltip={t('View as party')}
+          disabled={Boolean(pubKeys)}
         />
+
         <SidebarButton
           view={ViewType.Settings}
           icon={VegaIconNames.COG}
@@ -131,11 +134,13 @@ export const SidebarButton = ({
   view,
   icon,
   tooltip,
+  disabled = false,
   onClick,
 }: {
   view?: ViewType;
   icon: VegaIconNames;
   tooltip: string;
+  disabled?: boolean;
   onClick?: () => void;
 }) => {
   const { currView, setView } = useSidebar((store) => ({
@@ -156,7 +161,10 @@ export const SidebarButton = ({
       !view || view !== currView?.type,
     'bg-vega-yellow hover:bg-vega-yellow-550 text-black':
       view && view === currView?.type,
+    'cursor-not-allowed text-vega-clight-500 hover:bg-inherit dark:text-vega-cdark-500 dark:hover:bg-inherit':
+      disabled,
   });
+
   return (
     <Tooltip
       description={tooltip}
@@ -169,6 +177,7 @@ export const SidebarButton = ({
         className={buttonClasses}
         data-testid={view}
         onClick={onClick || (() => onSelect(view as SidebarView['type']))}
+        disabled={disabled}
       >
         <VegaIcon name={icon} size={20} />
       </button>
