@@ -38,7 +38,7 @@ export const WelcomeDialog = () => {
     title = (
       <span className="font-alpha calt" data-testid="welcome-title">
         {t('Console')}{' '}
-        <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+        <span className="text-vega-clight-100 dark:text-vega-cdark-100">
           {VEGA_ENV}
         </span>
       </span>
