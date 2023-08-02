@@ -35,6 +35,8 @@ describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
     cy.setVegaWallet();
 
     cy.visit('/');
+    cy.getByTestId(manageVegaWallet).click();
+    cy.getByTestId(walletTransfer).click();
 
     cy.wait('@Assets');
     cy.wait('@Accounts');
@@ -57,7 +59,6 @@ describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
     // 1003-TRAN-019
     cy.getByTestId(transferForm);
     cy.contains('Enter manually').click();
-
     cy.getByTestId(transferForm)
       .find(toAddressField)
       .type('7f9cf07d3a9905b1a61a1069f7a758855da428bc0f4a97de87f48644bfc25535');

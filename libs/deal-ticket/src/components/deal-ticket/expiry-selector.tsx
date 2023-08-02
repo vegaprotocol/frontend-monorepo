@@ -1,6 +1,7 @@
 import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { formatForInput } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
+import { useRef } from 'react';
 
 interface ExpirySelectorProps {
   value?: string;
@@ -13,7 +14,8 @@ export const ExpirySelector = ({
   onSelect,
   errorMessage,
 }: ExpirySelectorProps) => {
-  const date = value ? new Date(value) : new Date();
+  const now = useRef(new Date());
+  const date = value ? new Date(value) : now.current;
   const dateFormatted = formatForInput(date);
   const minDate = formatForInput(date);
   return (

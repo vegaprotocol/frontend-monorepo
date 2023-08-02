@@ -7,6 +7,8 @@ import {
   isOrderAmendmentTransaction,
   isBatchMarketInstructionsTransaction,
   isTransferTransaction,
+  isStopOrdersSubmissionTransaction,
+  isStopOrdersCancellationTransaction,
 } from './connectors';
 import { determineId } from './utils';
 
@@ -196,9 +198,16 @@ export const useVegaTransactionStore = create<VegaTransactionStore>()(
               isOrderCancellationTransaction(transaction.body) &&
               !transaction.body.orderCancellation.orderId;
             const isConfirmedTransfer = isTransferTransaction(transaction.body);
+            const isConfirmedStopOrderCancellation =
+              isStopOrdersCancellationTransaction(transaction.body);
+            const isConfirmedStopOrderSubmission =
+              isStopOrdersSubmissionTransaction(transaction.body);
 
             if (
-              (isConfirmedOrderCancellation || isConfirmedTransfer) &&
+              (isConfirmedOrderCancellation ||
+                isConfirmedTransfer ||
+                isConfirmedStopOrderCancellation ||
+                isConfirmedStopOrderSubmission) &&
               !transactionResult.error &&
               transactionResult.status
             ) {
