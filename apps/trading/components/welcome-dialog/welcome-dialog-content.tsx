@@ -7,7 +7,7 @@ import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import * as constants from '../constants';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 
-export const OnboardingDialog = () => {
+export const WelcomeDialogContent = () => {
   const { VEGA_ENV } = useEnvironment();
   const [, setOnboardingViewed] = useLocalStorage(
     constants.ONBOARDING_VIEWED_KEY

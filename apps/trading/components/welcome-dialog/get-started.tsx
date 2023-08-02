@@ -1,11 +1,14 @@
 import classNames from 'classnames';
 import { t } from '@vegaprotocol/i18n';
 import { ExternalLink, Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import {
+  useVegaWallet,
+  useVegaWalletDialogStore,
+  isBrowserWalletInstalled,
+} from '@vegaprotocol/wallet';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import * as constants from '../constants';
-import { isBrowserWalletInstalled } from '@vegaprotocol/utils';
 
 interface Props {
   lead?: string;

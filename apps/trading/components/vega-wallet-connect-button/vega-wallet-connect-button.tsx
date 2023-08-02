@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { isBrowserWalletInstalled, truncateByChars } from '@vegaprotocol/utils';
+import { isBrowserWalletInstalled } from '@vegaprotocol/wallet';
+import { truncateByChars } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   VegaIcon,
