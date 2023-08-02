@@ -31,7 +31,7 @@ describe('Tabs', () => {
     expect(await screen.getByText('Tab two content')).toBeInTheDocument();
   });
 
-  it('shows the', async () => {
+  it('shows the menu component for the selected tab', async () => {
     render(
       <Tabs>
         <Tab
