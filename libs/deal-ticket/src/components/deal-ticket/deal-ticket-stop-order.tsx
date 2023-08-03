@@ -568,7 +568,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           </div>
         </>
       )}
-      <NoWalletWarning pubKey={pubKey} isReadOnly={isReadOnly} asset={asset} />
+      <NoWalletWarning isReadOnly={isReadOnly} />
       <DealTicketButton side={side} label={t('Submit Stop Order')} />
       <DealTicketFeeDetails
         order={{
