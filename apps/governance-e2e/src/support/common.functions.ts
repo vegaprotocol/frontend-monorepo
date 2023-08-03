@@ -107,7 +107,7 @@ export function dissociateFromSecondWalletKey() {
   cy.getByTestId('vega-in-wallet')
     .first()
     .within(() => {
-      cy.getByTestId('eth-wallet-associated-balances')
+      cy.getByTestId('eth-wallet-associated-balances', txTimeout)
         .last()
         .within(() => {
           cy.getByTestId('associated-key')
