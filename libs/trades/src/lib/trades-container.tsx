@@ -1,6 +1,4 @@
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type { AgGridReact } from 'ag-grid-react';
-import { useRef } from 'react';
 import { tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
 import { useCreateOrderStore } from '@vegaprotocol/orders';
