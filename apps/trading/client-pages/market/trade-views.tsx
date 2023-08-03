@@ -16,6 +16,7 @@ import { LiquidityContainer } from '../../components/liquidity-container';
 import type { OrderContainerProps } from '../../components/orders-container';
 import { OrdersContainer } from '../../components/orders-container';
 import { StopOrdersContainer } from '../../components/stop-orders-container';
+import { AccountsMenu } from '../../components/accounts-menu';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -85,6 +86,10 @@ export const TradingViews = {
     label: 'Stop',
     component: StopOrdersContainer,
   },
-  collateral: { label: 'Collateral', component: AccountsContainer },
+  collateral: {
+    label: 'Collateral',
+    component: AccountsContainer,
+    menu: AccountsMenu,
+  },
   fills: { label: 'Fills', component: FillsContainer },
 };

@@ -15,11 +15,9 @@ import { ViewType, useSidebar } from '../sidebar';
 
 export const AccountsContainer = ({
   pinnedAsset,
-  hideButtons,
   onMarketClick,
 }: {
   pinnedAsset?: PinnedAsset;
-  hideButtons?: boolean;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
@@ -66,25 +64,6 @@ export const AccountsContainer = ({
         pinnedAsset={pinnedAsset}
         gridProps={gridStoreCallbacks}
       />
-      {!isReadOnly && !hideButtons && (
-        <div className="flex gap-2 justify-end p-2 absolute bottom-0 right-0 dark:bg-black/75 bg-white/75 rounded">
-          <Button
-            variant="primary"
-            size="sm"
-            data-testid="open-transfer"
-            onClick={() => setView({ type: ViewType.Transfer })}
-          >
-            {t('Transfer')}
-          </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => setView({ type: ViewType.Deposit })}
-          >
-            {t('Deposit')}
-          </Button>
-        </div>
-      )}
     </div>
   );
 };

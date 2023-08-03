@@ -133,11 +133,14 @@ const MainGrid = memo(
                   onMarketClick={onMarketClick}
                 />
               </Tab>
-              <Tab id="accounts" name={t('Collateral')}>
+              <Tab
+                id="accounts"
+                name={t('Collateral')}
+                menu={<TradingViews.collateral.menu />}
+              >
                 <TradingViews.collateral.component
                   pinnedAsset={pinnedAsset}
                   onMarketClick={onMarketClick}
-                  hideButtons
                 />
               </Tab>
             </Tabs>
