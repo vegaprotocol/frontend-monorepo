@@ -1,9 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import { useCallback, useRef, useState } from 'react';
-import { Button } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { OrderListTable } from '../order-list/order-list';
-import { useHasAmendableOrder } from '../../order-hooks/use-has-amendable-order';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
@@ -24,7 +22,6 @@ export enum Filter {
 
 export interface OrderListManagerProps {
   partyId: string;
-  marketId?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
@@ -34,7 +31,6 @@ export interface OrderListManagerProps {
 
 export const OrderListManager = ({
   partyId,
-  marketId,
   onMarketClick,
   onOrderTypeClick,
   isReadOnly,
@@ -45,7 +41,6 @@ export const OrderListManager = ({
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const [viewOrder, setViewOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
-  const hasAmendableOrder = useHasAmendableOrder(marketId);
   const variables =
     filter === Filter.Open
       ? { partyId, filter: { liveOnly: true } }
@@ -76,12 +71,6 @@ export const OrderListManager = ({
     [create]
   );
 
-  const cancelAll = useCallback(() => {
-    create({
-      orderCancellation: {},
-    });
-  }, [create]);
-
   return (
     <>
       <div className="h-full relative">
@@ -100,9 +89,6 @@ export const OrderListManager = ({
           {...gridProps}
         />
       </div>
-      {!isReadOnly && hasAmendableOrder && (
-        <CancelAllOrdersButton onClick={cancelAll} />
-      )}
       {editOrder && (
         <OrderEditDialog
           isOpen={Boolean(editOrder)}
@@ -148,16 +134,3 @@ export const OrderListManager = ({
     </>
   );
 };
-
-const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (
-  <div className="dark:bg-black/75 bg-white/75 h-auto flex justify-end p-2 absolute bottom-0 right-0 rounded">
-    <Button
-      variant="primary"
-      size="sm"
-      onClick={onClick}
-      data-testid="cancelAll"
-    >
-      {t('Cancel all')}
-    </Button>
-  </div>
-);

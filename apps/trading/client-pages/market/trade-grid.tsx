@@ -102,26 +102,25 @@ const MainGrid = memo(
                   onMarketClick={onMarketClick}
                 />
               </Tab>
-              <Tab id="open-orders" name={t('Open')}>
-                <TradingViews.orders.component
-                  marketId={marketId}
-                  filter={Filter.Open}
-                />
+              <Tab
+                id="open-orders"
+                name={t('Open')}
+                menu={<TradingViews.activeOrders.menu marketId={marketId} />}
+              >
+                <TradingViews.orders.component filter={Filter.Open} />
               </Tab>
               <Tab id="closed-orders" name={t('Closed')}>
-                <TradingViews.orders.component
-                  marketId={marketId}
-                  filter={Filter.Closed}
-                />
+                <TradingViews.orders.component filter={Filter.Closed} />
               </Tab>
               <Tab id="rejected-orders" name={t('Rejected')}>
-                <TradingViews.orders.component
-                  marketId={marketId}
-                  filter={Filter.Rejected}
-                />
+                <TradingViews.orders.component filter={Filter.Rejected} />
               </Tab>
-              <Tab id="orders" name={t('All')}>
-                <TradingViews.orders.component marketId={marketId} />
+              <Tab
+                id="orders"
+                name={t('All')}
+                menu={<TradingViews.orders.menu marketId={marketId} />}
+              >
+                <TradingViews.orders.component />
               </Tab>
               {FLAGS.STOP_ORDERS ? (
                 <Tab id="stop-orders" name={t('Stop orders')}>

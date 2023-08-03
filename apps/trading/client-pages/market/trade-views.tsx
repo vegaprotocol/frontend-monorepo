@@ -6,7 +6,7 @@ import {
   CandlesChartContainer,
   CandlesMenu,
 } from '@vegaprotocol/candles-chart';
-import { Filter } from '@vegaprotocol/orders';
+import { Filter, OpenOrdersMenu } from '@vegaprotocol/orders';
 import { NO_MARKET } from './constants';
 import { OrderbookContainer } from '../../components/orderbook-container';
 import { FillsContainer } from '../../components/fills-container';
@@ -62,6 +62,7 @@ export const TradingViews = {
     component: (props: OrderContainerProps) => (
       <OrdersContainer {...props} filter={Filter.Open} />
     ),
+    menu: OpenOrdersMenu,
   },
   closedOrders: {
     label: 'Closed',
@@ -78,6 +79,7 @@ export const TradingViews = {
   orders: {
     label: 'All',
     component: OrdersContainer,
+    menu: OpenOrdersMenu,
   },
   stopOrders: {
     label: 'Stop',
