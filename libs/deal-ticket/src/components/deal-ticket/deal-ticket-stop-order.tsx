@@ -488,19 +488,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           </InputError>
         )}
       </div>
-      <div className="flex gap-2 pb-2 justify-end">
-        <Checkbox
-          name="reduce-only"
-          checked={true}
-          disabled={true}
-          label={
-            <Tooltip description={<span>{t(REDUCE_ONLY_TOOLTIP)}</span>}>
-              <span className="text-xs">{t('Reduce only')}</span>
-            </Tooltip>
-          }
-        />
-      </div>
-      <div className="mb-2">
+      <div className="flex gap-2 pb-2 justify-between">
         <Controller
           name="expire"
           control={control}
@@ -511,10 +499,20 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 onCheckedChange={onCheckedChange}
                 checked={value}
                 name="expire"
-                label={'Expire'}
+                label={<span className="text-xs">{t('Expire')}</span>}
               />
             );
           }}
+        />
+        <Checkbox
+          name="reduce-only"
+          checked={true}
+          disabled={true}
+          label={
+            <Tooltip description={<span>{t(REDUCE_ONLY_TOOLTIP)}</span>}>
+              <span className="text-xs">{t('Reduce only')}</span>
+            </Tooltip>
+          }
         />
       </div>
       {expire && (
