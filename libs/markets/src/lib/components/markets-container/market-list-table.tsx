@@ -1,11 +1,9 @@
-import React, { forwardRef } from 'react';
 import type { TypedDataAgGrid } from '@vegaprotocol/datagrid';
 import {
   AgGridLazy as AgGrid,
   PriceFlashCell,
   MarketNameCell,
 } from '@vegaprotocol/datagrid';
-import type { AgGridReact } from 'ag-grid-react';
 import type { MarketMaybeWithData } from '../../markets-provider';
 import { OracleStatus } from './oracle-status';
 import { useColumnDefs } from './use-column-defs';
