@@ -14,6 +14,7 @@ import {
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order } from '../order-data-provider';
+import { OrderViewDialog } from '../order-list/order-view-dialog';
 
 export enum Filter {
   'Open' = 'Open',
@@ -42,6 +43,7 @@ export const OrderListManager = ({
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
+  const [viewOrder, setViewOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
   const hasAmendableOrder = useHasAmendableOrder(marketId);
   const variables =
@@ -89,6 +91,7 @@ export const OrderListManager = ({
           filter={filter}
           onCancel={cancel}
           onEdit={setEditOrder}
+          onView={setViewOrder}
           onMarketClick={onMarketClick}
           onOrderTypeClick={onOrderTypeClick}
           isReadOnly={isReadOnly}
@@ -132,6 +135,14 @@ export const OrderListManager = ({
             create({ orderAmendment }, originalOrder);
             setEditOrder(null);
           }}
+        />
+      )}
+      {viewOrder && (
+        <OrderViewDialog
+          isOpen={Boolean(viewOrder)}
+          order={viewOrder}
+          onChange={() => setViewOrder(null)}
+          onMarketClick={onMarketClick}
         />
       )}
     </>
