@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { Button } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
@@ -46,25 +45,23 @@ export const AccountsContainer = ({
   }
 
   return (
-    <div className="h-full relative">
-      <AccountManager
-        partyId={pubKey}
-        onClickAsset={onClickAsset}
-        onClickWithdraw={(assetId) => {
-          setView({ type: ViewType.Withdraw, assetId });
-        }}
-        onClickDeposit={(assetId) => {
-          setView({ type: ViewType.Deposit, assetId });
-        }}
-        onClickTransfer={(assetId) => {
-          setView({ type: ViewType.Transfer, assetId });
-        }}
-        onMarketClick={onMarketClick}
-        isReadOnly={isReadOnly}
-        pinnedAsset={pinnedAsset}
-        gridProps={gridStoreCallbacks}
-      />
-    </div>
+    <AccountManager
+      partyId={pubKey}
+      onClickAsset={onClickAsset}
+      onClickWithdraw={(assetId) => {
+        setView({ type: ViewType.Withdraw, assetId });
+      }}
+      onClickDeposit={(assetId) => {
+        setView({ type: ViewType.Deposit, assetId });
+      }}
+      onClickTransfer={(assetId) => {
+        setView({ type: ViewType.Transfer, assetId });
+      }}
+      onMarketClick={onMarketClick}
+      isReadOnly={isReadOnly}
+      pinnedAsset={pinnedAsset}
+      gridProps={gridStoreCallbacks}
+    />
   );
 };
 

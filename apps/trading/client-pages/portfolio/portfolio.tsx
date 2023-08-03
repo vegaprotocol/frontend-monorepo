@@ -8,10 +8,10 @@ import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import { usePageTitleStore } from '../../stores';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { AccountsContainer } from '../../components/accounts-container';
-import { DepositsContainer } from './deposits-container';
+import { DepositsContainer } from '../../components/deposits-container';
 import { FillsContainer } from '../../components/fills-container';
 import { PositionsContainer } from '../../components/positions-container';
-import { WithdrawalsContainer } from './withdrawals-container';
+import { WithdrawalsContainer } from '../../components/withdrawals-container';
 import { OrdersContainer } from '../../components/orders-container';
 import { LedgerContainer } from '../../components/ledger-container';
 import { AccountHistoryContainer } from './account-history-container';
@@ -21,6 +21,9 @@ import {
   usePaneLayout,
 } from '../../components/resizable-grid';
 import { ViewType, useSidebar } from '../../components/sidebar';
+import { AccountsMenu } from '../../components/accounts-menu';
+import { DepositsMenu } from '../../components/deposits-menu';
+import { WithdrawalsMenu } from '../../components/withdrawals-menu';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -85,16 +88,21 @@ export const Portfolio = () => {
         >
           <PortfolioGridChild>
             <Tabs storageKey="console-portfolio-bottom">
-              <Tab id="collateral" name={t('Collateral')}>
+              <Tab
+                id="collateral"
+                name={t('Collateral')}
+                menu={<AccountsMenu />}
+              >
                 <AccountsContainer />
               </Tab>
-              <Tab id="deposits" name={t('Deposits')}>
+              <Tab id="deposits" name={t('Deposits')} menu={<DepositsMenu />}>
                 <DepositsContainer />
               </Tab>
               <Tab
                 id="withdrawals"
                 name={t('Withdrawals')}
                 indicator={<WithdrawalsIndicator />}
+                menu={<WithdrawalsMenu />}
               >
                 <WithdrawalsContainer />
               </Tab>
