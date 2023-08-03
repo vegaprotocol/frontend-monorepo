@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
@@ -6,7 +6,6 @@ import {
   isNumeric,
 } from '@vegaprotocol/utils';
 import type { ColDef } from 'ag-grid-community';
-import type { AgGridReact } from 'ag-grid-react';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import type {
   VegaICellRendererParams,
@@ -17,10 +16,9 @@ import type { DepositFieldsFragment } from './__generated__/Deposit';
 import { EtherscanLink } from '@vegaprotocol/environment';
 import { DepositStatusMapping } from '@vegaprotocol/types';
 
-export const DepositsTable = forwardRef<
-  AgGridReact,
-  TypedDataAgGrid<DepositFieldsFragment>
->((props, ref) => {
+export const DepositsTable = (
+  props: TypedDataAgGrid<DepositFieldsFragment>
+) => {
   const columnDefs = useMemo<ColDef[]>(
     () => [
       { headerName: 'Asset', field: 'asset.symbol' },
@@ -79,11 +77,10 @@ export const DepositsTable = forwardRef<
   );
   return (
     <AgGrid
-      ref={ref}
       defaultColDef={{ flex: 1 }}
       columnDefs={columnDefs}
       style={{ width: '100%', height: '100%' }}
       {...props}
     />
   );
-});
+};

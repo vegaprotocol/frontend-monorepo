@@ -2,17 +2,13 @@ import { render, screen, act } from '@testing-library/react';
 import { StopOrdersManager } from './stop-orders-manager';
 import * as useDataProviderHook from '@vegaprotocol/data-provider';
 import type { StopOrder } from '../order-data-provider/stop-orders-data-provider';
-import * as stopOrdersTableMock from '../stop-orders-table/stop-orders-table';
-import { forwardRef } from 'react';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
 
-// @ts-ignore StopOrdersTable is read only but we need to override with the forwardRef to
-// avoid warnings about padding refs
-stopOrdersTableMock.StopOrdersTable = forwardRef(() => (
-  <div>StopOrdersTable</div>
-));
+jest.mock('../stop-orders-table/stop-orders-table', () => ({
+  StopOrdersTable: () => <div>StopOrdersTable</div>,
+}));
 
 const generateJsx = () => {
   const pubKey = '0x123';

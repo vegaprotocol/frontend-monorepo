@@ -43,14 +43,15 @@ const defaultColDef = {
   filterParams: { buttons: ['reset'] },
   minWidth: 100,
 };
-
-export const MarketListTable = forwardRef<
-  AgGridReact,
-  TypedDataAgGrid<MarketMaybeWithData> & {
-    onMarketClick: (marketId: string, metaKey?: boolean) => void;
-    SuccessorMarketRenderer?: React.FC<{ value: string }>;
-  }
->(({ onMarketClick, SuccessorMarketRenderer, ...props }, ref) => {
+type Props = TypedDataAgGrid<MarketMaybeWithData> & {
+  onMarketClick: (marketId: string, metaKey?: boolean) => void;
+  SuccessorMarketRenderer?: React.FC<{ value: string }>;
+};
+export const MarketListTable = ({
+  onMarketClick,
+  SuccessorMarketRenderer,
+  ...props
+}: Props) => {
   const columnDefs = useColumnDefs({ onMarketClick });
   const components = {
     PriceFlashCell,
@@ -61,7 +62,6 @@ export const MarketListTable = forwardRef<
     <AgGrid
       style={{ width: '100%', height: '100%' }}
       getRowId={getRowId}
-      ref={ref}
       defaultColDef={defaultColDef}
       columnDefs={columnDefs}
       suppressCellFocus
@@ -69,6 +69,6 @@ export const MarketListTable = forwardRef<
       {...props}
     />
   );
-});
+};
 
 export default MarketListTable;

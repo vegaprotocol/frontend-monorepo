@@ -11,7 +11,6 @@ interface TradesContainerProps {
 }
 
 export const TradesContainer = ({ marketId }: TradesContainerProps) => {
-  const gridRef = useRef<AgGridReact | null>(null);
   const useOrderStoreRef = useCreateOrderStore();
   const updateOrder = useOrderStoreRef((store) => store.update);
 
@@ -22,7 +21,6 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
 
   return (
     <TradesTable
-      ref={gridRef}
       rowData={data}
       onClick={(price?: string) => {
         if (price) {
