@@ -98,3 +98,5 @@ export const normalizeTransfer = <T extends Exact<Transfer, T>>(
     oneOff: {},
   };
 };
+
+export const isBrowserWalletInstalled = () => Boolean(window.vega);
