@@ -4,6 +4,7 @@ describe('Settings page', { tags: '@smoke' }, () => {
 
     cy.mockTradingPage();
     cy.mockSubscription();
+    cy.setOnBoardingViewed();
     cy.visit('/');
 
     // Only click if not already active otherwise sidebar will close

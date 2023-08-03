@@ -23,7 +23,6 @@ export const Home = () => {
         replace: true,
       });
     } else if (data) {
-      update({ shouldDisplayWelcomeDialog: true });
       const marketDataId = data[0]?.id;
       if (marketDataId) {
         navigate(Links[Routes.MARKET](marketDataId), {

@@ -17,7 +17,7 @@ export const SideSelector = (props: SideSelectorProps) => {
   return (
     <RadioGroup.Root
       name="order-side"
-      className="mb-2 flex h-10 leading-10"
+      className="mb-4 flex h-10 leading-10"
       {...props}
     >
       {toggles.map(({ label, value }) => (

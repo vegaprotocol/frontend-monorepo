@@ -12,6 +12,7 @@ import { addUpdateCapsuleMultiSig } from './lib/commands/add-validators-to-multi
 import {
   addVegaWalletConnect,
   addSetVegaWallet,
+  addSetOnBoardingViewed,
 } from './lib/commands/vega-wallet-connect';
 import { addMockTransactionResponse } from './lib/commands/mock-transaction-response';
 import { addCreateMarket } from './lib/commands/create-market';
@@ -38,6 +39,7 @@ addGetNetworkParameters();
 addUpdateCapsuleMultiSig();
 addVegaWalletConnect();
 addSetVegaWallet();
+addSetOnBoardingViewed();
 addMockTransactionResponse();
 addCreateMarket();
 addConnectPublicKey();

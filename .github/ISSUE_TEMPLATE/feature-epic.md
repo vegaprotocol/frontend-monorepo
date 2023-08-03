@@ -1,7 +1,8 @@
 ---
 name: Feature Epic
+about: 
+  A template to capture and scope user requirements, high level process, and basic mockups for an upcoming feature as part of the initial core spec review process.
 title: 'Epic: '
-description: A template to capture and scope user requirements, high level process, and basic mockups for an upcoming feature as part of the initial core spec review process.
 labels: feature-epic
 ---
 

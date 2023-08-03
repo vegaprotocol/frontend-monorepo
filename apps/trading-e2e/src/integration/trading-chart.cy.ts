@@ -77,6 +77,7 @@ function getButtonSelectorByText(text: string): string {
 beforeEach(() => {
   cy.mockTradingPage();
   cy.mockSubscription();
+  cy.setOnBoardingViewed();
   cy.visit('/#/markets/market-0');
   cy.wait('@Markets');
 });

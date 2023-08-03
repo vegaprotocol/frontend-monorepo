@@ -15,6 +15,7 @@ import { Tooltip } from '../../components/tooltip';
 import { WithdrawContainer } from '../withdraw-container';
 import { Routes as AppRoutes } from '../../pages/client-router';
 import { persist } from 'zustand/middleware';
+import { GetStarted } from '../welcome-dialog';
 
 const STORAGE_KEY = 'vega_sidebar_store';
 
@@ -184,6 +185,7 @@ export const SidebarContent = () => {
               setView({ type: ViewType.Deposit, assetId })
             }
           />
+          <GetStarted />
         </ContentWrapper>
       );
     } else {
@@ -207,6 +209,7 @@ export const SidebarContent = () => {
     return (
       <ContentWrapper title={t('Deposit')}>
         <DepositContainer assetId={view.assetId} />
+        <GetStarted />
       </ContentWrapper>
     );
   }
@@ -215,6 +218,7 @@ export const SidebarContent = () => {
     return (
       <ContentWrapper title={t('Withdraw')}>
         <WithdrawContainer assetId={view.assetId} />
+        <GetStarted />
       </ContentWrapper>
     );
   }
@@ -223,6 +227,7 @@ export const SidebarContent = () => {
     return (
       <ContentWrapper title={t('Transfer')}>
         <TransferContainer assetId={view.assetId} />
+        <GetStarted />
       </ContentWrapper>
     );
   }

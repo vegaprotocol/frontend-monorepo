@@ -339,7 +339,7 @@ context(
               cy.getByTestId(vegaWalletCurrencyTitle)
                 .contains(name)
                 .parent()
-                .siblings()
+                .siblings(txTimeout)
                 .should((elementAmount) => {
                   const displayedAmount = parseFloat(elementAmount.text());
                   expect(displayedAmount).be.gte(expectedAmount);

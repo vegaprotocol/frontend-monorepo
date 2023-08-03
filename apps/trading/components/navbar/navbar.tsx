@@ -52,6 +52,9 @@ export const Navbar = ({
           'bg-vega-yellow text-vega-clight-50': theme === 'yellow',
           'text-default': theme === 'system',
         })}
+        style={{
+          background: theme === 'yellow' ? 'url(/testnet-logo-bg.png' : 'none',
+        }}
       >
         <VLogo className="w-4" />
       </NavLink>

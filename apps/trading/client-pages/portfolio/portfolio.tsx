@@ -13,7 +13,6 @@ import { FillsContainer } from '../../components/fills-container';
 import { PositionsContainer } from '../../components/positions-container';
 import { WithdrawalsContainer } from './withdrawals-container';
 import { OrdersContainer } from '../../components/orders-container';
-import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { LedgerContainer } from '../../components/ledger-container';
 import { AccountHistoryContainer } from './account-history-container';
 import {
@@ -62,29 +61,19 @@ export const Portfolio = () => {
           <PortfolioGridChild>
             <Tabs storageKey="console-portfolio-top">
               <Tab id="account-history" name={t('Account history')}>
-                <VegaWalletContainer>
-                  <AccountHistoryContainer />
-                </VegaWalletContainer>
+                <AccountHistoryContainer />
               </Tab>
               <Tab id="positions" name={t('Positions')}>
-                <VegaWalletContainer>
-                  <PositionsContainer onMarketClick={onMarketClick} allKeys />
-                </VegaWalletContainer>
+                <PositionsContainer onMarketClick={onMarketClick} allKeys />
               </Tab>
               <Tab id="orders" name={t('Orders')}>
-                <VegaWalletContainer>
-                  <OrdersContainer />
-                </VegaWalletContainer>
+                <OrdersContainer />
               </Tab>
               <Tab id="fills" name={t('Fills')}>
-                <VegaWalletContainer>
-                  <FillsContainer onMarketClick={onMarketClick} />
-                </VegaWalletContainer>
+                <FillsContainer onMarketClick={onMarketClick} />
               </Tab>
               <Tab id="ledger-entries" name={t('Ledger entries')}>
-                <VegaWalletContainer>
-                  <LedgerContainer />
-                </VegaWalletContainer>
+                <LedgerContainer />
               </Tab>
             </Tabs>
           </PortfolioGridChild>
@@ -97,14 +86,10 @@ export const Portfolio = () => {
           <PortfolioGridChild>
             <Tabs storageKey="console-portfolio-bottom">
               <Tab id="collateral" name={t('Collateral')}>
-                <VegaWalletContainer>
-                  <AccountsContainer />
-                </VegaWalletContainer>
+                <AccountsContainer />
               </Tab>
               <Tab id="deposits" name={t('Deposits')}>
-                <VegaWalletContainer>
-                  <DepositsContainer />
-                </VegaWalletContainer>
+                <DepositsContainer />
               </Tab>
               <Tab
                 id="withdrawals"

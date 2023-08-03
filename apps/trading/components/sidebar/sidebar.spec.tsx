@@ -19,6 +19,10 @@ jest.mock('../settings', () => ({
   Settings: () => <div data-testid="settings" />,
 }));
 
+jest.mock('../welcome-dialog', () => ({
+  GetStarted: () => <div data-testid="get-started" />,
+}));
+
 describe('Sidebar', () => {
   it.each(['/markets/all', '/portfolio'])(
     'does not render ticket and info',
