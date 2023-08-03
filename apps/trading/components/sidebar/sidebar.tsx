@@ -16,6 +16,7 @@ import { WithdrawContainer } from '../withdraw-container';
 import { Routes as AppRoutes } from '../../pages/client-router';
 import { persist } from 'zustand/middleware';
 import { GetStarted } from '../welcome-dialog';
+import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
 
 const STORAGE_KEY = 'vega_sidebar_store';
 
@@ -26,6 +27,7 @@ export enum ViewType {
   Withdraw = 'Withdraw',
   Transfer = 'Transfer',
   Settings = 'Settings',
+  ViewAs = 'ViewAs',
 }
 
 type SidebarView =
@@ -53,6 +55,8 @@ type SidebarView =
 
 export const Sidebar = () => {
   const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
+  const setViewAsDialogOpen = useViewAsDialog((state) => state.setOpen);
+  const { pubKeys } = useVegaWallet();
   return (
     <div className="flex lg:flex-col gap-2 h-full p-1" data-testid="sidebar">
       <nav className={navClasses}>
@@ -106,6 +110,16 @@ export const Sidebar = () => {
       </nav>
       <nav className={classNames(navClasses, 'ml-auto lg:mt-auto lg:ml-0')}>
         <SidebarButton
+          view={ViewType.ViewAs}
+          onClick={() => {
+            setViewAsDialogOpen(true);
+          }}
+          icon={VegaIconNames.EYE}
+          tooltip={t('View as party')}
+          disabled={Boolean(pubKeys)}
+        />
+
+        <SidebarButton
           view={ViewType.Settings}
           icon={VegaIconNames.COG}
           tooltip={t('Settings')}
@@ -116,25 +130,41 @@ export const Sidebar = () => {
   );
 };
 
-const SidebarButton = ({
+export const SidebarButton = ({
   view,
   icon,
   tooltip,
+  disabled = false,
+  onClick,
 }: {
-  view: ViewType;
+  view?: ViewType;
   icon: VegaIconNames;
   tooltip: string;
+  disabled?: boolean;
+  onClick?: () => void;
 }) => {
   const { currView, setView } = useSidebar((store) => ({
     currView: store.view,
     setView: store.setView,
   }));
+
+  const onSelect = (view: SidebarView['type']) => {
+    if (view === currView?.type) {
+      setView(null);
+    } else {
+      setView({ type: view });
+    }
+  };
+
   const buttonClasses = classNames('flex items-center p-1 rounded', {
     'text-vega-clight-200 dark:text-vega-cdark-200 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500':
-      view !== currView?.type,
+      !view || view !== currView?.type,
     'bg-vega-yellow hover:bg-vega-yellow-550 text-black':
-      view === currView?.type,
+      view && view === currView?.type,
+    'cursor-not-allowed text-vega-clight-500 hover:bg-inherit dark:text-vega-cdark-500 dark:hover:bg-inherit':
+      disabled,
   });
+
   return (
     <Tooltip
       description={tooltip}
@@ -146,13 +176,8 @@ const SidebarButton = ({
       <button
         className={buttonClasses}
         data-testid={view}
-        onClick={() => {
-          if (view === currView?.type) {
-            setView(null);
-          } else {
-            setView({ type: view });
-          }
-        }}
+        onClick={onClick || (() => onSelect(view as SidebarView['type']))}
+        disabled={disabled}
       >
         <VegaIcon name={icon} size={20} />
       </button>
@@ -282,7 +307,7 @@ export const useSidebar = create<{
       view: null,
       setView: (x) =>
         set(() => {
-          if (x === null) {
+          if (x == null) {
             return { view: null, init: false };
           }
 

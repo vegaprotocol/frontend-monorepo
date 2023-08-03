@@ -220,7 +220,7 @@ context(
       function () {
         const proposalTitle = 'Test new market proposal';
         goToMakeNewProposal(governanceProposalType.NEW_MARKET);
-        cy.getByTestId(newProposalTitle).type('Test new market proposal');
+        cy.getByTestId(newProposalTitle).type(proposalTitle);
         cy.getByTestId(newProposalDescription).type('E2E test for proposals');
         cy.fixture('/proposals/new-market').then((newMarketProposal) => {
           const newMarketPayload = JSON.stringify(newMarketProposal);
@@ -604,6 +604,94 @@ context(
             submitUniqueRawProposal({ proposalBody: filePath });
           });
         });
+    });
+
+    it('able to submit successor market proposal', function () {
+      const proposalTitle = 'Test successor market proposal';
+
+      cy.createMarket();
+      cy.reload();
+      waitForSpinner();
+      cy.getByTestId('closed-proposals').within(() => {
+        cy.contains('Add Lorem Ipsum market')
+          .parentsUntil(proposalListItem)
+          .last()
+          .within(() => {
+            cy.getByTestId(viewProposalBtn).click();
+          });
+      });
+      getProposalInformationFromTable('ID').invoke('text').as('parentMarketId');
+      goToMakeNewProposal(governanceProposalType.NEW_MARKET);
+      cy.getByTestId(newProposalTitle).type(proposalTitle);
+      cy.getByTestId(newProposalDescription).type(
+        'E2E test for successor market'
+      );
+      cy.fixture('/proposals/successor-market').then((newMarketProposal) => {
+        newMarketProposal.changes.successor.parentMarketId =
+          this.parentMarketId;
+        const newMarketPayload = JSON.stringify(newMarketProposal);
+        cy.getByTestId(newProposalTerms).type(newMarketPayload, {
+          parseSpecialCharSequences: false,
+          delay: 2,
+        });
+      });
+      cy.getByTestId(proposalDownloadBtn)
+        .should('be.visible')
+        .click()
+        .then(() => {
+          cy.wrap(
+            getDownloadedProposalJsonPath('vega-new-market-proposal-')
+          ).then((filePath) => {
+            goToMakeNewProposal(governanceProposalType.RAW);
+            submitUniqueRawProposal({ proposalBody: filePath });
+          });
+        });
+      navigateTo(navigation.proposals);
+      getProposalFromTitle(proposalTitle).within(() => {
+        // 3003-PMAN-008
+        cy.getByTestId('proposal-successor-info')
+          .should('have.text', 'Successor market to: TEST.24h')
+          .find('a')
+          .should('have.attr', 'href')
+          .and('contain', this.parentMarketId);
+        cy.getByTestId('view-proposal-btn').click();
+      });
+      // #3003-PMAN-010
+      cy.getByTestId(proposalJsonToggle).click();
+      cy.get('.language-json').within(() => {
+        cy.get('.hljs-attr').should('contain.text', 'parentMarketId');
+        cy.get('.hljs-string').should('contain.text', this.parentMarketId);
+        cy.get('.hljs-attr').should('contain.text', 'insurancePoolFraction');
+        cy.get('.hljs-string').should('contain.text', '0.75');
+      });
+      cy.getByTestId('proposal-market-data').within(() => {
+        cy.getByTestId('proposal-market-data-toggle').click();
+        cy.contains('Key details').click();
+        // 3003-PMAN-009
+        getMarketProposalDetailsFromTable('Parent Market ID').should(
+          'have.text',
+          this.parentMarketId
+        );
+        getMarketProposalDetailsFromTable('Insurance Pool Fraction').should(
+          'have.text',
+          '0.75'
+        );
+        getMarketProposalDetailsFromTable('Trading Mode').should(
+          'have.text',
+          'No trading'
+        );
+      });
+      // 3003-PMAN-011
+      cy.contains('Parent Market ID').realHover();
+      cy.getByTestId('tooltip-content').should(
+        'contain.text',
+        'The ID of the market this market succeeds.'
+      );
+      cy.contains('Insurance Pool Fraction').realHover();
+      cy.getByTestId('tooltip-content').should(
+        'contain.text',
+        'The fraction of the insurance pool balance that is carried over from the parent market to the successor.'
+      );
     });
 
     after('Disassociate from second wallet key if present', function () {

@@ -1,5 +1,4 @@
 import {
-  Icon,
   InputError,
   SimpleGrid,
   Tooltip,
@@ -10,6 +9,8 @@ import {
   TradingDropdownRadioGroup,
   TradingDropdownRadioItem,
   TradingDropdownTrigger,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import type { Market, StaticMarketData } from '@vegaprotocol/markets';
@@ -81,11 +82,11 @@ export const TypeToggle = ({
                 }
               )}
             >
-              <button>
+              <button className="flex gap-1">
                 <span className="text-ellipsis whitespace-nowrap shrink overflow-hidden">
                   {t(selectedOption ? selectedOption.label : 'Stop')}
                 </span>
-                <Icon name="chevron-down" className="ml-1" />
+                <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
               </button>
             </TradingDropdownTrigger>
           }

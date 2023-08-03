@@ -1,7 +1,15 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Sidebar, SidebarContent, ViewType, useSidebar } from './sidebar';
+import {
+  Sidebar,
+  SidebarButton,
+  SidebarContent,
+  ViewType,
+  useSidebar,
+} from './sidebar';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { VegaWalletProvider } from '@vegaprotocol/wallet';
 
 jest.mock('../node-health', () => ({
   NodeHealthContainer: () => <span data-testid="node-health" />,
@@ -28,11 +36,14 @@ describe('Sidebar', () => {
     'does not render ticket and info',
     (path) => {
       render(
-        <MemoryRouter initialEntries={[path]}>
-          <Sidebar />
-        </MemoryRouter>
+        <VegaWalletProvider>
+          <MemoryRouter initialEntries={[path]}>
+            <Sidebar />
+          </MemoryRouter>
+        </VegaWalletProvider>
       );
 
+      expect(screen.getByTestId(ViewType.ViewAs)).toBeInTheDocument();
       expect(screen.getByTestId(ViewType.Settings)).toBeInTheDocument();
       expect(screen.getByTestId(ViewType.Transfer)).toBeInTheDocument();
       expect(screen.getByTestId(ViewType.Deposit)).toBeInTheDocument();
@@ -47,11 +58,14 @@ describe('Sidebar', () => {
 
   it('renders ticket and info on market pages', () => {
     render(
-      <MemoryRouter initialEntries={['/markets/ABC']}>
-        <Sidebar />
-      </MemoryRouter>
+      <VegaWalletProvider>
+        <MemoryRouter initialEntries={['/markets/ABC']}>
+          <Sidebar />
+        </MemoryRouter>
+      </VegaWalletProvider>
     );
 
+    expect(screen.getByTestId(ViewType.ViewAs)).toBeInTheDocument();
     expect(screen.getByTestId(ViewType.Settings)).toBeInTheDocument();
     expect(screen.getByTestId(ViewType.Transfer)).toBeInTheDocument();
     expect(screen.getByTestId(ViewType.Deposit)).toBeInTheDocument();
@@ -65,9 +79,11 @@ describe('Sidebar', () => {
 
   it('renders selected state', async () => {
     render(
-      <MemoryRouter initialEntries={['/markets/ABC']}>
-        <Sidebar />
-      </MemoryRouter>
+      <VegaWalletProvider>
+        <MemoryRouter initialEntries={['/markets/ABC']}>
+          <Sidebar />
+        </MemoryRouter>
+      </VegaWalletProvider>
     );
 
     const settingsButton = screen.getByTestId(ViewType.Settings);
@@ -91,11 +107,13 @@ describe('Sidebar', () => {
 describe('SidebarContent', () => {
   it('renders the correct content', () => {
     const { container } = render(
-      <MemoryRouter initialEntries={['/markets/ABC']}>
-        <Routes>
-          <Route path="/markets/:marketId" element={<SidebarContent />} />
-        </Routes>
-      </MemoryRouter>
+      <VegaWalletProvider>
+        <MemoryRouter initialEntries={['/markets/ABC']}>
+          <Routes>
+            <Route path="/markets/:marketId" element={<SidebarContent />} />
+          </Routes>
+        </MemoryRouter>
+      </VegaWalletProvider>
     );
 
     expect(container).toBeEmptyDOMElement();
@@ -115,11 +133,13 @@ describe('SidebarContent', () => {
 
   it('closes sidebar if market id is required but not present', () => {
     const { container } = render(
-      <MemoryRouter initialEntries={['/portfolio']}>
-        <Routes>
-          <Route path="/portfolio" element={<SidebarContent />} />
-        </Routes>
-      </MemoryRouter>
+      <VegaWalletProvider>
+        <MemoryRouter initialEntries={['/portfolio']}>
+          <Routes>
+            <Route path="/portfolio" element={<SidebarContent />} />
+          </Routes>
+        </MemoryRouter>
+      </VegaWalletProvider>
     );
 
     act(() => {
@@ -140,4 +160,26 @@ describe('SidebarContent', () => {
 
     expect(container).toBeEmptyDOMElement();
   });
+});
+
+describe('SidebarButton', () => {
+  it.each([ViewType.Info, ViewType.Deposit, ViewType.ViewAs])(
+    'runs given callback regardless of requested view (%s)',
+    async (view) => {
+      const onClick = jest.fn();
+      render(
+        <SidebarButton
+          icon={VegaIconNames.INFO}
+          tooltip="INFO"
+          onClick={onClick}
+          view={view}
+        />
+      );
+
+      const btn = screen.getByTestId(view);
+      await userEvent.click(btn);
+
+      expect(onClick).toBeCalled();
+    }
+  );
 });

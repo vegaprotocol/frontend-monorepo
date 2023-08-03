@@ -8,7 +8,7 @@ import type {
 import { Intent } from '../../utils/intent';
 
 type TradingButtonProps = {
-  size?: 'large' | 'medium' | 'small';
+  size?: 'large' | 'medium' | 'small' | 'extra-small';
   intent?: Intent;
   children?: ReactNode;
   icon?: ReactNode;
@@ -31,6 +31,7 @@ const getClassName = (
       'h-10': !subLabel && (!size || size === 'medium'),
       'h-8': !subLabel && size === 'small',
       'px-3 text-sm': !subLabel && size === 'small',
+      'h-6 px-2 text-xs': !subLabel && size === 'extra-small',
       'px-4 text-base': !subLabel && size !== 'small',
       'flex-col items-center justify-center px-3 pt-2.5 pb-2': subLabel,
     },

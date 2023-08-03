@@ -1,4 +1,4 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { DepositsTable } from '@vegaprotocol/deposits';
 import { depositsProvider } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/i18n';
@@ -17,6 +17,9 @@ export const DepositsContainer = () => {
     skip: !pubKey,
   });
   const setView = useSidebar((store) => store.setView);
+  if (!pubKey) {
+    return <Splash>{t('Please connect Vega wallet')}</Splash>;
+  }
   return (
     <div className="h-full">
       <DepositsTable

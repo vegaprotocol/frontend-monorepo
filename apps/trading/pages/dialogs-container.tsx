@@ -2,7 +2,7 @@ import {
   AssetDetailsDialog,
   useAssetDetailsDialogStore,
 } from '@vegaprotocol/assets';
-import { VegaConnectDialog } from '@vegaprotocol/wallet';
+import { VegaConnectDialog, ViewAsDialog } from '@vegaprotocol/wallet';
 import { Connectors } from '../lib/vega-connectors';
 import {
   Web3ConnectUncontrolledDialog,
@@ -19,6 +19,7 @@ const DialogsContainer = () => {
         connectors={Connectors}
         riskMessage={<RiskMessage />}
       />
+      <ViewAsDialog connector={Connectors.view} />
       <AssetDetailsDialog
         assetId={id}
         trigger={trigger || null}
