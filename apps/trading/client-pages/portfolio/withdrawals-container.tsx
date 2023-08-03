@@ -1,4 +1,4 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import {
   withdrawalProvider,
   WithdrawalsTable,
@@ -18,7 +18,9 @@ export const WithdrawalsContainer = () => {
   });
   const setView = useSidebar((store) => store.setView);
   const { ready, delayed } = useIncompleteWithdrawals();
-
+  if (!pubKey) {
+    return <Splash>{t('Please connect Vega wallet')}</Splash>;
+  }
   return (
     <>
       <div className="h-full relative">
