@@ -13,14 +13,9 @@ import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
-import {
-  normalizeOrderSubmission,
-  useVegaWallet,
-  useVegaWalletDialogStore,
-} from '@vegaprotocol/wallet';
+import { normalizeOrderSubmission, useVegaWallet } from '@vegaprotocol/wallet';
 import {
   Checkbox,
-  ExternalLink,
   InputError,
   Intent,
   Notification,
@@ -637,13 +632,7 @@ interface SummaryMessageProps {
 
 export const NoWalletWarning = ({
   isReadOnly,
-  pubKey,
-  asset,
-}: Pick<SummaryMessageProps, 'isReadOnly' | 'pubKey' | 'asset'>) => {
-  const assetSymbol = asset.symbol;
-  const openVegaWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+}: Pick<SummaryMessageProps, 'isReadOnly'>) => {
   if (isReadOnly) {
     return (
       <div className="mb-2">
@@ -652,31 +641,6 @@ export const NoWalletWarning = ({
             'You need to connect your own wallet to start trading on this market'
           }
         </InputError>
-      </div>
-    );
-  }
-  if (!pubKey) {
-    return (
-      <div className="mb-2">
-        <Notification
-          testId={'deal-ticket-connect-wallet'}
-          intent={Intent.Warning}
-          message={
-            <p className="text-sm pb-2">
-              You need a{' '}
-              <ExternalLink href="https://vega.xyz/wallet">
-                Vega wallet
-              </ExternalLink>{' '}
-              with {assetSymbol} to start trading in this market.
-            </p>
-          }
-          buttonProps={{
-            text: t('Connect wallet'),
-            action: openVegaWalletDialog,
-            dataTestId: 'order-connect-wallet',
-            size: 'small',
-          }}
-        />
       </div>
     );
   }
@@ -698,13 +662,7 @@ const SummaryMessage = memo(
     // Specific error UI for if balance is so we can
     // render a deposit dialog
     if (isReadOnly || !pubKey) {
-      return (
-        <NoWalletWarning
-          isReadOnly={isReadOnly}
-          asset={asset}
-          pubKey={pubKey}
-        />
-      );
+      return <NoWalletWarning isReadOnly={isReadOnly} />;
     }
 
     if (errorMessage === SummaryValidationType.NoCollateral) {
