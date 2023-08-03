@@ -20,7 +20,7 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
       __typename: 'TradableInstrument',
       instrument: {
         id: '',
-        code: 'BTCUSD.MF21',
+        code: 'ACTIVE',
         name: 'ACTIVE MARKET',
         metadata: {
           __typename: 'InstrumentMetadata',

@@ -142,22 +142,22 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
   it('sorting by Market', () => {
     visitAndClickPositions();
     const marketsSortedDefault = [
-      'ACTIVE MARKET',
-      'Apple Monthly (30 Jun 2022)',
-      'ETHBTC Quarterly (30 Jun 2022)',
-      'SUSPENDED MARKET',
+      'AACTIVE',
+      'AAPL.MF21',
+      'ETHBTC.QM21',
+      'SUSPENDED',
     ];
     const marketsSortedAsc = [
-      'ACTIVE MARKET',
-      'Apple Monthly (30 Jun 2022)',
-      'ETHBTC Quarterly (30 Jun 2022)',
-      'SUSPENDED MARKET',
+      'AACTIVE',
+      'AAPL.MF21',
+      'ETHBTC.QM21',
+      'SUSPENDED',
     ];
     const marketsSortedDesc = [
-      'SUSPENDED MARKET',
-      'ETHBTC Quarterly (30 Jun 2022)',
-      'Apple Monthly (30 Jun 2022)',
-      'ACTIVE MARKET',
+      'SUSPENDED',
+      'ETHBTC.QM21',
+      'AAPL.MF21',
+      'AACTIVE',
     ];
     cy.getByTestId(positions).click();
     // 7004-POSI-003
