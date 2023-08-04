@@ -33,7 +33,14 @@ describe('VegaWalletProvider', () => {
     .mockImplementation(() => Promise.resolve(mockPubKeys));
   const spyOnSend = jest
     .spyOn(jsonRpcConnector, 'sendTx')
-    .mockImplementation(() => Promise.resolve(null));
+    .mockImplementation(() =>
+      Promise.resolve({
+        transactionHash: 'tsx',
+        sentAt: '',
+        receivedAt: '',
+        signature: '',
+      })
+    );
   const storageSpy = jest.spyOn(LocalStorage, 'setItem');
   const spyOnDisconnect = jest
     .spyOn(jsonRpcConnector, 'disconnect')
