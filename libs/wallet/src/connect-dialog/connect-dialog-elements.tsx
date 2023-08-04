@@ -58,7 +58,7 @@ export const ConnectDialogFooter = () => {
 export const ChromeIcon = () => {
   return (
     <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-      <g clip-path="url(#clip0_3681_24659)">
+      <g clipPath="url(#clip0_3681_24659)">
         <path
           d="M15.9987 9.99963L26.3893 9.99964C25.3364 8.17534 23.8217 6.6604 21.9976 5.60716C20.1735 4.55391 18.1042 3.99949 15.9979 3.99964C13.8915 3.99979 11.8223 4.5545 9.99837 5.608C8.1744 6.66149 6.65995 8.17664 5.6073 10.0011L10.8026 18.9996L10.8072 18.9984C10.2787 18.0871 9.99984 17.0525 9.99865 15.999C9.99747 14.9454 10.274 13.9102 10.8005 12.9977C11.3269 12.0851 12.0847 11.3275 12.9973 10.8011C13.9099 10.2748 14.9451 9.99832 15.9987 9.99963Z"
           fill="url(#paint0_linear_3681_24659)"
@@ -89,8 +89,8 @@ export const ChromeIcon = () => {
           y2="27.2485"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#D93025" />
-          <stop offset="1" stop-color="#EA4335" />
+          <stop stopColor="#D93025" />
+          <stop offset="1" stopColor="#EA4335" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_3681_24659"
@@ -100,8 +100,8 @@ export const ChromeIcon = () => {
           y2="11.4997"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#FCC934" />
-          <stop offset="1" stop-color="#FBBC04" />
+          <stop stopColor="#FCC934" />
+          <stop offset="1" stopColor="#FBBC04" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_3681_24659"
@@ -111,8 +111,8 @@ export const ChromeIcon = () => {
           y2="9.25305"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#1E8E3E" />
-          <stop offset="1" stop-color="#34A853" />
+          <stop stopColor="#1E8E3E" />
+          <stop offset="1" stopColor="#34A853" />
         </linearGradient>
         <clipPath id="clip0_3681_24659">
           <rect
@@ -130,7 +130,7 @@ export const ChromeIcon = () => {
 export const MozillaIcon = () => {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <g clip-path="url(#clip0_3681_24667)">
+      <g clipPath="url(#clip0_3681_24667)">
         <path
           d="M22.4398 7.79786C21.9502 6.62017 20.9585 5.34873 20.1798 4.94687C20.8136 6.1893 21.1804 7.43561 21.3205 8.36575C21.3205 8.36758 21.3212 8.37212 21.3227 8.3845C20.0489 5.20951 17.889 3.92926 16.1252 1.1417C16.0361 1.00075 15.9468 0.85942 15.8598 0.710452C15.8155 0.634372 15.7742 0.556628 15.7358 0.477389C15.6625 0.335913 15.606 0.186371 15.5674 0.0317953C15.5676 0.0244774 15.5652 0.017323 15.5604 0.0117374C15.5557 0.00615177 15.549 0.00253868 15.5418 0.00160783C15.5349 -0.000373182 15.5275 -0.000373182 15.5206 0.00160783C15.519 0.00217033 15.5167 0.00399845 15.515 0.0046547C15.5125 0.00563908 15.5094 0.00788908 15.5068 0.0093422C15.508 0.0076547 15.5107 0.00385783 15.5115 0.0029672C12.6816 1.66028 11.7216 4.72614 11.6334 6.26003C10.5034 6.33772 9.42293 6.75406 8.53298 7.45478C8.43981 7.37608 8.3424 7.30253 8.24119 7.23447C7.98442 6.33615 7.97351 5.38538 8.20959 4.4814C7.05234 5.00833 6.15225 5.84125 5.49787 6.57672H5.49267C5.04609 6.01108 5.07759 4.14517 5.10305 3.75559C5.0977 3.73145 4.76991 3.92575 4.72697 3.95505C4.3329 4.23633 3.96449 4.55194 3.62606 4.89817C3.24095 5.28871 2.88907 5.71069 2.57409 6.15972C2.57409 6.16028 2.57377 6.16094 2.57358 6.1615C2.57358 6.16089 2.57391 6.16028 2.57409 6.15972C1.8497 7.18625 1.33595 8.34618 1.06252 9.57245C1.05712 9.59687 1.05258 9.62219 1.04733 9.6468C1.02614 9.74598 0.949828 10.2421 0.936469 10.3499C0.935438 10.3582 0.934969 10.3662 0.933984 10.3745C0.835324 10.8874 0.774224 11.4069 0.751172 11.9287C0.751172 11.9479 0.75 11.967 0.75 11.9862C0.750187 18.2072 5.79394 23.2501 12.0154 23.2501C17.5872 23.2501 22.2135 19.2053 23.1192 13.8924C23.1383 13.7482 23.1536 13.6033 23.1704 13.4578C23.3943 11.5261 23.1456 9.49572 22.4398 7.79786ZM9.45562 16.6148C9.50831 16.6399 9.55781 16.6675 9.61191 16.6916C9.61416 16.6931 9.61725 16.6949 9.61955 16.6963C9.56449 16.67 9.50984 16.6428 9.45562 16.6148ZM21.3236 8.38726L21.3221 8.37634C21.3227 8.38033 21.3234 8.3845 21.324 8.38848L21.3236 8.38726Z"
           fill="url(#paint0_linear_3681_24667)"
@@ -189,10 +189,10 @@ export const MozillaIcon = () => {
           y2="21.0528"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0.05" stop-color="#FFF44F" />
-          <stop offset="0.37" stop-color="#FF980E" />
-          <stop offset="0.53" stop-color="#FF3647" />
-          <stop offset="0.7" stop-color="#E31587" />
+          <stop offset="0.05" stopColor="#FFF44F" />
+          <stop offset="0.37" stopColor="#FF980E" />
+          <stop offset="0.53" stopColor="#FF3647" />
+          <stop offset="0.7" stopColor="#E31587" />
         </linearGradient>
         <radialGradient
           id="paint1_radial_3681_24667"
@@ -202,11 +202,11 @@ export const MozillaIcon = () => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(16.3404 2.59171) scale(23.0401 23.4281)"
         >
-          <stop offset="0.13" stop-color="#FFBD4F" />
-          <stop offset="0.28" stop-color="#FF980E" />
-          <stop offset="0.47" stop-color="#FF3750" />
-          <stop offset="0.78" stop-color="#EB0878" />
-          <stop offset="0.86" stop-color="#E50080" />
+          <stop offset="0.13" stopColor="#FFBD4F" />
+          <stop offset="0.28" stopColor="#FF980E" />
+          <stop offset="0.47" stopColor="#FF3750" />
+          <stop offset="0.78" stopColor="#EB0878" />
+          <stop offset="0.86" stopColor="#E50080" />
         </radialGradient>
         <radialGradient
           id="paint2_radial_3681_24667"
@@ -216,11 +216,11 @@ export const MozillaIcon = () => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(9.65968 12.2681) scale(23.6161 23.4281)"
         >
-          <stop offset="0.3" stop-color="#960E18" />
-          <stop offset="0.35" stop-color="#B11927" stop-opacity="0.74" />
-          <stop offset="0.43" stop-color="#DB293D" stop-opacity="0.34" />
-          <stop offset="0.5" stop-color="#F5334B" stop-opacity="0.09" />
-          <stop offset="0.53" stop-color="#FF3750" stop-opacity="0" />
+          <stop offset="0.3" stopColor="#960E18" />
+          <stop offset="0.35" stopColor="#B11927" stopOpacity="0.74" />
+          <stop offset="0.43" stopColor="#DB293D" stopOpacity="0.34" />
+          <stop offset="0.5" stopColor="#F5334B" stopOpacity="0.09" />
+          <stop offset="0.53" stopColor="#FF3750" stopOpacity="0" />
         </radialGradient>
         <radialGradient
           id="paint3_radial_3681_24667"
@@ -230,8 +230,8 @@ export const MozillaIcon = () => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(14.2261 -1.0978) scale(7.56236 12.839)"
         >
-          <stop offset="0.13" stop-color="#FFF44F" />
-          <stop offset="0.53" stop-color="#FF980E" />
+          <stop offset="0.13" stopColor="#FFF44F" />
+          <stop offset="0.53" stopColor="#FF980E" />
         </radialGradient>
         <radialGradient
           id="paint4_radial_3681_24667"
@@ -241,9 +241,9 @@ export const MozillaIcon = () => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(9.2356 18.3163) scale(10.007 10.9678)"
         >
-          <stop offset="0.35" stop-color="#3A8EE6" />
-          <stop offset="0.67" stop-color="#9059FF" />
-          <stop offset="1" stop-color="#C139E6" />
+          <stop offset="0.35" stopColor="#3A8EE6" />
+          <stop offset="0.67" stopColor="#9059FF" />
+          <stop offset="1" stopColor="#C139E6" />
         </radialGradient>
         <radialGradient
           id="paint5_radial_3681_24667"
@@ -253,8 +253,8 @@ export const MozillaIcon = () => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(10.9455 9.859) scale(5.31373 6.47101)"
         >
-          <stop offset="0.21" stop-color="#9059FF" stop-opacity="0" />
-          <stop offset="0.97" stop-color="#6E008B" stop-opacity="0.6" />
+          <stop offset="0.21" stopColor="#9059FF" stopOpacity="0" />
+          <stop offset="0.97" stopColor="#6E008B" stopOpacity="0.6" />
         </radialGradient>
         <radialGradient
           id="paint6_radial_3681_24667"
@@ -264,8 +264,8 @@ export const MozillaIcon = () => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(11.2585 1.72838) scale(7.95561 7.98388)"
         >
-          <stop offset="0.1" stop-color="#FFE226" />
-          <stop offset="0.79" stop-color="#FF7139" />
+          <stop offset="0.1" stopColor="#FFE226" />
+          <stop offset="0.79" stopColor="#FF7139" />
         </radialGradient>
         <radialGradient
           id="paint7_radial_3681_24667"
@@ -275,10 +275,10 @@ export const MozillaIcon = () => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(18.5242 -3.50921) scale(37.9818 31.8836)"
         >
-          <stop offset="0.11" stop-color="#FFF44F" />
-          <stop offset="0.46" stop-color="#FF980E" />
-          <stop offset="0.72" stop-color="#FF3647" />
-          <stop offset="0.9" stop-color="#E31587" />
+          <stop offset="0.11" stopColor="#FFF44F" />
+          <stop offset="0.46" stopColor="#FF980E" />
+          <stop offset="0.72" stopColor="#FF3647" />
+          <stop offset="0.9" stopColor="#E31587" />
         </radialGradient>
         <radialGradient
           id="paint8_radial_3681_24667"
@@ -288,10 +288,10 @@ export const MozillaIcon = () => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(4.41888 7.02007) rotate(77.3946) scale(12.0503 52.1278)"
         >
-          <stop stop-color="#FFF44F" />
-          <stop offset="0.3" stop-color="#FF980E" />
-          <stop offset="0.57" stop-color="#FF3647" />
-          <stop offset="0.74" stop-color="#E31587" />
+          <stop stopColor="#FFF44F" />
+          <stop offset="0.3" stopColor="#FF980E" />
+          <stop offset="0.57" stopColor="#FF3647" />
+          <stop offset="0.74" stopColor="#E31587" />
         </radialGradient>
         <radialGradient
           id="paint9_radial_3681_24667"
@@ -301,10 +301,10 @@ export const MozillaIcon = () => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(11.3407 4.60001) scale(21.8071 21.424)"
         >
-          <stop offset="0.14" stop-color="#FFF44F" />
-          <stop offset="0.48" stop-color="#FF980E" />
-          <stop offset="0.66" stop-color="#FF3647" />
-          <stop offset="0.9" stop-color="#E31587" />
+          <stop offset="0.14" stopColor="#FFF44F" />
+          <stop offset="0.48" stopColor="#FF980E" />
+          <stop offset="0.66" stopColor="#FF3647" />
+          <stop offset="0.9" stopColor="#E31587" />
         </radialGradient>
         <radialGradient
           id="paint10_radial_3681_24667"
@@ -314,8 +314,8 @@ export const MozillaIcon = () => {
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(17.0005 5.8529) scale(26.2114 23.4492)"
         >
-          <stop offset="0.09" stop-color="#FFF44F" />
-          <stop offset="0.63" stop-color="#FF980E" />
+          <stop offset="0.09" stopColor="#FFF44F" />
+          <stop offset="0.63" stopColor="#FF980E" />
         </radialGradient>
         <linearGradient
           id="paint11_linear_3681_24667"
@@ -325,8 +325,8 @@ export const MozillaIcon = () => {
           y2="19.0592"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0.17" stop-color="#FFF44F" stop-opacity="0.8" />
-          <stop offset="0.6" stop-color="#FFF44F" stop-opacity="0" />
+          <stop offset="0.17" stopColor="#FFF44F" stopOpacity="0.8" />
+          <stop offset="0.6" stopColor="#FFF44F" stopOpacity="0" />
         </linearGradient>
         <clipPath id="clip0_3681_24667">
           <rect width="24" height="24" fill="white" />

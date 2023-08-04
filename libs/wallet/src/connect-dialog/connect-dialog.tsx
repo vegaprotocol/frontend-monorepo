@@ -323,11 +323,41 @@ const GetWallet = () => {
       window.open(CHROME_EXTENSION_URL, '_blank');
     }
   };
-  return (
+  return !isItChrome && !isItMozilla ? (
+    <div
+      className="bg-vega-blue-350 hover:bg-vega-blue-400 dark:bg-vega-blue-650 dark:hover:bg-vega-blue-600 flex gap-2 items-center justify-center rounded h-8 px-3"
+      data-testid="get-wallet-button"
+    >
+      <span className="w-full h-full grid grid-cols-[1fr_min-content] justify-stretch items-center gap-1 text-base bg-vega-red-200">
+        <div className="flex items-center justify-center gap-1">
+          {t('Get the Vega Wallet')}
+          <Lozenge className="text-[10px] !font-alpha bg-vega-blue-500 dark:bg-vega-blue-500 py-0 px-1">
+            ALPHA
+          </Lozenge>
+        </div>
+        <div>
+          <div className="flex">
+            <button
+              type="button"
+              onClick={() => window.open(MOZILLA_EXTENSION_URL, '_blank')}
+            >
+              <MozillaIcon />
+            </button>{' '}
+            <button
+              type="button"
+              onClick={() => window.open(CHROME_EXTENSION_URL, '_blank')}
+            >
+              <ChromeIcon />
+            </button>
+          </div>
+        </div>
+      </span>
+    </div>
+  ) : (
     <TradingButton
       onClick={onClick}
       intent={Intent.Info}
-      data-testid={`get-wallet-button}`}
+      data-testid="get-wallet-button"
       className="!block w-full content-stretch justify-stretch"
       size="small"
     >
@@ -338,28 +368,9 @@ const GetWallet = () => {
             ALPHA
           </Lozenge>
         </div>
-        <div className="">
-          {!isItChrome && !isItMozilla ? (
-            <div className="flex">
-              <button
-                type="button"
-                onClick={() => window.open(MOZILLA_EXTENSION_URL, '_blank')}
-              >
-                <MozillaIcon />
-              </button>{' '}
-              <button
-                type="button"
-                onClick={() => window.open(CHROME_EXTENSION_URL, '_blank')}
-              >
-                <ChromeIcon />
-              </button>
-            </div>
-          ) : (
-            <>
-              {isItChrome && <ChromeIcon />}
-              {isItMozilla && <MozillaIcon />}
-            </>
-          )}
+        <div>
+          {isItChrome && <ChromeIcon />}
+          {isItMozilla && <MozillaIcon />}
         </div>
       </span>
     </TradingButton>
@@ -373,7 +384,7 @@ const ConnectionOption = ({
   onClick,
 }: {
   type: WalletType;
-  text: string;
+  text: string | ReactNode;
   onClick: () => void;
   disabled?: boolean;
 }) => {
