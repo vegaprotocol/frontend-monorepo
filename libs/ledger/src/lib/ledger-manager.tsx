@@ -1,8 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import type * as Schema from '@vegaprotocol/types';
 import type { FilterChangedEvent } from 'ag-grid-community';
-import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useRef, useState, useMemo } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import { subDays, formatRFC3339 } from 'date-fns';
 import { ledgerEntriesProvider } from './ledger-entries-data-provider';
 import type { LedgerEntriesQueryVariables } from './__generated__/LedgerEntries';
@@ -32,7 +31,6 @@ export const LedgerManager = ({
   partyId: string;
   gridProps: ReturnType<typeof useDataGridEvents>;
 }) => {
-  const gridRef = useRef<AgGridReact | null>(null);
   const [filter, setFilter] = useState<Filter>(defaultFilter);
 
   const variables = useMemo<LedgerEntriesQueryVariables>(
@@ -64,7 +62,6 @@ export const LedgerManager = ({
   return (
     <div className="h-full relative">
       <LedgerTable
-        ref={gridRef}
         rowData={data}
         overlayNoRowsTemplate={error ? error.message : t('No entries')}
         {...gridProps}

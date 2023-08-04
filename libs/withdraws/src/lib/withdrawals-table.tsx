@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
-import type { AgGridReact } from 'ag-grid-react';
 import type { ColDef } from 'ag-grid-community';
 import {
   addDecimalsFormatNumber,
@@ -40,7 +39,6 @@ export const WithdrawalsTable = ({
   ready?: TimestampedWithdrawals;
   delayed?: TimestampedWithdrawals;
 }) => {
-  const gridRef = useRef<AgGridReact | null>(null);
   const createWithdrawApproval = useEthWithdrawApprovalsStore(
     (store) => store.create
   );
@@ -146,7 +144,6 @@ export const WithdrawalsTable = ({
         CompleteCell,
       }}
       suppressCellFocus
-      ref={gridRef}
       {...props}
     />
   );
