@@ -1,7 +1,6 @@
 import { Controller, type Control } from 'react-hook-form';
 import type { Market } from '@vegaprotocol/markets';
-import type { OrderObj } from '@vegaprotocol/orders';
-import type { OrderFormFields } from '../../hooks/use-order-form';
+import type { OrderFormValues } from '../../hooks/use-form-values';
 import { toDecimal, validateAmount } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
@@ -12,25 +11,21 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 
 export interface DealTicketSizeIcebergProps {
-  control: Control<OrderFormFields>;
+  control: Control<OrderFormValues & { summary: undefined }>;
   market: Market;
   peakSizeError?: string;
   minimumVisibleSizeError?: string;
-  update: (obj: Partial<OrderObj>) => void;
-  peakSize: string;
-  minimumVisibleSize: string;
   size: string;
+  peakSize?: string;
 }
 
 export const DealTicketSizeIceberg = ({
   control,
   market,
-  update,
   peakSizeError,
   minimumVisibleSizeError,
-  peakSize,
-  minimumVisibleSize,
   size,
+  peakSize,
 }: DealTicketSizeIcebergProps) => {
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
 
@@ -97,25 +92,17 @@ export const DealTicketSizeIceberg = ({
                 },
                 validate: validateAmount(sizeStep, 'peakSize'),
               }}
-              render={() => (
+              render={({ field }) => (
                 <Input
                   id="input-order-peak-size"
                   className="w-full"
                   type="number"
-                  value={peakSize}
-                  onChange={(e) =>
-                    update({
-                      icebergOpts: {
-                        peakSize: e.target.value,
-                        minimumVisibleSize,
-                      },
-                    })
-                  }
                   step={sizeStep}
                   min={sizeStep}
                   max={size}
                   data-testid="order-peak-size"
                   onWheel={(e) => e.currentTarget.blur()}
+                  {...field}
                 />
               )}
             />
@@ -154,7 +141,7 @@ export const DealTicketSizeIceberg = ({
                     'Minimum visible size cannot be lower than ' + sizeStep
                   ),
                 },
-                max: {
+                max: peakSize && {
                   value: peakSize,
                   message: t(
                     'Minimum visible size cannot be greater than the peak size (%s)',
@@ -163,25 +150,17 @@ export const DealTicketSizeIceberg = ({
                 },
                 validate: validateAmount(sizeStep, 'minimumVisibleSize'),
               }}
-              render={() => (
+              render={({ field }) => (
                 <Input
                   id="input-order-minimum-size"
                   className="w-full"
                   type="number"
-                  value={minimumVisibleSize}
-                  onChange={(e) =>
-                    update({
-                      icebergOpts: {
-                        peakSize,
-                        minimumVisibleSize: e.target.value,
-                      },
-                    })
-                  }
                   step={sizeStep}
                   min={sizeStep}
                   max={peakSize}
                   data-testid="order-minimum-size"
                   onWheel={(e) => e.currentTarget.blur()}
+                  {...field}
                 />
               )}
             />

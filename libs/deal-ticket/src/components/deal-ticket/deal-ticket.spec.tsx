@@ -1,12 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import {
-  act,
-  render,
-  renderHook,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket, generateMarketData } from '../../test-helpers';
 import { DealTicket } from './deal-ticket';
@@ -15,7 +9,7 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { addDecimal } from '@vegaprotocol/utils';
 import type { OrdersQuery } from '@vegaprotocol/orders';
-import { useCreateOrderStore } from '@vegaprotocol/orders';
+import { useDealTicketFormValues } from '../../hooks/use-form-values';
 import * as positionsTools from '@vegaprotocol/positions';
 import { OrdersDocument } from '@vegaprotocol/orders';
 
@@ -50,9 +44,6 @@ function generateJsx(mocks: MockedResponse[] = []) {
 }
 
 describe('DealTicket', () => {
-  const { result } = renderHook(() => useCreateOrderStore());
-  const useOrderStore = result.current;
-
   beforeEach(() => {
     jest.clearAllMocks();
     localStorage.clear();
@@ -166,7 +157,7 @@ describe('DealTicket', () => {
       persist: true,
     };
 
-    useOrderStore.setState({
+    useDealTicketFormValues.setState({
       orders: {
         [expectedOrder.marketId]: expectedOrder,
       },
@@ -204,7 +195,7 @@ describe('DealTicket', () => {
       reduceOnly: true,
       postOnly: false,
     };
-    useOrderStore.setState({
+    useDealTicketFormValues.setState({
       orders: {
         [expectedOrder.marketId]: expectedOrder,
       },
@@ -247,7 +238,7 @@ describe('DealTicket', () => {
       postOnly: true,
     };
 
-    useOrderStore.setState({
+    useDealTicketFormValues.setState({
       orders: {
         [expectedOrder.marketId]: expectedOrder,
       },
@@ -295,7 +286,7 @@ describe('DealTicket', () => {
       },
     };
 
-    useOrderStore.setState({
+    useDealTicketFormValues.setState({
       orders: {
         [expectedOrder.marketId]: expectedOrder,
       },
@@ -339,7 +330,7 @@ describe('DealTicket', () => {
       reduceOnly: false,
       postOnly: false,
     };
-    useOrderStore.setState({
+    useDealTicketFormValues.setState({
       orders: {
         [expectedOrder.marketId]: expectedOrder,
       },

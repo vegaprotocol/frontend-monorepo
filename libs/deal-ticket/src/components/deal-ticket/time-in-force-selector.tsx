@@ -21,6 +21,13 @@ interface TimeInForceSelectorProps {
   errorMessage?: string;
 }
 
+const typeLimitOptions = Object.entries(Schema.OrderTimeInForce);
+const typeMarketOptions = typeLimitOptions.filter(
+  ([_, timeInForce]) =>
+    timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_FOK ||
+    timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
+);
+
 export const TimeInForceSelector = ({
   value,
   orderType,
@@ -31,12 +38,8 @@ export const TimeInForceSelector = ({
 }: TimeInForceSelectorProps) => {
   const options =
     orderType === Schema.OrderType.TYPE_LIMIT
-      ? Object.entries(Schema.OrderTimeInForce)
-      : Object.entries(Schema.OrderTimeInForce).filter(
-          ([_, timeInForce]) =>
-            timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_FOK ||
-            timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
-        );
+      ? typeLimitOptions
+      : typeMarketOptions;
 
   const renderError = (errorType: string) => {
     if (errorType === MarketModeValidationType.Auction) {

@@ -1,7 +1,7 @@
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
-import { useCreateOrderStore } from '@vegaprotocol/orders';
+import { useDealTicketFormValues } from '@vegaprotocol/deal-ticket';
 import { t } from '@vegaprotocol/i18n';
 
 interface TradesContainerProps {
@@ -9,8 +9,7 @@ interface TradesContainerProps {
 }
 
 export const TradesContainer = ({ marketId }: TradesContainerProps) => {
-  const useOrderStoreRef = useCreateOrderStore();
-  const updateOrder = useOrderStoreRef((store) => store.update);
+  const update = useDealTicketFormValues((state) => state.update);
 
   const { data, error } = useDataProvider({
     dataProvider: tradesWithMarketProvider,
@@ -21,9 +20,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
     <TradesTable
       rowData={data}
       onClick={(price?: string) => {
-        if (price) {
-          updateOrder(marketId, { price });
-        }
+        update(marketId, { price });
       }}
       overlayNoRowsTemplate={error ? error.message : t('No trades')}
     />

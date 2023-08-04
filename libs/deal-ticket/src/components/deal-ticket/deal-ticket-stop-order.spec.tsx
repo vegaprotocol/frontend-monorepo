@@ -6,8 +6,8 @@ import { generateMarket } from '../../test-helpers';
 import { StopOrder } from './deal-ticket-stop-order';
 import * as Schema from '@vegaprotocol/types';
 import { MockedProvider } from '@apollo/client/testing';
-import type { StopOrderFormValues } from '../../hooks/use-stop-order-form-values';
-import { useStopOrderFormValues } from '../../hooks/use-stop-order-form-values';
+import type { StopOrderFormValues } from '../../hooks/use-form-values';
+import { useDealTicketFormValues } from '../../hooks/use-form-values';
 import type { FeatureFlags } from '@vegaprotocol/environment';
 
 jest.mock('zustand');
@@ -131,8 +131,8 @@ describe('StopOrder', () => {
       expiresAt: '2023-07-27T16:43:27.000',
     };
 
-    useStopOrderFormValues.setState({
-      formValues: {
+    useDealTicketFormValues.setState({
+      stopOrders: {
         [market.id]: values,
       },
     });
