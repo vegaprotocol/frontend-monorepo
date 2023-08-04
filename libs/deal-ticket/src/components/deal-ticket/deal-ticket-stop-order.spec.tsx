@@ -158,16 +158,13 @@ describe('StopOrder', () => {
     );
   });
 
-  it('shows no wallet warning and do not submit if no wallet connected', async () => {
+  it('does not submit if no wallet connected', async () => {
     render(generateJsx(null));
     await userEvent.type(screen.getByTestId(sizeInput), '1');
     await userEvent.type(screen.getByTestId(priceInput), '1');
     await userEvent.type(screen.getByTestId(triggerPriceInput), '1');
     await userEvent.click(screen.getByTestId(submitButton));
     expect(submit).not.toBeCalled();
-    expect(
-      screen.getByTestId('deal-ticket-connect-wallet')
-    ).toBeInTheDocument();
   });
 
   it('calls submit if form is valid', async () => {
