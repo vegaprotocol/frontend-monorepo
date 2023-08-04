@@ -17,10 +17,8 @@ import type { VegaConnector } from '../connectors';
 import {
   InjectedConnector,
   JsonRpcConnector,
-  RestConnector,
   ViewConnector,
 } from '../connectors';
-import { RestConnectorForm } from './rest-connector-form';
 import { JsonRpcConnectorForm } from './json-rpc-connector-form';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
@@ -47,7 +45,7 @@ export const MOZILLA_EXTENSION_URL =
   'https://addons.mozilla.org/pl/firefox/addon/vega-wallet';
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
-export type WalletType = 'injected' | 'jsonRpc' | 'rest' | 'view';
+export type WalletType = 'injected' | 'jsonRpc' | 'view';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
@@ -125,7 +123,7 @@ const ConnectDialogContainer = ({
   appChainId: string;
   riskMessage?: ReactNode;
 }) => {
-  const { VEGA_WALLET_URL, HOSTED_WALLET_URL } = useEnvironment();
+  const { VEGA_WALLET_URL } = useEnvironment();
   const closeDialog = useVegaWalletDialogStore(
     (store) => store.closeVegaWalletDialog
   );
@@ -149,11 +147,7 @@ const ConnectDialogContainer = ({
 
   const handleSelect = (type: WalletType) => {
     const connector = connectors[type];
-
-    // If type is rest user has selected the hosted wallet option. So here
-    // we ensure that we are connecting to https://vega-hosted-wallet.on.fleek.co/
-    // otherwise use walletUrl which defaults to the localhost:1789
-    connector.url = type === 'rest' ? HOSTED_WALLET_URL : walletUrl;
+    connector.url = walletUrl;
 
     if (!connector) {
       // we should never get here unless connectors are not configured correctly
@@ -198,7 +192,7 @@ const ConnectDialogContainer = ({
           />
         )}
       </ConnectDialogContent>
-      <ConnectDialogFooter connector={selectedConnector} />
+      <ConnectDialogFooter />
     </>
   );
 };
@@ -286,24 +280,6 @@ const SelectedForm = ({
         reset={reset}
         riskMessage={riskMessage}
       />
-    );
-  }
-
-  if (connector instanceof RestConnector) {
-    return (
-      <>
-        <button
-          onClick={reset}
-          className="absolute p-2 top-0 left-0 md:top-2 md:left-2"
-          data-testid="back-button"
-        >
-          <VegaIcon name={VegaIconNames.CHEVRON_LEFT} />
-        </button>
-        <ConnectDialogTitle>{t('Connect')}</ConnectDialogTitle>
-        <div className="mb-2">
-          <RestConnectorForm connector={connector} onConnect={onConnect} />
-        </div>
-      </>
     );
   }
 
@@ -395,18 +371,16 @@ const ConnectionOption = ({
   type,
   text,
   onClick,
-  intent = Intent.Info,
 }: {
   type: WalletType;
   text: string;
   onClick: () => void;
-  disabled: boolean;
-  intent: Intent;
+  disabled?: boolean;
 }) => {
   return (
     <TradingButton
       size="small"
-      intent={intent}
+      intent={Intent.Info}
       onClick={onClick}
       className="block w-full"
       data-testid={`connector-${type}`}

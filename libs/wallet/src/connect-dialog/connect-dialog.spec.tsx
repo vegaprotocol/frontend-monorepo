@@ -18,7 +18,6 @@ import {
   ClientErrors,
   InjectedConnector,
   JsonRpcConnector,
-  RestConnector,
   ViewConnector,
   WalletError,
 } from '../connectors';
@@ -31,11 +30,18 @@ import {
   delayedReject,
   delayedResolve,
 } from '../test-helpers';
+import { useIsDesktopWalletRunning } from '../use-is-desktop-wallet-running';
 
 const mockUpdateDialogOpen = jest.fn();
 const mockCloseVegaDialog = jest.fn();
 
 jest.mock('@vegaprotocol/environment');
+let mockIsDesktopRunning = true;
+jest.mock('../use-is-desktop-wallet-running', () => ({
+  useIsDesktopWalletRunning: jest
+    .fn()
+    .mockImplementation(() => mockIsDesktopRunning),
+}));
 
 // @ts-ignore ignore mock implementation
 useEnvironment.mockImplementation(() => ({
@@ -53,12 +59,10 @@ let defaultProps: VegaConnectDialogProps;
 
 const INITIAL_KEY = 'some-key';
 
-const rest = new RestConnector();
 const jsonRpc = new JsonRpcConnector();
 const view = new ViewConnector(INITIAL_KEY);
 const injected = new InjectedConnector();
 const connectors = {
-  rest,
   jsonRpc,
   view,
   injected,
@@ -112,13 +116,7 @@ describe('VegaConnectDialog', () => {
     expect(list).toBeInTheDocument();
     expect(list.children).toHaveLength(3);
     expect(screen.getByTestId('connector-jsonRpc')).toHaveTextContent(
-      'Connect Vega wallet'
-    );
-    expect(screen.getByTestId('connector-rest')).toHaveTextContent(
-      'Hosted Fairground wallet'
-    );
-    expect(screen.getByTestId('connector-view')).toHaveTextContent(
-      'View as vega user'
+      'Use the Desktop App/CLI'
     );
   });
 
@@ -126,117 +124,11 @@ describe('VegaConnectDialog', () => {
     mockBrowserWallet();
     render(generateJSX());
     const list = await screen.findByTestId('connectors-list');
-    expect(list.children).toHaveLength(4);
+    expect(list.children).toHaveLength(3);
     expect(screen.getByTestId('connector-injected')).toHaveTextContent(
-      'Connect Web wallet'
+      'Connect'
     );
     clearBrowserWallet();
-  });
-
-  describe('RestConnector', () => {
-    it('connects', async () => {
-      const spy = jest
-        .spyOn(connectors.rest, 'authenticate')
-        .mockImplementation(() =>
-          Promise.resolve({ success: true, error: null })
-        );
-      jest
-        .spyOn(connectors.rest, 'connect')
-        .mockImplementation(() =>
-          Promise.resolve([{ publicKey: 'pubkey', name: 'test key 1' }])
-        );
-      render(generateJSX());
-      // Switches to rest form
-      fireEvent.click(await screen.findByText('Hosted Fairground wallet'));
-
-      // Client side validation
-      fireEvent.submit(screen.getByTestId('rest-connector-form'));
-      expect(spy).not.toHaveBeenCalled();
-      await waitFor(() => {
-        expect(screen.getAllByText('Required')).toHaveLength(2);
-      });
-
-      const fields = fillInForm();
-
-      // Wait for auth method to be called
-      await act(async () => {
-        fireEvent.submit(screen.getByTestId('rest-connector-form'));
-      });
-      await waitFor(() => {
-        expect(spy).toHaveBeenCalledWith(fields);
-
-        expect(mockCloseVegaDialog).toHaveBeenCalled();
-      });
-    });
-
-    it('handles failed connection', async () => {
-      const errMessage = 'Error message';
-      // Error from service
-      let spy = jest
-        .spyOn(connectors.rest, 'authenticate')
-        .mockImplementation(() =>
-          Promise.resolve({ success: false, error: errMessage })
-        );
-
-      render(generateJSX());
-      // Switches to rest form
-      fireEvent.click(await screen.findByText('Hosted Fairground wallet'));
-
-      const fields = fillInForm();
-      fireEvent.submit(screen.getByTestId('rest-connector-form'));
-
-      // Wait for auth method to be called
-      await act(async () => {
-        fireEvent.submit(screen.getByTestId('rest-connector-form'));
-      });
-
-      expect(spy).toHaveBeenCalledWith(fields);
-
-      expect(screen.getByTestId('form-error')).toHaveTextContent(errMessage);
-      expect(mockUpdateDialogOpen).not.toHaveBeenCalled();
-
-      // Fetch failed due to wallet not running
-      spy = jest
-        .spyOn(connectors.rest, 'authenticate')
-        // @ts-ignore test fetch failed with typeerror
-        .mockImplementation(() =>
-          Promise.reject(new TypeError('fetch failed'))
-        );
-
-      await act(async () => {
-        fireEvent.submit(screen.getByTestId('rest-connector-form'));
-      });
-
-      expect(screen.getByTestId('form-error')).toHaveTextContent(
-        `Wallet not running at ${mockHostedWalletUrl}`
-      );
-
-      // Reject eg non 200 results
-      spy = jest
-        .spyOn(connectors.rest, 'authenticate')
-        // @ts-ignore test fetch failed with typeerror
-        .mockImplementation(() => Promise.reject(new Error('Error!')));
-
-      await act(async () => {
-        fireEvent.submit(screen.getByTestId('rest-connector-form'));
-      });
-
-      expect(screen.getByTestId('form-error')).toHaveTextContent(
-        'Authentication failed'
-      );
-    });
-
-    const fillInForm = () => {
-      const walletValue = 'test-wallet';
-      fireEvent.change(screen.getByTestId('rest-wallet'), {
-        target: { value: walletValue },
-      });
-      const passphraseValue = 'test-passphrase';
-      fireEvent.change(screen.getByTestId('rest-passphrase'), {
-        target: { value: passphraseValue },
-      });
-      return { wallet: walletValue, passphrase: passphraseValue };
-    };
   });
 
   describe('JsonRpcConnector', () => {
@@ -373,81 +265,16 @@ describe('VegaConnectDialog', () => {
       expect(screen.getByText('An unknown error occurred')).toBeInTheDocument();
     });
 
+    it('handles wallet running is not detected', async () => {
+      mockIsDesktopRunning = false;
+      render(generateJSX());
+      expect(await screen.findByTestId('connector-jsonRpc')).toBeDisabled();
+    });
+
     async function selectJsonRpc() {
       expect(await screen.findByRole('dialog')).toBeInTheDocument();
       fireEvent.click(await screen.findByTestId('connector-jsonRpc'));
     }
-  });
-
-  describe('ViewOnlyConnector', () => {
-    const fillInForm = (address = '0'.repeat(64)) => {
-      fireEvent.change(screen.getByTestId('address'), {
-        target: { value: address },
-      });
-      return { address };
-    };
-
-    it('connects', async () => {
-      const spy = jest.spyOn(connectors.view, 'connect');
-
-      render(generateJSX());
-      // Switches to view form
-      fireEvent.click(await screen.findByText('View as vega user'));
-
-      // Client side validation
-      fireEvent.submit(screen.getByTestId('view-connector-form'));
-      expect(spy).not.toHaveBeenCalled();
-      await waitFor(() => {
-        expect(screen.getAllByText('Required')).toHaveLength(1);
-      });
-
-      fillInForm();
-
-      // Wait for auth method to be called
-      await act(async () => {
-        fireEvent.submit(screen.getByTestId('view-connector-form'));
-      });
-
-      expect(spy).toHaveBeenCalled();
-
-      expect(mockCloseVegaDialog).toHaveBeenCalled();
-    });
-
-    it('ensures pubkey is of correct length', async () => {
-      render(generateJSX());
-      // Switches to view form
-      fireEvent.click(await screen.findByText('View as vega user'));
-
-      fillInForm('123');
-
-      // Wait for auth method to be called
-      await act(async () => {
-        fireEvent.submit(screen.getByTestId('view-connector-form'));
-      });
-      await waitFor(() => {
-        expect(
-          screen.getAllByText('Pubkey must be 64 characters in length')
-        ).toHaveLength(1);
-      });
-    });
-
-    it('ensures pubkey is of valid hex', async () => {
-      render(generateJSX());
-      // Switches to view form
-      fireEvent.click(await screen.findByText('View as vega user'));
-
-      fillInForm('q'.repeat(64));
-
-      // Wait for auth method to be called
-      await act(async () => {
-        fireEvent.submit(screen.getByTestId('view-connector-form'));
-      });
-      await waitFor(() => {
-        expect(screen.getAllByText('Pubkey must be be valid hex')).toHaveLength(
-          1
-        );
-      });
-    });
   });
 
   describe('InjectedConnector', () => {

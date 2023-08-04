@@ -15,7 +15,7 @@ interface FormFields {
   address: string;
 }
 
-interface RestConnectorFormProps {
+interface ViewConnectorFormProps {
   connector: ViewConnector;
   onConnect: (connector: ViewConnector) => void;
   reset?: () => void;
@@ -25,7 +25,7 @@ export function ViewConnectorForm({
   connector,
   onConnect,
   reset,
-}: RestConnectorFormProps) {
+}: ViewConnectorFormProps) {
   const { connect } = useVegaWallet();
   const {
     register,
