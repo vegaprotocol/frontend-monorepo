@@ -33,18 +33,18 @@ export const GetStarted = ({ lead }: Props) => {
     setOnboardingViewed('true');
   };
 
-  if (!pubKey && !isBrowserWalletInstalled()) {
+  const wrapperClasses = classNames(
+    'flex flex-col py-4 px-6 gap-4 rounded',
+    'bg-vega-blue-300 dark:bg-vega-blue-700',
+    'border border-vega-blue-350 dark:border-vega-blue-650',
+    { 'mt-8': !lead }
+  );
+
+  if (!isBrowserWalletInstalled()) {
     return (
-      <div
-        className={classNames(
-          'flex flex-col bg-vega-blue-300 dark:bg-vega-blue-700 border border-vega-blue-350 dark:border-vega-blue-650 px-6 gap-4',
-          { 'py-4': lead },
-          { 'mt-8 py-6': !lead }
-        )}
-        data-testid="get-started-banner"
-      >
+      <div className={wrapperClasses} data-testid="get-started-banner">
         {lead && <h2>{lead}</h2>}
-        <h3>{t('Get started')}</h3>
+        <h3 className="text-lg">{t('Get started')}</h3>
         <div>
           <ul className="list-decimal list-inside">
             <li>{t('Get a Vega wallet')}</li>
@@ -57,7 +57,6 @@ export const GetStarted = ({ lead }: Props) => {
           <TradingButton
             intent={Intent.Info}
             onClick={onButtonClick}
-            className="block w-full"
             data-testid="get-started-button"
           >
             {t('Get started')}
@@ -82,5 +81,28 @@ export const GetStarted = ({ lead }: Props) => {
       </div>
     );
   }
+
+  if (!pubKey) {
+    return (
+      <div className={wrapperClasses}>
+        <p className="text-sm mb-1">
+          You need a{' '}
+          <ExternalLink href="https://vega.xyz/wallet">
+            Vega wallet
+          </ExternalLink>{' '}
+          to start trading in this market.
+        </p>
+        <TradingButton
+          onClick={openVegaWalletDialog}
+          size="small"
+          data-testid="order-connect-wallet"
+          intent={Intent.Info}
+        >
+          {t('Connect wallet')}
+        </TradingButton>
+      </div>
+    );
+  }
+
   return null;
 };

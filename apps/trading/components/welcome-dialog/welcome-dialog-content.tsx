@@ -31,12 +31,12 @@ export const WelcomeDialogContent = () => {
         <ul className="ml-0">
           <ListItemContent
             icon={<NonCustodialIcon />}
-            title={t('Non-cutodial and pseudonymous')}
+            title={t('Non-custodial and pseudonymous')}
             text={t('No third party has access to your funds.')}
           />
           <ListItemContent
             icon={<PurposeBuiltIcon />}
-            title={t('Purpose built proof of stake blockhain')}
+            title={t('Purpose built proof of stake blockchain')}
             text={t(
               'Fully decentralised high performance peer-to-network trading.'
             )}
