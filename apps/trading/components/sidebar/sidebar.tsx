@@ -156,14 +156,16 @@ export const SidebarButton = ({
     }
   };
 
-  const buttonClasses = classNames('flex items-center p-1 rounded', {
-    'text-vega-clight-200 dark:text-vega-cdark-200 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500':
-      !view || view !== currView?.type,
-    'bg-vega-yellow hover:bg-vega-yellow-550 text-black':
-      view && view === currView?.type,
-    'cursor-not-allowed text-vega-clight-500 hover:bg-inherit dark:text-vega-cdark-500 dark:hover:bg-inherit':
-      disabled,
-  });
+  const buttonClasses = classNames(
+    'flex items-center p-1 rounded',
+    'disabled:cursor-not-allowed disabled:text-vega-clight-500 dark:disabled:text-vega-cdark-500',
+    {
+      'text-vega-clight-200 dark:text-vega-cdark-200 enabled:hover:bg-vega-clight-500 dark:enabled:hover:bg-vega-cdark-500':
+        !view || view !== currView?.type,
+      'bg-vega-yellow enabled:hover:bg-vega-yellow-550 text-black':
+        view && view === currView?.type,
+    }
+  );
 
   return (
     <Tooltip
