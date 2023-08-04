@@ -1,8 +1,12 @@
-import { ExternalLinks} from '@vegaprotocol/environment';
-import {t} from '@vegaprotocol/i18n';
-import {ExternalLink, VegaIcon, VegaIconNames} from '@vegaprotocol/ui-toolkit';
+import { ExternalLinks } from '@vegaprotocol/environment';
+import { t } from '@vegaprotocol/i18n';
+import {
+  ExternalLink,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
-import type {ReactNode} from 'react';
+import type { ReactNode } from 'react';
 
 export const ConnectDialogTitle = ({ children }: { children: ReactNode }) => {
   return (
@@ -28,17 +32,25 @@ export const ConnectDialogFooter = () => {
   );
   return (
     <footer className={wrapperClasses}>
-          <ExternalLink href={ExternalLinks.VEGA_WALLET_URL_ABOUT} className="underline">
-            {t('About the Vega wallet')} <VegaIcon name={VegaIconNames.ARROW_TOP_RIGHT} />
+      <ExternalLink
+        href={ExternalLinks.VEGA_WALLET_URL_ABOUT}
+        className="underline"
+      >
+        {t('About the Vega wallet')}{' '}
+        <VegaIcon name={VegaIconNames.ARROW_TOP_RIGHT} />
+      </ExternalLink>
+      {ExternalLinks.VEGA_WALLET_BROWSER_LIST && (
+        <>
+          {' | '}
+          <ExternalLink
+            href={ExternalLinks.VEGA_WALLET_BROWSER_LIST}
+            className="underline"
+          >
+            {t('Supported browsers')}{' '}
+            <VegaIcon name={VegaIconNames.ARROW_TOP_RIGHT} />
           </ExternalLink>
-          {ExternalLinks.VEGA_WALLET_BROWSER_LIST && (
-            <>
-            {' | '}
-            <ExternalLink href={ExternalLinks.VEGA_WALLET_BROWSER_LIST} className="underline">
-              {t('Supported browsers')} <VegaIcon name={VegaIconNames.ARROW_TOP_RIGHT} />
-            </ExternalLink>
-            </>
-          )}
+        </>
+      )}
     </footer>
   );
 };

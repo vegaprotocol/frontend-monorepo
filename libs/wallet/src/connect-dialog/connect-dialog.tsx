@@ -28,7 +28,7 @@ import {
   ConnectDialogFooter,
   ConnectDialogTitle,
   ChromeIcon,
-  MozillaIcon
+  MozillaIcon,
 } from './connect-dialog-elements';
 import type { Status as JsonRpcStatus } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
@@ -498,4 +498,3 @@ const CustomUrlInput = ({
     </>
   );
 };
-
