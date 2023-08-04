@@ -1,10 +1,4 @@
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { VegaWalletProvider } from '../provider';
@@ -30,7 +24,6 @@ import {
   delayedReject,
   delayedResolve,
 } from '../test-helpers';
-import { useIsDesktopWalletRunning } from '../use-is-desktop-wallet-running';
 
 const mockUpdateDialogOpen = jest.fn();
 const mockCloseVegaDialog = jest.fn();
