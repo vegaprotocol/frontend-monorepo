@@ -216,7 +216,7 @@ const SuccessionLineItem = ({
   marketId: string;
   isCurrent?: boolean;
 }) => {
-  const { data, loading } = useSuccessorMarketQuery({
+  const { data } = useSuccessorMarketQuery({
     variables: {
       marketId,
     },
@@ -228,44 +228,45 @@ const SuccessionLineItem = ({
     ? governanceLink(TOKEN_PROPOSAL.replace(':id', marketData?.proposal?.id))
     : undefined;
 
-  if (loading) {
-    return (
-      <div className="rounded p-2 bg-vega-clight-700 dark:bg-vega-cdark-700 h-[68px] animate-pulse"></div>
-    );
-  }
   return (
-    marketData && (
-      <div
-        className={classNames(
-          'rounded p-2 bg-vega-clight-700 dark:bg-vega-cdark-700',
-          'font-alpha',
-          'flex flex-col '
-        )}
-      >
-        <div className="flex justify-between">
-          <div>
-            {proposalLink ? (
+    <div
+      className={classNames(
+        'rounded p-2 bg-vega-clight-700 dark:bg-vega-cdark-700',
+        'font-alpha',
+        'flex flex-col '
+      )}
+    >
+      <div className="flex justify-between">
+        <div>
+          {marketData ? (
+            proposalLink ? (
               <ExternalLink href={proposalLink}>
                 {marketData.tradableInstrument.instrument.code}
               </ExternalLink>
             ) : (
               marketData.tradableInstrument.instrument.code
-            )}
-          </div>
-          {isCurrent && (
-            <Tooltip description={t('This market')}>
-              <div className="text-vega-clight-200 dark:text-vega-cdark-200 cursor-help">
-                <VegaIcon name={VegaIconNames.BULLET} size={16} />
-              </div>
-            </Tooltip>
+            )
+          ) : (
+            <span className="block w-20 h-4 mb-1 bg-vega-clight-500 dark:bg-vega-cdark-500 animate-pulse"></span>
           )}
         </div>
-        <div className="text-xs">
-          {marketData.tradableInstrument.instrument.name}
-        </div>
-        <div className="text-xs truncate">{marketData.id}</div>
+        {isCurrent && (
+          <Tooltip description={t('This market')}>
+            <div className="text-vega-clight-200 dark:text-vega-cdark-200 cursor-help">
+              <VegaIcon name={VegaIconNames.BULLET} size={16} />
+            </div>
+          </Tooltip>
+        )}
       </div>
-    )
+      <div className="text-xs">
+        {marketData ? (
+          marketData.tradableInstrument.instrument.name
+        ) : (
+          <span className="block w-28 h-4 bg-vega-clight-500 dark:bg-vega-cdark-500 animate-pulse"></span>
+        )}
+      </div>
+      <div className="text-xs truncate mt-1">{marketId}</div>
+    </div>
   );
 };
 
