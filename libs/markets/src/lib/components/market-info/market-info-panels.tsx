@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { useMemo } from 'react';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
@@ -230,6 +230,7 @@ const SuccessionLineItem = ({
 
   return (
     <div
+      data-testid="succession-line-item"
       className={classNames(
         'rounded p-2 bg-vega-clight-700 dark:bg-vega-cdark-700',
         'font-alpha',
@@ -265,7 +266,12 @@ const SuccessionLineItem = ({
           <span className="block w-28 h-4 bg-vega-clight-500 dark:bg-vega-cdark-500 animate-pulse"></span>
         )}
       </div>
-      <div className="text-xs truncate mt-1">{marketId}</div>
+      <div
+        data-testid="succession-line-item-market-id"
+        className="text-xs truncate mt-1"
+      >
+        {marketId}
+      </div>
     </div>
   );
 };
@@ -302,7 +308,11 @@ const buildSuccessionLine = (
   find(id, 'down');
   return line;
 };
-export const SuccessionLineInfoPanel = ({ market }: MarketInfoProps) => {
+export const SuccessionLineInfoPanel = ({
+  market,
+}: {
+  market: Pick<MarketInfo, 'id'>;
+}) => {
   const { data } = useSuccessorMarketIdsQuery();
   const ids = compact(data?.marketsConnection?.edges.map((e) => e.node));
   const line = buildSuccessionLine(ids, market.id);
@@ -310,10 +320,10 @@ export const SuccessionLineInfoPanel = ({ market }: MarketInfoProps) => {
   return (
     <div className="flex flex-col gap-2">
       {line.map((id, i) => (
-        <>
+        <Fragment key={i}>
           {i > 0 && <SuccessionLink />}
           <SuccessionLineItem marketId={id} isCurrent={id === market.id} />
-        </>
+        </Fragment>
       ))}
     </div>
   );
