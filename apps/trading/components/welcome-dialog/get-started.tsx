@@ -16,7 +16,6 @@ interface Props {
 
 export const GetStarted = ({ lead }: Props) => {
   const { pubKey } = useVegaWallet();
-
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
   const CANONICAL_URL = VEGA_NETWORKS[VEGA_ENV] || 'https://console.vega.xyz';
 
@@ -40,7 +39,7 @@ export const GetStarted = ({ lead }: Props) => {
     { 'mt-8': !lead }
   );
 
-  if (!isBrowserWalletInstalled()) {
+  if (!pubKey && !isBrowserWalletInstalled()) {
     return (
       <div className={wrapperClasses} data-testid="get-started-banner">
         {lead && <h2>{lead}</h2>}
