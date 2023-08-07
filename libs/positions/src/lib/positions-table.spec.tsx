@@ -308,7 +308,7 @@ describe('Positions', () => {
       expect(screen.queryByRole('img')).not.toBeInTheDocument();
     });
 
-    it('renders status with warning tooltip if not normal', async () => {
+    it('renders status with warning tooltip if orders were closed', async () => {
       const props = {
         data: {
           ...singleRow,
@@ -333,6 +333,35 @@ describe('Positions', () => {
         // using within as radix renders tooltip content twice
         within(tooltip).getByText(
           'The position was distressed, but removing open orders from the book brought the margin level back to a point where the open position could be maintained.'
+        )
+      ).toBeInTheDocument();
+    });
+
+    it('renders status with warning tooltip if position was closed out', async () => {
+      const props = {
+        data: {
+          ...singleRow,
+          status: PositionStatus.POSITION_STATUS_CLOSED_OUT,
+        },
+        valueFormatted: '100',
+      };
+      render(<OpenVolumeCell {...(props as ICellRendererParams)} />);
+      const content = screen.getByText(props.valueFormatted);
+      expect(content).toBeInTheDocument();
+      expect(screen.getByRole('img')).toBeInTheDocument();
+      await userEvent.hover(content);
+      const tooltip = await screen.findByRole('tooltip');
+      expect(tooltip).toBeInTheDocument();
+      expect(
+        // using within as radix renders tooltip content twice
+        within(tooltip).getByText(
+          `Status: ${PositionStatusMapping[props.data.status]}`
+        )
+      ).toBeInTheDocument();
+      expect(
+        // using within as radix renders tooltip content twice
+        within(tooltip).getByText(
+          'You did not have enough BTC collateral to meet the maintenance margin requirements for your position, so it was closed by the network.'
         )
       ).toBeInTheDocument();
     });
