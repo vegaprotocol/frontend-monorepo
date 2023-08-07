@@ -17,8 +17,8 @@ export interface StopOrderFormValues {
   triggerDirection: Schema.StopOrderTriggerDirection;
 
   triggerType: 'price' | 'trailingPercentOffset';
-  triggerPrice: string;
-  triggerTrailingPercentOffset: string;
+  triggerPrice?: string;
+  triggerTrailingPercentOffset?: string;
 
   type: OrderType;
   size: string;
@@ -30,10 +30,6 @@ export interface StopOrderFormValues {
   expiresAt?: string;
 }
 
-type StopOrderFormValuesMap = {
-  [marketId: string]: Partial<StopOrderFormValues> | undefined;
-};
-
 export type OrderFormValues = {
   type: OrderType;
   side: Side;
@@ -44,13 +40,10 @@ export type OrderFormValues = {
   postOnly?: boolean;
   reduceOnly?: boolean;
   iceberg?: boolean;
-  icebergOpts?: {
-    peakSize?: string;
-    minimumVisibleSize?: string;
-  };
+  peakSize?: string;
+  minimumVisibleSize?: string;
 };
 
-type OrdersMap = { [marketId: string]: Partial<OrderFormValues> | undefined };
 type UpdateOrder = (marketId: string, values: Partial<OrderFormValues>) => void;
 
 type UpdateStopOrder = (
@@ -58,23 +51,31 @@ type UpdateStopOrder = (
   values: Partial<StopOrderFormValues>
 ) => void;
 
-interface Store {
-  orders: OrdersMap;
+type Store = {
   updateOrder: UpdateOrder;
-  stopOrders: StopOrderFormValuesMap;
   updateStopOrder: UpdateStopOrder;
   setType: (marketId: string, value: DealTicketType) => void;
   update: (marketId: string, values: { size?: string; price?: string }) => void;
-  showStopOrder: Record<string, boolean>;
-}
+  formValues: Record<
+    string,
+    | {
+        [DealTicketType.Limit]?: Partial<OrderFormValues>;
+        [DealTicketType.Market]?: Partial<OrderFormValues>;
+        [DealTicketType.StopLimit]?: Partial<StopOrderFormValues>;
+        [DealTicketType.StopMarket]?: Partial<StopOrderFormValues>;
+        type?: DealTicketType;
+      }
+    | undefined
+  >;
+};
 
-export const dealTicketTypeToOrderType = (dealTicketType: DealTicketType) =>
+export const dealTicketTypeToOrderType = (dealTicketType?: DealTicketType) =>
   dealTicketType === DealTicketType.Limit ||
   dealTicketType === DealTicketType.StopLimit
     ? Schema.OrderType.TYPE_LIMIT
     : Schema.OrderType.TYPE_MARKET;
 
-export const isStopOrderType = (dealTicketType: DealTicketType) =>
+export const isStopOrderType = (dealTicketType?: DealTicketType) =>
   dealTicketType === DealTicketType.StopLimit ||
   dealTicketType === DealTicketType.StopMarket;
 
@@ -82,57 +83,53 @@ export const useDealTicketFormValues = create<Store>()(
   immer(
     persist(
       subscribeWithSelector((set) => ({
-        showStopOrder: {},
-        activeForm: {},
-        orders: {},
-        stopOrders: {},
+        formValues: {},
         updateStopOrder: (marketId, formValues) => {
           set((state) => {
-            state.stopOrders[marketId] = Object.assign(
-              state.stopOrders[marketId] ?? {},
-              formValues
-            );
+            const type =
+              formValues.type === Schema.OrderType.TYPE_LIMIT
+                ? DealTicketType.StopLimit
+                : DealTicketType.StopMarket;
+            const market = state.formValues[marketId] || {};
+            if (!state.formValues[marketId]) {
+              state.formValues[marketId] = market;
+            }
+            market[type] = Object.assign(market[type] ?? {}, formValues);
           });
         },
         updateOrder: (marketId, formValues) => {
           set((state) => {
-            state.orders[marketId] = Object.assign(
-              state.orders[marketId] ?? {},
-              formValues
-            );
+            const type =
+              formValues.type === Schema.OrderType.TYPE_LIMIT
+                ? DealTicketType.Limit
+                : DealTicketType.Market;
+            const market = state.formValues[marketId] || {};
+            if (!state.formValues[marketId]) {
+              state.formValues[marketId] = market;
+            }
+            market[type] = Object.assign(market[type] ?? {}, formValues);
           });
         },
         update: (
           marketId: string,
-          values: { size?: string; price?: string }
+          formValues: { size?: string; price?: string }
         ) => {
           set((state) => {
-            state.stopOrders[marketId] = Object.assign(
-              state.stopOrders[marketId] ?? {},
-              values
-            );
-            state.orders[marketId] = Object.assign(
-              state.orders[marketId] ?? {},
-              values
-            );
+            const market = state.formValues[marketId] || {};
+            if (!state.formValues[marketId]) {
+              state.formValues[marketId] = market;
+            }
+            for (const type of Object.values(DealTicketType)) {
+              market[type] = Object.assign(market[type] ?? {}, formValues);
+            }
           });
         },
-        setType: (marketId, dealTicketType) => {
+        setType: (marketId, type) => {
           set((state) => {
-            const showStopOrder = isStopOrderType(dealTicketType);
-            const type = dealTicketTypeToOrderType(dealTicketType);
-            state.showStopOrder[marketId] = showStopOrder;
-            if (showStopOrder) {
-              state.stopOrders[marketId] = Object.assign(
-                state.stopOrders[marketId] ?? {},
-                { type }
-              );
-            } else {
-              state.orders[marketId] = Object.assign(
-                state.orders[marketId] ?? {},
-                { type }
-              );
-            }
+            state.formValues[marketId] = Object.assign(
+              state.formValues[marketId] ?? {},
+              { type }
+            );
           });
         },
       })),

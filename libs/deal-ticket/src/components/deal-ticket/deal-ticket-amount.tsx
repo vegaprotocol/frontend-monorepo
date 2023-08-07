@@ -6,7 +6,7 @@ import * as Schema from '@vegaprotocol/types';
 import type { OrderFormValues } from '../../hooks/use-form-values';
 
 export interface DealTicketAmountProps {
-  control: Control<OrderFormValues & { summary: undefined }>;
+  control: Control<OrderFormValues>;
   type: Schema.OrderType;
   marketData: StaticMarketData;
   marketPrice?: string;

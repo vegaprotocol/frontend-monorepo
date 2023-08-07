@@ -46,16 +46,13 @@ export const mapFormValuesToOrderSubmission = (
         Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
         Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
       ].includes(order.timeInForce)) &&
-    order.icebergOpts &&
-    order.icebergOpts.peakSize &&
-    order.icebergOpts.minimumVisibleSize
+    order.iceberg &&
+    order.peakSize &&
+    order.minimumVisibleSize
       ? {
-          peakSize: removeDecimal(
-            order.icebergOpts.peakSize,
-            positionDecimalPlaces
-          ),
+          peakSize: removeDecimal(order.peakSize, positionDecimalPlaces),
           minimumVisibleSize: removeDecimal(
-            order.icebergOpts.minimumVisibleSize,
+            order.minimumVisibleSize,
             positionDecimalPlaces
           ),
         }
@@ -85,7 +82,10 @@ export const mapFormValuesToStopOrdersSubmission = (
     ),
   };
   if (data.triggerType === 'price') {
-    stopOrderSetup.price = removeDecimal(data.triggerPrice, decimalPlaces);
+    stopOrderSetup.price = removeDecimal(
+      data.triggerPrice ?? '',
+      decimalPlaces
+    );
   } else if (data.triggerType === 'trailingPercentOffset') {
     stopOrderSetup.trailingPercentOffset = (
       Number(data.triggerTrailingPercentOffset) / 100

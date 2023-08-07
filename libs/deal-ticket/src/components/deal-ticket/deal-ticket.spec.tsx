@@ -9,7 +9,10 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { addDecimal } from '@vegaprotocol/utils';
 import type { OrdersQuery } from '@vegaprotocol/orders';
-import { useDealTicketFormValues } from '../../hooks/use-form-values';
+import {
+  DealTicketType,
+  useDealTicketFormValues,
+} from '../../hooks/use-form-values';
 import * as positionsTools from '@vegaprotocol/positions';
 import { OrdersDocument } from '@vegaprotocol/orders';
 
@@ -158,8 +161,10 @@ describe('DealTicket', () => {
     };
 
     useDealTicketFormValues.setState({
-      orders: {
-        [expectedOrder.marketId]: expectedOrder,
+      formValues: {
+        [expectedOrder.marketId]: {
+          [DealTicketType.Limit]: expectedOrder,
+        },
       },
     });
 
@@ -196,8 +201,10 @@ describe('DealTicket', () => {
       postOnly: false,
     };
     useDealTicketFormValues.setState({
-      orders: {
-        [expectedOrder.marketId]: expectedOrder,
+      formValues: {
+        [expectedOrder.marketId]: {
+          [DealTicketType.Limit]: expectedOrder,
+        },
       },
     });
 
@@ -239,8 +246,10 @@ describe('DealTicket', () => {
     };
 
     useDealTicketFormValues.setState({
-      orders: {
-        [expectedOrder.marketId]: expectedOrder,
+      formValues: {
+        [expectedOrder.marketId]: {
+          [DealTicketType.Limit]: expectedOrder,
+        },
       },
     });
 
@@ -287,8 +296,10 @@ describe('DealTicket', () => {
     };
 
     useDealTicketFormValues.setState({
-      orders: {
-        [expectedOrder.marketId]: expectedOrder,
+      formValues: {
+        [expectedOrder.marketId]: {
+          [DealTicketType.Limit]: expectedOrder,
+        },
       },
     });
 
@@ -331,8 +342,10 @@ describe('DealTicket', () => {
       postOnly: false,
     };
     useDealTicketFormValues.setState({
-      orders: {
-        [expectedOrder.marketId]: expectedOrder,
+      formValues: {
+        [expectedOrder.marketId]: {
+          [DealTicketType.Limit]: expectedOrder,
+        },
       },
     });
 

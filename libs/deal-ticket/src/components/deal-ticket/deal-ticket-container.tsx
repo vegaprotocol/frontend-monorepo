@@ -1,5 +1,8 @@
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
-import { useDealTicketFormValues } from '../../hooks/use-form-values';
+import {
+  isStopOrderType,
+  useDealTicketFormValues,
+} from '../../hooks/use-form-values';
 import { StopOrder } from './deal-ticket-stop-order';
 import {
   useStaticMarketData,
@@ -22,8 +25,8 @@ export const DealTicketContainer = ({
   marketId,
   ...props
 }: DealTicketContainerProps) => {
-  const showStopOrder = useDealTicketFormValues(
-    (state) => state.showStopOrder[marketId]
+  const showStopOrder = useDealTicketFormValues((state) =>
+    isStopOrderType(state.formValues[marketId]?.type)
   );
   const {
     data: market,

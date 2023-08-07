@@ -1,7 +1,8 @@
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
+import type { FormEventHandler } from 'react';
 import { memo, useCallback, useEffect, useRef, useMemo } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useController, useForm } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
 import {
@@ -52,12 +53,11 @@ import {
   useAccountBalance,
 } from '@vegaprotocol/accounts';
 
-import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
+import { OrderType } from '@vegaprotocol/types';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   DealTicketType,
   dealTicketTypeToOrderType,
-  isStopOrderType,
 } from '../../hooks/use-form-values';
 import type { OrderFormValues } from '../../hooks/use-form-values';
 import { useDealTicketFormValues } from '../../hooks/use-form-values';
@@ -95,14 +95,15 @@ export const useNotionalSize = (
     return null;
   }, [price, size, decimalPlaces, positionDecimalPlaces]);
 
-export const defaultValues = {
+export const stopSubmit: FormEventHandler = (e) => e.preventDefault();
+
+export const defaultValues: OrderFormValues = {
   type: Schema.OrderType.TYPE_LIMIT,
   side: Schema.Side.SIDE_BUY,
   timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
   size: '0',
   price: '0',
   expiresAt: undefined,
-  persist: false,
   postOnly: false,
   reduceOnly: false,
 };
@@ -118,30 +119,32 @@ export const DealTicket = ({
 }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const setType = useDealTicketFormValues((state) => state.setType);
+  const dealTicketType = useDealTicketFormValues((state) =>
+    state.formValues[market.id]?.type === DealTicketType.Market
+      ? DealTicketType.Market
+      : DealTicketType.Limit
+  );
+  const type = dealTicketTypeToOrderType(dealTicketType);
   const storedFormValues = useDealTicketFormValues(
-    (state) => state.orders[market.id]
+    (state) => state.formValues[market.id]
   );
   const updateStoredFormValues = useDealTicketFormValues(
     (state) => state.updateOrder
   );
 
-  // store last used tif for market so that when changing OrderType the previous TIF
-  // selection for that type is used when switching back
-  const lastTIF = useRef<{
-    [K in OrderType]?: OrderTimeInForce;
-  }>({
-    [OrderType.TYPE_MARKET]: OrderTimeInForce.TIME_IN_FORCE_IOC,
-    [OrderType.TYPE_LIMIT]: OrderTimeInForce.TIME_IN_FORCE_GTC,
-  });
-
   const {
     control,
+    reset,
     formState: { errors },
     handleSubmit,
     setValue,
     watch,
-  } = useForm<OrderFormValues & { summary: undefined }>({
-    defaultValues: { ...defaultValues, ...storedFormValues },
+  } = useForm<OrderFormValues>({
+    defaultValues: {
+      ...defaultValues,
+      ...storedFormValues?.[dealTicketType],
+      type,
+    },
   });
   const lastSubmitTime = useRef(0);
 
@@ -162,23 +165,26 @@ export const DealTicket = ({
 
   const { marketState, marketTradingMode } = marketData;
   const timeInForce = watch('timeInForce');
-  const type = watch('type');
+
   const side = watch('side');
   const rawSize = watch('size');
   const rawPrice = watch('price');
   const iceberg = watch('iceberg');
-  const peakSize = watch('icebergOpts.peakSize');
+  const peakSize = watch('peakSize');
 
   useEffect(() => {
-    if (storedFormValues?.size && rawSize !== storedFormValues?.size) {
-      setValue('size', storedFormValues.size);
+    const size = storedFormValues?.[dealTicketType]?.size;
+    if (size && rawSize !== size) {
+      setValue('size', size);
     }
-  }, [storedFormValues?.size, rawSize, setValue]);
+  }, [storedFormValues, dealTicketType, rawSize, setValue]);
+
   useEffect(() => {
-    if (storedFormValues?.price && rawPrice !== storedFormValues?.price) {
-      setValue('price', storedFormValues.price);
+    const price = storedFormValues?.[dealTicketType]?.price;
+    if (price && rawPrice !== price) {
+      setValue('price', price);
     }
-  }, [storedFormValues?.price, rawPrice, setValue]);
+  }, [storedFormValues, dealTicketType, rawPrice, setValue]);
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
@@ -322,50 +328,37 @@ export const DealTicket = ({
     },
     [submit, market.decimalPlaces, market.positionDecimalPlaces, market.id]
   );
+  useController({
+    name: 'type',
+    control,
+    rules: {
+      validate: validateType(marketData.marketTradingMode, marketData.trigger),
+    },
+  });
 
   return (
     <form
       onSubmit={
         isReadOnly || !pubKey
-          ? noop
+          ? stopSubmit
           : handleSubmit(summaryError ? noop : onSubmit)
       }
       noValidate
       data-testid="deal-ticket-form"
     >
-      <Controller
-        name="type"
-        control={control}
-        rules={{
-          validate: validateType(
-            marketData.marketTradingMode,
-            marketData.trigger
-          ),
+      <TypeSelector
+        value={dealTicketType}
+        onValueChange={(dealTicketType) => {
+          setType(market.id, dealTicketType);
+          reset({
+            ...defaultValues,
+            ...storedFormValues?.[dealTicketType],
+            type: dealTicketTypeToOrderType(dealTicketType),
+          });
         }}
-        render={({ field }) => (
-          <TypeSelector
-            value={
-              field.value === OrderType.TYPE_LIMIT
-                ? DealTicketType.Limit
-                : DealTicketType.Market
-            }
-            onValueChange={(dealTicketType) => {
-              setType(market.id, dealTicketType);
-              if (isStopOrderType(dealTicketType)) {
-                return;
-              }
-              const type = dealTicketTypeToOrderType(dealTicketType);
-              field.onChange(type);
-              const timeInForce = lastTIF.current[type];
-              if (timeInForce) {
-                setValue('timeInForce', timeInForce);
-              }
-            }}
-            market={market}
-            marketData={marketData}
-            errorMessage={errors.type?.message}
-          />
-        )}
+        market={market}
+        marketData={marketData}
+        errorMessage={errors.type?.message}
       />
       <Controller
         name="side"
@@ -396,12 +389,7 @@ export const DealTicket = ({
           <TimeInForceSelector
             value={field.value}
             orderType={type}
-            onSelect={(timeInForce) => {
-              field.onChange(timeInForce);
-              // Set TIF value for the given order type, so that when switching
-              // types we know the last used TIF for the given order type
-              lastTIF.current[type] = timeInForce;
-            }}
+            onSelect={field.onChange}
             market={market}
             marketData={marketData}
             errorMessage={errors.timeInForce?.message}
@@ -521,10 +509,8 @@ export const DealTicket = ({
           {iceberg && (
             <DealTicketSizeIceberg
               market={market}
-              peakSizeError={errors.icebergOpts?.peakSize?.message}
-              minimumVisibleSizeError={
-                errors.icebergOpts?.minimumVisibleSize?.message
-              }
+              peakSizeError={errors.peakSize?.message}
+              minimumVisibleSizeError={errors.minimumVisibleSize?.message}
               control={control}
               size={rawSize}
               peakSize={peakSize}

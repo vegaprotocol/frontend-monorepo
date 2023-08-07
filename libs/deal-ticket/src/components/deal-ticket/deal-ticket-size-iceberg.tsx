@@ -11,7 +11,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 
 export interface DealTicketSizeIcebergProps {
-  control: Control<OrderFormValues & { summary: undefined }>;
+  control: Control<OrderFormValues>;
   market: Market;
   peakSizeError?: string;
   minimumVisibleSizeError?: string;
@@ -75,7 +75,7 @@ export const DealTicketSizeIceberg = ({
             className="!mb-1"
           >
             <Controller
-              name="icebergOpts.peakSize"
+              name="peakSize"
               control={control}
               rules={{
                 required: t('You need to provide a peak size'),
@@ -131,7 +131,7 @@ export const DealTicketSizeIceberg = ({
             className="!mb-1"
           >
             <Controller
-              name="icebergOpts.minimumVisibleSize"
+              name="minimumVisibleSize"
               control={control}
               rules={{
                 required: t('You need to provide a minimum visible size'),
