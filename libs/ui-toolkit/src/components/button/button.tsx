@@ -136,15 +136,12 @@ export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorButtonProps>(
   }
 );
 
-type ButtonLinkProps = Omit<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  'className' | 'style'
->;
+type ButtonLinkProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'style'>;
 
 export const ButtonLink = forwardRef<HTMLButtonElement, ButtonLinkProps>(
-  ({ type = 'button', ...props }, ref) => {
-    const className = classnames('inline underline');
-    return <button ref={ref} className={className} type={type} {...props} />;
+  ({ type = 'button', className, ...props }, ref) => {
+    const style = classnames('inline underline', className);
+    return <button ref={ref} className={style} type={type} {...props} />;
   }
 );
 
