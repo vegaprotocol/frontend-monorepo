@@ -1,11 +1,17 @@
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { useMemo } from 'react';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
 import { marketDataProvider } from '../../market-data-provider';
 import { totalFeesPercentage } from '../../market-utils';
-import { ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
+import {
+  ExternalLink,
+  Splash,
+  Tooltip,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
   formatNumber,
@@ -23,14 +29,26 @@ import BigNumber from 'bignumber.js';
 import type { DataSourceDefinition, SignerKind } from '@vegaprotocol/types';
 import { ConditionOperatorMapping } from '@vegaprotocol/types';
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
-import { FLAGS, useEnvironment } from '@vegaprotocol/environment';
+import {
+  DApp,
+  FLAGS,
+  TOKEN_PROPOSAL,
+  useEnvironment,
+  useLinks,
+} from '@vegaprotocol/environment';
 import type { Provider } from '../../oracle-schema';
 import { OracleBasicProfile } from '../../components/oracle-basic-profile';
 import { useOracleProofs } from '../../hooks';
 import { OracleDialog } from '../oracle-dialog/oracle-dialog';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { useParentMarketIdQuery } from '../../__generated__';
+import {
+  useParentMarketIdQuery,
+  useSuccessorMarketIdsQuery,
+  useSuccessorMarketQuery,
+} from '../../__generated__';
 import { useSuccessorMarketProposalDetailsQuery } from '@vegaprotocol/proposals';
+import classNames from 'classnames';
+import compact from 'lodash/compact';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -188,6 +206,126 @@ export const KeyDetailsInfoPanel = ({ market }: MarketInfoProps) => {
             }
       }
     />
+  );
+};
+
+const SuccessionLineItem = ({
+  marketId,
+  isCurrent,
+}: {
+  marketId: string;
+  isCurrent?: boolean;
+}) => {
+  const { data } = useSuccessorMarketQuery({
+    variables: {
+      marketId,
+    },
+  });
+
+  const marketData = data?.market;
+  const governanceLink = useLinks(DApp.Token);
+  const proposalLink = marketData?.proposal?.id
+    ? governanceLink(TOKEN_PROPOSAL.replace(':id', marketData?.proposal?.id))
+    : undefined;
+
+  return (
+    <div
+      data-testid="succession-line-item"
+      className={classNames(
+        'rounded p-2 bg-vega-clight-700 dark:bg-vega-cdark-700',
+        'font-alpha',
+        'flex flex-col '
+      )}
+    >
+      <div className="flex justify-between">
+        <div>
+          {marketData ? (
+            proposalLink ? (
+              <ExternalLink href={proposalLink}>
+                {marketData.tradableInstrument.instrument.code}
+              </ExternalLink>
+            ) : (
+              marketData.tradableInstrument.instrument.code
+            )
+          ) : (
+            <span className="block w-20 h-4 mb-1 bg-vega-clight-500 dark:bg-vega-cdark-500 animate-pulse"></span>
+          )}
+        </div>
+        {isCurrent && (
+          <Tooltip description={t('This market')}>
+            <div className="text-vega-clight-200 dark:text-vega-cdark-200 cursor-help">
+              <VegaIcon name={VegaIconNames.BULLET} size={16} />
+            </div>
+          </Tooltip>
+        )}
+      </div>
+      <div className="text-xs">
+        {marketData ? (
+          marketData.tradableInstrument.instrument.name
+        ) : (
+          <span className="block w-28 h-4 bg-vega-clight-500 dark:bg-vega-cdark-500 animate-pulse"></span>
+        )}
+      </div>
+      <div
+        data-testid="succession-line-item-market-id"
+        className="text-xs truncate mt-1"
+      >
+        {marketId}
+      </div>
+    </div>
+  );
+};
+
+const SuccessionLink = () => (
+  <div className="text-center leading-none" aria-hidden>
+    <VegaIcon name={VegaIconNames.ARROW_DOWN} size={12} />
+  </div>
+);
+
+const buildSuccessionLine = (
+  all: {
+    id: string;
+    successorMarketID?: string | null | undefined;
+    parentMarketID?: string | null | undefined;
+  }[],
+  id: string
+) => {
+  let line = [id];
+  const find = (id: string, dir?: 'up' | 'down') => {
+    const item = all.find((a) => a.id === id);
+    const anc = dir === 'up' && item?.parentMarketID;
+    const des = dir === 'down' && item?.successorMarketID;
+    if (anc) {
+      line = [anc, ...line];
+      find(anc, 'up');
+    }
+    if (des) {
+      line = [...line, des];
+      find(des, 'down');
+    }
+  };
+  find(id, 'up');
+  find(id, 'down');
+  return line;
+};
+export const SuccessionLineInfoPanel = ({
+  market,
+}: {
+  market: Pick<MarketInfo, 'id'>;
+}) => {
+  const { data } = useSuccessorMarketIdsQuery();
+  const ids = compact(data?.marketsConnection?.edges.map((e) => e.node));
+  const line = buildSuccessionLine(ids, market.id);
+
+  return (
+    <div className="flex flex-col gap-2">
+      {line.map((id, i) => (
+        <Fragment key={i}>
+          {i > 0 && <SuccessionLink />}
+          <SuccessionLineItem marketId={id} isCurrent={id === market.id} />
+        </Fragment>
+      ))}
+    </div>
   );
 };
 
