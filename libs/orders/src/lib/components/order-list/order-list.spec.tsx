@@ -114,9 +114,11 @@ describe('OrderListTable', () => {
   it('should apply correct formatting applied for an iceberg order', async () => {
     const icebergOrder = {
       ...limitOrder,
+      size: '100',
+      remaining: '50',
       icebergOrder: {
         __typename: 'IcebergOrder',
-        minimumVisibleSize: '100',
+        minimumVisibleSize: '1',
         peakSize: '50',
         reservedRemaining: '50',
       } as OrderFieldsFragment['icebergOrder'],
@@ -127,8 +129,8 @@ describe('OrderListTable', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues: string[] = [
       icebergOrder.market?.tradableInstrument.instrument.code || '',
-      '0.05',
-      '0.10',
+      '0.00',
+      '+1.00',
       Schema.OrderTypeMapping[
         icebergOrder.type || Schema.OrderType.TYPE_LIMIT
       ] + ' (Iceberg)',
