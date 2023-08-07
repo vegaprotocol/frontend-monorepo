@@ -120,11 +120,7 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
   );
   return (
     <AgGrid
-      style={{ width: '100%', height: '100%' }}
       getRowId={({ data }) => data.id}
-      defaultColDef={{
-        flex: 1,
-      }}
       columnDefs={columnDefs}
       {...props}
     />

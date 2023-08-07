@@ -76,7 +76,6 @@ export const OrderListTable = memo<
             field: 'market.tradableInstrument.instrument.code',
             cellRenderer: 'MarketNameCell',
             cellRendererParams: { idPath: 'market.id', onMarketClick },
-            minWidth: 150,
           },
           {
             headerName: t('Filled'),
@@ -110,9 +109,6 @@ export const OrderListTable = memo<
                 data.market.positionDecimalPlaces ?? 0
               );
             },
-            minWidth: 50,
-            width: 90,
-            flex: 0,
           },
           {
             headerName: t('Size'),
@@ -154,9 +150,6 @@ export const OrderListTable = memo<
                 )
               );
             },
-            minWidth: 50,
-            width: 80,
-            flex: 0,
           },
           {
             field: 'type',
@@ -168,7 +161,6 @@ export const OrderListTable = memo<
             cellRendererParams: {
               onClick: onOrderTypeClick,
             },
-            minWidth: 80,
           },
           {
             field: 'status',
@@ -201,7 +193,6 @@ export const OrderListTable = memo<
                 {valueFormatted}
               </span>
             ),
-            minWidth: 100,
           },
           {
             field: 'price',
@@ -223,7 +214,6 @@ export const OrderListTable = memo<
               }
               return addDecimalsFormatNumber(value, data.market.decimalPlaces);
             },
-            minWidth: 100,
           },
           {
             field: 'timeInForce',
@@ -252,7 +242,6 @@ export const OrderListTable = memo<
 
               return label;
             },
-            minWidth: 150,
           },
           {
             field: 'updatedAt',
@@ -272,7 +261,6 @@ export const OrderListTable = memo<
                 </span>
               );
             },
-            minWidth: 150,
           },
           {
             colId: 'amend',
@@ -341,10 +329,6 @@ export const OrderListTable = memo<
             filterParams: { buttons: ['reset'] },
           }}
           columnDefs={columnDefs}
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
           getRowId={({ data }) => data.id}
           components={{ MarketNameCell, OrderTypeCell }}
           {...props}

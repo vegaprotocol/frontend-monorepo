@@ -254,10 +254,6 @@ export const StopOrdersTable = memo<
         filterParams: { buttons: ['reset'] },
       }}
       columnDefs={columnDefs}
-      style={{
-        width: '100%',
-        height: '100%',
-      }}
       getRowId={({ data }) => data.id}
       components={{ MarketNameCell }}
       {...props}

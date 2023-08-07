@@ -177,14 +177,12 @@ export const LedgerTable = (props: LedgerEntryProps) => {
           value ? getDateTimeFormat().format(fromNanoSeconds(value)) : '-',
         filterParams: dateRangeFilterParams,
         filter: DateRangeFilter,
-        flex: 1,
       },
     ],
     []
   );
   return (
     <AgGrid
-      style={{ width: '100%', height: '100%' }}
       tooltipShowDelay={500}
       defaultColDef={{
         sortable: true,

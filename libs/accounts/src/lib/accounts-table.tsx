@@ -306,7 +306,6 @@ export const AccountTable = ({
   return (
     <AgGrid
       {...props}
-      style={{ width: '100%', height: '100%' }}
       getRowId={({ data }: { data: AccountFields }) => data.asset.id}
       tooltipShowDelay={500}
       rowData={data}

@@ -124,7 +124,6 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
         ref={ref}
         columnDefs={columnDefs}
         overlayNoRowsTemplate={t('No fills')}
-        style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data?.id}
         tooltipShowDelay={0}
         tooltipHideDelay={2000}

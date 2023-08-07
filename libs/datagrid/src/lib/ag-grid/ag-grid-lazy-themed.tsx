@@ -17,6 +17,11 @@ const defaultColDef = {
   resizable: true,
 };
 
+const defaultStyle = {
+  width: '100%',
+  height: '100%',
+};
+
 export const AgGridThemed = ({
   style,
   gridRef,
@@ -33,8 +38,17 @@ export const AgGridThemed = ({
   });
 
   return (
-    <div className={wrapperClasses} style={style}>
+    <div
+      className={wrapperClasses}
+      style={{
+        ...defaultStyle,
+        ...style,
+      }}
+    >
       <AgGridReact
+        onFirstDataRendered={({ columnApi }) => {
+          columnApi.autoSizeAllColumns(true);
+        }}
         {...defaultProps}
         {...props}
         defaultColDef={{

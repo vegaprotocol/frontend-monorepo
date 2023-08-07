@@ -183,7 +183,6 @@ export const LiquidityTable = ({
 
   return (
     <AgGrid
-      style={{ width: '100%', height: '100%' }}
       overlayNoRowsTemplate={t('No liquidity provisions')}
       getRowId={({ data }: { data: LiquidityProvisionData }) => data.id || ''}
       tooltipShowDelay={500}

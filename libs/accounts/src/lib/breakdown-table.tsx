@@ -58,7 +58,6 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         {
           headerName: t('Balance'),
           field: 'used',
-          flex: 2,
           maxWidth: 500,
           type: 'rightAligned',
           tooltipComponent: TooltipCellComponent,
@@ -97,7 +96,6 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         {
           headerName: t('Margin health'),
           field: 'market.id',
-          flex: 2,
           maxWidth: 500,
           sortable: false,
           cellRenderer: ({
@@ -118,7 +116,6 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
 
     return (
       <AgGrid
-        style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('Collateral not used')}
         rowData={data}
         getRowId={({ data }: { data: AccountFields }) =>
@@ -129,7 +126,6 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         components={{ PriceCell, MarketNameCell, ProgressBarCell }}
         tooltipShowDelay={500}
         defaultColDef={{
-          flex: 1,
           sortable: true,
         }}
         columnDefs={coldefs}
