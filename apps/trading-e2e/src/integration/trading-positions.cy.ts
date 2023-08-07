@@ -251,11 +251,13 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
   it('I can see warnings', () => {
     visitAndClickPositions();
 
-    cy.get('[col-id="openVolume"]').within(() => {
-      cy.get('[aria-label="warning-sign icon"]')
-        .should('be.visible')
-        .realHover();
-    });
+    cy.get('[col-id="openVolume"]')
+      .eq(3)
+      .within(() => {
+        cy.get('[aria-label="warning-sign icon"]')
+          .should('be.visible')
+          .realHover();
+      });
     // 7004-POSI-011
     cy.getByTestId(tooltipContent).should('be.visible');
   });
