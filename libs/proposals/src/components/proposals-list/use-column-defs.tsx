@@ -163,7 +163,6 @@ export const useColumnDefs = () => {
   const defaultColDef: ColDef = useMemo(() => {
     return {
       sortable: true,
-      resizable: true,
       filter: true,
       filterParams: { buttons: ['reset'] },
       minWidth: 100,

@@ -250,7 +250,6 @@ export const StopOrdersTable = memo<
   return (
     <AgGrid
       defaultColDef={{
-        resizable: true,
         sortable: true,
         filterParams: { buttons: ['reset'] },
       }}

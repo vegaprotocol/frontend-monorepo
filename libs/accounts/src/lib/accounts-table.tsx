@@ -311,7 +311,6 @@ export const AccountTable = ({
       tooltipShowDelay={500}
       rowData={data}
       defaultColDef={{
-        resizable: true,
         tooltipComponent: TooltipCellComponent,
         sortable: true,
         comparator: accountValuesComparator,

@@ -14,7 +14,6 @@ const gridProps = {
     {
       field: 'id',
       width: 100,
-      resizable: true,
       filter: 'agNumberColumnFilter',
     },
   ],

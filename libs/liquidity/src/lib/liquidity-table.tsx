@@ -188,7 +188,6 @@ export const LiquidityTable = ({
       getRowId={({ data }: { data: LiquidityProvisionData }) => data.id || ''}
       tooltipShowDelay={500}
       defaultColDef={{
-        resizable: true,
         minWidth: 100,
         tooltipComponent: TooltipCellComponent,
         sortable: true,

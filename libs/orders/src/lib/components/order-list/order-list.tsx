@@ -337,7 +337,6 @@ export const OrderListTable = memo<
         <AgGrid
           ref={ref}
           defaultColDef={{
-            resizable: true,
             sortable: true,
             filterParams: { buttons: ['reset'] },
           }}

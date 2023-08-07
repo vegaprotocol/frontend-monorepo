@@ -103,7 +103,6 @@ export const PositionsTable = ({
       getRowId={getRowId}
       tooltipShowDelay={500}
       defaultColDef={{
-        resizable: true,
         sortable: true,
         filter: true,
         filterParams: { buttons: ['reset'] },

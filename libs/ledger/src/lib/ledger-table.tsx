@@ -187,7 +187,6 @@ export const LedgerTable = (props: LedgerEntryProps) => {
       style={{ width: '100%', height: '100%' }}
       tooltipShowDelay={500}
       defaultColDef={{
-        resizable: true,
         sortable: true,
         tooltipComponent: TransferTooltipCellComponent,
         filterParams: {

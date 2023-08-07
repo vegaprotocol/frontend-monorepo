@@ -130,7 +130,6 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         tooltipShowDelay={500}
         defaultColDef={{
           flex: 1,
-          resizable: true,
           sortable: true,
         }}
         columnDefs={coldefs}

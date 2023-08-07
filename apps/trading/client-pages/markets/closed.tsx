@@ -281,7 +281,6 @@ const ClosedMarketsDataGrid = ({
       columnDefs={colDefs}
       getRowId={({ data }) => data.id}
       defaultColDef={{
-        resizable: true,
         minWidth: 100,
         flex: 1,
       }}

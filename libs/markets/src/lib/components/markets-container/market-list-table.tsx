@@ -35,7 +35,6 @@ const MarketName = (props: MarketNameCellProps) => (
 );
 
 const defaultColDef = {
-  resizable: true,
   sortable: true,
   filter: true,
   filterParams: { buttons: ['reset'] },
