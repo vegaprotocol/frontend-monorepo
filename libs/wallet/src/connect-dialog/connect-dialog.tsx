@@ -15,11 +15,7 @@ import { useCallback, useState } from 'react';
 import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { t } from '@vegaprotocol/i18n';
 import type { VegaConnector } from '../connectors';
-import {
-  InjectedConnector,
-  JsonRpcConnector,
-  ViewConnector,
-} from '../connectors';
+import { InjectedConnector, JsonRpcConnector } from '../connectors';
 import { JsonRpcConnectorForm } from './json-rpc-connector-form';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
@@ -34,7 +30,6 @@ import type { Status as JsonRpcStatus } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
 import type { Status as InjectedStatus } from '../use-injected-connector';
 import { useInjectedConnector } from '../use-injected-connector';
-import { ViewConnectorForm } from './view-connector-form';
 import { useChainIdQuery } from './__generated__/ChainId';
 import { useVegaWallet } from '../use-vega-wallet';
 import { InjectedConnectorForm } from './injected-connector-form';
@@ -301,16 +296,6 @@ const SelectedForm = ({
         appChainId={appChainId}
         reset={reset}
         riskMessage={riskMessage}
-      />
-    );
-  }
-
-  if (connector instanceof ViewConnector) {
-    return (
-      <ViewConnectorForm
-        connector={connector}
-        onConnect={onConnect}
-        reset={reset}
       />
     );
   }

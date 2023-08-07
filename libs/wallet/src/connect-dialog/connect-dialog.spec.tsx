@@ -101,6 +101,11 @@ function generateJSX(props?: Partial<VegaConnectDialogProps>) {
 }
 
 describe('VegaConnectDialog', () => {
+  let navigatorGetter: jest.SpyInstance;
+  beforeEach(() => {
+    jest.clearAllMocks();
+    navigatorGetter = jest.spyOn(window.navigator, 'userAgent', 'get');
+  });
   it('displays a list of connection options', async () => {
     const { container, rerender } = render(generateJSX());
     expect(container).toBeEmptyDOMElement();
@@ -114,6 +119,7 @@ describe('VegaConnectDialog', () => {
   });
 
   it('displays browser wallet option if detected on window object', async () => {
+    navigatorGetter.mockReturnValue('Chrome');
     mockBrowserWallet();
     render(generateJSX());
     const list = await screen.findByTestId('connectors-list');
@@ -121,6 +127,7 @@ describe('VegaConnectDialog', () => {
     expect(screen.getByTestId('connector-injected')).toHaveTextContent(
       'Connect'
     );
+
     clearBrowserWallet();
   });
 
@@ -264,6 +271,24 @@ describe('VegaConnectDialog', () => {
       expect(await screen.findByTestId('connector-jsonRpc')).toBeDisabled();
     });
 
+    it('Mozilla logo should be rendered', async () => {
+      navigatorGetter.mockReturnValue('Firefox');
+      render(generateJSX());
+      expect(await screen.findByTestId('mozilla-logo')).toBeInTheDocument();
+    });
+
+    it('Chrome logo should be rendered', async () => {
+      navigatorGetter.mockReturnValue('Chrome');
+      render(generateJSX());
+      expect(await screen.findByTestId('chrome-logo')).toBeInTheDocument();
+    });
+
+    it('Chrome and Firefox logo should be rendered', async () => {
+      navigatorGetter.mockReturnValue('Safari');
+      render(generateJSX());
+      expect(await screen.findByTestId('mozilla-logo')).toBeInTheDocument();
+      expect(await screen.findByTestId('chrome-logo')).toBeInTheDocument();
+    });
     async function selectJsonRpc() {
       expect(await screen.findByRole('dialog')).toBeInTheDocument();
       fireEvent.click(await screen.findByTestId('connector-jsonRpc'));
