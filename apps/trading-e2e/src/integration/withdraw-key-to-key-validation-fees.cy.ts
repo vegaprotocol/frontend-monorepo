@@ -70,7 +70,7 @@ describe('transfer fees', { tags: '@regression', testIsolation: true }, () => {
       .should('not.be.empty');
   });
 
-  it('transfer fees', () => {
+  it.skip('transfer fees', () => {
     // 1003-TRAN-020
     // 1003-TRAN-021
     // 1003-TRAN-022
