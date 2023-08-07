@@ -24,8 +24,8 @@ interface RowProps {
   unformatted?: boolean;
   assetSymbol?: string;
   noBorder?: boolean;
-  oldValue?: ReactNode;
-  isNewValue?: boolean;
+  parentValue?: ReactNode;
+  hasParentData?: boolean;
 }
 
 export const Row = ({
@@ -36,9 +36,14 @@ export const Row = ({
   unformatted,
   assetSymbol = '',
   noBorder = true,
-  oldValue,
-  isNewValue,
+  parentValue,
+  hasParentData,
 }: RowProps) => {
+  // Note: we need both 'parentValue' and 'hasParentData' to do a conditional
+  // check to differentiate between when parentData itself is missing and when
+  // a specific parentValue is missing. These values are only used when we
+  // have successor market parent data.
+
   const className = 'text-sm';
 
   const getFormattedValue = (value: ReactNode) => {
@@ -59,12 +64,11 @@ export const Row = ({
   };
 
   const formattedValue = getFormattedValue(value);
-  const oldFormattedValue = oldValue && getFormattedValue(oldValue);
-
-  const hasChangedFormattedValue =
-    oldFormattedValue && oldFormattedValue !== formattedValue;
 
   if (!formattedValue) return null;
+
+  const newValueInSuccessorMarket = hasParentData && value && !parentValue;
+  const valueDiffersFromParentMarket = parentValue && parentValue !== value;
 
   return (
     <KeyValueTableRow
@@ -79,22 +83,24 @@ export const Row = ({
           <div tabIndex={-1}>{startCase(t(field))}</div>
         </Tooltip>
 
-        {isNewValue && (
-          <Lozenge className="py-0" variant={Intent.Success}>
-            {t('Added')}
+        {valueDiffersFromParentMarket && (
+          <Lozenge className="py-0" variant={Intent.Primary}>
+            {t('Updated')}
           </Lozenge>
         )}
 
-        {hasChangedFormattedValue && (
-          <Lozenge className="py-0" variant={Intent.Danger}>
-            {t('Updated')}
+        {newValueInSuccessorMarket && (
+          <Lozenge className="py-0" variant={Intent.Primary}>
+            {t('Added')}
           </Lozenge>
         )}
       </div>
       <div style={{ wordBreak: 'break-word' }}>
-        {hasChangedFormattedValue ? (
+        {valueDiffersFromParentMarket ? (
           <div className="flex items-center gap-3">
-            <span className="line-through">{oldFormattedValue}</span>
+            <span className="line-through">
+              {getFormattedValue(parentValue)}
+            </span>
             <span>{formattedValue}</span>
           </div>
         ) : (
@@ -113,7 +119,7 @@ export interface MarketInfoTableProps {
   children?: ReactNode;
   assetSymbol?: string;
   noBorder?: boolean;
-  parentMarketData?: Record<string, ReactNode> | null | undefined;
+  parentData?: Record<string, ReactNode> | null | undefined;
 }
 
 export const MarketInfoTable = ({
@@ -124,25 +130,33 @@ export const MarketInfoTable = ({
   children,
   assetSymbol,
   noBorder,
+  parentData,
 }: MarketInfoTableProps) => {
   if (!data || typeof data !== 'object') {
     return null;
   }
+
+  const hasParentData = parentData !== undefined;
+
   return (
     <>
       <KeyValueTable>
-        {Object.entries(data).map(([key, value]) => (
-          <Row
-            key={key}
-            field={key}
-            value={value}
-            decimalPlaces={decimalPlaces}
-            assetSymbol={assetSymbol}
-            asPercentage={asPercentage}
-            unformatted={unformatted}
-            noBorder={noBorder}
-          />
-        ))}
+        <>
+          {Object.entries(data).map(([key, value]) => (
+            <Row
+              key={key}
+              field={key}
+              value={value}
+              decimalPlaces={decimalPlaces}
+              assetSymbol={assetSymbol}
+              asPercentage={asPercentage}
+              unformatted={unformatted}
+              noBorder={noBorder}
+              parentValue={parentData?.[key]}
+              hasParentData={hasParentData}
+            />
+          ))}
+        </>
       </KeyValueTable>
       <div className="flex flex-col gap-2">{children}</div>
     </>

@@ -6,6 +6,7 @@ import {
   ExternalLink,
   Icon,
   Intent,
+  Lozenge,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -18,15 +19,30 @@ import type { OracleMarketSpecFieldsFragment } from '../../__generated__/OracleM
 import ReactMarkdown from 'react-markdown';
 import { useState } from 'react';
 
-export const OracleProfileTitle = ({ provider }: { provider: Provider }) => {
+export const OracleProfileTitle = ({
+  provider,
+  parentProvider,
+}: {
+  provider: Provider;
+  parentProvider?: Provider;
+}) => {
+  // If this is a successor market, the parent provider will only have been passed
+  // in if it differs from the current provider. If it is different, we'll just
+  // show the change in name, not icons and proofs.
   const { icon, intent } = getVerifiedStatusIcon(provider);
   const verifiedProofs = provider.proofs.filter(
     (proof) => proof.available === true
   );
   return (
     <span className="flex gap-1">
+      {parentProvider && (
+        <Lozenge variant={Intent.Primary}>{t('Updated')}</Lozenge>
+      )}
       {provider.url && (
         <span>
+          {parentProvider && parentProvider.name && (
+            <span className="line-through">{parentProvider.name}</span>
+          )}
           <span className="pr-1">{provider.name}</span>
           <span className="dark:text-vega-light-300 text-vega-dark-300">
             ({verifiedProofs.length})

@@ -1,3 +1,4 @@
+import isEqual from 'lodash/isEqual';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useMemo } from 'react';
@@ -5,7 +6,7 @@ import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
 import { marketDataProvider } from '../../market-data-provider';
 import { totalFeesPercentage } from '../../market-utils';
-import { ExternalLink, KeyValueTable, Splash } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
   formatNumber,
@@ -31,11 +32,12 @@ import { OracleDialog } from '../oracle-dialog/oracle-dialog';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useParentMarketIdQuery } from '../../__generated__';
 import { useSuccessorMarketProposalDetailsQuery } from '@vegaprotocol/proposals';
-import { useSuccessorMarketQuery } from '../../__generated__';
-import { Row } from './info-key-value-table';
+import type { MarketTradingMode } from '@vegaprotocol/types';
+import type { Signer } from '@vegaprotocol/types';
 
 type MarketInfoProps = {
   market: MarketInfo;
+  parentMarket?: MarketInfo;
   children?: ReactNode;
 };
 
@@ -140,81 +142,42 @@ export const InsurancePoolInfoPanel = ({
   );
 };
 
-export const ChangesFromParentMarketInfoPanel = ({
+export const KeyDetailsInfoPanel = ({
   market,
+  parentMarket,
 }: MarketInfoProps) => {
-  const { data: parentData } = useParentMarketIdQuery({
+  const { data: parentMarketIdData } = useParentMarketIdQuery({
     variables: {
       marketId: market.id,
     },
     skip: !FLAGS.SUCCESSOR_MARKETS,
   });
 
-  const { data: successorData } = useSuccessorMarketQuery({
+  const { data: successorProposalDetails } =
+    useSuccessorMarketProposalDetailsQuery({
+      variables: {
+        proposalId: market.proposal?.id || '',
+      },
+      skip: !FLAGS.SUCCESSOR_MARKETS || !market.proposal?.id,
+    });
+
+  // The following queries are needed as the parent market could also have been a successor market.
+  // Note: the parent market is only passed to this component if the successor markets flag is enabled,
+  // so that check is not needed in the skip.
+  const { data: grandparentMarketIdData } = useParentMarketIdQuery({
     variables: {
-      marketId: market.id,
+      marketId: parentMarket?.id || '',
     },
-    skip: !FLAGS.SUCCESSOR_MARKETS,
+    skip: !parentMarket?.id,
   });
 
-  const { data: successorProposal } = useSuccessorMarketProposalDetailsQuery({
-    variables: {
-      proposalId: market.proposal?.id || '',
-    },
-    skip: !FLAGS.SUCCESSOR_MARKETS || !market.proposal?.id,
-  });
-
-  const hasSuccessorPositionDecimalPlacesChanged =
-    successorData &&
-    successorData.market?.positionDecimalPlaces !==
-      market.positionDecimalPlaces;
-
-  return (
-    <KeyValueTable>
-      <Row
-        key={'parentMarketID'}
-        field={'parentMarketID'}
-        value={parentData?.market?.parentMarketID || '-'}
-        isNewValue={true}
-      />
-      <Row
-        key={'insurancePoolFraction'}
-        field={'insurancePoolFraction'}
-        value={
-          (successorProposal?.proposal?.terms.change.__typename ===
-            'NewMarket' &&
-            successorProposal.proposal.terms.change.successorConfiguration
-              ?.insurancePoolFraction) ||
-          '-'
-        }
-        isNewValue={true}
-      />
-      {hasSuccessorPositionDecimalPlacesChanged && (
-        <Row
-          key={'positionDecimalPlaces'}
-          field={'positionDecimalPlaces'}
-          value={successorData?.market?.positionDecimalPlaces || '-'}
-          oldValue={market.positionDecimalPlaces}
-        />
-      )}
-    </KeyValueTable>
-  );
-};
-
-export const KeyDetailsInfoPanel = ({ market }: MarketInfoProps) => {
-  const { data: parentData } = useParentMarketIdQuery({
-    variables: {
-      marketId: market.id,
-    },
-    skip: !FLAGS.SUCCESSOR_MARKETS,
-  });
-
-  const { data: successor } = useSuccessorMarketProposalDetailsQuery({
-    variables: {
-      proposalId: market.proposal?.id || '',
-    },
-    skip: !FLAGS.SUCCESSOR_MARKETS || !market.proposal?.id,
-  });
+  const { data: parentSuccessorProposalDetails } =
+    useSuccessorMarketProposalDetailsQuery({
+      variables: {
+        proposalId: parentMarket?.proposal?.id || '',
+      },
+      skip: !parentMarket?.proposal?.id,
+    });
 
   const assetDecimals =
     market.tradableInstrument.instrument.product.settlementAsset.decimals;
@@ -226,11 +189,12 @@ export const KeyDetailsInfoPanel = ({ market }: MarketInfoProps) => {
           ? {
               name: market.tradableInstrument.instrument.name,
               marketID: market.id,
-              parentMarketID: parentData?.market?.parentMarketID || '-',
+              parentMarketID: parentMarketIdData?.market?.parentMarketID || '-',
               insurancePoolFraction:
-                (successor?.proposal?.terms.change.__typename === 'NewMarket' &&
-                  successor.proposal.terms.change.successorConfiguration
-                    ?.insurancePoolFraction) ||
+                (successorProposalDetails?.proposal?.terms.change.__typename ===
+                  'NewMarket' &&
+                  successorProposalDetails.proposal.terms.change
+                    .successorConfiguration?.insurancePoolFraction) ||
                 '-',
               tradingMode:
                 market.tradingMode &&
@@ -250,11 +214,36 @@ export const KeyDetailsInfoPanel = ({ market }: MarketInfoProps) => {
               settlementAssetDecimalPlaces: assetDecimals,
             }
       }
+      parentData={
+        parentMarket && {
+          name: parentMarket?.tradableInstrument?.instrument?.name,
+          marketID: parentMarket?.id,
+          parentMarketID: grandparentMarketIdData?.market?.parentMarketID,
+          insurancePoolFraction:
+            parentSuccessorProposalDetails?.proposal?.terms.change
+              .__typename === 'NewMarket' &&
+            parentSuccessorProposalDetails.proposal.terms.change
+              .successorConfiguration?.insurancePoolFraction,
+          tradingMode:
+            parentMarket?.tradingMode &&
+            MarketTradingModeMapping[
+              parentMarket.tradingMode as MarketTradingMode
+            ],
+          marketDecimalPlaces: parentMarket?.decimalPlaces,
+          positionDecimalPlaces: parentMarket?.positionDecimalPlaces,
+          settlementAssetDecimalPlaces:
+            parentMarket?.tradableInstrument?.instrument?.product
+              ?.settlementAsset?.decimals,
+        }
+      }
     />
   );
 };
 
-export const InstrumentInfoPanel = ({ market }: MarketInfoProps) => (
+export const InstrumentInfoPanel = ({
+  market,
+  parentMarket,
+}: MarketInfoProps) => (
   <MarketInfoTable
     data={{
       marketName: market.tradableInstrument.instrument.name,
@@ -262,6 +251,16 @@ export const InstrumentInfoPanel = ({ market }: MarketInfoProps) => (
       productType: market.tradableInstrument.instrument.product.__typename,
       quoteName: market.tradableInstrument.instrument.product.quoteName,
     }}
+    parentData={
+      parentMarket && {
+        marketName: parentMarket?.tradableInstrument?.instrument?.name,
+        code: parentMarket?.tradableInstrument?.instrument?.code,
+        productType:
+          parentMarket?.tradableInstrument?.instrument?.product?.__typename,
+        quoteName:
+          parentMarket?.tradableInstrument?.instrument?.product?.quoteName,
+      }
+    }
   />
 );
 
@@ -274,6 +273,7 @@ export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
     () => market?.tradableInstrument.instrument.product?.settlementAsset.id,
     [market]
   );
+
   const { data: asset } = useAssetDataProvider(assetId ?? '');
   return asset ? (
     <>
@@ -296,54 +296,148 @@ export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
   );
 };
 
-export const MetadataInfoPanel = ({ market }: MarketInfoProps) => (
+const getMarketMetadata = (market: MarketInfo) =>
+  market.tradableInstrument.instrument.metadata.tags
+    ?.map((tag) => {
+      const [key, value] = tag.split(':');
+      return { [key]: value };
+    })
+    .reduce((acc, curr) => ({ ...acc, ...curr }), {});
+
+export const MetadataInfoPanel = ({
+  market,
+  parentMarket,
+}: MarketInfoProps) => (
   <MarketInfoTable
     data={{
       expiryDate: getMarketExpiryDateFormatted(
         market.tradableInstrument.instrument.metadata.tags
       ),
-      ...market.tradableInstrument.instrument.metadata.tags
-        ?.map((tag) => {
-          const [key, value] = tag.split(':');
-          return { [key]: value };
-        })
-        .reduce((acc, curr) => ({ ...acc, ...curr }), {}),
+      ...(getMarketMetadata(market) || {}),
     }}
+    parentData={
+      parentMarket && {
+        expiryDate: getMarketExpiryDateFormatted(
+          parentMarket.tradableInstrument.instrument.metadata.tags
+        ),
+        ...(getMarketMetadata(parentMarket) || {}),
+      }
+    }
   />
 );
 
-export const RiskModelInfoPanel = ({ market }: MarketInfoProps) => {
+export const RiskModelInfoPanel = ({
+  market,
+  parentMarket,
+}: MarketInfoProps) => {
   if (market.tradableInstrument.riskModel.__typename !== 'LogNormalRiskModel') {
     return null;
   }
+
   const { tau, riskAversionParameter } = market.tradableInstrument.riskModel;
-  return <MarketInfoTable data={{ tau, riskAversionParameter }} unformatted />;
+
+  let parentData;
+
+  if (
+    parentMarket?.tradableInstrument?.riskModel?.__typename ===
+    'LogNormalRiskModel'
+  ) {
+    const {
+      tau: parentTau,
+      riskAversionParameter: parentRiskAversionParameter,
+    } = market.tradableInstrument.riskModel;
+
+    parentData = {
+      tau: parentTau,
+      riskAversionParameter: parentRiskAversionParameter,
+    };
+  }
+
+  return (
+    <MarketInfoTable
+      data={{ tau, riskAversionParameter }}
+      parentData={parentData}
+      unformatted
+    />
+  );
 };
 
-export const RiskParametersInfoPanel = ({ market }: MarketInfoProps) => {
-  if (market.tradableInstrument.riskModel.__typename === 'LogNormalRiskModel') {
+export const RiskParametersInfoPanel = ({
+  market,
+  parentMarket,
+}: MarketInfoProps) => {
+  const marketType = market.tradableInstrument.riskModel.__typename;
+
+  let data, parentData;
+
+  if (marketType === 'LogNormalRiskModel') {
     const { r, sigma, mu } = market.tradableInstrument.riskModel.params;
-    return <MarketInfoTable data={{ r, sigma, mu }} unformatted />;
-  }
-  if (market.tradableInstrument.riskModel.__typename === 'SimpleRiskModel') {
+    data = { r, sigma, mu };
+
+    if (
+      parentMarket?.tradableInstrument?.riskModel.__typename ===
+      'LogNormalRiskModel'
+    ) {
+      const parentParams = parentMarket.tradableInstrument.riskModel.params;
+      parentData = {
+        r: parentParams.r,
+        sigma: parentParams.sigma,
+        mu: parentParams.mu,
+      };
+    }
+  } else if (marketType === 'SimpleRiskModel') {
     const { factorLong, factorShort } =
       market.tradableInstrument.riskModel.params;
-    return <MarketInfoTable data={{ factorLong, factorShort }} unformatted />;
+    data = { factorLong, factorShort };
+
+    if (
+      parentMarket?.tradableInstrument?.riskModel.__typename ===
+      'SimpleRiskModel'
+    ) {
+      const parentParams = parentMarket.tradableInstrument.riskModel.params;
+      parentData = {
+        factorLong: parentParams.factorLong,
+        factorShort: parentParams.factorShort,
+      };
+    }
   }
-  return null;
+
+  if (!data) return null;
+
+  return <MarketInfoTable data={data} parentData={parentData} unformatted />;
 };
 
-export const RiskFactorsInfoPanel = ({ market }: MarketInfoProps) => {
+export const RiskFactorsInfoPanel = ({
+  market,
+  parentMarket,
+}: MarketInfoProps) => {
   if (!market.riskFactors) {
     return null;
   }
+
   const { short, long } = market.riskFactors;
-  return <MarketInfoTable data={{ short, long }} unformatted />;
+
+  let parentData;
+
+  if (parentMarket?.riskFactors) {
+    const parentShort = parentMarket.riskFactors.short;
+    const parentLong = parentMarket.riskFactors.long;
+    parentData = { short: parentShort, long: parentLong };
+  }
+
+  return (
+    <MarketInfoTable
+      data={{ short, long }}
+      parentData={parentData}
+      unformatted
+    />
+  );
 };
 
 export const PriceMonitoringBoundsInfoPanel = ({
   market,
   triggerIndex,
+  parentMarket,
 }: MarketInfoProps & {
   triggerIndex: number;
 }) => {
@@ -351,11 +445,35 @@ export const PriceMonitoringBoundsInfoPanel = ({
     dataProvider: marketDataProvider,
     variables: { marketId: market.id },
   });
+
+  const { data: parentData } = useDataProvider({
+    dataProvider: marketDataProvider,
+    variables: { marketId: parentMarket?.id || '' },
+    skip:
+      !parentMarket ||
+      !parentMarket?.priceMonitoringSettings?.parameters?.triggers?.[
+        triggerIndex
+      ],
+  });
+
   const quoteUnit =
     market?.tradableInstrument.instrument.product?.quoteName || '';
+  const parentQuoteUnit =
+    parentMarket?.tradableInstrument.instrument.product?.quoteName || '';
+  const isParentQuoteUnitEqual = quoteUnit === parentQuoteUnit;
+
   const trigger =
     market.priceMonitoringSettings?.parameters?.triggers?.[triggerIndex];
+  const parentTrigger =
+    parentMarket?.priceMonitoringSettings?.parameters?.triggers?.[triggerIndex];
+  const isParentTriggerEqual = isEqual(trigger, parentTrigger);
+
   const bounds = data?.priceMonitoringBounds?.[triggerIndex];
+  const parentBounds = parentData?.priceMonitoringBounds?.[triggerIndex];
+
+  const shouldShowParentData =
+    isParentQuoteUnitEqual && isParentTriggerEqual && !!parentBounds;
+
   if (!trigger) {
     console.error(
       `Could not find data for trigger ${triggerIndex} (market id: ${market.id})`
@@ -382,6 +500,14 @@ export const PriceMonitoringBoundsInfoPanel = ({
             highestPrice: bounds.maxValidPrice,
             lowestPrice: bounds.minValidPrice,
           }}
+          parentData={
+            shouldShowParentData
+              ? {
+                  highestPrice: parentBounds.maxValidPrice,
+                  lowestPrice: parentBounds.minValidPrice,
+                }
+              : undefined
+          }
           decimalPlaces={market.decimalPlaces}
           assetSymbol={quoteUnit}
         />
@@ -397,18 +523,31 @@ export const PriceMonitoringBoundsInfoPanel = ({
 
 export const LiquidityMonitoringParametersInfoPanel = ({
   market,
-}: MarketInfoProps) => (
-  <MarketInfoTable
-    data={{
-      triggeringRatio: market.liquidityMonitoringParameters.triggeringRatio,
-      timeWindow:
-        market.liquidityMonitoringParameters.targetStakeParameters.timeWindow,
-      scalingFactor:
-        market.liquidityMonitoringParameters.targetStakeParameters
-          .scalingFactor,
-    }}
-  />
-);
+  parentMarket,
+}: MarketInfoProps) => {
+  const marketData = {
+    triggeringRatio: market.liquidityMonitoringParameters.triggeringRatio,
+    timeWindow:
+      market.liquidityMonitoringParameters.targetStakeParameters.timeWindow,
+    scalingFactor:
+      market.liquidityMonitoringParameters.targetStakeParameters.scalingFactor,
+  };
+
+  const parentMarketData = parentMarket
+    ? {
+        triggeringRatio:
+          parentMarket.liquidityMonitoringParameters.triggeringRatio,
+        timeWindow:
+          parentMarket.liquidityMonitoringParameters.targetStakeParameters
+            .timeWindow,
+        scalingFactor:
+          parentMarket.liquidityMonitoringParameters.targetStakeParameters
+            .scalingFactor,
+      }
+    : {};
+
+  return <MarketInfoTable data={marketData} parentData={parentMarketData} />;
+};
 
 export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
   const assetDecimals =
@@ -435,16 +574,61 @@ export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
   );
 };
 
-export const LiquidityPriceRangeInfoPanel = ({ market }: MarketInfoProps) => {
+export const LiquidityPriceRangeInfoPanel = ({
+  market,
+  parentMarket,
+}: MarketInfoProps) => {
   const quoteUnit =
     market?.tradableInstrument.instrument.product?.quoteName || '';
+  const parentQuoteUnit =
+    parentMarket?.tradableInstrument.instrument.product?.quoteName || '';
+
   const liquidityPriceRange = formatNumberPercentage(
     new BigNumber(market.lpPriceRange).times(100)
   );
+  const parentLiquidityPriceRange = parentMarket
+    ? formatNumberPercentage(
+        new BigNumber(parentMarket.lpPriceRange).times(100)
+      )
+    : null;
+
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: { marketId: market.id },
   });
+
+  const { data: parentMarketData } = useDataProvider({
+    dataProvider: marketDataProvider,
+    variables: { marketId: parentMarket?.id || '' },
+    skip: !parentMarket,
+  });
+
+  let parentData;
+
+  if (parentMarket && parentMarketData && quoteUnit === parentQuoteUnit) {
+    parentData = {
+      liquidityPriceRange: `${parentLiquidityPriceRange} of mid price`,
+      lowestPrice:
+        parentMarketData?.midPrice &&
+        `${addDecimalsFormatNumber(
+          new BigNumber(1)
+            .minus(parentMarket.lpPriceRange)
+            .times(parentMarketData.midPrice)
+            .toString(),
+          parentMarket.decimalPlaces
+        )} ${quoteUnit}`,
+      highestPrice:
+        parentMarketData?.midPrice &&
+        `${addDecimalsFormatNumber(
+          new BigNumber(1)
+            .plus(parentMarket.lpPriceRange)
+            .times(parentMarketData.midPrice)
+            .toString(),
+          parentMarket.decimalPlaces
+        )} ${quoteUnit}`,
+    };
+  }
+
   return (
     <>
       <p className="text-sm mb-2">
@@ -477,6 +661,7 @@ export const LiquidityPriceRangeInfoPanel = ({ market }: MarketInfoProps) => {
               market.decimalPlaces
             )} ${quoteUnit}`,
         }}
+        parentData={parentData}
       />
     </>
   );
@@ -485,8 +670,12 @@ export const LiquidityPriceRangeInfoPanel = ({ market }: MarketInfoProps) => {
 export const OracleInfoPanel = ({
   market,
   type,
+  parentMarket,
 }: MarketInfoProps & { type: 'settlementData' | 'termination' }) => {
+  // If this is a successor market, this component will only receive parent market
+  // data if the termination or settlement data is different from the parent.
   const product = market.tradableInstrument.instrument.product;
+  const parentProduct = parentMarket?.tradableInstrument?.instrument?.product;
   const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
   const { data } = useOracleProofs(ORACLE_PROOFS_URL);
 
@@ -495,12 +684,33 @@ export const OracleInfoPanel = ({
       ? product.dataSourceSpecForSettlementData.id
       : product.dataSourceSpecForTradingTermination.id;
 
+  const parentDataSourceSpecId =
+    type === 'settlementData'
+      ? parentProduct?.dataSourceSpecForSettlementData?.id
+      : parentProduct?.dataSourceSpecForTradingTermination?.id;
+
   const dataSourceSpec = (
     type === 'settlementData'
       ? product.dataSourceSpecForSettlementData.data
       : product.dataSourceSpecForTradingTermination.data
   ) as DataSourceDefinition;
 
+  const parentDataSourceSpec =
+    type === 'settlementData'
+      ? parentProduct?.dataSourceSpecForSettlementData?.data
+      : (parentProduct?.dataSourceSpecForTradingTermination
+          ?.data as DataSourceDefinition);
+
+  const isParentDataSourceSpecEqual =
+    parentDataSourceSpec !== undefined &&
+    dataSourceSpec === parentDataSourceSpec;
+  const isParentDataSourceSpecIdEqual =
+    parentDataSourceSpecId !== undefined &&
+    dataSourceSpecId === parentDataSourceSpecId;
+
+  // We'll only provide successor parent data (if it differs) to the
+  // DataSourceProof component. Having an old external link struck through
+  // is unlikely to be useful.
   return (
     <div className="flex flex-col gap-2">
       <DataSourceProof
@@ -509,7 +719,14 @@ export const OracleInfoPanel = ({
         providers={data}
         type={type}
         dataSourceSpecId={dataSourceSpecId}
+        parentData={
+          isParentDataSourceSpecEqual ? undefined : parentDataSourceSpec
+        }
+        parentDataSourceSpecId={
+          isParentDataSourceSpecIdEqual ? undefined : parentDataSourceSpecId
+        }
       />
+
       <ExternalLink
         data-testid="oracle-spec-links"
         href={`${VEGA_EXPLORER_URL}/oracles/${
@@ -531,14 +748,28 @@ export const DataSourceProof = ({
   providers,
   type,
   dataSourceSpecId,
+  parentData,
+  parentDataSourceSpecId,
 }: {
   data: DataSourceDefinition;
   providers: Provider[] | undefined;
   type: 'settlementData' | 'termination';
   dataSourceSpecId: string;
+  parentData?: DataSourceDefinition;
+  parentDataSourceSpecId?: string;
 }) => {
+  // If this is a successor market, we'll only pass parent data to child
+  // components for comparison if the data differs from the parent market.
   if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
     const signers = data.sourceType.sourceType.signers || [];
+    let parentSigners: Signer[];
+
+    if (
+      parentData &&
+      parentData.sourceType.__typename === 'DataSourceDefinitionExternal'
+    ) {
+      parentSigners = parentData.sourceType.sourceType?.signers || [];
+    }
 
     if (!providers?.length) {
       return <NoOracleProof type={type} />;
@@ -547,13 +778,30 @@ export const DataSourceProof = ({
     return (
       <div className="flex flex-col gap-2">
         {signers.map(({ signer }, i) => {
-          return (
+          const parentSigner = parentSigners?.find(
+            ({ signer: ParentSigner }) =>
+              ParentSigner.__typename === signer.__typename
+          )?.signer;
+
+          const isParentSignerEqual = isEqual(signer, parentSigner);
+
+          return isParentSignerEqual ? (
             <OracleLink
               key={i}
               providers={providers}
               signer={signer}
               type={type}
               dataSourceSpecId={dataSourceSpecId}
+            />
+          ) : (
+            <OracleLink
+              key={i}
+              providers={providers}
+              signer={signer}
+              type={type}
+              dataSourceSpecId={dataSourceSpecId}
+              parentSigner={parentSigner}
+              parentDataSourceSpecId={parentDataSourceSpecId}
             />
           );
         })}
@@ -588,18 +836,8 @@ export const DataSourceProof = ({
   return <div>{t('Invalid data source')}</div>;
 };
 
-const OracleLink = ({
-  providers,
-  signer,
-  type,
-  dataSourceSpecId,
-}: {
-  providers: Provider[];
-  signer: SignerKind;
-  type: 'settlementData' | 'termination';
-  dataSourceSpecId: string;
-}) => {
-  const signerProviders = providers.filter((p) => {
+const getSignerProviders = (signer: SignerKind, providers: Provider[]) =>
+  providers.filter((p) => {
     if (signer.__typename === 'PubKey') {
       if (
         p.oracle.type === 'public_key' &&
@@ -621,19 +859,62 @@ const OracleLink = ({
     return false;
   });
 
+const OracleLink = ({
+  providers,
+  signer,
+  type,
+  dataSourceSpecId,
+  parentSigner,
+  parentDataSourceSpecId,
+}: {
+  providers: Provider[];
+  signer: SignerKind;
+  type: 'settlementData' | 'termination';
+  dataSourceSpecId: string;
+  parentSigner?: SignerKind;
+  parentDataSourceSpecId?: string;
+}) => {
+  // If this is a successor market, the parent market data will only have been passed
+  // in if it differs from the current data.
+  const signerProviders = getSignerProviders(signer, providers);
+  const parentSignerProviders = parentSigner
+    ? getSignerProviders(parentSigner, providers)
+    : [];
+
   if (!signerProviders.length) {
     return <NoOracleProof type={type} />;
   }
 
   return (
     <div className="mt-2">
-      {signerProviders.map((provider) => (
-        <OracleProfile
-          key={dataSourceSpecId}
-          provider={provider}
-          dataSourceSpecId={dataSourceSpecId}
-        />
-      ))}
+      {signerProviders.map((provider) => {
+        // Making the assumption here that if the provider name is the same,
+        // that it is the same provider that the parent market used.
+        const parentProvider = parentSignerProviders.find(
+          (p) => p.name === provider.name
+        );
+
+        const isParentProviderEqual =
+          parentProvider !== undefined && isEqual(provider, parentProvider);
+
+        // We only want to pass the parent data to the child component if the
+        // data differs from the parent market.
+        return isParentProviderEqual ? (
+          <OracleProfile
+            key={dataSourceSpecId}
+            provider={provider}
+            dataSourceSpecId={dataSourceSpecId}
+          />
+        ) : (
+          <OracleProfile
+            key={dataSourceSpecId}
+            provider={provider}
+            dataSourceSpecId={dataSourceSpecId}
+            parentProvider={parentProvider}
+            parentDataSourceSpecId={parentDataSourceSpecId}
+          />
+        );
+      })}
     </div>
   );
 };
@@ -656,13 +937,18 @@ const NoOracleProof = ({
 const OracleProfile = (props: {
   provider: Provider;
   dataSourceSpecId: string;
+  parentProvider?: Provider;
+  parentDataSourceSpecId?: string;
 }) => {
+  // If this is a successor market, the parent market data will only have been passed
+  // in if it differs from the current data.
   const [open, onChange] = useState(false);
   return (
     <div key={props.provider.name}>
       <OracleBasicProfile
         provider={props.provider}
         onClick={() => onChange(!open)}
+        parentProvider={props.parentProvider}
       />
       <OracleDialog {...props} open={open} onChange={onChange} />
     </div>

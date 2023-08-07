@@ -19,7 +19,6 @@ import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
 import { ProposalMarketChanges } from '../proposal-market-changes';
 import type { NetworkParamsResult } from '@vegaprotocol/network-parameters';
-import { useSuccessorMarketProposalDetails } from '@vegaprotocol/proposals';
 
 export enum ProposalType {
   PROPOSAL_NEW_MARKET = 'PROPOSAL_NEW_MARKET',
@@ -33,6 +32,7 @@ export interface ProposalProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
   networkParams: Partial<NetworkParamsResult>;
   newMarketData?: MarketInfoWithData | null;
+  parentMarketData?: MarketInfoWithData | null;
   assetData?: AssetQuery | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   restData: any;
@@ -47,18 +47,16 @@ export const Proposal = ({
   networkParams,
   restData,
   newMarketData,
+  parentMarketData,
   assetData,
   originalMarketProposalRestData,
   mostRecentlyEnactedAssociatedMarketProposal,
 }: ProposalProps) => {
   const { t } = useTranslation();
-  const successor = useSuccessorMarketProposalDetails(proposal?.id);
 
   if (!proposal) {
     return null;
   }
-
-  const isSuccessor = !!successor?.parentMarketId || !!successor.code;
 
   let asset = assetData
     ? removePaginationWrapper(assetData.assetsConnection?.edges)[0]
@@ -163,7 +161,7 @@ export const Proposal = ({
           <div className="mb-4">
             <ProposalMarketData
               marketData={newMarketData}
-              isSuccessor={isSuccessor}
+              parentMarketData={parentMarketData ? parentMarketData : undefined}
             />
           </div>
         )}
