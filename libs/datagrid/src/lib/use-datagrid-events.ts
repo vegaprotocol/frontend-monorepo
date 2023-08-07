@@ -14,7 +14,7 @@ type State = {
   columnState?: ColumnState[];
 };
 
-type Event = ColumnResizedEvent | FilterChangedEvent | SortChangedEvent;
+type Event = FilterChangedEvent | SortChangedEvent;
 
 export const GRID_EVENT_DEBOUNCE_TIME = 300;
 
@@ -35,6 +35,22 @@ export const useDataGridEvents = (
     [callback]
   );
 
+  // This function can be called very frequently by the onColumnResized
+  // grid callback, so its memoized to only update after resizing is finished
+  const onColumnResized = ({
+    columnApi,
+    source,
+    finished,
+  }: ColumnResizedEvent) => {
+    if (!finished || !columnApi) return;
+
+    // dont store unless the user reszied manually
+    if (source !== 'uiColumnResized') return;
+
+    const columnState = columnApi.getColumnState();
+    callback({ columnState });
+  };
+
   // check if we have stored column states or filter models and apply if we do
   const onGridReady = useCallback(
     ({ api, columnApi }: GridReadyEvent) => {
@@ -47,7 +63,7 @@ export const useDataGridEvents = (
         });
       } else {
         // ensure columns fit available space if no widths are set
-        api.sizeColumnsToFit();
+        columnApi.autoSizeAllColumns();
       }
 
       if (state.filterModel) {
@@ -59,7 +75,7 @@ export const useDataGridEvents = (
 
   return {
     onGridReady,
-    onColumnResized: onGridChange,
+    onColumnResized,
     onFilterChanged: onGridChange,
     onSortChanged: onGridChange,
   };

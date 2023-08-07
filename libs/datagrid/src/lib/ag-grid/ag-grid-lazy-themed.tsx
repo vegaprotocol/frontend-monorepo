@@ -17,11 +17,6 @@ const defaultColDef = {
   resizable: true,
 };
 
-const defaultStyle = {
-  width: '100%',
-  height: '100%',
-};
-
 export const AgGridThemed = ({
   style,
   gridRef,
@@ -32,23 +27,14 @@ export const AgGridThemed = ({
 }) => {
   const { theme } = useThemeSwitcher();
 
-  const wrapperClasses = classNames('vega-ag-grid', {
+  const wrapperClasses = classNames('vega-ag-grid', 'w-full h-full', {
     'ag-theme-balham': theme === 'light',
     'ag-theme-balham-dark': theme === 'dark',
   });
 
   return (
-    <div
-      className={wrapperClasses}
-      style={{
-        ...defaultStyle,
-        ...style,
-      }}
-    >
+    <div className={wrapperClasses}>
       <AgGridReact
-        onFirstDataRendered={({ columnApi }) => {
-          columnApi.autoSizeAllColumns(true);
-        }}
         {...defaultProps}
         {...props}
         defaultColDef={{
