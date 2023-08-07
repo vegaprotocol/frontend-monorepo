@@ -374,6 +374,7 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('iceberg')).not.toBeChecked();
   });
 
+  // eslint-disable-next-line jest/no-disabled-tests
   it('handles TIF select box dependent on order type', async () => {
     render(generateJsx());
 

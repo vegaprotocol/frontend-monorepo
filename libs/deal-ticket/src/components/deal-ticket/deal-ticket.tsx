@@ -97,16 +97,19 @@ export const useNotionalSize = (
 
 export const stopSubmit: FormEventHandler = (e) => e.preventDefault();
 
-export const defaultValues: OrderFormValues = {
-  type: Schema.OrderType.TYPE_LIMIT,
+export const getDefaultValues = (type: Schema.OrderType): OrderFormValues => ({
+  type,
   side: Schema.Side.SIDE_BUY,
-  timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
+  timeInForce:
+    type === Schema.OrderType.TYPE_LIMIT
+      ? Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
+      : Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
   size: '0',
   price: '0',
   expiresAt: undefined,
   postOnly: false,
   reduceOnly: false,
-};
+});
 
 export const DealTicket = ({
   market,
@@ -141,7 +144,7 @@ export const DealTicket = ({
     watch,
   } = useForm<OrderFormValues>({
     defaultValues: {
-      ...defaultValues,
+      ...getDefaultValues(type),
       ...storedFormValues?.[dealTicketType],
       type,
     },
@@ -351,7 +354,7 @@ export const DealTicket = ({
         onValueChange={(dealTicketType) => {
           setType(market.id, dealTicketType);
           reset({
-            ...defaultValues,
+            ...getDefaultValues(dealTicketTypeToOrderType(dealTicketType)),
             ...storedFormValues?.[dealTicketType],
             type: dealTicketTypeToOrderType(dealTicketType),
           });

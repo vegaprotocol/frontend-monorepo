@@ -212,11 +212,13 @@ describe('StopOrder', () => {
     // switch to market order type error should disappear
     await userEvent.click(screen.getByTestId(orderTypeTrigger));
     await userEvent.click(screen.getByTestId(orderTypeMarket));
+    await userEvent.click(screen.getByTestId(submitButton));
     expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
 
     // switch back to limit type
     await userEvent.click(screen.getByTestId(orderTypeTrigger));
     await userEvent.click(screen.getByTestId(orderTypeLimit));
+    await userEvent.click(screen.getByTestId(submitButton));
     expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
 
     // to small value should be invalid
