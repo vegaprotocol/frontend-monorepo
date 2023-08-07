@@ -343,29 +343,29 @@ export const BrowserIcon = () => {
   const isItChrome = window.navigator.userAgent.includes('Chrome');
   const isItMozilla =
     window.navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-  if (!isItChrome && !isItMozilla) {
-    return (
-      <div className="flex">
-        <button
-          type="button"
-          onClick={() => window.open(MOZILLA_EXTENSION_URL, '_blank')}
-        >
-          <MozillaIcon />
-        </button>{' '}
-        <button
-          type="button"
-          onClick={() => window.open(CHROME_EXTENSION_URL, '_blank')}
-        >
-          <ChromeIcon />
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <>
-      {isItChrome && <ChromeIcon />}
-      {isItMozilla && <MozillaIcon />}
-    </>
+    <div className="absolute right-1 top-0 h-8 flex items-center">
+      {!isItChrome && !isItMozilla ? (
+        <>
+          <button
+            type="button"
+            onClick={() => window.open(MOZILLA_EXTENSION_URL, '_blank')}
+          >
+            <MozillaIcon />
+          </button>{' '}
+          <button
+            type="button"
+            onClick={() => window.open(CHROME_EXTENSION_URL, '_blank')}
+          >
+            <ChromeIcon />
+          </button>
+        </>
+      ) : (
+        <>
+          {isItChrome && <ChromeIcon />}
+          {isItMozilla && <MozillaIcon />}
+        </>
+      )}
+    </div>
   );
 };

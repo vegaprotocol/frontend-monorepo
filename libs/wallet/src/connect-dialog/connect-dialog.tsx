@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { create } from 'zustand';
 import {
   Dialog,
@@ -209,6 +210,15 @@ const ConnectorList = ({
     ? t('Connect Vega wallet')
     : t('Get a Vega wallet');
 
+  const extendedText = (
+    <>
+      <div className="w-full h-full flex justify-center items-center gap-1 text-base">
+        {t('Connect')}
+      </div>
+      <BrowserIcon />
+    </>
+  );
+
   return (
     <>
       <ConnectDialogTitle>{title}</ConnectDialogTitle>
@@ -222,9 +232,8 @@ const ConnectorList = ({
           {isBrowserWalletInstalled() ? (
             <ConnectionOption
               type="injected"
-              text={t('Connect')}
+              text={extendedText}
               onClick={() => onSelect('injected')}
-              icon={<BrowserIcon />}
             />
           ) : (
             <GetWallet />
@@ -322,38 +331,38 @@ const GetWallet = () => {
       window.open(CHROME_EXTENSION_URL, '_blank');
     }
   };
+
+  const buttonContent = (
+    <>
+      <div className="flex items-center justify-center gap-1 text-base">
+        {t('Get the Vega Wallet')}
+        <Lozenge className="text-[10px] !font-alpha bg-vega-blue-500 dark:bg-vega-blue-500 py-0 px-1">
+          ALPHA
+        </Lozenge>
+      </div>
+      <BrowserIcon />
+    </>
+  );
+
   return !isItChrome && !isItMozilla ? (
     <div
-      className="bg-vega-blue-350 hover:bg-vega-blue-400 dark:bg-vega-blue-650 dark:hover:bg-vega-blue-600 flex gap-2 items-center justify-center rounded h-8 px-3"
+      className={classNames([
+        'bg-vega-blue-350 hover:bg-vega-blue-400 dark:bg-vega-blue-650 dark:hover:bg-vega-blue-600',
+        'flex gap-2 items-center justify-center rounded h-8 px-3 relative',
+      ])}
       data-testid="get-wallet-button"
     >
-      <span className="w-full h-full grid grid-cols-[1fr_min-content] justify-stretch items-center gap-1 text-base bg-vega-red-200">
-        <div className="flex items-center justify-center gap-1">
-          {t('Get the Vega Wallet')}
-          <Lozenge className="text-[10px] !font-alpha bg-vega-blue-500 dark:bg-vega-blue-500 py-0 px-1">
-            ALPHA
-          </Lozenge>
-        </div>
-        <BrowserIcon />
-      </span>
+      {buttonContent}
     </div>
   ) : (
     <TradingButton
       onClick={onClick}
       intent={Intent.Info}
       data-testid="get-wallet-button"
-      className="!block w-full content-stretch justify-stretch"
+      className="!block w-full relative"
       size="small"
     >
-      <span className="w-full h-full grid grid-cols-[1fr_min-content] justify-stretch items-center gap-1 text-base bg-vega-red-200">
-        <div className="flex items-center justify-center gap-1">
-          {t('Get the Vega Wallet')}
-          <Lozenge className="text-[10px] !font-alpha bg-vega-blue-500 dark:bg-vega-blue-500 py-0 px-1">
-            ALPHA
-          </Lozenge>
-        </div>
-        <BrowserIcon />
-      </span>
+      {buttonContent}
     </TradingButton>
   );
 };
@@ -376,14 +385,12 @@ const ConnectionOption = ({
       size="small"
       intent={Intent.Info}
       onClick={onClick}
-      className="block w-full"
+      className="!block w-full relative"
       data-testid={`connector-${type}`}
       disabled={disabled}
       icon={icon}
     >
-      <span className="flex justify-between items-center text-base">
-        {text}
-      </span>
+      <span className="flex justify-center items-center text-base">{text}</span>
     </TradingButton>
   );
 };
@@ -402,8 +409,8 @@ const CustomUrlInput = ({
   const [urlInputExpanded, setUrlInputExpanded] = useState(false);
   return urlInputExpanded ? (
     <>
-      <div className="flex justify-between">
-        <p className="mb-1 text-sm text-vega-clight-100 dark:text-vega-cdark-100">
+      <div className="flex justify-between mb-1.5">
+        <p className="text-sm text-vega-clight-100 dark:text-vega-cdark-100">
           {t('Custom wallet location')}
         </p>
         <button
