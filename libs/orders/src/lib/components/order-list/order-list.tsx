@@ -1,6 +1,5 @@
 import {
   addDecimalsFormatNumber,
-  formatNumber,
   getDateTimeFormat,
   isNumeric,
   toBigNum,
