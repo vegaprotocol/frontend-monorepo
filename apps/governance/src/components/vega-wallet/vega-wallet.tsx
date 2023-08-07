@@ -20,7 +20,7 @@ import {
   WalletCardHeader,
   WalletCardRow,
 } from '../wallet-card';
-import { DownloadWalletPrompt } from './download-wallet-prompt';
+import { VegaWalletPrompt } from './vega-wallet-prompt';
 import { usePollForDelegations } from './hooks';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
@@ -85,7 +85,7 @@ const VegaWalletNotConnected = () => {
       >
         {t('connectVegaWalletToUseAssociated')}
       </Button>
-      <DownloadWalletPrompt />
+      <VegaWalletPrompt />
     </>
   );
 };
