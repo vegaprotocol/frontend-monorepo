@@ -25,8 +25,9 @@ import {
   ConnectDialogContent,
   ConnectDialogFooter,
   ConnectDialogTitle,
-  ChromeIcon,
-  MozillaIcon,
+  BrowserIcon,
+  CHROME_EXTENSION_URL,
+  MOZILLA_EXTENSION_URL,
 } from './connect-dialog-elements';
 import type { Status as JsonRpcStatus } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
@@ -39,10 +40,6 @@ import { InjectedConnectorForm } from './injected-connector-form';
 import { isBrowserWalletInstalled } from '../utils';
 import { useIsDesktopWalletRunning } from '../use-is-desktop-wallet-running';
 
-export const CHROME_EXTENSION_URL =
-  'https://chrome.google.com/webstore/detail/vega-wallet-fairground/nmmjkiafpmphlikhefgjbblebfgclikn';
-export const MOZILLA_EXTENSION_URL =
-  'https://addons.mozilla.org/pl/firefox/addon/vega-wallet';
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
 export type WalletType = 'injected' | 'jsonRpc' | 'view';
@@ -211,6 +208,7 @@ const ConnectorList = ({
   const title = isBrowserWalletInstalled()
     ? t('Connect Vega wallet')
     : t('Get a Vega wallet');
+
   return (
     <>
       <ConnectDialogTitle>{title}</ConnectDialogTitle>
@@ -226,6 +224,7 @@ const ConnectorList = ({
               type="injected"
               text={t('Connect')}
               onClick={() => onSelect('injected')}
+              icon={<BrowserIcon />}
             />
           ) : (
             <GetWallet />
@@ -335,22 +334,7 @@ const GetWallet = () => {
             ALPHA
           </Lozenge>
         </div>
-        <div>
-          <div className="flex">
-            <button
-              type="button"
-              onClick={() => window.open(MOZILLA_EXTENSION_URL, '_blank')}
-            >
-              <MozillaIcon />
-            </button>{' '}
-            <button
-              type="button"
-              onClick={() => window.open(CHROME_EXTENSION_URL, '_blank')}
-            >
-              <ChromeIcon />
-            </button>
-          </div>
-        </div>
+        <BrowserIcon />
       </span>
     </div>
   ) : (
@@ -368,10 +352,7 @@ const GetWallet = () => {
             ALPHA
           </Lozenge>
         </div>
-        <div>
-          {isItChrome && <ChromeIcon />}
-          {isItMozilla && <MozillaIcon />}
-        </div>
+        <BrowserIcon />
       </span>
     </TradingButton>
   );
@@ -382,11 +363,13 @@ const ConnectionOption = ({
   type,
   text,
   onClick,
+  icon,
 }: {
   type: WalletType;
   text: string | ReactNode;
   onClick: () => void;
   disabled?: boolean;
+  icon?: ReactNode;
 }) => {
   return (
     <TradingButton
@@ -396,6 +379,7 @@ const ConnectionOption = ({
       className="block w-full"
       data-testid={`connector-${type}`}
       disabled={disabled}
+      icon={icon}
     >
       <span className="flex justify-between items-center text-base">
         {text}

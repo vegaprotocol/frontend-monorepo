@@ -54,7 +54,10 @@ export const ConnectDialogFooter = () => {
     </footer>
   );
 };
-
+export const CHROME_EXTENSION_URL =
+  'https://chrome.google.com/webstore/detail/vega-wallet-fairground/nmmjkiafpmphlikhefgjbblebfgclikn';
+export const MOZILLA_EXTENSION_URL =
+  'https://addons.mozilla.org/pl/firefox/addon/vega-wallet';
 export const ChromeIcon = () => {
   return (
     <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
@@ -333,5 +336,36 @@ export const MozillaIcon = () => {
         </clipPath>
       </defs>
     </svg>
+  );
+};
+
+export const BrowserIcon = () => {
+  const isItChrome = window.navigator.userAgent.includes('Chrome');
+  const isItMozilla =
+    window.navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+  if (!isItChrome && !isItMozilla) {
+    return (
+      <div className="flex">
+        <button
+          type="button"
+          onClick={() => window.open(MOZILLA_EXTENSION_URL, '_blank')}
+        >
+          <MozillaIcon />
+        </button>{' '}
+        <button
+          type="button"
+          onClick={() => window.open(CHROME_EXTENSION_URL, '_blank')}
+        >
+          <ChromeIcon />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {isItChrome && <ChromeIcon />}
+      {isItMozilla && <MozillaIcon />}
+    </>
   );
 };
