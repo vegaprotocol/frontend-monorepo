@@ -1,9 +1,11 @@
 import debounce from 'lodash/debounce';
 import type {
+  ColumnMovedEvent,
   ColumnResizedEvent,
   ColumnState,
+  ColumnVisibleEvent,
   FilterChangedEvent,
-  GridReadyEvent,
+  FirstDataRenderedEvent,
   SortChangedEvent,
 } from 'ag-grid-community';
 import { useCallback, useMemo } from 'react';
@@ -14,7 +16,8 @@ type State = {
   columnState?: ColumnState[];
 };
 
-type Event = FilterChangedEvent | SortChangedEvent;
+type GridEvent = FilterChangedEvent | SortChangedEvent;
+type ColEvent = ColumnResizedEvent | ColumnMovedEvent | ColumnVisibleEvent;
 
 export const GRID_EVENT_DEBOUNCE_TIME = 300;
 
@@ -26,34 +29,27 @@ export const useDataGridEvents = (
   // grid callback, so its memoized to only update after resizing is finished
   const onGridChange = useMemo(
     () =>
-      debounce(({ api, columnApi }: Event) => {
-        if (!api || !columnApi) return;
-        const columnState = columnApi.getColumnState();
+      debounce(({ api }: GridEvent) => {
+        if (!api) return;
         const filterModel = api.getFilterModel();
-        callback({ columnState, filterModel });
+        callback({ filterModel });
       }, GRID_EVENT_DEBOUNCE_TIME),
     [callback]
   );
 
-  // This function can be called very frequently by the onColumnResized
-  // grid callback, so its memoized to only update after resizing is finished
-  const onColumnResized = ({
-    columnApi,
-    source,
-    finished,
-  }: ColumnResizedEvent) => {
-    if (!finished || !columnApi) return;
-
-    // dont store unless the user reszied manually
-    if (source !== 'uiColumnResized') return;
-
-    const columnState = columnApi.getColumnState();
-    callback({ columnState });
-  };
+  const onColumnChange = useMemo(
+    () =>
+      debounce(({ api, columnApi }: ColEvent) => {
+        if (!api || !columnApi) return;
+        const columnState = columnApi.getColumnState();
+        callback({ columnState });
+      }, GRID_EVENT_DEBOUNCE_TIME),
+    [callback]
+  );
 
   // check if we have stored column states or filter models and apply if we do
-  const onGridReady = useCallback(
-    ({ api, columnApi }: GridReadyEvent) => {
+  const onFirstDataRendered = useCallback(
+    ({ api, columnApi }: FirstDataRenderedEvent) => {
       if (!api || !columnApi) return;
 
       if (state.columnState) {
@@ -74,8 +70,10 @@ export const useDataGridEvents = (
   );
 
   return {
-    onGridReady,
-    onColumnResized,
+    onFirstDataRendered,
+    onColumnResized: onColumnChange,
+    onColumnVisible: onColumnChange,
+    onColumnMoved: onColumnChange,
     onFilterChanged: onGridChange,
     onSortChanged: onGridChange,
   };

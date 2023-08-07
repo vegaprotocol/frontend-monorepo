@@ -37,10 +37,7 @@ export const AgGridThemed = ({
       <AgGridReact
         {...defaultProps}
         {...props}
-        defaultColDef={{
-          ...defaultColDef,
-          ...props.defaultColDef,
-        }}
+        defaultColDef={defaultColDef}
         ref={gridRef}
       />
     </div>

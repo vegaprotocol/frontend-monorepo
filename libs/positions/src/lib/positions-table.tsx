@@ -113,7 +113,6 @@ export const PositionsTable = ({
         ProgressBarCell,
         MarketNameCell,
       }}
-      {...props}
       columnDefs={useMemo<ColDef[]>(() => {
         const columnDefs: (ColDef | null)[] = [
           multipleKeys
@@ -223,6 +222,7 @@ export const PositionsTable = ({
             headerName: t('Liquidation price'),
             colId: 'liquidationPrice',
             type: 'rightAligned',
+            cellClass: 'font-mono text-right',
             cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {
               if (!data) return null;
               return (
@@ -430,6 +430,7 @@ export const PositionsTable = ({
         pubKey,
         pubKeys,
       ])}
+      {...props}
     />
   );
 };
