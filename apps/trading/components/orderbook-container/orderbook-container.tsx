@@ -3,7 +3,7 @@ import { ViewType, useSidebar } from '../sidebar';
 import { useDealTicketFormValues } from '@vegaprotocol/deal-ticket';
 
 export const OrderbookContainer = ({ marketId }: { marketId: string }) => {
-  const update = useDealTicketFormValues((state) => state.update);
+  const update = useDealTicketFormValues((state) => state.updateAll);
   const setView = useSidebar((store) => store.setView);
   return (
     <OrderbookManager

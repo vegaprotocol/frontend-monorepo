@@ -55,7 +55,10 @@ type Store = {
   updateOrder: UpdateOrder;
   updateStopOrder: UpdateStopOrder;
   setType: (marketId: string, value: DealTicketType) => void;
-  update: (marketId: string, values: { size?: string; price?: string }) => void;
+  updateAll: (
+    marketId: string,
+    values: { size?: string; price?: string }
+  ) => void;
   formValues: Record<
     string,
     | {
@@ -110,7 +113,7 @@ export const useDealTicketFormValues = create<Store>()(
             market[type] = Object.assign(market[type] ?? {}, formValues);
           });
         },
-        update: (
+        updateAll: (
           marketId: string,
           formValues: { size?: string; price?: string }
         ) => {
@@ -134,7 +137,7 @@ export const useDealTicketFormValues = create<Store>()(
         },
       })),
       {
-        name: 'deal-ticket-form-values',
+        name: 'vega_deal_ticket_store',
       }
     )
   )

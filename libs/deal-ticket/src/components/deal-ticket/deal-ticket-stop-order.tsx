@@ -28,7 +28,7 @@ import {
   NoWalletWarning,
   REDUCE_ONLY_TOOLTIP,
   stopSubmit,
-  useNotionalSize,
+  getNotionalSize,
 } from './deal-ticket';
 import { TypeToggle } from './type-selector';
 import {
@@ -36,6 +36,7 @@ import {
   DealTicketType,
   type StopOrderFormValues,
   dealTicketTypeToOrderType,
+  isStopOrderType,
 } from '../../hooks/use-form-values';
 import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values-to-submission';
 import { DealTicketButton } from './deal-ticket-button';
@@ -48,8 +49,11 @@ export interface StopOrderProps {
   submit: (order: StopOrdersSubmission) => void;
 }
 
-const defaultValues: StopOrderFormValues = {
-  type: Schema.OrderType.TYPE_LIMIT,
+const getDefaultValues = (
+  type: Schema.OrderType,
+  storedValues?: Partial<StopOrderFormValues>
+): StopOrderFormValues => ({
+  type,
   side: Schema.Side.SIDE_BUY,
   timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
   triggerType: 'price',
@@ -58,30 +62,23 @@ const defaultValues: StopOrderFormValues = {
   expire: false,
   expiryStrategy: Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT,
   size: '0',
-};
+  ...storedValues,
+});
 
 export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const setType = useDealTicketFormValues((state) => state.setType);
-  const dealTicketType = useDealTicketFormValues((state) =>
-    state.formValues[market.id]?.type === DealTicketType.StopMarket
-      ? DealTicketType.StopMarket
-      : DealTicketType.StopLimit
-  );
-  const type = dealTicketTypeToOrderType(dealTicketType);
   const updateStoredFormValues = useDealTicketFormValues(
     (state) => state.updateStopOrder
   );
   const storedFormValues = useDealTicketFormValues(
     (state) => state.formValues[market.id]
   );
+  const dealTicketType = storedFormValues?.type ?? DealTicketType.StopLimit;
+  const type = dealTicketTypeToOrderType(dealTicketType);
   const { handleSubmit, setValue, watch, control, formState, reset } =
     useForm<StopOrderFormValues>({
-      defaultValues: {
-        ...defaultValues,
-        ...storedFormValues?.[dealTicketType],
-        type,
-      },
+      defaultValues: getDefaultValues(type, storedFormValues?.[dealTicketType]),
     });
   const { errors } = formState;
   const lastSubmitTime = useRef(0);
@@ -139,7 +136,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         : marketPrice
     );
 
-  const notionalSize = useNotionalSize(
+  const notionalSize = getNotionalSize(
     price,
     size,
     market.decimalPlaces,
@@ -179,11 +176,14 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         value={dealTicketType}
         onValueChange={(dealTicketType) => {
           setType(market.id, dealTicketType);
-          reset({
-            ...defaultValues,
-            ...storedFormValues?.[dealTicketType],
-            type: dealTicketTypeToOrderType(dealTicketType),
-          });
+          if (isStopOrderType(dealTicketType)) {
+            reset(
+              getDefaultValues(
+                dealTicketTypeToOrderType(dealTicketType),
+                storedFormValues?.[dealTicketType]
+              )
+            );
+          }
         }}
       />
       {errors.type && (

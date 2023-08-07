@@ -58,6 +58,7 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   DealTicketType,
   dealTicketTypeToOrderType,
+  isStopOrderType,
 } from '../../hooks/use-form-values';
 import type { OrderFormValues } from '../../hooks/use-form-values';
 import { useDealTicketFormValues } from '../../hooks/use-form-values';
@@ -77,27 +78,29 @@ export interface DealTicketProps {
   onDeposit: (assetId: string) => void;
 }
 
-export const useNotionalSize = (
+export const getNotionalSize = (
   price: string | null | undefined,
   size: string | undefined,
   decimalPlaces: number,
   positionDecimalPlaces: number
-) =>
-  useMemo(() => {
-    if (price && size) {
-      return removeDecimal(
-        toBigNum(size, positionDecimalPlaces).multipliedBy(
-          toBigNum(price, decimalPlaces)
-        ),
-        decimalPlaces
-      );
-    }
-    return null;
-  }, [price, size, decimalPlaces, positionDecimalPlaces]);
+) => {
+  if (price && size) {
+    return removeDecimal(
+      toBigNum(size, positionDecimalPlaces).multipliedBy(
+        toBigNum(price, decimalPlaces)
+      ),
+      decimalPlaces
+    );
+  }
+  return null;
+};
 
 export const stopSubmit: FormEventHandler = (e) => e.preventDefault();
 
-export const getDefaultValues = (type: Schema.OrderType): OrderFormValues => ({
+const getDefaultValues = (
+  type: Schema.OrderType,
+  storedValues?: Partial<OrderFormValues>
+): OrderFormValues => ({
   type,
   side: Schema.Side.SIDE_BUY,
   timeInForce:
@@ -109,6 +112,7 @@ export const getDefaultValues = (type: Schema.OrderType): OrderFormValues => ({
   expiresAt: undefined,
   postOnly: false,
   reduceOnly: false,
+  ...storedValues,
 });
 
 export const DealTicket = ({
@@ -122,18 +126,14 @@ export const DealTicket = ({
 }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const setType = useDealTicketFormValues((state) => state.setType);
-  const dealTicketType = useDealTicketFormValues((state) =>
-    state.formValues[market.id]?.type === DealTicketType.Market
-      ? DealTicketType.Market
-      : DealTicketType.Limit
-  );
-  const type = dealTicketTypeToOrderType(dealTicketType);
   const storedFormValues = useDealTicketFormValues(
     (state) => state.formValues[market.id]
   );
   const updateStoredFormValues = useDealTicketFormValues(
     (state) => state.updateOrder
   );
+  const dealTicketType = storedFormValues?.type ?? DealTicketType.Limit;
+  const type = dealTicketTypeToOrderType(dealTicketType);
 
   const {
     control,
@@ -143,11 +143,7 @@ export const DealTicket = ({
     setValue,
     watch,
   } = useForm<OrderFormValues>({
-    defaultValues: {
-      ...getDefaultValues(type),
-      ...storedFormValues?.[dealTicketType],
-      type,
-    },
+    defaultValues: getDefaultValues(type, storedFormValues?.[dealTicketType]),
   });
   const lastSubmitTime = useRef(0);
 
@@ -214,7 +210,7 @@ export const DealTicket = ({
     marketPrice &&
     getDerivedPrice(normalizedOrder, marketPrice);
 
-  const notionalSize = useNotionalSize(
+  const notionalSize = getNotionalSize(
     price,
     normalizedOrder?.size,
     market.decimalPlaces,
@@ -294,7 +290,6 @@ export const DealTicket = ({
       };
     }
 
-    // No error found above clear the error in case it was active on a previous render
     return undefined;
   }, [
     marketState,
@@ -353,11 +348,14 @@ export const DealTicket = ({
         value={dealTicketType}
         onValueChange={(dealTicketType) => {
           setType(market.id, dealTicketType);
-          reset({
-            ...getDefaultValues(dealTicketTypeToOrderType(dealTicketType)),
-            ...storedFormValues?.[dealTicketType],
-            type: dealTicketTypeToOrderType(dealTicketType),
-          });
+          if (!isStopOrderType(dealTicketType)) {
+            reset(
+              getDefaultValues(
+                dealTicketTypeToOrderType(dealTicketType),
+                storedFormValues?.[dealTicketType]
+              )
+            );
+          }
         }}
         market={market}
         marketData={marketData}

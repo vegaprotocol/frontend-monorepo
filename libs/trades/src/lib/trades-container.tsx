@@ -9,7 +9,7 @@ interface TradesContainerProps {
 }
 
 export const TradesContainer = ({ marketId }: TradesContainerProps) => {
-  const update = useDealTicketFormValues((state) => state.update);
+  const update = useDealTicketFormValues((state) => state.updateAll);
 
   const { data, error } = useDataProvider({
     dataProvider: tradesWithMarketProvider,
