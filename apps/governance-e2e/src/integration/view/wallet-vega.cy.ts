@@ -88,45 +88,6 @@ context(
       });
     });
 
-    describe('when rest connector form opened', function () {
-      before('click hosted wallet app button', function () {
-        cy.getByTestId(connectorsList).within(() => {
-          cy.getByTestId('connector-rest').click();
-        });
-      });
-
-      // 0002-WCON-002
-      it('should have wallet field visible', function () {
-        cy.getByTestId(restConnectorForm).within(() => {
-          cy.get(restWallet).should('be.visible');
-        });
-      });
-
-      it('should have password field visible', function () {
-        cy.getByTestId(restConnectorForm).within(() => {
-          cy.get(restPassphrase).should('be.visible');
-        });
-      });
-
-      it('should have connect button visible', function () {
-        cy.getByTestId(restConnectorForm).within(() => {
-          cy.get(restConnectBtn)
-            .should('be.visible')
-            .and('have.text', 'Connect');
-        });
-      });
-
-      it('should have close button visible', function () {
-        cy.get(dialog).within(() => {
-          cy.getByTestId(dialogCloseBtn).should('be.visible');
-        });
-      });
-
-      after('close dialog', function () {
-        cy.getByTestId(dialogCloseBtn).click().should('not.exist');
-      });
-    });
-
     describe('when vega wallet connected', function () {
       before('connect vega wallet', function () {
         cy.visit('/');
