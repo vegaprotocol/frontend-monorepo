@@ -69,7 +69,7 @@ context(
         cy.get(dialog).within(() => {
           cy.getByTestId(walletDialogHeader)
             .should('be.visible')
-            .and('have.text', 'Connect');
+            .and('have.text', 'Get a Vega wallet');
         });
       });
 
@@ -77,10 +77,7 @@ context(
         cy.getByTestId(connectorsList).within(() => {
           cy.getByTestId('connector-jsonRpc')
             .should('be.visible')
-            .and('have.text', 'Connect Vega wallet');
-          cy.getByTestId('connector-rest')
-            .should('be.visible')
-            .and('have.text', 'Hosted Fairground wallet');
+            .and('have.text', 'Use the Desktop App/CLI');
         });
       });
 
