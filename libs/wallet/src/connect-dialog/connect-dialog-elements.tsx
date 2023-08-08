@@ -1,4 +1,4 @@
-import { ExternalLinks } from '@vegaprotocol/environment';
+import { ExternalLinks, useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import {
   ExternalLink,
@@ -54,10 +54,7 @@ export const ConnectDialogFooter = () => {
     </footer>
   );
 };
-export const CHROME_EXTENSION_URL =
-  'https://chrome.google.com/webstore/detail/vega-wallet-fairground/nmmjkiafpmphlikhefgjbblebfgclikn';
-export const MOZILLA_EXTENSION_URL =
-  'https://addons.mozilla.org/pl/firefox/addon/vega-wallet';
+
 export const ChromeIcon = () => {
   return (
     <svg
@@ -352,6 +349,7 @@ export const MozillaIcon = () => {
 };
 
 export const BrowserIcon = () => {
+  const { MOZILLA_EXTENSION_URL, CHROME_EXTENSION_URL } = useEnvironment();
   const isItChrome = window.navigator.userAgent.includes('Chrome');
   const isItMozilla =
     window.navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
@@ -359,18 +357,12 @@ export const BrowserIcon = () => {
     <div className="absolute right-1 top-0 h-8 flex items-center">
       {!isItChrome && !isItMozilla ? (
         <>
-          <button
-            type="button"
-            onClick={() => window.open(MOZILLA_EXTENSION_URL, '_blank')}
-          >
+          <a href={MOZILLA_EXTENSION_URL} target="_blank" rel="noreferrer">
             <MozillaIcon />
-          </button>{' '}
-          <button
-            type="button"
-            onClick={() => window.open(CHROME_EXTENSION_URL, '_blank')}
-          >
+          </a>{' '}
+          <a href={CHROME_EXTENSION_URL} target="_blank" rel="noreferrer">
             <ChromeIcon />
-          </button>
+          </a>
         </>
       ) : (
         <>

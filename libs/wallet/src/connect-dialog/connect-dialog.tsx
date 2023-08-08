@@ -28,8 +28,6 @@ import {
   ConnectDialogFooter,
   ConnectDialogTitle,
   BrowserIcon,
-  CHROME_EXTENSION_URL,
-  MOZILLA_EXTENSION_URL,
 } from './connect-dialog-elements';
 import type { Status as JsonRpcStatus } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
@@ -321,6 +319,7 @@ const SelectedForm = ({
 };
 
 const GetWallet = () => {
+  const { MOZILLA_EXTENSION_URL, CHROME_EXTENSION_URL } = useEnvironment();
   const isItChrome = window.navigator.userAgent.includes('Chrome');
   const isItMozilla =
     window.navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
