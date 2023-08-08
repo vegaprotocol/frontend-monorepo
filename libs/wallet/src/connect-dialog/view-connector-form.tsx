@@ -1,9 +1,10 @@
 import { t } from '@vegaprotocol/i18n';
 import {
-  Button,
   FormGroup,
   Input,
   InputError,
+  Intent,
+  TradingButton,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -51,21 +52,8 @@ export function ViewConnectorForm({
 
   return (
     <>
-      {reset && (
-        <button
-          onClick={reset}
-          className="absolute p-2 top-0 left-0 md:top-2 md:left-2"
-          data-testid="back-button"
-        >
-          <VegaIcon
-            name={VegaIconNames.CHEVRON_LEFT}
-            aria-label="back"
-            size={16}
-          />
-        </button>
-      )}
       <form onSubmit={handleSubmit(onSubmit)} data-testid="view-connector-form">
-        <h1 className="text-2xl uppercase mb-6 text-center font-alpha calt">
+        <h1 className="text-2xl uppercase mb-6 font-alpha calt">
           {t('VIEW AS VEGA USER')}
         </h1>
         <p className="mb-4">
@@ -87,14 +75,25 @@ export function ViewConnectorForm({
             <InputError intent="danger">{errors.address.message}</InputError>
           )}
         </FormGroup>
-        <Button
+        <TradingButton
           data-testid="connect"
-          variant="primary"
+          intent={Intent.Info}
           type="submit"
-          fill={true}
+          className="w-full"
         >
           {t('Browse network')}
-        </Button>
+        </TradingButton>
+        {reset && (
+          <div className="flex justify-end">
+            <button
+              onClick={reset}
+              className="p-2 text-sm underline"
+              data-testid="back-button"
+            >
+              <VegaIcon name={VegaIconNames.ARROW_LEFT} /> {t('Go back')}
+            </button>
+          </div>
+        )}
       </form>
     </>
   );

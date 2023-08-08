@@ -30,8 +30,8 @@ const mockCloseVegaDialog = jest.fn();
 
 jest.mock('@vegaprotocol/environment');
 let mockIsDesktopRunning = true;
-jest.mock('../use-is-desktop-wallet-running', () => ({
-  useIsDesktopWalletRunning: jest
+jest.mock('../use-is-wallet-service-running', () => ({
+  useIsWalletServiceRunning: jest
     .fn()
     .mockImplementation(() => mockIsDesktopRunning),
 }));

@@ -15,8 +15,13 @@ import { useCallback, useState } from 'react';
 import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { t } from '@vegaprotocol/i18n';
 import type { VegaConnector } from '../connectors';
-import { InjectedConnector, JsonRpcConnector } from '../connectors';
+import {
+  InjectedConnector,
+  JsonRpcConnector,
+  ViewConnector,
+} from '../connectors';
 import { JsonRpcConnectorForm } from './json-rpc-connector-form';
+import { ViewConnectorForm } from './view-connector-form';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
   ConnectDialogContent,
@@ -34,7 +39,7 @@ import { useChainIdQuery } from './__generated__/ChainId';
 import { useVegaWallet } from '../use-vega-wallet';
 import { InjectedConnectorForm } from './injected-connector-form';
 import { isBrowserWalletInstalled } from '../utils';
-import { useIsDesktopWalletRunning } from '../use-is-desktop-wallet-running';
+import { useIsWalletServiceRunning } from '../use-is-wallet-service-running';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
@@ -157,7 +162,7 @@ const ConnectDialogContainer = ({
       injectedConnect(connector, appChainId);
     }
   };
-  const isDesktopWalletRunning = useIsDesktopWalletRunning(
+  const isDesktopWalletRunning = useIsWalletServiceRunning(
     walletUrl,
     connectors,
     appChainId
@@ -222,7 +227,7 @@ const ConnectorList = ({
           'Connect securely, deposit funds and approve or reject transactions with the Vega wallet'
         )}
       </p>
-      <div data-testid="connectors-list" className="flex flex-col my-6 gap-2">
+      <div data-testid="connectors-list" className="flex flex-col mt-6 gap-2">
         <div className="last:mb-0">
           {isBrowserWalletInstalled() ? (
             <ConnectionOption
@@ -234,8 +239,12 @@ const ConnectorList = ({
             <GetWallet />
           )}
         </div>
-        <div className="text-center text-sm text-vega-clight-100 dare:text-vega-cdark-100">
-          {t('OR')}
+        <div>
+          <ConnectionOption
+            type="view"
+            text={t('View as party')}
+            onClick={() => onSelect('view')}
+          />
         </div>
         <div className="last:mb-0">
           <CustomUrlInput
@@ -299,7 +308,15 @@ const SelectedForm = ({
       />
     );
   }
-
+  if (connector instanceof ViewConnector) {
+    return (
+      <ViewConnectorForm
+        connector={connector}
+        onConnect={onConnect}
+        reset={reset}
+      />
+    );
+  }
   throw new Error('No connector selected');
 };
 

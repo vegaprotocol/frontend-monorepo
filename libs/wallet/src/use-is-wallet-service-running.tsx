@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { JsonRpcConnector } from './connectors';
 import { ClientErrors } from './connectors';
 
-export const useIsDesktopWalletRunning = (
+export const useIsWalletServiceRunning = (
   url: string,
   connectors: { [key: string]: VegaConnector },
   appChainId: string

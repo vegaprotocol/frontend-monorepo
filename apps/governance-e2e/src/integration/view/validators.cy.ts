@@ -36,7 +36,7 @@ const epochCountDown = 'epoch-countdown';
 const stakeNumberRegex = /^\d{1,3}(,\d{3})*(\.\d+)?$/;
 
 context('Validators Page - verify elements on page', function () {
-  before('navigate to validators page', function () {
+  beforeEach('navigate to validators page', function () {
     cy.mockGQL((req) => {
       aliasGQLQuery(req, 'ChainId', chainIdQuery());
       aliasGQLQuery(req, 'Statistics', statisticsQuery());
