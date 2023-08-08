@@ -86,8 +86,6 @@ describe('connect vega wallet', { tags: '@smoke', testIsolation: true }, () => {
     cy.getByTestId('connect-vega-wallet').should('exist');
     cy.getByTestId('manage-vega-wallet').should('not.exist');
     cy.getByTestId('connect-vega-wallet').click();
-    cy.contains(
-      'Choose wallet app to connect, or to change port or server URL enter a custom wallet location first'
-    );
+    cy.contains('Enter a custom wallet location');
   });
 });
