@@ -412,9 +412,7 @@ const CustomUrlInput = ({
   return urlInputExpanded ? (
     <>
       <div className="flex justify-between mb-1.5">
-        <p className="text-sm text-vega-clight-100 dark:text-vega-cdark-100">
-          {t('Custom wallet location')}
-        </p>
+        <p className="text-sm text-secondary">{t('Custom wallet location')}</p>
         <button
           className="text-sm underline"
           onClick={() => setUrlInputExpanded(false)}
