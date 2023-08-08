@@ -5,8 +5,8 @@ import { t } from '@vegaprotocol/i18n';
 import classNames from 'classnames';
 
 const defaultProps: AgGridReactProps = {
-  rowHeight: 22,
-  headerHeight: 22,
+  rowHeight: 36,
+  headerHeight: 36,
   enableCellTextSelection: true,
   overlayLoadingTemplate: t('Loading...'),
   overlayNoRowsTemplate: t('No data'),
