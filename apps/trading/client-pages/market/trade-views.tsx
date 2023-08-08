@@ -1,6 +1,5 @@
 import type { ComponentProps } from 'react';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import { TradesContainer } from '@vegaprotocol/trades';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import {
   CandlesChartContainer,
@@ -8,6 +7,7 @@ import {
 } from '@vegaprotocol/candles-chart';
 import { Filter } from '@vegaprotocol/orders';
 import { NO_MARKET } from './constants';
+import { TradesContainer } from '../../components/trades-container';
 import { OrderbookContainer } from '../../components/orderbook-container';
 import { FillsContainer } from '../../components/fills-container';
 import { PositionsContainer } from '../../components/positions-container';
