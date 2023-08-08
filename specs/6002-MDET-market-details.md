@@ -117,6 +117,15 @@ When I look into market info I **Must** see following governance information:
 - Proposal: (<a name="6002-MDET-301" href="#6002-MDET-301">6002-MDET-301</a>)
   - link to governance proposal
   - link to propose a change to market
+- Succession line: (<a name="6002-MDET-302" href="#6002-MDET-302">6002-MDET-302</a>):
+  a list consisting of an origin market and all of its successors one-by-one.
+  The list **Should** contain:
+
+  - Market Code which links to the corresponding governance proposal
+  - Market Name
+  - Market ID
+
+  When I look at the succession line list I **Should** easily distinguish which market is the currently viewed market so I can see the ancestor-descendant relations between the current and other markets on the list.
 
 ## Market successor
 
