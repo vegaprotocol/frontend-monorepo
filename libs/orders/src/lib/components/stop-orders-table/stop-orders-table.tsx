@@ -46,7 +46,6 @@ export const StopOrdersTable = memo<
         field: 'market.tradableInstrument.instrument.code',
         cellRenderer: 'MarketNameCell',
         cellRendererParams: { idPath: 'market.id', onMarketClick },
-        minWidth: 150,
       },
       {
         headerName: t('Trigger'),
@@ -58,7 +57,6 @@ export const StopOrdersTable = memo<
           data,
         }: VegaValueFormatterParams<StopOrder, 'trigger'>): string =>
           data ? formatTrigger(data, data.market.decimalPlaces) : '',
-        minWidth: 100,
       },
       {
         field: 'expiresAt',
@@ -82,7 +80,6 @@ export const StopOrdersTable = memo<
           }
           return '';
         },
-        minWidth: 150,
       },
       {
         headerName: t('Size'),
@@ -129,7 +126,6 @@ export const StopOrdersTable = memo<
             )
           );
         },
-        minWidth: 80,
       },
       {
         field: 'submission.type',
@@ -141,7 +137,6 @@ export const StopOrdersTable = memo<
           value,
         }: VegaICellRendererParams<StopOrder, 'submission.type'>) =>
           value ? Schema.OrderTypeMapping[value] : '',
-        minWidth: 80,
       },
       {
         field: 'status',
@@ -163,7 +158,6 @@ export const StopOrdersTable = memo<
         }) => (
           <span data-testid={`order-status-${data?.id}`}>{valueFormatted}</span>
         ),
-        minWidth: 100,
       },
       {
         field: 'submission.price',
@@ -185,7 +179,6 @@ export const StopOrdersTable = memo<
           }
           return addDecimalsFormatNumber(value, data.market.decimalPlaces);
         },
-        minWidth: 100,
       },
       {
         field: 'submission.timeInForce',
@@ -198,7 +191,6 @@ export const StopOrdersTable = memo<
         }: VegaValueFormatterParams<StopOrder, 'submission.timeInForce'>) => {
           return value ? Schema.OrderTimeInForceCode[value] : '';
         },
-        minWidth: 150,
       },
       {
         field: 'updatedAt',
@@ -218,7 +210,6 @@ export const StopOrdersTable = memo<
             </span>
           );
         },
-        minWidth: 150,
       },
       {
         colId: 'actions',

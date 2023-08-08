@@ -41,7 +41,6 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
             if (!value) return 'None';
             return value;
           },
-          minWidth: 200,
         },
         {
           headerName: t('Account type'),
