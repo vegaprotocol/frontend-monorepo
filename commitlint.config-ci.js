@@ -7,7 +7,7 @@ module.exports = {
     'scope-enum': async (ctx) => [
       2,
       'always',
-      ['ci', 'docs', ...(await utils.getProjects(ctx))],
+      ['ci', 'docs', 'specs', ...(await utils.getProjects(ctx))],
     ],
   },
 };
