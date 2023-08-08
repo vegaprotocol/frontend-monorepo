@@ -15,8 +15,8 @@ export const VegaWalletPrompt = () => {
         </Link>
         <ButtonLink
           className="text-neutral-500"
-          onClick={() => setViewAsDialog(true)}
           data-testid="view-as-user"
+          onClick={() => setViewAsDialog(true)}
         >
           {t('viewAsParty')}
         </ButtonLink>
