@@ -291,9 +291,11 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
 
   it('View settlement asset', () => {
     visitAndClickPositions();
-    cy.get('[col-id="asset"]').within(() => {
-      cy.get('button[type="button"]').first().click();
-    });
+    cy.get('[col-id="asset"]')
+      .eq(3)
+      .within(() => {
+        cy.get('button[type="button"]').click();
+      });
     // 7004-POSI-008
     cy.getByTestId(dialogContent).should('be.visible');
     cy.getByTestId(dialogCloseX).click();
