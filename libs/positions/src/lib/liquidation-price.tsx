@@ -1,5 +1,8 @@
 import { useEstimatePositionQuery } from './__generated__/Positions';
-import { formatRange } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumberQuantum,
+  formatRange,
+} from '@vegaprotocol/utils';
 
 export const LiquidationPrice = ({
   marketId,
@@ -7,12 +10,16 @@ export const LiquidationPrice = ({
   collateralAvailable,
   decimalPlaces,
   formatDecimals,
+  marginBalance,
+  quantum,
 }: {
   marketId: string;
   openVolume: string;
   collateralAvailable: string;
   decimalPlaces: number;
   formatDecimals: number;
+  marginBalance: string;
+  quantum: string;
 }) => {
   const { data: currentData, previousData } = useEstimatePositionQuery({
     variables: {
@@ -56,5 +63,17 @@ export const LiquidationPrice = ({
             value
           );
   }
-  return <span data-testid="liquidation-price">{value}</span>;
+
+  const margin = addDecimalsFormatNumberQuantum(
+    marginBalance,
+    decimalPlaces,
+    quantum
+  );
+
+  return (
+    <div data-testid="liquidation-price" className="leading-4">
+      <div>{margin}</div>
+      <div className="text-secondary">{value}</div>
+    </div>
+  );
 };

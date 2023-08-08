@@ -31,6 +31,7 @@ import {
   toBigNum,
   formatNumber,
   addDecimalsFormatNumber,
+  addDecimalsFormatNumberQuantum,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type { Position } from './positions-data-providers';
@@ -116,6 +117,7 @@ export const PositionsTable = ({
         ProgressBarCell,
         MarketNameCell,
       }}
+      rowHeight={38}
       columnDefs={useMemo<ColDef[]>(() => {
         const columnDefs: (ColDef | null)[] = [
           multipleKeys
@@ -131,10 +133,35 @@ export const PositionsTable = ({
               }
             : null,
           {
-            headerName: t('Market'),
-            field: 'marketName',
-            cellRenderer: 'MarketNameCell',
-            cellRendererParams: { idPath: 'marketId', onMarketClick },
+            headerName: t('Market (Asset)'),
+            field: 'marketCode',
+            cellRenderer: ({
+              value,
+              data,
+            }: VegaICellRendererParams<Position, 'marketCode'>) => {
+              if (!data || !value) return '-';
+              return (
+                <div>
+                  <button
+                    className="underline"
+                    onClick={(e) => {
+                      if (!onMarketClick) return;
+                      onMarketClick(data.marketId, e.metaKey || e.ctrlKey);
+                    }}
+                  >
+                    {value}
+                  </button>{' '}
+                  (
+                  <button
+                    className="underline"
+                    onClick={() => openAssetDetailsDialog(data.assetId)}
+                  >
+                    {data?.assetSymbol}
+                  </button>
+                  )
+                </div>
+              );
+            },
           },
           {
             headerName: t('Notional'),
@@ -160,7 +187,7 @@ export const PositionsTable = ({
             },
           },
           {
-            headerName: t('Open volume'),
+            headerName: t('Size / Leverage'),
             field: 'openVolume',
             type: 'rightAligned',
             cellClass: 'font-mono text-right',
@@ -177,22 +204,50 @@ export const PositionsTable = ({
             valueFormatter: ({
               data,
             }: VegaValueFormatterParams<Position, 'openVolume'>): string => {
-              return data?.openVolume === undefined
-                ? ''
-                : volumePrefix(
-                    addDecimalsFormatNumber(
-                      data.openVolume,
-                      data.positionDecimalPlaces
-                    )
-                  );
+              if (!data?.openVolume) return '-';
+
+              const vol = volumePrefix(
+                addDecimalsFormatNumber(
+                  data.openVolume,
+                  data.positionDecimalPlaces
+                )
+              );
+
+              return vol;
             },
             cellRenderer: OpenVolumeCell,
           },
           {
-            headerName: t('Mark price'),
+            headerName: t('Entry / Mark'),
             field: 'markPrice',
             type: 'rightAligned',
-            cellRenderer: PriceFlashCell,
+            // cellRenderer: PriceFlashCell,
+            cellRenderer: ({
+              value,
+              data,
+            }: VegaICellRendererParams<Position>) => {
+              if (
+                !data?.averageEntryPrice ||
+                !data?.markPrice ||
+                !data?.marketDecimalPlaces
+              ) {
+                return '-';
+              }
+              const entry = addDecimalsFormatNumber(
+                data.averageEntryPrice,
+                data.marketDecimalPlaces
+              );
+              const mark = addDecimalsFormatNumber(
+                data.markPrice,
+                data.marketDecimalPlaces
+              );
+              return (
+                <div className="leading-4">
+                  <div className="font-mono">{entry}</div>
+                  <div className="text-secondary font-mono">{mark}</div>
+                </div>
+              );
+            },
             filter: 'agNumberColumnFilter',
             valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
               return !data ||
@@ -215,14 +270,20 @@ export const PositionsTable = ({
               ) {
                 return '-';
               }
-              return addDecimalsFormatNumber(
+              const entry = addDecimalsFormatNumber(
+                data.averageEntryPrice,
+                data.marketDecimalPlaces
+              );
+              const mark = addDecimalsFormatNumber(
                 data.markPrice,
                 data.marketDecimalPlaces
               );
+
+              return `${entry} / ${mark}`;
             },
           },
           {
-            headerName: t('Liquidation price'),
+            headerName: t('Margin / Liquidation'),
             colId: 'liquidationPrice',
             type: 'rightAligned',
             cellClass: 'font-mono text-right',
@@ -235,6 +296,8 @@ export const PositionsTable = ({
                   collateralAvailable={data.totalBalance}
                   decimalPlaces={data.decimals}
                   formatDecimals={data.marketDecimalPlaces}
+                  marginBalance={data.marginAccountBalance}
+                  quantum={data.quantum}
                 />
               );
             },
@@ -350,7 +413,11 @@ export const PositionsTable = ({
             }: VegaValueFormatterParams<Position, 'realisedPNL'>) => {
               return !data
                 ? ''
-                : addDecimalsFormatNumber(data.realisedPNL, data.decimals);
+                : addDecimalsFormatNumberQuantum(
+                    data.realisedPNL,
+                    data.decimals,
+                    data.quantum
+                  );
             },
             headerTooltip: t(
               'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
@@ -374,7 +441,11 @@ export const PositionsTable = ({
             }: VegaValueFormatterParams<Position, 'unrealisedPNL'>) =>
               !data
                 ? ''
-                : addDecimalsFormatNumber(data.unrealisedPNL, data.decimals),
+                : addDecimalsFormatNumberQuantum(
+                    data.unrealisedPNL,
+                    data.decimals,
+                    data.quantum
+                  ),
             headerTooltip: t(
               'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
             ),
@@ -535,7 +606,7 @@ export const OpenVolumeCell = ({
         </>
       }
     >
-      {valueFormatted}
+      {cellContent}
     </WarningCell>
   );
 };

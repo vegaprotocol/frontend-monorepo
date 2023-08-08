@@ -39,7 +39,7 @@ export interface Position {
   marginAccountBalance: string;
   marketDecimalPlaces: number;
   marketId: string;
-  marketName: string;
+  marketCode: string;
   marketTradingMode: Schema.MarketTradingMode;
   markPrice: string | undefined;
   notional: string | undefined;
@@ -122,7 +122,7 @@ export const getMetrics = (
       marginAccountBalance: marginAccount?.balance ?? '0',
       marketDecimalPlaces,
       marketId: market.id,
-      marketName: market.tradableInstrument.instrument.code,
+      marketCode: market.tradableInstrument.instrument.code,
       marketTradingMode: market.tradingMode,
       markPrice: marketData ? marketData.markPrice : undefined,
       notional: notional
