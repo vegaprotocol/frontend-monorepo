@@ -8,7 +8,7 @@ import { AgGridLazy as AgGrid, NumericCell } from '@vegaprotocol/datagrid';
 import {
   addDecimal,
   addDecimalsFormatNumber,
-  getDateTimeFormat,
+  getTimeFormat,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
@@ -112,7 +112,7 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
         valueFormatter: ({
           value,
         }: VegaValueFormatterParams<Trade, 'createdAt'>) => {
-          return value && getDateTimeFormat().format(new Date(value));
+          return value && getTimeFormat().format(new Date(value));
         },
       },
     ],
