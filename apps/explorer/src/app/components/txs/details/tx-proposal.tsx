@@ -91,9 +91,13 @@ export const TxProposal = ({ txData, pubKey, blockData }: TxProposalProps) => {
   }
 
   const tx = proposal.terms?.newAsset || proposal.terms?.updateAsset;
-  const isSuccessorMarketProposal = proposal?.terms?.newMarket?.changes?.successor;
-  const parentMarketId = isSuccessorMarketProposal && proposal?.terms.newMarket?.changes?.successor?.parentMarketId;
-  const insurancePoolFraction = proposal?.terms?.newMarket?.changes?.successor?.insurancePoolFraction;
+  const isSuccessorMarketProposal =
+    proposal?.terms?.newMarket?.changes?.successor;
+  const parentMarketId =
+    isSuccessorMarketProposal &&
+    proposal?.terms.newMarket?.changes?.successor?.parentMarketId;
+  const insurancePoolFraction =
+    proposal?.terms?.newMarket?.changes?.successor?.insurancePoolFraction;
 
   // This component is not rendered if no bundle is required
   const SignatureBundleComponent = proposal.terms?.newAsset
@@ -120,23 +124,30 @@ export const TxProposal = ({ txData, pubKey, blockData }: TxProposalProps) => {
             <Hash text={deterministicId} />
           </TableCell>
         </TableRow>
-        {isSuccessorMarketProposal ? <>
-          {parentMarketId ?
-            <TableRow modifier='bordered'>
-              <TableCell>{t('Previous market')}</TableCell>
-              <TableCell>
-                <MarketLink id={proposal.terms?.newMarket.changes.successor.parentMarketId} />
-              </TableCell>
-            </TableRow> : null}
-          {insurancePoolFraction ?
-            <TableRow modifier='bordered'>
-              <TableCell>{t('Insurance pool fraction')}</TableCell>
-              <TableCell>
-                {formatNumber(Number(insurancePoolFraction) * 100, 0)}%
-              </TableCell>
-            </TableRow> : null}
-        </> : null}
-
+        {isSuccessorMarketProposal ? (
+          <>
+            {parentMarketId ? (
+              <TableRow modifier="bordered">
+                <TableCell>{t('Previous market')}</TableCell>
+                <TableCell>
+                  <MarketLink
+                    id={
+                      proposal.terms?.newMarket.changes.successor.parentMarketId
+                    }
+                  />
+                </TableCell>
+              </TableRow>
+            ) : null}
+            {insurancePoolFraction ? (
+              <TableRow modifier="bordered">
+                <TableCell>{t('Insurance pool fraction')}</TableCell>
+                <TableCell>
+                  {formatNumber(Number(insurancePoolFraction) * 100, 0)}%
+                </TableCell>
+              </TableRow>
+            ) : null}
+          </>
+        ) : null}
       </TableWithTbody>
       <ProposalSummary
         id={deterministicId}
