@@ -46,7 +46,7 @@ const displayString: StringMap = {
   'Batch Market Instructions': 'Batch',
   'Stop Orders Submission': 'Stop',
   StopOrdersSubmission: 'Stop',
-  StopOrdersCancellation: 'Cancel stop',
+  StopOrdersCancellation: 'Cancel stop order',
   'Stop Orders Cancellation': 'Cancel stop',
 };
 
