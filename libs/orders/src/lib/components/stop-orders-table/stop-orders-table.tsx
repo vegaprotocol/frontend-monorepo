@@ -3,6 +3,7 @@ import {
   getDateTimeFormat,
   isNumeric,
   toBigNum,
+  formatTrigger,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
@@ -17,7 +18,6 @@ import {
   positiveClassNames,
   MarketNameCell,
   COL_DEFS,
-  formatTrigger,
 } from '@vegaprotocol/datagrid';
 import type {
   TypedDataAgGrid,

@@ -36,6 +36,7 @@ import {
   formatNumber,
   toBigNum,
   truncateByChars,
+  formatTrigger,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
@@ -51,7 +52,7 @@ import {
 import { useMarketsMapProvider } from '@vegaprotocol/markets';
 import type { Side } from '@vegaprotocol/types';
 import { OrderStatusMapping } from '@vegaprotocol/types';
-import { Size, formatTrigger } from '@vegaprotocol/datagrid';
+import { Size } from '@vegaprotocol/datagrid';
 import { useWithdrawalApprovalDialog } from './withdrawal-approval-dialog';
 import * as Schema from '@vegaprotocol/types';
 

@@ -1,6 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/i18n';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from './number';
 
 export const formatTrigger = (
   data: Pick<Schema.StopOrder, 'trigger' | 'triggerDirection'> | undefined,
