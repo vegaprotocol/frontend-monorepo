@@ -142,22 +142,22 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
   it('sorting by Market', () => {
     visitAndClickPositions();
     const marketsSortedDefault = [
-      'AACTIVE',
       'AAPL.MF21',
+      'BTCUSD.MF21',
       'ETHBTC.QM21',
-      'SUSPENDED',
+      'SOLUSD',
     ];
     const marketsSortedAsc = [
-      'AACTIVE',
       'AAPL.MF21',
+      'BTCUSD.MF21',
       'ETHBTC.QM21',
-      'SUSPENDED',
+      'SOLUSD',
     ];
     const marketsSortedDesc = [
-      'SUSPENDED',
+      'SOLUSD',
       'ETHBTC.QM21',
+      'BTCUSD.MF21',
       'AAPL.MF21',
-      'AACTIVE',
     ];
     cy.getByTestId(positions).click();
     // 7004-POSI-003
@@ -310,7 +310,7 @@ function validatePositionsDisplayed(multiKey = false) {
   cy.getByTestId('tab-positions').should('be.visible');
   cy.getByTestId('tab-positions')
     .get('.ag-center-cols-container .ag-row')
-    .first()
+    .eq(multiKey ? 3 : 1)
     .within(() => {
       cy.get('[col-id="marketName"]')
         .should('be.visible')

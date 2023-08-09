@@ -54,7 +54,7 @@ export const createMarketFragment = (
     tradableInstrument: {
       instrument: {
         id: '',
-        code: 'AACTIVE',
+        code: 'BTCUSD.MF21',
         name: 'ACTIVE MARKET',
         metadata: {
           __typename: 'InstrumentMetadata',
@@ -161,7 +161,7 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
     tradableInstrument: {
       instrument: {
         name: 'SUSPENDED MARKET',
-        code: 'SUSPENDED',
+        code: 'SOLUSD',
         product: {
           settlementAsset: {
             id: 'asset-1',
