@@ -6,6 +6,7 @@ import { Nav } from '../nav';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import {
   ProtocolUpgradeCountdownMode,
+  ProtocolUpgradeInProgressNotification,
   ProtocolUpgradeProposalNotification,
 } from '@vegaprotocol/proposals';
 import { ViewingAsBanner } from '@vegaprotocol/ui-toolkit';
@@ -49,6 +50,7 @@ const NotificationsContainer = () => {
       <ProtocolUpgradeProposalNotification
         mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
       />
+      <ProtocolUpgradeInProgressNotification />
       {isReadOnly ? (
         <ViewingAsBanner pubKey={pubKey} disconnect={disconnect} />
       ) : null}

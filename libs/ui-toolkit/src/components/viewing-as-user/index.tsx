@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
-import { NotificationBanner } from '../notification-banner';
+import { NotificationBanner, SHORT } from '../notification-banner';
 import { Intent } from '../../utils/intent';
 import { TradingButton } from '../trading-button';
 
@@ -25,7 +25,7 @@ export const ViewingAsBanner = ({
     <NotificationBanner
       data-testid="view-banner"
       intent={Intent.None}
-      className="!px-1 !py-1 min-h-fit"
+      className={SHORT}
     >
       <div className="flex justify-between items-baseline">
         <span>
