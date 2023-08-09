@@ -154,7 +154,7 @@ interface ProposalNewMarketTerms {
         auctionExtension: string;
       };
       logNormal: LogNormal;
-      successor: Successor;
+      successor?: Successor;
     };
   };
   closingTimestamp: number;
