@@ -44,16 +44,16 @@ const MainGrid = memo(
 
     return (
       <ResizableGrid vertical onChange={handleOnLayoutChange}>
-        <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
-          <ResizableGrid
-            proportionalLayout={false}
-            minSize={200}
-            onChange={handleOnMiddleLayoutChange}
-          >
+        <ResizableGridPanel
+          preferredSize={sizes[0]}
+          priority={LayoutPriority.High}
+          minSize={200}
+        >
+          <ResizableGrid onChange={handleOnMiddleLayoutChange}>
             <ResizableGridPanel
               priority={LayoutPriority.High}
               minSize={200}
-              preferredSize={sizesMiddle[1] || '50%'}
+              preferredSize={sizesMiddle[0] || '75%'}
             >
               <TradeGridChild>
                 <Tabs storageKey="console-trade-grid-main-left">
@@ -74,8 +74,8 @@ const MainGrid = memo(
               </TradeGridChild>
             </ResizableGridPanel>
             <ResizableGridPanel
-              preferredSize={sizesMiddle[2] || 300}
               minSize={200}
+              preferredSize={sizesMiddle[1] || 300}
             >
               <TradeGridChild>
                 <Tabs storageKey="console-trade-grid-main-right">
@@ -91,9 +91,9 @@ const MainGrid = memo(
           </ResizableGrid>
         </ResizableGridPanel>
         <ResizableGridPanel
-          priority={LayoutPriority.Low}
           preferredSize={sizes[1] || '25%'}
           minSize={50}
+          priority={LayoutPriority.Low}
         >
           <TradeGridChild>
             <Tabs storageKey="console-trade-grid-bottom">
