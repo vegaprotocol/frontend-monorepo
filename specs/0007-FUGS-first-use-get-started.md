@@ -13,3 +13,12 @@
 - **Must** There is a link to trade with real funds on Mainnet when I am on Fairground (<a name="0007-FUGS-010" href="#0007-FUGS-010">0007-FUGS-010</a>)
 - **Must** When I am on the Fairground version, I can see a warning / call out that this is Fairground meaning I can try out with virtual assets at no risk (<a name="0007-FUGS-011" href="#0007-FUGS-011">0007-FUGS-011</a>)
 - **Must** If I dismiss the popup, I land on the default market (<a name="0007-FUGS-012" href="#0007-FUGS-012">0007-FUGS-012</a>)
+- **Must** If I dismiss the popup, I land on the default market (<a name="0007-FUGS-012" href="#0007-FUGS-012">0007-FUGS-012</a>)
+
+## When first use popup has been seen, but no browser wallet is installed
+
+- **Must** I can see the steps to get started with a visible call to action to "get started" in the context of the deal ticket, deposit, withdraw, transfer components in the sidebar (<a name="0007-FUGS-013" href="#0007-FUGS-013">0007-FUGS-013</a>)
+- **Must** Remove buttons from pane containers that prompt to connect wallet (<a name="0007-FUGS-014" href="#0007-FUGS-014">0007-FUGS-014</a>)
+- **Must** We've replaced "connect wallet" in the top right with "get started" (<a name="0007-FUGS-015" href="#0007-FUGS-015">0007-FUGS-015</a>)
+- **Must** When I press the get started CTA, I see the wallet connect popup (<a name="0007-FUGS-016" href="#0007-FUGS-016">0007-FUGS-016</a>)
+- **Must** If I have a wallet installed already I don't see this quick start onboarding, and instead call(s) to action in Console revert to connect wallet, not "get started" (button in nav header) (<a name="0007-FUGS-017" href="#0007-FUGS-017">0007-FUGS-017</a>)
