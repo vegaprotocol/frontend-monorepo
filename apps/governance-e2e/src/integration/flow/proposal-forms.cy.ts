@@ -9,9 +9,7 @@ import {
 import {
   getDownloadedProposalJsonPath,
   getProposalFromTitle,
-  proposalChangeType,
   submitUniqueRawProposal,
-  validateProposalDetailsDiff,
 } from '../../support/governance.functions';
 import {
   getProposalInformationFromTable,
