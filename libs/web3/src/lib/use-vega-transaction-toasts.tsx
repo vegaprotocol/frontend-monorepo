@@ -22,6 +22,8 @@ import {
   isWithdrawTransaction,
   useVegaTransactionStore,
   VegaTxStatus,
+  isStopOrdersSubmissionTransaction,
+  isStopOrdersCancellationTransaction,
 } from '@vegaprotocol/wallet';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
@@ -50,6 +52,7 @@ import type { Side } from '@vegaprotocol/types';
 import { OrderStatusMapping } from '@vegaprotocol/types';
 import { Size } from '@vegaprotocol/datagrid';
 import { useWithdrawalApprovalDialog } from './withdrawal-approval-dialog';
+import * as Schema from '@vegaprotocol/types';
 
 const intentMap: { [s in VegaTxStatus]: Intent } = {
   Default: Intent.Primary,
@@ -85,6 +88,8 @@ const isTransactionTypeSupported = (tx: VegaStoredTxState) => {
   const withdraw = isWithdrawTransaction(tx.body);
   const submitOrder = isOrderSubmissionTransaction(tx.body);
   const cancelOrder = isOrderCancellationTransaction(tx.body);
+  const submitStopOrder = isStopOrdersSubmissionTransaction(tx.body);
+  const cancelStopOrder = isStopOrdersCancellationTransaction(tx.body);
   const editOrder = isOrderAmendmentTransaction(tx.body);
   const batchMarketInstructions = isBatchMarketInstructionsTransaction(tx.body);
   const transfer = isTransferTransaction(tx.body);
@@ -92,6 +97,8 @@ const isTransactionTypeSupported = (tx: VegaStoredTxState) => {
     withdraw ||
     submitOrder ||
     cancelOrder ||
+    submitStopOrder ||
+    cancelStopOrder ||
     editOrder ||
     batchMarketInstructions ||
     transfer
@@ -502,17 +509,27 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   }
 
   if (tx.order && tx.order.rejectionReason) {
-    const rejectionReason =
-      getRejectionReason(tx.order) || tx.order.rejectionReason || '';
+    const rejectionReason = getRejectionReason(tx.order);
     return (
       <>
         <ToastHeading>{getOrderToastTitle(tx.order.status)}</ToastHeading>
         {rejectionReason ? (
           <p>
-            {t('Your order has been rejected because: %s', [rejectionReason])}
+            {t('Your order has been %s because: %s', [
+              tx.order.status === Schema.OrderStatus.STATUS_STOPPED
+                ? 'stopped'
+                : 'rejected',
+              rejectionReason,
+            ])}
           </p>
         ) : (
-          <p>{t('Your order has been rejected.')}</p>
+          <p>
+            {t('Your order has been %s.', [
+              tx.order.status === Schema.OrderStatus.STATUS_STOPPED
+                ? 'stopped'
+                : 'rejected',
+            ])}
+          </p>
         )}
         {tx.txHash && (
           <p className="break-all">

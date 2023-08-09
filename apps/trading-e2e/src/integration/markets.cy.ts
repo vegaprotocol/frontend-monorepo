@@ -12,6 +12,7 @@ describe('markets table', { tags: '@smoke' }, () => {
         Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET
       );
       cy.mockSubscription();
+      cy.setOnBoardingViewed();
       cy.visit('/#/markets/all');
     });
   });

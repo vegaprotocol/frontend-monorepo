@@ -59,6 +59,7 @@ const CumulativeVol = memo(
   }) => {
     const volume = cumulativeValue ? (
       <NumericCell
+        testId={testId}
         value={cumulativeValue}
         valueFormatted={addDecimalsFixedFormatNumber(
           cumulativeValue,
@@ -69,7 +70,6 @@ const CumulativeVol = memo(
 
     return onClick && volume ? (
       <button
-        data-testid={testId}
         onClick={() => onClick(cumulativeValue)}
         className="hover:dark:bg-neutral-800 hover:bg-neutral-200 text-right pr-1"
       >

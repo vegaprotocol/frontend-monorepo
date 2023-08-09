@@ -15,6 +15,7 @@ describe('time in force validation', { tags: '@smoke' }, () => {
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.clearAllLocalStorage();
+    cy.setOnBoardingViewed();
     cy.visit('/#/markets/market-0');
     cy.wait('@Markets');
   });

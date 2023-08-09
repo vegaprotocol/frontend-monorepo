@@ -1,4 +1,8 @@
-import { TokenStaticLinks, useEnvironment } from '@vegaprotocol/environment';
+import {
+  FLAGS,
+  TokenStaticLinks,
+  useEnvironment,
+} from '@vegaprotocol/environment';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -34,6 +38,7 @@ import {
   RiskModelInfoPanel,
   RiskParametersInfoPanel,
   SettlementAssetInfoPanel,
+  SuccessionLineInfoPanel,
 } from './market-info-panels';
 import type { DataSourceDefinition } from '@vegaprotocol/types';
 import isEqual from 'lodash/isEqual';
@@ -291,6 +296,13 @@ export const MarketInfoAccordion = ({
                 </>
               }
             />
+            {FLAGS.SUCCESSOR_MARKETS && (
+              <AccordionItem
+                itemId="succession-line"
+                title={t('Succession line')}
+                content={<SuccessionLineInfoPanel market={market} />}
+              />
+            )}
           </Accordion>
         </div>
       )}

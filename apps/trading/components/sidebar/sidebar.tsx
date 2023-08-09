@@ -15,6 +15,8 @@ import { Tooltip } from '../../components/tooltip';
 import { WithdrawContainer } from '../withdraw-container';
 import { Routes as AppRoutes } from '../../pages/client-router';
 import { persist } from 'zustand/middleware';
+import { GetStarted } from '../welcome-dialog';
+import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
 
 const STORAGE_KEY = 'vega_sidebar_store';
 
@@ -25,6 +27,7 @@ export enum ViewType {
   Withdraw = 'Withdraw',
   Transfer = 'Transfer',
   Settings = 'Settings',
+  ViewAs = 'ViewAs',
 }
 
 type SidebarView =
@@ -51,9 +54,12 @@ type SidebarView =
     };
 
 export const Sidebar = () => {
+  const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
+  const setViewAsDialogOpen = useViewAsDialog((state) => state.setOpen);
+  const { pubKeys } = useVegaWallet();
   return (
-    <div className="flex flex-col gap-2 h-full py-1" data-testid="sidebar">
-      <nav className="flex flex-col items-center gap-4 p-1">
+    <div className="flex lg:flex-col gap-2 h-full p-1" data-testid="sidebar">
+      <nav className={navClasses}>
         {/* sidebar options that always show */}
         <SidebarButton
           view={ViewType.Deposit}
@@ -102,7 +108,17 @@ export const Sidebar = () => {
           />
         </Routes>
       </nav>
-      <nav className="mt-auto flex flex-col items-center gap-4 p-1">
+      <nav className={classNames(navClasses, 'ml-auto lg:mt-auto lg:ml-0')}>
+        <SidebarButton
+          view={ViewType.ViewAs}
+          onClick={() => {
+            setViewAsDialogOpen(true);
+          }}
+          icon={VegaIconNames.EYE}
+          tooltip={t('View as party')}
+          disabled={Boolean(pubKeys)}
+        />
+
         <SidebarButton
           view={ViewType.Settings}
           icon={VegaIconNames.COG}
@@ -114,25 +130,43 @@ export const Sidebar = () => {
   );
 };
 
-const SidebarButton = ({
+export const SidebarButton = ({
   view,
   icon,
   tooltip,
+  disabled = false,
+  onClick,
 }: {
-  view: ViewType;
+  view?: ViewType;
   icon: VegaIconNames;
   tooltip: string;
+  disabled?: boolean;
+  onClick?: () => void;
 }) => {
   const { currView, setView } = useSidebar((store) => ({
     currView: store.view,
     setView: store.setView,
   }));
-  const buttonClasses = classNames('flex items-center p-1 rounded', {
-    'text-vega-clight-200 dark:text-vega-cdark-200 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500':
-      view !== currView?.type,
-    'bg-vega-yellow hover:bg-vega-yellow-550 text-black':
-      view === currView?.type,
-  });
+
+  const onSelect = (view: SidebarView['type']) => {
+    if (view === currView?.type) {
+      setView(null);
+    } else {
+      setView({ type: view });
+    }
+  };
+
+  const buttonClasses = classNames(
+    'flex items-center p-1 rounded',
+    'disabled:cursor-not-allowed disabled:text-vega-clight-500 dark:disabled:text-vega-cdark-500',
+    {
+      'text-vega-clight-200 dark:text-vega-cdark-200 enabled:hover:bg-vega-clight-500 dark:enabled:hover:bg-vega-cdark-500':
+        !view || view !== currView?.type,
+      'bg-vega-yellow enabled:hover:bg-vega-yellow-550 text-black':
+        view && view === currView?.type,
+    }
+  );
+
   return (
     <Tooltip
       description={tooltip}
@@ -144,13 +178,8 @@ const SidebarButton = ({
       <button
         className={buttonClasses}
         data-testid={view}
-        onClick={() => {
-          if (view === currView?.type) {
-            setView(null);
-          } else {
-            setView({ type: view });
-          }
-        }}
+        onClick={onClick || (() => onSelect(view as SidebarView['type']))}
+        disabled={disabled}
       >
         <VegaIcon name={icon} size={20} />
       </button>
@@ -161,7 +190,7 @@ const SidebarButton = ({
 const SidebarDivider = () => {
   return (
     <div
-      className="bg-vega-clight-600 dark:bg-vega-cdark-600 w-4 h-px"
+      className="bg-vega-clight-600 dark:bg-vega-cdark-600 w-px h-4 lg:w-4 lg:h-px"
       role="separator"
     />
   );
@@ -183,6 +212,7 @@ export const SidebarContent = () => {
               setView({ type: ViewType.Deposit, assetId })
             }
           />
+          <GetStarted />
         </ContentWrapper>
       );
     } else {
@@ -206,6 +236,7 @@ export const SidebarContent = () => {
     return (
       <ContentWrapper title={t('Deposit')}>
         <DepositContainer assetId={view.assetId} />
+        <GetStarted />
       </ContentWrapper>
     );
   }
@@ -214,6 +245,7 @@ export const SidebarContent = () => {
     return (
       <ContentWrapper title={t('Withdraw')}>
         <WithdrawContainer assetId={view.assetId} />
+        <GetStarted />
       </ContentWrapper>
     );
   }
@@ -222,6 +254,7 @@ export const SidebarContent = () => {
     return (
       <ContentWrapper title={t('Transfer')}>
         <TransferContainer assetId={view.assetId} />
+        <GetStarted />
       </ContentWrapper>
     );
   }
@@ -276,7 +309,7 @@ export const useSidebar = create<{
       view: null,
       setView: (x) =>
         set(() => {
-          if (x === null) {
+          if (x == null) {
             return { view: null, init: false };
           }
 

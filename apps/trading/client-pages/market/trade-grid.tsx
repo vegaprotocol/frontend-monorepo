@@ -10,7 +10,6 @@ import type { Market } from '@vegaprotocol/markets';
 import { Filter } from '@vegaprotocol/orders';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
-import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import {
   ResizableGrid,
   ResizableGridPanel,
@@ -58,7 +57,11 @@ const MainGrid = memo(
             >
               <TradeGridChild>
                 <Tabs storageKey="console-trade-grid-main-left">
-                  <Tab id="chart" name={t('Chart')}>
+                  <Tab
+                    id="chart"
+                    name={t('Chart')}
+                    menu={<TradingViews.candles.menu />}
+                  >
                     <TradingViews.candles.component marketId={marketId} />
                   </Tab>
                   <Tab id="depth" name={t('Depth')}>
@@ -95,57 +98,48 @@ const MainGrid = memo(
           <TradeGridChild>
             <Tabs storageKey="console-trade-grid-bottom">
               <Tab id="positions" name={t('Positions')}>
-                <VegaWalletContainer>
-                  <TradingViews.positions.component
-                    onMarketClick={onMarketClick}
-                  />
-                </VegaWalletContainer>
+                <TradingViews.positions.component
+                  onMarketClick={onMarketClick}
+                />
               </Tab>
               <Tab id="open-orders" name={t('Open')}>
-                <VegaWalletContainer>
-                  <TradingViews.orders.component
-                    marketId={marketId}
-                    filter={Filter.Open}
-                  />
-                </VegaWalletContainer>
+                <TradingViews.orders.component
+                  marketId={marketId}
+                  filter={Filter.Open}
+                />
               </Tab>
               <Tab id="closed-orders" name={t('Closed')}>
-                <VegaWalletContainer>
-                  <TradingViews.orders.component
-                    marketId={marketId}
-                    filter={Filter.Closed}
-                  />
-                </VegaWalletContainer>
+                <TradingViews.orders.component
+                  marketId={marketId}
+                  filter={Filter.Closed}
+                />
               </Tab>
               <Tab id="rejected-orders" name={t('Rejected')}>
-                <VegaWalletContainer>
-                  <TradingViews.orders.component
-                    marketId={marketId}
-                    filter={Filter.Rejected}
-                  />
-                </VegaWalletContainer>
+                <TradingViews.orders.component
+                  marketId={marketId}
+                  filter={Filter.Rejected}
+                />
               </Tab>
               <Tab id="orders" name={t('All')}>
-                <VegaWalletContainer>
-                  <TradingViews.orders.component marketId={marketId} />
-                </VegaWalletContainer>
+                <TradingViews.orders.component marketId={marketId} />
               </Tab>
+              {FLAGS.STOP_ORDERS ? (
+                <Tab id="stop-orders" name={t('Stop orders')}>
+                  <TradingViews.stopOrders.component />
+                </Tab>
+              ) : null}
               <Tab id="fills" name={t('Fills')}>
-                <VegaWalletContainer>
-                  <TradingViews.fills.component
-                    marketId={marketId}
-                    onMarketClick={onMarketClick}
-                  />
-                </VegaWalletContainer>
+                <TradingViews.fills.component
+                  marketId={marketId}
+                  onMarketClick={onMarketClick}
+                />
               </Tab>
               <Tab id="accounts" name={t('Collateral')}>
-                <VegaWalletContainer>
-                  <TradingViews.collateral.component
-                    pinnedAsset={pinnedAsset}
-                    onMarketClick={onMarketClick}
-                    hideButtons
-                  />
-                </VegaWalletContainer>
+                <TradingViews.collateral.component
+                  pinnedAsset={pinnedAsset}
+                  onMarketClick={onMarketClick}
+                  hideButtons
+                />
               </Tab>
             </Tabs>
           </TradeGridChild>

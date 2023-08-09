@@ -57,7 +57,7 @@ const ROWS = [
 
 export const HealthDialog = ({ onChange, isOpen }: HealthDialogProps) => {
   return (
-    <Dialog size="medium" open={isOpen} onChange={onChange}>
+    <Dialog size="large" open={isOpen} onChange={onChange}>
       <h1 className="text-2xl mb-5 pr-2 font-medium font-alpha uppercase">
         {t('Health')}
       </h1>

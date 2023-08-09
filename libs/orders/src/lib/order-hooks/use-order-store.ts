@@ -111,13 +111,13 @@ export const useOrder = (marketId: string) => {
     [marketId, _update]
   );
 
-  // add new order to store if it doesnt exist, but don't
+  // add new order to store if it doesn't exist, but don't
   // persist until user has edited
   useEffect(() => {
     if (!order) {
       update(
         getDefaultOrder(marketId),
-        false // dont persist the order
+        false // don't persist the order
       );
     }
   }, [order, marketId, update]);

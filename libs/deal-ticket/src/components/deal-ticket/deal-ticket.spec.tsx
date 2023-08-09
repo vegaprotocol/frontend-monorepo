@@ -22,8 +22,12 @@ import { OrdersDocument } from '@vegaprotocol/orders';
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
   DealTicketFeeDetails: () => <div data-testid="deal-ticket-fee-details" />,
+  DealTicketMarginDetails: () => (
+    <div data-testid="deal-ticket-margin-details" />
+  ),
 }));
 
+const marketPrice = '200';
 const pubKey = 'pubKey';
 const market = generateMarket();
 const marketData = generateMarketData();
@@ -36,6 +40,7 @@ function generateJsx(mocks: MockedResponse[] = []) {
         <DealTicket
           market={market}
           marketData={marketData}
+          marketPrice={marketPrice}
           submit={submit}
           onDeposit={jest.fn()}
         />
@@ -114,30 +119,22 @@ describe('DealTicket', () => {
   });
 
   it('should display ticket defaults', () => {
-    const { container } = render(generateJsx());
+    render(generateJsx());
 
     // place order button should always be enabled
     expect(screen.getByTestId('place-order')).toBeEnabled();
 
     // Assert defaults are used
-    expect(
-      screen.getByTestId(`order-type-${Schema.OrderType.TYPE_MARKET}`)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('order-type-Market')).toBeInTheDocument();
+    expect(screen.getByTestId('order-type-Limit')).toBeInTheDocument();
 
-    const oderTypeLimitToggle = container.querySelector(
-      `[data-testid="order-type-${Schema.OrderType.TYPE_LIMIT}"] input[type="radio"]`
+    expect(screen.getByTestId('order-type-Limit').dataset.state).toEqual(
+      'checked'
     );
-    expect(oderTypeLimitToggle).toBeChecked();
 
-    expect(
-      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
-    ).not.toBeChecked();
+    expect(screen.getByTestId('order-side-SIDE_BUY').dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId('order-size')).toHaveDisplayValue('0');
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
@@ -147,12 +144,12 @@ describe('DealTicket', () => {
   it('should display last price for market type order', () => {
     render(generateJsx());
     act(() => {
-      screen.getByTestId(`order-type-${Schema.OrderType.TYPE_MARKET}`).click();
+      screen.getByTestId('order-type-Market').click();
     });
     // Assert last price is shown
     expect(screen.getByTestId('last-price')).toHaveTextContent(
       // eslint-disable-next-line
-      `~${addDecimal(marketData.markPrice, market.decimalPlaces)} ${
+      `~${addDecimal(marketPrice, market.decimalPlaces)} ${
         market.tradableInstrument.instrument.product.quoteName
       }`
     );
@@ -178,17 +175,12 @@ describe('DealTicket', () => {
     render(generateJsx());
 
     // Assert correct defaults are used from store
-    expect(
-      screen
-        .getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
-        .querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).not.toBeChecked();
+    expect(screen.getByTestId('order-type-Limit').dataset.state).toEqual(
+      'checked'
+    );
+    expect(screen.getByTestId('order-side-SIDE_SELL').dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId('order-size')).toHaveDisplayValue(
       expectedOrder.size
     );
@@ -221,17 +213,12 @@ describe('DealTicket', () => {
     render(generateJsx());
 
     // Assert correct defaults are used from store
-    expect(
-      screen
-        .getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
-        .querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).not.toBeChecked();
+    expect(screen.getByTestId('order-type-Limit').dataset.state).toEqual(
+      'checked'
+    );
+    expect(screen.getByTestId('order-side-SIDE_SELL').dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId('order-size')).toHaveDisplayValue(
       expectedOrder.size
     );
@@ -269,17 +256,12 @@ describe('DealTicket', () => {
     render(generateJsx());
 
     // Assert correct defaults are used from store
-    expect(
-      screen
-        .getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
-        .querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).not.toBeChecked();
+    expect(screen.getByTestId('order-type-Limit').dataset.state).toEqual(
+      'checked'
+    );
+    expect(screen.getByTestId('order-side-SIDE_SELL').dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId('order-size')).toHaveDisplayValue(
       expectedOrder.size
     );
@@ -322,17 +304,12 @@ describe('DealTicket', () => {
     render(generateJsx());
 
     // Assert correct defaults are used from store
-    expect(
-      screen
-        .getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
-        .querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).not.toBeChecked();
+    expect(screen.getByTestId('order-type-Limit').dataset.state).toEqual(
+      'checked'
+    );
+    expect(screen.getByTestId('order-side-SIDE_SELL').dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId('order-size')).toHaveDisplayValue(
       expectedOrder.size
     );
@@ -371,17 +348,12 @@ describe('DealTicket', () => {
     render(generateJsx());
 
     // Assert correct defaults are used from store
-    expect(
-      screen
-        .getByTestId(`order-type-${Schema.OrderType.TYPE_LIMIT}`)
-        .querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_SELL')?.querySelector('input')
-    ).toBeChecked();
-    expect(
-      screen.queryByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).not.toBeChecked();
+    expect(screen.getByTestId('order-type-Limit').dataset.state).toEqual(
+      'checked'
+    );
+    expect(screen.getByTestId('order-side-SIDE_SELL').dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId('order-size')).toHaveDisplayValue(
       expectedOrder.size
     );
@@ -402,7 +374,7 @@ describe('DealTicket', () => {
     render(generateJsx());
 
     act(() => {
-      screen.getByTestId(`order-type-${Schema.OrderType.TYPE_MARKET}`).click();
+      screen.getByTestId('order-type-Market').click();
     });
 
     // Only FOK and IOC should be present for type market order
@@ -427,7 +399,7 @@ describe('DealTicket', () => {
     );
 
     // Switch to type limit order -> all TIF options should be shown
-    await userEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
+    await userEvent.click(screen.getByTestId('order-type-Limit'));
     expect(screen.getByTestId('order-tif').children).toHaveLength(
       Object.keys(Schema.OrderTimeInForce).length
     );
@@ -447,7 +419,7 @@ describe('DealTicket', () => {
     );
 
     // Switch back to type market order -> FOK should be preserved from previous selection
-    await userEvent.click(screen.getByTestId('order-type-TYPE_MARKET'));
+    await userEvent.click(screen.getByTestId('order-type-Market'));
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
     );
@@ -462,7 +434,7 @@ describe('DealTicket', () => {
     );
 
     // Switch back type limit order -> GTT should be preserved
-    await userEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
+    await userEvent.click(screen.getByTestId('order-type-Limit'));
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
     );
@@ -477,7 +449,7 @@ describe('DealTicket', () => {
     );
 
     // Switch to type market order -> IOC should be preserved
-    await userEvent.click(screen.getByTestId('order-type-TYPE_MARKET'));
+    await userEvent.click(screen.getByTestId('order-type-Market'));
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
@@ -487,9 +459,9 @@ describe('DealTicket', () => {
     render(generateJsx());
 
     // BUY is selected by default
-    expect(
-      screen.getByTestId('order-side-SIDE_BUY')?.querySelector('input')
-    ).toBeChecked();
+    expect(screen.getByTestId('order-side-SIDE_BUY').dataset.state).toEqual(
+      'checked'
+    );
 
     await userEvent.type(screen.getByTestId('order-size'), '200');
 
@@ -504,7 +476,7 @@ describe('DealTicket', () => {
     );
 
     // Switch to limit order
-    await userEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
+    await userEvent.click(screen.getByTestId('order-type-Limit'));
 
     // Check all TIF options shown
     expect(screen.getByTestId('order-tif').children).toHaveLength(

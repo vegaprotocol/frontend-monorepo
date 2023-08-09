@@ -16,7 +16,7 @@ export const VegaIcon = ({ size = 16, name }: VegaIconProps) => {
   );
   const Element = VegaIconNameMap[name];
   return (
-    <span className={effectiveClassName}>
+    <span className={effectiveClassName} data-testid={`icon-${name}`}>
       <Element size={size} />
     </span>
   );

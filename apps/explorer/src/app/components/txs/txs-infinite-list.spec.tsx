@@ -5,11 +5,17 @@ import type { BlockExplorerTransactionResult } from '../../routes/types/block-ex
 import { Side } from '@vegaprotocol/types';
 import { MockedProvider } from '@apollo/client/testing';
 
+const generateHash = (): string =>
+  Array.from(
+    { length: 64 },
+    () => '0123456789ABCDEF'[Math.floor(Math.random() * 16)]
+  ).join('');
+
 const generateTxs = (number: number): BlockExplorerTransactionResult[] => {
   return Array.from(Array(number)).map((_) => ({
     block: '87901',
     index: 2,
-    hash: '0F8B98DA0923A50786B852D9CA11E051CACC4C733E1DB93D535C7D81DBD10F6F',
+    hash: generateHash(),
     submitter:
       '4b782482f587d291e8614219eb9a5ee9280fa2c58982dee71d976782a9be1964',
     type: 'Submit Order',

@@ -1,68 +1,52 @@
-import React, { useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Dialog } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
-import { useDataProvider } from '@vegaprotocol/data-provider';
-import { activeMarketsProvider } from '@vegaprotocol/markets';
-import * as constants from '../constants';
-import { RiskNoticeDialog } from './risk-notice-dialog';
-import { WelcomeNoticeDialog } from './welcome-notice-dialog';
-import { useGlobalStore } from '../../stores';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { Networks } from '@vegaprotocol/environment';
-import { isTestEnv } from '@vegaprotocol/utils';
+import { isBrowserWalletInstalled } from '@vegaprotocol/wallet';
+import * as constants from '../constants';
+import { WelcomeDialogContent } from './welcome-dialog-content';
+import { getConfig } from '@vegaprotocol/wallet';
+import { Links, Routes } from '../../pages/client-router';
+import { useGlobalStore } from '../../stores';
 
 export const WelcomeDialog = () => {
   const { VEGA_ENV } = useEnvironment();
-  const { pathname } = useLocation();
-  let dialogContent: React.ReactNode;
-  let title = '';
-  let size: 'small' | 'medium' = 'small';
-  let onClose: ((open: boolean) => void) | undefined = undefined;
-  const [riskAccepted] = useLocalStorage(constants.RISK_ACCEPTED_KEY);
-  const { data } = useDataProvider({
-    dataProvider: activeMarketsProvider,
-    variables: undefined,
-  });
+  const [onBoardingViewed, setOnboardingViewed] = useLocalStorage(
+    constants.ONBOARDING_VIEWED_KEY
+  );
+  const navigate = useNavigate();
+  const isOnboardingDialogNeeded =
+    onBoardingViewed !== 'true' && !isBrowserWalletInstalled() && !getConfig();
+  const marketId = useGlobalStore((store) => store.marketId);
 
-  const update = useGlobalStore((store) => store.update);
-  const shouldDisplayWelcomeDialog = useGlobalStore(
-    (store) => store.shouldDisplayWelcomeDialog
+  const onClose = () => {
+    setOnboardingViewed('true');
+    const link = marketId
+      ? Links[Routes.MARKET](marketId)
+      : Links[Routes.HOME]();
+    navigate(link);
+  };
+  const title = (
+    <span className="font-alpha calt" data-testid="welcome-title">
+      {t('Console')}{' '}
+      <span className="text-vega-clight-100 dark:text-vega-cdark-100">
+        {VEGA_ENV}
+      </span>
+    </span>
   );
 
-  const isRiskDialogNeeded =
-    riskAccepted !== 'true' && VEGA_ENV !== Networks.MAINNET && !isTestEnv();
-
-  const isWelcomeDialogNeeded = pathname === '/' || shouldDisplayWelcomeDialog;
-
-  const onCloseDialog = useCallback(() => {
-    update({
-      shouldDisplayWelcomeDialog: isRiskDialogNeeded,
-    });
-  }, [update, isRiskDialogNeeded]);
-
-  if (isRiskDialogNeeded) {
-    dialogContent = (
-      <RiskNoticeDialog onClose={onCloseDialog} network={VEGA_ENV} />
-    );
-    title = t('Vega Console');
-    size = 'medium';
-  } else if (isWelcomeDialogNeeded && data?.length === 0) {
-    dialogContent = <WelcomeNoticeDialog />;
-    onClose = onCloseDialog;
-  } else {
-    dialogContent = null as React.ReactNode;
-  }
-
-  return (
+  return isOnboardingDialogNeeded ? (
     <Dialog
-      open={Boolean(dialogContent)}
+      open
       title={title}
-      size={size}
+      size="medium"
       onChange={onClose}
+      intent={Intent.None}
+      dataTestId="welcome-dialog"
     >
-      {dialogContent}
+      <WelcomeDialogContent />
     </Dialog>
-  );
+  ) : null;
 };

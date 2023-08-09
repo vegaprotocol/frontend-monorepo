@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
@@ -9,31 +10,43 @@ export interface RadioGroupProps {
   value?: string;
   orientation?: 'horizontal' | 'vertical';
   onChange?: (value: string) => void;
+  className?: string;
 }
 
-export const RadioGroup = ({
-  children,
-  name,
-  value,
-  orientation = 'vertical',
-  onChange,
-}: RadioGroupProps) => {
-  const groupClasses = classNames('flex text-sm', {
-    'flex-col gap-2': orientation === 'vertical',
-    'flex-row gap-4': orientation === 'horizontal',
-  });
-  return (
-    <RadioGroupPrimitive.Root
-      name={name}
-      value={value}
-      onValueChange={onChange}
-      orientation={orientation}
-      className={groupClasses}
-    >
-      {children}
-    </RadioGroupPrimitive.Root>
-  );
-};
+export const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
+  (
+    {
+      children,
+      name,
+      value,
+      orientation = 'vertical',
+      onChange,
+      className,
+    }: RadioGroupProps,
+    ref
+  ) => {
+    const groupClasses = classNames(
+      'flex text-sm',
+      {
+        'flex-col gap-2': orientation === 'vertical',
+        'flex-row gap-4': orientation === 'horizontal',
+      },
+      className
+    );
+    return (
+      <RadioGroupPrimitive.Root
+        ref={ref}
+        name={name}
+        value={value}
+        onValueChange={onChange}
+        orientation={orientation}
+        className={groupClasses}
+      >
+        {children}
+      </RadioGroupPrimitive.Root>
+    );
+  }
+);
 
 interface RadioProps {
   id: string;

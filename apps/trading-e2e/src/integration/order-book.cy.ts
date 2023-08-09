@@ -14,6 +14,7 @@ const resPrice = 'price-990';
 
 describe('order book', { tags: '@smoke' }, () => {
   before(() => {
+    cy.setOnBoardingViewed();
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');

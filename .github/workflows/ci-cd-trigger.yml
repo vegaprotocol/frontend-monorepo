@@ -120,6 +120,15 @@ jobs:
       preview_explorer: ${{ env.PREVIEW_EXPLORER }}
       preview_tools: ${{ env.PREVIEW_TOOLS }}
 
+  console-e2e:
+    needs: lint-test-build
+    name: '(CI) console python'
+    uses: ./.github/workflows/console-test-run.yml
+    secrets: inherit
+    if: ${{ contains(fromJSON(needs.lint-test-build.outputs.projects), 'trading') && github.event_name == 'pull_request' }}
+    with:
+      github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
+
   cypress:
     needs: lint-test-build
     name: '(CI) cypress'

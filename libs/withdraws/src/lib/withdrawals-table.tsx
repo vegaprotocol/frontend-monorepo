@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
-import type { AgGridReact } from 'ag-grid-react';
 import type { ColDef } from 'ag-grid-community';
 import {
   addDecimalsFormatNumber,
@@ -12,7 +11,7 @@ import { t } from '@vegaprotocol/i18n';
 import {
   ActionsDropdown,
   ButtonLink,
-  DropdownMenuItem,
+  TradingDropdownItem,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -40,7 +39,6 @@ export const WithdrawalsTable = ({
   ready?: TimestampedWithdrawals;
   delayed?: TimestampedWithdrawals;
 }) => {
-  const gridRef = useRef<AgGridReact | null>(null);
   const createWithdrawApproval = useEthWithdrawApprovalsStore(
     (store) => store.create
   );
@@ -146,7 +144,6 @@ export const WithdrawalsTable = ({
         CompleteCell,
       }}
       suppressCellFocus
-      ref={gridRef}
       {...props}
     />
   );
@@ -175,7 +172,7 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
       </ButtonLink>
 
       <ActionsDropdown>
-        <DropdownMenuItem
+        <TradingDropdownItem
           key={'withdrawal-approval'}
           data-testid="withdrawal-approval"
           onClick={() => {
@@ -186,7 +183,7 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
         >
           <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
           {t('View withdrawal details')}
-        </DropdownMenuItem>
+        </TradingDropdownItem>
       </ActionsDropdown>
     </div>
   );

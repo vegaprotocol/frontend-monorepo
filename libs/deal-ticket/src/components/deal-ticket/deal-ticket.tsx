@@ -4,20 +4,18 @@ import { memo, useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
-import { DealTicketFeeDetails } from './deal-ticket-fee-details';
+import {
+  DealTicketFeeDetails,
+  DealTicketMarginDetails,
+} from './deal-ticket-fee-details';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
-import {
-  normalizeOrderSubmission,
-  useVegaWallet,
-  useVegaWalletDialogStore,
-} from '@vegaprotocol/wallet';
+import { normalizeOrderSubmission, useVegaWallet } from '@vegaprotocol/wallet';
 import {
   Checkbox,
-  ExternalLink,
   InputError,
   Intent,
   Notification,
@@ -30,8 +28,7 @@ import {
 } from '@vegaprotocol/positions';
 import { toBigNum, removeDecimal } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
-import { useEstimateFees } from '../../hooks/use-estimate-fees';
-import { getDerivedPrice } from '../../utils/get-price';
+import { getDerivedPrice } from '@vegaprotocol/markets';
 import type { OrderInfo } from '@vegaprotocol/types';
 
 import {
@@ -43,7 +40,11 @@ import {
 } from '../../utils';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { SummaryValidationType } from '../../constants';
-import type { Market, MarketData } from '@vegaprotocol/markets';
+import type {
+  Market,
+  MarketData,
+  StaticMarketData,
+} from '@vegaprotocol/markets';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
 import {
   useMarketAccountBalance,
@@ -53,26 +54,59 @@ import {
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { useOrderForm } from '../../hooks/use-order-form';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import {
+  DealTicketType,
+  useDealTicketTypeStore,
+} from '../../hooks/use-type-store';
+import { useStopOrderFormValues } from '../../hooks/use-stop-order-form-values';
 import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
+import noop from 'lodash/noop';
+
+export const REDUCE_ONLY_TOOLTIP =
+  '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
 
 export interface DealTicketProps {
   market: Market;
-  marketData: MarketData;
+  marketData: StaticMarketData;
+  marketPrice?: string | null;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   submit: (order: OrderSubmission) => void;
   onClickCollateral?: () => void;
   onDeposit: (assetId: string) => void;
 }
 
+export const useNotionalSize = (
+  price: string | null | undefined,
+  size: string | undefined,
+  decimalPlaces: number,
+  positionDecimalPlaces: number
+) =>
+  useMemo(() => {
+    if (price && size) {
+      return removeDecimal(
+        toBigNum(size, positionDecimalPlaces).multipliedBy(
+          toBigNum(price, decimalPlaces)
+        ),
+        decimalPlaces
+      );
+    }
+    return null;
+  }, [price, size, decimalPlaces, positionDecimalPlaces]);
+
 export const DealTicket = ({
   market,
   onMarketClick,
   marketData,
+  marketPrice,
   submit,
   onClickCollateral,
   onDeposit,
 }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
+  const setDealTicketType = useDealTicketTypeStore((state) => state.set);
+  const updateStopOrderFormValues = useStopOrderFormValues(
+    (state) => state.update
+  );
   // store last used tif for market so that when changing OrderType the previous TIF
   // selection for that type is used when switching back
 
@@ -95,11 +129,15 @@ export const DealTicket = ({
 
   const asset = market.tradableInstrument.instrument.product.settlementAsset;
 
-  const { accountBalance: marginAccountBalance } = useMarketAccountBalance(
-    market.id
-  );
+  const {
+    accountBalance: marginAccountBalance,
+    loading: loadingMarginAccountBalance,
+  } = useMarketAccountBalance(market.id);
 
-  const { accountBalance: generalAccountBalance } = useAccountBalance(asset.id);
+  const {
+    accountBalance: generalAccountBalance,
+    loading: loadingGeneralAccountBalance,
+  } = useAccountBalance(asset.id);
 
   const balance = (
     BigInt(marginAccountBalance) + BigInt(generalAccountBalance)
@@ -116,30 +154,20 @@ export const DealTicket = ({
     );
 
   const price = useMemo(() => {
-    return normalizedOrder && getDerivedPrice(normalizedOrder, marketData);
-  }, [normalizedOrder, marketData]);
+    return (
+      normalizedOrder &&
+      marketPrice &&
+      getDerivedPrice(normalizedOrder, marketPrice)
+    );
+  }, [normalizedOrder, marketPrice]);
 
-  const notionalSize = useMemo(() => {
-    if (price && normalizedOrder?.size) {
-      return removeDecimal(
-        toBigNum(
-          normalizedOrder.size,
-          market.positionDecimalPlaces
-        ).multipliedBy(toBigNum(price, market.decimalPlaces)),
-        market.decimalPlaces
-      );
-    }
-    return null;
-  }, [
+  const notionalSize = useNotionalSize(
     price,
     normalizedOrder?.size,
     market.decimalPlaces,
-    market.positionDecimalPlaces,
-  ]);
-
-  const feeEstimate = useEstimateFees(
-    normalizedOrder && { ...normalizedOrder, price }
+    market.positionDecimalPlaces
   );
+
   const { data: activeOrders } = useDataProvider({
     dataProvider: activeOrdersProvider,
     variables: { partyId: pubKey || '', marketId: market.id },
@@ -197,7 +225,10 @@ export const DealTicket = ({
 
     const hasNoBalance =
       !BigInt(generalAccountBalance) && !BigInt(marginAccountBalance);
-    if (hasNoBalance) {
+    if (
+      hasNoBalance &&
+      !(loadingMarginAccountBalance || loadingGeneralAccountBalance)
+    ) {
       setError('summary', {
         message: SummaryValidationType.NoCollateral,
         type: SummaryValidationType.NoCollateral,
@@ -221,6 +252,8 @@ export const DealTicket = ({
     marketTradingMode,
     generalAccountBalance,
     marginAccountBalance,
+    loadingMarginAccountBalance,
+    loadingGeneralAccountBalance,
     pubKey,
     setError,
     clearErrors,
@@ -265,11 +298,13 @@ export const DealTicket = ({
   );
 
   // if an order doesn't exist one will be created by the store immediately
-  if (!order || !normalizedOrder) return null;
+  if (!order || !normalizedOrder) {
+    return null;
+  }
 
   return (
     <form
-      onSubmit={isReadOnly ? undefined : handleSubmit(onSubmit)}
+      onSubmit={isReadOnly ? noop : handleSubmit(onSubmit)}
       noValidate
       data-testid="deal-ticket-form"
     >
@@ -284,9 +319,29 @@ export const DealTicket = ({
         }}
         render={() => (
           <TypeSelector
-            value={order.type}
-            onSelect={(type) => {
-              if (type === OrderType.TYPE_NETWORK) return;
+            value={
+              order.type === OrderType.TYPE_LIMIT
+                ? DealTicketType.Limit
+                : DealTicketType.Market
+            }
+            onValueChange={(dealTicketType) => {
+              setDealTicketType(market.id, dealTicketType);
+              if (
+                dealTicketType !== DealTicketType.Limit &&
+                dealTicketType !== DealTicketType.Market
+              ) {
+                updateStopOrderFormValues(market.id, {
+                  type:
+                    dealTicketType === DealTicketType.StopLimit
+                      ? OrderType.TYPE_LIMIT
+                      : OrderType.TYPE_MARKET,
+                });
+                return;
+              }
+              const type =
+                dealTicketType === DealTicketType.Limit
+                  ? OrderType.TYPE_LIMIT
+                  : OrderType.TYPE_MARKET;
               update({
                 type,
                 // when changing type also update the TIF to what was last used of new type
@@ -333,7 +388,7 @@ export const DealTicket = ({
         render={() => (
           <SideSelector
             value={order.side}
-            onSelect={(side) => {
+            onValueChange={(side) => {
               update({ side });
             }}
           />
@@ -344,6 +399,7 @@ export const DealTicket = ({
         orderType={order.type}
         market={market}
         marketData={marketData}
+        marketPrice={marketPrice || undefined}
         sizeError={errors.size?.message}
         priceError={errors.price?.message}
         update={update}
@@ -467,9 +523,7 @@ export const DealTicket = ({
                         ? t(
                             '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
                           )
-                        : t(
-                            '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.'
-                          )}
+                        : t(REDUCE_ONLY_TOOLTIP)}
                     </span>
                   }
                 >
@@ -541,9 +595,15 @@ export const DealTicket = ({
       />
       <DealTicketButton side={order.side} />
       <DealTicketFeeDetails
-        onMarketClick={onMarketClick}
-        feeEstimate={feeEstimate}
+        order={
+          normalizedOrder && { ...normalizedOrder, price: price || undefined }
+        }
         notionalSize={notionalSize}
+        assetSymbol={assetSymbol}
+        market={market}
+      />
+      <DealTicketMarginDetails
+        onMarketClick={onMarketClick}
         assetSymbol={assetSymbol}
         marginAccountBalance={marginAccountBalance}
         generalAccountBalance={generalAccountBalance}
@@ -569,6 +629,24 @@ interface SummaryMessageProps {
   onClickCollateral?: () => void;
   onDeposit: (assetId: string) => void;
 }
+
+export const NoWalletWarning = ({
+  isReadOnly,
+}: Pick<SummaryMessageProps, 'isReadOnly'>) => {
+  if (isReadOnly) {
+    return (
+      <div className="mb-2">
+        <InputError testId="deal-ticket-error-message-summary">
+          {
+            'You need to connect your own wallet to start trading on this market'
+          }
+        </InputError>
+      </div>
+    );
+  }
+  return null;
+};
+
 const SummaryMessage = memo(
   ({
     errorMessage,
@@ -583,46 +661,10 @@ const SummaryMessage = memo(
   }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
     // render a deposit dialog
-    const assetSymbol = asset.symbol;
-    const openVegaWalletDialog = useVegaWalletDialogStore(
-      (store) => store.openVegaWalletDialog
-    );
-    if (isReadOnly) {
-      return (
-        <div className="mb-2">
-          <InputError testId="deal-ticket-error-message-summary">
-            {
-              'You need to connect your own wallet to start trading on this market'
-            }
-          </InputError>
-        </div>
-      );
+    if (isReadOnly || !pubKey) {
+      return <NoWalletWarning isReadOnly={isReadOnly} />;
     }
-    if (!pubKey) {
-      return (
-        <div className="mb-2">
-          <Notification
-            testId={'deal-ticket-connect-wallet'}
-            intent={Intent.Warning}
-            message={
-              <p className="text-sm pb-2">
-                You need a{' '}
-                <ExternalLink href="https://vega.xyz/wallet">
-                  Vega wallet
-                </ExternalLink>{' '}
-                with {assetSymbol} to start trading in this market.
-              </p>
-            }
-            buttonProps={{
-              text: t('Connect wallet'),
-              action: openVegaWalletDialog,
-              dataTestId: 'order-connect-wallet',
-              size: 'small',
-            }}
-          />
-        </div>
-      );
-    }
+
     if (errorMessage === SummaryValidationType.NoCollateral) {
       return (
         <div className="mb-2">

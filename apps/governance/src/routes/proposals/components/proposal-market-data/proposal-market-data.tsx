@@ -274,7 +274,7 @@ export const ProposalMarketData = ({
         title={marketData.tradableInstrument.instrument.code}
         open={isOpen}
         onChange={(isOpen) => (isOpen ? open() : close())}
-        size="medium"
+        size="large"
         dataTestId="market-json-dialog"
       >
         <CopyWithTooltip text={JSON.stringify(marketData)}>

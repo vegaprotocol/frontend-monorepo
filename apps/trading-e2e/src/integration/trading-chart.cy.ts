@@ -77,6 +77,7 @@ function getButtonSelectorByText(text: string): string {
 beforeEach(() => {
   cy.mockTradingPage();
   cy.mockSubscription();
+  cy.setOnBoardingViewed();
   cy.visit('/#/markets/market-0');
   cy.wait('@Markets');
 });
@@ -154,7 +155,10 @@ describe(
         { name: 'Volume', infoText: 'Volume: 55,000' },
       ];
       cy.get(indicatorInfo).eq(1).realHover();
-      cy.get('.close-button-module_closeButton__2ifkl').click({ force: true });
+      cy.get('.chart__wrapper [data-testid="split-view-view"]')
+        .last()
+        .find('[role="button"][title="Close"]')
+        .click({ force: true });
       cy.get(indicatorInfo).should('have.length', 1);
 
       checkMenuItemCheckbox('Studies', studyInfo);
@@ -171,6 +175,7 @@ describe(
         .invoke('text')
         .then((text) => {
           const actualDate = text.slice(0, -67);
+          // eslint-disable-next-line no-console
           console.log(actualDate);
           const actualOhlc = text.slice(-67);
           assert.isTrue(expectedDateRegex.test(actualDate));

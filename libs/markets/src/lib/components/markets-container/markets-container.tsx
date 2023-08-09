@@ -1,6 +1,5 @@
 import type { MouseEvent } from 'react';
-import React, { useEffect, useRef } from 'react';
-import type { AgGridReact } from 'ag-grid-react';
+import React, { useEffect } from 'react';
 import type { CellClickedEvent } from 'ag-grid-community';
 import { t } from '@vegaprotocol/i18n';
 import { MarketListTable } from './market-list-table';
@@ -18,8 +17,6 @@ export const MarketsContainer = ({
   onSelect,
   SuccessorMarketRenderer,
 }: MarketsContainerProps) => {
-  const gridRef = useRef<AgGridReact | null>(null);
-
   const { data, error, reload } = useDataProvider({
     dataProvider,
     variables: undefined,
@@ -37,7 +34,6 @@ export const MarketsContainer = ({
   return (
     <div className="h-full relative">
       <MarketListTable
-        ref={gridRef}
         rowData={data}
         onCellClicked={(cellEvent: CellClickedEvent) => {
           const { data, column, event } = cellEvent;
@@ -50,6 +46,7 @@ export const MarketsContainer = ({
               'tradableInstrument.instrument.code',
               'tradableInstrument.instrument.product.settlementAsset',
               'tradableInstrument.instrument.product.settlementAsset.symbol',
+              'market-actions',
             ].includes(colId)
           ) {
             return;

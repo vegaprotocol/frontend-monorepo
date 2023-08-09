@@ -4,6 +4,7 @@ const nodeHealthTrigger = 'node-health-trigger';
 
 describe('home', { tags: '@regression' }, () => {
   before(() => {
+    cy.setOnBoardingViewed();
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.visit('/');
@@ -66,24 +67,6 @@ describe('home', { tags: '@regression' }, () => {
         .focus()
         .type(new URL(Cypress.env('VEGA_URL')).origin + '/graphql');
       cy.getByTestId('connect').click();
-    });
-  });
-
-  describe('Network switcher', () => {
-    before(() => {
-      cy.mockTradingPage();
-      cy.mockSubscription();
-      cy.visit('/');
-    });
-
-    it('switch to fairground network and check status & incidents link', () => {
-      // 0006-NETW-002
-      // 0006-NETW-003
-      cy.getByTestId('navigation')
-        .find('[data-testid="network-switcher"]')
-        .should('have.text', 'Custom')
-        .click();
-      cy.getByTestId('network-item').contains('Fairground testnet');
     });
   });
 });

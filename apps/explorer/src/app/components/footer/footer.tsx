@@ -23,7 +23,7 @@ export const Footer = () => {
   );
 
   return (
-    <footer className="grid grid-rows-2 lg:grid-cols-[1fr_auto] text-xs md:text-md lg:flex md:col-span-2 px-4 py-2 gap-4 border-t border-vega-light-200 dark:border-vega-dark-200">
+    <footer className="grid grid-cols-[1fr_auto] items-center text-xs md:text-md lg:flex md:col-span-2 px-4 pt-2 pb-3 gap-4 border-t border-vega-light-200 dark:border-vega-dark-200">
       <div className="flex justify-between gap-2 align-middle">
         {GIT_COMMIT_HASH && (
           <div className="content-center flex border-r border-neutral-700 dark:border-neutral-300 pr-4">
@@ -43,9 +43,12 @@ export const Footer = () => {
           </div>
         )}
 
-        <div className="content-center flex pl-2 md:border-r border-neutral-700 dark:border-neutral-300 pr-4">
-          {VEGA_URL && <NodeUrl url={VEGA_URL} />}
-          <Link className="ml-2" onClick={() => setNodeSwitcherOpen(true)}>
+        <div className="content-center flex pr-4 md:border-r border-neutral-700 dark:border-neutral-300">
+          <span className="pr-2">{VEGA_URL && <NodeUrl url={VEGA_URL} />}</span>
+          <Link
+            className="ml-2 underline-offset-4"
+            onClick={() => setNodeSwitcherOpen(true)}
+          >
             {t('Change')}
           </Link>
         </div>
@@ -59,7 +62,10 @@ export const Footer = () => {
         ) : null}
       </div>
       <div className="pl-2 align-center lg:align-right lg:flex lg:justify-end gap-2 align-middle lg:max-w-xs lg:ml-auto">
-        <RouteLink to={`/${Routes.DISCLAIMER}`} className="underline">
+        <RouteLink
+          to={`/${Routes.DISCLAIMER}`}
+          className="underline underline-offset-4"
+        >
           Disclaimer
         </RouteLink>
       </div>

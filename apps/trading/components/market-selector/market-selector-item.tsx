@@ -17,10 +17,12 @@ export const MarketSelectorItem = ({
   market,
   style,
   currentMarketId,
+  onSelect,
 }: {
   market: MarketMaybeWithDataAndCandles;
   style: CSSProperties;
   currentMarketId?: string;
+  onSelect: (marketId: string) => void;
 }) => {
   return (
     <div style={style} role="row">
@@ -32,6 +34,7 @@ export const MarketSelectorItem = ({
           'bg-vega-clight-600 dark:bg-vega-cdark-600':
             market.id === currentMarketId,
         })}
+        onClick={() => onSelect(market.id)}
       >
         <MarketData market={market} />
       </Link>
@@ -80,7 +83,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
   return (
     <>
       <div className="w-2/5" role="gridcell">
-        <h3 className="text-ellipsis whitespace-nowrap overflow-hidden">
+        <h3 className="text-ellipsis text-sm lg:text-base whitespace-nowrap overflow-hidden">
           {market.tradableInstrument.instrument.code}
         </h3>
         {mode && (
@@ -90,7 +93,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
         )}
       </div>
       <div
-        className="w-1/5 text-sm whitespace-nowrap text-ellipsis overflow-hidden"
+        className="w-1/5 text-xs lg:text-sm whitespace-nowrap text-ellipsis overflow-hidden"
         title={instrument.product.settlementAsset.symbol}
         data-testid="market-selector-price"
         role="gridcell"
@@ -98,7 +101,7 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
         {price} {instrument.product.settlementAsset.symbol}
       </div>
       <div
-        className="w-1/5 text-sm text-right whitespace-nowrap text-ellipsis overflow-hidden"
+        className="w-1/5 text-xs lg:text-sm text-right whitespace-nowrap text-ellipsis overflow-hidden"
         title={t('24h vol')}
         data-testid="market-selector-volume"
         role="gridcell"

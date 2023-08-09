@@ -6,7 +6,14 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
-import { ButtonLink } from '@vegaprotocol/ui-toolkit';
+import {
+  ActionsDropdown,
+  ButtonLink,
+  TradingDropdownCopyItem,
+  DropdownMenuItem,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import type { ForwardedRef } from 'react';
 import { memo, forwardRef, useMemo } from 'react';
 import {
@@ -27,7 +34,6 @@ import type {
 } from '@vegaprotocol/datagrid';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
-import { OrderActionsDropdown } from '../order-actions-dropdown';
 import { Filter } from '../order-list-manager';
 import type { ColDef } from 'ag-grid-community';
 
@@ -35,6 +41,7 @@ export type OrderListTableProps = TypedDataAgGrid<Order> & {
   marketId?: string;
   onCancel: (order: Order) => void;
   onEdit: (order: Order) => void;
+  onView: (order: Order) => void;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   filter?: Filter;
@@ -46,7 +53,15 @@ export const OrderListTable = memo<
 >(
   forwardRef<AgGridReact, OrderListTableProps>(
     (
-      { onCancel, onEdit, onMarketClick, onOrderTypeClick, filter, ...props },
+      {
+        onCancel,
+        onEdit,
+        onView,
+        onMarketClick,
+        onOrderTypeClick,
+        filter,
+        ...props
+      },
       ref
     ) => {
       const showAllActions = props.isReadOnly
@@ -69,11 +84,15 @@ export const OrderListTable = memo<
             cellClass: 'font-mono text-right',
             type: 'rightAligned',
             valueGetter: ({ data }: VegaValueGetterParams<Order>) => {
+              if (data?.icebergOrder) {
+                return data?.size && data.market
+                  ? BigInt(data.size) -
+                      BigInt(data.remaining) -
+                      BigInt(data.icebergOrder.reservedRemaining)
+                  : undefined;
+              }
               return data?.size && data.market
-                ? toBigNum(
-                    (BigInt(data.size) - BigInt(data.remaining)).toString(),
-                    data.market.positionDecimalPlaces ?? 0
-                  ).toNumber()
+                ? BigInt(data.size) - BigInt(data.remaining)
                 : undefined;
             },
             valueFormatter: ({
@@ -87,8 +106,8 @@ export const OrderListTable = memo<
                 return '-';
               }
               return addDecimalsFormatNumber(
-                (BigInt(data.size) - BigInt(data.remaining)).toString(),
-                data.market.positionDecimalPlaces
+                value,
+                data.market.positionDecimalPlaces ?? 0
               );
             },
             minWidth: 50,
@@ -283,7 +302,20 @@ export const OrderListTable = memo<
                       </ButtonLink>
                     </>
                   )}
-                  <OrderActionsDropdown id={data?.id} />
+                  <ActionsDropdown data-testid="market-actions-content">
+                    <TradingDropdownCopyItem
+                      value={data.id}
+                      text={t('Copy order ID')}
+                    />
+                    <DropdownMenuItem
+                      key={'view-order'}
+                      data-testid="view-order"
+                      onClick={() => onView(data)}
+                    >
+                      <VegaIcon name={VegaIconNames.INFO} size={16} />
+                      {t('View order details')}
+                    </DropdownMenuItem>
+                  </ActionsDropdown>
                 </div>
               );
             },
@@ -293,6 +325,7 @@ export const OrderListTable = memo<
           filter,
           onCancel,
           onEdit,
+          onView,
           onMarketClick,
           onOrderTypeClick,
           props.isReadOnly,

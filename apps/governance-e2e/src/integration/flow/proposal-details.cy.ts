@@ -218,17 +218,33 @@ describe(
       getProposalInformationFromTable('Tokens for proposal')
         .should('have.text', (1).toFixed(2))
         .and('be.visible');
+      navigateTo(navigation.proposals);
+      cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
+        getProposalFromTitle(rawProposal.rationale.title).within(() => {
+          // 3002-PROP-021
+          cy.getByTestId('user-voted-yes').should('exist');
+          cy.getByTestId(viewProposalButton).click();
+        });
+      });
       cy.getByTestId(changeVoteButton).should('be.visible').click();
       voteForProposal('against');
       cy.getByTestId(proposalVoteProgressAgainstPercentage)
         .contains('100.00%')
         .and('be.visible');
+      cy.getByTestId(voteBreakdownToggle).click();
       getProposalInformationFromTable('Tokens against proposal')
         .should('have.text', (1).toFixed(2))
         .and('be.visible');
       getProposalInformationFromTable('Number of voting parties')
         .should('have.text', '1')
         .and('be.visible');
+      navigateTo(navigation.proposals);
+      cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
+        getProposalFromTitle(rawProposal.rationale.title).within(() => {
+          cy.getByTestId('user-voted-no').should('exist');
+          cy.getByTestId(viewProposalButton).click();
+        });
+      });
     });
 
     // 3001-VOTE-042, 3001-VOTE-057, 3001-VOTE-058, 3001-VOTE-059, 3001-VOTE-060

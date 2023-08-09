@@ -30,4 +30,43 @@ describe('Tabs', () => {
     await userEvent.click(screen.getByText('Tab two'));
     expect(await screen.getByText('Tab two content')).toBeInTheDocument();
   });
+
+  it('shows the menu component for the selected tab', async () => {
+    render(
+      <Tabs>
+        <Tab
+          id="one"
+          name="Tab one"
+          menu={
+            <>
+              <button>Tab 1 button 1</button>
+              <button>Tab 1 button 2</button>
+            </>
+          }
+        >
+          <p>Tab one content</p>
+        </Tab>
+        <Tab
+          id="two"
+          name="Tab two"
+          menu={
+            <>
+              <button>Tab 2 button 1</button>
+              <button>Tab 2 button 2</button>
+            </>
+          }
+        >
+          <p>Tab two content</p>
+        </Tab>
+      </Tabs>
+    );
+
+    expect(screen.getByText('Tab one content')).toBeInTheDocument();
+    expect(screen.getByText('Tab 1 button 1')).toBeInTheDocument();
+    expect(screen.getByText('Tab 1 button 2')).toBeInTheDocument();
+    await userEvent.click(screen.getByText('Tab two'));
+    expect(await screen.getByText('Tab two content')).toBeInTheDocument();
+    expect(screen.getByText('Tab 2 button 1')).toBeInTheDocument();
+    expect(screen.getByText('Tab 2 button 2')).toBeInTheDocument();
+  });
 });

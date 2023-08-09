@@ -7,7 +7,7 @@ const closePosition = 'close-position';
 const dialogCloseX = 'dialog-close';
 const dialogContent = 'dialog-content';
 const dropDownMenu = 'dropdown-menu';
-const marketActionsContent = 'market-actions-content';
+const marketActionsContent = 'position-actions-content';
 const positions = 'Positions';
 const tabPositions = 'tab-positions';
 const toastContent = 'toast-content';
@@ -251,11 +251,13 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
   it('I can see warnings', () => {
     visitAndClickPositions();
 
-    cy.get('[col-id="openVolume"]').within(() => {
-      cy.get('[aria-label="warning-sign icon"]')
-        .should('be.visible')
-        .realHover();
-    });
+    cy.get('[col-id="openVolume"]')
+      .eq(3)
+      .within(() => {
+        cy.get('[aria-label="warning-sign icon"]')
+          .should('be.visible')
+          .realHover();
+      });
     // 7004-POSI-011
     cy.getByTestId(tooltipContent).should('be.visible');
   });
@@ -289,9 +291,11 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
 
   it('View settlement asset', () => {
     visitAndClickPositions();
-    cy.get('[col-id="asset"]').within(() => {
-      cy.get('button[type="button"]').first().click();
-    });
+    cy.get('[col-id="asset"]')
+      .eq(3)
+      .within(() => {
+        cy.get('button[type="button"]').click();
+      });
     // 7004-POSI-008
     cy.getByTestId(dialogContent).should('be.visible');
     cy.getByTestId(dialogCloseX).click();

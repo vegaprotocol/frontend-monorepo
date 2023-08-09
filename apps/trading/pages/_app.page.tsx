@@ -16,6 +16,7 @@ import {
 } from '@vegaprotocol/web3';
 import {
   envTriggerMapping,
+  Networks,
   NodeSwitcherDialog,
   useEnvironment,
   useInitializeEnv,
@@ -25,7 +26,13 @@ import './styles.css';
 import { usePageTitleStore } from '../stores';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
-import { HashRouter, useLocation, useSearchParams } from 'react-router-dom';
+import {
+  HashRouter,
+  useLocation,
+  Route,
+  Routes,
+  useSearchParams,
+} from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
 import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -39,6 +46,8 @@ import {
   ProtocolUpgradeProposalNotification,
 } from '@vegaprotocol/proposals';
 import { ViewingBanner } from '../components/viewing-banner';
+import { NavHeader } from '../components/navbar/nav-header';
+import { Routes as AppRoutes } from './client-router';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -74,6 +83,7 @@ const InitializeHandlers = () => {
 
 function AppBody({ Component }: AppProps) {
   const location = useLocation();
+  const { VEGA_ENV } = useEnvironment();
   const gridClasses = classNames(
     'h-full relative z-0 grid',
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
@@ -87,7 +97,16 @@ function AppBody({ Component }: AppProps) {
       <Title />
       <div className={gridClasses}>
         <AnnouncementBanner />
-        <Navbar theme="system" />
+        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'}>
+          <Routes>
+            <Route
+              path={AppRoutes.MARKETS}
+              // render nothing for markets/all, otherwise markets/:marketId will match with markets/all
+              element={null}
+            />
+            <Route path={AppRoutes.MARKET} element={<NavHeader />} />
+          </Routes>
+        </Navbar>
         <div data-testid="banners">
           <ProtocolUpgradeProposalNotification
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}

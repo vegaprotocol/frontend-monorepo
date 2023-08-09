@@ -4,10 +4,12 @@ import { useParams } from 'react-router-dom';
 import { MarketSelector } from '../../components/market-selector/market-selector';
 import { MarketHeaderStats } from '../../client-pages/market/market-header-stats';
 import { useMarket } from '@vegaprotocol/markets';
+import { useState } from 'react';
 
 export const MarketHeader = () => {
   const { marketId } = useParams();
   const { data } = useMarket(marketId);
+  const [open, setOpen] = useState(false);
 
   if (!data) return null;
 
@@ -15,6 +17,8 @@ export const MarketHeader = () => {
     <Header
       title={
         <Popover
+          open={open}
+          onChange={setOpen}
           trigger={
             <HeaderTitle>
               {data.tradableInstrument.instrument.code}
@@ -23,7 +27,10 @@ export const MarketHeader = () => {
           }
           alignOffset={-10}
         >
-          <MarketSelector currentMarketId={marketId} />
+          <MarketSelector
+            currentMarketId={marketId}
+            onSelect={() => setOpen(false)}
+          />
         </Popover>
       }
     >

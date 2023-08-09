@@ -1,9 +1,7 @@
 import React from 'react';
-import { useRef } from 'react';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
-import type { AgGridReact } from 'ag-grid-react';
 import { useColumnDefs } from './use-column-defs';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { useProposalsListQuery } from '../../lib/proposals-data-provider/__generated__/Proposals';
@@ -25,7 +23,6 @@ interface ProposalListProps {
 export const ProposalsList = ({
   SuccessorMarketRenderer,
 }: ProposalListProps) => {
-  const gridRef = useRef<AgGridReact | null>(null);
   const { data } = useProposalsListQuery({
     variables: {
       proposalType: Types.ProposalType.TYPE_NEW_MARKET,
@@ -40,7 +37,6 @@ export const ProposalsList = ({
   return (
     <div className="relative h-full">
       <AgGrid
-        ref={gridRef}
         className="w-full h-full"
         columnDefs={columnDefs}
         rowData={filteredData}

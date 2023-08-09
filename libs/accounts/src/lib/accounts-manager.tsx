@@ -75,7 +75,7 @@ export const AccountBreakdownDialog = memo(
   }) => {
     return (
       <Dialog
-        size="medium"
+        size="large"
         open={Boolean(assetId)}
         onChange={(isOpen) => {
           if (!isOpen) {
@@ -118,7 +118,6 @@ export const AccountManager = ({
   onMarketClick,
   gridProps,
 }: AccountManagerProps) => {
-  const gridRef = useRef<AgGridReact | null>(null);
   const [breakdownAssetId, setBreakdownAssetId] = useState<string>();
   const { data, error } = useDataProvider({
     dataProvider: aggregatedAccountsDataProvider,
@@ -138,7 +137,6 @@ export const AccountManager = ({
   return (
     <div className="relative h-full">
       <AccountTable
-        ref={gridRef}
         rowData={data}
         onClickAsset={onClickAsset}
         onClickDeposit={onClickDeposit}

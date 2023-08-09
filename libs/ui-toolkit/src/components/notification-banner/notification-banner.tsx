@@ -21,7 +21,7 @@ export const NotificationBanner = ({
   return (
     <div
       className={classNames(
-        'flex items-center p-3 border-b min-h-[56px]',
+        'flex items-center px-1 py-3 border-b min-h-[56px]',
         'text-[12px] leading-[16px] font-normal',
         {
           'bg-vega-light-100 dark:bg-vega-dark-100 ': intent === Intent.None,

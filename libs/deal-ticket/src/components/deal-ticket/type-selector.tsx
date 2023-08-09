@@ -1,32 +1,128 @@
 import {
-  FormGroup,
   InputError,
   SimpleGrid,
   Tooltip,
+  TradingDropdown,
+  TradingDropdownContent,
+  TradingDropdownItemIndicator,
+  TradingDropdownPortal,
+  TradingDropdownRadioGroup,
+  TradingDropdownRadioItem,
+  TradingDropdownTrigger,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
-import * as Schema from '@vegaprotocol/types';
-import { Toggle } from '@vegaprotocol/ui-toolkit';
-import type { Market, MarketData } from '@vegaprotocol/markets';
+import type { Market, StaticMarketData } from '@vegaprotocol/markets';
 import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
+import { DealTicketType } from '../../hooks/use-type-store';
+import * as RadioGroup from '@radix-ui/react-radio-group';
+import classNames from 'classnames';
+import { FLAGS } from '@vegaprotocol/environment';
 
 interface TypeSelectorProps {
-  value: Schema.OrderType;
-  onSelect: (type: Schema.OrderType) => void;
+  value: DealTicketType;
+  onValueChange: (type: DealTicketType) => void;
   market: Market;
-  marketData: MarketData;
+  marketData: StaticMarketData;
   errorMessage?: string;
 }
 
 const toggles = [
-  { label: t('Limit'), value: Schema.OrderType.TYPE_LIMIT },
-  { label: t('Market'), value: Schema.OrderType.TYPE_MARKET },
+  { label: t('Limit'), value: DealTicketType.Limit },
+  { label: t('Market'), value: DealTicketType.Market },
 ];
+const options = [
+  { label: t('Stop Limit'), value: DealTicketType.StopLimit },
+  { label: t('Stop Market'), value: DealTicketType.StopMarket },
+];
+
+export const TypeToggle = ({
+  value,
+  onValueChange,
+}: Pick<TypeSelectorProps, 'onValueChange' | 'value'>) => {
+  const selectedOption = options.find((t) => t.value === value);
+  return (
+    <RadioGroup.Root
+      name="order-type"
+      className={classNames('mb-2 grid h-8 leading-8 font-alpha text-xs', {
+        'grid-cols-3': FLAGS.STOP_ORDERS,
+        'grid-cols-2': !FLAGS.STOP_ORDERS,
+      })}
+      value={value}
+      onValueChange={onValueChange}
+    >
+      {toggles.map(({ label, value: itemValue }) => (
+        <RadioGroup.Item
+          value={itemValue}
+          key={itemValue}
+          id={`order-type-${itemValue}`}
+          data-testid={`order-type-${itemValue}`}
+          asChild
+        >
+          <button
+            className={classNames('rounded', {
+              'bg-vega-clight-500 dark:bg-vega-cdark-500': value === itemValue,
+            })}
+          >
+            {label}
+          </button>
+        </RadioGroup.Item>
+      ))}
+      {FLAGS.STOP_ORDERS && (
+        <TradingDropdown
+          trigger={
+            <TradingDropdownTrigger
+              data-testid="order-type-Stop"
+              className={classNames(
+                'rounded px-3 flex flex-nowrap items-center justify-center',
+                {
+                  'bg-vega-clight-500 dark:bg-vega-cdark-500': selectedOption,
+                }
+              )}
+            >
+              <button className="flex gap-1">
+                <span className="text-ellipsis whitespace-nowrap shrink overflow-hidden">
+                  {t(selectedOption ? selectedOption.label : 'Stop')}
+                </span>
+                <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
+              </button>
+            </TradingDropdownTrigger>
+          }
+        >
+          <TradingDropdownPortal>
+            <TradingDropdownContent>
+              <TradingDropdownRadioGroup
+                onValueChange={(value) =>
+                  onValueChange(value as DealTicketType)
+                }
+                value={value}
+              >
+                {options.map(({ label, value: itemValue }) => (
+                  <TradingDropdownRadioItem
+                    key={itemValue}
+                    value={itemValue}
+                    textValue={itemValue}
+                    id={`order-type-${itemValue}`}
+                    data-testid={`order-type-${itemValue}`}
+                  >
+                    {t(label)}
+                    <TradingDropdownItemIndicator />
+                  </TradingDropdownRadioItem>
+                ))}
+              </TradingDropdownRadioGroup>
+            </TradingDropdownContent>
+          </TradingDropdownPortal>
+        </TradingDropdown>
+      )}
+    </RadioGroup.Root>
+  );
+};
 
 export const TypeSelector = ({
   value,
-  onSelect,
+  onValueChange,
   market,
   marketData,
   errorMessage,
@@ -74,19 +170,18 @@ export const TypeSelector = ({
   };
 
   return (
-    <FormGroup label={t('Order type')} labelFor="order-type" compact={true}>
-      <Toggle
-        id="order-type"
-        name="order-type"
-        toggles={toggles}
-        checkedValue={value}
-        onChange={(e) => onSelect(e.target.value as Schema.OrderType)}
+    <>
+      <TypeToggle
+        onValueChange={(value) => {
+          onValueChange(value as DealTicketType);
+        }}
+        value={value}
       />
       {errorMessage && (
         <InputError testId="deal-ticket-error-message-type">
           {renderError(errorMessage as MarketModeValidationType)}
         </InputError>
       )}
-    </FormGroup>
+    </>
   );
 };

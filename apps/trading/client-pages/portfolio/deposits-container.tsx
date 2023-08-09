@@ -1,15 +1,12 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { DepositsTable } from '@vegaprotocol/deposits';
 import { depositsProvider } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useRef } from 'react';
-import type { AgGridReact } from 'ag-grid-react';
 import { useSidebar, ViewType } from '../../components/sidebar';
 
 export const DepositsContainer = () => {
-  const gridRef = useRef<AgGridReact | null>(null);
   const { pubKey, isReadOnly } = useVegaWallet();
   const { data, error } = useDataProvider({
     dataProvider: depositsProvider,
@@ -17,11 +14,13 @@ export const DepositsContainer = () => {
     skip: !pubKey,
   });
   const setView = useSidebar((store) => store.setView);
+  if (!pubKey) {
+    return <Splash>{t('Please connect Vega wallet')}</Splash>;
+  }
   return (
     <div className="h-full">
       <DepositsTable
         rowData={data}
-        ref={gridRef}
         overlayNoRowsTemplate={error ? error.message : t('No deposits')}
       />
       {!isReadOnly && (

@@ -1,4 +1,4 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import {
   withdrawalProvider,
   WithdrawalsTable,
@@ -7,7 +7,6 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { ViewType, useSidebar } from '../../components/sidebar';
 
 export const WithdrawalsContainer = () => {
@@ -19,9 +18,11 @@ export const WithdrawalsContainer = () => {
   });
   const setView = useSidebar((store) => store.setView);
   const { ready, delayed } = useIncompleteWithdrawals();
-
+  if (!pubKey) {
+    return <Splash>{t('Please connect Vega wallet')}</Splash>;
+  }
   return (
-    <VegaWalletContainer>
+    <>
       <div className="h-full relative">
         <WithdrawalsTable
           data-testid="withdrawals-history"
@@ -43,6 +44,6 @@ export const WithdrawalsContainer = () => {
           </Button>
         </div>
       )}
-    </VegaWalletContainer>
+    </>
   );
 };

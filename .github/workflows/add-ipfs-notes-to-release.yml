@@ -7,7 +7,7 @@ on:
 jobs:
   after-release:
     runs-on: ubuntu-22.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -30,18 +30,20 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Wait for publish to complete
+        uses: lewagon/wait-on-check-action@v1.3.1
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          check-name: '(CD) publish dist / trading'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+
       - name: resolve ipfs hashes for release
         run: |
           echo "Name: ${{ github.event.release.name }}"
           echo "Description: ${{ github.event.release.body }}"
           echo "Tag: ${{ github.event.release.tag_name }}"
-          commit="$(git rev-list -n 1 ${{ github.event.release.tag_name }})"
-          echo "Commit: $commit"
-          until docker pull vegaprotocol/trading:$commit; do
-            echo "Image not pushed yet, waiting 60 seconds"
-            sleep 60
-          done
-          docker run --rm vegaprotocol/trading:$commit cat /ipfs-hash > ipfs-hash
+          docker run --rm vegaprotocol/trading:mainnet cat /ipfs-hash > ipfs-hash
           curl -L https://dist.ipfs.tech/kubo/v0.20.0/kubo_v0.20.0_linux-amd64.tar.gz -o kubo.tgz
           tar -xzf kubo.tgz
           export PATH="$PATH:$PWD/kubo"

@@ -6,7 +6,7 @@ import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
-import type { OrderListTableProps } from '../';
+import type { OrderFieldsFragment, OrderListTableProps } from '../';
 import { OrderListTable } from '../';
 import {
   generateOrder,
@@ -27,6 +27,7 @@ const defaultProps: OrderListTableProps = {
   rowData: [],
   onEdit: jest.fn(),
   onCancel: jest.fn(),
+  onView: jest.fn(),
   isReadOnly: false,
 };
 
@@ -104,6 +105,41 @@ describe('OrderListTable', () => {
       }: ${getDateTimeFormat().format(new Date(limitOrder.expiresAt ?? ''))}`,
       getDateTimeFormat().format(new Date(limitOrder.createdAt)),
       'Edit',
+    ];
+    expectedValues.forEach((expectedValue, i) =>
+      expect(cells[i]).toHaveTextContent(expectedValue)
+    );
+  });
+
+  it('should apply correct formatting applied for an iceberg order', async () => {
+    const icebergOrder = {
+      ...limitOrder,
+      size: '100',
+      remaining: '50',
+      icebergOrder: {
+        __typename: 'IcebergOrder',
+        minimumVisibleSize: '1',
+        peakSize: '50',
+        reservedRemaining: '50',
+      } as OrderFieldsFragment['icebergOrder'],
+    };
+    await act(async () => {
+      render(generateJsx({ rowData: [icebergOrder] }));
+    });
+    const cells = screen.getAllByRole('gridcell');
+    const expectedValues: string[] = [
+      icebergOrder.market?.tradableInstrument.instrument.code || '',
+      '0.00',
+      '+1.00',
+      Schema.OrderTypeMapping[
+        icebergOrder.type || Schema.OrderType.TYPE_LIMIT
+      ] + ' (Iceberg)',
+      Schema.OrderStatusMapping[icebergOrder.status],
+      '-',
+      `${
+        Schema.OrderTimeInForceCode[icebergOrder.timeInForce]
+      }: ${getDateTimeFormat().format(new Date(icebergOrder.expiresAt ?? ''))}`,
+      getDateTimeFormat().format(new Date(icebergOrder.createdAt)),
     ];
     expectedValues.forEach((expectedValue, i) =>
       expect(cells[i]).toHaveTextContent(expectedValue)

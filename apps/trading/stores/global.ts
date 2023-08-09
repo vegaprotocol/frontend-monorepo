@@ -5,7 +5,6 @@ import produce from 'immer';
 interface GlobalStore {
   marketId: string | null;
   update: (store: Partial<Omit<GlobalStore, 'update'>>) => void;
-  shouldDisplayWelcomeDialog: boolean;
 }
 
 interface PageTitleStore {
@@ -15,7 +14,6 @@ interface PageTitleStore {
 
 export const useGlobalStore = create<GlobalStore>()((set) => ({
   marketId: LocalStorage.getItem('marketId') || null,
-  shouldDisplayWelcomeDialog: false,
   update: (newState) => {
     set(
       produce((state: GlobalStore) => {
