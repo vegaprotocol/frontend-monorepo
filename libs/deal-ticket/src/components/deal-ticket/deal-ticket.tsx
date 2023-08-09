@@ -1,7 +1,8 @@
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
-import { memo, useCallback, useEffect, useState, useRef, useMemo } from 'react';
-import { Controller } from 'react-hook-form';
+import type { FormEventHandler } from 'react';
+import { memo, useCallback, useEffect, useRef, useMemo } from 'react';
+import { Controller, useController, useForm } from 'react-hook-form';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
 import {
@@ -13,7 +14,8 @@ import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
-import { normalizeOrderSubmission, useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import { mapFormValuesToOrderSubmission } from '../../utils/map-form-values-to-submission';
 import {
   Checkbox,
   InputError,
@@ -51,14 +53,15 @@ import {
   useAccountBalance,
 } from '@vegaprotocol/accounts';
 
-import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
-import { useOrderForm } from '../../hooks/use-order-form';
+import { OrderType } from '@vegaprotocol/types';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   DealTicketType,
-  useDealTicketTypeStore,
-} from '../../hooks/use-type-store';
-import { useStopOrderFormValues } from '../../hooks/use-stop-order-form-values';
+  dealTicketTypeToOrderType,
+  isStopOrderType,
+} from '../../hooks/use-form-values';
+import type { OrderFormValues } from '../../hooks/use-form-values';
+import { useDealTicketFormValues } from '../../hooks/use-form-values';
 import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 import noop from 'lodash/noop';
 
@@ -75,23 +78,42 @@ export interface DealTicketProps {
   onDeposit: (assetId: string) => void;
 }
 
-export const useNotionalSize = (
+export const getNotionalSize = (
   price: string | null | undefined,
   size: string | undefined,
   decimalPlaces: number,
   positionDecimalPlaces: number
-) =>
-  useMemo(() => {
-    if (price && size) {
-      return removeDecimal(
-        toBigNum(size, positionDecimalPlaces).multipliedBy(
-          toBigNum(price, decimalPlaces)
-        ),
-        decimalPlaces
-      );
-    }
-    return null;
-  }, [price, size, decimalPlaces, positionDecimalPlaces]);
+) => {
+  if (price && size) {
+    return removeDecimal(
+      toBigNum(size, positionDecimalPlaces).multipliedBy(
+        toBigNum(price, decimalPlaces)
+      ),
+      decimalPlaces
+    );
+  }
+  return null;
+};
+
+export const stopSubmit: FormEventHandler = (e) => e.preventDefault();
+
+const getDefaultValues = (
+  type: Schema.OrderType,
+  storedValues?: Partial<OrderFormValues>
+): OrderFormValues => ({
+  type,
+  side: Schema.Side.SIDE_BUY,
+  timeInForce:
+    type === Schema.OrderType.TYPE_LIMIT
+      ? Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
+      : Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+  size: '0',
+  price: '0',
+  expiresAt: undefined,
+  postOnly: false,
+  reduceOnly: false,
+  ...storedValues,
+});
 
 export const DealTicket = ({
   market,
@@ -103,32 +125,29 @@ export const DealTicket = ({
   onDeposit,
 }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
-  const setDealTicketType = useDealTicketTypeStore((state) => state.set);
-  const updateStopOrderFormValues = useStopOrderFormValues(
-    (state) => state.update
+  const setType = useDealTicketFormValues((state) => state.setType);
+  const storedFormValues = useDealTicketFormValues(
+    (state) => state.formValues[market.id]
   );
-  // store last used tif for market so that when changing OrderType the previous TIF
-  // selection for that type is used when switching back
-
-  const [lastTIF, setLastTIF] = useState({
-    [OrderType.TYPE_MARKET]: OrderTimeInForce.TIME_IN_FORCE_IOC,
-    [OrderType.TYPE_LIMIT]: OrderTimeInForce.TIME_IN_FORCE_GTC,
-  });
+  const updateStoredFormValues = useDealTicketFormValues(
+    (state) => state.updateOrder
+  );
+  const dealTicketType = storedFormValues?.type ?? DealTicketType.Limit;
+  const type = dealTicketTypeToOrderType(dealTicketType);
 
   const {
     control,
-    errors,
-    order,
-    setError,
-    clearErrors,
-    update,
+    reset,
+    formState: { errors },
     handleSubmit,
-  } = useOrderForm(market.id);
-
+    setValue,
+    watch,
+  } = useForm<OrderFormValues>({
+    defaultValues: getDefaultValues(type, storedFormValues?.[dealTicketType]),
+  });
   const lastSubmitTime = useRef(0);
 
   const asset = market.tradableInstrument.instrument.product.settlementAsset;
-
   const {
     accountBalance: marginAccountBalance,
     loading: loadingMarginAccountBalance,
@@ -144,24 +163,54 @@ export const DealTicket = ({
   ).toString();
 
   const { marketState, marketTradingMode } = marketData;
+  const timeInForce = watch('timeInForce');
 
-  const normalizedOrder =
-    order &&
-    normalizeOrderSubmission(
-      order,
-      market.decimalPlaces,
-      market.positionDecimalPlaces
-    );
+  const side = watch('side');
+  const rawSize = watch('size');
+  const rawPrice = watch('price');
+  const iceberg = watch('iceberg');
+  const peakSize = watch('peakSize');
 
-  const price = useMemo(() => {
-    return (
-      normalizedOrder &&
-      marketPrice &&
-      getDerivedPrice(normalizedOrder, marketPrice)
-    );
-  }, [normalizedOrder, marketPrice]);
+  useEffect(() => {
+    const size = storedFormValues?.[dealTicketType]?.size;
+    if (size && rawSize !== size) {
+      setValue('size', size);
+    }
+  }, [storedFormValues, dealTicketType, rawSize, setValue]);
 
-  const notionalSize = useNotionalSize(
+  useEffect(() => {
+    const price = storedFormValues?.[dealTicketType]?.price;
+    if (price && rawPrice !== price) {
+      setValue('price', price);
+    }
+  }, [storedFormValues, dealTicketType, rawPrice, setValue]);
+
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      updateStoredFormValues(market.id, value);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, market.id, updateStoredFormValues]);
+
+  const normalizedOrder = mapFormValuesToOrderSubmission(
+    {
+      price: rawPrice || undefined,
+      side,
+      size: rawSize,
+      timeInForce,
+      type,
+    },
+    market.id,
+    market.decimalPlaces,
+    market.positionDecimalPlaces
+  );
+
+  const price =
+    normalizedOrder &&
+    marketPrice &&
+    getDerivedPrice(normalizedOrder, marketPrice);
+
+  const notionalSize = getNotionalSize(
     price,
     normalizedOrder?.size,
     market.decimalPlaces,
@@ -205,22 +254,20 @@ export const DealTicket = ({
   const assetSymbol =
     market.tradableInstrument.instrument.product.settlementAsset.symbol;
 
-  useEffect(() => {
+  const summaryError = useMemo(() => {
     if (!pubKey) {
-      setError('summary', {
+      return {
         message: t('No public key selected'),
         type: SummaryValidationType.NoPubKey,
-      });
-      return;
+      };
     }
 
     const marketStateError = validateMarketState(marketState);
     if (marketStateError !== true) {
-      setError('summary', {
+      return {
         message: marketStateError,
         type: SummaryValidationType.MarketState,
-      });
-      return;
+      };
     }
 
     const hasNoBalance =
@@ -229,24 +276,21 @@ export const DealTicket = ({
       hasNoBalance &&
       !(loadingMarginAccountBalance || loadingGeneralAccountBalance)
     ) {
-      setError('summary', {
+      return {
         message: SummaryValidationType.NoCollateral,
         type: SummaryValidationType.NoCollateral,
-      });
-      return;
+      };
     }
 
     const marketTradingModeError = validateMarketTradingMode(marketTradingMode);
     if (marketTradingModeError !== true) {
-      setError('summary', {
+      return {
         message: marketTradingModeError,
         type: SummaryValidationType.TradingMode,
-      });
-      return;
+      };
     }
 
-    // No error found above clear the error in case it was active on a previous render
-    clearErrors('summary');
+    return undefined;
   }, [
     marketState,
     marketTradingMode,
@@ -255,156 +299,83 @@ export const DealTicket = ({
     loadingMarginAccountBalance,
     loadingGeneralAccountBalance,
     pubKey,
-    setError,
-    clearErrors,
   ]);
 
-  const disablePostOnlyCheckbox = useMemo(() => {
-    const disabled = order
-      ? [
-          Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-          Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-        ].includes(order.timeInForce)
-      : true;
-    return disabled;
-  }, [order]);
+  const disablePostOnlyCheckbox = [
+    Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+    Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+  ].includes(timeInForce);
 
-  const disableReduceOnlyCheckbox = useMemo(() => {
-    const disabled = order
-      ? ![
-          Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-          Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-        ].includes(order.timeInForce)
-      : true;
-    return disabled;
-  }, [order]);
+  const disableReduceOnlyCheckbox = !disablePostOnlyCheckbox;
 
   const onSubmit = useCallback(
-    (order: OrderSubmission) => {
+    (formValues: OrderFormValues) => {
       const now = new Date().getTime();
       if (lastSubmitTime.current && now - lastSubmitTime.current < 1000) {
         return;
       }
       submit(
-        normalizeOrderSubmission(
-          order,
+        mapFormValuesToOrderSubmission(
+          formValues,
+          market.id,
           market.decimalPlaces,
           market.positionDecimalPlaces
         )
       );
       lastSubmitTime.current = now;
     },
-    [submit, market.decimalPlaces, market.positionDecimalPlaces]
+    [submit, market.decimalPlaces, market.positionDecimalPlaces, market.id]
   );
-
-  // if an order doesn't exist one will be created by the store immediately
-  if (!order || !normalizedOrder) {
-    return null;
-  }
+  useController({
+    name: 'type',
+    control,
+    rules: {
+      validate: validateType(marketData.marketTradingMode, marketData.trigger),
+    },
+  });
 
   return (
     <form
-      onSubmit={isReadOnly ? noop : handleSubmit(onSubmit)}
+      onSubmit={
+        isReadOnly || !pubKey
+          ? stopSubmit
+          : handleSubmit(summaryError ? noop : onSubmit)
+      }
       noValidate
       data-testid="deal-ticket-form"
     >
-      <Controller
-        name="type"
-        control={control}
-        rules={{
-          validate: validateType(
-            marketData.marketTradingMode,
-            marketData.trigger
-          ),
+      <TypeSelector
+        value={dealTicketType}
+        onValueChange={(dealTicketType) => {
+          setType(market.id, dealTicketType);
+          if (!isStopOrderType(dealTicketType)) {
+            reset(
+              getDefaultValues(
+                dealTicketTypeToOrderType(dealTicketType),
+                storedFormValues?.[dealTicketType]
+              )
+            );
+          }
         }}
-        render={() => (
-          <TypeSelector
-            value={
-              order.type === OrderType.TYPE_LIMIT
-                ? DealTicketType.Limit
-                : DealTicketType.Market
-            }
-            onValueChange={(dealTicketType) => {
-              setDealTicketType(market.id, dealTicketType);
-              if (
-                dealTicketType !== DealTicketType.Limit &&
-                dealTicketType !== DealTicketType.Market
-              ) {
-                updateStopOrderFormValues(market.id, {
-                  type:
-                    dealTicketType === DealTicketType.StopLimit
-                      ? OrderType.TYPE_LIMIT
-                      : OrderType.TYPE_MARKET,
-                });
-                return;
-              }
-              const type =
-                dealTicketType === DealTicketType.Limit
-                  ? OrderType.TYPE_LIMIT
-                  : OrderType.TYPE_MARKET;
-              update({
-                type,
-                // when changing type also update the TIF to what was last used of new type
-                timeInForce: lastTIF[type] || order.timeInForce,
-                postOnly:
-                  type === OrderType.TYPE_MARKET ? false : order.postOnly,
-                iceberg:
-                  type === OrderType.TYPE_MARKET ||
-                  [
-                    OrderTimeInForce.TIME_IN_FORCE_FOK,
-                    OrderTimeInForce.TIME_IN_FORCE_IOC,
-                  ].includes(lastTIF[type] || order.timeInForce)
-                    ? false
-                    : order.iceberg,
-                icebergOpts:
-                  type === OrderType.TYPE_MARKET ||
-                  [
-                    OrderTimeInForce.TIME_IN_FORCE_FOK,
-                    OrderTimeInForce.TIME_IN_FORCE_IOC,
-                  ].includes(lastTIF[type] || order.timeInForce)
-                    ? undefined
-                    : order.icebergOpts,
-                reduceOnly:
-                  type === OrderType.TYPE_LIMIT &&
-                  ![
-                    OrderTimeInForce.TIME_IN_FORCE_FOK,
-                    OrderTimeInForce.TIME_IN_FORCE_IOC,
-                  ].includes(lastTIF[type] || order.timeInForce)
-                    ? false
-                    : order.postOnly,
-                expiresAt: undefined,
-              });
-              clearErrors(['expiresAt', 'price']);
-            }}
-            market={market}
-            marketData={marketData}
-            errorMessage={errors.type?.message}
-          />
-        )}
+        market={market}
+        marketData={marketData}
+        errorMessage={errors.type?.message}
       />
       <Controller
         name="side"
         control={control}
-        render={() => (
-          <SideSelector
-            value={order.side}
-            onValueChange={(side) => {
-              update({ side });
-            }}
-          />
+        render={({ field }) => (
+          <SideSelector value={field.value} onValueChange={field.onChange} />
         )}
       />
       <DealTicketAmount
+        type={type}
         control={control}
-        orderType={order.type}
         market={market}
         marketData={marketData}
         marketPrice={marketPrice || undefined}
         sizeError={errors.size?.message}
         priceError={errors.price?.message}
-        update={update}
-        size={order.size}
-        price={order.price}
       />
       <Controller
         name="timeInForce"
@@ -415,58 +386,29 @@ export const DealTicket = ({
             marketData.trigger
           ),
         }}
-        render={() => (
+        render={({ field }) => (
           <TimeInForceSelector
-            value={order.timeInForce}
-            orderType={order.type}
-            onSelect={(timeInForce) => {
-              // Reset post only and reduce only when changing TIF
-              update({
-                timeInForce,
-                postOnly: [
-                  OrderTimeInForce.TIME_IN_FORCE_FOK,
-                  OrderTimeInForce.TIME_IN_FORCE_IOC,
-                ].includes(timeInForce)
-                  ? false
-                  : order.postOnly,
-                reduceOnly: ![
-                  OrderTimeInForce.TIME_IN_FORCE_FOK,
-                  OrderTimeInForce.TIME_IN_FORCE_IOC,
-                ].includes(timeInForce)
-                  ? false
-                  : order.reduceOnly,
-              });
-              // Set TIF value for the given order type, so that when switching
-              // types we know the last used TIF for the given order type
-              setLastTIF((curr) => ({
-                ...curr,
-                [order.type]: timeInForce,
-                expiresAt: undefined,
-              }));
-              clearErrors('expiresAt');
-            }}
+            value={field.value}
+            orderType={type}
+            onSelect={field.onChange}
             market={market}
             marketData={marketData}
             errorMessage={errors.timeInForce?.message}
           />
         )}
       />
-      {order.type === Schema.OrderType.TYPE_LIMIT &&
-        order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
+      {type === Schema.OrderType.TYPE_LIMIT &&
+        timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
           <Controller
             name="expiresAt"
             control={control}
             rules={{
               validate: validateExpiration,
             }}
-            render={() => (
+            render={({ field }) => (
               <ExpirySelector
-                value={order.expiresAt}
-                onSelect={(expiresAt) =>
-                  update({
-                    expiresAt: expiresAt || undefined,
-                  })
-                }
+                value={field.value}
+                onSelect={(expiresAt) => field.onChange(expiresAt)}
                 errorMessage={errors.expiresAt?.message}
               />
             )}
@@ -476,13 +418,14 @@ export const DealTicket = ({
         <Controller
           name="postOnly"
           control={control}
-          render={() => (
+          render={({ field }) => (
             <Checkbox
               name="post-only"
-              checked={order.postOnly}
+              checked={!disablePostOnlyCheckbox && field.value}
               disabled={disablePostOnlyCheckbox}
-              onCheckedChange={() => {
-                update({ postOnly: !order.postOnly, reduceOnly: false });
+              onCheckedChange={(postOnly) => {
+                field.onChange(postOnly);
+                setValue('reduceOnly', false);
               }}
               label={
                 <Tooltip
@@ -507,13 +450,14 @@ export const DealTicket = ({
         <Controller
           name="reduceOnly"
           control={control}
-          render={() => (
+          render={({ field }) => (
             <Checkbox
               name="reduce-only"
-              checked={order.reduceOnly}
+              checked={!disableReduceOnlyCheckbox && field.value}
               disabled={disableReduceOnlyCheckbox}
-              onCheckedChange={() => {
-                update({ postOnly: false, reduceOnly: !order.reduceOnly });
+              onCheckedChange={(reduceOnly) => {
+                field.onChange(reduceOnly);
+                setValue('postOnly', false);
               }}
               label={
                 <Tooltip
@@ -534,53 +478,49 @@ export const DealTicket = ({
           )}
         />
       </div>
-      <div className="flex gap-2 pb-2 justify-between">
-        {order.type === Schema.OrderType.TYPE_LIMIT && (
-          <Controller
-            name="iceberg"
-            control={control}
-            render={() => (
-              <Checkbox
-                name="iceberg"
-                checked={order.iceberg}
-                onCheckedChange={() => {
-                  update({ iceberg: !order.iceberg, icebergOpts: undefined });
-                }}
-                label={
-                  <Tooltip
-                    description={
-                      <p>
-                        {t(`Trade only a fraction of the order size at once.
+      {type === Schema.OrderType.TYPE_LIMIT && (
+        <>
+          <div className="flex gap-2 pb-2 justify-between">
+            <Controller
+              name="iceberg"
+              control={control}
+              render={({ field }) => (
+                <Checkbox
+                  name="iceberg"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  label={
+                    <Tooltip
+                      description={
+                        <p>
+                          {t(`Trade only a fraction of the order size at once.
                             After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away.
                             For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each.
                             Note that the full volume of the order is not hidden and is still reflected in the order book.`)}
-                      </p>
-                    }
-                  >
-                    <span className="text-xs">{t('Iceberg')}</span>
-                  </Tooltip>
-                }
-              />
-            )}
-          />
-        )}
-      </div>
-      {order.iceberg && (
-        <DealTicketSizeIceberg
-          update={update}
-          market={market}
-          peakSizeError={errors.icebergOpts?.peakSize?.message}
-          minimumVisibleSizeError={
-            errors.icebergOpts?.minimumVisibleSize?.message
-          }
-          control={control}
-          size={order.size}
-          peakSize={order.icebergOpts?.peakSize || ''}
-          minimumVisibleSize={order.icebergOpts?.minimumVisibleSize || ''}
-        />
+                        </p>
+                      }
+                    >
+                      <span className="text-xs">{t('Iceberg')}</span>
+                    </Tooltip>
+                  }
+                />
+              )}
+            />
+          </div>
+          {iceberg && (
+            <DealTicketSizeIceberg
+              market={market}
+              peakSizeError={errors.peakSize?.message}
+              minimumVisibleSizeError={errors.minimumVisibleSize?.message}
+              control={control}
+              size={rawSize}
+              peakSize={peakSize}
+            />
+          )}
+        </>
       )}
       <SummaryMessage
-        errorMessage={errors.summary?.message}
+        error={summaryError}
         asset={asset}
         marketTradingMode={marketData.marketTradingMode}
         balance={balance}
@@ -593,7 +533,7 @@ export const DealTicket = ({
         onClickCollateral={onClickCollateral}
         onDeposit={onDeposit}
       />
-      <DealTicketButton side={order.side} />
+      <DealTicketButton side={side} />
       <DealTicketFeeDetails
         order={
           normalizedOrder && { ...normalizedOrder, price: price || undefined }
@@ -619,7 +559,7 @@ export const DealTicket = ({
  * renders warnings about current state of the market
  */
 interface SummaryMessageProps {
-  errorMessage?: string;
+  error?: { message: string; type: string };
   asset: { id: string; symbol: string; name: string; decimals: number };
   marketTradingMode: MarketData['marketTradingMode'];
   balance: string;
@@ -649,7 +589,7 @@ export const NoWalletWarning = ({
 
 const SummaryMessage = memo(
   ({
-    errorMessage,
+    error,
     asset,
     marketTradingMode,
     balance,
@@ -665,7 +605,7 @@ const SummaryMessage = memo(
       return <NoWalletWarning isReadOnly={isReadOnly} />;
     }
 
-    if (errorMessage === SummaryValidationType.NoCollateral) {
+    if (error?.type === SummaryValidationType.NoCollateral) {
       return (
         <div className="mb-2">
           <ZeroBalanceError
@@ -679,11 +619,11 @@ const SummaryMessage = memo(
 
     // If we have any other full error which prevents
     // submission render that first
-    if (errorMessage) {
+    if (error?.message) {
       return (
         <div className="mb-2">
           <InputError testId="deal-ticket-error-message-summary">
-            {errorMessage}
+            {error?.message}
           </InputError>
         </div>
       );
