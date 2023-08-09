@@ -11,11 +11,12 @@ export const Product = {
   Perpetual: 'Perpetual',
 } as const;
 
-export type ProductType = keyof typeof Product;
+export type ProductType = keyof typeof Product & 'All';
 
 const ProductTypeMapping: {
   [key in ProductType]: string;
 } = {
+  All: 'All',
   [Product.Future]: 'Futures',
   [Product.Spot]: 'Spot',
   [Product.Perpetual]: 'Perpetuals',
@@ -30,7 +31,7 @@ export const ProductSelector = ({
 }) => {
   return (
     <div className="flex mb-2">
-      {Object.keys(Product).map((t) => {
+      {['All', ...Object.keys(Product)].map((t) => {
         const classes = classNames('px-3 py-1.5 rounded', {
           'bg-vega-clight-500 dark:bg-vega-cdark-500 text-default':
             t === product,
@@ -49,8 +50,7 @@ export const ProductSelector = ({
           </button>
         );
       })}
-      <Link to={Routes.MARKETS} className="flex items-center gap-2 ml-auto">
-        <span className="underline underline-offset-4">{t('All markets')}</span>
+      <Link to={Routes.MARKETS} className="flex items-center gap-2 ml-auto" title={t('See all markets')}>
         <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
       </Link>
     </div>

@@ -21,7 +21,7 @@ import classNames from 'classnames';
 
 export type Filter = {
   searchTerm: string;
-  product: ProductType;
+  product: ProductType | 'All';
   sort: SortType;
   assets: string[];
 };
@@ -39,7 +39,7 @@ export const MarketSelector = ({
 }) => {
   const [filter, setFilter] = useState<Filter>({
     searchTerm: '',
-    product: Product.Future,
+    product: 'All',
     sort: Sort.None,
     assets: [],
   });
