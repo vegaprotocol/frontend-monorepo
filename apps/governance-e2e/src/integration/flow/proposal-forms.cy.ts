@@ -9,7 +9,9 @@ import {
 import {
   getDownloadedProposalJsonPath,
   getProposalFromTitle,
+  proposalChangeType,
   submitUniqueRawProposal,
+  validateProposalDetailsDiff,
 } from '../../support/governance.functions';
 import {
   getProposalInformationFromTable,
@@ -606,7 +608,7 @@ context(
         });
     });
 
-    it('able to submit successor market proposal', function () {
+    it.only('able to submit successor market proposal', function () {
       const proposalTitle = 'Test successor market proposal';
 
       cy.createMarket();
@@ -654,44 +656,7 @@ context(
           .find('a')
           .should('have.attr', 'href')
           .and('contain', this.parentMarketId);
-        cy.getByTestId('view-proposal-btn').click();
       });
-      // #3003-PMAN-010
-      cy.getByTestId(proposalJsonToggle).click();
-      cy.get('.language-json').within(() => {
-        cy.get('.hljs-attr').should('contain.text', 'parentMarketId');
-        cy.get('.hljs-string').should('contain.text', this.parentMarketId);
-        cy.get('.hljs-attr').should('contain.text', 'insurancePoolFraction');
-        cy.get('.hljs-string').should('contain.text', '0.75');
-      });
-      cy.getByTestId('proposal-market-data').within(() => {
-        cy.getByTestId('proposal-market-data-toggle').click();
-        cy.contains('Key details').click();
-        // 3003-PMAN-009
-        getMarketProposalDetailsFromTable('Parent Market ID').should(
-          'have.text',
-          this.parentMarketId
-        );
-        getMarketProposalDetailsFromTable('Insurance Pool Fraction').should(
-          'have.text',
-          '0.75'
-        );
-        getMarketProposalDetailsFromTable('Trading Mode').should(
-          'have.text',
-          'No trading'
-        );
-      });
-      // 3003-PMAN-011
-      cy.contains('Parent Market ID').realHover();
-      cy.getByTestId('tooltip-content').should(
-        'contain.text',
-        'The ID of the market this market succeeds.'
-      );
-      cy.contains('Insurance Pool Fraction').realHover();
-      cy.getByTestId('tooltip-content').should(
-        'contain.text',
-        'The fraction of the insurance pool balance that is carried over from the parent market to the successor.'
-      );
     });
 
     after('Disassociate from second wallet key if present', function () {

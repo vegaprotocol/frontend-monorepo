@@ -154,6 +154,7 @@ interface ProposalNewMarketTerms {
         auctionExtension: string;
       };
       logNormal: LogNormal;
+      successor: Successor;
     };
   };
   closingTimestamp: number;
@@ -296,6 +297,11 @@ type ConditionOperator =
 interface Condition {
   operator: ConditionOperator;
   value: string;
+}
+
+interface Successor {
+  parentMarketId: string;
+  insurancePoolFraction: string;
 }
 
 interface LogNormal {
