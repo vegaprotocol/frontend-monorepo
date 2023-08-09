@@ -53,7 +53,7 @@ describe('fills', { tags: '@regression' }, () => {
     cy.getByTestId(tabFills).contains('Market');
     cy.getByTestId(tabFills)
       .get(
-        '[role="gridcell"][col-id="market.tradableInstrument.instrument.name"]'
+        '[role="gridcell"][col-id="market.tradableInstrument.instrument.code"]'
       )
       .each(($marketSymbol) => {
         cy.wrap($marketSymbol).invoke('text').should('not.be.empty');

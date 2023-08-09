@@ -31,12 +31,12 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
       const defs: ColDef[] = [
         {
           headerName: t('Market'),
-          field: 'market.tradableInstrument.instrument.name',
+          field: 'market.tradableInstrument.instrument.code',
           valueFormatter: ({
             value,
           }: VegaValueFormatterParams<
             AccountFields,
-            'market.tradableInstrument.instrument.name'
+            'market.tradableInstrument.instrument.code'
           >) => {
             if (!value) return 'None';
             return value;

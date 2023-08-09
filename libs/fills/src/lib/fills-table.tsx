@@ -47,7 +47,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
       () => [
         {
           headerName: t('Market'),
-          field: 'market.tradableInstrument.instrument.name',
+          field: 'market.tradableInstrument.instrument.code',
           cellRenderer: 'MarketNameCell',
           cellRendererParams: { idPath: 'market.id', onMarketClick },
         },
