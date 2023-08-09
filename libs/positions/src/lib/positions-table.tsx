@@ -12,7 +12,6 @@ import { COL_DEFS } from '@vegaprotocol/datagrid';
 import { ProgressBarCell } from '@vegaprotocol/datagrid';
 import {
   AgGridLazy as AgGrid,
-  DateRangeFilter,
   PriceFlashCell,
   signedNumberCssClass,
   signedNumberCssClassRules,
@@ -29,7 +28,6 @@ import {
   volumePrefix,
   toBigNum,
   formatNumber,
-  getDateTimeFormat,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -376,20 +374,6 @@ export const PositionsTable = ({
               'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
             ),
             cellRenderer: PNLCell,
-          },
-          {
-            headerName: t('Updated'),
-            field: 'updatedAt',
-            type: 'rightAligned',
-            filter: DateRangeFilter,
-            valueFormatter: ({
-              value,
-            }: VegaValueFormatterParams<Position, 'updatedAt'>) => {
-              if (!value) {
-                return '';
-              }
-              return getDateTimeFormat().format(new Date(value));
-            },
           },
           onClose && !isReadOnly
             ? {
