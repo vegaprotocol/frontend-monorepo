@@ -11,7 +11,7 @@ export const Product = {
   Perpetual: 'Perpetual',
 } as const;
 
-export type ProductType = keyof typeof Product & 'All';
+export type ProductType = keyof typeof Product | 'All';
 
 const ProductTypeMapping: {
   [key in ProductType]: string;
