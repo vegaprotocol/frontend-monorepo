@@ -235,7 +235,7 @@ export const PositionsTable = ({
             },
           },
           {
-            headerName: t('Settlement asset'),
+            headerName: t('Asset'),
             field: 'assetSymbol',
             colId: 'asset',
             cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {

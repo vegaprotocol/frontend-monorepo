@@ -39,8 +39,15 @@ export const useDataGridEvents = (
 
   const onColumnChange = useMemo(
     () =>
-      debounce(({ api, columnApi }: ColEvent) => {
+      debounce(({ api, columnApi, source }: ColEvent) => {
         if (!api || !columnApi) return;
+
+        // only call back on user interactions
+        const permittedEvents = ['uiColumnMoved', 'uiColumnResized'];
+        if (!permittedEvents.includes(source)) {
+          return;
+        }
+
         const columnState = columnApi.getColumnState();
         callback({ columnState });
       }, GRID_EVENT_DEBOUNCE_TIME),
@@ -60,6 +67,7 @@ export const useDataGridEvents = (
       } else {
         // ensure columns fit available space if no widths are set
         columnApi.autoSizeAllColumns();
+        // api.sizeColumnsToFit();
       }
 
       if (state.filterModel) {
