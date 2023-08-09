@@ -28,7 +28,10 @@ export const useMarketSelectorList = ({
       .filter((m) => isMarketActive(m.state))
       // only selected product type
       .filter((m) => {
-        if (product === 'All' || m.tradableInstrument.instrument.product.__typename === product) {
+        if (
+          product === 'All' ||
+          m.tradableInstrument.instrument.product.__typename === product
+        ) {
           return true;
         }
         return false;

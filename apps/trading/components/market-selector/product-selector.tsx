@@ -50,7 +50,11 @@ export const ProductSelector = ({
           </button>
         );
       })}
-      <Link to={Routes.MARKETS} className="flex items-center gap-2 ml-auto" title={t('See all markets')}>
+      <Link
+        to={Routes.MARKETS}
+        className="flex items-center gap-2 ml-auto"
+        title={t('See all markets')}
+      >
         <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
       </Link>
     </div>
