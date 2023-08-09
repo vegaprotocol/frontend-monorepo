@@ -152,6 +152,7 @@ html [data-theme='dark'] {
 
 /* Light variables */
 .ag-theme-balham {
+  --ag-grid-size: 2px; /* Used for compactness */
   --ag-row-height: 36px;
   --ag-header-height: 36px;
   --ag-background-color: theme(colors.white);
@@ -166,6 +167,7 @@ html [data-theme='dark'] {
 
 /* Dark variables */
 .ag-theme-balham-dark {
+  --ag-grid-size: 2px; /* Used for compactness */
   --ag-row-height: 36px;
   --ag-header-height: 36px;
   --ag-background-color: theme(colors.vega.cdark.900);
