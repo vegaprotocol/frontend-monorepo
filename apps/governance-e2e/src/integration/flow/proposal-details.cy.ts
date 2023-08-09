@@ -329,7 +329,7 @@ describe(
         });
     });
 
-    it.only('Able to vote for proposal twice by switching public key', function () {
+    it('Able to vote for proposal twice by switching public key', function () {
       ensureSpecifiedUnstakedTokensAreAssociated('1');
       createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
