@@ -5,7 +5,7 @@ import {
   FormGroup,
   Input,
   Intent,
-  Lozenge,
+  Pill,
   TradingButton,
   VegaIcon,
   VegaIconNames,
@@ -24,10 +24,10 @@ import { JsonRpcConnectorForm } from './json-rpc-connector-form';
 import { ViewConnectorForm } from './view-connector-form';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
+  BrowserIcon,
   ConnectDialogContent,
   ConnectDialogFooter,
   ConnectDialogTitle,
-  BrowserIcon,
 } from './connect-dialog-elements';
 import type { Status as JsonRpcStatus } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
@@ -337,9 +337,9 @@ const GetWallet = () => {
     <>
       <div className="flex items-center justify-center gap-1 text-base">
         {t('Get the Vega Wallet')}
-        <Lozenge className="text-[10px] !font-alpha bg-vega-blue-500 dark:bg-vega-blue-500 py-0 px-1">
+        <Pill size="xxs" intent={Intent.Info}>
           ALPHA
-        </Lozenge>
+        </Pill>
       </div>
       <BrowserIcon />
     </>
