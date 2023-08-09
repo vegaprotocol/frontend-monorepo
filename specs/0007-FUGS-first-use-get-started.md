@@ -13,7 +13,6 @@
 - **Must** There is a link to trade with real funds on Mainnet when I am on Fairground (<a name="0007-FUGS-010" href="#0007-FUGS-010">0007-FUGS-010</a>)
 - **Must** When I am on the Fairground version, I can see a warning / call out that this is Fairground meaning I can try out with virtual assets at no risk (<a name="0007-FUGS-011" href="#0007-FUGS-011">0007-FUGS-011</a>)
 - If I dismiss the popup, I land on the default market (<a name="0007-FUGS-012" href="#0007-FUGS-012">0007-FUGS-012</a>)
-- **Must** If I dismiss the popup, I land on the default market (<a name="0007-FUGS-012" href="#0007-FUGS-012">0007-FUGS-012</a>)
 
 ## When first use popup has been seen, but no browser wallet is installed
 
