@@ -32,6 +32,7 @@ export interface ProposalProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
   networkParams: Partial<NetworkParamsResult>;
   newMarketData?: MarketInfoWithData | null;
+  parentMarketData?: MarketInfoWithData | null;
   assetData?: AssetQuery | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   restData: any;
@@ -46,6 +47,7 @@ export const Proposal = ({
   networkParams,
   restData,
   newMarketData,
+  parentMarketData,
   assetData,
   originalMarketProposalRestData,
   mostRecentlyEnactedAssociatedMarketProposal,
@@ -157,7 +159,10 @@ export const Proposal = ({
 
         {newMarketData && (
           <div className="mb-4">
-            <ProposalMarketData marketData={newMarketData} />
+            <ProposalMarketData
+              marketData={newMarketData}
+              parentMarketData={parentMarketData ? parentMarketData : undefined}
+            />
           </div>
         )}
 
