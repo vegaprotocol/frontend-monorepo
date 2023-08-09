@@ -300,7 +300,7 @@ export const PositionsTable = ({
           multipleKeys
             ? null
             : {
-                headerName: t('Margin allocated'),
+                headerName: t('Margin'),
                 field: 'marginAccountBalance',
                 type: 'rightAligned',
                 filter: 'agNumberColumnFilter',

@@ -5,16 +5,16 @@ import { t } from '@vegaprotocol/i18n';
 import classNames from 'classnames';
 
 const defaultProps: AgGridReactProps = {
-  rowHeight: 36,
-  headerHeight: 36,
   enableCellTextSelection: true,
   overlayLoadingTemplate: t('Loading...'),
   overlayNoRowsTemplate: t('No data'),
   suppressCellFocus: true,
+  suppressColumnMoveAnimation: true,
 };
 
 const defaultColDef = {
   resizable: true,
+  flex: 1,
 };
 
 export const AgGridThemed = ({
@@ -37,7 +37,10 @@ export const AgGridThemed = ({
       <AgGridReact
         {...defaultProps}
         {...props}
-        defaultColDef={defaultColDef}
+        defaultColDef={{
+          ...defaultColDef,
+          ...props.defaultColDef,
+        }}
         ref={gridRef}
       />
     </div>

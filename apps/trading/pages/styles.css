@@ -152,6 +152,8 @@ html [data-theme='dark'] {
 
 /* Light variables */
 .ag-theme-balham {
+  --ag-row-height: 36px;
+  --ag-header-height: 36px;
   --ag-background-color: theme(colors.white);
   --ag-border-color: theme(colors.vega.clight.600);
   --ag-header-background-color: theme(colors.vega.clight.700);
@@ -164,6 +166,8 @@ html [data-theme='dark'] {
 
 /* Dark variables */
 .ag-theme-balham-dark {
+  --ag-row-height: 36px;
+  --ag-header-height: 36px;
   --ag-background-color: theme(colors.vega.cdark.900);
   --ag-border-color: theme(colors.vega.cdark.600);
   --ag-header-background-color: theme(colors.vega.cdark.700);

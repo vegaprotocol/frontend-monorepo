@@ -122,6 +122,7 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
     <AgGrid
       getRowId={({ data }) => data.id}
       columnDefs={columnDefs}
+      rowHeight={22}
       {...props}
     />
   );
