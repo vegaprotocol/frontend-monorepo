@@ -10,7 +10,7 @@ interface Props {
   className?: string;
 }
 
-const getClasses = (intent?: Intent, size: Size, className?: string) => {
+const getClasses = (size: Size, intent?: Intent, className?: string) => {
   return classNames(
     ['rounded-md', 'leading-none', 'font-alpha', 'py-1 px-2'],
     {
@@ -37,7 +37,7 @@ const getClasses = (intent?: Intent, size: Size, className?: string) => {
 
 export const Pill = ({ intent, size, className, children }: Props) => {
   return (
-    <span className={getClasses(intent, size || 'md', className)}>
+    <span className={getClasses(size || 'md', intent, className)}>
       {children}
     </span>
   );
