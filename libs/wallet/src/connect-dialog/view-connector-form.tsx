@@ -78,7 +78,7 @@ export function ViewConnectorForm({
         data-testid="connect"
         intent={Intent.Info}
         type="submit"
-        className="w-full"
+        fill
       >
         {t('Browse network')}
       </TradingButton>

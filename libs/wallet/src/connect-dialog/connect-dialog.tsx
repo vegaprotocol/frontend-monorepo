@@ -360,8 +360,9 @@ const GetWallet = () => {
       onClick={onClick}
       intent={Intent.Info}
       data-testid="get-wallet-button"
-      className="!block w-full relative"
+      className="relative"
       size="small"
+      fill
     >
       {buttonContent}
     </TradingButton>
@@ -386,10 +387,11 @@ const ConnectionOption = ({
       size="small"
       intent={Intent.Info}
       onClick={onClick}
-      className="!block w-full relative"
+      className="relative"
       data-testid={`connector-${type}`}
       disabled={disabled}
       icon={icon}
+      fill
     >
       <span className="flex justify-center items-center text-base">{text}</span>
     </TradingButton>
