@@ -379,9 +379,9 @@ export const SuccessionLineInfoPanel = ({
 };
 
 export const InstrumentInfoPanel = ({
-                                      market,
-                                      parentMarket,
-                                    }: MarketInfoProps) => (
+  market,
+  parentMarket,
+}: MarketInfoProps) => (
   <MarketInfoTable
     data={{
       marketName: market.tradableInstrument.instrument.name,
@@ -394,9 +394,9 @@ export const InstrumentInfoPanel = ({
         marketName: parentMarket?.tradableInstrument?.instrument?.name,
         code: parentMarket?.tradableInstrument?.instrument?.code,
         productType:
-        parentMarket?.tradableInstrument?.instrument?.product?.__typename,
+          parentMarket?.tradableInstrument?.instrument?.product?.__typename,
         quoteName:
-        parentMarket?.tradableInstrument?.instrument?.product?.quoteName,
+          parentMarket?.tradableInstrument?.instrument?.product?.quoteName,
       }
     }
   />
