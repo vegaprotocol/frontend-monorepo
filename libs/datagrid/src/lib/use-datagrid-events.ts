@@ -65,9 +65,7 @@ export const useDataGridEvents = (
           applyOrder: true,
         });
       } else {
-        // ensure columns fit available space if no widths are set
-        columnApi.autoSizeAllColumns();
-        // api.sizeColumnsToFit();
+        api.sizeColumnsToFit();
       }
 
       if (state.filterModel) {
