@@ -113,6 +113,7 @@ const marketsData = [
       instrument: {
         __typename: 'Instrument',
         name: 'AAVEDAI Monthly (30 Jun 2022)',
+        code: 'AAVEDAI.MF21',
         product: {
           settlementAsset: {
             symbol: 'tDAI',
@@ -142,6 +143,7 @@ const marketsData = [
       instrument: {
         __typename: 'Instrument',
         name: 'UNIDAI Monthly (30 Jun 2022)',
+        code: 'UNIDAI.MF21',
         product: {
           settlementAsset: {
             symbol: 'tDAI',
@@ -183,7 +185,7 @@ describe('getMetrics && rejoinPositionData', () => {
     expect(metrics[0].marketId).toEqual(
       '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8'
     );
-    expect(metrics[0].marketName).toEqual('AAVEDAI Monthly (30 Jun 2022)');
+    expect(metrics[0].marketName).toEqual('AAVEDAI.MF21');
     expect(metrics[0].marketTradingMode).toEqual(
       'TRADING_MODE_MONITORING_AUCTION'
     );
@@ -208,7 +210,7 @@ describe('getMetrics && rejoinPositionData', () => {
     expect(metrics[1].marketId).toEqual(
       '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e'
     );
-    expect(metrics[1].marketName).toEqual('UNIDAI Monthly (30 Jun 2022)');
+    expect(metrics[1].marketName).toEqual('UNIDAI.MF21');
     expect(metrics[1].marketTradingMode).toEqual('TRADING_MODE_CONTINUOUS');
     expect(metrics[1].notional).toEqual('86976200');
     expect(metrics[1].openVolume).toEqual('-100');

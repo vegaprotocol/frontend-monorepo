@@ -86,21 +86,13 @@ export const OrderListTable = memo<
             valueGetter: ({ data }: VegaValueGetterParams<Order>) => {
               if (data?.icebergOrder) {
                 return data?.size && data.market
-                  ? toBigNum(
-                      (
-                        BigInt(data.size) -
-                        BigInt(data.remaining) -
-                        BigInt(data.icebergOrder.reservedRemaining)
-                      ).toString(),
-                      data.market.positionDecimalPlaces ?? 0
-                    ).toNumber()
+                  ? BigInt(data.size) -
+                      BigInt(data.remaining) -
+                      BigInt(data.icebergOrder.reservedRemaining)
                   : undefined;
               }
               return data?.size && data.market
-                ? toBigNum(
-                    (BigInt(data.size) - BigInt(data.remaining)).toString(),
-                    data.market.positionDecimalPlaces ?? 0
-                  ).toNumber()
+                ? BigInt(data.size) - BigInt(data.remaining)
                 : undefined;
             },
             valueFormatter: ({
@@ -114,8 +106,8 @@ export const OrderListTable = memo<
                 return '-';
               }
               return addDecimalsFormatNumber(
-                (BigInt(data.size) - BigInt(data.remaining)).toString(),
-                data.market.positionDecimalPlaces
+                value,
+                data.market.positionDecimalPlaces ?? 0
               );
             },
             minWidth: 50,

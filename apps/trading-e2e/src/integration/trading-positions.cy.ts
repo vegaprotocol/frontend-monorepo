@@ -142,22 +142,22 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
   it('sorting by Market', () => {
     visitAndClickPositions();
     const marketsSortedDefault = [
-      'ACTIVE MARKET',
-      'Apple Monthly (30 Jun 2022)',
-      'ETHBTC Quarterly (30 Jun 2022)',
-      'SUSPENDED MARKET',
+      'AAPL.MF21',
+      'BTCUSD.MF21',
+      'ETHBTC.QM21',
+      'SOLUSD',
     ];
     const marketsSortedAsc = [
-      'ACTIVE MARKET',
-      'Apple Monthly (30 Jun 2022)',
-      'ETHBTC Quarterly (30 Jun 2022)',
-      'SUSPENDED MARKET',
+      'AAPL.MF21',
+      'BTCUSD.MF21',
+      'ETHBTC.QM21',
+      'SOLUSD',
     ];
     const marketsSortedDesc = [
-      'SUSPENDED MARKET',
-      'ETHBTC Quarterly (30 Jun 2022)',
-      'Apple Monthly (30 Jun 2022)',
-      'ACTIVE MARKET',
+      'SOLUSD',
+      'ETHBTC.QM21',
+      'BTCUSD.MF21',
+      'AAPL.MF21',
     ];
     cy.getByTestId(positions).click();
     // 7004-POSI-003
@@ -291,9 +291,11 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
 
   it('View settlement asset', () => {
     visitAndClickPositions();
-    cy.get('[col-id="asset"]').within(() => {
-      cy.get('button[type="button"]').first().click();
-    });
+    cy.get('[col-id="asset"]')
+      .eq(3)
+      .within(() => {
+        cy.get('button[type="button"]').click();
+      });
     // 7004-POSI-008
     cy.getByTestId(dialogContent).should('be.visible');
     cy.getByTestId(dialogCloseX).click();
@@ -308,7 +310,7 @@ function validatePositionsDisplayed(multiKey = false) {
   cy.getByTestId('tab-positions').should('be.visible');
   cy.getByTestId('tab-positions')
     .get('.ag-center-cols-container .ag-row')
-    .first()
+    .eq(multiKey ? 3 : 1)
     .within(() => {
       cy.get('[col-id="marketName"]')
         .should('be.visible')

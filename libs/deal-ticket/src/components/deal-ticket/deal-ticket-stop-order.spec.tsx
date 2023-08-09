@@ -6,8 +6,11 @@ import { generateMarket } from '../../test-helpers';
 import { StopOrder } from './deal-ticket-stop-order';
 import * as Schema from '@vegaprotocol/types';
 import { MockedProvider } from '@apollo/client/testing';
-import type { StopOrderFormValues } from '../../hooks/use-stop-order-form-values';
-import { useStopOrderFormValues } from '../../hooks/use-stop-order-form-values';
+import type { StopOrderFormValues } from '../../hooks/use-form-values';
+import {
+  DealTicketType,
+  useDealTicketFormValues,
+} from '../../hooks/use-form-values';
 import type { FeatureFlags } from '@vegaprotocol/environment';
 
 jest.mock('zustand');
@@ -131,9 +134,11 @@ describe('StopOrder', () => {
       expiresAt: '2023-07-27T16:43:27.000',
     };
 
-    useStopOrderFormValues.setState({
+    useDealTicketFormValues.setState({
       formValues: {
-        [market.id]: values,
+        [market.id]: {
+          [DealTicketType.StopLimit]: values,
+        },
       },
     });
 
@@ -207,11 +212,13 @@ describe('StopOrder', () => {
     // switch to market order type error should disappear
     await userEvent.click(screen.getByTestId(orderTypeTrigger));
     await userEvent.click(screen.getByTestId(orderTypeMarket));
+    await userEvent.click(screen.getByTestId(submitButton));
     expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
 
     // switch back to limit type
     await userEvent.click(screen.getByTestId(orderTypeTrigger));
     await userEvent.click(screen.getByTestId(orderTypeLimit));
+    await userEvent.click(screen.getByTestId(submitButton));
     expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
 
     // to small value should be invalid

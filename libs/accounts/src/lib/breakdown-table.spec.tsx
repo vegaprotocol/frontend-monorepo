@@ -23,6 +23,7 @@ const singleRow = {
       instrument: {
         __typename: 'Instrument',
         name: 'BTCUSD Monthly (30 Jun 2022)',
+        code: 'BTCUSD.MF21',
       },
     },
     id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
@@ -57,7 +58,7 @@ describe('BreakdownTable', () => {
     });
     const cells = await screen.findAllByRole('gridcell');
     const expectedValues = [
-      'BTCUSD Monthly (30 Jun 2022)',
+      'BTCUSD.MF21',
       'Margin',
       '1,256.00 (50%)',
       '1,256.00',
@@ -118,6 +119,7 @@ describe('BreakdownTable', () => {
                 instrument: {
                   __typename: 'Instrument',
                   name: 'BTCUSD Monthly (30 Jun 2022)',
+                  code: 'BTCUSD.MF21',
                 },
               },
             },

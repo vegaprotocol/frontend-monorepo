@@ -478,6 +478,12 @@ export const PNLCell = ({
           <p className="mb-2">
             {t('Lifetime loss socialisation deductions: %s', lossesFormatted)}
           </p>
+          <p className="mb-2">
+            {t(
+              `You received less %s in gains that you should have when the market moved in your favour. This occurred because one or more other trader(s) were closed out and did not have enough funds to cover their losses, and the market's insurance pool was empty.`,
+              [data.assetSymbol]
+            )}
+          </p>
           {LOSS_SOCIALIZATION_LINK && (
             <ExternalLink href={LOSS_SOCIALIZATION_LINK}>
               {t('Read more about loss socialisation')}
@@ -499,27 +505,51 @@ export const OpenVolumeCell = ({
     return <>-</>;
   }
 
-  if (data.status === PositionStatus.POSITION_STATUS_UNSPECIFIED) {
-    // eslint-disable-next-line react/jsx-no-useless-fragment
-    return <>{valueFormatted}</>;
-  }
-
   const POSITION_RESOLUTION_LINK = DocsLinks?.POSITION_RESOLUTION ?? '';
 
+  let primaryTooltip;
+  switch (data.status) {
+    case PositionStatus.POSITION_STATUS_CLOSED_OUT:
+      primaryTooltip = t('Your position was closed.');
+      break;
+    case PositionStatus.POSITION_STATUS_ORDERS_CLOSED:
+      primaryTooltip = t('Your open orders were cancelled.');
+      break;
+    case PositionStatus.POSITION_STATUS_DISTRESSED:
+      primaryTooltip = t('Your position is distressed.');
+      break;
+  }
+
+  let secondaryTooltip;
+  switch (data.status) {
+    case PositionStatus.POSITION_STATUS_CLOSED_OUT:
+      secondaryTooltip = t(
+        `You did not have enough %s collateral to meet the maintenance margin requirements for your position, so it was closed by the network.`,
+        [data.assetSymbol]
+      );
+      break;
+    case PositionStatus.POSITION_STATUS_ORDERS_CLOSED:
+      secondaryTooltip = t(
+        'The position was distressed, but removing open orders from the book brought the margin level back to a point where the open position could be maintained.'
+      );
+      break;
+    case PositionStatus.POSITION_STATUS_DISTRESSED:
+      secondaryTooltip = t(
+        'The position was distressed, but could not be closed out - orders were removed from the book, and the open volume will be closed out once there is sufficient volume on the book.'
+      );
+      break;
+    default:
+      secondaryTooltip = t('Maintained by network');
+  }
   return (
     <WarningCell
+      showIcon={data.status !== PositionStatus.POSITION_STATUS_UNSPECIFIED}
       tooltipContent={
         <>
+          <p className="mb-2">{primaryTooltip}</p>
+          <p className="mb-2">{secondaryTooltip}</p>
           <p className="mb-2">
-            {t('Your position was affected by market conditions')}
-          </p>
-          <p className="mb-2">
-            {t(
-              'Status: %s',
-              PositionStatusMapping[
-                PositionStatus.POSITION_STATUS_ORDERS_CLOSED
-              ]
-            )}
+            {t('Status: %s', PositionStatusMapping[data.status])}
           </p>
           {POSITION_RESOLUTION_LINK && (
             <ExternalLink href={POSITION_RESOLUTION_LINK}>
@@ -537,15 +567,17 @@ export const OpenVolumeCell = ({
 const WarningCell = ({
   children,
   tooltipContent,
+  showIcon = true,
 }: {
   children: ReactNode;
   tooltipContent: ReactNode;
+  showIcon?: boolean;
 }) => {
   return (
     <Tooltip description={tooltipContent}>
       <div className="w-full flex items-center justify-between underline decoration-dashed underline-offest-2">
         <span className="text-black dark:text-white mr-1">
-          <Icon name="warning-sign" size={3} />
+          {showIcon && <Icon name="warning-sign" size={3} />}
         </span>
         <span className="text-ellipsis overflow-hidden">{children}</span>
       </div>

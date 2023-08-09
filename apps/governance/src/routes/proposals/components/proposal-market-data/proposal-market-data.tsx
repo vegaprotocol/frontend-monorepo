@@ -45,8 +45,10 @@ export const useMarketDataDialogStore = create<MarketDataDialogState>(
 
 export const ProposalMarketData = ({
   marketData,
+  parentMarketData,
 }: {
   marketData: MarketInfoWithData;
+  parentMarketData?: MarketInfoWithData;
 }) => {
   const { t } = useTranslation();
   const { isOpen, open, close } = useMarketDataDialogStore();
@@ -58,8 +60,21 @@ export const ProposalMarketData = ({
 
   const settlementData = marketData.tradableInstrument.instrument.product
     .dataSourceSpecForSettlementData.data as DataSourceDefinition;
+  const parentSettlementData =
+    parentMarketData?.tradableInstrument.instrument?.product
+      ?.dataSourceSpecForSettlementData?.data;
   const terminationData = marketData.tradableInstrument.instrument.product
     .dataSourceSpecForTradingTermination.data as DataSourceDefinition;
+  const parentTerminationData =
+    parentMarketData?.tradableInstrument.instrument?.product
+      ?.dataSourceSpecForTradingTermination?.data;
+
+  const isParentSettlementDataEqual =
+    parentSettlementData !== undefined &&
+    isEqual(settlementData, parentSettlementData);
+  const isParentTerminationDataEqual =
+    parentTerminationData !== undefined &&
+    isEqual(terminationData, parentTerminationData);
 
   const getSigners = (data: DataSourceDefinition) => {
     if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
@@ -97,12 +112,22 @@ export const ProposalMarketData = ({
               <AccordionItem
                 itemId="key-details"
                 title={t('Key details')}
-                content={<KeyDetailsInfoPanel market={marketData} />}
+                content={
+                  <KeyDetailsInfoPanel
+                    market={marketData}
+                    parentMarket={parentMarketData}
+                  />
+                }
               />
               <AccordionItem
                 itemId="instrument"
                 title={t('Instrument')}
-                content={<InstrumentInfoPanel market={marketData} />}
+                content={
+                  <InstrumentInfoPanel
+                    market={marketData}
+                    parentMarket={parentMarketData}
+                  />
+                }
               />
               {isEqual(
                 getSigners(settlementData),
@@ -115,6 +140,11 @@ export const ProposalMarketData = ({
                     <OracleInfoPanel
                       market={marketData}
                       type="settlementData"
+                      parentMarket={
+                        isParentSettlementDataEqual
+                          ? undefined
+                          : parentMarketData
+                      }
                     />
                   }
                 />
@@ -127,6 +157,11 @@ export const ProposalMarketData = ({
                       <OracleInfoPanel
                         market={marketData}
                         type="settlementData"
+                        parentMarket={
+                          isParentSettlementDataEqual
+                            ? undefined
+                            : parentMarketData
+                        }
                       />
                     }
                   />
@@ -135,11 +170,21 @@ export const ProposalMarketData = ({
                     itemId="termination-oracle"
                     title={t('Termination Oracle')}
                     content={
-                      <OracleInfoPanel market={marketData} type="termination" />
+                      <OracleInfoPanel
+                        market={marketData}
+                        type="termination"
+                        parentMarket={
+                          isParentTerminationDataEqual
+                            ? undefined
+                            : parentMarketData
+                        }
+                      />
                     }
                   />
                 </>
               )}
+              {/*Note: successor markets will not differ in their settlement*/}
+              {/*assets, so no need to pass in parent market data for comparison.*/}
               <AccordionItem
                 itemId="settlement-asset"
                 title={t('Settlement asset')}
@@ -148,22 +193,42 @@ export const ProposalMarketData = ({
               <AccordionItem
                 itemId="metadata"
                 title={t('Metadata')}
-                content={<MetadataInfoPanel market={marketData} />}
+                content={
+                  <MetadataInfoPanel
+                    market={marketData}
+                    parentMarket={parentMarketData}
+                  />
+                }
               />
               <AccordionItem
                 itemId="risk-model"
                 title={t('Risk model')}
-                content={<RiskModelInfoPanel market={marketData} />}
+                content={
+                  <RiskModelInfoPanel
+                    market={marketData}
+                    parentMarket={parentMarketData}
+                  />
+                }
               />
               <AccordionItem
                 itemId="risk-parameters"
                 title={t('Risk parameters')}
-                content={<RiskParametersInfoPanel market={marketData} />}
+                content={
+                  <RiskParametersInfoPanel
+                    market={marketData}
+                    parentMarket={parentMarketData}
+                  />
+                }
               />
               <AccordionItem
                 itemId="risk-factors"
                 title={t('Risk factors')}
-                content={<RiskFactorsInfoPanel market={marketData} />}
+                content={
+                  <RiskFactorsInfoPanel
+                    market={marketData}
+                    parentMarket={parentMarketData}
+                  />
+                }
               />
               {(
                 marketData.priceMonitoringSettings?.parameters?.triggers || []
@@ -174,6 +239,7 @@ export const ProposalMarketData = ({
                   content={
                     <PriceMonitoringBoundsInfoPanel
                       market={marketData}
+                      parentMarket={parentMarketData}
                       triggerIndex={triggerIndex}
                     />
                   }
@@ -183,13 +249,21 @@ export const ProposalMarketData = ({
                 itemId="liqudity-monitoring-parameters"
                 title={t('Liquidity monitoring parameters')}
                 content={
-                  <LiquidityMonitoringParametersInfoPanel market={marketData} />
+                  <LiquidityMonitoringParametersInfoPanel
+                    market={marketData}
+                    parentMarket={parentMarketData}
+                  />
                 }
               />
               <AccordionItem
                 itemId="liquidity-price-range"
                 title={t('Liquidity price range')}
-                content={<LiquidityPriceRangeInfoPanel market={marketData} />}
+                content={
+                  <LiquidityPriceRangeInfoPanel
+                    market={marketData}
+                    parentMarket={parentMarketData}
+                  />
+                }
               />
             </Accordion>
           </div>
