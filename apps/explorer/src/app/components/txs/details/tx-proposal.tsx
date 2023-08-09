@@ -53,7 +53,11 @@ export function proposalTypeLabel(terms?: ProposalTerms): string {
   } else if (has(terms, 'updateAsset')) {
     return t('Update asset proposal');
   } else if (has(terms, 'newMarket')) {
-    return t('New market proposal');
+    if (terms?.newMarket?.changes?.successor) {
+      return t('Successor market proposal');
+    } else {
+      return t('New market proposal');
+    }
   } else if (has(terms, 'updateMarket')) {
     return t('Update market proposal');
   } else if (has(terms, 'updateNetworkParameter')) {
