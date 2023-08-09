@@ -78,7 +78,7 @@ export function getLabelForProposal(
   } else if (proposal.terms?.updateAsset) {
     return t('Proposal: Update asset');
   } else if (proposal.terms?.newMarket) {
-    if (proposal.terms?.newMarket) {
+    if (proposal.terms?.newMarket.changes?.successor) {
       return t('Proposal: Successor market');
     } else {
       return t('Proposal: New market');
