@@ -32,4 +32,8 @@
 - **must** I can see an explanation of what "Parent market ID" using a tooltip (<a name="3003-PMAN-011" href="#3003-PMAN-011">3003-PMAN-011</a>)
   If the proposal has been enacted, I can see the status of the market i.e. opening auction, continuous trading, rejected
 
+- **must** be able to see the market specification with the proposed update (<a name="3003-PMAN-012" href="#3003-PMAN-012">3003-PMAN-012</a>)
+
+- **must** be a simple way to visually highlight / compare the difference with this market specification from the original markets specification (<a name="3003-PMAN-013" href="#3003-PMAN-013">3003-PMAN-013</a>)
+
 back to [Propose](./3002-PROP-propose.md) for details on proposing

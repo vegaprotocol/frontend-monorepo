@@ -232,6 +232,23 @@ export function getDownloadedProposalJsonPath(proposalType: string) {
   return filepath;
 }
 
+export function validateProposalDetailsDiff(
+  RowName: string,
+  changeType: proposalChangeType,
+  newValue: string,
+  oldValue?: string
+) {
+  cy.contains(RowName)
+    .parentsUntil(proposalInformationTableRows)
+    .parent()
+    .first()
+    .within(() => {
+      cy.contains(changeType).should('be.visible');
+      cy.contains(newValue).should('be.visible');
+      if (oldValue) cy.contains(oldValue).should('have.class', 'line-through');
+    });
+}
+
 function getFormattedTime() {
   const now = new Date();
   const day = now.getDate().toString().padStart(2, '0');
@@ -251,4 +268,9 @@ export enum governanceProposalType {
   UPDATE_ASSET = 'Update asset',
   FREEFORM = 'Freeform',
   RAW = 'raw proposal',
+}
+
+export enum proposalChangeType {
+  UPDATED = 'Updated',
+  ADDED = 'Added',
 }
