@@ -134,6 +134,20 @@ describe('MarketSelector', () => {
     error: undefined,
   });
 
+  it('Button "All" should be selected by default', () => {
+    const buttons = ['All', 'Futures', 'Spot', 'Perpetuals'];
+    render(
+      <MemoryRouter>
+        <MarketSelector currentMarketId="market-0" onSelect={jest.fn()} />
+      </MemoryRouter>
+    );
+    screen
+      .getAllByTestId(/^product-(All|Future|Spot|Perpetual)$/)
+      .forEach((elem, i) => {
+        expect(elem.textContent).toEqual(buttons[i]);
+      });
+  });
+
   it('renders only active markets', () => {
     render(
       <MemoryRouter>
@@ -165,6 +179,12 @@ describe('MarketSelector', () => {
     );
 
     await userEvent.click(screen.getByTestId('product-Future'));
+    expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(
+      activeMarkets.length
+    );
+    expect(screen.queryByTestId('no-items')).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByTestId('product-All'));
     expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(
       activeMarkets.length
     );

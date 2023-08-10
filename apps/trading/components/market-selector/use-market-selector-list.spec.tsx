@@ -120,6 +120,13 @@ describe('useMarketSelectorList', () => {
       assets: [],
     });
     expect(result.current.markets).toEqual([markets[2]]);
+    rerender({
+      searchTerm: '',
+      product: 'All',
+      sort: Sort.None,
+      assets: [],
+    });
+    expect(result.current.markets).toEqual(markets);
   });
 
   it('filters by asset', () => {
