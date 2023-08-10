@@ -25,7 +25,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../../../components/heading';
 import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
-import type { MarketInfoWithData } from '@vegaprotocol/markets';
+import type { MarketInfo } from '@vegaprotocol/markets';
 import type { DataSourceDefinition } from '@vegaprotocol/types';
 import { create } from 'zustand';
 
@@ -47,8 +47,8 @@ export const ProposalMarketData = ({
   marketData,
   parentMarketData,
 }: {
-  marketData: MarketInfoWithData;
-  parentMarketData?: MarketInfoWithData;
+  marketData: MarketInfo;
+  parentMarketData?: MarketInfo;
 }) => {
   const { t } = useTranslation();
   const { isOpen, open, close } = useMarketDataDialogStore();
