@@ -202,7 +202,7 @@ const ConnectorList = ({
   onSelect: (type: WalletType) => void;
   walletUrl: string;
   setWalletUrl: (value: string) => void;
-  isDesktopWalletRunning: boolean;
+  isDesktopWalletRunning: boolean | null;
 }) => {
   const title = isBrowserWalletInstalled()
     ? t('Connect Vega wallet')
@@ -406,7 +406,7 @@ const CustomUrlInput = ({
 }: {
   walletUrl: string;
   setWalletUrl: (url: string) => void;
-  isDesktopWalletRunning: boolean;
+  isDesktopWalletRunning: boolean | null;
   onSelect: (type: WalletType) => void;
 }) => {
   const [urlInputExpanded, setUrlInputExpanded] = useState(false);
@@ -447,31 +447,33 @@ const CustomUrlInput = ({
         text={t('Use the Desktop App/CLI')}
         onClick={() => onSelect('jsonRpc')}
       />
-      <p className="mb-6 text-sm pt-2">
-        {isDesktopWalletRunning ? (
-          <button
-            className="underline text-default"
-            onClick={() => setUrlInputExpanded(true)}
-          >
-            {t('Enter a custom wallet location')}{' '}
-            <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
-          </button>
-        ) : (
-          <>
-            <span className="text-default">
-              {t(
-                'No running Desktop App/CLI detected. Open your app now to connect or enter a'
-              )}
-            </span>{' '}
+      {isDesktopWalletRunning !== null && (
+        <p className="mb-6 text-sm pt-2">
+          {isDesktopWalletRunning ? (
             <button
-              className="underline"
+              className="underline text-default"
               onClick={() => setUrlInputExpanded(true)}
             >
-              {t('custom wallet location')}
+              {t('Enter a custom wallet location')}{' '}
+              <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
             </button>
-          </>
-        )}
-      </p>
+          ) : (
+            <>
+              <span className="text-default">
+                {t(
+                  'No running Desktop App/CLI detected. Open your app now to connect or enter a'
+                )}
+              </span>{' '}
+              <button
+                className="underline"
+                onClick={() => setUrlInputExpanded(true)}
+              >
+                {t('custom wallet location')}
+              </button>
+            </>
+          )}
+        </p>
+      )}
     </>
   );
 };

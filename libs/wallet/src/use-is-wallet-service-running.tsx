@@ -8,7 +8,7 @@ export const useIsWalletServiceRunning = (
   connectors: { [key: string]: VegaConnector },
   appChainId: string
 ) => {
-  const [run, setRun] = useState(false);
+  const [run, setRun] = useState<boolean | null>(null);
 
   const checkState = useCallback(async () => {
     const connector = connectors['jsonRpc'] as JsonRpcConnector;
