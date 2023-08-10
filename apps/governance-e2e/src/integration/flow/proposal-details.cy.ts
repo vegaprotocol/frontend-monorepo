@@ -393,7 +393,7 @@ describe(
         cy.get('.hljs-attr').should('contain.text', 'insurancePoolFraction');
         cy.get('.hljs-string').should('contain.text', '0.75');
       });
-
+      // 3003-PMAN-011 3003-PMAN-012
       cy.getByTestId(marketDataToggle).click();
       cy.getByTestId('proposal-market-data').within(() => {
         cy.contains('Key details').click();
