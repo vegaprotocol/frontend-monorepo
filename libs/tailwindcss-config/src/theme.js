@@ -172,7 +172,7 @@ module.exports = {
         900: '#F9FAFA',
       },
     },
-    danger: '#FF077F',
+    danger: '#EC003C',
     warning: '#FF8700',
     success: '#00F780',
   },

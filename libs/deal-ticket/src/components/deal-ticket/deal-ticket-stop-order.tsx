@@ -376,7 +376,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
               }}
             />
           </FormGroup>
-          <div className="pt-7 leading-10">@</div>
+          <div className="pt-5 leading-10">@</div>
           <div className="flex-1">
             {type === Schema.OrderType.TYPE_LIMIT ? (
               <FormGroup
@@ -416,7 +416,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
               </FormGroup>
             ) : (
               <div
-                className="text-sm text-right pt-7 leading-10"
+                className="text-sm text-right pt-5 leading-10"
                 data-testid="price"
               >
                 {priceFormatted && quoteName
@@ -489,7 +489,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 onCheckedChange={onCheckedChange}
                 checked={value}
                 name="expire"
-                label={<span className="text-xs">{t('Expire')}</span>}
+                label={t('Expire')}
               />
             );
           }}
@@ -500,7 +500,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           disabled={true}
           label={
             <Tooltip description={<span>{t(REDUCE_ONLY_TOOLTIP)}</span>}>
-              <span className="text-xs">{t('Reduce only')}</span>
+              <>{t('Reduce only')}</>
             </Tooltip>
           }
         />

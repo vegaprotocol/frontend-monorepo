@@ -33,7 +33,7 @@ export const DealTicketMarketAmount = ({
     <div className="mb-2">
       <div className="flex items-start gap-4">
         <div className="flex-1">
-          <div className="mb-2 text-sm">{t('Size')}</div>
+          <div className="mb-2 text-xs">{t('Size')}</div>
           <Controller
             name="size"
             control={control}
@@ -59,7 +59,7 @@ export const DealTicketMarketAmount = ({
             )}
           />
         </div>
-        <div className="pt-7 leading-10">@</div>
+        <div className="pt-5 leading-10">@</div>
         <div className="flex-1 text-sm text-right">
           {inAuction && (
             <Tooltip
@@ -72,7 +72,7 @@ export const DealTicketMarketAmount = ({
           )}
           <div
             data-testid="last-price"
-            className={classNames('leading-10', { 'pt-7': !inAuction })}
+            className={classNames('leading-10', { 'pt-5': !inAuction })}
           >
             {priceFormatted && quoteName ? (
               <>

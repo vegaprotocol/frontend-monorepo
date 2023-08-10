@@ -30,7 +30,7 @@ export const FormGroup = ({
     },
     className
   );
-  const labelClasses = classNames('block mb-2 text-sm', {
+  const labelClasses = classNames('block mb-2 text-xs', {
     'text-right': labelAlign === 'right',
     'sr-only': hideLabel,
   });
