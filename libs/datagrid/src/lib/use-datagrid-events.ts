@@ -27,7 +27,7 @@ export const useDataGridEvents = (
 ) => {
   // This function can be called very frequently by the onColumnResized
   // grid callback, so its memoized to only update after resizing is finished
-  const onGridChange = useMemo(
+  const onFilterChange = useMemo(
     () =>
       debounce(({ api }: GridEvent) => {
         if (!api) return;
@@ -41,9 +41,12 @@ export const useDataGridEvents = (
     () =>
       debounce(({ api, columnApi, source }: ColEvent) => {
         if (!api || !columnApi) return;
-
         // only call back on user interactions
-        const permittedEvents = ['uiColumnMoved', 'uiColumnResized'];
+        const permittedEvents = [
+          'uiColumnMoved',
+          'uiColumnResized',
+          'uiColumnSorted',
+        ];
         if (!permittedEvents.includes(source)) {
           return;
         }
@@ -80,7 +83,7 @@ export const useDataGridEvents = (
     onColumnResized: onColumnChange,
     onColumnVisible: onColumnChange,
     onColumnMoved: onColumnChange,
-    onFilterChanged: onGridChange,
-    onSortChanged: onGridChange,
+    onSortChanged: onColumnChange,
+    onFilterChanged: onFilterChange,
   };
 };
