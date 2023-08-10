@@ -1,4 +1,4 @@
-import type { Story, Meta } from '@storybook/react';
+import type { StoryFn, Meta } from '@storybook/react';
 import { Input } from '../input';
 import type { FormGroupProps } from './form-group';
 import { FormGroup } from './form-group';
@@ -21,10 +21,13 @@ export default {
     hasError: {
       type: 'boolean',
     },
+    disabled: {
+      type: 'boolean',
+    },
   },
 } as Meta;
 
-const Template: Story<FormGroupProps> = (args) => (
+const Template: StoryFn<FormGroupProps> = (args) => (
   <FormGroup {...args}>
     <Input id="labelFor" />
   </FormGroup>

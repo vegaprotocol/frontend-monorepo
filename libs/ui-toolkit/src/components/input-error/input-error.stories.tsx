@@ -1,4 +1,4 @@
-import type { Story, Meta } from '@storybook/react';
+import type { StoryFn, Meta } from '@storybook/react';
 import { InputError } from './input-error';
 
 export default {
@@ -6,7 +6,7 @@ export default {
   title: 'InputError',
 } as Meta;
 
-const Template: Story = (args) => <InputError {...args} />;
+const Template: StoryFn = (args) => <InputError {...args} />;
 
 export const Danger = Template.bind({});
 Danger.args = {

@@ -1,4 +1,4 @@
-import type { Story, Meta } from '@storybook/react';
+import type { StoryFn, Meta } from '@storybook/react';
 import { Input } from './input';
 import { FormGroup } from '../form-group';
 export default {
@@ -6,7 +6,7 @@ export default {
   title: 'Input',
 } as Meta;
 
-const Template: Story = (args) => (
+const Template: StoryFn = (args) => (
   <FormGroup label="Hello" labelFor={args.id}>
     <Input value="I type words" {...args} />
   </FormGroup>

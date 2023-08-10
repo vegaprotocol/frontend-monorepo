@@ -1,4 +1,4 @@
-import type { Story, Meta } from '@storybook/react';
+import type { StoryFn, Meta } from '@storybook/react';
 import { Option, Select, RichSelect } from './select';
 import { FormGroup } from '../form-group';
 
@@ -7,7 +7,7 @@ export default {
   title: 'Select',
 } as Meta;
 
-const Template: Story = (args) => (
+const Template: StoryFn = (args) => (
   <FormGroup label="Select an option" labelFor={args.id}>
     <Select {...args}>
       <option value="Option 1">Option 1</option>
@@ -17,7 +17,7 @@ const Template: Story = (args) => (
   </FormGroup>
 );
 
-const RichSelectTemplate: Story = ({ placeholder, ...props }) => (
+const RichSelectTemplate: StoryFn = ({ placeholder, ...props }) => (
   <FormGroup label="Select an option" labelFor={props.id}>
     <RichSelect placeholder={placeholder} {...props} />
   </FormGroup>

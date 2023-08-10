@@ -16,7 +16,10 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       className
     );
 
-    const classes = classNames(defaultFormElement(hasError), textAreaClassName);
+    const classes = classNames(
+      defaultFormElement(hasError, props.disabled),
+      textAreaClassName
+    );
     return <textarea {...props} ref={ref} className={classes} />;
   }
 );

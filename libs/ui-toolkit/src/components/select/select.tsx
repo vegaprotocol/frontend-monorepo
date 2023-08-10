@@ -20,7 +20,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         ref={ref}
         {...props}
         className={classNames(
-          defaultSelectElement(hasError),
+          defaultSelectElement(hasError, props.disabled),
           className,
           'appearance-none rounded-md'
         )}
@@ -57,7 +57,7 @@ export const RichSelect = forwardRef<
         <SelectPrimitive.Trigger
           data-testid={props['data-testid'] || 'rich-select-trigger'}
           className={classNames(
-            defaultSelectElement(hasError),
+            defaultSelectElement(hasError, props.disabled),
             'rounded-md pl-2 pr-11',
             'max-w-full overflow-hidden break-all'
           )}

@@ -143,7 +143,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       <input
         {...props}
         ref={ref}
-        className={classNames(defaultFormElement(hasError), inputClassName)}
+        className={classNames(
+          defaultFormElement(hasError, props.disabled),
+          inputClassName
+        )}
       />
     );
 
