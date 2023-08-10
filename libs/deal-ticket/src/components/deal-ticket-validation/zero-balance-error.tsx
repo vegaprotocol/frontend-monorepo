@@ -1,4 +1,4 @@
-import { Intent, Notification, Link } from '@vegaprotocol/ui-toolkit';
+import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 
 interface ZeroBalanceErrorProps {
@@ -6,13 +6,11 @@ interface ZeroBalanceErrorProps {
     id: string;
     symbol: string;
   };
-  onClickCollateral?: () => void;
   onDeposit: (assetId: string) => void;
 }
 
 export const ZeroBalanceError = ({
   asset,
-  onClickCollateral,
   onDeposit,
 }: ZeroBalanceErrorProps) => {
   return (
@@ -24,12 +22,6 @@ export const ZeroBalanceError = ({
           {t(
             'You need %s in your wallet to trade in this market. ',
             asset.symbol
-          )}
-          {onClickCollateral && (
-            <>
-              {t('See all your')}{' '}
-              <Link onClick={onClickCollateral}>collateral</Link>.
-            </>
           )}
         </>
       }

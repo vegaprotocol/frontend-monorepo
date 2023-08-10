@@ -7,14 +7,10 @@ import { t } from '@vegaprotocol/i18n';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
-export const FillsContainer = ({
-  marketId,
-  onMarketClick,
-}: {
-  marketId?: string;
-  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-}) => {
+export const FillsContainer = ({ marketId }: { marketId?: string }) => {
+  const onMarketClick = useMarketClickHandler(true);
   const { pubKey } = useVegaWallet();
 
   const gridStore = useFillsStore((store) => store.gridStore);

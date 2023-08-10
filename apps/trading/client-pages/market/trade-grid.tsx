@@ -9,7 +9,6 @@ import { OracleBanner } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
 import { Filter } from '@vegaprotocol/orders';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
-import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import {
   ResizableGrid,
   ResizableGridPanel,
@@ -24,7 +23,6 @@ import { FLAGS } from '@vegaprotocol/environment';
 
 interface TradeGridProps {
   market: Market | null;
-  onSelect: (marketId: string, metaKey?: boolean) => void;
   pinnedAsset?: PinnedAsset;
 }
 
@@ -40,7 +38,6 @@ const MainGrid = memo(
     const [sizesMiddle, handleOnMiddleLayoutChange] = usePaneLayout({
       id: 'middle-1',
     });
-    const onMarketClick = useMarketClickHandler(true);
 
     return (
       <ResizableGrid vertical onChange={handleOnLayoutChange}>
@@ -98,9 +95,7 @@ const MainGrid = memo(
           <TradeGridChild>
             <Tabs storageKey="console-trade-grid-bottom">
               <Tab id="positions" name={t('Positions')}>
-                <TradingViews.positions.component
-                  onMarketClick={onMarketClick}
-                />
+                <TradingViews.positions.component />
               </Tab>
               <Tab
                 id="open-orders"
@@ -128,20 +123,14 @@ const MainGrid = memo(
                 </Tab>
               ) : null}
               <Tab id="fills" name={t('Fills')}>
-                <TradingViews.fills.component
-                  marketId={marketId}
-                  onMarketClick={onMarketClick}
-                />
+                <TradingViews.fills.component marketId={marketId} />
               </Tab>
               <Tab
                 id="accounts"
                 name={t('Collateral')}
                 menu={<TradingViews.collateral.menu />}
               >
-                <TradingViews.collateral.component
-                  pinnedAsset={pinnedAsset}
-                  onMarketClick={onMarketClick}
-                />
+                <TradingViews.collateral.component pinnedAsset={pinnedAsset} />
               </Tab>
             </Tabs>
           </TradeGridChild>

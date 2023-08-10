@@ -17,7 +17,6 @@ import { FLAGS } from '@vegaprotocol/environment';
 interface DealTicketContainerProps {
   marketId: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-  onClickCollateral?: () => void;
   onDeposit: (assetId: string) => void;
 }
 

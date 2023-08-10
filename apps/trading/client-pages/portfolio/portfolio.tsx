@@ -6,7 +6,6 @@ import { t } from '@vegaprotocol/i18n';
 import { useIncompleteWithdrawals } from '@vegaprotocol/withdraws';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import { usePageTitleStore } from '../../stores';
-import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { AccountsContainer } from '../../components/accounts-container';
 import { DepositsContainer } from '../../components/deposits-container';
 import { FillsContainer } from '../../components/fills-container';
@@ -54,7 +53,6 @@ export const Portfolio = () => {
     }
   }, [init, view, setView]);
 
-  const onMarketClick = useMarketClickHandler(true);
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
   const wrapperClasses = 'p-0.5 h-full max-h-full flex flex-col';
   return (
@@ -67,13 +65,13 @@ export const Portfolio = () => {
                 <AccountHistoryContainer />
               </Tab>
               <Tab id="positions" name={t('Positions')}>
-                <PositionsContainer onMarketClick={onMarketClick} allKeys />
+                <PositionsContainer allKeys />
               </Tab>
               <Tab id="orders" name={t('Orders')}>
                 <OrdersContainer />
               </Tab>
               <Tab id="fills" name={t('Fills')}>
-                <FillsContainer onMarketClick={onMarketClick} />
+                <FillsContainer />
               </Tab>
               <Tab id="ledger-entries" name={t('Ledger entries')}>
                 <LedgerContainer />

@@ -11,14 +11,14 @@ import { useDataGridEvents } from '@vegaprotocol/datagrid';
 import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { ViewType, useSidebar } from '../sidebar';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
 export const AccountsContainer = ({
   pinnedAsset,
-  onMarketClick,
 }: {
   pinnedAsset?: PinnedAsset;
-  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }) => {
+  const onMarketClick = useMarketClickHandler(true);
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const setView = useSidebar((store) => store.setView);

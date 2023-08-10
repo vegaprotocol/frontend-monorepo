@@ -1,10 +1,6 @@
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import type { Market } from '@vegaprotocol/markets';
 import { OracleBanner } from '@vegaprotocol/markets';
-import {
-  useMarketClickHandler,
-  useMarketLiquidityClickHandler,
-} from '../../lib/hooks/use-market-click-handler';
 import type { TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
 import { useState } from 'react';
@@ -20,22 +16,10 @@ import { FLAGS } from '@vegaprotocol/environment';
 
 interface TradePanelsProps {
   market: Market | null;
-  onSelect: (marketId: string, metaKey?: boolean) => void;
-  onMarketClick?: (marketId: string) => void;
-  onOrderTypeClick?: (marketId: string) => void;
-  onClickCollateral: () => void;
   pinnedAsset?: PinnedAsset;
 }
 
-export const TradePanels = ({
-  market,
-  onSelect,
-  onClickCollateral,
-  pinnedAsset,
-}: TradePanelsProps) => {
-  const onMarketClick = useMarketClickHandler(true);
-  const onOrderTypeClick = useMarketLiquidityClickHandler();
-
+export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
   const [view, setView] = useState<TradingView>('candles');
 
   const renderView = () => {
@@ -47,16 +31,7 @@ export const TradePanels = ({
 
     if (!market) return <Splash>{NO_MARKET}</Splash>;
 
-    return (
-      <Component
-        marketId={market?.id}
-        onSelect={onSelect}
-        onClickCollateral={onClickCollateral}
-        pinnedAsset={pinnedAsset}
-        onMarketClick={onMarketClick}
-        onOrderTypeClick={onOrderTypeClick}
-      />
-    );
+    return <Component marketId={market?.id} pinnedAsset={pinnedAsset} />;
   };
 
   const renderMenu = () => {
