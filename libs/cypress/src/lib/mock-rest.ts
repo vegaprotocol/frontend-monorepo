@@ -62,10 +62,27 @@ export const aliasWalletConnectQuery = (
       },
     });
   }
+  if (hasMethod(req, 'client.get_chain_id')) {
+    req.reply({
+      statusCode: 200,
+      headers: {
+        'Access-Control-Expose-Headers': 'Authorization',
+        Authorization: `VWT ${token}`,
+      },
+      body: {
+        jsonrpc: '2.0',
+        result: {
+          chainID: 'test-id',
+        },
+        id: '1',
+      },
+    });
+  }
 };
 
 export const aliasWalletConnectWithUserError = (
-  req: CyHttpMessages.IncomingHttpRequest
+  req: CyHttpMessages.IncomingHttpRequest,
+  token: string
 ) => {
   if (hasMethod(req, 'client.connect_wallet')) {
     req.alias = 'client.connect_wallet';
@@ -79,6 +96,22 @@ export const aliasWalletConnectWithUserError = (
           message: 'User error',
         },
         id: '0',
+      },
+    });
+  }
+  if (hasMethod(req, 'client.get_chain_id')) {
+    req.reply({
+      statusCode: 200,
+      headers: {
+        'Access-Control-Expose-Headers': 'Authorization',
+        Authorization: `VWT ${token}`,
+      },
+      body: {
+        jsonrpc: '2.0',
+        result: {
+          chainID: 'test-id',
+        },
+        id: '1',
       },
     });
   }

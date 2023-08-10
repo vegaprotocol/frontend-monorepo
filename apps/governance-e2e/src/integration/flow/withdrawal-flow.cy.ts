@@ -6,6 +6,8 @@ import {
 } from '../../support/common.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import { depositAsset } from '../../support/wallet-functions';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
+import { chainIdQuery, statisticsQuery } from '@vegaprotocol/mock';
 
 const withdraw = 'withdraw';
 const withdrawalForm = 'withdraw-form';
@@ -42,12 +44,20 @@ context(
   { tags: '@slow' },
   function () {
     before('visit withdrawals and connect vega wallet', function () {
+      cy.mockGQL((req) => {
+        aliasGQLQuery(req, 'ChainId', chainIdQuery());
+        aliasGQLQuery(req, 'Statistics', statisticsQuery());
+      });
       cy.visit('/');
       ethereumWalletConnect();
       depositAsset(usdcEthAddress, '1000', 5);
     });
 
     beforeEach('Navigate to withdrawal page', function () {
+      cy.mockGQL((req) => {
+        aliasGQLQuery(req, 'ChainId', chainIdQuery());
+        aliasGQLQuery(req, 'Statistics', statisticsQuery());
+      });
       cy.clearLocalStorage();
       turnTelemetryOff();
       cy.reload();

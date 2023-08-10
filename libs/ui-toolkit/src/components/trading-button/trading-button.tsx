@@ -13,6 +13,7 @@ type TradingButtonProps = {
   children?: ReactNode;
   icon?: ReactNode;
   subLabel?: ReactNode;
+  fill?: boolean;
 };
 
 const getClassName = (
@@ -20,7 +21,8 @@ const getClassName = (
     size,
     subLabel,
     intent,
-  }: Pick<TradingButtonProps, 'size' | 'subLabel' | 'intent'>,
+    fill,
+  }: Pick<TradingButtonProps, 'size' | 'subLabel' | 'intent' | 'fill'>,
   className?: string
 ) =>
   classNames(
@@ -61,6 +63,7 @@ const getClassName = (
         intent === Intent.Primary,
       '[&_[data-sub-label]]:text-vega-clight-100': intent === Intent.Primary,
     },
+    { 'w-full': fill },
     className
   );
 
@@ -99,6 +102,7 @@ export const TradingButton = forwardRef<
       children,
       className,
       subLabel,
+      fill,
       ...props
     },
     ref
@@ -107,7 +111,7 @@ export const TradingButton = forwardRef<
       ref={ref}
       type={type}
       data-trading-button
-      className={getClassName({ size, subLabel, intent }, className)}
+      className={getClassName({ size, subLabel, intent, fill }, className)}
       {...props}
     >
       <Content icon={icon} subLabel={subLabel} children={children} />

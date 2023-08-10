@@ -59,6 +59,8 @@ export const envSchema = z
     SENTRY_DSN: z.optional(z.string()),
     TENDERMINT_URL: z.optional(z.string()),
     TENDERMINT_WEBSOCKET_URL: z.optional(z.string()),
+    CHROME_EXTENSION_URL: z.optional(z.string()),
+    MOZILLA_EXTENSION_URL: z.optional(z.string()),
   })
   .refine(
     (data) => {
