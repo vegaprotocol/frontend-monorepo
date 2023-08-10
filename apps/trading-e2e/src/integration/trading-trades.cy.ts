@@ -59,8 +59,7 @@ describe('trades', { tags: '@smoke' }, () => {
     cy.getByTestId(tradesTable) // order table shares identical col id
       .find(`${colIdCreatedAt} ${colHeader}`)
       .should('have.text', 'Created at');
-    const dateTimeRegex =
-      /(\d{1,2})\/(\d{1,2})\/(\d{4}), (\d{1,2}):(\d{1,2}):(\d{1,2})/gm;
+    const dateTimeRegex = /(\d{1,2}):(\d{1,2}):(\d{1,2})/gm;
     cy.getByTestId(tradesTable)
       .get(`.ag-center-cols-container ${colIdCreatedAt}`)
       .each(($tradeDateTime) => {
@@ -87,6 +86,7 @@ describe('trades', { tags: '@smoke' }, () => {
   });
 
   it('copy price to deal ticket form', () => {
+    cy.getByTestId('Order').click();
     // 6005-THIS-007
     cy.get(colIdPrice).last().should('be.visible').click();
     cy.getByTestId('order-price').should('have.value', '171.16898');

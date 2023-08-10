@@ -230,7 +230,7 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
       deltaX: 500,
     });
     // 7004-POSI-004
-    cy.get('[col-id="updatedAt"]').should('be.visible');
+    cy.get('[col-id="unrealisedPNL"]').should('be.visible');
   });
 
   it('Drag and drop columns', () => {
