@@ -371,6 +371,14 @@ function compileEnvVars() {
       'NX_TENDERMINT_WEBSOCKET_URL',
       process.env['NX_TENDERMINT_WEBSOCKET_URL']
     ),
+    CHROME_EXTENSION_URL: windowOrDefault(
+      'NX_CHROME_EXTENSION_URL',
+      process.env['NX_CHROME_EXTENSION_URL']
+    ),
+    MOZILLA_EXTENSION_URL: windowOrDefault(
+      'NX_MOZILLA_EXTENSION_URL',
+      process.env['NX_MOZILLA_EXTENSION_URL']
+    ),
   };
 
   return env;

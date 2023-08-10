@@ -78,7 +78,11 @@ export function getLabelForProposal(
   } else if (proposal.terms?.updateAsset) {
     return t('Proposal: Update asset');
   } else if (proposal.terms?.newMarket) {
-    return t('Proposal: New market');
+    if (proposal.terms?.newMarket.changes?.successor) {
+      return t('Proposal: Successor market');
+    } else {
+      return t('Proposal: New market');
+    }
   } else if (proposal.terms?.updateMarket) {
     return t('Proposal: Update market');
   } else if (proposal.terms?.updateNetworkParameter) {

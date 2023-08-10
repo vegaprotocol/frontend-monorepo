@@ -74,7 +74,6 @@ export interface DealTicketProps {
   marketPrice?: string | null;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   submit: (order: OrderSubmission) => void;
-  onClickCollateral?: () => void;
   onDeposit: (assetId: string) => void;
 }
 
@@ -121,7 +120,6 @@ export const DealTicket = ({
   marketData,
   marketPrice,
   submit,
-  onClickCollateral,
   onDeposit,
 }: DealTicketProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
@@ -530,7 +528,6 @@ export const DealTicket = ({
         }
         isReadOnly={isReadOnly}
         pubKey={pubKey}
-        onClickCollateral={onClickCollateral}
         onDeposit={onDeposit}
       />
       <DealTicketButton side={side} />
@@ -566,7 +563,6 @@ interface SummaryMessageProps {
   margin: string;
   isReadOnly: boolean;
   pubKey: string | null;
-  onClickCollateral?: () => void;
   onDeposit: (assetId: string) => void;
 }
 
@@ -596,7 +592,6 @@ const SummaryMessage = memo(
     margin,
     isReadOnly,
     pubKey,
-    onClickCollateral,
     onDeposit,
   }: SummaryMessageProps) => {
     // Specific error UI for if balance is so we can
@@ -608,11 +603,7 @@ const SummaryMessage = memo(
     if (error?.type === SummaryValidationType.NoCollateral) {
       return (
         <div className="mb-2">
-          <ZeroBalanceError
-            asset={asset}
-            onClickCollateral={onClickCollateral}
-            onDeposit={onDeposit}
-          />
+          <ZeroBalanceError asset={asset} onDeposit={onDeposit} />
         </div>
       );
     }

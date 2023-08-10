@@ -6,9 +6,24 @@ When looking to use Vega via a user interface e.g. Dapp (Decentralized web App),
 
 - If the app loads and already has a connection it can restore "eagerly" (without the user having to click connect) it **could** do so
 - **must** select a connection method / wallet type: (<a name="0002-WCON-002" href="#0002-WCON-002">0002-WCON-002</a>)
-- if Rest:
+- If I don't have the browser wallet installed, I see "get started" on the connect button, otherwise I see "Connect" there. (<a name="0002-WCON-002" href="#0002-WCON-002">0002-WCON-002</a>)
+- If I don't have the browser wallet installed, when I press "Get started" I can see immediately a way to get the Vega wallet browser extension. (<a name="0002-WCON-0010" href="#0002-WCON-0010">0002-WCON-0010</a>)
+- If I do have the browser wallet installed, I can easily choose to connect to it. (<a name="0002-WCON-0011" href="#0002-WCON-0011">0002-WCON-0011</a>)
+- If the desktop wallet or CLI is detected as running, I can see that and choose to connect with my desktop / CLI wallet. (<a name="0002-WCON-0012" href="#0002-WCON-0012">0002-WCON-0012</a>)
+- If there is not running desktop wallet or CLI detected, I can see that I need to open my wallet. (<a name="0002-WCON-0013" href="#0002-WCON-0013">0002-WCON-0013</a>)
+- I can find out more about supported browsers i.e. there is a link (Issue "List compatible browsers" vegawallet-browser#360 has to be implemented). (<a name="0002-WCON-0013" href="#0002-WCON-0013">0002-WCON-0013</a>)
+- I can find out more about the Vega Wallet and see what "other" versions there are i.e. there is a link to the page on the website (currently - https://vega.xyz/wallet#overview). (<a name="0002-WCON-0014" href="#0002-WCON-0014">0002-WCON-0014</a>)
+- Browser wallet:
+
+  - The browser extension you need is automatically detected if you are using Chrome or Firefox, presenting the specific call to action to install that browser extension in a visible way e.g. with a Chrome or Firefox icon. (<a name="0002-WCON-041" href="#0002-WCON-041">0002-WCON-041</a>)
+  - The browser extension store opens in a new tab on the Vega Wallet extension page (Chrome or Firefox). (<a name="0002-WCON-042" href="#0002-WCON-042">0002-WCON-042</a>)
+  - When the browser I am using is not Firefox or Chrome, there is a way to download the browser extension anyway but at my own risk i.e. I can see options for both the chrome and firefox extensions in the CTA. (<a name="0002-WCON-043" href="#0002-WCON-043">0002-WCON-043</a>)
+  - There is a way to understand the browser extension is an Alpha release e.g. there is a label / description. (<a name="0002-WCON-044" href="#0002-WCON-044">0002-WCON-044</a>)
+
+- if I choose Desktop/CLI App ("jsonRpc" type):
 
   - **must** have the option to input a non-default Wallet location (<a name="0002-WCON-003" href="#0002-WCON-003">0002-WCON-003</a>)
+  - If I select to enter a custom wallet location, there is a way to go back to the default view i.e. a back button or similar.
   - **must** submit attempt to connect to wallet (<a name="0002-WCON-005" href="#0002-WCON-005">0002-WCON-005</a>)
 
   - if the dapp DOES already have a permission with the wallet: **must** see that wallet is connected (<a name="0002-WCON-007" href="#0002-WCON-007">0002-WCON-007</a>) note: if the user want to connect to a different wallet to the one that they were previously connected with, they will have to hit logout.
@@ -24,16 +39,6 @@ When looking to use Vega via a user interface e.g. Dapp (Decentralized web App),
   - if user rejects connection: **must** see a message saying that the request to connect was denied (<a name="0002-WCON-015" href="#0002-WCON-015">0002-WCON-015</a>)
 
   - if the dapp is unable to connect for technical reason (e.g. CORS): **must** see an explanation of the error, and a method of fixing the issue (<a name="0002-WCON-016" href="#0002-WCON-016">0002-WCON-016</a>)
-
-- ~~Browser wallet~~ `not available yet`
-- Fairground hosted wallet
-  - **must** only be be shown this option if the dapp is connected to fairground (<a name="0002-WCON-039" href="#0002-WCON-039">0002-WCON-039</a>)
-  - **must** input a wallet name (<a name="0002-WCON-017" href="#0002-WCON-017">0002-WCON-017</a>)
-  - **must** input a password (<a name="0002-WCON-018" href="#0002-WCON-018">0002-WCON-018</a>)
-  - if success: **must** see that the wallet is connected and details of connected key (<a name="0002-WCON-019" href="#0002-WCON-019">0002-WCON-019</a>)
-  - if failure: **must** see reason for failure (<a name="0002-WCON-020" href="#0002-WCON-020">0002-WCON-020</a>)
-  - _note: the fairground hosted wallet is configured to automatically approve connections from dapps so there is no need for key selection._
-- **must** have the option to select a different method / wallet type if I change my mind (<a name="0002-WCON-021" href="#0002-WCON-021">0002-WCON-021</a>)
 
 ... so I can use the interface to read data about my key/party or request my wallet to broadcast transactions to a Vega network.
 

@@ -25,6 +25,9 @@ import {
   vegaWalletSetSpecifiedApprovalAmount,
   vegaWalletTeardown,
 } from '../../support/wallet-functions';
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
+import { chainIdQuery, statisticsQuery } from '@vegaprotocol/mock';
+
 const stakeValidatorListTotalStake = 'total-stake';
 const stakeValidatorListTotalShare = 'total-stake-share';
 const stakeValidatorListStakePercentage = 'stake-percentage';
@@ -55,6 +58,10 @@ context(
   function () {
     // 1002-STKE-002, 1002-STKE-032
     before('visit staking tab and connect vega wallet', function () {
+      cy.mockGQL((req) => {
+        aliasGQLQuery(req, 'ChainId', chainIdQuery());
+        aliasGQLQuery(req, 'Statistics', statisticsQuery());
+      });
       cy.visit('/');
       ethereumWalletConnect();
       cy.connectVegaWallet();
@@ -65,6 +72,10 @@ context(
       beforeEach(
         'teardown wallet & drill into a specific validator',
         function () {
+          cy.mockGQL((req) => {
+            aliasGQLQuery(req, 'ChainId', chainIdQuery());
+            aliasGQLQuery(req, 'Statistics', statisticsQuery());
+          });
           cy.clearLocalStorage();
           turnTelemetryOff();
           // Go to homepage to allow wallet teardown without epoch timer refreshing page

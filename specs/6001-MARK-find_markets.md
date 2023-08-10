@@ -44,6 +44,7 @@
   - by newest markets (opening timestamp) (<a name="6001-MARK-032" href="#6001-MARK-032">6001-MARK-032</a>)
 - **Must** be able to close and open the market selector (<a name="6001-MARK-066" href="#6001-MARK-066">6001-MARK-066</a>)
 - **Must** must change color and have + or negative suffix of the price change and change color for the sparkline (<a name="6001-MARK-067" href="#6001-MARK-067">6001-MARK-067</a>)
+- **Must** be default tab "All" where there's no filtering by product. (<a name="6001-MARK-070" href="#6001-MARK-070">6001-MARK-070</a>)
 
 ## All Markets
 

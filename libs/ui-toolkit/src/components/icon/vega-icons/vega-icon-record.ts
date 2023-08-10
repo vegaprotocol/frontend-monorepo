@@ -1,6 +1,8 @@
 import { IconArrowDown } from './svg-icons/icon-arrow-down';
+import { IconArrowLeft } from './svg-icons/icon-arrow-left';
 import { IconArrowUp } from './svg-icons/icon-arrow-up';
 import { IconArrowRight } from './svg-icons/icon-arrow-right';
+import { IconArrowTopRight } from './svg-icons/icon-arrow-top-right';
 import { IconBreakdown } from './svg-icons/icon-breakdown';
 import { IconBullet } from './svg-icons/icon-bullet';
 import { IconChevronDown } from './svg-icons/icon-chevron-down';
@@ -36,8 +38,10 @@ import { IconSearch } from './svg-icons/icon-search';
 
 export enum VegaIconNames {
   ARROW_DOWN = 'arrow-down',
+  ARROW_LEFT = 'arrow-left',
   ARROW_UP = 'arrow-up',
   ARROW_RIGHT = 'arrow-right',
+  ARROW_TOP_RIGHT = 'arrow-top-right',
   BREAKDOWN = 'breakdown',
   BULLET = 'bullet',
   CHEVRON_DOWN = 'chevron-down',
@@ -77,8 +81,10 @@ export const VegaIconNameMap: Record<
   ({ size }: { size: number }) => JSX.Element
 > = {
   'arrow-down': IconArrowDown,
+  'arrow-left': IconArrowLeft,
   'arrow-up': IconArrowUp,
   'arrow-right': IconArrowRight,
+  'arrow-top-right': IconArrowTopRight,
   breakdown: IconBreakdown,
   bullet: IconBullet,
   'chevron-down': IconChevronDown,

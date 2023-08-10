@@ -169,14 +169,13 @@ describe('home', { tags: '@regression' }, () => {
 
     it('click get started button should open connect dialog', () => {
       cy.getByTestId('welcome-dialog').should('be.visible');
-      cy.getByTestId('get-started-button').click();
       cy.url().should('eq', Cypress.config().baseUrl + `/#/markets/all`);
       cy.window().then((window) => {
-        expect(window.localStorage.getItem('vega_onboarding_viewed')).to.equal(
-          'true'
-        );
+        // @ts-ignore stub it out just for test case
+        window.vega = {};
+        cy.getByTestId('get-started-button').click();
+        cy.getByTestId('wallet-dialog-title').should('contain.text', 'Connect');
       });
-      cy.getByTestId('wallet-dialog-title').should('contain.text', 'Connect');
     });
   });
 
