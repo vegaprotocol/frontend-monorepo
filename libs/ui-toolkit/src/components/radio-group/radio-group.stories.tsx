@@ -1,4 +1,4 @@
-import type { Story, Meta } from '@storybook/react';
+import type { StoryFn, Meta } from '@storybook/react';
 import type { RadioGroupProps } from './radio-group';
 import { RadioGroup, Radio } from './radio-group';
 
@@ -7,7 +7,7 @@ export default {
   title: 'RadioGroup',
 } as Meta;
 
-const Template: Story<RadioGroupProps> = (args) => (
+const Template: StoryFn<RadioGroupProps> = (args) => (
   <RadioGroup {...args}>
     <Radio id="item-1" value="1" label="Item 1" />
     <Radio id="item-2" value="2" label="Item 2" />

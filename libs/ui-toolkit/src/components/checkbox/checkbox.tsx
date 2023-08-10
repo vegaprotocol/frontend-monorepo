@@ -20,17 +20,16 @@ export const Checkbox = ({
   disabled = false,
 }: CheckboxProps) => {
   const rootClasses = classNames(
-    'relative flex justify-center items-center w-[15px] h-[15px] mt-1',
+    'relative flex justify-center items-center w-3 h-3',
     'border rounded-sm overflow-hidden',
-    {
-      'opacity-40 cursor-default': disabled,
-      'border-neutral-700 dark:border-neutral-300': !checked,
-      'border-white dark:border-black': checked,
-    }
+    'border-vega-clight-500 dark:border-vega-cdark-500',
+    'aria-checked:border-vega-clight-400 dark:aria-checked:border-vega-cdark-400',
+    'disabled:border-vega-clight-600 dark:disabled:border-vega-cdark-600',
+    'bg-vega-clight-700 dark:bg-vega-cdark-700'
   );
 
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-1.5 items-center">
       <CheckboxPrimitive.Root
         name={name}
         id={name}
@@ -40,25 +39,25 @@ export const Checkbox = ({
         disabled={disabled}
         data-testid={name}
       >
-        <CheckboxPrimitive.CheckboxIndicator className="flex justify-center items-center w-[15px] h-[15px] bg-black dark:bg-white">
+        <CheckboxPrimitive.CheckboxIndicator className="flex justify-center items-center w-3 h-3">
           {checked === 'indeterminate' ? (
             <span
               data-testid="indeterminate-icon"
-              className="absolute w-[8px] h-[2px] bg-white dark:bg-black"
+              className="absolute w-[8px] h-[2px] bg-vega-clight-50 dark:bg-vega-cdark-50"
             />
           ) : (
             <Icon
               name="tick"
-              size={3}
-              className="relative text-white dark:text-black"
+              size={2}
+              className="relative text-vega-clight-50 dark:text-vega-cdark-50"
             />
           )}
         </CheckboxPrimitive.CheckboxIndicator>
       </CheckboxPrimitive.Root>
       <label
         htmlFor={name}
-        className={classNames('text-sm flex-1', {
-          'dark:text-neutral-400 text-neutral-600': disabled,
+        className={classNames('text-xs flex-1', {
+          'text-vega-clight-200 dark:text-vega-cdark-200': disabled,
         })}
       >
         {label}
