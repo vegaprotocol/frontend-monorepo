@@ -1,6 +1,9 @@
 import { t } from '@vegaprotocol/i18n';
 import type { MarketInfoWithData } from '@vegaprotocol/markets';
-import { PriceMonitoringBoundsInfoPanel } from '@vegaprotocol/markets';
+import {
+  PriceMonitoringBoundsInfoPanel,
+  SuccessionLineInfoPanel,
+} from '@vegaprotocol/markets';
 import {
   LiquidityInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
@@ -103,6 +106,8 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
           <OracleInfoPanel market={market} type="settlementData" />
         </>
       )}
+      <h2 className={`${headerClassName} mb-4`}>{t('Succession line')}</h2>
+      <SuccessionLineInfoPanel market={market} />
     </div>
   );
 };
