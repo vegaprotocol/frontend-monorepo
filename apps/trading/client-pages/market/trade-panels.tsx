@@ -7,7 +7,7 @@ import {
 } from '../../lib/hooks/use-market-click-handler';
 import type { TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
-import { memo, useState } from 'react';
+import { useState } from 'react';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { NO_MARKET } from './constants';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -39,14 +39,7 @@ export const TradePanels = ({
   const [view, setView] = useState<TradingView>('candles');
 
   const renderView = () => {
-    const Component = memo<{
-      marketId: string;
-      onSelect: (marketId: string, metaKey?: boolean) => void;
-      onMarketClick?: (marketId: string) => void;
-      onOrderTypeClick?: (marketId: string) => void;
-      onClickCollateral: () => void;
-      pinnedAsset?: PinnedAsset;
-    }>(TradingViews[view].component);
+    const Component = TradingViews[view].component;
 
     if (!Component) {
       throw new Error(`No component for view: ${view}`);
@@ -71,9 +64,10 @@ export const TradePanels = ({
 
     if ('menu' in viewCfg) {
       const Menu = viewCfg.menu;
+
       return (
         <div className="flex gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
-          <Menu />
+          <Menu marketId={market?.id || ''} />
         </div>
       );
     }
