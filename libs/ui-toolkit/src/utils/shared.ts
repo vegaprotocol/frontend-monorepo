@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 
 export const defaultSelectElement = (hasError?: boolean, disabled?: boolean) =>
-  classnames(defaultFormElement(hasError, disabled), 'pr-10 h-8 py-1');
+  classnames(defaultFormElement(hasError, disabled), 'pr-10 min-h-8 py-1');
 
 export const defaultFormElement = (hasError?: boolean, disabled?: boolean) =>
   classnames(
