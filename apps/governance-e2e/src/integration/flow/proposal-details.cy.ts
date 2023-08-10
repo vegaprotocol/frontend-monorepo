@@ -447,8 +447,6 @@ describe(
         .contains('Insurance Pool Fraction')
         .realMouseUp()
         .realHover();
-      // cy.getByTestId('tooltip-content').should('not.exist')
-      // cy.contains('Insurance Pool Fraction').realHover();
       cy.getByTestId('tooltip-content', { timeout: 8000 }).should(
         'contain.text',
         'The fraction of the insurance pool balance that is carried over from the parent market to the successor.'
