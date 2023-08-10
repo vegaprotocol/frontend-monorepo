@@ -29,7 +29,7 @@ export const mockConnectWallet = () => {
 
 export const mockConnectWalletWithUserError = () => {
   cy.mockWallet((req) => {
-    aliasWalletConnectWithUserError(req);
+    aliasWalletConnectWithUserError(req, Cypress.env('VEGA_WALLET_API_TOKEN'));
   });
 };
 

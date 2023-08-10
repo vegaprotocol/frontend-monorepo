@@ -411,24 +411,26 @@ describe('Closed', () => {
         },
       },
     };
-    render(
-      <MemoryRouter>
-        <MockedProvider
-          mocks={[
-            mixedMarketsMock,
-            marketsDataMock,
-            oracleDataMock,
-            successorMarketsMock,
-          ]}
-        >
-          <VegaWalletContext.Provider
-            value={{ pubKey } as VegaWalletContextShape}
+    await act(() => {
+      render(
+        <MemoryRouter>
+          <MockedProvider
+            mocks={[
+              mixedMarketsMock,
+              marketsDataMock,
+              oracleDataMock,
+              successorMarketsMock,
+            ]}
           >
-            <Closed />
-          </VegaWalletContext.Provider>
-        </MockedProvider>
-      </MemoryRouter>
-    );
+            <VegaWalletContext.Provider
+              value={{ pubKey } as VegaWalletContextShape}
+            >
+              <Closed />
+            </VegaWalletContext.Provider>
+          </MockedProvider>
+        </MemoryRouter>
+      );
+    });
 
     await waitFor(() => {
       expect(

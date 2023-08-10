@@ -1,21 +1,23 @@
 import { t } from '@vegaprotocol/i18n';
 import {
-  Button,
   FormGroup,
   Input,
   InputError,
+  Intent,
+  TradingButton,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import type { ViewConnector } from '../connectors';
 import { useVegaWallet } from '../use-vega-wallet';
+import { ConnectDialogTitle } from './connect-dialog-elements';
 
 interface FormFields {
   address: string;
 }
 
-interface RestConnectorFormProps {
+interface ViewConnectorFormProps {
   connector: ViewConnector;
   onConnect: (connector: ViewConnector) => void;
   reset?: () => void;
@@ -25,7 +27,7 @@ export function ViewConnectorForm({
   connector,
   onConnect,
   reset,
-}: RestConnectorFormProps) {
+}: ViewConnectorFormProps) {
   const { connect } = useVegaWallet();
   const {
     register,
@@ -51,23 +53,8 @@ export function ViewConnectorForm({
 
   return (
     <>
-      {reset && (
-        <button
-          onClick={reset}
-          className="absolute p-2 top-0 left-0 md:top-2 md:left-2"
-          data-testid="back-button"
-        >
-          <VegaIcon
-            name={VegaIconNames.CHEVRON_LEFT}
-            aria-label="back"
-            size={16}
-          />
-        </button>
-      )}
+      <ConnectDialogTitle>{t('VIEW AS VEGA USER')}</ConnectDialogTitle>
       <form onSubmit={handleSubmit(onSubmit)} data-testid="view-connector-form">
-        <h1 className="text-2xl uppercase mb-6 text-center font-alpha calt">
-          {t('VIEW AS VEGA USER')}
-        </h1>
         <p className="mb-4">
           {t(
             'Browse from the perspective of another Vega user in read-only mode.'
@@ -87,14 +74,25 @@ export function ViewConnectorForm({
             <InputError intent="danger">{errors.address.message}</InputError>
           )}
         </FormGroup>
-        <Button
+        <TradingButton
           data-testid="connect"
-          variant="primary"
+          intent={Intent.Info}
           type="submit"
-          fill={true}
+          fill
         >
           {t('Browse network')}
-        </Button>
+        </TradingButton>
+        {reset && (
+          <div className="flex justify-end">
+            <button
+              onClick={reset}
+              className="p-2 text-sm underline"
+              data-testid="back-button"
+            >
+              <VegaIcon name={VegaIconNames.ARROW_LEFT} /> {t('Go back')}
+            </button>
+          </div>
+        )}
       </form>
     </>
   );

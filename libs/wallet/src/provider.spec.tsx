@@ -1,7 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import type { Transaction } from './connectors';
-import { ViewConnector } from './connectors';
-import { RestConnector } from './connectors';
+import { ViewConnector, JsonRpcConnector } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
 import { VegaWalletProvider } from './provider';
 import { LocalStorage } from '@vegaprotocol/utils';
@@ -10,7 +9,7 @@ import { WALLET_KEY } from './storage';
 import * as Environment from '@vegaprotocol/environment';
 import * as ReactHelpers from '@vegaprotocol/react-helpers';
 
-const restConnector = new RestConnector();
+const jsonRpcConnector = new JsonRpcConnector();
 const viewConnector = new ViewConnector();
 
 const setup = () => {
@@ -30,14 +29,21 @@ describe('VegaWalletProvider', () => {
     { publicKey: '222', name: 'public key 2' },
   ];
   const spyOnConnect = jest
-    .spyOn(restConnector, 'connect')
+    .spyOn(jsonRpcConnector, 'connect')
     .mockImplementation(() => Promise.resolve(mockPubKeys));
   const spyOnSend = jest
-    .spyOn(restConnector, 'sendTx')
-    .mockImplementation(() => Promise.resolve(null));
+    .spyOn(jsonRpcConnector, 'sendTx')
+    .mockImplementation(() =>
+      Promise.resolve({
+        transactionHash: 'tsx',
+        sentAt: '',
+        receivedAt: '',
+        signature: '',
+      })
+    );
   const storageSpy = jest.spyOn(LocalStorage, 'setItem');
   const spyOnDisconnect = jest
-    .spyOn(restConnector, 'disconnect')
+    .spyOn(jsonRpcConnector, 'disconnect')
     .mockImplementation(() => Promise.resolve());
 
   it('connects, disconnects and retrieve keypairs', async () => {
@@ -58,7 +64,7 @@ describe('VegaWalletProvider', () => {
 
     // Connect
     await act(async () => {
-      result.current.connect(restConnector);
+      result.current.connect(jsonRpcConnector);
     });
     expect(spyOnConnect).toHaveBeenCalled();
     expect(result.current.pubKeys).toHaveLength(mockPubKeys.length);
@@ -99,7 +105,7 @@ describe('VegaWalletProvider', () => {
 
     // Connect
     await act(async () => {
-      result.current.connect(restConnector);
+      result.current.connect(jsonRpcConnector);
       result.current.selectPubKey(mockPubKeys[0].publicKey);
     });
     expect(spyOnConnect).toHaveBeenCalled();
@@ -119,7 +125,7 @@ describe('VegaWalletProvider', () => {
     expect(result.current.pubKey).toBe(null);
 
     await act(async () => {
-      result.current.connect(restConnector);
+      result.current.connect(jsonRpcConnector);
       result.current.selectPubKey(mockPubKeys[0].publicKey);
     });
     expect(result.current.pubKey).toBe(mockPubKeys[0].publicKey);
