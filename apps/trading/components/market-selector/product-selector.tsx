@@ -6,12 +6,13 @@ import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 
 // Make sure these match the available __typename properties on product
 export const Product = {
+  All: 'All',
   Future: 'Future',
   Spot: 'Spot',
   Perpetual: 'Perpetual',
 } as const;
 
-export type ProductType = keyof typeof Product | 'All';
+export type ProductType = keyof typeof Product;
 
 const ProductTypeMapping: {
   [key in ProductType]: string;
@@ -29,10 +30,9 @@ export const ProductSelector = ({
   product: ProductType;
   onSelect: (product: ProductType) => void;
 }) => {
-  const products = ['All', ...Object.keys(Product)];
   return (
     <div className="flex mb-2">
-      {products.map((t) => {
+      {Object.keys(Product).map((t) => {
         const classes = classNames('px-3 py-1.5 rounded', {
           'bg-vega-clight-500 dark:bg-vega-cdark-500 text-default':
             t === product,
