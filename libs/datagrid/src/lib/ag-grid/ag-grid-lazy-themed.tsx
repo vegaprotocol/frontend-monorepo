@@ -14,7 +14,6 @@ const defaultProps: AgGridReactProps = {
 
 const defaultColDef = {
   resizable: true,
-  flex: 1,
 };
 
 export const AgGridThemed = ({

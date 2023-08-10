@@ -16,8 +16,12 @@ type State = {
   columnState?: ColumnState[];
 };
 
-type GridEvent = FilterChangedEvent | SortChangedEvent;
-type ColEvent = ColumnResizedEvent | ColumnMovedEvent | ColumnVisibleEvent;
+type GridEvent = FilterChangedEvent;
+type ColEvent =
+  | ColumnResizedEvent
+  | ColumnMovedEvent
+  | ColumnVisibleEvent
+  | SortChangedEvent;
 
 export const GRID_EVENT_DEBOUNCE_TIME = 300;
 

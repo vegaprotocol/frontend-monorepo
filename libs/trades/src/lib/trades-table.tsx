@@ -53,7 +53,6 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
         headerName: t('Price'),
         field: 'price',
         type: 'rightAligned',
-        width: 130,
         cellClass: changeCellClass,
         valueFormatter: ({
           value,
@@ -87,7 +86,6 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
       {
         headerName: t('Size'),
         field: 'size',
-        width: 125,
         type: 'rightAligned',
         valueFormatter: ({
           value,
@@ -107,8 +105,8 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
         headerName: t('Created at'),
         field: 'createdAt',
         type: 'rightAligned',
-        width: 170,
         cellClass: 'text-right',
+        flex: 1, // make created at always fill remaining space
         valueFormatter: ({
           value,
         }: VegaValueFormatterParams<Trade, 'createdAt'>) => {
