@@ -131,7 +131,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const hasAppended = !!(appendIconName || appendElement);
 
     const inputClassName = classNames(
-      'appearance-none dark:color-scheme-dark',
+      'appearance-none dark:color-scheme-dark px-3 h-8',
       className,
       {
         'pl-9': hasPrepended,
