@@ -121,7 +121,7 @@ export const getMetrics = (
       marginAccountBalance: marginAccount?.balance ?? '0',
       marketDecimalPlaces,
       marketId: market.id,
-      marketName: market.tradableInstrument.instrument.name,
+      marketName: market.tradableInstrument.instrument.code,
       marketTradingMode: market.tradingMode,
       markPrice: marketData ? marketData.markPrice : undefined,
       notional: notional

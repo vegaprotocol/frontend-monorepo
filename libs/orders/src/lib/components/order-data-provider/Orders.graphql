@@ -150,3 +150,9 @@ query StopOrders($partyId: ID!) {
     }
   }
 }
+
+query StopOrderById($stopOrderId: ID!) {
+  stopOrder(id: $stopOrderId) {
+    ...StopOrderFields
+  }
+}

@@ -730,6 +730,7 @@ context(
         .getByTestId('key-value-table-row')
         .contains(heading)
         .parent()
+        .parent()
         .siblings();
     }
   }
