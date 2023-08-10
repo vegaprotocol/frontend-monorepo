@@ -7,6 +7,10 @@ import { TableCell, TableRow, TableWithTbody } from '../../table';
 import DeterministicOrderDetails from '../../order-details/deterministic-order-details';
 import { CancelSummary } from '../../order-summary/order-cancellation';
 import Hash from '../../links/hash';
+import type { components } from '../../../../types/explorer';
+
+export type StopOrderCancellationTransaction =
+  components['schemas']['v1StopOrdersCancellation'];
 
 interface TxDetailsStopOrderCancelProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -22,12 +26,13 @@ export const TxDetailsStopOrderCancel = ({
   pubKey,
   blockData,
 }: TxDetailsStopOrderCancelProps) => {
-  if (!txData || !txData.command.stopOrdersCancellation) {
+  if (!txData || !txData.command.stopOrderId) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const marketId: string = txData.command.stopOrdersCancellation.marketId;
-  const orderId: string = txData.command.stopOrdersCancellation.orderId;
+  const command: StopOrderCancellationTransaction = txData.command;
+
+  const { marketId, stopOrderId } = command;
 
   return (
     <>
@@ -40,10 +45,10 @@ export const TxDetailsStopOrderCancel = ({
         <TableRow modifier="bordered">
           <TableCell>{t('Cancel stop order')}</TableCell>
           <TableCell>
-            {orderId ? (
-              <Hash text={orderId} />
+            {stopOrderId ? (
+              <Hash text={stopOrderId} />
             ) : (
-              <CancelSummary orderId={orderId} marketId={marketId} />
+              <CancelSummary orderId={stopOrderId} marketId={marketId} />
             )}
           </TableCell>
         </TableRow>
@@ -57,7 +62,7 @@ export const TxDetailsStopOrderCancel = ({
         ) : null}
       </TableWithTbody>
 
-      {orderId ? <DeterministicOrderDetails id={orderId} /> : null}
+      {stopOrderId ? <DeterministicOrderDetails id={stopOrderId} /> : null}
     </>
   );
 };
