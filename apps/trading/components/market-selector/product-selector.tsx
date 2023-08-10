@@ -6,6 +6,7 @@ import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 
 // Make sure these match the available __typename properties on product
 export const Product = {
+  All: 'All',
   Future: 'Future',
   Spot: 'Spot',
   Perpetual: 'Perpetual',
@@ -16,6 +17,7 @@ export type ProductType = keyof typeof Product;
 const ProductTypeMapping: {
   [key in ProductType]: string;
 } = {
+  [Product.All]: 'All',
   [Product.Future]: 'Futures',
   [Product.Spot]: 'Spot',
   [Product.Perpetual]: 'Perpetuals',
@@ -49,8 +51,12 @@ export const ProductSelector = ({
           </button>
         );
       })}
-      <Link to={Routes.MARKETS} className="flex items-center gap-2 ml-auto">
-        <span className="underline underline-offset-4">{t('All markets')}</span>
+      <Link
+        to={Routes.MARKETS}
+        className="flex items-center gap-2 ml-auto"
+        title={t('See all markets')}
+      >
+        <span className="underline underline-offset-4">{t('Browse')}</span>
         <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
       </Link>
     </div>
