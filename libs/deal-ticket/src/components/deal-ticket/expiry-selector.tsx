@@ -31,6 +31,7 @@ export const ExpirySelector = ({
         value={dateFormatted}
         onChange={(e) => onSelect(e.target.value)}
         min={minDate}
+        hasError={!!errorMessage}
       />
       {errorMessage && (
         <InputError testId="deal-ticket-error-message-expiry">

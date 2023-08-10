@@ -246,7 +246,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 validate: validateAmount(priceStep, 'Price'),
               }}
               control={control}
-              render={({ field }) => {
+              render={({ field, fieldState }) => {
                 const { value, ...props } = field;
                 return (
                   <div className="mb-2">
@@ -256,6 +256,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                       step={priceStep}
                       appendElement={asset.symbol}
                       value={value || ''}
+                      hasError={!!fieldState.error}
                       {...props}
                     />
                   </div>
@@ -294,7 +295,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                   'Trailing percentage offset'
                 ),
               }}
-              render={({ field }) => {
+              render={({ field, fieldState }) => {
                 const { value, ...props } = field;
                 return (
                   <div className="mb-2">
@@ -304,6 +305,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                       appendElement="%"
                       data-testid="triggerTrailingPercentOffset"
                       value={value || ''}
+                      hasError={!!fieldState.error}
                       {...props}
                     />
                   </div>
@@ -358,7 +360,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 },
                 validate: validateAmount(sizeStep, 'Size'),
               }}
-              render={({ field }) => {
+              render={({ field, fieldState }) => {
                 const { value, ...props } = field;
                 return (
                   <Input
@@ -370,6 +372,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                     onWheel={(e) => e.currentTarget.blur()}
                     data-testid="order-size"
                     value={value || ''}
+                    hasError={!!fieldState.error}
                     {...props}
                   />
                 );
@@ -397,7 +400,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                     },
                     validate: validateAmount(priceStep, 'Price'),
                   }}
-                  render={({ field }) => {
+                  render={({ field, fieldState }) => {
                     const { value, ...props } = field;
                     return (
                       <Input
@@ -408,6 +411,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                         data-testid="order-price"
                         onWheel={(e) => e.currentTarget.blur()}
                         value={value || ''}
+                        hasError={!!fieldState.error}
                         {...props}
                       />
                     );
@@ -449,11 +453,12 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           <Controller
             name="timeInForce"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <Select
                 id="select-time-in-force"
                 className="w-full"
                 data-testid="order-tif"
+                hasError={!!fieldState.error}
                 {...field}
               >
                 <option

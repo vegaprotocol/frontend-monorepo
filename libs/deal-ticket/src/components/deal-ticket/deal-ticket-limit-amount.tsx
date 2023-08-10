@@ -59,7 +59,7 @@ export const DealTicketLimitAmount = ({
                 },
                 validate: validateAmount(sizeStep, 'Size'),
               }}
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <Input
                   id="input-order-size-limit"
                   className="w-full"
@@ -68,6 +68,7 @@ export const DealTicketLimitAmount = ({
                   min={sizeStep}
                   data-testid="order-size"
                   onWheel={(e) => e.currentTarget.blur()}
+                  hasError={!!fieldState.error}
                   {...field}
                 />
               )}
@@ -93,7 +94,7 @@ export const DealTicketLimitAmount = ({
                 },
                 validate: validateAmount(priceStep, 'Price'),
               }}
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <Input
                   id="input-price-quote"
                   className="w-full"
@@ -101,6 +102,7 @@ export const DealTicketLimitAmount = ({
                   step={priceStep}
                   data-testid="order-price"
                   onWheel={(e) => e.currentTarget.blur()}
+                  hasError={!!fieldState.error}
                   {...field}
                 />
               )}

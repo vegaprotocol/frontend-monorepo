@@ -45,7 +45,7 @@ export const DealTicketMarketAmount = ({
               },
               validate: validateAmount(sizeStep, 'Size'),
             }}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <Input
                 id="input-order-size-market"
                 className="w-full"
@@ -54,6 +54,7 @@ export const DealTicketMarketAmount = ({
                 min={sizeStep}
                 onWheel={(e) => e.currentTarget.blur()}
                 data-testid="order-size"
+                hasError={!!fieldState.error}
                 {...field}
               />
             )}

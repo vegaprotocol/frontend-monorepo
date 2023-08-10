@@ -103,6 +103,7 @@ export const TimeInForceSelector = ({
         }}
         className="w-full"
         data-testid="order-tif"
+        hasError={!!errorMessage}
       >
         {options.map(([key, value]) => (
           <option key={key} value={value}>
