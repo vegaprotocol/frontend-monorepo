@@ -606,7 +606,7 @@ context(
         });
     });
 
-    it.only('able to submit successor market proposal', function () {
+    it('able to submit successor market proposal', function () {
       const proposalTitle = 'Test successor market proposal';
 
       cy.createMarket();
