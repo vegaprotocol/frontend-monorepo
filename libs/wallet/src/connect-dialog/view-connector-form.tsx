@@ -11,6 +11,7 @@ import {
 import { useForm } from 'react-hook-form';
 import type { ViewConnector } from '../connectors';
 import { useVegaWallet } from '../use-vega-wallet';
+import { ConnectDialogTitle } from './connect-dialog-elements';
 
 interface FormFields {
   address: string;
@@ -51,48 +52,48 @@ export function ViewConnectorForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} data-testid="view-connector-form">
-      <h1 className="text-2xl uppercase mb-6 font-alpha calt">
-        {t('VIEW AS VEGA USER')}
-      </h1>
-      <p className="mb-4">
-        {t(
-          'Browse from the perspective of another Vega user in read-only mode.'
+    <>
+      <ConnectDialogTitle>{t('VIEW AS VEGA USER')}</ConnectDialogTitle>
+      <form onSubmit={handleSubmit(onSubmit)} data-testid="view-connector-form">
+        <p className="mb-4">
+          {t(
+            'Browse from the perspective of another Vega user in read-only mode.'
+          )}
+        </p>
+        <FormGroup label={t('Vega Pubkey')} labelFor="address">
+          <Input
+            {...register('address', {
+              required: t('Required'),
+              validate: validatePubkey,
+            })}
+            id="address"
+            data-testid="address"
+            type="text"
+          />
+          {errors.address?.message && (
+            <InputError intent="danger">{errors.address.message}</InputError>
+          )}
+        </FormGroup>
+        <TradingButton
+          data-testid="connect"
+          intent={Intent.Info}
+          type="submit"
+          fill
+        >
+          {t('Browse network')}
+        </TradingButton>
+        {reset && (
+          <div className="flex justify-end">
+            <button
+              onClick={reset}
+              className="p-2 text-sm underline"
+              data-testid="back-button"
+            >
+              <VegaIcon name={VegaIconNames.ARROW_LEFT} /> {t('Go back')}
+            </button>
+          </div>
         )}
-      </p>
-      <FormGroup label={t('Vega Pubkey')} labelFor="address">
-        <Input
-          {...register('address', {
-            required: t('Required'),
-            validate: validatePubkey,
-          })}
-          id="address"
-          data-testid="address"
-          type="text"
-        />
-        {errors.address?.message && (
-          <InputError intent="danger">{errors.address.message}</InputError>
-        )}
-      </FormGroup>
-      <TradingButton
-        data-testid="connect"
-        intent={Intent.Info}
-        type="submit"
-        fill
-      >
-        {t('Browse network')}
-      </TradingButton>
-      {reset && (
-        <div className="flex justify-end">
-          <button
-            onClick={reset}
-            className="p-2 text-sm underline"
-            data-testid="back-button"
-          >
-            <VegaIcon name={VegaIconNames.ARROW_LEFT} /> {t('Go back')}
-          </button>
-        </div>
-      )}
-    </form>
+      </form>
+    </>
   );
 }

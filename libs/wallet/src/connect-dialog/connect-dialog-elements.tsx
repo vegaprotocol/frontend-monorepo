@@ -25,7 +25,7 @@ export const ConnectDialogContent = ({ children }: { children: ReactNode }) => {
 
 export const ConnectDialogFooter = () => {
   const wrapperClasses = classNames(
-    'flex justify-center gap-4 mt-6',
+    'flex justify-center gap-4 mt-4',
     'px-4 md:px-8 pt-4 md:pt-6',
     'border-t border-vega-light-200 dark:border-vega-dark-200',
     'text-vega-light-400 dark:text-vega-dark-400 text-sm'
