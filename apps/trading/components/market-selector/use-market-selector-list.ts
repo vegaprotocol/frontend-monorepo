@@ -5,6 +5,7 @@ import { calcCandleVolume, useMarketList } from '@vegaprotocol/markets';
 import { priceChangePercentage } from '@vegaprotocol/utils';
 import type { Filter } from '../../components/market-selector/market-selector';
 import { Sort } from './sort-dropdown';
+import { Product } from './product-selector';
 
 // Used for sort order and filter
 const MARKET_TEMPLATE = [
@@ -29,7 +30,7 @@ export const useMarketSelectorList = ({
       // only selected product type
       .filter((m) => {
         if (
-          product === 'All' ||
+          product === Product.All ||
           m.tradableInstrument.instrument.product.__typename === product
         ) {
           return true;

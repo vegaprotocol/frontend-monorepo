@@ -122,7 +122,7 @@ describe('useMarketSelectorList', () => {
     expect(result.current.markets).toEqual([markets[2]]);
     rerender({
       searchTerm: '',
-      product: 'All',
+      product: Product.All,
       sort: Sort.None,
       assets: [],
     });

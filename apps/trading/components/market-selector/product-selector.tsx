@@ -17,7 +17,7 @@ export type ProductType = keyof typeof Product;
 const ProductTypeMapping: {
   [key in ProductType]: string;
 } = {
-  All: 'All',
+  [Product.All]: 'All',
   [Product.Future]: 'Futures',
   [Product.Spot]: 'Spot',
   [Product.Perpetual]: 'Perpetuals',
@@ -56,6 +56,7 @@ export const ProductSelector = ({
         className="flex items-center gap-2 ml-auto"
         title={t('See all markets')}
       >
+        <span className="underline underline-offset-4">{t('Browse')}</span>
         <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
       </Link>
     </div>
