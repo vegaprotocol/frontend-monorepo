@@ -10,6 +10,7 @@ export const DepositsMenu = () => {
       intent={Intent.Primary}
       size="extra-small"
       onClick={() => setView({ type: ViewType.Deposit })}
+      data-testid="deposit-button"
     >
       {t('Deposit')}
     </TradingButton>
