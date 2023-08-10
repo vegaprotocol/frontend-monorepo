@@ -26,7 +26,7 @@ export const TxDetailsStopOrderCancel = ({
   pubKey,
   blockData,
 }: TxDetailsStopOrderCancelProps) => {
-  if (!txData || !txData.command.stopOrderId) {
+  if (!txData || !txData.command) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
