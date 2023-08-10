@@ -9,7 +9,7 @@ import {
   useMarket,
   useMarketPrice,
 } from '@vegaprotocol/markets';
-import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
+import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { DealTicket } from './deal-ticket';
 import { FLAGS } from '@vegaprotocol/environment';
@@ -42,7 +42,7 @@ export const DealTicketContainer = ({
   const { data: marketPrice } = useMarketPrice(market?.id);
   const create = useVegaTransactionStore((state) => state.create);
   return (
-    <AsyncRenderer
+    <AsyncRendererInline
       data={market && marketData}
       loading={marketLoading || marketDataLoading}
       error={marketError || marketDataError}
@@ -65,10 +65,8 @@ export const DealTicketContainer = ({
           />
         )
       ) : (
-        <Splash>
-          <p>{t('Could not load market')}</p>
-        </Splash>
+        <p>{t('Could not load market')}</p>
       )}
-    </AsyncRenderer>
+    </AsyncRendererInline>
   );
 };
