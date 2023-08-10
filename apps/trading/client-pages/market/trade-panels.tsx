@@ -1,13 +1,9 @@
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import type { Market } from '@vegaprotocol/markets';
 import { OracleBanner } from '@vegaprotocol/markets';
-import {
-  useMarketClickHandler,
-  useMarketLiquidityClickHandler,
-} from '../../lib/hooks/use-market-click-handler';
 import type { TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
-import { memo, useState } from 'react';
+import { useState } from 'react';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { NO_MARKET } from './constants';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -20,33 +16,14 @@ import { FLAGS } from '@vegaprotocol/environment';
 
 interface TradePanelsProps {
   market: Market | null;
-  onSelect: (marketId: string, metaKey?: boolean) => void;
-  onMarketClick?: (marketId: string) => void;
-  onOrderTypeClick?: (marketId: string) => void;
-  onClickCollateral: () => void;
   pinnedAsset?: PinnedAsset;
 }
 
-export const TradePanels = ({
-  market,
-  onSelect,
-  onClickCollateral,
-  pinnedAsset,
-}: TradePanelsProps) => {
-  const onMarketClick = useMarketClickHandler(true);
-  const onOrderTypeClick = useMarketLiquidityClickHandler();
-
+export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
   const [view, setView] = useState<TradingView>('candles');
 
   const renderView = () => {
-    const Component = memo<{
-      marketId: string;
-      onSelect: (marketId: string, metaKey?: boolean) => void;
-      onMarketClick?: (marketId: string) => void;
-      onOrderTypeClick?: (marketId: string) => void;
-      onClickCollateral: () => void;
-      pinnedAsset?: PinnedAsset;
-    }>(TradingViews[view].component);
+    const Component = TradingViews[view].component;
 
     if (!Component) {
       throw new Error(`No component for view: ${view}`);
@@ -54,16 +31,7 @@ export const TradePanels = ({
 
     if (!market) return <Splash>{NO_MARKET}</Splash>;
 
-    return (
-      <Component
-        marketId={market?.id}
-        onSelect={onSelect}
-        onClickCollateral={onClickCollateral}
-        pinnedAsset={pinnedAsset}
-        onMarketClick={onMarketClick}
-        onOrderTypeClick={onOrderTypeClick}
-      />
-    );
+    return <Component marketId={market?.id} pinnedAsset={pinnedAsset} />;
   };
 
   const renderMenu = () => {
@@ -71,9 +39,10 @@ export const TradePanels = ({
 
     if ('menu' in viewCfg) {
       const Menu = viewCfg.menu;
+
       return (
         <div className="flex gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
-          <Menu />
+          <Menu marketId={market?.id || ''} />
         </div>
       );
     }

@@ -25,11 +25,10 @@ export const FilterStatusValue = {
 };
 
 export interface OrderContainerProps {
-  marketId?: string;
   filter?: Filter;
 }
 
-export const OrdersContainer = ({ marketId, filter }: OrderContainerProps) => {
+export const OrdersContainer = ({ filter }: OrderContainerProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const onMarketClick = useMarketClickHandler(true);
   const onOrderTypeClick = useMarketLiquidityClickHandler();
@@ -45,7 +44,6 @@ export const OrdersContainer = ({ marketId, filter }: OrderContainerProps) => {
   return (
     <OrderListManager
       partyId={pubKey}
-      marketId={marketId}
       filter={filter}
       onMarketClick={onMarketClick}
       onOrderTypeClick={onOrderTypeClick}

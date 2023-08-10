@@ -10,7 +10,6 @@ import { TradeGrid } from './trade-grid';
 import { TradePanels } from './trade-panels';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
-import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { ViewType, useSidebar } from '../../components/sidebar';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
@@ -65,8 +64,6 @@ export const MarketPage = () => {
   const update = useGlobalStore((store) => store.update);
   const lastMarketId = useGlobalStore((store) => store.marketId);
 
-  const onSelect = useMarketClickHandler();
-
   const { data, error, loading } = useMarket(marketId);
 
   useEffect(() => {
@@ -87,7 +84,6 @@ export const MarketPage = () => {
       return (
         <TradeGrid
           market={data}
-          onSelect={onSelect}
           pinnedAsset={
             data?.tradableInstrument.instrument.product.settlementAsset
           }
@@ -97,11 +93,12 @@ export const MarketPage = () => {
     return (
       <TradePanels
         market={data}
-        onSelect={onSelect}
-        onClickCollateral={() => navigate('/portfolio')}
+        pinnedAsset={
+          data?.tradableInstrument.instrument.product.settlementAsset
+        }
       />
     );
-  }, [largeScreen, data, onSelect, navigate]);
+  }, [largeScreen, data]);
 
   if (!data && marketId) {
     return (
