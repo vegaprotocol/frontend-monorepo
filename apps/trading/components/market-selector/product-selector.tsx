@@ -29,9 +29,10 @@ export const ProductSelector = ({
   product: ProductType;
   onSelect: (product: ProductType) => void;
 }) => {
+  const products = ['All', ...Object.keys(Product)];
   return (
     <div className="flex mb-2">
-      {['All', ...Object.keys(Product)].map((t) => {
+      {products.map((t) => {
         const classes = classNames('px-3 py-1.5 rounded', {
           'bg-vega-clight-500 dark:bg-vega-cdark-500 text-default':
             t === product,

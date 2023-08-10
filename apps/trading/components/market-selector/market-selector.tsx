@@ -21,7 +21,7 @@ import classNames from 'classnames';
 
 export type Filter = {
   searchTerm: string;
-  product: ProductType | 'All';
+  product: ProductType;
   sort: SortType;
   assets: string[];
 };
