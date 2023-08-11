@@ -32,16 +32,26 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         {
           headerName: t('Market'),
           field: 'market.tradableInstrument.instrument.code',
-          valueFormatter: ({
+          minWidth: 200,
+          cellRenderer: ({
             value,
-          }: VegaValueFormatterParams<
+            data,
+          }: VegaICellRendererParams<
             AccountFields,
             'market.tradableInstrument.instrument.code'
           >) => {
-            if (!value) return 'None';
-            return value;
+            return value ? (
+              <MarketNameCell
+                value={value}
+                productType={
+                  data?.market?.tradableInstrument.instrument.product
+                    .__typename ?? ''
+                }
+              />
+            ) : (
+              'None'
+            );
           },
-          minWidth: 200,
         },
         {
           headerName: t('Account type'),
@@ -126,7 +136,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         }
         ref={ref}
         rowHeight={34}
-        components={{ PriceCell, MarketNameCell, ProgressBarCell }}
+        components={{ PriceCell, ProgressBarCell }}
         tooltipShowDelay={500}
         defaultColDef={{
           flex: 1,

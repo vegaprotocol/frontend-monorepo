@@ -12,17 +12,20 @@ import {
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/i18n';
+import { MarketProductPill } from '@vegaprotocol/datagrid';
 
 export const MarketSelectorItem = ({
   market,
   style,
   currentMarketId,
   onSelect,
+  allProducts,
 }: {
   market: MarketMaybeWithDataAndCandles;
   style: CSSProperties;
   currentMarketId?: string;
   onSelect: (marketId: string) => void;
+  allProducts: boolean;
 }) => {
   return (
     <div style={style} role="row">
@@ -36,13 +39,19 @@ export const MarketSelectorItem = ({
         })}
         onClick={() => onSelect(market.id)}
       >
-        <MarketData market={market} />
+        <MarketData market={market} allProducts={allProducts} />
       </Link>
     </div>
   );
 };
 
-const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
+const MarketData = ({
+  market,
+  allProducts,
+}: {
+  market: MarketMaybeWithDataAndCandles;
+  allProducts: boolean;
+}) => {
   const { data } = useMarketDataUpdateSubscription({
     variables: {
       marketId: market.id,
@@ -84,7 +93,14 @@ const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
     <>
       <div className="w-2/5" role="gridcell">
         <h3 className="text-ellipsis text-sm lg:text-base whitespace-nowrap overflow-hidden">
-          {market.tradableInstrument.instrument.code}
+          {market.tradableInstrument.instrument.code}{' '}
+          {allProducts && (
+            <MarketProductPill
+              productType={
+                market.tradableInstrument.instrument.product.__typename ?? ''
+              }
+            />
+          )}
         </h3>
         {mode && (
           <p className="text-xs text-vega-orange-500 dark:text-vega-orange-550 whitespace-nowrap">

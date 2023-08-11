@@ -10,9 +10,9 @@ interface Props {
   className?: string;
 }
 
-const getClasses = (size: Size, intent?: Intent, className?: string) => {
+const getClasses = (size: Size, intent: Intent, className?: string) => {
   return classNames(
-    ['rounded-md', 'leading-none', 'font-alpha', 'py-1 px-2'],
+    ['rounded-md', 'leading-none', 'font-alpha'],
     {
       'bg-vega-yellow dark:bg-vega-yellow': intent === Intent.Primary,
       'bg-vega-clight-500 dark:bg-vega-cdark-500': intent === Intent.None,
@@ -25,11 +25,11 @@ const getClasses = (size: Size, intent?: Intent, className?: string) => {
         intent === Intent.Primary,
     },
     {
-      'text-lg': size === 'lg',
-      'text-base': size === 'md',
-      'text-sma': size === 'sm',
-      'text-xs': size === 'xs',
-      'text-[10px]': size === 'xxs',
+      'text-lg py-1 px-2': size === 'lg',
+      'text-base py-1 px-2': size === 'md',
+      'text-small py-1 px-1': size === 'sm',
+      'text-xs py-1 px-1': size === 'xs',
+      'text-[10px] py-0 px-1': size === 'xxs',
     },
     className
   );
@@ -37,7 +37,9 @@ const getClasses = (size: Size, intent?: Intent, className?: string) => {
 
 export const Pill = ({ intent, size, className, children }: Props) => {
   return (
-    <span className={getClasses(size || 'md', intent, className)}>
+    <span
+      className={getClasses(size || 'md', intent || Intent.None, className)}
+    >
       {children}
     </span>
   );
