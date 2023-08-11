@@ -8,7 +8,7 @@ import { useProposalQuery } from './__generated__/Proposal';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import { ENV } from '../../../config';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { marketInfoWithDataProvider } from '@vegaprotocol/markets';
+import { marketInfoProvider } from '@vegaprotocol/markets';
 import { useAssetQuery } from '@vegaprotocol/assets';
 import {
   NetworkParams,
@@ -95,7 +95,7 @@ export const ProposalContainer = () => {
     loading: newMarketLoading,
     error: newMarketError,
   } = useDataProvider({
-    dataProvider: marketInfoWithDataProvider,
+    dataProvider: marketInfoProvider,
     skipUpdates: true,
     variables: {
       marketId: data?.proposal?.id || '',
@@ -109,12 +109,9 @@ export const ProposalContainer = () => {
     error: parentMarketIdError,
   } = useParentMarketIdQuery({
     variables: {
-      marketId: newMarketData?.data?.market?.id || '',
+      marketId: newMarketData?.id || '',
     },
-    skip:
-      !FLAGS.SUCCESSOR_MARKETS ||
-      !isSuccessor ||
-      !newMarketData?.data?.market?.id,
+    skip: !FLAGS.SUCCESSOR_MARKETS || !isSuccessor || !newMarketData?.id,
   });
 
   const {
@@ -122,7 +119,7 @@ export const ProposalContainer = () => {
     loading: parentMarketLoading,
     error: parentMarketError,
   } = useDataProvider({
-    dataProvider: marketInfoWithDataProvider,
+    dataProvider: marketInfoProvider,
     skipUpdates: true,
     variables: {
       marketId: parentMarketId?.market?.parentMarketID || '',

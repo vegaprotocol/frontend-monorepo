@@ -13,7 +13,7 @@ import Routes from '../../../routes';
 import { ProposalMarketData } from '../proposal-market-data';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
-import type { MarketInfoWithData } from '@vegaprotocol/markets';
+import type { MarketInfo } from '@vegaprotocol/markets';
 import type { AssetQuery } from '@vegaprotocol/assets';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
@@ -31,8 +31,8 @@ export enum ProposalType {
 export interface ProposalProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
   networkParams: Partial<NetworkParamsResult>;
-  newMarketData?: MarketInfoWithData | null;
-  parentMarketData?: MarketInfoWithData | null;
+  newMarketData?: MarketInfo | null;
+  parentMarketData?: MarketInfo | null;
   assetData?: AssetQuery | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   restData: any;
