@@ -20,6 +20,10 @@ import { MarginHealthChart } from './margin-health-chart';
 import { MarketNameCell } from '@vegaprotocol/datagrid';
 import { AccountType } from '@vegaprotocol/types';
 
+const defaultColDef = {
+  resizable: true,
+  sortable: true,
+};
 interface BreakdownTableProps extends AgGridReactProps {
   data: AccountFields[] | null;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
@@ -124,9 +128,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         rowHeight={34}
         components={{ PriceCell, MarketNameCell, ProgressBarCell }}
         tooltipShowDelay={500}
-        defaultColDef={{
-          sortable: true,
-        }}
+        defaultColDef={defaultColDef}
         columnDefs={coldefs}
       />
     );

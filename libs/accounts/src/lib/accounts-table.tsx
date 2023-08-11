@@ -58,6 +58,12 @@ export const accountValuesComparator = (
   return valueA > valueB ? 1 : -1;
 };
 
+const defaultColDef = {
+  resizable: true,
+  sortable: true,
+  tooltipComponent: TooltipCellComponent,
+  comparator: accountValuesComparator,
+};
 export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
   successCallback(rowsThisBlock: AccountFields[], lastRow?: number): void;
 }
@@ -309,11 +315,7 @@ export const AccountTable = ({
       getRowId={({ data }: { data: AccountFields }) => data.asset.id}
       tooltipShowDelay={500}
       rowData={data}
-      defaultColDef={{
-        tooltipComponent: TooltipCellComponent,
-        sortable: true,
-        comparator: accountValuesComparator,
-      }}
+      defaultColDef={defaultColDef}
       columnDefs={colDefs}
       getRowHeight={getPinnedAssetRowHeight}
       pinnedTopRowData={pinnedRow ? [pinnedRow] : undefined}

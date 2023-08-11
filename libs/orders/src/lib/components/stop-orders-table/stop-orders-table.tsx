@@ -29,6 +29,12 @@ import type { AgGridReact } from 'ag-grid-react';
 import type { StopOrder } from '../order-data-provider/stop-orders-data-provider';
 import type { ColDef } from 'ag-grid-community';
 
+const defaultColDef = {
+  resizable: true,
+  sortable: true,
+  filterParams: { buttons: ['reset'] },
+};
+
 export type StopOrdersTableProps = TypedDataAgGrid<StopOrder> & {
   onCancel: (order: StopOrder) => void;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
@@ -240,10 +246,7 @@ export const StopOrdersTable = memo<
 
   return (
     <AgGrid
-      defaultColDef={{
-        sortable: true,
-        filterParams: { buttons: ['reset'] },
-      }}
+      defaultColDef={defaultColDef}
       columnDefs={columnDefs}
       getRowId={({ data }) => data.id}
       components={{ MarketNameCell }}

@@ -37,6 +37,12 @@ import type { Order } from '../order-data-provider';
 import { Filter } from '../order-list-manager';
 import type { ColDef } from 'ag-grid-community';
 
+const defaultColDef = {
+  resizable: true,
+  sortable: true,
+  filterParams: { buttons: ['reset'] },
+};
+
 export type OrderListTableProps = TypedDataAgGrid<Order> & {
   marketId?: string;
   onCancel: (order: Order) => void;
@@ -324,10 +330,7 @@ export const OrderListTable = memo<
       return (
         <AgGrid
           ref={ref}
-          defaultColDef={{
-            sortable: true,
-            filterParams: { buttons: ['reset'] },
-          }}
+          defaultColDef={defaultColDef}
           columnDefs={columnDefs}
           getRowId={({ data }) => data.id}
           components={{ MarketNameCell, OrderTypeCell }}

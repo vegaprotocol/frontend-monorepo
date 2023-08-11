@@ -31,6 +31,12 @@ const dateValueFormatter = ({ value }: { value?: string | null }) => {
   return getDateTimeFormat().format(new Date(value));
 };
 
+const defaultColDef = {
+  resizable: true,
+  sortable: true,
+  tooltipComponent: TooltipCellComponent,
+};
+
 export interface LiquidityTableProps
   extends TypedDataAgGrid<LiquidityProvisionData> {
   symbol?: string;
@@ -185,10 +191,7 @@ export const LiquidityTable = ({
       overlayNoRowsTemplate={t('No liquidity provisions')}
       getRowId={({ data }: { data: LiquidityProvisionData }) => data.id || ''}
       tooltipShowDelay={500}
-      defaultColDef={{
-        tooltipComponent: TooltipCellComponent,
-        sortable: true,
-      }}
+      defaultColDef={defaultColDef}
       {...props}
       columnDefs={colDefs}
     />
