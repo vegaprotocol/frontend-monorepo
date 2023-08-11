@@ -56,6 +56,7 @@ context(
         function () {
           cy.clearLocalStorage();
           turnTelemetryOff();
+          cy.mockChainId();
           cy.reload();
           waitForSpinner();
           cy.connectVegaWallet();
