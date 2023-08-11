@@ -223,23 +223,6 @@ export const OrderViewDialog = ({
         </div>
       </KeyValueTableRow>
       {order.icebergOrder && (
-        <KeyValueTableRow key={'order-side'} className="ml-4">
-          <div data-testid={'order-side-label'}>{t('Side')}</div>
-          <div
-            data-testid={`order-side-value`}
-            className={classNames('text-right', {
-              // BUY
-              'text-market-green-600 dark:text-market-green':
-                order.side === Schema.Side.SIDE_BUY,
-              // SELL
-              'text-market-red': order.side === Schema.Side.SIDE_SELL,
-            })}
-          >
-            {Schema.SideMapping[order.side as Schema.Side]}
-          </div>
-        </KeyValueTableRow>
-      )}
-      {order.icebergOrder && (
         <KeyValueTableRow
           key={'order-iceberg-order-peak-size'}
           className="ml-4"
