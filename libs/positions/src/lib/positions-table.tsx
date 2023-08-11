@@ -84,6 +84,14 @@ AmountCell.displayName = 'AmountCell';
 export const getRowId = ({ data }: { data: Position }) =>
   `${data.partyId}-${data.marketId}`;
 
+const defaultColDef = {
+  sortable: true,
+  filter: true,
+  filterParams: { buttons: ['reset'] },
+  tooltipComponent: TooltipCellComponent,
+  resizable: true,
+};
+
 export const PositionsTable = ({
   onClose,
   onMarketClick,
@@ -99,12 +107,7 @@ export const PositionsTable = ({
       overlayNoRowsTemplate={t('No positions')}
       getRowId={getRowId}
       tooltipShowDelay={500}
-      defaultColDef={{
-        sortable: true,
-        filter: true,
-        filterParams: { buttons: ['reset'] },
-        tooltipComponent: TooltipCellComponent,
-      }}
+      defaultColDef={defaultColDef}
       components={{
         AmountCell,
         PriceFlashCell,

@@ -3,6 +3,7 @@ import { AgGridReact } from 'ag-grid-react';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/i18n';
 import classNames from 'classnames';
+import type { ColDef } from 'ag-grid-community';
 
 const defaultProps: AgGridReactProps = {
   enableCellTextSelection: true,
@@ -12,7 +13,7 @@ const defaultProps: AgGridReactProps = {
   suppressColumnMoveAnimation: true,
 };
 
-const defaultColDef = {
+const defaultColDef: ColDef = {
   resizable: true,
 };
 
@@ -34,13 +35,10 @@ export const AgGridThemed = ({
   return (
     <div className={wrapperClasses}>
       <AgGridReact
+        defaultColDef={defaultColDef}
+        ref={gridRef}
         {...defaultProps}
         {...props}
-        defaultColDef={{
-          ...defaultColDef,
-          ...props.defaultColDef,
-        }}
-        ref={gridRef}
       />
     </div>
   );

@@ -1,4 +1,3 @@
-import debounce from 'lodash/debounce';
 import type {
   ColumnMovedEvent,
   ColumnResizedEvent,
@@ -8,7 +7,7 @@ import type {
   FirstDataRenderedEvent,
   SortChangedEvent,
 } from 'ag-grid-community';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 type State = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,14 +15,7 @@ type State = {
   columnState?: ColumnState[];
 };
 
-type GridEvent = FilterChangedEvent;
-type ColEvent =
-  | ColumnResizedEvent
-  | ColumnMovedEvent
-  | ColumnVisibleEvent
-  | SortChangedEvent;
-
-export const GRID_EVENT_DEBOUNCE_TIME = 300;
+type ColEvent = ColumnResizedEvent | ColumnMovedEvent;
 
 export const useDataGridEvents = (
   state: State,
@@ -31,38 +23,54 @@ export const useDataGridEvents = (
 ) => {
   // This function can be called very frequently by the onColumnResized
   // grid callback, so its memoized to only update after resizing is finished
-  const onFilterChange = useMemo(
-    () =>
-      debounce(({ api }: GridEvent) => {
-        if (!api) return;
-        const filterModel = api.getFilterModel();
-        callback({ filterModel });
-      }, GRID_EVENT_DEBOUNCE_TIME),
+  const onFilterChanged = useCallback(
+    ({ api }: FilterChangedEvent) => {
+      if (!api) return;
+      const filterModel = api.getFilterModel();
+      callback({ filterModel });
+    },
     [callback]
   );
 
-  const onColumnChange = useMemo(
-    () =>
-      debounce(({ api, columnApi, source }: ColEvent) => {
-        if (!api || !columnApi) return;
-        // only call back on user interactions
-        const permittedEvents = [
-          'uiColumnMoved',
-          'uiColumnResized',
-          'uiColumnSorted',
-        ];
-        if (!permittedEvents.includes(source)) {
-          return;
-        }
+  const onColumnChange = useCallback(
+    ({ columnApi, source, finished }: ColEvent) => {
+      if (finished !== undefined && !finished) return;
 
-        const columnState = columnApi.getColumnState();
-        callback({ columnState });
-      }, GRID_EVENT_DEBOUNCE_TIME),
+      // only call back on user interactions
+      const permittedEvents = [
+        'uiColumnResized',
+        'uiColumnDragged',
+        'uiColumnMoved',
+      ];
+      if (!permittedEvents.includes(source)) {
+        return;
+      }
+
+      const columnState = columnApi.getColumnState();
+
+      callback({ columnState });
+    },
+    [callback]
+  );
+
+  const onSortChanged = useCallback(
+    ({ columnApi }: SortChangedEvent) => {
+      const columnState = columnApi.getColumnState();
+      callback({ columnState });
+    },
+    [callback]
+  );
+
+  const onColumnVisible = useCallback(
+    ({ columnApi }: ColumnVisibleEvent) => {
+      const columnState = columnApi.getColumnState();
+      callback({ columnState });
+    },
     [callback]
   );
 
   // check if we have stored column states or filter models and apply if we do
-  const onFirstDataRendered = useCallback(
+  const onGridReady = useCallback(
     ({ api, columnApi }: FirstDataRenderedEvent) => {
       if (!api || !columnApi) return;
 
@@ -83,11 +91,11 @@ export const useDataGridEvents = (
   );
 
   return {
-    onFirstDataRendered,
-    onColumnResized: onColumnChange,
-    onColumnVisible: onColumnChange,
+    onGridReady,
+    onSortChanged,
+    onColumnVisible,
+    onFilterChanged,
     onColumnMoved: onColumnChange,
-    onSortChanged: onColumnChange,
-    onFilterChanged: onFilterChange,
+    onColumnResized: onColumnChange,
   };
 };
