@@ -8,7 +8,7 @@ import { ClientRouter } from './client-router';
  */
 export default function Index() {
   return (
-    <div>
+    <>
       <Head>
         <meta charSet="utf-8" />
         <link
@@ -31,6 +31,6 @@ export default function Index() {
         <title>VEGA Console dApp</title>
       </Head>
       <ClientRouter />
-    </div>
+    </>
   );
 }
