@@ -6,9 +6,5 @@ import { ClientRouter } from './client-router';
  * have to serve a static site via next export
  */
 export default function Index() {
-  return (
-    <>
-      <ClientRouter />
-    </>
-  );
+  return <ClientRouter />;
 }
