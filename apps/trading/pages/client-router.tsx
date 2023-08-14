@@ -6,6 +6,7 @@ import { t } from '@vegaprotocol/i18n';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import trimEnd from 'lodash/trimEnd';
 import { LayoutWithSidebar } from '../components/layouts';
+import Head from 'next/head';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
@@ -124,6 +125,27 @@ export const ClientRouter = () => {
         </div>
       }
     >
+      <Head>
+        <meta charSet="utf-8" />
+        <link
+          rel="icon"
+          type="image/x-icon"
+          href="https://static.vega.xyz/favicon.ico"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="description" content="Vega Protocol - Console" />
+
+        <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+        <link rel="manifest" href="assets/manifest.json" />
+        <link
+          rel="preload"
+          href="https://static.vega.xyz/AlphaLyrae-Medium.woff2"
+          as="font"
+          type="font/woff2"
+        />
+        <title>VEGA Console dApp</title>
+      </Head>
       {routes}
     </Suspense>
   );
