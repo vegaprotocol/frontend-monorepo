@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import { ClientRouter } from './client-router';
 
 /**
