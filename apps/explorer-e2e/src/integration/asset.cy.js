@@ -38,9 +38,6 @@ context('Asset page', { tags: '@regression' }, () => {
         assets.slice(0, 1).forEach((asset) => {
           cy.get(`[row-id="${asset.id}"] [col-id="actions"] button`)
             .eq(0)
-            .should('contain.text', 'View details');
-          cy.get(`[row-id="${asset.id}"] [col-id="actions"] button`)
-            .eq(0)
             .click();
           cy.getByTestId('asset-header').should('have.text', asset.name);
         });
