@@ -29,8 +29,8 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
           # comment out "restore-keys" if you need to rebuild yarn from 0
-          restore-keys: |
-            ${{ runner.os }}-cache-node-modules-
+          # restore-keys: |
+          #   ${{ runner.os }}-cache-node-modules-
 
       - name: Setup node
         uses: actions/setup-node@v3
