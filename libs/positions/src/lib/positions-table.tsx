@@ -24,6 +24,8 @@ import {
   TooltipCellComponent,
   ExternalLink,
   Icon,
+  VegaIconNames,
+  VegaIcon,
 } from '@vegaprotocol/ui-toolkit';
 import {
   volumePrefix,
@@ -418,7 +420,7 @@ export const PositionsTable = ({
                           data-testid="close-position"
                           onClick={() => data && onClose(data)}
                         >
-                          {t('Close')}
+                          <VegaIcon name={VegaIconNames.CROSS} size={16} />
                         </ButtonLink>
                       ) : null}
                       {data?.assetId && (

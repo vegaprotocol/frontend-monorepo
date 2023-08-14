@@ -291,14 +291,14 @@ export const OrderListTable = memo<
                           data-testid="edit"
                           onClick={() => onEdit(data)}
                         >
-                          {t('Edit')}
+                          <VegaIcon name={VegaIconNames.EDIT} size={16} />
                         </ButtonLink>
                       )}
                       <ButtonLink
                         data-testid="cancel"
                         onClick={() => onCancel(data)}
                       >
-                        {t('Cancel')}
+                        <VegaIcon name={VegaIconNames.CROSS} size={16} />
                       </ButtonLink>
                     </>
                   )}
