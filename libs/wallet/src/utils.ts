@@ -1,15 +1,10 @@
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
 import type { Market, Order } from '@vegaprotocol/types';
-import { OrderTimeInForce, OrderType, AccountType } from '@vegaprotocol/types';
+import { AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { sha3_256 } from 'js-sha3';
-import type {
-  OrderAmendment,
-  OrderSubmission,
-  Transaction,
-  Transfer,
-} from './connectors';
+import type { OrderAmendment, Transaction, Transfer } from './connectors';
 import type { Exact } from 'type-fest';
 
 /**
@@ -28,36 +23,6 @@ export const encodeTransaction = (tx: Transaction): string => {
     ethers.utils.toUtf8Bytes(JSON.stringify(tx))
   );
 };
-
-export const normalizeOrderSubmission = (
-  order: OrderSubmission,
-  decimalPlaces: number,
-  positionDecimalPlaces: number
-): OrderSubmission => ({
-  marketId: order.marketId,
-  reference: order.reference,
-  type: order.type,
-  side: order.side,
-  timeInForce: order.timeInForce,
-  price:
-    order.type === OrderType.TYPE_LIMIT && order.price
-      ? removeDecimal(order.price, decimalPlaces)
-      : undefined,
-  size: removeDecimal(order.size, positionDecimalPlaces),
-  expiresAt:
-    order.expiresAt && order.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
-      ? toNanoSeconds(order.expiresAt)
-      : undefined,
-  postOnly: order.postOnly,
-  reduceOnly: order.reduceOnly,
-  icebergOpts: order.icebergOpts && {
-    peakSize: removeDecimal(order.icebergOpts.peakSize, positionDecimalPlaces),
-    minimumVisibleSize: removeDecimal(
-      order.icebergOpts.minimumVisibleSize,
-      positionDecimalPlaces
-    ),
-  },
-});
 
 export const normalizeOrderAmendment = <T extends Exact<OrderAmendment, T>>(
   order: Pick<Order, 'id' | 'timeInForce' | 'size' | 'expiresAt'>,
@@ -98,3 +63,5 @@ export const normalizeTransfer = <T extends Exact<Transfer, T>>(
     oneOff: {},
   };
 };
+
+export const isBrowserWalletInstalled = () => Boolean(window.vega);

@@ -8,12 +8,15 @@ import { useProposalQuery } from './__generated__/Proposal';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import { ENV } from '../../../config';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { marketInfoWithDataProvider } from '@vegaprotocol/markets';
+import { marketInfoProvider } from '@vegaprotocol/markets';
 import { useAssetQuery } from '@vegaprotocol/assets';
 import {
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
+import { useParentMarketIdQuery } from '@vegaprotocol/markets';
+import { FLAGS } from '@vegaprotocol/environment';
+import { useSuccessorMarketProposalDetails } from '@vegaprotocol/proposals';
 
 export const ProposalContainer = () => {
   const [
@@ -54,6 +57,10 @@ export const ProposalContainer = () => {
     skip: !params.proposalId,
   });
 
+  const successor = useSuccessorMarketProposalDetails(params.proposalId);
+
+  const isSuccessor = !!successor?.parentMarketId || !!successor.code;
+
   const {
     state: {
       data: originalMarketProposalRestData,
@@ -88,11 +95,38 @@ export const ProposalContainer = () => {
     loading: newMarketLoading,
     error: newMarketError,
   } = useDataProvider({
-    dataProvider: marketInfoWithDataProvider,
+    dataProvider: marketInfoProvider,
     skipUpdates: true,
     variables: {
       marketId: data?.proposal?.id || '',
       skip: !data?.proposal?.id,
+    },
+  });
+
+  const {
+    data: parentMarketId,
+    loading: parentMarketIdLoading,
+    error: parentMarketIdError,
+  } = useParentMarketIdQuery({
+    variables: {
+      marketId: newMarketData?.id || '',
+    },
+    skip: !FLAGS.SUCCESSOR_MARKETS || !isSuccessor || !newMarketData?.id,
+  });
+
+  const {
+    data: parentMarketData,
+    loading: parentMarketLoading,
+    error: parentMarketError,
+  } = useDataProvider({
+    dataProvider: marketInfoProvider,
+    skipUpdates: true,
+    variables: {
+      marketId: parentMarketId?.market?.parentMarketID || '',
+      skip:
+        !FLAGS.SUCCESSOR_MARKETS ||
+        !isSuccessor ||
+        !parentMarketId?.market?.parentMarketID,
     },
   });
 
@@ -160,6 +194,8 @@ export const ProposalContainer = () => {
         newMarketLoading ||
         assetLoading ||
         networkParamsLoading ||
+        parentMarketIdLoading ||
+        parentMarketLoading ||
         (restLoading ? (restLoading as boolean) : false) ||
         (originalMarketProposalRestLoading
           ? (originalMarketProposalRestLoading as boolean)
@@ -172,15 +208,18 @@ export const ProposalContainer = () => {
         error ||
         newMarketError ||
         assetError ||
+        networkParamsError ||
+        parentMarketIdError ||
+        parentMarketError ||
         restError ||
         originalMarketProposalRestError ||
-        previouslyEnactedMarketProposalsRestError ||
-        networkParamsError
+        previouslyEnactedMarketProposalsRestError
       }
       data={{
         ...data,
         ...networkParams,
         ...(newMarketData ? { newMarketData } : {}),
+        ...(parentMarketData ? { parentMarketData } : {}),
         ...(assetData ? { assetData } : {}),
         ...(restData ? { restData } : {}),
         ...(originalMarketProposalRestData
@@ -197,6 +236,7 @@ export const ProposalContainer = () => {
           networkParams={networkParams}
           restData={restData}
           newMarketData={newMarketData}
+          parentMarketData={parentMarketData}
           assetData={assetData}
           originalMarketProposalRestData={originalMarketProposalRestData}
           mostRecentlyEnactedAssociatedMarketProposal={

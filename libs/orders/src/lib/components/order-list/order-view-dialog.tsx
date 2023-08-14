@@ -18,6 +18,7 @@ import {
 import type { Order } from '../order-data-provider';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
+import classNames from 'classnames';
 
 interface OrderViewDialogProps {
   isOpen: boolean;
@@ -48,6 +49,21 @@ export const OrderViewDialog = ({
             ) : (
               order.market?.tradableInstrument.instrument.name
             )}
+          </div>
+        </KeyValueTableRow>
+        <KeyValueTableRow key={'order-side'}>
+          <div data-testid={'order-side-label'}>{t('Side')}</div>
+          <div
+            data-testid={`order-side-value`}
+            className={classNames({
+              // BUY
+              'text-market-green-600 dark:text-market-green':
+                order.side === Schema.Side.SIDE_BUY,
+              // SELL
+              'text-market-red': order.side === Schema.Side.SIDE_SELL,
+            })}
+          >
+            {Schema.SideMapping[order.side as Schema.Side]}
           </div>
         </KeyValueTableRow>
         <KeyValueTableRow key={'order-type'}>
@@ -223,7 +239,6 @@ export const OrderViewDialog = ({
           <div data-testid={`order-iceberg-order-peak-size-value`}>
             <Size
               value={order.icebergOrder.peakSize}
-              side={order.side}
               positionDecimalPlaces={
                 order.market?.positionDecimalPlaces as number
               }
@@ -248,7 +263,6 @@ export const OrderViewDialog = ({
           <div data-testid={`order-iceberg-order-minimum-visible-size-value`}>
             <Size
               value={order.icebergOrder.minimumVisibleSize}
-              side={order.side}
               positionDecimalPlaces={
                 order.market?.positionDecimalPlaces as number
               }
@@ -267,7 +281,6 @@ export const OrderViewDialog = ({
           <div data-testid={`order-iceberg-order-reserved-remaining-value`}>
             <Size
               value={order.icebergOrder.reservedRemaining}
-              side={order.side}
               positionDecimalPlaces={
                 order.market?.positionDecimalPlaces as number
               }

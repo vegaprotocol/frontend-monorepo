@@ -28,10 +28,10 @@ export const assetProvider = makeDataProvider<
   getData,
 });
 
-export const useAssetDataProvider = (assetId: string) => {
+export const useAssetDataProvider = (assetId: string, skip?: boolean) => {
   return useDataProvider({
     dataProvider: assetProvider,
     variables: { assetId: assetId || '' },
-    skip: !assetId,
+    skip: !assetId || skip,
   });
 };

@@ -7,21 +7,12 @@ import {
 } from '@vegaprotocol/network-parameters';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { Transfer } from '@vegaprotocol/wallet';
-import {
-  useVegaTransactionStore,
-  useVegaWallet,
-  useVegaWalletDialogStore,
-} from '@vegaprotocol/wallet';
+import { useVegaTransactionStore, useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useMemo } from 'react';
 import { accountsDataProvider } from './accounts-data-provider';
 import { TransferForm } from './transfer-form';
 import sortBy from 'lodash/sortBy';
-import {
-  ExternalLink,
-  Intent,
-  Lozenge,
-  Notification,
-} from '@vegaprotocol/ui-toolkit';
+import { Lozenge } from '@vegaprotocol/ui-toolkit';
 
 export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   const { pubKey, pubKeys } = useVegaWallet();
@@ -31,10 +22,6 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });
-
-  const openVegaWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
 
   const create = useVegaTransactionStore((store) => store.create);
 
@@ -74,28 +61,6 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
         )}
         {t('. If you are at all unsure, stop and seek advice.')}
       </p>
-      {!pubKey && (
-        <div className="mb-4">
-          <Notification
-            intent={Intent.Warning}
-            message={
-              <p className="text-sm pb-2">
-                You need a{' '}
-                <ExternalLink href="https://vega.xyz/wallet">
-                  Vega wallet
-                </ExternalLink>{' '}
-                to make a transfer.
-              </p>
-            }
-            buttonProps={{
-              text: t('Connect wallet'),
-              action: openVegaWalletDialog,
-              dataTestId: 'order-connect-wallet',
-              size: 'small',
-            }}
-          />
-        </div>
-      )}
       <TransferForm
         pubKey={pubKey}
         pubKeys={pubKeys ? pubKeys?.map((pk) => pk.publicKey) : null}

@@ -855,5 +855,6 @@
   "Estimated time to upgrade": "Estimated time to upgrade",
   "Upgraded at": "Upgraded at",
   "dataIsIdentical": "Data is identical",
-  "updatesToMarket": "Updates to market"
+  "updatesToMarket": "Updates to market",
+  "viewAsParty": "View as party"
 }

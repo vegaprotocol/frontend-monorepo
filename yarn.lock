@@ -9694,10 +9694,10 @@ ajv@^8.9.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-allotment@1.18.1:
-  version "1.18.1"
-  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.18.1.tgz#a31b0cb5b301309334dfa352c7704361437058de"
-  integrity sha512-ZhmpHoSvxHyPT5XjzTHeCBjzCMIFn1aGdNAzBCZhj1CcRMp31CaJCi+lfweoOLDbbjJqbFZqUk3xf+p7Mb0x5A==
+allotment@1.19.0:
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.19.0.tgz#8241a2e3db45e6b1e23f6ade29e392eab4297958"
+  integrity sha512-qL/1faHUoCOvMstCFGkaGSK/nVoSAVN6NLFuIW4P6D5fvKdgxV8/KNfMFeuQUXReodILp4I6z+5a9zmuqK5t4g==
   dependencies:
     classnames "^2.3.0"
     eventemitter3 "^5.0.0"
@@ -9706,10 +9706,10 @@ allotment@1.18.1:
     lodash.isequal "^4.5.0"
     use-resize-observer "^9.0.0"
 
-allotment@1.19.0:
-  version "1.19.0"
-  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.19.0.tgz#8241a2e3db45e6b1e23f6ade29e392eab4297958"
-  integrity sha512-qL/1faHUoCOvMstCFGkaGSK/nVoSAVN6NLFuIW4P6D5fvKdgxV8/KNfMFeuQUXReodILp4I6z+5a9zmuqK5t4g==
+allotment@1.19.2:
+  version "1.19.2"
+  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.19.2.tgz#6026a944678958c961dafcfefe9a768af4d6610e"
+  integrity sha512-RiiCLa4AQATPsQDXvleyvdRzSsd2J7naLuY+eK1sn1zeXBKMdsCwWuICZ+ZCeDCrJXjVV+q/mHfB2LT7PEYmTw==
   dependencies:
     classnames "^2.3.0"
     eventemitter3 "^5.0.0"

@@ -7,14 +7,10 @@ import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
-export const PositionsContainer = ({
-  onMarketClick,
-  allKeys,
-}: {
-  onMarketClick?: (marketId: string) => void;
-  allKeys?: boolean;
-}) => {
+export const PositionsContainer = ({ allKeys }: { allKeys?: boolean }) => {
+  const onMarketClick = useMarketClickHandler(true);
   const { pubKey, pubKeys, isReadOnly } = useVegaWallet();
 
   const gridStore = usePositionsStore((store) => store.gridStore);

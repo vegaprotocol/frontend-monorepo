@@ -63,6 +63,7 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
       cy.getByTestId(orderTIFDropDown).select('TIME_IN_FORCE_GTC');
       cy.getByTestId(orderSizeField).clear().type('1');
       cy.getByTestId(orderPriceField).clear().type('1.123456');
+      cy.getByTestId(placeOrderBtn).click();
       cy.getByTestId('deal-ticket-error-message-price-limit').should(
         'have.text',
         'Price accepts up to 5 decimal places'
@@ -73,6 +74,7 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
   describe('market order', () => {
     before(() => {
       cy.getByTestId(toggleMarket).click();
+      cy.getByTestId(placeOrderBtn).click();
     });
 
     it('must not see the price unit', function () {

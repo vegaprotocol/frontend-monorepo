@@ -10,10 +10,7 @@ import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { Controller } from 'react-hook-form';
 import classNames from 'classnames';
 
-export type DealTicketMarketAmountProps = Omit<
-  DealTicketAmountProps,
-  'orderType'
->;
+export type DealTicketMarketAmountProps = Omit<DealTicketAmountProps, 'type'>;
 
 export const DealTicketMarketAmount = ({
   control,
@@ -21,8 +18,6 @@ export const DealTicketMarketAmount = ({
   marketData,
   marketPrice,
   sizeError,
-  update,
-  size,
 }: DealTicketMarketAmountProps) => {
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
@@ -50,17 +45,16 @@ export const DealTicketMarketAmount = ({
               },
               validate: validateAmount(sizeStep, 'Size'),
             }}
-            render={() => (
+            render={({ field }) => (
               <Input
                 id="input-order-size-market"
                 className="w-full"
                 type="number"
-                value={size}
-                onChange={(e) => update({ size: e.target.value })}
                 step={sizeStep}
                 min={sizeStep}
                 onWheel={(e) => e.currentTarget.blur()}
                 data-testid="order-size"
+                {...field}
               />
             )}
           />

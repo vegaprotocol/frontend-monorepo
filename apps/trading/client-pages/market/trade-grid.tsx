@@ -9,7 +9,6 @@ import { OracleBanner } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
 import { Filter } from '@vegaprotocol/orders';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
-import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import {
   ResizableGrid,
   ResizableGridPanel,
@@ -24,7 +23,6 @@ import { FLAGS } from '@vegaprotocol/environment';
 
 interface TradeGridProps {
   market: Market | null;
-  onSelect: (marketId: string, metaKey?: boolean) => void;
   pinnedAsset?: PinnedAsset;
 }
 
@@ -40,20 +38,19 @@ const MainGrid = memo(
     const [sizesMiddle, handleOnMiddleLayoutChange] = usePaneLayout({
       id: 'middle-1',
     });
-    const onMarketClick = useMarketClickHandler(true);
 
     return (
       <ResizableGrid vertical onChange={handleOnLayoutChange}>
-        <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
-          <ResizableGrid
-            proportionalLayout={false}
-            minSize={200}
-            onChange={handleOnMiddleLayoutChange}
-          >
+        <ResizableGridPanel
+          preferredSize={sizes[0]}
+          priority={LayoutPriority.High}
+          minSize={200}
+        >
+          <ResizableGrid onChange={handleOnMiddleLayoutChange}>
             <ResizableGridPanel
               priority={LayoutPriority.High}
               minSize={200}
-              preferredSize={sizesMiddle[1] || '50%'}
+              preferredSize={sizesMiddle[0] || '75%'}
             >
               <TradeGridChild>
                 <Tabs storageKey="console-trade-grid-main-left">
@@ -74,8 +71,8 @@ const MainGrid = memo(
               </TradeGridChild>
             </ResizableGridPanel>
             <ResizableGridPanel
-              preferredSize={sizesMiddle[2] || 300}
               minSize={200}
+              preferredSize={sizesMiddle[1] || 300}
             >
               <TradeGridChild>
                 <Tabs storageKey="console-trade-grid-main-right">
@@ -91,37 +88,34 @@ const MainGrid = memo(
           </ResizableGrid>
         </ResizableGridPanel>
         <ResizableGridPanel
-          priority={LayoutPriority.Low}
           preferredSize={sizes[1] || '25%'}
           minSize={50}
+          priority={LayoutPriority.Low}
         >
           <TradeGridChild>
             <Tabs storageKey="console-trade-grid-bottom">
               <Tab id="positions" name={t('Positions')}>
-                <TradingViews.positions.component
-                  onMarketClick={onMarketClick}
-                />
+                <TradingViews.positions.component />
               </Tab>
-              <Tab id="open-orders" name={t('Open')}>
-                <TradingViews.orders.component
-                  marketId={marketId}
-                  filter={Filter.Open}
-                />
+              <Tab
+                id="open-orders"
+                name={t('Open')}
+                menu={<TradingViews.activeOrders.menu marketId={marketId} />}
+              >
+                <TradingViews.orders.component filter={Filter.Open} />
               </Tab>
               <Tab id="closed-orders" name={t('Closed')}>
-                <TradingViews.orders.component
-                  marketId={marketId}
-                  filter={Filter.Closed}
-                />
+                <TradingViews.orders.component filter={Filter.Closed} />
               </Tab>
               <Tab id="rejected-orders" name={t('Rejected')}>
-                <TradingViews.orders.component
-                  marketId={marketId}
-                  filter={Filter.Rejected}
-                />
+                <TradingViews.orders.component filter={Filter.Rejected} />
               </Tab>
-              <Tab id="orders" name={t('All')}>
-                <TradingViews.orders.component marketId={marketId} />
+              <Tab
+                id="orders"
+                name={t('All')}
+                menu={<TradingViews.orders.menu marketId={marketId} />}
+              >
+                <TradingViews.orders.component />
               </Tab>
               {FLAGS.STOP_ORDERS ? (
                 <Tab id="stop-orders" name={t('Stop orders')}>
@@ -129,17 +123,14 @@ const MainGrid = memo(
                 </Tab>
               ) : null}
               <Tab id="fills" name={t('Fills')}>
-                <TradingViews.fills.component
-                  marketId={marketId}
-                  onMarketClick={onMarketClick}
-                />
+                <TradingViews.fills.component marketId={marketId} />
               </Tab>
-              <Tab id="accounts" name={t('Collateral')}>
-                <TradingViews.collateral.component
-                  pinnedAsset={pinnedAsset}
-                  onMarketClick={onMarketClick}
-                  hideButtons
-                />
+              <Tab
+                id="accounts"
+                name={t('Collateral')}
+                menu={<TradingViews.collateral.menu />}
+              >
+                <TradingViews.collateral.component pinnedAsset={pinnedAsset} />
               </Tab>
             </Tabs>
           </TradeGridChild>

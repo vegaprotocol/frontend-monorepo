@@ -1,15 +1,15 @@
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import {
-  DealTicketType,
-  useDealTicketTypeStore,
-} from '../../hooks/use-type-store';
+  isStopOrderType,
+  useDealTicketFormValues,
+} from '../../hooks/use-form-values';
 import { StopOrder } from './deal-ticket-stop-order';
 import {
   useStaticMarketData,
   useMarket,
   useMarketPrice,
 } from '@vegaprotocol/markets';
-import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
+import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { DealTicket } from './deal-ticket';
 import { FLAGS } from '@vegaprotocol/environment';
@@ -17,7 +17,6 @@ import { FLAGS } from '@vegaprotocol/environment';
 interface DealTicketContainerProps {
   marketId: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-  onClickCollateral?: () => void;
   onDeposit: (assetId: string) => void;
 }
 
@@ -25,7 +24,9 @@ export const DealTicketContainer = ({
   marketId,
   ...props
 }: DealTicketContainerProps) => {
-  const type = useDealTicketTypeStore((state) => state.type[marketId]);
+  const showStopOrder = useDealTicketFormValues((state) =>
+    isStopOrderType(state.formValues[marketId]?.type)
+  );
   const {
     data: market,
     error: marketError,
@@ -41,16 +42,14 @@ export const DealTicketContainer = ({
   const { data: marketPrice } = useMarketPrice(market?.id);
   const create = useVegaTransactionStore((state) => state.create);
   return (
-    <AsyncRenderer
+    <AsyncRendererInline
       data={market && marketData}
       loading={marketLoading || marketDataLoading}
       error={marketError || marketDataError}
       reload={reload}
     >
       {market && marketData ? (
-        FLAGS.STOP_ORDERS &&
-        (type === DealTicketType.StopLimit ||
-          type === DealTicketType.StopMarket) ? (
+        FLAGS.STOP_ORDERS && showStopOrder ? (
           <StopOrder
             market={market}
             marketPrice={marketPrice}
@@ -66,10 +65,8 @@ export const DealTicketContainer = ({
           />
         )
       ) : (
-        <Splash>
-          <p>{t('Could not load market')}</p>
-        </Splash>
+        <p>{t('Could not load market')}</p>
       )}
-    </AsyncRenderer>
+    </AsyncRendererInline>
   );
 };

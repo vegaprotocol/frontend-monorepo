@@ -5,8 +5,8 @@ import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { Controller } from 'react-hook-form';
 
 export type DealTicketLimitAmountProps = Omit<
-  Omit<DealTicketAmountProps, 'marketData'>,
-  'orderType'
+  DealTicketAmountProps,
+  'marketData' | 'type'
 >;
 
 export const DealTicketLimitAmount = ({
@@ -14,9 +14,6 @@ export const DealTicketLimitAmount = ({
   market,
   sizeError,
   priceError,
-  update,
-  price,
-  size,
 }: DealTicketLimitAmountProps) => {
   const priceStep = toDecimal(market?.decimalPlaces);
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
@@ -62,17 +59,16 @@ export const DealTicketLimitAmount = ({
                 },
                 validate: validateAmount(sizeStep, 'Size'),
               }}
-              render={() => (
+              render={({ field }) => (
                 <Input
                   id="input-order-size-limit"
                   className="w-full"
                   type="number"
-                  value={size}
-                  onChange={(e) => update({ size: e.target.value })}
                   step={sizeStep}
                   min={sizeStep}
                   data-testid="order-size"
                   onWheel={(e) => e.currentTarget.blur()}
+                  {...field}
                 />
               )}
             />
@@ -95,19 +91,17 @@ export const DealTicketLimitAmount = ({
                   value: priceStep,
                   message: t('Price cannot be lower than ' + priceStep),
                 },
-                // @ts-ignore this fulfills the interface but still errors
                 validate: validateAmount(priceStep, 'Price'),
               }}
-              render={() => (
+              render={({ field }) => (
                 <Input
                   id="input-price-quote"
                   className="w-full"
                   type="number"
-                  value={price}
-                  onChange={(e) => update({ price: e.target.value })}
                   step={priceStep}
                   data-testid="order-price"
                   onWheel={(e) => e.currentTarget.blur()}
+                  {...field}
                 />
               )}
             />

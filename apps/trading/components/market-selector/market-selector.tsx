@@ -39,7 +39,7 @@ export const MarketSelector = ({
 }) => {
   const [filter, setFilter] = useState<Filter>({
     searchTerm: '',
-    product: Product.Future,
+    product: Product.All,
     sort: Sort.None,
     assets: [],
   });
