@@ -434,7 +434,7 @@ describe('Closed', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: 'SuccessorCode' })
+        screen.getByRole('button', { name: /^SuccessorCode/ })
       ).toBeInTheDocument();
     });
     expect(

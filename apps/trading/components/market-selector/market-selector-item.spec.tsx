@@ -99,6 +99,7 @@ describe('MarketSelectorItem', () => {
             currentMarketId={market.id}
             style={{}}
             onSelect={jest.fn()}
+            allProducts={false}
           />
         </MockedProvider>
       </MemoryRouter>

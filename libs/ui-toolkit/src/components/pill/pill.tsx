@@ -1,9 +1,9 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, HTMLProps } from 'react';
 import { Intent } from '../../utils/intent';
 import classNames from 'classnames';
 
 type Size = 'lg' | 'md' | 'sm' | 'xs' | 'xxs';
-interface Props {
+interface Props extends Omit<HTMLProps<HTMLSpanElement>, 'size'> {
   children: ReactNode;
   intent?: Intent;
   size?: Size;
@@ -35,10 +35,17 @@ const getClasses = (size: Size, intent: Intent, className?: string) => {
   );
 };
 
-export const Pill = ({ intent, size, className, children }: Props) => {
+export const Pill = ({
+  intent,
+  size,
+  className,
+  children,
+  ...props
+}: Props) => {
   return (
     <span
       className={getClasses(size || 'md', intent || Intent.None, className)}
+      {...props}
     >
       {children}
     </span>
