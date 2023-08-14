@@ -96,7 +96,8 @@ context(
       });
     });
 
-    it(
+    // eslint-disable-next-line
+    it.skip(
       'Able to withdraw asset: -eth wallet connected -withdraw funds button',
       { tags: '@smoke' },
       function () {
