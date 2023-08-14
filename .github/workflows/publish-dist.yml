@@ -89,7 +89,7 @@ jobs:
 
       - name: yarn install
         run: yarn install --pure-lockfile
-  
+
       # https://docs.github.com/en/actions/learn-github-actions/contexts
       - name: Define dist variables
         if: ${{ github.event_name == 'push' }}
