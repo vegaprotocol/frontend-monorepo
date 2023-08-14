@@ -107,6 +107,7 @@ export const NetworkParams = {
   market_liquidity_targetstake_triggering_ratio:
     'market_liquidity_targetstake_triggering_ratio',
   transfer_fee_factor: 'transfer_fee_factor',
+  network_validators_incumbentBonus: 'network_validators_incumbentBonus',
 } as const;
 
 type Params = typeof NetworkParams;

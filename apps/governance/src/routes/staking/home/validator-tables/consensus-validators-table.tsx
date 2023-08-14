@@ -389,10 +389,10 @@ export const ConsensusValidatorsTable = ({
         },
         {
           field: ValidatorFields.NORMALISED_VOTING_POWER,
-          headerName: t(ValidatorFields.NORMALISED_VOTING_POWER).toString(),
+          headerName: t('votingPower').toString(),
           headerTooltip: t('NormalisedVotingPowerDescription').toString(),
           cellRenderer: VotingPowerRenderer,
-          width: 200,
+          width: 120,
         },
         {
           field: ValidatorFields.TOTAL_PENALTIES,
