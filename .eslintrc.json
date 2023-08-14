@@ -51,7 +51,8 @@
             "ul": ["list"],
             "ol": ["list"]
           }
-        ]
+        ],
+        "cypress/unsafe-to-chain-command": 0
       }
     },
     {

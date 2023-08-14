@@ -71,6 +71,7 @@ export const initializeWalletConnector = (
               qrModalOptions: {
                 themeMode: 'dark',
                 themeVariables: {
+                  // @ts-ignore bypass theme variables ts check
                   '--w3m-z-index': '40',
                   '--w3m-accent-color': theme.colors.vega.yellow.DEFAULT,
                   '--w3m-background-color': theme.colors.vega.dark[100],
