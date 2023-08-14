@@ -46,7 +46,8 @@ export const MarketNameProposalCell = ({
         : '';
     const content = (
       <>
-        {value} <MarketProductPill productType={productType} />
+        <span data-testid="market-code">{value}</span>
+        <MarketProductPill productType={productType} />
       </>
     );
     if (data?.id) {

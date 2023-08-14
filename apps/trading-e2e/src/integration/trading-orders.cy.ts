@@ -120,7 +120,9 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
     cy.getByTestId('All').click();
 
     cy.getByTestId('tab-orders')
-      .get(`.ag-center-cols-container [col-id='${orderSymbol}']`)
+      .get(
+        `.ag-center-cols-container [col-id='${orderSymbol}'] [data-testid="market-code"]`
+      )
       .should('have.length.at.least', expectedOrderList.length)
       .then(($symbols) => {
         const symbolNames: string[] = [];

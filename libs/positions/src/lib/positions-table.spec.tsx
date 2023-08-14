@@ -82,6 +82,7 @@ describe('Positions', () => {
       render(<PositionsTable rowData={singleRowData} isReadOnly={false} />);
     });
     expect(screen.getByText('ETH/BTC (31 july 2022)')).toBeTruthy();
+    expect(screen.getByText('Futr')).toBeInTheDocument();
   });
 
   it('Does not fail if the market name does not match the split pattern', async () => {
