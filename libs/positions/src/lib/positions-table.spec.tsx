@@ -37,6 +37,7 @@ const singleRow: Position = {
   totalBalance: '123456',
   unrealisedPNL: '456',
   updatedAt: '2022-07-27T15:02:58.400Z',
+  productType: 'Future'
 };
 
 const singleRowData = [singleRow];
