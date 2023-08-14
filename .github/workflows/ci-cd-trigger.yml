@@ -22,28 +22,6 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
-      # - name: Cache node modules
-      #   id: cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: node_modules
-      #     key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
-          # comment out "restore-keys" if you need to rebuild yarn from 0
-          # restore-keys: |
-          #   ${{ runner.os }}-cache-node-modules-
-
-      - name: Setup node
-        uses: actions/setup-node@v3
-        if: steps.cache.outputs.cache-hit != 'true'
-        with:
-          node-version-file: '.nvmrc'
-          # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
-          cache: yarn
-
-      - name: yarn install
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn install --pure-lockfile
-
   lint-pr-title:
     needs: node-modules
     if: ${{ github.event_name == 'pull_request' }}
@@ -70,11 +48,14 @@ jobs:
           # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
           cache: yarn
 
+      - name: yarn install
+        run: yarn install --pure-lockfile
+
       # - name: Cache node modules
       #   uses: actions/cache@v3
       #   with:
       #     path: node_modules
-          # key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+      # key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v3
