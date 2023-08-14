@@ -15,14 +15,13 @@ type State = {
   columnState?: ColumnState[];
 };
 
-type ColEvent = ColumnResizedEvent | ColumnMovedEvent;
-
 export const useDataGridEvents = (
   state: State,
   callback: (data: State) => void
 ) => {
-  // This function can be called very frequently by the onColumnResized
-  // grid callback, so its memoized to only update after resizing is finished
+  /**
+   * Callback for filter events
+   */
   const onFilterChanged = useCallback(
     ({ api }: FilterChangedEvent) => {
       if (!api) return;
@@ -32,16 +31,26 @@ export const useDataGridEvents = (
     [callback]
   );
 
-  const onColumnChange = useCallback(
-    ({ columnApi, source, finished }: ColEvent) => {
-      if (finished !== undefined && !finished) return;
+  /**
+   * Callback for column resized and column moved events, which can be
+   * triggered in quick succession. Uses the finished flag to not call the
+   * store callback unnecessarily
+   */
+  const onDebouncedColumnChange = useCallback(
+    ({
+      columnApi,
+      source,
+      finished,
+    }: ColumnResizedEvent | ColumnMovedEvent) => {
+      if (!finished) return;
 
-      // only call back on user interactions
+      // only call back on user interactions, and not events triggered from the api
       const permittedEvents = [
         'uiColumnResized',
         'uiColumnDragged',
         'uiColumnMoved',
       ];
+
       if (!permittedEvents.includes(source)) {
         return;
       }
@@ -53,23 +62,21 @@ export const useDataGridEvents = (
     [callback]
   );
 
-  const onSortChanged = useCallback(
-    ({ columnApi }: SortChangedEvent) => {
+  /**
+   * Callback for sort and visible events
+   */
+  const onColumnChange = useCallback(
+    ({ columnApi }: SortChangedEvent | ColumnVisibleEvent) => {
       const columnState = columnApi.getColumnState();
       callback({ columnState });
     },
     [callback]
   );
 
-  const onColumnVisible = useCallback(
-    ({ columnApi }: ColumnVisibleEvent) => {
-      const columnState = columnApi.getColumnState();
-      callback({ columnState });
-    },
-    [callback]
-  );
-
-  // check if we have stored column states or filter models and apply if we do
+  /**
+   * Callback for grid startup to apply stored column and filter states.
+   * State only applied if found, otherwise columns sized to fit available space
+   */
   const onGridReady = useCallback(
     ({ api, columnApi }: FirstDataRenderedEvent) => {
       if (!api || !columnApi) return;
@@ -92,10 +99,12 @@ export const useDataGridEvents = (
 
   return {
     onGridReady,
-    onSortChanged,
-    onColumnVisible,
+    // these events don't use the 'finished' flag
     onFilterChanged,
-    onColumnMoved: onColumnChange,
-    onColumnResized: onColumnChange,
+    onSortChanged: onColumnChange,
+    onColumnVisible: onColumnChange,
+    // these trigger a lot so this callback uses the 'finished' flag
+    onColumnMoved: onDebouncedColumnChange,
+    onColumnResized: onDebouncedColumnChange,
   };
 };
