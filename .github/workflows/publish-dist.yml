@@ -87,11 +87,11 @@ jobs:
           # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
           cache: yarn
 
-      - name: Cache node modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+      # - name: Cache node modules
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: node_modules
+          # key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
 
       # https://docs.github.com/en/actions/learn-github-actions/contexts
       - name: Define dist variables
