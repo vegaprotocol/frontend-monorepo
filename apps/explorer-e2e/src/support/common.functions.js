@@ -127,3 +127,10 @@ Cypress.Commands.add(
       .should('have.text', tableRowValue);
   }
 );
+
+Cypress.Commands.add(
+  'validate_proposal_change_type',
+  (tableRowName, changeType) => {
+    cy.contains(tableRowName).siblings().should('have.text', changeType);
+  }
+);

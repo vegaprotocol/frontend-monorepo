@@ -74,6 +74,7 @@ context(
     beforeEach('visit governance tab', function () {
       cy.clearLocalStorage();
       turnTelemetryOff();
+      cy.mockChainId();
       cy.reload();
       waitForSpinner();
       cy.connectVegaWallet();
