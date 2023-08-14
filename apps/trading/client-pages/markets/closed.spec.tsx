@@ -214,7 +214,6 @@ describe('Closed', () => {
         </MemoryRouter>
       );
     });
-    // screen.debug(document, Infinity);
 
     const headers = screen.getAllByRole('columnheader');
     const expectedHeaders = [
@@ -443,6 +442,16 @@ describe('Closed', () => {
           element.getAttribute('col-id') === 'successorMarket',
       })
     ).toBeInTheDocument();
+    screen
+      .getAllByRole('gridcell', {
+        name: (_name, element) =>
+          element.getAttribute('col-id') === 'successorMarket',
+      })
+      .forEach((element) => {
+        expect(element.querySelector('[title="Future"]')?.textContent).toEqual(
+          'Futr'
+        );
+      });
   });
 
   it('feature flag should hide successors', async () => {
