@@ -6,8 +6,11 @@ import type { Market } from '@vegaprotocol/types';
 
 const productTypeMap = {
   Future: 'Futr',
+  FutureProduct: 'Futr',
   Spot: 'Spot',
+  SpotProduct: 'Spot',
   Perpetual: 'Perp',
+  PerpetualProduct: 'Perp',
 } as const;
 export type ProductType = keyof typeof productTypeMap | undefined;
 
