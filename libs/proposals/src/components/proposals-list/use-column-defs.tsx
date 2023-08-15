@@ -46,7 +46,7 @@ export const MarketNameProposalCell = ({
         : '';
     const content = (
       <>
-        <span data-testid="market-code">{value}</span>
+        <span data-testid="market-code">{value as string}</span>
         <MarketProductPill productType={productType} />
       </>
     );
