@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef } from 'ag-grid-community';
+import type { ProductType } from '@vegaprotocol/datagrid';
 import {
   CenteredGridCellWrapper,
   COL_DEFS,
@@ -12,6 +13,7 @@ import compact from 'lodash/compact';
 import { useEnvironment, FLAGS } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
+import type { Product } from '@vegaprotocol/types';
 import {
   NetworkParams,
   useNetworkParams,
@@ -37,13 +39,15 @@ export const MarketNameProposalCell = ({
   const { change } = data?.terms || {};
   if (change?.__typename === 'NewMarket' && VEGA_TOKEN_URL) {
     const productType =
-      'futureProduct' in change.instrument
+      'product' in change.instrument
+        ? (change.instrument.product as Product).__typename
+        : 'futureProduct' in change.instrument
         ? 'Future'
         : 'spotProduct' in change.instrument
         ? 'Spot'
         : 'perpetualProduct' in change.instrument
         ? 'Perpetual'
-        : '';
+        : (undefined as ProductType);
     const content = (
       <>
         <span data-testid="market-code">{value as string}</span>

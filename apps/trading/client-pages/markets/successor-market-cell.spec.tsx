@@ -3,6 +3,11 @@ import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import type { Market } from '@vegaprotocol/markets';
 import { SuccessorMarketRenderer } from './successor-market-cell';
+import {
+  MarketsDocument,
+  SuccessorMarketIdsDocument,
+} from '@vegaprotocol/markets';
+import { createMarketFragment } from '@vegaprotocol/mock';
 
 const mockSuccessorsQuery = [
   {
@@ -16,55 +21,76 @@ const mockSuccessorsQuery = [
 const parentMarket1 = {
   id: 'parentMarket1',
   tradableInstrument: {
-    instrument: { code: 'code parent 1', product: { __typename: 'Future' } },
+    instrument: { code: 'code parent 1', id: '1' },
   },
 } as unknown as Market;
 const successorMarket1 = {
   id: 'successorMarket1',
   tradableInstrument: {
-    instrument: { code: 'code successor 1', product: { __typename: 'Future' } },
+    instrument: { code: 'code successor 1', id: '2' },
   },
 } as unknown as Market;
 const parentMarket2 = {
   id: 'parentMarket2',
   tradableInstrument: {
-    instrument: { code: 'code parent 2', product: { __typename: 'Future' } },
+    instrument: { code: 'code parent 2', id: '3' },
   },
 } as unknown as Market;
 const successorMarket3 = {
   id: 'successorMarket3',
   tradableInstrument: {
-    instrument: { code: 'code successor 3', product: { __typename: 'Future' } },
+    instrument: { code: 'code successor 3', id: '4' },
   },
 } as unknown as Market;
 
-const mockMarkets: { [key in string]: Market } = {
+const mockMarkets = [
   parentMarket1,
   successorMarket1,
   parentMarket2,
   successorMarket3,
-};
-jest.mock('@vegaprotocol/markets', () => ({
-  ...jest.requireActual('@vegaprotocol/markets'),
-  useSuccessorMarketIds: jest
-    .fn()
-    .mockImplementation((id) =>
-      mockSuccessorsQuery.find((item) => item.id === id)
-    ),
-}));
-
-jest.mock('@vegaprotocol/data-provider', () => ({
-  ...jest.requireActual('@vegaprotocol/data-provider'),
-  useDataProvider: jest.fn().mockImplementation((args) => {
-    const { marketId } = args.variables;
-    return { data: mockMarkets[marketId] || null, error: null };
-  }),
-}));
+];
 
 const mockClickHandler = jest.fn();
 jest.mock('../../lib/hooks/use-market-click-handler', () => ({
   useMarketClickHandler: jest.fn().mockImplementation(() => mockClickHandler),
 }));
+
+const marketMock = {
+  request: {
+    query: MarketsDocument,
+    variables: undefined,
+  },
+  result: {
+    data: {
+      marketsConnection: {
+        edges: mockMarkets.map((item) => ({
+          node: {
+            ...createMarketFragment(item),
+          },
+        })),
+      },
+    },
+  },
+};
+
+const successorMock = {
+  request: {
+    query: SuccessorMarketIdsDocument,
+  },
+  result: {
+    data: {
+      marketsConnection: {
+        edges: mockSuccessorsQuery.map((item) => ({
+          node: {
+            ...item,
+          },
+        })),
+      },
+    },
+  },
+};
+
+const mocks = [marketMock, successorMock];
 
 describe('SuccessorMarketRenderer', () => {
   beforeEach(() => {
@@ -73,16 +99,17 @@ describe('SuccessorMarketRenderer', () => {
   it('should properly rendered successor market', async () => {
     const successorValue = 'market1';
     render(
-      <MockedProvider>
+      <MockedProvider mocks={[...mocks]}>
         <SuccessorMarketRenderer value={successorValue} />
       </MockedProvider>
     );
-    expect(screen.getByTestId('market-code')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('market-code')).toBeInTheDocument();
+    });
     expect(screen.getByText('code successor 1')).toBeInTheDocument();
     expect(screen.getByText('Futr')).toBeInTheDocument();
-    await act(() => {
-      userEvent.click(screen.getByRole('button'));
-    });
+
+    await userEvent.click(screen.getByRole('button'));
     await waitFor(() => {
       expect(mockClickHandler).toHaveBeenCalledWith('successorMarket1', false);
     });
@@ -90,16 +117,18 @@ describe('SuccessorMarketRenderer', () => {
   it('should properly rendered parent market', async () => {
     const successorValue = 'market1';
     render(
-      <MockedProvider>
+      <MockedProvider mocks={[...mocks]}>
         <SuccessorMarketRenderer value={successorValue} parent />
       </MockedProvider>
     );
-    expect(screen.getByTestId('market-code')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('market-code')).toBeInTheDocument();
+    });
     expect(screen.getByText('code parent 1')).toBeInTheDocument();
     expect(screen.getByText('Futr')).toBeInTheDocument();
-    await act(() => {
-      userEvent.click(screen.getByRole('button'));
-    });
+
+    await userEvent.click(screen.getByRole('button'));
+
     await waitFor(() => {
       expect(mockClickHandler).toHaveBeenCalledWith('parentMarket1', false);
     });
@@ -107,22 +136,23 @@ describe('SuccessorMarketRenderer', () => {
   it('should properly rendered only parent market', async () => {
     const successorValue = 'market2';
     const { rerender } = render(
-      <MockedProvider>
+      <MockedProvider mocks={[...mocks]}>
         <SuccessorMarketRenderer value={successorValue} parent />
       </MockedProvider>
     );
-    expect(screen.getByTestId('market-code')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('market-code')).toBeInTheDocument();
+    });
     expect(screen.getByText('code parent 2')).toBeInTheDocument();
     expect(screen.getByText('Futr')).toBeInTheDocument();
-    await act(() => {
-      userEvent.click(screen.getByRole('button'));
-    });
+    await userEvent.click(screen.getByRole('button'));
+
     await waitFor(() => {
       expect(mockClickHandler).toHaveBeenCalledWith('parentMarket2', false);
     });
 
     rerender(
-      <MockedProvider>
+      <MockedProvider mocks={[...mocks]}>
         <SuccessorMarketRenderer value={successorValue} />
       </MockedProvider>
     );
@@ -132,23 +162,25 @@ describe('SuccessorMarketRenderer', () => {
   it('should properly rendered only successor market', async () => {
     const successorValue = 'market3';
     const { rerender } = render(
-      <MockedProvider>
+      <MockedProvider mocks={[...mocks]}>
         <SuccessorMarketRenderer value={successorValue} />
       </MockedProvider>
     );
-    expect(screen.getByTestId('market-code')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('market-code')).toBeInTheDocument();
+    });
     expect(screen.getByText('code successor 3')).toBeInTheDocument();
     expect(screen.getByText('Futr')).toBeInTheDocument();
-    await act(() => {
-      userEvent.click(screen.getByRole('button'));
-    });
+
+    await userEvent.click(screen.getByRole('button'));
+
     await waitFor(() => {
       expect(mockClickHandler).toHaveBeenCalledWith('successorMarket3', false);
     });
 
     await act(() => {
       rerender(
-        <MockedProvider>
+        <MockedProvider mocks={[...mocks]}>
           <SuccessorMarketRenderer value={successorValue} parent />
         </MockedProvider>
       );

@@ -97,7 +97,7 @@ const MarketData = ({
           {allProducts && (
             <MarketProductPill
               productType={
-                market.tradableInstrument.instrument.product.__typename ?? ''
+                market.tradableInstrument.instrument.product.__typename
               }
             />
           )}

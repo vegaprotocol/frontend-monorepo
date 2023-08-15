@@ -44,8 +44,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
               <MarketNameCell
                 value={value}
                 productType={
-                  data?.market?.tradableInstrument.instrument.product
-                    .__typename ?? ''
+                  data?.market?.tradableInstrument.instrument.product.__typename
                 }
               />
             ) : (

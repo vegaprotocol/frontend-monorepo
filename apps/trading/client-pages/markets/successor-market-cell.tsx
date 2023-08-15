@@ -33,7 +33,7 @@ export const SuccessorMarketRenderer = ({
       value={data.tradableInstrument.instrument.code}
       data={data}
       onMarketClick={onMarketClick}
-      productType={data.tradableInstrument.instrument?.product.__typename ?? ''}
+      productType={data.tradableInstrument.instrument?.product.__typename}
     />
   ) : (
     '-'
