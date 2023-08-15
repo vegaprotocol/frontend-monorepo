@@ -136,15 +136,17 @@ export const ClientRouter = () => {
         <meta name="theme-color" content="#000000" />
         <meta name="description" content="Vega Protocol - Console" />
 
-        <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-        <link rel="manifest" href="assets/manifest.json" />
+        <link
+          rel="apple-touch-icon"
+          href="https://static.vega.xyz/favicon.ico"
+        />
         <link
           rel="preload"
           href="https://static.vega.xyz/AlphaLyrae-Medium.woff2"
           as="font"
           type="font/woff2"
         />
-        <title>VEGA Console dApp</title>
+        <title>VEGA Console</title>
       </Head>
       {routes}
     </Suspense>
