@@ -15,14 +15,14 @@ describe('getMarketProductType', () => {
         spotProduct: {
           quoteName: 'Market 1',
         },
-      } as InstrumentConfiguration)
+      } as unknown as InstrumentConfiguration)
     ).toEqual('Spot');
     expect(
       getMarketProductType({
         perpetualProduct: {
           quoteName: 'Market 1',
         },
-      } as InstrumentConfiguration)
+      } as unknown as InstrumentConfiguration)
     ).toEqual('Perpetual');
     expect(
       getMarketProductType({
@@ -32,7 +32,7 @@ describe('getMarketProductType', () => {
         futureProduct: {
           quoteName: 'Market 1',
         },
-      } as InstrumentConfiguration)
+      } as unknown as InstrumentConfiguration)
     ).toEqual('Perpetual');
     expect(
       getMarketProductType({
@@ -42,7 +42,7 @@ describe('getMarketProductType', () => {
         futureProduct: {
           quoteName: 'Market 1',
         },
-      } as InstrumentConfiguration)
+      } as unknown as InstrumentConfiguration)
     ).toEqual('Spot');
     expect(
       getMarketProductType({
@@ -52,7 +52,7 @@ describe('getMarketProductType', () => {
         perpetualProduct: {
           quoteName: 'Market 1',
         },
-      } as InstrumentConfiguration)
+      } as unknown as InstrumentConfiguration)
     ).toEqual('Future');
   });
 });

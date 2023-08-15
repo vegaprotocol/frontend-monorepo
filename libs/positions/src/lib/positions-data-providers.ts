@@ -51,7 +51,7 @@ export interface Position {
   totalBalance: string;
   unrealisedPNL: string;
   updatedAt: string | null;
-  productType: string;
+  productType?: string;
 }
 
 export const getMetrics = (
@@ -136,8 +136,7 @@ export const getMetrics = (
       totalBalance: totalBalance.multipliedBy(10 ** decimals).toFixed(),
       unrealisedPNL: position.unrealisedPNL,
       updatedAt: position.updatedAt || null,
-      productType:
-        market?.tradableInstrument.instrument.product.__typename || '',
+      productType: market?.tradableInstrument.instrument.product.__typename,
     });
   });
   return metrics;
