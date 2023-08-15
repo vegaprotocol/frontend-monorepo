@@ -1,5 +1,7 @@
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useEstimatePositionQuery } from './__generated__/Positions';
-import { formatRange } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 
 export const LiquidationPrice = ({
   marketId,
@@ -28,38 +30,46 @@ export const LiquidationPrice = ({
     skip: !openVolume || openVolume === '0',
   });
   const data = currentData || previousData;
-  let value = '-';
+  let bestCase = '-';
+  let worstCase = '-';
 
-  if (data) {
-    const bestCase =
+  if (data?.estimatePosition?.liquidation) {
+    bestCase =
       data.estimatePosition?.liquidation?.bestCase.open_volume_only.replace(
         /\..*/,
         ''
       );
-    const worstCase =
+    worstCase =
       data.estimatePosition?.liquidation?.worstCase.open_volume_only.replace(
         /\..*/,
         ''
       );
-    value =
-      bestCase && worstCase && BigInt(bestCase) < BigInt(worstCase)
-        ? formatRange(
-            bestCase,
-            worstCase,
-            decimalPlaces,
-            undefined,
-            formatDecimals,
-            value
-          )
-        : formatRange(
-            worstCase,
-            bestCase,
-            decimalPlaces,
-            undefined,
-            formatDecimals,
-            value
-          );
+    worstCase = addDecimalsFormatNumber(
+      worstCase,
+      decimalPlaces,
+      formatDecimals
+    );
+    bestCase = addDecimalsFormatNumber(bestCase, decimalPlaces, formatDecimals);
   }
 
-  return <span data-testid="liquidation-price">{value}</span>;
+  return (
+    <Tooltip
+      description={
+        <table>
+          <tbody>
+            <tr>
+              <th>{t('Worst case')}</th>
+              <td className="text-right font-mono pl-2">{worstCase}</td>
+            </tr>
+            <tr>
+              <th>{t('Best case')}</th>
+              <td className="text-right font-mono pl-2">{bestCase}</td>
+            </tr>
+          </tbody>
+        </table>
+      }
+    >
+      <span data-testid="liquidation-price">{worstCase}</span>
+    </Tooltip>
+  );
 };

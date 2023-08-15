@@ -289,10 +289,8 @@ export const PositionsTable = ({
                   marketId={data.marketId}
                   openVolume={data.openVolume}
                   collateralAvailable={data.totalBalance}
-                  decimalPlaces={data.decimals}
+                  decimalPlaces={data.marketDecimalPlaces}
                   formatDecimals={data.marketDecimalPlaces}
-                  marginBalance={data.marginAccountBalance}
-                  quantum={data.quantum}
                 />
               );
             },
