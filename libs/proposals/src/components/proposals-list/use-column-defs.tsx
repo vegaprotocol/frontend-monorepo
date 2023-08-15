@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef } from 'ag-grid-community';
-import type { ProductType } from '@vegaprotocol/datagrid';
 import {
   CenteredGridCellWrapper,
   COL_DEFS,
@@ -13,7 +12,6 @@ import compact from 'lodash/compact';
 import { useEnvironment, FLAGS } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import type { Product } from '@vegaprotocol/types';
 import {
   NetworkParams,
   useNetworkParams,
