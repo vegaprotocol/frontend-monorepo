@@ -115,7 +115,6 @@ export const WithdrawalsTable = ({
       {
         headerName: t('Transaction'),
         field: 'txHash',
-        flex: 2,
         type: 'rightAligned',
         cellRendererParams: {
           complete: (withdrawal: WithdrawalFieldsFragment) => {
@@ -135,8 +134,6 @@ export const WithdrawalsTable = ({
     <AgGrid
       overlayNoRowsTemplate={t('No withdrawals')}
       columnDefs={columnDefs}
-      defaultColDef={{ flex: 1 }}
-      style={{ width: '100%', height: '100%' }}
       components={{
         RecipientCell,
         StatusCell,

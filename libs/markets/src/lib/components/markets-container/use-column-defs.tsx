@@ -40,7 +40,6 @@ export const useColumnDefs = ({ onMarketClick }: Props) => {
         {
           headerName: t('Trading mode'),
           field: 'tradingMode',
-          minWidth: 170,
           valueFormatter: ({
             data,
           }: VegaValueFormatterParams<MarketMaybeWithData, 'data'>) => {

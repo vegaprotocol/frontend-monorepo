@@ -84,7 +84,6 @@ export const OrderListManager = ({
           onMarketClick={onMarketClick}
           onOrderTypeClick={onOrderTypeClick}
           isReadOnly={isReadOnly}
-          suppressAutoSize
           overlayNoRowsTemplate={error ? error.message : t('No orders')}
           {...gridProps}
         />

@@ -1,8 +1,8 @@
+import { createSuccessorMarketProposal } from '../support/governance.functions';
+
 context('Market page', { tags: '@regression' }, function () {
   describe('Verify elements on page', function () {
     const marketHeaders = 'markets-heading';
-    const createdMarketId =
-      '2eab0e66545a789047561bc5a2e5cbc3b19eb708da41104e3cac2474ee36c4d4';
 
     before('Create market', function () {
       cy.visit('/');
@@ -11,7 +11,7 @@ context('Market page', { tags: '@regression' }, function () {
 
     beforeEach('Get market id', function () {
       cy.navigate_to('markets');
-      cy.get('[col-id="id"]').eq(1).invoke('text').as('createdMarketId');
+      cy.get('[col-id="id"]').last().invoke('text').as('createdMarketId');
     });
 
     it('Market displayed on market page', function () {
@@ -106,6 +106,7 @@ context('Market page', { tags: '@regression' }, function () {
       // Able to view Json
       cy.contains('View JSON').click();
       cy.get('.language-json').should('exist');
+      cy.getByTestId('icon-cross').click();
     });
 
     // Skipping due to resize observer loop limit error
@@ -113,17 +114,60 @@ context('Market page', { tags: '@regression' }, function () {
       cy.common_switch_to_mobile_and_click_toggle();
       cy.navigate_to('markets', true);
       cy.getByTestId(marketHeaders).should('be.visible');
-      cy.get(`[row-id="${createdMarketId}"]`)
+      cy.get(`[row-id="${this.createdMarketId}"]`)
         .should('be.visible')
         .within(() => {
           cy.get_element_by_col_id('code').should('have.text', 'TEST.24h');
           cy.get_element_by_col_id('name').should('have.text', 'Test market 1');
           cy.get_element_by_col_id('state').should('have.text', 'Pending');
           cy.get_element_by_col_id('asset').should('have.text', 'fUSDC');
-          cy.get_element_by_col_id('id').should('have.text', createdMarketId);
+          cy.get_element_by_col_id('id').should(
+            'have.text',
+            this.createdMarketId
+          );
           cy.get_element_by_col_id('actions')
             .find('a')
-            .should('have.attr', 'href', `/markets/${createdMarketId}`);
+            .should('have.attr', 'href', `/markets/${this.createdMarketId}`);
+        });
+    });
+
+    it('Able to go to market details page for successor market', function () {
+      const successionLineItem = 'succession-line-item';
+      const successionLineMarketId = 'succession-line-item-market-id';
+
+      createSuccessorMarketProposal(this.createdMarketId);
+      cy.navigate_to('markets');
+      cy.reload();
+      cy.contains('Token test market', { timeout: 8000 }).should('be.visible');
+      cy.get('[row-index="0"]')
+        .invoke('attr', 'row-id')
+        .as('successorMarketId');
+      cy.contains('Token test market').click();
+      cy.getByTestId(marketHeaders).should('have.text', 'Token test market');
+      cy.validate_proposal_change_type('Triggering Ratio', 'Added');
+      cy.validate_element_from_table('Triggering Ratio', '0.7');
+      cy.validate_proposal_change_type('Time Window', 'Added');
+      cy.validate_element_from_table('Time Window', '3,600');
+      cy.validate_proposal_change_type('Scaling Factor', 'Added');
+      cy.validate_element_from_table('Scaling Factor', '10');
+
+      cy.getByTestId(successionLineItem)
+        .first()
+        .within(() => {
+          cy.contains('Test market 1');
+          cy.getByTestId(successionLineMarketId).should(
+            'have.text',
+            this.createdMarketId
+          );
+        });
+      cy.getByTestId(successionLineItem)
+        .eq(1)
+        .within(() => {
+          cy.contains('Token test market');
+          cy.getByTestId(successionLineMarketId).should(
+            'have.text',
+            this.successorMarketId
+          );
         });
     });
   });

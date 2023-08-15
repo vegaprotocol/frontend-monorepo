@@ -26,6 +26,7 @@ context('rewards - flow', { tags: '@slow' }, function () {
   before('set up environment to allow rewards', function () {
     cy.clearLocalStorage();
     turnTelemetryOff();
+    cy.mockChainId();
     cy.visit('/');
     waitForSpinner();
     ethereumWalletConnect();
