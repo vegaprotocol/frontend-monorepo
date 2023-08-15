@@ -23,10 +23,12 @@ import type {
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import type { InstrumentConfiguration } from '@vegaprotocol/types';
 import { ProposalStateMapping } from '@vegaprotocol/types';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { VoteProgress } from '../voting-progress';
 import { ProposalActionsDropdown } from '../proposal-actions-dropdown';
+import { getMarketProductType } from '../../utils/get-market-product-type';
 
 export const MarketNameProposalCell = ({
   value,
@@ -38,16 +40,9 @@ export const MarketNameProposalCell = ({
   const { VEGA_TOKEN_URL } = useEnvironment();
   const { change } = data?.terms || {};
   if (change?.__typename === 'NewMarket' && VEGA_TOKEN_URL) {
-    const productType =
-      'product' in change.instrument
-        ? (change.instrument.product as Product).__typename
-        : 'futureProduct' in change.instrument
-        ? 'Future'
-        : 'spotProduct' in change.instrument
-        ? 'Spot'
-        : 'perpetualProduct' in change.instrument
-        ? 'Perpetual'
-        : (undefined as ProductType);
+    const productType = getMarketProductType(
+      change.instrument as InstrumentConfiguration
+    );
     const content = (
       <>
         <span data-testid="market-code">{value as string}</span>
