@@ -429,8 +429,8 @@ export const PositionsTable = ({
                     </div>
                   );
                 },
-                minWidth: 90,
-                maxWidth: 90,
+                minWidth: 75,
+                maxWidth: 75,
               }
             : null,
         ];
