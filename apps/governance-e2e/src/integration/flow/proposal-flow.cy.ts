@@ -82,6 +82,7 @@ context(
       cy.clearLocalStorage();
       turnTelemetryOff();
       cy.reload();
+      cy.mockChainId();
       waitForSpinner();
       cy.connectVegaWallet();
       ethereumWalletConnect();

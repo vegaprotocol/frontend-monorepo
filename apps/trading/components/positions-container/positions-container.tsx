@@ -15,9 +15,7 @@ export const PositionsContainer = ({ allKeys }: { allKeys?: boolean }) => {
 
   const gridStore = usePositionsStore((store) => store.gridStore);
   const updateGridStore = usePositionsStore((store) => store.updateGridStore);
-  const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
-    updateGridStore(colState);
-  });
+  const gridStoreCallbacks = useDataGridEvents(gridStore, updateGridStore);
 
   if (!pubKey) {
     return (

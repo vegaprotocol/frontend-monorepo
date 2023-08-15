@@ -24,6 +24,7 @@ import { addVegaWalletSubmitLiquidityProvision } from './lib/commands/vega-walle
 import { addImportNodeWallets } from './lib/commands/import-node-wallets';
 import { addVegaWalletTopUpRewardsPool } from './lib/commands/vega-wallet-top-up-rewards-pool';
 import { addAssociateTokensToVegaWallet } from './lib/commands/associate-tokens-to-vega-wallet';
+import { addMockChainId } from './lib/commands/mock-chain-id';
 
 addGetTestIdcommand();
 addMockGQLCommand();
@@ -49,6 +50,7 @@ addVegaWalletSubmitLiquidityProvision();
 addImportNodeWallets();
 addVegaWalletTopUpRewardsPool();
 addAssociateTokensToVegaWallet();
+addMockChainId();
 
 export {
   mockConnectWallet,

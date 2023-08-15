@@ -35,11 +35,9 @@ const MarketName = (props: MarketNameCellProps) => (
 );
 
 const defaultColDef = {
-  resizable: true,
   sortable: true,
   filter: true,
   filterParams: { buttons: ['reset'] },
-  minWidth: 100,
 };
 type Props = TypedDataAgGrid<MarketMaybeWithData> & {
   onMarketClick: (marketId: string, metaKey?: boolean) => void;
@@ -58,7 +56,6 @@ export const MarketListTable = ({
   };
   return (
     <AgGrid
-      style={{ width: '100%', height: '100%' }}
       getRowId={getRowId}
       defaultColDef={defaultColDef}
       columnDefs={columnDefs}

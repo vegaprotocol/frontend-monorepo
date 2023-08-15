@@ -65,18 +65,16 @@ export const PositionsManager = ({
   });
 
   return (
-    <div className="h-full relative">
-      <PositionsTable
-        pubKey={pubKey}
-        pubKeys={pubKeys}
-        rowData={error ? [] : data}
-        onMarketClick={onMarketClick}
-        onClose={onClose}
-        isReadOnly={isReadOnly}
-        multipleKeys={partyIds.length > 1}
-        overlayNoRowsTemplate={error ? error.message : t('No positions')}
-        {...gridProps}
-      />
-    </div>
+    <PositionsTable
+      pubKey={pubKey}
+      pubKeys={pubKeys}
+      rowData={error ? [] : data}
+      onMarketClick={onMarketClick}
+      onClose={onClose}
+      isReadOnly={isReadOnly}
+      multipleKeys={partyIds.length > 1}
+      overlayNoRowsTemplate={error ? error.message : t('No positions')}
+      {...gridProps}
+    />
   );
 };

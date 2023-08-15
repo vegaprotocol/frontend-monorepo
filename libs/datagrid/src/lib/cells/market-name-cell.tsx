@@ -29,7 +29,11 @@ export const MarketNameCell = ({
   );
   if (!value || !data) return null;
   return onMarketClick ? (
-    <button onClick={handleOnClick} tabIndex={0}>
+    <button
+      onClick={handleOnClick}
+      tabIndex={0}
+      className="block text-left text-ellipsis overflow-hidden whitespace-nowrap w-full"
+    >
       {value}
     </button>
   ) : (

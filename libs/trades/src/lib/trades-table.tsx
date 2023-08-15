@@ -8,7 +8,7 @@ import { AgGridLazy as AgGrid, NumericCell } from '@vegaprotocol/datagrid';
 import {
   addDecimal,
   addDecimalsFormatNumber,
-  getDateTimeFormat,
+  getTimeFormat,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
@@ -53,7 +53,6 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
         headerName: t('Price'),
         field: 'price',
         type: 'rightAligned',
-        width: 130,
         cellClass: changeCellClass,
         valueFormatter: ({
           value,
@@ -87,7 +86,6 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
       {
         headerName: t('Size'),
         field: 'size',
-        width: 125,
         type: 'rightAligned',
         valueFormatter: ({
           value,
@@ -107,12 +105,12 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
         headerName: t('Created at'),
         field: 'createdAt',
         type: 'rightAligned',
-        width: 170,
         cellClass: 'text-right',
+        flex: 1, // make created at always fill remaining space
         valueFormatter: ({
           value,
         }: VegaValueFormatterParams<Trade, 'createdAt'>) => {
-          return value && getDateTimeFormat().format(new Date(value));
+          return value && getTimeFormat().format(new Date(value));
         },
       },
     ],
@@ -120,12 +118,9 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
   );
   return (
     <AgGrid
-      style={{ width: '100%', height: '100%' }}
       getRowId={({ data }) => data.id}
-      defaultColDef={{
-        flex: 1,
-      }}
       columnDefs={columnDefs}
+      rowHeight={22}
       {...props}
     />
   );
