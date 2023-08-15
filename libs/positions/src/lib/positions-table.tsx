@@ -39,7 +39,6 @@ import * as Schema from '@vegaprotocol/types';
 import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { PositionActionsDropdown } from './position-actions-dropdown';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { LiquidationPrice } from './liquidation-price';
 
@@ -104,7 +103,6 @@ export const PositionsTable = ({
   pubKey,
   ...props
 }: Props) => {
-  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return (
     <AgGrid
       overlayNoRowsTemplate={t('No positions')}
@@ -117,7 +115,7 @@ export const PositionsTable = ({
         ProgressBarCell,
         MarketNameCell,
       }}
-      rowHeight={38}
+      rowHeight={45}
       columnDefs={useMemo<ColDef[]>(() => {
         const columnDefs: (ColDef | null)[] = [
           multipleKeys
@@ -135,59 +133,25 @@ export const PositionsTable = ({
           {
             headerName: t('Market (Asset)'),
             field: 'marketCode',
+            onCellClicked: ({ data }) => {
+              if (!onMarketClick) return;
+              onMarketClick(data.marketId);
+            },
             cellRenderer: ({
               value,
               data,
             }: VegaICellRendererParams<Position, 'marketCode'>) => {
               if (!data || !value) return '-';
               return (
-                <div>
-                  <button
-                    className="underline"
-                    onClick={(e) => {
-                      if (!onMarketClick) return;
-                      onMarketClick(data.marketId, e.metaKey || e.ctrlKey);
-                    }}
-                  >
-                    {value}
-                  </button>{' '}
-                  (
-                  <button
-                    className="underline"
-                    onClick={() => openAssetDetailsDialog(data.assetId)}
-                  >
-                    {data?.assetSymbol}
-                  </button>
-                  )
+                <div className="leading-4">
+                  <div>{value}</div>
+                  <div className="text-muted">{data?.assetSymbol}</div>
                 </div>
               );
             },
           },
           {
-            headerName: t('Notional'),
-            headerTooltip: t('Mark price x open volume.'),
-            field: 'notional',
-            type: 'rightAligned',
-            cellClass: 'font-mono text-right',
-            filter: 'agNumberColumnFilter',
-            valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
-              return !data?.notional
-                ? undefined
-                : toBigNum(data.notional, data.marketDecimalPlaces).toNumber();
-            },
-            valueFormatter: ({
-              data,
-            }: VegaValueFormatterParams<Position, 'notional'>) => {
-              return !data || !data.notional
-                ? '-'
-                : addDecimalsFormatNumber(
-                    data.notional,
-                    data.marketDecimalPlaces
-                  );
-            },
-          },
-          {
-            headerName: t('Size / Leverage'),
+            headerName: t('Size'),
             field: 'openVolume',
             type: 'rightAligned',
             cellClass: 'font-mono text-right',
@@ -283,12 +247,43 @@ export const PositionsTable = ({
             },
           },
           {
-            headerName: t('Margin / Liquidation'),
+            headerName: t('Margin'),
             colId: 'liquidationPrice',
             type: 'rightAligned',
             cellClass: 'font-mono text-right',
             cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {
-              if (!data) return null;
+              if (
+                !data ||
+                !data.marginAccountBalance ||
+                !data.marketDecimalPlaces
+              ) {
+                return null;
+              }
+              const margin = addDecimalsFormatNumberQuantum(
+                data.marginAccountBalance,
+                data.decimals,
+                data.quantum
+              );
+
+              const lev = data?.currentLeverage ? data.currentLeverage : 1;
+              const leverage = formatNumber(Math.max(1, lev), 1);
+              return (
+                <div className="leading-4">
+                  <div>{margin}</div>
+                  <div className="text-muted">{leverage}x</div>
+                </div>
+              );
+            },
+          },
+          {
+            colId: 'liquidationPrice',
+            headerName: 'Liquidation',
+            cellClass: 'font-mono text-right',
+            type: 'rightAligned',
+            cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {
+              if (!data) {
+                return null;
+              }
               return (
                 <LiquidationPrice
                   marketId={data.marketId}
@@ -302,100 +297,6 @@ export const PositionsTable = ({
               );
             },
           },
-          {
-            headerName: t('Asset'),
-            field: 'assetSymbol',
-            colId: 'asset',
-            cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {
-              if (!data) return null;
-              return (
-                <ButtonLink
-                  title={t('View settlement asset details')}
-                  onClick={(e) => {
-                    openAssetDetailsDialog(
-                      data.assetId,
-                      e.target as HTMLElement
-                    );
-                  }}
-                >
-                  {data?.assetSymbol}
-                </ButtonLink>
-              );
-            },
-          },
-          {
-            headerName: t('Entry price'),
-            field: 'averageEntryPrice',
-            type: 'rightAligned',
-            cellRenderer: PriceFlashCell,
-            filter: 'agNumberColumnFilter',
-            valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
-              return data?.markPrice === undefined || !data
-                ? undefined
-                : toBigNum(
-                    data.averageEntryPrice,
-                    data.marketDecimalPlaces
-                  ).toNumber();
-            },
-            valueFormatter: ({
-              data,
-            }: VegaValueFormatterParams<
-              Position,
-              'averageEntryPrice'
-            >): string => {
-              if (!data) {
-                return '';
-              }
-              return addDecimalsFormatNumber(
-                data.averageEntryPrice,
-                data.marketDecimalPlaces
-              );
-            },
-          },
-          multipleKeys
-            ? null
-            : {
-                headerName: t('Leverage'),
-                field: 'currentLeverage',
-                type: 'rightAligned',
-                filter: 'agNumberColumnFilter',
-                cellRenderer: PriceFlashCell,
-                valueFormatter: ({
-                  value,
-                }: VegaValueFormatterParams<Position, 'currentLeverage'>) =>
-                  value === undefined ? '' : formatNumber(value.toString(), 1),
-              },
-          multipleKeys
-            ? null
-            : {
-                headerName: t('Margin'),
-                field: 'marginAccountBalance',
-                type: 'rightAligned',
-                filter: 'agNumberColumnFilter',
-                cellRenderer: PriceFlashCell,
-                valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
-                  return !data
-                    ? undefined
-                    : toBigNum(
-                        data.marginAccountBalance,
-                        data.decimals
-                      ).toNumber();
-                },
-                valueFormatter: ({
-                  data,
-                }: VegaValueFormatterParams<
-                  Position,
-                  'marginAccountBalance'
-                >): string => {
-                  if (!data) {
-                    return '';
-                  }
-                  return addDecimalsFormatNumber(
-                    data.marginAccountBalance,
-                    data.decimals
-                  );
-                },
-              },
           {
             headerName: t('Realised PNL'),
             field: 'realisedPNL',
@@ -481,15 +382,7 @@ export const PositionsTable = ({
         return columnDefs.filter<ColDef>(
           (colDef: ColDef | null): colDef is ColDef => colDef !== null
         );
-      }, [
-        isReadOnly,
-        multipleKeys,
-        onClose,
-        onMarketClick,
-        openAssetDetailsDialog,
-        pubKey,
-        pubKeys,
-      ])}
+      }, [isReadOnly, multipleKeys, onClose, onMarketClick, pubKey, pubKeys])}
       {...props}
     />
   );
@@ -548,8 +441,25 @@ export const OpenVolumeCell = ({
   valueFormatted,
   data,
 }: VegaICellRendererParams<Position, 'openVolume'>) => {
-  if (!data) {
+  if (!data || !data.notional) {
     return <>-</>;
+  }
+
+  const notional = addDecimalsFormatNumber(
+    data.notional,
+    data.marketDecimalPlaces
+  );
+
+  const cellContent = (
+    <div className="leading-4">
+      <div>{valueFormatted}</div>
+      <div className="text-muted">{notional}</div>
+    </div>
+  );
+
+  if (data.status === PositionStatus.POSITION_STATUS_UNSPECIFIED) {
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{cellContent}</>;
   }
 
   const POSITION_RESOLUTION_LINK = DocsLinks?.POSITION_RESOLUTION ?? '';
