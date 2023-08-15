@@ -27,7 +27,7 @@ const getClasses = (size: Size, intent: Intent, className?: string) => {
     {
       'text-lg py-1 px-2': size === 'lg',
       'text-base py-1 px-2': size === 'md',
-      'text-small py-1 px-1': size === 'sm',
+      'text-sm py-1 px-1': size === 'sm',
       'text-xs py-1 px-1': size === 'xs',
       'text-[10px] py-0 px-1': size === 'xxs',
     },
