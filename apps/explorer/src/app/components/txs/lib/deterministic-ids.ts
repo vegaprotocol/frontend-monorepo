@@ -37,34 +37,3 @@ export function txSignatureToDeterministicId(signature: string): string {
 
   return hash.hex();
 }
-
-export type stopSignatures = {
-  risesAboveId: string;
-  fallsBelowId: string;
-};
-
-/**
- * Given a stop order signature string, returns the deterministic IDs of both potential
- * orders
- *
- * @param signature
- * @returns stopSignatures
- */
-export function stopOrdersSignatureToDeterministicId(
-  signature?: string
-): stopSignatures {
-  if (!signature) {
-    return {
-      risesAboveId: '',
-      fallsBelowId: '',
-    };
-  }
-
-  const fallsBelowId = txSignatureToDeterministicId(signature);
-  const risesAboveId = sha3_256.create().update(fallsBelowId).hex();
-
-  return {
-    fallsBelowId,
-    risesAboveId,
-  };
-}
