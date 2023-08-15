@@ -60,7 +60,7 @@ export const ledgerEntriesProvider = makeDerivedDataProvider<
   (partsData) => {
     const entries = partsData[0] as ReturnType<typeof getData>;
     const assets = partsData[1] as Record<string, Asset>;
-    const markets = partsData[1] as Record<string, Market>;
+    const markets = partsData[2] as Record<string, Market>;
     return entries.map((entry) => {
       const asset = entry.assetId
         ? (assets as Record<string, Asset>)[entry.assetId]
