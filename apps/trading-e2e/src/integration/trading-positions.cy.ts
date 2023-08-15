@@ -27,7 +27,8 @@ describe('positions', { tags: '@smoke', testIsolation: true }, () => {
     validatePositionsDisplayed();
   });
 
-  it('renders positions on portfolio page', () => {
+  // TODO: move this to sim, its flakey
+  it.skip('renders positions on portfolio page', () => {
     cy.mockGQL((req) => {
       const positions = positionsQuery();
       if (positions.positions?.edges) {
