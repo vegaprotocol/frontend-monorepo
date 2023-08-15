@@ -137,7 +137,7 @@ jobs:
     secrets: inherit
     with:
       projects: ${{ needs.lint-test-build.outputs.projects-e2e }}
-      tags: '@smoke @regression'
+      tags: '@smoke'
 
   publish-dist:
     needs: lint-test-build

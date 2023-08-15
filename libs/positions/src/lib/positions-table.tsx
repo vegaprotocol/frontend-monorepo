@@ -12,7 +12,6 @@ import { COL_DEFS } from '@vegaprotocol/datagrid';
 import { ProgressBarCell } from '@vegaprotocol/datagrid';
 import {
   AgGridLazy as AgGrid,
-  DateRangeFilter,
   PriceFlashCell,
   signedNumberCssClass,
   signedNumberCssClassRules,
@@ -29,7 +28,6 @@ import {
   volumePrefix,
   toBigNum,
   formatNumber,
-  getDateTimeFormat,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -86,6 +84,14 @@ AmountCell.displayName = 'AmountCell';
 export const getRowId = ({ data }: { data: Position }) =>
   `${data.partyId}-${data.marketId}`;
 
+const defaultColDef = {
+  sortable: true,
+  filter: true,
+  filterParams: { buttons: ['reset'] },
+  tooltipComponent: TooltipCellComponent,
+  resizable: true,
+};
+
 export const PositionsTable = ({
   onClose,
   onMarketClick,
@@ -98,24 +104,16 @@ export const PositionsTable = ({
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return (
     <AgGrid
-      style={{ width: '100%', height: '100%' }}
       overlayNoRowsTemplate={t('No positions')}
       getRowId={getRowId}
       tooltipShowDelay={500}
-      defaultColDef={{
-        resizable: true,
-        sortable: true,
-        filter: true,
-        filterParams: { buttons: ['reset'] },
-        tooltipComponent: TooltipCellComponent,
-      }}
+      defaultColDef={defaultColDef}
       components={{
         AmountCell,
         PriceFlashCell,
         ProgressBarCell,
         MarketNameCell,
       }}
-      {...props}
       columnDefs={useMemo<ColDef[]>(() => {
         const columnDefs: (ColDef | null)[] = [
           multipleKeys
@@ -128,7 +126,6 @@ export const PositionsTable = ({
                     pubKeys.find((key) => key.publicKey === data.partyId)
                       ?.name) ||
                   data?.partyId,
-                minWidth: 190,
               }
             : null,
           {
@@ -136,7 +133,6 @@ export const PositionsTable = ({
             field: 'marketName',
             cellRenderer: 'MarketNameCell',
             cellRendererParams: { idPath: 'marketId', onMarketClick },
-            minWidth: 190,
           },
           {
             headerName: t('Notional'),
@@ -160,7 +156,6 @@ export const PositionsTable = ({
                     data.marketDecimalPlaces
                   );
             },
-            minWidth: 80,
           },
           {
             headerName: t('Open volume'),
@@ -190,7 +185,6 @@ export const PositionsTable = ({
                   );
             },
             cellRenderer: OpenVolumeCell,
-            minWidth: 100,
           },
           {
             headerName: t('Mark price'),
@@ -224,12 +218,12 @@ export const PositionsTable = ({
                 data.marketDecimalPlaces
               );
             },
-            minWidth: 100,
           },
           {
             headerName: t('Liquidation price'),
             colId: 'liquidationPrice',
             type: 'rightAligned',
+            cellClass: 'font-mono text-right',
             cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {
               if (!data) return null;
               return (
@@ -244,10 +238,9 @@ export const PositionsTable = ({
             },
           },
           {
-            headerName: t('Settlement asset'),
+            headerName: t('Asset'),
             field: 'assetSymbol',
             colId: 'asset',
-            minWidth: 100,
             cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {
               if (!data) return null;
               return (
@@ -293,7 +286,6 @@ export const PositionsTable = ({
                 data.marketDecimalPlaces
               );
             },
-            minWidth: 100,
           },
           multipleKeys
             ? null
@@ -307,12 +299,11 @@ export const PositionsTable = ({
                   value,
                 }: VegaValueFormatterParams<Position, 'currentLeverage'>) =>
                   value === undefined ? '' : formatNumber(value.toString(), 1),
-                minWidth: 100,
               },
           multipleKeys
             ? null
             : {
-                headerName: t('Margin allocated'),
+                headerName: t('Margin'),
                 field: 'marginAccountBalance',
                 type: 'rightAligned',
                 filter: 'agNumberColumnFilter',
@@ -339,7 +330,6 @@ export const PositionsTable = ({
                     data.decimals
                   );
                 },
-                minWidth: 100,
               },
           {
             headerName: t('Realised PNL'),
@@ -364,7 +354,6 @@ export const PositionsTable = ({
               'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
             ),
             cellRenderer: PNLCell,
-            minWidth: 100,
           },
           {
             headerName: t('Unrealised PNL'),
@@ -388,22 +377,6 @@ export const PositionsTable = ({
               'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
             ),
             cellRenderer: PNLCell,
-            minWidth: 100,
-          },
-          {
-            headerName: t('Updated'),
-            field: 'updatedAt',
-            type: 'rightAligned',
-            filter: DateRangeFilter,
-            valueFormatter: ({
-              value,
-            }: VegaValueFormatterParams<Position, 'updatedAt'>) => {
-              if (!value) {
-                return '';
-              }
-              return getDateTimeFormat().format(new Date(value));
-            },
-            minWidth: 150,
           },
           onClose && !isReadOnly
             ? {
@@ -427,8 +400,8 @@ export const PositionsTable = ({
                     </div>
                   );
                 },
-                minWidth: 90,
-                maxWidth: 90,
+                minWidth: 75,
+                maxWidth: 75,
               }
             : null,
         ];
@@ -444,6 +417,7 @@ export const PositionsTable = ({
         pubKey,
         pubKeys,
       ])}
+      {...props}
     />
   );
 };

@@ -79,7 +79,6 @@ export const useColumnDefs = () => {
         colId: 'market',
         headerName: t('Market'),
         field: 'terms.change.instrument.code',
-        minWidth: 150,
         cellStyle: { lineHeight: '14px' },
         cellRenderer: 'MarketNameProposalCell',
       },
@@ -162,7 +161,6 @@ export const useColumnDefs = () => {
           'terms.enactmentDatetime'
         >) => (value ? getDateTimeFormat().format(new Date(value)) : '-'),
         filter: DateRangeFilter,
-        flex: 1,
       },
       {
         colId: 'proposal-actions',
@@ -173,7 +171,6 @@ export const useColumnDefs = () => {
           if (!data?.id) return null;
           return <ProposalActionsDropdown id={data.id} />;
         },
-        flex: 1,
       },
     ]);
   }, [requiredMajorityPercentage]);
@@ -181,10 +178,8 @@ export const useColumnDefs = () => {
   const defaultColDef: ColDef = useMemo(() => {
     return {
       sortable: true,
-      resizable: true,
       filter: true,
       filterParams: { buttons: ['reset'] },
-      minWidth: 100,
     };
   }, []);
 

@@ -58,7 +58,7 @@ describe('Positions', () => {
     });
 
     const headers = screen.getAllByRole('columnheader');
-    expect(headers).toHaveLength(12);
+    expect(headers).toHaveLength(11);
     expect(
       headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
     ).toEqual([
@@ -67,13 +67,12 @@ describe('Positions', () => {
       'Open volume',
       'Mark price',
       'Liquidation price',
-      'Settlement asset',
+      'Asset',
       'Entry price',
       'Leverage',
-      'Margin allocated',
+      'Margin',
       'Realised PNL',
       'Unrealised PNL',
-      'Updated',
     ]);
   });
 
@@ -214,7 +213,7 @@ describe('Positions', () => {
       );
     });
     const cells = screen.getAllByRole('gridcell');
-    expect(cells[12].textContent).toEqual('Close');
+    expect(cells[11].textContent).toEqual('Close');
   });
 
   it('do not display close button if openVolume is zero', async () => {
@@ -230,7 +229,7 @@ describe('Positions', () => {
       );
     });
     const cells = screen.getAllByRole('gridcell');
-    expect(cells[12].textContent).toEqual('');
+    expect(cells[11].textContent).toEqual('');
   });
 
   describe('PNLCell', () => {

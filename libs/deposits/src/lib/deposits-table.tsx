@@ -70,17 +70,9 @@ export const DepositsTable = (
             </EtherscanLink>
           );
         },
-        flex: 1,
       },
     ],
     []
   );
-  return (
-    <AgGrid
-      defaultColDef={{ flex: 1 }}
-      columnDefs={columnDefs}
-      style={{ width: '100%', height: '100%' }}
-      {...props}
-    />
-  );
+  return <AgGrid columnDefs={columnDefs} {...props} />;
 };

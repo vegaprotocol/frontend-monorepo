@@ -67,7 +67,11 @@ export const MarketNameCell = ({
     </>
   );
   return onMarketClick && id ? (
-    <button onClick={handleOnClick} tabIndex={0}>
+    <button
+      onClick={handleOnClick}
+      tabIndex={0}
+      className="block text-left text-ellipsis overflow-hidden whitespace-nowrap w-full"
+    >
       {content}
     </button>
   ) : (

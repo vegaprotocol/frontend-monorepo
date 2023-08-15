@@ -1,5 +1,5 @@
 import { act, render, screen } from '@testing-library/react';
-import { getDateTimeFormat } from '@vegaprotocol/utils';
+import { getTimeFormat } from '@vegaprotocol/utils';
 import { SELL_CLASS, TradesTable, BUY_CLASS } from './trades-table';
 import type { Trade } from './trades-data-provider';
 import { Side } from '@vegaprotocol/types';
@@ -39,7 +39,7 @@ describe('TradesTable', () => {
     const expectedValues = [
       '1,111,222.00',
       '20.00',
-      getDateTimeFormat().format(new Date(trade.createdAt)),
+      getTimeFormat().format(new Date(trade.createdAt)),
     ];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);

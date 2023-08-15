@@ -273,15 +273,9 @@ const ClosedMarketsDataGrid = ({
 
   return (
     <AgGrid
-      style={{ width: '100%', height: '100%' }}
       rowData={rowData}
       columnDefs={colDefs}
       getRowId={({ data }) => data.id}
-      defaultColDef={{
-        resizable: true,
-        minWidth: 100,
-        flex: 1,
-      }}
       components={{ SuccessorMarketRenderer, MarketNameCell }}
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
     />
