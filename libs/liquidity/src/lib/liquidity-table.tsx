@@ -31,6 +31,12 @@ const dateValueFormatter = ({ value }: { value?: string | null }) => {
   return getDateTimeFormat().format(new Date(value));
 };
 
+const defaultColDef = {
+  resizable: true,
+  sortable: true,
+  tooltipComponent: TooltipCellComponent,
+};
+
 export interface LiquidityTableProps
   extends TypedDataAgGrid<LiquidityProvisionData> {
   symbol?: string;
@@ -124,7 +130,6 @@ export const LiquidityTable = ({
         headerTooltip: t(
           'The valuation of the market at the time the liquidity commitment was made. Commitments made at a lower valuation earlier in the lifetime of the market would be expected to have a higher equity-like share if the market has grown. If a commitment is amended, value will reflect the average of the market valuations across the lifetime of the commitment.'
         ),
-        minWidth: 160,
         valueFormatter: assetDecimalsQuantumFormatter,
         tooltipValueGetter: assetDecimalsFormatter,
       },
@@ -183,16 +188,10 @@ export const LiquidityTable = ({
 
   return (
     <AgGrid
-      style={{ width: '100%', height: '100%' }}
       overlayNoRowsTemplate={t('No liquidity provisions')}
       getRowId={({ data }: { data: LiquidityProvisionData }) => data.id || ''}
       tooltipShowDelay={500}
-      defaultColDef={{
-        resizable: true,
-        minWidth: 100,
-        tooltipComponent: TooltipCellComponent,
-        sortable: true,
-      }}
+      defaultColDef={defaultColDef}
       {...props}
       columnDefs={colDefs}
     />

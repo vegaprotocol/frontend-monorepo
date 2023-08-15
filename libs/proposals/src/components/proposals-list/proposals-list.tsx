@@ -42,7 +42,6 @@ export const ProposalsList = ({
         rowData={filteredData}
         defaultColDef={defaultColDef}
         getRowId={({ data }) => data.id}
-        style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No markets')}
         components={{ SuccessorMarketRenderer }}
       />

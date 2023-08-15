@@ -42,6 +42,16 @@ const dateRangeFilterParams = {
   maxNextDays: 0,
   defaultValue,
 };
+const defaultColDef = {
+  resizable: true,
+  sortable: true,
+  tooltipComponent: TransferTooltipCellComponent,
+  filterParams: {
+    ...dateRangeFilterParams,
+    buttons: ['reset'],
+  },
+};
+
 type LedgerEntryProps = TypedDataAgGrid<LedgerEntry>;
 
 export const LedgerTable = (props: LedgerEntryProps) => {
@@ -177,24 +187,14 @@ export const LedgerTable = (props: LedgerEntryProps) => {
           value ? getDateTimeFormat().format(fromNanoSeconds(value)) : '-',
         filterParams: dateRangeFilterParams,
         filter: DateRangeFilter,
-        flex: 1,
       },
     ],
     []
   );
   return (
     <AgGrid
-      style={{ width: '100%', height: '100%' }}
       tooltipShowDelay={500}
-      defaultColDef={{
-        resizable: true,
-        sortable: true,
-        tooltipComponent: TransferTooltipCellComponent,
-        filterParams: {
-          ...dateRangeFilterParams,
-          buttons: ['reset'],
-        },
-      }}
+      defaultColDef={defaultColDef}
       columnDefs={columnDefs}
       {...props}
     />
