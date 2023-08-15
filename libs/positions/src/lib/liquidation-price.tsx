@@ -7,18 +7,12 @@ export const LiquidationPrice = ({
   marketId,
   openVolume,
   collateralAvailable,
-  decimalPlaces,
-  formatDecimals,
-  marginBalance,
-  quantum,
+  marketDecimalPlaces,
 }: {
   marketId: string;
   openVolume: string;
   collateralAvailable: string;
-  decimalPlaces: number;
-  formatDecimals: number;
-  marginBalance: string;
-  quantum: string;
+  marketDecimalPlaces: number;
 }) => {
   const { data: currentData, previousData } = useEstimatePositionQuery({
     variables: {
@@ -29,28 +23,28 @@ export const LiquidationPrice = ({
     fetchPolicy: 'no-cache',
     skip: !openVolume || openVolume === '0',
   });
+
   const data = currentData || previousData;
+
+  if (!data?.estimatePosition?.liquidation) {
+    return <span>-</span>;
+  }
+
   let bestCase = '-';
   let worstCase = '-';
 
-  if (data?.estimatePosition?.liquidation) {
-    bestCase =
-      data.estimatePosition?.liquidation?.bestCase.open_volume_only.replace(
-        /\..*/,
-        ''
-      );
-    worstCase =
-      data.estimatePosition?.liquidation?.worstCase.open_volume_only.replace(
-        /\..*/,
-        ''
-      );
-    worstCase = addDecimalsFormatNumber(
-      worstCase,
-      decimalPlaces,
-      formatDecimals
+  bestCase =
+    data.estimatePosition?.liquidation?.bestCase.open_volume_only.replace(
+      /\..*/,
+      ''
     );
-    bestCase = addDecimalsFormatNumber(bestCase, decimalPlaces, formatDecimals);
-  }
+  worstCase =
+    data.estimatePosition?.liquidation?.worstCase.open_volume_only.replace(
+      /\..*/,
+      ''
+    );
+  worstCase = addDecimalsFormatNumber(worstCase, marketDecimalPlaces);
+  bestCase = addDecimalsFormatNumber(bestCase, marketDecimalPlaces);
 
   return (
     <Tooltip
