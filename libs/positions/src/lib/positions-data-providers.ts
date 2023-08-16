@@ -250,6 +250,26 @@ export const rejoinPositionData = (
   return null;
 };
 
+export const preparePositions = (metrics: Position[], showClosed: boolean) => {
+  return sortBy(metrics, 'marketCode').filter((p) => {
+    if (showClosed) {
+      return true;
+    }
+
+    if (
+      [
+        Schema.MarketState.STATE_ACTIVE,
+        Schema.MarketState.STATE_PENDING,
+        Schema.MarketState.STATE_SUSPENDED,
+      ].includes(p.marketState)
+    ) {
+      return true;
+    }
+
+    return false;
+  });
+};
+
 export const positionsMarketsProvider = makeDerivedDataProvider<
   string[],
   never,
@@ -286,23 +306,7 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
   ([positions, accounts, marketsData], variables) => {
     const positionsData = rejoinPositionData(positions, marketsData);
     const metrics = getMetrics(positionsData, accounts as Account[] | null);
-    return sortBy(metrics, 'marketCode').filter((p) => {
-      if (variables.showClosed) {
-        return true;
-      }
-
-      if (
-        [
-          Schema.MarketState.STATE_ACTIVE,
-          Schema.MarketState.STATE_PENDING,
-          Schema.MarketState.STATE_SUSPENDED,
-        ].includes(p.marketState)
-      ) {
-        return true;
-      }
-
-      return false;
-    });
+    return preparePositions(metrics, variables.showClosed);
   },
   (data, delta, previousData) =>
     data.filter((row) => {
