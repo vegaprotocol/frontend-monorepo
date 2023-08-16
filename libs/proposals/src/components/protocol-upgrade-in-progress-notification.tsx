@@ -29,10 +29,18 @@ export const ProtocolUpgradeInProgressNotification = () => {
   const { blocksRising, block } = useBlockRising();
   const detailsLink = useProtocolUpgradeProposalLink();
 
-  const { vegaReleaseTag, upgradeBlockHeight } =
-    error && !data && nextUpgrade && ALLOW_STORED_PROPOSAL_DATA
-      ? (JSON.parse(nextUpgrade) as StoredNextProtocolUpgradeData) // gets stored data in case of an data node error if allowed
-      : data || { vegaReleaseTag: undefined, upgradeBlockHeight: undefined };
+  let vegaReleaseTag: string | undefined;
+  let upgradeBlockHeight: string | undefined;
+
+  if (error && !data && nextUpgrade && ALLOW_STORED_PROPOSAL_DATA) {
+    try {
+      const stored = JSON.parse(nextUpgrade) as StoredNextProtocolUpgradeData;
+      vegaReleaseTag = stored.vegaReleaseTag;
+      upgradeBlockHeight = stored.upgradeBlockHeight;
+    } catch {
+      // no op
+    }
+  }
 
   /**
    * If upgrade is in progress then none of the nodes should produce blocks,
