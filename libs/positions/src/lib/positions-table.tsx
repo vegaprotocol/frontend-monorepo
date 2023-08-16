@@ -22,7 +22,6 @@ import {
   ExternalLink,
   VegaIcon,
   VegaIconNames,
-  Pill,
 } from '@vegaprotocol/ui-toolkit';
 import {
   volumePrefix,
