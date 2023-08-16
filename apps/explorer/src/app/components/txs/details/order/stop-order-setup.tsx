@@ -13,6 +13,7 @@ type V1OrderSetup = components['schemas']['v1StopOrderSetup'];
 
 interface StopOrderSetupProps extends V1OrderSetup {
   type: StopOrderType;
+  deterministicId: string;
 }
 
 export function getExpiryTypeLabel(
@@ -45,7 +46,7 @@ export function ExpiryTrigger({
   if (trailingPercentOffset) {
     return (
       <span>
-        {formatNumberPercentage(new BigNumber(trailingPercentOffset))}
+        {formatNumberPercentage(new BigNumber(trailingPercentOffset))}%
       </span>
     );
   }
@@ -68,9 +69,11 @@ export const StopOrderSetup = ({
   expiresAt,
   expiryStrategy,
   trailingPercentOffset,
+  deterministicId,
 }: StopOrderSetupProps) => {
   return (
     <div className={wrapperClasses}>
+      {deterministicId}
       <div className="mb-12 lg:mb-0">
         <div className="relative block rounded-lg px-3 py-6 md:px-6 lg:-mr-7">
           <h2 className="text-3xl font-bold mb-4 display-5">
@@ -86,6 +89,7 @@ export const StopOrderSetup = ({
               <OrderTxSummary order={orderSubmission} />
             </p>
           )}
+          <DeterministicOrderDetails id={deterministicId} />
           {expiresAt && expiryStrategy ? (
             <div className="">
               <h2 className="text-2xl font-bold text-dark mb-4">

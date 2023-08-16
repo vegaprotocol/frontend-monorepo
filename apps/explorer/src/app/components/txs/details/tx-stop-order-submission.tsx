@@ -4,9 +4,9 @@ import { MarketLink } from '../../links/';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
+import { stopOrdersSignatureToDeterministicId } from '../lib/deterministic-ids';
 import type { components } from '../../../../types/explorer';
 import { StopOrderSetup } from './order/stop-order-setup';
-import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 
 type StopOrderSetup = components['schemas']['v1StopOrderSetup'];
 
@@ -79,6 +79,10 @@ export const TxDetailsStopOrderSubmission = ({
   const tx: components['schemas']['v1StopOrdersSubmission'] =
     txData.command.stopOrdersSubmission;
 
+  const { risesAboveId, fallsBelowId } = stopOrdersSignatureToDeterministicId(
+    txData?.signature?.value
+  );
+
   return (
     <>
       <TableWithTbody className="mb-8" allowWrap={true}>
@@ -87,14 +91,6 @@ export const TxDetailsStopOrderSubmission = ({
           pubKey={pubKey}
           blockData={blockData}
         />
-        {txData?.signature.value ? (
-          <TableRow modifier="bordered">
-            <TableCell>{t('Deterministic ID')}</TableCell>
-            <TableCell>
-              {txSignatureToDeterministicId(txData.signature.value)}
-            </TableCell>
-          </TableRow>
-        ) : null}
         <TableRow modifier="bordered">
           <TableCell>{t('Market ID')}</TableCell>
           <TableCell>
@@ -122,10 +118,18 @@ export const TxDetailsStopOrderSubmission = ({
         </TableRow>
       </TableWithTbody>
       {tx.risesAbove && (
-        <StopOrderSetup type={'RisesAbove'} {...tx.risesAbove} />
+        <StopOrderSetup
+          type={'RisesAbove'}
+          {...tx.risesAbove}
+          deterministicId={risesAboveId}
+        />
       )}
       {tx.fallsBelow && (
-        <StopOrderSetup type={'FallsBelow'} {...tx.fallsBelow} />
+        <StopOrderSetup
+          type={'FallsBelow'}
+          {...tx.fallsBelow}
+          deterministicId={fallsBelowId}
+        />
       )}
     </>
   );
