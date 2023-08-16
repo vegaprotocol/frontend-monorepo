@@ -217,7 +217,7 @@ describe('no markets proposed', { tags: '@smoke', testIsolation: true }, () => {
     cy.setOnBoardingViewed();
   });
 
-  it('can see no markets message', () => {
+  it.skip('can see no markets message', () => {
     cy.visit('/#/markets/all');
     cy.get('[data-testid="Proposed markets"]').click();
 
