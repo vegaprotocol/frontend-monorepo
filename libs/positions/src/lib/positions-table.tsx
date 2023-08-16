@@ -47,7 +47,7 @@ interface Props extends TypedDataAgGrid<Position> {
   style?: CSSProperties;
   isReadOnly: boolean;
   multipleKeys?: boolean;
-  pubKeys?: Array<{ name: string; publicKey: string }>;
+  pubKeys?: Array<{ name: string; publicKey: string }> | null;
   pubKey?: string | null;
 }
 
