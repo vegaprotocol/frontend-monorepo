@@ -80,7 +80,7 @@ describe('OrderListTable', () => {
       '-',
       Schema.OrderTimeInForceCode[marketOrder.timeInForce],
       getDateTimeFormat().format(new Date(marketOrder.createdAt)),
-      'Edit',
+      '',
     ];
     expectedValues.forEach((expectedValue, i) =>
       expect(cells[i]).toHaveTextContent(expectedValue)
@@ -104,7 +104,7 @@ describe('OrderListTable', () => {
         Schema.OrderTimeInForceCode[limitOrder.timeInForce]
       }: ${getDateTimeFormat().format(new Date(limitOrder.expiresAt ?? ''))}`,
       getDateTimeFormat().format(new Date(limitOrder.createdAt)),
-      'Edit',
+      '',
     ];
     expectedValues.forEach((expectedValue, i) =>
       expect(cells[i]).toHaveTextContent(expectedValue)
