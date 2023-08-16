@@ -5,6 +5,7 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
+import type { StateCreator } from 'zustand';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
@@ -44,8 +45,30 @@ export const PositionsContainer = ({ allKeys }: { allKeys?: boolean }) => {
   );
 };
 
-const usePositionsStore = create<DataGridSlice>()(
-  persist(createDataGridSlice, {
-    name: 'vega_positions_store',
-  })
+type PositionsStoreSlice = {
+  showClosedMarkets: boolean;
+  toggleClosedMarkets: () => void;
+};
+
+const createPositionStoreSlice: StateCreator<PositionsStoreSlice> = (set) => ({
+  showClosedMarkets: false,
+  toggleClosedMarkets: () => {
+    set((curr) => {
+      return {
+        showClosedMarkets: !curr.showClosedMarkets,
+      };
+    });
+  },
+});
+
+export const usePositionsStore = create<PositionsStoreSlice & DataGridSlice>()(
+  persist(
+    (...args) => ({
+      ...createPositionStoreSlice(...args),
+      ...createDataGridSlice(...args),
+    }),
+    {
+      name: 'vega_positions_store',
+    }
+  )
 );
