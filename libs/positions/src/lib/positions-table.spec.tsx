@@ -189,13 +189,8 @@ describe('Positions', () => {
         />
       );
     });
-<<<<<<< HEAD
-    const cells = screen.getAllByRole('gridcell');
-    expect(cells[11].textContent).toEqual('');
-=======
 
-    expect(screen.getByRole('button', { name: 'Close' })).toBeInTheDocument();
->>>>>>> 997dc6380 (test: update tests after tooltip changes)
+    expect(screen.getByTestId('close-position')).toBeInTheDocument();
   });
 
   it('do not display close button if openVolume is zero', async () => {

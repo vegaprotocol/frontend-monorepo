@@ -21,6 +21,7 @@ import {
   ExternalLink,
   VegaIcon,
   VegaIconNames,
+  Pill,
 } from '@vegaprotocol/ui-toolkit';
 import {
   volumePrefix,
@@ -122,7 +123,21 @@ export const PositionsTable = ({
             }: VegaICellRendererParams<Position, 'marketCode'>) => {
               if (!data || !value) return '-';
               return (
-                <StackedCell primary={value} secondary={data?.assetSymbol} />
+                <StackedCell
+                  primary={value}
+                  secondary={
+                    <>
+                      {data?.assetSymbol}
+                      <Pill
+                        size="xxs"
+                        className="uppercase ml-0.5"
+                        title={productType}
+                      >
+                        {productTypeMap[productType] || productType}
+                      </Pill>
+                    </>
+                  }
+                />
               );
             },
           },

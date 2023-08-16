@@ -26,7 +26,7 @@ import {
   PositionsDocument,
   PositionsSubscriptionDocument,
 } from './__generated__/Positions';
-import type { PositionStatus } from '@vegaprotocol/types';
+import type { PositionStatus, ProductType } from '@vegaprotocol/types';
 
 export interface Position {
   assetId: string;
@@ -51,7 +51,7 @@ export interface Position {
   totalBalance: string;
   unrealisedPNL: string;
   updatedAt: string | null;
-  productType?: string;
+  productType: ProductType;
 }
 
 export const getMetrics = (
