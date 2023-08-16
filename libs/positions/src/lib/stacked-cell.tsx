@@ -9,8 +9,10 @@ export const StackedCell = ({
 }) => {
   return (
     <div className="leading-4 text-ellipsis whitespace-nowrap overflow-hidden">
-      <div>{primary}</div>
-      <div className="text-muted">{secondary}</div>
+      <div data-testid="stack-cell-primary">{primary}</div>
+      <div data-testid="stack-cell-secondary" className="text-muted">
+        {secondary}
+      </div>
     </div>
   );
 };
