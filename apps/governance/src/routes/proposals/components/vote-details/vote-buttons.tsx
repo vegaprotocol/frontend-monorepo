@@ -188,11 +188,7 @@ export const VoteButtons = ({
         (voteState === VoteState.Yes || voteState === VoteState.No) && (
           <p data-testid="you-voted">
             <span>{t('youVoted')}:</span>{' '}
-            <span
-              className={
-                voteState === VoteState.Yes ? 'text-success' : 'text-danger'
-              }
-            >
+            <span className="text-white font-bold">
               {t(`voteState_${voteState}`)}
             </span>{' '}
             {voteDatetime ? (

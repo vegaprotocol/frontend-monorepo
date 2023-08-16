@@ -19,6 +19,8 @@ import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
 import { ProposalMarketChanges } from '../proposal-market-changes';
 import type { NetworkParamsResult } from '@vegaprotocol/network-parameters';
+import { useVoteSubmit } from '@vegaprotocol/proposals';
+import { useUserVote } from '../vote-details/use-user-vote';
 
 export enum ProposalType {
   PROPOSAL_NEW_MARKET = 'PROPOSAL_NEW_MARKET',
@@ -53,6 +55,8 @@ export const Proposal = ({
   mostRecentlyEnactedAssociatedMarketProposal,
 }: ProposalProps) => {
   const { t } = useTranslation();
+  const { submit, Dialog, finalizedVote } = useVoteSubmit();
+  const { voteState, voteDatetime } = useUserVote(proposal?.id, finalizedVote);
 
   if (!proposal) {
     return null;
@@ -132,10 +136,12 @@ export const Proposal = ({
           </div>
         )}
       </div>
+
       <ProposalHeader
         proposal={proposal}
         isListItem={false}
         networkParams={networkParams}
+        voteState={voteState}
       />
 
       <div id="details">
@@ -207,6 +213,10 @@ export const Proposal = ({
               spamProtectionMinTokens={
                 networkParams?.spam_protection_voting_min_tokens
               }
+              submit={submit}
+              dialog={Dialog}
+              voteState={voteState}
+              voteDatetime={voteDatetime}
             />
           </RoundedWrapper>
         </div>
