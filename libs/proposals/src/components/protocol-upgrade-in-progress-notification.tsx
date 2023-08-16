@@ -41,13 +41,13 @@ export const ProtocolUpgradeInProgressNotification = () => {
    *
    * Once the networks is back then the notification disappears.
    */
-  const UPGRADE_IN_PROGRESS =
+  const upgradeInProgress =
     vegaReleaseTag &&
     upgradeBlockHeight &&
     !blocksRising &&
     block <= Number(upgradeBlockHeight);
 
-  if (!UPGRADE_IN_PROGRESS) return null;
+  if (!upgradeInProgress) return null;
 
   return (
     <NotificationBanner intent={Intent.Danger} className={SHORT}>
