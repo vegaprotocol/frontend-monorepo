@@ -1,4 +1,6 @@
 import { MemoryRouter } from 'react-router-dom';
+import { MockedProvider } from '@apollo/client/testing';
+import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { Proposal } from './proposal';
@@ -44,11 +46,15 @@ jest.mock('../list-asset', () => ({
 const renderComponent = (proposal: ProposalQuery['proposal']) => {
   render(
     <MemoryRouter>
-      <Proposal
-        restData={{}}
-        proposal={proposal as ProposalQuery['proposal']}
-        networkParams={mockNetworkParams}
-      />
+      <MockedProvider>
+        <VegaWalletProvider>
+          <Proposal
+            restData={{}}
+            proposal={proposal as ProposalQuery['proposal']}
+            networkParams={mockNetworkParams}
+          />
+        </VegaWalletProvider>
+      </MockedProvider>
     </MemoryRouter>
   );
 };
