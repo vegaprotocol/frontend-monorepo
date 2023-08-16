@@ -131,7 +131,8 @@ export const getMetrics = (
       totalBalance: totalBalance.multipliedBy(10 ** asset.decimals).toFixed(),
       unrealisedPNL: position.unrealisedPNL,
       updatedAt: position.updatedAt || null,
-      productType: market?.tradableInstrument.instrument.product.__typename,
+      productType: market?.tradableInstrument.instrument.product
+        .__typename as ProductType,
     });
   });
   return metrics;
