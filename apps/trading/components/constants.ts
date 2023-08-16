@@ -2,6 +2,7 @@ import { t } from '@vegaprotocol/i18n';
 
 export const THROTTLE_UPDATE_TIME = 500;
 export const ONBOARDING_VIEWED_KEY = 'vega_onboarding_viewed';
+export const STARTED_STEPS_KEY = 'vega_started_steps_viewed';
 export const MAINNET_WELCOME_HEADER = t(
   'Trade cash settled futures on the fully decentralised Vega network.'
 );

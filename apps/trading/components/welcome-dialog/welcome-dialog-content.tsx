@@ -3,21 +3,19 @@ import { GetStarted } from './get-started';
 import { TradingButton } from '@vegaprotocol/ui-toolkit';
 import { useNavigate } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
-import { useLocalStorage } from '@vegaprotocol/react-helpers';
-import * as constants from '../constants';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
+import { useGlobalStore } from '../../stores';
 
 export const WelcomeDialogContent = () => {
   const { VEGA_ENV } = useEnvironment();
-  const [, setOnboardingViewed] = useLocalStorage(
-    constants.ONBOARDING_VIEWED_KEY
-  );
+
+  const update = useGlobalStore((store) => store.update);
   const navigate = useNavigate();
   const browseMarkets = () => {
     const link = Links[Routes.MARKETS]();
     navigate(link);
-    setOnboardingViewed('true');
+    update({ onBoardingDismissed: true });
   };
   const lead =
     VEGA_ENV === Networks.MAINNET
@@ -57,7 +55,7 @@ export const WelcomeDialogContent = () => {
           {t('Browse the markets')}
         </TradingButton>
       </div>
-      <div className="sm:w-1/2">
+      <div className="sm:w-1/2 flex grow">
         <GetStarted lead={lead} />
       </div>
     </div>
