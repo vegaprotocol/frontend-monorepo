@@ -1,8 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import type { components } from '../../../../../types/explorer';
-import DeterministicOrderDetails, {
-  wrapperClasses,
-} from '../../../order-details/deterministic-order-details';
+import { wrapperClasses } from '../../../order-details/deterministic-order-details';
 import { formatNumberPercentage } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import OrderTxSummary from '../../../order-summary/order-tx-summary';

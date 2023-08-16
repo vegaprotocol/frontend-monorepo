@@ -55,10 +55,7 @@ export const PrimaryFilterOptions: FilterOption[] = [
   'Delegate',
   'Liquidity Provision Order',
   'Proposal',
-<<<<<<< HEAD
-=======
   'Stop Orders Submission',
->>>>>>> 89defeca5 (feat(explorer): add basic stop order view)
   'Stop Orders Cancellation',
   'Submit Oracle Data',
   'Submit Order',
