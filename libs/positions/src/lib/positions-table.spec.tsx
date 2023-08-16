@@ -211,7 +211,7 @@ describe('Positions', () => {
       );
     });
     const cells = screen.getAllByRole('gridcell');
-    expect(cells[11].textContent).toEqual('Close');
+    expect(cells[11].textContent).toEqual('');
   });
 
   it('do not display close button if openVolume is zero', async () => {
