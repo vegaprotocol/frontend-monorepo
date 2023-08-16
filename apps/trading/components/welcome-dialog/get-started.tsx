@@ -82,7 +82,7 @@ export const GetStarted = ({ lead }: Props) => {
   );
 
   const getStartedNeeded =
-    Number(currentStep || 0) < OnboardingStep.ONBOARDING_COMPLETE_STEP;
+    currentStep && currentStep < OnboardingStep.ONBOARDING_COMPLETE_STEP;
 
   const wrapperClasses = classNames(
     'flex flex-col py-4 px-6 gap-4 rounded',

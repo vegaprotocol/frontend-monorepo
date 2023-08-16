@@ -20,7 +20,8 @@ export const WelcomeDialog = () => {
 
   const navigate = useNavigate();
   const isOnboardingDialogNeeded =
-    Number(currentStep || 0) < OnboardingStep.ONBOARDING_COMPLETE_STEP &&
+    currentStep &&
+    currentStep < OnboardingStep.ONBOARDING_COMPLETE_STEP &&
     !dismissed;
   const marketId = useGlobalStore((store) => store.marketId);
 

@@ -50,8 +50,13 @@ export const useGetOnboardingStep = () => {
     },
     []
   );
-  return useMemo(
+  const result = useMemo(
     () => resolveOnBoardingState(pubKey, deposits, orders),
     [resolveOnBoardingState, pubKey, deposits, orders]
   );
+  if (depositsData === null || ordersData === null) {
+    // prevent a bad result before the data loads
+    return OnboardingStep.ONBOARDING_UNKNOWN_STEP;
+  }
+  return result;
 };
