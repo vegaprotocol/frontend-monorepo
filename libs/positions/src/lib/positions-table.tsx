@@ -31,8 +31,11 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type { Position } from './positions-data-providers';
-import * as Schema from '@vegaprotocol/types';
-import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
+import {
+  MarketTradingMode,
+  PositionStatus,
+  PositionStatusMapping,
+} from '@vegaprotocol/types';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { PositionActionsDropdown } from './position-actions-dropdown';
 import { LiquidationPrice } from './liquidation-price';
@@ -244,7 +247,7 @@ export const PositionsTable = ({
 
               if (
                 data.marketTradingMode ===
-                Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+                MarketTradingMode.TRADING_MODE_OPENING_AUCTION
               ) {
                 return <>-</>;
               }
@@ -274,7 +277,7 @@ export const PositionsTable = ({
               return !data ||
                 !data.markPrice ||
                 data.marketTradingMode ===
-                  Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+                  MarketTradingMode.TRADING_MODE_OPENING_AUCTION
                 ? undefined
                 : toBigNum(data.markPrice, data.marketDecimalPlaces).toNumber();
             },
@@ -516,7 +519,12 @@ export const OpenVolumeCell = ({
 
   return (
     <WarningCell
-      showIcon={data.status !== PositionStatus.POSITION_STATUS_UNSPECIFIED}
+      showIcon={
+        // not sure why but data.status has become a union of all the enum values
+        // rather than just being the enum itself
+        (data.status as PositionStatus) !==
+        PositionStatus.POSITION_STATUS_UNSPECIFIED
+      }
     >
       {cellContent}
     </WarningCell>
