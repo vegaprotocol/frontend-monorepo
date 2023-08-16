@@ -4,6 +4,8 @@ import { Intent } from '../../utils/intent';
 import { Icon } from '../icon';
 import type { HTMLAttributes } from 'react';
 
+export const SHORT = '!px-1 !py-1 min-h-fit';
+
 interface NotificationBannerProps {
   intent?: Intent;
   children?: React.ReactNode;

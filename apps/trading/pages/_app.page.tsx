@@ -43,6 +43,7 @@ import { Navbar } from '../components/navbar';
 import classNames from 'classnames';
 import {
   ProtocolUpgradeCountdownMode,
+  ProtocolUpgradeInProgressNotification,
   ProtocolUpgradeProposalNotification,
 } from '@vegaprotocol/proposals';
 import { ViewingBanner } from '../components/viewing-banner';
@@ -111,6 +112,7 @@ function AppBody({ Component }: AppProps) {
           <ProtocolUpgradeProposalNotification
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
           />
+          <ProtocolUpgradeInProgressNotification />
           <ViewingBanner />
           <UpgradeBanner showVersionChange={true} />
         </div>

@@ -5,7 +5,7 @@ import type { TendermintBlockResponse } from '../types';
 export const useBlockInfo = (blockHeight?: number, canFetch = true) => {
   const { TENDERMINT_URL } = useEnvironment();
 
-  const url = `${TENDERMINT_URL}/block?height=${blockHeight}`;
+  const url = `${TENDERMINT_URL}/block?height=${blockHeight || ''}`;
   const canFetchData = Boolean(
     TENDERMINT_URL && blockHeight && !isNaN(blockHeight) && canFetch
   );
