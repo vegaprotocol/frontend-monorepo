@@ -7,6 +7,7 @@ import { formatNumberPercentage } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import OrderTxSummary from '../../../order-summary/order-tx-summary';
 import PriceInMarket from '../../../price-in-market/price-in-market';
+import StopOrderTriggerSummary from './stop-order-trigger';
 
 export type StopOrderType = 'RisesAbove' | 'FallsBelow' | 'OCO';
 type V1OrderSetup = components['schemas']['v1StopOrderSetup'];
@@ -89,7 +90,7 @@ export const StopOrderSetup = ({
               <OrderTxSummary order={orderSubmission} />
             </p>
           )}
-          <DeterministicOrderDetails id={deterministicId} />
+          <StopOrderTriggerSummary id={deterministicId} />
           {expiresAt && expiryStrategy ? (
             <div className="">
               <h2 className="text-2xl font-bold text-dark mb-4">
