@@ -40,21 +40,25 @@ describe('markets selector', { tags: '@smoke' }, () => {
         code: 'SOLUSD',
         markPrice: '84.41',
         vol: '0.00',
+        productType: 'Futr',
       },
       {
         code: 'ETHBTC.QM21',
         markPrice: '46,126.90058',
         vol: '0.00',
+        productType: 'Futr',
       },
       {
         code: 'BTCUSD.MF21',
         markPrice: '46,126.90058',
         vol: '0.00',
+        productType: 'Futr',
       },
       {
         code: 'AAPL.MF21',
         markPrice: '46,126.90058',
         vol: '0.00',
+        productType: 'Futr',
       },
     ];
     cy.getByTestId('header-title').should('be.visible').click();
@@ -64,7 +68,9 @@ describe('markets selector', { tags: '@smoke' }, () => {
         const market = data[i];
         // 6001-MARK-021
         // 6001-MARK-022
-        expect(item.find('h3').text()).equals(market.code);
+        expect(item.find('h3').text()).equals(
+          `${market.code} ${market.productType}`
+        );
         expect(
           item.find('[data-testid="market-selector-volume"]').text()
         ).contains(market.vol);

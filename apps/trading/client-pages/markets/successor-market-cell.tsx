@@ -1,8 +1,8 @@
+import React from 'react';
 import { MarketNameCell } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketProvider, useSuccessorMarketIds } from '@vegaprotocol/markets';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
-import React from 'react';
 
 export const SuccessorMarketRenderer = ({
   value,
@@ -33,6 +33,7 @@ export const SuccessorMarketRenderer = ({
       value={data.tradableInstrument.instrument.code}
       data={data}
       onMarketClick={onMarketClick}
+      productType={data.tradableInstrument.instrument?.product.__typename}
     />
   ) : (
     '-'

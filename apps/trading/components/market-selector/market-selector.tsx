@@ -43,7 +43,7 @@ export const MarketSelector = ({
     sort: Sort.None,
     assets: [],
   });
-
+  const allProducts = filter.product === Product.All;
   const { markets, data, loading, error } = useMarketSelectorList(filter);
 
   return (
@@ -128,6 +128,7 @@ export const MarketSelector = ({
               ? t('Spot markets coming soon.')
               : t('No markets')
           }
+          allProducts={allProducts}
         />
       </div>
     </div>
@@ -141,6 +142,7 @@ const MarketList = ({
   currentMarketId,
   onSelect,
   noItems,
+  allProducts,
 }: {
   data: MarketMaybeWithDataAndCandles[];
   error: Error | undefined;
@@ -149,6 +151,7 @@ const MarketList = ({
   currentMarketId?: string;
   onSelect: (marketId: string) => void;
   noItems: string;
+  allProducts: boolean;
 }) => {
   const itemSize = 45;
   const listRef = useRef<HTMLDivElement | null>(null);
@@ -192,6 +195,7 @@ const MarketList = ({
           currentMarketId={currentMarketId}
           onSelect={onSelect}
           noItems={noItems}
+          allProducts={allProducts}
         />
       </div>
     </TinyScroll>
@@ -202,6 +206,7 @@ interface ListItemData {
   data: MarketMaybeWithDataAndCandles[];
   onSelect: (marketId: string) => void;
   currentMarketId?: string;
+  allProducts: boolean;
 }
 
 const ListItem = ({
@@ -218,6 +223,7 @@ const ListItem = ({
     currentMarketId={data.currentMarketId}
     style={style}
     onSelect={data.onSelect}
+    allProducts={data.allProducts}
   />
 );
 
@@ -229,19 +235,21 @@ const List = ({
   onSelect,
   noItems,
   currentMarketId,
+  allProducts,
 }: ListItemData & {
   loading: boolean;
   height: number;
   itemSize: number;
   noItems: string;
+  allProducts: boolean;
 }) => {
   const itemKey = useCallback(
     (index: number, data: ListItemData) => data.data[index].id,
     []
   );
   const itemData = useMemo(
-    () => ({ data, onSelect, currentMarketId }),
-    [data, onSelect, currentMarketId]
+    () => ({ data, onSelect, currentMarketId, allProducts }),
+    [data, onSelect, currentMarketId, allProducts]
   );
   if (!data || loading) {
     return (

@@ -4,7 +4,8 @@ import * as Schema from '@vegaprotocol/types';
 
 const rowSelector =
   '[data-testid="tab-open-markets"] .ag-center-cols-container .ag-row';
-const colInstrumentCode = '[col-id="tradableInstrument.instrument.code"]';
+const colInstrumentCode =
+  '[col-id="tradableInstrument.instrument.code"] [data-testid="market-code"]';
 
 describe('markets all table', { tags: '@smoke' }, () => {
   beforeEach(() => {

@@ -2,7 +2,7 @@ import React from 'react';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
-import { useColumnDefs } from './use-column-defs';
+import { MarketNameProposalCell, useColumnDefs } from './use-column-defs';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { useProposalsListQuery } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
@@ -43,7 +43,7 @@ export const ProposalsList = ({
         defaultColDef={defaultColDef}
         getRowId={({ data }) => data.id}
         overlayNoRowsTemplate={t('No markets')}
-        components={{ SuccessorMarketRenderer }}
+        components={{ SuccessorMarketRenderer, MarketNameProposalCell }}
       />
     </div>
   );

@@ -256,6 +256,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     cy.get(rowSelector)
       .first()
       .find('[col-id="code"]')
+      .find('[data-testid="market-code"]')
       .should('have.text', settledMarket.tradableInstrument.instrument.code);
 
     // 6001-MARK-002

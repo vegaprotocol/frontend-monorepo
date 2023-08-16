@@ -99,6 +99,7 @@ describe('MarketSelectorItem', () => {
             currentMarketId={market.id}
             style={{}}
             onSelect={jest.fn()}
+            allProducts
           />
         </MockedProvider>
       </MemoryRouter>
@@ -181,5 +182,7 @@ describe('MarketSelectorItem', () => {
         addDecimalsFormatNumber(marketData.markPrice, market.decimalPlaces)
       );
     });
+
+    expect(screen.getByText('Futr')).toBeInTheDocument();
   });
 });

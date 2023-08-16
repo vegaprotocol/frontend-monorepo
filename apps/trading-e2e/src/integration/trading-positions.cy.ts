@@ -166,7 +166,8 @@ describe('positions', { tags: '@regression', testIsolation: true }, () => {
       'marketName',
       marketsSortedDefault,
       marketsSortedAsc,
-      marketsSortedDesc
+      marketsSortedDesc,
+      ' [data-testid="market-code"]'
     );
   });
 

@@ -5,6 +5,7 @@ import {
   CenteredGridCellWrapper,
   COL_DEFS,
   DateRangeFilter,
+  MarketProductPill,
   SetFilter,
 } from '@vegaprotocol/datagrid';
 import compact from 'lodash/compact';
@@ -20,13 +21,42 @@ import type {
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import type { InstrumentConfiguration } from '@vegaprotocol/types';
 import { ProposalStateMapping } from '@vegaprotocol/types';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { VoteProgress } from '../voting-progress';
 import { ProposalActionsDropdown } from '../proposal-actions-dropdown';
+import { getMarketProductType } from '../../utils/get-market-product-type';
+
+export const MarketNameProposalCell = ({
+  value,
+  data,
+}: VegaICellRendererParams<
+  ProposalListFieldsFragment,
+  'terms.change.instrument.code'
+>) => {
+  const { VEGA_TOKEN_URL } = useEnvironment();
+  const { change } = data?.terms || {};
+  if (change?.__typename === 'NewMarket' && VEGA_TOKEN_URL) {
+    const productType = getMarketProductType(
+      change.instrument as InstrumentConfiguration
+    );
+    const content = (
+      <>
+        <span data-testid="market-code">{value as string}</span>
+        <MarketProductPill productType={productType} />
+      </>
+    );
+    if (data?.id) {
+      const link = `${VEGA_TOKEN_URL}/proposals/${data.id}`;
+      return <ExternalLink href={link}>{content}</ExternalLink>;
+    }
+    return content;
+  }
+  return null;
+};
 
 export const useColumnDefs = () => {
-  const { VEGA_TOKEN_URL } = useEnvironment();
   const { params } = useNetworkParams([
     NetworkParams.governance_proposal_market_requiredMajority,
   ]);
@@ -43,26 +73,7 @@ export const useColumnDefs = () => {
         headerName: t('Market'),
         field: 'terms.change.instrument.code',
         cellStyle: { lineHeight: '14px' },
-        cellRenderer: ({
-          data,
-        }: VegaICellRendererParams<
-          ProposalListFieldsFragment,
-          'terms.change.instrument.code'
-        >) => {
-          const { change } = data?.terms || {};
-          if (change?.__typename === 'NewMarket' && VEGA_TOKEN_URL) {
-            if (data?.id) {
-              const link = `${VEGA_TOKEN_URL}/proposals/${data.id}`;
-              return (
-                <ExternalLink href={link}>
-                  {change.instrument.code}
-                </ExternalLink>
-              );
-            }
-            return change.instrument.code;
-          }
-          return null;
-        },
+        cellRenderer: 'MarketNameProposalCell',
       },
       {
         colId: 'description',
@@ -155,7 +166,7 @@ export const useColumnDefs = () => {
         },
       },
     ]);
-  }, [VEGA_TOKEN_URL, requiredMajorityPercentage]);
+  }, [requiredMajorityPercentage]);
 
   const defaultColDef: ColDef = useMemo(() => {
     return {
