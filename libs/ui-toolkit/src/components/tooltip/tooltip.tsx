@@ -9,7 +9,7 @@ import {
 } from '@radix-ui/react-tooltip';
 import type { ITooltipParams } from 'ag-grid-community';
 
-export const tooltipContentClasses =
+const tooltipContentClasses =
   'max-w-sm bg-vega-light-100 dark:bg-vega-dark-100 border border-vega-light-200 dark:border-vega-dark-200 px-2 py-1 z-20 rounded text-xs text-black dark:text-white break-word';
 export interface TooltipProps {
   children: React.ReactElement;
@@ -60,5 +60,9 @@ export const Tooltip = ({
   );
 
 export const TooltipCellComponent = (props: ITooltipParams) => {
-  return <p className={tooltipContentClasses}>{props.value}</p>;
+  return (
+    <div className={tooltipContentClasses} role="tooltip">
+      {props.value}
+    </div>
+  );
 };

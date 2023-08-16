@@ -21,7 +21,6 @@ import {
   ExternalLink,
   VegaIcon,
   VegaIconNames,
-  tooltipContentClasses,
 } from '@vegaprotocol/ui-toolkit';
 import {
   volumePrefix,
@@ -131,13 +130,22 @@ export const PositionsTable = ({
             cellClass: 'font-mono text-right',
             cellClassRules: signedNumberCssClassRules,
             filter: 'agNumberColumnFilter',
-            valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
+            valueGetter: ({ data }: { data: Position }) => {
               return data?.openVolume === undefined
                 ? undefined
                 : toBigNum(
                     data?.openVolume,
                     data.positionDecimalPlaces
                   ).toNumber();
+            },
+            tooltipValueGetter: ({ data }: ITooltipParams<Position>) => {
+              if (
+                !data ||
+                data.status === PositionStatus.POSITION_STATUS_UNSPECIFIED
+              ) {
+                return null;
+              }
+              return data.status;
             },
             valueFormatter: ({
               data,
@@ -153,12 +161,14 @@ export const PositionsTable = ({
 
               return vol;
             },
-            tooltipComponent: ({ value, data }: ITooltipParams<Position>) => {
-              if (!data) return null;
+            tooltipComponent: (args: ITooltipParams<Position>) => {
+              if (!args.data) {
+                return null;
+              }
               const POSITION_RESOLUTION_LINK =
                 DocsLinks?.POSITION_RESOLUTION ?? '';
               let primaryTooltip;
-              switch (data.status) {
+              switch (args.data.status) {
                 case PositionStatus.POSITION_STATUS_CLOSED_OUT:
                   primaryTooltip = t('Your position was closed.');
                   break;
@@ -171,11 +181,11 @@ export const PositionsTable = ({
               }
 
               let secondaryTooltip;
-              switch (data.status) {
+              switch (args.data.status) {
                 case PositionStatus.POSITION_STATUS_CLOSED_OUT:
                   secondaryTooltip = t(
                     `You did not have enough %s collateral to meet the maintenance margin requirements for your position, so it was closed by the network.`,
-                    [data.assetSymbol]
+                    args.data.assetSymbol
                   );
                   break;
                 case PositionStatus.POSITION_STATUS_ORDERS_CLOSED:
@@ -192,18 +202,26 @@ export const PositionsTable = ({
                   secondaryTooltip = t('Maintained by network');
               }
               return (
-                <div>
-                  <p className="mb-2">{primaryTooltip}</p>
-                  <p className="mb-2">{secondaryTooltip}</p>
-                  <p className="mb-2">
-                    {t('Status: %s', PositionStatusMapping[data.status])}
-                  </p>
-                  {POSITION_RESOLUTION_LINK && (
-                    <ExternalLink href={POSITION_RESOLUTION_LINK}>
-                      {t('Read more about position resolution')}
-                    </ExternalLink>
-                  )}
-                </div>
+                <TooltipCellComponent
+                  {...args}
+                  value={
+                    <>
+                      <p className="mb-2">{primaryTooltip}</p>
+                      <p className="mb-2">{secondaryTooltip}</p>
+                      <p className="mb-2">
+                        {t(
+                          'Status: %s',
+                          PositionStatusMapping[args.data.status]
+                        )}
+                      </p>
+                      {POSITION_RESOLUTION_LINK && (
+                        <ExternalLink href={POSITION_RESOLUTION_LINK}>
+                          {t('Read more about position resolution')}
+                        </ExternalLink>
+                      )}
+                    </>
+                  }
+                />
               );
             },
             cellRenderer: OpenVolumeCell,
@@ -329,51 +347,56 @@ export const PositionsTable = ({
             valueGetter: realisedPNLValueGetter,
             // @ts-ignore no type overlap, but the functions are identical
             tooltipValueGetter: realisedPNLValueGetter,
-            tooltipComponent: ({
-              value,
-              valueFormatted,
-              data,
-            }: ITooltipParams) => {
+            tooltipComponent: (args: ITooltipParams) => {
               const LOSS_SOCIALIZATION_LINK =
                 DocsLinks?.LOSS_SOCIALIZATION ?? '';
 
-              if (!data) {
+              if (!args.data) {
                 return <>-</>;
               }
 
-              const losses = parseInt(data?.lossSocializationAmount ?? '0');
+              const losses = parseInt(
+                args.data?.lossSocializationAmount ?? '0'
+              );
 
               if (losses <= 0) {
                 // eslint-disable-next-line react/jsx-no-useless-fragment
-                return <>{valueFormatted}</>;
+                return <>{args.valueFormatted}</>;
               }
 
               const lossesFormatted = addDecimalsFormatNumber(
-                data.lossSocializationAmount,
-                data.assetDecimals
+                args.data.lossSocializationAmount,
+                args.data.assetDecimals
               );
 
               return (
-                <div className={tooltipContentClasses}>
-                  <p className="mb-2">{t('Realised PNL: %s', value)}</p>
-                  <p className="mb-2">
-                    {t(
-                      'Lifetime loss socialisation deductions: %s',
-                      lossesFormatted
-                    )}
-                  </p>
-                  <p className="mb-2">
-                    {t(
-                      `You received less %s in gains that you should have when the market moved in your favour. This occurred because one or more other trader(s) were closed out and did not have enough funds to cover their losses, and the market's insurance pool was empty.`,
-                      [data.assetSymbol]
-                    )}
-                  </p>
-                  {LOSS_SOCIALIZATION_LINK && (
-                    <ExternalLink href={LOSS_SOCIALIZATION_LINK}>
-                      {t('Read more about loss socialisation')}
-                    </ExternalLink>
-                  )}
-                </div>
+                <TooltipCellComponent
+                  {...args}
+                  value={
+                    <>
+                      <p className="mb-2">
+                        {t('Realised PNL: %s', args.value)}
+                      </p>
+                      <p className="mb-2">
+                        {t(
+                          'Lifetime loss socialisation deductions: %s',
+                          lossesFormatted
+                        )}
+                      </p>
+                      <p className="mb-2">
+                        {t(
+                          `You received less %s in gains that you should have when the market moved in your favour. This occurred because one or more other trader(s) were closed out and did not have enough funds to cover their losses, and the market's insurance pool was empty.`,
+                          args.data.assetSymbol
+                        )}
+                      </p>
+                      {LOSS_SOCIALIZATION_LINK && (
+                        <ExternalLink href={LOSS_SOCIALIZATION_LINK}>
+                          {t('Read more about loss socialisation')}
+                        </ExternalLink>
+                      )}
+                    </>
+                  }
+                />
               );
             },
             valueFormatter: ({
