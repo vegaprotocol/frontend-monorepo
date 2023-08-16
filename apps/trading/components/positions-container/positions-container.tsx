@@ -14,6 +14,7 @@ export const PositionsContainer = ({ allKeys }: { allKeys?: boolean }) => {
   const onMarketClick = useMarketClickHandler(true);
   const { pubKey, pubKeys, isReadOnly } = useVegaWallet();
 
+  const showClosed = usePositionsStore((store) => store.showClosedMarkets);
   const gridStore = usePositionsStore((store) => store.gridStore);
   const updateGridStore = usePositionsStore((store) => store.updateGridStore);
   const gridStoreCallbacks = useDataGridEvents(gridStore, updateGridStore);
@@ -41,6 +42,7 @@ export const PositionsContainer = ({ allKeys }: { allKeys?: boolean }) => {
       onMarketClick={onMarketClick}
       isReadOnly={isReadOnly}
       gridProps={gridStoreCallbacks}
+      showClosed={showClosed}
     />
   );
 };

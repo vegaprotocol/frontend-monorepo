@@ -41,6 +41,7 @@ export interface Position {
   marketId: string;
   marketCode: string;
   marketTradingMode: Schema.MarketTradingMode;
+  marketState: Schema.MarketState;
   markPrice: string | undefined;
   notional: string | undefined;
   openVolume: string;
@@ -119,6 +120,7 @@ export const getMetrics = (
       marketId: market.id,
       marketCode: market.tradableInstrument.instrument.code,
       marketTradingMode: market.tradingMode,
+      marketState: market.state,
       markPrice: marketData ? marketData.markPrice : undefined,
       notional: notional
         ? notional.multipliedBy(10 ** marketDecimalPlaces).toFixed(0)
@@ -265,7 +267,7 @@ export const positionsMarketsProvider = makeDerivedDataProvider<
 export const positionsMetricsProvider = makeDerivedDataProvider<
   Position[],
   Position[],
-  PositionsQueryVariables & { marketIds: string[] }
+  PositionsQueryVariables & { marketIds: string[]; showClosed: boolean }
 >(
   [
     (callback, client, variables) =>
@@ -281,10 +283,26 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
         marketIds: variables.marketIds,
       }),
   ],
-  ([positions, accounts, marketsData]) => {
+  ([positions, accounts, marketsData], variables) => {
     const positionsData = rejoinPositionData(positions, marketsData);
     const metrics = getMetrics(positionsData, accounts as Account[] | null);
-    return sortBy(metrics, 'marketCode');
+    return sortBy(metrics, 'marketCode').filter((p) => {
+      if (variables.showClosed) {
+        return true;
+      }
+
+      if (
+        [
+          Schema.MarketState.STATE_ACTIVE,
+          Schema.MarketState.STATE_PENDING,
+          Schema.MarketState.STATE_SUSPENDED,
+        ].includes(p.marketState)
+      ) {
+        return true;
+      }
+
+      return false;
+    });
   },
   (data, delta, previousData) =>
     data.filter((row) => {
