@@ -1,10 +1,9 @@
-import type { RenderResult } from '@testing-library/react';
 import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PositionsTable, OpenVolumeCell, PNLCell } from './positions-table';
 import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
-import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
+import { PositionStatus } from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
