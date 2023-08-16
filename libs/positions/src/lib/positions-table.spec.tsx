@@ -1,7 +1,7 @@
 import type { RenderResult } from '@testing-library/react';
 import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import PositionsTable, { OpenVolumeCell, PNLCell } from './positions-table';
+import { PositionsTable, OpenVolumeCell, PNLCell } from './positions-table';
 import type { Position } from './positions-data-providers';
 import * as Schema from '@vegaprotocol/types';
 import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
@@ -20,13 +20,13 @@ const singleRow: Position = {
   assetSymbol: 'BTC',
   averageEntryPrice: '133',
   currentLeverage: 1.1,
-  decimals: 2, // this is settlementAsset.decimals
+  assetDecimals: 2, // this is settlementAsset.decimals
   quantum: '0.1',
   lossSocializationAmount: '0',
   marginAccountBalance: '12345600',
   marketDecimalPlaces: 1,
   marketId: 'string',
-  marketName: 'ETH/BTC (31 july 2022)',
+  marketCode: 'ETH/BTC (31 july 2022)',
   marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
   markPrice: '123',
   notional: '12300',

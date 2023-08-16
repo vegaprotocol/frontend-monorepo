@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { useMemo } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import type { ColDef, ITooltipParams } from 'ag-grid-community';
@@ -8,18 +7,16 @@ import type {
   TypedDataAgGrid,
   VegaICellRendererParams,
 } from '@vegaprotocol/datagrid';
-import { COL_DEFS } from '@vegaprotocol/datagrid';
-import { ProgressBarCell } from '@vegaprotocol/datagrid';
 import {
   AgGridLazy as AgGrid,
+  COL_DEFS,
   PriceFlashCell,
-  signedNumberCssClass,
   signedNumberCssClassRules,
   MarketNameCell,
+  ProgressBarCell,
 } from '@vegaprotocol/datagrid';
 import {
   ButtonLink,
-  Tooltip,
   TooltipCellComponent,
   ExternalLink,
   VegaIcon,
@@ -39,7 +36,6 @@ import * as Schema from '@vegaprotocol/types';
 import { PositionStatus, PositionStatusMapping } from '@vegaprotocol/types';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { PositionActionsDropdown } from './position-actions-dropdown';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { LiquidationPrice } from './liquidation-price';
 import { StackedCell } from './stacked-cell';
 
@@ -49,43 +45,24 @@ interface Props extends TypedDataAgGrid<Position> {
   style?: CSSProperties;
   isReadOnly: boolean;
   multipleKeys?: boolean;
-  pubKeys?: VegaWalletContextShape['pubKeys'];
-  pubKey?: VegaWalletContextShape['pubKey'];
+  pubKeys?: Array<{ name: string; publicKey: string }>;
+  pubKey?: string | null;
 }
-
-export interface AmountCellProps {
-  valueFormatted?: Pick<
-    Position,
-    'openVolume' | 'marketDecimalPlaces' | 'positionDecimalPlaces' | 'notional'
-  >;
-}
-
-export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
-  if (!valueFormatted) {
-    return null;
-  }
-  const { openVolume, positionDecimalPlaces, marketDecimalPlaces, notional } =
-    valueFormatted;
-  return valueFormatted && notional ? (
-    <div className="leading-tight font-mono">
-      <div
-        className={classNames('text-right', signedNumberCssClass(openVolume))}
-      >
-        {volumePrefix(
-          addDecimalsFormatNumber(openVolume, positionDecimalPlaces)
-        )}
-      </div>
-      <div className="text-right">
-        {addDecimalsFormatNumber(notional, marketDecimalPlaces)}
-      </div>
-    </div>
-  ) : null;
-};
-
-AmountCell.displayName = 'AmountCell';
 
 export const getRowId = ({ data }: { data: Position }) =>
   `${data.partyId}-${data.marketId}`;
+
+const realisedPNLValueGetter = ({ data }: { data: Position }) => {
+  return !data
+    ? undefined
+    : toBigNum(data.realisedPNL, data.assetDecimals).toNumber();
+};
+
+const unrealisedPNLValueGetter = ({ data }: { data: Position }) => {
+  return !data
+    ? undefined
+    : toBigNum(data.unrealisedPNL, data.assetDecimals).toNumber();
+};
 
 const defaultColDef = {
   sortable: true,
@@ -111,7 +88,6 @@ export const PositionsTable = ({
       tooltipShowDelay={500}
       defaultColDef={defaultColDef}
       components={{
-        AmountCell,
         PriceFlashCell,
         ProgressBarCell,
         MarketNameCell,
@@ -350,16 +326,9 @@ export const PositionsTable = ({
             cellClassRules: signedNumberCssClassRules,
             cellClass: 'font-mono text-right',
             filter: 'agNumberColumnFilter',
-            valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
-              return !data
-                ? undefined
-                : toBigNum(data.realisedPNL, data.assetDecimals).toNumber();
-            },
-            tooltipValueGetter: ({ data }: ITooltipParams<Position>) => {
-              return !data
-                ? undefined
-                : toBigNum(data.realisedPNL, data.assetDecimals).toNumber();
-            },
+            valueGetter: realisedPNLValueGetter,
+            // @ts-ignore no type overlap, but the functions are identical
+            tooltipValueGetter: realisedPNLValueGetter,
             tooltipComponent: ({
               value,
               valueFormatted,
@@ -430,16 +399,9 @@ export const PositionsTable = ({
             cellClassRules: signedNumberCssClassRules,
             cellClass: 'font-mono text-right',
             filter: 'agNumberColumnFilter',
-            tooltipValueGetter: ({ data }: ITooltipParams<Position>) => {
-              return !data
-                ? undefined
-                : toBigNum(data.unrealisedPNL, data.assetDecimals).toNumber();
-            },
-            valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
-              return !data
-                ? undefined
-                : toBigNum(data.unrealisedPNL, data.assetDecimals).toNumber();
-            },
+            valueGetter: unrealisedPNLValueGetter,
+            // @ts-ignore no type overlap but function can be identical
+            tooltipValueGetter: unrealisedPNLValueGetter,
             valueFormatter: ({
               data,
             }: VegaValueFormatterParams<Position, 'unrealisedPNL'>) =>
@@ -489,8 +451,6 @@ export const PositionsTable = ({
     />
   );
 };
-
-export default PositionsTable;
 
 export const PNLCell = ({
   valueFormatted,
