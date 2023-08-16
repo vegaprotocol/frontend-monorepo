@@ -25,7 +25,7 @@ import type {
   DispatchMetric,
   StopOrderStatus,
 } from './__generated__/types';
-import type { ProductType } from './product';
+import type { ProductType, ProposalProductType } from './product';
 
 export const AccountTypeMapping: {
   [T in AccountType]: string;
@@ -522,3 +522,12 @@ export const ProductTypeMapping: Record<ProductType, string> = {
 export const ProductTypeShortName: Record<ProductType, string> = {
   Future: 'FUTR',
 };
+
+export const ProposalProductTypeMapping: Record<ProposalProductType, string> = {
+  FutureProduct: 'Future',
+};
+
+export const ProposalProductTypeShortName: Record<ProposalProductType, string> =
+  {
+    FutureProduct: 'FUTR',
+  };

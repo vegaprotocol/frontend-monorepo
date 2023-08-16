@@ -14,6 +14,7 @@ import {
   signedNumberCssClassRules,
   MarketNameCell,
   ProgressBarCell,
+  MarketProductPill,
 } from '@vegaprotocol/datagrid';
 import {
   ButtonLink,
@@ -128,13 +129,7 @@ export const PositionsTable = ({
                   secondary={
                     <>
                       {data?.assetSymbol}
-                      <Pill
-                        size="xxs"
-                        className="uppercase ml-0.5"
-                        title={productType}
-                      >
-                        {productTypeMap[productType] || productType}
-                      </Pill>
+                      <MarketProductPill productType={data.productType} />
                     </>
                   }
                 />

@@ -6,6 +6,7 @@ import {
   ProductTypeShortName,
   type Market,
   type ProductType,
+  ProductTypeMapping,
 } from '@vegaprotocol/types';
 
 export const MarketProductPill = ({
@@ -14,7 +15,11 @@ export const MarketProductPill = ({
   productType: ProductType;
 }) => {
   return (
-    <Pill size="xxs" className="uppercase ml-0.5" title={productType}>
+    <Pill
+      size="xxs"
+      className="uppercase ml-0.5"
+      title={ProductTypeMapping[productType]}
+    >
       {ProductTypeShortName[productType]}
     </Pill>
   );
