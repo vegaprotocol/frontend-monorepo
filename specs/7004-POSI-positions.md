@@ -52,5 +52,3 @@
 - **Must** be able to see if your realised PnL was affected by loss socialisation (<a name="7004-POSI-018" href="#7004-POSI-018">7004-POSI-018</a>)
 
 - **Must** Must be able to see what type of product the position was opened on (<a name="7004-POSI-019" href="#7004-POSI-019">7004-POSI-019</a>)
-
-- **Must** see product type of market's instrument near to market label (<a name="7004-POSI-020" href="#7004-POSI-020">7004-POSI-020</a>)
