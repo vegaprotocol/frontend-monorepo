@@ -6,6 +6,9 @@ import BigNumber from 'bignumber.js';
 import OrderTxSummary from '../../../order-summary/order-tx-summary';
 import PriceInMarket from '../../../price-in-market/price-in-market';
 import StopOrderTriggerSummary from './stop-order-trigger';
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import { Time } from '../../../time';
+import { fromUnixTime, parse } from 'date-fns/esm';
 
 export type StopOrderType = 'RisesAbove' | 'FallsBelow' | 'OCO';
 type V1OrderSetup = components['schemas']['v1StopOrderSetup'];
@@ -45,7 +48,7 @@ export function ExpiryTrigger({
   if (trailingPercentOffset) {
     return (
       <span>
-        {formatNumberPercentage(new BigNumber(trailingPercentOffset))}%
+        {formatNumberPercentage(new BigNumber(trailingPercentOffset))}
       </span>
     );
   }
@@ -53,9 +56,28 @@ export function ExpiryTrigger({
   return null;
 }
 
+export function getMovePrefix(
+  type: StopOrderType,
+  trailingPercentOffset?: string
+): string {
+  if (type === 'RisesAbove') {
+    if (trailingPercentOffset) {
+      return '+';
+    } else {
+      return '>';
+    }
+  } else {
+    if (trailingPercentOffset) {
+      return '-';
+    } else {
+      return '<';
+    }
+  }
+}
+
 export const TypeLabel = {
-  RisesAbove: t('Rises by'),
-  FallsBelow: t('Falls by'),
+  RisesAbove: t('Take profit'),
+  FallsBelow: t('Stop loss'),
   OCO: '',
 };
 
@@ -70,35 +92,54 @@ export const StopOrderSetup = ({
   trailingPercentOffset,
   deterministicId,
 }: StopOrderSetupProps) => {
+  let d = 'Unknown';
+  try {
+    d = expiresAt
+      ? fromUnixTime(parseInt(expiresAt) / 1000000000).toLocaleString()
+      : t('Unknown');
+  } catch (e) {
+    d = t('Unknown');
+  }
+
   return (
     <div className={wrapperClasses}>
-      {deterministicId}
       <div className="mb-12 lg:mb-0">
         <div className="relative block rounded-lg px-3 py-6 md:px-6 lg:-mr-7">
-          <h2 className="text-3xl font-bold mb-4 display-5">
-            {TypeLabel[type]}{' '}
-            <ExpiryTrigger
-              trailingPercentOffset={trailingPercentOffset}
-              price={price}
-              marketId={orderSubmission?.marketId}
-            />
-          </h2>
           {orderSubmission && (
             <p className="text-vega-grey-400">
               <OrderTxSummary order={orderSubmission} />
             </p>
           )}
-          <StopOrderTriggerSummary id={deterministicId} />
-          {expiresAt && expiryStrategy ? (
-            <div className="">
-              <h2 className="text-2xl font-bold text-dark mb-4">
-                {t('Expiry Type')}
-              </h2>
-              <h5 className="text-lg font-medium text-gray-500 mb-0">
-                {getExpiryTypeLabel(expiryStrategy)}
-              </h5>
+
+          <div className="grid md:grid-cols-4 gap-x-6 mt-4">
+            <div className="mt-2">
+              <h3 className="font-bold text-dark mb-1">{TypeLabel[type]} </h3>
+              <p className=" font-xs text-gray-500 mb-0">
+                {getMovePrefix(type, trailingPercentOffset)}
+                <ExpiryTrigger
+                  trailingPercentOffset={trailingPercentOffset}
+                  price={price}
+                  marketId={orderSubmission?.marketId}
+                />
+              </p>
             </div>
-          ) : null}
+
+            <div className="mt-2">
+              <h3 className="font-bold text-dark mb-1">{t('Triggered')}</h3>
+              <StopOrderTriggerSummary id={deterministicId} />
+            </div>
+
+            {expiresAt && expiryStrategy ? (
+              <div className="mt-2">
+                <h3 className="font-bold text-dark mb-1">{t('Expiry Type')}</h3>
+                <p className=" font-xs text-gray-500 mb-0">
+                  <Tooltip description={<span>{d}</span>}>
+                    <span>{getExpiryTypeLabel(expiryStrategy)}</span>
+                  </Tooltip>
+                </p>
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
     </div>
