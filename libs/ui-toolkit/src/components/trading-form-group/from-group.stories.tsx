@@ -1,5 +1,5 @@
 import type { StoryFn, Meta } from '@storybook/react';
-import { Input } from '../input';
+import { Input } from '../trading-input';
 import type { FormGroupProps } from './form-group';
 import { FormGroup } from './form-group';
 export default {
