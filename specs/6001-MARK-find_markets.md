@@ -3,7 +3,7 @@
 ## Closed Markets
 
 - **Must** see market's instrument code (<a name="6001-MARK-001" href="#6001-MARK-001">6001-MARK-001</a>)
-- **Must** see product type of market's instrument near to instrument code (of Market and Successor market both, if there are present) (<a name="6001-MARK-071" href="#6001-MARK-071">6001-MARK-071</a>)
+- **Must** see market's product type (<a name="6001-MARK-071" href="#6001-MARK-071">6001-MARK-071</a>)
 - **Must** see market's instrument name (sometimes labelled 'description') (<a name="6001-MARK-002" href="#6001-MARK-002">6001-MARK-002</a>)
 - **Must** see status (<a name="6001-MARK-003" href="#6001-MARK-003">6001-MARK-003</a>)
 - **Must** see the settlement date (<a name="6001-MARK-004" href="#6001-MARK-004">6001-MARK-004</a>)
@@ -46,12 +46,12 @@
 - **Must** be able to close and open the market selector (<a name="6001-MARK-066" href="#6001-MARK-066">6001-MARK-066</a>)
 - **Must** must change color and have + or negative suffix of the price change and change color for the sparkline (<a name="6001-MARK-067" href="#6001-MARK-067">6001-MARK-067</a>)
 - **Must** be default tab "All" where there's no filtering by product. (<a name="6001-MARK-070" href="#6001-MARK-070">6001-MARK-070</a>)
-- If tab "All" is selected **Must** see product type of market's instrument near to instrument code (<a name="6001-MARK-072" href="#6001-MARK-072">6001-MARK-072</a>)
+- If tab "All" is selected **Must** see product type (<a name="6001-MARK-072" href="#6001-MARK-072">6001-MARK-072</a>)
 
 ## All Markets
 
 - **Must** see market's instrument code (<a name="6001-MARK-035" href="#6001-MARK-035">6001-MARK-035</a>)
-- **Must** see product type of market's instrument near to instrument code (of Market and Successor market both, if there are present) (<a name="6001-MARK-073" href="#6001-MARK-073">6001-MARK-073</a>)
+- **Must** see product type (<a name="6001-MARK-073" href="#6001-MARK-073">6001-MARK-073</a>)
 - **Must** see market's instrument name (sometimes labelled 'description') (<a name="6001-MARK-036" href="#6001-MARK-036">6001-MARK-036</a>)
 - **Must** see Trading mode (<a name="6001-MARK-037" href="#6001-MARK-037">6001-MARK-037</a>)
 - **Must** see status (<a name="6001-MARK-038" href="#6001-MARK-038">6001-MARK-038</a>)
@@ -74,7 +74,7 @@
 ## Proposed markets
 
 - **Must** see market's instrument code (<a name="6001-MARK-049" href="#6001-MARK-049">6001-MARK-049</a>)
-- **Must** see product type of market's instrument near to instrument code (of Market and Successor market both, if there are present) (<a name="6001-MARK-074" href="#6001-MARK-074">6001-MARK-074</a>)
+- **Must** see product type (<a name="6001-MARK-074" href="#6001-MARK-074">6001-MARK-074</a>)
 - **Must** see market's instrument name (sometimes labelled 'description') (<a name="6001-MARK-050" href="#6001-MARK-050">6001-MARK-050</a>)
 - **Must** show the settlement asset (<a name="6001-MARK-051" href="#6001-MARK-051">6001-MARK-051</a>)
 - **Must** see state (<a name="6001-MARK-052" href="#6001-MARK-052">6001-MARK-052</a>)
