@@ -220,6 +220,7 @@ describe(
       cy.getByTestId(changeVoteButton).should('be.visible').click();
       voteForProposal('for');
       // 3001-VOTE-064
+      cy.getByTestId('user-voted-yes').should('exist');
       getProposalInformationFromTable('Tokens for proposal')
         .should('have.text', (1).toFixed(2))
         .and('be.visible');
