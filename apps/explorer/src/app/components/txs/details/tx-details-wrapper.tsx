@@ -11,6 +11,7 @@ import { TxDetailsBatch } from './tx-batch';
 import { TxDetailsChainEvent } from './tx-chain-event';
 import { TxDetailsNodeVote } from './tx-node-vote';
 import { TxDetailsOrderCancel } from './tx-order-cancel';
+import { TxDetailsStopOrderCancel } from './tx-stop-order-cancel';
 import { TxDetailsOrderAmend } from './tx-order-amend';
 import { TxDetailsWithdrawSubmission } from './tx-withdraw-submission';
 import { TxDetailsDelegate } from './tx-delegation';
@@ -85,6 +86,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsProtocolUpgrade;
     case 'Cancel Order':
       return TxDetailsOrderCancel;
+    case 'Stop Orders Cancellation':
+      return TxDetailsStopOrderCancel;
     case 'Amend Order':
       return TxDetailsOrderAmend;
     case 'Validator Heartbeat':
