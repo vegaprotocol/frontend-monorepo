@@ -1,9 +1,11 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { isBrowserWalletInstalled, useVegaWallet } from '@vegaprotocol/wallet';
 import { depositsProvider } from '@vegaprotocol/deposits';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '@vegaprotocol/orders';
 import * as Types from '@vegaprotocol/types';
+import { aggregatedAccountsDataProvider } from '@vegaprotocol/accounts';
+import { positionsDataProvider } from '@vegaprotocol/positions';
 
 export enum OnboardingStep {
   ONBOARDING_UNKNOWN_STEP,
@@ -15,48 +17,86 @@ export enum OnboardingStep {
 }
 
 export const useGetOnboardingStep = () => {
-  const { pubKey = '' } = useVegaWallet();
+  const [isLoading, setIsLoading] = useState(true);
+  const { pubKey = '', pubKeys } = useVegaWallet();
   const { data: depositsData } = useDataProvider({
     dataProvider: depositsProvider,
-    variables: { partyId: pubKey },
+    variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });
-  const deposits = depositsData?.some(
-    (item) => item.status === Types.DepositStatus.STATUS_FINALIZED
-  );
+  const { data: collateralData } = useDataProvider({
+    dataProvider: aggregatedAccountsDataProvider,
+    variables: { partyId: pubKey || '' },
+    skip: !pubKey,
+  });
+  const collaterals = Boolean(collateralData?.length);
+  const deposits =
+    depositsData?.some(
+      (item) => item.status === Types.DepositStatus.STATUS_FINALIZED
+    ) || false;
   const { data: ordersData } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
     variables: {
-      partyId: pubKey,
+      partyId: pubKey || '',
     },
     skip: !pubKey,
   });
   const orders = Boolean(ordersData?.length);
+
+  const partyIds = pubKeys?.map((item) => item.publicKey) || [];
+  const { data: positionsData } = useDataProvider({
+    dataProvider: positionsDataProvider,
+    variables: {
+      partyIds,
+    },
+    skip: !partyIds?.length,
+  });
+  const positions = Boolean(positionsData?.length);
+  useEffect(() => {
+    const value = Boolean(
+      pubKey &&
+        (depositsData === null ||
+          ordersData === null ||
+          collateralData === null ||
+          positionsData === null)
+    );
+    setIsLoading(value);
+  }, [pubKey, depositsData, ordersData, collateralData, positionsData]);
+
   const resolveOnBoardingState = useCallback(
-    (pubKey?: string, deposits?: boolean, orders?: boolean) => {
-      if (!pubKey && !isBrowserWalletInstalled()) {
+    (
+      pubKey: string,
+      deposits: boolean,
+      orders: boolean,
+      collaterals: boolean,
+      positions: boolean,
+      isLoading: boolean
+    ) => {
+      if (isLoading) {
+        return OnboardingStep.ONBOARDING_UNKNOWN_STEP;
+      }
+      if (!isBrowserWalletInstalled()) {
         return OnboardingStep.ONBOARDING_WALLET_STEP;
       }
       if (!pubKey) {
         return OnboardingStep.ONBOARDING_CONNECT_STEP;
       }
-      if (!deposits) {
+      if (!deposits && !collaterals) {
         return OnboardingStep.ONBOARDING_DEPOSIT_STEP;
       }
-      if (!orders) {
+      if (!orders && !positions) {
         return OnboardingStep.ONBOARDING_ORDER_STEP;
       }
       return OnboardingStep.ONBOARDING_COMPLETE_STEP;
     },
     []
   );
-  const result = useMemo(
-    () => resolveOnBoardingState(pubKey, deposits, orders),
-    [resolveOnBoardingState, pubKey, deposits, orders]
+  return resolveOnBoardingState(
+    pubKey || '',
+    deposits,
+    orders,
+    collaterals,
+    positions,
+    isLoading
   );
-  if (depositsData === null || ordersData === null) {
-    // prevent a bad result before the data loads
-    return OnboardingStep.ONBOARDING_UNKNOWN_STEP;
-  }
-  return result;
 };

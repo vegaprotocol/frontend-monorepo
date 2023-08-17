@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useEnvironment } from '@vegaprotocol/environment';
+import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { WelcomeDialogContent } from './welcome-dialog-content';
 import { Links, Routes } from '../../pages/client-router';
 import { useGlobalStore } from '../../stores';
@@ -10,16 +11,18 @@ import {
   useGetOnboardingStep,
   OnboardingStep,
 } from './use-get-onboarding-step';
+import * as constants from '../constants';
 
 export const WelcomeDialog = () => {
   const { VEGA_ENV } = useEnvironment();
-
+  const [onBoardingViewed] = useLocalStorage(constants.ONBOARDING_VIEWED_KEY);
   const update = useGlobalStore((store) => store.update);
   const dismissed = useGlobalStore((store) => store.onBoardingDismissed);
   const currentStep = useGetOnboardingStep();
 
   const navigate = useNavigate();
   const isOnboardingDialogNeeded =
+    onBoardingViewed !== 'true' &&
     currentStep &&
     currentStep < OnboardingStep.ONBOARDING_COMPLETE_STEP &&
     !dismissed;

@@ -12,7 +12,9 @@ export const useIsWalletServiceRunning = (
 
   const checkState = useCallback(async () => {
     const connector = connectors['jsonRpc'] as JsonRpcConnector;
-    connector.url = url;
+    if (url && url !== connector.url) {
+      connector.url = url;
+    }
     try {
       await connector.checkCompat();
       const chainIdResult = await connector.getChainId();
