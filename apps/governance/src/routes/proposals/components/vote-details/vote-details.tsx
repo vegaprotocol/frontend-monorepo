@@ -3,23 +3,29 @@ import { formatDistanceToNow } from 'date-fns';
 import { RoundedWrapper, Icon, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ProposalState } from '@vegaprotocol/types';
-import { useVoteSubmit, VoteProgress } from '@vegaprotocol/proposals';
+import { VoteProgress } from '@vegaprotocol/proposals';
 import { formatNumber } from '../../../../lib/format-number';
 import { ConnectToVega } from '../../../../components/connect-to-vega';
 import { useVoteInformation } from '../../hooks';
-import { useUserVote } from './use-user-vote';
 import { CurrentProposalStatus } from '../current-proposal-status';
 import { VoteButtonsContainer } from './vote-buttons';
 import { SubHeading } from '../../../../components/heading';
 import { ProposalType } from '../proposal/proposal';
+import type { VoteValue } from '@vegaprotocol/types';
+import type { DialogProps } from '@vegaprotocol/wallet';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import type { VoteState } from './use-user-vote';
 
 interface VoteDetailsProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
   minVoterBalance: string | null | undefined;
   spamProtectionMinTokens: string | null | undefined;
   proposalType: ProposalType | null;
+  submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
+  dialog: (props: DialogProps) => JSX.Element;
+  voteState: VoteState | null;
+  voteDatetime: Date | null;
 }
 
 export const VoteDetails = ({
@@ -27,6 +33,10 @@ export const VoteDetails = ({
   minVoterBalance,
   spamProtectionMinTokens,
   proposalType,
+  submit,
+  dialog,
+  voteState,
+  voteDatetime,
 }: VoteDetailsProps) => {
   const { pubKey } = useVegaWallet();
   const {
@@ -48,8 +58,7 @@ export const VoteDetails = ({
   } = useVoteInformation({ proposal });
 
   const { t } = useTranslation();
-  const { submit, Dialog, finalizedVote } = useVoteSubmit();
-  const { voteState, voteDatetime } = useUserVote(proposal?.id, finalizedVote);
+
   const defaultDecimals = 2;
   const daysLeft = t('daysLeft', {
     daysLeft: formatDistanceToNow(new Date(proposal?.terms.closingDatetime)),
@@ -219,7 +228,7 @@ export const VoteDetails = ({
                 spamProtectionMinTokens={spamProtectionMinTokens}
                 className="flex"
                 submit={submit}
-                dialog={Dialog}
+                dialog={dialog}
               />
             )
           ) : (

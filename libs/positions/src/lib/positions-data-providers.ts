@@ -26,20 +26,20 @@ import {
   PositionsDocument,
   PositionsSubscriptionDocument,
 } from './__generated__/Positions';
-import type { PositionStatus } from '@vegaprotocol/types';
+import type { PositionStatus, ProductType } from '@vegaprotocol/types';
 
 export interface Position {
   assetId: string;
   assetSymbol: string;
   averageEntryPrice: string;
   currentLeverage: number | undefined;
-  decimals: number;
+  assetDecimals: number;
   quantum: string;
   lossSocializationAmount: string;
   marginAccountBalance: string;
   marketDecimalPlaces: number;
   marketId: string;
-  marketName: string;
+  marketCode: string;
   marketTradingMode: Schema.MarketTradingMode;
   markPrice: string | undefined;
   notional: string | undefined;
@@ -51,7 +51,7 @@ export interface Position {
   totalBalance: string;
   unrealisedPNL: string;
   updatedAt: string | null;
-  productType?: string;
+  productType: ProductType;
 }
 
 export const getMetrics = (
@@ -71,15 +71,10 @@ export const getMetrics = (
     const marginAccount = accounts?.find((account) => {
       return account.market?.id === market?.id;
     });
-    const {
-      decimals,
-      id: assetId,
-      symbol: assetSymbol,
-      quantum,
-    } = market.tradableInstrument.instrument.product.settlementAsset;
+    const asset = market.tradableInstrument.instrument.product.settlementAsset;
     const generalAccount = accounts?.find(
       (account) =>
-        account.asset.id === assetId &&
+        account.asset.id === asset.id &&
         account.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL
     );
 
@@ -89,11 +84,11 @@ export const getMetrics = (
 
     const marginAccountBalance = toBigNum(
       marginAccount?.balance ?? 0,
-      decimals
+      asset.decimals
     );
     const generalAccountBalance = toBigNum(
       generalAccount?.balance ?? 0,
-      decimals
+      asset.decimals
     );
 
     const markPrice = marketData
@@ -112,17 +107,17 @@ export const getMetrics = (
         : notional.dividedBy(totalBalance)
       : undefined;
     metrics.push({
-      assetId,
-      assetSymbol,
+      assetId: asset.id,
+      assetSymbol: asset.symbol,
       averageEntryPrice: position.averageEntryPrice,
       currentLeverage: currentLeverage ? currentLeverage.toNumber() : undefined,
-      decimals,
-      quantum,
+      assetDecimals: asset.decimals,
+      quantum: asset.quantum,
       lossSocializationAmount: position.lossSocializationAmount || '0',
       marginAccountBalance: marginAccount?.balance ?? '0',
       marketDecimalPlaces,
       marketId: market.id,
-      marketName: market.tradableInstrument.instrument.code,
+      marketCode: market.tradableInstrument.instrument.code,
       marketTradingMode: market.tradingMode,
       markPrice: marketData ? marketData.markPrice : undefined,
       notional: notional
@@ -133,10 +128,11 @@ export const getMetrics = (
       positionDecimalPlaces,
       realisedPNL: position.realisedPNL,
       status: position.positionStatus,
-      totalBalance: totalBalance.multipliedBy(10 ** decimals).toFixed(),
+      totalBalance: totalBalance.multipliedBy(10 ** asset.decimals).toFixed(),
       unrealisedPNL: position.unrealisedPNL,
       updatedAt: position.updatedAt || null,
-      productType: market?.tradableInstrument.instrument.product.__typename,
+      productType: market?.tradableInstrument.instrument.product
+        .__typename as ProductType,
     });
   });
   return metrics;
@@ -288,7 +284,7 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
   ([positions, accounts, marketsData]) => {
     const positionsData = rejoinPositionData(positions, marketsData);
     const metrics = getMetrics(positionsData, accounts as Account[] | null);
-    return sortBy(metrics, 'marketName');
+    return sortBy(metrics, 'marketCode');
   },
   (data, delta, previousData) =>
     data.filter((row) => {
