@@ -180,12 +180,12 @@ describe('getMetrics && rejoinPositionData', () => {
     expect(metrics[0].currentLeverage).toBeCloseTo(1.02);
     expect(metrics[0].marketDecimalPlaces).toEqual(5);
     expect(metrics[0].positionDecimalPlaces).toEqual(0);
-    expect(metrics[0].decimals).toEqual(5);
+    expect(metrics[0].assetDecimals).toEqual(5);
     expect(metrics[0].markPrice).toEqual('9431775');
     expect(metrics[0].marketId).toEqual(
       '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8'
     );
-    expect(metrics[0].marketName).toEqual('AAVEDAI.MF21');
+    expect(metrics[0].marketCode).toEqual('AAVEDAI.MF21');
     expect(metrics[0].marketTradingMode).toEqual(
       'TRADING_MODE_MONITORING_AUCTION'
     );
@@ -205,12 +205,12 @@ describe('getMetrics && rejoinPositionData', () => {
     expect(metrics[1].currentLeverage).toBeCloseTo(0.097);
     expect(metrics[1].marketDecimalPlaces).toEqual(5);
     expect(metrics[1].positionDecimalPlaces).toEqual(0);
-    expect(metrics[1].decimals).toEqual(5);
+    expect(metrics[1].assetDecimals).toEqual(5);
     expect(metrics[1].markPrice).toEqual('869762');
     expect(metrics[1].marketId).toEqual(
       '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e'
     );
-    expect(metrics[1].marketName).toEqual('UNIDAI.MF21');
+    expect(metrics[1].marketCode).toEqual('UNIDAI.MF21');
     expect(metrics[1].marketTradingMode).toEqual('TRADING_MODE_CONTINUOUS');
     expect(metrics[1].notional).toEqual('86976200');
     expect(metrics[1].openVolume).toEqual('-100');

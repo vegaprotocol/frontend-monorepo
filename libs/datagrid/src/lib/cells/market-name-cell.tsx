@@ -2,28 +2,27 @@ import type { MouseEvent } from 'react';
 import { useCallback } from 'react';
 import get from 'lodash/get';
 import { Pill } from '@vegaprotocol/ui-toolkit';
-import type { Market } from '@vegaprotocol/types';
-
-const productTypeMap = {
-  Future: 'Futr',
-  FutureProduct: 'Futr',
-  Spot: 'Spot',
-  SpotProduct: 'Spot',
-  Perpetual: 'Perp',
-  PerpetualProduct: 'Perp',
-} as const;
-export type ProductType = keyof typeof productTypeMap | undefined;
+import {
+  ProductTypeShortName,
+  type Market,
+  type ProductType,
+  ProductTypeMapping,
+} from '@vegaprotocol/types';
 
 export const MarketProductPill = ({
   productType,
 }: {
-  productType?: ProductType;
+  productType: ProductType;
 }) => {
-  return productType ? (
-    <Pill size="xxs" className="uppercase ml-0.5" title={productType}>
-      {productTypeMap[productType] || productType}
+  return (
+    <Pill
+      size="xxs"
+      className="uppercase ml-0.5"
+      title={ProductTypeMapping[productType]}
+    >
+      {ProductTypeShortName[productType]}
     </Pill>
-  ) : null;
+  );
 };
 
 interface MarketNameCellProps {
@@ -66,7 +65,7 @@ export const MarketNameCell = ({
       <span data-testid="market-code" data-market-id={id}>
         {value}
       </span>
-      <MarketProductPill productType={productType} />
+      {productType && <MarketProductPill productType={productType} />}
     </>
   );
   return onMarketClick && id ? (
