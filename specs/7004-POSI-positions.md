@@ -4,7 +4,7 @@
 
 - **Must** be able to view the following columns (<a name="7004-POSI-002" href="#7004-POSI-002">7004-POSI-002</a>):
 
-  - market
+  - market (with its product type)
   - notional
   - open volume
   - mark price
@@ -15,6 +15,8 @@
   - realised PNL
   - unrealised PNL
   - Updated
+
+- **Must** see product type of market's instrument near to market label (<a name="7004-POSI-014" href="#7004-POSI-014">7004-POSI-014</a>)
 
 - **Must** be able to sort each column by asc and dsc (<a name="7004-POSI-003" href="#7004-POSI-003">7004-POSI-003</a>)
 

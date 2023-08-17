@@ -16,6 +16,7 @@
     - **Could** have default sort order (<a name="7001-COLL-010" href="#7001-COLL-010">7001-COLL-010</a>)
       - General
       - Margin
+        - associated market name (instrument code) with its product type **must** be shown
       - Bond
       - Fees - Maker
       - Fees - Liquidity
