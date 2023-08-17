@@ -134,3 +134,16 @@ Cypress.Commands.add(
     cy.contains(tableRowName).siblings().should('have.text', changeType);
   }
 );
+
+Cypress.Commands.add(
+  'validate_transaction_fields',
+  (rowNum, rowName, rowValue, hrefUrl = null) => {
+    cy.get('tr')
+      .eq(rowNum)
+      .within(() => {
+        cy.get('td').eq(0).should('have.text', rowName);
+        cy.get('td').eq(1).should('have.text', rowValue);
+        if (hrefUrl) cy.get('a').should('have.attr', 'href', hrefUrl);
+      });
+  }
+);

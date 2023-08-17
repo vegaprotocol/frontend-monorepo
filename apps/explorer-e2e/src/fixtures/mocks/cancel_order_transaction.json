@@ -1,0 +1,24 @@
+{
+  "transaction": {
+    "block": "10277448",
+    "index": 13,
+    "hash": "C79AE0040AE7CFE3EACD715E569B043B214D8451405CB40C06EAA1C38F453A85",
+    "submitter": "86ff2c3b45be7c43202d1dc370779d070faaba1029094c46174857f1b445673f",
+    "type": "Cancel Order",
+    "code": 0,
+    "cursor": "10277448.13",
+    "command": {
+      "nonce": "18292162483463539777",
+      "blockHeight": "10277444",
+      "orderCancellation": {
+        "orderId": "",
+        "marketId": ""
+      }
+    },
+    "signature": {
+      "value": "22a24614c3b19b5c6a7a979738dbda5cdeea39f61aabb937fb795f975ddc56a9e4823659024c29f1b9400939a502c4cf7fa10b946400d2b4f18caed6ac9f7d07",
+      "algo": "vega/ed25519",
+      "version": 1
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "transaction": {
+    "block": "9319120",
+    "index": 0,
+    "hash": "28B2C9082E853F83958E91E9CA12343034CE7268DAF05EB987E6DB236C240208",
+    "submitter": "a80cc31c783829674a0f340a765e401f089349c706cc6c99401962aa3f663471",
+    "type": "Amend Order",
+    "code": 70,
+    "cursor": "9319120.0",
+    "command": {
+      "nonce": "13856472833343542396",
+      "blockHeight": "9319118",
+      "orderAmendment": {
+        "orderId": "a4a385ef2e8d8d508d129c91680fdd771374a21bd6fc49628a7e79cf53af1fbb",
+        "marketId": "e6561f69c2a76858866aab2896eeb529b46040614566e0665602d67bc682c31f",
+        "price": "13984",
+        "sizeDelta": "0",
+        "timeInForce": "TIME_IN_FORCE_GTC",
+        "peggedOffset": "",
+        "peggedReference": "PEGGED_REFERENCE_UNSPECIFIED"
+      }
+    },
+    "signature": {
+      "value": "43d6f047c7c11f96b15ccd18acaf2889ec902bcdc816b029ddd103576e303abca71e4ef06c41e9072f7623230586d7d85425784f935857c3838f1b9828be1a01",
+      "algo": "vega/ed25519",
+      "version": 1
+    },
+    "error": "couldn't insert order in book"
+  }
+}
