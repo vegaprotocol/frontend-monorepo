@@ -15,7 +15,7 @@ interface PositionsManagerProps {
   partyIds: string[];
   onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
-  gridProps: ReturnType<typeof useDataGridEvents>;
+  gridProps?: ReturnType<typeof useDataGridEvents>;
 }
 
 export const PositionsManager = ({

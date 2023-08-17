@@ -60,5 +60,9 @@ export const Tooltip = ({
   );
 
 export const TooltipCellComponent = (props: ITooltipParams) => {
-  return <p className={tooltipContentClasses}>{props.value}</p>;
+  return (
+    <div className={tooltipContentClasses} role="tooltip">
+      {props.value}
+    </div>
+  );
 };
