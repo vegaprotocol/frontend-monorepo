@@ -1,14 +1,15 @@
 import { t } from '@vegaprotocol/i18n';
 import type { components } from '../../../../../types/explorer';
-import { wrapperClasses } from '../../../order-details/deterministic-order-details';
 import { formatNumberPercentage } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import OrderTxSummary from '../../../order-summary/order-tx-summary';
 import PriceInMarket from '../../../price-in-market/price-in-market';
 import StopOrderTriggerSummary from './stop-order-trigger';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import { Time } from '../../../time';
-import { fromUnixTime, parse } from 'date-fns/esm';
+import { fromUnixTime } from 'date-fns/esm';
+
+const wrapperClasses =
+  'flex items-center max-w-sm border border-vega-light-200 dark:border-vega-dark-150 rounded-md pv-2 ph-5 mb-5';
 
 export type StopOrderType = 'RisesAbove' | 'FallsBelow' | 'OCO';
 type V1OrderSetup = components['schemas']['v1StopOrderSetup'];
@@ -103,18 +104,12 @@ export const StopOrderSetup = ({
 
   return (
     <div className={wrapperClasses}>
-      <div className="mb-12 lg:mb-0">
-        <div className="relative block rounded-lg px-3 py-6 md:px-6 lg:-mr-7">
-          {orderSubmission && (
-            <p className="text-vega-grey-400">
-              <OrderTxSummary order={orderSubmission} />
-            </p>
-          )}
-
-          <div className="grid md:grid-cols-4 gap-x-6 mt-4">
-            <div className="mt-2">
-              <h3 className="font-bold text-dark mb-1">{TypeLabel[type]} </h3>
-              <p className=" font-xs text-gray-500 mb-0">
+      <div className="mb-12 lg:mb-0 flex-auto">
+        <div className="bg-slate-100 text-slate-900 px-6 py-2 md:px-6 ">
+          <div className="">
+            <div className="">
+              <strong className="font-bold mb-1">{TypeLabel[type]} </strong>
+              <p className=" font-xs mb-0">
                 {getMovePrefix(type, trailingPercentOffset)}
                 <ExpiryTrigger
                   trailingPercentOffset={trailingPercentOffset}
@@ -124,15 +119,10 @@ export const StopOrderSetup = ({
               </p>
             </div>
 
-            <div className="mt-2">
-              <h3 className="font-bold text-dark mb-1">{t('Triggered')}</h3>
-              <StopOrderTriggerSummary id={deterministicId} />
-            </div>
-
             {expiresAt && expiryStrategy ? (
               <div className="mt-2">
-                <h3 className="font-bold text-dark mb-1">{t('Expiry Type')}</h3>
-                <p className=" font-xs text-gray-500 mb-0">
+                <h3 className="font-bold mb-1">{t('Expiry Type')}</h3>
+                <p className=" font-xs mb-0">
                   <Tooltip description={<span>{d}</span>}>
                     <span>{getExpiryTypeLabel(expiryStrategy)}</span>
                   </Tooltip>
@@ -141,6 +131,10 @@ export const StopOrderSetup = ({
             ) : null}
           </div>
         </div>
+        <StopOrderTriggerSummary
+          id={deterministicId}
+          orderSubmission={orderSubmission}
+        />
       </div>
     </div>
   );
