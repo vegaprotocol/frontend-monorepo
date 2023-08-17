@@ -127,6 +127,7 @@ export const ProposalMarketData = ({
             ) ? (
               <>
                 <h2 className={marketDataHeaderStyles}>{t('Oracle')}</h2>
+
                 <OracleInfoPanel
                   market={marketData}
                   type="settlementData"

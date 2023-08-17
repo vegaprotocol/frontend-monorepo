@@ -1,13 +1,14 @@
 import isEqual from 'lodash/isEqual';
 import type { ReactNode } from 'react';
-import { Fragment, useState } from 'react';
-import { useMemo } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
 import { marketDataProvider } from '../../market-data-provider';
 import { totalFeesPercentage } from '../../market-utils';
 import {
   ExternalLink,
+  Intent,
+  Lozenge,
   Splash,
   Tooltip,
   VegaIcon,
@@ -27,9 +28,15 @@ import type {
 } from './market-info-data-provider';
 import { Last24hVolume } from '../last-24h-volume';
 import BigNumber from 'bignumber.js';
-import type { DataSourceDefinition, SignerKind } from '@vegaprotocol/types';
-import { ConditionOperatorMapping } from '@vegaprotocol/types';
-import { MarketTradingModeMapping } from '@vegaprotocol/types';
+import type {
+  DataSourceDefinition,
+  MarketTradingMode,
+  SignerKind,
+} from '@vegaprotocol/types';
+import {
+  ConditionOperatorMapping,
+  MarketTradingModeMapping,
+} from '@vegaprotocol/types';
 import {
   DApp,
   FLAGS,
@@ -48,8 +55,6 @@ import {
   useSuccessorMarketQuery,
 } from '../../__generated__';
 import { useSuccessorMarketProposalDetailsQuery } from '@vegaprotocol/proposals';
-import type { MarketTradingMode } from '@vegaprotocol/types';
-import type { Signer } from '@vegaprotocol/types';
 import classNames from 'classnames';
 import compact from 'lodash/compact';
 
@@ -839,45 +844,76 @@ export const OracleInfoPanel = ({
       : (parentProduct?.dataSourceSpecForTradingTermination
           ?.data as DataSourceDefinition);
 
-  const isParentDataSourceSpecEqual =
-    parentDataSourceSpec !== undefined &&
-    dataSourceSpec === parentDataSourceSpec;
-  const isParentDataSourceSpecIdEqual =
+  const shouldShowParentData =
+    parentMarket !== undefined &&
     parentDataSourceSpecId !== undefined &&
-    dataSourceSpecId === parentDataSourceSpecId;
+    !isEqual(dataSourceSpec, parentDataSourceSpec);
 
-  // We'll only provide successor parent data (if it differs) to the
-  // DataSourceProof component. Having an old external link struck through
-  // is unlikely to be useful.
+  const wrapperClasses = classNames('mb-4', {
+    'flex items-center gap-6': shouldShowParentData,
+  });
+
   return (
-    <div className="flex flex-col gap-2">
-      <DataSourceProof
-        data-testid="oracle-proof-links"
-        data={dataSourceSpec}
-        providers={data}
-        type={type}
-        dataSourceSpecId={dataSourceSpecId}
-        parentData={
-          isParentDataSourceSpecEqual ? undefined : parentDataSourceSpec
-        }
-        parentDataSourceSpecId={
-          isParentDataSourceSpecIdEqual ? undefined : parentDataSourceSpecId
-        }
-      />
+    <>
+      {shouldShowParentData && (
+        <Lozenge variant={Intent.Primary} className="text-sm">
+          {t('Updated')}
+        </Lozenge>
+      )}
 
-      <ExternalLink
-        data-testid="oracle-spec-links"
-        href={`${VEGA_EXPLORER_URL}/oracles/${
-          type === 'settlementData'
-            ? product.dataSourceSpecForSettlementData.id
-            : product.dataSourceSpecForTradingTermination.id
-        }`}
-      >
-        {type === 'settlementData'
-          ? t('View settlement data specification')
-          : t('View termination specification')}
-      </ExternalLink>
-    </div>
+      <div className={wrapperClasses}>
+        {shouldShowParentData &&
+          parentDataSourceSpec &&
+          parentDataSourceSpecId &&
+          parentProduct && (
+            <div className="flex flex-col gap-2 text-vega-dark-300 line-through">
+              <DataSourceProof
+                data-testid="oracle-proof-links"
+                data={parentDataSourceSpec}
+                providers={data}
+                type={type}
+                dataSourceSpecId={parentDataSourceSpecId}
+              />
+
+              <ExternalLink
+                data-testid="oracle-spec-links"
+                href={`${VEGA_EXPLORER_URL}/oracles/${
+                  type === 'settlementData'
+                    ? parentProduct.dataSourceSpecForSettlementData.id
+                    : parentProduct.dataSourceSpecForTradingTermination.id
+                }`}
+              >
+                {type === 'settlementData'
+                  ? t('View settlement data specification')
+                  : t('View termination specification')}
+              </ExternalLink>
+            </div>
+          )}
+
+        <div className="flex flex-col gap-2">
+          <DataSourceProof
+            data-testid="oracle-proof-links"
+            data={dataSourceSpec}
+            providers={data}
+            type={type}
+            dataSourceSpecId={dataSourceSpecId}
+          />
+
+          <ExternalLink
+            data-testid="oracle-spec-links"
+            href={`${VEGA_EXPLORER_URL}/oracles/${
+              type === 'settlementData'
+                ? product.dataSourceSpecForSettlementData.id
+                : product.dataSourceSpecForTradingTermination.id
+            }`}
+          >
+            {type === 'settlementData'
+              ? t('View settlement data specification')
+              : t('View termination specification')}
+          </ExternalLink>
+        </div>
+      </div>
+    </>
   );
 };
 
@@ -886,28 +922,14 @@ export const DataSourceProof = ({
   providers,
   type,
   dataSourceSpecId,
-  parentData,
-  parentDataSourceSpecId,
 }: {
   data: DataSourceDefinition;
   providers: Provider[] | undefined;
   type: 'settlementData' | 'termination';
   dataSourceSpecId: string;
-  parentData?: DataSourceDefinition;
-  parentDataSourceSpecId?: string;
 }) => {
-  // If this is a successor market, we'll only pass parent data to child
-  // components for comparison if the data differs from the parent market.
   if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
     const signers = data.sourceType.sourceType.signers || [];
-    let parentSigners: Signer[];
-
-    if (
-      parentData &&
-      parentData.sourceType.__typename === 'DataSourceDefinitionExternal'
-    ) {
-      parentSigners = parentData.sourceType.sourceType?.signers || [];
-    }
 
     if (!providers?.length) {
       return <NoOracleProof type={type} />;
@@ -915,34 +937,15 @@ export const DataSourceProof = ({
 
     return (
       <div className="flex flex-col gap-2">
-        {signers.map(({ signer }, i) => {
-          const parentSigner = parentSigners?.find(
-            ({ signer: ParentSigner }) =>
-              ParentSigner.__typename === signer.__typename
-          )?.signer;
-
-          const isParentSignerEqual = isEqual(signer, parentSigner);
-
-          return isParentSignerEqual ? (
-            <OracleLink
-              key={i}
-              providers={providers}
-              signer={signer}
-              type={type}
-              dataSourceSpecId={dataSourceSpecId}
-            />
-          ) : (
-            <OracleLink
-              key={i}
-              providers={providers}
-              signer={signer}
-              type={type}
-              dataSourceSpecId={dataSourceSpecId}
-              parentSigner={parentSigner}
-              parentDataSourceSpecId={parentDataSourceSpecId}
-            />
-          );
-        })}
+        {signers.map(({ signer }, i) => (
+          <OracleLink
+            key={i}
+            providers={providers}
+            signer={signer}
+            type={type}
+            dataSourceSpecId={dataSourceSpecId}
+          />
+        ))}
       </div>
     );
   }
@@ -1002,22 +1005,13 @@ const OracleLink = ({
   signer,
   type,
   dataSourceSpecId,
-  parentSigner,
-  parentDataSourceSpecId,
 }: {
   providers: Provider[];
   signer: SignerKind;
   type: 'settlementData' | 'termination';
   dataSourceSpecId: string;
-  parentSigner?: SignerKind;
-  parentDataSourceSpecId?: string;
 }) => {
-  // If this is a successor market, the parent market data will only have been passed
-  // in if it differs from the current data.
   const signerProviders = getSignerProviders(signer, providers);
-  const parentSignerProviders = parentSigner
-    ? getSignerProviders(parentSigner, providers)
-    : [];
 
   if (!signerProviders.length) {
     return <NoOracleProof type={type} />;
@@ -1025,34 +1019,13 @@ const OracleLink = ({
 
   return (
     <div className="mt-2">
-      {signerProviders.map((provider) => {
-        // Making the assumption here that if the provider name is the same,
-        // that it is the same provider that the parent market used.
-        const parentProvider = parentSignerProviders.find(
-          (p) => p.name === provider.name
-        );
-
-        const isParentProviderEqual =
-          parentProvider !== undefined && isEqual(provider, parentProvider);
-
-        // We only want to pass the parent data to the child component if the
-        // data differs from the parent market.
-        return isParentProviderEqual ? (
-          <OracleProfile
-            key={dataSourceSpecId}
-            provider={provider}
-            dataSourceSpecId={dataSourceSpecId}
-          />
-        ) : (
-          <OracleProfile
-            key={dataSourceSpecId}
-            provider={provider}
-            dataSourceSpecId={dataSourceSpecId}
-            parentProvider={parentProvider}
-            parentDataSourceSpecId={parentDataSourceSpecId}
-          />
-        );
-      })}
+      {signerProviders.map((provider) => (
+        <OracleProfile
+          key={dataSourceSpecId}
+          provider={provider}
+          dataSourceSpecId={dataSourceSpecId}
+        />
+      ))}
     </div>
   );
 };
@@ -1075,18 +1048,13 @@ const NoOracleProof = ({
 const OracleProfile = (props: {
   provider: Provider;
   dataSourceSpecId: string;
-  parentProvider?: Provider;
-  parentDataSourceSpecId?: string;
 }) => {
-  // If this is a successor market, the parent market data will only have been passed
-  // in if it differs from the current data.
   const [open, onChange] = useState(false);
   return (
     <div key={props.provider.name}>
       <OracleBasicProfile
         provider={props.provider}
         onClick={() => onChange(!open)}
-        parentProvider={props.parentProvider}
       />
       <OracleDialog {...props} open={open} onChange={onChange} />
     </div>
