@@ -13,16 +13,31 @@
   - **Must** show the asset symbol (<a name="7001-COLL-007" href="#7001-COLL-007">7001-COLL-007</a>)
   - **Must** provide a way to see the [full asset details](6501-ASSE-assets.md) (<a name="7001-COLL-008" href="#7001-COLL-008">7001-COLL-008</a>)
   - **Must** provide a way to see all accounts, their type, and their balance for a single asset (<a name="7001-COLL-009" href="#7001-COLL-009">7001-COLL-009</a>)
-    - **Could** have default sort order (<a name="7001-COLL-010" href="#7001-COLL-010">7001-COLL-010</a>)
-      - General
-      - Margin
-      - Bond
-      - Fees - Maker
-      - Fees - Liquidity
-      - Rewards - Maker Paid
-      - Rewards - Maker Received
-      - Rewards - Liquidity Provision Received Fees
-      - Rewards - Market Proposers
+  - **Could** have default sort order (<a name="7001-COLL-010" href="#7001-COLL-010">7001-COLL-010</a>)
+    - General
+    - Margin
+    - Bond
+    - Fees - Maker
+    - Fees - Liquidity
+    - Rewards - Maker Paid
+    - Rewards - Maker Received
+    - Rewards - Liquidity Provision Received Fees
+    - Rewards - Market Proposers
+
+## Accounts breakdown
+
+- **Must** be able to see a breakdown of accounts for a single asset (<a name="7001-COLL-013" href="#7001-COLL-013">7001-COLL-013</a>)
+- **Must** be able to see the total amount of the selected asset (<a name="7001-COLL-014" href="#7001-COLL-014">7001-COLL-014</a>)
+- **Must** be able to see market code of margin account (<a name="7001-COLL-015" href="#7001-COLL-015">7001-COLL-015</a>)
+- **Must** be able to see product type of the margin account's associated market (<a name="7001-COLL-016" href="#7001-COLL-016">7001-COLL-016</a>)
+- **Must** be able to see account type (<a name="7001-COLL-017" href="#7001-COLL-017">7001-COLL-017</a>)
+- **Must** be able to see account balance (<a name="7001-COLL-018" href="#7001-COLL-018">7001-COLL-018</a>)
+- **Must** be able to see what percentage of that assets total is used by a margin account (<a name="7001-COLL-019" href="#7001-COLL-019">7001-COLL-019</a>)
+- **Must** be able to see margin health if its a margin account (<a name="7001-COLL-020" href="#7001-COLL-020">7001-COLL-020</a>)
+
+### Margin health
+
+TODO
 
 ## Deal Ticket
 
