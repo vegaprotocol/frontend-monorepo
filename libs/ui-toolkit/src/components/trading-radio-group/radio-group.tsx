@@ -3,7 +3,7 @@ import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
-export interface RadioGroupProps {
+export interface TradingRadioGroupProps {
   name?: string;
   children: ReactNode;
   defaultValue?: string;
@@ -13,7 +13,10 @@ export interface RadioGroupProps {
   className?: string;
 }
 
-export const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
+export const TradingRadioGroup = forwardRef<
+  HTMLDivElement,
+  TradingRadioGroupProps
+>(
   (
     {
       children,
@@ -22,7 +25,7 @@ export const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
       orientation = 'vertical',
       onChange,
       className,
-    }: RadioGroupProps,
+    }: TradingRadioGroupProps,
     ref
   ) => {
     const groupClasses = classNames(
@@ -55,7 +58,7 @@ interface RadioProps {
   disabled?: boolean;
 }
 
-export const Radio = ({ id, value, label, disabled }: RadioProps) => {
+export const TradingRadio = ({ id, value, label, disabled }: RadioProps) => {
   const wrapperClasses = classNames('flex items-center gap-1.5 text-xs');
   const itemClasses = classNames(
     'flex justify-center items-center',

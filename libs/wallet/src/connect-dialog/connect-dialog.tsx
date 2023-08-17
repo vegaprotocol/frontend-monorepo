@@ -2,11 +2,11 @@ import classNames from 'classnames';
 import { create } from 'zustand';
 import {
   Dialog,
-  FormGroup,
-  Input,
   Intent,
   Pill,
   TradingButton,
+  TradingFormGroup,
+  TradingInput,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -421,17 +421,17 @@ const CustomUrlInput = ({
           <VegaIcon name={VegaIconNames.ARROW_LEFT} /> {t('Go back')}
         </button>
       </div>
-      <FormGroup
+      <TradingFormGroup
         labelFor="wallet-url"
         label={t('Custom wallet location')}
         hideLabel
       >
-        <Input
+        <TradingInput
           value={walletUrl}
           onChange={(e) => setWalletUrl(e.target.value)}
           name="wallet-url"
         />
-      </FormGroup>
+      </TradingFormGroup>
       <ConnectionOption
         disabled={!isDesktopWalletRunning}
         type="jsonRpc"

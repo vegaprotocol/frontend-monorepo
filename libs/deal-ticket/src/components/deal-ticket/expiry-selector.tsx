@@ -1,4 +1,8 @@
-import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import {
+  TradingFormGroup,
+  TradingInput,
+  TradingInputError,
+} from '@vegaprotocol/ui-toolkit';
 import { formatForInput } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useRef } from 'react';
@@ -19,12 +23,12 @@ export const ExpirySelector = ({
   const dateFormatted = formatForInput(date);
   const minDate = formatForInput(date);
   return (
-    <FormGroup
+    <TradingFormGroup
       label={t('Expiry time/date')}
       labelFor="expiration"
       compact={true}
     >
-      <Input
+      <TradingInput
         data-testid="date-picker-field"
         id="expiration"
         type="datetime-local"
@@ -34,10 +38,10 @@ export const ExpirySelector = ({
         hasError={!!errorMessage}
       />
       {errorMessage && (
-        <InputError testId="deal-ticket-error-message-expiry">
+        <TradingInputError testId="deal-ticket-error-message-expiry">
           {errorMessage}
-        </InputError>
+        </TradingInputError>
       )}
-    </FormGroup>
+    </TradingFormGroup>
   );
 };

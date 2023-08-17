@@ -1,12 +1,12 @@
 import type { StoryFn, Meta } from '@storybook/react';
-import { InputError } from './input-error';
+import { TradingInputError } from './input-error';
 
 export default {
-  component: InputError,
+  component: TradingInputError,
   title: 'InputError',
 } as Meta;
 
-const Template: StoryFn = (args) => <InputError {...args} />;
+const Template: StoryFn = (args) => <TradingInputError {...args} />;
 
 export const Danger = Template.bind({});
 Danger.args = {

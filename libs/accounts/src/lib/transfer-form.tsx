@@ -9,13 +9,13 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import {
   Button,
-  FormGroup,
-  Input,
-  InputError,
-  RichSelect,
-  Select,
+  TradingFormGroup,
+  TradingInput,
+  TradingInputError,
+  TradingRichSelect,
+  TradingSelect,
   Tooltip,
-  Checkbox,
+  TradingCheckbox,
 } from '@vegaprotocol/ui-toolkit';
 import type { Transfer } from '@vegaprotocol/wallet';
 import { normalizeTransfer } from '@vegaprotocol/wallet';
@@ -130,12 +130,16 @@ export const TransferForm = ({
       className="text-sm"
       data-testid="transfer-form"
     >
-      <FormGroup label="Vega key" labelFor="to-address">
+      <TradingFormGroup label="Vega key" labelFor="to-address">
         <AddressField
           pubKeys={pubKeys}
           onChange={() => setValue('toAddress', '')}
           select={
-            <Select {...register('toAddress')} id="to-address" defaultValue="">
+            <TradingSelect
+              {...register('toAddress')}
+              id="to-address"
+              defaultValue=""
+            >
               <option value="" disabled={true}>
                 {t('Please select')}
               </option>
@@ -147,10 +151,10 @@ export const TransferForm = ({
                       {pk}
                     </option>
                   ))}
-            </Select>
+            </TradingSelect>
           }
           input={
-            <Input
+            <TradingInput
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus={true} // focus input immediately after is shown
               id="to-address"
@@ -171,12 +175,12 @@ export const TransferForm = ({
           }
         />
         {errors.toAddress?.message && (
-          <InputError forInput="to-address">
+          <TradingInputError forInput="to-address">
             {errors.toAddress.message}
-          </InputError>
+          </TradingInputError>
         )}
-      </FormGroup>
-      <FormGroup label="Asset" labelFor="asset">
+      </TradingFormGroup>
+      <TradingFormGroup label="Asset" labelFor="asset">
         <Controller
           control={control}
           name="asset"
@@ -186,7 +190,7 @@ export const TransferForm = ({
             },
           }}
           render={({ field }) => (
-            <RichSelect
+            <TradingRichSelect
               data-testid="select-asset"
               id={field.name}
               name={field.name}
@@ -208,15 +212,17 @@ export const TransferForm = ({
                   }
                 />
               ))}
-            </RichSelect>
+            </TradingRichSelect>
           )}
         />
         {errors.asset?.message && (
-          <InputError forInput="asset">{errors.asset.message}</InputError>
+          <TradingInputError forInput="asset">
+            {errors.asset.message}
+          </TradingInputError>
         )}
-      </FormGroup>
-      <FormGroup label="Amount" labelFor="amount">
-        <Input
+      </TradingFormGroup>
+      <TradingFormGroup label="Amount" labelFor="amount">
+        <TradingInput
           id="amount"
           autoComplete="off"
           appendElement={
@@ -239,11 +245,13 @@ export const TransferForm = ({
           })}
         />
         {errors.amount?.message && (
-          <InputError forInput="amount">{errors.amount.message}</InputError>
+          <TradingInputError forInput="amount">
+            {errors.amount.message}
+          </TradingInputError>
         )}
-      </FormGroup>
+      </TradingFormGroup>
       <div className="mb-4">
-        <Checkbox
+        <TradingCheckbox
           name="include-transfer-fee"
           disabled={!transferAmount}
           label={

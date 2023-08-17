@@ -17,8 +17,8 @@ import type { OrderSubmission } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { mapFormValuesToOrderSubmission } from '../../utils/map-form-values-to-submission';
 import {
-  Checkbox,
-  InputError,
+  TradingCheckbox,
+  TradingInputError,
   Intent,
   Notification,
   Tooltip,
@@ -417,7 +417,7 @@ export const DealTicket = ({
           name="postOnly"
           control={control}
           render={({ field }) => (
-            <Checkbox
+            <TradingCheckbox
               name="post-only"
               checked={!disablePostOnlyCheckbox && field.value}
               disabled={disablePostOnlyCheckbox}
@@ -449,7 +449,7 @@ export const DealTicket = ({
           name="reduceOnly"
           control={control}
           render={({ field }) => (
-            <Checkbox
+            <TradingCheckbox
               name="reduce-only"
               checked={!disableReduceOnlyCheckbox && field.value}
               disabled={disableReduceOnlyCheckbox}
@@ -483,7 +483,7 @@ export const DealTicket = ({
               name="iceberg"
               control={control}
               render={({ field }) => (
-                <Checkbox
+                <TradingCheckbox
                   name="iceberg"
                   checked={field.value}
                   onCheckedChange={field.onChange}
@@ -572,11 +572,11 @@ export const NoWalletWarning = ({
   if (isReadOnly) {
     return (
       <div className="mb-2">
-        <InputError testId="deal-ticket-error-message-summary">
+        <TradingInputError testId="deal-ticket-error-message-summary">
           {
             'You need to connect your own wallet to start trading on this market'
           }
-        </InputError>
+        </TradingInputError>
       </div>
     );
   }
@@ -613,9 +613,9 @@ const SummaryMessage = memo(
     if (error?.message) {
       return (
         <div className="mb-2">
-          <InputError testId="deal-ticket-error-message-summary">
+          <TradingInputError testId="deal-ticket-error-message-summary">
             {error?.message}
-          </InputError>
+          </TradingInputError>
         </div>
       );
     }

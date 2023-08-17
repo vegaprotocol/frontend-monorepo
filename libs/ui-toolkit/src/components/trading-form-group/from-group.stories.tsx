@@ -1,9 +1,9 @@
 import type { StoryFn, Meta } from '@storybook/react';
-import { Input } from '../trading-input';
-import type { FormGroupProps } from './form-group';
-import { FormGroup } from './form-group';
+import { TradingInput } from '../trading-input';
+import type { TradingFormGroupProps } from './form-group';
+import { TradingFormGroup } from './form-group';
 export default {
-  component: FormGroup,
+  component: TradingFormGroup,
   title: 'FormGroup',
   argTypes: {
     label: {
@@ -27,10 +27,10 @@ export default {
   },
 } as Meta;
 
-const Template: StoryFn<FormGroupProps> = (args) => (
-  <FormGroup {...args}>
-    <Input id="labelFor" />
-  </FormGroup>
+const Template: StoryFn<TradingFormGroupProps> = (args) => (
+  <TradingFormGroup {...args}>
+    <TradingInput id="labelFor" />
+  </TradingFormGroup>
 );
 
 export const Default = Template.bind({});

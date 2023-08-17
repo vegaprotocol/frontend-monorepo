@@ -1,22 +1,22 @@
 import { render, screen } from '@testing-library/react';
 
-import { FormGroup } from './form-group';
+import { TradingFormGroup } from './form-group';
 
 describe('FormGroup', () => {
   it('should render label if given a label', () => {
     render(
-      <FormGroup label="label" labelFor="test">
+      <TradingFormGroup label="label" labelFor="test">
         <input id="test"></input>
-      </FormGroup>
+      </TradingFormGroup>
     );
     expect(screen.getByLabelText('label')).toBeInTheDocument();
   });
 
   it('should render children', () => {
     render(
-      <FormGroup label="label" labelFor="test">
+      <TradingFormGroup label="label" labelFor="test">
         <input data-testid="foo" id="test"></input>
-      </FormGroup>
+      </TradingFormGroup>
     );
     expect(screen.getByTestId('foo')).toBeInTheDocument();
   });

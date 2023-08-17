@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
-export interface FormGroupProps {
+export interface TradingFormGroupProps {
   children: ReactNode;
   className?: string;
   label: string | ReactNode; // For accessibility reasons this must always be set for screen readers. If you want it to not show, then use the hideLabel prop"
@@ -13,7 +13,7 @@ export interface FormGroupProps {
   compact?: boolean;
 }
 
-export const FormGroup = ({
+export const TradingFormGroup = ({
   children,
   className,
   label,
@@ -23,7 +23,7 @@ export const FormGroup = ({
   hideLabel = false,
   compact = false,
   disabled = false,
-}: FormGroupProps) => {
+}: TradingFormGroupProps) => {
   const wrapperClasses = classNames(
     'relative',
     {

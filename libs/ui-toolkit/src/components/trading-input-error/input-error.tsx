@@ -1,21 +1,21 @@
 import classNames from 'classnames';
 import type { HTMLAttributes } from 'react';
 
-interface InputErrorProps extends HTMLAttributes<HTMLDivElement> {
+interface TradingInputErrorProps extends HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   intent?: 'danger' | 'warning';
   forInput?: string;
   testId?: string;
 }
 
-export const InputError = ({
+export const TradingInputError = ({
   intent = 'danger',
   children,
   forInput,
   testId,
   className,
   ...props
-}: InputErrorProps) => {
+}: TradingInputErrorProps) => {
   const effectiveClassName = classNames(
     'text-xs flex items-center first-letter:uppercase',
     'mt-2',

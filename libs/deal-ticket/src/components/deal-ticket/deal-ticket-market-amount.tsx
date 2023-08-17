@@ -4,7 +4,11 @@ import {
   validateAmount,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { Input, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  TradingInput,
+  TradingInputError,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import { isMarketInAuction } from '@vegaprotocol/markets';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { Controller } from 'react-hook-form';
@@ -46,7 +50,7 @@ export const DealTicketMarketAmount = ({
               validate: validateAmount(sizeStep, 'Size'),
             }}
             render={({ field, fieldState }) => (
-              <Input
+              <TradingInput
                 id="input-order-size-market"
                 className="w-full"
                 type="number"
@@ -86,12 +90,12 @@ export const DealTicketMarketAmount = ({
         </div>
       </div>
       {sizeError && (
-        <InputError
+        <TradingInputError
           intent="danger"
           testId="deal-ticket-error-message-size-market"
         >
           {sizeError}
-        </InputError>
+        </TradingInputError>
       )}
     </div>
   );

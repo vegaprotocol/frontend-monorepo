@@ -6,14 +6,15 @@ import { Icon } from '..';
 import { defaultSelectElement } from '../../utils/shared';
 import * as SelectPrimitive from '@radix-ui/react-select';
 
-export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+export interface TradingSelectProps
+  extends SelectHTMLAttributes<HTMLSelectElement> {
   hasError?: boolean;
   className?: string;
   value?: string | number;
   children?: React.ReactNode;
 }
 
-export const Select = forwardRef<HTMLSelectElement, SelectProps>(
+export const TradingSelect = forwardRef<HTMLSelectElement, TradingSelectProps>(
   ({ className, hasError, ...props }, ref) => (
     <div className="flex items-center relative">
       <select
@@ -33,7 +34,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   )
 );
 
-export type RichSelectProps = React.ComponentProps<
+export type TradingRichSelectProps = React.ComponentProps<
   typeof SelectPrimitive.Root
 > & {
   placeholder: string;
@@ -41,9 +42,9 @@ export type RichSelectProps = React.ComponentProps<
   id?: string;
   'data-testid'?: string;
 };
-export const RichSelect = forwardRef<
+export const TradingRichSelect = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
-  RichSelectProps
+  TradingRichSelectProps
 >(({ id, children, placeholder, hasError, ...props }, forwardedRef) => {
   const containerRef = useRef<HTMLDivElement>();
   const contentRef = useRef<HTMLDivElement>();
@@ -98,7 +99,7 @@ export const RichSelect = forwardRef<
   );
 });
 
-export const Option = forwardRef<
+export const TradingOption = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Item>,
   React.ComponentProps<typeof SelectPrimitive.Item>
 >(({ children, className, ...props }, forwardedRef) => (

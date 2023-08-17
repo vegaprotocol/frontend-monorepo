@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
 
-import { InputError } from './input-error';
+import { TradingInputError } from './input-error';
 
 describe('InputError', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<InputError />);
+    const { baseElement } = render(<TradingInputError />);
     expect(baseElement).toBeTruthy();
   });
 });

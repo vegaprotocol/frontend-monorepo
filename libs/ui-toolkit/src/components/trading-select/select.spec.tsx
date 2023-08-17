@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
-import { RichSelect, Select, Option } from './select';
+import { TradingRichSelect, TradingSelect, TradingOption } from './select';
 
 describe('Select', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<Select />);
+    const { baseElement } = render(<TradingSelect />);
     expect(baseElement).toBeTruthy();
   });
 });
@@ -11,10 +11,10 @@ describe('Select', () => {
 describe('RichSelect', () => {
   it('should render select element with placeholder when no value is pre-selected', async () => {
     const { findByTestId } = render(
-      <RichSelect placeholder={'Select'}>
-        <Option value={'1'}>1</Option>
-        <Option value={'2'}>2</Option>
-      </RichSelect>
+      <TradingRichSelect placeholder={'Select'}>
+        <TradingOption value={'1'}>1</TradingOption>
+        <TradingOption value={'2'}>2</TradingOption>
+      </TradingRichSelect>
     );
     const btn = (await findByTestId(
       'rich-select-trigger'
@@ -24,10 +24,10 @@ describe('RichSelect', () => {
 
   it('should render select element with pre-selected value', async () => {
     const { findByTestId } = render(
-      <RichSelect placeholder={'Select'} value={'1'}>
-        <Option value={'1'}>1</Option>
-        <Option value={'2'}>2</Option>
-      </RichSelect>
+      <TradingRichSelect placeholder={'Select'} value={'1'}>
+        <TradingOption value={'1'}>1</TradingOption>
+        <TradingOption value={'2'}>2</TradingOption>
+      </TradingRichSelect>
     );
     const btn = (await findByTestId(
       'rich-select-trigger'

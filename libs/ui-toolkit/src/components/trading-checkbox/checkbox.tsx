@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
 type CheckedState = boolean | 'indeterminate';
-export interface CheckboxProps {
+export interface TradingCheckboxProps {
   checked?: CheckedState;
   label?: ReactNode;
   name?: string;
@@ -12,13 +12,13 @@ export interface CheckboxProps {
   disabled?: boolean;
 }
 
-export const Checkbox = ({
+export const TradingCheckbox = ({
   checked,
   label,
   name,
   onCheckedChange,
   disabled = false,
-}: CheckboxProps) => {
+}: TradingCheckboxProps) => {
   const rootClasses = classNames(
     'relative flex justify-center items-center w-3 h-3',
     'border rounded-sm overflow-hidden',

@@ -1,8 +1,8 @@
 import { t } from '@vegaprotocol/i18n';
 import {
-  FormGroup,
-  Input,
-  InputError,
+  TradingFormGroup,
+  TradingInput,
+  TradingInputError,
   Intent,
   TradingButton,
   VegaIcon,
@@ -60,8 +60,8 @@ export function ViewConnectorForm({
             'Browse from the perspective of another Vega user in read-only mode.'
           )}
         </p>
-        <FormGroup label={t('Vega Pubkey')} labelFor="address">
-          <Input
+        <TradingFormGroup label={t('Vega Pubkey')} labelFor="address">
+          <TradingInput
             {...register('address', {
               required: t('Required'),
               validate: validatePubkey,
@@ -71,9 +71,11 @@ export function ViewConnectorForm({
             type="text"
           />
           {errors.address?.message && (
-            <InputError intent="danger">{errors.address.message}</InputError>
+            <TradingInputError intent="danger">
+              {errors.address.message}
+            </TradingInputError>
           )}
-        </FormGroup>
+        </TradingFormGroup>
         <TradingButton
           data-testid="connect"
           intent={Intent.Info}

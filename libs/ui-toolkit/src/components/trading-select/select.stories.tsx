@@ -1,25 +1,25 @@
 import type { StoryFn, Meta } from '@storybook/react';
-import { Option, Select, RichSelect } from './select';
+import { TradingOption, TradingSelect, TradingRichSelect } from './select';
 import { FormGroup } from '../form-group';
 
 export default {
-  component: Select,
+  component: TradingSelect,
   title: 'Select',
 } as Meta;
 
 const Template: StoryFn = (args) => (
   <FormGroup label="Select an option" labelFor={args.id}>
-    <Select {...args}>
+    <TradingSelect {...args}>
       <option value="Option 1">Option 1</option>
       <option value="Option 2">Option 2</option>
       <option value="Option 3">Option 3</option>
-    </Select>
+    </TradingSelect>
   </FormGroup>
 );
 
 const RichSelectTemplate: StoryFn = ({ placeholder, ...props }) => (
   <FormGroup label="Select an option" labelFor={props.id}>
-    <RichSelect placeholder={placeholder} {...props} />
+    <TradingRichSelect placeholder={placeholder} {...props} />
   </FormGroup>
 );
 
@@ -51,42 +51,42 @@ RichDefaultSelect.args = {
   },
   children: (
     <>
-      <Option value="1">
+      <TradingOption value="1">
         <div className="flex flex-col justify-start items-start">
           <span>Option One</span>
           <span className="text-xs">First option</span>
         </div>
-      </Option>
-      <Option value="2">
+      </TradingOption>
+      <TradingOption value="2">
         <div className="flex flex-col justify-start items-start">
           <span>Option Two</span>
           <span className="text-xs">Second option</span>
         </div>
-      </Option>
-      <Option value="3">
+      </TradingOption>
+      <TradingOption value="3">
         <div className="flex flex-col justify-start items-start">
           <span>Option Three</span>
           <span className="text-xs">Third option</span>
         </div>
-      </Option>
-      <Option value="4">
+      </TradingOption>
+      <TradingOption value="4">
         <div className="flex flex-col justify-start items-start">
           <span>Option Four</span>
           <span className="text-xs">Fourth option</span>
         </div>
-      </Option>
-      <Option value="5">
+      </TradingOption>
+      <TradingOption value="5">
         <div className="flex flex-col justify-start items-start">
           <span>Option Five</span>
           <span className="text-xs">Fifth option</span>
         </div>
-      </Option>
-      <Option value="6">
+      </TradingOption>
+      <TradingOption value="6">
         <div className="flex flex-col justify-start items-start">
           <span>Option Six</span>
           <span className="text-xs">Sixth option</span>
         </div>
-      </Option>
+      </TradingOption>
     </>
   ),
 };

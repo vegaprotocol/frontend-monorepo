@@ -55,9 +55,9 @@ type InputAppend = NoPrepend &
 
 type AffixProps = InputPrepend | InputAppend;
 
-export type InputProps = InputRootProps & AffixProps;
+export type TradingInputProps = InputRootProps & AffixProps;
 
-export const inputStyle = ({
+export const tradingInputStyle = ({
   style,
   disabled,
 }: {
@@ -79,7 +79,7 @@ const getAffixElement = ({
   appendElement,
   appendIconName,
   appendIconDescription,
-}: Pick<InputProps, keyof AffixProps>) => {
+}: Pick<TradingInputProps, keyof AffixProps>) => {
   const position = prependIconName || prependElement ? 'pre' : 'post';
 
   const className = classNames(
@@ -112,7 +112,7 @@ const getAffixElement = ({
   return null;
 };
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(
+export const TradingInput = forwardRef<HTMLInputElement, TradingInputProps>(
   (
     {
       prependIconName,
