@@ -1,7 +1,12 @@
 import { useMemo } from 'react';
 import orderBy from 'lodash/orderBy';
 import { MarketState } from '@vegaprotocol/types';
-import { calcCandleVolume, useMarketList } from '@vegaprotocol/markets';
+import {
+  MarketMaybeWithDataAndCandles,
+  calcCandleVolume,
+  calcTradedFactor,
+  useMarketList,
+} from '@vegaprotocol/markets';
 import { priceChangePercentage } from '@vegaprotocol/utils';
 import type { Filter } from '../../components/market-selector/market-selector';
 import { Sort } from './sort-dropdown';
@@ -92,6 +97,10 @@ export const useMarketSelectorList = ({
         [(m) => new Date(m.marketTimestamps.open).getTime()],
         ['desc']
       );
+    }
+
+    if (sort === Sort.TopTraded) {
+      return orderBy(markets, [(m) => calcTradedFactor(m)], ['desc']);
     }
 
     return markets;
