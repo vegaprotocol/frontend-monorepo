@@ -122,70 +122,72 @@ fragment UpdateMarketFields on UpdateMarket {
     instrument {
       code
       product {
-        quoteName
-        dataSourceSpecForSettlementData {
-          sourceType {
-            ... on DataSourceDefinitionExternal {
-              sourceType {
-                ... on DataSourceSpecConfiguration {
-                  signers {
-                    signer {
-                      ... on PubKey {
-                        key
-                      }
-                      ... on ETHAddress {
-                        address
+        ... on UpdateFutureProduct {
+          quoteName
+          dataSourceSpecForSettlementData {
+            sourceType {
+              ... on DataSourceDefinitionExternal {
+                sourceType {
+                  ... on DataSourceSpecConfiguration {
+                    signers {
+                      signer {
+                        ... on PubKey {
+                          key
+                        }
+                        ... on ETHAddress {
+                          address
+                        }
                       }
                     }
-                  }
-                  filters {
-                    key {
-                      name
-                      type
-                    }
-                    conditions {
-                      operator
-                      value
+                    filters {
+                      key {
+                        name
+                        type
+                      }
+                      conditions {
+                        operator
+                        value
+                      }
                     }
                   }
                 }
               }
             }
           }
-        }
-        dataSourceSpecForTradingTermination {
-          sourceType {
-            ... on DataSourceDefinitionExternal {
-              sourceType {
-                ... on DataSourceSpecConfiguration {
-                  signers {
-                    signer {
-                      ... on PubKey {
-                        key
-                      }
-                      ... on ETHAddress {
-                        address
+          dataSourceSpecForTradingTermination {
+            sourceType {
+              ... on DataSourceDefinitionExternal {
+                sourceType {
+                  ... on DataSourceSpecConfiguration {
+                    signers {
+                      signer {
+                        ... on PubKey {
+                          key
+                        }
+                        ... on ETHAddress {
+                          address
+                        }
                       }
                     }
-                  }
-                  filters {
-                    key {
-                      name
-                      type
-                    }
-                    conditions {
-                      operator
-                      value
+                    filters {
+                      key {
+                        name
+                        type
+                      }
+                      conditions {
+                        operator
+                        value
+                      }
                     }
                   }
                 }
               }
             }
           }
-        }
-        dataSourceSpecBinding {
-          settlementDataProperty
-          tradingTerminationProperty
+          dataSourceSpecBinding {
+            settlementDataProperty
+            tradingTerminationProperty
+          }
         }
       }
     }
