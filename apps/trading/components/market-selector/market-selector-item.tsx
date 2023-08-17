@@ -89,17 +89,15 @@ const MarketData = ({
       ? addDecimalsFormatNumber(vol, market.positionDecimalPlaces)
       : '0.00';
 
+  const productType = market.tradableInstrument.instrument.product.__typename;
+
   return (
     <>
       <div className="w-2/5" role="gridcell">
         <h3 className="text-ellipsis text-sm lg:text-base whitespace-nowrap overflow-hidden">
           {market.tradableInstrument.instrument.code}{' '}
-          {allProducts && (
-            <MarketProductPill
-              productType={
-                market.tradableInstrument.instrument.product.__typename
-              }
-            />
+          {allProducts && productType && (
+            <MarketProductPill productType={productType} />
           )}
         </h3>
         {mode && (
