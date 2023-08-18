@@ -53,7 +53,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
       update({ onBoardingDismissed: true });
     };
   } else if (step === OnboardingStep.ONBOARDING_ORDER_STEP) {
-    buttonText = t('Trade');
+    buttonText = t('Dismiss');
     onClickHandle = () => {
       navigate(link);
       setView({ type: ViewType.Order });
@@ -110,9 +110,8 @@ export const GetStarted = ({ lead }: Props) => {
             </li>
             <li>
               {t('Connect')}{' '}
-              {currentStep > OnboardingStep.ONBOARDING_CONNECT_STEP && (
-                <VegaIcon name={VegaIconNames.TICK} size={24} />
-              )}
+              {(currentStep > OnboardingStep.ONBOARDING_CONNECT_STEP ||
+                pubKey) && <VegaIcon name={VegaIconNames.TICK} size={24} />}
             </li>
             <li>
               {t('Deposit funds')}{' '}

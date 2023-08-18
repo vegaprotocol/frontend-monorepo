@@ -204,6 +204,7 @@ const ConnectorList = ({
   setWalletUrl: (value: string) => void;
   isDesktopWalletRunning: boolean | null;
 }) => {
+  const { pubKey } = useVegaWallet();
   const title = isBrowserWalletInstalled()
     ? t('Connect Vega wallet')
     : t('Get a Vega wallet');
@@ -242,6 +243,7 @@ const ConnectorList = ({
             type="view"
             text={t('View as party')}
             onClick={() => onSelect('view')}
+            disabled={Boolean(pubKey)}
           />
         </div>
         <div className="last:mb-0">
@@ -409,6 +411,7 @@ const CustomUrlInput = ({
   isDesktopWalletRunning: boolean | null;
   onSelect: (type: WalletType) => void;
 }) => {
+  const { pubKey } = useVegaWallet();
   const [urlInputExpanded, setUrlInputExpanded] = useState(false);
   return urlInputExpanded ? (
     <>
@@ -433,7 +436,7 @@ const CustomUrlInput = ({
         />
       </FormGroup>
       <ConnectionOption
-        disabled={!isDesktopWalletRunning}
+        disabled={!isDesktopWalletRunning || Boolean(pubKey)}
         type="jsonRpc"
         text={t('Connect the App/CLI')}
         onClick={() => onSelect('jsonRpc')}
@@ -442,7 +445,7 @@ const CustomUrlInput = ({
   ) : (
     <>
       <ConnectionOption
-        disabled={!isDesktopWalletRunning}
+        disabled={!isDesktopWalletRunning || Boolean(pubKey)}
         type="jsonRpc"
         text={t('Use the Desktop App/CLI')}
         onClick={() => onSelect('jsonRpc')}
@@ -453,6 +456,7 @@ const CustomUrlInput = ({
             <button
               className="underline text-default"
               onClick={() => setUrlInputExpanded(true)}
+              disabled={Boolean(pubKey)}
             >
               {t('Enter a custom wallet location')}{' '}
               <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
@@ -467,6 +471,7 @@ const CustomUrlInput = ({
               <button
                 className="underline"
                 onClick={() => setUrlInputExpanded(true)}
+                disabled={Boolean(pubKey)}
               >
                 {t('custom wallet location')}
               </button>

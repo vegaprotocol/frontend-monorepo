@@ -5,6 +5,7 @@ import produce from 'immer';
 interface GlobalStore {
   marketId: string | null;
   onBoardingDismissed: boolean;
+  eagerConnecting: boolean;
   update: (store: Partial<Omit<GlobalStore, 'update'>>) => void;
 }
 
@@ -16,6 +17,7 @@ interface PageTitleStore {
 export const useGlobalStore = create<GlobalStore>()((set) => ({
   marketId: LocalStorage.getItem('marketId') || null,
   onBoardingDismissed: false,
+  eagerConnecting: false,
   update: (newState) => {
     set(
       produce((state: GlobalStore) => {
