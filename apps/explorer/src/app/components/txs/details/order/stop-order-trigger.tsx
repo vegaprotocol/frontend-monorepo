@@ -15,7 +15,7 @@ export const StatusLabel: Record<StopOrderStatus, string> = {
   [StopOrderStatus.STATUS_REJECTED]: t('Rejected'),
   [StopOrderStatus.STATUS_STOPPED]: t('Stopped'),
   [StopOrderStatus.STATUS_TRIGGERED]: t('Triggered'),
-  [StopOrderStatus.STATUS_UNSPECIFIED]: t('Unknown'),
+  [StopOrderStatus.STATUS_UNSPECIFIED]: t('Status unknown'),
 };
 
 export const StatusIcon: Record<StopOrderStatus, IconName> = {
@@ -31,7 +31,7 @@ export const StatusIcon: Record<StopOrderStatus, IconName> = {
 export const StatusMidColor: Record<StopOrderStatus, string> = {
   [StopOrderStatus.STATUS_CANCELLED]: 'bg-red-100 text-red-900',
   [StopOrderStatus.STATUS_EXPIRED]: 'bg-red-100 text-red-900',
-  [StopOrderStatus.STATUS_PENDING]: 'bg-yellow text-yellow-900',
+  [StopOrderStatus.STATUS_PENDING]: 'bg-yellow-100 text-yellow-900',
   [StopOrderStatus.STATUS_REJECTED]: 'bg-red-100 text-red-900',
   [StopOrderStatus.STATUS_STOPPED]: 'bg-red-100 text-red-900',
   [StopOrderStatus.STATUS_TRIGGERED]: 'bg-green-100 text-green-900',
@@ -41,7 +41,7 @@ export const StatusMidColor: Record<StopOrderStatus, string> = {
 export const StatusBottomColor: Record<StopOrderStatus, string> = {
   [StopOrderStatus.STATUS_CANCELLED]: 'bg-red-50 text-red-900 line-through',
   [StopOrderStatus.STATUS_EXPIRED]: 'bg-red-50 text-red-900 line-through',
-  [StopOrderStatus.STATUS_PENDING]: 'bg-yellow-500',
+  [StopOrderStatus.STATUS_PENDING]: 'bg-yellow-50 text-yellow-900',
   [StopOrderStatus.STATUS_REJECTED]: 'bg-red-50 text-red-900 line-through',
   [StopOrderStatus.STATUS_STOPPED]: 'bg-red-50 text-red-900 line-through',
   [StopOrderStatus.STATUS_TRIGGERED]: 'bg-green-50 text-green-900',

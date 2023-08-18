@@ -4,7 +4,10 @@ import { MarketLink } from '../../links/';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
-import { stopOrdersSignatureToDeterministicId } from '../lib/deterministic-ids';
+import {
+  getStopOrderIds,
+  stopOrdersSignatureToDeterministicId,
+} from '../lib/deterministic-ids';
 import type { components } from '../../../../types/explorer';
 import { StopOrderSetup } from './order/stop-order-setup';
 
@@ -79,8 +82,14 @@ export const TxDetailsStopOrderSubmission = ({
   const tx: components['schemas']['v1StopOrdersSubmission'] =
     txData.command.stopOrdersSubmission;
 
-  const { risesAboveId, fallsBelowId } = stopOrdersSignatureToDeterministicId(
+  const orderIds = stopOrdersSignatureToDeterministicId(
     txData?.signature?.value
+  );
+
+  const { risesAboveId, fallsBelowId } = getStopOrderIds(
+    orderIds,
+    tx.risesAbove,
+    tx.fallsBelow
   );
 
   return (
@@ -117,20 +126,23 @@ export const TxDetailsStopOrderSubmission = ({
           </TableCell>
         </TableRow>
       </TableWithTbody>
-      {tx.risesAbove && (
-        <StopOrderSetup
-          type={'RisesAbove'}
-          {...tx.risesAbove}
-          deterministicId={risesAboveId}
-        />
-      )}
-      {tx.fallsBelow && (
-        <StopOrderSetup
-          type={'FallsBelow'}
-          {...tx.fallsBelow}
-          deterministicId={fallsBelowId}
-        />
-      )}
+      <div className="flex gap-2">
+        {tx.fallsBelow && fallsBelowId && (
+          <StopOrderSetup
+            type={'FallsBelow'}
+            {...tx.fallsBelow}
+            deterministicId={fallsBelowId}
+          />
+        )}
+
+        {tx.risesAbove && risesAboveId && (
+          <StopOrderSetup
+            type={'RisesAbove'}
+            {...tx.risesAbove}
+            deterministicId={risesAboveId}
+          />
+        )}
+      </div>
     </>
   );
 };
