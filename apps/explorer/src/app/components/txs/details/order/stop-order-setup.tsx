@@ -48,7 +48,8 @@ export function ExpiryTrigger({
   if (trailingPercentOffset) {
     return (
       <span>
-        {formatNumberPercentage(new BigNumber(trailingPercentOffset))}
+        {formatNumberPercentage(new BigNumber(trailingPercentOffset))}{' '}
+        (trailing)
       </span>
     );
   }
@@ -76,8 +77,8 @@ export function getMovePrefix(
 }
 
 export const TypeLabel = {
-  RisesAbove: t('Take profit'),
-  FallsBelow: t('Stop loss'),
+  RisesAbove: t('Rises above ↗'),
+  FallsBelow: t('Falls below ↘'),
   OCO: '',
 };
 

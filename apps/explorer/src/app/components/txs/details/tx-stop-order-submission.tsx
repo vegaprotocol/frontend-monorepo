@@ -26,9 +26,9 @@ export function getStopTypeLabel(
   if (risesAbove && fallsBelow) {
     return t('OCO (One Cancels Other)');
   } else if (fallsBelow) {
-    return t('Falls Below');
+    return t('Falls Below ↘');
   } else if (risesAbove) {
-    return t('Rises Above');
+    return t('Rises Above ↗');
   } else {
     return t('Stop Order');
   }

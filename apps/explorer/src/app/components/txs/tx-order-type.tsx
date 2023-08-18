@@ -59,11 +59,11 @@ export function getLabelForStopOrderType(
       command.stopOrdersSubmission.risesAbove &&
       command.stopOrdersSubmission.fallsBelow
     ) {
-      return 'Stop OCO';
+      return 'Stop ⇅';
     } else if (command.stopOrdersSubmission.risesAbove) {
-      return 'Take profit';
+      return 'Stop ↗';
     } else if (command.stopOrdersSubmission.fallsBelow) {
-      return 'Stop loss';
+      return 'Stop ↘';
     }
   }
   return 'Stop';
