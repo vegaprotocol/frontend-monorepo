@@ -580,7 +580,6 @@ export const RiskFactorsInfoPanel = ({
 export const PriceMonitoringBoundsInfoPanel = ({
   market,
   triggerIndex,
-  parentMarket,
 }: MarketInfoProps & {
   triggerIndex: number;
 }) => {
@@ -589,33 +588,13 @@ export const PriceMonitoringBoundsInfoPanel = ({
     variables: { marketId: market.id },
   });
 
-  const { data: parentData } = useDataProvider({
-    dataProvider: marketDataProvider,
-    variables: { marketId: parentMarket?.id || '' },
-    skip:
-      !parentMarket ||
-      !parentMarket?.priceMonitoringSettings?.parameters?.triggers?.[
-        triggerIndex
-      ],
-  });
-
   const quoteUnit =
     market?.tradableInstrument.instrument.product?.quoteName || '';
-  const parentQuoteUnit =
-    parentMarket?.tradableInstrument.instrument.product?.quoteName || '';
-  const isParentQuoteUnitEqual = quoteUnit === parentQuoteUnit;
 
   const trigger =
     market.priceMonitoringSettings?.parameters?.triggers?.[triggerIndex];
-  const parentTrigger =
-    parentMarket?.priceMonitoringSettings?.parameters?.triggers?.[triggerIndex];
-  const isParentTriggerEqual = isEqual(trigger, parentTrigger);
 
   const bounds = data?.priceMonitoringBounds?.[triggerIndex];
-  const parentBounds = parentData?.priceMonitoringBounds?.[triggerIndex];
-
-  const shouldShowParentData =
-    isParentQuoteUnitEqual && isParentTriggerEqual && !!parentBounds;
 
   if (!trigger) {
     console.error(
@@ -643,14 +622,6 @@ export const PriceMonitoringBoundsInfoPanel = ({
             highestPrice: bounds.maxValidPrice,
             lowestPrice: bounds.minValidPrice,
           }}
-          parentData={
-            shouldShowParentData
-              ? {
-                  highestPrice: parentBounds.maxValidPrice,
-                  lowestPrice: parentBounds.minValidPrice,
-                }
-              : undefined
-          }
           decimalPlaces={market.decimalPlaces}
           assetSymbol={quoteUnit}
         />

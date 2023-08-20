@@ -77,6 +77,14 @@ export const ProposalMarketData = ({
     parentTerminationData !== undefined &&
     isEqual(terminationData, parentTerminationData);
 
+  const showParentPriceMonitoringBounds =
+    parentMarketData?.priceMonitoringSettings?.parameters?.triggers !==
+      undefined &&
+    !isEqual(
+      marketData.priceMonitoringSettings?.parameters?.triggers,
+      parentMarketData?.priceMonitoringSettings?.parameters?.triggers
+    );
+
   const getSigners = (data: DataSourceDefinition) => {
     if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
       const signers = data.sourceType.sourceType.signers || [];
@@ -195,6 +203,25 @@ export const ProposalMarketData = ({
               parentMarket={parentMarketData}
             />
 
+            {showParentPriceMonitoringBounds &&
+              (
+                parentMarketData?.priceMonitoringSettings?.parameters
+                  ?.triggers || []
+              ).map((_, triggerIndex) => (
+                <>
+                  <h2 className={marketDataHeaderStyles}>
+                    {t(`Parent price monitoring bounds ${triggerIndex + 1}`)}
+                  </h2>
+
+                  <div className="text-vega-dark-300 line-through">
+                    <PriceMonitoringBoundsInfoPanel
+                      market={parentMarketData}
+                      triggerIndex={triggerIndex}
+                    />
+                  </div>
+                </>
+              ))}
+
             {(
               marketData.priceMonitoringSettings?.parameters?.triggers || []
             ).map((_, triggerIndex) => (
@@ -205,7 +232,6 @@ export const ProposalMarketData = ({
 
                 <PriceMonitoringBoundsInfoPanel
                   market={marketData}
-                  parentMarket={parentMarketData}
                   triggerIndex={triggerIndex}
                 />
               </>
