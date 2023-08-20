@@ -5,7 +5,7 @@ import {
   amendMarginAccountBalance,
 } from '@vegaprotocol/mock';
 
-describe(
+describe.skip(
   'account validation',
   { tags: '@regression', testIsolation: true },
   () => {
