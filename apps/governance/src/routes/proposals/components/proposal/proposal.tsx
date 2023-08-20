@@ -55,7 +55,7 @@ export const Proposal = ({
   mostRecentlyEnactedAssociatedMarketProposal,
 }: ProposalProps) => {
   const { t } = useTranslation();
-  const { submit, Dialog, finalizedVote } = useVoteSubmit();
+  const { submit, Dialog, finalizedVote, transaction } = useVoteSubmit();
   const { voteState, voteDatetime } = useUserVote(proposal?.id, finalizedVote);
 
   if (!proposal) {
@@ -215,6 +215,7 @@ export const Proposal = ({
               }
               submit={submit}
               dialog={Dialog}
+              transaction={transaction}
               voteState={voteState}
               voteDatetime={voteDatetime}
             />
