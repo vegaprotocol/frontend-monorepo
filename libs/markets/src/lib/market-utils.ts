@@ -1,4 +1,4 @@
-import { formatNumberPercentage } from '@vegaprotocol/utils';
+import { formatNumberPercentage, toBigNum } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
@@ -98,5 +98,11 @@ export const calcTradedFactor = (m: MarketMaybeWithDataAndCandles) => {
   const quantum = Number(
     m.tradableInstrument.instrument.product.settlementAsset.quantum
   );
-  return volume * price * quantum;
+  const decimals = Number(
+    m.tradableInstrument.instrument.product.settlementAsset.decimals
+  );
+  const fp = toBigNum(price, decimals);
+  const fq = toBigNum(quantum, decimals);
+  const factor = fq.multipliedBy(fp).multipliedBy(volume);
+  return factor.toNumber();
 };
