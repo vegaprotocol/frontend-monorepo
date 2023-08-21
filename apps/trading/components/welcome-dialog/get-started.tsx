@@ -65,7 +65,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
     <TradingButton
       onClick={onClickHandle}
       size="small"
-      data-testid="order-connect-wallet"
+      data-testid="get-started-button"
       intent={Intent.Info}
     >
       {buttonText}

@@ -23,7 +23,7 @@ describe('deal ticket basics', { tags: '@smoke' }, () => {
     // 0003-WTXN-001
     cy.getByTestId('connect-vega-wallet'); // Not connected
     cy.getByTestId(placeOrderBtn).should('exist');
-    cy.getByTestId('get-started-button').should('exist');
+    cy.getByTestId('order-connect-wallet').should('exist');
   });
 
   it('must be able to select order direction - long/short', function () {
@@ -44,7 +44,7 @@ describe('deal ticket basics', { tags: '@smoke' }, () => {
     mockConnectWallet();
     cy.getByTestId(toggleLimit).click();
     cy.getByTestId(orderPriceField).clear().type('101');
-    cy.getByTestId('get-started-button').click();
+    cy.getByTestId('order-connect-wallet').click();
     cy.getByTestId('dialog-content').should('be.visible');
     cy.getByTestId('connectors-list')
       .find('[data-testid="connector-jsonRpc"]')
