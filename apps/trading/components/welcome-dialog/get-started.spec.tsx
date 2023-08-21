@@ -40,7 +40,7 @@ describe('GetStarted', () => {
   it('renders connect prompt if no pubKey but wallet installed', () => {
     globalThis.window.vega = {} as Vega;
     renderComponent();
-    expect(screen.getByTestId('order-connect-wallet')).toBeInTheDocument();
+    expect(screen.getByTestId('get-started-banner')).toBeInTheDocument();
     globalThis.window.vega = undefined as unknown as Vega;
   });
 
