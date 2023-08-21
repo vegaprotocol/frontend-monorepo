@@ -4364,6 +4364,8 @@ export type StopOrder = {
   marketId: Scalars['ID'];
   /** If OCO (one-cancels-other) order, the ID of the associated order. */
   ocoLinkId?: Maybe<Scalars['ID']>;
+  /** The order that was created when triggered. */
+  order?: Maybe<Order>;
   /** Party that submitted the stop order. */
   partyId: Scalars['ID'];
   /** Status of the stop order */
@@ -4371,7 +4373,7 @@ export type StopOrder = {
   /** Order to submit when the stop order is triggered. */
   submission: OrderSubmission;
   /** Price movement that will trigger the stop order */
-  trigger?: Maybe<StopOrderTrigger>;
+  trigger: StopOrderTrigger;
   /** Direction the price is moving to trigger the stop order. */
   triggerDirection: StopOrderTriggerDirection;
   /** Time the stop order was last updated. */
