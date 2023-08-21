@@ -12,7 +12,7 @@ import { VoteButtonsContainer } from './vote-buttons';
 import { SubHeading } from '../../../../components/heading';
 import { ProposalType } from '../proposal/proposal';
 import type { VoteValue } from '@vegaprotocol/types';
-import type { DialogProps } from '@vegaprotocol/wallet';
+import type { DialogProps, VegaTxState } from '@vegaprotocol/wallet';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { VoteState } from './use-user-vote';
@@ -22,6 +22,7 @@ interface VoteDetailsProps {
   minVoterBalance: string | null | undefined;
   spamProtectionMinTokens: string | null | undefined;
   proposalType: ProposalType | null;
+  transaction: VegaTxState | null;
   submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
   dialog: (props: DialogProps) => JSX.Element;
   voteState: VoteState | null;
@@ -34,6 +35,7 @@ export const VoteDetails = ({
   spamProtectionMinTokens,
   proposalType,
   submit,
+  transaction,
   dialog,
   voteState,
   voteDatetime,
@@ -228,6 +230,7 @@ export const VoteDetails = ({
                 spamProtectionMinTokens={spamProtectionMinTokens}
                 className="flex"
                 submit={submit}
+                transaction={transaction}
                 dialog={dialog}
               />
             )
