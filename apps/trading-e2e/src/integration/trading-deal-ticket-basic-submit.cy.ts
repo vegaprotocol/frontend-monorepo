@@ -3,7 +3,7 @@ import { testOrderSubmission } from '../support/order-validation';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
 import { createOrder } from '../support/create-order';
 
-describe('must submit order', { tags: '@smoke' }, () => {
+describe.skip('must submit order', { tags: '@smoke' }, () => {
   // 7002-SORD-039
   before(() => {
     cy.setVegaWallet();

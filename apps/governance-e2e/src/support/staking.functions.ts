@@ -182,9 +182,10 @@ export function clickOnValidatorFromList(
   } else {
     cy.get(`[row-id="${validatorNumber}"]`)
       .should('be.visible')
-      .find(stakeValidatorListName)
-      .as('validatorOnList');
-    cy.get('@validatorOnList').click();
+      .first()
+      .within(() => {
+        cy.get(stakeValidatorListName).click();
+      });
   }
 }
 
