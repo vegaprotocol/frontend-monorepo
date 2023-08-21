@@ -49,7 +49,7 @@ export const PartyBlockStake = ({
             } else if (e?.node.type === 'TYPE_UNLINK') {
               return accumulator.minus(diff);
             } else {
-              return accumulator
+              return accumulator;
             }
           }, new BigNumber(0))
           .toString()
