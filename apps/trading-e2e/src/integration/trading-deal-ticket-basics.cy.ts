@@ -54,6 +54,14 @@ describe('deal ticket basics', { tags: '@smoke' }, () => {
     cy.getByTestId(toggleLimit).next('input').should('be.checked');
     cy.getByTestId(orderPriceField).should('have.value', '101');
   });
+
+  it('sidebar shoyld be open after reload', () => {
+    cy.getByTestId('deal-ticket-form').should('be.visible');
+    cy.getByTestId('Order').click();
+    cy.getByTestId('deal-ticket-form').should('not.exist');
+    cy.reload();
+    cy.getByTestId('deal-ticket-form').should('be.visible');
+  });
 });
 
 describe(

@@ -299,16 +299,14 @@ export const useSidebar = create<{
   init: boolean;
   view: SidebarView | null;
   setView: (view: SidebarView | null) => void;
-}>()(
-    (set) => ({
-      init: true,
-      view: null,
-      setView: (x) =>
-        set(() => {
-          if (x == null) {
-            return { view: null, init: false };
-          }
-          return { view: x, init: false };
-        }),
-    })
-);
+}>()((set) => ({
+  init: true,
+  view: null,
+  setView: (x) =>
+    set(() => {
+      if (x == null) {
+        return { view: null, init: false };
+      }
+      return { view: x, init: false };
+    }),
+}));
