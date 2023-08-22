@@ -34,6 +34,7 @@ export * from './progress-bar';
 export * from './radio-group';
 export * from './rounded-wrapper';
 export * from './select';
+export * from './show-more';
 export * from './simple-grid';
 export * from './slider';
 export * from './sparkline';
