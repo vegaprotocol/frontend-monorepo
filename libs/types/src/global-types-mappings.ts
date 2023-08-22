@@ -547,17 +547,25 @@ export const PeggedReferenceMapping: { [R in PeggedReference]: string } = {
 
 export const ProductTypeMapping: Record<ProductType, string> = {
   Future: 'Future',
+  Spot: 'Spot',
+  Perpetual: 'Perpetual',
 };
 
 export const ProductTypeShortName: Record<ProductType, string> = {
   Future: 'Futr',
+  Spot: 'Spot',
+  Perpetual: 'Perp',
 };
 
 export const ProposalProductTypeMapping: Record<ProposalProductType, string> = {
   FutureProduct: 'Future',
+  SpotProduct: 'Spot',
+  PerpetualProduct: 'Perp',
 };
 
 export const ProposalProductTypeShortName: Record<ProposalProductType, string> =
   {
     FutureProduct: 'Futr',
+    SpotProduct: 'Spot',
+    PerpetualProduct: 'Perp',
   };
