@@ -19,18 +19,7 @@ interface MarketNameCellProps {
 const MarketName = (props: MarketNameCellProps) => (
   <>
     <MarketNameCell {...props} />
-    {props.data ? (
-      <OracleStatus
-        dataSourceSpecForSettlementData={
-          props.data.tradableInstrument.instrument.product
-            .dataSourceSpecForSettlementData
-        }
-        dataSourceSpecForTradingTermination={
-          props.data.tradableInstrument.instrument.product
-            .dataSourceSpecForTradingTermination
-        }
-      />
-    ) : null}
+    {props.data ? <OracleStatus market={props.data} /> : null}
   </>
 );
 

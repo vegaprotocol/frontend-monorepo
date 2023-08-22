@@ -125,6 +125,31 @@ query MarketInfo($marketId: ID!) {
               tradingTerminationProperty
             }
           }
+          ... on Perpetual {
+            quoteName
+            settlementAsset {
+              id
+              symbol
+              name
+              decimals
+            }
+            dataSourceSpecForSettlementData {
+              id
+              data {
+                ...DataSource
+              }
+            }
+            dataSourceSpecForSettlementSchedule {
+              id
+              data {
+                ...DataSource
+              }
+            }
+            dataSourceSpecBinding {
+              settlementDataProperty
+              settlementScheduleProperty
+            }
+          }
         }
       }
       riskModel {

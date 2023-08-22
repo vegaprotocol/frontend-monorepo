@@ -17,7 +17,10 @@ export const DealTicketLimitAmount = ({
 }: DealTicketLimitAmountProps) => {
   const priceStep = toDecimal(market?.decimalPlaces);
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
-  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+  const quoteName =
+    'quoteName' in market.tradableInstrument.instrument.product
+      ? market.tradableInstrument.instrument.product.quoteName
+      : '';
 
   const renderError = () => {
     if (sizeError) {

@@ -4,6 +4,7 @@ import { t } from '@vegaprotocol/i18n';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
+import type { MarketFieldsFragment } from '@vegaprotocol/markets';
 import { marketDataProvider, useMarket } from '@vegaprotocol/markets';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid } from './trade-grid';
@@ -79,26 +80,14 @@ export const MarketPage = () => {
     }
   }, [init, view, setView]);
 
+  const pinnedAsset = getAsset(data);
+
   const tradeView = useMemo(() => {
     if (largeScreen) {
-      return (
-        <TradeGrid
-          market={data}
-          pinnedAsset={
-            data?.tradableInstrument.instrument.product.settlementAsset
-          }
-        />
-      );
+      return <TradeGrid market={data} pinnedAsset={pinnedAsset} />;
     }
-    return (
-      <TradePanels
-        market={data}
-        pinnedAsset={
-          data?.tradableInstrument.instrument.product.settlementAsset
-        }
-      />
-    );
-  }, [largeScreen, data]);
+    return <TradePanels market={data} pinnedAsset={pinnedAsset} />;
+  }, [largeScreen, data, pinnedAsset]);
 
   if (!data && marketId) {
     return (
@@ -133,4 +122,16 @@ export const MarketPage = () => {
       {tradeView}
     </AsyncRenderer>
   );
+};
+
+const getAsset = (market: MarketFieldsFragment | null) => {
+  return market &&
+    'settlementAsset' in market.tradableInstrument.instrument.product
+    ? market?.tradableInstrument.instrument.product?.settlementAsset
+    : {
+        id: '',
+        symbol: '',
+        decimals: 0,
+        name: '',
+      };
 };

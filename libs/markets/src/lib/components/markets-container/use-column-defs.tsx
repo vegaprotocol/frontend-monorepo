@@ -167,7 +167,11 @@ export const useColumnDefs = ({ onMarketClick }: Props) => {
             'tradableInstrument.instrument.product.settlementAsset.symbol'
           >) => {
             const value =
-              data?.tradableInstrument.instrument.product.settlementAsset;
+              data &&
+              'settlementAsset' in data.tradableInstrument.instrument.product
+                ? data?.tradableInstrument.instrument.product.settlementAsset
+                : undefined;
+
             return value ? (
               <ButtonLink
                 onClick={(e) => {
@@ -193,7 +197,11 @@ export const useColumnDefs = ({ onMarketClick }: Props) => {
               <MarketActionsDropdown
                 marketId={data.id}
                 assetId={
-                  data.tradableInstrument.instrument.product.settlementAsset.id
+                  'settlementAsset' in
+                  data.tradableInstrument.instrument.product
+                    ? data.tradableInstrument.instrument.product.settlementAsset
+                        .id
+                    : ''
                 }
               />
             );

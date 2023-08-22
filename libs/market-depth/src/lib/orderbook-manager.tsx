@@ -66,7 +66,11 @@ export const OrderbookManager = ({
         asks={data?.depth.sell ?? []}
         decimalPlaces={market?.decimalPlaces ?? 0}
         positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
-        assetSymbol={market?.tradableInstrument.instrument.product.quoteName}
+        assetSymbol={
+          market && 'quoteName' in market.tradableInstrument.instrument.product
+            ? market?.tradableInstrument.instrument.product.quoteName
+            : ''
+        }
         onClick={onClick}
         midPrice={marketData?.midPrice}
       />

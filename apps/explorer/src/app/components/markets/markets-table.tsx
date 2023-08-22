@@ -73,8 +73,7 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
           MarketFieldsFragment,
           'tradableInstrument.instrument.product.settlementAsset.symbol'
         >) => {
-          const value =
-            data?.tradableInstrument.instrument.product.settlementAsset;
+          const value = data && getAsset(data);
           return value ? (
             <ButtonLink
               onClick={(e) => {
@@ -137,4 +136,21 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
       }}
     />
   );
+};
+
+const getAsset = (
+  data: MarketFieldsFragment
+): {
+  decimals: number | undefined;
+  symbol: string;
+  id: string;
+} => {
+  // TODO to handle baseAsset for Spots
+  return 'settlementAsset' in data.tradableInstrument.instrument.product
+    ? data?.tradableInstrument?.instrument?.product?.settlementAsset
+    : {
+        decimals: 0,
+        symbol: '',
+        id: '',
+      };
 };

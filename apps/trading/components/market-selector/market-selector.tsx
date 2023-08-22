@@ -71,9 +71,14 @@ export const MarketSelector = ({
           </div>
           <AssetDropdown
             assets={uniqBy(
-              data?.map(
-                (d) => d.tradableInstrument.instrument.product.settlementAsset
-              ),
+              data?.map((d) => {
+                // TODO to handle baseAsset for Spots
+                const asset =
+                  'settlementAsset' in d.tradableInstrument.instrument.product
+                    ? d.tradableInstrument.instrument.product.settlementAsset
+                    : { id: '', symbol: '' };
+                return asset;
+              }),
               'id'
             )}
             checkedAssets={filter.assets}

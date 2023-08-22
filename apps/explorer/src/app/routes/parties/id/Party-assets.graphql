@@ -23,6 +23,9 @@ fragment ExplorerPartyAssetsAccounts on AccountBalance {
           ... on Future {
             quoteName
           }
+          ... on Perpetual {
+            quoteName
+          }
         }
       }
     }

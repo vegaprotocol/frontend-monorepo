@@ -49,6 +49,7 @@ import {
   useOrderByIdQuery,
   useStopOrderByIdQuery,
 } from '@vegaprotocol/orders';
+import type { MarketFieldsFragment } from '@vegaprotocol/markets';
 import { useMarketsMapProvider } from '@vegaprotocol/markets';
 import type { Side } from '@vegaprotocol/types';
 import { OrderStatusMapping } from '@vegaprotocol/types';
@@ -131,6 +132,21 @@ const SizeAtPrice = ({ side, size, price, meta }: SizeAtPriceProps) => {
   );
 };
 
+const getAsset = (
+  data: MarketFieldsFragment
+): {
+  decimals: number | undefined;
+  symbol: string;
+} => {
+  // TODO to handle baseAsset for Spots
+  return 'settlementAsset' in data.tradableInstrument.instrument.product
+    ? data?.tradableInstrument?.instrument?.product?.settlementAsset
+    : {
+        decimals: 0,
+        symbol: '',
+      };
+};
+
 const SubmitOrderDetails = ({
   data,
   order,
@@ -161,9 +177,7 @@ const SubmitOrderDetails = ({
           meta={{
             positionDecimalPlaces: market.positionDecimalPlaces,
             decimalPlaces: market.decimalPlaces,
-            asset:
-              market.tradableInstrument.instrument.product.settlementAsset
-                .symbol,
+            asset: getAsset(market).symbol,
           }}
           side={side}
           size={size}
@@ -203,9 +217,7 @@ const SubmitStopOrderDetails = ({ data }: { data: StopOrdersSubmission }) => {
           meta={{
             positionDecimalPlaces: market.positionDecimalPlaces,
             decimalPlaces: market.decimalPlaces,
-            asset:
-              market.tradableInstrument.instrument.product.settlementAsset
-                .symbol,
+            asset: getAsset(market).symbol,
           }}
           side={side}
           size={size}
@@ -252,8 +264,7 @@ const EditOrderDetails = ({
       meta={{
         positionDecimalPlaces: market.positionDecimalPlaces,
         decimalPlaces: market.decimalPlaces,
-        asset:
-          market.tradableInstrument.instrument.product.settlementAsset.symbol,
+        asset: getAsset(market).symbol,
       }}
     />
   );
@@ -266,8 +277,7 @@ const EditOrderDetails = ({
       meta={{
         positionDecimalPlaces: market.positionDecimalPlaces,
         decimalPlaces: market.decimalPlaces,
-        asset:
-          market.tradableInstrument.instrument.product.settlementAsset.symbol,
+        asset: getAsset(market).symbol,
       }}
     />
   );
@@ -313,8 +323,7 @@ const CancelOrderDetails = ({
       meta={{
         positionDecimalPlaces: market.positionDecimalPlaces,
         decimalPlaces: market.decimalPlaces,
-        asset:
-          market.tradableInstrument.instrument.product.settlementAsset.symbol,
+        asset: getAsset(market).symbol,
       }}
     />
   );
@@ -355,8 +364,7 @@ const CancelStopOrderDetails = ({ stopOrderId }: { stopOrderId: string }) => {
         meta={{
           positionDecimalPlaces: market.positionDecimalPlaces,
           decimalPlaces: market.decimalPlaces,
-          asset:
-            market.tradableInstrument.instrument.product.settlementAsset.symbol,
+          asset: getAsset(market).symbol,
         }}
       />
       <br />

@@ -78,6 +78,32 @@ fragment MarketFields on Market {
             tradingTerminationProperty
           }
         }
+        ... on Perpetual {
+          settlementAsset {
+            id
+            symbol
+            name
+            decimals
+            quantum
+          }
+          quoteName
+          dataSourceSpecForSettlementSchedule {
+            id
+            data {
+              ...DataSourceSpec
+            }
+          }
+          dataSourceSpecForSettlementData {
+            id
+            data {
+              ...DataSourceSpec
+            }
+          }
+          dataSourceSpecBinding {
+            settlementDataProperty
+            settlementScheduleProperty
+          }
+        }
       }
     }
   }

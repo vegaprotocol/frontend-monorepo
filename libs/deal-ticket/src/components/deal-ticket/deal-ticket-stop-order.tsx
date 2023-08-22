@@ -150,8 +150,30 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     return () => subscription.unsubscribe();
   }, [watch, market.id, updateStoredFormValues]);
 
-  const { quoteName, settlementAsset: asset } =
-    market.tradableInstrument.instrument.product;
+  let quoteName,
+    asset: {
+      id: string;
+      symbol: string;
+      name: string;
+      decimals: number;
+      quantum: string;
+    } | null = null;
+
+  if (market.tradableInstrument.instrument.product.__typename === 'Future') {
+    quoteName = market.tradableInstrument.instrument.product.quoteName;
+    asset = market.tradableInstrument.instrument.product.settlementAsset;
+  }
+
+  if (market.tradableInstrument.instrument.product.__typename === 'Perpetual') {
+    quoteName = market.tradableInstrument.instrument.product.quoteName;
+    asset = market.tradableInstrument.instrument.product.settlementAsset;
+  }
+
+  if (market.tradableInstrument.instrument.product.__typename === 'Spot') {
+    // TODO add baseAsset and quoteAsset for Spots
+    // quoteName = market.tradableInstrument.instrument.product.quoteAsset;
+    // asset = market.tradableInstrument.instrument.product.baseAsset;
+  }
 
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
   const priceStep = toDecimal(market?.decimalPlaces);
@@ -254,7 +276,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                       data-testid="triggerPrice"
                       type="number"
                       step={priceStep}
-                      appendElement={asset.symbol}
+                      appendElement={asset?.symbol}
                       value={value || ''}
                       {...props}
                     />
@@ -570,7 +592,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           type,
         }}
         notionalSize={notionalSize}
-        assetSymbol={asset.symbol}
+        assetSymbol={asset?.symbol || ''}
         market={market}
       />
     </form>

@@ -150,7 +150,7 @@ export const createMarketFragment = (
     __typename: 'Market',
   };
 
-  return merge(defaultFragment, override);
+  return merge(defaultFragment, override) as MarketFieldsFragment;
 };
 
 const marketFieldsFragments: MarketFieldsFragment[] = [

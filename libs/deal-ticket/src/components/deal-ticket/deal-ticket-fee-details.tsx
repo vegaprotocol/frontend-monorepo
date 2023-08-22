@@ -7,7 +7,7 @@ import { FeesBreakdown } from '@vegaprotocol/markets';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
-import type { Market } from '@vegaprotocol/markets';
+import type { Market, MarketFieldsFragment } from '@vegaprotocol/markets';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
 
@@ -90,11 +90,10 @@ export const DealTicketFeeDetails = ({
   notionalSize,
 }: DealTicketFeeDetailsProps) => {
   const feeEstimate = useEstimateFees(order);
-  const { settlementAsset: asset } =
-    market.tradableInstrument.instrument.product;
+  const asset = getAsset(market);
   const { decimals: assetDecimals, quantum } = asset;
   const marketDecimals = market.decimalPlaces;
-  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+  const quoteName = getQuote(market);
 
   return (
     <>
@@ -164,8 +163,7 @@ export const DealTicketMarginDetails = ({
   const marginEstimate = positionEstimate?.margin;
   const totalBalance =
     BigInt(generalAccountBalance || '0') + BigInt(marginAccountBalance || '0');
-  const { settlementAsset: asset } =
-    market.tradableInstrument.instrument.product;
+  const asset = getAsset(market);
   const { decimals: assetDecimals, quantum } = asset;
   let marginRequiredBestCase: string | undefined = undefined;
   let marginRequiredWorstCase: string | undefined = undefined;
@@ -304,7 +302,7 @@ export const DealTicketMarginDetails = ({
     []
   );
 
-  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+  const quoteName = getQuote(market);
 
   return (
     <>
@@ -375,4 +373,23 @@ export const DealTicketMarginDetails = ({
       )}
     </>
   );
+};
+
+const getAsset = (market: MarketFieldsFragment) => {
+  // TODO update with baseAsset for Spots
+  return 'settlementAsset' in market.tradableInstrument.instrument.product
+    ? market.tradableInstrument.instrument.product.settlementAsset
+    : {
+        quantum: '0',
+        decimals: 0,
+        symbol: '',
+        id: '',
+      };
+};
+
+const getQuote = (market: MarketFieldsFragment) => {
+  // TODO update with quoteAsset for Spots
+  return 'quoteName' in market.tradableInstrument.instrument.product
+    ? market.tradableInstrument.instrument.product.quoteName
+    : '';
 };

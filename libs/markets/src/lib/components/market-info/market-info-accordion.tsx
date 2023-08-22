@@ -88,14 +88,31 @@ export const MarketInfoAccordion = ({
     market.accountsConnection?.edges
   );
 
-  const settlementData = market.tradableInstrument.instrument.product
-    .dataSourceSpecForSettlementData.data as DataSourceDefinition;
-  const terminationData = market.tradableInstrument.instrument.product
-    .dataSourceSpecForTradingTermination.data as DataSourceDefinition;
+  const settlementData =
+    'dataSourceSpecForSettlementData' in
+    market.tradableInstrument.instrument.product
+      ? (market.tradableInstrument.instrument.product
+          .dataSourceSpecForSettlementData.data as DataSourceDefinition)
+      : undefined;
+  const terminationData =
+    'dataSourceSpecForTradingTermination' in
+    market.tradableInstrument.instrument.product
+      ? (market.tradableInstrument.instrument.product
+          .dataSourceSpecForTradingTermination.data as DataSourceDefinition)
+      : undefined;
+  const settlementScheduleData =
+    'dataSourceSpecForSettlementSchedule' in
+    market.tradableInstrument.instrument.product
+      ? (market.tradableInstrument.instrument.product
+          .dataSourceSpecForSettlementSchedule.data as DataSourceDefinition)
+      : undefined;
 
   const getSigners = (data: DataSourceDefinition) => {
     if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
-      const signers = data.sourceType.sourceType.signers || [];
+      const signers =
+        ('signers' in data.sourceType.sourceType &&
+          data.sourceType.sourceType.signers) ||
+        [];
 
       return signers.map(({ signer }, i) => {
         return (
@@ -158,7 +175,9 @@ export const MarketInfoAccordion = ({
             title={t('Instrument')}
             content={<InstrumentInfoPanel market={market} />}
           />
-          {isEqual(getSigners(settlementData), getSigners(terminationData)) ? (
+          {settlementData &&
+          terminationData &&
+          isEqual(getSigners(settlementData), getSigners(terminationData)) ? (
             <AccordionItem
               itemId="oracles"
               title={t('Oracle')}
@@ -175,11 +194,41 @@ export const MarketInfoAccordion = ({
                   <OracleInfoPanel market={market} type="settlementData" />
                 }
               />
-
               <AccordionItem
                 itemId="termination-oracle"
                 title={t('Termination Oracle')}
                 content={<OracleInfoPanel market={market} type="termination" />}
+              />
+            </>
+          )}
+          {settlementData &&
+          settlementScheduleData &&
+          isEqual(
+            getSigners(settlementData),
+            getSigners(settlementScheduleData)
+          ) ? (
+            <AccordionItem
+              itemId="oracles"
+              title={t('Oracle')}
+              content={
+                <OracleInfoPanel market={market} type="settlementData" />
+              }
+            />
+          ) : (
+            <>
+              <AccordionItem
+                itemId="settlement-oracle"
+                title={t('Settlement Oracle')}
+                content={
+                  <OracleInfoPanel market={market} type="settlementData" />
+                }
+              />
+              <AccordionItem
+                itemId="settlement-schedule-oracle"
+                title={t('Settlement Schedule Oracle')}
+                content={
+                  <OracleInfoPanel market={market} type="settlementSchedule" />
+                }
               />
             </>
           )}
@@ -227,7 +276,7 @@ export const MarketInfoAccordion = ({
             }
           )}
           <AccordionItem
-            itemId="liqudity-monitoring-parameters"
+            itemId="liquidity-monitoring-parameters"
             title={t('Liquidity monitoring parameters')}
             content={<LiquidityMonitoringParametersInfoPanel market={market} />}
           />

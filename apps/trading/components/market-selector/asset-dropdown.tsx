@@ -33,7 +33,7 @@ export const AssetDropdown = ({
       }
     >
       <DropdownMenuContent>
-        {assets?.map((a) => {
+        {assets?.filter(Boolean).map((a) => {
           return (
             <DropdownMenuCheckboxItem
               key={a.id}
@@ -66,7 +66,7 @@ const TriggerText = ({
 
   if (checkedAssets.length === 1) {
     const assetId = checkedAssets[0];
-    const asset = assets.find((a) => a.id === assetId);
+    const asset = assets.find((a) => a?.id === assetId);
     text = asset ? asset.symbol : t('Asset (1)');
   } else if (checkedAssets.length > 1) {
     text = t(`${checkedAssets.length} Assets`);

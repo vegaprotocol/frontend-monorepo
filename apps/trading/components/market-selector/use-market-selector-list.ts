@@ -39,9 +39,12 @@ export const useMarketSelectorList = ({
       })
       .filter((m) => {
         if (assets.length === 0) return true;
-        return assets.includes(
-          m.tradableInstrument.instrument.product.settlementAsset.id
-        );
+        // TODO to handle baseAsset for Spots
+        const asset =
+          'settlementAsset' in m.tradableInstrument.instrument.product
+            ? m.tradableInstrument.instrument.product.settlementAsset
+            : { id: '', symbol: '' };
+        return assets.includes(asset?.id);
       })
       // filter based on search term
       .filter((m) => {

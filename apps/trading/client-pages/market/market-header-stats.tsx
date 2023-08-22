@@ -2,7 +2,7 @@ import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
 import { MarketProposalNotification } from '@vegaprotocol/proposals';
-import type { Market } from '@vegaprotocol/markets';
+import type { Market, MarketFieldsFragment } from '@vegaprotocol/markets';
 import { getExpiryDate, getMarketExpiryDate } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { Last24hPriceChange, Last24hVolume } from '@vegaprotocol/markets';
@@ -21,7 +21,8 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
-  const asset = market?.tradableInstrument.instrument.product?.settlementAsset;
+  // TODO to handle baseAsset for Spots
+  const asset = market && getAsset(market);
 
   return (
     <>
@@ -114,8 +115,11 @@ const ExpiryTooltipContent = ({
 }: ExpiryTooltipContentProps) => {
   if (market?.marketTimestamps.close === null) {
     const oracleId =
+      'dataSourceSpecForTradingTermination' in
       market.tradableInstrument.instrument.product
-        .dataSourceSpecForTradingTermination?.id;
+        ? market.tradableInstrument.instrument.product
+            .dataSourceSpecForTradingTermination?.id
+        : undefined;
 
     const metadataExpiryDate = getMarketExpiryDate(
       market.tradableInstrument.instrument.metadata.tags
@@ -151,4 +155,14 @@ const ExpiryTooltipContent = ({
   }
 
   return null;
+};
+
+const getAsset = (market: MarketFieldsFragment) => {
+  return 'settlementAsset' in market.tradableInstrument.instrument.product
+    ? market?.tradableInstrument.instrument.product?.settlementAsset
+    : {
+        id: '',
+        symbol: '',
+        decimals: 0,
+      };
 };

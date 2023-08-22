@@ -20,11 +20,17 @@ export const useOracleMarkets = (
     ?.map((edge) => edge.node)
     ?.filter((node) => {
       const p = node.tradableInstrument.instrument.product;
-      const sourceType = p.dataSourceSpecForSettlementData.data.sourceType;
-      if (sourceType.__typename !== 'DataSourceDefinitionExternal') {
+      const sourceType =
+        'dataSourceSpecForSettlementData' in p
+          ? p.dataSourceSpecForSettlementData.data.sourceType
+          : undefined;
+      if (sourceType?.__typename !== 'DataSourceDefinitionExternal') {
         return false;
       }
-      const signers = sourceType?.sourceType.signers;
+      const signers =
+        'signers' in sourceType.sourceType
+          ? sourceType?.sourceType.signers
+          : null;
       const signerKeys = signers?.filter(Boolean).map((signer) => {
         if (signer.signer.__typename === 'ETHAddress') {
           return signer.signer.address;

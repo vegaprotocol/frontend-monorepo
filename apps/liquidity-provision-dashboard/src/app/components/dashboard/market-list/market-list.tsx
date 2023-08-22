@@ -35,6 +35,22 @@ import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
 import { intentForStatus } from '../../../lib/utils';
 import { formatDistanceToNow } from 'date-fns';
+import get from 'lodash/get';
+
+export const getAsset = (
+  data: Market
+): {
+  decimals?: number | undefined;
+  symbol?: string | undefined;
+} => {
+  // TODO to handle baseAsset for Spots
+  return 'settlementAsset' in data.tradableInstrument.instrument.product
+    ? data?.tradableInstrument?.instrument?.product?.settlementAsset
+    : {
+        decimals: undefined,
+        symbol: undefined,
+      };
+};
 
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();
@@ -51,12 +67,7 @@ export const MarketList = () => {
           return (
             <>
               <span className="leading-3">{value}</span>
-              <span className="leading-3">
-                {
-                  data?.tradableInstrument?.instrument?.product?.settlementAsset
-                    ?.symbol
-                }
-              </span>
+              <span className="leading-3">{get(getAsset(data), 'symbol')}</span>
             </>
           );
         },
@@ -87,12 +98,7 @@ export const MarketList = () => {
           value,
           data,
         }: VegaValueFormatterParams<Market, 'data.markPrice'>) =>
-          value && data
-            ? formatWithAsset(
-                value,
-                data.tradableInstrument.instrument.product.settlementAsset
-              )
-            : '-',
+          value && data ? formatWithAsset(value, getAsset(data)) : '-',
       },
 
       {
@@ -123,8 +129,7 @@ export const MarketList = () => {
           value && data
             ? `${addDecimalsFormatNumber(
                 value,
-                data.tradableInstrument.instrument.product.settlementAsset
-                  .decimals
+                getAsset(data).decimals || 0
               )} (${displayChange(data.volumeChange)})`
             : '-',
         headerTooltip: t('The trade volume over the last 24h'),
@@ -138,10 +143,7 @@ export const MarketList = () => {
           data,
         }: VegaValueFormatterParams<Market, 'liquidityCommitted'>) =>
           data && value
-            ? formatWithAsset(
-                value.toString(),
-                data.tradableInstrument.instrument.product.settlementAsset
-              )
+            ? formatWithAsset(value.toString(), getAsset(data))
             : '-',
         headerTooltip: t('The amount of funds allocated to provide liquidity'),
       },
@@ -153,12 +155,7 @@ export const MarketList = () => {
           value,
           data,
         }: VegaValueFormatterParams<Market, 'target'>) =>
-          data && value
-            ? formatWithAsset(
-                value,
-                data.tradableInstrument.instrument.product.settlementAsset
-              )
-            : '-',
+          data && value ? formatWithAsset(value, getAsset(data)) : '-',
         headerTooltip: t(
           'The ideal committed liquidity to operate the market.  If total commitment currently below this level then LPs can set the fee level with new commitment.'
         ),
@@ -230,10 +227,7 @@ export const MarketList = () => {
         }) => (
           <HealthBar
             target={data.target}
-            decimals={
-              data.tradableInstrument.instrument.product.settlementAsset
-                .decimals
-            }
+            decimals={getAsset(data).decimals || 0}
             levels={data.feeLevels}
             intent={intentForStatus(value)}
           />

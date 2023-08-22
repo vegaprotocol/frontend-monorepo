@@ -8,7 +8,11 @@ import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { SimpleGridProps } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import type { Market, MarketData } from '@vegaprotocol/markets';
+import type {
+  Market,
+  MarketData,
+  MarketFieldsFragment,
+} from '@vegaprotocol/markets';
 
 export const compileGridData = (
   market: Pick<
@@ -40,10 +44,9 @@ export const compileGridData = (
   const formatStake = (value: string) => {
     const formattedValue = addDecimalsFormatNumber(
       value,
-      market.tradableInstrument.instrument.product.settlementAsset.decimals
+      getAsset(market).decimals
     );
-    const asset =
-      market.tradableInstrument.instrument.product.settlementAsset.symbol;
+    const asset = getAsset(market).symbol;
     return `${formattedValue} ${asset}`;
   };
 
@@ -117,4 +120,21 @@ export const compileGridData = (
   }
 
   return grid;
+};
+
+const getAsset = (
+  market: Pick<
+    MarketFieldsFragment,
+    'id' | 'tradableInstrument' | 'decimalPlaces' | 'positionDecimalPlaces'
+  >
+) => {
+  // TODO update with baseAsset for Spots
+  return 'settlementAsset' in market.tradableInstrument.instrument.product
+    ? market.tradableInstrument.instrument.product.settlementAsset
+    : {
+        quantum: '0',
+        decimals: 0,
+        symbol: '',
+        id: '',
+      };
 };

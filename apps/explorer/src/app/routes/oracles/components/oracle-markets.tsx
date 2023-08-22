@@ -10,7 +10,7 @@ interface OracleMarketsProps {
 }
 
 /**
- * Slightly misleadlingly names, OracleMarkets lists the market (almost always singular)
+ * Slightly misleadingly names, OracleMarkets lists the market (almost always singular)
  * to which an oracle is attached. It also checks what it triggers, by checking on the
  * market whether it is attached to the dataSourceSpecForSettlementData or ..TradingTermination
  */
@@ -27,8 +27,10 @@ export function OracleMarkets({ id }: OracleMarketsProps) {
     const m = markets.find((m) => {
       const p = m.tradableInstrument.instrument.product;
       if (
-        p.dataSourceSpecForSettlementData.id === id ||
-        p.dataSourceSpecForTradingTermination.id === id
+        ('dataSourceSpecForSettlementData' in p &&
+          p.dataSourceSpecForSettlementData.id === id) ||
+        ('dataSourceSpecForTradingTermination' in p &&
+          p.dataSourceSpecForTradingTermination.id === id)
       ) {
         return true;
       }
@@ -37,9 +39,11 @@ export function OracleMarkets({ id }: OracleMarketsProps) {
 
     if (m && m.id) {
       const type =
+        'dataSourceSpecForSettlementData' in
+          m.tradableInstrument.instrument.product &&
         id ===
-        m.tradableInstrument.instrument.product.dataSourceSpecForSettlementData
-          .id
+          m.tradableInstrument.instrument.product
+            .dataSourceSpecForSettlementData.id
           ? 'Settlement for'
           : 'Termination for';
       return (

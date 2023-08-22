@@ -61,9 +61,17 @@ export const getMetrics = (
   if (!data || !data?.length) {
     return [];
   }
+
   const metrics: Position[] = [];
   data.forEach((position) => {
     const market = position.market;
+    if (
+      !market ||
+      !('settlementAsset' in market.tradableInstrument.instrument.product)
+    ) {
+      return;
+    }
+
     if (!market) {
       return;
     }

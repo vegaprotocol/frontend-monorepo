@@ -52,6 +52,7 @@ import type { MarketTradingMode } from '@vegaprotocol/types';
 import type { Signer } from '@vegaprotocol/types';
 import classNames from 'classnames';
 import compact from 'lodash/compact';
+import get from 'lodash/get';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -80,9 +81,17 @@ export const CurrentFeesInfoPanel = ({ market }: MarketInfoProps) => (
 
 export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
   const assetSymbol =
-    market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
+    market?.tradableInstrument.instrument.product &&
+    'settlementAsset' in market.tradableInstrument.instrument.product
+      ? market?.tradableInstrument.instrument.product?.settlementAsset.symbol
+      : market?.tradableInstrument.instrument.product &&
+        'baseAsset' in market.tradableInstrument.instrument.product
+      ? get(market?.tradableInstrument.instrument.product?.baseAsset, 'symbol')
+      : '';
   const quoteUnit =
-    market?.tradableInstrument.instrument.product?.quoteName || '';
+    'quoteName' in market.tradableInstrument.instrument.product
+      ? market?.tradableInstrument.instrument.product?.quoteName
+      : '';
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: { marketId: market.id },
@@ -94,7 +103,10 @@ export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
           markPrice: data?.markPrice,
           bestBidPrice: data?.bestBidPrice,
           bestOfferPrice: data?.bestOfferPrice,
-          quoteUnit: market.tradableInstrument.instrument.product.quoteName,
+          quoteUnit: get(
+            market.tradableInstrument.instrument.product,
+            'quoteName'
+          ),
         }}
         decimalPlaces={market.decimalPlaces}
       />
@@ -145,17 +157,16 @@ export const InsurancePoolInfoPanel = ({
     Get<MarketInfoWithData, 'accountsConnection.edges[0].node'>
   >;
 } & MarketInfoProps) => {
-  const assetSymbol =
-    market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
+  const assetSymbol = getAssetSymbol(market);
+  const assetDecimals = getAssetDecimals(market);
+
   return (
     <MarketInfoTable
       data={{
         balance: account.balance,
       }}
       assetSymbol={assetSymbol}
-      decimalPlaces={
-        market.tradableInstrument.instrument.product.settlementAsset.decimals
-      }
+      decimalPlaces={assetDecimals}
     />
   );
 };
@@ -197,8 +208,7 @@ export const KeyDetailsInfoPanel = ({
       skip: !parentMarket?.proposal?.id,
     });
 
-  const assetDecimals =
-    market.tradableInstrument.instrument.product.settlementAsset.decimals;
+  const assetDecimals = getAssetDecimals(market);
 
   return (
     <MarketInfoTable
@@ -249,9 +259,7 @@ export const KeyDetailsInfoPanel = ({
             ],
           marketDecimalPlaces: parentMarket?.decimalPlaces,
           positionDecimalPlaces: parentMarket?.positionDecimalPlaces,
-          settlementAssetDecimalPlaces:
-            parentMarket?.tradableInstrument?.instrument?.product
-              ?.settlementAsset?.decimals,
+          settlementAssetDecimalPlaces: assetDecimals,
         }
       }
     />
@@ -387,7 +395,7 @@ export const InstrumentInfoPanel = ({
       marketName: market.tradableInstrument.instrument.name,
       code: market.tradableInstrument.instrument.code,
       productType: market.tradableInstrument.instrument.product.__typename,
-      quoteName: market.tradableInstrument.instrument.product.quoteName,
+      quoteName: get(market.tradableInstrument.instrument.product, 'quoteName'),
     }}
     parentData={
       parentMarket && {
@@ -395,22 +403,22 @@ export const InstrumentInfoPanel = ({
         code: parentMarket?.tradableInstrument?.instrument?.code,
         productType:
           parentMarket?.tradableInstrument?.instrument?.product?.__typename,
-        quoteName:
-          parentMarket?.tradableInstrument?.instrument?.product?.quoteName,
+        quoteName: get(
+          parentMarket?.tradableInstrument?.instrument?.product,
+          'quoteName'
+        ),
       }
     }
   />
 );
 
 export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
-  const assetSymbol =
-    market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
-  const quoteUnit =
-    market?.tradableInstrument.instrument.product?.quoteName || '';
-  const assetId = useMemo(
-    () => market?.tradableInstrument.instrument.product?.settlementAsset.id,
-    [market]
+  const assetSymbol = getAssetSymbol(market);
+  const quoteUnit = get(
+    market?.tradableInstrument.instrument.product,
+    'quoteName'
   );
+  const assetId = useMemo(() => getAssetId(market), [market]);
 
   const { data: asset } = useAssetDataProvider(assetId ?? '');
   return asset ? (
@@ -594,10 +602,14 @@ export const PriceMonitoringBoundsInfoPanel = ({
       ],
   });
 
-  const quoteUnit =
-    market?.tradableInstrument.instrument.product?.quoteName || '';
-  const parentQuoteUnit =
-    parentMarket?.tradableInstrument.instrument.product?.quoteName || '';
+  const quoteUnit = get(
+    market?.tradableInstrument.instrument.product,
+    'quoteName'
+  );
+  const parentQuoteUnit = get(
+    parentMarket?.tradableInstrument.instrument.product,
+    'quoteName'
+  );
   const isParentQuoteUnitEqual = quoteUnit === parentQuoteUnit;
 
   const trigger =
@@ -688,10 +700,8 @@ export const LiquidityMonitoringParametersInfoPanel = ({
 };
 
 export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
-  const assetDecimals =
-    market.tradableInstrument.instrument.product.settlementAsset.decimals;
-  const assetSymbol =
-    market?.tradableInstrument.instrument.product?.settlementAsset.symbol || '';
+  const assetDecimals = getAssetDecimals(market);
+  const assetSymbol = getAssetSymbol(market);
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: { marketId: market.id },
@@ -717,9 +727,14 @@ export const LiquidityPriceRangeInfoPanel = ({
   parentMarket,
 }: MarketInfoProps) => {
   const quoteUnit =
-    market?.tradableInstrument.instrument.product?.quoteName || '';
+    ('quoteName' in market.tradableInstrument.instrument.product &&
+      market?.tradableInstrument.instrument.product?.quoteName) ||
+    '';
   const parentQuoteUnit =
-    parentMarket?.tradableInstrument.instrument.product?.quoteName || '';
+    (parentMarket &&
+      'quoteName' in parentMarket.tradableInstrument.instrument.product &&
+      parentMarket?.tradableInstrument.instrument.product?.quoteName) ||
+    '';
 
   const liquidityPriceRange = formatNumberPercentage(
     new BigNumber(market.lpPriceRange).times(100)
@@ -809,7 +824,9 @@ export const OracleInfoPanel = ({
   market,
   type,
   parentMarket,
-}: MarketInfoProps & { type: 'settlementData' | 'termination' }) => {
+}: MarketInfoProps & {
+  type: 'settlementData' | 'termination' | 'settlementSchedule';
+}) => {
   // If this is a successor market, this component will only receive parent market
   // data if the termination or settlement data is different from the parent.
   const product = market.tradableInstrument.instrument.product;
@@ -818,26 +835,52 @@ export const OracleInfoPanel = ({
   const { data } = useOracleProofs(ORACLE_PROOFS_URL);
 
   const dataSourceSpecId =
-    type === 'settlementData'
+    type === 'settlementData' && 'dataSourceSpecForSettlementData' in product
       ? product.dataSourceSpecForSettlementData.id
-      : product.dataSourceSpecForTradingTermination.id;
+      : type === 'termination' &&
+        'dataSourceSpecForTradingTermination' in product
+      ? product.dataSourceSpecForTradingTermination.id
+      : type === 'settlementSchedule' &&
+        'dataSourceSpecForSettlementScheduleData' in product
+      ? get(product.dataSourceSpecForSettlementScheduleData, 'id')
+      : '';
 
-  const parentDataSourceSpecId =
-    type === 'settlementData'
-      ? parentProduct?.dataSourceSpecForSettlementData?.id
-      : parentProduct?.dataSourceSpecForTradingTermination?.id;
+  const parentDataSourceSpecId = !parentProduct
+    ? undefined
+    : type === 'settlementData' &&
+      'dataSourceSpecForSettlementData' in parentProduct
+    ? parentProduct.dataSourceSpecForSettlementData.id
+    : type === 'termination' &&
+      'dataSourceSpecForTradingTermination' in parentProduct
+    ? parentProduct.dataSourceSpecForTradingTermination.id
+    : type === 'settlementSchedule' &&
+      'dataSourceSpecForSettlementScheduleData' in parentProduct
+    ? get(parentProduct.dataSourceSpecForSettlementScheduleData, 'id')
+    : '';
 
-  const dataSourceSpec = (
-    type === 'settlementData'
+  const dataSourceSpec =
+    type === 'settlementData' && 'dataSourceSpecForSettlementData' in product
       ? product.dataSourceSpecForSettlementData.data
-      : product.dataSourceSpecForTradingTermination.data
-  ) as DataSourceDefinition;
+      : type === 'termination' &&
+        'dataSourceSpecForTradingTermination' in product
+      ? product.dataSourceSpecForTradingTermination.data
+      : type === 'settlementSchedule' &&
+        'dataSourceSpecForSettlementScheduleData' in product
+      ? get(product.dataSourceSpecForSettlementScheduleData, 'data')
+      : null;
 
-  const parentDataSourceSpec =
-    type === 'settlementData'
-      ? parentProduct?.dataSourceSpecForSettlementData?.data
-      : (parentProduct?.dataSourceSpecForTradingTermination
-          ?.data as DataSourceDefinition);
+  const parentDataSourceSpec = !parentProduct
+    ? undefined
+    : type === 'settlementData' &&
+      'dataSourceSpecForSettlementData' in parentProduct
+    ? parentProduct.dataSourceSpecForSettlementData.data
+    : type === 'termination' &&
+      'dataSourceSpecForTradingTermination' in parentProduct
+    ? parentProduct.dataSourceSpecForTradingTermination.data
+    : type === 'settlementSchedule' &&
+      'dataSourceSpecForSettlementScheduleData' in parentProduct
+    ? get(parentProduct.dataSourceSpecForSettlementScheduleData, 'data')
+    : null;
 
   const isParentDataSourceSpecEqual =
     parentDataSourceSpec !== undefined &&
@@ -867,11 +910,7 @@ export const OracleInfoPanel = ({
 
       <ExternalLink
         data-testid="oracle-spec-links"
-        href={`${VEGA_EXPLORER_URL}/oracles/${
-          type === 'settlementData'
-            ? product.dataSourceSpecForSettlementData.id
-            : product.dataSourceSpecForTradingTermination.id
-        }`}
+        href={`${VEGA_EXPLORER_URL}/oracles/${dataSourceSpecId}`}
       >
         {type === 'settlementData'
           ? t('View settlement data specification')
@@ -891,7 +930,7 @@ export const DataSourceProof = ({
 }: {
   data: DataSourceDefinition;
   providers: Provider[] | undefined;
-  type: 'settlementData' | 'termination';
+  type: 'settlementData' | 'termination' | 'settlementSchedule';
   dataSourceSpecId: string;
   parentData?: DataSourceDefinition;
   parentDataSourceSpecId?: string;
@@ -899,14 +938,20 @@ export const DataSourceProof = ({
   // If this is a successor market, we'll only pass parent data to child
   // components for comparison if the data differs from the parent market.
   if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
-    const signers = data.sourceType.sourceType.signers || [];
+    const signers =
+      ('signers' in data.sourceType.sourceType &&
+        data.sourceType.sourceType.signers) ||
+      [];
     let parentSigners: Signer[];
 
     if (
       parentData &&
       parentData.sourceType.__typename === 'DataSourceDefinitionExternal'
     ) {
-      parentSigners = parentData.sourceType.sourceType?.signers || [];
+      parentSigners =
+        ('signers' in parentData.sourceType.sourceType &&
+          parentData.sourceType.sourceType?.signers) ||
+        [];
     }
 
     if (!providers?.length) {
@@ -1007,7 +1052,7 @@ const OracleLink = ({
 }: {
   providers: Provider[];
   signer: SignerKind;
-  type: 'settlementData' | 'termination';
+  type: 'settlementData' | 'termination' | 'settlementSchedule';
   dataSourceSpecId: string;
   parentSigner?: SignerKind;
   parentDataSourceSpecId?: string;
@@ -1060,7 +1105,7 @@ const OracleLink = ({
 const NoOracleProof = ({
   type,
 }: {
-  type: 'settlementData' | 'termination';
+  type: 'settlementData' | 'termination' | 'settlementSchedule';
 }) => {
   return (
     <p>
@@ -1091,4 +1136,28 @@ const OracleProfile = (props: {
       <OracleDialog {...props} open={open} onChange={onChange} />
     </div>
   );
+};
+
+export const getAssetSymbol = (market: MarketInfo) => {
+  return 'settlementAsset' in market.tradableInstrument.instrument.product
+    ? market?.tradableInstrument.instrument.product.settlementAsset.symbol
+    : 'baseAsset' in market.tradableInstrument.instrument.product
+    ? get(market?.tradableInstrument.instrument.product.baseAsset, 'symbol')
+    : '';
+};
+
+export const getAssetDecimals = (market: MarketInfo) => {
+  return 'settlementAsset' in market.tradableInstrument.instrument.product
+    ? market?.tradableInstrument.instrument.product.settlementAsset.decimals
+    : 'baseAsset' in market.tradableInstrument.instrument.product
+    ? get(market?.tradableInstrument.instrument.product.baseAsset, 'decimals')
+    : '';
+};
+
+export const getAssetId = (market: MarketInfo) => {
+  return 'settlementAsset' in market.tradableInstrument.instrument.product
+    ? market?.tradableInstrument.instrument.product.settlementAsset.id
+    : 'baseAsset' in market.tradableInstrument.instrument.product
+    ? get(market?.tradableInstrument.instrument.product.baseAsset, 'id')
+    : '';
 };

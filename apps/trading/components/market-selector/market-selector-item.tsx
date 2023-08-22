@@ -108,14 +108,17 @@ const MarketData = ({
           </p>
         )}
       </div>
-      <div
-        className="w-1/5 text-xs lg:text-sm whitespace-nowrap text-ellipsis overflow-hidden"
-        title={instrument.product.settlementAsset.symbol}
-        data-testid="market-selector-price"
-        role="gridcell"
-      >
-        {price} {instrument.product.settlementAsset.symbol}
-      </div>
+      {/* TODO to handle baseAsset for Spots  */}
+      {instrument.product && 'settlementAsset' in instrument.product && (
+        <div
+          className="w-1/5 text-xs lg:text-sm whitespace-nowrap text-ellipsis overflow-hidden"
+          title={instrument.product.settlementAsset.symbol}
+          data-testid="market-selector-price"
+          role="gridcell"
+        >
+          {price} {instrument.product.settlementAsset.symbol}
+        </div>
+      )}
       <div
         className="w-1/5 text-xs lg:text-sm text-right whitespace-nowrap text-ellipsis overflow-hidden"
         title={t('24h vol')}

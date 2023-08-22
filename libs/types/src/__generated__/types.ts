@@ -1791,6 +1791,8 @@ export type Market = {
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
   /** The list of the liquidity provision commitments for this market */
   liquidityProvisionsConnection?: Maybe<LiquidityProvisionsConnection>;
+  /** Optional: Liquidity SLA parameters for the market */
+  liquiditySLAParameters?: Maybe<LiquiditySLAParameters>;
   /** Liquidity Provision order price range */
   lpPriceRange: Scalars['String'];
   /** Timestamps for state changes in the market */

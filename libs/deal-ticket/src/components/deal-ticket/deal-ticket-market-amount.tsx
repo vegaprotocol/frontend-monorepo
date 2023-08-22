@@ -9,6 +9,7 @@ import { isMarketInAuction } from '@vegaprotocol/markets';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { Controller } from 'react-hook-form';
 import classNames from 'classnames';
+import get from 'lodash/get';
 
 export type DealTicketMarketAmountProps = Omit<DealTicketAmountProps, 'type'>;
 
@@ -19,7 +20,10 @@ export const DealTicketMarketAmount = ({
   marketPrice,
   sizeError,
 }: DealTicketMarketAmountProps) => {
-  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+  const quoteName = get(
+    market.tradableInstrument.instrument.product,
+    'quoteName'
+  );
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
   const price = marketPrice;
 

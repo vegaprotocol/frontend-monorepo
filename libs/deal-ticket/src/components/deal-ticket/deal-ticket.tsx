@@ -45,6 +45,7 @@ import { SummaryValidationType } from '../../constants';
 import type {
   Market,
   MarketData,
+  MarketFieldsFragment,
   StaticMarketData,
 } from '@vegaprotocol/markets';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
@@ -145,7 +146,7 @@ export const DealTicket = ({
   });
   const lastSubmitTime = useRef(0);
 
-  const asset = market.tradableInstrument.instrument.product.settlementAsset;
+  const asset = getAsset(market);
   const {
     accountBalance: marginAccountBalance,
     loading: loadingMarginAccountBalance,
@@ -249,8 +250,7 @@ export const DealTicket = ({
     fetchPolicy: 'no-cache',
   });
 
-  const assetSymbol =
-    market.tradableInstrument.instrument.product.settlementAsset.symbol;
+  const assetSymbol = getAsset(market).symbol;
 
   const summaryError = useMemo(() => {
     if (!pubKey) {
@@ -658,3 +658,15 @@ const SummaryMessage = memo(
     return null;
   }
 );
+
+const getAsset = (market: MarketFieldsFragment) => {
+  // TODO add baseAsset for Spot
+  return 'settlementAsset' in market.tradableInstrument.instrument.product
+    ? market.tradableInstrument.instrument.product.settlementAsset
+    : {
+        id: '',
+        symbol: '',
+        name: '',
+        decimals: 0,
+      };
+};

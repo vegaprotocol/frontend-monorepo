@@ -130,11 +130,16 @@ const AccountHistoryManager = ({
     DateRange.RANGE_1M
   );
   const [market, setMarket] = useState<Market | null>(null);
+
   const marketFilterCb = useCallback(
-    (item: Market) =>
-      !asset?.id ||
-      item.tradableInstrument.instrument.product.settlementAsset.id ===
-        asset?.id,
+    (item: Market) => {
+      // TODO to handle baseAsset for Spots
+      const itemAsset =
+        'settlementAsset' in item.tradableInstrument.instrument.product
+          ? item.tradableInstrument.instrument.product.settlementAsset
+          : undefined;
+      return !asset?.id || itemAsset?.id === asset?.id;
+    },
     [asset?.id]
   );
   const markets = useMemo<Market[] | null>(() => {
@@ -153,8 +158,12 @@ const AccountHistoryManager = ({
   const resolveMarket = useCallback(
     (m: Market) => {
       setMarket(m);
-      const newAssetId =
-        m.tradableInstrument.instrument.product.settlementAsset.id;
+      // TODO to handle baseAsset for Spots
+      const itemAsset =
+        'settlementAsset' in m.tradableInstrument.instrument.product
+          ? m.tradableInstrument.instrument.product.settlementAsset
+          : undefined;
+      const newAssetId = itemAsset?.id;
       const newAsset = assets.find((item) => item.id === newAssetId);
       if ((!asset || (assets && newAssetId !== asset.id)) && newAsset) {
         setAssetId(newAsset.id);
@@ -259,10 +268,15 @@ const AccountHistoryManager = ({
   }, [markets, market, accountType, resolveMarket]);
 
   useEffect(() => {
+    // TODO to handle baseAsset for Spots
+    const itemAsset =
+      market &&
+      'settlementAsset' in market.tradableInstrument.instrument.product
+        ? market?.tradableInstrument.instrument.product.settlementAsset
+        : undefined;
     if (
       accountType !== Schema.AccountType.ACCOUNT_TYPE_MARGIN ||
-      market?.tradableInstrument.instrument.product.settlementAsset.id !==
-        asset?.id
+      itemAsset?.id !== asset?.id
     ) {
       setMarket(null);
     }

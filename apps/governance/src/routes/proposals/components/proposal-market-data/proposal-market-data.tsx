@@ -58,27 +58,46 @@ export const ProposalMarketData = ({
     return null;
   }
 
-  const settlementData = marketData.tradableInstrument.instrument.product
-    .dataSourceSpecForSettlementData.data as DataSourceDefinition;
+  const settlementData =
+    'dataSourceSpecForSettlementData' in
+      marketData.tradableInstrument.instrument.product &&
+    (marketData.tradableInstrument.instrument.product
+      .dataSourceSpecForSettlementData.data as DataSourceDefinition);
   const parentSettlementData =
+    parentMarketData &&
+    'dataSourceSpecForSettlementData' in
+      parentMarketData.tradableInstrument.instrument.product &&
     parentMarketData?.tradableInstrument.instrument?.product
       ?.dataSourceSpecForSettlementData?.data;
-  const terminationData = marketData.tradableInstrument.instrument.product
-    .dataSourceSpecForTradingTermination.data as DataSourceDefinition;
+
+  const terminationData =
+    'dataSourceSpecForTradingTermination' in
+      marketData.tradableInstrument.instrument.product &&
+    (marketData.tradableInstrument.instrument.product
+      .dataSourceSpecForTradingTermination.data as DataSourceDefinition);
   const parentTerminationData =
+    parentMarketData &&
+    'dataSourceSpecForTradingTermination' in
+      parentMarketData.tradableInstrument.instrument.product &&
     parentMarketData?.tradableInstrument.instrument?.product
       ?.dataSourceSpecForTradingTermination?.data;
+
+  // TODO add settlementScheduleData for Perp Proposal
 
   const isParentSettlementDataEqual =
     parentSettlementData !== undefined &&
     isEqual(settlementData, parentSettlementData);
+
   const isParentTerminationDataEqual =
     parentTerminationData !== undefined &&
     isEqual(terminationData, parentTerminationData);
 
   const getSigners = (data: DataSourceDefinition) => {
     if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
-      const signers = data.sourceType.sourceType.signers || [];
+      const signers =
+        ('signers' in data.sourceType.sourceType &&
+          data.sourceType.sourceType.signers) ||
+        [];
 
       return signers.map(({ signer }) => {
         return (
@@ -129,7 +148,9 @@ export const ProposalMarketData = ({
                   />
                 }
               />
-              {isEqual(
+              {settlementData &&
+              terminationData &&
+              isEqual(
                 getSigners(settlementData),
                 getSigners(terminationData)
               ) ? (
@@ -246,7 +267,7 @@ export const ProposalMarketData = ({
                 />
               ))}
               <AccordionItem
-                itemId="liqudity-monitoring-parameters"
+                itemId="liquidity-monitoring-parameters"
                 title={t('Liquidity monitoring parameters')}
                 content={
                   <LiquidityMonitoringParametersInfoPanel

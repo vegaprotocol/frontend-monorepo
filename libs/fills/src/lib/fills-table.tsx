@@ -142,7 +142,10 @@ const formatPrice = ({
     return '-';
   }
   const asset =
-    data?.market.tradableInstrument.instrument.product.settlementAsset.symbol;
+    'settlementAsset' in data.market.tradableInstrument.instrument.product
+      ? data?.market.tradableInstrument.instrument.product.settlementAsset
+          .symbol
+      : '';
   const valueFormatted = addDecimalsFormatNumber(
     value,
     data?.market.decimalPlaces
@@ -193,7 +196,9 @@ const formatTotal = ({
     return '-';
   }
   const { symbol: assetSymbol, decimals: assetDecimals } =
-    data?.market.tradableInstrument.instrument.product.settlementAsset ?? {};
+    ('settlementAsset' in data.market.tradableInstrument.instrument.product
+      ? data?.market.tradableInstrument.instrument.product.settlementAsset
+      : null) ?? {};
   const size = new BigNumber(
     addDecimal(data?.size, data?.market.positionDecimalPlaces)
   );
@@ -219,7 +224,12 @@ const formatFee = (partyId: string) => {
     Trade,
     'market.tradableInstrument.instrument.product'
   >) => {
-    if (!value?.settlementAsset || !data) {
+    if (
+      !value ||
+      !('settlementAsset' in value) ||
+      !value?.settlementAsset ||
+      !data
+    ) {
       return '-';
     }
     const asset = value.settlementAsset;

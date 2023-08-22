@@ -16,13 +16,26 @@ import { Market } from './market';
 import { Header } from './header';
 import { LPProvidersGrid } from './providers';
 
+const getAsset = (
+  data: MarketWithData
+): {
+  decimals?: number | undefined;
+  symbol?: string | undefined;
+} => {
+  // TODO to handle baseAsset for Spots
+  return 'settlementAsset' in data.tradableInstrument.instrument.product
+    ? data?.tradableInstrument?.instrument?.product?.settlementAsset
+    : {
+        decimals: 0,
+        symbol: '',
+      };
+};
+
 const formatMarket = (market: MarketWithData) => {
   return {
     name: market?.tradableInstrument.instrument.name,
-    symbol:
-      market?.tradableInstrument.instrument.product.settlementAsset.symbol,
-    settlementAsset:
-      market?.tradableInstrument.instrument.product.settlementAsset,
+    symbol: getAsset(market).symbol,
+    settlementAsset: getAsset(market),
     targetStake: market?.data?.targetStake,
     tradingMode: market?.data?.marketTradingMode,
     trigger: market?.data?.trigger,

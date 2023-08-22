@@ -42,12 +42,15 @@ export const LiquidityContainer = ({
     skip: !marketId,
   });
 
-  const assetDecimalPlaces =
-    market?.tradableInstrument.instrument.product.settlementAsset.decimals || 0;
-  const quantum =
-    market?.tradableInstrument.instrument.product.settlementAsset.quantum || 0;
-  const symbol =
-    market?.tradableInstrument.instrument.product.settlementAsset.symbol;
+  // TODO to handle baseAsset for Spots
+  const itemAsset =
+    market && 'settlementAsset' in market.tradableInstrument.instrument.product
+      ? market.tradableInstrument.instrument.product.settlementAsset
+      : undefined;
+
+  const assetDecimalPlaces = itemAsset?.decimals || 0;
+  const quantum = itemAsset?.quantum || 0;
+  const symbol = itemAsset?.symbol;
 
   const { params } = useNetworkParams([
     NetworkParams.market_liquidity_stakeToCcyVolume,
