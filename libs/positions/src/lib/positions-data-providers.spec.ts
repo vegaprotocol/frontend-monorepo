@@ -2,7 +2,12 @@ import * as Schema from '@vegaprotocol/types';
 import type { Account } from '@vegaprotocol/accounts';
 import type { MarketWithData } from '@vegaprotocol/markets';
 import type { PositionFieldsFragment } from './__generated__/Positions';
-import { getMetrics, rejoinPositionData } from './positions-data-providers';
+import type { Position } from './positions-data-providers';
+import {
+  getMetrics,
+  preparePositions,
+  rejoinPositionData,
+} from './positions-data-providers';
 import { PositionStatus } from '@vegaprotocol/types';
 
 const accounts = [
@@ -222,5 +227,30 @@ describe('getMetrics && rejoinPositionData', () => {
       positions[1].lossSocializationAmount
     );
     expect(metrics[1].status).toEqual(positions[1].positionStatus);
+  });
+
+  it('sorts and filters positions', () => {
+    const createPosition = (override?: Partial<Position>) =>
+      ({
+        marketState: Schema.MarketState.STATE_ACTIVE,
+        marketCode: 'a',
+        ...override,
+      } as Position);
+
+    const data = [
+      createPosition(),
+      createPosition({
+        marketCode: 'c',
+        marketState: Schema.MarketState.STATE_CANCELLED,
+      }),
+      createPosition({ marketCode: 'd' }),
+      createPosition({ marketCode: 'b' }),
+    ];
+
+    const withoutClosed = preparePositions(data, false);
+    expect(withoutClosed.map((p) => p.marketCode)).toEqual(['a', 'b', 'd']);
+
+    const withClosed = preparePositions(data, true);
+    expect(withClosed.map((p) => p.marketCode)).toEqual(['a', 'b', 'c', 'd']);
   });
 });
