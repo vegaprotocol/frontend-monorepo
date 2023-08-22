@@ -27,6 +27,7 @@ const singleRow: Position = {
   marketId: 'string',
   marketCode: 'ETHBTC.QM21',
   marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  marketState: Schema.MarketState.STATE_ACTIVE,
   markPrice: '123',
   notional: '12300',
   openVolume: '100',
