@@ -10,7 +10,7 @@ export type ExplorerPartyAssetsQueryVariables = Types.Exact<{
 }>;
 
 
-export type ExplorerPartyAssetsQuery = { __typename?: 'Query', partiesConnection?: { __typename?: 'PartyConnection', edges: Array<{ __typename?: 'PartyEdge', node: { __typename?: 'Party', id: string, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amount: string, epoch: number, node: { __typename?: 'Node', id: string, name: string } } } | null> | null } | null, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string, linkings: { __typename?: 'StakesConnection', edges?: Array<{ __typename?: 'StakeLinkingEdge', node: { __typename?: 'StakeLinking', amount: string } } | null> | null } }, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', name: string, id: string, decimals: number, symbol: string, source: { __typename: 'BuiltinAsset' } | { __typename: 'ERC20', contractAddress: string } }, market?: { __typename?: 'Market', id: string, decimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, product: { __typename?: 'Future', quoteName: string } } } } | null } } | null> | null } | null } }> } | null };
+export type ExplorerPartyAssetsQuery = { __typename?: 'Query', partiesConnection?: { __typename?: 'PartyConnection', edges: Array<{ __typename?: 'PartyEdge', node: { __typename?: 'Party', id: string, delegationsConnection?: { __typename?: 'DelegationsConnection', edges?: Array<{ __typename?: 'DelegationEdge', node: { __typename?: 'Delegation', amount: string, epoch: number, node: { __typename?: 'Node', id: string, name: string } } } | null> | null } | null, stakingSummary: { __typename?: 'StakingSummary', currentStakeAvailable: string, linkings: { __typename?: 'StakesConnection', edges?: Array<{ __typename?: 'StakeLinkingEdge', node: { __typename?: 'StakeLinking', type: Types.StakeLinkingType, status: Types.StakeLinkingStatus, amount: string } } | null> | null } }, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', name: string, id: string, decimals: number, symbol: string, source: { __typename: 'BuiltinAsset' } | { __typename: 'ERC20', contractAddress: string } }, market?: { __typename?: 'Market', id: string, decimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, product: { __typename?: 'Future', quoteName: string } } } } | null } } | null> | null } | null } }> } | null };
 
 export const ExplorerPartyAssetsAccountsFragmentDoc = gql`
     fragment ExplorerPartyAssetsAccounts on AccountBalance {
@@ -64,9 +64,11 @@ export const ExplorerPartyAssetsDocument = gql`
         }
         stakingSummary {
           currentStakeAvailable
-          linkings(pagination: {first: 100}) {
+          linkings(pagination: {last: 100}) {
             edges {
               node {
+                type
+                status
                 amount
               }
             }
