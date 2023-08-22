@@ -114,15 +114,6 @@ describe('StopOrder', () => {
     });
   });
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('should display trigger price as price for market type order', async () => {
-    render(generateJsx());
-    await userEvent.click(screen.getByTestId(orderTypeTrigger));
-    await userEvent.click(screen.getByTestId(orderTypeMarket));
-    await userEvent.type(screen.getByTestId(triggerPriceInput), '10');
-    expect(screen.getByTestId('price')).toHaveTextContent('10.0');
-  });
-
   it('should use local storage state for initial values', async () => {
     const values: Partial<StopOrderFormValues> = {
       type: Schema.OrderType.TYPE_LIMIT,

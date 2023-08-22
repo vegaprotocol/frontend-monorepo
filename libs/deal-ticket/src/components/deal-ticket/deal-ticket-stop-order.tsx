@@ -303,12 +303,8 @@ const Size = ({
       render={({ field, fieldState }) => {
         const { value, ...props } = field;
         return (
-          <>
-            <FormGroup
-              labelFor="input-price-quote"
-              label={t(`Size`)}
-              compact={true}
-            >
+          <div className="mb-2">
+            <FormGroup labelFor="input-price-quote" label={t(`Size`)} compact>
               <Input
                 id={oco ? 'oco-order-size' : 'order-size'}
                 className="w-full"
@@ -333,7 +329,7 @@ const Size = ({
                 {fieldState.error.message}
               </InputError>
             )}
-          </>
+          </div>
         );
       }}
     />
@@ -372,7 +368,7 @@ const Price = ({
       render={({ field, fieldState }) => {
         const { value, ...props } = field;
         return (
-          <>
+          <div className="mb-2">
             <FormGroup
               labelFor={oco ? 'input-ocoPrice-quote' : 'input-price-quote'}
               label={t(`Price (${quoteName})`)}
@@ -401,7 +397,7 @@ const Price = ({
                 {fieldState.error.message}
               </InputError>
             )}
-          </>
+          </div>
         );
       }}
     />
@@ -419,7 +415,7 @@ const TimeInForce = ({
     name="timeInForce"
     control={control}
     render={({ field, fieldState }) => (
-      <>
+      <div className="mb-2">
         <FormGroup
           label={t('Time in force')}
           labelFor="select-time-in-force"
@@ -451,7 +447,7 @@ const TimeInForce = ({
             {fieldState.error.message}
           </InputError>
         )}
-      </>
+      </div>
     )}
   />
 );
