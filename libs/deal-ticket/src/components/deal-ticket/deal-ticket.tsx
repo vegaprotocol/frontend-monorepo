@@ -30,7 +30,7 @@ import {
 } from '@vegaprotocol/positions';
 import { toBigNum, removeDecimal } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
-import { getDerivedPrice } from '@vegaprotocol/markets';
+import { getAsset, getDerivedPrice } from '@vegaprotocol/markets';
 import type { OrderInfo } from '@vegaprotocol/types';
 
 import {
@@ -45,7 +45,6 @@ import { SummaryValidationType } from '../../constants';
 import type {
   Market,
   MarketData,
-  MarketFieldsFragment,
   StaticMarketData,
 } from '@vegaprotocol/markets';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
@@ -658,15 +657,3 @@ const SummaryMessage = memo(
     return null;
   }
 );
-
-const getAsset = (market: MarketFieldsFragment) => {
-  // TODO add baseAsset for Spot
-  return 'settlementAsset' in market.tradableInstrument.instrument.product
-    ? market.tradableInstrument.instrument.product.settlementAsset
-    : {
-        id: '',
-        symbol: '',
-        name: '',
-        decimals: 0,
-      };
-};

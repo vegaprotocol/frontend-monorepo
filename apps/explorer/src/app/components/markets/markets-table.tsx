@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { MarketFieldsFragment } from '@vegaprotocol/markets';
+import { getAsset, type MarketFieldsFragment } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
@@ -136,21 +136,4 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
       }}
     />
   );
-};
-
-const getAsset = (
-  data: MarketFieldsFragment
-): {
-  decimals: number | undefined;
-  symbol: string;
-  id: string;
-} => {
-  // TODO to handle baseAsset for Spots
-  return 'settlementAsset' in data.tradableInstrument.instrument.product
-    ? data?.tradableInstrument?.instrument?.product?.settlementAsset
-    : {
-        decimals: 0,
-        symbol: '',
-        id: '',
-      };
 };

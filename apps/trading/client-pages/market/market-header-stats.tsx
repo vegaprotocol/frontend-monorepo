@@ -2,10 +2,14 @@ import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
 import { MarketProposalNotification } from '@vegaprotocol/proposals';
-import type { Market, MarketFieldsFragment } from '@vegaprotocol/markets';
+import type { Market } from '@vegaprotocol/markets';
 import { getExpiryDate, getMarketExpiryDate } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { Last24hPriceChange, Last24hVolume } from '@vegaprotocol/markets';
+import {
+  Last24hPriceChange,
+  Last24hVolume,
+  getAsset,
+} from '@vegaprotocol/markets';
 import { MarketState as State } from '@vegaprotocol/types';
 import { HeaderStat } from '../../components/header';
 import { MarketMarkPrice } from '../../components/market-mark-price';
@@ -155,14 +159,4 @@ const ExpiryTooltipContent = ({
   }
 
   return null;
-};
-
-const getAsset = (market: MarketFieldsFragment) => {
-  return 'settlementAsset' in market.tradableInstrument.instrument.product
-    ? market?.tradableInstrument.instrument.product?.settlementAsset
-    : {
-        id: '',
-        symbol: '',
-        decimals: 0,
-      };
 };

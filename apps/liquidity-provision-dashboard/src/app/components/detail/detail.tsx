@@ -9,27 +9,12 @@ import {
   sumLiquidityCommitted,
   lpAggregatedDataProvider,
 } from '@vegaprotocol/liquidity';
-import { marketWithDataProvider } from '@vegaprotocol/markets';
+import { getAsset, marketWithDataProvider } from '@vegaprotocol/markets';
 import type { MarketWithData } from '@vegaprotocol/markets';
 
 import { Market } from './market';
 import { Header } from './header';
 import { LPProvidersGrid } from './providers';
-
-const getAsset = (
-  data: MarketWithData
-): {
-  decimals?: number | undefined;
-  symbol?: string | undefined;
-} => {
-  // TODO to handle baseAsset for Spots
-  return 'settlementAsset' in data.tradableInstrument.instrument.product
-    ? data?.tradableInstrument?.instrument?.product?.settlementAsset
-    : {
-        decimals: 0,
-        symbol: '',
-      };
-};
 
 const formatMarket = (market: MarketWithData) => {
   return {

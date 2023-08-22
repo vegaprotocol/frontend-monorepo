@@ -86,3 +86,18 @@ export const calcCandleHigh = (candles: Candle[]): string | undefined => {
 export const calcCandleVolume = (candles: Candle[]): string | undefined =>
   candles &&
   candles.reduce((acc, c) => new BigNumber(acc).plus(c.volume).toString(), '0');
+
+export const getAsset = (market: Pick<Market, 'tradableInstrument'>) => {
+  const product = market.tradableInstrument.instrument.product;
+
+  if (product.__typename === 'Perpetual' || product.__typename === 'Future') {
+    return product.settlementAsset;
+  }
+
+  if (product.__typename === 'Spot') {
+    // TODO to handle baseAsset for Spots
+    throw new Error('Spots not yet implemented');
+  }
+
+  throw new Error('Invalid product type');
+};

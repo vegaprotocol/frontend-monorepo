@@ -49,8 +49,7 @@ import {
   useOrderByIdQuery,
   useStopOrderByIdQuery,
 } from '@vegaprotocol/orders';
-import type { MarketFieldsFragment } from '@vegaprotocol/markets';
-import { useMarketsMapProvider } from '@vegaprotocol/markets';
+import { getAsset, useMarketsMapProvider } from '@vegaprotocol/markets';
 import type { Side } from '@vegaprotocol/types';
 import { OrderStatusMapping } from '@vegaprotocol/types';
 import { Size } from '@vegaprotocol/datagrid';
@@ -130,21 +129,6 @@ const SizeAtPrice = ({ side, size, price, meta }: SizeAtPriceProps) => {
         : `@ ~ ${meta.asset}`}
     </>
   );
-};
-
-const getAsset = (
-  data: MarketFieldsFragment
-): {
-  decimals: number | undefined;
-  symbol: string;
-} => {
-  // TODO to handle baseAsset for Spots
-  return 'settlementAsset' in data.tradableInstrument.instrument.product
-    ? data?.tradableInstrument?.instrument?.product?.settlementAsset
-    : {
-        decimals: 0,
-        symbol: '',
-      };
 };
 
 const SubmitOrderDetails = ({

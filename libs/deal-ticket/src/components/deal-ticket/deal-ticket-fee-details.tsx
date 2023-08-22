@@ -3,7 +3,7 @@ import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import classnames from 'classnames';
 import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/i18n';
-import { FeesBreakdown } from '@vegaprotocol/markets';
+import { FeesBreakdown, getAsset } from '@vegaprotocol/markets';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
@@ -373,18 +373,6 @@ export const DealTicketMarginDetails = ({
       )}
     </>
   );
-};
-
-const getAsset = (market: MarketFieldsFragment) => {
-  // TODO update with baseAsset for Spots
-  return 'settlementAsset' in market.tradableInstrument.instrument.product
-    ? market.tradableInstrument.instrument.product.settlementAsset
-    : {
-        quantum: '0',
-        decimals: 0,
-        symbol: '',
-        id: '',
-      };
 };
 
 const getQuote = (market: MarketFieldsFragment) => {

@@ -36,21 +36,7 @@ import { Status } from '../../status';
 import { intentForStatus } from '../../../lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import get from 'lodash/get';
-
-export const getAsset = (
-  data: Market
-): {
-  decimals?: number | undefined;
-  symbol?: string | undefined;
-} => {
-  // TODO to handle baseAsset for Spots
-  return 'settlementAsset' in data.tradableInstrument.instrument.product
-    ? data?.tradableInstrument?.instrument?.product?.settlementAsset
-    : {
-        decimals: undefined,
-        symbol: undefined,
-      };
-};
+import { getAsset } from '@vegaprotocol/markets';
 
 export const MarketList = () => {
   const { data, error, loading } = useMarketsLiquidity();
