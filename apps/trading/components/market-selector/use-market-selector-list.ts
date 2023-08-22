@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
 import orderBy from 'lodash/orderBy';
 import { MarketState } from '@vegaprotocol/types';
-import { calcCandleVolume, useMarketList } from '@vegaprotocol/markets';
+import {
+  calcCandleVolume,
+  getAsset,
+  useMarketList,
+} from '@vegaprotocol/markets';
 import { priceChangePercentage } from '@vegaprotocol/utils';
 import type { Filter } from '../../components/market-selector/market-selector';
 import { Sort } from './sort-dropdown';
@@ -39,11 +43,7 @@ export const useMarketSelectorList = ({
       })
       .filter((m) => {
         if (assets.length === 0) return true;
-        // TODO to handle baseAsset for Spots
-        const asset =
-          'settlementAsset' in m.tradableInstrument.instrument.product
-            ? m.tradableInstrument.instrument.product.settlementAsset
-            : { id: '', symbol: '' };
+        const asset = getAsset(m);
         return assets.includes(asset?.id);
       })
       // filter based on search term

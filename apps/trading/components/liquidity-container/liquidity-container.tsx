@@ -7,7 +7,7 @@ import {
   LiquidityTable,
   liquidityProvisionsDataProvider,
 } from '@vegaprotocol/liquidity';
-import { useMarket } from '@vegaprotocol/markets';
+import { getAsset, useMarket } from '@vegaprotocol/markets';
 import {
   NetworkParams,
   useNetworkParams,
@@ -17,6 +17,7 @@ import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { get } from 'lodash';
 
 export const LiquidityContainer = ({
   marketId,
@@ -42,11 +43,7 @@ export const LiquidityContainer = ({
     skip: !marketId,
   });
 
-  // TODO to handle baseAsset for Spots
-  const itemAsset =
-    market && 'settlementAsset' in market.tradableInstrument.instrument.product
-      ? market.tradableInstrument.instrument.product.settlementAsset
-      : undefined;
+  const itemAsset = market && getAsset(market);
 
   const assetDecimalPlaces = itemAsset?.decimals || 0;
   const quantum = itemAsset?.quantum || 0;

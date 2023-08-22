@@ -29,7 +29,7 @@ import {
   useThemeSwitcher,
 } from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type { Market } from '@vegaprotocol/markets';
+import { getAsset, type Market } from '@vegaprotocol/markets';
 
 const DateRange = {
   RANGE_1D: '1D',
@@ -133,11 +133,7 @@ const AccountHistoryManager = ({
 
   const marketFilterCb = useCallback(
     (item: Market) => {
-      // TODO to handle baseAsset for Spots
-      const itemAsset =
-        'settlementAsset' in item.tradableInstrument.instrument.product
-          ? item.tradableInstrument.instrument.product.settlementAsset
-          : undefined;
+      const itemAsset = getAsset(item);
       return !asset?.id || itemAsset?.id === asset?.id;
     },
     [asset?.id]
@@ -158,11 +154,7 @@ const AccountHistoryManager = ({
   const resolveMarket = useCallback(
     (m: Market) => {
       setMarket(m);
-      // TODO to handle baseAsset for Spots
-      const itemAsset =
-        'settlementAsset' in m.tradableInstrument.instrument.product
-          ? m.tradableInstrument.instrument.product.settlementAsset
-          : undefined;
+      const itemAsset = getAsset(m);
       const newAssetId = itemAsset?.id;
       const newAsset = assets.find((item) => item.id === newAssetId);
       if ((!asset || (assets && newAssetId !== asset.id)) && newAsset) {
@@ -268,12 +260,7 @@ const AccountHistoryManager = ({
   }, [markets, market, accountType, resolveMarket]);
 
   useEffect(() => {
-    // TODO to handle baseAsset for Spots
-    const itemAsset =
-      market &&
-      'settlementAsset' in market.tradableInstrument.instrument.product
-        ? market?.tradableInstrument.instrument.product.settlementAsset
-        : undefined;
+    const itemAsset = market && getAsset(market);
     if (
       accountType !== Schema.AccountType.ACCOUNT_TYPE_MARGIN ||
       itemAsset?.id !== asset?.id

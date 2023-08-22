@@ -1,4 +1,5 @@
 import {
+  getAsset,
   tooltipMapping,
   useMarket,
   useStaticMarketData,
@@ -25,11 +26,7 @@ export const LiquidityHeader = () => {
   const targetStake = marketData?.targetStake;
   const suppliedStake = marketData?.suppliedStake;
 
-  // TODO to handle baseAsset for Spots
-  const asset =
-    market && 'settlementAsset' in market.tradableInstrument.instrument.product
-      ? market.tradableInstrument.instrument.product.settlementAsset
-      : undefined;
+  const asset = market && getAsset(market);
 
   const assetDecimalPlaces = asset?.decimals || 0;
   const symbol = asset?.symbol;

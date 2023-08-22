@@ -25,7 +25,6 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
-  // TODO to handle baseAsset for Spots
   const asset = market && getAsset(market);
 
   return (
