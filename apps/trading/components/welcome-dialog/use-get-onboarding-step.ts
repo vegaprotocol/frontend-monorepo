@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { isBrowserWalletInstalled, useVegaWallet } from '@vegaprotocol/wallet';
 import { depositsProvider } from '@vegaprotocol/deposits';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -18,7 +17,6 @@ export enum OnboardingStep {
 }
 
 export const useGetOnboardingStep = () => {
-  const [isLoading, setIsLoading] = useState(true);
   const connecting = useGlobalStore((store) => store.eagerConnecting);
   const { pubKey = '', pubKeys } = useVegaWallet();
   const { data: depositsData } = useDataProvider({
@@ -40,6 +38,9 @@ export const useGetOnboardingStep = () => {
     dataProvider: ordersWithMarketProvider,
     variables: {
       partyId: pubKey || '',
+      pagination: {
+        first: 1,
+      },
     },
     skip: !pubKey,
   });
@@ -54,24 +55,14 @@ export const useGetOnboardingStep = () => {
     skip: !partyIds?.length,
   });
   const positions = Boolean(positionsData?.length);
-  useEffect(() => {
-    const value = Boolean(
-      (connecting || pubKey) &&
-        (depositsData === null ||
-          ordersData === null ||
-          collateralData === null ||
-          positionsData === null)
-    );
-    setIsLoading(value);
-  }, [
-    pubKey,
-    depositsData,
-    ordersData,
-    collateralData,
-    positionsData,
-    connecting,
-  ]);
 
+  const isLoading = Boolean(
+    (connecting || pubKey) &&
+      (depositsData === null ||
+        ordersData === null ||
+        collateralData === null ||
+        positionsData === null)
+  );
   if (isLoading) {
     return OnboardingStep.ONBOARDING_UNKNOWN_STEP;
   }

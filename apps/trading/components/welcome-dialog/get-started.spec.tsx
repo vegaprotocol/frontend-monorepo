@@ -51,12 +51,16 @@ describe('GetStarted', () => {
   });
 
   it('steps should be ticked', () => {
+    const navigatorGetter: jest.SpyInstance = jest.spyOn(
+      window.navigator,
+      'userAgent',
+      'get'
+    );
+    navigatorGetter.mockReturnValue('Chrome');
     mockStep = 1;
     const { rerender, container } = renderComponent();
     expect(screen.queryByTestId('icon-tick')).not.toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Get Vega Wallet' })
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('get-wallet-button')).toBeInTheDocument();
 
     mockStep = 2;
     rerender(

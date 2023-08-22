@@ -235,7 +235,7 @@ const ConnectorList = ({
               onClick={() => onSelect('injected')}
             />
           ) : (
-            <GetWallet />
+            <GetWalletButton />
           )}
         </div>
         <div>
@@ -320,7 +320,7 @@ const SelectedForm = ({
   throw new Error('No connector selected');
 };
 
-const GetWallet = () => {
+export const GetWalletButton = ({ className }: { className?: string }) => {
   const { MOZILLA_EXTENSION_URL, CHROME_EXTENSION_URL } = useEnvironment();
   const isItChrome = window.navigator.userAgent.includes('Chrome');
   const isItMozilla =
@@ -349,10 +349,13 @@ const GetWallet = () => {
 
   return !isItChrome && !isItMozilla ? (
     <div
-      className={classNames([
-        'bg-vega-blue-350 hover:bg-vega-blue-400 dark:bg-vega-blue-650 dark:hover:bg-vega-blue-600',
-        'flex gap-2 items-center justify-center rounded h-8 px-3 relative',
-      ])}
+      className={classNames(
+        [
+          'bg-vega-blue-350 hover:bg-vega-blue-400 dark:bg-vega-blue-650 dark:hover:bg-vega-blue-600',
+          'flex gap-2 items-center justify-center rounded h-8 px-3 relative',
+        ],
+        className
+      )}
       data-testid="get-wallet-button"
     >
       {buttonContent}
@@ -362,7 +365,7 @@ const GetWallet = () => {
       onClick={onClick}
       intent={Intent.Info}
       data-testid="get-wallet-button"
-      className="relative"
+      className={classNames('relative', className)}
       size="small"
       fill
     >
