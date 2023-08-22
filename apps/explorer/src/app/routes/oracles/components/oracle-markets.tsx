@@ -10,7 +10,7 @@ interface OracleMarketsProps {
 }
 
 /**
- * Slightly misleadingly names, OracleMarkets lists the market (almost always singular)
+ * Slightly misleading names, OracleMarkets lists the market (almost always singular)
  * to which an oracle is attached. It also checks what it triggers, by checking on the
  * market whether it is attached to the dataSourceSpecForSettlementData or ..TradingTermination
  */
