@@ -10,13 +10,13 @@ import {
 import { useForm, Controller, useController } from 'react-hook-form';
 import * as Schema from '@vegaprotocol/types';
 import {
-  Radio,
-  RadioGroup,
-  Input,
-  Checkbox,
-  FormGroup,
-  InputError,
-  Select,
+  TradingRadio,
+  TradingRadioGroup,
+  TradingInput,
+  TradingCheckbox,
+  TradingFormGroup,
+  TradingInputError,
+  TradingSelect,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { getDerivedPrice, type Market } from '@vegaprotocol/markets';
@@ -187,9 +187,9 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         }}
       />
       {errors.type && (
-        <InputError testId="stop-order-error-message-type">
+        <TradingInputError testId="stop-order-error-message-type">
           {errors.type.message}
-        </InputError>
+        </TradingInputError>
       )}
 
       <Controller
@@ -199,21 +199,21 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           <SideSelector value={field.value} onValueChange={field.onChange} />
         )}
       />
-      <FormGroup label={t('Trigger')} compact={true} labelFor="">
+      <TradingFormGroup label={t('Trigger')} compact={true} labelFor="">
         <Controller
           name="triggerDirection"
           control={control}
           render={({ field }) => {
             const { onChange, value } = field;
             return (
-              <RadioGroup
+              <TradingRadioGroup
                 name="triggerDirection"
                 onChange={onChange}
                 value={value}
                 orientation="horizontal"
                 className="mb-2"
               >
-                <Radio
+                <TradingRadio
                   value={
                     Schema.StopOrderTriggerDirection
                       .TRIGGER_DIRECTION_RISES_ABOVE
@@ -221,7 +221,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                   id="triggerDirection-risesAbove"
                   label={'Rises above'}
                 />
-                <Radio
+                <TradingRadio
                   value={
                     Schema.StopOrderTriggerDirection
                       .TRIGGER_DIRECTION_FALLS_BELOW
@@ -229,7 +229,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                   id="triggerDirection-fallsBelow"
                   label={'Falls below'}
                 />
-              </RadioGroup>
+              </TradingRadioGroup>
             );
           }}
         />
@@ -246,16 +246,17 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 validate: validateAmount(priceStep, 'Price'),
               }}
               control={control}
-              render={({ field }) => {
+              render={({ field, fieldState }) => {
                 const { value, ...props } = field;
                 return (
                   <div className="mb-2">
-                    <Input
+                    <TradingInput
                       data-testid="triggerPrice"
                       type="number"
                       step={priceStep}
                       appendElement={asset.symbol}
                       value={value || ''}
+                      hasError={!!fieldState.error}
                       {...props}
                     />
                   </div>
@@ -263,9 +264,9 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
               }}
             />
             {errors.triggerPrice && (
-              <InputError testId="stop-order-error-message-trigger-price">
+              <TradingInputError testId="stop-order-error-message-trigger-price">
                 {errors.triggerPrice.message}
-              </InputError>
+              </TradingInputError>
             )}
           </div>
         )}
@@ -294,16 +295,17 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                   'Trailing percentage offset'
                 ),
               }}
-              render={({ field }) => {
+              render={({ field, fieldState }) => {
                 const { value, ...props } = field;
                 return (
                   <div className="mb-2">
-                    <Input
+                    <TradingInput
                       type="number"
                       step={trailingPercentOffsetStep}
                       appendElement="%"
                       data-testid="triggerTrailingPercentOffset"
                       value={value || ''}
+                      hasError={!!fieldState.error}
                       {...props}
                     />
                   </div>
@@ -311,9 +313,9 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
               }}
             />
             {errors.triggerTrailingPercentOffset && (
-              <InputError testId="stop-order-error-message-trigger-trailing-percent-offset">
+              <TradingInputError testId="stop-order-error-message-trigger-trailing-percent-offset">
                 {errors.triggerTrailingPercentOffset.message}
-              </InputError>
+              </TradingInputError>
             )}
           </div>
         )}
@@ -324,25 +326,29 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           render={({ field }) => {
             const { onChange, value } = field;
             return (
-              <RadioGroup
+              <TradingRadioGroup
                 onChange={onChange}
                 value={value}
                 orientation="horizontal"
               >
-                <Radio value="price" id="triggerType-price" label={'Price'} />
-                <Radio
+                <TradingRadio
+                  value="price"
+                  id="triggerType-price"
+                  label={'Price'}
+                />
+                <TradingRadio
                   value="trailingPercentOffset"
                   id="triggerType-trailingPercentOffset"
                   label={'Trailing Percent Offset'}
                 />
-              </RadioGroup>
+              </TradingRadioGroup>
             );
           }}
         />
-      </FormGroup>
+      </TradingFormGroup>
       <div className="mb-2">
         <div className="flex items-start gap-4">
-          <FormGroup
+          <TradingFormGroup
             labelFor="input-price-quote"
             label={t(`Size`)}
             className="!mb-0 flex-1"
@@ -358,10 +364,10 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 },
                 validate: validateAmount(sizeStep, 'Size'),
               }}
-              render={({ field }) => {
+              render={({ field, fieldState }) => {
                 const { value, ...props } = field;
                 return (
-                  <Input
+                  <TradingInput
                     id="order-size"
                     className="w-full"
                     type="number"
@@ -370,16 +376,17 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                     onWheel={(e) => e.currentTarget.blur()}
                     data-testid="order-size"
                     value={value || ''}
+                    hasError={!!fieldState.error}
                     {...props}
                   />
                 );
               }}
             />
-          </FormGroup>
-          <div className="pt-7 leading-10">@</div>
+          </TradingFormGroup>
+          <div className="pt-5 leading-10">@</div>
           <div className="flex-1">
             {type === Schema.OrderType.TYPE_LIMIT ? (
-              <FormGroup
+              <TradingFormGroup
                 labelFor="input-price-quote"
                 label={t(`Price (${quoteName})`)}
                 labelAlign="right"
@@ -397,10 +404,10 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                     },
                     validate: validateAmount(priceStep, 'Price'),
                   }}
-                  render={({ field }) => {
+                  render={({ field, fieldState }) => {
                     const { value, ...props } = field;
                     return (
-                      <Input
+                      <TradingInput
                         id="input-price-quote"
                         className="w-full"
                         type="number"
@@ -408,15 +415,16 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                         data-testid="order-price"
                         onWheel={(e) => e.currentTarget.blur()}
                         value={value || ''}
+                        hasError={!!fieldState.error}
                         {...props}
                       />
                     );
                   }}
                 />
-              </FormGroup>
+              </TradingFormGroup>
             ) : (
               <div
-                className="text-sm text-right pt-7 leading-10"
+                className="text-sm text-right pt-5 leading-10"
                 data-testid="price"
               >
                 {priceFormatted && quoteName
@@ -427,21 +435,21 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           </div>
         </div>
         {errors.size && (
-          <InputError testId="stop-order-error-message-size">
+          <TradingInputError testId="stop-order-error-message-size">
             {errors.size.message}
-          </InputError>
+          </TradingInputError>
         )}
 
         {!errors.size &&
           errors.price &&
           type === Schema.OrderType.TYPE_LIMIT && (
-            <InputError testId="stop-order-error-message-price">
+            <TradingInputError testId="stop-order-error-message-price">
               {errors.price.message}
-            </InputError>
+            </TradingInputError>
           )}
       </div>
       <div className="mb-2">
-        <FormGroup
+        <TradingFormGroup
           label={t('Time in force')}
           labelFor="select-time-in-force"
           compact={true}
@@ -449,11 +457,12 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           <Controller
             name="timeInForce"
             control={control}
-            render={({ field }) => (
-              <Select
+            render={({ field, fieldState }) => (
+              <TradingSelect
                 id="select-time-in-force"
                 className="w-full"
                 data-testid="order-tif"
+                hasError={!!fieldState.error}
                 {...field}
               >
                 <option
@@ -468,14 +477,14 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 >
                   {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_FOK)}
                 </option>
-              </Select>
+              </TradingSelect>
             )}
           />
-        </FormGroup>
+        </TradingFormGroup>
         {errors.timeInForce && (
-          <InputError testId="stop-error-message-tif">
+          <TradingInputError testId="stop-error-message-tif">
             {errors.timeInForce.message}
-          </InputError>
+          </TradingInputError>
         )}
       </div>
       <div className="flex gap-2 pb-2 justify-between">
@@ -485,29 +494,29 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           render={({ field }) => {
             const { onChange: onCheckedChange, value } = field;
             return (
-              <Checkbox
+              <TradingCheckbox
                 onCheckedChange={onCheckedChange}
                 checked={value}
                 name="expire"
-                label={<span className="text-xs">{t('Expire')}</span>}
+                label={t('Expire')}
               />
             );
           }}
         />
-        <Checkbox
+        <TradingCheckbox
           name="reduce-only"
           checked={true}
           disabled={true}
           label={
             <Tooltip description={<span>{t(REDUCE_ONLY_TOOLTIP)}</span>}>
-              <span className="text-xs">{t('Reduce only')}</span>
+              <>{t('Reduce only')}</>
             </Tooltip>
           }
         />
       </div>
       {expire && (
         <>
-          <FormGroup
+          <TradingFormGroup
             label={t('Strategy')}
             labelFor="expiryStrategy"
             compact={true}
@@ -517,26 +526,26 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
               control={control}
               render={({ field }) => {
                 return (
-                  <RadioGroup orientation="horizontal" {...field}>
-                    <Radio
+                  <TradingRadioGroup orientation="horizontal" {...field}>
+                    <TradingRadio
                       value={
                         Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT
                       }
                       id="expiryStrategy-submit"
                       label={'Submit'}
                     />
-                    <Radio
+                    <TradingRadio
                       value={
                         Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS
                       }
                       id="expiryStrategy-cancel"
                       label={'Cancel'}
                     />
-                  </RadioGroup>
+                  </TradingRadioGroup>
                 );
               }}
             />
-          </FormGroup>
+          </TradingFormGroup>
           <div className="mb-2">
             <Controller
               name="expiresAt"

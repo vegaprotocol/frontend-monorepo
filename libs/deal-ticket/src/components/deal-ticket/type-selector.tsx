@@ -1,5 +1,5 @@
 import {
-  InputError,
+  TradingInputError,
   SimpleGrid,
   Tooltip,
   TradingDropdown,
@@ -178,9 +178,9 @@ export const TypeSelector = ({
         value={value}
       />
       {errorMessage && (
-        <InputError testId="deal-ticket-error-message-type">
+        <TradingInputError testId="deal-ticket-error-message-type">
           {renderError(errorMessage as MarketModeValidationType)}
-        </InputError>
+        </TradingInputError>
       )}
     </>
   );
