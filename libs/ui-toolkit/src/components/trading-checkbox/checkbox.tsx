@@ -1,4 +1,4 @@
-import { Icon } from '../icon';
+import { VegaIcon, VegaIconNames } from '../icon';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
@@ -46,11 +46,7 @@ export const TradingCheckbox = ({
               className="absolute w-[8px] h-[2px] bg-vega-clight-50 dark:bg-vega-cdark-50"
             />
           ) : (
-            <Icon
-              name="tick"
-              size={2}
-              className="relative text-vega-clight-50 dark:text-vega-cdark-50"
-            />
+            <VegaIcon name={VegaIconNames.TICK} size={10} />
           )}
         </CheckboxPrimitive.CheckboxIndicator>
       </CheckboxPrimitive.Root>
