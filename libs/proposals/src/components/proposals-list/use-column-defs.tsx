@@ -5,7 +5,6 @@ import {
   CenteredGridCellWrapper,
   COL_DEFS,
   DateRangeFilter,
-  MarketProductPill,
   SetFilter,
 } from '@vegaprotocol/datagrid';
 import compact from 'lodash/compact';
@@ -20,13 +19,15 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import type { InstrumentConfiguration } from '@vegaprotocol/types';
-import { ProposalStateMapping } from '@vegaprotocol/types';
+import { ExternalLink, Pill } from '@vegaprotocol/ui-toolkit';
+import {
+  ProposalProductTypeMapping,
+  ProposalProductTypeShortName,
+  ProposalStateMapping,
+} from '@vegaprotocol/types';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { VoteProgress } from '../voting-progress';
 import { ProposalActionsDropdown } from '../proposal-actions-dropdown';
-import { getMarketProductType } from '../../utils/get-market-product-type';
 
 export const MarketNameProposalCell = ({
   value,
@@ -38,13 +39,19 @@ export const MarketNameProposalCell = ({
   const { VEGA_TOKEN_URL } = useEnvironment();
   const { change } = data?.terms || {};
   if (change?.__typename === 'NewMarket' && VEGA_TOKEN_URL) {
-    const productType = getMarketProductType(
-      change.instrument as InstrumentConfiguration
-    );
+    const type = change.instrument.futureProduct?.__typename;
     const content = (
       <>
         <span data-testid="market-code">{value as string}</span>
-        <MarketProductPill productType={productType} />
+        {type && (
+          <Pill
+            size="xxs"
+            className="uppercase ml-0.5"
+            title={ProposalProductTypeMapping[type]}
+          >
+            {ProposalProductTypeShortName[type]}
+          </Pill>
+        )}
       </>
     );
     if (data?.id) {

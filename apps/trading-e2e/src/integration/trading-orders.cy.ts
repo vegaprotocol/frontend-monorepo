@@ -447,8 +447,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find('[data-testid="edit"]')
-      .should('have.text', 'Edit')
+      .find('[data-testid="icon-edit"]')
       .then(($btn) => {
         cy.wrap($btn).click();
         cy.getByTestId('dialog-title').should('have.text', 'Edit order');
@@ -476,8 +475,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find(`[data-testid="cancel"]`)
-      .should('have.text', 'Cancel')
+      .find(`[data-testid="icon-cross"]`)
       .then(($btn) => {
         cy.wrap($btn).click({ force: true });
         const order: OrderCancellation = {
@@ -514,8 +512,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find('[data-testid="edit"]')
-      .should('have.text', 'Edit')
+      .find('[data-testid="icon-edit"]')
       .then(($btn) => {
         cy.wrap($btn).click({ force: true });
         cy.getByTestId('dialog-title').should('have.text', 'Edit order');

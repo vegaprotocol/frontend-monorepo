@@ -26,21 +26,22 @@ import {
   PositionsDocument,
   PositionsSubscriptionDocument,
 } from './__generated__/Positions';
-import type { PositionStatus } from '@vegaprotocol/types';
+import type { PositionStatus, ProductType } from '@vegaprotocol/types';
 
 export interface Position {
   assetId: string;
   assetSymbol: string;
   averageEntryPrice: string;
   currentLeverage: number | undefined;
-  decimals: number;
+  assetDecimals: number;
   quantum: string;
   lossSocializationAmount: string;
   marginAccountBalance: string;
   marketDecimalPlaces: number;
   marketId: string;
-  marketName: string;
+  marketCode: string;
   marketTradingMode: Schema.MarketTradingMode;
+  marketState: Schema.MarketState;
   markPrice: string | undefined;
   notional: string | undefined;
   openVolume: string;
@@ -51,7 +52,7 @@ export interface Position {
   totalBalance: string;
   unrealisedPNL: string;
   updatedAt: string | null;
-  productType?: string;
+  productType: ProductType;
 }
 
 export const getMetrics = (
@@ -79,15 +80,10 @@ export const getMetrics = (
     const marginAccount = accounts?.find((account) => {
       return account.market?.id === market?.id;
     });
-    const {
-      decimals,
-      id: assetId,
-      symbol: assetSymbol,
-      quantum,
-    } = market.tradableInstrument.instrument.product.settlementAsset;
+    const asset = market.tradableInstrument.instrument.product.settlementAsset;
     const generalAccount = accounts?.find(
       (account) =>
-        account.asset.id === assetId &&
+        account.asset.id === asset.id &&
         account.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL
     );
 
@@ -97,11 +93,11 @@ export const getMetrics = (
 
     const marginAccountBalance = toBigNum(
       marginAccount?.balance ?? 0,
-      decimals
+      asset.decimals
     );
     const generalAccountBalance = toBigNum(
       generalAccount?.balance ?? 0,
-      decimals
+      asset.decimals
     );
 
     const markPrice = marketData
@@ -120,18 +116,19 @@ export const getMetrics = (
         : notional.dividedBy(totalBalance)
       : undefined;
     metrics.push({
-      assetId,
-      assetSymbol,
+      assetId: asset.id,
+      assetSymbol: asset.symbol,
       averageEntryPrice: position.averageEntryPrice,
       currentLeverage: currentLeverage ? currentLeverage.toNumber() : undefined,
-      decimals,
-      quantum,
+      assetDecimals: asset.decimals,
+      quantum: asset.quantum,
       lossSocializationAmount: position.lossSocializationAmount || '0',
       marginAccountBalance: marginAccount?.balance ?? '0',
       marketDecimalPlaces,
       marketId: market.id,
-      marketName: market.tradableInstrument.instrument.code,
+      marketCode: market.tradableInstrument.instrument.code,
       marketTradingMode: market.tradingMode,
+      marketState: market.state,
       markPrice: marketData ? marketData.markPrice : undefined,
       notional: notional
         ? notional.multipliedBy(10 ** marketDecimalPlaces).toFixed(0)
@@ -141,10 +138,11 @@ export const getMetrics = (
       positionDecimalPlaces,
       realisedPNL: position.realisedPNL,
       status: position.positionStatus,
-      totalBalance: totalBalance.multipliedBy(10 ** decimals).toFixed(),
+      totalBalance: totalBalance.multipliedBy(10 ** asset.decimals).toFixed(),
       unrealisedPNL: position.unrealisedPNL,
       updatedAt: position.updatedAt || null,
-      productType: market?.tradableInstrument.instrument.product.__typename,
+      productType: market?.tradableInstrument.instrument.product
+        .__typename as ProductType,
     });
   });
   return metrics;
@@ -260,6 +258,26 @@ export const rejoinPositionData = (
   return null;
 };
 
+export const preparePositions = (metrics: Position[], showClosed: boolean) => {
+  return sortBy(metrics, 'marketCode').filter((p) => {
+    if (showClosed) {
+      return true;
+    }
+
+    if (
+      [
+        Schema.MarketState.STATE_ACTIVE,
+        Schema.MarketState.STATE_PENDING,
+        Schema.MarketState.STATE_SUSPENDED,
+      ].includes(p.marketState)
+    ) {
+      return true;
+    }
+
+    return false;
+  });
+};
+
 export const positionsMarketsProvider = makeDerivedDataProvider<
   string[],
   never,
@@ -277,7 +295,7 @@ export const positionsMarketsProvider = makeDerivedDataProvider<
 export const positionsMetricsProvider = makeDerivedDataProvider<
   Position[],
   Position[],
-  PositionsQueryVariables & { marketIds: string[] }
+  PositionsQueryVariables & { marketIds: string[]; showClosed: boolean }
 >(
   [
     (callback, client, variables) =>
@@ -293,10 +311,10 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
         marketIds: variables.marketIds,
       }),
   ],
-  ([positions, accounts, marketsData]) => {
+  ([positions, accounts, marketsData], variables) => {
     const positionsData = rejoinPositionData(positions, marketsData);
     const metrics = getMetrics(positionsData, accounts as Account[] | null);
-    return sortBy(metrics, 'marketName');
+    return preparePositions(metrics, variables.showClosed);
   },
   (data, delta, previousData) =>
     data.filter((row) => {

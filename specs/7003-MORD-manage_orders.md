@@ -51,6 +51,7 @@ When looking at a list of orders, I...
 
 - **must** see what [market](9001-DATA-data_display.md#market) an order is related to (either code, ID or name, preferable name) (<a name="7003-MORD-002" href="#7003-MORD-002">7003-MORD-002</a>)
   - **should** see what the `status` is of the market (particularly if it is not "normal")
+- **must** see product type of market's instrument (<a name="7003-MORD-020" href="#7003-MORD-020">7003-MORD-020</a>)
 - **must** see the [size](9001-DATA-data_display.md#size) of the order (<a name="7003-MORD-003" href="#7003-MORD-003">7003-MORD-003</a>)
 - **must** see the [direction/side](9001-DATA-data_display.md#direction--side) (Long or Short) of the order (this can be implied with a + or negative suffix on the size, + for Long, - for short) (<a name="7003-MORD-004" href="#7003-MORD-004">7003-MORD-004</a>)
 - **must** see [order type](9001-DATA-data_display.md#order-type) (<a name="7003-MORD-005" href="#7003-MORD-005">7003-MORD-005</a>)

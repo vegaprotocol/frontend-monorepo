@@ -44,6 +44,8 @@ describe('number utils', () => {
       o: '12,345,678.91234568',
       q: '1',
     },
+    // USDT / USDC
+    { v: new BigNumber(12345678), d: 6, o: '12.35', q: 1000000 },
   ])(
     'formats with addDecimalsFormatNumberQuantum given number correctly',
     ({ v, d, o, q }) => {

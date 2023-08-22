@@ -17,6 +17,7 @@ import type { OrderContainerProps } from '../../components/orders-container';
 import { OrdersContainer } from '../../components/orders-container';
 import { StopOrdersContainer } from '../../components/stop-orders-container';
 import { AccountsMenu } from '../../components/accounts-menu';
+import { PositionsMenu } from '../../components/positions-menu';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -57,7 +58,11 @@ export const TradingViews = {
     label: 'Trades',
     component: requiresMarket(TradesContainer),
   },
-  positions: { label: 'Positions', component: PositionsContainer },
+  positions: {
+    label: 'Positions',
+    component: PositionsContainer,
+    menu: PositionsMenu,
+  },
   activeOrders: {
     label: 'Active',
     component: (props: OrderContainerProps) => (

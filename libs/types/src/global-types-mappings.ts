@@ -25,6 +25,7 @@ import type {
   DispatchMetric,
   StopOrderStatus,
 } from './__generated__/types';
+import type { ProductType, ProposalProductType } from './product';
 
 export const AccountTypeMapping: {
   [T in AccountType]: string;
@@ -543,3 +544,20 @@ export const PeggedReferenceMapping: { [R in PeggedReference]: string } = {
   PEGGED_REFERENCE_BEST_BID: 'Bid',
   PEGGED_REFERENCE_MID: 'Mid',
 };
+
+export const ProductTypeMapping: Record<ProductType, string> = {
+  Future: 'Future',
+};
+
+export const ProductTypeShortName: Record<ProductType, string> = {
+  Future: 'Futr',
+};
+
+export const ProposalProductTypeMapping: Record<ProposalProductType, string> = {
+  FutureProduct: 'Future',
+};
+
+export const ProposalProductTypeShortName: Record<ProposalProductType, string> =
+  {
+    FutureProduct: 'Futr',
+  };
