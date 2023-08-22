@@ -11,6 +11,8 @@ export const MarketHeader = () => {
   const { data } = useMarket(marketId);
   const [open, setOpen] = useState(false);
 
+  // Ensure that markets are kept cached so opening the list
+  // shows all markets instantly
   useMarketList();
 
   if (!data) return null;
