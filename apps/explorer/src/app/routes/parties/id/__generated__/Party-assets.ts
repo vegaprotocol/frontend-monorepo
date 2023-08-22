@@ -64,7 +64,7 @@ export const ExplorerPartyAssetsDocument = gql`
         }
         stakingSummary {
           currentStakeAvailable
-          linkings(pagination: {first: 100}) {
+          linkings(pagination: {last: 100}) {
             edges {
               node {
                 type
