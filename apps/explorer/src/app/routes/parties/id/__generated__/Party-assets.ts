@@ -5,8 +5,6 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type ExplorerPartyAssetsAccountsFragment = { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', name: string, id: string, decimals: number, symbol: string, source: { __typename: 'BuiltinAsset' } | { __typename: 'ERC20', contractAddress: string } }, market?: { __typename?: 'Market', id: string, decimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, product: { __typename?: 'Future', quoteName: string } } } } | null };
 
-export type ExplorerPartyLinksFragment = { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', name: string, id: string, decimals: number, symbol: string, source: { __typename: 'BuiltinAsset' } | { __typename: 'ERC20', contractAddress: string } }, market?: { __typename?: 'Market', id: string, decimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, product: { __typename?: 'Future', quoteName: string } } } } | null };
-
 export type ExplorerPartyAssetsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
@@ -16,38 +14,6 @@ export type ExplorerPartyAssetsQuery = { __typename?: 'Query', partiesConnection
 
 export const ExplorerPartyAssetsAccountsFragmentDoc = gql`
     fragment ExplorerPartyAssetsAccounts on AccountBalance {
-  asset {
-    name
-    id
-    decimals
-    symbol
-    source {
-      __typename
-      ... on ERC20 {
-        contractAddress
-      }
-    }
-  }
-  type
-  balance
-  market {
-    id
-    decimalPlaces
-    tradableInstrument {
-      instrument {
-        name
-        product {
-          ... on Future {
-            quoteName
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-export const ExplorerPartyLinksFragmentDoc = gql`
-    fragment ExplorerPartyLinks on AccountBalance {
   asset {
     name
     id
