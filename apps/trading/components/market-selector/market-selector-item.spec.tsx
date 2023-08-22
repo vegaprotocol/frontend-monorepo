@@ -119,7 +119,9 @@ describe('MarketSelectorItem', () => {
 
   it('renders market information', async () => {
     const symbol =
-      market.tradableInstrument.instrument.product.settlementAsset.symbol;
+      'settlementAsset' in market.tradableInstrument.instrument.product
+        ? market.tradableInstrument.instrument.product.settlementAsset.symbol
+        : '';
 
     const mock: MockedResponse<MarketDataUpdateSubscription> = {
       request: {

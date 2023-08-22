@@ -140,12 +140,15 @@ describe('DealTicket', () => {
     act(() => {
       screen.getByTestId('order-type-Market').click();
     });
+
+    const quoteName =
+      'quoteName' in market.tradableInstrument.instrument.product
+        ? market.tradableInstrument.instrument.product.quoteName
+        : '';
     // Assert last price is shown
     expect(screen.getByTestId('last-price')).toHaveTextContent(
       // eslint-disable-next-line
-      `~${addDecimal(marketPrice, market.decimalPlaces)} ${
-        market.tradableInstrument.instrument.product.quoteName
-      }`
+      `~${addDecimal(marketPrice, market.decimalPlaces)} ${quoteName}`
     );
   });
 

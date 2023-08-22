@@ -232,6 +232,11 @@ describe('Closed', () => {
     expect(headers).toHaveLength(expectedHeaders.length);
     expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
 
+    const assetSymbol =
+      'settlementAsset' in market.tradableInstrument.instrument.product
+        ? market.tradableInstrument.instrument.product.settlementAsset.symbol
+        : '';
+
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       market.tradableInstrument.instrument.code,
@@ -248,7 +253,7 @@ describe('Closed', () => {
       addDecimalsFormatNumber(marketsData!.markPrice, market.decimalPlaces),
       /* eslint-enable @typescript-eslint/no-non-null-assertion */
       addDecimalsFormatNumber(property.value, market.decimalPlaces),
-      market.tradableInstrument.instrument.product.settlementAsset.symbol,
+      assetSymbol,
       '', // actions row
     ];
     cells.forEach((cell, i) => {
