@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 import PriceInMarket from '../../../price-in-market/price-in-market';
 import StopOrderTriggerSummary from './stop-order-trigger';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import { fromUnixTime } from 'date-fns/esm';
+import fromUnixTime from 'date-fns/fromUnixTime';
 
 const wrapperClasses =
   'flex-1 max-w-xs items-center border border-vega-light-200 dark:border-vega-dark-150 rounded-md pv-2 ph-5 mb-5';
