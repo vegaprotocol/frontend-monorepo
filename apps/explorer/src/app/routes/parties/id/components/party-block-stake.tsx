@@ -42,8 +42,8 @@ export const PartyBlockStake = ({
     linkedLength && linkedLength > 0
       ? p?.stakingSummary?.linkings?.edges
           ?.reduce((total, e) => {
-            const accumulator = new BigNumber(total)
-            const diff = new BigNumber(e?.node.amount || 0)
+            const accumulator = new BigNumber(total);
+            const diff = new BigNumber(e?.node.amount || 0);
             if (e?.node.type === 'TYPE_LINK') {
               return accumulator.plus(diff);
             } else if (e?.node.type === 'TYPE_UNLINK') {
