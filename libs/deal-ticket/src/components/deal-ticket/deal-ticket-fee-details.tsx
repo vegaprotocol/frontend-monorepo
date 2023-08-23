@@ -3,11 +3,11 @@ import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import classnames from 'classnames';
 import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/i18n';
-import { FeesBreakdown, getAsset } from '@vegaprotocol/markets';
+import { FeesBreakdown, getAsset, getQuoteName } from '@vegaprotocol/markets';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
-import type { Market, MarketFieldsFragment } from '@vegaprotocol/markets';
+import type { Market } from '@vegaprotocol/markets';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
 
@@ -93,7 +93,7 @@ export const DealTicketFeeDetails = ({
   const asset = getAsset(market);
   const { decimals: assetDecimals, quantum } = asset;
   const marketDecimals = market.decimalPlaces;
-  const quoteName = getQuote(market);
+  const quoteName = getQuoteName(market);
 
   return (
     <>
@@ -302,7 +302,7 @@ export const DealTicketMarginDetails = ({
     []
   );
 
-  const quoteName = getQuote(market);
+  const quoteName = getQuoteName(market);
 
   return (
     <>
@@ -373,11 +373,4 @@ export const DealTicketMarginDetails = ({
       )}
     </>
   );
-};
-
-const getQuote = (market: MarketFieldsFragment) => {
-  // TODO update with quoteAsset for Spots
-  return 'quoteName' in market.tradableInstrument.instrument.product
-    ? market.tradableInstrument.instrument.product.quoteName
-    : '';
 };

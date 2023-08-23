@@ -14,7 +14,6 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import {
-  addDecimalsFormatNumber,
   formatNumber,
   formatNumberPercentage,
   getMarketExpiryDateFormatted,
@@ -49,6 +48,7 @@ import {
 } from '../../__generated__';
 import { useSuccessorMarketProposalDetailsQuery } from '@vegaprotocol/proposals';
 import type { MarketTradingMode } from '@vegaprotocol/types';
+import { getQuoteName } from '../../market-utils';
 import type { Signer } from '@vegaprotocol/types';
 import classNames from 'classnames';
 import compact from 'lodash/compact';
@@ -88,10 +88,7 @@ export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
         'baseAsset' in market.tradableInstrument.instrument.product
       ? get(market?.tradableInstrument.instrument.product?.baseAsset, 'symbol')
       : '';
-  const quoteUnit =
-    'quoteName' in market.tradableInstrument.instrument.product
-      ? market?.tradableInstrument.instrument.product?.quoteName
-      : '';
+  const quoteUnit = getQuoteName(market);
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: { marketId: market.id },

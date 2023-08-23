@@ -7,6 +7,7 @@ import { toDecimal, validateAmount } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { Controller } from 'react-hook-form';
+import { getQuoteName } from '@vegaprotocol/markets';
 
 export type DealTicketLimitAmountProps = Omit<
   DealTicketAmountProps,
@@ -21,10 +22,7 @@ export const DealTicketLimitAmount = ({
 }: DealTicketLimitAmountProps) => {
   const priceStep = toDecimal(market?.decimalPlaces);
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
-  const quoteName =
-    'quoteName' in market.tradableInstrument.instrument.product
-      ? market.tradableInstrument.instrument.product.quoteName
-      : '';
+  const quoteName = getQuoteName(market);
 
   const renderError = () => {
     if (sizeError) {

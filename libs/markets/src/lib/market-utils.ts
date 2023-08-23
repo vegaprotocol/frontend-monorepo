@@ -89,7 +89,9 @@ export const calcCandleVolume = (candles: Candle[]): string | undefined =>
 
 export const getAsset = (market: Partial<Market>) => {
   if (!market.tradableInstrument?.instrument.product) {
-    throw new Error('Invalid tradable instrument');
+    throw new Error(
+      'Failed to retrieve settlementAsset. Invalid tradable instrument'
+    );
   }
 
   const product = market.tradableInstrument.instrument.product;
@@ -100,8 +102,31 @@ export const getAsset = (market: Partial<Market>) => {
 
   if (product.__typename === 'Spot') {
     // TODO to handle baseAsset for Spots
-    throw new Error('Spots not yet implemented');
+    throw new Error(
+      'Failed to retrieve settlementAsset. Spots not yet implemented'
+    );
   }
 
-  throw new Error('Invalid product type');
+  throw new Error('Failed to retrieve settlementAsset. Invalid product type');
+};
+
+export const getQuoteName = (market: Partial<Market>) => {
+  if (!market.tradableInstrument?.instrument.product) {
+    throw new Error(
+      'Failed to retrieve quoteName. Invalid tradable instrument'
+    );
+  }
+
+  const product = market.tradableInstrument.instrument.product;
+
+  if (product.__typename === 'Perpetual' || product.__typename === 'Future') {
+    return product.quoteName;
+  }
+
+  if (product.__typename === 'Spot') {
+    // TODO to handle baseAsset for Spots
+    throw new Error('Failed to retrieve quoteName. Spots not yet implemented');
+  }
+
+  throw new Error('Failed to retrieve quoteName. Invalid product type');
 };

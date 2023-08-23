@@ -15,6 +15,7 @@ import {
 } from '../../hooks/use-form-values';
 import * as positionsTools from '@vegaprotocol/positions';
 import { OrdersDocument } from '@vegaprotocol/orders';
+import { getQuoteName } from '@vegaprotocol/markets';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
@@ -141,10 +142,7 @@ describe('DealTicket', () => {
       screen.getByTestId('order-type-Market').click();
     });
 
-    const quoteName =
-      'quoteName' in market.tradableInstrument.instrument.product
-        ? market.tradableInstrument.instrument.product.quoteName
-        : '';
+    const quoteName = getQuoteName(market);
     // Assert last price is shown
     expect(screen.getByTestId('last-price')).toHaveTextContent(
       // eslint-disable-next-line
