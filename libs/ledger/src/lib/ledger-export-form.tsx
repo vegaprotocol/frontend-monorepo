@@ -93,7 +93,7 @@ export const LedgerExportForm = ({ partyId }: { partyId: string }) => {
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
         link.download = filename;
-        // link.click();
+        link.click();
       })
       .catch((err) => {
         localLoggerFactory({ application: 'ledger' }).error(
