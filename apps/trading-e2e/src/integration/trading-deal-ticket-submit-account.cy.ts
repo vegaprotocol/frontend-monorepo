@@ -48,6 +48,7 @@ describe.skip(
 
     describe('not enough balance warning', () => {
       beforeEach(() => {
+        cy.clearLocalStorage();
         cy.setVegaWallet();
         cy.mockTradingPage();
         let accounts = accountsQuery();
