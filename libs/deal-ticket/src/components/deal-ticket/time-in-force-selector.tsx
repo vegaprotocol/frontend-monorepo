@@ -1,7 +1,7 @@
 import {
-  FormGroup,
-  InputError,
-  Select,
+  TradingFormGroup,
+  TradingInputError,
+  TradingSelect,
   Tooltip,
   SimpleGrid,
 } from '@vegaprotocol/ui-toolkit';
@@ -90,12 +90,12 @@ export const TimeInForceSelector = ({
   };
 
   return (
-    <FormGroup
+    <TradingFormGroup
       label={t('Time in force')}
       labelFor="select-time-in-force"
       compact={true}
     >
-      <Select
+      <TradingSelect
         id="select-time-in-force"
         value={value}
         onChange={(e) => {
@@ -103,18 +103,19 @@ export const TimeInForceSelector = ({
         }}
         className="w-full"
         data-testid="order-tif"
+        hasError={!!errorMessage}
       >
         {options.map(([key, value]) => (
           <option key={key} value={value}>
             {timeInForceLabel(value)}
           </option>
         ))}
-      </Select>
+      </TradingSelect>
       {errorMessage && (
-        <InputError testId="deal-ticket-error-message-tif">
+        <TradingInputError testId="deal-ticket-error-message-tif">
           {renderError(errorMessage)}
-        </InputError>
+        </TradingInputError>
       )}
-    </FormGroup>
+    </TradingFormGroup>
   );
 };
