@@ -296,7 +296,7 @@ export const OrderListTable = memo<
                       </ButtonLink>
                     </>
                   )}
-                  <ActionsDropdown data-testid="market-actions-content">
+                  <ActionsDropdown data-testid="order-actions-content">
                     <TradingDropdownCopyItem
                       value={data.id}
                       text={t('Copy order ID')}

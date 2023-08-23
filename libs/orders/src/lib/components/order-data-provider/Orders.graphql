@@ -128,6 +128,9 @@ fragment StopOrderFields on StopOrder {
   updatedAt
   partyId
   marketId
+  order {
+    ...OrderFields
+  }
   trigger {
     ... on StopOrderPrice {
       price
