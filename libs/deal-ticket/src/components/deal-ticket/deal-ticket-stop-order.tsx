@@ -83,7 +83,7 @@ const Trigger = ({
   const triggerType = watch(oco ? 'ocoTriggerType' : 'triggerType');
   const isPriceTrigger = triggerType === 'price';
   return (
-    <FormGroup label={t('Trigger')} compact={true} labelFor="">
+    <FormGroup label={t('Trigger')} labelFor="">
       <Controller
         name="triggerDirection"
         control={control}
@@ -303,7 +303,7 @@ const Size = ({
       render={({ field, fieldState }) => {
         const { value, ...props } = field;
         return (
-          <div className="mb-2">
+          <div className="mb-4">
             <FormGroup labelFor="input-price-quote" label={t(`Size`)} compact>
               <Input
                 id={oco ? 'oco-order-size' : 'order-size'}
@@ -368,7 +368,7 @@ const Price = ({
       render={({ field, fieldState }) => {
         const { value, ...props } = field;
         return (
-          <div className="mb-2">
+          <div className="mb-4">
             <FormGroup
               labelFor={oco ? 'input-ocoPrice-quote' : 'input-price-quote'}
               label={t(`Price (${quoteName})`)}
@@ -602,7 +602,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         priceStep={priceStep}
         assetSymbol={asset.symbol}
       />
-      <hr className="mb-2 border-vega-clight-500 dark:border-vega-cdark-500" />
+      <hr className="mb-4 border-vega-clight-500 dark:border-vega-cdark-500" />
       <Price
         control={control}
         watch={watch}
@@ -611,10 +611,10 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
       />
       <Size control={control} sizeStep={sizeStep} />
       <TimeInForce control={control} />
-      <div className="flex gap-2 pb-2 justify-end">
+      <div className="flex gap-2 pb-3 justify-end">
         <ReduceOnly />
       </div>
-      <hr className="mb-2 border-vega-clight-500 dark:border-vega-cdark-500" />
+      <hr className="mb-4 border-vega-clight-500 dark:border-vega-cdark-500" />
       <div className="flex gap-2 pb-2 justify-between">
         <Controller
           name="oco"
@@ -657,7 +657,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
       </div>
       {oco && (
         <>
-          <FormGroup label={t('Type')} compact={true} labelFor="">
+          <FormGroup label={t('Type')} labelFor="">
             <Controller
               name={`ocoType`}
               control={control}
@@ -725,11 +725,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
       </div>
       {expire && (
         <>
-          <FormGroup
-            label={t('Strategy')}
-            labelFor="expiryStrategy"
-            compact={true}
-          >
+          <FormGroup label={t('Strategy')} labelFor="expiryStrategy">
             <Controller
               name="expiryStrategy"
               control={control}
@@ -772,7 +768,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
               }}
             />
           </FormGroup>
-          <div className="mb-2">
+          <div className="mb-4">
             <Controller
               name="expiresAt"
               control={control}

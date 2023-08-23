@@ -389,7 +389,7 @@ export const DealTicket = ({
           validate: validateAmount(sizeStep, 'Size'),
         }}
         render={({ field, fieldState }) => (
-          <div className="mb-2">
+          <div className="mb-4">
             <FormGroup
               label={t('Size')}
               labelFor="input-order-size-limit"
@@ -427,7 +427,7 @@ export const DealTicket = ({
             validate: validateAmount(priceStep, 'Price'),
           }}
           render={({ field, fieldState }) => (
-            <div className="mb-2">
+            <div className="mb-4">
               <FormGroup
                 labelFor="input-price-quote"
                 label={t(`Price (${quoteName})`)}
