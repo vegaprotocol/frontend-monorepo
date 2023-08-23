@@ -21,6 +21,7 @@ import type { DataSourceFilterFragment } from '@vegaprotocol/markets';
 import {
   MarketActionsDropdown,
   closedMarketsWithDataProvider,
+  getAsset,
 } from '@vegaprotocol/markets';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { ColDef } from 'ag-grid-community';
@@ -101,16 +102,7 @@ export const Closed = () => {
         'dataSourceSpecForTradingTermination' in instrument.product
           ? instrument.product.dataSourceSpecForTradingTermination.id
           : '',
-      settlementAsset:
-        'settlementAsset' in instrument.product
-          ? instrument.product.settlementAsset
-          : {
-              id: '',
-              decimals: 0,
-              quantum: '0',
-              name: '',
-              symbol: '',
-            },
+      settlementAsset: getAsset({ tradableInstrument: { instrument } }),
       productType: instrument.product.__typename || '',
     };
 

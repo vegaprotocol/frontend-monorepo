@@ -87,7 +87,11 @@ export const calcCandleVolume = (candles: Candle[]): string | undefined =>
   candles &&
   candles.reduce((acc, c) => new BigNumber(acc).plus(c.volume).toString(), '0');
 
-export const getAsset = (market: Pick<Market, 'tradableInstrument'>) => {
+export const getAsset = (market: Partial<Market>) => {
+  if (!market.tradableInstrument?.instrument.product) {
+    throw new Error('Invalid tradable instrument');
+  }
+
   const product = market.tradableInstrument.instrument.product;
 
   if (product.__typename === 'Perpetual' || product.__typename === 'Future') {

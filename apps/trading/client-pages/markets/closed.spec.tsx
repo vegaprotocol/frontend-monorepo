@@ -17,6 +17,7 @@ import {
   MarketsDataDocument,
   MarketsDocument,
   SuccessorMarketIdsDocument,
+  getAsset,
 } from '@vegaprotocol/markets';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
@@ -232,10 +233,7 @@ describe('Closed', () => {
     expect(headers).toHaveLength(expectedHeaders.length);
     expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
 
-    const assetSymbol =
-      'settlementAsset' in market.tradableInstrument.instrument.product
-        ? market.tradableInstrument.instrument.product.settlementAsset.symbol
-        : '';
+    const assetSymbol = getAsset(market).symbol;
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [

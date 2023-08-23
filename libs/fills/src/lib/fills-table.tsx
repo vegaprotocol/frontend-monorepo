@@ -30,6 +30,7 @@ import BigNumber from 'bignumber.js';
 import type { Trade } from './fills-data-provider';
 import type { FillFieldsFragment } from './__generated__/Fills';
 import { FillActionsDropdown } from './fill-actions-dropdown';
+import { getAsset } from '@vegaprotocol/markets';
 
 const TAKER = 'Taker';
 const MAKER = 'Maker';
@@ -141,11 +142,7 @@ const formatPrice = ({
   if (!data?.market || !isNumeric(value)) {
     return '-';
   }
-  const asset =
-    'settlementAsset' in data.market.tradableInstrument.instrument.product
-      ? data?.market.tradableInstrument.instrument.product.settlementAsset
-          .symbol
-      : '';
+  const asset = getAsset(data.market);
   const valueFormatted = addDecimalsFormatNumber(
     value,
     data?.market.decimalPlaces
@@ -195,10 +192,9 @@ const formatTotal = ({
   if (!data?.market || !isNumeric(value)) {
     return '-';
   }
-  const { symbol: assetSymbol, decimals: assetDecimals } =
-    ('settlementAsset' in data.market.tradableInstrument.instrument.product
-      ? data?.market.tradableInstrument.instrument.product.settlementAsset
-      : null) ?? {};
+  const { symbol: assetSymbol, decimals: assetDecimals } = getAsset(
+    data.market
+  );
   const size = new BigNumber(
     addDecimal(data?.size, data?.market.positionDecimalPlaces)
   );

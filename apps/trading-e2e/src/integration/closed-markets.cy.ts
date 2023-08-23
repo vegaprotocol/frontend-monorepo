@@ -23,6 +23,7 @@ import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
 } from '@vegaprotocol/utils';
+import { getAsset } from '@vegaprotocol/markets';
 
 describe('Closed markets', { tags: '@smoke' }, () => {
   const settlementDataProperty = 'settlement-data-property';
@@ -367,8 +368,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
           )
         );
 
-    const settlementAssetSymbol =
-      'settlementAsset' in product ? product.settlementAsset.symbol : '';
+    const settlementAssetSymbol = getAsset(settledMarket).symbol;
 
     // 6001-MARK-018
     settlementAssetSymbol &&
