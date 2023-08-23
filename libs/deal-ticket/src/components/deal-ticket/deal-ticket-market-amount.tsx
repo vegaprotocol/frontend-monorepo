@@ -4,7 +4,11 @@ import {
   validateAmount,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { Input, InputError, Tooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  TradingInput,
+  TradingInputError,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import { isMarketInAuction } from '@vegaprotocol/markets';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { Controller } from 'react-hook-form';
@@ -33,7 +37,7 @@ export const DealTicketMarketAmount = ({
     <div className="mb-2">
       <div className="flex items-start gap-4">
         <div className="flex-1">
-          <div className="mb-2 text-sm">{t('Size')}</div>
+          <div className="mb-2 text-xs">{t('Size')}</div>
           <Controller
             name="size"
             control={control}
@@ -45,8 +49,8 @@ export const DealTicketMarketAmount = ({
               },
               validate: validateAmount(sizeStep, 'Size'),
             }}
-            render={({ field }) => (
-              <Input
+            render={({ field, fieldState }) => (
+              <TradingInput
                 id="input-order-size-market"
                 className="w-full"
                 type="number"
@@ -54,12 +58,13 @@ export const DealTicketMarketAmount = ({
                 min={sizeStep}
                 onWheel={(e) => e.currentTarget.blur()}
                 data-testid="order-size"
+                hasError={!!fieldState.error}
                 {...field}
               />
             )}
           />
         </div>
-        <div className="pt-7 leading-10">@</div>
+        <div className="pt-5 leading-10">@</div>
         <div className="flex-1 text-sm text-right">
           {inAuction && (
             <Tooltip
@@ -72,7 +77,7 @@ export const DealTicketMarketAmount = ({
           )}
           <div
             data-testid="last-price"
-            className={classNames('leading-10', { 'pt-7': !inAuction })}
+            className={classNames('leading-10', { 'pt-5': !inAuction })}
           >
             {priceFormatted && quoteName ? (
               <>
@@ -85,12 +90,12 @@ export const DealTicketMarketAmount = ({
         </div>
       </div>
       {sizeError && (
-        <InputError
+        <TradingInputError
           intent="danger"
           testId="deal-ticket-error-message-size-market"
         >
           {sizeError}
-        </InputError>
+        </TradingInputError>
       )}
     </div>
   );

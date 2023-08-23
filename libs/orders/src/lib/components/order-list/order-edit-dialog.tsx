@@ -9,9 +9,9 @@ import { t } from '@vegaprotocol/i18n';
 import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import {
-  FormGroup,
-  Input,
-  InputError,
+  TradingFormGroup,
+  TradingInput,
+  TradingInputError,
   Button,
   Dialog,
   Icon,
@@ -102,8 +102,12 @@ export const OrderEditDialog = ({
         noValidate
       >
         <div className="flex flex-col md:flex-row gap-4">
-          <FormGroup label={t('Price')} labelFor="limitPrice" className="grow">
-            <Input
+          <TradingFormGroup
+            label={t('Price')}
+            labelFor="limitPrice"
+            className="grow"
+          >
+            <TradingInput
               type="number"
               step={step}
               {...register('limitPrice', {
@@ -119,13 +123,13 @@ export const OrderEditDialog = ({
               id="limitPrice"
             />
             {errors.limitPrice?.message && (
-              <InputError intent="danger">
+              <TradingInputError intent="danger">
                 {errors.limitPrice.message}
-              </InputError>
+              </TradingInputError>
             )}
-          </FormGroup>
-          <FormGroup label={t('Size')} labelFor="size" className="grow">
-            <Input
+          </TradingFormGroup>
+          <TradingFormGroup label={t('Size')} labelFor="size" className="grow">
+            <TradingInput
               type="number"
               step={stepSize}
               {...register('size', {
@@ -139,9 +143,11 @@ export const OrderEditDialog = ({
               id="size"
             />
             {errors.size?.message && (
-              <InputError intent="danger">{errors.size.message}</InputError>
+              <TradingInputError intent="danger">
+                {errors.size.message}
+              </TradingInputError>
             )}
-          </FormGroup>
+          </TradingFormGroup>
         </div>
         <Button variant="primary" size="md" type="submit">
           {t('Update')}

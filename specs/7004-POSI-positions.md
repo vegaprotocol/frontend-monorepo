@@ -51,4 +51,8 @@
 
 - **Must** be able to see if your realised PnL was affected by loss socialisation (<a name="7004-POSI-018" href="#7004-POSI-018">7004-POSI-018</a>)
 
-- **Must** Must be able to see what type of product the position was opened on (<a name="7004-POSI-019" href="#7004-POSI-019">7004-POSI-019</a>)
+- **Must** be able to see what type of product the position was opened on (<a name="7004-POSI-019" href="#7004-POSI-019">7004-POSI-019</a>)
+
+- **Must** not see positions on markets which are closed (<a name="7004-POSI-020" href="#7004-POSI-020">7004-POSI-020</a>)
+
+- **Must** be able to show closed markets (<a name="7004-POSI-021" href="#7004-POSI-021">7004-POSI-021</a>)
