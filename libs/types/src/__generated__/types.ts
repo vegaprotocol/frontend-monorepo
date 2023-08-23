@@ -1793,8 +1793,6 @@ export type Market = {
   liquidityProvisionsConnection?: Maybe<LiquidityProvisionsConnection>;
   /** Optional: Liquidity SLA parameters for the market */
   liquiditySLAParameters?: Maybe<LiquiditySLAParameters>;
-  /** Liquidity Provision order price range */
-  lpPriceRange: Scalars['String'];
   /** Timestamps for state changes in the market */
   marketTimestamps: MarketTimestamps;
   /**
@@ -1916,6 +1914,8 @@ export type MarketData = {
   commitments: MarketDataCommitments;
   /** What extended the ongoing auction (if an auction was extended) */
   extensionTrigger: AuctionTrigger;
+  /** The current funding rate. This applies only to a perpetual market */
+  fundingRate?: Maybe<Scalars['String']>;
   /** Indicative price if the auction ended now, 0 if not in auction mode */
   indicativePrice: Scalars['String'];
   /** Indicative volume if the auction ended now, 0 if not in auction mode */
@@ -2203,8 +2203,6 @@ export type NewMarket = {
   linearSlippageFactor: Scalars['String'];
   /** Liquidity monitoring parameters */
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
-  /** Liquidity Provision order price range */
-  lpPriceRange: Scalars['String'];
   /** Metadata for this instrument, tags */
   metadata?: Maybe<Array<Scalars['String']>>;
   /** Decimal places for order sizes, sets what size the smallest order / position on the market can be */
@@ -2469,6 +2467,8 @@ export type ObservableMarketData = {
   bestStaticOfferVolume: Scalars['String'];
   /** What extended the ongoing auction (if an auction was extended) */
   extensionTrigger: AuctionTrigger;
+  /** The current funding rate. This applies only to a perpetual market */
+  fundingRate?: Maybe<Scalars['String']>;
   /** Indicative price if the auction ended now, 0 if not in auction mode */
   indicativePrice: Scalars['String'];
   /** Indicative volume if the auction ended now, 0 if not in auction mode */

@@ -16,7 +16,6 @@ function getSuccessorTxBody(parentMarketId) {
             positionDecimalPlaces: '5',
             linearSlippageFactor: '0.001',
             quadraticSlippageFactor: '0',
-            lpPriceRange: '10',
             instrument: {
               name: 'Token test market',
               code: 'TEST.24h',

@@ -1,5 +1,4 @@
 {
-  "lpPriceRange": "10",
   "linearSlippageFactor": "0.001",
   "quadraticSlippageFactor": "0",
   "instrument": {

@@ -5,7 +5,6 @@ import {
   InstrumentInfoPanel,
   KeyDetailsInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
-  LiquidityPriceRangeInfoPanel,
   MetadataInfoPanel,
   OracleInfoPanel,
   PriceMonitoringBoundsInfoPanel,
@@ -271,16 +270,6 @@ export const ProposalMarketData = ({
                 title={t('Liquidity monitoring parameters')}
                 content={
                   <LiquidityMonitoringParametersInfoPanel
-                    market={marketData}
-                    parentMarket={parentMarketData}
-                  />
-                }
-              />
-              <AccordionItem
-                itemId="liquidity-price-range"
-                title={t('Liquidity price range')}
-                content={
-                  <LiquidityPriceRangeInfoPanel
                     market={marketData}
                     parentMarket={parentMarketData}
                   />

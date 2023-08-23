@@ -1449,11 +1449,6 @@ export interface components {
       readonly liquidityMonitoringParameters?: components['schemas']['vegaLiquidityMonitoringParameters'];
       /** @description Log normal risk model parameters, valid only if MODEL_LOG_NORMAL is selected. */
       readonly logNormal?: components['schemas']['vegaLogNormalRiskModel'];
-      /**
-       * @description Percentage move up and down from the mid price which specifies the range of
-       * price levels over which automated liquidity provision orders will be deployed.
-       */
-      readonly lpPriceRange?: string;
       /** @description Optional new futures market metadata, tags. */
       readonly metadata?: readonly string[];
       /**
@@ -1849,11 +1844,6 @@ export interface components {
       readonly liquidityMonitoringParameters?: components['schemas']['vegaLiquidityMonitoringParameters'];
       /** @description Log normal risk model parameters, valid only if MODEL_LOG_NORMAL is selected. */
       readonly logNormal?: components['schemas']['vegaLogNormalRiskModel'];
-      /**
-       * @description Percentage move up and down from the mid price which specifies the range of
-       * price levels over which automated liquidity provision orders will be deployed.
-       */
-      readonly lpPriceRange?: string;
       /** @description Optional futures market metadata, tags. */
       readonly metadata?: readonly string[];
       /** @description Price monitoring parameters. */

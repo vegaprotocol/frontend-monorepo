@@ -129,7 +129,6 @@ interface ProposalNewMarketTerms {
     changes: {
       decimalPlaces: string;
       positionDecimalPlaces: string;
-      lpPriceRange: string;
       linearSlippageFactor: string;
       quadraticSlippageFactor: string;
       instrument: {

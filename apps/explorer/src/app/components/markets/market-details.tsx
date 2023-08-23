@@ -9,7 +9,6 @@ import {
   LiquidityMonitoringParametersInfoPanel,
   InstrumentInfoPanel,
   KeyDetailsInfoPanel,
-  LiquidityPriceRangeInfoPanel,
   MetadataInfoPanel,
   OracleInfoPanel,
   RiskFactorsInfoPanel,
@@ -104,8 +103,6 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
       <LiquidityMonitoringParametersInfoPanel market={market} />
       <h2 className={headerClassName}>{t('Liquidity')}</h2>
       <LiquidityInfoPanel market={market} />
-      <h2 className={headerClassName}>{t('Liquidity price range')}</h2>
-      <LiquidityPriceRangeInfoPanel market={market} />
       {showTwoOracles ? (
         <>
           <h2 className={headerClassName}>{t('Settlement oracle')}</h2>
