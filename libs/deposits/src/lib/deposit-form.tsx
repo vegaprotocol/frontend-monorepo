@@ -14,14 +14,14 @@ import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
   Button,
-  FormGroup,
-  Input,
-  InputError,
-  RichSelect,
+  TradingFormGroup,
+  TradingInput,
+  TradingInputError,
+  TradingRichSelect,
   Notification,
   Intent,
   ButtonLink,
-  Select,
+  TradingSelect,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
@@ -151,7 +151,7 @@ export const DepositForm = ({
       noValidate={true}
       data-testid="deposit-form"
     >
-      <FormGroup
+      <TradingFormGroup
         label={t('From (Ethereum address)')}
         labelFor="ethereum-address"
       >
@@ -197,15 +197,17 @@ export const DepositForm = ({
           }}
         />
         {errors.from?.message && (
-          <InputError intent="danger">{errors.from.message}</InputError>
+          <TradingInputError intent="danger">
+            {errors.from.message}
+          </TradingInputError>
         )}
-      </FormGroup>
-      <FormGroup label={t('To (Vega key)')} labelFor="to">
+      </TradingFormGroup>
+      <TradingFormGroup label={t('To (Vega key)')} labelFor="to">
         <AddressField
           pubKeys={pubKeys}
           onChange={() => setValue('to', '')}
           select={
-            <Select {...register('to')} id="to" defaultValue="">
+            <TradingSelect {...register('to')} id="to" defaultValue="">
               <option value="" disabled>
                 {t('Please select')}
               </option>
@@ -215,10 +217,10 @@ export const DepositForm = ({
                     {pk}
                   </option>
                 ))}
-            </Select>
+            </TradingSelect>
           }
           input={
-            <Input
+            <TradingInput
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus={true} // focus input immediately after is shown
               id="to"
@@ -233,12 +235,12 @@ export const DepositForm = ({
           }
         />
         {errors.to?.message && (
-          <InputError intent="danger" forInput="to">
+          <TradingInputError intent="danger" forInput="to">
             {errors.to.message}
-          </InputError>
+          </TradingInputError>
         )}
-      </FormGroup>
-      <FormGroup label={t('Asset')} labelFor="asset">
+      </TradingFormGroup>
+      <TradingFormGroup label={t('Asset')} labelFor="asset">
         <Controller
           control={control}
           name="asset"
@@ -248,7 +250,7 @@ export const DepositForm = ({
             },
           }}
           render={({ field }) => (
-            <RichSelect
+            <TradingRichSelect
               data-testid="select-asset"
               id={field.name}
               name={field.name}
@@ -271,13 +273,13 @@ export const DepositForm = ({
                     }
                   />
                 ))}
-            </RichSelect>
+            </TradingRichSelect>
           )}
         />
         {errors.asset?.message && (
-          <InputError intent="danger" forInput="asset">
+          <TradingInputError intent="danger" forInput="asset">
             {errors.asset.message}
-          </InputError>
+          </TradingInputError>
         )}
         {isActive && isFaucetable && selectedAsset && (
           <UseButton onClick={submitFaucet}>
@@ -296,7 +298,7 @@ export const DepositForm = ({
             {t('View asset details')}
           </button>
         )}
-      </FormGroup>
+      </TradingFormGroup>
       <FaucetNotification
         isActive={isActive}
         selectedAsset={selectedAsset}
@@ -308,8 +310,8 @@ export const DepositForm = ({
         </div>
       )}
       {approved && (
-        <FormGroup label={t('Amount')} labelFor="amount">
-          <Input
+        <TradingFormGroup label={t('Amount')} labelFor="amount">
+          <TradingInput
             type="number"
             autoComplete="off"
             id="amount"
@@ -374,9 +376,9 @@ export const DepositForm = ({
             })}
           />
           {errors.amount?.message && (
-            <InputError intent="danger" forInput="amount">
+            <TradingInputError intent="danger" forInput="amount">
               {errors.amount.message}
-            </InputError>
+            </TradingInputError>
           )}
           {selectedAsset && balances && (
             <UseButton
@@ -390,7 +392,7 @@ export const DepositForm = ({
               {t('Use maximum')}
             </UseButton>
           )}
-        </FormGroup>
+        </TradingFormGroup>
       )}
       <ApproveNotification
         isActive={isActive}

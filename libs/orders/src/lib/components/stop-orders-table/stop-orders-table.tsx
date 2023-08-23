@@ -7,7 +7,14 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
-import { ButtonLink } from '@vegaprotocol/ui-toolkit';
+import {
+  ActionsDropdown,
+  ButtonLink,
+  VegaIcon,
+  VegaIconNames,
+  DropdownMenuItem,
+  TradingDropdownCopyItem,
+} from '@vegaprotocol/ui-toolkit';
 import type { ForwardedRef } from 'react';
 import { memo, useMemo } from 'react';
 import {
@@ -28,6 +35,7 @@ import type {
 import type { AgGridReact } from 'ag-grid-react';
 import type { StopOrder } from '../order-data-provider/stop-orders-data-provider';
 import type { ColDef } from 'ag-grid-community';
+import type { Order } from '../order-data-provider';
 
 const defaultColDef = {
   resizable: true,
@@ -38,12 +46,13 @@ const defaultColDef = {
 export type StopOrdersTableProps = TypedDataAgGrid<StopOrder> & {
   onCancel: (order: StopOrder) => void;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  onView: (order: Order) => void;
   isReadOnly: boolean;
 };
 
 export const StopOrdersTable = memo<
   StopOrdersTableProps & { ref?: ForwardedRef<AgGridReact> }
->(({ onCancel, onMarketClick, ...props }: StopOrdersTableProps) => {
+>(({ onCancel, onView, onMarketClick, ...props }: StopOrdersTableProps) => {
   const showAllActions = !props.isReadOnly;
   const columnDefs: ColDef[] = useMemo(
     () => [
@@ -236,12 +245,32 @@ export const StopOrdersTable = memo<
                     {t('Cancel')}
                   </ButtonLink>
                 )}
+              {data.status === Schema.StopOrderStatus.STATUS_TRIGGERED &&
+                data.order && (
+                  <ActionsDropdown data-testid="stop-order-actions-content">
+                    <TradingDropdownCopyItem
+                      value={data.order.id}
+                      text={t('Copy order ID')}
+                    />
+                    <DropdownMenuItem
+                      key={'view-order'}
+                      data-testid="view-order"
+                      onClick={() =>
+                        data.order &&
+                        onView({ ...data.order, market: data.market })
+                      }
+                    >
+                      <VegaIcon name={VegaIconNames.INFO} size={16} />
+                      {t('View order details')}
+                    </DropdownMenuItem>
+                  </ActionsDropdown>
+                )}
             </div>
           );
         },
       },
     ],
-    [onCancel, onMarketClick, props.isReadOnly, showAllActions]
+    [onCancel, onMarketClick, onView, props.isReadOnly, showAllActions]
   );
 
   return (

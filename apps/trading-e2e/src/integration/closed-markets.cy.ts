@@ -259,6 +259,12 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       .find('[data-testid="market-code"]')
       .should('have.text', settledMarket.tradableInstrument.instrument.code);
 
+    // 6001-MARK-071
+    cy.get(rowSelector)
+      .first()
+      .find('[title="Future"]')
+      .should('have.text', 'Futr');
+
     // 6001-MARK-002
     cy.get(rowSelector)
       .first()

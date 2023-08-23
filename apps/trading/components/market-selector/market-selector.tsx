@@ -5,7 +5,7 @@ import {
   type MarketMaybeWithDataAndCandles,
 } from '@vegaprotocol/markets';
 import {
-  Input,
+  TradingInput,
   TinyScroll,
   VegaIcon,
   VegaIconNames,
@@ -60,7 +60,7 @@ export const MarketSelector = ({
         />
         <div className="text-sm grid grid-cols-[2fr_1fr_1fr] gap-1 ">
           <div className="flex-1">
-            <Input
+            <TradingInput
               onChange={(e) =>
                 setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
               }

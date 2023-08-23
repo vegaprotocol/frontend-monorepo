@@ -14,11 +14,8 @@ import { Settings } from '../settings';
 import { Tooltip } from '../../components/tooltip';
 import { WithdrawContainer } from '../withdraw-container';
 import { Routes as AppRoutes } from '../../pages/client-router';
-import { persist } from 'zustand/middleware';
 import { GetStarted } from '../welcome-dialog';
 import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
-
-const STORAGE_KEY = 'vega_sidebar_store';
 
 export enum ViewType {
   Order = 'Order',
@@ -302,22 +299,14 @@ export const useSidebar = create<{
   init: boolean;
   view: SidebarView | null;
   setView: (view: SidebarView | null) => void;
-}>()(
-  persist(
-    (set) => ({
-      init: true,
-      view: null,
-      setView: (x) =>
-        set(() => {
-          if (x == null) {
-            return { view: null, init: false };
-          }
-
-          return { view: x, init: false };
-        }),
+}>()((set) => ({
+  init: true,
+  view: null,
+  setView: (x) =>
+    set(() => {
+      if (x == null) {
+        return { view: null, init: false };
+      }
+      return { view: x, init: false };
     }),
-    {
-      name: STORAGE_KEY,
-    }
-  )
-);
+}));

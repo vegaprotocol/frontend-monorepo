@@ -1,4 +1,4 @@
-import { Checkbox } from '@vegaprotocol/ui-toolkit';
+import { TradingCheckbox } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 
@@ -7,7 +7,7 @@ export const TelemetryApproval = ({ helpText }: { helpText: string }) => {
   return (
     <div className="flex flex-col py-3">
       <div className="mr-4" role="form">
-        <Checkbox
+        <TradingCheckbox
           label={<span className="text-lg pl-1">{t('Share usage data')}</span>}
           checked={isApproved}
           name="telemetry-approval"

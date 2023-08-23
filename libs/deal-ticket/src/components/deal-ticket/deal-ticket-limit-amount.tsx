@@ -1,4 +1,8 @@
-import { FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import {
+  TradingFormGroup,
+  TradingInput,
+  TradingInputError,
+} from '@vegaprotocol/ui-toolkit';
 import { toDecimal, validateAmount } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
@@ -25,17 +29,17 @@ export const DealTicketLimitAmount = ({
   const renderError = () => {
     if (sizeError) {
       return (
-        <InputError testId="deal-ticket-error-message-size-limit">
+        <TradingInputError testId="deal-ticket-error-message-size-limit">
           {sizeError}
-        </InputError>
+        </TradingInputError>
       );
     }
 
     if (priceError) {
       return (
-        <InputError testId="deal-ticket-error-message-price-limit">
+        <TradingInputError testId="deal-ticket-error-message-price-limit">
           {priceError}
-        </InputError>
+        </TradingInputError>
       );
     }
 
@@ -46,7 +50,7 @@ export const DealTicketLimitAmount = ({
     <div className="mb-2">
       <div className="flex items-start gap-4">
         <div className="flex-1">
-          <FormGroup
+          <TradingFormGroup
             label={t('Size')}
             labelFor="input-order-size-limit"
             className="!mb-0"
@@ -62,8 +66,8 @@ export const DealTicketLimitAmount = ({
                 },
                 validate: validateAmount(sizeStep, 'Size'),
               }}
-              render={({ field }) => (
-                <Input
+              render={({ field, fieldState }) => (
+                <TradingInput
                   id="input-order-size-limit"
                   className="w-full"
                   type="number"
@@ -71,15 +75,16 @@ export const DealTicketLimitAmount = ({
                   min={sizeStep}
                   data-testid="order-size"
                   onWheel={(e) => e.currentTarget.blur()}
+                  hasError={!!fieldState.error}
                   {...field}
                 />
               )}
             />
-          </FormGroup>
+          </TradingFormGroup>
         </div>
-        <div className="pt-7 leading-10">@</div>
+        <div className="pt-5 leading-10">@</div>
         <div className="flex-1">
-          <FormGroup
+          <TradingFormGroup
             labelFor="input-price-quote"
             label={t(`Price (${quoteName})`)}
             labelAlign="right"
@@ -96,19 +101,20 @@ export const DealTicketLimitAmount = ({
                 },
                 validate: validateAmount(priceStep, 'Price'),
               }}
-              render={({ field }) => (
-                <Input
+              render={({ field, fieldState }) => (
+                <TradingInput
                   id="input-price-quote"
                   className="w-full"
                   type="number"
                   step={priceStep}
                   data-testid="order-price"
                   onWheel={(e) => e.currentTarget.blur()}
+                  hasError={!!fieldState.error}
                   {...field}
                 />
               )}
             />
-          </FormGroup>
+          </TradingFormGroup>
         </div>
       </div>
       {renderError()}

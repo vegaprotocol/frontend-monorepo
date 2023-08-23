@@ -125,7 +125,7 @@ jobs:
       #----------------------------------------------
       - name: Run tests
         working-directory: ./console-test
-        run: poetry run pytest -s --numprocesses auto
+        run: poetry run pytest -s --numprocesses auto --dist loadfile
       - name: Check files
         run: |
           ls -al .

@@ -32,37 +32,6 @@ fragment ExplorerPartyAssetsAccounts on AccountBalance {
   }
 }
 
-fragment ExplorerPartyLinks on AccountBalance {
-  asset {
-    name
-    id
-    decimals
-    symbol
-    source {
-      __typename
-      ... on ERC20 {
-        contractAddress
-      }
-    }
-  }
-  type
-  balance
-  market {
-    id
-    decimalPlaces
-    tradableInstrument {
-      instrument {
-        name
-        product {
-          ... on Future {
-            quoteName
-          }
-        }
-      }
-    }
-  }
-}
-
 query ExplorerPartyAssets($partyId: ID!) {
   partiesConnection(id: $partyId) {
     edges {

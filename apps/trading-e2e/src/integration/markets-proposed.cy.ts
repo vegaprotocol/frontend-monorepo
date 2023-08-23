@@ -45,6 +45,12 @@ describe('markets proposed table', { tags: '@smoke' }, () => {
       .find('[col-id="description"]')
       .should('have.text', 'ETHUSD');
 
+    //  6001-MARK-074
+    cy.get(rowSelector)
+      .first()
+      .find('[title="Future"]')
+      .should('have.text', 'Futr');
+
     //  6001-MARK-051
     cy.get(rowSelector)
       .first()
