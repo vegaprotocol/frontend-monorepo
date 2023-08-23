@@ -124,6 +124,7 @@ export const marketInfoQuery = (
             quoteName: 'BTC',
             settlementAsset: {
               __typename: 'Asset',
+              quantum: '1',
               id: 'market-0',
               symbol: 'tBTC',
               name: 'tBTC TEST',
