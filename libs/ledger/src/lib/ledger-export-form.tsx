@@ -15,6 +15,7 @@ import { t } from '@vegaprotocol/i18n';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 import { formatForInput } from '@vegaprotocol/utils';
+import { subDays } from 'date-fns';
 
 const DEFAULT_EXPORT_FILE_NAME = 'ledger_entries.csv';
 
@@ -25,9 +26,10 @@ const getProtoHost = (vegaurl: string) => {
 
 export const LedgerExportForm = ({ partyId }: { partyId: string }) => {
   const now = useRef(new Date());
-  const [dateFrom, setDateFrom] = useState('');
+  const defaultFrom = subDays(now.current, 7);
+  const [dateFrom, setDateFrom] = useState(formatForInput(defaultFrom));
   const [dateTo, setDateTo] = useState('');
-  const maxFromDate = formatForInput(new Date(dateTo) || now.current);
+  const maxFromDate = formatForInput(new Date(dateTo || now.current));
   const maxToDate = formatForInput(now.current);
   const { data } = useAssetsDataProvider();
   const assets = (data || []).reduce((aggr, item) => {
@@ -70,13 +72,16 @@ export const LedgerExportForm = ({ partyId }: { partyId: string }) => {
   );
 
   const link = useMemo(() => {
-    if (protohost) {
-      const dateFromUrl = dateFrom
-        ? `&dateRange.startTimestamp=${toNanoSeconds(dateFrom)}`
-        : '';
+    if (protohost && partyId && assetId) {
+      const defaultFrom = subDays(now.current, 7);
       const dateToUrl = dateTo
         ? `&dateRange.endTimestamp=${toNanoSeconds(dateTo)}`
         : '';
+      const dateFromUrl = dateFrom
+        ? `&dateRange.startTimestamp=${toNanoSeconds(dateFrom)}`
+        : dateTo
+        ? ''
+        : `&dateRange.startTimestamp=${toNanoSeconds(defaultFrom)}`;
       return `${protohost}/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${assetId}${dateFromUrl}${dateToUrl}`;
     }
     return '';
@@ -119,9 +124,10 @@ export const LedgerExportForm = ({ partyId }: { partyId: string }) => {
         <TradingFormGroup label={t('Date from')} labelFor="date-from">
           <TradingInput
             type="datetime-local"
+            data-testid="date-from"
+            id="date-from"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            id="date-from"
             disabled={disable}
             max={maxFromDate}
           />
@@ -129,9 +135,10 @@ export const LedgerExportForm = ({ partyId }: { partyId: string }) => {
         <TradingFormGroup label={t('Date to')} labelFor="date-to">
           <TradingInput
             type="datetime-local"
+            data-testid="date-to"
+            id="date-to"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            id="date-to"
             disabled={disable}
             max={maxToDate}
           />
