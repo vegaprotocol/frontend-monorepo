@@ -8,9 +8,8 @@ declare global {
   }
 }
 
-export const DEFAULT_SNAP_ID = 'local:http://localhost:8080';
 // export const LOCAL_SNAP_ID = 'local:http://localhost:8080';
-// export const DEFAULT_SNAP_ID = 'npm:@vegaprotocol/snap';
+export const DEFAULT_SNAP_ID = 'npm:@vegaprotocol/snap';
 
 type GetSnapsResponse = Record<string, Snap>;
 
@@ -48,6 +47,7 @@ export const ERR_ETHEREUM_UNDEFINED = new Error(
 );
 export const ERR_NODE_ADDRESS_NOT_SET = new Error('nodeAddress is not set');
 const ERR_SNAP_ID_NOT_SET = new Error('snapId is not set');
+const ERR_TRANSACTION_PARSE = new Error('could not parse transaction data');
 
 /**
  * Requests permission for a website to communicate with the specified snaps
@@ -101,13 +101,14 @@ export const invokeSnap = async <T>(
   request: InvokeSnapRequest
 ): InvokeSnapResponse<T> => {
   if (!window.ethereum) throw ERR_ETHEREUM_UNDEFINED;
-  return await window.ethereum.request({
+  const req = {
     method: 'wallet_invokeSnap',
     params: {
       snapId,
       request,
     },
-  });
+  };
+  return await window.ethereum.request(req);
 };
 
 export class SnapConnector implements VegaConnector {
@@ -115,11 +116,6 @@ export class SnapConnector implements VegaConnector {
   snapId: string | undefined = undefined;
   nodeAddress: string | undefined = undefined;
 
-  /**
-   *
-   * @param nodeAddress
-   * @param snapId
-   */
   constructor(nodeAddress?: string, snapId = DEFAULT_SNAP_ID) {
     this.nodeAddress = nodeAddress;
     this.snapId = snapId;
@@ -136,8 +132,8 @@ export class SnapConnector implements VegaConnector {
     const res = await this.listKeys();
     setConfig({
       connector: 'snap',
-      token: null, // no token required for injected
-      url: null, // no url for injected
+      token: null, // no token required for snap
+      url: null, // no url required for snap
     });
     return res?.keys;
   }
@@ -146,22 +142,29 @@ export class SnapConnector implements VegaConnector {
     if (!this.nodeAddress) throw ERR_NODE_ADDRESS_NOT_SET;
     if (!this.snapId) throw ERR_SNAP_ID_NOT_SET;
 
+    // This step is needed to strip the transaction object from any additional
+    // properties, such as `__proto__`, etc.
+    let txData = null;
+    try {
+      txData = JSON.parse(JSON.stringify(transaction));
+    } catch (err) {
+      throw ERR_TRANSACTION_PARSE;
+    }
+
     const payload = {
       method: 'client.send_transaction',
       params: {
-        publicKey: pubKey,
-        transaction: transaction,
         sendingMode: 'TYPE_SYNC',
+        transaction: txData,
+        publicKey: pubKey,
         networkEndpoints: [this.nodeAddress],
       },
     };
-    console.log('PAYLOAD', payload);
+
     const result = await invokeSnap<SendTransactionResponse>(
       this.snapId,
       payload
     );
-
-    console.log('RESULT', result);
 
     return {
       transactionHash: result.transactionHash,
@@ -184,6 +187,7 @@ export class SnapConnector implements VegaConnector {
   }
 
   async disconnect() {
+    console.log('here');
     clearConfig();
   }
 }
