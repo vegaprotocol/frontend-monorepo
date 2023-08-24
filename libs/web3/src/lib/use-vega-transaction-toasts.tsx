@@ -725,11 +725,11 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
 
 const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   let label = t('Error occurred');
-  let errorMessage = `${tx.error?.message}  ${
-    tx.error instanceof WalletError && tx.error?.data
-      ? `:  ${tx.error?.data}`
-      : ''
-  }`;
+  let errorMessage =
+    tx.error instanceof WalletError
+      ? `${tx.error.title}: ${tx.error.data}`
+      : tx.error?.message;
+
   const reconnectVegaWallet = useReconnectVegaWallet();
 
   const orderRejection = tx.order && getRejectionReason(tx.order);
@@ -740,6 +740,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   const walletError =
     tx.error instanceof WalletError &&
     walletNoConnectionCodes.includes(tx.error.code);
+
   if (orderRejection) {
     label = getOrderToastTitle(tx.order?.status) || t('Order rejected');
     errorMessage = t('Your order has been rejected because: %s', [

@@ -1,5 +1,11 @@
 import type EthereumProvider from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
-import type { PubKey, Transaction, VegaConnector } from './vega-connector';
+import type { TransactionResponse } from './vega-connector';
+import {
+  WalletError,
+  type PubKey,
+  type Transaction,
+  type VegaConnector,
+} from './vega-connector';
 import { clearConfig, setConfig } from '../storage';
 
 declare global {
@@ -27,16 +33,23 @@ type InvokeSnapRequest = {
 };
 type InvokeSnapResponse<T> = Promise<T>;
 
-type SendTransactionResponse = {
-  transactionHash: string;
-  receivedAt: string;
-  sentAt: string;
-  transaction: {
-    signature: {
-      value: string;
+type SendTransactionResponse =
+  | {
+      transactionHash: string;
+      receivedAt: string;
+      sentAt: string;
+      transaction?: {
+        signature?: {
+          value: string;
+        };
+      };
+    }
+  | {
+      error: Error & {
+        code: number;
+        data: unknown;
+      };
     };
-  };
-};
 type GetChainIdResponse = {
   chainID: string;
 };
@@ -166,12 +179,21 @@ export class SnapConnector implements VegaConnector {
       payload
     );
 
+    if ('error' in result) {
+      const { message, code, data } = result.error;
+      throw new WalletError(
+        message,
+        code,
+        typeof data === 'string' ? data : ''
+      );
+    }
+
     return {
       transactionHash: result.transactionHash,
+      signature: result?.transaction?.signature?.value,
       receivedAt: result.receivedAt,
       sentAt: result.sentAt,
-      signature: result.transaction.signature.value,
-    };
+    } as TransactionResponse;
   }
 
   async getChainId(): Promise<GetChainIdResponse> {
@@ -187,7 +209,6 @@ export class SnapConnector implements VegaConnector {
   }
 
   async disconnect() {
-    console.log('here');
     clearConfig();
   }
 }

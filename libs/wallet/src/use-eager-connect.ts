@@ -1,4 +1,5 @@
-import { SnapConnector, useVegaWallet } from './';
+import type { SnapConnector } from './';
+import { useVegaWallet } from './';
 import { useEffect, useState } from 'react';
 import type { VegaConnector } from './connectors/vega-connector';
 import { getConfig } from './storage';
