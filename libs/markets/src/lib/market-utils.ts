@@ -124,7 +124,7 @@ export const getAsset = (market: Partial<Market>) => {
     );
   }
 
-  throw new Error('Failed to retrieve settlementAsset. Invalid product type');
+  throw new Error('Failed to retrieve asset. Invalid product type');
 };
 
 export const getQuoteName = (market: Partial<Market>) => {
