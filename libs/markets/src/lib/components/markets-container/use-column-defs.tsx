@@ -15,6 +15,7 @@ import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { FLAGS } from '@vegaprotocol/environment';
 import type { MarketMaybeWithData } from '../../markets-provider';
 import { MarketActionsDropdown } from './market-table-actions';
+import { getAsset } from '../../market-utils';
 
 interface Props {
   onMarketClick: (marketId: string, metaKey?: boolean) => void;
@@ -166,11 +167,7 @@ export const useColumnDefs = ({ onMarketClick }: Props) => {
             MarketMaybeWithData,
             'tradableInstrument.instrument.product.settlementAsset.symbol'
           >) => {
-            const value =
-              data &&
-              'settlementAsset' in data.tradableInstrument.instrument.product
-                ? data?.tradableInstrument.instrument.product.settlementAsset
-                : undefined;
+            const value = data && getAsset(data);
 
             return value ? (
               <ButtonLink
@@ -196,13 +193,7 @@ export const useColumnDefs = ({ onMarketClick }: Props) => {
             return (
               <MarketActionsDropdown
                 marketId={data.id}
-                assetId={
-                  'settlementAsset' in
-                  data.tradableInstrument.instrument.product
-                    ? data.tradableInstrument.instrument.product.settlementAsset
-                        .id
-                    : ''
-                }
+                assetId={getAsset(data)?.id}
               />
             );
           },

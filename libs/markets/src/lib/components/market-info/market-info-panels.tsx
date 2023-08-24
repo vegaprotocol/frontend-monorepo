@@ -858,7 +858,7 @@ export const DataSourceProof = ({
   return <div>{t('Invalid data source')}</div>;
 };
 
-const getDataSourceSpec = (
+export const getDataSourceSpec = (
   product: MarketInfo['tradableInstrument']['instrument']['product'],
   type: 'settlementData' | 'termination' | 'settlementSchedule'
 ): {

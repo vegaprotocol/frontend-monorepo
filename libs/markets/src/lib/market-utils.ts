@@ -10,6 +10,48 @@ import type {
 } from '../';
 const { MarketState, MarketTradingMode } = Schema;
 
+export const getAsset = (market: Partial<Market>) => {
+  if (!market.tradableInstrument?.instrument.product) {
+    throw new Error(
+      'Failed to retrieve settlementAsset. Invalid tradable instrument'
+    );
+  }
+
+  const product = market.tradableInstrument.instrument.product;
+
+  if (product.__typename === 'Perpetual' || product.__typename === 'Future') {
+    return product.settlementAsset;
+  }
+
+  if (product.__typename === 'Spot') {
+    // TODO to handle baseAsset for Spots
+    throw new Error('Failed to retrieve asset. Spots not yet implemented');
+  }
+
+  throw new Error('Failed to retrieve asset. Invalid product type');
+};
+
+export const getQuoteName = (market: Partial<Market>) => {
+  if (!market.tradableInstrument?.instrument.product) {
+    throw new Error(
+      'Failed to retrieve quoteName. Invalid tradable instrument'
+    );
+  }
+
+  const product = market.tradableInstrument.instrument.product;
+
+  if (product.__typename === 'Perpetual' || product.__typename === 'Future') {
+    return product.quoteName;
+  }
+
+  if (product.__typename === 'Spot') {
+    // TODO to handle baseAsset for Spots
+    throw new Error('Failed to retrieve quoteName. Spots not yet implemented');
+  }
+
+  throw new Error('Failed to retrieve quoteName. Invalid product type');
+};
+
 export const totalFees = (fees: Market['fees']['factors']) => {
   return fees
     ? new BigNumber(fees.makerFee)
@@ -102,48 +144,4 @@ export const calcTradedFactor = (m: MarketMaybeWithDataAndCandles) => {
   const fq = toBigNum(quantum, decimals);
   const factor = fq.multipliedBy(fp).multipliedBy(volume);
   return factor.toNumber();
-};
-
-export const getAsset = (market: Partial<Market>) => {
-  if (!market.tradableInstrument?.instrument.product) {
-    throw new Error(
-      'Failed to retrieve settlementAsset. Invalid tradable instrument'
-    );
-  }
-
-  const product = market.tradableInstrument.instrument.product;
-
-  if (product.__typename === 'Perpetual' || product.__typename === 'Future') {
-    return product.settlementAsset;
-  }
-
-  if (product.__typename === 'Spot') {
-    // TODO to handle baseAsset for Spots
-    throw new Error(
-      'Failed to retrieve settlementAsset. Spots not yet implemented'
-    );
-  }
-
-  throw new Error('Failed to retrieve settlementAsset. Invalid product type');
-};
-
-export const getQuoteName = (market: Partial<Market>) => {
-  if (!market.tradableInstrument?.instrument.product) {
-    throw new Error(
-      'Failed to retrieve quoteName. Invalid tradable instrument'
-    );
-  }
-
-  const product = market.tradableInstrument.instrument.product;
-
-  if (product.__typename === 'Perpetual' || product.__typename === 'Future') {
-    return product.quoteName;
-  }
-
-  if (product.__typename === 'Spot') {
-    // TODO to handle baseAsset for Spots
-    throw new Error('Failed to retrieve quoteName. Spots not yet implemented');
-  }
-
-  throw new Error('Failed to retrieve quoteName. Invalid product type');
 };

@@ -68,7 +68,10 @@ export const getMetrics = (
     const market = position.market;
     if (
       !market ||
-      !('settlementAsset' in market.tradableInstrument.instrument.product)
+      !(
+        market.tradableInstrument.instrument.product.__typename === 'Future' ||
+        market.tradableInstrument.instrument.product.__typename === 'Perpetual'
+      )
     ) {
       return;
     }

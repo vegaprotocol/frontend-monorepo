@@ -170,7 +170,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   }
 
   if (market.tradableInstrument.instrument.product.__typename === 'Spot') {
-    // TODO add baseAsset and quoteAsset for Spots
+    // TODO to handle baseAsset and quoteAsset for Spots
     // quoteName = market.tradableInstrument.instrument.product.quoteAsset;
     // asset = market.tradableInstrument.instrument.product.baseAsset;
   }

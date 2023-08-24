@@ -118,8 +118,7 @@ const ExpiryTooltipContent = ({
 }: ExpiryTooltipContentProps) => {
   if (market?.marketTimestamps.close === null) {
     const oracleId =
-      'dataSourceSpecForTradingTermination' in
-      market.tradableInstrument.instrument.product
+      market.tradableInstrument.instrument.product.__typename === 'Future'
         ? market.tradableInstrument.instrument.product
             .dataSourceSpecForTradingTermination?.id
         : undefined;

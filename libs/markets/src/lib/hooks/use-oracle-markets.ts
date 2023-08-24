@@ -30,7 +30,7 @@ export const useOracleMarkets = (
       const signers =
         'signers' in sourceType.sourceType
           ? sourceType?.sourceType.signers
-          : null;
+          : undefined;
       const signerKeys = signers?.filter(Boolean).map((signer) => {
         if (signer.signer.__typename === 'ETHAddress') {
           return signer.signer.address;

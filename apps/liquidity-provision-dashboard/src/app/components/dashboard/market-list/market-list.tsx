@@ -35,7 +35,6 @@ import { HealthDialog } from '../../health-dialog';
 import { Status } from '../../status';
 import { intentForStatus } from '../../../lib/utils';
 import { formatDistanceToNow } from 'date-fns';
-import get from 'lodash/get';
 import { getAsset } from '@vegaprotocol/markets';
 
 export const MarketList = () => {
@@ -53,7 +52,7 @@ export const MarketList = () => {
           return (
             <>
               <span className="leading-3">{value}</span>
-              <span className="leading-3">{get(getAsset(data), 'symbol')}</span>
+              <span className="leading-3">{getAsset(data).symbol}</span>
             </>
           );
         },
