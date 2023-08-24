@@ -132,6 +132,7 @@ describe('MarketSelector', () => {
     data: markets,
     loading: false,
     error: undefined,
+    reload: jest.fn(),
   });
 
   it('Button "All" should be selected by default', () => {
