@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import uniqBy from 'lodash/uniqBy';
-import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
+import { type MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import {
   TradingInput,
   TinyScroll,
@@ -8,7 +8,7 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import type { CSSProperties } from 'react';
-import { useCallback, useState, useMemo, useRef } from 'react';
+import { useCallback, useState, useMemo, useRef, useEffect } from 'react';
 import { FixedSizeList } from 'react-window';
 import { useMarketSelectorList } from './use-market-selector-list';
 import type { ProductType } from './product-selector';
@@ -44,7 +44,12 @@ export const MarketSelector = ({
     assets: [],
   });
   const allProducts = filter.product === Product.All;
-  const { markets, data, loading, error } = useMarketSelectorList(filter);
+  const { markets, data, loading, error, reload } =
+    useMarketSelectorList(filter);
+
+  useEffect(() => {
+    reload();
+  }, [reload]);
 
   return (
     <div data-testid="market-selector">

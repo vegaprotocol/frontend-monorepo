@@ -2,31 +2,38 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
-import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { isBrowserWalletInstalled } from '@vegaprotocol/wallet';
-import * as constants from '../constants';
+import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { WelcomeDialogContent } from './welcome-dialog-content';
-import { getConfig } from '@vegaprotocol/wallet';
 import { Links, Routes } from '../../pages/client-router';
 import { useGlobalStore } from '../../stores';
+import {
+  useGetOnboardingStep,
+  OnboardingStep,
+} from './use-get-onboarding-step';
+import * as constants from '../constants';
 
 export const WelcomeDialog = () => {
   const { VEGA_ENV } = useEnvironment();
-  const [onBoardingViewed, setOnboardingViewed] = useLocalStorage(
-    constants.ONBOARDING_VIEWED_KEY
-  );
+  const [onBoardingViewed] = useLocalStorage(constants.ONBOARDING_VIEWED_KEY);
+  const update = useGlobalStore((store) => store.update);
+  const dismissed = useGlobalStore((store) => store.onBoardingDismissed);
+  const currentStep = useGetOnboardingStep();
+
   const navigate = useNavigate();
   const isOnboardingDialogNeeded =
-    onBoardingViewed !== 'true' && !isBrowserWalletInstalled() && !getConfig();
+    onBoardingViewed !== 'true' &&
+    currentStep &&
+    currentStep < OnboardingStep.ONBOARDING_COMPLETE_STEP &&
+    !dismissed;
   const marketId = useGlobalStore((store) => store.marketId);
 
   const onClose = () => {
-    setOnboardingViewed('true');
     const link = marketId
       ? Links[Routes.MARKET](marketId)
       : Links[Routes.HOME]();
     navigate(link);
+    update({ onBoardingDismissed: true });
   };
   const title = (
     <span className="font-alpha calt" data-testid="welcome-title">

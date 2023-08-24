@@ -21,8 +21,7 @@
           "echo $NX_TENDERMINT_URL",
           "echo $NX_TENDERMINT_WEBSOCKET_URL",
           "echo $NX_ETHEREUM_PROVIDER_URL"
-        ],
-        "url": "https://cloud.nx.app"
+        ]
       }
     }
   },

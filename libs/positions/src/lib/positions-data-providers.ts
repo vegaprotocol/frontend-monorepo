@@ -181,7 +181,7 @@ const getSubscriptionVariables = (
 ): PositionsSubscriptionSubscriptionVariables[] =>
   ([] as string[]).concat(variables.partyIds).map((partyId) => ({ partyId }));
 
-const positionsDataProvider = makeDataProvider<
+export const positionsDataProvider = makeDataProvider<
   PositionsQuery,
   PositionFieldsFragment[],
   PositionsSubscriptionSubscription,
