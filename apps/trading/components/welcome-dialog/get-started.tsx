@@ -105,38 +105,29 @@ export const GetStarted = ({ lead }: Props) => {
         {lead && <h2>{lead}</h2>}
         <h3 className="text-lg">{t('Get started')}</h3>
         <div>
-          <ul className="list-inside -ml-5" role="list">
-            <li className="flex">
-              <div className="w-5">
-                {currentStep > OnboardingStep.ONBOARDING_WALLET_STEP && (
-                  <VegaIcon name={VegaIconNames.TICK} size={20} />
-                )}
-              </div>
-              <div className="ml-1">1. {t('Get a Vega wallet')}</div>
-            </li>
-            <li className="flex">
-              <div className="w-5">
-                {(currentStep > OnboardingStep.ONBOARDING_CONNECT_STEP ||
-                  pubKey) && <VegaIcon name={VegaIconNames.TICK} size={20} />}
-              </div>
-              <div className="ml-1">2. {t('Connect')}</div>
-            </li>
-            <li className="flex">
-              <div className="w-5">
-                {currentStep > OnboardingStep.ONBOARDING_DEPOSIT_STEP && (
-                  <VegaIcon name={VegaIconNames.TICK} size={20} />
-                )}
-              </div>
-              <div className="ml-1">3. {t('Deposit funds')}</div>
-            </li>
-            <li className="flex">
-              <div className="w-5">
-                {currentStep > OnboardingStep.ONBOARDING_ORDER_STEP && (
-                  <VegaIcon name={VegaIconNames.TICK} size={20} />
-                )}
-              </div>
-              <div className="ml-1">4. {t('Open a position')}</div>
-            </li>
+          <ul className="list-none">
+            <Step
+              step={1}
+              text={t('Get a Vega wallet')}
+              complete={currentStep > OnboardingStep.ONBOARDING_WALLET_STEP}
+            />
+            <Step
+              step={2}
+              text={t('Connect')}
+              complete={Boolean(
+                currentStep > OnboardingStep.ONBOARDING_CONNECT_STEP || pubKey
+              )}
+            />
+            <Step
+              step={3}
+              text={t('Deposit funds')}
+              complete={currentStep > OnboardingStep.ONBOARDING_DEPOSIT_STEP}
+            />
+            <Step
+              step={4}
+              text={t('Open a position')}
+              complete={currentStep > OnboardingStep.ONBOARDING_ORDER_STEP}
+            />
           </ul>
         </div>
         <div>
@@ -165,7 +156,7 @@ export const GetStarted = ({ lead }: Props) => {
   if (!pubKey) {
     return (
       <div className={wrapperClasses}>
-        <p className="text-sm mb-1">
+        <p className="mb-1 text-sm">
           You need a{' '}
           <ExternalLink href="https://vega.xyz/wallet">
             Vega wallet
@@ -185,4 +176,35 @@ export const GetStarted = ({ lead }: Props) => {
   }
 
   return null;
+};
+
+const Step = ({
+  step,
+  text,
+  complete,
+}: {
+  step: number;
+  text: string;
+  complete: boolean;
+}) => {
+  return (
+    <li
+      className={classNames('flex', {
+        'text-vega-clight-200 dark:text-vega-cdark-200': complete,
+      })}
+    >
+      <div className="flex justify-center w-5">
+        {complete ? <Tick /> : <span>{step}.</span>}
+      </div>
+      <div className="ml-1">{text}</div>
+    </li>
+  );
+};
+
+const Tick = () => {
+  return (
+    <span className="relative right-[2px]">
+      <VegaIcon name={VegaIconNames.TICK} size={18} />
+    </span>
+  );
 };
