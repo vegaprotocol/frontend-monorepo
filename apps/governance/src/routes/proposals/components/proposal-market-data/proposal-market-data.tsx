@@ -58,16 +58,33 @@ export const ProposalMarketData = ({
   }
 
   const settlementData =
-    'dataSourceSpecForSettlementData' in
-      marketData.tradableInstrument.instrument.product &&
-    (marketData.tradableInstrument.instrument.product
-      .dataSourceSpecForSettlementData.data as DataSourceDefinition);
+    marketData.tradableInstrument.instrument.product.__typename === 'Future' ||
+    marketData.tradableInstrument.instrument.product.__typename === 'Perpetual'
+      ? (marketData.tradableInstrument.instrument.product
+          .dataSourceSpecForSettlementData.data as DataSourceDefinition)
+      : undefined;
+
+  const settlementScheduleData =
+    marketData.tradableInstrument.instrument.product.__typename === 'Perpetual'
+      ? (marketData.tradableInstrument.instrument.product
+          .dataSourceSpecForSettlementSchedule.data as DataSourceDefinition)
+      : undefined;
+
   const parentSettlementData =
-    parentMarketData &&
-    'dataSourceSpecForSettlementData' in
-      parentMarketData.tradableInstrument.instrument.product &&
-    parentMarketData?.tradableInstrument.instrument?.product
-      ?.dataSourceSpecForSettlementData?.data;
+    parentMarketData?.tradableInstrument.instrument.product.__typename ===
+      'Future' ||
+    parentMarketData?.tradableInstrument.instrument.product.__typename ===
+      'Perpetual'
+      ? parentMarketData?.tradableInstrument.instrument?.product
+          ?.dataSourceSpecForSettlementData?.data
+      : undefined;
+
+  const parentSettlementScheduleData =
+    parentMarketData?.tradableInstrument.instrument.product.__typename ===
+    'Perpetual'
+      ? parentMarketData?.tradableInstrument.instrument?.product
+          ?.dataSourceSpecForSettlementSchedule?.data
+      : undefined;
 
   const terminationData =
     'dataSourceSpecForTradingTermination' in
@@ -86,6 +103,10 @@ export const ProposalMarketData = ({
   const isParentSettlementDataEqual =
     parentSettlementData !== undefined &&
     isEqual(settlementData, parentSettlementData);
+
+  const isParentSettlementScheduleDataEqual =
+    parentSettlementData !== undefined &&
+    isEqual(settlementScheduleData, parentSettlementScheduleData);
 
   const isParentTerminationDataEqual =
     parentTerminationData !== undefined &&
@@ -172,7 +193,7 @@ export const ProposalMarketData = ({
                 <>
                   <AccordionItem
                     itemId="settlement-oracle"
-                    title={t('Settlement Oracle')}
+                    title={t('Settlement oracle')}
                     content={
                       <OracleInfoPanel
                         market={marketData}
@@ -188,13 +209,29 @@ export const ProposalMarketData = ({
 
                   <AccordionItem
                     itemId="termination-oracle"
-                    title={t('Termination Oracle')}
+                    title={t('Termination oracle')}
                     content={
                       <OracleInfoPanel
                         market={marketData}
                         type="termination"
                         parentMarket={
                           isParentTerminationDataEqual
+                            ? undefined
+                            : parentMarketData
+                        }
+                      />
+                    }
+                  />
+
+                  <AccordionItem
+                    itemId="settlement-schedule-oracle"
+                    title={t('Settlement schedule oracle')}
+                    content={
+                      <OracleInfoPanel
+                        market={marketData}
+                        type="settlementSchedule"
+                        parentMarket={
+                          isParentSettlementScheduleDataEqual
                             ? undefined
                             : parentMarketData
                         }

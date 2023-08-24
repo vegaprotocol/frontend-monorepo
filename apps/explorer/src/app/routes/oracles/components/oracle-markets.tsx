@@ -27,7 +27,7 @@ export function OracleMarkets({ id }: OracleMarketsProps) {
     const m = markets.find((m) => {
       const p = m.tradableInstrument.instrument.product;
       if (
-        ('dataSourceSpecForSettlementData' in p &&
+        ((p.__typename === 'Future' || p.__typename === 'Perpetual') &&
           p.dataSourceSpecForSettlementData.id === id) ||
         ('dataSourceSpecForTradingTermination' in p &&
           p.dataSourceSpecForTradingTermination.id === id)
@@ -39,8 +39,8 @@ export function OracleMarkets({ id }: OracleMarketsProps) {
 
     if (m && m.id) {
       const type =
-        'dataSourceSpecForSettlementData' in
-          m.tradableInstrument.instrument.product &&
+        (m.tradableInstrument.instrument.product.__typename === 'Future' ||
+          m.tradableInstrument.instrument.product.__typename === 'Perpetual') &&
         id ===
           m.tradableInstrument.instrument.product
             .dataSourceSpecForSettlementData.id

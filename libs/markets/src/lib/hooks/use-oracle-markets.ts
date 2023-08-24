@@ -21,7 +21,7 @@ export const useOracleMarkets = (
     ?.filter((node) => {
       const p = node.tradableInstrument.instrument.product;
       const sourceType =
-        'dataSourceSpecForSettlementData' in p
+        p.__typename === 'Future' || p.__typename === 'Perpetual'
           ? p.dataSourceSpecForSettlementData.data.sourceType
           : undefined;
       if (sourceType?.__typename !== 'DataSourceDefinitionExternal') {

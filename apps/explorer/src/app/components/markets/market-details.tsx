@@ -23,17 +23,14 @@ import isEqual from 'lodash/isEqual';
 export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
   if (!market) return null;
 
-  // TODO - check settlementScheduleData for Perpetuals
-
   const settlementData =
-    'dataSourceSpecForSettlementData' in
-    market.tradableInstrument.instrument.product
+    market.tradableInstrument.instrument.product.__typename === 'Future' ||
+    market.tradableInstrument.instrument.product.__typename === 'Perpetual'
       ? (market.tradableInstrument.instrument.product
           .dataSourceSpecForSettlementData.data as DataSourceDefinition)
       : undefined;
   const terminationData =
-    'dataSourceSpecForTradingTermination' in
-    market.tradableInstrument.instrument.product
+    market.tradableInstrument.instrument.product.__typename === 'Future'
       ? (market.tradableInstrument.instrument.product
           .dataSourceSpecForTradingTermination.data as DataSourceDefinition)
       : undefined;

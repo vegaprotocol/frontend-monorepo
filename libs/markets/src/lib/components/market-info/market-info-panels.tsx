@@ -48,11 +48,10 @@ import {
 } from '../../__generated__';
 import { useSuccessorMarketProposalDetailsQuery } from '@vegaprotocol/proposals';
 import type { MarketTradingMode } from '@vegaprotocol/types';
-import { getQuoteName } from '../../market-utils';
+import { getQuoteName, getAsset } from '../../market-utils';
 import type { Signer } from '@vegaprotocol/types';
 import classNames from 'classnames';
 import compact from 'lodash/compact';
-import get from 'lodash/get';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -80,14 +79,7 @@ export const CurrentFeesInfoPanel = ({ market }: MarketInfoProps) => (
 );
 
 export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
-  const assetSymbol =
-    market?.tradableInstrument.instrument.product &&
-    'settlementAsset' in market.tradableInstrument.instrument.product
-      ? market?.tradableInstrument.instrument.product?.settlementAsset.symbol
-      : market?.tradableInstrument.instrument.product &&
-        'baseAsset' in market.tradableInstrument.instrument.product
-      ? get(market?.tradableInstrument.instrument.product?.baseAsset, 'symbol')
-      : '';
+  const assetSymbol = getAsset(market).symbol;
   const quoteUnit = getQuoteName(market);
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
@@ -100,10 +92,7 @@ export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
           markPrice: data?.markPrice,
           bestBidPrice: data?.bestBidPrice,
           bestOfferPrice: data?.bestOfferPrice,
-          quoteUnit: get(
-            market.tradableInstrument.instrument.product,
-            'quoteName'
-          ),
+          quoteUnit,
         }}
         decimalPlaces={market.decimalPlaces}
       />
@@ -154,16 +143,15 @@ export const InsurancePoolInfoPanel = ({
     Get<MarketInfoWithData, 'accountsConnection.edges[0].node'>
   >;
 } & MarketInfoProps) => {
-  const assetSymbol = getAssetSymbol(market);
-  const assetDecimals = getAssetDecimals(market);
+  const asset = getAsset(market);
 
   return (
     <MarketInfoTable
       data={{
         balance: account.balance,
       }}
-      assetSymbol={assetSymbol}
-      decimalPlaces={assetDecimals}
+      assetSymbol={asset.symbol}
+      decimalPlaces={asset.decimals}
     />
   );
 };
@@ -205,7 +193,7 @@ export const KeyDetailsInfoPanel = ({
       skip: !parentMarket?.proposal?.id,
     });
 
-  const assetDecimals = getAssetDecimals(market);
+  const assetDecimals = getAsset(market).decimals;
 
   return (
     <MarketInfoTable
@@ -386,36 +374,32 @@ export const SuccessionLineInfoPanel = ({
 export const InstrumentInfoPanel = ({
   market,
   parentMarket,
-}: MarketInfoProps) => (
-  <MarketInfoTable
-    data={{
-      marketName: market.tradableInstrument.instrument.name,
-      code: market.tradableInstrument.instrument.code,
-      productType: market.tradableInstrument.instrument.product.__typename,
-      quoteName: get(market.tradableInstrument.instrument.product, 'quoteName'),
-    }}
-    parentData={
-      parentMarket && {
-        marketName: parentMarket?.tradableInstrument?.instrument?.name,
-        code: parentMarket?.tradableInstrument?.instrument?.code,
-        productType:
-          parentMarket?.tradableInstrument?.instrument?.product?.__typename,
-        quoteName: get(
-          parentMarket?.tradableInstrument?.instrument?.product,
-          'quoteName'
-        ),
+}: MarketInfoProps) => {
+  return (
+    <MarketInfoTable
+      data={{
+        marketName: market.tradableInstrument.instrument.name,
+        code: market.tradableInstrument.instrument.code,
+        productType: market.tradableInstrument.instrument.product.__typename,
+        quoteName: getQuoteName(market),
+      }}
+      parentData={
+        parentMarket && {
+          marketName: parentMarket?.tradableInstrument?.instrument?.name,
+          code: parentMarket?.tradableInstrument?.instrument?.code,
+          productType:
+            parentMarket?.tradableInstrument?.instrument?.product?.__typename,
+          quoteName: getQuoteName(parentMarket),
+        }
       }
-    }
-  />
-);
+    />
+  );
+};
 
 export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
-  const assetSymbol = getAssetSymbol(market);
-  const quoteUnit = get(
-    market?.tradableInstrument.instrument.product,
-    'quoteName'
-  );
-  const assetId = useMemo(() => getAssetId(market), [market]);
+  const assetSymbol = getAsset(market).symbol;
+  const quoteUnit = getQuoteName(market);
+  const assetId = useMemo(() => getAsset(market).id, [market]);
 
   const { data: asset } = useAssetDataProvider(assetId ?? '');
   return asset ? (
@@ -599,14 +583,8 @@ export const PriceMonitoringBoundsInfoPanel = ({
       ],
   });
 
-  const quoteUnit = get(
-    market?.tradableInstrument.instrument.product,
-    'quoteName'
-  );
-  const parentQuoteUnit = get(
-    parentMarket?.tradableInstrument.instrument.product,
-    'quoteName'
-  );
+  const quoteUnit = getQuoteName(market);
+  const parentQuoteUnit = parentMarket && getQuoteName(parentMarket);
   const isParentQuoteUnitEqual = quoteUnit === parentQuoteUnit;
 
   const trigger =
@@ -697,8 +675,7 @@ export const LiquidityMonitoringParametersInfoPanel = ({
 };
 
 export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
-  const assetDecimals = getAssetDecimals(market);
-  const assetSymbol = getAssetSymbol(market);
+  const asset = getAsset(market);
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: { marketId: market.id },
@@ -711,8 +688,8 @@ export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
           suppliedStake: data?.suppliedStake,
           marketValueProxy: data?.marketValueProxy,
         }}
-        decimalPlaces={assetDecimals}
-        assetSymbol={assetSymbol}
+        decimalPlaces={asset.decimals}
+        assetSymbol={asset.symbol}
       />
       {children}
     </>
@@ -733,88 +710,51 @@ export const OracleInfoPanel = ({
   const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
   const { data } = useOracleProofs(ORACLE_PROOFS_URL);
 
-  const dataSourceSpecId =
-    type === 'settlementData' && 'dataSourceSpecForSettlementData' in product
-      ? product.dataSourceSpecForSettlementData.id
-      : type === 'termination' &&
-        'dataSourceSpecForTradingTermination' in product
-      ? product.dataSourceSpecForTradingTermination.id
-      : type === 'settlementSchedule' &&
-        'dataSourceSpecForSettlementScheduleData' in product
-      ? get(product.dataSourceSpecForSettlementScheduleData, 'id')
-      : '';
+  const { dataSourceSpecId, dataSourceSpec } = getDataSourceSpec(product, type);
 
-  const parentDataSourceSpecId = !parentProduct
-    ? undefined
-    : type === 'settlementData' &&
-      'dataSourceSpecForSettlementData' in parentProduct
-    ? parentProduct.dataSourceSpecForSettlementData.id
-    : type === 'termination' &&
-      'dataSourceSpecForTradingTermination' in parentProduct
-    ? parentProduct.dataSourceSpecForTradingTermination.id
-    : type === 'settlementSchedule' &&
-      'dataSourceSpecForSettlementScheduleData' in parentProduct
-    ? get(parentProduct.dataSourceSpecForSettlementScheduleData, 'id')
-    : '';
-
-  const dataSourceSpec =
-    type === 'settlementData' && 'dataSourceSpecForSettlementData' in product
-      ? product.dataSourceSpecForSettlementData.data
-      : type === 'termination' &&
-        'dataSourceSpecForTradingTermination' in product
-      ? product.dataSourceSpecForTradingTermination.data
-      : type === 'settlementSchedule' &&
-        'dataSourceSpecForSettlementScheduleData' in product
-      ? get(product.dataSourceSpecForSettlementScheduleData, 'data')
-      : null;
-
-  const parentDataSourceSpec = !parentProduct
-    ? undefined
-    : type === 'settlementData' &&
-      'dataSourceSpecForSettlementData' in parentProduct
-    ? parentProduct.dataSourceSpecForSettlementData.data
-    : type === 'termination' &&
-      'dataSourceSpecForTradingTermination' in parentProduct
-    ? parentProduct.dataSourceSpecForTradingTermination.data
-    : type === 'settlementSchedule' &&
-      'dataSourceSpecForSettlementScheduleData' in parentProduct
-    ? get(parentProduct.dataSourceSpecForSettlementScheduleData, 'data')
-    : null;
-
-  const isParentDataSourceSpecEqual =
-    parentDataSourceSpec !== undefined &&
-    dataSourceSpec === parentDataSourceSpec;
-  const isParentDataSourceSpecIdEqual =
-    parentDataSourceSpecId !== undefined &&
-    dataSourceSpecId === parentDataSourceSpecId;
+  let parentDataSourceSpecId, parentDataSourceSpec;
+  if (parentProduct) {
+    parentDataSourceSpec = getDataSourceSpec(parentProduct, type);
+    parentDataSourceSpecId = parentDataSourceSpec.dataSourceSpecId;
+    parentDataSourceSpec = parentDataSourceSpec.dataSourceSpec;
+  }
 
   // We'll only provide successor parent data (if it differs) to the
   // DataSourceProof component. Having an old external link struck through
   // is unlikely to be useful.
   return (
     <div className="flex flex-col gap-2">
-      <DataSourceProof
-        data-testid="oracle-proof-links"
-        data={dataSourceSpec}
-        providers={data}
-        type={type}
-        dataSourceSpecId={dataSourceSpecId}
-        parentData={
-          isParentDataSourceSpecEqual ? undefined : parentDataSourceSpec
-        }
-        parentDataSourceSpecId={
-          isParentDataSourceSpecIdEqual ? undefined : parentDataSourceSpecId
-        }
-      />
-
-      <ExternalLink
-        data-testid="oracle-spec-links"
-        href={`${VEGA_EXPLORER_URL}/oracles/${dataSourceSpecId}`}
-      >
-        {type === 'settlementData'
-          ? t('View settlement data specification')
-          : t('View termination specification')}
-      </ExternalLink>
+      {dataSourceSpec && dataSourceSpecId && (
+        <DataSourceProof
+          data-testid="oracle-proof-links"
+          providers={data}
+          type={type}
+          dataSourceSpecId={dataSourceSpecId}
+          parentDataSourceSpecId={
+            dataSourceSpecId === parentDataSourceSpecId
+              ? undefined
+              : parentDataSourceSpecId
+          }
+          data={dataSourceSpec}
+          parentData={
+            dataSourceSpec === parentDataSourceSpec
+              ? undefined
+              : parentDataSourceSpec
+          }
+        />
+      )}
+      {dataSourceSpecId && (
+        <ExternalLink
+          data-testid="oracle-spec-links"
+          href={`${VEGA_EXPLORER_URL}/oracles/${dataSourceSpecId}`}
+        >
+          {type === 'settlementData'
+            ? t('View settlement data specification')
+            : type === 'settlementSchedule'
+            ? t('View settlement schedule specification')
+            : t('View termination specification')}
+        </ExternalLink>
+      )}
     </div>
   );
 };
@@ -896,7 +836,7 @@ export const DataSourceProof = ({
       return (
         <div>
           <h3>{t('Internal conditions')}</h3>
-          {data.sourceType.sourceType?.conditions.map((condition, i) => {
+          {data.sourceType.sourceType?.conditions?.map((condition, i) => {
             if (!condition) return null;
             return (
               <p key={i}>
@@ -916,6 +856,59 @@ export const DataSourceProof = ({
   }
 
   return <div>{t('Invalid data source')}</div>;
+};
+
+const getDataSourceSpec = (
+  product: MarketInfo['tradableInstrument']['instrument']['product'],
+  type: 'settlementData' | 'termination' | 'settlementSchedule'
+): {
+  dataSourceSpecId: string | undefined;
+  dataSourceSpec: DataSourceDefinition | undefined;
+} => {
+  let dataSourceSpecId, dataSourceSpec;
+
+  switch (type) {
+    case 'settlementData':
+      switch (product.__typename) {
+        case 'Future':
+          dataSourceSpecId = product.dataSourceSpecForSettlementData.id;
+          dataSourceSpec = product.dataSourceSpecForSettlementData.data;
+          break;
+        case 'Perpetual':
+          dataSourceSpecId = product.dataSourceSpecForSettlementData.id;
+          dataSourceSpec = product.dataSourceSpecForSettlementData.data;
+          break;
+        default:
+          break;
+      }
+      break;
+    case 'termination':
+      switch (product.__typename) {
+        case 'Future':
+          dataSourceSpecId = product.dataSourceSpecForTradingTermination.id;
+          dataSourceSpec = product.dataSourceSpecForTradingTermination.data;
+          break;
+        default:
+          break;
+      }
+      break;
+    case 'settlementSchedule':
+      switch (product.__typename) {
+        case 'Perpetual':
+          dataSourceSpecId = product.dataSourceSpecForSettlementSchedule.id;
+          dataSourceSpec = product.dataSourceSpecForSettlementSchedule.data;
+          break;
+        default:
+          break;
+      }
+      break;
+    default:
+      break;
+  }
+  return {
+    dataSourceSpecId,
+    dataSourceSpec: dataSourceSpec as DataSourceDefinition,
+  };
 };
 
 const getSignerProviders = (signer: SignerKind, providers: Provider[]) =>
@@ -977,7 +970,7 @@ const OracleLink = ({
         );
 
         const isParentProviderEqual =
-          parentProvider !== undefined && isEqual(provider, parentProvider);
+          parentProvider && isEqual(provider, parentProvider);
 
         // We only want to pass the parent data to the child component if the
         // data differs from the parent market.
@@ -1035,28 +1028,4 @@ const OracleProfile = (props: {
       <OracleDialog {...props} open={open} onChange={onChange} />
     </div>
   );
-};
-
-export const getAssetSymbol = (market: MarketInfo) => {
-  return 'settlementAsset' in market.tradableInstrument.instrument.product
-    ? market?.tradableInstrument.instrument.product.settlementAsset.symbol
-    : 'baseAsset' in market.tradableInstrument.instrument.product
-    ? get(market?.tradableInstrument.instrument.product.baseAsset, 'symbol')
-    : '';
-};
-
-export const getAssetDecimals = (market: MarketInfo) => {
-  return 'settlementAsset' in market.tradableInstrument.instrument.product
-    ? market?.tradableInstrument.instrument.product.settlementAsset.decimals
-    : 'baseAsset' in market.tradableInstrument.instrument.product
-    ? get(market?.tradableInstrument.instrument.product.baseAsset, 'decimals')
-    : '';
-};
-
-export const getAssetId = (market: MarketInfo) => {
-  return 'settlementAsset' in market.tradableInstrument.instrument.product
-    ? market?.tradableInstrument.instrument.product.settlementAsset.id
-    : 'baseAsset' in market.tradableInstrument.instrument.product
-    ? get(market?.tradableInstrument.instrument.product.baseAsset, 'id')
-    : '';
 };

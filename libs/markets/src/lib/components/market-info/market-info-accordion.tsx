@@ -123,6 +123,16 @@ export const MarketInfoAccordion = ({
     return [];
   };
 
+  const showOneOracleSection =
+    (market.tradableInstrument.instrument.product.__typename === 'Future' &&
+      settlementData &&
+      terminationData &&
+      isEqual(getSigners(settlementData), getSigners(terminationData))) ||
+    (market.tradableInstrument.instrument.product.__typename === 'Perpetual' &&
+      settlementData &&
+      settlementScheduleData &&
+      isEqual(getSigners(settlementData), getSigners(settlementScheduleData)));
+
   return (
     <div>
       <div className="mb-8">
@@ -174,9 +184,7 @@ export const MarketInfoAccordion = ({
             title={t('Instrument')}
             content={<InstrumentInfoPanel market={market} />}
           />
-          {settlementData &&
-          terminationData &&
-          isEqual(getSigners(settlementData), getSigners(terminationData)) ? (
+          {showOneOracleSection ? (
             <AccordionItem
               itemId="oracles"
               title={t('Oracle')}
@@ -188,47 +196,34 @@ export const MarketInfoAccordion = ({
             <>
               <AccordionItem
                 itemId="settlement-oracle"
-                title={t('Settlement Oracle')}
+                title={t('Settlement oracle')}
                 content={
                   <OracleInfoPanel market={market} type="settlementData" />
                 }
               />
-              <AccordionItem
-                itemId="termination-oracle"
-                title={t('Termination Oracle')}
-                content={<OracleInfoPanel market={market} type="termination" />}
-              />
-            </>
-          )}
-          {settlementData &&
-          settlementScheduleData &&
-          isEqual(
-            getSigners(settlementData),
-            getSigners(settlementScheduleData)
-          ) ? (
-            <AccordionItem
-              itemId="oracles"
-              title={t('Oracle')}
-              content={
-                <OracleInfoPanel market={market} type="settlementData" />
-              }
-            />
-          ) : (
-            <>
-              <AccordionItem
-                itemId="settlement-oracle"
-                title={t('Settlement Oracle')}
-                content={
-                  <OracleInfoPanel market={market} type="settlementData" />
-                }
-              />
-              <AccordionItem
-                itemId="settlement-schedule-oracle"
-                title={t('Settlement Schedule Oracle')}
-                content={
-                  <OracleInfoPanel market={market} type="settlementSchedule" />
-                }
-              />
+              {market.tradableInstrument.instrument.product.__typename ===
+                'Perpetual' && (
+                <AccordionItem
+                  itemId="settlement-schedule-oracle"
+                  title={t('Settlement schedule oracle')}
+                  content={
+                    <OracleInfoPanel
+                      market={market}
+                      type="settlementSchedule"
+                    />
+                  }
+                />
+              )}
+              {market.tradableInstrument.instrument.product.__typename ===
+                'Future' && (
+                <AccordionItem
+                  itemId="termination-oracle"
+                  title={t('Termination oracle')}
+                  content={
+                    <OracleInfoPanel market={market} type="termination" />
+                  }
+                />
+              )}
             </>
           )}
           <AccordionItem

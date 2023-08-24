@@ -65,7 +65,8 @@ export const Closed = () => {
     const instrument = market.tradableInstrument.instrument;
 
     const spec =
-      'dataSourceSpecForSettlementData' in instrument.product &&
+      (instrument.product.__typename === 'Future' ||
+        instrument.product.__typename === 'Perpetual') &&
       instrument.product.dataSourceSpecForSettlementData.data.sourceType
         .__typename === 'DataSourceDefinitionExternal'
         ? instrument.product.dataSourceSpecForSettlementData.data.sourceType
@@ -74,7 +75,8 @@ export const Closed = () => {
     const filters = (spec && 'filters' in spec && spec.filters) || [];
 
     const settlementDataSpecBinding =
-      'dataSourceSpecBinding' in instrument.product
+      instrument.product.__typename === 'Future' ||
+      instrument.product.__typename === 'Perpetual'
         ? instrument.product.dataSourceSpecBinding.settlementDataProperty
         : '';
     const filter = filters?.find((filter) => {
@@ -93,13 +95,14 @@ export const Closed = () => {
       bestOfferPrice: market.data?.bestOfferPrice,
       markPrice: market.data?.markPrice,
       settlementDataOracleId:
-        'dataSourceSpecForSettlementData' in instrument.product
+        instrument.product.__typename === 'Future' ||
+        instrument.product.__typename === 'Perpetual'
           ? instrument.product.dataSourceSpecForSettlementData.id
           : '',
       settlementDataSpecBinding,
       settlementDataSourceFilter: filter,
       tradingTerminationOracleId:
-        'dataSourceSpecForTradingTermination' in instrument.product
+        instrument.product.__typename === 'Future'
           ? instrument.product.dataSourceSpecForTradingTermination.id
           : '',
       settlementAsset: getAsset({ tradableInstrument: { instrument } }),

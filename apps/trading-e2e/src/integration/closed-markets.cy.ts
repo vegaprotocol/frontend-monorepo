@@ -342,7 +342,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     );
 
     const settlementDataId =
-      'dataSourceSpecForSettlementData' in product
+      product.__typename === 'Future' || product.__typename === 'Perpetual'
         ? product.dataSourceSpecForSettlementData.id
         : '';
 
