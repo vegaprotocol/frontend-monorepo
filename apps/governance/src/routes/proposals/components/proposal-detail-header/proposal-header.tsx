@@ -8,13 +8,13 @@ import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { truncateMiddle } from '../../../../lib/truncate-middle';
 import { CurrentProposalState } from '../current-proposal-state';
 import { ProposalInfoLabel } from '../proposal-info-label';
-import { ProposalVotingStatus } from '../proposal-voting-status';
 import type { NetworkParamsResult } from '@vegaprotocol/network-parameters';
 import { useSuccessorMarketProposalDetails } from '@vegaprotocol/proposals';
 import { FLAGS } from '@vegaprotocol/environment';
 import Routes from '../../../routes';
 import { Link } from 'react-router-dom';
 import type { VoteState } from '../vote-details/use-user-vote';
+import { VoteBreakdown } from '../vote-breakdown';
 
 export const ProposalHeader = ({
   proposal,
@@ -185,7 +185,8 @@ export const ProposalHeader = ({
         </div>
       )}
 
-      <ProposalVotingStatus proposal={proposal} networkParams={networkParams} />
+      {/*<ProposalVotingStatus proposal={proposal} networkParams={networkParams} />*/}
+      <VoteBreakdown proposal={proposal} />
     </>
   );
 };
