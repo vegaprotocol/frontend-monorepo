@@ -120,7 +120,7 @@ export const getAsset = (market: Partial<Market>) => {
   if (product.__typename === 'Spot') {
     // TODO to handle baseAsset for Spots
     throw new Error(
-      'Failed to retrieve settlementAsset. Spots not yet implemented'
+      'Failed to retrieve asset. Spots not yet implemented'
     );
   }
 
