@@ -1,8 +1,13 @@
-import { formatNumberPercentage } from '@vegaprotocol/utils';
+import { formatNumberPercentage, toBigNum } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
-import type { Market, Candle, MarketMaybeWithData } from '../';
+import type {
+  Market,
+  Candle,
+  MarketMaybeWithData,
+  MarketMaybeWithDataAndCandles,
+} from '../';
 const { MarketState, MarketTradingMode } = Schema;
 
 export const totalFees = (fees: Market['fees']['factors']) => {
@@ -129,4 +134,16 @@ export const getQuoteName = (market: Partial<Market>) => {
   }
 
   throw new Error('Failed to retrieve quoteName. Invalid product type');
+};
+
+export const calcTradedFactor = (m: MarketMaybeWithDataAndCandles) => {
+  const volume = Number(calcCandleVolume(m.candles || []) || 0);
+  const price = m.data?.markPrice ? Number(m.data.markPrice) : 0;
+  const asset = getAsset(m);
+  const quantum = Number(asset.quantum);
+  const decimals = Number(asset.decimals);
+  const fp = toBigNum(price, decimals);
+  const fq = toBigNum(quantum, decimals);
+  const factor = fq.multipliedBy(fp).multipliedBy(volume);
+  return factor.toNumber();
 };
