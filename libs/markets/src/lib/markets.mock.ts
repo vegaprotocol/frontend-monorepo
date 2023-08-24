@@ -142,7 +142,7 @@ export const createMarketFragment = (
           },
           quoteName: 'DAI',
           __typename: 'Future',
-        },
+        } as const,
         __typename: 'Instrument',
       },
       __typename: 'TradableInstrument',
@@ -150,7 +150,7 @@ export const createMarketFragment = (
     __typename: 'Market',
   };
 
-  return merge(defaultFragment, override) as MarketFieldsFragment;
+  return merge(defaultFragment, override);
 };
 
 const marketFieldsFragments: MarketFieldsFragment[] = [
