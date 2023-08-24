@@ -132,25 +132,11 @@ export const mapFormValuesToStopOrdersSubmission = (
 
   if (data.expire) {
     const expiresAt = data.expiresAt && toNanoSeconds(data.expiresAt);
-    if (
-      data.expiryStrategy === 'cancel' ||
-      data.expiryStrategy === 'submit' ||
-      (data.expiryStrategy === 'submitFallsBelow' &&
-        data.triggerDirection ===
-          Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW) ||
-      (data.expiryStrategy === 'submitRisesAbove' &&
-        data.triggerDirection ===
-          Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE)
-    ) {
-      stopOrderSetup.expiresAt = expiresAt;
-      stopOrderSetup.expiryStrategy =
-        data.expiryStrategy === 'cancel'
-          ? Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS
-          : Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT;
-    } else if (oppositeStopOrderSetup) {
+    stopOrderSetup.expiresAt = expiresAt;
+    stopOrderSetup.expiryStrategy = data.expiryStrategy;
+    if (oppositeStopOrderSetup) {
       oppositeStopOrderSetup.expiresAt = expiresAt;
-      oppositeStopOrderSetup.expiryStrategy =
-        Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT;
+      oppositeStopOrderSetup.expiryStrategy = data.expiryStrategy;
     }
   }
 

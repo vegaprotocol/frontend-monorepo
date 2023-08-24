@@ -72,6 +72,7 @@ const timeInForce = 'order-tif';
 const sizeErrorMessage = 'stop-order-error-message-size';
 const priceErrorMessage = 'stop-order-error-message-price';
 const triggerPriceErrorMessage = 'stop-order-error-message-trigger-price';
+const triggerPriceWarningMessage = 'stop-order-warning-message-trigger-price';
 const triggerTrailingPercentOffsetErrorMessage =
   'stop-order-error-message-trigger-trailing-percent-offset';
 
@@ -122,7 +123,7 @@ describe('StopOrder', () => {
       price: '300.22',
       timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
       expire: true,
-      expiryStrategy: 'cancel',
+      expiryStrategy: Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS,
       expiresAt: '2023-07-27T16:43:27.000',
     };
 
@@ -241,10 +242,17 @@ describe('StopOrder', () => {
     await userEvent.type(screen.getByTestId(triggerPriceInput), '0.001');
     expect(screen.getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
-    // clear and fill using valid value
+    // clear and fill using value causing immediate trigger
     await userEvent.clear(screen.getByTestId(triggerPriceInput));
     await userEvent.type(screen.getByTestId(triggerPriceInput), '0.01');
     expect(screen.queryByTestId(triggerPriceErrorMessage)).toBeNull();
+    expect(
+      screen.queryByTestId(triggerPriceWarningMessage)
+    ).toBeInTheDocument();
+
+    // change to correct value
+    await userEvent.type(screen.getByTestId(triggerPriceInput), '2');
+    expect(screen.queryByTestId(triggerPriceWarningMessage)).toBeNull();
   });
 
   it('validates trigger trailing percentage offset field', async () => {

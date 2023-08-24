@@ -26,11 +26,7 @@ export interface StopOrderFormValues {
   price?: string;
 
   expire: boolean;
-  expiryStrategy?:
-    | 'submit'
-    | 'cancel'
-    | 'submitFallsBelow'
-    | 'submitRisesAbove';
+  expiryStrategy?: Schema.StopOrderExpiryStrategy;
   expiresAt?: string;
 
   oco?: boolean;

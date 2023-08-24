@@ -58,7 +58,7 @@ const getDefaultValues = (
   triggerDirection:
     Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
   expire: false,
-  expiryStrategy: 'submit',
+  expiryStrategy: Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT,
   size: '0',
   ocoType: type,
   ocoTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
@@ -73,14 +73,19 @@ const Trigger = ({
   priceStep,
   assetSymbol,
   oco,
+  marketPrice,
+  decimalPlaces,
 }: {
   control: Control<StopOrderFormValues>;
   watch: UseFormWatch<StopOrderFormValues>;
   priceStep: string;
   assetSymbol: string;
   oco?: boolean;
+  marketPrice?: string | null;
+  decimalPlaces: number;
 }) => {
   const triggerType = watch(oco ? 'ocoTriggerType' : 'triggerType');
+  const triggerDirection = watch('triggerDirection');
   const isPriceTrigger = triggerType === 'price';
   return (
     <FormGroup label={t('Trigger')} labelFor="">
@@ -105,11 +110,7 @@ const Trigger = ({
                     : Schema.StopOrderTriggerDirection
                         .TRIGGER_DIRECTION_RISES_ABOVE
                 }
-                id={
-                  oco
-                    ? 'ocoTriggerDirection-risesAbove'
-                    : 'triggerDirection-risesAbove'
-                }
+                id={`triggerDirection-risesAbove${oco ? '-oco' : ''}`}
                 label={'Rises above'}
               />
               <Radio
@@ -120,11 +121,7 @@ const Trigger = ({
                     : Schema.StopOrderTriggerDirection
                         .TRIGGER_DIRECTION_RISES_ABOVE
                 }
-                id={
-                  oco
-                    ? 'ocoTriggerDirection-fallsBelow'
-                    : 'triggerDirection-fallsBelow'
-                }
+                id={`triggerDirection-fallsBelow${oco ? '-oco' : ''}`}
                 label={'Falls below'}
               />
             </RadioGroup>
@@ -146,11 +143,35 @@ const Trigger = ({
             control={control}
             render={({ field, fieldState }) => {
               const { value, ...props } = field;
+              let triggerWarning = false;
+
+              if (marketPrice && value) {
+                const condition =
+                  (!oco &&
+                    triggerDirection ===
+                      Schema.StopOrderTriggerDirection
+                        .TRIGGER_DIRECTION_RISES_ABOVE) ||
+                  (oco &&
+                    triggerDirection ===
+                      Schema.StopOrderTriggerDirection
+                        .TRIGGER_DIRECTION_FALLS_BELOW)
+                    ? '>'
+                    : '<';
+                const diff =
+                  BigInt(marketPrice) -
+                  BigInt(removeDecimal(value, decimalPlaces));
+                if (
+                  (condition === '>' && diff > 0) ||
+                  (condition === '<' && diff < 0)
+                ) {
+                  triggerWarning = true;
+                }
+              }
               return (
                 <>
                   <div className="mb-2">
                     <Input
-                      data-testid={oco ? 'ocoTriggerPrice' : 'triggerPrice'}
+                      data-testid={`triggerPrice${oco ? '-oco' : ''}`}
                       type="number"
                       step={priceStep}
                       appendElement={assetSymbol}
@@ -161,13 +182,21 @@ const Trigger = ({
                   </div>
                   {fieldState.error && (
                     <InputError
-                      testId={
-                        oco
-                          ? 'stop-order-error-message-oco-trigger-price'
-                          : 'stop-order-error-message-trigger-price'
-                      }
+                      testId={`stop-order-error-message-trigger-price${
+                        oco ? '-oco' : ''
+                      }`}
                     >
                       {fieldState.error.message}
+                    </InputError>
+                  )}
+                  {!fieldState.error && triggerWarning && (
+                    <InputError
+                      intent="warning"
+                      testId={`stop-order-warning-message-trigger-price${
+                        oco ? '-oco' : ''
+                      }`}
+                    >
+                      {t('Stop order will be triggered immediately')}
                     </InputError>
                   )}
                 </>
@@ -214,11 +243,9 @@ const Trigger = ({
                       type="number"
                       step={trailingPercentOffsetStep}
                       appendElement="%"
-                      data-testid={
-                        oco
-                          ? 'ocoTriggerTrailingPercentOffset'
-                          : 'triggerTrailingPercentOffset'
-                      }
+                      data-testid={`triggerTrailingPercentOffset${
+                        oco ? '-oco' : ''
+                      }`}
                       value={value || ''}
                       hasError={!!fieldState.error}
                       {...props}
@@ -226,11 +253,9 @@ const Trigger = ({
                   </div>
                   {fieldState.error && (
                     <InputError
-                      testId={
-                        oco
-                          ? 'stop-order-error-message-trigger-oco-trailing-percent-offset'
-                          : 'stop-order-error-message-trigger-trailing-percent-offset'
-                      }
+                      testId={`stop-order-error-message-trigger-trailing-percent-offset${
+                        oco ? '-oco' : ''
+                      }`}
                     >
                       {fieldState.error.message}
                     </InputError>
@@ -259,16 +284,12 @@ const Trigger = ({
             >
               <Radio
                 value="price"
-                id={oco ? 'ocoTriggerType-price' : 'triggerType-price'}
+                id={`triggerType-price${oco ? '-oco' : ''}`}
                 label={'Price'}
               />
               <Radio
                 value="trailingPercentOffset"
-                id={
-                  oco
-                    ? 'ocoTriggerType-trailingPercentOffset'
-                    : 'triggerType-trailingPercentOffset'
-                }
+                id={`triggerType-trailingPercentOffset${oco ? '-oco' : ''}`}
                 label={'Trailing Percent Offset'}
               />
             </RadioGroup>
@@ -302,17 +323,18 @@ const Size = ({
       }}
       render={({ field, fieldState }) => {
         const { value, ...props } = field;
+        const id = `order-size${oco ? '-oco' : ''}`;
         return (
           <div className="mb-4">
-            <FormGroup labelFor="input-price-quote" label={t(`Size`)} compact>
+            <FormGroup labelFor={id} label={t(`Size`)} compact>
               <Input
-                id={oco ? 'oco-order-size' : 'order-size'}
+                id={id}
                 className="w-full"
                 type="number"
                 step={sizeStep}
                 min={sizeStep}
                 onWheel={(e) => e.currentTarget.blur()}
-                data-testid={oco ? 'oco-order-size' : 'order-size'}
+                data-testid={id}
                 value={value || ''}
                 hasError={!!fieldState.error}
                 {...props}
@@ -320,11 +342,7 @@ const Size = ({
             </FormGroup>
             {fieldState.error && (
               <InputError
-                testId={
-                  oco
-                    ? 'stop-order-error-message-oco-size'
-                    : 'stop-order-error-message-size'
-                }
+                testId={`stop-order-error-message-size${oco ? '-oco' : ''}`}
               >
                 {fieldState.error.message}
               </InputError>
@@ -367,19 +385,20 @@ const Price = ({
       }}
       render={({ field, fieldState }) => {
         const { value, ...props } = field;
+        const id = `order-price${oco ? '-oco' : ''}`;
         return (
           <div className="mb-4">
             <FormGroup
-              labelFor={oco ? 'input-ocoPrice-quote' : 'input-price-quote'}
+              labelFor={id}
               label={t(`Price (${quoteName})`)}
               compact={true}
             >
               <Input
-                id={oco ? 'input-ocoPrice-quote' : 'input-price-quote'}
+                id={id}
                 className="w-full"
                 type="number"
                 step={priceStep}
-                data-testid={oco ? 'order-ocoPrice' : 'order-price'}
+                data-testid={id}
                 onWheel={(e) => e.currentTarget.blur()}
                 value={value || ''}
                 hasError={!!fieldState.error}
@@ -388,11 +407,7 @@ const Price = ({
             </FormGroup>
             {fieldState.error && (
               <InputError
-                testId={
-                  oco
-                    ? 'stop-order-error-message-oco-price'
-                    : 'stop-order-error-message-price'
-                }
+                testId={`stop-order-error-message-price${oco ? '-oco' : ''}`}
               >
                 {fieldState.error.message}
               </InputError>
@@ -414,41 +429,40 @@ const TimeInForce = ({
   <Controller
     name="timeInForce"
     control={control}
-    render={({ field, fieldState }) => (
-      <div className="mb-2">
-        <FormGroup
-          label={t('Time in force')}
-          labelFor="select-time-in-force"
-          compact={true}
-        >
-          <Select
-            id="select-time-in-force"
-            className="w-full"
-            data-testid="order-tif"
-            hasError={!!fieldState.error}
-            {...field}
-          >
-            <option
-              key={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
-              value={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
+    render={({ field, fieldState }) => {
+      const id = `select-time-in-force${oco ? '-oco' : ''}`;
+      return (
+        <div className="mb-2">
+          <FormGroup label={t('Time in force')} labelFor={id} compact={true}>
+            <Select
+              id={id}
+              className="w-full"
+              data-testid="order-tif"
+              hasError={!!fieldState.error}
+              {...field}
             >
-              {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_IOC)}
-            </option>
-            <option
-              key={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
-              value={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
-            >
-              {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_FOK)}
-            </option>
-          </Select>
-        </FormGroup>
-        {fieldState.error && (
-          <InputError testId="stop-error-message-tif">
-            {fieldState.error.message}
-          </InputError>
-        )}
-      </div>
-    )}
+              <option
+                key={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
+                value={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
+              >
+                {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_IOC)}
+              </option>
+              <option
+                key={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
+                value={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
+              >
+                {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_FOK)}
+              </option>
+            </Select>
+          </FormGroup>
+          {fieldState.error && (
+            <InputError testId={`stop-error-message-tif${oco ? '-oco' : ''}`}>
+              {fieldState.error.message}
+            </InputError>
+          )}
+        </div>
+      );
+    }}
   />
 );
 
@@ -503,13 +517,11 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const side = watch('side');
   const expire = watch('expire');
   const triggerType = watch('triggerType');
-  const triggerDirection = watch('triggerDirection');
   const triggerPrice = watch('triggerPrice');
   const timeInForce = watch('timeInForce');
   const rawPrice = watch('price');
   const rawSize = watch('size');
   const oco = watch('oco');
-  const expiryStrategy = watch('expiryStrategy');
 
   useEffect(() => {
     const size = storedFormValues?.[dealTicketType]?.size;
@@ -601,6 +613,8 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         watch={watch}
         priceStep={priceStep}
         assetSymbol={asset.symbol}
+        marketPrice={marketPrice}
+        decimalPlaces={market.decimalPlaces}
       />
       <hr className="mb-4 border-vega-clight-500 dark:border-vega-cdark-500" />
       <Price
@@ -625,21 +639,10 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
               <Checkbox
                 onCheckedChange={(state) => {
                   onChange(state);
-                  if (state && expiryStrategy === 'submit') {
-                    setValue(
-                      'expiryStrategy',
-                      triggerDirection ===
-                        Schema.StopOrderTriggerDirection
-                          .TRIGGER_DIRECTION_FALLS_BELOW
-                        ? 'submitFallsBelow'
-                        : 'submitRisesAbove'
-                    );
-                  } else if (
-                    (!state && expiryStrategy === 'submitFallsBelow') ||
-                    expiryStrategy === 'submitRisesAbove'
-                  ) {
-                    setValue('expiryStrategy', 'submit');
-                  }
+                  setValue(
+                    'expiryStrategy',
+                    Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS
+                  );
                 }}
                 checked={value}
                 name="oco"
@@ -689,6 +692,8 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             watch={watch}
             priceStep={priceStep}
             assetSymbol={asset.symbol}
+            marketPrice={marketPrice}
+            decimalPlaces={market.decimalPlaces}
             oco
           />
           <hr className="mb-2 border-vega-clight-500 dark:border-vega-cdark-500" />
@@ -735,31 +740,20 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                   <RadioGroup
                     onChange={onChange}
                     value={value}
-                    orientation={oco ? 'vertical' : 'horizontal'}
+                    orientation="horizontal"
                   >
-                    {!oco && (
-                      <Radio
-                        value="submit"
-                        id="expiryStrategy-submit"
-                        label={'Submit'}
-                      />
-                    )}
-                    {oco && (
-                      <>
-                        <Radio
-                          value="submitRisesAbove"
-                          id="expiryStrategy-submitRisesAbove"
-                          label={'Submit rises above'}
-                        />
-                        <Radio
-                          value="submitFallsBelow"
-                          id="expiryStrategySubmitFallsBelow"
-                          label={'Submit falls below'}
-                        />
-                      </>
-                    )}
                     <Radio
-                      value="cancel"
+                      disabled={oco}
+                      value={
+                        Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT
+                      }
+                      id="expiryStrategy-submit"
+                      label={'Submit'}
+                    />
+                    <Radio
+                      value={
+                        Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS
+                      }
                       id="expiryStrategy-cancel"
                       label={'Cancel'}
                     />
