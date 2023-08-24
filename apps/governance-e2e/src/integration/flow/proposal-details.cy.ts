@@ -407,7 +407,8 @@ describe(
       // 3003-PMAN-011 3003-PMAN-012
       cy.getByTestId(marketDataToggle).click();
       cy.getByTestId('proposal-market-data').within(() => {
-        cy.contains('Key details').click();
+        // Assert that all toggles are removed
+        cy.getByTestId('accordion-toggle').should('not.exist');
         validateProposalDetailsDiff(
           'Name',
           proposalChangeType.UPDATED,
@@ -431,7 +432,6 @@ describe(
           'Opening auction'
         );
 
-        cy.contains('Instrument').click();
         validateProposalDetailsDiff(
           'Market Name',
           proposalChangeType.UPDATED,
@@ -439,7 +439,6 @@ describe(
           'Test market 1'
         );
 
-        cy.contains('Metadata').click();
         validateProposalDetailsDiff(
           'Sector',
           proposalChangeType.UPDATED,
