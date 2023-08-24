@@ -220,15 +220,8 @@ const formatFee = (partyId: string) => {
     Trade,
     'market.tradableInstrument.instrument.product'
   >) => {
-    if (
-      !value ||
-      !('settlementAsset' in value) ||
-      !value?.settlementAsset ||
-      !data
-    ) {
-      return '-';
-    }
-    const asset = value.settlementAsset;
+    if (!value || !data || !data?.market) return '-';
+    const asset = getAsset(data.market);
     const { fees: feesObj, role } = getRoleAndFees({ data, partyId });
     if (!feesObj) return '-';
 

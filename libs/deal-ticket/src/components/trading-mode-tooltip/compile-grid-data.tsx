@@ -36,14 +36,11 @@ export const compileGridData = (
         Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET) ||
     marketData?.trigger ===
       Schema.AuctionTrigger.AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS;
+  const asset = getAsset(market);
 
   const formatStake = (value: string) => {
-    const formattedValue = addDecimalsFormatNumber(
-      value,
-      getAsset(market).decimals
-    );
-    const asset = getAsset(market).symbol;
-    return `${formattedValue} ${asset}`;
+    const formattedValue = addDecimalsFormatNumber(value, asset.decimals);
+    return `${formattedValue} ${asset.symbol}`;
   };
 
   if (!marketData) return grid;

@@ -19,7 +19,12 @@ import {
   TradingSelect,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { getDerivedPrice, type Market } from '@vegaprotocol/markets';
+import {
+  getAsset,
+  getDerivedPrice,
+  getQuoteName,
+  type Market,
+} from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
@@ -150,30 +155,8 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     return () => subscription.unsubscribe();
   }, [watch, market.id, updateStoredFormValues]);
 
-  let quoteName,
-    asset: {
-      id: string;
-      symbol: string;
-      name: string;
-      decimals: number;
-      quantum: string;
-    } | null = null;
-
-  if (market.tradableInstrument.instrument.product.__typename === 'Future') {
-    quoteName = market.tradableInstrument.instrument.product.quoteName;
-    asset = market.tradableInstrument.instrument.product.settlementAsset;
-  }
-
-  if (market.tradableInstrument.instrument.product.__typename === 'Perpetual') {
-    quoteName = market.tradableInstrument.instrument.product.quoteName;
-    asset = market.tradableInstrument.instrument.product.settlementAsset;
-  }
-
-  if (market.tradableInstrument.instrument.product.__typename === 'Spot') {
-    // TODO to handle baseAsset and quoteAsset for Spots
-    // quoteName = market.tradableInstrument.instrument.product.quoteAsset;
-    // asset = market.tradableInstrument.instrument.product.baseAsset;
-  }
+  const asset = getAsset(market);
+  const quoteName = getQuoteName(market);
 
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
   const priceStep = toDecimal(market?.decimalPlaces);
@@ -276,7 +259,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                       data-testid="triggerPrice"
                       type="number"
                       step={priceStep}
-                      appendElement={asset?.symbol}
+                      appendElement={asset.symbol}
                       value={value || ''}
                       hasError={!!fieldState.error}
                       {...props}
@@ -601,7 +584,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           type,
         }}
         notionalSize={notionalSize}
-        assetSymbol={asset?.symbol || ''}
+        assetSymbol={asset.symbol}
         market={market}
       />
     </form>

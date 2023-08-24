@@ -249,8 +249,6 @@ export const DealTicket = ({
     fetchPolicy: 'no-cache',
   });
 
-  const assetSymbol = getAsset(market).symbol;
-
   const summaryError = useMemo(() => {
     if (!pubKey) {
       return {
@@ -535,12 +533,12 @@ export const DealTicket = ({
           normalizedOrder && { ...normalizedOrder, price: price || undefined }
         }
         notionalSize={notionalSize}
-        assetSymbol={assetSymbol}
+        assetSymbol={asset.symbol}
         market={market}
       />
       <DealTicketMarginDetails
         onMarketClick={onMarketClick}
-        assetSymbol={assetSymbol}
+        assetSymbol={asset.symbol}
         marginAccountBalance={marginAccountBalance}
         generalAccountBalance={generalAccountBalance}
         positionEstimate={positionEstimate?.estimatePosition}
