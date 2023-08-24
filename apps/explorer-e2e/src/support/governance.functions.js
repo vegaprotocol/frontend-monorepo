@@ -1,8 +1,18 @@
+import { addSeconds, millisecondsToSeconds } from 'date-fns';
+
 export function createSuccessorMarketProposal(parentMarketId) {
   cy.VegaWalletSubmitProposal(getSuccessorTxBody(parentMarketId));
 }
 
 function getSuccessorTxBody(parentMarketId) {
+  const MIN_CLOSE_SEC = 500;
+  const MIN_ENACT_SEC = 700;
+
+  const closingDate = addSeconds(new Date(), MIN_CLOSE_SEC);
+  const enactmentDate = addSeconds(closingDate, MIN_ENACT_SEC);
+  const closingTimestamp = millisecondsToSeconds(closingDate.getTime());
+  const enactmentTimestamp = millisecondsToSeconds(enactmentDate.getTime());
+
   return {
     proposalSubmission: {
       rationale: {
@@ -122,8 +132,49 @@ function getSuccessorTxBody(parentMarketId) {
             },
           },
         },
-        closingTimestamp: 1695666618,
-        enactmentTimestamp: 1695666618,
+        closingTimestamp,
+        enactmentTimestamp,
+      },
+    },
+  };
+}
+
+export function getNewAssetTxBody() {
+  const MIN_CLOSE_SEC = 500;
+  const MIN_ENACT_SEC = 700;
+  const MIN_VALID_SEC = 60;
+
+  const closingDate = addSeconds(new Date(), MIN_CLOSE_SEC);
+  const enactmentDate = addSeconds(closingDate, MIN_ENACT_SEC);
+  const validationDate = addSeconds(new Date(), MIN_VALID_SEC);
+
+  const closingTimestamp = millisecondsToSeconds(closingDate.getTime());
+  const enactmentTimestamp = millisecondsToSeconds(enactmentDate.getTime());
+  const validationTimestamp = millisecondsToSeconds(validationDate.getTime());
+
+  return {
+    proposalSubmission: {
+      rationale: {
+        title: 'Test new asset proposal',
+        description: 'E2E test for proposals',
+      },
+      terms: {
+        newAsset: {
+          changes: {
+            name: 'USDT Coin',
+            symbol: 'USDT',
+            decimals: '18',
+            quantum: '1',
+            erc20: {
+              contractAddress: '0xb404c51bbc10dcbe948077f18a4b8e553d160084',
+              withdrawThreshold: '10',
+              lifetimeLimit: '10',
+            },
+          },
+        },
+        closingTimestamp,
+        enactmentTimestamp,
+        validationTimestamp,
       },
     },
   };
