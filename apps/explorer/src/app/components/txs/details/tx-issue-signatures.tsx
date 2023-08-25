@@ -41,7 +41,7 @@ export const TxDetailsIssueSignatures = ({
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const cmd: Command = txData.command;
+  const cmd: Command = txData.command.issueSignatures;
   const k = cmd.kind ? kind[cmd.kind] : null;
 
   return (

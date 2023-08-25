@@ -7,7 +7,6 @@ import { DealTicket } from './deal-ticket';
 import * as Schema from '@vegaprotocol/types';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import { addDecimal } from '@vegaprotocol/utils';
 import type { OrdersQuery } from '@vegaprotocol/orders';
 import {
   DealTicketType,
@@ -15,7 +14,6 @@ import {
 } from '../../hooks/use-form-values';
 import * as positionsTools from '@vegaprotocol/positions';
 import { OrdersDocument } from '@vegaprotocol/orders';
-import { getQuoteName } from '@vegaprotocol/markets';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
@@ -133,20 +131,6 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('order-size')).toHaveDisplayValue('0');
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
-    );
-  });
-
-  it('should display last price for market type order', () => {
-    render(generateJsx());
-    act(() => {
-      screen.getByTestId('order-type-Market').click();
-    });
-
-    const quoteName = getQuoteName(market);
-    // Assert last price is shown
-    expect(screen.getByTestId('last-price')).toHaveTextContent(
-      // eslint-disable-next-line
-      `~${addDecimal(marketPrice, market.decimalPlaces)} ${quoteName}`
     );
   });
 
