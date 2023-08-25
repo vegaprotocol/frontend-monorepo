@@ -1,7 +1,12 @@
 import { useRef, useCallback, useEffect } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { StopOrdersSubmission } from '@vegaprotocol/wallet';
-import { removeDecimal, toDecimal, validateAmount } from '@vegaprotocol/utils';
+import {
+  formatForInput,
+  removeDecimal,
+  toDecimal,
+  validateAmount,
+} from '@vegaprotocol/utils';
 import type { Control, UseFormWatch } from 'react-hook-form';
 import { useForm, Controller, useController } from 'react-hook-form';
 import * as Schema from '@vegaprotocol/types';
@@ -35,10 +40,10 @@ import { TypeToggle } from './type-selector';
 import {
   useDealTicketFormValues,
   DealTicketType,
-  type StopOrderFormValues,
   dealTicketTypeToOrderType,
   isStopOrderType,
 } from '../../hooks/use-form-values';
+import type { StopOrderFormValues } from '../../hooks/use-form-values';
 import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values-to-submission';
 import { DealTicketButton } from './deal-ticket-button';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
@@ -65,6 +70,7 @@ const getDefaultValues = (
   expire: false,
   expiryStrategy: Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT,
   size: '0',
+  oco: false,
   ocoType: type,
   ocoTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
   ocoTriggerType: 'price',
@@ -527,6 +533,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const rawPrice = watch('price');
   const rawSize = watch('size');
   const oco = watch('oco');
+  const expiresAt = watch('expiresAt');
 
   useEffect(() => {
     const size = storedFormValues?.[dealTicketType]?.size;
@@ -630,11 +637,11 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
       />
       <Size control={control} sizeStep={sizeStep} />
       <TimeInForce control={control} />
-      <div className="flex gap-2 pb-3 justify-end">
+      <div className="flex justify-end pb-3 gap-2">
         <ReduceOnly />
       </div>
       <hr className="mb-4 border-vega-clight-500 dark:border-vega-cdark-500" />
-      <div className="flex gap-2 pb-2 justify-between">
+      <div className="flex justify-between pb-2 gap-2">
         <Controller
           name="oco"
           control={control}
@@ -711,7 +718,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           />
           <Size control={control} sizeStep={sizeStep} oco />
           <TimeInForce control={control} oco />
-          <div className="flex gap-2 mb-2 justify-end">
+          <div className="flex justify-end mb-2 gap-2">
             <ReduceOnly />
           </div>
         </>
@@ -724,7 +731,17 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             const { onChange: onCheckedChange, value } = field;
             return (
               <Checkbox
-                onCheckedChange={onCheckedChange}
+                onCheckedChange={(value) => {
+                  if (
+                    value &&
+                    (!expiresAt || new Date(expiresAt).getTime() < Date.now())
+                  ) {
+                    setValue('expiresAt', formatForInput(new Date()), {
+                      shouldValidate: true,
+                    });
+                  }
+                  onCheckedChange(value);
+                }}
                 checked={value}
                 name="expire"
                 label={t('Expire')}
@@ -772,6 +789,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
               name="expiresAt"
               control={control}
               rules={{
+                required: t('You need provide a expiry time/date'),
                 validate: validateExpiration,
               }}
               render={({ field }) => {
