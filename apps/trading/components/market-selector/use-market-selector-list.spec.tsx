@@ -82,7 +82,7 @@ describe('useMarketSelectorList', () => {
         tradableInstrument: {
           instrument: {
             product: {
-              __typename: 'Spot' as 'Future', // spot isn't in schema yet
+              __typename: 'Spot',
             },
           },
         },
@@ -92,7 +92,7 @@ describe('useMarketSelectorList', () => {
         tradableInstrument: {
           instrument: {
             product: {
-              __typename: 'Perpetual' as 'Future', // spot isn't in schema yet
+              __typename: 'Perpetual',
             },
           },
         },
@@ -136,6 +136,7 @@ describe('useMarketSelectorList', () => {
         tradableInstrument: {
           instrument: {
             product: {
+              __typename: 'Future',
               settlementAsset: {
                 id: 'asset-0',
               },
@@ -148,6 +149,7 @@ describe('useMarketSelectorList', () => {
         tradableInstrument: {
           instrument: {
             product: {
+              __typename: 'Future',
               settlementAsset: {
                 id: 'asset-0',
               },
@@ -160,6 +162,7 @@ describe('useMarketSelectorList', () => {
         tradableInstrument: {
           instrument: {
             product: {
+              __typename: 'Future',
               settlementAsset: {
                 id: 'asset-1',
               },
@@ -172,6 +175,7 @@ describe('useMarketSelectorList', () => {
         tradableInstrument: {
           instrument: {
             product: {
+              __typename: 'Future',
               settlementAsset: {
                 id: 'asset-2',
               },
@@ -192,6 +196,7 @@ describe('useMarketSelectorList', () => {
       sort: Sort.None,
       assets: ['asset-0'],
     });
+
     expect(result.current.markets).toEqual([markets[0], markets[1]]);
 
     rerender({
@@ -390,7 +395,7 @@ describe('useMarketSelectorList', () => {
     const markets = [
       createMarketFragment({
         id: 'market-0',
-        // @ts-ignore actual fragment doesnt contain candles and is joined later
+        // @ts-ignore actual fragment doesn't contain candles and is joined later
         candles: [
           {
             close: '100',
@@ -402,7 +407,7 @@ describe('useMarketSelectorList', () => {
       }),
       createMarketFragment({
         id: 'market-1',
-        // @ts-ignore actual fragment doesnt contain candles and is joined later
+        // @ts-ignore actual fragment doesn't contain candles and is joined later
         candles: [
           {
             close: '100',
@@ -414,7 +419,7 @@ describe('useMarketSelectorList', () => {
       }),
       createMarketFragment({
         id: 'market-2',
-        // @ts-ignore actual fragment doesnt contain candles and is joined later
+        // @ts-ignore actual fragment doesn't contain candles and is joined later
         candles: [
           {
             close: '100',

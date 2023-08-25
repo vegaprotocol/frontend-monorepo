@@ -147,7 +147,7 @@ const formatPrice = ({
     value,
     data?.market.decimalPlaces
   );
-  return `${valueFormatted} ${asset}`;
+  return `${valueFormatted} ${asset.symbol}`;
 };
 
 const formatSize = (partyId: string) => {

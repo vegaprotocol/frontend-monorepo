@@ -22,6 +22,7 @@ describe('FillsTable', () => {
           instrument: {
             code: 'test market',
             product: {
+              __typename: 'Future',
               settlementAsset: {
                 decimals: 2,
                 symbol: 'BTC',
