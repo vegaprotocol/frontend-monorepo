@@ -38,8 +38,6 @@ import {
 } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { getDerivedPrice } from '@vegaprotocol/markets';
-import type { OrderInfo } from '@vegaprotocol/types';
-
 import {
   validateExpiration,
   validateMarketState,
@@ -59,8 +57,6 @@ import {
   useMarketAccountBalance,
   useAccountBalance,
 } from '@vegaprotocol/accounts';
-
-import { OrderType } from '@vegaprotocol/types';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   DealTicketType,
@@ -231,8 +227,8 @@ export const DealTicket = ({
   });
   const openVolume = useOpenVolume(pubKey, market.id) ?? '0';
   const orders = activeOrders
-    ? activeOrders.map<OrderInfo>((order) => ({
-        isMarketOrder: order.type === OrderType.TYPE_MARKET,
+    ? activeOrders.map<Schema.OrderInfo>((order) => ({
+        isMarketOrder: order.type === Schema.OrderType.TYPE_MARKET,
         price: order.price,
         remaining: order.remaining,
         side: order.side,
@@ -240,7 +236,7 @@ export const DealTicket = ({
     : [];
   if (normalizedOrder) {
     orders.push({
-      isMarketOrder: normalizedOrder.type === OrderType.TYPE_MARKET,
+      isMarketOrder: normalizedOrder.type === Schema.OrderType.TYPE_MARKET,
       price: normalizedOrder.price ?? '0',
       remaining: normalizedOrder.size,
       side: normalizedOrder.side,
@@ -467,6 +463,19 @@ export const DealTicket = ({
             value={field.value}
             orderType={type}
             onSelect={(value) => {
+              // If GTT is selected and no expiresAt time is set, or its
+              // behind current time then reset the value to current time
+              if (
+                value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
+                (!expiresAt || new Date(expiresAt).getTime() < Date.now())
+              ) {
+                setValue('expiresAt', formatForInput(new Date()), {
+                  shouldValidate: true,
+                });
+              }
+
+              // iceberg orders must be persistent orders, so if user
+              // switches to to a non persisten tif value, remove iceberg selection
               if (iceberg && isNonPersistentOrder(value)) {
                 setValue('iceberg', false);
               }

@@ -18,6 +18,8 @@ export const ExpirySelector = ({
   onSelect,
   errorMessage,
 }: ExpirySelectorProps) => {
+  const minDateRef = useRef(new Date());
+
   return (
     <div className="mb-4">
       <TradingFormGroup
@@ -31,7 +33,7 @@ export const ExpirySelector = ({
           type="datetime-local"
           value={value && formatForInput(new Date(value))}
           onChange={(e) => onSelect(e.target.value)}
-          min={formatForInput(useRef(new Date()).current)}
+          min={formatForInput(minDateRef.current)}
           hasError={!!errorMessage}
         />
         {errorMessage && (
