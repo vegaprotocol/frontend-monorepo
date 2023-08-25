@@ -121,7 +121,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   it('settlement asset displayed', () => {
-    // 6002-MDET-206
+    // 6002-MDET-207
     cy.getByTestId(marketTitle).contains('Settlement asset').click();
     cy.window().then((win) => {
       cy.stub(win, 'prompt').returns('DISABLED WINDOW PROMPT');
@@ -145,7 +145,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   it('metadata displayed', () => {
-    // 6002-MDET-207
+    // 6002-MDET-208
     cy.getByTestId(marketTitle).contains('Metadata').click();
 
     validateMarketDataRow(0, 'Formerly', '076BB86A5AA41E3E');
@@ -156,21 +156,21 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   it('risk model displayed', () => {
-    // 6002-MDET-208
+    // 6002-MDET-209
     cy.getByTestId(marketTitle).contains('Risk model').click();
     validateMarketDataRow(0, 'Tau', '0.0001140771161');
     validateMarketDataRow(1, 'Risk Aversion Parameter', '0.01');
   });
 
   it('risk parameters displayed', () => {
-    // 6002-MDET-209
+    // 6002-MDET-210
     cy.getByTestId(marketTitle).contains('Risk parameters').click();
     validateMarketDataRow(0, 'R', '0.016');
     validateMarketDataRow(1, 'Sigma', '0.3');
   });
 
   it('risk factors displayed', () => {
-    // 6002-MDET-210
+    // 6002-MDET-211
     cy.getByTestId(marketTitle).contains('Risk factors').click();
 
     validateMarketDataRow(0, 'Short', '0.008571790367285281');
@@ -178,7 +178,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   it('price monitoring bounds displayed', () => {
-    // 6002-MDET-211
+    // 6002-MDET-212
     cy.getByTestId(marketTitle).contains('Price monitoring bounds 1').click();
     cy.get('p.col-span-1').contains('99.99999% probability price bounds');
     cy.get('p.col-span-1').contains('Within 43,200 seconds');
@@ -187,7 +187,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   it('liquidity monitoring parameters displayed', () => {
-    // 6002-MDET-212
+    // 6002-MDET-213
     cy.getByTestId(marketTitle)
       .contains('Liquidity monitoring parameters')
       .click();
@@ -198,7 +198,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   it('liquidity displayed', () => {
-    // 6002-MDET-213
+    // 6002-MDET-214
     cy.getByTestId(marketTitle)
       .contains(/Liquidity(?! m)/)
       .click();
@@ -213,7 +213,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   it('liquidity price range displayed', () => {
-    // 6002-MDET-214
+    // 6002-MDET-215
     cy.getByTestId(marketTitle).contains('Liquidity price range').click();
 
     validateMarketDataRow(0, 'Liquidity Price Range', '2.00% of mid price');
