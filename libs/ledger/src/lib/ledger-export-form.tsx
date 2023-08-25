@@ -45,7 +45,7 @@ export const LedgerExportForm = ({ partyId }: { partyId: string }) => {
   }, [assetId, assets]);
   const VEGA_URL = useEnvironment((store) => store.VEGA_URL);
   const protohost = VEGA_URL ? getProtoHost(VEGA_URL) : '';
-  const disable = !assetId || isDownloading;
+  const disabled = Boolean(!assetId || isDownloading);
   const assetDropDown = (
     <DropdownMenu
       trigger={
@@ -95,10 +95,12 @@ export const LedgerExportForm = ({ partyId }: { partyId: string }) => {
         const filename =
           nameHeader?.split('=').pop() ?? DEFAULT_EXPORT_FILE_NAME;
         const blob = await resp.blob();
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = filename;
-        link.click();
+        if (blob) {
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = filename;
+          link.click();
+        }
       })
       .catch((err) => {
         localLoggerFactory({ application: 'ledger' }).error(
@@ -128,7 +130,7 @@ export const LedgerExportForm = ({ partyId }: { partyId: string }) => {
             id="date-from"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            disabled={disable}
+            disabled={disabled}
             max={maxFromDate}
           />
         </TradingFormGroup>
@@ -139,7 +141,7 @@ export const LedgerExportForm = ({ partyId }: { partyId: string }) => {
             id="date-to"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            disabled={disable}
+            disabled={disabled}
             max={maxToDate}
           />
         </TradingFormGroup>
@@ -148,14 +150,17 @@ export const LedgerExportForm = ({ partyId }: { partyId: string }) => {
           title={t('Download all to .csv file')}
         >
           {isDownloading && (
-            <div className="absolute flex w-full h-full justify-center items-center">
+            <div
+              className="absolute flex w-full h-full justify-center items-center"
+              data-testid="download-spinner"
+            >
               <Loader size="small" />
             </div>
           )}
           <Button
             variant="primary"
             fill
-            disabled={disable}
+            disabled={disabled}
             onClick={startDownload}
             data-testid="ledger-download-button"
           >

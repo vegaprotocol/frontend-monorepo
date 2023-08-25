@@ -17,13 +17,11 @@ jest.mock('@vegaprotocol/environment', () => ({
   useEnvironment: jest.fn(() => mockEnvironment()),
 }));
 
-const mockHeadersGetter = jest.fn();
 const mockResponse = {
-  headers: { get: mockHeadersGetter },
-  blob: () => 'file',
+  headers: { get: jest.fn() },
+  blob: () => '',
 };
 global.fetch = jest.fn().mockResolvedValue(mockResponse);
-global.URL.createObjectURL = jest.fn();
 
 const assetMock = {
   request: {
@@ -78,10 +76,20 @@ describe('LedgerExportLink', () => {
         })
       ).toBeInTheDocument();
       expect(screen.getByTestId('ledger-download-button')).toBeInTheDocument();
+    });
+    act(() => {
       userEvent.click(screen.getByTestId('ledger-download-button'));
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('download-spinner')).toBeInTheDocument();
+    });
+    await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
         `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=asset-id&dateRange.startTimestamp=1691057410000000000`
       );
+    });
+    await waitFor(() => {
+      expect(screen.queryByTestId('download-spinner')).not.toBeInTheDocument();
     });
   });
 
@@ -110,7 +118,8 @@ describe('LedgerExportLink', () => {
     await waitFor(() => {
       expect(screen.getByRole('menu')).toBeInTheDocument();
     });
-    act(() => {
+
+    await act(() => {
       userEvent.click(
         screen.getByRole('menuitem', {
           name: (accessibleName, element) =>
@@ -126,6 +135,7 @@ describe('LedgerExportLink', () => {
         })
       ).toBeInTheDocument();
     });
+
     act(() => {
       userEvent.click(screen.getByTestId('ledger-download-button'));
     });
@@ -178,7 +188,7 @@ describe('LedgerExportLink', () => {
     await waitFor(() => {
       expect(screen.getByLabelText('Date to')).toBeInTheDocument();
     });
-    await act(() => {
+    act(() => {
       fireEvent.change(screen.getByLabelText('Date to'), {
         target: { value: formatForInput(newDate) },
       });
@@ -188,7 +198,7 @@ describe('LedgerExportLink', () => {
         `${formatForInput(newDate)}.000`
       );
     });
-    await act(() => {
+    act(() => {
       fireEvent.click(screen.getByTestId('ledger-download-button'));
     });
     await waitFor(() => {
