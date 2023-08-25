@@ -10,11 +10,6 @@ import {
 export const jsonRpc = new JsonRpcConnector();
 export const injected = new InjectedConnector();
 
-export const snap = new SnapConnector(
-  ENV.VEGA_URL ? new URL(ENV.VEGA_URL).origin : undefined,
-  DEFAULT_SNAP_ID
-);
-
 let view: ViewConnector;
 if (typeof window !== 'undefined') {
   const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
@@ -22,6 +17,11 @@ if (typeof window !== 'undefined') {
 } else {
   view = new ViewConnector();
 }
+
+export const snap = new SnapConnector(
+  ENV.VEGA_URL ? new URL(ENV.VEGA_URL).origin : undefined,
+  DEFAULT_SNAP_ID
+);
 
 export const Connectors = {
   injected,

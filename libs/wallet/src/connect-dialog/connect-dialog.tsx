@@ -11,7 +11,7 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { t } from '@vegaprotocol/i18n';
 import type { VegaConnector } from '../connectors';
@@ -21,13 +21,11 @@ import {
   JsonRpcConnector,
   SnapConnector,
   ViewConnector,
-  getSnap,
-  getSnaps,
   requestSnap,
 } from '../connectors';
 import { JsonRpcConnectorForm } from './json-rpc-connector-form';
 import { ViewConnectorForm } from './view-connector-form';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { FLAGS, useEnvironment } from '@vegaprotocol/environment';
 import {
   BrowserIcon,
   ConnectDialogContent,
@@ -252,25 +250,45 @@ const ConnectorList = ({
             <GetWalletButton />
           )}
         </div>
-        <div>
-          {isSnapRunning ? (
-            <ConnectionOption
-              type="snap"
-              text={t('Connect via Vega MetaMask Snap')}
-              onClick={() => {
-                onSelect('snap');
-              }}
-            />
-          ) : (
-            <ConnectionOption
-              type="snap"
-              text={t('Install Vega MetaMask Snap')}
-              onClick={() => {
-                requestSnap(DEFAULT_SNAP_ID);
-              }}
-            />
-          )}
-        </div>
+        {FLAGS.METAMASK_SNAPS ? (
+          <div>
+            {isSnapRunning ? (
+              <ConnectionOption
+                type="snap"
+                text={
+                  <>
+                    <div className="w-full h-full flex justify-center items-center gap-1 text-base">
+                      {t('Connect via Vega MetaMask Snap')}
+                    </div>
+                    <div className="absolute right-1 top-0 h-8 flex items-center">
+                      <VegaIcon name={VegaIconNames.METAMASK} size={24} />
+                    </div>
+                  </>
+                }
+                onClick={() => {
+                  onSelect('snap');
+                }}
+              />
+            ) : (
+              <ConnectionOption
+                type="snap"
+                text={
+                  <>
+                    <div className="w-full h-full flex justify-center items-center gap-1 text-base">
+                      {t('Install Vega MetaMask Snap')}
+                    </div>
+                    <div className="absolute right-1 top-0 h-8 flex items-center">
+                      <VegaIcon name={VegaIconNames.METAMASK} size={24} />
+                    </div>
+                  </>
+                }
+                onClick={() => {
+                  requestSnap(DEFAULT_SNAP_ID);
+                }}
+              />
+            )}
+          </div>
+        ) : null}
         <div>
           <ConnectionOption
             type="view"

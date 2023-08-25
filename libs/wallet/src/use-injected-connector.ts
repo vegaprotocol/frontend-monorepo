@@ -20,7 +20,6 @@ export enum Status {
 export const ERR_VEGA_UNDEFINED = new Error('window.vega not found');
 export const ERR_INVALID_CHAIN = new Error('Invalid chain');
 
-// TODO: Rename to useConnector?
 export const useInjectedConnector = (onConnect: () => void) => {
   const { connect, acknowledgeNeeded } = useVegaWallet();
   const [status, setStatus] = useState(Status.Idle);
@@ -45,7 +44,6 @@ export const useInjectedConnector = (onConnect: () => void) => {
         setStatus(Status.GettingChainId);
 
         const { chainID } = await connector.getChainId();
-
         if (chainID !== appChainId) {
           throw ERR_INVALID_CHAIN;
         }

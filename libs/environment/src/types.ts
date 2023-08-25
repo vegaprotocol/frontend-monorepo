@@ -18,7 +18,11 @@ export type Environment = z.infer<typeof envSchema>;
 export type FeatureFlags = z.infer<typeof featureFlagsSchema>;
 export type CosmicElevatorFlags = Pick<
   FeatureFlags,
-  'ICEBERG_ORDERS' | 'STOP_ORDERS' | 'SUCCESSOR_MARKETS' | 'PRODUCT_PERPETUALS'
+  | 'ICEBERG_ORDERS'
+  | 'STOP_ORDERS'
+  | 'SUCCESSOR_MARKETS'
+  | 'PRODUCT_PERPETUALS'
+  | 'METAMASK_SNAPS'
 >;
 export type Configuration = z.infer<typeof tomlConfigSchema>;
 export const CUSTOM_NODE_KEY = 'custom' as const;
