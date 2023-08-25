@@ -17,7 +17,6 @@ import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { get } from 'lodash';
 
 export const LiquidityContainer = ({
   marketId,

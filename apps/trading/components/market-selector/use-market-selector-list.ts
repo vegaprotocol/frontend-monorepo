@@ -45,7 +45,7 @@ export const useMarketSelectorList = ({
       .filter((m) => {
         if (assets.length === 0) return true;
         const asset = getAsset(m);
-        return assets.includes(asset?.id);
+        return assets.includes(asset.id);
       })
       // filter based on search term
       .filter((m) => {

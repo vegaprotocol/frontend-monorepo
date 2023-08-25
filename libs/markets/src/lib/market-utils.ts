@@ -1,5 +1,5 @@
 import { formatNumberPercentage, toBigNum } from '@vegaprotocol/utils';
-import * as Schema from '@vegaprotocol/types';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
 import type {
@@ -8,13 +8,10 @@ import type {
   MarketMaybeWithData,
   MarketMaybeWithDataAndCandles,
 } from '../';
-const { MarketState, MarketTradingMode } = Schema;
 
 export const getAsset = (market: Partial<Market>) => {
   if (!market.tradableInstrument?.instrument.product) {
-    throw new Error(
-      'Failed to retrieve settlementAsset. Invalid tradable instrument'
-    );
+    throw new Error('Failed to retrieve asset. Invalid tradable instrument');
   }
 
   const product = market.tradableInstrument.instrument.product;

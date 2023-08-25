@@ -14,7 +14,10 @@ import type {
   MarketMaybeWithData,
   MarketDataQueryVariables,
 } from '@vegaprotocol/markets';
-import { allMarketsWithLiveDataProvider } from '@vegaprotocol/markets';
+import {
+  allMarketsWithLiveDataProvider,
+  getAsset,
+} from '@vegaprotocol/markets';
 import type {
   PositionsQuery,
   PositionFieldsFragment,
@@ -66,24 +69,15 @@ export const getMetrics = (
   const metrics: Position[] = [];
   data.forEach((position) => {
     const market = position.market;
-    if (
-      !market ||
-      !(
-        market.tradableInstrument.instrument.product.__typename === 'Future' ||
-        market.tradableInstrument.instrument.product.__typename === 'Perpetual'
-      )
-    ) {
-      return;
-    }
-
     if (!market) {
       return;
     }
+
     const marketData = market?.data;
     const marginAccount = accounts?.find((account) => {
       return account.market?.id === market?.id;
     });
-    const asset = market.tradableInstrument.instrument.product.settlementAsset;
+    const asset = getAsset(market);
     const generalAccount = accounts?.find(
       (account) =>
         account.asset.id === asset.id &&

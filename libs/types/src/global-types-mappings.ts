@@ -560,7 +560,7 @@ export const ProductTypeShortName: Record<ProductType, string> = {
 export const ProposalProductTypeMapping: Record<ProposalProductType, string> = {
   FutureProduct: 'Future',
   SpotProduct: 'Spot',
-  PerpetualProduct: 'Perp',
+  PerpetualProduct: 'Perpeptual',
 };
 
 export const ProposalProductTypeShortName: Record<ProposalProductType, string> =

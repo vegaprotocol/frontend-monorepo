@@ -9,11 +9,10 @@ import {
   TradingInputError,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { isMarketInAuction } from '@vegaprotocol/markets';
+import { getQuoteName, isMarketInAuction } from '@vegaprotocol/markets';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 import { Controller } from 'react-hook-form';
 import classNames from 'classnames';
-import get from 'lodash/get';
 
 export type DealTicketMarketAmountProps = Omit<DealTicketAmountProps, 'type'>;
 
@@ -24,10 +23,7 @@ export const DealTicketMarketAmount = ({
   marketPrice,
   sizeError,
 }: DealTicketMarketAmountProps) => {
-  const quoteName = get(
-    market.tradableInstrument.instrument.product,
-    'quoteName'
-  );
+  const quoteName = getQuoteName(market);
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
   const price = marketPrice;
 
