@@ -73,12 +73,16 @@ export const requestSnap = async (
   params: Record<'version' | string, unknown> = {}
 ) => {
   if (!window.ethereum) throw ERR_ETHEREUM_UNDEFINED;
-  await window.ethereum.request({
-    method: 'wallet_requestSnaps',
-    params: {
-      [snapId]: params,
-    },
-  });
+  try {
+    await window.ethereum.request({
+      method: 'wallet_requestSnaps',
+      params: {
+        [snapId]: params,
+      },
+    });
+  } catch (err) {
+    // NOOP - rejected by user
+  }
 };
 
 /**
