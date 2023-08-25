@@ -4766,6 +4766,8 @@ export type StopOrderFilter = {
   dateRange?: InputMaybe<DateRange>;
   /** Zero or more expiry strategies to filter by */
   expiryStrategy?: InputMaybe<Array<StopOrderExpiryStrategy>>;
+  /** Filter for live stop orders only */
+  liveOnly?: InputMaybe<Scalars['Boolean']>;
   /** Zero or more market IDs to filter by */
   markets?: InputMaybe<Array<Scalars['ID']>>;
   /** Zero or more party IDs to filter by */
@@ -5309,10 +5311,10 @@ export enum TransferType {
   TRANSFER_TYPE_MTM_LOSS = 'TRANSFER_TYPE_MTM_LOSS',
   /** Funds added to margin account after mark to market gain */
   TRANSFER_TYPE_MTM_WIN = 'TRANSFER_TYPE_MTM_WIN',
+  /** Funds deducted from margin account after a perpetuals funding loss. */
+  TRANSFER_TYPE_PERPETUALS_FUNDING_LOSS = 'TRANSFER_TYPE_PERPETUALS_FUNDING_LOSS',
   /** Funds added to margin account after a perpetuals funding gain. */
   TRANSFER_TYPE_PERPETUALS_FUNDING_WIN = 'TRANSFER_TYPE_PERPETUALS_FUNDING_WIN',
-  /** Funds deducted from margin account after a perpetuals funding loss. */
-  TRANSFER_TYPE_PERPPETUALS_FUNDING_LOSS = 'TRANSFER_TYPE_PERPPETUALS_FUNDING_LOSS',
   /** Funds moved from the vesting account to the vested account once the vesting period is reached. */
   TRANSFER_TYPE_REWARDS_VESTED = 'TRANSFER_TYPE_REWARDS_VESTED',
   /** Reward payout received */

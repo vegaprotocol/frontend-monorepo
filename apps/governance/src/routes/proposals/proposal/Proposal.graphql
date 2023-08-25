@@ -247,6 +247,53 @@ query Proposal($proposalId: ID!) {
                     tradingTerminationProperty
                   }
                 }
+                ... on UpdatePerpetualProduct {
+                  quoteName
+                  dataSourceSpecForSettlementData {
+                    sourceType {
+                      ... on DataSourceDefinitionInternal {
+                        sourceType {
+                          ... on DataSourceSpecConfigurationTime {
+                            conditions {
+                              operator
+                              value
+                            }
+                          }
+                        }
+                      }
+                      ... on DataSourceDefinitionExternal {
+                        sourceType {
+                          ... on DataSourceSpecConfiguration {
+                            signers {
+                              signer {
+                                ... on PubKey {
+                                  key
+                                }
+                                ... on ETHAddress {
+                                  address
+                                }
+                              }
+                            }
+                            filters {
+                              key {
+                                name
+                                type
+                              }
+                              conditions {
+                                operator
+                                value
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  dataSourceSpecBinding {
+                    settlementDataProperty
+                    settlementScheduleProperty
+                  }
+                }
               }
             }
             metadata

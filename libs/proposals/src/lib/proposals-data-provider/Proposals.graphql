@@ -188,6 +188,73 @@ fragment UpdateMarketFields on UpdateMarket {
             tradingTerminationProperty
           }
         }
+        ... on UpdatePerpetualProduct {
+          quoteName
+          dataSourceSpecForSettlementData {
+            sourceType {
+              ... on DataSourceDefinitionExternal {
+                sourceType {
+                  ... on DataSourceSpecConfiguration {
+                    signers {
+                      signer {
+                        ... on PubKey {
+                          key
+                        }
+                        ... on ETHAddress {
+                          address
+                        }
+                      }
+                    }
+                    filters {
+                      key {
+                        name
+                        type
+                      }
+                      conditions {
+                        operator
+                        value
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          dataSourceSpecForSettlementSchedule {
+            sourceType {
+              ... on DataSourceDefinitionExternal {
+                sourceType {
+                  ... on DataSourceSpecConfiguration {
+                    signers {
+                      signer {
+                        ... on PubKey {
+                          key
+                        }
+                        ... on ETHAddress {
+                          address
+                        }
+                      }
+                    }
+                    filters {
+                      key {
+                        name
+                        type
+                      }
+                      conditions {
+                        operator
+                        value
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          dataSourceSpecBinding {
+            settlementDataProperty
+            settlementScheduleProperty
+          }
+        }
       }
     }
     metadata
