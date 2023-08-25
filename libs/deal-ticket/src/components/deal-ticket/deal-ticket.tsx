@@ -307,12 +307,14 @@ export const DealTicket = ({
     pubKey,
   ]);
 
-  const disablePostOnlyCheckbox = [
+  const iocOrFok = [
     Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
     Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
   ].includes(timeInForce);
 
-  const disableReduceOnlyCheckbox = !disablePostOnlyCheckbox;
+  const disablePostOnlyCheckbox = iocOrFok;
+  const disableReduceOnlyCheckbox = !iocOrFok;
+  const disableIcebergCheckbox = iocOrFok;
 
   const onSubmit = useCallback(
     (formValues: OrderFormValues) => {
@@ -469,12 +471,13 @@ export const DealTicket = ({
             orderType={type}
             onSelect={(value) => {
               if (
-                value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
-                (!expiresAt || new Date(expiresAt).getTime() < Date.now())
+                iceberg &&
+                [
+                  Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+                  Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+                ].includes(value)
               ) {
-                setValue('expiresAt', formatForInput(new Date()), {
-                  shouldValidate: true,
-                });
+                setValue('iceberg', false);
               }
               field.onChange(value);
             }}
@@ -502,7 +505,7 @@ export const DealTicket = ({
             )}
           />
         )}
-      <div className="flex gap-2 pb-2 justify-between">
+      <div className="flex justify-between pb-2 gap-2">
         <Controller
           name="postOnly"
           control={control}
@@ -568,7 +571,7 @@ export const DealTicket = ({
       </div>
       {type === Schema.OrderType.TYPE_LIMIT && (
         <>
-          <div className="flex gap-2 pb-2 justify-between">
+          <div className="flex justify-between pb-2 gap-2">
             <Controller
               name="iceberg"
               control={control}
@@ -577,6 +580,7 @@ export const DealTicket = ({
                   name="iceberg"
                   checked={field.value}
                   onCheckedChange={field.onChange}
+                  disabled={disableIcebergCheckbox}
                   label={
                     <Tooltip
                       description={

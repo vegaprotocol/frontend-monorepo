@@ -41,11 +41,11 @@ export const mapFormValuesToOrderSubmission = (
       ? false
       : order.reduceOnly,
   icebergOpts:
-    (order.type === Schema.OrderType.TYPE_MARKET ||
-      [
-        Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-        Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-      ].includes(order.timeInForce)) &&
+    order.type === Schema.OrderType.TYPE_LIMIT &&
+    ![
+      Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+    ].includes(order.timeInForce) &&
     order.iceberg &&
     order.peakSize &&
     order.minimumVisibleSize
