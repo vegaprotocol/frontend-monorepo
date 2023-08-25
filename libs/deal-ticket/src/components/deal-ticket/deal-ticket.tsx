@@ -34,6 +34,7 @@ import {
   removeDecimal,
   validateAmount,
   toDecimal,
+  formatForInput,
 } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { getDerivedPrice } from '@vegaprotocol/markets';
@@ -174,6 +175,7 @@ export const DealTicket = ({
   const rawPrice = watch('price');
   const iceberg = watch('iceberg');
   const peakSize = watch('peakSize');
+  const expiresAt = watch('expiresAt');
 
   useEffect(() => {
     const size = storedFormValues?.[dealTicketType]?.size;
@@ -465,7 +467,17 @@ export const DealTicket = ({
           <TimeInForceSelector
             value={field.value}
             orderType={type}
-            onSelect={field.onChange}
+            onSelect={(value) => {
+              if (
+                value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
+                (!expiresAt || new Date(expiresAt).getTime() < Date.now())
+              ) {
+                setValue('expiresAt', formatForInput(new Date()), {
+                  shouldValidate: true,
+                });
+              }
+              field.onChange(value);
+            }}
             market={market}
             marketData={marketData}
             errorMessage={errors.timeInForce?.message}
@@ -478,6 +490,7 @@ export const DealTicket = ({
             name="expiresAt"
             control={control}
             rules={{
+              required: t('You need provide a expiry time/date'),
               validate: validateExpiration,
             }}
             render={({ field }) => (
