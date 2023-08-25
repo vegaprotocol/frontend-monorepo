@@ -71,6 +71,7 @@ import type { OrderFormValues } from '../../hooks/use-form-values';
 import { useDealTicketFormValues } from '../../hooks/use-form-values';
 import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 import noop from 'lodash/noop';
+import { isNonPersistentOrder } from '../../utils/time-in-force-persistance';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -307,14 +308,10 @@ export const DealTicket = ({
     pubKey,
   ]);
 
-  const iocOrFok = [
-    Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-    Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-  ].includes(timeInForce);
-
-  const disablePostOnlyCheckbox = iocOrFok;
-  const disableReduceOnlyCheckbox = !iocOrFok;
-  const disableIcebergCheckbox = iocOrFok;
+  const nonPersistentOrder = isNonPersistentOrder(timeInForce);
+  const disablePostOnlyCheckbox = nonPersistentOrder;
+  const disableReduceOnlyCheckbox = !nonPersistentOrder;
+  const disableIcebergCheckbox = nonPersistentOrder;
 
   const onSubmit = useCallback(
     (formValues: OrderFormValues) => {
@@ -470,13 +467,7 @@ export const DealTicket = ({
             value={field.value}
             orderType={type}
             onSelect={(value) => {
-              if (
-                iceberg &&
-                [
-                  Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-                  Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-                ].includes(value)
-              ) {
+              if (iceberg && isNonPersistentOrder(value)) {
                 setValue('iceberg', false);
               }
               field.onChange(value);
