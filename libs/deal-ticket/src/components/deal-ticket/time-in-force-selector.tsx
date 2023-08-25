@@ -90,32 +90,34 @@ export const TimeInForceSelector = ({
   };
 
   return (
-    <TradingFormGroup
-      label={t('Time in force')}
-      labelFor="select-time-in-force"
-      compact={true}
-    >
-      <TradingSelect
-        id="select-time-in-force"
-        value={value}
-        onChange={(e) => {
-          onSelect(e.target.value as Schema.OrderTimeInForce);
-        }}
-        className="w-full"
-        data-testid="order-tif"
-        hasError={!!errorMessage}
+    <div className="mb-4">
+      <TradingFormGroup
+        label={t('Time in force')}
+        labelFor="select-time-in-force"
+        compact={true}
       >
-        {options.map(([key, value]) => (
-          <option key={key} value={value}>
-            {timeInForceLabel(value)}
-          </option>
-        ))}
-      </TradingSelect>
-      {errorMessage && (
-        <TradingInputError testId="deal-ticket-error-message-tif">
-          {renderError(errorMessage)}
-        </TradingInputError>
-      )}
-    </TradingFormGroup>
+        <TradingSelect
+          id="select-time-in-force"
+          value={value}
+          onChange={(e) => {
+            onSelect(e.target.value as Schema.OrderTimeInForce);
+          }}
+          className="w-full"
+          data-testid="order-tif"
+          hasError={!!errorMessage}
+        >
+          {options.map(([key, value]) => (
+            <option key={key} value={value}>
+              {timeInForceLabel(value)}
+            </option>
+          ))}
+        </TradingSelect>
+        {errorMessage && (
+          <TradingInputError testId="deal-ticket-error-message-tif">
+            {renderError(errorMessage)}
+          </TradingInputError>
+        )}
+      </TradingFormGroup>
+    </div>
   );
 };

@@ -23,25 +23,27 @@ export const ExpirySelector = ({
   const dateFormatted = formatForInput(date);
   const minDate = formatForInput(date);
   return (
-    <TradingFormGroup
-      label={t('Expiry time/date')}
-      labelFor="expiration"
-      compact={true}
-    >
-      <TradingInput
-        data-testid="date-picker-field"
-        id="expiration"
-        type="datetime-local"
-        value={dateFormatted}
-        onChange={(e) => onSelect(e.target.value)}
-        min={minDate}
-        hasError={!!errorMessage}
-      />
-      {errorMessage && (
-        <TradingInputError testId="deal-ticket-error-message-expiry">
-          {errorMessage}
-        </TradingInputError>
-      )}
-    </TradingFormGroup>
+    <div className="mb-4">
+      <TradingFormGroup
+        label={t('Expiry time/date')}
+        labelFor="expiration"
+        compact
+      >
+        <TradingInput
+          data-testid="date-picker-field"
+          id="expiration"
+          type="datetime-local"
+          value={dateFormatted}
+          onChange={(e) => onSelect(e.target.value)}
+          min={minDate}
+          hasError={!!errorMessage}
+        />
+        {errorMessage && (
+          <TradingInputError testId="deal-ticket-error-message-expiry">
+            {errorMessage}
+          </TradingInputError>
+        )}
+      </TradingFormGroup>
+    </div>
   );
 };

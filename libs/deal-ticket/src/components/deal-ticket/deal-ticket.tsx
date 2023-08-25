@@ -3,7 +3,6 @@ import * as Schema from '@vegaprotocol/types';
 import type { FormEventHandler } from 'react';
 import { memo, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Controller, useController, useForm } from 'react-hook-form';
-import { DealTicketAmount } from './deal-ticket-amount';
 import { DealTicketButton } from './deal-ticket-button';
 import {
   DealTicketFeeDetails,
@@ -17,8 +16,10 @@ import type { OrderSubmission } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { mapFormValuesToOrderSubmission } from '../../utils/map-form-values-to-submission';
 import {
-  TradingCheckbox,
-  TradingInputError,
+  TradingInput as Input,
+  TradingCheckbox as Checkbox,
+  TradingFormGroup as FormGroup,
+  TradingInputError as InputError,
   Intent,
   Notification,
   Tooltip,
@@ -28,7 +29,12 @@ import {
   useEstimatePositionQuery,
   useOpenVolume,
 } from '@vegaprotocol/positions';
-import { toBigNum, removeDecimal } from '@vegaprotocol/utils';
+import {
+  toBigNum,
+  removeDecimal,
+  validateAmount,
+  toDecimal,
+} from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { getDerivedPrice } from '@vegaprotocol/markets';
 import type { OrderInfo } from '@vegaprotocol/types';
@@ -332,6 +338,10 @@ export const DealTicket = ({
     },
   });
 
+  const priceStep = toDecimal(market?.decimalPlaces);
+  const sizeStep = toDecimal(market?.positionDecimalPlaces);
+  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+
   return (
     <form
       onSubmit={
@@ -366,15 +376,82 @@ export const DealTicket = ({
           <SideSelector value={field.value} onValueChange={field.onChange} />
         )}
       />
-      <DealTicketAmount
-        type={type}
+
+      <Controller
+        name="size"
         control={control}
-        market={market}
-        marketData={marketData}
-        marketPrice={marketPrice || undefined}
-        sizeError={errors.size?.message}
-        priceError={errors.price?.message}
+        rules={{
+          required: t('You need to provide a size'),
+          min: {
+            value: sizeStep,
+            message: t('Size cannot be lower than ' + sizeStep),
+          },
+          validate: validateAmount(sizeStep, 'Size'),
+        }}
+        render={({ field, fieldState }) => (
+          <div className="mb-4">
+            <FormGroup
+              label={t('Size')}
+              labelFor="input-order-size-limit"
+              compact
+            >
+              <Input
+                id="input-order-size-limit"
+                className="w-full"
+                type="number"
+                step={sizeStep}
+                min={sizeStep}
+                data-testid="order-size"
+                onWheel={(e) => e.currentTarget.blur()}
+                {...field}
+              />
+            </FormGroup>
+            {fieldState.error && (
+              <InputError testId="deal-ticket-error-message-size">
+                {fieldState.error.message}
+              </InputError>
+            )}
+          </div>
+        )}
       />
+      {type === Schema.OrderType.TYPE_LIMIT && (
+        <Controller
+          name="price"
+          control={control}
+          rules={{
+            required: t('You need provide a price'),
+            min: {
+              value: priceStep,
+              message: t('Price cannot be lower than ' + priceStep),
+            },
+            validate: validateAmount(priceStep, 'Price'),
+          }}
+          render={({ field, fieldState }) => (
+            <div className="mb-4">
+              <FormGroup
+                labelFor="input-price-quote"
+                label={t(`Price (${quoteName})`)}
+                compact
+              >
+                <Input
+                  id="input-price-quote"
+                  className="w-full"
+                  type="number"
+                  step={priceStep}
+                  data-testid="order-price"
+                  onWheel={(e) => e.currentTarget.blur()}
+                  {...field}
+                />
+              </FormGroup>
+              {fieldState.error && (
+                <InputError testId="deal-ticket-error-message-price">
+                  {fieldState.error.message}
+                </InputError>
+              )}
+            </div>
+          )}
+        />
+      )}
       <Controller
         name="timeInForce"
         control={control}
@@ -417,7 +494,7 @@ export const DealTicket = ({
           name="postOnly"
           control={control}
           render={({ field }) => (
-            <TradingCheckbox
+            <Checkbox
               name="post-only"
               checked={!disablePostOnlyCheckbox && field.value}
               disabled={disablePostOnlyCheckbox}
@@ -449,7 +526,7 @@ export const DealTicket = ({
           name="reduceOnly"
           control={control}
           render={({ field }) => (
-            <TradingCheckbox
+            <Checkbox
               name="reduce-only"
               checked={!disableReduceOnlyCheckbox && field.value}
               disabled={disableReduceOnlyCheckbox}
@@ -483,7 +560,7 @@ export const DealTicket = ({
               name="iceberg"
               control={control}
               render={({ field }) => (
-                <TradingCheckbox
+                <Checkbox
                   name="iceberg"
                   checked={field.value}
                   onCheckedChange={field.onChange}
@@ -572,11 +649,11 @@ export const NoWalletWarning = ({
   if (isReadOnly) {
     return (
       <div className="mb-2">
-        <TradingInputError testId="deal-ticket-error-message-summary">
+        <InputError testId="deal-ticket-error-message-summary">
           {
             'You need to connect your own wallet to start trading on this market'
           }
-        </TradingInputError>
+        </InputError>
       </div>
     );
   }
@@ -613,9 +690,9 @@ const SummaryMessage = memo(
     if (error?.message) {
       return (
         <div className="mb-2">
-          <TradingInputError testId="deal-ticket-error-message-summary">
+          <InputError testId="deal-ticket-error-message-summary">
             {error?.message}
-          </TradingInputError>
+          </InputError>
         </div>
       );
     }
