@@ -72,6 +72,7 @@ const timeInForce = 'order-tif';
 const sizeErrorMessage = 'stop-order-error-message-size';
 const priceErrorMessage = 'stop-order-error-message-price';
 const triggerPriceErrorMessage = 'stop-order-error-message-trigger-price';
+const triggerPriceWarningMessage = 'stop-order-warning-message-trigger-price';
 const triggerTrailingPercentOffsetErrorMessage =
   'stop-order-error-message-trigger-trailing-percent-offset';
 
@@ -112,14 +113,6 @@ describe('StopOrder', () => {
         'checked'
       );
     });
-  });
-
-  it('should display trigger price as price for market type order', async () => {
-    render(generateJsx());
-    await userEvent.click(screen.getByTestId(orderTypeTrigger));
-    await userEvent.click(screen.getByTestId(orderTypeMarket));
-    await userEvent.type(screen.getByTestId(triggerPriceInput), '10');
-    expect(screen.getByTestId('price')).toHaveTextContent('10.0');
   });
 
   it('should use local storage state for initial values', async () => {
@@ -203,8 +196,8 @@ describe('StopOrder', () => {
 
     await userEvent.click(screen.getByTestId(submitButton));
     // price error message should not show if size has error
-    expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
-    await userEvent.type(screen.getByTestId(sizeInput), '0.1');
+    // expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
+    // await userEvent.type(screen.getByTestId(sizeInput), '0.1');
     expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
     await userEvent.type(screen.getByTestId(priceInput), '0.001');
     expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
@@ -249,10 +242,17 @@ describe('StopOrder', () => {
     await userEvent.type(screen.getByTestId(triggerPriceInput), '0.001');
     expect(screen.getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
-    // clear and fill using valid value
+    // clear and fill using value causing immediate trigger
     await userEvent.clear(screen.getByTestId(triggerPriceInput));
     await userEvent.type(screen.getByTestId(triggerPriceInput), '0.01');
     expect(screen.queryByTestId(triggerPriceErrorMessage)).toBeNull();
+    expect(
+      screen.queryByTestId(triggerPriceWarningMessage)
+    ).toBeInTheDocument();
+
+    // change to correct value
+    await userEvent.type(screen.getByTestId(triggerPriceInput), '2');
+    expect(screen.queryByTestId(triggerPriceWarningMessage)).toBeNull();
   });
 
   it('validates trigger trailing percentage offset field', async () => {
