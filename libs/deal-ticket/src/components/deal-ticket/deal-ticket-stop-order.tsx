@@ -20,7 +20,8 @@ import {
   TradingSelect as Select,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { getDerivedPrice, type Market } from '@vegaprotocol/markets';
+import { getDerivedPrice } from '@vegaprotocol/markets';
+import type { Market } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
@@ -35,10 +36,10 @@ import { TypeToggle } from './type-selector';
 import {
   useDealTicketFormValues,
   DealTicketType,
-  type StopOrderFormValues,
   dealTicketTypeToOrderType,
   isStopOrderType,
 } from '../../hooks/use-form-values';
+import type { StopOrderFormValues } from '../../hooks/use-form-values';
 import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values-to-submission';
 import { DealTicketButton } from './deal-ticket-button';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
@@ -632,11 +633,11 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
       />
       <Size control={control} sizeStep={sizeStep} />
       <TimeInForce control={control} />
-      <div className="flex gap-2 pb-3 justify-end">
+      <div className="flex justify-end pb-3 gap-2">
         <ReduceOnly />
       </div>
       <hr className="mb-4 border-vega-clight-500 dark:border-vega-cdark-500" />
-      <div className="flex gap-2 pb-2 justify-between">
+      <div className="flex justify-between pb-2 gap-2">
         <Controller
           name="oco"
           control={control}
@@ -713,7 +714,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           />
           <Size control={control} sizeStep={sizeStep} oco />
           <TimeInForce control={control} oco />
-          <div className="flex gap-2 mb-2 justify-end">
+          <div className="flex justify-end mb-2 gap-2">
             <ReduceOnly />
           </div>
         </>

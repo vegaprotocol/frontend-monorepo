@@ -38,8 +38,6 @@ import {
 } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { getDerivedPrice } from '@vegaprotocol/markets';
-import type { OrderInfo } from '@vegaprotocol/types';
-
 import {
   validateExpiration,
   validateMarketState,
@@ -59,8 +57,6 @@ import {
   useMarketAccountBalance,
   useAccountBalance,
 } from '@vegaprotocol/accounts';
-
-import { OrderType } from '@vegaprotocol/types';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   DealTicketType,
@@ -71,6 +67,7 @@ import type { OrderFormValues } from '../../hooks/use-form-values';
 import { useDealTicketFormValues } from '../../hooks/use-form-values';
 import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 import noop from 'lodash/noop';
+import { isNonPersistentOrder } from '../../utils/time-in-force-persistance';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -230,8 +227,8 @@ export const DealTicket = ({
   });
   const openVolume = useOpenVolume(pubKey, market.id) ?? '0';
   const orders = activeOrders
-    ? activeOrders.map<OrderInfo>((order) => ({
-        isMarketOrder: order.type === OrderType.TYPE_MARKET,
+    ? activeOrders.map<Schema.OrderInfo>((order) => ({
+        isMarketOrder: order.type === Schema.OrderType.TYPE_MARKET,
         price: order.price,
         remaining: order.remaining,
         side: order.side,
@@ -239,7 +236,7 @@ export const DealTicket = ({
     : [];
   if (normalizedOrder) {
     orders.push({
-      isMarketOrder: normalizedOrder.type === OrderType.TYPE_MARKET,
+      isMarketOrder: normalizedOrder.type === Schema.OrderType.TYPE_MARKET,
       price: normalizedOrder.price ?? '0',
       remaining: normalizedOrder.size,
       side: normalizedOrder.side,
@@ -307,12 +304,10 @@ export const DealTicket = ({
     pubKey,
   ]);
 
-  const disablePostOnlyCheckbox = [
-    Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-    Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-  ].includes(timeInForce);
-
-  const disableReduceOnlyCheckbox = !disablePostOnlyCheckbox;
+  const nonPersistentOrder = isNonPersistentOrder(timeInForce);
+  const disablePostOnlyCheckbox = nonPersistentOrder;
+  const disableReduceOnlyCheckbox = !nonPersistentOrder;
+  const disableIcebergCheckbox = nonPersistentOrder;
 
   const onSubmit = useCallback(
     (formValues: OrderFormValues) => {
@@ -468,6 +463,8 @@ export const DealTicket = ({
             value={field.value}
             orderType={type}
             onSelect={(value) => {
+              // If GTT is selected and no expiresAt time is set, or its
+              // behind current time then reset the value to current time
               if (
                 value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
                 (!expiresAt || new Date(expiresAt).getTime() < Date.now())
@@ -475,6 +472,12 @@ export const DealTicket = ({
                 setValue('expiresAt', formatForInput(new Date()), {
                   shouldValidate: true,
                 });
+              }
+
+              // iceberg orders must be persistent orders, so if user
+              // switches to to a non persisten tif value, remove iceberg selection
+              if (iceberg && isNonPersistentOrder(value)) {
+                setValue('iceberg', false);
               }
               field.onChange(value);
             }}
@@ -502,7 +505,7 @@ export const DealTicket = ({
             )}
           />
         )}
-      <div className="flex gap-2 pb-2 justify-between">
+      <div className="flex justify-between pb-2 gap-2">
         <Controller
           name="postOnly"
           control={control}
@@ -568,7 +571,7 @@ export const DealTicket = ({
       </div>
       {type === Schema.OrderType.TYPE_LIMIT && (
         <>
-          <div className="flex gap-2 pb-2 justify-between">
+          <div className="flex justify-between pb-2 gap-2">
             <Controller
               name="iceberg"
               control={control}
@@ -577,6 +580,7 @@ export const DealTicket = ({
                   name="iceberg"
                   checked={field.value}
                   onCheckedChange={field.onChange}
+                  disabled={disableIcebergCheckbox}
                   label={
                     <Tooltip
                       description={
