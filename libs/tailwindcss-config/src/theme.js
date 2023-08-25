@@ -177,7 +177,21 @@ module.exports = {
     success: '#00F780',
   },
   fontFamily: {
-    mono: ['Roboto Mono', 'monospace'],
+    mono: [
+      'ui-monospace',
+      'Menlo',
+      'Monaco',
+      'Cascadia Mono',
+      'Segoe UI Mono',
+      'Roboto Mono',
+      'Oxygen Mono',
+      'Ubuntu Monospace',
+      'Source Code Pro',
+      'Fira Mono',
+      'Droid Sans Mono',
+      'Courier New',
+      'monospace',
+    ],
     sans: [
       '"Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
     ],
