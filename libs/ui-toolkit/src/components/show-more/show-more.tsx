@@ -68,7 +68,11 @@ export const ShowMore = ({
 
       {!expanded && (
         <div className="mt-1 text-center">
-          <Button size={'sm'} onClick={() => setExpanded(true)}>
+          <Button
+            size={'sm'}
+            onClick={() => setExpanded(true)}
+            data-testid="show-more-btn"
+          >
             {t('Show more')}
           </Button>
         </div>
