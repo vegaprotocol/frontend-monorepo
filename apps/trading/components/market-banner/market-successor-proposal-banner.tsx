@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import type {
   SuccessorProposalListFieldsFragment,
   NewMarketSuccessorFieldsFragment,
@@ -52,7 +52,7 @@ export const MarketSuccessorProposalBanner = ({
               TOKEN_PROPOSAL.replace(':id', item.id || '')
             );
             return (
-              <>
+              <Fragment key={i}>
                 <ExternalLink href={externalLink} key={i}>
                   {
                     (item.terms?.change as NewMarketSuccessorFieldsFragment)
@@ -60,7 +60,7 @@ export const MarketSuccessorProposalBanner = ({
                   }
                 </ExternalLink>
                 {i < successors.length - 1 && ', '}
-              </>
+              </Fragment>
             );
           })}
         </div>

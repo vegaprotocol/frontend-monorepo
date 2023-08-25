@@ -220,6 +220,7 @@ describe(
       cy.getByTestId(changeVoteButton).should('be.visible').click();
       voteForProposal('for');
       // 3001-VOTE-064
+      cy.getByTestId('user-voted-yes').should('exist');
       getProposalInformationFromTable('Tokens for proposal')
         .should('have.text', (1).toFixed(2))
         .and('be.visible');
@@ -358,6 +359,34 @@ describe(
       });
       switchVegaWalletPubKey();
       stakingPageDisassociateAllTokens();
+    });
+
+    it('Error message should be displayed if error returned from wallet when voting', function () {
+      const errorMsg =
+        'Application error: party has already submitted the maximum number of transactions of this type per epoch (3)';
+
+      createRawProposal();
+      cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
+        getProposalFromTitle(rawProposal.rationale.title).within(() =>
+          cy.getByTestId(viewProposalButton).click()
+        );
+        cy.intercept('POST', '/api/v2/requests', {
+          jsonrpc: '2.0',
+          error: {
+            code: 2001,
+            message: 'Application error',
+            data: 'party has already submitted the maximum number of transactions of this type per epoch (3)',
+          },
+          id: '-PK5EGmErnjLhAmzMeclC',
+        });
+        cy.contains('Vote breakdown').should('be.visible', { timeout: 10000 });
+        cy.getByTestId('vote-buttons').contains('for').click();
+        cy.getByTestId('dialog-title').should(
+          'have.text',
+          'Transaction failed'
+        );
+        cy.getByTestId('Error').should('have.text', errorMsg);
+      });
     });
 
     it('Able to see successor market details with new and updated values', function () {

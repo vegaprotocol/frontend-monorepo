@@ -214,7 +214,6 @@ describe('Closed', () => {
         </MemoryRouter>
       );
     });
-    // screen.debug(document, Infinity);
 
     const headers = screen.getAllByRole('columnheader');
     const expectedHeaders = [
@@ -434,7 +433,7 @@ describe('Closed', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: 'SuccessorCode' })
+        screen.getByRole('button', { name: /^SuccessorCode/ })
       ).toBeInTheDocument();
     });
     expect(
@@ -443,6 +442,16 @@ describe('Closed', () => {
           element.getAttribute('col-id') === 'successorMarket',
       })
     ).toBeInTheDocument();
+    screen
+      .getAllByRole('gridcell', {
+        name: (_name, element) =>
+          element.getAttribute('col-id') === 'successorMarket',
+      })
+      .forEach((element) => {
+        expect(element.querySelector('[title="Future"]')?.textContent).toEqual(
+          'Futr'
+        );
+      });
   });
 
   it('feature flag should hide successors', async () => {

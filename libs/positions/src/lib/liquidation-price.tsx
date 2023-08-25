@@ -1,18 +1,18 @@
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useEstimatePositionQuery } from './__generated__/Positions';
-import { formatRange } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 
 export const LiquidationPrice = ({
   marketId,
   openVolume,
   collateralAvailable,
-  decimalPlaces,
-  formatDecimals,
+  marketDecimalPlaces,
 }: {
   marketId: string;
   openVolume: string;
   collateralAvailable: string;
-  decimalPlaces: number;
-  formatDecimals: number;
+  marketDecimalPlaces: number;
 }) => {
   const { data: currentData, previousData } = useEstimatePositionQuery({
     variables: {
@@ -23,38 +23,47 @@ export const LiquidationPrice = ({
     fetchPolicy: 'no-cache',
     skip: !openVolume || openVolume === '0',
   });
-  const data = currentData || previousData;
-  let value = '-';
 
-  if (data) {
-    const bestCase =
-      data.estimatePosition?.liquidation?.bestCase.open_volume_only.replace(
-        /\..*/,
-        ''
-      );
-    const worstCase =
-      data.estimatePosition?.liquidation?.worstCase.open_volume_only.replace(
-        /\..*/,
-        ''
-      );
-    value =
-      bestCase && worstCase && BigInt(bestCase) < BigInt(worstCase)
-        ? formatRange(
-            bestCase,
-            worstCase,
-            decimalPlaces,
-            undefined,
-            formatDecimals,
-            value
-          )
-        : formatRange(
-            worstCase,
-            bestCase,
-            decimalPlaces,
-            undefined,
-            formatDecimals,
-            value
-          );
+  const data = currentData || previousData;
+
+  if (!data?.estimatePosition?.liquidation) {
+    return <span>-</span>;
   }
-  return <span data-testid="liquidation-price">{value}</span>;
+
+  let bestCase = '-';
+  let worstCase = '-';
+
+  bestCase =
+    data.estimatePosition?.liquidation?.bestCase.open_volume_only.replace(
+      /\..*/,
+      ''
+    );
+  worstCase =
+    data.estimatePosition?.liquidation?.worstCase.open_volume_only.replace(
+      /\..*/,
+      ''
+    );
+  worstCase = addDecimalsFormatNumber(worstCase, marketDecimalPlaces);
+  bestCase = addDecimalsFormatNumber(bestCase, marketDecimalPlaces);
+
+  return (
+    <Tooltip
+      description={
+        <table>
+          <tbody>
+            <tr>
+              <th>{t('Worst case')}</th>
+              <td className="text-right font-mono pl-2">{worstCase}</td>
+            </tr>
+            <tr>
+              <th>{t('Best case')}</th>
+              <td className="text-right font-mono pl-2">{bestCase}</td>
+            </tr>
+          </tbody>
+        </table>
+      }
+    >
+      <span data-testid="liquidation-price">{worstCase}</span>
+    </Tooltip>
+  );
 };

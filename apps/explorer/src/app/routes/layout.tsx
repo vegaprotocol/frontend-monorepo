@@ -22,6 +22,11 @@ import { Footer } from '../components/footer/footer';
 import { Header } from '../components/header';
 import { Routes } from './route-names';
 import { useExplorerNodeNamesLazyQuery } from './validators/__generated__/NodeNames';
+import {
+  ProtocolUpgradeCountdownMode,
+  ProtocolUpgradeInProgressNotification,
+  ProtocolUpgradeProposalNotification,
+} from '@vegaprotocol/proposals';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, asJson, setOpen } = useAssetDetailsDialogStore();
@@ -62,6 +67,10 @@ export const Layout = () => {
             />
           )}
           <Header />
+          <ProtocolUpgradeProposalNotification
+            mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
+          />
+          <ProtocolUpgradeInProgressNotification />
         </div>
         <div className={fixedWidthClasses}>
           <main className="p-4">

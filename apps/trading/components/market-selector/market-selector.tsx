@@ -1,14 +1,14 @@
 import { t } from '@vegaprotocol/i18n';
 import uniqBy from 'lodash/uniqBy';
-import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
+import { type MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import {
-  Input,
+  TradingInput,
   TinyScroll,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import type { CSSProperties } from 'react';
-import { useCallback, useState, useMemo, useRef } from 'react';
+import { useCallback, useState, useMemo, useRef, useEffect } from 'react';
 import { FixedSizeList } from 'react-window';
 import { useMarketSelectorList } from './use-market-selector-list';
 import type { ProductType } from './product-selector';
@@ -43,8 +43,13 @@ export const MarketSelector = ({
     sort: Sort.None,
     assets: [],
   });
+  const allProducts = filter.product === Product.All;
+  const { markets, data, loading, error, reload } =
+    useMarketSelectorList(filter);
 
-  const { markets, data, loading, error } = useMarketSelectorList(filter);
+  useEffect(() => {
+    reload();
+  }, [reload]);
 
   return (
     <div data-testid="market-selector">
@@ -57,7 +62,7 @@ export const MarketSelector = ({
         />
         <div className="text-sm grid grid-cols-[2fr_1fr_1fr] gap-1 ">
           <div className="flex-1">
-            <Input
+            <TradingInput
               onChange={(e) =>
                 setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
               }
@@ -128,6 +133,7 @@ export const MarketSelector = ({
               ? t('Spot markets coming soon.')
               : t('No markets')
           }
+          allProducts={allProducts}
         />
       </div>
     </div>
@@ -141,6 +147,7 @@ const MarketList = ({
   currentMarketId,
   onSelect,
   noItems,
+  allProducts,
 }: {
   data: MarketMaybeWithDataAndCandles[];
   error: Error | undefined;
@@ -149,6 +156,7 @@ const MarketList = ({
   currentMarketId?: string;
   onSelect: (marketId: string) => void;
   noItems: string;
+  allProducts: boolean;
 }) => {
   const itemSize = 45;
   const listRef = useRef<HTMLDivElement | null>(null);
@@ -192,6 +200,7 @@ const MarketList = ({
           currentMarketId={currentMarketId}
           onSelect={onSelect}
           noItems={noItems}
+          allProducts={allProducts}
         />
       </div>
     </TinyScroll>
@@ -202,6 +211,7 @@ interface ListItemData {
   data: MarketMaybeWithDataAndCandles[];
   onSelect: (marketId: string) => void;
   currentMarketId?: string;
+  allProducts: boolean;
 }
 
 const ListItem = ({
@@ -218,6 +228,7 @@ const ListItem = ({
     currentMarketId={data.currentMarketId}
     style={style}
     onSelect={data.onSelect}
+    allProducts={data.allProducts}
   />
 );
 
@@ -229,19 +240,21 @@ const List = ({
   onSelect,
   noItems,
   currentMarketId,
+  allProducts,
 }: ListItemData & {
   loading: boolean;
   height: number;
   itemSize: number;
   noItems: string;
+  allProducts: boolean;
 }) => {
   const itemKey = useCallback(
     (index: number, data: ListItemData) => data.data[index].id,
     []
   );
   const itemData = useMemo(
-    () => ({ data, onSelect, currentMarketId }),
-    [data, onSelect, currentMarketId]
+    () => ({ data, onSelect, currentMarketId, allProducts }),
+    [data, onSelect, currentMarketId, allProducts]
   );
   if (!data || loading) {
     return (

@@ -4,7 +4,8 @@ import * as Schema from '@vegaprotocol/types';
 
 const rowSelector =
   '[data-testid="tab-open-markets"] .ag-center-cols-container .ag-row';
-const colInstrumentCode = '[col-id="tradableInstrument.instrument.code"]';
+const colInstrumentCode =
+  '[col-id="tradableInstrument.instrument.code"] [data-testid="market-code"]';
 
 describe('markets all table', { tags: '@smoke' }, () => {
   beforeEach(() => {
@@ -67,6 +68,12 @@ describe('markets all table', { tags: '@smoke' }, () => {
       .first()
       .find(colInstrumentCode)
       .should('have.text', 'SOLUSD');
+
+    // 6001-MARK-073
+    cy.get(rowSelector)
+      .first()
+      .find('[title="Future"]')
+      .should('have.text', 'Futr');
 
     //  6001-MARK-036
     cy.get(rowSelector)

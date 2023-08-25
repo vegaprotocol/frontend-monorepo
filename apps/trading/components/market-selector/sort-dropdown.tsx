@@ -15,6 +15,7 @@ export const Sort = {
   Gained: 'Gained',
   Lost: 'Lost',
   New: 'New',
+  TopTraded: 'TopTraded',
 } as const;
 
 export type SortType = keyof typeof Sort;
@@ -26,6 +27,7 @@ export const SortTypeMapping: {
   [Sort.Gained]: 'Top gaining',
   [Sort.Lost]: 'Top losing',
   [Sort.New]: 'New markets',
+  [Sort.TopTraded]: 'Top traded',
 };
 
 const SortIconMapping: {
@@ -35,6 +37,7 @@ const SortIconMapping: {
   [Sort.Gained]: VegaIconNames.TREND_UP,
   [Sort.Lost]: VegaIconNames.TREND_DOWN,
   [Sort.New]: VegaIconNames.STAR,
+  [Sort.TopTraded]: VegaIconNames.ARROW_UP,
 };
 
 export const SortDropdown = ({

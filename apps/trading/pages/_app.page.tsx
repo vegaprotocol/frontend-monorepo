@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { t } from '@vegaprotocol/i18n';
@@ -23,7 +23,7 @@ import {
   useNodeSwitcherStore,
 } from '@vegaprotocol/environment';
 import './styles.css';
-import { usePageTitleStore } from '../stores';
+import { useGlobalStore, usePageTitleStore } from '../stores';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
 import {
@@ -43,6 +43,7 @@ import { Navbar } from '../components/navbar';
 import classNames from 'classnames';
 import {
   ProtocolUpgradeCountdownMode,
+  ProtocolUpgradeInProgressNotification,
   ProtocolUpgradeProposalNotification,
 } from '@vegaprotocol/proposals';
 import { ViewingBanner } from '../components/viewing-banner';
@@ -111,6 +112,7 @@ function AppBody({ Component }: AppProps) {
           <ProtocolUpgradeProposalNotification
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
           />
+          <ProtocolUpgradeInProgressNotification />
           <ViewingBanner />
           <UpgradeBanner showVersionChange={true} />
         </div>
@@ -168,7 +170,8 @@ const PartyData = () => {
 
 const MaybeConnectEagerly = () => {
   const { VEGA_ENV, SENTRY_DSN } = useEnvironment();
-  useVegaEagerConnect(Connectors);
+  const update = useGlobalStore((store) => store.update);
+  const eagerConnecting = useVegaEagerConnect(Connectors);
   const [isTelemetryApproved] = useTelemetryApproval();
   useEthereumEagerConnect(
     isTelemetryApproved ? { dsn: SENTRY_DSN, env: VEGA_ENV } : {}
@@ -180,5 +183,8 @@ const MaybeConnectEagerly = () => {
   if (query && !pubKey) {
     connect(Connectors['view']);
   }
+  useEffect(() => {
+    update({ eagerConnecting });
+  }, [update, eagerConnecting]);
   return null;
 };

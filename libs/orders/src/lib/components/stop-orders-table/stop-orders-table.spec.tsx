@@ -4,6 +4,7 @@ import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
+import userEvent from '@testing-library/user-event';
 import {
   StopOrdersTable,
   type StopOrdersTableProps,
@@ -27,6 +28,7 @@ jest.mock('@vegaprotocol/utils', () => ({
 }));
 
 const defaultProps: StopOrdersTableProps = {
+  onView: jest.fn(),
   rowData: [],
   onCancel: jest.fn(),
   isReadOnly: false,
@@ -104,6 +106,7 @@ const rowData = [
   generateStopOrder({
     id: 'stop-order-6',
     status: Schema.StopOrderStatus.STATUS_TRIGGERED,
+    order: { id: 'order-id' },
   }),
 ];
 
@@ -233,5 +236,38 @@ describe('StopOrdersTable', () => {
         Schema.StopOrderStatus.STATUS_PENDING
       );
     });
+  });
+
+  it('shows actions dropdown only for triggered stop orders', async () => {
+    await act(async () => {
+      render(generateJsx({ rowData }));
+    });
+    const dropdownMenuButtons = screen.getAllByTestId('dropdown-menu');
+    expect(dropdownMenuButtons).toHaveLength(1);
+    dropdownMenuButtons.forEach((dropdownMenuButton) => {
+      const id = dropdownMenuButton
+        .closest('[role="row"]')
+        ?.getAttribute('row-id');
+      expect(rowData.find((row) => row.id === id)?.status).toEqual(
+        Schema.StopOrderStatus.STATUS_TRIGGERED
+      );
+    });
+  });
+
+  it('action dropdown has copy and view order actions', async () => {
+    const onView = jest.fn();
+    const user = userEvent.setup();
+    await act(async () => {
+      render(generateJsx({ rowData, onView }));
+    });
+    const dropdownMenuButtons = screen.getByTestId('dropdown-menu');
+    dropdownMenuButtons.click();
+    await user.click(dropdownMenuButtons as HTMLButtonElement);
+    const menuItems = screen.getAllByRole('menuitem');
+    expect(menuItems).toHaveLength(2);
+    expect(menuItems[0]).toHaveTextContent('Copy order ID');
+    expect(menuItems[1]).toHaveTextContent('View order details');
+    menuItems[1].click();
+    expect(onView).toBeCalled();
   });
 });

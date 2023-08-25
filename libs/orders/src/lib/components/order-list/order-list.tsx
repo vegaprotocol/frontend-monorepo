@@ -271,8 +271,8 @@ export const OrderListTable = memo<
           {
             colId: 'amend',
             ...COL_DEFS.actions,
-            minWidth: showAllActions ? 110 : COL_DEFS.actions.minWidth,
-            maxWidth: showAllActions ? 110 : COL_DEFS.actions.minWidth,
+            minWidth: showAllActions ? 90 : COL_DEFS.actions.minWidth,
+            maxWidth: showAllActions ? 90 : COL_DEFS.actions.minWidth,
             cellRenderer: ({ data }: { data?: Order }) => {
               if (!data) return null;
 
@@ -285,18 +285,18 @@ export const OrderListTable = memo<
                           data-testid="edit"
                           onClick={() => onEdit(data)}
                         >
-                          {t('Edit')}
+                          <VegaIcon name={VegaIconNames.EDIT} size={16} />
                         </ButtonLink>
                       )}
                       <ButtonLink
                         data-testid="cancel"
                         onClick={() => onCancel(data)}
                       >
-                        {t('Cancel')}
+                        <VegaIcon name={VegaIconNames.CROSS} size={16} />
                       </ButtonLink>
                     </>
                   )}
-                  <ActionsDropdown data-testid="market-actions-content">
+                  <ActionsDropdown data-testid="order-actions-content">
                     <TradingDropdownCopyItem
                       value={data.id}
                       text={t('Copy order ID')}

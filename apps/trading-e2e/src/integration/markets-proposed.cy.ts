@@ -3,7 +3,7 @@ import type { ProposalsListQuery } from '@vegaprotocol/proposals';
 
 const rowSelector =
   '[data-testid="tab-proposed-markets"] .ag-center-cols-container .ag-row';
-const colMarketId = '[col-id="market"]';
+const colMarketId = '[col-id="market"] [data-testid="market-code"]';
 
 describe('markets proposed table', { tags: '@smoke' }, () => {
   before(() => {
@@ -44,6 +44,12 @@ describe('markets proposed table', { tags: '@smoke' }, () => {
       .first()
       .find('[col-id="description"]')
       .should('have.text', 'ETHUSD');
+
+    //  6001-MARK-074
+    cy.get(rowSelector)
+      .first()
+      .find('[title="Future"]')
+      .should('have.text', 'Futr');
 
     //  6001-MARK-051
     cy.get(rowSelector)
@@ -155,7 +161,13 @@ describe('markets proposed table', { tags: '@smoke' }, () => {
       'AAVEDAI.MF21',
       'AAPL.MF21',
     ];
-    checkSorting('market', marketColDefault, marketColAsc, marketColDesc);
+    checkSorting(
+      'market',
+      marketColDefault,
+      marketColAsc,
+      marketColDesc,
+      ' [data-testid="market-code"]'
+    );
 
     const stateColDefault = [
       'Open',

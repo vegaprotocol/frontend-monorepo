@@ -12,11 +12,11 @@ import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
   Button,
-  FormGroup,
-  Input,
-  InputError,
+  TradingFormGroup,
+  TradingInput,
+  TradingInputError,
   Notification,
-  RichSelect,
+  TradingRichSelect,
   ExternalLink,
   Intent,
 } from '@vegaprotocol/ui-toolkit';
@@ -150,7 +150,7 @@ export const WithdrawForm = ({
     field: ControllerRenderProps<FormFields, 'asset'>;
   }) => {
     return (
-      <RichSelect
+      <TradingRichSelect
         data-testid="select-asset"
         id="asset"
         name="asset"
@@ -170,7 +170,7 @@ export const WithdrawForm = ({
             balance={<AssetBalance asset={a} />}
           />
         ))}
-      </RichSelect>
+      </TradingRichSelect>
     );
   };
 
@@ -193,7 +193,7 @@ export const WithdrawForm = ({
         noValidate={true}
         data-testid="withdraw-form"
       >
-        <FormGroup label={t('Asset')} labelFor="asset">
+        <TradingFormGroup label={t('Asset')} labelFor="asset">
           <Controller
             control={control}
             name="asset"
@@ -205,10 +205,12 @@ export const WithdrawForm = ({
             render={renderAssetsSelector}
           />
           {errors.asset?.message && (
-            <InputError intent="danger">{errors.asset.message}</InputError>
+            <TradingInputError intent="danger">
+              {errors.asset.message}
+            </TradingInputError>
           )}
-        </FormGroup>
-        <FormGroup
+        </TradingFormGroup>
+        <TradingFormGroup
           label={t('To (Ethereum address)')}
           labelFor="ethereum-address"
         >
@@ -218,15 +220,17 @@ export const WithdrawForm = ({
               clearErrors('to');
             }}
           />
-          <Input
+          <TradingInput
             id="ethereum-address"
             data-testid="eth-address-input"
             {...register('to', { validate: { required, ethereumAddress } })}
           />
           {errors.to?.message && (
-            <InputError intent="danger">{errors.to.message}</InputError>
+            <TradingInputError intent="danger">
+              {errors.to.message}
+            </TradingInputError>
           )}
-        </FormGroup>
+        </TradingFormGroup>
         {selectedAsset && threshold && (
           <div className="mb-4">
             <WithdrawLimits
@@ -238,8 +242,8 @@ export const WithdrawForm = ({
             />
           </div>
         )}
-        <FormGroup label={t('Amount')} labelFor="amount">
-          <Input
+        <TradingFormGroup label={t('Amount')} labelFor="amount">
+          <TradingInput
             data-testid="amount-input"
             type="number"
             autoComplete="off"
@@ -259,7 +263,9 @@ export const WithdrawForm = ({
             })}
           />
           {errors.amount?.message && (
-            <InputError intent="danger">{errors.amount.message}</InputError>
+            <TradingInputError intent="danger">
+              {errors.amount.message}
+            </TradingInputError>
           )}
           {selectedAsset && (
             <UseButton
@@ -282,7 +288,7 @@ export const WithdrawForm = ({
               />
             </div>
           )}
-        </FormGroup>
+        </TradingFormGroup>
         <Button
           data-testid="submit-withdrawal"
           type="submit"

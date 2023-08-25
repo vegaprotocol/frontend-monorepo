@@ -120,7 +120,9 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
     cy.getByTestId('All').click();
 
     cy.getByTestId('tab-orders')
-      .get(`.ag-center-cols-container [col-id='${orderSymbol}']`)
+      .get(
+        `.ag-center-cols-container [col-id='${orderSymbol}'] [data-testid="market-code"]`
+      )
       .should('have.length.at.least', expectedOrderList.length)
       .then(($symbols) => {
         const symbolNames: string[] = [];
@@ -220,12 +222,17 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
 
   it('must see a filled order', () => {
     // 7002-SORD-046
+    // 7003-MORD-020
     // NOT COVERED:  Must be able to see/link to all trades that were created from this order
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_FILLED,
     });
     cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Filled');
+    cy.get('[col-id="market.tradableInstrument.instrument.code"]').contains(
+      '[title="Future"]',
+      'Futr'
+    );
   });
 
   it('must see a rejected order', () => {
@@ -445,8 +452,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find('[data-testid="edit"]')
-      .should('have.text', 'Edit')
+      .find('[data-testid="icon-edit"]')
       .then(($btn) => {
         cy.wrap($btn).click();
         cy.getByTestId('dialog-title').should('have.text', 'Edit order');
@@ -474,8 +480,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find(`[data-testid="cancel"]`)
-      .should('have.text', 'Cancel')
+      .find(`[data-testid="icon-cross"]`)
       .then(($btn) => {
         cy.wrap($btn).click({ force: true });
         const order: OrderCancellation = {
@@ -512,8 +517,7 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find('[data-testid="edit"]')
-      .should('have.text', 'Edit')
+      .find('[data-testid="icon-edit"]')
       .then(($btn) => {
         cy.wrap($btn).click({ force: true });
         cy.getByTestId('dialog-title').should('have.text', 'Edit order');

@@ -12,10 +12,12 @@ import type {
 import {
   AgGridLazy as AgGrid,
   DateRangeFilter,
+  MarketNameCell,
   SetFilter,
 } from '@vegaprotocol/datagrid';
 import type * as Types from '@vegaprotocol/types';
 import type { ColDef } from 'ag-grid-community';
+import type { Market } from '@vegaprotocol/markets';
 import {
   AccountTypeMapping,
   DescriptionTransferTypeMapping,
@@ -82,10 +84,14 @@ export const LedgerTable = (props: LedgerEntryProps) => {
         field: 'marketSender.tradableInstrument.instrument.code',
         cellRenderer: ({
           value,
+          data,
         }: VegaValueFormatterParams<
           LedgerEntry,
           'marketSender.tradableInstrument.instrument.code'
-        >) => value || '-',
+        >) =>
+          value && (
+            <MarketNameCell value={value} data={data?.marketSender as Market} />
+          ),
       },
       {
         headerName: t('Receiver'),
@@ -112,10 +118,17 @@ export const LedgerTable = (props: LedgerEntryProps) => {
         field: 'marketReceiver.tradableInstrument.instrument.code',
         cellRenderer: ({
           value,
+          data,
         }: VegaValueFormatterParams<
           LedgerEntry,
           'marketReceiver.tradableInstrument.instrument.code'
-        >) => value || '-',
+        >) =>
+          value && (
+            <MarketNameCell
+              value={value}
+              data={data?.marketReceiver as Market}
+            />
+          ),
       },
       {
         headerName: t('Transfer type'),

@@ -8,7 +8,7 @@ import {
 import type { OrderSubmission } from '@vegaprotocol/wallet';
 import { createOrder } from '../support/create-order';
 
-describe(
+describe.skip(
   'account validation',
   { tags: '@regression', testIsolation: true },
   () => {

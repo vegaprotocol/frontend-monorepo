@@ -15,7 +15,8 @@ interface PositionsManagerProps {
   partyIds: string[];
   onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
-  gridProps: ReturnType<typeof useDataGridEvents>;
+  gridProps?: ReturnType<typeof useDataGridEvents>;
+  showClosed?: boolean;
 }
 
 export const PositionsManager = ({
@@ -23,6 +24,7 @@ export const PositionsManager = ({
   onMarketClick,
   isReadOnly,
   gridProps,
+  showClosed = false,
 }: PositionsManagerProps) => {
   const { pubKeys, pubKey } = useVegaWallet();
   const create = useVegaTransactionStore((store) => store.create);
@@ -60,7 +62,7 @@ export const PositionsManager = ({
 
   const { data, error } = useDataProvider({
     dataProvider: positionsMetricsProvider,
-    variables: { partyIds, marketIds: marketIds || [] },
+    variables: { partyIds, marketIds: marketIds || [], showClosed },
     skip: !marketIds,
   });
 
@@ -68,7 +70,7 @@ export const PositionsManager = ({
     <PositionsTable
       pubKey={pubKey}
       pubKeys={pubKeys}
-      rowData={error ? [] : data}
+      rowData={data}
       onMarketClick={onMarketClick}
       onClose={onClose}
       isReadOnly={isReadOnly}

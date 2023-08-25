@@ -24,6 +24,7 @@ import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { MockedResponse } from '@apollo/client/testing';
 import { FLAGS } from '@vegaprotocol/environment';
 import { BrowserRouter } from 'react-router-dom';
+import { VoteState } from '../vote-details/use-user-vote';
 
 jest.mock('@vegaprotocol/proposals', () => ({
   ...jest.requireActual('@vegaprotocol/proposals'),
@@ -36,7 +37,8 @@ jest.mock('@vegaprotocol/proposals', () => ({
 const renderComponent = (
   proposal: ProposalQuery['proposal'],
   isListItem = true,
-  mocks: MockedResponse[] = []
+  mocks: MockedResponse[] = [],
+  voteState?: VoteState
 ) =>
   render(
     <AppStateProvider>
@@ -47,6 +49,7 @@ const renderComponent = (
               proposal={proposal}
               isListItem={isListItem}
               networkParams={mockNetworkParams}
+              voteState={voteState}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>
@@ -386,10 +389,15 @@ describe('Proposal header', () => {
         closingDatetime: nextWeek.toString(),
       },
     });
-    renderComponent(proposal, true, [
-      // @ts-ignore generateProposal always creates an id
-      createUserVoteQueryMock(proposal.id, VoteValue.VALUE_NO),
-    ]);
+    renderComponent(
+      proposal,
+      true,
+      [
+        // @ts-ignore generateProposal always creates an id
+        createUserVoteQueryMock(proposal.id, VoteValue.VALUE_NO),
+      ],
+      VoteState.No
+    );
     expect(await screen.findByTestId('user-voted-no')).toBeInTheDocument();
   });
 
@@ -400,10 +408,15 @@ describe('Proposal header', () => {
         closingDatetime: nextWeek.toString(),
       },
     });
-    renderComponent(proposal, true, [
-      // @ts-ignore generateProposal always creates an id
-      createUserVoteQueryMock(proposal.id, VoteValue.VALUE_YES),
-    ]);
+    renderComponent(
+      proposal,
+      true,
+      [
+        // @ts-ignore generateProposal always creates an id
+        createUserVoteQueryMock(proposal.id, VoteValue.VALUE_YES),
+      ],
+      VoteState.Yes
+    );
     expect(await screen.findByTestId('user-voted-yes')).toBeInTheDocument();
   });
 });

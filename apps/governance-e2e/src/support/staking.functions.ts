@@ -84,9 +84,10 @@ export function stakingPageAssociateTokens(
           .length
       ) {
         cy.get(tokenInputApprove, txTimeout).should('be.enabled').click();
-        cy.contains('Approve $VEGA Tokens for staking on Vega').should(
-          'be.visible'
-        );
+        cy.contains(
+          'Approve $VEGA Tokens for staking on Vega',
+          txTimeout
+        ).should('be.visible');
         cy.contains(
           'Approve $VEGA Tokens for staking on Vega',
           txTimeout
@@ -181,7 +182,7 @@ export function clickOnValidatorFromList(
   } else {
     cy.get(`[row-id="${validatorNumber}"]`)
       .should('be.visible')
-      .find(stakeValidatorListName)
+      .first()
       .as('validatorOnList');
     cy.get('@validatorOnList').click();
   }

@@ -4,7 +4,11 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { AgGridLazy as AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
+import {
+  AgGridLazy as AgGrid,
+  COL_DEFS,
+  MarketNameCell,
+} from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
@@ -47,6 +51,7 @@ interface Row {
   setlementDataSourceFilter: DataSourceFilterFragment | undefined;
   tradingTerminationOracleId: string;
   settlementAsset: SettlementAsset;
+  productType: string;
 }
 
 export const Closed = () => {
@@ -90,6 +95,7 @@ export const Closed = () => {
       tradingTerminationOracleId:
         instrument.product.dataSourceSpecForTradingTermination.id,
       settlementAsset: instrument.product.settlementAsset,
+      productType: instrument.product.__typename || '',
     };
 
     return row;
@@ -115,16 +121,7 @@ const ClosedMarketsDataGrid = ({
       {
         headerName: t('Market'),
         field: 'code',
-        cellRenderer: ({
-          value,
-          data,
-        }: VegaICellRendererParams<Row, 'code'>) => {
-          return (
-            <span data-testid="market-code" data-market-id={data?.id}>
-              {value}
-            </span>
-          );
-        },
+        cellRenderer: 'MarketNameCell',
       },
       {
         headerName: t('Description'),
@@ -279,7 +276,7 @@ const ClosedMarketsDataGrid = ({
       rowData={rowData}
       columnDefs={colDefs}
       getRowId={({ data }) => data.id}
-      components={{ SuccessorMarketRenderer }}
+      components={{ SuccessorMarketRenderer, MarketNameCell }}
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
     />
   );
