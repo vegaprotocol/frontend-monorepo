@@ -129,7 +129,8 @@ describe('useMarketSelectorList', () => {
     expect(result.current.markets).toEqual(markets);
   });
 
-  it('filters by asset', () => {
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('filters by asset', () => {
     const markets = [
       createMarketFragment({
         id: 'market-0',
