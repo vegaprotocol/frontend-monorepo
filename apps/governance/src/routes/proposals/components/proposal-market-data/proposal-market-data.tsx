@@ -14,8 +14,6 @@ import {
   SettlementAssetInfoPanel,
 } from '@vegaprotocol/markets';
 import {
-  Accordion,
-  AccordionItem,
   Button,
   CopyWithTooltip,
   Dialog,
@@ -42,6 +40,9 @@ export const useMarketDataDialogStore = create<MarketDataDialogState>(
   })
 );
 
+const marketDataHeaderStyles =
+  'font-alpha calt text-base border-b border-vega-dark-200 mt-2 py-2';
+
 export const ProposalMarketData = ({
   marketData,
   parentMarketData,
@@ -64,12 +65,6 @@ export const ProposalMarketData = ({
           .dataSourceSpecForSettlementData.data as DataSourceDefinition)
       : undefined;
 
-  const settlementScheduleData =
-    marketData.tradableInstrument.instrument.product.__typename === 'Perpetual'
-      ? (marketData.tradableInstrument.instrument.product
-          .dataSourceSpecForSettlementSchedule.data as DataSourceDefinition)
-      : undefined;
-
   const parentSettlementData =
     parentMarketData?.tradableInstrument.instrument.product.__typename ===
       'Future' ||
@@ -77,6 +72,12 @@ export const ProposalMarketData = ({
       'Perpetual'
       ? parentMarketData?.tradableInstrument.instrument?.product
           ?.dataSourceSpecForSettlementData?.data
+      : undefined;
+
+  const settlementScheduleData =
+    marketData.tradableInstrument.instrument.product.__typename === 'Perpetual'
+      ? (marketData.tradableInstrument.instrument.product
+          .dataSourceSpecForSettlementSchedule.data as DataSourceDefinition)
       : undefined;
 
   const parentSettlementScheduleData =
@@ -87,16 +88,17 @@ export const ProposalMarketData = ({
       : undefined;
 
   const terminationData =
-    'dataSourceSpecForTradingTermination' in
-      marketData.tradableInstrument.instrument.product &&
-    (marketData.tradableInstrument.instrument.product
-      .dataSourceSpecForTradingTermination.data as DataSourceDefinition);
+    marketData.tradableInstrument.instrument.product.__typename === 'Future'
+      ? (marketData.tradableInstrument.instrument.product
+          .dataSourceSpecForTradingTermination.data as DataSourceDefinition)
+      : undefined;
+
   const parentTerminationData =
-    parentMarketData &&
-    'dataSourceSpecForTradingTermination' in
-      parentMarketData.tradableInstrument.instrument.product &&
-    parentMarketData?.tradableInstrument.instrument?.product
-      ?.dataSourceSpecForTradingTermination?.data;
+    parentMarketData?.tradableInstrument.instrument.product.__typename ===
+    'Future'
+      ? parentMarketData?.tradableInstrument.instrument?.product
+          ?.dataSourceSpecForTradingTermination?.data
+      : undefined;
 
   // TODO add settlementScheduleData for Perp Proposal
 
@@ -111,6 +113,14 @@ export const ProposalMarketData = ({
   const isParentTerminationDataEqual =
     parentTerminationData !== undefined &&
     isEqual(terminationData, parentTerminationData);
+
+  const showParentPriceMonitoringBounds =
+    parentMarketData?.priceMonitoringSettings?.parameters?.triggers !==
+      undefined &&
+    !isEqual(
+      marketData.priceMonitoringSettings?.parameters?.triggers,
+      parentMarketData?.priceMonitoringSettings?.parameters?.triggers
+    );
 
   const getSigners = (data: DataSourceDefinition) => {
     if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
@@ -147,172 +157,160 @@ export const ProposalMarketData = ({
             </Button>
           </div>
           <div className="mb-10">
-            <Accordion>
-              <AccordionItem
-                itemId="key-details"
-                title={t('Key details')}
-                content={
-                  <KeyDetailsInfoPanel
-                    market={marketData}
-                    parentMarket={parentMarketData}
-                  />
-                }
-              />
-              <AccordionItem
-                itemId="instrument"
-                title={t('Instrument')}
-                content={
-                  <InstrumentInfoPanel
-                    market={marketData}
-                    parentMarket={parentMarketData}
-                  />
-                }
-              />
-              {settlementData &&
-              terminationData &&
-              isEqual(
-                getSigners(settlementData),
-                getSigners(terminationData)
-              ) ? (
-                <AccordionItem
-                  itemId="oracles"
-                  title={t('Oracle')}
-                  content={
+            <h2 className={marketDataHeaderStyles}>{t('Key details')}</h2>
+            <KeyDetailsInfoPanel
+              market={marketData}
+              parentMarket={parentMarketData}
+            />
+
+            <h2 className={marketDataHeaderStyles}>{t('Instrument')}</h2>
+            <InstrumentInfoPanel
+              market={marketData}
+              parentMarket={parentMarketData}
+            />
+
+            {settlementData &&
+            terminationData &&
+            isEqual(getSigners(settlementData), getSigners(terminationData)) ? (
+              <>
+                <h2 className={marketDataHeaderStyles}>{t('Oracle')}</h2>
+
+                <OracleInfoPanel
+                  market={marketData}
+                  type="settlementData"
+                  parentMarket={
+                    isParentSettlementDataEqual ||
+                    isParentSettlementScheduleDataEqual
+                      ? undefined
+                      : parentMarketData
+                  }
+                />
+              </>
+            ) : (
+              <>
+                <h2 className={marketDataHeaderStyles}>
+                  {t('Settlement oracle')}
+                </h2>
+                <OracleInfoPanel
+                  market={marketData}
+                  type="settlementData"
+                  parentMarket={
+                    isParentSettlementDataEqual ? undefined : parentMarketData
+                  }
+                />
+
+                {marketData.tradableInstrument.instrument.product.__typename ===
+                  'Future' && (
+                  <div>
+                    <h2 className={marketDataHeaderStyles}>
+                      {t('Termination oracle')}
+                    </h2>
                     <OracleInfoPanel
                       market={marketData}
-                      type="settlementData"
+                      type="termination"
                       parentMarket={
-                        isParentSettlementDataEqual
+                        isParentTerminationDataEqual
                           ? undefined
                           : parentMarketData
                       }
                     />
-                  }
-                />
-              ) : (
-                <>
-                  <AccordionItem
-                    itemId="settlement-oracle"
-                    title={t('Settlement oracle')}
-                    content={
-                      <OracleInfoPanel
-                        market={marketData}
-                        type="settlementData"
-                        parentMarket={
-                          isParentSettlementDataEqual
-                            ? undefined
-                            : parentMarketData
-                        }
-                      />
-                    }
-                  />
+                  </div>
+                )}
 
-                  <AccordionItem
-                    itemId="termination-oracle"
-                    title={t('Termination oracle')}
-                    content={
-                      <OracleInfoPanel
-                        market={marketData}
-                        type="termination"
-                        parentMarket={
-                          isParentTerminationDataEqual
-                            ? undefined
-                            : parentMarketData
-                        }
-                      />
-                    }
-                  />
-
-                  <AccordionItem
-                    itemId="settlement-schedule-oracle"
-                    title={t('Settlement schedule oracle')}
-                    content={
-                      <OracleInfoPanel
-                        market={marketData}
-                        type="settlementSchedule"
-                        parentMarket={
-                          isParentSettlementScheduleDataEqual
-                            ? undefined
-                            : parentMarketData
-                        }
-                      />
-                    }
-                  />
-                </>
-              )}
-              {/*Note: successor markets will not differ in their settlement*/}
-              {/*assets, so no need to pass in parent market data for comparison.*/}
-              <AccordionItem
-                itemId="settlement-asset"
-                title={t('Settlement asset')}
-                content={<SettlementAssetInfoPanel market={marketData} />}
-              />
-              <AccordionItem
-                itemId="metadata"
-                title={t('Metadata')}
-                content={
-                  <MetadataInfoPanel
-                    market={marketData}
-                    parentMarket={parentMarketData}
-                  />
-                }
-              />
-              <AccordionItem
-                itemId="risk-model"
-                title={t('Risk model')}
-                content={
-                  <RiskModelInfoPanel
-                    market={marketData}
-                    parentMarket={parentMarketData}
-                  />
-                }
-              />
-              <AccordionItem
-                itemId="risk-parameters"
-                title={t('Risk parameters')}
-                content={
-                  <RiskParametersInfoPanel
-                    market={marketData}
-                    parentMarket={parentMarketData}
-                  />
-                }
-              />
-              <AccordionItem
-                itemId="risk-factors"
-                title={t('Risk factors')}
-                content={
-                  <RiskFactorsInfoPanel
-                    market={marketData}
-                    parentMarket={parentMarketData}
-                  />
-                }
-              />
-              {(
-                marketData.priceMonitoringSettings?.parameters?.triggers || []
-              ).map((_, triggerIndex) => (
-                <AccordionItem
-                  itemId={`trigger-${triggerIndex}`}
-                  title={t(`Price monitoring bounds ${triggerIndex + 1}`)}
-                  content={
-                    <PriceMonitoringBoundsInfoPanel
+                {marketData.tradableInstrument.instrument.product.__typename ===
+                  'Perpetual' && (
+                  <div>
+                    <h2 className={marketDataHeaderStyles}>
+                      {t('Settlement schedule oracle')}
+                    </h2>
+                    <OracleInfoPanel
                       market={marketData}
-                      parentMarket={parentMarketData}
+                      type="settlementSchedule"
+                      parentMarket={
+                        isParentSettlementScheduleDataEqual
+                          ? undefined
+                          : parentMarketData
+                      }
+                    />
+                  </div>
+                )}
+              </>
+            )}
+
+            {/*Note: successor markets will not differ in their settlement*/}
+            {/*assets, so no need to pass in parent market data for comparison.*/}
+
+            <h2 className={marketDataHeaderStyles}>{t('Settlement assets')}</h2>
+            <SettlementAssetInfoPanel
+              market={marketData}
+              parentMarket={parentMarketData}
+            />
+
+            <h2 className={marketDataHeaderStyles}>{t('Metadata')}</h2>
+            <MetadataInfoPanel
+              market={marketData}
+              parentMarket={parentMarketData}
+            />
+
+            <h2 className={marketDataHeaderStyles}>{t('Risk model')}</h2>
+            <RiskModelInfoPanel
+              market={marketData}
+              parentMarket={parentMarketData}
+            />
+
+            <h2 className={marketDataHeaderStyles}>{t('Risk parameters')}</h2>
+            <RiskParametersInfoPanel
+              market={marketData}
+              parentMarket={parentMarketData}
+            />
+
+            <h2 className={marketDataHeaderStyles}>{t('Risk factors')}</h2>
+            <RiskFactorsInfoPanel
+              market={marketData}
+              parentMarket={parentMarketData}
+            />
+
+            {showParentPriceMonitoringBounds &&
+              (
+                parentMarketData?.priceMonitoringSettings?.parameters
+                  ?.triggers || []
+              ).map((_, triggerIndex) => (
+                <>
+                  <h2 className={marketDataHeaderStyles}>
+                    {t(`Parent price monitoring bounds ${triggerIndex + 1}`)}
+                  </h2>
+
+                  <div className="text-vega-dark-300 line-through">
+                    <PriceMonitoringBoundsInfoPanel
+                      market={parentMarketData}
                       triggerIndex={triggerIndex}
                     />
-                  }
-                />
+                  </div>
+                </>
               ))}
-              <AccordionItem
-                itemId="liquidity-monitoring-parameters"
-                title={t('Liquidity monitoring parameters')}
-                content={
-                  <LiquidityMonitoringParametersInfoPanel
-                    market={marketData}
-                    parentMarket={parentMarketData}
-                  />
-                }
-              />
-            </Accordion>
+
+            {(
+              marketData.priceMonitoringSettings?.parameters?.triggers || []
+            ).map((_, triggerIndex) => (
+              <>
+                <h2 className={marketDataHeaderStyles}>
+                  {t(`Price monitoring bounds ${triggerIndex + 1}`)}
+                </h2>
+
+                <PriceMonitoringBoundsInfoPanel
+                  market={marketData}
+                  triggerIndex={triggerIndex}
+                />
+              </>
+            ))}
+
+            <h2 className={marketDataHeaderStyles}>
+              {t('Liquidity monitoring parameters')}
+            </h2>
+            <LiquidityMonitoringParametersInfoPanel
+              market={marketData}
+              parentMarket={parentMarketData}
+            />
           </div>
         </>
       )}

@@ -5,7 +5,6 @@ import {
   ExternalLink,
   Icon,
   Intent,
-  Lozenge,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -60,12 +59,10 @@ export const OracleBasicProfile = ({
   provider,
   onClick,
   markets: oracleMarkets,
-  parentProvider,
 }: {
   provider: Provider;
   markets?: OracleMarketSpecFieldsFragment[] | undefined;
   onClick?: (value?: boolean) => void;
-  parentProvider?: Provider;
 }) => {
   const { icon, message, intent } = getVerifiedStatusIcon(provider);
 
@@ -81,14 +78,8 @@ export const OracleBasicProfile = ({
       icon: getLinkIcon(proof.type),
     }));
 
-  // If this is a successor market and there's a different parent provider,
-  // we'll just show that there's been a change, rather than add old data
-  // in alongside the new provider.
   return (
     <>
-      {parentProvider && (
-        <Lozenge variant={Intent.Primary}>{t('Updated')}</Lozenge>
-      )}
       <span className="flex gap-1">
         {provider.url && (
           <span className="flex align-items-bottom text-md gap-1">
