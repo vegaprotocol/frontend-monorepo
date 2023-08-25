@@ -47,19 +47,17 @@ describe('Oracle Data view', () => {
   it('Renders details component when there is data', () => {
     const res = render(
       renderComponent({
-        dataConnection: {
-          edges: [
-            {
-              node: {
-                externalData: {
-                  data: {
-                    broadcastAt: '2022-01-01',
-                  },
+        edges: [
+          {
+            node: {
+              externalData: {
+                data: {
+                  broadcastAt: '2022-01-01',
                 },
               },
             },
-          ],
-        },
+          },
+        ],
       } as DataConnection)
     );
     expect(res.getByText('Broadcast data')).toBeInTheDocument();
