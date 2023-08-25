@@ -3,13 +3,17 @@ import { Header, HeaderTitle } from '../header';
 import { useParams } from 'react-router-dom';
 import { MarketSelector } from '../../components/market-selector/market-selector';
 import { MarketHeaderStats } from '../../client-pages/market/market-header-stats';
-import { useMarket } from '@vegaprotocol/markets';
+import { useMarket, useMarketList } from '@vegaprotocol/markets';
 import { useState } from 'react';
 
 export const MarketHeader = () => {
   const { marketId } = useParams();
   const { data } = useMarket(marketId);
   const [open, setOpen] = useState(false);
+
+  // Ensure that markets are kept cached so opening the list
+  // shows all markets instantly
+  useMarketList();
 
   if (!data) return null;
 

@@ -1,4 +1,8 @@
 {
   "name": "@vegaprotocol/react-helpers",
-  "version": "0.2.5"
+  "version": "0.2.5",
+  "peerDependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  }
 }

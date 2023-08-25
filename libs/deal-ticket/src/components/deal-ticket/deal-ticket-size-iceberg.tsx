@@ -4,9 +4,9 @@ import type { OrderFormValues } from '../../hooks/use-form-values';
 import { toDecimal, validateAmount } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
-  FormGroup,
-  Input,
-  InputError,
+  TradingFormGroup,
+  TradingInput,
+  TradingInputError,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 
@@ -32,9 +32,9 @@ export const DealTicketSizeIceberg = ({
   const renderPeakSizeError = () => {
     if (peakSizeError) {
       return (
-        <InputError testId="deal-ticket-peak-error-message-size-limit">
+        <TradingInputError testId="deal-ticket-peak-error-message-size-limit">
           {peakSizeError}
-        </InputError>
+        </TradingInputError>
       );
     }
 
@@ -44,9 +44,9 @@ export const DealTicketSizeIceberg = ({
   const renderMinimumSizeError = () => {
     if (minimumVisibleSizeError) {
       return (
-        <InputError testId="deal-ticket-minimum-error-message-size-limit">
+        <TradingInputError testId="deal-ticket-minimum-error-message-size-limit">
           {minimumVisibleSizeError}
-        </InputError>
+        </TradingInputError>
       );
     }
 
@@ -57,7 +57,7 @@ export const DealTicketSizeIceberg = ({
     <div className="mb-2">
       <div className="flex items-center gap-4">
         <div className="flex-1">
-          <FormGroup
+          <TradingFormGroup
             label={
               <Tooltip
                 description={
@@ -93,7 +93,7 @@ export const DealTicketSizeIceberg = ({
                 validate: validateAmount(sizeStep, 'peakSize'),
               }}
               render={({ field }) => (
-                <Input
+                <TradingInput
                   id="input-order-peak-size"
                   className="w-full"
                   type="number"
@@ -106,14 +106,14 @@ export const DealTicketSizeIceberg = ({
                 />
               )}
             />
-          </FormGroup>
+          </TradingFormGroup>
         </div>
         <div className="flex-0 items-center">
           <div className="flex"></div>
           <div className="flex"></div>
         </div>
         <div className="flex-1">
-          <FormGroup
+          <TradingFormGroup
             label={
               <Tooltip
                 description={
@@ -151,7 +151,7 @@ export const DealTicketSizeIceberg = ({
                 validate: validateAmount(sizeStep, 'minimumVisibleSize'),
               }}
               render={({ field }) => (
-                <Input
+                <TradingInput
                   id="input-order-minimum-size"
                   className="w-full"
                   type="number"
@@ -164,7 +164,7 @@ export const DealTicketSizeIceberg = ({
                 />
               )}
             />
-          </FormGroup>
+          </TradingFormGroup>
         </div>
       </div>
       {renderPeakSizeError()}

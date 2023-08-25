@@ -69,6 +69,12 @@ describe('markets all table', { tags: '@smoke' }, () => {
       .find(colInstrumentCode)
       .should('have.text', 'SOLUSD');
 
+    // 6001-MARK-073
+    cy.get(rowSelector)
+      .first()
+      .find('[title="Future"]')
+      .should('have.text', 'Futr');
+
     //  6001-MARK-036
     cy.get(rowSelector)
       .first()

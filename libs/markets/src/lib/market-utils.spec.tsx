@@ -1,6 +1,10 @@
 import * as Schema from '@vegaprotocol/types';
-import type { Market } from './markets-provider';
-import { filterAndSortMarkets, totalFeesPercentage } from './market-utils';
+import type { Market, MarketMaybeWithDataAndCandles } from './markets-provider';
+import {
+  calcTradedFactor,
+  filterAndSortMarkets,
+  totalFeesPercentage,
+} from './market-utils';
 const { MarketState, MarketTradingMode } = Schema;
 
 const MARKET_A: Partial<Market> = {
@@ -75,5 +79,54 @@ describe('totalFees', () => {
     { i: createFee(0.01, 0.056782, 0), o: '6.6782%' },
   ])('adds fees correctly', ({ i, o }) => {
     expect(totalFeesPercentage(i)).toEqual(o);
+  });
+});
+
+describe('calcTradedFactor', () => {
+  const marketA = {
+    data: {
+      markPrice: '10',
+    },
+    candles: [
+      {
+        volume: '1000',
+      },
+    ],
+    tradableInstrument: {
+      instrument: {
+        product: {
+          settlementAsset: {
+            decimals: 18,
+            quantum: '1000000000000000000', // 1
+          },
+        },
+      },
+    },
+  };
+  const marketB = {
+    data: {
+      markPrice: '10',
+    },
+    candles: [
+      {
+        volume: '1000',
+      },
+    ],
+    tradableInstrument: {
+      instrument: {
+        product: {
+          settlementAsset: {
+            decimals: 18,
+            quantum: '1', // 0.0000000000000000001
+          },
+        },
+      },
+    },
+  };
+  it('a is "traded" more than b', () => {
+    const fa = calcTradedFactor(marketA as MarketMaybeWithDataAndCandles);
+    const fb = calcTradedFactor(marketB as MarketMaybeWithDataAndCandles);
+    // it should be true because market a's asset is "more valuable" than b's
+    expect(fa > fb).toBeTruthy();
   });
 });

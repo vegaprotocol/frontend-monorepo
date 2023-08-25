@@ -53,7 +53,6 @@ for the a given Ethereum wallet/address/key:
   - **must** see how many tokens in each tranche are locked <a name="1005-VEST-025" href="#1005-VEST-025">1005-VEST-025</a>
   - **must** see how many tokens in each tranche are redeemable <a name="1005-VEST-026" href="#1005-VEST-026">1005-VEST-026</a>
   - **must** see an option to redeem from tranche <a name="1005-VEST-027" href="#1005-VEST-027">1005-VEST-027</a>
-  - **must** be warned if amount that can be redeemed from that tranche is greater than the un-associated balance for that Eth key (because this will cause the redeem function to fail) <a name="1005-VEST-028" href="#1005-VEST-028">1005-VEST-028</a>
   - **should** see how many tokens I'd need to disassociate to be able to run the redeem function (this should be rounded up to avoid the transaction failing due to more tokens having unlocked since the user looked at the form)
   - **should** see link to [disassociate](1004-ASSO-associate.md)
 
