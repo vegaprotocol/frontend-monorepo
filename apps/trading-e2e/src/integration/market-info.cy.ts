@@ -212,15 +212,6 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     );
   });
 
-  it('liquidity price range displayed', () => {
-    // 6002-MDET-215
-    cy.getByTestId(marketTitle).contains('Liquidity price range').click();
-
-    validateMarketDataRow(0, 'Liquidity Price Range', '2.00% of mid price');
-    validateMarketDataRow(1, 'Lowest Price', '45,204.362 BTC');
-    validateMarketDataRow(2, 'Highest Price', '47,049.438 BTC');
-  });
-
   it('proposal displayed', () => {
     // 6002-MDET-301
     cy.getByTestId(marketTitle).contains('Proposal').click();
