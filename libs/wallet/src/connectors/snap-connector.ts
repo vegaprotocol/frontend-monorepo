@@ -207,12 +207,16 @@ export class SnapConnector implements VegaConnector {
       );
     }
 
+    if (!result?.transaction?.signature) {
+      throw new Error('could not retrieve transaction siganture');
+    }
+
     return {
       transactionHash: result.transactionHash,
       signature: result?.transaction?.signature?.value,
       receivedAt: result.receivedAt,
       sentAt: result.sentAt,
-    } as TransactionResponse;
+    };
   }
 
   async getChainId(): Promise<GetChainIdResponse> {
