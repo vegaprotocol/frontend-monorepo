@@ -1,6 +1,5 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { LedgerExportForm } from './ledger-export-form';
+import { createDownloadUrl, LedgerExportForm } from './ledger-export-form';
 import { formatForInput, toNanoSeconds } from '@vegaprotocol/utils';
 
 const vegaUrl = 'https://vega-url.co.uk/querystuff';
@@ -12,12 +11,12 @@ const mockResponse = {
 global.fetch = jest.fn().mockResolvedValue(mockResponse);
 
 const assetsMock = {
-  'asset-id': 'symbol asset-id',
-  'asset-id-2': 'symbol asset-id-2',
+  ['a'.repeat(64)]: 'symbol asset-id',
+  ['b'.repeat(64)]: 'symbol asset-id-2',
 };
 
 describe('LedgerExportForm', () => {
-  const partyId = 'partyId';
+  const partyId = 'c'.repeat(64);
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -44,10 +43,13 @@ describe('LedgerExportForm', () => {
     // userEvent does not work with faked timers
     fireEvent.click(screen.getByTestId('ledger-download-button'));
 
-    expect(await screen.findByTestId('download-spinner')).toBeInTheDocument();
+    expect(screen.getByTestId('download-spinner')).toBeInTheDocument();
+
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
-        `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=asset-id&dateRange.startTimestamp=1691057410000000000`
+        `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${
+          Object.keys(assetsMock)[0]
+        }&dateRange.startTimestamp=1691057410000000000`
       );
     });
     await waitFor(() => {
@@ -66,7 +68,7 @@ describe('LedgerExportForm', () => {
     expect(screen.getByText('symbol asset-id')).toBeInTheDocument();
 
     fireEvent.change(screen.getByTestId('select-ledger-asset'), {
-      target: { value: 'asset-id-2' },
+      target: { value: Object.keys(assetsMock)[1] },
     });
 
     expect(screen.getByText('symbol asset-id-2')).toBeInTheDocument();
@@ -77,7 +79,9 @@ describe('LedgerExportForm', () => {
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
-        `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=asset-id-2&dateRange.startTimestamp=1691057410000000000`
+        `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${
+          Object.keys(assetsMock)[1]
+        }&dateRange.startTimestamp=1691057410000000000`
       );
     });
     await waitFor(() => {
@@ -110,9 +114,9 @@ describe('LedgerExportForm', () => {
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
-        `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=asset-id&dateRange.startTimestamp=${toNanoSeconds(
-          newDate
-        )}`
+        `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${
+          Object.keys(assetsMock)[0]
+        }&dateRange.startTimestamp=${toNanoSeconds(newDate)}`
       );
     });
 
@@ -145,7 +149,9 @@ describe('LedgerExportForm', () => {
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
-        `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=asset-id&dateRange.startTimestamp=1691057410000000000&dateRange.endTimestamp=${toNanoSeconds(
+        `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${
+          Object.keys(assetsMock)[0]
+        }&dateRange.startTimestamp=1691057410000000000&dateRange.endTimestamp=${toNanoSeconds(
           newDate
         )}`
       );
@@ -154,5 +160,56 @@ describe('LedgerExportForm', () => {
     await waitFor(() => {
       expect(screen.queryByTestId('download-spinner')).not.toBeInTheDocument();
     });
+  });
+});
+
+describe('createDownloadUrl', () => {
+  const fromTimestamp = 1690848000000;
+  const toTimestamp = 1691107200000;
+  const args = {
+    protohost: 'https://vega-url.co.uk',
+    partyId: 'a'.repeat(64),
+    assetId: 'b'.repeat(64),
+    dateFrom: new Date(fromTimestamp).toISOString(),
+  };
+
+  it('formats url with without an end date', () => {
+    expect(createDownloadUrl(args)).toEqual(
+      `${args.protohost}/api/v2/ledgerentry/export?partyId=${
+        args.partyId
+      }&assetId=${args.assetId}&dateRange.startTimestamp=${toNanoSeconds(
+        args.dateFrom
+      )}`
+    );
+  });
+
+  it('formats url with with an end date', () => {
+    const dateTo = new Date(toTimestamp).toISOString();
+    expect(
+      createDownloadUrl({
+        ...args,
+        dateTo,
+      })
+    ).toEqual(
+      `${args.protohost}/api/v2/ledgerentry/export?partyId=${
+        args.partyId
+      }&assetId=${args.assetId}&dateRange.startTimestamp=${toNanoSeconds(
+        args.dateFrom
+      )}&dateRange.endTimestamp=${toNanoSeconds(dateTo)}`
+    );
+  });
+
+  it('should throw if invalid args are provided', () => {
+    // invalid url
+    expect(() => {
+      // @ts-ignore override z.infer type
+      createDownloadUrl({ ...args, protohost: 'foo' });
+    }).toThrow();
+
+    // invalid partyId
+    expect(() => {
+      // @ts-ignore override z.infer type
+      createDownloadUrl({ ...args, partyId: 'z'.repeat(64) });
+    }).toThrow();
   });
 });

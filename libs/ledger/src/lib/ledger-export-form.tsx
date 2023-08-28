@@ -1,5 +1,5 @@
-import { toNanoSeconds } from '@vegaprotocol/utils';
 import { useRef, useState } from 'react';
+import { z } from 'zod';
 import {
   Button,
   Loader,
@@ -7,6 +7,7 @@ import {
   TradingInput,
   TradingSelect,
 } from '@vegaprotocol/ui-toolkit';
+import { toNanoSeconds, VEGA_ID_REGEX } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 import { formatForInput } from '@vegaprotocol/utils';
@@ -19,27 +20,32 @@ const getProtoHost = (vegaurl: string) => {
   return `${loc.protocol}//${loc.host}`;
 };
 
-const createDownloadUrl = (
-  protohost: string,
-  partyId: string,
-  assetId: string,
-  dateFrom: string,
-  dateTo: string,
-  now: Date
-) => {
-  if (protohost && partyId && assetId) {
-    const defaultFrom = subDays(now, 7);
-    const dateToUrl = dateTo
-      ? `&dateRange.endTimestamp=${toNanoSeconds(dateTo)}`
-      : '';
-    const dateFromUrl = dateFrom
-      ? `&dateRange.startTimestamp=${toNanoSeconds(dateFrom)}`
-      : dateTo
-      ? ''
-      : `&dateRange.startTimestamp=${toNanoSeconds(defaultFrom)}`;
-    return `${protohost}/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${assetId}${dateFromUrl}${dateToUrl}`;
+const downloadSchema = z.object({
+  protohost: z.string().url().nonempty(),
+  partyId: z.string().regex(VEGA_ID_REGEX).nonempty(),
+  assetId: z.string().regex(VEGA_ID_REGEX).nonempty(),
+  dateFrom: z.string().nonempty(),
+  dateTo: z.string().optional(),
+});
+
+export const createDownloadUrl = (args: z.infer<typeof downloadSchema>) => {
+  // check args from form inputs
+  downloadSchema.parse(args);
+
+  const params = new URLSearchParams();
+  params.append('partyId', args.partyId);
+  params.append('assetId', args.assetId);
+  params.append('dateRange.startTimestamp', toNanoSeconds(args.dateFrom));
+
+  if (args.dateTo) {
+    params.append('dateRange.endTimestamp', toNanoSeconds(args.dateTo));
   }
-  return '';
+
+  const url = new URL(args.protohost);
+  url.pathname = '/api/v2/ledgerentry/export';
+  url.search = params.toString();
+
+  return url.toString();
 };
 
 interface Props {
@@ -50,8 +56,9 @@ interface Props {
 
 export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
   const now = useRef(new Date());
-  const defaultFrom = subDays(now.current, 7);
-  const [dateFrom, setDateFrom] = useState(formatForInput(defaultFrom));
+  const [dateFrom, setDateFrom] = useState(() => {
+    return formatForInput(subDays(now.current, 7));
+  });
   const [dateTo, setDateTo] = useState('');
   const maxFromDate = formatForInput(new Date(dateTo || now.current));
   const maxToDate = formatForInput(now.current);
@@ -80,100 +87,85 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
     </TradingSelect>
   );
 
-  const startDownload = (event: React.FormEvent<HTMLFormElement>) => {
+  const startDownload = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const link = createDownloadUrl(
-      protohost,
-      partyId,
-      assetId,
-      dateFrom,
-      dateTo,
-      now.current
-    );
-    if (link) {
+    try {
+      const link = createDownloadUrl({
+        protohost,
+        partyId,
+        assetId,
+        dateFrom,
+        dateTo,
+      });
       setIsDownloading(true);
-      fetch(link)
-        .then(async (resp) => {
-          const { headers } = resp;
-          const nameHeader = headers.get('content-disposition');
-          const filename =
-            nameHeader?.split('=').pop() ?? DEFAULT_EXPORT_FILE_NAME;
-          const blob = await resp.blob();
-          if (blob) {
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = filename;
-            link.click();
-          }
-        })
-        .catch((err) => {
-          localLoggerFactory({ application: 'ledger' }).error(
-            'Download file',
-            err
-          );
-        })
-        .finally(() => {
-          setIsDownloading(false);
-        });
+      const resp = await fetch(link);
+      const { headers } = resp;
+      const nameHeader = headers.get('content-disposition');
+      const filename = nameHeader?.split('=').pop() ?? DEFAULT_EXPORT_FILE_NAME;
+      const blob = await resp.blob();
+      if (blob) {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+      }
+    } catch (err) {
+      localLoggerFactory({ application: 'ledger' }).error('Download file', err);
+    } finally {
+      setIsDownloading(false);
     }
   };
 
   if (!protohost || Object.keys(assets).length === 0) {
     return null;
   }
+
   return (
-    <form onSubmit={startDownload}>
-      <div className="w-full h-full flex justify-start relative">
-        <div className="flex flex-col shrink items-stretch gap-2 p-4 w-[350px]">
-          <h2 className="mb-4">{t('Export ledger entries')}</h2>
-          <TradingFormGroup label={t('Select asset')} labelFor="asset">
-            {assetDropDown}
-          </TradingFormGroup>
-          <TradingFormGroup label={t('Date from')} labelFor="date-from">
-            <TradingInput
-              type="datetime-local"
-              data-testid="date-from"
-              id="date-from"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-              disabled={disabled}
-              max={maxFromDate}
-            />
-          </TradingFormGroup>
-          <TradingFormGroup label={t('Date to')} labelFor="date-to">
-            <TradingInput
-              type="datetime-local"
-              data-testid="date-to"
-              id="date-to"
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
-              disabled={disabled}
-              max={maxToDate}
-            />
-          </TradingFormGroup>
+    <form onSubmit={startDownload} className="p-4 w-[350px]">
+      <h2 className="mb-4">{t('Export ledger entries')}</h2>
+      <TradingFormGroup label={t('Select asset')} labelFor="asset">
+        {assetDropDown}
+      </TradingFormGroup>
+      <TradingFormGroup label={t('Date from')} labelFor="date-from">
+        <TradingInput
+          type="datetime-local"
+          data-testid="date-from"
+          id="date-from"
+          value={dateFrom}
+          onChange={(e) => setDateFrom(e.target.value)}
+          disabled={disabled}
+          max={maxFromDate}
+        />
+      </TradingFormGroup>
+      <TradingFormGroup label={t('Date to')} labelFor="date-to">
+        <TradingInput
+          type="datetime-local"
+          data-testid="date-to"
+          id="date-to"
+          value={dateTo}
+          onChange={(e) => setDateTo(e.target.value)}
+          disabled={disabled}
+          max={maxToDate}
+        />
+      </TradingFormGroup>
+      <div className="relative text-sm" title={t('Download all to .csv file')}>
+        {isDownloading && (
           <div
-            className="text-sm relative"
-            title={t('Download all to .csv file')}
+            className="absolute flex items-center justify-center w-full h-full"
+            data-testid="download-spinner"
           >
-            {isDownloading && (
-              <div
-                className="absolute flex w-full h-full justify-center items-center"
-                data-testid="download-spinner"
-              >
-                <Loader size="small" />
-              </div>
-            )}
-            <Button
-              variant="primary"
-              fill
-              disabled={disabled}
-              type="submit"
-              data-testid="ledger-download-button"
-            >
-              {t('Download')}
-            </Button>
+            <Loader size="small" />
           </div>
-        </div>
+        )}
+        <Button
+          variant="primary"
+          fill
+          disabled={disabled}
+          type="submit"
+          data-testid="ledger-download-button"
+        >
+          {t('Download')}
+        </Button>
       </div>
     </form>
   );
