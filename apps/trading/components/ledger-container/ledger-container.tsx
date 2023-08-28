@@ -3,16 +3,27 @@ import { LedgerExportForm } from '@vegaprotocol/ledger';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { useAssetsDataProvider } from '@vegaprotocol/assets';
+import type { PartyAssetFieldsFragment } from '@vegaprotocol/assets';
+import { usePartyAssetsQuery } from '@vegaprotocol/assets';
 
 export const LedgerContainer = () => {
   const { pubKey } = useVegaWallet();
   const VEGA_URL = useEnvironment((store) => store.VEGA_URL);
-  const { data, loading } = useAssetsDataProvider();
-  const assets = (data || []).reduce((aggr, item) => {
-    aggr[item.id] = item.symbol;
-    return aggr;
-  }, {} as Record<string, string>);
+  const { data, loading } = usePartyAssetsQuery({
+    variables: { partyId: pubKey || '' },
+    skip: !pubKey,
+  });
+  const assets = (data?.party?.accountsConnection?.edges ?? [])
+    .map<PartyAssetFieldsFragment>(
+      (item) => item?.node?.asset ?? ({} as PartyAssetFieldsFragment)
+    )
+    .reduce((aggr, item) => {
+      if ('id' in item && 'symbol' in item) {
+        aggr[item.id as string] = item.symbol as string;
+      }
+      return aggr;
+    }, {} as Record<string, string>);
+
   if (!pubKey) {
     return (
       <Splash>

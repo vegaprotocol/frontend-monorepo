@@ -64,7 +64,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
   const assetDropDown = (
     <TradingSelect
       id="select-ledger-asset"
-      value={assets[assetId]}
+      value={assetId}
       onChange={(e) => {
         setAssetId(e.target.value);
       }}
