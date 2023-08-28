@@ -11,7 +11,11 @@ import type { Transaction } from './connectors';
 import { WalletError } from './connectors';
 
 const mockPubKey = '0x123';
-const defaultWalletContext = {
+
+const defaultWalletContext: VegaWalletContextShape = {
+  network: 'TESTNET',
+  vegaUrl: 'https://vega.xyz',
+  vegaWalletServiceUrl: 'https://vega.wallet.xyz',
   pubKey: null,
   pubKeys: [],
   isReadOnly: false,
@@ -19,7 +23,8 @@ const defaultWalletContext = {
   connect: jest.fn(),
   disconnect: jest.fn(),
   selectPubKey: jest.fn(),
-  connector: null,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  links: {} as any,
 };
 
 function setup(context?: Partial<VegaWalletContextShape>) {

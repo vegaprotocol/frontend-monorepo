@@ -69,6 +69,7 @@ const defaultConfig: VegaWalletConfig = {
   vegaUrl: 'https://vega.xyz',
   vegaWalletServiceUrl: 'https://vegaservice.xyz',
   links: {
+    explorer: 'explorer-link',
     concepts: 'concepts-link',
     chromeExtensionUrl: 'chrome-link',
     mozillaExtensionUrl: 'mozilla-link',

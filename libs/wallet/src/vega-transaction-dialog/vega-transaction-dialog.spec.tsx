@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import { WalletError } from '../connectors';
-import { VegaWalletContext } from '../context';
 import type { VegaWalletConfig } from '../provider';
 import { VegaWalletProvider } from '../provider';
 import { VegaTxStatus } from '../use-vega-transaction';
