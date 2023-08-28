@@ -64,6 +64,10 @@ html.dark {
 
 html [data-theme='dark'],
 html [data-theme='light'] {
+  /* fonts */
+  --pennant-font-family-base: theme(fontFamily.alpha);
+  --pennant-font-family-monospace: theme(fontFamily.mono);
+
   /* sell candles only use stroke as the candle is solid (without border) */
   --pennant-color-sell-stroke: theme(colors.market.red.DEFAULT);
 
