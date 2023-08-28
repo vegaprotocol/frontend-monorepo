@@ -1,7 +1,9 @@
 import type { InMemoryCacheConfig } from '@apollo/client';
 import {
   AppFailure,
+  DocsLinks,
   NetworkLoader,
+  Networks,
   NodeGuard,
   useEnvironment,
 } from '@vegaprotocol/environment';
@@ -17,14 +19,28 @@ export const DynamicLoader = dynamic(() => import('../preloader/preloader'), {
 });
 
 export const AppLoader = ({ children }: { children: ReactNode }) => {
-  const { error, VEGA_URL, MAINTENANCE_PAGE } = useEnvironment((store) => ({
-    error: store.error,
-    VEGA_URL: store.VEGA_URL,
-    MAINTENANCE_PAGE: store.MAINTENANCE_PAGE,
-  }));
+  const {
+    error,
+    VEGA_URL,
+    VEGA_ENV,
+    VEGA_WALLET_URL,
+    MAINTENANCE_PAGE,
+    MOZILLA_EXTENSION_URL,
+    CHROME_EXTENSION_URL,
+  } = useEnvironment();
 
   if (MAINTENANCE_PAGE) {
     return <MaintenancePage />;
+  }
+
+  if (
+    !VEGA_URL ||
+    !VEGA_WALLET_URL ||
+    !CHROME_EXTENSION_URL ||
+    !MOZILLA_EXTENSION_URL ||
+    !DocsLinks
+  ) {
+    throw new Error('Environment not configured');
   }
 
   return (
@@ -40,7 +56,20 @@ export const AppLoader = ({ children }: { children: ReactNode }) => {
         failure={<AppFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
       >
         <Web3Provider>
-          <VegaWalletProvider>{children}</VegaWalletProvider>
+          <VegaWalletProvider
+            config={{
+              network: VEGA_ENV,
+              vegaUrl: VEGA_URL,
+              vegaWalletServiceUrl: VEGA_WALLET_URL,
+              links: {
+                concepts: DocsLinks.VEGA_WALLET_CONCEPTS_URL,
+                chromeExtensionUrl: CHROME_EXTENSION_URL,
+                mozillaExtensionUrl: MOZILLA_EXTENSION_URL,
+              },
+            }}
+          >
+            {children}
+          </VegaWalletProvider>
         </Web3Provider>
       </NodeGuard>
     </NetworkLoader>

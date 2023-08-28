@@ -3,14 +3,12 @@ import { useVegaWallet } from './';
 import { useEffect, useState } from 'react';
 import type { VegaConnector } from './connectors/vega-connector';
 import { getConfig } from './storage';
-import { useEnvironment } from '@vegaprotocol/environment';
 
 export function useEagerConnect(Connectors: {
   [connector: string]: VegaConnector;
 }) {
-  const { VEGA_URL } = useEnvironment();
   const [connecting, setConnecting] = useState(true);
-  const { connect, acknowledgeNeeded } = useVegaWallet();
+  const { vegaUrl, connect, acknowledgeNeeded } = useVegaWallet();
 
   useEffect(() => {
     const attemptConnect = async () => {
@@ -41,8 +39,8 @@ export function useEagerConnect(Connectors: {
           await connect(injectedInstance);
         } else if (cfg.connector === 'snap') {
           const snapInstance = Connectors[cfg.connector] as SnapConnector;
-          if (VEGA_URL) {
-            snapInstance.nodeAddress = new URL(VEGA_URL).origin;
+          if (vegaUrl) {
+            snapInstance.nodeAddress = new URL(vegaUrl).origin;
             await connect(snapInstance);
           }
         } else {
@@ -58,7 +56,7 @@ export function useEagerConnect(Connectors: {
     if (typeof window !== 'undefined') {
       attemptConnect();
     }
-  }, [connect, Connectors, acknowledgeNeeded, VEGA_URL]);
+  }, [connect, Connectors, acknowledgeNeeded, vegaUrl]);
 
   return connecting;
 }
