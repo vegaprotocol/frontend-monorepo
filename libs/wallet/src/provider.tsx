@@ -28,7 +28,7 @@ interface VegaWalletLinks {
   mozillaExtensionUrl: string;
 }
 
-interface VegaWalletConfig {
+export interface VegaWalletConfig {
   network: Networks;
   vegaUrl: string;
   vegaWalletServiceUrl: string;
