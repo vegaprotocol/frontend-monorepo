@@ -7,12 +7,13 @@ import type { PartyAssetFieldsFragment } from '@vegaprotocol/assets';
 import { usePartyAssetsQuery } from '@vegaprotocol/assets';
 
 export const LedgerContainer = () => {
-  const { pubKey } = useVegaWallet();
   const VEGA_URL = useEnvironment((store) => store.VEGA_URL);
+  const { pubKey } = useVegaWallet();
   const { data, loading } = usePartyAssetsQuery({
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });
+
   const assets = (data?.party?.accountsConnection?.edges ?? [])
     .map<PartyAssetFieldsFragment>(
       (item) => item?.node?.asset ?? ({} as PartyAssetFieldsFragment)
@@ -32,9 +33,17 @@ export const LedgerContainer = () => {
     );
   }
 
+  if (!VEGA_URL) {
+    return (
+      <Splash>
+        <p>{t('Environment not configured')}</p>
+      </Splash>
+    );
+  }
+
   if (loading) {
     return (
-      <div className="w-full h-full flex justify-center items-center relative">
+      <div className="relative flex items-center justify-center w-full h-full">
         <Loader />
       </div>
     );

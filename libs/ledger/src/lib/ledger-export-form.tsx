@@ -50,7 +50,7 @@ export const createDownloadUrl = (args: z.infer<typeof downloadSchema>) => {
 
 interface Props {
   partyId: string;
-  vegaUrl?: string;
+  vegaUrl: string;
   assets: Record<string, string>;
 }
 
@@ -65,7 +65,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
 
   const [isDownloading, setIsDownloading] = useState(false);
   const [assetId, setAssetId] = useState(Object.keys(assets)[0]);
-  const protohost = vegaUrl ? getProtoHost(vegaUrl) : '';
+  const protohost = getProtoHost(vegaUrl);
   const disabled = Boolean(!assetId || isDownloading);
 
   const assetDropDown = (
