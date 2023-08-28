@@ -15,6 +15,10 @@ body,
   @apply h-full;
 }
 
+.font-mono {
+  @apply tracking-tighter;
+}
+
 .text-default {
   @apply text-vega-clight-50 dark:text-vega-cdark-50;
 }
@@ -147,7 +151,7 @@ html [data-theme='dark'] {
 }
 
 .vega-ag-grid .ag-header-row {
-  @apply font-alpha font-normal;
+  @apply font-normal font-alpha;
 }
 
 /* Light variables */

@@ -9,6 +9,7 @@ import type {
 } from '../hooks/use-form-values';
 import * as Schema from '@vegaprotocol/types';
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
+import { isPersistentOrder } from './time-in-force-persistance';
 
 export const mapFormValuesToOrderSubmission = (
   order: OrderFormValues,
@@ -41,11 +42,8 @@ export const mapFormValuesToOrderSubmission = (
       ? false
       : order.reduceOnly,
   icebergOpts:
-    (order.type === Schema.OrderType.TYPE_MARKET ||
-      [
-        Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-        Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-      ].includes(order.timeInForce)) &&
+    order.type === Schema.OrderType.TYPE_LIMIT &&
+    isPersistentOrder(order.timeInForce) &&
     order.iceberg &&
     order.peakSize &&
     order.minimumVisibleSize
