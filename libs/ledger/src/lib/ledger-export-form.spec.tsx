@@ -25,9 +25,9 @@ const assetsMock = {
 describe('LedgerExportForm', () => {
   const partyId = 'partyId';
 
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
-    cleanup();
+    // cleanup();
   });
   beforeAll(() => {
     jest.useFakeTimers().setSystemTime(new Date('2023-08-10T10:10:10.000Z'));
@@ -44,15 +44,12 @@ describe('LedgerExportForm', () => {
         assets={assetsMock}
       />
     );
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', {
-          name: (accessibleName, element) =>
-            element.textContent === 'symbol asset-id',
-        })
-      ).toBeInTheDocument();
-      expect(screen.getByTestId('ledger-download-button')).toBeInTheDocument();
-    });
+    expect(await screen.getByText('symbol asset-id')).toBeInTheDocument();
+
+    expect(
+      await screen.getByTestId('ledger-download-button')
+    ).toBeInTheDocument();
+
     await act(async () => {
       userEvent.click(screen.getByTestId('ledger-download-button'));
     });
@@ -130,9 +127,7 @@ describe('LedgerExportForm', () => {
         assets={assetsMock}
       />
     );
-    await waitFor(() => {
-      expect(screen.getByLabelText('Date from')).toBeInTheDocument();
-    });
+    expect(await screen.getByLabelText('Date from')).toBeInTheDocument();
     await act(async () => {
       fireEvent.change(screen.getByLabelText('Date from'), {
         target: { value: formatForInput(newDate) },
