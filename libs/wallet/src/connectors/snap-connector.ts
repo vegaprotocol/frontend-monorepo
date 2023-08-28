@@ -16,12 +16,12 @@ type WindowEthereumProvider = {
   request<T = unknown>(args: RequestArguments): Promise<T>;
 };
 
-export const ERR_ETHEREUM_UNDEFINED = new Error(
-  'MetaMask extension could not be found'
-);
-export const ERR_NODE_ADDRESS_NOT_SET = new Error('nodeAddress is not set');
-const ERR_SNAP_ID_NOT_SET = new Error('snapId is not set');
-const ERR_TRANSACTION_PARSE = new Error('could not parse transaction data');
+export const SnapConnectorErrors = {
+  ETHEREUM_UNDEFINED: new Error('MetaMask extension could not be found'),
+  NODE_ADDRESS_NOT_SET: new Error('nodeAddress is not set'),
+  SNAP_ID_NOT_SET: new Error('snapId is not set'),
+  TRANSACTION_PARSE: new Error('could not parse transaction data'),
+};
 
 const ethereumRequest = <T>(args: RequestArguments): Promise<T> => {
   // can't declare `EthereumProvider` here because of the conflict with
@@ -37,7 +37,7 @@ const ethereumRequest = <T>(args: RequestArguments): Promise<T> => {
   ) {
     return (window.ethereum as WindowEthereumProvider).request<T>(args);
   }
-  throw ERR_ETHEREUM_UNDEFINED;
+  throw SnapConnectorErrors.ETHEREUM_UNDEFINED;
 };
 
 export const LOCAL_SNAP_ID = 'local:http://localhost:8080';
@@ -154,7 +154,7 @@ export class SnapConnector implements VegaConnector {
   }
 
   async listKeys() {
-    if (!this.snapId) throw ERR_SNAP_ID_NOT_SET;
+    if (!this.snapId) throw SnapConnectorErrors.SNAP_ID_NOT_SET;
     return await invokeSnap<ListKeysResponse>(this.snapId, {
       method: 'client.list_keys',
     });
@@ -171,8 +171,8 @@ export class SnapConnector implements VegaConnector {
   }
 
   async sendTx(pubKey: string, transaction: Transaction) {
-    if (!this.nodeAddress) throw ERR_NODE_ADDRESS_NOT_SET;
-    if (!this.snapId) throw ERR_SNAP_ID_NOT_SET;
+    if (!this.nodeAddress) throw SnapConnectorErrors.NODE_ADDRESS_NOT_SET;
+    if (!this.snapId) throw SnapConnectorErrors.SNAP_ID_NOT_SET;
 
     // This step is needed to strip the transaction object from any additional
     // properties, such as `__proto__`, etc.
@@ -180,7 +180,7 @@ export class SnapConnector implements VegaConnector {
     try {
       txData = JSON.parse(JSON.stringify(transaction));
     } catch (err) {
-      throw ERR_TRANSACTION_PARSE;
+      throw SnapConnectorErrors.TRANSACTION_PARSE;
     }
 
     const payload = {
@@ -216,8 +216,8 @@ export class SnapConnector implements VegaConnector {
   }
 
   async getChainId(): Promise<GetChainIdResponse> {
-    if (!this.nodeAddress) throw ERR_NODE_ADDRESS_NOT_SET;
-    if (!this.snapId) throw ERR_SNAP_ID_NOT_SET;
+    if (!this.nodeAddress) throw SnapConnectorErrors.NODE_ADDRESS_NOT_SET;
+    if (!this.snapId) throw SnapConnectorErrors.SNAP_ID_NOT_SET;
 
     const response = await invokeSnap<GetChainIdResponse>(this.snapId, {
       method: 'client.get_chain_id',

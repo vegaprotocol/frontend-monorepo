@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 import {
-  ERR_ETHEREUM_UNDEFINED,
-  ERR_NODE_ADDRESS_NOT_SET,
+  InjectedConnectorErrors,
   SnapConnector,
+  SnapConnectorErrors,
 } from './connectors';
 import { InjectedConnector } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
@@ -17,9 +17,6 @@ export enum Status {
   AcknowledgeNeeded = 'AcknowledgeNeeded',
 }
 
-export const ERR_VEGA_UNDEFINED = new Error('window.vega not found');
-export const ERR_INVALID_CHAIN = new Error('Invalid chain');
-
 export const useInjectedConnector = (onConnect: () => void) => {
   const { connect, acknowledgeNeeded } = useVegaWallet();
   const [status, setStatus] = useState(Status.Idle);
@@ -33,11 +30,15 @@ export const useInjectedConnector = (onConnect: () => void) => {
     ) => {
       try {
         if (connector instanceof InjectedConnector && !('vega' in window)) {
-          throw ERR_VEGA_UNDEFINED;
+          throw InjectedConnectorErrors.VEGA_UNDEFINED;
         }
         if (connector instanceof SnapConnector) {
-          if (!('ethereum' in window)) throw ERR_ETHEREUM_UNDEFINED;
-          if (!VEGA_URL) throw ERR_NODE_ADDRESS_NOT_SET;
+          if (!('ethereum' in window)) {
+            throw SnapConnectorErrors.ETHEREUM_UNDEFINED;
+          }
+          if (!VEGA_URL) {
+            throw SnapConnectorErrors.NODE_ADDRESS_NOT_SET;
+          }
           connector.nodeAddress = new URL(VEGA_URL).origin;
         }
 
@@ -45,7 +46,7 @@ export const useInjectedConnector = (onConnect: () => void) => {
 
         const { chainID } = await connector.getChainId();
         if (chainID !== appChainId) {
-          throw ERR_INVALID_CHAIN;
+          throw InjectedConnectorErrors.INVALID_CHAIN;
         }
 
         setStatus(Status.Connecting);

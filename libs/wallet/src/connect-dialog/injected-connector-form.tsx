@@ -1,9 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
-import {
-  ERR_INVALID_CHAIN,
-  ERR_VEGA_UNDEFINED,
-  Status,
-} from '../use-injected-connector';
+import { Status } from '../use-injected-connector';
 import { ConnectDialogTitle } from './connect-dialog-elements';
 import type { ReactNode } from 'react';
 import {
@@ -15,10 +11,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { setAcknowledged } from '../storage';
 import { useVegaWallet } from '../use-vega-wallet';
-import {
-  ERR_ETHEREUM_UNDEFINED,
-  ERR_NODE_ADDRESS_NOT_SET,
-} from '../connectors';
+import { InjectedConnectorErrors, SnapConnectorErrors } from '../connectors';
 
 export const InjectedConnectorForm = ({
   status,
@@ -116,7 +109,7 @@ export const InjectedConnectorForm = ({
 
 const Center = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="flex justify-center items-center my-6">{children}</div>
+    <div className="flex items-center justify-center my-6">{children}</div>
   );
 };
 
@@ -138,18 +131,20 @@ const Error = ({
   );
 
   if (error) {
-    if (error.message === ERR_INVALID_CHAIN.message) {
+    if (error.message === InjectedConnectorErrors.INVALID_CHAIN.message) {
       title = t('Wrong network');
       text = t(
         'To complete your wallet connection, set your wallet network in your app to "%s".',
         appChainId
       );
-    } else if (error.message === ERR_VEGA_UNDEFINED.message) {
+    } else if (
+      error.message === InjectedConnectorErrors.VEGA_UNDEFINED.message
+    ) {
       title = t('No wallet detected');
       text = t('Vega browser extension not installed');
     } else if (
-      error.message === ERR_ETHEREUM_UNDEFINED.message ||
-      error.message === ERR_NODE_ADDRESS_NOT_SET.message
+      error.message === SnapConnectorErrors.ETHEREUM_UNDEFINED.message ||
+      error.message === SnapConnectorErrors.NODE_ADDRESS_NOT_SET.message
     ) {
       title = t('Snap failed');
       text = t('Could not connect to Vega MetaMask Snap');
@@ -159,7 +154,7 @@ const Error = ({
   return (
     <>
       <ConnectDialogTitle>{title}</ConnectDialogTitle>
-      <p className="text-center mb-2 first-letter:uppercase">{text}</p>
+      <p className="mb-2 text-center first-letter:uppercase">{text}</p>
       {tryAgain}
     </>
   );
