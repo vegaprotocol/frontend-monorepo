@@ -4,7 +4,6 @@ import {
   screen,
   waitFor,
   fireEvent,
-  cleanup,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LedgerExportForm } from './ledger-export-form';
@@ -25,9 +24,8 @@ const assetsMock = {
 describe('LedgerExportForm', () => {
   const partyId = 'partyId';
 
-  beforeEach(() => {
+  afterEach(() => {
     jest.clearAllMocks();
-    // cleanup();
   });
   beforeAll(() => {
     jest.useFakeTimers().setSystemTime(new Date('2023-08-10T10:10:10.000Z'));
