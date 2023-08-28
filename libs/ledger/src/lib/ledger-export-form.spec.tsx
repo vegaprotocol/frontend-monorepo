@@ -4,18 +4,13 @@ import {
   screen,
   waitFor,
   fireEvent,
+  cleanup,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MockedProvider } from '@apollo/client/testing';
 import { LedgerExportForm } from './ledger-export-form';
-import { AssetsDocument } from '@vegaprotocol/assets';
 import { formatForInput, toNanoSeconds } from '@vegaprotocol/utils';
 
-const VEGA_URL = 'https://vega-url.co.uk/querystuff';
-const mockEnvironment = jest.fn(() => VEGA_URL);
-jest.mock('@vegaprotocol/environment', () => ({
-  useEnvironment: jest.fn(() => mockEnvironment()),
-}));
+const vegaUrl = 'https://vega-url.co.uk/querystuff';
 
 const mockResponse = {
   headers: { get: jest.fn() },
@@ -23,37 +18,16 @@ const mockResponse = {
 };
 global.fetch = jest.fn().mockResolvedValue(mockResponse);
 
-const assetMock = {
-  request: {
-    query: AssetsDocument,
-  },
-  result: {
-    data: {
-      assetsConnection: {
-        edges: [
-          {
-            node: {
-              id: 'asset-id',
-              symbol: 'symbol asset-id',
-            },
-          },
-          {
-            node: {
-              id: 'asset-id-2',
-              symbol: 'symbol asset-id-2',
-            },
-          },
-        ],
-      },
-    },
-  },
+const assetsMock = {
+  'asset-id': 'symbol asset-id',
+  'asset-id-2': 'symbol asset-id-2',
 };
-
-describe('LedgerExportLink', () => {
+describe('LedgerExportForm', () => {
   const partyId = 'partyId';
 
   afterEach(() => {
     jest.clearAllMocks();
+    cleanup();
   });
   beforeAll(() => {
     jest.useFakeTimers().setSystemTime(new Date('2023-08-10T10:10:10.000Z'));
@@ -64,9 +38,11 @@ describe('LedgerExportLink', () => {
 
   it('should be properly rendered', async () => {
     render(
-      <MockedProvider mocks={[assetMock]}>
-        <LedgerExportForm partyId={partyId} />
-      </MockedProvider>
+      <LedgerExportForm
+        partyId={partyId}
+        vegaUrl={vegaUrl}
+        assets={assetsMock}
+      />
     );
     await waitFor(() => {
       expect(
@@ -77,7 +53,7 @@ describe('LedgerExportLink', () => {
       ).toBeInTheDocument();
       expect(screen.getByTestId('ledger-download-button')).toBeInTheDocument();
     });
-    act(() => {
+    await act(async () => {
       userEvent.click(screen.getByTestId('ledger-download-button'));
     });
     await waitFor(() => {
@@ -95,31 +71,21 @@ describe('LedgerExportLink', () => {
 
   it('assetID should be properly change request url', async () => {
     render(
-      <MockedProvider mocks={[assetMock]}>
-        <LedgerExportForm partyId={partyId} />
-      </MockedProvider>
+      <LedgerExportForm
+        partyId={partyId}
+        vegaUrl={vegaUrl}
+        assets={assetsMock}
+      />
     );
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', {
-          name: (accessibleName, element) =>
-            element.textContent === 'symbol asset-id',
-        })
-      ).toBeInTheDocument();
-    });
-    act(() => {
-      userEvent.click(
-        screen.getByRole('button', {
-          name: (accessibleName, element) =>
-            element.textContent === 'symbol asset-id',
-        })
-      );
+    expect(await screen.getByText('symbol asset-id')).toBeInTheDocument();
+    await act(async () => {
+      userEvent.click(screen.getByText('symbol asset-id'));
     });
     await waitFor(() => {
       expect(screen.getByRole('menu')).toBeInTheDocument();
     });
 
-    await act(() => {
+    await act(async () => {
       userEvent.click(
         screen.getByRole('menuitem', {
           name: (accessibleName, element) =>
@@ -136,27 +102,38 @@ describe('LedgerExportLink', () => {
       ).toBeInTheDocument();
     });
 
-    act(() => {
+    await act(async () => {
       userEvent.click(screen.getByTestId('ledger-download-button'));
     });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('download-spinner')).toBeInTheDocument();
+    });
+
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
         `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=asset-id-2&dateRange.startTimestamp=1691057410000000000`
       );
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('download-spinner')).not.toBeInTheDocument();
     });
   });
 
   it('date-from should properly change request url', async () => {
     const newDate = new Date(1691230210000);
     render(
-      <MockedProvider mocks={[assetMock]}>
-        <LedgerExportForm partyId={partyId} />
-      </MockedProvider>
+      <LedgerExportForm
+        partyId={partyId}
+        vegaUrl={vegaUrl}
+        assets={assetsMock}
+      />
     );
     await waitFor(() => {
       expect(screen.getByLabelText('Date from')).toBeInTheDocument();
     });
-    await act(() => {
+    await act(async () => {
       fireEvent.change(screen.getByLabelText('Date from'), {
         target: { value: formatForInput(newDate) },
       });
@@ -166,7 +143,7 @@ describe('LedgerExportLink', () => {
         `${formatForInput(newDate)}.000`
       );
     });
-    await act(() => {
+    await act(async () => {
       fireEvent.click(screen.getByTestId('ledger-download-button'));
     });
     await waitFor(() => {
@@ -181,14 +158,16 @@ describe('LedgerExportLink', () => {
   it('date-to should properly change request url', async () => {
     const newDate = new Date(1691230210000);
     render(
-      <MockedProvider mocks={[assetMock]}>
-        <LedgerExportForm partyId={partyId} />
-      </MockedProvider>
+      <LedgerExportForm
+        partyId={partyId}
+        vegaUrl={vegaUrl}
+        assets={assetsMock}
+      />
     );
-    await waitFor(() => {
-      expect(screen.getByLabelText('Date to')).toBeInTheDocument();
-    });
-    act(() => {
+
+    expect(await screen.getByLabelText('Date to')).toBeInTheDocument();
+
+    await act(async () => {
       fireEvent.change(screen.getByLabelText('Date to'), {
         target: { value: formatForInput(newDate) },
       });
@@ -198,7 +177,7 @@ describe('LedgerExportLink', () => {
         `${formatForInput(newDate)}.000`
       );
     });
-    act(() => {
+    await act(async () => {
       fireEvent.click(screen.getByTestId('ledger-download-button'));
     });
     await waitFor(() => {
