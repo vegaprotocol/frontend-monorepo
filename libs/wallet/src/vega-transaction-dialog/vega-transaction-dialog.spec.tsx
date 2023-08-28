@@ -1,5 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { WalletError } from '../connectors';
+import { VegaWalletContext } from '../context';
+import type { VegaWalletConfig } from '../provider';
+import { VegaWalletProvider } from '../provider';
 import { VegaTxStatus } from '../use-vega-transaction';
 import type { VegaTransactionDialogProps } from './vega-transaction-dialog';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
@@ -16,24 +19,40 @@ jest.mock('@vegaprotocol/environment', () => ({
 }));
 
 describe('VegaTransactionDialog', () => {
-  let props: VegaTransactionDialogProps;
+  const defaultConfig: VegaWalletConfig = {
+    network: 'TESTNET',
+    vegaUrl: 'https://vega.xyz',
+    vegaWalletServiceUrl: 'https://vegaservice.xyz',
+    links: {
+      explorer: 'explorer-link',
+      concepts: 'concepts-link',
+      chromeExtensionUrl: 'chrome-link',
+      mozillaExtensionUrl: 'mozilla-link',
+    },
+  };
 
-  beforeEach(() => {
-    props = {
-      isOpen: true,
-      onChange: () => false,
-      transaction: {
-        dialogOpen: true,
-        status: VegaTxStatus.Requested,
-        error: null,
-        txHash: null,
-        signature: null,
-      },
-    };
-  });
+  const props: VegaTransactionDialogProps = {
+    isOpen: true,
+    onChange: () => false,
+    transaction: {
+      dialogOpen: true,
+      status: VegaTxStatus.Requested,
+      error: null,
+      txHash: null,
+      signature: null,
+    },
+  };
+
+  const renderComponent = (testProps?: Partial<VegaTransactionDialogProps>) => {
+    return render(
+      <VegaWalletProvider config={defaultConfig}>
+        <VegaTransactionDialog {...props} {...testProps} />
+      </VegaWalletProvider>
+    );
+  };
 
   it('requested', () => {
-    render(<VegaTransactionDialog {...props} />);
+    renderComponent();
     expect(screen.getByTestId('dialog-title')).toHaveTextContent(/confirm/i);
     expect(screen.getByTestId(VegaTxStatus.Requested)).toHaveTextContent(
       /please open your wallet/i
@@ -44,16 +63,13 @@ describe('VegaTransactionDialog', () => {
   });
 
   it('pending', () => {
-    render(
-      <VegaTransactionDialog
-        {...props}
-        transaction={{
-          ...props.transaction,
-          txHash: 'tx-hash',
-          status: VegaTxStatus.Pending,
-        }}
-      />
-    );
+    renderComponent({
+      transaction: {
+        ...props.transaction,
+        txHash: 'tx-hash',
+        status: VegaTxStatus.Pending,
+      },
+    });
     expect(screen.getByTestId('dialog-title')).toHaveTextContent(/awaiting/i);
     expect(screen.getByTestId(VegaTxStatus.Pending)).toHaveTextContent(
       /please wait/i
@@ -62,16 +78,13 @@ describe('VegaTransactionDialog', () => {
   });
 
   it('error', () => {
-    render(
-      <VegaTransactionDialog
-        {...props}
-        transaction={{
-          ...props.transaction,
-          error: new WalletError('rejected', 1),
-          status: VegaTxStatus.Error,
-        }}
-      />
-    );
+    renderComponent({
+      transaction: {
+        ...props.transaction,
+        error: new WalletError('rejected', 1),
+        status: VegaTxStatus.Error,
+      },
+    });
     expect(screen.getByTestId('dialog-title')).toHaveTextContent(/failed/i);
     expect(screen.getByTestId(VegaTxStatus.Error)).toHaveTextContent(
       /rejected/i
@@ -79,16 +92,13 @@ describe('VegaTransactionDialog', () => {
   });
 
   it('default complete', () => {
-    render(
-      <VegaTransactionDialog
-        {...props}
-        transaction={{
-          ...props.transaction,
-          txHash: 'tx-hash',
-          status: VegaTxStatus.Complete,
-        }}
-      />
-    );
+    renderComponent({
+      transaction: {
+        ...props.transaction,
+        txHash: 'tx-hash',
+        status: VegaTxStatus.Complete,
+      },
+    });
     expect(screen.getByTestId('dialog-title')).toHaveTextContent(/complete/i);
     expect(screen.getByTestId(VegaTxStatus.Complete)).toHaveTextContent(
       /confirmed/i
@@ -104,18 +114,15 @@ describe('VegaTransactionDialog', () => {
       const content = {
         [status]: <div>{text}</div>,
       };
-      render(
-        <VegaTransactionDialog
-          {...props}
-          transaction={{
-            ...props.transaction,
-            txHash: 'tx-hash',
-            status: status as VegaTxStatus,
-          }}
-          title={title}
-          content={content}
-        />
-      );
+      renderComponent({
+        transaction: {
+          ...props.transaction,
+          txHash: 'tx-hash',
+          status: status as VegaTxStatus,
+        },
+        title: title,
+        content: content,
+      });
       expect(screen.getByTestId('dialog-title')).toHaveTextContent(title);
       expect(screen.getByText(text)).toBeInTheDocument();
     }
@@ -127,7 +134,7 @@ describe('VegaTransactionDialog', () => {
     );
     expect(screen.getByTestId('tx-block-explorer')).toHaveAttribute(
       'href',
-      `https://test.explorer.vega.network/txs/0x${txHash}`
+      `${defaultConfig.links.explorer}/txs/0x${txHash}`
     );
   }
 });

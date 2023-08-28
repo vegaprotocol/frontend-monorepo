@@ -49,6 +49,7 @@ export interface VegaWalletContextShape {
 
   /** Useful links for wallet users */
   links: {
+    explorer: string;
     about: string;
     concepts: string;
     browserList: string;

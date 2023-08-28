@@ -23,6 +23,7 @@ type Networks =
   | 'CUSTOM';
 
 interface VegaWalletLinks {
+  explorer: string;
   concepts: string;
   chromeExtensionUrl: string;
   mozillaExtensionUrl: string;
@@ -149,6 +150,7 @@ export const VegaWalletProvider = ({
       vegaWalletServiceUrl: config.vegaWalletServiceUrl,
       network: config.network,
       links: {
+        explorer: config.links.explorer,
         about: ExternalLinks.VEGA_WALLET_URL_ABOUT,
         browserList: ExternalLinks.VEGA_WALLET_BROWSER_LIST,
         concepts: config.links.concepts,
