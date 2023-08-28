@@ -6,7 +6,6 @@ import {
   type VegaConnector,
 } from './vega-connector';
 import { clearConfig, setConfig } from '../storage';
-import '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 
 type RequestArguments = {
   method: string;
