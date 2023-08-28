@@ -1,14 +1,11 @@
 import { toNanoSeconds } from '@vegaprotocol/utils';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   Button,
   Loader,
   TradingFormGroup,
   TradingInput,
-  TradingDropdown,
-  TradingDropdownTrigger,
-  TradingDropdownContent,
-  TradingDropdownItem,
+  TradingSelect,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { localLoggerFactory } from '@vegaprotocol/logger';
@@ -61,37 +58,26 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
 
   const [isDownloading, setIsDownloading] = useState(false);
   const [assetId, setAssetId] = useState(Object.keys(assets)[0]);
-  useEffect(() => {
-    if (!assetId) {
-      setAssetId(Object.keys(assets)[0]);
-    }
-  }, [assetId, assets]);
   const protohost = vegaUrl ? getProtoHost(vegaUrl) : '';
   const disabled = Boolean(!assetId || isDownloading);
+
   const assetDropDown = (
-    <TradingDropdown
-      trigger={
-        <TradingDropdownTrigger
-          disabled={isDownloading}
-          id="asset"
-          className="block w-full py-1 px-2 rounded bg-transparent border border-vega-light-200 dark:border-vega-dark-200"
-        >
-          <button>{assets[assetId]}</button>
-        </TradingDropdownTrigger>
-      }
+    <TradingSelect
+      id="select-ledger-asset"
+      value={assets[assetId]}
+      onChange={(e) => {
+        setAssetId(e.target.value);
+      }}
+      className="w-full"
+      data-testid="select-ledger-asset"
+      disabled={isDownloading}
     >
-      <TradingDropdownContent>
-        {Object.keys(assets).map((assetKey) => (
-          <TradingDropdownItem
-            key={assetKey}
-            onSelect={() => setAssetId(assetKey)}
-            className="min-w-[315px]"
-          >
-            {assets[assetKey]}
-          </TradingDropdownItem>
-        ))}
-      </TradingDropdownContent>
-    </TradingDropdown>
+      {Object.keys(assets).map((assetKey) => (
+        <option key={assetKey} value={assetKey}>
+          {assets[assetKey]}
+        </option>
+      ))}
+    </TradingSelect>
   );
 
   const startDownload = (event: React.FormEvent<HTMLFormElement>) => {
@@ -136,61 +122,59 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
     return null;
   }
   return (
-    <div className="h-full relative">
-      <form onSubmit={startDownload}>
-        <div className="w-full h-full flex justify-center">
-          <div className="flex flex-col shrink items-stretch gap-2 p-2 w-[350px]">
-            <h2 className="mb-4">{t('Export ledger entries')}</h2>
-            <TradingFormGroup label={t('Select asset')} labelFor="asset">
-              {assetDropDown}
-            </TradingFormGroup>
-            <TradingFormGroup label={t('Date from')} labelFor="date-from">
-              <TradingInput
-                type="datetime-local"
-                data-testid="date-from"
-                id="date-from"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
-                disabled={disabled}
-                max={maxFromDate}
-              />
-            </TradingFormGroup>
-            <TradingFormGroup label={t('Date to')} labelFor="date-to">
-              <TradingInput
-                type="datetime-local"
-                data-testid="date-to"
-                id="date-to"
-                value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
-                disabled={disabled}
-                max={maxToDate}
-              />
-            </TradingFormGroup>
-            <div
-              className="text-sm relative"
-              title={t('Download all to .csv file')}
-            >
-              {isDownloading && (
-                <div
-                  className="absolute flex w-full h-full justify-center items-center"
-                  data-testid="download-spinner"
-                >
-                  <Loader size="small" />
-                </div>
-              )}
-              <Button
-                variant="primary"
-                fill
-                disabled={disabled}
-                type="submit"
-                data-testid="ledger-download-button"
+    <form onSubmit={startDownload}>
+      <div className="w-full h-full flex justify-center relative">
+        <div className="flex flex-col shrink items-stretch gap-2 p-2 w-[350px]">
+          <h2 className="mb-4">{t('Export ledger entries')}</h2>
+          <TradingFormGroup label={t('Select asset')} labelFor="asset">
+            {assetDropDown}
+          </TradingFormGroup>
+          <TradingFormGroup label={t('Date from')} labelFor="date-from">
+            <TradingInput
+              type="datetime-local"
+              data-testid="date-from"
+              id="date-from"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              disabled={disabled}
+              max={maxFromDate}
+            />
+          </TradingFormGroup>
+          <TradingFormGroup label={t('Date to')} labelFor="date-to">
+            <TradingInput
+              type="datetime-local"
+              data-testid="date-to"
+              id="date-to"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              disabled={disabled}
+              max={maxToDate}
+            />
+          </TradingFormGroup>
+          <div
+            className="text-sm relative"
+            title={t('Download all to .csv file')}
+          >
+            {isDownloading && (
+              <div
+                className="absolute flex w-full h-full justify-center items-center"
+                data-testid="download-spinner"
               >
-                {t('Download')}
-              </Button>
-            </div>
+                <Loader size="small" />
+              </div>
+            )}
+            <Button
+              variant="primary"
+              fill
+              disabled={disabled}
+              type="submit"
+              data-testid="ledger-download-button"
+            >
+              {t('Download')}
+            </Button>
           </div>
         </div>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 };

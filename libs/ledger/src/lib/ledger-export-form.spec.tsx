@@ -70,19 +70,11 @@ describe('LedgerExportForm', () => {
       />
     );
     expect(await screen.getByText('symbol asset-id')).toBeInTheDocument();
-    act(() => {
-      userEvent.click(screen.getByText('symbol asset-id'));
-    });
-    await waitFor(() => {
-      expect(screen.getByRole('menu')).toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId('select-ledger-asset'), {
+      target: { value: 'asset-id-2' },
     });
 
-    fireEvent.click(
-      screen.getByRole('menuitem', {
-        name: (accessibleName, element) =>
-          element.textContent === 'symbol asset-id-2',
-      })
-    );
     expect(await screen.getByText('symbol asset-id-2')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('ledger-download-button'));
