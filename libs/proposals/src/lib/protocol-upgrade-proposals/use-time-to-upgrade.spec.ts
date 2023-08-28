@@ -1,5 +1,9 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import { parseDuration, useTimeToUpgrade } from './use-time-to-upgrade';
+import {
+  ERR_NO_TIME_UNITS,
+  parseDuration,
+  useTimeToUpgrade,
+} from './use-time-to-upgrade';
 
 jest.mock('./__generated__/BlockStatistics', () => ({
   ...jest.requireActual('./__generated__/BlockStatistics'),
@@ -47,5 +51,8 @@ describe('parseDuration', () => {
     ['8m0.000000001s', 8 * 60 * 1000 + 1 / 1000000],
   ])('parses %s to %d milliseconds', (input, output) => {
     expect(parseDuration(input)).toEqual(output);
+  });
+  it('throws an error when given corrupted data', () => {
+    expect(() => parseDuration('blah')).toThrow(ERR_NO_TIME_UNITS);
   });
 });

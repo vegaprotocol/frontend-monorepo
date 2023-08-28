@@ -7,6 +7,10 @@ const DEFAULT_POLLS = 10;
 const INTERVAL = 1000;
 const durations = [] as number[];
 
+export const ERR_NO_TIME_UNITS = new Error(
+  'could not parse block duration value - no time units detected'
+);
+
 /**
  * Parses block duration value and output a number of milliseconds.
  * @param input The block duration input from the API, e.g. 4m5.001s
@@ -25,7 +29,14 @@ export const parseDuration = (input: string) => {
   const lessThanSecond = /^[0-9.]+[nµm]*s$/gu.test(input);
   const exp = /(?<hours>[0-9.]+h)?(?<minutes>[0-9.]+m)?(?<seconds>[0-9.]+s)?/gu;
   const m = exp.exec(input);
+
+  const hours = m?.groups?.['hours'];
+  const minutes = m?.groups?.['minutes'];
   const seconds = lessThanSecond ? input : m?.groups?.['seconds'];
+  if (!lessThanSecond && !hours && !minutes && !seconds) {
+    throw ERR_NO_TIME_UNITS;
+  }
+
   if (seconds) {
     S = parseFloat(seconds);
     if (seconds.includes('ns')) S /= 1000 * 1000;
@@ -33,11 +44,9 @@ export const parseDuration = (input: string) => {
     else if (seconds.includes('ms')) S *= 1;
     else if (seconds.includes('s')) S *= 1000;
   }
-  const minutes = m?.groups?.['minutes'];
   if (minutes && !lessThanSecond) {
     M = parseFloat(minutes) * 60 * 1000;
   }
-  const hours = m?.groups?.['hours'];
   if (hours && !lessThanSecond) {
     H = parseFloat(hours) * 60 * 60 * 1000;
   }
@@ -65,7 +74,11 @@ const useAverageBlockDuration = (polls = DEFAULT_POLLS) => {
 
   useEffect(() => {
     if (durations.length < polls && data) {
-      durations.push(parseDuration(data.statistics.blockDuration)); // ms
+      try {
+        durations.push(parseDuration(data.statistics.blockDuration)); // ms
+      } catch (err) {
+        // NOOP - do not add unparsed value to AVG
+      }
     }
     if (durations.length === polls) {
       const averageBlockDuration = sum(durations) / durations.length; // ms
