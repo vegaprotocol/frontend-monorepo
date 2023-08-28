@@ -1,10 +1,4 @@
-import {
-  act,
-  render,
-  screen,
-  waitFor,
-  fireEvent,
-} from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LedgerExportForm } from './ledger-export-form';
 import { formatForInput, toNanoSeconds } from '@vegaprotocol/utils';
@@ -21,15 +15,18 @@ const assetsMock = {
   'asset-id': 'symbol asset-id',
   'asset-id-2': 'symbol asset-id-2',
 };
+
 describe('LedgerExportForm', () => {
   const partyId = 'partyId';
 
   afterEach(() => {
     jest.clearAllMocks();
   });
+
   beforeAll(() => {
     jest.useFakeTimers().setSystemTime(new Date('2023-08-10T10:10:10.000Z'));
   });
+
   afterAll(() => {
     jest.useRealTimers();
   });
@@ -42,15 +39,12 @@ describe('LedgerExportForm', () => {
         assets={assetsMock}
       />
     );
-    expect(await screen.getByText('symbol asset-id')).toBeInTheDocument();
+    expect(screen.getByText('symbol asset-id')).toBeInTheDocument();
 
-    expect(
-      await screen.getByTestId('ledger-download-button')
-    ).toBeInTheDocument();
+    // userEvent does not work with faked timers
     fireEvent.click(screen.getByTestId('ledger-download-button'));
-    await waitFor(() => {
-      expect(screen.getByTestId('download-spinner')).toBeInTheDocument();
-    });
+
+    expect(await screen.findByTestId('download-spinner')).toBeInTheDocument();
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
         `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=asset-id&dateRange.startTimestamp=1691057410000000000`
@@ -69,16 +63,17 @@ describe('LedgerExportForm', () => {
         assets={assetsMock}
       />
     );
-    expect(await screen.getByText('symbol asset-id')).toBeInTheDocument();
+    expect(screen.getByText('symbol asset-id')).toBeInTheDocument();
 
     fireEvent.change(screen.getByTestId('select-ledger-asset'), {
       target: { value: 'asset-id-2' },
     });
 
-    expect(await screen.getByText('symbol asset-id-2')).toBeInTheDocument();
+    expect(screen.getByText('symbol asset-id-2')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('ledger-download-button'));
-    expect(await screen.getByTestId('download-spinner')).toBeInTheDocument();
+
+    expect(screen.getByTestId('download-spinner')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
@@ -99,21 +94,20 @@ describe('LedgerExportForm', () => {
         assets={assetsMock}
       />
     );
-    expect(await screen.getByLabelText('Date from')).toBeInTheDocument();
+    expect(screen.getByLabelText('Date from')).toBeInTheDocument();
+
     fireEvent.change(screen.getByLabelText('Date from'), {
       target: { value: formatForInput(newDate) },
     });
 
-    await waitFor(() => {
-      expect(screen.getByTestId('date-from')).toHaveValue(
-        `${formatForInput(newDate)}.000`
-      );
-    });
+    expect(screen.getByTestId('date-from')).toHaveValue(
+      `${formatForInput(newDate)}.000`
+    );
+
     fireEvent.click(screen.getByTestId('ledger-download-button'));
 
-    await waitFor(() => {
-      expect(screen.getByTestId('download-spinner')).toBeInTheDocument();
-    });
+    expect(screen.getByTestId('download-spinner')).toBeInTheDocument();
+
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
         `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=asset-id&dateRange.startTimestamp=${toNanoSeconds(
@@ -121,6 +115,7 @@ describe('LedgerExportForm', () => {
         )}`
       );
     });
+
     await waitFor(() => {
       expect(screen.queryByTestId('download-spinner')).not.toBeInTheDocument();
     });
@@ -136,19 +131,18 @@ describe('LedgerExportForm', () => {
       />
     );
 
-    expect(await screen.getByLabelText('Date to')).toBeInTheDocument();
+    expect(screen.getByLabelText('Date to')).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText('Date to'), {
       target: { value: formatForInput(newDate) },
     });
 
-    await waitFor(() => {
-      expect(screen.getByTestId('date-to')).toHaveValue(
-        `${formatForInput(newDate)}.000`
-      );
-    });
+    expect(screen.getByTestId('date-to')).toHaveValue(
+      `${formatForInput(newDate)}.000`
+    );
 
     fireEvent.click(screen.getByTestId('ledger-download-button'));
+
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
         `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=asset-id&dateRange.startTimestamp=1691057410000000000&dateRange.endTimestamp=${toNanoSeconds(
@@ -156,6 +150,7 @@ describe('LedgerExportForm', () => {
         )}`
       );
     });
+
     await waitFor(() => {
       expect(screen.queryByTestId('download-spinner')).not.toBeInTheDocument();
     });
