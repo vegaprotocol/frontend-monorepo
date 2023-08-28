@@ -47,7 +47,7 @@ const createDownloadUrl = (
 
 interface Props {
   partyId: string;
-  vegaUrl: string;
+  vegaUrl?: string;
   assets: Record<string, string>;
 }
 
