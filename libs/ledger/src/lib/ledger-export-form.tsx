@@ -123,8 +123,8 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
   }
   return (
     <form onSubmit={startDownload}>
-      <div className="w-full h-full flex justify-center relative">
-        <div className="flex flex-col shrink items-stretch gap-2 p-2 w-[350px]">
+      <div className="w-full h-full flex justify-start relative">
+        <div className="flex flex-col shrink items-stretch gap-2 p-4 w-[350px]">
           <h2 className="mb-4">{t('Export ledger entries')}</h2>
           <TradingFormGroup label={t('Select asset')} labelFor="asset">
             {assetDropDown}
