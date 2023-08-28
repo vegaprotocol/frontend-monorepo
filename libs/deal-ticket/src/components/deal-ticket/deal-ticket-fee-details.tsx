@@ -1,7 +1,4 @@
 import { useCallback, useState } from 'react';
-import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import classnames from 'classnames';
-import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { FeesBreakdown } from '@vegaprotocol/markets';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
@@ -16,7 +13,6 @@ import { marketMarginDataProvider } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
 import {
-  NOTIONAL_SIZE_TOOLTIP_TEXT,
   MARGIN_DIFF_TOOLTIP_TEXT,
   DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT,
   TOTAL_MARGIN_AVAILABLE,
@@ -25,114 +21,54 @@ import {
   MARGIN_ACCOUNT_TOOLTIP_TEXT,
 } from '../../constants';
 import { useEstimateFees } from '../../hooks';
+import { KeyValue } from './key-value';
 
 const emptyValue = '-';
-
-export interface DealTicketFeeDetailPros {
-  label: string;
-  value?: string | null | undefined;
-  symbol: string;
-  indent?: boolean | undefined;
-  labelDescription?: ReactNode;
-  formattedValue?: string;
-  onClick?: () => void;
-}
-
-export const DealTicketFeeDetail = ({
-  label,
-  value,
-  labelDescription,
-  symbol,
-  indent,
-  onClick,
-  formattedValue,
-}: DealTicketFeeDetailPros) => {
-  const displayValue = `${formattedValue ?? '-'} ${symbol || ''}`;
-  const valueElement = onClick ? (
-    <button onClick={onClick} className="text-muted">
-      {displayValue}
-    </button>
-  ) : (
-    <div className="text-muted">{displayValue}</div>
-  );
-  return (
-    <div
-      data-testid={
-        'deal-ticket-fee-' + label.toLocaleLowerCase().replace(/\s/g, '-')
-      }
-      key={typeof label === 'string' ? label : 'value-dropdown'}
-      className={classnames(
-        'text-xs mt-2 flex justify-between items-center gap-4 flex-wrap',
-        { 'ml-2': indent }
-      )}
-    >
-      <Tooltip description={labelDescription}>
-        <div>{label}</div>
-      </Tooltip>
-      <Tooltip description={`${value ?? '-'} ${symbol || ''}`}>
-        {valueElement}
-      </Tooltip>
-    </div>
-  );
-};
 
 export interface DealTicketFeeDetailsProps {
   assetSymbol: string;
   order: OrderSubmissionBody['orderSubmission'];
   market: Market;
-  notionalSize: string | null;
 }
 
 export const DealTicketFeeDetails = ({
   assetSymbol,
   order,
   market,
-  notionalSize,
 }: DealTicketFeeDetailsProps) => {
   const feeEstimate = useEstimateFees(order);
   const { settlementAsset: asset } =
     market.tradableInstrument.instrument.product;
   const { decimals: assetDecimals, quantum } = asset;
-  const marketDecimals = market.decimalPlaces;
-  const quoteName = market.tradableInstrument.instrument.product.quoteName;
 
   return (
-    <>
-      <DealTicketFeeDetail
-        label={t('Notional')}
-        value={formatValue(notionalSize, marketDecimals)}
-        formattedValue={formatValue(notionalSize, marketDecimals)}
-        symbol={quoteName}
-        labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName)}
-      />
-      <DealTicketFeeDetail
-        label={t('Fees')}
-        value={
-          feeEstimate?.totalFeeAmount &&
-          `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals)}`
-        }
-        formattedValue={
-          feeEstimate?.totalFeeAmount &&
-          `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals, quantum)}`
-        }
-        labelDescription={
-          <>
-            <span>
-              {t(
-                `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}.`
-              )}
-            </span>
-            <FeesBreakdown
-              fees={feeEstimate?.fees}
-              feeFactors={market.fees.factors}
-              symbol={assetSymbol}
-              decimals={assetDecimals}
-            />
-          </>
-        }
-        symbol={assetSymbol}
-      />
-    </>
+    <KeyValue
+      label={t('Fees')}
+      value={
+        feeEstimate?.totalFeeAmount &&
+        `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals)}`
+      }
+      formattedValue={
+        feeEstimate?.totalFeeAmount &&
+        `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals, quantum)}`
+      }
+      labelDescription={
+        <>
+          <span>
+            {t(
+              `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}.`
+            )}
+          </span>
+          <FeesBreakdown
+            fees={feeEstimate?.fees}
+            feeFactors={market.fees.factors}
+            symbol={assetSymbol}
+            decimals={assetDecimals}
+          />
+        </>
+      }
+      symbol={assetSymbol}
+    />
   );
 };
 
@@ -209,7 +145,7 @@ export const DealTicketMarginDetails = ({
       BigInt(marginAccountBalance);
 
     deductionFromCollateral = (
-      <DealTicketFeeDetail
+      <KeyValue
         indent
         label={t('Deduction from collateral')}
         value={formatRange(
@@ -236,7 +172,7 @@ export const DealTicketMarginDetails = ({
       />
     );
     projectedMargin = (
-      <DealTicketFeeDetail
+      <KeyValue
         label={t('Projected margin')}
         value={formatRange(
           marginEstimate?.bestCase.initialLevel,
@@ -308,7 +244,7 @@ export const DealTicketMarginDetails = ({
 
   return (
     <>
-      <DealTicketFeeDetail
+      <KeyValue
         label={t('Margin required')}
         value={formatRange(
           marginRequiredBestCase,
@@ -324,7 +260,7 @@ export const DealTicketMarginDetails = ({
         labelDescription={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}
         symbol={assetSymbol}
       />
-      <DealTicketFeeDetail
+      <KeyValue
         label={t('Total margin available')}
         indent
         value={formatValue(totalMarginAvailable, assetDecimals)}
@@ -342,7 +278,7 @@ export const DealTicketMarginDetails = ({
         )}
       />
       {deductionFromCollateral}
-      <DealTicketFeeDetail
+      <KeyValue
         label={t('Current margin allocation')}
         indent
         onClick={
@@ -358,7 +294,7 @@ export const DealTicketMarginDetails = ({
         )}
       />
       {projectedMargin}
-      <DealTicketFeeDetail
+      <KeyValue
         label={t('Liquidation price estimate')}
         value={liquidationPriceEstimate}
         formattedValue={liquidationPriceEstimate}

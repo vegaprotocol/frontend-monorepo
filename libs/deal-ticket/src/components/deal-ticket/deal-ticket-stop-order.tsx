@@ -3,6 +3,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { StopOrdersSubmission } from '@vegaprotocol/wallet';
 import {
   formatForInput,
+  formatValue,
   removeDecimal,
   toDecimal,
   validateAmount,
@@ -19,6 +20,9 @@ import {
   TradingInputError as InputError,
   TradingSelect as Select,
   Tooltip,
+  TradingButton,
+  Intent,
+  Pill,
 } from '@vegaprotocol/ui-toolkit';
 import { getDerivedPrice } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
@@ -41,9 +45,10 @@ import {
 } from '../../hooks/use-form-values';
 import type { StopOrderFormValues } from '../../hooks/use-form-values';
 import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values-to-submission';
-import { DealTicketButton } from './deal-ticket-button';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { validateExpiration } from '../../utils';
+import { NOTIONAL_SIZE_TOOLTIP_TEXT } from '../../constants';
+import { KeyValue } from './key-value';
 
 export interface StopOrderProps {
   market: Market;
@@ -78,7 +83,7 @@ const Trigger = ({
   control,
   watch,
   priceStep,
-  assetSymbol,
+  quoteName,
   oco,
   marketPrice,
   decimalPlaces,
@@ -86,7 +91,7 @@ const Trigger = ({
   control: Control<StopOrderFormValues>;
   watch: UseFormWatch<StopOrderFormValues>;
   priceStep: string;
-  assetSymbol: string;
+  quoteName: string;
   oco?: boolean;
   marketPrice?: string | null;
   decimalPlaces: number;
@@ -181,7 +186,7 @@ const Trigger = ({
                       data-testid={`triggerPrice${oco ? '-oco' : ''}`}
                       type="number"
                       step={priceStep}
-                      appendElement={assetSymbol}
+                      appendElement={<Pill size="xs">{quoteName}</Pill>}
                       value={value || ''}
                       hasError={!!fieldState.error}
                       {...props}
@@ -249,7 +254,7 @@ const Trigger = ({
                     <Input
                       type="number"
                       step={trailingPercentOffsetStep}
-                      appendElement="%"
+                      appendElement={<Pill size="xs">%</Pill>}
                       data-testid={`triggerTrailingPercentOffset${
                         oco ? '-oco' : ''
                       }`}
@@ -311,10 +316,12 @@ const Size = ({
   control,
   sizeStep,
   oco,
+  isLimitType,
 }: {
   control: Control<StopOrderFormValues>;
   sizeStep: string;
   oco?: boolean;
+  isLimitType: boolean;
 }) => {
   return (
     <Controller
@@ -332,7 +339,7 @@ const Size = ({
         const { value, ...props } = field;
         const id = `order-size${oco ? '-oco' : ''}`;
         return (
-          <div className="mb-4">
+          <div className={`mb-${isLimitType ? '4' : '2'}`}>
             <FormGroup labelFor={id} label={t(`Size`)} compact>
               <Input
                 id={id}
@@ -394,12 +401,8 @@ const Price = ({
         const { value, ...props } = field;
         const id = `order-price${oco ? '-oco' : ''}`;
         return (
-          <div className="mb-4">
-            <FormGroup
-              labelFor={id}
-              label={t(`Price (${quoteName})`)}
-              compact={true}
-            >
+          <div className="mb-2">
+            <FormGroup labelFor={id} label={t('Price')} compact={true}>
               <Input
                 id={id}
                 className="w-full"
@@ -409,6 +412,7 @@ const Price = ({
                 onWheel={(e) => e.currentTarget.blur()}
                 value={value || ''}
                 hasError={!!fieldState.error}
+                appendElement={<Pill size="xs">{quoteName}</Pill>}
                 {...props}
               />
             </FormGroup>
@@ -530,6 +534,9 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const rawSize = watch('size');
   const oco = watch('oco');
   const expiresAt = watch('expiresAt');
+  const ocoPrice = watch('ocoPrice');
+  const ocoSize = watch('ocoSize');
+  const ocoType = watch('ocoType');
 
   useEffect(() => {
     const size = storedFormValues?.[dealTicketType]?.size;
@@ -562,6 +569,13 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const notionalSize = getNotionalSize(
     price,
     size,
+    market.decimalPlaces,
+    market.positionDecimalPlaces
+  );
+
+  const notionalSizeOco = getNotionalSize(
+    ocoPrice,
+    ocoSize,
     market.decimalPlaces,
     market.positionDecimalPlaces
   );
@@ -620,18 +634,31 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         control={control}
         watch={watch}
         priceStep={priceStep}
-        assetSymbol={asset.symbol}
+        quoteName={quoteName}
         marketPrice={marketPrice}
         decimalPlaces={market.decimalPlaces}
       />
       <hr className="mb-4 border-vega-clight-500 dark:border-vega-cdark-500" />
+      <Size
+        control={control}
+        sizeStep={sizeStep}
+        isLimitType={type === Schema.OrderType.TYPE_LIMIT}
+      />
       <Price
         control={control}
         watch={watch}
         priceStep={priceStep}
         quoteName={quoteName}
       />
-      <Size control={control} sizeStep={sizeStep} />
+      <div className="mb-4">
+        <KeyValue
+          label={t('Notional')}
+          value={formatValue(notionalSize, market.decimalPlaces)}
+          formattedValue={formatValue(notionalSize, market.decimalPlaces)}
+          symbol={quoteName}
+          labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName)}
+        />
+      </div>
       <TimeInForce control={control} />
       <div className="flex justify-end pb-3 gap-2">
         <ReduceOnly />
@@ -699,12 +726,18 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             control={control}
             watch={watch}
             priceStep={priceStep}
-            assetSymbol={asset.symbol}
+            quoteName={quoteName}
             marketPrice={marketPrice}
             decimalPlaces={market.decimalPlaces}
             oco
           />
           <hr className="mb-2 border-vega-clight-500 dark:border-vega-cdark-500" />
+          <Size
+            control={control}
+            sizeStep={sizeStep}
+            oco
+            isLimitType={ocoType === Schema.OrderType.TYPE_LIMIT}
+          />
           <Price
             control={control}
             watch={watch}
@@ -712,7 +745,18 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             quoteName={quoteName}
             oco
           />
-          <Size control={control} sizeStep={sizeStep} oco />
+          <div className="mb-4">
+            <KeyValue
+              label={t('Notional')}
+              value={formatValue(notionalSizeOco, market.decimalPlaces)}
+              formattedValue={formatValue(
+                notionalSizeOco,
+                market.decimalPlaces
+              )}
+              symbol={quoteName}
+              labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName)}
+            />
+          </div>
           <TimeInForce control={control} oco />
           <div className="flex justify-end mb-2 gap-2">
             <ReduceOnly />
@@ -803,7 +847,16 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         </>
       )}
       <NoWalletWarning isReadOnly={isReadOnly} />
-      <DealTicketButton side={side} label={t('Submit Stop Order')} />
+      <TradingButton
+        data-testid="place-order"
+        className="w-full"
+        intent={side === Schema.Side.SIDE_BUY ? Intent.Success : Intent.Danger}
+        subLabel={`${formatValue(notionalSize, market.decimalPlaces)} ${
+          market.tradableInstrument.instrument.product.quoteName
+        }`}
+      >
+        {t('Place order')}
+      </TradingButton>
       <DealTicketFeeDetails
         order={{
           marketId: market.id,
@@ -813,7 +866,6 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           timeInForce,
           type,
         }}
-        notionalSize={notionalSize}
         assetSymbol={asset.symbol}
         market={market}
       />

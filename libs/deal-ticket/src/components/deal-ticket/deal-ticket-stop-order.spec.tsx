@@ -115,6 +115,32 @@ describe('StopOrder', () => {
     });
   });
 
+  it('calculate notional for market limit', async () => {
+    render(generateJsx());
+    await userEvent.type(screen.getByTestId(sizeInput), '10');
+    await userEvent.type(screen.getByTestId(priceInput), '10');
+    expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
+      'Notional100.00 BTC'
+    );
+  });
+
+  it('calculates notional for limit order', async () => {
+    render(generateJsx());
+    await userEvent.click(screen.getByTestId(orderTypeTrigger));
+    await userEvent.click(screen.getByTestId(orderTypeMarket));
+    await userEvent.type(screen.getByTestId(sizeInput), '10');
+    // price trigger is selected but it's empty, calculate base on size and marketPrice prop
+    expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
+      'Notional20.00 BTC'
+    );
+
+    await userEvent.type(screen.getByTestId(triggerPriceInput), '3');
+    // calculate base on size and price trigger
+    expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
+      'Notional30.00 BTC'
+    );
+  });
+
   it('should use local storage state for initial values', async () => {
     const values: Partial<StopOrderFormValues> = {
       type: Schema.OrderType.TYPE_LIMIT,
