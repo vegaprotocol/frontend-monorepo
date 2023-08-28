@@ -1,4 +1,3 @@
-import type { TransactionResponse } from './vega-connector';
 import {
   WalletError,
   type PubKey,
