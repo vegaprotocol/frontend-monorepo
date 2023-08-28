@@ -6,17 +6,6 @@ import { VegaTxStatus } from '../use-vega-transaction';
 import type { VegaTransactionDialogProps } from './vega-transaction-dialog';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
 
-jest.mock('@vegaprotocol/environment', () => ({
-  useEnvironment: () => ({
-    VEGA_EXPLORER_URL: 'https://test.explorer.vega.network',
-    VEGA_ENV: 'TESTNET',
-  }),
-  Networks: {
-    MAINNET: 'MAINNET',
-    TESTNET: 'TESTNET',
-  },
-}));
-
 describe('VegaTransactionDialog', () => {
   const defaultConfig: VegaWalletConfig = {
     network: 'TESTNET',
