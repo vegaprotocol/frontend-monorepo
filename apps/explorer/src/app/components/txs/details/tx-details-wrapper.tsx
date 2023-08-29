@@ -27,6 +27,7 @@ import { TxDetailsNodeAnnounce } from './tx-node-announce';
 import { TxDetailsStateVariable } from './tx-state-variable-proposal';
 import { TxProposal } from './tx-proposal';
 import { TxDetailsTransfer } from './tx-transfer';
+import { TxDetailsStopOrderSubmission } from './tx-stop-order-submission';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -116,6 +117,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsUndelegate;
     case 'State Variable Proposal':
       return TxDetailsStateVariable;
+    case 'Stop Orders Submission':
+      return TxDetailsStopOrderSubmission;
     case 'Transfer Funds':
       return TxDetailsTransfer;
     default:

@@ -1,23 +1,23 @@
 import { render } from '@testing-library/react';
 import { OracleData } from './oracle-data';
-import type { ExplorerOracleDataConnectionFragment } from '../__generated__/Oracles';
+import { type ExplorerOracleDataConnectionFragment } from '../__generated__/Oracles';
 
-function renderComponent(data: ExplorerOracleDataConnectionFragment) {
+type DataConnection = ExplorerOracleDataConnectionFragment['dataConnection'];
+
+function renderComponent(
+  data: ExplorerOracleDataConnectionFragment['dataConnection']
+) {
   return <OracleData data={data} />;
 }
 
 describe('Oracle Data view', () => {
   it('Renders nothing when data is null', () => {
-    const res = render(
-      renderComponent(null as unknown as ExplorerOracleDataConnectionFragment)
-    );
+    const res = render(renderComponent(null as unknown as DataConnection));
     expect(res.container).toBeEmptyDOMElement();
   });
 
   it('Renders nothing when dataConnection is empty', () => {
-    const res = render(
-      renderComponent({} as ExplorerOracleDataConnectionFragment)
-    );
+    const res = render(renderComponent({} as DataConnection));
     expect(res.container).toBeEmptyDOMElement();
   });
   it('Renders nothing when dataConnection has no edges', () => {
@@ -26,7 +26,7 @@ describe('Oracle Data view', () => {
         dataConnection: {
           edges: null,
         },
-      } as ExplorerOracleDataConnectionFragment)
+      } as DataConnection)
     );
     expect(res.container).toBeEmptyDOMElement();
   });
@@ -37,7 +37,7 @@ describe('Oracle Data view', () => {
         dataConnection: {
           edges: [],
         },
-      } as unknown as ExplorerOracleDataConnectionFragment)
+      } as unknown as DataConnection)
     );
     expect(res.container).toBeEmptyDOMElement();
   });
@@ -47,20 +47,18 @@ describe('Oracle Data view', () => {
   it('Renders details component when there is data', () => {
     const res = render(
       renderComponent({
-        dataConnection: {
-          edges: [
-            {
-              node: {
-                externalData: {
-                  data: {
-                    broadcastAt: '2022-01-01',
-                  },
+        edges: [
+          {
+            node: {
+              externalData: {
+                data: {
+                  broadcastAt: '2022-01-01',
                 },
               },
             },
-          ],
-        },
-      } as ExplorerOracleDataConnectionFragment)
+          },
+        ],
+      } as DataConnection)
     );
     expect(res.getByText('Broadcast data')).toBeInTheDocument();
   });

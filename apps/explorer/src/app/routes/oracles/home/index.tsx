@@ -34,11 +34,15 @@ const Oracles = () => {
               if (!id) {
                 return null;
               }
+
+              const dataConnection = o?.node.dataConnection;
+
               return (
                 <div id={id} key={id} className="mb-10">
                   <OracleDetails
                     id={id}
                     dataSource={o?.node}
+                    dataConnection={dataConnection}
                     showBroadcasts={false}
                   />
                   <details>

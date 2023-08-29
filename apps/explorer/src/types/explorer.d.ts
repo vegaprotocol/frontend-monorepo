@@ -920,6 +920,8 @@ export interface components {
      *  - ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: Per asset reward account for fees received by liquidity providers
      *  - ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: Per asset reward account for market proposers when the market goes above some trading threshold
      *  - ACCOUNT_TYPE_HOLDING: Per asset account for holding in-flight unfilled orders' funds
+     *  - ACCOUNT_TYPE_LP_LIQUIDITY_FEES: Network controlled liquidity provider's account, per market, to hold accrued liquidity fees.
+     *  - ACCOUNT_TYPE_LIQUIDITY_FEES_BONUS_DISTRIBUTION: Network controlled liquidity fees bonus distribution account, per market.
      * @default ACCOUNT_TYPE_UNSPECIFIED
      * @enum {string}
      */
@@ -941,7 +943,9 @@ export interface components {
       | 'ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES'
       | 'ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES'
       | 'ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS'
-      | 'ACCOUNT_TYPE_HOLDING';
+      | 'ACCOUNT_TYPE_HOLDING'
+      | 'ACCOUNT_TYPE_LP_LIQUIDITY_FEES'
+      | 'ACCOUNT_TYPE_LIQUIDITY_FEES_BONUS_DISTRIBUTION';
     /** Vega representation of an external asset */
     readonly vegaAssetDetails: {
       /** @description Vega built-in asset. */

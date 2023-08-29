@@ -38,17 +38,9 @@ export function OracleMarkets({ id }: OracleMarketsProps) {
     });
 
     if (m && m.id) {
-      const type =
-        (m.tradableInstrument.instrument.product.__typename === 'Future' ||
-          m.tradableInstrument.instrument.product.__typename === 'Perpetual') &&
-        id ===
-          m.tradableInstrument.instrument.product
-            .dataSourceSpecForSettlementData.id
-          ? 'Settlement for'
-          : 'Termination for';
       return (
         <TableRow modifier="bordered">
-          <TableHeader scope="row">{type}</TableHeader>
+          <TableHeader scope="row">{getLabel(id, m)}</TableHeader>
           <TableCell modifier="bordered" data-testid={`m-${m.id}`}>
             <MarketLink id={m.id} />
           </TableCell>
@@ -64,4 +56,39 @@ export function OracleMarkets({ id }: OracleMarketsProps) {
       </TableCell>
     </TableRow>
   );
+}
+
+export function getLabel(
+  id: string,
+  m: ExplorerOracleForMarketsMarketFragment | null
+): string {
+  const settlementId =
+    ((m?.tradableInstrument?.instrument?.product?.__typename === 'Future' ||
+      m?.tradableInstrument?.instrument?.product?.__typename === 'Perpetual') &&
+      m?.tradableInstrument?.instrument?.product
+        ?.dataSourceSpecForSettlementData?.id) ||
+    null;
+
+  const terminationId =
+    (m?.tradableInstrument?.instrument?.product?.__typename === 'Future' &&
+      m?.tradableInstrument?.instrument?.product
+        ?.dataSourceSpecForTradingTermination?.id) ||
+    null;
+
+  const settlementScheduleId =
+    (m?.tradableInstrument?.instrument?.product?.__typename === 'Perpetual' &&
+      m?.tradableInstrument?.instrument?.product
+        ?.dataSourceSpecForSettlementSchedule?.id) ||
+    null;
+
+  switch (id) {
+    case settlementId:
+      return 'Settlement for';
+    case terminationId:
+      return 'Termination for';
+    case settlementScheduleId:
+      return 'Settlement schedule for';
+    default:
+      return 'Unknown';
+  }
 }
