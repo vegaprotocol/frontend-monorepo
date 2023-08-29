@@ -73,6 +73,7 @@ export const useVegaTransactionStore = create<VegaTransactionStore>()(
         order,
       };
       set({ transactions: transactions.concat(transaction) });
+
       return transaction.id;
     },
     update: (index: number, update: Partial<VegaStoredTxState>) => {
