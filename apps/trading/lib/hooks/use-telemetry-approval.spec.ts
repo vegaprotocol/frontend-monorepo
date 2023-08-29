@@ -5,11 +5,11 @@ import { STORAGE_KEY, useTelemetryApproval } from './use-telemetry-approval';
 import { Networks } from '@vegaprotocol/environment';
 
 const mockSetValue = jest.fn();
-let mockStorageHookResult = [null, mockSetValue];
+let mockStorageHookResult: [string | null, jest.Mock] = [null, mockSetValue];
 jest.mock('@vegaprotocol/logger');
 jest.mock('@vegaprotocol/react-helpers', () => ({
   ...jest.requireActual('@vegaprotocol/react-helpers'),
-  useLocalStorage: jest.fn().mockImplementation(() => mockStorageHookResult),
+  useLocalStorage: jest.fn(() => mockStorageHookResult),
 }));
 let mockVegaEnv = 'test';
 jest.mock('@vegaprotocol/environment', () => ({
