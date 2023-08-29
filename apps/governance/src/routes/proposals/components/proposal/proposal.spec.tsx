@@ -1,6 +1,7 @@
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
+import type { VegaWalletConfig } from '@vegaprotocol/wallet';
 import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { Proposal } from './proposal';
@@ -47,7 +48,7 @@ const renderComponent = (proposal: ProposalQuery['proposal']) => {
   render(
     <MemoryRouter>
       <MockedProvider>
-        <VegaWalletProvider>
+        <VegaWalletProvider config={{} as VegaWalletConfig}>
           <Proposal
             restData={{}}
             proposal={proposal as ProposalQuery['proposal']}
