@@ -34,6 +34,7 @@ export type FilterOption =
   | 'Protocol Upgrade'
   | 'Register new Node'
   | 'State Variable Proposal'
+  | 'Stop Orders Submission'
   | 'Stop Orders Cancellation'
   | 'Submit Oracle Data'
   | 'Submit Order'
@@ -54,6 +55,7 @@ export const PrimaryFilterOptions: FilterOption[] = [
   'Delegate',
   'Liquidity Provision Order',
   'Proposal',
+  'Stop Orders Submission',
   'Stop Orders Cancellation',
   'Submit Oracle Data',
   'Submit Order',

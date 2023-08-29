@@ -1,0 +1,25 @@
+fragment ExplorerStopOrderFields on StopOrder {
+  id
+  status
+  createdAt
+  trigger {
+    ... on StopOrderPrice {
+      price
+    }
+    ... on StopOrderTrailingPercentOffset {
+      trailingPercentOffset
+    }
+  }
+  createdAt
+  ocoLinkId
+  triggerDirection
+  order {
+    id
+  }
+}
+
+query ExplorerStopOrder($stopOrderId: ID!) {
+  stopOrder(id: $stopOrderId) {
+    ...ExplorerStopOrderFields
+  }
+}

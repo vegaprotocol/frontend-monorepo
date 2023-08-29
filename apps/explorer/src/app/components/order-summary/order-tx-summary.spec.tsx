@@ -33,7 +33,7 @@ describe('Order TX Summary component', () => {
     expect(res.queryByTestId('order-summary')).not.toBeInTheDocument();
   });
 
-  it('Renders nothing if the order passed lacks a price', () => {
+  it('Renders "Market Price" if the order passed lacks a price', () => {
     const o: Order = {
       marketId: '123',
       side: 'SIDE_BUY',
@@ -41,7 +41,7 @@ describe('Order TX Summary component', () => {
       size: '10',
     };
     const res = renderComponent(o);
-    expect(res.queryByTestId('order-summary')).not.toBeInTheDocument();
+    expect(res.queryByText('Market Price')).toBeInTheDocument();
   });
 
   it('Renders nothing if the order has an unspecified side', () => {
