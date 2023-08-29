@@ -643,6 +643,7 @@ export const DealTicket = ({
       />
       <TradingButton
         data-testid="place-order"
+        type="submit"
         className="w-full"
         intent={side === Schema.Side.SIDE_BUY ? Intent.Success : Intent.Danger}
         subLabel={`${formatValue(notionalSize, market.decimalPlaces)} ${

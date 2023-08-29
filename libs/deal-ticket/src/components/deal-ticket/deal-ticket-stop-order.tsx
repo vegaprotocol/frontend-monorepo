@@ -438,17 +438,17 @@ const TimeInForce = ({
   oco?: boolean;
 }) => (
   <Controller
-    name="timeInForce"
+    name={oco ? 'ocoTimeInForce' : 'timeInForce'}
     control={control}
     render={({ field, fieldState }) => {
-      const id = `select-time-in-force${oco ? '-oco' : ''}`;
+      const id = `order-tif${oco ? '-oco' : ''}`;
       return (
         <div className="mb-2">
           <FormGroup label={t('Time in force')} labelFor={id} compact={true}>
             <Select
               id={id}
               className="w-full"
-              data-testid="order-tif"
+              data-testid={id}
               hasError={!!fieldState.error}
               {...field}
             >
@@ -849,6 +849,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
       <NoWalletWarning isReadOnly={isReadOnly} />
       <TradingButton
         data-testid="place-order"
+        type="submit"
         className="w-full"
         intent={side === Schema.Side.SIDE_BUY ? Intent.Success : Intent.Danger}
         subLabel={`${formatValue(notionalSize, market.decimalPlaces)} ${

@@ -65,6 +65,7 @@ const expiryStrategyCancel = 'expiryStrategy-cancel';
 const triggerTypePrice = 'triggerType-price';
 const triggerTypeTrailingPercentOffset = 'triggerType-trailingPercentOffset';
 
+const oco = 'oco';
 const expire = 'expire';
 const datePicker = 'date-picker-field';
 const timeInForce = 'order-tif';
@@ -75,6 +76,8 @@ const triggerPriceErrorMessage = 'stop-order-error-message-trigger-price';
 const triggerPriceWarningMessage = 'stop-order-warning-message-trigger-price';
 const triggerTrailingPercentOffsetErrorMessage =
   'stop-order-error-message-trigger-trailing-percent-offset';
+
+const ocoPostfix = (id: string, postfix = true) => (postfix ? `${id}-oco` : id);
 
 describe('StopOrder', () => {
   beforeEach(() => {
@@ -107,6 +110,7 @@ describe('StopOrder', () => {
       'checked'
     );
     expect(screen.getByTestId(expire).dataset.state).toEqual('unchecked');
+    expect(screen.getByTestId(oco).dataset.state).toEqual('unchecked');
     await userEvent.click(screen.getByTestId(expire));
     await waitFor(() => {
       expect(screen.getByTestId(expiryStrategySubmit).dataset.state).toEqual(
@@ -151,6 +155,11 @@ describe('StopOrder', () => {
       expire: true,
       expiryStrategy: Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS,
       expiresAt: '2023-07-27T16:43:27.000',
+      oco: true,
+      ocoType: Schema.OrderType.TYPE_LIMIT,
+      ocoSize: '0.2',
+      ocoPrice: '300.23',
+      ocoTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
     };
 
     useDealTicketFormValues.setState({
@@ -169,10 +178,22 @@ describe('StopOrder', () => {
     expect(screen.getByTestId(sizeInput)).toHaveDisplayValue(
       values.size as string
     );
-    expect(screen.getByTestId('order-tif')).toHaveValue(values.timeInForce);
+    expect(screen.getByTestId(timeInForce)).toHaveValue(values.timeInForce);
     expect(screen.getByTestId(priceInput)).toHaveDisplayValue(
       values.price as string
     );
+
+    expect(screen.getByTestId(ocoPostfix(sizeInput))).toHaveDisplayValue(
+      values.ocoSize as string
+    );
+    expect(screen.getByTestId(ocoPostfix(timeInForce))).toHaveValue(
+      values.ocoTimeInForce
+    );
+    expect(screen.getByTestId(ocoPostfix(priceInput))).toHaveDisplayValue(
+      values.ocoPrice as string
+    );
+    expect(screen.getByTestId('ocoTypeLimit').dataset.state).toEqual('checked');
+
     expect(screen.getByTestId(expire).dataset.state).toEqual('checked');
     expect(screen.getByTestId(expiryStrategyCancel).dataset.state).toEqual(
       'checked'
@@ -180,6 +201,9 @@ describe('StopOrder', () => {
     expect(screen.getByTestId(datePicker)).toHaveDisplayValue(
       values.expiresAt as string
     );
+
+    await userEvent.click(screen.getByTestId(orderTypeMarket));
+    expect(screen.getByTestId(oco).dataset.state).toEqual('unchecked');
   });
 
   it('does not submit if no wallet connected', async () => {
@@ -204,141 +228,162 @@ describe('StopOrder', () => {
     render(generateJsx());
 
     await userEvent.click(screen.getByTestId(submitButton));
+    [false, true].forEach(async (ocoValue) => {
+      if (ocoValue) {
+        await userEvent.click(screen.getByTestId(oco));
+      }
+      const getByTestId = (id: string) => screen.getByTestId(id);
+      const queryByTestId = (id: string) =>
+        screen.queryByTestId(ocoPostfix(id, ocoValue));
+      // default value should be invalid
+      expect(getByTestId(sizeErrorMessage)).toBeInTheDocument();
+      // to small value should be invalid
+      await userEvent.type(getByTestId(sizeInput), '0.01');
+      expect(getByTestId(sizeErrorMessage)).toBeInTheDocument();
 
-    // default value should be invalid
-    expect(screen.getByTestId(sizeErrorMessage)).toBeInTheDocument();
-    // to small value should be invalid
-    await userEvent.type(screen.getByTestId(sizeInput), '0.01');
-    expect(screen.getByTestId(sizeErrorMessage)).toBeInTheDocument();
-
-    // clear and fill using valid value
-    await userEvent.clear(screen.getByTestId(sizeInput));
-    await userEvent.type(screen.getByTestId(sizeInput), '0.1');
-    expect(screen.queryByTestId(sizeErrorMessage)).toBeNull();
+      // clear and fill using valid value
+      await userEvent.clear(getByTestId(sizeInput));
+      await userEvent.type(getByTestId(sizeInput), '0.1');
+      expect(queryByTestId(sizeErrorMessage)).toBeNull();
+    });
   });
 
   it('validates price field', async () => {
     render(generateJsx());
-
     await userEvent.click(screen.getByTestId(submitButton));
-    // price error message should not show if size has error
-    // expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
-    // await userEvent.type(screen.getByTestId(sizeInput), '0.1');
-    expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
-    await userEvent.type(screen.getByTestId(priceInput), '0.001');
-    expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
+    [false, true].forEach(async (ocoValue) => {
+      if (ocoValue) {
+        await userEvent.click(screen.getByTestId(oco));
+      }
+      const getByTestId = (id: string) => screen.getByTestId(id);
+      const queryByTestId = (id: string) =>
+        screen.queryByTestId(ocoPostfix(id, ocoValue));
+      expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
+      await userEvent.type(getByTestId(priceInput), '0.001');
+      expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
 
-    // switch to market order type error should disappear
-    await userEvent.click(screen.getByTestId(orderTypeTrigger));
-    await userEvent.click(screen.getByTestId(orderTypeMarket));
-    await userEvent.click(screen.getByTestId(submitButton));
-    expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
+      // switch to market order type error should disappear
+      await userEvent.click(getByTestId(orderTypeTrigger));
+      await userEvent.click(getByTestId(orderTypeMarket));
+      await userEvent.click(getByTestId(submitButton));
+      expect(queryByTestId(priceErrorMessage)).toBeNull();
 
-    // switch back to limit type
-    await userEvent.click(screen.getByTestId(orderTypeTrigger));
-    await userEvent.click(screen.getByTestId(orderTypeLimit));
-    await userEvent.click(screen.getByTestId(submitButton));
-    expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
+      // switch back to limit type
+      await userEvent.click(getByTestId(orderTypeTrigger));
+      await userEvent.click(getByTestId(orderTypeLimit));
+      await userEvent.click(getByTestId(submitButton));
+      expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
 
-    // to small value should be invalid
-    await userEvent.type(screen.getByTestId(priceInput), '0.001');
-    expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
+      // to small value should be invalid
+      await userEvent.type(getByTestId(priceInput), '0.001');
+      expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
 
-    // clear and fill using valid value
-    await userEvent.clear(screen.getByTestId(priceInput));
-    await userEvent.type(screen.getByTestId(priceInput), '0.01');
-    expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
+      // clear and fill using valid value
+      await userEvent.clear(getByTestId(priceInput));
+      await userEvent.type(getByTestId(priceInput), '0.01');
+      expect(queryByTestId(priceErrorMessage)).toBeNull();
+    });
   });
 
   it('validates trigger price field', async () => {
     render(generateJsx());
 
     await userEvent.click(screen.getByTestId(submitButton));
-    expect(screen.getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
+    [false, true].forEach(async (ocoValue) => {
+      if (ocoValue) {
+        await userEvent.click(screen.getByTestId(oco));
+      }
+      const getByTestId = (id: string) => screen.getByTestId(id);
+      const queryByTestId = (id: string) =>
+        screen.queryByTestId(ocoPostfix(id, ocoValue));
+      expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
-    // switch to trailing percentage offset trigger type
-    await userEvent.click(screen.getByTestId(triggerTypeTrailingPercentOffset));
-    expect(screen.queryByTestId(triggerPriceErrorMessage)).toBeNull();
+      // switch to trailing percentage offset trigger type
+      await userEvent.click(getByTestId(triggerTypeTrailingPercentOffset));
+      expect(queryByTestId(triggerPriceErrorMessage)).toBeNull();
 
-    // switch back to price trigger type
-    await userEvent.click(screen.getByTestId(triggerTypePrice));
-    expect(screen.getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
+      // switch back to price trigger type
+      await userEvent.click(getByTestId(triggerTypePrice));
+      expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
-    // to small value should be invalid
-    await userEvent.type(screen.getByTestId(triggerPriceInput), '0.001');
-    expect(screen.getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
+      // to small value should be invalid
+      await userEvent.type(getByTestId(triggerPriceInput), '0.001');
+      expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
-    // clear and fill using value causing immediate trigger
-    await userEvent.clear(screen.getByTestId(triggerPriceInput));
-    await userEvent.type(screen.getByTestId(triggerPriceInput), '0.01');
-    expect(screen.queryByTestId(triggerPriceErrorMessage)).toBeNull();
-    expect(
-      screen.queryByTestId(triggerPriceWarningMessage)
-    ).toBeInTheDocument();
+      // clear and fill using value causing immediate trigger
+      await userEvent.clear(getByTestId(triggerPriceInput));
+      await userEvent.type(getByTestId(triggerPriceInput), '0.01');
+      expect(queryByTestId(triggerPriceErrorMessage)).toBeNull();
+      expect(queryByTestId(triggerPriceWarningMessage)).toBeInTheDocument();
 
-    // change to correct value
-    await userEvent.type(screen.getByTestId(triggerPriceInput), '2');
-    expect(screen.queryByTestId(triggerPriceWarningMessage)).toBeNull();
+      // change to correct value
+      await userEvent.type(getByTestId(triggerPriceInput), '2');
+      expect(queryByTestId(triggerPriceWarningMessage)).toBeNull();
+    });
   });
 
   it('validates trigger trailing percentage offset field', async () => {
     render(generateJsx());
 
-    // should not show error with default form values
     await userEvent.click(screen.getByTestId(submitButton));
-    expect(
-      screen.queryByTestId(triggerTrailingPercentOffsetErrorMessage)
-    ).toBeNull();
+    [false, true].forEach(async (ocoValue) => {
+      if (ocoValue) {
+        await userEvent.click(screen.getByTestId(oco));
+      }
+      const getByTestId = (id: string) => screen.getByTestId(id);
+      const queryByTestId = (id: string) =>
+        screen.queryByTestId(ocoPostfix(id, ocoValue));
 
-    // switch to trailing percentage offset trigger type
-    await userEvent.click(screen.getByTestId(triggerTypeTrailingPercentOffset));
-    expect(
-      screen.getByTestId(triggerTrailingPercentOffsetErrorMessage)
-    ).toBeInTheDocument();
+      // should not show error with default form values
+      expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
+      expect(
+        queryByTestId(triggerTrailingPercentOffsetErrorMessage)
+      ).toBeNull();
 
-    // to small value should be invalid
-    await userEvent.type(
-      screen.getByTestId(triggerTrailingPercentOffsetInput),
-      '0.09'
-    );
-    expect(
-      screen.getByTestId(triggerTrailingPercentOffsetErrorMessage)
-    ).toBeInTheDocument();
+      // switch to trailing percentage offset trigger type
+      await userEvent.click(getByTestId(triggerTypeTrailingPercentOffset));
+      expect(
+        getByTestId(triggerTrailingPercentOffsetErrorMessage)
+      ).toBeInTheDocument();
 
-    // clear and fill using valid value
-    await userEvent.clear(
-      screen.getByTestId(triggerTrailingPercentOffsetInput)
-    );
-    await userEvent.type(
-      screen.getByTestId(triggerTrailingPercentOffsetInput),
-      '0.1'
-    );
-    expect(
-      screen.queryByTestId(triggerTrailingPercentOffsetErrorMessage)
-    ).toBeNull();
+      // to small value should be invalid
+      await userEvent.type(
+        getByTestId(triggerTrailingPercentOffsetInput),
+        '0.09'
+      );
+      expect(
+        getByTestId(triggerTrailingPercentOffsetErrorMessage)
+      ).toBeInTheDocument();
 
-    // to big value should be invalid
-    await userEvent.clear(
-      screen.getByTestId(triggerTrailingPercentOffsetInput)
-    );
-    await userEvent.type(
-      screen.getByTestId(triggerTrailingPercentOffsetInput),
-      '99.91'
-    );
-    expect(
-      screen.getByTestId(triggerTrailingPercentOffsetErrorMessage)
-    ).toBeInTheDocument();
+      // clear and fill using valid value
+      await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
+      await userEvent.type(
+        getByTestId(triggerTrailingPercentOffsetInput),
+        '0.1'
+      );
+      expect(
+        queryByTestId(triggerTrailingPercentOffsetErrorMessage)
+      ).toBeNull();
 
-    // clear and fill using valid value
-    await userEvent.clear(
-      screen.getByTestId(triggerTrailingPercentOffsetInput)
-    );
-    await userEvent.type(
-      screen.getByTestId(triggerTrailingPercentOffsetInput),
-      '99.9'
-    );
-    expect(
-      screen.queryByTestId(triggerTrailingPercentOffsetErrorMessage)
-    ).toBeNull();
+      // to big value should be invalid
+      await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
+      await userEvent.type(
+        screen.getByTestId(triggerTrailingPercentOffsetInput),
+        '99.91'
+      );
+      expect(
+        getByTestId(triggerTrailingPercentOffsetErrorMessage)
+      ).toBeInTheDocument();
+
+      // clear and fill using valid value
+      await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
+      await userEvent.type(
+        getByTestId(triggerTrailingPercentOffsetInput),
+        '99.9'
+      );
+      expect(
+        screen.queryByTestId(triggerTrailingPercentOffsetErrorMessage)
+      ).toBeNull();
+    });
   });
 });
