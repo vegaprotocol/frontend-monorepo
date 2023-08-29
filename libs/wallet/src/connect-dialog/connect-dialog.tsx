@@ -16,13 +16,16 @@ import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { t } from '@vegaprotocol/i18n';
 import type { VegaConnector } from '../connectors';
 import {
+  DEFAULT_SNAP_ID,
   InjectedConnector,
   JsonRpcConnector,
+  SnapConnector,
   ViewConnector,
+  requestSnap,
 } from '../connectors';
 import { JsonRpcConnectorForm } from './json-rpc-connector-form';
 import { ViewConnectorForm } from './view-connector-form';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { FLAGS, useEnvironment } from '@vegaprotocol/environment';
 import {
   BrowserIcon,
   ConnectDialogContent,
@@ -38,10 +41,11 @@ import { useVegaWallet } from '../use-vega-wallet';
 import { InjectedConnectorForm } from './injected-connector-form';
 import { isBrowserWalletInstalled } from '../utils';
 import { useIsWalletServiceRunning } from '../use-is-wallet-service-running';
+import { useIsSnapRunning } from '../use-is-snap-running';
 
 export const CLOSE_DELAY = 1700;
 type Connectors = { [key: string]: VegaConnector };
-export type WalletType = 'injected' | 'jsonRpc' | 'view';
+export type WalletType = 'injected' | 'jsonRpc' | 'view' | 'snap';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
@@ -156,7 +160,10 @@ const ConnectDialogContainer = ({
     // for rest because we need to show an authentication form
     if (connector instanceof JsonRpcConnector) {
       jsonRpcConnect(connector, appChainId);
-    } else if (connector instanceof InjectedConnector) {
+    } else if (
+      connector instanceof InjectedConnector ||
+      connector instanceof SnapConnector
+    ) {
       injectedConnect(connector, appChainId);
     }
   };
@@ -165,6 +172,8 @@ const ConnectDialogContainer = ({
     connectors,
     appChainId
   );
+
+  const isSnapRunning = useIsSnapRunning(DEFAULT_SNAP_ID);
 
   return (
     <>
@@ -185,6 +194,7 @@ const ConnectDialogContainer = ({
             setWalletUrl={setWalletUrl}
             onSelect={handleSelect}
             isDesktopWalletRunning={isDesktopWalletRunning}
+            isSnapRunning={isSnapRunning}
           />
         )}
       </ConnectDialogContent>
@@ -198,11 +208,13 @@ const ConnectorList = ({
   walletUrl,
   setWalletUrl,
   isDesktopWalletRunning,
+  isSnapRunning,
 }: {
   onSelect: (type: WalletType) => void;
   walletUrl: string;
   setWalletUrl: (value: string) => void;
   isDesktopWalletRunning: boolean | null;
+  isSnapRunning: boolean | null;
 }) => {
   const { pubKey } = useVegaWallet();
   const title = isBrowserWalletInstalled()
@@ -238,6 +250,45 @@ const ConnectorList = ({
             <GetWalletButton />
           )}
         </div>
+        {FLAGS.METAMASK_SNAPS ? (
+          <div>
+            {isSnapRunning ? (
+              <ConnectionOption
+                type="snap"
+                text={
+                  <>
+                    <div className="w-full h-full flex justify-center items-center gap-1 text-base">
+                      {t('Connect via Vega MetaMask Snap')}
+                    </div>
+                    <div className="absolute right-1 top-0 h-8 flex items-center">
+                      <VegaIcon name={VegaIconNames.METAMASK} size={24} />
+                    </div>
+                  </>
+                }
+                onClick={() => {
+                  onSelect('snap');
+                }}
+              />
+            ) : (
+              <ConnectionOption
+                type="snap"
+                text={
+                  <>
+                    <div className="w-full h-full flex justify-center items-center gap-1 text-base">
+                      {t('Install Vega MetaMask Snap')}
+                    </div>
+                    <div className="absolute right-1 top-0 h-8 flex items-center">
+                      <VegaIcon name={VegaIconNames.METAMASK} size={24} />
+                    </div>
+                  </>
+                }
+                onClick={() => {
+                  requestSnap(DEFAULT_SNAP_ID);
+                }}
+              />
+            )}
+          </div>
+        ) : null}
         <div>
           <ConnectionOption
             type="view"
@@ -282,7 +333,10 @@ const SelectedForm = ({
   onConnect: () => void;
   riskMessage?: ReactNode;
 }) => {
-  if (connector instanceof InjectedConnector) {
+  if (
+    connector instanceof InjectedConnector ||
+    connector instanceof SnapConnector
+  ) {
     return (
       <InjectedConnectorForm
         status={injectedState.status}
