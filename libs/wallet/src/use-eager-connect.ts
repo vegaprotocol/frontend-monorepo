@@ -1,12 +1,9 @@
-import type { SnapConnector } from './';
-import { useVegaWallet } from './';
+import type { Connectors, SnapConnector } from './';
+import { InjectedConnector, useVegaWallet } from './';
 import { useEffect, useState } from 'react';
-import type { VegaConnector } from './connectors/vega-connector';
 import { getConfig } from './storage';
 
-export function useEagerConnect(Connectors: {
-  [connector: string]: VegaConnector;
-}) {
+export function useEagerConnect(Connectors: Connectors) {
   const [connecting, setConnecting] = useState(true);
   const { vegaUrl, connect, acknowledgeNeeded } = useVegaWallet();
 
@@ -31,12 +28,11 @@ export function useEagerConnect(Connectors: {
         );
         return;
       }
+
       try {
-        if (cfg.connector === 'injected') {
-          const injectedInstance = Connectors[cfg.connector];
-          // @ts-ignore only injected wallet has connectWallet method
-          await injectedInstance.connectWallet();
-          await connect(injectedInstance);
+        if (connector instanceof InjectedConnector) {
+          await connector.connectWallet();
+          await connect(connector);
         } else if (cfg.connector === 'snap') {
           const snapInstance = Connectors[cfg.connector] as SnapConnector;
           if (vegaUrl) {
@@ -44,7 +40,7 @@ export function useEagerConnect(Connectors: {
             await connect(snapInstance);
           }
         } else {
-          await connect(Connectors[cfg.connector]);
+          await connect(connector);
         }
       } catch {
         console.warn(`Failed to connect with connector: ${cfg.connector}`);

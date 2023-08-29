@@ -14,7 +14,7 @@ import type { ReactNode } from 'react';
 import { useCallback, useState } from 'react';
 import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { t } from '@vegaprotocol/i18n';
-import type { VegaConnector } from '../connectors';
+import type { Connectors, VegaConnector } from '../connectors';
 import {
   DEFAULT_SNAP_ID,
   InjectedConnector,
@@ -43,7 +43,7 @@ import { useIsWalletServiceRunning } from '../use-is-wallet-service-running';
 import { useIsSnapRunning } from '../use-is-snap-running';
 
 export const CLOSE_DELAY = 1700;
-type Connectors = { [key: string]: VegaConnector };
+
 export type WalletType = 'injected' | 'jsonRpc' | 'view' | 'snap';
 
 export interface VegaConnectDialogProps {
@@ -146,7 +146,6 @@ const ConnectDialogContainer = ({
 
   const handleSelect = (type: WalletType) => {
     const connector = connectors[type];
-    connector.url = walletUrl;
 
     if (!connector) {
       // we should never get here unless connectors are not configured correctly
@@ -158,6 +157,7 @@ const ConnectDialogContainer = ({
     // Immediately connect on selection if jsonRpc is selected, we can't do this
     // for rest because we need to show an authentication form
     if (connector instanceof JsonRpcConnector) {
+      connector.url = walletUrl;
       jsonRpcConnect(connector, appChainId);
     } else if (connector instanceof InjectedConnector) {
       injectedConnect(connector, appChainId);
@@ -171,7 +171,7 @@ const ConnectDialogContainer = ({
 
   const isDesktopWalletRunning = useIsWalletServiceRunning(
     walletUrl,
-    connectors,
+    connectors['jsonRpc'],
     appChainId
   );
 

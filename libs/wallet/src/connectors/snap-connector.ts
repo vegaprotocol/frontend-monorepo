@@ -147,6 +147,8 @@ export class SnapConnector implements VegaConnector {
   snapId: string | undefined = undefined;
   nodeAddress: string | undefined = undefined;
 
+  // note we cannot set nodeAddress in the constructor because the
+  // trading app will not know what the vega url is until the app runs
   constructor(snapId = DEFAULT_SNAP_ID) {
     this.snapId = snapId;
   }
