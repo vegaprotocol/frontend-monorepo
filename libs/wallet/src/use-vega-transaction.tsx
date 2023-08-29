@@ -9,7 +9,7 @@ import type { VegaTransactionContentMap } from './vega-transaction-dialog';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
 import type { Transaction } from './connectors';
-import type { WalletError } from './connectors';
+import { WalletError } from './connectors';
 import { ClientErrors } from './connectors';
 
 export interface DialogProps {
@@ -44,7 +44,7 @@ export const initialState = {
 };
 
 export const orderErrorResolve = (err: Error | unknown): Error => {
-  if (err instanceof WalletClientError) {
+  if (err instanceof WalletClientError || err instanceof WalletError) {
     return err;
   } else if (err instanceof WalletHttpError) {
     return ClientErrors.UNKNOWN;
