@@ -39,7 +39,7 @@ export const Oracle = () => {
             <OracleDetails
               id={id || ''}
               dataSource={data?.oracleSpec}
-              dataConnection={data?.oracleSpec}
+              dataConnection={data?.oracleSpec.dataConnection}
               showBroadcasts={true}
             />
             <details>

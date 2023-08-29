@@ -26,6 +26,11 @@ export const sharedHeaderProps = {
   className: 'align-top',
 };
 
+const Labels: Record<BlockExplorerTransactionResult['type'], string> = {
+  'Stop Orders Submission': 'Stop Order',
+  'Stop Orders Cancellation': 'Cancel Stop Order',
+};
+
 /**
  * These rows are shown for every transaction type, providing a consistent set of rows for the top
  * of a transaction details row. The order is relatively arbitrary but felt right - it might need to
@@ -44,12 +49,14 @@ export const TxDetailsShared = ({
   const time: string = blockData?.result.block.header.time || '';
   const height: string = blockData?.result.block.header.height || txData.block;
 
+  const type = Labels[txData.type] || txData.type;
+
   return (
     <>
       {hideTypeRow === false ? (
         <TableRow modifier="bordered">
           <TableCell {...sharedHeaderProps}>{t('Type')}</TableCell>
-          <TableCell>{txData.type}</TableCell>
+          <TableCell>{type}</TableCell>
         </TableRow>
       ) : null}
       <TableRow modifier="bordered">
