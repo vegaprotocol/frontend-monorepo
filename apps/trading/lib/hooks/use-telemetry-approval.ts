@@ -4,6 +4,7 @@ import { SentryInit, SentryClose } from '@vegaprotocol/logger';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 
 export const STORAGE_KEY = 'vega_telemetry_approval';
+export const STORAGE_SECOND_KEY = 'vega_telemetry_viewed';
 
 export const useTelemetryApproval = (): [
   value: string,
@@ -15,10 +16,12 @@ export const useTelemetryApproval = (): [
   const defaultTelemetryValue =
     VEGA_ENV === Networks.MAINNET ? 'false' : 'true';
   const [value, setValue] = useLocalStorage(STORAGE_KEY);
-  const [shouldOpen, setShouldOpen] = useState(!value);
+  const [viewedValue, setViewedValue] = useLocalStorage(STORAGE_SECOND_KEY);
+  const [shouldOpen, setShouldOpen] = useState(!value || !viewedValue);
   const close = useCallback(() => {
     setShouldOpen(false);
-  }, []);
+    setViewedValue('true');
+  }, [setViewedValue]);
   const manageValue = useCallback(
     (value: string) => {
       if (value === 'true' && SENTRY_DSN) {
@@ -33,9 +36,10 @@ export const useTelemetryApproval = (): [
   const setTelemetryValue = useCallback(
     (value: string) => {
       setShouldOpen(false);
+      setViewedValue('true');
       manageValue(value);
     },
-    [manageValue]
+    [manageValue, setViewedValue]
   );
   useEffect(() => {
     if (!value) {
