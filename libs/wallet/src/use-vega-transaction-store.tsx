@@ -21,22 +21,8 @@ import type {
 
 import type { WithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
 import { subscribeWithSelector } from 'zustand/middleware';
-
-export enum VegaTxStatus {
-  Default = 'Default',
-  Requested = 'Requested',
-  Pending = 'Pending',
-  Error = 'Error',
-  Complete = 'Complete',
-}
-
-export interface VegaTxState {
-  status: VegaTxStatus;
-  error: Error | null;
-  txHash: string | null;
-  signature: string | null;
-  dialogOpen: boolean;
-}
+import type { VegaTxState } from './types';
+import { VegaTxStatus } from './types';
 
 export interface VegaStoredTxState extends VegaTxState {
   id: number;
@@ -48,6 +34,7 @@ export interface VegaStoredTxState extends VegaTxState {
   withdrawalApproval?: WithdrawalApprovalQuery['erc20WithdrawalApproval'];
   order?: OrderTxUpdateFieldsFragment;
 }
+
 export interface VegaTransactionStore {
   transactions: (VegaStoredTxState | undefined)[];
   create: (tx: Transaction, order?: OrderTxUpdateFieldsFragment) => number;

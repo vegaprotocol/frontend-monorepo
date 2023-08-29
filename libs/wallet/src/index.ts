@@ -1,5 +1,6 @@
 export * from './connectors';
 export * from './context';
+export * from './use-vega-transaction';
 export * from './use-vega-wallet';
 export * from './use-vega-transaction-manager';
 export * from './use-vega-transaction-store';
@@ -11,5 +12,6 @@ export * from './provider';
 export * from './connect-dialog';
 export * from './utils';
 export * from './storage';
+export * from './types';
 export * from './__generated__/TransactionResult';
 export * from './__generated__/WithdrawalApproval';

@@ -2,14 +2,12 @@ import { useVegaWallet } from './use-vega-wallet';
 import { useEffect, useRef } from 'react';
 import { WalletError } from './connectors';
 import { ClientErrors } from './connectors';
-import {
-  useVegaTransactionStore,
-  VegaTxStatus,
-} from './use-vega-transaction-store';
+import { useVegaTransactionStore } from './use-vega-transaction-store';
 import {
   WalletClientError,
   WalletHttpError,
 } from '@vegaprotocol/wallet-client';
+import { VegaTxStatus } from './types';
 
 const orderErrorResolve = (err: Error | unknown): Error => {
   if (err instanceof WalletClientError || err instanceof WalletError) {
