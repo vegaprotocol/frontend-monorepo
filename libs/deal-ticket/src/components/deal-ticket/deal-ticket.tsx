@@ -124,6 +124,11 @@ const getDefaultValues = (
   ...storedValues,
 });
 
+export const getAssetUnit = (tags?: string[] | null) =>
+  tags
+    ?.find((tag) => tag.startsWith('base:') || tag.startsWith('ticker:'))
+    ?.replace(/^[^:]*:/, '');
+
 export const DealTicket = ({
   market,
   onMarketClick,
@@ -262,6 +267,10 @@ export const DealTicket = ({
 
   const assetSymbol =
     market.tradableInstrument.instrument.product.settlementAsset.symbol;
+
+  const assetUnit = getAssetUnit(
+    market.tradableInstrument.instrument.metadata.tags
+  );
 
   const summaryError = useMemo(() => {
     if (!pubKey) {
@@ -403,6 +412,7 @@ export const DealTicket = ({
                 id="input-order-size-limit"
                 className="w-full"
                 type="number"
+                appendElement={assetUnit && <Pill size="xs">{assetUnit}</Pill>}
                 step={sizeStep}
                 min={sizeStep}
                 data-testid="order-size"
@@ -464,6 +474,13 @@ export const DealTicket = ({
           formattedValue={formatValue(notionalSize, market.decimalPlaces)}
           symbol={quoteName}
           labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName)}
+        />
+        <DealTicketFeeDetails
+          order={
+            normalizedOrder && { ...normalizedOrder, price: price || undefined }
+          }
+          assetSymbol={assetSymbol}
+          market={market}
         />
       </div>
       <Controller
@@ -646,19 +663,24 @@ export const DealTicket = ({
         type="submit"
         className="w-full"
         intent={side === Schema.Side.SIDE_BUY ? Intent.Success : Intent.Danger}
-        subLabel={`${formatValue(notionalSize, market.decimalPlaces)} ${
-          market.tradableInstrument.instrument.product.quoteName
+        subLabel={`${formatValue(
+          normalizedOrder.size,
+          market.positionDecimalPlaces
+        )} ${assetUnit} @ ${
+          type === Schema.OrderType.TYPE_MARKET
+            ? 'market'
+            : `${formatValue(
+                normalizedOrder.price,
+                market.decimalPlaces
+              )} ${quoteName}`
         }`}
       >
-        {t('Place order')}
+        {t(
+          type === Schema.OrderType.TYPE_MARKET
+            ? 'Place market order'
+            : 'Place limit order'
+        )}
       </TradingButton>
-      <DealTicketFeeDetails
-        order={
-          normalizedOrder && { ...normalizedOrder, price: price || undefined }
-        }
-        assetSymbol={assetSymbol}
-        market={market}
-      />
       <DealTicketMarginDetails
         onMarketClick={onMarketClick}
         assetSymbol={assetSymbol}
