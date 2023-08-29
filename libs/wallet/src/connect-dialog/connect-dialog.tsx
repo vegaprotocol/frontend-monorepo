@@ -393,8 +393,8 @@ export const GetWalletButton = ({
   mozillaExtensionUrl,
   className,
 }: {
-  chromeExtensionUrl: string;
-  mozillaExtensionUrl: string;
+  chromeExtensionUrl?: string;
+  mozillaExtensionUrl?: string;
   className?: string;
 }) => {
   const isItChrome = window.navigator.userAgent.includes('Chrome');
@@ -419,10 +419,12 @@ export const GetWalletButton = ({
           ALPHA
         </Pill>
       </div>
-      <BrowserIcon
-        chromeExtensionUrl={chromeExtensionUrl}
-        mozillaExtensionUrl={mozillaExtensionUrl}
-      />
+      {chromeExtensionUrl && mozillaExtensionUrl && (
+        <BrowserIcon
+          chromeExtensionUrl={chromeExtensionUrl}
+          mozillaExtensionUrl={mozillaExtensionUrl}
+        />
+      )}
     </>
   );
 
