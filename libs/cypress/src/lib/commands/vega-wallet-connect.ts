@@ -81,6 +81,8 @@ export function addSetOnBoardingViewed() {
   Cypress.Commands.add('setOnBoardingViewed', () => {
     cy.window().then((win) => {
       win.localStorage.setItem('vega_onboarding_viewed', 'true');
+      win.localStorage.setItem('vega_telemetry_approval', 'false');
+      win.localStorage.setItem('vega_telemetry_viewed', 'true');
     });
   });
 }
