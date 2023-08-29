@@ -12,6 +12,7 @@ describe('Portfolio page', { tags: '@smoke' }, () => {
   });
   describe('Ledger entries', () => {
     it('Download form should be properly rendered', () => {
+      // 7007-LEEN-001
       cy.visit('/#/portfolio');
       cy.getByTestId('"Ledger entries"').click();
       cy.getByTestId('tab-ledger-entries').within(($headers) => {
