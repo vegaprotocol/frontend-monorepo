@@ -119,4 +119,34 @@ export const tooltipMapping: Record<string, ReactNode> = {
   SLACompletionFactor: t(
     `The SLA completion factor. Specifies the maximum fraction of their accrued fees an LP that meets the SLA implied by market.liquidity.commitmentMinTimeFraction will lose to liquidity providers that achieved a higher SLA performance than them. `
   ),
+  bondPenaltyParameter: t(
+    'used to calculate the penalty to liquidity providers when they fail to support their open position through sufficient general+margin balance. Valid values: any decimal number >= 0 with a default value of 0.1.'
+  ),
+  nonPerformanceBondPenaltySlope: t(
+    'used to calculate how much is the LP bond slashed if they fail to reach the minimum SLA. Valid values: any decimal number >= 0 with a default value of 2.0.'
+  ),
+  nonPerformanceBondPenaltyMax: t(
+    'used to calculate how much is the LP bond slashed if they fail to reach the minimum SLA. Valid values: any decimal number >= 0 and <=1.0 with a default value of 0.5.'
+  ),
+  maximumLiquidityFeeFactorLevel: t(
+    'used in validating fee amounts that are submitted as part of the LP commitment transaction. Note that a value of 0.05 = 5%. Valid values are: any decimal number >=0 and <=1. Default value 1.'
+  ),
+  stakeToCCYVolume: t(
+    'used to translate a commitment to an obligation. Any decimal number >0 with default value 1.0.'
+  ),
+  epochLength: t(
+    'LP rewards from liquidity fees are paid out once per epoch according to whether they met the "SLA" (implied by market.liquidity.commitmentMinTimeFraction) and their previous performance (for the last n epochs defined by market.liquidity.performanceHysteresisEpochs), see epoch spec.'
+  ),
+  earlyExitPenalty: t(
+    '(decimal ≥0), sets how much LP forfeits of their bond in case the market is below target stake and they wish to reduce their commitment. If set to 0 there is no penalty for early exit, if set to 1 their entire bond is forfeited if they exit their entire commitment, if set >1, their entire bond will be forfeited for exiting 1/earlyExitPenalty of their commitment amount.'
+  ),
+  probabilityOfTradingTauScaling: t(
+    'sets how the probability of trading is calculated from the risk model; this is used to measure the relative competitiveness of LPs supplied volume.'
+  ),
+  minimumProbabilityOfTradingLPOrders: t(
+    'sets a lower bound on the result of the probability of trading calculation.'
+  ),
+  feeCalculationTimeStep: t(
+    '(time period e.g. 1m) controls how often the quality of liquidity supplied by the LPs is evaluated and fees arising from that period are earmarked for specific parties. Minimum valid value 0. Maximum valid value validators.epoch.length.'
+  ),
 };

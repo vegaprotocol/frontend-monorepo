@@ -103,9 +103,25 @@ export const NetworkParams = {
     'spam_protection_minimumWithdrawalQuantumMultiple',
   spam_protection_voting_min_tokens: 'spam_protection_voting_min_tokens',
   spam_protection_proposal_min_tokens: 'spam_protection_proposal_min_tokens',
-  market_liquidity_stakeToCcyVolume: 'market_liquidity_stakeToCcyVolume',
   market_liquidity_targetstake_triggering_ratio:
     'market_liquidity_targetstake_triggering_ratio',
+  market_liquidity_bondPenaltyParameter:
+    'market_liquidity_bondPenaltyParameter',
+  market_liquidity_nonPerformanceBondPenaltySlope:
+    'market_liquidity_nonPerformanceBondPenaltySlope',
+  market_liquidity_sla_nonPerformanceBondPenaltyMax:
+    'market_liquidity_sla_nonPerformanceBondPenaltyMax',
+  market_liquidity_maximumLiquidityFeeFactorLevel:
+    'market_liquidity_maximumLiquidityFeeFactorLevel',
+  market_liquidity_stakeToCcyVolume: 'market_liquidity_stakeToCcyVolume',
+  validators_epoch_length: 'validators_epoch_length',
+  market_liquidity_earlyExitPenalty: 'market_liquidity_earlyExitPenalty',
+  market_liquidity_probabilityOfTrading_tau_scaling:
+    'market_liquidity_probabilityOfTrading_tau_scaling',
+  market_liquidity_minimum_probabilityOfTrading_lpOrders:
+    'market_liquidity_minimum_probabilityOfTrading_lpOrders',
+  market_liquidity_feeCalculationTimeStep:
+    'market_liquidity_feeCalculationTimeStep',
   transfer_fee_factor: 'transfer_fee_factor',
   network_validators_incumbentBonus: 'network_validators_incumbentBonus',
 } as const;

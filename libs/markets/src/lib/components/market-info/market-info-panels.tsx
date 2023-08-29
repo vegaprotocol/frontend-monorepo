@@ -57,6 +57,10 @@ import { useSuccessorMarketProposalDetailsQuery } from '@vegaprotocol/proposals'
 import { getQuoteName, getAsset } from '../../market-utils';
 import classNames from 'classnames';
 import compact from 'lodash/compact';
+import {
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/network-parameters';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -681,6 +685,46 @@ export const LiquiditySLAParametersInfoPanel = ({
     : {};
 
   return <MarketInfoTable data={marketData} parentData={parentMarketData} />;
+};
+
+export const LiquidityNetworkSLAParametersInfoPanel = ({
+  market,
+  parentMarket,
+}: MarketInfoProps) => {
+  const { params: networkParams } = useNetworkParams([
+    NetworkParams.market_liquidity_bondPenaltyParameter,
+    NetworkParams.market_liquidity_nonPerformanceBondPenaltySlope,
+    NetworkParams.market_liquidity_sla_nonPerformanceBondPenaltyMax,
+    NetworkParams.market_liquidity_maximumLiquidityFeeFactorLevel,
+    NetworkParams.market_liquidity_stakeToCcyVolume,
+    NetworkParams.validators_epoch_length,
+    NetworkParams.market_liquidity_earlyExitPenalty,
+    NetworkParams.market_liquidity_probabilityOfTrading_tau_scaling,
+    NetworkParams.market_liquidity_minimum_probabilityOfTrading_lpOrders,
+    NetworkParams.market_liquidity_feeCalculationTimeStep,
+  ]);
+
+  const marketNetworkParamData = {
+    bondPenaltyParameter:
+      networkParams['market_liquidity_bondPenaltyParameter'],
+    nonPerformanceBondPenaltySlope:
+      networkParams['market_liquidity_nonPerformanceBondPenaltySlope'],
+    nonPerformanceBondPenaltyMax:
+      networkParams['market_liquidity_sla_nonPerformanceBondPenaltyMax'],
+    maximumLiquidityFeeFactorLevel:
+      networkParams['market_liquidity_maximumLiquidityFeeFactorLevel'],
+    stakeToCCYVolume: networkParams['market_liquidity_stakeToCcyVolume'],
+    epochLength: networkParams['validators_epoch_length'],
+    earlyExitPenalty: networkParams['market_liquidity_earlyExitPenalty'],
+    probabilityOfTradingTauScaling:
+      networkParams['market_liquidity_probabilityOfTrading_tau_scaling'],
+    minimumProbabilityOfTradingLPOrders:
+      networkParams['market_liquidity_minimum_probabilityOfTrading_lpOrders'],
+    feeCalculationTimeStep:
+      networkParams['market_liquidity_feeCalculationTimeStep'],
+  };
+
+  return <MarketInfoTable data={marketNetworkParamData} />;
 };
 
 export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {

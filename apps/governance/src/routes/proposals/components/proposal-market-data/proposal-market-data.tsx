@@ -5,6 +5,7 @@ import {
   InstrumentInfoPanel,
   KeyDetailsInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
+  LiquidityNetworkSLAParametersInfoPanel,
   LiquiditySLAParametersInfoPanel,
   MetadataInfoPanel,
   OracleInfoPanel,
@@ -316,6 +317,13 @@ export const ProposalMarketData = ({
               {t('Liquidity SLA Parameters')}
             </h2>
             <LiquiditySLAParametersInfoPanel
+              market={marketData}
+              parentMarket={parentMarketData}
+            />
+            <h2 className={marketDataHeaderStyles}>
+              {t('Liquidity Network SLA Parameters')}
+            </h2>
+            <LiquidityNetworkSLAParametersInfoPanel
               market={marketData}
               parentMarket={parentMarketData}
             />
