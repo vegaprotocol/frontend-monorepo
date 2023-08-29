@@ -20,7 +20,7 @@ describe('useMarketSelectorList', () => {
     const defaultArgs: Filter = {
       searchTerm: '',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     };
     return renderHook((args) => useMarketSelectorList(args), {
@@ -109,21 +109,21 @@ describe('useMarketSelectorList', () => {
     rerender({
       searchTerm: '',
       product: Product.Spot as 'Future',
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([markets[1]]);
     rerender({
       searchTerm: '',
       product: Product.Perpetual as 'Future',
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([markets[2]]);
     rerender({
       searchTerm: '',
       product: Product.All,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual(markets);
@@ -189,7 +189,7 @@ describe('useMarketSelectorList', () => {
     const { result, rerender } = setup({
       searchTerm: '',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: ['asset-0'],
     });
     expect(result.current.markets).toEqual([markets[0], markets[1]]);
@@ -197,7 +197,7 @@ describe('useMarketSelectorList', () => {
     rerender({
       searchTerm: '',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: ['asset-0', 'asset-1'],
     });
 
@@ -210,7 +210,7 @@ describe('useMarketSelectorList', () => {
     rerender({
       searchTerm: '',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: ['asset-0', 'asset-1', 'asset-2'],
     });
 
@@ -220,7 +220,7 @@ describe('useMarketSelectorList', () => {
     rerender({
       searchTerm: '',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: ['asset-invalid'],
     });
 
@@ -275,28 +275,28 @@ describe('useMarketSelectorList', () => {
     const { result, rerender } = setup({
       searchTerm: 'abc',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([markets[0]]);
     rerender({
       searchTerm: 'def',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([markets[1], markets[2]]);
     rerender({
       searchTerm: 'defg',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([markets[2]]);
     rerender({
       searchTerm: 'zzz',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([]);
@@ -305,14 +305,14 @@ describe('useMarketSelectorList', () => {
     rerender({
       searchTerm: 'aaa',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([markets[0]]);
     rerender({
       searchTerm: 'ggg',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([
@@ -375,9 +375,10 @@ describe('useMarketSelectorList', () => {
     const { result } = setup({
       searchTerm: '',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
+
     expect(result.current.markets).toEqual([
       markets[1],
       markets[2],

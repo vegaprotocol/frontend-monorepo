@@ -262,9 +262,7 @@ describe('MarketSelector', () => {
     await userEvent.click(screen.getByTestId('sort-trigger'));
     const options = screen.getAllByTestId(/sort-item/);
     expect(options.map((o) => o.textContent?.trim())).toEqual(
-      Object.entries(Sort)
-        .filter(([key]) => key !== Sort.None)
-        .map(([key]) => SortTypeMapping[key as SortType])
+      Object.entries(Sort).map(([key]) => SortTypeMapping[key as SortType])
     );
     await userEvent.click(screen.getByTestId('sort-item-Gained'));
     expect(

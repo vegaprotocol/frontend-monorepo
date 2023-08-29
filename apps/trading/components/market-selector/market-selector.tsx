@@ -106,9 +106,6 @@ export const MarketSelector = ({
             currentSort={filter.sort}
             onSelect={(sort) => {
               setFilter((curr) => {
-                if (curr.sort === sort) {
-                  return { ...curr, sort: Sort.None };
-                }
                 return {
                   ...curr,
                   sort,
