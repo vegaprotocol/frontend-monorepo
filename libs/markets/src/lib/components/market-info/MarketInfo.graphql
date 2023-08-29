@@ -90,6 +90,13 @@ query MarketInfo($marketId: ID!) {
         scalingFactor
       }
     }
+    liquiditySLAParameters {
+      priceRange
+      commitmentMinTimeFraction
+      providersFeeCalculationTimeStep
+      performanceHysteresisEpochs
+      slaCompletionFactor
+    }
     tradableInstrument {
       instrument {
         id
