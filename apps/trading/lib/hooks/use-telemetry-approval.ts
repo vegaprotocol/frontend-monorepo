@@ -1,13 +1,13 @@
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SentryInit, SentryClose } from '@vegaprotocol/logger';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
+
 export const STORAGE_KEY = 'vega_telemetry_approval';
 
 export const useTelemetryApproval = (): [
   value: string,
   setValue: (value: string) => void,
-  defaultValue: string,
   shouldOpen: boolean,
   close: () => void
 ] => {
@@ -16,16 +16,10 @@ export const useTelemetryApproval = (): [
     VEGA_ENV === Networks.MAINNET ? 'false' : 'true';
   const [value, setValue] = useLocalStorage(STORAGE_KEY);
   const [shouldOpen, setShouldOpen] = useState(!value);
-  const valueRef = useRef(Boolean(value));
-  useEffect(() => {
-    if (!valueRef.current) {
-      setShouldOpen(true);
-    }
-  }, []);
   const close = useCallback(() => {
     setShouldOpen(false);
   }, []);
-  const setApprove = useCallback(
+  const manageValue = useCallback(
     (value: string) => {
       if (value === 'true' && SENTRY_DSN) {
         SentryInit(SENTRY_DSN, VEGA_ENV);
@@ -36,5 +30,18 @@ export const useTelemetryApproval = (): [
     },
     [setValue, SENTRY_DSN, VEGA_ENV]
   );
-  return [value || '', setApprove, defaultTelemetryValue, shouldOpen, close];
+  const setTelemetryValue = useCallback(
+    (value: string) => {
+      setShouldOpen(false);
+      manageValue(value);
+    },
+    [manageValue]
+  );
+  useEffect(() => {
+    if (!value) {
+      manageValue(defaultTelemetryValue);
+    }
+  }, [value, manageValue, defaultTelemetryValue]);
+
+  return [value || '', setTelemetryValue, shouldOpen, close];
 };

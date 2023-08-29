@@ -2,11 +2,14 @@ import { Button, Icon } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 
 interface Props {
-  isApproved: string;
-  setApproved: (value: string) => void;
+  telemetryValue: string;
+  setTelemetryValue: (value: string) => void;
 }
 
-export const TelemetryApproval = ({ isApproved, setApproved }: Props) => {
+export const TelemetryApproval = ({
+  telemetryValue,
+  setTelemetryValue,
+}: Props) => {
   return (
     <div className="flex flex-col py-3">
       <div className="mr-4" role="form">
@@ -32,7 +35,7 @@ export const TelemetryApproval = ({ isApproved, setApproved }: Props) => {
         </div>
         <div className="flex justify-around items-center mt-10 gap-4 w-full">
           <Button
-            onClick={() => setApproved('false')}
+            onClick={() => setTelemetryValue('false')}
             variant="default"
             data-testid="do-not-share-data-button"
           >
@@ -40,11 +43,11 @@ export const TelemetryApproval = ({ isApproved, setApproved }: Props) => {
           </Button>
 
           <Button
-            onClick={() => setApproved('true')}
+            onClick={() => setTelemetryValue('true')}
             variant="primary"
             data-testid="share-data-button"
           >
-            {isApproved === 'true'
+            {telemetryValue === 'true'
               ? t('Continue sharing data')
               : t('Share data')}
           </Button>

@@ -1,4 +1,3 @@
-import React, { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
@@ -16,19 +15,8 @@ import { TelemetryApproval } from './telemetry-approval';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 
 export const WelcomeDialog = () => {
-  const [
-    telemetryOn,
-    setTelemetryOn,
-    defaultTelemetryValue,
-    isTelemetryNeeded,
-    closeTelemetry,
-  ] = useTelemetryApproval();
-  useEffect(() => {
-    if (!telemetryOn) {
-      setTelemetryOn(defaultTelemetryValue);
-    }
-  }, [telemetryOn, setTelemetryOn, defaultTelemetryValue]);
-
+  const [telemetryValue, setTelemetryValue, isTelemetryNeeded, closeTelemetry] =
+    useTelemetryApproval();
   const { VEGA_ENV } = useEnvironment();
   const [onBoardingViewed] = useLocalStorage(constants.ONBOARDING_VIEWED_KEY);
   const update = useGlobalStore((store) => store.update);
@@ -43,17 +31,9 @@ export const WelcomeDialog = () => {
     !dismissed;
   const marketId = useGlobalStore((store) => store.marketId);
 
-  const setApproved = useCallback(
-    (value: string) => {
-      setTelemetryOn(value);
-      closeTelemetry();
-    },
-    [setTelemetryOn, closeTelemetry]
-  );
-
   const onClose = () => {
     if (isTelemetryNeeded) {
-      setApproved(telemetryOn || defaultTelemetryValue);
+      closeTelemetry();
     } else {
       const link = marketId
         ? Links[Routes.MARKET](marketId)
@@ -78,7 +58,10 @@ export const WelcomeDialog = () => {
   );
 
   const content = isTelemetryNeeded ? (
-    <TelemetryApproval isApproved={telemetryOn} setApproved={setApproved} />
+    <TelemetryApproval
+      telemetryValue={telemetryValue}
+      setTelemetryValue={setTelemetryValue}
+    />
   ) : isOnboardingDialogNeeded ? (
     <WelcomeDialogContent />
   ) : null;
