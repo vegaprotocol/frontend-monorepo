@@ -1,25 +1,15 @@
 import { useMemo, useRef, useState } from 'react';
 import ReactVirtualizedAutoSizer from 'react-virtualized-auto-sizer';
-import {
-  addDecimalsFormatNumber,
-  formatNumberFixed,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { usePrevious } from '@vegaprotocol/react-helpers';
 import { OrderbookRow } from './orderbook-row';
 import type { OrderbookRowData } from './orderbook-data';
 import { compactRows, VolumeType } from './orderbook-data';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  Splash,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Splash, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
+import { OrderbookControls } from './orderbook-controls';
 
 // Sets row height, will be used to calculate number of rows that can be
 // displayed each side of the book without overflow
@@ -110,11 +100,6 @@ export const Orderbook = ({
   assetSymbol,
 }: OrderbookProps) => {
   const [resolution, setResolution] = useState(1);
-  const resolutions = new Array(
-    Math.max(midPrice?.toString().length ?? 0, decimalPlaces + 1)
-  )
-    .fill(null)
-    .map((v, i) => Math.pow(10, i));
 
   const groupedAsks = useMemo(() => {
     return compactRows(asks, VolumeType.ask, resolution);
@@ -123,7 +108,6 @@ export const Orderbook = ({
   const groupedBids = useMemo(() => {
     return compactRows(bids, VolumeType.bid, resolution);
   }, [bids, resolution]);
-  const [isOpen, setOpen] = useState(false);
   const previousMidPrice = usePrevious(midPrice);
   const priceChangeRef = useRef<'up' | 'down' | 'none'>('none');
   if (midPrice && previousMidPrice !== midPrice) {
@@ -138,29 +122,6 @@ export const Orderbook = ({
       <VegaIcon name={PRICE_CHANGE_ICON_MAP[priceChangeRef.current]} />
     </span>
   );
-
-  const formatResolution = (r: number) => {
-    return formatNumberFixed(
-      Math.log10(r) - decimalPlaces > 0
-        ? Math.pow(10, Math.log10(r) - decimalPlaces)
-        : 0,
-      decimalPlaces - Math.log10(r)
-    );
-  };
-
-  const increaseResolution = () => {
-    const index = resolutions.indexOf(resolution);
-    if (index < resolutions.length - 1) {
-      setResolution(resolutions[index + 1]);
-    }
-  };
-
-  const decreaseResolution = () => {
-    const index = resolutions.indexOf(resolution);
-    if (index > 0) {
-      setResolution(resolutions[index - 1]);
-    }
-  };
 
   return (
     <div className="h-full text-xs grid grid-rows-[1fr_min-content]">
@@ -219,7 +180,7 @@ export const Orderbook = ({
                     />
                   </>
                 ) : (
-                  <div className="inset-0 absolute">
+                  <div className="absolute inset-0">
                     <Splash>{t('No data')}</Splash>
                   </div>
                 )}
@@ -228,59 +189,13 @@ export const Orderbook = ({
           }}
         </ReactVirtualizedAutoSizer>
       </div>
-      <div className="border-t border-default flex">
-        <button
-          onClick={increaseResolution}
-          disabled={resolutions.indexOf(resolution) >= resolutions.length - 1}
-          className="flex items-center border-r border-default px-2 cursor-pointer"
-          data-testid="plus-button"
-        >
-          <VegaIcon size={12} name={VegaIconNames.PLUS} />
-        </button>
-        <DropdownMenu
-          open={isOpen}
-          onOpenChange={(open) => setOpen(open)}
-          trigger={
-            <DropdownMenuTrigger
-              data-testid="resolution"
-              className="flex justify-between px-1 items-center"
-              style={{
-                width: `${
-                  Math.max.apply(
-                    null,
-                    resolutions.map((item) => formatResolution(item).length)
-                  ) + 3
-                }ch`,
-              }}
-            >
-              <VegaIcon
-                size={12}
-                name={
-                  isOpen ? VegaIconNames.CHEVRON_UP : VegaIconNames.CHEVRON_DOWN
-                }
-              />
-              <div className="text-xs text-left">
-                {formatResolution(resolution)}
-              </div>
-            </DropdownMenuTrigger>
-          }
-        >
-          <DropdownMenuContent align="start">
-            {resolutions.map((r) => (
-              <DropdownMenuItem key={r} onClick={() => setResolution(r)}>
-                {formatResolution(r)}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <button
-          onClick={decreaseResolution}
-          disabled={resolutions.indexOf(resolution) <= 0}
-          className="flex items-center border-x border-default px-2 cursor-pointer"
-          data-testid="minus-button"
-        >
-          <VegaIcon size={12} name={VegaIconNames.MINUS} />
-        </button>
+      <div className="border-t border-default">
+        <OrderbookControls
+          midPrice={midPrice}
+          resolution={resolution}
+          decimalPlaces={decimalPlaces}
+          setResolution={setResolution}
+        />
       </div>
     </div>
   );
