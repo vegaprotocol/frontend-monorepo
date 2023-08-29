@@ -13,9 +13,9 @@
         "tsConfig": "libs/wallet/tsconfig.lib.json",
         "project": "libs/wallet/package.json",
         "entryFile": "libs/wallet/src/index.ts",
-        "external": ["react/jsx-runtime"],
+        "external": ["react", "react-dom", "react/jsx-runtime"],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "compiler": "babel",
+        "compiler": "swc",
         "assets": [
           {
             "glob": "libs/wallet/README.md",
