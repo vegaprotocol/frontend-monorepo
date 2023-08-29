@@ -197,6 +197,16 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     validateMarketDataRow(2, 'Scaling Factor', '10');
   });
 
+  it('liquidity SLA parameters displayed', () => {
+    cy.getByTestId(marketTitle).contains('Liquidity SLA parameters').click();
+
+    validateMarketDataRow(0, 'Price Range', '0.95');
+    validateMarketDataRow(1, 'Commitment Time Fraction', '0.5');
+    validateMarketDataRow(2, 'Provider Fee Calculation Step', '5,000,000,000');
+    validateMarketDataRow(3, 'Performance Hysteresis Epochs', '4');
+    validateMarketDataRow(4, 'SLA Completion Factor', '0.5');
+  });
+
   it('liquidity displayed', () => {
     // 6002-MDET-214
     cy.getByTestId(marketTitle)

@@ -101,6 +101,13 @@ export const marketInfoQuery = (
         },
         __typename: 'LiquidityMonitoringParameters',
       },
+      liquiditySLAParameters: {
+        priceRange: '0.95',
+        commitmentMinTimeFraction: '0.5',
+        providersFeeCalculationTimeStep: 5000000000,
+        performanceHysteresisEpochs: 4,
+        slaCompletionFactor: '0.5',
+      },
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
