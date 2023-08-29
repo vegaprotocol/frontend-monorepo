@@ -651,6 +651,38 @@ export const LiquidityMonitoringParametersInfoPanel = ({
   return <MarketInfoTable data={marketData} parentData={parentMarketData} />;
 };
 
+export const LiquiditySLAParametersInfoPanel = ({
+  market,
+  parentMarket,
+}: MarketInfoProps) => {
+  const marketData = {
+    priceRange: market.liquiditySLAParameters?.priceRange,
+    commitmentMinTimeFraction:
+      market.liquiditySLAParameters?.commitmentMinTimeFraction,
+    providersFeeCalculationTimeStep:
+      market.liquiditySLAParameters?.providersFeeCalculationTimeStep,
+    performanceHysteresisEpochs:
+      market.liquiditySLAParameters?.performanceHysteresisEpochs,
+    SLACompletionFactor: market.liquiditySLAParameters?.slaCompletionFactor,
+  };
+
+  const parentMarketData = parentMarket
+    ? {
+        priceRange: parentMarket.liquiditySLAParameters?.priceRange,
+        commitmentMinTimeFraction:
+          parentMarket.liquiditySLAParameters?.commitmentMinTimeFraction,
+        providersFeeCalculationTimeStep:
+          parentMarket.liquiditySLAParameters?.providersFeeCalculationTimeStep,
+        performanceHysteresisEpochs:
+          parentMarket.liquiditySLAParameters?.performanceHysteresisEpochs,
+        slaCompletionFactor:
+          parentMarket.liquiditySLAParameters?.slaCompletionFactor,
+      }
+    : {};
+
+  return <MarketInfoTable data={marketData} parentData={parentMarketData} />;
+};
+
 export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
   const asset = getAsset(market);
   const { data } = useDataProvider({

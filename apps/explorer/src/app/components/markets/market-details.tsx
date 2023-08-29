@@ -1,6 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import type { MarketInfoWithData } from '@vegaprotocol/markets';
 import {
+  LiquiditySLAParametersInfoPanel,
   PriceMonitoringBoundsInfoPanel,
   SuccessionLineInfoPanel,
 } from '@vegaprotocol/markets';
@@ -98,6 +99,8 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
       )}
       <h2 className={headerClassName}>{t('Liquidity monitoring')}</h2>
       <LiquidityMonitoringParametersInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Liquidity SLA Parameters')}</h2>
+      <LiquiditySLAParametersInfoPanel market={market} />
       <h2 className={headerClassName}>{t('Liquidity')}</h2>
       <LiquidityInfoPanel market={market} />
       {showTwoOracles ? (
