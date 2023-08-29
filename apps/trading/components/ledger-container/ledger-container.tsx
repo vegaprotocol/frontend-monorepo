@@ -1,22 +1,29 @@
-import { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
-import { LedgerManager } from '@vegaprotocol/ledger';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { LedgerExportForm } from '@vegaprotocol/ledger';
+import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { DataGridSlice } from '../../stores/datagrid-store-slice';
-import { createDataGridSlice } from '../../stores/datagrid-store-slice';
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { useEnvironment } from '@vegaprotocol/environment';
+import type { PartyAssetFieldsFragment } from '@vegaprotocol/assets';
+import { usePartyAssetsQuery } from '@vegaprotocol/assets';
 
 export const LedgerContainer = () => {
+  const VEGA_URL = useEnvironment((store) => store.VEGA_URL);
   const { pubKey } = useVegaWallet();
-
-  const gridStore = useLedgerStore((store) => store.gridStore);
-  const updateGridStore = useLedgerStore((store) => store.updateGridStore);
-
-  const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
-    updateGridStore(colState);
+  const { data, loading } = usePartyAssetsQuery({
+    variables: { partyId: pubKey || '' },
+    skip: !pubKey,
   });
+
+  const assets = (data?.party?.accountsConnection?.edges ?? [])
+    .map<PartyAssetFieldsFragment>(
+      (item) => item?.node?.asset ?? ({} as PartyAssetFieldsFragment)
+    )
+    .reduce((aggr, item) => {
+      if ('id' in item && 'symbol' in item) {
+        aggr[item.id as string] = item.symbol as string;
+      }
+      return aggr;
+    }, {} as Record<string, string>);
 
   if (!pubKey) {
     return (
@@ -26,11 +33,31 @@ export const LedgerContainer = () => {
     );
   }
 
-  return <LedgerManager partyId={pubKey} gridProps={gridStoreCallbacks} />;
-};
+  if (!VEGA_URL) {
+    return (
+      <Splash>
+        <p>{t('Environment not configured')}</p>
+      </Splash>
+    );
+  }
 
-const useLedgerStore = create<DataGridSlice>()(
-  persist(createDataGridSlice, {
-    name: 'vega_ledger_store',
-  })
-);
+  if (loading) {
+    return (
+      <div className="relative flex items-center justify-center w-full h-full">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (!Object.keys(assets).length) {
+    return (
+      <Splash>
+        <p>{t('No ledger entries to export')}</p>
+      </Splash>
+    );
+  }
+
+  return (
+    <LedgerExportForm partyId={pubKey} vegaUrl={VEGA_URL} assets={assets} />
+  );
+};
