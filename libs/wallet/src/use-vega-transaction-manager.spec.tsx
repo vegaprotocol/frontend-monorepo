@@ -2,7 +2,7 @@ import { useVegaTransactionManager } from './use-vega-transaction-manager';
 import { renderHook } from '@testing-library/react';
 import waitForNextTick from 'flush-promises';
 import type { TransactionResponse } from './connectors/vega-connector';
-import { VegaTxStatus } from './use-vega-transaction-store';
+import { VegaTxStatus } from './types';
 import type {
   VegaTransactionStore,
   VegaStoredTxState,
