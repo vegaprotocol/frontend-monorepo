@@ -24,6 +24,7 @@ export const AppLoader = ({ children }: { children: ReactNode }) => {
     VEGA_URL,
     VEGA_ENV,
     VEGA_WALLET_URL,
+    VEGA_EXPLORER_URL,
     MAINTENANCE_PAGE,
     MOZILLA_EXTENSION_URL,
     CHROME_EXTENSION_URL,
@@ -36,6 +37,7 @@ export const AppLoader = ({ children }: { children: ReactNode }) => {
   if (
     !VEGA_URL ||
     !VEGA_WALLET_URL ||
+    !VEGA_EXPLORER_URL ||
     !CHROME_EXTENSION_URL ||
     !MOZILLA_EXTENSION_URL ||
     !DocsLinks
@@ -62,6 +64,7 @@ export const AppLoader = ({ children }: { children: ReactNode }) => {
               vegaUrl: VEGA_URL,
               vegaWalletServiceUrl: VEGA_WALLET_URL,
               links: {
+                explorer: VEGA_EXPLORER_URL,
                 concepts: DocsLinks.VEGA_WALLET_CONCEPTS_URL,
                 chromeExtensionUrl: CHROME_EXTENSION_URL,
                 mozillaExtensionUrl: MOZILLA_EXTENSION_URL,
