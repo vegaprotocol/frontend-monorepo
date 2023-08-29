@@ -1,5 +1,11 @@
+import { aliasGQLQuery } from '@vegaprotocol/cypress';
+import { partyAssetsQuery } from '@vegaprotocol/mock';
+
 describe('Portfolio page', { tags: '@smoke' }, () => {
   beforeEach(() => {
+    cy.mockGQL((req) => {
+      aliasGQLQuery(req, 'PartyAssets', partyAssetsQuery());
+    });
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.setVegaWallet();

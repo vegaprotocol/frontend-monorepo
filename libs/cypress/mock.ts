@@ -2,6 +2,7 @@
 export * from '../accounts/src/lib/accounts.mock';
 export * from '../assets/src/lib/asset.mock';
 export * from '../assets/src/lib/assets.mock';
+export * from '../assets/src/lib/party-assets.mock';
 export * from '../candles-chart/src/lib/candles.mock';
 export * from '../candles-chart/src/lib/chart.mock';
 export * from '../deal-ticket/src/hooks/estimate-order.mock';
