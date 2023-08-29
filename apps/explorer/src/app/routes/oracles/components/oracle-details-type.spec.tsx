@@ -55,13 +55,13 @@ describe('Oracle type view', () => {
     const s = mock('prices.external.whatever');
     expect(isInternalSourceType(s)).toEqual(false);
     const res = render(renderWrappedComponent(s));
-    expect(res.getByText('External data')).toBeInTheDocument();
+    expect(res.getByText('External Data')).toBeInTheDocument();
   });
 
   it('Renders External data otherwise', () => {
     const s = mock('prices.external.vegaprotocol.builtin.');
     expect(isInternalSourceType(s)).toEqual(false);
     const res = render(renderWrappedComponent(s));
-    expect(res.getByText('External data')).toBeInTheDocument();
+    expect(res.getByText('External Data')).toBeInTheDocument();
   });
 });

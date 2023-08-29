@@ -14,7 +14,8 @@ import { OracleFilter } from './oracle-filter';
 import { OracleDetailsType } from './oracle-details-type';
 import { OracleMarkets } from './oracle-markets';
 import { OracleSigners } from './oracle-signers';
-import OracleLink from '../../../components/links/oracle-link/oracle-link';
+import { OracleEthSource } from './oracle-eth-source';
+import Hash from '../../../components/links/hash';
 
 export type SourceType =
   ExplorerOracleDataSourceFragment['dataSourceSpec']['spec']['data']['sourceType'];
@@ -38,10 +39,8 @@ export const OracleDetails = ({
   id,
   dataSource,
   dataConnection,
-  showBroadcasts = false,
 }: OracleDetailsProps) => {
   const sourceType = dataSource.dataSourceSpec.spec.data.sourceType;
-  const reportsCount: number = dataConnection.edges?.length || 0;
 
   return (
     <div>
@@ -49,23 +48,27 @@ export const OracleDetails = ({
         <TableRow modifier="bordered">
           <TableHeader scope="row">{t('ID')}</TableHeader>
           <TableCell modifier="bordered">
-            <OracleLink id={id} />
+            <Hash text={id} />
           </TableCell>
         </TableRow>
         <OracleDetailsType sourceType={sourceType} />
+        <TableRow modifier="bordered">
+          <TableHeader scope="row">{t('Status')}</TableHeader>
+          <TableCell modifier="bordered">
+            {dataSource.dataSourceSpec.spec.status}
+          </TableCell>
+        </TableRow>
         <OracleSigners sourceType={sourceType} />
+        <OracleEthSource sourceType={sourceType} />
         <OracleMarkets id={id} />
         <TableRow modifier="bordered">
-          <TableHeader scope="row">{t('Matched data')}</TableHeader>
+          <TableHeader scope="row">{t('Filter')}</TableHeader>
           <TableCell modifier="bordered">
-            {showBroadcasts ? reportsCount : reportsCount > 0 ? '✅' : '❌'}
+            <OracleFilter data={dataSource} />
           </TableCell>
         </TableRow>
       </TableWithTbody>
-      <OracleFilter data={dataSource} />
-      {showBroadcasts && dataConnection ? (
-        <OracleData data={dataConnection} />
-      ) : null}
+      {dataConnection ? <OracleData data={dataConnection} /> : null}
     </div>
   );
 };

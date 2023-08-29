@@ -1,22 +1,27 @@
 fragment ExplorerOracleForMarketsMarket on Market {
   id
+  state
   tradableInstrument {
     instrument {
       product {
         ... on Future {
           dataSourceSpecForSettlementData {
             id
+            status
           }
           dataSourceSpecForTradingTermination {
             id
+            status
           }
         }
         ... on Perpetual {
           dataSourceSpecForSettlementData {
             id
+            status
           }
           dataSourceSpecForSettlementSchedule {
             id
+            status
           }
         }
       }
@@ -29,6 +34,75 @@ query ExplorerOracleFormMarkets {
     edges {
       node {
         ...ExplorerOracleForMarketsMarket
+      }
+    }
+  }
+  oracleSpecsConnection {
+    edges {
+      node {
+        dataSourceSpec {
+          spec {
+            id
+            status
+            data {
+              sourceType {
+                ... on DataSourceDefinitionInternal {
+                  sourceType {
+                    ... on DataSourceSpecConfigurationTime {
+                      conditions {
+                        value
+                        operator
+                      }
+                    }
+                    ... on DataSourceSpecConfigurationTimeTrigger {
+                      conditions {
+                        value
+                        operator
+                      }
+                      triggers {
+                        initial
+                        every
+                      }
+                    }
+                  }
+                }
+                ... on DataSourceDefinitionExternal {
+                  sourceType {
+                    ... on EthCallSpec {
+                      address
+                    }
+                    ... on DataSourceSpecConfiguration {
+                      signers {
+                        signer {
+                          ... on ETHAddress {
+                            address
+                          }
+                          ... on PubKey {
+                            key
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        dataConnection(pagination: { first: 1 }) {
+          edges {
+            node {
+              externalData {
+                data {
+                  data {
+                    name
+                    value
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

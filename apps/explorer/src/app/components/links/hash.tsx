@@ -1,5 +1,6 @@
 export type HashProps = {
   text: string;
+  truncate?: boolean;
 };
 
 /**
@@ -7,10 +8,16 @@ export type HashProps = {
  * are broken when they need to wrap. This will remove the need
  * for a lot of the overflow scrolling that currently exists.
  */
-const Hash = ({ text }: HashProps) => {
+const Hash = ({ text, truncate = false }: HashProps) => {
+  const h = truncate ? text.slice(0, 6) : text;
+
   return (
-    <code className="break-all font-mono" style={{ wordWrap: 'break-word' }}>
-      {text}
+    <code
+      title={text}
+      className="break-all font-mono"
+      style={{ wordWrap: 'break-word' }}
+    >
+      {h}
     </code>
   );
 };

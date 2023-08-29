@@ -63,6 +63,9 @@ describe('Market link component', () => {
                 product: {
                   __typename: 'Future',
                   quoteName: 'dai',
+                  settlementAsset: {
+                    decimals: 8,
+                  },
                 },
               },
             },

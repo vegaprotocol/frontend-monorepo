@@ -3,6 +3,7 @@ query ExplorerMarket($id: ID!) {
     id
     decimalPlaces
     positionDecimalPlaces
+    state
     tradableInstrument {
       instrument {
         name
@@ -22,6 +23,5 @@ query ExplorerMarket($id: ID!) {
         }
       }
     }
-    state
   }
 }

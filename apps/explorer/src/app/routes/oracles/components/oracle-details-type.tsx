@@ -26,6 +26,14 @@ export function isInternalSourceType(s: SourceType) {
   return false;
 }
 
+export function getExternalType(s: SourceType) {
+  if (s.sourceType.__typename === 'EthCallSpec') {
+    return 'Ethereum Contract Call';
+  } else {
+    return 'External Data';
+  }
+}
+
 interface OracleDetailsTypeProps {
   sourceType: SourceType;
 }
@@ -45,7 +53,7 @@ export function OracleDetailsType({ sourceType }: OracleDetailsTypeProps) {
     <TableRow modifier="bordered">
       <TableHeader scope="row">Type</TableHeader>
       <TableCell modifier="bordered">
-        {isInternal ? 'Internal data' : 'External data'}
+        {isInternal ? 'Internal data' : getExternalType(sourceType)}
       </TableCell>
     </TableRow>
   );

@@ -74,6 +74,9 @@ function renderExistingAmend(
                   product: {
                     __typename: 'Future',
                     quoteName: '123',
+                    settlementAsset: {
+                      decimals: 8,
+                    },
                   },
                 },
               },
@@ -124,6 +127,9 @@ function renderExistingAmend(
                   product: {
                     __typename: 'Future',
                     quoteName: '123',
+                    settlementAsset: {
+                      decimals: 8,
+                    },
                   },
                 },
               },
@@ -152,6 +158,9 @@ function renderExistingAmend(
                 product: {
                   __typename: 'Future',
                   quoteName: 'dai',
+                  settlementAsset: {
+                    decimals: 8,
+                  },
                 },
               },
             },

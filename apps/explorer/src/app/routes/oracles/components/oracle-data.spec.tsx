@@ -51,15 +51,26 @@ describe('Oracle Data view', () => {
           {
             node: {
               externalData: {
+                __typename: 'ExternalData',
                 data: {
-                  broadcastAt: '2022-01-01',
+                  __typename: 'Data',
+                  matchedSpecIds: ['123'],
+                  broadcastAt: '2023-01-01T00:00:00Z',
+                  data: [
+                    {
+                      __typename: 'Property',
+                      name: 'Test-name',
+                      value: 'Test-data',
+                    },
+                  ],
                 },
               },
             },
           },
         ],
-      } as DataConnection)
+      } as ExplorerOracleDataConnectionFragment['dataConnection'])
     );
-    expect(res.getByText('Broadcast data')).toBeInTheDocument();
+    expect(res.getByText('Test-name')).toBeInTheDocument();
+    expect(res.getByText('Test-data')).toBeInTheDocument();
   });
 });
