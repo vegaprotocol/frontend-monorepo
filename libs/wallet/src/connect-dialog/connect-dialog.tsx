@@ -14,7 +14,6 @@ import type { ReactNode } from 'react';
 import { useCallback, useState } from 'react';
 import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { t } from '@vegaprotocol/i18n';
-import { FLAGS } from '@vegaprotocol/environment';
 import type { VegaConnector } from '../connectors';
 import {
   DEFAULT_SNAP_ID,
@@ -123,7 +122,7 @@ const ConnectDialogContainer = ({
   appChainId: string;
   riskMessage?: ReactNode;
 }) => {
-  const { vegaWalletServiceUrl } = useVegaWallet();
+  const { vegaUrl, vegaWalletServiceUrl } = useVegaWallet();
   const closeDialog = useVegaWalletDialogStore(
     (store) => store.closeVegaWalletDialog
   );
@@ -160,10 +159,12 @@ const ConnectDialogContainer = ({
     // for rest because we need to show an authentication form
     if (connector instanceof JsonRpcConnector) {
       jsonRpcConnect(connector, appChainId);
-    } else if (
-      connector instanceof InjectedConnector ||
-      connector instanceof SnapConnector
-    ) {
+    } else if (connector instanceof InjectedConnector) {
+      injectedConnect(connector, appChainId);
+    } else if (connector instanceof SnapConnector) {
+      // Set the nodeAddress to send tx's to, normally this is handled by
+      // the vega wallet
+      connector.nodeAddress = new URL(vegaUrl).origin;
       injectedConnect(connector, appChainId);
     }
   };
@@ -190,6 +191,7 @@ const ConnectDialogContainer = ({
           />
         ) : (
           <ConnectorList
+            connectors={connectors}
             walletUrl={walletUrl}
             setWalletUrl={setWalletUrl}
             onSelect={handleSelect}
@@ -204,12 +206,14 @@ const ConnectDialogContainer = ({
 };
 
 const ConnectorList = ({
+  connectors,
   onSelect,
   walletUrl,
   setWalletUrl,
   isDesktopWalletRunning,
   isSnapRunning,
 }: {
+  connectors: Connectors;
   onSelect: (type: WalletType) => void;
   walletUrl: string;
   setWalletUrl: (value: string) => void;
@@ -256,7 +260,7 @@ const ConnectorList = ({
             />
           )}
         </div>
-        {FLAGS.METAMASK_SNAPS ? (
+        {connectors['snap'] !== undefined ? (
           <div>
             {isSnapRunning ? (
               <ConnectionOption

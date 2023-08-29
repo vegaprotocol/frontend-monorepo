@@ -147,8 +147,7 @@ export class SnapConnector implements VegaConnector {
   snapId: string | undefined = undefined;
   nodeAddress: string | undefined = undefined;
 
-  constructor(nodeAddress?: string, snapId = DEFAULT_SNAP_ID) {
-    this.nodeAddress = nodeAddress;
+  constructor(snapId = DEFAULT_SNAP_ID) {
     this.snapId = snapId;
   }
 

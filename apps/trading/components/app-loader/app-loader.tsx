@@ -40,7 +40,7 @@ export const AppLoader = ({ children }: { children: ReactNode }) => {
     !MOZILLA_EXTENSION_URL ||
     !DocsLinks
   ) {
-    throw new Error('Environment not configured');
+    return null;
   }
 
   return (

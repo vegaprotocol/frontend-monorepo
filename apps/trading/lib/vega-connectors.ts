@@ -1,4 +1,4 @@
-import { ENV } from '@vegaprotocol/environment';
+import { ENV, FLAGS } from '@vegaprotocol/environment';
 import {
   JsonRpcConnector,
   ViewConnector,
@@ -18,10 +18,9 @@ if (typeof window !== 'undefined') {
   view = new ViewConnector();
 }
 
-export const snap = new SnapConnector(
-  ENV.VEGA_URL ? new URL(ENV.VEGA_URL).origin : undefined,
-  DEFAULT_SNAP_ID
-);
+export const snap = FLAGS.METAMASK_SNAPS
+  ? new SnapConnector(DEFAULT_SNAP_ID)
+  : undefined;
 
 export const Connectors = {
   injected,
