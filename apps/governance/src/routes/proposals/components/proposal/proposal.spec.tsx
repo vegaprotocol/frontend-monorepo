@@ -44,11 +44,23 @@ jest.mock('../list-asset', () => ({
   ListAsset: () => <div data-testid="proposal-list-asset"></div>,
 }));
 
+const vegaWalletConfig: VegaWalletConfig = {
+  network: 'TESTNET',
+  vegaUrl: 'https://vega.xyz',
+  vegaWalletServiceUrl: 'https://wallet.vega.xyz',
+  links: {
+    explorer: 'explorer',
+    concepts: 'concepts',
+    chromeExtensionUrl: 'chrome',
+    mozillaExtensionUrl: 'mozilla',
+  },
+};
+
 const renderComponent = (proposal: ProposalQuery['proposal']) => {
   render(
     <MemoryRouter>
       <MockedProvider>
-        <VegaWalletProvider config={{} as VegaWalletConfig}>
+        <VegaWalletProvider config={vegaWalletConfig}>
           <Proposal
             restData={{}}
             proposal={proposal as ProposalQuery['proposal']}

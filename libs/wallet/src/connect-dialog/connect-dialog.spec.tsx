@@ -47,6 +47,7 @@ const connectors = {
   jsonRpc,
   view,
   injected,
+  snap: undefined,
 };
 
 beforeEach(() => {
