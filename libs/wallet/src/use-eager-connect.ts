@@ -1,9 +1,11 @@
-import type { Connectors, SnapConnector } from './';
-import { InjectedConnector, useVegaWallet } from './';
 import { useEffect, useState } from 'react';
+import { InjectedConnector } from './connectors/injected-connector';
+import { SnapConnector } from './connectors/snap-connector';
 import { getConfig } from './storage';
+import type { Connectors } from './connectors';
+import { useVegaWallet } from './use-vega-wallet';
 
-export function useEagerConnect(Connectors: Connectors) {
+export function useEagerConnect(connectors: Connectors) {
   const [connecting, setConnecting] = useState(true);
   const { vegaUrl, connect, acknowledgeNeeded } = useVegaWallet();
 
@@ -18,7 +20,7 @@ export function useEagerConnect(Connectors: Connectors) {
 
       // Use the connector string in local storage to find the right connector to auto
       // connect to
-      const connector = Connectors[cfg.connector];
+      const connector = connectors[cfg.connector];
 
       // Developer hasn't provided this connector
       if (!connector) {
@@ -33,12 +35,9 @@ export function useEagerConnect(Connectors: Connectors) {
         if (connector instanceof InjectedConnector) {
           await connector.connectWallet();
           await connect(connector);
-        } else if (cfg.connector === 'snap') {
-          const snapInstance = Connectors[cfg.connector] as SnapConnector;
-          if (vegaUrl) {
-            snapInstance.nodeAddress = new URL(vegaUrl).origin;
-            await connect(snapInstance);
-          }
+        } else if (connector instanceof SnapConnector) {
+          connector.nodeAddress = new URL(vegaUrl).origin;
+          await connect(connector);
         } else {
           await connect(connector);
         }
@@ -52,7 +51,7 @@ export function useEagerConnect(Connectors: Connectors) {
     if (typeof window !== 'undefined') {
       attemptConnect();
     }
-  }, [connect, Connectors, acknowledgeNeeded, vegaUrl]);
+  }, [connect, connectors, acknowledgeNeeded, vegaUrl]);
 
   return connecting;
 }

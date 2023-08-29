@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { create } from 'zustand';
 import {
   Dialog,
   Intent,
@@ -41,6 +40,7 @@ import { InjectedConnectorForm } from './injected-connector-form';
 import { isBrowserWalletInstalled } from '../utils';
 import { useIsWalletServiceRunning } from '../use-is-wallet-service-running';
 import { useIsSnapRunning } from '../use-is-snap-running';
+import { useVegaWalletDialogStore } from './vega-wallet-dialog-store';
 
 export const CLOSE_DELAY = 1700;
 
@@ -50,23 +50,6 @@ export interface VegaConnectDialogProps {
   connectors: Connectors;
   riskMessage?: ReactNode;
 }
-
-export interface VegaWalletDialogStore {
-  vegaWalletDialogOpen: boolean;
-  updateVegaWalletDialog: (open: boolean) => void;
-  openVegaWalletDialog: () => void;
-  closeVegaWalletDialog: () => void;
-}
-
-export const useVegaWalletDialogStore = create<VegaWalletDialogStore>()(
-  (set) => ({
-    vegaWalletDialogOpen: false,
-    updateVegaWalletDialog: (open: boolean) =>
-      set({ vegaWalletDialogOpen: open }),
-    openVegaWalletDialog: () => set({ vegaWalletDialogOpen: true }),
-    closeVegaWalletDialog: () => set({ vegaWalletDialogOpen: false }),
-  })
-);
 
 export const VegaConnectDialog = ({
   connectors,

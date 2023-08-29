@@ -1,9 +1,28 @@
 import { useVegaWallet } from './use-vega-wallet';
 import { useEffect, useRef } from 'react';
-import type { WalletError } from './connectors';
+import { WalletError } from './connectors';
 import { ClientErrors } from './connectors';
-import { VegaTxStatus, orderErrorResolve } from './use-vega-transaction';
-import { useVegaTransactionStore } from './use-vega-transaction-store';
+import {
+  useVegaTransactionStore,
+  VegaTxStatus,
+} from './use-vega-transaction-store';
+import {
+  WalletClientError,
+  WalletHttpError,
+} from '@vegaprotocol/wallet-client';
+
+const orderErrorResolve = (err: Error | unknown): Error => {
+  if (err instanceof WalletClientError || err instanceof WalletError) {
+    return err;
+  } else if (err instanceof WalletHttpError) {
+    return ClientErrors.UNKNOWN;
+  } else if (err instanceof TypeError) {
+    return ClientErrors.NO_SERVICE;
+  } else if (err instanceof Error) {
+    return err;
+  }
+  return ClientErrors.UNKNOWN;
+};
 
 export const useVegaTransactionManager = () => {
   const { sendTx, pubKey, disconnect } = useVegaWallet();

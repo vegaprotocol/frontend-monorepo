@@ -3,11 +3,8 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { VegaWalletConfig } from '../provider';
 import { VegaWalletProvider } from '../provider';
-import {
-  VegaConnectDialog,
-  CLOSE_DELAY,
-  useVegaWalletDialogStore,
-} from './connect-dialog';
+import { VegaConnectDialog, CLOSE_DELAY } from './connect-dialog';
+import { useVegaWalletDialogStore } from './vega-wallet-dialog-store';
 import type { VegaConnectDialogProps } from '..';
 import {
   ClientErrors,

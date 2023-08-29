@@ -2,12 +2,11 @@ import { useVegaTransactionManager } from './use-vega-transaction-manager';
 import { renderHook } from '@testing-library/react';
 import waitForNextTick from 'flush-promises';
 import type { TransactionResponse } from './connectors/vega-connector';
+import { VegaTxStatus } from './use-vega-transaction-store';
 import type {
   VegaTransactionStore,
   VegaStoredTxState,
 } from './use-vega-transaction-store';
-
-import { VegaTxStatus } from './use-vega-transaction';
 
 const mockSendTx = jest.fn<Promise<Partial<TransactionResponse> | null>, []>();
 

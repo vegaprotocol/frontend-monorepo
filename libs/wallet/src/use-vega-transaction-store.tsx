@@ -13,8 +13,6 @@ import {
 import { determineId } from './utils';
 
 import { create } from 'zustand';
-import type { VegaTxState } from './use-vega-transaction';
-import { VegaTxStatus } from './use-vega-transaction';
 import type {
   TransactionEventFieldsFragment,
   WithdrawalBusEventFieldsFragment,
@@ -23,6 +21,23 @@ import type {
 
 import type { WithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
 import { subscribeWithSelector } from 'zustand/middleware';
+
+export enum VegaTxStatus {
+  Default = 'Default',
+  Requested = 'Requested',
+  Pending = 'Pending',
+  Error = 'Error',
+  Complete = 'Complete',
+}
+
+export interface VegaTxState {
+  status: VegaTxStatus;
+  error: Error | null;
+  txHash: string | null;
+  signature: string | null;
+  dialogOpen: boolean;
+}
+
 export interface VegaStoredTxState extends VegaTxState {
   id: number;
   createdAt: Date;
