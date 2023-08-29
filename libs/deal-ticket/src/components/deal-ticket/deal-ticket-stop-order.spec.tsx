@@ -226,13 +226,13 @@ describe('StopOrder', () => {
 
   it('validates size field', async () => {
     render(generateJsx());
-
-    await userEvent.click(screen.getByTestId(submitButton));
     [false, true].forEach(async (ocoValue) => {
       if (ocoValue) {
         await userEvent.click(screen.getByTestId(oco));
       }
-      const getByTestId = (id: string) => screen.getByTestId(id);
+      await userEvent.click(screen.getByTestId(submitButton));
+      const getByTestId = (id: string) =>
+        screen.getByTestId(ocoPostfix(id, ocoValue));
       const queryByTestId = (id: string) =>
         screen.queryByTestId(ocoPostfix(id, ocoValue));
       // default value should be invalid
@@ -250,12 +250,13 @@ describe('StopOrder', () => {
 
   it('validates price field', async () => {
     render(generateJsx());
-    await userEvent.click(screen.getByTestId(submitButton));
     [false, true].forEach(async (ocoValue) => {
       if (ocoValue) {
         await userEvent.click(screen.getByTestId(oco));
       }
-      const getByTestId = (id: string) => screen.getByTestId(id);
+      await userEvent.click(screen.getByTestId(submitButton));
+      const getByTestId = (id: string) =>
+        screen.getByTestId(ocoPostfix(id, ocoValue));
       const queryByTestId = (id: string) =>
         screen.queryByTestId(ocoPostfix(id, ocoValue));
       expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
@@ -287,13 +288,13 @@ describe('StopOrder', () => {
 
   it('validates trigger price field', async () => {
     render(generateJsx());
-
-    await userEvent.click(screen.getByTestId(submitButton));
     [false, true].forEach(async (ocoValue) => {
       if (ocoValue) {
         await userEvent.click(screen.getByTestId(oco));
       }
-      const getByTestId = (id: string) => screen.getByTestId(id);
+      await userEvent.click(screen.getByTestId(submitButton));
+      const getByTestId = (id: string) =>
+        screen.getByTestId(ocoPostfix(id, ocoValue));
       const queryByTestId = (id: string) =>
         screen.queryByTestId(ocoPostfix(id, ocoValue));
       expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
@@ -324,18 +325,17 @@ describe('StopOrder', () => {
 
   it('validates trigger trailing percentage offset field', async () => {
     render(generateJsx());
-
-    await userEvent.click(screen.getByTestId(submitButton));
     [false, true].forEach(async (ocoValue) => {
       if (ocoValue) {
         await userEvent.click(screen.getByTestId(oco));
       }
-      const getByTestId = (id: string) => screen.getByTestId(id);
+      await userEvent.click(screen.getByTestId(submitButton));
+      const getByTestId = (id: string) =>
+        screen.getByTestId(ocoPostfix(id, ocoValue));
       const queryByTestId = (id: string) =>
         screen.queryByTestId(ocoPostfix(id, ocoValue));
 
       // should not show error with default form values
-      expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
       expect(
         queryByTestId(triggerTrailingPercentOffsetErrorMessage)
       ).toBeNull();
