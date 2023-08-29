@@ -168,13 +168,17 @@ const ConnectDialogContainer = ({
       injectedConnect(connector, appChainId);
     }
   };
+
   const isDesktopWalletRunning = useIsWalletServiceRunning(
     walletUrl,
     connectors,
     appChainId
   );
 
-  const isSnapRunning = useIsSnapRunning(DEFAULT_SNAP_ID);
+  const isSnapRunning = useIsSnapRunning(
+    DEFAULT_SNAP_ID,
+    Boolean(connectors['snap'])
+  );
 
   return (
     <>
