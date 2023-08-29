@@ -3,7 +3,6 @@ import {
   AppFailure,
   DocsLinks,
   NetworkLoader,
-  Networks,
   NodeGuard,
   useEnvironment,
 } from '@vegaprotocol/environment';

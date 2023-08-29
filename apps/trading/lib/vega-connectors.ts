@@ -1,4 +1,4 @@
-import { ENV, FLAGS } from '@vegaprotocol/environment';
+import { FLAGS } from '@vegaprotocol/environment';
 import {
   JsonRpcConnector,
   ViewConnector,

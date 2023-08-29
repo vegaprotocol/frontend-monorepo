@@ -22,6 +22,6 @@ export const useIsSnapRunning = (snapId: string, shouldCheck: boolean) => {
     return () => {
       clearInterval(i);
     };
-  }, [snapId]);
+  }, [snapId, shouldCheck]);
   return running;
 };
