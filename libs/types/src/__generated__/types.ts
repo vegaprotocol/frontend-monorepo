@@ -4414,6 +4414,8 @@ export type StopOrderFilter = {
   dateRange?: InputMaybe<DateRange>;
   /** Zero or more expiry strategies to filter by */
   expiryStrategy?: InputMaybe<Array<StopOrderExpiryStrategy>>;
+  /** Filter for live stop orders only */
+  liveOnly?: InputMaybe<Scalars['Boolean']>;
   /** Zero or more market IDs to filter by */
   markets?: InputMaybe<Array<Scalars['ID']>>;
   /** Zero or more party IDs to filter by */

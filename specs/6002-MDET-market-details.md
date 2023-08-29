@@ -1,6 +1,6 @@
 # Market
 
-As a trading platform user I want to see all possible information about market.  
+As a trading platform user I want to see all possible information about market.
 <i>IMPORTANT: Available entries may vary depending on market specifics (e.g. oracle related). Separate ACs may be created for more detailed information.</i>
 
 ## Market details
@@ -105,10 +105,6 @@ When I look into market info I **Must** see following specification:
   - Supplied Stake
   - Market Value Proxy
   - link to liquidity provision table
-- Liquidity price range: (<a name="6002-MDET-214" href="#6002-MDET-214">6002-MDET-214</a>)
-  - Liquidity Price Range
-  - Lowest Price
-  - Highest Price
 
 ## Market governance
 

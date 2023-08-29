@@ -111,7 +111,6 @@ fragment NewMarketFields on NewMarket {
   #   triggeringRatio
   #   auctionExtensionSecs
   # }
-  lpPriceRange
   # linearSlippageFactor
   # quadraticSlippageFactor
 }

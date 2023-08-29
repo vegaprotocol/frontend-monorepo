@@ -28,7 +28,6 @@ import {
   KeyDetailsInfoPanel,
   LiquidityInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
-  LiquidityPriceRangeInfoPanel,
   MarketPriceInfoPanel,
   MarketVolumeInfoPanel,
   MetadataInfoPanel,
@@ -249,11 +248,6 @@ export const MarketInfoAccordion = ({
                 </div>
               </LiquidityInfoPanel>
             }
-          />
-          <AccordionItem
-            itemId="liquidity-price-range"
-            title={t('Liquidity price range')}
-            content={<LiquidityPriceRangeInfoPanel market={market} />}
           />
         </Accordion>
       </div>

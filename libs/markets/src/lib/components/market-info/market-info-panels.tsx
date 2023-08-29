@@ -15,7 +15,6 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import {
-  addDecimalsFormatNumber,
   formatNumber,
   formatNumberPercentage,
   getMarketExpiryDateFormatted,
@@ -684,99 +683,6 @@ export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
         assetSymbol={assetSymbol}
       />
       {children}
-    </>
-  );
-};
-
-export const LiquidityPriceRangeInfoPanel = ({
-  market,
-  parentMarket,
-}: MarketInfoProps) => {
-  const quoteUnit =
-    market?.tradableInstrument.instrument.product?.quoteName || '';
-  const parentQuoteUnit =
-    parentMarket?.tradableInstrument.instrument.product?.quoteName || '';
-
-  const liquidityPriceRange = formatNumberPercentage(
-    new BigNumber(market.lpPriceRange).times(100)
-  );
-  const parentLiquidityPriceRange = parentMarket
-    ? formatNumberPercentage(
-        new BigNumber(parentMarket.lpPriceRange).times(100)
-      )
-    : null;
-
-  const { data } = useDataProvider({
-    dataProvider: marketDataProvider,
-    variables: { marketId: market.id },
-  });
-
-  const { data: parentMarketData } = useDataProvider({
-    dataProvider: marketDataProvider,
-    variables: { marketId: parentMarket?.id || '' },
-    skip: !parentMarket,
-  });
-
-  let parentData;
-
-  if (parentMarket && parentMarketData && quoteUnit === parentQuoteUnit) {
-    parentData = {
-      liquidityPriceRange: `${parentLiquidityPriceRange} of mid price`,
-      lowestPrice:
-        parentMarketData?.midPrice &&
-        `${addDecimalsFormatNumber(
-          new BigNumber(1)
-            .minus(parentMarket.lpPriceRange)
-            .times(parentMarketData.midPrice)
-            .toString(),
-          parentMarket.decimalPlaces
-        )} ${quoteUnit}`,
-      highestPrice:
-        parentMarketData?.midPrice &&
-        `${addDecimalsFormatNumber(
-          new BigNumber(1)
-            .plus(parentMarket.lpPriceRange)
-            .times(parentMarketData.midPrice)
-            .toString(),
-          parentMarket.decimalPlaces
-        )} ${quoteUnit}`,
-    };
-  }
-
-  return (
-    <>
-      <p className="text-sm mb-2">
-        {`For liquidity orders to count towards a commitment, they must be
-            within the liquidity monitoring bounds.`}
-      </p>
-      <p className="text-sm mb-2">
-        {`The liquidity price range is a ${liquidityPriceRange} difference from the mid
-            price.`}
-      </p>
-      <MarketInfoTable
-        data={{
-          liquidityPriceRange: `${liquidityPriceRange} of mid price`,
-          lowestPrice:
-            data?.midPrice &&
-            `${addDecimalsFormatNumber(
-              new BigNumber(1)
-                .minus(market.lpPriceRange)
-                .times(data.midPrice)
-                .toString(),
-              market.decimalPlaces
-            )} ${quoteUnit}`,
-          highestPrice:
-            data?.midPrice &&
-            `${addDecimalsFormatNumber(
-              new BigNumber(1)
-                .plus(market.lpPriceRange)
-                .times(data.midPrice)
-                .toString(),
-              market.decimalPlaces
-            )} ${quoteUnit}`,
-        }}
-        parentData={parentData}
-      />
     </>
   );
 };

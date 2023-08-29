@@ -88,14 +88,6 @@ context('Market page', { tags: '@regression' }, function () {
       cy.validate_element_from_table('Target Stake', '0.00 fUSDC');
       cy.validate_element_from_table('Supplied Stake', '0.00 fUSDC');
       cy.validate_element_from_table('Market Value Proxy', '0.00 fUSDC');
-      // Liquidity price range
-      cy.validate_element_from_table(
-        'Liquidity Price Range',
-        '1,000.00% of mid price'
-      );
-      cy.validate_element_from_table('Lowest Price', '0.00 fUSDC');
-      cy.validate_element_from_table('Highest Price', '0.00 fUSDC');
-
       cy.getByTestId('oracle-spec-links')
         .should('have.attr', 'href')
         .and(

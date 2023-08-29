@@ -36,7 +36,6 @@ query MarketInfo($marketId: ID!) {
     positionDecimalPlaces
     state
     tradingMode
-    lpPriceRange
     proposal {
       id
       rationale {

@@ -20,7 +20,6 @@ query Proposal($proposalId: ID!) {
         ... on NewMarket {
           decimalPlaces
           metadata
-          lpPriceRange
           riskParameters {
             ... on LogNormalRiskModel {
               riskAversionParameter
@@ -152,7 +151,6 @@ query Proposal($proposalId: ID!) {
             }
           }
           positionDecimalPlaces
-          lpPriceRange
           linearSlippageFactor
           quadraticSlippageFactor
         }
