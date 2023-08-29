@@ -39,6 +39,7 @@ jest.mock('@vegaprotocol/markets', () => {
         name: 'M1',
         code: 'M1',
         product: {
+          __typename: 'Future',
           quoteName: '',
           settlementAsset: {
             id: 'asset-1',

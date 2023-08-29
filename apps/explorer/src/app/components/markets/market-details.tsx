@@ -23,14 +23,24 @@ import isEqual from 'lodash/isEqual';
 export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
   if (!market) return null;
 
-  const settlementData = market.tradableInstrument.instrument.product
-    .dataSourceSpecForSettlementData.data as DataSourceDefinition;
-  const terminationData = market.tradableInstrument.instrument.product
-    .dataSourceSpecForTradingTermination.data as DataSourceDefinition;
+  const settlementData =
+    market.tradableInstrument.instrument.product.__typename === 'Future' ||
+    market.tradableInstrument.instrument.product.__typename === 'Perpetual'
+      ? (market.tradableInstrument.instrument.product
+          .dataSourceSpecForSettlementData.data as DataSourceDefinition)
+      : undefined;
+  const terminationData =
+    market.tradableInstrument.instrument.product.__typename === 'Future'
+      ? (market.tradableInstrument.instrument.product
+          .dataSourceSpecForTradingTermination.data as DataSourceDefinition)
+      : undefined;
 
   const getSigners = (data: DataSourceDefinition) => {
     if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
-      const signers = data.sourceType.sourceType.signers || [];
+      const signers =
+        ('signers' in data.sourceType.sourceType &&
+          data.sourceType.sourceType.signers) ||
+        [];
 
       return signers.map(({ signer }, i) => {
         return (
@@ -42,10 +52,10 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
     return [];
   };
 
-  const showTwoOracles = isEqual(
-    getSigners(settlementData),
-    getSigners(terminationData)
-  );
+  const showTwoOracles =
+    settlementData &&
+    terminationData &&
+    isEqual(getSigners(settlementData), getSigners(terminationData));
 
   const headerClassName = 'font-alpha calt text-xl mt-4 border-b-2 pb-2';
 

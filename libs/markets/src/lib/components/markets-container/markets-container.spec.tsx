@@ -24,7 +24,10 @@ const market = {
   id: 'id-1',
   tradableInstrument: {
     instrument: {
-      product: { settlementAsset: { id: 'assetId-1' } },
+      product: {
+        __typename: 'Future',
+        settlementAsset: { id: 'assetId-1' },
+      },
     },
   },
   decimalPlaces: 1,

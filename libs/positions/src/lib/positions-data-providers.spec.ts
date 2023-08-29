@@ -120,6 +120,7 @@ const marketsData = [
         name: 'AAVEDAI Monthly (30 Jun 2022)',
         code: 'AAVEDAI.MF21',
         product: {
+          __typename: 'Future',
           settlementAsset: {
             symbol: 'tDAI',
             id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
@@ -150,6 +151,7 @@ const marketsData = [
         name: 'UNIDAI Monthly (30 Jun 2022)',
         code: 'UNIDAI.MF21',
         product: {
+          __typename: 'Future',
           settlementAsset: {
             symbol: 'tDAI',
             id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',

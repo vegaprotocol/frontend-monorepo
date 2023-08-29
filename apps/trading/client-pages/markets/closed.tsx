@@ -11,18 +11,17 @@ import {
 } from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/i18n';
+import type { Asset } from '@vegaprotocol/types';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
 import {
   addDecimalsFormatNumber,
   getMarketExpiryDate,
 } from '@vegaprotocol/utils';
-import type {
-  DataSourceFilterFragment,
-  MarketMaybeWithData,
-} from '@vegaprotocol/markets';
+import type { DataSourceFilterFragment } from '@vegaprotocol/markets';
 import {
   MarketActionsDropdown,
   closedMarketsWithDataProvider,
+  getAsset,
 } from '@vegaprotocol/markets';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { ColDef } from 'ag-grid-community';
@@ -32,8 +31,10 @@ import { SettlementPriceCell } from './settlement-price-cell';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { SuccessorMarketRenderer } from './successor-market-cell';
 
-type SettlementAsset =
-  MarketMaybeWithData['tradableInstrument']['instrument']['product']['settlementAsset'];
+type SettlementAsset = Pick<
+  Asset,
+  'decimals' | 'name' | 'quantum' | 'id' | 'symbol'
+>;
 
 interface Row {
   id: string;
@@ -48,7 +49,7 @@ interface Row {
   markPrice: string | undefined;
   settlementDataOracleId: string;
   settlementDataSpecBinding: string;
-  setlementDataSourceFilter: DataSourceFilterFragment | undefined;
+  settlementDataSourceFilter: DataSourceFilterFragment | undefined;
   tradingTerminationOracleId: string;
   settlementAsset: SettlementAsset;
   productType: string;
@@ -64,15 +65,20 @@ export const Closed = () => {
     const instrument = market.tradableInstrument.instrument;
 
     const spec =
+      (instrument.product.__typename === 'Future' ||
+        instrument.product.__typename === 'Perpetual') &&
       instrument.product.dataSourceSpecForSettlementData.data.sourceType
         .__typename === 'DataSourceDefinitionExternal'
         ? instrument.product.dataSourceSpecForSettlementData.data.sourceType
             .sourceType
         : undefined;
-    const filters = spec?.filters || [];
+    const filters = (spec && 'filters' in spec && spec.filters) || [];
 
     const settlementDataSpecBinding =
-      instrument.product.dataSourceSpecBinding.settlementDataProperty;
+      instrument.product.__typename === 'Future' ||
+      instrument.product.__typename === 'Perpetual'
+        ? instrument.product.dataSourceSpecBinding.settlementDataProperty
+        : '';
     const filter = filters?.find((filter) => {
       return filter.key.name === settlementDataSpecBinding;
     });
@@ -89,12 +95,17 @@ export const Closed = () => {
       bestOfferPrice: market.data?.bestOfferPrice,
       markPrice: market.data?.markPrice,
       settlementDataOracleId:
-        instrument.product.dataSourceSpecForSettlementData.id,
+        instrument.product.__typename === 'Future' ||
+        instrument.product.__typename === 'Perpetual'
+          ? instrument.product.dataSourceSpecForSettlementData.id
+          : '',
       settlementDataSpecBinding,
-      setlementDataSourceFilter: filter,
+      settlementDataSourceFilter: filter,
       tradingTerminationOracleId:
-        instrument.product.dataSourceSpecForTradingTermination.id,
-      settlementAsset: instrument.product.settlementAsset,
+        instrument.product.__typename === 'Future'
+          ? instrument.product.dataSourceSpecForTradingTermination.id
+          : '',
+      settlementAsset: getAsset({ tradableInstrument: { instrument } }),
       productType: instrument.product.__typename || '',
     };
 
@@ -233,7 +244,7 @@ const ClosedMarketsDataGrid = ({
           <SettlementPriceCell
             oracleSpecId={value}
             settlementDataSpecBinding={data?.settlementDataSpecBinding}
-            filter={data?.setlementDataSourceFilter}
+            filter={data?.settlementDataSourceFilter}
           />
         ),
       },

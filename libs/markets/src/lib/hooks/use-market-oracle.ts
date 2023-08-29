@@ -5,6 +5,7 @@ import { useMarket } from '../markets-provider';
 import { useMemo } from 'react';
 import type { Provider } from '../oracle-schema';
 import type { DataSourceSpecFragment } from '../__generated__';
+import get from 'lodash/get';
 
 export const getMatchingOracleProvider = (
   dataSourceSpec: DataSourceSpecFragment,
@@ -20,7 +21,8 @@ export const getMatchingOracleProvider = (
     }
 
     if (
-      dataSourceSpec.sourceType.__typename === 'DataSourceDefinitionExternal'
+      dataSourceSpec.sourceType.__typename === 'DataSourceDefinitionExternal' &&
+      'signers' in dataSourceSpec.sourceType.sourceType
     ) {
       return dataSourceSpec.sourceType.sourceType.signers?.some(
         (signer) =>
@@ -38,7 +40,8 @@ export const useMarketOracle = (
   marketId: string,
   dataSourceType:
     | 'dataSourceSpecForSettlementData'
-    | 'dataSourceSpecForTradingTermination' = 'dataSourceSpecForSettlementData'
+    | 'dataSourceSpecForTradingTermination'
+    | 'dataSourceSpecForSettlementSchedule' = 'dataSourceSpecForSettlementData'
 ): {
   data?: {
     provider: NonNullable<ReturnType<typeof getMatchingOracleProvider>>;
@@ -57,8 +60,11 @@ export const useMarketOracle = (
     if (!providers || !market) {
       return { data: undefined };
     }
-    const dataSourceSpec =
-      market.tradableInstrument.instrument.product[dataSourceType];
+    const dataSourceSpec = get(
+      market.tradableInstrument.instrument.product,
+      dataSourceType
+    );
+
     const provider = getMatchingOracleProvider(dataSourceSpec.data, providers);
     if (provider) {
       return { data: { provider, dataSourceSpecId: dataSourceSpec.id } };

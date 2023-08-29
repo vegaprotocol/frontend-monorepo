@@ -7,7 +7,7 @@ import {
   LiquidityTable,
   liquidityProvisionsDataProvider,
 } from '@vegaprotocol/liquidity';
-import { useMarket } from '@vegaprotocol/markets';
+import { getAsset, useMarket } from '@vegaprotocol/markets';
 import {
   NetworkParams,
   useNetworkParams,
@@ -42,12 +42,11 @@ export const LiquidityContainer = ({
     skip: !marketId,
   });
 
-  const assetDecimalPlaces =
-    market?.tradableInstrument.instrument.product.settlementAsset.decimals || 0;
-  const quantum =
-    market?.tradableInstrument.instrument.product.settlementAsset.quantum || 0;
-  const symbol =
-    market?.tradableInstrument.instrument.product.settlementAsset.symbol;
+  const itemAsset = market && getAsset(market);
+
+  const assetDecimalPlaces = itemAsset?.decimals || 0;
+  const quantum = itemAsset?.quantum || 0;
+  const symbol = itemAsset?.symbol;
 
   const { params } = useNetworkParams([
     NetworkParams.market_liquidity_stakeToCcyVolume,

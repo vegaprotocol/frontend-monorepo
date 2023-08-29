@@ -23,6 +23,7 @@ import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
 } from '@vegaprotocol/utils';
+import { getAsset } from '@vegaprotocol/markets';
 
 describe('Closed markets', { tags: '@smoke' }, () => {
   const settlementDataProperty = 'settlement-data-property';
@@ -277,31 +278,34 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       .find('[col-id="state"]')
       .should('have.text', MarketStateMapping[settledMarket.state]);
 
+    const terminationId =
+      'dataSourceSpecForTradingTermination' in product
+        ? product.dataSourceSpecForTradingTermination.id
+        : '';
+
     // 6001-MARK-004
     // 6001-MARK-005
     // 6001-MARK-009
     // 6001-MARK-008
     // 6001-MARK-010
-    cy.get(rowSelector)
-      .first()
-      .find('[col-id="settlementDate"]')
-      .find('[data-testid="link"]')
-      .should(($el) => {
-        const href = $el.attr('href');
-        expect(href).to.match(
-          new RegExp(
-            `/oracles/${product.dataSourceSpecForTradingTermination.id}`
+    terminationId &&
+      cy
+        .get(rowSelector)
+        .first()
+        .find('[col-id="settlementDate"]')
+        .find('[data-testid="link"]')
+        .should(($el) => {
+          const href = $el.attr('href');
+          expect(href).to.match(new RegExp(`/oracles/${terminationId}`));
+        })
+        .should('have.text', '4 days ago')
+        .should(
+          'have.attr',
+          'title',
+          getDateTimeFormat().format(
+            new Date(settledMarket.marketTimestamps.close)
           )
         );
-      })
-      .should('have.text', '4 days ago')
-      .should(
-        'have.attr',
-        'title',
-        getDateTimeFormat().format(
-          new Date(settledMarket.marketTimestamps.close)
-        )
-      );
 
     // 6001-MARK-011
     cy.get(rowSelector)
@@ -337,33 +341,42 @@ describe('Closed markets', { tags: '@smoke' }, () => {
       )
     );
 
+    const settlementDataId =
+      product.__typename === 'Future' || product.__typename === 'Perpetual'
+        ? product.dataSourceSpecForSettlementData.id
+        : '';
+
     // 6001-MARK-014
     // 6001-MARK-015
     // 6001-MARK-016
-    cy.get(rowSelector)
-      .first()
-      .find('[col-id="settlementDataOracleId"]')
-      .find('[data-testid="link"]')
-      .should(($el) => {
-        const href = $el.attr('href');
-        expect(href).to.match(
-          new RegExp(`/oracles/${product.dataSourceSpecForSettlementData.id}`)
+    settlementDataId &&
+      cy
+        .get(rowSelector)
+        .first()
+        .find('[col-id="settlementDataOracleId"]')
+        .find('[data-testid="link"]')
+        .should(($el) => {
+          const href = $el.attr('href');
+          expect(href).to.match(new RegExp(`/oracles/${settlementDataId}`));
+        })
+        .should(
+          'have.text',
+          addDecimalsFormatNumber(
+            // @ts-ignore cannot deep un-partial
+            specDataConnection.externalData.data.data[0].value,
+            settlementDataPropertyKey.numberDecimalPlaces
+          )
         );
-      })
-      .should(
-        'have.text',
-        addDecimalsFormatNumber(
-          // @ts-ignore cannot deep un-partial
-          specDataConnection.externalData.data.data[0].value,
-          settlementDataPropertyKey.numberDecimalPlaces
-        )
-      );
+
+    const settlementAssetSymbol = getAsset(settledMarket).symbol;
 
     // 6001-MARK-018
-    cy.get(rowSelector)
-      .first()
-      .find('[col-id="settlementAsset"]')
-      .should('have.text', product.settlementAsset.symbol);
+    settlementAssetSymbol &&
+      cy
+        .get(rowSelector)
+        .first()
+        .find('[col-id="settlementAsset"]')
+        .should('have.text', settlementAssetSymbol);
 
     // 6001-MARK-020
     cy.get('.ag-pinned-right-cols-container')

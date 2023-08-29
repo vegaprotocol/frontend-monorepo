@@ -160,37 +160,13 @@ query Proposal($proposalId: ID!) {
             instrument {
               code
               product {
-                quoteName
-                dataSourceSpecForSettlementData {
-                  sourceType {
-                    ... on DataSourceDefinitionInternal {
-                      sourceType {
-                        ... on DataSourceSpecConfigurationTime {
-                          conditions {
-                            operator
-                            value
-                          }
-                        }
-                      }
-                    }
-                    ... on DataSourceDefinitionExternal {
-                      sourceType {
-                        ... on DataSourceSpecConfiguration {
-                          signers {
-                            signer {
-                              ... on PubKey {
-                                key
-                              }
-                              ... on ETHAddress {
-                                address
-                              }
-                            }
-                          }
-                          filters {
-                            key {
-                              name
-                              type
-                            }
+                ... on UpdateFutureProduct {
+                  quoteName
+                  dataSourceSpecForSettlementData {
+                    sourceType {
+                      ... on DataSourceDefinitionInternal {
+                        sourceType {
+                          ... on DataSourceSpecConfigurationTime {
                             conditions {
                               operator
                               value
@@ -198,52 +174,125 @@ query Proposal($proposalId: ID!) {
                           }
                         }
                       }
+                      ... on DataSourceDefinitionExternal {
+                        sourceType {
+                          ... on DataSourceSpecConfiguration {
+                            signers {
+                              signer {
+                                ... on PubKey {
+                                  key
+                                }
+                                ... on ETHAddress {
+                                  address
+                                }
+                              }
+                            }
+                            filters {
+                              key {
+                                name
+                                type
+                              }
+                              conditions {
+                                operator
+                                value
+                              }
+                            }
+                          }
+                        }
+                      }
                     }
                   }
+                  # dataSourceSpecForTradingTermination {
+                  #   sourceType {
+                  #     ... on DataSourceDefinitionInternal {
+                  #       sourceType {
+                  #         ... on DataSourceSpecConfigurationTime {
+                  #           conditions {
+                  #             operator
+                  #             value
+                  #           }
+                  #         }
+                  #       }
+                  #     }
+                  #     ... on DataSourceDefinitionExternal {
+                  #       sourceType {
+                  #         ... on DataSourceSpecConfiguration {
+                  #           signers {
+                  #             signer {
+                  #               ... on PubKey {
+                  #                 key
+                  #               }
+                  #               ... on ETHAddress {
+                  #                 address
+                  #               }
+                  #             }
+                  #           }
+                  #           filters {
+                  #             key {
+                  #               name
+                  #               type
+                  #             }
+                  #             conditions {
+                  #               operator
+                  #               value
+                  #             }
+                  #           }
+                  #         }
+                  #       }
+                  #     }
+                  #   }
+                  # }
+                  dataSourceSpecBinding {
+                    settlementDataProperty
+                    tradingTerminationProperty
+                  }
                 }
-                # dataSourceSpecForTradingTermination {
-                #   sourceType {
-                #     ... on DataSourceDefinitionInternal {
-                #       sourceType {
-                #         ... on DataSourceSpecConfigurationTime {
-                #           conditions {
-                #             operator
-                #             value
-                #           }
-                #         }
-                #       }
-                #     }
-                #     ... on DataSourceDefinitionExternal {
-                #       sourceType {
-                #         ... on DataSourceSpecConfiguration {
-                #           signers {
-                #             signer {
-                #               ... on PubKey {
-                #                 key
-                #               }
-                #               ... on ETHAddress {
-                #                 address
-                #               }
-                #             }
-                #           }
-                #           filters {
-                #             key {
-                #               name
-                #               type
-                #             }
-                #             conditions {
-                #               operator
-                #               value
-                #             }
-                #           }
-                #         }
-                #       }
-                #     }
-                #   }
-                # }
-                dataSourceSpecBinding {
-                  settlementDataProperty
-                  tradingTerminationProperty
+                ... on UpdatePerpetualProduct {
+                  quoteName
+                  dataSourceSpecForSettlementData {
+                    sourceType {
+                      ... on DataSourceDefinitionInternal {
+                        sourceType {
+                          ... on DataSourceSpecConfigurationTime {
+                            conditions {
+                              operator
+                              value
+                            }
+                          }
+                        }
+                      }
+                      ... on DataSourceDefinitionExternal {
+                        sourceType {
+                          ... on DataSourceSpecConfiguration {
+                            signers {
+                              signer {
+                                ... on PubKey {
+                                  key
+                                }
+                                ... on ETHAddress {
+                                  address
+                                }
+                              }
+                            }
+                            filters {
+                              key {
+                                name
+                                type
+                              }
+                              conditions {
+                                operator
+                                value
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  dataSourceSpecBinding {
+                    settlementDataProperty
+                    settlementScheduleProperty
+                  }
                 }
               }
             }

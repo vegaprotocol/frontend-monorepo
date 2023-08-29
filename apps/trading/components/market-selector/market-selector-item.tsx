@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
-import { calcCandleVolume } from '@vegaprotocol/markets';
+import { calcCandleVolume, getAsset } from '@vegaprotocol/markets';
 import { useCandles } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
@@ -90,6 +90,7 @@ const MarketData = ({
       : '0.00';
 
   const productType = market.tradableInstrument.instrument.product.__typename;
+  const symbol = getAsset(market).symbol || '';
 
   return (
     <>
@@ -106,14 +107,16 @@ const MarketData = ({
           </p>
         )}
       </div>
-      <div
-        className="w-1/5 text-xs lg:text-sm whitespace-nowrap text-ellipsis overflow-hidden"
-        title={instrument.product.settlementAsset.symbol}
-        data-testid="market-selector-price"
-        role="gridcell"
-      >
-        {price} {instrument.product.settlementAsset.symbol}
-      </div>
+      {instrument.product && (
+        <div
+          className="w-1/5 text-xs lg:text-sm whitespace-nowrap text-ellipsis overflow-hidden"
+          title={symbol}
+          data-testid="market-selector-price"
+          role="gridcell"
+        >
+          {price} {symbol}
+        </div>
+      )}
       <div
         className="w-1/5 text-xs lg:text-sm text-right whitespace-nowrap text-ellipsis overflow-hidden"
         title={t('24h vol')}

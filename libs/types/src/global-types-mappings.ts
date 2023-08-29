@@ -1,6 +1,6 @@
 import type { ConditionOperator, PeggedReference } from './__generated__/types';
+import type { AccountType } from './__generated__/types';
 import type {
-  AccountType,
   AuctionTrigger,
   DataSourceSpecStatus,
   DepositStatus,
@@ -48,6 +48,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_SETTLEMENT: 'Settlement',
   ACCOUNT_TYPE_HOLDING: 'Holding',
   ACCOUNT_TYPE_LP_LIQUIDITY_FEES: 'LP Liquidity Fees',
+  ACCOUNT_TYPE_NETWORK_TREASURY: 'Network Treasury',
 };
 
 /**
@@ -74,6 +75,7 @@ export const AuctionTriggerMapping: {
   AUCTION_TRIGGER_OPENING: 'opening',
   AUCTION_TRIGGER_PRICE: 'price',
   AUCTION_TRIGGER_UNSPECIFIED: 'unspecified',
+  AUCTION_TRIGGER_GOVERNANCE_SUSPENSION: 'governance suspension',
 };
 
 /**
@@ -118,6 +120,7 @@ export const MarketStateMapping: {
   STATE_SETTLED: 'Settled',
   STATE_SUSPENDED: 'Suspended',
   STATE_TRADING_TERMINATED: 'Trading Terminated',
+  STATE_SUSPENDED_VIA_GOVERNANCE: 'Suspended via governance',
 };
 
 /**
@@ -131,6 +134,7 @@ export const MarketTradingModeMapping: {
   TRADING_MODE_MONITORING_AUCTION: 'Monitoring auction',
   TRADING_MODE_NO_TRADING: 'No trading',
   TRADING_MODE_OPENING_AUCTION: 'Opening auction',
+  TRADING_MODE_SUSPENDED_VIA_GOVERNANCE: 'Suspended via governance',
 };
 
 export const NodeStatusMapping: {
@@ -349,6 +353,10 @@ export const ProposalRejectionReasonMapping: {
   PROPOSAL_ERROR_INVALID_SPOT: 'Invalid spot',
   PROPOSAL_ERROR_INVALID_SUCCESSOR_MARKET: 'Invalid successor market',
   PROPOSAL_ERROR_SPOT_PRODUCT_DISABLED: 'Spot product disabled',
+  PROPOSAL_ERROR_INVALID_MARKET_STATE_UPDATE: 'Invalid market state update',
+  PROPOSAL_ERROR_INVALID_PERPETUAL_PRODUCT: 'Invalid perpetual product',
+  PROPOSAL_ERROR_INVALID_SLA_PARAMS: 'Invalid SLA params',
+  PROPOSAL_ERROR_MISSING_SLA_PARAMS: 'Missing SLA params',
 };
 
 /**
@@ -450,6 +458,17 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_HOLDING_LOCK: 'Holding locked',
   TRANSFER_TYPE_HOLDING_RELEASE: 'Holding released',
   TRANSFER_TYPE_SPOT: 'Spot',
+  TRANSFER_TYPE_LIQUIDITY_FEE_ALLOCATE: 'Liquidity fee allocated',
+  TRANSFER_TYPE_LIQUIDITY_FEE_NET_DISTRIBUTE: 'Liquidity fee net distributed',
+  TRANSFER_TYPE_LIQUIDITY_FEE_UNPAID_COLLECT: 'Liquidity fee unpaid collected',
+  TRANSFER_TYPE_PERPETUALS_FUNDING_WIN: 'Perpetuals funding gain',
+  TRANSFER_TYPE_PERPETUALS_FUNDING_LOSS: 'Perpetuals funding loss',
+  TRANSFER_TYPE_REWARDS_VESTED: 'Rewards vested',
+  TRANSFER_TYPE_SLA_PENALTY_BOND_APPLY: 'SLA penalty bond applied',
+  TRANSFER_TYPE_SLA_PENALTY_LP_FEE_APPLY: 'SLA penalty LP fee applied',
+  TRANSFER_TYPE_SLA_PERFORMANCE_BONUS_DISTRIBUTE:
+    'SLA performance bonus distributed',
+  TRANSFER_TYPE_SUCCESSOR_INSURANCE_FRACTION: 'Successor insurance fraction',
 };
 
 export const DescriptionTransferTypeMapping: TransferTypeMap = {
@@ -480,6 +499,17 @@ export const DescriptionTransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_HOLDING_LOCK: 'Holdings locked',
   TRANSFER_TYPE_HOLDING_RELEASE: 'Holdings released',
   TRANSFER_TYPE_SPOT: 'Spot',
+  TRANSFER_TYPE_LIQUIDITY_FEE_ALLOCATE: 'Liquidity fee allocated',
+  TRANSFER_TYPE_LIQUIDITY_FEE_NET_DISTRIBUTE: 'Liquidity fee net distributed',
+  TRANSFER_TYPE_LIQUIDITY_FEE_UNPAID_COLLECT: 'Liquidity fee unpaid collected',
+  TRANSFER_TYPE_PERPETUALS_FUNDING_WIN: 'Perpetuals funding gain',
+  TRANSFER_TYPE_PERPETUALS_FUNDING_LOSS: 'Perpetuals funding loss',
+  TRANSFER_TYPE_REWARDS_VESTED: 'Rewards vested',
+  TRANSFER_TYPE_SLA_PENALTY_BOND_APPLY: 'SLA penalty bond applied',
+  TRANSFER_TYPE_SLA_PENALTY_LP_FEE_APPLY: 'SLA penalty LP fee applied',
+  TRANSFER_TYPE_SLA_PERFORMANCE_BONUS_DISTRIBUTE:
+    'SLA performance bonus distributed',
+  TRANSFER_TYPE_SUCCESSOR_INSURANCE_FRACTION: 'Successor insurance fraction',
 };
 
 type DispatchMetricLabel = {
@@ -517,17 +547,25 @@ export const PeggedReferenceMapping: { [R in PeggedReference]: string } = {
 
 export const ProductTypeMapping: Record<ProductType, string> = {
   Future: 'Future',
+  Spot: 'Spot',
+  Perpetual: 'Perpetual',
 };
 
 export const ProductTypeShortName: Record<ProductType, string> = {
   Future: 'Futr',
+  Spot: 'Spot',
+  Perpetual: 'Perp',
 };
 
 export const ProposalProductTypeMapping: Record<ProposalProductType, string> = {
   FutureProduct: 'Future',
+  SpotProduct: 'Spot',
+  PerpetualProduct: 'Perpeptual',
 };
 
 export const ProposalProductTypeShortName: Record<ProposalProductType, string> =
   {
     FutureProduct: 'Futr',
+    SpotProduct: 'Spot',
+    PerpetualProduct: 'Perp',
   };

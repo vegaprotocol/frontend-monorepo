@@ -26,6 +26,24 @@ fragment OracleMarketSpecFields on Market {
             tradingTerminationProperty
           }
         }
+        ... on Perpetual {
+          dataSourceSpecForSettlementData {
+            id
+            data {
+              ...DataSourceSpec
+            }
+          }
+          dataSourceSpecForSettlementSchedule {
+            id
+            data {
+              ...DataSourceSpec
+            }
+          }
+          dataSourceSpecBinding {
+            settlementDataProperty
+            settlementScheduleProperty
+          }
+        }
       }
     }
   }

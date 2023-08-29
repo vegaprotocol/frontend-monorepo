@@ -61,6 +61,7 @@ export const createMarketFragment = (
           tags: [],
         },
         product: {
+          __typename: 'Future',
           settlementAsset: {
             id: 'asset-0',
             symbol: 'tDAI',
@@ -141,8 +142,7 @@ export const createMarketFragment = (
             settlementDataProperty: 'settlement-data-property',
           },
           quoteName: 'DAI',
-          __typename: 'Future',
-        },
+        } as const,
         __typename: 'Instrument',
       },
       __typename: 'TradableInstrument',

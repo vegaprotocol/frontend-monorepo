@@ -29,7 +29,7 @@ import {
   useThemeSwitcher,
 } from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type { Market } from '@vegaprotocol/markets';
+import { getAsset, type Market } from '@vegaprotocol/markets';
 
 const DateRange = {
   RANGE_1D: '1D',
@@ -130,11 +130,12 @@ const AccountHistoryManager = ({
     DateRange.RANGE_1M
   );
   const [market, setMarket] = useState<Market | null>(null);
+
   const marketFilterCb = useCallback(
-    (item: Market) =>
-      !asset?.id ||
-      item.tradableInstrument.instrument.product.settlementAsset.id ===
-        asset?.id,
+    (item: Market) => {
+      const itemAsset = getAsset(item);
+      return !asset?.id || itemAsset?.id === asset?.id;
+    },
     [asset?.id]
   );
   const markets = useMemo<Market[] | null>(() => {
@@ -153,8 +154,8 @@ const AccountHistoryManager = ({
   const resolveMarket = useCallback(
     (m: Market) => {
       setMarket(m);
-      const newAssetId =
-        m.tradableInstrument.instrument.product.settlementAsset.id;
+      const itemAsset = getAsset(m);
+      const newAssetId = itemAsset?.id;
       const newAsset = assets.find((item) => item.id === newAssetId);
       if ((!asset || (assets && newAssetId !== asset.id)) && newAsset) {
         setAssetId(newAsset.id);
@@ -259,10 +260,10 @@ const AccountHistoryManager = ({
   }, [markets, market, accountType, resolveMarket]);
 
   useEffect(() => {
+    const itemAsset = market && getAsset(market);
     if (
       accountType !== Schema.AccountType.ACCOUNT_TYPE_MARGIN ||
-      market?.tradableInstrument.instrument.product.settlementAsset.id !==
-        asset?.id
+      itemAsset?.id !== asset?.id
     ) {
       setMarket(null);
     }

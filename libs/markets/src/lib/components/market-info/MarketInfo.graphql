@@ -106,6 +106,7 @@ query MarketInfo($marketId: ID!) {
               symbol
               name
               decimals
+              quantum
             }
             dataSourceSpecForSettlementData {
               id
@@ -122,6 +123,32 @@ query MarketInfo($marketId: ID!) {
             dataSourceSpecBinding {
               settlementDataProperty
               tradingTerminationProperty
+            }
+          }
+          ... on Perpetual {
+            quoteName
+            settlementAsset {
+              id
+              symbol
+              name
+              decimals
+              quantum
+            }
+            dataSourceSpecForSettlementData {
+              id
+              data {
+                ...DataSource
+              }
+            }
+            dataSourceSpecForSettlementSchedule {
+              id
+              data {
+                ...DataSource
+              }
+            }
+            dataSourceSpecBinding {
+              settlementDataProperty
+              settlementScheduleProperty
             }
           }
         }

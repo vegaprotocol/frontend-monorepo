@@ -3,6 +3,7 @@ import orderBy from 'lodash/orderBy';
 import { MarketState } from '@vegaprotocol/types';
 import {
   calcCandleVolume,
+  getAsset,
   calcTradedFactor,
   useMarketList,
 } from '@vegaprotocol/markets';
@@ -43,9 +44,8 @@ export const useMarketSelectorList = ({
       })
       .filter((m) => {
         if (assets.length === 0) return true;
-        return assets.includes(
-          m.tradableInstrument.instrument.product.settlementAsset.id
-        );
+        const asset = getAsset(m);
+        return assets.includes(asset.id);
       })
       // filter based on search term
       .filter((m) => {

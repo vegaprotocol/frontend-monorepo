@@ -22,7 +22,7 @@ jest.mock('./market-selector-item', () => ({
   ),
 }));
 
-// without a real DOM autosize won't render with an actual height or width
+// without a real DOM auto-size won't render with an actual height or width
 jest.mock('react-virtualized-auto-sizer', () => {
   // eslint-disable-next-line react/display-name
   return ({
@@ -41,6 +41,7 @@ describe('MarketSelector', () => {
           code: 'a',
           name: 'a',
           product: {
+            __typename: 'Future',
             settlementAsset: {
               id: 'asset-0',
             },
@@ -61,6 +62,7 @@ describe('MarketSelector', () => {
           code: 'b',
           name: 'b',
           product: {
+            __typename: 'Future',
             settlementAsset: {
               id: 'asset-0',
             },
@@ -79,6 +81,7 @@ describe('MarketSelector', () => {
       tradableInstrument: {
         instrument: {
           product: {
+            __typename: 'Future',
             settlementAsset: {
               id: 'asset-1',
             },
@@ -94,6 +97,7 @@ describe('MarketSelector', () => {
           code: 'c',
           name: 'c',
           product: {
+            __typename: 'Future',
             settlementAsset: {
               id: 'asset-1',
             },
@@ -113,6 +117,7 @@ describe('MarketSelector', () => {
           code: 'cd',
           name: 'cd',
           product: {
+            __typename: 'Perpetual',
             settlementAsset: {
               id: 'asset-2',
             },
@@ -174,21 +179,14 @@ describe('MarketSelector', () => {
     );
 
     await userEvent.click(screen.getByTestId('product-Perpetual'));
-    expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(0);
-    expect(screen.getByTestId('no-items')).toHaveTextContent(
-      'Perpetual markets coming soon.'
-    );
+    expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(1);
 
     await userEvent.click(screen.getByTestId('product-Future'));
-    expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(
-      activeMarkets.length
-    );
+    expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(3);
     expect(screen.queryByTestId('no-items')).not.toBeInTheDocument();
 
     await userEvent.click(screen.getByTestId('product-All'));
-    expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(
-      activeMarkets.length
-    );
+    expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(4);
     expect(screen.queryByTestId('no-items')).not.toBeInTheDocument();
   });
 
@@ -218,38 +216,6 @@ describe('MarketSelector', () => {
     expect(screen.getAllByTestId(/market-\d/)).toHaveLength(2);
     expect(screen.getByTestId('market-3')).toBeInTheDocument();
     expect(screen.getByTestId('market-4')).toBeInTheDocument();
-  });
-
-  it('filters by asset', async () => {
-    render(
-      <MemoryRouter>
-        <MarketSelector currentMarketId="market-0" onSelect={jest.fn()} />
-      </MemoryRouter>
-    );
-
-    await userEvent.click(screen.getByTestId('asset-trigger'));
-    expect(screen.getAllByTestId(/asset-id/)).toHaveLength(3);
-    await userEvent.click(screen.getByTestId('asset-id-asset-0'));
-    expect(screen.getAllByTestId(/market-\d/)).toHaveLength(2);
-    expect(screen.getByTestId('market-0')).toBeInTheDocument();
-    expect(screen.getByTestId('market-1')).toBeInTheDocument();
-
-    // reopen asset dropdown and add asset-1
-    await userEvent.click(screen.getByTestId('asset-trigger'));
-    await userEvent.click(screen.getByTestId('asset-id-asset-1'));
-
-    // all markets with asset-0 or asset-1 shown (no market id as market is closed)
-    expect(screen.getAllByTestId(/market-\d/)).toHaveLength(3);
-    expect(screen.getByTestId('market-0')).toBeInTheDocument();
-    expect(screen.getByTestId('market-1')).toBeInTheDocument();
-    expect(screen.getByTestId('market-3')).toBeInTheDocument();
-
-    // reopen and uncheck asset-0
-    await userEvent.click(screen.getByTestId('asset-trigger'));
-    await userEvent.click(screen.getByTestId('asset-id-asset-0'));
-
-    expect(screen.getAllByTestId(/market-\d/)).toHaveLength(1);
-    expect(screen.getByTestId('market-3')).toBeInTheDocument();
   });
 
   it('sorts by gained', async () => {

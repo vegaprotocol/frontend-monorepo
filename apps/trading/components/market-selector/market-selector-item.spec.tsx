@@ -10,7 +10,7 @@ import type {
   MarketDataUpdateFieldsFragment,
   MarketDataUpdateSubscription,
 } from '@vegaprotocol/markets';
-import { MarketCandlesDocument } from '@vegaprotocol/markets';
+import { MarketCandlesDocument, getAsset } from '@vegaprotocol/markets';
 import { MarketDataUpdateDocument } from '@vegaprotocol/markets';
 import {
   AuctionTrigger,
@@ -118,8 +118,7 @@ describe('MarketSelectorItem', () => {
   });
 
   it('renders market information', async () => {
-    const symbol =
-      market.tradableInstrument.instrument.product.settlementAsset.symbol;
+    const symbol = getAsset(market).symbol;
 
     const mock: MockedResponse<MarketDataUpdateSubscription> = {
       request: {

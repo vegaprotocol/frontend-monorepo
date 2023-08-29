@@ -33,7 +33,7 @@ export const AssetDropdown = ({
       }
     >
       <DropdownMenuContent>
-        {assets?.map((a) => {
+        {assets.filter(Boolean).map((a) => {
           return (
             <DropdownMenuCheckboxItem
               key={a.id}

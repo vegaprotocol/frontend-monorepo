@@ -20,8 +20,12 @@ import {
   TradingSelect as Select,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { getDerivedPrice } from '@vegaprotocol/markets';
-import type { Market } from '@vegaprotocol/markets';
+import {
+  getAsset,
+  getDerivedPrice,
+  getQuoteName,
+  type Market,
+} from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
@@ -573,8 +577,8 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     return () => subscription.unsubscribe();
   }, [watch, market.id, updateStoredFormValues]);
 
-  const { quoteName, settlementAsset: asset } =
-    market.tradableInstrument.instrument.product;
+  const asset = getAsset(market);
+  const quoteName = getQuoteName(market);
 
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
   const priceStep = toDecimal(market?.decimalPlaces);

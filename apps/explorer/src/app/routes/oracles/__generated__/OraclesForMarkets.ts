@@ -3,12 +3,12 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type ExplorerOracleForMarketsMarketFragment = { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', product: { __typename?: 'Future', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceSpec', id: string } } } } };
+export type ExplorerOracleForMarketsMarketFragment = { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', product: { __typename?: 'Future', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceSpec', id: string } } | { __typename?: 'Perpetual', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string }, dataSourceSpecForSettlementSchedule: { __typename?: 'DataSourceSpec', id: string } } | { __typename?: 'Spot' } } } };
 
 export type ExplorerOracleFormMarketsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type ExplorerOracleFormMarketsQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', product: { __typename?: 'Future', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceSpec', id: string } } } } } }> } | null };
+export type ExplorerOracleFormMarketsQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', product: { __typename?: 'Future', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceSpec', id: string } } | { __typename?: 'Perpetual', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string }, dataSourceSpecForSettlementSchedule: { __typename?: 'DataSourceSpec', id: string } } | { __typename?: 'Spot' } } } } }> } | null };
 
 export const ExplorerOracleForMarketsMarketFragmentDoc = gql`
     fragment ExplorerOracleForMarketsMarket on Market {
@@ -21,6 +21,14 @@ export const ExplorerOracleForMarketsMarketFragmentDoc = gql`
             id
           }
           dataSourceSpecForTradingTermination {
+            id
+          }
+        }
+        ... on Perpetual {
+          dataSourceSpecForSettlementData {
+            id
+          }
+          dataSourceSpecForSettlementSchedule {
             id
           }
         }

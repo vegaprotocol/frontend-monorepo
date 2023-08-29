@@ -3,7 +3,7 @@ import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import classnames from 'classnames';
 import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/i18n';
-import { FeesBreakdown } from '@vegaprotocol/markets';
+import { FeesBreakdown, getAsset, getQuoteName } from '@vegaprotocol/markets';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
@@ -90,11 +90,10 @@ export const DealTicketFeeDetails = ({
   notionalSize,
 }: DealTicketFeeDetailsProps) => {
   const feeEstimate = useEstimateFees(order);
-  const { settlementAsset: asset } =
-    market.tradableInstrument.instrument.product;
+  const asset = getAsset(market);
   const { decimals: assetDecimals, quantum } = asset;
   const marketDecimals = market.decimalPlaces;
-  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+  const quoteName = getQuoteName(market);
 
   return (
     <>
@@ -164,8 +163,7 @@ export const DealTicketMarginDetails = ({
   const marginEstimate = positionEstimate?.margin;
   const totalBalance =
     BigInt(generalAccountBalance || '0') + BigInt(marginAccountBalance || '0');
-  const { settlementAsset: asset } =
-    market.tradableInstrument.instrument.product;
+  const asset = getAsset(market);
   const { decimals: assetDecimals, quantum } = asset;
   let marginRequiredBestCase: string | undefined = undefined;
   let marginRequiredWorstCase: string | undefined = undefined;
@@ -304,7 +302,7 @@ export const DealTicketMarginDetails = ({
     []
   );
 
-  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+  const quoteName = getQuoteName(market);
 
   return (
     <>

@@ -67,6 +67,9 @@ export function OracleSigners({ sourceType }: OracleDetailsSignersProps) {
   if (sourceType.__typename !== 'DataSourceDefinitionExternal') {
     return null;
   }
+  if (!('signers' in sourceType.sourceType)) {
+    return null;
+  }
   const signers = sourceType.sourceType.signers;
 
   if (!signers || signers.length === 0) {

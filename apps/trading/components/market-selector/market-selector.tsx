@@ -1,6 +1,9 @@
 import { t } from '@vegaprotocol/i18n';
 import uniqBy from 'lodash/uniqBy';
-import { type MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
+import {
+  getAsset,
+  type MarketMaybeWithDataAndCandles,
+} from '@vegaprotocol/markets';
 import {
   TradingInput,
   TinyScroll,
@@ -76,9 +79,7 @@ export const MarketSelector = ({
           </div>
           <AssetDropdown
             assets={uniqBy(
-              data?.map(
-                (d) => d.tradableInstrument.instrument.product.settlementAsset
-              ),
+              data?.map((d) => getAsset(d)),
               'id'
             )}
             checkedAssets={filter.assets}

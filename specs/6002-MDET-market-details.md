@@ -60,11 +60,13 @@ When I look into market info I **Must** see following specification:
   - Quote Name
 - Oracle: (<a name="6002-MDET-203" href="#6002-MDET-203">6002-MDET-203</a>)
   - <i>content may vary</i>
-- Settlement Oracle: (<a name="6002-MDET-204" href="#6002-MDET-204">6002-MDET-204</a>)
+- Settlement oracle: (<a name="6002-MDET-204" href="#6002-MDET-204">6002-MDET-204</a>)
   - <i>content may vary</i>
-- Termination Oracle: (<a name="6002-MDET-205" href="#6002-MDET-205">6002-MDET-205</a>)
-  - <i>content may vary</i>
-- Settlement asset: (<a name="6002-MDET-206" href="#6002-MDET-206">6002-MDET-206</a>)
+- Termination oracle: (<a name="6002-MDET-205" href="#6002-MDET-205">6002-MDET-205</a>)
+  - <i>optional. only for futures. content may vary</i>
+- Settlement schedule oracle: (<a name="6002-MDET-206" href="#6002-MDET-206">6002-MDET-206</a>)
+  - <i>optional. only for perpetuals. content may vary</i>
+- Settlement asset: (<a name="6002-MDET-207" href="#6002-MDET-207">6002-MDET-207</a>)
   - ID
   - Type
   - Name
@@ -77,7 +79,7 @@ When I look into market info I **Must** see following specification:
   - Lifetime limit
   - Infrastracture fee account balance
   - Global reward pool account balance
-- Metadata: (<a name="6002-MDET-207" href="#6002-MDET-207">6002-MDET-207</a>)
+- Metadata: (<a name="6002-MDET-208" href="#6002-MDET-208">6002-MDET-208</a>)
   - Expiry Date
   - Base
   - Quote
@@ -85,22 +87,22 @@ When I look into market info I **Must** see following specification:
   - Sector
   - Enactment
   - Settlement
-- Risk model: (<a name="6002-MDET-208" href="#6002-MDET-208">6002-MDET-208</a>)
+- Risk model: (<a name="6002-MDET-209" href="#6002-MDET-209">6002-MDET-209</a>)
   - Tau
   - Risk Aversion Parameter
-- Risk parameters: (<a name="6002-MDET-209" href="#6002-MDET-209">6002-MDET-209</a>)
+- Risk parameters: (<a name="6002-MDET-210" href="#6002-MDET-210">6002-MDET-210</a>)
   - Sigma
-- Risk factors: (<a name="6002-MDET-210" href="#6002-MDET-210">6002-MDET-210</a>)
+- Risk factors: (<a name="6002-MDET-211" href="#6002-MDET-211">6002-MDET-211</a>)
   - Short
   - Long
-- price monitoring bounds <i>(multiple bounds possible)</i>: (<a name="6002-MDET-211" href="#6002-MDET-211">6002-MDET-211</a>)
+- price monitoring bounds <i>(multiple bounds possible)</i>: (<a name="6002-MDET-212" href="#6002-MDET-212">6002-MDET-212</a>)
   - Highest Price
   - Lowest Price
-- Liquidity monitoring parameters: (<a name="6002-MDET-212" href="#6002-MDET-212">6002-MDET-212</a>)
+- Liquidity monitoring parameters: (<a name="6002-MDET-213" href="#6002-MDET-213">6002-MDET-213</a>)
   - Triggering Ratio
   - Time Window
   - Scaling Factor
-- Liquidity: (<a name="6002-MDET-213" href="#6002-MDET-213">6002-MDET-213</a>)
+- Liquidity: (<a name="6002-MDET-214" href="#6002-MDET-214">6002-MDET-214</a>)
   - Target Stake
   - Supplied Stake
   - Market Value Proxy

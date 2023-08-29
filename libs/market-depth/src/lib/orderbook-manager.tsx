@@ -2,7 +2,11 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketDepthProvider } from './market-depth-provider';
-import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
+import {
+  getQuoteName,
+  marketDataProvider,
+  marketProvider,
+} from '@vegaprotocol/markets';
 import type {
   MarketDepthQuery,
   MarketDepthQueryVariables,
@@ -66,7 +70,7 @@ export const OrderbookManager = ({
         asks={data?.depth.sell ?? []}
         decimalPlaces={market?.decimalPlaces ?? 0}
         positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
-        assetSymbol={market?.tradableInstrument.instrument.product.quoteName}
+        assetSymbol={(market && getQuoteName(market)) || ''}
         onClick={onClick}
         midPrice={marketData?.midPrice}
       />

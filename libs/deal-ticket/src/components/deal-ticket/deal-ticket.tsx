@@ -37,7 +37,7 @@ import {
   formatForInput,
 } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
-import { getDerivedPrice } from '@vegaprotocol/markets';
+import { getAsset, getDerivedPrice, getQuoteName } from '@vegaprotocol/markets';
 import {
   validateExpiration,
   validateMarketState,
@@ -149,7 +149,7 @@ export const DealTicket = ({
   });
   const lastSubmitTime = useRef(0);
 
-  const asset = market.tradableInstrument.instrument.product.settlementAsset;
+  const asset = getAsset(market);
   const {
     accountBalance: marginAccountBalance,
     loading: loadingMarginAccountBalance,
@@ -254,9 +254,6 @@ export const DealTicket = ({
     fetchPolicy: 'no-cache',
   });
 
-  const assetSymbol =
-    market.tradableInstrument.instrument.product.settlementAsset.symbol;
-
   const summaryError = useMemo(() => {
     if (!pubKey) {
       return {
@@ -337,7 +334,7 @@ export const DealTicket = ({
 
   const priceStep = toDecimal(market?.decimalPlaces);
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
-  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+  const quoteName = getQuoteName(market);
 
   return (
     <form
@@ -475,7 +472,7 @@ export const DealTicket = ({
               }
 
               // iceberg orders must be persistent orders, so if user
-              // switches to to a non persisten tif value, remove iceberg selection
+              // switches to to a non persistent TIF value, remove iceberg selection
               if (iceberg && isNonPersistentOrder(value)) {
                 setValue('iceberg', false);
               }
@@ -630,12 +627,12 @@ export const DealTicket = ({
           normalizedOrder && { ...normalizedOrder, price: price || undefined }
         }
         notionalSize={notionalSize}
-        assetSymbol={assetSymbol}
+        assetSymbol={asset.symbol}
         market={market}
       />
       <DealTicketMarginDetails
         onMarketClick={onMarketClick}
-        assetSymbol={assetSymbol}
+        assetSymbol={asset.symbol}
         marginAccountBalance={marginAccountBalance}
         generalAccountBalance={generalAccountBalance}
         positionEstimate={positionEstimate?.estimatePosition}
