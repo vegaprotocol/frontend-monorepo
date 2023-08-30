@@ -53,7 +53,7 @@ const OrderbookSide = ({
         {rows.map((data) => (
           <OrderbookRow
             key={data.price}
-            price={(BigInt(data.price) / BigInt(resolution)).toString()}
+            price={data.price}
             onClick={onClick}
             decimalPlaces={decimalPlaces - Math.log10(resolution)}
             positionDecimalPlaces={positionDecimalPlaces}
