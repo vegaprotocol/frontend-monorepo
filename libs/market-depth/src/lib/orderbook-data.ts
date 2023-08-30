@@ -12,7 +12,7 @@ export interface OrderbookRowData {
   cumulativeVol: number;
 }
 
-export const getPriceLevel = (price: string | bigint, resolution: number) => {
+export const getPriceLevel = (price: string, resolution: number) => {
   const p = BigInt(price);
   const r = BigInt(resolution);
   let priceLevel = (p / r) * r;
@@ -43,7 +43,7 @@ const updateCumulativeVolumeByType = (
 };
 
 export const compactRows = (
-  data: PriceLevelFieldsFragment[] | null | undefined,
+  data: PriceLevelFieldsFragment[],
   dataType: VolumeType,
   resolution: number
 ) => {
