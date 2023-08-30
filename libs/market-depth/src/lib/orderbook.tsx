@@ -115,11 +115,16 @@ export const OrderbookMid = ({
         // monospace sizing doesn't quite align with alpha
         className="font-mono text-[15px]"
         data-testid={`last-traded-${lastTradedPrice}`}
+        title={t('Last traded price')}
       >
         {addDecimalsFormatNumber(lastTradedPrice, decimalPlaces)}
       </span>
       <span>{assetSymbol}</span>
-      <span className="font-mono text-xs text-muted" data-testid="spread">
+      <span
+        title={t('Spread')}
+        className="font-mono text-xs text-muted"
+        data-testid="spread"
+      >
         ({addDecimalsFormatNumber(spread, decimalPlaces)})
       </span>
     </div>
