@@ -9,35 +9,39 @@ const HIDE_VOL_WIDTH = 190;
 const HIDE_CUMULATIVE_VOL_WIDTH = 260;
 
 interface OrderbookRowProps {
-  value: number;
-  cumulativeValue: number;
-  cumulativeRelativeValue: number;
+  volume: number;
+  cumulativeVolume: number;
   decimalPlaces: number;
   positionDecimalPlaces: number;
   price: string;
   onClick: (args: { price?: string; size?: string }) => void;
   type: VolumeType;
   width: number;
+  maxVol: number;
 }
 
 export const OrderbookRow = memo(
   ({
-    value,
-    cumulativeValue,
-    cumulativeRelativeValue,
+    volume,
+    cumulativeVolume,
     decimalPlaces,
     positionDecimalPlaces,
     price,
     onClick,
     type,
     width,
+    maxVol,
   }: OrderbookRowProps) => {
     const txtId = type === VolumeType.bid ? 'bid' : 'ask';
     const cols =
       width >= HIDE_CUMULATIVE_VOL_WIDTH ? 3 : width >= HIDE_VOL_WIDTH ? 2 : 1;
     return (
       <div className="relative px-1">
-        <CumulationBar cumulativeValue={cumulativeRelativeValue} type={type} />
+        <CumulationBar
+          cumulativeVolume={cumulativeVolume}
+          type={type}
+          maxVol={maxVol}
+        />
         <div
           data-testid={`${txtId}-rows-container`}
           className={classNames('grid gap-1 text-right', `grid-cols-${cols}`)}
@@ -62,14 +66,14 @@ export const OrderbookRow = memo(
           {width >= HIDE_VOL_WIDTH && (
             <OrderBookRowCell
               onClick={() =>
-                onClick({ size: addDecimal(value, positionDecimalPlaces) })
+                onClick({ size: addDecimal(volume, positionDecimalPlaces) })
               }
             >
               <NumericCell
                 testId={`${txtId}-vol-${price}`}
-                value={value}
+                value={volume}
                 valueFormatted={addDecimalsFixedFormatNumber(
-                  value,
+                  volume,
                   positionDecimalPlaces ?? 0
                 )}
               />
@@ -79,15 +83,15 @@ export const OrderbookRow = memo(
             <OrderBookRowCell
               onClick={() =>
                 onClick({
-                  size: addDecimal(cumulativeValue, positionDecimalPlaces),
+                  size: addDecimal(cumulativeVolume, positionDecimalPlaces),
                 })
               }
             >
               <NumericCell
                 testId={`cumulative-vol-${price}`}
-                value={cumulativeValue}
+                value={cumulativeVolume}
                 valueFormatted={addDecimalsFixedFormatNumber(
-                  cumulativeValue,
+                  cumulativeVolume,
                   positionDecimalPlaces
                 )}
               />
@@ -119,12 +123,15 @@ const OrderBookRowCell = ({
 };
 
 const CumulationBar = ({
-  cumulativeValue = 0,
+  cumulativeVolume = 0,
   type,
+  maxVol,
 }: {
-  cumulativeValue?: number;
+  cumulativeVolume: number;
   type: VolumeType;
+  maxVol: number;
 }) => {
+  const width = (cumulativeVolume / maxVol) * 100;
   return (
     <div
       data-testid={`${VolumeType.bid === type ? 'bid' : 'ask'}-bar`}
@@ -135,7 +142,7 @@ const CumulationBar = ({
           : 'bg-market-red-300 dark:bg-market-red/30'
       )}
       style={{
-        width: `${cumulativeValue}%`,
+        width: `${width}%`,
       }}
     />
   );

@@ -25,6 +25,7 @@ const OrderbookSide = ({
   positionDecimalPlaces,
   onClick,
   width,
+  maxVol,
 }: {
   rows: OrderbookRowData[];
   resolution: number;
@@ -33,6 +34,7 @@ const OrderbookSide = ({
   type: VolumeType;
   onClick: (args: { price?: string; size?: string }) => void;
   width: number;
+  maxVol: number;
 }) => {
   return (
     <div
@@ -55,11 +57,11 @@ const OrderbookSide = ({
             onClick={onClick}
             decimalPlaces={decimalPlaces - Math.log10(resolution)}
             positionDecimalPlaces={positionDecimalPlaces}
-            value={data.value}
-            cumulativeValue={data.cumulativeVol.value}
-            cumulativeRelativeValue={data.cumulativeVol.relativeValue}
+            volume={data.volume}
+            cumulativeVolume={data.cumulativeVol}
             type={type}
             width={width}
+            maxVol={maxVol}
           />
         ))}
       </div>
@@ -164,6 +166,10 @@ export const Orderbook = ({
             );
             const askRows = groupedAsks.slice(limit * -1);
             const bidRows = groupedBids.slice(0, limit);
+            const maxVol = Math.max(
+              Number(askRows[0].cumulativeVol),
+              Number(bidRows[bidRows.length - 1].cumulativeVol)
+            );
             return (
               <div
                 className="overflow-hidden grid"
@@ -184,6 +190,7 @@ export const Orderbook = ({
                       positionDecimalPlaces={positionDecimalPlaces}
                       onClick={onClick}
                       width={width}
+                      maxVol={maxVol}
                     />
                     <OrderbookMid
                       lastTradedPrice={lastTradedPrice}
@@ -200,6 +207,7 @@ export const Orderbook = ({
                       positionDecimalPlaces={positionDecimalPlaces}
                       onClick={onClick}
                       width={width}
+                      maxVol={maxVol}
                     />
                   </>
                 ) : (
