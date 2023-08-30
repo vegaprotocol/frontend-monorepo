@@ -108,7 +108,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
   ),
   priceRange: t('The price range of the market. '),
   commitmentMinTimeFraction: t(
-    `The minimum time fraction for a commitment. Specifies the minimum fraction of time LPs must spend 'on the book' providing their committed liquidity.`
+    `Specifies the minimum fraction of time LPs must spend 'on the book' providing their committed liquidity.`
   ),
   providersFeeCalculationTimeStep: t(
     'The time step for providers fee. Specifies how often the quality of liquidity supplied by the LPS is evaluated and fees arising from that period are earmarked for specific parties.'
