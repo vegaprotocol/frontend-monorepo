@@ -106,7 +106,6 @@ export const tooltipMapping: Record<string, ReactNode> = {
   insurancePoolFraction: t(
     'The fraction of the insurance pool balance that is carried over from the parent market to the successor.'
   ),
-  priceRange: t('The price range of the market. '),
   commitmentMinTimeFraction: t(
     `Specifies the minimum fraction of time LPs must spend 'on the book' providing their committed liquidity.`
   ),
