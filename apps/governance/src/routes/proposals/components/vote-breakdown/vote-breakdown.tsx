@@ -15,27 +15,29 @@ interface VoteBreakdownProps {
 
 interface VoteProgressProps {
   percentageFor: BigNumber;
-  colourful?: boolean;
+  colourfulBg?: boolean;
+  testId?: string;
   children?: ReactNode;
 }
 
 const VoteProgress = ({
   percentageFor,
-  colourful,
+  colourfulBg,
+  testId,
   children,
 }: VoteProgressProps) => {
   const containerClasses = classNames(
     'relative h-10 rounded-md border border-vega-dark-300 overflow-hidden',
-    colourful ? 'bg-vega-pink' : 'bg-vega-dark-400'
+    colourfulBg ? 'bg-vega-pink' : 'bg-vega-dark-400'
   );
 
   const progressClasses = classNames(
     'absolute h-full top-0 left-0',
-    colourful ? 'bg-vega-green' : 'bg-white'
+    colourfulBg ? 'bg-vega-green' : 'bg-white'
   );
 
   const textClasses = classNames(
-    'absolute top-0 left-4 w-full h-full flex items-center justify-start text-black'
+    'absolute top-0 left-0 w-full h-full flex items-center justify-start px-3 text-black'
   );
 
   return (
@@ -43,6 +45,7 @@ const VoteProgress = ({
       <div
         className={progressClasses}
         style={{ width: `${percentageFor}%` }}
+        data-testid={testId}
       ></div>
       <div className={textClasses}>{children}</div>
     </div>
@@ -53,24 +56,29 @@ interface StatusProps {
   reached: boolean;
   threshold: BigNumber;
   text: string;
+  testId?: string;
 }
 
-const Status = ({ reached, threshold, text }: StatusProps) => {
+const Status = ({ reached, threshold, text, testId }: StatusProps) => {
   const { t } = useTranslation();
 
-  return reached ? (
-    <div className="flex items-center gap-2">
-      <Icon name="tick" />
-      <span>
-        {threshold.toString()}% {text} {t('met')}
-      </span>
-    </div>
-  ) : (
-    <div className="flex items-center gap-2">
-      <Icon name="cross" />
-      <span>
-        {threshold.toString()}% {text} {t('not met')}
-      </span>
+  return (
+    <div data-testid={testId}>
+      {reached ? (
+        <div className="flex items-center gap-2">
+          <Icon name="tick" size={4} />
+          <span>
+            {threshold.toString()}% {text} {t('met')}
+          </span>
+        </div>
+      ) : (
+        <div className="flex items-center gap-2">
+          <Icon name="cross" size={4} />
+          <span>
+            {threshold.toString()}% {text} {t('not met')}
+          </span>
+        </div>
+      )}
     </div>
   );
 };
@@ -105,6 +113,18 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
   const defaultDP = 2;
   const isProposalOpen = proposal?.state === ProposalState.STATE_OPEN;
   const isUpdateMarket = proposal?.terms?.change?.__typename === 'UpdateMarket';
+  const participationThresholdProgress = BigNumber.min(
+    totalTokensPercentage.dividedBy(requiredParticipation).multipliedBy(100),
+    new BigNumber(100)
+  );
+  const lpParticipationThresholdProgress =
+    requiredParticipationLP &&
+    BigNumber.min(
+      totalLPTokensPercentage
+        .dividedBy(requiredParticipationLP)
+        .multipliedBy(100),
+      new BigNumber(100)
+    );
   const willPass = willPassByTokenVote || willPassByLPVote;
   const updateMarketVotePassMethod = willPassByTokenVote
     ? t('byTokenVote')
@@ -117,9 +137,19 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
   );
 
   return (
-    <>
+    <div className="mb-6">
       {isProposalOpen && (
-        <div data-testid="proposal-pass-method" className="mb-4">
+        <div
+          data-testid="vote-status"
+          className="flex items-center gap-1 mb-2 text-bold"
+        >
+          <span>
+            {willPass ? (
+              <Icon name="tick" size={5} className="text-vega-green" />
+            ) : (
+              <Icon name="cross" size={5} className="text-vega-pink" />
+            )}
+          </span>
           <span>{t('currentlySetTo')} </span>
           {willPass ? (
             <span>
@@ -131,89 +161,24 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
           )}
         </div>
       )}
-      {isUpdateMarket && <h3 className={headingClasses}>{t('tokenVote')}</h3>}
-      <div className={sectionWrapperClasses}>
-        <section data-testid="token-majority-breakdown">
-          <VoteProgress percentageFor={yesPercentage} colourful={true}>
-            <Status
-              reached={majorityMet}
-              threshold={requiredMajorityPercentage}
-              text={t('majorityThreshold')}
-            />
-          </VoteProgress>
-
-          <div className={progressDetailsClasses}>
-            <div className="flex items-center gap-1">
-              <span>{t('tokenVotesFor')}:</span>
-              <Tooltip description={formatNumber(yesTokens, defaultDP)}>
-                <button>
-                  {yesTokens.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
-                </button>
-              </Tooltip>
-              <span>
-                (
-                <Tooltip
-                  description={<span>{yesPercentage.toFixed(defaultDP)}%</span>}
-                >
-                  <button>{yesPercentage.toFixed(0)}%</button>
-                </Tooltip>
-                )
-              </span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <span>{t('tokenVotesAgainst')}:</span>
-              <Tooltip description={formatNumber(noTokens, defaultDP)}>
-                <button>
-                  {noTokens.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
-                </button>
-              </Tooltip>
-              <span>
-                (
-                <Tooltip
-                  description={<span>{noPercentage.toFixed(defaultDP)}%</span>}
-                >
-                  <button>{noPercentage.toFixed(0)}%</button>
-                </Tooltip>
-                )
-              </span>
-            </div>
-          </div>
-        </section>
-
-        <section data-testid="token-participation-breakdown">
-          <VoteProgress percentageFor={totalTokensPercentage}>
-            <Status
-              reached={participationMet}
-              threshold={requiredParticipation}
-              text={t('participationThreshold')}
-            />
-          </VoteProgress>
-
-          <div className="flex mt-2 text-sm">
-            <div className="flex items-center gap-1">
-              <span>{t('totalTokensVoted')}:</span>
-              <Tooltip description={formatNumber(totalTokensVoted, defaultDP)}>
-                <button>
-                  {totalTokensVoted.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
-                </button>
-              </Tooltip>
-              <span>({totalTokensPercentage.toFixed(defaultDP)}%)</span>
-            </div>
-          </div>
-        </section>
-      </div>
 
       {isUpdateMarket && (
-        <div className="mt-4">
+        <div className="mb-4">
           <h3 className={headingClasses}>{t('liquidityProviderVote')}</h3>
           <div className={sectionWrapperClasses}>
             <section data-testid="lp-majority-breakdown">
-              <VoteProgress percentageFor={yesLPPercentage} colourful={true}>
+              <VoteProgress
+                percentageFor={yesLPPercentage}
+                colourfulBg={true}
+                testId="lp-majority-progress"
+              >
                 <Status
                   reached={majorityLPMet}
                   threshold={requiredMajorityLPPercentage}
                   text={t('majorityThreshold')}
+                  testId={
+                    majorityLPMet ? 'lp-majority-met' : 'lp-majority-not-met'
+                  }
                 />
               </VoteProgress>
 
@@ -277,11 +242,21 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
             </section>
 
             <section data-testid="lp-participation-breakdown">
-              <VoteProgress percentageFor={totalLPTokensPercentage}>
+              <VoteProgress
+                percentageFor={
+                  lpParticipationThresholdProgress || new BigNumber(0)
+                }
+                testId="lp-participation-progress"
+              >
                 <Status
                   reached={participationLPMet}
                   threshold={requiredParticipationLP || new BigNumber(1)}
                   text={t('participationThreshold')}
+                  testId={
+                    participationLPMet
+                      ? 'lp-participation-met'
+                      : 'lp-participation-not-met'
+                  }
                 />
               </VoteProgress>
 
@@ -310,6 +285,94 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
           </div>
         </div>
       )}
-    </>
+
+      {isUpdateMarket && <h3 className={headingClasses}>{t('tokenVote')}</h3>}
+      <div className={sectionWrapperClasses}>
+        <section data-testid="token-majority-breakdown">
+          <VoteProgress
+            percentageFor={yesPercentage}
+            colourfulBg={true}
+            testId="token-majority-progress"
+          >
+            <Status
+              reached={majorityMet}
+              threshold={requiredMajorityPercentage}
+              text={t('majorityThreshold')}
+              testId={
+                majorityMet ? 'token-majority-met' : 'token-majority-not-met'
+              }
+            />
+          </VoteProgress>
+
+          <div className={progressDetailsClasses}>
+            <div className="flex items-center gap-1">
+              <span>{t('tokenVotesFor')}:</span>
+              <Tooltip description={formatNumber(yesTokens, defaultDP)}>
+                <button>
+                  {yesTokens.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
+                </button>
+              </Tooltip>
+              <span>
+                (
+                <Tooltip
+                  description={<span>{yesPercentage.toFixed(defaultDP)}%</span>}
+                >
+                  <button>{yesPercentage.toFixed(0)}%</button>
+                </Tooltip>
+                )
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <span>{t('tokenVotesAgainst')}:</span>
+              <Tooltip description={formatNumber(noTokens, defaultDP)}>
+                <button>
+                  {noTokens.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
+                </button>
+              </Tooltip>
+              <span>
+                (
+                <Tooltip
+                  description={<span>{noPercentage.toFixed(defaultDP)}%</span>}
+                >
+                  <button>{noPercentage.toFixed(0)}%</button>
+                </Tooltip>
+                )
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <section data-testid="token-participation-breakdown">
+          <VoteProgress
+            percentageFor={participationThresholdProgress}
+            testId="token-participation-progress"
+          >
+            <Status
+              reached={participationMet}
+              threshold={requiredParticipation}
+              text={t('participationThreshold')}
+              testId={
+                participationMet
+                  ? 'token-participation-met'
+                  : 'token-participation-not-met'
+              }
+            />
+          </VoteProgress>
+
+          <div className="flex mt-2 text-sm">
+            <div className="flex items-center gap-1">
+              <span>{t('totalTokensVoted')}:</span>
+              <Tooltip description={formatNumber(totalTokensVoted, defaultDP)}>
+                <button>
+                  {totalTokensVoted.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
+                </button>
+              </Tooltip>
+              <span>({totalTokensPercentage.toFixed(defaultDP)}%)</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
   );
 };

@@ -6,11 +6,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { render, screen } from '@testing-library/react';
 import { format } from 'date-fns';
 import { ProposalRejectionReason, ProposalState } from '@vegaprotocol/types';
-import {
-  generateNoVotes,
-  generateProposal,
-  generateYesVotes,
-} from '../../test-helpers/generate-proposals';
+import { generateProposal } from '../../test-helpers/generate-proposals';
 import { ProposalsListItemDetails } from './proposals-list-item-details';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import {
@@ -93,84 +89,6 @@ describe('Proposals list item details', () => {
     );
   });
 
-  it('Renders proposal state: Update market proposal - Currently expected to pass by LP vote', () => {
-    renderComponent(
-      generateProposal({
-        state: ProposalState.STATE_OPEN,
-        terms: {
-          change: {
-            __typename: 'UpdateMarket',
-          },
-        },
-        votes: {
-          yes: {
-            ...generateYesVotes(0),
-            totalEquityLikeShareWeight: '1000',
-          },
-          no: {
-            ...generateNoVotes(0),
-            totalEquityLikeShareWeight: '0',
-          },
-        },
-      })
-    );
-    expect(screen.getByTestId('vote-status')).toHaveTextContent(
-      'Currently expected to pass by LP vote'
-    );
-  });
-
-  it('Renders proposal state: Update market proposal - Currently expected to pass by token vote', () => {
-    renderComponent(
-      generateProposal({
-        state: ProposalState.STATE_OPEN,
-        terms: {
-          change: {
-            __typename: 'UpdateMarket',
-          },
-        },
-        votes: {
-          yes: {
-            ...generateYesVotes(1000, 1000),
-            totalEquityLikeShareWeight: '0',
-          },
-          no: {
-            ...generateNoVotes(0),
-            totalEquityLikeShareWeight: '0',
-          },
-        },
-      })
-    );
-    expect(screen.getByTestId('vote-status')).toHaveTextContent(
-      'Currently expected to pass by token vote'
-    );
-  });
-
-  it('Renders proposal state: Update market proposal - Currently expected to fail', () => {
-    renderComponent(
-      generateProposal({
-        state: ProposalState.STATE_OPEN,
-        terms: {
-          change: {
-            __typename: 'UpdateMarket',
-          },
-        },
-        votes: {
-          yes: {
-            ...generateYesVotes(0),
-            totalEquityLikeShareWeight: '0',
-          },
-          no: {
-            ...generateNoVotes(0),
-            totalEquityLikeShareWeight: '0',
-          },
-        },
-      })
-    );
-    expect(screen.getByTestId('vote-status')).toHaveTextContent(
-      'Currently expected to fail'
-    );
-  });
-
   it('Renders proposal state: Open - 5 minutes left to vote', () => {
     renderComponent(
       generateProposal({
@@ -210,43 +128,6 @@ describe('Proposals list item details', () => {
     );
     expect(screen.getByTestId('vote-details')).toHaveTextContent(
       '5 days left to vote'
-    );
-  });
-
-  it('Renders proposal state: Open - majority not reached', () => {
-    renderComponent(
-      generateProposal({
-        state: ProposalState.STATE_OPEN,
-        terms: {
-          enactmentDatetime: nextWeek.toString(),
-        },
-        votes: {
-          no: generateNoVotes(1, 1000000000000000000),
-          yes: generateYesVotes(1, 1000000000000000000),
-        },
-      })
-    );
-    expect(screen.getByTestId('vote-status')).toHaveTextContent(
-      'Currently expected to fail'
-    );
-  });
-
-  it('Renders proposal state: Open - will pass', () => {
-    renderComponent(
-      generateProposal({
-        state: ProposalState.STATE_OPEN,
-        votes: {
-          __typename: 'ProposalVotes',
-          yes: generateYesVotes(3000, 1000000000000000000),
-          no: generateNoVotes(0),
-        },
-        terms: {
-          closingDatetime: nextWeek.toString(),
-        },
-      })
-    );
-    expect(screen.getByTestId('vote-status')).toHaveTextContent(
-      'Currently expected to pass'
     );
   });
 

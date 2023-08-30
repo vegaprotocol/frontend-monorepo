@@ -31,10 +31,6 @@ import {
   orderByDate,
   orderByUpgradeBlockHeight,
 } from '../proposals/components/proposals-list/proposals-list';
-import {
-  NetworkParams,
-  useNetworkParams,
-} from '@vegaprotocol/network-parameters';
 import { BigNumber } from '../../lib/bignumber';
 
 const nodesToShow = 6;
@@ -47,57 +43,34 @@ const HomeProposals = ({
   protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
 }) => {
   const { t } = useTranslation();
-  const {
-    params: networkParams,
-    loading: networkParamsLoading,
-    error: networkParamsError,
-  } = useNetworkParams([
-    NetworkParams.governance_proposal_market_requiredMajority,
-    NetworkParams.governance_proposal_updateMarket_requiredMajority,
-    NetworkParams.governance_proposal_updateMarket_requiredMajorityLP,
-    NetworkParams.governance_proposal_asset_requiredMajority,
-    NetworkParams.governance_proposal_updateAsset_requiredMajority,
-    NetworkParams.governance_proposal_updateNetParam_requiredMajority,
-    NetworkParams.governance_proposal_freeform_requiredMajority,
-  ]);
 
   return (
-    <AsyncRenderer
-      loading={networkParamsLoading}
-      error={networkParamsError}
-      data={networkParams}
-    >
-      <section className="mb-16" data-testid="home-proposals">
-        <Heading title={t('vegaGovernance')} />
-        <h3 className="mb-6">{t('homeProposalsIntro')}</h3>
-        <div className="mb-8">
-          <ExternalLink href={ExternalLinks.GOVERNANCE_PAGE}>
-            {t(`readMoreGovernance`)}
-          </ExternalLink>
-        </div>
+    <section className="mb-16" data-testid="home-proposals">
+      <Heading title={t('vegaGovernance')} />
+      <h3 className="mb-6">{t('homeProposalsIntro')}</h3>
+      <div className="mb-8">
+        <ExternalLink href={ExternalLinks.GOVERNANCE_PAGE}>
+          {t(`readMoreGovernance`)}
+        </ExternalLink>
+      </div>
 
-        <SubHeading title={t('latestProposals')} />
-        <ul data-testid="home-proposal-list" className="grid gap-6">
-          {protocolUpgradeProposals.map((proposal, index) => (
-            <ProtocolUpgradeProposalsListItem key={index} proposal={proposal} />
-          ))}
+      <SubHeading title={t('latestProposals')} />
+      <ul data-testid="home-proposal-list" className="grid gap-6">
+        {protocolUpgradeProposals.map((proposal, index) => (
+          <ProtocolUpgradeProposalsListItem key={index} proposal={proposal} />
+        ))}
 
-          {proposals.map((proposal) => (
-            <ProposalsListItem
-              key={proposal.id}
-              proposal={proposal}
-              networkParams={networkParams}
-            />
-          ))}
-        </ul>
+        {proposals.map((proposal) => (
+          <ProposalsListItem key={proposal.id} proposal={proposal} />
+        ))}
+      </ul>
 
-        <div className="mt-6">
-          <Link to={`${Routes.PROPOSALS}`}>
-            <Button size="md">{t('homeProposalsButtonText')}</Button>
-          </Link>
-        </div>
-      </section>
-    </AsyncRenderer>
+      <div className="mt-6">
+        <Link to={`${Routes.PROPOSALS}`}>
+          <Button size="md">{t('homeProposalsButtonText')}</Button>
+        </Link>
+      </div>
+    </section>
   );
 };
 
