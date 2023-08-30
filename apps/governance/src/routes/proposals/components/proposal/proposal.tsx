@@ -21,14 +21,6 @@ import type { NetworkParamsResult } from '@vegaprotocol/network-parameters';
 import { useVoteSubmit } from '@vegaprotocol/proposals';
 import { useUserVote } from '../vote-details/use-user-vote';
 
-export enum ProposalType {
-  PROPOSAL_NEW_MARKET = 'PROPOSAL_NEW_MARKET',
-  PROPOSAL_UPDATE_MARKET = 'PROPOSAL_UPDATE_MARKET',
-  PROPOSAL_NEW_ASSET = 'PROPOSAL_NEW_ASSET',
-  PROPOSAL_UPDATE_ASSET = 'PROPOSAL_UPDATE_ASSET',
-  PROPOSAL_NETWORK_PARAMETER = 'PROPOSAL_NETWORK_PARAMETER',
-  PROPOSAL_FREEFORM = 'PROPOSAL_FREEFORM',
-}
 export interface ProposalProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
   networkParams: Partial<NetworkParamsResult>;
@@ -79,39 +71,32 @@ export const Proposal = ({
   }
 
   let minVoterBalance = null;
-  let proposalType = null;
 
   if (networkParams) {
     switch (proposal.terms.change.__typename) {
       case 'NewMarket':
         minVoterBalance =
           networkParams.governance_proposal_market_minVoterBalance;
-        proposalType = ProposalType.PROPOSAL_NEW_MARKET;
         break;
       case 'UpdateMarket':
         minVoterBalance =
           networkParams.governance_proposal_updateMarket_minVoterBalance;
-        proposalType = ProposalType.PROPOSAL_UPDATE_MARKET;
         break;
       case 'NewAsset':
         minVoterBalance =
           networkParams.governance_proposal_asset_minVoterBalance;
-        proposalType = ProposalType.PROPOSAL_NEW_ASSET;
         break;
       case 'UpdateAsset':
         minVoterBalance =
           networkParams.governance_proposal_updateAsset_minVoterBalance;
-        proposalType = ProposalType.PROPOSAL_UPDATE_ASSET;
         break;
       case 'UpdateNetworkParameter':
         minVoterBalance =
           networkParams.governance_proposal_updateNetParam_minVoterBalance;
-        proposalType = ProposalType.PROPOSAL_NETWORK_PARAMETER;
         break;
       case 'NewFreeform':
         minVoterBalance =
           networkParams.governance_proposal_freeform_minVoterBalance;
-        proposalType = ProposalType.PROPOSAL_FREEFORM;
         break;
     }
   }
