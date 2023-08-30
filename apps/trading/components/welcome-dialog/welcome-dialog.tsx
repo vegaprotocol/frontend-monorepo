@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
+import type { Toast } from '@vegaprotocol/ui-toolkit';
+import { Dialog, Intent, useToasts } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -15,6 +16,7 @@ import {
 import * as constants from '../constants';
 import { TelemetryApproval } from './telemetry-approval';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
+import { useCallback } from 'react';
 
 const ONBOARDING_STORAGE_KEY = 'vega_onboarding_dismiss_store';
 export const useOnboardingStore = create<{
@@ -32,6 +34,7 @@ export const useOnboardingStore = create<{
   )
 );
 
+const TELEMETRY_APPROVAL_TOAST_ID = 'telemetry_tost_id';
 export const WelcomeDialog = () => {
   const { VEGA_ENV } = useEnvironment();
   const navigate = useNavigate();
@@ -64,31 +67,58 @@ export const WelcomeDialog = () => {
       dismiss();
     }
   };
+
+  const [setToast, hasToast, removeToast] = useToasts((store) => [
+    store.setToast,
+    store.hasToast,
+    store.remove,
+  ]);
+  const onApprovalClose = useCallback(() => {
+    closeTelemetry();
+    removeToast(TELEMETRY_APPROVAL_TOAST_ID);
+  }, [removeToast, closeTelemetry]);
+
+  const setTelemetryApprovalAndClose = useCallback(
+    (value: string) => {
+      setTelemetryValue(value);
+      onApprovalClose();
+    },
+    [setTelemetryValue, onApprovalClose]
+  );
+
+  if (isTelemetryPopupNeeded) {
+    const toast: Toast = {
+      id: TELEMETRY_APPROVAL_TOAST_ID,
+      intent: Intent.Warning,
+      content: (
+        <>
+          <h3 className="text-sm uppercase mb-1">
+            {t('Improve vega console')}
+          </h3>
+          <TelemetryApproval
+            telemetryValue={telemetryValue}
+            setTelemetryValue={setTelemetryApprovalAndClose}
+          />
+        </>
+      ),
+      onClose: onApprovalClose,
+    };
+    if (!hasToast(TELEMETRY_APPROVAL_TOAST_ID)) {
+      setToast(toast);
+    }
+    return;
+  }
+
   const title = (
     <span className="font-alpha calt" data-testid="welcome-title">
-      {isOnboardingDialogNeeded ? (
-        <>
-          {t('Console')}{' '}
-          <span className="text-vega-clight-100 dark:text-vega-cdark-100">
-            {VEGA_ENV}
-          </span>
-        </>
-      ) : isTelemetryPopupNeeded ? (
-        t('Improve vega console')
-      ) : null}
+      {t('Console')}{' '}
+      <span className="text-vega-clight-100 dark:text-vega-cdark-100">
+        {VEGA_ENV}
+      </span>
     </span>
   );
 
-  const content = isOnboardingDialogNeeded ? (
-    <WelcomeDialogContent />
-  ) : isTelemetryPopupNeeded ? (
-    <TelemetryApproval
-      telemetryValue={telemetryValue}
-      setTelemetryValue={setTelemetryValue}
-    />
-  ) : null;
-
-  return content ? (
+  return isOnboardingDialogNeeded ? (
     <Dialog
       open
       title={title}
@@ -97,7 +127,7 @@ export const WelcomeDialog = () => {
       intent={Intent.None}
       dataTestId="welcome-dialog"
     >
-      {content}
+      <WelcomeDialogContent />
     </Dialog>
   ) : null;
 };

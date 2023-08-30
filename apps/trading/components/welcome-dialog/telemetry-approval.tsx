@@ -13,12 +13,12 @@ export const TelemetryApproval = ({
   return (
     <div className="flex flex-col py-3">
       <div className="mr-4" role="form">
-        <div className="mt-6">
+        <div className="mt-2">
           {t(
             'Help us identify bugs and improve Vega Governance by sharing anonymous usage data.'
           )}
         </div>
-        <div className="flex items-center mt-6">
+        <div className="flex items-center mt-2">
           <Icon name="eye-off" className="mr-6" size={6} />
           <div className="flex flex-col gap-1">
             <div className="font-semibold">{t('Anonymous')}</div>
@@ -26,18 +26,20 @@ export const TelemetryApproval = ({
           </div>
         </div>
 
-        <div className="flex items-center mt-6">
+        <div className="flex items-center mt-2">
           <Icon name="cog" className="mr-6" size={6} />
           <div className="flex flex-col gap-1">
             <div className="font-semibold">{t('Optional')}</div>
             <div>{t('You can opt out any time via settings')}</div>
           </div>
         </div>
-        <div className="flex justify-around items-center mt-10 gap-4 w-full">
+        <div className="flex flex-col justify-around items-center mt-10 gap-4 w-full px-4">
           <Button
             onClick={() => setTelemetryValue('false')}
+            size="xs"
             variant="default"
             data-testid="do-not-share-data-button"
+            fill
           >
             {t('No thanks')}
           </Button>
@@ -46,6 +48,8 @@ export const TelemetryApproval = ({
             onClick={() => setTelemetryValue('true')}
             variant="primary"
             data-testid="share-data-button"
+            size="xs"
+            fill
           >
             {telemetryValue === 'true'
               ? t('Continue sharing data')
