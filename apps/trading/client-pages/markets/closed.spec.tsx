@@ -83,6 +83,7 @@ describe('Closed', () => {
           tags: [settlementDateTag],
         },
         product: {
+          __typename: 'Future',
           dataSourceSpecForSettlementData: {
             id: settlementDataId,
             data: {
@@ -371,7 +372,7 @@ describe('Closed', () => {
             ...createMarketFragment().tradableInstrument,
             instrument: {
               ...createMarketFragment().tradableInstrument.instrument,
-              id: 'successorAssset',
+              id: 'successorAsset',
               name: 'Successor Market Name',
               code: 'SuccessorCode',
             },
@@ -480,7 +481,7 @@ describe('Closed', () => {
             ...createMarketFragment().tradableInstrument,
             instrument: {
               ...createMarketFragment().tradableInstrument.instrument,
-              id: 'successorAssset',
+              id: 'successorAsset',
               name: 'Successor Market Name',
               code: 'SuccessorCode',
             },
