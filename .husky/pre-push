@@ -3,3 +3,6 @@
 
 # Lint all staged files
 yarn nx format:check
+
+# Test all projects with changes
+yarn nx affected -t test --exclude trading
