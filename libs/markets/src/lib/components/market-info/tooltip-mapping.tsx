@@ -141,7 +141,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'Sets how much an LP forfeits of their bond if they reduce their commitment while the market is below target stake. If set to 0 there is no penalty for early exit, if set to 1 their entire bond is forfeited if they exit their entire commitment, if set >1, their entire bond will be forfeited for exiting 1/earlyExitPenalty of their commitment amount. Must be a decimal ≥0. '
   ),
   probabilityOfTradingTauScaling: t(
-    'sets how the probability of trading is calculated from the risk model; this is used to measure the relative competitiveness of LPs supplied volume.'
+    'Sets how the probability of trading is calculated from the risk model. This is used to measure the relative competitiveness of an LP's supplied volume.'
   ),
   minimumProbabilityOfTradingLPOrders: t(
     'sets a lower bound on the result of the probability of trading calculation.'
