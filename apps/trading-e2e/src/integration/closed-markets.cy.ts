@@ -62,6 +62,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
     tradableInstrument: {
       instrument: {
         product: {
+          __typename: 'Future',
           dataSourceSpecBinding: {
             settlementDataProperty,
           },
@@ -93,6 +94,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
           ],
         },
         product: {
+          __typename: 'Future',
           dataSourceSpecBinding: {
             settlementDataProperty,
           },
@@ -120,6 +122,7 @@ describe('Closed markets', { tags: '@smoke' }, () => {
           ],
         },
         product: {
+          __typename: 'Future',
           dataSourceSpecBinding: {
             settlementDataProperty,
           },

@@ -150,6 +150,7 @@ function renderExistingAmend(
               instrument: {
                 name: 'test-label',
                 product: {
+                  __typename: 'Future',
                   quoteName: 'dai',
                 },
               },

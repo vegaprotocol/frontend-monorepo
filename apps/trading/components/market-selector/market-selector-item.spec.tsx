@@ -35,6 +35,7 @@ describe('MarketSelectorItem', () => {
     tradableInstrument: {
       instrument: {
         product: {
+          __typename: 'Future',
           settlementAsset: {
             symbol: 'SYM',
           },
