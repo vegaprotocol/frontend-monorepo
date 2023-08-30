@@ -144,7 +144,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'Sets how the probability of trading is calculated from the risk model. This is used to measure the relative competitiveness of an LP's supplied volume.'
   ),
   minimumProbabilityOfTradingLPOrders: t(
-    'sets a lower bound on the result of the probability of trading calculation.'
+    'Sets a lower bound on the result of the probability of trading calculation.'
   ),
   feeCalculationTimeStep: t(
     '(time period e.g. 1m) controls how often the quality of liquidity supplied by the LPs is evaluated and fees arising from that period are earmarked for specific parties. Minimum valid value 0. Maximum valid value validators.epoch.length.'
