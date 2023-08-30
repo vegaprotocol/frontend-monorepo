@@ -225,167 +225,166 @@ describe('StopOrder', () => {
     expect(submit).toBeCalled();
   });
 
-  it('validates size field', async () => {
+  it.each([
+    { fieldName: 'size', ocoValue: false },
+    { fieldName: 'ocoSize', ocoValue: true },
+  ])('validates $fieldName field', async ({ ocoValue }) => {
     render(generateJsx());
-    [false, true].forEach(async (ocoValue) => {
-      if (ocoValue) {
-        await userEvent.click(screen.getByTestId(oco));
-      }
-      await userEvent.click(screen.getByTestId(submitButton));
-      const getByTestId = (id: string) =>
-        screen.getByTestId(ocoPostfix(id, ocoValue));
-      const queryByTestId = (id: string) =>
-        screen.queryByTestId(ocoPostfix(id, ocoValue));
-      // default value should be invalid
-      expect(getByTestId(sizeErrorMessage)).toBeInTheDocument();
-      // to small value should be invalid
-      await userEvent.type(getByTestId(sizeInput), '0.01');
-      expect(getByTestId(sizeErrorMessage)).toBeInTheDocument();
+    if (ocoValue) {
+      await userEvent.click(screen.getByTestId(oco));
+    }
+    await userEvent.click(screen.getByTestId(submitButton));
+    const getByTestId = (id: string) =>
+      screen.getByTestId(ocoPostfix(id, ocoValue));
+    const queryByTestId = (id: string) =>
+      screen.queryByTestId(ocoPostfix(id, ocoValue));
+    // default value should be invalid
+    expect(getByTestId(sizeErrorMessage)).toBeInTheDocument();
+    // to small value should be invalid
+    await userEvent.type(getByTestId(sizeInput), '0.01');
+    expect(getByTestId(sizeErrorMessage)).toBeInTheDocument();
 
-      // clear and fill using valid value
-      await userEvent.clear(getByTestId(sizeInput));
-      await userEvent.type(getByTestId(sizeInput), '0.1');
-      expect(queryByTestId(sizeErrorMessage)).toBeNull();
-    });
+    // clear and fill using valid value
+    await userEvent.clear(getByTestId(sizeInput));
+    await userEvent.type(getByTestId(sizeInput), '0.1');
+    expect(queryByTestId(sizeErrorMessage)).toBeNull();
   });
 
-  it('validates price field', async () => {
+  it.each([
+    { fieldName: 'price', ocoValue: false },
+    { fieldName: 'ocoPrice', ocoValue: true },
+  ])('validates $fieldName field', async ({ ocoValue }) => {
     render(generateJsx());
-    [false, true].forEach(async (ocoValue) => {
-      if (ocoValue) {
-        await userEvent.click(screen.getByTestId(oco));
-      }
-      await userEvent.click(screen.getByTestId(submitButton));
-      const getByTestId = (id: string) =>
-        screen.getByTestId(ocoPostfix(id, ocoValue));
-      const queryByTestId = (id: string) =>
-        screen.queryByTestId(ocoPostfix(id, ocoValue));
-      expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
-      await userEvent.type(getByTestId(priceInput), '0.001');
-      expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
+    if (ocoValue) {
+      await userEvent.click(screen.getByTestId(oco));
+    }
+    await userEvent.click(screen.getByTestId(submitButton));
 
-      // switch to market order type error should disappear
-      await userEvent.click(getByTestId(orderTypeTrigger));
-      await userEvent.click(getByTestId(orderTypeMarket));
-      await userEvent.click(getByTestId(submitButton));
-      expect(queryByTestId(priceErrorMessage)).toBeNull();
+    const getByTestId = (id: string) =>
+      screen.getByTestId(ocoPostfix(id, ocoValue));
+    const queryByTestId = (id: string) =>
+      screen.queryByTestId(ocoPostfix(id, ocoValue));
 
-      // switch back to limit type
-      await userEvent.click(getByTestId(orderTypeTrigger));
-      await userEvent.click(getByTestId(orderTypeLimit));
-      await userEvent.click(getByTestId(submitButton));
-      expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
+    expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
+    await userEvent.type(getByTestId(priceInput), '0.001');
+    expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
 
-      // to small value should be invalid
-      await userEvent.type(getByTestId(priceInput), '0.001');
-      expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
+    // switch to market order type error should disappear
+    await userEvent.click(screen.getByTestId(orderTypeTrigger));
+    await userEvent.click(screen.getByTestId(orderTypeMarket));
+    await userEvent.click(screen.getByTestId(submitButton));
+    expect(queryByTestId(priceErrorMessage)).toBeNull();
 
-      // clear and fill using valid value
-      await userEvent.clear(getByTestId(priceInput));
-      await userEvent.type(getByTestId(priceInput), '0.01');
-      expect(queryByTestId(priceErrorMessage)).toBeNull();
-    });
+    // switch back to limit type
+    await userEvent.click(screen.getByTestId(orderTypeTrigger));
+    await userEvent.click(screen.getByTestId(orderTypeLimit));
+    await userEvent.click(screen.getByTestId(submitButton));
+    expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
+
+    // to small value should be invalid
+    await userEvent.type(getByTestId(priceInput), '0.001');
+    expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
+
+    // clear and fill using valid value
+    await userEvent.clear(getByTestId(priceInput));
+    await userEvent.type(getByTestId(priceInput), '0.01');
+    expect(queryByTestId(priceErrorMessage)).toBeNull();
   });
 
-  it('validates trigger price field', async () => {
+  it.each([
+    { fieldName: 'triggerPrice', ocoValue: false },
+    { fieldName: 'ocoTriggerPrice', ocoValue: true },
+  ])('validates $fieldName field', async ({ ocoValue }) => {
     render(generateJsx());
-    [false, true].forEach(async (ocoValue) => {
-      if (ocoValue) {
-        await userEvent.click(screen.getByTestId(oco));
-      }
-      await userEvent.click(screen.getByTestId(submitButton));
-      const getByTestId = (id: string) =>
-        screen.getByTestId(ocoPostfix(id, ocoValue));
-      const queryByTestId = (id: string) =>
-        screen.queryByTestId(ocoPostfix(id, ocoValue));
-      expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
-      // switch to trailing percentage offset trigger type
-      await userEvent.click(getByTestId(triggerTypeTrailingPercentOffset));
-      expect(queryByTestId(triggerPriceErrorMessage)).toBeNull();
+    if (ocoValue) {
+      await userEvent.click(screen.getByTestId(oco));
+      await userEvent.click(screen.getByTestId(triggerDirectionFallsBelow));
+    }
+    await userEvent.click(screen.getByTestId(submitButton));
+    const getByTestId = (id: string) =>
+      screen.getByTestId(ocoPostfix(id, ocoValue));
+    const queryByTestId = (id: string) =>
+      screen.queryByTestId(ocoPostfix(id, ocoValue));
+    expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
-      // switch back to price trigger type
-      await userEvent.click(getByTestId(triggerTypePrice));
-      expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
+    // switch to trailing percentage offset trigger type
+    await userEvent.click(getByTestId(triggerTypeTrailingPercentOffset));
+    expect(queryByTestId(triggerPriceErrorMessage)).toBeNull();
 
-      // to small value should be invalid
-      await userEvent.type(getByTestId(triggerPriceInput), '0.001');
-      expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
+    // switch back to price trigger type
+    await userEvent.click(getByTestId(triggerTypePrice));
+    expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
-      // clear and fill using value causing immediate trigger
-      await userEvent.clear(getByTestId(triggerPriceInput));
-      await userEvent.type(getByTestId(triggerPriceInput), '0.01');
-      expect(queryByTestId(triggerPriceErrorMessage)).toBeNull();
-      expect(queryByTestId(triggerPriceWarningMessage)).toBeInTheDocument();
+    // to small value should be invalid
+    await userEvent.type(getByTestId(triggerPriceInput), '0.001');
+    expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
-      // change to correct value
-      await userEvent.type(getByTestId(triggerPriceInput), '2');
-      expect(queryByTestId(triggerPriceWarningMessage)).toBeNull();
-    });
+    // clear and fill using value causing immediate trigger
+    await userEvent.clear(getByTestId(triggerPriceInput));
+    await userEvent.type(getByTestId(triggerPriceInput), '0.01');
+    expect(queryByTestId(triggerPriceErrorMessage)).toBeNull();
+    expect(queryByTestId(triggerPriceWarningMessage)).toBeInTheDocument();
+
+    // change to correct value
+    await userEvent.type(getByTestId(triggerPriceInput), '2');
+    expect(queryByTestId(triggerPriceWarningMessage)).toBeNull();
   });
 
-  it('validates trigger trailing percentage offset field', async () => {
+  it.each([
+    { fieldName: 'trailingPercentageOffset', ocoValue: false },
+    { fieldName: 'ocoTrailingPercentageOffset', ocoValue: true },
+  ])('validates $fieldName field', async ({ ocoValue }) => {
     render(generateJsx());
-    [false, true].forEach(async (ocoValue) => {
-      if (ocoValue) {
-        await userEvent.click(screen.getByTestId(oco));
-      }
-      await userEvent.click(screen.getByTestId(submitButton));
-      const getByTestId = (id: string) =>
-        screen.getByTestId(ocoPostfix(id, ocoValue));
-      const queryByTestId = (id: string) =>
-        screen.queryByTestId(ocoPostfix(id, ocoValue));
+    if (ocoValue) {
+      await userEvent.click(screen.getByTestId(oco));
+    }
+    await userEvent.click(screen.getByTestId(submitButton));
+    const getByTestId = (id: string) =>
+      screen.getByTestId(ocoPostfix(id, ocoValue));
+    const queryByTestId = (id: string) =>
+      screen.queryByTestId(ocoPostfix(id, ocoValue));
 
-      // should not show error with default form values
-      expect(
-        queryByTestId(triggerTrailingPercentOffsetErrorMessage)
-      ).toBeNull();
+    // should not show error with default form values
+    expect(queryByTestId(triggerTrailingPercentOffsetErrorMessage)).toBeNull();
 
-      // switch to trailing percentage offset trigger type
-      await userEvent.click(getByTestId(triggerTypeTrailingPercentOffset));
-      expect(
-        getByTestId(triggerTrailingPercentOffsetErrorMessage)
-      ).toBeInTheDocument();
+    // switch to trailing percentage offset trigger type
+    await userEvent.click(getByTestId(triggerTypeTrailingPercentOffset));
+    expect(
+      getByTestId(triggerTrailingPercentOffsetErrorMessage)
+    ).toBeInTheDocument();
 
-      // to small value should be invalid
-      await userEvent.type(
-        getByTestId(triggerTrailingPercentOffsetInput),
-        '0.09'
-      );
-      expect(
-        getByTestId(triggerTrailingPercentOffsetErrorMessage)
-      ).toBeInTheDocument();
+    // to small value should be invalid
+    await userEvent.type(
+      getByTestId(triggerTrailingPercentOffsetInput),
+      '0.09'
+    );
+    expect(
+      getByTestId(triggerTrailingPercentOffsetErrorMessage)
+    ).toBeInTheDocument();
 
-      // clear and fill using valid value
-      await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
-      await userEvent.type(
-        getByTestId(triggerTrailingPercentOffsetInput),
-        '0.1'
-      );
-      expect(
-        queryByTestId(triggerTrailingPercentOffsetErrorMessage)
-      ).toBeNull();
+    // clear and fill using valid value
+    await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
+    await userEvent.type(getByTestId(triggerTrailingPercentOffsetInput), '0.1');
+    expect(queryByTestId(triggerTrailingPercentOffsetErrorMessage)).toBeNull();
 
-      // to big value should be invalid
-      await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
-      await userEvent.type(
-        screen.getByTestId(triggerTrailingPercentOffsetInput),
-        '99.91'
-      );
-      expect(
-        getByTestId(triggerTrailingPercentOffsetErrorMessage)
-      ).toBeInTheDocument();
+    // to big value should be invalid
+    await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
+    await userEvent.type(
+      getByTestId(triggerTrailingPercentOffsetInput),
+      '99.91'
+    );
+    expect(
+      getByTestId(triggerTrailingPercentOffsetErrorMessage)
+    ).toBeInTheDocument();
 
-      // clear and fill using valid value
-      await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
-      await userEvent.type(
-        getByTestId(triggerTrailingPercentOffsetInput),
-        '99.9'
-      );
-      expect(
-        screen.queryByTestId(triggerTrailingPercentOffsetErrorMessage)
-      ).toBeNull();
-    });
+    // clear and fill using valid value
+    await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
+    await userEvent.type(
+      getByTestId(triggerTrailingPercentOffsetInput),
+      '99.9'
+    );
+    expect(queryByTestId(triggerTrailingPercentOffsetErrorMessage)).toBeNull();
   });
 
   it('sync oco trigger', async () => {
