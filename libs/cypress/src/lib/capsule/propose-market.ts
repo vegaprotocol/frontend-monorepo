@@ -4,7 +4,7 @@ import { createLog } from './logging';
 import type { ProposalSubmissionBody } from '@vegaprotocol/wallet';
 import { getProposal } from './get-proposal';
 import { sendVegaTx } from './wallet-client';
-import { ASSET_ID_FOR_MARKET, ASSET_SYMBOL } from './contants';
+import { ASSET_ID_FOR_MARKET, ASSET_SYMBOL } from './constants';
 
 const log = createLog('propose-market');
 
