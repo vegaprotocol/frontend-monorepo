@@ -1637,7 +1637,7 @@ export type LiquiditySLAParameters = {
    * Specifies the maximum fraction of their accrued fees an LP that meets the SLA implied by market.liquidity.commitmentMinTimeFraction will
    * lose to liquidity providers that achieved a higher SLA performance than them.
    */
-  slaCompletionFactor: Scalars['String'];
+  slaCompetitionFactor: Scalars['String'];
 };
 
 /** Parameters for the log normal risk model */

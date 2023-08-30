@@ -95,7 +95,7 @@ query MarketInfo($marketId: ID!) {
       commitmentMinTimeFraction
       providersFeeCalculationTimeStep
       performanceHysteresisEpochs
-      slaCompletionFactor
+      slaCompetitionFactor
     }
     tradableInstrument {
       instrument {

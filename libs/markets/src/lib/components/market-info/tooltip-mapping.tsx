@@ -116,7 +116,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
   performanceHysteresisEpochs: t(
     'Specifies the number of epochs over which past performance will continue to affect rewards.'
   ),
-  SLACompletionFactor: t(
+  SLACompetitionFactor: t(
     `The SLA completion factor. Specifies the maximum fraction of their accrued fees an LP that meets the SLA implied by market.liquidity.commitmentMinTimeFraction will lose to liquidity providers that achieved a higher SLA performance than them. `
   ),
   bondPenaltyParameter: t(

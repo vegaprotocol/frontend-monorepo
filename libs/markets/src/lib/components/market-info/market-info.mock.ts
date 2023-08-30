@@ -106,7 +106,7 @@ export const marketInfoQuery = (
         commitmentMinTimeFraction: '0.5',
         providersFeeCalculationTimeStep: 5000000000,
         performanceHysteresisEpochs: 4,
-        slaCompletionFactor: '0.5',
+        slaCompetitionFactor: '0.5',
       },
       tradableInstrument: {
         __typename: 'TradableInstrument',

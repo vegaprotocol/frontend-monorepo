@@ -667,7 +667,7 @@ export const LiquiditySLAParametersInfoPanel = ({
       market.liquiditySLAParameters?.providersFeeCalculationTimeStep,
     performanceHysteresisEpochs:
       market.liquiditySLAParameters?.performanceHysteresisEpochs,
-    SLACompletionFactor: market.liquiditySLAParameters?.slaCompletionFactor,
+    SLACompetitionFactor: market.liquiditySLAParameters?.slaCompetitionFactor,
   };
 
   const parentMarketData = parentMarket
@@ -679,8 +679,8 @@ export const LiquiditySLAParametersInfoPanel = ({
           parentMarket.liquiditySLAParameters?.providersFeeCalculationTimeStep,
         performanceHysteresisEpochs:
           parentMarket.liquiditySLAParameters?.performanceHysteresisEpochs,
-        slaCompletionFactor:
-          parentMarket.liquiditySLAParameters?.slaCompletionFactor,
+        slaCompetitionFactor:
+          parentMarket.liquiditySLAParameters?.slaCompetitionFactor,
       }
     : {};
 
