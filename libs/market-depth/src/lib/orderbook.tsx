@@ -17,20 +17,7 @@ export const rowHeight = 17;
 const rowGap = 1;
 const midHeight = 30;
 
-type PriceChange = 'up' | 'down' | 'none';
-
-const PRICE_CHANGE_ICON_MAP: Readonly<Record<PriceChange, VegaIconNames>> = {
-  up: VegaIconNames.ARROW_UP,
-  down: VegaIconNames.ARROW_DOWN,
-  none: VegaIconNames.BULLET,
-};
-const PRICE_CHANGE_CLASS_MAP: Readonly<Record<PriceChange, string>> = {
-  up: 'text-market-green-600 dark:text-market-green',
-  down: 'text-market-red dark:text-market-red',
-  none: 'text-vega-blue-500',
-};
-
-const OrderbookTable = ({
+const OrderbookSide = ({
   rows,
   resolution,
   type,
@@ -80,21 +67,78 @@ const OrderbookTable = ({
   );
 };
 
+export const OrderbookMid = ({
+  lastTradedPrice,
+  decimalPlaces,
+  assetSymbol,
+  bestOffer,
+  bestBid,
+}: {
+  lastTradedPrice: string;
+  decimalPlaces: number;
+  assetSymbol: string;
+  bestOffer: string;
+  bestBid: string;
+}) => {
+  const previousLastTradedPrice = usePrevious(lastTradedPrice);
+  const priceChangeRef = useRef<'up' | 'down' | 'none'>('none');
+  const spread = (BigInt(bestOffer) - BigInt(bestBid)).toString();
+
+  if (previousLastTradedPrice !== lastTradedPrice) {
+    priceChangeRef.current =
+      Number(previousLastTradedPrice) > Number(lastTradedPrice) ? 'down' : 'up';
+  }
+
+  return (
+    <div className="flex items-center justify-center text-base gap-2">
+      {priceChangeRef.current !== 'none' && (
+        <span
+          className={classNames('flex flex-col justify-center', {
+            'text-market-green-600 dark:text-market-green':
+              priceChangeRef.current === 'up',
+            'text-market-red dark:text-market-red':
+              priceChangeRef.current === 'down',
+          })}
+        >
+          <VegaIcon
+            name={
+              priceChangeRef.current === 'up'
+                ? VegaIconNames.ARROW_UP
+                : VegaIconNames.ARROW_DOWN
+            }
+          />
+        </span>
+      )}
+      <span
+        // monospace sizing doesn't quite align with alpha
+        className="font-mono text-[15px]"
+        data-testid={`last-traded-${lastTradedPrice}`}
+      >
+        {addDecimalsFormatNumber(lastTradedPrice, decimalPlaces)}
+      </span>
+      <span>{assetSymbol}</span>
+      <span className="font-mono text-xs text-muted" data-testid="spread">
+        ({addDecimalsFormatNumber(spread, decimalPlaces)})
+      </span>
+    </div>
+  );
+};
+
 interface OrderbookProps {
   decimalPlaces: number;
   positionDecimalPlaces: number;
   onClick: (args: { price?: string; size?: string }) => void;
-  midPrice?: string;
+  lastTradedPrice: string;
   bids: PriceLevelFieldsFragment[];
   asks: PriceLevelFieldsFragment[];
-  assetSymbol: string | undefined;
+  assetSymbol: string;
 }
 
 export const Orderbook = ({
   decimalPlaces,
   positionDecimalPlaces,
   onClick,
-  midPrice,
+  lastTradedPrice,
   asks,
   bids,
   assetSymbol,
@@ -108,20 +152,6 @@ export const Orderbook = ({
   const groupedBids = useMemo(() => {
     return compactRows(bids, VolumeType.bid, resolution);
   }, [bids, resolution]);
-  const previousMidPrice = usePrevious(midPrice);
-  const priceChangeRef = useRef<'up' | 'down' | 'none'>('none');
-  if (midPrice && previousMidPrice !== midPrice) {
-    priceChangeRef.current =
-      (previousMidPrice || '') > midPrice ? 'down' : 'up';
-  }
-
-  const priceChangeIcon = (
-    <span
-      className={classNames(PRICE_CHANGE_CLASS_MAP[priceChangeRef.current])}
-    >
-      <VegaIcon name={PRICE_CHANGE_ICON_MAP[priceChangeRef.current]} />
-    </span>
-  );
 
   return (
     <div className="h-full text-xs grid grid-rows-[1fr_min-content]">
@@ -132,8 +162,8 @@ export const Orderbook = ({
               1,
               Math.floor((height - midHeight) / 2 / (rowHeight + rowGap))
             );
-            const askRows = groupedAsks?.slice(limit * -1) ?? [];
-            const bidRows = groupedBids?.slice(0, limit) ?? [];
+            const askRows = groupedAsks.slice(limit * -1);
+            const bidRows = groupedBids.slice(0, limit);
             return (
               <div
                 className="overflow-hidden grid"
@@ -146,7 +176,7 @@ export const Orderbook = ({
               >
                 {askRows.length || bidRows.length ? (
                   <>
-                    <OrderbookTable
+                    <OrderbookSide
                       rows={askRows}
                       type={VolumeType.ask}
                       resolution={resolution}
@@ -155,21 +185,14 @@ export const Orderbook = ({
                       onClick={onClick}
                       width={width}
                     />
-                    <div className="flex items-center justify-center gap-2">
-                      {midPrice && (
-                        <>
-                          <span
-                            className="font-mono text-lg"
-                            data-testid={`middle-mark-price-${midPrice}`}
-                          >
-                            {addDecimalsFormatNumber(midPrice, decimalPlaces)}
-                          </span>
-                          <span className="text-base">{assetSymbol}</span>
-                          {priceChangeIcon}
-                        </>
-                      )}
-                    </div>
-                    <OrderbookTable
+                    <OrderbookMid
+                      lastTradedPrice={lastTradedPrice}
+                      decimalPlaces={decimalPlaces}
+                      assetSymbol={assetSymbol}
+                      bestOffer={asks[0].price}
+                      bestBid={bids[0].price}
+                    />
+                    <OrderbookSide
                       rows={bidRows}
                       type={VolumeType.bid}
                       resolution={resolution}
@@ -191,7 +214,7 @@ export const Orderbook = ({
       </div>
       <div className="border-t border-default">
         <OrderbookControls
-          midPrice={midPrice}
+          lastTradedPrice={lastTradedPrice}
           resolution={resolution}
           decimalPlaces={decimalPlaces}
           setResolution={setResolution}

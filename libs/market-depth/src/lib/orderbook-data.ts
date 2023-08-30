@@ -144,7 +144,7 @@ export interface MockDataGeneratorParams {
   numberOfSellRows: number;
   numberOfBuyRows: number;
   overlap: number;
-  midPrice?: string;
+  lastTradedPrice: string;
   bestStaticBidPrice: number;
   bestStaticOfferPrice: number;
 }
@@ -152,14 +152,14 @@ export interface MockDataGeneratorParams {
 export const generateMockData = ({
   numberOfSellRows,
   numberOfBuyRows,
-  midPrice,
+  lastTradedPrice,
   overlap,
   bestStaticBidPrice,
   bestStaticOfferPrice,
 }: MockDataGeneratorParams) => {
   let matrix = new Array(numberOfSellRows).fill(undefined);
   let price =
-    Number(midPrice) + (numberOfSellRows - Math.ceil(overlap / 2) + 1);
+    Number(lastTradedPrice) + (numberOfSellRows - Math.ceil(overlap / 2) + 1);
   const sell: PriceLevelFieldsFragment[] = matrix.map((row, i) => ({
     price: (price -= 1).toString(),
     volume: (numberOfSellRows - i + 1).toString(),
@@ -175,7 +175,7 @@ export const generateMockData = ({
   return {
     asks: sell,
     bids: buy,
-    midPrice,
+    lastTradedPrice,
     bestStaticBidPrice: bestStaticBidPrice.toString(),
     bestStaticOfferPrice: bestStaticOfferPrice.toString(),
   };

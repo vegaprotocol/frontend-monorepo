@@ -10,12 +10,12 @@ import {
 import { formatNumberFixed } from '@vegaprotocol/utils';
 
 export const OrderbookControls = ({
-  midPrice,
+  lastTradedPrice,
   resolution,
   decimalPlaces,
   setResolution,
 }: {
-  midPrice: string | undefined;
+  lastTradedPrice: string | undefined;
   resolution: number;
   decimalPlaces: number;
   setResolution: (resolution: number) => void;
@@ -23,7 +23,7 @@ export const OrderbookControls = ({
   const [isOpen, setOpen] = useState(false);
 
   const resolutions = new Array(
-    Math.max(midPrice?.toString().length ?? 0, decimalPlaces + 1)
+    Math.max(lastTradedPrice?.toString().length ?? 0, decimalPlaces + 1)
   )
     .fill(null)
     .map((v, i) => Math.pow(10, i));
