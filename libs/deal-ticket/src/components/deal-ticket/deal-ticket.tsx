@@ -22,7 +22,7 @@ import {
   Intent,
   Notification,
   Tooltip,
-  TradingButton,
+  TradingButton as Button,
   Pill,
 } from '@vegaprotocol/ui-toolkit';
 
@@ -658,7 +658,7 @@ export const DealTicket = ({
         pubKey={pubKey}
         onDeposit={onDeposit}
       />
-      <TradingButton
+      <Button
         data-testid="place-order"
         type="submit"
         className="w-full"
@@ -680,7 +680,7 @@ export const DealTicket = ({
             ? 'Place market order'
             : 'Place limit order'
         )}
-      </TradingButton>
+      </Button>
       <DealTicketMarginDetails
         onMarketClick={onMarketClick}
         assetSymbol={assetSymbol}

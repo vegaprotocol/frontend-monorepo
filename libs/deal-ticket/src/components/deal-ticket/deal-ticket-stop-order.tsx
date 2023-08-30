@@ -23,8 +23,9 @@ import {
   TradingInputError as InputError,
   TradingSelect as Select,
   Tooltip,
-  TradingButton,
+  TradingButton as Button,
   Pill,
+  Intent,
 } from '@vegaprotocol/ui-toolkit';
 import { getDerivedPrice } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
@@ -615,6 +616,136 @@ const formatTrigger = ({
         )}`
   }`;
 
+const SubmitButton = ({
+  assetUnit,
+  market,
+  oco,
+  ocoPrice,
+  ocoSize,
+  ocoTriggerPrice,
+  ocoTriggerTrailingPercentOffset,
+  ocoTriggerType,
+  ocoType,
+  price,
+  side,
+  size,
+  triggerDirection,
+  triggerPrice,
+  triggerTrailingPercentOffset,
+  triggerType,
+  type,
+}: Pick<
+  StopOrderFormValues,
+  | 'oco'
+  | 'ocoPrice'
+  | 'ocoSize'
+  | 'ocoTriggerPrice'
+  | 'ocoTriggerTrailingPercentOffset'
+  | 'ocoTriggerType'
+  | 'ocoType'
+  | 'price'
+  | 'side'
+  | 'size'
+  | 'triggerDirection'
+  | 'triggerPrice'
+  | 'triggerTrailingPercentOffset'
+  | 'triggerType'
+  | 'type'
+> &
+  Pick<StopOrderProps, 'market'> & { assetUnit?: string }) => {
+  const { quoteName } = market.tradableInstrument.instrument.product;
+  const risesAbove =
+    triggerDirection ===
+    Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE;
+  const subLabel = oco ? (
+    <>
+      {formatSizeAtPrice({
+        assetUnit,
+        decimalPlaces: market.decimalPlaces,
+        positionDecimalPlaces: market.positionDecimalPlaces,
+        price: risesAbove ? price : ocoPrice,
+        quoteName,
+        side,
+        size: risesAbove ? size : ocoSize,
+        type,
+      })}{' '}
+      {formatTrigger({
+        decimalPlaces: market.decimalPlaces,
+        quoteName,
+        triggerDirection:
+          Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+        triggerPrice: risesAbove ? triggerPrice : ocoTriggerPrice,
+        triggerTrailingPercentOffset: risesAbove
+          ? triggerTrailingPercentOffset
+          : ocoTriggerTrailingPercentOffset,
+        triggerType: risesAbove ? triggerType : ocoTriggerType,
+      })}
+      <br />
+      {formatSizeAtPrice({
+        assetUnit,
+        decimalPlaces: market.decimalPlaces,
+        positionDecimalPlaces: market.positionDecimalPlaces,
+        price: !risesAbove ? price : ocoPrice,
+        quoteName,
+        side,
+        size: !risesAbove ? size : ocoSize,
+        type: ocoType,
+      })}{' '}
+      {formatTrigger({
+        decimalPlaces: market.decimalPlaces,
+        quoteName,
+        triggerDirection:
+          Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
+        triggerPrice: !risesAbove ? triggerPrice : ocoTriggerPrice,
+        triggerTrailingPercentOffset: !risesAbove
+          ? triggerTrailingPercentOffset
+          : ocoTriggerTrailingPercentOffset,
+        triggerType: !risesAbove ? triggerType : ocoTriggerType,
+      })}
+    </>
+  ) : (
+    <>
+      {formatSizeAtPrice({
+        assetUnit,
+        decimalPlaces: market.decimalPlaces,
+        positionDecimalPlaces: market.positionDecimalPlaces,
+        price,
+        quoteName,
+        side,
+        size,
+        type,
+      })}
+      <br />
+      {t('Trigger')}{' '}
+      {formatTrigger({
+        decimalPlaces: market.decimalPlaces,
+        quoteName,
+        triggerDirection,
+        triggerPrice,
+        triggerTrailingPercentOffset,
+        triggerType,
+      })}
+    </>
+  );
+  return (
+    <Button
+      intent={side === Schema.Side.SIDE_BUY ? Intent.Success : Intent.Danger}
+      data-testid="place-order"
+      type="submit"
+      className="w-full"
+      subLabel={subLabel}
+    >
+      {t(
+        oco
+          ? 'Place OCO stop order'
+          : type === Schema.OrderType.TYPE_MARKET
+          ? 'Place market stop order'
+          : 'Place limit stop order'
+      )}
+    </Button>
+  );
+};
+
 export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const setType = useDealTicketFormValues((state) => state.setType);
@@ -708,80 +839,6 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const normalizedPrice = price && removeDecimal(price, market.decimalPlaces);
   const normalizedSize =
     size && removeDecimal(size, market.positionDecimalPlaces);
-
-  const risesAbove =
-    triggerDirection ===
-    Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE;
-  const subLabel = oco ? (
-    <>
-      {formatSizeAtPrice({
-        assetUnit,
-        decimalPlaces: market.decimalPlaces,
-        positionDecimalPlaces: market.positionDecimalPlaces,
-        price: risesAbove ? price : ocoPrice,
-        quoteName,
-        side,
-        size: risesAbove ? size : ocoSize,
-        type,
-      })}{' '}
-      {formatTrigger({
-        decimalPlaces: market.decimalPlaces,
-        quoteName,
-        triggerDirection:
-          Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
-        triggerPrice: risesAbove ? triggerPrice : ocoTriggerPrice,
-        triggerTrailingPercentOffset: risesAbove
-          ? triggerTrailingPercentOffset
-          : ocoTriggerTrailingPercentOffset,
-        triggerType: risesAbove ? triggerType : ocoTriggerType,
-      })}
-      <br />
-      {formatSizeAtPrice({
-        assetUnit,
-        decimalPlaces: market.decimalPlaces,
-        positionDecimalPlaces: market.positionDecimalPlaces,
-        price: !risesAbove ? price : ocoPrice,
-        quoteName,
-        side,
-        size: !risesAbove ? size : ocoSize,
-        type: ocoType,
-      })}{' '}
-      {formatTrigger({
-        decimalPlaces: market.decimalPlaces,
-        quoteName,
-        triggerDirection:
-          Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
-        triggerPrice: !risesAbove ? triggerPrice : ocoTriggerPrice,
-        triggerTrailingPercentOffset: !risesAbove
-          ? triggerTrailingPercentOffset
-          : ocoTriggerTrailingPercentOffset,
-        triggerType: !risesAbove ? triggerType : ocoTriggerType,
-      })}
-    </>
-  ) : (
-    <>
-      {formatSizeAtPrice({
-        assetUnit,
-        decimalPlaces: market.decimalPlaces,
-        positionDecimalPlaces: market.positionDecimalPlaces,
-        price,
-        quoteName,
-        side,
-        size,
-        type,
-      })}
-      <br />
-      {t('Trigger')}{' '}
-      {formatTrigger({
-        decimalPlaces: market.decimalPlaces,
-        quoteName,
-        triggerDirection,
-        triggerPrice,
-        triggerTrailingPercentOffset,
-        triggerType,
-      })}
-    </>
-  );
 
   return (
     <form
@@ -962,11 +1019,12 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             return (
               <Checkbox
                 onCheckedChange={(value) => {
+                  const now = Date.now();
                   if (
                     value &&
-                    (!expiresAt || new Date(expiresAt).getTime() < Date.now())
+                    (!expiresAt || new Date(expiresAt).getTime() < now)
                   ) {
-                    setValue('expiresAt', formatForInput(new Date()), {
+                    setValue('expiresAt', formatForInput(new Date(now)), {
                       shouldValidate: true,
                     });
                   }
@@ -1037,20 +1095,25 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         </>
       )}
       <NoWalletWarning isReadOnly={isReadOnly} />
-      <TradingButton
-        data-testid="place-order"
-        type="submit"
-        className="w-full"
-        subLabel={subLabel}
-      >
-        {t(
-          oco
-            ? 'Place OCO stop order'
-            : type === Schema.OrderType.TYPE_MARKET
-            ? 'Place market stop order'
-            : 'Place limit stop order'
-        )}
-      </TradingButton>
+      <SubmitButton
+        assetUnit={assetUnit}
+        market={market}
+        oco={oco}
+        ocoPrice={ocoPrice}
+        ocoSize={ocoSize}
+        ocoTriggerPrice={ocoTriggerPrice}
+        ocoTriggerTrailingPercentOffset={ocoTriggerTrailingPercentOffset}
+        ocoTriggerType={ocoTriggerType}
+        ocoType={ocoType}
+        price={price}
+        side={side}
+        size={size}
+        triggerDirection={triggerDirection}
+        triggerPrice={triggerPrice}
+        triggerTrailingPercentOffset={triggerTrailingPercentOffset}
+        triggerType={triggerType}
+        type={type}
+      />
     </form>
   );
 };

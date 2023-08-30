@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket } from '../../test-helpers';
 import { StopOrder } from './deal-ticket-stop-order';
@@ -12,6 +12,7 @@ import {
   useDealTicketFormValues,
 } from '../../hooks/use-form-values';
 import type { FeatureFlags } from '@vegaprotocol/environment';
+import { formatForInput } from '@vegaprotocol/utils';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
@@ -57,7 +58,7 @@ const orderSideBuy = 'order-side-SIDE_BUY';
 const orderSideSell = 'order-side-SIDE_SELL';
 
 const triggerDirectionRisesAbove = 'triggerDirection-risesAbove';
-// const triggerDirectionFallsBelow = 'triggerDirection-fallsBelow';
+const triggerDirectionFallsBelow = 'triggerDirection-fallsBelow';
 
 const expiryStrategySubmit = 'expiryStrategy-submit';
 const expiryStrategyCancel = 'expiryStrategy-cancel';
@@ -385,5 +386,79 @@ describe('StopOrder', () => {
         screen.queryByTestId(triggerTrailingPercentOffsetErrorMessage)
       ).toBeNull();
     });
+  });
+
+  it('sync oco trigger', async () => {
+    render(generateJsx());
+    await userEvent.click(screen.getByTestId(oco));
+    expect(
+      screen.getByTestId(triggerDirectionRisesAbove).dataset.state
+    ).toEqual('checked');
+    expect(
+      screen.getByTestId(ocoPostfix(triggerDirectionFallsBelow)).dataset.state
+    ).toEqual('checked');
+    await userEvent.click(screen.getByTestId(triggerDirectionFallsBelow));
+    expect(
+      screen.getByTestId(triggerDirectionRisesAbove).dataset.state
+    ).toEqual('unchecked');
+    expect(
+      screen.getByTestId(ocoPostfix(triggerDirectionFallsBelow)).dataset.state
+    ).toEqual('unchecked');
+    await userEvent.click(
+      screen.getByTestId(ocoPostfix(triggerDirectionFallsBelow))
+    );
+    expect(
+      screen.getByTestId(triggerDirectionRisesAbove).dataset.state
+    ).toEqual('checked');
+    expect(
+      screen.getByTestId(ocoPostfix(triggerDirectionFallsBelow)).dataset.state
+    ).toEqual('checked');
+  });
+
+  it('disables submit expiry strategy when OCO selected', async () => {
+    render(generateJsx());
+    await userEvent.click(screen.getByTestId(expire));
+    await userEvent.click(screen.getByTestId(expiryStrategySubmit));
+    await userEvent.click(screen.getByTestId(oco));
+    expect(screen.getByTestId(expiryStrategySubmit).dataset.state).toEqual(
+      'unchecked'
+    );
+    expect(screen.getByTestId(expiryStrategySubmit)).toBeDisabled();
+    await userEvent.click(screen.getByTestId(oco));
+    await userEvent.click(screen.getByTestId(expiryStrategySubmit));
+    expect(screen.getByTestId(expiryStrategySubmit).dataset.state).toEqual(
+      'checked'
+    );
+    expect(screen.getByTestId(expiryStrategySubmit)).not.toBeDisabled();
+  });
+
+  it('sets expiry time/date to now if expiry is changed to checked', async () => {
+    const now = Math.round(Date.now() / 1000) * 1000;
+    render(generateJsx());
+    jest.spyOn(global.Date, 'now').mockImplementationOnce(() => now);
+    await userEvent.click(screen.getByTestId(expire));
+
+    // expiry time/date was empty it should be set to now
+    expect(
+      new Date(screen.getByTestId<HTMLInputElement>(datePicker).value).getTime()
+    ).toEqual(now);
+
+    // set to the value in the past (now - 1s)
+    fireEvent.change(screen.getByTestId<HTMLInputElement>(datePicker), {
+      target: { value: formatForInput(new Date(now - 1000)) },
+    });
+    expect(
+      new Date(
+        screen.getByTestId<HTMLInputElement>(datePicker).value
+      ).getTime() + 1000
+    ).toEqual(now);
+
+    // switch expiry off and on
+    await userEvent.click(screen.getByTestId(expire));
+    await userEvent.click(screen.getByTestId(expire));
+    // expiry time/date was in the past it should be set to now
+    expect(
+      new Date(screen.getByTestId<HTMLInputElement>(datePicker).value).getTime()
+    ).toEqual(now);
   });
 });
