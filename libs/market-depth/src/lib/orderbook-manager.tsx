@@ -17,7 +17,7 @@ export type OrderbookData = {
 
 interface OrderbookManagerProps {
   marketId: string;
-  onClick?: (args: { price?: string; size?: string }) => void;
+  onClick: (args: { price?: string; size?: string }) => void;
 }
 
 export const OrderbookManager = ({

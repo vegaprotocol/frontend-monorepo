@@ -7,7 +7,7 @@ export enum VolumeType {
 }
 export interface CumulativeVol {
   value: number;
-  relativeValue?: number;
+  relativeValue: number;
 }
 
 export interface OrderbookRowData {
@@ -83,7 +83,11 @@ export const compactRows = (
       value += Number(subRow.volume);
       subRow = groupedByLevel[price].pop();
     }
-    orderbookData.push({ price, value, cumulativeVol: { value: 0 } });
+    orderbookData.push({
+      price,
+      value,
+      cumulativeVol: { value: 0, relativeValue: 0 },
+    });
   });
 
   orderbookData.sort((a, b) => {

@@ -1,23 +1,122 @@
-import React, { memo } from 'react';
+import type { ReactNode } from 'react';
+import { memo } from 'react';
 import { addDecimal, addDecimalsFixedFormatNumber } from '@vegaprotocol/utils';
-import { NumericCell, PriceCell } from '@vegaprotocol/datagrid';
+import { NumericCell } from '@vegaprotocol/datagrid';
 import { VolumeType } from './orderbook-data';
 import classNames from 'classnames';
 
+const HIDE_VOL_WIDTH = 190;
+const HIDE_CUMULATIVE_VOL_WIDTH = 260;
+
 interface OrderbookRowProps {
   value: number;
-  cumulativeValue?: number;
-  cumulativeRelativeValue?: number;
+  cumulativeValue: number;
+  cumulativeRelativeValue: number;
   decimalPlaces: number;
   positionDecimalPlaces: number;
   price: string;
-  onClick?: (args: { price?: string; size?: string }) => void;
+  onClick: (args: { price?: string; size?: string }) => void;
   type: VolumeType;
   width: number;
 }
 
-const HIDE_VOL_WIDTH = 150;
-const HIDE_CUMULATIVE_VOL_WIDTH = 220;
+export const OrderbookRow = memo(
+  ({
+    value,
+    cumulativeValue,
+    cumulativeRelativeValue,
+    decimalPlaces,
+    positionDecimalPlaces,
+    price,
+    onClick,
+    type,
+    width,
+  }: OrderbookRowProps) => {
+    const txtId = type === VolumeType.bid ? 'bid' : 'ask';
+    const cols =
+      width >= HIDE_CUMULATIVE_VOL_WIDTH ? 3 : width >= HIDE_VOL_WIDTH ? 2 : 1;
+    return (
+      <div className="relative px-1">
+        <CumulationBar cumulativeValue={cumulativeRelativeValue} type={type} />
+        <div
+          data-testid={`${txtId}-rows-container`}
+          className={classNames('grid gap-1 text-right', `grid-cols-${cols}`)}
+        >
+          <OrderBookRowCell
+            onClick={() => onClick({ price: addDecimal(price, decimalPlaces) })}
+          >
+            <NumericCell
+              testId={`price-${price}`}
+              value={BigInt(price)}
+              valueFormatted={addDecimalsFixedFormatNumber(
+                price,
+                decimalPlaces
+              )}
+              className={classNames({
+                'text-market-red dark:text-market-red': type === VolumeType.ask,
+                'text-market-green-600 dark:text-market-green':
+                  type === VolumeType.bid,
+              })}
+            />
+          </OrderBookRowCell>
+          {width >= HIDE_VOL_WIDTH && (
+            <OrderBookRowCell
+              onClick={() =>
+                onClick({ size: addDecimal(value, positionDecimalPlaces) })
+              }
+            >
+              <NumericCell
+                testId={`${txtId}-vol-${price}`}
+                value={value}
+                valueFormatted={addDecimalsFixedFormatNumber(
+                  value,
+                  positionDecimalPlaces ?? 0
+                )}
+              />
+            </OrderBookRowCell>
+          )}
+          {width >= HIDE_CUMULATIVE_VOL_WIDTH && (
+            <OrderBookRowCell
+              onClick={() =>
+                onClick({
+                  size: addDecimal(cumulativeValue, positionDecimalPlaces),
+                })
+              }
+            >
+              <NumericCell
+                testId={`cumulative-vol-${price}`}
+                value={cumulativeValue}
+                valueFormatted={addDecimalsFixedFormatNumber(
+                  cumulativeValue,
+                  positionDecimalPlaces
+                )}
+              />
+            </OrderBookRowCell>
+          )}
+        </div>
+      </div>
+    );
+  }
+);
+
+OrderbookRow.displayName = 'OrderbookRow';
+
+const OrderBookRowCell = ({
+  children,
+  onClick,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+}) => {
+  return (
+    <button
+      className="overflow-hidden text-right text-ellipsis whitespace-nowrap hover:dark:bg-neutral-800 hover:bg-neutral-200"
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};
 
 const CumulationBar = ({
   cumulativeValue = 0,
@@ -41,118 +140,3 @@ const CumulationBar = ({
     />
   );
 };
-
-const CumulativeVol = memo(
-  ({
-    testId,
-    positionDecimalPlaces,
-    cumulativeValue,
-    onClick,
-  }: {
-    ask?: number;
-    bid?: number;
-    cumulativeValue?: number;
-    testId?: string;
-    className?: string;
-    positionDecimalPlaces: number;
-    onClick?: (size?: string | number) => void;
-  }) => {
-    const volume = cumulativeValue ? (
-      <NumericCell
-        testId={testId}
-        value={cumulativeValue}
-        valueFormatted={addDecimalsFixedFormatNumber(
-          cumulativeValue,
-          positionDecimalPlaces ?? 0
-        )}
-      />
-    ) : null;
-
-    return onClick && volume ? (
-      <button
-        onClick={() => onClick(cumulativeValue)}
-        className="hover:dark:bg-neutral-800 hover:bg-neutral-200 text-right pr-1"
-      >
-        {volume}
-      </button>
-    ) : (
-      <div className="pr-1" data-testid={testId}>
-        {volume}
-      </div>
-    );
-  }
-);
-CumulativeVol.displayName = 'OrderBookCumulativeVol';
-
-export const OrderbookRow = React.memo(
-  ({
-    value,
-    cumulativeValue,
-    cumulativeRelativeValue,
-    decimalPlaces,
-    positionDecimalPlaces,
-    price,
-    onClick,
-    type,
-    width,
-  }: OrderbookRowProps) => {
-    const txtId = type === VolumeType.bid ? 'bid' : 'ask';
-    const cols =
-      width >= HIDE_CUMULATIVE_VOL_WIDTH ? 3 : width >= HIDE_VOL_WIDTH ? 2 : 1;
-    return (
-      <div className="relative pr-1">
-        <CumulationBar cumulativeValue={cumulativeRelativeValue} type={type} />
-        <div
-          data-testid={`${txtId}-rows-container`}
-          className={classNames('grid gap-1 text-right', `grid-cols-${cols}`)}
-        >
-          <PriceCell
-            testId={`price-${price}`}
-            value={BigInt(price)}
-            onClick={() =>
-              onClick && onClick({ price: addDecimal(price, decimalPlaces) })
-            }
-            valueFormatted={addDecimalsFixedFormatNumber(price, decimalPlaces)}
-            className={
-              type === VolumeType.ask
-                ? 'text-market-red dark:text-market-red'
-                : 'text-market-green-600 dark:text-market-green'
-            }
-          />
-          {width >= HIDE_VOL_WIDTH && (
-            <PriceCell
-              testId={`${txtId}-vol-${price}`}
-              onClick={(value) =>
-                onClick &&
-                value &&
-                onClick({
-                  size: addDecimal(value, positionDecimalPlaces),
-                })
-              }
-              value={value}
-              valueFormatted={addDecimalsFixedFormatNumber(
-                value,
-                positionDecimalPlaces
-              )}
-            />
-          )}
-          {width >= HIDE_CUMULATIVE_VOL_WIDTH && (
-            <CumulativeVol
-              testId={`cumulative-vol-${price}`}
-              onClick={() =>
-                onClick &&
-                cumulativeValue &&
-                onClick({
-                  size: addDecimal(cumulativeValue, positionDecimalPlaces),
-                })
-              }
-              positionDecimalPlaces={positionDecimalPlaces}
-              cumulativeValue={cumulativeValue}
-            />
-          )}
-        </div>
-      </div>
-    );
-  }
-);
-OrderbookRow.displayName = 'OrderbookRow';
