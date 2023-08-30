@@ -129,7 +129,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'used to calculate how much is the LP bond slashed if they fail to reach the minimum SLA. Valid values: any decimal number >= 0 and <=1.0 with a default value of 0.5.'
   ),
   maximumLiquidityFeeFactorLevel: t(
-    'used in validating fee amounts that are submitted as part of the LP commitment transaction. Note that a value of 0.05 = 5%. Valid values are: any decimal number >=0 and <=1. Default value 1.'
+    'Used to validate the proposed fee amounts that are submitted as part of the LP commitment transaction. Note that a value of 0.05 = 5%. Valid values are: any decimal number >=0 and <=1. Default value 1.'
   ),
   stakeToCCYVolume: t(
     'used to translate a commitment to an obligation. Any decimal number >0 with default value 1.0.'
