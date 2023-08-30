@@ -403,13 +403,9 @@ export const DealTicket = ({
         }}
         render={({ field, fieldState }) => (
           <div className={isLimitType ? 'mb-4' : 'mb-2'}>
-            <FormGroup
-              label={t('Size')}
-              labelFor="input-order-size-limit"
-              compact
-            >
+            <FormGroup label={t('Size')} labelFor="order-size" compact>
               <Input
-                id="input-order-size-limit"
+                id="order-size"
                 className="w-full"
                 type="number"
                 appendElement={assetUnit && <Pill size="xs">{assetUnit}</Pill>}
