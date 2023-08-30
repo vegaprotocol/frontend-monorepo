@@ -120,7 +120,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     `The SLA completion factor. Specifies the maximum fraction of their accrued fees an LP that meets the SLA implied by market.liquidity.commitmentMinTimeFraction will lose to liquidity providers that achieved a higher SLA performance than them. `
   ),
   bondPenaltyParameter: t(
-    'used to calculate the penalty to liquidity providers when they fail to support their open position through sufficient general+margin balance. Valid values: any decimal number >= 0 with a default value of 0.1.'
+    'Used to calculate the penalty to liquidity providers when they cannot support their open position with the assets in their margin and general accounts. Valid values: any decimal number >= 0 with a default value of 0.1.'
   ),
   nonPerformanceBondPenaltySlope: t(
     'used to calculate how much is the LP bond slashed if they fail to reach the minimum SLA. Valid values: any decimal number >= 0 with a default value of 2.0.'
