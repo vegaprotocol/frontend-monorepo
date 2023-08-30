@@ -11,4 +11,7 @@ As a market user I want to see information about orders existing in the market.
 - I **Must** see prices sorted descending (<a name="6003-ORDB-007" href="#6003-ORDB-007">6003-ORDB-007</a>)
 - I **Must** be able to set a resolution of data (<a name="6003-ORDB-008" href="#6003-ORDB-008">6003-ORDB-008</a>)
 - When I click specific price, it **Must** be copied to deal ticket form (<a name="6003-ORDB-009" href="#6003-ORDB-009">6003-ORDB-009</a>)
-- Order is removed from orderbook if traded away(<a name="6003-ORDB-010" href="#6003-ORDB-010">6003-ORDB-010</a>)
+- Order is removed from orderbook if traded away (<a name="6003-ORDB-010" href="#6003-ORDB-010">6003-ORDB-010</a>)
+- Spread (bestAsk - bestOffer) is show in the mid secion (<a name="6003-ORDB-011" href="#6003-ORDB-011">6003-ORDB-011</a>)
+- Cumulative volume is displayed visually (volume bars) as a proportion of the entire book volume (<a name="6003-ORDB-012" href="#6003-ORDB-012">6003-ORDB-012</a>)
+- Mid section shows the last traded price movement using an arrow (<a name="6003-ORDB-013" href="#6003-ORDB-013">6003-ORDB-013</a>)
