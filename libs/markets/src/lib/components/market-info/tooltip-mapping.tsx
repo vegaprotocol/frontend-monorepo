@@ -135,7 +135,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'used to translate a commitment to an obligation. Any decimal number >0 with default value 1.0.'
   ),
   epochLength: t(
-    'LP rewards from liquidity fees are paid out once per epoch according to whether they met the "SLA" (implied by market.liquidity.commitmentMinTimeFraction) and their previous performance (for the last n epochs defined by market.liquidity.performanceHysteresisEpochs), see epoch spec.'
+    'LP rewards from liquidity fees are paid out once per epoch. How much they receive depends on whether they met the liquidity SLA and their previous performance in recent epochs (defined by market.liquidity.performanceHysteresisEpochs).'
   ),
   earlyExitPenalty: t(
     '(decimal ≥0), sets how much LP forfeits of their bond in case the market is below target stake and they wish to reduce their commitment. If set to 0 there is no penalty for early exit, if set to 1 their entire bond is forfeited if they exit their entire commitment, if set >1, their entire bond will be forfeited for exiting 1/earlyExitPenalty of their commitment amount.'
