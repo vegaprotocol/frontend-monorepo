@@ -13,6 +13,7 @@ interface OrderbookRowProps {
   cumulativeVolume: number;
   decimalPlaces: number;
   positionDecimalPlaces: number;
+  priceFormatDecimalPlaces: number;
   price: string;
   onClick: (args: { price?: string; size?: string }) => void;
   type: VolumeType;
@@ -26,6 +27,7 @@ export const OrderbookRow = memo(
     cumulativeVolume,
     decimalPlaces,
     positionDecimalPlaces,
+    priceFormatDecimalPlaces,
     price,
     onClick,
     type,
@@ -35,6 +37,7 @@ export const OrderbookRow = memo(
     const txtId = type === VolumeType.bid ? 'bid' : 'ask';
     const cols =
       width >= HIDE_CUMULATIVE_VOL_WIDTH ? 3 : width >= HIDE_VOL_WIDTH ? 2 : 1;
+
     return (
       <div className="relative px-1">
         <CumulationBar
@@ -54,7 +57,8 @@ export const OrderbookRow = memo(
               value={BigInt(price)}
               valueFormatted={addDecimalsFixedFormatNumber(
                 price,
-                decimalPlaces
+                decimalPlaces,
+                priceFormatDecimalPlaces
               )}
               className={classNames({
                 'text-market-red dark:text-market-red': type === VolumeType.ask,

@@ -36,6 +36,11 @@ const OrderbookSide = ({
   width: number;
   maxVol: number;
 }) => {
+  // we'll want to only display a relevant number of dps based on the
+  // current resolution selection
+  const priceFormatDecimalPlaces = Math.ceil(
+    decimalPlaces - Math.log10(resolution)
+  );
   return (
     <div
       className={
@@ -55,8 +60,9 @@ const OrderbookSide = ({
             key={data.price}
             price={data.price}
             onClick={onClick}
-            decimalPlaces={decimalPlaces - Math.log10(resolution)}
+            decimalPlaces={decimalPlaces}
             positionDecimalPlaces={positionDecimalPlaces}
+            priceFormatDecimalPlaces={priceFormatDecimalPlaces}
             volume={data.volume}
             cumulativeVolume={data.cumulativeVol}
             type={type}
