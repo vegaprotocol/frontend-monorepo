@@ -114,7 +114,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'The time step for providers fee. Specifies how often the quality of liquidity supplied by the LPS is evaluated and fees arising from that period are earmarked for specific parties.'
   ),
   performanceHysteresisEpochs: t(
-    'The performance hysteresis epochs. Specifies the number of liquidity epochs over which past performance will continue to affect rewards.'
+    'Specifies the number of epochs over which past performance will continue to affect rewards.'
   ),
   SLACompletionFactor: t(
     `The SLA completion factor. Specifies the maximum fraction of their accrued fees an LP that meets the SLA implied by market.liquidity.commitmentMinTimeFraction will lose to liquidity providers that achieved a higher SLA performance than them. `
