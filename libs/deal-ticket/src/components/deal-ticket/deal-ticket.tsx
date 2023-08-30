@@ -402,7 +402,7 @@ export const DealTicket = ({
           validate: validateAmount(sizeStep, 'Size'),
         }}
         render={({ field, fieldState }) => (
-          <div className={`mb-${isLimitType ? '4' : '2'}`}>
+          <div className={isLimitType ? 'mb-4' : 'mb-2'}>
             <FormGroup
               label={t('Size')}
               labelFor="input-order-size-limit"

@@ -345,7 +345,7 @@ const Size = ({
         const { value, ...props } = field;
         const id = `order-size${oco ? '-oco' : ''}`;
         return (
-          <div className={`mb-${isLimitType ? '4' : '2'}`}>
+          <div className={isLimitType ? 'mb-4' : 'mb-2'}>
             <FormGroup labelFor={id} label={t(`Size`)} compact>
               <Input
                 id={id}
@@ -572,7 +572,7 @@ const formatSizeAtPrice = ({
   positionDecimalPlaces: number;
   quoteName: string;
 }) =>
-  `${side === Schema.Side.SIDE_SELL ? '-' : ''}${formatValue(
+  `${formatValue(
     removeDecimal(size, positionDecimalPlaces),
     positionDecimalPlaces
   )} ${assetUnit} @ ${
