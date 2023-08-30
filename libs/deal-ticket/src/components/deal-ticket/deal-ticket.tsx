@@ -400,6 +400,7 @@ export const DealTicket = ({
             message: t('Size cannot be lower than ' + sizeStep),
           },
           validate: validateAmount(sizeStep, 'Size'),
+          deps: ['peakSize', 'minimumVisibleSize'],
         }}
         render={({ field, fieldState }) => (
           <div className={isLimitType ? 'mb-4' : 'mb-2'}>

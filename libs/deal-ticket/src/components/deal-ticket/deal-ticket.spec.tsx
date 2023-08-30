@@ -533,6 +533,61 @@ describe('DealTicket', () => {
     expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
   });
 
+  it('validates iceberg field', async () => {
+    const peakSizeErrorMessage = 'deal-ticket-peak-error-message';
+    const minimumSizeErrorMessage = 'deal-ticket-minimum-error-message';
+    const sizeInput = 'order-size';
+    const peakSizeInput = 'order-peak-size';
+    const minimumSizeInput = 'order-minimum-size';
+    const submitButton = 'place-order';
+
+    render(generateJsx());
+    await userEvent.selectOptions(
+      screen.getByTestId('order-tif'),
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GFA
+    );
+    await userEvent.click(screen.getByTestId('iceberg'));
+    await userEvent.click(screen.getByTestId(submitButton));
+
+    // validate empty fields
+    expect(screen.getByTestId(peakSizeErrorMessage)).toBeInTheDocument();
+    expect(screen.getByTestId(minimumSizeErrorMessage)).toBeInTheDocument();
+
+    await userEvent.type(screen.getByTestId(peakSizeInput), '0.01');
+    await userEvent.type(screen.getByTestId(minimumSizeInput), '0.01');
+
+    // validate value smaller than step
+    expect(screen.getByTestId(peakSizeErrorMessage)).toBeInTheDocument();
+    expect(screen.getByTestId(minimumSizeErrorMessage)).toBeInTheDocument();
+
+    await userEvent.clear(screen.getByTestId(peakSizeInput));
+    await userEvent.type(screen.getByTestId(peakSizeInput), '0.5');
+    await userEvent.clear(screen.getByTestId(minimumSizeInput));
+    await userEvent.type(screen.getByTestId(minimumSizeInput), '0.7');
+
+    await userEvent.clear(screen.getByTestId(sizeInput));
+    await userEvent.type(screen.getByTestId(sizeInput), '0.1');
+
+    // validate value higher than size
+    expect(screen.getByTestId(peakSizeErrorMessage)).toBeInTheDocument();
+    expect(screen.getByTestId(minimumSizeErrorMessage)).toBeInTheDocument();
+
+    await userEvent.clear(screen.getByTestId(sizeInput));
+    await userEvent.type(screen.getByTestId(sizeInput), '1');
+    // validate peak higher than minimum
+    expect(screen.queryByTestId(peakSizeErrorMessage)).toBeNull();
+    expect(screen.getByTestId(minimumSizeErrorMessage)).toBeInTheDocument();
+
+    await userEvent.clear(screen.getByTestId(peakSizeInput));
+    await userEvent.type(screen.getByTestId(peakSizeInput), '1');
+    await userEvent.clear(screen.getByTestId(minimumSizeInput));
+    await userEvent.type(screen.getByTestId(minimumSizeInput), '1');
+
+    // validate correct values
+    expect(screen.queryByTestId(peakSizeErrorMessage)).toBeNull();
+    expect(screen.queryByTestId(minimumSizeErrorMessage)).toBeNull();
+  });
+
   it('sets expiry time/date to now if expiry is changed to checked', async () => {
     const datePicker = 'date-picker-field';
     const now = Math.round(Date.now() / 1000) * 1000;

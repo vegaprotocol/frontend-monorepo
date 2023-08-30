@@ -32,7 +32,7 @@ export const DealTicketSizeIceberg = ({
   const renderPeakSizeError = () => {
     if (peakSizeError) {
       return (
-        <TradingInputError testId="deal-ticket-peak-error-message-size-limit">
+        <TradingInputError testId="deal-ticket-peak-error-message">
           {peakSizeError}
         </TradingInputError>
       );
@@ -44,7 +44,7 @@ export const DealTicketSizeIceberg = ({
   const renderMinimumSizeError = () => {
     if (minimumVisibleSizeError) {
       return (
-        <TradingInputError testId="deal-ticket-minimum-error-message-size-limit">
+        <TradingInputError testId="deal-ticket-minimum-error-message">
           {minimumVisibleSizeError}
         </TradingInputError>
       );
