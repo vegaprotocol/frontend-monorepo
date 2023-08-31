@@ -1,12 +1,10 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
+import type { VegaWalletConfig } from '../provider';
 import { VegaWalletProvider } from '../provider';
-import {
-  VegaConnectDialog,
-  CLOSE_DELAY,
-  useVegaWalletDialogStore,
-} from './connect-dialog';
+import { VegaConnectDialog, CLOSE_DELAY } from './connect-dialog';
+import { useVegaWalletDialogStore } from './vega-wallet-dialog-store';
 import type { VegaConnectDialogProps } from '..';
 import {
   ClientErrors,
@@ -15,7 +13,6 @@ import {
   ViewConnector,
   WalletError,
 } from '../connectors';
-import { useEnvironment } from '@vegaprotocol/environment';
 import type { ChainIdQuery } from './__generated__/ChainId';
 import { ChainIdDocument } from './__generated__/ChainId';
 import {
@@ -28,24 +25,12 @@ import {
 const mockUpdateDialogOpen = jest.fn();
 const mockCloseVegaDialog = jest.fn();
 
-jest.mock('@vegaprotocol/environment');
 let mockIsDesktopRunning = true;
+
 jest.mock('../use-is-wallet-service-running', () => ({
   useIsWalletServiceRunning: jest
     .fn()
     .mockImplementation(() => mockIsDesktopRunning),
-}));
-
-// @ts-ignore ignore mock implementation
-useEnvironment.mockImplementation(() => ({
-  VEGA_ENV: 'TESTNET',
-  VEGA_URL: 'https://vega-node.url',
-  VEGA_NETWORKS: JSON.stringify({}),
-  VEGA_WALLET_URL: mockVegaWalletUrl,
-  GIT_BRANCH: 'test',
-  GIT_COMMIT_HASH: 'abcdef',
-  GIT_ORIGIN_URL: 'https://github.com/test/repo',
-  HOSTED_WALLET_URL: mockHostedWalletUrl,
 }));
 
 let defaultProps: VegaConnectDialogProps;
@@ -59,7 +44,9 @@ const connectors = {
   jsonRpc,
   view,
   injected,
+  snap: undefined,
 };
+
 beforeEach(() => {
   jest.clearAllMocks();
   defaultProps = {
@@ -73,12 +60,24 @@ beforeEach(() => {
   });
 });
 
-const mockVegaWalletUrl = 'http://mock.wallet.com';
-const mockHostedWalletUrl = 'http://mock.hosted.com';
-
 const mockChainId = 'chain-id';
 
-function generateJSX(props?: Partial<VegaConnectDialogProps>) {
+const defaultConfig: VegaWalletConfig = {
+  network: 'TESTNET',
+  vegaUrl: 'https://vega.xyz',
+  vegaWalletServiceUrl: 'https://vegaservice.xyz',
+  links: {
+    explorer: 'explorer-link',
+    concepts: 'concepts-link',
+    chromeExtensionUrl: 'chrome-link',
+    mozillaExtensionUrl: 'mozilla-link',
+  },
+};
+
+function generateJSX(
+  props?: Partial<VegaConnectDialogProps>,
+  config?: Partial<VegaWalletConfig>
+) {
   const chainIdMock: MockedResponse<ChainIdQuery> = {
     request: {
       query: ChainIdDocument,
@@ -93,7 +92,7 @@ function generateJSX(props?: Partial<VegaConnectDialogProps>) {
   };
   return (
     <MockedProvider mocks={[chainIdMock]}>
-      <VegaWalletProvider>
+      <VegaWalletProvider config={{ ...defaultConfig, ...config }}>
         <VegaConnectDialog {...defaultProps} {...props} />
       </VegaWalletProvider>
     </MockedProvider>

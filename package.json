@@ -140,7 +140,6 @@
     "@storybook/react-webpack5": "7.0.24",
     "@svgr/rollup": "^8.0.1",
     "@svgr/webpack": "^6.1.2",
-    "@swc/core": "^1.2.173",
     "@swc/jest": "0.2.20",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "14.0.0",

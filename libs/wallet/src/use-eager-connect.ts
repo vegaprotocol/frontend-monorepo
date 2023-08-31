@@ -1,16 +1,13 @@
-import type { SnapConnector } from './';
-import { useVegaWallet } from './';
 import { useEffect, useState } from 'react';
-import type { VegaConnector } from './connectors/vega-connector';
+import { InjectedConnector } from './connectors/injected-connector';
+import { SnapConnector } from './connectors/snap-connector';
 import { getConfig } from './storage';
-import { useEnvironment } from '@vegaprotocol/environment';
+import type { Connectors } from './connectors';
+import { useVegaWallet } from './use-vega-wallet';
 
-export function useEagerConnect(Connectors: {
-  [connector: string]: VegaConnector;
-}) {
-  const { VEGA_URL } = useEnvironment();
+export function useEagerConnect(connectors: Connectors) {
   const [connecting, setConnecting] = useState(true);
-  const { connect, acknowledgeNeeded } = useVegaWallet();
+  const { vegaUrl, connect, acknowledgeNeeded } = useVegaWallet();
 
   useEffect(() => {
     const attemptConnect = async () => {
@@ -23,7 +20,7 @@ export function useEagerConnect(Connectors: {
 
       // Use the connector string in local storage to find the right connector to auto
       // connect to
-      const connector = Connectors[cfg.connector];
+      const connector = connectors[cfg.connector];
 
       // Developer hasn't provided this connector
       if (!connector) {
@@ -33,20 +30,16 @@ export function useEagerConnect(Connectors: {
         );
         return;
       }
+
       try {
-        if (cfg.connector === 'injected') {
-          const injectedInstance = Connectors[cfg.connector];
-          // @ts-ignore only injected wallet has connectWallet method
-          await injectedInstance.connectWallet();
-          await connect(injectedInstance);
-        } else if (cfg.connector === 'snap') {
-          const snapInstance = Connectors[cfg.connector] as SnapConnector;
-          if (VEGA_URL) {
-            snapInstance.nodeAddress = new URL(VEGA_URL).origin;
-            await connect(snapInstance);
-          }
+        if (connector instanceof InjectedConnector) {
+          await connector.connectWallet();
+          await connect(connector);
+        } else if (connector instanceof SnapConnector) {
+          connector.nodeAddress = new URL(vegaUrl).origin;
+          await connect(connector);
         } else {
-          await connect(Connectors[cfg.connector]);
+          await connect(connector);
         }
       } catch {
         console.warn(`Failed to connect with connector: ${cfg.connector}`);
@@ -58,7 +51,7 @@ export function useEagerConnect(Connectors: {
     if (typeof window !== 'undefined') {
       attemptConnect();
     }
-  }, [connect, Connectors, acknowledgeNeeded, VEGA_URL]);
+  }, [connect, connectors, acknowledgeNeeded, vegaUrl]);
 
   return connecting;
 }

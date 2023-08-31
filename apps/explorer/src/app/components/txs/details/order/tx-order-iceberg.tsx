@@ -1,10 +1,12 @@
 import { t } from '@vegaprotocol/i18n';
 import type { components } from '../../../../../types/explorer';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import SizeInMarket from '../../../size-in-market/size-in-market';
 
 export interface TxDetailsOrderIcebergDetailsProps {
   iceberg: components['schemas']['v1IcebergOpts'];
   size: components['schemas']['v1OrderSubmission']['size'];
+  marketId?: string;
 }
 
 /**
@@ -28,6 +30,7 @@ export interface TxDetailsOrderIcebergDetailsProps {
 export const TxOrderIcebergDetails = ({
   iceberg,
   size,
+  marketId,
 }: TxDetailsOrderIcebergDetailsProps) => {
   return (
     <div
@@ -36,15 +39,28 @@ export const TxOrderIcebergDetails = ({
     >
       <Tooltip description={t('Iceberg: Minimum visible size')}>
         <span className="align-bottom text-vega-orange-650">
-          {iceberg.minimumVisibleSize || '-'}
+          {marketId ? (
+            <SizeInMarket
+              size={iceberg.minimumVisibleSize}
+              marketId={marketId}
+            />
+          ) : (
+            iceberg.minimumVisibleSize
+          )}
         </span>
       </Tooltip>
       <Tooltip description={t('Iceberg: Total size')}>
-        <span className="text-sm text-vega-blue-600 mx-3">{size}</span>
+        <span className="text-sm text-vega-blue-600 mx-3">
+          {marketId ? <SizeInMarket size={size} marketId={marketId} /> : size}
+        </span>
       </Tooltip>
       <Tooltip description={t('Iceberg: Visible peak')}>
         <span className="align-top text-vega-yellow-600">
-          {iceberg.peakSize || '-'}
+          {marketId ? (
+            <SizeInMarket size={iceberg.peakSize} marketId={marketId} />
+          ) : (
+            iceberg.peakSize
+          )}
         </span>
       </Tooltip>
     </div>

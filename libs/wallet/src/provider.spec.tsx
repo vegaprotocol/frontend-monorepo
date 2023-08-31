@@ -2,19 +2,32 @@ import { act, renderHook } from '@testing-library/react';
 import type { Transaction } from './connectors';
 import { ViewConnector, JsonRpcConnector } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
+import type { VegaWalletConfig } from './provider';
 import { VegaWalletProvider } from './provider';
 import { LocalStorage } from '@vegaprotocol/utils';
 import type { ReactNode } from 'react';
 import { WALLET_KEY } from './storage';
-import * as Environment from '@vegaprotocol/environment';
-import * as ReactHelpers from '@vegaprotocol/react-helpers';
 
 const jsonRpcConnector = new JsonRpcConnector();
 const viewConnector = new ViewConnector();
 
-const setup = () => {
+const defaultConfig: VegaWalletConfig = {
+  network: 'TESTNET',
+  vegaUrl: 'https://vega.xyz',
+  vegaWalletServiceUrl: 'https://vegaservice.xyz',
+  links: {
+    explorer: 'explorer-link',
+    concepts: 'concepts-link',
+    chromeExtensionUrl: 'chrome-link',
+    mozillaExtensionUrl: 'mozilla-link',
+  },
+};
+
+const setup = (config?: Partial<VegaWalletConfig>) => {
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <VegaWalletProvider>{children}</VegaWalletProvider>
+    <VegaWalletProvider config={{ ...defaultConfig, ...config }}>
+      {children}
+    </VegaWalletProvider>
   );
   return renderHook(() => useVegaWallet(), { wrapper });
 };
@@ -51,6 +64,9 @@ describe('VegaWalletProvider', () => {
 
     // Default state
     expect(result.current).toEqual({
+      network: defaultConfig.network,
+      vegaUrl: defaultConfig.vegaUrl,
+      vegaWalletServiceUrl: defaultConfig.vegaWalletServiceUrl,
       acknowledgeNeeded: false,
       pubKey: null,
       pubKeys: null,
@@ -60,6 +76,11 @@ describe('VegaWalletProvider', () => {
       disconnect: expect.any(Function),
       sendTx: expect.any(Function),
       fetchPubKeys: expect.any(Function || undefined),
+      links: {
+        about: expect.any(String),
+        browserList: expect.any(String),
+        ...defaultConfig.links,
+      },
     });
 
     // Connect
@@ -91,17 +112,7 @@ describe('VegaWalletProvider', () => {
     const { result } = setup();
 
     // Default state
-    expect(result.current).toEqual({
-      acknowledgeNeeded: false,
-      pubKey: null,
-      pubKeys: null,
-      isReadOnly: false,
-      selectPubKey: expect.any(Function),
-      connect: expect.any(Function),
-      disconnect: expect.any(Function),
-      sendTx: expect.any(Function),
-      fetchPubKeys: expect.any(Function),
-    });
+    expect(result.current.pubKey).toEqual(null);
 
     // Connect
     await act(async () => {
@@ -128,6 +139,7 @@ describe('VegaWalletProvider', () => {
       result.current.connect(jsonRpcConnector);
       result.current.selectPubKey(mockPubKeys[0].publicKey);
     });
+
     expect(result.current.pubKey).toBe(mockPubKeys[0].publicKey);
 
     // Disconnect
@@ -155,21 +167,11 @@ describe('VegaWalletProvider', () => {
 
   it('acknowledgeNeeded will set on', async () => {
     jest
-      .spyOn(Environment, 'useEnvironment')
-      .mockReturnValue({ VEGA_ENV: 'MAINNET' });
-    jest.spyOn(ReactHelpers, 'useLocalStorage').mockImplementation(() => [
-      '',
-      () => {
-        /**/
-      },
-      () => {
-        /**/
-      },
-    ]);
-    jest
       .spyOn(viewConnector, 'connect')
       .mockImplementation(() => Promise.resolve(mockPubKeys));
-    const { result } = setup();
+
+    const { result } = setup({ network: 'MAINNET' });
+
     expect(result.current.acknowledgeNeeded).toBe(true);
 
     await act(async () => {

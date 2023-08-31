@@ -15,6 +15,7 @@ on:
           - types
           - utils
           - i18n
+          - wallet
 
 jobs:
   publish:

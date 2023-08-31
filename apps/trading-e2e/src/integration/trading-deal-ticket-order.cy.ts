@@ -33,9 +33,7 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
 
     it('must see the price unit', function () {
       // 7002-SORD-018
-      cy.getByTestId(orderPriceField)
-        .siblings('label')
-        .should('have.text', 'Price (DAI)');
+      cy.getByTestId(orderPriceField).next().should('have.text', 'DAI');
     });
 
     it('must see warning when placing an order with expiry date in past', () => {
