@@ -4,10 +4,8 @@ import { getDateTimeFormat } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { Trade } from './fills-data-provider';
-
 import { FillsTable, getFeesBreakdown } from './fills-table';
 import { generateFill } from './test-helpers';
-import { marketOrder } from '@vegaprotocol/orders';
 
 describe('FillsTable', () => {
   let defaultFill: PartialDeep<Trade>;
