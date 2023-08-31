@@ -7,7 +7,7 @@ import {
   TradingDropdownContent,
   TradingDropdownItem,
 } from '@vegaprotocol/ui-toolkit';
-import { addDecimal, getNumberFormat } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 export const OrderbookControls = ({
   lastTradedPrice,
@@ -102,17 +102,20 @@ export const OrderbookControls = ({
 };
 
 export const formatResolution = (r: number, decimalPlaces: number) => {
-  const num = addDecimal(r, decimalPlaces);
-  // Wrap with Number to trim trailing 0s
-  const x = Number(num);
+  let num = addDecimalsFormatNumber(r, decimalPlaces);
 
-  if (x >= 1) {
-    return getNumberFormat(0).format(x);
-  }
+  // Remove trailing zeroes
+  num = num.replace(/(\.\d*?)0+$/, '$1');
+  num = num.replace(/\.$/, '');
 
-  return x.toString();
+  return num;
 };
 
+/**
+ * Create a list of resolutions based on the largest and smallest
+ * possible values using the last traded price and the market
+ * decimal places
+ */
 export const createResolutions = (
   lastTradedPrice: string,
   decimalPlaces: number

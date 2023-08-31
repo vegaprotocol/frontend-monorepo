@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { generateMockData, VolumeType } from './orderbook-data';
 import { Orderbook, OrderbookMid } from './orderbook';
 import * as orderbookData from './orderbook-data';
-import { createResolutions } from './orderbook-controls';
+import { createResolutions, formatResolution } from './orderbook-controls';
 
 function mockOffsetSize(width: number, height: number) {
   Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', {
@@ -266,5 +266,23 @@ describe('createResolutions', () => {
         2
       )
     ).toEqual([1, 2, 5, 10, 20, 50, 100]);
+  });
+});
+
+describe('formatResolution', () => {
+  it('formats less than 1', () => {
+    expect(formatResolution(1, 2)).toEqual('0.01');
+    expect(formatResolution(1, 3)).toEqual('0.001');
+    expect(formatResolution(2, 4)).toEqual('0.0002');
+    expect(formatResolution(5, 8)).toEqual('0.00000005');
+    expect(formatResolution(10000, 5)).toEqual('0.1');
+  });
+
+  it('formats greater than 1', () => {
+    expect(formatResolution(1000, 2)).toEqual('10');
+    expect(formatResolution(100000, 4)).toEqual('10');
+    expect(formatResolution(10000000, 2)).toEqual('100,000');
+    expect(formatResolution(500, 2)).toEqual('5');
+    expect(formatResolution(500, 1)).toEqual('50');
   });
 });
