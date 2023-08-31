@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
-import { Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
+import { TradingButton } from '@vegaprotocol/ui-toolkit';
 import { ViewType, useSidebar } from '../sidebar';
 
 export const WithdrawalsMenu = () => {
@@ -7,7 +7,6 @@ export const WithdrawalsMenu = () => {
 
   return (
     <TradingButton
-      intent={Intent.Primary}
       size="extra-small"
       onClick={() => setView({ type: ViewType.Withdraw })}
       data-testid="withdraw-dialog-button"
