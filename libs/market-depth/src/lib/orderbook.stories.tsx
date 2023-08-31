@@ -9,9 +9,9 @@ type Props = Omit<MockDataGeneratorParams, 'resolution'> & {
 
 const OrderbookMockDataProvider = ({ decimalPlaces, ...props }: Props) => {
   return (
-    <div className="absolute inset-0 dark:bg-black dark:text-neutral-200 bg-white text-neutral-800">
+    <div className="absolute inset-0 bg-white dark:bg-black dark:text-neutral-200 text-neutral-800">
       <div
-        className="absolute left-0 top-0 bottom-0"
+        className="absolute top-0 bottom-0 left-0"
         style={{ width: '400px' }}
       >
         <Orderbook
@@ -19,6 +19,7 @@ const OrderbookMockDataProvider = ({ decimalPlaces, ...props }: Props) => {
           decimalPlaces={decimalPlaces}
           {...generateMockData({ ...props })}
           assetSymbol="USD"
+          onClick={() => undefined}
         />
       </div>
     </div>

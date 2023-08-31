@@ -22,6 +22,7 @@ import {
   Intent,
   ButtonLink,
   TradingSelect,
+  truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
@@ -173,7 +174,7 @@ export const DepositForm = ({
               return (
                 <div className="text-sm" aria-describedby="ethereum-address">
                   <p className="mb-1 break-all" data-testid="ethereum-address">
-                    {account}
+                    {truncateMiddle(account)}
                   </p>
                   <DisconnectEthereumButton
                     onDisconnect={() => {
