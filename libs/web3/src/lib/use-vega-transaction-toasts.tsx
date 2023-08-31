@@ -9,6 +9,7 @@ import type {
   VegaStoredTxState,
   WithdrawalBusEventFieldsFragment,
   StopOrdersSubmission,
+  StopOrderSetup,
 } from '@vegaprotocol/wallet';
 import {
   isTransferTransaction,
@@ -49,6 +50,7 @@ import {
   useOrderByIdQuery,
   useStopOrderByIdQuery,
 } from '@vegaprotocol/orders';
+import type { Market } from '@vegaprotocol/markets';
 import { useMarketsMapProvider } from '@vegaprotocol/markets';
 import type { Side } from '@vegaprotocol/types';
 import { OrderStatusMapping } from '@vegaprotocol/types';
@@ -174,11 +176,15 @@ const SubmitOrderDetails = ({
   );
 };
 
-const SubmitStopOrderDetails = ({ data }: { data: StopOrdersSubmission }) => {
-  const { data: markets } = useMarketsMapProvider();
-  const stopOrderSetup = data.risesAbove || data.fallsBelow;
-  if (!stopOrderSetup) return null;
-  const market = markets?.[stopOrderSetup?.orderSubmission.marketId];
+const SubmitStopOrderSetup = ({
+  stopOrderSetup,
+  triggerDirection,
+  market,
+}: {
+  stopOrderSetup: StopOrderSetup;
+  triggerDirection: Schema.StopOrderTriggerDirection;
+  market: Market;
+}) => {
   if (!market || !stopOrderSetup) return null;
 
   const { price, size, side } = stopOrderSetup.orderSubmission;
@@ -191,37 +197,64 @@ const SubmitStopOrderDetails = ({ data }: { data: StopOrdersSubmission }) => {
       __typename: 'StopOrderTrailingPercentOffset',
     };
   }
-  const triggerDirection = data.risesAbove
-    ? Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
-    : Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW;
+  return (
+    <p>
+      <SizeAtPrice
+        meta={{
+          positionDecimalPlaces: market.positionDecimalPlaces,
+          decimalPlaces: market.decimalPlaces,
+          asset:
+            market.tradableInstrument.instrument.product.settlementAsset.symbol,
+        }}
+        side={side}
+        size={size}
+        price={price}
+      />
+      <br />
+      {trigger &&
+        formatTrigger(
+          {
+            triggerDirection,
+            trigger,
+          },
+          market.decimalPlaces,
+          ''
+        )}
+    </p>
+  );
+};
+
+const SubmitStopOrderDetails = ({ data }: { data: StopOrdersSubmission }) => {
+  const { data: markets } = useMarketsMapProvider();
+  const marketId =
+    data.fallsBelow?.orderSubmission.marketId ||
+    data.risesAbove?.orderSubmission.marketId;
+  const market = marketId && markets?.[marketId];
+  if (!market) {
+    return null;
+  }
   return (
     <Panel>
       <h4>{t('Submit stop order')}</h4>
       <p>{market?.tradableInstrument.instrument.code}</p>
-      <p>
-        <SizeAtPrice
-          meta={{
-            positionDecimalPlaces: market.positionDecimalPlaces,
-            decimalPlaces: market.decimalPlaces,
-            asset:
-              market.tradableInstrument.instrument.product.settlementAsset
-                .symbol,
-          }}
-          side={side}
-          size={size}
-          price={price}
+      {data.fallsBelow && (
+        <SubmitStopOrderSetup
+          stopOrderSetup={data.fallsBelow}
+          triggerDirection={
+            Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
+          }
+          market={market}
         />
-        <br />
-        {trigger &&
-          formatTrigger(
-            {
-              triggerDirection,
-              trigger,
-            },
-            market.decimalPlaces,
-            ''
-          )}
-      </p>
+      )}
+      {data.risesAbove && (
+        <SubmitStopOrderSetup
+          stopOrderSetup={data.risesAbove}
+          triggerDirection={
+            Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
+          }
+          market={market}
+        />
+      )}
     </Panel>
   );
 };
@@ -725,11 +758,11 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
 
 const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   let label = t('Error occurred');
-  let errorMessage = `${tx.error?.message}  ${
-    tx.error instanceof WalletError && tx.error?.data
-      ? `:  ${tx.error?.data}`
-      : ''
-  }`;
+  let errorMessage =
+    tx.error instanceof WalletError
+      ? `${tx.error.title}: ${tx.error.data}`
+      : tx.error?.message;
+
   const reconnectVegaWallet = useReconnectVegaWallet();
 
   const orderRejection = tx.order && getRejectionReason(tx.order);
@@ -740,6 +773,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   const walletError =
     tx.error instanceof WalletError &&
     walletNoConnectionCodes.includes(tx.error.code);
+
   if (orderRejection) {
     label = getOrderToastTitle(tx.order?.status) || t('Order rejected');
     errorMessage = t('Your order has been rejected because: %s', [

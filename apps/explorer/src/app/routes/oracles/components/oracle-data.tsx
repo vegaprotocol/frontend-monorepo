@@ -4,7 +4,7 @@ import filter from 'recursive-key-filter';
 import type { ExplorerOracleDataConnectionFragment } from '../__generated__/Oracles';
 
 interface OracleDataTypeProps {
-  data: ExplorerOracleDataConnectionFragment;
+  data: ExplorerOracleDataConnectionFragment['dataConnection'];
 }
 
 /**
@@ -14,12 +14,7 @@ interface OracleDataTypeProps {
  * that Does The Job, rather than because it's good.
  */
 export function OracleData({ data }: OracleDataTypeProps) {
-  if (
-    !data ||
-    !data.dataConnection ||
-    !data.dataConnection.edges?.length ||
-    data.dataConnection.edges.length > 1
-  ) {
+  if (!data || !data.edges?.length || data.edges.length > 1) {
     return null;
   }
 
@@ -27,7 +22,7 @@ export function OracleData({ data }: OracleDataTypeProps) {
     <details data-testid="oracle-data">
       <summary>{t('Broadcast data')}</summary>
       <ul>
-        {data.dataConnection.edges.map((d) => {
+        {data.edges.map((d) => {
           if (!d) {
             return null;
           }

@@ -1,5 +1,10 @@
 import { useCallback, useState } from 'react';
-import type { InjectedConnector } from './connectors';
+import {
+  InjectedConnectorErrors,
+  SnapConnector,
+  SnapConnectorErrors,
+} from './connectors';
+import { InjectedConnector } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
 
 export enum Status {
@@ -12,27 +17,41 @@ export enum Status {
 }
 
 export const useInjectedConnector = (onConnect: () => void) => {
-  const { connect, acknowledgeNeeded } = useVegaWallet();
+  const { vegaUrl, connect, acknowledgeNeeded } = useVegaWallet();
   const [status, setStatus] = useState(Status.Idle);
   const [error, setError] = useState<Error | null>(null);
 
   const attemptConnect = useCallback(
-    async (connector: InjectedConnector, appChainId: string) => {
+    async (
+      connector: InjectedConnector | SnapConnector,
+      appChainId: string
+    ) => {
       try {
-        if (!('vega' in window)) {
-          throw new Error('window.vega not found');
+        if (connector instanceof InjectedConnector && !('vega' in window)) {
+          throw InjectedConnectorErrors.VEGA_UNDEFINED;
+        }
+        if (connector instanceof SnapConnector) {
+          if (!('ethereum' in window)) {
+            throw SnapConnectorErrors.ETHEREUM_UNDEFINED;
+          }
+          if (!vegaUrl) {
+            throw SnapConnectorErrors.NODE_ADDRESS_NOT_SET;
+          }
+          connector.nodeAddress = new URL(vegaUrl).origin;
         }
 
         setStatus(Status.GettingChainId);
 
         const { chainID } = await connector.getChainId();
-
         if (chainID !== appChainId) {
-          throw new Error('Invalid chain');
+          throw InjectedConnectorErrors.INVALID_CHAIN;
         }
 
         setStatus(Status.Connecting);
-        await connector.connectWallet(); // authorize wallet
+        if (connector instanceof InjectedConnector) {
+          // extra step for injected connector - authorize wallet
+          await connector.connectWallet();
+        }
         await connect(connector); // connect with keys
 
         if (acknowledgeNeeded) {
@@ -50,7 +69,7 @@ export const useInjectedConnector = (onConnect: () => void) => {
         setStatus(Status.Error);
       }
     },
-    [acknowledgeNeeded, connect, onConnect]
+    [vegaUrl, acknowledgeNeeded, connect, onConnect]
   );
 
   return {

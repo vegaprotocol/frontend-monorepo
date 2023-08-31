@@ -76,7 +76,7 @@ export const TypeToggle = ({
             <TradingDropdownTrigger
               data-testid="order-type-Stop"
               className={classNames(
-                'rounded px-3 flex flex-nowrap items-center justify-center',
+                'rounded px-2 flex flex-nowrap items-center justify-center',
                 {
                   'bg-vega-clight-500 dark:bg-vega-cdark-500': selectedOption,
                 }

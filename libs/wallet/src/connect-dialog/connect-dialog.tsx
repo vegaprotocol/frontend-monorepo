@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { create } from 'zustand';
 import {
   Dialog,
   Intent,
@@ -14,15 +13,17 @@ import type { ReactNode } from 'react';
 import { useCallback, useState } from 'react';
 import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { t } from '@vegaprotocol/i18n';
-import type { VegaConnector } from '../connectors';
+import type { Connectors, VegaConnector } from '../connectors';
 import {
+  DEFAULT_SNAP_ID,
   InjectedConnector,
   JsonRpcConnector,
+  SnapConnector,
   ViewConnector,
+  requestSnap,
 } from '../connectors';
 import { JsonRpcConnectorForm } from './json-rpc-connector-form';
 import { ViewConnectorForm } from './view-connector-form';
-import { useEnvironment } from '@vegaprotocol/environment';
 import {
   BrowserIcon,
   ConnectDialogContent,
@@ -38,32 +39,17 @@ import { useVegaWallet } from '../use-vega-wallet';
 import { InjectedConnectorForm } from './injected-connector-form';
 import { isBrowserWalletInstalled } from '../utils';
 import { useIsWalletServiceRunning } from '../use-is-wallet-service-running';
+import { useIsSnapRunning } from '../use-is-snap-running';
+import { useVegaWalletDialogStore } from './vega-wallet-dialog-store';
 
 export const CLOSE_DELAY = 1700;
-type Connectors = { [key: string]: VegaConnector };
-export type WalletType = 'injected' | 'jsonRpc' | 'view';
+
+export type WalletType = 'injected' | 'jsonRpc' | 'view' | 'snap';
 
 export interface VegaConnectDialogProps {
   connectors: Connectors;
   riskMessage?: ReactNode;
 }
-
-export interface VegaWalletDialogStore {
-  vegaWalletDialogOpen: boolean;
-  updateVegaWalletDialog: (open: boolean) => void;
-  openVegaWalletDialog: () => void;
-  closeVegaWalletDialog: () => void;
-}
-
-export const useVegaWalletDialogStore = create<VegaWalletDialogStore>()(
-  (set) => ({
-    vegaWalletDialogOpen: false,
-    updateVegaWalletDialog: (open: boolean) =>
-      set({ vegaWalletDialogOpen: open }),
-    openVegaWalletDialog: () => set({ vegaWalletDialogOpen: true }),
-    closeVegaWalletDialog: () => set({ vegaWalletDialogOpen: false }),
-  })
-);
 
 export const VegaConnectDialog = ({
   connectors,
@@ -119,12 +105,12 @@ const ConnectDialogContainer = ({
   appChainId: string;
   riskMessage?: ReactNode;
 }) => {
-  const { VEGA_WALLET_URL } = useEnvironment();
+  const { vegaUrl, vegaWalletServiceUrl } = useVegaWallet();
   const closeDialog = useVegaWalletDialogStore(
     (store) => store.closeVegaWalletDialog
   );
   const [selectedConnector, setSelectedConnector] = useState<VegaConnector>();
-  const [walletUrl, setWalletUrl] = useState(VEGA_WALLET_URL || '');
+  const [walletUrl, setWalletUrl] = useState(vegaWalletServiceUrl);
 
   const reset = useCallback(() => {
     setSelectedConnector(undefined);
@@ -143,7 +129,6 @@ const ConnectDialogContainer = ({
 
   const handleSelect = (type: WalletType) => {
     const connector = connectors[type];
-    connector.url = walletUrl;
 
     if (!connector) {
       // we should never get here unless connectors are not configured correctly
@@ -155,15 +140,27 @@ const ConnectDialogContainer = ({
     // Immediately connect on selection if jsonRpc is selected, we can't do this
     // for rest because we need to show an authentication form
     if (connector instanceof JsonRpcConnector) {
+      connector.url = walletUrl;
       jsonRpcConnect(connector, appChainId);
     } else if (connector instanceof InjectedConnector) {
       injectedConnect(connector, appChainId);
+    } else if (connector instanceof SnapConnector) {
+      // Set the nodeAddress to send tx's to, normally this is handled by
+      // the vega wallet
+      connector.nodeAddress = new URL(vegaUrl).origin;
+      injectedConnect(connector, appChainId);
     }
   };
+
   const isDesktopWalletRunning = useIsWalletServiceRunning(
     walletUrl,
-    connectors,
+    connectors['jsonRpc'],
     appChainId
+  );
+
+  const isSnapRunning = useIsSnapRunning(
+    DEFAULT_SNAP_ID,
+    Boolean(connectors['snap'])
   );
 
   return (
@@ -181,10 +178,12 @@ const ConnectDialogContainer = ({
           />
         ) : (
           <ConnectorList
+            connectors={connectors}
             walletUrl={walletUrl}
             setWalletUrl={setWalletUrl}
             onSelect={handleSelect}
             isDesktopWalletRunning={isDesktopWalletRunning}
+            isSnapRunning={isSnapRunning}
           />
         )}
       </ConnectDialogContent>
@@ -194,26 +193,34 @@ const ConnectDialogContainer = ({
 };
 
 const ConnectorList = ({
+  connectors,
   onSelect,
   walletUrl,
   setWalletUrl,
   isDesktopWalletRunning,
+  isSnapRunning,
 }: {
+  connectors: Connectors;
   onSelect: (type: WalletType) => void;
   walletUrl: string;
   setWalletUrl: (value: string) => void;
   isDesktopWalletRunning: boolean | null;
+  isSnapRunning: boolean | null;
 }) => {
+  const { pubKey, links } = useVegaWallet();
   const title = isBrowserWalletInstalled()
     ? t('Connect Vega wallet')
     : t('Get a Vega wallet');
 
   const extendedText = (
     <>
-      <div className="w-full h-full flex justify-center items-center gap-1 text-base">
+      <div className="flex items-center justify-center w-full h-full text-base gap-1">
         {t('Connect')}
       </div>
-      <BrowserIcon />
+      <BrowserIcon
+        chromeExtensionUrl={links.chromeExtensionUrl}
+        mozillaExtensionUrl={links.mozillaExtensionUrl}
+      />
     </>
   );
 
@@ -234,14 +241,57 @@ const ConnectorList = ({
               onClick={() => onSelect('injected')}
             />
           ) : (
-            <GetWallet />
+            <GetWalletButton
+              chromeExtensionUrl={links.chromeExtensionUrl}
+              mozillaExtensionUrl={links.mozillaExtensionUrl}
+            />
           )}
         </div>
+        {connectors['snap'] !== undefined ? (
+          <div>
+            {isSnapRunning ? (
+              <ConnectionOption
+                type="snap"
+                text={
+                  <>
+                    <div className="flex items-center justify-center w-full h-full text-base gap-1">
+                      {t('Connect via Vega MetaMask Snap')}
+                    </div>
+                    <div className="absolute top-0 flex items-center h-8 right-1">
+                      <VegaIcon name={VegaIconNames.METAMASK} size={24} />
+                    </div>
+                  </>
+                }
+                onClick={() => {
+                  onSelect('snap');
+                }}
+              />
+            ) : (
+              <ConnectionOption
+                type="snap"
+                text={
+                  <>
+                    <div className="flex items-center justify-center w-full h-full text-base gap-1">
+                      {t('Install Vega MetaMask Snap')}
+                    </div>
+                    <div className="absolute top-0 flex items-center h-8 right-1">
+                      <VegaIcon name={VegaIconNames.METAMASK} size={24} />
+                    </div>
+                  </>
+                }
+                onClick={() => {
+                  requestSnap(DEFAULT_SNAP_ID);
+                }}
+              />
+            )}
+          </div>
+        ) : null}
         <div>
           <ConnectionOption
             type="view"
             text={t('View as party')}
             onClick={() => onSelect('view')}
+            disabled={Boolean(pubKey)}
           />
         </div>
         <div className="last:mb-0">
@@ -280,7 +330,10 @@ const SelectedForm = ({
   onConnect: () => void;
   riskMessage?: ReactNode;
 }) => {
-  if (connector instanceof InjectedConnector) {
+  if (
+    connector instanceof InjectedConnector ||
+    connector instanceof SnapConnector
+  ) {
     return (
       <InjectedConnectorForm
         status={injectedState.status}
@@ -318,39 +371,55 @@ const SelectedForm = ({
   throw new Error('No connector selected');
 };
 
-const GetWallet = () => {
-  const { MOZILLA_EXTENSION_URL, CHROME_EXTENSION_URL } = useEnvironment();
+export const GetWalletButton = ({
+  chromeExtensionUrl,
+  mozillaExtensionUrl,
+  className,
+}: {
+  chromeExtensionUrl?: string;
+  mozillaExtensionUrl?: string;
+  className?: string;
+}) => {
   const isItChrome = window.navigator.userAgent.includes('Chrome');
   const isItMozilla =
     window.navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+
   const onClick = () => {
     if (isItMozilla) {
-      window.open(MOZILLA_EXTENSION_URL, '_blank');
+      window.open(mozillaExtensionUrl, '_blank');
       return;
     }
     if (isItChrome) {
-      window.open(CHROME_EXTENSION_URL, '_blank');
+      window.open(chromeExtensionUrl, '_blank');
     }
   };
 
   const buttonContent = (
     <>
-      <div className="flex items-center justify-center gap-1 text-base">
+      <div className="flex items-center justify-center text-base gap-1">
         {t('Get the Vega Wallet')}
         <Pill size="xxs" intent={Intent.Info}>
           ALPHA
         </Pill>
       </div>
-      <BrowserIcon />
+      {chromeExtensionUrl && mozillaExtensionUrl && (
+        <BrowserIcon
+          chromeExtensionUrl={chromeExtensionUrl}
+          mozillaExtensionUrl={mozillaExtensionUrl}
+        />
+      )}
     </>
   );
 
   return !isItChrome && !isItMozilla ? (
     <div
-      className={classNames([
-        'bg-vega-blue-350 hover:bg-vega-blue-400 dark:bg-vega-blue-650 dark:hover:bg-vega-blue-600',
-        'flex gap-2 items-center justify-center rounded h-8 px-3 relative',
-      ])}
+      className={classNames(
+        [
+          'bg-vega-blue-350 hover:bg-vega-blue-400 dark:bg-vega-blue-650 dark:hover:bg-vega-blue-600',
+          'flex gap-2 items-center justify-center rounded h-8 px-3 relative',
+        ],
+        className
+      )}
       data-testid="get-wallet-button"
     >
       {buttonContent}
@@ -360,7 +429,7 @@ const GetWallet = () => {
       onClick={onClick}
       intent={Intent.Info}
       data-testid="get-wallet-button"
-      className="relative"
+      className={classNames('relative', className)}
       size="small"
       fill
     >
@@ -393,7 +462,7 @@ const ConnectionOption = ({
       icon={icon}
       fill
     >
-      <span className="flex justify-center items-center text-base">{text}</span>
+      <span className="flex items-center justify-center text-base">{text}</span>
     </TradingButton>
   );
 };
@@ -409,6 +478,7 @@ const CustomUrlInput = ({
   isDesktopWalletRunning: boolean | null;
   onSelect: (type: WalletType) => void;
 }) => {
+  const { pubKey } = useVegaWallet();
   const [urlInputExpanded, setUrlInputExpanded] = useState(false);
   return urlInputExpanded ? (
     <>
@@ -433,7 +503,7 @@ const CustomUrlInput = ({
         />
       </TradingFormGroup>
       <ConnectionOption
-        disabled={!isDesktopWalletRunning}
+        disabled={!isDesktopWalletRunning || Boolean(pubKey)}
         type="jsonRpc"
         text={t('Connect the App/CLI')}
         onClick={() => onSelect('jsonRpc')}
@@ -442,17 +512,18 @@ const CustomUrlInput = ({
   ) : (
     <>
       <ConnectionOption
-        disabled={!isDesktopWalletRunning}
+        disabled={!isDesktopWalletRunning || Boolean(pubKey)}
         type="jsonRpc"
         text={t('Use the Desktop App/CLI')}
         onClick={() => onSelect('jsonRpc')}
       />
       {isDesktopWalletRunning !== null && (
-        <p className="mb-6 text-sm pt-2">
+        <p className="pt-2 mb-6 text-sm">
           {isDesktopWalletRunning ? (
             <button
               className="underline text-default"
               onClick={() => setUrlInputExpanded(true)}
+              disabled={Boolean(pubKey)}
             >
               {t('Enter a custom wallet location')}{' '}
               <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
@@ -467,6 +538,7 @@ const CustomUrlInput = ({
               <button
                 className="underline"
                 onClick={() => setUrlInputExpanded(true)}
+                disabled={Boolean(pubKey)}
               >
                 {t('custom wallet location')}
               </button>

@@ -11,6 +11,9 @@ import {
   getDateFormatForSpecifiedDays,
   getProposalFromTitle,
   getProposalInformationFromTable,
+  goToMakeNewProposal,
+  governanceProposalType,
+  longProposalDescription,
   proposalChangeType,
   submitUniqueRawProposal,
   validateProposalDetailsDiff,
@@ -43,7 +46,6 @@ const proposalDetailsTitle = 'proposal-title';
 const proposalDetailsDescription = 'proposal-description';
 const openProposals = 'open-proposals';
 const viewProposalButton = 'view-proposal-btn';
-const proposalDescriptionToggle = 'proposal-description-toggle';
 const voteBreakdownToggle = 'vote-breakdown-toggle';
 const proposalTermsToggle = 'proposal-json-toggle';
 const marketDataToggle = 'proposal-market-data-toggle';
@@ -71,10 +73,13 @@ describe(
 
     // 3001-VOTE-050 3001-VOTE-054 3001-VOTE-055 3002-PROP-019
     it('Newly created raw proposal details - shows proposal title and full description', function () {
-      const proposalDescription =
-        'I propose that everyone evaluate the following IPFS document and vote Yes if they agree. bafybeigwwctpv37xdcwacqxvekr6e4kaemqsrv34em6glkbiceo3fcy4si';
+      const proposalDetails = longProposalDescription;
 
-      createRawProposal();
+      goToMakeNewProposal(governanceProposalType.RAW);
+      submitUniqueRawProposal({
+        proposalTitle: 'raw proposal with long description',
+        proposalDescription: proposalDetails,
+      });
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         cy.getByTestId(openProposals).within(() => {
           getProposalFromTitle(rawProposal.rationale.title).within(() => {
@@ -85,12 +90,17 @@ describe(
           'contain.text',
           rawProposal.rationale.title
         );
-        cy.getByTestId(proposalDescriptionToggle).click();
-        cy.getByTestId('proposal-description-toggle');
-        cy.getByTestId(proposalDetailsDescription)
-          .find('p')
-          .should('have.text', proposalDescription);
       });
+      cy.getByTestId(proposalDetailsDescription).within(() => {
+        cy.get('p').should('not.have.text', 'Hyperlink text');
+        cy.getByTestId('show-more-btn').click();
+        cy.get('p')
+          .invoke('text')
+          .should('have.have.length', 2194) // Full description is displayed
+          .and('contain', 'Hyperlink text');
+        cy.get('a').should('have.attr', 'href');
+      });
+
       // 3001-VOTE-008
       getProposalInformationFromTable('ID')
         .invoke('text')
@@ -361,34 +371,6 @@ describe(
       stakingPageDisassociateAllTokens();
     });
 
-    it('Error message should be displayed if error returned from wallet when voting', function () {
-      const errorMsg =
-        'Application error: party has already submitted the maximum number of transactions of this type per epoch (3)';
-
-      createRawProposal();
-      cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-        getProposalFromTitle(rawProposal.rationale.title).within(() =>
-          cy.getByTestId(viewProposalButton).click()
-        );
-        cy.intercept('POST', '/api/v2/requests', {
-          jsonrpc: '2.0',
-          error: {
-            code: 2001,
-            message: 'Application error',
-            data: 'party has already submitted the maximum number of transactions of this type per epoch (3)',
-          },
-          id: '-PK5EGmErnjLhAmzMeclC',
-        });
-        cy.contains('Vote breakdown').should('be.visible', { timeout: 10000 });
-        cy.getByTestId('vote-buttons').contains('for').click();
-        cy.getByTestId('dialog-title').should(
-          'have.text',
-          'Transaction failed'
-        );
-        cy.getByTestId('Error').should('have.text', errorMsg);
-      });
-    });
-
     it('Able to see successor market details with new and updated values', function () {
       cy.createMarket();
       cy.reload();
@@ -425,7 +407,8 @@ describe(
       // 3003-PMAN-011 3003-PMAN-012
       cy.getByTestId(marketDataToggle).click();
       cy.getByTestId('proposal-market-data').within(() => {
-        cy.contains('Key details').click();
+        // Assert that all toggles are removed
+        cy.getByTestId('accordion-toggle').should('not.exist');
         validateProposalDetailsDiff(
           'Name',
           proposalChangeType.UPDATED,
@@ -449,7 +432,6 @@ describe(
           'Opening auction'
         );
 
-        cy.contains('Instrument').click();
         validateProposalDetailsDiff(
           'Market Name',
           proposalChangeType.UPDATED,
@@ -457,7 +439,6 @@ describe(
           'Test market 1'
         );
 
-        cy.contains('Metadata').click();
         validateProposalDetailsDiff(
           'Sector',
           proposalChangeType.UPDATED,

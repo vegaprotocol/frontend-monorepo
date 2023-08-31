@@ -1,6 +1,6 @@
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { MarketSelector } from '../market-selector';
-import { useMarket } from '@vegaprotocol/markets';
+import { useMarket, useMarketList } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { useParams } from 'react-router-dom';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
@@ -13,6 +13,10 @@ export const NavHeader = () => {
   const { marketId } = useParams();
   const { data } = useMarket(marketId);
   const [open, setOpen] = useState(false);
+
+  // Ensure that markets are kept cached so opening the list
+  // shows all markets instantly
+  useMarketList();
 
   if (!marketId) return null;
 

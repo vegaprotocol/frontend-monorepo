@@ -1,11 +1,13 @@
 import { t } from '@vegaprotocol/i18n';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { StopOrdersTable } from '../stop-orders-table/stop-orders-table';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import type { StopOrder } from '../order-data-provider/stop-orders-data-provider';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { stopOrdersWithMarketProvider } from '../order-data-provider/stop-orders-data-provider';
+import { OrderViewDialog } from '../order-list/order-view-dialog';
+import type { Order } from '../order-data-provider';
 
 export interface StopOrdersManagerProps {
   partyId: string;
@@ -23,6 +25,7 @@ export const StopOrdersManager = ({
   gridProps,
 }: StopOrdersManagerProps) => {
   const create = useVegaTransactionStore((state) => state.create);
+  const [viewOrder, setViewOrder] = useState<Order | null>(null);
   const variables = { partyId };
 
   const { data, error, reload } = useDataProvider({
@@ -53,14 +56,25 @@ export const StopOrdersManager = ({
   );
 
   return (
-    <StopOrdersTable
-      rowData={data}
-      onCancel={cancel}
-      onMarketClick={onMarketClick}
-      isReadOnly={isReadOnly}
-      suppressAutoSize
-      overlayNoRowsTemplate={error ? error.message : t('No stop orders')}
-      {...gridProps}
-    />
+    <>
+      <StopOrdersTable
+        rowData={data}
+        onCancel={cancel}
+        onView={setViewOrder}
+        onMarketClick={onMarketClick}
+        isReadOnly={isReadOnly}
+        suppressAutoSize
+        overlayNoRowsTemplate={error ? error.message : t('No stop orders')}
+        {...gridProps}
+      />
+      {viewOrder && (
+        <OrderViewDialog
+          isOpen={Boolean(viewOrder)}
+          order={viewOrder}
+          onChange={() => setViewOrder(null)}
+          onMarketClick={onMarketClick}
+        />
+      )}
+    </>
   );
 };

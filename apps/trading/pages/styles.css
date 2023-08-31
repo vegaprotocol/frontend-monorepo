@@ -15,6 +15,10 @@ body,
   @apply h-full;
 }
 
+.font-mono {
+  @apply tracking-tighter;
+}
+
 .text-default {
   @apply text-vega-clight-50 dark:text-vega-cdark-50;
 }
@@ -60,6 +64,10 @@ html.dark {
 
 html [data-theme='dark'],
 html [data-theme='light'] {
+  /* fonts */
+  --pennant-font-family-base: theme(fontFamily.alpha);
+  --pennant-font-family-monospace: theme(fontFamily.mono);
+
   /* sell candles only use stroke as the candle is solid (without border) */
   --pennant-color-sell-stroke: theme(colors.market.red.DEFAULT);
 
@@ -147,7 +155,7 @@ html [data-theme='dark'] {
 }
 
 .vega-ag-grid .ag-header-row {
-  @apply font-alpha font-normal;
+  @apply font-normal font-alpha;
 }
 
 /* Light variables */
@@ -208,4 +216,16 @@ html [data-theme='dark'] {
 .vega-scrollbar::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px rgb(0 0 0 / 30%);
   background-color: #999;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
 }

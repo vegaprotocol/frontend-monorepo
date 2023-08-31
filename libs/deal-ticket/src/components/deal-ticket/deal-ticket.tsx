@@ -3,8 +3,6 @@ import * as Schema from '@vegaprotocol/types';
 import type { FormEventHandler } from 'react';
 import { memo, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Controller, useController, useForm } from 'react-hook-form';
-import { DealTicketAmount } from './deal-ticket-amount';
-import { DealTicketButton } from './deal-ticket-button';
 import {
   DealTicketFeeDetails,
   DealTicketMarginDetails,
@@ -17,22 +15,31 @@ import type { OrderSubmission } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { mapFormValuesToOrderSubmission } from '../../utils/map-form-values-to-submission';
 import {
-  TradingCheckbox,
-  TradingInputError,
+  TradingInput as Input,
+  TradingCheckbox as Checkbox,
+  TradingFormGroup as FormGroup,
+  TradingInputError as InputError,
   Intent,
   Notification,
   Tooltip,
+  TradingButton as Button,
+  Pill,
 } from '@vegaprotocol/ui-toolkit';
 
 import {
   useEstimatePositionQuery,
   useOpenVolume,
 } from '@vegaprotocol/positions';
-import { toBigNum, removeDecimal } from '@vegaprotocol/utils';
+import {
+  toBigNum,
+  removeDecimal,
+  validateAmount,
+  toDecimal,
+  formatForInput,
+  formatValue,
+} from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { getDerivedPrice } from '@vegaprotocol/markets';
-import type { OrderInfo } from '@vegaprotocol/types';
-
 import {
   validateExpiration,
   validateMarketState,
@@ -41,7 +48,10 @@ import {
   validateType,
 } from '../../utils';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
-import { SummaryValidationType } from '../../constants';
+import {
+  NOTIONAL_SIZE_TOOLTIP_TEXT,
+  SummaryValidationType,
+} from '../../constants';
 import type {
   Market,
   MarketData,
@@ -52,8 +62,6 @@ import {
   useMarketAccountBalance,
   useAccountBalance,
 } from '@vegaprotocol/accounts';
-
-import { OrderType } from '@vegaprotocol/types';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   DealTicketType,
@@ -64,6 +72,8 @@ import type { OrderFormValues } from '../../hooks/use-form-values';
 import { useDealTicketFormValues } from '../../hooks/use-form-values';
 import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 import noop from 'lodash/noop';
+import { isNonPersistentOrder } from '../../utils/time-in-force-persistance';
+import { KeyValue } from './key-value';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -113,6 +123,11 @@ const getDefaultValues = (
   reduceOnly: false,
   ...storedValues,
 });
+
+export const getAssetUnit = (tags?: string[] | null) =>
+  tags
+    ?.find((tag) => tag.startsWith('base:') || tag.startsWith('ticker:'))
+    ?.replace(/^[^:]*:/, '');
 
 export const DealTicket = ({
   market,
@@ -168,6 +183,7 @@ export const DealTicket = ({
   const rawPrice = watch('price');
   const iceberg = watch('iceberg');
   const peakSize = watch('peakSize');
+  const expiresAt = watch('expiresAt');
 
   useEffect(() => {
     const size = storedFormValues?.[dealTicketType]?.size;
@@ -222,8 +238,8 @@ export const DealTicket = ({
   });
   const openVolume = useOpenVolume(pubKey, market.id) ?? '0';
   const orders = activeOrders
-    ? activeOrders.map<OrderInfo>((order) => ({
-        isMarketOrder: order.type === OrderType.TYPE_MARKET,
+    ? activeOrders.map<Schema.OrderInfo>((order) => ({
+        isMarketOrder: order.type === Schema.OrderType.TYPE_MARKET,
         price: order.price,
         remaining: order.remaining,
         side: order.side,
@@ -231,7 +247,7 @@ export const DealTicket = ({
     : [];
   if (normalizedOrder) {
     orders.push({
-      isMarketOrder: normalizedOrder.type === OrderType.TYPE_MARKET,
+      isMarketOrder: normalizedOrder.type === Schema.OrderType.TYPE_MARKET,
       price: normalizedOrder.price ?? '0',
       remaining: normalizedOrder.size,
       side: normalizedOrder.side,
@@ -251,6 +267,10 @@ export const DealTicket = ({
 
   const assetSymbol =
     market.tradableInstrument.instrument.product.settlementAsset.symbol;
+
+  const assetUnit = getAssetUnit(
+    market.tradableInstrument.instrument.metadata.tags
+  );
 
   const summaryError = useMemo(() => {
     if (!pubKey) {
@@ -299,12 +319,10 @@ export const DealTicket = ({
     pubKey,
   ]);
 
-  const disablePostOnlyCheckbox = [
-    Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-    Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-  ].includes(timeInForce);
-
-  const disableReduceOnlyCheckbox = !disablePostOnlyCheckbox;
+  const nonPersistentOrder = isNonPersistentOrder(timeInForce);
+  const disablePostOnlyCheckbox = nonPersistentOrder;
+  const disableReduceOnlyCheckbox = !nonPersistentOrder;
+  const disableIcebergCheckbox = nonPersistentOrder;
 
   const onSubmit = useCallback(
     (formValues: OrderFormValues) => {
@@ -331,6 +349,11 @@ export const DealTicket = ({
       validate: validateType(marketData.marketTradingMode, marketData.trigger),
     },
   });
+
+  const priceStep = toDecimal(market?.decimalPlaces);
+  const sizeStep = toDecimal(market?.positionDecimalPlaces);
+  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+  const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
 
   return (
     <form
@@ -366,15 +389,97 @@ export const DealTicket = ({
           <SideSelector value={field.value} onValueChange={field.onChange} />
         )}
       />
-      <DealTicketAmount
-        type={type}
+
+      <Controller
+        name="size"
         control={control}
-        market={market}
-        marketData={marketData}
-        marketPrice={marketPrice || undefined}
-        sizeError={errors.size?.message}
-        priceError={errors.price?.message}
+        rules={{
+          required: t('You need to provide a size'),
+          min: {
+            value: sizeStep,
+            message: t('Size cannot be lower than ' + sizeStep),
+          },
+          validate: validateAmount(sizeStep, 'Size'),
+          deps: ['peakSize', 'minimumVisibleSize'],
+        }}
+        render={({ field, fieldState }) => (
+          <div className={isLimitType ? 'mb-4' : 'mb-2'}>
+            <FormGroup label={t('Size')} labelFor="order-size" compact>
+              <Input
+                id="order-size"
+                className="w-full"
+                type="number"
+                appendElement={assetUnit && <Pill size="xs">{assetUnit}</Pill>}
+                step={sizeStep}
+                min={sizeStep}
+                data-testid="order-size"
+                onWheel={(e) => e.currentTarget.blur()}
+                {...field}
+              />
+            </FormGroup>
+            {fieldState.error && (
+              <InputError testId="deal-ticket-error-message-size">
+                {fieldState.error.message}
+              </InputError>
+            )}
+          </div>
+        )}
       />
+      {isLimitType && (
+        <Controller
+          name="price"
+          control={control}
+          rules={{
+            required: t('You need provide a price'),
+            min: {
+              value: priceStep,
+              message: t('Price cannot be lower than ' + priceStep),
+            },
+            validate: validateAmount(priceStep, 'Price'),
+          }}
+          render={({ field, fieldState }) => (
+            <div className="mb-2">
+              <FormGroup
+                labelFor="input-price-quote"
+                label={t('Price')}
+                compact
+              >
+                <Input
+                  id="input-price-quote"
+                  appendElement={<Pill size="xs">{quoteName}</Pill>}
+                  className="w-full"
+                  type="number"
+                  step={priceStep}
+                  data-testid="order-price"
+                  onWheel={(e) => e.currentTarget.blur()}
+                  {...field}
+                />
+              </FormGroup>
+              {fieldState.error && (
+                <InputError testId="deal-ticket-error-message-price">
+                  {fieldState.error.message}
+                </InputError>
+              )}
+            </div>
+          )}
+        />
+      )}
+      <div className="mb-4">
+        <KeyValue
+          label={t('Notional')}
+          value={formatValue(notionalSize, market.decimalPlaces)}
+          formattedValue={formatValue(notionalSize, market.decimalPlaces)}
+          symbol={quoteName}
+          labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName)}
+        />
+        <DealTicketFeeDetails
+          order={
+            normalizedOrder && { ...normalizedOrder, price: price || undefined }
+          }
+          assetSymbol={assetSymbol}
+          market={market}
+        />
+      </div>
       <Controller
         name="timeInForce"
         control={control}
@@ -388,19 +493,38 @@ export const DealTicket = ({
           <TimeInForceSelector
             value={field.value}
             orderType={type}
-            onSelect={field.onChange}
+            onSelect={(value) => {
+              // If GTT is selected and no expiresAt time is set, or its
+              // behind current time then reset the value to current time
+              if (
+                value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
+                (!expiresAt || new Date(expiresAt).getTime() < Date.now())
+              ) {
+                setValue('expiresAt', formatForInput(new Date()), {
+                  shouldValidate: true,
+                });
+              }
+
+              // iceberg orders must be persistent orders, so if user
+              // switches to a non persistent tif value, remove iceberg selection
+              if (iceberg && isNonPersistentOrder(value)) {
+                setValue('iceberg', false);
+              }
+              field.onChange(value);
+            }}
             market={market}
             marketData={marketData}
             errorMessage={errors.timeInForce?.message}
           />
         )}
       />
-      {type === Schema.OrderType.TYPE_LIMIT &&
+      {isLimitType &&
         timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
           <Controller
             name="expiresAt"
             control={control}
             rules={{
+              required: t('You need provide a expiry time/date'),
               validate: validateExpiration,
             }}
             render={({ field }) => (
@@ -412,12 +536,12 @@ export const DealTicket = ({
             )}
           />
         )}
-      <div className="flex gap-2 pb-2 justify-between">
+      <div className="flex justify-between pb-2 gap-2">
         <Controller
           name="postOnly"
           control={control}
           render={({ field }) => (
-            <TradingCheckbox
+            <Checkbox
               name="post-only"
               checked={!disablePostOnlyCheckbox && field.value}
               disabled={disablePostOnlyCheckbox}
@@ -449,7 +573,7 @@ export const DealTicket = ({
           name="reduceOnly"
           control={control}
           render={({ field }) => (
-            <TradingCheckbox
+            <Checkbox
               name="reduce-only"
               checked={!disableReduceOnlyCheckbox && field.value}
               disabled={disableReduceOnlyCheckbox}
@@ -476,17 +600,18 @@ export const DealTicket = ({
           )}
         />
       </div>
-      {type === Schema.OrderType.TYPE_LIMIT && (
+      {isLimitType && (
         <>
-          <div className="flex gap-2 pb-2 justify-between">
+          <div className="flex justify-between pb-2 gap-2">
             <Controller
               name="iceberg"
               control={control}
               render={({ field }) => (
-                <TradingCheckbox
+                <Checkbox
                   name="iceberg"
                   checked={field.value}
                   onCheckedChange={field.onChange}
+                  disabled={disableIcebergCheckbox}
                   label={
                     <Tooltip
                       description={
@@ -530,15 +655,29 @@ export const DealTicket = ({
         pubKey={pubKey}
         onDeposit={onDeposit}
       />
-      <DealTicketButton side={side} />
-      <DealTicketFeeDetails
-        order={
-          normalizedOrder && { ...normalizedOrder, price: price || undefined }
-        }
-        notionalSize={notionalSize}
-        assetSymbol={assetSymbol}
-        market={market}
-      />
+      <Button
+        data-testid="place-order"
+        type="submit"
+        className="w-full"
+        intent={side === Schema.Side.SIDE_BUY ? Intent.Success : Intent.Danger}
+        subLabel={`${formatValue(
+          normalizedOrder.size,
+          market.positionDecimalPlaces
+        )} ${assetUnit} @ ${
+          type === Schema.OrderType.TYPE_MARKET
+            ? 'market'
+            : `${formatValue(
+                normalizedOrder.price,
+                market.decimalPlaces
+              )} ${quoteName}`
+        }`}
+      >
+        {t(
+          type === Schema.OrderType.TYPE_MARKET
+            ? 'Place market order'
+            : 'Place limit order'
+        )}
+      </Button>
       <DealTicketMarginDetails
         onMarketClick={onMarketClick}
         assetSymbol={assetSymbol}
@@ -572,11 +711,11 @@ export const NoWalletWarning = ({
   if (isReadOnly) {
     return (
       <div className="mb-2">
-        <TradingInputError testId="deal-ticket-error-message-summary">
+        <InputError testId="deal-ticket-error-message-summary">
           {
             'You need to connect your own wallet to start trading on this market'
           }
-        </TradingInputError>
+        </InputError>
       </div>
     );
   }
@@ -613,9 +752,9 @@ const SummaryMessage = memo(
     if (error?.message) {
       return (
         <div className="mb-2">
-          <TradingInputError testId="deal-ticket-error-message-summary">
+          <InputError testId="deal-ticket-error-message-summary">
             {error?.message}
-          </TradingInputError>
+          </InputError>
         </div>
       );
     }

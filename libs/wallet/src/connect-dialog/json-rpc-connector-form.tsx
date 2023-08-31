@@ -14,7 +14,6 @@ import type { JsonRpcConnector } from '../connectors';
 import { ClientErrors } from '../connectors';
 import { ConnectDialogTitle } from './connect-dialog-elements';
 import { Status } from '../use-json-rpc-connect';
-import { DocsLinks } from '@vegaprotocol/environment';
 import { useVegaWallet } from '../use-vega-wallet';
 import { setAcknowledged } from '../storage';
 
@@ -156,6 +155,7 @@ const Error = ({
   appChainId: string;
   onTryAgain: () => void;
 }) => {
+  const { links } = useVegaWallet();
   let title = t('Something went wrong');
   let text: ReactNode | undefined = t('An unknown error occurred');
   let tryAgain: ReactNode | null = (
@@ -182,11 +182,9 @@ const Error = ({
         <>
           {capitalize(error.message)}
           {'. '}
-          {DocsLinks && (
-            <Link href={DocsLinks.VEGA_WALLET_CONCEPTS_URL}>
-              {t('Read the docs to troubleshoot')}
-            </Link>
-          )}
+          <Link href={links.concepts}>
+            {t('Read the docs to troubleshoot')}
+          </Link>
         </>
       );
     } else if (error.code === ServiceErrors.REQUEST_PROCESSING) {

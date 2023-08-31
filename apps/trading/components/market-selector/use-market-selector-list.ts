@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
 import orderBy from 'lodash/orderBy';
 import { MarketState } from '@vegaprotocol/types';
-import { calcCandleVolume, useMarketList } from '@vegaprotocol/markets';
+import {
+  calcCandleVolume,
+  calcTradedFactor,
+  useMarketList,
+} from '@vegaprotocol/markets';
 import { priceChangePercentage } from '@vegaprotocol/utils';
 import type { Filter } from '../../components/market-selector/market-selector';
 import { Sort } from './sort-dropdown';
@@ -20,7 +24,7 @@ export const useMarketSelectorList = ({
   sort,
   searchTerm,
 }: Filter) => {
-  const { data, loading, error } = useMarketList();
+  const { data, loading, error, reload } = useMarketList();
 
   const markets = useMemo(() => {
     if (!data?.length) return [];
@@ -94,10 +98,14 @@ export const useMarketSelectorList = ({
       );
     }
 
+    if (sort === Sort.TopTraded) {
+      return orderBy(markets, [(m) => calcTradedFactor(m)], ['desc']);
+    }
+
     return markets;
   }, [data, product, searchTerm, assets, sort]);
 
-  return { markets, data, loading, error };
+  return { markets, data, loading, error, reload };
 };
 
 export const isMarketActive = (state: MarketState) => {

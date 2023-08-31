@@ -9,6 +9,7 @@ import type {
 } from '../hooks/use-form-values';
 import * as Schema from '@vegaprotocol/types';
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
+import { isPersistentOrder } from './time-in-force-persistance';
 
 export const mapFormValuesToOrderSubmission = (
   order: OrderFormValues,
@@ -41,11 +42,8 @@ export const mapFormValuesToOrderSubmission = (
       ? false
       : order.reduceOnly,
   icebergOpts:
-    (order.type === Schema.OrderType.TYPE_MARKET ||
-      [
-        Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-        Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-      ].includes(order.timeInForce)) &&
+    order.type === Schema.OrderType.TYPE_LIMIT &&
+    isPersistentOrder(order.timeInForce) &&
     order.iceberg &&
     order.peakSize &&
     order.minimumVisibleSize
@@ -58,6 +56,22 @@ export const mapFormValuesToOrderSubmission = (
         }
       : undefined,
 });
+
+const setTrigger = (
+  stopOrderSetup: StopOrderSetup,
+  triggerType: StopOrderFormValues['triggerPrice'],
+  triggerPrice: StopOrderFormValues['triggerPrice'],
+  triggerTrailingPercentOffset: StopOrderFormValues['triggerTrailingPercentOffset'],
+  decimalPlaces: number
+) => {
+  if (triggerType === 'price') {
+    stopOrderSetup.price = removeDecimal(triggerPrice ?? '', decimalPlaces);
+  } else if (triggerType === 'trailingPercentOffset') {
+    stopOrderSetup.trailingPercentOffset = (
+      Number(triggerTrailingPercentOffset) / 100
+    ).toFixed(3);
+  }
+};
 
 export const mapFormValuesToStopOrdersSubmission = (
   data: StopOrderFormValues,
@@ -81,31 +95,46 @@ export const mapFormValuesToStopOrdersSubmission = (
       positionDecimalPlaces
     ),
   };
-  if (data.triggerType === 'price') {
-    stopOrderSetup.price = removeDecimal(
-      data.triggerPrice ?? '',
+  setTrigger(
+    stopOrderSetup,
+    data.triggerType,
+    data.triggerPrice,
+    data.triggerTrailingPercentOffset,
+    decimalPlaces
+  );
+  let oppositeStopOrderSetup: StopOrderSetup | undefined = undefined;
+  if (data.oco) {
+    oppositeStopOrderSetup = {
+      orderSubmission: mapFormValuesToOrderSubmission(
+        {
+          type: data.ocoType,
+          side: data.side,
+          size: data.ocoSize,
+          timeInForce: data.ocoTimeInForce,
+          price: data.ocoPrice,
+          reduceOnly: true,
+        },
+        marketId,
+        decimalPlaces,
+        positionDecimalPlaces
+      ),
+    };
+    setTrigger(
+      oppositeStopOrderSetup,
+      data.ocoTriggerType,
+      data.ocoTriggerPrice,
+      data.ocoTriggerTrailingPercentOffset,
       decimalPlaces
     );
-  } else if (data.triggerType === 'trailingPercentOffset') {
-    stopOrderSetup.trailingPercentOffset = (
-      Number(data.triggerTrailingPercentOffset) / 100
-    ).toFixed(3);
   }
 
   if (data.expire) {
-    stopOrderSetup.expiresAt = data.expiresAt && toNanoSeconds(data.expiresAt);
-    if (
-      data.expiryStrategy ===
-      Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS
-    ) {
-      stopOrderSetup.expiryStrategy =
-        Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS;
-    } else if (
-      data.expiryStrategy ===
-      Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT
-    ) {
-      stopOrderSetup.expiryStrategy =
-        Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT;
+    const expiresAt = data.expiresAt && toNanoSeconds(data.expiresAt);
+    stopOrderSetup.expiresAt = expiresAt;
+    stopOrderSetup.expiryStrategy = data.expiryStrategy;
+    if (oppositeStopOrderSetup) {
+      oppositeStopOrderSetup.expiresAt = expiresAt;
+      oppositeStopOrderSetup.expiryStrategy = data.expiryStrategy;
     }
   }
 
@@ -114,12 +143,14 @@ export const mapFormValuesToStopOrdersSubmission = (
     Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
   ) {
     submission.risesAbove = stopOrderSetup;
+    submission.fallsBelow = oppositeStopOrderSetup;
   }
   if (
     data.triggerDirection ===
     Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
   ) {
     submission.fallsBelow = stopOrderSetup;
+    submission.risesAbove = oppositeStopOrderSetup;
   }
 
   return submission;

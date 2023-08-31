@@ -80,13 +80,14 @@ const getAffixElement = ({
   appendIconName,
   appendIconDescription,
 }: Pick<TradingInputProps, keyof AffixProps>) => {
-  const position = prependIconName || prependElement ? 'pre' : 'post';
-
   const className = classNames(
-    ['fill-black dark:fill-white', 'absolute', 'z-10'],
+    'absolute z-10 top-0 bottom-0 flex items-center',
     {
-      'left-3': position === 'pre',
-      'right-3': position === 'post',
+      'fill-black dark:fill-white': prependIconName || appendIconName,
+      'left-3': prependIconName,
+      'right-3': appendIconName,
+      'left-1': prependElement,
+      'right-1': appendElement,
     }
   );
 
@@ -161,7 +162,7 @@ export const TradingInput = forwardRef<HTMLInputElement, TradingInputProps>(
 
     if (element) {
       return (
-        <div className="flex items-center relative">
+        <div className="relative">
           {hasPrepended && element}
           {input}
           {hasAppended && element}

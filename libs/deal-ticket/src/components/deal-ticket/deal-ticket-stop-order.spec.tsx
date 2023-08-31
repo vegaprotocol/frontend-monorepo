@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket } from '../../test-helpers';
 import { StopOrder } from './deal-ticket-stop-order';
@@ -12,6 +12,7 @@ import {
   useDealTicketFormValues,
 } from '../../hooks/use-form-values';
 import type { FeatureFlags } from '@vegaprotocol/environment';
+import { formatForInput } from '@vegaprotocol/utils';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
@@ -57,7 +58,7 @@ const orderSideBuy = 'order-side-SIDE_BUY';
 const orderSideSell = 'order-side-SIDE_SELL';
 
 const triggerDirectionRisesAbove = 'triggerDirection-risesAbove';
-// const triggerDirectionFallsBelow = 'triggerDirection-fallsBelow';
+const triggerDirectionFallsBelow = 'triggerDirection-fallsBelow';
 
 const expiryStrategySubmit = 'expiryStrategy-submit';
 const expiryStrategyCancel = 'expiryStrategy-cancel';
@@ -65,6 +66,7 @@ const expiryStrategyCancel = 'expiryStrategy-cancel';
 const triggerTypePrice = 'triggerType-price';
 const triggerTypeTrailingPercentOffset = 'triggerType-trailingPercentOffset';
 
+const oco = 'oco';
 const expire = 'expire';
 const datePicker = 'date-picker-field';
 const timeInForce = 'order-tif';
@@ -72,8 +74,11 @@ const timeInForce = 'order-tif';
 const sizeErrorMessage = 'stop-order-error-message-size';
 const priceErrorMessage = 'stop-order-error-message-price';
 const triggerPriceErrorMessage = 'stop-order-error-message-trigger-price';
+const triggerPriceWarningMessage = 'stop-order-warning-message-trigger-price';
 const triggerTrailingPercentOffsetErrorMessage =
   'stop-order-error-message-trigger-trailing-percent-offset';
+
+const ocoPostfix = (id: string, postfix = true) => (postfix ? `${id}-oco` : id);
 
 describe('StopOrder', () => {
   beforeEach(() => {
@@ -106,6 +111,7 @@ describe('StopOrder', () => {
       'checked'
     );
     expect(screen.getByTestId(expire).dataset.state).toEqual('unchecked');
+    expect(screen.getByTestId(oco).dataset.state).toEqual('unchecked');
     await userEvent.click(screen.getByTestId(expire));
     await waitFor(() => {
       expect(screen.getByTestId(expiryStrategySubmit).dataset.state).toEqual(
@@ -114,12 +120,30 @@ describe('StopOrder', () => {
     });
   });
 
-  it('should display trigger price as price for market type order', async () => {
+  it('calculate notional for market limit', async () => {
+    render(generateJsx());
+    await userEvent.type(screen.getByTestId(sizeInput), '10');
+    await userEvent.type(screen.getByTestId(priceInput), '10');
+    expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
+      'Notional100.00 BTC'
+    );
+  });
+
+  it('calculates notional for limit order', async () => {
     render(generateJsx());
     await userEvent.click(screen.getByTestId(orderTypeTrigger));
     await userEvent.click(screen.getByTestId(orderTypeMarket));
-    await userEvent.type(screen.getByTestId(triggerPriceInput), '10');
-    expect(screen.getByTestId('price')).toHaveTextContent('10.0');
+    await userEvent.type(screen.getByTestId(sizeInput), '10');
+    // price trigger is selected but it's empty, calculate base on size and marketPrice prop
+    expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
+      'Notional20.00 BTC'
+    );
+
+    await userEvent.type(screen.getByTestId(triggerPriceInput), '3');
+    // calculate base on size and price trigger
+    expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
+      'Notional30.00 BTC'
+    );
   });
 
   it('should use local storage state for initial values', async () => {
@@ -132,6 +156,11 @@ describe('StopOrder', () => {
       expire: true,
       expiryStrategy: Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS,
       expiresAt: '2023-07-27T16:43:27.000',
+      oco: true,
+      ocoType: Schema.OrderType.TYPE_LIMIT,
+      ocoSize: '0.2',
+      ocoPrice: '300.23',
+      ocoTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
     };
 
     useDealTicketFormValues.setState({
@@ -150,10 +179,22 @@ describe('StopOrder', () => {
     expect(screen.getByTestId(sizeInput)).toHaveDisplayValue(
       values.size as string
     );
-    expect(screen.getByTestId('order-tif')).toHaveValue(values.timeInForce);
+    expect(screen.getByTestId(timeInForce)).toHaveValue(values.timeInForce);
     expect(screen.getByTestId(priceInput)).toHaveDisplayValue(
       values.price as string
     );
+
+    expect(screen.getByTestId(ocoPostfix(sizeInput))).toHaveDisplayValue(
+      values.ocoSize as string
+    );
+    expect(screen.getByTestId(ocoPostfix(timeInForce))).toHaveValue(
+      values.ocoTimeInForce
+    );
+    expect(screen.getByTestId(ocoPostfix(priceInput))).toHaveDisplayValue(
+      values.ocoPrice as string
+    );
+    expect(screen.getByTestId('ocoTypeLimit').dataset.state).toEqual('checked');
+
     expect(screen.getByTestId(expire).dataset.state).toEqual('checked');
     expect(screen.getByTestId(expiryStrategyCancel).dataset.state).toEqual(
       'checked'
@@ -161,6 +202,9 @@ describe('StopOrder', () => {
     expect(screen.getByTestId(datePicker)).toHaveDisplayValue(
       values.expiresAt as string
     );
+
+    await userEvent.click(screen.getByTestId(orderTypeMarket));
+    expect(screen.getByTestId(oco).dataset.state).toEqual('unchecked');
   });
 
   it('does not submit if no wallet connected', async () => {
@@ -181,138 +225,239 @@ describe('StopOrder', () => {
     expect(submit).toBeCalled();
   });
 
-  it('validates size field', async () => {
+  it.each([
+    { fieldName: 'size', ocoValue: false },
+    { fieldName: 'ocoSize', ocoValue: true },
+  ])('validates $fieldName field', async ({ ocoValue }) => {
     render(generateJsx());
-
+    if (ocoValue) {
+      await userEvent.click(screen.getByTestId(oco));
+    }
     await userEvent.click(screen.getByTestId(submitButton));
-
+    const getByTestId = (id: string) =>
+      screen.getByTestId(ocoPostfix(id, ocoValue));
+    const queryByTestId = (id: string) =>
+      screen.queryByTestId(ocoPostfix(id, ocoValue));
     // default value should be invalid
-    expect(screen.getByTestId(sizeErrorMessage)).toBeInTheDocument();
+    expect(getByTestId(sizeErrorMessage)).toBeInTheDocument();
     // to small value should be invalid
-    await userEvent.type(screen.getByTestId(sizeInput), '0.01');
-    expect(screen.getByTestId(sizeErrorMessage)).toBeInTheDocument();
+    await userEvent.type(getByTestId(sizeInput), '0.01');
+    expect(getByTestId(sizeErrorMessage)).toBeInTheDocument();
 
     // clear and fill using valid value
-    await userEvent.clear(screen.getByTestId(sizeInput));
-    await userEvent.type(screen.getByTestId(sizeInput), '0.1');
-    expect(screen.queryByTestId(sizeErrorMessage)).toBeNull();
+    await userEvent.clear(getByTestId(sizeInput));
+    await userEvent.type(getByTestId(sizeInput), '0.1');
+    expect(queryByTestId(sizeErrorMessage)).toBeNull();
   });
 
-  it('validates price field', async () => {
+  it.each([
+    { fieldName: 'price', ocoValue: false },
+    { fieldName: 'ocoPrice', ocoValue: true },
+  ])('validates $fieldName field', async ({ ocoValue }) => {
     render(generateJsx());
-
+    if (ocoValue) {
+      await userEvent.click(screen.getByTestId(oco));
+    }
     await userEvent.click(screen.getByTestId(submitButton));
-    // price error message should not show if size has error
-    expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
-    await userEvent.type(screen.getByTestId(sizeInput), '0.1');
-    expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
-    await userEvent.type(screen.getByTestId(priceInput), '0.001');
-    expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
+
+    const getByTestId = (id: string) =>
+      screen.getByTestId(ocoPostfix(id, ocoValue));
+    const queryByTestId = (id: string) =>
+      screen.queryByTestId(ocoPostfix(id, ocoValue));
+
+    expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
+    await userEvent.type(getByTestId(priceInput), '0.001');
+    expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
 
     // switch to market order type error should disappear
     await userEvent.click(screen.getByTestId(orderTypeTrigger));
     await userEvent.click(screen.getByTestId(orderTypeMarket));
     await userEvent.click(screen.getByTestId(submitButton));
-    expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
+    expect(queryByTestId(priceErrorMessage)).toBeNull();
 
     // switch back to limit type
     await userEvent.click(screen.getByTestId(orderTypeTrigger));
     await userEvent.click(screen.getByTestId(orderTypeLimit));
     await userEvent.click(screen.getByTestId(submitButton));
-    expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
+    expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
 
     // to small value should be invalid
-    await userEvent.type(screen.getByTestId(priceInput), '0.001');
-    expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
+    await userEvent.type(getByTestId(priceInput), '0.001');
+    expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
 
     // clear and fill using valid value
-    await userEvent.clear(screen.getByTestId(priceInput));
-    await userEvent.type(screen.getByTestId(priceInput), '0.01');
-    expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
+    await userEvent.clear(getByTestId(priceInput));
+    await userEvent.type(getByTestId(priceInput), '0.01');
+    expect(queryByTestId(priceErrorMessage)).toBeNull();
   });
 
-  it('validates trigger price field', async () => {
+  it.each([
+    { fieldName: 'triggerPrice', ocoValue: false },
+    { fieldName: 'ocoTriggerPrice', ocoValue: true },
+  ])('validates $fieldName field', async ({ ocoValue }) => {
     render(generateJsx());
 
+    if (ocoValue) {
+      await userEvent.click(screen.getByTestId(oco));
+      await userEvent.click(screen.getByTestId(triggerDirectionFallsBelow));
+    }
     await userEvent.click(screen.getByTestId(submitButton));
-    expect(screen.getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
+    const getByTestId = (id: string) =>
+      screen.getByTestId(ocoPostfix(id, ocoValue));
+    const queryByTestId = (id: string) =>
+      screen.queryByTestId(ocoPostfix(id, ocoValue));
+    expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
     // switch to trailing percentage offset trigger type
-    await userEvent.click(screen.getByTestId(triggerTypeTrailingPercentOffset));
-    expect(screen.queryByTestId(triggerPriceErrorMessage)).toBeNull();
+    await userEvent.click(getByTestId(triggerTypeTrailingPercentOffset));
+    expect(queryByTestId(triggerPriceErrorMessage)).toBeNull();
 
     // switch back to price trigger type
-    await userEvent.click(screen.getByTestId(triggerTypePrice));
-    expect(screen.getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
+    await userEvent.click(getByTestId(triggerTypePrice));
+    expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
     // to small value should be invalid
-    await userEvent.type(screen.getByTestId(triggerPriceInput), '0.001');
-    expect(screen.getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
+    await userEvent.type(getByTestId(triggerPriceInput), '0.001');
+    expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
-    // clear and fill using valid value
-    await userEvent.clear(screen.getByTestId(triggerPriceInput));
-    await userEvent.type(screen.getByTestId(triggerPriceInput), '0.01');
-    expect(screen.queryByTestId(triggerPriceErrorMessage)).toBeNull();
+    // clear and fill using value causing immediate trigger
+    await userEvent.clear(getByTestId(triggerPriceInput));
+    await userEvent.type(getByTestId(triggerPriceInput), '0.01');
+    expect(queryByTestId(triggerPriceErrorMessage)).toBeNull();
+    expect(queryByTestId(triggerPriceWarningMessage)).toBeInTheDocument();
+
+    // change to correct value
+    await userEvent.type(getByTestId(triggerPriceInput), '2');
+    expect(queryByTestId(triggerPriceWarningMessage)).toBeNull();
   });
 
-  it('validates trigger trailing percentage offset field', async () => {
+  it.each([
+    { fieldName: 'trailingPercentageOffset', ocoValue: false },
+    { fieldName: 'ocoTrailingPercentageOffset', ocoValue: true },
+  ])('validates $fieldName field', async ({ ocoValue }) => {
     render(generateJsx());
+    if (ocoValue) {
+      await userEvent.click(screen.getByTestId(oco));
+    }
+    await userEvent.click(screen.getByTestId(submitButton));
+    const getByTestId = (id: string) =>
+      screen.getByTestId(ocoPostfix(id, ocoValue));
+    const queryByTestId = (id: string) =>
+      screen.queryByTestId(ocoPostfix(id, ocoValue));
 
     // should not show error with default form values
-    await userEvent.click(screen.getByTestId(submitButton));
-    expect(
-      screen.queryByTestId(triggerTrailingPercentOffsetErrorMessage)
-    ).toBeNull();
+    expect(queryByTestId(triggerTrailingPercentOffsetErrorMessage)).toBeNull();
 
     // switch to trailing percentage offset trigger type
-    await userEvent.click(screen.getByTestId(triggerTypeTrailingPercentOffset));
+    await userEvent.click(getByTestId(triggerTypeTrailingPercentOffset));
     expect(
-      screen.getByTestId(triggerTrailingPercentOffsetErrorMessage)
+      getByTestId(triggerTrailingPercentOffsetErrorMessage)
     ).toBeInTheDocument();
 
     // to small value should be invalid
     await userEvent.type(
-      screen.getByTestId(triggerTrailingPercentOffsetInput),
+      getByTestId(triggerTrailingPercentOffsetInput),
       '0.09'
     );
     expect(
-      screen.getByTestId(triggerTrailingPercentOffsetErrorMessage)
+      getByTestId(triggerTrailingPercentOffsetErrorMessage)
     ).toBeInTheDocument();
 
     // clear and fill using valid value
-    await userEvent.clear(
-      screen.getByTestId(triggerTrailingPercentOffsetInput)
-    );
-    await userEvent.type(
-      screen.getByTestId(triggerTrailingPercentOffsetInput),
-      '0.1'
-    );
-    expect(
-      screen.queryByTestId(triggerTrailingPercentOffsetErrorMessage)
-    ).toBeNull();
+    await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
+    await userEvent.type(getByTestId(triggerTrailingPercentOffsetInput), '0.1');
+    expect(queryByTestId(triggerTrailingPercentOffsetErrorMessage)).toBeNull();
 
     // to big value should be invalid
-    await userEvent.clear(
-      screen.getByTestId(triggerTrailingPercentOffsetInput)
-    );
+    await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
     await userEvent.type(
-      screen.getByTestId(triggerTrailingPercentOffsetInput),
+      getByTestId(triggerTrailingPercentOffsetInput),
       '99.91'
     );
     expect(
-      screen.getByTestId(triggerTrailingPercentOffsetErrorMessage)
+      getByTestId(triggerTrailingPercentOffsetErrorMessage)
     ).toBeInTheDocument();
 
     // clear and fill using valid value
-    await userEvent.clear(
-      screen.getByTestId(triggerTrailingPercentOffsetInput)
-    );
+    await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
     await userEvent.type(
-      screen.getByTestId(triggerTrailingPercentOffsetInput),
+      getByTestId(triggerTrailingPercentOffsetInput),
       '99.9'
     );
+    expect(queryByTestId(triggerTrailingPercentOffsetErrorMessage)).toBeNull();
+  });
+
+  it('sync oco trigger', async () => {
+    render(generateJsx());
+    await userEvent.click(screen.getByTestId(oco));
     expect(
-      screen.queryByTestId(triggerTrailingPercentOffsetErrorMessage)
-    ).toBeNull();
+      screen.getByTestId(triggerDirectionRisesAbove).dataset.state
+    ).toEqual('checked');
+    expect(
+      screen.getByTestId(ocoPostfix(triggerDirectionFallsBelow)).dataset.state
+    ).toEqual('checked');
+    await userEvent.click(screen.getByTestId(triggerDirectionFallsBelow));
+    expect(
+      screen.getByTestId(triggerDirectionRisesAbove).dataset.state
+    ).toEqual('unchecked');
+    expect(
+      screen.getByTestId(ocoPostfix(triggerDirectionFallsBelow)).dataset.state
+    ).toEqual('unchecked');
+    await userEvent.click(
+      screen.getByTestId(ocoPostfix(triggerDirectionFallsBelow))
+    );
+    expect(
+      screen.getByTestId(triggerDirectionRisesAbove).dataset.state
+    ).toEqual('checked');
+    expect(
+      screen.getByTestId(ocoPostfix(triggerDirectionFallsBelow)).dataset.state
+    ).toEqual('checked');
+  });
+
+  it('disables submit expiry strategy when OCO selected', async () => {
+    render(generateJsx());
+    await userEvent.click(screen.getByTestId(expire));
+    await userEvent.click(screen.getByTestId(expiryStrategySubmit));
+    await userEvent.click(screen.getByTestId(oco));
+    expect(screen.getByTestId(expiryStrategySubmit).dataset.state).toEqual(
+      'unchecked'
+    );
+    expect(screen.getByTestId(expiryStrategySubmit)).toBeDisabled();
+    await userEvent.click(screen.getByTestId(oco));
+    await userEvent.click(screen.getByTestId(expiryStrategySubmit));
+    expect(screen.getByTestId(expiryStrategySubmit).dataset.state).toEqual(
+      'checked'
+    );
+    expect(screen.getByTestId(expiryStrategySubmit)).not.toBeDisabled();
+  });
+
+  it('sets expiry time/date to now if expiry is changed to checked', async () => {
+    const now = Math.round(Date.now() / 1000) * 1000;
+    render(generateJsx());
+    jest.spyOn(global.Date, 'now').mockImplementationOnce(() => now);
+    await userEvent.click(screen.getByTestId(expire));
+
+    // expiry time/date was empty it should be set to now
+    expect(
+      new Date(screen.getByTestId<HTMLInputElement>(datePicker).value).getTime()
+    ).toEqual(now);
+
+    // set to the value in the past (now - 1s)
+    fireEvent.change(screen.getByTestId<HTMLInputElement>(datePicker), {
+      target: { value: formatForInput(new Date(now - 1000)) },
+    });
+    expect(
+      new Date(
+        screen.getByTestId<HTMLInputElement>(datePicker).value
+      ).getTime() + 1000
+    ).toEqual(now);
+
+    // switch expiry off and on
+    await userEvent.click(screen.getByTestId(expire));
+    await userEvent.click(screen.getByTestId(expire));
+    // expiry time/date was in the past it should be set to now
+    expect(
+      new Date(screen.getByTestId<HTMLInputElement>(datePicker).value).getTime()
+    ).toEqual(now);
   });
 });

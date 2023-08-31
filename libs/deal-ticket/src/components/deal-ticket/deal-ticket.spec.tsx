@@ -1,13 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket, generateMarketData } from '../../test-helpers';
 import { DealTicket } from './deal-ticket';
 import * as Schema from '@vegaprotocol/types';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import { addDecimal } from '@vegaprotocol/utils';
 import type { OrdersQuery } from '@vegaprotocol/orders';
 import {
   DealTicketType,
@@ -15,6 +20,7 @@ import {
 } from '../../hooks/use-form-values';
 import * as positionsTools from '@vegaprotocol/positions';
 import { OrdersDocument } from '@vegaprotocol/orders';
+import { formatForInput } from '@vegaprotocol/utils';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
@@ -132,20 +138,6 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('order-size')).toHaveDisplayValue('0');
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
-    );
-  });
-
-  it('should display last price for market type order', () => {
-    render(generateJsx());
-    act(() => {
-      screen.getByTestId('order-type-Market').click();
-    });
-    // Assert last price is shown
-    expect(screen.getByTestId('last-price')).toHaveTextContent(
-      // eslint-disable-next-line
-      `~${addDecimal(marketPrice, market.decimalPlaces)} ${
-        market.tradableInstrument.instrument.product.quoteName
-      }`
     );
   });
 
@@ -329,7 +321,7 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('iceberg')).toBeChecked();
   });
 
-  it('should set values for a non-persistent iceberg order and disable post only checkbox', () => {
+  it('should set values for a non-persistent order and disable post only checkbox', () => {
     const expectedOrder = {
       marketId: market.id,
       type: Schema.OrderType.TYPE_LIMIT,
@@ -372,6 +364,7 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('reduce-only')).not.toBeChecked();
     expect(screen.getByTestId('post-only')).not.toBeChecked();
     expect(screen.getByTestId('iceberg')).not.toBeChecked();
+    expect(screen.getByTestId('iceberg')).toBeDisabled();
   });
 
   // eslint-disable-next-line jest/no-disabled-tests
@@ -487,5 +480,151 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('order-tif').children).toHaveLength(
       Object.keys(Schema.OrderTimeInForce).length
     );
+  });
+
+  it('validates size field', async () => {
+    render(generateJsx());
+    const sizeErrorMessage = 'deal-ticket-error-message-size';
+    const sizeInput = 'order-size';
+    await userEvent.click(screen.getByTestId('place-order'));
+    // default value should be invalid
+    expect(screen.getByTestId(sizeErrorMessage)).toBeInTheDocument();
+    // to small value should be invalid
+    await userEvent.type(screen.getByTestId(sizeInput), '0.01');
+    expect(screen.getByTestId(sizeErrorMessage)).toBeInTheDocument();
+
+    // clear and fill using valid value
+    await userEvent.clear(screen.getByTestId(sizeInput));
+    await userEvent.type(screen.getByTestId(sizeInput), '0.1');
+    expect(screen.queryByTestId(sizeErrorMessage)).toBeNull();
+  });
+
+  it('validates price field', async () => {
+    const priceErrorMessage = 'deal-ticket-error-message-price';
+    const priceInput = 'order-price';
+    const submitButton = 'place-order';
+    const orderTypeMarket = 'order-type-Market';
+    const orderTypeLimit = 'order-type-Limit';
+    render(generateJsx());
+
+    await userEvent.click(screen.getByTestId(submitButton));
+
+    expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
+    await userEvent.type(screen.getByTestId(priceInput), '0.001');
+    expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
+
+    // switch to market order type error should disappear
+    await userEvent.click(screen.getByTestId(orderTypeMarket));
+    await userEvent.click(screen.getByTestId(submitButton));
+    expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
+
+    // switch back to limit type
+    await userEvent.click(screen.getByTestId(orderTypeLimit));
+    await userEvent.click(screen.getByTestId(submitButton));
+    expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
+
+    // to small value should be invalid
+    await userEvent.type(screen.getByTestId(priceInput), '0.001');
+    expect(screen.getByTestId(priceErrorMessage)).toBeInTheDocument();
+
+    // clear and fill using valid value
+    await userEvent.clear(screen.getByTestId(priceInput));
+    await userEvent.type(screen.getByTestId(priceInput), '0.01');
+    expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
+  });
+
+  it('validates iceberg field', async () => {
+    const peakSizeErrorMessage = 'deal-ticket-peak-error-message';
+    const minimumSizeErrorMessage = 'deal-ticket-minimum-error-message';
+    const sizeInput = 'order-size';
+    const peakSizeInput = 'order-peak-size';
+    const minimumSizeInput = 'order-minimum-size';
+    const submitButton = 'place-order';
+
+    render(generateJsx());
+    await userEvent.selectOptions(
+      screen.getByTestId('order-tif'),
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GFA
+    );
+    await userEvent.click(screen.getByTestId('iceberg'));
+    await userEvent.click(screen.getByTestId(submitButton));
+
+    // validate empty fields
+    expect(screen.getByTestId(peakSizeErrorMessage)).toBeInTheDocument();
+    expect(screen.getByTestId(minimumSizeErrorMessage)).toBeInTheDocument();
+
+    await userEvent.type(screen.getByTestId(peakSizeInput), '0.01');
+    await userEvent.type(screen.getByTestId(minimumSizeInput), '0.01');
+
+    // validate value smaller than step
+    expect(screen.getByTestId(peakSizeErrorMessage)).toBeInTheDocument();
+    expect(screen.getByTestId(minimumSizeErrorMessage)).toBeInTheDocument();
+
+    await userEvent.clear(screen.getByTestId(peakSizeInput));
+    await userEvent.type(screen.getByTestId(peakSizeInput), '0.5');
+    await userEvent.clear(screen.getByTestId(minimumSizeInput));
+    await userEvent.type(screen.getByTestId(minimumSizeInput), '0.7');
+
+    await userEvent.clear(screen.getByTestId(sizeInput));
+    await userEvent.type(screen.getByTestId(sizeInput), '0.1');
+
+    // validate value higher than size
+    expect(screen.getByTestId(peakSizeErrorMessage)).toBeInTheDocument();
+    expect(screen.getByTestId(minimumSizeErrorMessage)).toBeInTheDocument();
+
+    await userEvent.clear(screen.getByTestId(sizeInput));
+    await userEvent.type(screen.getByTestId(sizeInput), '1');
+    // validate peak higher than minimum
+    expect(screen.queryByTestId(peakSizeErrorMessage)).toBeNull();
+    expect(screen.getByTestId(minimumSizeErrorMessage)).toBeInTheDocument();
+
+    await userEvent.clear(screen.getByTestId(peakSizeInput));
+    await userEvent.type(screen.getByTestId(peakSizeInput), '1');
+    await userEvent.clear(screen.getByTestId(minimumSizeInput));
+    await userEvent.type(screen.getByTestId(minimumSizeInput), '1');
+
+    // validate correct values
+    expect(screen.queryByTestId(peakSizeErrorMessage)).toBeNull();
+    expect(screen.queryByTestId(minimumSizeErrorMessage)).toBeNull();
+  });
+
+  it('sets expiry time/date to now if expiry is changed to checked', async () => {
+    const datePicker = 'date-picker-field';
+    const now = Math.round(Date.now() / 1000) * 1000;
+    render(generateJsx());
+    jest.spyOn(global.Date, 'now').mockImplementationOnce(() => now);
+    await userEvent.selectOptions(
+      screen.getByTestId('order-tif'),
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
+    );
+
+    // expiry time/date was empty it should be set to now
+    expect(
+      new Date(screen.getByTestId<HTMLInputElement>(datePicker).value).getTime()
+    ).toEqual(now);
+
+    // set to the value in the past (now - 1s)
+    fireEvent.change(screen.getByTestId<HTMLInputElement>(datePicker), {
+      target: { value: formatForInput(new Date(now - 1000)) },
+    });
+    expect(
+      new Date(
+        screen.getByTestId<HTMLInputElement>(datePicker).value
+      ).getTime() + 1000
+    ).toEqual(now);
+
+    // switch expiry off and on
+    await userEvent.selectOptions(
+      screen.getByTestId('order-tif'),
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GFA
+    );
+    await userEvent.selectOptions(
+      screen.getByTestId('order-tif'),
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
+    );
+    // expiry time/date was in the past it should be set to now
+    expect(
+      new Date(screen.getByTestId<HTMLInputElement>(datePicker).value).getTime()
+    ).toEqual(now);
   });
 });

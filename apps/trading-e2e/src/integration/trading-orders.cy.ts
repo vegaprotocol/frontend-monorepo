@@ -222,12 +222,17 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
 
   it('must see a filled order', () => {
     // 7002-SORD-046
+    // 7003-MORD-020
     // NOT COVERED:  Must be able to see/link to all trades that were created from this order
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_FILLED,
     });
     cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Filled');
+    cy.get('[col-id="market.tradableInstrument.instrument.code"]').contains(
+      '[title="Future"]',
+      'Futr'
+    );
   });
 
   it('must see a rejected order', () => {

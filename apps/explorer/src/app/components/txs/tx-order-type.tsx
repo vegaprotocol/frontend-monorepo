@@ -50,6 +50,25 @@ const displayString: StringMap = {
   'Stop Orders Cancellation': 'Cancel stop',
 };
 
+export function getLabelForStopOrderType(
+  orderType: string,
+  command: components['schemas']['v1InputData']
+): string {
+  if (command.stopOrdersSubmission) {
+    if (
+      command.stopOrdersSubmission.risesAbove &&
+      command.stopOrdersSubmission.fallsBelow
+    ) {
+      return 'Stop ⇅';
+    } else if (command.stopOrdersSubmission.risesAbove) {
+      return 'Stop ↗';
+    } else if (command.stopOrdersSubmission.fallsBelow) {
+      return 'Stop ↘';
+    }
+  }
+  return 'Stop';
+}
+
 export function getLabelForOrderType(
   orderType: string,
   command: components['schemas']['v1InputData']
@@ -184,6 +203,9 @@ export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
     colours = 'text-black bg-vega-yellow';
   } else if (type === 'Order' && command) {
     type = getLabelForOrderType(orderType, command);
+    colours = 'text-white dark-text-white bg-vega-blue dark:bg-vega-blue';
+  } else if (type === 'Stop' && command) {
+    type = getLabelForStopOrderType(orderType, command);
     colours = 'text-white dark-text-white bg-vega-blue dark:bg-vega-blue';
   }
 

@@ -408,6 +408,12 @@ function compileFeatureFlags(): FeatureFlags {
         process.env['NX_PRODUCT_PERPETUALS']
       ) as string
     ),
+    METAMASK_SNAPS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_METAMASK_SNAPS',
+        process.env['NX_METAMASK_SNAPS']
+      ) as string
+    ),
   };
   const EXPLORER_FLAGS = {
     EXPLORER_ASSETS: TRUTHY.includes(

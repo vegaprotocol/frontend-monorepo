@@ -28,6 +28,17 @@ export interface StopOrderFormValues {
   expire: boolean;
   expiryStrategy?: Schema.StopOrderExpiryStrategy;
   expiresAt?: string;
+
+  oco?: boolean;
+
+  ocoTriggerType: 'price' | 'trailingPercentOffset';
+  ocoTriggerPrice?: string;
+  ocoTriggerTrailingPercentOffset?: string;
+
+  ocoType: OrderType;
+  ocoSize: string;
+  ocoTimeInForce: OrderTimeInForce;
+  ocoPrice?: string;
 }
 
 export type OrderFormValues = {
@@ -138,6 +149,7 @@ export const useDealTicketFormValues = create<Store>()(
       })),
       {
         name: 'vega_deal_ticket_store',
+        version: 1,
       }
     )
   )
