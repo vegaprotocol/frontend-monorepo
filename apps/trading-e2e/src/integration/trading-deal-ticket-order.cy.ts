@@ -24,6 +24,9 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
 
   beforeEach(() => {
     cy.mockTradingPage();
+    cy.getByTestId('deal-ticket-fee-margin-required').within(() => {
+      cy.get('button').click();
+    });
   });
 
   describe('limit order', () => {

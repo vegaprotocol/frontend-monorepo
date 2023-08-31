@@ -20,6 +20,9 @@ export interface TooltipProps {
   sideOffset?: number;
 }
 
+export const TOOLTIP_TRIGGER_CLASS_NAME =
+  'underline underline-offset-2 decoration-neutral-400 dark:decoration-neutral-400 decoration-dashed';
+
 // Conditionally rendered tooltip if description content is provided.
 export const Tooltip = ({
   children,
@@ -32,10 +35,7 @@ export const Tooltip = ({
   description ? (
     <Provider delayDuration={200} skipDelayDuration={100}>
       <Root open={open}>
-        <Trigger
-          asChild
-          className="underline underline-offset-2 decoration-neutral-400 dark:decoration-neutral-400 decoration-dashed"
-        >
+        <Trigger asChild className={TOOLTIP_TRIGGER_CLASS_NAME}>
           {children}
         </Trigger>
         {description && (
