@@ -184,8 +184,8 @@ describe('OrderbookMid', () => {
     lastTradedPrice: '100',
     decimalPlaces: 0,
     assetSymbol: 'BTC',
-    bestOffer: '101',
-    bestBid: '99',
+    bestAskPrice: '101',
+    bestBidPrice: '99',
   };
 
   it('renders no change until lastTradedPrice changes', () => {
@@ -201,7 +201,9 @@ describe('OrderbookMid', () => {
     rerender(<OrderbookMid {...props} />);
     expect(screen.queryByTestId(/icon-/)).not.toBeInTheDocument();
 
-    rerender(<OrderbookMid {...props} lastTradedPrice="101" bestOffer="102" />);
+    rerender(
+      <OrderbookMid {...props} lastTradedPrice="101" bestAskPrice="102" />
+    );
     expect(screen.getByTestId('icon-arrow-up')).toBeInTheDocument();
     expect(screen.getByTestId('spread')).toHaveTextContent('(3)');
 
@@ -210,8 +212,8 @@ describe('OrderbookMid', () => {
       <OrderbookMid
         {...props}
         lastTradedPrice="101"
-        bestOffer="102"
-        bestBid="98"
+        bestAskPrice="102"
+        bestBidPrice="98"
       />
     );
     expect(screen.getByTestId('icon-arrow-up')).toBeInTheDocument();

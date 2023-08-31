@@ -73,18 +73,18 @@ export const OrderbookMid = ({
   lastTradedPrice,
   decimalPlaces,
   assetSymbol,
-  bestOffer,
-  bestBid,
+  bestAskPrice,
+  bestBidPrice,
 }: {
   lastTradedPrice: string;
   decimalPlaces: number;
   assetSymbol: string;
-  bestOffer: string;
-  bestBid: string;
+  bestAskPrice: string;
+  bestBidPrice: string;
 }) => {
   const previousLastTradedPrice = usePrevious(lastTradedPrice);
   const priceChangeRef = useRef<'up' | 'down' | 'none'>('none');
-  const spread = (BigInt(bestOffer) - BigInt(bestBid)).toString();
+  const spread = (BigInt(bestAskPrice) - BigInt(bestBidPrice)).toString();
 
   if (previousLastTradedPrice !== lastTradedPrice) {
     priceChangeRef.current =
@@ -160,6 +160,11 @@ export const Orderbook = ({
     return compactRows(bids, VolumeType.bid, resolution);
   }, [bids, resolution]);
 
+  // get the best bid/ask, note that we are using the pre aggregated
+  // values so we can render the most accurate spread in the mid section
+  const bestAskPrice = asks[0] ? asks[0].price : '0';
+  const bestBidPrice = bids[0] ? bids[0].price : '0';
+
   return (
     <div className="h-full text-xs grid grid-rows-[1fr_min-content]">
       <div>
@@ -171,17 +176,22 @@ export const Orderbook = ({
             );
             const askRows = groupedAsks.slice(limit * -1);
             const bidRows = groupedBids.slice(0, limit);
+
+            // this is used for providing a scale to render the volume
+            // bars based on the visible book
+            const deepestVisibleAsk = askRows[0];
+            const deepestVisibleBid = bidRows[bidRows.length - 1];
             const maxVol = Math.max(
-              Number(askRows[0].cumulativeVol),
-              Number(bidRows[bidRows.length - 1].cumulativeVol)
+              deepestVisibleAsk?.cumulativeVol || 0,
+              deepestVisibleBid?.cumulativeVol || 0
             );
             return (
               <div
                 className="overflow-hidden grid"
                 data-testid="orderbook-grid-element"
                 style={{
-                  width: width + 'px',
-                  height: height + 'px',
+                  width,
+                  height,
                   gridTemplateRows: `1fr ${midHeight}px 1fr`, // cannot use tailwind here as tailwind will not parse a class string with interpolation
                 }}
               >
@@ -201,8 +211,8 @@ export const Orderbook = ({
                       lastTradedPrice={lastTradedPrice}
                       decimalPlaces={decimalPlaces}
                       assetSymbol={assetSymbol}
-                      bestOffer={asks[0].price}
-                      bestBid={bids[0].price}
+                      bestAskPrice={bestAskPrice}
+                      bestBidPrice={bestBidPrice}
                     />
                     <OrderbookSide
                       rows={bidRows}
