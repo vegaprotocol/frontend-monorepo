@@ -9,7 +9,7 @@ const MAX_FRACTION_DIGITS = 20;
 
 export function toDecimal(numberOfDecimals: number) {
   return new BigNumber(1)
-    .dividedBy(Math.pow(10, numberOfDecimals))
+    .dividedBy(new BigNumber(10).exponentiatedBy(numberOfDecimals))
     .toString(10);
 }
 
@@ -17,7 +17,8 @@ export function toBigNum(
   rawValue: string | number,
   decimals: number
 ): BigNumber {
-  return new BigNumber(rawValue || 0).dividedBy(Math.pow(10, decimals));
+  const divides = new BigNumber(10).exponentiatedBy(decimals);
+  return new BigNumber(rawValue || 0).dividedBy(divides);
 }
 
 export function addDecimal(
@@ -36,7 +37,8 @@ export function removeDecimal(
   value: string | BigNumber,
   decimals: number
 ): string {
-  return new BigNumber(value || 0).times(Math.pow(10, decimals)).toFixed(0);
+  const times = new BigNumber(10).exponentiatedBy(decimals);
+  return new BigNumber(value || 0).times(times).toFixed(0);
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
