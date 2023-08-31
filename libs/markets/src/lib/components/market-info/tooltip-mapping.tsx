@@ -106,11 +106,11 @@ export const tooltipMapping: Record<string, ReactNode> = {
   insurancePoolFraction: t(
     'The fraction of the insurance pool balance that is carried over from the parent market to the successor.'
   ),
-  commitmentMinTimeFraction: t(
+  minimumTimeCommitment: t(
     `Specifies the minimum fraction of time LPs must spend 'on the book' providing their committed liquidity.`
   ),
-  providersFeeCalculationTimeStep: t(
-    'The time step for providers fee. Specifies how often the quality of liquidity supplied by the LPS is evaluated and fees arising from that period are earmarked for specific parties.'
+  feeCalculationTimeStep: t(
+    'This is providers fee calculation time step. Specifies how often the quality of liquidity supplied by the LPs is evaluated and fees arising from that period are earmarked for specific parties.'
   ),
   performanceHysteresisEpochs: t(
     'Specifies the number of epochs over which past performance will continue to affect rewards.'
@@ -134,7 +134,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     `Used to translate an LP's commitment amount to an obligation. Any decimal number >0 with default value 1.0.`
   ),
   epochLength: t(
-    'LP rewards from liquidity fees are paid out once per epoch. How much they receive depends on whether they met the liquidity SLA and their previous performance in recent epochs (defined by market.liquidity.performanceHysteresisEpochs).'
+    'This is validators epoch length. LP rewards from liquidity fees are paid out once per epoch. How much they receive depends on whether they met the liquidity SLA and their previous performance in recent epochs (defined by market.liquidity.performanceHysteresisEpochs).'
   ),
   earlyExitPenalty: t(
     'Sets how much an LP forfeits of their bond if they reduce their commitment while the market is below target stake. If set to 0 there is no penalty for early exit, if set to 1 their entire bond is forfeited if they exit their entire commitment, if set >1, their entire bond will be forfeited for exiting 1/earlyExitPenalty of their commitment amount. Must be a decimal ≥0. '
@@ -144,8 +144,5 @@ export const tooltipMapping: Record<string, ReactNode> = {
   ),
   minimumProbabilityOfTradingLPOrders: t(
     'Sets a lower bound on the result of the probability of trading calculation.'
-  ),
-  feeCalculationTimeStep: t(
-    '(time period e.g. 1m) controls how often the quality of liquidity supplied by the LPs is evaluated and fees arising from that period are earmarked for specific parties. Minimum valid value 0. Maximum valid value validators.epoch.length.'
   ),
 };

@@ -29,6 +29,7 @@ import {
   LiquidityInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
   LiquidityNetworkSLAParametersInfoPanel,
+  LiquidityPriceRangeInfoPanel,
   LiquiditySLAParametersInfoPanel,
   MarketPriceInfoPanel,
   MarketVolumeInfoPanel,
@@ -275,8 +276,13 @@ export const MarketInfoAccordion = ({
             content={<LiquidityMonitoringParametersInfoPanel market={market} />}
           />
           <AccordionItem
+            itemId="liquidity-price-range"
+            title={t('Liquidity price range')}
+            content={<LiquidityPriceRangeInfoPanel market={market} />}
+          />
+          <AccordionItem
             itemId="liquidity-sla-parameters"
-            title={t('Liquidity SLA parameters')}
+            title={t('Liquidity SLA')}
             content={<LiquiditySLAParametersInfoPanel market={market} />}
           />
           <AccordionItem

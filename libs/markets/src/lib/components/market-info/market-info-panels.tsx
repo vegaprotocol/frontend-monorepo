@@ -15,6 +15,7 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import {
+  addDecimalsFormatNumber,
   formatNumber,
   formatNumberPercentage,
   getMarketExpiryDateFormatted,
@@ -596,7 +597,7 @@ export const PriceMonitoringBoundsInfoPanel = ({
   }
   return (
     <>
-      <div className="grid grid-cols-2 text-sm mb-2">
+      <div className="grid grid-cols-2 text-xs mb-2">
         <p className="col-span-1">
           {t('%s probability price bounds', [
             formatNumberPercentage(
@@ -655,15 +656,120 @@ export const LiquidityMonitoringParametersInfoPanel = ({
   return <MarketInfoTable data={marketData} parentData={parentMarketData} />;
 };
 
+export const LiquidityPriceRangeInfoPanel = ({
+  market,
+  parentMarket,
+}: MarketInfoProps) => {
+  const marketLpPriceRange = market.liquiditySLAParameters?.priceRange;
+  const parentMarketLpPriceRange =
+    parentMarket?.liquiditySLAParameters?.priceRange;
+  const quoteUnit =
+    ('quoteName' in market.tradableInstrument.instrument.product &&
+      market?.tradableInstrument.instrument.product?.quoteName) ||
+    '';
+  const parentQuoteUnit =
+    (parentMarket &&
+      'quoteName' in parentMarket.tradableInstrument.instrument.product &&
+      parentMarket?.tradableInstrument.instrument.product?.quoteName) ||
+    '';
+
+  const liquidityPriceRange =
+    marketLpPriceRange &&
+    formatNumberPercentage(new BigNumber(marketLpPriceRange).times(100));
+  const parentLiquidityPriceRange =
+    parentMarket && parentMarketLpPriceRange
+      ? formatNumberPercentage(
+          new BigNumber(parentMarketLpPriceRange).times(100)
+        )
+      : null;
+
+  const { data } = useDataProvider({
+    dataProvider: marketDataProvider,
+    variables: { marketId: market.id },
+  });
+
+  const { data: parentMarketData } = useDataProvider({
+    dataProvider: marketDataProvider,
+    variables: { marketId: parentMarket?.id || '' },
+    skip: !parentMarket,
+  });
+
+  let parentData;
+
+  if (parentMarket && parentMarketData && quoteUnit === parentQuoteUnit) {
+    parentData = {
+      liquidityPriceRange: `${parentLiquidityPriceRange} of mid price`,
+      lowestPrice:
+        parentMarketLpPriceRange &&
+        parentMarketData?.midPrice &&
+        `${addDecimalsFormatNumber(
+          new BigNumber(1)
+            .minus(parentMarketLpPriceRange)
+            .times(parentMarketData.midPrice)
+            .toString(),
+          parentMarket.decimalPlaces
+        )} ${quoteUnit}`,
+      highestPrice:
+        parentMarketLpPriceRange &&
+        parentMarketData?.midPrice &&
+        `${addDecimalsFormatNumber(
+          new BigNumber(1)
+            .plus(parentMarketLpPriceRange)
+            .times(parentMarketData.midPrice)
+            .toString(),
+          parentMarket.decimalPlaces
+        )} ${quoteUnit}`,
+    };
+  }
+
+  return (
+    <>
+      <p className="text-xs mb-2 border-l-2 pl-2">
+        {`For liquidity orders to count towards a commitment, they must be
+            within the liquidity monitoring bounds.`}
+      </p>
+      <MarketInfoTable
+        data={{
+          liquidityPriceRange: `${liquidityPriceRange} of mid price`,
+          lowestPrice:
+            marketLpPriceRange &&
+            data?.midPrice &&
+            `${addDecimalsFormatNumber(
+              new BigNumber(1)
+                .minus(marketLpPriceRange)
+                .times(data.midPrice)
+                .toString(),
+              market.decimalPlaces
+            )} ${quoteUnit}`,
+          highestPrice:
+            marketLpPriceRange &&
+            data?.midPrice &&
+            `${addDecimalsFormatNumber(
+              new BigNumber(1)
+                .plus(marketLpPriceRange)
+                .times(data.midPrice)
+                .toString(),
+              market.decimalPlaces
+            )} ${quoteUnit}`,
+        }}
+        parentData={parentData}
+      />
+      <p className="text-xs mb-2 border-l-2 pl-2 mt-2">
+        {`The liquidity price range is a ${liquidityPriceRange} difference from the mid
+            price.`}
+      </p>
+    </>
+  );
+};
+
 export const LiquiditySLAParametersInfoPanel = ({
   market,
   parentMarket,
 }: MarketInfoProps) => {
   const marketData = {
-    priceRange: market.liquiditySLAParameters?.priceRange,
-    commitmentMinTimeFraction:
+    minimumTimeCommitment:
       market.liquiditySLAParameters?.commitmentMinTimeFraction,
-    providersFeeCalculationTimeStep:
+    feeCalculationTimeStep:
       market.liquiditySLAParameters?.providersFeeCalculationTimeStep,
     performanceHysteresisEpochs:
       market.liquiditySLAParameters?.performanceHysteresisEpochs,
@@ -672,7 +778,6 @@ export const LiquiditySLAParametersInfoPanel = ({
 
   const parentMarketData = parentMarket
     ? {
-        priceRange: parentMarket.liquiditySLAParameters?.priceRange,
         commitmentMinTimeFraction:
           parentMarket.liquiditySLAParameters?.commitmentMinTimeFraction,
         providersFeeCalculationTimeStep:
@@ -682,9 +787,23 @@ export const LiquiditySLAParametersInfoPanel = ({
         slaCompetitionFactor:
           parentMarket.liquiditySLAParameters?.slaCompetitionFactor,
       }
-    : {};
+    : undefined;
 
-  return <MarketInfoTable data={marketData} parentData={parentMarketData} />;
+  return (
+    <>
+      <p className="text-xs mb-2 border-l-2 pl-2">
+        {t(
+          'The point of liquidity provision on Vega is to incentivize people to place orders on the market that maintain liquidity on the book.'
+        )}
+      </p>
+      <p className="text-xs mb-2 border-l-2 pl-2">
+        {t(
+          'This is done via a financial commitment and reward + penalty mechanics, and through the LP commitment transaction that announces that a party is entering the liquidity provision (LP) service level agreement (SLA).'
+        )}
+      </p>
+      <MarketInfoTable data={marketData} parentData={parentMarketData} />
+    </>
+  );
 };
 
 export const LiquidityNetworkSLAParametersInfoPanel = ({
