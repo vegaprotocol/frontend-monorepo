@@ -1,8 +1,12 @@
 import { useRef, useCallback, useEffect } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { StopOrdersSubmission } from '@vegaprotocol/wallet';
+import type {
+  OrderSubmissionBody,
+  StopOrdersSubmission,
+} from '@vegaprotocol/wallet';
 import {
   formatForInput,
+  formatValue,
   removeDecimal,
   toDecimal,
   validateAmount,
@@ -19,6 +23,9 @@ import {
   TradingInputError as InputError,
   TradingSelect as Select,
   Tooltip,
+  TradingButton as Button,
+  Pill,
+  Intent,
 } from '@vegaprotocol/ui-toolkit';
 import { getDerivedPrice } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
@@ -31,6 +38,7 @@ import {
   REDUCE_ONLY_TOOLTIP,
   stopSubmit,
   getNotionalSize,
+  getAssetUnit,
 } from './deal-ticket';
 import { TypeToggle } from './type-selector';
 import {
@@ -41,9 +49,10 @@ import {
 } from '../../hooks/use-form-values';
 import type { StopOrderFormValues } from '../../hooks/use-form-values';
 import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values-to-submission';
-import { DealTicketButton } from './deal-ticket-button';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { validateExpiration } from '../../utils';
+import { NOTIONAL_SIZE_TOOLTIP_TEXT } from '../../constants';
+import { KeyValue } from './key-value';
 
 export interface StopOrderProps {
   market: Market;
@@ -78,7 +87,7 @@ const Trigger = ({
   control,
   watch,
   priceStep,
-  assetSymbol,
+  quoteName,
   oco,
   marketPrice,
   decimalPlaces,
@@ -86,7 +95,7 @@ const Trigger = ({
   control: Control<StopOrderFormValues>;
   watch: UseFormWatch<StopOrderFormValues>;
   priceStep: string;
-  assetSymbol: string;
+  quoteName: string;
   oco?: boolean;
   marketPrice?: string | null;
   decimalPlaces: number;
@@ -181,7 +190,7 @@ const Trigger = ({
                       data-testid={`triggerPrice${oco ? '-oco' : ''}`}
                       type="number"
                       step={priceStep}
-                      appendElement={assetSymbol}
+                      appendElement={<Pill size="xs">{quoteName}</Pill>}
                       value={value || ''}
                       hasError={!!fieldState.error}
                       {...props}
@@ -249,7 +258,7 @@ const Trigger = ({
                     <Input
                       type="number"
                       step={trailingPercentOffsetStep}
-                      appendElement="%"
+                      appendElement={<Pill size="xs">%</Pill>}
                       data-testid={`triggerTrailingPercentOffset${
                         oco ? '-oco' : ''
                       }`}
@@ -311,10 +320,14 @@ const Size = ({
   control,
   sizeStep,
   oco,
+  isLimitType,
+  assetUnit,
 }: {
   control: Control<StopOrderFormValues>;
   sizeStep: string;
   oco?: boolean;
+  isLimitType: boolean;
+  assetUnit?: string;
 }) => {
   return (
     <Controller
@@ -332,7 +345,7 @@ const Size = ({
         const { value, ...props } = field;
         const id = `order-size${oco ? '-oco' : ''}`;
         return (
-          <div className="mb-4">
+          <div className={isLimitType ? 'mb-4' : 'mb-2'}>
             <FormGroup labelFor={id} label={t(`Size`)} compact>
               <Input
                 id={id}
@@ -341,6 +354,7 @@ const Size = ({
                 step={sizeStep}
                 min={sizeStep}
                 onWheel={(e) => e.currentTarget.blur()}
+                appendElement={assetUnit && <Pill size="xs">{assetUnit}</Pill>}
                 data-testid={id}
                 value={value || ''}
                 hasError={!!fieldState.error}
@@ -394,12 +408,8 @@ const Price = ({
         const { value, ...props } = field;
         const id = `order-price${oco ? '-oco' : ''}`;
         return (
-          <div className="mb-4">
-            <FormGroup
-              labelFor={id}
-              label={t(`Price (${quoteName})`)}
-              compact={true}
-            >
+          <div className="mb-2">
+            <FormGroup labelFor={id} label={t('Price')} compact={true}>
               <Input
                 id={id}
                 className="w-full"
@@ -409,6 +419,7 @@ const Price = ({
                 onWheel={(e) => e.currentTarget.blur()}
                 value={value || ''}
                 hasError={!!fieldState.error}
+                appendElement={<Pill size="xs">{quoteName}</Pill>}
                 {...props}
               />
             </FormGroup>
@@ -434,17 +445,17 @@ const TimeInForce = ({
   oco?: boolean;
 }) => (
   <Controller
-    name="timeInForce"
+    name={oco ? 'ocoTimeInForce' : 'timeInForce'}
     control={control}
     render={({ field, fieldState }) => {
-      const id = `select-time-in-force${oco ? '-oco' : ''}`;
+      const id = `order-tif${oco ? '-oco' : ''}`;
       return (
         <div className="mb-2">
           <FormGroup label={t('Time in force')} labelFor={id} compact={true}>
             <Select
               id={id}
               className="w-full"
-              data-testid="order-tif"
+              data-testid={id}
               hasError={!!fieldState.error}
               {...field}
             >
@@ -486,6 +497,255 @@ const ReduceOnly = () => (
   />
 );
 
+const NotionalAndFees = ({
+  market,
+  marketPrice,
+  side,
+  size,
+  price,
+  timeInForce,
+  triggerPrice,
+  triggerType,
+  type,
+}: Pick<
+  OrderSubmissionBody['orderSubmission'],
+  'side' | 'size' | 'timeInForce' | 'type' | 'price'
+> &
+  Pick<StopOrderProps, 'market' | 'marketPrice'> &
+  Pick<StopOrderFormValues, 'triggerType' | 'triggerPrice'>) => {
+  const { quoteName, settlementAsset: asset } =
+    market.tradableInstrument.instrument.product;
+  const isPriceTrigger = triggerType === 'price';
+  const derivedPrice = getDerivedPrice(
+    {
+      type,
+      price,
+    },
+    type === Schema.OrderType.TYPE_MARKET && isPriceTrigger && triggerPrice
+      ? removeDecimal(triggerPrice, market.decimalPlaces)
+      : marketPrice || '0'
+  );
+
+  const notionalSize = getNotionalSize(
+    derivedPrice,
+    size,
+    market.decimalPlaces,
+    market.positionDecimalPlaces
+  );
+  return (
+    <div className="mb-4">
+      <KeyValue
+        label={t('Notional')}
+        value={formatValue(notionalSize, market.decimalPlaces)}
+        formattedValue={formatValue(notionalSize, market.decimalPlaces)}
+        symbol={quoteName}
+        labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName)}
+      />
+      <DealTicketFeeDetails
+        order={{
+          marketId: market.id,
+          price: derivedPrice,
+          side,
+          size,
+          timeInForce,
+          type,
+        }}
+        assetSymbol={asset.symbol}
+        market={market}
+      />
+    </div>
+  );
+};
+
+const formatSizeAtPrice = ({
+  assetUnit,
+  decimalPlaces,
+  positionDecimalPlaces,
+  price,
+  quoteName,
+  side,
+  size,
+  type,
+}: Pick<StopOrderFormValues, 'price' | 'side' | 'size' | 'type'> & {
+  assetUnit?: string;
+  decimalPlaces: number;
+  positionDecimalPlaces: number;
+  quoteName: string;
+}) =>
+  `${formatValue(
+    removeDecimal(size, positionDecimalPlaces),
+    positionDecimalPlaces
+  )} ${assetUnit} @ ${
+    type === Schema.OrderType.TYPE_MARKET
+      ? 'market'
+      : `${formatValue(
+          removeDecimal(price || '0', decimalPlaces),
+          decimalPlaces
+        )} ${quoteName}`
+  }`;
+const formatTrigger = ({
+  decimalPlaces,
+  triggerDirection,
+  triggerPrice,
+  triggerTrailingPercentOffset,
+  triggerType,
+  quoteName,
+}: Pick<
+  StopOrderFormValues,
+  | 'triggerDirection'
+  | 'triggerType'
+  | 'triggerPrice'
+  | 'triggerTrailingPercentOffset'
+> & {
+  decimalPlaces: number;
+  quoteName: string;
+}) =>
+  `${
+    triggerDirection ===
+    Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
+      ? t('above')
+      : t('below')
+  } ${
+    triggerType === 'price'
+      ? `${formatValue(
+          removeDecimal(triggerPrice || '', decimalPlaces),
+          decimalPlaces
+        )} ${quoteName}`
+      : `${(Number(triggerTrailingPercentOffset) || 0).toFixed(1)}% ${t(
+          'trailing'
+        )}`
+  }`;
+
+const SubmitButton = ({
+  assetUnit,
+  market,
+  oco,
+  ocoPrice,
+  ocoSize,
+  ocoTriggerPrice,
+  ocoTriggerTrailingPercentOffset,
+  ocoTriggerType,
+  ocoType,
+  price,
+  side,
+  size,
+  triggerDirection,
+  triggerPrice,
+  triggerTrailingPercentOffset,
+  triggerType,
+  type,
+}: Pick<
+  StopOrderFormValues,
+  | 'oco'
+  | 'ocoPrice'
+  | 'ocoSize'
+  | 'ocoTriggerPrice'
+  | 'ocoTriggerTrailingPercentOffset'
+  | 'ocoTriggerType'
+  | 'ocoType'
+  | 'price'
+  | 'side'
+  | 'size'
+  | 'triggerDirection'
+  | 'triggerPrice'
+  | 'triggerTrailingPercentOffset'
+  | 'triggerType'
+  | 'type'
+> &
+  Pick<StopOrderProps, 'market'> & { assetUnit?: string }) => {
+  const { quoteName } = market.tradableInstrument.instrument.product;
+  const risesAbove =
+    triggerDirection ===
+    Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE;
+  const subLabel = oco ? (
+    <>
+      {formatSizeAtPrice({
+        assetUnit,
+        decimalPlaces: market.decimalPlaces,
+        positionDecimalPlaces: market.positionDecimalPlaces,
+        price: risesAbove ? price : ocoPrice,
+        quoteName,
+        side,
+        size: risesAbove ? size : ocoSize,
+        type,
+      })}{' '}
+      {formatTrigger({
+        decimalPlaces: market.decimalPlaces,
+        quoteName,
+        triggerDirection:
+          Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+        triggerPrice: risesAbove ? triggerPrice : ocoTriggerPrice,
+        triggerTrailingPercentOffset: risesAbove
+          ? triggerTrailingPercentOffset
+          : ocoTriggerTrailingPercentOffset,
+        triggerType: risesAbove ? triggerType : ocoTriggerType,
+      })}
+      <br />
+      {formatSizeAtPrice({
+        assetUnit,
+        decimalPlaces: market.decimalPlaces,
+        positionDecimalPlaces: market.positionDecimalPlaces,
+        price: !risesAbove ? price : ocoPrice,
+        quoteName,
+        side,
+        size: !risesAbove ? size : ocoSize,
+        type: ocoType,
+      })}{' '}
+      {formatTrigger({
+        decimalPlaces: market.decimalPlaces,
+        quoteName,
+        triggerDirection:
+          Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
+        triggerPrice: !risesAbove ? triggerPrice : ocoTriggerPrice,
+        triggerTrailingPercentOffset: !risesAbove
+          ? triggerTrailingPercentOffset
+          : ocoTriggerTrailingPercentOffset,
+        triggerType: !risesAbove ? triggerType : ocoTriggerType,
+      })}
+    </>
+  ) : (
+    <>
+      {formatSizeAtPrice({
+        assetUnit,
+        decimalPlaces: market.decimalPlaces,
+        positionDecimalPlaces: market.positionDecimalPlaces,
+        price,
+        quoteName,
+        side,
+        size,
+        type,
+      })}
+      <br />
+      {t('Trigger')}{' '}
+      {formatTrigger({
+        decimalPlaces: market.decimalPlaces,
+        quoteName,
+        triggerDirection,
+        triggerPrice,
+        triggerTrailingPercentOffset,
+        triggerType,
+      })}
+    </>
+  );
+  return (
+    <Button
+      intent={side === Schema.Side.SIDE_BUY ? Intent.Success : Intent.Danger}
+      data-testid="place-order"
+      type="submit"
+      className="w-full"
+      subLabel={subLabel}
+    >
+      {t(
+        oco
+          ? 'Place OCO stop order'
+          : type === Schema.OrderType.TYPE_MARKET
+          ? 'Place market stop order'
+          : 'Place limit stop order'
+      )}
+    </Button>
+  );
+};
+
 export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const setType = useDealTicketFormValues((state) => state.setType);
@@ -521,50 +781,40 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     },
     [market.id, market.decimalPlaces, market.positionDecimalPlaces, submit]
   );
-  const side = watch('side');
   const expire = watch('expire');
-  const triggerType = watch('triggerType');
-  const triggerPrice = watch('triggerPrice');
-  const timeInForce = watch('timeInForce');
-  const rawPrice = watch('price');
-  const rawSize = watch('size');
-  const oco = watch('oco');
   const expiresAt = watch('expiresAt');
-
-  useEffect(() => {
-    const size = storedFormValues?.[dealTicketType]?.size;
-    if (size && rawSize !== size) {
-      setValue('size', size);
-    }
-  }, [storedFormValues, dealTicketType, rawSize, setValue]);
-
-  useEffect(() => {
-    const price = storedFormValues?.[dealTicketType]?.price;
-    if (price && rawPrice !== price) {
-      setValue('price', price);
-    }
-  }, [storedFormValues, dealTicketType, rawPrice, setValue]);
-
-  const isPriceTrigger = triggerType === 'price';
-  const size = removeDecimal(rawSize, market.positionDecimalPlaces);
-  const price =
-    marketPrice &&
-    getDerivedPrice(
-      {
-        type,
-        price: rawPrice && removeDecimal(rawPrice, market.decimalPlaces),
-      },
-      type === Schema.OrderType.TYPE_MARKET && isPriceTrigger && triggerPrice
-        ? removeDecimal(triggerPrice, market.decimalPlaces)
-        : marketPrice
-    );
-
-  const notionalSize = getNotionalSize(
-    price,
-    size,
-    market.decimalPlaces,
-    market.positionDecimalPlaces
+  const oco = watch('oco');
+  const ocoPrice = watch('ocoPrice');
+  const ocoSize = watch('ocoSize');
+  const ocoTimeInForce = watch('ocoTimeInForce');
+  const ocoTriggerPrice = watch('ocoTriggerPrice');
+  const ocoTriggerTrailingPercentOffset = watch(
+    'ocoTriggerTrailingPercentOffset'
   );
+  const ocoTriggerType = watch('ocoTriggerType');
+  const ocoType = watch('ocoType');
+  const price = watch('price');
+  const side = watch('side');
+  const size = watch('size');
+  const timeInForce = watch('timeInForce');
+  const triggerDirection = watch('triggerDirection');
+  const triggerPrice = watch('triggerPrice');
+  const triggerTrailingPercentOffset = watch('triggerTrailingPercentOffset');
+  const triggerType = watch('triggerType');
+
+  useEffect(() => {
+    const storedSize = storedFormValues?.[dealTicketType]?.size;
+    if (storedSize && size !== storedSize) {
+      setValue('size', storedSize);
+    }
+  }, [storedFormValues, dealTicketType, size, setValue]);
+
+  useEffect(() => {
+    const storedPrice = storedFormValues?.[dealTicketType]?.price;
+    if (storedPrice && price !== storedPrice) {
+      setValue('price', storedPrice);
+    }
+  }, [storedFormValues, dealTicketType, price, setValue]);
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
@@ -573,8 +823,10 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     return () => subscription.unsubscribe();
   }, [watch, market.id, updateStoredFormValues]);
 
-  const { quoteName, settlementAsset: asset } =
-    market.tradableInstrument.instrument.product;
+  const { quoteName } = market.tradableInstrument.instrument.product;
+  const assetUnit = getAssetUnit(
+    market.tradableInstrument.instrument.metadata.tags
+  );
 
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
   const priceStep = toDecimal(market?.decimalPlaces);
@@ -583,6 +835,10 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     name: 'type',
     control,
   });
+
+  const normalizedPrice = price && removeDecimal(price, market.decimalPlaces);
+  const normalizedSize =
+    size && removeDecimal(size, market.positionDecimalPlaces);
 
   return (
     <form
@@ -620,18 +876,34 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         control={control}
         watch={watch}
         priceStep={priceStep}
-        assetSymbol={asset.symbol}
+        quoteName={quoteName}
         marketPrice={marketPrice}
         decimalPlaces={market.decimalPlaces}
       />
       <hr className="mb-4 border-vega-clight-500 dark:border-vega-cdark-500" />
+      <Size
+        control={control}
+        sizeStep={sizeStep}
+        isLimitType={type === Schema.OrderType.TYPE_LIMIT}
+        assetUnit={assetUnit}
+      />
       <Price
         control={control}
         watch={watch}
         priceStep={priceStep}
         quoteName={quoteName}
       />
-      <Size control={control} sizeStep={sizeStep} />
+      <NotionalAndFees
+        market={market}
+        marketPrice={marketPrice}
+        price={normalizedPrice}
+        side={side}
+        size={normalizedSize}
+        timeInForce={timeInForce}
+        triggerPrice={triggerPrice}
+        triggerType={triggerType}
+        type={type}
+      />
       <TimeInForce control={control} />
       <div className="flex justify-end pb-3 gap-2">
         <ReduceOnly />
@@ -682,12 +954,12 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                   >
                     <Radio
                       value={Schema.OrderType.TYPE_MARKET}
-                      id={`ocoTypeMarket`}
+                      id="ocoTypeMarket"
                       label={'Market'}
                     />
                     <Radio
                       value={Schema.OrderType.TYPE_LIMIT}
-                      id={`ocoTypeLimit`}
+                      id="ocoTypeLimit"
                       label={'Limit'}
                     />
                   </RadioGroup>
@@ -699,12 +971,19 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             control={control}
             watch={watch}
             priceStep={priceStep}
-            assetSymbol={asset.symbol}
+            quoteName={quoteName}
             marketPrice={marketPrice}
             decimalPlaces={market.decimalPlaces}
             oco
           />
           <hr className="mb-2 border-vega-clight-500 dark:border-vega-cdark-500" />
+          <Size
+            control={control}
+            sizeStep={sizeStep}
+            assetUnit={assetUnit}
+            oco
+            isLimitType={ocoType === Schema.OrderType.TYPE_LIMIT}
+          />
           <Price
             control={control}
             watch={watch}
@@ -712,7 +991,19 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             quoteName={quoteName}
             oco
           />
-          <Size control={control} sizeStep={sizeStep} oco />
+          <NotionalAndFees
+            market={market}
+            marketPrice={marketPrice}
+            price={ocoPrice && removeDecimal(ocoPrice, market.decimalPlaces)}
+            side={side}
+            size={
+              ocoSize && removeDecimal(ocoSize, market.positionDecimalPlaces)
+            }
+            timeInForce={ocoTimeInForce}
+            triggerPrice={ocoTriggerPrice}
+            triggerType={ocoTriggerType}
+            type={ocoType}
+          />
           <TimeInForce control={control} oco />
           <div className="flex justify-end mb-2 gap-2">
             <ReduceOnly />
@@ -728,11 +1019,12 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             return (
               <Checkbox
                 onCheckedChange={(value) => {
+                  const now = Date.now();
                   if (
                     value &&
-                    (!expiresAt || new Date(expiresAt).getTime() < Date.now())
+                    (!expiresAt || new Date(expiresAt).getTime() < now)
                   ) {
-                    setValue('expiresAt', formatForInput(new Date()), {
+                    setValue('expiresAt', formatForInput(new Date(now)), {
                       shouldValidate: true,
                     });
                   }
@@ -803,19 +1095,24 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         </>
       )}
       <NoWalletWarning isReadOnly={isReadOnly} />
-      <DealTicketButton side={side} label={t('Submit Stop Order')} />
-      <DealTicketFeeDetails
-        order={{
-          marketId: market.id,
-          price: price || undefined,
-          side,
-          size,
-          timeInForce,
-          type,
-        }}
-        notionalSize={notionalSize}
-        assetSymbol={asset.symbol}
+      <SubmitButton
+        assetUnit={assetUnit}
         market={market}
+        oco={oco}
+        ocoPrice={ocoPrice}
+        ocoSize={ocoSize}
+        ocoTriggerPrice={ocoTriggerPrice}
+        ocoTriggerTrailingPercentOffset={ocoTriggerTrailingPercentOffset}
+        ocoTriggerType={ocoTriggerType}
+        ocoType={ocoType}
+        price={price}
+        side={side}
+        size={size}
+        triggerDirection={triggerDirection}
+        triggerPrice={triggerPrice}
+        triggerTrailingPercentOffset={triggerTrailingPercentOffset}
+        triggerType={triggerType}
+        type={type}
       />
     </form>
   );
