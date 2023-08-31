@@ -201,6 +201,19 @@ describe('Positions', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('handle negative positionDecimalPlaces', async () => {
+    await renderComponent({
+      ...singleRow,
+      openVolume: '-2000',
+      positionDecimalPlaces: -4,
+    });
+    const cells = screen.getAllByRole('gridcell');
+    const cell = cells[1];
+    expect(within(cell).getByTestId('stack-cell-primary')).toHaveTextContent(
+      '-20,000,000'
+    );
+  });
+
   describe('PNLCell', () => {
     const props = {
       data: undefined,

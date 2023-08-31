@@ -164,6 +164,24 @@ describe('OrderListTable', () => {
     );
   });
 
+  it('negative positionDecimalPoints should be properly rendered in size column', async () => {
+    const localMarketOrder = {
+      ...marketOrder,
+      size: '3000',
+      market: {
+        ...marketOrder.market,
+        positionDecimalPlaces: -4,
+      },
+    };
+
+    await act(async () => {
+      render(generateJsx({ rowData: [localMarketOrder] }));
+    });
+
+    const cells = screen.getAllByRole('gridcell');
+    expect(cells[2]).toHaveTextContent('+30,000,000');
+  });
+
   describe('amend cell', () => {
     it('allows cancelling and editing for permitted orders', async () => {
       const mockEdit = jest.fn();
