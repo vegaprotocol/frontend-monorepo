@@ -5,9 +5,11 @@ import {
   addDecimalsFormatNumberQuantum,
   formatNumber,
   formatNumberPercentage,
+  getUnlimitedThreshold,
   isNumeric,
   removeDecimal,
   toBigNum,
+  quantumDecimalPlaces,
   toDecimal,
   toNumberParts,
 } from './number';
@@ -183,4 +185,64 @@ describe('number utils', () => {
       }
     );
   });
+});
+
+describe('quantumDecimalPlaces', () => {
+  it.each([
+    ['1', 1, 3],
+    ['10', 1, 2],
+    ['100', 1, 1],
+    ['1000', 1, 0],
+    ['1', 2, 4],
+    ['10', 2, 3],
+    ['100', 2, 2],
+    ['1000', 2, 1],
+    ['1', 3, 5],
+    ['10', 3, 4],
+    ['100', 3, 3],
+    ['1000', 3, 2],
+    ['1', 18, 20],
+    ['1000000000', 18, 11],
+    ['5000000000', 18, 11],
+    ['1000000000000000000', 18, 2],
+  ])(
+    'converts quantum %s of %d decimal places to %d quant. decimal places',
+    (quantum, decimals, output) => {
+      expect(quantumDecimalPlaces(quantum, decimals)).toEqual(output);
+    }
+  );
+});
+
+describe('getUnlimitedThreshold', () => {
+  it.each([
+    [
+      0,
+      '9.26336713898529563388567880069503262826159877325124512315660672063305037119488e+76',
+    ],
+    [
+      1,
+      '9.26336713898529563388567880069503262826159877325124512315660672063305037119488e+75',
+    ],
+    [
+      2,
+      '9.26336713898529563388567880069503262826159877325124512315660672063305037119488e+74',
+    ],
+    [
+      3,
+      '9.26336713898529563388567880069503262826159877325124512315660672063305037119488e+73',
+    ],
+    [
+      10,
+      '9.26336713898529563388567880069503262826159877325124512315660672063305037119488e+66',
+    ],
+    [
+      18,
+      '9.26336713898529563388567880069503262826159877325124512315660672063305037119488e+58',
+    ],
+  ])(
+    'given %d decimal places it returns unlimited threshold %s',
+    (decimals, output) => {
+      expect(getUnlimitedThreshold(decimals).toString()).toEqual(output);
+    }
+  );
 });

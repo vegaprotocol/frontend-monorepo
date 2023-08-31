@@ -4,6 +4,18 @@ import memoize from 'lodash/memoize';
 
 import { getUserLocale } from '../get-user-locale';
 
+/**
+ * A raw unformatted value greater than this is considered and displayed
+ * as UNLIMITED.
+ */
+export const UNLIMITED_THRESHOLD = new BigNumber(2).pow(256).times(0.8);
+/**
+ * Gets the unlimited threshold value for given decimal places.
+ * @param decimalPlaces the asset's decimal places
+ */
+export const getUnlimitedThreshold = (decimalPlaces: number) =>
+  UNLIMITED_THRESHOLD.dividedBy(Math.pow(10, decimalPlaces));
+
 const MIN_FRACTION_DIGITS = 2;
 const MAX_FRACTION_DIGITS = 20;
 
@@ -90,6 +102,25 @@ export const formatNumberFixed = (
   formatDecimals = 0
 ) => {
   return getFixedNumberFormat(formatDecimals).format(Number(rawValue));
+};
+
+export const quantumDecimalPlaces = (
+  /** Raw asset's quantum value */
+  rawQuantum: number | string,
+  /** Asset's decimal places */
+  decimalPlaces: number
+) => {
+  // if raw quantum value is an empty string then it'll evaluate to 0
+  // this check ignores NaNs and zeroes
+  const formatDecimals =
+    isNaN(Number(rawQuantum)) || Number(rawQuantum) === 0
+      ? decimalPlaces
+      : Math.max(
+          0,
+          Math.log10(100 / Number(addDecimal(rawQuantum, decimalPlaces)))
+        );
+
+  return Math.ceil(formatDecimals);
 };
 
 export const addDecimalsFormatNumberQuantum = (
