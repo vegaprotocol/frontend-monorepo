@@ -111,6 +111,8 @@ export enum AccountType {
   ACCOUNT_TYPE_NETWORK_TREASURY = 'ACCOUNT_TYPE_NETWORK_TREASURY',
   /** PendingTransfers - a global account for the pending transfers pool */
   ACCOUNT_TYPE_PENDING_TRANSFERS = 'ACCOUNT_TYPE_PENDING_TRANSFERS',
+  /** Average position reward account is a per asset per market account for average position reward funds */
+  ACCOUNT_TYPE_REWARD_AVERAGE_POSITION = 'ACCOUNT_TYPE_REWARD_AVERAGE_POSITION',
   /** RewardLpReceivedFees - an account holding rewards for a liquidity provider's received fees */
   ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES = 'ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES',
   /** RewardMakerPaidFees - an account holding rewards for maker paid fees */
@@ -119,8 +121,18 @@ export enum AccountType {
   ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES = 'ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES',
   /** RewardMarketProposers - an account holding rewards for market proposers */
   ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS = 'ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS',
+  /** Relative return reward account is a per asset per market account for relative return reward funds */
+  ACCOUNT_TYPE_REWARD_RELATIVE_RETURN = 'ACCOUNT_TYPE_REWARD_RELATIVE_RETURN',
+  /** Return volatility reward account is a per asset per market account for return volatility reward funds */
+  ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY = 'ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY',
+  /** Validator ranking reward account is a per asset account for validator ranking reward funds */
+  ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING = 'ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING',
   /** Settlement - only for 'system' party */
-  ACCOUNT_TYPE_SETTLEMENT = 'ACCOUNT_TYPE_SETTLEMENT'
+  ACCOUNT_TYPE_SETTLEMENT = 'ACCOUNT_TYPE_SETTLEMENT',
+  /** Vested reward account is a per party per asset account for vested reward funds */
+  ACCOUNT_TYPE_VESTED_REWARDS = 'ACCOUNT_TYPE_VESTED_REWARDS',
+  /** Vesting reward account is a per party per asset account for locked reward funds waiting to be vested */
+  ACCOUNT_TYPE_VESTING_REWARDS = 'ACCOUNT_TYPE_VESTING_REWARDS'
 }
 
 /** An account record used for subscriptions */
@@ -720,6 +732,8 @@ export type DiscreteTrading = {
 
 /** The type of metric to use for a reward dispatch strategy */
 export enum DispatchMetric {
+  /** Dispatch metric that uses the time weighted position of the party in the market */
+  DISPATCH_METRIC_AVERAGE_POSITION = 'DISPATCH_METRIC_AVERAGE_POSITION',
   /** Dispatch metric that uses the total LP fees received in the market */
   DISPATCH_METRIC_LP_FEES_RECEIVED = 'DISPATCH_METRIC_LP_FEES_RECEIVED',
   /** Dispatch metric that uses the total maker fees paid in the market */
@@ -727,7 +741,13 @@ export enum DispatchMetric {
   /** Dispatch metric that uses the total maker fees received in the market */
   DISPATCH_METRIC_MAKER_FEES_RECEIVED = 'DISPATCH_METRIC_MAKER_FEES_RECEIVED',
   /** Dispatch metric that uses the total value of the market if above the required threshold and not paid given proposer bonus yet */
-  DISPATCH_METRIC_MARKET_VALUE = 'DISPATCH_METRIC_MARKET_VALUE'
+  DISPATCH_METRIC_MARKET_VALUE = 'DISPATCH_METRIC_MARKET_VALUE',
+  /** Dispatch metric that uses the relative PNL of the party in the market */
+  DISPATCH_METRIC_RELATIVE_RETURN = 'DISPATCH_METRIC_RELATIVE_RETURN',
+  /** Dispatch metric that uses return volatility of the party in the market */
+  DISPATCH_METRIC_RETURN_VOLATILITY = 'DISPATCH_METRIC_RETURN_VOLATILITY',
+  /** Dispatch metric that uses the validator ranking of the validator as metric */
+  DISPATCH_METRIC_VALIDATOR_RANKING = 'DISPATCH_METRIC_VALIDATOR_RANKING'
 }
 
 /** Dispatch strategy for a recurring transfer */
@@ -737,9 +757,36 @@ export type DispatchStrategy = {
   dispatchMetric: DispatchMetric;
   /** The asset to use for measuring contribution to the metric */
   dispatchMetricAssetId: Scalars['ID'];
+  /** Controls how the reward is distributed between qualifying parties */
+  distributionStrategy: DistributionStrategy;
+  /** The type of entities eligible for this strategy */
+  entityScope: EntityScope;
+  /** If entity scope is individuals then this defines the scope for individuals */
+  individualScope?: Maybe<IndividualScope>;
+  /** Number of epochs after distribution to delay vesting of rewards by */
+  lockPeriod: Scalars['Int'];
   /** Scope the dispatch to this market only under the metric asset */
   marketIdsInScope?: Maybe<Array<Scalars['ID']>>;
+  /** The proportion of the top performers in the team for a given metric to be averaged for the metric calculation if scope is team */
+  nTopPerformers?: Maybe<Scalars['String']>;
+  /** Minimum notional time-weighted averaged position required for a party to be considered eligible */
+  notionalTimeWeightedAveragePositionRequirement: Scalars['String'];
+  /** Ascending order list of start rank and corresponding share ratio */
+  rankTable?: Maybe<RankTable>;
+  /** Minimum number of governance tokens, e.g. VEGA, staked for a party to be considered eligible */
+  stakingRequirement: Scalars['String'];
+  /** The teams in scope for the reward, if the entity is teams */
+  teamScope?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Number of epochs to evaluate the metric on */
+  windowLength: Scalars['Int'];
 };
+
+export enum DistributionStrategy {
+  /** Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has */
+  DISTRIBUTION_STRATEGY_PRO_RATA = 'DISTRIBUTION_STRATEGY_PRO_RATA',
+  /** Rewards funded using the rank strategy */
+  DISTRIBUTION_STRATEGY_RANK = 'DISTRIBUTION_STRATEGY_RANK'
+}
 
 /** An asset originated from an Ethereum ERC20 Token */
 export type ERC20 = {
@@ -905,6 +952,13 @@ export type Entities = {
   withdrawals?: Maybe<Array<Maybe<Withdrawal>>>;
 };
 
+export enum EntityScope {
+  /** Rewards must be distributed directly to eligible parties */
+  ENTITY_SCOPE_INDIVIDUALS = 'ENTITY_SCOPE_INDIVIDUALS',
+  /** Rewards must be distributed directly to eligible teams, and then amongst team members */
+  ENTITY_SCOPE_TEAMS = 'ENTITY_SCOPE_TEAMS'
+}
+
 /** Epoch describes a specific period of time in the Vega network */
 export type Epoch = {
   __typename?: 'Epoch';
@@ -1020,7 +1074,7 @@ export type Erc20WithdrawalApproval = {
   amount: Scalars['String'];
   /** The source asset in the ethereum network */
   assetSource: Scalars['String'];
-  /** Timestamp at which the withdrawal was created */
+  /** RFC3339Nano timestamp at which the withdrawal was created */
   creation: Scalars['String'];
   /** The nonce to be used in the request */
   nonce: Scalars['String'];
@@ -1204,7 +1258,7 @@ export type FundingPeriodDataPoint = {
   price: Scalars['String'];
   /** Sequence number of the funding period the data point belongs to. */
   seq: Scalars['Int'];
-  /** Timestamp when the data point was received. */
+  /** RFC3339Nano timestamp when the data point was received. */
   timestamp: Scalars['Timestamp'];
   /** Time-weighted average price calculated from data points for this period from the data source. */
   twap?: Maybe<Scalars['String']>;
@@ -1309,6 +1363,15 @@ export type IcebergOrder = {
   /** Size of the order that is reserved and used to restore the iceberg's peak when it is refreshed */
   reservedRemaining: Scalars['String'];
 };
+
+export enum IndividualScope {
+  /** All parties on the network are within the scope of this reward */
+  INDIVIDUAL_SCOPE_ALL = 'INDIVIDUAL_SCOPE_ALL',
+  /** All parties that are part of a team are within the scope of this reward */
+  INDIVIDUAL_SCOPE_IN_TEAM = 'INDIVIDUAL_SCOPE_IN_TEAM',
+  /** All parties that are not part of a team are within the scope of this reward */
+  INDIVIDUAL_SCOPE_NOT_IN_TEAM = 'INDIVIDUAL_SCOPE_NOT_IN_TEAM'
+}
 
 /** Describes something that can be traded on Vega */
 export type Instrument = {
@@ -1539,7 +1602,7 @@ export type LiquidityProvision = {
   buys: Array<LiquidityOrderReference>;
   /** Specified as a unit-less number that represents the amount of settlement asset of the market. */
   commitmentAmount: Scalars['String'];
-  /** When the liquidity provision was initially created (formatted RFC3339) */
+  /** RFC3339Nano time when the liquidity provision was initially created */
   createdAt: Scalars['Timestamp'];
   /** Nominated liquidity fee factor, which is an input to the calculation of liquidity fees on the market, as per setting fees and rewarding liquidity providers. */
   fee: Scalars['String'];
@@ -1588,7 +1651,7 @@ export type LiquidityProvisionUpdate = {
   buys: Array<LiquidityOrderReference>;
   /** Specified as a unit-less number that represents the amount of settlement asset of the market. */
   commitmentAmount: Scalars['String'];
-  /** When the liquidity provision was initially created (formatted RFC3339) */
+  /** RFC3339Nano time when the liquidity provision was initially created */
   createdAt: Scalars['Timestamp'];
   /** Nominated liquidity fee factor, which is an input to the calculation of liquidity fees on the market, as per setting fees and rewarding liquidity providers. */
   fee: Scalars['String'];
@@ -1604,7 +1667,7 @@ export type LiquidityProvisionUpdate = {
   sells: Array<LiquidityOrderReference>;
   /** The current status of this liquidity provision */
   status: LiquidityProvisionStatus;
-  /** RFC3339Nano time of when the liquidity provision was updated */
+  /** RFC3339Nano time when the liquidity provision was updated */
   updatedAt?: Maybe<Scalars['Timestamp']>;
   /** The version of this liquidity provision */
   version: Scalars['String'];
@@ -1637,7 +1700,7 @@ export type LiquiditySLAParameters = {
    * Specifies the maximum fraction of their accrued fees an LP that meets the SLA implied by market.liquidity.commitmentMinTimeFraction will
    * lose to liquidity providers that achieved a higher SLA performance than them.
    */
-  slaCompletionFactor: Scalars['String'];
+  slaCompetitionFactor: Scalars['String'];
 };
 
 /** Parameters for the log normal risk model */
@@ -2085,13 +2148,13 @@ export type MarketTick = {
 /** Timestamps for when the market changes state */
 export type MarketTimestamps = {
   __typename?: 'MarketTimestamps';
-  /** Time when the market is closed */
+  /** RFC3339Nano time when the market is closed */
   close: Scalars['Timestamp'];
-  /** Time when the market is open and ready to accept trades */
+  /** RFC3339Nano time when the market is open and ready to accept trades */
   open: Scalars['Timestamp'];
-  /** Time when the market has been voted in and waiting to be created */
+  /** RFC3339Nano time when the market has been voted in and waiting to be created */
   pending: Scalars['Timestamp'];
-  /** Time when the market is first proposed */
+  /** RFC3339Nano time when the market is first proposed */
   proposed?: Maybe<Scalars['Timestamp']>;
 };
 
@@ -2548,14 +2611,14 @@ export type ObservableMarketDepthUpdate = {
 /** The specific details for a one-off governance transfer */
 export type OneOffGovernanceTransfer = {
   __typename?: 'OneOffGovernanceTransfer';
-  /** An optional time when the transfer should be delivered */
+  /** An optional RFC3339Nano time when the transfer should be delivered */
   deliverOn?: Maybe<Scalars['Timestamp']>;
 };
 
 /** The specific details for a one-off transfer */
 export type OneOffTransfer = {
   __typename?: 'OneOffTransfer';
-  /** An optional time when the transfer should be delivered */
+  /** An optional RFC3339Nano time when the transfer should be delivered */
   deliverOn?: Maybe<Scalars['Timestamp']>;
 };
 
@@ -2614,7 +2677,7 @@ export type Order = {
   __typename?: 'Order';
   /** RFC3339Nano formatted date and time for when the order was created (timestamp) */
   createdAt: Scalars['Timestamp'];
-  /** Expiration time of this order (ISO-8601 RFC3339+Nano formatted date) */
+  /** RFC3339Nano expiration time of this order */
   expiresAt?: Maybe<Scalars['Timestamp']>;
   /** Details of an iceberg order */
   icebergOrder?: Maybe<IcebergOrder>;
@@ -2865,7 +2928,7 @@ export enum OrderStatus {
 /** Details of the order that will be submitted when the stop order is triggered. */
 export type OrderSubmission = {
   __typename?: 'OrderSubmission';
-  /** Expiration time of this order (ISO-8601 RFC3339+Nano formatted date) */
+  /** RFC3339Nano expiration time of this order */
   expiresAt: Scalars['Timestamp'];
   /** Details of an iceberg order */
   icebergOrder?: Maybe<IcebergOrder>;
@@ -2928,7 +2991,7 @@ export type OrderUpdate = {
   __typename?: 'OrderUpdate';
   /** RFC3339Nano formatted date and time for when the order was created (timestamp) */
   createdAt: Scalars['Timestamp'];
-  /** Expiration time of this order (ISO-8601 RFC3339+Nano formatted date) */
+  /** RFC3339Nano expiration time of this order */
   expiresAt?: Maybe<Scalars['Timestamp']>;
   /** Details of an iceberg order */
   icebergOrder?: Maybe<IcebergOrder>;
@@ -4316,6 +4379,12 @@ export type QuerywithdrawalsArgs = {
   pagination?: InputMaybe<Pagination>;
 };
 
+export type RankTable = {
+  __typename?: 'RankTable';
+  shareRatio: Scalars['Int'];
+  startRank: Scalars['Int'];
+};
+
 export type RankingScore = {
   __typename?: 'RankingScore';
   /** The performance score of the validator */
@@ -4371,7 +4440,7 @@ export type Reward = {
   party: Party;
   /** Percentage out of the total distributed reward */
   percentageOfTotal: Scalars['String'];
-  /** Time at which the rewards was received */
+  /** RFC3339Nano time when the rewards were received */
   receivedAt: Scalars['Timestamp'];
   /** The type of reward */
   rewardType: AccountType;
@@ -4562,14 +4631,14 @@ export type StakeLinking = {
   amount: Scalars['String'];
   /** The (ethereum) block height of the link/unlink */
   blockHeight: Scalars['String'];
-  /** The time at which the stake linking was fully processed by the Vega network, null until defined */
+  /** The RFC3339Nano time at which the stake linking was fully processed by the Vega network, null until defined */
   finalizedAt?: Maybe<Scalars['Timestamp']>;
   id: Scalars['ID'];
   /** The party initiating the stake linking */
   party: Party;
   /** The status of the linking */
   status: StakeLinkingStatus;
-  /** The time at which the request happened on ethereum */
+  /** The RFC3339Nano time at which the request happened on ethereum */
   timestamp: Scalars['Timestamp'];
   /** The transaction hash (ethereum) which initiated the link/unlink */
   txHash: Scalars['String'];
@@ -4702,9 +4771,9 @@ export type Statistics = {
 /** A stop order in Vega */
 export type StopOrder = {
   __typename?: 'StopOrder';
-  /** Time the stop order was created. */
+  /** RFC3339Nano time the stop order was created. */
   createdAt: Scalars['Timestamp'];
-  /** Time at which the order will expire if an expiry time is set. */
+  /** RFC3339Nano time at which the order will expire if an expiry time is set. */
   expiresAt?: Maybe<Scalars['Timestamp']>;
   /** If an expiry is set, what should the stop order do when it expires. */
   expiryStrategy?: Maybe<StopOrderExpiryStrategy>;
@@ -4728,7 +4797,7 @@ export type StopOrder = {
   trigger: StopOrderTrigger;
   /** Direction the price is moving to trigger the stop order. */
   triggerDirection: StopOrderTriggerDirection;
-  /** Time the stop order was last updated. */
+  /** RFC3339Nano time the stop order was last updated. */
   updatedAt?: Maybe<Scalars['Timestamp']>;
 };
 
@@ -5193,7 +5262,7 @@ export type Transfer = {
   reference?: Maybe<Scalars['String']>;
   /** The status of this transfer */
   status: TransferStatus;
-  /** The time at which the transfer was submitted */
+  /** The RFC3339Nano time at which the transfer was submitted */
   timestamp: Scalars['Timestamp'];
   /** The public key of the recipient of the funds */
   to: Scalars['String'];
