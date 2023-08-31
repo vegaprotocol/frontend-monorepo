@@ -2,15 +2,13 @@ import { act, renderHook } from '@testing-library/react';
 import type { VegaWalletContextShape } from './context';
 import { VegaWalletContext } from './context';
 import type { ReactNode } from 'react';
-import {
-  initialState,
-  useVegaTransaction,
-  VegaTxStatus,
-} from './use-vega-transaction';
+import { initialState, useVegaTransaction } from './use-vega-transaction';
 import type { Transaction } from './connectors';
 import { WalletError } from './connectors';
+import { VegaTxStatus } from './types';
 
 const mockPubKey = '0x123';
+
 const defaultWalletContext = {
   pubKey: null,
   pubKeys: [],
@@ -20,7 +18,7 @@ const defaultWalletContext = {
   disconnect: jest.fn(),
   selectPubKey: jest.fn(),
   connector: null,
-};
+} as unknown as VegaWalletContextShape;
 
 function setup(context?: Partial<VegaWalletContextShape>) {
   const wrapper = ({ children }: { children: ReactNode }) => (

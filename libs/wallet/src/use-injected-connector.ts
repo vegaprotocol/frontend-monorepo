@@ -6,7 +6,6 @@ import {
 } from './connectors';
 import { InjectedConnector } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
-import { useEnvironment } from '@vegaprotocol/environment';
 
 export enum Status {
   Idle = 'Idle',
@@ -18,10 +17,9 @@ export enum Status {
 }
 
 export const useInjectedConnector = (onConnect: () => void) => {
-  const { connect, acknowledgeNeeded } = useVegaWallet();
+  const { vegaUrl, connect, acknowledgeNeeded } = useVegaWallet();
   const [status, setStatus] = useState(Status.Idle);
   const [error, setError] = useState<Error | null>(null);
-  const { VEGA_URL } = useEnvironment();
 
   const attemptConnect = useCallback(
     async (
@@ -36,10 +34,10 @@ export const useInjectedConnector = (onConnect: () => void) => {
           if (!('ethereum' in window)) {
             throw SnapConnectorErrors.ETHEREUM_UNDEFINED;
           }
-          if (!VEGA_URL) {
+          if (!vegaUrl) {
             throw SnapConnectorErrors.NODE_ADDRESS_NOT_SET;
           }
-          connector.nodeAddress = new URL(VEGA_URL).origin;
+          connector.nodeAddress = new URL(vegaUrl).origin;
         }
 
         setStatus(Status.GettingChainId);
@@ -71,7 +69,7 @@ export const useInjectedConnector = (onConnect: () => void) => {
         setStatus(Status.Error);
       }
     },
-    [VEGA_URL, acknowledgeNeeded, connect, onConnect]
+    [vegaUrl, acknowledgeNeeded, connect, onConnect]
   );
 
   return {

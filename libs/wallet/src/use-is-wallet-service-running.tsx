@@ -1,20 +1,21 @@
-import type { VegaConnector } from './connectors';
 import { useCallback, useEffect, useState } from 'react';
 import type { JsonRpcConnector } from './connectors';
 import { ClientErrors } from './connectors';
 
 export const useIsWalletServiceRunning = (
   url: string,
-  connectors: { [key: string]: VegaConnector },
+  connector: JsonRpcConnector | undefined,
   appChainId: string
 ) => {
   const [run, setRun] = useState<boolean | null>(null);
 
   const checkState = useCallback(async () => {
-    const connector = connectors['jsonRpc'] as JsonRpcConnector;
+    if (!connector) return false;
+
     if (url && url !== connector.url) {
       connector.url = url;
     }
+
     try {
       await connector.checkCompat();
       const chainIdResult = await connector.getChainId();
@@ -25,9 +26,11 @@ export const useIsWalletServiceRunning = (
       return false;
     }
     return true;
-  }, [connectors, url, appChainId]);
+  }, [connector, url, appChainId]);
 
   useEffect(() => {
+    if (!connector) return;
+
     let interval: NodeJS.Timeout;
     checkState().then((value) => {
       setRun(value);
@@ -38,7 +41,7 @@ export const useIsWalletServiceRunning = (
     return () => {
       clearInterval(interval);
     };
-  }, [checkState]);
+  }, [checkState, connector]);
 
   return run;
 };

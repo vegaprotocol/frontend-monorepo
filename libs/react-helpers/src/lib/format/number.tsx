@@ -1,9 +1,14 @@
 import { BigNumber } from 'bignumber.js';
-import { getUserLocale, formatNumber } from '@vegaprotocol/utils';
+import {
+  getUserLocale,
+  formatNumber,
+  getUnlimitedThreshold,
+} from '@vegaprotocol/utils';
 
 const INFINITY = '∞';
 const DEFAULT_COMPACT_ABOVE = 1_000_000;
 const DEFAULT_COMPACT_CAP = new BigNumber(1e24);
+
 /**
  * Compacts given number to human readable format.
  * @param number
@@ -34,6 +39,10 @@ export const CompactNumber = ({
 
   const decimalPlaces =
     (decimals === 'infer' ? number.decimalPlaces() : decimals) || 0;
+
+  if (number.isGreaterThan(getUnlimitedThreshold(decimalPlaces))) {
+    return <span data-testid={testId}>{INFINITY}</span>;
+  }
 
   if (number.isLessThan(DEFAULT_COMPACT_ABOVE)) {
     return (

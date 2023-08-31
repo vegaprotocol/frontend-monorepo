@@ -11,14 +11,45 @@ import type {
 import { VegaWalletContext } from './context';
 import { WALLET_KEY, WALLET_RISK_ACCEPTED_KEY } from './storage';
 import { ViewConnector } from './connectors';
-import { useEnvironment, Networks } from '@vegaprotocol/environment';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
+
+type Networks =
+  | 'MAINNET'
+  | 'MAINNET_MIRROR'
+  | 'TESTNET'
+  | 'VALIDATOR_TESTNET'
+  | 'STAGNET1'
+  | 'DEVNET'
+  | 'CUSTOM';
+
+interface VegaWalletLinks {
+  explorer: string;
+  concepts: string;
+  chromeExtensionUrl: string;
+  mozillaExtensionUrl: string;
+}
+
+export interface VegaWalletConfig {
+  network: Networks;
+  vegaUrl: string;
+  vegaWalletServiceUrl: string;
+  links: VegaWalletLinks;
+}
+
+const ExternalLinks = {
+  VEGA_WALLET_URL_ABOUT: 'https://vega.xyz/wallet/#overview',
+  VEGA_WALLET_BROWSER_LIST: '',
+};
 
 interface VegaWalletProviderProps {
   children: ReactNode;
+  config: VegaWalletConfig;
 }
 
-export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
+export const VegaWalletProvider = ({
+  children,
+  config,
+}: VegaWalletProviderProps) => {
   // Current selected pubKey
   const [pubKey, setPubKey] = useState<string | null>(null);
   const [isReadOnly, setIsReadOnly] = useState<boolean>(false);
@@ -109,13 +140,23 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
     return connector.current.sendTx(pubkey, transaction);
   }, []);
 
-  const { VEGA_ENV } = useEnvironment();
   const [riskAcceptedValue] = useLocalStorage(WALLET_RISK_ACCEPTED_KEY);
   const acknowledgeNeeded =
-    VEGA_ENV === Networks.MAINNET && riskAcceptedValue !== 'true';
+    config.network === 'MAINNET' && riskAcceptedValue !== 'true';
 
   const contextValue = useMemo<VegaWalletContextShape>(() => {
     return {
+      vegaUrl: config.vegaUrl,
+      vegaWalletServiceUrl: config.vegaWalletServiceUrl,
+      network: config.network,
+      links: {
+        explorer: config.links.explorer,
+        about: ExternalLinks.VEGA_WALLET_URL_ABOUT,
+        browserList: ExternalLinks.VEGA_WALLET_BROWSER_LIST,
+        concepts: config.links.concepts,
+        chromeExtensionUrl: config.links.chromeExtensionUrl,
+        mozillaExtensionUrl: config.links.mozillaExtensionUrl,
+      },
       isReadOnly,
       pubKey,
       pubKeys,
@@ -127,6 +168,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
       acknowledgeNeeded,
     };
   }, [
+    config,
     isReadOnly,
     pubKey,
     pubKeys,
