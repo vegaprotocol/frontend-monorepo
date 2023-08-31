@@ -1,7 +1,7 @@
 import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
 import type { MockedResponse } from '@apollo/client/testing';
 import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
-import type { PubKey } from '@vegaprotocol/wallet';
+import type { PubKey, VegaWalletContextShape } from '@vegaprotocol/wallet';
 import type { VoteValue } from '@vegaprotocol/types';
 import type { UserVoteQuery } from '../components/vote-details/__generated__/Vote';
 import { UserVoteDocument } from '../components/vote-details/__generated__/Vote';
@@ -21,7 +21,7 @@ export const mockWalletContext = {
   disconnect: jest.fn(),
   selectPubKey: jest.fn(),
   connector: null,
-};
+} as unknown as VegaWalletContextShape;
 
 const mockEthereumConfig = {
   network_id: '3',

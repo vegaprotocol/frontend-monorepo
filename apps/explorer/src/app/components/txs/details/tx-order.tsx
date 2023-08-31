@@ -81,7 +81,11 @@ export const TxDetailsOrder = ({
           <TableRow modifier="bordered">
             <TableCell>{t('Iceberg details')}</TableCell>
             <TableCell>
-              <TxOrderIcebergDetails iceberg={iceberg} size={size} />
+              <TxOrderIcebergDetails
+                iceberg={iceberg}
+                size={size}
+                marketId={marketId}
+              />
             </TableCell>
           </TableRow>
         ) : null}

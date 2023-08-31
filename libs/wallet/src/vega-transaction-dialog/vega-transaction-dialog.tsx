@@ -1,10 +1,10 @@
-import { Networks, useEnvironment } from '@vegaprotocol/environment';
+import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
-import type { ReactNode } from 'react';
 import { WalletClientError } from '@vegaprotocol/wallet-client';
-import type { VegaTxState } from '../use-vega-transaction';
-import { VegaTxStatus } from '../use-vega-transaction';
+import type { VegaTxState } from '../types';
+import { VegaTxStatus } from '../types';
+import { useVegaWallet } from '../use-vega-wallet';
 
 export type VegaTransactionContentMap = {
   [C in VegaTxStatus]?: JSX.Element;
@@ -86,7 +86,7 @@ interface VegaDialogProps {
  * Default dialog content
  */
 export const VegaDialog = ({ transaction }: VegaDialogProps) => {
-  const { VEGA_EXPLORER_URL, VEGA_ENV } = useEnvironment();
+  const { links, network } = useVegaWallet();
 
   let content = null;
   if (transaction.status === VegaTxStatus.Requested) {
@@ -97,9 +97,9 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
             'Please open your wallet application and confirm or reject the transaction'
           )}
         </p>
-        {VEGA_ENV !== Networks.MAINNET && (
+        {network !== 'MAINNET' && (
           <p data-testid="testnet-transaction-info">
-            {t('[This is %s transaction only]').replace('%s', VEGA_ENV)}
+            {t('[This is %s transaction only]').replace('%s', network)}
           </p>
         )}
       </>
@@ -125,7 +125,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
             <a
               className="underline"
               data-testid="tx-block-explorer"
-              href={`${VEGA_EXPLORER_URL}/txs/0x${transaction.txHash}`}
+              href={`${links.explorer}/txs/0x${transaction.txHash}`}
               target="_blank"
               rel="noreferrer"
             >
@@ -146,7 +146,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
             <a
               className="underline"
               data-testid="tx-block-explorer"
-              href={`${VEGA_EXPLORER_URL}/txs/0x${transaction.txHash}`}
+              href={`${links.explorer}/txs/0x${transaction.txHash}`}
               target="_blank"
               rel="noreferrer"
             >

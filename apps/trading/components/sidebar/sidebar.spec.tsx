@@ -9,7 +9,8 @@ import {
 } from './sidebar';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import { VegaWalletProvider } from '@vegaprotocol/wallet';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
+import { VegaWalletContext } from '@vegaprotocol/wallet';
 
 jest.mock('../node-health', () => ({
   NodeHealthContainer: () => <span data-testid="node-health" />,
@@ -31,16 +32,20 @@ jest.mock('../welcome-dialog', () => ({
   GetStarted: () => <div data-testid="get-started" />,
 }));
 
+const walletContext = {
+  pubKeys: [{ publicKey: 'pubkey' }],
+} as VegaWalletContextShape;
+
 describe('Sidebar', () => {
   it.each(['/markets/all', '/portfolio'])(
     'does not render ticket and info',
     (path) => {
       render(
-        <VegaWalletProvider>
+        <VegaWalletContext.Provider value={walletContext}>
           <MemoryRouter initialEntries={[path]}>
             <Sidebar />
           </MemoryRouter>
-        </VegaWalletProvider>
+        </VegaWalletContext.Provider>
       );
 
       expect(screen.getByTestId(ViewType.ViewAs)).toBeInTheDocument();
@@ -58,11 +63,11 @@ describe('Sidebar', () => {
 
   it('renders ticket and info on market pages', () => {
     render(
-      <VegaWalletProvider>
+      <VegaWalletContext.Provider value={walletContext}>
         <MemoryRouter initialEntries={['/markets/ABC']}>
           <Sidebar />
         </MemoryRouter>
-      </VegaWalletProvider>
+      </VegaWalletContext.Provider>
     );
 
     expect(screen.getByTestId(ViewType.ViewAs)).toBeInTheDocument();
@@ -79,11 +84,11 @@ describe('Sidebar', () => {
 
   it('renders selected state', async () => {
     render(
-      <VegaWalletProvider>
+      <VegaWalletContext.Provider value={walletContext}>
         <MemoryRouter initialEntries={['/markets/ABC']}>
           <Sidebar />
         </MemoryRouter>
-      </VegaWalletProvider>
+      </VegaWalletContext.Provider>
     );
 
     const settingsButton = screen.getByTestId(ViewType.Settings);
@@ -107,13 +112,13 @@ describe('Sidebar', () => {
 describe('SidebarContent', () => {
   it('renders the correct content', () => {
     const { container } = render(
-      <VegaWalletProvider>
+      <VegaWalletContext.Provider value={walletContext}>
         <MemoryRouter initialEntries={['/markets/ABC']}>
           <Routes>
             <Route path="/markets/:marketId" element={<SidebarContent />} />
           </Routes>
         </MemoryRouter>
-      </VegaWalletProvider>
+      </VegaWalletContext.Provider>
     );
 
     expect(container).toBeEmptyDOMElement();
@@ -133,13 +138,13 @@ describe('SidebarContent', () => {
 
   it('closes sidebar if market id is required but not present', () => {
     const { container } = render(
-      <VegaWalletProvider>
+      <VegaWalletContext.Provider value={walletContext}>
         <MemoryRouter initialEntries={['/portfolio']}>
           <Routes>
             <Route path="/portfolio" element={<SidebarContent />} />
           </Routes>
         </MemoryRouter>
-      </VegaWalletProvider>
+      </VegaWalletContext.Provider>
     );
 
     act(() => {
