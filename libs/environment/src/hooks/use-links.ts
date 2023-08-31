@@ -159,6 +159,7 @@ export const ExternalLinks = {
   DISCORD: 'https://vega.xyz/discord',
   GOVERNANCE_PAGE: 'https://vega.xyz/governance',
   VALIDATOR_FORUM: 'https://community.vega.xyz/c/mainnet-validator-candidates',
+  PROPOSALS_FORUM: 'https://community.vega.xyz/c/governance/25',
   MARGIN_CREDIT_RISK:
     'https://vega.xyz/papers/margins-and-credit-risk.pdf#page=7',
   VEGA_WALLET_URL: 'https://vega.xyz/wallet',
