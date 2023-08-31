@@ -49,6 +49,12 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_HOLDING: 'Holding',
   ACCOUNT_TYPE_LP_LIQUIDITY_FEES: 'LP Liquidity Fees',
   ACCOUNT_TYPE_NETWORK_TREASURY: 'Network Treasury',
+  ACCOUNT_TYPE_REWARD_AVERAGE_POSITION: 'Reward Average Position',
+  ACCOUNT_TYPE_REWARD_RELATIVE_RETURN: 'Reward Relative Return',
+  ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY: 'Reward Return Volatility',
+  ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING: 'Reward Validator Ranking',
+  ACCOUNT_TYPE_VESTED_REWARDS: 'Vested Rewards',
+  ACCOUNT_TYPE_VESTING_REWARDS: 'Vesting Rewards',
 };
 
 /**
@@ -520,6 +526,10 @@ export const DispatchMetricLabels: DispatchMetricLabel = {
   DISPATCH_METRIC_MAKER_FEES_PAID: 'Price maker fees paid',
   DISPATCH_METRIC_MAKER_FEES_RECEIVED: 'Price maker fees earned',
   DISPATCH_METRIC_MARKET_VALUE: 'Total market Value',
+  DISPATCH_METRIC_AVERAGE_POSITION: 'Average position',
+  DISPATCH_METRIC_RELATIVE_RETURN: 'Relative return',
+  DISPATCH_METRIC_RETURN_VOLATILITY: 'Return volatility',
+  DISPATCH_METRIC_VALIDATOR_RANKING: 'Validator ranking',
 };
 
 export const PositionStatusMapping: {
@@ -560,7 +570,7 @@ export const ProductTypeShortName: Record<ProductType, string> = {
 export const ProposalProductTypeMapping: Record<ProposalProductType, string> = {
   FutureProduct: 'Future',
   SpotProduct: 'Spot',
-  PerpetualProduct: 'Perpeptual',
+  PerpetualProduct: 'Perpetual',
 };
 
 export const ProposalProductTypeShortName: Record<ProposalProductType, string> =
