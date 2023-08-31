@@ -1,7 +1,7 @@
 import { render, waitFor, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMockData, VolumeType } from './orderbook-data';
-import { Orderbook } from './orderbook';
+import { Orderbook, OrderbookMid } from './orderbook';
 import * as orderbookData from './orderbook-data';
 
 function mockOffsetSize(width: number, height: number) {
@@ -24,7 +24,7 @@ describe('Orderbook', () => {
     numberOfSellRows: 100,
     numberOfBuyRows: 100,
     step: 1,
-    midPrice: '122900',
+    lastTradedPrice: '122900',
     bestStaticBidPrice: 122905,
     bestStaticOfferPrice: 122895,
     decimalPlaces: 3,
@@ -44,13 +44,14 @@ describe('Orderbook', () => {
         positionDecimalPlaces={0}
         {...generateMockData(params)}
         assetSymbol="USD"
+        onClick={jest.fn()}
       />
     );
     await waitFor(() =>
-      screen.getByTestId(`middle-mark-price-${params.midPrice}`)
+      screen.getByTestId(`last-traded-${params.lastTradedPrice}`)
     );
     expect(
-      screen.getByTestId(`middle-mark-price-${params.midPrice}`)
+      screen.getByTestId(`last-traded-${params.lastTradedPrice}`)
     ).toHaveTextContent('122.90');
   });
 
@@ -68,10 +69,10 @@ describe('Orderbook', () => {
       />
     );
     expect(
-      await screen.findByTestId(`middle-mark-price-${params.midPrice}`)
+      await screen.findByTestId(`last-traded-${params.lastTradedPrice}`)
     ).toBeInTheDocument();
     // Before resolution change the price is 122.934
-    await userEvent.click(await screen.getByTestId('price-122901'));
+    await userEvent.click(screen.getByTestId('price-122901'));
     expect(onClickSpy).toBeCalledWith({ price: '122.901' });
 
     await userEvent.click(screen.getByTestId('resolution'));
@@ -92,7 +93,7 @@ describe('Orderbook', () => {
       VolumeType.ask,
       10
     );
-    await userEvent.click(await screen.getByTestId('price-12294'));
+    await userEvent.click(screen.getByTestId('price-12294'));
     expect(onClickSpy).toBeCalledWith({ price: '122.94' });
   });
 
@@ -175,5 +176,50 @@ describe('Orderbook', () => {
     screen.getAllByTestId('ask-rows-container').forEach((item) => {
       expect(item).toHaveClass('grid-cols-1');
     });
+  });
+});
+
+describe('OrderbookMid', () => {
+  const props = {
+    lastTradedPrice: '100',
+    decimalPlaces: 0,
+    assetSymbol: 'BTC',
+    bestAskPrice: '101',
+    bestBidPrice: '99',
+  };
+
+  it('renders no change until lastTradedPrice changes', () => {
+    const { rerender } = render(<OrderbookMid {...props} />);
+    expect(screen.getByTestId(/last-traded/)).toHaveTextContent(
+      props.lastTradedPrice
+    );
+    expect(screen.getByText(props.assetSymbol)).toBeInTheDocument();
+    expect(screen.queryByTestId(/icon-/)).not.toBeInTheDocument();
+    expect(screen.getByTestId('spread')).toHaveTextContent('(2)');
+
+    // rerender with no change should not show the icon
+    rerender(<OrderbookMid {...props} />);
+    expect(screen.queryByTestId(/icon-/)).not.toBeInTheDocument();
+
+    rerender(
+      <OrderbookMid {...props} lastTradedPrice="101" bestAskPrice="102" />
+    );
+    expect(screen.getByTestId('icon-arrow-up')).toBeInTheDocument();
+    expect(screen.getByTestId('spread')).toHaveTextContent('(3)');
+
+    // rerender again with the same price, should still be set to 'up'
+    rerender(
+      <OrderbookMid
+        {...props}
+        lastTradedPrice="101"
+        bestAskPrice="102"
+        bestBidPrice="98"
+      />
+    );
+    expect(screen.getByTestId('icon-arrow-up')).toBeInTheDocument();
+    expect(screen.getByTestId('spread')).toHaveTextContent('(4)');
+
+    rerender(<OrderbookMid {...props} lastTradedPrice="100" />);
+    expect(screen.getByTestId('icon-arrow-down')).toBeInTheDocument();
   });
 });

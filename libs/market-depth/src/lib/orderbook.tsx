@@ -1,25 +1,15 @@
 import { useMemo, useRef, useState } from 'react';
 import ReactVirtualizedAutoSizer from 'react-virtualized-auto-sizer';
-import {
-  addDecimalsFormatNumber,
-  formatNumberFixed,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { usePrevious } from '@vegaprotocol/react-helpers';
 import { OrderbookRow } from './orderbook-row';
 import type { OrderbookRowData } from './orderbook-data';
 import { compactRows, VolumeType } from './orderbook-data';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  Splash,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Splash, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
+import { OrderbookControls } from './orderbook-controls';
 
 // Sets row height, will be used to calculate number of rows that can be
 // displayed each side of the book without overflow
@@ -27,20 +17,7 @@ export const rowHeight = 17;
 const rowGap = 1;
 const midHeight = 30;
 
-type PriceChange = 'up' | 'down' | 'none';
-
-const PRICE_CHANGE_ICON_MAP: Readonly<Record<PriceChange, VegaIconNames>> = {
-  up: VegaIconNames.ARROW_UP,
-  down: VegaIconNames.ARROW_DOWN,
-  none: VegaIconNames.BULLET,
-};
-const PRICE_CHANGE_CLASS_MAP: Readonly<Record<PriceChange, string>> = {
-  up: 'text-market-green-600 dark:text-market-green',
-  down: 'text-market-red dark:text-market-red',
-  none: 'text-vega-blue-500',
-};
-
-const OrderbookTable = ({
+const OrderbookSide = ({
   rows,
   resolution,
   type,
@@ -48,14 +25,16 @@ const OrderbookTable = ({
   positionDecimalPlaces,
   onClick,
   width,
+  maxVol,
 }: {
   rows: OrderbookRowData[];
   resolution: number;
   decimalPlaces: number;
   positionDecimalPlaces: number;
   type: VolumeType;
-  onClick?: (args: { price?: string; size?: string }) => void;
+  onClick: (args: { price?: string; size?: string }) => void;
   width: number;
+  maxVol: number;
 }) => {
   return (
     <div
@@ -78,11 +57,11 @@ const OrderbookTable = ({
             onClick={onClick}
             decimalPlaces={decimalPlaces - Math.log10(resolution)}
             positionDecimalPlaces={positionDecimalPlaces}
-            value={data.value}
-            cumulativeValue={data.cumulativeVol.value}
-            cumulativeRelativeValue={data.cumulativeVol.relativeValue}
+            volume={data.volume}
+            cumulativeVolume={data.cumulativeVol}
             type={type}
             width={width}
+            maxVol={maxVol}
           />
         ))}
       </div>
@@ -90,31 +69,88 @@ const OrderbookTable = ({
   );
 };
 
+export const OrderbookMid = ({
+  lastTradedPrice,
+  decimalPlaces,
+  assetSymbol,
+  bestAskPrice,
+  bestBidPrice,
+}: {
+  lastTradedPrice: string;
+  decimalPlaces: number;
+  assetSymbol: string;
+  bestAskPrice: string;
+  bestBidPrice: string;
+}) => {
+  const previousLastTradedPrice = usePrevious(lastTradedPrice);
+  const priceChangeRef = useRef<'up' | 'down' | 'none'>('none');
+  const spread = (BigInt(bestAskPrice) - BigInt(bestBidPrice)).toString();
+
+  if (previousLastTradedPrice !== lastTradedPrice) {
+    priceChangeRef.current =
+      Number(previousLastTradedPrice) > Number(lastTradedPrice) ? 'down' : 'up';
+  }
+
+  return (
+    <div className="flex items-center justify-center text-base gap-2">
+      {priceChangeRef.current !== 'none' && (
+        <span
+          className={classNames('flex flex-col justify-center', {
+            'text-market-green-600 dark:text-market-green':
+              priceChangeRef.current === 'up',
+            'text-market-red dark:text-market-red':
+              priceChangeRef.current === 'down',
+          })}
+        >
+          <VegaIcon
+            name={
+              priceChangeRef.current === 'up'
+                ? VegaIconNames.ARROW_UP
+                : VegaIconNames.ARROW_DOWN
+            }
+          />
+        </span>
+      )}
+      <span
+        // monospace sizing doesn't quite align with alpha
+        className="font-mono text-[15px]"
+        data-testid={`last-traded-${lastTradedPrice}`}
+        title={t('Last traded price')}
+      >
+        {addDecimalsFormatNumber(lastTradedPrice, decimalPlaces)}
+      </span>
+      <span>{assetSymbol}</span>
+      <span
+        title={t('Spread')}
+        className="font-mono text-xs text-muted"
+        data-testid="spread"
+      >
+        ({addDecimalsFormatNumber(spread, decimalPlaces)})
+      </span>
+    </div>
+  );
+};
+
 interface OrderbookProps {
   decimalPlaces: number;
   positionDecimalPlaces: number;
-  onClick?: (args: { price?: string; size?: string }) => void;
-  midPrice?: string;
+  onClick: (args: { price?: string; size?: string }) => void;
+  lastTradedPrice: string;
   bids: PriceLevelFieldsFragment[];
   asks: PriceLevelFieldsFragment[];
-  assetSymbol: string | undefined;
+  assetSymbol: string;
 }
 
 export const Orderbook = ({
   decimalPlaces,
   positionDecimalPlaces,
   onClick,
-  midPrice,
+  lastTradedPrice,
   asks,
   bids,
   assetSymbol,
 }: OrderbookProps) => {
   const [resolution, setResolution] = useState(1);
-  const resolutions = new Array(
-    Math.max(midPrice?.toString().length ?? 0, decimalPlaces + 1)
-  )
-    .fill(null)
-    .map((v, i) => Math.pow(10, i));
 
   const groupedAsks = useMemo(() => {
     return compactRows(asks, VolumeType.ask, resolution);
@@ -123,44 +159,11 @@ export const Orderbook = ({
   const groupedBids = useMemo(() => {
     return compactRows(bids, VolumeType.bid, resolution);
   }, [bids, resolution]);
-  const [isOpen, setOpen] = useState(false);
-  const previousMidPrice = usePrevious(midPrice);
-  const priceChangeRef = useRef<'up' | 'down' | 'none'>('none');
-  if (midPrice && previousMidPrice !== midPrice) {
-    priceChangeRef.current =
-      (previousMidPrice || '') > midPrice ? 'down' : 'up';
-  }
 
-  const priceChangeIcon = (
-    <span
-      className={classNames(PRICE_CHANGE_CLASS_MAP[priceChangeRef.current])}
-    >
-      <VegaIcon name={PRICE_CHANGE_ICON_MAP[priceChangeRef.current]} />
-    </span>
-  );
-
-  const formatResolution = (r: number) => {
-    return formatNumberFixed(
-      Math.log10(r) - decimalPlaces > 0
-        ? Math.pow(10, Math.log10(r) - decimalPlaces)
-        : 0,
-      decimalPlaces - Math.log10(r)
-    );
-  };
-
-  const increaseResolution = () => {
-    const index = resolutions.indexOf(resolution);
-    if (index < resolutions.length - 1) {
-      setResolution(resolutions[index + 1]);
-    }
-  };
-
-  const decreaseResolution = () => {
-    const index = resolutions.indexOf(resolution);
-    if (index > 0) {
-      setResolution(resolutions[index - 1]);
-    }
-  };
+  // get the best bid/ask, note that we are using the pre aggregated
+  // values so we can render the most accurate spread in the mid section
+  const bestAskPrice = asks[0] ? asks[0].price : '0';
+  const bestBidPrice = bids[0] ? bids[0].price : '0';
 
   return (
     <div className="h-full text-xs grid grid-rows-[1fr_min-content]">
@@ -171,21 +174,30 @@ export const Orderbook = ({
               1,
               Math.floor((height - midHeight) / 2 / (rowHeight + rowGap))
             );
-            const askRows = groupedAsks?.slice(limit * -1) ?? [];
-            const bidRows = groupedBids?.slice(0, limit) ?? [];
+            const askRows = groupedAsks.slice(limit * -1);
+            const bidRows = groupedBids.slice(0, limit);
+
+            // this is used for providing a scale to render the volume
+            // bars based on the visible book
+            const deepestVisibleAsk = askRows[0];
+            const deepestVisibleBid = bidRows[bidRows.length - 1];
+            const maxVol = Math.max(
+              deepestVisibleAsk?.cumulativeVol || 0,
+              deepestVisibleBid?.cumulativeVol || 0
+            );
             return (
               <div
                 className="overflow-hidden grid"
                 data-testid="orderbook-grid-element"
                 style={{
-                  width: width + 'px',
-                  height: height + 'px',
+                  width,
+                  height,
                   gridTemplateRows: `1fr ${midHeight}px 1fr`, // cannot use tailwind here as tailwind will not parse a class string with interpolation
                 }}
               >
                 {askRows.length || bidRows.length ? (
                   <>
-                    <OrderbookTable
+                    <OrderbookSide
                       rows={askRows}
                       type={VolumeType.ask}
                       resolution={resolution}
@@ -193,22 +205,16 @@ export const Orderbook = ({
                       positionDecimalPlaces={positionDecimalPlaces}
                       onClick={onClick}
                       width={width}
+                      maxVol={maxVol}
                     />
-                    <div className="flex items-center justify-center gap-2">
-                      {midPrice && (
-                        <>
-                          <span
-                            className="font-mono text-lg"
-                            data-testid={`middle-mark-price-${midPrice}`}
-                          >
-                            {addDecimalsFormatNumber(midPrice, decimalPlaces)}
-                          </span>
-                          <span className="text-base">{assetSymbol}</span>
-                          {priceChangeIcon}
-                        </>
-                      )}
-                    </div>
-                    <OrderbookTable
+                    <OrderbookMid
+                      lastTradedPrice={lastTradedPrice}
+                      decimalPlaces={decimalPlaces}
+                      assetSymbol={assetSymbol}
+                      bestAskPrice={bestAskPrice}
+                      bestBidPrice={bestBidPrice}
+                    />
+                    <OrderbookSide
                       rows={bidRows}
                       type={VolumeType.bid}
                       resolution={resolution}
@@ -216,10 +222,11 @@ export const Orderbook = ({
                       positionDecimalPlaces={positionDecimalPlaces}
                       onClick={onClick}
                       width={width}
+                      maxVol={maxVol}
                     />
                   </>
                 ) : (
-                  <div className="inset-0 absolute">
+                  <div className="absolute inset-0">
                     <Splash>{t('No data')}</Splash>
                   </div>
                 )}
@@ -228,59 +235,13 @@ export const Orderbook = ({
           }}
         </ReactVirtualizedAutoSizer>
       </div>
-      <div className="border-t border-default flex">
-        <button
-          onClick={increaseResolution}
-          disabled={resolutions.indexOf(resolution) >= resolutions.length - 1}
-          className="flex items-center border-r border-default px-2 cursor-pointer"
-          data-testid="plus-button"
-        >
-          <VegaIcon size={12} name={VegaIconNames.PLUS} />
-        </button>
-        <DropdownMenu
-          open={isOpen}
-          onOpenChange={(open) => setOpen(open)}
-          trigger={
-            <DropdownMenuTrigger
-              data-testid="resolution"
-              className="flex justify-between px-1 items-center"
-              style={{
-                width: `${
-                  Math.max.apply(
-                    null,
-                    resolutions.map((item) => formatResolution(item).length)
-                  ) + 3
-                }ch`,
-              }}
-            >
-              <VegaIcon
-                size={12}
-                name={
-                  isOpen ? VegaIconNames.CHEVRON_UP : VegaIconNames.CHEVRON_DOWN
-                }
-              />
-              <div className="text-xs text-left">
-                {formatResolution(resolution)}
-              </div>
-            </DropdownMenuTrigger>
-          }
-        >
-          <DropdownMenuContent align="start">
-            {resolutions.map((r) => (
-              <DropdownMenuItem key={r} onClick={() => setResolution(r)}>
-                {formatResolution(r)}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <button
-          onClick={decreaseResolution}
-          disabled={resolutions.indexOf(resolution) <= 0}
-          className="flex items-center border-x border-default px-2 cursor-pointer"
-          data-testid="minus-button"
-        >
-          <VegaIcon size={12} name={VegaIconNames.MINUS} />
-        </button>
+      <div className="border-t border-default">
+        <OrderbookControls
+          lastTradedPrice={lastTradedPrice}
+          resolution={resolution}
+          decimalPlaces={decimalPlaces}
+          setResolution={setResolution}
+        />
       </div>
     </div>
   );
