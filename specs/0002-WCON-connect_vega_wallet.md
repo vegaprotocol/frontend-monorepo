@@ -13,6 +13,8 @@ When looking to use Vega via a user interface e.g. Dapp (Decentralized web App),
 - If there is not running desktop wallet or CLI detected, I can see that I need to open my wallet. (<a name="0002-WCON-0013" href="#0002-WCON-0013">0002-WCON-0013</a>)
 - I can find out more about supported browsers i.e. there is a link (Issue "List compatible browsers" vegawallet-browser#360 has to be implemented). (<a name="0002-WCON-0013" href="#0002-WCON-0013">0002-WCON-0013</a>)
 - I can find out more about the Vega Wallet and see what "other" versions there are i.e. there is a link to the page on the website (currently - https://vega.xyz/wallet#overview). (<a name="0002-WCON-0014" href="#0002-WCON-0014">0002-WCON-0014</a>)
+- I can install and connect vega metamask snap wallet (<a name="0002-WCON-0015" href="#0002-WCON-0015">0002-WCON-0015</a>)
+
 - Browser wallet:
 
   - The browser extension you need is automatically detected if you are using Chrome or Firefox, presenting the specific call to action to install that browser extension in a visible way e.g. with a Chrome or Firefox icon. (<a name="0002-WCON-041" href="#0002-WCON-041">0002-WCON-041</a>)
