@@ -288,11 +288,11 @@ const ConnectorList = ({
                 />
                 {snapStatus === SnapStatus.NOT_SUPPORTED ? (
                   <p className="pt-2 text-sm text-default">
-                    {t('No MetaMask Flask detected.')} {t('Install')}{' '}
-                    <ExternalLink href="https://metamask.io/flask/">
-                      MetaMask Flask
-                    </ExternalLink>{' '}
-                    {t('in order to use the snap.')}
+                    {t('No MetaMask version that supports snaps detected.')}{' '}
+                    {t('Learn more about')}{' '}
+                    <ExternalLink href="https://metamask.io/snaps/">
+                      MetaMask Snaps
+                    </ExternalLink>
                   </p>
                 ) : null}
               </>
