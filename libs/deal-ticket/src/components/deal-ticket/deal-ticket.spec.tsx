@@ -590,9 +590,9 @@ describe('DealTicket', () => {
 
   it('sets expiry time/date to now if expiry is changed to checked', async () => {
     const datePicker = 'date-picker-field';
-    const now = Math.round(Date.now() / 1000) * 1000;
+    const now = 24 * 60 * 60 * 1000;
     render(generateJsx());
-    jest.spyOn(global.Date, 'now').mockImplementationOnce(() => now);
+    jest.spyOn(global.Date, 'now').mockImplementation(() => now);
     await userEvent.selectOptions(
       screen.getByTestId('order-tif'),
       Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
