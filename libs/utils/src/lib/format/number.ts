@@ -132,15 +132,15 @@ export const formatNumberPercentage = (value: BigNumber, decimals?: number) => {
 export const toNumberParts = (
   value: BigNumber | null | undefined,
   decimals = 18
-): [integers: string, decimalPlaces: string] => {
+): [integers: string, decimalPlaces: string, separator: string] => {
   if (!value) {
-    return ['0', '0'.repeat(decimals)];
+    return ['0', '0'.repeat(decimals), '.'];
   }
   const separator = getDecimalSeparator() || '.';
   const [integers, decimalsPlaces] = formatNumber(value, decimals)
     .toString()
     .split(separator);
-  return [integers, decimalsPlaces || ''];
+  return [integers, decimalsPlaces || '', separator];
 };
 
 export const isNumeric = (
