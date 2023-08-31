@@ -432,9 +432,9 @@ describe('StopOrder', () => {
   });
 
   it('sets expiry time/date to now if expiry is changed to checked', async () => {
-    const now = Math.round(Date.now() / 1000) * 1000;
+    const now = 24 * 60 * 60 * 1000;
     render(generateJsx());
-    jest.spyOn(global.Date, 'now').mockImplementationOnce(() => now);
+    jest.spyOn(global.Date, 'now').mockImplementation(() => now);
     await userEvent.click(screen.getByTestId(expire));
 
     // expiry time/date was empty it should be set to now
