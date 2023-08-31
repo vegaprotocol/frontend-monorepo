@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import {
   Dialog,
+  ExternalLink,
   Intent,
   Pill,
   TradingButton,
@@ -39,7 +40,7 @@ import { useVegaWallet } from '../use-vega-wallet';
 import { InjectedConnectorForm } from './injected-connector-form';
 import { isBrowserWalletInstalled } from '../utils';
 import { useIsWalletServiceRunning } from '../use-is-wallet-service-running';
-import { useIsSnapRunning } from '../use-is-snap-running';
+import { SnapStatus, useSnapStatus } from '../use-snap-status';
 import { useVegaWalletDialogStore } from './vega-wallet-dialog-store';
 
 export const CLOSE_DELAY = 1700;
@@ -158,7 +159,7 @@ const ConnectDialogContainer = ({
     appChainId
   );
 
-  const isSnapRunning = useIsSnapRunning(
+  const snapStatus = useSnapStatus(
     DEFAULT_SNAP_ID,
     Boolean(connectors['snap'])
   );
@@ -183,7 +184,7 @@ const ConnectDialogContainer = ({
             setWalletUrl={setWalletUrl}
             onSelect={handleSelect}
             isDesktopWalletRunning={isDesktopWalletRunning}
-            isSnapRunning={isSnapRunning}
+            snapStatus={snapStatus}
           />
         )}
       </ConnectDialogContent>
@@ -198,14 +199,14 @@ const ConnectorList = ({
   walletUrl,
   setWalletUrl,
   isDesktopWalletRunning,
-  isSnapRunning,
+  snapStatus,
 }: {
   connectors: Connectors;
   onSelect: (type: WalletType) => void;
   walletUrl: string;
   setWalletUrl: (value: string) => void;
   isDesktopWalletRunning: boolean | null;
-  isSnapRunning: boolean | null;
+  snapStatus: SnapStatus;
 }) => {
   const { pubKey, links } = useVegaWallet();
   const title = isBrowserWalletInstalled()
@@ -249,7 +250,7 @@ const ConnectorList = ({
         </div>
         {connectors['snap'] !== undefined ? (
           <div>
-            {isSnapRunning ? (
+            {snapStatus === SnapStatus.INSTALLED ? (
               <ConnectionOption
                 type="snap"
                 text={
@@ -267,22 +268,34 @@ const ConnectorList = ({
                 }}
               />
             ) : (
-              <ConnectionOption
-                type="snap"
-                text={
-                  <>
-                    <div className="flex items-center justify-center w-full h-full text-base gap-1">
-                      {t('Install Vega MetaMask Snap')}
-                    </div>
-                    <div className="absolute top-0 flex items-center h-8 right-1">
-                      <VegaIcon name={VegaIconNames.METAMASK} size={24} />
-                    </div>
-                  </>
-                }
-                onClick={() => {
-                  requestSnap(DEFAULT_SNAP_ID);
-                }}
-              />
+              <>
+                <ConnectionOption
+                  type="snap"
+                  disabled={snapStatus === SnapStatus.NOT_SUPPORTED}
+                  text={
+                    <>
+                      <div className="flex items-center justify-center w-full h-full text-base gap-1">
+                        {t('Install Vega MetaMask Snap')}
+                      </div>
+                      <div className="absolute top-0 flex items-center h-8 right-1">
+                        <VegaIcon name={VegaIconNames.METAMASK} size={24} />
+                      </div>
+                    </>
+                  }
+                  onClick={() => {
+                    requestSnap(DEFAULT_SNAP_ID);
+                  }}
+                />
+                {snapStatus === SnapStatus.NOT_SUPPORTED ? (
+                  <p className="pt-2 text-sm text-default">
+                    {t('No MetaMask Flask detected.')} {t('Install')}{' '}
+                    <ExternalLink href="https://metamask.io/flask/">
+                      MetaMask Flask
+                    </ExternalLink>{' '}
+                    {t('in order to use the snap.')}
+                  </p>
+                ) : null}
+              </>
             )}
           </div>
         ) : null}

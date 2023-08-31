@@ -118,14 +118,10 @@ export const getSnap = async (
   snapId: string,
   version?: string
 ): Promise<Snap | undefined> => {
-  try {
-    const snaps = await getSnaps();
-    return Object.values(snaps).find(
-      (snap) => snap.id === snapId && (!version || snap.version === version)
-    );
-  } catch (e) {
-    return undefined;
-  }
+  const snaps = await getSnaps();
+  return Object.values(snaps).find(
+    (snap) => snap.id === snapId && (!version || snap.version === version)
+  );
 };
 
 export const invokeSnap = async <T>(
