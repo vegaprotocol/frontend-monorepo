@@ -7,7 +7,7 @@ import {
   TradingDropdownContent,
   TradingDropdownItem,
 } from '@vegaprotocol/ui-toolkit';
-import { formatNumberFixed } from '@vegaprotocol/utils';
+import { addDecimal, getNumberFormat } from '@vegaprotocol/utils';
 
 export const OrderbookControls = ({
   lastTradedPrice,
@@ -15,27 +15,14 @@ export const OrderbookControls = ({
   decimalPlaces,
   setResolution,
 }: {
-  lastTradedPrice: string | undefined;
+  lastTradedPrice: string;
   resolution: number;
   decimalPlaces: number;
   setResolution: (resolution: number) => void;
 }) => {
   const [isOpen, setOpen] = useState(false);
 
-  const resolutions = new Array(
-    Math.max(lastTradedPrice?.toString().length ?? 0, decimalPlaces + 1)
-  )
-    .fill(null)
-    .map((v, i) => Math.pow(10, i));
-
-  const formatResolution = (r: number) => {
-    return formatNumberFixed(
-      Math.log10(r) - decimalPlaces > 0
-        ? Math.pow(10, Math.log10(r) - decimalPlaces)
-        : 0,
-      decimalPlaces - Math.log10(r)
-    );
-  };
+  const resolutions = createResolutions(lastTradedPrice, decimalPlaces);
 
   const increaseResolution = () => {
     const index = resolutions.indexOf(resolution);
@@ -56,7 +43,7 @@ export const OrderbookControls = ({
       <button
         onClick={increaseResolution}
         disabled={resolutions.indexOf(resolution) >= resolutions.length - 1}
-        className="flex items-center px-2 border-r cursor-pointer border-default"
+        className="flex items-center px-2 border-r cursor-pointer border-default disabled:cursor-default"
         data-testid="plus-button"
       >
         <VegaIcon size={12} name={VegaIconNames.PLUS} />
@@ -67,12 +54,14 @@ export const OrderbookControls = ({
         trigger={
           <TradingDropdownTrigger data-testid="resolution">
             <button
-              className="flex items-center px-2 text-left gap-1"
+              className="flex items-center justify-between px-2 gap-1"
               style={{
                 minWidth: `${
                   Math.max.apply(
                     null,
-                    resolutions.map((item) => formatResolution(item).length)
+                    resolutions.map(
+                      (item) => formatResolution(item, decimalPlaces).length
+                    )
                   ) + 5
                 }ch`,
               }}
@@ -83,15 +72,19 @@ export const OrderbookControls = ({
                   isOpen ? VegaIconNames.CHEVRON_UP : VegaIconNames.CHEVRON_DOWN
                 }
               />
-              {formatResolution(resolution)}
+              {formatResolution(resolution, decimalPlaces)}
             </button>
           </TradingDropdownTrigger>
         }
       >
         <TradingDropdownContent align="start">
           {resolutions.map((r) => (
-            <TradingDropdownItem key={r} onClick={() => setResolution(r)}>
-              {formatResolution(r)}
+            <TradingDropdownItem
+              key={r}
+              onClick={() => setResolution(r)}
+              className="justify-end"
+            >
+              {formatResolution(r, decimalPlaces)}
             </TradingDropdownItem>
           ))}
         </TradingDropdownContent>
@@ -99,11 +92,55 @@ export const OrderbookControls = ({
       <button
         onClick={decreaseResolution}
         disabled={resolutions.indexOf(resolution) <= 0}
-        className="flex items-center px-2 cursor-pointer border-x border-default"
+        className="flex items-center px-2 cursor-pointer border-x border-default disabled:cursor-default"
         data-testid="minus-button"
       >
         <VegaIcon size={12} name={VegaIconNames.MINUS} />
       </button>
     </div>
   );
+};
+
+export const formatResolution = (r: number, decimalPlaces: number) => {
+  const num = addDecimal(r, decimalPlaces);
+  // Wrap with Number to trim trailing 0s
+  const x = Number(num);
+
+  if (x >= 1) {
+    return getNumberFormat(0).format(x);
+  }
+
+  return x.toString();
+};
+
+export const createResolutions = (
+  lastTradedPrice: string,
+  decimalPlaces: number
+) => {
+  // number of levels determined by either the number
+  // of digits in the last traded price OR the number of decimal
+  // places. For example:
+  //
+  // last traded = 1 (0.001)
+  // dps = 3
+  // result = 3
+  //
+  // last traded = 100001 (1000.01
+  // dps = 2
+  // result = 6
+  const levelCount = Math.max(lastTradedPrice.length ?? 0, decimalPlaces + 1);
+  const generatedResolutions = new Array(levelCount)
+    .fill(null)
+    .map((_, i) => Math.pow(10, i));
+  const customResolutions = [2, 5, 20, 50, 200, 500];
+  const combined = customResolutions.concat(generatedResolutions);
+  combined.sort((a, b) => a - b);
+
+  // Remove any resolutions higher than the generated ones as
+  // we dont want a custom resolution higher than necessary
+  const resolutions = combined.filter((r) => {
+    return r <= generatedResolutions[generatedResolutions.length - 1];
+  });
+
+  return resolutions;
 };

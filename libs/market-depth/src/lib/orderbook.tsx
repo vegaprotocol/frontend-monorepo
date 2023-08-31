@@ -23,6 +23,7 @@ const OrderbookSide = ({
   type,
   decimalPlaces,
   positionDecimalPlaces,
+  priceFormatDecimalPlaces,
   onClick,
   width,
   maxVol,
@@ -31,16 +32,12 @@ const OrderbookSide = ({
   resolution: number;
   decimalPlaces: number;
   positionDecimalPlaces: number;
+  priceFormatDecimalPlaces: number;
   type: VolumeType;
   onClick: (args: { price?: string; size?: string }) => void;
   width: number;
   maxVol: number;
 }) => {
-  // we'll want to only display a relevant number of dps based on the
-  // current resolution selection
-  const priceFormatDecimalPlaces = Math.ceil(
-    decimalPlaces - Math.log10(resolution)
-  );
   return (
     <div
       className={
@@ -171,6 +168,12 @@ export const Orderbook = ({
   const bestAskPrice = asks[0] ? asks[0].price : '0';
   const bestBidPrice = bids[0] ? bids[0].price : '0';
 
+  // we'll want to only display a relevant number of dps based on the
+  // current resolution selection
+  const priceFormatDecimalPlaces = Math.ceil(
+    decimalPlaces - Math.log10(resolution)
+  );
+
   return (
     <div className="h-full text-xs grid grid-rows-[1fr_min-content]">
       <div>
@@ -209,6 +212,7 @@ export const Orderbook = ({
                       resolution={resolution}
                       decimalPlaces={decimalPlaces}
                       positionDecimalPlaces={positionDecimalPlaces}
+                      priceFormatDecimalPlaces={priceFormatDecimalPlaces}
                       onClick={onClick}
                       width={width}
                       maxVol={maxVol}
@@ -226,6 +230,7 @@ export const Orderbook = ({
                       resolution={resolution}
                       decimalPlaces={decimalPlaces}
                       positionDecimalPlaces={positionDecimalPlaces}
+                      priceFormatDecimalPlaces={priceFormatDecimalPlaces}
                       onClick={onClick}
                       width={width}
                       maxVol={maxVol}
