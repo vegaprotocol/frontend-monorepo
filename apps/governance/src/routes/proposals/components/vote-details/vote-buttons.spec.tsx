@@ -4,6 +4,7 @@ import { VoteButtons } from './vote-buttons';
 import { VoteState } from './use-user-vote';
 import { ProposalState } from '@vegaprotocol/types';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { mockWalletContext } from '../../test-helpers/mocks';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { MockedProvider } from '@apollo/react-testing';
@@ -67,7 +68,7 @@ describe('Vote buttons', () => {
       disconnect: jest.fn(),
       selectPubKey: jest.fn(),
       connector: null,
-    };
+    } as unknown as VegaWalletContextShape;
 
     render(
       <AppStateProvider>
