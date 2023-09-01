@@ -105,8 +105,7 @@ export const formatResolution = (r: number, decimalPlaces: number) => {
   let num = addDecimalsFormatNumber(r, decimalPlaces);
 
   // Remove trailing zeroes
-  num = num.replace(/(\.\d*?)0+$/, '$1');
-  num = num.replace(/\.$/, '');
+  num = num.replace(/\.?0+$/, '');
 
   return num;
 };
