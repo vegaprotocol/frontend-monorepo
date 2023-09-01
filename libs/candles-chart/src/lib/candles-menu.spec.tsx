@@ -7,8 +7,8 @@ describe('CandlesMenu', () => {
     render(<CandlesMenu />);
 
     await userEvent.click(
-      screen.getByText('Studies', {
-        selector: '[type="button"]',
+      screen.getByRole('button', {
+        name: 'Studies',
       })
     );
     expect(await screen.findByRole('menu')).toBeInTheDocument();
