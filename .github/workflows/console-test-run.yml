@@ -113,7 +113,7 @@ jobs:
       #----------------------------------------------
       - name: Install vega binaries
         working-directory: ./console-test
-        run: poetry run python -m vega_sim.tools.load_binaries --force
+        run: poetry run python -m vega_sim.tools.load_binaries --force --latest
       #----------------------------------------------
       # install playwright
       #----------------------------------------------
