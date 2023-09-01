@@ -15,6 +15,7 @@ import { IconDeposit } from './svg-icons/icon-deposit';
 import { IconEdit } from './svg-icons/icon-edit';
 import { IconExclaimationMark } from './svg-icons/icon-exclaimation-mark';
 import { IconEye } from './svg-icons/icon-eye';
+import { IconEyeOff } from './svg-icons/icon-eye-off';
 import { IconForum } from './svg-icons/icon-forum';
 import { IconGlobe } from './svg-icons/icon-globe';
 import { IconInfo } from './svg-icons/icon-info';
@@ -55,6 +56,7 @@ export enum VegaIconNames {
   EDIT = 'edit',
   EXCLAIMATION_MARK = 'exclaimation-mark',
   EYE = 'eye',
+  EYE_OFF = 'eye-off',
   FORUM = 'forum',
   GLOBE = 'globe',
   INFO = 'info',
@@ -90,6 +92,7 @@ export const VegaIconNameMap: Record<
   'chevron-down': IconChevronDown,
   'chevron-left': IconChevronLeft,
   'chevron-up': IconChevronUp,
+  'eye-off': IconEyeOff,
   'exclaimation-mark': IconExclaimationMark,
   'open-external': IconOpenExternal,
   'question-mark': IconQuestionMark,
