@@ -4,7 +4,7 @@ export const validateAmount = (step: number | string, field: string) => {
   const [, stepDecimals = ''] = String(step).split('.');
 
   return (value?: string) => {
-    if (Number(step) >= 1) {
+    if (Number(step) > 1) {
       if (Number(value) % Number(step) > 0) {
         return t(`${field} must be a multiple of ${step} for this market`);
       }
