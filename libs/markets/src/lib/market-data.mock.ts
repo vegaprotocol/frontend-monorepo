@@ -62,6 +62,7 @@ const marketDataFields: MarketDataFieldsFragment = {
   markPrice: '4612690058',
   midPrice: '4612690000',
   openInterest: '0',
+  lastTradedPrice: '4612690000',
   priceMonitoringBounds: [
     {
       minValidPrice: '654701',
@@ -99,6 +100,7 @@ const marketDataUpdateFields: MarketDataUpdateFieldsFragment = {
   marketValueProxy: '',
   markPrice: '4612690058',
   midPrice: '0',
+  lastTradedPrice: '0',
   openInterest: '0',
   staticMidPrice: '0',
   trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
