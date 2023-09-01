@@ -39,8 +39,15 @@ import {
   SettlementAssetInfoPanel,
   SuccessionLineInfoPanel,
 } from './market-info-panels';
-import type { DataSourceDefinition } from '@vegaprotocol/types';
 import isEqual from 'lodash/isEqual';
+import {
+  dataSourceSpecForSettlementSchedule,
+  getDataSourceSpecForSettlementData,
+  getDataSourceSpecForTradingTermination,
+  isPerpetual,
+  isFuture,
+} from '../../product';
+import type { DataSourceFragment } from './__generated__/MarketInfo';
 
 export interface MarketInfoAccordionProps {
   market: MarketInfo;
@@ -87,24 +94,13 @@ export const MarketInfoAccordion = ({
     market.accountsConnection?.edges
   );
 
-  const settlementData =
-    market.tradableInstrument.instrument.product.__typename === 'Future' ||
-    market.tradableInstrument.instrument.product.__typename === 'Perpetual'
-      ? (market.tradableInstrument.instrument.product
-          .dataSourceSpecForSettlementData.data as DataSourceDefinition)
-      : undefined;
-  const terminationData =
-    market.tradableInstrument.instrument.product.__typename === 'Future'
-      ? (market.tradableInstrument.instrument.product
-          .dataSourceSpecForTradingTermination.data as DataSourceDefinition)
-      : undefined;
+  const { product } = market.tradableInstrument.instrument;
+  const settlementData = getDataSourceSpecForSettlementData(product)?.data;
+  const terminationData = getDataSourceSpecForTradingTermination(product)?.data;
   const settlementScheduleData =
-    market.tradableInstrument.instrument.product.__typename === 'Perpetual'
-      ? (market.tradableInstrument.instrument.product
-          .dataSourceSpecForSettlementSchedule.data as DataSourceDefinition)
-      : undefined;
+    dataSourceSpecForSettlementSchedule(product)?.data;
 
-  const getSigners = (data: DataSourceDefinition) => {
+  const getSigners = (data: DataSourceFragment['data']) => {
     if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
       const signers =
         ('signers' in data.sourceType.sourceType &&
@@ -122,11 +118,11 @@ export const MarketInfoAccordion = ({
   };
 
   const showOneOracleSection =
-    (market.tradableInstrument.instrument.product.__typename === 'Future' &&
+    (isFuture(product) &&
       settlementData &&
       terminationData &&
       isEqual(getSigners(settlementData), getSigners(terminationData))) ||
-    (market.tradableInstrument.instrument.product.__typename === 'Perpetual' &&
+    (isPerpetual(product) &&
       settlementData &&
       settlementScheduleData &&
       isEqual(getSigners(settlementData), getSigners(settlementScheduleData)));

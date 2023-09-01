@@ -3,6 +3,8 @@ import type { MarketInfoWithData } from '@vegaprotocol/markets';
 import {
   PriceMonitoringBoundsInfoPanel,
   SuccessionLineInfoPanel,
+  getDataSourceSpecForSettlementData,
+  getDataSourceSpecForTradingTermination,
 } from '@vegaprotocol/markets';
 import {
   LiquidityInfoPanel,
@@ -22,18 +24,9 @@ import isEqual from 'lodash/isEqual';
 
 export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
   if (!market) return null;
-
-  const settlementData =
-    market.tradableInstrument.instrument.product.__typename === 'Future' ||
-    market.tradableInstrument.instrument.product.__typename === 'Perpetual'
-      ? (market.tradableInstrument.instrument.product
-          .dataSourceSpecForSettlementData.data as DataSourceDefinition)
-      : undefined;
-  const terminationData =
-    market.tradableInstrument.instrument.product.__typename === 'Future'
-      ? (market.tradableInstrument.instrument.product
-          .dataSourceSpecForTradingTermination.data as DataSourceDefinition)
-      : undefined;
+  const { product } = market.tradableInstrument.instrument;
+  const settlementData = getDataSourceSpecForSettlementData(product)?.data;
+  const terminationData = getDataSourceSpecForTradingTermination(product)?.data;
 
   const getSigners = (data: DataSourceDefinition) => {
     if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
