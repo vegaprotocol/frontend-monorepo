@@ -6,7 +6,7 @@ import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
-import type { OrderFieldsFragment, OrderListTableProps } from '../';
+import type { Order, OrderFieldsFragment, OrderListTableProps } from '../';
 import { OrderListTable } from '../';
 import {
   generateOrder,
@@ -172,7 +172,7 @@ describe('OrderListTable', () => {
         ...marketOrder.market,
         positionDecimalPlaces: -4,
       },
-    };
+    } as Order;
 
     await act(async () => {
       render(generateJsx({ rowData: [localMarketOrder] }));
