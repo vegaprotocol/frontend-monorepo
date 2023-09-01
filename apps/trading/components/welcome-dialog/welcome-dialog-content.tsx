@@ -5,17 +5,17 @@ import { useNavigate } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
-import { useGlobalStore } from '../../stores';
+import { useOnboardingStore } from './welcome-dialog';
 
 export const WelcomeDialogContent = () => {
   const { VEGA_ENV } = useEnvironment();
 
-  const update = useGlobalStore((store) => store.update);
+  const dismiss = useOnboardingStore((store) => store.dismiss);
   const navigate = useNavigate();
   const browseMarkets = () => {
     const link = Links[Routes.MARKETS]();
     navigate(link);
-    update({ onBoardingDismissed: true });
+    dismiss();
   };
   const lead =
     VEGA_ENV === Networks.MAINNET

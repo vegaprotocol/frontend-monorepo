@@ -174,10 +174,33 @@ When populating a deal ticket I...
 - **must** see that selecting "Post only" or "reduce only" de-select the other (if selected). As is it not possibly to apply them both to an order (<a name="7003-SORD-059" href="#7003-SORD-059">7003-SORD-059</a>)
 
 - **must** see an option to select expire for stop order limit and market (<a name="7002-SORD-071" href="#7002-SORD-071">7002-SORD-071</a>)
+
   - **must** select strategy for stop order limit and market (<a name="7002-SORD-072" href="#7002-SORD-072">7002-SORD-072</a>)
     - **must** see strategy submit (<a name="7002-SORD-073" href="#7002-SORD-073">7002-SORD-073</a>)
+      if it is oco then submit strategy is not available (<a name="7002-SORD-081" href="#7002-SORD-081">7002-SORD-081</a>)
     - **must** see strategy cancel (<a name="7002-SORD-074" href="#7002-SORD-074">7002-SORD-074</a>)
   - **must** see expiry time/date (<a name="7002-SORD-075" href="#7002-SORD-075">7002-SORD-075</a>)
+
+- **must** see an option to select oco for stop order limit and market (<a name="7002-SORD-082" href="#7002-SORD-082">7002-SORD-082</a>)
+  - **must** see a type to select market or limit (<a name="7002-SORD-083" href="#7002-SORD-083">7002-SORD-083</a>)
+  - **must** see for market type
+    - **must** see rises above (<a name="7002-SORD-084" href="#7002-SORD-084">7002-SORD-084</a>)
+    - **must** see falls below (<a name="7002-SORD-085" href="#7002-SORD-085">7002-SORD-085</a>)
+    - **must** enter a trigger value (<a name="7002-SORD-086" href="#7002-SORD-086">7002-SORD-086</a>)
+    - **must** select a trigger price (<a name="7002-SORD-087" href="#7002-SORD-087">7002-SORD-087</a>)
+    - **must** select a trigger trailing percent offset (<a name="7002-SORD-088" href="#7002-SORD-088">7002-SORD-088</a>)
+  - **must** see for limit type
+    - **must** enter a price (<a name="7002-SORD-089" href="#7002-SORD-089">7002-SORD-089</a>)
+    - **must** select a trigger direction (<a name="7002-SORD-090" href="#7002-SORD-090">7002-SORD-090</a>)
+    - **must** see rises above (<a name="7002-SORD-099" href="#7002-SORD-099">7002-SORD-099</a>)
+    - **must** see falls below (<a name="7002-SORD-091" href="#7002-SORD-091">7002-SORD-091</a>)
+    - if the user has not set a preference: trigger direction **must** default to `opposite to the one selected in the stop order` (<a name="7002-SORD-092" href="#7002-SORD-092">7002-SORD-092</a>)
+    - **must** enter a trigger value (<a name="7002-SORD-093" href="#7002-SORD-093">7002-SORD-093</a>)
+    - **must** select a trigger type (<a name="7002-SORD-094" href="#7002-SORD-094">7002-SORD-094</a>)
+    - **must** see a trigger price (<a name="7002-SORD-095" href="#7002-SORD-095">7002-SORD-095</a>)
+    - **must** see a trigger trailing percent offset (<a name="7002-SORD-096" href="#7002-SORD-096">7002-SORD-096</a>)
+  - if the user has not set a preference: trigger type **must** default to `price` (<a name="7002-SORD-097" href="#7002-SORD-097">7002-SORD-097</a>)
+  - if the trigger price is already met on submission, **must** warn the user that the stop order will be triggered immediately (<a name="7002-SORD-098" href="#7002-SORD-098">7002-SORD-098</a>)
 
 ... so I can control in more detail how my order is executed
 
