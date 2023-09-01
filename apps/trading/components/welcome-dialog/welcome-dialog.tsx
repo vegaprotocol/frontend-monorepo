@@ -89,7 +89,7 @@ export const WelcomeDialog = () => {
   if (isTelemetryPopupNeeded) {
     const toast: Toast = {
       id: TELEMETRY_APPROVAL_TOAST_ID,
-      intent: Intent.Warning,
+      intent: Intent.Primary,
       content: (
         <>
           <h3 className="text-sm uppercase mb-1">
@@ -122,7 +122,7 @@ export const WelcomeDialog = () => {
     <Dialog
       open
       title={title}
-      size={isTelemetryPopupNeeded ? 'small' : 'medium'}
+      size="medium"
       onChange={onClose}
       intent={Intent.None}
       dataTestId="welcome-dialog"

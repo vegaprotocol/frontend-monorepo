@@ -1,4 +1,9 @@
-import { Button, Icon } from '@vegaprotocol/ui-toolkit';
+import {
+  Intent,
+  TradingButton,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 
 interface Props {
@@ -19,42 +24,42 @@ export const TelemetryApproval = ({
           )}
         </div>
         <div className="flex items-center mt-2">
-          <Icon name="eye-off" className="mr-6" size={6} />
-          <div className="flex flex-col gap-1">
+          <VegaIcon name={VegaIconNames.EYE_OFF} size={24} />
+          <div className="flex flex-col gap-1 ml-6">
             <div className="font-semibold">{t('Anonymous')}</div>
             <div>{t('Your identity is always anonymous on Vega')}</div>
           </div>
         </div>
 
         <div className="flex items-center mt-2">
-          <Icon name="cog" className="mr-6" size={6} />
-          <div className="flex flex-col gap-1">
+          <VegaIcon name={VegaIconNames.COG} size={24} />
+          <div className="flex flex-col gap-1 ml-6">
             <div className="font-semibold">{t('Optional')}</div>
             <div>{t('You can opt out any time via settings')}</div>
           </div>
         </div>
         <div className="flex flex-col justify-around items-center mt-10 gap-4 w-full px-4">
-          <Button
+          <TradingButton
             onClick={() => setTelemetryValue('false')}
-            size="xs"
-            variant="default"
+            size="small"
+            intent={Intent.None}
             data-testid="do-not-share-data-button"
             fill
           >
             {t('No thanks')}
-          </Button>
+          </TradingButton>
 
-          <Button
+          <TradingButton
             onClick={() => setTelemetryValue('true')}
-            variant="primary"
+            intent={Intent.Info}
             data-testid="share-data-button"
-            size="xs"
+            size="small"
             fill
           >
             {telemetryValue === 'true'
               ? t('Continue sharing data')
               : t('Share data')}
-          </Button>
+          </TradingButton>
         </div>
       </div>
     </div>
