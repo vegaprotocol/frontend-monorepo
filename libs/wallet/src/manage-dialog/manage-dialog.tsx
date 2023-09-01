@@ -7,7 +7,7 @@ import {
   Intent,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '..';
+import { useVegaWallet } from '../use-vega-wallet';
 
 export interface VegaManageDialogProps {
   dialogOpen: boolean;
@@ -38,13 +38,13 @@ export const VegaManageDialog = ({
                 className="mb-2 last:mb-0"
               >
                 <div
-                  className="flex gap-4 justify-between text-sm"
+                  className="flex justify-between text-sm gap-4"
                   data-testid={isSelected ? 'selected-key' : ''}
                 >
                   <p data-testid="vega-public-key-full">
                     {truncateByChars(pk.publicKey)}
                   </p>
-                  <div className="flex gap-4 ml-auto">
+                  <div className="flex ml-auto gap-4">
                     {!isSelected && (
                       <button
                         onClick={() => {

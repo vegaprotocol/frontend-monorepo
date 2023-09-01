@@ -1,5 +1,6 @@
 import { useCallback, useContext } from 'react';
-import { useVegaWalletDialogStore, VegaWalletContext } from '.';
+import { useVegaWalletDialogStore } from './connect-dialog/vega-wallet-dialog-store';
+import { VegaWalletContext } from './context';
 
 export function useVegaWallet() {
   const context = useContext(VegaWalletContext);

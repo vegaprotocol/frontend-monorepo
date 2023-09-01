@@ -11,28 +11,14 @@ import type { Intent } from '@vegaprotocol/ui-toolkit';
 import type { Transaction } from './connectors';
 import { WalletError } from './connectors';
 import { ClientErrors } from './connectors';
+import type { VegaTxState } from './types';
+import { VegaTxStatus } from './types';
 
 export interface DialogProps {
   intent?: Intent;
   title?: string;
   icon?: ReactNode;
   content?: VegaTransactionContentMap;
-}
-
-export enum VegaTxStatus {
-  Default = 'Default',
-  Requested = 'Requested',
-  Pending = 'Pending',
-  Error = 'Error',
-  Complete = 'Complete',
-}
-
-export interface VegaTxState {
-  status: VegaTxStatus;
-  error: Error | null;
-  txHash: string | null;
-  signature: string | null;
-  dialogOpen: boolean;
 }
 
 export const initialState = {

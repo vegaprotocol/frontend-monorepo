@@ -5,15 +5,11 @@ export enum VolumeType {
   bid,
   ask,
 }
-export interface CumulativeVol {
-  value: number;
-  relativeValue?: number;
-}
 
 export interface OrderbookRowData {
   price: string;
-  value: number;
-  cumulativeVol: CumulativeVol;
+  volume: number;
+  cumulativeVol: number;
 }
 
 export const getPriceLevel = (price: string | bigint, resolution: number) => {
@@ -26,25 +22,6 @@ export const getPriceLevel = (price: string | bigint, resolution: number) => {
   return priceLevel.toString();
 };
 
-const getMaxVolumes = (orderbookData: OrderbookRowData[]) => ({
-  cumulativeVol: Math.max(
-    orderbookData[0]?.cumulativeVol.value,
-    orderbookData[orderbookData.length - 1]?.cumulativeVol.value
-  ),
-});
-
-// round instead of ceil so we will not show 0 if value if different than 0
-const toPercentValue = (value?: number) => Math.ceil((value ?? 0) * 100);
-
-const updateRelativeData = (data: OrderbookRowData[]) => {
-  const { cumulativeVol } = getMaxVolumes(data);
-  data.forEach((data, i) => {
-    data.cumulativeVol.relativeValue = toPercentValue(
-      data.cumulativeVol.value / cumulativeVol
-    );
-  });
-};
-
 const updateCumulativeVolumeByType = (
   data: OrderbookRowData[],
   dataType: VolumeType
@@ -53,14 +30,13 @@ const updateCumulativeVolumeByType = (
     const maxIndex = data.length - 1;
     if (dataType === VolumeType.bid) {
       for (let i = 0; i <= maxIndex; i++) {
-        data[i].cumulativeVol.value =
-          data[i].value + (i !== 0 ? data[i - 1].cumulativeVol.value : 0);
+        data[i].cumulativeVol =
+          data[i].volume + (i !== 0 ? data[i - 1].cumulativeVol : 0);
       }
     } else {
       for (let i = maxIndex; i >= 0; i--) {
-        data[i].cumulativeVol.value =
-          data[i].value +
-          (i !== maxIndex ? data[i + 1].cumulativeVol.value : 0);
+        data[i].cumulativeVol =
+          data[i].volume + (i !== maxIndex ? data[i + 1].cumulativeVol : 0);
       }
     }
   }
@@ -75,6 +51,7 @@ export const compactRows = (
     getPriceLevel(row.price, resolution)
   );
   const orderbookData: OrderbookRowData[] = [];
+
   Object.keys(groupedByLevel).forEach((price) => {
     const { volume } = groupedByLevel[price].pop() as PriceLevelFieldsFragment;
     let value = Number(volume);
@@ -83,7 +60,11 @@ export const compactRows = (
       value += Number(subRow.volume);
       subRow = groupedByLevel[price].pop();
     }
-    orderbookData.push({ price, value, cumulativeVol: { value: 0 } });
+    orderbookData.push({
+      price,
+      volume: value,
+      cumulativeVol: 0,
+    });
   });
 
   orderbookData.sort((a, b) => {
@@ -95,8 +76,9 @@ export const compactRows = (
     }
     return 1;
   });
+
   updateCumulativeVolumeByType(orderbookData, dataType);
-  updateRelativeData(orderbookData);
+
   return orderbookData;
 };
 
@@ -140,7 +122,7 @@ export interface MockDataGeneratorParams {
   numberOfSellRows: number;
   numberOfBuyRows: number;
   overlap: number;
-  midPrice?: string;
+  lastTradedPrice: string;
   bestStaticBidPrice: number;
   bestStaticOfferPrice: number;
 }
@@ -148,14 +130,14 @@ export interface MockDataGeneratorParams {
 export const generateMockData = ({
   numberOfSellRows,
   numberOfBuyRows,
-  midPrice,
+  lastTradedPrice,
   overlap,
   bestStaticBidPrice,
   bestStaticOfferPrice,
 }: MockDataGeneratorParams) => {
   let matrix = new Array(numberOfSellRows).fill(undefined);
   let price =
-    Number(midPrice) + (numberOfSellRows - Math.ceil(overlap / 2) + 1);
+    Number(lastTradedPrice) + (numberOfSellRows - Math.ceil(overlap / 2) + 1);
   const sell: PriceLevelFieldsFragment[] = matrix.map((row, i) => ({
     price: (price -= 1).toString(),
     volume: (numberOfSellRows - i + 1).toString(),
@@ -171,7 +153,7 @@ export const generateMockData = ({
   return {
     asks: sell,
     bids: buy,
-    midPrice,
+    lastTradedPrice,
     bestStaticBidPrice: bestStaticBidPrice.toString(),
     bestStaticOfferPrice: bestStaticOfferPrice.toString(),
   };

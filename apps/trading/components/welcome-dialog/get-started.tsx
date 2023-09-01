@@ -30,6 +30,7 @@ interface Props {
 }
 
 const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
+  const { CHROME_EXTENSION_URL, MOZILLA_EXTENSION_URL } = useEnvironment();
   const navigate = useNavigate();
   const [, setOnboardingViewed] = useLocalStorage(
     constants.ONBOARDING_VIEWED_KEY
@@ -47,7 +48,13 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
     openVegaWalletDialog();
   };
   if (step === OnboardingStep.ONBOARDING_WALLET_STEP) {
-    return <GetWalletButton className="justify-between" />;
+    return (
+      <GetWalletButton
+        className="justify-between"
+        chromeExtensionUrl={CHROME_EXTENSION_URL}
+        mozillaExtensionUrl={MOZILLA_EXTENSION_URL}
+      />
+    );
   } else if (step === OnboardingStep.ONBOARDING_CONNECT_STEP) {
     buttonText = t('Connect');
   } else if (step === OnboardingStep.ONBOARDING_DEPOSIT_STEP) {

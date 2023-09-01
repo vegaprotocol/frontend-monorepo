@@ -2,7 +2,11 @@ import type { Asset } from '@vegaprotocol/assets';
 import { EtherscanLink } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
-import { formatNumber } from '@vegaprotocol/utils';
+import {
+  formatNumber,
+  getUnlimitedThreshold,
+  quantumDecimalPlaces,
+} from '@vegaprotocol/utils';
 import type { EthStoredTxState } from '@vegaprotocol/web3';
 import { EthTxStatus, useEthTransactionStore } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
@@ -188,6 +192,15 @@ const ApprovalTxFeedback = ({
   }
 
   if (tx.status === EthTxStatus.Confirmed) {
+    const approvedAllowanceValue = (
+      allowance || new BigNumber(0)
+    ).isGreaterThan(getUnlimitedThreshold(selectedAsset.decimals))
+      ? '∞'
+      : formatNumber(
+          allowance?.toString() || 0,
+          quantumDecimalPlaces(selectedAsset.quantum, selectedAsset.decimals)
+        );
+
     return (
       <div className="mb-4">
         <Notification
@@ -198,7 +211,7 @@ const ApprovalTxFeedback = ({
               <p>
                 {t('You approved deposits of up to %s %s.', [
                   selectedAsset?.symbol,
-                  formatNumber(allowance?.toString() || 0),
+                  approvedAllowanceValue,
                 ])}
               </p>
               {txLink && <p>{txLink}</p>}

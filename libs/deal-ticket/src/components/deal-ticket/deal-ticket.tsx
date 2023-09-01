@@ -3,7 +3,6 @@ import * as Schema from '@vegaprotocol/types';
 import type { FormEventHandler } from 'react';
 import { memo, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Controller, useController, useForm } from 'react-hook-form';
-import { DealTicketButton } from './deal-ticket-button';
 import {
   DealTicketFeeDetails,
   DealTicketMarginDetails,
@@ -23,6 +22,8 @@ import {
   Intent,
   Notification,
   Tooltip,
+  TradingButton as Button,
+  Pill,
 } from '@vegaprotocol/ui-toolkit';
 
 import {
@@ -35,6 +36,7 @@ import {
   validateAmount,
   toDecimal,
   formatForInput,
+  formatValue,
 } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { getDerivedPrice } from '@vegaprotocol/markets';
@@ -46,7 +48,10 @@ import {
   validateType,
 } from '../../utils';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
-import { SummaryValidationType } from '../../constants';
+import {
+  NOTIONAL_SIZE_TOOLTIP_TEXT,
+  SummaryValidationType,
+} from '../../constants';
 import type {
   Market,
   MarketData,
@@ -68,6 +73,7 @@ import { useDealTicketFormValues } from '../../hooks/use-form-values';
 import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 import noop from 'lodash/noop';
 import { isNonPersistentOrder } from '../../utils/time-in-force-persistance';
+import { KeyValue } from './key-value';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -117,6 +123,11 @@ const getDefaultValues = (
   reduceOnly: false,
   ...storedValues,
 });
+
+export const getAssetUnit = (tags?: string[] | null) =>
+  tags
+    ?.find((tag) => tag.startsWith('base:') || tag.startsWith('ticker:'))
+    ?.replace(/^[^:]*:/, '');
 
 export const DealTicket = ({
   market,
@@ -257,6 +268,10 @@ export const DealTicket = ({
   const assetSymbol =
     market.tradableInstrument.instrument.product.settlementAsset.symbol;
 
+  const assetUnit = getAssetUnit(
+    market.tradableInstrument.instrument.metadata.tags
+  );
+
   const summaryError = useMemo(() => {
     if (!pubKey) {
       return {
@@ -338,6 +353,7 @@ export const DealTicket = ({
   const priceStep = toDecimal(market?.decimalPlaces);
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
+  const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
 
   return (
     <form
@@ -384,18 +400,16 @@ export const DealTicket = ({
             message: t('Size cannot be lower than ' + sizeStep),
           },
           validate: validateAmount(sizeStep, 'Size'),
+          deps: ['peakSize', 'minimumVisibleSize'],
         }}
         render={({ field, fieldState }) => (
-          <div className="mb-4">
-            <FormGroup
-              label={t('Size')}
-              labelFor="input-order-size-limit"
-              compact
-            >
+          <div className={isLimitType ? 'mb-4' : 'mb-2'}>
+            <FormGroup label={t('Size')} labelFor="order-size" compact>
               <Input
-                id="input-order-size-limit"
+                id="order-size"
                 className="w-full"
                 type="number"
+                appendElement={assetUnit && <Pill size="xs">{assetUnit}</Pill>}
                 step={sizeStep}
                 min={sizeStep}
                 data-testid="order-size"
@@ -411,7 +425,7 @@ export const DealTicket = ({
           </div>
         )}
       />
-      {type === Schema.OrderType.TYPE_LIMIT && (
+      {isLimitType && (
         <Controller
           name="price"
           control={control}
@@ -424,14 +438,15 @@ export const DealTicket = ({
             validate: validateAmount(priceStep, 'Price'),
           }}
           render={({ field, fieldState }) => (
-            <div className="mb-4">
+            <div className="mb-2">
               <FormGroup
                 labelFor="input-price-quote"
-                label={t(`Price (${quoteName})`)}
+                label={t('Price')}
                 compact
               >
                 <Input
                   id="input-price-quote"
+                  appendElement={<Pill size="xs">{quoteName}</Pill>}
                   className="w-full"
                   type="number"
                   step={priceStep}
@@ -449,6 +464,22 @@ export const DealTicket = ({
           )}
         />
       )}
+      <div className="mb-4">
+        <KeyValue
+          label={t('Notional')}
+          value={formatValue(notionalSize, market.decimalPlaces)}
+          formattedValue={formatValue(notionalSize, market.decimalPlaces)}
+          symbol={quoteName}
+          labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName)}
+        />
+        <DealTicketFeeDetails
+          order={
+            normalizedOrder && { ...normalizedOrder, price: price || undefined }
+          }
+          assetSymbol={assetSymbol}
+          market={market}
+        />
+      </div>
       <Controller
         name="timeInForce"
         control={control}
@@ -465,17 +496,18 @@ export const DealTicket = ({
             onSelect={(value) => {
               // If GTT is selected and no expiresAt time is set, or its
               // behind current time then reset the value to current time
+              const now = Date.now();
               if (
                 value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
-                (!expiresAt || new Date(expiresAt).getTime() < Date.now())
+                (!expiresAt || new Date(expiresAt).getTime() < now)
               ) {
-                setValue('expiresAt', formatForInput(new Date()), {
+                setValue('expiresAt', formatForInput(new Date(now)), {
                   shouldValidate: true,
                 });
               }
 
               // iceberg orders must be persistent orders, so if user
-              // switches to to a non persisten tif value, remove iceberg selection
+              // switches to a non persistent tif value, remove iceberg selection
               if (iceberg && isNonPersistentOrder(value)) {
                 setValue('iceberg', false);
               }
@@ -487,7 +519,7 @@ export const DealTicket = ({
           />
         )}
       />
-      {type === Schema.OrderType.TYPE_LIMIT &&
+      {isLimitType &&
         timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
           <Controller
             name="expiresAt"
@@ -569,7 +601,7 @@ export const DealTicket = ({
           )}
         />
       </div>
-      {type === Schema.OrderType.TYPE_LIMIT && (
+      {isLimitType && (
         <>
           <div className="flex justify-between pb-2 gap-2">
             <Controller
@@ -624,15 +656,29 @@ export const DealTicket = ({
         pubKey={pubKey}
         onDeposit={onDeposit}
       />
-      <DealTicketButton side={side} />
-      <DealTicketFeeDetails
-        order={
-          normalizedOrder && { ...normalizedOrder, price: price || undefined }
-        }
-        notionalSize={notionalSize}
-        assetSymbol={assetSymbol}
-        market={market}
-      />
+      <Button
+        data-testid="place-order"
+        type="submit"
+        className="w-full"
+        intent={side === Schema.Side.SIDE_BUY ? Intent.Success : Intent.Danger}
+        subLabel={`${formatValue(
+          normalizedOrder.size,
+          market.positionDecimalPlaces
+        )} ${assetUnit} @ ${
+          type === Schema.OrderType.TYPE_MARKET
+            ? 'market'
+            : `${formatValue(
+                normalizedOrder.price,
+                market.decimalPlaces
+              )} ${quoteName}`
+        }`}
+      >
+        {t(
+          type === Schema.OrderType.TYPE_MARKET
+            ? 'Place market order'
+            : 'Place limit order'
+        )}
+      </Button>
       <DealTicketMarginDetails
         onMarketClick={onMarketClick}
         assetSymbol={assetSymbol}
