@@ -29,11 +29,10 @@
 ## When the popup has been dismissed:
 
 - **Must** I can see the steps to get started with a visible call to action (according to my progress) in the context of the deal ticket, deposit, withdraw, transfer components in the sidebar (<a name="0007-FUGS-013" href="#0007-FUGS-013">0007-FUGS-013</a>)
-- **Must** Remove buttons from pane containers that prompt to connect wallet (<a name="0007-FUGS-014" href="#0007-FUGS-014">0007-FUGS-014</a>)
-- **Must** We've replaced "connect wallet" in the top right with "get started" (<a name="0007-FUGS-015" href="#0007-FUGS-015">0007-FUGS-015</a>)
-- **Must** When I press the get started CTA, I see the wallet connect popup (<a name="0007-FUGS-016" href="#0007-FUGS-016">0007-FUGS-016</a>)
-- **Must** If I have a wallet installed already I don't see this quick start onboarding, and instead call(s) to action in Console revert to connect wallet, not "get started" (button in nav header) (<a name="0007-FUGS-017" href="#0007-FUGS-017">0007-FUGS-017</a>)
+- **Must** We've replaced "connect wallet" in the top right with "get started" (<a name="0007-FUGS-014" href="#0007-FUGS-014">0007-FUGS-014</a>)
+- **Must** When I press the get started CTA, I see the wallet connect popup (<a name="0007-FUGS-015" href="#0007-FUGS-015">0007-FUGS-015</a>)
+- **Must** If I have a wallet installed already I don't see this quick start onboarding, and instead call(s) to action in Console revert to connect wallet, not "get started" (button in nav header) (<a name="0007-FUGS-016" href="#0007-FUGS-016">0007-FUGS-016</a>)
 
 ## When onboarding process has been accomplished:
 
-- I can see telemetry approval toast: on environment other than mainnet telemetry is enabled by default (<a name="0007-FUGS-019" href="#0007-FUGS-019">0007-FUGS-019</a>)
+- I can see telemetry approval toast: on environment other than mainnet telemetry is enabled by default (<a name="0007-FUGS-018" href="#0007-FUGS-018">0007-FUGS-018</a>)
