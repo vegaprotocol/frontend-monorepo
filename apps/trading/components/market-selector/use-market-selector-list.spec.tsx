@@ -12,7 +12,10 @@ import { useMarketList } from '@vegaprotocol/markets';
 import type { Filter } from '../../components/market-selector';
 import { subDays } from 'date-fns';
 
-jest.mock('@vegaprotocol/markets');
+jest.mock('@vegaprotocol/markets', () => ({
+  ...jest.requireActual('@vegaprotocol/markets'),
+  useMarketList: jest.fn(),
+}));
 const mockUseMarketList = useMarketList as jest.Mock;
 
 describe('useMarketSelectorList', () => {
@@ -20,7 +23,7 @@ describe('useMarketSelectorList', () => {
     const defaultArgs: Filter = {
       searchTerm: '',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     };
     return renderHook((args) => useMarketSelectorList(args), {
@@ -109,21 +112,21 @@ describe('useMarketSelectorList', () => {
     rerender({
       searchTerm: '',
       product: Product.Spot as 'Future',
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([markets[1]]);
     rerender({
       searchTerm: '',
       product: Product.Perpetual as 'Future',
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([markets[2]]);
     rerender({
       searchTerm: '',
       product: Product.All,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual(markets);
@@ -189,7 +192,7 @@ describe('useMarketSelectorList', () => {
     const { result, rerender } = setup({
       searchTerm: '',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: ['asset-0'],
     });
     expect(result.current.markets).toEqual([markets[0], markets[1]]);
@@ -197,7 +200,7 @@ describe('useMarketSelectorList', () => {
     rerender({
       searchTerm: '',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: ['asset-0', 'asset-1'],
     });
 
@@ -210,7 +213,7 @@ describe('useMarketSelectorList', () => {
     rerender({
       searchTerm: '',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: ['asset-0', 'asset-1', 'asset-2'],
     });
 
@@ -220,7 +223,7 @@ describe('useMarketSelectorList', () => {
     rerender({
       searchTerm: '',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: ['asset-invalid'],
     });
 
@@ -275,28 +278,28 @@ describe('useMarketSelectorList', () => {
     const { result, rerender } = setup({
       searchTerm: 'abc',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([markets[0]]);
     rerender({
       searchTerm: 'def',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([markets[1], markets[2]]);
     rerender({
       searchTerm: 'defg',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([markets[2]]);
     rerender({
       searchTerm: 'zzz',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([]);
@@ -305,14 +308,14 @@ describe('useMarketSelectorList', () => {
     rerender({
       searchTerm: 'aaa',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([markets[0]]);
     rerender({
       searchTerm: 'ggg',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
     expect(result.current.markets).toEqual([
@@ -322,11 +325,15 @@ describe('useMarketSelectorList', () => {
     ]);
   });
 
-  it('sorts by state and volume by default', () => {
+  it('sorts by top traded by default', () => {
     const markets = [
       createMarketFragment({
         id: 'market-0',
-        state: MarketState.STATE_PENDING,
+        state: MarketState.STATE_ACTIVE,
+        // @ts-ignore data not on fragment
+        data: {
+          markPrice: '1',
+        },
         // @ts-ignore candles not on fragment
         candles: [
           {
@@ -337,30 +344,42 @@ describe('useMarketSelectorList', () => {
       createMarketFragment({
         id: 'market-1',
         state: MarketState.STATE_ACTIVE,
+        // @ts-ignore data not on fragment
+        data: {
+          markPrice: '1',
+        },
         // @ts-ignore candles not on fragment
         candles: [
           {
-            volume: '200',
+            volume: '100',
           },
         ],
       }),
       createMarketFragment({
         id: 'market-2',
         state: MarketState.STATE_ACTIVE,
+        // @ts-ignore data not on fragment
+        data: {
+          markPrice: '1',
+        },
         // @ts-ignore candles not on fragment
         candles: [
           {
-            volume: '100',
+            volume: '300',
           },
         ],
       }),
       createMarketFragment({
-        state: MarketState.STATE_PENDING,
         id: 'market-3',
+        state: MarketState.STATE_ACTIVE,
+        // @ts-ignore data not on fragment
+        data: {
+          markPrice: '1',
+        },
         // @ts-ignore candles not on fragment
         candles: [
           {
-            volume: '100',
+            volume: '400',
           },
         ],
       }),
@@ -375,14 +394,15 @@ describe('useMarketSelectorList', () => {
     const { result } = setup({
       searchTerm: '',
       product: Product.Future,
-      sort: Sort.None,
+      sort: Sort.TopTraded,
       assets: [],
     });
+
     expect(result.current.markets).toEqual([
-      markets[1],
+      markets[3],
       markets[2],
       markets[0],
-      markets[3],
+      markets[1],
     ]);
   });
 
