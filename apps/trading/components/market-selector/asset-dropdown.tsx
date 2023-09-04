@@ -1,13 +1,12 @@
 import { t } from '@vegaprotocol/i18n';
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItemIndicator,
-  DropdownMenuTrigger,
-  VegaIcon,
-  VegaIconNames,
+  TradingDropdown,
+  TradingDropdownCheckboxItem,
+  TradingDropdownContent,
+  TradingDropdownItemIndicator,
+  TradingDropdownTrigger,
 } from '@vegaprotocol/ui-toolkit';
+import { MarketSelectorButton } from './market-selector-button';
 
 type Assets = Array<{ id: string; symbol: string }>;
 
@@ -25,17 +24,19 @@ export const AssetDropdown = ({
   }
 
   return (
-    <DropdownMenu
+    <TradingDropdown
       trigger={
-        <DropdownMenuTrigger data-testid="asset-trigger">
-          <TriggerText assets={assets} checkedAssets={checkedAssets} />
-        </DropdownMenuTrigger>
+        <TradingDropdownTrigger data-testid="asset-trigger">
+          <MarketSelectorButton>
+            {triggerText({ assets, checkedAssets })}
+          </MarketSelectorButton>
+        </TradingDropdownTrigger>
       }
     >
-      <DropdownMenuContent>
+      <TradingDropdownContent>
         {assets?.map((a) => {
           return (
-            <DropdownMenuCheckboxItem
+            <TradingDropdownCheckboxItem
               key={a.id}
               checked={checkedAssets.includes(a.id)}
               onCheckedChange={(checked) => {
@@ -46,16 +47,16 @@ export const AssetDropdown = ({
               data-testid={`asset-id-${a.id}`}
             >
               {a.symbol}
-              <DropdownMenuItemIndicator />
-            </DropdownMenuCheckboxItem>
+              <TradingDropdownItemIndicator />
+            </TradingDropdownCheckboxItem>
           );
         })}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </TradingDropdownContent>
+    </TradingDropdown>
   );
 };
 
-const TriggerText = ({
+const triggerText = ({
   assets,
   checkedAssets,
 }: {
@@ -72,9 +73,5 @@ const TriggerText = ({
     text = t(`${checkedAssets.length} Assets`);
   }
 
-  return (
-    <span className="flex justify-between items-center">
-      {text} <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
-    </span>
-  );
+  return text;
 };
