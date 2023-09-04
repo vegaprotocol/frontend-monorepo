@@ -14,6 +14,7 @@ import {
   Link as UILink,
   Splash,
   AccordionItem,
+  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { generatePath, Link } from 'react-router-dom';
 
@@ -28,7 +29,6 @@ import {
   KeyDetailsInfoPanel,
   LiquidityInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
-  LiquidityNetworkSLAParametersInfoPanel,
   LiquidityPriceRangeInfoPanel,
   LiquiditySLAParametersInfoPanel,
   MarketPriceInfoPanel,
@@ -282,13 +282,18 @@ export const MarketInfoAccordion = ({
           />
           <AccordionItem
             itemId="liquidity-sla-parameters"
-            title={t('Liquidity SLA')}
+            title={
+              <span>
+                <Tooltip
+                  description={t(
+                    'SLA protocol = a part of the Vega protocol that creates similar incentives within the decentralised system to those achieved by a Service Level Agreement between parties in traditional finance. The SLA protocol involves no discussion, agreement, or contracts between parties but instead relies upon rules and an economic mechanism implemented in code running on the network'
+                  )}
+                >
+                  <span>{t('Liquidity SLA protocol')}</span>
+                </Tooltip>
+              </span>
+            }
             content={<LiquiditySLAParametersInfoPanel market={market} />}
-          />
-          <AccordionItem
-            itemId="liquidity-sla-network-parameters"
-            title={t('Liquidity SLA network parameters')}
-            content={<LiquidityNetworkSLAParametersInfoPanel market={market} />}
           />
           <AccordionItem
             itemId="liquidity"

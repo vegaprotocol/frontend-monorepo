@@ -762,54 +762,50 @@ export const LiquidityPriceRangeInfoPanel = ({
   );
 };
 
+const fromNanoSecondsToSeconds = (nanoseconds: number | string) =>
+  t('%ss', [new BigNumber(nanoseconds).dividedBy(1e9).toString()]);
+
 export const LiquiditySLAParametersInfoPanel = ({
   market,
   parentMarket,
 }: MarketInfoProps) => {
   const marketData = {
-    minimumTimeCommitment:
-      market.liquiditySLAParameters?.commitmentMinTimeFraction,
     feeCalculationTimeStep:
-      market.liquiditySLAParameters?.providersFeeCalculationTimeStep,
+      market.liquiditySLAParameters?.providersFeeCalculationTimeStep &&
+      fromNanoSecondsToSeconds(
+        market.liquiditySLAParameters.providersFeeCalculationTimeStep
+      ),
     performanceHysteresisEpochs:
       market.liquiditySLAParameters?.performanceHysteresisEpochs,
-    SLACompetitionFactor: market.liquiditySLAParameters?.slaCompetitionFactor,
+    SLACompetitionFactor:
+      market.liquiditySLAParameters?.slaCompetitionFactor &&
+      formatNumberPercentage(
+        new BigNumber(
+          market.liquiditySLAParameters?.slaCompetitionFactor
+        ).times(100)
+      ),
+    commitmentMinimumTimeFraction:
+      market.liquiditySLAParameters?.commitmentMinTimeFraction &&
+      formatNumberPercentage(
+        new BigNumber(
+          market.liquiditySLAParameters?.commitmentMinTimeFraction
+        ).times(100)
+      ),
   };
 
   const parentMarketData = parentMarket
     ? {
-        commitmentMinTimeFraction:
-          parentMarket.liquiditySLAParameters?.commitmentMinTimeFraction,
         providersFeeCalculationTimeStep:
           parentMarket.liquiditySLAParameters?.providersFeeCalculationTimeStep,
         performanceHysteresisEpochs:
           parentMarket.liquiditySLAParameters?.performanceHysteresisEpochs,
         slaCompetitionFactor:
           parentMarket.liquiditySLAParameters?.slaCompetitionFactor,
+        commitmentMinimumTimeFraction:
+          parentMarket.liquiditySLAParameters?.commitmentMinTimeFraction,
       }
     : undefined;
 
-  return (
-    <>
-      <p className="text-xs mb-2 border-l-2 pl-2">
-        {t(
-          'The point of liquidity provision on Vega is to incentivize people to place orders on the market that maintain liquidity on the book.'
-        )}
-      </p>
-      <p className="text-xs mb-2 border-l-2 pl-2">
-        {t(
-          'This is done via a financial commitment and reward + penalty mechanics, and through the LP commitment transaction that announces that a party is entering the liquidity provision (LP) service level agreement (SLA).'
-        )}
-      </p>
-      <MarketInfoTable data={marketData} parentData={parentMarketData} />
-    </>
-  );
-};
-
-export const LiquidityNetworkSLAParametersInfoPanel = ({
-  market,
-  parentMarket,
-}: MarketInfoProps) => {
   const { params: networkParams } = useNetworkParams([
     NetworkParams.market_liquidity_bondPenaltyParameter,
     NetworkParams.market_liquidity_nonPerformanceBondPenaltySlope,
@@ -824,6 +820,7 @@ export const LiquidityNetworkSLAParametersInfoPanel = ({
   ]);
 
   const marketNetworkParamData = {
+    epochLength: networkParams['validators_epoch_length'],
     bondPenaltyParameter:
       networkParams['market_liquidity_bondPenaltyParameter'],
     nonPerformanceBondPenaltySlope:
@@ -833,7 +830,6 @@ export const LiquidityNetworkSLAParametersInfoPanel = ({
     maximumLiquidityFeeFactorLevel:
       networkParams['market_liquidity_maximumLiquidityFeeFactorLevel'],
     stakeToCCYVolume: networkParams['market_liquidity_stakeToCcyVolume'],
-    epochLength: networkParams['validators_epoch_length'],
     earlyExitPenalty: networkParams['market_liquidity_earlyExitPenalty'],
     probabilityOfTradingTauScaling:
       networkParams['market_liquidity_probabilityOfTrading_tau_scaling'],
@@ -843,7 +839,12 @@ export const LiquidityNetworkSLAParametersInfoPanel = ({
       networkParams['market_liquidity_feeCalculationTimeStep'],
   };
 
-  return <MarketInfoTable data={marketNetworkParamData} />;
+  return (
+    <>
+      <MarketInfoTable data={marketData} parentData={parentMarketData} />
+      <MarketInfoTable data={marketNetworkParamData} unformatted={true} />
+    </>
+  );
 };
 
 export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {

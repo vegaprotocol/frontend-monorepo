@@ -5,7 +5,6 @@ import {
   InstrumentInfoPanel,
   KeyDetailsInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
-  LiquidityNetworkSLAParametersInfoPanel,
   LiquidityPriceRangeInfoPanel,
   LiquiditySLAParametersInfoPanel,
   MetadataInfoPanel,
@@ -322,15 +321,10 @@ export const ProposalMarketData = ({
               parentMarket={parentMarketData}
             />
 
-            <h2 className={marketDataHeaderStyles}>{t('Liquidity SLA')}</h2>
-            <LiquiditySLAParametersInfoPanel
-              market={marketData}
-              parentMarket={parentMarketData}
-            />
             <h2 className={marketDataHeaderStyles}>
-              {t('Liquidity Network SLA Parameters')}
+              {t('Liquidity SLA protocol')}
             </h2>
-            <LiquidityNetworkSLAParametersInfoPanel
+            <LiquiditySLAParametersInfoPanel
               market={marketData}
               parentMarket={parentMarketData}
             />
