@@ -2,8 +2,8 @@ import { ETHERSCAN_ADDRESS, useEtherscanLink } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import {
   ActionsDropdown,
-  DropdownMenuCopyItem,
-  DropdownMenuItem,
+  TradingDropdownCopyItem,
+  TradingDropdownItem,
   Link,
   VegaIcon,
   VegaIconNames,
@@ -30,49 +30,49 @@ export const AccountsActionsDropdown = ({
 
   return (
     <ActionsDropdown>
-      <DropdownMenuItem
+      <TradingDropdownItem
         key={'deposit'}
         data-testid="deposit"
         onClick={onClickDeposit}
       >
         <VegaIcon name={VegaIconNames.DEPOSIT} size={16} />
         {t('Deposit')}
-      </DropdownMenuItem>
-      <DropdownMenuItem
+      </TradingDropdownItem>
+      <TradingDropdownItem
         key={'withdraw'}
         data-testid="withdraw"
         onClick={onClickWithdraw}
       >
         <VegaIcon name={VegaIconNames.WITHDRAW} size={16} />
         {t('Withdraw')}
-      </DropdownMenuItem>
-      <DropdownMenuItem
+      </TradingDropdownItem>
+      <TradingDropdownItem
         key={'transfer'}
         data-testid="transfer"
         onClick={onClickTransfer}
       >
         <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
         {t('Transfer')}
-      </DropdownMenuItem>
-      <DropdownMenuItem
+      </TradingDropdownItem>
+      <TradingDropdownItem
         key={'breakdown'}
         data-testid="breakdown"
         onClick={onClickBreakdown}
       >
         <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
         {t('View usage breakdown')}
-      </DropdownMenuItem>
-      <DropdownMenuItem
+      </TradingDropdownItem>
+      <TradingDropdownItem
         onClick={(e) => {
           openAssetDialog(assetId, e.target as HTMLElement);
         }}
       >
         <VegaIcon name={VegaIconNames.INFO} size={16} />
         {t('View asset details')}
-      </DropdownMenuItem>
-      <DropdownMenuCopyItem value={assetId} text={t('Copy asset ID')} />
+      </TradingDropdownItem>
+      <TradingDropdownCopyItem value={assetId} text={t('Copy asset ID')} />
       {assetContractAddress && (
-        <DropdownMenuItem>
+        <TradingDropdownItem>
           <Link
             href={etherscanLink(
               ETHERSCAN_ADDRESS.replace(':hash', assetContractAddress)
@@ -84,7 +84,7 @@ export const AccountsActionsDropdown = ({
               {t('View on Etherscan')}
             </span>
           </Link>
-        </DropdownMenuItem>
+        </TradingDropdownItem>
       )}
     </ActionsDropdown>
   );
