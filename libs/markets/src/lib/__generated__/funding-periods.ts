@@ -5,6 +5,8 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type FundingPeriodsQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
+  dateRange?: Types.InputMaybe<Types.DateRange>;
+  pagination?: Types.InputMaybe<Types.Pagination>;
 }>;
 
 
@@ -12,6 +14,8 @@ export type FundingPeriodsQuery = { __typename?: 'Query', fundingPeriods: { __ty
 
 export type FundingPeriodDataPointsQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
+  dateRange?: Types.InputMaybe<Types.DateRange>;
+  pagination?: Types.InputMaybe<Types.Pagination>;
 }>;
 
 
@@ -19,8 +23,12 @@ export type FundingPeriodDataPointsQuery = { __typename?: 'Query', fundingPeriod
 
 
 export const FundingPeriodsDocument = gql`
-    query FundingPeriods($marketId: ID!) {
-  fundingPeriods(marketId: $marketId) {
+    query FundingPeriods($marketId: ID!, $dateRange: DateRange, $pagination: Pagination) {
+  fundingPeriods(
+    marketId: $marketId
+    dateRange: $dateRange
+    pagination: $pagination
+  ) {
     edges {
       node {
         marketId
@@ -50,6 +58,8 @@ export const FundingPeriodsDocument = gql`
  * const { data, loading, error } = useFundingPeriodsQuery({
  *   variables: {
  *      marketId: // value for 'marketId'
+ *      dateRange: // value for 'dateRange'
+ *      pagination: // value for 'pagination'
  *   },
  * });
  */
@@ -65,8 +75,12 @@ export type FundingPeriodsQueryHookResult = ReturnType<typeof useFundingPeriodsQ
 export type FundingPeriodsLazyQueryHookResult = ReturnType<typeof useFundingPeriodsLazyQuery>;
 export type FundingPeriodsQueryResult = Apollo.QueryResult<FundingPeriodsQuery, FundingPeriodsQueryVariables>;
 export const FundingPeriodDataPointsDocument = gql`
-    query FundingPeriodDataPoints($marketId: ID!) {
-  fundingPeriodDataPoints(marketId: $marketId) {
+    query FundingPeriodDataPoints($marketId: ID!, $dateRange: DateRange, $pagination: Pagination) {
+  fundingPeriodDataPoints(
+    marketId: $marketId
+    dateRange: $dateRange
+    pagination: $pagination
+  ) {
     edges {
       node {
         marketId
@@ -94,6 +108,8 @@ export const FundingPeriodDataPointsDocument = gql`
  * const { data, loading, error } = useFundingPeriodDataPointsQuery({
  *   variables: {
  *      marketId: // value for 'marketId'
+ *      dateRange: // value for 'dateRange'
+ *      pagination: // value for 'pagination'
  *   },
  * });
  */

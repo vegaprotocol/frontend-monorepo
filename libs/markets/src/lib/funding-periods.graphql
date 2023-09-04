@@ -1,5 +1,13 @@
-query FundingPeriods($marketId: ID!) {
-  fundingPeriods(marketId: $marketId) {
+query FundingPeriods(
+  $marketId: ID!
+  $dateRange: DateRange
+  $pagination: Pagination
+) {
+  fundingPeriods(
+    marketId: $marketId
+    dateRange: $dateRange
+    pagination: $pagination
+  ) {
     edges {
       node {
         marketId
@@ -15,8 +23,16 @@ query FundingPeriods($marketId: ID!) {
   }
 }
 
-query FundingPeriodDataPoints($marketId: ID!) {
-  fundingPeriodDataPoints(marketId: $marketId) {
+query FundingPeriodDataPoints(
+  $marketId: ID!
+  $dateRange: DateRange
+  $pagination: Pagination
+) {
+  fundingPeriodDataPoints(
+    marketId: $marketId
+    dateRange: $dateRange
+    pagination: $pagination
+  ) {
     edges {
       node {
         marketId
