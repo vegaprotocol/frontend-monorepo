@@ -20,22 +20,6 @@ export const AssetDropdown = ({
   checkedAssets: string[];
   onSelect: (id: string, checked: boolean) => void;
 }) => {
-  const assetsText = useMemo(() => {
-    if (!assets?.length) {
-      return null;
-    }
-    let text = t('Assets');
-
-    if (checkedAssets.length === 1) {
-      const assetId = checkedAssets[0];
-      const asset = assets.find((a) => a.id === assetId);
-      text = asset ? asset.symbol : t('Asset (1)');
-    } else if (checkedAssets.length > 1) {
-      text = t(`${checkedAssets.length} Assets`);
-    }
-    return text;
-  }, [assets, checkedAssets]);
-
   if (!assets?.length) {
     return null;
   }
@@ -44,7 +28,9 @@ export const AssetDropdown = ({
     <TradingDropdown
       trigger={
         <TradingDropdownTrigger data-testid="asset-trigger">
-          <MarketSelectorButton>Assets</MarketSelectorButton>
+          <MarketSelectorButton>
+            {triggerText({ assets, checkedAssets })}
+          </MarketSelectorButton>
         </TradingDropdownTrigger>
       }
     >
@@ -69,4 +55,24 @@ export const AssetDropdown = ({
       </TradingDropdownContent>
     </TradingDropdown>
   );
+};
+
+const triggerText = ({
+  assets,
+  checkedAssets,
+}: {
+  assets: Assets;
+  checkedAssets: string[];
+}) => {
+  let text = t('Assets');
+
+  if (checkedAssets.length === 1) {
+    const assetId = checkedAssets[0];
+    const asset = assets.find((a) => a.id === assetId);
+    text = asset ? asset.symbol : t('Asset (1)');
+  } else if (checkedAssets.length > 1) {
+    text = t(`${checkedAssets.length} Assets`);
+  }
+
+  return text;
 };
