@@ -51,8 +51,8 @@ jobs:
     uses: ./.github/workflows/lint-pr.yml
     secrets: inherit
 
-  lint-test-build:
-    timeout-minutes: 60
+  lint-format:
+    timeout-minutes: 20
     needs: node-modules
     runs-on: ubuntu-22.04
     name: '(CI) lint + unit test + build'
@@ -108,10 +108,6 @@ jobs:
 
       - name: Test affected
         run: yarn nx affected:test
-
-      - name: Build affected
-        run: yarn nx affected:build || (yarn install && yarn nx affected:build)
-
     outputs:
       projects: ${{ env.PROJECTS }}
       projects-e2e: ${{ env.PROJECTS_E2E }}
@@ -120,8 +116,28 @@ jobs:
       preview_explorer: ${{ env.PREVIEW_EXPLORER }}
       preview_tools: ${{ env.PREVIEW_TOOLS }}
 
+  build-sources:
+    timeout-minutes: 30
+    needs: lint-format
+    runs-on: ubuntu-22.04
+    name: 'Build sources of affected apps'
+    steps:
+      - name: Build affected
+        run: yarn nx affected:build || (yarn install && yarn nx affected:build)
+    outputs:
+      projects: ${{ env.PROJECTS }}
+
+  test-affected:
+    timeout-minutes: 30
+    needs: build-sources
+    runs-on: ubuntu-22.04
+    name: 'Build sources of affected apps'
+    steps:
+      - name: Build affected
+        run: yarn nx affected:build || (yarn install && yarn nx affected:build)
+
   console-e2e:
-    needs: lint-test-build
+    needs: build-sources
     name: '(CI) console python'
     uses: ./.github/workflows/console-test-run.yml
     secrets: inherit
@@ -130,7 +146,7 @@ jobs:
       github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
   cypress:
-    needs: lint-test-build
+    needs: build-sources
     name: '(CI) cypress'
     # if: ${{ needs.lint-test-build.outputs.projects-e2e != '[]' }}
     uses: ./.github/workflows/cypress-run.yml
@@ -140,7 +156,7 @@ jobs:
       tags: '@smoke'
 
   publish-dist:
-    needs: lint-test-build
+    needs: build-sources
     name: '(CD) publish dist'
     if: ${{ (github.event_name == 'pull_request' &&  github.event.pull_request.head.repo.full_name == 'vegaprotocol/frontend-monorepo') || github.event_name == 'push' }}
     uses: ./.github/workflows/publish-dist.yml
@@ -152,7 +168,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - publish-dist
-      - lint-test-build
+      - build-sources
     if: ${{ github.event_name == 'pull_request' &&  github.event.pull_request.head.repo.full_name == 'vegaprotocol/frontend-monorepo' }}
     timeout-minutes: 60
     name: '(CD) comment preview links'
