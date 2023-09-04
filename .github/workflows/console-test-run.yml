@@ -13,6 +13,8 @@ jobs:
     runs-on: 8-cores
     timeout-minutes: 20
     steps:
+      - name: additional info step
+        run: echo ${{ inputs.github-sha }}
       #----------------------------------------------
       #       check-out frontend-monorepo
       #----------------------------------------------
