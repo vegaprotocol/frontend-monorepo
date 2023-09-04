@@ -179,7 +179,7 @@ jobs:
     steps:
       - name: info print
         run: |
-          echo projects: ${{ fromJSON(needs.build-sources.outputs.projects) }}
+          echo projects: ${{ join(fromJSON(needs.build-sources.outputs.projects), ', ') }}
           echo github.event_name: ${{ github.event_name }}
 
   console-e2e:
