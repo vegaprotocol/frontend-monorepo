@@ -145,6 +145,10 @@ jobs:
     outputs:
       projects: ${{ env.PROJECTS }}
       projects-e2e: ${{ env.PROJECTS_E2E }}
+      preview_governance: ${{ env.PREVIEW_GOVERNANCE }}
+      preview_trading: ${{ env.PREVIEW_TRADING }}
+      preview_explorer: ${{ env.PREVIEW_EXPLORER }}
+      preview_tools: ${{ env.PREVIEW_TOOLS }}
 
   test-affected:
     timeout-minutes: 30
@@ -169,6 +173,11 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: develop
 
       - name: Build affected
         run: yarn nx affected:build || (yarn install && yarn nx affected:build)
