@@ -85,6 +85,9 @@ jobs:
       - name: Lint affected
         run: yarn nx affected:lint --max-warnings=0
 
+      - name: Build affected spec
+        run: yarn nx affected --target=build-spec
+
   build-sources:
     timeout-minutes: 30
     needs: lint-format
@@ -169,8 +172,8 @@ jobs:
         with:
           main-branch-name: develop
 
-      - name: Build affected
-        run: yarn nx affected:build || (yarn install && yarn nx affected:build)
+      - name: Test affected
+        run: yarn nx affected:test
 
   info-step:
     runs-on: ubuntu-22.04
@@ -187,7 +190,7 @@ jobs:
     name: '(CI) console python'
     uses: ./.github/workflows/console-test-run.yml
     secrets: inherit
-    # if: ${{ contains(fromJSON(needs.lint-test-build.outputs.projects), 'trading') && github.event_name == 'pull_request' }}
+    if: ${{ contains(fromJSON(needs.build-sources.outputs.projects), 'trading') && github.event_name == 'pull_request' }}
     with:
       github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
