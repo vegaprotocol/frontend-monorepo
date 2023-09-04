@@ -90,7 +90,7 @@ jobs:
 
   test-affected:
     timeout-minutes: 30
-    needs: lint-format
+    needs: build-sources
     runs-on: ubuntu-22.04
     name: 'run unit test of affected apps'
     steps:
@@ -122,7 +122,7 @@ jobs:
 
   build-sources:
     timeout-minutes: 30
-    needs: build-sources
+    needs: lint-format
     runs-on: ubuntu-22.04
     name: 'Build sources of affected apps'
     steps:
