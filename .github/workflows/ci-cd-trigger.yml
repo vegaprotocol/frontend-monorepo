@@ -21,7 +21,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-
       - name: Cache node modules
         id: cache
         uses: actions/cache@v3
@@ -39,7 +38,6 @@ jobs:
           node-version-file: '.nvmrc'
           # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
           cache: yarn
-
       - name: yarn install
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install --pure-lockfile
@@ -174,12 +172,12 @@ jobs:
       - name: Build affected
         run: yarn nx affected:build || (yarn install && yarn nx affected:build)
 
-  info-step:
-    needs: build-sources
-    name: 'Info temp step'
-    run: |
-      echo projects: ${{ fromJSON(needs.lint-test-build.outputs.projects) }}
-      echo github.event_name: ${{ github.event_name }}
+  #info-step:
+  #  needs: build-sources
+  #  name: 'Info temp step'
+  #  run: |
+  #   echo projects: ${{ fromJSON(needs.lint-test-build.outputs.projects) }}
+  #    echo github.event_name: ${{ github.event_name }}
 
   console-e2e:
     needs: build-sources
