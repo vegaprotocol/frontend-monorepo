@@ -6,7 +6,6 @@ import {
   TradingDropdownItemIndicator,
   TradingDropdownTrigger,
 } from '@vegaprotocol/ui-toolkit';
-import { useMemo } from 'react';
 import { MarketSelectorButton } from './market-selector-button';
 
 type Assets = Array<{ id: string; symbol: string }>;
