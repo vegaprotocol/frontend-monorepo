@@ -55,7 +55,7 @@ jobs:
     timeout-minutes: 20
     needs: node-modules
     runs-on: ubuntu-22.04
-    name: '(CI) lint + unit test + build'
+    name: '(CI) lint + format check'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -103,11 +103,6 @@ jobs:
       - name: Lint affected
         run: yarn nx affected:lint --max-warnings=0
 
-      - name: Build affected spec
-        run: yarn nx affected --target=build-spec
-
-      - name: Test affected
-        run: yarn nx affected:test
     outputs:
       projects: ${{ env.PROJECTS }}
       projects-e2e: ${{ env.PROJECTS_E2E }}
@@ -122,17 +117,54 @@ jobs:
     runs-on: ubuntu-22.04
     name: 'Build sources of affected apps'
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+
       - name: Build affected
         run: yarn nx affected:build || (yarn install && yarn nx affected:build)
     outputs:
       projects: ${{ env.PROJECTS }}
+      projects-e2e: ${{ env.PROJECTS_E2E }}
 
   test-affected:
     timeout-minutes: 30
     needs: build-sources
     runs-on: ubuntu-22.04
-    name: 'Build sources of affected apps'
+    name: 'run unit test of affected apps'
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+
       - name: Build affected
         run: yarn nx affected:build || (yarn install && yarn nx affected:build)
 
