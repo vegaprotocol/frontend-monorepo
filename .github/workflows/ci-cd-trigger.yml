@@ -172,12 +172,12 @@ jobs:
       - name: Build affected
         run: yarn nx affected:build || (yarn install && yarn nx affected:build)
 
-  #info-step:
-  #  needs: build-sources
-  #  name: 'Info temp step'
-  #  run: |
-  #   echo projects: ${{ fromJSON(needs.lint-test-build.outputs.projects) }}
-  #    echo github.event_name: ${{ github.event_name }}
+  info-step:
+    needs: build-sources
+    name: 'Info temp step'
+    run: |
+      echo projects: ${{ fromJSON(needs.build-sources.outputs.projects) }}
+      echo github.event_name: ${{ github.event_name }}
 
   console-e2e:
     needs: build-sources
@@ -191,11 +191,11 @@ jobs:
   cypress:
     needs: build-sources
     name: '(CI) cypress'
-    # if: ${{ needs.lint-test-build.outputs.projects-e2e != '[]' }}
+    # if: ${{ needs.build-sources.outputs.projects-e2e != '[]' }}
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
     with:
-      projects: ${{ needs.lint-test-build.outputs.projects-e2e }}
+      projects: ${{ needs.build-sources.outputs.projects-e2e }}
       tags: '@smoke'
 
   publish-dist:
@@ -205,7 +205,7 @@ jobs:
     uses: ./.github/workflows/publish-dist.yml
     secrets: inherit
     with:
-      projects: ${{ needs.lint-test-build.outputs.projects }}
+      projects: ${{ needs.build-sources.outputs.projects }}
 
   dist-check:
     runs-on: ubuntu-latest
@@ -227,27 +227,27 @@ jobs:
         run: |
           # https://stackoverflow.com/questions/3183444/check-for-valid-link-url
           regex='(https?|ftp|file)://[-[:alnum:]\+&@#/%?=~_|!:,.;]*[-[:alnum:]\+&@#/%=~_|]'
-          if [[ "${{ needs.lint-test-build.outputs.preview_governance }}" =~ $regex ]]; then
-            until curl --insecure --location --fail "${{ needs.lint-test-build.outputs.preview_governance }}"; do
-              echo "waiting for governance preview: ${{ needs.lint-test-build.outputs.preview_governance }}"
+          if [[ "${{ needs.build-sources.outputs.preview_governance }}" =~ $regex ]]; then
+            until curl --insecure --location --fail "${{ needs.build-sources.outputs.preview_governance }}"; do
+              echo "waiting for governance preview: ${{ needs.build-sources.outputs.preview_governance }}"
               sleep 5
             done
           fi
-          if [[ "${{ needs.lint-test-build.outputs.preview_explorer }}" =~ $regex ]]; then
-            until curl --insecure --location --fail "${{ needs.lint-test-build.outputs.preview_explorer }}"; do
-              echo "waiting for explorer preview: ${{ needs.lint-test-build.outputs.preview_explorer }}"
+          if [[ "${{ needs.build-sources.outputs.preview_explorer }}" =~ $regex ]]; then
+            until curl --insecure --location --fail "${{ needs.build-sources.outputs.preview_explorer }}"; do
+              echo "waiting for explorer preview: ${{ needs.build-sources.outputs.preview_explorer }}"
               sleep 5
             done
           fi
-          if [[ "${{ needs.lint-test-build.outputs.preview_trading }}" =~ $regex ]]; then
-            until curl --insecure --location --fail "${{ needs.lint-test-build.outputs.preview_trading }}"; do
-              echo "waiting for trading preview: ${{ needs.lint-test-build.outputs.preview_trading }}"
+          if [[ "${{ needs.build-sources.outputs.preview_trading }}" =~ $regex ]]; then
+            until curl --insecure --location --fail "${{ needs.build-sources.outputs.preview_trading }}"; do
+              echo "waiting for trading preview: ${{ needs.build-sources.outputs.preview_trading }}"
               sleep 5
             done
           fi
-          if [[ "${{ needs.lint-test-build.outputs.preview_tools }}" =~ $regex ]]; then
-            until curl --insecure --location --fail "${{ needs.lint-test-build.outputs.preview_tools }}"; do
-              echo "waiting for tools preview: ${{ needs.lint-test-build.outputs.preview_tools }}"
+          if [[ "${{ needs.build-sources.outputs.preview_tools }}" =~ $regex ]]; then
+            until curl --insecure --location --fail "${{ needs.build-sources.outputs.preview_tools }}"; do
+              echo "waiting for tools preview: ${{ needs.build-sources.outputs.preview_tools }}"
               sleep 5
             done
           fi
@@ -259,10 +259,10 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             Previews
-            * governance: ${{ needs.lint-test-build.outputs.preview_governance }}
-            * explorer: ${{ needs.lint-test-build.outputs.preview_explorer  }}
-            * trading: ${{ needs.lint-test-build.outputs.preview_trading }}
-            * tools: ${{ needs.lint-test-build.outputs.preview_tools }}
+            * governance: ${{ needs.build-sources.outputs.preview_governance }}
+            * explorer: ${{ needs.build-sources.outputs.preview_explorer  }}
+            * trading: ${{ needs.build-sources.outputs.preview_trading }}
+            * tools: ${{ needs.build-sources.outputs.preview_tools }}
 
   # Report single result at the end, to avoid mess with required checks in PR
   cypress-check:
