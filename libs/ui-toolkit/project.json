@@ -14,7 +14,7 @@
         "tsConfig": "libs/ui-toolkit/tsconfig.lib.json",
         "project": "libs/ui-toolkit/package.json",
         "entryFile": "libs/ui-toolkit/src/index.ts",
-        "external": ["react/jsx-runtime"],
+        "external": ["react", "react-dom", "react/jsx-runtime"],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "babel",
         "format": ["esm", "cjs"],

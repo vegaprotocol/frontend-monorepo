@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { LocalStorage } from '@vegaprotocol/utils';
 
 const THEME_STORAGE_KEY = 'theme';
 const Themes = {
@@ -13,7 +12,7 @@ const isBrowser = typeof window !== 'undefined';
 
 const validateTheme = (theme: string): theme is Theme => {
   if (Object.values(Themes).includes(theme as Theme)) return true;
-  LocalStorage.removeItem(THEME_STORAGE_KEY);
+  localStorage.removeItem(THEME_STORAGE_KEY);
   return false;
 };
 
@@ -35,7 +34,7 @@ const getCurrentTheme = () => {
     return Themes.DARK;
   }
 
-  const storedTheme = LocalStorage.getItem(THEME_STORAGE_KEY);
+  const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
 
   if (storedTheme && validateTheme(storedTheme)) {
     setThemeClassName(storedTheme);
@@ -69,7 +68,7 @@ const useThemeStore = create<ThemeStore>((set) => ({
         theme = newTheme;
       }
 
-      LocalStorage.setItem(THEME_STORAGE_KEY, theme);
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
 
       setThemeClassName(theme);
 

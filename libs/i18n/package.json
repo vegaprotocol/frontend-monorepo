@@ -1,5 +1,8 @@
 {
   "name": "@vegaprotocol/i18n",
   "version": "0.0.4",
-  "type": "commonjs"
+  "peerDependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  }
 }

@@ -50,6 +50,7 @@ export const VegaWalletProvider = ({
   children,
   config,
 }: VegaWalletProviderProps) => {
+  console.log('PROVIDER 2');
   // Current selected pubKey
   const [pubKey, setPubKey] = useState<string | null>(null);
   const [isReadOnly, setIsReadOnly] = useState<boolean>(false);

@@ -5,7 +5,6 @@ import {
   useSyncExternalStore,
   useState,
 } from 'react';
-import { LocalStorage } from '@vegaprotocol/utils';
 
 type LocalStorageCallback = (key: string) => void;
 const LOCAL_STORAGE_CALLBACKS = new Set<LocalStorageCallback>();
@@ -34,18 +33,18 @@ export const useLocalStorage = (key: string) => {
     [key]
   );
   const getSnapshot = () => {
-    const item = LocalStorage.getItem(key);
+    const item = localStorage.getItem(key);
     return item;
   };
   const setValue = useCallback(
     (value: string) => {
-      LocalStorage.setItem(key, value);
+      localStorage.setItem(key, value);
       triggerCallbacks(key);
     },
     [key]
   );
   const removeValue = useCallback(() => {
-    LocalStorage.removeItem(key);
+    localStorage.removeItem(key);
     triggerCallbacks(key);
   }, [key]);
   const value = useSyncExternalStore(subscribe, getSnapshot, () => null);
@@ -71,16 +70,16 @@ export const useLocalStorage = (key: string) => {
 };
 
 export const useLocalStorageSnapshot = (key: string) => {
-  const [value, setStoredValue] = useState(LocalStorage.getItem(key));
+  const [value, setStoredValue] = useState(localStorage.getItem(key));
   const setValue = useCallback(
     (value: string) => {
-      LocalStorage.setItem(key, value);
+      localStorage.setItem(key, value);
       setStoredValue(value);
     },
     [key]
   );
   const removeValue = useCallback(() => {
-    LocalStorage.removeItem(key);
+    localStorage.removeItem(key);
     setStoredValue(null);
   }, [key]);
   return useMemo<UseLocalStorageHook>(

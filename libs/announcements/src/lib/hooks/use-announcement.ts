@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import type { AppNameType, Announcement } from '../schema';
 import { AnnouncementsSchema } from '../schema';
 import { sha256 } from 'ethers/lib/utils';
-import { useLocalStorageSnapshot } from '@vegaprotocol/react-helpers';
 
 const getData = async (name: AppNameType, url: string) => {
   const now = new Date();
@@ -39,14 +38,8 @@ export const useDismissedAnnouncement = (): [
   string | null | undefined,
   (data: object) => void
 ] => {
-  const [dismissed, setDismissedInStorage] = useLocalStorageSnapshot(
-    'dismissed-announcement'
-  );
-  const setDismissed = useCallback(
-    (data: object) => setDismissedInStorage(checksum(data)),
-    [setDismissedInStorage]
-  );
-  return [dismissed, setDismissed];
+  const setDismissed = useCallback((data: object) => console.log('foo'), []);
+  return ['yes', setDismissed];
 };
 
 export const useAnnouncement = (name: AppNameType, url: string) => {

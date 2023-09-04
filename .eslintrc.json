@@ -95,6 +95,12 @@
       "files": ["*.js", "*.jsx"],
       "extends": ["plugin:@nx/javascript"],
       "rules": {}
+    },
+    {
+      "files": ["*.json"],
+      "rules": {
+        "@nx/dependency-checks": "error"
+      }
     }
   ]
 }
