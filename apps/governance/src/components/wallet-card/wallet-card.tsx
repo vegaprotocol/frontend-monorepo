@@ -54,7 +54,7 @@ export const WalletCardRow = ({
 }) => {
   const ref = React.useRef<HTMLDivElement | null>(null);
   useAnimateValue(ref, value);
-  const [integers, decimalsPlaces] = useNumberParts(value, decimals);
+  const [integers, decimalsPlaces, separator] = useNumberParts(value, decimals);
 
   return (
     <div
@@ -75,7 +75,10 @@ export const WalletCardRow = ({
           className="font-mono flex-1 text-right"
           data-testid="associated-amount"
         >
-          <span>{integers}.</span>
+          <span>
+            {integers}
+            {separator}
+          </span>
           <span>{decimalsPlaces}</span>
         </span>
       )}
@@ -110,7 +113,10 @@ export const WalletCardAsset = ({
   border,
   subheading,
 }: WalletCardAssetProps) => {
-  const [integers, decimalsPlaces] = useNumberParts(balance, decimals);
+  const [integers, decimalsPlaces, separator] = useNumberParts(
+    balance,
+    decimals
+  );
 
   return (
     <div className="flex flex-nowrap mt-2 mb-4">
@@ -132,7 +138,10 @@ export const WalletCardAsset = ({
           </div>
         </div>
         <div className="px-2 basis-full font-mono" data-testid="currency-value">
-          <span>{integers}.</span>
+          <span>
+            {integers}
+            {separator}
+          </span>
           <span className="text-neutral-400">{decimalsPlaces}</span>
         </div>
       </div>
