@@ -15,8 +15,8 @@ interface StoredSettings {
 const DEFAULT_CHART_SETTINGS = {
   interval: Interval.I15M,
   type: ChartType.CANDLE,
-  overlays: [],
-  studies: [Study.VOLUME],
+  overlays: [Overlay.MOVING_AVERAGE],
+  studies: [Study.MACD, Study.VOLUME],
 };
 
 export const useCandlesChartSettingsStore = create<
