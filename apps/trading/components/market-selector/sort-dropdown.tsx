@@ -8,6 +8,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
+import { MarketSelectorButton } from './market-selector-button';
 
 export const Sort = {
   Gained: 'Gained',
@@ -47,10 +48,11 @@ export const SortDropdown = ({
     <TradingDropdown
       trigger={
         <TradingDropdownTrigger data-testid="sort-trigger">
-          <span className="flex items-center justify-between gap-1">
+          <MarketSelectorButton
+            icon={<VegaIcon name={VegaIconNames.CHEVRON_DOWN} />}
+          >
             {SortTypeMapping[currentSort]}
-            <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
-          </span>
+          </MarketSelectorButton>
         </TradingDropdownTrigger>
       }
     >
