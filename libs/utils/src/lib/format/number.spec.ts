@@ -7,6 +7,8 @@ import {
   formatNumberPercentage,
   getUnlimitedThreshold,
   isNumeric,
+  removeDecimal,
+  toBigNum,
   quantumDecimalPlaces,
   toDecimal,
   toNumberParts,
@@ -153,9 +155,35 @@ describe('number utils', () => {
       { v: 7, o: '0.0000001' },
       { v: 8, o: '0.00000001' },
       { v: 9, o: '0.000000001' },
+      { v: -1, o: '10' },
+      { v: -2, o: '100' },
+      { v: -3, o: '1000' },
     ])('formats with toNumber given number correctly', ({ v, o }) => {
       expect(toDecimal(v)).toStrictEqual(o);
     });
+  });
+
+  describe('positive and negative decimals should be handled correctly', () => {
+    const baseNum = '2000';
+    const methods = [removeDecimal, toBigNum];
+    it.each([
+      { decimals: 0, result: ['2000', '2000'] },
+      { decimals: 1, result: ['20000', '200'] },
+      { decimals: -1, result: ['200', '20000'] },
+      { decimals: 2, result: ['200000', '20'] },
+      { decimals: -2, result: ['20', '200000'] },
+      { decimals: 3, result: ['2000000', '2'] },
+      { decimals: -3, result: ['2', '2000000'] },
+      { decimals: 4, result: ['20000000', '0.2'] },
+      { decimals: -4, result: ['0', '20000000'] }, // removeDecimal has toFixed(0) at the end
+    ])(
+      'number methods should handle negative decimals',
+      ({ decimals, result }) => {
+        methods.forEach((method, i) => {
+          expect(method(baseNum, decimals).toString()).toEqual(result[i]);
+        });
+      }
+    );
   });
 });
 
