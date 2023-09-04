@@ -175,9 +175,11 @@ jobs:
   info-step:
     needs: build-sources
     name: 'Info temp step'
-    run: |
-      echo projects: ${{ fromJSON(needs.build-sources.outputs.projects) }}
-      echo github.event_name: ${{ github.event_name }}
+    steps:
+      - name: info print
+        run: |
+          echo projects: ${{ fromJSON(needs.build-sources.outputs.projects) }}
+          echo github.event_name: ${{ github.event_name }}
 
   console-e2e:
     needs: build-sources
