@@ -6,7 +6,7 @@ import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
-import type { OrderFieldsFragment, OrderListTableProps } from '../';
+import type { Order, OrderFieldsFragment, OrderListTableProps } from '../';
 import { OrderListTable } from '../';
 import {
   generateOrder,
@@ -162,6 +162,24 @@ describe('OrderListTable', () => {
         Schema.OrderRejectionReasonMapping[rejectedOrder.rejectionReason]
       }`
     );
+  });
+
+  it('negative positionDecimalPoints should be properly rendered in size column', async () => {
+    const localMarketOrder = {
+      ...marketOrder,
+      size: '3000',
+      market: {
+        ...marketOrder.market,
+        positionDecimalPlaces: -4,
+      },
+    } as Order;
+
+    await act(async () => {
+      render(generateJsx({ rowData: [localMarketOrder] }));
+    });
+
+    const cells = screen.getAllByRole('gridcell');
+    expect(cells[2]).toHaveTextContent('+30,000,000');
   });
 
   describe('amend cell', () => {
