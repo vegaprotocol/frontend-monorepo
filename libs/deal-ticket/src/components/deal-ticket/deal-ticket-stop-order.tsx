@@ -26,6 +26,7 @@ import {
   TradingButton as Button,
   Pill,
   Intent,
+  Notification,
 } from '@vegaprotocol/ui-toolkit';
 import { getDerivedPrice } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
@@ -53,6 +54,8 @@ import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { validateExpiration } from '../../utils';
 import { NOTIONAL_SIZE_TOOLTIP_TEXT } from '../../constants';
 import { KeyValue } from './key-value';
+import { useDataProvider } from '@vegaprotocol/data-provider';
+import { stopOrdersProvider } from '@vegaprotocol/orders';
 
 export interface StopOrderProps {
   market: Market;
@@ -60,6 +63,8 @@ export interface StopOrderProps {
   submit: (order: StopOrdersSubmission) => void;
 }
 
+const MAX_NUMBER_OF_ACTIVE_STOP_ORDERS = 4;
+const POLLING_TIME = 2000;
 const trailingPercentOffsetStep = '0.1';
 
 const getDefaultValues = (
@@ -802,6 +807,27 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const triggerTrailingPercentOffset = watch('triggerTrailingPercentOffset');
   const triggerType = watch('triggerType');
 
+  const { data: activeStopOrders, reload } = useDataProvider({
+    dataProvider: stopOrdersProvider,
+    variables: {
+      filter: {
+        parties: pubKey ? [pubKey] : [],
+        markets: [market.id],
+        liveOnly: true,
+      },
+    },
+    skip: !(pubKey && (formState.isDirty || formState.submitCount)),
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      reload();
+    }, POLLING_TIME);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [reload]);
+
   useEffect(() => {
     const storedSize = storedFormValues?.[dealTicketType]?.size;
     if (storedSize && size !== storedSize) {
@@ -864,7 +890,6 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           {errors.type.message}
         </InputError>
       )}
-
       <Controller
         name="side"
         control={control}
@@ -1095,6 +1120,20 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         </>
       )}
       <NoWalletWarning isReadOnly={isReadOnly} />
+      {(activeStopOrders?.length ?? 0) + (oco ? 2 : 1) >
+      MAX_NUMBER_OF_ACTIVE_STOP_ORDERS ? (
+        <div className="mb-2">
+          <Notification
+            intent={Intent.Warning}
+            testId={'stop-order-warning-limit'}
+            message={t(
+              'There is a limit of %s active stop orders per market. Orders submitted above the limit will be immediately rejected.',
+              [MAX_NUMBER_OF_ACTIVE_STOP_ORDERS.toString()]
+            )}
+          />
+        </div>
+      ) : null}
+
       <SubmitButton
         assetUnit={assetUnit}
         market={market}

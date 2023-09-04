@@ -37,7 +37,7 @@ export type OrderSubmissionFieldsFragment = { __typename?: 'OrderSubmission', ma
 export type StopOrderFieldsFragment = { __typename?: 'StopOrder', id: string, ocoLinkId?: string | null, expiresAt?: any | null, expiryStrategy?: Types.StopOrderExpiryStrategy | null, triggerDirection: Types.StopOrderTriggerDirection, status: Types.StopOrderStatus, createdAt: any, updatedAt?: any | null, partyId: string, marketId: string, order?: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, postOnly?: boolean | null, reduceOnly?: boolean | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null } | null, trigger: { __typename?: 'StopOrderPrice', price: string } | { __typename?: 'StopOrderTrailingPercentOffset', trailingPercentOffset: string }, submission: { __typename?: 'OrderSubmission', marketId: string, price: string, size: string, side: Types.Side, timeInForce: Types.OrderTimeInForce, expiresAt: any, type: Types.OrderType, reference?: string | null, postOnly?: boolean | null, reduceOnly?: boolean | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null } };
 
 export type StopOrdersQueryVariables = Types.Exact<{
-  partyId: Types.Scalars['ID'];
+  filter?: Types.InputMaybe<Types.StopOrderFilter>;
 }>;
 
 
@@ -283,8 +283,8 @@ export function useOrdersUpdateSubscription(baseOptions: Apollo.SubscriptionHook
 export type OrdersUpdateSubscriptionHookResult = ReturnType<typeof useOrdersUpdateSubscription>;
 export type OrdersUpdateSubscriptionResult = Apollo.SubscriptionResult<OrdersUpdateSubscription>;
 export const StopOrdersDocument = gql`
-    query StopOrders($partyId: ID!) {
-  stopOrders(filter: {parties: [$partyId]}) {
+    query StopOrders($filter: StopOrderFilter) {
+  stopOrders(filter: $filter) {
     edges {
       node {
         ...StopOrderFields
@@ -306,11 +306,11 @@ export const StopOrdersDocument = gql`
  * @example
  * const { data, loading, error } = useStopOrdersQuery({
  *   variables: {
- *      partyId: // value for 'partyId'
+ *      filter: // value for 'filter'
  *   },
  * });
  */
-export function useStopOrdersQuery(baseOptions: Apollo.QueryHookOptions<StopOrdersQuery, StopOrdersQueryVariables>) {
+export function useStopOrdersQuery(baseOptions?: Apollo.QueryHookOptions<StopOrdersQuery, StopOrdersQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<StopOrdersQuery, StopOrdersQueryVariables>(StopOrdersDocument, options);
       }
