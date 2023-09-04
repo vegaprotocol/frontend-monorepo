@@ -135,6 +135,11 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
 
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: develop
+
       - name: Build affected
         run: yarn nx affected:build || (yarn install && yarn nx affected:build)
     outputs:
