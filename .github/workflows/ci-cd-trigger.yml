@@ -88,9 +88,41 @@ jobs:
       - name: Build affected spec
         run: yarn nx affected --target=build-spec
 
-  build-sources:
+  test-affected:
     timeout-minutes: 30
     needs: lint-format
+    runs-on: ubuntu-22.04
+    name: 'run unit test of affected apps'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: develop
+
+      - name: Test affected
+        run: yarn nx affected:test
+
+  build-sources:
+    timeout-minutes: 30
+    needs: build-sources
     runs-on: ubuntu-22.04
     name: 'Build sources of affected apps'
     steps:
@@ -142,48 +174,6 @@ jobs:
       preview_trading: ${{ env.PREVIEW_TRADING }}
       preview_explorer: ${{ env.PREVIEW_EXPLORER }}
       preview_tools: ${{ env.PREVIEW_TOOLS }}
-
-  test-affected:
-    timeout-minutes: 30
-    needs: build-sources
-    runs-on: ubuntu-22.04
-    name: 'run unit test of affected apps'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-
-      - name: Cache node modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
-
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v3
-        with:
-          main-branch-name: develop
-
-      - name: Test affected
-        run: yarn nx affected:test
-
-  info-step:
-    runs-on: ubuntu-22.04
-    needs: build-sources
-    name: 'Info temp step'
-    steps:
-      - name: info print
-        run: |
-          echo projects: ${{ join(fromJSON(needs.build-sources.outputs.projects), ', ') }}
-          echo github.event_name: ${{ github.event_name }}
 
   console-e2e:
     needs: build-sources
