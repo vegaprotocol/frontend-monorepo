@@ -1,4 +1,4 @@
-import { TradingOption } from '@vegaprotocol/ui-toolkit';
+import { TradingOption, truncateMiddle } from '@vegaprotocol/ui-toolkit';
 import type { AssetFieldsFragment } from './__generated__/Asset';
 import classNames from 'classnames';
 import { t } from '@vegaprotocol/i18n';
@@ -45,7 +45,7 @@ export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
         {balance}
         <div className="text-[12px] font-mono w-full text-left break-all">
           <span className="text-vega-light-300 dark:text-vega-dark-300">
-            {asset.id}
+            {truncateMiddle(asset.id)}
           </span>
         </div>
       </div>

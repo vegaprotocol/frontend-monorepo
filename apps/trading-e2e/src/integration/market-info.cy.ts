@@ -133,11 +133,7 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     validateMarketDataRow(4, 'Decimals', '5');
     validateMarketDataRow(5, 'Quantum', '1');
     validateMarketDataRow(6, 'Status', 'Enabled');
-    validateMarketDataRow(
-      7,
-      'Contract address',
-      '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4'
-    );
+    validateMarketDataRow(7, 'Contract address', '0x0158…78a4');
     validateMarketDataRow(8, 'Withdrawal threshold', '0.0005');
     validateMarketDataRow(9, 'Lifetime limit', '1,230');
     validateMarketDataRow(10, 'Infrastructure fee account balance', '0.00001');

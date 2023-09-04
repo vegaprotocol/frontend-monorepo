@@ -5,7 +5,11 @@ import {
   addDecimalsFormatNumberQuantum,
   formatNumber,
   formatNumberPercentage,
+  getUnlimitedThreshold,
   isNumeric,
+  removeDecimal,
+  toBigNum,
+  quantumDecimalPlaces,
   toDecimal,
   toNumberParts,
 } from './number';
@@ -151,8 +155,94 @@ describe('number utils', () => {
       { v: 7, o: '0.0000001' },
       { v: 8, o: '0.00000001' },
       { v: 9, o: '0.000000001' },
+      { v: -1, o: '10' },
+      { v: -2, o: '100' },
+      { v: -3, o: '1000' },
     ])('formats with toNumber given number correctly', ({ v, o }) => {
       expect(toDecimal(v)).toStrictEqual(o);
     });
   });
+
+  describe('positive and negative decimals should be handled correctly', () => {
+    const baseNum = '2000';
+    const methods = [removeDecimal, toBigNum];
+    it.each([
+      { decimals: 0, result: ['2000', '2000'] },
+      { decimals: 1, result: ['20000', '200'] },
+      { decimals: -1, result: ['200', '20000'] },
+      { decimals: 2, result: ['200000', '20'] },
+      { decimals: -2, result: ['20', '200000'] },
+      { decimals: 3, result: ['2000000', '2'] },
+      { decimals: -3, result: ['2', '2000000'] },
+      { decimals: 4, result: ['20000000', '0.2'] },
+      { decimals: -4, result: ['0', '20000000'] }, // removeDecimal has toFixed(0) at the end
+    ])(
+      'number methods should handle negative decimals',
+      ({ decimals, result }) => {
+        methods.forEach((method, i) => {
+          expect(method(baseNum, decimals).toString()).toEqual(result[i]);
+        });
+      }
+    );
+  });
+});
+
+describe('quantumDecimalPlaces', () => {
+  it.each([
+    ['1', 1, 3],
+    ['10', 1, 2],
+    ['100', 1, 1],
+    ['1000', 1, 0],
+    ['1', 2, 4],
+    ['10', 2, 3],
+    ['100', 2, 2],
+    ['1000', 2, 1],
+    ['1', 3, 5],
+    ['10', 3, 4],
+    ['100', 3, 3],
+    ['1000', 3, 2],
+    ['1', 18, 20],
+    ['1000000000', 18, 11],
+    ['5000000000', 18, 11],
+    ['1000000000000000000', 18, 2],
+  ])(
+    'converts quantum %s of %d decimal places to %d quant. decimal places',
+    (quantum, decimals, output) => {
+      expect(quantumDecimalPlaces(quantum, decimals)).toEqual(output);
+    }
+  );
+});
+
+describe('getUnlimitedThreshold', () => {
+  it.each([
+    [
+      0,
+      '9.26336713898529563388567880069503262826159877325124512315660672063305037119488e+76',
+    ],
+    [
+      1,
+      '9.26336713898529563388567880069503262826159877325124512315660672063305037119488e+75',
+    ],
+    [
+      2,
+      '9.26336713898529563388567880069503262826159877325124512315660672063305037119488e+74',
+    ],
+    [
+      3,
+      '9.26336713898529563388567880069503262826159877325124512315660672063305037119488e+73',
+    ],
+    [
+      10,
+      '9.26336713898529563388567880069503262826159877325124512315660672063305037119488e+66',
+    ],
+    [
+      18,
+      '9.26336713898529563388567880069503262826159877325124512315660672063305037119488e+58',
+    ],
+  ])(
+    'given %d decimal places it returns unlimited threshold %s',
+    (decimals, output) => {
+      expect(getUnlimitedThreshold(decimals).toString()).toEqual(output);
+    }
+  );
 });

@@ -38,7 +38,12 @@ const Oracles = () => {
               const dataConnection = o?.node.dataConnection;
 
               return (
-                <div id={id} key={id} className="mb-10">
+                <div
+                  id={id}
+                  key={id}
+                  className="mb-10"
+                  data-testid="oracle-details"
+                >
                   <OracleDetails
                     id={id}
                     dataSource={o?.node}

@@ -15,31 +15,33 @@ const CHECK_INTERVAL = 5000; // ms
  */
 const ALLOW_STALE = 2; // times -> MAX(this, 1) * CHECK_INTERVAL ~> min check time
 
-export const useBlockRising = () => {
+export const useBlockRising = (skip = false) => {
   const [blocksRising, setBlocksRising] = useState(true);
   const [block, setBlock] = useState(0);
   const nodes = useEnvironment((state) => state.nodes);
   const clients = useMemo(() => {
-    return nodes.map(
-      (n) =>
-        n &&
-        n.length > 0 &&
-        createClient({
+    return nodes.map((n) => {
+      if (n && n.length > 0) {
+        const client = createClient({
           url: n,
           cacheConfig: undefined,
           retry: false,
           connectToDevTools: false,
           connectToHeaderStore: true,
-        })
-    );
+        });
+        return client;
+      }
+      return undefined;
+    });
   }, [nodes]);
 
   const { refetch: fetchBlockInfo } = useBlockInfo();
   useEffect(() => {
+    if (skip) return;
     let stale = 0;
     let prev = 0;
     const check = async () => {
-      const queries = clients.map((client, index) =>
+      const queries = clients.map((client) =>
         client
           ? client
               .query<BlockStatisticsQuery>({
@@ -47,18 +49,16 @@ export const useBlockRising = () => {
                 fetchPolicy: 'network-only',
                 errorPolicy: 'ignore',
               })
-              .catch((err) =>
-                Promise.reject(
-                  `could not retrieve statistics from ${nodes[index]}`
-                )
-              )
+              .catch(() => {
+                // NOOP - could not retrieve statistics for that node (network error)
+              })
           : undefined
       );
 
       const blockInfo = await fetchBlockInfo();
       const results = (await Promise.allSettled(compact(queries))).map(
         (res) => {
-          if (res && res.status === 'fulfilled') {
+          if (res && res.status === 'fulfilled' && res.value) {
             return res.value.data.statistics;
           } else {
             return undefined;
@@ -86,7 +86,7 @@ export const useBlockRising = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [clients, fetchBlockInfo, blocksRising, nodes]);
+  }, [clients, fetchBlockInfo, blocksRising, nodes, skip]);
 
   return { blocksRising, block };
 };

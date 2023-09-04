@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
-import { Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
+import { TradingButton } from '@vegaprotocol/ui-toolkit';
 import { ViewType, useSidebar } from '../sidebar';
 
 export const AccountsMenu = () => {
@@ -8,7 +8,6 @@ export const AccountsMenu = () => {
   return (
     <>
       <TradingButton
-        intent={Intent.Primary}
         size="extra-small"
         data-testid="open-transfer"
         onClick={() => setView({ type: ViewType.Transfer })}
@@ -16,7 +15,6 @@ export const AccountsMenu = () => {
         {t('Transfer')}
       </TradingButton>
       <TradingButton
-        intent={Intent.Primary}
         size="extra-small"
         onClick={() => setView({ type: ViewType.Deposit })}
       >
