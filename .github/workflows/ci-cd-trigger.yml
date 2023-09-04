@@ -173,6 +173,7 @@ jobs:
         run: yarn nx affected:build || (yarn install && yarn nx affected:build)
 
   info-step:
+    runs-on: ubuntu-22.04
     needs: build-sources
     name: 'Info temp step'
     steps:
