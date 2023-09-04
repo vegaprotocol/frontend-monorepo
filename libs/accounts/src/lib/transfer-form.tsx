@@ -8,7 +8,6 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
-  Button,
   TradingFormGroup,
   TradingInput,
   TradingInputError,
@@ -16,6 +15,7 @@ import {
   TradingSelect,
   Tooltip,
   TradingCheckbox,
+  TradingButton,
 } from '@vegaprotocol/ui-toolkit';
 import type { Transfer } from '@vegaprotocol/wallet';
 import { normalizeTransfer } from '@vegaprotocol/wallet';
@@ -276,9 +276,9 @@ export const TransferForm = ({
           decimals={asset?.decimals}
         />
       )}
-      <Button type="submit" variant="primary" fill={true}>
+      <TradingButton type="submit" fill={true}>
         {t('Confirm transfer')}
-      </Button>
+      </TradingButton>
     </form>
   );
 };
@@ -309,8 +309,8 @@ export const TransferFee = ({
   const totalValue = new BigNumber(transferAmount).plus(fee).toString();
 
   return (
-    <div className="mb-4 flex flex-col gap-2 text-xs">
-      <div className="flex justify-between gap-1 items-center flex-wrap">
+    <div className="flex flex-col mb-4 text-xs gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-1">
         <Tooltip
           description={t(
             `The transfer fee is set by the network parameter transfer.fee.factor, currently set to %s`,
@@ -324,7 +324,7 @@ export const TransferFee = ({
           {formatNumber(fee, decimals)}
         </div>
       </div>
-      <div className="flex justify-between gap-1 items-center flex-wrap">
+      <div className="flex flex-wrap items-center justify-between gap-1">
         <Tooltip
           description={t(
             `The total amount to be transferred (without the fee)`
@@ -337,7 +337,7 @@ export const TransferFee = ({
           {formatNumber(amount, decimals)}
         </div>
       </div>
-      <div className="flex justify-between gap-1 items-center flex-wrap">
+      <div className="flex flex-wrap items-center justify-between gap-1">
         <Tooltip
           description={t(
             `The total amount taken from your account. The amount to be transferred plus the fee.`
@@ -384,7 +384,7 @@ export const AddressField = ({
             setIsInput((curr) => !curr);
             onChange();
           }}
-          className="ml-auto text-sm absolute top-0 right-0 underline"
+          className="absolute top-0 right-0 ml-auto text-sm underline"
         >
           {isInput ? t('Select from wallet') : t('Enter manually')}
         </button>
