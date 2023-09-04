@@ -5,8 +5,6 @@ import {
   TradingDropdownContent,
   TradingDropdownItemIndicator,
   TradingDropdownTrigger,
-  VegaIcon,
-  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useMemo } from 'react';
 import { MarketSelectorButton } from './market-selector-button';
@@ -46,11 +44,7 @@ export const AssetDropdown = ({
     <TradingDropdown
       trigger={
         <TradingDropdownTrigger data-testid="asset-trigger">
-          <MarketSelectorButton
-            icon={<VegaIcon name={VegaIconNames.CHEVRON_DOWN} />}
-          >
-            {assetsText}
-          </MarketSelectorButton>
+          <MarketSelectorButton>Assets</MarketSelectorButton>
         </TradingDropdownTrigger>
       }
     >

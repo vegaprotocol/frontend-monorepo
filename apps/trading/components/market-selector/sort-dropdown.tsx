@@ -48,9 +48,7 @@ export const SortDropdown = ({
     <TradingDropdown
       trigger={
         <TradingDropdownTrigger data-testid="sort-trigger">
-          <MarketSelectorButton
-            icon={<VegaIcon name={VegaIconNames.CHEVRON_DOWN} />}
-          >
+          <MarketSelectorButton>
             {SortTypeMapping[currentSort]}
           </MarketSelectorButton>
         </TradingDropdownTrigger>
