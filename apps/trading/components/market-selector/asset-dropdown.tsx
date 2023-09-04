@@ -1,13 +1,14 @@
 import { t } from '@vegaprotocol/i18n';
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItemIndicator,
-  DropdownMenuTrigger,
+  TradingDropdown,
+  TradingDropdownCheckboxItem,
+  TradingDropdownContent,
+  TradingDropdownItemIndicator,
+  TradingDropdownTrigger,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
+import { useMemo } from 'react';
 
 type Assets = Array<{ id: string; symbol: string }>;
 
@@ -20,22 +21,41 @@ export const AssetDropdown = ({
   checkedAssets: string[];
   onSelect: (id: string, checked: boolean) => void;
 }) => {
+  const assetsText = useMemo(() => {
+    if (!assets?.length) {
+      return null;
+    }
+    let text = t('Assets');
+
+    if (checkedAssets.length === 1) {
+      const assetId = checkedAssets[0];
+      const asset = assets.find((a) => a.id === assetId);
+      text = asset ? asset.symbol : t('Asset (1)');
+    } else if (checkedAssets.length > 1) {
+      text = t(`${checkedAssets.length} Assets`);
+    }
+    return text;
+  }, [assets, checkedAssets]);
+
   if (!assets?.length) {
     return null;
   }
 
   return (
-    <DropdownMenu
+    <TradingDropdown
       trigger={
-        <DropdownMenuTrigger data-testid="asset-trigger">
-          <TriggerText assets={assets} checkedAssets={checkedAssets} />
-        </DropdownMenuTrigger>
+        <TradingDropdownTrigger data-testid="asset-trigger">
+          <span className="flex items-center justify-around">
+            {assetsText}
+            <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+          </span>
+        </TradingDropdownTrigger>
       }
     >
-      <DropdownMenuContent>
+      <TradingDropdownContent>
         {assets?.map((a) => {
           return (
-            <DropdownMenuCheckboxItem
+            <TradingDropdownCheckboxItem
               key={a.id}
               checked={checkedAssets.includes(a.id)}
               onCheckedChange={(checked) => {
@@ -46,35 +66,11 @@ export const AssetDropdown = ({
               data-testid={`asset-id-${a.id}`}
             >
               {a.symbol}
-              <DropdownMenuItemIndicator />
-            </DropdownMenuCheckboxItem>
+              <TradingDropdownItemIndicator />
+            </TradingDropdownCheckboxItem>
           );
         })}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
-
-const TriggerText = ({
-  assets,
-  checkedAssets,
-}: {
-  assets: Assets;
-  checkedAssets: string[];
-}) => {
-  let text = t('Assets');
-
-  if (checkedAssets.length === 1) {
-    const assetId = checkedAssets[0];
-    const asset = assets.find((a) => a.id === assetId);
-    text = asset ? asset.symbol : t('Asset (1)');
-  } else if (checkedAssets.length > 1) {
-    text = t(`${checkedAssets.length} Assets`);
-  }
-
-  return (
-    <span className="flex justify-between items-center">
-      {text} <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
-    </span>
+      </TradingDropdownContent>
+    </TradingDropdown>
   );
 };
