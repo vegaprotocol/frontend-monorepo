@@ -84,10 +84,8 @@ const getAffixElement = ({
     'absolute z-10 top-0 bottom-0 flex items-center',
     {
       'fill-black dark:fill-white': prependIconName || appendIconName,
-      'left-3': prependIconName,
-      'right-3': appendIconName,
-      'left-1': prependElement,
-      'right-1': appendElement,
+      'left-3': prependIconName || prependElement,
+      'right-3': appendIconName || appendElement,
     }
   );
 

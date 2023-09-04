@@ -33,11 +33,14 @@ export const ProductSelector = ({
   return (
     <div className="flex mb-2">
       {Object.keys(Product).map((t) => {
-        const classes = classNames('px-3 py-1.5 rounded', {
-          'bg-vega-clight-500 dark:bg-vega-cdark-500 text-default':
-            t === product,
-          'text-secondary': t !== product,
-        });
+        const classes = classNames(
+          'text-sm px-3 py-1.5 rounded hover:text-vega-clight-50 dark:hover:text-vega-cdark-50',
+          {
+            'bg-vega-clight-500 dark:bg-vega-cdark-500 text-default':
+              t === product,
+            'text-secondary': t !== product,
+          }
+        );
         return (
           <button
             key={t}
@@ -53,7 +56,7 @@ export const ProductSelector = ({
       })}
       <Link
         to={Routes.MARKETS}
-        className="flex items-center gap-2 ml-auto"
+        className="flex items-center ml-auto text-sm gap-2"
         title={t('See all markets')}
       >
         <span className="underline underline-offset-4">{t('Browse')}</span>
