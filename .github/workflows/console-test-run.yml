@@ -10,7 +10,7 @@ on:
 jobs:
   run-tests:
     name: run-tests
-    runs-on: 8-cores
+    runs-on: console-test
     timeout-minutes: 20
     steps:
       #----------------------------------------------
