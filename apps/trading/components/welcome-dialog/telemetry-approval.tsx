@@ -16,29 +16,32 @@ export const TelemetryApproval = ({
   setTelemetryValue,
 }: Props) => {
   return (
-    <div className="flex flex-col py-3">
+    <div className="flex flex-col">
       <div className="mr-4" role="form">
-        <div className="mt-2">
+        <p className="mb-4">
           {t(
             'Help us identify bugs and improve Vega Governance by sharing anonymous usage data.'
           )}
-        </div>
-        <div className="flex items-center mt-2">
-          <VegaIcon name={VegaIconNames.EYE_OFF} size={24} />
-          <div className="flex flex-col gap-1 ml-6">
-            <div className="font-semibold">{t('Anonymous')}</div>
-            <div>{t('Your identity is always anonymous on Vega')}</div>
+        </p>
+        <div className="flex items-start mb-2 gap-3">
+          <VegaIcon name={VegaIconNames.EYE_OFF} size={18} />
+          <div className="flex flex-col gap-1">
+            <h6 className="font-semibold">{t('Anonymous')}</h6>
+            <p className="text-muted">
+              {t('Your identity is always anonymous on Vega')}
+            </p>
           </div>
         </div>
-
-        <div className="flex items-center mt-2">
-          <VegaIcon name={VegaIconNames.COG} size={24} />
-          <div className="flex flex-col gap-1 ml-6">
-            <div className="font-semibold">{t('Optional')}</div>
-            <div>{t('You can opt out any time via settings')}</div>
+        <div className="flex items-start mb-4 gap-3">
+          <VegaIcon name={VegaIconNames.COG} size={18} />
+          <div className="flex flex-col gap-1">
+            <h6 className="font-semibold">{t('Optional')}</h6>
+            <p className="text-muted">
+              {t('You can opt out any time via settings')}
+            </p>
           </div>
         </div>
-        <div className="flex flex-col justify-around items-center mt-10 gap-4 w-full px-4">
+        <div className="flex flex-col items-center justify-around gap-2">
           <TradingButton
             onClick={() => setTelemetryValue('false')}
             size="small"

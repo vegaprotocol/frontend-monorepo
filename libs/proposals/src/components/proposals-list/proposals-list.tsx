@@ -35,16 +35,13 @@ export const ProposalsList = ({
   const { columnDefs, defaultColDef } = useColumnDefs();
 
   return (
-    <div className="relative h-full">
-      <AgGrid
-        className="w-full h-full"
-        columnDefs={columnDefs}
-        rowData={filteredData}
-        defaultColDef={defaultColDef}
-        getRowId={({ data }) => data.id}
-        overlayNoRowsTemplate={t('No markets')}
-        components={{ SuccessorMarketRenderer, MarketNameProposalCell }}
-      />
-    </div>
+    <AgGrid
+      columnDefs={columnDefs}
+      rowData={filteredData}
+      defaultColDef={defaultColDef}
+      getRowId={({ data }) => data.id}
+      overlayNoRowsTemplate={t('No markets')}
+      components={{ SuccessorMarketRenderer, MarketNameProposalCell }}
+    />
   );
 };

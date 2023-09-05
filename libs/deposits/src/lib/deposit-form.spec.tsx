@@ -305,9 +305,7 @@ describe('Deposit form', () => {
       target: { value: '8' },
     });
 
-    fireEvent.click(
-      screen.getByText('Deposit', { selector: '[type="submit"]' })
-    );
+    fireEvent.click(screen.getByRole('button', { name: 'Deposit' }));
 
     await waitFor(() => {
       expect(props.submitDeposit).toHaveBeenCalledWith({

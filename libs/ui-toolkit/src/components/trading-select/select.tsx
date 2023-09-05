@@ -2,7 +2,7 @@ import type { Ref, SelectHTMLAttributes } from 'react';
 import { useRef } from 'react';
 import { forwardRef } from 'react';
 import classNames from 'classnames';
-import { Icon } from '..';
+import { Icon, VegaIcon, VegaIconNames } from '..';
 import { defaultSelectElement } from '../../utils/shared';
 import * as SelectPrimitive from '@radix-ui/react-select';
 
@@ -16,7 +16,7 @@ export interface TradingSelectProps
 
 export const TradingSelect = forwardRef<HTMLSelectElement, TradingSelectProps>(
   ({ className, hasError, ...props }, ref) => (
-    <div className="flex items-center relative">
+    <div className="relative flex items-center">
       <select
         ref={ref}
         {...props}
@@ -26,10 +26,9 @@ export const TradingSelect = forwardRef<HTMLSelectElement, TradingSelectProps>(
           'appearance-none rounded-md'
         )}
       />
-      <Icon
-        name="chevron-down"
-        className="absolute right-4 z-10 pointer-events-none"
-      />
+      <span className="absolute z-10 flex items-center pointer-events-none right-2">
+        <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+      </span>
     </div>
   )
 );
@@ -52,7 +51,7 @@ export const TradingRichSelect = forwardRef<
   return (
     <div
       ref={containerRef as Ref<HTMLDivElement>}
-      className="flex items-center relative"
+      className="relative flex items-center"
     >
       <SelectPrimitive.Root {...props} defaultOpen={false}>
         <SelectPrimitive.Trigger
@@ -85,11 +84,11 @@ export const TradingRichSelect = forwardRef<
             side={'bottom'}
             align={'center'}
           >
-            <SelectPrimitive.ScrollUpButton className="flex items-center justify-center py-1 absolute w-full h-6 z-20 bg-gradient-to-t from-transparent to-neutral-50 dark:to-neutral-900">
+            <SelectPrimitive.ScrollUpButton className="absolute z-20 flex items-center justify-center w-full h-6 py-1 bg-gradient-to-t from-transparent to-neutral-50 dark:to-neutral-900">
               <Icon name="chevron-up" />
             </SelectPrimitive.ScrollUpButton>
             <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
-            <SelectPrimitive.ScrollDownButton className="flex items-center justify-center py-1 absolute bottom-0 w-full h-6 z-20 bg-gradient-to-b from-transparent to-neutral-50 dark:to-neutral-900">
+            <SelectPrimitive.ScrollDownButton className="absolute bottom-0 z-20 flex items-center justify-center w-full h-6 py-1 bg-gradient-to-b from-transparent to-neutral-50 dark:to-neutral-900">
               <Icon name="chevron-down" />
             </SelectPrimitive.ScrollDownButton>
           </SelectPrimitive.Content>

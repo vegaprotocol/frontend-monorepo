@@ -61,7 +61,7 @@ describe('Positions', () => {
       'Market',
       'Size / Notional',
       'Entry / Mark',
-      'Margin',
+      'Margin / Leverage',
       'Liquidation',
       'Realised PNL',
       'Unrealised PNL',
