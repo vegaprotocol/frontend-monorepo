@@ -16,7 +16,6 @@ import { ProposalHeader } from './proposal-header';
 import {
   lastWeek,
   nextWeek,
-  mockNetworkParams,
   mockWalletContext,
   createUserVoteQueryMock,
 } from '../../test-helpers/mocks';
@@ -48,7 +47,6 @@ const renderComponent = (
             <ProposalHeader
               proposal={proposal}
               isListItem={isListItem}
-              networkParams={mockNetworkParams}
               voteState={voteState}
             />
           </VegaWalletContext.Provider>
