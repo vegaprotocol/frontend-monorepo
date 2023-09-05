@@ -12,9 +12,10 @@ import {
   TradingFormGroup,
   TradingInput,
   TradingInputError,
-  Button,
   Dialog,
-  Icon,
+  VegaIcon,
+  VegaIconNames,
+  TradingButton,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import type { Order } from '../order-data-provider';
@@ -37,7 +38,7 @@ export const OrderEditDialog = ({
   order,
   onSubmit,
 }: OrderEditDialogProps) => {
-  const headerClassName = 'text-lg font-bold text-black dark:text-white';
+  const headerClassName = 'text-xs font-bold text-black dark:text-white';
   const {
     register,
     formState: { errors },
@@ -57,13 +58,13 @@ export const OrderEditDialog = ({
       open={isOpen}
       onChange={onChange}
       title={t('Edit order')}
-      icon={<Icon name="edit" />}
+      icon={<VegaIcon name={VegaIconNames.EDIT} />}
     >
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         {order.market && (
           <div className="md:col-span-2">
             <p className={headerClassName}>{t(`Market`)}</p>
-            <p>{t(`${order.market.tradableInstrument.instrument.name}`)}</p>
+            <p>{order.market.tradableInstrument.instrument.code}</p>
           </div>
         )}
         {order.type === Schema.OrderType.TYPE_LIMIT && order.market && (
@@ -149,9 +150,7 @@ export const OrderEditDialog = ({
             )}
           </TradingFormGroup>
         </div>
-        <Button variant="primary" size="md" type="submit">
-          {t('Update')}
-        </Button>
+        <TradingButton type="submit">{t('Update')}</TradingButton>
       </form>
     </Dialog>
   );
