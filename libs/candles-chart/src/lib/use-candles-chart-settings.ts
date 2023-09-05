@@ -10,6 +10,7 @@ interface StoredSettings {
   type: ChartType;
   overlays: Overlay[];
   studies: Study[];
+  studySizes: number[];
 }
 
 const DEFAULT_CHART_SETTINGS = {
@@ -17,6 +18,7 @@ const DEFAULT_CHART_SETTINGS = {
   type: ChartType.CANDLE,
   overlays: [Overlay.MOVING_AVERAGE],
   studies: [Study.MACD, Study.VOLUME],
+  studySizes: [],
 };
 
 export const useCandlesChartSettingsStore = create<
@@ -94,6 +96,7 @@ export const useCandlesChartSettings = () => {
     setType: settings.setType,
     setStudies: settings.setStudies,
     setOverlays: settings.setOverlays,
+    studySizes: settings.studySizes,
     merge: settings.merge,
   };
 };

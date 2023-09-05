@@ -1,4 +1,5 @@
 import 'pennant/dist/style.css';
+import debounce from 'lodash/debounce';
 import { CandlestickChart } from 'pennant';
 import { VegaDataSource } from './data-source';
 import { useApolloClient } from '@apollo/client';
@@ -22,8 +23,19 @@ export const CandlesChartContainer = ({
   const { pubKey } = useVegaWallet();
   const { theme } = useThemeSwitcher();
 
-  const { interval, chartType, overlays, studies, merge } =
+  const { interval, chartType, overlays, studies, studySizes, merge } =
     useCandlesChartSettings();
+
+  const handlePaneChange = useMemo(
+    () =>
+      debounce((sizes: number[]) => {
+        // first number is main pain, which is greedy so we don't store it
+        merge({
+          studySizes: sizes.filter((_, i) => i !== 0),
+        });
+      }, 300),
+    [merge]
+  );
 
   const dataSource = useMemo(() => {
     return new VegaDataSource(client, marketId, pubKey);
@@ -42,9 +54,9 @@ export const CandlesChartContainer = ({
               notEnoughDataText: (
                 <span className="text-xs text-center">{t('No data')}</span>
               ),
-              initialNumCandlesToDisplay: Math.floor(
-                width * CANDLES_TO_WIDTH_FACTOR
-              ),
+              initialNumCandlesToDisplay: INITIAL_CANDLES_TO_ZOOM,
+              studySize: 150, // default size
+              studySizes,
             }}
             interval={interval}
             theme={theme}
@@ -54,6 +66,7 @@ export const CandlesChartContainer = ({
                 studies: options.studies,
               });
             }}
+            onPaneChanged={handlePaneChange}
           />
         </div>
       )}
