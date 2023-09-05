@@ -1,6 +1,7 @@
 import type { Provider } from '../oracle-schema';
 import type { OracleMarketSpecFieldsFragment } from '../__generated__/OracleMarketsSpec';
 import { useOracleMarketsSpecQuery } from '../__generated__/OracleMarketsSpec';
+import { getDataSourceSpecForSettlementData } from '../product';
 
 export const useOracleMarkets = (
   provider: Provider
@@ -19,11 +20,9 @@ export const useOracleMarkets = (
   const oracleMarkets = markets?.marketsConnection?.edges
     ?.map((edge) => edge.node)
     ?.filter((node) => {
-      const p = node.tradableInstrument.instrument.product;
+      const { product } = node.tradableInstrument.instrument;
       const sourceType =
-        p.__typename === 'Future' || p.__typename === 'Perpetual'
-          ? p.dataSourceSpecForSettlementData.data.sourceType
-          : undefined;
+        getDataSourceSpecForSettlementData(product)?.data.sourceType;
       if (sourceType?.__typename !== 'DataSourceDefinitionExternal') {
         return false;
       }

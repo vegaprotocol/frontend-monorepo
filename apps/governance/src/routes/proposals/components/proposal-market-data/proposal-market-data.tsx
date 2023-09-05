@@ -12,6 +12,9 @@ import {
   RiskModelInfoPanel,
   RiskParametersInfoPanel,
   SettlementAssetInfoPanel,
+  dataSourceSpecForSettlementSchedule,
+  getDataSourceSpecForSettlementData,
+  getDataSourceSpecForTradingTermination,
 } from '@vegaprotocol/markets';
 import {
   Button,
@@ -58,47 +61,19 @@ export const ProposalMarketData = ({
     return null;
   }
 
-  const settlementData =
-    marketData.tradableInstrument.instrument.product.__typename === 'Future' ||
-    marketData.tradableInstrument.instrument.product.__typename === 'Perpetual'
-      ? (marketData.tradableInstrument.instrument.product
-          .dataSourceSpecForSettlementData.data as DataSourceDefinition)
-      : undefined;
+  const { product } = marketData.tradableInstrument.instrument;
 
+  const settlementData = getDataSourceSpecForSettlementData(product);
+  const settlementScheduleData = dataSourceSpecForSettlementSchedule(product);
+  const terminationData = getDataSourceSpecForTradingTermination(product);
+
+  const parentProduct = parentMarketData?.tradableInstrument.instrument.product;
   const parentSettlementData =
-    parentMarketData?.tradableInstrument.instrument.product.__typename ===
-      'Future' ||
-    parentMarketData?.tradableInstrument.instrument.product.__typename ===
-      'Perpetual'
-      ? parentMarketData?.tradableInstrument.instrument?.product
-          ?.dataSourceSpecForSettlementData?.data
-      : undefined;
-
-  const settlementScheduleData =
-    marketData.tradableInstrument.instrument.product.__typename === 'Perpetual'
-      ? (marketData.tradableInstrument.instrument.product
-          .dataSourceSpecForSettlementSchedule.data as DataSourceDefinition)
-      : undefined;
-
+    parentProduct && getDataSourceSpecForSettlementData(parentProduct);
   const parentSettlementScheduleData =
-    parentMarketData?.tradableInstrument.instrument.product.__typename ===
-    'Perpetual'
-      ? parentMarketData?.tradableInstrument.instrument?.product
-          ?.dataSourceSpecForSettlementSchedule?.data
-      : undefined;
-
-  const terminationData =
-    marketData.tradableInstrument.instrument.product.__typename === 'Future'
-      ? (marketData.tradableInstrument.instrument.product
-          .dataSourceSpecForTradingTermination.data as DataSourceDefinition)
-      : undefined;
-
+    parentProduct && dataSourceSpecForSettlementSchedule(parentProduct);
   const parentTerminationData =
-    parentMarketData?.tradableInstrument.instrument.product.__typename ===
-    'Future'
-      ? parentMarketData?.tradableInstrument.instrument?.product
-          ?.dataSourceSpecForTradingTermination?.data
-      : undefined;
+    parentProduct && getDataSourceSpecForTradingTermination(parentProduct);
 
   // TODO add settlementScheduleData for Perp Proposal
 

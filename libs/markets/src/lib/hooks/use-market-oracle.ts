@@ -4,11 +4,14 @@ import { useMarket } from '../markets-provider';
 
 import { useMemo } from 'react';
 import type { Provider } from '../oracle-schema';
-import type { DataSourceSpecFragment } from '../__generated__';
-import get from 'lodash/get';
+import {
+  getDataSourceSpecForSettlementData,
+  getDataSourceSpecForTradingTermination,
+} from '../product';
+import type { DataSourceFragment } from '../components';
 
 export const getMatchingOracleProvider = (
-  dataSourceSpec: DataSourceSpecFragment,
+  dataSourceSpec: DataSourceFragment['data'],
   providers: Provider[]
 ) => {
   return providers.find((provider) => {
@@ -60,13 +63,22 @@ export const useMarketOracle = (
     if (!providers || !market) {
       return { data: undefined };
     }
-    const dataSourceSpec = get(
-      market.tradableInstrument.instrument.product,
-      dataSourceType
-    );
+    let dataSourceSpec: DataSourceFragment | undefined = undefined;
+    const { product } = market.tradableInstrument.instrument;
+    if (dataSourceType === 'dataSourceSpecForSettlementData') {
+      dataSourceSpec = getDataSourceSpecForSettlementData(product);
+    }
+    if (dataSourceType === 'dataSourceSpecForSettlementSchedule') {
+      dataSourceSpec = getDataSourceSpecForSettlementData(product);
+    }
+    if (dataSourceType === 'dataSourceSpecForTradingTermination') {
+      dataSourceSpec = getDataSourceSpecForTradingTermination(product);
+    }
 
-    const provider = getMatchingOracleProvider(dataSourceSpec.data, providers);
-    if (provider) {
+    const provider =
+      dataSourceSpec &&
+      getMatchingOracleProvider(dataSourceSpec.data, providers);
+    if (provider && dataSourceSpec) {
       return { data: { provider, dataSourceSpecId: dataSourceSpec.id } };
     }
     return { data: undefined };
