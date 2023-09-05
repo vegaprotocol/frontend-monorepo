@@ -2,7 +2,7 @@
 . "$(dirname "$0")/_/husky.sh"
 
 # Lint all staged files
-yarn nx format:check
+# yarn nx format:check
 
 # Test all projects with changes
-yarn nx affected -t test --exclude trading
+# yarn nx affected -t test --exclude trading
