@@ -370,7 +370,7 @@ context(
     });
 
     // 3001-VOTE-092 3004-PMAC-001 3004-PMAC-003
-    it.only('Able to submit update market proposal and vote for proposal', function () {
+    it('Able to submit update market proposal and vote for proposal', function () {
       vegaWalletFaucetAssetsWithoutCheck(
         fUSDCId,
         '1000000',
