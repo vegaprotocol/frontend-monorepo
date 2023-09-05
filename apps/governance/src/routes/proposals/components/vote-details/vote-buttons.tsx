@@ -190,14 +190,15 @@ export const VoteButtons = ({
         (voteState === VoteState.Yes || voteState === VoteState.No) && (
           <p data-testid="you-voted">
             <span>{t('youVoted')}:</span>{' '}
-            <span className="text-white font-bold">
+            <span className="mx-1 text-white font-bold uppercase">
               {t(`voteState_${voteState}`)}
             </span>{' '}
             {voteDatetime ? (
-              <span>{format(voteDatetime, DATE_FORMAT_LONG)}. </span>
+              <span>on {format(voteDatetime, DATE_FORMAT_LONG)}. </span>
             ) : null}
             {proposalVotable ? (
               <ButtonLink
+                className="text-white"
                 data-testid="change-vote-button"
                 onClick={() => {
                   setChangeVote(true);
