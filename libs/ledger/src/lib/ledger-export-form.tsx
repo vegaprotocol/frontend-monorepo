@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { z } from 'zod';
 import {
-  Button,
+  TradingButton,
   Loader,
   TradingFormGroup,
   TradingInput,
@@ -157,15 +157,14 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
             <Loader size="small" />
           </div>
         )}
-        <Button
-          variant="primary"
+        <TradingButton
           fill
           disabled={disabled}
           type="submit"
           data-testid="ledger-download-button"
         >
           {t('Download')}
-        </Button>
+        </TradingButton>
       </div>
     </form>
   );

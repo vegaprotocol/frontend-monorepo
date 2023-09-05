@@ -1,13 +1,14 @@
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItemIndicator,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
+  TradingDropdown,
+  TradingDropdownContent,
+  TradingDropdownItemIndicator,
+  TradingDropdownRadioGroup,
+  TradingDropdownRadioItem,
+  TradingDropdownTrigger,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
+import { MarketSelectorButton } from './market-selector-button';
 
 export const Sort = {
   Gained: 'Gained',
@@ -44,24 +45,23 @@ export const SortDropdown = ({
   onSelect: (sort: SortType) => void;
 }) => {
   return (
-    <DropdownMenu
+    <TradingDropdown
       trigger={
-        <DropdownMenuTrigger data-testid="sort-trigger">
-          <span className="flex items-center justify-between gap-1">
+        <TradingDropdownTrigger data-testid="sort-trigger">
+          <MarketSelectorButton>
             {SortTypeMapping[currentSort]}
-            <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
-          </span>
-        </DropdownMenuTrigger>
+          </MarketSelectorButton>
+        </TradingDropdownTrigger>
       }
     >
-      <DropdownMenuContent>
-        <DropdownMenuRadioGroup
+      <TradingDropdownContent>
+        <TradingDropdownRadioGroup
           value={currentSort}
           onValueChange={(value) => onSelect(value as SortType)}
         >
           {Object.keys(Sort).map((key) => {
             return (
-              <DropdownMenuRadioItem
+              <TradingDropdownRadioItem
                 inset
                 key={key}
                 value={key}
@@ -71,12 +71,12 @@ export const SortDropdown = ({
                   <VegaIcon name={SortIconMapping[key as SortType]} />{' '}
                   {SortTypeMapping[key as SortType]}
                 </span>
-                <DropdownMenuItemIndicator />
-              </DropdownMenuRadioItem>
+                <TradingDropdownItemIndicator />
+              </TradingDropdownRadioItem>
             );
           })}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </TradingDropdownRadioGroup>
+      </TradingDropdownContent>
+    </TradingDropdown>
   );
 };

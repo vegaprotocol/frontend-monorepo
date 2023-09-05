@@ -10,7 +10,7 @@ import { useCallback } from 'react';
 import { useLayoutEffect } from 'react';
 import { useRef } from 'react';
 import { Intent } from '../../utils/intent';
-import { Icon } from '../icon';
+import { Icon, VegaIcon, VegaIconNames } from '../icon';
 import { Loader } from '../loader';
 import { t } from '@vegaprotocol/i18n';
 
@@ -317,18 +317,14 @@ export const Toast = ({
         }
       )}
     >
-      <div className="flex relative">
+      <div className="relative flex">
         <button
           type="button"
           data-testid="toast-close"
           onClick={closeToast}
-          className="absolute p-[8px] top-[3px] right-[3px] z-20"
+          className="absolute top-0 right-0 z-20 flex items-center p-2"
         >
-          <Icon
-            name="cross"
-            size={3}
-            className="!block dark:text-white !w-[11px] !h-[11px]"
-          />
+          <VegaIcon name={VegaIconNames.CROSS} size={12} />
         </button>
         <div
           data-testid="toast-accent"
@@ -348,7 +344,7 @@ export const Toast = ({
               // red
               'bg-vega-red-500 text-vega-red-600': intent === Intent.Danger,
             },
-            'w-8 p-[9px]',
+            'w-8 p-2',
             'flex justify-center'
           )}
         >

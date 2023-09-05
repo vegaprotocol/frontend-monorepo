@@ -211,7 +211,7 @@ const MultipleReadyToWithdrawToastContent = ({
           count.toString()
         )}
       </p>
-      <p className="mt-1">
+      <p className="mt-2">
         <Button
           data-testid="toast-view-withdrawals"
           size="xs"
@@ -243,7 +243,7 @@ const SingleReadyToWithdrawToastContent = ({
     },
   });
   const completeButton = (
-    <p className="mt-1">
+    <p className="mt-2">
       <Button
         data-testid="toast-complete-withdrawal"
         size="xs"

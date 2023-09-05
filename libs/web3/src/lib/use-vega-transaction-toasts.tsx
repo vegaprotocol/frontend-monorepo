@@ -598,7 +598,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
 
   if (isWithdrawTransaction(tx.body)) {
     const completeWithdrawalButton = tx.withdrawal && (
-      <p className="mt-1">
+      <p className="mt-2">
         <Button
           data-testid="toast-complete-withdrawal"
           size="xs"
