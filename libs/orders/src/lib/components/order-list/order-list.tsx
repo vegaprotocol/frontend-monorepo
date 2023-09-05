@@ -10,7 +10,7 @@ import {
   ActionsDropdown,
   ButtonLink,
   TradingDropdownCopyItem,
-  DropdownMenuItem,
+  TradingDropdownItem,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -271,19 +271,20 @@ export const OrderListTable = memo<
           {
             colId: 'amend',
             ...COL_DEFS.actions,
-            minWidth: showAllActions ? 90 : COL_DEFS.actions.minWidth,
-            maxWidth: showAllActions ? 90 : COL_DEFS.actions.minWidth,
+            minWidth: showAllActions ? 80 : COL_DEFS.actions.minWidth,
+            maxWidth: showAllActions ? 80 : COL_DEFS.actions.minWidth,
             cellRenderer: ({ data }: { data?: Order }) => {
               if (!data) return null;
 
               return (
-                <div className="flex gap-2 items-center justify-end">
+                <div className="flex items-center justify-end gap-2">
                   {isOrderAmendable(data) && !props.isReadOnly && (
                     <>
                       {!data.icebergOrder && (
                         <ButtonLink
                           data-testid="edit"
                           onClick={() => onEdit(data)}
+                          title={t('Edit order')}
                         >
                           <VegaIcon name={VegaIconNames.EDIT} size={16} />
                         </ButtonLink>
@@ -291,6 +292,7 @@ export const OrderListTable = memo<
                       <ButtonLink
                         data-testid="cancel"
                         onClick={() => onCancel(data)}
+                        title={t('Cancel order')}
                       >
                         <VegaIcon name={VegaIconNames.CROSS} size={16} />
                       </ButtonLink>
@@ -301,14 +303,14 @@ export const OrderListTable = memo<
                       value={data.id}
                       text={t('Copy order ID')}
                     />
-                    <DropdownMenuItem
+                    <TradingDropdownItem
                       key={'view-order'}
                       data-testid="view-order"
                       onClick={() => onView(data)}
                     >
                       <VegaIcon name={VegaIconNames.INFO} size={16} />
                       {t('View order details')}
-                    </DropdownMenuItem>
+                    </TradingDropdownItem>
                   </ActionsDropdown>
                 </div>
               );

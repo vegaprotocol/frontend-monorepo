@@ -12,7 +12,7 @@ import {
   ButtonLink,
   VegaIcon,
   VegaIconNames,
-  DropdownMenuItem,
+  TradingDropdownItem,
   TradingDropdownCopyItem,
   Pill,
 } from '@vegaprotocol/ui-toolkit';
@@ -246,7 +246,7 @@ export const StopOrdersTable = memo(
             if (!data) return null;
 
             return (
-              <div className="flex gap-2 items-center justify-end">
+              <div className="flex items-center justify-end gap-2">
                 {data.status === Schema.StopOrderStatus.STATUS_PENDING &&
                   !props.isReadOnly && (
                     <ButtonLink
@@ -263,7 +263,7 @@ export const StopOrdersTable = memo(
                         value={data.order.id}
                         text={t('Copy order ID')}
                       />
-                      <DropdownMenuItem
+                      <TradingDropdownItem
                         key={'view-order'}
                         data-testid="view-order"
                         onClick={() =>
@@ -273,7 +273,7 @@ export const StopOrdersTable = memo(
                       >
                         <VegaIcon name={VegaIconNames.INFO} size={16} />
                         {t('View order details')}
-                      </DropdownMenuItem>
+                      </TradingDropdownItem>
                     </ActionsDropdown>
                   )}
               </div>

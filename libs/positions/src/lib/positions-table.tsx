@@ -292,7 +292,7 @@ export const PositionsTable = ({
             },
           },
           {
-            headerName: t('Margin'),
+            headerName: t('Margin / Leverage'),
             colId: 'margin',
             type: 'rightAligned',
             cellClass: 'font-mono text-right',
@@ -456,13 +456,14 @@ export const PositionsTable = ({
                 ...COL_DEFS.actions,
                 cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {
                   return (
-                    <div className="flex gap-2 items-center justify-end">
+                    <div className="flex items-center justify-end gap-2">
                       {data?.openVolume &&
                       data?.openVolume !== '0' &&
                       data.partyId === pubKey ? (
                         <ButtonLink
                           data-testid="close-position"
                           onClick={() => data && onClose(data)}
+                          title={t('Close position')}
                         >
                           <VegaIcon name={VegaIconNames.CROSS} size={16} />
                         </ButtonLink>
@@ -548,9 +549,9 @@ const WarningCell = ({
   showIcon?: boolean;
 }) => {
   return (
-    <div className="flex justify-end items-center">
+    <div className="flex items-center justify-end">
       {showIcon && (
-        <span className="text-black dark:text-white mr-2">
+        <span className="mr-2 text-black dark:text-white">
           <VegaIcon name={VegaIconNames.EXCLAIMATION_MARK} size={12} />
         </span>
       )}

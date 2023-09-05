@@ -11,9 +11,13 @@ import type {
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { COL_DEFS } from '@vegaprotocol/datagrid';
-import { Button, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-
-import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
+import {
+  Intent,
+  TradingButton,
+  VegaIcon,
+  VegaIconNames,
+  TooltipCellComponent,
+} from '@vegaprotocol/ui-toolkit';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import type {
   IGetRowsParams,
@@ -186,7 +190,7 @@ export const AccountTable = ({
           ) : (
             <>
               <span className="underline">{valueFormatted}</span>
-              <span className="ml-2 inline-block w-14 text-muted">
+              <span className="inline-block ml-2 w-14 text-muted">
                 {t('0.00%')}
               </span>
             </>
@@ -248,26 +252,26 @@ export const AccountTable = ({
         colId: 'accounts-actions',
         field: 'asset.id',
         ...COL_DEFS.actions,
-        minWidth: showDepositButton ? 130 : COL_DEFS.actions.minWidth,
-        maxWidth: showDepositButton ? 130 : COL_DEFS.actions.maxWidth,
+        minWidth: showDepositButton ? 105 : COL_DEFS.actions.minWidth,
+        maxWidth: showDepositButton ? 105 : COL_DEFS.actions.maxWidth,
         cellRenderer: ({
           value: assetId,
           node,
         }: VegaICellRendererParams<AccountFields, 'asset.id'>) => {
           if (!assetId) return null;
-          if (node.rowPinned && node.data?.total === '0') {
+          if (node.rowPinned && node.data?.balance === '0') {
             return (
               <CenteredGridCellWrapper className="h-[30px] justify-end py-1">
-                <Button
-                  size="xs"
-                  variant="primary"
+                <TradingButton
+                  size="extra-small"
+                  intent={Intent.Primary}
                   data-testid="deposit"
                   onClick={() => {
                     onClickDeposit && onClickDeposit(assetId);
                   }}
                 >
                   <VegaIcon name={VegaIconNames.DEPOSIT} /> {t('Deposit')}
-                </Button>
+                </TradingButton>
               </CenteredGridCellWrapper>
             );
           }

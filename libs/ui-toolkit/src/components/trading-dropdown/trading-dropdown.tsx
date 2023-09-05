@@ -146,7 +146,7 @@ export const TradingDropdownItemIndicator = forwardRef<
   <DropdownMenuPrimitive.ItemIndicator
     {...itemIndicatorProps}
     ref={forwardedRef}
-    className="flex-end text-vega-green"
+    className="flex-end text-vega-green-600 dark:text-vega-green"
   >
     <VegaIcon name={VegaIconNames.TICK} />
   </DropdownMenuPrimitive.ItemIndicator>

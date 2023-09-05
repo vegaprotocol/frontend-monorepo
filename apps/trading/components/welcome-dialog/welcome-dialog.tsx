@@ -92,7 +92,7 @@ export const WelcomeDialog = () => {
       intent: Intent.Primary,
       content: (
         <>
-          <h3 className="text-sm uppercase mb-1">
+          <h3 className="mb-1 text-sm uppercase">
             {t('Improve vega console')}
           </h3>
           <TelemetryApproval
