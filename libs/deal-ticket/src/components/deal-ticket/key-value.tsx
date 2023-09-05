@@ -3,7 +3,8 @@ import classnames from 'classnames';
 import type { ReactNode } from 'react';
 
 export interface KeyValuePros {
-  label: string;
+  id?: string;
+  label: ReactNode;
   value?: string | null | undefined;
   symbol: string;
   indent?: boolean | undefined;
@@ -13,6 +14,7 @@ export interface KeyValuePros {
 }
 
 export const KeyValue = ({
+  id,
   label,
   value,
   labelDescription,
@@ -31,9 +33,11 @@ export const KeyValue = ({
   );
   return (
     <div
-      data-testid={
-        'deal-ticket-fee-' + label.toLocaleLowerCase().replace(/\s/g, '-')
-      }
+      data-testid={`deal-ticket-fee-${
+        !id && typeof label === 'string'
+          ? label.toLocaleLowerCase().replace(/\s/g, '-')
+          : id
+      }`}
       key={typeof label === 'string' ? label : 'value-dropdown'}
       className={classnames(
         'text-xs mt-2 flex justify-between items-center gap-4 flex-wrap',
