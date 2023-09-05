@@ -5,9 +5,8 @@ import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import { ProposalDescription } from '../proposal-description';
 import { ProposalChangeTable } from '../proposal-change-table';
 import { ProposalJson } from '../proposal-json';
-import { ProposalVotesTable } from '../proposal-votes-table';
 import { ProposalAssetDetails } from '../proposal-asset-details';
-import { VoteDetails } from '../vote-details';
+import { UserVote } from '../vote-details';
 import { ListAsset } from '../list-asset';
 import Routes from '../../../routes';
 import { ProposalMarketData } from '../proposal-market-data';
@@ -22,14 +21,6 @@ import type { NetworkParamsResult } from '@vegaprotocol/network-parameters';
 import { useVoteSubmit } from '@vegaprotocol/proposals';
 import { useUserVote } from '../vote-details/use-user-vote';
 
-export enum ProposalType {
-  PROPOSAL_NEW_MARKET = 'PROPOSAL_NEW_MARKET',
-  PROPOSAL_UPDATE_MARKET = 'PROPOSAL_UPDATE_MARKET',
-  PROPOSAL_NEW_ASSET = 'PROPOSAL_NEW_ASSET',
-  PROPOSAL_UPDATE_ASSET = 'PROPOSAL_UPDATE_ASSET',
-  PROPOSAL_NETWORK_PARAMETER = 'PROPOSAL_NETWORK_PARAMETER',
-  PROPOSAL_FREEFORM = 'PROPOSAL_FREEFORM',
-}
 export interface ProposalProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
   networkParams: Partial<NetworkParamsResult>;
@@ -80,39 +71,32 @@ export const Proposal = ({
   }
 
   let minVoterBalance = null;
-  let proposalType = null;
 
   if (networkParams) {
     switch (proposal.terms.change.__typename) {
       case 'NewMarket':
         minVoterBalance =
           networkParams.governance_proposal_market_minVoterBalance;
-        proposalType = ProposalType.PROPOSAL_NEW_MARKET;
         break;
       case 'UpdateMarket':
         minVoterBalance =
           networkParams.governance_proposal_updateMarket_minVoterBalance;
-        proposalType = ProposalType.PROPOSAL_UPDATE_MARKET;
         break;
       case 'NewAsset':
         minVoterBalance =
           networkParams.governance_proposal_asset_minVoterBalance;
-        proposalType = ProposalType.PROPOSAL_NEW_ASSET;
         break;
       case 'UpdateAsset':
         minVoterBalance =
           networkParams.governance_proposal_updateAsset_minVoterBalance;
-        proposalType = ProposalType.PROPOSAL_UPDATE_ASSET;
         break;
       case 'UpdateNetworkParameter':
         minVoterBalance =
           networkParams.governance_proposal_updateNetParam_minVoterBalance;
-        proposalType = ProposalType.PROPOSAL_NETWORK_PARAMETER;
         break;
       case 'NewFreeform':
         minVoterBalance =
           networkParams.governance_proposal_freeform_minVoterBalance;
-        proposalType = ProposalType.PROPOSAL_FREEFORM;
         break;
     }
   }
@@ -140,91 +124,81 @@ export const Proposal = ({
       <ProposalHeader
         proposal={proposal}
         isListItem={false}
-        networkParams={networkParams}
         voteState={voteState}
       />
 
-      <div id="details">
-        <div className="my-10">
-          <ProposalChangeTable proposal={proposal} />
-        </div>
-
-        {proposal.terms.change.__typename === 'NewAsset' &&
-        proposal.terms.change.source.__typename === 'ERC20' &&
-        proposal.id ? (
-          <ListAsset
-            assetId={proposal.id}
-            withdrawalThreshold={proposal.terms.change.source.withdrawThreshold}
-            lifetimeLimit={proposal.terms.change.source.lifetimeLimit}
-          />
-        ) : null}
-
-        <div className="mb-4">
-          <ProposalDescription description={proposal.rationale.description} />
-        </div>
-
-        {newMarketData && (
-          <div className="mb-4">
-            <ProposalMarketData
-              marketData={newMarketData}
-              parentMarketData={parentMarketData ? parentMarketData : undefined}
-            />
-          </div>
-        )}
-
-        {proposal.terms.change.__typename === 'UpdateMarket' && (
-          <div className="mb-4">
-            <ProposalMarketChanges
-              originalProposal={
-                originalMarketProposalRestData?.data?.proposal?.terms?.newMarket
-                  ?.changes || {}
-              }
-              latestEnactedProposal={
-                mostRecentlyEnactedAssociatedMarketProposal?.node?.proposal
-                  ?.terms?.updateMarket?.changes || {}
-              }
-              updatedProposal={
-                restData?.data?.proposal?.terms?.updateMarket?.changes || {}
-              }
-            />
-          </div>
-        )}
-
-        {(proposal.terms.change.__typename === 'NewAsset' ||
-          proposal.terms.change.__typename === 'UpdateAsset') &&
-          asset && (
-            <div className="mb-4">
-              <ProposalAssetDetails asset={asset} />
-            </div>
-          )}
-
-        <div className="mb-6">
-          <ProposalJson proposal={restData?.data?.proposal} />
-        </div>
+      <div className="my-10">
+        <ProposalChangeTable proposal={proposal} />
       </div>
 
-      <div id="voting">
-        <div className="mb-10">
-          <RoundedWrapper paddingBottom={true}>
-            <VoteDetails
-              proposal={proposal}
-              proposalType={proposalType}
-              minVoterBalance={minVoterBalance}
-              spamProtectionMinTokens={
-                networkParams?.spam_protection_voting_min_tokens
-              }
-              submit={submit}
-              dialog={Dialog}
-              transaction={transaction}
-              voteState={voteState}
-              voteDatetime={voteDatetime}
-            />
-          </RoundedWrapper>
-        </div>
+      {proposal.terms.change.__typename === 'NewAsset' &&
+      proposal.terms.change.source.__typename === 'ERC20' &&
+      proposal.id ? (
+        <ListAsset
+          assetId={proposal.id}
+          withdrawalThreshold={proposal.terms.change.source.withdrawThreshold}
+          lifetimeLimit={proposal.terms.change.source.lifetimeLimit}
+        />
+      ) : null}
 
+      <div className="mb-4">
+        <ProposalDescription description={proposal.rationale.description} />
+      </div>
+
+      {newMarketData && (
         <div className="mb-4">
-          <ProposalVotesTable proposal={proposal} proposalType={proposalType} />
+          <ProposalMarketData
+            marketData={newMarketData}
+            parentMarketData={parentMarketData ? parentMarketData : undefined}
+          />
         </div>
+      )}
+
+      {proposal.terms.change.__typename === 'UpdateMarket' && (
+        <div className="mb-4">
+          <ProposalMarketChanges
+            originalProposal={
+              originalMarketProposalRestData?.data?.proposal?.terms?.newMarket
+                ?.changes || {}
+            }
+            latestEnactedProposal={
+              mostRecentlyEnactedAssociatedMarketProposal?.node?.proposal?.terms
+                ?.updateMarket?.changes || {}
+            }
+            updatedProposal={
+              restData?.data?.proposal?.terms?.updateMarket?.changes || {}
+            }
+          />
+        </div>
+      )}
+
+      {(proposal.terms.change.__typename === 'NewAsset' ||
+        proposal.terms.change.__typename === 'UpdateAsset') &&
+        asset && (
+          <div className="mb-4">
+            <ProposalAssetDetails asset={asset} />
+          </div>
+        )}
+
+      <div className="mb-10">
+        <RoundedWrapper paddingBottom={true}>
+          <UserVote
+            proposal={proposal}
+            minVoterBalance={minVoterBalance}
+            spamProtectionMinTokens={
+              networkParams?.spam_protection_voting_min_tokens
+            }
+            submit={submit}
+            dialog={Dialog}
+            transaction={transaction}
+            voteState={voteState}
+            voteDatetime={voteDatetime}
+          />
+        </RoundedWrapper>
+      </div>
+
+      <div className="mb-6">
+        <ProposalJson proposal={restData?.data?.proposal} />
       </div>
     </section>
   );
