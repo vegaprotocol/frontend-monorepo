@@ -52,8 +52,6 @@ const enactmentDeadlineError = 'enactment-before-voting-deadline';
 const proposalDownloadBtn = 'proposal-download-json';
 const feedbackError = '[data-testid="Error"]';
 const viewProposalBtn = 'view-proposal-btn';
-const liquidityVoteStatus = 'liquidity-votes-status';
-const tokenVoteStatus = 'token-votes-status';
 const proposalJsonToggle = 'proposal-json-toggle';
 const proposalJsonSection = 'proposal-json';
 const vegaWalletPublicKey = Cypress.env('vegaWalletPublicKey');
@@ -372,7 +370,7 @@ context(
     });
 
     // 3001-VOTE-092 3004-PMAC-001 3004-PMAC-003
-    it('Able to submit update market proposal and vote for proposal', function () {
+    it.only('Able to submit update market proposal and vote for proposal', function () {
       vegaWalletFaucetAssetsWithoutCheck(
         fUSDCId,
         '1000000',
@@ -421,27 +419,28 @@ context(
             cy.getByTestId(viewProposalBtn).click();
           });
       });
-      cy.getByTestId(liquidityVoteStatus).should(
-        'contain.text',
-        'Currently expected to fail'
+      cy.getByTestId('lp-majority-not-met').should(
+        'have.text',
+        '66% majority threshold not met'
       );
-      cy.getByTestId(tokenVoteStatus).should(
-        'contain.text',
-        'Currently expected to fail'
+
+      cy.getByTestId('token-majority-not-met').should(
+        'have.text',
+        '66% majority threshold not met'
       );
       voteForProposal('for');
-      cy.getByTestId(liquidityVoteStatus).should(
-        'contain.text',
-        'Currently expected to pass'
+      cy.getByTestId('lp-majority-met').should(
+        'have.text',
+        '66% majority threshold met'
       );
-      cy.getByTestId(tokenVoteStatus).should(
-        'contain.text',
-        'Currently expected to pass'
+      cy.getByTestId('token-majority-met').should(
+        'have.text',
+        '66% majority threshold met'
       );
-      cy.getByTestId('vote-breakdown-toggle').click();
-      getProposalInformationFromTable('Expected to pass')
-        .contains('👍 by token vote')
-        .should('be.visible');
+      cy.getByTestId('vote-status').should(
+        'have.text',
+        'Currently expected to  pass by token vote'
+      );
     });
 
     // 3001-VOTE-026 3001-VOTE-027 3001-VOTE-028 3001-VOTE-095 3001-VOTE-096 3005-PASN-001

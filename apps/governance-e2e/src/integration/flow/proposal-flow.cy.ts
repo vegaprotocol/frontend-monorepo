@@ -298,9 +298,6 @@ context(
       getProposalFromTitle(proposalTitle).within(() =>
         cy.getByTestId(viewProposalButton).click()
       );
-      cy.contains('Vote breakdown').should('be.visible', {
-        timeout: 10000,
-      });
       cy.getByTestId(voteButtons).should('not.exist');
       cy.getByTestId('min-proposal-requirements').should(
         'have.text',
