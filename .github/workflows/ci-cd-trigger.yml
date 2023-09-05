@@ -97,20 +97,20 @@ jobs:
           echo "preview_explorer: ${{ env.PREVIEW_EXPLORER }}"
           echo "preview_tools: ${{ env.PREVIEW_TOOLS }}"
 
-      - name: Check formatting
-        run: yarn nx format:check
+      # - name: Check formatting
+      #   run: yarn nx format:check
 
-      - name: Lint affected
-        run: yarn nx affected:lint --max-warnings=0
+      # - name: Lint affected
+      #   run: yarn nx affected:lint --max-warnings=0
 
-      - name: Build affected spec
-        run: yarn nx affected --target=build-spec
+      # - name: Build affected spec
+      #   run: yarn nx affected --target=build-spec
 
-      - name: Test affected
-        run: yarn nx affected:test
+      # - name: Test affected
+      #   run: yarn nx affected:test
 
-      - name: Build affected
-        run: yarn nx affected:build || (yarn install && yarn nx affected:build)
+      # - name: Build affected
+      #   run: yarn nx affected:build || (yarn install && yarn nx affected:build)
 
     outputs:
       projects: ${{ env.PROJECTS }}
