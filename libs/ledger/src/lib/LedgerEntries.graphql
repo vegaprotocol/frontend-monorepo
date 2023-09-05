@@ -1,0 +1,47 @@
+fragment LedgerEntry on AggregatedLedgerEntry {
+  vegaTime
+  quantity
+  assetId
+  transferType
+  toAccountType
+  toAccountMarketId
+  toAccountPartyId
+  toAccountBalance
+  fromAccountType
+  fromAccountMarketId
+  fromAccountPartyId
+  fromAccountBalance
+}
+
+query LedgerEntries(
+  $partyId: ID!
+  $pagination: Pagination
+  $dateRange: DateRange
+  $fromAccountType: [AccountType!]
+  $toAccountType: [AccountType!]
+) {
+  ledgerEntries(
+    filter: {
+      FromAccountFilter: {
+        partyIds: [$partyId]
+        accountTypes: $fromAccountType
+      }
+      ToAccountFilter: { partyIds: [$partyId], accountTypes: $toAccountType }
+    }
+    pagination: $pagination
+    dateRange: $dateRange
+  ) {
+    edges {
+      node {
+        ...LedgerEntry
+      }
+      cursor
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}

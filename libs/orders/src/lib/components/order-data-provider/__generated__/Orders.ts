@@ -3,14 +3,14 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type OrderFieldsFragment = { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, postOnly?: boolean | null, reduceOnly?: boolean | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null };
+export type OrderFieldsFragment = { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, postOnly?: boolean | null, reduceOnly?: boolean | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null };
 
 export type OrderByIdQueryVariables = Types.Exact<{
   orderId: Types.Scalars['ID'];
 }>;
 
 
-export type OrderByIdQuery = { __typename?: 'Query', orderByID: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, postOnly?: boolean | null, reduceOnly?: boolean | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null } };
+export type OrderByIdQuery = { __typename?: 'Query', orderByID: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, postOnly?: boolean | null, reduceOnly?: boolean | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null } };
 
 export type OrdersQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -20,9 +20,9 @@ export type OrdersQueryVariables = Types.Exact<{
 }>;
 
 
-export type OrdersQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, ordersConnection?: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, postOnly?: boolean | null, reduceOnly?: boolean | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } | null } | null } | null };
+export type OrdersQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, ordersConnection?: { __typename?: 'OrderConnection', edges?: Array<{ __typename?: 'OrderEdge', cursor?: string | null, node: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, postOnly?: boolean | null, reduceOnly?: boolean | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } | null } | null } | null };
 
-export type OrderUpdateFieldsFragment = { __typename?: 'OrderUpdate', id: string, marketId: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, liquidityProvisionId?: string | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null };
+export type OrderUpdateFieldsFragment = { __typename?: 'OrderUpdate', id: string, marketId: string, type?: Types.OrderType | null, side: Types.Side, size: string, remaining: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, liquidityProvisionId?: string | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null };
 
 export type OrdersUpdateSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -30,55 +30,8 @@ export type OrdersUpdateSubscriptionVariables = Types.Exact<{
 }>;
 
 
-export type OrdersUpdateSubscription = { __typename?: 'Subscription', orders?: Array<{ __typename?: 'OrderUpdate', id: string, marketId: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, liquidityProvisionId?: string | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null }> | null };
+export type OrdersUpdateSubscription = { __typename?: 'Subscription', orders?: Array<{ __typename?: 'OrderUpdate', id: string, marketId: string, type?: Types.OrderType | null, side: Types.Side, size: string, remaining: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, liquidityProvisionId?: string | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null }> | null };
 
-export type OrderSubmissionFieldsFragment = { __typename?: 'OrderSubmission', marketId: string, price: string, size: string, side: Types.Side, timeInForce: Types.OrderTimeInForce, expiresAt: any, type: Types.OrderType, reference?: string | null, postOnly?: boolean | null, reduceOnly?: boolean | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null };
-
-export type StopOrderFieldsFragment = { __typename?: 'StopOrder', id: string, ocoLinkId?: string | null, expiresAt?: any | null, expiryStrategy?: Types.StopOrderExpiryStrategy | null, triggerDirection: Types.StopOrderTriggerDirection, status: Types.StopOrderStatus, createdAt: any, updatedAt?: any | null, partyId: string, marketId: string, order?: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, postOnly?: boolean | null, reduceOnly?: boolean | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null } | null, trigger: { __typename?: 'StopOrderPrice', price: string } | { __typename?: 'StopOrderTrailingPercentOffset', trailingPercentOffset: string }, submission: { __typename?: 'OrderSubmission', marketId: string, price: string, size: string, side: Types.Side, timeInForce: Types.OrderTimeInForce, expiresAt: any, type: Types.OrderType, reference?: string | null, postOnly?: boolean | null, reduceOnly?: boolean | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null } };
-
-export type StopOrdersQueryVariables = Types.Exact<{
-  partyId: Types.Scalars['ID'];
-}>;
-
-
-export type StopOrdersQuery = { __typename?: 'Query', stopOrders?: { __typename?: 'StopOrderConnection', edges?: Array<{ __typename?: 'StopOrderEdge', node?: { __typename?: 'StopOrder', id: string, ocoLinkId?: string | null, expiresAt?: any | null, expiryStrategy?: Types.StopOrderExpiryStrategy | null, triggerDirection: Types.StopOrderTriggerDirection, status: Types.StopOrderStatus, createdAt: any, updatedAt?: any | null, partyId: string, marketId: string, order?: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, postOnly?: boolean | null, reduceOnly?: boolean | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null } | null, trigger: { __typename?: 'StopOrderPrice', price: string } | { __typename?: 'StopOrderTrailingPercentOffset', trailingPercentOffset: string }, submission: { __typename?: 'OrderSubmission', marketId: string, price: string, size: string, side: Types.Side, timeInForce: Types.OrderTimeInForce, expiresAt: any, type: Types.OrderType, reference?: string | null, postOnly?: boolean | null, reduceOnly?: boolean | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null } } | null }> | null } | null };
-
-export type StopOrderByIdQueryVariables = Types.Exact<{
-  stopOrderId: Types.Scalars['ID'];
-}>;
-
-
-export type StopOrderByIdQuery = { __typename?: 'Query', stopOrder?: { __typename?: 'StopOrder', id: string, ocoLinkId?: string | null, expiresAt?: any | null, expiryStrategy?: Types.StopOrderExpiryStrategy | null, triggerDirection: Types.StopOrderTriggerDirection, status: Types.StopOrderStatus, createdAt: any, updatedAt?: any | null, partyId: string, marketId: string, order?: { __typename?: 'Order', id: string, type?: Types.OrderType | null, side: Types.Side, size: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, price: string, timeInForce: Types.OrderTimeInForce, remaining: string, expiresAt?: any | null, createdAt: any, updatedAt?: any | null, postOnly?: boolean | null, reduceOnly?: boolean | null, market: { __typename?: 'Market', id: string }, liquidityProvision?: { __typename: 'LiquidityProvision' } | null, peggedOrder?: { __typename: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null, icebergOrder?: { __typename: 'IcebergOrder', peakSize: string, minimumVisibleSize: string, reservedRemaining: string } | null } | null, trigger: { __typename?: 'StopOrderPrice', price: string } | { __typename?: 'StopOrderTrailingPercentOffset', trailingPercentOffset: string }, submission: { __typename?: 'OrderSubmission', marketId: string, price: string, size: string, side: Types.Side, timeInForce: Types.OrderTimeInForce, expiresAt: any, type: Types.OrderType, reference?: string | null, postOnly?: boolean | null, reduceOnly?: boolean | null, peggedOrder?: { __typename?: 'PeggedOrder', reference: Types.PeggedReference, offset: string } | null } } | null };
-
-export const OrderUpdateFieldsFragmentDoc = gql`
-    fragment OrderUpdateFields on OrderUpdate {
-  id
-  marketId
-  type
-  side
-  size
-  status
-  rejectionReason
-  price
-  timeInForce
-  remaining
-  expiresAt
-  createdAt
-  updatedAt
-  liquidityProvisionId
-  peggedOrder {
-    __typename
-    reference
-    offset
-  }
-  icebergOrder {
-    __typename
-    peakSize
-    minimumVisibleSize
-    reservedRemaining
-  }
-}
-    `;
 export const OrderFieldsFragmentDoc = gql`
     fragment OrderFields on Order {
   id
@@ -106,61 +59,32 @@ export const OrderFieldsFragmentDoc = gql`
     reference
     offset
   }
-  icebergOrder {
-    __typename
-    peakSize
-    minimumVisibleSize
-    reservedRemaining
-  }
 }
     `;
-export const OrderSubmissionFieldsFragmentDoc = gql`
-    fragment OrderSubmissionFields on OrderSubmission {
+export const OrderUpdateFieldsFragmentDoc = gql`
+    fragment OrderUpdateFields on OrderUpdate {
+  id
   marketId
-  price
-  size
-  side
-  timeInForce
-  expiresAt
   type
-  reference
+  side
+  size
+  remaining
+  status
+  rejectionReason
+  price
+  timeInForce
+  remaining
+  expiresAt
+  createdAt
+  updatedAt
+  liquidityProvisionId
   peggedOrder {
+    __typename
     reference
     offset
   }
-  postOnly
-  reduceOnly
 }
     `;
-export const StopOrderFieldsFragmentDoc = gql`
-    fragment StopOrderFields on StopOrder {
-  id
-  ocoLinkId
-  expiresAt
-  expiryStrategy
-  triggerDirection
-  status
-  createdAt
-  updatedAt
-  partyId
-  marketId
-  order {
-    ...OrderFields
-  }
-  trigger {
-    ... on StopOrderPrice {
-      price
-    }
-    ... on StopOrderTrailingPercentOffset {
-      trailingPercentOffset
-    }
-  }
-  submission {
-    ...OrderSubmissionFields
-  }
-}
-    ${OrderFieldsFragmentDoc}
-${OrderSubmissionFieldsFragmentDoc}`;
 export const OrderByIdDocument = gql`
     query OrderById($orderId: ID!) {
   orderByID(id: $orderId) {
@@ -282,77 +206,3 @@ export function useOrdersUpdateSubscription(baseOptions: Apollo.SubscriptionHook
       }
 export type OrdersUpdateSubscriptionHookResult = ReturnType<typeof useOrdersUpdateSubscription>;
 export type OrdersUpdateSubscriptionResult = Apollo.SubscriptionResult<OrdersUpdateSubscription>;
-export const StopOrdersDocument = gql`
-    query StopOrders($partyId: ID!) {
-  stopOrders(filter: {parties: [$partyId]}) {
-    edges {
-      node {
-        ...StopOrderFields
-      }
-    }
-  }
-}
-    ${StopOrderFieldsFragmentDoc}`;
-
-/**
- * __useStopOrdersQuery__
- *
- * To run a query within a React component, call `useStopOrdersQuery` and pass it any options that fit your needs.
- * When your component renders, `useStopOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useStopOrdersQuery({
- *   variables: {
- *      partyId: // value for 'partyId'
- *   },
- * });
- */
-export function useStopOrdersQuery(baseOptions: Apollo.QueryHookOptions<StopOrdersQuery, StopOrdersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<StopOrdersQuery, StopOrdersQueryVariables>(StopOrdersDocument, options);
-      }
-export function useStopOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StopOrdersQuery, StopOrdersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<StopOrdersQuery, StopOrdersQueryVariables>(StopOrdersDocument, options);
-        }
-export type StopOrdersQueryHookResult = ReturnType<typeof useStopOrdersQuery>;
-export type StopOrdersLazyQueryHookResult = ReturnType<typeof useStopOrdersLazyQuery>;
-export type StopOrdersQueryResult = Apollo.QueryResult<StopOrdersQuery, StopOrdersQueryVariables>;
-export const StopOrderByIdDocument = gql`
-    query StopOrderById($stopOrderId: ID!) {
-  stopOrder(id: $stopOrderId) {
-    ...StopOrderFields
-  }
-}
-    ${StopOrderFieldsFragmentDoc}`;
-
-/**
- * __useStopOrderByIdQuery__
- *
- * To run a query within a React component, call `useStopOrderByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useStopOrderByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useStopOrderByIdQuery({
- *   variables: {
- *      stopOrderId: // value for 'stopOrderId'
- *   },
- * });
- */
-export function useStopOrderByIdQuery(baseOptions: Apollo.QueryHookOptions<StopOrderByIdQuery, StopOrderByIdQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<StopOrderByIdQuery, StopOrderByIdQueryVariables>(StopOrderByIdDocument, options);
-      }
-export function useStopOrderByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StopOrderByIdQuery, StopOrderByIdQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<StopOrderByIdQuery, StopOrderByIdQueryVariables>(StopOrderByIdDocument, options);
-        }
-export type StopOrderByIdQueryHookResult = ReturnType<typeof useStopOrderByIdQuery>;
-export type StopOrderByIdLazyQueryHookResult = ReturnType<typeof useStopOrderByIdLazyQuery>;
-export type StopOrderByIdQueryResult = Apollo.QueryResult<StopOrderByIdQuery, StopOrderByIdQueryVariables>;

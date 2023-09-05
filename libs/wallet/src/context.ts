@@ -7,15 +7,6 @@ import type {
 } from './connectors';
 
 export interface VegaWalletContextShape {
-  /** Current connected network */
-  network: string;
-
-  /** Url of current connected node */
-  vegaUrl: string;
-
-  /** Url of running wallet service */
-  vegaWalletServiceUrl: string;
-
   /** If the current connector does not support signing transactions */
   isReadOnly: boolean;
   /** The current select public key */
@@ -46,16 +37,6 @@ export interface VegaWalletContextShape {
 
   /** Acknowledge disclaimer */
   acknowledgeNeeded?: boolean;
-
-  /** Useful links for wallet users */
-  links: {
-    explorer: string;
-    about: string;
-    concepts: string;
-    browserList: string;
-    chromeExtensionUrl: string;
-    mozillaExtensionUrl: string;
-  };
 }
 
 export const VegaWalletContext = createContext<

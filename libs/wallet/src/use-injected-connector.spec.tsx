@@ -1,28 +1,17 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { Status, useInjectedConnector } from './use-injected-connector';
 import type { ReactNode } from 'react';
-import type { VegaWalletConfig } from './provider';
 import { VegaWalletProvider } from './provider';
 import { InjectedConnector } from './connectors';
 import { mockBrowserWallet } from './test-helpers';
+import { useEnvironment } from '@vegaprotocol/environment';
+import { Networks } from '@vegaprotocol/environment';
 
-const defaultConfig: VegaWalletConfig = {
-  network: 'TESTNET',
-  vegaUrl: 'https://vega.xyz',
-  vegaWalletServiceUrl: 'https://vegaservice.xyz',
-  links: {
-    explorer: 'explorer-link',
-    concepts: 'concepts-link',
-    chromeExtensionUrl: 'chrome-link',
-    mozillaExtensionUrl: 'mozilla-link',
-  },
-};
+jest.mock('@vegaprotocol/environment');
 
-const setup = (callback = jest.fn(), config?: Partial<VegaWalletConfig>) => {
+const setup = (callback = jest.fn()) => {
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <VegaWalletProvider config={{ ...defaultConfig, ...config }}>
-      {children}
-    </VegaWalletProvider>
+    <VegaWalletProvider>{children}</VegaWalletProvider>
   );
   return renderHook(() => useInjectedConnector(callback), { wrapper });
 };
@@ -30,6 +19,10 @@ const setup = (callback = jest.fn(), config?: Partial<VegaWalletConfig>) => {
 const injected = new InjectedConnector();
 
 describe('useInjectedConnector', () => {
+  beforeEach(() => {
+    // @ts-ignore useEnvironment has been mocked
+    useEnvironment.mockImplementation(() => ({ VEGA_ENV: Networks.TESTNET }));
+  });
   it('attempts connection', async () => {
     const { result } = setup();
     expect(typeof result.current.connect).toBe('function');
@@ -91,8 +84,11 @@ describe('useInjectedConnector', () => {
 
   it('connects when aknowledgement required', async () => {
     const callback = jest.fn();
+    // @ts-ignore useEnvironment has been mocked
+    useEnvironment.mockImplementation(() => ({ VEGA_ENV: Networks.MAINNET }));
+
     const vega = mockBrowserWallet();
-    const { result } = setup(callback, { network: 'MAINNET' });
+    const { result } = setup(callback);
 
     act(() => {
       result.current.connect(injected, '1'); // default mock chainId is '1'

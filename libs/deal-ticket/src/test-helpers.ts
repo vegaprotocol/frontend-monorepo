@@ -1,4 +1,4 @@
-import type { Market, StaticMarketData } from '@vegaprotocol/markets';
+import type { Market, MarketData } from '@vegaprotocol/markets';
 import * as Schema from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
@@ -85,15 +85,33 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
 }
 
 export function generateMarketData(
-  override?: PartialDeep<StaticMarketData>
-): StaticMarketData {
-  const defaultMarketData: StaticMarketData = {
+  override?: PartialDeep<MarketData>
+): MarketData {
+  const defaultMarketData: MarketData = {
+    __typename: 'MarketData',
+    market: {
+      id: 'market-id',
+      __typename: 'Market',
+    },
     auctionEnd: '2022-06-21T17:18:43.484055236Z',
     auctionStart: '2022-06-21T17:18:43.484055236Z',
+    bestBidPrice: '0',
+    bestBidVolume: '0',
+    bestOfferPrice: '0',
+    bestOfferVolume: '0',
+    bestStaticBidPrice: '0',
+    bestStaticBidVolume: '0',
+    bestStaticOfferPrice: '0',
+    bestStaticOfferVolume: '0',
     indicativePrice: '100',
     indicativeVolume: '10',
     marketState: Schema.MarketState.STATE_ACTIVE,
     marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+    marketValueProxy: '',
+    markPrice: '200',
+    midPrice: '0',
+    openInterest: '',
+    staticMidPrice: '0',
     suppliedStake: '1000',
     targetStake: '1000000',
     trigger: Schema.AuctionTrigger.AUCTION_TRIGGER_BATCH,

@@ -1,8 +1,9 @@
-import React from 'react';
+import { useRef } from 'react';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
-import { MarketNameProposalCell, useColumnDefs } from './use-column-defs';
+import type { AgGridReact } from 'ag-grid-react';
+import { useColumnDefs } from './use-column-defs';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { useProposalsListQuery } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
@@ -16,13 +17,8 @@ export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
     ].includes(proposal.state)
   );
 
-interface ProposalListProps {
-  SuccessorMarketRenderer: React.FC<{ value: string }>;
-}
-
-export const ProposalsList = ({
-  SuccessorMarketRenderer,
-}: ProposalListProps) => {
+export const ProposalsList = () => {
+  const gridRef = useRef<AgGridReact | null>(null);
   const { data } = useProposalsListQuery({
     variables: {
       proposalType: Types.ProposalType.TYPE_NEW_MARKET,
@@ -35,13 +31,17 @@ export const ProposalsList = ({
   const { columnDefs, defaultColDef } = useColumnDefs();
 
   return (
-    <AgGrid
-      columnDefs={columnDefs}
-      rowData={filteredData}
-      defaultColDef={defaultColDef}
-      getRowId={({ data }) => data.id}
-      overlayNoRowsTemplate={t('No markets')}
-      components={{ SuccessorMarketRenderer, MarketNameProposalCell }}
-    />
+    <div className="relative h-full">
+      <AgGrid
+        ref={gridRef}
+        className="w-full h-full"
+        columnDefs={columnDefs}
+        rowData={filteredData}
+        defaultColDef={defaultColDef}
+        getRowId={({ data }) => data.id}
+        style={{ width: '100%', height: '100%' }}
+        overlayNoRowsTemplate={t('No markets')}
+      />
+    </div>
   );
 };

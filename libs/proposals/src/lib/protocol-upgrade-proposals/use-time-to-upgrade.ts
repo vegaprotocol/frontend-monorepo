@@ -7,52 +7,6 @@ const DEFAULT_POLLS = 10;
 const INTERVAL = 1000;
 const durations = [] as number[];
 
-export const ERR_NO_TIME_UNITS = new Error(
-  'could not parse block duration value - no time units detected'
-);
-
-/**
- * Parses block duration value and output a number of milliseconds.
- * @param input The block duration input from the API, e.g. 4m5.001s
- * @returns A number of milliseconds
- */
-export const parseDuration = (input: string) => {
-  // h  -> 60*60*1000
-  // m  -> 60*1000
-  // s  -> 1000
-  // ms -> 1
-  // µs -> 1/1000
-  // ns -> 1/1000000
-  let H = 0;
-  let M = 0;
-  let S = 0;
-  const lessThanSecond = /^[0-9.]+[nµm]*s$/gu.test(input);
-  const exp = /(?<hours>[0-9.]+h)?(?<minutes>[0-9.]+m)?(?<seconds>[0-9.]+s)?/gu;
-  const m = exp.exec(input);
-
-  const hours = m?.groups?.['hours'];
-  const minutes = m?.groups?.['minutes'];
-  const seconds = lessThanSecond ? input : m?.groups?.['seconds'];
-  if (!lessThanSecond && !hours && !minutes && !seconds) {
-    throw ERR_NO_TIME_UNITS;
-  }
-
-  if (seconds) {
-    S = parseFloat(seconds);
-    if (seconds.includes('ns')) S /= 1000 * 1000;
-    else if (seconds.includes('µs')) S /= 1000;
-    else if (seconds.includes('ms')) S *= 1;
-    else if (seconds.includes('s')) S *= 1000;
-  }
-  if (minutes && !lessThanSecond) {
-    M = parseFloat(minutes) * 60 * 1000;
-  }
-  if (hours && !lessThanSecond) {
-    H = parseFloat(hours) * 60 * 60 * 1000;
-  }
-  return H + M + S;
-};
-
 const useAverageBlockDuration = (polls = DEFAULT_POLLS) => {
   const [avg, setAvg] = useState<number | undefined>(undefined);
   const { data, startPolling, stopPolling, error } = useBlockStatisticsQuery({
@@ -74,11 +28,7 @@ const useAverageBlockDuration = (polls = DEFAULT_POLLS) => {
 
   useEffect(() => {
     if (durations.length < polls && data) {
-      try {
-        durations.push(parseDuration(data.statistics.blockDuration)); // ms
-      } catch (err) {
-        // NOOP - do not add unparsed value to AVG
-      }
+      durations.push(parseFloat(data.statistics.blockDuration));
     }
     if (durations.length === polls) {
       const averageBlockDuration = sum(durations) / durations.length; // ms

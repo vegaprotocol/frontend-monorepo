@@ -1,8 +1,6 @@
-import startCase from 'lodash/startCase';
-import classNames from 'classnames';
-import { Link } from 'react-router-dom';
 import {
   AsyncRenderer,
+  KeyValueTable,
   KeyValueTableRow,
   SyntaxHighlighter,
 } from '@vegaprotocol/ui-toolkit';
@@ -14,12 +12,11 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { RouteTitle } from '../../components/route-title';
+import orderBy from 'lodash/orderBy';
 import { useNetworkParamsQuery } from '@vegaprotocol/network-parameters';
+import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import { useScrollToLocation } from '../../hooks/scroll-to-location';
 import { useDocumentTitle } from '../../hooks/use-document-title';
-import { structureNetworkParams } from './structure-network-params';
-import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
-import type { GroupedParams } from './structure-network-params';
 
 const PERCENTAGE_PARAMS = [
   'governance.proposal.asset.requiredMajority',
@@ -61,54 +58,6 @@ const BIG_NUMBER_PARAMS = [
   'governance.proposal.updateAsset.minVoterBalance',
 ];
 
-export const renderGroupedParams = (
-  group: GroupedParams,
-  level: number,
-  parentKeys: string[] = []
-) => {
-  const Header = `h${level}` as keyof JSX.IntrinsicElements;
-  const headerStyles = classNames('uppercase font-semibold', {
-    'pt-6 text-3xl underline': level === 1,
-    'pt-3 text-2xl': level === 2,
-    'pt-2 text-lg': level === 3,
-    'pt-2 text-default': level === 4,
-  });
-
-  return Object.entries(group).map(([key, value]) => {
-    const fullPath = [...parentKeys, key].join('.');
-    const isLeafNode = typeof value !== 'object';
-    const id = parentKeys.concat([key]).join('-');
-
-    return (
-      <div key={key}>
-        {!isLeafNode && (
-          <div id={id}>
-            <Link to={`#${id}`}>
-              <Header className={headerStyles} data-testid={id}>
-                {startCase(key)}
-              </Header>
-            </Link>
-          </div>
-        )}
-        {isLeafNode ? (
-          typeof value === 'string' ? (
-            <div data-testid={id}>
-              <NetworkParameterRow
-                key={fullPath}
-                row={{ key: fullPath, value: value }}
-              />
-            </div>
-          ) : null
-        ) : (
-          <div className="pb-1">
-            {renderGroupedParams(value, level + 1, [...parentKeys, key])}
-          </div>
-        )}
-      </div>
-    );
-  });
-};
-
 export const NetworkParameterRow = ({
   row: { key, value },
 }: {
@@ -128,9 +77,7 @@ export const NetworkParameterRow = ({
     >
       {key}
       {isSyntaxRow ? (
-        <div className="pb-2">
-          <SyntaxHighlighter data={JSON.parse(value)} />
-        </div>
+        <SyntaxHighlighter data={JSON.parse(value)} />
       ) : isNaN(Number(value)) ? (
         value
       ) : BIG_NUMBER_PARAMS.includes(key) ? (
@@ -166,12 +113,17 @@ export const NetworkParametersTable = ({
       loading={loading}
       error={error}
       render={(data) => {
-        const flatParams = removePaginationWrapper(
-          data.networkParametersConnection.edges
+        const ascParams = orderBy(
+          removePaginationWrapper(data.networkParametersConnection.edges),
+          (param) => param.key,
+          'asc'
         );
-        const groupedParams = structureNetworkParams(flatParams);
         return (
-          <div className="-mt-6">{renderGroupedParams(groupedParams, 1)}</div>
+          <KeyValueTable data-testid="parameters">
+            {(ascParams || []).map((row) => (
+              <NetworkParameterRow key={row.key} row={row} />
+            ))}
+          </KeyValueTable>
         );
       }}
     />

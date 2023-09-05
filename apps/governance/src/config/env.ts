@@ -25,10 +25,6 @@ export const ContractAddresses: {
     claimAddress: customClaimAddress ?? '0x0',
     lockedAddress: customLockedAddress ?? '0x0',
   },
-  MAINNET_MIRROR: {
-    claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
-    lockedAddress: '0x0', // TODO not deployed to this env
-  },
   DEVNET: {
     claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
     lockedAddress: '0x0', // TODO not deployed to this env
@@ -67,6 +63,12 @@ export const ENV = {
   localProviderUrl: windowOrDefault('NX_LOCAL_PROVIDER_URL'),
   delegationsPagination: windowOrDefault('NX_DELEGATIONS_PAGINATION'),
   rest: windowOrDefault('NX_VEGA_REST_URL'),
+  flags: {
+    NETWORK_DOWN: TRUTHY.includes(windowOrDefault('NX_NETWORK_DOWN')),
+    MOCK: TRUTHY.includes(windowOrDefault('NX_MOCKED')),
+    FAIRGROUND: TRUTHY.includes(windowOrDefault('NX_FAIRGROUND')),
+    NETWORK_LIMITS: TRUTHY.includes(windowOrDefault('NX_NETWORK_LIMITS')),
+  },
   addresses:
     ContractAddresses[(envName === 'local' ? 'CUSTOM' : envName) as Networks],
 };

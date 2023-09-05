@@ -1,4 +1,3 @@
-import { OrderType } from '@vegaprotocol/types';
 import type { OrderSubmission } from '@vegaprotocol/wallet';
 
 const orderSizeField = 'order-size';
@@ -10,9 +9,7 @@ export const createOrder = (order: OrderSubmission): void => {
   cy.log('Placing order', order);
   const { type, side, size, price, timeInForce, expiresAt } = order;
 
-  cy.getByTestId(
-    `order-type-${type === OrderType.TYPE_LIMIT ? 'Limit' : 'Market'}`
-  ).click();
+  cy.getByTestId(`order-type-${type}`).click();
   cy.getByTestId(`order-side-${side}`).click();
   cy.getByTestId(orderSizeField).clear().type(size);
   if (price) {

@@ -1,5 +1,5 @@
 import {
-  TradingDropdownItem,
+  DropdownMenuItem,
   VegaIcon,
   VegaIconNames,
   Link,
@@ -12,8 +12,8 @@ export const ProposalActionsDropdown = ({ id }: { id: string }) => {
   const linkCreator = useLinks(DApp.Token);
 
   return (
-    <ActionsDropdown data-testid="proposal-actions-content">
-      <TradingDropdownItem>
+    <ActionsDropdown data-testid="market-actions-content">
+      <DropdownMenuItem>
         <Link
           href={linkCreator(TOKEN_PROPOSAL.replace(':id', id))}
           target="_blank"
@@ -21,7 +21,7 @@ export const ProposalActionsDropdown = ({ id }: { id: string }) => {
           <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
           {t('View proposal')}
         </Link>
-      </TradingDropdownItem>
+      </DropdownMenuItem>
     </ActionsDropdown>
   );
 };

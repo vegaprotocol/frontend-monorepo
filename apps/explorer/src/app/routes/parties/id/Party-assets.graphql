@@ -48,11 +48,9 @@ query ExplorerPartyAssets($partyId: ID!) {
         }
         stakingSummary {
           currentStakeAvailable
-          linkings(pagination: { last: 100 }) {
+          linkings(pagination: { first: 100 }) {
             edges {
               node {
-                type
-                status
                 amount
               }
             }

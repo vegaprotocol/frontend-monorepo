@@ -5,11 +5,10 @@ import type {
   BatchMarketInstructionSubmissionBody,
   OrderAmendment,
   OrderTxUpdateFieldsFragment,
+  OrderCancellationBody,
   OrderSubmission,
   VegaStoredTxState,
   WithdrawalBusEventFieldsFragment,
-  StopOrdersSubmission,
-  StopOrderSetup,
 } from '@vegaprotocol/wallet';
 import {
   isTransferTransaction,
@@ -23,8 +22,6 @@ import {
   isWithdrawTransaction,
   useVegaTransactionStore,
   VegaTxStatus,
-  isStopOrdersSubmissionTransaction,
-  isStopOrdersCancellationTransaction,
 } from '@vegaprotocol/wallet';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
@@ -37,10 +34,9 @@ import {
   formatNumber,
   toBigNum,
   truncateByChars,
-  formatTrigger,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { useAssetsMapProvider } from '@vegaprotocol/assets';
+import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { useEthWithdrawApprovalsStore } from './use-ethereum-withdraw-approvals-store';
 import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';
 import {
@@ -48,15 +44,12 @@ import {
   getOrderToastTitle,
   getRejectionReason,
   useOrderByIdQuery,
-  useStopOrderByIdQuery,
 } from '@vegaprotocol/orders';
-import type { Market } from '@vegaprotocol/markets';
-import { useMarketsMapProvider } from '@vegaprotocol/markets';
+import { useMarketList } from '@vegaprotocol/markets';
 import type { Side } from '@vegaprotocol/types';
 import { OrderStatusMapping } from '@vegaprotocol/types';
 import { Size } from '@vegaprotocol/datagrid';
 import { useWithdrawalApprovalDialog } from './withdrawal-approval-dialog';
-import * as Schema from '@vegaprotocol/types';
 
 const intentMap: { [s in VegaTxStatus]: Intent } = {
   Default: Intent.Primary,
@@ -92,8 +85,6 @@ const isTransactionTypeSupported = (tx: VegaStoredTxState) => {
   const withdraw = isWithdrawTransaction(tx.body);
   const submitOrder = isOrderSubmissionTransaction(tx.body);
   const cancelOrder = isOrderCancellationTransaction(tx.body);
-  const submitStopOrder = isStopOrdersSubmissionTransaction(tx.body);
-  const cancelStopOrder = isStopOrdersCancellationTransaction(tx.body);
   const editOrder = isOrderAmendmentTransaction(tx.body);
   const batchMarketInstructions = isBatchMarketInstructionsTransaction(tx.body);
   const transfer = isTransferTransaction(tx.body);
@@ -101,8 +92,6 @@ const isTransactionTypeSupported = (tx: VegaStoredTxState) => {
     withdraw ||
     submitOrder ||
     cancelOrder ||
-    submitStopOrder ||
-    cancelStopOrder ||
     editOrder ||
     batchMarketInstructions ||
     transfer
@@ -140,8 +129,8 @@ const SubmitOrderDetails = ({
   data: OrderSubmission;
   order?: OrderTxUpdateFieldsFragment;
 }) => {
-  const { data: markets } = useMarketsMapProvider();
-  const market = markets?.[order?.marketId || ''];
+  const { data: markets } = useMarketList();
+  const market = markets?.find((m) => m.id === order?.marketId);
   if (!market) return null;
 
   const price = order ? order.price : data.price;
@@ -176,89 +165,6 @@ const SubmitOrderDetails = ({
   );
 };
 
-const SubmitStopOrderSetup = ({
-  stopOrderSetup,
-  triggerDirection,
-  market,
-}: {
-  stopOrderSetup: StopOrderSetup;
-  triggerDirection: Schema.StopOrderTriggerDirection;
-  market: Market;
-}) => {
-  if (!market || !stopOrderSetup) return null;
-
-  const { price, size, side } = stopOrderSetup.orderSubmission;
-  let trigger: Schema.StopOrderTrigger | null = null;
-  if (stopOrderSetup.price) {
-    trigger = { price: stopOrderSetup.price, __typename: 'StopOrderPrice' };
-  } else if (stopOrderSetup.trailingPercentOffset) {
-    trigger = {
-      trailingPercentOffset: stopOrderSetup.trailingPercentOffset,
-      __typename: 'StopOrderTrailingPercentOffset',
-    };
-  }
-  return (
-    <p>
-      <SizeAtPrice
-        meta={{
-          positionDecimalPlaces: market.positionDecimalPlaces,
-          decimalPlaces: market.decimalPlaces,
-          asset:
-            market.tradableInstrument.instrument.product.settlementAsset.symbol,
-        }}
-        side={side}
-        size={size}
-        price={price}
-      />
-      <br />
-      {trigger &&
-        formatTrigger(
-          {
-            triggerDirection,
-            trigger,
-          },
-          market.decimalPlaces,
-          ''
-        )}
-    </p>
-  );
-};
-
-const SubmitStopOrderDetails = ({ data }: { data: StopOrdersSubmission }) => {
-  const { data: markets } = useMarketsMapProvider();
-  const marketId =
-    data.fallsBelow?.orderSubmission.marketId ||
-    data.risesAbove?.orderSubmission.marketId;
-  const market = marketId && markets?.[marketId];
-  if (!market) {
-    return null;
-  }
-  return (
-    <Panel>
-      <h4>{t('Submit stop order')}</h4>
-      <p>{market?.tradableInstrument.instrument.code}</p>
-      {data.fallsBelow && (
-        <SubmitStopOrderSetup
-          stopOrderSetup={data.fallsBelow}
-          triggerDirection={
-            Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
-          }
-          market={market}
-        />
-      )}
-      {data.risesAbove && (
-        <SubmitStopOrderSetup
-          stopOrderSetup={data.risesAbove}
-          triggerDirection={
-            Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
-          }
-          market={market}
-        />
-      )}
-    </Panel>
-  );
-};
-
 const EditOrderDetails = ({
   data,
   order,
@@ -270,12 +176,13 @@ const EditOrderDetails = ({
     variables: { orderId: data.orderId },
     fetchPolicy: 'no-cache',
   });
-  const { data: markets } = useMarketsMapProvider();
+  const { data: markets } = useMarketList();
 
   const originalOrder = order || orderById?.orderByID;
   const marketId = order?.marketId || orderById?.orderByID.market.id;
-  const market = markets?.[marketId || ''];
-  if (!originalOrder || !market) return null;
+  if (!originalOrder) return null;
+  const market = markets?.find((m) => m.id === marketId);
+  if (!market) return null;
 
   const original = (
     <SizeAtPrice
@@ -331,11 +238,11 @@ const CancelOrderDetails = ({
   const { data: orderById } = useOrderByIdQuery({
     variables: { orderId },
   });
-  const { data: markets } = useMarketsMapProvider();
+  const { data: markets } = useMarketList();
 
   const originalOrder = orderById?.orderByID;
   if (!originalOrder) return null;
-  const market = markets?.[originalOrder.market.id];
+  const market = markets?.find((m) => m.id === originalOrder.market.id);
   if (!market) return null;
 
   const original = (
@@ -368,52 +275,15 @@ const CancelOrderDetails = ({
   );
 };
 
-const CancelStopOrderDetails = ({ stopOrderId }: { stopOrderId: string }) => {
-  const { data: orderById } = useStopOrderByIdQuery({
-    variables: { stopOrderId },
-  });
-  const { data: markets } = useMarketsMapProvider();
-
-  const originalOrder = orderById?.stopOrder;
-  if (!originalOrder) return null;
-  const market = markets?.[originalOrder.marketId];
-  if (!market) return null;
-
-  const original = (
-    <>
-      <SizeAtPrice
-        side={originalOrder.submission.side}
-        size={originalOrder.submission.size}
-        price={originalOrder.submission.price}
-        meta={{
-          positionDecimalPlaces: market.positionDecimalPlaces,
-          decimalPlaces: market.decimalPlaces,
-          asset:
-            market.tradableInstrument.instrument.product.settlementAsset.symbol,
-        }}
-      />
-      <br />
-      {formatTrigger(originalOrder, market.decimalPlaces, '')}
-    </>
-  );
-  return (
-    <Panel title={stopOrderId}>
-      <h4>{t('Cancel stop order')}</h4>
-      <p>{market?.tradableInstrument.instrument.code}</p>
-      <p>
-        <s>{original}</s>
-      </p>
-    </Panel>
-  );
-};
-
 export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
-  const { data: assets } = useAssetsMapProvider();
-  const { data: markets } = useMarketsMapProvider();
+  const { data: assets } = useAssetsDataProvider();
+  const { data: markets } = useMarketList();
 
   if (isWithdrawTransaction(tx.body)) {
     const transactionDetails = tx.body;
-    const asset = assets?.[transactionDetails.withdrawSubmission.asset];
+    const asset = assets?.find(
+      (a) => a.id === transactionDetails.withdrawSubmission.asset
+    );
     if (asset) {
       const num = formatNumber(
         toBigNum(transactionDetails.withdrawSubmission.amount, asset.decimals),
@@ -435,11 +305,15 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
     );
   }
 
-  if (isStopOrdersSubmissionTransaction(tx.body)) {
-    return <SubmitStopOrderDetails data={tx.body.stopOrdersSubmission} />;
-  }
-
   if (isOrderCancellationTransaction(tx.body)) {
+    // CANCEL ALL (from Portfolio)
+    if (
+      tx.body.orderCancellation.marketId === undefined &&
+      tx.body.orderCancellation.orderId === undefined
+    ) {
+      return <Panel>{t('Cancel all orders')}</Panel>;
+    }
+
     // CANCEL
     if (
       tx.body.orderCancellation.orderId &&
@@ -455,50 +329,22 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
 
     // CANCEL ALL (from Trading)
     if (tx.body.orderCancellation.marketId) {
-      const marketName =
-        markets?.[tx.body.orderCancellation.marketId]?.tradableInstrument
-          .instrument.code;
-      if (marketName) {
-        return (
-          <Panel>
-            {t('Cancel all orders for')} <strong>{marketName}</strong>
-          </Panel>
-        );
-      }
-    }
-    // CANCEL ALL (from Portfolio)
-    return <Panel>{t('Cancel all orders')}</Panel>;
-  }
-
-  if (isStopOrdersCancellationTransaction(tx.body)) {
-    // CANCEL
-    if (
-      tx.body.stopOrdersCancellation.stopOrderId &&
-      tx.body.stopOrdersCancellation.marketId
-    ) {
+      const marketName = markets?.find(
+        (m) =>
+          m.id === (tx.body as OrderCancellationBody).orderCancellation.marketId
+      )?.tradableInstrument.instrument.code;
       return (
-        <CancelStopOrderDetails
-          stopOrderId={String(tx.body.stopOrdersCancellation.stopOrderId)}
-        />
+        <Panel>
+          {marketName ? (
+            <>
+              {t('Cancel all orders for')} <strong>{marketName}</strong>
+            </>
+          ) : (
+            t('Cancel all orders')
+          )}
+        </Panel>
       );
     }
-
-    // CANCEL ALL for market
-    if (tx.body.stopOrdersCancellation.marketId) {
-      const marketName =
-        markets?.[tx.body.stopOrdersCancellation.marketId]?.tradableInstrument
-          .instrument.code;
-      if (marketName) {
-        return (
-          <Panel>
-            {t('Cancel all stop orders for')} <strong>{marketName}</strong>
-          </Panel>
-        );
-      }
-    }
-
-    // CANCEL ALL
-    return <Panel>{t('Cancel all stop orders')}</Panel>;
   }
 
   if (isOrderAmendmentTransaction(tx.body)) {
@@ -515,7 +361,7 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
     const marketId = first(
       transaction.batchMarketInstructions.cancellations
     )?.marketId;
-    const market = markets?.[marketId || ''];
+    const market = marketId && markets?.find((m) => m.id === marketId);
     if (market) {
       return (
         <Panel>
@@ -532,7 +378,7 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
 
   if (isTransferTransaction(tx.body)) {
     const { amount, to, asset } = tx.body.transfer;
-    const transferAsset = assets?.[asset];
+    const transferAsset = assets?.find((a) => a.id === asset);
     // only render if we have an asset to avoid unformatted amounts showing
     if (transferAsset) {
       const value = addDecimalsFormatNumber(amount, transferAsset.decimals);
@@ -598,7 +444,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
 
   if (isWithdrawTransaction(tx.body)) {
     const completeWithdrawalButton = tx.withdrawal && (
-      <p className="mt-2">
+      <p className="mt-1">
         <Button
           data-testid="toast-complete-withdrawal"
           size="xs"
@@ -656,27 +502,17 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   }
 
   if (tx.order && tx.order.rejectionReason) {
-    const rejectionReason = getRejectionReason(tx.order);
+    const rejectionReason =
+      getRejectionReason(tx.order) || tx.order.rejectionReason || '';
     return (
       <>
         <ToastHeading>{getOrderToastTitle(tx.order.status)}</ToastHeading>
         {rejectionReason ? (
           <p>
-            {t('Your order has been %s because: %s', [
-              tx.order.status === Schema.OrderStatus.STATUS_STOPPED
-                ? 'stopped'
-                : 'rejected',
-              rejectionReason,
-            ])}
+            {t('Your order has been rejected because: %s', [rejectionReason])}
           </p>
         ) : (
-          <p>
-            {t('Your order has been %s.', [
-              tx.order.status === Schema.OrderStatus.STATUS_STOPPED
-                ? 'stopped'
-                : 'rejected',
-            ])}
-          </p>
+          <p>{t('Your order has been rejected.')}</p>
         )}
         {tx.txHash && (
           <p className="break-all">
@@ -758,11 +594,11 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
 
 const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   let label = t('Error occurred');
-  let errorMessage =
-    tx.error instanceof WalletError
-      ? `${tx.error.title}: ${tx.error.data}`
-      : tx.error?.message;
-
+  let errorMessage = `${tx.error?.message}  ${
+    tx.error instanceof WalletError && tx.error?.data
+      ? `:  ${tx.error?.data}`
+      : ''
+  }`;
   const reconnectVegaWallet = useReconnectVegaWallet();
 
   const orderRejection = tx.order && getRejectionReason(tx.order);
@@ -773,7 +609,6 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   const walletError =
     tx.error instanceof WalletError &&
     walletNoConnectionCodes.includes(tx.error.code);
-
   if (orderRejection) {
     label = getOrderToastTitle(tx.order?.status) || t('Order rejected');
     errorMessage = t('Your order has been rejected because: %s', [

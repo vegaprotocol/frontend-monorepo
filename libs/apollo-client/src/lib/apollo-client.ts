@@ -121,12 +121,9 @@ export function createClient({
     // called on startup, NodeCheck and NodeCheckTimeUpdate are called
     // by the NodeSwitcher component and the useNodeHealth hook
     if (
-      [
-        'NodeGuard',
-        'NodeCheck',
-        'NodeCheckTimeUpdate',
-        'BlockStatistics',
-      ].includes(operation.operationName)
+      ['NodeGuard', 'NodeCheck', 'NodeCheckTimeUpdate'].includes(
+        operation.operationName
+      )
     ) {
       return;
     }

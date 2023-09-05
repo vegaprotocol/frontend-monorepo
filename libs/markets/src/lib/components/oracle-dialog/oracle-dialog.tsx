@@ -11,27 +11,16 @@ export const OracleDialog = ({
   dataSourceSpecId,
   open,
   onChange,
-  parentProvider,
 }: {
   dataSourceSpecId: string;
   provider: Provider;
   open: boolean;
   onChange?: (isOpen: boolean) => void;
-  parentProvider?: Provider;
 }) => {
-  // If this is a successor market, the parent market data will only have been passed
-  // in if it differs from the current data. We'll pass this on to the title component
-  // to show a change, but the full profile showing changes is unwieldy - it's enough
-  // to know from the title that the oracle has changed.
   const oracleMarkets = useOracleMarkets(provider);
   return (
     <Dialog
-      title={
-        <OracleProfileTitle
-          provider={provider}
-          parentProvider={parentProvider}
-        />
-      }
+      title={<OracleProfileTitle provider={provider} />}
       aria-labelledby="oracle-proof-dialog"
       open={open}
       onChange={onChange}

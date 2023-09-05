@@ -2,7 +2,7 @@ import { LocalStorage } from '@vegaprotocol/utils';
 
 interface ConnectorConfig {
   token: string | null;
-  connector: 'injected' | 'jsonRpc' | 'view' | 'snap';
+  connector: 'injected' | 'rest' | 'jsonRpc' | 'view';
   url: string | null;
 }
 

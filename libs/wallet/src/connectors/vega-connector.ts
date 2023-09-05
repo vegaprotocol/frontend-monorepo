@@ -79,32 +79,6 @@ export interface OrderAmendmentBody {
   orderAmendment: OrderAmendment;
 }
 
-export interface StopOrderSetup {
-  orderSubmission: OrderSubmission;
-  expiresAt?: string;
-  expiryStrategy?: Schema.StopOrderExpiryStrategy;
-  price?: string;
-  trailingPercentOffset?: string;
-}
-
-export interface StopOrdersSubmission {
-  risesAbove?: StopOrderSetup;
-  fallsBelow?: StopOrderSetup;
-}
-
-export interface StopOrdersCancellation {
-  stopOrderId?: string;
-  marketId?: string;
-}
-
-export interface StopOrdersSubmissionBody {
-  stopOrdersSubmission: StopOrdersSubmission;
-}
-
-export interface StopOrdersCancellationBody {
-  stopOrdersCancellation: StopOrdersCancellation;
-}
-
 export interface VoteSubmissionBody {
   voteSubmission: {
     value: Schema.VoteValue;
@@ -154,7 +128,6 @@ interface ProposalNewMarketTerms {
         auctionExtension: string;
       };
       logNormal: LogNormal;
-      successor?: Successor;
     };
   };
   closingTimestamp: number;
@@ -299,11 +272,6 @@ interface Condition {
   value: string;
 }
 
-interface Successor {
-  parentMarketId: string;
-  insurancePoolFraction: string;
-}
-
 interface LogNormal {
   tau: number;
   riskAversionParameter: number;
@@ -389,8 +357,6 @@ export interface TransferBody {
 }
 
 export type Transaction =
-  | StopOrdersSubmissionBody
-  | StopOrdersCancellationBody
   | OrderSubmissionBody
   | OrderCancellationBody
   | WithdrawSubmissionBody
@@ -414,16 +380,6 @@ export const isOrderSubmissionTransaction = (
 export const isOrderCancellationTransaction = (
   transaction: Transaction
 ): transaction is OrderCancellationBody => 'orderCancellation' in transaction;
-
-export const isStopOrdersSubmissionTransaction = (
-  transaction: Transaction
-): transaction is StopOrdersSubmissionBody =>
-  'stopOrdersSubmission' in transaction;
-
-export const isStopOrdersCancellationTransaction = (
-  transaction: Transaction
-): transaction is StopOrdersCancellationBody =>
-  'stopOrdersCancellation' in transaction;
 
 export const isOrderAmendmentTransaction = (
   transaction: Transaction

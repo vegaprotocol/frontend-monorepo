@@ -1,33 +1,30 @@
 import { t } from '@vegaprotocol/i18n';
 import {
-  TradingFormGroup,
-  TradingInput,
-  TradingInputError,
-  Intent,
-  TradingButton,
-  VegaIcon,
-  VegaIconNames,
+  Button,
+  FormGroup,
+  Icon,
+  Input,
+  InputError,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import type { ViewConnector } from '../connectors';
 import { useVegaWallet } from '../use-vega-wallet';
-import { ConnectDialogTitle } from './connect-dialog-elements';
 
 interface FormFields {
   address: string;
 }
 
-interface ViewConnectorFormProps {
+interface RestConnectorFormProps {
   connector: ViewConnector;
   onConnect: (connector: ViewConnector) => void;
-  reset?: () => void;
+  reset: () => void;
 }
 
 export function ViewConnectorForm({
   connector,
   onConnect,
   reset,
-}: ViewConnectorFormProps) {
+}: RestConnectorFormProps) {
   const { connect } = useVegaWallet();
   const {
     register,
@@ -53,15 +50,24 @@ export function ViewConnectorForm({
 
   return (
     <>
-      <ConnectDialogTitle>{t('VIEW AS VEGA USER')}</ConnectDialogTitle>
+      <button
+        onClick={reset}
+        className="absolute p-2 top-0 left-0 md:top-2 md:left-2"
+        data-testid="back-button"
+      >
+        <Icon name={'chevron-left'} ariaLabel="back" size={4} />
+      </button>
       <form onSubmit={handleSubmit(onSubmit)} data-testid="view-connector-form">
+        <h1 className="text-2xl uppercase mb-6 text-center font-alpha calt">
+          {t('VIEW AS VEGA USER')}
+        </h1>
         <p className="mb-4">
           {t(
             'Browse from the perspective of another Vega user in read-only mode.'
           )}
         </p>
-        <TradingFormGroup label={t('Vega Pubkey')} labelFor="address">
-          <TradingInput
+        <FormGroup label={t('Vega Pubkey')} labelFor="address">
+          <Input
             {...register('address', {
               required: t('Required'),
               validate: validatePubkey,
@@ -71,30 +77,17 @@ export function ViewConnectorForm({
             type="text"
           />
           {errors.address?.message && (
-            <TradingInputError intent="danger">
-              {errors.address.message}
-            </TradingInputError>
+            <InputError intent="danger">{errors.address.message}</InputError>
           )}
-        </TradingFormGroup>
-        <TradingButton
+        </FormGroup>
+        <Button
           data-testid="connect"
-          intent={Intent.Info}
+          variant="primary"
           type="submit"
-          fill
+          fill={true}
         >
           {t('Browse network')}
-        </TradingButton>
-        {reset && (
-          <div className="flex justify-end">
-            <button
-              onClick={reset}
-              className="p-2 text-sm underline"
-              data-testid="back-button"
-            >
-              <VegaIcon name={VegaIconNames.ARROW_LEFT} /> {t('Go back')}
-            </button>
-          </div>
-        )}
+        </Button>
       </form>
     </>
   );

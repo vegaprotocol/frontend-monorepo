@@ -5,6 +5,7 @@ import {
   RewardsTable,
 } from '../shared-rewards-table-assets/shared-rewards-table-assets';
 import type { EpochIndividualReward } from './generate-epoch-individual-rewards-list';
+import { useTranslation } from 'react-i18next';
 
 interface EpochIndividualRewardsGridProps {
   data: EpochIndividualReward;
@@ -21,11 +22,14 @@ interface RewardItemProps {
 const DisplayReward = ({
   reward,
   decimals,
+  percentageOfTotal,
 }: {
   reward: string;
   decimals: number;
   percentageOfTotal?: string;
 }) => {
+  const { t } = useTranslation();
+
   if (Number(reward) === 0) {
     return <span className="text-vega-dark-300">-</span>;
   }
@@ -35,12 +39,23 @@ const DisplayReward = ({
       description={
         <div className="flex flex-col items-start">
           <span>{formatNumber(toBigNum(reward, decimals), decimals)}</span>
+          {percentageOfTotal && (
+            <span className="text-vega-dark-300">
+              ({percentageOfTotal}% {t('ofTotalDistributed')})
+            </span>
+          )}
         </div>
       }
     >
       <button>
         <div className="flex flex-col items-start">
           <span>{formatNumber(toBigNum(reward, decimals), 4)}</span>
+          {percentageOfTotal && (
+            <span className="text-vega-dark-300">
+              ({formatNumber(percentageOfTotal, 4).toString()}
+              %)
+            </span>
+          )}
         </div>
       </button>
     </Tooltip>

@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { RejectedProposalsList } from './rejected-proposals-list';
 import { ProposalState } from '@vegaprotocol/types';
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import {
   mockWalletContext,
   networkParamsQueryMock,
@@ -55,38 +55,24 @@ afterAll(() => {
   jest.useRealTimers();
 });
 
-jest.mock('../vote-details/use-user-vote', () => ({
-  useUserVote: jest.fn().mockImplementation(() => ({ voteState: 'NotCast' })),
-}));
-
 describe('Rejected proposals list', () => {
-  it('Renders a list of proposals', async () => {
+  it('Renders a list of proposals', () => {
     render(
       renderComponent([
         rejectedProposalClosedLastMonth,
         rejectedProposalClosesNextWeek,
       ])
     );
-
-    await waitFor(() => {
-      const rejectedProposals = within(
-        screen.getByTestId('rejected-proposals')
-      );
-      const rejectedProposalsItems = rejectedProposals.getAllByTestId(
-        'proposals-list-item'
-      );
-      expect(rejectedProposalsItems).toHaveLength(2);
-    });
+    const rejectedProposals = within(screen.getByTestId('rejected-proposals'));
+    const rejectedProposalsItems = rejectedProposals.getAllByTestId(
+      'proposals-list-item'
+    );
+    expect(rejectedProposalsItems).toHaveLength(2);
   });
 
-  it('Displays text when there are no proposals', async () => {
+  it('Displays text when there are no proposals', () => {
     render(renderComponent([]));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('no-rejected-proposals')).toBeInTheDocument();
-      expect(
-        screen.queryByTestId('rejected-proposals')
-      ).not.toBeInTheDocument();
-    });
+    expect(screen.queryByTestId('rejected-proposals')).not.toBeInTheDocument();
+    expect(screen.getByTestId('no-rejected-proposals')).toBeInTheDocument();
   });
 });

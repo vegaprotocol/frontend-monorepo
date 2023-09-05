@@ -75,7 +75,7 @@ export const AccountBreakdownDialog = memo(
   }) => {
     return (
       <Dialog
-        size="large"
+        size="medium"
         open={Boolean(assetId)}
         onChange={(isOpen) => {
           if (!isOpen) {
@@ -100,7 +100,6 @@ interface AccountManagerProps {
   onClickAsset: (assetId: string) => void;
   onClickWithdraw?: (assetId?: string) => void;
   onClickDeposit?: (assetId?: string) => void;
-  onClickTransfer?: (assetId?: string) => void;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
@@ -111,13 +110,13 @@ export const AccountManager = ({
   onClickAsset,
   onClickWithdraw,
   onClickDeposit,
-  onClickTransfer,
   partyId,
   isReadOnly,
   pinnedAsset,
   onMarketClick,
   gridProps,
 }: AccountManagerProps) => {
+  const gridRef = useRef<AgGridReact | null>(null);
   const [breakdownAssetId, setBreakdownAssetId] = useState<string>();
   const { data, error } = useDataProvider({
     dataProvider: aggregatedAccountsDataProvider,
@@ -137,11 +136,11 @@ export const AccountManager = ({
   return (
     <div className="relative h-full">
       <AccountTable
+        ref={gridRef}
         rowData={data}
         onClickAsset={onClickAsset}
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
-        onClickTransfer={onClickTransfer}
         onClickBreakdown={setBreakdownAssetId}
         isReadOnly={isReadOnly}
         pinnedAsset={pinnedAsset}

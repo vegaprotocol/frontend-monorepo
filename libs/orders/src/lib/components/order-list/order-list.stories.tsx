@@ -22,9 +22,6 @@ const Template: Story = (args) => {
         onEdit={() => {
           return;
         }}
-        onView={() => {
-          return;
-        }}
         isReadOnly={false}
       />
     </div>
@@ -52,9 +49,6 @@ const Template2: Story = (args) => {
           rowData={args.data}
           onCancel={cancel}
           onEdit={setEditOrder}
-          onView={() => {
-            return;
-          }}
           isReadOnly={false}
         />
       </div>

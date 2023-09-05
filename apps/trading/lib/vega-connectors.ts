@@ -1,12 +1,11 @@
-import { FLAGS } from '@vegaprotocol/environment';
 import {
+  RestConnector,
   JsonRpcConnector,
   ViewConnector,
   InjectedConnector,
-  SnapConnector,
-  DEFAULT_SNAP_ID,
 } from '@vegaprotocol/wallet';
 
+export const rest = new RestConnector();
 export const jsonRpc = new JsonRpcConnector();
 export const injected = new InjectedConnector();
 
@@ -18,13 +17,9 @@ if (typeof window !== 'undefined') {
   view = new ViewConnector();
 }
 
-export const snap = FLAGS.METAMASK_SNAPS
-  ? new SnapConnector(DEFAULT_SNAP_ID)
-  : undefined;
-
 export const Connectors = {
   injected,
+  rest,
   jsonRpc,
   view,
-  snap,
 };

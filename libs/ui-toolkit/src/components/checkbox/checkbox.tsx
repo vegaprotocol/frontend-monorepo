@@ -20,7 +20,7 @@ export const Checkbox = ({
   disabled = false,
 }: CheckboxProps) => {
   const rootClasses = classNames(
-    'relative flex justify-center items-center w-[15px] h-[15px] mt-1',
+    'relative flex justify-center items-center w-[15px] h-[15px]',
     'border rounded-sm overflow-hidden',
     {
       'opacity-40 cursor-default': disabled,
@@ -30,7 +30,7 @@ export const Checkbox = ({
   );
 
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-1 items-center">
       <CheckboxPrimitive.Root
         name={name}
         id={name}

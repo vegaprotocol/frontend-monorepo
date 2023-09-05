@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import {
   ActionsDropdown,
-  TradingDropdownItem,
+  DropdownMenuItem,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -11,15 +11,15 @@ export const PositionActionsDropdown = ({ assetId }: { assetId: string }) => {
   const open = useAssetDetailsDialogStore((store) => store.open);
 
   return (
-    <ActionsDropdown data-testid="position-actions-content">
-      <TradingDropdownItem
+    <ActionsDropdown data-testid="market-actions-content">
+      <DropdownMenuItem
         onClick={(e) => {
           open(assetId, e.target as HTMLElement);
         }}
       >
         <VegaIcon name={VegaIconNames.INFO} size={16} />
         {t('View settlement asset details')}
-      </TradingDropdownItem>
+      </DropdownMenuItem>
     </ActionsDropdown>
   );
 };

@@ -9,13 +9,12 @@ import { t } from '@vegaprotocol/i18n';
 import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import {
-  TradingFormGroup,
-  TradingInput,
-  TradingInputError,
+  FormGroup,
+  Input,
+  InputError,
+  Button,
   Dialog,
-  VegaIcon,
-  VegaIconNames,
-  TradingButton,
+  Icon,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import type { Order } from '../order-data-provider';
@@ -38,7 +37,7 @@ export const OrderEditDialog = ({
   order,
   onSubmit,
 }: OrderEditDialogProps) => {
-  const headerClassName = 'text-xs font-bold text-black dark:text-white';
+  const headerClassName = 'text-lg font-bold text-black dark:text-white';
   const {
     register,
     formState: { errors },
@@ -58,13 +57,13 @@ export const OrderEditDialog = ({
       open={isOpen}
       onChange={onChange}
       title={t('Edit order')}
-      icon={<VegaIcon name={VegaIconNames.EDIT} />}
+      icon={<Icon name="edit" />}
     >
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         {order.market && (
           <div className="md:col-span-2">
             <p className={headerClassName}>{t(`Market`)}</p>
-            <p>{order.market.tradableInstrument.instrument.code}</p>
+            <p>{t(`${order.market.tradableInstrument.instrument.name}`)}</p>
           </div>
         )}
         {order.type === Schema.OrderType.TYPE_LIMIT && order.market && (
@@ -103,12 +102,8 @@ export const OrderEditDialog = ({
         noValidate
       >
         <div className="flex flex-col md:flex-row gap-4">
-          <TradingFormGroup
-            label={t('Price')}
-            labelFor="limitPrice"
-            className="grow"
-          >
-            <TradingInput
+          <FormGroup label={t('Price')} labelFor="limitPrice" className="grow">
+            <Input
               type="number"
               step={step}
               {...register('limitPrice', {
@@ -124,13 +119,13 @@ export const OrderEditDialog = ({
               id="limitPrice"
             />
             {errors.limitPrice?.message && (
-              <TradingInputError intent="danger">
+              <InputError intent="danger">
                 {errors.limitPrice.message}
-              </TradingInputError>
+              </InputError>
             )}
-          </TradingFormGroup>
-          <TradingFormGroup label={t('Size')} labelFor="size" className="grow">
-            <TradingInput
+          </FormGroup>
+          <FormGroup label={t('Size')} labelFor="size" className="grow">
+            <Input
               type="number"
               step={stepSize}
               {...register('size', {
@@ -144,13 +139,13 @@ export const OrderEditDialog = ({
               id="size"
             />
             {errors.size?.message && (
-              <TradingInputError intent="danger">
-                {errors.size.message}
-              </TradingInputError>
+              <InputError intent="danger">{errors.size.message}</InputError>
             )}
-          </TradingFormGroup>
+          </FormGroup>
         </div>
-        <TradingButton type="submit">{t('Update')}</TradingButton>
+        <Button variant="primary" size="md" type="submit">
+          {t('Update')}
+        </Button>
       </form>
     </Dialog>
   );

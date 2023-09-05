@@ -12,7 +12,6 @@ import {
   getVegaTransactionContentIntent,
 } from './use-vega-transaction-toasts';
 import { Intent } from '@vegaprotocol/ui-toolkit';
-import type { OrderByIdQuery, StopOrderByIdQuery } from '@vegaprotocol/orders';
 
 jest.mock('@vegaprotocol/assets', () => {
   const A1 = {
@@ -24,7 +23,7 @@ jest.mock('@vegaprotocol/assets', () => {
   };
   return {
     ...jest.requireActual('@vegaprotocol/assets'),
-    useAssetsMapProvider: jest.fn(() => ({ data: { [A1.id]: A1 } })),
+    useAssetsDataProvider: jest.fn(() => ({ data: [A1] })),
   };
 });
 
@@ -51,7 +50,7 @@ jest.mock('@vegaprotocol/markets', () => {
   };
   return {
     ...jest.requireActual('@vegaprotocol/markets'),
-    useMarketsMapProvider: jest.fn(() => ({ data: { [M1.id]: M1 } })),
+    useMarketList: jest.fn(() => ({ data: [M1] })),
   };
 });
 
@@ -60,64 +59,20 @@ jest.mock('@vegaprotocol/orders', () => {
     ...jest.requireActual('@vegaprotocol/orders'),
     useOrderByIdQuery: jest.fn(({ variables: { orderId } }) => {
       if (orderId === '0') {
-        const data: OrderByIdQuery = {
-          orderByID: {
-            id: '0',
-            side: 'SIDE_BUY',
-            size: '10',
-            remaining: '10',
-            timeInForce: 'TIME_IN_FORCE_FOK',
-            type: 'TYPE_MARKET',
-            price: '1234',
-            createdAt: new Date(),
-            status: 'STATUS_ACTIVE',
-            market: { id: 'market-1' },
-          },
-        } as OrderByIdQuery;
         return {
-          data,
-        };
-      } else {
-        return { data: undefined };
-      }
-    }),
-    useStopOrderByIdQuery: jest.fn(({ variables: { stopOrderId } }) => {
-      if (stopOrderId === '0') {
-        const data: StopOrderByIdQuery = {
-          stopOrder: {
-            id: '0',
-            ocoLinkId: null,
-            expiresAt: null,
-            expiryStrategy: null,
-            triggerDirection: 'TRIGGER_DIRECTION_RISES_ABOVE',
-            status: 'STATUS_CANCELLED',
-            createdAt: '2023-08-03T07:12:36.325927Z',
-            updatedAt: null,
-            partyId: 'party-id',
-            marketId: 'market-1',
-            trigger: {
-              price: '1234',
-              __typename: 'StopOrderPrice',
-            },
-            submission: {
-              marketId: 'market-1',
-              price: '1234',
+          data: {
+            orderByID: {
+              id: '0',
+              side: 'SIDE_BUY',
               size: '10',
-              side: 'SIDE_SELL',
               timeInForce: 'TIME_IN_FORCE_FOK',
-              expiresAt: null,
               type: 'TYPE_MARKET',
-              reference: '',
-              peggedOrder: null,
-              postOnly: false,
-              reduceOnly: true,
-              __typename: 'OrderSubmission',
+              price: '1234',
+              createdAt: new Date(),
+              status: 'STATUS_ACTIVE',
+              market: { id: 'market-1' },
             },
-            __typename: 'StopOrder',
           },
-        } as StopOrderByIdQuery;
-        return {
-          data,
         };
       } else {
         return { data: undefined };
@@ -188,31 +143,6 @@ const submitOrder: VegaStoredTxState = {
   },
 };
 
-const submitStopOrder: VegaStoredTxState = {
-  id: 0,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-  body: {
-    stopOrdersSubmission: {
-      risesAbove: {
-        price: '1234',
-        orderSubmission: {
-          marketId: 'market-1',
-          side: Side.SIDE_BUY,
-          size: '10',
-          timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-          type: OrderType.TYPE_MARKET,
-        },
-      },
-    },
-  },
-  status: VegaTxStatus.Default,
-  error: null,
-  txHash: null,
-  signature: null,
-  dialogOpen: false,
-};
-
 const editOrder: VegaStoredTxState = {
   id: 0,
   createdAt: new Date(),
@@ -269,23 +199,6 @@ const cancelAll: VegaStoredTxState = {
     orderCancellation: {
       marketId: undefined,
       orderId: undefined,
-    },
-  },
-  status: VegaTxStatus.Default,
-  error: null,
-  txHash: null,
-  signature: null,
-  dialogOpen: false,
-};
-
-const cancelStopOrder: VegaStoredTxState = {
-  id: 0,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-  body: {
-    stopOrdersCancellation: {
-      marketId: 'market-1',
-      stopOrderId: '0',
     },
   },
   status: VegaTxStatus.Default,
@@ -357,19 +270,11 @@ describe('VegaTransactionDetails', () => {
     { tx: withdraw, details: 'Withdraw 12.34 $A' },
     { tx: submitOrder, details: 'Submit order - activeM1+0.10 @ 12.34 $A' },
     {
-      tx: submitStopOrder,
-      details: 'Submit stop orderM1+0.10 @ ~ $AMark > 12.34',
-    },
-    {
       tx: editOrder,
       details: 'Edit order - activeM1+0.10 @ 12.34 $A+0.11 @ 10.00 $A',
     },
     { tx: cancelOrder, details: 'Cancel orderM1+0.10 @ 12.34 $A' },
     { tx: cancelAll, details: 'Cancel all orders' },
-    {
-      tx: cancelStopOrder,
-      details: 'Cancel stop orderM1-0.10 @ 12.34 $AMark > 12.34',
-    },
     { tx: closePosition, details: 'Close position for M1' },
     { tx: batch, details: 'Batch market instruction' },
   ])('display details for transaction', ({ tx, details }) => {
@@ -386,16 +291,10 @@ describe('getVegaTransactionContentIntent', () => {
     expect(getVegaTransactionContentIntent(submitOrder).intent).toBe(
       Intent.Success
     );
-    expect(getVegaTransactionContentIntent(submitStopOrder).intent).toBe(
-      Intent.Primary
-    );
     expect(getVegaTransactionContentIntent(editOrder).intent).toBe(
       Intent.Primary
     );
     expect(getVegaTransactionContentIntent(cancelOrder).intent).toBe(
-      Intent.Primary
-    );
-    expect(getVegaTransactionContentIntent(cancelStopOrder).intent).toBe(
       Intent.Primary
     );
     expect(getVegaTransactionContentIntent(cancelAll).intent).toBe(

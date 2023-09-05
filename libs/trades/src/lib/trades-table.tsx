@@ -1,5 +1,7 @@
+import type { AgGridReact } from 'ag-grid-react';
 import { useMemo } from 'react';
 import type { ColDef } from 'ag-grid-community';
+import { forwardRef } from 'react';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
@@ -8,7 +10,7 @@ import { AgGridLazy as AgGrid, NumericCell } from '@vegaprotocol/datagrid';
 import {
   addDecimal,
   addDecimalsFormatNumber,
-  getTimeFormat,
+  getDateTimeFormat,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
@@ -46,82 +48,90 @@ interface Props extends AgGridReactProps {
   onClick?: (price?: string) => void;
 }
 
-export const TradesTable = ({ onClick, ...props }: Props) => {
-  const columnDefs = useMemo<ColDef[]>(
-    () => [
-      {
-        headerName: t('Price'),
-        field: 'price',
-        type: 'rightAligned',
-        cellClass: changeCellClass,
-        valueFormatter: ({
-          value,
-          data,
-        }: VegaValueFormatterParams<Trade, 'price'>) => {
-          if (!value || !data?.market) {
-            return '';
-          }
-          return addDecimalsFormatNumber(value, data.market.decimalPlaces);
-        },
-        cellRenderer: ({
-          value,
-          data,
-        }: VegaICellRendererParams<Trade, 'price'>) => {
-          if (!data?.market || !value) {
-            return '';
-          }
-          return (
-            <button
-              onClick={() =>
-                onClick &&
-                onClick(addDecimal(value, data.market?.decimalPlaces || 0))
-              }
-              className="hover:dark:bg-vega-cdark-800 hover:bg-vega-clight-800"
-            >
-              {addDecimalsFormatNumber(value, data.market.decimalPlaces)}
-            </button>
-          );
-        },
-      },
-      {
-        headerName: t('Size'),
-        field: 'size',
-        type: 'rightAligned',
-        valueFormatter: ({
-          value,
-          data,
-        }: VegaValueFormatterParams<Trade, 'size'>) => {
-          if (!value || !data?.market) {
-            return '';
-          }
-          return addDecimalsFormatNumber(
+export const TradesTable = forwardRef<AgGridReact, Props>(
+  ({ onClick, ...props }, ref) => {
+    const columnDefs = useMemo<ColDef[]>(
+      () => [
+        {
+          headerName: t('Price'),
+          field: 'price',
+          type: 'rightAligned',
+          width: 130,
+          cellClass: changeCellClass,
+          valueFormatter: ({
             value,
-            data.market.positionDecimalPlaces
-          );
+            data,
+          }: VegaValueFormatterParams<Trade, 'price'>) => {
+            if (!value || !data?.market) {
+              return '';
+            }
+            return addDecimalsFormatNumber(value, data.market.decimalPlaces);
+          },
+          cellRenderer: ({
+            value,
+            data,
+          }: VegaICellRendererParams<Trade, 'price'>) => {
+            if (!data?.market || !value) {
+              return '';
+            }
+            return (
+              <button
+                onClick={() =>
+                  onClick &&
+                  onClick(addDecimal(value, data.market?.decimalPlaces || 0))
+                }
+                className="hover:dark:bg-neutral-800 hover:bg-neutral-200"
+              >
+                {addDecimalsFormatNumber(value, data.market.decimalPlaces)}
+              </button>
+            );
+          },
         },
-        cellRenderer: NumericCell,
-      },
-      {
-        headerName: t('Created at'),
-        field: 'createdAt',
-        type: 'rightAligned',
-        cellClass: 'text-right',
-        flex: 1, // make created at always fill remaining space
-        valueFormatter: ({
-          value,
-        }: VegaValueFormatterParams<Trade, 'createdAt'>) => {
-          return value && getTimeFormat().format(new Date(value));
+        {
+          headerName: t('Size'),
+          field: 'size',
+          width: 125,
+          type: 'rightAligned',
+          valueFormatter: ({
+            value,
+            data,
+          }: VegaValueFormatterParams<Trade, 'size'>) => {
+            if (!value || !data?.market) {
+              return '';
+            }
+            return addDecimalsFormatNumber(
+              value,
+              data.market.positionDecimalPlaces
+            );
+          },
+          cellRenderer: NumericCell,
         },
-      },
-    ],
-    [onClick]
-  );
-  return (
-    <AgGrid
-      getRowId={({ data }) => data.id}
-      columnDefs={columnDefs}
-      rowHeight={22}
-      {...props}
-    />
-  );
-};
+        {
+          headerName: t('Created at'),
+          field: 'createdAt',
+          type: 'rightAligned',
+          width: 170,
+          cellClass: 'text-right',
+          valueFormatter: ({
+            value,
+          }: VegaValueFormatterParams<Trade, 'createdAt'>) => {
+            return value && getDateTimeFormat().format(new Date(value));
+          },
+        },
+      ],
+      [onClick]
+    );
+    return (
+      <AgGrid
+        style={{ width: '100%', height: '100%' }}
+        getRowId={({ data }) => data.id}
+        ref={ref}
+        defaultColDef={{
+          flex: 1,
+        }}
+        columnDefs={columnDefs}
+        {...props}
+      />
+    );
+  }
+);

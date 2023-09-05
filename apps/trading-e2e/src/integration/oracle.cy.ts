@@ -6,7 +6,6 @@ const oracleFullProfile = 'oracle-full-profile';
 
 describe('oracle information', { tags: '@smoke' }, () => {
   before(() => {
-    cy.setOnBoardingViewed();
     cy.mockTradingPage(
       MarketState.STATE_ACTIVE,
       undefined,

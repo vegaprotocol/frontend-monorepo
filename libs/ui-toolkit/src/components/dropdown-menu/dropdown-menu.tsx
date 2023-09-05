@@ -43,18 +43,17 @@ export const DropdownMenuTrigger = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
   DropdownMenuPrimitive.DropdownMenuTriggerProps
 >(({ className, children, ...props }, forwardedRef) => {
-  const triggerClasses = classNames(
+  const defaultClasses = [
     'text-sm py-1 px-2 rounded bg-transparent border whitespace-nowrap',
     'border-vega-light-200 dark:border-vega-dark-200',
     'hover:border-vega-light-300 dark:hover:border-vega-dark-300',
-    className
-  );
+  ].join(' ');
 
   return (
     <DropdownMenuPrimitive.Trigger
       asChild={true}
       ref={forwardedRef}
-      className={triggerClasses}
+      className={className || defaultClasses}
       {...props}
     >
       <button>{children}</button>
@@ -73,13 +72,13 @@ export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
 export const DropdownMenuContent = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Content>,
   React.ComponentProps<typeof DropdownMenuPrimitive.Content>
->(({ className, sideOffset = 10, ...contentProps }, forwardedRef) => (
+>(({ className, ...contentProps }, forwardedRef) => (
   <DropdownMenuPrimitive.Content
+    {...contentProps}
     ref={forwardedRef}
     className="min-w-[290px] bg-vega-light-100 dark:bg-vega-dark-100 p-2 rounded z-20 text-black dark:text-white border border-vega-light-200 dark:border-vega-dark-200"
     align="start"
-    sideOffset={sideOffset}
-    {...contentProps}
+    sideOffset={10}
   />
 ));
 

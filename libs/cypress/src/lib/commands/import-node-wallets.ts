@@ -15,7 +15,6 @@ export const addImportNodeWallets = () => {
       .its('stdout')
       .then((result) => {
         const obj = JSON.parse(result);
-        // eslint-disable-next-line no-console
         console.log(obj);
         cy.writeFile(
           './src/fixtures/wallet/node0RecoveryPhrase',

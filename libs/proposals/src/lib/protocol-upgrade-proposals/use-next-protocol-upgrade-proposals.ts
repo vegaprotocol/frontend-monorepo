@@ -2,13 +2,6 @@ import { useMemo, useEffect } from 'react';
 import * as Schema from '@vegaprotocol/types';
 import { removePaginationWrapper, isTestEnv } from '@vegaprotocol/utils';
 import { useProtocolUpgradeProposalsQuery } from './__generated__/ProtocolUpgradeProposals';
-import { useLocalStorageSnapshot } from '@vegaprotocol/react-helpers';
-import pick from 'lodash/pick';
-
-const POLL_INTERVAL = 5000; // ms
-
-export const NEXT_PROTOCOL_UPGRADE_PROPOSAL_SNAPSHOT =
-  'next_protocol_upgrade_proposal';
 
 export const useNextProtocolUpgradeProposals = (since?: number) => {
   const { data, loading, error, startPolling, stopPolling } =
@@ -29,7 +22,7 @@ export const useNextProtocolUpgradeProposals = (since?: number) => {
     }
 
     if (!isTestEnv() && window.location.hostname !== 'localhost') {
-      startPolling(POLL_INTERVAL);
+      startPolling(5000);
     }
   }, [error, startPolling, stopPolling]);
 
@@ -58,27 +51,9 @@ export const useNextProtocolUpgradeProposals = (since?: number) => {
   };
 };
 
-export type StoredNextProtocolUpgradeData = {
-  vegaReleaseTag: string;
-  upgradeBlockHeight: string;
-};
-export const useNextProtocolUpgradeProposal = (
-  since?: number,
-  persist = false
-) => {
+export const useNextProtocolUpgradeProposal = (since?: number) => {
   const { data, lastBlockHeight, loading, error } =
     useNextProtocolUpgradeProposals(since);
-
-  const [, setNextUpgrade] = useLocalStorageSnapshot(
-    NEXT_PROTOCOL_UPGRADE_PROPOSAL_SNAPSHOT
-  );
-  useEffect(() => {
-    if (data && persist) {
-      setNextUpgrade(
-        JSON.stringify(pick(data, 'upgradeBlockHeight', 'vegaReleaseTag'))
-      );
-    }
-  }, [data, persist, setNextUpgrade]);
 
   return {
     data: !data ? undefined : data[0],

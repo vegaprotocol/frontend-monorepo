@@ -1,4 +1,5 @@
 import { useVegaTransactionStore } from './use-vega-transaction-store';
+import { VegaTxStatus } from './use-vega-transaction';
 import type { VegaStoredTxState } from './use-vega-transaction-store';
 import type {
   OrderAmendmentBody,
@@ -11,7 +12,6 @@ import {
   OrderType,
   Side,
 } from '@vegaprotocol/types';
-import { VegaTxStatus } from './types';
 
 jest.mock('./utils', () => ({
   ...jest.requireActual('./utils'),

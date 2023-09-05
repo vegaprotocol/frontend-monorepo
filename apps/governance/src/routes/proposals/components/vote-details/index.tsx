@@ -1,1 +1,1 @@
-export { UserVote } from './user-vote';
+export { VoteDetails } from './vote-details';

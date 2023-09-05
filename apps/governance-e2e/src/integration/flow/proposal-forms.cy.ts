@@ -74,7 +74,6 @@ context(
     beforeEach('visit governance tab', function () {
       cy.clearLocalStorage();
       turnTelemetryOff();
-      cy.mockChainId();
       cy.reload();
       waitForSpinner();
       cy.connectVegaWallet();
@@ -221,7 +220,7 @@ context(
       function () {
         const proposalTitle = 'Test new market proposal';
         goToMakeNewProposal(governanceProposalType.NEW_MARKET);
-        cy.getByTestId(newProposalTitle).type(proposalTitle);
+        cy.getByTestId(newProposalTitle).type('Test new market proposal');
         cy.getByTestId(newProposalDescription).type('E2E test for proposals');
         cy.fixture('/proposals/new-market').then((newMarketProposal) => {
           const newMarketPayload = JSON.stringify(newMarketProposal);
@@ -607,57 +606,6 @@ context(
         });
     });
 
-    it('able to submit successor market proposal', function () {
-      const proposalTitle = 'Test successor market proposal';
-
-      cy.createMarket();
-      cy.reload();
-      waitForSpinner();
-      cy.getByTestId('closed-proposals').within(() => {
-        cy.contains('Add Lorem Ipsum market')
-          .parentsUntil(proposalListItem)
-          .last()
-          .within(() => {
-            cy.getByTestId(viewProposalBtn).click();
-          });
-      });
-      getProposalInformationFromTable('ID').invoke('text').as('parentMarketId');
-      goToMakeNewProposal(governanceProposalType.NEW_MARKET);
-      cy.getByTestId(newProposalTitle).type(proposalTitle);
-      cy.getByTestId(newProposalDescription).type(
-        'E2E test for successor market'
-      );
-      cy.fixture('/proposals/successor-market').then((newMarketProposal) => {
-        newMarketProposal.changes.successor.parentMarketId =
-          this.parentMarketId;
-        const newMarketPayload = JSON.stringify(newMarketProposal);
-        cy.getByTestId(newProposalTerms).type(newMarketPayload, {
-          parseSpecialCharSequences: false,
-          delay: 2,
-        });
-      });
-      cy.getByTestId(proposalDownloadBtn)
-        .should('be.visible')
-        .click()
-        .then(() => {
-          cy.wrap(
-            getDownloadedProposalJsonPath('vega-new-market-proposal-')
-          ).then((filePath) => {
-            goToMakeNewProposal(governanceProposalType.RAW);
-            submitUniqueRawProposal({ proposalBody: filePath });
-          });
-        });
-      navigateTo(navigation.proposals);
-      getProposalFromTitle(proposalTitle).within(() => {
-        // 3003-PMAN-008
-        cy.getByTestId('proposal-successor-info')
-          .should('have.text', 'Successor market to: TEST.24h')
-          .find('a')
-          .should('have.attr', 'href')
-          .and('contain', this.parentMarketId);
-      });
-    });
-
     after('Disassociate from second wallet key if present', function () {
       cy.reload();
       waitForSpinner();
@@ -693,7 +641,6 @@ context(
       return cy
         .getByTestId('key-value-table-row')
         .contains(heading)
-        .parent()
         .parent()
         .siblings();
     }

@@ -4,6 +4,7 @@ import { getDateTimeFormat } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { Trade } from './fills-data-provider';
+
 import { FillsTable, getFeesBreakdown } from './fills-table';
 import { generateFill } from './test-helpers';
 
@@ -19,7 +20,7 @@ describe('FillsTable', () => {
         positionDecimalPlaces: 5,
         tradableInstrument: {
           instrument: {
-            code: 'test market',
+            name: 'test market',
             product: {
               settlementAsset: {
                 decimals: 2,
@@ -70,7 +71,7 @@ describe('FillsTable', () => {
     render(<FillsTable partyId={partyId} rowData={[{ ...buyerFill }]} />);
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
-      buyerFill.market?.tradableInstrument.instrument.code || '',
+      buyerFill.market?.tradableInstrument.instrument.name || '',
       '+3.00',
       '1.00 BTC',
       '3.00 BTC',
@@ -105,7 +106,7 @@ describe('FillsTable', () => {
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
-      buyerFill.market?.tradableInstrument.instrument.code || '',
+      buyerFill.market?.tradableInstrument.instrument.name || '',
       '-3.00',
       '1.00 BTC',
       '3.00 BTC',
@@ -140,7 +141,7 @@ describe('FillsTable', () => {
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
-      buyerFill.market?.tradableInstrument.instrument.code || '',
+      buyerFill.market?.tradableInstrument.instrument.name || '',
       '-3.00',
       '1.00 BTC',
       '3.00 BTC',
@@ -212,27 +213,6 @@ describe('FillsTable', () => {
     expect(
       await screen.findByTestId('fee-breakdown-tooltip')
     ).toBeInTheDocument();
-  });
-
-  it('negative positionDecimalPoints should be properly rendered in size column', async () => {
-    const partyId = 'party-id';
-    const negativeDecimalPositionFill = generateFill({
-      ...defaultFill,
-      market: {
-        ...defaultFill.market,
-        positionDecimalPlaces: -4,
-      },
-    });
-    await act(async () => {
-      render(
-        <FillsTable partyId={partyId} rowData={[negativeDecimalPositionFill]} />
-      );
-    });
-
-    const sizeCell = screen
-      .getAllByRole('gridcell')
-      .find((c) => c.getAttribute('col-id') === 'size');
-    expect(sizeCell).toHaveTextContent('3,000,000,000');
   });
 
   describe('getFeesBreakdown', () => {

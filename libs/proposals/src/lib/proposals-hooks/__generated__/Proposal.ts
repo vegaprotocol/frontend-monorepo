@@ -13,12 +13,12 @@ export type ProposalEventSubscriptionVariables = Types.Exact<{
 
 export type ProposalEventSubscription = { __typename?: 'Subscription', proposals: { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null } };
 
-export type UpdateNetworkParameterProposalFragment = { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null, change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } } };
+export type UpdateNetworkParameterProposalFragment = { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null, change: { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } } };
 
 export type OnUpdateNetworkParametersSubscriptionVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type OnUpdateNetworkParametersSubscription = { __typename?: 'Subscription', proposals: { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null, change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } } } };
+export type OnUpdateNetworkParametersSubscription = { __typename?: 'Subscription', proposals: { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null, change: { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } } } };
 
 export type ProposalOfMarketQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
@@ -26,20 +26,6 @@ export type ProposalOfMarketQueryVariables = Types.Exact<{
 
 
 export type ProposalOfMarketQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null } } | null };
-
-export type SuccessorMarketProposalDetailsQueryVariables = Types.Exact<{
-  proposalId: Types.Scalars['ID'];
-}>;
-
-
-export type SuccessorMarketProposalDetailsQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', successorConfiguration?: { __typename?: 'SuccessorConfiguration', parentMarketId: string, insurancePoolFraction: string } | null } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter' } } } | null };
-
-export type InstrumentDetailsQueryVariables = Types.Exact<{
-  marketId: Types.Scalars['ID'];
-}>;
-
-
-export type InstrumentDetailsQuery = { __typename?: 'Query', market?: { __typename?: 'Market', tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, name: string } } } | null };
 
 export const ProposalEventFieldsFragmentDoc = gql`
     fragment ProposalEventFields on Proposal {
@@ -162,88 +148,3 @@ export function useProposalOfMarketLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type ProposalOfMarketQueryHookResult = ReturnType<typeof useProposalOfMarketQuery>;
 export type ProposalOfMarketLazyQueryHookResult = ReturnType<typeof useProposalOfMarketLazyQuery>;
 export type ProposalOfMarketQueryResult = Apollo.QueryResult<ProposalOfMarketQuery, ProposalOfMarketQueryVariables>;
-export const SuccessorMarketProposalDetailsDocument = gql`
-    query SuccessorMarketProposalDetails($proposalId: ID!) {
-  proposal(id: $proposalId) {
-    id
-    terms {
-      change {
-        ... on NewMarket {
-          successorConfiguration {
-            parentMarketId
-            insurancePoolFraction
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useSuccessorMarketProposalDetailsQuery__
- *
- * To run a query within a React component, call `useSuccessorMarketProposalDetailsQuery` and pass it any options that fit your needs.
- * When your component renders, `useSuccessorMarketProposalDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSuccessorMarketProposalDetailsQuery({
- *   variables: {
- *      proposalId: // value for 'proposalId'
- *   },
- * });
- */
-export function useSuccessorMarketProposalDetailsQuery(baseOptions: Apollo.QueryHookOptions<SuccessorMarketProposalDetailsQuery, SuccessorMarketProposalDetailsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<SuccessorMarketProposalDetailsQuery, SuccessorMarketProposalDetailsQueryVariables>(SuccessorMarketProposalDetailsDocument, options);
-      }
-export function useSuccessorMarketProposalDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SuccessorMarketProposalDetailsQuery, SuccessorMarketProposalDetailsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<SuccessorMarketProposalDetailsQuery, SuccessorMarketProposalDetailsQueryVariables>(SuccessorMarketProposalDetailsDocument, options);
-        }
-export type SuccessorMarketProposalDetailsQueryHookResult = ReturnType<typeof useSuccessorMarketProposalDetailsQuery>;
-export type SuccessorMarketProposalDetailsLazyQueryHookResult = ReturnType<typeof useSuccessorMarketProposalDetailsLazyQuery>;
-export type SuccessorMarketProposalDetailsQueryResult = Apollo.QueryResult<SuccessorMarketProposalDetailsQuery, SuccessorMarketProposalDetailsQueryVariables>;
-export const InstrumentDetailsDocument = gql`
-    query InstrumentDetails($marketId: ID!) {
-  market(id: $marketId) {
-    tradableInstrument {
-      instrument {
-        code
-        name
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useInstrumentDetailsQuery__
- *
- * To run a query within a React component, call `useInstrumentDetailsQuery` and pass it any options that fit your needs.
- * When your component renders, `useInstrumentDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInstrumentDetailsQuery({
- *   variables: {
- *      marketId: // value for 'marketId'
- *   },
- * });
- */
-export function useInstrumentDetailsQuery(baseOptions: Apollo.QueryHookOptions<InstrumentDetailsQuery, InstrumentDetailsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<InstrumentDetailsQuery, InstrumentDetailsQueryVariables>(InstrumentDetailsDocument, options);
-      }
-export function useInstrumentDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<InstrumentDetailsQuery, InstrumentDetailsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<InstrumentDetailsQuery, InstrumentDetailsQueryVariables>(InstrumentDetailsDocument, options);
-        }
-export type InstrumentDetailsQueryHookResult = ReturnType<typeof useInstrumentDetailsQuery>;
-export type InstrumentDetailsLazyQueryHookResult = ReturnType<typeof useInstrumentDetailsLazyQuery>;
-export type InstrumentDetailsQueryResult = Apollo.QueryResult<InstrumentDetailsQuery, InstrumentDetailsQueryVariables>;

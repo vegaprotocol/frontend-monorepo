@@ -6,12 +6,14 @@ import { t } from '@vegaprotocol/i18n';
 import { useIncompleteWithdrawals } from '@vegaprotocol/withdraws';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import { usePageTitleStore } from '../../stores';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { AccountsContainer } from '../../components/accounts-container';
-import { DepositsContainer } from '../../components/deposits-container';
+import { DepositsContainer } from './deposits-container';
 import { FillsContainer } from '../../components/fills-container';
 import { PositionsContainer } from '../../components/positions-container';
-import { WithdrawalsContainer } from '../../components/withdrawals-container';
+import { WithdrawalsContainer } from './withdrawals-container';
 import { OrdersContainer } from '../../components/orders-container';
+import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { LedgerContainer } from '../../components/ledger-container';
 import { AccountHistoryContainer } from './account-history-container';
 import {
@@ -19,10 +21,6 @@ import {
   ResizableGridPanel,
   usePaneLayout,
 } from '../../components/resizable-grid';
-import { ViewType, useSidebar } from '../../components/sidebar';
-import { AccountsMenu } from '../../components/accounts-menu';
-import { DepositsMenu } from '../../components/deposits-menu';
-import { WithdrawalsMenu } from '../../components/withdrawals-menu';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -30,14 +28,13 @@ const WithdrawalsIndicator = () => {
     return null;
   }
   return (
-    <span className="bg-vega-clight-500 dark:bg-vega-cdark-500 text-default rounded p-1 leading-none">
+    <span className="bg-vega-blue-450 text-white text-[10px] rounded p-[3px] pb-[2px] leading-none">
       {ready.length}
     </span>
   );
 };
 
 export const Portfolio = () => {
-  const { init, view, setView } = useSidebar();
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
@@ -46,15 +43,9 @@ export const Portfolio = () => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle]);
 
-  // Make transfer sidebar open by default
-  useEffect(() => {
-    if (init && view === null) {
-      setView({ type: ViewType.Transfer });
-    }
-  }, [init, view, setView]);
-
+  const onMarketClick = useMarketClickHandler(true);
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
-  const wrapperClasses = 'p-0.5 h-full max-h-full flex flex-col';
+  const wrapperClasses = 'h-full max-h-full flex flex-col';
   return (
     <div className={wrapperClasses}>
       <ResizableGrid vertical onChange={handleOnLayoutChange}>
@@ -62,19 +53,29 @@ export const Portfolio = () => {
           <PortfolioGridChild>
             <Tabs storageKey="console-portfolio-top">
               <Tab id="account-history" name={t('Account history')}>
-                <AccountHistoryContainer />
+                <VegaWalletContainer>
+                  <AccountHistoryContainer />
+                </VegaWalletContainer>
               </Tab>
               <Tab id="positions" name={t('Positions')}>
-                <PositionsContainer allKeys />
+                <VegaWalletContainer>
+                  <PositionsContainer onMarketClick={onMarketClick} allKeys />
+                </VegaWalletContainer>
               </Tab>
               <Tab id="orders" name={t('Orders')}>
-                <OrdersContainer />
+                <VegaWalletContainer>
+                  <OrdersContainer />
+                </VegaWalletContainer>
               </Tab>
               <Tab id="fills" name={t('Fills')}>
-                <FillsContainer />
+                <VegaWalletContainer>
+                  <FillsContainer onMarketClick={onMarketClick} />
+                </VegaWalletContainer>
               </Tab>
               <Tab id="ledger-entries" name={t('Ledger entries')}>
-                <LedgerContainer />
+                <VegaWalletContainer>
+                  <LedgerContainer />
+                </VegaWalletContainer>
               </Tab>
             </Tabs>
           </PortfolioGridChild>
@@ -86,21 +87,20 @@ export const Portfolio = () => {
         >
           <PortfolioGridChild>
             <Tabs storageKey="console-portfolio-bottom">
-              <Tab
-                id="collateral"
-                name={t('Collateral')}
-                menu={<AccountsMenu />}
-              >
-                <AccountsContainer />
+              <Tab id="collateral" name={t('Collateral')}>
+                <VegaWalletContainer>
+                  <AccountsContainer />
+                </VegaWalletContainer>
               </Tab>
-              <Tab id="deposits" name={t('Deposits')} menu={<DepositsMenu />}>
-                <DepositsContainer />
+              <Tab id="deposits" name={t('Deposits')}>
+                <VegaWalletContainer>
+                  <DepositsContainer />
+                </VegaWalletContainer>
               </Tab>
               <Tab
                 id="withdrawals"
                 name={t('Withdrawals')}
                 indicator={<WithdrawalsIndicator />}
-                menu={<WithdrawalsMenu />}
               >
                 <WithdrawalsContainer />
               </Tab>
@@ -118,8 +118,8 @@ interface PortfolioGridChildProps {
 
 const PortfolioGridChild = ({ children }: PortfolioGridChildProps) => {
   return (
-    <section className="h-full p-1">
-      <div className="border border-default h-full rounded-sm">{children}</div>
+    <section className="bg-white dark:bg-black w-full h-full">
+      {children}
     </section>
   );
 };

@@ -23,7 +23,7 @@ export const useAccountBalance = (assetId?: string) => {
     },
     [assetId]
   );
-  const { loading, error } = useDataProvider({
+  useDataProvider({
     dataProvider: accountsDataProvider,
     variables,
     skip: !pubKey || !assetId,
@@ -34,9 +34,7 @@ export const useAccountBalance = (assetId?: string) => {
     () => ({
       accountBalance: pubKey ? accountBalance : '',
       accountDecimals: pubKey ? accountDecimals : null,
-      loading,
-      error,
     }),
-    [accountBalance, accountDecimals, pubKey, loading, error]
+    [accountBalance, accountDecimals, pubKey]
   );
 };

@@ -26,7 +26,7 @@ export const initializeCoinbaseConnector = (providerUrl: string) =>
           url: providerUrl,
         },
         onError: (error) => {
-          console.warn('ERR_COINBASE_WALLET', error);
+          console.log('ERR_COINBASE_WALLET', error);
           useWeb3ConnectStore.setState({ error });
         },
       })
@@ -82,7 +82,7 @@ export const initializeWalletConnector = (
               },
             },
             onError: (error) => {
-              console.warn('ERR_WALLET_CONNECT', error.message);
+              console.log('ERR_WALLET_CONNECT', error.message);
               useWeb3ConnectStore.setState({ error });
             },
           })
@@ -98,7 +98,7 @@ export const initializeMetaMaskConnector = () =>
           mustBeMetaMask: false,
         },
         onError: (error) => {
-          console.warn('ERR_META_MASK', error.message);
+          console.log('ERR_META_MASK', error.message);
           useWeb3ConnectStore.setState({ error });
         },
       })

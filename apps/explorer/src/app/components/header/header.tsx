@@ -95,10 +95,7 @@ export const Header = () => {
         {mainItems.map(routeToNavigationItem)}
         {groupedItems && groupedItems.length > 0 && (
           <NavigationItem>
-            <NavigationTrigger
-              isActive={Boolean(isOnOther)}
-              data-testid="other"
-            >
+            <NavigationTrigger isActive={Boolean(isOnOther)}>
               {t('Other')}
             </NavigationTrigger>
             <NavigationContent>

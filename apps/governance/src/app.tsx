@@ -41,7 +41,6 @@ import {
   AppFailure,
   NodeSwitcherDialog,
   useNodeSwitcherStore,
-  DocsLinks,
 } from '@vegaprotocol/environment';
 import { ENV } from './config';
 import type { InMemoryCacheConfig } from '@apollo/client';
@@ -110,17 +109,8 @@ const Web3Container = ({
     store.connectors,
     store.initialize,
   ]);
-  const {
-    ETHEREUM_PROVIDER_URL,
-    ETH_LOCAL_PROVIDER_URL,
-    ETH_WALLET_MNEMONIC,
-    VEGA_ENV,
-    VEGA_URL,
-    VEGA_EXPLORER_URL,
-    CHROME_EXTENSION_URL,
-    MOZILLA_EXTENSION_URL,
-    VEGA_WALLET_URL,
-  } = useEnvironment();
+  const { ETHEREUM_PROVIDER_URL, ETH_LOCAL_PROVIDER_URL, ETH_WALLET_MNEMONIC } =
+    useEnvironment();
   useEffect(() => {
     if (chainId) {
       return initializeConnectors(
@@ -149,33 +139,10 @@ const Web3Container = ({
     return <SplashLoader />;
   }
 
-  if (
-    !VEGA_URL ||
-    !VEGA_WALLET_URL ||
-    !VEGA_EXPLORER_URL ||
-    !DocsLinks ||
-    !CHROME_EXTENSION_URL ||
-    !MOZILLA_EXTENSION_URL
-  ) {
-    return null;
-  }
-
   return (
     <Web3Provider connectors={connectors}>
       <Web3Connector connectors={connectors} chainId={Number(chainId)}>
-        <VegaWalletProvider
-          config={{
-            network: VEGA_ENV,
-            vegaUrl: VEGA_URL,
-            vegaWalletServiceUrl: VEGA_WALLET_URL,
-            links: {
-              explorer: VEGA_EXPLORER_URL,
-              concepts: DocsLinks?.VEGA_WALLET_CONCEPTS_URL,
-              chromeExtensionUrl: CHROME_EXTENSION_URL,
-              mozillaExtensionUrl: MOZILLA_EXTENSION_URL,
-            },
-          }}
-        >
+        <VegaWalletProvider>
           <ContractsProvider>
             <AppLoader>
               <BalanceManager>
@@ -308,7 +275,7 @@ const AppContainer = () => {
     <Router>
       <ScrollToTop />
       <AppStateProvider>
-        <div className="min-h-full text-white grid">
+        <div className="grid min-h-full text-white">
           <NodeGuard
             skeleton={<div>{t('Loading')}</div>}
             failure={

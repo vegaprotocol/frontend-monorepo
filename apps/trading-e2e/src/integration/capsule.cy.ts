@@ -2,6 +2,7 @@ import { removeDecimal } from '@vegaprotocol/cypress';
 import * as Schema from '@vegaprotocol/types';
 import {
   OrderStatusMapping,
+  OrderTimeInForceMapping,
   OrderTypeMapping,
   Side,
 } from '@vegaprotocol/types';
@@ -16,6 +17,7 @@ const orderStatus = 'status';
 const orderRemaining = 'remaining';
 const orderPrice = 'price';
 const orderTimeInForce = 'timeInForce';
+const orderCreatedAt = 'createdAt';
 const orderUpdatedAt = 'updatedAt';
 const assetSelectField = 'select[name="asset"]';
 const amountField = 'input[name="amount"]';
@@ -54,7 +56,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
 
   it('can deposit', function () {
     cy.visit('/#/portfolio');
-    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
 
     // 1001-DEPO-001
     // 1001-DEPO-002
@@ -117,10 +119,10 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
   it('can key to key transfers', function () {
     // 1003-TRAN-023
     // 1003-TRAN-006
-    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
 
     cy.getByTestId(collateralTab).click();
-    cy.getByTestId('open-transfer').click();
+    cy.getByTestId('open-transfer-dialog').click();
     cy.getByTestId('transfer-form').should('be.visible');
     cy.getByTestId('transfer-form').find('[name="toAddress"]').select(1);
     cy.get('select option')
@@ -187,21 +189,19 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     // 0006-NETW-010
     const market = this.market;
     cy.visit(`/#/markets/${market.id}`);
-    cy.getByTestId('node-health-trigger').realHover();
     cy.getByTestId('node-health')
       .children()
       .first()
       .should('contain.text', 'Operational')
+      .next()
+      .should('contain.text', new URL(Cypress.env('VEGA_URL')).hostname)
+      .next()
       .then(($el) => {
         const blockHeight = parseInt($el.text());
         // block height will increase over the course of the test run so best
         // we can do here is check that its showing something sensible
         expect(blockHeight).to.be.greaterThan(0);
       });
-    cy.getByTestId('node-health')
-      .children()
-      .eq(1)
-      .should('contain.text', new URL(Cypress.env('VEGA_URL')).hostname);
   });
 
   it('can place and receive an order', function () {
@@ -260,7 +260,10 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
             OrderStatusMapping.STATUS_ACTIVE
           );
 
-          cy.get(`[col-id='${orderRemaining}']`).should('contain.text', '0.00');
+          cy.get(`[col-id='${orderRemaining}']`).should(
+            'contain.text',
+            `0.00/${order.size}`
+          );
 
           cy.get(`[col-id='${orderPrice}']`).then(($price) => {
             expect(parseFloat($price.text())).to.equal(parseFloat(order.price));
@@ -268,10 +271,10 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
 
           cy.get(`[col-id='${orderTimeInForce}']`).should(
             'contain.text',
-            'GTC'
+            OrderTimeInForceMapping[order.timeInForce]
           );
 
-          checkIfDataAndTimeOfCreationAndUpdateIsEqual(orderUpdatedAt);
+          checkIfDataAndTimeOfCreationAndUpdateIsEqual(orderCreatedAt);
         });
     });
   });
@@ -344,7 +347,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     const ethWalletAddress = Cypress.env('ETHEREUM_WALLET_ADDRESS');
 
     cy.visit('/#/portfolio');
-    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId('Withdrawals').click();
     cy.getByTestId('withdraw-dialog-button').click();
@@ -431,7 +434,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     // 1001-DEPO-006
     // 1001-DEPO-007
     cy.visit('/#/portfolio');
-    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
@@ -453,7 +456,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     // 1002-WITH-007
 
     cy.visit('/#/portfolio');
-    cy.get('[data-testid="pathname-/portfolio"]', txTimeout).should('exist');
+    cy.get('main[data-testid="/portfolio"]', txTimeout).should('exist');
     cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
@@ -535,7 +538,6 @@ function checkIfDataAndTimeOfCreationAndUpdateIsEqual(date: string) {
       // unexpected latency
       const minBefore = subSeconds(new Date(), 5);
       const maxAfter = addSeconds(new Date(), 5);
-      // eslint-disable-next-line no-console
       console.log(maxAfter);
       const date = new Date($dateTime.toString());
       expect(isAfter(date, minBefore) && isBefore(date, maxAfter)).to.equal(

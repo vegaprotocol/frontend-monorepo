@@ -11,7 +11,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       cy.getByTestId('home-proposals').within(() => {
         cy.get('[href="/proposals"]')
           .should('exist')
-          .and('have.text', 'See all proposals');
+          .and('have.text', 'Browse, vote, and propose');
       });
     });
 
@@ -119,7 +119,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       });
     });
 
-    // 0006-NETW-001 0006-NETW-002
     it('should display network data', function () {
       cy.getByTestId('git-network-data')
         .should('contain.text', 'Reading network data from')
@@ -131,37 +130,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
         });
     });
 
-    // 0006-NETW-003 0006-NETW-008 0006-NETW-009 0006-NETW-010 0006-NETW-012 0006-NETW-013 0006-NETW-017 0006-NETW-018 0006-NETW-019 0006-NETW-020
-    it('should have option to switch to different network node', function () {
-      cy.getByTestId('git-network-data').within(() => {
-        cy.getByTestId('link').click();
-      });
-      cy.getByTestId('node-row').within(() => {
-        cy.getByTestId('node-url-0')
-          .parent()
-          .should('have.text', 'http://localhost:3008/graphql');
-        cy.getByTestId('response-time-cell')
-          .invoke('text')
-          .should('not.be.empty')
-          .and('not.eq', 'Checking');
-        cy.getByTestId('block-height-cell')
-          .invoke('text')
-          .should('not.be.empty')
-          .then((currentBlockHeight) => {
-            // Check that block height updates automatically
-            cy.getByTestId('block-height-cell')
-              .invoke('text')
-              .should('not.eq', currentBlockHeight);
-          });
-        cy.getByTestId('subscription-cell').should('have.text', 'Yes');
-      });
-      cy.getByTestId('connect').should('be.disabled');
-      cy.getByTestId('node-url-custom').click();
-      cy.get('input').should('exist');
-      cy.getByTestId('connect').should('be.disabled');
-      cy.getByTestId('icon-cross').click();
-    });
-
     it('should display eth data', function () {
       cy.getByTestId('git-eth-data')
         .should('contain.text', 'Reading Ethereum data from')
@@ -170,7 +138,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
         });
     });
 
-    // 0006-NETW-011
     it('should contain link for known issues on Github', function () {
       cy.getByTestId('git-info').within(() => {
         cy.contains('Known issues and feedback on')
@@ -194,7 +161,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       cy.getByTestId('menu-drawer').should('be.visible');
     });
 
-    it('should have link for proposal page', function () {
+    it.skip('should have link for proposal page', function () {
       cy.getByTestId('menu-drawer').within(() => {
         cy.get('[href="/proposals"]')
           .should('exist')

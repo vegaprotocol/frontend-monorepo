@@ -78,22 +78,13 @@ export function stakingPageAssociateTokens(
   }
   cy.get(tokenAmountInputBox, epochTimeout).type(amount);
   if (approve) {
-    cy.getByTestId('wallet-associate').then((walletAssociateField) => {
-      if (
-        walletAssociateField.find('[data-testid="token-input-approve-button"]')
-          .length
-      ) {
-        cy.get(tokenInputApprove, txTimeout).should('be.enabled').click();
-        cy.contains(
-          'Approve $VEGA Tokens for staking on Vega',
-          txTimeout
-        ).should('be.visible');
-        cy.contains(
-          'Approve $VEGA Tokens for staking on Vega',
-          txTimeout
-        ).should('not.exist');
-      }
-    });
+    cy.get(tokenInputApprove, txTimeout).should('be.enabled').click();
+    cy.contains('Approve $VEGA Tokens for staking on Vega').should(
+      'be.visible'
+    );
+    cy.contains('Approve $VEGA Tokens for staking on Vega', txTimeout).should(
+      'not.exist'
+    );
   }
   cy.get(tokenSubmitButton, txTimeout).should('be.enabled').click();
 
@@ -182,9 +173,8 @@ export function clickOnValidatorFromList(
   } else {
     cy.get(`[row-id="${validatorNumber}"]`)
       .should('be.visible')
-      .first()
-      .as('validatorOnList');
-    cy.get('@validatorOnList').click();
+      .find(stakeValidatorListName)
+      .click();
   }
 }
 

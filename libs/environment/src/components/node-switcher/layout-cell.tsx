@@ -29,7 +29,7 @@ export const LayoutCell = ({
         data-testid={dataTestId}
         className={classnames('font-mono', {
           'text-danger': !isLoading && hasError,
-          'text-muted': isLoading,
+          'text-neutral-800 dark:text-neutral-200': isLoading,
         })}
       >
         {isLoading ? t('Checking') : children || '-'}

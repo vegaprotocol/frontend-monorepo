@@ -4,8 +4,6 @@ import {
   vegaWalletFaucetAssetsWithoutCheck,
   vegaWalletTeardown,
 } from '../../support/wallet-functions';
-import { aliasGQLQuery } from '@vegaprotocol/cypress';
-import { chainIdQuery, statisticsQuery } from '@vegaprotocol/mock';
 
 const walletContainer = 'aside [data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
@@ -16,6 +14,10 @@ const dialogHeader = 'dialog-title';
 const walletDialogHeader = 'wallet-dialog-title';
 const connectorsList = 'connectors-list';
 const dialogCloseBtn = 'dialog-close';
+const restConnectorForm = 'rest-connector-form';
+const restWallet = '#wallet';
+const restPassphrase = '#passphrase';
+const restConnectBtn = '[type="submit"]';
 const accountNo = 'vega-account-truncated';
 const currencyTitle = 'currency-title';
 const currencyValue = 'currency-value';
@@ -67,7 +69,7 @@ context(
         cy.get(dialog).within(() => {
           cy.getByTestId(walletDialogHeader)
             .should('be.visible')
-            .and('have.text', 'Get a Vega wallet');
+            .and('have.text', 'Connect');
         });
       });
 
@@ -75,7 +77,10 @@ context(
         cy.getByTestId(connectorsList).within(() => {
           cy.getByTestId('connector-jsonRpc')
             .should('be.visible')
-            .and('have.text', 'Use the Desktop App/CLI');
+            .and('have.text', 'Connect Vega wallet');
+          cy.getByTestId('connector-hosted')
+            .should('be.visible')
+            .and('have.text', 'Hosted Fairground wallet');
         });
       });
 
@@ -86,14 +91,48 @@ context(
       });
     });
 
+    describe('when rest connector form opened', function () {
+      before('click hosted wallet app button', function () {
+        cy.getByTestId(connectorsList).within(() => {
+          cy.getByTestId('connector-hosted').click();
+        });
+      });
+
+      // 0002-WCON-002
+      it('should have wallet field visible', function () {
+        cy.getByTestId(restConnectorForm).within(() => {
+          cy.get(restWallet).should('be.visible');
+        });
+      });
+
+      it('should have password field visible', function () {
+        cy.getByTestId(restConnectorForm).within(() => {
+          cy.get(restPassphrase).should('be.visible');
+        });
+      });
+
+      it('should have connect button visible', function () {
+        cy.getByTestId(restConnectorForm).within(() => {
+          cy.get(restConnectBtn)
+            .should('be.visible')
+            .and('have.text', 'Connect');
+        });
+      });
+
+      it('should have close button visible', function () {
+        cy.get(dialog).within(() => {
+          cy.getByTestId(dialogCloseBtn).should('be.visible');
+        });
+      });
+
+      after('close dialog', function () {
+        cy.getByTestId(dialogCloseBtn).click().should('not.exist');
+      });
+    });
+
     describe('when vega wallet connected', function () {
       before('connect vega wallet', function () {
-        cy.mockGQL((req) => {
-          aliasGQLQuery(req, 'ChainId', chainIdQuery());
-          aliasGQLQuery(req, 'Statistics', statisticsQuery());
-        });
         cy.visit('/');
-        cy.wait('@ChainId');
         cy.connectVegaWallet();
         vegaWalletTeardown();
       });
@@ -276,10 +315,6 @@ context(
         ];
 
         before('faucet assets to connected vega wallet', function () {
-          cy.mockGQL((req) => {
-            aliasGQLQuery(req, 'ChainId', chainIdQuery());
-            aliasGQLQuery(req, 'Statistics', statisticsQuery());
-          });
           for (const { id, amount } of assets) {
             vegaWalletFaucetAssetsWithoutCheck(id, amount, vegaWalletPublicKey);
           }
@@ -304,7 +339,7 @@ context(
               cy.getByTestId(vegaWalletCurrencyTitle)
                 .contains(name)
                 .parent()
-                .siblings(txTimeout)
+                .siblings()
                 .should((elementAmount) => {
                   const displayedAmount = parseFloat(elementAmount.text());
                   expect(displayedAmount).be.gte(expectedAmount);

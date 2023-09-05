@@ -11,25 +11,27 @@ import { useVegaTransactionStore, useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useMemo } from 'react';
 import { accountsDataProvider } from './accounts-data-provider';
 import { TransferForm } from './transfer-form';
-import sortBy from 'lodash/sortBy';
+import { useTransferDialog } from './transfer-dialog';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
+import sortBy from 'lodash/sortBy';
 
 export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   const { pubKey, pubKeys } = useVegaWallet();
+  const open = useTransferDialog((store) => store.open);
   const { param } = useNetworkParam(NetworkParams.transfer_fee_factor);
   const { data } = useDataProvider({
     dataProvider: accountsDataProvider,
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });
-
   const create = useVegaTransactionStore((store) => store.create);
 
   const transfer = useCallback(
     (transfer: Transfer) => {
       create({ transfer });
+      open(false);
     },
-    [create]
+    [create, open]
   );
 
   const assets = useMemo(() => {
@@ -49,17 +51,10 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
 
   return (
     <>
-      <p className="text-sm mb-4" data-testid="transfer-intro-text">
-        {t('Transfer funds to another Vega key')}
-        {pubKey && (
-          <>
-            {t(' from ')}
-            <Lozenge className="font-mono">
-              {truncateByChars(pubKey || '')}
-            </Lozenge>
-          </>
-        )}
-        {t('. If you are at all unsure, stop and seek advice.')}
+      <p className="text-sm mb-4" data-testid="dialog-transfer-text">
+        {t('Transfer funds to another Vega key from')}{' '}
+        <Lozenge className="font-mono">{truncateByChars(pubKey || '')}</Lozenge>{' '}
+        {t('If you are at all unsure, stop and seek advice.')}
       </p>
       <TransferForm
         pubKey={pubKey}

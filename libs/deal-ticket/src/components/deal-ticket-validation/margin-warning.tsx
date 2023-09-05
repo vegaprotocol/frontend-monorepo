@@ -1,6 +1,7 @@
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { Notification, Intent } from '@vegaprotocol/ui-toolkit';
+import { useDepositDialog } from '@vegaprotocol/deposits';
 
 interface Props {
   margin: string;
@@ -10,10 +11,10 @@ interface Props {
     symbol: string;
     decimals: number;
   };
-  onDeposit: (assetId: string) => void;
 }
 
-export const MarginWarning = ({ margin, balance, asset, onDeposit }: Props) => {
+export const MarginWarning = ({ margin, balance, asset }: Props) => {
+  const openDepositDialog = useDepositDialog((state) => state.open);
   return (
     <Notification
       intent={Intent.Warning}
@@ -28,9 +29,9 @@ export const MarginWarning = ({ margin, balance, asset, onDeposit }: Props) => {
       } ${t('available.')}`}
       buttonProps={{
         text: t(`Deposit ${asset.symbol}`),
-        action: () => onDeposit(asset.id),
+        action: () => openDepositDialog(asset.id),
         dataTestId: 'deal-ticket-deposit-dialog-button',
-        size: 'small',
+        size: 'sm',
       }}
     />
   );

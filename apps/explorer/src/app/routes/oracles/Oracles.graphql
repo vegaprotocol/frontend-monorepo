@@ -1,34 +1,4 @@
-fragment ExplorerOracleDataConnection on OracleSpec {
-  dataConnection {
-    edges {
-      node {
-        externalData {
-          data {
-            signers {
-              signer {
-                ... on ETHAddress {
-                  address
-                }
-                ... on PubKey {
-                  key
-                }
-              }
-            }
-            data {
-              name
-              value
-            }
-            matchedSpecIds
-            broadcastAt
-          }
-        }
-      }
-    }
-  }
-}
-
 fragment ExplorerOracleDataSource on OracleSpec {
-  ...ExplorerOracleDataConnection
   dataSourceSpec {
     spec {
       id
@@ -64,7 +34,6 @@ fragment ExplorerOracleDataSource on OracleSpec {
                   key {
                     name
                     type
-                    numberDecimalPlaces
                   }
                   conditions {
                     value
@@ -73,6 +42,38 @@ fragment ExplorerOracleDataSource on OracleSpec {
                 }
               }
             }
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment ExplorerOracleDataConnection on OracleSpec {
+  dataConnection {
+    pageInfo {
+      hasNextPage
+    }
+    edges {
+      node {
+        externalData {
+          data {
+            signers {
+              signer {
+                ... on ETHAddress {
+                  address
+                }
+                ... on PubKey {
+                  key
+                }
+              }
+            }
+            data {
+              name
+              value
+            }
+            matchedSpecIds
+            broadcastAt
           }
         }
       }
@@ -96,5 +97,6 @@ query ExplorerOracleSpecs {
 query ExplorerOracleSpecById($id: ID!) {
   oracleSpec(oracleSpecId: $id) {
     ...ExplorerOracleDataSource
+    ...ExplorerOracleDataConnection
   }
 }

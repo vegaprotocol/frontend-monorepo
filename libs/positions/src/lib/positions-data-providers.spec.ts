@@ -2,12 +2,7 @@ import * as Schema from '@vegaprotocol/types';
 import type { Account } from '@vegaprotocol/accounts';
 import type { MarketWithData } from '@vegaprotocol/markets';
 import type { PositionFieldsFragment } from './__generated__/Positions';
-import type { Position } from './positions-data-providers';
-import {
-  getMetrics,
-  preparePositions,
-  rejoinPositionData,
-} from './positions-data-providers';
+import { getMetrics, rejoinPositionData } from './positions-data-providers';
 import { PositionStatus } from '@vegaprotocol/types';
 
 const accounts = [
@@ -118,7 +113,6 @@ const marketsData = [
       instrument: {
         __typename: 'Instrument',
         name: 'AAVEDAI Monthly (30 Jun 2022)',
-        code: 'AAVEDAI.MF21',
         product: {
           settlementAsset: {
             symbol: 'tDAI',
@@ -148,7 +142,6 @@ const marketsData = [
       instrument: {
         __typename: 'Instrument',
         name: 'UNIDAI Monthly (30 Jun 2022)',
-        code: 'UNIDAI.MF21',
         product: {
           settlementAsset: {
             symbol: 'tDAI',
@@ -185,12 +178,12 @@ describe('getMetrics && rejoinPositionData', () => {
     expect(metrics[0].currentLeverage).toBeCloseTo(1.02);
     expect(metrics[0].marketDecimalPlaces).toEqual(5);
     expect(metrics[0].positionDecimalPlaces).toEqual(0);
-    expect(metrics[0].assetDecimals).toEqual(5);
+    expect(metrics[0].decimals).toEqual(5);
     expect(metrics[0].markPrice).toEqual('9431775');
     expect(metrics[0].marketId).toEqual(
       '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8'
     );
-    expect(metrics[0].marketCode).toEqual('AAVEDAI.MF21');
+    expect(metrics[0].marketName).toEqual('AAVEDAI Monthly (30 Jun 2022)');
     expect(metrics[0].marketTradingMode).toEqual(
       'TRADING_MODE_MONITORING_AUCTION'
     );
@@ -210,12 +203,12 @@ describe('getMetrics && rejoinPositionData', () => {
     expect(metrics[1].currentLeverage).toBeCloseTo(0.097);
     expect(metrics[1].marketDecimalPlaces).toEqual(5);
     expect(metrics[1].positionDecimalPlaces).toEqual(0);
-    expect(metrics[1].assetDecimals).toEqual(5);
+    expect(metrics[1].decimals).toEqual(5);
     expect(metrics[1].markPrice).toEqual('869762');
     expect(metrics[1].marketId).toEqual(
       '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e'
     );
-    expect(metrics[1].marketCode).toEqual('UNIDAI.MF21');
+    expect(metrics[1].marketName).toEqual('UNIDAI Monthly (30 Jun 2022)');
     expect(metrics[1].marketTradingMode).toEqual('TRADING_MODE_CONTINUOUS');
     expect(metrics[1].notional).toEqual('86976200');
     expect(metrics[1].openVolume).toEqual('-100');
@@ -227,30 +220,5 @@ describe('getMetrics && rejoinPositionData', () => {
       positions[1].lossSocializationAmount
     );
     expect(metrics[1].status).toEqual(positions[1].positionStatus);
-  });
-
-  it('sorts and filters positions', () => {
-    const createPosition = (override?: Partial<Position>) =>
-      ({
-        marketState: Schema.MarketState.STATE_ACTIVE,
-        marketCode: 'a',
-        ...override,
-      } as Position);
-
-    const data = [
-      createPosition(),
-      createPosition({
-        marketCode: 'c',
-        marketState: Schema.MarketState.STATE_CANCELLED,
-      }),
-      createPosition({ marketCode: 'd' }),
-      createPosition({ marketCode: 'b' }),
-    ];
-
-    const withoutClosed = preparePositions(data, false);
-    expect(withoutClosed.map((p) => p.marketCode)).toEqual(['a', 'b', 'd']);
-
-    const withClosed = preparePositions(data, true);
-    expect(withClosed.map((p) => p.marketCode)).toEqual(['a', 'b', 'c', 'd']);
   });
 });

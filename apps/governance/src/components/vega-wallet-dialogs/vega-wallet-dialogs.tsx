@@ -1,8 +1,4 @@
-import {
-  VegaConnectDialog,
-  VegaManageDialog,
-  ViewAsDialog,
-} from '@vegaprotocol/wallet';
+import { VegaConnectDialog, VegaManageDialog } from '@vegaprotocol/wallet';
 import {
   AppStateActionType,
   useAppState,
@@ -29,8 +25,6 @@ export const VegaWalletDialogs = () => {
           })
         }
       />
-
-      <ViewAsDialog connector={Connectors.view} />
     </>
   );
 };

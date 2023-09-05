@@ -1,13 +1,9 @@
 import { MemoryRouter } from 'react-router-dom';
-import { MockedProvider } from '@apollo/client/testing';
-import { VegaWalletProvider } from '@vegaprotocol/wallet';
-import type { VegaWalletConfig } from '@vegaprotocol/wallet';
 import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { Proposal } from './proposal';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { ProposalState } from '@vegaprotocol/types';
-import { mockNetworkParams } from '../../test-helpers/mocks';
 
 jest.mock('@vegaprotocol/network-parameters', () => ({
   ...jest.requireActual('@vegaprotocol/network-parameters'),
@@ -34,34 +30,23 @@ jest.mock('../proposal-change-table', () => ({
 jest.mock('../proposal-json', () => ({
   ProposalJson: () => <div data-testid="proposal-json"></div>,
 }));
+jest.mock('../proposal-votes-table', () => ({
+  ProposalVotesTable: () => <div data-testid="proposal-votes-table"></div>,
+}));
+jest.mock('../vote-details', () => ({
+  VoteDetails: () => <div data-testid="proposal-vote-details"></div>,
+}));
 jest.mock('../list-asset', () => ({
   ListAsset: () => <div data-testid="proposal-list-asset"></div>,
 }));
 
-const vegaWalletConfig: VegaWalletConfig = {
-  network: 'TESTNET',
-  vegaUrl: 'https://vega.xyz',
-  vegaWalletServiceUrl: 'https://wallet.vega.xyz',
-  links: {
-    explorer: 'explorer',
-    concepts: 'concepts',
-    chromeExtensionUrl: 'chrome',
-    mozillaExtensionUrl: 'mozilla',
-  },
-};
-
 const renderComponent = (proposal: ProposalQuery['proposal']) => {
   render(
     <MemoryRouter>
-      <MockedProvider>
-        <VegaWalletProvider config={vegaWalletConfig}>
-          <Proposal
-            restData={{}}
-            proposal={proposal as ProposalQuery['proposal']}
-            networkParams={mockNetworkParams}
-          />
-        </VegaWalletProvider>
-      </MockedProvider>
+      <Proposal
+        restData={{}}
+        proposal={proposal as ProposalQuery['proposal']}
+      />
     </MemoryRouter>
   );
 };
@@ -98,6 +83,8 @@ it('renders each section', async () => {
   expect(await screen.findByTestId('proposal-header')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-change-table')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-json')).toBeInTheDocument();
+  expect(screen.getByTestId('proposal-votes-table')).toBeInTheDocument();
+  expect(screen.getByTestId('proposal-vote-details')).toBeInTheDocument();
   expect(screen.queryByTestId('proposal-list-asset')).not.toBeInTheDocument();
 });
 

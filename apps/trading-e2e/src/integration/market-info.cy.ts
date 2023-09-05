@@ -1,6 +1,5 @@
 import { MarketTradingModeMapping } from '@vegaprotocol/types';
 import { MarketState } from '@vegaprotocol/types';
-import compact from 'lodash/compact';
 
 const accordionContent = 'accordion-content';
 const blockExplorerLink = 'block-explorer-link';
@@ -21,7 +20,6 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
   });
 
   before(() => {
-    cy.setOnBoardingViewed();
     cy.mockTradingPage(MarketState.STATE_ACTIVE);
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
@@ -68,24 +66,16 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     // 6002-MDET-201
     cy.getByTestId(marketTitle).contains('Key details').click();
 
-    const rows: [string, string][] = compact([
-      ['Name', 'BTCUSD Monthly (30 Jun 2022)'],
-      ['Market ID', 'market-0'],
-      Cypress.env('NX_SUCCESSOR_MARKETS') && ['Parent Market ID', 'PARENT-A'],
-      Cypress.env('NX_SUCCESSOR_MARKETS') && [
-        'Insurance Pool Fraction',
-        '0.75',
-      ],
-      ['Trading Mode', MarketTradingModeMapping.TRADING_MODE_CONTINUOUS],
-      ['Market Decimal Places', '5'],
-      ['Position Decimal Places', '0'],
-      ['Settlement Asset Decimal Places', '5'],
-    ]);
-
-    for (const rowNumber in rows) {
-      const [name, value] = rows[rowNumber];
-      validateMarketDataRow(Number(rowNumber), name, value);
-    }
+    validateMarketDataRow(0, 'Name', 'BTCUSD Monthly (30 Jun 2022)');
+    validateMarketDataRow(1, 'Market ID', 'market-0');
+    validateMarketDataRow(
+      2,
+      'Trading Mode',
+      MarketTradingModeMapping.TRADING_MODE_CONTINUOUS
+    );
+    validateMarketDataRow(3, 'Market Decimal Places', '5');
+    validateMarketDataRow(4, 'Position Decimal Places', '0');
+    validateMarketDataRow(5, 'Settlement Asset Decimal Places', '5');
   });
 
   it('instrument displayed', () => {
@@ -133,7 +123,11 @@ describe('market info is displayed', { tags: '@smoke' }, () => {
     validateMarketDataRow(4, 'Decimals', '5');
     validateMarketDataRow(5, 'Quantum', '1');
     validateMarketDataRow(6, 'Status', 'Enabled');
-    validateMarketDataRow(7, 'Contract address', '0x0158…78a4');
+    validateMarketDataRow(
+      7,
+      'Contract address',
+      '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4'
+    );
     validateMarketDataRow(8, 'Withdrawal threshold', '0.0005');
     validateMarketDataRow(9, 'Lifetime limit', '1,230');
     validateMarketDataRow(10, 'Infrastructure fee account balance', '0.00001');

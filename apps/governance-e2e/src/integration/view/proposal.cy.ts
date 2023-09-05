@@ -17,7 +17,6 @@ const governanceDocsUrl = 'https://vega.xyz/governance';
 const networkUpgradeProposalListItem = 'protocol-upgrade-proposals-list-item';
 const closedProposals = 'closed-proposals';
 const closedProposalToggle = 'closed-proposals-toggle-networkUpgrades';
-const protocolUpgradeTime = 'protocol-upgrade-time';
 
 context(
   'Governance Page - verify elements on page',
@@ -162,7 +161,7 @@ context(
             );
             cy.getByTestId('protocol-upgrade-proposal-status').should(
               'have.text',
-              'Approved by validators'
+              'Approved by validators '
             );
           });
       });
@@ -175,7 +174,6 @@ context(
       });
     });
 
-    // 3009-NTWU-003 3009-NTWU-004 3009-NTWU-007
     it('should see details of network upgrade proposal', function () {
       mockNetworkUpgradeProposal();
       navigateTo(navigation.proposals);
@@ -228,52 +226,6 @@ context(
       cy.getByTestId(closedProposals).should('have.length', 1);
       cy.getByTestId(networkUpgradeProposalListItem).should('not.exist');
       cy.getByTestId(closedProposalToggle).should('not.exist');
-    });
-
-    // 3009-NTWU-001 3009-NTWU-002 3009-NTWU-006 3009-NTWU-009
-    it.skip('should display network upgrade banner with estimate', function () {
-      mockNetworkUpgradeProposal();
-      cy.visit('/');
-      cy.getByTestId('banners').within(() => {
-        cy.get('div')
-          .should('contain.text', 'The network will upgrade to v1 in ')
-          .and(
-            'contain.text',
-            'Trading activity will be interrupted, manage your risk appropriately.'
-          );
-        cy.getByTestId('external-link')
-          .should('have.attr', 'href')
-          .and('contain', '/proposals/protocol-upgrade/v1');
-      });
-
-      // estimate does not display possibly due to mocks or Cypress unless the proposal is clicked on several times
-      // By default the application waits for 10 blocks until showing estimate - roughly 10 seconds
-      for (let i = 0; i < 3; i++) {
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(3000);
-        navigateTo(navigation.proposals);
-        cy.getByTestId(networkUpgradeProposalListItem)
-          .first()
-          .find('[data-testid="view-proposal-btn"]')
-          .click();
-      }
-      cy.getByTestId('upgrade-proposal-estimate')
-        .invoke('text')
-        .as('displayedEstimate');
-      cy.get('@displayedEstimate').then((estimateText) => {
-        // Estimated time should automatically update every second
-        cy.getByTestId(protocolUpgradeTime)
-          .invoke('text')
-          .should('not.eq', estimateText);
-      });
-      // time estimate on proposal detail
-      cy.getByTestId('protocol-upgrade-proposal').within(() => {
-        cy.get('@displayedEstimate').then((estimateText) => {
-          cy.getByTestId(protocolUpgradeTime)
-            .invoke('text')
-            .should('not.eq', estimateText);
-        });
-      });
     });
   }
 );

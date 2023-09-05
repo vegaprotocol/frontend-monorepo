@@ -88,39 +88,31 @@ afterAll(() => {
   jest.useRealTimers();
 });
 
-jest.mock('../vote-details/use-user-vote', () => ({
-  useUserVote: jest.fn().mockImplementation(() => ({ voteState: 'NotCast' })),
-}));
-
 describe('Proposals list', () => {
-  it('Render a page title and link to the make proposal form', async () => {
+  it('Render a page title and link to the make proposal form', () => {
     render(renderComponent([]));
-    await screen.findByTestId('proposals-list');
     expect(screen.getByText('Proposals')).toBeInTheDocument();
     expect(screen.getByTestId('new-proposal-link')).toBeInTheDocument();
   });
 
-  it('Will hide filter if no proposals', async () => {
+  it('Will hide filter if no proposals', () => {
     render(renderComponent([]));
-    await screen.findByTestId('proposals-list');
     expect(
       screen.queryByTestId('proposals-list-filter')
     ).not.toBeInTheDocument();
   });
 
-  it('Will show filter if there are proposals', async () => {
+  it('Will show filter if there are proposals', () => {
     render(renderComponent([enactedProposalClosedLastWeek]));
-    await screen.findByTestId('proposals-list');
     expect(screen.queryByTestId('proposals-list-filter')).toBeInTheDocument();
   });
 
-  it('Will render a link to rejected proposals', async () => {
+  it('Will render a link to rejected proposals', () => {
     render(renderComponent([]));
-    await screen.findByTestId('proposals-list');
     expect(screen.getByText('See rejected proposals')).toBeInTheDocument();
   });
 
-  it('Places proposals correctly in open or closed lists', async () => {
+  it('Places proposals correctly in open or closed lists', () => {
     render(
       renderComponent([
         openProposalClosesNextWeek,
@@ -129,7 +121,6 @@ describe('Proposals list', () => {
         failedProposalClosedLastMonth,
       ])
     );
-    await screen.findByTestId('proposals-list');
     const openProposals = within(screen.getByTestId('open-proposals'));
     const closedProposals = within(screen.getByTestId('closed-proposals'));
     expect(openProposals.getAllByTestId('proposals-list-item').length).toBe(2);
@@ -138,47 +129,42 @@ describe('Proposals list', () => {
     );
   });
 
-  it('Displays info on no proposals', async () => {
+  it('Displays info on no proposals', () => {
     render(renderComponent([]));
-    await screen.findByTestId('proposals-list');
     expect(screen.queryByTestId('open-proposals')).not.toBeInTheDocument();
     expect(screen.getByTestId('no-open-proposals')).toBeInTheDocument();
     expect(screen.queryByTestId('closed-proposals')).not.toBeInTheDocument();
     expect(screen.getByTestId('no-closed-proposals')).toBeInTheDocument();
   });
 
-  it('Displays info on no open proposals if only closed are present', async () => {
+  it('Displays info on no open proposals if only closed are present', () => {
     render(renderComponent([enactedProposalClosedLastWeek]));
-    await screen.findByTestId('proposals-list');
     expect(screen.queryByTestId('open-proposals')).not.toBeInTheDocument();
     expect(screen.getByTestId('no-open-proposals')).toBeInTheDocument();
     expect(screen.getByTestId('closed-proposals')).toBeInTheDocument();
     expect(screen.queryByTestId('no-closed-proposals')).not.toBeInTheDocument();
   });
 
-  it('Displays info on no closed proposals if only open are present', async () => {
+  it('Displays info on no closed proposals if only open are present', () => {
     render(renderComponent([openProposalClosesNextWeek]));
-    await screen.findByTestId('proposals-list');
     expect(screen.getByTestId('open-proposals')).toBeInTheDocument();
     expect(screen.queryByTestId('no-open-proposals')).not.toBeInTheDocument();
     expect(screen.queryByTestId('closed-proposals')).not.toBeInTheDocument();
     expect(screen.getByTestId('no-closed-proposals')).toBeInTheDocument();
   });
 
-  it('Opens filter form when button is clicked', async () => {
+  it('Opens filter form when button is clicked', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
-    await screen.findByTestId('proposals-list');
     fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
     expect(screen.getByTestId('proposals-list-filter')).toBeInTheDocument();
   });
 
-  it('Filters list by text - party id', async () => {
+  it('Filters list by text - party id', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
-    await screen.findByTestId('proposals-list');
     fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
     fireEvent.change(screen.getByTestId('filter-input'), {
       target: { value: 'bvcx' },
@@ -188,11 +174,10 @@ describe('Proposals list', () => {
     expect(container.querySelector('#proposal1')).not.toBeInTheDocument();
   });
 
-  it('Filters list by text - proposal id', async () => {
+  it('Filters list by text - proposal id', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
-    await screen.findByTestId('proposals-list');
     fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
     fireEvent.change(screen.getByTestId('filter-input'), {
       target: { value: 'proposal1' },
@@ -202,11 +187,10 @@ describe('Proposals list', () => {
     expect(container.querySelector('#proposal2')).not.toBeInTheDocument();
   });
 
-  it('Filters list by text - check for substring matching', async () => {
+  it('Filters list by text - check for substring matching', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
-    await screen.findByTestId('proposals-list');
     fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
     fireEvent.change(screen.getByTestId('filter-input'), {
       target: { value: 'osal1' },
@@ -216,11 +200,10 @@ describe('Proposals list', () => {
     expect(container.querySelector('#proposal2')).not.toBeInTheDocument();
   });
 
-  it('When filter is used, clear button is visible', async () => {
+  it('When filter is used, clear button is visible', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
-    await screen.findByTestId('proposals-list');
     fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
     fireEvent.change(screen.getByTestId('filter-input'), {
       target: { value: 'test' },
@@ -228,11 +211,10 @@ describe('Proposals list', () => {
     expect(screen.getByTestId('clear-filter')).toBeInTheDocument();
   });
 
-  it('When clear filter button is used, input is cleared', async () => {
+  it('When clear filter button is used, input is cleared', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
-    await screen.findByTestId('proposals-list');
     fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
     fireEvent.change(screen.getByTestId('filter-input'), {
       target: { value: 'test' },
@@ -243,41 +225,37 @@ describe('Proposals list', () => {
     );
   });
 
-  it('Displays a toggle for closed proposals if there are both closed governance proposals and closed upgrade proposals', async () => {
+  it('Displays a toggle for closed proposals if there are both closed governance proposals and closed upgrade proposals', () => {
     render(
       renderComponent(
         [enactedProposalClosedLastWeek],
         [closedProtocolUpgradeProposal]
       )
     );
-    await screen.findByTestId('proposals-list');
     expect(screen.getByTestId('toggle-closed-proposals')).toBeInTheDocument();
   });
 
-  it('Does not display a toggle for closed proposals if there are only closed upgrade proposals', async () => {
+  it('Does not display a toggle for closed proposals if there are only closed upgrade proposals', () => {
     render(renderComponent([], [closedProtocolUpgradeProposal]));
-    await screen.findByTestId('proposals-list');
     expect(
       screen.queryByTestId('toggle-closed-proposals')
     ).not.toBeInTheDocument();
   });
 
-  it('Does not display a toggle for closed proposals if there are only closed governance proposals', async () => {
+  it('Does not display a toggle for closed proposals if there are only closed governance proposals', () => {
     render(renderComponent([enactedProposalClosedLastWeek]));
-    await screen.findByTestId('proposals-list');
     expect(
       screen.queryByTestId('toggle-closed-proposals')
     ).not.toBeInTheDocument();
   });
 
-  it('Does not display a toggle for closed proposals if the proposal filter is engaged', async () => {
+  it('Does not display a toggle for closed proposals if the proposal filter is engaged', () => {
     render(
       renderComponent(
         [enactedProposalClosedLastWeek],
         [closedProtocolUpgradeProposal]
       )
     );
-    await screen.findByTestId('proposal-filter-toggle');
     fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
     fireEvent.change(screen.getByTestId('filter-input'), {
       target: { value: 'test' },
@@ -287,7 +265,7 @@ describe('Proposals list', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('Displays closed governance proposals by default due to default for the toggle', async () => {
+  it('Displays closed governance proposals by default due to default for the toggle', () => {
     render(
       renderComponent(
         [enactedProposalClosedLastWeek],
@@ -295,19 +273,17 @@ describe('Proposals list', () => {
       )
     );
     expect(
-      await screen.findByTestId('closed-governance-proposals')
+      screen.getByTestId('closed-governance-proposals')
     ).toBeInTheDocument();
   });
 
-  it('Displays closed upgrade proposals when the toggle is clicked', async () => {
+  it('Displays closed upgrade proposals when the toggle is clicked', () => {
     render(
       renderComponent(
         [enactedProposalClosedLastWeek],
         [closedProtocolUpgradeProposal]
       )
     );
-
-    await screen.findByTestId('toggle-closed-proposals');
     fireEvent.click(screen.getByText('Network upgrades'));
     expect(screen.getByTestId('closed-upgrade-proposals')).toBeInTheDocument();
   });

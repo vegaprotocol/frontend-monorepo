@@ -1,6 +1,7 @@
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
-import { Filter, OrderListManager } from '@vegaprotocol/orders';
 import { t } from '@vegaprotocol/i18n';
+import { Filter } from '@vegaprotocol/orders';
+import { OrderListManager } from '@vegaprotocol/orders';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
@@ -25,10 +26,11 @@ export const FilterStatusValue = {
 };
 
 export interface OrderContainerProps {
+  marketId?: string;
   filter?: Filter;
 }
 
-export const OrdersContainer = ({ filter }: OrderContainerProps) => {
+export const OrdersContainer = ({ marketId, filter }: OrderContainerProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const onMarketClick = useMarketClickHandler(true);
   const onOrderTypeClick = useMarketLiquidityClickHandler();
@@ -44,6 +46,7 @@ export const OrdersContainer = ({ filter }: OrderContainerProps) => {
   return (
     <OrderListManager
       partyId={pubKey}
+      marketId={marketId}
       filter={filter}
       onMarketClick={onMarketClick}
       onOrderTypeClick={onOrderTypeClick}

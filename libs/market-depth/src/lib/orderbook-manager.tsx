@@ -9,6 +9,7 @@ import type {
   MarketDepthUpdateSubscription,
   PriceLevelFieldsFragment,
 } from './__generated__/MarketDepth';
+import { useCreateOrderStore } from '@vegaprotocol/orders';
 
 export type OrderbookData = {
   asks: PriceLevelFieldsFragment[];
@@ -17,13 +18,9 @@ export type OrderbookData = {
 
 interface OrderbookManagerProps {
   marketId: string;
-  onClick: (args: { price?: string; size?: string }) => void;
 }
 
-export const OrderbookManager = ({
-  marketId,
-  onClick,
-}: OrderbookManagerProps) => {
+export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   const variables = { marketId };
 
   const { data, error, loading, reload } = useDataProvider<
@@ -53,6 +50,8 @@ export const OrderbookManager = ({
     dataProvider: marketDataProvider,
     variables,
   });
+  const useOrderStoreRef = useCreateOrderStore();
+  const updateOrder = useOrderStoreRef((store) => store.update);
 
   return (
     <AsyncRenderer
@@ -61,17 +60,19 @@ export const OrderbookManager = ({
       data={data}
       reload={reload}
     >
-      {market && marketData && (
-        <Orderbook
-          bids={data?.depth.buy ?? []}
-          asks={data?.depth.sell ?? []}
-          decimalPlaces={market.decimalPlaces}
-          positionDecimalPlaces={market.positionDecimalPlaces}
-          assetSymbol={market.tradableInstrument.instrument.product.quoteName}
-          onClick={onClick}
-          lastTradedPrice={marketData.lastTradedPrice}
-        />
-      )}
+      <Orderbook
+        bids={data?.depth.buy ?? []}
+        asks={data?.depth.sell ?? []}
+        decimalPlaces={market?.decimalPlaces ?? 0}
+        positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
+        assetSymbol={market?.tradableInstrument.instrument.product.quoteName}
+        onClick={(price: string) => {
+          if (price) {
+            updateOrder(marketId, { price });
+          }
+        }}
+        midPrice={marketData?.midPrice}
+      />
     </AsyncRenderer>
   );
 };

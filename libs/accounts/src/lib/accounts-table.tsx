@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react';
+import { forwardRef, useMemo, useCallback } from 'react';
 import {
   addDecimalsFormatNumber,
   addDecimalsFormatNumberQuantum,
@@ -11,13 +11,9 @@ import type {
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { COL_DEFS } from '@vegaprotocol/datagrid';
-import {
-  Intent,
-  TradingButton,
-  VegaIcon,
-  VegaIconNames,
-  TooltipCellComponent,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+
+import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import type {
   IGetRowsParams,
@@ -25,7 +21,7 @@ import type {
   RowHeightParams,
   ColDef,
 } from 'ag-grid-community';
-import type { AgGridReactProps } from 'ag-grid-react';
+import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { AccountFields } from './accounts-data-provider';
 import type { Asset } from '@vegaprotocol/types';
 import { CenteredGridCellWrapper } from '@vegaprotocol/datagrid';
@@ -35,6 +31,7 @@ import { AccountsActionsDropdown } from './accounts-actions-dropdown';
 
 const colorClass = (percentageUsed: number, neutral = false) => {
   return classNames('text-right', {
+    'text-neutral-500 dark:text-neutral-400': percentageUsed < 75 && !neutral,
     'text-vega-orange': percentageUsed >= 75 && percentageUsed < 90,
     'text-vega-red': percentageUsed >= 90,
   });
@@ -62,12 +59,6 @@ export const accountValuesComparator = (
   return valueA > valueB ? 1 : -1;
 };
 
-const defaultColDef = {
-  resizable: true,
-  sortable: true,
-  tooltipComponent: TooltipCellComponent,
-  comparator: accountValuesComparator,
-};
 export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
   successCallback(rowsThisBlock: AccountFields[], lastRow?: number): void;
 }
@@ -80,249 +71,255 @@ export interface AccountTableProps extends AgGridReactProps {
   onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
   onClickBreakdown?: (assetId: string) => void;
-  onClickTransfer?: (assetId: string) => void;
   isReadOnly: boolean;
   pinnedAsset?: PinnedAsset;
 }
 
-export const AccountTable = ({
-  onClickAsset,
-  onClickWithdraw,
-  onClickDeposit,
-  onClickBreakdown,
-  onClickTransfer,
-  rowData,
-  isReadOnly,
-  pinnedAsset,
-  ...props
-}: AccountTableProps) => {
-  const pinnedRow = useMemo(() => {
-    if (!pinnedAsset) {
-      return;
-    }
-    const currentPinnedAssetRow = rowData?.find(
-      (row) => row.asset.id === pinnedAsset?.id
-    );
-    if (!currentPinnedAssetRow) {
-      return {
-        asset: pinnedAsset,
-        available: '0',
-        used: '0',
-        total: '0',
-        balance: '0',
-      };
-    }
-    return currentPinnedAssetRow;
-  }, [pinnedAsset, rowData]);
-
-  const { getRowHeight } = props;
-
-  const getPinnedAssetRowHeight = useCallback(
-    (params: RowHeightParams) => {
-      if (
-        params.node.rowPinned &&
-        params.data.asset.id === pinnedAsset?.id &&
-        new BigNumber(params.data.total).isLessThanOrEqualTo(0)
-      ) {
-        return 32;
-      }
-      return getRowHeight ? getRowHeight(params) : undefined;
+export const AccountTable = forwardRef<AgGridReact, AccountTableProps>(
+  (
+    {
+      onClickAsset,
+      onClickWithdraw,
+      onClickDeposit,
+      onClickBreakdown,
+      rowData,
+      isReadOnly,
+      pinnedAsset,
+      ...props
     },
-    [pinnedAsset?.id, getRowHeight]
-  );
+    ref
+  ) => {
+    const pinnedRow = useMemo(() => {
+      if (!pinnedAsset) {
+        return;
+      }
+      const currentPinnedAssetRow = rowData?.find(
+        (row) => row.asset.id === pinnedAsset?.id
+      );
+      if (!currentPinnedAssetRow) {
+        return {
+          asset: pinnedAsset,
+          available: '0',
+          used: '0',
+          total: '0',
+          balance: '0',
+        };
+      }
+      return currentPinnedAssetRow;
+    }, [pinnedAsset, rowData]);
 
-  const showDepositButton = pinnedRow?.balance === '0';
+    const { getRowHeight } = props;
 
-  const colDefs = useMemo(() => {
-    const defs: ColDef[] = [
-      {
-        headerName: t('Asset'),
-        field: 'asset.symbol',
-        headerTooltip: t(
-          'Asset is the collateral that is deposited into the Vega protocol.'
-        ),
-        cellClass: 'underline',
-        onCellClicked: ({ data }) => {
-          if (data) {
-            onClickAsset(data.asset.id);
-          }
-        },
+    const getPinnedAssetRowHeight = useCallback(
+      (params: RowHeightParams) => {
+        if (
+          params.node.rowPinned &&
+          params.data.asset.id === pinnedAsset?.id &&
+          new BigNumber(params.data.total).isLessThanOrEqualTo(0)
+        ) {
+          return 32;
+        }
+        return getRowHeight ? getRowHeight(params) : undefined;
       },
-      {
-        headerName: t('Used'),
-        type: 'rightAligned',
-        field: 'used',
-        headerTooltip: t(
-          'Currently allocated to a market as margin or bond. Check the breakdown for details.'
-        ),
-        tooltipValueGetter: ({ value, data }) => {
-          if (!value || !data) return null;
-          return addDecimalsFormatNumber(value, data.asset.decimals);
+      [pinnedAsset?.id, getRowHeight]
+    );
+
+    const showDepositButton = pinnedRow?.balance === '0';
+
+    const colDefs = useMemo(() => {
+      const defs: ColDef[] = [
+        {
+          headerName: t('Asset'),
+          field: 'asset.symbol',
+          headerTooltip: t(
+            'Asset is the collateral that is deposited into the Vega protocol.'
+          ),
+          cellClass: 'underline',
+          onCellClicked: ({ data }) => {
+            if (data) {
+              onClickAsset(data.asset.id);
+            }
+          },
         },
-        onCellClicked: ({ data }) => {
-          if (!data || !onClickBreakdown) return;
-          onClickBreakdown(data.asset.id);
-        },
-        cellRenderer: ({
-          data,
-          value,
-        }: VegaICellRendererParams<AccountFields, 'used'>) => {
-          if (!value || !data) return '-';
-          const percentageUsed = percentageValue(value, data.total);
-          const valueFormatted = addDecimalsFormatNumberQuantum(
+        {
+          headerName: t('Used'),
+          type: 'rightAligned',
+          field: 'used',
+          headerTooltip: t(
+            'Currently allocated to a market as margin or bond. Check the breakdown for details.'
+          ),
+          tooltipValueGetter: ({ value, data }) => {
+            if (!value || !data) return null;
+            return addDecimalsFormatNumber(value, data.asset.decimals);
+          },
+          onCellClicked: ({ data }) => {
+            if (!data || !onClickBreakdown) return;
+            onClickBreakdown(data.asset.id);
+          },
+          cellRenderer: ({
+            data,
             value,
-            data.asset.decimals,
-            data.asset.quantum
-          );
-
-          return data.breakdown ? (
-            <>
-              <span className="underline">{valueFormatted}</span>
-              <span
-                className={classNames(
-                  colorClass(percentageUsed),
-                  'ml-1 inline-block w-14'
-                )}
-              >
-                {percentageUsed.toFixed(2)}%
-              </span>
-            </>
-          ) : (
-            <>
-              <span className="underline">{valueFormatted}</span>
-              <span className="inline-block ml-2 w-14 text-muted">
-                {t('0.00%')}
-              </span>
-            </>
-          );
-        },
-      },
-      {
-        headerName: t('Available'),
-        field: 'available',
-        type: 'rightAligned',
-        headerTooltip: t(
-          'Deposited on the network, but not allocated to a market. Free to use for placing orders or providing liquidity.'
-        ),
-        tooltipValueGetter: ({ value, data }) => {
-          if (!value || !data) return null;
-          return addDecimalsFormatNumber(value, data.asset.decimals);
-        },
-        cellClass: ({ data }) => {
-          const percentageUsed = percentageValue(data?.used, data?.total);
-          return colorClass(percentageUsed, true);
-        },
-        valueFormatter: ({
-          value,
-          data,
-        }: VegaValueFormatterParams<AccountFields, 'available'>) => {
-          if (!value || !data) return '-';
-          return addDecimalsFormatNumberQuantum(
-            value,
-            data.asset.decimals,
-            data.asset.quantum
-          );
-        },
-      },
-
-      {
-        headerName: t('Total'),
-        type: 'rightAligned',
-        field: 'total',
-        headerTooltip: t(
-          'The total amount of each asset on this key. Includes used and available collateral.'
-        ),
-        tooltipValueGetter: ({ value, data }) => {
-          if (!value || !data) return null;
-          return addDecimalsFormatNumber(value, data.asset.decimals);
-        },
-        valueFormatter: ({
-          data,
-          value,
-        }: VegaValueFormatterParams<AccountFields, 'total'>) => {
-          if (!data || !value) return '-';
-          return addDecimalsFormatNumberQuantum(
-            value,
-            data.asset.decimals,
-            data.asset.quantum
-          );
-        },
-      },
-      {
-        colId: 'accounts-actions',
-        field: 'asset.id',
-        ...COL_DEFS.actions,
-        minWidth: showDepositButton ? 105 : COL_DEFS.actions.minWidth,
-        maxWidth: showDepositButton ? 105 : COL_DEFS.actions.maxWidth,
-        cellRenderer: ({
-          value: assetId,
-          node,
-        }: VegaICellRendererParams<AccountFields, 'asset.id'>) => {
-          if (!assetId) return null;
-          if (node.rowPinned && node.data?.balance === '0') {
-            return (
-              <CenteredGridCellWrapper className="h-[30px] justify-end py-1">
-                <TradingButton
-                  size="extra-small"
-                  intent={Intent.Primary}
-                  data-testid="deposit"
-                  onClick={() => {
-                    onClickDeposit && onClickDeposit(assetId);
-                  }}
-                >
-                  <VegaIcon name={VegaIconNames.DEPOSIT} /> {t('Deposit')}
-                </TradingButton>
-              </CenteredGridCellWrapper>
+          }: VegaICellRendererParams<AccountFields, 'used'>) => {
+            if (!value || !data) return '-';
+            const percentageUsed = percentageValue(value, data.total);
+            const valueFormatted = addDecimalsFormatNumberQuantum(
+              value,
+              data.asset.decimals,
+              data.asset.quantum
             );
-          }
-          return isReadOnly ? null : (
-            <AccountsActionsDropdown
-              assetId={assetId}
-              assetContractAddress={
-                node.data?.asset.source?.__typename === 'ERC20'
-                  ? node.data.asset.source.contractAddress
-                  : undefined
-              }
-              onClickDeposit={() => {
-                onClickDeposit && onClickDeposit(assetId);
-              }}
-              onClickWithdraw={() => {
-                onClickWithdraw && onClickWithdraw(assetId);
-              }}
-              onClickBreakdown={() => {
-                onClickBreakdown && onClickBreakdown(assetId);
-              }}
-              onClickTransfer={() => {
-                onClickTransfer && onClickTransfer(assetId);
-              }}
-            />
-          );
+
+            return data.breakdown ? (
+              <>
+                <span className="underline">{valueFormatted}</span>
+                <span
+                  className={classNames(
+                    colorClass(percentageUsed),
+                    'ml-1 inline-block w-14'
+                  )}
+                >
+                  {percentageUsed.toFixed(2)}%
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="underline">{valueFormatted}</span>
+                <span className="ml-2 inline-block w-14 text-vega-light-200 dark:text-vega-dark-200">
+                  {t('0.00%')}'
+                </span>
+              </>
+            );
+          },
         },
-      },
-    ];
-    return defs;
-  }, [
-    onClickAsset,
-    onClickBreakdown,
-    onClickDeposit,
-    onClickWithdraw,
-    onClickTransfer,
-    isReadOnly,
-    showDepositButton,
-  ]);
+        {
+          headerName: t('Available'),
+          field: 'available',
+          type: 'rightAligned',
+          headerTooltip: t(
+            'Deposited on the network, but not allocated to a market. Free to use for placing orders or providing liquidity.'
+          ),
+          tooltipValueGetter: ({ value, data }) => {
+            if (!value || !data) return null;
+            return addDecimalsFormatNumber(value, data.asset.decimals);
+          },
+          cellClass: ({ data }) => {
+            const percentageUsed = percentageValue(data?.used, data?.total);
+            return colorClass(percentageUsed, true);
+          },
+          valueFormatter: ({
+            value,
+            data,
+          }: VegaValueFormatterParams<AccountFields, 'available'>) => {
+            if (!value || !data) return '-';
+            return addDecimalsFormatNumberQuantum(
+              value,
+              data.asset.decimals,
+              data.asset.quantum
+            );
+          },
+        },
 
-  const data = rowData?.filter((data) => data.asset.id !== pinnedAsset?.id);
+        {
+          headerName: t('Total'),
+          type: 'rightAligned',
+          field: 'total',
+          headerTooltip: t(
+            'The total amount of each asset on this key. Includes used and available collateral.'
+          ),
+          tooltipValueGetter: ({ value, data }) => {
+            if (!value || !data) return null;
+            return addDecimalsFormatNumber(value, data.asset.decimals);
+          },
+          valueFormatter: ({
+            data,
+            value,
+          }: VegaValueFormatterParams<AccountFields, 'total'>) => {
+            if (!data || !value) return '-';
+            return addDecimalsFormatNumberQuantum(
+              value,
+              data.asset.decimals,
+              data.asset.quantum
+            );
+          },
+        },
+        {
+          colId: 'accounts-actions',
+          field: 'asset.id',
+          ...COL_DEFS.actions,
+          minWidth: showDepositButton ? 130 : COL_DEFS.actions.minWidth,
+          maxWidth: showDepositButton ? 130 : COL_DEFS.actions.maxWidth,
+          cellRenderer: ({
+            value: assetId,
+            node,
+          }: VegaICellRendererParams<AccountFields, 'asset.id'>) => {
+            if (!assetId) return null;
+            if (node.rowPinned && node.data?.total === '0') {
+              return (
+                <CenteredGridCellWrapper className="h-[30px] justify-end py-1">
+                  <Button
+                    size="xs"
+                    variant="primary"
+                    data-testid="deposit"
+                    onClick={() => {
+                      onClickDeposit && onClickDeposit(assetId);
+                    }}
+                  >
+                    <VegaIcon name={VegaIconNames.DEPOSIT} /> {t('Deposit')}
+                  </Button>
+                </CenteredGridCellWrapper>
+              );
+            }
+            return isReadOnly ? null : (
+              <AccountsActionsDropdown
+                assetId={assetId}
+                assetContractAddress={
+                  node.data?.asset.source?.__typename === 'ERC20'
+                    ? node.data.asset.source.contractAddress
+                    : undefined
+                }
+                onClickDeposit={() => {
+                  onClickDeposit && onClickDeposit(assetId);
+                }}
+                onClickWithdraw={() => {
+                  onClickWithdraw && onClickWithdraw(assetId);
+                }}
+                onClickBreakdown={() => {
+                  onClickBreakdown && onClickBreakdown(assetId);
+                }}
+              />
+            );
+          },
+        },
+      ];
+      return defs;
+    }, [
+      onClickAsset,
+      onClickBreakdown,
+      onClickDeposit,
+      onClickWithdraw,
+      isReadOnly,
+      showDepositButton,
+    ]);
 
-  return (
-    <AgGrid
-      {...props}
-      getRowId={({ data }: { data: AccountFields }) => data.asset.id}
-      tooltipShowDelay={500}
-      rowData={data}
-      defaultColDef={defaultColDef}
-      columnDefs={colDefs}
-      getRowHeight={getPinnedAssetRowHeight}
-      pinnedTopRowData={pinnedRow ? [pinnedRow] : undefined}
-    />
-  );
-};
+    const data = rowData?.filter((data) => data.asset.id !== pinnedAsset?.id);
+
+    return (
+      <AgGrid
+        {...props}
+        style={{ width: '100%', height: '100%' }}
+        getRowId={({ data }: { data: AccountFields }) => data.asset.id}
+        ref={ref}
+        tooltipShowDelay={500}
+        rowData={data}
+        defaultColDef={{
+          resizable: true,
+          tooltipComponent: TooltipCellComponent,
+          sortable: true,
+          comparator: accountValuesComparator,
+        }}
+        columnDefs={colDefs}
+        getRowHeight={getPinnedAssetRowHeight}
+        pinnedTopRowData={pinnedRow ? [pinnedRow] : undefined}
+      />
+    );
+  }
+);

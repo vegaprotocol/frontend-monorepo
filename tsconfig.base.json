@@ -48,7 +48,6 @@
       "@vegaprotocol/tailwindcss-config": [
         "libs/tailwindcss-config/src/index.js"
       ],
-      "@vegaprotocol/tendermint": ["libs/tendermint/src/index.ts"],
       "@vegaprotocol/trades": ["libs/trades/src/index.ts"],
       "@vegaprotocol/types": ["libs/types/src/index.ts"],
       "@vegaprotocol/ui-toolkit": ["libs/ui-toolkit/src/index.ts"],

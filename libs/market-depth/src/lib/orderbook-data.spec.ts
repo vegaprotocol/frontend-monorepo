@@ -31,12 +31,21 @@ describe('compactRows', () => {
   it('counts cumulative vol', () => {
     const asks = compactRows(sell, VolumeType.ask, 10);
     const bids = compactRows(buy, VolumeType.bid, 10);
-    expect(asks[0].cumulativeVol).toEqual(4950);
-    expect(bids[0].cumulativeVol).toEqual(579);
-    expect(asks[10].cumulativeVol).toEqual(390);
-    expect(bids[10].cumulativeVol).toEqual(4950);
-    expect(bids[bids.length - 1].cumulativeVol).toEqual(4950);
-    expect(asks[asks.length - 1].cumulativeVol).toEqual(390);
+    expect(asks[0].cumulativeVol.value).toEqual(4950);
+    expect(bids[0].cumulativeVol.value).toEqual(579);
+    expect(asks[10].cumulativeVol.value).toEqual(390);
+    expect(bids[10].cumulativeVol.value).toEqual(4950);
+    expect(bids[bids.length - 1].cumulativeVol.value).toEqual(4950);
+    expect(asks[asks.length - 1].cumulativeVol.value).toEqual(390);
+  });
+
+  it('updates relative data', () => {
+    const asks = compactRows(sell, VolumeType.ask, 10);
+    const bids = compactRows(buy, VolumeType.bid, 10);
+    expect(asks[0].cumulativeVol.relativeValue).toEqual(100);
+    expect(bids[0].cumulativeVol.relativeValue).toEqual(12);
+    expect(asks[10].cumulativeVol.relativeValue).toEqual(8);
+    expect(bids[10].cumulativeVol.relativeValue).toEqual(100);
   });
 });
 

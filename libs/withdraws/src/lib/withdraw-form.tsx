@@ -11,18 +11,18 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
-  TradingFormGroup,
-  TradingInput,
-  TradingInputError,
+  Button,
+  FormGroup,
+  Input,
+  InputError,
   Notification,
-  TradingRichSelect,
+  RichSelect,
   ExternalLink,
   Intent,
-  TradingButton,
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
-import { useEffect, type ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes } from 'react';
 import type { ControllerRenderProps } from 'react-hook-form';
 import { formatDistanceToNow } from 'date-fns';
 import { useForm, Controller, useWatch } from 'react-hook-form';
@@ -111,7 +111,6 @@ export const WithdrawForm = ({
     register,
     handleSubmit,
     setValue,
-    trigger,
     clearErrors,
     control,
     formState: { errors },
@@ -139,18 +138,13 @@ export const WithdrawForm = ({
     });
   };
 
-  useEffect(() => {
-    setValue('to', address || '');
-    trigger('to');
-  }, [address, setValue, trigger]);
-
   const renderAssetsSelector = ({
     field,
   }: {
     field: ControllerRenderProps<FormFields, 'asset'>;
   }) => {
     return (
-      <TradingRichSelect
+      <RichSelect
         data-testid="select-asset"
         id="asset"
         name="asset"
@@ -170,20 +164,18 @@ export const WithdrawForm = ({
             balance={<AssetBalance asset={a} />}
           />
         ))}
-      </TradingRichSelect>
+      </RichSelect>
     );
   };
 
   const showWithdrawDelayNotification =
-    Boolean(delay) &&
-    Boolean(selectedAsset) &&
-    new BigNumber(amount).isGreaterThan(threshold);
+    delay && selectedAsset && new BigNumber(amount).isGreaterThan(threshold);
 
   return (
     <>
       <div className="mb-4 text-sm">
         <p>{t('There are two steps required to make a withdrawal')}</p>
-        <ol className="pl-4 list-disc">
+        <ol className="list-disc pl-4">
           <li>{t('Step 1 - Release funds from Vega')}</li>
           <li>{t('Step 2 - Transfer funds to your Ethereum wallet')}</li>
         </ol>
@@ -193,7 +185,7 @@ export const WithdrawForm = ({
         noValidate={true}
         data-testid="withdraw-form"
       >
-        <TradingFormGroup label={t('Asset')} labelFor="asset">
+        <FormGroup label={t('Asset')} labelFor="asset">
           <Controller
             control={control}
             name="asset"
@@ -205,12 +197,10 @@ export const WithdrawForm = ({
             render={renderAssetsSelector}
           />
           {errors.asset?.message && (
-            <TradingInputError intent="danger">
-              {errors.asset.message}
-            </TradingInputError>
+            <InputError intent="danger">{errors.asset.message}</InputError>
           )}
-        </TradingFormGroup>
-        <TradingFormGroup
+        </FormGroup>
+        <FormGroup
           label={t('To (Ethereum address)')}
           labelFor="ethereum-address"
         >
@@ -220,17 +210,15 @@ export const WithdrawForm = ({
               clearErrors('to');
             }}
           />
-          <TradingInput
+          <Input
             id="ethereum-address"
             data-testid="eth-address-input"
             {...register('to', { validate: { required, ethereumAddress } })}
           />
           {errors.to?.message && (
-            <TradingInputError intent="danger">
-              {errors.to.message}
-            </TradingInputError>
+            <InputError intent="danger">{errors.to.message}</InputError>
           )}
-        </TradingFormGroup>
+        </FormGroup>
         {selectedAsset && threshold && (
           <div className="mb-4">
             <WithdrawLimits
@@ -242,8 +230,8 @@ export const WithdrawForm = ({
             />
           </div>
         )}
-        <TradingFormGroup label={t('Amount')} labelFor="amount">
-          <TradingInput
+        <FormGroup label={t('Amount')} labelFor="amount">
+          <Input
             data-testid="amount-input"
             type="number"
             autoComplete="off"
@@ -263,9 +251,7 @@ export const WithdrawForm = ({
             })}
           />
           {errors.amount?.message && (
-            <TradingInputError intent="danger">
-              {errors.amount.message}
-            </TradingInputError>
+            <InputError intent="danger">{errors.amount.message}</InputError>
           )}
           {selectedAsset && (
             <UseButton
@@ -278,7 +264,7 @@ export const WithdrawForm = ({
               {t('Use maximum')}
             </UseButton>
           )}
-          {selectedAsset && showWithdrawDelayNotification && (
+          {showWithdrawDelayNotification && (
             <div className="mt-2">
               <WithdrawDelayNotification
                 threshold={threshold}
@@ -288,14 +274,15 @@ export const WithdrawForm = ({
               />
             </div>
           )}
-        </TradingFormGroup>
-        <TradingButton
+        </FormGroup>
+        <Button
           data-testid="submit-withdrawal"
           type="submit"
+          variant="primary"
           fill={true}
         >
-          {t('Release funds')}
-        </TradingButton>
+          Release funds
+        </Button>
       </form>
     </>
   );
@@ -308,7 +295,7 @@ const UseButton = (props: UseButtonProps) => {
     <button
       {...props}
       type="button"
-      className="absolute top-0 right-0 ml-auto text-sm underline"
+      className="ml-auto text-sm absolute top-0 right-0 underline"
     />
   );
 };

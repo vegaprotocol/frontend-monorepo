@@ -137,7 +137,7 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
         hide: window.innerWidth <= BREAKPOINT_MD,
         headerName: t('Enactment date'),
         field: 'terms.enactmentDatetime',
-        valueFormatter: ({
+        valueFormatte: ({
           value,
         }: VegaValueFormatterParams<
           ProposalListFieldsFragment,

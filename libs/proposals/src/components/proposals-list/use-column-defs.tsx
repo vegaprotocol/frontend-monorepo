@@ -1,14 +1,8 @@
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef } from 'ag-grid-community';
-import {
-  CenteredGridCellWrapper,
-  COL_DEFS,
-  DateRangeFilter,
-  SetFilter,
-} from '@vegaprotocol/datagrid';
-import compact from 'lodash/compact';
-import { useEnvironment, FLAGS } from '@vegaprotocol/environment';
+import { COL_DEFS, DateRangeFilter, SetFilter } from '@vegaprotocol/datagrid';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
@@ -19,51 +13,14 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { ExternalLink, Pill } from '@vegaprotocol/ui-toolkit';
-import {
-  ProposalProductTypeMapping,
-  ProposalProductTypeShortName,
-  ProposalStateMapping,
-} from '@vegaprotocol/types';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { ProposalStateMapping } from '@vegaprotocol/types';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { VoteProgress } from '../voting-progress';
 import { ProposalActionsDropdown } from '../proposal-actions-dropdown';
 
-export const MarketNameProposalCell = ({
-  value,
-  data,
-}: VegaICellRendererParams<
-  ProposalListFieldsFragment,
-  'terms.change.instrument.code'
->) => {
-  const { VEGA_TOKEN_URL } = useEnvironment();
-  const { change } = data?.terms || {};
-  if (change?.__typename === 'NewMarket' && VEGA_TOKEN_URL) {
-    const type = change.instrument.futureProduct?.__typename;
-    const content = (
-      <>
-        <span data-testid="market-code">{value as string}</span>
-        {type && (
-          <Pill
-            size="xxs"
-            className="uppercase ml-0.5"
-            title={ProposalProductTypeMapping[type]}
-          >
-            {ProposalProductTypeShortName[type]}
-          </Pill>
-        )}
-      </>
-    );
-    if (data?.id) {
-      const link = `${VEGA_TOKEN_URL}/proposals/${data.id}`;
-      return <ExternalLink href={link}>{content}</ExternalLink>;
-    }
-    return content;
-  }
-  return null;
-};
-
 export const useColumnDefs = () => {
+  const { VEGA_TOKEN_URL } = useEnvironment();
   const { params } = useNetworkParams([
     NetworkParams.governance_proposal_market_requiredMajority,
   ]);
@@ -73,14 +30,35 @@ export const useColumnDefs = () => {
     return new BigNumber(requiredMajority).times(100);
   }, [params?.governance_proposal_market_requiredMajority]);
 
+  const cellCss = 'grid h-full items-center';
   const columnDefs: ColDef[] = useMemo(() => {
-    return compact([
+    return [
       {
         colId: 'market',
         headerName: t('Market'),
         field: 'terms.change.instrument.code',
+        minWidth: 150,
         cellStyle: { lineHeight: '14px' },
-        cellRenderer: 'MarketNameProposalCell',
+        cellRenderer: ({
+          data,
+        }: VegaICellRendererParams<
+          ProposalListFieldsFragment,
+          'terms.change.instrument.code'
+        >) => {
+          const { change } = data?.terms || {};
+          if (change?.__typename === 'NewMarket' && VEGA_TOKEN_URL) {
+            if (data?.id) {
+              const link = `${VEGA_TOKEN_URL}/proposals/${data.id}`;
+              return (
+                <ExternalLink href={link}>
+                  {change.instrument.code}
+                </ExternalLink>
+              );
+            }
+            return change.instrument.code;
+          }
+          return null;
+        },
       },
       {
         colId: 'description',
@@ -105,16 +83,10 @@ export const useColumnDefs = () => {
           set: ProposalStateMapping,
         },
       },
-      FLAGS.SUCCESSOR_MARKETS && {
-        headerName: t('Parent market'),
-        field: 'id',
-        colId: 'parentMarket',
-        cellRenderer: 'SuccessorMarketRenderer',
-        cellRendererParams: { parent: true },
-      },
       {
         colId: 'voting',
         headerName: t('Voting'),
+        cellClass: 'flex justify-between leading-tight font-mono',
         cellRenderer: ({
           data,
         }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
@@ -126,12 +98,12 @@ export const useColumnDefs = () => {
               ? new BigNumber(0)
               : yesTokens.multipliedBy(100).dividedBy(totalTokensVoted);
             return (
-              <CenteredGridCellWrapper>
+              <div className="uppercase flex h-full items-center justify-center">
                 <VoteProgress
                   threshold={requiredMajorityPercentage}
                   progress={yesPercentage}
                 />
-              </CenteredGridCellWrapper>
+              </div>
             );
           }
           return '-';
@@ -161,6 +133,7 @@ export const useColumnDefs = () => {
           'terms.enactmentDatetime'
         >) => (value ? getDateTimeFormat().format(new Date(value)) : '-'),
         filter: DateRangeFilter,
+        flex: 1,
       },
       {
         colId: 'proposal-actions',
@@ -171,15 +144,19 @@ export const useColumnDefs = () => {
           if (!data?.id) return null;
           return <ProposalActionsDropdown id={data.id} />;
         },
+        flex: 1,
       },
-    ]);
-  }, [requiredMajorityPercentage]);
+    ];
+  }, [VEGA_TOKEN_URL, requiredMajorityPercentage]);
 
   const defaultColDef: ColDef = useMemo(() => {
     return {
       sortable: true,
+      cellClass: cellCss,
+      resizable: true,
       filter: true,
       filterParams: { buttons: ['reset'] },
+      minWidth: 100,
     };
   }, []);
 

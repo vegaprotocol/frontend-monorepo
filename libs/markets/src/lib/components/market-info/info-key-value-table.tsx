@@ -4,10 +4,8 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
-  Intent,
   KeyValueTable,
   KeyValueTableRow,
-  Lozenge,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
@@ -24,11 +22,9 @@ interface RowProps {
   unformatted?: boolean;
   assetSymbol?: string;
   noBorder?: boolean;
-  parentValue?: ReactNode;
-  hasParentData?: boolean;
 }
 
-export const Row = ({
+const Row = ({
   field,
   value,
   decimalPlaces,
@@ -36,14 +32,7 @@ export const Row = ({
   unformatted,
   assetSymbol = '',
   noBorder = true,
-  parentValue,
-  hasParentData,
 }: RowProps) => {
-  // Note: we need both 'parentValue' and 'hasParentData' to do a conditional
-  // check to differentiate between when parentData itself is missing and when
-  // a specific parentValue is missing. These values are only used when we
-  // have successor market parent data.
-
   const className = 'text-sm';
 
   const getFormattedValue = (value: ReactNode) => {
@@ -66,10 +55,6 @@ export const Row = ({
   const formattedValue = getFormattedValue(value);
 
   if (!formattedValue) return null;
-
-  const newValueInSuccessorMarket = hasParentData && value && !parentValue;
-  const valueDiffersFromParentMarket = parentValue && parentValue !== value;
-
   return (
     <KeyValueTableRow
       key={field}
@@ -78,35 +63,10 @@ export const Row = ({
       dtClassName={className}
       ddClassName={className}
     >
-      <div className="flex items-center gap-3">
-        <Tooltip description={tooltipMapping[field]} align="start">
-          <div tabIndex={-1}>{startCase(t(field))}</div>
-        </Tooltip>
-
-        {valueDiffersFromParentMarket && (
-          <Lozenge className="py-0" variant={Intent.Primary}>
-            {t('Updated')}
-          </Lozenge>
-        )}
-
-        {newValueInSuccessorMarket && (
-          <Lozenge className="py-0" variant={Intent.Primary}>
-            {t('Added')}
-          </Lozenge>
-        )}
-      </div>
-      <div style={{ wordBreak: 'break-word' }}>
-        {valueDiffersFromParentMarket ? (
-          <div className="flex items-center gap-3">
-            <span className="line-through dark:text-vega-dark-300">
-              {getFormattedValue(parentValue)}
-            </span>
-            <span>{formattedValue}</span>
-          </div>
-        ) : (
-          formattedValue
-        )}
-      </div>
+      <Tooltip description={tooltipMapping[field]} align="start">
+        <div tabIndex={-1}>{startCase(t(field))}</div>
+      </Tooltip>
+      <span style={{ wordBreak: 'break-word' }}>{formattedValue}</span>
     </KeyValueTableRow>
   );
 };
@@ -119,7 +79,6 @@ export interface MarketInfoTableProps {
   children?: ReactNode;
   assetSymbol?: string;
   noBorder?: boolean;
-  parentData?: Record<string, ReactNode> | null | undefined;
 }
 
 export const MarketInfoTable = ({
@@ -130,33 +89,25 @@ export const MarketInfoTable = ({
   children,
   assetSymbol,
   noBorder,
-  parentData,
 }: MarketInfoTableProps) => {
   if (!data || typeof data !== 'object') {
     return null;
   }
-
-  const hasParentData = parentData !== undefined;
-
   return (
     <>
       <KeyValueTable>
-        <>
-          {Object.entries(data).map(([key, value]) => (
-            <Row
-              key={key}
-              field={key}
-              value={value}
-              decimalPlaces={decimalPlaces}
-              assetSymbol={assetSymbol}
-              asPercentage={asPercentage}
-              unformatted={unformatted}
-              noBorder={noBorder}
-              parentValue={parentData?.[key]}
-              hasParentData={hasParentData}
-            />
-          ))}
-        </>
+        {Object.entries(data).map(([key, value]) => (
+          <Row
+            key={key}
+            field={key}
+            value={value}
+            decimalPlaces={decimalPlaces}
+            assetSymbol={assetSymbol}
+            asPercentage={asPercentage}
+            unformatted={unformatted}
+            noBorder={noBorder}
+          />
+        ))}
       </KeyValueTable>
       <div className="flex flex-col gap-2">{children}</div>
     </>

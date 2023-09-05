@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Icon } from '@vegaprotocol/ui-toolkit';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { ProposalState } from '@vegaprotocol/types';
@@ -17,32 +18,53 @@ export const CurrentProposalState = ({
 
   switch (proposal?.state) {
     case ProposalState.STATE_ENACTED: {
-      proposalStatus = t('voteState_Enacted');
+      proposalStatus = (
+        <>
+          <span className="mr-2">{t('voteState_Enacted')}</span>
+          <Icon name={'tick'} />
+        </>
+      );
       break;
     }
     case ProposalState.STATE_PASSED: {
-      proposalStatus = t('voteState_Passed');
+      proposalStatus = (
+        <>
+          <span className="mr-2">{t('voteState_Passed')}</span>
+          <Icon name={'tick'} />
+        </>
+      );
       break;
     }
     case ProposalState.STATE_WAITING_FOR_NODE_VOTE: {
-      proposalStatus = t('voteState_WaitingForNodeVote');
+      proposalStatus = (
+        <>
+          <span className="mr-2">{t('voteState_WaitingForNodeVote')}</span>
+          <Icon name={'time'} />
+        </>
+      );
       break;
     }
     case ProposalState.STATE_OPEN: {
       variant = 'primary' as ProposalInfoLabelVariant;
-      proposalStatus = t('voteState_Open');
+      proposalStatus = <>{t('voteState_Open')}</>;
       break;
     }
     case ProposalState.STATE_DECLINED: {
-      proposalStatus = t('voteState_Declined');
+      proposalStatus = (
+        <>
+          <span className="mr-2">{t('voteState_Declined')}</span>
+          <Icon name={'cross'} />
+        </>
+      );
       break;
     }
     case ProposalState.STATE_REJECTED: {
-      proposalStatus = t('voteState_Rejected');
-      break;
-    }
-    case ProposalState.STATE_FAILED: {
-      proposalStatus = t('voteState_Failed');
+      proposalStatus = (
+        <>
+          <span className="mr-2">{t('voteState_Rejected')}</span>
+          <Icon name={'warning-sign'} />
+        </>
+      );
       break;
     }
   }

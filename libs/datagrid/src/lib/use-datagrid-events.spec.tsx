@@ -14,6 +14,7 @@ const gridProps = {
     {
       field: 'id',
       width: 100,
+      resizable: true,
       filter: 'agNumberColumnFilter',
     },
   ],
@@ -49,7 +50,7 @@ describe('useDataGridEvents', () => {
     console.warn = originalWarn;
   });
 
-  it('default state is set and callback is called on filter event', async () => {
+  it('default state is set and callback is called on column or filter event', async () => {
     const callback = jest.fn();
     const initialState = {
       filterModel: undefined,
@@ -65,6 +66,45 @@ describe('useDataGridEvents', () => {
     );
     // no filters set
     expect(result.current.api.getFilterModel()).toEqual({});
+
+    const newWidth = 400;
+
+    // Set col width
+    await act(async () => {
+      result.current.columnApi.setColumnWidth('id', newWidth);
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(GRID_EVENT_DEBOUNCE_TIME);
+    });
+
+    expect(callback).toHaveBeenCalledWith({
+      columnState: [expect.objectContaining({ colId: 'id', width: newWidth })],
+      filterModel: {},
+    });
+    callback.mockClear();
+    expect(result.current.columnApi.getColumnState()[0].width).toEqual(
+      newWidth
+    );
+
+    // Set filter
+    await act(async () => {
+      result.current.columnApi.applyColumnState({
+        state: [{ colId: 'id', sort: 'asc' }],
+        applyOrder: true,
+      });
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(GRID_EVENT_DEBOUNCE_TIME);
+    });
+
+    expect(callback).toHaveBeenCalledWith({
+      columnState: [expect.objectContaining({ colId: 'id', sort: 'asc' })],
+      filterModel: {},
+    });
+    callback.mockClear();
+    expect(result.current.columnApi.getColumnState()[0].sort).toEqual('asc');
 
     // Set filter
     const idFilter = {
@@ -83,7 +123,7 @@ describe('useDataGridEvents', () => {
     });
 
     expect(callback).toHaveBeenCalledWith({
-      columnState: undefined,
+      columnState: expect.any(Object),
       filterModel: {
         id: idFilter,
       },
@@ -98,7 +138,7 @@ describe('useDataGridEvents', () => {
       filterType: 'number',
       type: 'equals',
     };
-    const colState = { colId: 'id', sort: 'desc' as const };
+    const colState = { colId: 'id', width: 300, sort: 'desc' as const };
     const initialState = {
       filterModel: {
         id: idFilter,
@@ -116,7 +156,7 @@ describe('useDataGridEvents', () => {
     });
   });
 
-  it('ignores events that were not made via the UI', async () => {
+  it('debounces events', async () => {
     const callback = jest.fn();
     const initialState = {
       filterModel: undefined,
@@ -130,6 +170,8 @@ describe('useDataGridEvents', () => {
     // Set col width multiple times
     await act(async () => {
       result.current.columnApi.setColumnWidth('id', newWidth);
+      result.current.columnApi.setColumnWidth('id', newWidth);
+      result.current.columnApi.setColumnWidth('id', newWidth);
     });
 
     expect(callback).not.toHaveBeenCalled();
@@ -138,6 +180,6 @@ describe('useDataGridEvents', () => {
       jest.advanceTimersByTime(GRID_EVENT_DEBOUNCE_TIME);
     });
 
-    expect(callback).toHaveBeenCalledTimes(0);
+    expect(callback).toHaveBeenCalledTimes(1);
   });
 });

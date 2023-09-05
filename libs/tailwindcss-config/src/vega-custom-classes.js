@@ -51,12 +51,6 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.rtl-dir': {
       direction: 'rtl',
     },
-    '.dashed-background': {
-      background: `repeating-linear-gradient(0deg, transparent, transparent 2px, ${colors.neutral[900]} 2px, ${colors.neutral[900]} 4px)`,
-    },
-    '.dark .dashed-background': {
-      background: `repeating-linear-gradient(0deg, transparent, transparent 2px, ${colors.neutral[200]} 2px, ${colors.neutral[200]} 4px)`,
-    },
   });
 });
 

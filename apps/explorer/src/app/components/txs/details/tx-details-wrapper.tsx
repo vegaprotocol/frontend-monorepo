@@ -11,7 +11,6 @@ import { TxDetailsBatch } from './tx-batch';
 import { TxDetailsChainEvent } from './tx-chain-event';
 import { TxDetailsNodeVote } from './tx-node-vote';
 import { TxDetailsOrderCancel } from './tx-order-cancel';
-import { TxDetailsStopOrderCancel } from './tx-stop-order-cancel';
 import { TxDetailsOrderAmend } from './tx-order-amend';
 import { TxDetailsWithdrawSubmission } from './tx-withdraw-submission';
 import { TxDetailsDelegate } from './tx-delegation';
@@ -27,7 +26,6 @@ import { TxDetailsNodeAnnounce } from './tx-node-announce';
 import { TxDetailsStateVariable } from './tx-state-variable-proposal';
 import { TxProposal } from './tx-proposal';
 import { TxDetailsTransfer } from './tx-transfer';
-import { TxDetailsStopOrderSubmission } from './tx-stop-order-submission';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -87,8 +85,6 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsProtocolUpgrade;
     case 'Cancel Order':
       return TxDetailsOrderCancel;
-    case 'Stop Orders Cancellation':
-      return TxDetailsStopOrderCancel;
     case 'Amend Order':
       return TxDetailsOrderAmend;
     case 'Validator Heartbeat':
@@ -117,8 +113,6 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsUndelegate;
     case 'State Variable Proposal':
       return TxDetailsStateVariable;
-    case 'Stop Orders Submission':
-      return TxDetailsStopOrderSubmission;
     case 'Transfer Funds':
       return TxDetailsTransfer;
     default:

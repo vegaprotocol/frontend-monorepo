@@ -2,7 +2,7 @@ import type { ApolloError } from '@apollo/client';
 import { useHeaderStore } from '@vegaprotocol/apollo-client';
 import { isValidUrl } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { TradingRadio } from '@vegaprotocol/ui-toolkit';
+import { Radio } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useState } from 'react';
 import { CUSTOM_NODE_KEY } from '../../types';
 import {
@@ -138,7 +138,7 @@ export const RowData = ({
     <>
       {id !== CUSTOM_NODE_KEY && (
         <div className="break-all" data-testid="node">
-          <TradingRadio id={`node-url-${id}`} value={url} label={url} />
+          <Radio id={`node-url-${id}`} value={url} label={url} />
         </div>
       )}
       <LayoutCell

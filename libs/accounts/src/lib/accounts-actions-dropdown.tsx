@@ -2,12 +2,13 @@ import { ETHERSCAN_ADDRESS, useEtherscanLink } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import {
   ActionsDropdown,
-  TradingDropdownCopyItem,
-  TradingDropdownItem,
+  DropdownMenuCopyItem,
+  DropdownMenuItem,
   Link,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
+import { useTransferDialog } from './transfer-dialog';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 export const AccountsActionsDropdown = ({
@@ -16,63 +17,62 @@ export const AccountsActionsDropdown = ({
   onClickDeposit,
   onClickWithdraw,
   onClickBreakdown,
-  onClickTransfer,
 }: {
   assetId: string;
   assetContractAddress?: string;
   onClickDeposit: () => void;
   onClickWithdraw: () => void;
   onClickBreakdown: () => void;
-  onClickTransfer: () => void;
 }) => {
   const etherscanLink = useEtherscanLink();
+  const openTransferDialog = useTransferDialog((store) => store.open);
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
 
   return (
     <ActionsDropdown>
-      <TradingDropdownItem
+      <DropdownMenuItem
         key={'deposit'}
         data-testid="deposit"
         onClick={onClickDeposit}
       >
         <VegaIcon name={VegaIconNames.DEPOSIT} size={16} />
         {t('Deposit')}
-      </TradingDropdownItem>
-      <TradingDropdownItem
+      </DropdownMenuItem>
+      <DropdownMenuItem
         key={'withdraw'}
         data-testid="withdraw"
         onClick={onClickWithdraw}
       >
         <VegaIcon name={VegaIconNames.WITHDRAW} size={16} />
         {t('Withdraw')}
-      </TradingDropdownItem>
-      <TradingDropdownItem
+      </DropdownMenuItem>
+      <DropdownMenuItem
         key={'transfer'}
         data-testid="transfer"
-        onClick={onClickTransfer}
+        onClick={() => openTransferDialog(true, assetId)}
       >
         <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
         {t('Transfer')}
-      </TradingDropdownItem>
-      <TradingDropdownItem
+      </DropdownMenuItem>
+      <DropdownMenuItem
         key={'breakdown'}
         data-testid="breakdown"
         onClick={onClickBreakdown}
       >
         <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
         {t('View usage breakdown')}
-      </TradingDropdownItem>
-      <TradingDropdownItem
+      </DropdownMenuItem>
+      <DropdownMenuItem
         onClick={(e) => {
           openAssetDialog(assetId, e.target as HTMLElement);
         }}
       >
         <VegaIcon name={VegaIconNames.INFO} size={16} />
         {t('View asset details')}
-      </TradingDropdownItem>
-      <TradingDropdownCopyItem value={assetId} text={t('Copy asset ID')} />
+      </DropdownMenuItem>
+      <DropdownMenuCopyItem value={assetId} text={t('Copy asset ID')} />
       {assetContractAddress && (
-        <TradingDropdownItem>
+        <DropdownMenuItem>
           <Link
             href={etherscanLink(
               ETHERSCAN_ADDRESS.replace(':hash', assetContractAddress)
@@ -84,7 +84,7 @@ export const AccountsActionsDropdown = ({
               {t('View on Etherscan')}
             </span>
           </Link>
-        </TradingDropdownItem>
+        </DropdownMenuItem>
       )}
     </ActionsDropdown>
   );

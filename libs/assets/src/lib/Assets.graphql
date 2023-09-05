@@ -24,26 +24,3 @@ query Assets {
     }
   }
 }
-
-fragment PartyAssetFields on Asset {
-  id
-  name
-  symbol
-  status
-}
-
-query PartyAssets($partyId: ID!) {
-  party(id: $partyId) {
-    id
-    accountsConnection {
-      edges {
-        node {
-          type
-          asset {
-            ...PartyAssetFields
-          }
-        }
-      }
-    }
-  }
-}

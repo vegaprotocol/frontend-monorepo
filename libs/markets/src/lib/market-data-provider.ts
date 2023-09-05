@@ -15,7 +15,6 @@ import type {
   MarketDataUpdateFieldsFragment,
   MarketDataQueryVariables,
 } from './__generated__/market-data';
-import { getMarketPrice } from './get-price';
 
 export type MarketData = MarketDataFieldsFragment;
 
@@ -58,21 +57,6 @@ export const markPriceProvider = makeDerivedDataProvider<
   never,
   MarketDataQueryVariables
 >([marketDataProvider], ([marketData]) => (marketData as MarketData).markPrice);
-
-export const marketPriceProvider = makeDerivedDataProvider<
-  string | undefined,
-  never,
-  MarketDataQueryVariables
->([marketDataProvider], ([marketData]) =>
-  getMarketPrice(marketData as MarketData)
-);
-
-export const useMarketPrice = (marketId?: string, skip?: boolean) =>
-  useDataProvider({
-    dataProvider: marketPriceProvider,
-    variables: { marketId: marketId || '' },
-    skip: skip || !marketId,
-  });
 
 export type StaticMarketData = Pick<
   MarketData,

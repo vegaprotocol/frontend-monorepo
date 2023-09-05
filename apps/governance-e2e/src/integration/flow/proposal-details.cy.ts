@@ -11,12 +11,7 @@ import {
   getDateFormatForSpecifiedDays,
   getProposalFromTitle,
   getProposalInformationFromTable,
-  goToMakeNewProposal,
-  governanceProposalType,
-  longProposalDescription,
-  proposalChangeType,
   submitUniqueRawProposal,
-  validateProposalDetailsDiff,
   voteForProposal,
 } from '../../../../governance-e2e/src/support/governance.functions';
 import {
@@ -31,9 +26,7 @@ import {
 } from '../../support/wallet-functions';
 import type { testFreeformProposal } from '../../support/common-interfaces';
 import { formatDateWithLocalTimezone } from '@vegaprotocol/utils';
-import { createSuccessorMarketProposalTxBody } from '../../support/proposal.functions';
 
-const proposalListItem = '[data-testid="proposals-list-item"]';
 const proposalVoteProgressForPercentage =
   'vote-progress-indicator-percentage-for';
 const proposalVoteProgressAgainstPercentage =
@@ -46,9 +39,9 @@ const proposalDetailsTitle = 'proposal-title';
 const proposalDetailsDescription = 'proposal-description';
 const openProposals = 'open-proposals';
 const viewProposalButton = 'view-proposal-btn';
+const proposalDescriptionToggle = 'proposal-description-toggle';
 const voteBreakdownToggle = 'vote-breakdown-toggle';
 const proposalTermsToggle = 'proposal-json-toggle';
-const marketDataToggle = 'proposal-market-data-toggle';
 
 describe(
   'Governance flow for proposal details',
@@ -57,12 +50,12 @@ describe(
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
       ethereumWalletConnect();
+      // cy.associateTokensToVegaWallet('1');
     });
 
     beforeEach('visit proposals tab', function () {
       cy.clearLocalStorage();
       turnTelemetryOff();
-      cy.mockChainId();
       cy.reload();
       waitForSpinner();
       cy.connectVegaWallet();
@@ -73,13 +66,10 @@ describe(
 
     // 3001-VOTE-050 3001-VOTE-054 3001-VOTE-055 3002-PROP-019
     it('Newly created raw proposal details - shows proposal title and full description', function () {
-      const proposalDetails = longProposalDescription;
+      const proposalDescription =
+        'I propose that everyone evaluate the following IPFS document and vote Yes if they agree. bafybeigwwctpv37xdcwacqxvekr6e4kaemqsrv34em6glkbiceo3fcy4si';
 
-      goToMakeNewProposal(governanceProposalType.RAW);
-      submitUniqueRawProposal({
-        proposalTitle: 'raw proposal with long description',
-        proposalDescription: proposalDetails,
-      });
+      createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         cy.getByTestId(openProposals).within(() => {
           getProposalFromTitle(rawProposal.rationale.title).within(() => {
@@ -90,17 +80,12 @@ describe(
           'contain.text',
           rawProposal.rationale.title
         );
+        cy.getByTestId(proposalDescriptionToggle).click();
+        cy.getByTestId('proposal-description-toggle');
+        cy.getByTestId(proposalDetailsDescription)
+          .find('p')
+          .should('have.text', proposalDescription);
       });
-      cy.getByTestId(proposalDetailsDescription).within(() => {
-        cy.get('p').should('not.have.text', 'Hyperlink text');
-        cy.getByTestId('show-more-btn').click();
-        cy.get('p')
-          .invoke('text')
-          .should('have.have.length', 2194) // Full description is displayed
-          .and('contain', 'Hyperlink text');
-        cy.get('a').should('have.attr', 'href');
-      });
-
       // 3001-VOTE-008
       getProposalInformationFromTable('ID')
         .invoke('text')
@@ -230,37 +215,20 @@ describe(
       cy.getByTestId(changeVoteButton).should('be.visible').click();
       voteForProposal('for');
       // 3001-VOTE-064
-      cy.getByTestId('user-voted-yes').should('exist');
       getProposalInformationFromTable('Tokens for proposal')
         .should('have.text', (1).toFixed(2))
         .and('be.visible');
-      navigateTo(navigation.proposals);
-      cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-        getProposalFromTitle(rawProposal.rationale.title).within(() => {
-          // 3002-PROP-021
-          cy.getByTestId('user-voted-yes').should('exist');
-          cy.getByTestId(viewProposalButton).click();
-        });
-      });
       cy.getByTestId(changeVoteButton).should('be.visible').click();
       voteForProposal('against');
       cy.getByTestId(proposalVoteProgressAgainstPercentage)
         .contains('100.00%')
         .and('be.visible');
-      cy.getByTestId(voteBreakdownToggle).click();
       getProposalInformationFromTable('Tokens against proposal')
         .should('have.text', (1).toFixed(2))
         .and('be.visible');
       getProposalInformationFromTable('Number of voting parties')
         .should('have.text', '1')
         .and('be.visible');
-      navigateTo(navigation.proposals);
-      cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-        getProposalFromTitle(rawProposal.rationale.title).within(() => {
-          cy.getByTestId('user-voted-no').should('exist');
-          cy.getByTestId(viewProposalButton).click();
-        });
-      });
     });
 
     // 3001-VOTE-042, 3001-VOTE-057, 3001-VOTE-058, 3001-VOTE-059, 3001-VOTE-060
@@ -369,98 +337,6 @@ describe(
       });
       switchVegaWalletPubKey();
       stakingPageDisassociateAllTokens();
-    });
-
-    it('Able to see successor market details with new and updated values', function () {
-      cy.createMarket();
-      cy.reload();
-      waitForSpinner();
-      cy.getByTestId('closed-proposals').within(() => {
-        cy.contains('Add Lorem Ipsum market')
-          .parentsUntil(proposalListItem)
-          .last()
-          .within(() => {
-            cy.getByTestId(viewProposalButton).click();
-          });
-      });
-      getProposalInformationFromTable('ID')
-        .invoke('text')
-        .as('parentMarketId')
-        .then(() => {
-          cy.VegaWalletSubmitProposal(
-            createSuccessorMarketProposalTxBody(this.parentMarketId)
-          );
-        });
-      navigateTo(navigation.proposals);
-      cy.reload();
-      getProposalFromTitle('Test successor market proposal details').within(
-        () => cy.getByTestId(viewProposalButton).click()
-      );
-      // #3003-PMAN-010
-      cy.getByTestId(proposalTermsToggle).click();
-      cy.get('.language-json').within(() => {
-        cy.get('.hljs-attr').should('contain.text', 'parentMarketId');
-        cy.get('.hljs-string').should('contain.text', this.parentMarketId);
-        cy.get('.hljs-attr').should('contain.text', 'insurancePoolFraction');
-        cy.get('.hljs-string').should('contain.text', '0.75');
-      });
-      // 3003-PMAN-011 3003-PMAN-012
-      cy.getByTestId(marketDataToggle).click();
-      cy.getByTestId('proposal-market-data').within(() => {
-        // Assert that all toggles are removed
-        cy.getByTestId('accordion-toggle').should('not.exist');
-        validateProposalDetailsDiff(
-          'Name',
-          proposalChangeType.UPDATED,
-          'Token test market',
-          'Test market 1'
-        );
-        validateProposalDetailsDiff(
-          'Parent Market ID',
-          proposalChangeType.ADDED,
-          this.parentMarketId
-        );
-        validateProposalDetailsDiff(
-          'Insurance Pool Fraction',
-          proposalChangeType.ADDED,
-          '0.75'
-        );
-        validateProposalDetailsDiff(
-          'Trading Mode',
-          proposalChangeType.UPDATED,
-          'No trading',
-          'Opening auction'
-        );
-
-        validateProposalDetailsDiff(
-          'Market Name',
-          proposalChangeType.UPDATED,
-          'Token test market',
-          'Test market 1'
-        );
-
-        validateProposalDetailsDiff(
-          'Sector',
-          proposalChangeType.UPDATED,
-          'materials',
-          'tech'
-        );
-      });
-
-      // 3003-PMAN-011
-      cy.get('.underline').contains('Parent Market ID').realHover();
-      cy.getByTestId('tooltip-content', { timeout: 8000 }).should(
-        'contain.text',
-        'The ID of the market this market succeeds.'
-      );
-      cy.get('.underline')
-        .contains('Insurance Pool Fraction')
-        .realMouseUp()
-        .realHover();
-      cy.getByTestId('tooltip-content', { timeout: 8000 }).should(
-        'contain.text',
-        'The fraction of the insurance pool balance that is carried over from the parent market to the successor.'
-      );
     });
   }
 );

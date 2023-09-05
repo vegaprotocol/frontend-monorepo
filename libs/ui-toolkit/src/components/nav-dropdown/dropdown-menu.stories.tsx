@@ -19,7 +19,6 @@ export const RadioItems = () => {
           <span>Open</span>
         </NavDropdownMenuTrigger>
         <NavDropdownMenuContent>
-          {/* eslint-disable no-console */}
           <NavDropdownMenuItem onSelect={() => console.log('minimize')}>
             Minimize window
           </NavDropdownMenuItem>
@@ -29,7 +28,6 @@ export const RadioItems = () => {
           <NavDropdownMenuItem onSelect={() => console.log('smaller')}>
             Smaller
           </NavDropdownMenuItem>
-          {/* eslint-enable */}
         </NavDropdownMenuContent>
       </NavDropdownMenu>
     </div>

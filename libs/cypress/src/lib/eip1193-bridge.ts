@@ -9,14 +9,12 @@ export class CustomizedBridge extends Eip1193Bridge {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async sendAsync(...args: any) {
-    // eslint-disable-next-line no-console
     console.debug('sendAsync called', ...args);
     return this.send(...args);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   override async send(...args: any) {
-    // eslint-disable-next-line no-console
     console.debug('send called', ...args);
     const isCallbackForm =
       typeof args[0] === 'object' && typeof args[1] === 'function';
@@ -91,7 +89,6 @@ export class CustomizedBridge extends Eip1193Bridge {
         // All other transactions the base class works for
         result = await super.send(method, params);
       }
-      // eslint-disable-next-line no-console
       console.debug('result received', method, params, result);
       if (isCallbackForm) {
         callback(null, { result });
@@ -99,7 +96,6 @@ export class CustomizedBridge extends Eip1193Bridge {
         return result;
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.log(error);
       if (isCallbackForm) {
         callback(error, null);

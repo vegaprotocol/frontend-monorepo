@@ -17,11 +17,11 @@ describe('deposit form validation', { tags: '@smoke' }, () => {
     cy.mockTradingPage();
     cy.setVegaWallet();
     cy.visit('/#/portfolio');
-    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.getByTestId('Deposits').click();
     cy.getByTestId('deposit-button').click();
-    connectEthereumWallet('MetaMask');
     cy.wait('@Assets');
+    connectEthereumWallet('MetaMask');
   }
 
   before(() => {
@@ -102,13 +102,15 @@ describe('deposit actions', { tags: '@smoke' }, () => {
     cy.mockSubscription();
     cy.setVegaWallet();
     cy.visit('/#/markets/market-1');
+    cy.wait('@MarketsCandles');
+    cy.getByTestId('dialog-close').click();
   });
 
-  it('Deposit to trade is visible', () => {
+  it('Deposit to trade is visble', () => {
     cy.getByTestId('Collateral').click();
-    cy.get('[row-id="asset-id"]').contains('tEURO').should('be.visible');
-    cy.contains('[data-testid="deposit"]', 'Deposit').should('be.visible');
-    cy.contains('[data-testid="deposit"]', 'Deposit').click();
+    cy.contains('[data-testid="deposit"]', 'Deposit')
+      .should('be.visible')
+      .click();
     cy.getByTestId('deposit-submit').should('be.visible');
   });
 });

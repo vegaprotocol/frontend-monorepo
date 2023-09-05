@@ -1,7 +1,7 @@
 import {
-  TradingFormGroup,
-  TradingInputError,
-  TradingSelect,
+  FormGroup,
+  InputError,
+  Select,
   Tooltip,
   SimpleGrid,
 } from '@vegaprotocol/ui-toolkit';
@@ -21,13 +21,6 @@ interface TimeInForceSelectorProps {
   errorMessage?: string;
 }
 
-const typeLimitOptions = Object.entries(Schema.OrderTimeInForce);
-const typeMarketOptions = typeLimitOptions.filter(
-  ([_, timeInForce]) =>
-    timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_FOK ||
-    timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
-);
-
 export const TimeInForceSelector = ({
   value,
   orderType,
@@ -38,8 +31,12 @@ export const TimeInForceSelector = ({
 }: TimeInForceSelectorProps) => {
   const options =
     orderType === Schema.OrderType.TYPE_LIMIT
-      ? typeLimitOptions
-      : typeMarketOptions;
+      ? Object.entries(Schema.OrderTimeInForce)
+      : Object.entries(Schema.OrderTimeInForce).filter(
+          ([_, timeInForce]) =>
+            timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_FOK ||
+            timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
+        );
 
   const renderError = (errorType: string) => {
     if (errorType === MarketModeValidationType.Auction) {
@@ -90,34 +87,31 @@ export const TimeInForceSelector = ({
   };
 
   return (
-    <div className="mb-4">
-      <TradingFormGroup
-        label={t('Time in force')}
-        labelFor="select-time-in-force"
-        compact={true}
+    <FormGroup
+      label={t('Time in force')}
+      labelFor="select-time-in-force"
+      compact={true}
+    >
+      <Select
+        id="select-time-in-force"
+        value={value}
+        onChange={(e) => {
+          onSelect(e.target.value as Schema.OrderTimeInForce);
+        }}
+        className="w-full"
+        data-testid="order-tif"
       >
-        <TradingSelect
-          id="select-time-in-force"
-          value={value}
-          onChange={(e) => {
-            onSelect(e.target.value as Schema.OrderTimeInForce);
-          }}
-          className="w-full"
-          data-testid="order-tif"
-          hasError={!!errorMessage}
-        >
-          {options.map(([key, value]) => (
-            <option key={key} value={value}>
-              {timeInForceLabel(value)}
-            </option>
-          ))}
-        </TradingSelect>
-        {errorMessage && (
-          <TradingInputError testId="deal-ticket-error-message-tif">
-            {renderError(errorMessage)}
-          </TradingInputError>
-        )}
-      </TradingFormGroup>
-    </div>
+        {options.map(([key, value]) => (
+          <option key={key} value={value}>
+            {timeInForceLabel(value)}
+          </option>
+        ))}
+      </Select>
+      {errorMessage && (
+        <InputError testId="deal-ticket-error-message-tif">
+          {renderError(errorMessage)}
+        </InputError>
+      )}
+    </FormGroup>
   );
 };

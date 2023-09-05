@@ -20,7 +20,6 @@ import {
   TotalStakeRenderer,
   StakeShareRenderer,
   PendingStakeRenderer,
-  VotingPowerRenderer,
 } from './shared';
 import type { AgGridReact } from 'ag-grid-react';
 import type { ColDef } from 'ag-grid-community';
@@ -40,6 +39,7 @@ interface StandbyPendingValidatorsTableProps extends ValidatorsTableProps {
 export const StandbyPendingValidatorsTable = ({
   data,
   previousEpochData,
+  totalStake,
   stakeNeededForPromotion,
   stakeNeededForPromotionDescription,
   validatorsView,
@@ -132,8 +132,6 @@ export const StandbyPendingValidatorsTable = ({
               name,
             },
             [ValidatorFields.STAKE]: stakedTotal,
-            [ValidatorFields.NORMALISED_VOTING_POWER]: '0%',
-            [ValidatorFields.UNNORMALISED_VOTING_POWER]: '0%',
             [ValidatorFields.STAKE_NEEDED_FOR_PROMOTION]:
               individualStakeNeededForPromotion || null,
             [ValidatorFields.STAKE_NEEDED_FOR_PROMOTION_DESCRIPTION]:
@@ -225,14 +223,7 @@ export const StandbyPendingValidatorsTable = ({
           headerName: t(ValidatorFields.STAKE_SHARE).toString(),
           headerTooltip: t('StakeShareDescription').toString(),
           cellRenderer: StakeShareRenderer,
-          width: 120,
-        },
-        {
-          field: ValidatorFields.NORMALISED_VOTING_POWER,
-          headerName: t('votingPower').toString(),
-          headerTooltip: t('NonConsensusVotingPowerDescription').toString(),
-          cellRenderer: VotingPowerRenderer,
-          width: 120,
+          width: 100,
         },
         // {
         //   field: ValidatorFields.STAKE_NEEDED_FOR_PROMOTION,

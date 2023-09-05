@@ -29,32 +29,23 @@ export const ProtocolUpgradeProposalNotification = ({
 
   const { vegaReleaseTag, upgradeBlockHeight } = data;
 
-  let timeLeft = time;
-  let blocksLeft = Number(upgradeBlockHeight) - Number(lastBlockHeight);
-  if (blocksLeft < 0) {
-    blocksLeft = 0;
-    timeLeft = 0;
-  }
-
   let countdown;
   switch (mode) {
     case ProtocolUpgradeCountdownMode.IN_BLOCKS:
       countdown = (
         <>
-          <span className="text-vega-orange-500">{blocksLeft}</span>{' '}
+          <span className="text-vega-orange-500">
+            {Number(upgradeBlockHeight) - Number(lastBlockHeight)}
+          </span>{' '}
           {t('blocks')}
         </>
       );
       break;
     case ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING:
       countdown =
-        timeLeft !== undefined ? (
-          <span
-            title={t('estimated time to protocol upgrade')}
-            className="text-vega-orange-500"
-            data-testid="upgrade-proposal-estimate"
-          >
-            {convertToCountdownString(timeLeft, '0:00:00:00')}
+        time !== undefined ? (
+          <span className="text-vega-orange-500">
+            {convertToCountdownString(time, '0:00:00:00')}
           </span>
         ) : (
           <span className="text-vega-orange-600 lowercase italic">

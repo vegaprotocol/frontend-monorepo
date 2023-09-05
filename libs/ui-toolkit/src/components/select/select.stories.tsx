@@ -46,7 +46,6 @@ RichDefaultSelect.args = {
   name: 'rich',
   placeholder: 'Select an option',
   onValueChange: (v: string) => {
-    // eslint-disable-next-line no-console
     console.log(v);
   },
   children: (

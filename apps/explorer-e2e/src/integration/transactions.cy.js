@@ -40,7 +40,7 @@ context.skip('Transactions page', function () {
             .first()
             .click({ force: true });
         } else {
-          cy.log('Unable to find any transactions on page');
+          cy.slack('Unable to find any transactions on page');
           cy.screenshot();
         }
       });
@@ -78,7 +78,7 @@ context.skip('Transactions page', function () {
               }
             });
         } else {
-          cy.log('Unable to find any transactions on page');
+          cy.slack('Unable to find any transactions on page');
           cy.screenshot();
         }
       });

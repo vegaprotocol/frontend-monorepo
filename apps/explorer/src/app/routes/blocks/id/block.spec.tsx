@@ -204,7 +204,6 @@ describe('Block', () => {
     (useFetch as jest.Mock).mockReturnValue({
       state: { data: createBlockResponse(1), loading: false, error: null },
     });
-
     render(renderComponent(1));
     await waitFor(() => screen.getByTestId('block-header'));
     expect(screen.getByTestId('previous-block-button')).toHaveAttribute(

@@ -5,7 +5,6 @@ import type {
 import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import merge from 'lodash/merge';
-import type { SuccessorMarketProposalDetailsQuery } from '../proposals-hooks';
 
 export const proposalListQuery = (
   override?: PartialDeep<ProposalsListQuery>
@@ -1285,27 +1284,3 @@ const proposalListFields: ProposalListFieldsFragment[] = [
     __typename: 'Proposal',
   },
 ];
-
-export const successorMarketProposalDetailsQuery = (
-  override?: SuccessorMarketProposalDetailsQuery
-): SuccessorMarketProposalDetailsQuery =>
-  merge(
-    {
-      __typename: 'Query',
-      proposal: {
-        __typename: 'Proposal',
-        terms: {
-          __typename: 'ProposalTerms',
-          change: {
-            __typename: 'NewMarket',
-            successorConfiguration: {
-              __typename: 'SuccessorConfiguration',
-              insurancePoolFraction: '0.75',
-              parentMarketId: 'PARENT-A',
-            },
-          },
-        },
-      },
-    },
-    override
-  );

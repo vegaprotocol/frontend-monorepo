@@ -15,7 +15,7 @@ import {
 } from 'date-fns';
 import { formatForInput } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { TradingInputError } from '@vegaprotocol/ui-toolkit';
+import { InputError } from '@vegaprotocol/ui-toolkit';
 
 const defaultValue: Schema.DateRange = {};
 export interface DateRangeFilterProps extends IFilterParams {
@@ -195,7 +195,7 @@ export const DateRangeFilter = forwardRef(
     }, [value, props]);
 
     const notification = useMemo(() => {
-      const not = error ? <TradingInputError>{error}</TradingInputError> : null;
+      const not = error ? <InputError>{error}</InputError> : null;
       return (
         <div className="ag-filter-apply-panel flex min-h-[2rem]">{not}</div>
       );

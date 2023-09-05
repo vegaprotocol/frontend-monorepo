@@ -1,13 +1,8 @@
-import { formatNumberPercentage, toBigNum } from '@vegaprotocol/utils';
+import { formatNumberPercentage } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
-import type {
-  Market,
-  Candle,
-  MarketMaybeWithData,
-  MarketMaybeWithDataAndCandles,
-} from '../';
+import type { Market, Candle, MarketMaybeWithData } from '../';
 const { MarketState, MarketTradingMode } = Schema;
 
 export const totalFees = (fees: Market['fees']['factors']) => {
@@ -91,18 +86,3 @@ export const calcCandleHigh = (candles: Candle[]): string | undefined => {
 export const calcCandleVolume = (candles: Candle[]): string | undefined =>
   candles &&
   candles.reduce((acc, c) => new BigNumber(acc).plus(c.volume).toString(), '0');
-
-export const calcTradedFactor = (m: MarketMaybeWithDataAndCandles) => {
-  const volume = Number(calcCandleVolume(m.candles || []) || 0);
-  const price = m.data?.markPrice ? Number(m.data.markPrice) : 0;
-  const quantum = Number(
-    m.tradableInstrument.instrument.product.settlementAsset.quantum
-  );
-  const decimals = Number(
-    m.tradableInstrument.instrument.product.settlementAsset.decimals
-  );
-  const fp = toBigNum(price, decimals);
-  const fq = toBigNum(quantum, decimals);
-  const factor = fq.multipliedBy(fp).multipliedBy(volume);
-  return factor.toNumber();
-};

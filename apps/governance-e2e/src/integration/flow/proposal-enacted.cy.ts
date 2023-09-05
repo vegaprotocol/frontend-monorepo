@@ -26,8 +26,6 @@ const votesTable = 'votes-table';
 const openProposals = 'open-proposals';
 const proposalVoteProgressForPercentage =
   'vote-progress-indicator-percentage-for';
-const majorityVoteReached = 'majority-reached';
-const minParticipationReached = 'participation-reached';
 const proposalTimeout = { timeout: 8000 };
 
 context(
@@ -42,7 +40,6 @@ context(
     beforeEach('visit proposals', function () {
       cy.clearLocalStorage();
       turnTelemetryOff();
-      cy.mockChainId();
       cy.reload();
       waitForSpinner();
       cy.connectVegaWallet();
@@ -75,7 +72,7 @@ context(
       });
     });
 
-    // 3001-VOTE-020 3001-VOTE-021 3001-VOTE-046 3001-VOTE-044 3001-VOTE-074 3001-VOTE-074
+    // 3001-VOTE-046 3001-VOTE-044 3001-VOTE-074 3001-VOTE-074
     it('Able to enact proposal by voting', function () {
       const proposalTitle = 'Add New proposal with short enactment';
       const proposalTx = createUpdateNetworkProposalTxBody();
@@ -88,18 +85,10 @@ context(
         cy.contains(proposalTitle)
           .parentsUntil(proposalListItem)
           .last()
-          .within(() => {
-            // 3001-VOTE-019 time to vote is highlighted red
-            cy.getByTestId('vote-details')
-              .find('span')
-              .should('have.class', 'text-vega-pink');
-            cy.getByTestId(viewProposalButton).click();
-          });
+          .within(() => cy.getByTestId(viewProposalButton).click());
       });
       cy.getByTestId(proposalStatus).should('have.text', 'Open');
       voteForProposal('for');
-      cy.getByTestId(majorityVoteReached).should('exist');
-      cy.getByTestId(minParticipationReached).should('exist');
       cy.getByTestId(proposalStatus, proposalTimeout)
         .should('have.text', 'Passed')
         .then(() => {
@@ -115,14 +104,6 @@ context(
       cy.getByTestId(proposalVoteProgressForPercentage)
         .contains('100.00%')
         .and('be.visible');
-      navigateTo(navigation.proposals);
-      cy.contains(proposalTitle)
-        .parentsUntil(proposalListItem)
-        .last()
-        .within(() => {
-          cy.getByTestId(majorityVoteReached).should('exist');
-          cy.getByTestId(minParticipationReached).should('exist');
-        });
     });
 
     // 3001-VOTE-047

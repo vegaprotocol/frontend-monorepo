@@ -1,141 +1,130 @@
-import { useSearchParams } from 'react-router-dom';
-import type { URLSearchParamsInit } from 'react-router-dom';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import type {
   BlockExplorerTransactionResult,
   BlockExplorerTransactions,
 } from '../routes/types/block-explorer-response';
+import { DATA_SOURCES } from '../config';
 import isNumber from 'lodash/isNumber';
-import { AllFilterOptions } from '../components/txs/tx-filter';
-import type { FilterOption } from '../components/txs/tx-filter';
-import { BE_TXS_PER_REQUEST, getTxsDataUrl } from './get-txs-data-url';
 
-export function getTypeFilters(filters?: Set<FilterOption>) {
-  if (!filters) {
-    return '';
-  } else if (filters.size > 1) {
-    return '';
-  }
-
-  const forcedSingleFilter = Array.from(filters)[0];
-  return `filters[cmd.type]=${forcedSingleFilter}`;
+export interface TxsStateProps {
+  txsData: BlockExplorerTransactionResult[];
+  hasMoreTxs: boolean;
+  cursor: string;
+  previousCursors: string[];
+  hasPreviousPage: boolean;
 }
 
 export interface IUseTxsData {
-  count?: number;
-  before?: string;
-  after?: string;
-  party?: string;
-  filters?: Set<FilterOption>;
+  limit: number;
+  filters?: string;
 }
 
-export const useTxsData = ({
-  count = 25,
-  before,
-  after,
-  filters,
-  party,
-}: IUseTxsData) => {
-  const [, setSearchParams] = useSearchParams();
-  let hasMoreTxs = true;
-  let txsData: BlockExplorerTransactionResult[] = [];
+interface IGetTxsDataUrl {
+  limit: string;
+  filters?: string;
+}
 
-  const url = getTxsDataUrl({
-    filters: getTypeFilters(filters),
-    count,
-    before,
-    after,
-    party,
+export const getTxsDataUrl = ({ limit, filters }: IGetTxsDataUrl) => {
+  const url = new URL(`${DATA_SOURCES.blockExplorerUrl}/transactions`);
+
+  if (limit) {
+    url.searchParams.append('limit', limit);
+  }
+
+  // Hacky fix for param as array
+  let urlAsString = url.toString();
+  if (filters) {
+    urlAsString += '&' + filters.replace(' ', '%20');
+  }
+
+  return urlAsString;
+};
+
+export const useTxsData = ({ limit, filters }: IUseTxsData) => {
+  const [
+    { txsData, hasMoreTxs, cursor, previousCursors, hasPreviousPage },
+    setTxsState,
+  ] = useState<TxsStateProps>({
+    txsData: [],
+    hasMoreTxs: false,
+    previousCursors: [],
+    cursor: '',
+    hasPreviousPage: false,
   });
+
+  const url = getTxsDataUrl({ limit: limit.toString(), filters });
 
   const {
     state: { data, error, loading },
     refetch,
   } = useFetch<BlockExplorerTransactions>(url, {}, true);
 
-  if (!loading && data && isNumber(data.transactions.length)) {
-    hasMoreTxs = data.transactions.length >= count;
-    txsData = data.transactions;
-  }
+  useEffect(() => {
+    if (!loading && data && isNumber(data.transactions.length)) {
+      setTxsState((prev) => {
+        return {
+          ...prev,
+          txsData: data.transactions,
+          hasMoreTxs: data.transactions.length >= limit,
+          cursor: data?.transactions.at(-1)?.cursor || '',
+        };
+      });
+    }
+  }, [loading, setTxsState, data, limit]);
 
   const nextPage = useCallback(() => {
-    const after = data?.transactions.at(-1)?.cursor || '';
-    const params: URLSearchParamsInit = { after };
-    if (filters) {
-      params.filters = Array.from(filters).join(',');
-    }
-    setSearchParams(params);
-  }, [filters, data, setSearchParams]);
+    const c = data?.transactions.at(0)?.cursor;
+    const newPreviousCursors = c ? [...previousCursors, c] : previousCursors;
+
+    setTxsState((prev) => ({
+      ...prev,
+      hasPreviousPage: true,
+      previousCursors: newPreviousCursors,
+    }));
+
+    return refetch({
+      limit,
+      before: cursor,
+    });
+  }, [data, previousCursors, cursor, limit, refetch]);
 
   const previousPage = useCallback(() => {
-    const before = data?.transactions[0]?.cursor || '';
-    const params: URLSearchParamsInit = { before };
-    if (filters && filters.size > 0 && filters.size === 1) {
-      params.filters = Array.from(filters)[0];
-    }
-    setSearchParams(params);
-  }, [filters, data, setSearchParams]);
+    const previousCursor = [...previousCursors].pop();
+    const newPreviousCursors = previousCursors.slice(0, -1);
+    setTxsState((prev) => ({
+      ...prev,
+      hasPreviousPage: newPreviousCursors.length > 0,
+      previousCursors: newPreviousCursors,
+    }));
+    return refetch({
+      limit,
+      before: previousCursor,
+    });
+  }, [previousCursors, limit, refetch]);
 
   const refreshTxs = useCallback(async () => {
-    const params: URLSearchParamsInit = {};
-    if (filters && filters.size > 0 && filters.size === 1) {
-      params.filters = Array.from(filters)[0];
-    }
-    setSearchParams(params);
+    setTxsState(() => ({
+      txsData: [],
+      cursor: '',
+      previousCursors: [],
+      hasMoreTxs: false,
+      hasPreviousPage: false,
+    }));
 
-    refetch({ count: BE_TXS_PER_REQUEST });
-  }, [setSearchParams, refetch, filters]);
-
-  const updateFilters = useCallback(
-    (newFilters: Set<FilterOption>) => {
-      const params: URLSearchParamsInit = {};
-      if (newFilters && newFilters.size === 1) {
-        params.filters = Array.from(newFilters)[0];
-      }
-
-      setSearchParams(params);
-    },
-    [setSearchParams]
-  );
+    refetch({ limit });
+  }, [setTxsState, limit, refetch, filters]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
-    updateFilters,
     txsData,
     loading,
     error,
     hasMoreTxs,
+    hasPreviousPage,
+    previousCursors,
+    cursor,
     refreshTxs,
     nextPage,
     previousPage,
   };
 };
-
-/**
- * Returns a Set of filters based on the URLSearchParams, or
- * defaults to all.
- * @param params
- * @returns Set
- */
-export function getInitialFilters(params: URLSearchParams): Set<FilterOption> {
-  const defaultFilters = new Set(AllFilterOptions);
-
-  const p = params.get('filters');
-
-  if (!p) {
-    return defaultFilters;
-  }
-
-  const filters = new Set<FilterOption>();
-  p.split(',').forEach((f) => {
-    if (AllFilterOptions.includes(f as FilterOption)) {
-      filters.add(f as FilterOption);
-    }
-  });
-
-  if (filters.size === 0) {
-    return defaultFilters;
-  }
-
-  return filters;
-}

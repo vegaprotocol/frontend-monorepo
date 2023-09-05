@@ -3,6 +3,7 @@ import { addMockGQLCommand } from './lib/mock-gql';
 import { addMockSubscription } from './lib/mock-ws';
 import { addMockWalletCommand } from './lib/mock-rest';
 import { addMockWeb3ProviderCommand } from './lib/commands/mock-web3-provider';
+import { addSlackCommand } from './lib/commands/slack';
 import { addHighlightLog } from './lib/commands/highlight-log';
 import { addGetAssets } from './lib/commands/get-assets';
 import { addVegaWalletReceiveFaucetedAsset } from './lib/commands/vega-wallet-receive-fauceted-asset';
@@ -12,7 +13,6 @@ import { addUpdateCapsuleMultiSig } from './lib/commands/add-validators-to-multi
 import {
   addVegaWalletConnect,
   addSetVegaWallet,
-  addSetOnBoardingViewed,
 } from './lib/commands/vega-wallet-connect';
 import { addMockTransactionResponse } from './lib/commands/mock-transaction-response';
 import { addCreateMarket } from './lib/commands/create-market';
@@ -24,9 +24,9 @@ import { addVegaWalletSubmitLiquidityProvision } from './lib/commands/vega-walle
 import { addImportNodeWallets } from './lib/commands/import-node-wallets';
 import { addVegaWalletTopUpRewardsPool } from './lib/commands/vega-wallet-top-up-rewards-pool';
 import { addAssociateTokensToVegaWallet } from './lib/commands/associate-tokens-to-vega-wallet';
-import { addMockChainId } from './lib/commands/mock-chain-id';
 
 addGetTestIdcommand();
+addSlackCommand();
 addMockGQLCommand();
 addMockSubscription();
 addMockWalletCommand();
@@ -40,7 +40,6 @@ addGetNetworkParameters();
 addUpdateCapsuleMultiSig();
 addVegaWalletConnect();
 addSetVegaWallet();
-addSetOnBoardingViewed();
 addMockTransactionResponse();
 addCreateMarket();
 addConnectPublicKey();
@@ -50,7 +49,6 @@ addVegaWalletSubmitLiquidityProvision();
 addImportNodeWallets();
 addVegaWalletTopUpRewardsPool();
 addAssociateTokensToVegaWallet();
-addMockChainId();
 
 export {
   mockConnectWallet,
@@ -61,14 +59,7 @@ export { aliasGQLQuery } from './lib/mock-gql';
 export { aliasWalletQuery } from './lib/mock-rest';
 export * from './lib/utils';
 
-Cypress.on('uncaught:exception', (err) => {
-  if (
-    err.message.includes('ResizeObserver loop limit exceeded') ||
-    err.message.includes(
-      'ResizeObserver loop completed with undelivered notifications'
-    )
-  ) {
-    return false;
-  }
-  return true;
-});
+Cypress.on(
+  'uncaught:exception',
+  (err) => !err.message.includes('ResizeObserver loop limit exceeded')
+);

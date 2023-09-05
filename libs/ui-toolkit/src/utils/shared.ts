@@ -1,20 +1,17 @@
 import classnames from 'classnames';
 
-export const defaultSelectElement = (hasError?: boolean, disabled?: boolean) =>
-  classnames(defaultFormElement(hasError, disabled), 'pr-10 min-h-8 py-1');
+export const defaultSelectElement = (hasError?: boolean) =>
+  classnames(defaultFormElement(hasError), 'dark:bg-black');
 
-export const defaultFormElement = (hasError?: boolean, disabled?: boolean) =>
+export const defaultFormElement = (hasError?: boolean) =>
   classnames(
     'flex items-center w-full text-sm',
-    'p-2 rounded whitespace-nowrap text-ellipsis overflow-hidden',
-    'border',
-    'focus:border-vega-clight-400 dark:focus:border-vega-cdark-400',
+    'p-2 border-2 rounded',
+    'bg-transparent',
+    'border border-vega-light-200 dark:border-vega-dark-200',
+    'focus:border-vega-light-300 dark:focus:border-vega-dark-300',
+    'disabled:opacity-60',
     {
-      'bg-vega-clight-700 dark:bg-vega-cdark-700': !disabled && !hasError,
-      'bg-transparent': disabled || hasError,
-      'border-vega-clight-600 dark:border-vega-cdark-600': disabled,
-      'border-vega-red-500': !disabled && hasError,
-      'border-vega-clight-500 dark:border-vega-cdark-500':
-        !disabled && !hasError,
+      'border-vega-pink': hasError,
     }
   );

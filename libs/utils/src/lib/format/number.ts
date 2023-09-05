@@ -4,24 +4,12 @@ import memoize from 'lodash/memoize';
 
 import { getUserLocale } from '../get-user-locale';
 
-/**
- * A raw unformatted value greater than this is considered and displayed
- * as UNLIMITED.
- */
-export const UNLIMITED_THRESHOLD = new BigNumber(2).pow(256).times(0.8);
-/**
- * Gets the unlimited threshold value for given decimal places.
- * @param decimalPlaces the asset's decimal places
- */
-export const getUnlimitedThreshold = (decimalPlaces: number) =>
-  UNLIMITED_THRESHOLD.dividedBy(Math.pow(10, decimalPlaces));
-
 const MIN_FRACTION_DIGITS = 2;
 const MAX_FRACTION_DIGITS = 20;
 
 export function toDecimal(numberOfDecimals: number) {
   return new BigNumber(1)
-    .dividedBy(new BigNumber(10).exponentiatedBy(numberOfDecimals))
+    .dividedBy(Math.pow(10, numberOfDecimals))
     .toString(10);
 }
 
@@ -29,8 +17,7 @@ export function toBigNum(
   rawValue: string | number,
   decimals: number
 ): BigNumber {
-  const divides = new BigNumber(10).exponentiatedBy(decimals);
-  return new BigNumber(rawValue || 0).dividedBy(divides);
+  return new BigNumber(rawValue || 0).dividedBy(Math.pow(10, decimals));
 }
 
 export function addDecimal(
@@ -49,8 +36,7 @@ export function removeDecimal(
   value: string | BigNumber,
   decimals: number
 ): string {
-  const times = new BigNumber(10).exponentiatedBy(decimals);
-  return new BigNumber(value || 0).times(times).toFixed(0);
+  return new BigNumber(value || 0).times(Math.pow(10, decimals)).toFixed(0);
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
@@ -104,25 +90,6 @@ export const formatNumberFixed = (
   return getFixedNumberFormat(formatDecimals).format(Number(rawValue));
 };
 
-export const quantumDecimalPlaces = (
-  /** Raw asset's quantum value */
-  rawQuantum: number | string,
-  /** Asset's decimal places */
-  decimalPlaces: number
-) => {
-  // if raw quantum value is an empty string then it'll evaluate to 0
-  // this check ignores NaNs and zeroes
-  const formatDecimals =
-    isNaN(Number(rawQuantum)) || Number(rawQuantum) === 0
-      ? decimalPlaces
-      : Math.max(
-          0,
-          Math.log10(100 / Number(addDecimal(rawQuantum, decimalPlaces)))
-        );
-
-  return Math.ceil(formatDecimals);
-};
-
 export const addDecimalsFormatNumberQuantum = (
   rawValue: string | number,
   decimalPlaces: number,
@@ -165,15 +132,15 @@ export const formatNumberPercentage = (value: BigNumber, decimals?: number) => {
 export const toNumberParts = (
   value: BigNumber | null | undefined,
   decimals = 18
-): [integers: string, decimalPlaces: string, separator: string] => {
+): [integers: string, decimalPlaces: string] => {
   if (!value) {
-    return ['0', '0'.repeat(decimals), '.'];
+    return ['0', '0'.repeat(decimals)];
   }
   const separator = getDecimalSeparator() || '.';
   const [integers, decimalsPlaces] = formatNumber(value, decimals)
     .toString()
     .split(separator);
-  return [integers, decimalsPlaces || '', separator];
+  return [integers, decimalsPlaces || ''];
 };
 
 export const isNumeric = (

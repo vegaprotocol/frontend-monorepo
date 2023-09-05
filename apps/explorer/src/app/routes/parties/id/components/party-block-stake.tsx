@@ -42,15 +42,9 @@ export const PartyBlockStake = ({
     linkedLength && linkedLength > 0
       ? p?.stakingSummary?.linkings?.edges
           ?.reduce((total, e) => {
-            const accumulator = new BigNumber(total);
-            const diff = new BigNumber(e?.node.amount || 0);
-            if (e?.node.type === 'TYPE_LINK') {
-              return accumulator.plus(diff);
-            } else if (e?.node.type === 'TYPE_UNLINK') {
-              return accumulator.minus(diff);
-            } else {
-              return accumulator;
-            }
+            return new BigNumber(total).plus(
+              new BigNumber(e?.node.amount || 0)
+            );
           }, new BigNumber(0))
           .toString()
       : '0';
@@ -60,7 +54,7 @@ export const PartyBlockStake = ({
       {p?.stakingSummary.currentStakeAvailable ? (
         <KeyValueTable>
           <KeyValueTableRow noBorder={true}>
-            <div>{t('Associated to key')}</div>
+            <div>{t('Available stake')}</div>
             <div>
               <GovernanceAssetBalance
                 price={p.stakingSummary.currentStakeAvailable}
@@ -68,7 +62,7 @@ export const PartyBlockStake = ({
             </div>
           </KeyValueTableRow>
           <KeyValueTableRow noBorder={true}>
-            <div>{t('Staked to validator')}</div>
+            <div>{t('Active stake')}</div>
             <div>
               <GovernanceAssetBalance price={linkedStake || '0'} />
             </div>

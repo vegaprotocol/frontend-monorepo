@@ -5,12 +5,6 @@ import type {
   MarketFieldsFragment,
   MarketsQuery,
 } from './__generated__/markets';
-import type {
-  ParentMarketIdQuery,
-  SuccessorMarketIdQuery,
-  SuccessorMarketIdsQuery,
-  SuccessorMarketQuery,
-} from './__generated__';
 
 export const marketsQuery = (
   override?: PartialDeep<MarketsQuery>
@@ -235,76 +229,3 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
     },
   }),
 ];
-
-export const successorMarketIdQuery = (
-  override?: Partial<SuccessorMarketIdQuery>
-) => {
-  const res: SuccessorMarketIdQuery = {
-    __typename: 'Query',
-    market: {
-      __typename: 'Market',
-      successorMarketID: 'SUCCESSOR-A',
-    },
-  };
-  return merge(res, override);
-};
-
-export const parentMarketIdQuery = (
-  override?: Partial<ParentMarketIdQuery>
-) => {
-  const res: ParentMarketIdQuery = {
-    __typename: 'Query',
-    market: {
-      __typename: 'Market',
-      parentMarketID: 'PARENT-A',
-    },
-  };
-  return merge(res, override);
-};
-
-export const successorMarketIdsQuery = (
-  override?: Partial<SuccessorMarketIdsQuery>
-) => {
-  const res: SuccessorMarketIdsQuery = {
-    __typename: 'Query',
-    marketsConnection: {
-      __typename: 'MarketConnection',
-      edges: [
-        {
-          __typename: 'MarketEdge',
-          node: {
-            __typename: 'Market',
-            id: 'PARENT-A',
-            successorMarketID: 'SUCCESSOR-A',
-          },
-        },
-      ],
-    },
-  };
-  return merge(res, override);
-};
-
-export const successorMarketQuery = (
-  override?: Partial<SuccessorMarketQuery>
-) => {
-  const res: SuccessorMarketQuery = {
-    __typename: 'Query',
-    market: {
-      __typename: 'Market',
-      id: 'SUCCESSOR-A',
-      positionDecimalPlaces: 2,
-      state: Schema.MarketState.STATE_ACTIVE,
-      tradableInstrument: {
-        __typename: 'TradableInstrument',
-        instrument: {
-          __typename: 'Instrument',
-          code: 'SUCCESSOR-A',
-          name: 'Successor Market A',
-        },
-      },
-      tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-    },
-  };
-
-  return merge(res, override);
-};

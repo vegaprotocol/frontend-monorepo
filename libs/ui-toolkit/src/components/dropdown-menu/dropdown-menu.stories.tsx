@@ -26,6 +26,7 @@ export const CheckboxItems = () => {
     { label: 'Moving average', state: useState(false) },
     { label: 'Price monitoring bands', state: useState(false) },
   ];
+  console.log(checkboxItems);
 
   return (
     <DropdownMenu
@@ -67,7 +68,6 @@ export const RadioItems = () => {
         }
       >
         <DropdownMenuContent>
-          {/* eslint-disable no-console */}
           <DropdownMenuItem onSelect={() => console.log('minimize')}>
             Minimize window
           </DropdownMenuItem>
@@ -77,7 +77,6 @@ export const RadioItems = () => {
           <DropdownMenuItem onSelect={() => console.log('smaller')}>
             Smaller
           </DropdownMenuItem>
-          {/* eslint-enable */}
           <DropdownMenuSeparator />
           <DropdownMenuRadioGroup value={selected} onValueChange={setSelected}>
             {files.map((file) => (

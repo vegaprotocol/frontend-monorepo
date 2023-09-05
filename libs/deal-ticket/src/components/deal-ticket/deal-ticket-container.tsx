@@ -1,32 +1,21 @@
-import { useVegaTransactionStore } from '@vegaprotocol/wallet';
-import {
-  isStopOrderType,
-  useDealTicketFormValues,
-} from '../../hooks/use-form-values';
-import { StopOrder } from './deal-ticket-stop-order';
-import {
-  useStaticMarketData,
-  useMarket,
-  useMarketPrice,
-} from '@vegaprotocol/markets';
-import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
+import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
+import { useVegaTransactionStore } from '@vegaprotocol/wallet';
+import { useMarket, marketDataProvider } from '@vegaprotocol/markets';
 import { DealTicket } from './deal-ticket';
-import { FLAGS } from '@vegaprotocol/environment';
 
-interface DealTicketContainerProps {
+export interface DealTicketContainerProps {
   marketId: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-  onDeposit: (assetId: string) => void;
+  onClickCollateral?: () => void;
 }
 
 export const DealTicketContainer = ({
   marketId,
-  ...props
+  onMarketClick,
+  onClickCollateral,
 }: DealTicketContainerProps) => {
-  const showStopOrder = useDealTicketFormValues((state) =>
-    isStopOrderType(state.formValues[marketId]?.type)
-  );
   const {
     data: market,
     error: marketError,
@@ -38,35 +27,35 @@ export const DealTicketContainer = ({
     error: marketDataError,
     loading: marketDataLoading,
     reload,
-  } = useStaticMarketData(marketId);
-  const { data: marketPrice } = useMarketPrice(market?.id);
+  } = useThrottledDataProvider(
+    {
+      dataProvider: marketDataProvider,
+      variables: { marketId },
+    },
+    1000
+  );
   const create = useVegaTransactionStore((state) => state.create);
+
   return (
-    <AsyncRendererInline
+    <AsyncRenderer
       data={market && marketData}
       loading={marketLoading || marketDataLoading}
       error={marketError || marketDataError}
       reload={reload}
     >
       {market && marketData ? (
-        FLAGS.STOP_ORDERS && showStopOrder ? (
-          <StopOrder
-            market={market}
-            marketPrice={marketPrice}
-            submit={(stopOrdersSubmission) => create({ stopOrdersSubmission })}
-          />
-        ) : (
-          <DealTicket
-            {...props}
-            market={market}
-            marketPrice={marketPrice}
-            marketData={marketData}
-            submit={(orderSubmission) => create({ orderSubmission })}
-          />
-        )
+        <DealTicket
+          market={market}
+          marketData={marketData}
+          submit={(orderSubmission) => create({ orderSubmission })}
+          onClickCollateral={onClickCollateral}
+          onMarketClick={onMarketClick}
+        />
       ) : (
-        <p>{t('Could not load market')}</p>
+        <Splash>
+          <p>{t('Could not load market')}</p>
+        </Splash>
       )}
-    </AsyncRendererInline>
+    </AsyncRenderer>
   );
 };

@@ -32,7 +32,6 @@ fragment MarketDataUpdateFields on ObservableMarketData {
   suppliedStake
   targetStake
   trigger
-  lastTradedPrice
 }
 
 subscription MarketDataUpdate($marketId: ID!) {
@@ -77,7 +76,6 @@ fragment MarketDataFields on MarketData {
   suppliedStake
   targetStake
   trigger
-  lastTradedPrice
 }
 
 query MarketData($marketId: ID!) {

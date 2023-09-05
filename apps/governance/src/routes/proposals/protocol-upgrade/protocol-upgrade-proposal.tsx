@@ -1,11 +1,10 @@
 import { useMemo } from 'react';
-import type { ReactNode } from 'react';
 import { ProtocolUpgradeProposalDetailHeader } from '../components/protocol-upgrade-proposal-detail-header';
 import { ProtocolUpdateProposalDetailApprovals } from '../components/protocol-upgrade-proposal-detail-approvals';
 import { ProtocolUpgradeProposalDetailInfo } from '../components/protocol-upgrade-proposal-detail-info';
 import { getNormalisedVotingPower } from '../../staking/shared';
 import type { NodesFragmentFragment } from '../../staking/home/__generated__/Nodes';
-import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
+import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { useVegaRelease } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +13,6 @@ export interface ProtocolUpgradeProposalProps {
   proposal: ProtocolUpgradeProposalFieldsFragment;
   consensusValidators: NodesFragmentFragment[] | null;
   lastBlockHeight?: string;
-  time?: string | ReactNode;
 }
 
 export const getConsensusApprovals = (
@@ -46,7 +44,6 @@ export const ProtocolUpgradeProposal = ({
   proposal,
   lastBlockHeight,
   consensusValidators,
-  time,
 }: ProtocolUpgradeProposalProps) => {
   const { t } = useTranslation();
   const releaseInfo = useVegaRelease(proposal.vegaReleaseTag);
@@ -76,7 +73,6 @@ export const ProtocolUpgradeProposal = ({
       <ProtocolUpgradeProposalDetailInfo
         proposal={proposal}
         lastBlockHeight={lastBlockHeight}
-        time={time}
       />
 
       {consensusValidators && consensusApprovals && (

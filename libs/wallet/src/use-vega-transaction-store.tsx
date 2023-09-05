@@ -7,12 +7,12 @@ import {
   isOrderAmendmentTransaction,
   isBatchMarketInstructionsTransaction,
   isTransferTransaction,
-  isStopOrdersSubmissionTransaction,
-  isStopOrdersCancellationTransaction,
 } from './connectors';
 import { determineId } from './utils';
 
 import { create } from 'zustand';
+import type { VegaTxState } from './use-vega-transaction';
+import { VegaTxStatus } from './use-vega-transaction';
 import type {
   TransactionEventFieldsFragment,
   WithdrawalBusEventFieldsFragment,
@@ -21,9 +21,6 @@ import type {
 
 import type { WithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
 import { subscribeWithSelector } from 'zustand/middleware';
-import type { VegaTxState } from './types';
-import { VegaTxStatus } from './types';
-
 export interface VegaStoredTxState extends VegaTxState {
   id: number;
   createdAt: Date;
@@ -34,7 +31,6 @@ export interface VegaStoredTxState extends VegaTxState {
   withdrawalApproval?: WithdrawalApprovalQuery['erc20WithdrawalApproval'];
   order?: OrderTxUpdateFieldsFragment;
 }
-
 export interface VegaTransactionStore {
   transactions: (VegaStoredTxState | undefined)[];
   create: (tx: Transaction, order?: OrderTxUpdateFieldsFragment) => number;
@@ -75,7 +71,6 @@ export const useVegaTransactionStore = create<VegaTransactionStore>()(
         order,
       };
       set({ transactions: transactions.concat(transaction) });
-
       return transaction.id;
     },
     update: (index: number, update: Partial<VegaStoredTxState>) => {
@@ -201,16 +196,9 @@ export const useVegaTransactionStore = create<VegaTransactionStore>()(
               isOrderCancellationTransaction(transaction.body) &&
               !transaction.body.orderCancellation.orderId;
             const isConfirmedTransfer = isTransferTransaction(transaction.body);
-            const isConfirmedStopOrderCancellation =
-              isStopOrdersCancellationTransaction(transaction.body);
-            const isConfirmedStopOrderSubmission =
-              isStopOrdersSubmissionTransaction(transaction.body);
 
             if (
-              (isConfirmedOrderCancellation ||
-                isConfirmedTransfer ||
-                isConfirmedStopOrderCancellation ||
-                isConfirmedStopOrderSubmission) &&
+              (isConfirmedOrderCancellation || isConfirmedTransfer) &&
               !transactionResult.error &&
               transactionResult.status
             ) {

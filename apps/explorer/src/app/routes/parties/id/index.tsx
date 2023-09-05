@@ -15,13 +15,9 @@ import { PartyBlockAccounts } from './components/party-block-accounts';
 import { isValidPartyId } from './components/party-id-error';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { TxsListNavigation } from '../../../components/txs/tx-list-navigation';
-import type { FilterOption } from '../../../components/txs/tx-filter';
 import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
-import { useSearchParams } from 'react-router-dom';
 
 const Party = () => {
-  const [params] = useSearchParams();
-
   const [filters, setFilters] = useState(new Set(AllFilterOptions));
   const { party } = useParams<{ party: string }>();
 
@@ -31,21 +27,24 @@ const Party = () => {
   const partyId = toNonHex(party ? party : '');
   const { isMobile } = useScreenDimensions();
   const visibleChars = useMemo(() => (isMobile ? 10 : 14), [isMobile]);
+  const baseFilters = `filters[tx.submitter]=${partyId}`;
+  const f =
+    filters && filters.size === 1
+      ? `${baseFilters}&filters[cmd.type]=${Array.from(filters)[0]}`
+      : baseFilters;
 
   const {
+    hasMoreTxs,
     nextPage,
-    refreshTxs,
     previousPage,
     error,
+    refreshTxs,
     loading,
     txsData,
-    hasMoreTxs,
-    updateFilters,
+    hasPreviousPage,
   } = useTxsData({
-    filters: filters.size === 1 ? filters : undefined,
-    before: params.get('before') || undefined,
-    after: !params.get('before') ? params.get('after') || undefined : undefined,
-    party: partyId,
+    limit: 25,
+    filters: f,
   });
 
   const variables = useMemo(() => ({ partyId }), [partyId]);
@@ -68,7 +67,7 @@ const Party = () => {
             text: t('Go back'),
             action: () => navigate(-1),
             className: 'py-1',
-            size: 'small',
+            size: 'sm',
           }}
         />
       </div>
@@ -103,21 +102,15 @@ const Party = () => {
         refreshTxs={refreshTxs}
         nextPage={nextPage}
         previousPage={previousPage}
-        hasPreviousPage={true}
+        hasPreviousPage={hasPreviousPage}
         loading={loading}
         hasMoreTxs={hasMoreTxs}
       >
-        <TxsFilter
-          filters={filters}
-          setFilters={(f) => {
-            setFilters(f);
-            updateFilters(f as Set<FilterOption>);
-          }}
-        />
+        <TxsFilter filters={filters} setFilters={setFilters} />
       </TxsListNavigation>
       {!error && txsData ? (
         <TxsInfiniteList
-          hasMoreTxs={true}
+          hasMoreTxs={hasMoreTxs}
           areTxsLoading={loading}
           txs={txsData}
           loadMoreTxs={nextPage}

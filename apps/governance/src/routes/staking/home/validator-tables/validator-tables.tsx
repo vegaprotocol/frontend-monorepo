@@ -17,10 +17,6 @@ import type { PreviousEpochQuery } from '../../__generated__/PreviousEpoch';
 import type { StakingQuery } from '../../__generated__/Staking';
 import type { StakingDelegationFieldsFragment } from '../../__generated__/Staking';
 import type { ValidatorWithUserData } from './shared';
-import {
-  NetworkParams,
-  useNetworkParams,
-} from '@vegaprotocol/network-parameters';
 
 export interface ValidatorsTableProps {
   nodesData: NodesQuery | undefined;
@@ -45,9 +41,6 @@ export const ValidatorTables = ({
   const {
     appState: { decimals },
   } = useAppState();
-  const { params } = useNetworkParams([
-    NetworkParams.network_validators_incumbentBonus,
-  ]);
 
   const [validatorsView, setValidatorsView] = useState<ValidatorsView>('all');
   const totalStake = useMemo(
@@ -58,10 +51,6 @@ export const ValidatorTables = ({
   const currentUserStakeAvailable = useMemo(
     () => userStakingData?.party?.stakingSummary.currentStakeAvailable || '0',
     [userStakingData?.party?.stakingSummary.currentStakeAvailable]
-  );
-  const incumbentBonus = useMemo(
-    () => new BigNumber(params?.network_validators_incumbentBonus),
-    [params?.network_validators_incumbentBonus]
   );
 
   let stakeNeededForPromotion = undefined;
@@ -137,23 +126,28 @@ export const ValidatorTables = ({
     consensusValidators.length &&
     (standbyValidators.length || pendingValidators.length)
   ) {
-    const lowestConsensusStake = consensusValidators.reduce(
+    const lowestRankingConsensusScore = consensusValidators.reduce(
       (lowest: ValidatorWithUserData, validator: ValidatorWithUserData) => {
-        if (Number(validator.stakedTotal) < Number(lowest.stakedTotal)) {
+        if (
+          Number(validator.rankingScore.rankingScore) <
+          Number(lowest.rankingScore.rankingScore)
+        ) {
           lowest = validator;
         }
         return lowest;
       }
-    ).stakedTotal;
+    ).rankingScore.rankingScore;
 
-    const lowestRankingBigNum = toBigNum(lowestConsensusStake, decimals);
+    const lowestRankingBigNum = toBigNum(lowestRankingConsensusScore, 0);
+    const consensusStakedTotal = consensusValidators.reduce((acc, cur) => {
+      return acc.plus(toBigNum(cur.stakedTotal, decimals));
+    }, new BigNumber(0));
 
     stakeNeededForPromotion = formatNumber(
-      lowestRankingBigNum.multipliedBy(incumbentBonus.plus(1)),
+      lowestRankingBigNum.times(consensusStakedTotal),
       2
     ).toString();
   }
-
   return (
     <section data-testid="validator-tables">
       <div className="grid w-full justify-end">
@@ -193,18 +187,12 @@ export const ValidatorTables = ({
         <div className="mb-10">
           <SubHeading title={t('status-ersatz')} />
           <p>
-            <span>
-              <Trans i18nKey="ersatzDescription1" />
-            </span>
-
-            <span className="text-white font-bold">
-              {' '}
-              {stakeNeededForPromotion}{' '}
-            </span>
-
-            <span>
-              <Trans i18nKey="ersatzDescription2" />
-            </span>
+            <Trans
+              i18nKey="ersatzDescription"
+              values={{
+                stakeNeededForPromotion,
+              }}
+            />
           </p>
           <StandbyPendingValidatorsTable
             data={standbyValidators}

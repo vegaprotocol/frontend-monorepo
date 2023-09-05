@@ -42,7 +42,6 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
     cy.clearLocalStorage();
     turnTelemetryOff();
     cy.reload();
-    cy.mockChainId();
     waitForSpinner();
     cy.connectVegaWallet();
     ethereumWalletConnect();
@@ -50,8 +49,8 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
     navigateTo(navigation.proposals);
   });
 
-  // 3001-VOTE-018
   it('Newly created proposals list - proposals closest to closing date appear higher in list', function () {
+    // 3001-VOTE-005
     const proposalDays = [364, 50, 2];
     for (let index = 0; index < proposalDays.length; index++) {
       goToMakeNewProposal(governanceProposalType.RAW);
@@ -121,24 +120,16 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
     submitUniqueRawProposal({ proposalTitle: proposalTitle });
     getProposalFromTitle(proposalTitle).within(() => {
       // 3001-VOTE-039
-      cy.getByTestId('participation-not-reached').should(
+      cy.getByTestId(voteStatus).should(
         'have.text',
-        'Min. participation not reached'
+        'Participation not reached'
       );
       cy.getByTestId(viewProposalButton).click();
     });
     voteForProposal('for');
     navigateTo(navigation.proposals);
     getProposalFromTitle(proposalTitle).within(() => {
-      cy.getByTestId(voteStatus).should(
-        'have.text',
-        'Currently expected to  pass'
-      );
-      cy.getByTestId('user-voted-yes').should('exist');
-      cy.getByTestId('participation-reached').should(
-        'have.text',
-        'Min. participation reached'
-      );
+      cy.getByTestId(voteStatus).should('have.text', 'Set to pass');
       cy.getByTestId(viewProposalButton).click();
     });
     cy.getByTestId(voteBreakDownToggle).click();

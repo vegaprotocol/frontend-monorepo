@@ -10,7 +10,7 @@ import { useCallback } from 'react';
 import { useLayoutEffect } from 'react';
 import { useRef } from 'react';
 import { Intent } from '../../utils/intent';
-import { Icon, VegaIcon, VegaIconNames } from '../icon';
+import { Icon } from '../icon';
 import { Loader } from '../loader';
 import { t } from '@vegaprotocol/i18n';
 
@@ -40,7 +40,6 @@ type ToastProps = Toast & {
 export const toastIconMapping: { [i in Intent]: IconName } = {
   [Intent.None]: IconNames.HELP,
   [Intent.Primary]: IconNames.INFO_SIGN,
-  [Intent.Info]: IconNames.INFO_SIGN,
   [Intent.Success]: IconNames.TICK_CIRCLE,
   [Intent.Warning]: IconNames.WARNING_SIGN,
   [Intent.Danger]: IconNames.ERROR,
@@ -248,7 +247,7 @@ export const Toast = ({
           'bg-vega-green-300 dark:bg-vega-green-700': intent === Intent.Success,
           'bg-vega-orange-300 dark:bg-vega-orange-700':
             intent === Intent.Warning,
-          'bg-vega-red-300 dark:bg-vega-red-700': intent === Intent.Danger,
+          'bg-vega-pink-300 dark:bg-vega-pink-700': intent === Intent.Danger,
         },
         // panel's colours
         {
@@ -260,7 +259,7 @@ export const Toast = ({
             intent === Intent.Success,
           '[&_[data-panel]]:bg-vega-orange-350 [&_[data-panel]]:dark:bg-vega-orange-650':
             intent === Intent.Warning,
-          '[&_[data-panel]]:bg-vega-red-350 [&_[data-panel]]:dark:bg-vega-red-650':
+          '[&_[data-panel]]:bg-vega-pink-350 [&_[data-panel]]:dark:bg-vega-pink-650':
             intent === Intent.Danger,
         },
         {
@@ -272,7 +271,7 @@ export const Toast = ({
             intent === Intent.Success,
           '[&_[data-panel]]:to-vega-orange-350 [&_[data-panel]]:dark:to-vega-orange-650':
             intent === Intent.Warning,
-          '[&_[data-panel]]:to-vega-red-350 [&_[data-panel]]:dark:to-vega-red-650':
+          '[&_[data-panel]]:to-vega-pink-350 [&_[data-panel]]:dark:to-vega-pink-650':
             intent === Intent.Danger,
         },
         // panel's actions
@@ -285,7 +284,7 @@ export const Toast = ({
             intent === Intent.Success,
           '[&_[data-panel-actions]]:bg-vega-orange-400 [&_[data-panel-actions]]:dark:bg-vega-orange-600':
             intent === Intent.Warning,
-          '[&_[data-panel-actions]]:bg-vega-red-400 [&_[data-panel-actions]]:dark:bg-vega-red-600':
+          '[&_[data-panel-actions]]:bg-vega-pink-400 [&_[data-panel-actions]]:dark:bg-vega-pink-600':
             intent === Intent.Danger,
         },
         // panels's progress bar colours
@@ -307,7 +306,7 @@ export const Toast = ({
             intent === Intent.Warning,
           '[&_[data-progress-bar]]:bg-vega-pink-400 [&_[data-progress-bar]]:dark:bg-vega-pink-600':
             intent === Intent.Danger,
-          '[&_[data-progress-bar-value]]:bg-vega-red-500 [&_[data-progress-bar-value]]:dark:bg-vega-red-500':
+          '[&_[data-progress-bar-value]]:bg-vega-pink-500 [&_[data-progress-bar-value]]:dark:bg-vega-pink-500':
             intent === Intent.Danger,
         },
         {
@@ -317,14 +316,18 @@ export const Toast = ({
         }
       )}
     >
-      <div className="relative flex">
+      <div className="flex relative">
         <button
           type="button"
           data-testid="toast-close"
           onClick={closeToast}
-          className="absolute top-0 right-0 z-20 flex items-center p-2"
+          className="absolute p-[8px] top-[3px] right-[3px] z-20"
         >
-          <VegaIcon name={VegaIconNames.CROSS} size={12} />
+          <Icon
+            name="cross"
+            size={3}
+            className="!block dark:text-white !w-[11px] !h-[11px]"
+          />
         </button>
         <div
           data-testid="toast-accent"
@@ -341,10 +344,10 @@ export const Toast = ({
               // orange
               'bg-vega-orange-500 text-vega-orange-600':
                 intent === Intent.Warning,
-              // red
-              'bg-vega-red-500 text-vega-red-600': intent === Intent.Danger,
+              // pink
+              'bg-vega-pink-500 text-vega-pink-600': intent === Intent.Danger,
             },
-            'w-8 p-2',
+            'w-8 p-[9px]',
             'flex justify-center'
           )}
         >
@@ -382,7 +385,7 @@ export const Toast = ({
                     intent === Intent.Success,
                   'bg-vega-orange-400 dark:bg-vega-orange-600':
                     intent === Intent.Warning,
-                  'bg-vega-red-400 dark:bg-vega-red-600':
+                  'bg-vega-pink-400 dark:bg-vega-pink-600':
                     intent === Intent.Danger,
                 },
                 'absolute bottom-0 left-0 w-full h-[4px]',

@@ -21,7 +21,7 @@ describe('withdraw form validation', { tags: '@smoke' }, () => {
     cy.visit('/#/portfolio');
     cy.getByTestId('Withdrawals').click();
 
-    cy.getByTestId('Withdraw').click(); // sidebar item
+    cy.getByTestId('withdraw-dialog-button').click();
 
     // It also requires connection Ethereum wallet
     connectEthereumWallet('MetaMask');
@@ -87,17 +87,15 @@ describe(
       cy.setVegaWallet();
 
       cy.visit('/#/portfolio');
-
-      cy.wait('@Accounts');
-      cy.wait('@Assets');
-
       cy.getByTestId('Withdrawals').click();
 
-      cy.getByTestId('Withdraw').click();
+      cy.getByTestId('withdraw-dialog-button').click();
 
       // It also requires connection Ethereum wallet
       connectEthereumWallet('MetaMask');
 
+      cy.wait('@Accounts');
+      cy.wait('@Assets');
       cy.mockVegaWalletTransaction();
     });
 

@@ -23,7 +23,6 @@ module.exports = defineConfig({
     viewportWidth: 1440,
     viewportHeight: 900,
     testIsolation: false,
-    experimentalMemoryManagement: true,
   },
   env: {
     environment: 'CUSTOM',

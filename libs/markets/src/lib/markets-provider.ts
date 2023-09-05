@@ -27,9 +27,8 @@ import {
   filterAndSortMarkets,
 } from './market-utils';
 import { MarketsDocument } from './__generated__/markets';
+
 import type { Candle } from './market-candles-provider';
-import type { SuccessorMarketIdsQuery } from './__generated__/SuccessorMarket';
-import { SuccessorMarketIdsDocument } from './__generated__';
 
 export type Market = MarketFieldsFragment;
 
@@ -199,7 +198,7 @@ export const allMarketsWithLiveDataProvider = makeDerivedDataProvider<
     return data.find(
       (market) =>
         market.id ===
-        (parts[1].delta as MarketDataUpdateFieldsFragment)?.marketId
+        (parts[1].delta as MarketDataUpdateFieldsFragment).marketId
     );
   }
 );
@@ -239,35 +238,4 @@ export const useMarketList = () => {
     error,
     reload,
   };
-};
-
-export type MarketSuccessors = {
-  __typename?: 'Market';
-  id: string;
-  successorMarketID?: string | null;
-  parentMarketID?: string | null;
-};
-const getMarketSuccessorData = (
-  responseData: SuccessorMarketIdsQuery | null
-): MarketSuccessors[] | null =>
-  responseData?.marketsConnection?.edges.map((edge) => edge.node) || null;
-
-export const marketSuccessorProvider = makeDataProvider<
-  SuccessorMarketIdsQuery,
-  MarketSuccessors[],
-  never,
-  never
->({
-  query: SuccessorMarketIdsDocument,
-  getData: getMarketSuccessorData,
-  fetchPolicy: 'no-cache',
-});
-
-export const useSuccessorMarketIds = (marketId: string) => {
-  const { data } = useDataProvider({
-    dataProvider: marketSuccessorProvider,
-    variables: undefined,
-    skip: !marketId,
-  });
-  return data?.find((item) => item.id === marketId) ?? null;
 };

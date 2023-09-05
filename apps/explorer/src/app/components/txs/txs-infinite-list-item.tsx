@@ -14,9 +14,9 @@ const DEFAULT_TRUNCATE_LENGTH = 7;
 
 export function getIdTruncateLength(screen: Screen): number {
   if (['xxxl', 'xxl'].includes(screen)) {
-    return 32;
+    return 64;
   } else if (['xl', 'lg', 'md'].includes(screen)) {
-    return 16;
+    return 32;
   }
   return DEFAULT_TRUNCATE_LENGTH;
 }

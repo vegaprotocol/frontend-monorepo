@@ -3,7 +3,6 @@ import type { components } from '../../../types/explorer';
 import PriceInMarket from '../price-in-market/price-in-market';
 import { sideText } from '../order-details/lib/order-labels';
 import SizeInMarket from '../size-in-market/size-in-market';
-import { t } from '@vegaprotocol/i18n';
 
 export type OrderSummaryProps = {
   order: components['schemas']['v1OrderSubmission'];
@@ -21,6 +20,7 @@ const OrderTxSummary = ({ order }: OrderSummaryProps) => {
   if (
     !order ||
     !order.marketId ||
+    !order.price ||
     !order.side ||
     order.side === 'SIDE_UNSPECIFIED'
   ) {
@@ -36,14 +36,10 @@ const OrderTxSummary = ({ order }: OrderSummaryProps) => {
         '-'
       )}
       &nbsp;<i className="text-xs">@</i>&nbsp;
-      {order.price ? (
-        <PriceInMarket
-          marketId={order.marketId}
-          price={order.price}
-        ></PriceInMarket>
-      ) : (
-        t('Market Price')
-      )}
+      <PriceInMarket
+        marketId={order.marketId}
+        price={order.price}
+      ></PriceInMarket>
     </div>
   );
 };

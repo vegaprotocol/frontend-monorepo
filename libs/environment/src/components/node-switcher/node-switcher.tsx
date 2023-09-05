@@ -4,10 +4,10 @@ import { t } from '@vegaprotocol/i18n';
 import {
   Button,
   ButtonLink,
-  TradingInput,
+  Input,
   Loader,
-  TradingRadio,
-  TradingRadioGroup,
+  Radio,
+  RadioGroup,
 } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '../../hooks';
 import { CUSTOM_NODE_KEY } from '../../types';
@@ -76,7 +76,7 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
               `This app will only work on ${VEGA_ENV}. Select a node to connect to.`
             )}
           </p>
-          <TradingRadioGroup
+          <RadioGroup
             value={nodeRadio}
             onChange={(value) => setNodeRadio(value)}
           >
@@ -112,7 +112,7 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
                 />
               </div>
             </div>
-          </TradingRadioGroup>
+          </RadioGroup>
           <div className="mt-4">
             <Button
               fill={true}
@@ -161,7 +161,7 @@ const CustomRowWrapper = ({
     <LayoutRow dataTestId="custom-row">
       <div className="flex w-full mb-2">
         {nodes.length > 0 && (
-          <TradingRadio
+          <Radio
             id="node-url-custom"
             value={CUSTOM_NODE_KEY}
             label={nodeRadio === CUSTOM_NODE_KEY ? '' : t('Other')}
@@ -172,7 +172,7 @@ const CustomRowWrapper = ({
             data-testid="custom-node"
             className="flex items-center w-full gap-2"
           >
-            <TradingInput
+            <Input
               placeholder="https://"
               value={inputText}
               hasError={Boolean(error)}

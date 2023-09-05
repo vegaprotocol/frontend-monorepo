@@ -86,18 +86,14 @@ describe('Txs infinite list item', () => {
     render(
       <MockedProvider>
         <MemoryRouter>
-          <table>
-            <tbody>
-              <TxsInfiniteListItem
-                type="testType"
-                submitter="testPubKey"
-                hash="testTxHash"
-                block="1"
-                code={0}
-                command={{}}
-              />
-            </tbody>
-          </table>
+          <TxsInfiniteListItem
+            type="testType"
+            submitter="testPubKey"
+            hash="testTxHash"
+            block="1"
+            code={0}
+            command={{}}
+          />
         </MemoryRouter>
       </MockedProvider>
     );

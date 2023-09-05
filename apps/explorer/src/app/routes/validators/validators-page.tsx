@@ -91,15 +91,7 @@ export const ValidatorsPage = () => {
   const { data: tmData } = useTendermintValidators(5000);
   const { data, loading, error, refetch } = useExplorerNodesQuery();
 
-  const validators = compact(
-    data?.nodesConnection.edges
-      ?.map((e) => e?.node)
-      .filter(
-        (node) =>
-          node?.rankingScore?.performanceScore &&
-          new BigNumber(node.rankingScore.performanceScore).isGreaterThan(0)
-      )
-  );
+  const validators = compact(data?.nodesConnection.edges?.map((e) => e?.node));
 
   // voting power
   const powers = compact(tmData?.result.validators).map(

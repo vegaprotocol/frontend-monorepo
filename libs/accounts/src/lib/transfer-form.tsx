@@ -8,14 +8,14 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
-  TradingFormGroup,
-  TradingInput,
-  TradingInputError,
-  TradingRichSelect,
-  TradingSelect,
+  Button,
+  FormGroup,
+  Input,
+  InputError,
+  RichSelect,
+  Select,
   Tooltip,
-  TradingCheckbox,
-  TradingButton,
+  Checkbox,
 } from '@vegaprotocol/ui-toolkit';
 import type { Transfer } from '@vegaprotocol/wallet';
 import { normalizeTransfer } from '@vegaprotocol/wallet';
@@ -130,16 +130,12 @@ export const TransferForm = ({
       className="text-sm"
       data-testid="transfer-form"
     >
-      <TradingFormGroup label="Vega key" labelFor="to-address">
+      <FormGroup label="Vega key" labelFor="to-address">
         <AddressField
           pubKeys={pubKeys}
           onChange={() => setValue('toAddress', '')}
           select={
-            <TradingSelect
-              {...register('toAddress')}
-              id="to-address"
-              defaultValue=""
-            >
+            <Select {...register('toAddress')} id="to-address" defaultValue="">
               <option value="" disabled={true}>
                 {t('Please select')}
               </option>
@@ -151,10 +147,10 @@ export const TransferForm = ({
                       {pk}
                     </option>
                   ))}
-            </TradingSelect>
+            </Select>
           }
           input={
-            <TradingInput
+            <Input
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus={true} // focus input immediately after is shown
               id="to-address"
@@ -175,12 +171,12 @@ export const TransferForm = ({
           }
         />
         {errors.toAddress?.message && (
-          <TradingInputError forInput="to-address">
+          <InputError forInput="to-address">
             {errors.toAddress.message}
-          </TradingInputError>
+          </InputError>
         )}
-      </TradingFormGroup>
-      <TradingFormGroup label="Asset" labelFor="asset">
+      </FormGroup>
+      <FormGroup label="Asset" labelFor="asset">
         <Controller
           control={control}
           name="asset"
@@ -190,7 +186,7 @@ export const TransferForm = ({
             },
           }}
           render={({ field }) => (
-            <TradingRichSelect
+            <RichSelect
               data-testid="select-asset"
               id={field.name}
               name={field.name}
@@ -212,17 +208,15 @@ export const TransferForm = ({
                   }
                 />
               ))}
-            </TradingRichSelect>
+            </RichSelect>
           )}
         />
         {errors.asset?.message && (
-          <TradingInputError forInput="asset">
-            {errors.asset.message}
-          </TradingInputError>
+          <InputError forInput="asset">{errors.asset.message}</InputError>
         )}
-      </TradingFormGroup>
-      <TradingFormGroup label="Amount" labelFor="amount">
-        <TradingInput
+      </FormGroup>
+      <FormGroup label="Amount" labelFor="amount">
+        <Input
           id="amount"
           autoComplete="off"
           appendElement={
@@ -245,13 +239,11 @@ export const TransferForm = ({
           })}
         />
         {errors.amount?.message && (
-          <TradingInputError forInput="amount">
-            {errors.amount.message}
-          </TradingInputError>
+          <InputError forInput="amount">{errors.amount.message}</InputError>
         )}
-      </TradingFormGroup>
+      </FormGroup>
       <div className="mb-4">
-        <TradingCheckbox
+        <Checkbox
           name="include-transfer-fee"
           disabled={!transferAmount}
           label={
@@ -276,9 +268,9 @@ export const TransferForm = ({
           decimals={asset?.decimals}
         />
       )}
-      <TradingButton type="submit" fill={true}>
+      <Button type="submit" variant="primary" fill={true}>
         {t('Confirm transfer')}
-      </TradingButton>
+      </Button>
     </form>
   );
 };
@@ -309,8 +301,8 @@ export const TransferFee = ({
   const totalValue = new BigNumber(transferAmount).plus(fee).toString();
 
   return (
-    <div className="flex flex-col mb-4 text-xs gap-2">
-      <div className="flex flex-wrap items-center justify-between gap-1">
+    <div className="mb-4 flex flex-col gap-2 text-xs">
+      <div className="flex justify-between gap-1 items-center flex-wrap">
         <Tooltip
           description={t(
             `The transfer fee is set by the network parameter transfer.fee.factor, currently set to %s`,
@@ -320,11 +312,14 @@ export const TransferFee = ({
           <div>{t('Transfer fee')}</div>
         </Tooltip>
 
-        <div data-testid="transfer-fee" className="text-muted">
+        <div
+          data-testid="transfer-fee"
+          className="text-neutral-500 dark:text-neutral-300"
+        >
           {formatNumber(fee, decimals)}
         </div>
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-1">
+      <div className="flex justify-between gap-1 items-center flex-wrap">
         <Tooltip
           description={t(
             `The total amount to be transferred (without the fee)`
@@ -333,11 +328,14 @@ export const TransferFee = ({
           <div>{t('Amount to be transferred')}</div>
         </Tooltip>
 
-        <div data-testid="transfer-amount" className="text-muted">
+        <div
+          data-testid="transfer-amount"
+          className="text-neutral-500 dark:text-neutral-300"
+        >
           {formatNumber(amount, decimals)}
         </div>
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-1">
+      <div className="flex justify-between gap-1 items-center flex-wrap">
         <Tooltip
           description={t(
             `The total amount taken from your account. The amount to be transferred plus the fee.`
@@ -346,7 +344,10 @@ export const TransferFee = ({
           <div>{t('Total amount (with fee)')}</div>
         </Tooltip>
 
-        <div data-testid="total-transfer-fee" className="text-muted">
+        <div
+          data-testid="total-transfer-fee"
+          className="text-neutral-500 dark:text-neutral-300"
+        >
           {formatNumber(totalValue, decimals)}
         </div>
       </div>
@@ -384,7 +385,7 @@ export const AddressField = ({
             setIsInput((curr) => !curr);
             onChange();
           }}
-          className="absolute top-0 right-0 ml-auto text-sm underline"
+          className="ml-auto text-sm absolute top-0 right-0 underline"
         >
           {isInput ? t('Select from wallet') : t('Enter manually')}
         </button>

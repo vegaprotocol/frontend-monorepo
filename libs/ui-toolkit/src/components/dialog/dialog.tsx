@@ -16,7 +16,7 @@ interface DialogProps {
   title?: string | ReactNode;
   icon?: ReactNode;
   intent?: Intent;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium';
   dataTestId?: string;
 }
 
@@ -45,9 +45,8 @@ export function Dialog({
     'dark:bg-black bg-white dark:text-white',
     getIntentBorder(intent),
     {
-      'w-[520px]': size === 'small',
-      'w-[680px]': size === 'medium',
-      'w-[720px] lg:w-[940px]': size === 'large',
+      'w-[620px]': size === 'small',
+      'w-[720px] lg:w-[940px]': size === 'medium',
     }
   );
 
@@ -78,7 +77,7 @@ export function Dialog({
                 className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
                 data-testid="dialog-close"
               >
-                <VegaIcon name={VegaIconNames.CROSS} size={24} />
+                <VegaIcon name={VegaIconNames.CROSS} />
               </DialogPrimitives.Close>
             )}
             <div className="flex gap-4 max-w-full">

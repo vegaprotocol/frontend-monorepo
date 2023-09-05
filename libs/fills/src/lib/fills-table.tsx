@@ -47,7 +47,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
       () => [
         {
           headerName: t('Market'),
-          field: 'market.tradableInstrument.instrument.code',
+          field: 'market.tradableInstrument.instrument.name',
           cellRenderer: 'MarketNameCell',
           cellRendererParams: { idPath: 'market.id', onMarketClick },
         },
@@ -124,6 +124,8 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
         ref={ref}
         columnDefs={columnDefs}
         overlayNoRowsTemplate={t('No fills')}
+        defaultColDef={{ resizable: true }}
+        style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data?.id}
         tooltipShowDelay={0}
         tooltipHideDelay={2000}
@@ -300,7 +302,7 @@ const FeesBreakdownTooltip = ({
   return (
     <div
       data-testid="fee-breakdown-tooltip"
-      className="max-w-sm bg-vega-light-100 dark:bg-vega-dark-100 border border-vega-light-200 dark:border-vega-dark-200 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white"
+      className="max-w-sm border border-neutral-600 bg-neutral-100 dark:bg-neutral-800 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white"
     >
       {role === MAKER && (
         <>

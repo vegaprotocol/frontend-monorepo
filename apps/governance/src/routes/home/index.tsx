@@ -20,7 +20,7 @@ import {
   getNotRejectedProposals,
   getNotRejectedProtocolUpgradeProposals,
 } from '../proposals/proposals/proposals-container';
-import { Heading, SubHeading } from '../../components/heading';
+import { Heading } from '../../components/heading';
 import * as Schema from '@vegaprotocol/types';
 import type { RouteChildProps } from '..';
 import type { ProposalFieldsFragment } from '../proposals/proposals/__generated__/Proposals';
@@ -31,7 +31,6 @@ import {
   orderByDate,
   orderByUpgradeBlockHeight,
 } from '../proposals/components/proposals-list/proposals-list';
-import { BigNumber } from '../../lib/bignumber';
 
 const nodesToShow = 6;
 
@@ -46,16 +45,21 @@ const HomeProposals = ({
 
   return (
     <section className="mb-16" data-testid="home-proposals">
-      <Heading title={t('vegaGovernance')} />
+      <Heading title={t('Proposals')} />
       <h3 className="mb-6">{t('homeProposalsIntro')}</h3>
-      <div className="mb-8">
+      <div className="flex items-center mb-8 gap-8">
+        <Link to={`${Routes.PROPOSALS}`}>
+          <Button size="md">{t('homeProposalsButtonText')}</Button>
+        </Link>
+
         <ExternalLink href={ExternalLinks.GOVERNANCE_PAGE}>
           {t(`readMoreGovernance`)}
         </ExternalLink>
       </div>
-
-      <SubHeading title={t('latestProposals')} />
-      <ul data-testid="home-proposal-list" className="grid gap-6">
+      <ul
+        data-testid="home-proposal-list"
+        className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-6"
+      >
         {protocolUpgradeProposals.map((proposal, index) => (
           <ProtocolUpgradeProposalsListItem key={index} proposal={proposal} />
         ))}
@@ -64,12 +68,6 @@ const HomeProposals = ({
           <ProposalsListItem key={proposal.id} proposal={proposal} />
         ))}
       </ul>
-
-      <div className="mt-6">
-        <Link to={`${Routes.PROPOSALS}`}>
-          <Button size="md">{t('homeProposalsButtonText')}</Button>
-        </Link>
-      </div>
     </section>
   );
 };
@@ -88,8 +86,8 @@ const HomeNodes = ({
   const { t } = useTranslation();
 
   const highlightedNodeData = [
-    { title: t('activeNodes'), length: activeNodes.length },
-    { title: t('consensusNodes'), length: consensusNodes.length },
+    { title: t('active nodes'), length: activeNodes.length },
+    { title: t('consensus nodes'), length: consensusNodes.length },
   ];
 
   return (
@@ -235,7 +233,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
     [protocolUpgradeProposals]
   );
 
-  const totalProposalsDesired = 3;
+  const totalProposalsDesired = 4;
   const protocolUpgradeProposalsToShow = sortedProtocolUpgradeProposals.slice(
     0,
     totalProposalsDesired
@@ -250,8 +248,6 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
 
   const activeNodes = removePaginationWrapper(
     validatorsData?.nodesConnection.edges
-  ).filter((node) =>
-    new BigNumber(node.rankingScore.performanceScore).isGreaterThan(0)
   );
 
   const trimmedActiveNodes = activeNodes?.slice(0, nodesToShow);
@@ -291,7 +287,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
         </div>
 
         <div data-testid="home-vega-token">
-          <Heading title={t('vegaToken')} marginTop={false} />
+          <Heading title={t('VEGA Token')} marginTop={false} />
           <h3 className="mb-6">{t('homeVegaTokenIntro')}</h3>
           <div className="flex items-center mb-8 gap-4">
             <Link to={Routes.WITHDRAWALS}>

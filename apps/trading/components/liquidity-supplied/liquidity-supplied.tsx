@@ -156,7 +156,8 @@ export const MarketLiquiditySupplied = ({
       description={description}
       testId="liquidity-supplied"
     >
-      <Indicator variant={status} /> {supplied} (
+      <Indicator variant={status} />
+      {supplied} (
       {percentage.gt(100) ? '>100%' : formatNumberPercentage(percentage, 2)})
     </HeaderStat>
   ) : (

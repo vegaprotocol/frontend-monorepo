@@ -29,7 +29,6 @@ const toastPanel = 'toast-panel';
 const toastClose = 'toast-close';
 const withdrawalDialogContent = 'dialog-content';
 const toastCompleteWithdrawal = 'toast-complete-withdrawal';
-const scrollBar = '.ag-body-horizontal-scroll-viewport';
 const usdtName = 'USDC (local)';
 const usdcEthAddress = '0x1b8a1B6CBE5c93609b46D1829Cc7f3Cb8eeE23a0';
 const usdcSymbol = 'tUSDC';
@@ -51,7 +50,6 @@ context(
     beforeEach('Navigate to withdrawal page', function () {
       cy.clearLocalStorage();
       turnTelemetryOff();
-      cy.mockChainId();
       cy.reload();
       waitForSpinner();
       navigateTo(navigation.withdraw);
@@ -98,8 +96,7 @@ context(
       });
     });
 
-    // eslint-disable-next-line
-    it.skip(
+    it(
       'Able to withdraw asset: -eth wallet connected -withdraw funds button',
       { tags: '@smoke' },
       function () {
@@ -200,17 +197,20 @@ context(
           );
           cy.getByTestId(toastClose).click();
         });
-      cy.get("[row-id='0']").within(() => {
-        cy.get(tableAssetSymbol).should('have.text', usdcSymbol);
-        cy.get(tableAmount).should('have.text', '110.00');
-        cy.get(tableReceiverAddress)
-          .find('a')
-          .should('have.attr', 'href')
-          .and('contain', 'https://sepolia.etherscan.io/address/');
-        cy.get(tableCreatedTimeStamp).should('not.be.empty');
-      });
+      cy.get(tableTxHash)
+        .eq(1)
+        .should('have.text', 'Complete withdrawal')
+        .parent()
+        .within(() => {
+          cy.get(tableAssetSymbol).should('have.text', usdcSymbol);
+          cy.get(tableAmount).should('have.text', '110.00');
+          cy.get(tableReceiverAddress)
+            .find('a')
+            .should('have.attr', 'href')
+            .and('contain', 'https://sepolia.etherscan.io/address/');
+          cy.get(tableCreatedTimeStamp).should('not.be.empty');
+        });
       ethereumWalletConnect();
-      cy.get(scrollBar).scrollTo('right');
       cy.getByTestId(completeWithdrawalButton).first().click();
       cy.getByTestId(toast)
         .last(txTimeout)

@@ -1,7 +1,10 @@
 import { t } from '@vegaprotocol/i18n';
-import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import { Routes } from '../../pages/client-router';
-import { Link } from 'react-router-dom';
+import {
+  ExternalLink,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
+import { Links, Routes } from '../../pages/client-router';
 
 export const RiskMessage = () => {
   return (
@@ -27,12 +30,15 @@ export const RiskMessage = () => {
         {t(
           'By using the Vega Console, you acknowledge that you have read and understood the'
         )}{' '}
-        <Link className="underline" to={Routes.DISCLAIMER} target="_blank">
+        <ExternalLink
+          href={`/#/${Links[Routes.DISCLAIMER]()}`}
+          className="underline"
+        >
           <span className="flex items-center gap-1">
             <span>{t('Vega Console Disclaimer')}</span>
             <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
           </span>
-        </Link>
+        </ExternalLink>
       </p>
     </>
   );

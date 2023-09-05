@@ -2,11 +2,7 @@ import type { Asset } from '@vegaprotocol/assets';
 import { EtherscanLink } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
-import {
-  formatNumber,
-  getUnlimitedThreshold,
-  quantumDecimalPlaces,
-} from '@vegaprotocol/utils';
+import { formatNumber } from '@vegaprotocol/utils';
 import type { EthStoredTxState } from '@vegaprotocol/web3';
 import { EthTxStatus, useEthTransactionStore } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
@@ -59,7 +55,7 @@ export const ApproveNotification = ({
           selectedAsset?.symbol
         )}
         buttonProps={{
-          size: 'small',
+          size: 'sm',
           text: t('Approve %s', selectedAsset?.symbol),
           action: onApprove,
           dataTestId: 'approve-submit',
@@ -77,7 +73,7 @@ export const ApproveNotification = ({
           formatNumber(balances.allowance.toString())
         )}
         buttonProps={{
-          size: 'small',
+          size: 'sm',
           text: t('Approve %s', selectedAsset?.symbol),
           action: onApprove,
           dataTestId: 'reapprove-submit',
@@ -192,15 +188,6 @@ const ApprovalTxFeedback = ({
   }
 
   if (tx.status === EthTxStatus.Confirmed) {
-    const approvedAllowanceValue = (
-      allowance || new BigNumber(0)
-    ).isGreaterThan(getUnlimitedThreshold(selectedAsset.decimals))
-      ? '∞'
-      : formatNumber(
-          allowance?.toString() || 0,
-          quantumDecimalPlaces(selectedAsset.quantum, selectedAsset.decimals)
-        );
-
     return (
       <div className="mb-4">
         <Notification
@@ -211,7 +198,7 @@ const ApprovalTxFeedback = ({
               <p>
                 {t('You approved deposits of up to %s %s.', [
                   selectedAsset?.symbol,
-                  approvedAllowanceValue,
+                  formatNumber(allowance?.toString() || 0),
                 ])}
               </p>
               {txLink && <p>{txLink}</p>}

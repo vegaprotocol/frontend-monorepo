@@ -1,11 +1,7 @@
 import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
 import type { MockedResponse } from '@apollo/client/testing';
 import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
-import type { PubKey, VegaWalletContextShape } from '@vegaprotocol/wallet';
-import type { VoteValue } from '@vegaprotocol/types';
-import type { UserVoteQuery } from '../components/vote-details/__generated__/Vote';
-import { UserVoteDocument } from '../components/vote-details/__generated__/Vote';
-import faker from 'faker';
+import type { PubKey } from '@vegaprotocol/wallet';
 
 export const mockPubkey: PubKey = {
   publicKey: '0x123',
@@ -21,7 +17,7 @@ export const mockWalletContext = {
   disconnect: jest.fn(),
   selectPubKey: jest.fn(),
   connector: null,
-} as unknown as VegaWalletContextShape;
+};
 
 const mockEthereumConfig = {
   network_id: '3',
@@ -53,16 +49,6 @@ export const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   },
 };
 
-export const mockNetworkParams = {
-  governance_proposal_asset_requiredMajority: '0.66',
-  governance_proposal_freeform_requiredMajority: '0.66',
-  governance_proposal_market_requiredMajority: '0.66',
-  governance_proposal_updateAsset_requiredMajority: '0.66',
-  governance_proposal_updateMarket_requiredMajority: '0.66',
-  governance_proposal_updateMarket_requiredMajorityLP: '0.66',
-  governance_proposal_updateNetParam_requiredMajority: '0.5',
-};
-
 const oneMinute = 1000 * 60;
 const oneHour = oneMinute * 60;
 const oneDay = oneHour * 24;
@@ -76,34 +62,3 @@ export const lastWeek = new Date(-oneWeek);
 export const nextWeek = new Date(oneWeek);
 export const lastMonth = new Date(-oneMonth);
 export const nextMonth = new Date(oneMonth);
-
-export const createUserVoteQueryMock = (
-  proposalId: string,
-  value: VoteValue
-): MockedResponse<UserVoteQuery> => ({
-  request: {
-    query: UserVoteDocument,
-    variables: {
-      partyId: mockPubkey.publicKey,
-    },
-  },
-  result: {
-    data: {
-      party: {
-        votesConnection: {
-          edges: [
-            {
-              node: {
-                proposalId,
-                vote: {
-                  value,
-                  datetime: faker.date.past().toISOString(),
-                },
-              },
-            },
-          ],
-        },
-      },
-    },
-  },
-});

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
+import type { AgGridReact } from 'ag-grid-react';
 import type { ColDef } from 'ag-grid-community';
 import {
   addDecimalsFormatNumber,
@@ -11,7 +12,7 @@ import { t } from '@vegaprotocol/i18n';
 import {
   ActionsDropdown,
   ButtonLink,
-  TradingDropdownItem,
+  DropdownMenuItem,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -39,6 +40,7 @@ export const WithdrawalsTable = ({
   ready?: TimestampedWithdrawals;
   delayed?: TimestampedWithdrawals;
 }) => {
+  const gridRef = useRef<AgGridReact | null>(null);
   const createWithdrawApproval = useEthWithdrawApprovalsStore(
     (store) => store.create
   );
@@ -115,6 +117,7 @@ export const WithdrawalsTable = ({
       {
         headerName: t('Transaction'),
         field: 'txHash',
+        flex: 2,
         type: 'rightAligned',
         cellRendererParams: {
           complete: (withdrawal: WithdrawalFieldsFragment) => {
@@ -134,6 +137,8 @@ export const WithdrawalsTable = ({
     <AgGrid
       overlayNoRowsTemplate={t('No withdrawals')}
       columnDefs={columnDefs}
+      defaultColDef={{ flex: 1 }}
+      style={{ width: '100%', height: '100%' }}
       components={{
         RecipientCell,
         StatusCell,
@@ -141,6 +146,7 @@ export const WithdrawalsTable = ({
         CompleteCell,
       }}
       suppressCellFocus
+      ref={gridRef}
       {...props}
     />
   );
@@ -169,7 +175,7 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
       </ButtonLink>
 
       <ActionsDropdown>
-        <TradingDropdownItem
+        <DropdownMenuItem
           key={'withdrawal-approval'}
           data-testid="withdrawal-approval"
           onClick={() => {
@@ -180,7 +186,7 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
         >
           <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
           {t('View withdrawal details')}
-        </TradingDropdownItem>
+        </DropdownMenuItem>
       </ActionsDropdown>
     </div>
   );

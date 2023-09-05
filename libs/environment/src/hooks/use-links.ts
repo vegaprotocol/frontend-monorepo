@@ -20,7 +20,6 @@ type DAppLinks = {
 
 const EmptyLinks: DAppLinks = {
   [Networks.VALIDATOR_TESTNET]: '',
-  [Networks.MAINNET_MIRROR]: '',
   [Networks.DEVNET]: '',
   [Networks.STAGNET1]: '',
   [Networks.TESTNET]: '',
@@ -29,11 +28,9 @@ const EmptyLinks: DAppLinks = {
 
 const ExplorerLinks = {
   ...EmptyLinks,
-  [Networks.STAGNET1]: 'https://explorer.stagnet1.vega.rocks',
   [Networks.TESTNET]: 'https://explorer.fairground.wtf',
   [Networks.VALIDATOR_TESTNET]:
     'https://explorer.validators-testnet.vega.rocks',
-  [Networks.MAINNET_MIRROR]: 'https://explorer.mainnet-mirror.vega.rocks/',
   [Networks.MAINNET]: 'https://explorer.vega.xyz',
 };
 
@@ -41,18 +38,15 @@ const ConsoleLinks = {
   ...EmptyLinks,
   [Networks.STAGNET1]: 'https://trading.stagnet1.vega.rocks',
   [Networks.TESTNET]: 'https://console.fairground.wtf',
-  [Networks.MAINNET]: 'https://vega.trading',
-  [Networks.MAINNET_MIRROR]: 'https://console.mainnet-mirror.vega.rocks',
+  [Networks.MAINNET]: 'https://console.vega.xyz',
 };
 
 const TokenLinks = {
   ...EmptyLinks,
   [Networks.DEVNET]: 'https://dev.governance.vega.xyz',
-  [Networks.STAGNET1]: 'https://governance.stagnet1.vega.rocks',
   [Networks.TESTNET]: 'https://governance.fairground.wtf',
   [Networks.VALIDATOR_TESTNET]:
     'https://governance.validators-testnet.vega.rocks',
-  [Networks.MAINNET_MIRROR]: 'https://governance.mainnet-mirror.vega.rocks',
   [Networks.MAINNET]: 'https://governance.vega.xyz',
 };
 
@@ -162,9 +156,7 @@ export const ExternalLinks = {
   MARGIN_CREDIT_RISK:
     'https://vega.xyz/papers/margins-and-credit-risk.pdf#page=7',
   VEGA_WALLET_URL: 'https://vega.xyz/wallet',
-  VEGA_WALLET_URL_ABOUT: 'https://vega.xyz/wallet/#overview',
   VEGA_WALLET_HOSTED_URL: 'https://vega-hosted-wallet.on.fleek.co/',
-  VEGA_WALLET_BROWSER_LIST: '',
   BLOG: 'https://blog.vega.xyz/',
 };
 

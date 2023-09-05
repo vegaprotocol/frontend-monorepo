@@ -1,4 +1,5 @@
-import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
+import { Intent, Notification, Link } from '@vegaprotocol/ui-toolkit';
+import { useDepositDialog } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/i18n';
 
 interface ZeroBalanceErrorProps {
@@ -6,13 +7,14 @@ interface ZeroBalanceErrorProps {
     id: string;
     symbol: string;
   };
-  onDeposit: (assetId: string) => void;
+  onClickCollateral?: () => void;
 }
 
 export const ZeroBalanceError = ({
   asset,
-  onDeposit,
+  onClickCollateral,
 }: ZeroBalanceErrorProps) => {
+  const openDepositDialog = useDepositDialog((state) => state.open);
   return (
     <Notification
       intent={Intent.Warning}
@@ -23,15 +25,19 @@ export const ZeroBalanceError = ({
             'You need %s in your wallet to trade in this market. ',
             asset.symbol
           )}
+          {onClickCollateral && (
+            <>
+              {t('See all your')}{' '}
+              <Link onClick={onClickCollateral}>collateral</Link>.
+            </>
+          )}
         </>
       }
       buttonProps={{
         text: t(`Make a deposit`),
-        action: () => {
-          onDeposit(asset.id);
-        },
+        action: () => openDepositDialog(asset.id),
         dataTestId: 'deal-ticket-deposit-dialog-button',
-        size: 'small',
+        size: 'sm',
       }}
     />
   );

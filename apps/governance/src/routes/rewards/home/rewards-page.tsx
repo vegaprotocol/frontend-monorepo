@@ -61,6 +61,8 @@ export const RewardsPage = () => {
     error: paramsError,
   } = useNetworkParams([NetworkParams.reward_staking_delegation_payoutDelay]);
 
+  console.log('params', params);
+
   const payoutDuration = useMemo(() => {
     if (!params) {
       return 0;

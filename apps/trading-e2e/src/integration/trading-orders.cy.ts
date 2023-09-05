@@ -120,9 +120,7 @@ describe('orders list', { tags: '@smoke', testIsolation: true }, () => {
     cy.getByTestId('All').click();
 
     cy.getByTestId('tab-orders')
-      .get(
-        `.ag-center-cols-container [col-id='${orderSymbol}'] [data-testid="market-code"]`
-      )
+      .get(`.ag-center-cols-container [col-id='${orderSymbol}']`)
       .should('have.length.at.least', expectedOrderList.length)
       .then(($symbols) => {
         const symbolNames: string[] = [];
@@ -222,17 +220,12 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
 
   it('must see a filled order', () => {
     // 7002-SORD-046
-    // 7003-MORD-020
     // NOT COVERED:  Must be able to see/link to all trades that were created from this order
     updateOrder({
       id: orderId,
       status: Schema.OrderStatus.STATUS_FILLED,
     });
     cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Filled');
-    cy.get('[col-id="market.tradableInstrument.instrument.code"]').contains(
-      '[title="Future"]',
-      'Futr'
-    );
   });
 
   it('must see a rejected order', () => {
@@ -438,8 +431,6 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
   });
 
   const orderId = '1234567890';
-
-  // this test is flakey
   it('must be able to amend the price of an order', () => {
     // 7003-MORD-007
     // 7003-MORD-012
@@ -452,7 +443,8 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find('[data-testid="icon-edit"]')
+      .find('[data-testid="edit"]')
+      .should('have.text', 'Edit')
       .then(($btn) => {
         cy.wrap($btn).click();
         cy.getByTestId('dialog-title').should('have.text', 'Edit order');
@@ -480,7 +472,8 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find(`[data-testid="icon-cross"]`)
+      .find(`[data-testid="cancel"]`)
+      .should('have.text', 'Cancel')
       .then(($btn) => {
         cy.wrap($btn).click({ force: true });
         const order: OrderCancellation = {
@@ -517,7 +510,8 @@ describe('amend and cancel order', { tags: '@smoke' }, () => {
       liquidityProvisionId: null,
     });
     cy.get(`[row-id=${orderId}]`)
-      .find('[data-testid="icon-edit"]')
+      .find('[data-testid="edit"]')
+      .should('have.text', 'Edit')
       .then(($btn) => {
         cy.wrap($btn).click({ force: true });
         cy.getByTestId('dialog-title').should('have.text', 'Edit order');

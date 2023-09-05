@@ -41,22 +41,21 @@ export const checkSorting = (
   column: string,
   orderTabDefault: string[],
   orderTabAsc: string[],
-  orderTabDesc: string[],
-  additionalColumnSelector = ''
+  orderTabDesc: string[]
 ) => {
-  checkSortChange(orderTabDefault, column, additionalColumnSelector);
+  checkSortChange(orderTabDefault, column);
   cy.get('.ag-header-container')
     .last()
     .within(() => {
       cy.get(`[col-id="${column}"]`).last().click();
     });
-  checkSortChange(orderTabAsc, column, additionalColumnSelector);
+  checkSortChange(orderTabAsc, column);
   cy.get('.ag-header-container')
     .last()
     .within(() => {
       cy.get(`[col-id="${column}"]`).click();
     });
-  checkSortChange(orderTabDesc, column, additionalColumnSelector);
+  checkSortChange(orderTabDesc, column);
   cy.get('.ag-header-container')
     .last()
     .within(() => {
@@ -64,20 +63,13 @@ export const checkSorting = (
     });
 };
 
-const checkSortChange = (
-  tabsArr: string[],
-  column: string,
-  additionalColumnSelector = ''
-) => {
+const checkSortChange = (tabsArr: string[], column: string) => {
   cy.get('.ag-center-cols-container')
     .last()
     .within(() => {
       tabsArr.forEach((entry, i) => {
         cy.get(`[row-index="${i}"]`).within(() => {
-          cy.get(`[col-id="${column}"]${additionalColumnSelector}`).should(
-            'have.text',
-            tabsArr[i]
-          );
+          cy.get(`[col-id="${column}"]`).should('have.text', tabsArr[i]);
         });
       });
     });

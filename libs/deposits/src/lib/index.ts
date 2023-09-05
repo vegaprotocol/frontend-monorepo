@@ -1,6 +1,7 @@
 export * from './__generated__/Deposit';
 export * from './asset-balance';
 export * from './deposit-container';
+export * from './deposit-dialog';
 export * from './deposit-form';
 export * from './deposit-limits';
 export * from './deposit-manager';

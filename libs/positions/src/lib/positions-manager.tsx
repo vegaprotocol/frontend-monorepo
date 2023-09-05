@@ -15,8 +15,7 @@ interface PositionsManagerProps {
   partyIds: string[];
   onMarketClick?: (marketId: string) => void;
   isReadOnly: boolean;
-  gridProps?: ReturnType<typeof useDataGridEvents>;
-  showClosed?: boolean;
+  gridProps: ReturnType<typeof useDataGridEvents>;
 }
 
 export const PositionsManager = ({
@@ -24,7 +23,6 @@ export const PositionsManager = ({
   onMarketClick,
   isReadOnly,
   gridProps,
-  showClosed = false,
 }: PositionsManagerProps) => {
   const { pubKeys, pubKey } = useVegaWallet();
   const create = useVegaTransactionStore((store) => store.create);
@@ -62,21 +60,23 @@ export const PositionsManager = ({
 
   const { data, error } = useDataProvider({
     dataProvider: positionsMetricsProvider,
-    variables: { partyIds, marketIds: marketIds || [], showClosed },
+    variables: { partyIds, marketIds: marketIds || [] },
     skip: !marketIds,
   });
 
   return (
-    <PositionsTable
-      pubKey={pubKey}
-      pubKeys={pubKeys}
-      rowData={data}
-      onMarketClick={onMarketClick}
-      onClose={onClose}
-      isReadOnly={isReadOnly}
-      multipleKeys={partyIds.length > 1}
-      overlayNoRowsTemplate={error ? error.message : t('No positions')}
-      {...gridProps}
-    />
+    <div className="h-full relative">
+      <PositionsTable
+        pubKey={pubKey}
+        pubKeys={pubKeys}
+        rowData={error ? [] : data}
+        onMarketClick={onMarketClick}
+        onClose={onClose}
+        isReadOnly={isReadOnly}
+        multipleKeys={partyIds.length > 1}
+        overlayNoRowsTemplate={error ? error.message : t('No positions')}
+        {...gridProps}
+      />
+    </div>
   );
 };

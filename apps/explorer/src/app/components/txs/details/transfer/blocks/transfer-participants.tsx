@@ -31,8 +31,6 @@ const AccountType: Record<AccountTypes, string> = {
   ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: 'LP Received Fees',
   ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Market Proposers',
   ACCOUNT_TYPE_HOLDING: 'Holding',
-  ACCOUNT_TYPE_LIQUIDITY_FEES_BONUS_DISTRIBUTION: 'Bonus Distribution',
-  ACCOUNT_TYPE_LP_LIQUIDITY_FEES: 'LP Liquidity Fees',
 };
 
 interface TransferParticipantsProps {

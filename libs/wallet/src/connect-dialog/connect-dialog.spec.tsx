@@ -1,18 +1,28 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { VegaWalletConfig } from '../provider';
 import { VegaWalletProvider } from '../provider';
-import { VegaConnectDialog, CLOSE_DELAY } from './connect-dialog';
-import { useVegaWalletDialogStore } from './vega-wallet-dialog-store';
+import {
+  VegaConnectDialog,
+  CLOSE_DELAY,
+  useVegaWalletDialogStore,
+} from './connect-dialog';
 import type { VegaConnectDialogProps } from '..';
 import {
   ClientErrors,
   InjectedConnector,
   JsonRpcConnector,
+  RestConnector,
   ViewConnector,
   WalletError,
 } from '../connectors';
+import { useEnvironment } from '@vegaprotocol/environment';
 import type { ChainIdQuery } from './__generated__/ChainId';
 import { ChainIdDocument } from './__generated__/ChainId';
 import {
@@ -25,28 +35,34 @@ import {
 const mockUpdateDialogOpen = jest.fn();
 const mockCloseVegaDialog = jest.fn();
 
-let mockIsDesktopRunning = true;
+jest.mock('@vegaprotocol/environment');
 
-jest.mock('../use-is-wallet-service-running', () => ({
-  useIsWalletServiceRunning: jest
-    .fn()
-    .mockImplementation(() => mockIsDesktopRunning),
+// @ts-ignore ignore mock implementation
+useEnvironment.mockImplementation(() => ({
+  VEGA_ENV: 'TESTNET',
+  VEGA_URL: 'https://vega-node.url',
+  VEGA_NETWORKS: JSON.stringify({}),
+  VEGA_WALLET_URL: mockVegaWalletUrl,
+  GIT_BRANCH: 'test',
+  GIT_COMMIT_HASH: 'abcdef',
+  GIT_ORIGIN_URL: 'https://github.com/test/repo',
+  HOSTED_WALLET_URL: mockHostedWalletUrl,
 }));
 
 let defaultProps: VegaConnectDialogProps;
 
 const INITIAL_KEY = 'some-key';
 
+const rest = new RestConnector();
 const jsonRpc = new JsonRpcConnector();
 const view = new ViewConnector(INITIAL_KEY);
 const injected = new InjectedConnector();
 const connectors = {
+  rest,
   jsonRpc,
   view,
   injected,
-  snap: undefined,
 };
-
 beforeEach(() => {
   jest.clearAllMocks();
   defaultProps = {
@@ -60,24 +76,12 @@ beforeEach(() => {
   });
 });
 
+const mockVegaWalletUrl = 'http://mock.wallet.com';
+const mockHostedWalletUrl = 'http://mock.hosted.com';
+
 const mockChainId = 'chain-id';
 
-const defaultConfig: VegaWalletConfig = {
-  network: 'TESTNET',
-  vegaUrl: 'https://vega.xyz',
-  vegaWalletServiceUrl: 'https://vegaservice.xyz',
-  links: {
-    explorer: 'explorer-link',
-    concepts: 'concepts-link',
-    chromeExtensionUrl: 'chrome-link',
-    mozillaExtensionUrl: 'mozilla-link',
-  },
-};
-
-function generateJSX(
-  props?: Partial<VegaConnectDialogProps>,
-  config?: Partial<VegaWalletConfig>
-) {
+function generateJSX(props?: Partial<VegaConnectDialogProps>) {
   const chainIdMock: MockedResponse<ChainIdQuery> = {
     request: {
       query: ChainIdDocument,
@@ -92,7 +96,7 @@ function generateJSX(
   };
   return (
     <MockedProvider mocks={[chainIdMock]}>
-      <VegaWalletProvider config={{ ...defaultConfig, ...config }}>
+      <VegaWalletProvider>
         <VegaConnectDialog {...defaultProps} {...props} />
       </VegaWalletProvider>
     </MockedProvider>
@@ -100,11 +104,6 @@ function generateJSX(
 }
 
 describe('VegaConnectDialog', () => {
-  let navigatorGetter: jest.SpyInstance;
-  beforeEach(() => {
-    jest.clearAllMocks();
-    navigatorGetter = jest.spyOn(window.navigator, 'userAgent', 'get');
-  });
   it('displays a list of connection options', async () => {
     const { container, rerender } = render(generateJSX());
     expect(container).toBeEmptyDOMElement();
@@ -113,21 +112,131 @@ describe('VegaConnectDialog', () => {
     expect(list).toBeInTheDocument();
     expect(list.children).toHaveLength(3);
     expect(screen.getByTestId('connector-jsonRpc')).toHaveTextContent(
-      'Use the Desktop App/CLI'
+      'Connect Vega wallet'
+    );
+    expect(screen.getByTestId('connector-rest')).toHaveTextContent(
+      'Hosted Fairground wallet'
+    );
+    expect(screen.getByTestId('connector-view')).toHaveTextContent(
+      'View as vega user'
     );
   });
 
   it('displays browser wallet option if detected on window object', async () => {
-    navigatorGetter.mockReturnValue('Chrome');
     mockBrowserWallet();
     render(generateJSX());
     const list = await screen.findByTestId('connectors-list');
-    expect(list.children).toHaveLength(3);
+    expect(list.children).toHaveLength(4);
     expect(screen.getByTestId('connector-injected')).toHaveTextContent(
-      'Connect'
+      'Connect Web wallet'
     );
-
     clearBrowserWallet();
+  });
+
+  describe('RestConnector', () => {
+    it('connects', async () => {
+      const spy = jest
+        .spyOn(connectors.rest, 'authenticate')
+        .mockImplementation(() =>
+          Promise.resolve({ success: true, error: null })
+        );
+      jest
+        .spyOn(connectors.rest, 'connect')
+        .mockImplementation(() =>
+          Promise.resolve([{ publicKey: 'pubkey', name: 'test key 1' }])
+        );
+      render(generateJSX());
+      // Switches to rest form
+      fireEvent.click(await screen.findByText('Hosted Fairground wallet'));
+
+      // Client side validation
+      fireEvent.submit(screen.getByTestId('rest-connector-form'));
+      expect(spy).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(screen.getAllByText('Required')).toHaveLength(2);
+      });
+
+      const fields = fillInForm();
+
+      // Wait for auth method to be called
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('rest-connector-form'));
+      });
+      await waitFor(() => {
+        expect(spy).toHaveBeenCalledWith(fields);
+
+        expect(mockCloseVegaDialog).toHaveBeenCalled();
+      });
+    });
+
+    it('handles failed connection', async () => {
+      const errMessage = 'Error message';
+      // Error from service
+      let spy = jest
+        .spyOn(connectors.rest, 'authenticate')
+        .mockImplementation(() =>
+          Promise.resolve({ success: false, error: errMessage })
+        );
+
+      render(generateJSX());
+      // Switches to rest form
+      fireEvent.click(await screen.findByText('Hosted Fairground wallet'));
+
+      const fields = fillInForm();
+      fireEvent.submit(screen.getByTestId('rest-connector-form'));
+
+      // Wait for auth method to be called
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('rest-connector-form'));
+      });
+
+      expect(spy).toHaveBeenCalledWith(fields);
+
+      expect(screen.getByTestId('form-error')).toHaveTextContent(errMessage);
+      expect(mockUpdateDialogOpen).not.toHaveBeenCalled();
+
+      // Fetch failed due to wallet not running
+      spy = jest
+        .spyOn(connectors.rest, 'authenticate')
+        // @ts-ignore test fetch failed with typeerror
+        .mockImplementation(() =>
+          Promise.reject(new TypeError('fetch failed'))
+        );
+
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('rest-connector-form'));
+      });
+
+      expect(screen.getByTestId('form-error')).toHaveTextContent(
+        `Wallet not running at ${mockHostedWalletUrl}`
+      );
+
+      // Reject eg non 200 results
+      spy = jest
+        .spyOn(connectors.rest, 'authenticate')
+        // @ts-ignore test fetch failed with typeerror
+        .mockImplementation(() => Promise.reject(new Error('Error!')));
+
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('rest-connector-form'));
+      });
+
+      expect(screen.getByTestId('form-error')).toHaveTextContent(
+        'Authentication failed'
+      );
+    });
+
+    const fillInForm = () => {
+      const walletValue = 'test-wallet';
+      fireEvent.change(screen.getByTestId('rest-wallet'), {
+        target: { value: walletValue },
+      });
+      const passphraseValue = 'test-passphrase';
+      fireEvent.change(screen.getByTestId('rest-passphrase'), {
+        target: { value: passphraseValue },
+      });
+      return { wallet: walletValue, passphrase: passphraseValue };
+    };
   });
 
   describe('JsonRpcConnector', () => {
@@ -264,34 +373,81 @@ describe('VegaConnectDialog', () => {
       expect(screen.getByText('An unknown error occurred')).toBeInTheDocument();
     });
 
-    it('handles wallet running is not detected', async () => {
-      mockIsDesktopRunning = false;
-      render(generateJSX());
-      expect(await screen.findByTestId('connector-jsonRpc')).toBeDisabled();
-    });
-
-    it('Mozilla logo should be rendered', async () => {
-      navigatorGetter.mockReturnValue('Firefox');
-      render(generateJSX());
-      expect(await screen.findByTestId('mozilla-logo')).toBeInTheDocument();
-    });
-
-    it('Chrome logo should be rendered', async () => {
-      navigatorGetter.mockReturnValue('Chrome');
-      render(generateJSX());
-      expect(await screen.findByTestId('chrome-logo')).toBeInTheDocument();
-    });
-
-    it('Chrome and Firefox logo should be rendered', async () => {
-      navigatorGetter.mockReturnValue('Safari');
-      render(generateJSX());
-      expect(await screen.findByTestId('mozilla-logo')).toBeInTheDocument();
-      expect(await screen.findByTestId('chrome-logo')).toBeInTheDocument();
-    });
     async function selectJsonRpc() {
       expect(await screen.findByRole('dialog')).toBeInTheDocument();
       fireEvent.click(await screen.findByTestId('connector-jsonRpc'));
     }
+  });
+
+  describe('ViewOnlyConnector', () => {
+    const fillInForm = (address = '0'.repeat(64)) => {
+      fireEvent.change(screen.getByTestId('address'), {
+        target: { value: address },
+      });
+      return { address };
+    };
+
+    it('connects', async () => {
+      const spy = jest.spyOn(connectors.view, 'connect');
+
+      render(generateJSX());
+      // Switches to view form
+      fireEvent.click(await screen.findByText('View as vega user'));
+
+      // Client side validation
+      fireEvent.submit(screen.getByTestId('view-connector-form'));
+      expect(spy).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(screen.getAllByText('Required')).toHaveLength(1);
+      });
+
+      fillInForm();
+
+      // Wait for auth method to be called
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('view-connector-form'));
+      });
+
+      expect(spy).toHaveBeenCalled();
+
+      expect(mockCloseVegaDialog).toHaveBeenCalled();
+    });
+
+    it('ensures pubkey is of correct length', async () => {
+      render(generateJSX());
+      // Switches to view form
+      fireEvent.click(await screen.findByText('View as vega user'));
+
+      fillInForm('123');
+
+      // Wait for auth method to be called
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('view-connector-form'));
+      });
+      await waitFor(() => {
+        expect(
+          screen.getAllByText('Pubkey must be 64 characters in length')
+        ).toHaveLength(1);
+      });
+    });
+
+    it('ensures pubkey is of valid hex', async () => {
+      render(generateJSX());
+      // Switches to view form
+      fireEvent.click(await screen.findByText('View as vega user'));
+
+      fillInForm('q'.repeat(64));
+
+      // Wait for auth method to be called
+      await act(async () => {
+        fireEvent.submit(screen.getByTestId('view-connector-form'));
+      });
+      await waitFor(() => {
+        expect(screen.getAllByText('Pubkey must be be valid hex')).toHaveLength(
+          1
+        );
+      });
+    });
   });
 
   describe('InjectedConnector', () => {

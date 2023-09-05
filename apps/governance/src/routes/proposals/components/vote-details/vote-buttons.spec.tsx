@@ -1,10 +1,9 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import BigNumber from 'bignumber.js';
 import { VoteButtons } from './vote-buttons';
 import { VoteState } from './use-user-vote';
 import { ProposalState } from '@vegaprotocol/types';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { mockWalletContext } from '../../test-helpers/mocks';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { MockedProvider } from '@apollo/react-testing';
@@ -25,7 +24,6 @@ describe('Vote buttons', () => {
               currentStakeAvailable={new BigNumber(1)}
               dialog={() => <div>Blah</div>}
               submit={() => Promise.resolve()}
-              transaction={null}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>
@@ -49,7 +47,6 @@ describe('Vote buttons', () => {
               currentStakeAvailable={new BigNumber(1)}
               dialog={() => <div>Blah</div>}
               submit={() => Promise.resolve()}
-              transaction={null}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>
@@ -68,7 +65,7 @@ describe('Vote buttons', () => {
       disconnect: jest.fn(),
       selectPubKey: jest.fn(),
       connector: null,
-    } as unknown as VegaWalletContextShape;
+    };
 
     render(
       <AppStateProvider>
@@ -84,7 +81,6 @@ describe('Vote buttons', () => {
               currentStakeAvailable={new BigNumber(1)}
               dialog={() => <div>Blah</div>}
               submit={() => Promise.resolve()}
-              transaction={null}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>
@@ -109,7 +105,6 @@ describe('Vote buttons', () => {
               currentStakeAvailable={new BigNumber(0)}
               dialog={() => <div>Blah</div>}
               submit={() => Promise.resolve()}
-              transaction={null}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>
@@ -137,7 +132,6 @@ describe('Vote buttons', () => {
               currentStakeAvailable={new BigNumber(1)}
               dialog={() => <div>Blah</div>}
               submit={() => Promise.resolve()}
-              transaction={null}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>
@@ -165,7 +159,6 @@ describe('Vote buttons', () => {
               currentStakeAvailable={new BigNumber(10)}
               dialog={() => <div>Blah</div>}
               submit={() => Promise.resolve()}
-              transaction={null}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>
@@ -190,7 +183,6 @@ describe('Vote buttons', () => {
               currentStakeAvailable={new BigNumber(10)}
               dialog={() => <div>Blah</div>}
               submit={() => Promise.resolve()}
-              transaction={null}
             />
           </VegaWalletContext.Provider>
         </MockedProvider>

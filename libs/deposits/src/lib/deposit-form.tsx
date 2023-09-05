@@ -13,22 +13,21 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
-  TradingFormGroup,
-  TradingInput,
-  TradingInputError,
-  TradingRichSelect,
+  Button,
+  FormGroup,
+  Input,
+  InputError,
+  RichSelect,
   Notification,
   Intent,
   ButtonLink,
-  TradingSelect,
-  truncateMiddle,
-  TradingButton,
+  Select,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes, ChangeEvent, ReactNode } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useWatch, Controller, useForm } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
@@ -91,17 +90,16 @@ export const DepositForm = ({
   const [approveNotificationIntent, setApproveNotificationIntent] =
     useState<Intent>(Intent.Warning);
   const [persistedDeposit] = usePersistentDeposit(selectedAsset?.id);
+
   const {
     register,
     handleSubmit,
     setValue,
     clearErrors,
-    trigger,
     control,
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      from: account || '',
       to: pubKey ? pubKey : undefined,
       asset: selectedAsset?.id,
       amount: persistedDeposit?.amount,
@@ -138,11 +136,6 @@ export const DepositForm = ({
     return _pubKeys ? _pubKeys.map((pk) => pk.publicKey) : [];
   }, [_pubKeys]);
 
-  useEffect(() => {
-    setValue('from', account || '');
-    trigger('from');
-  }, [account, setValue, trigger]);
-
   const approved =
     balances && balances.allowance.isGreaterThan(0) ? true : false;
 
@@ -152,7 +145,7 @@ export const DepositForm = ({
       noValidate={true}
       data-testid="deposit-form"
     >
-      <TradingFormGroup
+      <FormGroup
         label={t('From (Ethereum address)')}
         labelFor="ethereum-address"
       >
@@ -173,8 +166,8 @@ export const DepositForm = ({
             if (isActive && account) {
               return (
                 <div className="text-sm" aria-describedby="ethereum-address">
-                  <p className="mb-1 break-all" data-testid="ethereum-address">
-                    {truncateMiddle(account)}
+                  <p className="mb-1" data-testid="ethereum-address">
+                    {account}
                   </p>
                   <DisconnectEthereumButton
                     onDisconnect={() => {
@@ -186,29 +179,27 @@ export const DepositForm = ({
               );
             }
             return (
-              <TradingButton
+              <Button
                 onClick={openDialog}
-                intent={Intent.Primary}
+                variant="primary"
                 type="button"
                 data-testid="connect-eth-wallet-btn"
               >
                 {t('Connect')}
-              </TradingButton>
+              </Button>
             );
           }}
         />
         {errors.from?.message && (
-          <TradingInputError intent="danger">
-            {errors.from.message}
-          </TradingInputError>
+          <InputError intent="danger">{errors.from.message}</InputError>
         )}
-      </TradingFormGroup>
-      <TradingFormGroup label={t('To (Vega key)')} labelFor="to">
+      </FormGroup>
+      <FormGroup label={t('To (Vega key)')} labelFor="to">
         <AddressField
           pubKeys={pubKeys}
           onChange={() => setValue('to', '')}
           select={
-            <TradingSelect {...register('to')} id="to" defaultValue="">
+            <Select {...register('to')} id="to" defaultValue="">
               <option value="" disabled>
                 {t('Please select')}
               </option>
@@ -218,10 +209,10 @@ export const DepositForm = ({
                     {pk}
                   </option>
                 ))}
-            </TradingSelect>
+            </Select>
           }
           input={
-            <TradingInput
+            <Input
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus={true} // focus input immediately after is shown
               id="to"
@@ -236,12 +227,12 @@ export const DepositForm = ({
           }
         />
         {errors.to?.message && (
-          <TradingInputError intent="danger" forInput="to">
+          <InputError intent="danger" forInput="to">
             {errors.to.message}
-          </TradingInputError>
+          </InputError>
         )}
-      </TradingFormGroup>
-      <TradingFormGroup label={t('Asset')} labelFor="asset">
+      </FormGroup>
+      <FormGroup label={t('Asset')} labelFor="asset">
         <Controller
           control={control}
           name="asset"
@@ -251,7 +242,7 @@ export const DepositForm = ({
             },
           }}
           render={({ field }) => (
-            <TradingRichSelect
+            <RichSelect
               data-testid="select-asset"
               id={field.name}
               name={field.name}
@@ -274,13 +265,13 @@ export const DepositForm = ({
                     }
                   />
                 ))}
-            </TradingRichSelect>
+            </RichSelect>
           )}
         />
         {errors.asset?.message && (
-          <TradingInputError intent="danger" forInput="asset">
+          <InputError intent="danger" forInput="asset">
             {errors.asset.message}
-          </TradingInputError>
+          </InputError>
         )}
         {isActive && isFaucetable && selectedAsset && (
           <UseButton onClick={submitFaucet}>
@@ -299,7 +290,7 @@ export const DepositForm = ({
             {t('View asset details')}
           </button>
         )}
-      </TradingFormGroup>
+      </FormGroup>
       <FaucetNotification
         isActive={isActive}
         selectedAsset={selectedAsset}
@@ -311,8 +302,8 @@ export const DepositForm = ({
         </div>
       )}
       {approved && (
-        <TradingFormGroup label={t('Amount')} labelFor="amount">
-          <TradingInput
+        <FormGroup label={t('Amount')} labelFor="amount">
+          <Input
             type="number"
             autoComplete="off"
             id="amount"
@@ -377,9 +368,9 @@ export const DepositForm = ({
             })}
           />
           {errors.amount?.message && (
-            <TradingInputError intent="danger" forInput="amount">
+            <InputError intent="danger" forInput="amount">
               {errors.amount.message}
-            </TradingInputError>
+            </InputError>
           )}
           {selectedAsset && balances && (
             <UseButton
@@ -393,7 +384,7 @@ export const DepositForm = ({
               {t('Use maximum')}
             </UseButton>
           )}
-        </TradingFormGroup>
+        </FormGroup>
       )}
       <ApproveNotification
         isActive={isActive}
@@ -435,14 +426,15 @@ const FormButton = ({ approved, selectedAsset }: FormButtonProps) => {
           />
         </div>
       )}
-      <TradingButton
+      <Button
         type="submit"
         data-testid="deposit-submit"
+        variant={isActive ? 'primary' : 'default'}
         fill
-        disabled={!isActive || invalidChain}
+        disabled={invalidChain}
       >
         {t('Deposit')}
-      </TradingButton>
+      </Button>
     </>
   );
 };
@@ -454,7 +446,7 @@ const UseButton = (props: UseButtonProps) => {
     <button
       {...props}
       type="button"
-      className="absolute top-0 right-0 ml-auto text-sm underline"
+      className="ml-auto text-sm absolute top-0 right-0 underline"
     />
   );
 };
@@ -512,7 +504,7 @@ export const AddressField = ({
             setIsInput((curr) => !curr);
             onChange();
           }}
-          className="absolute top-0 right-0 ml-auto text-sm underline"
+          className="ml-auto text-sm absolute top-0 right-0 underline"
           data-testid="enter-pubkey-manually"
         >
           {isInput ? t('Select from wallet') : t('Enter manually')}

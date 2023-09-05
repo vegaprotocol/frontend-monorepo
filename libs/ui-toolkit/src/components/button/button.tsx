@@ -30,14 +30,14 @@ const primary = [
   'enabled:active:bg-vega-yellow-550 enabled:active:border-vega-yellow-550',
 ];
 const secondary = [
-  'text-white',
+  'text-white dark:text-black',
   'border-vega-pink',
   'dark:bg-vega-pink bg-vega-pink-550',
   'enabled:hover:bg-vega-pink enabled:hover:border-vega-pink',
   'enabled:active:bg-vega-pink enabled:active:border-vega-pink',
 ];
 const ternary = [
-  'text-black',
+  'text-white dark:text-black',
   'border-vega-green',
   'dark:bg-vega-green bg-vega-green-550',
   'enabled:hover:bg-vega-green enabled:hover:border-vega-green',
@@ -136,12 +136,15 @@ export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorButtonProps>(
   }
 );
 
-type ButtonLinkProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'style'>;
+type ButtonLinkProps = Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'className' | 'style'
+>;
 
 export const ButtonLink = forwardRef<HTMLButtonElement, ButtonLinkProps>(
-  ({ type = 'button', className, ...props }, ref) => {
-    const style = classnames('inline underline', className);
-    return <button ref={ref} className={style} type={type} {...props} />;
+  ({ type = 'button', ...props }, ref) => {
+    const className = classnames('inline underline');
+    return <button ref={ref} className={className} type={type} {...props} />;
   }
 );
 

@@ -37,7 +37,7 @@ describe('fills', { tags: '@regression' }, () => {
 
   it('renders fills on portfolio page', () => {
     cy.visit('/#/portfolio');
-    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.getByTestId('Fills').click();
     validateFillsDisplayed();
   });
@@ -53,7 +53,7 @@ describe('fills', { tags: '@regression' }, () => {
     cy.getByTestId(tabFills).contains('Market');
     cy.getByTestId(tabFills)
       .get(
-        '[role="gridcell"][col-id="market.tradableInstrument.instrument.code"]'
+        '[role="gridcell"][col-id="market.tradableInstrument.instrument.name"]'
       )
       .each(($marketSymbol) => {
         cy.wrap($marketSymbol).invoke('text').should('not.be.empty');

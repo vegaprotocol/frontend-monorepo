@@ -1,20 +1,16 @@
+import { DocsLinks, ExternalLinks } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
-import {
-  ExternalLink,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
-import { MozillaIcon } from './mozilla-icon';
-import { ChromeIcon } from './chrome-icon';
-import { useVegaWallet } from '../use-vega-wallet';
+import type { VegaConnector } from '../connectors';
+import { RestConnector } from '../connectors';
 
 export const ConnectDialogTitle = ({ children }: { children: ReactNode }) => {
   return (
     <h1
       data-testid="wallet-dialog-title"
-      className="mb-6 text-2xl uppercase font-alpha calt"
+      className="text-2xl uppercase mb-6 text-center font-alpha calt"
     >
       {children}
     </h1>
@@ -25,56 +21,48 @@ export const ConnectDialogContent = ({ children }: { children: ReactNode }) => {
   return <div>{children}</div>;
 };
 
-export const ConnectDialogFooter = () => {
-  const { links } = useVegaWallet();
+export const ConnectDialogFooter = ({
+  connector,
+}: {
+  connector: VegaConnector | undefined;
+}) => {
   const wrapperClasses = classNames(
-    'flex justify-center gap-4 mt-4',
+    'flex justify-center gap-4',
     'px-4 md:px-8 pt-4 md:pt-6',
     'border-t border-vega-light-200 dark:border-vega-dark-200',
-    'text-vega-light-400 dark:text-vega-dark-400 text-sm'
+    'text-vega-light-400 dark:text-vega-dark-400'
   );
+  const isHostedWalletSelected = connector instanceof RestConnector;
   return (
     <footer className={wrapperClasses}>
-      <ExternalLink href={links.about} className="underline">
-        {t('About the Vega wallet')}{' '}
-        <VegaIcon name={VegaIconNames.ARROW_TOP_RIGHT} />
-      </ExternalLink>
-      {' | '}
-      <ExternalLink href={links.browserList} className="underline">
-        {t('Supported browsers')}{' '}
-        <VegaIcon name={VegaIconNames.ARROW_TOP_RIGHT} />
-      </ExternalLink>
-    </footer>
-  );
-};
-
-export const BrowserIcon = ({
-  chromeExtensionUrl,
-  mozillaExtensionUrl,
-}: {
-  chromeExtensionUrl: string;
-  mozillaExtensionUrl: string;
-}) => {
-  const isItChrome = window.navigator.userAgent.includes('Chrome');
-  const isItMozilla =
-    window.navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-  return (
-    <div className="absolute top-0 flex items-center h-8 right-1">
-      {!isItChrome && !isItMozilla ? (
-        <>
-          <a href={mozillaExtensionUrl} target="_blank" rel="noreferrer">
-            <MozillaIcon />
-          </a>{' '}
-          <a href={chromeExtensionUrl} target="_blank" rel="noreferrer">
-            <ChromeIcon />
-          </a>
-        </>
+      {isHostedWalletSelected ? (
+        <p className="text-center">
+          {t('For demo purposes get a ')}
+          <Link
+            href={ExternalLinks.VEGA_WALLET_HOSTED_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {t('hosted wallet')}
+          </Link>
+          {t(', or for the real experience create a wallet in the ')}
+          <Link href={ExternalLinks.VEGA_WALLET_URL}>
+            {t('Vega wallet app')}
+          </Link>
+        </p>
       ) : (
         <>
-          {isItChrome && <ChromeIcon />}
-          {isItMozilla && <MozillaIcon />}
+          <Link href={ExternalLinks.VEGA_WALLET_URL}>
+            {t('Get a Vega Wallet')}
+          </Link>
+          {' | '}
+          {DocsLinks && (
+            <Link href={DocsLinks.VEGA_WALLET_CONCEPTS_URL}>
+              {t('Having trouble?')}
+            </Link>
+          )}
         </>
       )}
-    </div>
+    </footer>
   );
 };

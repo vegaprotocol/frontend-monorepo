@@ -15,9 +15,8 @@ export const ethereumAddress = (value: string) => {
   return true;
 };
 
-export const VEGA_ID_REGEX = /^[A-Fa-f0-9]{64}$/i;
 export const vegaPublicKey = (value: string) => {
-  if (!VEGA_ID_REGEX.test(value)) {
+  if (!/^[A-Fa-f0-9]{64}$/i.test(value)) {
     return t('Invalid Vega key');
   }
   return true;

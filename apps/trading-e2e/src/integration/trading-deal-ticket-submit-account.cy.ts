@@ -8,11 +8,11 @@ import {
 import type { OrderSubmission } from '@vegaprotocol/wallet';
 import { createOrder } from '../support/create-order';
 
-describe.skip(
+describe(
   'account validation',
   { tags: '@regression', testIsolation: true },
   () => {
-    describe.skip('zero balance error', () => {
+    describe('zero balance error', () => {
       beforeEach(() => {
         cy.setVegaWallet();
         cy.mockTradingPage();
@@ -59,12 +59,6 @@ describe.skip(
         cy.mockSubscription();
         cy.visit('/#/markets/market-0');
         cy.wait('@Markets');
-
-        cy.get('[data-testid="deal-ticket-form"]').then(($form) => {
-          if (!$form.length) {
-            cy.getByTestId('Order').click();
-          }
-        });
       });
 
       it('should display info and button for deposit', () => {
@@ -80,8 +74,8 @@ describe.skip(
           'You may not have enough margin available to open this position. 5.00 tDAI is currently required. You have only 0.01001 tDAI available.'
         );
         cy.getByTestId('deal-ticket-deposit-dialog-button').click();
-        cy.getByTestId('sidebar-content')
-          .find('h2')
+        cy.getByTestId('dialog-content')
+          .find('h1')
           .eq(0)
           .should('have.text', 'Deposit');
       });

@@ -25,7 +25,6 @@ import {
   vegaWalletSetSpecifiedApprovalAmount,
   vegaWalletTeardown,
 } from '../../support/wallet-functions';
-
 const stakeValidatorListTotalStake = 'total-stake';
 const stakeValidatorListTotalShare = 'total-stake-share';
 const stakeValidatorListStakePercentage = 'stake-percentage';
@@ -68,7 +67,6 @@ context(
         function () {
           cy.clearLocalStorage();
           turnTelemetryOff();
-          cy.mockChainId();
           // Go to homepage to allow wallet teardown without epoch timer refreshing page
           navigateTo(navigation.home);
           vegaWalletTeardown();
@@ -146,7 +144,7 @@ context(
         closeStakingDialog();
         navigateTo(navigation.validators);
         cy.getByTestId(viewStakedByMeToggle).click();
-        cy.getByTestId(userStakeBtn, epochTimeout).should('have.length', 2);
+        cy.getByTestId(userStakeBtn).should('have.length', 2);
       });
 
       it('Able to stake against a validator - using vega from vesting contract', function () {

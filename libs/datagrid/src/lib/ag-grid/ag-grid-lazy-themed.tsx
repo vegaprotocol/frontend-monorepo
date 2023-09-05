@@ -3,20 +3,6 @@ import { AgGridReact } from 'ag-grid-react';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/i18n';
 import classNames from 'classnames';
-import type { ColDef } from 'ag-grid-community';
-
-const defaultProps: AgGridReactProps = {
-  enableCellTextSelection: true,
-  overlayLoadingTemplate: t('Loading...'),
-  overlayNoRowsTemplate: t('No data'),
-  suppressCellFocus: true,
-  suppressColumnMoveAnimation: true,
-};
-
-const defaultColDef: ColDef = {
-  resizable: true,
-  sortable: true,
-};
 
 export const AgGridThemed = ({
   style,
@@ -27,20 +13,23 @@ export const AgGridThemed = ({
   gridRef?: React.ForwardedRef<AgGridReact>;
 }) => {
   const { theme } = useThemeSwitcher();
+  const defaultProps = {
+    rowHeight: 22,
+    headerHeight: 22,
+    enableCellTextSelection: true,
+    overlayLoadingTemplate: t('Loading...'),
+    overlayNoRowsTemplate: t('No data'),
+    suppressCellFocus: true,
+  };
 
-  const wrapperClasses = classNames('vega-ag-grid', 'w-full h-full', {
+  const wrapperClasses = classNames('vega-ag-grid', {
     'ag-theme-balham': theme === 'light',
     'ag-theme-balham-dark': theme === 'dark',
   });
 
   return (
-    <div className={wrapperClasses}>
-      <AgGridReact
-        defaultColDef={defaultColDef}
-        ref={gridRef}
-        {...defaultProps}
-        {...props}
-      />
+    <div className={wrapperClasses} style={style}>
+      <AgGridReact {...defaultProps} {...props} ref={gridRef} />
     </div>
   );
 };

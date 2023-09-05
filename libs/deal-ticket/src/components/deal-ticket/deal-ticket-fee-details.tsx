@@ -1,20 +1,22 @@
 import { useCallback, useState } from 'react';
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import classnames from 'classnames';
+import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { FeesBreakdown } from '@vegaprotocol/markets';
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
 import type { Market } from '@vegaprotocol/markets';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
+import type { EstimateFeesQuery } from '../../hooks/__generated__/EstimateOrder';
 import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
 
 import { formatRange, formatValue } from '@vegaprotocol/utils';
 import { marketMarginDataProvider } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
-import * as Accordion from '@radix-ui/react-accordion';
-
 import {
+  NOTIONAL_SIZE_TOOLTIP_TEXT,
   MARGIN_DIFF_TOOLTIP_TEXT,
   DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT,
   TOTAL_MARGIN_AVAILABLE,
@@ -22,76 +24,81 @@ import {
   EST_TOTAL_MARGIN_TOOLTIP_TEXT,
   MARGIN_ACCOUNT_TOOLTIP_TEXT,
 } from '../../constants';
-import { useEstimateFees } from '../../hooks';
-import { KeyValue } from './key-value';
-import { TOOLTIP_TRIGGER_CLASS_NAME } from '@vegaprotocol/ui-toolkit';
 
 const emptyValue = '-';
 
-export interface DealTicketFeeDetailsProps {
-  assetSymbol: string;
-  order: OrderSubmissionBody['orderSubmission'];
-  market: Market;
+export interface DealTicketFeeDetailPros {
+  label: string;
+  value?: string | null | undefined;
+  symbol: string;
+  indent?: boolean | undefined;
+  labelDescription?: ReactNode;
+  formattedValue?: string;
+  onClick?: () => void;
 }
 
-export const DealTicketFeeDetails = ({
-  assetSymbol,
-  order,
-  market,
-}: DealTicketFeeDetailsProps) => {
-  const feeEstimate = useEstimateFees(order);
-  const { settlementAsset: asset } =
-    market.tradableInstrument.instrument.product;
-  const { decimals: assetDecimals, quantum } = asset;
-
+export const DealTicketFeeDetail = ({
+  label,
+  value,
+  labelDescription,
+  symbol,
+  indent,
+  onClick,
+  formattedValue,
+}: DealTicketFeeDetailPros) => {
+  const displayValue = `${formattedValue ?? '-'} ${symbol || ''}`;
+  const valueElement = onClick ? (
+    <button
+      onClick={onClick}
+      className="text-neutral-500 dark:text-neutral-300"
+    >
+      {displayValue}
+    </button>
+  ) : (
+    <div className="text-neutral-500 dark:text-neutral-300">{displayValue}</div>
+  );
   return (
-    <KeyValue
-      label={t('Fees')}
-      value={
-        feeEstimate?.totalFeeAmount &&
-        `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals)}`
+    <div
+      data-testid={
+        'deal-ticket-fee-' + label.toLocaleLowerCase().replace(/\s/g, '-')
       }
-      formattedValue={
-        feeEstimate?.totalFeeAmount &&
-        `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals, quantum)}`
-      }
-      labelDescription={
-        <>
-          <span>
-            {t(
-              `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}.`
-            )}
-          </span>
-          <FeesBreakdown
-            fees={feeEstimate?.fees}
-            feeFactors={market.fees.factors}
-            symbol={assetSymbol}
-            decimals={assetDecimals}
-          />
-        </>
-      }
-      symbol={assetSymbol}
-    />
+      key={typeof label === 'string' ? label : 'value-dropdown'}
+      className={classnames(
+        'text-xs mt-2 flex justify-between items-center gap-4 flex-wrap',
+        { 'ml-2': indent }
+      )}
+    >
+      <Tooltip description={labelDescription}>
+        <div>{label}</div>
+      </Tooltip>
+      <Tooltip description={`${value ?? '-'} ${symbol || ''}`}>
+        {valueElement}
+      </Tooltip>
+    </div>
   );
 };
 
-export interface DealTicketMarginDetailsProps {
+export interface DealTicketFeeDetailsProps {
   generalAccountBalance?: string;
   marginAccountBalance?: string;
   market: Market;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   assetSymbol: string;
+  notionalSize: string | null;
+  feeEstimate: EstimateFeesQuery['estimateFees'] | undefined;
   positionEstimate: EstimatePositionQuery['estimatePosition'];
 }
 
-export const DealTicketMarginDetails = ({
+export const DealTicketFeeDetails = ({
   marginAccountBalance,
   generalAccountBalance,
   assetSymbol,
+  feeEstimate,
   market,
   onMarketClick,
+  notionalSize,
   positionEstimate,
-}: DealTicketMarginDetailsProps) => {
+}: DealTicketFeeDetailsProps) => {
   const [breakdownDialog, setBreakdownDialog] = useState(false);
   const { pubKey: partyId } = useVegaWallet();
   const { data: currentMargins } = useDataProvider({
@@ -106,6 +113,7 @@ export const DealTicketMarginDetails = ({
   const { settlementAsset: asset } =
     market.tradableInstrument.instrument.product;
   const { decimals: assetDecimals, quantum } = asset;
+  const marketDecimals = market.decimalPlaces;
   let marginRequiredBestCase: string | undefined = undefined;
   let marginRequiredWorstCase: string | undefined = undefined;
   if (marginEstimate) {
@@ -148,7 +156,7 @@ export const DealTicketMarginDetails = ({
       BigInt(marginAccountBalance);
 
     deductionFromCollateral = (
-      <KeyValue
+      <DealTicketFeeDetail
         indent
         label={t('Deduction from collateral')}
         value={formatRange(
@@ -175,7 +183,7 @@ export const DealTicketMarginDetails = ({
       />
     );
     projectedMargin = (
-      <KeyValue
+      <DealTicketFeeDetail
         label={t('Projected margin')}
         value={formatRange(
           marginEstimate?.bestCase.initialLevel,
@@ -246,75 +254,92 @@ export const DealTicketMarginDetails = ({
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
 
   return (
-    <>
-      <Accordion.Root type="single" collapsible>
-        <Accordion.Item value="margin">
-          <KeyValue
-            id="margin-required"
-            label={
-              <Accordion.Trigger className={TOOLTIP_TRIGGER_CLASS_NAME}>
-                {t('Margin required')}
-              </Accordion.Trigger>
-            }
-            value={formatRange(
-              marginRequiredBestCase,
-              marginRequiredWorstCase,
-              assetDecimals
-            )}
-            formattedValue={formatRange(
-              marginRequiredBestCase,
-              marginRequiredWorstCase,
-              assetDecimals,
-              quantum
-            )}
-            labelDescription={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}
-            symbol={assetSymbol}
-          />
-          <Accordion.Content>
-            <KeyValue
-              label={t('Total margin available')}
-              indent
-              value={formatValue(totalMarginAvailable, assetDecimals)}
-              formattedValue={formatValue(
-                totalMarginAvailable,
-                assetDecimals,
-                quantum
+    <div>
+      <DealTicketFeeDetail
+        label={t('Notional')}
+        value={formatValue(notionalSize, marketDecimals)}
+        formattedValue={formatValue(notionalSize, marketDecimals)}
+        symbol={quoteName}
+        labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName)}
+      />
+      <DealTicketFeeDetail
+        label={t('Fees')}
+        value={
+          feeEstimate?.totalFeeAmount &&
+          `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals)}`
+        }
+        formattedValue={
+          feeEstimate?.totalFeeAmount &&
+          `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals, quantum)}`
+        }
+        labelDescription={
+          <>
+            <span>
+              {t(
+                `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}.`
               )}
+            </span>
+            <FeesBreakdown
+              fees={feeEstimate?.fees}
+              feeFactors={market.fees.factors}
               symbol={assetSymbol}
-              labelDescription={TOTAL_MARGIN_AVAILABLE(
-                formatValue(generalAccountBalance, assetDecimals, quantum),
-                formatValue(marginAccountBalance, assetDecimals, quantum),
-                formatValue(
-                  currentMargins?.maintenanceLevel,
-                  assetDecimals,
-                  quantum
-                ),
-                assetSymbol
-              )}
+              decimals={assetDecimals}
             />
-            {deductionFromCollateral}
-            <KeyValue
-              label={t('Current margin allocation')}
-              indent
-              onClick={
-                generalAccountBalance
-                  ? () => setBreakdownDialog(true)
-                  : undefined
-              }
-              value={formatValue(marginAccountBalance, assetDecimals)}
-              symbol={assetSymbol}
-              labelDescription={MARGIN_ACCOUNT_TOOLTIP_TEXT}
-              formattedValue={formatValue(
-                marginAccountBalance,
-                assetDecimals,
-                quantum
-              )}
-            />
-          </Accordion.Content>
-        </Accordion.Item>
-      </Accordion.Root>
+          </>
+        }
+        symbol={assetSymbol}
+      />
+      <DealTicketFeeDetail
+        label={t('Margin required')}
+        value={formatRange(
+          marginRequiredBestCase,
+          marginRequiredWorstCase,
+          assetDecimals
+        )}
+        formattedValue={formatRange(
+          marginRequiredBestCase,
+          marginRequiredWorstCase,
+          assetDecimals,
+          quantum
+        )}
+        labelDescription={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}
+        symbol={assetSymbol}
+      />
+      <DealTicketFeeDetail
+        label={t('Total margin available')}
+        indent
+        value={formatValue(totalMarginAvailable, assetDecimals)}
+        formattedValue={formatValue(
+          totalMarginAvailable,
+          assetDecimals,
+          quantum
+        )}
+        symbol={assetSymbol}
+        labelDescription={TOTAL_MARGIN_AVAILABLE(
+          formatValue(generalAccountBalance, assetDecimals, quantum),
+          formatValue(marginAccountBalance, assetDecimals, quantum),
+          formatValue(currentMargins?.maintenanceLevel, assetDecimals, quantum),
+          assetSymbol
+        )}
+      />
+      {deductionFromCollateral}
+      <DealTicketFeeDetail
+        label={t('Current margin allocation')}
+        indent
+        onClick={
+          generalAccountBalance ? () => setBreakdownDialog(true) : undefined
+        }
+        value={formatValue(marginAccountBalance, assetDecimals)}
+        symbol={assetSymbol}
+        labelDescription={MARGIN_ACCOUNT_TOOLTIP_TEXT}
+        formattedValue={formatValue(
+          marginAccountBalance,
+          assetDecimals,
+          quantum
+        )}
+      />
       {projectedMargin}
-      <KeyValue
+      <DealTicketFeeDetail
         label={t('Liquidation price estimate')}
         value={liquidationPriceEstimate}
         formattedValue={liquidationPriceEstimate}
@@ -329,6 +354,6 @@ export const DealTicketMarginDetails = ({
           onClose={onAccountBreakdownDialogClose}
         />
       )}
-    </>
+    </div>
   );
 };

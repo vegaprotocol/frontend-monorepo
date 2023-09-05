@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import {
-  TradingDropdownItem,
-  TradingDropdownCopyItem,
+  DropdownMenuItem,
+  DropdownMenuCopyItem,
   Link,
   VegaIcon,
   VegaIconNames,
@@ -22,8 +22,8 @@ export const MarketActionsDropdown = ({
 
   return (
     <ActionsDropdown data-testid="market-actions-content">
-      <TradingDropdownCopyItem value={marketId} text={t('Copy Market ID')} />
-      <TradingDropdownItem>
+      <DropdownMenuCopyItem value={marketId} text={t('Copy Market ID')} />
+      <DropdownMenuItem>
         <Link
           href={linkCreator(EXPLORER_MARKET.replace(':id', marketId))}
           target="_blank"
@@ -33,15 +33,15 @@ export const MarketActionsDropdown = ({
             {t('View on Explorer')}
           </span>
         </Link>
-      </TradingDropdownItem>
-      <TradingDropdownItem
+      </DropdownMenuItem>
+      <DropdownMenuItem
         onClick={(e) => {
           open(assetId, e.target as HTMLElement);
         }}
       >
         <VegaIcon name={VegaIconNames.INFO} size={16} />
         {t('View settlement asset details')}
-      </TradingDropdownItem>
+      </DropdownMenuItem>
     </ActionsDropdown>
   );
 };

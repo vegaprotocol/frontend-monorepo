@@ -134,7 +134,7 @@ export const ProposalsList = ({
     p?.party?.id?.toString().includes(filterString);
 
   return (
-    <div data-testid="proposals-list">
+    <>
       <div className="grid xs:grid-cols-2 items-center">
         <Heading
           centerContent={false}
@@ -294,6 +294,6 @@ export const ProposalsList = ({
       <Link className="underline" to={Routes.PROPOSALS_REJECTED}>
         {t('seeRejectedProposals')}
       </Link>
-    </div>
+    </>
   );
 };

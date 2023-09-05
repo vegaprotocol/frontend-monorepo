@@ -18,7 +18,6 @@ import { VegaWallet } from '../vega-wallet';
 import { useLocation, useMatch } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useTelemetryDialog } from '../telemetry-dialog/telemetry-dialog';
-import { ProtocolUpgradeCountdown } from '@vegaprotocol/proposals';
 
 export const SettingsLink = () => {
   const { open, isOpen, close } = useTelemetryDialog();
@@ -62,12 +61,7 @@ export const Nav = ({ theme }: Pick<NavigationProps, 'theme'>) => {
       appName="Governance"
       theme={theme}
       breakpoints={[458, 959]}
-      actions={
-        <>
-          <SettingsLink />
-          <ProtocolUpgradeCountdown />
-        </>
-      }
+      actions={<SettingsLink />}
     >
       <NavigationList
         className="[.drawer-content_&]:border-b [.drawer-content_&]:border-b-vega-light-200 dark:[.drawer-content_&]:border-b-vega-dark-200 [.drawer-content_&]:pb-8 [.drawer-content_&]:mb-2"

@@ -14,19 +14,10 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
     cy.wait('@Markets');
-
-    cy.get('[data-testid="deal-ticket-form"]').then(($form) => {
-      if (!$form.length) {
-        cy.getByTestId('Order').click();
-      }
-    });
   });
 
   beforeEach(() => {
     cy.mockTradingPage();
-    cy.getByTestId('deal-ticket-fee-margin-required').within(() => {
-      cy.get('button').click();
-    });
   });
 
   describe('limit order', () => {
@@ -36,7 +27,9 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
 
     it('must see the price unit', function () {
       // 7002-SORD-018
-      cy.getByTestId(orderPriceField).next().should('have.text', 'DAI');
+      cy.getByTestId(orderPriceField)
+        .siblings('label')
+        .should('have.text', 'Price (DAI)');
     });
 
     it('must see warning when placing an order with expiry date in past', () => {
@@ -64,8 +57,7 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
       cy.getByTestId(orderTIFDropDown).select('TIME_IN_FORCE_GTC');
       cy.getByTestId(orderSizeField).clear().type('1');
       cy.getByTestId(orderPriceField).clear().type('1.123456');
-      cy.getByTestId(placeOrderBtn).click();
-      cy.getByTestId('deal-ticket-error-message-price').should(
+      cy.getByTestId('deal-ticket-error-message-price-limit').should(
         'have.text',
         'Price accepts up to 5 decimal places'
       );
@@ -75,7 +67,6 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
   describe('market order', () => {
     before(() => {
       cy.getByTestId(toggleMarket).click();
-      cy.getByTestId(placeOrderBtn).click();
     });
 
     it('must not see the price unit', function () {
@@ -88,7 +79,7 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
       cy.getByTestId(orderSizeField).clear().type('1.234');
       // 7002-SORD-060
       cy.getByTestId(placeOrderBtn).should('be.enabled');
-      cy.getByTestId('deal-ticket-error-message-size').should(
+      cy.getByTestId('deal-ticket-error-message-size-market').should(
         'have.text',
         'Size must be whole numbers for this market'
       );
@@ -97,7 +88,7 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
     it('must warn if order size is set to 0', function () {
       cy.getByTestId(orderSizeField).clear().type('0');
       cy.getByTestId(placeOrderBtn).should('be.enabled');
-      cy.getByTestId('deal-ticket-error-message-size').should(
+      cy.getByTestId('deal-ticket-error-message-size-market').should(
         'have.text',
         'Size cannot be lower than 1'
       );

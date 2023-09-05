@@ -1,11 +1,9 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import {
   ConditionOperator,
   ConditionOperatorMapping,
 } from '@vegaprotocol/types';
-import { DataSourceProof, SuccessionLineInfoPanel } from './market-info-panels';
-import { MockedProvider } from '@apollo/react-testing';
-import { SuccessorMarketIdsDocument } from '../../__generated__';
+import { DataSourceProof } from './market-info-panels';
 
 jest.mock('../../hooks/use-oracle-markets', () => ({
   useOracleMarkets: () => [],
@@ -138,94 +136,4 @@ describe('DataSourceProof', () => {
       )
     ).toBeInTheDocument();
   });
-});
-
-describe('SuccessionLineInfoPanel', () => {
-  const mocks = [
-    {
-      request: {
-        query: SuccessorMarketIdsDocument,
-      },
-      result: {
-        data: {
-          __typename: 'Query',
-          marketsConnection: {
-            __typename: 'MarketConnection',
-            edges: [
-              {
-                __typename: 'MarketEdge',
-                node: {
-                  __typename: 'Market',
-                  id: 'abc',
-                  successorMarketID: 'def',
-                  parentMarketID: null,
-                },
-              },
-              {
-                __typename: 'MarketEdge',
-                node: {
-                  __typename: 'Market',
-                  id: 'def',
-                  successorMarketID: 'ghi',
-                  parentMarketID: 'abc',
-                },
-              },
-              {
-                __typename: 'MarketEdge',
-                node: {
-                  __typename: 'Market',
-                  id: 'ghi',
-                  successorMarketID: null,
-                  parentMarketID: 'def',
-                },
-              },
-            ],
-          },
-        },
-      },
-    },
-  ];
-
-  it.each([
-    ['abc', 1],
-    ['def', 2],
-    ['ghi', 3],
-  ])(
-    'renders succession line for %s (current position %d)',
-    async (id, number) => {
-      render(
-        <MockedProvider mocks={mocks}>
-          <SuccessionLineInfoPanel
-            market={{
-              id,
-            }}
-          />
-        </MockedProvider>
-      );
-
-      await waitFor(() => {
-        const items = screen.getAllByTestId('succession-line-item');
-        expect(items.length).toBe(3);
-        expect(
-          items[0].querySelector(
-            '[data-testid="succession-line-item-market-id"]'
-          )?.textContent
-        ).toBe('abc');
-        expect(
-          items[1].querySelector(
-            '[data-testid="succession-line-item-market-id"]'
-          )?.textContent
-        ).toBe('def');
-        expect(
-          items[2].querySelector(
-            '[data-testid="succession-line-item-market-id"]'
-          )?.textContent
-        ).toBe('ghi');
-
-        expect(
-          items[number - 1].querySelector('[data-testid="icon-bullet"]')
-        ).toBeInTheDocument();
-      });
-    }
-  );
 });

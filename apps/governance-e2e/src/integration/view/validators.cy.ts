@@ -11,7 +11,6 @@ import {
   waitForBeginningOfEpoch,
 } from '../../support/staking.functions';
 import { previousEpochData } from '../../fixtures/mocks/previous-epoch';
-import { chainIdQuery, statisticsQuery } from '@vegaprotocol/mock';
 
 const guideLink = 'staking-guide-link';
 const validatorTitle = 'validator-node-title';
@@ -34,21 +33,10 @@ const overstakedPenaltyToolTip = 'overstaked-penalty-tooltip';
 const multisigPenaltyToolTip = 'multisig-error-tooltip';
 const epochCountDown = 'epoch-countdown';
 const stakeNumberRegex = /^\d{1,3}(,\d{3})*(\.\d+)?$/;
-const txTimeout = Cypress.env('txTimeout');
 
 context('Validators Page - verify elements on page', function () {
-  before('navigate to validators page', () => {
-    cy.mockGQL((req) => {
-      aliasGQLQuery(req, 'ChainId', chainIdQuery());
-      aliasGQLQuery(req, 'Statistics', statisticsQuery());
-    });
+  before('navigate to validators page', function () {
     cy.visit('/validators');
-  });
-  beforeEach(() => {
-    cy.mockGQL((req) => {
-      aliasGQLQuery(req, 'ChainId', chainIdQuery());
-      aliasGQLQuery(req, 'Statistics', statisticsQuery());
-    });
   });
 
   describe('with wallets disconnected', { tags: '@smoke' }, function () {
@@ -189,11 +177,6 @@ context('Validators Page - verify elements on page', function () {
     { tags: '@smoke' },
     function () {
       before('connect wallets and click on validator', function () {
-        cy.mockGQL((req) => {
-          aliasGQLQuery(req, 'ChainId', chainIdQuery());
-          aliasGQLQuery(req, 'Statistics', statisticsQuery());
-        });
-        cy.visit('/validators');
         cy.connectVegaWallet();
         clickOnValidatorFromList(0);
       });
@@ -280,7 +263,7 @@ context('Validators Page - verify elements on page', function () {
 
         cy.getByTestId(epochCountDown).within(() => {
           cy.get(epochTitle).should('not.be.empty');
-          cy.get(nextEpochInfo, txTimeout).should('contain.text', 'Next epoch');
+          cy.get(nextEpochInfo).should('contain.text', 'Next epoch');
         });
       });
     }

@@ -20,10 +20,6 @@ import { MarginHealthChart } from './margin-health-chart';
 import { MarketNameCell } from '@vegaprotocol/datagrid';
 import { AccountType } from '@vegaprotocol/types';
 
-const defaultColDef = {
-  resizable: true,
-  sortable: true,
-};
 interface BreakdownTableProps extends AgGridReactProps {
   data: AccountFields[] | null;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
@@ -35,26 +31,17 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
       const defs: ColDef[] = [
         {
           headerName: t('Market'),
-          field: 'market.tradableInstrument.instrument.code',
-          minWidth: 200,
-          cellRenderer: ({
+          field: 'market.tradableInstrument.instrument.name',
+          valueFormatter: ({
             value,
-            data,
-          }: VegaICellRendererParams<
+          }: VegaValueFormatterParams<
             AccountFields,
-            'market.tradableInstrument.instrument.code'
+            'market.tradableInstrument.instrument.name'
           >) => {
-            return value ? (
-              <MarketNameCell
-                value={value}
-                productType={
-                  data?.market?.tradableInstrument.instrument.product.__typename
-                }
-              />
-            ) : (
-              'None'
-            );
+            if (!value) return 'None';
+            return value;
           },
+          minWidth: 200,
         },
         {
           headerName: t('Account type'),
@@ -71,6 +58,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         {
           headerName: t('Balance'),
           field: 'used',
+          flex: 2,
           maxWidth: 500,
           type: 'rightAligned',
           tooltipComponent: TooltipCellComponent,
@@ -109,6 +97,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         {
           headerName: t('Margin health'),
           field: 'market.id',
+          flex: 2,
           maxWidth: 500,
           sortable: false,
           cellRenderer: ({
@@ -129,6 +118,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
 
     return (
       <AgGrid
+        style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('Collateral not used')}
         rowData={data}
         getRowId={({ data }: { data: AccountFields }) =>
@@ -136,9 +126,13 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         }
         ref={ref}
         rowHeight={34}
-        components={{ PriceCell, ProgressBarCell }}
+        components={{ PriceCell, MarketNameCell, ProgressBarCell }}
         tooltipShowDelay={500}
-        defaultColDef={defaultColDef}
+        defaultColDef={{
+          flex: 1,
+          resizable: true,
+          sortable: true,
+        }}
         columnDefs={coldefs}
       />
     );

@@ -10,24 +10,26 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { addDecimal, toBigNum } from '@vegaprotocol/utils';
 import { ProposalState, VoteValue } from '@vegaprotocol/types';
-import { useAppState } from '../../../../contexts/app-state/app-state-context';
+import {
+  AppStateActionType,
+  useAppState,
+} from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
 import { DATE_FORMAT_LONG } from '../../../../lib/date-formats';
 import { VoteState } from './use-user-vote';
 import { ProposalMinRequirements, ProposalUserAction } from '../shared';
 import { VoteTransactionDialog } from './vote-transaction-dialog';
 import { useVoteButtonsQuery } from './__generated__/Stake';
-import type { DialogProps, VegaTxState } from '@vegaprotocol/wallet';
+import type { DialogProps } from '@vegaprotocol/wallet';
 
 interface VoteButtonsContainerProps {
   voteState: VoteState | null;
   voteDatetime: Date | null;
   proposalId: string | null;
   proposalState: ProposalState;
-  minVoterBalance: string | null | undefined;
-  spamProtectionMinTokens: string | null | undefined;
+  minVoterBalance: string | null;
+  spamProtectionMinTokens: string | null;
   submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
-  transaction: VegaTxState | null;
   dialog: (props: DialogProps) => JSX.Element;
   className?: string;
 }
@@ -68,10 +70,10 @@ export const VoteButtons = ({
   minVoterBalance,
   spamProtectionMinTokens,
   submit,
-  transaction,
   dialog: Dialog,
 }: VoteButtonsProps) => {
   const { t } = useTranslation();
+  const { appDispatch } = useAppState();
   const { pubKey } = useVegaWallet();
   const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
     openVegaWalletDialog: store.openVegaWalletDialog,
@@ -96,6 +98,10 @@ export const VoteButtons = ({
         <div data-testid="connect-wallet">
           <ButtonLink
             onClick={() => {
+              appDispatch({
+                type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
+                isOpen: true,
+              });
               openVegaWalletDialog();
             }}
           >
@@ -136,6 +142,7 @@ export const VoteButtons = ({
     minVoterBalance,
     spamProtectionMinTokens,
     t,
+    appDispatch,
     openVegaWalletDialog,
   ]);
 
@@ -190,15 +197,18 @@ export const VoteButtons = ({
         (voteState === VoteState.Yes || voteState === VoteState.No) && (
           <p data-testid="you-voted">
             <span>{t('youVoted')}:</span>{' '}
-            <span className="mx-1 text-white font-bold uppercase">
+            <span
+              className={
+                voteState === VoteState.Yes ? 'text-success' : 'text-danger'
+              }
+            >
               {t(`voteState_${voteState}`)}
             </span>{' '}
             {voteDatetime ? (
-              <span>on {format(voteDatetime, DATE_FORMAT_LONG)}. </span>
+              <span>{format(voteDatetime, DATE_FORMAT_LONG)}. </span>
             ) : null}
             {proposalVotable ? (
               <ButtonLink
-                className="text-white"
                 data-testid="change-vote-button"
                 onClick={() => {
                   setChangeVote(true);
@@ -211,11 +221,7 @@ export const VoteButtons = ({
           </p>
         )
       )}
-      <VoteTransactionDialog
-        voteState={voteState}
-        transaction={transaction}
-        TransactionDialog={Dialog}
-      />
+      <VoteTransactionDialog voteState={voteState} TransactionDialog={Dialog} />
     </>
   );
 };

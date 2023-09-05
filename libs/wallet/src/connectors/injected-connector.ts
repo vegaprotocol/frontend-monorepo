@@ -41,11 +41,6 @@ declare global {
   }
 }
 
-export const InjectedConnectorErrors = {
-  VEGA_UNDEFINED: new Error('window.vega not found'),
-  INVALID_CHAIN: new Error('Invalid chain'),
-};
-
 export class InjectedConnector implements VegaConnector {
   description = 'Connects using the Vega wallet browser extension';
 

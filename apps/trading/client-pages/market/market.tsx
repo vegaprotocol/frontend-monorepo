@@ -2,15 +2,18 @@ import React, { useEffect, useMemo } from 'react';
 import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
-import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
+import {
+  useDataProvider,
+  useThrottledDataProvider,
+} from '@vegaprotocol/data-provider';
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
-import { marketDataProvider, useMarket } from '@vegaprotocol/markets';
+import { marketProvider, marketDataProvider } from '@vegaprotocol/markets';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid } from './trade-grid';
 import { TradePanels } from './trade-panels';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
-import { ViewType, useSidebar } from '../../components/sidebar';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -58,13 +61,19 @@ const TitleUpdater = ({
 export const MarketPage = () => {
   const { marketId } = useParams();
   const navigate = useNavigate();
-  const { init, view, setView } = useSidebar();
+
   const { screenSize } = useScreenDimensions();
   const largeScreen = ['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize);
   const update = useGlobalStore((store) => store.update);
   const lastMarketId = useGlobalStore((store) => store.marketId);
 
-  const { data, error, loading } = useMarket(marketId);
+  const onSelect = useMarketClickHandler();
+
+  const { data, error, loading } = useDataProvider({
+    dataProvider: marketProvider,
+    variables: { marketId: marketId || '' },
+    skip: !marketId,
+  });
 
   useEffect(() => {
     if (data?.id && data.id !== lastMarketId) {
@@ -72,18 +81,12 @@ export const MarketPage = () => {
     }
   }, [update, lastMarketId, data?.id]);
 
-  // Make sidebar open on deal ticket by default
-  useEffect(() => {
-    if (init && view === null) {
-      setView({ type: ViewType.Order });
-    }
-  }, [init, view, setView]);
-
   const tradeView = useMemo(() => {
     if (largeScreen) {
       return (
         <TradeGrid
           market={data}
+          onSelect={onSelect}
           pinnedAsset={
             data?.tradableInstrument.instrument.product.settlementAsset
           }
@@ -93,12 +96,11 @@ export const MarketPage = () => {
     return (
       <TradePanels
         market={data}
-        pinnedAsset={
-          data?.tradableInstrument.instrument.product.settlementAsset
-        }
+        onSelect={onSelect}
+        onClickCollateral={() => navigate('/portfolio')}
       />
     );
-  }, [largeScreen, data]);
+  }, [largeScreen, data, onSelect, navigate]);
 
   if (!data && marketId) {
     return (

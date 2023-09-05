@@ -6,7 +6,7 @@ import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
-import type { Order, OrderFieldsFragment, OrderListTableProps } from '../';
+import type { OrderListTableProps } from '../';
 import { OrderListTable } from '../';
 import {
   generateOrder,
@@ -27,7 +27,6 @@ const defaultProps: OrderListTableProps = {
   rowData: [],
   onEdit: jest.fn(),
   onCancel: jest.fn(),
-  onView: jest.fn(),
   isReadOnly: false,
 };
 
@@ -80,7 +79,7 @@ describe('OrderListTable', () => {
       '-',
       Schema.OrderTimeInForceCode[marketOrder.timeInForce],
       getDateTimeFormat().format(new Date(marketOrder.createdAt)),
-      '',
+      'Edit',
     ];
     expectedValues.forEach((expectedValue, i) =>
       expect(cells[i]).toHaveTextContent(expectedValue)
@@ -104,42 +103,7 @@ describe('OrderListTable', () => {
         Schema.OrderTimeInForceCode[limitOrder.timeInForce]
       }: ${getDateTimeFormat().format(new Date(limitOrder.expiresAt ?? ''))}`,
       getDateTimeFormat().format(new Date(limitOrder.createdAt)),
-      '',
-    ];
-    expectedValues.forEach((expectedValue, i) =>
-      expect(cells[i]).toHaveTextContent(expectedValue)
-    );
-  });
-
-  it('should apply correct formatting applied for an iceberg order', async () => {
-    const icebergOrder = {
-      ...limitOrder,
-      size: '100',
-      remaining: '50',
-      icebergOrder: {
-        __typename: 'IcebergOrder',
-        minimumVisibleSize: '1',
-        peakSize: '50',
-        reservedRemaining: '50',
-      } as OrderFieldsFragment['icebergOrder'],
-    };
-    await act(async () => {
-      render(generateJsx({ rowData: [icebergOrder] }));
-    });
-    const cells = screen.getAllByRole('gridcell');
-    const expectedValues: string[] = [
-      icebergOrder.market?.tradableInstrument.instrument.code || '',
-      '0.00',
-      '+1.00',
-      Schema.OrderTypeMapping[
-        icebergOrder.type || Schema.OrderType.TYPE_LIMIT
-      ] + ' (Iceberg)',
-      Schema.OrderStatusMapping[icebergOrder.status],
-      '-',
-      `${
-        Schema.OrderTimeInForceCode[icebergOrder.timeInForce]
-      }: ${getDateTimeFormat().format(new Date(icebergOrder.expiresAt ?? ''))}`,
-      getDateTimeFormat().format(new Date(icebergOrder.createdAt)),
+      'Edit',
     ];
     expectedValues.forEach((expectedValue, i) =>
       expect(cells[i]).toHaveTextContent(expectedValue)
@@ -162,24 +126,6 @@ describe('OrderListTable', () => {
         Schema.OrderRejectionReasonMapping[rejectedOrder.rejectionReason]
       }`
     );
-  });
-
-  it('negative positionDecimalPoints should be properly rendered in size column', async () => {
-    const localMarketOrder = {
-      ...marketOrder,
-      size: '3000',
-      market: {
-        ...marketOrder.market,
-        positionDecimalPlaces: -4,
-      },
-    } as Order;
-
-    await act(async () => {
-      render(generateJsx({ rowData: [localMarketOrder] }));
-    });
-
-    const cells = screen.getAllByRole('gridcell');
-    expect(cells[2]).toHaveTextContent('+30,000,000');
   });
 
   describe('amend cell', () => {

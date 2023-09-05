@@ -48,7 +48,6 @@ describe('LocalLogger', () => {
       const consoleMethod = methodToConsoleMethod[i];
       jest.spyOn(console, consoleMethod).mockImplementation();
       logger[method]('test', 'test2');
-      // eslint-disable-next-line no-console
       expect(console[consoleMethod]).toHaveBeenCalledWith(
         `trading:${methodToLevel[i]}: `,
         'test',
@@ -101,14 +100,10 @@ describe('LocalLogger', () => {
     const logger = localLoggerFactory({ logLevel: 'info' });
     jest.spyOn(console, 'debug').mockImplementation();
     logger.debug('test', 'test1');
-
-    // eslint-disable-next-line no-console
     expect(console.debug).not.toHaveBeenCalled();
 
     logger.setLogLevel('debug');
     logger.debug('test', 'test1');
-
-    // eslint-disable-next-line no-console
     expect(console.debug).toHaveBeenCalledWith(
       'trading:debug: ',
       'test',

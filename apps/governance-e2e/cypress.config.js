@@ -28,7 +28,6 @@ module.exports = defineConfig({
     numTestsKeptInMemory: 5,
     downloadsFolder: 'cypress/downloads',
     testIsolation: false,
-    experimentalMemoryManagement: true,
   },
   env: {
     ethProviderUrl: 'http://localhost:8545/',

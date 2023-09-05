@@ -17,25 +17,23 @@ export interface TooltipProps {
   open?: boolean;
   align?: 'start' | 'center' | 'end';
   side?: 'top' | 'right' | 'bottom' | 'left';
-  sideOffset?: number;
 }
-
-export const TOOLTIP_TRIGGER_CLASS_NAME =
-  'underline underline-offset-2 decoration-neutral-400 dark:decoration-neutral-400 decoration-dashed';
 
 // Conditionally rendered tooltip if description content is provided.
 export const Tooltip = ({
   children,
   description,
   open,
-  sideOffset,
   align = 'start',
   side = 'bottom',
 }: TooltipProps) =>
   description ? (
     <Provider delayDuration={200} skipDelayDuration={100}>
       <Root open={open}>
-        <Trigger asChild className={TOOLTIP_TRIGGER_CLASS_NAME}>
+        <Trigger
+          asChild
+          className="underline underline-offset-2 decoration-neutral-400 dark:decoration-neutral-400 decoration-dashed"
+        >
           {children}
         </Trigger>
         {description && (
@@ -45,7 +43,6 @@ export const Tooltip = ({
               side={side}
               alignOffset={8}
               className={tooltipContentClasses}
-              sideOffset={sideOffset}
             >
               <div className="relative z-0" data-testid="tooltip-content">
                 {description}
@@ -60,9 +57,5 @@ export const Tooltip = ({
   );
 
 export const TooltipCellComponent = (props: ITooltipParams) => {
-  return (
-    <div className={tooltipContentClasses} role="tooltip">
-      {props.value}
-    </div>
-  );
+  return <p className={tooltipContentClasses}>{props.value}</p>;
 };

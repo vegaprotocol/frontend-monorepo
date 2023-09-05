@@ -8,7 +8,6 @@ import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 import DeterministicOrderDetails from '../../order-details/deterministic-order-details';
 import Hash from '../../links/hash';
 import { TxOrderPeggedReferenceRow } from './order/tx-order-peg';
-import { TxOrderIcebergDetails } from './order/tx-order-iceberg';
 
 interface TxDetailsOrderProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -33,8 +32,6 @@ export const TxDetailsOrder = ({
   const marketId = txData.command.orderSubmission.marketId || '-';
   const reference = txData.command.orderSubmission.peggedOrder;
   const side = txData.command.orderSubmission.side;
-  const iceberg = txData.command.orderSubmission.icebergOpts;
-  const size = txData.command.orderSubmission.size;
 
   let deterministicId = '';
 
@@ -76,18 +73,6 @@ export const TxDetailsOrder = ({
             reference={reference.reference}
             marketId={marketId}
           />
-        ) : null}
-        {iceberg ? (
-          <TableRow modifier="bordered">
-            <TableCell>{t('Iceberg details')}</TableCell>
-            <TableCell>
-              <TxOrderIcebergDetails
-                iceberg={iceberg}
-                size={size}
-                marketId={marketId}
-              />
-            </TableCell>
-          </TableRow>
         ) : null}
       </TableWithTbody>
 

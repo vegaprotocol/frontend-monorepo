@@ -1,56 +1,30 @@
 import React, { useEffect } from 'react';
 import { titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import {
-  LocalStoragePersistTabs as Tabs,
-  Tab,
-  TradingAnchorButton,
-} from '@vegaprotocol/ui-toolkit';
+import { LocalStoragePersistTabs as Tabs, Tab } from '@vegaprotocol/ui-toolkit';
 import { Markets } from './markets';
 import { Proposed } from './proposed';
 import { usePageTitleStore } from '../../stores';
 import { Closed } from './closed';
-import {
-  DApp,
-  TOKEN_NEW_MARKET_PROPOSAL,
-  useLinks,
-} from '@vegaprotocol/environment';
 
 export const MarketsPage = () => {
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
-
-  const tokenLink = useLinks(DApp.Token);
-  const externalLink = tokenLink(TOKEN_NEW_MARKET_PROPOSAL);
-
   useEffect(() => {
     updateTitle(titlefy(['Markets']));
   }, [updateTitle]);
-
   return (
-    <div className="h-full pt-0.5 pb-3 px-1.5">
-      <div className="h-full my-1 border rounded-sm border-default">
-        <Tabs storageKey="console-markets">
-          <Tab id="open-markets" name={t('Open markets')}>
-            <Markets />
-          </Tab>
-          <Tab
-            id="proposed-markets"
-            name={t('Proposed markets')}
-            menu={
-              <TradingAnchorButton size="extra-small" href={externalLink}>
-                {t('Propose a new market')}
-              </TradingAnchorButton>
-            }
-          >
-            <Proposed />
-          </Tab>
-          <Tab id="closed-markets" name={t('Closed markets')}>
-            <Closed />
-          </Tab>
-        </Tabs>
-      </div>
-    </div>
+    <Tabs storageKey="console-markets">
+      <Tab id="all-markets" name={t('All markets')}>
+        <Markets />
+      </Tab>
+      <Tab id="proposed-markets" name={t('Proposed markets')}>
+        <Proposed />
+      </Tab>
+      <Tab id="closed-markets" name={t('Closed markets')}>
+        <Closed />
+      </Tab>
+    </Tabs>
   );
 };

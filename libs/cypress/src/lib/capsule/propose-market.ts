@@ -153,16 +153,14 @@ export function waitForProposal(id: string): Promise<{ id: string }> {
       try {
         const res = await getProposal(id);
         if (
-          (res.proposal !== null &&
-            res.proposal.state === Schema.ProposalState.STATE_OPEN) ||
-          res.proposal.state ===
-            Schema.ProposalState.STATE_WAITING_FOR_NODE_VOTE
+          res.proposal !== null &&
+          res.proposal.state === Schema.ProposalState.STATE_OPEN
         ) {
           clearInterval(interval);
           resolve(res.proposal);
         }
       } catch (err) {
-        console.error(err);
+        console.log(err);
       }
 
       tick++;

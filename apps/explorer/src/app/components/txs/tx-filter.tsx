@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSubContent,
   Icon,
+  Button,
 } from '@vegaprotocol/ui-toolkit';
 import type { Dispatch, SetStateAction } from 'react';
 import { FilterLabel } from './tx-filter-label';
@@ -34,8 +35,6 @@ export type FilterOption =
   | 'Protocol Upgrade'
   | 'Register new Node'
   | 'State Variable Proposal'
-  | 'Stop Orders Submission'
-  | 'Stop Orders Cancellation'
   | 'Submit Oracle Data'
   | 'Submit Order'
   | 'Transfer Funds'
@@ -55,8 +54,6 @@ export const PrimaryFilterOptions: FilterOption[] = [
   'Delegate',
   'Liquidity Provision Order',
   'Proposal',
-  'Stop Orders Submission',
-  'Stop Orders Cancellation',
   'Submit Oracle Data',
   'Submit Order',
   'Transfer Funds',
@@ -103,13 +100,15 @@ export const TxsFilter = ({ filters, setFilters }: TxFilterProps) => {
     <DropdownMenu
       modal={false}
       trigger={
-        <DropdownMenuTrigger>
-          <FilterLabel filters={filters} />
+        <DropdownMenuTrigger className="ml-0">
+          <Button size="xs" data-testid="filter-trigger">
+            <FilterLabel filters={filters} />
+          </Button>
         </DropdownMenuTrigger>
       }
     >
       <DropdownMenuContent>
-        {filters.size > 1 ? null : (
+        {filters.size > 0 ? null : (
           <>
             <DropdownMenuCheckboxItem
               onCheckedChange={() => setFilters(new Set(AllFilterOptions))}

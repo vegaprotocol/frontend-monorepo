@@ -26,7 +26,6 @@ context('rewards - flow', { tags: '@slow' }, function () {
   before('set up environment to allow rewards', function () {
     cy.clearLocalStorage();
     turnTelemetryOff();
-    cy.mockChainId();
     cy.visit('/');
     waitForSpinner();
     ethereumWalletConnect();
@@ -97,14 +96,12 @@ context('rewards - flow', { tags: '@slow' }, function () {
       .within(() => {
         cy.get('h2').first().should('contain.text', 'EPOCH');
         cy.getByTestId('individual-rewards-asset').should('have.text', 'Vega');
-        cy.getByTestId('ACCOUNT_TYPE_GLOBAL_REWARD', rewardsTimeOut).should(
-          'contain.text',
-          '0.4415'
-        );
-        cy.getByTestId('ACCOUNT_TYPE_FEES_INFRASTRUCTURE').should(
-          'contain.text',
-          '0.0004'
-        );
+        cy.getByTestId('ACCOUNT_TYPE_GLOBAL_REWARD', rewardsTimeOut)
+          .should('contain.text', '0.4415')
+          .and('contain.text', '(44.15%)');
+        cy.getByTestId('ACCOUNT_TYPE_FEES_INFRASTRUCTURE')
+          .should('contain.text', '0.0004')
+          .and('contain.text', '(44.15%)');
         cy.getByTestId('total').should('have.text', '0.4419');
       });
   });

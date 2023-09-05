@@ -1,11 +1,10 @@
 import { Suspense } from 'react';
 import type { RouteObject } from 'react-router-dom';
-import { Outlet, useRoutes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import dynamic from 'next/dynamic';
 import { t } from '@vegaprotocol/i18n';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import trimEnd from 'lodash/trimEnd';
-import { LayoutWithSidebar } from '../components/layouts';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
@@ -27,83 +26,87 @@ const LazyPortfolio = dynamic(() => import('../client-pages/portfolio'), {
   ssr: false,
 });
 
-const LazyDisclaimer = dynamic(() => import('../client-pages/disclaimer'), {
+const LazySettings = dynamic(() => import('../client-pages/settings'), {
   ssr: false,
 });
 
-const LazyDeposit = dynamic(() => import('../client-pages/deposit'), {
+const LazyDisclaimer = dynamic(() => import('../client-pages/disclaimer'), {
   ssr: false,
 });
 
 export enum Routes {
   HOME = '/',
-  MARKET = '/markets/:marketId',
+  MARKET = '/markets',
   MARKETS = '/markets/all',
   PORTFOLIO = '/portfolio',
-  LIQUIDITY = '/liquidity/:marketId',
-  DISCLAIMER = '/disclaimer',
-  DEPOSIT = '/deposit',
+  LIQUIDITY = 'liquidity/:marketId',
+  SETTINGS = 'settings',
+  DISCLAIMER = 'disclaimer',
 }
 
 type ConsoleLinks = { [r in Routes]: (...args: string[]) => string };
-
 export const Links: ConsoleLinks = {
   [Routes.HOME]: () => Routes.HOME,
-  [Routes.MARKET]: (marketId: string) =>
-    trimEnd(Routes.MARKET.replace(':marketId', marketId)),
+  [Routes.MARKET]: (marketId: string | null | undefined) =>
+    marketId ? trimEnd(`${Routes.MARKET}/${marketId}`, '/') : Routes.MARKET,
   [Routes.MARKETS]: () => Routes.MARKETS,
   [Routes.PORTFOLIO]: () => Routes.PORTFOLIO,
-  [Routes.LIQUIDITY]: (marketId: string) =>
-    trimEnd(Routes.LIQUIDITY.replace(':marketId', marketId)),
+  [Routes.LIQUIDITY]: (marketId: string | null | undefined) =>
+    marketId
+      ? trimEnd(`${Routes.LIQUIDITY}/${marketId}`, '/')
+      : Routes.LIQUIDITY,
+  [Routes.SETTINGS]: () => Routes.SETTINGS,
   [Routes.DISCLAIMER]: () => Routes.DISCLAIMER,
-  [Routes.DEPOSIT]: () => Routes.DEPOSIT,
 };
 
 const routerConfig: RouteObject[] = [
   {
-    path: '/*',
-    element: <LayoutWithSidebar />,
+    index: true,
+    element: <LazyHome />,
+  },
+  {
+    path: Routes.MARKETS,
+    element: <LazyMarkets />,
+  },
+  {
+    path: Routes.MARKET,
     children: [
-      // all pages that require the Layout component (Sidebar)
       {
         index: true,
-        element: <LazyHome />,
+        element: <LazyMarket />,
       },
       {
-        path: 'markets',
-        element: <Outlet />,
-        children: [
-          {
-            path: 'all',
-            element: <LazyMarkets />,
-          },
-          {
-            path: ':marketId',
-            element: <LazyMarket />,
-          },
-        ],
-      },
-      {
-        path: 'portfolio',
-        element: <LazyPortfolio />,
-      },
-      {
-        path: 'liquidity',
-        element: <Outlet />,
-        children: [
-          {
-            path: ':marketId',
-            element: <LazyLiquidity />,
-          },
-        ],
+        path: ':marketId',
+        element: <LazyMarket />,
       },
     ],
+  },
+  {
+    path: Routes.LIQUIDITY,
+    element: <LazyLiquidity />,
+    children: [
+      {
+        index: true,
+        element: <LazyLiquidity />,
+      },
+      {
+        path: ':marketId',
+        element: <LazyLiquidity />,
+      },
+    ],
+  },
+  {
+    path: Routes.PORTFOLIO,
+    element: <LazyPortfolio />,
+  },
+  {
+    path: Routes.SETTINGS,
+    element: <LazySettings />,
   },
   {
     path: Routes.DISCLAIMER,
     element: <LazyDisclaimer />,
   },
-  { path: Routes.DEPOSIT, element: <LazyDeposit /> },
   {
     path: '*',
     element: (

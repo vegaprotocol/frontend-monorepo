@@ -1,13 +1,13 @@
+import { useVegaWallet } from './';
 import { useEffect, useState } from 'react';
-import { InjectedConnector } from './connectors/injected-connector';
-import { SnapConnector } from './connectors/snap-connector';
+import type { VegaConnector } from './connectors/vega-connector';
 import { getConfig } from './storage';
-import type { Connectors } from './connectors';
-import { useVegaWallet } from './use-vega-wallet';
 
-export function useEagerConnect(connectors: Connectors) {
+export function useEagerConnect(Connectors: {
+  [connector: string]: VegaConnector;
+}) {
   const [connecting, setConnecting] = useState(true);
-  const { vegaUrl, connect, acknowledgeNeeded } = useVegaWallet();
+  const { connect, acknowledgeNeeded } = useVegaWallet();
 
   useEffect(() => {
     const attemptConnect = async () => {
@@ -20,7 +20,7 @@ export function useEagerConnect(connectors: Connectors) {
 
       // Use the connector string in local storage to find the right connector to auto
       // connect to
-      const connector = connectors[cfg.connector];
+      const connector = Connectors[cfg.connector];
 
       // Developer hasn't provided this connector
       if (!connector) {
@@ -30,16 +30,14 @@ export function useEagerConnect(connectors: Connectors) {
         );
         return;
       }
-
       try {
-        if (connector instanceof InjectedConnector) {
-          await connector.connectWallet();
-          await connect(connector);
-        } else if (connector instanceof SnapConnector) {
-          connector.nodeAddress = new URL(vegaUrl).origin;
-          await connect(connector);
+        if (cfg.connector === 'injected') {
+          const injectedInstance = Connectors[cfg.connector];
+          // @ts-ignore only injected wallet has connectWallet method
+          await injectedInstance.connectWallet();
+          await connect(injectedInstance);
         } else {
-          await connect(connector);
+          await connect(Connectors[cfg.connector]);
         }
       } catch {
         console.warn(`Failed to connect with connector: ${cfg.connector}`);
@@ -51,7 +49,7 @@ export function useEagerConnect(connectors: Connectors) {
     if (typeof window !== 'undefined') {
       attemptConnect();
     }
-  }, [connect, connectors, acknowledgeNeeded, vegaUrl]);
+  }, [connect, Connectors, acknowledgeNeeded]);
 
   return connecting;
 }

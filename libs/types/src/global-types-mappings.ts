@@ -23,9 +23,7 @@ import type {
   VoteValue,
   WithdrawalStatus,
   DispatchMetric,
-  StopOrderStatus,
 } from './__generated__/types';
-import type { ProductType, ProposalProductType } from './product';
 
 export const AccountTypeMapping: {
   [T in AccountType]: string;
@@ -46,8 +44,6 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Reward Market Proposers',
   ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: 'Reward Maker paid fees',
   ACCOUNT_TYPE_SETTLEMENT: 'Settlement',
-  ACCOUNT_TYPE_HOLDING: 'Holding',
-  ACCOUNT_TYPE_LP_LIQUIDITY_FEES: 'LP Liquidity Fees',
 };
 
 /**
@@ -237,21 +233,6 @@ export const OrderStatusMapping: {
 };
 
 /**
- * Stop order statuses, these determine several states for an stop order that cannot be expressed with other fields in StopOrder.
- */
-export const StopOrderStatusMapping: {
-  [T in StopOrderStatus]: string;
-} = {
-  STATUS_CANCELLED: 'Cancelled',
-  STATUS_EXPIRED: 'Expired',
-  STATUS_PENDING: 'Pending',
-  STATUS_REJECTED: 'Rejected',
-  STATUS_STOPPED: 'Stopped',
-  STATUS_TRIGGERED: 'Triggered',
-  STATUS_UNSPECIFIED: 'Unspecified',
-};
-
-/**
  * Valid order types, these determine what happens when an order is added to the book
  */
 type OrderTimeInForceMap = {
@@ -340,15 +321,6 @@ export const ProposalRejectionReasonMapping: {
   PROPOSAL_ERROR_UNSUPPORTED_TRADING_MODE: 'Unsupported trading mode',
   PROPOSAL_ERROR_ERC20_ADDRESS_ALREADY_IN_USE:
     'ERC20 address already in use by an existing asset',
-  PROPOSAL_ERROR_GOVERNANCE_CANCEL_TRANSFER_PROPOSAL_INVALID:
-    'Governance cancel transfer proposal invalid',
-  PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_FAILED:
-    'Governance transfer proposal failed',
-  PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_INVALID:
-    'Governance transfer proposal invalid',
-  PROPOSAL_ERROR_INVALID_SPOT: 'Invalid spot',
-  PROPOSAL_ERROR_INVALID_SUCCESSOR_MARKET: 'Invalid successor market',
-  PROPOSAL_ERROR_SPOT_PRODUCT_DISABLED: 'Spot product disabled',
 };
 
 /**
@@ -447,9 +419,6 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE: 'Transfer received',
   TRANSFER_TYPE_CLEAR_ACCOUNT: 'Market accounts cleared',
   TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE: 'Balances restored',
-  TRANSFER_TYPE_HOLDING_LOCK: 'Holding locked',
-  TRANSFER_TYPE_HOLDING_RELEASE: 'Holding released',
-  TRANSFER_TYPE_SPOT: 'Spot',
 };
 
 export const DescriptionTransferTypeMapping: TransferTypeMap = {
@@ -477,9 +446,6 @@ export const DescriptionTransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_CLEAR_ACCOUNT: `Market-related accounts emptied, and balances moved, because the market has closed`,
   TRANSFER_TYPE_UNSPECIFIED: 'Default value, always invalid',
   TRANSFER_TYPE_CHECKPOINT_BALANCE_RESTORE: `Balances are being restored to the user's account following a checkpoint restart of the network`,
-  TRANSFER_TYPE_HOLDING_LOCK: 'Holdings locked',
-  TRANSFER_TYPE_HOLDING_RELEASE: 'Holdings released',
-  TRANSFER_TYPE_SPOT: 'Spot',
 };
 
 type DispatchMetricLabel = {
@@ -514,20 +480,3 @@ export const PeggedReferenceMapping: { [R in PeggedReference]: string } = {
   PEGGED_REFERENCE_BEST_BID: 'Bid',
   PEGGED_REFERENCE_MID: 'Mid',
 };
-
-export const ProductTypeMapping: Record<ProductType, string> = {
-  Future: 'Future',
-};
-
-export const ProductTypeShortName: Record<ProductType, string> = {
-  Future: 'Futr',
-};
-
-export const ProposalProductTypeMapping: Record<ProposalProductType, string> = {
-  FutureProduct: 'Future',
-};
-
-export const ProposalProductTypeShortName: Record<ProposalProductType, string> =
-  {
-    FutureProduct: 'Futr',
-  };

@@ -2,7 +2,6 @@ export enum Intent {
   None,
   Primary,
   Danger,
-  Info,
   Warning,
   Success,
 }
@@ -22,7 +21,7 @@ export const getIntentBackground = (intent?: Intent) => {
   return {
     'bg-neutral-200 dark:bg-neutral-800': intent === undefined,
     'bg-black dark:bg-white': intent === Intent.None,
-    'bg-vega-blue-300 dark:bg-vega-blue-650': intent === Intent.Primary,
+    'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Primary,
     'bg-danger': intent === Intent.Danger,
     'bg-warning': intent === Intent.Warning,
     // contrast issues with light mode

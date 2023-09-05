@@ -27,8 +27,8 @@ export function OracleMarkets({ id }: OracleMarketsProps) {
     const m = markets.find((m) => {
       const p = m.tradableInstrument.instrument.product;
       if (
-        p?.dataSourceSpecForSettlementData?.id === id ||
-        p?.dataSourceSpecForTradingTermination?.id === id
+        p.dataSourceSpecForSettlementData.id === id ||
+        p.dataSourceSpecForTradingTermination.id === id
       ) {
         return true;
       }
@@ -36,9 +36,15 @@ export function OracleMarkets({ id }: OracleMarketsProps) {
     });
 
     if (m && m.id) {
+      const type =
+        id ===
+        m.tradableInstrument.instrument.product.dataSourceSpecForSettlementData
+          .id
+          ? 'Settlement for'
+          : 'Termination for';
       return (
         <TableRow modifier="bordered">
-          <TableHeader scope="row">{getLabel(id, m)}</TableHeader>
+          <TableHeader scope="row">{type}</TableHeader>
           <TableCell modifier="bordered" data-testid={`m-${m.id}`}>
             <MarketLink id={m.id} />
           </TableCell>
@@ -54,15 +60,4 @@ export function OracleMarkets({ id }: OracleMarketsProps) {
       </TableCell>
     </TableRow>
   );
-}
-
-export function getLabel(
-  id: string,
-  m: ExplorerOracleForMarketsMarketFragment | null
-): string {
-  const settlementId =
-    m?.tradableInstrument?.instrument?.product?.dataSourceSpecForSettlementData
-      ?.id || null;
-
-  return id === settlementId ? 'Settlement for' : 'Termination for';
 }

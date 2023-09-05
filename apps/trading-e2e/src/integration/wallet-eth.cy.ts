@@ -10,7 +10,7 @@ describe('ethereum wallet', { tags: '@smoke', testIsolation: true }, () => {
     cy.mockSubscription();
     cy.setVegaWallet();
     cy.visit('/#/portfolio');
-    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
+    cy.get('main[data-testid="/portfolio"]').should('exist');
     cy.getByTestId('Withdrawals').click();
   });
 
@@ -43,10 +43,11 @@ describe('ethereum wallet', { tags: '@smoke', testIsolation: true }, () => {
     // 0004-EWAL-005
     // 0004-EWAL-006
 
+    const ethWalletAddress = Cypress.env('ETHEREUM_WALLET_ADDRESS');
     cy.getByTestId('Deposits').click();
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('MetaMask');
-    cy.getByTestId('ethereum-address').should('have.text', '0xEe7D…d94F');
+    cy.getByTestId('ethereum-address').should('have.text', ethWalletAddress);
     cy.getByTestId('disconnect-ethereum-wallet')
       .should('have.text', 'Disconnect')
       .click();

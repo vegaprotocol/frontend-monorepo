@@ -2,13 +2,14 @@ import * as Sentry from '@sentry/react';
 import { toBigNum } from '@vegaprotocol/utils';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useEagerConnect } from '@vegaprotocol/wallet';
-import { FLAGS, useEnvironment } from '@vegaprotocol/environment';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SplashError } from './components/splash-error';
 import { SplashLoader } from './components/splash-loader';
+import { Flags } from './config';
 import {
   AppStateActionType,
   useAppState,
@@ -79,7 +80,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
       }
     };
 
-    if (!FLAGS.GOVERNANCE_NETWORK_DOWN) {
+    if (!Flags.NETWORK_DOWN) {
       run();
     }
   }, [token, appDispatch, staking, vesting]);
@@ -147,7 +148,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
     };
 
     // Only begin polling if network limits flag is set, as this is a new API not yet on mainnet 7/3/22
-    if (FLAGS.GOVERNANCE_NETWORK_LIMITS) {
+    if (Flags.NETWORK_LIMITS) {
       getNetworkLimits();
     }
 
@@ -156,7 +157,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
     };
   }, [appDispatch, VEGA_URL, t]);
 
-  if (FLAGS.GOVERNANCE_NETWORK_DOWN) {
+  if (Flags.NETWORK_DOWN) {
     return (
       <Splash>
         <SplashError />

@@ -68,7 +68,7 @@ export const calculateOverstakedPenalty = (nodeId: string, nodes: Node[]) => {
   }
   const penalty = new BigNumber(1)
     .minus(
-      new BigNumber(node.rewardScore?.rawValidatorScore || 1).dividedBy(tts)
+      new BigNumber(node.rewardScore?.rawValidatorScore || 0).dividedBy(tts)
     )
     .times(100);
   return penalty.isLessThan(0) ? new BigNumber(0) : penalty;

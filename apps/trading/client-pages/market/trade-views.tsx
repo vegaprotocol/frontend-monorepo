@@ -1,27 +1,25 @@
 import type { ComponentProps } from 'react';
 import { Splash } from '@vegaprotocol/ui-toolkit';
+import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
+import { TradesContainer } from '@vegaprotocol/trades';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
-import {
-  CandlesChartContainer,
-  CandlesMenu,
-} from '@vegaprotocol/candles-chart';
-import { Filter, OpenOrdersMenu } from '@vegaprotocol/orders';
+import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
+import { OrderbookContainer } from '@vegaprotocol/market-depth';
+import { Filter } from '@vegaprotocol/orders';
 import { NO_MARKET } from './constants';
-import { TradesContainer } from '../../components/trades-container';
-import { OrderbookContainer } from '../../components/orderbook-container';
 import { FillsContainer } from '../../components/fills-container';
 import { PositionsContainer } from '../../components/positions-container';
 import { AccountsContainer } from '../../components/accounts-container';
 import { LiquidityContainer } from '../../components/liquidity-container';
 import type { OrderContainerProps } from '../../components/orders-container';
 import { OrdersContainer } from '../../components/orders-container';
-import { StopOrdersContainer } from '../../components/stop-orders-container';
-import { AccountsMenu } from '../../components/accounts-menu';
-import { PositionsMenu } from '../../components/positions-menu';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
   | typeof DepthChartContainer
+  | typeof DealTicketContainer
+  | typeof MarketInfoAccordionContainer
   | typeof OrderbookContainer
   | typeof TradesContainer;
 
@@ -40,7 +38,6 @@ export const TradingViews = {
   candles: {
     label: 'Candles',
     component: requiresMarket(CandlesChartContainer),
-    menu: CandlesMenu,
   },
   depth: {
     label: 'Depth',
@@ -50,6 +47,14 @@ export const TradingViews = {
     label: 'Liquidity',
     component: requiresMarket(LiquidityContainer),
   },
+  ticket: {
+    label: 'Ticket',
+    component: requiresMarket(DealTicketContainer),
+  },
+  info: {
+    label: 'Info',
+    component: requiresMarket(MarketInfoAccordionContainer),
+  },
   orderbook: {
     label: 'Orderbook',
     component: requiresMarket(OrderbookContainer),
@@ -58,17 +63,12 @@ export const TradingViews = {
     label: 'Trades',
     component: requiresMarket(TradesContainer),
   },
-  positions: {
-    label: 'Positions',
-    component: PositionsContainer,
-    menu: PositionsMenu,
-  },
+  positions: { label: 'Positions', component: PositionsContainer },
   activeOrders: {
     label: 'Active',
     component: (props: OrderContainerProps) => (
       <OrdersContainer {...props} filter={Filter.Open} />
     ),
-    menu: OpenOrdersMenu,
   },
   closedOrders: {
     label: 'Closed',
@@ -85,16 +85,7 @@ export const TradingViews = {
   orders: {
     label: 'All',
     component: OrdersContainer,
-    menu: OpenOrdersMenu,
   },
-  stopOrders: {
-    label: 'Stop',
-    component: StopOrdersContainer,
-  },
-  collateral: {
-    label: 'Collateral',
-    component: AccountsContainer,
-    menu: AccountsMenu,
-  },
+  collateral: { label: 'Collateral', component: AccountsContainer },
   fills: { label: 'Fills', component: FillsContainer },
 };

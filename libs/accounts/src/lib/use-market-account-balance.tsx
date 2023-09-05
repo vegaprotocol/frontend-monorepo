@@ -22,7 +22,7 @@ export const useMarketAccountBalance = (marketId: string) => {
     },
     [marketId]
   );
-  const { loading, error } = useDataProvider({
+  useDataProvider({
     dataProvider: accountsDataProvider,
     variables: { partyId: pubKey || '' },
     skip: !pubKey || !marketId,
@@ -33,9 +33,7 @@ export const useMarketAccountBalance = (marketId: string) => {
     () => ({
       accountBalance: pubKey ? accountBalance : '',
       accountDecimals: pubKey ? accountDecimals : null,
-      loading,
-      error,
     }),
-    [accountBalance, accountDecimals, pubKey, loading, error]
+    [accountBalance, accountDecimals, pubKey]
   );
 };

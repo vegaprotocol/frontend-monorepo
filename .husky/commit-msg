@@ -3,3 +3,6 @@
 
 # Lint commit messages to ensure they follow conventional commit standards
 yarn commitlint --edit "${1}"
+
+# Lint all staged files
+yarn lint-staged

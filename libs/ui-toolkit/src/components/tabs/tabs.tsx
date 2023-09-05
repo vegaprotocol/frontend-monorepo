@@ -2,13 +2,12 @@ import * as TabsPrimitive from '@radix-ui/react-tabs';
 import {
   useLocalStorageSnapshot,
   getValidItem,
-  useResizeObserver,
 } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
 import type { ReactElement, ReactNode } from 'react';
-import { Children, isValidElement, useRef, useState } from 'react';
+import { Children, isValidElement, useState } from 'react';
 export interface TabsProps extends TabsPrimitive.TabsProps {
-  children: (ReactElement<TabProps> | null)[];
+  children: ReactElement<TabProps>[];
 }
 
 export const Tabs = ({
@@ -18,26 +17,12 @@ export const Tabs = ({
   onValueChange,
   ...props
 }: TabsProps) => {
-  const [activeTab, setActiveTab] = useState<string | undefined>(() => {
+  const [activeTab, setActiveTab] = useState<string>(() => {
     if (defaultValue) {
       return defaultValue;
     }
-    return children.find((v) => v)?.props.id;
+    return children[0].props.id;
   });
-
-  // Bunch of refs in order to detect wrapping in side the tabs so that we
-  // can apply a bg color
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const tabsRef = useRef<HTMLDivElement | null>(null);
-  const menuRef = useRef<HTMLDivElement | null>(null);
-  const [wrapped, setWrapped] = useState(() =>
-    isWrapped(tabsRef.current, menuRef.current)
-  );
-
-  useResizeObserver(wrapperRef.current, () => {
-    setWrapped(isWrapped(tabsRef.current, menuRef.current));
-  });
-
   return (
     <TabsPrimitive.Root
       {...props}
@@ -45,31 +30,27 @@ export const Tabs = ({
       onValueChange={onValueChange || setActiveTab}
       className="h-full grid grid-rows-[min-content_1fr]"
     >
-      <div
-        ref={wrapperRef}
-        className="flex flex-wrap justify-between border-b border-default min-w-0"
-      >
+      <div className="border-b border-default">
         <TabsPrimitive.List
           className="flex flex-nowrap overflow-visible"
           role="tablist"
-          ref={tabsRef}
         >
           {Children.map(children, (child) => {
             if (!isValidElement(child) || child.props.hidden) return null;
             const isActive = child.props.id === (value || activeTab);
             const triggerClass = classNames(
-              'relative text-xs py-2 px-3 border-l border-r first:border-l-0',
+              'relative px-4 py-1 border-r border-default',
+              'uppercase',
               {
-                'cursor-default border-default bg-vega-clight-700 dark:bg-vega-cdark-700':
-                  isActive,
-                'text-default': isActive,
-                'text-muted border-transparent': !isActive,
+                'cursor-default': isActive,
+                'text-neutral-400 hover:text-neutral-500 dark:hover:text-neutral-300':
+                  !isActive,
               },
               'flex items-center gap-2'
             );
             const borderClass = classNames(
               'absolute bottom-[-1px] left-0 w-full h-0 border-b',
-              'border-vega-clight-700 dark:border-vega-cdark-700',
+              'border-b-white dark:border-b-black',
               { hidden: !isActive }
             );
             return (
@@ -85,27 +66,6 @@ export const Tabs = ({
             );
           })}
         </TabsPrimitive.List>
-        <div
-          ref={menuRef}
-          className={classNames('flex-1 p-1', {
-            'bg-vega-clight-700 dark:bg-vega-cdark-700': wrapped,
-            '': wrapped,
-          })}
-        >
-          {Children.map(children, (child) => {
-            if (!isValidElement(child) || child.props.hidden) return null;
-            return (
-              <TabsPrimitive.Content
-                value={child.props.id}
-                className={classNames('flex flex-nowrap gap-1', {
-                  'justify-end': !wrapped,
-                })}
-              >
-                {child.props.menu}
-              </TabsPrimitive.Content>
-            );
-          })}
-        </div>
       </div>
       <div className="h-full overflow-auto">
         {Children.map(children, (child) => {
@@ -113,7 +73,7 @@ export const Tabs = ({
           return (
             <TabsPrimitive.Content
               value={child.props.id}
-              className="h-full"
+              className="h-full bg-white dark:bg-black"
               data-testid={`tab-${child.props.id}`}
             >
               {child.props.children}
@@ -131,7 +91,6 @@ interface TabProps {
   name: string;
   indicator?: ReactNode;
   hidden?: boolean;
-  menu?: ReactNode;
 }
 
 export const Tab = ({ children, ...props }: TabProps) => {
@@ -152,23 +111,10 @@ export const LocalStoragePersistTabs = ({
       children={children}
       value={getValidItem(
         value,
-        Children.map(
-          children.filter((c): c is ReactElement<TabProps> => c !== null),
-          (child) => child.props.id
-        ),
+        Children.map(children, (child) => child.props.id),
         undefined
       )}
       onValueChange={onValueChange}
     />
   );
-};
-
-const isWrapped = (
-  tabs: HTMLDivElement | null,
-  menu: HTMLDivElement | null
-) => {
-  if (!tabs || !menu) return;
-  const listRect = tabs.getBoundingClientRect();
-  const menuRect = menu.getBoundingClientRect();
-  return menuRect.y > listRect.y;
 };

@@ -20,7 +20,7 @@ import {
   WalletCardHeader,
   WalletCardRow,
 } from '../wallet-card';
-import { VegaWalletPrompt } from './vega-wallet-prompt';
+import { DownloadWalletPrompt } from './download-wallet-prompt';
 import { usePollForDelegations } from './hooks';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
@@ -71,6 +71,7 @@ export const VegaWallet = () => {
 
 const VegaWalletNotConnected = () => {
   const { t } = useTranslation();
+  const { appDispatch } = useAppState();
   const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
     openVegaWalletDialog: store.openVegaWalletDialog,
   }));
@@ -78,6 +79,10 @@ const VegaWalletNotConnected = () => {
     <>
       <Button
         onClick={() => {
+          appDispatch({
+            type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
+            isOpen: true,
+          });
           openVegaWalletDialog();
         }}
         fill={true}
@@ -85,7 +90,7 @@ const VegaWalletNotConnected = () => {
       >
         {t('connectVegaWalletToUseAssociated')}
       </Button>
-      <VegaWalletPrompt />
+      <DownloadWalletPrompt />
     </>
   );
 };

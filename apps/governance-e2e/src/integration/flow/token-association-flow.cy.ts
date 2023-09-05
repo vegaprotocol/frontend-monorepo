@@ -56,7 +56,6 @@ context(
         function () {
           cy.clearLocalStorage();
           turnTelemetryOff();
-          cy.mockChainId();
           cy.reload();
           waitForSpinner();
           cy.connectVegaWallet();
@@ -350,12 +349,6 @@ context(
             'vegaWalletPublicKey2Short'
           )} can now participate in governance and nominate a validator with your associated $VEGA.`
         );
-        stakingPageDisassociateAllTokens();
-      });
-
-      it('Able to associate over 1 million tokens', function () {
-        cy.get(ethWalletAssociateButton).click();
-        stakingPageAssociateTokens('2000000', { approve: true });
         stakingPageDisassociateAllTokens();
       });
     });

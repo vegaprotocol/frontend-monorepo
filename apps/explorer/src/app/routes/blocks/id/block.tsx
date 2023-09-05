@@ -1,5 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
+import { DATA_SOURCES } from '../../../config';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
+import type { TendermintBlocksResponse } from '../tendermint-blocks-response';
 import { RouteTitle } from '../../../components/route-title';
 import { TimeAgo } from '../../../components/time-ago';
 import {
@@ -12,7 +14,7 @@ import { TxsPerBlock } from '../../../components/txs/txs-per-block';
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { Routes } from '../../route-names';
 import { t } from '@vegaprotocol/i18n';
-import { useBlockInfo } from '@vegaprotocol/tendermint';
+import { useFetch } from '@vegaprotocol/react-helpers';
 import { NodeLink } from '../../../components/links';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 import EmptyList from '../../../components/empty-list/empty-list';
@@ -22,7 +24,10 @@ const Block = () => {
   useDocumentTitle(['Blocks', `Block #${block}`]);
   const {
     state: { data: blockData, loading, error },
-  } = useBlockInfo(Number(block));
+  } = useFetch<TendermintBlocksResponse>(
+    `${DATA_SOURCES.tendermintUrl}/block?height=${block}`,
+    { cache: 'force-cache' }
+  );
 
   return (
     <section>

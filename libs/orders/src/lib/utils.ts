@@ -36,7 +36,7 @@ export const getRejectionReason = (
     default:
       return order.rejectionReason
         ? t(Schema.OrderRejectionReasonMapping[order.rejectionReason])
-        : '';
+        : null;
   }
 };
 
@@ -79,9 +79,9 @@ export const getOrderToastIntent = (
     case Schema.OrderStatus.STATUS_PARKED:
     case Schema.OrderStatus.STATUS_EXPIRED:
     case Schema.OrderStatus.STATUS_PARTIALLY_FILLED:
-    case Schema.OrderStatus.STATUS_STOPPED:
       return Intent.Warning;
     case Schema.OrderStatus.STATUS_REJECTED:
+    case Schema.OrderStatus.STATUS_STOPPED:
       return Intent.Danger;
     case Schema.OrderStatus.STATUS_FILLED:
     case Schema.OrderStatus.STATUS_ACTIVE:

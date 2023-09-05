@@ -1,25 +1,20 @@
 import { t } from '@vegaprotocol/i18n';
 import { useNextProtocolUpgradeProposal, useTimeToUpgrade } from '../lib';
 import { convertToCountdownString } from '@vegaprotocol/utils';
+import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
-import {
-  NavigationContext,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Icon, NavigationContext } from '@vegaprotocol/ui-toolkit';
 import { useProtocolUpgradeProposalLink } from '@vegaprotocol/environment';
 import { useContext } from 'react';
-
 export enum ProtocolUpgradeCountdownMode {
   IN_BLOCKS,
   IN_ESTIMATED_TIME_REMAINING,
 }
-
 type ProtocolUpgradeCountdownProps = {
   mode?: ProtocolUpgradeCountdownMode;
 };
 export const ProtocolUpgradeCountdown = ({
-  mode = ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING,
+  mode = ProtocolUpgradeCountdownMode.IN_BLOCKS,
 }: ProtocolUpgradeCountdownProps) => {
   const { theme } = useContext(NavigationContext);
   const { data, lastBlockHeight } = useNextProtocolUpgradeProposal();
@@ -80,17 +75,20 @@ export const ProtocolUpgradeCountdown = ({
       <div
         data-testid="protocol-upgrade-counter"
         className={classNames(
-          'flex flex-nowrap gap-1 items-center text-xs py-1 px-2 lg:px-4 h-8',
+          'flex flex-nowrap items-center text-xs py-2 px-4',
           'border rounded',
           'border-vega-orange-500 dark:border-vega-orange-500',
           'bg-vega-orange-300 dark:bg-vega-orange-700',
-          'text-default',
           {
             '!bg-transparent !border-black': theme === 'yellow',
           }
         )}
       >
-        <VegaIcon name={VegaIconNames.EXCLAIMATION_MARK} size={12} />{' '}
+        <Icon
+          name={IconNames.WARNING_SIGN}
+          size={3}
+          className={classNames('mr-2', emphasis)}
+        />{' '}
         <span className="flex gap-1 flex-nowrap whitespace-nowrap">
           <span>{t('Network upgrade in')} </span>
           {countdown}

@@ -114,7 +114,6 @@ describe('Raw proposal form', () => {
               {
                 pubKey,
                 sendTx: mockSendTx,
-                links: { explorer: 'explorer' },
               } as unknown as VegaWalletContextShape
             }
           >

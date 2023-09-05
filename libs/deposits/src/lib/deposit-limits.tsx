@@ -7,7 +7,7 @@ import {
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import type BigNumber from 'bignumber.js';
-import { formatNumber, quantumDecimalPlaces } from '@vegaprotocol/utils';
+import { formatNumber } from '@vegaprotocol/utils';
 
 // Note: all of the values here are with correct asset's decimals
 // See `libs/deposits/src/lib/use-deposit-balances.ts`
@@ -35,10 +35,7 @@ export const DepositLimits = ({
       label: t('Balance available'),
       rawValue: balance,
       value: balance ? (
-        <CompactNumber
-          number={balance}
-          decimals={quantumDecimalPlaces(asset.quantum, asset.decimals)}
-        />
+        <CompactNumber number={balance} decimals={asset.decimals} />
       ) : (
         '-'
       ),
@@ -76,7 +73,7 @@ export const DepositLimits = ({
       value: !exempt ? (
         <CompactNumber
           number={max.minus(deposited)}
-          decimals={quantumDecimalPlaces(asset.quantum, asset.decimals)}
+          decimals={asset.decimals}
         />
       ) : (
         <div data-testid="exempt">{t('Exempt')}</div>
@@ -100,10 +97,7 @@ export const DepositLimits = ({
       ),
       rawValue: allowance,
       value: allowance ? (
-        <CompactNumber
-          number={allowance}
-          decimals={quantumDecimalPlaces(asset.quantum, asset.decimals)}
-        />
+        <CompactNumber number={allowance} decimals={asset.decimals} />
       ) : (
         '-'
       ),

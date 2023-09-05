@@ -32,7 +32,7 @@ export const NumericCell = forwardRef<HTMLSpanElement, NumericCellProps>(
       <span
         ref={ref}
         className={classNames(
-          'font-mono relative whitespace-nowrap overflow-hidden text-ellipsis text-right rtl-dir',
+          'font-mono relative text-black dark:text-white whitespace-nowrap overflow-hidden text-ellipsis text-right rtl-dir',
           className
         )}
         data-testid={testId}

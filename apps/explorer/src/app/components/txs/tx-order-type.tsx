@@ -50,25 +50,6 @@ const displayString: StringMap = {
   'Stop Orders Cancellation': 'Cancel stop',
 };
 
-export function getLabelForStopOrderType(
-  orderType: string,
-  command: components['schemas']['v1InputData']
-): string {
-  if (command.stopOrdersSubmission) {
-    if (
-      command.stopOrdersSubmission.risesAbove &&
-      command.stopOrdersSubmission.fallsBelow
-    ) {
-      return 'Stop ⇅';
-    } else if (command.stopOrdersSubmission.risesAbove) {
-      return 'Stop ↗';
-    } else if (command.stopOrdersSubmission.fallsBelow) {
-      return 'Stop ↘';
-    }
-  }
-  return 'Stop';
-}
-
 export function getLabelForOrderType(
   orderType: string,
   command: components['schemas']['v1InputData']
@@ -97,11 +78,7 @@ export function getLabelForProposal(
   } else if (proposal.terms?.updateAsset) {
     return t('Proposal: Update asset');
   } else if (proposal.terms?.newMarket) {
-    if (proposal.terms?.newMarket.changes?.successor) {
-      return t('Proposal: Successor market');
-    } else {
-      return t('Proposal: New market');
-    }
+    return t('Proposal: New market');
   } else if (proposal.terms?.updateMarket) {
     return t('Proposal: Update market');
   } else if (proposal.terms?.updateNetworkParameter) {
@@ -189,7 +166,6 @@ export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
     'text-white dark:text-white bg-vega-dark-150 dark:bg-vega-dark-250';
 
   // This will get unwieldy and should probably produce a different colour of tag
-  // Note that colours are currently arbitrary
   if (type === 'Chain Event' && !!command?.chainEvent) {
     type = getLabelForChainEvent(command.chainEvent);
     colours = 'text-white dark-text-white bg-vega-pink dark:bg-vega-pink';
@@ -201,12 +177,6 @@ export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
       type = getLabelForProposal(command.proposalSubmission);
     }
     colours = 'text-black bg-vega-yellow';
-  } else if (type === 'Order' && command) {
-    type = getLabelForOrderType(orderType, command);
-    colours = 'text-white dark-text-white bg-vega-blue dark:bg-vega-blue';
-  } else if (type === 'Stop' && command) {
-    type = getLabelForStopOrderType(orderType, command);
-    colours = 'text-white dark-text-white bg-vega-blue dark:bg-vega-blue';
   }
 
   if (type === 'Vote on Proposal') {

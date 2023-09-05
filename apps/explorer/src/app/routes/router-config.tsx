@@ -14,6 +14,7 @@ import { Block } from './blocks/id';
 import { Blocks } from './blocks/home';
 import { Tx } from './txs/id';
 import { TxsList } from './txs/home';
+import flags from '../config/flags';
 import { t } from '@vegaprotocol/i18n';
 import { Routes } from './route-names';
 import { NetworkParameters } from './network-parameters';
@@ -29,7 +30,6 @@ import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 import { remove0x } from '@vegaprotocol/utils';
 import { PartyAccountsByAsset } from './parties/id/accounts';
 import { Disclaimer } from './pages/disclaimer';
-import { FLAGS } from '@vegaprotocol/environment';
 
 export type Navigable = {
   path: string;
@@ -59,7 +59,7 @@ type Route = RouteItem & {
   children?: RouteItem[];
 };
 
-const partiesRoutes: Route[] = FLAGS.EXPLORER_PARTIES
+const partiesRoutes: Route[] = flags.parties
   ? [
       {
         path: Routes.PARTIES,
@@ -119,7 +119,7 @@ const partiesRoutes: Route[] = FLAGS.EXPLORER_PARTIES
     ]
   : [];
 
-const assetsRoutes: Route[] = FLAGS.EXPLORER_ASSETS
+const assetsRoutes: Route[] = flags.assets
   ? [
       {
         path: Routes.ASSETS,
@@ -147,7 +147,7 @@ const assetsRoutes: Route[] = FLAGS.EXPLORER_ASSETS
     ]
   : [];
 
-const genesisRoutes: Route[] = FLAGS.EXPLORER_GENESIS
+const genesisRoutes: Route[] = flags.genesis
   ? [
       {
         path: Routes.GENESIS,
@@ -163,7 +163,7 @@ const genesisRoutes: Route[] = FLAGS.EXPLORER_GENESIS
     ]
   : [];
 
-const governanceRoutes: Route[] = FLAGS.EXPLORER_GOVERNANCE
+const governanceRoutes: Route[] = flags.governance
   ? [
       {
         path: Routes.GOVERNANCE,
@@ -179,7 +179,7 @@ const governanceRoutes: Route[] = FLAGS.EXPLORER_GOVERNANCE
     ]
   : [];
 
-const marketsRoutes: Route[] = FLAGS.EXPLORER_MARKETS
+const marketsRoutes: Route[] = flags.markets
   ? [
       {
         path: Routes.MARKETS,
@@ -207,7 +207,7 @@ const marketsRoutes: Route[] = FLAGS.EXPLORER_MARKETS
     ]
   : [];
 
-const networkParametersRoutes: Route[] = FLAGS.EXPLORER_NETWORK_PARAMETERS
+const networkParametersRoutes: Route[] = flags.networkParameters
   ? [
       {
         path: Routes.NETWORK_PARAMETERS,
@@ -225,7 +225,7 @@ const networkParametersRoutes: Route[] = FLAGS.EXPLORER_NETWORK_PARAMETERS
     ]
   : [];
 
-const validators: Route[] = FLAGS.EXPLORER_VALIDATORS
+const validators: Route[] = flags.validators
   ? [
       {
         path: Routes.VALIDATORS,

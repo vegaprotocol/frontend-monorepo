@@ -3,7 +3,7 @@ import { usePrevious } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
 import type { Ref } from 'react';
 import { useLayoutEffect, useRef } from 'react';
-import { TradingButton } from '../trading-button';
+import { Button } from '../button';
 import { Toast } from './toast';
 import type { Toasts } from './use-toasts';
 import { ToastPosition, useToasts, useToastsConfiguration } from './use-toasts';
@@ -65,10 +65,10 @@ export const ToastsContainer = ({
           'bottom-0 left-[50%] translate-x-[-50%]':
             position === ToastPosition.BottomCenter,
         },
+        'p-[8px_16px_16px_16px]',
         'max-w-full max-h-full overflow-x-hidden overflow-y-auto',
         {
-          'p-4': validToasts.length > 0, // only apply padding when toasts showing, otherwise a small section of the screen is covered
-          hidden: validToasts.length === 0,
+          hidden: Object.keys(toasts).length === 0,
         }
       )}
     >
@@ -87,27 +87,26 @@ export const ToastsContainer = ({
                 </li>
               );
             })}
-        <div
+        <Button
+          title={t('Dismiss all toasts')}
+          size="sm"
+          fill={true}
           className={classNames(
-            'absolute w-full top-[-38px] right-0 z-20',
+            'absolute top-[-38px] right-0 z-20',
             'transition-opacity',
             'opacity-0 group-hover:opacity-50 hover:!opacity-100',
+            'text-sm text-black dark:text-white bg-white dark:bg-black hover:!bg-white hover:dark:!bg-black',
             {
               hidden: validToasts.length === 0,
             }
           )}
+          onClick={() => {
+            closeAll();
+          }}
+          variant={'default'}
         >
-          <TradingButton
-            title={t('Dismiss all toasts')}
-            size="small"
-            fill={true}
-            onClick={() => {
-              closeAll();
-            }}
-          >
-            {t('Dismiss all')}
-          </TradingButton>
-        </div>
+          {t('Dismiss all')}
+        </Button>
       </ul>
     </Portal>
   );

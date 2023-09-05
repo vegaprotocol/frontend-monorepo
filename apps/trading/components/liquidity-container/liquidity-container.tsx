@@ -12,9 +12,10 @@ import {
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
+import type { AgGridReact } from 'ag-grid-react';
 import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -25,6 +26,8 @@ export const LiquidityContainer = ({
   marketId: string | undefined;
   filter?: Filter;
 }) => {
+  const gridRef = useRef<AgGridReact | null>(null);
+
   const gridStore = useLiquidityStore((store) => store.gridStore);
   const updateGridStore = useLiquidityStore((store) => store.updateGridStore);
 
@@ -57,6 +60,7 @@ export const LiquidityContainer = ({
   return (
     <div className="h-full relative">
       <LiquidityTable
+        ref={gridRef}
         rowData={data}
         symbol={symbol}
         assetDecimalPlaces={assetDecimalPlaces}

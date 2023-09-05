@@ -3,8 +3,7 @@ import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type * as Schema from '@vegaprotocol/types';
 import type { KeyValueTableRowProps } from '@vegaprotocol/ui-toolkit';
-import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import { CopyWithTooltip, truncateMiddle } from '@vegaprotocol/ui-toolkit';
+import { CopyWithTooltip, Icon } from '@vegaprotocol/ui-toolkit';
 import {
   KeyValueTable,
   KeyValueTableRow,
@@ -57,7 +56,7 @@ export const rows: Rows = [
     key: AssetDetail.ID,
     label: t('ID'),
     tooltip: '',
-    value: (asset) => truncateMiddle(asset.id),
+    value: (asset) => asset.id,
   },
   {
     key: AssetDetail.TYPE,
@@ -110,12 +109,10 @@ export const rows: Rows = [
 
       return (
         <>
-          <EtherscanLink address={asset.source.contractAddress}>
-            {truncateMiddle(asset.source.contractAddress)}
-          </EtherscanLink>{' '}
+          <EtherscanLink address={asset.source.contractAddress} />{' '}
           <CopyWithTooltip text={asset.source.contractAddress}>
             <button title={t('Copy address to clipboard')}>
-              <VegaIcon size={14} name={VegaIconNames.COPY} />
+              <Icon size={3} name="duplicate" />
             </button>
           </CopyWithTooltip>
         </>
