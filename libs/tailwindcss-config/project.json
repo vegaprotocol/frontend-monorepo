@@ -4,18 +4,6 @@
   "sourceRoot": "libs/tailwindcss-config/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "format": ["esm", "cjs"],
-      "options": {
-        "outputPath": "dist/libs/tailwindcss-config",
-        "main": "libs/tailwindcss-config/src/index.js",
-        "tsConfig": "libs/tailwindcss-config/tsconfig.lib.json",
-        "assets": ["libs/tailwindcss-config/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
-      }
-    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],

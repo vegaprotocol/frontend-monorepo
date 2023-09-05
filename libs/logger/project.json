@@ -5,17 +5,6 @@
   "projectType": "library",
   "tags": [],
   "targets": {
-    "build": {
-      "executor": "@nx/js:swc",
-      "outputs": ["{options.outputPath}"],
-      "format": ["esm", "cjs"],
-      "options": {
-        "outputPath": "dist/libs/logger",
-        "main": "libs/logger/src/index.ts",
-        "tsConfig": "libs/logger/tsconfig.lib.json",
-        "assets": ["libs/logger/*.md"]
-      }
-    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],

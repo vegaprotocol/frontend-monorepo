@@ -12,26 +12,7 @@
         "lintFilePatterns": ["libs/tendermint/**/*.{ts,tsx,js,jsx}"]
       }
     },
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/tendermint",
-        "tsConfig": "libs/tendermint/tsconfig.lib.json",
-        "project": "libs/tendermint/package.json",
-        "entryFile": "libs/tendermint/src/index.ts",
-        "external": ["react", "react-dom", "react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "compiler": "babel",
-        "assets": [
-          {
-            "glob": "libs/tendermint/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
-      }
-    },
+
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],

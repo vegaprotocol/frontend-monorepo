@@ -4,27 +4,6 @@
   "sourceRoot": "libs/i18n/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/js:swc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/i18n",
-        "main": "libs/i18n/src/index.ts",
-        "tsConfig": "libs/i18n/tsconfig.lib.json",
-        "assets": ["libs/i18n/*.md"]
-      }
-    },
-    "publish": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node tools/scripts/publish.mjs i18n {args.ver} {args.tag}"
-      },
-      "dependsOn": [
-        {
-          "target": "build"
-        }
-      ]
-    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],

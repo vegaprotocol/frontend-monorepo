@@ -5,28 +5,6 @@
   "projectType": "library",
   "tags": [],
   "targets": {
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "buildableProjectDepsInPackageJsonType": "dependencies",
-        "outputPath": "dist/libs/ui-toolkit",
-        "tsConfig": "libs/ui-toolkit/tsconfig.lib.json",
-        "project": "libs/ui-toolkit/package.json",
-        "entryFile": "libs/ui-toolkit/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "compiler": "babel",
-        "format": ["esm", "cjs"],
-        "assets": [
-          {
-            "glob": "libs/ui-toolkit/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
-      }
-    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],

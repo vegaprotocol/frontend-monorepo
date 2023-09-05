@@ -4,28 +4,6 @@
   "sourceRoot": "libs/utils/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "format": ["esm", "cjs"],
-      "options": {
-        "outputPath": "dist/libs/utils",
-        "main": "libs/utils/src/index.ts",
-        "tsConfig": "libs/utils/tsconfig.lib.json",
-        "assets": ["libs/utils/*.md"]
-      }
-    },
-    "publish": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node tools/scripts/publish.mjs utils {args.ver} {args.tag}"
-      },
-      "dependsOn": [
-        {
-          "target": "build"
-        }
-      ]
-    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],

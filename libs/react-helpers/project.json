@@ -5,28 +5,6 @@
   "projectType": "library",
   "tags": [],
   "targets": {
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "buildableProjectDepsInPackageJsonType": "dependencies",
-        "outputPath": "dist/libs/react-helpers",
-        "tsConfig": "libs/react-helpers/tsconfig.lib.json",
-        "project": "libs/react-helpers/package.json",
-        "entryFile": "libs/react-helpers/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "compiler": "babel",
-        "format": ["esm", "cjs"],
-        "assets": [
-          {
-            "glob": "libs/react-helpers/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
-      }
-    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
