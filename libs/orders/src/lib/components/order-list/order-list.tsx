@@ -271,8 +271,8 @@ export const OrderListTable = memo<
           {
             colId: 'amend',
             ...COL_DEFS.actions,
-            minWidth: showAllActions ? 90 : COL_DEFS.actions.minWidth,
-            maxWidth: showAllActions ? 90 : COL_DEFS.actions.minWidth,
+            minWidth: showAllActions ? 80 : COL_DEFS.actions.minWidth,
+            maxWidth: showAllActions ? 80 : COL_DEFS.actions.minWidth,
             cellRenderer: ({ data }: { data?: Order }) => {
               if (!data) return null;
 
