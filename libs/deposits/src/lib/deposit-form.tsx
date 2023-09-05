@@ -13,7 +13,6 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
-  Button,
   TradingFormGroup,
   TradingInput,
   TradingInputError,
@@ -23,6 +22,7 @@ import {
   ButtonLink,
   TradingSelect,
   truncateMiddle,
+  TradingButton,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
@@ -186,14 +186,14 @@ export const DepositForm = ({
               );
             }
             return (
-              <Button
+              <TradingButton
                 onClick={openDialog}
-                variant="primary"
+                intent={Intent.Primary}
                 type="button"
                 data-testid="connect-eth-wallet-btn"
               >
                 {t('Connect')}
-              </Button>
+              </TradingButton>
             );
           }}
         />
@@ -435,15 +435,14 @@ const FormButton = ({ approved, selectedAsset }: FormButtonProps) => {
           />
         </div>
       )}
-      <Button
+      <TradingButton
         type="submit"
         data-testid="deposit-submit"
-        variant={isActive ? 'primary' : 'default'}
         fill
-        disabled={invalidChain}
+        disabled={!isActive || invalidChain}
       >
         {t('Deposit')}
-      </Button>
+      </TradingButton>
     </>
   );
 };
@@ -455,7 +454,7 @@ const UseButton = (props: UseButtonProps) => {
     <button
       {...props}
       type="button"
-      className="ml-auto text-sm absolute top-0 right-0 underline"
+      className="absolute top-0 right-0 ml-auto text-sm underline"
     />
   );
 };
@@ -513,7 +512,7 @@ export const AddressField = ({
             setIsInput((curr) => !curr);
             onChange();
           }}
-          className="ml-auto text-sm absolute top-0 right-0 underline"
+          className="absolute top-0 right-0 ml-auto text-sm underline"
           data-testid="enter-pubkey-manually"
         >
           {isInput ? t('Select from wallet') : t('Enter manually')}

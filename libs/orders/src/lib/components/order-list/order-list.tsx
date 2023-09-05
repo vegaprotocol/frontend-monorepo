@@ -10,7 +10,7 @@ import {
   ActionsDropdown,
   ButtonLink,
   TradingDropdownCopyItem,
-  DropdownMenuItem,
+  TradingDropdownItem,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -277,7 +277,7 @@ export const OrderListTable = memo<
               if (!data) return null;
 
               return (
-                <div className="flex gap-2 items-center justify-end">
+                <div className="flex items-center justify-end gap-2">
                   {isOrderAmendable(data) && !props.isReadOnly && (
                     <>
                       {!data.icebergOrder && (
@@ -301,14 +301,14 @@ export const OrderListTable = memo<
                       value={data.id}
                       text={t('Copy order ID')}
                     />
-                    <DropdownMenuItem
+                    <TradingDropdownItem
                       key={'view-order'}
                       data-testid="view-order"
                       onClick={() => onView(data)}
                     >
                       <VegaIcon name={VegaIconNames.INFO} size={16} />
                       {t('View order details')}
-                    </DropdownMenuItem>
+                    </TradingDropdownItem>
                   </ActionsDropdown>
                 </div>
               );
