@@ -11,7 +11,6 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
-  Button,
   TradingFormGroup,
   TradingInput,
   TradingInputError,
@@ -19,6 +18,7 @@ import {
   TradingRichSelect,
   ExternalLink,
   Intent,
+  TradingButton,
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
@@ -183,7 +183,7 @@ export const WithdrawForm = ({
     <>
       <div className="mb-4 text-sm">
         <p>{t('There are two steps required to make a withdrawal')}</p>
-        <ol className="list-disc pl-4">
+        <ol className="pl-4 list-disc">
           <li>{t('Step 1 - Release funds from Vega')}</li>
           <li>{t('Step 2 - Transfer funds to your Ethereum wallet')}</li>
         </ol>
@@ -289,14 +289,13 @@ export const WithdrawForm = ({
             </div>
           )}
         </TradingFormGroup>
-        <Button
+        <TradingButton
           data-testid="submit-withdrawal"
           type="submit"
-          variant="primary"
           fill={true}
         >
-          Release funds
-        </Button>
+          {t('Release funds')}
+        </TradingButton>
       </form>
     </>
   );
@@ -309,7 +308,7 @@ const UseButton = (props: UseButtonProps) => {
     <button
       {...props}
       type="button"
-      className="ml-auto text-sm absolute top-0 right-0 underline"
+      className="absolute top-0 right-0 ml-auto text-sm underline"
     />
   );
 };

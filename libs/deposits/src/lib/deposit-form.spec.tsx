@@ -15,6 +15,7 @@ import { useWeb3ConnectStore } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import type { DepositBalances } from './use-deposit-balances';
+import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('@vegaprotocol/wallet');
 jest.mock('@vegaprotocol/web3');
@@ -90,7 +91,7 @@ describe('Deposit form', () => {
     // Assert default values (including) from/to provided by useVegaWallet and useWeb3React
     expect(screen.getByText('From (Ethereum address)')).toBeInTheDocument();
     expect(screen.getByTestId('ethereum-address')).toHaveTextContent(
-      MOCK_ETH_ADDRESS
+      truncateMiddle(MOCK_ETH_ADDRESS)
     );
     expect(screen.getByLabelText('Asset')).toHaveValue('');
     expect(screen.getByLabelText('To (Vega key)')).toHaveValue('');
@@ -304,9 +305,7 @@ describe('Deposit form', () => {
       target: { value: '8' },
     });
 
-    fireEvent.click(
-      screen.getByText('Deposit', { selector: '[type="submit"]' })
-    );
+    fireEvent.click(screen.getByRole('button', { name: 'Deposit' }));
 
     await waitFor(() => {
       expect(props.submitDeposit).toHaveBeenCalledWith({
@@ -353,7 +352,7 @@ describe('Deposit form', () => {
     ).not.toBeInTheDocument();
     expect(screen.getByText('From (Ethereum address)')).toBeInTheDocument();
     expect(screen.getByTestId('ethereum-address')).toHaveTextContent(
-      MOCK_ETH_ADDRESS
+      truncateMiddle(MOCK_ETH_ADDRESS)
     );
   });
 

@@ -199,7 +199,7 @@ export const allMarketsWithLiveDataProvider = makeDerivedDataProvider<
     return data.find(
       (market) =>
         market.id ===
-        (parts[1].delta as MarketDataUpdateFieldsFragment).marketId
+        (parts[1].delta as MarketDataUpdateFieldsFragment)?.marketId
     );
   }
 );

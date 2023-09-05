@@ -10,13 +10,14 @@ import {
   studyLabels,
 } from 'pennant';
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItemIndicator,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
+  TradingButton,
+  TradingDropdown,
+  TradingDropdownCheckboxItem,
+  TradingDropdownContent,
+  TradingDropdownItemIndicator,
+  TradingDropdownRadioGroup,
+  TradingDropdownRadioItem,
+  TradingDropdownTrigger,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
 import type { IconName } from '@blueprintjs/icons';
@@ -44,69 +45,76 @@ export const CandlesMenu = () => {
   } = useCandlesChartSettings();
   const triggerClasses = 'text-xs';
   const contentAlign = 'end';
+  const triggerButtonProps = { size: 'extra-small' } as const;
 
   return (
     <>
-      <DropdownMenu
+      <TradingDropdown
         trigger={
-          <DropdownMenuTrigger className={triggerClasses}>
-            {t(`Interval: ${intervalLabels[interval]}`)}
-          </DropdownMenuTrigger>
+          <TradingDropdownTrigger className={triggerClasses}>
+            <TradingButton {...triggerButtonProps}>
+              {t(`Interval: ${intervalLabels[interval]}`)}
+            </TradingButton>
+          </TradingDropdownTrigger>
         }
       >
-        <DropdownMenuContent align={contentAlign}>
-          <DropdownMenuRadioGroup
+        <TradingDropdownContent align={contentAlign}>
+          <TradingDropdownRadioGroup
             value={interval}
             onValueChange={(value) => {
               setInterval(value as Interval);
             }}
           >
             {Object.values(Interval).map((timeInterval) => (
-              <DropdownMenuRadioItem
+              <TradingDropdownRadioItem
                 key={timeInterval}
                 inset
                 value={timeInterval}
               >
                 {intervalLabels[timeInterval]}
-                <DropdownMenuItemIndicator />
-              </DropdownMenuRadioItem>
+                <TradingDropdownItemIndicator />
+              </TradingDropdownRadioItem>
             ))}
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <DropdownMenu
+          </TradingDropdownRadioGroup>
+        </TradingDropdownContent>
+      </TradingDropdown>
+      <TradingDropdown
         trigger={
-          <DropdownMenuTrigger className={triggerClasses}>
-            <Icon name={chartTypeIcon.get(chartType) as IconName} />
-          </DropdownMenuTrigger>
+          <TradingDropdownTrigger className={triggerClasses}>
+            <TradingButton {...triggerButtonProps}>
+              <Icon name={chartTypeIcon.get(chartType) as IconName} />
+            </TradingButton>
+          </TradingDropdownTrigger>
         }
       >
-        <DropdownMenuContent align={contentAlign}>
-          <DropdownMenuRadioGroup
+        <TradingDropdownContent align={contentAlign}>
+          <TradingDropdownRadioGroup
             value={chartType}
             onValueChange={(value) => {
               setType(value as ChartType);
             }}
           >
             {Object.values(ChartType).map((type) => (
-              <DropdownMenuRadioItem key={type} inset value={type}>
+              <TradingDropdownRadioItem key={type} inset value={type}>
                 {chartTypeLabels[type]}
-                <DropdownMenuItemIndicator />
-              </DropdownMenuRadioItem>
+                <TradingDropdownItemIndicator />
+              </TradingDropdownRadioItem>
             ))}
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <DropdownMenu
+          </TradingDropdownRadioGroup>
+        </TradingDropdownContent>
+      </TradingDropdown>
+      <TradingDropdown
         trigger={
-          <DropdownMenuTrigger className={triggerClasses}>
-            {t('Overlays')}
-          </DropdownMenuTrigger>
+          <TradingDropdownTrigger className={triggerClasses}>
+            <TradingButton {...triggerButtonProps}>
+              {t('Overlays')}
+            </TradingButton>
+          </TradingDropdownTrigger>
         }
       >
-        <DropdownMenuContent align={contentAlign}>
+        <TradingDropdownContent align={contentAlign}>
           {Object.values(Overlay).map((overlay) => (
-            <DropdownMenuCheckboxItem
+            <TradingDropdownCheckboxItem
               key={overlay}
               checked={overlays.includes(overlay)}
               onCheckedChange={() => {
@@ -121,21 +129,23 @@ export const CandlesMenu = () => {
               }}
             >
               {overlayLabels[overlay]}
-              <DropdownMenuItemIndicator />
-            </DropdownMenuCheckboxItem>
+              <TradingDropdownItemIndicator />
+            </TradingDropdownCheckboxItem>
           ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <DropdownMenu
+        </TradingDropdownContent>
+      </TradingDropdown>
+      <TradingDropdown
         trigger={
-          <DropdownMenuTrigger className={triggerClasses}>
-            {t('Studies')}
-          </DropdownMenuTrigger>
+          <TradingDropdownTrigger className={triggerClasses}>
+            <TradingButton {...triggerButtonProps}>
+              {t('Studies')}
+            </TradingButton>
+          </TradingDropdownTrigger>
         }
       >
-        <DropdownMenuContent align={contentAlign}>
+        <TradingDropdownContent align={contentAlign}>
           {Object.values(Study).map((study) => (
-            <DropdownMenuCheckboxItem
+            <TradingDropdownCheckboxItem
               key={study}
               checked={studies.includes(study)}
               onCheckedChange={() => {
@@ -150,11 +160,11 @@ export const CandlesMenu = () => {
               }}
             >
               {studyLabels[study]}
-              <DropdownMenuItemIndicator />
-            </DropdownMenuCheckboxItem>
+              <TradingDropdownItemIndicator />
+            </TradingDropdownCheckboxItem>
           ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+        </TradingDropdownContent>
+      </TradingDropdown>
     </>
   );
 };

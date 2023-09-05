@@ -2,9 +2,10 @@ import { t } from '@vegaprotocol/i18n';
 import {
   Button,
   Dialog,
-  Icon,
   Splash,
   SyntaxHighlighter,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { create } from 'zustand';
 import { AssetDetailsTable } from './asset-details-table';
@@ -82,7 +83,7 @@ export const AssetDetailsDialog = ({
   return (
     <Dialog
       title={title}
-      icon={<Icon name="info-sign"></Icon>}
+      icon={<VegaIcon name={VegaIconNames.INFO} />}
       open={open}
       onChange={(isOpen) => onChange(isOpen)}
       onCloseAutoFocus={(e) => {
@@ -97,7 +98,7 @@ export const AssetDetailsDialog = ({
       }}
     >
       {content}
-      <p className="text-sm my-4">
+      <p className="my-4 text-xs">
         {t(
           'There is 1 unit of the settlement asset (%s) to every 1 quote unit.',
           [assetSymbol]

@@ -21,7 +21,7 @@ export type OrderbookData = {
 
 interface OrderbookManagerProps {
   marketId: string;
-  onClick?: (args: { price?: string; size?: string }) => void;
+  onClick: (args: { price?: string; size?: string }) => void;
 }
 
 export const OrderbookManager = ({
@@ -57,7 +57,6 @@ export const OrderbookManager = ({
     dataProvider: marketDataProvider,
     variables,
   });
-
   return (
     <AsyncRenderer
       loading={loading || marketDataLoading || marketLoading}
@@ -65,15 +64,17 @@ export const OrderbookManager = ({
       data={data}
       reload={reload}
     >
-      <Orderbook
-        bids={data?.depth.buy ?? []}
-        asks={data?.depth.sell ?? []}
-        decimalPlaces={market?.decimalPlaces ?? 0}
-        positionDecimalPlaces={market?.positionDecimalPlaces ?? 0}
-        assetSymbol={(market && getQuoteName(market)) || ''}
-        onClick={onClick}
-        midPrice={marketData?.midPrice}
-      />
+      {market && marketData && (
+        <Orderbook
+          bids={data?.depth.buy ?? []}
+          asks={data?.depth.sell ?? []}
+          decimalPlaces={market.decimalPlaces}
+          positionDecimalPlaces={market.positionDecimalPlaces}
+          assetSymbol={getQuoteName(market)}
+          onClick={onClick}
+          lastTradedPrice={marketData.lastTradedPrice}
+        />
+      )}
     </AsyncRenderer>
   );
 };

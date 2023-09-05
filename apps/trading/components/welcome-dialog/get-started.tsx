@@ -23,6 +23,7 @@ import { Links, Routes } from '../../pages/client-router';
 import { useGlobalStore } from '../../stores';
 import { useSidebar, ViewType } from '../sidebar';
 import * as constants from '../constants';
+import { useOnboardingStore } from './welcome-dialog';
 
 interface Props {
   lead?: string;
@@ -35,7 +36,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
     constants.ONBOARDING_VIEWED_KEY
   );
 
-  const update = useGlobalStore((store) => store.update);
+  const dismiss = useOnboardingStore((store) => store.dismiss);
   const marketId = useGlobalStore((store) => store.marketId);
   const link = marketId ? Links[Routes.MARKET](marketId) : Links[Routes.HOME]();
   const openVegaWalletDialog = useVegaWalletDialogStore(
@@ -61,7 +62,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
     onClickHandle = () => {
       navigate(link);
       setView({ type: ViewType.Deposit });
-      update({ onBoardingDismissed: true });
+      dismiss();
     };
   } else if (step === OnboardingStep.ONBOARDING_ORDER_STEP) {
     buttonText = t('Dismiss');

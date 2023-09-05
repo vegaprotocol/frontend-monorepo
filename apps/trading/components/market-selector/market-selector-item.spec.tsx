@@ -70,6 +70,7 @@ describe('MarketSelectorItem', () => {
     targetStake: '1000000',
     trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
     priceMonitoringBounds: null,
+    lastTradedPrice: '100',
   };
 
   const candles = [

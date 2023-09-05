@@ -11,7 +11,6 @@ import {
 import Routes from '../../../routes';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
-import { useVoteInformation } from '../../hooks';
 
 export const ProposalsListItemDetails = ({
   proposal,
@@ -20,18 +19,10 @@ export const ProposalsListItemDetails = ({
 }) => {
   const { t } = useTranslation();
   const state = proposal?.state;
-  const { willPassByTokenVote, willPassByLPVote } = useVoteInformation({
-    proposal,
-  });
-  const updateMarketWillPass = willPassByTokenVote || willPassByLPVote;
-  const updateMarketVotePassMethod = willPassByTokenVote
-    ? t('byTokenVote')
-    : t('byLPVote');
   const nowToEnactmentInHours = differenceInHours(
     new Date(proposal?.terms.closingDatetime),
     new Date()
   );
-  const isUpdateMarket = proposal?.terms.change.__typename === 'UpdateMarket';
 
   let voteDetails: ReactNode;
   let voteStatus: ReactNode;
@@ -78,31 +69,11 @@ export const ProposalsListItemDetails = ({
     }
     case ProposalState.STATE_OPEN: {
       voteDetails = (
-        <span className={nowToEnactmentInHours < 6 ? 'text-vega-pink' : ''}>
+        <span className={nowToEnactmentInHours < 6 ? 'text-vega-orange' : ''}>
           {formatDistanceToNowStrict(new Date(proposal?.terms.closingDatetime))}{' '}
           {t('left to vote')}
         </span>
       );
-      voteStatus =
-        (isUpdateMarket &&
-          (updateMarketWillPass ? (
-            <>
-              {t('currentlySetTo')} {t('pass')} {updateMarketVotePassMethod}
-            </>
-          ) : (
-            <>
-              {t('currentlySetTo')} {t('fail')}
-            </>
-          ))) ||
-        (willPassByTokenVote ? (
-          <>
-            {t('currentlySetTo')} {t('pass')}
-          </>
-        ) : (
-          <>
-            {t('currentlySetTo')} {t('fail')}
-          </>
-        ));
       break;
     }
     case ProposalState.STATE_REJECTED: {

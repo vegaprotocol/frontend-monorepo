@@ -495,11 +495,12 @@ export const DealTicket = ({
             onSelect={(value) => {
               // If GTT is selected and no expiresAt time is set, or its
               // behind current time then reset the value to current time
+              const now = Date.now();
               if (
                 value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
-                (!expiresAt || new Date(expiresAt).getTime() < Date.now())
+                (!expiresAt || new Date(expiresAt).getTime() < now)
               ) {
-                setValue('expiresAt', formatForInput(new Date()), {
+                setValue('expiresAt', formatForInput(new Date(now)), {
                   shouldValidate: true,
                 });
               }

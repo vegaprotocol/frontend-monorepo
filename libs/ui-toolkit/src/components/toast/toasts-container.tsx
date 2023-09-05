@@ -3,7 +3,7 @@ import { usePrevious } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
 import type { Ref } from 'react';
 import { useLayoutEffect, useRef } from 'react';
-import { Button } from '../button';
+import { TradingButton } from '../trading-button';
 import { Toast } from './toast';
 import type { Toasts } from './use-toasts';
 import { ToastPosition, useToasts, useToastsConfiguration } from './use-toasts';
@@ -87,26 +87,27 @@ export const ToastsContainer = ({
                 </li>
               );
             })}
-        <Button
-          title={t('Dismiss all toasts')}
-          size="sm"
-          fill={true}
+        <div
           className={classNames(
-            'absolute top-[-38px] right-0 z-20',
+            'absolute w-full top-[-38px] right-0 z-20',
             'transition-opacity',
             'opacity-0 group-hover:opacity-50 hover:!opacity-100',
-            'text-sm text-black dark:text-white bg-white dark:bg-black hover:!bg-white hover:dark:!bg-black',
             {
               hidden: validToasts.length === 0,
             }
           )}
-          onClick={() => {
-            closeAll();
-          }}
-          variant={'default'}
         >
-          {t('Dismiss all')}
-        </Button>
+          <TradingButton
+            title={t('Dismiss all toasts')}
+            size="small"
+            fill={true}
+            onClick={() => {
+              closeAll();
+            }}
+          >
+            {t('Dismiss all')}
+          </TradingButton>
+        </div>
       </ul>
     </Portal>
   );

@@ -2,9 +2,8 @@ import { useMemo } from 'react';
 import orderBy from 'lodash/orderBy';
 import { MarketState } from '@vegaprotocol/types';
 import {
-  calcCandleVolume,
-  getAsset,
   calcTradedFactor,
+  getAsset,
   useMarketList,
 } from '@vegaprotocol/markets';
 import { priceChangePercentage } from '@vegaprotocol/utils';
@@ -59,22 +58,6 @@ export const useMarketSelectorList = ({
         }
         return false;
       });
-
-    if (sort === Sort.None) {
-      // Sort by market state primarily and AtoZ secondarily
-      return orderBy(
-        markets,
-        [
-          (m) => MARKET_TEMPLATE.indexOf(m.state),
-          (m) => {
-            if (!m.candles?.length) return 0;
-            const vol = calcCandleVolume(m.candles);
-            return Number(vol || 0);
-          },
-        ],
-        ['asc', 'desc']
-      );
-    }
 
     if (sort === Sort.Gained || sort === Sort.Lost) {
       const dir = sort === Sort.Gained ? 'desc' : 'asc';
