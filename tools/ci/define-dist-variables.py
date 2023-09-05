@@ -14,13 +14,8 @@ domain = 'vega.rocks'
 bucket_name = ''
 
 if 'release/' in args.github_ref:
-  if 'mainnet-mirror' in args.github_ref:
-    env_name = 'mainnet-mirror'
-  if 'validators-testnet' in args.github_ref:
-    env_name = 'validators-testnet'
-  else:
-    # remove prefixing release/ and take the first string limited by - which is supposed to be name of the environment for releasing (format: release/testnet-trading)
-    env_name = args.github_ref.replace('refs/heads/release/', '').split('-')[0]
+  # remove prefixing release/ and take the first string limited by - which is supposed to be name of the environment for releasing (format: release/testnet-trading)
+  env_name = args.github_ref.replace('refs/heads/release/', '').split('-')[0]
 elif 'develop' in args.github_ref:
   env_name = 'stagnet1'
   apps_deployed_from_develop_to_mainnet = {
