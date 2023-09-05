@@ -20,7 +20,7 @@ jobs:
         project: ${{ fromJSON(inputs.projects) }}
     name: ${{ matrix.project }}
     runs-on: self-hosted-runner
-    timeout-minutes: 100
+    timeout-minutes: 120
     steps:
       # Checks if skip cache was requested
       - name: Set skip-nx-cache flag

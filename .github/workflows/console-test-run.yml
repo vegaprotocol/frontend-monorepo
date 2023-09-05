@@ -10,8 +10,8 @@ on:
 jobs:
   run-tests:
     name: run-tests
-    runs-on: ubuntu-22.04
-    timeout-minutes: 25
+    runs-on: 8-cores
+    timeout-minutes: 20
     steps:
       #----------------------------------------------
       #       check-out frontend-monorepo
@@ -125,7 +125,7 @@ jobs:
       #----------------------------------------------
       - name: Run tests
         working-directory: ./console-test
-        run: poetry run pytest --numprocesses auto
+        run: poetry run pytest -v -s --numprocesses auto --dist loadfile --durations=20
       - name: Check files
         run: |
           ls -al .
