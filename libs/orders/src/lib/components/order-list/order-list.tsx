@@ -271,8 +271,8 @@ export const OrderListTable = memo<
           {
             colId: 'amend',
             ...COL_DEFS.actions,
-            minWidth: showAllActions ? 90 : COL_DEFS.actions.minWidth,
-            maxWidth: showAllActions ? 90 : COL_DEFS.actions.minWidth,
+            minWidth: showAllActions ? 80 : COL_DEFS.actions.minWidth,
+            maxWidth: showAllActions ? 80 : COL_DEFS.actions.minWidth,
             cellRenderer: ({ data }: { data?: Order }) => {
               if (!data) return null;
 
@@ -284,6 +284,7 @@ export const OrderListTable = memo<
                         <ButtonLink
                           data-testid="edit"
                           onClick={() => onEdit(data)}
+                          title={t('Edit order')}
                         >
                           <VegaIcon name={VegaIconNames.EDIT} size={16} />
                         </ButtonLink>
@@ -291,6 +292,7 @@ export const OrderListTable = memo<
                       <ButtonLink
                         data-testid="cancel"
                         onClick={() => onCancel(data)}
+                        title={t('Cancel order')}
                       >
                         <VegaIcon name={VegaIconNames.CROSS} size={16} />
                       </ButtonLink>

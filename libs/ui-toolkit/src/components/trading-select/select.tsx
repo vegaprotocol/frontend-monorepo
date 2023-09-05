@@ -2,7 +2,7 @@ import type { Ref, SelectHTMLAttributes } from 'react';
 import { useRef } from 'react';
 import { forwardRef } from 'react';
 import classNames from 'classnames';
-import { Icon, VegaIcon, VegaIconNames } from '..';
+import { VegaIcon, VegaIconNames } from '..';
 import { defaultSelectElement } from '../../utils/shared';
 import * as SelectPrimitive from '@radix-ui/react-select';
 
@@ -65,8 +65,8 @@ export const TradingRichSelect = forwardRef<
           ref={forwardedRef}
         >
           <SelectPrimitive.Value placeholder={placeholder} />
-          <SelectPrimitive.Icon className={classNames('absolute right-4')}>
-            <Icon name="chevron-down" />
+          <SelectPrimitive.Icon className={classNames('absolute right-2')}>
+            <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
           </SelectPrimitive.Icon>
         </SelectPrimitive.Trigger>
         <SelectPrimitive.Portal container={containerRef.current}>
@@ -85,11 +85,11 @@ export const TradingRichSelect = forwardRef<
             align={'center'}
           >
             <SelectPrimitive.ScrollUpButton className="absolute z-20 flex items-center justify-center w-full h-6 py-1 bg-gradient-to-t from-transparent to-neutral-50 dark:to-neutral-900">
-              <Icon name="chevron-up" />
+              <VegaIcon name={VegaIconNames.CHEVRON_UP} />
             </SelectPrimitive.ScrollUpButton>
             <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
             <SelectPrimitive.ScrollDownButton className="absolute bottom-0 z-20 flex items-center justify-center w-full h-6 py-1 bg-gradient-to-b from-transparent to-neutral-50 dark:to-neutral-900">
-              <Icon name="chevron-down" />
+              <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
             </SelectPrimitive.ScrollDownButton>
           </SelectPrimitive.Content>
         </SelectPrimitive.Portal>
@@ -122,7 +122,7 @@ export const TradingOption = forwardRef<
   >
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
     <SelectPrimitive.ItemIndicator className="absolute right-4 top-[50%] translate-y-[-50%]">
-      <Icon name="tick" />
+      <VegaIcon name={VegaIconNames.TICK} />
     </SelectPrimitive.ItemIndicator>
   </SelectPrimitive.Item>
 ));
