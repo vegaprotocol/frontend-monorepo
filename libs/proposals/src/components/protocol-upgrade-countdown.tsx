@@ -73,7 +73,7 @@ export const ProtocolUpgradeCountdown = ({
 
   return (
     <a
-      href={detailsLink(data.vegaReleaseTag)}
+      href={detailsLink(data.vegaReleaseTag, data.upgradeBlockHeight)}
       target="_blank"
       rel="noreferrer nofollow noopener"
     >

@@ -79,7 +79,7 @@ export const ProtocolUpgradeProposalNotification = ({
         {t(
           'Trading activity will be interrupted, manage your risk appropriately.'
         )}{' '}
-        <ExternalLink href={detailsLink(vegaReleaseTag)}>
+        <ExternalLink href={detailsLink(vegaReleaseTag, upgradeBlockHeight)}>
           {t('View details')}
         </ExternalLink>
       </div>
