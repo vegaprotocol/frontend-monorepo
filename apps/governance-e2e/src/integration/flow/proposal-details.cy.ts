@@ -151,6 +151,7 @@ describe(
       // 3001-VOTE-037
       // 3001-VOTE-040
       // 3001-VOTE-067
+      // 3001-VOTE-023
       createRawProposal();
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
         getProposalFromTitle(rawProposal.rationale.title).within(() =>
@@ -203,6 +204,9 @@ describe(
       cy.getByTestId(votesForPercentage) // 3001-VOTE-072
         .should('have.text', '100%');
       cy.getByTestId(votesAgainstPercentage).should('have.text', '0%');
+      cy.getByTestId('token-majority-progress')
+        .should('have.attr', 'style')
+        .and('eq', 'width: 100%;'); // 3001-VOTE-024
       cy.getByTestId(changeVoteButton).should('be.visible').click();
       voteForProposal('for');
       // 3001-VOTE-064

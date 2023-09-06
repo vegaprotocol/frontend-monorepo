@@ -162,6 +162,8 @@ When looking to vote on the proposal, I...
     - **must** trigger a transaction that needs to be confirmed in users wallet (<a name="3001-VOTE-013" href="#3001-VOTE-013">3001-VOTE-013</a>)
     - **must** see that I need to confirm the transaction in my wallet to continue (<a name="3001-VOTE-014" href="#3001-VOTE-014">3001-VOTE-014</a>)
   - **must** see option to change my vote (vote again in same or different direction) (<a name="3001-VOTE-090" href="#3001-VOTE-090">3001-VOTE-090</a>)
+  - **must** see two vote status bars, one showing majority voting yes/no, and the other showing participation progress. The maximum value for the progress bar should be the threshold for that proposal type. (<a name="3001-VOTE-023" href="#3001-VOTE-023">3001-VOTE-023</a>)
+  - **must** see when the participation bar reaches 100% (i.e. the network param threshold is met) the indicator text on top of it reads "[network param]% participation threshold met". Otherwise it says "[network param]% participation threshold not met". (<a name="3001-VOTE-024" href="#3001-VOTE-024">3001-VOTE-024</a>)
 
 For open market change proposals, all of the above and:
 
