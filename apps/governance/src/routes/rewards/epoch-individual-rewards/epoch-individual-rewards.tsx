@@ -9,6 +9,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { EpochIndividualRewardsTable } from './epoch-individual-rewards-table';
 import { generateEpochIndividualRewardsList } from './generate-epoch-individual-rewards-list';
 import { calculateEpochOffset } from '../../../lib/epoch-pagination';
+import { useNetworkParam } from '@vegaprotocol/network-parameters';
 
 const EPOCHS_PAGE_SIZE = 10;
 
@@ -26,6 +27,9 @@ export const EpochIndividualRewards = ({
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
   const { delegationsPagination } = ENV;
+  const { param: marketCreationQuantumMultiple } = useNetworkParam(
+    'rewards_marketCreationQuantumMultiple'
+  );
 
   const { data, loading, error, refetch } = useRewardsQuery({
     notifyOnNetworkStatusChange: true,
@@ -103,6 +107,7 @@ export const EpochIndividualRewards = ({
           {epochIndividualRewardSummaries.map(
             (epochIndividualRewardSummary) => (
               <EpochIndividualRewardsTable
+                marketCreationQuantumMultiple={marketCreationQuantumMultiple}
                 data={epochIndividualRewardSummary}
               />
             )

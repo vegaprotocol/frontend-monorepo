@@ -43,7 +43,10 @@ describe('EpochIndividualRewardsTable', () => {
   it('should render correctly', () => {
     const { getByTestId } = render(
       <AppStateProvider>
-        <EpochIndividualRewardsTable data={mockData} />
+        <EpochIndividualRewardsTable
+          data={mockData}
+          marketCreationQuantumMultiple={'1000'}
+        />
       </AppStateProvider>
     );
     expect(getByTestId('epoch-individual-rewards-table')).toBeInTheDocument();

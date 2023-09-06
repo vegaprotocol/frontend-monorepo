@@ -66,7 +66,10 @@ describe('EpochTotalRewardsTable', () => {
   it('should render correctly', () => {
     const { getByTestId } = render(
       <AppStateProvider>
-        <EpochTotalRewardsTable data={mockData} />
+        <EpochTotalRewardsTable
+          data={mockData}
+          marketCreationQuantumMultiple={'1000'}
+        />
       </AppStateProvider>
     );
     expect(getByTestId('epoch-total-rewards-table')).toBeInTheDocument();
