@@ -183,7 +183,7 @@ context(
         .first()
         .find('[data-testid="view-proposal-btn"]')
         .click();
-      cy.url().should('contain', '/protocol-upgrades/v1');
+      cy.url().should('contain', '/protocol-upgrades/v1/2015942');
       cy.getByTestId('protocol-upgrade-proposal').within(() => {
         cy.get('h1').should('have.text', 'Vega Release v1');
         cy.getByTestId('protocol-upgrade-block-height').should(
@@ -243,7 +243,7 @@ context(
           );
         cy.getByTestId('external-link')
           .should('have.attr', 'href')
-          .and('contain', '/proposals/protocol-upgrade/v1');
+          .and('contain', '/proposals/protocol-upgrade/v1/2015942');
       });
 
       // estimate does not display possibly due to mocks or Cypress unless the proposal is clicked on several times
