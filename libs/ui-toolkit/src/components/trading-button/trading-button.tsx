@@ -132,6 +132,7 @@ export const TradingAnchorButton = forwardRef<
       children,
       className,
       subLabel,
+      ...props
     },
     ref
   ) => (
@@ -139,6 +140,7 @@ export const TradingAnchorButton = forwardRef<
       ref={ref}
       href={href}
       className={getClassName({ size, subLabel, intent }, className)}
+      {...props}
     >
       <Content icon={icon} subLabel={subLabel} children={children} />
     </a>
