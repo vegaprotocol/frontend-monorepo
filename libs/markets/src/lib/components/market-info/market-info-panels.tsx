@@ -15,8 +15,11 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import {
+  formatDateWithLocalTimezone,
   formatNumber,
   formatNumberPercentage,
+  fromNanoSeconds,
+  getDateTimeFormat,
   getMarketExpiryDateFormatted,
 } from '@vegaprotocol/utils';
 import type { Get } from 'type-fest';
@@ -57,6 +60,8 @@ import { useSuccessorMarketProposalDetailsQuery } from '@vegaprotocol/proposals'
 import { getQuoteName, getAsset } from '../../market-utils';
 import classNames from 'classnames';
 import compact from 'lodash/compact';
+import type { DataSourceFragment } from './__generated__/MarketInfo';
+import { formatDuration } from 'date-fns';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -671,6 +676,30 @@ export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
       {children}
     </>
   );
+};
+
+export const FundingInfoPanel = ({
+  dataSource,
+}: {
+  dataSource: DataSourceFragment;
+}) => {
+  const sourceType = dataSource.data.sourceType.sourceType;
+  if (
+    sourceType.__typename !== 'DataSourceSpecConfigurationTimeTrigger' ||
+    !sourceType.triggers?.[0]?.every
+  ) {
+    return null;
+  }
+  const { every, initial } = sourceType.triggers[0];
+  const hours = Math.floor(every / (60 * 60));
+  const minutes = Math.floor(every / 60) % 60;
+  const initialLabel = initial
+    ? ` ${t('from')} ${getDateTimeFormat().format(new Date(initial * 1000))}`
+    : '';
+  return `${t('every')} ${formatDuration({
+    hours,
+    minutes,
+  })} ${initialLabel}`;
 };
 
 export const OracleInfoPanel = ({

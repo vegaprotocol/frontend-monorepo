@@ -15,6 +15,7 @@ import {
   getDataSourceSpecForSettlementSchedule,
   getDataSourceSpecForSettlementData,
   getDataSourceSpecForTradingTermination,
+  getSigners,
 } from '@vegaprotocol/markets';
 import {
   Button,
@@ -26,7 +27,6 @@ import {
 import { SubHeading } from '../../../../components/heading';
 import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import type { MarketInfo } from '@vegaprotocol/markets';
-import type { DataSourceDefinition } from '@vegaprotocol/types';
 import { create } from 'zustand';
 
 type MarketDataDialogState = {
@@ -97,23 +97,6 @@ export const ProposalMarketData = ({
       marketData.priceMonitoringSettings?.parameters?.triggers,
       parentMarketData?.priceMonitoringSettings?.parameters?.triggers
     );
-
-  const getSigners = (data: DataSourceDefinition) => {
-    if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
-      const signers =
-        ('signers' in data.sourceType.sourceType &&
-          data.sourceType.sourceType.signers) ||
-        [];
-
-      return signers.map(({ signer }) => {
-        return (
-          (signer.__typename === 'ETHAddress' && signer.address) ||
-          (signer.__typename === 'PubKey' && signer.key)
-        );
-      });
-    }
-    return [];
-  };
 
   return (
     <section className="relative" data-testid="proposal-market-data">

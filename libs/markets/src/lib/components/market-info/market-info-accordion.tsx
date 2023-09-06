@@ -23,6 +23,7 @@ import type { MarketInfo } from './market-info-data-provider';
 import { MarketProposalNotification } from '@vegaprotocol/proposals';
 import {
   CurrentFeesInfoPanel,
+  FundingInfoPanel,
   InstrumentInfoPanel,
   InsurancePoolInfoPanel,
   KeyDetailsInfoPanel,
@@ -46,8 +47,8 @@ import {
   getDataSourceSpecForTradingTermination,
   isPerpetual,
   isFuture,
+  getSigners,
 } from '../../product';
-import type { DataSourceFragment } from './__generated__/MarketInfo';
 
 export interface MarketInfoAccordionProps {
   market: MarketInfo;
@@ -95,37 +96,26 @@ export const MarketInfoAccordion = ({
   );
 
   const { product } = market.tradableInstrument.instrument;
-  const settlementData = getDataSourceSpecForSettlementData(product)?.data;
-  const terminationData = getDataSourceSpecForTradingTermination(product)?.data;
-  const settlementScheduleData =
-    getDataSourceSpecForSettlementSchedule(product)?.data;
-
-  const getSigners = (data: DataSourceFragment['data']) => {
-    if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
-      const signers =
-        ('signers' in data.sourceType.sourceType &&
-          data.sourceType.sourceType.signers) ||
-        [];
-
-      return signers.map(({ signer }, i) => {
-        return (
-          (signer.__typename === 'ETHAddress' && signer.address) ||
-          (signer.__typename === 'PubKey' && signer.key)
-        );
-      });
-    }
-    return [];
-  };
+  const settlementDataSource = getDataSourceSpecForSettlementData(product);
+  const terminationDataSource = getDataSourceSpecForTradingTermination(product);
+  const settlementScheduleDataSource =
+    getDataSourceSpecForSettlementSchedule(product);
 
   const showOneOracleSection =
     (isFuture(product) &&
-      settlementData &&
-      terminationData &&
-      isEqual(getSigners(settlementData), getSigners(terminationData))) ||
+      settlementDataSource &&
+      terminationDataSource &&
+      isEqual(
+        getSigners(settlementDataSource),
+        getSigners(terminationDataSource)
+      )) ||
     (isPerpetual(product) &&
-      settlementData &&
-      settlementScheduleData &&
-      isEqual(getSigners(settlementData), getSigners(settlementScheduleData)));
+      settlementDataSource &&
+      settlementScheduleDataSource &&
+      isEqual(
+        getSigners(settlementDataSource),
+        getSigners(settlementScheduleDataSource)
+      ));
 
   return (
     <div>
@@ -178,6 +168,15 @@ export const MarketInfoAccordion = ({
             title={t('Instrument')}
             content={<InstrumentInfoPanel market={market} />}
           />
+          {settlementScheduleDataSource && (
+            <AccordionItem
+              itemId="funding"
+              title={t('Funding')}
+              content={
+                <FundingInfoPanel dataSource={settlementScheduleDataSource} />
+              }
+            />
+          )}
           {showOneOracleSection ? (
             <AccordionItem
               itemId="oracles"
@@ -195,8 +194,7 @@ export const MarketInfoAccordion = ({
                   <OracleInfoPanel market={market} type="settlementData" />
                 }
               />
-              {market.tradableInstrument.instrument.product.__typename ===
-                'Perpetual' && (
+              {isPerpetual(product) && (
                 <AccordionItem
                   itemId="settlement-schedule-oracle"
                   title={t('Settlement schedule oracle')}
@@ -208,8 +206,7 @@ export const MarketInfoAccordion = ({
                   }
                 />
               )}
-              {market.tradableInstrument.instrument.product.__typename ===
-                'Future' && (
+              {isFuture(product) && (
                 <AccordionItem
                   itemId="termination-oracle"
                   title={t('Termination oracle')}
