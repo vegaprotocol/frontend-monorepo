@@ -13,7 +13,13 @@
         "tsConfig": "libs/announcements/tsconfig.lib.json",
         "project": "libs/announcements/package.json",
         "entryFile": "libs/announcements/src/index.ts",
-        "external": ["react/jsx-runtime"],
+        "external": [
+          "react",
+          "react-dom",
+          "react/jsx-runtime",
+          "@vegaprotocol/react-helpers",
+          "@vegaprotocol/ui-toolkit"
+        ],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [

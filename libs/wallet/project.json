@@ -13,7 +13,17 @@
         "tsConfig": "libs/wallet/tsconfig.lib.json",
         "project": "libs/wallet/package.json",
         "entryFile": "libs/wallet/src/index.ts",
-        "external": ["react", "react-dom", "react/jsx-runtime"],
+        "external": [
+          "react",
+          "react-dom",
+          "react/jsx-runtime",
+          "@vegaprotocol/i18n",
+          "@vegaprotocol/react-helpers",
+          "@vegaprotocol/types",
+          "@vegaprotocol/ui-toolkit",
+          "@vegaprotocol/utils",
+          "@vegaprotocol/wallet-client"
+        ],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "babel",
         "format": ["esm", "cjs"],

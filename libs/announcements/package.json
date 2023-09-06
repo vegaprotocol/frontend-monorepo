@@ -1,8 +1,4 @@
 {
   "name": "@vegaprotocol/announcements",
-  "version": "0.0.2",
-  "peerDependencies": {
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
-  }
+  "version": "0.0.2"
 }

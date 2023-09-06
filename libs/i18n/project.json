@@ -7,6 +7,7 @@
     "build": {
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
+      "format": ["esm", "cjs"],
       "options": {
         "outputPath": "dist/libs/i18n",
         "main": "libs/i18n/src/index.ts",
