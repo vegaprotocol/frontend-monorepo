@@ -10,7 +10,7 @@ on:
 jobs:
   run-tests:
     name: run-tests
-    runs-on: 8-cores
+    runs-on: console-test
     timeout-minutes: 20
     steps:
       #----------------------------------------------
@@ -35,12 +35,12 @@ jobs:
       #----------------------------------------------
       #       setup node
       #----------------------------------------------
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
-          # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
-          cache: yarn
+      # - name: Setup node
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version-file: '.nvmrc'
+      #     # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
+      #     cache: yarn
       #----------------------------------------------
       #       install deps if cache missing
       #----------------------------------------------
@@ -78,29 +78,29 @@ jobs:
       #----------------------------------------------
       #       set-up python
       #----------------------------------------------
-      - name: Set up python
-        id: setup-python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10.11'
+      # - name: Set up python
+      #   id: setup-python
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: '3.10.11'
       #----------------------------------------------
       #  -----  install & configure poetry  -----
       #----------------------------------------------
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-          virtualenvs-path: console-test/.venv
+      # - name: Install Poetry
+      #   uses: snok/install-poetry@v1
+      #   with:
+      #     virtualenvs-create: true
+      #     virtualenvs-in-project: true
+      #     virtualenvs-path: console-test/.venv
       #----------------------------------------------
       #       load cached venv if cache exists
       #----------------------------------------------
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v3
-        with:
-          path: console-test/.venv
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      # - name: Load cached venv
+      #   id: cached-poetry-dependencies
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: console-test/.venv
+      #     key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
       #----------------------------------------------
       # install dependencies if cache does not exist
       #----------------------------------------------
