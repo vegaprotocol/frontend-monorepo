@@ -95,8 +95,10 @@ const MarketData = ({
   return (
     <>
       <div className="w-2/5" role="gridcell">
-        <h3 className="text-ellipsis text-sm lg:text-base whitespace-nowrap overflow-hidden">
-          {market.tradableInstrument.instrument.code}{' '}
+        <h3 className="flex items-baseline">
+          <span className="text-sm lg:text-base text-ellipsis whitespace-nowrap overflow-hidden">
+            {market.tradableInstrument.instrument.code}
+          </span>
           {allProducts && productType && (
             <MarketProductPill productType={productType} />
           )}

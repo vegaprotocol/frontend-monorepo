@@ -12,16 +12,18 @@ import {
 export const MarketProductPill = ({
   productType,
 }: {
-  productType: ProductType;
+  productType?: ProductType;
 }) => {
   return (
-    <Pill
-      size="xxs"
-      className="uppercase ml-0.5"
-      title={ProductTypeMapping[productType]}
-    >
-      {ProductTypeShortName[productType]}
-    </Pill>
+    productType && (
+      <Pill
+        size="xxs"
+        className="uppercase ml-0.5"
+        title={ProductTypeMapping[productType]}
+      >
+        {ProductTypeShortName[productType]}
+      </Pill>
+    )
   );
 };
 
