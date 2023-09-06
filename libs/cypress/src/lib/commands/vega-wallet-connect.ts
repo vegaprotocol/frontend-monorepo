@@ -65,6 +65,8 @@ export function addSetVegaWallet() {
   Cypress.Commands.add('setVegaWallet', () => {
     cy.window().then((win) => {
       win.localStorage.setItem('vega_onboarding_viewed', 'true');
+      win.localStorage.setItem('vega_telemetry_approval', 'false');
+      win.localStorage.setItem('vega_telemetry_viewed', 'true');
       win.localStorage.setItem(
         'vega_wallet_config',
         JSON.stringify({
@@ -81,6 +83,8 @@ export function addSetOnBoardingViewed() {
   Cypress.Commands.add('setOnBoardingViewed', () => {
     cy.window().then((win) => {
       win.localStorage.setItem('vega_onboarding_viewed', 'true');
+      win.localStorage.setItem('vega_telemetry_approval', 'false');
+      win.localStorage.setItem('vega_telemetry_viewed', 'true');
     });
   });
 }

@@ -31,7 +31,7 @@ export const MarketSelectorItem = ({
     <div style={style} role="row">
       <Link
         to={`/markets/${market.id}`}
-        className={classNames('h-full flex items-center gap-2 px-4', {
+        className={classNames('h-full flex items-center gap-2 mx-2 px-2', {
           'hover:bg-vega-clight-700 dark:hover:bg-vega-cdark-700':
             market.id !== currentMarketId,
           'bg-vega-clight-600 dark:bg-vega-cdark-600':
@@ -94,7 +94,7 @@ const MarketData = ({
   return (
     <>
       <div className="w-2/5" role="gridcell">
-        <h3 className="text-ellipsis text-sm lg:text-base whitespace-nowrap overflow-hidden">
+        <h3 className="overflow-hidden text-sm text-ellipsis lg:text-base whitespace-nowrap">
           {market.tradableInstrument.instrument.code}{' '}
           {allProducts && productType && (
             <MarketProductPill productType={productType} />
@@ -107,7 +107,7 @@ const MarketData = ({
         )}
       </div>
       <div
-        className="w-1/5 text-xs lg:text-sm whitespace-nowrap text-ellipsis overflow-hidden"
+        className="w-1/5 overflow-hidden text-xs lg:text-sm whitespace-nowrap text-ellipsis"
         title={instrument.product.settlementAsset.symbol}
         data-testid="market-selector-price"
         role="gridcell"
@@ -115,14 +115,14 @@ const MarketData = ({
         {price} {instrument.product.settlementAsset.symbol}
       </div>
       <div
-        className="w-1/5 text-xs lg:text-sm text-right whitespace-nowrap text-ellipsis overflow-hidden"
+        className="w-1/5 overflow-hidden text-xs text-right lg:text-sm whitespace-nowrap text-ellipsis"
         title={t('24h vol')}
         data-testid="market-selector-volume"
         role="gridcell"
       >
         {volume}
       </div>
-      <div className="w-1/5 flex justify-end" role="gridcell">
+      <div className="flex justify-end w-1/5" role="gridcell">
         {oneDayCandles && (
           <Sparkline
             width={64}

@@ -21,6 +21,8 @@ import {
 import * as positionsTools from '@vegaprotocol/positions';
 import { OrdersDocument } from '@vegaprotocol/orders';
 import { formatForInput } from '@vegaprotocol/utils';
+import type { PartialDeep } from 'type-fest';
+import type { Market } from '@vegaprotocol/markets';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
@@ -36,12 +38,19 @@ const market = generateMarket();
 const marketData = generateMarketData();
 const submit = jest.fn();
 
-function generateJsx(mocks: MockedResponse[] = []) {
+function generateJsx(
+  mocks: MockedResponse[] = [],
+  marketOverrides: PartialDeep<Market> = {}
+) {
+  const joinedMarket: Market = {
+    ...market,
+    ...marketOverrides,
+  } as Market;
   return (
     <MockedProvider mocks={[...mocks]}>
       <VegaWalletContext.Provider value={{ pubKey, isReadOnly: false } as any}>
         <DealTicket
-          market={market}
+          market={joinedMarket}
           marketData={marketData}
           marketPrice={marketPrice}
           submit={submit}
@@ -367,7 +376,6 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('iceberg')).toBeDisabled();
   });
 
-  // eslint-disable-next-line jest/no-disabled-tests
   it('handles TIF select box dependent on order type', async () => {
     render(generateJsx());
 
@@ -531,6 +539,25 @@ describe('DealTicket', () => {
     await userEvent.clear(screen.getByTestId(priceInput));
     await userEvent.type(screen.getByTestId(priceInput), '0.01');
     expect(screen.queryByTestId(priceErrorMessage)).toBeNull();
+  });
+
+  it('validates size when positionDecimalPlaces is negative', async () => {
+    render(generateJsx([], { positionDecimalPlaces: -4 }));
+    const sizeErrorMessage = 'deal-ticket-error-message-size';
+    const sizeInput = 'order-size';
+    await userEvent.click(screen.getByTestId('place-order'));
+    // default value should be invalid
+    expect(screen.getByTestId(sizeErrorMessage)).toBeInTheDocument();
+    expect(screen.getByTestId(sizeErrorMessage)).toHaveTextContent(
+      'Size cannot be lower than 10000'
+    );
+    await userEvent.type(screen.getByTestId(sizeInput), '10001');
+    expect(screen.getByTestId(sizeErrorMessage)).toHaveTextContent(
+      'Size must be a multiple of 10000 for this market'
+    );
+    await userEvent.clear(screen.getByTestId(sizeInput));
+    await userEvent.type(screen.getByTestId(sizeInput), '10000');
+    expect(screen.queryByTestId(sizeErrorMessage)).toBeNull();
   });
 
   it('validates iceberg field', async () => {

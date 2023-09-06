@@ -24,8 +24,8 @@ export const Settings = () => {
       >
         <Switch
           name="settings-telemetry-switch"
-          onCheckedChange={(isOn) => setIsApproved(isOn)}
-          checked={isApproved}
+          onCheckedChange={(isOn) => setIsApproved(isOn ? 'true' : 'false')}
+          checked={isApproved === 'true'}
         />
       </SettingsGroup>
       <SettingsGroup label={t('Toast location')}>

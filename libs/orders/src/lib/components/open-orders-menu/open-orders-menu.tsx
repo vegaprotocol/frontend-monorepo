@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
-import { Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
+import { TradingButton } from '@vegaprotocol/ui-toolkit';
 import { useVegaTransactionStore, useVegaWallet } from '@vegaprotocol/wallet';
 import { useHasAmendableOrder } from '../../order-hooks';
 
@@ -28,12 +28,7 @@ export const OpenOrdersMenu = ({ marketId }: { marketId: string }) => {
 };
 
 const CancelAllOrdersButton = ({ onClick }: { onClick: () => void }) => (
-  <TradingButton
-    intent={Intent.Primary}
-    size="extra-small"
-    onClick={onClick}
-    data-testid="cancelAll"
-  >
+  <TradingButton size="extra-small" onClick={onClick} data-testid="cancelAll">
     {t('Cancel all')}
   </TradingButton>
 );

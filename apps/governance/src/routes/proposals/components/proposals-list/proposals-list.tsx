@@ -7,17 +7,13 @@ import { ProposalsListItem } from '../proposals-list-item';
 import { ProtocolUpgradeProposalsListItem } from '../protocol-upgrade-proposals-list-item/protocol-upgrade-proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
 import Routes from '../../../routes';
-import { AsyncRenderer, Button, Toggle } from '@vegaprotocol/ui-toolkit';
+import { Button, Toggle } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { ExternalLinks } from '@vegaprotocol/environment';
-import {
-  NetworkParams,
-  useNetworkParams,
-} from '@vegaprotocol/network-parameters';
 
 interface ProposalsListProps {
   proposals: Array<ProposalFieldsFragment | ProposalQuery['proposal']>;
@@ -69,20 +65,6 @@ export const ProposalsList = ({
   lastBlockHeight,
 }: ProposalsListProps) => {
   const { t } = useTranslation();
-  const {
-    params: networkParams,
-    loading: networkParamsLoading,
-    error: networkParamsError,
-  } = useNetworkParams([
-    NetworkParams.governance_proposal_market_requiredMajority,
-    NetworkParams.governance_proposal_updateMarket_requiredMajority,
-    NetworkParams.governance_proposal_updateMarket_requiredMajorityLP,
-    NetworkParams.governance_proposal_asset_requiredMajority,
-    NetworkParams.governance_proposal_updateAsset_requiredMajority,
-    NetworkParams.governance_proposal_updateNetParam_requiredMajority,
-    NetworkParams.governance_proposal_freeform_requiredMajority,
-  ]);
-
   const [filterString, setFilterString] = useState('');
   const [closedProposalsView, setClosedProposalsView] =
     useState<ClosedProposalsViewOptions>(
@@ -147,175 +129,161 @@ export const ProposalsList = ({
     p?.party?.id?.toString().includes(filterString);
 
   return (
-    <AsyncRenderer
-      loading={networkParamsLoading}
-      error={networkParamsError}
-      data={networkParams}
-    >
-      <div data-testid="proposals-list">
-        <div className="grid xs:grid-cols-2 items-center">
-          <Heading
-            centerContent={false}
-            marginBottom={false}
-            title={t('pageTitleProposals')}
-          />
+    <div data-testid="proposals-list">
+      <div className="grid xs:grid-cols-2 items-center">
+        <Heading
+          centerContent={false}
+          marginBottom={false}
+          title={t('pageTitleProposals')}
+        />
 
-          <div className="xs:justify-self-end" data-testid="new-proposal-link">
-            <Link to={`${Routes.PROPOSALS}/propose/raw`}>
-              <Button variant="primary" size="sm">
-                <div className="flex items-center gap-1">
-                  {t('NewProposal')}
-                </div>
-              </Button>
-            </Link>
-          </div>
+        <div className="xs:justify-self-end" data-testid="new-proposal-link">
+          <Link to={`${Routes.PROPOSALS}/propose/raw`}>
+            <Button variant="primary" size="sm">
+              <div className="flex items-center gap-1">{t('NewProposal')}</div>
+            </Button>
+          </Link>
         </div>
+      </div>
 
-        <p className="mb-8">
-          {t(
-            `The Vega network is governed by the community. View active proposals, vote on them or propose changes to the network. Network upgrades are proposed and approved by validators.`
-          )}{' '}
-          <ExternalLink
-            data-testid="proposal-documentation-link"
-            href={ExternalLinks.GOVERNANCE_PAGE}
-            className="text-white"
-          >
-            {t(`Find out more about Vega governance`)}
-          </ExternalLink>
-        </p>
+      <p className="mb-8">
+        {t(
+          `The Vega network is governed by the community. View active proposals, vote on them or propose changes to the network. Network upgrades are proposed and approved by validators.`
+        )}{' '}
+        <ExternalLink
+          data-testid="proposal-documentation-link"
+          href={ExternalLinks.GOVERNANCE_PAGE}
+          className="text-white"
+        >
+          {t(`Find out more about Vega governance`)}
+        </ExternalLink>
+      </p>
 
-        {proposals.length > 0 && (
-          <ProposalsListFilter
-            filterString={filterString}
-            setFilterString={(value) => {
-              setFilterString(value);
-              if (value.length > 0) {
-                // If the filter is engaged, ensure the user is viewing governance proposals,
-                // as network upgrades do not have IDs to filter by and will be excluded.
-                setClosedProposalsView(
-                  ClosedProposalsViewOptions.NetworkGovernance
-                );
-              }
-            }}
-          />
-        )}
+      {proposals.length > 0 && (
+        <ProposalsListFilter
+          filterString={filterString}
+          setFilterString={(value) => {
+            setFilterString(value);
+            if (value.length > 0) {
+              // If the filter is engaged, ensure the user is viewing governance proposals,
+              // as network upgrades do not have IDs to filter by and will be excluded.
+              setClosedProposalsView(
+                ClosedProposalsViewOptions.NetworkGovernance
+              );
+            }
+          }}
+        />
+      )}
 
-        <section className="-mx-4 p-4 mb-8 bg-vega-dark-100">
-          <SubHeading title={t('openProposals')} />
+      <section className="-mx-4 p-4 mb-8 bg-vega-dark-100">
+        <SubHeading title={t('openProposals')} />
 
-          {sortedProposals.open.length > 0 ||
-          sortedProtocolUpgradeProposals.open.length > 0 ? (
-            <ul data-testid="open-proposals">
-              {filterString.length < 1 &&
-                sortedProtocolUpgradeProposals.open.map((proposal) => (
-                  <ProtocolUpgradeProposalsListItem
-                    key={proposal.upgradeBlockHeight}
-                    proposal={proposal}
-                  />
-                ))}
-
-              {sortedProposals.open.filter(filterPredicate).map((proposal) => (
-                <ProposalsListItem
-                  key={proposal?.id}
+        {sortedProposals.open.length > 0 ||
+        sortedProtocolUpgradeProposals.open.length > 0 ? (
+          <ul data-testid="open-proposals">
+            {filterString.length < 1 &&
+              sortedProtocolUpgradeProposals.open.map((proposal) => (
+                <ProtocolUpgradeProposalsListItem
+                  key={proposal.upgradeBlockHeight}
                   proposal={proposal}
-                  networkParams={networkParams}
                 />
               ))}
-            </ul>
-          ) : (
-            <p className="mb-0" data-testid="no-open-proposals">
-              {t('noOpenProposals')}
-            </p>
-          )}
-        </section>
 
-        <section className="relative">
-          <SubHeading title={t('closedProposals')} />
-          {sortedProposals.closed.length > 0 ||
-          sortedProtocolUpgradeProposals.closed.length > 0 ? (
-            <>
-              {
-                // We need both the closed proposals and closed protocol upgrade
-                // proposals to be present for there to be a toggle. It also gets
-                // hidden if the user has filtered the list, as the upgrade proposals
-                // do not have the necessary fields for filtering.
-                sortedProposals.closed.length > 0 &&
-                  sortedProtocolUpgradeProposals.closed.length > 0 &&
-                  filterString.length < 1 && (
-                    <div
-                      className="grid w-full justify-end xl:-mt-12 pb-6"
-                      data-testid="toggle-closed-proposals"
-                    >
-                      <div className="w-[440px]">
-                        <Toggle
-                          name="closed-proposals-toggle"
-                          toggles={[
-                            {
-                              label: t(
-                                ClosedProposalsViewOptions.NetworkGovernance
-                              ),
-                              value:
-                                ClosedProposalsViewOptions.NetworkGovernance,
-                            },
-                            {
-                              label: t(
-                                ClosedProposalsViewOptions.NetworkUpgrades
-                              ),
-                              value: ClosedProposalsViewOptions.NetworkUpgrades,
-                            },
-                          ]}
-                          checkedValue={closedProposalsView}
-                          onChange={(e) =>
-                            setClosedProposalsView(
-                              e.target.value as ClosedProposalsViewOptions
-                            )
-                          }
-                        />
-                      </div>
+            {sortedProposals.open.filter(filterPredicate).map((proposal) => (
+              <ProposalsListItem key={proposal?.id} proposal={proposal} />
+            ))}
+          </ul>
+        ) : (
+          <p className="mb-0" data-testid="no-open-proposals">
+            {t('noOpenProposals')}
+          </p>
+        )}
+      </section>
+
+      <section className="relative">
+        <SubHeading title={t('closedProposals')} />
+        {sortedProposals.closed.length > 0 ||
+        sortedProtocolUpgradeProposals.closed.length > 0 ? (
+          <>
+            {
+              // We need both the closed proposals and closed protocol upgrade
+              // proposals to be present for there to be a toggle. It also gets
+              // hidden if the user has filtered the list, as the upgrade proposals
+              // do not have the necessary fields for filtering.
+              sortedProposals.closed.length > 0 &&
+                sortedProtocolUpgradeProposals.closed.length > 0 &&
+                filterString.length < 1 && (
+                  <div
+                    className="grid w-full justify-end xl:-mt-12 pb-6"
+                    data-testid="toggle-closed-proposals"
+                  >
+                    <div className="w-[440px]">
+                      <Toggle
+                        name="closed-proposals-toggle"
+                        toggles={[
+                          {
+                            label: t(
+                              ClosedProposalsViewOptions.NetworkGovernance
+                            ),
+                            value: ClosedProposalsViewOptions.NetworkGovernance,
+                          },
+                          {
+                            label: t(
+                              ClosedProposalsViewOptions.NetworkUpgrades
+                            ),
+                            value: ClosedProposalsViewOptions.NetworkUpgrades,
+                          },
+                        ]}
+                        checkedValue={closedProposalsView}
+                        onChange={(e) =>
+                          setClosedProposalsView(
+                            e.target.value as ClosedProposalsViewOptions
+                          )
+                        }
+                      />
                     </div>
-                  )
-              }
+                  </div>
+                )
+            }
 
-              <ul data-testid="closed-proposals">
-                {closedProposalsView ===
-                  ClosedProposalsViewOptions.NetworkUpgrades && (
-                  <div data-testid="closed-upgrade-proposals">
-                    {sortedProtocolUpgradeProposals.closed.map((proposal) => (
-                      <ProtocolUpgradeProposalsListItem
-                        key={proposal.upgradeBlockHeight}
+            <ul data-testid="closed-proposals">
+              {closedProposalsView ===
+                ClosedProposalsViewOptions.NetworkUpgrades && (
+                <div data-testid="closed-upgrade-proposals">
+                  {sortedProtocolUpgradeProposals.closed.map((proposal) => (
+                    <ProtocolUpgradeProposalsListItem
+                      key={proposal.upgradeBlockHeight}
+                      proposal={proposal}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {closedProposalsView ===
+                ClosedProposalsViewOptions.NetworkGovernance && (
+                <div data-testid="closed-governance-proposals">
+                  {sortedProposals.closed
+                    .filter(filterPredicate)
+                    .map((proposal) => (
+                      <ProposalsListItem
+                        key={proposal?.id}
                         proposal={proposal}
                       />
                     ))}
-                  </div>
-                )}
+                </div>
+              )}
+            </ul>
+          </>
+        ) : (
+          <p className="mb-0" data-testid="no-closed-proposals">
+            {t('noClosedProposals')}
+          </p>
+        )}
+      </section>
 
-                {closedProposalsView ===
-                  ClosedProposalsViewOptions.NetworkGovernance && (
-                  <div data-testid="closed-governance-proposals">
-                    {sortedProposals.closed
-                      .filter(filterPredicate)
-                      .map((proposal) => (
-                        <ProposalsListItem
-                          key={proposal?.id}
-                          proposal={proposal}
-                          networkParams={networkParams}
-                        />
-                      ))}
-                  </div>
-                )}
-              </ul>
-            </>
-          ) : (
-            <p className="mb-0" data-testid="no-closed-proposals">
-              {t('noClosedProposals')}
-            </p>
-          )}
-        </section>
-
-        <Link className="underline" to={Routes.PROPOSALS_REJECTED}>
-          {t('seeRejectedProposals')}
-        </Link>
-      </div>
-    </AsyncRenderer>
+      <Link className="underline" to={Routes.PROPOSALS_REJECTED}>
+        {t('seeRejectedProposals')}
+      </Link>
+    </div>
   );
 };

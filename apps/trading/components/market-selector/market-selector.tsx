@@ -40,7 +40,7 @@ export const MarketSelector = ({
   const [filter, setFilter] = useState<Filter>({
     searchTerm: '',
     product: Product.All,
-    sort: Sort.None,
+    sort: Sort.TopTraded,
     assets: [],
   });
   const allProducts = filter.product === Product.All;
@@ -52,8 +52,8 @@ export const MarketSelector = ({
   }, [reload]);
 
   return (
-    <div data-testid="market-selector">
-      <div className="pt-2 px-2 mb-2">
+    <div data-testid="market-selector" className="md:w-[580px]">
+      <div className="px-2 pt-2 mb-2">
         <ProductSelector
           product={filter.product}
           onSelect={(product) => {
@@ -106,9 +106,6 @@ export const MarketSelector = ({
             currentSort={filter.sort}
             onSelect={(sort) => {
               setFilter((curr) => {
-                if (curr.sort === sort) {
-                  return { ...curr, sort: Sort.None };
-                }
                 return {
                   ...curr,
                   sort,
@@ -294,9 +291,9 @@ const List = ({
 
 const Skeleton = () => {
   return (
-    <div className="mb-2 px-2">
-      <div className="bg-vega-light-100 dark:bg-vega-dark-100 rounded-lg p-4">
-        <div className="w-full h-3 bg-vega-light-200 dark:bg-vega-dark-200 mb-2" />
+    <div className="px-2 mb-2">
+      <div className="p-4 rounded-lg bg-vega-light-100 dark:bg-vega-dark-100">
+        <div className="w-full h-3 mb-2 bg-vega-light-200 dark:bg-vega-dark-200" />
         <div className="w-2/3 h-3 bg-vega-light-200 dark:bg-vega-dark-200" />
       </div>
     </div>

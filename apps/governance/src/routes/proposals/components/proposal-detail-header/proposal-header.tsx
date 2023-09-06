@@ -8,22 +8,19 @@ import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { truncateMiddle } from '../../../../lib/truncate-middle';
 import { CurrentProposalState } from '../current-proposal-state';
 import { ProposalInfoLabel } from '../proposal-info-label';
-import { ProposalVotingStatus } from '../proposal-voting-status';
-import type { NetworkParamsResult } from '@vegaprotocol/network-parameters';
 import { useSuccessorMarketProposalDetails } from '@vegaprotocol/proposals';
 import { FLAGS } from '@vegaprotocol/environment';
 import Routes from '../../../routes';
 import { Link } from 'react-router-dom';
 import type { VoteState } from '../vote-details/use-user-vote';
+import { VoteBreakdown } from '../vote-breakdown';
 
 export const ProposalHeader = ({
   proposal,
-  networkParams,
   isListItem = true,
   voteState,
 }: {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
-  networkParams: Partial<NetworkParamsResult>;
   isListItem?: boolean;
   voteState?: VoteState | null;
 }) => {
@@ -146,7 +143,7 @@ export const ProposalHeader = ({
               className="flex items-center gap-2"
               data-testid={`user-voted-${voteState.toLowerCase()}`}
             >
-              <div className="text-vega-green" data-testid="you-voted-icon">
+              <div data-testid="you-voted-icon">
                 <VegaIcon name={VegaIconNames.VOTE} size={24} />
               </div>
               <div>
@@ -185,7 +182,7 @@ export const ProposalHeader = ({
         </div>
       )}
 
-      <ProposalVotingStatus proposal={proposal} networkParams={networkParams} />
+      <VoteBreakdown proposal={proposal} />
     </>
   );
 };

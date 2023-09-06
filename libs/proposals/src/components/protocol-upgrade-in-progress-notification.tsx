@@ -26,21 +26,35 @@ export const ProtocolUpgradeInProgressNotification = () => {
   const [nextUpgrade] = useLocalStorageSnapshot(
     NEXT_PROTOCOL_UPGRADE_PROPOSAL_SNAPSHOT
   );
-  const { blocksRising, block } = useBlockRising();
   const detailsLink = useProtocolUpgradeProposalLink();
 
   let vegaReleaseTag: string | undefined;
   let upgradeBlockHeight: string | undefined;
 
-  if (error && !data && nextUpgrade && ALLOW_STORED_PROPOSAL_DATA) {
+  const hasData = data && !error;
+  const hasStoredData = nextUpgrade && ALLOW_STORED_PROPOSAL_DATA;
+
+  if (hasData) {
+    // gets tag and height from the data api
+    vegaReleaseTag = data.vegaReleaseTag;
+    upgradeBlockHeight = data.upgradeBlockHeight;
+  } else if (hasStoredData) {
+    // gets tag and height from stored value if data api is unavailable
     try {
       const stored = JSON.parse(nextUpgrade) as StoredNextProtocolUpgradeData;
       vegaReleaseTag = stored.vegaReleaseTag;
       upgradeBlockHeight = stored.upgradeBlockHeight;
     } catch {
-      // no op
+      // NOOP - could not parse stored data
     }
   }
+
+  const hasUpgradeInfo = vegaReleaseTag && upgradeBlockHeight;
+
+  const { blocksRising, block } = useBlockRising(
+    // skips querying blocks if there's no upgrade information available
+    !hasUpgradeInfo
+  );
 
   /**
    * If upgrade is in progress then none of the nodes should produce blocks,
@@ -50,10 +64,7 @@ export const ProtocolUpgradeInProgressNotification = () => {
    * Once the networks is back then the notification disappears.
    */
   const upgradeInProgress =
-    vegaReleaseTag &&
-    upgradeBlockHeight &&
-    !blocksRising &&
-    block <= Number(upgradeBlockHeight);
+    hasUpgradeInfo && !blocksRising && block <= Number(upgradeBlockHeight);
 
   if (!upgradeInProgress) return null;
 
@@ -66,8 +77,8 @@ export const ProtocolUpgradeInProgressNotification = () => {
         {t(
           'Trading and other network activity has stopped until the upgrade is complete.'
         )}{' '}
-        {vegaReleaseTag && (
-          <ExternalLink href={detailsLink(vegaReleaseTag)}>
+        {vegaReleaseTag && upgradeBlockHeight && (
+          <ExternalLink href={detailsLink(vegaReleaseTag, upgradeBlockHeight)}>
             {t('View details')}
           </ExternalLink>
         )}
