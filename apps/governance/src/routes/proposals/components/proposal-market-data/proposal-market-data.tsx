@@ -12,7 +12,7 @@ import {
   RiskModelInfoPanel,
   RiskParametersInfoPanel,
   SettlementAssetInfoPanel,
-  dataSourceSpecForSettlementSchedule,
+  getDataSourceSpecForSettlementSchedule,
   getDataSourceSpecForSettlementData,
   getDataSourceSpecForTradingTermination,
 } from '@vegaprotocol/markets';
@@ -64,14 +64,15 @@ export const ProposalMarketData = ({
   const { product } = marketData.tradableInstrument.instrument;
 
   const settlementData = getDataSourceSpecForSettlementData(product);
-  const settlementScheduleData = dataSourceSpecForSettlementSchedule(product);
+  const settlementScheduleData =
+    getDataSourceSpecForSettlementSchedule(product);
   const terminationData = getDataSourceSpecForTradingTermination(product);
 
   const parentProduct = parentMarketData?.tradableInstrument.instrument.product;
   const parentSettlementData =
     parentProduct && getDataSourceSpecForSettlementData(parentProduct);
   const parentSettlementScheduleData =
-    parentProduct && dataSourceSpecForSettlementSchedule(parentProduct);
+    parentProduct && getDataSourceSpecForSettlementSchedule(parentProduct);
   const parentTerminationData =
     parentProduct && getDataSourceSpecForTradingTermination(parentProduct);
 

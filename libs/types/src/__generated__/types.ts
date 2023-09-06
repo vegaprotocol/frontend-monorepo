@@ -109,6 +109,8 @@ export enum AccountType {
   ACCOUNT_TYPE_MARGIN = 'ACCOUNT_TYPE_MARGIN',
   /** Network treasury, per-asset treasury controlled by the network */
   ACCOUNT_TYPE_NETWORK_TREASURY = 'ACCOUNT_TYPE_NETWORK_TREASURY',
+  /** Holds pending rewards to be paid to the referrer of a party out of fees paid by the taker */
+  ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD = 'ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD',
   /** PendingTransfers - a global account for the pending transfers pool */
   ACCOUNT_TYPE_PENDING_TRANSFERS = 'ACCOUNT_TYPE_PENDING_TRANSFERS',
   /** Average position reward account is a per asset per market account for average position reward funds */
@@ -1694,8 +1696,6 @@ export type LiquiditySLAParameters = {
   /** Specifies the number of liquidity epochs over which past performance will continue to affect rewards */
   performanceHysteresisEpochs: Scalars['Int'];
   priceRange: Scalars['String'];
-  /** Specifies how often the quality of liquidity supplied by the LPS is evaluated and fees arising from that period are earmarked for specific parties */
-  providersFeeCalculationTimeStep: Scalars['Int'];
   /**
    * Specifies the maximum fraction of their accrued fees an LP that meets the SLA implied by market.liquidity.commitmentMinTimeFraction will
    * lose to liquidity providers that achieved a higher SLA performance than them.
@@ -5151,10 +5151,22 @@ export type TradeFee = {
   __typename?: 'TradeFee';
   /** The infrastructure fee, a fee paid to the validators to maintain the Vega network */
   infrastructureFee: Scalars['String'];
+  /** Referral discount on infrastructure fees for the trade */
+  infrastructureFeeReferralDiscount?: Maybe<Scalars['String']>;
+  /** Volume discount on infrastructure fees for the trade */
+  infrastructureFeeVolumeDiscount?: Maybe<Scalars['String']>;
   /** The fee paid to the liquidity providers that committed liquidity to the market */
   liquidityFee: Scalars['String'];
+  /** Referral discount on liquidity fees for the trade */
+  liquidityFeeReferralDiscount?: Maybe<Scalars['String']>;
+  /** Volume discount on liquidity fees for the trade */
+  liquidityFeeVolumeDiscount?: Maybe<Scalars['String']>;
   /** The maker fee, paid by the aggressive party to the other party (the one who had an order in the book) */
   makerFee: Scalars['String'];
+  /** Referral discount on maker fees for the trade */
+  makerFeeReferralDiscount?: Maybe<Scalars['String']>;
+  /** Volume discount on maker fees for the trade */
+  makerFeeVolumeDiscount?: Maybe<Scalars['String']>;
 };
 
 export type TradeSettlement = {

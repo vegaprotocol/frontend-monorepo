@@ -41,7 +41,7 @@ import {
 } from './market-info-panels';
 import isEqual from 'lodash/isEqual';
 import {
-  dataSourceSpecForSettlementSchedule,
+  getDataSourceSpecForSettlementSchedule,
   getDataSourceSpecForSettlementData,
   getDataSourceSpecForTradingTermination,
   isPerpetual,
@@ -98,7 +98,7 @@ export const MarketInfoAccordion = ({
   const settlementData = getDataSourceSpecForSettlementData(product)?.data;
   const terminationData = getDataSourceSpecForTradingTermination(product)?.data;
   const settlementScheduleData =
-    dataSourceSpecForSettlementSchedule(product)?.data;
+    getDataSourceSpecForSettlementSchedule(product)?.data;
 
   const getSigners = (data: DataSourceFragment['data']) => {
     if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {

@@ -17,7 +17,7 @@ export const getDataSourceSpecForSettlementData = (product: Product) =>
     ? product.dataSourceSpecForSettlementData
     : undefined;
 
-export const dataSourceSpecForSettlementSchedule = (product: Product) =>
+export const getDataSourceSpecForSettlementSchedule = (product: Product) =>
   isPerpetual(product)
     ? product.dataSourceSpecForSettlementSchedule
     : undefined;

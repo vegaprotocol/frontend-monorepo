@@ -10,6 +10,7 @@ fragment MarketDataUpdateFields on ObservableMarketData {
   bestStaticBidVolume
   bestStaticOfferPrice
   bestStaticOfferVolume
+  fundingRate
   indicativePrice
   indicativeVolume
   marketState
@@ -54,6 +55,7 @@ fragment MarketDataFields on MarketData {
   bestStaticBidVolume
   bestStaticOfferPrice
   bestStaticOfferVolume
+  fundingRate
   indicativePrice
   indicativeVolume
   marketState
