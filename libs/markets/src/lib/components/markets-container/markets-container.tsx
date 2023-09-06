@@ -38,35 +38,33 @@ export const MarketsContainer = ({
   }, [reload]);
 
   return (
-    <div className="h-full relative">
-      <MarketListTable
-        rowData={data}
-        onCellClicked={(cellEvent: CellClickedEvent) => {
-          const { data, column, event } = cellEvent;
-          // prevent navigating to the market page if any of the below cells are clicked
-          // event.preventDefault or event.stopPropagation dont seem to apply for aggird
-          const colId = column.getColId();
-          if (
-            [
-              'id',
-              'tradableInstrument.instrument.code',
-              'tradableInstrument.instrument.product.settlementAsset',
-              'tradableInstrument.instrument.product.settlementAsset.symbol',
-              'market-actions',
-            ].includes(colId)
-          ) {
-            return;
-          }
-          onSelect(
-            (data as MarketMaybeWithData).id,
-            (event as unknown as MouseEvent)?.metaKey ||
-              (event as unknown as MouseEvent)?.ctrlKey
-          );
-        }}
-        onMarketClick={onSelect}
-        overlayNoRowsTemplate={error ? error.message : t('No markets')}
-        SuccessorMarketRenderer={SuccessorMarketRenderer}
-      />
-    </div>
+    <MarketListTable
+      rowData={data}
+      onCellClicked={(cellEvent: CellClickedEvent) => {
+        const { data, column, event } = cellEvent;
+        // prevent navigating to the market page if any of the below cells are clicked
+        // event.preventDefault or event.stopPropagation dont seem to apply for aggird
+        const colId = column.getColId();
+        if (
+          [
+            'id',
+            'tradableInstrument.instrument.code',
+            'tradableInstrument.instrument.product.settlementAsset',
+            'tradableInstrument.instrument.product.settlementAsset.symbol',
+            'market-actions',
+          ].includes(colId)
+        ) {
+          return;
+        }
+        onSelect(
+          (data as MarketMaybeWithData).id,
+          (event as unknown as MouseEvent)?.metaKey ||
+            (event as unknown as MouseEvent)?.ctrlKey
+        );
+      }}
+      onMarketClick={onSelect}
+      overlayNoRowsTemplate={error ? error.message : t('No markets')}
+      SuccessorMarketRenderer={SuccessorMarketRenderer}
+    />
   );
 };
