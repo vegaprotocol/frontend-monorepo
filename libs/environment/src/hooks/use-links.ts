@@ -127,7 +127,7 @@ export const TOKEN_GOVERNANCE = '/proposals';
 export const TOKEN_PROPOSALS = '/proposals';
 export const TOKEN_PROPOSAL = '/proposals/:id';
 export const TOKEN_PROTOCOL_UPGRADE_PROPOSAL =
-  '/proposals/protocol-upgrade/:tag';
+  '/proposals/protocol-upgrade/:tag/:blockHeight';
 export const TOKEN_VALIDATOR = '/validators/:id';
 
 /**
@@ -135,12 +135,12 @@ export const TOKEN_VALIDATOR = '/validators/:id';
  */
 export const useProtocolUpgradeProposalLink = () => {
   const governance = useLinks(DApp.Token);
-  return (releaseTag: string) =>
+  return (releaseTag: string, blockHeight: string) =>
     governance(
       TOKEN_PROTOCOL_UPGRADE_PROPOSAL.replace(
         ':tag',
         stripFullStops(releaseTag)
-      )
+      ).replace(':blockHeight', blockHeight)
     );
 };
 

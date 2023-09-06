@@ -279,7 +279,7 @@ const routerConfig = [
     ],
   },
   {
-    path: `${Routes.PROTOCOL_UPGRADES}/:proposalReleaseTag`,
+    path: `${Routes.PROTOCOL_UPGRADES}/:proposalReleaseTag/:proposalBlockHeight`,
     element: <LazyProtocolUpgradeProposal />,
   },
   {
