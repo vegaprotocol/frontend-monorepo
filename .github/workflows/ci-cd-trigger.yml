@@ -21,7 +21,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-
       - name: Cache node modules
         id: cache
         uses: actions/cache@v3
@@ -39,7 +38,6 @@ jobs:
           node-version-file: '.nvmrc'
           # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
           cache: yarn
-
       - name: yarn install
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install --pure-lockfile
@@ -51,11 +49,11 @@ jobs:
     uses: ./.github/workflows/lint-pr.yml
     secrets: inherit
 
-  lint-test-build:
-    timeout-minutes: 60
+  lint-format:
+    timeout-minutes: 20
     needs: node-modules
     runs-on: ubuntu-22.04
-    name: '(CI) lint + unit test + build'
+    name: '(CI) lint + format check'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -68,6 +66,76 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
+          cache: yarn
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: develop
+
+      - name: Check formatting
+        run: yarn nx format:check
+
+      - name: Lint affected
+        run: yarn nx affected:lint --max-warnings=0
+
+      - name: Build affected spec
+        run: yarn nx affected --target=build-spec
+
+  test-affected:
+    timeout-minutes: 30
+    needs: build-sources
+    runs-on: ubuntu-22.04
+    name: 'run unit test of affected apps'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: develop
+
+      - name: Test affected
+        run: yarn nx affected:test
+
+  build-sources:
+    timeout-minutes: 30
+    needs: lint-format
+    runs-on: ubuntu-22.04
+    name: 'Build sources of affected apps'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
           cache: yarn
 
       - name: Cache node modules
@@ -97,21 +165,8 @@ jobs:
           echo "preview_explorer: ${{ env.PREVIEW_EXPLORER }}"
           echo "preview_tools: ${{ env.PREVIEW_TOOLS }}"
 
-      - name: Check formatting
-        run: yarn nx format:check
-
-      - name: Lint affected
-        run: yarn nx affected:lint --max-warnings=0
-
-      - name: Build affected spec
-        run: yarn nx affected --target=build-spec
-
-      - name: Test affected
-        run: yarn nx affected:test
-
       - name: Build affected
         run: yarn nx affected:build || (yarn install && yarn nx affected:build)
-
     outputs:
       projects: ${{ env.PROJECTS }}
       projects-e2e: ${{ env.PROJECTS_E2E }}
@@ -121,38 +176,38 @@ jobs:
       preview_tools: ${{ env.PREVIEW_TOOLS }}
 
   console-e2e:
-    needs: lint-test-build
+    needs: build-sources
     name: '(CI) console python'
     uses: ./.github/workflows/console-test-run.yml
     secrets: inherit
-    if: ${{ contains(fromJSON(needs.lint-test-build.outputs.projects), 'trading') && github.event_name == 'pull_request' }}
+    if: ${{ contains(fromJSON(needs.build-sources.outputs.projects), 'trading') && github.event_name == 'pull_request' }}
     with:
       github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
   cypress:
-    needs: lint-test-build
+    needs: build-sources
     name: '(CI) cypress'
-    # if: ${{ needs.lint-test-build.outputs.projects-e2e != '[]' }}
+    # if: ${{ needs.build-sources.outputs.projects-e2e != '[]' }}
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
     with:
-      projects: ${{ needs.lint-test-build.outputs.projects-e2e }}
+      projects: ${{ needs.build-sources.outputs.projects-e2e }}
       tags: '@smoke'
 
   publish-dist:
-    needs: lint-test-build
+    needs: build-sources
     name: '(CD) publish dist'
     if: ${{ (github.event_name == 'pull_request' &&  github.event.pull_request.head.repo.full_name == 'vegaprotocol/frontend-monorepo') || github.event_name == 'push' }}
     uses: ./.github/workflows/publish-dist.yml
     secrets: inherit
     with:
-      projects: ${{ needs.lint-test-build.outputs.projects }}
+      projects: ${{ needs.build-sources.outputs.projects }}
 
   dist-check:
     runs-on: ubuntu-latest
     needs:
       - publish-dist
-      - lint-test-build
+      - build-sources
     if: ${{ github.event_name == 'pull_request' &&  github.event.pull_request.head.repo.full_name == 'vegaprotocol/frontend-monorepo' }}
     timeout-minutes: 60
     name: '(CD) comment preview links'
@@ -168,27 +223,27 @@ jobs:
         run: |
           # https://stackoverflow.com/questions/3183444/check-for-valid-link-url
           regex='(https?|ftp|file)://[-[:alnum:]\+&@#/%?=~_|!:,.;]*[-[:alnum:]\+&@#/%=~_|]'
-          if [[ "${{ needs.lint-test-build.outputs.preview_governance }}" =~ $regex ]]; then
-            until curl --insecure --location --fail "${{ needs.lint-test-build.outputs.preview_governance }}"; do
-              echo "waiting for governance preview: ${{ needs.lint-test-build.outputs.preview_governance }}"
+          if [[ "${{ needs.build-sources.outputs.preview_governance }}" =~ $regex ]]; then
+            until curl --insecure --location --fail "${{ needs.build-sources.outputs.preview_governance }}"; do
+              echo "waiting for governance preview: ${{ needs.build-sources.outputs.preview_governance }}"
               sleep 5
             done
           fi
-          if [[ "${{ needs.lint-test-build.outputs.preview_explorer }}" =~ $regex ]]; then
-            until curl --insecure --location --fail "${{ needs.lint-test-build.outputs.preview_explorer }}"; do
-              echo "waiting for explorer preview: ${{ needs.lint-test-build.outputs.preview_explorer }}"
+          if [[ "${{ needs.build-sources.outputs.preview_explorer }}" =~ $regex ]]; then
+            until curl --insecure --location --fail "${{ needs.build-sources.outputs.preview_explorer }}"; do
+              echo "waiting for explorer preview: ${{ needs.build-sources.outputs.preview_explorer }}"
               sleep 5
             done
           fi
-          if [[ "${{ needs.lint-test-build.outputs.preview_trading }}" =~ $regex ]]; then
-            until curl --insecure --location --fail "${{ needs.lint-test-build.outputs.preview_trading }}"; do
-              echo "waiting for trading preview: ${{ needs.lint-test-build.outputs.preview_trading }}"
+          if [[ "${{ needs.build-sources.outputs.preview_trading }}" =~ $regex ]]; then
+            until curl --insecure --location --fail "${{ needs.build-sources.outputs.preview_trading }}"; do
+              echo "waiting for trading preview: ${{ needs.build-sources.outputs.preview_trading }}"
               sleep 5
             done
           fi
-          if [[ "${{ needs.lint-test-build.outputs.preview_tools }}" =~ $regex ]]; then
-            until curl --insecure --location --fail "${{ needs.lint-test-build.outputs.preview_tools }}"; do
-              echo "waiting for tools preview: ${{ needs.lint-test-build.outputs.preview_tools }}"
+          if [[ "${{ needs.build-sources.outputs.preview_tools }}" =~ $regex ]]; then
+            until curl --insecure --location --fail "${{ needs.build-sources.outputs.preview_tools }}"; do
+              echo "waiting for tools preview: ${{ needs.build-sources.outputs.preview_tools }}"
               sleep 5
             done
           fi
@@ -200,10 +255,10 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             Previews
-            * governance: ${{ needs.lint-test-build.outputs.preview_governance }}
-            * explorer: ${{ needs.lint-test-build.outputs.preview_explorer  }}
-            * trading: ${{ needs.lint-test-build.outputs.preview_trading }}
-            * tools: ${{ needs.lint-test-build.outputs.preview_tools }}
+            * governance: ${{ needs.build-sources.outputs.preview_governance }}
+            * explorer: ${{ needs.build-sources.outputs.preview_explorer  }}
+            * trading: ${{ needs.build-sources.outputs.preview_trading }}
+            * tools: ${{ needs.build-sources.outputs.preview_tools }}
 
   # Report single result at the end, to avoid mess with required checks in PR
   cypress-check:
