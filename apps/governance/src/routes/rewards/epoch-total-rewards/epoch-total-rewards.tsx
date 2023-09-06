@@ -22,7 +22,6 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
   const { param: marketCreationQuantumMultiple } = useNetworkParam(
     'rewards_marketCreationQuantumMultiple'
   );
-  console.log(marketCreationQuantumMultiple);
   const [page, setPage] = useState(1);
   const { data, loading, error, refetch } = useEpochAssetsRewardsQuery({
     notifyOnNetworkStatusChange: true,
