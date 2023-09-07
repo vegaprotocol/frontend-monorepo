@@ -335,7 +335,7 @@ describe('Closed', () => {
       },
     };
 
-    await act(() => {
+    await act(async () => {
       render(
         <MemoryRouter>
           <MockedProvider
@@ -359,7 +359,7 @@ describe('Closed', () => {
     })[0];
 
     expect(within(cell).getByTestId('stack-cell-secondary')).toHaveTextContent(
-      'SCCR'
+      'PRNT'
     );
   });
 });
