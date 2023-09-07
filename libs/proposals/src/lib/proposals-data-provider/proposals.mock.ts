@@ -1,5 +1,4 @@
 import type {
-  NewMarketFieldsFragment,
   ProposalListFieldsFragment,
   ProposalsListQuery,
 } from './__generated__/Proposals';
@@ -110,7 +109,7 @@ export const marketUpdateProposal: ProposalListFieldsFragment = {
 export const createProposalListFieldsFragment = (
   override?: PartialDeep<ProposalListFieldsFragment>
 ): ProposalListFieldsFragment => {
-  const newMarket: NewMarketFieldsFragment = {
+  const newMarket = {
     decimalPlaces: 1,
     lpPriceRange: '',
     riskParameters: {
@@ -121,7 +120,7 @@ export const createProposalListFieldsFragment = (
         factorShort: 1,
       },
     },
-    metadata: [],
+    metadata: undefined,
     successorConfiguration: {
       __typename: 'SuccessorConfiguration',
       parentMarketId: 'xyz',
@@ -161,7 +160,7 @@ export const createProposalListFieldsFragment = (
       __typename: 'InstrumentConfiguration',
     },
     __typename: 'NewMarket',
-  };
+  } as const;
   const defaultProposal: ProposalListFieldsFragment = {
     id: 'e9ec6d5c46a7e7bcabf9ba7a893fa5a5eeeec08b731f06f7a6eb7bf0e605b829',
     reference: 'injected_at_runtime',
