@@ -16,17 +16,6 @@ import { ProposalsListDocument } from '../../lib';
 import type { PartialDeep } from 'type-fest';
 import { FLAGS } from '@vegaprotocol/environment';
 
-jest.mock('@vegaprotocol/environment', () => {
-  const actual = jest.requireActual('@vegaprotocol/environment');
-  return {
-    ...actual,
-    FLAGS: {
-      ...actual.FLAGS,
-      SUCCESSOR_MARKETS: true,
-    },
-  };
-});
-
 const successorMarketName = 'Successor Market Name';
 const spySuccessorMarketRenderer = jest
   .fn()
@@ -89,7 +78,7 @@ describe('ProposalsList', () => {
     await act(() => {
       render(
         <MockedProvider mocks={[mock]}>
-          <ProposalsList SuccessorMarketRenderer={spySuccessorMarketRenderer} />
+          <ProposalsList />
         </MockedProvider>
       );
     });
@@ -127,7 +116,7 @@ describe('ProposalsList', () => {
     await act(() => {
       render(
         <MockedProvider mocks={[mock]}>
-          <ProposalsList SuccessorMarketRenderer={spySuccessorMarketRenderer} />
+          <ProposalsList />
         </MockedProvider>
       );
     });
