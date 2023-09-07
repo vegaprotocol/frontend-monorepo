@@ -4,16 +4,6 @@
   "sourceRoot": "libs/apollo-client/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/apollo-client",
-        "main": "libs/apollo-client/src/index.ts",
-        "tsConfig": "libs/apollo-client/tsconfig.lib.json",
-        "assets": ["libs/apollo-client/*.md"]
-      }
-    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
