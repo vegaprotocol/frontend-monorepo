@@ -46,7 +46,7 @@ export const ProposalsList = ({ cellRenderers }: ProposalListProps) => {
       rowData={filteredData}
       defaultColDef={defaultColDef}
       getRowId={({ data }) => data.id}
-      overlayNoRowsTemplate={t('No markets')}
+      overlayNoRowsTemplate={t('No proposed markets')}
       components={cellRenderers}
       rowHeight={45}
     />

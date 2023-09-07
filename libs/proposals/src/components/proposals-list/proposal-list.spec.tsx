@@ -1,9 +1,9 @@
 import {
   render,
   screen,
-  act,
   waitFor,
   getAllByRole,
+  within,
 } from '@testing-library/react';
 import merge from 'lodash/merge';
 import type { MockedResponse } from '@apollo/client/testing';
@@ -14,14 +14,13 @@ import { createProposalListFieldsFragment } from '../../lib/proposals-data-provi
 import type { ProposalsListQuery } from '../../lib';
 import { ProposalsListDocument } from '../../lib';
 import type { PartialDeep } from 'type-fest';
-import { FLAGS } from '@vegaprotocol/environment';
 
-const successorMarketName = 'Successor Market Name';
-const spySuccessorMarketRenderer = jest
-  .fn()
-  .mockReturnValue(successorMarketName);
+const parentMarketName = 'Parent Market Name';
+const ParentMarketCell = () => <span>{parentMarketName}</span>;
 
 describe('ProposalsList', () => {
+  const rowContainerSelector = '.ag-center-cols-container';
+
   const createProposalsMock = (override?: PartialDeep<ProposalsListQuery>) => {
     const defaultProposalEdges = [
       {
@@ -70,75 +69,55 @@ describe('ProposalsList', () => {
 
     return mock;
   };
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
   it('should be properly rendered', async () => {
     const mock = createProposalsMock();
-    await act(() => {
-      render(
-        <MockedProvider mocks={[mock]}>
-          <ProposalsList />
-        </MockedProvider>
-      );
-    });
-    const container = document.querySelector('.ag-center-cols-container');
+    render(
+      <MockedProvider mocks={[mock]}>
+        <ProposalsList cellRenderers={{ ParentMarketCell }} />
+      </MockedProvider>
+    );
+
     await waitFor(() => {
-      expect(container).toBeInTheDocument();
-    });
-    expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(3);
-  });
-
-  it('some of states should be filtered out', async () => {
-    const proposalNode = createProposalListFieldsFragment({
-      id: 'id-1',
-      state: Types.ProposalState.STATE_ENACTED,
+      expect(document.querySelector(rowContainerSelector)).toBeInTheDocument();
     });
 
-    const mock = createProposalsMock({
-      proposalsConnection: {
-        edges: [
-          {
-            __typename: 'ProposalEdge',
-            node: {
-              ...proposalNode,
-              terms: {
-                ...proposalNode.terms,
-                change: {
-                  ...proposalNode.terms.change,
-                },
-              },
-            },
-          },
-        ],
-      },
-    } as PartialDeep<ProposalsListQuery>);
-    await act(() => {
-      render(
-        <MockedProvider mocks={[mock]}>
-          <ProposalsList />
-        </MockedProvider>
-      );
-    });
-    const container = document.querySelector('.ag-center-cols-container');
-    await waitFor(() => {
-      expect(container).toBeInTheDocument();
-      expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
-    });
+    const expectedHeaders = [
+      'Market',
+      'Settlement asset',
+      'State',
+      'Parent market',
+      'Voting',
+      'Closing date',
+      'Enactment date',
+      '', // actions col
+    ];
 
-    expect(spySuccessorMarketRenderer).toHaveBeenCalled();
+    const headers = screen.getAllByRole('columnheader');
+    expect(headers).toHaveLength(expectedHeaders.length);
     expect(
-      screen.getByRole('columnheader', {
-        name: (_name, element) =>
-          element.getAttribute('col-id') === 'parentMarket',
-      })
-    ).toBeInTheDocument();
+      headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
+    ).toEqual(expectedHeaders);
+
+    const container = within(
+      document.querySelector(rowContainerSelector) as HTMLElement
+    );
+    expect(container.getAllByRole('row')).toHaveLength(
+      // @ts-ignore data is mocked
+      mock?.result?.data.proposalsConnection.edges.length
+    );
+
     expect(
-      screen.getAllByRole('gridcell', {
-        name: (name, element) =>
-          element.getAttribute('col-id') === 'parentMarket',
+      container.getAllByRole('gridcell', {
+        name: (_, element) =>
+          element.getAttribute('col-id') ===
+          'terms.change.successorConfiguration.parentMarketId',
       })[0]
-    ).toHaveTextContent(successorMarketName);
+    ).toHaveTextContent(parentMarketName);
   });
 
   it('empty response should causes no data message display', async () => {
@@ -158,58 +137,11 @@ describe('ProposalsList', () => {
         },
       },
     };
-    await act(() => {
-      render(
-        <MockedProvider mocks={[mock]}>
-          <ProposalsList SuccessorMarketRenderer={spySuccessorMarketRenderer} />
-        </MockedProvider>
-      );
-    });
-    expect(await screen.findByText('No markets')).toBeInTheDocument();
-
-    expect(
-      screen.getByRole('columnheader', {
-        name: (_name, element) =>
-          element.getAttribute('col-id') === 'parentMarket',
-      })
-    ).toBeInTheDocument();
-  });
-
-  it('feature flag should hide parent marketcolumn', async () => {
-    const mockedFlags = jest.mocked(FLAGS);
-    mockedFlags.SUCCESSOR_MARKETS = false;
-    const mock: MockedResponse<ProposalsListQuery> = {
-      request: {
-        query: ProposalsListDocument,
-        variables: {
-          proposalType: Types.ProposalType.TYPE_NEW_MARKET,
-        },
-      },
-      result: {
-        data: {
-          proposalsConnection: {
-            __typename: 'ProposalsConnection',
-            edges: [],
-          },
-        },
-      },
-    };
-    await act(() => {
-      render(
-        <MockedProvider mocks={[mock]}>
-          <ProposalsList SuccessorMarketRenderer={spySuccessorMarketRenderer} />
-        </MockedProvider>
-      );
-    });
-    await waitFor(() => {
-      expect(
-        screen.getByRole('columnheader', {
-          name: (_name, element) => element.getAttribute('col-id') === 'market',
-        })
-      ).toBeInTheDocument();
-    });
-    screen.getAllByRole('columnheader').forEach((element) => {
-      expect(element.getAttribute('col-id')).not.toEqual('parentMarket');
-    });
+    render(
+      <MockedProvider mocks={[mock]}>
+        <ProposalsList cellRenderers={{ ParentMarketCell }} />
+      </MockedProvider>
+    );
+    expect(await screen.findByText('No proposed markets')).toBeInTheDocument();
   });
 });
