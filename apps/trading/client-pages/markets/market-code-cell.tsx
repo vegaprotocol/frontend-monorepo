@@ -4,17 +4,16 @@ import { ProductTypeMapping, ProductTypeShortName } from '@vegaprotocol/types';
 import { StackedCell } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 
-export const MarketCodeCell = ({
-  value,
-  data,
-}: {
+export interface MarketCodeCellProps {
   value: string | undefined; // market code
   data: {
     productType: ProductType | undefined;
     parentMarketID: string | null | undefined;
     successorMarketID: string | null | undefined;
   };
-}) => {
+}
+
+export const MarketCodeCell = ({ value, data }: MarketCodeCellProps) => {
   if (!value || !data || !data.productType) return null;
 
   const infoSpanClasses =
