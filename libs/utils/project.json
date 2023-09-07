@@ -12,8 +12,7 @@
         "outputPath": "dist/libs/utils",
         "main": "libs/utils/src/index.ts",
         "tsConfig": "libs/utils/tsconfig.lib.json",
-        "assets": ["libs/utils/*.md"],
-        "external": ["@vegaprotocol/i18n", "@vegaprotocol/types"]
+        "assets": ["libs/utils/*.md"]
       }
     },
     "publish": {
