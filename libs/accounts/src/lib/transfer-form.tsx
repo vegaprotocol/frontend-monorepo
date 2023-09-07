@@ -24,6 +24,7 @@ import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { AssetOption, Balance } from '@vegaprotocol/assets';
+import { create } from 'zustand';
 
 interface FormFields {
   toAddress: string;
@@ -66,6 +67,8 @@ export const TransferForm = ({
       asset: initialAssetId,
     },
   });
+
+  const setAssetId = useTransferAssetIdStore((store) => store.setAssetId);
 
   const amount = watch('amount');
   const assetId = watch('asset');
@@ -196,6 +199,7 @@ export const TransferForm = ({
               name={field.name}
               onValueChange={(value) => {
                 field.onChange(value);
+                setAssetId(value);
               }}
               placeholder={t('Please select an asset')}
               value={field.value}
@@ -392,3 +396,16 @@ export const AddressField = ({
     </>
   );
 };
+
+interface TransferAssetIdStore {
+  assetId?: string;
+  setAssetId: (assetId: string) => void;
+}
+export const useTransferAssetIdStore = create<TransferAssetIdStore>()(
+  (set) => ({
+    assetId: undefined,
+    setAssetId: (assetId: string) => {
+      set({ assetId });
+    },
+  })
+);
