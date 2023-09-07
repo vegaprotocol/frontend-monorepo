@@ -19,6 +19,7 @@ export const MarketCodeCell = ({
 
   const infoSpanClasses =
     'mr-1 pr-1 uppercase border-r last:pr-0 last:mr-0 last:border-r-0 border-vega-clight-200 dark:border-vega-cdark-200';
+
   const info = compact([
     <span
       className={infoSpanClasses}
@@ -30,19 +31,19 @@ export const MarketCodeCell = ({
     data.parentMarketID && (
       <span
         className={infoSpanClasses}
-        key="parent"
-        title={t('Parent of a market')}
+        key="successor"
+        title={t('Successor of a market')}
       >
-        {t('PRNT')}
+        {t('SCCR')}
       </span>
     ),
     data.successorMarketID && (
       <span
         className={infoSpanClasses}
-        key="successor"
-        title={t('Successor of a market')}
+        key="parent"
+        title={t('Parent of a market')}
       >
-        {t('SCCR')}
+        {t('PRNT')}
       </span>
     ),
   ]);
