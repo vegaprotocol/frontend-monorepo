@@ -159,7 +159,7 @@ export const ProposalHeader = ({
         </div>
       </div>
 
-      <div data-testid="proposal-title">
+      <div data-testid="proposal-title" className="break-all">
         {isListItem ? (
           <header>
             <SubHeading

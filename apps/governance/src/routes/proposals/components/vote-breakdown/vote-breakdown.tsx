@@ -130,7 +130,10 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
     ? t('byTokenVote')
     : t('byLiquidityVote');
 
-  const sectionWrapperClasses = classNames('grid sm:grid-cols-2 gap-6');
+  const sectionWrapperClasses = classNames(
+    'flex justify-between flex-wrap gap-6'
+  );
+  const sectionClasses = classNames('min-w-[300px] flex-1 flex-grow');
   const headingClasses = classNames('mb-2 text-vega-dark-400');
   const progressDetailsClasses = classNames(
     'flex justify-between flex-wrap mt-2 text-sm'
@@ -166,7 +169,10 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
         <div className="mb-4">
           <h3 className={headingClasses}>{t('liquidityProviderVote')}</h3>
           <div className={sectionWrapperClasses}>
-            <section data-testid="lp-majority-breakdown">
+            <section
+              className={sectionClasses}
+              data-testid="lp-majority-breakdown"
+            >
               <VoteProgress
                 percentageFor={yesLPPercentage}
                 colourfulBg={true}
@@ -241,7 +247,10 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
               </div>
             </section>
 
-            <section data-testid="lp-participation-breakdown">
+            <section
+              className={sectionClasses}
+              data-testid="lp-participation-breakdown"
+            >
               <VoteProgress
                 percentageFor={
                   lpParticipationThresholdProgress || new BigNumber(0)
@@ -288,7 +297,10 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
 
       {isUpdateMarket && <h3 className={headingClasses}>{t('tokenVote')}</h3>}
       <div className={sectionWrapperClasses}>
-        <section data-testid="token-majority-breakdown">
+        <section
+          className={sectionClasses}
+          data-testid="token-majority-breakdown"
+        >
           <VoteProgress
             percentageFor={yesPercentage}
             colourfulBg={true}
@@ -343,7 +355,10 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
           </div>
         </section>
 
-        <section data-testid="token-participation-breakdown">
+        <section
+          className={sectionClasses}
+          data-testid="token-participation-breakdown"
+        >
           <VoteProgress
             percentageFor={participationThresholdProgress}
             testId="token-participation-progress"
