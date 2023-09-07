@@ -42,6 +42,8 @@ export const createMarketFragment = (
       close: null,
       open: null,
     },
+    successorMarketID: null,
+    parentMarketID: null,
     fees: {
       __typename: 'Fees',
       factors: {
