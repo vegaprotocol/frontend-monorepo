@@ -21,7 +21,7 @@
           "@vegaprotocol/utils"
         ],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "compiler": "babel",
+        "compiler": "swc",
         "format": ["esm", "cjs"],
         "assets": [
           {

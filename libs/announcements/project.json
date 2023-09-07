@@ -21,7 +21,7 @@
           "@vegaprotocol/ui-toolkit"
         ],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "compiler": "babel",
+        "compiler": "swc",
         "assets": [
           {
             "glob": "libs/announcements/README.md",
