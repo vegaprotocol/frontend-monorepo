@@ -25,6 +25,7 @@
 
 - **Must** be able to click on current node to open node switcher dialog (<a name="0006-NETW-012" href="#0006-NETW-012">0006-NETW-012</a>)
 - In the node dialog
+
   - **Must** must see all nodes provided by the [network config](https://github.com/vegaprotocol/networks) (<a name="0006-NETW-013" href="#0006-NETW-013">0006-NETW-013</a>)
   - For each node
     - **Must** see the response time of the node (<a name="0006-NETW-014" href="#0006-NETW-014">0006-NETW-014</a>)
@@ -34,3 +35,9 @@
   - **Must** be able to select 'other' to input a node address and connect to it (<a name="0006-NETW-018" href="#0006-NETW-018">0006-NETW-018</a>)
   - **Must** have disabled connect button if 'other' is selected but no url has been entered (<a name="0006-NETW-019" href="#0006-NETW-019">0006-NETW-019</a>)
   - **Must** have disabled connect button if selected node is the current node (<a name="0006-NETW-020" href="#0006-NETW-020">0006-NETW-020</a>)
+
+  ## Block Explorer
+
+  - **Must** show all possible network parameters (<a name="0006-NETW-021" href="#0006-NETW-021">0006-NETW-021</a>)
+  - **Must** I can see network parameters grouped by type (<a name="0006-NETW-022" href="#0006-NETW-022">0006-NETW-022</a>)
+  - **Must** Network parameter headings act as linkable anchors i.e. a third party website can link directly to a "section" of the network parameter page (<a name="0006-NETW-023" href="#0006-NETW-023">0006-NETW-022</a>)
