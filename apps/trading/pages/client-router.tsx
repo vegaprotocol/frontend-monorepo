@@ -35,6 +35,14 @@ const LazyDeposit = dynamic(() => import('../client-pages/deposit'), {
   ssr: false,
 });
 
+const LazyWithdraw = dynamic(() => import('../client-pages/withdraw'), {
+  ssr: false,
+});
+
+const LazyTransfer = dynamic(() => import('../client-pages/transfer'), {
+  ssr: false,
+});
+
 export enum Routes {
   HOME = '/',
   MARKET = '/markets/:marketId',
@@ -43,6 +51,8 @@ export enum Routes {
   LIQUIDITY = '/liquidity/:marketId',
   DISCLAIMER = '/disclaimer',
   DEPOSIT = '/deposit',
+  WITHDRAW = '/withdraw',
+  TRANSFER = '/transfer',
 }
 
 type ConsoleLinks = { [r in Routes]: (...args: string[]) => string };
@@ -57,6 +67,8 @@ export const Links: ConsoleLinks = {
     trimEnd(Routes.LIQUIDITY.replace(':marketId', marketId)),
   [Routes.DISCLAIMER]: () => Routes.DISCLAIMER,
   [Routes.DEPOSIT]: () => Routes.DEPOSIT,
+  [Routes.WITHDRAW]: () => Routes.WITHDRAW,
+  [Routes.TRANSFER]: () => Routes.TRANSFER,
 };
 
 const routerConfig: RouteObject[] = [
@@ -104,6 +116,8 @@ const routerConfig: RouteObject[] = [
     element: <LazyDisclaimer />,
   },
   { path: Routes.DEPOSIT, element: <LazyDeposit /> },
+  { path: Routes.WITHDRAW, element: <LazyWithdraw /> },
+  { path: Routes.TRANSFER, element: <LazyTransfer /> },
   {
     path: '*',
     element: (
