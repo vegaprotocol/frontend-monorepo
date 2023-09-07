@@ -1,8 +1,4 @@
 {
   "name": "@vegaprotocol/ui-toolkit",
-  "version": "0.12.8",
-  "peerDependencies": {
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
-  }
+  "version": "0.12.9"
 }
