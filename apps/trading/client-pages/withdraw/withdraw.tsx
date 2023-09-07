@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 
 export const Withdraw = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const assetId = searchParams.get('assetId');
+  const assetId = searchParams.get('assetId') || undefined;
   const asset = useWithdrawStore((store) => store.asset);
   useEffect(() => {
     if (assetId && asset?.id && assetId !== asset.id) {
