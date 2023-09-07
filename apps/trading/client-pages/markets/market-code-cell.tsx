@@ -2,6 +2,7 @@ import compact from 'lodash/compact';
 import type { ProductType } from '@vegaprotocol/types';
 import { ProductTypeMapping, ProductTypeShortName } from '@vegaprotocol/types';
 import { StackedCell } from '@vegaprotocol/datagrid';
+import { t } from '@vegaprotocol/i18n';
 
 export const MarketCodeCell = ({
   value,
@@ -27,17 +28,21 @@ export const MarketCodeCell = ({
       {ProductTypeShortName[data.productType]}
     </span>,
     data.parentMarketID && (
-      <span className={infoSpanClasses} key="parent" title="Parent of a market">
-        PARN
+      <span
+        className={infoSpanClasses}
+        key="parent"
+        title={t('Parent of a market')}
+      >
+        {t('PRNT')}
       </span>
     ),
     data.successorMarketID && (
       <span
         className={infoSpanClasses}
         key="successor"
-        title="Succeeded a market"
+        title={t('Successor of a market')}
       >
-        SCCR
+        {t('SCCR')}
       </span>
     ),
   ]);
