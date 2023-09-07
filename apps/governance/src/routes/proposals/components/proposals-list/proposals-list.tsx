@@ -55,7 +55,10 @@ export const orderByUpgradeBlockHeight = (
 ) =>
   orderBy(
     arr,
-    [(p) => p?.upgradeBlockHeight, (p) => p.vegaReleaseTag],
+    [
+      (p) => (p?.upgradeBlockHeight ? parseInt(p.upgradeBlockHeight, 10) : 0),
+      (p) => p.vegaReleaseTag,
+    ],
     ['desc', 'desc']
   );
 
