@@ -1,12 +1,9 @@
 context('Network parameters page', { tags: '@smoke' }, function () {
   before('navigate to network parameter page', function () {
     cy.fixture('net_parameter_format_lookup').as('networkParameterFormat');
+    cy.visit('/network-parameters');
   });
   describe('Verify elements on page', function () {
-    beforeEach(() => {
-      cy.visit('/network-parameters');
-    });
-
     const networkParametersHeader = '[data-testid="network-param-header"]';
     const tableRows = '[data-testid="key-value-table-row"]';
 
@@ -16,6 +13,7 @@ context('Network parameters page', { tags: '@smoke' }, function () {
         .and('be.visible');
     });
 
+    // 0006-NETW-021
     it('should list each of the network parameters available', function () {
       cy.get_network_parameters().then((network_parameters) => {
         const numberOfNetworkParametersInSystem =
@@ -196,6 +194,19 @@ context('Network parameters page', { tags: '@smoke' }, function () {
           }
         });
       });
+    });
+
+    // 0006-NETW-022 0006-NETW-023
+    it('governance assets should be correctly grouped', function () {
+      cy.getByTestId('governance')
+        .should('exist')
+        .parent()
+        .should('have.attr', 'href', '/network-parameters#governance');
+      cy.get('[id="governance-proposal-asset"]')
+        .parent()
+        .within(() => {
+          cy.getByTestId('key-value-table-row').should('have.length', 8);
+        });
     });
 
     it('should be able to see network parameters - on mobile', function () {

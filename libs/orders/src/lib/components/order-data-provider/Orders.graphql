@@ -144,8 +144,8 @@ fragment StopOrderFields on StopOrder {
   }
 }
 
-query StopOrders($partyId: ID!) {
-  stopOrders(filter: { parties: [$partyId] }) {
+query StopOrders($filter: StopOrderFilter) {
+  stopOrders(filter: $filter) {
     edges {
       node {
         ...StopOrderFields

@@ -11,7 +11,6 @@ import {
   enterRawProposalBody,
   generateFreeFormProposalTitle,
   getProposalFromTitle,
-  getProposalInformationFromTable,
   goToMakeNewProposal,
   governanceProposalType,
   submitUniqueRawProposal,
@@ -30,7 +29,9 @@ const proposalType = 'proposal-type';
 const proposalStatus = 'proposal-status';
 const proposalClosingDate = 'vote-details';
 const viewProposalButton = 'view-proposal-btn';
-const voteBreakDownToggle = 'vote-breakdown-toggle';
+const voteMajorityNotMet = 'token-majority-not-met';
+const voteMajorityMet = 'token-majority-met';
+const votesForPercentage = 'votes-for-percentage';
 
 describe('Governance flow for proposal list', { tags: '@slow' }, function () {
   before('connect wallets and set approval limit', function () {
@@ -121,10 +122,15 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
     submitUniqueRawProposal({ proposalTitle: proposalTitle });
     getProposalFromTitle(proposalTitle).within(() => {
       // 3001-VOTE-039
-      cy.getByTestId('participation-not-reached').should(
+      cy.getByTestId(voteMajorityNotMet).should(
         'have.text',
-        'Min. participation not reached'
+        '66% majority threshold not met'
       );
+      cy.getByTestId('token-participation-not-met').should(
+        'have.text',
+        '0.000000000000000000000015% participation threshold not met'
+      );
+      cy.getByTestId(votesForPercentage).should('have.text', '0%');
       cy.getByTestId(viewProposalButton).click();
     });
     voteForProposal('for');
@@ -134,16 +140,15 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
         'have.text',
         'Currently expected to  pass'
       );
-      cy.getByTestId('user-voted-yes').should('exist');
-      cy.getByTestId('participation-reached').should(
+      cy.getByTestId(voteMajorityMet).should(
         'have.text',
-        'Min. participation reached'
+        '66% majority threshold met'
       );
-      cy.getByTestId(viewProposalButton).click();
+      cy.getByTestId(votesForPercentage).should('have.text', '100%');
+      cy.getByTestId('token-participation-met').should(
+        'have.text',
+        '0.000000000000000000000015% participation threshold met'
+      );
     });
-    cy.getByTestId(voteBreakDownToggle).click();
-    getProposalInformationFromTable('Token participation met')
-      .contains('👍')
-      .should('be.visible');
   });
 });
