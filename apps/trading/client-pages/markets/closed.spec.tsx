@@ -1,4 +1,4 @@
-import { act, render, screen, within, waitFor } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Closed } from './closed';
 import { MarketStateMapping, PropertyKeyType } from '@vegaprotocol/types';
@@ -10,13 +10,11 @@ import type {
   OracleSpecDataConnectionQuery,
   MarketsDataQuery,
   MarketsQuery,
-  SuccessorMarketIdsQuery,
 } from '@vegaprotocol/markets';
 import {
   OracleSpecDataConnectionDocument,
   MarketsDataDocument,
   MarketsDocument,
-  SuccessorMarketIdsDocument,
 } from '@vegaprotocol/markets';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
