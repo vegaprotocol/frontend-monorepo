@@ -308,7 +308,7 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
             <div className="flex items-center gap-1">
               <span>{t('tokenVotesFor')}:</span>
               <Tooltip description={formatNumber(yesTokens, defaultDP)}>
-                <button>
+                <button data-testid="num-votes-for">
                   {yesTokens.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
                 </button>
               </Tooltip>
@@ -317,7 +317,9 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
                 <Tooltip
                   description={<span>{yesPercentage.toFixed(defaultDP)}%</span>}
                 >
-                  <button>{yesPercentage.toFixed(0)}%</button>
+                  <button data-testid="votes-for-percentage">
+                    {yesPercentage.toFixed(0)}%
+                  </button>
                 </Tooltip>
                 )
               </span>
@@ -326,7 +328,7 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
             <div className="flex items-center gap-1">
               <span>{t('tokenVotesAgainst')}:</span>
               <Tooltip description={formatNumber(noTokens, defaultDP)}>
-                <button>
+                <button data-testid="num-votes-against">
                   {noTokens.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
                 </button>
               </Tooltip>
@@ -335,7 +337,9 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
                 <Tooltip
                   description={<span>{noPercentage.toFixed(defaultDP)}%</span>}
                 >
-                  <button>{noPercentage.toFixed(0)}%</button>
+                  <button data-testid="votes-against-percentage">
+                    {noPercentage.toFixed(0)}%
+                  </button>
                 </Tooltip>
                 )
               </span>
@@ -364,11 +368,13 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
             <div className="flex items-center gap-1">
               <span>{t('totalTokensVoted')}:</span>
               <Tooltip description={formatNumber(totalTokensVoted, defaultDP)}>
-                <button>
+                <button data-testid="total-voted">
                   {totalTokensVoted.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
                 </button>
               </Tooltip>
-              <span>({totalTokensPercentage.toFixed(defaultDP)}%)</span>
+              <span data-testid="total-voted-percentage">
+                ({totalTokensPercentage.toFixed(defaultDP)}%)
+              </span>
             </div>
           </div>
         </section>

@@ -219,7 +219,9 @@ export function ensureSpecifiedUnstakedTokensAreAssociated(
     .eq(1)
     .invoke('text')
     .then((unstakedBalance) => {
-      if (parseFloat(unstakedBalance) != parseFloat(tokenAmount)) {
+      const tokenFloat = parseFloat(tokenAmount);
+      const unstakedFloat = parseFloat(unstakedBalance.replace(/,/g, ''));
+      if (tokenFloat != unstakedFloat) {
         vegaWalletTeardown();
         cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
           '0.00',
