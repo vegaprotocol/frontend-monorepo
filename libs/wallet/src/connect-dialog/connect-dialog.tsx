@@ -224,6 +224,14 @@ const ConnectorList = ({
       />
     </>
   );
+  const isItChrome = window.navigator.userAgent.includes('Chrome');
+  const isItMozilla =
+    window.navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+  const browserName = isItChrome
+    ? 'Chrome'
+    : isItMozilla
+    ? 'Firefox'
+    : 'your browser';
 
   return (
     <>
@@ -236,16 +244,44 @@ const ConnectorList = ({
       <div data-testid="connectors-list" className="flex flex-col mt-6 gap-2">
         <div className="last:mb-0">
           {isBrowserWalletInstalled() ? (
-            <ConnectionOption
+            <ConnectionOptionWithDescription
               type="injected"
               text={extendedText}
               onClick={() => onSelect('injected')}
+              title={
+                <>
+                  <span>{t('Vega Wallet')}</span>
+                  <span className="text-xs"> {t('full featured')}</span>
+                </>
+              }
+              description={t(
+                `Connect Vega Wallet extension
+              for %s to access all features including key
+              management, asset breakdown, and detailed transaction views from your
+              browser.`,
+                [browserName]
+              )}
             />
           ) : (
-            <GetWalletButton
-              chromeExtensionUrl={links.chromeExtensionUrl}
-              mozillaExtensionUrl={links.mozillaExtensionUrl}
-            />
+            <div className="bg-slate-100 dark:bg-slate-900 p-2">
+              <h1 className="text-lg px-2">
+                <span>{t('Vega Wallet')}</span>
+                <span className="text-xs"> {t('full featured')}</span>
+              </h1>
+              <p className="p-2 text-sm">
+                {t(
+                  `Install Vega Wallet extension
+              for %s to access all features including key
+              management, asset breakdown, and detailed transaction views from your
+              browser.`,
+                  [browserName]
+                )}
+              </p>
+              <GetWalletButton
+                chromeExtensionUrl={links.chromeExtensionUrl}
+                mozillaExtensionUrl={links.mozillaExtensionUrl}
+              />
+            </div>
           )}
         </div>
         {connectors['snap'] !== undefined ? (
@@ -269,9 +305,18 @@ const ConnectorList = ({
               />
             ) : (
               <>
-                <ConnectionOption
+                <ConnectionOptionWithDescription
                   type="snap"
                   disabled={snapStatus === SnapStatus.NOT_SUPPORTED}
+                  title={
+                    <>
+                      <span>{t('Metamask Snap')}</span>
+                      <span className="text-xs"> {t('quick start')}</span>
+                    </>
+                  }
+                  description={t(
+                    `Connect directly via Metamask with the Vega Snap for single key support without advanced features.`
+                  )}
                   text={
                     <>
                       <div className="flex items-center justify-center w-full h-full text-base gap-1">
@@ -299,21 +344,22 @@ const ConnectorList = ({
             )}
           </div>
         ) : null}
-        <div>
+        <div className="p-2 bg-slate-100 dark:bg-slate-900">
+          <h1 className="p-2">{t('Advanced / Other options...')}</h1>
           <ConnectionOption
             type="view"
             text={t('View as party')}
             onClick={() => onSelect('view')}
             disabled={Boolean(pubKey)}
           />
-        </div>
-        <div className="last:mb-0">
-          <CustomUrlInput
-            walletUrl={walletUrl}
-            setWalletUrl={setWalletUrl}
-            isDesktopWalletRunning={isDesktopWalletRunning}
-            onSelect={() => onSelect('jsonRpc')}
-          />
+          <div className="mt-2">
+            <CustomUrlInput
+              walletUrl={walletUrl}
+              setWalletUrl={setWalletUrl}
+              isDesktopWalletRunning={isDesktopWalletRunning}
+              onSelect={() => onSelect('jsonRpc')}
+            />
+          </div>
         </div>
       </div>
     </>
@@ -448,6 +494,38 @@ export const GetWalletButton = ({
     >
       {buttonContent}
     </TradingButton>
+  );
+};
+
+const ConnectionOptionWithDescription = ({
+  disabled,
+  type,
+  text,
+  onClick,
+  icon,
+  description,
+  title,
+}: {
+  type: WalletType;
+  text: string | ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  icon?: ReactNode;
+  description?: string | ReactNode;
+  title?: string | ReactNode;
+}) => {
+  return (
+    <div className="bg-slate-100 dark:bg-slate-900 p-2">
+      <h1 className="px-2">{title}</h1>
+      <p className="p-2 text-sm">{description}</p>
+      <ConnectionOption
+        disabled={disabled}
+        type={type}
+        text={text}
+        onClick={onClick}
+        icon={icon}
+      />
+    </div>
   );
 };
 
