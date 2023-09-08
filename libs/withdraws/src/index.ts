@@ -12,4 +12,3 @@ export * from './lib/withdrawal-feedback';
 export * from './lib/withdrawals-provider';
 export * from './lib/withdrawals-table';
 export * from './lib/use-ready-to-complete-withdrawals-toast';
-export * from './lib/withdraw-store';
