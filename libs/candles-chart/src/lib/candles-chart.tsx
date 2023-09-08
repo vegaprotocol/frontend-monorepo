@@ -12,6 +12,8 @@ export type CandlesChartContainerProps = {
   marketId: string;
 };
 
+const INITIAL_CANDLES_TO_ZOOM = 150;
+
 export const CandlesChartContainer = ({
   marketId,
 }: CandlesChartContainerProps) => {
@@ -36,6 +38,7 @@ export const CandlesChartContainer = ({
         notEnoughDataText: (
           <span className="text-xs text-center">{t('No data')}</span>
         ),
+        initialNumCandlesToDisplay: INITIAL_CANDLES_TO_ZOOM,
       }}
       interval={interval}
       theme={theme}
