@@ -14,7 +14,7 @@ export const Transfer = () => {
 
   useEffect(() => {
     if (assetId && selectedAssetId && selectedAssetId !== assetId) {
-      setTimeout(() => setSearchParams({}));
+      setSearchParams({});
     }
   }, [assetId, selectedAssetId, setSearchParams]);
 
