@@ -279,8 +279,8 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
         trimmedActiveNodes={trimmedActiveNodes}
       />
 
-      <section className="grid grid-cols-2 gap-12 mb-16">
-        <div data-testid="home-rewards">
+      <section className="flex justify-between flex-wrap gap-12 mb-16">
+        <div className="min-w-[360px] flex-1" data-testid="home-rewards">
           <Heading title={t('Rewards')} marginTop={false} />
           <h3 className="mb-6">{t('homeRewardsIntro')}</h3>
           <div className="flex items-center mb-8 gap-4">
@@ -290,7 +290,7 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
           </div>
         </div>
 
-        <div data-testid="home-vega-token">
+        <div className="min-w-[360px] flex-1" data-testid="home-vega-token">
           <Heading title={t('vegaToken')} marginTop={false} />
           <h3 className="mb-6">{t('homeVegaTokenIntro')}</h3>
           <div className="flex items-center mb-8 gap-4">

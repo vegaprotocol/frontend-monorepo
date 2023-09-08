@@ -133,24 +133,26 @@ export const RewardsPage = () => {
               </p>
             </div>
 
-            <div className="w-[360px]">
-              <Toggle
-                name="epoch-reward-view-toggle"
-                toggles={[
-                  {
-                    label: t('totalDistributed'),
-                    value: 'total',
-                  },
-                  {
-                    label: t('earnedByMe'),
-                    value: 'individual',
-                  },
-                ]}
-                checkedValue={toggleRewardsView}
-                onChange={(e) =>
-                  setToggleRewardsView(e.target.value as RewardsView)
-                }
-              />
+            <div className="flex justify-end">
+              <div className="w-full max-w-[360px]">
+                <Toggle
+                  name="epoch-reward-view-toggle"
+                  toggles={[
+                    {
+                      label: t('totalDistributed'),
+                      value: 'total',
+                    },
+                    {
+                      label: t('earnedByMe'),
+                      value: 'individual',
+                    },
+                  ]}
+                  checkedValue={toggleRewardsView}
+                  onChange={(e) =>
+                    setToggleRewardsView(e.target.value as RewardsView)
+                  }
+                />
+              </div>
             </div>
           </section>
 
