@@ -2,7 +2,7 @@ import type { Ref, SelectHTMLAttributes } from 'react';
 import { useRef } from 'react';
 import { forwardRef } from 'react';
 import classNames from 'classnames';
-import { Icon } from '..';
+import { Icon } from '../icon';
 import { defaultSelectElement } from '../../utils/shared';
 import * as SelectPrimitive from '@radix-ui/react-select';
 
