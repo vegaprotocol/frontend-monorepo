@@ -9,6 +9,7 @@ import { LayoutWithSidebar } from '../components/layouts';
 import { Deposit } from '../client-pages/deposit';
 import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
+import { LayoutCentered } from '../components/layouts/layout-centered';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
@@ -41,9 +42,9 @@ export enum Routes {
   PORTFOLIO = '/portfolio',
   LIQUIDITY = '/liquidity/:marketId',
   DISCLAIMER = '/disclaimer',
-  DEPOSIT = '/deposit',
-  WITHDRAW = '/withdraw',
-  TRANSFER = '/transfer',
+  DEPOSIT = '/transact/deposit',
+  WITHDRAW = '/transact/withdraw',
+  TRANSFER = '/transact/transfer',
 }
 
 type ConsoleLinks = { [r in Routes]: (...args: string[]) => string };
@@ -109,11 +110,24 @@ export const routerConfig: RouteObject[] = [
   },
   {
     path: Routes.DISCLAIMER,
-    element: <LazyDisclaimer />,
+    element: <LayoutCentered />,
+    children: [{ index: true, element: <LazyDisclaimer /> }],
   },
+  {
+    path: Routes.TRANSACT,
+    element: <LayoutCentered />,
+    children: [
+      { path: 'deposit', element: <LazyDeposit /> },
+      { path: 'withdraw', element: <LazyWithdraw /> },
+      { path: 'transfer', element: <LazyTransfer /> },
+    ],
+  },
+<<<<<<< HEAD
   { path: Routes.DEPOSIT, element: <Deposit /> },
   { path: Routes.WITHDRAW, element: <Withdraw /> },
   { path: Routes.TRANSFER, element: <Transfer /> },
+=======
+>>>>>>> 35a90b2ec (feat: add shared layout page for transact routes)
   {
     path: '*',
     element: (
