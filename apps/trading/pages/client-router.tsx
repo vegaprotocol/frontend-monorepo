@@ -6,10 +6,11 @@ import { t } from '@vegaprotocol/i18n';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import trimEnd from 'lodash/trimEnd';
 import { LayoutWithSidebar } from '../components/layouts';
+import { LayoutCentered } from '../components/layouts/layout-centered';
+import { Transact } from '../client-pages/transact';
 import { Deposit } from '../client-pages/deposit';
 import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
-import { LayoutCentered } from '../components/layouts/layout-centered';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
@@ -42,6 +43,7 @@ export enum Routes {
   PORTFOLIO = '/portfolio',
   LIQUIDITY = '/liquidity/:marketId',
   DISCLAIMER = '/disclaimer',
+  TRANSACT = '/transact',
   DEPOSIT = '/transact/deposit',
   WITHDRAW = '/transact/withdraw',
   TRANSFER = '/transact/transfer',
@@ -58,6 +60,7 @@ export const Links: ConsoleLinks = {
   [Routes.LIQUIDITY]: (marketId: string) =>
     trimEnd(Routes.LIQUIDITY.replace(':marketId', marketId)),
   [Routes.DISCLAIMER]: () => Routes.DISCLAIMER,
+  [Routes.TRANSACT]: () => Routes.TRANSACT,
   [Routes.DEPOSIT]: () => Routes.DEPOSIT,
   [Routes.WITHDRAW]: () => Routes.WITHDRAW,
   [Routes.TRANSFER]: () => Routes.TRANSFER,
@@ -115,11 +118,12 @@ export const routerConfig: RouteObject[] = [
   },
   {
     path: Routes.TRANSACT,
-    element: <LayoutCentered />,
+    element: <Transact />,
     children: [
-      { path: 'deposit', element: <LazyDeposit /> },
-      { path: 'withdraw', element: <LazyWithdraw /> },
-      { path: 'transfer', element: <LazyTransfer /> },
+      { index: true, element: null },
+      { path: 'deposit', element: <Deposit /> },
+      { path: 'withdraw', element: <Withdraw /> },
+      { path: 'transfer', element: <Transfer /> },
     ],
   },
 <<<<<<< HEAD
