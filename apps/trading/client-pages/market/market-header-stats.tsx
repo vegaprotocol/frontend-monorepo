@@ -152,7 +152,7 @@ export const FundingCountdown = ({ marketId }: { marketId: string }) => {
   if (node && node.startTime && !node.endTime) {
     startTime = fromNanoSeconds(node.startTime).getTime();
   }
-  let diffFormatted = '-';
+  let diffFormatted = t('Unknown');
   let every: number | undefined = undefined;
   const sourceType =
     marketInfo &&
