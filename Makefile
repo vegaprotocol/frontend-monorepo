@@ -11,7 +11,7 @@ recalculate-ipfs:
 	echo "ipfs hash inside the image"
 	docker run --rm ${TAG} cat /ipfs-hash
 	echo "recalculating ipfs hash"
-	docker run --rm ${TAG} ipfs add -r /usr/share/nginx/html
+	docker run --rm ${TAG} ipfs add -rQ /usr/share/nginx/html
 
 .PHONY: eject-ipfs-hash
 unpack:
