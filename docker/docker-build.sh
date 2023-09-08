@@ -7,7 +7,7 @@ envCmd=""
 
 if [[ ! -z "${ENV_NAME}" ]]; then
   if [[ "${ENV_NAME}" != "ops-vega" ]]; then
-    envCmd="envCmd="yarn env-cmd -f ./apps/${APP}/.env.${ENV_NAME}"
+    envCmd="yarn env-cmd -f ./apps/${APP}/.env.${ENV_NAME}"
   fi
 fi
 
