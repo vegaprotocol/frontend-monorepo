@@ -236,12 +236,12 @@ const ConnectorList = ({
   return (
     <>
       <ConnectDialogTitle>{title}</ConnectDialogTitle>
-      <p className="text-sm">
+      <p className="text-md">
         {t(
           'Connect securely, deposit funds and approve or reject transactions with the Vega wallet'
         )}
       </p>
-      <div data-testid="connectors-list" className="flex flex-col mt-6 gap-2">
+      <div data-testid="connectors-list" className="flex flex-col mt-4 gap-2">
         <div className="last:mb-0">
           {isBrowserWalletInstalled() ? (
             <ConnectionOptionWithDescription
@@ -250,7 +250,8 @@ const ConnectorList = ({
               onClick={() => onSelect('injected')}
               title={
                 <>
-                  <span>{t('Vega Wallet')}</span>{' '}
+                  <span>{t('Vega Wallet')}</span>
+                  {'  '}
                   <span className="text-xs">{t('full featured')}</span>
                 </>
               }
@@ -265,7 +266,8 @@ const ConnectorList = ({
           ) : (
             <div className="py-2">
               <h1 className="text-lg px-2">
-                <span>{t('Vega Wallet')}</span>{' '}
+                <span>{t('Vega Wallet')}</span>
+                {'  '}
                 <span className="text-xs"> {t('full featured')}</span>
               </h1>
               <p className="p-2 text-sm">
@@ -310,7 +312,8 @@ const ConnectorList = ({
                   disabled={snapStatus === SnapStatus.NOT_SUPPORTED}
                   title={
                     <>
-                      <span>{t('Metamask Snap')}</span>{' '}
+                      <span>{t('Metamask Snap')}</span>
+                      {'  '}
                       <span className="text-xs"> {t('quick start')}</span>
                     </>
                   }
@@ -345,7 +348,7 @@ const ConnectorList = ({
           </div>
         ) : null}
         <div>
-          <h1 className="text-sm">{t('Advanced / Other options...')}</h1>
+          <h1 className="text-md my-1">{t('Advanced / Other options...')}</h1>
           <ConnectionOption
             type="view"
             text={t('View as party')}
@@ -516,7 +519,7 @@ const ConnectionOptionWithDescription = ({
 }) => {
   return (
     <div className="mb-2">
-      <h1 className="text-sm">{title}</h1>
+      <h1 className="text-md">{title}</h1>
       <p className="pb-2 text-gray-60 text-sm text-muted">{description}</p>
       <ConnectionOption
         disabled={disabled}
