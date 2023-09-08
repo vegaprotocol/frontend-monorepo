@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import { MockedProvider } from '@apollo/react-testing';
 import { MemoryRouter } from 'react-router-dom';
 import { Transfer } from './transfer';
 
@@ -15,11 +14,9 @@ jest.mock('../../components/welcome-dialog/get-started.ts', () => ({
 
 const renderJsx = (route = '/transfer') => {
   render(
-    <MockedProvider>
-      <MemoryRouter initialEntries={[route]}>
-        <Transfer />
-      </MemoryRouter>
-    </MockedProvider>
+    <MemoryRouter initialEntries={[route]}>
+      <Transfer />
+    </MemoryRouter>
   );
 };
 

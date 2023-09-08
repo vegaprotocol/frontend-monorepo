@@ -1,46 +1,26 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/react-testing';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { useWithdrawStore } from '@vegaprotocol/withdraws';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import type { Asset } from '@vegaprotocol/assets';
 import { Withdraw } from './withdraw';
 
-const mockWalletContext = {} as unknown as VegaWalletContextShape;
-
 jest.mock('../../components/withdraw-container', () => ({
-  WithdrawContainer: jest.fn(({ assetId }: { assetId?: string }) => (
+  WithdrawContainer: ({ assetId }: { assetId?: string }) => (
     <div data-testid="assetId">{assetId}</div>
-  )),
+  ),
 }));
 
-let mockSearchParamsResult: string | undefined = undefined;
-const mockSearchParams = {
-  get: jest.fn(() => mockSearchParamsResult),
-};
-const mockSetSearchParams = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useSearchParams: jest.fn(() => [mockSearchParams, mockSetSearchParams]),
+jest.mock('../../components/welcome-dialog/get-started.ts', () => ({
+  GetStarted: () => <div>GetStarted</div>,
 }));
 
-const renderJsx = () => {
+const renderJsx = (route = '/withdraw') => {
   render(
-    <VegaWalletContext.Provider value={mockWalletContext}>
-      <MockedProvider>
-        <MemoryRouter>
-          <Withdraw />
-        </MemoryRouter>
-      </MockedProvider>
-    </VegaWalletContext.Provider>
+    <MemoryRouter initialEntries={[route]}>
+      <Withdraw />
+    </MemoryRouter>
   );
 };
 
 describe('Withdraw page', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
   it('should be properly rendered', async () => {
     renderJsx();
     expect(
@@ -50,30 +30,12 @@ describe('Withdraw page', () => {
   });
 
   it('assetId should be passed down', async () => {
-    mockSearchParamsResult = 'assetId';
-    renderJsx();
+    const assetId = 'foo';
+    const route = '/withdraw?assetId=' + assetId;
+    renderJsx(route);
     expect(
       screen.getByRole('heading', { level: 1, name: 'Withdraw' })
     ).toBeInTheDocument();
-    expect(screen.getByTestId('assetId')).toHaveTextContent('assetId');
-  });
-
-  it('if store returns different asset, search param should be cleared', async () => {
-    useWithdrawStore.setState({ asset: { id: 'assetId' } as unknown as Asset });
-    mockSearchParamsResult = 'assetId';
-    renderJsx();
-    expect(
-      screen.getByRole('heading', { level: 1, name: 'Withdraw' })
-    ).toBeInTheDocument();
-    expect(screen.getByTestId('assetId')).toHaveTextContent('assetId');
-    expect(mockSetSearchParams).not.toHaveBeenCalled();
-    act(() => {
-      useWithdrawStore.setState({
-        asset: { id: 'different-assetId' } as unknown as Asset,
-      });
-    });
-    await waitFor(() => {
-      expect(mockSetSearchParams).toHaveBeenCalledWith({});
-    });
+    expect(screen.getByTestId('assetId')).toHaveTextContent(assetId);
   });
 });
