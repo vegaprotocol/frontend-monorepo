@@ -1,1 +1,1 @@
-export { Withdraw as default } from './withdraw';
+export { Withdraw } from './withdraw';

@@ -1,1 +1,1 @@
-export { Transfer as default } from './transfer';
+export { Transfer } from './transfer';
