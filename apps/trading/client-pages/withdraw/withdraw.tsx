@@ -1,6 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
-import { GetStarted } from '../../components/welcome-dialog';
 import { t } from '@vegaprotocol/i18n';
+import { GetStarted } from '../../components/welcome-dialog';
 import { WithdrawContainer } from '../../components/withdraw-container';
 
 export const Withdraw = () => {
