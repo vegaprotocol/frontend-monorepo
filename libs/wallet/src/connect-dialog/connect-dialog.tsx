@@ -241,8 +241,8 @@ const ConnectorList = ({
           'Connect securely, deposit funds and approve or reject transactions with the Vega wallet'
         )}
       </p>
-      <div data-testid="connectors-list" className="flex flex-col mt-4 gap-2">
-        <div className="last:mb-0">
+      <div data-testid="connectors-list" className="flex flex-col mt-4 gap-4">
+        <div>
           {isBrowserWalletInstalled() ? (
             <ConnectionOptionWithDescription
               type="injected"
@@ -265,7 +265,7 @@ const ConnectorList = ({
             />
           ) : (
             <div className="py-2">
-              <h1 className="text-lg px-2">
+              <h1 className="px-2 text-lg">
                 <span>{t('Vega Wallet')}</span>
                 {'  '}
                 <span className="text-xs"> {t('full featured')}</span>
@@ -335,7 +335,7 @@ const ConnectorList = ({
                   }}
                 />
                 {snapStatus === SnapStatus.NOT_SUPPORTED ? (
-                  <p className="pt-2 text-xs text-default">
+                  <p className="pt-1 text-xs leading-tight text-default">
                     {t('No MetaMask version that supports snaps detected.')}{' '}
                     {t('Learn more about')}{' '}
                     <ExternalLink href="https://metamask.io/snaps/">
@@ -348,7 +348,7 @@ const ConnectorList = ({
           </div>
         ) : null}
         <div>
-          <h1 className="text-md my-1">{t('Advanced / Other options...')}</h1>
+          <h1 className="my-1 text-md">{t('Advanced / Other options...')}</h1>
           <ConnectionOption
             type="view"
             text={t('View as party')}
@@ -518,9 +518,9 @@ const ConnectionOptionWithDescription = ({
   title?: string | ReactNode;
 }) => {
   return (
-    <div className="mb-2">
+    <div>
       <h1 className="text-md">{title}</h1>
-      <p className="pb-2 text-gray-60 text-sm text-muted">{description}</p>
+      <p className="pb-2 text-sm text-gray-60 text-muted">{description}</p>
       <ConnectionOption
         disabled={disabled}
         type={type}
@@ -612,7 +612,7 @@ const CustomUrlInput = ({
         onClick={() => onSelect('jsonRpc')}
       />
       {isDesktopWalletRunning !== null && (
-        <p className="pt-2 mb-6 text-sm">
+        <p className="pt-1 mb-2 text-sm leading-tight">
           {isDesktopWalletRunning ? (
             <button
               className="underline text-default"
@@ -630,7 +630,7 @@ const CustomUrlInput = ({
                 )}
               </span>{' '}
               <button
-                className="underline text-xs"
+                className="text-xs underline"
                 onClick={() => setUrlInputExpanded(true)}
                 disabled={Boolean(pubKey)}
               >
