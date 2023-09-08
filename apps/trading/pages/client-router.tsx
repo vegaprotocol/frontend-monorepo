@@ -6,6 +6,9 @@ import { t } from '@vegaprotocol/i18n';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import trimEnd from 'lodash/trimEnd';
 import { LayoutWithSidebar } from '../components/layouts';
+import { Deposit } from '../client-pages/deposit';
+import { Withdraw } from '../client-pages/withdraw';
+import { Transfer } from '../client-pages/transfer';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
@@ -28,18 +31,6 @@ const LazyPortfolio = dynamic(() => import('../client-pages/portfolio'), {
 });
 
 const LazyDisclaimer = dynamic(() => import('../client-pages/disclaimer'), {
-  ssr: false,
-});
-
-const LazyDeposit = dynamic(() => import('../client-pages/deposit'), {
-  ssr: false,
-});
-
-const LazyWithdraw = dynamic(() => import('../client-pages/withdraw'), {
-  ssr: false,
-});
-
-const LazyTransfer = dynamic(() => import('../client-pages/transfer'), {
   ssr: false,
 });
 
@@ -115,9 +106,9 @@ const routerConfig: RouteObject[] = [
     path: Routes.DISCLAIMER,
     element: <LazyDisclaimer />,
   },
-  { path: Routes.DEPOSIT, element: <LazyDeposit /> },
-  { path: Routes.WITHDRAW, element: <LazyWithdraw /> },
-  { path: Routes.TRANSFER, element: <LazyTransfer /> },
+  { path: Routes.DEPOSIT, element: <Deposit /> },
+  { path: Routes.WITHDRAW, element: <Withdraw /> },
+  { path: Routes.TRANSFER, element: <Transfer /> },
   {
     path: '*',
     element: (
@@ -133,7 +124,7 @@ export const ClientRouter = () => {
   return (
     <Suspense
       fallback={
-        <div className="w-full h-full flex justify-center items-center">
+        <div className="flex items-center justify-center w-full h-full">
           <Loader />
         </div>
       }

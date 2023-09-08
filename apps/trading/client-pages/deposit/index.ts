@@ -1,3 +1,1 @@
-import { Deposit } from './deposit';
-
-export default Deposit;
+export { Deposit } from './deposit';
