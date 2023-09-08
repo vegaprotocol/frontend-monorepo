@@ -100,8 +100,8 @@ const Home = ({ name }: RouteChildProps) => {
           </Link>
         </p>
       </HomeSection>
-      <div className="flex gap-12">
-        <div className="flex-1">
+      <div className="flex justify-between flex-wrap gap-x-12 gap-y-4">
+        <div className="flex-1 min-w-[360px]">
           <HomeSection>
             <SubHeading title={t('Staking')} />
             <p>
@@ -118,7 +118,7 @@ const Home = ({ name }: RouteChildProps) => {
             </p>
           </HomeSection>
         </div>
-        <div className="flex-1">
+        <div className="flex-1 min-w-[360px]">
           <HomeSection>
             <SubHeading title={t('Governance')} />
             <p>
