@@ -29,7 +29,7 @@ describe('Transfer page', () => {
     expect(screen.getByTestId('assetId')).toBeEmptyDOMElement();
   });
 
-  it('assetId should be passed down', async () => {
+  it('assetId should be passed down', () => {
     const assetId = 'foo';
     const route = '/transfer?assetId=' + assetId;
     renderJsx(route);

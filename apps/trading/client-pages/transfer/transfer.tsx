@@ -1,7 +1,7 @@
-import { GetStarted } from '../../components/welcome-dialog';
+import { useSearchParams } from 'react-router-dom';
 import { t } from '@vegaprotocol/i18n';
 import { TransferContainer } from '@vegaprotocol/accounts';
-import { useSearchParams } from 'react-router-dom';
+import { GetStarted } from '../../components/welcome-dialog';
 
 export const Transfer = () => {
   const [searchParams] = useSearchParams();
