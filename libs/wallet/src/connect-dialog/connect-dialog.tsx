@@ -236,7 +236,7 @@ const ConnectorList = ({
   return (
     <>
       <ConnectDialogTitle>{title}</ConnectDialogTitle>
-      <p>
+      <p className="text-sm">
         {t(
           'Connect securely, deposit funds and approve or reject transactions with the Vega wallet'
         )}
@@ -250,8 +250,8 @@ const ConnectorList = ({
               onClick={() => onSelect('injected')}
               title={
                 <>
-                  <span>{t('Vega Wallet')}</span>
-                  <span className="text-xs"> {t('full featured')}</span>
+                  <span>{t('Vega Wallet')}</span>{' '}
+                  <span className="text-xs">{t('full featured')}</span>
                 </>
               }
               description={t(
@@ -263,9 +263,9 @@ const ConnectorList = ({
               )}
             />
           ) : (
-            <div className="bg-slate-100 dark:bg-slate-900 p-2">
+            <div className="py-2">
               <h1 className="text-lg px-2">
-                <span>{t('Vega Wallet')}</span>
+                <span>{t('Vega Wallet')}</span>{' '}
                 <span className="text-xs"> {t('full featured')}</span>
               </h1>
               <p className="p-2 text-sm">
@@ -310,7 +310,7 @@ const ConnectorList = ({
                   disabled={snapStatus === SnapStatus.NOT_SUPPORTED}
                   title={
                     <>
-                      <span>{t('Metamask Snap')}</span>
+                      <span>{t('Metamask Snap')}</span>{' '}
                       <span className="text-xs"> {t('quick start')}</span>
                     </>
                   }
@@ -332,7 +332,7 @@ const ConnectorList = ({
                   }}
                 />
                 {snapStatus === SnapStatus.NOT_SUPPORTED ? (
-                  <p className="pt-2 text-sm text-default">
+                  <p className="pt-2 text-xs text-default">
                     {t('No MetaMask version that supports snaps detected.')}{' '}
                     {t('Learn more about')}{' '}
                     <ExternalLink href="https://metamask.io/snaps/">
@@ -344,8 +344,8 @@ const ConnectorList = ({
             )}
           </div>
         ) : null}
-        <div className="p-2 bg-slate-100 dark:bg-slate-900">
-          <h1 className="p-2">{t('Advanced / Other options...')}</h1>
+        <div>
+          <h1 className="text-sm">{t('Advanced / Other options...')}</h1>
           <ConnectionOption
             type="view"
             text={t('View as party')}
@@ -515,9 +515,9 @@ const ConnectionOptionWithDescription = ({
   title?: string | ReactNode;
 }) => {
   return (
-    <div className="bg-slate-100 dark:bg-slate-900 p-2">
-      <h1 className="px-2">{title}</h1>
-      <p className="p-2 text-sm">{description}</p>
+    <div className="mb-2">
+      <h1 className="text-sm">{title}</h1>
+      <p className="pb-2 text-gray-60 text-sm text-muted">{description}</p>
       <ConnectionOption
         disabled={disabled}
         type={type}
@@ -621,13 +621,13 @@ const CustomUrlInput = ({
             </button>
           ) : (
             <>
-              <span className="text-default">
+              <span className="text-xs">
                 {t(
                   'No running Desktop App/CLI detected. Open your app now to connect or enter a'
                 )}
               </span>{' '}
               <button
-                className="underline"
+                className="underline text-xs"
                 onClick={() => setUrlInputExpanded(true)}
                 disabled={Boolean(pubKey)}
               >
