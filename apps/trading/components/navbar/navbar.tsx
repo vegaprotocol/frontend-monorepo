@@ -142,7 +142,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
 
   // If we have a stored marketId make Trade link go to that market
   // otherwise always go to /markets/all
-  const tradingPath = marketId ? Links.MARKET(marketId) : Links.MARKETS;
+  const tradingPath = marketId ? Links.MARKET(marketId) : Links.MARKETS();
 
   return (
     <div className="lg:flex lg:h-full gap-3">
