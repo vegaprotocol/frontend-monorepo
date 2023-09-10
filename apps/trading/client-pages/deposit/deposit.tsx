@@ -7,17 +7,20 @@ import {
   useOnboardingStore,
   OnboardingStep,
 } from '../../components/welcome-dialog/use-get-onboarding-step';
-import { Links, Routes } from '../../pages/client-router';
+import { Links } from '../../pages/client-router';
 import classNames from 'classnames';
+import { useSearchParams } from 'react-router-dom';
 
 export const Deposit = () => {
+  const [searchParams] = useSearchParams();
+  const assetId = searchParams.get('assetId') || undefined;
   return (
     <div className="max-w-[600px] px-4 py-8 mx-auto lg:px-8">
       <h1 className="mb-6 text-4xl uppercase xl:text-5xl font-alpha calt">
         {t('Deposit')}
       </h1>
       <div className="flex flex-col gap-6">
-        <DepositContainer />
+        <DepositContainer assetId={assetId} />
         <DepositGetStarted />
       </div>
     </div>
@@ -46,7 +49,7 @@ const DepositGetStarted = () => {
         <GetStartedCheckList />
         {step > OnboardingStep.ONBOARDING_DEPOSIT_STEP && (
           <TradingAnchorButton
-            href={Links[Routes.HOME]()}
+            href={Links.HOME()}
             onClick={() => dismiss()}
             intent={Intent.Info}
           >
