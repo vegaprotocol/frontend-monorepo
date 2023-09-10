@@ -81,7 +81,7 @@ export const Sidebar = () => {
         {/* buttons for specific routes */}
         <Routes>
           <Route
-            path={AppRoutes.MARKETS}
+            path="all"
             // render nothing for markets/all, otherwise markets/:marketId will match with markets/all
             element={null}
           />
@@ -91,7 +91,7 @@ export const Sidebar = () => {
             element={null}
           />
           <Route
-            path={AppRoutes.MARKET}
+            path=":marketId"
             element={
               <>
                 <SidebarDivider />

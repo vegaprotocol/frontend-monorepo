@@ -15,7 +15,8 @@ import { Deposit } from '../client-pages/deposit';
 import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
 
-// These must remain dynamically imported as pennant cannot be compiled by nextjs
+// These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
+// Using dynamic imports is a workaround for this until pennant is published as ESM
 const MarketPage = lazy(() => import('../client-pages/market'));
 const Portfolio = lazy(() => import('../client-pages/portfolio'));
 

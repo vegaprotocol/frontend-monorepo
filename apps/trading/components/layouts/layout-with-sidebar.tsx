@@ -23,8 +23,8 @@ export const LayoutWithSidebar = () => {
     <div className={gridClasses}>
       <div className="col-span-full">
         <Routes>
-          <Route path={AppRoutes.MARKET} element={<MarketHeader />} />
-          <Route path={AppRoutes.LIQUIDITY} element={<LiquidityHeader />} />
+          <Route path=":marketId" element={<MarketHeader />} />
+          <Route path=":marketId/liquidity" element={<LiquidityHeader />} />
         </Routes>
       </div>
       <main
