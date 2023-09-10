@@ -32,7 +32,7 @@ export const routerConfig: RouteObject[] = [
     path: 'transact/*',
     element: <Transact />,
     children: [
-      { index: true, element: null },
+      { index: true, element: <Navigate to="deposit" /> },
       { path: 'deposit', element: <Deposit /> },
       { path: 'withdraw', element: <Withdraw /> },
       { path: 'transfer', element: <Transfer /> },
