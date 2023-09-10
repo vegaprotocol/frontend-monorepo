@@ -87,7 +87,6 @@ export const routerConfig: RouteObject[] = [
       {
         index: true,
         element: <Home />,
-        // element: <Navigate to="all" />,
       },
       {
         path: 'markets',
