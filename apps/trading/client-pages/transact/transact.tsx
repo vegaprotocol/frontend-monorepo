@@ -1,4 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
+import { Links } from '../../pages/client-router';
 import classNames from 'classnames';
 import { NavLink, Outlet } from 'react-router-dom';
 
@@ -12,13 +13,13 @@ export const Transact = () => {
   return (
     <div className="container px-4 mx-auto my-8">
       <nav className="flex mb-6 text-lg gap-4">
-        <NavLink to="deposit" className={linkClasses}>
+        <NavLink to={Links.DEPOSIT()} className={linkClasses}>
           {t('Deposit')}
         </NavLink>
-        <NavLink to="withdraw" className={linkClasses}>
+        <NavLink to={Links.WITHDRAW()} className={linkClasses}>
           {t('Withdraw')}
         </NavLink>
-        <NavLink to="transfer" className={linkClasses}>
+        <NavLink to={Links.TRANSFER()} className={linkClasses}>
           {t('Transfer')}
         </NavLink>
       </nav>

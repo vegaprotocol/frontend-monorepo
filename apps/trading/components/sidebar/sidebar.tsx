@@ -14,9 +14,9 @@ import { Settings } from '../settings';
 import { Tooltip } from '../../components/tooltip';
 import { WithdrawContainer } from '../withdraw-container';
 import { Routes as AppRoutes } from '../../pages/client-router';
+import { GetStarted } from '../welcome-dialog';
 import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
-import { GetStarted } from '../welcome-dialog';
 
 export enum ViewType {
   Order = 'Order',
@@ -51,6 +51,26 @@ type SidebarView =
       type: ViewType.Settings;
     };
 
+const MarketSidebarButtons = () => {
+  return (
+    <>
+      <>
+        <SidebarDivider />
+        <SidebarButton
+          view={ViewType.Order}
+          icon={VegaIconNames.TICKET}
+          tooltip={t('Order')}
+        />
+        <SidebarButton
+          view={ViewType.Info}
+          icon={VegaIconNames.BREAKDOWN}
+          tooltip={t('Market specification')}
+        />
+      </>
+    </>
+  );
+};
+
 export const Sidebar = () => {
   const currentRouteId = useGetCurrentRouteId();
   const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
@@ -81,13 +101,13 @@ export const Sidebar = () => {
         {/* buttons for specific routes */}
         <Routes>
           <Route
-            path="all"
+            path="markets/all"
             // render nothing for markets/all, otherwise markets/:marketId will match with markets/all
             element={null}
           />
           <Route
             // render nothing for portfolio
-            path={AppRoutes.PORTFOLIO}
+            path="portfolio"
             element={null}
           />
           <Route

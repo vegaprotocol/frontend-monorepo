@@ -20,34 +20,38 @@ import { Transfer } from '../client-pages/transfer';
 const MarketPage = lazy(() => import('../client-pages/market'));
 const Portfolio = lazy(() => import('../client-pages/portfolio'));
 
-export enum Routes {
-  HOME = '/',
-  MARKET = '/markets/:marketId',
-  MARKETS = '/markets/all',
-  PORTFOLIO = '/portfolio',
-  LIQUIDITY = '/liquidity/:marketId',
-  DISCLAIMER = '/disclaimer',
-  TRANSACT = '/transact',
-  DEPOSIT = '/transact/deposit',
-  WITHDRAW = '/transact/withdraw',
-  TRANSFER = '/transact/transfer',
-}
+// Make all route paths 'absolute' for easier
+// href creation
+export const Routes = {
+  HOME: '/',
+  MARKETS: '/markets/all',
+  MARKET: '/markets/:marketId',
+  LIQUIDITY: '/liquidity/:marketId',
+  PORTFOLIO: '/portfolio',
+  DISCLAIMER: '/disclaimer',
+  TRANSACT: '/transact',
+  DEPOSIT: '/transact/deposit',
+  WITHDRAW: '/transact/withdraw',
+  TRANSFER: '/transact/transfer',
+} as const;
 
-type ConsoleLinks = { [r in Routes]: (...args: string[]) => string };
+type ConsoleLinks = {
+  [R in keyof typeof Routes]: (...args: string[]) => string;
+};
 
 export const Links: ConsoleLinks = {
-  [Routes.HOME]: () => Routes.HOME,
-  [Routes.MARKET]: (marketId: string) =>
+  HOME: () => Routes.HOME,
+  MARKET: (marketId: string) =>
     trimEnd(Routes.MARKET.replace(':marketId', marketId)),
-  [Routes.MARKETS]: () => Routes.MARKETS,
-  [Routes.PORTFOLIO]: () => Routes.PORTFOLIO,
-  [Routes.LIQUIDITY]: (marketId: string) =>
+  MARKETS: () => Routes.MARKETS,
+  PORTFOLIO: () => Routes.PORTFOLIO,
+  LIQUIDITY: (marketId: string) =>
     trimEnd(Routes.LIQUIDITY.replace(':marketId', marketId)),
-  [Routes.DISCLAIMER]: () => Routes.DISCLAIMER,
-  [Routes.TRANSACT]: () => Routes.TRANSACT,
-  [Routes.DEPOSIT]: () => Routes.DEPOSIT,
-  [Routes.WITHDRAW]: () => Routes.WITHDRAW,
-  [Routes.TRANSFER]: () => Routes.TRANSFER,
+  DISCLAIMER: () => Routes.DISCLAIMER,
+  TRANSACT: () => Routes.TRANSACT,
+  DEPOSIT: () => Routes.DEPOSIT,
+  WITHDRAW: () => Routes.WITHDRAW,
+  TRANSFER: () => Routes.TRANSFER,
 };
 
 const NotFound = () => (
@@ -56,40 +60,11 @@ const NotFound = () => (
   </Splash>
 );
 
-const routerConfig: RouteObject[] = [
+export const routerConfig: RouteObject[] = [
+  // Pages that dont use the sidebar must come first
+  // to ensure they are matched before /*
   {
-    index: true,
-    element: <Home />,
-  },
-  {
-    path: 'markets/*',
-    element: <LayoutWithSidebar />,
-    children: [
-      {
-        index: true,
-        element: <Navigate to="all" />,
-      },
-      {
-        path: 'all',
-        element: <MarketsPage />,
-      },
-      {
-        path: ':marketId',
-        element: <Outlet />,
-        children: [
-          { index: true, element: <MarketPage /> },
-          { path: 'liquidity', element: <Liquidity /> },
-        ],
-      },
-    ],
-  },
-  {
-    path: 'portfolio',
-    element: <LayoutWithSidebar />,
-    children: [{ index: true, element: <Portfolio /> }],
-  },
-  {
-    path: Routes.TRANSACT,
+    path: 'transact/*',
     element: <Transact />,
     children: [
       { index: true, element: null },
@@ -99,13 +74,52 @@ const routerConfig: RouteObject[] = [
     ],
   },
   {
-    path: Routes.DISCLAIMER,
+    path: 'disclaimer',
     element: <LayoutCentered />,
     children: [{ index: true, element: <Disclaimer /> }],
   },
+
+  // All other pages will use the sidebar
   {
-    path: '*',
-    element: <NotFound />,
+    path: '/*',
+    element: <LayoutWithSidebar />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+        // element: <Navigate to="all" />,
+      },
+      {
+        path: 'markets',
+        element: <Outlet />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="all" />,
+          },
+          {
+            path: 'all',
+            element: <MarketsPage />,
+          },
+          {
+            path: ':marketId',
+            element: <MarketPage />,
+          },
+        ],
+      },
+      {
+        path: 'portfolio',
+        element: <Portfolio />,
+      },
+      {
+        path: 'liquidity/:marketId',
+        element: <Liquidity />,
+      },
+      {
+        path: '*',
+        element: <NotFound />,
+      },
+    ],
   },
 ];
 

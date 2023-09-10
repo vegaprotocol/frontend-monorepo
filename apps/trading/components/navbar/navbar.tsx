@@ -15,7 +15,7 @@ import * as N from '@radix-ui/react-navigation-menu';
 import * as D from '@radix-ui/react-dialog';
 import { NavLink } from 'react-router-dom';
 
-import { Links, Routes } from '../../pages/client-router';
+import { Links } from '../../pages/client-router';
 import classNames from 'classnames';
 import { VegaWalletMenu } from '../vega-wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
@@ -142,9 +142,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
 
   // If we have a stored marketId make Trade link go to that market
   // otherwise always go to /markets/all
-  const tradingPath = marketId
-    ? Links[Routes.MARKET](marketId)
-    : Links[Routes.MARKET]('');
+  const tradingPath = marketId ? Links.MARKET(marketId) : Links.MARKETS;
 
   return (
     <div className="lg:flex lg:h-full gap-3">
@@ -171,7 +169,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
       <NavbarListDivider />
       <NavbarList>
         <NavbarItem>
-          <NavbarLink to={Links[Routes.MARKETS]()} onClick={onClick}>
+          <NavbarLink to={Links.MARKETS()} onClick={onClick}>
             {t('Markets')}
           </NavbarLink>
         </NavbarItem>
@@ -181,7 +179,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           </NavbarLink>
         </NavbarItem>
         <NavbarItem>
-          <NavbarLink to={Links[Routes.PORTFOLIO]()} onClick={onClick}>
+          <NavbarLink to={Links.PORTFOLIO()} onClick={onClick}>
             {t('Portfolio')}
           </NavbarLink>
         </NavbarItem>
@@ -209,7 +207,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
                 </NavbarSubItem>
               )}
               <NavbarSubItem>
-                <NavbarLink to={Links[Routes.DISCLAIMER]()} onClick={onClick}>
+                <NavbarLink to={Links.DISCLAIMER()} onClick={onClick}>
                   {t('Disclaimer')}
                 </NavbarLink>
               </NavbarSubItem>

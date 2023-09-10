@@ -24,6 +24,7 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { Link } from 'react-router-dom';
+import { Links } from '../../pages/client-router';
 
 interface Props {
   marketId?: string;
@@ -135,7 +136,7 @@ export const MarketLiquiditySupplied = ({
         </p>
       )}
       <div className="flex flex-col gap-2">
-        <Link to="liquidity" data-testid="view-liquidity-link">
+        <Link to={Links.LIQUIDITY(marketId)} data-testid="view-liquidity-link">
           <UILink>{t('View liquidity provision table')}</UILink>
         </Link>
       </div>
