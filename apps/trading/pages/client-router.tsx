@@ -61,8 +61,8 @@ const NotFound = () => (
 );
 
 export const routerConfig: RouteObject[] = [
-  // Pages that dont use the sidebar must come first
-  // to ensure they are matched before /*
+  // Pages that dont use the LayoutWithSidebar must come first
+  // to ensure they are matched before the catch all route '/*'
   {
     path: 'transact/*',
     element: <Transact />,
@@ -114,6 +114,8 @@ export const routerConfig: RouteObject[] = [
         path: 'liquidity/:marketId',
         element: <Liquidity />,
       },
+
+      // NotFound page is here so its caught within parent '/*' route
       {
         path: '*',
         element: <NotFound />,
