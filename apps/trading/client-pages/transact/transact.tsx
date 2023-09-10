@@ -11,7 +11,7 @@ export const Transact = () => {
   };
 
   return (
-    <div className="container px-4 mx-auto my-8">
+    <div className="max-w-[500px] px-4 mx-auto my-8">
       <nav className="flex mb-6 text-lg gap-4">
         <NavLink to={Links.DEPOSIT()} className={linkClasses}>
           {t('Deposit')}
@@ -23,7 +23,7 @@ export const Transact = () => {
           {t('Transfer')}
         </NavLink>
       </nav>
-      <div className="pt-4 border-t lg:w-2/3 xl:w-1/2 lg:p-6 lg:border lg:rounded-xl border-default">
+      <div className="pt-4 border-t md:p-6 md:border md:rounded-xl border-default">
         <Outlet />
       </div>
     </div>
