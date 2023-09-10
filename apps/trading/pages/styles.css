@@ -36,7 +36,7 @@ body,
 }
 
 /**
- * ALLOTMENT 
+ * ALLOTMENT
  */
 
 html {
@@ -81,6 +81,8 @@ html [data-theme='light'] {
   --pennant-color-macd-macd: theme(colors.vega.yellow.500);
 
   --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
+
+  --pennant-candlestick-inner-padding: 0.1;
 }
 
 html [data-theme='light'] {
