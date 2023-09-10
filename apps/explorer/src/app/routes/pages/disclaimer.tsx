@@ -4,7 +4,7 @@ import { RouteTitle } from '../../components/route-title';
 export const Disclaimer = () => {
   return (
     <section>
-      <div className="max-w-5xl px-40 mb-4 max-sm:px-0 max-md:px-10">
+      <div className="px-40 max-sm:px-0 max-md:px-10 mb-4 max-w-5xl">
         <RouteTitle data-testid="disclaimer-header">
           {t('Disclaimer')}
         </RouteTitle>
