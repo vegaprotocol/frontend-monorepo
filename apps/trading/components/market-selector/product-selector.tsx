@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { Routes } from '../../pages/client-router';
 import { t } from '@vegaprotocol/i18n';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { Links } from '../../lib/links';
 
 // Make sure these match the available __typename properties on product
 export const Product = {
@@ -55,7 +55,7 @@ export const ProductSelector = ({
         );
       })}
       <Link
-        to={Routes.MARKETS}
+        to={Links.MARKETS()}
         className="flex items-center ml-auto text-sm gap-2"
         title={t('See all markets')}
       >

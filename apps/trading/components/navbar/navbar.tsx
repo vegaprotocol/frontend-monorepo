@@ -15,7 +15,7 @@ import * as N from '@radix-ui/react-navigation-menu';
 import * as D from '@radix-ui/react-dialog';
 import { NavLink } from 'react-router-dom';
 
-import { Links } from '../../pages/client-router';
+import { Links } from '../../lib/links';
 import classNames from 'classnames';
 import { VegaWalletMenu } from '../vega-wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';

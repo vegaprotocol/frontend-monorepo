@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
-import { Links } from '../../pages/client-router';
 import { useGlobalStore } from '../../stores';
 import { useTopTradedMarkets } from '../../lib/hooks/use-top-traded-markets';
+import { Links } from '../../lib/links';
 
 // The home pages only purpose is to redirect to the users last market,
 // the top traded if they are new, or fall back to the list of markets.

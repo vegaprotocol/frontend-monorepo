@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
-import { Links } from '../../pages/client-router';
+import { Links } from '../../lib/links';
 import classNames from 'classnames';
 import { NavLink, Outlet } from 'react-router-dom';
 

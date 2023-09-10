@@ -24,7 +24,7 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { Link } from 'react-router-dom';
-import { Links } from '../../pages/client-router';
+import { Links } from '../../lib/links';
 
 interface Props {
   marketId?: string;

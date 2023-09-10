@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useCallback } from 'react';
-import { Links } from '../../pages/client-router';
+import { Links } from '../../lib/links';
 
 export const useMarketClickHandler = (replace = false) => {
   const navigate = useNavigate();

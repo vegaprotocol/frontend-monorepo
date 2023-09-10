@@ -15,7 +15,7 @@ import {
   useGetOnboardingStep,
   useOnboardingStore,
 } from './use-get-onboarding-step';
-import { Links, Routes } from '../../pages/client-router';
+import { Links, Routes } from '../../lib/links';
 import { useGlobalStore } from '../../stores';
 import { useSidebar, ViewType } from '../sidebar';
 

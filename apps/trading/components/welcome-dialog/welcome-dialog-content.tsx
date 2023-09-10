@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import { GetStarted } from './get-started';
 import { TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
-import { Links } from '../../pages/client-router';
+import { Links } from '../../lib/links';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
 import { useTopTradedMarkets } from '../../lib/hooks/use-top-traded-markets';

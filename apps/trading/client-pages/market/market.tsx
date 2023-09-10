@@ -9,7 +9,7 @@ import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid } from './trade-grid';
 import { TradePanels } from './trade-panels';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Links } from '../../pages/client-router';
+import { Links } from '../../lib/links';
 import { ViewType, useSidebar } from '../../components/sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
