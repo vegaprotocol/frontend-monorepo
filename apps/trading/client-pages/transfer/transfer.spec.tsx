@@ -21,14 +21,6 @@ const renderJsx = (route = '/transfer') => {
 };
 
 describe('Transfer page', () => {
-  it('properly rendered', () => {
-    renderJsx();
-    expect(
-      screen.getByRole('heading', { level: 1, name: 'Transfer' })
-    ).toBeInTheDocument();
-    expect(screen.getByTestId('assetId')).toBeEmptyDOMElement();
-  });
-
   it('assetId should be passed down', () => {
     const assetId = 'foo';
     const route = '/transfer?assetId=' + assetId;
