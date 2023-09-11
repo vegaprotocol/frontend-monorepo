@@ -40,14 +40,6 @@ describe('useGetOnboardingStep', () => {
     expect(result.current).toEqual(OnboardingStep.ONBOARDING_UNKNOWN_STEP);
   });
 
-  it('should return properly ONBOARDING_WALLET_STEP', () => {
-    mockContext = { pubKey: null };
-    // @ts-ignore test only purpose
-    globalThis.window.vega = undefined;
-    const { result } = renderHook(() => useGetOnboardingStep(), { wrapper });
-    expect(result.current).toEqual(OnboardingStep.ONBOARDING_WALLET_STEP);
-  });
-
   it('should return properly ONBOARDING_CONNECT_STEP', () => {
     mockContext = { pubKey: null };
     const { result } = renderHook(() => useGetOnboardingStep(), { wrapper });

@@ -70,7 +70,7 @@ export const useGetOnboardingStep = () => {
   if (!isBrowserWalletInstalled()) {
     step = OnboardingStep.ONBOARDING_WALLET_STEP;
   }
-  if (!pubKey && isBrowserWalletInstalled()) {
+  if (!pubKey) {
     step = OnboardingStep.ONBOARDING_CONNECT_STEP;
   }
   if (pubKey) {
