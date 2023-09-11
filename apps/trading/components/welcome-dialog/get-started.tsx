@@ -7,11 +7,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import {
-  GetWalletButton,
-  useVegaWallet,
-  useVegaWalletDialogStore,
-} from '@vegaprotocol/wallet';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { useNavigate } from 'react-router-dom';
@@ -30,7 +26,6 @@ interface Props {
 }
 
 const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
-  const { CHROME_EXTENSION_URL, MOZILLA_EXTENSION_URL } = useEnvironment();
   const navigate = useNavigate();
   const [, setOnboardingViewed] = useLocalStorage(
     constants.ONBOARDING_VIEWED_KEY
@@ -47,15 +42,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   let onClickHandle = () => {
     openVegaWalletDialog();
   };
-  if (step === OnboardingStep.ONBOARDING_WALLET_STEP) {
-    return (
-      <GetWalletButton
-        className="justify-between"
-        chromeExtensionUrl={CHROME_EXTENSION_URL}
-        mozillaExtensionUrl={MOZILLA_EXTENSION_URL}
-      />
-    );
-  } else if (step === OnboardingStep.ONBOARDING_CONNECT_STEP) {
+  if (step <= OnboardingStep.ONBOARDING_CONNECT_STEP) {
     buttonText = t('Connect');
   } else if (step === OnboardingStep.ONBOARDING_DEPOSIT_STEP) {
     buttonText = t('Deposit');
@@ -65,7 +52,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
       dismiss();
     };
   } else if (step === OnboardingStep.ONBOARDING_ORDER_STEP) {
-    buttonText = t('Dismiss');
+    buttonText = t('Ready to trade');
     onClickHandle = () => {
       navigate(link);
       setView({ type: ViewType.Order });
@@ -116,23 +103,18 @@ export const GetStarted = ({ lead }: Props) => {
           <ul className="list-none">
             <Step
               step={1}
-              text={t('Get a Vega wallet')}
-              complete={currentStep > OnboardingStep.ONBOARDING_WALLET_STEP}
-            />
-            <Step
-              step={2}
               text={t('Connect')}
               complete={Boolean(
                 currentStep > OnboardingStep.ONBOARDING_CONNECT_STEP || pubKey
               )}
             />
             <Step
-              step={3}
+              step={2}
               text={t('Deposit funds')}
               complete={currentStep > OnboardingStep.ONBOARDING_DEPOSIT_STEP}
             />
             <Step
-              step={4}
+              step={3}
               text={t('Open a position')}
               complete={currentStep > OnboardingStep.ONBOARDING_ORDER_STEP}
             />

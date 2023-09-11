@@ -22,7 +22,7 @@ describe('GetStarted', () => {
   };
   const checkTicks = (elements: Element[]) => {
     elements.forEach((item, i) => {
-      if (i + 1 < mockStep) {
+      if (i + 1 < mockStep - 1) {
         expect(item.querySelector('[data-testid="icon-tick"]')).toBeTruthy();
       }
     });
@@ -57,19 +57,9 @@ describe('GetStarted', () => {
       'get'
     );
     navigatorGetter.mockReturnValue('Chrome');
-    mockStep = 1;
-    const { rerender, container } = renderComponent();
-    expect(screen.queryByTestId('icon-tick')).not.toBeInTheDocument();
-    expect(screen.getByTestId('get-wallet-button')).toBeInTheDocument();
 
     mockStep = 2;
-    rerender(
-      <MemoryRouter>
-        <VegaWalletContext.Provider value={{} as VegaWalletContextShape}>
-          <GetStarted />
-        </VegaWalletContext.Provider>
-      </MemoryRouter>
-    );
+    const { rerender, container } = renderComponent();
     checkTicks(screen.getAllByRole('listitem'));
     expect(screen.getByRole('button', { name: 'Connect' })).toBeInTheDocument();
 
@@ -93,7 +83,9 @@ describe('GetStarted', () => {
       </MemoryRouter>
     );
     checkTicks(screen.getAllByRole('listitem'));
-    expect(screen.getByRole('button', { name: 'Dismiss' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Ready to trade' })
+    ).toBeInTheDocument();
 
     mockStep = 5;
     rerender(
