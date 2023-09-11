@@ -115,10 +115,10 @@ export const useCandlesChartSettings = () => {
     [Study.VOLUME]
   );
 
-  const studySizes: number[] = [];
-  studies.forEach((s) => {
+  // find the study size
+  const studySizes = studies.map((s) => {
     const size = settings.studySizes[s] || STUDY_SIZE;
-    studySizes.push(size);
+    return size;
   });
 
   return {
