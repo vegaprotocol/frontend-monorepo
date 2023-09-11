@@ -63,20 +63,24 @@ export const useGetOnboardingStep = () => {
         collateralData === null ||
         positionsData === null)
   );
+  let step = OnboardingStep.ONBOARDING_UNKNOWN_STEP;
   if (isLoading) {
-    return OnboardingStep.ONBOARDING_UNKNOWN_STEP;
+    return step;
   }
   if (!isBrowserWalletInstalled()) {
-    return OnboardingStep.ONBOARDING_WALLET_STEP;
+    step = OnboardingStep.ONBOARDING_WALLET_STEP;
   }
-  if (!pubKey) {
-    return OnboardingStep.ONBOARDING_CONNECT_STEP;
+  if (!pubKey && isBrowserWalletInstalled()) {
+    step = OnboardingStep.ONBOARDING_CONNECT_STEP;
   }
-  if (!deposits && !collaterals) {
-    return OnboardingStep.ONBOARDING_DEPOSIT_STEP;
+  if (pubKey) {
+    step = OnboardingStep.ONBOARDING_DEPOSIT_STEP;
   }
-  if (!orders && !positions) {
-    return OnboardingStep.ONBOARDING_ORDER_STEP;
+  if (pubKey && (deposits || collaterals)) {
+    step = OnboardingStep.ONBOARDING_ORDER_STEP;
   }
-  return OnboardingStep.ONBOARDING_COMPLETE_STEP;
+  if (pubKey && (orders || positions)) {
+    step = OnboardingStep.ONBOARDING_COMPLETE_STEP;
+  }
+  return step;
 };
