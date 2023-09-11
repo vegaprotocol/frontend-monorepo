@@ -26,6 +26,17 @@ fragment DataSource on DataSourceSpec {
               value
             }
           }
+          ... on DataSourceSpecConfigurationTimeTrigger {
+            __typename
+            triggers {
+              initial
+              every
+            }
+            conditions {
+              operator
+              value
+            }
+          }
         }
       }
     }

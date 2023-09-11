@@ -115,6 +115,21 @@ export const staticMarketDataProvider = makeDerivedDataProvider<
   });
 });
 
+export const fundingRateProvider = makeDerivedDataProvider<
+  string,
+  never,
+  MarketDataQueryVariables
+>([marketDataProvider], (parts) => {
+  return (parts[0] as ReturnType<typeof getData>)?.fundingRate || null;
+});
+
+export const useFundingRate = (marketId?: string, skip?: boolean) =>
+  useDataProvider({
+    dataProvider: fundingRateProvider,
+    variables: { marketId: marketId || '' },
+    skip: skip || !marketId,
+  });
+
 export const useStaticMarketData = (marketId?: string, skip?: boolean) => {
   return useDataProvider({
     dataProvider: staticMarketDataProvider,
