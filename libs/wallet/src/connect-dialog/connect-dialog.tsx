@@ -241,51 +241,49 @@ const ConnectorList = ({
           'Connect securely, deposit funds and approve or reject transactions with the Vega wallet'
         )}
       </p>
-      <div data-testid="connectors-list" className="flex flex-col mt-4 gap-4">
-        <div>
-          {isBrowserWalletInstalled() ? (
-            <ConnectionOptionWithDescription
-              type="injected"
-              text={extendedText}
-              onClick={() => onSelect('injected')}
-              title={
-                <>
-                  <span>{t('Vega Wallet')}</span>
-                  {'  '}
-                  <span className="text-xs">{t('full featured')}</span>
-                </>
-              }
-              description={t(
-                `Connect Vega Wallet extension
+      <div data-testid="connectors-list" className="flex flex-col mt-4 gap-2">
+        {isBrowserWalletInstalled() ? (
+          <ConnectionOptionWithDescription
+            type="injected"
+            text={extendedText}
+            onClick={() => onSelect('injected')}
+            title={
+              <>
+                <span>{t('Vega Wallet')}</span>
+                {'  '}
+                <span className="text-xs">{t('full featured')}</span>
+              </>
+            }
+            description={t(
+              `Connect Vega Wallet extension
+              for %s to access all features including key
+              management and detailed transaction views from your
+              browser.`,
+              [browserName]
+            )}
+          />
+        ) : (
+          <div>
+            <h1 className="mb-1 text-lg">
+              <span>{t('Vega Wallet')}</span>
+              {'  '}
+              <span className="text-xs"> {t('full featured')}</span>
+            </h1>
+            <p className="mb-2 text-sm">
+              {t(
+                `Install Vega Wallet extension
               for %s to access all features including key
               management and detailed transaction views from your
               browser.`,
                 [browserName]
               )}
+            </p>
+            <GetWalletButton
+              chromeExtensionUrl={links.chromeExtensionUrl}
+              mozillaExtensionUrl={links.mozillaExtensionUrl}
             />
-          ) : (
-            <div className="py-2">
-              <h1 className="px-2 text-lg">
-                <span>{t('Vega Wallet')}</span>
-                {'  '}
-                <span className="text-xs"> {t('full featured')}</span>
-              </h1>
-              <p className="p-2 text-sm">
-                {t(
-                  `Install Vega Wallet extension
-              for %s to access all features including key
-              management and detailed transaction views from your
-              browser.`,
-                  [browserName]
-                )}
-              </p>
-              <GetWalletButton
-                chromeExtensionUrl={links.chromeExtensionUrl}
-                mozillaExtensionUrl={links.mozillaExtensionUrl}
-              />
-            </div>
-          )}
-        </div>
+          </div>
+        )}
         {connectors['snap'] !== undefined ? (
           <div>
             {snapStatus === SnapStatus.INSTALLED ? (
@@ -348,7 +346,7 @@ const ConnectorList = ({
           </div>
         ) : null}
         <div>
-          <h1 className="my-1 text-md">{t('Advanced / Other options...')}</h1>
+          <h1 className="mb-1 text-md">{t('Advanced / Other options...')}</h1>
           <ConnectionOption
             type="view"
             text={t('View as party')}
@@ -520,7 +518,7 @@ const ConnectionOptionWithDescription = ({
   return (
     <div>
       <h1 className="text-md">{title}</h1>
-      <p className="pb-2 text-sm text-gray-60 text-muted">{description}</p>
+      <p className="mb-2 text-sm text-gray-60 text-muted">{description}</p>
       <ConnectionOption
         disabled={disabled}
         type={type}
