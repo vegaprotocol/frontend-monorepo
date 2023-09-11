@@ -15,6 +15,7 @@ const proposalDocumentationLink = 'proposal-documentation-link';
 const connectToVegaWalletButton = 'connect-to-vega-wallet-btn';
 const governanceDocsUrl = 'https://vega.xyz/governance';
 const networkUpgradeProposalListItem = 'protocol-upgrade-proposals-list-item';
+const proposalUpgradeBlockHeight = 'protocol-upgrade-proposal-block-height';
 const closedProposals = 'closed-proposals';
 const closedProposalToggle = 'closed-proposals-toggle-networkUpgrades';
 const protocolUpgradeTime = 'protocol-upgrade-time';
@@ -156,7 +157,7 @@ context(
               'have.text',
               'Vega release tag: v1'
             );
-            cy.getByTestId('protocol-upgrade-proposal-block-height').should(
+            cy.getByTestId(proposalUpgradeBlockHeight).should(
               'have.text',
               'Upgrade block height: 2015942'
             );
@@ -171,7 +172,15 @@ context(
       });
       cy.getByTestId(closedProposalToggle).click();
       cy.getByTestId(closedProposals).within(() => {
-        cy.getByTestId(networkUpgradeProposalListItem).should('have.length', 1);
+        cy.getByTestId(networkUpgradeProposalListItem).should('have.length', 2);
+        cy.getByTestId(networkUpgradeProposalListItem)
+          .first()
+          .within(() => {
+            cy.getByTestId(proposalUpgradeBlockHeight).should(
+              'contain.text',
+              '10001'
+            );
+          });
       });
     });
 
