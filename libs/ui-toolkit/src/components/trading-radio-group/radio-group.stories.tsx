@@ -4,7 +4,7 @@ import { TradingRadioGroup, TradingRadio } from './radio-group';
 
 export default {
   component: TradingRadioGroup,
-  title: 'RadioGroup',
+  title: 'RadioGroup trading',
 } as Meta;
 
 const Template: StoryFn<TradingRadioGroupProps> = (args) => (

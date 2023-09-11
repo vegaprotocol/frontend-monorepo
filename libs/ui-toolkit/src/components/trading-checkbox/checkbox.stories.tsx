@@ -4,7 +4,7 @@ import { TradingCheckbox } from './checkbox';
 
 export default {
   component: TradingCheckbox,
-  title: 'Checkbox',
+  title: 'Checkbox - trading',
 } as Meta<typeof TradingCheckbox>;
 
 const Template: StoryFn<TradingCheckboxProps> = (args) => (
