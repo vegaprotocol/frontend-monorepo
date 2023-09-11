@@ -7,8 +7,6 @@ import {
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { depositsProvider } from '@vegaprotocol/deposits';
-import { aggregatedAccountsDataProvider } from '@vegaprotocol/accounts';
 import { ordersWithMarketProvider } from '@vegaprotocol/orders';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 
