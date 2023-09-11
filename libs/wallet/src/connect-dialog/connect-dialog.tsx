@@ -241,51 +241,49 @@ const ConnectorList = ({
           'Connect securely, deposit funds and approve or reject transactions with the Vega wallet'
         )}
       </p>
-      <div data-testid="connectors-list" className="flex flex-col mt-4 gap-4">
-        <div>
-          {isBrowserWalletInstalled() ? (
-            <ConnectionOptionWithDescription
-              type="injected"
-              text={extendedText}
-              onClick={() => onSelect('injected')}
-              title={
-                <>
-                  <span>{t('Vega Wallet')}</span>
-                  {'  '}
-                  <span className="text-xs">{t('full featured')}</span>
-                </>
-              }
-              description={t(
-                `Connect Vega Wallet extension
+      <div data-testid="connectors-list" className="flex flex-col mt-4 gap-2">
+        {isBrowserWalletInstalled() ? (
+          <ConnectionOptionWithDescription
+            type="injected"
+            text={extendedText}
+            onClick={() => onSelect('injected')}
+            title={
+              <>
+                <span>{t('Vega Wallet')}</span>
+                {'  '}
+                <span className="text-xs">{t('full featured')}</span>
+              </>
+            }
+            description={t(
+              `Connect Vega Wallet extension
+              for %s to access all features including key
+              management and detailed transaction views from your
+              browser.`,
+              [browserName]
+            )}
+          />
+        ) : (
+          <div>
+            <h1 className="mb-1 text-lg">
+              <span>{t('Vega Wallet')}</span>
+              {'  '}
+              <span className="text-xs"> {t('full featured')}</span>
+            </h1>
+            <p className="mb-2 text-sm">
+              {t(
+                `Install Vega Wallet extension
               for %s to access all features including key
               management and detailed transaction views from your
               browser.`,
                 [browserName]
               )}
+            </p>
+            <GetWalletButton
+              chromeExtensionUrl={links.chromeExtensionUrl}
+              mozillaExtensionUrl={links.mozillaExtensionUrl}
             />
-          ) : (
-            <div className="py-2">
-              <h1 className="px-2 text-lg">
-                <span>{t('Vega Wallet')}</span>
-                {'  '}
-                <span className="text-xs"> {t('full featured')}</span>
-              </h1>
-              <p className="p-2 text-sm">
-                {t(
-                  `Install Vega Wallet extension
-              for %s to access all features including key
-              management and detailed transaction views from your
-              browser.`,
-                  [browserName]
-                )}
-              </p>
-              <GetWalletButton
-                chromeExtensionUrl={links.chromeExtensionUrl}
-                mozillaExtensionUrl={links.mozillaExtensionUrl}
-              />
-            </div>
-          )}
-        </div>
+          </div>
+        )}
         {connectors['snap'] !== undefined ? (
           <div>
             {snapStatus === SnapStatus.INSTALLED ? (
@@ -335,7 +333,7 @@ const ConnectorList = ({
                   }}
                 />
                 {snapStatus === SnapStatus.NOT_SUPPORTED ? (
-                  <p className="pt-1 text-xs leading-tight text-default">
+                  <p className="pt-1 text-xs leading-tight text-muted">
                     {t('No MetaMask version that supports snaps detected.')}{' '}
                     {t('Learn more about')}{' '}
                     <ExternalLink href="https://metamask.io/snaps/">
@@ -348,7 +346,7 @@ const ConnectorList = ({
           </div>
         ) : null}
         <div>
-          <h1 className="my-1 text-md">{t('Advanced / Other options...')}</h1>
+          <h1 className="mb-1 text-md">{t('Advanced / Other options...')}</h1>
           <ConnectionOption
             type="view"
             text={t('View as party')}
@@ -520,7 +518,7 @@ const ConnectionOptionWithDescription = ({
   return (
     <div>
       <h1 className="text-md">{title}</h1>
-      <p className="pb-2 text-sm text-gray-60 text-muted">{description}</p>
+      <p className="mb-2 text-sm text-gray-60 text-muted">{description}</p>
       <ConnectionOption
         disabled={disabled}
         type={type}
@@ -579,10 +577,11 @@ const CustomUrlInput = ({
       <div className="flex justify-between mb-1.5">
         <p className="text-sm text-secondary">{t('Custom wallet location')}</p>
         <button
-          className="text-sm underline"
+          className="text-sm text-muted"
           onClick={() => setUrlInputExpanded(false)}
         >
-          <VegaIcon name={VegaIconNames.ARROW_LEFT} /> {t('Go back')}
+          <VegaIcon name={VegaIconNames.ARROW_LEFT} />{' '}
+          <span className="underline underline-offset-4">{t('Go back')}</span>
         </button>
       </div>
       <TradingFormGroup
@@ -612,18 +611,20 @@ const CustomUrlInput = ({
         onClick={() => onSelect('jsonRpc')}
       />
       {isDesktopWalletRunning !== null && (
-        <p className="pt-1 mb-2 text-sm leading-tight">
+        <div className="pt-1 mb-2 text-sm">
           {isDesktopWalletRunning ? (
             <button
-              className="underline text-default"
+              className="text-muted"
               onClick={() => setUrlInputExpanded(true)}
               disabled={Boolean(pubKey)}
             >
-              {t('Enter a custom wallet location')}{' '}
+              <span className="underline underline-offset-4">
+                {t('Enter a custom wallet location')}
+              </span>{' '}
               <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
             </button>
           ) : (
-            <>
+            <p className="leading-tight text-muted">
               <span className="text-xs">
                 {t(
                   'No running Desktop App/CLI detected. Open your app now to connect or enter a'
@@ -636,9 +637,9 @@ const CustomUrlInput = ({
               >
                 {t('custom wallet location')}
               </button>
-            </>
+            </p>
           )}
-        </p>
+        </div>
       )}
     </>
   );

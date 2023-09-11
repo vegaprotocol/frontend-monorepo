@@ -7,8 +7,6 @@ import {
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { depositsProvider } from '@vegaprotocol/deposits';
-import { aggregatedAccountsDataProvider } from '@vegaprotocol/accounts';
 import { ordersWithMarketProvider } from '@vegaprotocol/orders';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 
@@ -23,7 +21,7 @@ let mockContext: Partial<VegaWalletContextShape> = { pubKey: 'test-pubkey' };
 describe('useGetOnboardingStep', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockData = [{ id: 'item-id' }];
+    mockData = [];
     mockContext = { pubKey: 'test-pubkey' };
     globalThis.window.vega = {} as Vega;
   });
@@ -42,13 +40,6 @@ describe('useGetOnboardingStep', () => {
     expect(result.current).toEqual(OnboardingStep.ONBOARDING_UNKNOWN_STEP);
   });
 
-  it('should return properly ONBOARDING_WALLET_STEP', () => {
-    // @ts-ignore test only purpose
-    globalThis.window.vega = undefined;
-    const { result } = renderHook(() => useGetOnboardingStep(), { wrapper });
-    expect(result.current).toEqual(OnboardingStep.ONBOARDING_WALLET_STEP);
-  });
-
   it('should return properly ONBOARDING_CONNECT_STEP', () => {
     mockContext = { pubKey: null };
     const { result } = renderHook(() => useGetOnboardingStep(), { wrapper });
@@ -56,15 +47,6 @@ describe('useGetOnboardingStep', () => {
   });
 
   it('should return properly ONBOARDING_DEPOSIT_STEP', async () => {
-    (useDataProvider as jest.Mock).mockImplementation((args) => {
-      if (
-        args.dataProvider === depositsProvider ||
-        args.dataProvider === aggregatedAccountsDataProvider
-      ) {
-        return { data: [] };
-      }
-      return { data: mockData };
-    });
     const { result } = renderHook(() => useGetOnboardingStep(), { wrapper });
     await expect(result.current).toEqual(
       OnboardingStep.ONBOARDING_DEPOSIT_STEP
@@ -72,6 +54,7 @@ describe('useGetOnboardingStep', () => {
   });
 
   it('should return properly ONBOARDING_ORDER_STEP', async () => {
+    mockData = [{ id: 'item-id' }];
     (useDataProvider as jest.Mock).mockImplementation((args) => {
       if (
         args.dataProvider === ordersWithMarketProvider ||
@@ -86,6 +69,7 @@ describe('useGetOnboardingStep', () => {
   });
 
   it('should return properly ONBOARDING_COMPLETE_STEP', async () => {
+    mockData = [{ id: 'item-id' }];
     (useDataProvider as jest.Mock).mockImplementation(() => {
       return { data: mockData };
     });

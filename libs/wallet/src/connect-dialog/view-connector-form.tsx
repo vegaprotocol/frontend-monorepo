@@ -88,10 +88,13 @@ export function ViewConnectorForm({
           <div className="flex justify-end">
             <button
               onClick={reset}
-              className="p-2 text-sm underline"
+              className="p-2 text-sm"
               data-testid="back-button"
             >
-              <VegaIcon name={VegaIconNames.ARROW_LEFT} /> {t('Go back')}
+              <VegaIcon name={VegaIconNames.ARROW_LEFT} />{' '}
+              <span className="underline underline-offset-4">
+                {t('Go back')}
+              </span>
             </button>
           </div>
         )}
