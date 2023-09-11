@@ -48,10 +48,15 @@ When populating a deal ticket I...
 - **must** select a side/direction e.g. long/short (note: some implementations may do this with two different submit buttons long/short rather than a toggle) (<a name="7002-SORD-004" href="#7002-SORD-004">7002-SORD-004</a>)
 
 - **must** be able to select the [order type](../protocol/0014-ORDT-order_types.md) that I wish to submit (<a name="7002-SORD-005" href="#7002-SORD-005">7002-SORD-005</a>)
+
   - **must** see limit order (<a name="7002-SORD-006" href="#7002-SORD-006">7002-SORD-006</a>)
   - **must** see market order (<a name="7002-SORD-007" href="#7002-SORD-007">7002-SORD-007</a>)
   - **must** see stop limit order (<a name="7002-SORD-008" href="#7002-SORD-008">7002-SORD-008</a>)
   - **must** see stop market order (<a name="7002-SORD-009" href="#7002-SORD-009">7002-SORD-009</a>)
+
+- **must** see on an submit button: order type, size and price (<a name="7002-SORD-010" href="#7002-SORD-010">7002-SORD-010</a>)
+
+- **must** see warning abut a limit of 4 active stop orders per market (<a name="7002-SORD-011" href="#7002-SORD-011">7002-SORD-011</a>)
 
 ## Order size
 
