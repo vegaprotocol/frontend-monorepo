@@ -3,6 +3,7 @@ import { CandlestickChart } from 'pennant';
 import { VegaDataSource } from './data-source';
 import { useApolloClient } from '@apollo/client';
 import { useMemo } from 'react';
+import AutoSizer from 'react-virtualized-auto-sizer';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/i18n';
@@ -11,6 +12,8 @@ import { useCandlesChartSettings } from './use-candles-chart-settings';
 export type CandlesChartContainerProps = {
   marketId: string;
 };
+
+const CANDLES_TO_WIDTH_FACTOR = 0.15;
 
 export const CandlesChartContainer = ({
   marketId,
@@ -27,24 +30,33 @@ export const CandlesChartContainer = ({
   }, [client, marketId, pubKey]);
 
   return (
-    <CandlestickChart
-      dataSource={dataSource}
-      options={{
-        chartType,
-        overlays,
-        studies,
-        notEnoughDataText: (
-          <span className="text-xs text-center">{t('No data')}</span>
-        ),
-      }}
-      interval={interval}
-      theme={theme}
-      onOptionsChanged={(options) => {
-        merge({
-          overlays: options.overlays,
-          studies: options.studies,
-        });
-      }}
-    />
+    <AutoSizer>
+      {({ width, height }) => (
+        <div style={{ width, height }}>
+          <CandlestickChart
+            dataSource={dataSource}
+            options={{
+              chartType,
+              overlays,
+              studies,
+              notEnoughDataText: (
+                <span className="text-xs text-center">{t('No data')}</span>
+              ),
+              initialNumCandlesToDisplay: Math.floor(
+                width * CANDLES_TO_WIDTH_FACTOR
+              ),
+            }}
+            interval={interval}
+            theme={theme}
+            onOptionsChanged={(options) => {
+              merge({
+                overlays: options.overlays,
+                studies: options.studies,
+              });
+            }}
+          />
+        </div>
+      )}
+    </AutoSizer>
   );
 };

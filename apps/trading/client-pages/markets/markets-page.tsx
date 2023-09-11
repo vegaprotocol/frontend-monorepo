@@ -39,7 +39,11 @@ export const MarketsPage = () => {
             id="proposed-markets"
             name={t('Proposed markets')}
             menu={
-              <TradingAnchorButton size="extra-small" href={externalLink}>
+              <TradingAnchorButton
+                size="extra-small"
+                data-testid="propose-new-market"
+                href={externalLink}
+              >
                 {t('Propose a new market')}
               </TradingAnchorButton>
             }

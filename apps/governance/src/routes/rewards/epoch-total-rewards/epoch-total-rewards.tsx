@@ -6,6 +6,7 @@ import { useEpochAssetsRewardsQuery } from '../home/__generated__/Rewards';
 import { generateEpochTotalRewardsList } from './generate-epoch-total-rewards-list';
 import { EpochTotalRewardsTable } from './epoch-total-rewards-table';
 import { calculateEpochOffset } from '../../../lib/epoch-pagination';
+import { useNetworkParam } from '@vegaprotocol/network-parameters';
 
 const EPOCHS_PAGE_SIZE = 10;
 
@@ -18,6 +19,9 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
   const epochId = Number(currentEpoch.id) - 1;
   const totalPages = Math.ceil(epochId / EPOCHS_PAGE_SIZE);
   const { t } = useTranslation();
+  const { param: marketCreationQuantumMultiple } = useNetworkParam(
+    'rewards_marketCreationQuantumMultiple'
+  );
   const [page, setPage] = useState(1);
   const { data, loading, error, refetch } = useEpochAssetsRewardsQuery({
     notifyOnNetworkStatusChange: true,
@@ -70,7 +74,11 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
         >
           {Array.from(epochTotalRewardSummaries.values()).map(
             (epochTotalSummary, index) => (
-              <EpochTotalRewardsTable data={epochTotalSummary} key={index} />
+              <EpochTotalRewardsTable
+                marketCreationQuantumMultiple={marketCreationQuantumMultiple}
+                data={epochTotalSummary}
+                key={index}
+              />
             )
           )}
           <Pagination

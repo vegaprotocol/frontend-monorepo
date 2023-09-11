@@ -7,7 +7,7 @@ import type { StopOrder } from '../order-data-provider/stop-orders-data-provider
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { stopOrdersWithMarketProvider } from '../order-data-provider/stop-orders-data-provider';
 import { OrderViewDialog } from '../order-list/order-view-dialog';
-import type { Order } from '../order-data-provider';
+import type { Order, StopOrdersQueryVariables } from '../order-data-provider';
 
 export interface StopOrdersManagerProps {
   partyId: string;
@@ -26,7 +26,11 @@ export const StopOrdersManager = ({
 }: StopOrdersManagerProps) => {
   const create = useVegaTransactionStore((state) => state.create);
   const [viewOrder, setViewOrder] = useState<Order | null>(null);
-  const variables = { partyId };
+  const variables: StopOrdersQueryVariables = {
+    filter: {
+      parties: [partyId],
+    },
+  };
 
   const { data, error, reload } = useDataProvider({
     dataProvider: stopOrdersWithMarketProvider,

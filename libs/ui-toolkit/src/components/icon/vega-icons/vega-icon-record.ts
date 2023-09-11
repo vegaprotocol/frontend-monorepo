@@ -36,6 +36,7 @@ import { IconTrendDown } from './svg-icons/icon-trend-down';
 import { IconTrendUp } from './svg-icons/icon-trend-up';
 import { IconTwitter } from './svg-icons/icon-twitter';
 import { IconVote } from './svg-icons/icon-vote';
+import { IconWarning } from './svg-icons/icon-warning';
 import { IconWithdraw } from './svg-icons/icon-withdraw';
 
 export enum VegaIconNames {
@@ -78,6 +79,7 @@ export enum VegaIconNames {
   TWITTER = 'twitter',
   VOTE = 'vote',
   WITHDRAW = 'withdraw',
+  WARNING = 'warning',
 }
 
 export const VegaIconNameMap: Record<
@@ -123,4 +125,5 @@ export const VegaIconNameMap: Record<
   twitter: IconTwitter,
   vote: IconVote,
   withdraw: IconWithdraw,
+  warning: IconWarning,
 };

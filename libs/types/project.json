@@ -13,7 +13,6 @@
         "tsConfig": "libs/types/tsconfig.lib.json",
         "project": "libs/types/package.json",
         "entryFile": "libs/types/src/index.ts",
-        "external": ["react/jsx-runtime"],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "babel",
         "format": ["esm", "cjs"],
@@ -23,8 +22,7 @@
             "input": ".",
             "output": "."
           }
-        ],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        ]
       }
     },
     "lint": {

@@ -474,7 +474,7 @@
   "rewardsColLiquidityProvisionHeader": "LIQUIDITY PROVISION",
   "rewardsColLiquidityProvisionTooltip": "Liquidity provision rewards are distributed based on how much you have earned in liquidity fees, funded by a liquidity reward pool for that market",
   "rewardsColMarketCreationHeader": "MARKET CREATION",
-  "rewardsColMarketCreationTooltip": "Market creation rewards are paid out to the creator of any market that exceeds a set threshold of cumulative volume in a given epoch, currently [rewards.marketCreationQuantumMultiple]",
+  "rewardsColMarketCreationTooltip": "Market creation rewards are paid out to the creator of any market that exceeds a set threshold of cumulative volume in a given epoch, currently {{marketCreationQuantumMultiple}}",
   "rewardsColTotalHeader": "TOTAL",
   "ofTotalDistributed": "of total distributed",
   "checkBackSoon": "Check back soon",

@@ -3,7 +3,7 @@ import { TradingInputError } from './input-error';
 
 export default {
   component: TradingInputError,
-  title: 'InputError',
+  title: 'InputError trading',
 } as Meta;
 
 const Template: StoryFn = (args) => <TradingInputError {...args} />;

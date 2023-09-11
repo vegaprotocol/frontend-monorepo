@@ -55,7 +55,10 @@ export const orderByUpgradeBlockHeight = (
 ) =>
   orderBy(
     arr,
-    [(p) => p?.upgradeBlockHeight, (p) => p.vegaReleaseTag],
+    [
+      (p) => (p?.upgradeBlockHeight ? parseInt(p.upgradeBlockHeight, 10) : 0),
+      (p) => p.vegaReleaseTag,
+    ],
     ['desc', 'desc']
   );
 
@@ -224,10 +227,10 @@ export const ProposalsList = ({
                 sortedProtocolUpgradeProposals.closed.length > 0 &&
                 filterString.length < 1 && (
                   <div
-                    className="grid w-full justify-end xl:-mt-12 pb-6"
+                    className="flex justify-end xl:-mt-12 pb-6"
                     data-testid="toggle-closed-proposals"
                   >
-                    <div className="w-[440px]">
+                    <div className="w-full max-w-[420px]">
                       <Toggle
                         name="closed-proposals-toggle"
                         toggles={[

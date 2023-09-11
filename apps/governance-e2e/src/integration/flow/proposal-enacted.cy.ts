@@ -22,12 +22,10 @@ const proposalListItem = '[data-testid="proposals-list-item"]';
 const closedProposals = 'closed-proposals';
 const proposalStatus = 'proposal-status';
 const viewProposalButton = 'view-proposal-btn';
-const votesTable = 'votes-table';
+const votesTable = 'user-vote';
 const openProposals = 'open-proposals';
-const proposalVoteProgressForPercentage =
-  'vote-progress-indicator-percentage-for';
-const majorityVoteReached = 'majority-reached';
-const minParticipationReached = 'participation-reached';
+const majorityVoteReached = 'token-majority-met';
+const minParticipationReached = 'token-participation-met';
 const proposalTimeout = { timeout: 8000 };
 
 context(
@@ -70,7 +68,6 @@ context(
       cy.getByTestId('proposal-type').should('have.text', 'New market');
       cy.getByTestId(proposalStatus).should('have.text', 'Enacted');
       cy.getByTestId(votesTable).within(() => {
-        cy.contains('Vote passed.').should('be.visible');
         cy.contains('Voting has ended.').should('be.visible');
       });
     });
@@ -92,7 +89,7 @@ context(
             // 3001-VOTE-019 time to vote is highlighted red
             cy.getByTestId('vote-details')
               .find('span')
-              .should('have.class', 'text-vega-pink');
+              .should('have.class', 'text-vega-orange');
             cy.getByTestId(viewProposalButton).click();
           });
       });
@@ -109,12 +106,9 @@ context(
           );
         });
       cy.getByTestId(votesTable).within(() => {
-        cy.contains('Vote passed.').should('be.visible');
         cy.contains('Voting has ended.').should('be.visible');
       });
-      cy.getByTestId(proposalVoteProgressForPercentage)
-        .contains('100.00%')
-        .and('be.visible');
+      cy.getByTestId('votes-for-percentage').should('have.text', '100%');
       navigateTo(navigation.proposals);
       cy.contains(proposalTitle)
         .parentsUntil(proposalListItem)
