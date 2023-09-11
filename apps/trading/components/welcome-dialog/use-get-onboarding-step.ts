@@ -1,4 +1,4 @@
-import { isBrowserWalletInstalled, useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import { depositsProvider } from '@vegaprotocol/deposits';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '@vegaprotocol/orders';
@@ -66,9 +66,6 @@ export const useGetOnboardingStep = () => {
   let step = OnboardingStep.ONBOARDING_UNKNOWN_STEP;
   if (isLoading) {
     return step;
-  }
-  if (!isBrowserWalletInstalled()) {
-    step = OnboardingStep.ONBOARDING_WALLET_STEP;
   }
   if (!pubKey) {
     step = OnboardingStep.ONBOARDING_CONNECT_STEP;
