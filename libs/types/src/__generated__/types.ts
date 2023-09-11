@@ -351,6 +351,18 @@ export enum AuctionTrigger {
   AUCTION_TRIGGER_UNSPECIFIED = 'AUCTION_TRIGGER_UNSPECIFIED'
 }
 
+export type BenefitTier = {
+  __typename?: 'BenefitTier';
+  /** The minimum number of epochs the party needs to be in the referral set to be eligible for the benefit */
+  minimumEpochs: Scalars['Int'];
+  /** The minimum running notional for the given benefit tier */
+  minimumRunningNotionalTakerVolume: Scalars['String'];
+  /** The proportion of the referee's taker fees to be discounted */
+  referralDiscountFactor: Scalars['String'];
+  /** The proportion of the referee's taker fees to be rewarded to the referrer */
+  referralRewardFactor: Scalars['String'];
+};
+
 /** A Vega builtin asset, mostly for testing purpose */
 export type BuiltinAsset = {
   __typename?: 'BuiltinAsset';
@@ -3059,6 +3071,8 @@ export type Party = {
   __typename?: 'Party';
   /** Collateral accounts relating to a party */
   accountsConnection?: Maybe<AccountsConnection>;
+  /** The activity streak */
+  activityStreak?: Maybe<PartyActivityStreak>;
   delegationsConnection?: Maybe<DelegationsConnection>;
   /** The list of all deposits for a party by the party */
   depositsConnection?: Maybe<DepositsConnection>;
@@ -3100,6 +3114,12 @@ export type PartyaccountsConnectionArgs = {
   marketId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
   type?: InputMaybe<AccountType>;
+};
+
+
+/** Represents a party on Vega, could be an ethereum wallet address in the future */
+export type PartyactivityStreakArgs = {
+  epoch?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -3201,6 +3221,27 @@ export type PartyvotesConnectionArgs = {
 export type PartywithdrawalsConnectionArgs = {
   dateRange?: InputMaybe<DateRange>;
   pagination?: InputMaybe<Pagination>;
+};
+
+/** The activity streak for a party. */
+export type PartyActivityStreak = {
+  __typename?: 'PartyActivityStreak';
+  /** The number of epochs the party has been active in a row */
+  activeFor: Scalars['Int'];
+  /** The epoch for which this information is relevant */
+  epoch: Scalars['Int'];
+  /** The number of epochs the party has been inactive in a row */
+  inactiveFor: Scalars['Int'];
+  /** If the party is considered as active, and thus eligible for rewards multipliers */
+  isActive: Scalars['Boolean'];
+  /** The open volume for the party in the given epoch */
+  openVolume: Scalars['String'];
+  /** The rewards distribution multiplier for the party */
+  rewardDistributionMultiplier: Scalars['String'];
+  /** The rewards vesting multiplier for the party */
+  rewardVestingMultiplier: Scalars['String'];
+  /** The traded volume for that party in the given epoch */
+  tradedVolume: Scalars['String'];
 };
 
 /** Connection type for retrieving cursor-based paginated party information */
@@ -3555,7 +3596,7 @@ export type Proposal = {
   votes: ProposalVotes;
 };
 
-export type ProposalChange = CancelTransfer | NewAsset | NewFreeform | NewMarket | NewSpotMarket | NewTransfer | UpdateAsset | UpdateMarket | UpdateMarketState | UpdateNetworkParameter | UpdateSpotMarket;
+export type ProposalChange = CancelTransfer | NewAsset | NewFreeform | NewMarket | NewSpotMarket | NewTransfer | UpdateAsset | UpdateMarket | UpdateMarketState | UpdateNetworkParameter | UpdateReferralProgram | UpdateSpotMarket | UpdateVolumeDiscountProgram;
 
 export type ProposalDetail = {
   __typename?: 'ProposalDetail';
@@ -4709,6 +4750,14 @@ export type StakingSummarylinkingsArgs = {
   pagination?: InputMaybe<Pagination>;
 };
 
+export type StakingTier = {
+  __typename?: 'StakingTier';
+  /** Required number of governance tokens ($VEGA) a referrer must have staked to receive the multiplier */
+  minimumStakedTokens: Scalars['String'];
+  /** Multiplier applied to the referral reward factor when calculating referral rewards due to the referrer */
+  referralRewardMultiplier: Scalars['String'];
+};
+
 /** Statistics about the node */
 export type Statistics = {
   __typename?: 'Statistics';
@@ -5537,6 +5586,22 @@ export type UpdatePerpetualProduct = {
 
 export type UpdateProductConfiguration = UpdateFutureProduct | UpdatePerpetualProduct;
 
+export type UpdateReferralProgram = {
+  __typename?: 'UpdateReferralProgram';
+  /** Benefit tiers for the program */
+  benefitTiers: Array<BenefitTier>;
+  /** The end time of the program */
+  endOfProgramTimestamp: Scalars['Timestamp'];
+  /** ID of the proposal that created the referral program */
+  id: Scalars['ID'];
+  /** Determines the level of benefit a party can expect based on their staking */
+  stakingTiers: Array<StakingTier>;
+  /** Current version of the referral program */
+  version: Scalars['Int'];
+  /** The window legnth to consider for the referral program */
+  windowLength: Scalars['Int'];
+};
+
 /** Update an existing spot market on Vega */
 export type UpdateSpotMarket = {
   __typename?: 'UpdateSpotMarket';
@@ -5560,6 +5625,20 @@ export type UpdateSpotMarketConfiguration = {
   targetStakeParameters: TargetStakeParameters;
 };
 
+export type UpdateVolumeDiscountProgram = {
+  __typename?: 'UpdateVolumeDiscountProgram';
+  /** The benefit tiers for the program */
+  benefitTiers: Array<VolumeBenefitTier>;
+  /** The end time of the program */
+  endOfProgramTimestamp: Scalars['Timestamp'];
+  /** ID of the proposal that created the discount program */
+  id: Scalars['ID'];
+  /** The current version of the volume discount program */
+  version: Scalars['Int'];
+  /** The window legnth to consider for the volume discount program */
+  windowLength: Scalars['Int'];
+};
+
 /** Status of a validator node */
 export enum ValidatorStatus {
   /** The node is a candidate to become a Tendermint validator if a slot is made available */
@@ -5569,6 +5648,14 @@ export enum ValidatorStatus {
   /** The node is taking part in Tendermint consensus */
   VALIDATOR_NODE_STATUS_TENDERMINT = 'VALIDATOR_NODE_STATUS_TENDERMINT'
 }
+
+export type VolumeBenefitTier = {
+  __typename?: 'VolumeBenefitTier';
+  /** The minimum running notional for the given benefit tier */
+  minimumRunningNotionalTakerVolume: Scalars['String'];
+  /** Discount given to those in this benefit tier */
+  volumeDiscountFactor: Scalars['String'];
+};
 
 export type Vote = {
   __typename?: 'Vote';
