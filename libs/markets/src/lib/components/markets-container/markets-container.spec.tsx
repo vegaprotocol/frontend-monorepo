@@ -83,8 +83,9 @@ describe('MarketsContainer', () => {
     await userEvent.click(
       screen.getByRole('button', {
         name: (_name, element) =>
-          (element.parentNode as Element)?.getAttribute('id') ===
-          'cell-market-actions-9',
+          (element.parentNode as Element)
+            ?.getAttribute('id')
+            ?.startsWith('cell-market-actions-') || false,
       })
     );
 
@@ -124,36 +125,6 @@ describe('MarketsContainer', () => {
         })
       ).toBeInTheDocument();
     }
-  });
-
-  it('SuccessorMarketRenderer should be rendered', async () => {
-    const successorMarketName = 'Successor Market Name';
-    const spySuccessorMarketRenderer = jest
-      .fn()
-      .mockReturnValue(successorMarketName);
-
-    render(
-      <MockedProvider>
-        <MarketsContainer
-          onSelect={spyOnSelect}
-          SuccessorMarketRenderer={spySuccessorMarketRenderer}
-        />
-      </MockedProvider>
-    );
-
-    expect(spySuccessorMarketRenderer).toHaveBeenCalled();
-    expect(
-      screen.getByRole('columnheader', {
-        name: (_name, element) =>
-          element.getAttribute('col-id') === 'successorMarketID',
-      })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('presentation', {
-        name: (_name, element) =>
-          element.getAttribute('id') === 'cell-successorMarketID-14',
-      })
-    ).toHaveTextContent(successorMarketName);
   });
 
   it('feature flag should hide successorMarketID column', async () => {
