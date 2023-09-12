@@ -5,36 +5,45 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
+type StudySizes = { [S in Study]?: number };
+
 interface StoredSettings {
   interval: Interval;
   type: ChartType;
   overlays: Overlay[];
   studies: Study[];
+  studySizes: StudySizes;
 }
+
+export const STUDY_SIZE = 100;
+const STUDY_ORDER: Study[] = [
+  Study.FORCE_INDEX,
+  Study.RELATIVE_STRENGTH_INDEX,
+  Study.ELDAR_RAY,
+  Study.MACD,
+  Study.VOLUME,
+];
 
 const DEFAULT_CHART_SETTINGS = {
   interval: Interval.I15M,
   type: ChartType.CANDLE,
   overlays: [Overlay.MOVING_AVERAGE],
   studies: [Study.MACD, Study.VOLUME],
+  studySizes: {},
 };
 
 export const useCandlesChartSettingsStore = create<
   StoredSettings & {
-    merge: (settings: Partial<StoredSettings>) => void;
     setType: (type: ChartType) => void;
     setInterval: (interval: Interval) => void;
-    setOverlays: (overlays: Overlay[]) => void;
-    setStudies: (studies: Study[]) => void;
+    setOverlays: (overlays?: Overlay[]) => void;
+    setStudies: (studies?: Study[]) => void;
+    setStudySizes: (sizes: number[]) => void;
   }
 >()(
   persist(
     immer((set) => ({
       ...DEFAULT_CHART_SETTINGS,
-      merge: (settings: Partial<StoredSettings>) =>
-        set((state) => {
-          Object.assign(state, settings);
-        }),
       setType: (type) =>
         set((state) => {
           state.type = type;
@@ -43,14 +52,35 @@ export const useCandlesChartSettingsStore = create<
         set((state) => {
           state.interval = interval;
         }),
-      setOverlays: (overlays) =>
+      setOverlays: (overlays) => {
+        if (!overlays) return;
+
         set((state) => {
           state.overlays = overlays;
-        }),
-      setStudies: (studies) =>
+        });
+      },
+      setStudies: (studies) => {
+        if (!studies) return;
+
+        // Make sure studies are always returned in the same order
+        studies.sort((a, b) => {
+          return STUDY_ORDER.indexOf(a) - STUDY_ORDER.indexOf(b);
+        });
+
         set((state) => {
           state.studies = studies;
-        }),
+        });
+      },
+      setStudySizes: (sizes) => {
+        set((state) => {
+          // for every study find the corresonding size and update
+          // the size record for that study
+          state.studies.forEach((s, i) => {
+            const size = sizes[i];
+            state.studySizes[s] = size;
+          });
+        });
+      },
     })),
     {
       name: 'vega_candles_chart_store',
@@ -85,15 +115,22 @@ export const useCandlesChartSettings = () => {
     [Study.VOLUME]
   );
 
+  // find the study size
+  const studySizes = studies.map((s) => {
+    const size = settings.studySizes[s] || STUDY_SIZE;
+    return size;
+  });
+
   return {
     interval,
     chartType,
     overlays,
     studies,
+    studySizes,
     setInterval: settings.setInterval,
     setType: settings.setType,
     setStudies: settings.setStudies,
     setOverlays: settings.setOverlays,
-    merge: settings.merge,
+    setStudySizes: settings.setStudySizes,
   };
 };
