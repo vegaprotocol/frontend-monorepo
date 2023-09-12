@@ -259,8 +259,8 @@ export const DealTicketMarginDetails = ({
             <AccordionPrimitive.Trigger
               data-testid="accordion-toggle"
               className={classNames(
-                'w-full py-2',
-                'flex items-center gap-2 border-b border-vega-light-200 dark:border-vega-dark-200 text-xs',
+                'w-full pt-2',
+                'flex items-center gap-2 text-xs',
                 'group'
               )}
             >
@@ -277,13 +277,13 @@ export const DealTicketMarginDetails = ({
                   <AccordionChevron size={10} />
                 </div>
                 <Tooltip
-                  description={`${
+                  description={
                     formatRange(
                       marginRequiredBestCase,
                       marginRequiredWorstCase,
                       assetDecimals
                     ) ?? '-'
-                  } ${assetSymbol || ''}`}
+                  }
                   noUnderline
                 >
                   <div className="font-mono text-right">
@@ -292,7 +292,8 @@ export const DealTicketMarginDetails = ({
                       marginRequiredWorstCase,
                       assetDecimals,
                       quantum
-                    )}
+                    )}{' '}
+                    {assetSymbol || ''}
                   </div>
                 </Tooltip>
               </div>
