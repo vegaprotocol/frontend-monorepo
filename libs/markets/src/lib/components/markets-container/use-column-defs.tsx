@@ -35,10 +35,12 @@ export const useColumnDefs = ({ onMarketClick }: Props) => {
           field: 'tradableInstrument.instrument.code',
           cellRenderer: 'MarketName',
           cellRendererParams: { onMarketClick },
+          flex: 2,
         },
         {
           headerName: t('Description'),
           field: 'tradableInstrument.instrument.name',
+          flex: 2,
         },
         {
           headerName: t('Trading mode'),
