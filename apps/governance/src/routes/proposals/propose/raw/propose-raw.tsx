@@ -1,12 +1,17 @@
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useEnvironment, DocsLinks } from '@vegaprotocol/environment';
-import { Heading } from '../../../../components/heading';
+import {
+  useEnvironment,
+  DocsLinks,
+  ExternalLinks,
+} from '@vegaprotocol/environment';
+import { Heading, SubHeading } from '../../../../components/heading';
 import {
   AsyncRenderer,
   ExternalLink,
   FormGroup,
   InputError,
+  RoundedWrapper,
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
 import { validateJson } from '@vegaprotocol/utils';
@@ -79,15 +84,6 @@ export const ProposeRaw = () => {
             spamProtectionMin={params.spam_protection_proposal_min_tokens}
           />
 
-          {DocsLinks && (
-            <p className="text-sm" data-testid="proposal-docs-link">
-              <span className="mr-1">{t('ProposalTermsText')}</span>
-              <ExternalLink href={DocsLinks.PROPOSALS_GUIDE} target="_blank">
-                {DocsLinks.PROPOSALS_GUIDE}
-              </ExternalLink>
-            </p>
-          )}
-
           {VEGA_EXPLORER_URL && (
             <p className="text-sm">
               {t('MoreProposalsInfo')}{' '}
@@ -98,12 +94,44 @@ export const ProposeRaw = () => {
             </p>
           )}
 
+          <section data-testid="how-to" className="my-10">
+            <RoundedWrapper paddingBottom={true}>
+              <SubHeading title={t('HowToPropose')} />
+              <ul>
+                <li className="p-1">
+                  {t('HowToProposeRawStep1')}{' '}
+                  {ExternalLinks && (
+                    <span data-testid="proposal-docs-link">
+                      <ExternalLink
+                        href={ExternalLinks.PROPOSALS_FORUM}
+                        target="_blank"
+                      >
+                        {ExternalLinks.PROPOSALS_FORUM}
+                      </ExternalLink>
+                    </span>
+                  )}
+                </li>
+                <li className="p-1">
+                  {t('HowToProposeRawStep2')}{' '}
+                  {DocsLinks && (
+                    <span data-testid="proposal-docs-link">
+                      <ExternalLink
+                        href={DocsLinks.PROPOSALS_GUIDE}
+                        target="_blank"
+                      >
+                        {DocsLinks.PROPOSALS_GUIDE}
+                      </ExternalLink>
+                    </span>
+                  )}
+                </li>
+                <li className="p-1">{t('HowToProposeRawStep3')}</li>
+              </ul>
+            </RoundedWrapper>
+          </section>
+
           <div data-testid="raw-proposal-form">
             <form onSubmit={handleSubmit(onSubmit)}>
-              <FormGroup
-                label="Make a proposal by submitting JSON"
-                labelFor="proposal-data"
-              >
+              <FormGroup label="Valid JSON required" labelFor="proposal-data">
                 <TextArea
                   id="proposal-data"
                   className="min-h-[200px]"
