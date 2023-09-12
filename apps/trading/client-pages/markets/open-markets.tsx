@@ -1,20 +1,25 @@
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { MarketMaybeWithData } from '@vegaprotocol/markets';
-import { marketsWithDataProvider } from '@vegaprotocol/markets';
+import { marketListProvider } from '@vegaprotocol/markets';
 import { useEffect } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import type { CellClickedEvent } from 'ag-grid-community';
 import MarketListTable from './market-list-table';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
+import { Interval } from '@vegaprotocol/types';
+import { useYesterday } from '@vegaprotocol/react-helpers';
 
 const POLLING_TIME = 2000;
 
 export const OpenMarkets = () => {
   const handleOnSelect = useMarketClickHandler();
-
+  const yesterday = useYesterday();
   const { data, error, reload } = useDataProvider({
-    dataProvider: marketsWithDataProvider,
-    variables: undefined,
+    dataProvider: marketListProvider,
+    variables: {
+      since: new Date(yesterday).toISOString(),
+      interval: Interval.INTERVAL_I1H,
+    },
   });
 
   useEffect(() => {
