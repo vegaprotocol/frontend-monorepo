@@ -4,13 +4,10 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import {
-  AgGridLazy as AgGrid,
-  COL_DEFS,
-  MarketNameCell,
-} from '@vegaprotocol/datagrid';
+import { AgGridLazy as AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/i18n';
+import type { ProductType } from '@vegaprotocol/types';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
 import {
   addDecimalsFormatNumber,
@@ -20,17 +17,13 @@ import type {
   DataSourceFilterFragment,
   MarketMaybeWithData,
 } from '@vegaprotocol/markets';
-import {
-  MarketActionsDropdown,
-  closedMarketsWithDataProvider,
-} from '@vegaprotocol/markets';
+import { closedMarketsWithDataProvider } from '@vegaprotocol/markets';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import type { ColDef } from 'ag-grid-community';
-import { FLAGS } from '@vegaprotocol/environment';
 import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { SuccessorMarketRenderer } from './successor-market-cell';
+import { MarketActionsDropdown } from './market-table-actions';
+import { MarketCodeCell } from './market-code-cell';
 
 type SettlementAsset =
   MarketMaybeWithData['tradableInstrument']['instrument']['product']['settlementAsset'];
@@ -51,7 +44,9 @@ interface Row {
   setlementDataSourceFilter: DataSourceFilterFragment | undefined;
   tradingTerminationOracleId: string;
   settlementAsset: SettlementAsset;
-  productType: string;
+  productType: ProductType | undefined;
+  successorMarketID: string | null | undefined;
+  parentMarketID: string | null | undefined;
 }
 
 export const Closed = () => {
@@ -95,16 +90,19 @@ export const Closed = () => {
       tradingTerminationOracleId:
         instrument.product.dataSourceSpecForTradingTermination.id,
       settlementAsset: instrument.product.settlementAsset,
-      productType: instrument.product.__typename || '',
+      productType: instrument.product.__typename,
+      successorMarketID: market.successorMarketID,
+      parentMarketID: market.parentMarketID,
     };
 
     return row;
   });
-  return (
-    <div className="h-full relative">
-      <ClosedMarketsDataGrid rowData={rowData} error={error} />
-    </div>
-  );
+
+  return <ClosedMarketsDataGrid rowData={rowData} error={error} />;
+};
+
+const components = {
+  MarketCodeCell,
 };
 
 const ClosedMarketsDataGrid = ({
@@ -117,15 +115,11 @@ const ClosedMarketsDataGrid = ({
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
 
   const colDefs = useMemo(() => {
-    const cols: ColDef[] = compact([
+    return [
       {
         headerName: t('Market'),
         field: 'code',
-        cellRenderer: 'MarketNameCell',
-      },
-      {
-        headerName: t('Description'),
-        field: 'name',
+        cellRenderer: 'MarketCodeCell',
       },
       {
         headerName: t('Status'),
@@ -175,12 +169,6 @@ const ClosedMarketsDataGrid = ({
             return false;
           },
         },
-      },
-      FLAGS.SUCCESSOR_MARKETS && {
-        headerName: t('Successor market'),
-        field: 'id',
-        colId: 'successorMarket',
-        cellRenderer: 'SuccessorMarketRenderer',
       },
       {
         headerName: t('Best bid'),
@@ -263,12 +251,13 @@ const ClosedMarketsDataGrid = ({
             <MarketActionsDropdown
               marketId={data.id}
               assetId={data.settlementAsset.id}
+              successorMarketID={data.successorMarketID}
+              parentMarketID={data.parentMarketID}
             />
           );
         },
       },
-    ]);
-    return cols;
+    ];
   }, [openAssetDialog]);
 
   return (
@@ -276,8 +265,8 @@ const ClosedMarketsDataGrid = ({
       rowData={rowData}
       columnDefs={colDefs}
       getRowId={({ data }) => data.id}
-      components={{ SuccessorMarketRenderer, MarketNameCell }}
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
+      components={components}
     />
   );
 };

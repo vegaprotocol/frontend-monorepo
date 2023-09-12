@@ -43,6 +43,7 @@ export const getVerifiedStatusIcon = (provider: Provider) => {
   const lastVerified = provider.oracle.last_verified
     ? new Date(provider.oracle.last_verified)
     : new Date(provider.oracle.first_verified);
+
   return {
     ...getIconIntent(),
     message: t(
@@ -112,13 +113,13 @@ export const OracleBasicProfile = ({
           <Icon size={3} name={icon as IconName} />
         </span>
       </span>
-      <p className="text-sm dark:text-vega-light-300 text-vega-dark-300 mb-2">
+      <p className="mb-2 text-sm dark:text-vega-light-300 text-vega-dark-300">
         {message}
       </p>
       {oracleMarkets && (
         <p
           data-testid="signed-proofs"
-          className="text-sm dark:text-vega-light-300 text-vega-dark-300 mb-2"
+          className="mb-2 text-sm dark:text-vega-light-300 text-vega-dark-300"
         >
           {t('Involved in %s %s', [
             oracleMarkets.length.toString(),
@@ -130,9 +131,9 @@ export const OracleBasicProfile = ({
         <div className="flex flex-row gap-3">
           {links.map((link) => (
             <ExternalLink key={link.url} href={link.url} data-testid={link.url}>
-              <span className="flex gap-1 items-center">
+              <span className="flex items-center gap-1">
                 <VegaIcon name={getLinkIcon(link.type)} />
-                <span className="capitalize underline">{link.type}</span>
+                <span className="underline capitalize">{link.type}</span>
                 <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
               </span>
             </ExternalLink>

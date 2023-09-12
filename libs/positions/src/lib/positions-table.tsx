@@ -15,6 +15,7 @@ import {
   MarketNameCell,
   ProgressBarCell,
   MarketProductPill,
+  StackedCell,
 } from '@vegaprotocol/datagrid';
 import {
   ButtonLink,
@@ -40,7 +41,6 @@ import {
 import { DocsLinks } from '@vegaprotocol/environment';
 import { PositionActionsDropdown } from './position-actions-dropdown';
 import { LiquidationPrice } from './liquidation-price';
-import { StackedCell } from './stacked-cell';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
