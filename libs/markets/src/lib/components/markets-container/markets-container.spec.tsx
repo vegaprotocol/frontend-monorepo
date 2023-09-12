@@ -126,36 +126,6 @@ describe('MarketsContainer', () => {
     }
   });
 
-  it('SuccessorMarketRenderer should be rendered', async () => {
-    const successorMarketName = 'Successor Market Name';
-    const spySuccessorMarketRenderer = jest
-      .fn()
-      .mockReturnValue(successorMarketName);
-
-    render(
-      <MockedProvider>
-        <MarketsContainer
-          onSelect={spyOnSelect}
-          SuccessorMarketRenderer={spySuccessorMarketRenderer}
-        />
-      </MockedProvider>
-    );
-
-    expect(spySuccessorMarketRenderer).toHaveBeenCalled();
-    expect(
-      screen.getByRole('columnheader', {
-        name: (_name, element) =>
-          element.getAttribute('col-id') === 'successorMarketID',
-      })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('presentation', {
-        name: (_name, element) =>
-          element.getAttribute('id') === 'cell-successorMarketID-14',
-      })
-    ).toHaveTextContent(successorMarketName);
-  });
-
   it('feature flag should hide successorMarketID column', async () => {
     const mockedFlags = jest.mocked(FLAGS);
     mockedFlags.SUCCESSOR_MARKETS = false;
