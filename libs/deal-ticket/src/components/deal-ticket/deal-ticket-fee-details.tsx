@@ -22,11 +22,7 @@ import {
 } from '../../constants';
 import { useEstimateFees } from '../../hooks';
 import { KeyValue } from './key-value';
-import {
-  Accordion,
-  AccordionItem,
-  TOOLTIP_TRIGGER_CLASS_NAME,
-} from '@vegaprotocol/ui-toolkit';
+import { Accordion, AccordionItem } from '@vegaprotocol/ui-toolkit';
 
 const emptyValue = '-';
 
@@ -255,11 +251,7 @@ export const DealTicketMarginDetails = ({
           title={
             <KeyValue
               id="margin-required"
-              label={
-                <span className={TOOLTIP_TRIGGER_CLASS_NAME}>
-                  {t('Margin required')}
-                </span>
-              }
+              label={t('Margin required')}
               value={formatRange(
                 marginRequiredBestCase,
                 marginRequiredWorstCase,
