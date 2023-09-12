@@ -74,7 +74,7 @@ export const MarketPage = () => {
     }
 
     // make sidebar open on deal ticket by default
-    if (init && view === null) {
+    if (view === null) {
       setView({ type: ViewType.Order });
     }
   }, [update, lastMarketId, data?.id, setView, init, view]);
