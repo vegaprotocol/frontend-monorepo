@@ -54,7 +54,7 @@ export const TokenDetails = ({
     config.token_vesting_contract?.address || ENV.addresses.tokenVestingAddress;
 
   return (
-    <div className="token-details">
+    <div className="token-details break-all">
       <RoundedWrapper>
         <KeyValueTable>
           <KeyValueTableRow>

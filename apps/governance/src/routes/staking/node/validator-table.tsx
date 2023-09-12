@@ -106,7 +106,7 @@ export const ValidatorTable = ({
 
   return (
     <>
-      <p className="mb-12">
+      <p className="mb-12 break-all">
         {t('validatorFormIntro')}{' '}
         {DocsLinks && (
           <ExternalLink
