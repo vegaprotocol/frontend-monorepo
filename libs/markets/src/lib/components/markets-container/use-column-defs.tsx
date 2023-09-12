@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, ValueFormatterParams } from 'ag-grid-community';
 import compact from 'lodash/compact';
 import { t } from '@vegaprotocol/i18n';
 import type {
@@ -7,14 +7,17 @@ import type {
   VegaValueFormatterParams,
   VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
-import { COL_DEFS, SetFilter } from '@vegaprotocol/datagrid';
+import { COL_DEFS, FlashCell, SetFilter } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
-import { ButtonLink } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import { FLAGS } from '@vegaprotocol/environment';
-import type { MarketMaybeWithData } from '../../markets-provider';
+import type {
+  MarketMaybeWithData,
+  MarketMaybeWithDataAndCandles,
+} from '../../markets-provider';
 import { MarketActionsDropdown } from './market-table-actions';
+import { calcCandleVolume } from '../../market-utils';
 
 interface Props {
   onMarketClick: (marketId: string, metaKey?: boolean) => void;
@@ -40,18 +43,32 @@ export const useColumnDefs = ({ onMarketClick }: Props) => {
         {
           headerName: t('Trading mode'),
           field: 'tradingMode',
-          valueFormatter: ({
+          cellRenderer: ({
             data,
-          }: VegaValueFormatterParams<MarketMaybeWithData, 'data'>) => {
+          }: VegaICellRendererParams<MarketMaybeWithData, 'data'>) => {
             if (!data?.data) return '-';
             const { trigger, marketTradingMode } = data.data;
-            return marketTradingMode ===
-              MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+
+            const withTriggerInfo =
+              marketTradingMode ===
+                MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
               trigger &&
-              trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-              ? `${Schema.MarketTradingModeMapping[marketTradingMode]}
-            - ${Schema.AuctionTriggerMapping[trigger]}`
-              : Schema.MarketTradingModeMapping[marketTradingMode];
+              trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED;
+
+            if (withTriggerInfo) {
+              return (
+                <Tooltip
+                  description={`${Schema.MarketTradingModeMapping[marketTradingMode]}
+                - ${Schema.AuctionTriggerMapping[trigger]}`}
+                >
+                  <span>
+                    {Schema.MarketTradingModeMapping[marketTradingMode]}
+                  </span>
+                </Tooltip>
+              );
+            }
+
+            return Schema.MarketTradingModeMapping[marketTradingMode];
           },
           filter: SetFilter,
           filterParams: {
@@ -70,69 +87,6 @@ export const useColumnDefs = ({ onMarketClick }: Props) => {
           filterParams: {
             set: Schema.MarketStateMapping,
           },
-        },
-        FLAGS.SUCCESSOR_MARKETS && {
-          headerName: t('Successor market'),
-          field: 'successorMarketID',
-          cellRenderer: 'SuccessorMarketRenderer',
-        },
-        {
-          headerName: t('Best bid'),
-          field: 'data.bestBidPrice',
-          type: 'rightAligned',
-          cellRenderer: 'PriceFlashCell',
-          filter: 'agNumberColumnFilter',
-          valueGetter: ({
-            data,
-          }: VegaValueGetterParams<MarketMaybeWithData>) => {
-            return data?.data?.bestBidPrice === undefined
-              ? undefined
-              : toBigNum(
-                  data?.data?.bestBidPrice,
-                  data.decimalPlaces
-                ).toNumber();
-          },
-          valueFormatter: ({
-            data,
-          }: VegaValueFormatterParams<
-            MarketMaybeWithData,
-            'data.bestBidPrice'
-          >) =>
-            data?.data?.bestBidPrice === undefined
-              ? '-'
-              : addDecimalsFormatNumber(
-                  data.data.bestBidPrice,
-                  data.decimalPlaces
-                ),
-        },
-        {
-          headerName: t('Best offer'),
-          field: 'data.bestOfferPrice',
-          type: 'rightAligned',
-          cellRenderer: 'PriceFlashCell',
-          filter: 'agNumberColumnFilter',
-          valueGetter: ({
-            data,
-          }: VegaValueGetterParams<MarketMaybeWithData>) => {
-            return data?.data?.bestOfferPrice === undefined
-              ? undefined
-              : toBigNum(
-                  data?.data?.bestOfferPrice,
-                  data.decimalPlaces
-                ).toNumber();
-          },
-          valueFormatter: ({
-            data,
-          }: VegaValueFormatterParams<
-            MarketMaybeWithData,
-            'data.bestOfferPrice'
-          >) =>
-            data?.data?.bestOfferPrice === undefined
-              ? '-'
-              : addDecimalsFormatNumber(
-                  data.data.bestOfferPrice,
-                  data.decimalPlaces
-                ),
         },
         {
           headerName: t('Mark price'),
@@ -158,6 +112,33 @@ export const useColumnDefs = ({ onMarketClick }: Props) => {
                 ),
         },
         {
+          headerName: t('24h volume'),
+          type: 'rightAligned',
+          field: 'data.candles',
+          valueGetter: ({
+            data,
+          }: VegaValueGetterParams<MarketMaybeWithDataAndCandles>) => {
+            if (!data) return 0;
+            const candles = data?.candles;
+            const vol = candles ? calcCandleVolume(candles) : '0';
+            return Number(vol);
+          },
+          valueFormatter: ({
+            data,
+          }: ValueFormatterParams<
+            MarketMaybeWithDataAndCandles,
+            'candles'
+          >) => {
+            const candles = data?.candles;
+            const vol = candles ? calcCandleVolume(candles) : '0';
+            const volume =
+              data && vol && vol !== '0'
+                ? addDecimalsFormatNumber(vol, data.positionDecimalPlaces)
+                : '0.00';
+            return volume;
+          },
+        },
+        {
           headerName: t('Settlement asset'),
           field: 'tradableInstrument.instrument.product.settlementAsset.symbol',
           cellRenderer: ({
@@ -178,6 +159,79 @@ export const useColumnDefs = ({ onMarketClick }: Props) => {
               </ButtonLink>
             ) : (
               ''
+            );
+          },
+        },
+        {
+          headerName: t('Spread'),
+          field: 'data.bestBidPrice',
+          type: 'rightAligned',
+          filter: 'agNumberColumnFilter',
+          valueGetter: ({
+            data,
+          }: VegaValueGetterParams<MarketMaybeWithData>) => {
+            const offer =
+              data?.data?.bestOfferPrice === undefined
+                ? undefined
+                : toBigNum(
+                    data?.data?.bestOfferPrice,
+                    data.decimalPlaces
+                  ).toNumber();
+            const bid =
+              data?.data?.bestBidPrice === undefined
+                ? undefined
+                : toBigNum(
+                    data?.data?.bestBidPrice,
+                    data.decimalPlaces
+                  ).toNumber();
+            return Number(bid) - Number(offer);
+          },
+          cellRenderer: ({
+            data,
+          }: VegaICellRendererParams<MarketMaybeWithData, 'data'>) => {
+            const offerValue =
+              data?.data?.bestOfferPrice === undefined
+                ? undefined
+                : toBigNum(
+                    data?.data?.bestOfferPrice,
+                    data.decimalPlaces
+                  ).toNumber();
+            const bidValue =
+              data?.data?.bestBidPrice === undefined
+                ? undefined
+                : toBigNum(
+                    data?.data?.bestBidPrice,
+                    data.decimalPlaces
+                  ).toNumber();
+
+            const offerFlash = (
+              <span className="font-mono" data-testid="offer-price">
+                <FlashCell value={Number(offerValue)}>
+                  {data?.data?.bestOfferPrice === undefined
+                    ? '-'
+                    : addDecimalsFormatNumber(
+                        data.data.bestOfferPrice,
+                        data.decimalPlaces
+                      )}
+                </FlashCell>
+              </span>
+            );
+            const bidFlash = (
+              <span className="font-mono" data-testid="bid-price">
+                <FlashCell value={Number(bidValue)}>
+                  {data?.data?.bestBidPrice === undefined
+                    ? '-'
+                    : addDecimalsFormatNumber(
+                        data.data.bestBidPrice,
+                        data.decimalPlaces
+                      )}
+                </FlashCell>
+              </span>
+            );
+            return (
+              <>
+                {offerFlash} - {bidFlash}
+              </>
             );
           },
         },

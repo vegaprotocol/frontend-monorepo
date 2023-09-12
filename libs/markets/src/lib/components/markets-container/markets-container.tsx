@@ -4,8 +4,10 @@ import type { CellClickedEvent } from 'ag-grid-community';
 import { t } from '@vegaprotocol/i18n';
 import { MarketListTable } from './market-list-table';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { marketsWithDataProvider as dataProvider } from '../../markets-provider';
+import { marketListProvider as dataProvider } from '../../markets-provider';
 import type { MarketMaybeWithData } from '../../markets-provider';
+import { useYesterday } from '@vegaprotocol/react-helpers';
+import { Interval } from '@vegaprotocol/types';
 
 const POLLING_TIME = 2000;
 interface MarketsContainerProps {
@@ -17,9 +19,13 @@ export const MarketsContainer = ({
   onSelect,
   SuccessorMarketRenderer,
 }: MarketsContainerProps) => {
+  const yesterday = useYesterday();
   const { data, error, reload } = useDataProvider({
     dataProvider,
-    variables: undefined,
+    variables: {
+      since: new Date(yesterday).toISOString(),
+      interval: Interval.INTERVAL_I1H,
+    },
   });
 
   useEffect(() => {
