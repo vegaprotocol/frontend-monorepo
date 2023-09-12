@@ -12,8 +12,6 @@ import { formatRange, formatValue } from '@vegaprotocol/utils';
 import { marketMarginDataProvider } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
-import * as Accordion from '@radix-ui/react-accordion';
-
 import {
   MARGIN_DIFF_TOOLTIP_TEXT,
   DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT,
@@ -24,7 +22,11 @@ import {
 } from '../../constants';
 import { useEstimateFees } from '../../hooks';
 import { KeyValue } from './key-value';
-import { TOOLTIP_TRIGGER_CLASS_NAME } from '@vegaprotocol/ui-toolkit';
+import {
+  Accordion,
+  AccordionItem,
+  TOOLTIP_TRIGGER_CLASS_NAME,
+} from '@vegaprotocol/ui-toolkit';
 
 const emptyValue = '-';
 
@@ -246,76 +248,81 @@ export const DealTicketMarginDetails = ({
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
 
   return (
-    <>
-      <Accordion.Root type="single" collapsible>
-        <Accordion.Item value="margin">
-          <KeyValue
-            id="margin-required"
-            label={
-              <Accordion.Trigger className={TOOLTIP_TRIGGER_CLASS_NAME}>
-                {t('Margin required')}
-              </Accordion.Trigger>
-            }
-            value={formatRange(
-              marginRequiredBestCase,
-              marginRequiredWorstCase,
-              assetDecimals
-            )}
-            formattedValue={formatRange(
-              marginRequiredBestCase,
-              marginRequiredWorstCase,
-              assetDecimals,
-              quantum
-            )}
-            labelDescription={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}
-            symbol={assetSymbol}
-          />
-          <Accordion.Content>
+    <div className="flex flex-col gap-2 w-full">
+      <Accordion>
+        <AccordionItem
+          itemId="margin"
+          title={
             <KeyValue
-              label={t('Total margin available')}
-              indent
-              value={formatValue(totalMarginAvailable, assetDecimals)}
-              formattedValue={formatValue(
-                totalMarginAvailable,
+              id="margin-required"
+              label={
+                <span className={TOOLTIP_TRIGGER_CLASS_NAME}>
+                  {t('Margin required')}
+                </span>
+              }
+              value={formatRange(
+                marginRequiredBestCase,
+                marginRequiredWorstCase,
+                assetDecimals
+              )}
+              formattedValue={formatRange(
+                marginRequiredBestCase,
+                marginRequiredWorstCase,
                 assetDecimals,
                 quantum
               )}
+              labelDescription={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}
               symbol={assetSymbol}
-              labelDescription={TOTAL_MARGIN_AVAILABLE(
-                formatValue(generalAccountBalance, assetDecimals, quantum),
-                formatValue(marginAccountBalance, assetDecimals, quantum),
-                formatValue(
-                  currentMargins?.maintenanceLevel,
+            />
+          }
+          content={
+            <div className="flex flex-col gap-2 w-full">
+              <KeyValue
+                label={t('Total margin available')}
+                indent
+                value={formatValue(totalMarginAvailable, assetDecimals)}
+                formattedValue={formatValue(
+                  totalMarginAvailable,
                   assetDecimals,
                   quantum
-                ),
-                assetSymbol
-              )}
-            />
-            {deductionFromCollateral}
-            <KeyValue
-              label={t('Current margin allocation')}
-              indent
-              onClick={
-                generalAccountBalance
-                  ? () => setBreakdownDialog(true)
-                  : undefined
-              }
-              value={formatValue(marginAccountBalance, assetDecimals)}
-              symbol={assetSymbol}
-              labelDescription={MARGIN_ACCOUNT_TOOLTIP_TEXT}
-              formattedValue={formatValue(
-                marginAccountBalance,
-                assetDecimals,
-                quantum
-              )}
-            />
-          </Accordion.Content>
-        </Accordion.Item>
-      </Accordion.Root>
+                )}
+                symbol={assetSymbol}
+                labelDescription={TOTAL_MARGIN_AVAILABLE(
+                  formatValue(generalAccountBalance, assetDecimals, quantum),
+                  formatValue(marginAccountBalance, assetDecimals, quantum),
+                  formatValue(
+                    currentMargins?.maintenanceLevel,
+                    assetDecimals,
+                    quantum
+                  ),
+                  assetSymbol
+                )}
+              />
+              {deductionFromCollateral}
+              <KeyValue
+                label={t('Current margin allocation')}
+                indent
+                onClick={
+                  generalAccountBalance
+                    ? () => setBreakdownDialog(true)
+                    : undefined
+                }
+                value={formatValue(marginAccountBalance, assetDecimals)}
+                symbol={assetSymbol}
+                labelDescription={MARGIN_ACCOUNT_TOOLTIP_TEXT}
+                formattedValue={formatValue(
+                  marginAccountBalance,
+                  assetDecimals,
+                  quantum
+                )}
+              />
+            </div>
+          }
+        />
+      </Accordion>
       {projectedMargin}
       <KeyValue
-        label={t('Liquidation price estimate')}
+        label={t('Liquidation')}
         value={liquidationPriceEstimate}
         formattedValue={liquidationPriceEstimate}
         symbol={quoteName}
@@ -329,6 +336,6 @@ export const DealTicketMarginDetails = ({
           onClose={onAccountBreakdownDialogClose}
         />
       )}
-    </>
+    </div>
   );
 };

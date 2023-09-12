@@ -31,7 +31,7 @@ export const AccordionItem = ({
 }: AccordionPanelProps) => {
   const triggerClassNames = classNames(
     'w-full py-2',
-    'flex items-center justify-between border-b border-vega-light-200 dark:border-vega-dark-200 text-sm',
+    'flex items-center justify-between gap-2 border-b border-vega-light-200 dark:border-vega-dark-200 text-sm',
     'group'
   );
   return (
@@ -41,7 +41,9 @@ export const AccordionItem = ({
           data-testid="accordion-toggle"
           className={triggerClassNames}
         >
-          <span data-testid="accordion-title">{title}</span>
+          <span data-testid="accordion-title" className="flex-1 text-left">
+            {title}
+          </span>
           <AccordionChevron aria-hidden />
         </AccordionPrimitive.Trigger>
       </AccordionPrimitive.Header>
