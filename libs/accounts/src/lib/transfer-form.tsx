@@ -21,7 +21,7 @@ import type { Transfer } from '@vegaprotocol/wallet';
 import { normalizeTransfer } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { AssetOption, Balance } from '@vegaprotocol/assets';
 
@@ -123,6 +123,13 @@ export const TransferForm = ({
     const maxAmount = asset ? new BigNumber(asset.balance) : new BigNumber(0);
     return maxAmount;
   }, [asset]);
+
+  // reset for placeholder workaround https://github.com/radix-ui/primitives/issues/1569
+  useEffect(() => {
+    if (!pubKey) {
+      setValue('asset', '');
+    }
+  }, [setValue, pubKey]);
 
   return (
     <form
