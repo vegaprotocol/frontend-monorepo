@@ -37,11 +37,39 @@ context(
     });
 
     // 3002-PROP-023 3004-PMAC-002 3005-PASN-002 3006-PASC-002 3007-PNEC-002 3008-PFRO-003
-    it('should have button for link to more information on proposals', function () {
-      const proposalsUrl = 'https://docs.vega.xyz/mainnet/tutorials/proposals';
-      cy.getByTestId('new-proposal-link')
-        .find('a')
-        .should('have.attr', 'href', proposalsUrl);
+    it('new proposal page should have button for link to more information on proposals', function () {
+      cy.getByTestId('new-proposal-link').click();
+      cy.url().should('include', '/proposals/propose/raw');
+      cy.contains('To see Explorer data on proposals visit').within(() => {
+        cy.getByTestId('external-link').should(
+          'have.attr',
+          'href',
+          'https://explorer.fairground.wtf/governance'
+        );
+      });
+      cy.contains(
+        '1. Sense check your proposal with the community on the forum:'
+      ).within(() => {
+        cy.getByTestId('external-link').should(
+          'have.attr',
+          'href',
+          'https://community.vega.xyz/c/governance/25'
+        );
+      });
+      cy.contains(
+        '2. Use the appropriate proposal template in the docs:'
+      ).within(() => {
+        cy.getByTestId('external-link').should(
+          'have.attr',
+          'href',
+          'https://docs.vega.xyz/mainnet/tutorials/proposals'
+        );
+      });
+      cy.contains('Connect your wallet to submit a proposal').should(
+        'be.visible'
+      );
+      cy.getByTestId('connect-to-vega-wallet-btn').should('exist');
+      navigateTo(navigation.proposals);
     });
 
     it('should be able to see a working link for - find out more about Vega governance', function () {
