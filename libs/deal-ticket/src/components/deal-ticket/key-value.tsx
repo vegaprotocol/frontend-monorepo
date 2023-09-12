@@ -47,7 +47,7 @@ export const KeyValue = ({
       <Tooltip description={labelDescription}>
         <div className="text-muted">{label}</div>
       </Tooltip>
-      <Tooltip description={`${value ?? '-'} ${symbol || ''}`}>
+      <Tooltip description={`${value ?? '-'} ${symbol || ''}`} noUnderline>
         {valueElement}
       </Tooltip>
     </div>
