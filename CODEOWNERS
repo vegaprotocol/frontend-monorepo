@@ -1,2 +1,3 @@
 * @vegaprotocol/frontend
+* @vegaprotocol/frontend-qa
 *.graphql @vegaprotocol/core

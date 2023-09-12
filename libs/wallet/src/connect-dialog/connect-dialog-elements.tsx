@@ -12,10 +12,7 @@ import { useVegaWallet } from '../use-vega-wallet';
 
 export const ConnectDialogTitle = ({ children }: { children: ReactNode }) => {
   return (
-    <h1
-      data-testid="wallet-dialog-title"
-      className="mb-6 text-2xl uppercase font-alpha calt"
-    >
+    <h1 data-testid="wallet-dialog-title" className="mb-6 text-2xl font-alpha">
       {children}
     </h1>
   );

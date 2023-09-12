@@ -4,26 +4,6 @@
   "sourceRoot": "libs/ledger/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/ledger",
-        "tsConfig": "libs/ledger/tsconfig.lib.json",
-        "project": "libs/ledger/package.json",
-        "entryFile": "libs/ledger/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "compiler": "babel",
-        "assets": [
-          {
-            "glob": "libs/ledger/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
-      }
-    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],

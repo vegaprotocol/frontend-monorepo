@@ -2,7 +2,7 @@ import type { Ref, SelectHTMLAttributes } from 'react';
 import { useRef } from 'react';
 import { forwardRef } from 'react';
 import classNames from 'classnames';
-import { VegaIcon, VegaIconNames } from '..';
+import { VegaIcon, VegaIconNames } from '../icon';
 import { defaultSelectElement } from '../../utils/shared';
 import * as SelectPrimitive from '@radix-ui/react-select';
 
@@ -107,7 +107,7 @@ export const TradingOption = forwardRef<
     className={classNames(
       'relative',
       'text-black dark:text-white',
-      'cursor-pointer outline-none',
+      'cursor-pointer outline-none ',
       'hover:bg-neutral-100 dark:hover:bg-neutral-800',
       'focus:bg-neutral-100 dark:focus:bg-neutral-800',
       'pl-2 py-2',

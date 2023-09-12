@@ -7,18 +7,13 @@ import { ProposalsListItem } from '../proposals-list-item';
 import { ProtocolUpgradeProposalsListItem } from '../protocol-upgrade-proposals-list-item/protocol-upgrade-proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
 import Routes from '../../../routes';
-import {
-  Button,
-  Toggle,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, Toggle } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
-import { DocsLinks, ExternalLinks } from '@vegaprotocol/environment';
+import { ExternalLinks } from '@vegaprotocol/environment';
 
 interface ProposalsListProps {
   proposals: Array<ProposalFieldsFragment | ProposalQuery['proposal']>;
@@ -145,18 +140,13 @@ export const ProposalsList = ({
           title={t('pageTitleProposals')}
         />
 
-        {DocsLinks && (
-          <div className="xs:justify-self-end" data-testid="new-proposal-link">
-            <ExternalLink href={DocsLinks.PROPOSALS_GUIDE}>
-              <Button variant="primary" size="sm">
-                <div className="flex items-center gap-1">
-                  {t('NewProposal')}
-                  <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
-                </div>
-              </Button>
-            </ExternalLink>
-          </div>
-        )}
+        <div className="xs:justify-self-end" data-testid="new-proposal-link">
+          <Link to={`${Routes.PROPOSALS}/propose/raw`}>
+            <Button variant="primary" size="sm">
+              <div className="flex items-center gap-1">{t('NewProposal')}</div>
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <p className="mb-8">

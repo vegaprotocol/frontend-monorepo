@@ -6,12 +6,11 @@ WORKDIR /app
 ARG APP
 ARG ENV_NAME=""
 RUN apk add --update --no-cache \
-  python3==3.10.11-r0 \
   make==4.3-r0 \
   gcc==11.2.1_git20220219-r2 \
   g++==11.2.1_git20220219-r2
 COPY . ./
-RUN yarn --network-timeout 100000 --pure-lockfile
+RUN yarn --pure-lockfile
 # work around for different build process in trading
 RUN sh docker/docker-build.sh
 

@@ -4,7 +4,7 @@ import { FormGroup } from '../form-group';
 
 export default {
   component: TradingSelect,
-  title: 'Select',
+  title: 'Select trading',
 } as Meta;
 
 const Template: StoryFn = (args) => (
