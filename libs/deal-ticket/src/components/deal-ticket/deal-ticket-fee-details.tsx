@@ -11,6 +11,7 @@ import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
 import { formatRange, formatValue } from '@vegaprotocol/utils';
 import { marketMarginDataProvider } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import * as AccordionPrimitive from '@radix-ui/react-accordion';
 
 import {
   MARGIN_DIFF_TOOLTIP_TEXT,
@@ -22,7 +23,13 @@ import {
 } from '../../constants';
 import { useEstimateFees } from '../../hooks';
 import { KeyValue } from './key-value';
-import { Accordion, AccordionItem } from '@vegaprotocol/ui-toolkit';
+import {
+  Accordion,
+  AccordionChevron,
+  AccordionPanel,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
+import classNames from 'classnames';
 
 const emptyValue = '-';
 
@@ -246,71 +253,94 @@ export const DealTicketMarginDetails = ({
   return (
     <div className="flex flex-col gap-2 w-full">
       <Accordion>
-        <AccordionItem
+        <AccordionPanel
           itemId="margin"
-          title={
-            <KeyValue
-              id="margin-required"
-              label={t('Margin required')}
-              value={formatRange(
-                marginRequiredBestCase,
-                marginRequiredWorstCase,
-                assetDecimals
+          trigger={
+            <AccordionPrimitive.Trigger
+              data-testid="accordion-toggle"
+              className={classNames(
+                'w-full py-2',
+                'flex items-center gap-2 border-b border-vega-light-200 dark:border-vega-dark-200 text-xs',
+                'group'
               )}
-              formattedValue={formatRange(
-                marginRequiredBestCase,
-                marginRequiredWorstCase,
+            >
+              <div
+                data-testid={`deal-ticket-fee-margin-required`}
+                key={'value-dropdown'}
+                className="flex items-center gap-2 justify-between w-full"
+              >
+                <div className="flex items-center gap-1">
+                  <Tooltip description={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}>
+                    <span className="text-muted">{t('Margin required')}</span>
+                  </Tooltip>
+
+                  <AccordionChevron size={10} />
+                </div>
+                <Tooltip
+                  description={`${
+                    formatRange(
+                      marginRequiredBestCase,
+                      marginRequiredWorstCase,
+                      assetDecimals
+                    ) ?? '-'
+                  } ${assetSymbol || ''}`}
+                  noUnderline
+                >
+                  <div className="font-mono text-right">
+                    {formatRange(
+                      marginRequiredBestCase,
+                      marginRequiredWorstCase,
+                      assetDecimals,
+                      quantum
+                    )}
+                  </div>
+                </Tooltip>
+              </div>
+            </AccordionPrimitive.Trigger>
+          }
+        >
+          <div className="flex flex-col gap-2 w-full">
+            <KeyValue
+              label={t('Total margin available')}
+              indent
+              value={formatValue(totalMarginAvailable, assetDecimals)}
+              formattedValue={formatValue(
+                totalMarginAvailable,
                 assetDecimals,
                 quantum
               )}
-              labelDescription={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}
               symbol={assetSymbol}
+              labelDescription={TOTAL_MARGIN_AVAILABLE(
+                formatValue(generalAccountBalance, assetDecimals, quantum),
+                formatValue(marginAccountBalance, assetDecimals, quantum),
+                formatValue(
+                  currentMargins?.maintenanceLevel,
+                  assetDecimals,
+                  quantum
+                ),
+                assetSymbol
+              )}
             />
-          }
-          content={
-            <div className="flex flex-col gap-2 w-full">
-              <KeyValue
-                label={t('Total margin available')}
-                indent
-                value={formatValue(totalMarginAvailable, assetDecimals)}
-                formattedValue={formatValue(
-                  totalMarginAvailable,
-                  assetDecimals,
-                  quantum
-                )}
-                symbol={assetSymbol}
-                labelDescription={TOTAL_MARGIN_AVAILABLE(
-                  formatValue(generalAccountBalance, assetDecimals, quantum),
-                  formatValue(marginAccountBalance, assetDecimals, quantum),
-                  formatValue(
-                    currentMargins?.maintenanceLevel,
-                    assetDecimals,
-                    quantum
-                  ),
-                  assetSymbol
-                )}
-              />
-              {deductionFromCollateral}
-              <KeyValue
-                label={t('Current margin allocation')}
-                indent
-                onClick={
-                  generalAccountBalance
-                    ? () => setBreakdownDialog(true)
-                    : undefined
-                }
-                value={formatValue(marginAccountBalance, assetDecimals)}
-                symbol={assetSymbol}
-                labelDescription={MARGIN_ACCOUNT_TOOLTIP_TEXT}
-                formattedValue={formatValue(
-                  marginAccountBalance,
-                  assetDecimals,
-                  quantum
-                )}
-              />
-            </div>
-          }
-        />
+            {deductionFromCollateral}
+            <KeyValue
+              label={t('Current margin allocation')}
+              indent
+              onClick={
+                generalAccountBalance
+                  ? () => setBreakdownDialog(true)
+                  : undefined
+              }
+              value={formatValue(marginAccountBalance, assetDecimals)}
+              symbol={assetSymbol}
+              labelDescription={MARGIN_ACCOUNT_TOOLTIP_TEXT}
+              formattedValue={formatValue(
+                marginAccountBalance,
+                assetDecimals,
+                quantum
+              )}
+            />
+          </div>
+        </AccordionPanel>
       </Accordion>
       {projectedMargin}
       <KeyValue

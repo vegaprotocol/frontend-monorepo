@@ -1,5 +1,6 @@
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import classNames from 'classnames';
+import type { VegaIconProps } from '../icon';
 import { VegaIcon, VegaIconNames } from '../icon';
 
 export interface AccordionItemProps {
@@ -21,6 +22,28 @@ export const Accordion = ({ panels, children }: AccordionProps) => {
     <AccordionPrimitive.Root type="multiple">
       {children}
     </AccordionPrimitive.Root>
+  );
+};
+
+export const AccordionPanel = ({
+  trigger,
+  children,
+  itemId,
+}: {
+  trigger: React.ReactNode;
+  children: React.ReactNode;
+  itemId: string;
+}) => {
+  return (
+    <AccordionPrimitive.Item value={itemId}>
+      <AccordionPrimitive.Header>{trigger}</AccordionPrimitive.Header>
+      <AccordionPrimitive.Content
+        className="py-3 text-sm"
+        data-testid="accordion-content"
+      >
+        {children}
+      </AccordionPrimitive.Content>
+    </AccordionPrimitive.Item>
   );
 };
 
@@ -57,15 +80,17 @@ export const AccordionItem = ({
   );
 };
 
-export const AccordionChevron = () => {
+export const AccordionChevron = ({
+  size = 16,
+}: Pick<VegaIconProps, 'size'>) => {
   return (
     <span
       className={classNames(
-        'transform transition ease-in-out duration-300',
+        'flex transform transition ease-in-out duration-300',
         'group-data-[state=open]:rotate-180'
       )}
     >
-      <VegaIcon name={VegaIconNames.CHEVRON_DOWN} aria-hidden />
+      <VegaIcon name={VegaIconNames.CHEVRON_DOWN} aria-hidden size={size} />
     </span>
   );
 };
