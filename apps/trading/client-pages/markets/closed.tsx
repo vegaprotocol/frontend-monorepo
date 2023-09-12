@@ -267,6 +267,7 @@ const ClosedMarketsDataGrid = ({
       getRowId={({ data }) => data.id}
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
       components={components}
+      rowHeight={45}
     />
   );
 };
