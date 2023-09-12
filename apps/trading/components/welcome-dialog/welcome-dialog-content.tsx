@@ -6,14 +6,32 @@ import { Links, Routes } from '../../pages/client-router';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
 import { useOnboardingStore } from './welcome-dialog';
+import { useMarketList } from '@vegaprotocol/markets';
+import { isMarketActive } from '../../lib/utils';
+import orderBy from 'lodash/orderBy';
+import { priceChangePercentage } from '@vegaprotocol/utils';
 
 export const WelcomeDialogContent = () => {
   const { VEGA_ENV } = useEnvironment();
 
   const dismiss = useOnboardingStore((store) => store.dismiss);
   const navigate = useNavigate();
-  const browseMarkets = () => {
-    const link = Links[Routes.MARKETS]();
+  const { data } = useMarketList();
+  const markets = orderBy(
+    data?.filter((m) => isMarketActive(m.state)) || [],
+    [
+      (m) => {
+        if (!m.candles?.length) return 0;
+        return Number(priceChangePercentage(m.candles.map((c) => c.close)));
+      },
+    ],
+    ['desc']
+  );
+  const explore = () => {
+    const marketId = markets?.[0].id ?? '';
+    const link = marketId
+      ? Links[Routes.MARKET](marketId)
+      : Links[Routes.MARKETS]();
     navigate(link);
     dismiss();
   };
@@ -48,11 +66,11 @@ export const WelcomeDialogContent = () => {
           />
         </ul>
         <TradingButton
-          onClick={browseMarkets}
+          onClick={explore}
           className="block w-full"
           data-testid="browse-markets-button"
         >
-          {t('Browse the markets')}
+          {t('Explore')}
         </TradingButton>
       </div>
       <div className="sm:w-1/2 flex grow">
