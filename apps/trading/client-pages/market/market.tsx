@@ -69,15 +69,15 @@ export const MarketPage = () => {
   useEffect(() => {
     if (data?.id && data.id !== lastMarketId) {
       update({ marketId: data.id });
+      // make sidebar open on market id change
+      setView({ type: ViewType.Order });
     }
-  }, [update, lastMarketId, data?.id]);
 
-  // Make sidebar open on deal ticket by default
-  useEffect(() => {
+    // make sidebar open on deal ticket by default
     if (init && view === null) {
       setView({ type: ViewType.Order });
     }
-  }, [init, view, setView]);
+  }, [update, lastMarketId, data?.id, setView, init, view]);
 
   const tradeView = useMemo(() => {
     if (largeScreen) {
