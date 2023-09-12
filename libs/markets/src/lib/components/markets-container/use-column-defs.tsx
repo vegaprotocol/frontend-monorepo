@@ -7,7 +7,7 @@ import type {
   VegaValueFormatterParams,
   VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
-import { COL_DEFS, FlashCell, SetFilter } from '@vegaprotocol/datagrid';
+import { COL_DEFS, SetFilter } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
 import { ButtonLink, Tooltip } from '@vegaprotocol/ui-toolkit';
@@ -169,72 +169,42 @@ export const useColumnDefs = ({ onMarketClick }: Props) => {
           field: 'data.bestBidPrice',
           type: 'rightAligned',
           filter: 'agNumberColumnFilter',
+          cellRenderer: 'PriceFlashCell',
           valueGetter: ({
             data,
           }: VegaValueGetterParams<MarketMaybeWithData>) => {
-            const offer =
-              data?.data?.bestOfferPrice === undefined
-                ? undefined
-                : toBigNum(
-                    data?.data?.bestOfferPrice,
-                    data.decimalPlaces
-                  ).toNumber();
-            const bid =
-              data?.data?.bestBidPrice === undefined
-                ? undefined
-                : toBigNum(
-                    data?.data?.bestBidPrice,
-                    data.decimalPlaces
-                  ).toNumber();
-            return Number(bid) - Number(offer);
-          },
-          cellRenderer: ({
-            data,
-          }: VegaICellRendererParams<MarketMaybeWithData, 'data'>) => {
-            const offerValue =
-              data?.data?.bestOfferPrice === undefined
-                ? undefined
-                : toBigNum(
-                    data?.data?.bestOfferPrice,
-                    data.decimalPlaces
-                  ).toNumber();
-            const bidValue =
-              data?.data?.bestBidPrice === undefined
-                ? undefined
-                : toBigNum(
-                    data?.data?.bestBidPrice,
-                    data.decimalPlaces
-                  ).toNumber();
+            if (
+              !data ||
+              !data.data?.bestOfferPrice ||
+              !data.data?.bestBidPrice
+            ) {
+              return undefined;
+            }
 
-            const offerFlash = (
-              <span className="font-mono" data-testid="offer-price">
-                <FlashCell value={Number(offerValue)}>
-                  {data?.data?.bestOfferPrice === undefined
-                    ? '-'
-                    : addDecimalsFormatNumber(
-                        data.data.bestOfferPrice,
-                        data.decimalPlaces
-                      )}
-                </FlashCell>
-              </span>
+            const offer = toBigNum(
+              data.data.bestOfferPrice,
+              data.decimalPlaces
             );
-            const bidFlash = (
-              <span className="font-mono" data-testid="bid-price">
-                <FlashCell value={Number(bidValue)}>
-                  {data?.data?.bestBidPrice === undefined
-                    ? '-'
-                    : addDecimalsFormatNumber(
-                        data.data.bestBidPrice,
-                        data.decimalPlaces
-                      )}
-                </FlashCell>
-              </span>
-            );
-            return (
-              <>
-                {offerFlash} - {bidFlash}
-              </>
-            );
+            const bid = toBigNum(data.data.bestBidPrice, data.decimalPlaces);
+
+            const spread = offer.minus(bid).toNumber();
+
+            // The calculation above can result in '-0' being rendered after formatting
+            // so return Math.abs to remove it and just render '0'
+            if (spread === 0) {
+              return Math.abs(spread);
+            }
+
+            return spread;
+          },
+          valueFormatter: ({
+            value,
+          }: VegaValueFormatterParams<
+            MarketMaybeWithData,
+            'data.bestBidPrice'
+          >) => {
+            if (!value) return '-';
+            return value.toString();
           },
         },
         {
