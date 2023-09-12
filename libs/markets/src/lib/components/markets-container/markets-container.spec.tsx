@@ -83,8 +83,9 @@ describe('MarketsContainer', () => {
     await userEvent.click(
       screen.getByRole('button', {
         name: (_name, element) =>
-          (element.parentNode as Element)?.getAttribute('id') ===
-          'cell-market-actions-9',
+          (element.parentNode as Element)
+            ?.getAttribute('id')
+            ?.startsWith('cell-market-actions-') || false,
       })
     );
 
