@@ -14,7 +14,6 @@ import {
   Last24hVolume,
   getAsset,
   getDataSourceSpecForSettlementSchedule,
-  isPerpetual,
   marketInfoProvider,
   useFundingPeriodsQuery,
   useFundingRate,
