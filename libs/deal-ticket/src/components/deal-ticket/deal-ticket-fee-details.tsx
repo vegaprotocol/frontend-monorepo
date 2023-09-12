@@ -11,8 +11,7 @@ import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
 import { formatRange, formatValue } from '@vegaprotocol/utils';
 import { marketMarginDataProvider } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-
-import * as Accordion from '@radix-ui/react-accordion';
+import * as AccordionPrimitive from '@radix-ui/react-accordion';
 
 import {
   MARGIN_DIFF_TOOLTIP_TEXT,
@@ -24,7 +23,13 @@ import {
 } from '../../constants';
 import { useEstimateFees } from '../../hooks';
 import { KeyValue } from './key-value';
-import { TOOLTIP_TRIGGER_CLASS_NAME } from '@vegaprotocol/ui-toolkit';
+import {
+  Accordion,
+  AccordionChevron,
+  AccordionPanel,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
+import classNames from 'classnames';
 
 const emptyValue = '-';
 
@@ -246,31 +251,56 @@ export const DealTicketMarginDetails = ({
   const quoteName = market.tradableInstrument.instrument.product.quoteName;
 
   return (
-    <>
-      <Accordion.Root type="single" collapsible>
-        <Accordion.Item value="margin">
-          <KeyValue
-            id="margin-required"
-            label={
-              <Accordion.Trigger className={TOOLTIP_TRIGGER_CLASS_NAME}>
-                {t('Margin required')}
-              </Accordion.Trigger>
-            }
-            value={formatRange(
-              marginRequiredBestCase,
-              marginRequiredWorstCase,
-              assetDecimals
-            )}
-            formattedValue={formatRange(
-              marginRequiredBestCase,
-              marginRequiredWorstCase,
-              assetDecimals,
-              quantum
-            )}
-            labelDescription={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}
-            symbol={assetSymbol}
-          />
-          <Accordion.Content>
+    <div className="flex flex-col gap-2 w-full">
+      <Accordion>
+        <AccordionPanel
+          itemId="margin"
+          trigger={
+            <AccordionPrimitive.Trigger
+              data-testid="accordion-toggle"
+              className={classNames(
+                'w-full pt-2',
+                'flex items-center gap-2 text-xs',
+                'group'
+              )}
+            >
+              <div
+                data-testid={`deal-ticket-fee-margin-required`}
+                key={'value-dropdown'}
+                className="flex items-center gap-2 justify-between w-full"
+              >
+                <div className="flex items-center gap-1">
+                  <Tooltip description={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}>
+                    <span className="text-muted">{t('Margin required')}</span>
+                  </Tooltip>
+
+                  <AccordionChevron size={10} />
+                </div>
+                <Tooltip
+                  description={
+                    formatRange(
+                      marginRequiredBestCase,
+                      marginRequiredWorstCase,
+                      assetDecimals
+                    ) ?? '-'
+                  }
+                  noUnderline
+                >
+                  <div className="font-mono text-right">
+                    {formatRange(
+                      marginRequiredBestCase,
+                      marginRequiredWorstCase,
+                      assetDecimals,
+                      quantum
+                    )}{' '}
+                    {assetSymbol || ''}
+                  </div>
+                </Tooltip>
+              </div>
+            </AccordionPrimitive.Trigger>
+          }
+        >
+          <div className="flex flex-col gap-2 w-full">
             <KeyValue
               label={t('Total margin available')}
               indent
@@ -310,12 +340,12 @@ export const DealTicketMarginDetails = ({
                 quantum
               )}
             />
-          </Accordion.Content>
-        </Accordion.Item>
-      </Accordion.Root>
+          </div>
+        </AccordionPanel>
+      </Accordion>
       {projectedMargin}
       <KeyValue
-        label={t('Liquidation price estimate')}
+        label={t('Liquidation')}
         value={liquidationPriceEstimate}
         formattedValue={liquidationPriceEstimate}
         symbol={quoteName}
@@ -329,6 +359,6 @@ export const DealTicketMarginDetails = ({
           onClose={onAccountBreakdownDialogClose}
         />
       )}
-    </>
+    </div>
   );
 };

@@ -8,7 +8,7 @@ export const EST_MARGIN_TOOLTIP_TEXT = (settlementAsset: string) =>
     [settlementAsset]
   );
 export const EST_TOTAL_MARGIN_TOOLTIP_TEXT = t(
-  'Estimated total margin that will cover open position, active orders and this order.'
+  'Estimated total margin that will cover open positions, active orders and this order.'
 );
 export const MARGIN_ACCOUNT_TOOLTIP_TEXT = t('Margin account balance.');
 export const MARGIN_DIFF_TOOLTIP_TEXT = (settlementAsset: string) =>
@@ -60,7 +60,7 @@ export const EST_FEES_TOOLTIP_TEXT = t(
 );
 
 export const LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT = t(
-  'This is a approximation to the liquidation price for that particular contract position, assuming nothing else changes, which may affect your margin and collateral balances.'
+  'This is an approximation (or a range) for the liquidation price for that particular contract position, assuming nothing else changes, which may affect your margin and collateral balances.'
 );
 
 export const EST_SLIPPAGE = t(
