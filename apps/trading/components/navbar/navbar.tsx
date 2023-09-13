@@ -1,6 +1,12 @@
 import type { ButtonHTMLAttributes, LiHTMLAttributes, ReactNode } from 'react';
 import { useState } from 'react';
-import { useEnvironment, DocsLinks, Networks } from '@vegaprotocol/environment';
+import {
+  useEnvironment,
+  DocsLinks,
+  Networks,
+  DApp,
+  useLinks,
+} from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
@@ -178,6 +184,19 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           <NavbarLink to={Links[Routes.PORTFOLIO]()} onClick={onClick}>
             {t('Portfolio')}
           </NavbarLink>
+        </NavbarItem>
+        <NavbarItem>
+          <span
+            className={classNames(
+              'block lg:flex lg:h-full flex-col justify-center',
+              'px-6 py-2 lg:p-0 text-lg lg:text-sm',
+              'hover:text-vega-clight-100 dark:hover:text-vega-cdark-100'
+            )}
+          >
+            <NavbarLinkExternal to={useLinks(DApp.Token)()}>
+              {t('Governance')}
+            </NavbarLinkExternal>
+          </span>
         </NavbarItem>
         <NavbarItem>
           <NavbarTrigger>{t('Resources')}</NavbarTrigger>
