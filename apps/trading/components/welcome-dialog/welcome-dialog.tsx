@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { create } from 'zustand';
@@ -6,8 +5,6 @@ import { persist } from 'zustand/middleware';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { WelcomeDialogContent } from './welcome-dialog-content';
-import { Links, Routes } from '../../pages/client-router';
-import { useGlobalStore } from '../../stores';
 import {
   useGetOnboardingStep,
   OnboardingStep,
@@ -32,7 +29,6 @@ export const useOnboardingStore = create<{
 
 export const WelcomeDialog = () => {
   const { VEGA_ENV } = useEnvironment();
-  const navigate = useNavigate();
   const [onBoardingViewed] = useLocalStorage(constants.ONBOARDING_VIEWED_KEY);
   const dismiss = useOnboardingStore((store) => store.dismiss);
   const dismissed = useOnboardingStore((store) => store.dismissed);
@@ -42,16 +38,6 @@ export const WelcomeDialog = () => {
     onBoardingViewed !== 'true' &&
     currentStep < OnboardingStep.ONBOARDING_COMPLETE_STEP &&
     !dismissed;
-
-  const marketId = useGlobalStore((store) => store.marketId);
-
-  const onClose = () => {
-    const link = marketId
-      ? Links[Routes.MARKET](marketId)
-      : Links[Routes.HOME]();
-    navigate(link);
-    dismiss();
-  };
 
   return (
     <Dialog
@@ -65,7 +51,7 @@ export const WelcomeDialog = () => {
         </span>
       }
       size="medium"
-      onChange={onClose}
+      onChange={() => dismiss()}
       intent={Intent.None}
       dataTestId="welcome-dialog"
     >
