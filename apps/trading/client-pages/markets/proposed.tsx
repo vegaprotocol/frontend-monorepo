@@ -1,6 +1,10 @@
 import { ProposalsList } from '@vegaprotocol/proposals';
-import { SuccessorMarketRenderer } from './successor-market-cell';
+import { ParentMarketCell } from './parent-market-cell';
+
+const cellRenderers = {
+  ParentMarketCell,
+};
 
 export const Proposed = () => {
-  return <ProposalsList SuccessorMarketRenderer={SuccessorMarketRenderer} />;
+  return <ProposalsList cellRenderers={cellRenderers} />;
 };

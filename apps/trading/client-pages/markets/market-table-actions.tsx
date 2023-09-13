@@ -9,14 +9,21 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { DApp, EXPLORER_MARKET, useLinks } from '@vegaprotocol/environment';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import { useNavigate } from 'react-router-dom';
+import { Links, Routes } from '../../pages/client-router';
 
 export const MarketActionsDropdown = ({
   marketId,
   assetId,
+  successorMarketID,
+  parentMarketID,
 }: {
   marketId: string;
   assetId: string;
+  successorMarketID: string | null | undefined;
+  parentMarketID: string | null | undefined;
 }) => {
+  const navigate = useNavigate();
   const open = useAssetDetailsDialogStore((store) => store.open);
   const linkCreator = useLinks(DApp.Explorer);
 
@@ -42,6 +49,26 @@ export const MarketActionsDropdown = ({
         <VegaIcon name={VegaIconNames.INFO} size={16} />
         {t('View settlement asset details')}
       </TradingDropdownItem>
+      {parentMarketID && (
+        <TradingDropdownItem
+          onClick={() => {
+            navigate(Links[Routes.MARKET](parentMarketID));
+          }}
+        >
+          <VegaIcon name={VegaIconNames.EYE} size={16} />
+          {t('View parent market')}
+        </TradingDropdownItem>
+      )}
+      {successorMarketID && (
+        <TradingDropdownItem
+          onClick={() => {
+            navigate(Links[Routes.MARKET](successorMarketID));
+          }}
+        >
+          <VegaIcon name={VegaIconNames.EYE} size={16} />
+          {t('View successor market')}
+        </TradingDropdownItem>
+      )}
     </ActionsDropdown>
   );
 };
