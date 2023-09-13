@@ -831,8 +831,9 @@ export const LiquiditySLAParametersInfoPanel = ({
       networkParams['market_liquidity_probabilityOfTrading_tau_scaling'],
     minimumProbabilityOfTradingLPOrders:
       networkParams['market_liquidity_minimum_probabilityOfTrading_lpOrders'],
-    feeCalculationTimeStep:
-      networkParams['market_liquidity_feeCalculationTimeStep'],
+    feeCalculationTimeStep: fromNanoSecondsToSeconds(
+      networkParams['market_liquidity_feeCalculationTimeStep']
+    ),
   };
 
   return (
