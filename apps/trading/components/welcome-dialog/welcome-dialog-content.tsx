@@ -1,7 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import { GetStarted } from './get-started';
-import { TradingButton } from '@vegaprotocol/ui-toolkit';
-import { useNavigate } from 'react-router-dom';
+import { TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
 import { Links, Routes } from '../../pages/client-router';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
@@ -15,7 +14,6 @@ export const WelcomeDialogContent = () => {
   const { VEGA_ENV } = useEnvironment();
 
   const dismiss = useOnboardingStore((store) => store.dismiss);
-  const navigate = useNavigate();
   const { data } = useMarketList();
   const markets = orderBy(
     data?.filter((m) => isMarketActive(m.state)) || [],
@@ -27,14 +25,11 @@ export const WelcomeDialogContent = () => {
     ],
     ['desc']
   );
-  const explore = () => {
-    const marketId = markets?.[0].id ?? '';
-    const link = marketId
-      ? Links[Routes.MARKET](marketId)
-      : Links[Routes.MARKETS]();
-    navigate(link);
-    dismiss();
-  };
+  const marketId = markets.length ? markets[0].id : undefined;
+  const link = marketId
+    ? Links[Routes.MARKET](marketId)
+    : Links[Routes.MARKETS]();
+
   const lead =
     VEGA_ENV === Networks.MAINNET
       ? t('Start trading on the worlds most advanced decentralised exchange.')
@@ -43,7 +38,7 @@ export const WelcomeDialogContent = () => {
         );
   return (
     <div className="flex flex-col sm:flex-row gap-8">
-      <div className="sm:w-1/2 flex flex-col justify-between pt-3">
+      <div className="flex flex-col justify-between pt-3 sm:w-1/2">
         <ul className="ml-0">
           <ListItemContent
             icon={<NonCustodialIcon />}
@@ -65,15 +60,16 @@ export const WelcomeDialogContent = () => {
             )}
           />
         </ul>
-        <TradingButton
-          onClick={explore}
+        <TradingAnchorButton
+          href={link}
+          onClick={() => dismiss()}
           className="block w-full"
           data-testid="browse-markets-button"
         >
           {t('Explore')}
-        </TradingButton>
+        </TradingAnchorButton>
       </div>
-      <div className="sm:w-1/2 flex grow">
+      <div className="flex sm:w-1/2 grow">
         <GetStarted lead={lead} />
       </div>
     </div>
@@ -90,10 +86,10 @@ const ListItemContent = ({
   text: string;
 }) => {
   return (
-    <li className="my-4 flex gap-3">
-      <div className="shrink-0 pt-1">{icon}</div>
+    <li className="flex my-4 gap-3">
+      <div className="pt-1 shrink-0">{icon}</div>
       <div>
-        <h3 className="text-lg leading-snug mb-2">{title}</h3>
+        <h3 className="mb-2 text-lg leading-snug">{title}</h3>
         <p className="text-sm text-secondary">{text}</p>
       </div>
     </li>
