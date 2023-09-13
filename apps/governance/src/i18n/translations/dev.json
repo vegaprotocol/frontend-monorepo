@@ -474,7 +474,7 @@
   "rewardsColLiquidityProvisionHeader": "LIQUIDITY PROVISION",
   "rewardsColLiquidityProvisionTooltip": "Liquidity provision rewards are distributed based on how much you have earned in liquidity fees, funded by a liquidity reward pool for that market",
   "rewardsColMarketCreationHeader": "MARKET CREATION",
-  "rewardsColMarketCreationTooltip": "Market creation rewards are paid out to the creator of any market that exceeds a set threshold of cumulative volume in a given epoch, currently [rewards.marketCreationQuantumMultiple]",
+  "rewardsColMarketCreationTooltip": "Market creation rewards are paid out to the creator of any market that exceeds a set threshold of cumulative volume in a given epoch, currently {{marketCreationQuantumMultiple}}",
   "rewardsColTotalHeader": "TOTAL",
   "ofTotalDistributed": "of total distributed",
   "checkBackSoon": "Check back soon",
@@ -708,7 +708,7 @@
   "NewAssetProposal": "New asset proposal",
   "UpdateAssetProposal": "Update asset proposal",
   "NewFreeformProposal": "New freeform proposal",
-  "NewRawProposal": "New raw proposal",
+  "NewRawProposal": "New proposal",
   "MinProposalRequirements": "You must have at least {{value}} VEGA associated to make a proposal",
   "MinProposalVoteRequirements": "You must have at least {{value}} VEGA associated to vote on this proposal",
   "totalSupply": "Total Supply",
@@ -870,5 +870,9 @@
   "Upgraded at": "Upgraded at",
   "dataIsIdentical": "Data is identical",
   "updatesToMarket": "Updates to market",
-  "viewAsParty": "View as party"
+  "viewAsParty": "View as party",
+  "HowToPropose": "How to make a proposal",
+  "HowToProposeRawStep1": "1. Sense check your proposal with the community on the forum:",
+  "HowToProposeRawStep2": "2. Use the appropriate proposal template in the docs:",
+  "HowToProposeRawStep3": "3. Submit on-chain below"
 }

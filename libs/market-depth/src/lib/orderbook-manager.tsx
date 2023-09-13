@@ -57,7 +57,6 @@ export const OrderbookManager = ({
     dataProvider: marketDataProvider,
     variables,
   });
-
   return (
     <AsyncRenderer
       loading={loading || marketDataLoading || marketLoading}
@@ -71,7 +70,7 @@ export const OrderbookManager = ({
           asks={data?.depth.sell ?? []}
           decimalPlaces={market.decimalPlaces}
           positionDecimalPlaces={market.positionDecimalPlaces}
-          assetSymbol={(market && getQuoteName(market)) || ''}
+          assetSymbol={getQuoteName(market)}
           onClick={onClick}
           lastTradedPrice={marketData.lastTradedPrice}
         />

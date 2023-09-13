@@ -9,14 +9,21 @@
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "buildableProjectDepsInPackageJsonType": "dependencies",
         "outputPath": "dist/libs/ui-toolkit",
         "tsConfig": "libs/ui-toolkit/tsconfig.lib.json",
         "project": "libs/ui-toolkit/package.json",
         "entryFile": "libs/ui-toolkit/src/index.ts",
-        "external": ["react/jsx-runtime"],
+        "external": [
+          "react",
+          "react-dom",
+          "react/jsx-runtime",
+          "@vegaprotocol/i18n",
+          "@vegaprotocol/react-helpers",
+          "@vegaprotocol/tailwindcss-config",
+          "@vegaprotocol/utils"
+        ],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "compiler": "babel",
+        "compiler": "swc",
         "format": ["esm", "cjs"],
         "assets": [
           {

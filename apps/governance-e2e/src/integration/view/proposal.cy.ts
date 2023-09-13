@@ -15,6 +15,7 @@ const proposalDocumentationLink = 'proposal-documentation-link';
 const connectToVegaWalletButton = 'connect-to-vega-wallet-btn';
 const governanceDocsUrl = 'https://vega.xyz/governance';
 const networkUpgradeProposalListItem = 'protocol-upgrade-proposals-list-item';
+const proposalUpgradeBlockHeight = 'protocol-upgrade-proposal-block-height';
 const closedProposals = 'closed-proposals';
 const closedProposalToggle = 'closed-proposals-toggle-networkUpgrades';
 const protocolUpgradeTime = 'protocol-upgrade-time';
@@ -37,11 +38,39 @@ context(
     });
 
     // 3002-PROP-023 3004-PMAC-002 3005-PASN-002 3006-PASC-002 3007-PNEC-002 3008-PFRO-003
-    it('should have button for link to more information on proposals', function () {
-      const proposalsUrl = 'https://docs.vega.xyz/mainnet/tutorials/proposals';
-      cy.getByTestId('new-proposal-link')
-        .find('a')
-        .should('have.attr', 'href', proposalsUrl);
+    it('new proposal page should have button for link to more information on proposals', function () {
+      cy.getByTestId('new-proposal-link').click();
+      cy.url().should('include', '/proposals/propose/raw');
+      cy.contains('To see Explorer data on proposals visit').within(() => {
+        cy.getByTestId('external-link').should(
+          'have.attr',
+          'href',
+          'https://explorer.fairground.wtf/governance'
+        );
+      });
+      cy.contains(
+        '1. Sense check your proposal with the community on the forum:'
+      ).within(() => {
+        cy.getByTestId('external-link').should(
+          'have.attr',
+          'href',
+          'https://community.vega.xyz/c/governance/25'
+        );
+      });
+      cy.contains(
+        '2. Use the appropriate proposal template in the docs:'
+      ).within(() => {
+        cy.getByTestId('external-link').should(
+          'have.attr',
+          'href',
+          'https://docs.vega.xyz/mainnet/tutorials/proposals'
+        );
+      });
+      cy.contains('Connect your wallet to submit a proposal').should(
+        'be.visible'
+      );
+      cy.getByTestId('connect-to-vega-wallet-btn').should('exist');
+      navigateTo(navigation.proposals);
     });
 
     it('should be able to see a working link for - find out more about Vega governance', function () {
@@ -156,7 +185,7 @@ context(
               'have.text',
               'Vega release tag: v1'
             );
-            cy.getByTestId('protocol-upgrade-proposal-block-height').should(
+            cy.getByTestId(proposalUpgradeBlockHeight).should(
               'have.text',
               'Upgrade block height: 2015942'
             );
@@ -171,7 +200,15 @@ context(
       });
       cy.getByTestId(closedProposalToggle).click();
       cy.getByTestId(closedProposals).within(() => {
-        cy.getByTestId(networkUpgradeProposalListItem).should('have.length', 1);
+        cy.getByTestId(networkUpgradeProposalListItem).should('have.length', 2);
+        cy.getByTestId(networkUpgradeProposalListItem)
+          .first()
+          .within(() => {
+            cy.getByTestId(proposalUpgradeBlockHeight).should(
+              'contain.text',
+              '10001'
+            );
+          });
       });
     });
 
@@ -183,7 +220,7 @@ context(
         .first()
         .find('[data-testid="view-proposal-btn"]')
         .click();
-      cy.url().should('contain', '/protocol-upgrades/v1');
+      cy.url().should('contain', '/protocol-upgrades/v1/2015942');
       cy.getByTestId('protocol-upgrade-proposal').within(() => {
         cy.get('h1').should('have.text', 'Vega Release v1');
         cy.getByTestId('protocol-upgrade-block-height').should(
@@ -243,7 +280,7 @@ context(
           );
         cy.getByTestId('external-link')
           .should('have.attr', 'href')
-          .and('contain', '/proposals/protocol-upgrade/v1');
+          .and('contain', '/proposals/protocol-upgrade/v1/2015942');
       });
 
       // estimate does not display possibly due to mocks or Cypress unless the proposal is clicked on several times

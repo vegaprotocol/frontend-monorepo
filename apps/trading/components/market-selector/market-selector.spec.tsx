@@ -10,7 +10,7 @@ import type { SortType } from './sort-dropdown';
 import { SortTypeMapping } from './sort-dropdown';
 import { Sort } from './sort-dropdown';
 import { subDays } from 'date-fns';
-import { isMarketActive } from './use-market-selector-list';
+import { isMarketActive } from '../../lib/utils';
 
 jest.mock('@vegaprotocol/markets');
 const mockUseMarketList = useMarketList as jest.Mock;

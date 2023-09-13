@@ -7,18 +7,13 @@ import { ProposalsListItem } from '../proposals-list-item';
 import { ProtocolUpgradeProposalsListItem } from '../protocol-upgrade-proposals-list-item/protocol-upgrade-proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
 import Routes from '../../../routes';
-import {
-  Button,
-  Toggle,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, Toggle } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
-import { DocsLinks, ExternalLinks } from '@vegaprotocol/environment';
+import { ExternalLinks } from '@vegaprotocol/environment';
 
 interface ProposalsListProps {
   proposals: Array<ProposalFieldsFragment | ProposalQuery['proposal']>;
@@ -55,7 +50,10 @@ export const orderByUpgradeBlockHeight = (
 ) =>
   orderBy(
     arr,
-    [(p) => p?.upgradeBlockHeight, (p) => p.vegaReleaseTag],
+    [
+      (p) => (p?.upgradeBlockHeight ? parseInt(p.upgradeBlockHeight, 10) : 0),
+      (p) => p.vegaReleaseTag,
+    ],
     ['desc', 'desc']
   );
 
@@ -142,18 +140,13 @@ export const ProposalsList = ({
           title={t('pageTitleProposals')}
         />
 
-        {DocsLinks && (
-          <div className="xs:justify-self-end" data-testid="new-proposal-link">
-            <ExternalLink href={DocsLinks.PROPOSALS_GUIDE}>
-              <Button variant="primary" size="sm">
-                <div className="flex items-center gap-1">
-                  {t('NewProposal')}
-                  <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
-                </div>
-              </Button>
-            </ExternalLink>
-          </div>
-        )}
+        <div className="xs:justify-self-end" data-testid="new-proposal-link">
+          <Link to={`${Routes.PROPOSALS}/propose/raw`}>
+            <Button variant="primary" size="sm">
+              <div className="flex items-center gap-1">{t('NewProposal')}</div>
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <p className="mb-8">
@@ -224,10 +217,10 @@ export const ProposalsList = ({
                 sortedProtocolUpgradeProposals.closed.length > 0 &&
                 filterString.length < 1 && (
                   <div
-                    className="grid w-full justify-end xl:-mt-12 pb-6"
+                    className="flex justify-end xl:-mt-12 pb-6"
                     data-testid="toggle-closed-proposals"
                   >
-                    <div className="w-[440px]">
+                    <div className="w-full max-w-[420px]">
                       <Toggle
                         name="closed-proposals-toggle"
                         toggles={[

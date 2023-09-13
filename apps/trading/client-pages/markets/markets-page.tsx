@@ -6,7 +6,7 @@ import {
   Tab,
   TradingAnchorButton,
 } from '@vegaprotocol/ui-toolkit';
-import { Markets } from './markets';
+import { OpenMarkets } from './open-markets';
 import { Proposed } from './proposed';
 import { usePageTitleStore } from '../../stores';
 import { Closed } from './closed';
@@ -33,13 +33,17 @@ export const MarketsPage = () => {
       <div className="h-full my-1 border rounded-sm border-default">
         <Tabs storageKey="console-markets">
           <Tab id="open-markets" name={t('Open markets')}>
-            <Markets />
+            <OpenMarkets />
           </Tab>
           <Tab
             id="proposed-markets"
             name={t('Proposed markets')}
             menu={
-              <TradingAnchorButton size="extra-small" href={externalLink}>
+              <TradingAnchorButton
+                size="extra-small"
+                data-testid="propose-new-market"
+                href={externalLink}
+              >
                 {t('Propose a new market')}
               </TradingAnchorButton>
             }

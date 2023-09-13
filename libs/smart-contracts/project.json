@@ -3,16 +3,6 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/smart-contracts/src",
   "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/smart-contracts",
-        "main": "libs/smart-contracts/src/index.ts",
-        "tsConfig": "libs/smart-contracts/tsconfig.lib.json",
-        "assets": ["libs/smart-contracts/*.md"]
-      }
-    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],

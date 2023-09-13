@@ -6,36 +6,14 @@ fragment DataSourceFilter on Filter {
   }
 }
 
-fragment DataSourceSpec on DataSourceDefinition {
-  sourceType {
-    ... on DataSourceDefinitionExternal {
-      sourceType {
-        ... on DataSourceSpecConfiguration {
-          signers {
-            signer {
-              ... on PubKey {
-                key
-              }
-              ... on ETHAddress {
-                address
-              }
-            }
-          }
-          filters {
-            ...DataSourceFilter
-          }
-        }
-      }
-    }
-  }
-}
-
 fragment MarketFields on Market {
   id
   decimalPlaces
   positionDecimalPlaces
   state
   tradingMode
+  parentMarketID
+  successorMarketID
   fees {
     factors {
       makerFee
@@ -53,56 +31,10 @@ fragment MarketFields on Market {
       }
       product {
         ... on Future {
-          settlementAsset {
-            id
-            symbol
-            name
-            decimals
-            quantum
-          }
-          quoteName
-          dataSourceSpecForTradingTermination {
-            id
-            data {
-              ...DataSourceSpec
-            }
-          }
-          dataSourceSpecForSettlementData {
-            id
-            data {
-              ...DataSourceSpec
-            }
-          }
-          dataSourceSpecBinding {
-            settlementDataProperty
-            tradingTerminationProperty
-          }
+          ...Future
         }
         ... on Perpetual {
-          settlementAsset {
-            id
-            symbol
-            name
-            decimals
-            quantum
-          }
-          quoteName
-          dataSourceSpecForSettlementSchedule {
-            id
-            data {
-              ...DataSourceSpec
-            }
-          }
-          dataSourceSpecForSettlementData {
-            id
-            data {
-              ...DataSourceSpec
-            }
-          }
-          dataSourceSpecBinding {
-            settlementDataProperty
-            settlementScheduleProperty
-          }
+          ...Perpetual
         }
       }
     }

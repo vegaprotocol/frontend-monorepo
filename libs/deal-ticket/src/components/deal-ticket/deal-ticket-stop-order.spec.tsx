@@ -78,7 +78,17 @@ const triggerPriceWarningMessage = 'stop-order-warning-message-trigger-price';
 const triggerTrailingPercentOffsetErrorMessage =
   'stop-order-error-message-trigger-trailing-percent-offset';
 
+const numberOfActiveOrdersLimit = 'stop-order-warning-limit';
+
 const ocoPostfix = (id: string, postfix = true) => (postfix ? `${id}-oco` : id);
+
+const mockDataProvider = jest.fn((...args) => ({
+  data: Array(0),
+}));
+jest.mock('@vegaprotocol/data-provider', () => ({
+  ...jest.requireActual('@vegaprotocol/data-provider'),
+  useDataProvider: jest.fn((...args) => mockDataProvider(...args)),
+}));
 
 describe('StopOrder', () => {
   beforeEach(() => {
@@ -459,5 +469,27 @@ describe('StopOrder', () => {
     expect(
       new Date(screen.getByTestId<HTMLInputElement>(datePicker).value).getTime()
     ).toEqual(now);
+  });
+
+  it('shows limit of active stop orders number', async () => {
+    mockDataProvider.mockReturnValue({
+      data: Array(4),
+    });
+    render(generateJsx());
+    expect(mockDataProvider.mock.lastCall?.[0].skip).toBe(true);
+    await userEvent.type(screen.getByTestId(sizeInput), '0.01');
+    expect(mockDataProvider.mock.lastCall?.[0].skip).toBe(false);
+    expect(screen.getByTestId(numberOfActiveOrdersLimit)).toBeInTheDocument();
+  });
+
+  it('counts oco as two orders', async () => {
+    mockDataProvider.mockReturnValue({
+      data: Array(3),
+    });
+    render(generateJsx());
+    await userEvent.type(screen.getByTestId(sizeInput), '0.01');
+    expect(screen.queryByTestId(numberOfActiveOrdersLimit)).toBeNull();
+    await userEvent.click(screen.getByTestId(oco));
+    expect(screen.getByTestId(numberOfActiveOrdersLimit)).toBeInTheDocument();
   });
 });

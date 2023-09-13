@@ -5,6 +5,8 @@ import {
   LiquiditySLAParametersInfoPanel,
   PriceMonitoringBoundsInfoPanel,
   SuccessionLineInfoPanel,
+  getDataSourceSpecForSettlementData,
+  getDataSourceSpecForTradingTermination,
 } from '@vegaprotocol/markets';
 import {
   LiquidityInfoPanel,
@@ -19,25 +21,16 @@ import {
   SettlementAssetInfoPanel,
 } from '@vegaprotocol/markets';
 import { MarketInfoTable } from '@vegaprotocol/markets';
-import type { DataSourceDefinition } from '@vegaprotocol/types';
+import type { DataSourceFragment } from '@vegaprotocol/markets';
 import isEqual from 'lodash/isEqual';
 
 export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
   if (!market) return null;
+  const { product } = market.tradableInstrument.instrument;
+  const settlementDataSource = getDataSourceSpecForSettlementData(product);
+  const terminationDataSource = getDataSourceSpecForTradingTermination(product);
 
-  const settlementData =
-    market.tradableInstrument.instrument.product.__typename === 'Future' ||
-    market.tradableInstrument.instrument.product.__typename === 'Perpetual'
-      ? (market.tradableInstrument.instrument.product
-          .dataSourceSpecForSettlementData.data as DataSourceDefinition)
-      : undefined;
-  const terminationData =
-    market.tradableInstrument.instrument.product.__typename === 'Future'
-      ? (market.tradableInstrument.instrument.product
-          .dataSourceSpecForTradingTermination.data as DataSourceDefinition)
-      : undefined;
-
-  const getSigners = (data: DataSourceDefinition) => {
+  const getSigners = ({ data }: DataSourceFragment) => {
     if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
       const signers =
         ('signers' in data.sourceType.sourceType &&
@@ -55,9 +48,12 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
   };
 
   const showTwoOracles =
-    settlementData &&
-    terminationData &&
-    isEqual(getSigners(settlementData), getSigners(terminationData));
+    settlementDataSource &&
+    terminationDataSource &&
+    isEqual(
+      getSigners(settlementDataSource),
+      getSigners(terminationDataSource)
+    );
 
   const headerClassName = 'font-alpha calt text-xl mt-4 border-b-2 pb-2';
 

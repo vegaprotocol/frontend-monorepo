@@ -1,31 +1,87 @@
-fragment DataSource on DataSourceDefinition {
-  sourceType {
-    ... on DataSourceDefinitionExternal {
-      sourceType {
-        ... on DataSourceSpecConfiguration {
-          signers {
-            signer {
-              ... on PubKey {
-                key
-              }
-              ... on ETHAddress {
-                address
+fragment DataSource on DataSourceSpec {
+  id
+  data {
+    sourceType {
+      ... on DataSourceDefinitionExternal {
+        sourceType {
+          ... on DataSourceSpecConfiguration {
+            signers {
+              signer {
+                ... on PubKey {
+                  key
+                }
+                ... on ETHAddress {
+                  address
+                }
               }
             }
           }
         }
       }
-    }
-    ... on DataSourceDefinitionInternal {
-      sourceType {
-        ... on DataSourceSpecConfigurationTime {
-          conditions {
-            operator
-            value
+      ... on DataSourceDefinitionInternal {
+        sourceType {
+          ... on DataSourceSpecConfigurationTime {
+            conditions {
+              operator
+              value
+            }
+          }
+          ... on DataSourceSpecConfigurationTimeTrigger {
+            __typename
+            triggers {
+              initial
+              every
+            }
+            conditions {
+              operator
+              value
+            }
           }
         }
       }
     }
+  }
+}
+
+fragment Future on Future {
+  quoteName
+  settlementAsset {
+    id
+    symbol
+    name
+    decimals
+    quantum
+  }
+  dataSourceSpecForSettlementData {
+    ...DataSource
+  }
+  dataSourceSpecForTradingTermination {
+    ...DataSource
+  }
+  dataSourceSpecBinding {
+    settlementDataProperty
+    tradingTerminationProperty
+  }
+}
+
+fragment Perpetual on Perpetual {
+  quoteName
+  settlementAsset {
+    id
+    symbol
+    name
+    decimals
+    quantum
+  }
+  dataSourceSpecForSettlementData {
+    ...DataSource
+  }
+  dataSourceSpecForSettlementSchedule {
+    ...DataSource
+  }
+  dataSourceSpecBinding {
+    settlementDataProperty
+    settlementScheduleProperty
   }
 }
 
@@ -93,7 +149,6 @@ query MarketInfo($marketId: ID!) {
     liquiditySLAParameters {
       priceRange
       commitmentMinTimeFraction
-      providersFeeCalculationTimeStep
       performanceHysteresisEpochs
       slaCompetitionFactor
     }
@@ -107,56 +162,10 @@ query MarketInfo($marketId: ID!) {
         }
         product {
           ... on Future {
-            quoteName
-            settlementAsset {
-              id
-              symbol
-              name
-              decimals
-              quantum
-            }
-            dataSourceSpecForSettlementData {
-              id
-              data {
-                ...DataSource
-              }
-            }
-            dataSourceSpecForTradingTermination {
-              id
-              data {
-                ...DataSource
-              }
-            }
-            dataSourceSpecBinding {
-              settlementDataProperty
-              tradingTerminationProperty
-            }
+            ...Future
           }
           ... on Perpetual {
-            quoteName
-            settlementAsset {
-              id
-              symbol
-              name
-              decimals
-              quantum
-            }
-            dataSourceSpecForSettlementData {
-              id
-              data {
-                ...DataSource
-              }
-            }
-            dataSourceSpecForSettlementSchedule {
-              id
-              data {
-                ...DataSource
-              }
-            }
-            dataSourceSpecBinding {
-              settlementDataProperty
-              settlementScheduleProperty
-            }
+            ...Perpetual
           }
         }
       }

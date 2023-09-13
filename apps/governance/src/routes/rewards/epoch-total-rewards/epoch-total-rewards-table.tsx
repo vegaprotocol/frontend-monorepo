@@ -8,6 +8,7 @@ import type { EpochTotalSummary } from './generate-epoch-total-rewards-list';
 
 interface EpochTotalRewardsGridProps {
   data: EpochTotalSummary;
+  marketCreationQuantumMultiple: string | null;
 }
 
 interface RewardItemProps {
@@ -52,9 +53,14 @@ const RewardItem = ({
 
 export const EpochTotalRewardsTable = ({
   data,
+  marketCreationQuantumMultiple,
 }: EpochTotalRewardsGridProps) => {
   return (
-    <RewardsTable dataTestId="epoch-total-rewards-table" epoch={data.epoch}>
+    <RewardsTable
+      marketCreationQuantumMultiple={marketCreationQuantumMultiple}
+      dataTestId="epoch-total-rewards-table"
+      epoch={data.epoch}
+    >
       {Array.from(data.assetRewards.values()).map(
         ({ name, rewards, totalAmount, decimals }, i) => (
           <div className="contents" key={i}>

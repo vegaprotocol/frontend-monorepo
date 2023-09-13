@@ -67,7 +67,7 @@ export const ProtocolUpgradeProposalsListItem = ({
         <Link
           to={`${Routes.PROTOCOL_UPGRADES}/${stripFullStops(
             proposal.vegaReleaseTag
-          )}`}
+          )}/${proposal.upgradeBlockHeight}`}
         >
           <Button data-testid="view-proposal-btn">{t('viewDetails')}</Button>
         </Link>

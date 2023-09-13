@@ -463,7 +463,7 @@ export const DealTicket = ({
           )}
         />
       )}
-      <div className="mb-4">
+      <div className="mb-4 flex flex-col gap-2 w-full">
         <KeyValue
           label={t('Notional')}
           value={formatValue(notionalSize, market.decimalPlaces)}

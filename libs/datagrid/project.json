@@ -5,26 +5,6 @@
   "projectType": "library",
   "tags": [],
   "targets": {
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/datagrid",
-        "tsConfig": "libs/datagrid/tsconfig.lib.json",
-        "project": "libs/datagrid/package.json",
-        "entryFile": "libs/datagrid/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "compiler": "babel",
-        "assets": [
-          {
-            "glob": "libs/datagrid/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
-      }
-    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],

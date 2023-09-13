@@ -3,7 +3,7 @@ import { TradingInput } from './input';
 import { FormGroup } from '../form-group';
 export default {
   component: TradingInput,
-  title: 'Input',
+  title: 'Input trading',
 } as Meta;
 
 const Template: StoryFn = (args) => (

@@ -77,8 +77,8 @@ export const ProtocolUpgradeInProgressNotification = () => {
         {t(
           'Trading and other network activity has stopped until the upgrade is complete.'
         )}{' '}
-        {vegaReleaseTag && (
-          <ExternalLink href={detailsLink(vegaReleaseTag)}>
+        {vegaReleaseTag && upgradeBlockHeight && (
+          <ExternalLink href={detailsLink(vegaReleaseTag, upgradeBlockHeight)}>
             {t('View details')}
           </ExternalLink>
         )}

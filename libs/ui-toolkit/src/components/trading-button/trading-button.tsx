@@ -39,17 +39,17 @@ const getClassName = (
     },
     // colours
     {
-      'bg-vega-yellow hover:bg-vega-yellow-550 dark:bg-vega-yellow dark:hover:bg-vega-yellow-450':
+      'bg-vega-yellow enabled:hover:bg-vega-yellow-550 dark:bg-vega-yellow dark:enabled:hover:bg-vega-yellow-450':
         intent === Intent.Primary,
-      'bg-vega-clight-500 hover:bg-vega-clight-400 dark:bg-vega-cdark-500 dark:hover:bg-vega-cdark-400':
+      'bg-vega-clight-500 enabled:hover:bg-vega-clight-400 dark:bg-vega-cdark-500 dark:enabled:hover:bg-vega-cdark-400':
         intent === Intent.None,
-      'bg-vega-blue-350 hover:bg-vega-blue-400 dark:bg-vega-blue-650 dark:hover:bg-vega-blue-600':
+      'bg-vega-blue-350 enabled:hover:bg-vega-blue-400 dark:bg-vega-blue-650 dark:enabled:hover:bg-vega-blue-600':
         intent === Intent.Info,
-      'bg-vega-orange-350 hover:bg-vega-orange-400 dark:bg-vega-orange-650 dark:hover:bg-vega-orange-600':
+      'bg-vega-orange-350 enabled:hover:bg-vega-orange-400 dark:bg-vega-orange-650 dark:enabled:hover:bg-vega-orange-600':
         intent === Intent.Warning,
-      'bg-vega-red-350 hover:bg-vega-red-400 dark:bg-vega-red-650 dark:hover:bg-vega-red-600':
+      'bg-vega-red-350 enabled:hover:bg-vega-red-400 dark:bg-vega-red-650 dark:enabled:hover:bg-vega-red-600':
         intent === Intent.Danger,
-      'bg-vega-green-350 hover:bg-vega-green-400 dark:bg-vega-green-650 dark:hover:bg-vega-green-600':
+      'bg-vega-green-350 enabled:hover:bg-vega-green-400 dark:bg-vega-green-650 dark:enabled:hover:bg-vega-green-600':
         intent === Intent.Success,
       'text-vega-clight-50 dark:text-vega-cdark-50': intent !== Intent.Primary,
       'text-vega-clight-900 dark:text-vega-cdark-900':
@@ -73,7 +73,7 @@ const Content = ({
   children,
 }: Pick<TradingButtonProps, 'icon' | 'subLabel' | 'children'>) => (
   <>
-    <span data-label className="font-alpha leading-none" key="children">
+    <span data-label className="leading-none font-alpha" key="children">
       {children}
     </span>
     {icon}
@@ -132,6 +132,7 @@ export const TradingAnchorButton = forwardRef<
       children,
       className,
       subLabel,
+      ...props
     },
     ref
   ) => (
@@ -139,6 +140,7 @@ export const TradingAnchorButton = forwardRef<
       ref={ref}
       href={href}
       className={getClassName({ size, subLabel, intent }, className)}
+      {...props}
     >
       <Content icon={icon} subLabel={subLabel} children={children} />
     </a>

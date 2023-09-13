@@ -24,6 +24,7 @@ import type { MarketInfo } from './market-info-data-provider';
 import { MarketProposalNotification } from '@vegaprotocol/proposals';
 import {
   CurrentFeesInfoPanel,
+  FundingInfoPanel,
   InstrumentInfoPanel,
   InsurancePoolInfoPanel,
   KeyDetailsInfoPanel,
@@ -42,8 +43,15 @@ import {
   SettlementAssetInfoPanel,
   SuccessionLineInfoPanel,
 } from './market-info-panels';
-import type { DataSourceDefinition } from '@vegaprotocol/types';
 import isEqual from 'lodash/isEqual';
+import {
+  getDataSourceSpecForSettlementSchedule,
+  getDataSourceSpecForSettlementData,
+  getDataSourceSpecForTradingTermination,
+  isPerpetual,
+  isFuture,
+  getSigners,
+} from '../../product';
 
 export interface MarketInfoAccordionProps {
   market: MarketInfo;
@@ -90,49 +98,27 @@ export const MarketInfoAccordion = ({
     market.accountsConnection?.edges
   );
 
-  const settlementData =
-    market.tradableInstrument.instrument.product.__typename === 'Future' ||
-    market.tradableInstrument.instrument.product.__typename === 'Perpetual'
-      ? (market.tradableInstrument.instrument.product
-          .dataSourceSpecForSettlementData.data as DataSourceDefinition)
-      : undefined;
-  const terminationData =
-    market.tradableInstrument.instrument.product.__typename === 'Future'
-      ? (market.tradableInstrument.instrument.product
-          .dataSourceSpecForTradingTermination.data as DataSourceDefinition)
-      : undefined;
-  const settlementScheduleData =
-    market.tradableInstrument.instrument.product.__typename === 'Perpetual'
-      ? (market.tradableInstrument.instrument.product
-          .dataSourceSpecForSettlementSchedule.data as DataSourceDefinition)
-      : undefined;
-
-  const getSigners = (data: DataSourceDefinition) => {
-    if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
-      const signers =
-        ('signers' in data.sourceType.sourceType &&
-          data.sourceType.sourceType.signers) ||
-        [];
-
-      return signers.map(({ signer }, i) => {
-        return (
-          (signer.__typename === 'ETHAddress' && signer.address) ||
-          (signer.__typename === 'PubKey' && signer.key)
-        );
-      });
-    }
-    return [];
-  };
+  const { product } = market.tradableInstrument.instrument;
+  const settlementDataSource = getDataSourceSpecForSettlementData(product);
+  const terminationDataSource = getDataSourceSpecForTradingTermination(product);
+  const settlementScheduleDataSource =
+    getDataSourceSpecForSettlementSchedule(product);
 
   const showOneOracleSection =
-    (market.tradableInstrument.instrument.product.__typename === 'Future' &&
-      settlementData &&
-      terminationData &&
-      isEqual(getSigners(settlementData), getSigners(terminationData))) ||
-    (market.tradableInstrument.instrument.product.__typename === 'Perpetual' &&
-      settlementData &&
-      settlementScheduleData &&
-      isEqual(getSigners(settlementData), getSigners(settlementScheduleData)));
+    (isFuture(product) &&
+      settlementDataSource &&
+      terminationDataSource &&
+      isEqual(
+        getSigners(settlementDataSource),
+        getSigners(terminationDataSource)
+      )) ||
+    (isPerpetual(product) &&
+      settlementDataSource &&
+      settlementScheduleDataSource &&
+      isEqual(
+        getSigners(settlementDataSource),
+        getSigners(settlementScheduleDataSource)
+      ));
 
   return (
     <div>
@@ -185,6 +171,15 @@ export const MarketInfoAccordion = ({
             title={t('Instrument')}
             content={<InstrumentInfoPanel market={market} />}
           />
+          {settlementScheduleDataSource && (
+            <AccordionItem
+              itemId="funding"
+              title={t('Funding')}
+              content={
+                <FundingInfoPanel dataSource={settlementScheduleDataSource} />
+              }
+            />
+          )}
           {showOneOracleSection ? (
             <AccordionItem
               itemId="oracles"
@@ -202,8 +197,7 @@ export const MarketInfoAccordion = ({
                   <OracleInfoPanel market={market} type="settlementData" />
                 }
               />
-              {market.tradableInstrument.instrument.product.__typename ===
-                'Perpetual' && (
+              {isPerpetual(product) && (
                 <AccordionItem
                   itemId="settlement-schedule-oracle"
                   title={t('Settlement schedule oracle')}
@@ -215,8 +209,7 @@ export const MarketInfoAccordion = ({
                   }
                 />
               )}
-              {market.tradableInstrument.instrument.product.__typename ===
-                'Future' && (
+              {isFuture(product) && (
                 <AccordionItem
                   itemId="termination-oracle"
                   title={t('Termination oracle')}

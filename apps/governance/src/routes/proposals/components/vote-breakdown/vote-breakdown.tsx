@@ -130,7 +130,10 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
     ? t('byTokenVote')
     : t('byLiquidityVote');
 
-  const sectionWrapperClasses = classNames('grid sm:grid-cols-2 gap-6');
+  const sectionWrapperClasses = classNames(
+    'flex justify-between flex-wrap gap-6'
+  );
+  const sectionClasses = classNames('min-w-[300px] flex-1 flex-grow');
   const headingClasses = classNames('mb-2 text-vega-dark-400');
   const progressDetailsClasses = classNames(
     'flex justify-between flex-wrap mt-2 text-sm'
@@ -166,7 +169,10 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
         <div className="mb-4">
           <h3 className={headingClasses}>{t('liquidityProviderVote')}</h3>
           <div className={sectionWrapperClasses}>
-            <section data-testid="lp-majority-breakdown">
+            <section
+              className={sectionClasses}
+              data-testid="lp-majority-breakdown"
+            >
               <VoteProgress
                 percentageFor={yesLPPercentage}
                 colourfulBg={true}
@@ -241,7 +247,10 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
               </div>
             </section>
 
-            <section data-testid="lp-participation-breakdown">
+            <section
+              className={sectionClasses}
+              data-testid="lp-participation-breakdown"
+            >
               <VoteProgress
                 percentageFor={
                   lpParticipationThresholdProgress || new BigNumber(0)
@@ -288,7 +297,10 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
 
       {isUpdateMarket && <h3 className={headingClasses}>{t('tokenVote')}</h3>}
       <div className={sectionWrapperClasses}>
-        <section data-testid="token-majority-breakdown">
+        <section
+          className={sectionClasses}
+          data-testid="token-majority-breakdown"
+        >
           <VoteProgress
             percentageFor={yesPercentage}
             colourfulBg={true}
@@ -308,7 +320,7 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
             <div className="flex items-center gap-1">
               <span>{t('tokenVotesFor')}:</span>
               <Tooltip description={formatNumber(yesTokens, defaultDP)}>
-                <button>
+                <button data-testid="num-votes-for">
                   {yesTokens.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
                 </button>
               </Tooltip>
@@ -317,7 +329,9 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
                 <Tooltip
                   description={<span>{yesPercentage.toFixed(defaultDP)}%</span>}
                 >
-                  <button>{yesPercentage.toFixed(0)}%</button>
+                  <button data-testid="votes-for-percentage">
+                    {yesPercentage.toFixed(0)}%
+                  </button>
                 </Tooltip>
                 )
               </span>
@@ -326,7 +340,7 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
             <div className="flex items-center gap-1">
               <span>{t('tokenVotesAgainst')}:</span>
               <Tooltip description={formatNumber(noTokens, defaultDP)}>
-                <button>
+                <button data-testid="num-votes-against">
                   {noTokens.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
                 </button>
               </Tooltip>
@@ -335,7 +349,9 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
                 <Tooltip
                   description={<span>{noPercentage.toFixed(defaultDP)}%</span>}
                 >
-                  <button>{noPercentage.toFixed(0)}%</button>
+                  <button data-testid="votes-against-percentage">
+                    {noPercentage.toFixed(0)}%
+                  </button>
                 </Tooltip>
                 )
               </span>
@@ -343,7 +359,10 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
           </div>
         </section>
 
-        <section data-testid="token-participation-breakdown">
+        <section
+          className={sectionClasses}
+          data-testid="token-participation-breakdown"
+        >
           <VoteProgress
             percentageFor={participationThresholdProgress}
             testId="token-participation-progress"
@@ -364,11 +383,13 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
             <div className="flex items-center gap-1">
               <span>{t('totalTokensVoted')}:</span>
               <Tooltip description={formatNumber(totalTokensVoted, defaultDP)}>
-                <button>
+                <button data-testid="total-voted">
                   {totalTokensVoted.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
                 </button>
               </Tooltip>
-              <span>({totalTokensPercentage.toFixed(defaultDP)}%)</span>
+              <span data-testid="total-voted-percentage">
+                ({totalTokensPercentage.toFixed(defaultDP)}%)
+              </span>
             </div>
           </div>
         </section>

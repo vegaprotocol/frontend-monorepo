@@ -5,26 +5,6 @@
   "projectType": "library",
   "tags": [],
   "targets": {
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/fills",
-        "tsConfig": "libs/fills/tsconfig.lib.json",
-        "project": "libs/fills/package.json",
-        "entryFile": "libs/fills/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "compiler": "babel",
-        "assets": [
-          {
-            "glob": "libs/fills/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
-      }
-    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],

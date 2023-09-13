@@ -184,7 +184,7 @@ const Web3Container = ({
                     <TemplateSidebar sidebar={sideBar}>
                       <AppRouter />
                     </TemplateSidebar>
-                    <footer className="p-4 border-t border-neutral-700">
+                    <footer className="p-4 border-t border-neutral-700 break-all">
                       <NetworkInfo />
                     </footer>
                   </AppLayout>
@@ -308,7 +308,7 @@ const AppContainer = () => {
     <Router>
       <ScrollToTop />
       <AppStateProvider>
-        <div className="min-h-full text-white grid">
+        <div className="min-h-full text-white">
           <NodeGuard
             skeleton={<div>{t('Loading')}</div>}
             failure={

@@ -41,6 +41,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_INSURANCE: 'Insurance',
   ACCOUNT_TYPE_MARGIN: 'Margin',
   ACCOUNT_TYPE_PENDING_TRANSFERS: 'Pending transfers',
+  ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD: 'Pending fee referral reward',
   ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: 'Reward LP received fees',
   ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: 'Reward Maker received fees',
   ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Reward Market Proposers',

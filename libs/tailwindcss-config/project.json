@@ -12,8 +12,7 @@
         "outputPath": "dist/libs/tailwindcss-config",
         "main": "libs/tailwindcss-config/src/index.js",
         "tsConfig": "libs/tailwindcss-config/tsconfig.lib.json",
-        "assets": ["libs/tailwindcss-config/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "assets": ["libs/tailwindcss-config/*.md"]
       }
     },
     "lint": {

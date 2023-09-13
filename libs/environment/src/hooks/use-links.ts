@@ -127,7 +127,7 @@ export const TOKEN_GOVERNANCE = '/proposals';
 export const TOKEN_PROPOSALS = '/proposals';
 export const TOKEN_PROPOSAL = '/proposals/:id';
 export const TOKEN_PROTOCOL_UPGRADE_PROPOSAL =
-  '/proposals/protocol-upgrade/:tag';
+  '/proposals/protocol-upgrade/:tag/:blockHeight';
 export const TOKEN_VALIDATOR = '/validators/:id';
 
 /**
@@ -135,12 +135,12 @@ export const TOKEN_VALIDATOR = '/validators/:id';
  */
 export const useProtocolUpgradeProposalLink = () => {
   const governance = useLinks(DApp.Token);
-  return (releaseTag: string) =>
+  return (releaseTag: string, blockHeight: string) =>
     governance(
       TOKEN_PROTOCOL_UPGRADE_PROPOSAL.replace(
         ':tag',
         stripFullStops(releaseTag)
-      )
+      ).replace(':blockHeight', blockHeight)
     );
 };
 
@@ -159,6 +159,7 @@ export const ExternalLinks = {
   DISCORD: 'https://vega.xyz/discord',
   GOVERNANCE_PAGE: 'https://vega.xyz/governance',
   VALIDATOR_FORUM: 'https://community.vega.xyz/c/mainnet-validator-candidates',
+  PROPOSALS_FORUM: 'https://community.vega.xyz/c/governance/25',
   MARGIN_CREDIT_RISK:
     'https://vega.xyz/papers/margins-and-credit-risk.pdf#page=7',
   VEGA_WALLET_URL: 'https://vega.xyz/wallet',

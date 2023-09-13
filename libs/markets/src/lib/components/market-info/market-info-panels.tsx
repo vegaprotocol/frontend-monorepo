@@ -18,6 +18,7 @@ import {
   addDecimalsFormatNumber,
   formatNumber,
   formatNumberPercentage,
+  getDateTimeFormat,
   getMarketExpiryDateFormatted,
 } from '@vegaprotocol/utils';
 import type { Get } from 'type-fest';
@@ -62,6 +63,8 @@ import {
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
+import type { DataSourceFragment } from './__generated__/MarketInfo';
+import { formatDuration } from 'date-fns';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -770,11 +773,6 @@ export const LiquiditySLAParametersInfoPanel = ({
   parentMarket,
 }: MarketInfoProps) => {
   const marketData = {
-    feeCalculationTimeStep:
-      market.liquiditySLAParameters?.providersFeeCalculationTimeStep &&
-      fromNanoSecondsToSeconds(
-        market.liquiditySLAParameters.providersFeeCalculationTimeStep
-      ),
     performanceHysteresisEpochs:
       market.liquiditySLAParameters?.performanceHysteresisEpochs,
     SLACompetitionFactor:
@@ -795,8 +793,6 @@ export const LiquiditySLAParametersInfoPanel = ({
 
   const parentMarketData = parentMarket
     ? {
-        providersFeeCalculationTimeStep:
-          parentMarket.liquiditySLAParameters?.providersFeeCalculationTimeStep,
         performanceHysteresisEpochs:
           parentMarket.liquiditySLAParameters?.performanceHysteresisEpochs,
         slaCompetitionFactor:
@@ -867,6 +863,30 @@ export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
       {children}
     </>
   );
+};
+
+export const FundingInfoPanel = ({
+  dataSource,
+}: {
+  dataSource: DataSourceFragment;
+}) => {
+  const sourceType = dataSource.data.sourceType.sourceType;
+  if (
+    sourceType.__typename !== 'DataSourceSpecConfigurationTimeTrigger' ||
+    !sourceType.triggers?.[0]?.every
+  ) {
+    return null;
+  }
+  const { every, initial } = sourceType.triggers[0];
+  const hours = Math.floor(every / (60 * 60));
+  const minutes = Math.floor(every / 60) % 60;
+  const initialLabel = initial
+    ? ` ${t('from')} ${getDateTimeFormat().format(new Date(initial * 1000))}`
+    : '';
+  return `${t('every')} ${formatDuration({
+    hours,
+    minutes,
+  })} ${initialLabel}`;
 };
 
 export const OracleInfoPanel = ({

@@ -146,7 +146,7 @@ export function getProposalInformationFromTable(heading: string) {
 }
 
 export function voteForProposal(vote: string) {
-  cy.contains('Vote breakdown').should('be.visible', { timeout: 10000 });
+  cy.get(voteButtons).should('be.visible', { timeout: 10000 });
   cy.get(voteButtons).contains(vote).click();
   cy.get(dialogTitle, proposalTimeout).should(
     'have.text',

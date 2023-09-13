@@ -4,7 +4,7 @@ import type { TradingFormGroupProps } from './form-group';
 import { TradingFormGroup } from './form-group';
 export default {
   component: TradingFormGroup,
-  title: 'FormGroup',
+  title: 'FormGroup trading',
   argTypes: {
     label: {
       type: 'string',

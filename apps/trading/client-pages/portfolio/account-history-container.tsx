@@ -32,7 +32,7 @@ import {
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { getAsset, type Market } from '@vegaprotocol/markets';
 
-const DateRange = {
+export const DateRange = {
   RANGE_1D: '1D',
   RANGE_7D: '7D',
   RANGE_1M: '1M',
@@ -47,7 +47,7 @@ const dateRangeToggleItems = Object.entries(DateRange).map(([_, value]) => ({
   value: value,
 }));
 
-const calculateStartDate = (range: string): string | undefined => {
+export const calculateStartDate = (range: string): string | undefined => {
   const now = new Date();
   switch (range) {
     case DateRange.RANGE_1D:

@@ -7,23 +7,13 @@
     "build": {
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
+      "format": ["esm", "cjs"],
       "options": {
         "outputPath": "dist/libs/i18n",
         "main": "libs/i18n/src/index.ts",
         "tsConfig": "libs/i18n/tsconfig.lib.json",
         "assets": ["libs/i18n/*.md"]
       }
-    },
-    "publish": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node tools/scripts/publish.mjs i18n {args.ver} {args.tag}"
-      },
-      "dependsOn": [
-        {
-          "target": "build"
-        }
-      ]
     },
     "lint": {
       "executor": "@nx/linter:eslint",

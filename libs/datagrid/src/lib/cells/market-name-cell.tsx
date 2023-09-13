@@ -12,16 +12,18 @@ import {
 export const MarketProductPill = ({
   productType,
 }: {
-  productType: ProductType;
+  productType?: ProductType;
 }) => {
   return (
-    <Pill
-      size="xxs"
-      className="uppercase ml-0.5"
-      title={ProductTypeMapping[productType]}
-    >
-      {ProductTypeShortName[productType]}
-    </Pill>
+    productType && (
+      <Pill
+        size="xxs"
+        className="uppercase ml-0.5"
+        title={ProductTypeMapping[productType]}
+      >
+        {ProductTypeShortName[productType]}
+      </Pill>
+    )
   );
 };
 
@@ -59,7 +61,7 @@ export const MarketNameCell = ({
     (data as { market: Market })?.market?.tradableInstrument.instrument.product
       .__typename;
 
-  if (!value) return;
+  if (!value) return null;
   const content = (
     <>
       <span data-testid="market-code" data-market-id={id}>
@@ -72,7 +74,7 @@ export const MarketNameCell = ({
     <button
       onClick={handleOnClick}
       tabIndex={0}
-      className="block text-left text-ellipsis overflow-hidden whitespace-nowrap w-full"
+      className="block w-full overflow-hidden text-left text-ellipsis whitespace-nowrap"
     >
       {content}
     </button>

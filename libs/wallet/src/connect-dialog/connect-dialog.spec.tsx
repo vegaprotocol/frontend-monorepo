@@ -111,7 +111,7 @@ describe('VegaConnectDialog', () => {
     rerender(generateJSX());
     const list = await screen.findByTestId('connectors-list');
     expect(list).toBeInTheDocument();
-    expect(list.children).toHaveLength(3);
+    expect(list.children).toHaveLength(2);
     expect(screen.getByTestId('connector-jsonRpc')).toHaveTextContent(
       'Use the Desktop App/CLI'
     );
@@ -122,7 +122,7 @@ describe('VegaConnectDialog', () => {
     mockBrowserWallet();
     render(generateJSX());
     const list = await screen.findByTestId('connectors-list');
-    expect(list.children).toHaveLength(3);
+    expect(list.children).toHaveLength(2);
     expect(screen.getByTestId('connector-injected')).toHaveTextContent(
       'Connect'
     );
