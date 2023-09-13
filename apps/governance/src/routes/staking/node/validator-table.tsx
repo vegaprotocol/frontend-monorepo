@@ -122,38 +122,43 @@ export const ValidatorTable = ({
 
       <div className="my-12" data-testid="validator-table">
         <SubHeading title={t('profile')} />
-        <RoundedWrapper paddingBottom={true}>
-          <KeyValueTable data-testid="validator-table-profile">
-            <KeyValueTableRow>
-              <span>{t('id')}</span>
-              <ValidatorTableCell dataTestId="validator-id">
-                {node.id}
-              </ValidatorTableCell>
-            </KeyValueTableRow>
-            <KeyValueTableRow>
-              <span>{t('ABOUT THIS VALIDATOR')}</span>
+        <div className="break-all">
+          <RoundedWrapper paddingBottom={true}>
+            <KeyValueTable data-testid="validator-table-profile">
+              <KeyValueTableRow>
+                <span>{t('id')}</span>
+                <ValidatorTableCell dataTestId="validator-id">
+                  {node.id}
+                </ValidatorTableCell>
+              </KeyValueTableRow>
+              <KeyValueTableRow>
+                <span>{t('ABOUT THIS VALIDATOR')}</span>
 
-              <Tooltip description={t('AboutThisValidatorDescription')}>
-                <a data-testid="validator-description-url" href={node.infoUrl}>
-                  {node.infoUrl}
-                </a>
-              </Tooltip>
-            </KeyValueTableRow>
-            <KeyValueTableRow noBorder={true}>
-              <span>
-                <strong>{t('STATUS')}</strong>
-              </span>
-
-              <Tooltip description={t('ValidatorStatusDescription')}>
-                <span data-testid="validator-status">
-                  <strong>
-                    {t(statusTranslationKey(node.rankingScore.status))}
-                  </strong>
+                <Tooltip description={t('AboutThisValidatorDescription')}>
+                  <a
+                    data-testid="validator-description-url"
+                    href={node.infoUrl}
+                  >
+                    {node.infoUrl}
+                  </a>
+                </Tooltip>
+              </KeyValueTableRow>
+              <KeyValueTableRow noBorder={true}>
+                <span>
+                  <strong>{t('STATUS')}</strong>
                 </span>
-              </Tooltip>
-            </KeyValueTableRow>
-          </KeyValueTable>
-        </RoundedWrapper>
+
+                <Tooltip description={t('ValidatorStatusDescription')}>
+                  <span data-testid="validator-status">
+                    <strong>
+                      {t(statusTranslationKey(node.rankingScore.status))}
+                    </strong>
+                  </span>
+                </Tooltip>
+              </KeyValueTableRow>
+            </KeyValueTable>
+          </RoundedWrapper>
+        </div>
 
         <div className="mb-10">
           {t('validatorTableIntro')}{' '}
@@ -167,144 +172,154 @@ export const ValidatorTable = ({
         </div>
 
         <SubHeading title={t('ADDRESS')} />
-        <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
-          <KeyValueTable data-testid="validator-table-address">
-            <KeyValueTableRow>
-              <span>{t('VEGA ADDRESS / PUBLIC KEY')}</span>
-              <ValidatorTableCell dataTestId="validator-public-key">
-                {node.pubkey}
-              </ValidatorTableCell>
-            </KeyValueTableRow>
-            <KeyValueTableRow>
-              <span>{t('SERVER LOCATION')}</span>
-              <ValidatorTableCell dataTestId="validator-server-location">
-                {countryData.find((c) => c.code === node.location)?.name ||
-                  t('not available')}
-              </ValidatorTableCell>
-            </KeyValueTableRow>
-            <KeyValueTableRow noBorder={true}>
-              <span>{t('ETHEREUM ADDRESS')}</span>
-              <span data-testid="validator-eth-address">
-                <Link
-                  title={t('View on Etherscan (opens in a new tab)')}
-                  href={`${ETHERSCAN_URL}/address/${node.ethereumAddress}`}
-                  target="_blank"
-                >
-                  {node.ethereumAddress}
-                </Link>
-              </span>
-            </KeyValueTableRow>
-          </KeyValueTable>
-        </RoundedWrapper>
+        <div className="break-all">
+          <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
+            <KeyValueTable data-testid="validator-table-address">
+              <KeyValueTableRow>
+                <span>{t('VEGA ADDRESS / PUBLIC KEY')}</span>
+                <ValidatorTableCell dataTestId="validator-public-key">
+                  {node.pubkey}
+                </ValidatorTableCell>
+              </KeyValueTableRow>
+              <KeyValueTableRow>
+                <span>{t('SERVER LOCATION')}</span>
+                <ValidatorTableCell dataTestId="validator-server-location">
+                  {countryData.find((c) => c.code === node.location)?.name ||
+                    t('not available')}
+                </ValidatorTableCell>
+              </KeyValueTableRow>
+              <KeyValueTableRow noBorder={true}>
+                <span>{t('ETHEREUM ADDRESS')}</span>
+                <span data-testid="validator-eth-address">
+                  <Link
+                    title={t('View on Etherscan (opens in a new tab)')}
+                    href={`${ETHERSCAN_URL}/address/${node.ethereumAddress}`}
+                    target="_blank"
+                  >
+                    {node.ethereumAddress}
+                  </Link>
+                </span>
+              </KeyValueTableRow>
+            </KeyValueTable>
+          </RoundedWrapper>
+        </div>
 
         <SubHeading title={t('STAKE')} />
-        <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
-          <KeyValueTable data-testid="validator-table-stake">
-            <KeyValueTableRow>
-              <span>{t('STAKED BY OPERATOR')}</span>
+        <div className="break-all">
+          <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
+            <KeyValueTable data-testid="validator-table-stake">
+              <KeyValueTableRow>
+                <span>{t('STAKED BY OPERATOR')}</span>
 
-              <Tooltip description={t('StakedByOperatorDescription')}>
-                <span data-testid="staked-by-operator">
-                  {formatNumber(toBigNum(node.stakedByOperator, decimals))}
+                <Tooltip description={t('StakedByOperatorDescription')}>
+                  <span data-testid="staked-by-operator">
+                    {formatNumber(toBigNum(node.stakedByOperator, decimals))}
+                  </span>
+                </Tooltip>
+              </KeyValueTableRow>
+              <KeyValueTableRow>
+                <span>{t('STAKED BY DELEGATES')}</span>
+
+                <Tooltip description={t('StakedByDelegatesDescription')}>
+                  <span data-testid="staked-by-delegates">
+                    {formatNumber(toBigNum(node.stakedByDelegates, decimals))}
+                  </span>
+                </Tooltip>
+              </KeyValueTableRow>
+              <KeyValueTableRow>
+                <span>
+                  <strong>{t('TOTAL STAKE')}</strong>
                 </span>
-              </Tooltip>
-            </KeyValueTableRow>
-            <KeyValueTableRow>
-              <span>{t('STAKED BY DELEGATES')}</span>
 
-              <Tooltip description={t('StakedByDelegatesDescription')}>
-                <span data-testid="staked-by-delegates">
-                  {formatNumber(toBigNum(node.stakedByDelegates, decimals))}
+                <span data-testid="total-stake">
+                  <strong>
+                    {formatNumber(toBigNum(node.stakedTotal, decimals))}
+                  </strong>
                 </span>
-              </Tooltip>
-            </KeyValueTableRow>
-            <KeyValueTableRow>
-              <span>
-                <strong>{t('TOTAL STAKE')}</strong>
-              </span>
+              </KeyValueTableRow>
+              <KeyValueTableRow>
+                <span>{t('PENDING STAKE')}</span>
 
-              <span data-testid="total-stake">
-                <strong>
-                  {formatNumber(toBigNum(node.stakedTotal, decimals))}
-                </strong>
-              </span>
-            </KeyValueTableRow>
-            <KeyValueTableRow>
-              <span>{t('PENDING STAKE')}</span>
+                <Tooltip description={t('PendingStakeDescription')}>
+                  <span data-testid="pending-stake">
+                    {formatNumber(toBigNum(node.pendingStake, decimals))}
+                  </span>
+                </Tooltip>
+              </KeyValueTableRow>
+              <KeyValueTableRow noBorder={true}>
+                <span>{t('STAKE SHARE')}</span>
 
-              <Tooltip description={t('PendingStakeDescription')}>
-                <span data-testid="pending-stake">
-                  {formatNumber(toBigNum(node.pendingStake, decimals))}
-                </span>
-              </Tooltip>
-            </KeyValueTableRow>
-            <KeyValueTableRow noBorder={true}>
-              <span>{t('STAKE SHARE')}</span>
-
-              <Tooltip description={t('StakeShareDescription')}>
-                <span data-testid="stake-percentage">{stakePercentage}</span>
-              </Tooltip>
-            </KeyValueTableRow>
-          </KeyValueTable>
-        </RoundedWrapper>
+                <Tooltip description={t('StakeShareDescription')}>
+                  <span data-testid="stake-percentage">{stakePercentage}</span>
+                </Tooltip>
+              </KeyValueTableRow>
+            </KeyValueTable>
+          </RoundedWrapper>
+        </div>
 
         <SubHeading title={t('PENALTIES')} />
-        <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
-          <KeyValueTable data-testid="validator-table-penalties">
-            <KeyValueTableRow>
-              <span>{t('OVERSTAKED PENALTY')}</span>
+        <div className="break-all">
+          <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
+            <KeyValueTable data-testid="validator-table-penalties">
+              <KeyValueTableRow>
+                <span>{t('OVERSTAKED PENALTY')}</span>
 
-              <Tooltip description={t('OverstakedPenaltyDescription')}>
-                <span data-testid="overstaking-penalty">
-                  {formatNumberPercentage(penalties.overstaked, 2)}
-                </span>
-              </Tooltip>
-            </KeyValueTableRow>
-            <KeyValueTableRow>
-              <span>{t('PERFORMANCE PENALTY')}</span>
+                <Tooltip description={t('OverstakedPenaltyDescription')}>
+                  <span data-testid="overstaking-penalty">
+                    {formatNumberPercentage(penalties.overstaked, 2)}
+                  </span>
+                </Tooltip>
+              </KeyValueTableRow>
+              <KeyValueTableRow>
+                <span>{t('PERFORMANCE PENALTY')}</span>
 
-              <Tooltip description={t('PerformancePenaltyDescription')}>
-                <span data-testid="performance-penalty">
-                  {formatNumberPercentage(penalties.performance, 2)}
+                <Tooltip description={t('PerformancePenaltyDescription')}>
+                  <span data-testid="performance-penalty">
+                    {formatNumberPercentage(penalties.performance, 2)}
+                  </span>
+                </Tooltip>
+              </KeyValueTableRow>
+              <KeyValueTableRow noBorder={true}>
+                <span>
+                  <strong>{t('TOTAL PENALTIES')}</strong>
                 </span>
-              </Tooltip>
-            </KeyValueTableRow>
-            <KeyValueTableRow noBorder={true}>
-              <span>
-                <strong>{t('TOTAL PENALTIES')}</strong>
-              </span>
-              <span data-testid="total-penalties">
-                <strong>{formatNumberPercentage(penalties.overall, 2)}</strong>
-              </span>
-            </KeyValueTableRow>
-          </KeyValueTable>
-        </RoundedWrapper>
+                <span data-testid="total-penalties">
+                  <strong>
+                    {formatNumberPercentage(penalties.overall, 2)}
+                  </strong>
+                </span>
+              </KeyValueTableRow>
+            </KeyValueTable>
+          </RoundedWrapper>
+        </div>
 
         <SubHeading title={t('VOTING POWER')} />
-        <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
-          <KeyValueTable data-testid="validator-table-voting-power">
-            <KeyValueTableRow>
-              <span>{t('UNNORMALISED VOTING POWER')}</span>
+        <div className="break-all">
+          <RoundedWrapper marginBottomLarge={true} paddingBottom={true}>
+            <KeyValueTable data-testid="validator-table-voting-power">
+              <KeyValueTableRow>
+                <span>{t('UNNORMALISED VOTING POWER')}</span>
 
-              <Tooltip description={t('UnnormalisedVotingPowerDescription')}>
-                <span data-testid="unnormalised-voting-power">
-                  {getUnnormalisedVotingPower(rawValidatorScore)}
+                <Tooltip description={t('UnnormalisedVotingPowerDescription')}>
+                  <span data-testid="unnormalised-voting-power">
+                    {getUnnormalisedVotingPower(rawValidatorScore)}
+                  </span>
+                </Tooltip>
+              </KeyValueTableRow>
+              <KeyValueTableRow noBorder={true}>
+                <span>
+                  <strong>{t('NORMALISED VOTING POWER')}</strong>
                 </span>
-              </Tooltip>
-            </KeyValueTableRow>
-            <KeyValueTableRow noBorder={true}>
-              <span>
-                <strong>{t('NORMALISED VOTING POWER')}</strong>
-              </span>
 
-              <Tooltip description={t('NormalisedVotingPowerDescription')}>
-                <strong data-testid="normalised-voting-power">
-                  {getNormalisedVotingPower(node.rankingScore.votingPower)}
-                </strong>
-              </Tooltip>
-            </KeyValueTableRow>
-          </KeyValueTable>
-        </RoundedWrapper>
+                <Tooltip description={t('NormalisedVotingPowerDescription')}>
+                  <strong data-testid="normalised-voting-power">
+                    {getNormalisedVotingPower(node.rankingScore.votingPower)}
+                  </strong>
+                </Tooltip>
+              </KeyValueTableRow>
+            </KeyValueTable>
+          </RoundedWrapper>
+        </div>
       </div>
     </>
   );

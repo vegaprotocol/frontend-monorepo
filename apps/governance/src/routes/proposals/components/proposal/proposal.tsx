@@ -127,7 +127,7 @@ export const Proposal = ({
         voteState={voteState}
       />
 
-      <div className="my-10">
+      <div className="my-10 break-all">
         <ProposalChangeTable proposal={proposal} />
       </div>
 
