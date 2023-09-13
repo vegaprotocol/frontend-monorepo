@@ -262,10 +262,10 @@ context(
             '2'
           );
           waitForBeginningOfEpoch();
-          cy.getByTestId(stakeValidatorListStakePercentage).should(
-            'have.text',
-            '50.02%'
-          );
+          cy.getByTestId(
+            stakeValidatorListStakePercentage,
+            epochTimeout
+          ).should('have.text', '50.02%');
           navigateTo(navigation.validators);
           validateValidatorListTotalStakeAndShare('0', '3,002.00', '50.02%');
         }
