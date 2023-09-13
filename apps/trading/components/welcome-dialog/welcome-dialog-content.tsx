@@ -5,27 +5,14 @@ import { Links, Routes } from '../../pages/client-router';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
 import { useOnboardingStore } from './welcome-dialog';
-import { useMarketList } from '@vegaprotocol/markets';
-import { isMarketActive } from '../../lib/utils';
-import orderBy from 'lodash/orderBy';
-import { priceChangePercentage } from '@vegaprotocol/utils';
+import { useTopTradedMarkets } from '../../lib/hooks/use-top-traded-markets';
 
 export const WelcomeDialogContent = () => {
   const { VEGA_ENV } = useEnvironment();
-
   const dismiss = useOnboardingStore((store) => store.dismiss);
-  const { data } = useMarketList();
-  const markets = orderBy(
-    data?.filter((m) => isMarketActive(m.state)) || [],
-    [
-      (m) => {
-        if (!m.candles?.length) return 0;
-        return Number(priceChangePercentage(m.candles.map((c) => c.close)));
-      },
-    ],
-    ['desc']
-  );
-  const marketId = markets.length ? markets[0].id : undefined;
+
+  const { data } = useTopTradedMarkets();
+  const marketId = data && data[0]?.id;
   const link = marketId
     ? Links[Routes.MARKET](marketId)
     : Links[Routes.MARKETS]();
