@@ -1,7 +1,7 @@
 import type { Toast } from '@vegaprotocol/ui-toolkit';
 import { Intent, useToasts } from '@vegaprotocol/ui-toolkit';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { TelemetryApproval } from './telemetry-approval';
 import { t } from '@vegaprotocol/i18n';
 import { useOnboardingStore } from '../welcome-dialog';
@@ -19,15 +19,18 @@ export const Telemetry = () => {
     store.remove,
   ]);
 
-  const onApprovalClose = () => {
+  const onApprovalClose = useCallback(() => {
     closeTelemetry();
     removeToast(TELEMETRY_APPROVAL_TOAST_ID);
-  };
+  }, [closeTelemetry, removeToast]);
 
-  const setTelemetryApprovalAndClose = (value: string) => {
-    setTelemetryValue(value);
-    onApprovalClose();
-  };
+  const setTelemetryApprovalAndClose = useCallback(
+    (value: string) => {
+      setTelemetryValue(value);
+      onApprovalClose();
+    },
+    [onApprovalClose, setTelemetryValue]
+  );
 
   useEffect(() => {
     if (isTelemetryNeeded && onboardingDissmissed) {
@@ -52,7 +55,15 @@ export const Telemetry = () => {
       }
       return;
     }
-  }, [isTelemetryNeeded, onboardingDissmissed]);
+  }, [
+    telemetryValue,
+    isTelemetryNeeded,
+    onboardingDissmissed,
+    setToast,
+    hasToast,
+    onApprovalClose,
+    setTelemetryApprovalAndClose,
+  ]);
 
   return null;
 };
