@@ -1989,8 +1989,6 @@ export type MarketData = {
   commitments: MarketDataCommitments;
   /** What extended the ongoing auction (if an auction was extended) */
   extensionTrigger: AuctionTrigger;
-  /** The current funding rate. This applies only to a perpetual market */
-  fundingRate?: Maybe<Scalars['String']>;
   /** Indicative price if the auction ended now, 0 if not in auction mode */
   indicativePrice: Scalars['String'];
   /** Indicative volume if the auction ended now, 0 if not in auction mode */
@@ -2019,6 +2017,8 @@ export type MarketData = {
   openInterest: Scalars['String'];
   /** A list of valid price ranges per associated trigger */
   priceMonitoringBounds?: Maybe<Array<PriceMonitoringBounds>>;
+  /** The current funding rate. This applies only to a perpetual market */
+  productData?: Maybe<ProductData>;
   /** The arithmetic average of the best static bid price and best static offer price */
   staticMidPrice: Scalars['String'];
   /** The supplied stake for the market */
@@ -2542,8 +2542,6 @@ export type ObservableMarketData = {
   bestStaticOfferVolume: Scalars['String'];
   /** What extended the ongoing auction (if an auction was extended) */
   extensionTrigger: AuctionTrigger;
-  /** The current funding rate. This applies only to a perpetual market */
-  fundingRate?: Maybe<Scalars['String']>;
   /** Indicative price if the auction ended now, 0 if not in auction mode */
   indicativePrice: Scalars['String'];
   /** Indicative volume if the auction ended now, 0 if not in auction mode */
@@ -2572,6 +2570,8 @@ export type ObservableMarketData = {
   openInterest: Scalars['String'];
   /** A list of valid price ranges per associated trigger */
   priceMonitoringBounds?: Maybe<Array<PriceMonitoringBounds>>;
+  /** The current funding rate. This applies only to a perpetual market */
+  productData?: Maybe<ProductData>;
   /** The arithmetic average of the best static bid price and best static offer price */
   staticMidPrice: Scalars['String'];
   /** The supplied stake for the market */
@@ -3317,6 +3317,19 @@ export type Perpetual = {
   settlementAsset: Asset;
 };
 
+/** Details of a  perpetual product. */
+export type PerpetualData = {
+  __typename?: 'PerpetualData';
+  /** Time-weighted average price calculated from data points for this period from the external data source. */
+  externalTwap?: Maybe<Scalars['String']>;
+  /** Funding payment for this period as the difference between the time-weighted average price of the external and internal data point. */
+  fundingPayment?: Maybe<Scalars['String']>;
+  /** Percentage difference between the time-weighted average price of the external and internal data point. */
+  fundingRate?: Maybe<Scalars['String']>;
+  /** Time-weighted average price calculated from data points for this period from the internal data source. */
+  internalTwap?: Maybe<Scalars['String']>;
+};
+
 export type PerpetualProduct = {
   __typename?: 'PerpetualProduct';
   /** Lower bound for the clamp function used as part of the funding rate calculation, in the range [-1, 1] */
@@ -3521,6 +3534,8 @@ export type PriceMonitoringTrigger = {
 export type Product = Future | Perpetual | Spot;
 
 export type ProductConfiguration = FutureProduct | PerpetualProduct | SpotProduct;
+
+export type ProductData = PerpetualData;
 
 /** A property associates a name to a value */
 export type Property = {
@@ -3937,6 +3952,8 @@ export type Query = {
   balanceChanges: AggregatedBalanceConnection;
   /** List core snapshots */
   coreSnapshots?: Maybe<CoreSnapshotConnection>;
+  /** Get the current referral program */
+  currentReferralProgram?: Maybe<ReferralProgram>;
   /** Find a deposit using its ID */
   deposit?: Maybe<Deposit>;
   /** Fetch all deposits */
@@ -4033,6 +4050,9 @@ export type Query = {
   protocolUpgradeProposals?: Maybe<ProtocolUpgradeProposalConnection>;
   /** Flag indicating whether the data-node is ready to begin the protocol upgrade */
   protocolUpgradeStatus?: Maybe<ProtocolUpgradeStatus>;
+  referralSetReferees: ReferralSetRefereeConnection;
+  /** List referral sets */
+  referralSets: ReferralSetConnection;
   /** Get statistics about the Vega node */
   statistics: Statistics;
   /** Get stop order by ID */
@@ -4372,6 +4392,20 @@ export type QueryprotocolUpgradeProposalsArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryreferralSetRefereesArgs = {
+  id: Scalars['ID'];
+  pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryreferralSetsArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerystopOrderArgs = {
   id: Scalars['ID'];
 };
@@ -4464,6 +4498,125 @@ export type RecurringTransfer = {
   factor: Scalars['String'];
   /** The epoch at which this recurring transfer will start */
   startEpoch: Scalars['Int'];
+};
+
+export type RefereeStats = {
+  __typename?: 'RefereeStats';
+  /** Discount factor applied to the party. */
+  discountFactor: Scalars['String'];
+  /** Unique ID of the party. */
+  partyId: Scalars['ID'];
+  /** Reward factor applied to the party. */
+  rewardFactor: Scalars['String'];
+};
+
+/** Referral program information */
+export type ReferralProgram = {
+  __typename?: 'ReferralProgram';
+  /** Defined tiers in increasing order. First element will give Tier 1, second element will give Tier 2, etc. */
+  benefitTiers: Array<BenefitTier>;
+  /** Timestamp as RFC3339Nano, after which when the current epoch ends, the programs status will become STATE_CLOSED and benefits will be disabled. */
+  endOfProgramTimestamp: Scalars['Timestamp'];
+  /** Timestamp as RFC3339Nano when the program ended. If present, the current program has ended and no program is currently running. */
+  endedAt?: Maybe<Scalars['Timestamp']>;
+  /** Unique ID generated from the proposal that created this program. */
+  id: Scalars['ID'];
+  /**
+   * Defined staking tiers in increasing order. First element will give Tier 1,
+   * second element will give Tier 2, and so on. Determines the level of
+   * benefit a party can expect based on their staking.
+   */
+  stakingTiers: Array<StakingTier>;
+  /** Incremental version of the program. It is incremented each time the referral program is edited. */
+  version: Scalars['Int'];
+  /** Number of epochs over which to evaluate a referral set's running volume. */
+  windowLength: Scalars['Int'];
+};
+
+/** Data relating to a referral set. */
+export type ReferralSet = {
+  __typename?: 'ReferralSet';
+  /** Timestamp as RFC3339Nano when the referral set was created. */
+  createdAt: Scalars['Timestamp'];
+  /** Unique ID of the created set. */
+  id: Scalars['ID'];
+  /** Party that created the set. */
+  referrer: Scalars['ID'];
+  /**
+   * Referral set statistics for the latest or specific epoch.
+   * If provided the results can be filtered for a specific referee
+   */
+  stats: ReferralSetStats;
+  /** Timestamp as RFC3339Nano when the referral set was updated. */
+  updatedAt: Scalars['Timestamp'];
+};
+
+
+/** Data relating to a referral set. */
+export type ReferralSetstatsArgs = {
+  epoch?: InputMaybe<Scalars['Int']>;
+  referee?: InputMaybe<Scalars['ID']>;
+};
+
+/** Connection type for retrieving cursor-based paginated referral set information */
+export type ReferralSetConnection = {
+  __typename?: 'ReferralSetConnection';
+  /** The referral sets in this connection */
+  edges: Array<Maybe<ReferralSetEdge>>;
+  /** The pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing the referral set and cursor information returned by a ReferralSetConnection */
+export type ReferralSetEdge = {
+  __typename?: 'ReferralSetEdge';
+  /** The cursor for this referral set */
+  cursor: Scalars['String'];
+  /** The referral set */
+  node: ReferralSet;
+};
+
+/** Data relating to referees that have joined a referral set */
+export type ReferralSetReferee = {
+  __typename?: 'ReferralSetReferee';
+  /** Epoch in which the party joined the set. */
+  atEpoch: Scalars['Int'];
+  /** Timestamp as RFC3339Nano when the party joined the set. */
+  joinedAt: Scalars['Timestamp'];
+  /** Party that joined the set. */
+  refereeId: Scalars['ID'];
+  /** Unique ID of the referral set the referee joined. */
+  referralSetId: Scalars['ID'];
+};
+
+/** Connection type for retrieving cursor-based paginated information about the referral set referees */
+export type ReferralSetRefereeConnection = {
+  __typename?: 'ReferralSetRefereeConnection';
+  /** The referral set referees in this connection */
+  edges: Array<Maybe<ReferralSetRefereeEdge>>;
+  /** The pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing the referral set referee and cursor information returned by a ReferralSetRefereeConnection */
+export type ReferralSetRefereeEdge = {
+  __typename?: 'ReferralSetRefereeEdge';
+  /** The cursor for this referral set referee */
+  cursor: Scalars['String'];
+  /** The referral set referee */
+  node: ReferralSetReferee;
+};
+
+export type ReferralSetStats = {
+  __typename?: 'ReferralSetStats';
+  /** Epoch at which the set's statistics are updated. */
+  atEpoch?: Maybe<Scalars['Int']>;
+  /** Referees' statistics for that epoch. */
+  referees_stats: Array<RefereeStats>;
+  /** Running volume for the set based on the window length of the current referral program. */
+  referralSetRunningNotionalTakerVolume: Scalars['String'];
+  /** Unique ID of the set */
+  setId: Scalars['ID'];
 };
 
 /** Reward information for a single party */
