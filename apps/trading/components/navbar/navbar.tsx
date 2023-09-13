@@ -193,7 +193,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
               'hover:text-vega-clight-100 dark:hover:text-vega-cdark-100'
             )}
           >
-            <NavbarLinkExternal to={useLinks(DApp.Token)()}>
+            <NavbarLinkExternal to={useLinks(DApp.Governance)()}>
               {t('Governance')}
             </NavbarLinkExternal>
           </span>
