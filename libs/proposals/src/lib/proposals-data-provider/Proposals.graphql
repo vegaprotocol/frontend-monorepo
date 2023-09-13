@@ -113,6 +113,9 @@ fragment NewMarketFields on NewMarket {
   # }
   # linearSlippageFactor
   # quadraticSlippageFactor
+  successorConfiguration {
+    parentMarketId
+  }
 }
 
 fragment UpdateMarketFields on UpdateMarket {

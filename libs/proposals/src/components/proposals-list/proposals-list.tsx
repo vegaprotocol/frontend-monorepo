@@ -1,11 +1,11 @@
-import React from 'react';
+import type { FC } from 'react';
 import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
-import { MarketNameProposalCell, useColumnDefs } from './use-column-defs';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { useProposalsListQuery } from '../../lib/proposals-data-provider/__generated__/Proposals';
-import { removePaginationWrapper } from '@vegaprotocol/utils';
+import { useColumnDefs } from './use-column-defs';
 
 export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
   data.filter((proposal) =>
@@ -16,13 +16,19 @@ export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
     ].includes(proposal.state)
   );
 
+const defaultColDef = {
+  sortable: true,
+  filter: true,
+  filterParams: { buttons: ['reset'] },
+};
+
 interface ProposalListProps {
-  SuccessorMarketRenderer: React.FC<{ value: string }>;
+  cellRenderers: {
+    [name: string]: FC<{ value: string; data: ProposalListFieldsFragment }>;
+  };
 }
 
-export const ProposalsList = ({
-  SuccessorMarketRenderer,
-}: ProposalListProps) => {
+export const ProposalsList = ({ cellRenderers }: ProposalListProps) => {
   const { data } = useProposalsListQuery({
     variables: {
       proposalType: Types.ProposalType.TYPE_NEW_MARKET,
@@ -32,7 +38,7 @@ export const ProposalsList = ({
   const filteredData = getNewMarketProposals(
     removePaginationWrapper(data?.proposalsConnection?.edges)
   );
-  const { columnDefs, defaultColDef } = useColumnDefs();
+  const columnDefs = useColumnDefs();
 
   return (
     <AgGrid
@@ -40,8 +46,9 @@ export const ProposalsList = ({
       rowData={filteredData}
       defaultColDef={defaultColDef}
       getRowId={({ data }) => data.id}
-      overlayNoRowsTemplate={t('No markets')}
-      components={{ SuccessorMarketRenderer, MarketNameProposalCell }}
+      overlayNoRowsTemplate={t('No proposed markets')}
+      components={cellRenderers}
+      rowHeight={45}
     />
   );
 };

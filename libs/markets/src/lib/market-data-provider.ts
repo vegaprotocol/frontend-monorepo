@@ -120,7 +120,9 @@ export const fundingRateProvider = makeDerivedDataProvider<
   never,
   MarketDataQueryVariables
 >([marketDataProvider], (parts) => {
-  return (parts[0] as ReturnType<typeof getData>)?.fundingRate || null;
+  return (
+    (parts[0] as ReturnType<typeof getData>)?.productData?.fundingRate || null
+  );
 });
 
 export const useFundingRate = (marketId?: string, skip?: boolean) =>

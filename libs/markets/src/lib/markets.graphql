@@ -12,6 +12,8 @@ fragment MarketFields on Market {
   positionDecimalPlaces
   state
   tradingMode
+  parentMarketID
+  successorMarketID
   fees {
     factors {
       makerFee

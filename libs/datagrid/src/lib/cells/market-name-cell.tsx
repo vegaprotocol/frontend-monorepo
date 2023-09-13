@@ -61,7 +61,7 @@ export const MarketNameCell = ({
     (data as { market: Market })?.market?.tradableInstrument.instrument.product
       .__typename;
 
-  if (!value) return;
+  if (!value) return null;
   const content = (
     <>
       <span data-testid="market-code" data-market-id={id}>
@@ -74,7 +74,7 @@ export const MarketNameCell = ({
     <button
       onClick={handleOnClick}
       tabIndex={0}
-      className="block text-left text-ellipsis overflow-hidden whitespace-nowrap w-full"
+      className="block w-full overflow-hidden text-left text-ellipsis whitespace-nowrap"
     >
       {content}
     </button>

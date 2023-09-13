@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import orderBy from 'lodash/orderBy';
-import { MarketState } from '@vegaprotocol/types';
 import {
   calcTradedFactor,
   getAsset,
@@ -10,13 +9,7 @@ import { priceChangePercentage } from '@vegaprotocol/utils';
 import type { Filter } from '../../components/market-selector/market-selector';
 import { Sort } from './sort-dropdown';
 import { Product } from './product-selector';
-
-// Used for sort order and filter
-const MARKET_TEMPLATE = [
-  MarketState.STATE_ACTIVE,
-  MarketState.STATE_SUSPENDED,
-  MarketState.STATE_PENDING,
-];
+import { isMarketActive } from '../../lib/utils';
 
 export const useMarketSelectorList = ({
   product,
@@ -89,8 +82,4 @@ export const useMarketSelectorList = ({
   }, [data, product, searchTerm, assets, sort]);
 
   return { markets, data, loading, error, reload };
-};
-
-export const isMarketActive = (state: MarketState) => {
-  return MARKET_TEMPLATE.includes(state);
 };

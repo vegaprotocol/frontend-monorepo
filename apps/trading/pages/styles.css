@@ -82,7 +82,9 @@ html [data-theme='light'] {
 
   --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
 
-  --pennant-candlestick-inner-padding: 0.1;
+  /* reduce space between candles */
+  --pennant-candlestick-inner-padding: 0.175;
+  --pennant-candlestick-stroke-width: 0.5;
 }
 
 html [data-theme='light'] {

@@ -1,15 +1,13 @@
 import merge from 'lodash/merge';
 import { renderHook } from '@testing-library/react';
-import {
-  isMarketActive,
-  useMarketSelectorList,
-} from './use-market-selector-list';
-import { Product } from '../../components/market-selector/product-selector';
+import { useMarketSelectorList } from './use-market-selector-list';
+import { isMarketActive } from '../../lib/utils';
+import { Product } from './product-selector';
 import { Sort } from './sort-dropdown';
 import { createMarketFragment } from '@vegaprotocol/mock';
 import { MarketState } from '@vegaprotocol/types';
 import { useMarketList } from '@vegaprotocol/markets';
-import type { Filter } from '../../components/market-selector';
+import type { Filter } from './market-selector';
 import { subDays } from 'date-fns';
 
 jest.mock('@vegaprotocol/markets', () => ({

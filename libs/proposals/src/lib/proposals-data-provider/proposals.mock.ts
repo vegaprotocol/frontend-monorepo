@@ -109,6 +109,58 @@ export const marketUpdateProposal: ProposalListFieldsFragment = {
 export const createProposalListFieldsFragment = (
   override?: PartialDeep<ProposalListFieldsFragment>
 ): ProposalListFieldsFragment => {
+  const newMarket = {
+    decimalPlaces: 1,
+    lpPriceRange: '',
+    riskParameters: {
+      __typename: 'SimpleRiskModel',
+      params: {
+        __typename: 'SimpleRiskModelParams',
+        factorLong: 0,
+        factorShort: 1,
+      },
+    },
+    metadata: undefined,
+    successorConfiguration: {
+      __typename: 'SuccessorConfiguration',
+      parentMarketId: 'xyz',
+    },
+    instrument: {
+      code: 'ETHUSD',
+      name: 'ETHUSD',
+      futureProduct: {
+        settlementAsset: {
+          id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
+          name: 'tDAI TEST',
+          symbol: 'tDAI',
+          decimals: 1,
+          quantum: '1',
+          __typename: 'Asset',
+        },
+        quoteName: '',
+        dataSourceSpecBinding: {
+          __typename: 'DataSourceSpecToFutureBinding',
+          settlementDataProperty: '',
+          tradingTerminationProperty: '',
+        },
+        dataSourceSpecForSettlementData: {
+          __typename: 'DataSourceDefinition',
+          sourceType: {
+            __typename: 'DataSourceDefinitionInternal',
+          },
+        },
+        dataSourceSpecForTradingTermination: {
+          __typename: 'DataSourceDefinition',
+          sourceType: {
+            __typename: 'DataSourceDefinitionInternal',
+          },
+        },
+        __typename: 'FutureProduct',
+      },
+      __typename: 'InstrumentConfiguration',
+    },
+    __typename: 'NewMarket',
+  } as const;
   const defaultProposal: ProposalListFieldsFragment = {
     id: 'e9ec6d5c46a7e7bcabf9ba7a893fa5a5eeeec08b731f06f7a6eb7bf0e605b829',
     reference: 'injected_at_runtime',
@@ -147,54 +199,7 @@ export const createProposalListFieldsFragment = (
     terms: {
       closingDatetime: '2022-11-15T12:44:34Z',
       enactmentDatetime: '2022-11-15T12:44:54Z',
-      change: {
-        decimalPlaces: 1,
-
-        riskParameters: {
-          __typename: 'SimpleRiskModel',
-          params: {
-            __typename: 'SimpleRiskModelParams',
-            factorLong: 0,
-            factorShort: 1,
-          },
-        },
-        metadata: [],
-        instrument: {
-          code: 'ETHUSD',
-          name: 'ETHUSD',
-          futureProduct: {
-            settlementAsset: {
-              id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
-              name: 'tDAI TEST',
-              symbol: 'tDAI',
-              decimals: 1,
-              quantum: '1',
-              __typename: 'Asset',
-            },
-            quoteName: '',
-            dataSourceSpecBinding: {
-              __typename: 'DataSourceSpecToFutureBinding',
-              settlementDataProperty: '',
-              tradingTerminationProperty: '',
-            },
-            dataSourceSpecForSettlementData: {
-              __typename: 'DataSourceDefinition',
-              sourceType: {
-                __typename: 'DataSourceDefinitionInternal',
-              },
-            },
-            dataSourceSpecForTradingTermination: {
-              __typename: 'DataSourceDefinition',
-              sourceType: {
-                __typename: 'DataSourceDefinitionInternal',
-              },
-            },
-            __typename: 'FutureProduct',
-          },
-          __typename: 'InstrumentConfiguration',
-        },
-        __typename: 'NewMarket',
-      },
+      change: newMarket,
       __typename: 'ProposalTerms',
     },
     __typename: 'Proposal',
