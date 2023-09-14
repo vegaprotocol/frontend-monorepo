@@ -658,7 +658,7 @@ export const LiquidityMonitoringParametersInfoPanel = ({
           parentMarket.liquidityMonitoringParameters.targetStakeParameters
             .scalingFactor,
       }
-    : {};
+    : undefined;
 
   return <MarketInfoTable data={marketData} parentData={parentMarketData} />;
 };
