@@ -1,6 +1,6 @@
 # Related issues 🔗
 
-Issue: #[Issue number here]
+Closes #[Issue number here]
 
 # Description ℹ️
 

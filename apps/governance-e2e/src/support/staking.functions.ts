@@ -170,21 +170,20 @@ export function clickOnValidatorFromList(
   validatorName = null
 ) {
   cy.contains('Loading...', epochTimeout).should('not.exist');
-  waitForBeginningOfEpoch();
   // below is to ensure validator list is shown
   cy.get(stakeValidatorListName, { timeout: 10000 }).should('exist');
   cy.get(stakeValidatorListPendingStake, txTimeout).should(
     'not.contain',
     '2,000,000,000,000,000,000.00' // number due to bug #936
   );
+  waitForBeginningOfEpoch();
   if (validatorName) {
     cy.contains(validatorName).click();
   } else {
     cy.get(`[row-id="${validatorNumber}"]`)
       .should('be.visible')
       .first()
-      .as('validatorOnList');
-    cy.get('@validatorOnList').click();
+      .click();
   }
 }
 
@@ -196,7 +195,7 @@ export function validateValidatorListTotalStakeAndShare(
   cy.contains('Loading...', epochTimeout).should('not.exist');
   waitForBeginningOfEpoch();
   cy.get(`[row-id="${positionOnList}"]`)
-    .eq(1)
+    .first()
     .within(() => {
       cy.getByTestId(stakeValidatorListTotalStake, epochTimeout).should(
         'have.text',
