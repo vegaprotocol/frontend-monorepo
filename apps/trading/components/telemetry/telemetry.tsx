@@ -4,7 +4,7 @@ import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useCallback, useEffect } from 'react';
 import { TelemetryApproval } from './telemetry-approval';
 import { t } from '@vegaprotocol/i18n';
-import { useOnboardingStore } from '../welcome-dialog';
+import { useOnboardingStore } from '../welcome-dialog/use-get-onboarding-step';
 
 const TELEMETRY_APPROVAL_TOAST_ID = 'telemetry_tost_id';
 

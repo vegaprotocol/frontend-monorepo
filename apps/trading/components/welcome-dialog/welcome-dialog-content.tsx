@@ -4,12 +4,14 @@ import { TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
 import { Links, Routes } from '../../pages/client-router';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
-import { useOnboardingStore } from './welcome-dialog';
 import { useTopTradedMarkets } from '../../lib/hooks/use-top-traded-markets';
+import { useOnboardingStore } from './use-get-onboarding-step';
 
 export const WelcomeDialogContent = () => {
   const { VEGA_ENV } = useEnvironment();
-  const dismiss = useOnboardingStore((store) => store.dismiss);
+  const setOnboardingDialog = useOnboardingStore(
+    (store) => store.setDialogOpen
+  );
 
   const { data } = useTopTradedMarkets();
   const marketId = data && data[0]?.id;
@@ -49,7 +51,7 @@ export const WelcomeDialogContent = () => {
         </ul>
         <TradingAnchorButton
           href={link}
-          onClick={() => dismiss()}
+          onClick={() => setOnboardingDialog(false)}
           className="block w-full"
           data-testid="browse-markets-button"
         >
