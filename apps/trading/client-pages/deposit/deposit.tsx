@@ -12,15 +12,13 @@ import classNames from 'classnames';
 
 export const Deposit = () => {
   return (
-    <div className="flex justify-center w-full px-8 py-16">
-      <div className="lg:min-w-[700px] min-w-[300px] max-w-[700px]">
-        <h1 className="text-4xl uppercase xl:text-5xl font-alpha calt">
-          {t('Deposit')}
-        </h1>
-        <div className="mt-10">
-          <DepositContainer />
-          <DepositGetStarted />
-        </div>
+    <div className="max-w-[600px] px-4 py-8 mx-auto lg:px-8">
+      <h1 className="mb-6 text-4xl uppercase xl:text-5xl font-alpha calt">
+        {t('Deposit')}
+      </h1>
+      <div className="flex flex-col gap-6">
+        <DepositContainer />
+        <DepositGetStarted />
       </div>
     </div>
   );
@@ -31,7 +29,7 @@ const DepositGetStarted = () => {
   const dismiss = useOnboardingStore((store) => store.dismiss);
   const step = useGetOnboardingStep();
   const wrapperClasses = classNames(
-    'flex flex-col py-4 px-6 gap-4 rounded mt-6',
+    'flex flex-col py-4 px-6 gap-4 rounded',
     'bg-vega-blue-300 dark:bg-vega-blue-700',
     'border border-vega-blue-350 dark:border-vega-blue-650'
   );
@@ -42,18 +40,20 @@ const DepositGetStarted = () => {
   }
 
   return (
-    <div className={wrapperClasses}>
-      <h3 className="text-lg">{t('Get started')}</h3>
-      <GetStartedCheckList />
-      {step > OnboardingStep.ONBOARDING_DEPOSIT_STEP && (
-        <TradingAnchorButton
-          href={Links[Routes.HOME]()}
-          onClick={() => dismiss()}
-          intent={Intent.Info}
-        >
-          {t('Start trading')}
-        </TradingAnchorButton>
-      )}
+    <div className="pt-6 border-t border-default">
+      <div className={wrapperClasses}>
+        <h3 className="text-lg">{t('Get started')}</h3>
+        <GetStartedCheckList />
+        {step > OnboardingStep.ONBOARDING_DEPOSIT_STEP && (
+          <TradingAnchorButton
+            href={Links[Routes.HOME]()}
+            onClick={() => dismiss()}
+            intent={Intent.Info}
+          >
+            {t('Start trading')}
+          </TradingAnchorButton>
+        )}
+      </div>
     </div>
   );
 };
