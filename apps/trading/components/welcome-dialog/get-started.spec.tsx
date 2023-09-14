@@ -2,7 +2,8 @@ import { MemoryRouter } from 'react-router-dom';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { GetStarted } from './get-started';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { useOnboardingStore } from './use-get-onboarding-step';
 
 let mockStep = 1;
 jest.mock('./use-get-onboarding-step', () => ({
@@ -44,13 +45,15 @@ describe('GetStarted', () => {
     globalThis.window.vega = undefined as unknown as Vega;
   });
 
-  it('renders nothing if connected', () => {
+  it('renders nothing if dismissed', () => {
+    useOnboardingStore.setState({ dismissed: true });
     mockStep = 0;
     const { container } = renderComponent({ pubKey: 'my-pubkey' });
     expect(container).toBeEmptyDOMElement();
   });
 
   it('steps should be ticked', () => {
+    useOnboardingStore.setState({ dismissed: false });
     const navigatorGetter: jest.SpyInstance = jest.spyOn(
       window.navigator,
       'userAgent',
@@ -86,6 +89,8 @@ describe('GetStarted', () => {
     expect(
       screen.getByRole('button', { name: 'Ready to trade' })
     ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Ready to trade' }));
 
     mockStep = 5;
     rerender(
