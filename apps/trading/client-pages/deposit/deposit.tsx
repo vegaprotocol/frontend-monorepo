@@ -1,10 +1,6 @@
 import { DepositContainer } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/i18n';
-import {
-  Intent,
-  TradingAnchorButton,
-  TradingButton,
-} from '@vegaprotocol/ui-toolkit';
+import { Intent, TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
 import { GetStartedCheckList } from '../../components/welcome-dialog';
 import {
   useGetOnboardingStep,

@@ -9,7 +9,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
-import { useMatch, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   OnboardingStep,
   useGetOnboardingStep,
