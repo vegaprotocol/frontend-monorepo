@@ -10,6 +10,7 @@ import { useVegaWallet, type PubKey } from '@vegaprotocol/wallet';
 import { useCallback, useMemo } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { ViewType, useSidebar } from '../sidebar';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-path-id';
 
 export const VegaWalletMenu = ({
   setMenu,
@@ -17,7 +18,8 @@ export const VegaWalletMenu = ({
   setMenu: (open: 'nav' | 'wallet' | null) => void;
 }) => {
   const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
-  const setView = useSidebar((store) => store.setView);
+  const currentRouteId = useGetCurrentRouteId();
+  const setViews = useSidebar((store) => store.setViews);
 
   const activeKey = useMemo(() => {
     return pubKeys?.find((pk) => pk.publicKey === pubKey);
@@ -46,7 +48,7 @@ export const VegaWalletMenu = ({
       <div className="flex flex-col gap-2 m-4">
         <Button
           onClick={() => {
-            setView({ type: ViewType.Transfer });
+            setViews({ type: ViewType.Transfer }, currentRouteId);
             setMenu(null);
           }}
         >

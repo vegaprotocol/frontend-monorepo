@@ -22,13 +22,15 @@ import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import { ViewType, useSidebar } from '../sidebar';
 import classNames from 'classnames';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-path-id';
 
 export const VegaWalletConnectButton = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const setView = useSidebar((store) => store.setView);
+  const currentRouteId = useGetCurrentRouteId();
+  const setViews = useSidebar((store) => store.setViews);
   const {
     pubKey,
     pubKeys,
@@ -95,7 +97,7 @@ export const VegaWalletConnectButton = () => {
               <TradingDropdownItem
                 data-testid="wallet-transfer"
                 onClick={() => {
-                  setView({ type: ViewType.Transfer });
+                  setViews({ type: ViewType.Transfer }, currentRouteId);
                   setDropdownOpen(false);
                 }}
               >

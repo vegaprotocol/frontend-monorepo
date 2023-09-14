@@ -1,14 +1,16 @@
 import { Outlet, Routes, Route } from 'react-router-dom';
 import { Sidebar, SidebarContent, useSidebar } from '../sidebar';
 import classNames from 'classnames';
-import { Routes as AppRoutes } from '../../pages/client-router';
+import { Routes as AppRoutes, routerConfig } from '../../pages/client-router';
 import { MarketHeader } from '../market-header';
 import { LiquidityHeader } from '../liquidity-header';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-path-id';
 
 export const LayoutWithSidebar = () => {
-  const sidebarView = useSidebar((store) => store.view);
+  const currentRouteId = useGetCurrentRouteId();
+  const views = useSidebar((store) => store.views);
+  const sidebarView = views[currentRouteId] || null;
   const sidebarOpen = sidebarView !== null;
-
   const gridClasses = classNames(
     'h-full relative z-0 grid',
     'grid-rows-[min-content_1fr_40px]',

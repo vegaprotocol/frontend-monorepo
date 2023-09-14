@@ -23,6 +23,7 @@ import { ViewType, useSidebar } from '../../components/sidebar';
 import { AccountsMenu } from '../../components/accounts-menu';
 import { DepositsMenu } from '../../components/deposits-menu';
 import { WithdrawalsMenu } from '../../components/withdrawals-menu';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-path-id';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -37,7 +38,9 @@ const WithdrawalsIndicator = () => {
 };
 
 export const Portfolio = () => {
-  const { init, view, setView } = useSidebar();
+  const currentRouteId = useGetCurrentRouteId();
+  const { init, getView, setViews } = useSidebar();
+  const view = getView(currentRouteId);
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
@@ -49,9 +52,9 @@ export const Portfolio = () => {
   // Make transfer sidebar open by default
   useEffect(() => {
     if (init && view === null) {
-      setView({ type: ViewType.Transfer });
+      setViews({ type: ViewType.Transfer }, currentRouteId);
     }
-  }, [init, view, setView]);
+  }, [init, view, setViews, currentRouteId]);
 
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
   const wrapperClasses = 'p-0.5 h-full max-h-full flex flex-col';
