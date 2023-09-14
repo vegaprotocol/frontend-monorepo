@@ -195,8 +195,7 @@ export function validateValidatorListTotalStakeAndShare(
   cy.contains('Loading...', epochTimeout).should('not.exist');
   waitForBeginningOfEpoch();
   cy.get(`[row-id="${positionOnList}"]`)
-    .should('have.length', 2)
-    .eq(1)
+    .first()
     .within(() => {
       cy.getByTestId(stakeValidatorListTotalStake, epochTimeout).should(
         'have.text',

@@ -352,7 +352,6 @@ export const ConsensusValidatorsTable = ({
           field: ValidatorFields.RANKING_INDEX,
           headerName: '#',
           width: 60,
-          pinned: 'left',
         },
         {
           field: ValidatorFields.VALIDATOR,
@@ -362,7 +361,6 @@ export const ConsensusValidatorsTable = ({
             if (a === b) return 0;
             return a > b ? 1 : -1;
           },
-          pinned: 'left',
           width: 260,
         },
         {
