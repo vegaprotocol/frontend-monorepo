@@ -3,13 +3,13 @@ import { t } from '@vegaprotocol/i18n';
 import {
   ExternalLink,
   Intent,
+  TradingAnchorButton,
   TradingButton,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
-import { useNavigate } from 'react-router-dom';
 import {
   OnboardingStep,
   useGetOnboardingStep,
@@ -24,45 +24,54 @@ interface Props {
 }
 
 const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
-  const navigate = useNavigate();
   const dismiss = useOnboardingStore((store) => store.dismiss);
   const setDialogOpen = useOnboardingStore((store) => store.setDialogOpen);
   const marketId = useGlobalStore((store) => store.marketId);
-  const link = marketId ? Links[Routes.MARKET](marketId) : Links[Routes.HOME]();
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
   const setView = useSidebar((store) => store.setView);
-  let buttonText = t('Get started');
-  let onClickHandle = () => {
-    openVegaWalletDialog();
+
+  const buttonProps = {
+    size: 'small' as const,
+    'data-testid': 'get-started-button',
+    intent: Intent.Info,
   };
+
   if (step <= OnboardingStep.ONBOARDING_CONNECT_STEP) {
-    buttonText = t('Connect');
+    return (
+      <TradingButton {...buttonProps} onClick={() => openVegaWalletDialog()}>
+        {t('Connect')}
+      </TradingButton>
+    );
   } else if (step === OnboardingStep.ONBOARDING_DEPOSIT_STEP) {
-    buttonText = t('Deposit');
-    onClickHandle = () => {
-      navigate('deposit');
-      setView({ type: ViewType.Deposit });
-      setDialogOpen(false);
-    };
+    return (
+      <TradingAnchorButton
+        {...buttonProps}
+        href={Links[Routes.DEPOSIT]()}
+        onClick={() => setDialogOpen(false)}
+      >
+        {t('Deposit')}
+      </TradingAnchorButton>
+    );
   } else if (step >= OnboardingStep.ONBOARDING_ORDER_STEP) {
-    buttonText = t('Ready to trade');
-    onClickHandle = () => {
-      navigate(link);
-      setView({ type: ViewType.Order });
-      dismiss();
-    };
+    return (
+      <TradingAnchorButton
+        {...buttonProps}
+        href={marketId ? Links[Routes.MARKET](marketId) : Links[Routes.HOME]()}
+        onClick={() => {
+          setView({ type: ViewType.Order });
+          dismiss();
+        }}
+      >
+        {t('Ready to trade')}
+      </TradingAnchorButton>
+    );
   }
 
   return (
-    <TradingButton
-      onClick={onClickHandle}
-      size="small"
-      data-testid="get-started-button"
-      intent={Intent.Info}
-    >
-      {buttonText}
+    <TradingButton {...buttonProps} onClick={() => openVegaWalletDialog()}>
+      {t('Get started')}
     </TradingButton>
   );
 };

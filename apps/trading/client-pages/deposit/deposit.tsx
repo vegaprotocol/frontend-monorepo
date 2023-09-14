@@ -36,6 +36,7 @@ const DepositGetStarted = () => {
     'border border-vega-blue-350 dark:border-vega-blue-650'
   );
 
+  // Dont show unless still onboarding
   if (onboardingDismissed) {
     return null;
   }
