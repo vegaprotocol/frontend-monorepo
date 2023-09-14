@@ -113,6 +113,20 @@ In order to run a container on port 3000:
 docker run -p 3000:80 [TAG]
 ```
 
+On top of that there are two possible scenarios for running docker image - using nginx server (default) of ipfs daemon.
+
+to run ipfs on port 3000:
+
+```bash
+docker run -p 3000:80 [TAG] ipfs
+```
+
+to run nginx on port 3000:
+
+```bash
+docker run -p 3000:80 [TAG]
+```
+
 ## Build instructions
 
 The [`docker`](./docker) subfolder has some docker configurations for easily setting up your own hosted version of Console either for the web, or ready for pinning on IPFS.
