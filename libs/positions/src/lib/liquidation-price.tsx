@@ -16,8 +16,12 @@ export const LiquidationPrice = ({
   decimalPlaces: number;
   formatDecimals: number;
 }) => {
-  // The estimate order query API gives us the liquidation price in formatted by asset decimals.
-  // We need to calculate it with asset decimals, but display it with market decimals precision until the API changes.
+  // NOTE!
+  //
+  // The estimate order query API gives us the liquidation price unformatted but expecting to be converted
+  // using asset decimal placse.
+  //
+  // We need to convert it with asset decimals, but display it formatted with market decimals precision until the API changes.
   const { data: currentData, previousData } = useEstimatePositionQuery({
     variables: {
       marketId,
@@ -57,11 +61,11 @@ export const LiquidationPrice = ({
           <tbody>
             <tr>
               <th>{t('Worst case')}</th>
-              <td className="text-right font-mono pl-2">{worstCase}</td>
+              <td className="pl-2 font-mono text-right">{worstCase}</td>
             </tr>
             <tr>
               <th>{t('Best case')}</th>
-              <td className="text-right font-mono pl-2">{bestCase}</td>
+              <td className="pl-2 font-mono text-right">{bestCase}</td>
             </tr>
           </tbody>
         </table>
