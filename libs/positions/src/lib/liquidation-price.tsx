@@ -7,13 +7,21 @@ export const LiquidationPrice = ({
   marketId,
   openVolume,
   collateralAvailable,
-  marketDecimalPlaces,
+  decimalPlaces,
+  formatDecimals,
 }: {
   marketId: string;
   openVolume: string;
   collateralAvailable: string;
-  marketDecimalPlaces: number;
+  decimalPlaces: number;
+  formatDecimals: number;
 }) => {
+  // NOTE!
+  //
+  // The estimate order query API gives us the liquidation price unformatted but expecting to be converted
+  // using asset decimal placse.
+  //
+  // We need to convert it with asset decimals, but display it formatted with market decimals precision until the API changes.
   const { data: currentData, previousData } = useEstimatePositionQuery({
     variables: {
       marketId,
@@ -43,8 +51,8 @@ export const LiquidationPrice = ({
       /\..*/,
       ''
     );
-  worstCase = addDecimalsFormatNumber(worstCase, marketDecimalPlaces);
-  bestCase = addDecimalsFormatNumber(bestCase, marketDecimalPlaces);
+  worstCase = addDecimalsFormatNumber(worstCase, decimalPlaces, formatDecimals);
+  bestCase = addDecimalsFormatNumber(bestCase, decimalPlaces, formatDecimals);
 
   return (
     <Tooltip
@@ -53,11 +61,11 @@ export const LiquidationPrice = ({
           <tbody>
             <tr>
               <th>{t('Worst case')}</th>
-              <td className="text-right font-mono pl-2">{worstCase}</td>
+              <td className="pl-2 font-mono text-right">{worstCase}</td>
             </tr>
             <tr>
               <th>{t('Best case')}</th>
-              <td className="text-right font-mono pl-2">{bestCase}</td>
+              <td className="pl-2 font-mono text-right">{bestCase}</td>
             </tr>
           </tbody>
         </table>
