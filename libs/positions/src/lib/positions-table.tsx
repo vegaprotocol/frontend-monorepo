@@ -339,12 +339,15 @@ export const PositionsTable = ({
               if (!data) {
                 return '-';
               }
+              // The estimate order query API gives us the liquidation price in formatted by asset decimals.
+              // We need to calculate it with asset decimals, but display it with market decimals precision until the API changes.
               return (
                 <LiquidationPrice
                   marketId={data.marketId}
                   openVolume={data.openVolume}
                   collateralAvailable={data.totalBalance}
-                  marketDecimalPlaces={data.marketDecimalPlaces}
+                  decimalPlaces={data.assetDecimals}
+                  formatDecimals={data.marketDecimalPlaces}
                 />
               );
             },
