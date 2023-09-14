@@ -29,7 +29,7 @@ export const MarketSuccessorProposalBanner = ({
             ?.successorConfiguration?.parentMarketId === marketId
       ) ?? [];
   const [visible, setVisible] = useState(true);
-  const tokenLink = useLinks(DApp.Token);
+  const tokenLink = useLinks(DApp.Governance);
   if (visible && successors.length) {
     return (
       <NotificationBanner
