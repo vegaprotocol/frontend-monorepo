@@ -6,6 +6,7 @@ import type {
   ReactNode,
 } from 'react';
 import { Intent } from '../../utils/intent';
+import { Link } from 'react-router-dom';
 
 type TradingButtonProps = {
   size?: 'large' | 'medium' | 'small' | 'extra-small';
@@ -119,30 +120,22 @@ export const TradingButton = forwardRef<
   )
 );
 
-export const TradingAnchorButton = forwardRef<
-  HTMLAnchorElement,
-  AnchorHTMLAttributes<HTMLAnchorElement> & TradingButtonProps
->(
-  (
-    {
-      size = 'medium',
-      intent = Intent.None,
-      icon,
-      href,
-      children,
-      className,
-      subLabel,
-      ...props
-    },
-    ref
-  ) => (
-    <a
-      ref={ref}
-      href={href}
-      className={getClassName({ size, subLabel, intent }, className)}
-      {...props}
-    >
-      <Content icon={icon} subLabel={subLabel} children={children} />
-    </a>
-  )
+export const TradingAnchorButton = ({
+  size = 'medium',
+  intent = Intent.None,
+  icon,
+  href,
+  children,
+  className,
+  subLabel,
+  ...props
+}: AnchorHTMLAttributes<HTMLAnchorElement> &
+  TradingButtonProps & { href: string }) => (
+  <Link
+    to={href}
+    className={getClassName({ size, subLabel, intent }, className)}
+    {...props}
+  >
+    <Content icon={icon} subLabel={subLabel} children={children} />
+  </Link>
 );
