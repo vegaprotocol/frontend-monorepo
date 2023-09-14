@@ -164,7 +164,7 @@ As a prerequisite you need to perform build of `dist` directory and move its con
 You can build any of the containers locally with the following command:
 
 ```bash
-docker build --dockerfile docker/node-outside-docker.Dockerfile . --tag=[TAG]
+docker build -f docker/node-outside-docker.Dockerfile . --tag=[TAG]
 ```
 
 ### Verifying ipfs-hash of existing current application version
