@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useEffect } from 'react';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { EtherscanLink } from '@vegaprotocol/environment';
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
@@ -218,12 +219,19 @@ export const useEthereumTransactionToasts = () => {
     [onClose]
   );
 
-  useEthTransactionStore.subscribe(
-    (state) => compact(state.transactions.filter((tx) => tx?.dialogOpen)),
-    (txs) => {
-      txs.forEach((tx) => {
-        setToast(fromEthTransaction(tx));
-      });
-    }
-  );
+  // Only register a subscription once
+  useEffect(() => {
+    const unsubscribe = useEthTransactionStore.subscribe(
+      (state) => compact(state.transactions.filter((tx) => tx?.dialogOpen)),
+      (txs) => {
+        txs.forEach((tx) => {
+          setToast(fromEthTransaction(tx));
+        });
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 };
