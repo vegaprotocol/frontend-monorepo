@@ -76,10 +76,10 @@ export const MarketPage = () => {
   }, [update, lastMarketId, data?.id]);
 
   useEffect(() => {
-    if (view === undefined) {
+    if (largeScreen && view === undefined) {
       setViews({ type: ViewType.Order }, currentRouteId);
     }
-  }, [setViews, view, currentRouteId]);
+  }, [setViews, view, currentRouteId, largeScreen]);
 
   const tradeView = useMemo(() => {
     if (largeScreen) {
