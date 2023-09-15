@@ -14,9 +14,9 @@ import { Settings } from '../settings';
 import { Tooltip } from '../../components/tooltip';
 import { WithdrawContainer } from '../withdraw-container';
 import { Routes as AppRoutes } from '../../pages/client-router';
-import { GetStarted } from '../welcome-dialog';
 import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
+import { GetStarted } from '../welcome-dialog';
 
 export enum ViewType {
   Order = 'Order',
@@ -57,7 +57,7 @@ export const Sidebar = () => {
   const setViewAsDialogOpen = useViewAsDialog((state) => state.setOpen);
   const { pubKeys } = useVegaWallet();
   return (
-    <div className="flex lg:flex-col gap-2 h-full p-1" data-testid="sidebar">
+    <div className="flex h-full p-1 lg:flex-col gap-2" data-testid="sidebar">
       <nav className={navClasses}>
         {/* sidebar options that always show */}
         <SidebarButton
@@ -197,7 +197,7 @@ export const SidebarButton = ({
 const SidebarDivider = () => {
   return (
     <div
-      className="bg-vega-clight-600 dark:bg-vega-cdark-600 w-px h-4 lg:w-4 lg:h-px"
+      className="w-px h-4 bg-vega-clight-600 dark:bg-vega-cdark-600 lg:w-4 lg:h-px"
       role="separator"
     />
   );
@@ -245,7 +245,6 @@ export const SidebarContent = () => {
     return (
       <ContentWrapper title={t('Deposit')}>
         <DepositContainer assetId={view.assetId} />
-        <GetStarted />
       </ContentWrapper>
     );
   }
@@ -254,7 +253,6 @@ export const SidebarContent = () => {
     return (
       <ContentWrapper title={t('Withdraw')}>
         <WithdrawContainer assetId={view.assetId} />
-        <GetStarted />
       </ContentWrapper>
     );
   }
@@ -263,7 +261,6 @@ export const SidebarContent = () => {
     return (
       <ContentWrapper title={t('Transfer')}>
         <TransferContainer assetId={view.assetId} />
-        <GetStarted />
       </ContentWrapper>
     );
   }
@@ -288,7 +285,7 @@ const ContentWrapper = ({
 }) => {
   return (
     <TinyScroll
-      className="h-full overflow-auto py-4 pl-3 pr-4"
+      className="h-full py-4 pl-3 pr-4 overflow-auto"
       // panes have p-1, since sidebar is on the right make pl less to account for additional pane space
       data-testid="sidebar-content"
     >
