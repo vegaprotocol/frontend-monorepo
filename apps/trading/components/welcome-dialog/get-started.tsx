@@ -73,7 +73,6 @@ export const GetStarted = ({ lead }: Props) => {
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const CANONICAL_URL = VEGA_NETWORKS[VEGA_ENV] || 'https://console.vega.xyz';
   const currentStep = useGetOnboardingStep();
   const dismissed = useOnboardingStore((store) => store.dismissed);
 
@@ -116,7 +115,7 @@ export const GetStarted = ({ lead }: Props) => {
         {VEGA_ENV === Networks.MAINNET && (
           <p className="text-sm">
             {t('Experiment for free with virtual assets on')}{' '}
-            <ExternalLink href={CANONICAL_URL}>
+            <ExternalLink href={VEGA_NETWORKS.TESTNET}>
               {t('Fairground Testnet')}
             </ExternalLink>
           </p>
@@ -124,7 +123,7 @@ export const GetStarted = ({ lead }: Props) => {
         {VEGA_ENV === Networks.TESTNET && (
           <p className="text-sm">
             {t('Ready to trade with real funds?')}{' '}
-            <ExternalLink href={CANONICAL_URL}>
+            <ExternalLink href={VEGA_NETWORKS.MAINNET}>
               {t('Switch to Mainnet')}
             </ExternalLink>
           </p>
