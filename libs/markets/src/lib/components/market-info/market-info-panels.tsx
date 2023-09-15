@@ -15,10 +15,8 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import {
-  formatDateWithLocalTimezone,
   formatNumber,
   formatNumberPercentage,
-  fromNanoSeconds,
   getDateTimeFormat,
   getMarketExpiryDateFormatted,
 } from '@vegaprotocol/utils';
@@ -106,7 +104,7 @@ export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
         }}
         decimalPlaces={market.decimalPlaces}
       />
-      <p className="text-xs mt-2">
+      <p className="mt-2 text-xs">
         {t(
           'There is 1 unit of the settlement asset (%s) to every 1 quote unit (%s).',
           [assetSymbol, quoteUnit]
@@ -315,12 +313,12 @@ const SuccessionLineItem = ({
         {marketData ? (
           marketData.tradableInstrument.instrument.name
         ) : (
-          <span className="block w-28 h-4 bg-vega-clight-500 dark:bg-vega-cdark-500 animate-pulse"></span>
+          <span className="block h-4 w-28 bg-vega-clight-500 dark:bg-vega-cdark-500 animate-pulse"></span>
         )}
       </div>
       <div
         data-testid="succession-line-item-market-id"
-        className="text-xs truncate mt-1"
+        className="mt-1 text-xs truncate"
       >
         {marketId}
       </div>
@@ -329,7 +327,7 @@ const SuccessionLineItem = ({
 };
 
 const SuccessionLink = () => (
-  <div className="text-center leading-none" aria-hidden>
+  <div className="leading-none text-center" aria-hidden>
     <VegaIcon name={VegaIconNames.ARROW_DOWN} size={12} />
   </div>
 );
@@ -421,7 +419,7 @@ export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
         dtClassName="text-black dark:text-white text-ui !px-0 !font-normal"
         ddClassName="text-black dark:text-white text-ui !px-0 !font-normal max-w-full"
       />
-      <p className="text-xs mt-4">
+      <p className="mt-4 text-xs">
         {t(
           'There is 1 unit of the settlement asset (%s) to every 1 quote unit (%s).',
           [assetSymbol, quoteUnit]
@@ -597,7 +595,7 @@ export const PriceMonitoringBoundsInfoPanel = ({
   }
   return (
     <>
-      <div className="grid grid-cols-2 text-sm mb-2">
+      <div className="mb-2 text-sm grid grid-cols-2">
         <p className="col-span-1">
           {t('%s probability price bounds', [
             formatNumberPercentage(
@@ -605,7 +603,7 @@ export const PriceMonitoringBoundsInfoPanel = ({
             ),
           ])}
         </p>
-        <p className="col-span-1 text-right">
+        <p className="text-right col-span-1">
           {t('Within %s seconds', [formatNumber(trigger.horizonSecs)])}
         </p>
       </div>
@@ -619,7 +617,7 @@ export const PriceMonitoringBoundsInfoPanel = ({
           assetSymbol={quoteUnit}
         />
       )}
-      <p className="text-xs mt-2">
+      <p className="mt-2 text-xs">
         {t('Results in %s seconds auction if breached', [
           trigger.auctionExtensionSecs.toString(),
         ])}
@@ -747,7 +745,7 @@ export const OracleInfoPanel = ({
           parentDataSourceSpec &&
           parentDataSourceSpecId &&
           parentProduct && (
-            <div className="flex flex-col gap-2 text-vega-dark-300 line-through">
+            <div className="flex flex-col line-through gap-2 text-vega-dark-300">
               <DataSourceProof
                 data-testid="oracle-proof-links"
                 data={parentDataSourceSpec}

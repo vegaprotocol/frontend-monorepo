@@ -476,6 +476,7 @@ describe('StopOrder', () => {
     mockDataProvider.mockReturnValue({
       reload: jest.fn(),
       data: Array(4),
+      reload: jest.fn(),
     });
     render(generateJsx());
     expect(mockDataProvider.mock.lastCall?.[0].skip).toBe(true);
@@ -488,6 +489,7 @@ describe('StopOrder', () => {
     mockDataProvider.mockReturnValue({
       reload: jest.fn(),
       data: Array(3),
+      reload: jest.fn(),
     });
     render(generateJsx());
     await userEvent.type(screen.getByTestId(sizeInput), '0.01');
