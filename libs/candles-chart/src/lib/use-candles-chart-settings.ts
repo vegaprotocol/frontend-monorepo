@@ -15,7 +15,7 @@ interface StoredSettings {
   studySizes: StudySizes;
 }
 
-export const STUDY_SIZE = 100;
+export const STUDY_SIZE = 90;
 const STUDY_ORDER: Study[] = [
   Study.FORCE_INDEX,
   Study.RELATIVE_STRENGTH_INDEX,
