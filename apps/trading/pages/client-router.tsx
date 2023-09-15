@@ -59,7 +59,7 @@ export const Links: ConsoleLinks = {
   [Routes.DEPOSIT]: () => Routes.DEPOSIT,
 };
 
-const routerConfig: RouteObject[] = [
+export const routerConfig: RouteObject[] = [
   {
     path: '/*',
     element: <LayoutWithSidebar />,
@@ -68,6 +68,7 @@ const routerConfig: RouteObject[] = [
       {
         index: true,
         element: <LazyHome />,
+        id: Routes.HOME,
       },
       {
         path: 'markets',
@@ -76,16 +77,19 @@ const routerConfig: RouteObject[] = [
           {
             path: 'all',
             element: <LazyMarkets />,
+            id: Routes.MARKETS,
           },
           {
             path: ':marketId',
             element: <LazyMarket />,
+            id: Routes.MARKET,
           },
         ],
       },
       {
         path: 'portfolio',
         element: <LazyPortfolio />,
+        id: Routes.PORTFOLIO,
       },
       {
         path: 'liquidity',
@@ -94,6 +98,7 @@ const routerConfig: RouteObject[] = [
           {
             path: ':marketId',
             element: <LazyLiquidity />,
+            id: Routes.LIQUIDITY,
           },
         ],
       },

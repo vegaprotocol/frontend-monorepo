@@ -10,10 +10,10 @@ const dialogContent = 'dialog-content';
 describe('connect vega wallet', { tags: '@smoke', testIsolation: true }, () => {
   beforeEach(() => {
     // Using portfolio page as it requires vega wallet connection
-    cy.visit('/#/portfolio');
     cy.mockTradingPage();
     cy.mockSubscription();
     cy.setOnBoardingViewed();
+    cy.visit('/#/portfolio');
     cy.get('[data-testid="pathname-/portfolio"]').should('exist');
   });
 

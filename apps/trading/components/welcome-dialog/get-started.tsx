@@ -32,7 +32,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const setView = useSidebar((store) => store.setView);
+  const setViews = useSidebar((store) => store.setViews);
   let buttonText = t('Get started');
   let onClickHandle = () => {
     openVegaWalletDialog();
@@ -43,14 +43,14 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
     buttonText = t('Deposit');
     onClickHandle = () => {
       navigate(link);
-      setView({ type: ViewType.Deposit });
+      setViews({ type: ViewType.Deposit }, Routes.MARKET);
       setDialogOpen(false);
     };
   } else if (step >= OnboardingStep.ONBOARDING_ORDER_STEP) {
     buttonText = t('Ready to trade');
     onClickHandle = () => {
       navigate(link);
-      setView({ type: ViewType.Order });
+      setViews({ type: ViewType.Order }, Routes.MARKET);
       dismiss();
     };
   }
@@ -73,7 +73,6 @@ export const GetStarted = ({ lead }: Props) => {
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const CANONICAL_URL = VEGA_NETWORKS[VEGA_ENV] || 'https://console.vega.xyz';
   const currentStep = useGetOnboardingStep();
   const dismissed = useOnboardingStore((store) => store.dismissed);
 
@@ -116,7 +115,7 @@ export const GetStarted = ({ lead }: Props) => {
         {VEGA_ENV === Networks.MAINNET && (
           <p className="text-sm">
             {t('Experiment for free with virtual assets on')}{' '}
-            <ExternalLink href={CANONICAL_URL}>
+            <ExternalLink href={VEGA_NETWORKS.TESTNET}>
               {t('Fairground Testnet')}
             </ExternalLink>
           </p>
@@ -124,7 +123,7 @@ export const GetStarted = ({ lead }: Props) => {
         {VEGA_ENV === Networks.TESTNET && (
           <p className="text-sm">
             {t('Ready to trade with real funds?')}{' '}
-            <ExternalLink href={CANONICAL_URL}>
+            <ExternalLink href={VEGA_NETWORKS.MAINNET}>
               {t('Switch to Mainnet')}
             </ExternalLink>
           </p>
