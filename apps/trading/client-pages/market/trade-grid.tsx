@@ -56,6 +56,7 @@ const MainGrid = memo(
                 <Tabs storageKey="console-trade-grid-main-left">
                   <Tab
                     id="chart"
+                    overflowHidden
                     name={t('Chart')}
                     menu={<TradingViews.candles.menu />}
                   >

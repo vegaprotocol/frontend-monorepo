@@ -113,7 +113,9 @@ export const Tabs = ({
           return (
             <TabsPrimitive.Content
               value={child.props.id}
-              className="h-full"
+              className={classNames('h-full', {
+                'overflow-hidden': child.props.overflowHidden,
+              })}
               data-testid={`tab-${child.props.id}`}
             >
               {child.props.children}
@@ -131,6 +133,7 @@ interface TabProps {
   name: string;
   indicator?: ReactNode;
   hidden?: boolean;
+  overflowHidden?: boolean;
   menu?: ReactNode;
 }
 
