@@ -6,7 +6,7 @@ import {
   Tab,
   TradingAnchorButton,
 } from '@vegaprotocol/ui-toolkit';
-import { Markets } from './markets';
+import { OpenMarkets } from './open-markets';
 import { Proposed } from './proposed';
 import { usePageTitleStore } from '../../stores';
 import { Closed } from './closed';
@@ -21,8 +21,8 @@ export const MarketsPage = () => {
     updateTitle: store.updateTitle,
   }));
 
-  const tokenLink = useLinks(DApp.Token);
-  const externalLink = tokenLink(TOKEN_NEW_MARKET_PROPOSAL);
+  const governanceLink = useLinks(DApp.Governance);
+  const externalLink = governanceLink(TOKEN_NEW_MARKET_PROPOSAL);
 
   useEffect(() => {
     updateTitle(titlefy(['Markets']));
@@ -33,7 +33,7 @@ export const MarketsPage = () => {
       <div className="h-full my-1 border rounded-sm border-default">
         <Tabs storageKey="console-markets">
           <Tab id="open-markets" name={t('Open markets')}>
-            <Markets />
+            <OpenMarkets />
           </Tab>
           <Tab
             id="proposed-markets"

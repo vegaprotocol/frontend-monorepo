@@ -8,6 +8,7 @@ import {
   Portal,
 } from '@radix-ui/react-tooltip';
 import type { ITooltipParams } from 'ag-grid-community';
+import classNames from 'classnames';
 
 const tooltipContentClasses =
   'max-w-sm bg-vega-light-100 dark:bg-vega-dark-100 border border-vega-light-200 dark:border-vega-dark-200 px-2 py-1 z-20 rounded text-xs text-black dark:text-white break-word';
@@ -18,10 +19,14 @@ export interface TooltipProps {
   align?: 'start' | 'center' | 'end';
   side?: 'top' | 'right' | 'bottom' | 'left';
   sideOffset?: number;
+  noUnderline?: boolean;
 }
 
-export const TOOLTIP_TRIGGER_CLASS_NAME =
-  'underline underline-offset-2 decoration-neutral-400 dark:decoration-neutral-400 decoration-dashed';
+export const TOOLTIP_TRIGGER_CLASS_NAME = (noUnderline?: boolean) =>
+  classNames(
+    { 'underline underline-offset-2': !noUnderline },
+    'decoration-neutral-400 dark:decoration-neutral-400 decoration-dashed'
+  );
 
 // Conditionally rendered tooltip if description content is provided.
 export const Tooltip = ({
@@ -31,11 +36,12 @@ export const Tooltip = ({
   sideOffset,
   align = 'start',
   side = 'bottom',
+  noUnderline,
 }: TooltipProps) =>
   description ? (
     <Provider delayDuration={200} skipDelayDuration={100}>
       <Root open={open}>
-        <Trigger asChild className={TOOLTIP_TRIGGER_CLASS_NAME}>
+        <Trigger asChild className={TOOLTIP_TRIGGER_CLASS_NAME(noUnderline)}>
           {children}
         </Trigger>
         {description && (

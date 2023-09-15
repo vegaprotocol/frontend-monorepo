@@ -212,7 +212,7 @@ context(
         closeStakingDialog();
         navigateTo(navigation.validators);
         cy.get(`[row-id="${0}"]`)
-          .eq(1)
+          .first()
           .within(() => {
             cy.getByTestId(stakeValidatorListTotalStake)
               .should('have.text', '3,002.00')
@@ -222,7 +222,7 @@ context(
               .and('be.visible');
           });
         cy.get(`[row-id="${1}"]`)
-          .eq(1)
+          .first()
           .within(() => {
             cy.getByTestId(stakeValidatorListTotalStake)
               .scrollIntoView()
@@ -262,10 +262,10 @@ context(
             '2'
           );
           waitForBeginningOfEpoch();
-          cy.getByTestId(stakeValidatorListStakePercentage).should(
-            'have.text',
-            '50.02%'
-          );
+          cy.getByTestId(
+            stakeValidatorListStakePercentage,
+            epochTimeout
+          ).should('have.text', '50.02%');
           navigateTo(navigation.validators);
           validateValidatorListTotalStakeAndShare('0', '3,002.00', '50.02%');
         }

@@ -11,7 +11,7 @@ type Net = Exclude<Networks, 'CUSTOM'>;
 export enum DApp {
   Explorer = 'Explorer',
   Console = 'Console',
-  Token = 'Token',
+  Governance = 'Governance',
 }
 
 type DAppLinks = {
@@ -45,7 +45,7 @@ const ConsoleLinks = {
   [Networks.MAINNET_MIRROR]: 'https://console.mainnet-mirror.vega.rocks',
 };
 
-const TokenLinks = {
+const GovernanceLinks = {
   ...EmptyLinks,
   [Networks.DEVNET]: 'https://dev.governance.vega.xyz',
   [Networks.STAGNET1]: 'https://governance.stagnet1.vega.rocks',
@@ -59,7 +59,7 @@ const TokenLinks = {
 const Links: { [k in DApp]: DAppLinks } = {
   [DApp.Explorer]: ExplorerLinks,
   [DApp.Console]: ConsoleLinks,
-  [DApp.Token]: TokenLinks,
+  [DApp.Governance]: GovernanceLinks,
 };
 
 export const DocsLinks = VEGA_DOCS_URL
@@ -88,7 +88,7 @@ export const useLinks = (dapp: DApp, network?: Net) => {
     useEnvironment();
   const fallback = {
     [DApp.Explorer]: VEGA_EXPLORER_URL,
-    [DApp.Token]: VEGA_TOKEN_URL,
+    [DApp.Governance]: VEGA_TOKEN_URL,
     [DApp.Console]: VEGA_CONSOLE_URL,
   };
 
@@ -99,7 +99,10 @@ export const useLinks = (dapp: DApp, network?: Net) => {
 
   let baseUrl = trim(Links[dapp][net], '/');
   if (baseUrl.length === 0 && Object.keys(fallback).includes(dapp)) {
-    baseUrl = trim(fallback[dapp as DApp.Explorer | DApp.Token] || '', '/');
+    baseUrl = trim(
+      fallback[dapp as DApp.Explorer | DApp.Governance] || '',
+      '/'
+    );
   }
 
   const link = useCallback(
@@ -134,7 +137,7 @@ export const TOKEN_VALIDATOR = '/validators/:id';
  * Generates link to the protocol upgrade proposal details on Governance
  */
 export const useProtocolUpgradeProposalLink = () => {
-  const governance = useLinks(DApp.Token);
+  const governance = useLinks(DApp.Governance);
   return (releaseTag: string, blockHeight: string) =>
     governance(
       TOKEN_PROTOCOL_UPGRADE_PROPOSAL.replace(

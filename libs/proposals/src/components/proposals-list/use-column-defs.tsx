@@ -6,9 +6,9 @@ import {
   COL_DEFS,
   DateRangeFilter,
   SetFilter,
+  StackedCell,
 } from '@vegaprotocol/datagrid';
 import compact from 'lodash/compact';
-import { useEnvironment, FLAGS } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
@@ -19,49 +19,14 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { ExternalLink, Pill } from '@vegaprotocol/ui-toolkit';
 import {
-  ProposalProductTypeMapping,
-  ProposalProductTypeShortName,
+  ProductTypeMapping,
+  ProductTypeShortName,
   ProposalStateMapping,
 } from '@vegaprotocol/types';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { VoteProgress } from '../voting-progress';
 import { ProposalActionsDropdown } from '../proposal-actions-dropdown';
-
-export const MarketNameProposalCell = ({
-  value,
-  data,
-}: VegaICellRendererParams<
-  ProposalListFieldsFragment,
-  'terms.change.instrument.code'
->) => {
-  const { VEGA_TOKEN_URL } = useEnvironment();
-  const { change } = data?.terms || {};
-  if (change?.__typename === 'NewMarket' && VEGA_TOKEN_URL) {
-    const type = change.instrument.futureProduct?.__typename;
-    const content = (
-      <>
-        <span data-testid="market-code">{value as string}</span>
-        {type && (
-          <Pill
-            size="xxs"
-            className="uppercase ml-0.5"
-            title={ProposalProductTypeMapping[type]}
-          >
-            {ProposalProductTypeShortName[type]}
-          </Pill>
-        )}
-      </>
-    );
-    if (data?.id) {
-      const link = `${VEGA_TOKEN_URL}/proposals/${data.id}`;
-      return <ExternalLink href={link}>{content}</ExternalLink>;
-    }
-    return content;
-  }
-  return null;
-};
 
 export const useColumnDefs = () => {
   const { params } = useNetworkParams([
@@ -80,17 +45,36 @@ export const useColumnDefs = () => {
         headerName: t('Market'),
         field: 'terms.change.instrument.code',
         cellStyle: { lineHeight: '14px' },
-        cellRenderer: 'MarketNameProposalCell',
-      },
-      {
-        colId: 'description',
-        headerName: t('Description'),
-        field: 'terms.change.instrument.name',
+        cellRenderer: ({
+          value,
+          data,
+        }: {
+          value: string;
+          data: ProposalListFieldsFragment;
+        }) => {
+          if (!value || !data) return '-';
+
+          // TODO: update when we switch to ProductConfiguration
+          const productType = 'Future';
+          return (
+            <StackedCell
+              primary={value}
+              secondary={
+                <span
+                  title={ProductTypeMapping[productType]}
+                  className="uppercase"
+                >
+                  {ProductTypeShortName[productType]}
+                </span>
+              }
+            />
+          );
+        },
       },
       {
         colId: 'asset',
         headerName: t('Settlement asset'),
-        field: 'terms.change.instrument.futureProduct.settlementAsset.name',
+        field: 'terms.change.instrument.futureProduct.settlementAsset.symbol',
       },
       {
         colId: 'state',
@@ -105,12 +89,10 @@ export const useColumnDefs = () => {
           set: ProposalStateMapping,
         },
       },
-      FLAGS.SUCCESSOR_MARKETS && {
+      {
         headerName: t('Parent market'),
-        field: 'id',
-        colId: 'parentMarket',
-        cellRenderer: 'SuccessorMarketRenderer',
-        cellRendererParams: { parent: true },
+        field: 'terms.change.successorConfiguration.parentMarketId',
+        cellRenderer: 'ParentMarketCell',
       },
       {
         colId: 'voting',
@@ -169,25 +151,12 @@ export const useColumnDefs = () => {
           data,
         }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
           if (!data?.id) return null;
+
           return <ProposalActionsDropdown id={data.id} />;
         },
       },
     ]);
   }, [requiredMajorityPercentage]);
 
-  const defaultColDef: ColDef = useMemo(() => {
-    return {
-      sortable: true,
-      filter: true,
-      filterParams: { buttons: ['reset'] },
-    };
-  }, []);
-
-  return useMemo(
-    () => ({
-      columnDefs,
-      defaultColDef,
-    }),
-    [columnDefs, defaultColDef]
-  );
+  return columnDefs;
 };

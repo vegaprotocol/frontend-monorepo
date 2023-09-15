@@ -277,7 +277,7 @@ const SuccessionLineItem = ({
   });
 
   const marketData = data?.market;
-  const governanceLink = useLinks(DApp.Token);
+  const governanceLink = useLinks(DApp.Governance);
   const proposalLink = marketData?.proposal?.id
     ? governanceLink(TOKEN_PROPOSAL.replace(':id', marketData?.proposal?.id))
     : undefined;
@@ -658,7 +658,7 @@ export const LiquidityMonitoringParametersInfoPanel = ({
           parentMarket.liquidityMonitoringParameters.targetStakeParameters
             .scalingFactor,
       }
-    : {};
+    : undefined;
 
   return <MarketInfoTable data={marketData} parentData={parentMarketData} />;
 };

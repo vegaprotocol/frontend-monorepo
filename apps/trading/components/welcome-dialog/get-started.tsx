@@ -7,69 +7,51 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import {
-  GetWalletButton,
-  useVegaWallet,
-  useVegaWalletDialogStore,
-} from '@vegaprotocol/wallet';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
-import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { useNavigate } from 'react-router-dom';
 import {
   OnboardingStep,
   useGetOnboardingStep,
+  useOnboardingStore,
 } from './use-get-onboarding-step';
 import { Links, Routes } from '../../pages/client-router';
 import { useGlobalStore } from '../../stores';
 import { useSidebar, ViewType } from '../sidebar';
-import * as constants from '../constants';
-import { useOnboardingStore } from './welcome-dialog';
 
 interface Props {
   lead?: string;
 }
 
 const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
-  const { CHROME_EXTENSION_URL, MOZILLA_EXTENSION_URL } = useEnvironment();
   const navigate = useNavigate();
-  const [, setOnboardingViewed] = useLocalStorage(
-    constants.ONBOARDING_VIEWED_KEY
-  );
-
   const dismiss = useOnboardingStore((store) => store.dismiss);
+  const setDialogOpen = useOnboardingStore((store) => store.setDialogOpen);
   const marketId = useGlobalStore((store) => store.marketId);
   const link = marketId ? Links[Routes.MARKET](marketId) : Links[Routes.HOME]();
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const setView = useSidebar((store) => store.setView);
+  const setViews = useSidebar((store) => store.setViews);
   let buttonText = t('Get started');
   let onClickHandle = () => {
     openVegaWalletDialog();
   };
-  if (step === OnboardingStep.ONBOARDING_WALLET_STEP) {
-    return (
-      <GetWalletButton
-        className="justify-between"
-        chromeExtensionUrl={CHROME_EXTENSION_URL}
-        mozillaExtensionUrl={MOZILLA_EXTENSION_URL}
-      />
-    );
-  } else if (step === OnboardingStep.ONBOARDING_CONNECT_STEP) {
+  if (step <= OnboardingStep.ONBOARDING_CONNECT_STEP) {
     buttonText = t('Connect');
   } else if (step === OnboardingStep.ONBOARDING_DEPOSIT_STEP) {
     buttonText = t('Deposit');
     onClickHandle = () => {
       navigate(link);
-      setView({ type: ViewType.Deposit });
-      dismiss();
+      setViews({ type: ViewType.Deposit }, Routes.MARKET);
+      setDialogOpen(false);
     };
-  } else if (step === OnboardingStep.ONBOARDING_ORDER_STEP) {
-    buttonText = t('Dismiss');
+  } else if (step >= OnboardingStep.ONBOARDING_ORDER_STEP) {
+    buttonText = t('Ready to trade');
     onClickHandle = () => {
       navigate(link);
-      setView({ type: ViewType.Order });
-      setOnboardingViewed('true');
+      setViews({ type: ViewType.Order }, Routes.MARKET);
+      dismiss();
     };
   }
 
@@ -88,17 +70,11 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
 export const GetStarted = ({ lead }: Props) => {
   const { pubKey } = useVegaWallet();
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
-  const CANONICAL_URL = VEGA_NETWORKS[VEGA_ENV] || 'https://console.vega.xyz';
-  const [onBoardingViewed] = useLocalStorage(constants.ONBOARDING_VIEWED_KEY);
-  const currentStep = useGetOnboardingStep();
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-
-  const getStartedNeeded =
-    onBoardingViewed !== 'true' &&
-    currentStep &&
-    currentStep < OnboardingStep.ONBOARDING_COMPLETE_STEP;
+  const currentStep = useGetOnboardingStep();
+  const dismissed = useOnboardingStore((store) => store.dismissed);
 
   const wrapperClasses = classNames(
     'flex flex-col py-4 px-6 gap-4 rounded',
@@ -107,7 +83,7 @@ export const GetStarted = ({ lead }: Props) => {
     { 'mt-8': !lead }
   );
 
-  if (getStartedNeeded) {
+  if (!dismissed) {
     return (
       <div className={wrapperClasses} data-testid="get-started-banner">
         {lead && <h2>{lead}</h2>}
@@ -116,23 +92,18 @@ export const GetStarted = ({ lead }: Props) => {
           <ul className="list-none">
             <Step
               step={1}
-              text={t('Get a Vega wallet')}
-              complete={currentStep > OnboardingStep.ONBOARDING_WALLET_STEP}
-            />
-            <Step
-              step={2}
               text={t('Connect')}
               complete={Boolean(
                 currentStep > OnboardingStep.ONBOARDING_CONNECT_STEP || pubKey
               )}
             />
             <Step
-              step={3}
+              step={2}
               text={t('Deposit funds')}
               complete={currentStep > OnboardingStep.ONBOARDING_DEPOSIT_STEP}
             />
             <Step
-              step={4}
+              step={3}
               text={t('Open a position')}
               complete={currentStep > OnboardingStep.ONBOARDING_ORDER_STEP}
             />
@@ -144,7 +115,7 @@ export const GetStarted = ({ lead }: Props) => {
         {VEGA_ENV === Networks.MAINNET && (
           <p className="text-sm">
             {t('Experiment for free with virtual assets on')}{' '}
-            <ExternalLink href={CANONICAL_URL}>
+            <ExternalLink href={VEGA_NETWORKS.TESTNET}>
               {t('Fairground Testnet')}
             </ExternalLink>
           </p>
@@ -152,7 +123,7 @@ export const GetStarted = ({ lead }: Props) => {
         {VEGA_ENV === Networks.TESTNET && (
           <p className="text-sm">
             {t('Ready to trade with real funds?')}{' '}
-            <ExternalLink href={CANONICAL_URL}>
+            <ExternalLink href={VEGA_NETWORKS.MAINNET}>
               {t('Switch to Mainnet')}
             </ExternalLink>
           </p>

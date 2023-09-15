@@ -15,6 +15,7 @@ import {
   MarketNameCell,
   ProgressBarCell,
   MarketProductPill,
+  StackedCell,
 } from '@vegaprotocol/datagrid';
 import {
   ButtonLink,
@@ -40,7 +41,6 @@ import {
 import { DocsLinks } from '@vegaprotocol/environment';
 import { PositionActionsDropdown } from './position-actions-dropdown';
 import { LiquidationPrice } from './liquidation-price';
-import { StackedCell } from './stacked-cell';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -339,12 +339,16 @@ export const PositionsTable = ({
               if (!data) {
                 return '-';
               }
+              // The estimate order query API gives us the liquidation price unformatted but expecting
+              // conversion using asset decimals. We need to convert it with asset decimals, but format
+              // it with market decimals precision until the API changes.
               return (
                 <LiquidationPrice
                   marketId={data.marketId}
                   openVolume={data.openVolume}
                   collateralAvailable={data.totalBalance}
-                  marketDecimalPlaces={data.marketDecimalPlaces}
+                  decimalPlaces={data.assetDecimals}
+                  formatDecimals={data.marketDecimalPlaces}
                 />
               );
             },
@@ -364,7 +368,7 @@ export const PositionsTable = ({
                 DocsLinks?.LOSS_SOCIALIZATION ?? '';
 
               if (!args.data) {
-                return <>-</>;
+                return null;
               }
 
               const losses = parseInt(
@@ -373,7 +377,9 @@ export const PositionsTable = ({
 
               if (losses <= 0) {
                 // eslint-disable-next-line react/jsx-no-useless-fragment
-                return <>{args.valueFormatted}</>;
+                return (
+                  <TooltipCellComponent {...args} value={args.valueFormatted} />
+                );
               }
 
               const lossesFormatted = addDecimalsFormatNumber(
