@@ -84,6 +84,7 @@ const ocoPostfix = (id: string, postfix = true) => (postfix ? `${id}-oco` : id);
 
 const mockDataProvider = jest.fn((...args) => ({
   data: Array(0),
+  reload: jest.fn(),
 }));
 jest.mock('@vegaprotocol/data-provider', () => ({
   ...jest.requireActual('@vegaprotocol/data-provider'),
@@ -473,7 +474,9 @@ describe('StopOrder', () => {
 
   it('shows limit of active stop orders number', async () => {
     mockDataProvider.mockReturnValue({
+      reload: jest.fn(),
       data: Array(4),
+      reload: jest.fn(),
     });
     render(generateJsx());
     expect(mockDataProvider.mock.lastCall?.[0].skip).toBe(true);
@@ -484,7 +487,9 @@ describe('StopOrder', () => {
 
   it('counts oco as two orders', async () => {
     mockDataProvider.mockReturnValue({
+      reload: jest.fn(),
       data: Array(3),
+      reload: jest.fn(),
     });
     render(generateJsx());
     await userEvent.type(screen.getByTestId(sizeInput), '0.01');

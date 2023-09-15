@@ -139,7 +139,7 @@ export const ValidatorsPage = () => {
   const [vegaDialog, setVegaDialog] = useState<boolean>(false);
   const [tmDialog, setTmDialog] = useState<boolean>(false);
 
-  const tokenLink = useLinks(DApp.Token);
+  const tokenLink = useLinks(DApp.Governance);
 
   return (
     <>

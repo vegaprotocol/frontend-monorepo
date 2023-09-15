@@ -195,14 +195,12 @@ export const StandbyPendingValidatorsTable = ({
           field: ValidatorFields.RANKING_INDEX,
           headerName: '#',
           width: 60,
-          pinned: 'left',
         },
         {
           field: ValidatorFields.VALIDATOR,
           headerName: t(ValidatorFields.VALIDATOR).toString(),
           cellRenderer: ValidatorRenderer,
           comparator: ({ name: a }, { name: b }) => Math.sign(a - b),
-          pinned: 'left',
           width: 260,
         },
         {

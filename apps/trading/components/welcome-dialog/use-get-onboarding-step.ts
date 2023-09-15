@@ -1,3 +1,5 @@
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { depositsProvider } from '@vegaprotocol/deposits';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -6,6 +8,29 @@ import * as Types from '@vegaprotocol/types';
 import { aggregatedAccountsDataProvider } from '@vegaprotocol/accounts';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import { useGlobalStore } from '../../stores';
+
+const ONBOARDING_STORAGE_KEY = 'vega_onboarding';
+export const useOnboardingStore = create<{
+  dialogOpen: boolean;
+  dismissed: boolean;
+  dismiss: () => void;
+  setDialogOpen: (isOpen: boolean) => void;
+}>()(
+  persist(
+    (set) => ({
+      dialogOpen: true,
+      dismissed: false,
+      dismiss: () => set({ dismissed: true }),
+      setDialogOpen: (isOpen) => set({ dialogOpen: isOpen }),
+    }),
+    {
+      name: ONBOARDING_STORAGE_KEY,
+      partialize: (state) => ({
+        dismissed: state.dismissed,
+      }),
+    }
+  )
+);
 
 export enum OnboardingStep {
   ONBOARDING_UNKNOWN_STEP,

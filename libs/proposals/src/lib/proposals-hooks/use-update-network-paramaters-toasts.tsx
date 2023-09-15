@@ -26,7 +26,7 @@ const UpdateNetworkParameterToastContent = ({
 }: {
   proposal: Proposal;
 }) => {
-  const tokenLink = useLinks(DApp.Token);
+  const tokenLink = useLinks(DApp.Governance);
   const change = proposal.terms.change as UpdateNetworkParameter;
   const title = t('Network change proposal %s').replace(
     '%s',

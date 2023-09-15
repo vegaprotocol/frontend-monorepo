@@ -41,7 +41,7 @@ export const ProposedMarkets = () => {
       proposal.terms.change.instrument.code,
   }));
 
-  const tokenLink = useLinks(DApp.Token);
+  const tokenLink = useLinks(DApp.Governance);
   return useMemo(
     () => (
       <div className="mt-7 pt-8 border-t border-default">

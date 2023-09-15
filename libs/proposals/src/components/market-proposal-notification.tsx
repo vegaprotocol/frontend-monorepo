@@ -10,7 +10,7 @@ type MarketProposalNotificationProps = {
 export const MarketProposalNotification = ({
   marketId,
 }: MarketProposalNotificationProps) => {
-  const tokenLink = useLinks(DApp.Token);
+  const tokenLink = useLinks(DApp.Governance);
   const { data: proposal } = useUpdateProposal({
     id: marketId,
     proposalType: Schema.ProposalType.TYPE_UPDATE_MARKET,

@@ -11,6 +11,7 @@ import { TradePanels } from './trade-panels';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 import { ViewType, useSidebar } from '../../components/sidebar';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -58,7 +59,9 @@ const TitleUpdater = ({
 export const MarketPage = () => {
   const { marketId } = useParams();
   const navigate = useNavigate();
-  const { init, view, setView } = useSidebar();
+  const currentRouteId = useGetCurrentRouteId();
+  const { setViews, getView } = useSidebar();
+  const view = getView(currentRouteId);
   const { screenSize } = useScreenDimensions();
   const largeScreen = ['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize);
   const update = useGlobalStore((store) => store.update);
@@ -69,15 +72,14 @@ export const MarketPage = () => {
   useEffect(() => {
     if (data?.id && data.id !== lastMarketId) {
       update({ marketId: data.id });
-      // make sidebar open on market id change
-      setView({ type: ViewType.Order });
     }
+  }, [update, lastMarketId, data?.id]);
 
-    // make sidebar open on deal ticket by default
-    if (view === null) {
-      setView({ type: ViewType.Order });
+  useEffect(() => {
+    if (largeScreen && view === undefined) {
+      setViews({ type: ViewType.Order }, currentRouteId);
     }
-  }, [update, lastMarketId, data?.id, setView, init, view]);
+  }, [setViews, view, currentRouteId, largeScreen]);
 
   const pinnedAsset = data && getAsset(data);
 
