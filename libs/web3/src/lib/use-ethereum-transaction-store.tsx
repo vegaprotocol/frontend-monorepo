@@ -27,7 +27,13 @@ export interface EthStoredTxState extends EthTxState {
   methodName: ContractMethod;
   args: string[];
   requiredConfirmations: number;
-  requiresConfirmation: boolean; // whether or not the tx needs external confirmation (IE from a subscription even)
+  // whether or not the tx needs external confirmation (IE from a subscription even)
+  requiresConfirmation: boolean;
+  // whether or not to notify via toast
+  // true = force open toast
+  // false = force close toast
+  // undefined = leave alone
+  notify: boolean | undefined;
   assetId?: string;
   deposit?: DepositBusEventFieldsFragment;
   withdrawal?: WithdrawalBusEventFieldsFragment;
@@ -49,7 +55,7 @@ export interface EthTransactionStore {
     update?: Partial<
       Pick<
         EthStoredTxState,
-        'status' | 'error' | 'receipt' | 'confirmations' | 'txHash'
+        'status' | 'error' | 'receipt' | 'confirmations' | 'txHash' | 'notify'
       >
     >
   ) => void;
@@ -89,6 +95,7 @@ export const useEthTransactionStore = create<EthTransactionStore>()(
         requiresConfirmation,
         assetId,
         withdrawal,
+        notify: true,
       };
       set({ transactions: transactions.concat(transaction) });
       return transaction.id;
@@ -135,6 +142,7 @@ export const useEthTransactionStore = create<EthTransactionStore>()(
           transaction.deposit = deposit;
           transaction.dialogOpen = true;
           transaction.updatedAt = new Date();
+          transaction.notify = true;
         })
       );
     },

@@ -12,6 +12,7 @@ import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { ViewType, useSidebar } from '../sidebar';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 export const AccountsContainer = ({
   pinnedAsset,
@@ -21,7 +22,8 @@ export const AccountsContainer = ({
   const onMarketClick = useMarketClickHandler(true);
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
-  const setView = useSidebar((store) => store.setView);
+  const currentRouteId = useGetCurrentRouteId();
+  const setViews = useSidebar((store) => store.setViews);
 
   const gridStore = useAccountStore((store) => store.gridStore);
   const updateGridStore = useAccountStore((store) => store.updateGridStore);
@@ -49,13 +51,13 @@ export const AccountsContainer = ({
       partyId={pubKey}
       onClickAsset={onClickAsset}
       onClickWithdraw={(assetId) => {
-        setView({ type: ViewType.Withdraw, assetId });
+        setViews({ type: ViewType.Withdraw, assetId }, currentRouteId);
       }}
       onClickDeposit={(assetId) => {
-        setView({ type: ViewType.Deposit, assetId });
+        setViews({ type: ViewType.Deposit, assetId }, currentRouteId);
       }}
       onClickTransfer={(assetId) => {
-        setView({ type: ViewType.Transfer, assetId });
+        setViews({ type: ViewType.Transfer, assetId }, currentRouteId);
       }}
       onMarketClick={onMarketClick}
       isReadOnly={isReadOnly}

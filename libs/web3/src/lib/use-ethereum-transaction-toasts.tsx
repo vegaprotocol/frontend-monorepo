@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useEffect } from 'react';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { EtherscanLink } from '@vegaprotocol/environment';
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
@@ -169,11 +170,13 @@ export const useEthereumTransactionToasts = () => {
   ]);
 
   const dismissTx = useEthTransactionStore((state) => state.dismiss);
+  const updateTx = useEthTransactionStore((state) => state.update);
 
   const onClose = useCallback(
     (tx: EthStoredTxState) => () => {
       dismissTx(tx.id);
       removeToast(`eth-${tx.id}`);
+      updateTx(tx.id, { notify: false });
       // closes related "Funds released" toast after successful withdrawal
       if (
         isWithdrawTransaction(tx) &&
@@ -183,7 +186,7 @@ export const useEthereumTransactionToasts = () => {
         closeToastBy({ withdrawalId: tx.withdrawal.id });
       }
     },
-    [closeToastBy, dismissTx, removeToast]
+    [closeToastBy, dismissTx, removeToast, updateTx]
   );
 
   const fromEthTransaction = useCallback(
@@ -213,17 +216,25 @@ export const useEthereumTransactionToasts = () => {
         loader: [EthTxStatus.Pending, EthTxStatus.Complete].includes(tx.status),
         content,
         closeAfter,
+        hidden: !tx.notify,
       };
     },
     [onClose]
   );
 
-  useEthTransactionStore.subscribe(
-    (state) => compact(state.transactions.filter((tx) => tx?.dialogOpen)),
-    (txs) => {
-      txs.forEach((tx) => {
-        setToast(fromEthTransaction(tx));
-      });
-    }
-  );
+  // Only register a subscription once
+  useEffect(() => {
+    const unsubscribe = useEthTransactionStore.subscribe(
+      (state) => compact(state.transactions.filter((tx) => tx?.dialogOpen)),
+      (txs) => {
+        txs.forEach((tx) => {
+          setToast(fromEthTransaction(tx));
+        });
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, [fromEthTransaction, setToast]);
 };

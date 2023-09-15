@@ -186,7 +186,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           </NavbarLink>
         </NavbarItem>
         <NavbarItem>
-          <NavbarLinkExternal to={useLinks(DApp.Token)()}>
+          <NavbarLinkExternal to={useLinks(DApp.Governance)()}>
             {t('Governance')}
           </NavbarLinkExternal>
         </NavbarItem>

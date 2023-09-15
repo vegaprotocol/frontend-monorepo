@@ -4,16 +4,19 @@ import classNames from 'classnames';
 import { Routes as AppRoutes } from '../../pages/client-router';
 import { MarketHeader } from '../market-header';
 import { LiquidityHeader } from '../liquidity-header';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 export const LayoutWithSidebar = () => {
-  const sidebarView = useSidebar((store) => store.view);
+  const currentRouteId = useGetCurrentRouteId();
+  const views = useSidebar((store) => store.views);
+  const sidebarView = views[currentRouteId] || null;
   const sidebarOpen = sidebarView !== null;
-
   const gridClasses = classNames(
     'h-full relative z-0 grid',
     'grid-rows-[min-content_1fr_40px]',
     'lg:grid-rows-[min-content_1fr]',
-    'lg:grid-cols-[1fr_350px_40px]'
+    'lg:grid-cols-[1fr_280px_40px]',
+    'xxxl:grid-cols-[1fr_320px_40px]'
   );
 
   return (

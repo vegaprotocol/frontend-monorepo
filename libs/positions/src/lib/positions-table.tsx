@@ -368,7 +368,7 @@ export const PositionsTable = ({
                 DocsLinks?.LOSS_SOCIALIZATION ?? '';
 
               if (!args.data) {
-                return <>-</>;
+                return null;
               }
 
               const losses = parseInt(
@@ -377,7 +377,9 @@ export const PositionsTable = ({
 
               if (losses <= 0) {
                 // eslint-disable-next-line react/jsx-no-useless-fragment
-                return <>{args.valueFormatted}</>;
+                return (
+                  <TooltipCellComponent {...args} value={args.valueFormatted} />
+                );
               }
 
               const lossesFormatted = addDecimalsFormatNumber(

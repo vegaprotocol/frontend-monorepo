@@ -25,6 +25,7 @@ export const useEthTransactionManager = () => {
       status: EthTxStatus.Requested,
       error: null,
       confirmations: 0,
+      notify: true,
     });
     const {
       contract,
@@ -48,6 +49,7 @@ export const useEthTransactionManager = () => {
         update(transaction.id, {
           status: EthTxStatus.Error,
           error: err as EthereumError,
+          notify: true,
         });
         return;
       }
@@ -61,6 +63,7 @@ export const useEthTransactionManager = () => {
         update(transaction.id, {
           status: EthTxStatus.Pending,
           txHash: tx.hash,
+          notify: true,
         });
 
         for (let i = 1; i <= requiredConfirmations; i++) {
@@ -77,19 +80,31 @@ export const useEthTransactionManager = () => {
         }
 
         if (requiresConfirmation) {
-          update(transaction.id, { status: EthTxStatus.Complete, receipt });
+          update(transaction.id, {
+            status: EthTxStatus.Complete,
+            receipt,
+          });
         } else {
-          update(transaction.id, { status: EthTxStatus.Confirmed, receipt });
+          update(transaction.id, {
+            status: EthTxStatus.Confirmed,
+            receipt,
+            notify: true,
+          });
         }
       } catch (err) {
         if (err instanceof Error || isEthereumError(err)) {
           if (!isExpectedEthereumError(err)) {
-            update(transaction.id, { status: EthTxStatus.Error, error: err });
+            update(transaction.id, {
+              status: EthTxStatus.Error,
+              error: err,
+              notify: true,
+            });
           }
         } else {
           update(transaction.id, {
             status: EthTxStatus.Error,
             error: new Error('Something went wrong'),
+            notify: true,
           });
         }
         return;

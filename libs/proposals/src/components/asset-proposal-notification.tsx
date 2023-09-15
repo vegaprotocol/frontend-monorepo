@@ -10,7 +10,7 @@ type AssetProposalNotificationProps = {
 export const AssetProposalNotification = ({
   assetId,
 }: AssetProposalNotificationProps) => {
-  const tokenLink = useLinks(DApp.Token);
+  const tokenLink = useLinks(DApp.Governance);
   const { data: proposal } = useUpdateProposal({
     id: assetId,
     proposalType: Schema.ProposalType.TYPE_UPDATE_ASSET,
