@@ -45,7 +45,7 @@ const HomeProposals = ({
   const { t } = useTranslation();
 
   return (
-    <section className="mb-16" data-testid="home-proposals">
+    <section className="mb-16 break-all" data-testid="home-proposals">
       <Heading title={t('vegaGovernance')} />
       <h3 className="mb-6">{t('homeProposalsIntro')}</h3>
       <div className="mb-8">

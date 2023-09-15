@@ -35,7 +35,7 @@ export const BundleSigners = ({
   tx,
   id,
 }: BundleSignersProps) => {
-  const tokenLink = useLinks(DApp.Token);
+  const tokenLink = useLinks(DApp.Governance);
 
   const bridgeFunction: BridgeFunction =
     tx?.changes?.erc20 && 'contractAddress' in tx.changes.erc20

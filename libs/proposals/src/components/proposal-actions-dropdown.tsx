@@ -9,7 +9,7 @@ import { t } from '@vegaprotocol/i18n';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
 
 export const ProposalActionsDropdown = ({ id }: { id: string }) => {
-  const linkCreator = useLinks(DApp.Token);
+  const linkCreator = useLinks(DApp.Governance);
 
   return (
     <ActionsDropdown data-testid="proposal-actions-content">

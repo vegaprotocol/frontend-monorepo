@@ -1,20 +1,16 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { marketsWithDataProvider } from '@vegaprotocol/markets';
-import { useDataProvider } from '@vegaprotocol/data-provider';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { Links, Routes } from '../../pages/client-router';
 import { useGlobalStore } from '../../stores';
+import { useTopTradedMarkets } from '../../lib/hooks/use-top-traded-markets';
 
+// The home pages only purpose is to redirect to the users last market,
+// the top traded if they are new, or fall back to the list of markets.
+// Thats why we just render a loader here
 export const Home = () => {
   const navigate = useNavigate();
-  // The default market selected in the platform behind the overlay
-  // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
-  const { data, error, loading } = useDataProvider({
-    dataProvider: marketsWithDataProvider,
-    variables: undefined,
-  });
-  const update = useGlobalStore((store) => store.update);
+  const { data } = useTopTradedMarkets();
   const marketId = useGlobalStore((store) => store.marketId);
 
   useEffect(() => {
@@ -32,12 +28,11 @@ export const Home = () => {
         navigate(Links[Routes.MARKETS]());
       }
     }
-  }, [marketId, data, navigate, update]);
+  }, [marketId, data, navigate]);
 
   return (
-    <AsyncRenderer data={data} loading={loading} error={error}>
-      {/* Render a loading and error state but we will redirect if markets are found */}
-      {null}
-    </AsyncRenderer>
+    <Splash>
+      <Loader />
+    </Splash>
   );
 };

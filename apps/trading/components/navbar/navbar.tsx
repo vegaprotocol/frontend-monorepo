@@ -1,6 +1,12 @@
 import type { ButtonHTMLAttributes, LiHTMLAttributes, ReactNode } from 'react';
 import { useState } from 'react';
-import { useEnvironment, DocsLinks, Networks } from '@vegaprotocol/environment';
+import {
+  useEnvironment,
+  DocsLinks,
+  Networks,
+  DApp,
+  useLinks,
+} from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
@@ -59,14 +65,14 @@ export const Navbar = ({
         <VLogo className="w-4" />
       </NavLink>
       {/* Left section */}
-      <div className="lg:hidden flex items-center">{children}</div>
+      <div className="flex items-center lg:hidden">{children}</div>
       {/* Used to show header in nav on mobile */}
       <div className="hidden lg:block">
         <NavbarMenu onClick={() => setMenu(null)} />
       </div>
 
       {/* Right section */}
-      <div className="ml-auto flex justify-end items-center gap-2">
+      <div className="flex items-center justify-end ml-auto gap-2">
         <ProtocolUpgradeCountdown />
         <NavbarMobileButton
           onClick={() => {
@@ -100,7 +106,7 @@ export const Navbar = ({
           onOpenChange={(open) => setMenu((x) => (open ? x : null))}
         >
           <D.Overlay
-            className="lg:hidden fixed inset-0 dark:bg-black/80 bg-black/50 z-20"
+            className="fixed inset-0 z-20 lg:hidden dark:bg-black/80 bg-black/50"
             data-testid="navbar-menu-overlay"
           />
           <D.Content
@@ -111,7 +117,7 @@ export const Navbar = ({
             )}
             data-testid="navbar-menu-content"
           >
-            <div className="flex justify-end items-center h-10 p-1">
+            <div className="flex items-center justify-end h-10 p-1">
               <NavbarMobileButton onClick={() => setMenu(null)}>
                 <span className="sr-only">{t('Close menu')}</span>
                 <VegaIcon name={VegaIconNames.CROSS} size={24} />
@@ -178,6 +184,11 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           <NavbarLink to={Links[Routes.PORTFOLIO]()} onClick={onClick}>
             {t('Portfolio')}
           </NavbarLink>
+        </NavbarItem>
+        <NavbarItem>
+          <NavbarLinkExternal to={useLinks(DApp.Governance)()}>
+            {t('Governance')}
+          </NavbarLinkExternal>
         </NavbarItem>
         <NavbarItem>
           <NavbarTrigger>{t('Resources')}</NavbarTrigger>
@@ -336,7 +347,7 @@ const NavbarLinkExternal = ({
       <NavLink
         to={to}
         className={classNames(
-          'flex lg:inline-flex gap-2 justify-between items-center relative',
+          'flex gap-2 lg:h-full items-center',
           'px-6 py-2 lg:p-0 text-lg lg:text-sm',
           'hover:text-vega-clight-100 dark:hover:text-vega-cdark-100'
         )}
@@ -344,7 +355,7 @@ const NavbarLinkExternal = ({
         target="_blank"
       >
         <span>{children}</span>
-        <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
+        <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={14} />
       </NavLink>
     </N.Link>
   );
@@ -364,8 +375,8 @@ const BurgerIcon = () => (
 
 const NavbarListDivider = () => {
   return (
-    <div className="py-2 px-6 lg:px-0" role="separator">
-      <div className="h-px lg:h-full w-full lg:w-px bg-vega-clight-500 dark:bg-vega-cdark-500" />
+    <div className="px-6 py-2 lg:px-0" role="separator">
+      <div className="w-full h-px lg:h-full lg:w-px bg-vega-clight-500 dark:bg-vega-cdark-500" />
     </div>
   );
 };

@@ -33,7 +33,7 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
   const { params } = useNetworkParams([
     NetworkParams.governance_proposal_market_requiredMajority,
   ]);
-  const tokenLink = useLinks(DApp.Token);
+  const tokenLink = useLinks(DApp.Governance);
   const requiredMajorityPercentage = useMemo(() => {
     const requiredMajority =
       params?.governance_proposal_market_requiredMajority ?? 1;
