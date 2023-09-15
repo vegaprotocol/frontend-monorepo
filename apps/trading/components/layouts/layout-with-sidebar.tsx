@@ -1,7 +1,7 @@
 import { Outlet, Routes, Route } from 'react-router-dom';
 import { Sidebar, SidebarContent, useSidebar } from '../sidebar';
 import classNames from 'classnames';
-import { Routes as AppRoutes, routerConfig } from '../../pages/client-router';
+import { Routes as AppRoutes } from '../../pages/client-router';
 import { MarketHeader } from '../market-header';
 import { LiquidityHeader } from '../liquidity-header';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-path-id';

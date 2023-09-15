@@ -11,6 +11,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
+import { Routes as AppRoutes } from '../../pages/client-router';
 
 jest.mock('../node-health', () => ({
   NodeHealthContainer: () => <span data-testid="node-health" />,
@@ -115,7 +116,11 @@ describe('SidebarContent', () => {
       <VegaWalletContext.Provider value={walletContext}>
         <MemoryRouter initialEntries={['/markets/ABC']}>
           <Routes>
-            <Route path="/markets/:marketId" element={<SidebarContent />} />
+            <Route
+              path="/markets/:marketId"
+              id={AppRoutes.MARKET}
+              element={<SidebarContent />}
+            />
           </Routes>
         </MemoryRouter>
       </VegaWalletContext.Provider>
@@ -124,13 +129,17 @@ describe('SidebarContent', () => {
     expect(container).toBeEmptyDOMElement();
 
     act(() => {
-      useSidebar.setState({ view: { type: ViewType.Transfer } });
+      useSidebar.setState({
+        views: { [AppRoutes.MARKET]: { type: ViewType.Transfer } },
+      });
     });
 
     expect(screen.getByTestId('transfer')).toBeInTheDocument();
 
     act(() => {
-      useSidebar.setState({ view: { type: ViewType.Deposit } });
+      useSidebar.setState({
+        views: { [AppRoutes.MARKET]: { type: ViewType.Deposit } },
+      });
     });
 
     expect(screen.getByTestId('deposit')).toBeInTheDocument();
@@ -141,26 +150,36 @@ describe('SidebarContent', () => {
       <VegaWalletContext.Provider value={walletContext}>
         <MemoryRouter initialEntries={['/portfolio']}>
           <Routes>
-            <Route path="/portfolio" element={<SidebarContent />} />
+            <Route
+              path="/portfolio"
+              id={AppRoutes.PORTFOLIO}
+              element={<SidebarContent />}
+            />
           </Routes>
         </MemoryRouter>
       </VegaWalletContext.Provider>
     );
 
     act(() => {
-      useSidebar.setState({ view: { type: ViewType.Order } });
+      useSidebar.setState({
+        views: { [AppRoutes.PORTFOLIO]: { type: ViewType.Order } },
+      });
     });
 
     expect(container).toBeEmptyDOMElement();
 
     act(() => {
-      useSidebar.setState({ view: { type: ViewType.Settings } });
+      useSidebar.setState({
+        views: { [AppRoutes.PORTFOLIO]: { type: ViewType.Settings } },
+      });
     });
 
     expect(screen.getByTestId('settings')).toBeInTheDocument();
 
     act(() => {
-      useSidebar.setState({ view: { type: ViewType.Info } });
+      useSidebar.setState({
+        views: { [AppRoutes.PORTFOLIO]: { type: ViewType.Info } },
+      });
     });
 
     expect(container).toBeEmptyDOMElement();
@@ -178,6 +197,7 @@ describe('SidebarButton', () => {
           tooltip="INFO"
           onClick={onClick}
           view={view}
+          routeId="current-route-id"
         />
       );
 

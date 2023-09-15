@@ -39,8 +39,9 @@ const WithdrawalsIndicator = () => {
 
 export const Portfolio = () => {
   const currentRouteId = useGetCurrentRouteId();
-  const { init, getView, setViews } = useSidebar();
+  const { getView, setViews } = useSidebar();
   const view = getView(currentRouteId);
+
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));
@@ -51,10 +52,10 @@ export const Portfolio = () => {
 
   // Make transfer sidebar open by default
   useEffect(() => {
-    if (init && view === null) {
+    if (view === undefined) {
       setViews({ type: ViewType.Transfer }, currentRouteId);
     }
-  }, [init, view, setViews, currentRouteId]);
+  }, [view, setViews, currentRouteId]);
 
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
   const wrapperClasses = 'p-0.5 h-full max-h-full flex flex-col';

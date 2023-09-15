@@ -4,11 +4,16 @@ import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletConnectButton } from './vega-wallet-connect-button';
 import { truncateByChars } from '@vegaprotocol/utils';
 import userEvent from '@testing-library/user-event';
+// import {useGetCurrentRouteId} from "../../lib/hooks/use-get-current-path-id";
 
 const mockUpdateDialogOpen = jest.fn();
 jest.mock('@vegaprotocol/wallet', () => ({
   ...jest.requireActual('@vegaprotocol/wallet'),
   useVegaWalletDialogStore: () => mockUpdateDialogOpen,
+}));
+
+jest.mock('../../lib/hooks/use-get-current-path-id', () => ({
+  useGetCurrentRouteId: jest.fn().mockReturnValue('current-route-id'),
 }));
 
 beforeEach(() => {

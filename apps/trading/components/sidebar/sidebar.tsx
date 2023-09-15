@@ -309,14 +309,12 @@ const CloseSidebar = () => {
 };
 
 export const useSidebar = create<{
-  init: boolean;
   views: { [key: string]: SidebarView | null };
   setViews: (view: SidebarView | null, routeId: string) => void;
-  getView: (routeId: string) => SidebarView | null;
+  getView: (routeId: string) => SidebarView | null | undefined;
 }>()((set, get) => ({
-  init: true,
   views: {},
   setViews: (x, routeId) =>
-    set(({ views }) => ({ views: { ...views, [routeId]: x }, init: false })),
-  getView: (routeId) => get().views[routeId] || null,
+    set(({ views }) => ({ views: { ...views, [routeId]: x } })),
+  getView: (routeId) => get().views[routeId],
 }));

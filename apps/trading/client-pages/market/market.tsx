@@ -60,7 +60,7 @@ export const MarketPage = () => {
   const { marketId } = useParams();
   const navigate = useNavigate();
   const currentRouteId = useGetCurrentRouteId();
-  const { init, setViews, getView } = useSidebar();
+  const { setViews, getView } = useSidebar();
   const view = getView(currentRouteId);
   const { screenSize } = useScreenDimensions();
   const largeScreen = ['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize);
@@ -76,10 +76,10 @@ export const MarketPage = () => {
   }, [update, lastMarketId, data?.id]);
 
   useEffect(() => {
-    if (init && view === null) {
+    if (view === undefined) {
       setViews({ type: ViewType.Order }, currentRouteId);
     }
-  }, [setViews, init, view, currentRouteId]);
+  }, [setViews, view, currentRouteId]);
 
   const tradeView = useMemo(() => {
     if (largeScreen) {
