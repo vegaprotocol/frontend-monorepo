@@ -11,7 +11,7 @@ jest.mock('@vegaprotocol/wallet', () => ({
   useVegaWalletDialogStore: () => mockUpdateDialogOpen,
 }));
 
-jest.mock('../../lib/hooks/use-get-current-path-id', () => ({
+jest.mock('../../lib/hooks/use-get-current-route-id', () => ({
   useGetCurrentRouteId: jest.fn().mockReturnValue('current-route-id'),
 }));
 

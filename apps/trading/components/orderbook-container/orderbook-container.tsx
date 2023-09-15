@@ -1,7 +1,7 @@
 import { OrderbookManager } from '@vegaprotocol/market-depth';
 import { ViewType, useSidebar } from '../sidebar';
 import { useDealTicketFormValues } from '@vegaprotocol/deal-ticket';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-path-id';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 export const OrderbookContainer = ({ marketId }: { marketId: string }) => {
   const currentRouteId = useGetCurrentRouteId();

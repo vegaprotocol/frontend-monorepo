@@ -23,7 +23,7 @@ import { ViewType, useSidebar } from '../../components/sidebar';
 import { AccountsMenu } from '../../components/accounts-menu';
 import { DepositsMenu } from '../../components/deposits-menu';
 import { WithdrawalsMenu } from '../../components/withdrawals-menu';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-path-id';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();

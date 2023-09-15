@@ -16,7 +16,7 @@ import { WithdrawContainer } from '../withdraw-container';
 import { Routes as AppRoutes } from '../../pages/client-router';
 import { GetStarted } from '../welcome-dialog';
 import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-path-id';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 export enum ViewType {
   Order = 'Order',
@@ -52,7 +52,7 @@ type SidebarView =
     };
 
 export const Sidebar = () => {
-  const currentPathId = useGetCurrentRouteId();
+  const currentRouteId = useGetCurrentRouteId();
   const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
   const setViewAsDialogOpen = useViewAsDialog((state) => state.setOpen);
   const { pubKeys } = useVegaWallet();
@@ -64,19 +64,19 @@ export const Sidebar = () => {
           view={ViewType.Deposit}
           icon={VegaIconNames.DEPOSIT}
           tooltip={t('Deposit')}
-          routeId={currentPathId}
+          routeId={currentRouteId}
         />
         <SidebarButton
           view={ViewType.Withdraw}
           icon={VegaIconNames.WITHDRAW}
           tooltip={t('Withdraw')}
-          routeId={currentPathId}
+          routeId={currentRouteId}
         />
         <SidebarButton
           view={ViewType.Transfer}
           icon={VegaIconNames.TRANSFER}
           tooltip={t('Transfer')}
-          routeId={currentPathId}
+          routeId={currentRouteId}
         />
         {/* buttons for specific routes */}
         <Routes>
@@ -99,13 +99,13 @@ export const Sidebar = () => {
                   view={ViewType.Order}
                   icon={VegaIconNames.TICKET}
                   tooltip={t('Order')}
-                  routeId={currentPathId}
+                  routeId={currentRouteId}
                 />
                 <SidebarButton
                   view={ViewType.Info}
                   icon={VegaIconNames.BREAKDOWN}
                   tooltip={t('Market specification')}
-                  routeId={currentPathId}
+                  routeId={currentRouteId}
                 />
               </>
             }
@@ -121,13 +121,13 @@ export const Sidebar = () => {
           icon={VegaIconNames.EYE}
           tooltip={t('View as party')}
           disabled={Boolean(pubKeys)}
-          routeId={currentPathId}
+          routeId={currentRouteId}
         />
         <SidebarButton
           view={ViewType.Settings}
           icon={VegaIconNames.COG}
           tooltip={t('Settings')}
-          routeId={currentPathId}
+          routeId={currentRouteId}
         />
         <NodeHealthContainer />
       </nav>

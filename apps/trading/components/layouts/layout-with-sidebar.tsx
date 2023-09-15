@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { Routes as AppRoutes } from '../../pages/client-router';
 import { MarketHeader } from '../market-header';
 import { LiquidityHeader } from '../liquidity-header';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-path-id';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 export const LayoutWithSidebar = () => {
   const currentRouteId = useGetCurrentRouteId();

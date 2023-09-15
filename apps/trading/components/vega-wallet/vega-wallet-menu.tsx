@@ -10,7 +10,7 @@ import { useVegaWallet, type PubKey } from '@vegaprotocol/wallet';
 import { useCallback, useMemo } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { ViewType, useSidebar } from '../sidebar';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-path-id';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 export const VegaWalletMenu = ({
   setMenu,

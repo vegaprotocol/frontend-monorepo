@@ -12,7 +12,7 @@ import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { ViewType, useSidebar } from '../sidebar';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-path-id';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 export const AccountsContainer = ({
   pinnedAsset,

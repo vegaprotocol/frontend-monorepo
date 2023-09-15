@@ -22,7 +22,7 @@ import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import { ViewType, useSidebar } from '../sidebar';
 import classNames from 'classnames';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-path-id';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 export const VegaWalletConnectButton = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
