@@ -5,14 +5,18 @@ import {
   OrderType,
   Side,
 } from '@vegaprotocol/types';
-import type { VegaStoredTxState } from '@vegaprotocol/wallet';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
+
 import {
   VegaTransactionDetails,
   getVegaTransactionContentIntent,
 } from './use-vega-transaction-toasts';
 import { Intent } from '@vegaprotocol/ui-toolkit';
-import type { OrderByIdQuery, StopOrderByIdQuery } from '@vegaprotocol/orders';
+import type {
+  OrderByIdQuery,
+  StopOrderByIdQuery,
+} from './__generated__/Orders';
+import type { VegaStoredTxState } from './use-vega-transaction-store';
+import { VegaTxStatus } from './types';
 
 jest.mock('@vegaprotocol/assets', () => {
   const A1 = {

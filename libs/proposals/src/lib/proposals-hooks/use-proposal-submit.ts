@@ -1,10 +1,7 @@
 import { useCallback, useState } from 'react';
 import * as Sentry from '@sentry/react';
-import {
-  useVegaWallet,
-  useVegaTransaction,
-  determineId,
-} from '@vegaprotocol/wallet';
+import { useVegaWallet, determineId } from '@vegaprotocol/wallet';
+import { useVegaTransaction } from './use-vega-transaction';
 import { useProposalEvent } from './use-proposal-event';
 import type { ProposalSubmission } from '@vegaprotocol/wallet';
 import type { ProposalEventFieldsFragment } from './__generated__/Proposal';

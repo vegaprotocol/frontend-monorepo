@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { PositionsTable } from './positions-table';
 import * as Schema from '@vegaprotocol/types';
-import { useVegaTransactionStore } from '@vegaprotocol/wallet';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {

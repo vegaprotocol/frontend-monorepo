@@ -4,15 +4,27 @@ import {
   WalletClientError,
   WalletHttpError,
 } from '@vegaprotocol/wallet-client';
-import { useVegaWallet } from './use-vega-wallet';
-import type { VegaTransactionContentMap } from './vega-transaction-dialog';
-import { VegaTransactionDialog } from './vega-transaction-dialog';
+import { useVegaWallet, WalletError, ClientErrors } from '@vegaprotocol/wallet';
+import type { Transaction } from '@vegaprotocol/wallet';
+import type { VegaTransactionContentMap } from '../../components/vega-transaction-dialog';
+import { VegaTransactionDialog } from '../../components/vega-transaction-dialog';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
-import type { Transaction } from './connectors';
-import { WalletError } from './connectors';
-import { ClientErrors } from './connectors';
-import type { VegaTxState } from './types';
-import { VegaTxStatus } from './types';
+
+export enum VegaTxStatus {
+  Default = 'Default',
+  Requested = 'Requested',
+  Pending = 'Pending',
+  Error = 'Error',
+  Complete = 'Complete',
+}
+
+export interface VegaTxState {
+  status: VegaTxStatus;
+  error: Error | null;
+  txHash: string | null;
+  signature: string | null;
+  dialogOpen: boolean;
+}
 
 export interface DialogProps {
   intent?: Intent;

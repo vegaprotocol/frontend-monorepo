@@ -1,10 +1,8 @@
 import { act, renderHook } from '@testing-library/react';
-import type { VegaWalletContextShape } from './context';
-import { VegaWalletContext } from './context';
+import type { VegaWalletContextShape, Transaction } from '@vegaprotocol/wallet';
+import { VegaWalletContext, WalletError } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { initialState, useVegaTransaction } from './use-vega-transaction';
-import type { Transaction } from './connectors';
-import { WalletError } from './connectors';
 import { VegaTxStatus } from './types';
 
 const mockPubKey = '0x123';

@@ -15,5 +15,12 @@
     "**/*.test.jsx",
     "jest.config.ts"
   ],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+  "include": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
+    "src/lib/use-create-withdraw.ts",
+    "src/lib/use-complete-withdraw.ts"
+  ]
 }

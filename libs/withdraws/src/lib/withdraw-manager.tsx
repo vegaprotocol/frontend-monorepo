@@ -1,6 +1,6 @@
 import sortBy from 'lodash/sortBy';
+import type { WithdrawalArgs } from './withdraw-form';
 import { WithdrawForm } from './withdraw-form';
-import type { WithdrawalArgs } from './use-create-withdraw';
 import type { Asset } from '@vegaprotocol/assets';
 import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 import { useWithdrawAsset } from './use-withdraw-asset';

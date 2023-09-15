@@ -6,7 +6,7 @@ import { ConnectToVega } from '../../../../components/connect-to-vega';
 import { VoteButtonsContainer } from './vote-buttons';
 import { SubHeading } from '../../../../components/heading';
 import type { VoteValue } from '@vegaprotocol/types';
-import type { DialogProps, VegaTxState } from '@vegaprotocol/wallet';
+import type { DialogProps, VegaTxState } from '@vegaprotocol/proposals';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { VoteState } from './use-user-vote';

@@ -4,7 +4,7 @@ import type {
   OrderAmendmentBody,
   OrderCancellationBody,
   WithdrawSubmissionBody,
-} from './connectors/vega-connector';
+} from '@vegaprotocol/wallet';
 import {
   OrderStatus,
   OrderTimeInForce,

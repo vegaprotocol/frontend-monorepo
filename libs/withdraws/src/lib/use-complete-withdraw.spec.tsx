@@ -3,7 +3,7 @@ import { waitFor } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
-import { useCompleteWithdraw } from './use-complete-withdraw';
+import { useCompleteWithdraw } from './use-complete-withdraw.ts';
 import type { Erc20ApprovalQuery } from './__generated__/Erc20Approval';
 import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
 import * as web3 from '@vegaprotocol/web3';

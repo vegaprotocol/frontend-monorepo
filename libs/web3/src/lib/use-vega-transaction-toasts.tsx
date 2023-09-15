@@ -4,13 +4,15 @@ import compact from 'lodash/compact';
 import type {
   BatchMarketInstructionSubmissionBody,
   OrderAmendment,
-  OrderTxUpdateFieldsFragment,
   OrderSubmission,
-  VegaStoredTxState,
-  WithdrawalBusEventFieldsFragment,
   StopOrdersSubmission,
   StopOrderSetup,
 } from '@vegaprotocol/wallet';
+import type {
+  OrderTxUpdateFieldsFragment,
+  WithdrawalBusEventFieldsFragment,
+} from './__generated__/TransactionResult';
+import type { VegaStoredTxState } from './use-vega-transaction-store';
 import {
   isTransferTransaction,
   isBatchMarketInstructionsTransaction,
@@ -21,11 +23,11 @@ import {
   isOrderCancellationTransaction,
   isOrderSubmissionTransaction,
   isWithdrawTransaction,
-  useVegaTransactionStore,
-  VegaTxStatus,
   isStopOrdersSubmissionTransaction,
   isStopOrdersCancellationTransaction,
 } from '@vegaprotocol/wallet';
+import { useVegaTransactionStore } from './use-vega-transaction-store';
+import { VegaTxStatus } from './types';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '@vegaprotocol/ui-toolkit';
@@ -44,12 +46,9 @@ import { useAssetsMapProvider } from '@vegaprotocol/assets';
 import { useEthWithdrawApprovalsStore } from './use-ethereum-withdraw-approvals-store';
 import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';
 import {
-  getOrderToastIntent,
-  getOrderToastTitle,
-  getRejectionReason,
   useOrderByIdQuery,
   useStopOrderByIdQuery,
-} from '@vegaprotocol/orders';
+} from './__generated__/Orders';
 import type { Market } from '@vegaprotocol/markets';
 import { useMarketsMapProvider } from '@vegaprotocol/markets';
 import type { Side } from '@vegaprotocol/types';
@@ -57,6 +56,75 @@ import { OrderStatusMapping } from '@vegaprotocol/types';
 import { Size } from '@vegaprotocol/datagrid';
 import { useWithdrawalApprovalDialog } from './withdrawal-approval-dialog';
 import * as Schema from '@vegaprotocol/types';
+
+export const getRejectionReason = (
+  order: OrderTxUpdateFieldsFragment
+): string | null => {
+  switch (order.status) {
+    case Schema.OrderStatus.STATUS_STOPPED:
+      return t(
+        `Your ${
+          Schema.OrderTimeInForceMapping[order.timeInForce]
+        } order was not filled and it has been stopped`
+      );
+    default:
+      return order.rejectionReason
+        ? t(Schema.OrderRejectionReasonMapping[order.rejectionReason])
+        : '';
+  }
+};
+
+export const getOrderToastTitle = (
+  status?: Schema.OrderStatus
+): string | undefined => {
+  if (!status) {
+    return;
+  }
+
+  switch (status) {
+    case Schema.OrderStatus.STATUS_ACTIVE:
+      return t('Order submitted');
+    case Schema.OrderStatus.STATUS_FILLED:
+      return t('Order filled');
+    case Schema.OrderStatus.STATUS_PARTIALLY_FILLED:
+      return t('Order partially filled');
+    case Schema.OrderStatus.STATUS_PARKED:
+      return t('Order parked');
+    case Schema.OrderStatus.STATUS_STOPPED:
+      return t('Order stopped');
+    case Schema.OrderStatus.STATUS_CANCELLED:
+      return t('Order cancelled');
+    case Schema.OrderStatus.STATUS_EXPIRED:
+      return t('Order expired');
+    case Schema.OrderStatus.STATUS_REJECTED:
+      return t('Order rejected');
+    default:
+      return t('Submission failed');
+  }
+};
+
+export const getOrderToastIntent = (
+  status?: Schema.OrderStatus
+): Intent | undefined => {
+  if (!status) {
+    return;
+  }
+  switch (status) {
+    case Schema.OrderStatus.STATUS_PARKED:
+    case Schema.OrderStatus.STATUS_EXPIRED:
+    case Schema.OrderStatus.STATUS_PARTIALLY_FILLED:
+    case Schema.OrderStatus.STATUS_STOPPED:
+      return Intent.Warning;
+    case Schema.OrderStatus.STATUS_REJECTED:
+      return Intent.Danger;
+    case Schema.OrderStatus.STATUS_FILLED:
+    case Schema.OrderStatus.STATUS_ACTIVE:
+    case Schema.OrderStatus.STATUS_CANCELLED:
+      return Intent.Success;
+    default:
+      return;
+  }
+};
 
 const intentMap: { [s in VegaTxStatus]: Intent } = {
   Default: Intent.Primary,

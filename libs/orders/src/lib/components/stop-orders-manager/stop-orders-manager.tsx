@@ -2,12 +2,12 @@ import { t } from '@vegaprotocol/i18n';
 import { useCallback, useEffect, useState } from 'react';
 import { StopOrdersTable } from '../stop-orders-table/stop-orders-table';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
-import { useVegaTransactionStore } from '@vegaprotocol/wallet';
 import type { StopOrder } from '../order-data-provider/stop-orders-data-provider';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { stopOrdersWithMarketProvider } from '../order-data-provider/stop-orders-data-provider';
 import { OrderViewDialog } from '../order-list/order-view-dialog';
 import type { Order, StopOrdersQueryVariables } from '../order-data-provider';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
 
 export interface StopOrdersManagerProps {
   partyId: string;

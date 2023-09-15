@@ -1,5 +1,5 @@
 import produce from 'immer';
-import type { Transaction } from './connectors';
+import type { Transaction } from '@vegaprotocol/wallet';
 import {
   isWithdrawTransaction,
   isOrderSubmissionTransaction,
@@ -9,8 +9,8 @@ import {
   isTransferTransaction,
   isStopOrdersSubmissionTransaction,
   isStopOrdersCancellationTransaction,
-} from './connectors';
-import { determineId } from './utils';
+  determineId,
+} from '@vegaprotocol/wallet';
 
 import { create } from 'zustand';
 import type {

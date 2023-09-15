@@ -4,10 +4,12 @@ import type { AppProps } from 'next/app';
 import { t } from '@vegaprotocol/i18n';
 import {
   useEagerConnect as useVegaEagerConnect,
-  useVegaTransactionManager,
-  useVegaTransactionUpdater,
   useVegaWallet,
 } from '@vegaprotocol/wallet';
+import {
+  useVegaTransactionManager,
+  useVegaTransactionUpdater,
+} from '@vegaprotocol/web3';
 import {
   useEagerConnect as useEthereumEagerConnect,
   useEthTransactionManager,
