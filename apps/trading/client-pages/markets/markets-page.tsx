@@ -21,8 +21,8 @@ export const MarketsPage = () => {
     updateTitle: store.updateTitle,
   }));
 
-  const tokenLink = useLinks(DApp.Token);
-  const externalLink = tokenLink(TOKEN_NEW_MARKET_PROPOSAL);
+  const governanceLink = useLinks(DApp.Governance);
+  const externalLink = governanceLink(TOKEN_NEW_MARKET_PROPOSAL);
 
   useEffect(() => {
     updateTitle(titlefy(['Markets']));

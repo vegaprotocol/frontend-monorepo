@@ -49,6 +49,7 @@ import {
 import { ViewingBanner } from '../components/viewing-banner';
 import { NavHeader } from '../components/navbar/nav-header';
 import { Routes as AppRoutes } from './client-router';
+import { Telemetry } from '../components/telemetry';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -125,6 +126,7 @@ function AppBody({ Component }: AppProps) {
       <InitializeHandlers />
       <MaybeConnectEagerly />
       <PartyData />
+      <Telemetry />
     </div>
   );
 }

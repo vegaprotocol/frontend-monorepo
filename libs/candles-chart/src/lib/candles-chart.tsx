@@ -8,13 +8,16 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/i18n';
-import { useCandlesChartSettings } from './use-candles-chart-settings';
+import {
+  STUDY_SIZE,
+  useCandlesChartSettings,
+} from './use-candles-chart-settings';
 
 export type CandlesChartContainerProps = {
   marketId: string;
 };
 
-const CANDLES_TO_WIDTH_FACTOR = 0.15;
+const CANDLES_TO_WIDTH_FACTOR = 0.2;
 
 export const CandlesChartContainer = ({
   marketId,
@@ -49,33 +52,34 @@ export const CandlesChartContainer = ({
 
   return (
     <AutoSizer>
-      {({ width, height }) => (
-        <div style={{ width, height }}>
-          <CandlestickChart
-            dataSource={dataSource}
-            options={{
-              chartType,
-              overlays,
-              studies,
-              notEnoughDataText: (
-                <span className="text-xs text-center">{t('No data')}</span>
-              ),
-              initialNumCandlesToDisplay: Math.floor(
-                width * CANDLES_TO_WIDTH_FACTOR
-              ),
-              studySize: 150, // default size
-              studySizes,
-            }}
-            interval={interval}
-            theme={theme}
-            onOptionsChanged={(options) => {
-              setStudies(options.studies);
-              setOverlays(options.overlays);
-            }}
-            onPaneChanged={handlePaneChange}
-          />
-        </div>
-      )}
+      {({ width, height }) => {
+        const candlesCount = Math.floor(width * CANDLES_TO_WIDTH_FACTOR);
+        return (
+          <div style={{ width, height }}>
+            <CandlestickChart
+              dataSource={dataSource}
+              options={{
+                chartType,
+                overlays,
+                studies,
+                notEnoughDataText: (
+                  <span className="text-xs text-center">{t('No data')}</span>
+                ),
+                initialNumCandlesToDisplay: candlesCount,
+                studySize: STUDY_SIZE,
+                studySizes,
+              }}
+              interval={interval}
+              theme={theme}
+              onOptionsChanged={(options) => {
+                setStudies(options.studies);
+                setOverlays(options.overlays);
+              }}
+              onPaneChanged={handlePaneChange}
+            />
+          </div>
+        );
+      }}
     </AutoSizer>
   );
 };

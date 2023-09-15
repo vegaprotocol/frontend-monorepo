@@ -155,10 +155,10 @@ jobs:
       - name: Sanity check docker image
         run: |
           echo "Check ipfs-hash"
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat /ipfs-hash
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat /ipfs-hash > ${{ matrix.app }}-ipfs-hash
+          docker run --rm --entrypoint /bin/sh ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat /ipfs-hash
+          docker run --rm --entrypoint /bin/sh ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local cat /ipfs-hash > ${{ matrix.app }}-ipfs-hash
           echo "List html directory"
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local sh -c 'apk add --update tree; tree /usr/share/nginx/html'
+          docker run --rm --entrypoint /bin/sh ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local sh -c 'apk add --update tree; tree /usr/share/nginx/html'
 
       - name: Publish dist as docker image (ghcr)
         uses: docker/build-push-action@v3
