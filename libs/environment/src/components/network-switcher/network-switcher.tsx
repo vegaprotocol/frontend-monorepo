@@ -87,7 +87,7 @@ export const NetworkSwitcher = ({
   className,
 }: NetworkSwitcherProps) => {
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
-  const tokenLink = useLinks(DApp.Token);
+  const tokenLink = useLinks(DApp.Governance);
   const [isOpen, setOpen] = useState(false);
   const [isAdvancedView, setAdvancedView] = useState(false);
 

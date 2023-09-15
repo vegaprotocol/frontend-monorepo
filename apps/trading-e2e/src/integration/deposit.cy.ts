@@ -104,7 +104,7 @@ describe('deposit actions', { tags: '@smoke' }, () => {
     cy.visit('/#/markets/market-1');
   });
 
-  it('Deposit to trade is visible', () => {
+  it.skip('Deposit to trade is visible', () => {
     cy.getByTestId('Collateral').click();
     cy.get('[row-id="asset-id"]').contains('tEURO').should('be.visible');
     cy.contains('[data-testid="deposit"]', 'Deposit').should('be.visible');

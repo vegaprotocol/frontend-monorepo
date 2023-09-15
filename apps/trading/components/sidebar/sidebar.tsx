@@ -15,6 +15,7 @@ import { Tooltip } from '../../components/tooltip';
 import { WithdrawContainer } from '../withdraw-container';
 import { Routes as AppRoutes } from '../../pages/client-router';
 import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 export enum ViewType {
   Order = 'Order',
@@ -50,6 +51,7 @@ type SidebarView =
     };
 
 export const Sidebar = () => {
+  const currentRouteId = useGetCurrentRouteId();
   const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
   const setViewAsDialogOpen = useViewAsDialog((state) => state.setOpen);
   const { pubKeys } = useVegaWallet();
@@ -61,16 +63,19 @@ export const Sidebar = () => {
           view={ViewType.Deposit}
           icon={VegaIconNames.DEPOSIT}
           tooltip={t('Deposit')}
+          routeId={currentRouteId}
         />
         <SidebarButton
           view={ViewType.Withdraw}
           icon={VegaIconNames.WITHDRAW}
           tooltip={t('Withdraw')}
+          routeId={currentRouteId}
         />
         <SidebarButton
           view={ViewType.Transfer}
           icon={VegaIconNames.TRANSFER}
           tooltip={t('Transfer')}
+          routeId={currentRouteId}
         />
         {/* buttons for specific routes */}
         <Routes>
@@ -93,11 +98,13 @@ export const Sidebar = () => {
                   view={ViewType.Order}
                   icon={VegaIconNames.TICKET}
                   tooltip={t('Order')}
+                  routeId={currentRouteId}
                 />
                 <SidebarButton
                   view={ViewType.Info}
                   icon={VegaIconNames.BREAKDOWN}
                   tooltip={t('Market specification')}
+                  routeId={currentRouteId}
                 />
               </>
             }
@@ -113,12 +120,13 @@ export const Sidebar = () => {
           icon={VegaIconNames.EYE}
           tooltip={t('View as party')}
           disabled={Boolean(pubKeys)}
+          routeId={currentRouteId}
         />
-
         <SidebarButton
           view={ViewType.Settings}
           icon={VegaIconNames.COG}
           tooltip={t('Settings')}
+          routeId={currentRouteId}
         />
         <NodeHealthContainer />
       </nav>
@@ -132,23 +140,25 @@ export const SidebarButton = ({
   tooltip,
   disabled = false,
   onClick,
+  routeId,
 }: {
   view?: ViewType;
   icon: VegaIconNames;
   tooltip: string;
   disabled?: boolean;
   onClick?: () => void;
+  routeId: string;
 }) => {
-  const { currView, setView } = useSidebar((store) => ({
-    currView: store.view,
-    setView: store.setView,
+  const { setViews, getView } = useSidebar((store) => ({
+    setViews: store.setViews,
+    getView: store.getView,
   }));
-
+  const currView = getView(routeId);
   const onSelect = (view: SidebarView['type']) => {
     if (view === currView?.type) {
-      setView(null);
+      setViews(null, routeId);
     } else {
-      setView({ type: view });
+      setViews({ type: view }, routeId);
     }
   };
 
@@ -194,8 +204,10 @@ const SidebarDivider = () => {
 
 export const SidebarContent = () => {
   const params = useParams();
-  const { view, setView } = useSidebar();
+  const currentRouteId = useGetCurrentRouteId();
 
+  const { setViews, getView } = useSidebar();
+  const view = getView(currentRouteId);
   if (!view) return null;
 
   if (view.type === ViewType.Order) {
@@ -205,7 +217,7 @@ export const SidebarContent = () => {
           <DealTicketContainer
             marketId={params.marketId}
             onDeposit={(assetId) =>
-              setView({ type: ViewType.Deposit, assetId })
+              setViews({ type: ViewType.Deposit, assetId }, currentRouteId)
             }
           />
         </ContentWrapper>
@@ -283,25 +295,21 @@ const ContentWrapper = ({
 
 /** If rendered will close sidebar */
 const CloseSidebar = () => {
-  const setView = useSidebar((store) => store.setView);
+  const currentRouteId = useGetCurrentRouteId();
+  const setViews = useSidebar((store) => store.setViews);
   useEffect(() => {
-    setView(null);
-  }, [setView]);
+    setViews(null, currentRouteId);
+  }, [setViews, currentRouteId]);
   return null;
 };
 
 export const useSidebar = create<{
-  init: boolean;
-  view: SidebarView | null;
-  setView: (view: SidebarView | null) => void;
-}>()((set) => ({
-  init: true,
-  view: null,
-  setView: (x) =>
-    set(() => {
-      if (x == null) {
-        return { view: null, init: false };
-      }
-      return { view: x, init: false };
-    }),
+  views: { [key: string]: SidebarView | null };
+  setViews: (view: SidebarView | null, routeId: string) => void;
+  getView: (routeId: string) => SidebarView | null | undefined;
+}>()((set, get) => ({
+  views: {},
+  setViews: (x, routeId) =>
+    set(({ views }) => ({ views: { ...views, [routeId]: x } })),
+  getView: (routeId) => get().views[routeId],
 }));
