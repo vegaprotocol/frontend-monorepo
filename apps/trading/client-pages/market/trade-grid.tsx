@@ -72,7 +72,7 @@ const MainGrid = memo(
             </ResizableGridPanel>
             <ResizableGridPanel
               minSize={200}
-              preferredSize={sizesMiddle[1] || 300}
+              preferredSize={sizesMiddle[1] || 275}
             >
               <TradeGridChild>
                 <Tabs storageKey="console-trade-grid-main-right">
@@ -180,7 +180,7 @@ const TradeGridChild = ({ children }: TradeGridChildProps) => {
         {({ width, height }) => (
           <div
             style={{ width, height }}
-            className="border border-default rounded-sm"
+            className="border rounded-sm border-default"
           >
             {children}
           </div>
