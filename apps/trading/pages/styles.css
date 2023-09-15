@@ -161,11 +161,22 @@ html [data-theme='dark'] {
   @apply font-normal font-alpha;
 }
 
-/* Light variables */
-.ag-theme-balham {
+.ag-theme-balham,
+.ag-theme-balham-dark {
   --ag-grid-size: 2px; /* Used for compactness */
   --ag-row-height: 36px;
-  --ag-header-height: 36px;
+  --ag-header-height: 28px;
+}
+
+@media (min-width: theme(screens.xxl)) {
+  .ag-theme-balham,
+  .ag-theme-balham-dark {
+    --ag-header-height: 36px;
+  }
+}
+
+/* Light variables */
+.ag-theme-balham {
   --ag-background-color: theme(colors.white);
   --ag-border-color: theme(colors.vega.clight.600);
   --ag-header-background-color: theme(colors.vega.clight.700);
@@ -178,9 +189,6 @@ html [data-theme='dark'] {
 
 /* Dark variables */
 .ag-theme-balham-dark {
-  --ag-grid-size: 2px; /* Used for compactness */
-  --ag-row-height: 36px;
-  --ag-header-height: 36px;
   --ag-background-color: theme(colors.vega.cdark.900);
   --ag-border-color: theme(colors.vega.cdark.600);
   --ag-header-background-color: theme(colors.vega.cdark.700);
@@ -190,6 +198,7 @@ html [data-theme='dark'] {
   --ag-row-hover-color: theme(colors.vega.cdark.800);
   --ag-modal-overlay-background-color: rgb(9 11 16 / 50%);
 }
+
 .ag-theme-balham-dark .ag-row.no-hover,
 .ag-theme-balham-dark .ag-row.no-hover:hover,
 .ag-theme-balham .ag-row.no-hover,
