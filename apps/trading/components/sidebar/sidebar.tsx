@@ -16,6 +16,7 @@ import { WithdrawContainer } from '../withdraw-container';
 import { Routes as AppRoutes } from '../../pages/client-router';
 import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
+import { GetStarted } from '../welcome-dialog';
 
 export enum ViewType {
   Order = 'Order',
@@ -220,6 +221,7 @@ export const SidebarContent = () => {
               setViews({ type: ViewType.Deposit, assetId }, currentRouteId)
             }
           />
+          <GetStarted />
         </ContentWrapper>
       );
     } else {
