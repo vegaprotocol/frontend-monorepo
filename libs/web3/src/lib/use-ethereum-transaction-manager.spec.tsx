@@ -15,6 +15,7 @@ const requestedTransactionUpdate = {
   status: EthTxStatus.Requested,
   error: null,
   confirmations: 0,
+  notify: true,
 };
 
 const mockDepositAsset = jest.fn();
@@ -57,6 +58,7 @@ const createTransaction = (
   dialogOpen: false,
   txHash: null,
   receipt: null,
+  notify: true,
   ...transaction,
 });
 
@@ -158,6 +160,7 @@ describe('useVegaTransactionManager', () => {
     expect(update.mock.calls[1][1]).toEqual({
       status: EthTxStatus.Pending,
       txHash,
+      notify: true,
     });
   });
 
@@ -197,6 +200,7 @@ describe('useVegaTransactionManager', () => {
     expect(update.mock.calls[3][1]).toEqual({
       status: EthTxStatus.Confirmed,
       receipt,
+      notify: true,
     });
   });
 

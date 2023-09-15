@@ -26,10 +26,7 @@ import {
   Pill,
 } from '@vegaprotocol/ui-toolkit';
 
-import {
-  useEstimatePositionQuery,
-  useOpenVolume,
-} from '@vegaprotocol/positions';
+import { useOpenVolume } from '@vegaprotocol/positions';
 import {
   toBigNum,
   removeDecimal,
@@ -63,13 +60,14 @@ import {
   useAccountBalance,
 } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import type { OrderFormValues } from '../../hooks';
 import {
   DealTicketType,
   dealTicketTypeToOrderType,
   isStopOrderType,
-} from '../../hooks/use-form-values';
-import type { OrderFormValues } from '../../hooks/use-form-values';
-import { useDealTicketFormValues } from '../../hooks/use-form-values';
+  useDealTicketFormValues,
+  usePositionEstimate,
+} from '../../hooks';
 import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 import noop from 'lodash/noop';
 import { isNonPersistentOrder } from '../../utils/time-in-force-persistance';
@@ -253,16 +251,14 @@ export const DealTicket = ({
       side: normalizedOrder.side,
     });
   }
-  const { data: positionEstimate } = useEstimatePositionQuery({
-    variables: {
-      marketId: market.id,
-      openVolume,
-      orders,
-      collateralAvailable:
-        marginAccountBalance || generalAccountBalance ? balance : undefined,
-    },
+
+  const positionEstimate = usePositionEstimate({
+    marketId: market.id,
+    openVolume,
+    orders,
+    collateralAvailable:
+      marginAccountBalance || generalAccountBalance ? balance : undefined,
     skip: !normalizedOrder,
-    fetchPolicy: 'no-cache',
   });
 
   const assetSymbol =
