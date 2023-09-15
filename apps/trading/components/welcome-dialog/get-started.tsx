@@ -32,7 +32,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const setView = useSidebar((store) => store.setView);
+  const setViews = useSidebar((store) => store.setViews);
   let buttonText = t('Get started');
   let onClickHandle = () => {
     openVegaWalletDialog();
@@ -43,14 +43,14 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
     buttonText = t('Deposit');
     onClickHandle = () => {
       navigate(link);
-      setView({ type: ViewType.Deposit });
+      setViews({ type: ViewType.Deposit }, Routes.MARKET);
       setDialogOpen(false);
     };
   } else if (step >= OnboardingStep.ONBOARDING_ORDER_STEP) {
     buttonText = t('Ready to trade');
     onClickHandle = () => {
       navigate(link);
-      setView({ type: ViewType.Order });
+      setViews({ type: ViewType.Order }, Routes.MARKET);
       dismiss();
     };
   }
