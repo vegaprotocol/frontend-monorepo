@@ -1,5 +1,8 @@
 name: (CI) Console tests
 
+env:
+  VEGA_VERSION: v0.72.14
+
 on:
   workflow_call:
     inputs:
@@ -78,7 +81,14 @@ jobs:
       #----------------------------------------------
       - name: Install vega binaries
         working-directory: ./console-test
-        run: poetry run python -m vega_sim.tools.load_binaries --force
+        if: steps.vega_binaries_cache.outputs.cache-hit != 'true'
+        run: poetry run python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
+      #----------------------------------------------
+      #  -----  pull console. -----
+      #----------------------------------------------
+      - name: pull console
+        run: |
+          poetry run docker pull vegaprotocol/trading:develop
       #----------------------------------------------
       # install playwright
       #----------------------------------------------
