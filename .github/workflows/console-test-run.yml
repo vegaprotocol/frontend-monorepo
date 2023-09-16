@@ -84,12 +84,6 @@ jobs:
         if: steps.vega_binaries_cache.outputs.cache-hit != 'true'
         run: poetry run python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
       #----------------------------------------------
-      #  -----  pull console. -----
-      #----------------------------------------------
-      - name: pull console
-        run: |
-          poetry run docker pull vegaprotocol/trading:develop
-      #----------------------------------------------
       # install playwright
       #----------------------------------------------
       - name: install playwright
