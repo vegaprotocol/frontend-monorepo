@@ -1,6 +1,6 @@
 import { Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
-import type { ComponentProps, HTMLAttributes } from 'react';
+import type { ComponentProps, ButtonHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -13,10 +13,10 @@ export const RainbowButton = ({
   children,
   className,
   ...props
-}: RainbowButtonProps & HTMLAttributes<HTMLButtonElement>) => (
+}: RainbowButtonProps & ButtonHTMLAttributes<HTMLButtonElement>) => (
   <button
     className={classNames(
-      'bg-rainbow hover:bg-none hover:bg-vega-pink-500 rounded-lg overflow-hidden',
+      'bg-rainbow hover:bg-none hover:bg-rainbow enabled:hover:bg-vega-pink-500 rounded-lg overflow-hidden disabled:opacity-40',
       {
         'px-5 py-3 text-white': variant === 'full',
         'p-[0.125rem]': variant === 'border',
@@ -47,7 +47,7 @@ const RAINBOW_TAB_STYLE = classNames(
 
 export const RainbowTabButton = forwardRef<
   HTMLButtonElement,
-  HTMLAttributes<HTMLButtonElement>
+  ButtonHTMLAttributes<HTMLButtonElement>
 >(({ children, ...props }, ref) => (
   <button ref={ref} className={RAINBOW_TAB_STYLE} {...props}>
     {children}
