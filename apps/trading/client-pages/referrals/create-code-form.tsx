@@ -5,13 +5,23 @@ import classNames from 'classnames';
 
 export const CreateCodeForm = () => {
   const [err, setErr] = useState<boolean | null>(null);
-  const { isReadOnly, pubKey } = useVegaWallet();
+  const { isReadOnly, pubKey, sendTx } = useVegaWallet();
   const onSubmit = () => {
-    // TODO: TX HERE
     if (isReadOnly || !pubKey) {
       setErr(true);
     } else {
       setErr(false);
+      sendTx(pubKey, {
+        createReferralSet: {
+          isTeam: false,
+        },
+      })
+        .then((res) => {
+          // TODO: Do something with response
+        })
+        .catch((err) => {
+          // TODO: Do something with rejection
+        });
     }
   };
 
