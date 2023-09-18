@@ -394,6 +394,18 @@ export type ApplyReferralCode = {
   };
 };
 
+export type CreateReferralSet = {
+  createReferralSet: {
+    isTeam: boolean;
+    team?: {
+      name: string;
+      teamUrl?: string;
+      avatarUrl?: string;
+      closed: boolean;
+    };
+  };
+};
+
 export type Transaction =
   | StopOrdersSubmissionBody
   | StopOrdersCancellationBody
@@ -408,7 +420,8 @@ export type Transaction =
   | BatchMarketInstructionSubmissionBody
   | TransferBody
   | LiquidityProvisionSubmission
-  | ApplyReferralCode;
+  | ApplyReferralCode
+  | CreateReferralSet;
 
 export const isWithdrawTransaction = (
   transaction: Transaction

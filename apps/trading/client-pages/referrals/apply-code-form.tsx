@@ -14,6 +14,7 @@ export const ApplyCodeForm = () => {
     handleSubmit,
     formState: { errors },
     setValue,
+    setError,
   } = useForm();
 
   const [params] = useSearchParams();
@@ -36,7 +37,10 @@ export const ApplyCodeForm = () => {
         // TODO: Do something with response
       })
       .catch((err) => {
-        // TODO: Do something with error
+        setError('code', {
+          type: 'required',
+          message: 'Your code has been rejected',
+        });
       });
   };
 
