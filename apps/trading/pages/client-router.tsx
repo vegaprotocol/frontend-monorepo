@@ -6,6 +6,10 @@ import { t } from '@vegaprotocol/i18n';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import trimEnd from 'lodash/trimEnd';
 import { LayoutWithSidebar } from '../components/layouts';
+import { LayoutWithSky } from '../client-pages/referrals/layout';
+import { ReferralStatistics } from '../client-pages/referrals/referral-statistics';
+import { ApplyCodeForm } from '../client-pages/referrals/apply-code-form';
+import { CreateCodeForm } from '../client-pages/referrals/create-code-form';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
@@ -35,6 +39,13 @@ const LazyDeposit = dynamic(() => import('../client-pages/deposit'), {
   ssr: false,
 });
 
+const LazyReferrals = dynamic(
+  () => import('../client-pages/referrals/referrals'),
+  {
+    ssr: false,
+  }
+);
+
 export enum Routes {
   HOME = '/',
   MARKET = '/markets/:marketId',
@@ -43,6 +54,10 @@ export enum Routes {
   LIQUIDITY = '/liquidity/:marketId',
   DISCLAIMER = '/disclaimer',
   DEPOSIT = '/deposit',
+  REFERRALS = '/referrals',
+  REFERRALS_APPLY_CODE = '/referrals/apply-code',
+  REFERRALS_CREATE_CODE = '/referrals/create-code',
+  TEAMS = '/teams',
 }
 
 type ConsoleLinks = { [r in Routes]: (...args: string[]) => string };
@@ -57,6 +72,10 @@ export const Links: ConsoleLinks = {
     trimEnd(Routes.LIQUIDITY.replace(':marketId', marketId)),
   [Routes.DISCLAIMER]: () => Routes.DISCLAIMER,
   [Routes.DEPOSIT]: () => Routes.DEPOSIT,
+  [Routes.REFERRALS]: () => Routes.REFERRALS,
+  [Routes.REFERRALS_APPLY_CODE]: () => Routes.REFERRALS_APPLY_CODE,
+  [Routes.REFERRALS_CREATE_CODE]: () => Routes.REFERRALS_CREATE_CODE,
+  [Routes.TEAMS]: () => Routes.TEAMS,
 };
 
 export const routerConfig: RouteObject[] = [
@@ -109,6 +128,30 @@ export const routerConfig: RouteObject[] = [
     element: <LazyDisclaimer />,
   },
   { path: Routes.DEPOSIT, element: <LazyDeposit /> },
+  // Referrals routing:
+  {
+    path: Routes.REFERRALS,
+    element: <LayoutWithSky />,
+    children: [
+      {
+        element: <LazyReferrals />,
+        children: [
+          {
+            index: true,
+            element: <ReferralStatistics />,
+          },
+          {
+            path: Routes.REFERRALS_APPLY_CODE,
+            element: <ApplyCodeForm />,
+          },
+          {
+            path: Routes.REFERRALS_CREATE_CODE,
+            element: <CreateCodeForm />,
+          },
+        ],
+      },
+    ],
+  },
   {
     path: '*',
     element: (

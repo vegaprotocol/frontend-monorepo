@@ -181,6 +181,11 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           </NavbarLink>
         </NavbarItem>
         <NavbarItem>
+          <NavbarLink to={Links[Routes.REFERRALS]()} onClick={onClick}>
+            {t('Referrals')}
+          </NavbarLink>
+        </NavbarItem>
+        <NavbarItem>
           <NavbarLink to={Links[Routes.PORTFOLIO]()} onClick={onClick}>
             {t('Portfolio')}
           </NavbarLink>
