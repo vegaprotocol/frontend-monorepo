@@ -3,13 +3,13 @@ import { t } from '@vegaprotocol/i18n';
 import {
   ExternalLink,
   Intent,
+  TradingAnchorButton,
   TradingButton,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
-import { useNavigate } from 'react-router-dom';
 import {
   OnboardingStep,
   useGetOnboardingStep,
@@ -24,46 +24,81 @@ interface Props {
 }
 
 const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
-  const navigate = useNavigate();
   const dismiss = useOnboardingStore((store) => store.dismiss);
   const setDialogOpen = useOnboardingStore((store) => store.setDialogOpen);
   const marketId = useGlobalStore((store) => store.marketId);
-  const link = marketId ? Links[Routes.MARKET](marketId) : Links[Routes.HOME]();
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
   const setViews = useSidebar((store) => store.setViews);
-  let buttonText = t('Get started');
-  let onClickHandle = () => {
-    openVegaWalletDialog();
+
+  const buttonProps = {
+    size: 'small' as const,
+    'data-testid': 'get-started-button',
+    intent: Intent.Info,
   };
+
   if (step <= OnboardingStep.ONBOARDING_CONNECT_STEP) {
-    buttonText = t('Connect');
+    return (
+      <TradingButton {...buttonProps} onClick={() => openVegaWalletDialog()}>
+        {t('Connect')}
+      </TradingButton>
+    );
   } else if (step === OnboardingStep.ONBOARDING_DEPOSIT_STEP) {
-    buttonText = t('Deposit');
-    onClickHandle = () => {
-      navigate(link);
-      setViews({ type: ViewType.Deposit }, Routes.MARKET);
-      setDialogOpen(false);
-    };
+    return (
+      <TradingAnchorButton
+        {...buttonProps}
+        href={Links[Routes.DEPOSIT]()}
+        onClick={() => setDialogOpen(false)}
+      >
+        {t('Deposit')}
+      </TradingAnchorButton>
+    );
   } else if (step >= OnboardingStep.ONBOARDING_ORDER_STEP) {
-    buttonText = t('Ready to trade');
-    onClickHandle = () => {
-      navigate(link);
-      setViews({ type: ViewType.Order }, Routes.MARKET);
-      dismiss();
-    };
+    return (
+      <TradingAnchorButton
+        {...buttonProps}
+        href={marketId ? Links[Routes.MARKET](marketId) : Links[Routes.HOME]()}
+        onClick={() => {
+          setViews({ type: ViewType.Order }, Routes.MARKET);
+          dismiss();
+        }}
+      >
+        {t('Ready to trade')}
+      </TradingAnchorButton>
+    );
   }
 
   return (
-    <TradingButton
-      onClick={onClickHandle}
-      size="small"
-      data-testid="get-started-button"
-      intent={Intent.Info}
-    >
-      {buttonText}
+    <TradingButton {...buttonProps} onClick={() => openVegaWalletDialog()}>
+      {t('Get started')}
     </TradingButton>
+  );
+};
+
+export const GetStartedCheckList = () => {
+  const { pubKey } = useVegaWallet();
+  const currentStep = useGetOnboardingStep();
+  return (
+    <ul className="list-none">
+      <Step
+        step={1}
+        text={t('Connect')}
+        complete={Boolean(
+          currentStep > OnboardingStep.ONBOARDING_CONNECT_STEP || pubKey
+        )}
+      />
+      <Step
+        step={2}
+        text={t('Deposit funds')}
+        complete={currentStep > OnboardingStep.ONBOARDING_DEPOSIT_STEP}
+      />
+      <Step
+        step={3}
+        text={t('Open a position')}
+        complete={currentStep > OnboardingStep.ONBOARDING_ORDER_STEP}
+      />
+    </ul>
   );
 };
 
@@ -89,25 +124,7 @@ export const GetStarted = ({ lead }: Props) => {
         {lead && <h2>{lead}</h2>}
         <h3 className="text-lg">{t('Get started')}</h3>
         <div>
-          <ul className="list-none">
-            <Step
-              step={1}
-              text={t('Connect')}
-              complete={Boolean(
-                currentStep > OnboardingStep.ONBOARDING_CONNECT_STEP || pubKey
-              )}
-            />
-            <Step
-              step={2}
-              text={t('Deposit funds')}
-              complete={currentStep > OnboardingStep.ONBOARDING_DEPOSIT_STEP}
-            />
-            <Step
-              step={3}
-              text={t('Open a position')}
-              complete={currentStep > OnboardingStep.ONBOARDING_ORDER_STEP}
-            />
-          </ul>
+          <GetStartedCheckList />
         </div>
         <div>
           <GetStartedButton step={currentStep} />

@@ -1,5 +1,8 @@
 name: (CI) Console tests
 
+env:
+  VEGA_VERSION: v0.72.14
+
 on:
   workflow_call:
     inputs:
@@ -11,7 +14,7 @@ jobs:
   run-tests:
     name: run-tests
     runs-on: console-test
-    timeout-minutes: 20
+    timeout-minutes: 40
     steps:
       #----------------------------------------------
       #       check-out frontend-monorepo
@@ -78,7 +81,8 @@ jobs:
       #----------------------------------------------
       - name: Install vega binaries
         working-directory: ./console-test
-        run: poetry run python -m vega_sim.tools.load_binaries --force
+        if: steps.vega_binaries_cache.outputs.cache-hit != 'true'
+        run: poetry run python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
       #----------------------------------------------
       # install playwright
       #----------------------------------------------

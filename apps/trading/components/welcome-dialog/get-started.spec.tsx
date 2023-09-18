@@ -75,7 +75,7 @@ describe('GetStarted', () => {
       </MemoryRouter>
     );
     checkTicks(screen.getAllByRole('listitem'));
-    expect(screen.getByRole('button', { name: 'Deposit' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Deposit' })).toBeInTheDocument();
 
     mockStep = 4;
     rerender(
@@ -87,10 +87,10 @@ describe('GetStarted', () => {
     );
     checkTicks(screen.getAllByRole('listitem'));
     expect(
-      screen.getByRole('button', { name: 'Ready to trade' })
+      screen.getByRole('link', { name: 'Ready to trade' })
     ).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Ready to trade' }));
+    fireEvent.click(screen.getByRole('link', { name: 'Ready to trade' }));
 
     mockStep = 5;
     rerender(
