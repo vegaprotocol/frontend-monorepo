@@ -8,6 +8,7 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
       mockGQL(handler: RouteHandler): void;
+      mockStatistics(handler: RouteHandler): void;
     }
   }
 }
@@ -39,6 +40,16 @@ const extractVariables = (req: CyHttpMessages.IncomingHttpRequest): object => {
     {}
   );
 };
+
+export function addMockStatistics() {
+  Cypress.Commands.add('mockStatistics', (handler: RouteHandler) => {
+    cy.intercept(
+      'GET',
+      Cypress.env('VEGA_URL').replace('graphql', 'statistics'),
+      handler
+    ).as('GQL');
+  });
+}
 
 export function addMockGQLCommand() {
   Cypress.Commands.add('mockGQL', (handler: RouteHandler) => {

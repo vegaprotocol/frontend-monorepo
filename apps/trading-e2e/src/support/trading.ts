@@ -7,7 +7,6 @@ import {
   assetQuery,
   assetsQuery,
   candlesQuery,
-  chainIdQuery,
   chartQuery,
   depositsQuery,
   estimateFeesQuery,
