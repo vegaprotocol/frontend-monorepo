@@ -8,12 +8,13 @@ import type {
   VegaStoredTxState,
 } from './use-vega-transaction-store';
 
-const mockSendTx = jest.fn<Promise<Partial<TransactionResponse> | null>, []>();
+const mockSendTx = jest.fn();
 
 const pubKey = 'pubKey';
 
 const mockDisconnect = jest.fn();
-jest.mock('./use-vega-wallet', () => ({
+jest.mock('@vegaprotocol/wallet', () => ({
+  ...jest.requireActual('@vegaprotocol/wallet'),
   useVegaWallet: () => ({
     sendTx: mockSendTx,
     pubKey,

@@ -20,11 +20,5 @@
     "jest.config.ts",
     "__mocks__"
   ],
-  "include": [
-    "**/*.js",
-    "**/*.jsx",
-    "**/*.ts",
-    "**/*.tsx",
-    "../proposals/src/lib/proposals-hooks/use-vega-transaction.tsx"
-  ]
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
 }
