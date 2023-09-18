@@ -135,6 +135,7 @@ export const Referrals = () => {
           <TradingAnchorButton
             className="mx-auto w-max"
             href="https://docs.vega.xyz/"
+            target="_blank"
           >
             Read the terms <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
           </TradingAnchorButton>
