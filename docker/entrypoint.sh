@@ -1,11 +1,14 @@
 #!/bin/sh
 
-daemon="${1:-nginx}"
+entrypoint="${1:-nginx}"
 
-if [[ "$daemon" = "nginx" ]]; then
+if [[ "$entrypoint" = "nginx" ]]; then
   nginx -g 'daemon off;'
-elif [[ "$daemon" = "ipfs" ]]; then
+elif [[ "$entrypoint" = "ipfs" ]]; then
   ipfs config profile apply server
   ipfs config --json Addresses.Gateway '"/ip4/127.0.0.1/tcp/80"'
   ipfs daemon
+elif [[ "-c" ]]; then
+  shift
+  /bin/sh -c "$@"
 fi
