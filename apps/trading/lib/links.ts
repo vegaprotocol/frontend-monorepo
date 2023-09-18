@@ -13,6 +13,10 @@ export const Routes = {
   DEPOSIT: '/portfolio/assets/deposit',
   WITHDRAW: '/portfolio/assets/withdraw',
   TRANSFER: '/portfolio/assets/transfer',
+  REFERRALS: '/referrals',
+  REFERRALS_APPLY_CODE: '/referrals/apply-code',
+  REFERRALS_CREATE_CODE: '/referrals/create-code',
+  TEAMS: '/teams',
 } as const;
 
 type ConsoleLinks = {
@@ -32,4 +36,8 @@ export const Links: ConsoleLinks = {
   DEPOSIT: () => Routes.DEPOSIT,
   WITHDRAW: () => Routes.WITHDRAW,
   TRANSFER: () => Routes.TRANSFER,
+  REFERRALS: () => Routes.REFERRALS,
+  REFERRALS_APPLY_CODE: () => Routes.REFERRALS_APPLY_CODE,
+  REFERRALS_CREATE_CODE: () => Routes.REFERRALS_CREATE_CODE,
+  TEAMS: () => Routes.TEAMS,
 };

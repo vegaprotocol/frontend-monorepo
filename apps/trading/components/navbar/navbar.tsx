@@ -184,6 +184,11 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           </NavbarLink>
         </NavbarItem>
         <NavbarItem>
+          <NavbarLink to={Links.REFERRALS()} onClick={onClick}>
+            {t('Referrals')}
+          </NavbarLink>
+        </NavbarItem>
+        <NavbarItem>
           <NavbarLinkExternal to={useLinks(DApp.Governance)()}>
             {t('Governance')}
           </NavbarLinkExternal>

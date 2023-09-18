@@ -14,6 +14,11 @@ import { Deposit } from '../client-pages/deposit';
 import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
 import { Routes } from '../lib/links';
+import { LayoutWithSky } from '../client-pages/referrals/layout';
+import { Referrals } from '../client-pages/referrals/referrals';
+import { ReferralStatistics } from '../client-pages/referrals/referral-statistics';
+import { ApplyCodeForm } from '../client-pages/referrals/apply-code-form';
+import { CreateCodeForm } from '../client-pages/referrals/create-code-form';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -35,7 +40,30 @@ export const routerConfig: RouteObject[] = [
     id: Routes.DISCLAIMER,
     children: [{ index: true, element: <Disclaimer /> }],
   },
-
+  // Referrals routing:
+  {
+    path: Routes.REFERRALS,
+    element: <LayoutWithSky />,
+    children: [
+      {
+        element: <Referrals />,
+        children: [
+          {
+            index: true,
+            element: <ReferralStatistics />,
+          },
+          {
+            path: Routes.REFERRALS_APPLY_CODE,
+            element: <ApplyCodeForm />,
+          },
+          {
+            path: Routes.REFERRALS_CREATE_CODE,
+            element: <CreateCodeForm />,
+          },
+        ],
+      },
+    ],
+  },
   // All other pages will use the sidebar
   {
     path: '/*',
@@ -93,7 +121,6 @@ export const routerConfig: RouteObject[] = [
         element: <Liquidity />,
         id: Routes.LIQUIDITY,
       },
-
       // NotFound page is here so its caught within parent '/*' route
       {
         path: '*',
