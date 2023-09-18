@@ -13,7 +13,6 @@ import { RainbowTabLink } from './buttons';
 import { Outlet } from 'react-router-dom';
 import { Tag } from './tag';
 import { Routes } from '../../pages/client-router';
-import Image from 'next/image';
 
 export const Referrals = () => {
   return (
@@ -31,11 +30,11 @@ export const Referrals = () => {
             Apply a code
           </RainbowTabLink>
         </div>
-        <div className="border-t border-b py-16 border-vega-cdark-500">
+        <div className="py-16 border-t border-b border-vega-cdark-500">
           <Outlet />
         </div>
       </div>
-      <div className="mt-10 mb-5 flex flex-row justify-between items-baseline">
+      <div className="flex flex-row items-baseline justify-between mt-10 mb-5">
         <h2 className="text-2xl">Referral tiers</h2>
         <span className="text-base">
           <span className="text-vega-clight-200 dark:text-vega-cdark-200">
@@ -48,10 +47,10 @@ export const Referrals = () => {
         <TiersTable />
       </div>
 
-      <div className="mb-5 flex flex-row justify-between items-baseline">
+      <div className="flex flex-row items-baseline justify-between mb-5">
         <h2 className="text-2xl">Staking multipliers</h2>
       </div>
-      <div className="mb-20 flex flex-col jjustify-items-stretch md:flex-row gap-5">
+      <div className="flex flex-col mb-20 jjustify-items-stretch md:flex-row gap-5">
         <div
           className={classNames(
             'overflow-hidden',
@@ -60,8 +59,8 @@ export const Referrals = () => {
           )}
         >
           <div aria-hidden>
-            <Image
-              src="/assets/1x.png"
+            <img
+              src="/1x.png"
               alt="1x multiplier"
               width={768}
               height={400}
@@ -85,8 +84,8 @@ export const Referrals = () => {
           )}
         >
           <div aria-hidden>
-            <Image
-              src="/assets/2x.png"
+            <img
+              src="/2x.png"
               alt="2x multiplier"
               width={768}
               height={400}
@@ -109,8 +108,8 @@ export const Referrals = () => {
           )}
         >
           <div aria-hidden>
-            <Image
-              src="/assets/3x.png"
+            <img
+              src="/3x.png"
               alt="3x multiplier"
               width={768}
               height={400}
@@ -127,14 +126,14 @@ export const Referrals = () => {
         </div>
       </div>
 
-      <div className="text-center mt-10 mb-5">
+      <div className="mt-10 mb-5 text-center">
         <h2 className="text-2xl">How it works</h2>
       </div>
       <div className="md:w-[60%] mx-auto">
         <HowItWorksTable />
         <div className="mt-5">
           <TradingAnchorButton
-            className="w-max mx-auto"
+            className="mx-auto w-max"
             href="https://docs.vega.xyz/"
           >
             Read the terms <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
