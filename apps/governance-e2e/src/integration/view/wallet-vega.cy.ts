@@ -4,7 +4,6 @@ import {
   vegaWalletFaucetAssetsWithoutCheck,
   vegaWalletTeardown,
 } from '../../support/wallet-functions';
-import { aliasGQLQuery } from '@vegaprotocol/cypress';
 
 const walletContainer = 'aside [data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';

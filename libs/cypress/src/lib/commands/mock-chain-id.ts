@@ -22,7 +22,7 @@ export function addMockChainId() {
       },
     };
     cy.mockGQL((req) => {
-      aliasGQLQuery(req, 'Statistics', statisticsQuery(result));
+      aliasGQLQuery(req, 'NodeCheck', statisticsQuery(result));
     });
     cy.mockStatistics((req) => {
       req.reply({
