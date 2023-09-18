@@ -47,7 +47,7 @@ export function addMockStatistics() {
       'GET',
       Cypress.env('VEGA_URL').replace('graphql', 'statistics'),
       handler
-    ).as('GQL');
+    ).as('ChainId');
   });
 }
 
