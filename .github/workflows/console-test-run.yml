@@ -70,14 +70,29 @@ jobs:
           repository: vegaprotocol/console-test
           path: './console-test'
       #----------------------------------------------
-      # install dependencies if cache does not exist
+      #       install dependencies
       #----------------------------------------------
       - name: Install dependencies
         working-directory: ./console-test
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
       #----------------------------------------------
-      # install vega binaries
+      #       find vega binaries path
+      #----------------------------------------------
+      - name: Find vega binaries path
+        id: vega_bin_path
+        working-directory: ./console-test
+        run: echo path=$(poetry run python -c "import vega_sim; print(vega_sim.vega_bin_path)") >> $GITHUB_OUTPUT
+      #----------------------------------------------
+      #       vega binaries cache
+      #----------------------------------------------
+      - name: Vega binaries cache
+        uses: actions/cache@v3
+        id: vega_binaries_cache
+        with:
+          path: ${{ steps.vega_bin_path.outputs.path }}
+          key: ${{ runner.os }}-vega-binaries-${{ env.VEGA_VERSION }}
+      #----------------------------------------------
+      #       install vega binaries
       #----------------------------------------------
       - name: Install vega binaries
         working-directory: ./console-test
@@ -87,7 +102,7 @@ jobs:
       # install playwright
       #----------------------------------------------
       - name: install playwright
-        run: poetry run playwright install
+        run: poetry run playwright install --with-deps chromium
         working-directory: ./console-test
       #----------------------------------------------
       # run tests
