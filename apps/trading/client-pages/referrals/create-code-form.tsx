@@ -91,9 +91,9 @@ export const CreateCodeForm = () => {
       </div>
       {status === 'success' && code && (
         <div className="flex gap-2">
-          <pre className="p-3 text-sm rounded bg-vega-clight-700 dark:bg-vega-cdark-700">
-            {code}
-          </pre>
+          <p className="flex items-center px-2 text-sm rounded bg-vega-clight-700 dark:bg-vega-cdark-700">
+            <span>{code}</span>
+          </p>
           <CopyWithTooltip text={code}>
             <TradingButton
               className="text-sm no-underline"
