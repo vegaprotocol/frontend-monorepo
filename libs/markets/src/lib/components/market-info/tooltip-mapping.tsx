@@ -116,7 +116,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'This is a market parameter. Specifies the number of epochs over which past performance will continue to affect rewards.'
   ),
   SLACompetitionFactor: t(
-    `This is a market parameter. The SLA completion factor. Specifies the maximum fraction of their accrued fees an LP that meets the SLA implied by market.liquidity.commitmentMinTimeFraction will lose to liquidity providers that achieved a higher SLA performance than them. `
+    `Maximum fraction of an LP's accrued fees that an LP would lose to liquidity providers that achieved a higher SLA performance than them. This is a market parameter. `
   ),
   bondPenaltyParameter: t(
     'This is a network parameter. It is used to calculate the penalty to liquidity providers when they cannot support their open position with the assets in their margin and general accounts. Valid values: any decimal number >= 0 with a default value of 0.1.'
