@@ -38,3 +38,7 @@ When making to deposit ERC20 assets to an Vega key, I...
     - **must** see feedback that the deposit has or has not been credited to the Vega key (<a name="1001-DEPO-010" href="#1001-DEPO-010">1001-DEPO-010</a>)
 
 ...so that my Vega key can use these assets on Vega
+
+### Deposit page
+
+- Visiting the page with a query param `?assetId=XYZ` should load the page with that asset selected if that asset exists (<a name="1001-DEPO-011" href="#1001-DEPO-011">1001-DEPO-011</a>)

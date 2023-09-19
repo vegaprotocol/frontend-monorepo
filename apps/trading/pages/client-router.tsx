@@ -6,6 +6,9 @@ import { t } from '@vegaprotocol/i18n';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import trimEnd from 'lodash/trimEnd';
 import { LayoutWithSidebar } from '../components/layouts';
+import { Deposit } from '../client-pages/deposit';
+import { Withdraw } from '../client-pages/withdraw';
+import { Transfer } from '../client-pages/transfer';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
@@ -31,10 +34,6 @@ const LazyDisclaimer = dynamic(() => import('../client-pages/disclaimer'), {
   ssr: false,
 });
 
-const LazyDeposit = dynamic(() => import('../client-pages/deposit'), {
-  ssr: false,
-});
-
 export enum Routes {
   HOME = '/',
   MARKET = '/markets/:marketId',
@@ -43,6 +42,8 @@ export enum Routes {
   LIQUIDITY = '/liquidity/:marketId',
   DISCLAIMER = '/disclaimer',
   DEPOSIT = '/deposit',
+  WITHDRAW = '/withdraw',
+  TRANSFER = '/transfer',
 }
 
 type ConsoleLinks = { [r in Routes]: (...args: string[]) => string };
@@ -57,6 +58,8 @@ export const Links: ConsoleLinks = {
     trimEnd(Routes.LIQUIDITY.replace(':marketId', marketId)),
   [Routes.DISCLAIMER]: () => Routes.DISCLAIMER,
   [Routes.DEPOSIT]: () => Routes.DEPOSIT,
+  [Routes.WITHDRAW]: () => Routes.WITHDRAW,
+  [Routes.TRANSFER]: () => Routes.TRANSFER,
 };
 
 export const routerConfig: RouteObject[] = [
@@ -108,7 +111,9 @@ export const routerConfig: RouteObject[] = [
     path: Routes.DISCLAIMER,
     element: <LazyDisclaimer />,
   },
-  { path: Routes.DEPOSIT, element: <LazyDeposit /> },
+  { path: Routes.DEPOSIT, element: <Deposit /> },
+  { path: Routes.WITHDRAW, element: <Withdraw /> },
+  { path: Routes.TRANSFER, element: <Transfer /> },
   {
     path: '*',
     element: (
@@ -124,7 +129,7 @@ export const ClientRouter = () => {
   return (
     <Suspense
       fallback={
-        <div className="w-full h-full flex justify-center items-center">
+        <div className="flex items-center justify-center w-full h-full">
           <Loader />
         </div>
       }
