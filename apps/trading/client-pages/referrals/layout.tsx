@@ -12,7 +12,7 @@ export const Layout = ({
     <div
       className={classNames(
         'max-w-[1440px]',
-        'mx-auto px-16 md:px-32 pb-32',
+        'mx-auto px-4 md:px-32 lg:px-16 pb-32',
         'relative z-0',
         'h-full overflow-auto',
         className

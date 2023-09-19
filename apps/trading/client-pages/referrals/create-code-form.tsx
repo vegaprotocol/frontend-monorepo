@@ -29,7 +29,7 @@ export const CreateCodeForm = () => {
   };
 
   return (
-    <div className="w-1/2 mx-auto">
+    <div className="mx-auto lg:w-1/2">
       <h3 className="mb-5 text-xl text-center uppercase calt">
         Create a referral code
       </h3>

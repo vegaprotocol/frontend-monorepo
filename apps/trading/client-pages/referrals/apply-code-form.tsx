@@ -45,8 +45,8 @@ export const ApplyCodeForm = () => {
   };
 
   return (
-    <div className="w-1/2 mx-auto">
-      <h3 className="text-xl mb-5 text-center uppercase calt">
+    <div className="mx-auto lg:w-1/2">
+      <h3 className="mb-5 text-xl text-center uppercase calt">
         Apply a referral code
       </h3>
       <p className="mb-6 text-center">Enter a referral code</p>
@@ -57,7 +57,7 @@ export const ApplyCodeForm = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <label className="flex-grow">
-          <span className="block text-vega-clight-100 dark:text-vega-cdark-100 mb-1 text-sm">
+          <span className="block mb-1 text-sm text-vega-clight-100 dark:text-vega-cdark-100">
             Your referral code
           </span>
           <Input
