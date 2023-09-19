@@ -1,8 +1,9 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { getNumberFormat } from '@vegaprotocol/utils';
 import { addDays } from 'date-fns';
 
 // TODO: Generate query
+// eslint-disable-next-line
 const REFERRAL_PROGRAM_QUERY = gql`
   query ReferralProgram {
     currentReferralProgram {
@@ -27,7 +28,9 @@ const REFERRAL_PROGRAM_QUERY = gql`
 
 export const useReferralProgram = () => {
   // TODO: get real data
-  // const { data, loading, error } = useQuery(REFERRAL_PROGRAM_QUERY);
+  // const { data, loading, error } = useQuery(REFERRAL_PROGRAM_QUERY, {
+  //  fetchPolicy: 'cache-and-network',
+  // });
 
   const dummyData = {
     currentReferralProgram: {

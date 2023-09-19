@@ -59,6 +59,7 @@ export const Referrals = () => {
           )}
         >
           <div aria-hidden>
+            {/* eslint-disable-next-line  @next/next/no-img-element */}
             <img
               src="/1x.png"
               alt="1x multiplier"
@@ -84,6 +85,7 @@ export const Referrals = () => {
           )}
         >
           <div aria-hidden>
+            {/* eslint-disable-next-line  @next/next/no-img-element */}
             <img
               src="/2x.png"
               alt="2x multiplier"
@@ -108,6 +110,7 @@ export const Referrals = () => {
           )}
         >
           <div aria-hidden>
+            {/* eslint-disable-next-line  @next/next/no-img-element */}
             <img
               src="/3x.png"
               alt="3x multiplier"

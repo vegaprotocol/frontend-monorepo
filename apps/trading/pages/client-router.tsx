@@ -9,7 +9,7 @@ import { LayoutWithSidebar } from '../components/layouts';
 import { LayoutWithSky } from '../client-pages/referrals/layout';
 import { ReferralStatistics } from '../client-pages/referrals/referral-statistics';
 import { ApplyCodeForm } from '../client-pages/referrals/apply-code-form';
-import { CreateCodeForm } from '../client-pages/referrals/create-code-form';
+import { CreateCodeContainer } from '../client-pages/referrals/create-code-form';
 
 const LazyHome = dynamic(() => import('../client-pages/home'), {
   ssr: false,
@@ -146,7 +146,7 @@ export const routerConfig: RouteObject[] = [
           },
           {
             path: Routes.REFERRALS_CREATE_CODE,
-            element: <CreateCodeForm />,
+            element: <CreateCodeContainer />,
           },
         ],
       },
@@ -167,7 +167,7 @@ export const ClientRouter = () => {
   return (
     <Suspense
       fallback={
-        <div className="w-full h-full flex justify-center items-center">
+        <div className="flex items-center justify-center w-full h-full">
           <Loader />
         </div>
       }
