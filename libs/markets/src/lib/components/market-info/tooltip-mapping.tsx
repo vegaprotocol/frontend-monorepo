@@ -131,7 +131,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'This is a network parameter. It is used to validate the proposed fee amounts that are submitted as part of the LP commitment transaction. Note that a value of 0.05 = 5%. Valid values are: any decimal number >=0 and <=1. Default value 1.'
   ),
   stakeToCCYVolume: t(
-    `This is a network parameter. It is used to translate an LP's commitment amount to an obligation. Any decimal number >0 with default value 1.0.`
+    `Multiplier used to translate an LP's commitment amount to their liquidity obligation. This is a network parameter.`
   ),
   epochLength: t(
     'This is a network parameter. LP rewards from liquidity fees are paid out once per epoch. How much they receive depends on whether they met the liquidity SLA and their previous performance in recent epochs (defined by market.liquidity.performanceHysteresisEpochs).'
