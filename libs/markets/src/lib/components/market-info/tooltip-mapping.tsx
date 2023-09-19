@@ -143,6 +143,6 @@ export const tooltipMapping: Record<string, ReactNode> = {
     `Determines how the probability of trading is scaled from the risk model, and is used to measure the relative competitiveness of an LP's supplied volume. This is a network parameter.`
   ),
   minimumProbabilityOfTradingLPOrders: t(
-    'This is a network parameter. It sets a lower bound on the result of the probability of trading calculation.'
+    'The lower bound for the probability of trading calculation, used to measure liquidity available on a market to determine if LPs are meeting their commitment. This is a network parameter.'
   ),
 };
