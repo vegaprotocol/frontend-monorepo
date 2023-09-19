@@ -110,7 +110,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     `This is a market parameter. It specifies the minimum fraction of time LPs must spend 'on the book' providing their committed liquidity.`
   ),
   feeCalculationTimeStep: t(
-    'This is a market parameter. This is providers fee calculation time step. Specifies how often the quality of liquidity supplied by the LPs is evaluated and fees arising from that period are earmarked for specific parties.'
+    'How often the quality of liquidity supplied by each liquidity provider is evaluated and the fees arising from that period are earmarked for specific providers. This is a market parameter. '
   ),
   performanceHysteresisEpochs: t(
     'This is a market parameter. Specifies the number of epochs over which past performance will continue to affect rewards.'
