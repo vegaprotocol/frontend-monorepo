@@ -19,6 +19,8 @@ import { Referrals } from '../client-pages/referrals/referrals';
 import { ReferralStatistics } from '../client-pages/referrals/referral-statistics';
 import { ApplyCodeForm } from '../client-pages/referrals/apply-code-form';
 import { CreateCodeContainer } from '../client-pages/referrals/create-code-form';
+import { compact } from 'lodash';
+import { FLAGS } from '@vegaprotocol/environment';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -49,16 +51,21 @@ export const routerConfig: RouteObject[] = [
         element: <Referrals />,
         children: [
           {
-            index: true,
-            element: <ReferralStatisticsContainer />,
-          },
-          {
-            path: Routes.REFERRALS_CREATE_CODE,
-            element: <CreateCodeContainer />,
-          },
-          {
-            path: Routes.REFERRALS_APPLY_CODE,
-            element: <ApplyCodeForm />,
+            element: <LazyReferrals />,
+            children: [
+              {
+                index: true,
+                element: <ReferralStatisticsContainer />,
+              },
+              {
+                path: Routes.REFERRALS_CREATE_CODE,
+                element: <CreateCodeContainer />,
+              },
+              {
+                path: Routes.REFERRALS_APPLY_CODE,
+                element: <ApplyCodeForm />,
+              },
+            ],
           },
         ],
       },
@@ -128,7 +135,7 @@ export const routerConfig: RouteObject[] = [
       },
     ],
   },
-];
+]);
 
 export const ClientRouter = () => {
   const routes = useRoutes(routerConfig);

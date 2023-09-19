@@ -23,6 +23,7 @@ export type CosmicElevatorFlags = Pick<
   | 'SUCCESSOR_MARKETS'
   | 'PRODUCT_PERPETUALS'
   | 'METAMASK_SNAPS'
+  | 'REFERRALS'
 >;
 export type Configuration = z.infer<typeof tomlConfigSchema>;
 export const CUSTOM_NODE_KEY = 'custom' as const;

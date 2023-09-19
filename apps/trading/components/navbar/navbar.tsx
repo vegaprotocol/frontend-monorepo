@@ -6,6 +6,7 @@ import {
   Networks,
   DApp,
   useLinks,
+  FLAGS,
 } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import { useGlobalStore } from '../../stores';
@@ -183,11 +184,13 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
             {t('Portfolio')}
           </NavbarLink>
         </NavbarItem>
-        <NavbarItem>
-          <NavbarLink to={Links.REFERRALS()} onClick={onClick}>
-            {t('Referrals')}
-          </NavbarLink>
-        </NavbarItem>
+        {FLAGS.REFERRALS && (
+          <NavbarItem>
+            <NavbarLink to={Links.REFERRALS()} onClick={onClick}>
+              {t('Referrals')}
+            </NavbarLink>
+          </NavbarItem>
+        )}
         <NavbarItem>
           <NavbarLinkExternal to={useLinks(DApp.Governance)()}>
             {t('Governance')}
