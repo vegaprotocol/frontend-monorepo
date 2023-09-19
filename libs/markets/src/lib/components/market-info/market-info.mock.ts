@@ -104,7 +104,6 @@ export const marketInfoQuery = (
       liquiditySLAParameters: {
         priceRange: '0.95',
         commitmentMinTimeFraction: '0.5',
-        providersFeeCalculationTimeStep: 5000000000,
         performanceHysteresisEpochs: 4,
         slaCompetitionFactor: '0.5',
       },
