@@ -125,7 +125,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'A sliding penalty for how much an LP bond is slashed if an LP fails to reach the minimum SLA. This is a network parameter.'
   ),
   nonPerformanceBondPenaltyMax: t(
-    'The maximum amount, as a fraction, that an LP's bond can be slashed by if they fail to reach the minimum SLA. This is a network parameter.'
+    `The maximum amount, as a fraction, that an LP's bond can be slashed by if they fail to reach the minimum SLA. This is a network parameter.`
   ),
   maximumLiquidityFeeFactorLevel: t(
     'Maximum value that a proposed fee amount can be, which is submitted as part of the LP commitment transaction. Note that a value of 0.05 = 5%. This is a network parameter.'
