@@ -34,6 +34,7 @@ const STAKING_TIERS_MAPPING: Record<number, string> = {
   3: 'Reward hoarder',
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MOCK = {
   data: {
     currentReferralProgram: {
@@ -82,10 +83,9 @@ const MOCK = {
 };
 
 export const useReferralProgram = () => {
-  const { data, loading, error } = MOCK;
-  // useQuery(REFERRAL_PROGRAM_QUERY, {
-  //   fetchPolicy: 'cache-and-network',
-  // });
+  const { data, loading, error } = useQuery(REFERRAL_PROGRAM_QUERY, {
+    fetchPolicy: 'cache-and-network',
+  });
 
   if (!data) {
     return {

@@ -10,7 +10,6 @@ import { Button, RainbowButton } from './buttons';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import type { ReferralData } from './hooks/use-referral';
 import { useReferral } from './hooks/use-referral';
-import { Link } from 'react-router-dom';
 import { CreateCodeContainer } from './create-code-form';
 import classNames from 'classnames';
 
