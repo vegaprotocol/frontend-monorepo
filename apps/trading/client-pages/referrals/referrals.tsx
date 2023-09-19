@@ -6,7 +6,7 @@ import {
 import classNames from 'classnames';
 import { HowItWorksTable } from './how-it-works-table';
 import { LandingBanner } from './landing-banner';
-import { TiersTable } from './tiers-table';
+import { TiersContainer } from './tiers-table';
 import { BORDER_COLOR, GRADIENT } from './constants';
 
 import { RainbowTabLink } from './buttons';
@@ -44,7 +44,7 @@ export const Referrals = () => {
         </span>
       </div>
       <div className="mb-20">
-        <TiersTable />
+        <TiersContainer />
       </div>
 
       <div className="flex flex-row items-baseline justify-between mb-5">
@@ -59,6 +59,7 @@ export const Referrals = () => {
           )}
         >
           <div aria-hidden>
+            {/* eslint-disable-next-line  @next/next/no-img-element */}
             <img
               src="/1x.png"
               alt="1x multiplier"
@@ -84,6 +85,7 @@ export const Referrals = () => {
           )}
         >
           <div aria-hidden>
+            {/* eslint-disable-next-line  @next/next/no-img-element */}
             <img
               src="/2x.png"
               alt="2x multiplier"
@@ -108,6 +110,7 @@ export const Referrals = () => {
           )}
         >
           <div aria-hidden>
+            {/* eslint-disable-next-line  @next/next/no-img-element */}
             <img
               src="/3x.png"
               alt="3x multiplier"

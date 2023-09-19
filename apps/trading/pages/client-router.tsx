@@ -18,7 +18,7 @@ import { LayoutWithSky } from '../client-pages/referrals/layout';
 import { Referrals } from '../client-pages/referrals/referrals';
 import { ReferralStatistics } from '../client-pages/referrals/referral-statistics';
 import { ApplyCodeForm } from '../client-pages/referrals/apply-code-form';
-import { CreateCodeForm } from '../client-pages/referrals/create-code-form';
+import { CreateCodeContainer } from '../client-pages/referrals/create-code-form';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -58,7 +58,7 @@ export const routerConfig: RouteObject[] = [
           },
           {
             path: Routes.REFERRALS_CREATE_CODE,
-            element: <CreateCodeForm />,
+            element: <CreateCodeContainer />,
           },
         ],
       },

@@ -175,4 +175,5 @@ export const ExternalLinks = {
 export const TokenStaticLinks = {
   PROPOSAL_PAGE: ':tokenUrl/proposals/:proposalId',
   UPDATE_PROPOSAL_PAGE: ':tokenUrl/proposals/propose/update-market',
+  ASSOCIATE: 'token/associate',
 };
