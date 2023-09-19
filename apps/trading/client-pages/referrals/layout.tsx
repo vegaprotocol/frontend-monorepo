@@ -14,7 +14,6 @@ export const Layout = ({
         'max-w-[1440px]',
         'mx-auto px-16 md:px-32 pb-32',
         'relative z-0',
-        'h-full overflow-auto',
         className
       )}
       {...props}
@@ -29,7 +28,7 @@ export const LayoutWithSky = ({
   ...props
 }: HTMLAttributes<HTMLDivElement>) => {
   return (
-    <div className={classNames('h-full', SKY_BACKGROUND)}>
+    <div className={classNames('h-full overflow-auto', SKY_BACKGROUND)}>
       <Layout className={className} {...props} />
     </div>
   );

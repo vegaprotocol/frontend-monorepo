@@ -18,7 +18,7 @@ export const Tile = ({
           'bg-rainbow p-[0.125rem]': variant === 'rainbow',
           [`border-2 ${BORDER_COLOR} p-0`]: variant === 'default',
         },
-        'rounded-lg overflow-hidden'
+        'rounded-lg overflow-hidden relative'
       )}
     >
       <div

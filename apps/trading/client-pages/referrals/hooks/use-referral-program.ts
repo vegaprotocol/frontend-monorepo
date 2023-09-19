@@ -1,6 +1,8 @@
-import { gql } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import { getNumberFormat } from '@vegaprotocol/utils';
 import { addDays } from 'date-fns';
+import sortBy from 'lodash/sortBy';
+import omit from 'lodash/omit';
 
 // TODO: Generate query
 // eslint-disable-next-line
@@ -26,13 +28,14 @@ const REFERRAL_PROGRAM_QUERY = gql`
   }
 `;
 
-export const useReferralProgram = () => {
-  // TODO: get real data
-  // const { data, loading, error } = useQuery(REFERRAL_PROGRAM_QUERY, {
-  //  fetchPolicy: 'cache-and-network',
-  // });
+const STAKING_TIERS_MAPPING: Record<number, string> = {
+  1: 'Tradestarter',
+  2: 'Mid level degen',
+  3: 'Reward hoarder',
+};
 
-  const dummyData = {
+const MOCK = {
+  data: {
     currentReferralProgram: {
       id: 'abc',
       version: 1,
@@ -58,11 +61,47 @@ export const useReferralProgram = () => {
           referralRewardFactor: '0.001',
         },
       ],
+      stakingTiers: [
+        {
+          minimumStakedTokens: '10000',
+          referralRewardMultiplier: '1',
+        },
+        {
+          minimumStakedTokens: '20000',
+          referralRewardMultiplier: '2',
+        },
+        {
+          minimumStakedTokens: '30000',
+          referralRewardMultiplier: '3',
+        },
+      ],
     },
-  } as const;
+  },
+  loading: false,
+  error: undefined,
+};
 
-  const benefitTiers = dummyData.currentReferralProgram.benefitTiers.map(
-    (t, i) => {
+export const useReferralProgram = () => {
+  const { data, loading, error } = MOCK;
+  // useQuery(REFERRAL_PROGRAM_QUERY, {
+  //   fetchPolicy: 'cache-and-network',
+  // });
+
+  if (!data) {
+    return {
+      benefitTiers: [],
+      stakingTiers: [],
+      details: undefined,
+      loading,
+      error,
+    };
+  }
+
+  const benefitTiers = sortBy(data.currentReferralProgram.benefitTiers, (t) =>
+    Number(t.referralRewardFactor)
+  )
+    .reverse()
+    .map((t, i) => {
       return {
         tier: i + 1,
         commission: Number(t.referralRewardFactor) * 100 + '%',
@@ -71,13 +110,24 @@ export const useReferralProgram = () => {
           Number(t.minimumRunningNotionalTakerVolume)
         ),
       };
-    }
-  );
+    });
 
-  // TODO: return real loading, error values
+  const stakingTiers = sortBy(
+    data.currentReferralProgram.stakingTiers,
+    (t) => t.referralRewardMultiplier
+  ).map((t, i) => {
+    return {
+      tier: i + 1,
+      label: STAKING_TIERS_MAPPING[i + 1],
+      ...t,
+    };
+  });
+
   return {
     benefitTiers,
-    loading: false,
-    error: undefined,
+    stakingTiers,
+    details: omit(data.currentReferralProgram, 'benefitTiers', 'stakingTiers'),
+    loading,
+    error,
   };
 };

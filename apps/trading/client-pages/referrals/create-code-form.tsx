@@ -16,41 +16,19 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { gql, useQuery } from '@apollo/client';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
-
-const CREATE_CODE_QUERY = gql`
-  query CreateCode($partyId: ID!) {
-    party(id: $partyId) {
-      stakingSummary {
-        currentStakeAvailable
-      }
-    }
-    networkParameter(key: "referralProgram.minStakedVegaTokens") {
-      value
-    }
-  }
-`;
+import { useStakeAvailable } from './hooks/use-stake-available';
 
 export const CreateCodeContainer = () => {
-  const { pubKey } = useVegaWallet();
-  const { data, loading } = useQuery(CREATE_CODE_QUERY, {
-    variables: { partyId: pubKey || '' },
-    skip: !pubKey,
-    // TOOD: remove when network params available
-    errorPolicy: 'ignore',
-  });
-
-  if (loading) return null;
-
-  const requiredStake = data?.networkParameter?.value || '0';
-  const currentStakeAvailable =
-    data?.party?.stakingSummary.currentStakeAvailable || '0';
+  const { stakeAvailable, requiredStake } = useStakeAvailable();
+  if (stakeAvailable == null || requiredStake == null) {
+    return null;
+  }
 
   return (
     <CreateCodeForm
-      currentStakeAvailable={currentStakeAvailable}
+      currentStakeAvailable={stakeAvailable}
       requiredStake={requiredStake}
     />
   );
@@ -60,8 +38,8 @@ export const CreateCodeForm = ({
   currentStakeAvailable,
   requiredStake,
 }: {
-  currentStakeAvailable: string;
-  requiredStake: string;
+  currentStakeAvailable: bigint;
+  requiredStake: bigint;
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const openWalletDialog = useVegaWalletDialogStore(
@@ -116,8 +94,8 @@ const CreateCodeDialog = ({
   requiredStake,
 }: {
   setDialogOpen: (open: boolean) => void;
-  currentStakeAvailable: string;
-  requiredStake: string;
+  currentStakeAvailable: bigint;
+  requiredStake: bigint;
 }) => {
   const createLink = useLinks(DApp.Governance);
   const { isReadOnly, pubKey, sendTx } = useVegaWallet();
@@ -184,17 +162,16 @@ const CreateCodeDialog = ({
   };
 
   // TODO: Add when network parameters are updated
-
   if (
-    currentStakeAvailable === '0' ||
-    BigInt(currentStakeAvailable) < BigInt(requiredStake)
+    currentStakeAvailable === BigInt(0) ||
+    currentStakeAvailable < requiredStake
   ) {
     return (
       <div className="flex flex-col gap-4">
         <p>
-          You need at least {addDecimalsFormatNumber(requiredStake, 18)} VEGA
-          staked to generate a referral code and participate in the referral
-          program.
+          You need at least{' '}
+          {addDecimalsFormatNumber(requiredStake.toString(), 18)} VEGA staked to
+          generate a referral code and participate in the referral program.
         </p>
         <TradingAnchorButton
           href={createLink(TokenStaticLinks.ASSOCIATE)}
@@ -211,7 +188,7 @@ const CreateCodeDialog = ({
     <div className="flex flex-col gap-4">
       {(status === 'idle' || status === 'loading' || status === 'error') && (
         <p>
-          Generate a referral code to share with your friends aand start enaring
+          Generate a referral code to share with your friends and start earning
           commission.
         </p>
       )}

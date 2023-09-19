@@ -50,15 +50,15 @@ export const routerConfig: RouteObject[] = [
         children: [
           {
             index: true,
-            element: <ReferralStatistics />,
-          },
-          {
-            path: Routes.REFERRALS_APPLY_CODE,
-            element: <ApplyCodeForm />,
+            element: <ReferralStatisticsContainer />,
           },
           {
             path: Routes.REFERRALS_CREATE_CODE,
             element: <CreateCodeContainer />,
+          },
+          {
+            path: Routes.REFERRALS_APPLY_CODE,
+            element: <ApplyCodeForm />,
           },
         ],
       },

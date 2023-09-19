@@ -1,13 +1,19 @@
-import { Input, InputError } from '@vegaprotocol/ui-toolkit';
+import {
+  Input,
+  InputError,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import type { FieldValues } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import classNames from 'classnames';
 import { useSearchParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from './buttons';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export const ApplyCodeForm = () => {
+  const [finalized, setFinalized] = useState<boolean>(false);
   const { isReadOnly, pubKey, sendTx } = useVegaWallet();
   const {
     register,
@@ -34,7 +40,7 @@ export const ApplyCodeForm = () => {
       },
     })
       .then((res) => {
-        // TODO: Do something with response
+        setFinalized(true);
       })
       .catch((err) => {
         setError('code', {
@@ -43,6 +49,19 @@ export const ApplyCodeForm = () => {
         });
       });
   };
+
+  if (finalized) {
+    return (
+      <div className="w-1/2 mx-auto">
+        <h3 className="mb-5 text-xl text-center uppercase calt flex flex-row gap-2 justify-center items-center">
+          <span className="text-vega-green-500">
+            <VegaIcon name={VegaIconNames.TICK} size={20} />
+          </span>{' '}
+          <span className="pt-1">Code applied</span>
+        </h3>
+      </div>
+    );
+  }
 
   return (
     <div className="w-1/2 mx-auto">

@@ -1,8 +1,24 @@
 import { gql, useQuery } from '@apollo/client';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 
-const REFERRAL_QUERY = gql`
+const REFERRER_QUERY = gql`
   query ReferralSets($partyId: ID!) {
     referralSets(referrer: $partyId) {
+      edges {
+        node {
+          id
+          referrer
+          createdAt
+          updatedAt
+        }
+      }
+    }
+  }
+`;
+
+const REFEREE_QUERY = gql`
+  query ReferralSets($partyId: ID!) {
+    referralSets(referee: $partyId) {
       edges {
         node {
           id
@@ -30,17 +46,34 @@ const REFEREES_QUERY = gql`
   }
 `;
 
-// Fetches the current user's referral and then fetches all referees using
-// the referral code
-export const useReferral = (pubKey: string) => {
+// TODO: generate types after perps work is merged
+export type ReferralData = {
+  code: string;
+  referees: Array<{
+    refereeId: string;
+    joinedAt: string;
+    atEpoch: number;
+  }>;
+};
+
+export const useReferral = (
+  pubKey: string | null,
+  role: 'referrer' | 'referee'
+) => {
+  const query = {
+    referrer: REFERRER_QUERY,
+    referee: REFEREE_QUERY,
+  };
+
   const {
     data: referralData,
     loading: referralLoading,
     error: referralError,
-  } = useQuery(REFERRAL_QUERY, {
+  } = useQuery(query[role], {
     variables: {
       partyId: pubKey,
     },
+    skip: !pubKey,
     fetchPolicy: 'cache-and-network',
   });
 
@@ -61,10 +94,8 @@ export const useReferral = (pubKey: string) => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const referees = refereesData?.referralSetReferees.edges?.map(
-    // TODO: generate types
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (e: any) => e.node
+  const referees = removePaginationWrapper(
+    refereesData?.referralSetReferees.edges
   );
 
   const data =
@@ -76,17 +107,7 @@ export const useReferral = (pubKey: string) => {
       : undefined;
 
   return {
-    // TODO: generate types after perps work is merged
-    data: data as
-      | {
-          code: string;
-          referees: Array<{
-            refereeId: string;
-            joinedAt: string;
-            atEpoch: number;
-          }>;
-        }
-      | undefined,
+    data: data as ReferralData | undefined,
     loading: referralLoading || refereesLoading,
     error: referralError || refereesError,
   };
