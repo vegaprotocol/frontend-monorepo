@@ -119,7 +119,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     `Maximum fraction of an LP's accrued fees that an LP would lose to liquidity providers that achieved a higher SLA performance than them. This is a market parameter. `
   ),
   bondPenaltyParameter: t(
-    'This is a network parameter. It is used to calculate the penalty to liquidity providers when they cannot support their open position with the assets in their margin and general accounts. Valid values: any decimal number >= 0 with a default value of 0.1.'
+    'Used to calculate the penalty to liquidity providers when they cannot support their open position with the assets in their margin and general accounts. This is a network parameter.'
   ),
   nonPerformanceBondPenaltySlope: t(
     'This is a network parameter. It is used to calculate by how much the LP bond is slashed if an LP fails to reach the minimum SLA. Valid values: any decimal number >= 0 with a default value of 2.0.'
