@@ -122,7 +122,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'Used to calculate the penalty to liquidity providers when they cannot support their open position with the assets in their margin and general accounts. This is a network parameter.'
   ),
   nonPerformanceBondPenaltySlope: t(
-    'This is a network parameter. It is used to calculate by how much the LP bond is slashed if an LP fails to reach the minimum SLA. Valid values: any decimal number >= 0 with a default value of 2.0.'
+    'A sliding penalty for how much an LP bond is slashed if an LP fails to reach the minimum SLA. This is a network parameter.'
   ),
   nonPerformanceBondPenaltyMax: t(
     'This is a network parameter. It is used to calculate how much is the LP bond slashed if they fail to reach the minimum SLA. Valid values: any decimal number >= 0 and <=1.0 with a default value of 0.5.'
