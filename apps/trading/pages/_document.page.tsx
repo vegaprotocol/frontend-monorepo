@@ -10,20 +10,18 @@ export default function Document() {
           - single page index.page.tsx
         */}
 
-        {/* fonts */}
+        {/* preload fonts */}
         <link
           rel="preload"
-          href="../public/AlphaLyrae-Medium.woff2"
+          href="/AlphaLyrae-Medium.woff2"
           as="font"
           type="font/woff2"
         />
 
         {/* icons */}
-        <link rel="icon" type="image/x-icon" href="../public/favicon.ico" />
-        <link rel="apple-touch-icon" content="../public/favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" content="/favicon.ico" />
 
-        {/* eslint-disable-next-line @next/next/no-css-tags */}
-        <link rel="stylesheet" href="../public/fonts.css" />
         {/* eslint-disable-next-line @next/next/no-css-tags */}
         <link rel="stylesheet" href="/preloader.css" media="all" />
 

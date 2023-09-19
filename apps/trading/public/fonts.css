@@ -1,8 +1,0 @@
-@font-face {
-  font-family: AlphaLyrae;
-  src: url('AlphaLyrae-Medium.woff2') format('woff2'),
-    url('AlphaLyrae-Medium.woff') format('woff'),
-    url('AlphaLyrae-Medium.ttf') format('truetype'),
-    url('AlphaLyrae-Medium.eot') format('embedded-opentype'),
-    url('AlphaLyrae-Medium.otf') format('opentype');
-}
