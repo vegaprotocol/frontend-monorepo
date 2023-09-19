@@ -107,19 +107,19 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'The fraction of the insurance pool balance that is carried over from the parent market to the successor.'
   ),
   commitmentMinimumTimeFraction: t(
-    `This is a market parameter. It specifies the minimum fraction of time LPs must spend 'on the book' providing their committed liquidity.`
+    `Specifies the minimum fraction of time LPs must spend 'on the book' providing their committed liquidity. This is a market parameter.`
   ),
   feeCalculationTimeStep: t(
-    'This is a market parameter. This is providers fee calculation time step. Specifies how often the quality of liquidity supplied by the LPs is evaluated and fees arising from that period are earmarked for specific parties.'
+    'How often the quality of liquidity supplied by each liquidity provider is evaluated and the fees arising from that period are earmarked for specific providers. This is a market parameter. '
   ),
   performanceHysteresisEpochs: t(
-    'This is a market parameter. Specifies the number of epochs over which past performance will continue to affect rewards.'
+    'Number of epochs over which past performance will continue to affect rewards. This is a market parameter.'
   ),
   SLACompetitionFactor: t(
-    `This is a market parameter. The SLA completion factor. Specifies the maximum fraction of their accrued fees an LP that meets the SLA implied by market.liquidity.commitmentMinTimeFraction will lose to liquidity providers that achieved a higher SLA performance than them. `
+    `Maximum fraction of an LP's accrued fees that an LP would lose to liquidity providers that achieved a higher SLA performance than them. This is a market parameter. `
   ),
   bondPenaltyParameter: t(
-    'This is a network parameter. It is used to calculate the penalty to liquidity providers when they cannot support their open position with the assets in their margin and general accounts. Valid values: any decimal number >= 0 with a default value of 0.1.'
+    'Used to calculate the penalty to liquidity providers when they cannot support their open position with the assets in their margin and general accounts. This is a network parameter.'
   ),
   nonPerformanceBondPenaltySlope: t(
     'This is a network parameter. It is used to calculate by how much the LP bond is slashed if an LP fails to reach the minimum SLA. Valid values: any decimal number >= 0 with a default value of 2.0.'
@@ -131,18 +131,18 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'This is a network parameter. It is used to validate the proposed fee amounts that are submitted as part of the LP commitment transaction. Note that a value of 0.05 = 5%. Valid values are: any decimal number >=0 and <=1. Default value 1.'
   ),
   stakeToCCYVolume: t(
-    `This is a network parameter. It is used to translate an LP's commitment amount to an obligation. Any decimal number >0 with default value 1.0.`
+    `Multiplier used to translate an LP's commitment amount to their liquidity obligation. This is a network parameter.`
   ),
   epochLength: t(
-    'This is a network parameter. LP rewards from liquidity fees are paid out once per epoch. How much they receive depends on whether they met the liquidity SLA and their previous performance in recent epochs (defined by market.liquidity.performanceHysteresisEpochs).'
+    'How long an epoch is. LP rewards from liquidity fees are paid out once per epoch. How much they receive depends on whether they met the liquidity SLA and their previous performance in recent epochs. This is a network parameter.'
   ),
   earlyExitPenalty: t(
     'This is a network parameter. It sets how much an LP forfeits of their bond if they reduce their commitment while the market is below target stake. If set to 0 there is no penalty for early exit, if set to 1 their entire bond is forfeited if they exit their entire commitment, if set >1, their entire bond will be forfeited for exiting 1/earlyExitPenalty of their commitment amount. Must be a decimal ≥0. '
   ),
   probabilityOfTradingTauScaling: t(
-    `This is a network parameter. It sets how the probability of trading is calculated from the risk model. This is used to measure the relative competitiveness of an LP's supplied volume.`
+    `Determines how the probability of trading is scaled from the risk model, and is used to measure the relative competitiveness of an LP's supplied volume. This is a network parameter.`
   ),
   minimumProbabilityOfTradingLPOrders: t(
-    'This is a network parameter. It sets a lower bound on the result of the probability of trading calculation.'
+    'The lower bound for the probability of trading calculation, used to measure liquidity available on a market to determine if LPs are meeting their commitment. This is a network parameter.'
   ),
 };
