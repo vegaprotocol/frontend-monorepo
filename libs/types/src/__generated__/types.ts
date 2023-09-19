@@ -1108,15 +1108,35 @@ export type Erc20WithdrawalDetails = {
   receiverAddress: Scalars['String'];
 };
 
+/**
+ * Specifies a data source that derives its content from calling a read method
+ * on an Ethereum contract.
+ */
 export type EthCallSpec = {
   __typename?: 'EthCallSpec';
-  Abi?: Maybe<Array<Scalars['String']>>;
-  Address: Scalars['String'];
-  Args?: Maybe<Array<Scalars['String']>>;
-  Filters?: Maybe<Array<Filter>>;
-  Method: Scalars['String'];
-  RequiredConfirmations: Scalars['Int'];
-  Trigger: EthCallTrigger;
+  /** The ABI of that contract. */
+  abi?: Maybe<Array<Scalars['String']>>;
+  /** Ethereum address of the contract to call. */
+  address: Scalars['String'];
+  /**
+   * List of arguments to pass to method call.
+   * Protobuf 'Value' wraps an arbitrary JSON type that is mapped to an Ethereum
+   * type according to the ABI.
+   */
+  args?: Maybe<Array<Scalars['String']>>;
+  /** Filters the data returned from the contract method. */
+  filters?: Maybe<Array<Filter>>;
+  /** Name of the method on the contract to call. */
+  method: Scalars['String'];
+  /**
+   * Normalisers are used to convert the data returned from the contract method
+   * into a standard format.
+   */
+  normalisers?: Maybe<Array<Normaliser>>;
+  /** Number of confirmations required before the query is considered verified. */
+  requiredConfirmations: Scalars['Int'];
+  /** Conditions for determining when to call the contract method. */
+  trigger: EthCallTrigger;
 };
 
 /** EthCallTrigger is the type of trigger used to make calls to Ethereum network. */
@@ -1125,11 +1145,24 @@ export type EthCallTrigger = {
   trigger: TriggerKind;
 };
 
+/**
+ * Trigger for an Ethereum call based on the Ethereum block timestamp. Can be
+ * one-off or repeating.
+ */
 export type EthTimeTrigger = {
   __typename?: 'EthTimeTrigger';
-  Every?: Maybe<Scalars['Timestamp']>;
-  Initial?: Maybe<Scalars['Timestamp']>;
-  Until?: Maybe<Scalars['Timestamp']>;
+  /**
+   * Repeat the call every n seconds after the initial call. If no time for
+   * initial call was specified, begin repeating immediately.
+   */
+  every?: Maybe<Scalars['Int']>;
+  /** Trigger when the Ethereum time is greater or equal to this time, in Unix seconds. */
+  initial?: Maybe<Scalars['Timestamp']>;
+  /**
+   * If repeating, stop once Ethereum time is greater than this time, in Unix
+   * seconds. If not set, then repeat indefinitely.
+   */
+  until?: Maybe<Scalars['Timestamp']>;
 };
 
 /** An Ethereum data source */
@@ -2278,6 +2311,8 @@ export type NewMarket = {
   linearSlippageFactor: Scalars['String'];
   /** Liquidity monitoring parameters */
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
+  /** Liquidity SLA Parameters */
+  liquiditySLAParameters?: Maybe<LiquiditySLAParameters>;
   /** Metadata for this instrument, tags */
   metadata?: Maybe<Array<Scalars['String']>>;
   /** Decimal places for order sizes, sets what size the smallest order / position on the market can be */
@@ -2502,6 +2537,16 @@ export type NodesConnection = {
   edges?: Maybe<Array<Maybe<NodeEdge>>>;
   /** Page information for the connection */
   pageInfo: PageInfo;
+};
+
+/**
+ * Normaliser to convert the data returned from the contract method
+ * into a standard format.
+ */
+export type Normaliser = {
+  __typename?: 'Normaliser';
+  expression: Scalars['String'];
+  name: Scalars['String'];
 };
 
 /** The equity like share of liquidity fee for each liquidity provider */
@@ -4061,8 +4106,22 @@ export type Query = {
   stopOrders?: Maybe<StopOrderConnection>;
   /** List markets in a succession line */
   successorMarkets?: Maybe<SuccessorMarketConnection>;
+  /** List a referee's team history */
+  teamRefereeHistory?: Maybe<TeamRefereeHistoryConnection>;
+  /** List all referees for a team */
+  teamReferees?: Maybe<TeamRefereeConnection>;
+  /**
+   * List information about all teams or filter for a specific team ID or referrer, or referee's party ID
+   * If no filter is provided all teams will be listed.
+   * If a team ID is provided, only the team with that ID will be returned
+   * If a party ID is provided, the team whose referrer party ID or a referee's party ID matches will be return
+   * If both team ID and party ID is provided, only the team ID will be used.
+   */
+  teams?: Maybe<TeamConnection>;
   /** Get a list of all trades and apply any given filters to the results */
   trades?: Maybe<TradeConnection>;
+  /** Find a transfer using its ID */
+  transfer?: Maybe<Transfer>;
   /** Get a list of all transfers for a public key */
   transfersConnection?: Maybe<TransferConnection>;
   /** Find a withdrawal using its ID */
@@ -4393,8 +4452,10 @@ export type QueryprotocolUpgradeProposalsArgs = {
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryreferralSetRefereesArgs = {
-  id: Scalars['ID'];
+  id?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
+  referee?: InputMaybe<Scalars['ID']>;
+  referrer?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -4402,6 +4463,8 @@ export type QueryreferralSetRefereesArgs = {
 export type QueryreferralSetsArgs = {
   id?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
+  referee?: InputMaybe<Scalars['ID']>;
+  referrer?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -4427,10 +4490,38 @@ export type QuerysuccessorMarketsArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryteamRefereeHistoryArgs = {
+  pagination?: InputMaybe<Pagination>;
+  referee: Scalars['ID'];
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryteamRefereesArgs = {
+  pagination?: InputMaybe<Pagination>;
+  teamId: Scalars['ID'];
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryteamsArgs = {
+  pagination?: InputMaybe<Pagination>;
+  partyId?: InputMaybe<Scalars['ID']>;
+  teamId?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerytradesArgs = {
   dateRange?: InputMaybe<DateRange>;
   filter?: InputMaybe<TradesFilter>;
   pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerytransferArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -5278,6 +5369,105 @@ export type TargetStakeParameters = {
   timeWindow: Scalars['Int'];
 };
 
+/** Team record containing the team information. */
+export type Team = {
+  __typename?: 'Team';
+  /** Link to an image of the team's avatar. */
+  avatarURL: Scalars['String'];
+  /** Tells if a party can join the team or not. */
+  closed: Scalars['Boolean'];
+  /** Time in RFC3339Nano format when the team was created. */
+  createdAt: Scalars['Timestamp'];
+  /** Epoch at which the team was created. */
+  createdAtEpoch: Scalars['Int'];
+  /** Name of the team. */
+  name: Scalars['String'];
+  /** Party ID that created the team. */
+  referrer: Scalars['ID'];
+  /** Unique ID of the team. */
+  teamId: Scalars['ID'];
+  /** Link to the team's homepage. */
+  teamURL: Scalars['String'];
+};
+
+/** Connection type for retrieving cursor-based paginated team data */
+export type TeamConnection = {
+  __typename?: 'TeamConnection';
+  /** Teams in this connection */
+  edges: Array<TeamEdge>;
+  /** Pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing a team cursor and its associated team data */
+export type TeamEdge = {
+  __typename?: 'TeamEdge';
+  /** Cursor identifying the team data */
+  cursor: Scalars['String'];
+  /** Team data */
+  node: Team;
+};
+
+/** A team's referee info */
+export type TeamReferee = {
+  __typename?: 'TeamReferee';
+  /** Time in RFC3339Nano format when the referee joined the team. */
+  joinedAt: Scalars['Timestamp'];
+  /** Epoch at which the referee joined the team. */
+  joinedAtEpoch: Scalars['Int'];
+  /** Party ID of the referee */
+  referee: Scalars['ID'];
+  /** Team ID. */
+  teamId: Scalars['ID'];
+};
+
+/** Connection type for retrieving cursor-based paginated team referee data */
+export type TeamRefereeConnection = {
+  __typename?: 'TeamRefereeConnection';
+  /** Team referees in this connection */
+  edges: Array<TeamRefereeEdge>;
+  /** Pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing a team referee cursor and its associated team referee data */
+export type TeamRefereeEdge = {
+  __typename?: 'TeamRefereeEdge';
+  /** Cursor identifying the team referee data */
+  cursor: Scalars['String'];
+  /** Team referee data */
+  node: TeamReferee;
+};
+
+/** Referee's team history, i.e. which team a referee has been a member of. */
+export type TeamRefereeHistory = {
+  __typename?: 'TeamRefereeHistory';
+  /** Time in RFC3339Nano format when the referee joined the team. */
+  joinedAt: Scalars['Timestamp'];
+  /** Epoch at which the referee joined the team. */
+  joinedAtEpoch: Scalars['Int'];
+  /** ID of the team the referee joined. */
+  teamId: Scalars['ID'];
+};
+
+/** Connection type for retrieving cursor-based paginated team referee history data */
+export type TeamRefereeHistoryConnection = {
+  __typename?: 'TeamRefereeHistoryConnection';
+  /** Team referee history in this connection */
+  edges: Array<TeamRefereeHistoryEdge>;
+  /** Pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing a team referee history cursor and its associated team referee history data */
+export type TeamRefereeHistoryEdge = {
+  __typename?: 'TeamRefereeHistoryEdge';
+  /** Cursor identifying the team referee history data */
+  cursor: Scalars['String'];
+  /** Team referee history data */
+  node: TeamRefereeHistory;
+};
+
 export type TimeUpdate = {
   __typename?: 'TimeUpdate';
   /** RFC3339Nano time of new block time */
@@ -5682,10 +5872,21 @@ export type UpdateMarket = {
 
 export type UpdateMarketConfiguration = {
   __typename?: 'UpdateMarketConfiguration';
+  /** Updated futures market instrument configuration. */
   instrument: UpdateInstrumentConfiguration;
+  /** Linear slippage factor is used to cap the slippage component of maintenance margin - it is applied to the slippage volume. */
+  linearSlippageFactor: Scalars['String'];
+  /** Liquidity monitoring parameters. */
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
+  /** Liquidity SLA Parameters. */
+  liquiditySLAParameters?: Maybe<LiquiditySLAParameters>;
+  /** Optional futures market metadata, tags. */
   metadata?: Maybe<Array<Maybe<Scalars['String']>>>;
+  /** Price monitoring parameters. */
   priceMonitoringParameters: PriceMonitoringParameters;
+  /** Quadratic slippage factor is used to cap the slippage component of maintenance margin - it is applied to the square of the slippage volume. */
+  quadraticSlippageFactor: Scalars['String'];
+  /** Updated futures market risk model parameters. */
   riskParameters: UpdateMarketRiskParameters;
 };
 

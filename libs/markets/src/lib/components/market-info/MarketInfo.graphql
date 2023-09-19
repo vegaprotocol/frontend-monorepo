@@ -1,3 +1,11 @@
+fragment DataSourceFilter on Filter {
+  key {
+    name
+    type
+    numberDecimalPlaces
+  }
+}
+
 fragment DataSource on DataSourceSpec {
   id
   data {
@@ -14,6 +22,9 @@ fragment DataSource on DataSourceSpec {
                   address
                 }
               }
+            }
+            filters {
+              ...DataSourceFilter
             }
           }
         }
