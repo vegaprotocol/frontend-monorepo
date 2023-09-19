@@ -97,6 +97,12 @@
         "r": 0.016,
         "sigma": 0.8
       }
+    },
+    "liquiditySlaParameters": {
+      "priceRange": "0.95",
+      "commitmentMinTimeFraction": "0.5",
+      "performanceHysteresisEpochs": 2,
+      "slaCompetitionFactor": "0.75"
     }
   }
 }
