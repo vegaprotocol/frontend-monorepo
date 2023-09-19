@@ -327,7 +327,7 @@ fragment UpdateAssetFields on UpdateAsset {
   }
 }
 
-fragment UpdateNetworkParameterFiels on UpdateNetworkParameter {
+fragment UpdateNetworkParameterFields on UpdateNetworkParameter {
   networkParameter {
     key
     value
@@ -383,7 +383,7 @@ fragment ProposalListFields on Proposal {
         ...UpdateAssetFields
       }
       ... on UpdateNetworkParameter {
-        ...UpdateNetworkParameterFiels
+        ...UpdateNetworkParameterFields
       }
     }
   }

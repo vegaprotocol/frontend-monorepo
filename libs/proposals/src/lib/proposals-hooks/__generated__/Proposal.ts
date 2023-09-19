@@ -1,7 +1,7 @@
 import * as Types from '@vegaprotocol/types';
 
 import { gql } from '@apollo/client';
-import { UpdateNetworkParameterFielsFragmentDoc } from '../../proposals-data-provider/__generated__/Proposals';
+import { UpdateNetworkParameterFieldsFragmentDoc } from '../../proposals-data-provider/__generated__/Proposals';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type ProposalEventFieldsFragment = { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null };
@@ -59,12 +59,12 @@ export const UpdateNetworkParameterProposalFragmentDoc = gql`
     enactmentDatetime
     change {
       ... on UpdateNetworkParameter {
-        ...UpdateNetworkParameterFiels
+        ...UpdateNetworkParameterFields
       }
     }
   }
 }
-    ${UpdateNetworkParameterFielsFragmentDoc}`;
+    ${UpdateNetworkParameterFieldsFragmentDoc}`;
 export const ProposalEventDocument = gql`
     subscription ProposalEvent($partyId: ID!) {
   proposals(partyId: $partyId) {
