@@ -113,7 +113,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'How often the quality of liquidity supplied by each liquidity provider is evaluated and the fees arising from that period are earmarked for specific providers. This is a market parameter. '
   ),
   performanceHysteresisEpochs: t(
-    'This is a market parameter. Specifies the number of epochs over which past performance will continue to affect rewards.'
+    'Number of epochs over which past performance will continue to affect rewards. This is a market parameter.'
   ),
   SLACompetitionFactor: t(
     `Maximum fraction of an LP's accrued fees that an LP would lose to liquidity providers that achieved a higher SLA performance than them. This is a market parameter. `
