@@ -137,7 +137,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'How long an epoch is. LP rewards from liquidity fees are paid out once per epoch. How much they receive depends on whether they met the liquidity SLA and their previous performance in recent epochs. This is a network parameter.'
   ),
   earlyExitPenalty: t(
-    'How much an LP forfeits of their bond if they reduce their commitment while the market is below target stake. If set to 0 there is no penalty for early exit. If set to 1 an LP's entire bond is forfeited when an LP removes their full commitment. This is a network parameter.'
+    `How much an LP forfeits of their bond if they reduce their commitment while the market is below target stake. If set to 0 there is no penalty for early exit. If set to 1 an LP's entire bond is forfeited when an LP removes their full commitment. This is a network parameter.`
   ),
   probabilityOfTradingTauScaling: t(
     `Determines how the probability of trading is scaled from the risk model, and is used to measure the relative competitiveness of an LP's supplied volume. This is a network parameter.`
