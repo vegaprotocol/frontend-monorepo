@@ -87,7 +87,7 @@ export const TiersContainer = () => {
         )}
       </div>
       <div className="mb-20">
-        {loading ? (
+        {loading || !benefitTiers || benefitTiers.length === 0 ? (
           <Loading variant="large" />
         ) : (
           <TiersTable data={benefitTiers} />
@@ -98,7 +98,7 @@ export const TiersContainer = () => {
         <h2 className="text-2xl">Staking multipliers</h2>
       </div>
       <div className="flex flex-col mb-20 justify-items-stretch md:flex-row gap-5">
-        {loading ? (
+        {loading || !stakingTiers || stakingTiers.length === 0 ? (
           <>
             <Loading variant="large" />
             <Loading variant="large" />
