@@ -13,7 +13,6 @@ import { NodeHealthContainer } from '../node-health';
 import { Settings } from '../settings';
 import { Tooltip } from '../../components/tooltip';
 import { WithdrawContainer } from '../withdraw-container';
-import { Routes as AppRoutes } from '../../pages/client-router';
 import { GetStarted } from '../welcome-dialog';
 import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
@@ -52,6 +51,8 @@ type SidebarView =
     };
 
 const MarketSidebarButtons = () => {
+  const currentRouteId = useGetCurrentRouteId();
+
   return (
     <>
       <>
@@ -60,11 +61,13 @@ const MarketSidebarButtons = () => {
           view={ViewType.Order}
           icon={VegaIconNames.TICKET}
           tooltip={t('Order')}
+          routeId={currentRouteId}
         />
         <SidebarButton
           view={ViewType.Info}
           icon={VegaIconNames.BREAKDOWN}
           tooltip={t('Market specification')}
+          routeId={currentRouteId}
         />
       </>
     </>
@@ -110,25 +113,10 @@ export const Sidebar = () => {
             path="portfolio"
             element={null}
           />
+          <Route path="markets/:marketId" element={<MarketSidebarButtons />} />
           <Route
-            path=":marketId"
-            element={
-              <>
-                <SidebarDivider />
-                <SidebarButton
-                  view={ViewType.Order}
-                  icon={VegaIconNames.TICKET}
-                  tooltip={t('Order')}
-                  routeId={currentRouteId}
-                />
-                <SidebarButton
-                  view={ViewType.Info}
-                  icon={VegaIconNames.BREAKDOWN}
-                  tooltip={t('Market specification')}
-                  routeId={currentRouteId}
-                />
-              </>
-            }
+            path="liquidity/:marketId"
+            element={<MarketSidebarButtons />}
           />
         </Routes>
       </nav>
