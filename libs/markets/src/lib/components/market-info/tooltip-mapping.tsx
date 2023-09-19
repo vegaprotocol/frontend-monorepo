@@ -128,7 +128,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'The maximum amount, as a fraction, that an LP's bond can be slashed by if they fail to reach the minimum SLA. This is a network parameter.'
   ),
   maximumLiquidityFeeFactorLevel: t(
-    'This is a network parameter. It is used to validate the proposed fee amounts that are submitted as part of the LP commitment transaction. Note that a value of 0.05 = 5%. Valid values are: any decimal number >=0 and <=1. Default value 1.'
+    'Maximum value that a proposed fee amount can be, which is submitted as part of the LP commitment transaction. Note that a value of 0.05 = 5%. This is a network parameter.'
   ),
   stakeToCCYVolume: t(
     `Multiplier used to translate an LP's commitment amount to their liquidity obligation. This is a network parameter.`
