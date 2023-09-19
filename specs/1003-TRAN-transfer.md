@@ -57,3 +57,7 @@
 - **Must** i cannot select include transfer fee unless amount is entered (<a name="1003-TRAN-022" href="#1003-TRAN-022">1003-TRAN-022</a>)
 
 - **Must** With all fields entered correctly, clicking "confirm transfer" button will start transaction(<a name="1003-TRAN-023" href="#1003-TRAN-023">1003-TRAN-023</a>)
+
+### Transfer page
+
+- Visiting the page with a query param `?assetId=XYZ` should load the page with that asset selected if that asset exists (<a name="1003-TRAN-024" href="#1003-TRAN-024">1003-TRAN-024</a>)

@@ -49,7 +49,7 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
 
   return (
     <>
-      <p className="text-sm mb-4" data-testid="transfer-intro-text">
+      <p className="mb-4 text-sm" data-testid="transfer-intro-text">
         {t('Transfer funds to another Vega key')}
         {pubKey && (
           <>

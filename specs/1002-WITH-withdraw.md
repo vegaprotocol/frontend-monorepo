@@ -115,3 +115,7 @@ When looking to submit the Ethereum transaction to release funds from the Vega b
   - **should** see status of incomplete withdrawals (so I can confirm the withdraw I attempted to complete is incomplete)
 
 ... so the funds I withdrew from Vega are credited to my Ethereum key
+
+### Withdraw page
+
+- Visiting the page with a query param `?assetId=XYZ` should load the page with that asset selected if that asset exists (<a name="1002-WITH-024" href="#1002-WITH-024">1002-WITH-024</a>)
