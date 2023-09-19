@@ -55,21 +55,19 @@ const MarketSidebarButtons = () => {
 
   return (
     <>
-      <>
-        <SidebarDivider />
-        <SidebarButton
-          view={ViewType.Order}
-          icon={VegaIconNames.TICKET}
-          tooltip={t('Order')}
-          routeId={currentRouteId}
-        />
-        <SidebarButton
-          view={ViewType.Info}
-          icon={VegaIconNames.BREAKDOWN}
-          tooltip={t('Market specification')}
-          routeId={currentRouteId}
-        />
-      </>
+      <SidebarDivider />
+      <SidebarButton
+        view={ViewType.Order}
+        icon={VegaIconNames.TICKET}
+        tooltip={t('Order')}
+        routeId={currentRouteId}
+      />
+      <SidebarButton
+        view={ViewType.Info}
+        icon={VegaIconNames.BREAKDOWN}
+        tooltip={t('Market specification')}
+        routeId={currentRouteId}
+      />
     </>
   );
 };
