@@ -74,11 +74,11 @@ export const Closed = () => {
         ? instrument.product.dataSourceSpecBinding.settlementDataProperty
         : '';
     const filter =
-      filters &&
-      Array.isArray(filters) &&
-      filters?.find((filter) => {
-        return filter.key.name === settlementDataSpecBinding;
-      });
+      filters && Array.isArray(filters)
+        ? filters?.find((filter) => {
+            return filter.key.name === settlementDataSpecBinding;
+          })
+        : undefined;
 
     const row: Row = {
       id: market.id,
