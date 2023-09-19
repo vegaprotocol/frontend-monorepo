@@ -118,7 +118,7 @@ On top of that there are two possible scenarios for running docker image - using
 to run ipfs on port 3000:
 
 ```bash
-docker run -p 3000:80 [TAG] ipfs
+docker run -p 3000:80 [TAG] /run-ipfs.sh
 ```
 
 to run nginx on port 3000:

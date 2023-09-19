@@ -155,10 +155,10 @@ jobs:
       - name: Sanity check docker image
         run: |
           echo "Check ipfs-hash"
-          docker run --rm --entrypoint /bin/sh ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local -c 'cat /ipfs-hash'
-          docker run --rm --entrypoint /bin/sh ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local -c 'cat /ipfs-hash' > ${{ matrix.app }}-ipfs-hash
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local /bin/sh -c 'cat /ipfs-hash'
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local /bin/sh -c 'cat /ipfs-hash' > ${{ matrix.app }}-ipfs-hash
           echo "List html directory"
-          docker run --rm --entrypoint /bin/sh ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local -c 'apk add --update tree; tree /usr/share/nginx/html'
+          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local /bin/sh -c 'apk add --update tree; tree /usr/share/nginx/html'
 
       - name: Publish dist as docker image (ghcr)
         uses: docker/build-push-action@v3
@@ -329,7 +329,9 @@ jobs:
             fi
 
             # create commit
-            commit_msg="Automated hash update from ${{ github.ref }}"
-            git commit -m "$commit_msg"
-            git push -u origin "main"
+            if ! git diff --cached --exit-code; then
+              commit_msg="Automated hash update from ${{ github.ref }}"
+              git commit -m "$commit_msg"
+              git push -u origin "main"
+            fi
           )
