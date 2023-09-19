@@ -36,6 +36,7 @@ const proposalType = 'proposal-type';
 const proposalDetails = 'proposal-details';
 const newProposalSubmitButton = 'proposal-submit';
 const proposalVoteDeadline = 'proposal-vote-deadline';
+const proposalEnactmentDeadline = 'proposal-enactment-deadline';
 const proposalParameterSelect = 'proposal-parameter-select';
 const proposalMarketSelect = 'proposal-market-select';
 const newProposalTitle = 'proposal-title';
@@ -227,6 +228,8 @@ context(
             parseSpecialCharSequences: false,
             delay: 2,
           });
+          cy.getByTestId(proposalVoteDeadline).clear().type('2');
+          cy.getByTestId(proposalEnactmentDeadline).clear().type('3');
         });
         cy.getByTestId(proposalDownloadBtn)
           .should('be.visible')
@@ -634,6 +637,8 @@ context(
           parseSpecialCharSequences: false,
           delay: 2,
         });
+        cy.getByTestId(proposalVoteDeadline).clear().type('2');
+        cy.getByTestId(proposalEnactmentDeadline).clear().type('3');
       });
       cy.getByTestId(proposalDownloadBtn)
         .should('be.visible')

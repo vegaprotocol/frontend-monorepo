@@ -98,6 +98,12 @@
         "sigma": 0.8
       }
     },
+    "liquiditySlaParameters": {
+      "priceRange": "0.95",
+      "commitmentMinTimeFraction": "0.5",
+      "performanceHysteresisEpochs": 2,
+      "slaCompetitionFactor": "0.75"
+    },
     "successor": {
       "parentMarketId": "",
       "insurancePoolFraction": "0.75"

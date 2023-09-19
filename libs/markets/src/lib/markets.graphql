@@ -1,11 +1,3 @@
-fragment DataSourceFilter on Filter {
-  key {
-    name
-    type
-    numberDecimalPlaces
-  }
-}
-
 fragment MarketFields on Market {
   id
   decimalPlaces

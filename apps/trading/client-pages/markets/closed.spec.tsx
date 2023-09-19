@@ -1,7 +1,7 @@
 import { act, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Closed } from './closed';
-import { MarketStateMapping } from '@vegaprotocol/types';
+import { MarketStateMapping, PropertyKeyType } from '@vegaprotocol/types';
 import { MarketState } from '@vegaprotocol/types';
 import { subDays } from 'date-fns';
 import type { MockedResponse } from '@apollo/client/testing';
@@ -57,17 +57,17 @@ describe('Closed', () => {
               sourceType: {
                 __typename: 'DataSourceDefinitionExternal',
                 sourceType: {
-                  // filters: [
-                  //   {
-                  //     __typename: 'Filter',
-                  //     key: {
-                  //       __typename: 'PropertyKey',
-                  //       name: settlementDataProperty,
-                  //       type: PropertyKeyType.TYPE_INTEGER,
-                  //       numberDecimalPlaces: 5,
-                  //     },
-                  //   },
-                  // ],
+                  filters: [
+                    {
+                      __typename: 'Filter',
+                      key: {
+                        __typename: 'PropertyKey',
+                        name: settlementDataProperty,
+                        type: PropertyKeyType.TYPE_INTEGER,
+                        numberDecimalPlaces: 5,
+                      },
+                    },
+                  ],
                 },
               },
             },
@@ -228,7 +228,7 @@ describe('Closed', () => {
   it('only renders settled and terminated markets', async () => {
     const mixedMarkets = [
       {
-        // inlclude as settled
+        // include as settled
         __typename: 'MarketEdge' as const,
         node: createMarketFragment({
           id: 'include-0',
