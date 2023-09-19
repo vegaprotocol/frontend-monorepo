@@ -122,13 +122,13 @@ export const tooltipMapping: Record<string, ReactNode> = {
     'Used to calculate the penalty to liquidity providers when they cannot support their open position with the assets in their margin and general accounts. This is a network parameter.'
   ),
   nonPerformanceBondPenaltySlope: t(
-    'This is a network parameter. It is used to calculate by how much the LP bond is slashed if an LP fails to reach the minimum SLA. Valid values: any decimal number >= 0 with a default value of 2.0.'
+    'A sliding penalty for how much an LP bond is slashed if an LP fails to reach the minimum SLA. This is a network parameter.'
   ),
   nonPerformanceBondPenaltyMax: t(
-    'This is a network parameter. It is used to calculate how much is the LP bond slashed if they fail to reach the minimum SLA. Valid values: any decimal number >= 0 and <=1.0 with a default value of 0.5.'
+    'The maximum amount, as a fraction, that an LP's bond can be slashed by if they fail to reach the minimum SLA. This is a network parameter.'
   ),
   maximumLiquidityFeeFactorLevel: t(
-    'This is a network parameter. It is used to validate the proposed fee amounts that are submitted as part of the LP commitment transaction. Note that a value of 0.05 = 5%. Valid values are: any decimal number >=0 and <=1. Default value 1.'
+    'Maximum value that a proposed fee amount can be, which is submitted as part of the LP commitment transaction. Note that a value of 0.05 = 5%. This is a network parameter.'
   ),
   stakeToCCYVolume: t(
     `Multiplier used to translate an LP's commitment amount to their liquidity obligation. This is a network parameter.`
