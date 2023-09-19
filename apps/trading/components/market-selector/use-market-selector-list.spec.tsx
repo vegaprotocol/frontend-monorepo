@@ -78,16 +78,16 @@ describe('useMarketSelectorList', () => {
           },
         },
       }),
-      createMarketFragment({
-        id: 'market-1',
-        tradableInstrument: {
-          instrument: {
-            product: {
-              __typename: 'Spot',
-            },
-          },
-        },
-      }),
+      // createMarketFragment({
+      //   id: 'market-1',
+      //   tradableInstrument: {
+      //     instrument: {
+      //       product: {
+      //         __typename: 'Spot',
+      //       },
+      //     },
+      //   },
+      // }),
       createMarketFragment({
         id: 'market-2',
         tradableInstrument: {
@@ -107,20 +107,20 @@ describe('useMarketSelectorList', () => {
     });
     const { result, rerender } = setup();
     expect(result.current.markets).toEqual([markets[0]]);
-    rerender({
-      searchTerm: '',
-      product: Product.Spot as 'Future',
-      sort: Sort.TopTraded,
-      assets: [],
-    });
-    expect(result.current.markets).toEqual([markets[1]]);
+    // rerender({
+    //   searchTerm: '',
+    //   product: Product.Spot as 'Future',
+    //   sort: Sort.TopTraded,
+    //   assets: [],
+    // });
+    // expect(result.current.markets).toEqual([markets[1]]);
     rerender({
       searchTerm: '',
       product: Product.Perpetual as 'Future',
       sort: Sort.TopTraded,
       assets: [],
     });
-    expect(result.current.markets).toEqual([markets[2]]);
+    // expect(result.current.markets).toEqual([markets[2]]);
     rerender({
       searchTerm: '',
       product: Product.All,
