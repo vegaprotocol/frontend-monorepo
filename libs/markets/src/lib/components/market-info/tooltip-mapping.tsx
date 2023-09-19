@@ -134,7 +134,7 @@ export const tooltipMapping: Record<string, ReactNode> = {
     `Multiplier used to translate an LP's commitment amount to their liquidity obligation. This is a network parameter.`
   ),
   epochLength: t(
-    'This is a network parameter. LP rewards from liquidity fees are paid out once per epoch. How much they receive depends on whether they met the liquidity SLA and their previous performance in recent epochs (defined by market.liquidity.performanceHysteresisEpochs).'
+    'How long an epoch is. LP rewards from liquidity fees are paid out once per epoch. How much they receive depends on whether they met the liquidity SLA and their previous performance in recent epochs. This is a network parameter.'
   ),
   earlyExitPenalty: t(
     'This is a network parameter. It sets how much an LP forfeits of their bond if they reduce their commitment while the market is below target stake. If set to 0 there is no penalty for early exit, if set to 1 their entire bond is forfeited if they exit their entire commitment, if set >1, their entire bond will be forfeited for exiting 1/earlyExitPenalty of their commitment amount. Must be a decimal ≥0. '
