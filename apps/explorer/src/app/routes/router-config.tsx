@@ -241,6 +241,37 @@ const validators: Route[] = FLAGS.EXPLORER_VALIDATORS
     ]
   : [];
 
+const oraclesRoutes: Route[] = FLAGS.EXPLORER_ORACLES
+  ? [
+      {
+        path: Routes.ORACLES,
+        handle: {
+          name: t('Oracles'),
+          text: t('Oracles'),
+          breadcrumb: () => <Link to={Routes.ORACLES}>{t('Oracles')}</Link>,
+        },
+        element: <OraclePage />,
+        children: [
+          {
+            index: true,
+            element: <Oracles />,
+          },
+          {
+            path: ':id',
+            element: <Oracle />,
+            handle: {
+              breadcrumb: (params: Params<string>) => (
+                <Link to={linkTo(Routes.ORACLES, params.id)}>
+                  {truncateMiddle(params.id as string)}
+                </Link>
+              ),
+            },
+          },
+        ],
+      },
+    ]
+  : [];
+
 const linkTo = (...segments: (string | undefined)[]) =>
   compact(segments).join('/');
 
@@ -310,32 +341,7 @@ export const routerConfig: Route[] = [
           },
         ],
       },
-      {
-        path: Routes.ORACLES,
-        handle: {
-          name: t('Oracles'),
-          text: t('Oracles'),
-          breadcrumb: () => <Link to={Routes.ORACLES}>{t('Oracles')}</Link>,
-        },
-        element: <OraclePage />,
-        children: [
-          {
-            index: true,
-            element: <Oracles />,
-          },
-          {
-            path: ':id',
-            element: <Oracle />,
-            handle: {
-              breadcrumb: (params: Params<string>) => (
-                <Link to={linkTo(Routes.ORACLES, params.id)}>
-                  {truncateMiddle(params.id as string)}
-                </Link>
-              ),
-            },
-          },
-        ],
-      },
+      ...oraclesRoutes,
       {
         path: Routes.DISCLAIMER,
         element: <Disclaimer />,
