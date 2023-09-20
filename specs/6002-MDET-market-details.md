@@ -107,6 +107,10 @@ When I look into market info I **Must** see following specification:
   - Supplied Stake
   - Market Value Proxy
   - link to liquidity provision table
+- Liquidity price range: (<a name="6002-MDET-215" href="#6002-MDET-215">6002-MDET-215</a>)
+  - Liquidity Price Range
+  - Lowest Price
+  - Highest Price
 
 ## Market governance
 
