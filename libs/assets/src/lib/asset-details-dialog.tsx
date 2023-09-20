@@ -82,6 +82,7 @@ export const AssetDetailsDialog = ({
 
   return (
     <Dialog
+      id="asset-details"
       title={title}
       icon={<VegaIcon name={VegaIconNames.INFO} />}
       open={open}

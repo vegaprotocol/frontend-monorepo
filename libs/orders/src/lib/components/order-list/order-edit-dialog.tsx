@@ -55,6 +55,7 @@ export const OrderEditDialog = ({
 
   return (
     <Dialog
+      id="order-edit-dialog"
       open={isOpen}
       onChange={onChange}
       title={t('Edit order')}

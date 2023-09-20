@@ -9,7 +9,7 @@ export const NodeSwitcherDialog = ({
   setOpen: (x: boolean) => void;
 }) => {
   return (
-    <Dialog open={open} onChange={setOpen} size="large">
+    <Dialog open={open} onChange={setOpen} size="large" id="node-switcher">
       <NodeSwitcher closeDialog={() => setOpen(false)} />
     </Dialog>
   );

@@ -26,6 +26,7 @@ export const OracleDialog = ({
   const oracleMarkets = useOracleMarkets(provider);
   return (
     <Dialog
+      id="oracle-dialog"
       title={
         <OracleProfileTitle
           provider={provider}

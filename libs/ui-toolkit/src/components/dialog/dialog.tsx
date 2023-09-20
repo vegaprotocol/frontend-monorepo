@@ -1,13 +1,59 @@
-import { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
+import { create } from 'zustand';
+import { subscribeWithSelector } from 'zustand/middleware';
 
 import { getIntentBorder } from '../../utils/intent';
 import { VegaIcon, VegaIconNames } from '../icon';
 
 import type { ReactNode } from 'react';
 import type { Intent } from '../../utils/intent';
-interface DialogProps {
+
+type DialogManagerStore = {
+  openOne: string;
+  queueOpen: string[];
+  removeFromOpen: (id: string) => void;
+  setOpen: (id: string) => void;
+};
+
+export const useDialogManagerStore = create<DialogManagerStore>()(
+  subscribeWithSelector((set, get) => ({
+    openOne: '',
+    queueOpen: [],
+    removeFromOpen: (id) => {
+      const queueOpen = get().queueOpen;
+      let openOne = get().openOne;
+      const ind = queueOpen.indexOf(id);
+      if (ind > -1) {
+        queueOpen.splice(ind, 1);
+      }
+      if (openOne === id) {
+        openOne = queueOpen.shift() || '';
+      }
+      set({ queueOpen, openOne });
+    },
+    setOpen: (id: string) =>
+      set((store) => {
+        let openOne = store.openOne;
+        const queueOpen = store.queueOpen;
+        if (openOne !== id) {
+          const oldOne = store.openOne;
+          openOne = id;
+          const ind = queueOpen.indexOf(oldOne);
+          if (oldOne) {
+            if (ind > -1) {
+              queueOpen.splice(ind, 1);
+            }
+            queueOpen.unshift(oldOne);
+          }
+        }
+        return { queueOpen, openOne };
+      }),
+  }))
+);
+
+export interface DialogProps {
   children: ReactNode;
   open: boolean;
   onChange?: (isOpen: boolean) => void;
@@ -18,9 +64,30 @@ interface DialogProps {
   intent?: Intent;
   size?: 'small' | 'medium' | 'large';
   dataTestId?: string;
+  id?: string;
 }
 
-export function Dialog({
+export const Dialog = ({ open, id, ...props }: DialogProps) => {
+  const openOne = useDialogManagerStore((store) => store.openOne);
+  const queueOpen = useDialogManagerStore((store) => store.queueOpen);
+  const removeFromOpen = useDialogManagerStore((store) => store.removeFromOpen);
+  const setOpen = useDialogManagerStore((store) => store.setOpen);
+
+  useLayoutEffect(() => {
+    if (id) {
+      if (open && openOne !== id && queueOpen.indexOf(id) === -1) {
+        setOpen(id);
+      } else if (!open && openOne === id && queueOpen.indexOf(id) === -1) {
+        removeFromOpen(id);
+      }
+    }
+  }, [openOne, id, open, removeFromOpen, setOpen, queueOpen]);
+
+  const isOpen = id ? id === openOne : open;
+  return <DialogInner {...props} open={isOpen} />;
+};
+
+export function DialogInner({
   children,
   open,
   onChange,

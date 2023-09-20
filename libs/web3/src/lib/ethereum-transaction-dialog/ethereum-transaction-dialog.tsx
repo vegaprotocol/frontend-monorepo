@@ -23,6 +23,7 @@ export const EthereumTransactionDialog = ({
   const { status, error, confirmations, txHash } = transaction;
   return (
     <Dialog
+      id="ethereum-transaction-dialog"
       open={transaction.dialogOpen}
       onChange={onChange}
       size="small"

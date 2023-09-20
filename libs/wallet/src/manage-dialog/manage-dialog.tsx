@@ -21,6 +21,7 @@ export const VegaManageDialog = ({
   const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
   return (
     <Dialog
+      id="wallet-manage-dialog"
       title={t('SELECT A VEGA KEY')}
       open={dialogOpen}
       onChange={setDialogOpen}

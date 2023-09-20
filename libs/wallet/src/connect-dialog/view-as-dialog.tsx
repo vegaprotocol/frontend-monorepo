@@ -23,6 +23,7 @@ export const ViewAsDialog = ({ connector }: ViewAsDialogProps) => {
 
   return (
     <Dialog
+      id="view-as-dialog"
       open={open}
       size="small"
       onChange={(open) => {

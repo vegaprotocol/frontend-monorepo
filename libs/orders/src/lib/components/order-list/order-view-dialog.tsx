@@ -35,7 +35,12 @@ export const OrderViewDialog = ({
 }: OrderViewDialogProps) => {
   const [, setCopied] = useCopyTimeout();
   return (
-    <Dialog open={isOpen} title={t('Order details')} onChange={onChange}>
+    <Dialog
+      open={isOpen}
+      title={t('Order details')}
+      onChange={onChange}
+      id="order-view-dialog"
+    >
       <KeyValueTable>
         <KeyValueTableRow key={'order-market'}>
           <div data-testid={'order-market-label'}>{t('Market')}</div>

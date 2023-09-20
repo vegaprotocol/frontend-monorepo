@@ -82,6 +82,7 @@ export const VegaConnectDialog = ({
 
   return (
     <Dialog
+      id="connect-dialog"
       open={vegaWalletDialogOpen}
       size="small"
       onChange={onVegaWalletDialogChange}

@@ -30,6 +30,7 @@ export const WithdrawalApprovalDialog = ({
 }: WithdrawalApprovalDialogProps) => {
   return (
     <Dialog
+      id="withdrawal-approval-dialog"
       title={t('Save withdrawal details')}
       icon={<VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />}
       open={open}

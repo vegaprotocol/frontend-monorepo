@@ -15,6 +15,7 @@ export const CreateWithdrawalDialog = () => {
   );
   return (
     <Dialog
+      id="create-withdrawal-dialog"
       title={t('Withdraw')}
       open={isOpen && !connectWalletDialogIsOpen}
       onChange={(isOpen) => (isOpen ? open() : close())}

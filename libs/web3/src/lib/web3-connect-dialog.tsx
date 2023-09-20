@@ -31,6 +31,7 @@ export const Web3ConnectDialog = ({
   desiredChainId,
 }: Web3ConnectDialogProps) => (
   <Dialog
+    id="web3-connect-wallet"
     open={dialogOpen}
     onChange={setDialogOpen}
     onInteractOutside={(e) => {

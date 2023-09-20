@@ -12,6 +12,7 @@ export const WelcomeDialog = () => {
 
   return (
     <Dialog
+      id="welcome-dialog"
       open={dismissed ? false : dialogOpen}
       title={
         <span className="font-alpha calt" data-testid="welcome-title">

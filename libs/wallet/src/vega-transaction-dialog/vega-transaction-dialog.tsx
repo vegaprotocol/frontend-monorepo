@@ -34,6 +34,7 @@ export const VegaTransactionDialog = ({
 
   return (
     <Dialog
+      id="vega-transaction-dialog"
       open={isOpen}
       onChange={onChange}
       intent={computedIntent}

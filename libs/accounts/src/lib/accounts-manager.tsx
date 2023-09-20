@@ -75,6 +75,7 @@ export const AccountBreakdownDialog = memo(
   }) => {
     return (
       <Dialog
+        id="account-breakdown"
         size="large"
         open={Boolean(assetId)}
         onChange={(isOpen) => {
