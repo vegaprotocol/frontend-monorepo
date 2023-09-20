@@ -1,31 +1,98 @@
-fragment DataSource on DataSourceDefinition {
-  sourceType {
-    ... on DataSourceDefinitionExternal {
-      sourceType {
-        ... on DataSourceSpecConfiguration {
-          signers {
-            signer {
-              ... on PubKey {
-                key
+fragment DataSourceFilter on Filter {
+  key {
+    name
+    type
+    numberDecimalPlaces
+  }
+}
+
+fragment DataSource on DataSourceSpec {
+  id
+  data {
+    sourceType {
+      ... on DataSourceDefinitionExternal {
+        sourceType {
+          ... on DataSourceSpecConfiguration {
+            signers {
+              signer {
+                ... on PubKey {
+                  key
+                }
+                ... on ETHAddress {
+                  address
+                }
               }
-              ... on ETHAddress {
-                address
-              }
+            }
+            filters {
+              ...DataSourceFilter
+            }
+          }
+        }
+      }
+      ... on DataSourceDefinitionInternal {
+        sourceType {
+          ... on DataSourceSpecConfigurationTime {
+            conditions {
+              operator
+              value
+            }
+          }
+          ... on DataSourceSpecConfigurationTimeTrigger {
+            __typename
+            triggers {
+              initial
+              every
+            }
+            conditions {
+              operator
+              value
             }
           }
         }
       }
     }
-    ... on DataSourceDefinitionInternal {
-      sourceType {
-        ... on DataSourceSpecConfigurationTime {
-          conditions {
-            operator
-            value
-          }
-        }
-      }
-    }
+  }
+}
+
+fragment Future on Future {
+  quoteName
+  settlementAsset {
+    id
+    symbol
+    name
+    decimals
+    quantum
+  }
+  dataSourceSpecForSettlementData {
+    ...DataSource
+  }
+  dataSourceSpecForTradingTermination {
+    ...DataSource
+  }
+  dataSourceSpecBinding {
+    settlementDataProperty
+    tradingTerminationProperty
+  }
+}
+
+fragment Perpetual on Perpetual {
+  quoteName
+  settlementAsset {
+    id
+    symbol
+    name
+    decimals
+    quantum
+  }
+  dataSourceSpecForSettlementData {
+    ...DataSource
+  }
+  dataSourceSpecForSettlementSchedule {
+    ...DataSource
+  }
+  dataSourceSpecBinding {
+    settlementDataProperty
+    settlementScheduleProperty
   }
 }
 
@@ -36,7 +103,6 @@ query MarketInfo($marketId: ID!) {
     positionDecimalPlaces
     state
     tradingMode
-    lpPriceRange
     proposal {
       id
       rationale {
@@ -101,29 +167,10 @@ query MarketInfo($marketId: ID!) {
         }
         product {
           ... on Future {
-            quoteName
-            settlementAsset {
-              id
-              symbol
-              name
-              decimals
-            }
-            dataSourceSpecForSettlementData {
-              id
-              data {
-                ...DataSource
-              }
-            }
-            dataSourceSpecForTradingTermination {
-              id
-              data {
-                ...DataSource
-              }
-            }
-            dataSourceSpecBinding {
-              settlementDataProperty
-              tradingTerminationProperty
-            }
+            ...Future
+          }
+          ... on Perpetual {
+            ...Perpetual
           }
         }
       }

@@ -63,6 +63,7 @@ export const createMarketFragment = (
           tags: [],
         },
         product: {
+          __typename: 'Future',
           settlementAsset: {
             id: 'asset-0',
             symbol: 'tDAI',
@@ -143,8 +144,7 @@ export const createMarketFragment = (
             settlementDataProperty: 'settlement-data-property',
           },
           quoteName: 'DAI',
-          __typename: 'Future',
-        },
+        } as const,
         __typename: 'Instrument',
       },
       __typename: 'TradableInstrument',
@@ -165,6 +165,7 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
         name: 'SUSPENDED MARKET',
         code: 'SOLUSD',
         product: {
+          __typename: 'Future',
           settlementAsset: {
             id: 'asset-1',
             symbol: 'XYZalpha',
@@ -195,6 +196,7 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
         code: 'AAPL.MF21',
         name: 'Apple Monthly (30 Jun 2022)',
         product: {
+          __typename: 'Future',
           settlementAsset: {
             id: 'asset-id',
             name: '',
@@ -224,6 +226,7 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
         code: 'ETHBTC.QM21',
         name: 'ETHBTC Quarterly (30 Jun 2022)',
         product: {
+          __typename: 'Future',
           settlementAsset: {
             id: 'asset-3',
             symbol: 'tBTC',

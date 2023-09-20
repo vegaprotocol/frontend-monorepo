@@ -33,6 +33,8 @@ const PriceInMarket = ({
       label = addDecimalsFormatNumber(price, data.market.decimalPlaces);
     } else if (
       decimalSource === 'SETTLEMENT_ASSET' &&
+      data.market &&
+      'settlementAsset' in data.market.tradableInstrument.instrument.product &&
       data.market?.tradableInstrument.instrument.product.settlementAsset
     ) {
       label = addDecimalsFormatNumber(

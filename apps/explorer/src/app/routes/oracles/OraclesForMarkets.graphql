@@ -11,6 +11,14 @@ fragment ExplorerOracleForMarketsMarket on Market {
             id
           }
         }
+        ... on Perpetual {
+          dataSourceSpecForSettlementData {
+            id
+          }
+          dataSourceSpecForSettlementSchedule {
+            id
+          }
+        }
       }
     }
   }

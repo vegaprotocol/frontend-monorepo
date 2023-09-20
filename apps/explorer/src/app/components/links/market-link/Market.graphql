@@ -13,6 +13,12 @@ query ExplorerMarket($id: ID!) {
               decimals
             }
           }
+          ... on Perpetual {
+            quoteName
+            settlementAsset {
+              decimals
+            }
+          }
         }
       }
     }

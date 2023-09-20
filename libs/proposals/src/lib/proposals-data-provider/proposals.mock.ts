@@ -249,7 +249,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       enactmentDatetime: '2022-11-15T12:39:51Z',
       change: {
         decimalPlaces: 1,
-        lpPriceRange: '',
+
         riskParameters: {
           __typename: 'SimpleRiskModel',
           params: {
@@ -339,7 +339,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       enactmentDatetime: '2022-11-14T16:24:34Z',
       change: {
         decimalPlaces: 1,
-        lpPriceRange: '',
+
         riskParameters: {
           __typename: 'SimpleRiskModel',
           params: {
@@ -429,7 +429,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       enactmentDatetime: '2022-11-11T16:32:32Z',
       change: {
         decimalPlaces: 1,
-        lpPriceRange: '',
+
         riskParameters: {
           __typename: 'SimpleRiskModel',
           params: {
@@ -519,7 +519,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       enactmentDatetime: '2022-11-14T09:41:17Z',
       change: {
         decimalPlaces: 1,
-        lpPriceRange: '',
+
         riskParameters: {
           __typename: 'SimpleRiskModel',
           params: {
@@ -609,7 +609,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       enactmentDatetime: '2022-11-11T16:32:32Z',
       change: {
         decimalPlaces: 1,
-        lpPriceRange: '',
+
         riskParameters: {
           __typename: 'SimpleRiskModel',
           params: {
@@ -699,7 +699,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       enactmentDatetime: '2022-11-11T16:30:35Z',
       change: {
         decimalPlaces: 1,
-        lpPriceRange: '',
+
         riskParameters: {
           __typename: 'SimpleRiskModel',
           params: {
@@ -789,7 +789,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       enactmentDatetime: '2022-11-11T16:30:35Z',
       change: {
         decimalPlaces: 1,
-        lpPriceRange: '',
+
         riskParameters: {
           __typename: 'SimpleRiskModel',
           params: {
@@ -879,7 +879,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       enactmentDatetime: '2022-11-11T16:30:35Z',
       change: {
         decimalPlaces: 1,
-        lpPriceRange: '',
+
         riskParameters: {
           __typename: 'SimpleRiskModel',
           params: {
@@ -969,7 +969,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       enactmentDatetime: '2022-11-11T16:30:35Z',
       change: {
         decimalPlaces: 1,
-        lpPriceRange: '',
+
         riskParameters: {
           __typename: 'SimpleRiskModel',
           params: {
@@ -1059,7 +1059,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       enactmentDatetime: '2022-11-11T16:30:35Z',
       change: {
         decimalPlaces: 1,
-        lpPriceRange: '',
+
         riskParameters: {
           __typename: 'SimpleRiskModel',
           params: {
@@ -1149,7 +1149,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       enactmentDatetime: '2022-11-11T16:30:35Z',
       change: {
         decimalPlaces: 1,
-        lpPriceRange: '',
+
         riskParameters: {
           __typename: 'SimpleRiskModel',
           params: {
@@ -1239,7 +1239,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
       enactmentDatetime: '2022-11-11T16:30:35Z',
       change: {
         decimalPlaces: 1,
-        lpPriceRange: '',
+
         riskParameters: {
           __typename: 'SimpleRiskModel',
           params: {

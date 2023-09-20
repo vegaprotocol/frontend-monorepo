@@ -129,7 +129,6 @@ interface ProposalNewMarketTerms {
     changes: {
       decimalPlaces: string;
       positionDecimalPlaces: string;
-      lpPriceRange: string;
       linearSlippageFactor: string;
       quadraticSlippageFactor: string;
       instrument: {
@@ -155,6 +154,7 @@ interface ProposalNewMarketTerms {
       };
       logNormal: LogNormal;
       successor?: Successor;
+      liquiditySlaParameters: LiquiditySLAParameters;
     };
   };
   closingTimestamp: number;
@@ -322,6 +322,13 @@ interface Trigger {
   horizon: string;
   probability: string;
   auctionExtension: string;
+}
+
+interface LiquiditySLAParameters {
+  priceRange: string;
+  commitmentMinTimeFraction: string;
+  performanceHysteresisEpochs: number;
+  slaCompetitionFactor: string;
 }
 
 export interface ProposalSubmission {

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { MarketFieldsFragment } from '@vegaprotocol/markets';
+import { getAsset, type MarketFieldsFragment } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
@@ -73,8 +73,7 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
           MarketFieldsFragment,
           'tradableInstrument.instrument.product.settlementAsset.symbol'
         >) => {
-          const value =
-            data?.tradableInstrument.instrument.product.settlementAsset;
+          const value = data && getAsset(data);
           return value ? (
             <ButtonLink
               onClick={(e) => {

@@ -7,26 +7,26 @@ import type {
 import { AgGridLazy as AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/i18n';
+import type { Asset } from '@vegaprotocol/types';
 import type { ProductType } from '@vegaprotocol/types';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
 import {
   addDecimalsFormatNumber,
   getMarketExpiryDate,
 } from '@vegaprotocol/utils';
-import type {
-  DataSourceFilterFragment,
-  MarketMaybeWithData,
-} from '@vegaprotocol/markets';
-import { closedMarketsWithDataProvider } from '@vegaprotocol/markets';
+import { closedMarketsWithDataProvider, getAsset } from '@vegaprotocol/markets';
+import type { DataSourceFilterFragment } from '@vegaprotocol/markets';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { MarketActionsDropdown } from './market-table-actions';
 import { MarketCodeCell } from './market-code-cell';
+import { MarketActionsDropdown } from './market-table-actions';
 
-type SettlementAsset =
-  MarketMaybeWithData['tradableInstrument']['instrument']['product']['settlementAsset'];
+type SettlementAsset = Pick<
+  Asset,
+  'decimals' | 'name' | 'quantum' | 'id' | 'symbol'
+>;
 
 interface Row {
   id: string;
@@ -41,7 +41,7 @@ interface Row {
   markPrice: string | undefined;
   settlementDataOracleId: string;
   settlementDataSpecBinding: string;
-  setlementDataSourceFilter: DataSourceFilterFragment | undefined;
+  settlementDataSourceFilter: DataSourceFilterFragment | undefined;
   tradingTerminationOracleId: string;
   settlementAsset: SettlementAsset;
   productType: ProductType | undefined;
@@ -59,18 +59,26 @@ export const Closed = () => {
     const instrument = market.tradableInstrument.instrument;
 
     const spec =
+      (instrument.product.__typename === 'Future' ||
+        instrument.product.__typename === 'Perpetual') &&
       instrument.product.dataSourceSpecForSettlementData.data.sourceType
         .__typename === 'DataSourceDefinitionExternal'
         ? instrument.product.dataSourceSpecForSettlementData.data.sourceType
             .sourceType
         : undefined;
-    const filters = spec?.filters || [];
+    const filters = (spec && 'filters' in spec && spec.filters) || [];
 
     const settlementDataSpecBinding =
-      instrument.product.dataSourceSpecBinding.settlementDataProperty;
-    const filter = filters?.find((filter) => {
-      return filter.key.name === settlementDataSpecBinding;
-    });
+      instrument.product.__typename === 'Future' ||
+      instrument.product.__typename === 'Perpetual'
+        ? instrument.product.dataSourceSpecBinding.settlementDataProperty
+        : '';
+    const filter =
+      filters && Array.isArray(filters)
+        ? filters?.find((filter) => {
+            return filter.key.name === settlementDataSpecBinding;
+          })
+        : undefined;
 
     const row: Row = {
       id: market.id,
@@ -84,12 +92,17 @@ export const Closed = () => {
       bestOfferPrice: market.data?.bestOfferPrice,
       markPrice: market.data?.markPrice,
       settlementDataOracleId:
-        instrument.product.dataSourceSpecForSettlementData.id,
+        instrument.product.__typename === 'Future' ||
+        instrument.product.__typename === 'Perpetual'
+          ? instrument.product.dataSourceSpecForSettlementData.id
+          : '',
       settlementDataSpecBinding,
-      setlementDataSourceFilter: filter,
+      settlementDataSourceFilter: filter,
       tradingTerminationOracleId:
-        instrument.product.dataSourceSpecForTradingTermination.id,
-      settlementAsset: instrument.product.settlementAsset,
+        instrument.product.__typename === 'Future'
+          ? instrument.product.dataSourceSpecForTradingTermination.id
+          : '',
+      settlementAsset: getAsset({ tradableInstrument: { instrument } }),
       productType: instrument.product.__typename,
       successorMarketID: market.successorMarketID,
       parentMarketID: market.parentMarketID,
@@ -221,7 +234,7 @@ const ClosedMarketsDataGrid = ({
           <SettlementPriceCell
             oracleSpecId={value}
             settlementDataSpecBinding={data?.settlementDataSpecBinding}
-            filter={data?.setlementDataSourceFilter}
+            filter={data?.settlementDataSourceFilter}
           />
         ),
       },

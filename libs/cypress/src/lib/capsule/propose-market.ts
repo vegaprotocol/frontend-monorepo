@@ -37,7 +37,6 @@ function createNewMarketProposal(): ProposalSubmissionBody {
             positionDecimalPlaces: '5',
             linearSlippageFactor: '0.001',
             quadraticSlippageFactor: '0',
-            lpPriceRange: '10',
             instrument: {
               name: 'Test market 1',
               code: 'TEST.24h',
@@ -131,6 +130,12 @@ function createNewMarketProposal(): ProposalSubmissionBody {
                 r: 0.016,
                 sigma: 0.5,
               },
+            },
+            liquiditySlaParameters: {
+              priceRange: '0.95',
+              commitmentMinTimeFraction: '0.5',
+              performanceHysteresisEpochs: 2,
+              slaCompetitionFactor: '0.75',
             },
           },
         },
