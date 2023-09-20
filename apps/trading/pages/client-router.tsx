@@ -9,7 +9,7 @@ import { Home } from '../client-pages/home';
 import { Liquidity } from '../client-pages/liquidity';
 import { MarketsPage } from '../client-pages/markets';
 import { Disclaimer } from '../client-pages/disclaimer';
-import { Transact } from '../client-pages/transact';
+import { Assets } from '../client-pages/assets';
 import { Deposit } from '../client-pages/deposit';
 import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
@@ -28,16 +28,6 @@ const NotFound = () => (
 export const routerConfig: RouteObject[] = [
   // Pages that dont use the LayoutWithSidebar must come first
   // to ensure they are matched before the catch all route '/*'
-  {
-    path: 'transact/*',
-    element: <Transact />,
-    children: [
-      { index: true, element: <Navigate to="deposit" /> },
-      { path: 'deposit', element: <Deposit /> },
-      { path: 'withdraw', element: <Withdraw /> },
-      { path: 'transfer', element: <Transfer /> },
-    ],
-  },
   {
     path: 'disclaimer',
     element: <LayoutCentered />,
@@ -73,7 +63,23 @@ export const routerConfig: RouteObject[] = [
       },
       {
         path: 'portfolio',
-        element: <Portfolio />,
+        element: <Outlet />,
+        children: [
+          {
+            index: true,
+            element: <Portfolio />,
+          },
+          {
+            path: 'assets',
+            element: <Assets />,
+            children: [
+              { index: true, element: <Navigate to="deposit" /> },
+              { path: 'deposit', element: <Deposit /> },
+              { path: 'withdraw', element: <Withdraw /> },
+              { path: 'transfer', element: <Transfer /> },
+            ],
+          },
+        ],
       },
       {
         path: 'liquidity/:marketId',

@@ -3,7 +3,7 @@ import { Links } from '../../lib/links';
 import classNames from 'classnames';
 import { NavLink, Outlet } from 'react-router-dom';
 
-export const Transact = () => {
+export const Assets = () => {
   const linkClasses = ({ isActive }: { isActive: boolean }) => {
     return classNames('border-b-2 border-transparent', {
       'border-vega-yellow': isActive,

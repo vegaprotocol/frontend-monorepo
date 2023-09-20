@@ -1,1 +1,0 @@
-export { Transact } from './transact';

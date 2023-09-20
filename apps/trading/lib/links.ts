@@ -9,10 +9,10 @@ export const Routes = {
   LIQUIDITY: '/liquidity/:marketId',
   PORTFOLIO: '/portfolio',
   DISCLAIMER: '/disclaimer',
-  TRANSACT: '/transact',
-  DEPOSIT: '/transact/deposit',
-  WITHDRAW: '/transact/withdraw',
-  TRANSFER: '/transact/transfer',
+  ASSETS: '/portfolio/assets',
+  DEPOSIT: '/portfolio/assets/deposit',
+  WITHDRAW: '/portfolio/assets/withdraw',
+  TRANSFER: '/portfolio/assets/transfer',
 } as const;
 
 type ConsoleLinks = {
@@ -28,7 +28,7 @@ export const Links: ConsoleLinks = {
   LIQUIDITY: (marketId: string) =>
     trimEnd(Routes.LIQUIDITY.replace(':marketId', marketId)),
   DISCLAIMER: () => Routes.DISCLAIMER,
-  TRANSACT: () => Routes.TRANSACT,
+  ASSETS: () => Routes.ASSETS,
   DEPOSIT: () => Routes.DEPOSIT,
   WITHDRAW: () => Routes.WITHDRAW,
   TRANSFER: () => Routes.TRANSFER,
