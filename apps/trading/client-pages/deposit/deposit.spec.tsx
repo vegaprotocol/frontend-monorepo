@@ -1,29 +1,29 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { Transfer } from './transfer';
+import { Deposit } from './deposit';
 
-jest.mock('@vegaprotocol/accounts', () => ({
-  TransferContainer: ({ assetId }: { assetId?: string }) => (
+jest.mock('@vegaprotocol/deposits', () => ({
+  DepositContainer: ({ assetId }: { assetId?: string }) => (
     <div data-testid="assetId">{assetId}</div>
   ),
 }));
 
-jest.mock('../../components/welcome-dialog/get-started.ts', () => ({
-  GetStarted: () => <div>GetStarted</div>,
+jest.mock('./deposit-get-started', () => ({
+  DepositGetStarted: () => <div>DepositGetStarted</div>,
 }));
 
-const renderJsx = (route = '/transfer') => {
+const renderJsx = (route = '/deposit') => {
   render(
     <MemoryRouter initialEntries={[route]}>
-      <Transfer />
+      <Deposit />
     </MemoryRouter>
   );
 };
 
-describe('Transfer page', () => {
+describe('Deposit page', () => {
   it('assetId should be passed down', () => {
     const assetId = 'foo';
-    const route = '/transfer?assetId=' + assetId;
+    const route = '/deposit?assetId=' + assetId;
     renderJsx(route);
     expect(screen.getByTestId('assetId')).toHaveTextContent(assetId);
   });

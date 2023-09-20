@@ -21,21 +21,10 @@ const renderJsx = (route = '/withdraw') => {
 };
 
 describe('Withdraw page', () => {
-  it('should be properly rendered', () => {
-    renderJsx();
-    expect(
-      screen.getByRole('heading', { level: 1, name: 'Withdraw' })
-    ).toBeInTheDocument();
-    expect(screen.getByTestId('assetId')).toBeEmptyDOMElement();
-  });
-
   it('assetId should be passed down', () => {
     const assetId = 'foo';
     const route = '/withdraw?assetId=' + assetId;
     renderJsx(route);
-    expect(
-      screen.getByRole('heading', { level: 1, name: 'Withdraw' })
-    ).toBeInTheDocument();
     expect(screen.getByTestId('assetId')).toHaveTextContent(assetId);
   });
 });

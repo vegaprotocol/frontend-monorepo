@@ -3,12 +3,10 @@ import { matchRoutes, useLocation } from 'react-router-dom';
 
 export const useGetCurrentRouteId = () => {
   const location = useLocation();
-  const currentRoute = matchRoutes(routerConfig, location);
-  const lastRoute = currentRoute?.pop();
+  const matches = matchRoutes(routerConfig, location);
+  const lastRoute = matches ? matches[matches.length - 1] : undefined;
   if (lastRoute) {
-    const {
-      route: { id },
-    } = lastRoute;
+    const id = lastRoute.route.id;
     return id || '';
   }
   return '';

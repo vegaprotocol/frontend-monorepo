@@ -12,7 +12,7 @@ import {
   Indicator,
   KeyValueTable,
   KeyValueTableRow,
-  Link,
+  Link as UILink,
 } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
@@ -23,6 +23,8 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { DocsLinks } from '@vegaprotocol/environment';
+import { Link } from 'react-router-dom';
+import { Links } from '../../lib/links';
 
 interface Props {
   marketId?: string;
@@ -100,50 +102,50 @@ export const MarketLiquiditySupplied = ({
 
   const description = marketId ? (
     <section data-testid="liquidity-supplied-tooltip">
-      <KeyValueTable>
-        <KeyValueTableRow>
-          <span>{t('Supplied stake')}</span>
-          <span>
-            {market?.suppliedStake
-              ? addDecimalsFormatNumber(
-                  new BigNumber(market?.suppliedStake).toString(),
-                  assetDecimals
-                )
-              : '-'}
-          </span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          <span>{t('Target stake')}</span>
-          <span>
-            {market?.targetStake
-              ? addDecimalsFormatNumber(
-                  new BigNumber(market?.targetStake).toString(),
-                  assetDecimals
-                )
-              : '-'}
-          </span>
-        </KeyValueTableRow>
-      </KeyValueTable>
-      <br />
-      <div className="flex flex-col gap-2">
-        <Link
-          href={`/#/liquidity/${marketId}`}
-          data-testid="view-liquidity-link"
-        >
-          {t('View liquidity provision table')}
-        </Link>
-        {DocsLinks && (
-          <ExternalLink href={DocsLinks.LIQUIDITY} className="mt-2">
-            {t('Learn about providing liquidity')}
-          </ExternalLink>
-        )}
+      <div className="mb-2">
+        <KeyValueTable>
+          <KeyValueTableRow>
+            <span>{t('Supplied stake')}</span>
+            <span>
+              {market?.suppliedStake
+                ? addDecimalsFormatNumber(
+                    new BigNumber(market?.suppliedStake).toString(),
+                    assetDecimals
+                  )
+                : '-'}
+            </span>
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            <span>{t('Target stake')}</span>
+            <span>
+              {market?.targetStake
+                ? addDecimalsFormatNumber(
+                    new BigNumber(market?.targetStake).toString(),
+                    assetDecimals
+                  )
+                : '-'}
+            </span>
+          </KeyValueTableRow>
+        </KeyValueTable>
       </div>
       {showMessage && (
-        <p className="mt-4">
+        <p className="mb-2">
           {t(
             'The market has sufficient liquidity but there are not enough priced limit orders in the order book, which are required to deploy liquidity commitment pegged orders.'
           )}
         </p>
+      )}
+      <div className="flex flex-col gap-2">
+        <Link to={Links.LIQUIDITY(marketId)} data-testid="view-liquidity-link">
+          <UILink>{t('View liquidity provision table')}</UILink>
+        </Link>
+      </div>
+      {DocsLinks && (
+        <div>
+          <ExternalLink href={DocsLinks.LIQUIDITY} className="mt-2">
+            {t('Learn about providing liquidity')}
+          </ExternalLink>
+        </div>
       )}
     </section>
   ) : (

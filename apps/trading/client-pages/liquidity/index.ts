@@ -1,3 +1,1 @@
-import { Liquidity } from './liquidity';
-
-export default Liquidity;
+export { Liquidity } from './liquidity';
