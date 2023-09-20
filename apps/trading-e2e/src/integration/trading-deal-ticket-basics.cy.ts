@@ -1,12 +1,8 @@
-import * as Schema from '@vegaprotocol/types';
 import { mockConnectWallet } from '@vegaprotocol/cypress';
 import {
   orderPriceField,
   placeOrderBtn,
   toggleLimit,
-  toggleLong,
-  toggleMarket,
-  toggleShort,
 } from '../support/deal-ticket';
 
 describe('deal ticket basics', { tags: '@smoke' }, () => {
@@ -24,20 +20,6 @@ describe('deal ticket basics', { tags: '@smoke' }, () => {
     cy.getByTestId('connect-vega-wallet'); // Not connected
     cy.getByTestId(placeOrderBtn).should('exist');
     cy.getByTestId('order-connect-wallet').should('exist');
-  });
-
-  it('must be able to select order direction - long/short', function () {
-    // 7002-SORD-004
-    cy.getByTestId(toggleShort).click().next('input').should('be.checked');
-    cy.getByTestId(toggleLong).click().next('input').should('be.checked');
-  });
-
-  it('must be able to select order type - limit/market', function () {
-    // 7002-SORD-005
-    // 7002-SORD-006
-    // 7002-SORD-007
-    cy.getByTestId(toggleLimit).click().next('input').should('be.checked');
-    cy.getByTestId(toggleMarket).click().next('input').should('be.checked');
   });
 
   it('order connect vega wallet button should connect', () => {
@@ -64,43 +46,3 @@ describe('deal ticket basics', { tags: '@smoke' }, () => {
     cy.getByTestId('deal-ticket-form').should('be.visible');
   });
 });
-
-describe(
-  'market states not accepting orders',
-  { tags: '@smoke', testIsolation: true },
-  function () {
-    //7002-SORD-062
-    //7002-SORD-063
-    //7002-SORD-066
-
-    const states = [
-      Schema.MarketState.STATE_REJECTED,
-      Schema.MarketState.STATE_CANCELLED,
-      Schema.MarketState.STATE_CLOSED,
-      Schema.MarketState.STATE_SETTLED,
-      Schema.MarketState.STATE_TRADING_TERMINATED,
-    ];
-
-    states.forEach((marketState) => {
-      describe(marketState, function () {
-        beforeEach(function () {
-          cy.mockTradingPage(marketState);
-          cy.mockSubscription();
-          cy.setVegaWallet();
-          cy.visit('/#/markets/market-0');
-        });
-        it('must display that market is not accepting orders', function () {
-          cy.getByTestId('deal-ticket-error-message-summary').should(
-            'have.text',
-            `This market is ${marketState
-              .split('_')
-              .pop()
-              ?.toLowerCase()} and not accepting orders`
-          );
-          // 7002-SORD-060
-          cy.getByTestId('place-order').should('be.enabled');
-        });
-      });
-    });
-  }
-);

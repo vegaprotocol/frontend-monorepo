@@ -40,18 +40,25 @@ const submit = jest.fn();
 
 function generateJsx(
   mocks: MockedResponse[] = [],
-  marketOverrides: PartialDeep<Market> = {}
+  marketOverrides: PartialDeep<Market> = {},
+  marketDataOverrides: Partial<YourMarketDataType> = {}
 ) {
   const joinedMarket: Market = {
     ...market,
     ...marketOverrides,
   } as Market;
+
+  const joinedMarketData: YourMarketDataType = {
+    ...marketData,
+    ...marketDataOverrides,
+  } as YourMarketDataType;
+
   return (
     <MockedProvider mocks={[...mocks]}>
       <VegaWalletContext.Provider value={{ pubKey, isReadOnly: false } as any}>
         <DealTicket
           market={joinedMarket}
-          marketData={marketData}
+          marketData={joinedMarketData}
           marketPrice={marketPrice}
           submit={submit}
           onDeposit={jest.fn()}
@@ -462,6 +469,10 @@ describe('DealTicket', () => {
   });
 
   it('can edit deal ticket', async () => {
+    // 7002-SORD-004
+    // 7002-SORD-005
+    // 7002-SORD-006
+    // 7002-SORD-007
     render(generateJsx());
 
     // BUY is selected by default
@@ -483,10 +494,30 @@ describe('DealTicket', () => {
 
     // Switch to limit order
     await userEvent.click(screen.getByTestId('order-type-Limit'));
+    expect(screen.getByTestId('order-type-Limit').dataset.state).toEqual(
+      'checked'
+    );
 
     // Check all TIF options shown
     expect(screen.getByTestId('order-tif').children).toHaveLength(
       Object.keys(Schema.OrderTimeInForce).length
+    );
+    // Switch to market order
+    await userEvent.click(screen.getByTestId('order-type-Market'));
+    expect(screen.getByTestId('order-type-Market').dataset.state).toEqual(
+      'checked'
+    );
+
+    // Switch to short order
+    await userEvent.click(screen.getByTestId('order-side-SIDE_SELL'));
+    expect(screen.getByTestId('order-side-SIDE_SELL').dataset.state).toEqual(
+      'checked'
+    );
+
+    // Switch to long order
+    await userEvent.click(screen.getByTestId('order-side-SIDE_BUY'));
+    expect(screen.getByTestId('order-side-SIDE_BUY').dataset.state).toEqual(
+      'checked'
     );
   });
 
@@ -653,5 +684,41 @@ describe('DealTicket', () => {
     expect(
       new Date(screen.getByTestId<HTMLInputElement>(datePicker).value).getTime()
     ).toEqual(now);
+  });
+
+  describe('market states not accepting orders', () => {
+    const states = [
+      Schema.MarketState.STATE_REJECTED,
+      Schema.MarketState.STATE_CANCELLED,
+      Schema.MarketState.STATE_CLOSED,
+      Schema.MarketState.STATE_SETTLED,
+      Schema.MarketState.STATE_TRADING_TERMINATED,
+    ];
+
+    states.forEach((marketState) => {
+      describe(`Market State: ${marketState}`, () => {
+        beforeEach(() => {
+          const marketOverrides = { state: marketState };
+          const marketDataOverrides = { marketState: marketState };
+          render(generateJsx([], marketOverrides, marketDataOverrides));
+        });
+
+        it('must display that market is not accepting orders', async () => {
+          const text = `This market is ${marketState
+            .split('_')
+            .pop()
+            ?.toLowerCase()} and not accepting orders`;
+          await waitFor(() => {
+            expect(
+              screen.getByTestId('deal-ticket-error-message-summary')
+            ).toHaveTextContent(text);
+          });
+        });
+
+        it('should have the place-order button enabled', () => {
+          expect(screen.getByTestId('place-order')).toBeEnabled();
+        });
+      });
+    });
   });
 });
