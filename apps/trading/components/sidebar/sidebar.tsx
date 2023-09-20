@@ -55,7 +55,6 @@ const MarketSidebarButtons = () => {
 
   return (
     <>
-      <SidebarDivider />
       <SidebarButton
         view={ViewType.Order}
         icon={VegaIconNames.TICKET}
@@ -72,6 +71,33 @@ const MarketSidebarButtons = () => {
   );
 };
 
+const AssetSidebarButtons = () => {
+  const currentRouteId = useGetCurrentRouteId();
+
+  return (
+    <>
+      <SidebarButton
+        view={ViewType.Deposit}
+        icon={VegaIconNames.DEPOSIT}
+        tooltip={t('Deposit')}
+        routeId={currentRouteId}
+      />
+      <SidebarButton
+        view={ViewType.Withdraw}
+        icon={VegaIconNames.WITHDRAW}
+        tooltip={t('Withdraw')}
+        routeId={currentRouteId}
+      />
+      <SidebarButton
+        view={ViewType.Transfer}
+        icon={VegaIconNames.TRANSFER}
+        tooltip={t('Transfer')}
+        routeId={currentRouteId}
+      />
+    </>
+  );
+};
+
 export const Sidebar = () => {
   const currentRouteId = useGetCurrentRouteId();
   const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
@@ -80,41 +106,34 @@ export const Sidebar = () => {
   return (
     <div className="flex h-full p-1 lg:flex-col gap-2" data-testid="sidebar">
       <nav className={navClasses}>
-        {/* sidebar options that always show */}
-        <SidebarButton
-          view={ViewType.Deposit}
-          icon={VegaIconNames.DEPOSIT}
-          tooltip={t('Deposit')}
-          routeId={currentRouteId}
-        />
-        <SidebarButton
-          view={ViewType.Withdraw}
-          icon={VegaIconNames.WITHDRAW}
-          tooltip={t('Withdraw')}
-          routeId={currentRouteId}
-        />
-        <SidebarButton
-          view={ViewType.Transfer}
-          icon={VegaIconNames.TRANSFER}
-          tooltip={t('Transfer')}
-          routeId={currentRouteId}
-        />
-        {/* buttons for specific routes */}
         <Routes>
+          <Route path="markets/all" element={<AssetSidebarButtons />} />
+          <Route path="portfolio">
+            <Route
+              // Show deposit/withdraw/transfer sidebar options only on portflio dashboard (index)
+              index={true}
+              element={<AssetSidebarButtons />}
+            />
+          </Route>
           <Route
-            path="markets/all"
-            // render nothing for markets/all, otherwise markets/:marketId will match with markets/all
-            element={null}
+            path="markets/:marketId"
+            element={
+              <>
+                <AssetSidebarButtons />
+                <SidebarDivider />
+                <MarketSidebarButtons />
+              </>
+            }
           />
-          <Route
-            // render nothing for portfolio
-            path="portfolio"
-            element={null}
-          />
-          <Route path="markets/:marketId" element={<MarketSidebarButtons />} />
           <Route
             path="liquidity/:marketId"
-            element={<MarketSidebarButtons />}
+            element={
+              <>
+                <AssetSidebarButtons />
+                <SidebarDivider />
+                <MarketSidebarButtons />
+              </>
+            }
           />
         </Routes>
       </nav>
