@@ -13,6 +13,7 @@ import { Assets } from '../client-pages/assets';
 import { Deposit } from '../client-pages/deposit';
 import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
+import { Routes } from '../lib/links';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -31,6 +32,7 @@ export const routerConfig: RouteObject[] = [
   {
     path: 'disclaimer',
     element: <LayoutCentered />,
+    id: Routes.DISCLAIMER,
     children: [{ index: true, element: <Disclaimer /> }],
   },
 
@@ -42,6 +44,7 @@ export const routerConfig: RouteObject[] = [
       {
         index: true,
         element: <Home />,
+        id: Routes.HOME,
       },
       {
         path: 'markets',
@@ -54,10 +57,12 @@ export const routerConfig: RouteObject[] = [
           {
             path: 'all',
             element: <MarketsPage />,
+            id: Routes.MARKETS,
           },
           {
             path: ':marketId',
             element: <MarketPage />,
+            id: Routes.MARKET,
           },
         ],
       },
@@ -68,15 +73,17 @@ export const routerConfig: RouteObject[] = [
           {
             index: true,
             element: <Portfolio />,
+            id: Routes.PORTFOLIO,
           },
           {
             path: 'assets',
             element: <Assets />,
+            id: Routes.ASSETS,
             children: [
               { index: true, element: <Navigate to="deposit" /> },
-              { path: 'deposit', element: <Deposit /> },
-              { path: 'withdraw', element: <Withdraw /> },
-              { path: 'transfer', element: <Transfer /> },
+              { path: 'deposit', element: <Deposit />, id: Routes.DEPOSIT },
+              { path: 'withdraw', element: <Withdraw />, id: Routes.WITHDRAW },
+              { path: 'transfer', element: <Transfer />, id: Routes.TRANSFER },
             ],
           },
         ],
@@ -84,6 +91,7 @@ export const routerConfig: RouteObject[] = [
       {
         path: 'liquidity/:marketId',
         element: <Liquidity />,
+        id: Routes.LIQUIDITY,
       },
 
       // NotFound page is here so its caught within parent '/*' route
