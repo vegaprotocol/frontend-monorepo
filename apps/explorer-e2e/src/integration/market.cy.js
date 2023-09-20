@@ -101,7 +101,7 @@ context('Market page', { tags: '@regression' }, function () {
           'contain',
           '/oracles/bf242aa5c9f64fcbb77808aa8582e73711519f4b35264eb797a80f1803590a24'
         );
-      ('');
+
       // Able to view Json
       cy.contains('View JSON').click();
       cy.get('.language-json').should('exist');
