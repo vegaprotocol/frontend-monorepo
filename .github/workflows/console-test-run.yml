@@ -7,7 +7,7 @@ on:
   workflow_call:
     inputs:
       github-sha:
-        required: true
+        required: false
         type: string
 
 jobs:
