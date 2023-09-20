@@ -36,7 +36,7 @@ import {
   formatValue,
 } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
-import { getDerivedPrice } from '@vegaprotocol/markets';
+import { getDerivedPrice, isMarketInAuction } from '@vegaprotocol/markets';
 import {
   validateExpiration,
   validateMarketState,
@@ -182,6 +182,7 @@ export const DealTicket = ({
   const iceberg = watch('iceberg');
   const peakSize = watch('peakSize');
   const expiresAt = watch('expiresAt');
+  const postOnly = watch('postOnly');
 
   useEffect(() => {
     const size = storedFormValues?.[dealTicketType]?.size;
@@ -211,6 +212,7 @@ export const DealTicket = ({
       size: rawSize,
       timeInForce,
       type,
+      postOnly,
     },
     market.id,
     market.decimalPlaces,
@@ -474,6 +476,7 @@ export const DealTicket = ({
           }
           assetSymbol={assetSymbol}
           market={market}
+          isMarketInAuction={isMarketInAuction(marketData.marketTradingMode)}
         />
       </div>
       <Controller
