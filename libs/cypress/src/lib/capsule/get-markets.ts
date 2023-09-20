@@ -54,7 +54,7 @@ export async function getMarkets() {
                 tags: string[];
               };
               product: {
-                settlementAssset: {
+                settlementAsset: {
                   id: string;
                   symbol: string;
                   decimals: number;

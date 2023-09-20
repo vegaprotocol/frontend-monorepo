@@ -4,10 +4,14 @@ import { useMarket } from '../markets-provider';
 
 import { useMemo } from 'react';
 import type { Provider } from '../oracle-schema';
-import type { DataSourceSpecFragment } from '../__generated__';
+import {
+  getDataSourceSpecForSettlementData,
+  getDataSourceSpecForTradingTermination,
+} from '../product';
+import type { DataSourceFragment } from '../components';
 
 export const getMatchingOracleProvider = (
-  dataSourceSpec: DataSourceSpecFragment,
+  dataSourceSpec: DataSourceFragment['data'],
   providers: Provider[]
 ) => {
   return providers.find((provider) => {
@@ -20,7 +24,8 @@ export const getMatchingOracleProvider = (
     }
 
     if (
-      dataSourceSpec.sourceType.__typename === 'DataSourceDefinitionExternal'
+      dataSourceSpec.sourceType.__typename === 'DataSourceDefinitionExternal' &&
+      'signers' in dataSourceSpec.sourceType.sourceType
     ) {
       return dataSourceSpec.sourceType.sourceType.signers?.some(
         (signer) =>
@@ -38,7 +43,8 @@ export const useMarketOracle = (
   marketId: string,
   dataSourceType:
     | 'dataSourceSpecForSettlementData'
-    | 'dataSourceSpecForTradingTermination' = 'dataSourceSpecForSettlementData'
+    | 'dataSourceSpecForTradingTermination'
+    | 'dataSourceSpecForSettlementSchedule' = 'dataSourceSpecForSettlementData'
 ): {
   data?: {
     provider: NonNullable<ReturnType<typeof getMatchingOracleProvider>>;
@@ -57,10 +63,22 @@ export const useMarketOracle = (
     if (!providers || !market) {
       return { data: undefined };
     }
-    const dataSourceSpec =
-      market.tradableInstrument.instrument.product[dataSourceType];
-    const provider = getMatchingOracleProvider(dataSourceSpec.data, providers);
-    if (provider) {
+    let dataSourceSpec: DataSourceFragment | undefined = undefined;
+    const { product } = market.tradableInstrument.instrument;
+    if (dataSourceType === 'dataSourceSpecForSettlementData') {
+      dataSourceSpec = getDataSourceSpecForSettlementData(product);
+    }
+    if (dataSourceType === 'dataSourceSpecForSettlementSchedule') {
+      dataSourceSpec = getDataSourceSpecForSettlementData(product);
+    }
+    if (dataSourceType === 'dataSourceSpecForTradingTermination') {
+      dataSourceSpec = getDataSourceSpecForTradingTermination(product);
+    }
+
+    const provider =
+      dataSourceSpec &&
+      getMatchingOracleProvider(dataSourceSpec.data, providers);
+    if (provider && dataSourceSpec) {
       return { data: { provider, dataSourceSpecId: dataSourceSpec.id } };
     }
     return { data: undefined };

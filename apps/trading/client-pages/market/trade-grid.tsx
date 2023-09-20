@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { t } from '@vegaprotocol/i18n';
-import { OracleBanner } from '@vegaprotocol/markets';
+import { OracleBanner, useMarket } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
 import { Filter } from '@vegaprotocol/orders';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
@@ -34,6 +34,7 @@ const MainGrid = memo(
     marketId: string;
     pinnedAsset?: PinnedAsset;
   }) => {
+    const { data: market } = useMarket(marketId);
     const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });
     const [sizesMiddle, handleOnMiddleLayoutChange] = usePaneLayout({
       id: 'middle-1',
@@ -68,6 +69,13 @@ const MainGrid = memo(
                   <Tab id="liquidity" name={t('Liquidity')}>
                     <TradingViews.liquidity.component marketId={marketId} />
                   </Tab>
+                  {market &&
+                  market.tradableInstrument.instrument.product.__typename ===
+                    'Perpetual' ? (
+                    <Tab id="funding" name={t('Funding')}>
+                      <TradingViews.funding.component marketId={marketId} />
+                    </Tab>
+                  ) : null}
                 </Tabs>
               </TradeGridChild>
             </ResizableGridPanel>

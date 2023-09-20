@@ -47,7 +47,7 @@ export const generateStopOrder = (
             __typename: 'InstrumentMetadata',
             tags: ['xyz asset'],
           },
-          name: 'XYZ intrument',
+          name: 'XYZ instrument',
           product: {
             __typename: 'Future',
             quoteName: '',

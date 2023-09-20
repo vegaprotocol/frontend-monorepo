@@ -16,7 +16,7 @@ import type {
   MarketMaybeWithDataAndCandles,
 } from '@vegaprotocol/markets';
 import { MarketActionsDropdown } from './market-table-actions';
-import { calcCandleVolume } from '@vegaprotocol/markets';
+import { calcCandleVolume, getAsset } from '@vegaprotocol/markets';
 import { MarketCodeCell } from './market-code-cell';
 
 const { MarketTradingMode, AuctionTrigger } = Schema;
@@ -151,8 +151,7 @@ export const useColumnDefs = () => {
           MarketMaybeWithData,
           'tradableInstrument.instrument.product.settlementAsset.symbol'
         >) => {
-          const value =
-            data?.tradableInstrument.instrument.product.settlementAsset;
+          const value = data && getAsset(data);
           return value ? (
             <ButtonLink
               onClick={(e) => {
@@ -211,9 +210,7 @@ export const useColumnDefs = () => {
           return (
             <MarketActionsDropdown
               marketId={data.id}
-              assetId={
-                data.tradableInstrument.instrument.product.settlementAsset.id
-              }
+              assetId={getAsset(data).id}
               successorMarketID={data.successorMarketID}
               parentMarketID={data.parentMarketID}
             />

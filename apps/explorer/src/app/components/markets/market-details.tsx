@@ -3,13 +3,14 @@ import type { MarketInfoWithData } from '@vegaprotocol/markets';
 import {
   PriceMonitoringBoundsInfoPanel,
   SuccessionLineInfoPanel,
+  getDataSourceSpecForSettlementData,
+  getDataSourceSpecForTradingTermination,
 } from '@vegaprotocol/markets';
 import {
   LiquidityInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
   InstrumentInfoPanel,
   KeyDetailsInfoPanel,
-  LiquidityPriceRangeInfoPanel,
   MetadataInfoPanel,
   OracleInfoPanel,
   RiskFactorsInfoPanel,
@@ -18,20 +19,21 @@ import {
   SettlementAssetInfoPanel,
 } from '@vegaprotocol/markets';
 import { MarketInfoTable } from '@vegaprotocol/markets';
-import type { DataSourceDefinition } from '@vegaprotocol/types';
+import type { DataSourceFragment } from '@vegaprotocol/markets';
 import isEqual from 'lodash/isEqual';
 
 export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
   if (!market) return null;
+  const { product } = market.tradableInstrument.instrument;
+  const settlementDataSource = getDataSourceSpecForSettlementData(product);
+  const terminationDataSource = getDataSourceSpecForTradingTermination(product);
 
-  const settlementData = market.tradableInstrument.instrument.product
-    .dataSourceSpecForSettlementData.data as DataSourceDefinition;
-  const terminationData = market.tradableInstrument.instrument.product
-    .dataSourceSpecForTradingTermination.data as DataSourceDefinition;
-
-  const getSigners = (data: DataSourceDefinition) => {
+  const getSigners = ({ data }: DataSourceFragment) => {
     if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
-      const signers = data.sourceType.sourceType.signers || [];
+      const signers =
+        ('signers' in data.sourceType.sourceType &&
+          data.sourceType.sourceType.signers) ||
+        [];
 
       return signers.map(({ signer }, i) => {
         return (
@@ -43,10 +45,13 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
     return [];
   };
 
-  const showTwoOracles = isEqual(
-    getSigners(settlementData),
-    getSigners(terminationData)
-  );
+  const showTwoOracles =
+    settlementDataSource &&
+    terminationDataSource &&
+    isEqual(
+      getSigners(settlementDataSource),
+      getSigners(terminationDataSource)
+    );
 
   const headerClassName = 'font-alpha calt text-xl mt-4 border-b-2 pb-2';
 
@@ -91,8 +96,6 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
       <LiquidityMonitoringParametersInfoPanel market={market} />
       <h2 className={headerClassName}>{t('Liquidity')}</h2>
       <LiquidityInfoPanel market={market} />
-      <h2 className={headerClassName}>{t('Liquidity price range')}</h2>
-      <LiquidityPriceRangeInfoPanel market={market} />
       {showTwoOracles ? (
         <>
           <h2 className={headerClassName}>{t('Settlement oracle')}</h2>

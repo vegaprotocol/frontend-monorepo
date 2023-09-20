@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
-import { calcCandleVolume } from '@vegaprotocol/markets';
+import { calcCandleVolume, getAsset } from '@vegaprotocol/markets';
 import { useCandles } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
@@ -80,7 +80,6 @@ const MarketData = ({
     ? MarketTradingModeMapping[marketTradingMode]
     : '';
 
-  const instrument = market.tradableInstrument.instrument;
   const { oneDayCandles } = useCandles({ marketId: market.id });
 
   const vol = oneDayCandles ? calcCandleVolume(oneDayCandles) : '0';
@@ -90,12 +89,15 @@ const MarketData = ({
       : '0.00';
 
   const productType = market.tradableInstrument.instrument.product.__typename;
+  const symbol = getAsset(market).symbol || '';
 
   return (
     <>
       <div className="w-2/5" role="gridcell">
-        <h3 className="overflow-hidden text-sm text-ellipsis lg:text-base whitespace-nowrap">
-          {market.tradableInstrument.instrument.code}{' '}
+        <h3 className="flex items-baseline">
+          <span className="text-sm lg:text-base text-ellipsis whitespace-nowrap overflow-hidden">
+            {market.tradableInstrument.instrument.code}
+          </span>
           {allProducts && productType && (
             <MarketProductPill productType={productType} />
           )}
@@ -108,11 +110,11 @@ const MarketData = ({
       </div>
       <div
         className="w-1/5 overflow-hidden text-xs lg:text-sm whitespace-nowrap text-ellipsis"
-        title={instrument.product.settlementAsset.symbol}
+        title={symbol}
         data-testid="market-selector-price"
         role="gridcell"
       >
-        {price} {instrument.product.settlementAsset.symbol}
+        {price} {symbol}
       </div>
       <div
         className="w-1/5 overflow-hidden text-xs text-right lg:text-sm whitespace-nowrap text-ellipsis"

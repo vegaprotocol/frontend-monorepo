@@ -122,6 +122,7 @@ const mockTradingPage = (
         tradableInstrument: {
           instrument: {
             product: {
+              __typename: 'Future',
               dataSourceSpecForSettlementData: {
                 data: {
                   sourceType: {

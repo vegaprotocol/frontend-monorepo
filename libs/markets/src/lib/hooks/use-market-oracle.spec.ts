@@ -16,6 +16,7 @@ const mockMarket = jest.fn<{ data: MarketFieldsFragment | null }, unknown[]>(
       tradableInstrument: {
         instrument: {
           product: {
+            __typename: 'Future',
             dataSourceSpecForSettlementData: {
               id: dataSourceSpecId,
               data: {

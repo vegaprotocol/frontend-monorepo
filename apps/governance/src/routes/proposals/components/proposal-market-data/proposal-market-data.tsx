@@ -5,7 +5,6 @@ import {
   InstrumentInfoPanel,
   KeyDetailsInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
-  LiquidityPriceRangeInfoPanel,
   MetadataInfoPanel,
   OracleInfoPanel,
   PriceMonitoringBoundsInfoPanel,
@@ -13,6 +12,10 @@ import {
   RiskModelInfoPanel,
   RiskParametersInfoPanel,
   SettlementAssetInfoPanel,
+  getDataSourceSpecForSettlementSchedule,
+  getDataSourceSpecForSettlementData,
+  getDataSourceSpecForTradingTermination,
+  getSigners,
 } from '@vegaprotocol/markets';
 import {
   Button,
@@ -24,7 +27,6 @@ import {
 import { SubHeading } from '../../../../components/heading';
 import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import type { MarketInfo } from '@vegaprotocol/markets';
-import type { DataSourceDefinition } from '@vegaprotocol/types';
 import { create } from 'zustand';
 
 type MarketDataDialogState = {
@@ -59,20 +61,31 @@ export const ProposalMarketData = ({
     return null;
   }
 
-  const settlementData = marketData.tradableInstrument.instrument.product
-    .dataSourceSpecForSettlementData.data as DataSourceDefinition;
+  const { product } = marketData.tradableInstrument.instrument;
+
+  const settlementData = getDataSourceSpecForSettlementData(product);
+  const settlementScheduleData =
+    getDataSourceSpecForSettlementSchedule(product);
+  const terminationData = getDataSourceSpecForTradingTermination(product);
+
+  const parentProduct = parentMarketData?.tradableInstrument.instrument.product;
   const parentSettlementData =
-    parentMarketData?.tradableInstrument.instrument?.product
-      ?.dataSourceSpecForSettlementData?.data;
-  const terminationData = marketData.tradableInstrument.instrument.product
-    .dataSourceSpecForTradingTermination.data as DataSourceDefinition;
+    parentProduct && getDataSourceSpecForSettlementData(parentProduct);
+  const parentSettlementScheduleData =
+    parentProduct && getDataSourceSpecForSettlementSchedule(parentProduct);
   const parentTerminationData =
-    parentMarketData?.tradableInstrument.instrument?.product
-      ?.dataSourceSpecForTradingTermination?.data;
+    parentProduct && getDataSourceSpecForTradingTermination(parentProduct);
+
+  // TODO add settlementScheduleData for Perp Proposal
 
   const isParentSettlementDataEqual =
     parentSettlementData !== undefined &&
     isEqual(settlementData, parentSettlementData);
+
+  const isParentSettlementScheduleDataEqual =
+    parentSettlementData !== undefined &&
+    isEqual(settlementScheduleData, parentSettlementScheduleData);
+
   const isParentTerminationDataEqual =
     parentTerminationData !== undefined &&
     isEqual(terminationData, parentTerminationData);
@@ -84,20 +97,6 @@ export const ProposalMarketData = ({
       marketData.priceMonitoringSettings?.parameters?.triggers,
       parentMarketData?.priceMonitoringSettings?.parameters?.triggers
     );
-
-  const getSigners = (data: DataSourceDefinition) => {
-    if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
-      const signers = data.sourceType.sourceType.signers || [];
-
-      return signers.map(({ signer }) => {
-        return (
-          (signer.__typename === 'ETHAddress' && signer.address) ||
-          (signer.__typename === 'PubKey' && signer.key)
-        );
-      });
-    }
-    return [];
-  };
 
   return (
     <section className="relative" data-testid="proposal-market-data">
@@ -129,10 +128,9 @@ export const ProposalMarketData = ({
               parentMarket={parentMarketData}
             />
 
-            {isEqual(
-              getSigners(settlementData),
-              getSigners(terminationData)
-            ) ? (
+            {settlementData &&
+            terminationData &&
+            isEqual(getSigners(settlementData), getSigners(terminationData)) ? (
               <>
                 <h2 className={marketDataHeaderStyles}>{t('Oracle')}</h2>
 
@@ -140,14 +138,17 @@ export const ProposalMarketData = ({
                   market={marketData}
                   type="settlementData"
                   parentMarket={
-                    isParentSettlementDataEqual ? undefined : parentMarketData
+                    isParentSettlementDataEqual ||
+                    isParentSettlementScheduleDataEqual
+                      ? undefined
+                      : parentMarketData
                   }
                 />
               </>
             ) : (
               <>
                 <h2 className={marketDataHeaderStyles}>
-                  {t('Settlement Oracle')}
+                  {t('Settlement oracle')}
                 </h2>
                 <OracleInfoPanel
                   market={marketData}
@@ -157,16 +158,41 @@ export const ProposalMarketData = ({
                   }
                 />
 
-                <h2 className={marketDataHeaderStyles}>
-                  {t('Termination Oracle')}
-                </h2>
-                <OracleInfoPanel
-                  market={marketData}
-                  type="termination"
-                  parentMarket={
-                    isParentTerminationDataEqual ? undefined : parentMarketData
-                  }
-                />
+                {marketData.tradableInstrument.instrument.product.__typename ===
+                  'Future' && (
+                  <div>
+                    <h2 className={marketDataHeaderStyles}>
+                      {t('Termination oracle')}
+                    </h2>
+                    <OracleInfoPanel
+                      market={marketData}
+                      type="termination"
+                      parentMarket={
+                        isParentTerminationDataEqual
+                          ? undefined
+                          : parentMarketData
+                      }
+                    />
+                  </div>
+                )}
+
+                {marketData.tradableInstrument.instrument.product.__typename ===
+                  'Perpetual' && (
+                  <div>
+                    <h2 className={marketDataHeaderStyles}>
+                      {t('Settlement schedule oracle')}
+                    </h2>
+                    <OracleInfoPanel
+                      market={marketData}
+                      type="settlementSchedule"
+                      parentMarket={
+                        isParentSettlementScheduleDataEqual
+                          ? undefined
+                          : parentMarketData
+                      }
+                    />
+                  </div>
+                )}
               </>
             )}
 
@@ -241,14 +267,6 @@ export const ProposalMarketData = ({
               {t('Liquidity monitoring parameters')}
             </h2>
             <LiquidityMonitoringParametersInfoPanel
-              market={marketData}
-              parentMarket={parentMarketData}
-            />
-
-            <h2 className={marketDataHeaderStyles}>
-              {t('Liquidity price range')}
-            </h2>
-            <LiquidityPriceRangeInfoPanel
               market={marketData}
               parentMarket={parentMarketData}
             />

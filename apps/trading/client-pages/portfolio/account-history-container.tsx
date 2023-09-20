@@ -30,9 +30,9 @@ import {
   useThemeSwitcher,
 } from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type { Market } from '@vegaprotocol/markets';
+import { getAsset, type Market } from '@vegaprotocol/markets';
 
-const DateRange = {
+export const DateRange = {
   RANGE_1D: '1D',
   RANGE_7D: '7D',
   RANGE_1M: '1M',
@@ -47,7 +47,7 @@ const dateRangeToggleItems = Object.entries(DateRange).map(([_, value]) => ({
   value: value,
 }));
 
-const calculateStartDate = (range: string): string | undefined => {
+export const calculateStartDate = (range: string): string | undefined => {
   const now = new Date();
   switch (range) {
     case DateRange.RANGE_1D:
@@ -131,11 +131,12 @@ const AccountHistoryManager = ({
     DateRange.RANGE_1M
   );
   const [market, setMarket] = useState<Market | null>(null);
+
   const marketFilterCb = useCallback(
-    (item: Market) =>
-      !asset?.id ||
-      item.tradableInstrument.instrument.product.settlementAsset.id ===
-        asset?.id,
+    (item: Market) => {
+      const itemAsset = getAsset(item);
+      return !asset?.id || itemAsset?.id === asset?.id;
+    },
     [asset?.id]
   );
   const markets = useMemo<Market[] | null>(() => {
@@ -155,8 +156,8 @@ const AccountHistoryManager = ({
   const resolveMarket = useCallback(
     (m: Market) => {
       setMarket(m);
-      const newAssetId =
-        m.tradableInstrument.instrument.product.settlementAsset.id;
+      const itemAsset = getAsset(m);
+      const newAssetId = itemAsset?.id;
       const newAsset = assets.find((item) => item.id === newAssetId);
       if ((!asset || (assets && newAssetId !== asset.id)) && newAsset) {
         setAssetId(newAsset.id);
@@ -241,11 +242,7 @@ const AccountHistoryManager = ({
                     setAssetId(a.id);
 
                     // if the selected asset is different to the selected market clear the market
-                    if (
-                      a.id !==
-                      market?.tradableInstrument.instrument.product
-                        .settlementAsset.id
-                    ) {
+                    if (market && a.id !== getAsset(market).id) {
                       setMarket(null);
                     }
                   }}

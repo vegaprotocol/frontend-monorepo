@@ -4,7 +4,6 @@
     "positionDecimalPlaces": "5",
     "linearSlippageFactor": "0.001",
     "quadraticSlippageFactor": "0",
-    "lpPriceRange": "10",
     "instrument": {
       "name": "Token test market",
       "code": "Token.24h",
@@ -98,6 +97,12 @@
         "r": 0.016,
         "sigma": 0.8
       }
+    },
+    "liquiditySlaParameters": {
+      "priceRange": "0.95",
+      "commitmentMinTimeFraction": "0.5",
+      "performanceHysteresisEpochs": 2,
+      "slaCompetitionFactor": "0.75"
     }
   }
 }

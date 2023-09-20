@@ -107,8 +107,14 @@ export enum AccountType {
    * to ensure they are never lost or 'double spent'
    */
   ACCOUNT_TYPE_MARGIN = 'ACCOUNT_TYPE_MARGIN',
+  /** Network treasury, per-asset treasury controlled by the network */
+  ACCOUNT_TYPE_NETWORK_TREASURY = 'ACCOUNT_TYPE_NETWORK_TREASURY',
+  /** Holds pending rewards to be paid to the referrer of a party out of fees paid by the taker */
+  ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD = 'ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD',
   /** PendingTransfers - a global account for the pending transfers pool */
   ACCOUNT_TYPE_PENDING_TRANSFERS = 'ACCOUNT_TYPE_PENDING_TRANSFERS',
+  /** Average position reward account is a per asset per market account for average position reward funds */
+  ACCOUNT_TYPE_REWARD_AVERAGE_POSITION = 'ACCOUNT_TYPE_REWARD_AVERAGE_POSITION',
   /** RewardLpReceivedFees - an account holding rewards for a liquidity provider's received fees */
   ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES = 'ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES',
   /** RewardMakerPaidFees - an account holding rewards for maker paid fees */
@@ -117,8 +123,18 @@ export enum AccountType {
   ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES = 'ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES',
   /** RewardMarketProposers - an account holding rewards for market proposers */
   ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS = 'ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS',
+  /** Relative return reward account is a per asset per market account for relative return reward funds */
+  ACCOUNT_TYPE_REWARD_RELATIVE_RETURN = 'ACCOUNT_TYPE_REWARD_RELATIVE_RETURN',
+  /** Return volatility reward account is a per asset per market account for return volatility reward funds */
+  ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY = 'ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY',
+  /** Validator ranking reward account is a per asset account for validator ranking reward funds */
+  ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING = 'ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING',
   /** Settlement - only for 'system' party */
-  ACCOUNT_TYPE_SETTLEMENT = 'ACCOUNT_TYPE_SETTLEMENT'
+  ACCOUNT_TYPE_SETTLEMENT = 'ACCOUNT_TYPE_SETTLEMENT',
+  /** Vested reward account is a per party per asset account for vested reward funds */
+  ACCOUNT_TYPE_VESTED_REWARDS = 'ACCOUNT_TYPE_VESTED_REWARDS',
+  /** Vesting reward account is a per party per asset account for locked reward funds waiting to be vested */
+  ACCOUNT_TYPE_VESTING_REWARDS = 'ACCOUNT_TYPE_VESTING_REWARDS'
 }
 
 /** An account record used for subscriptions */
@@ -219,7 +235,9 @@ export type Asset = {
   __typename?: 'Asset';
   /** The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18 */
   decimals: Scalars['Int'];
-  /** The global reward pool account for this asset */
+  /** The global insurance account for this asset */
+  globalInsuranceAccount?: Maybe<AccountBalance>;
+  /** The staking reward pool account for this asset */
   globalRewardPoolAccount?: Maybe<AccountBalance>;
   /** The ID of the asset */
   id: Scalars['ID'];
@@ -233,6 +251,8 @@ export type Asset = {
   marketProposerRewardAccount?: Maybe<AccountBalance>;
   /** The full name of the asset (e.g: Great British Pound) */
   name: Scalars['String'];
+  /** The network treasury account for this asset */
+  networkTreasuryAccount?: Maybe<AccountBalance>;
   /** The minimum economically meaningful amount in the asset */
   quantum: Scalars['String'];
   /** The origin source of the asset (e.g: an ERC20 asset) */
@@ -317,6 +337,8 @@ export type AuctionEvent = {
 export enum AuctionTrigger {
   /** Auction because market has a frequent batch auction trading mode */
   AUCTION_TRIGGER_BATCH = 'AUCTION_TRIGGER_BATCH',
+  /** Auction triggered by governance market suspension */
+  AUCTION_TRIGGER_GOVERNANCE_SUSPENSION = 'AUCTION_TRIGGER_GOVERNANCE_SUSPENSION',
   /** Liquidity monitoring due to unmet target stake */
   AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET = 'AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET',
   /** Opening auction */
@@ -328,6 +350,18 @@ export enum AuctionTrigger {
   /** Invalid trigger (or no auction) */
   AUCTION_TRIGGER_UNSPECIFIED = 'AUCTION_TRIGGER_UNSPECIFIED'
 }
+
+export type BenefitTier = {
+  __typename?: 'BenefitTier';
+  /** The minimum number of epochs the party needs to be in the referral set to be eligible for the benefit */
+  minimumEpochs: Scalars['Int'];
+  /** The minimum running notional for the given benefit tier */
+  minimumRunningNotionalTakerVolume: Scalars['String'];
+  /** The proportion of the referee's taker fees to be discounted */
+  referralDiscountFactor: Scalars['String'];
+  /** The proportion of the referee's taker fees to be rewarded to the referrer */
+  referralRewardFactor: Scalars['String'];
+};
 
 /** A Vega builtin asset, mostly for testing purpose */
 export type BuiltinAsset = {
@@ -487,6 +521,7 @@ export type Data = {
    * When the array is empty, it means no data spec matched this source data.
    */
   matchedSpecIds?: Maybe<Array<Scalars['ID']>>;
+  metaData?: Maybe<Array<Maybe<Property>>>;
   /** signers is the list of public keys/ETH addresses that signed the data */
   signers?: Maybe<Array<Signer>>;
 };
@@ -561,6 +596,32 @@ export type DataSourceSpecConfiguration = {
 export type DataSourceSpecConfigurationTime = {
   __typename?: 'DataSourceSpecConfigurationTime';
   conditions: Array<Maybe<Condition>>;
+};
+
+/** DataSourceSpecConfigurationTimeTrigger is the internal data source used for emitting timestamps automatically using predefined intervals and conditions */
+export type DataSourceSpecConfigurationTimeTrigger = {
+  __typename?: 'DataSourceSpecConfigurationTimeTrigger';
+  conditions: Array<Maybe<Condition>>;
+  triggers: Array<Maybe<InternalTimeTrigger>>;
+};
+
+/**
+ * Bindings to describe which property of the data source data is to be used as settlement data
+ * and which is to be used as the trading termination trigger.
+ */
+export type DataSourceSpecPerpetualBinding = {
+  __typename?: 'DataSourceSpecPerpetualBinding';
+  /**
+   * Name of the property in the source data that should be used as settlement data.
+   * For example, if it is set to "prices.BTC.value", then the perpetual market will use the value of this property
+   * as settlement data.
+   */
+  settlementDataProperty: Scalars['String'];
+  /**
+   * Name of the property in the source data that should be used as settlement schedule.
+   * For example, if it is set to "prices.BTC.timestamp", then the perpetual market will use the value of this property
+   */
+  settlementScheduleProperty: Scalars['String'];
 };
 
 /** Describes the status of the data spec */
@@ -685,6 +746,8 @@ export type DiscreteTrading = {
 
 /** The type of metric to use for a reward dispatch strategy */
 export enum DispatchMetric {
+  /** Dispatch metric that uses the time weighted position of the party in the market */
+  DISPATCH_METRIC_AVERAGE_POSITION = 'DISPATCH_METRIC_AVERAGE_POSITION',
   /** Dispatch metric that uses the total LP fees received in the market */
   DISPATCH_METRIC_LP_FEES_RECEIVED = 'DISPATCH_METRIC_LP_FEES_RECEIVED',
   /** Dispatch metric that uses the total maker fees paid in the market */
@@ -692,7 +755,13 @@ export enum DispatchMetric {
   /** Dispatch metric that uses the total maker fees received in the market */
   DISPATCH_METRIC_MAKER_FEES_RECEIVED = 'DISPATCH_METRIC_MAKER_FEES_RECEIVED',
   /** Dispatch metric that uses the total value of the market if above the required threshold and not paid given proposer bonus yet */
-  DISPATCH_METRIC_MARKET_VALUE = 'DISPATCH_METRIC_MARKET_VALUE'
+  DISPATCH_METRIC_MARKET_VALUE = 'DISPATCH_METRIC_MARKET_VALUE',
+  /** Dispatch metric that uses the relative PNL of the party in the market */
+  DISPATCH_METRIC_RELATIVE_RETURN = 'DISPATCH_METRIC_RELATIVE_RETURN',
+  /** Dispatch metric that uses return volatility of the party in the market */
+  DISPATCH_METRIC_RETURN_VOLATILITY = 'DISPATCH_METRIC_RETURN_VOLATILITY',
+  /** Dispatch metric that uses the validator ranking of the validator as metric */
+  DISPATCH_METRIC_VALIDATOR_RANKING = 'DISPATCH_METRIC_VALIDATOR_RANKING'
 }
 
 /** Dispatch strategy for a recurring transfer */
@@ -702,9 +771,36 @@ export type DispatchStrategy = {
   dispatchMetric: DispatchMetric;
   /** The asset to use for measuring contribution to the metric */
   dispatchMetricAssetId: Scalars['ID'];
+  /** Controls how the reward is distributed between qualifying parties */
+  distributionStrategy: DistributionStrategy;
+  /** The type of entities eligible for this strategy */
+  entityScope: EntityScope;
+  /** If entity scope is individuals then this defines the scope for individuals */
+  individualScope?: Maybe<IndividualScope>;
+  /** Number of epochs after distribution to delay vesting of rewards by */
+  lockPeriod: Scalars['Int'];
   /** Scope the dispatch to this market only under the metric asset */
   marketIdsInScope?: Maybe<Array<Scalars['ID']>>;
+  /** The proportion of the top performers in the team for a given metric to be averaged for the metric calculation if scope is team */
+  nTopPerformers?: Maybe<Scalars['String']>;
+  /** Minimum notional time-weighted averaged position required for a party to be considered eligible */
+  notionalTimeWeightedAveragePositionRequirement: Scalars['String'];
+  /** Ascending order list of start rank and corresponding share ratio */
+  rankTable?: Maybe<RankTable>;
+  /** Minimum number of governance tokens, e.g. VEGA, staked for a party to be considered eligible */
+  stakingRequirement: Scalars['String'];
+  /** The teams in scope for the reward, if the entity is teams */
+  teamScope?: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Number of epochs to evaluate the metric on */
+  windowLength: Scalars['Int'];
 };
+
+export enum DistributionStrategy {
+  /** Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has */
+  DISTRIBUTION_STRATEGY_PRO_RATA = 'DISTRIBUTION_STRATEGY_PRO_RATA',
+  /** Rewards funded using the rank strategy */
+  DISTRIBUTION_STRATEGY_RANK = 'DISTRIBUTION_STRATEGY_RANK'
+}
 
 /** An asset originated from an Ethereum ERC20 Token */
 export type ERC20 = {
@@ -870,6 +966,13 @@ export type Entities = {
   withdrawals?: Maybe<Array<Maybe<Withdrawal>>>;
 };
 
+export enum EntityScope {
+  /** Rewards must be distributed directly to eligible parties */
+  ENTITY_SCOPE_INDIVIDUALS = 'ENTITY_SCOPE_INDIVIDUALS',
+  /** Rewards must be distributed directly to eligible teams, and then amongst team members */
+  ENTITY_SCOPE_TEAMS = 'ENTITY_SCOPE_TEAMS'
+}
+
 /** Epoch describes a specific period of time in the Vega network */
 export type Epoch = {
   __typename?: 'Epoch';
@@ -985,7 +1088,7 @@ export type Erc20WithdrawalApproval = {
   amount: Scalars['String'];
   /** The source asset in the ethereum network */
   assetSource: Scalars['String'];
-  /** Timestamp at which the withdrawal was created */
+  /** RFC3339Nano timestamp at which the withdrawal was created */
   creation: Scalars['String'];
   /** The nonce to be used in the request */
   nonce: Scalars['String'];
@@ -1003,6 +1106,63 @@ export type Erc20WithdrawalDetails = {
   __typename?: 'Erc20WithdrawalDetails';
   /** The ethereum address of the receiver of the asset funds */
   receiverAddress: Scalars['String'];
+};
+
+/**
+ * Specifies a data source that derives its content from calling a read method
+ * on an Ethereum contract.
+ */
+export type EthCallSpec = {
+  __typename?: 'EthCallSpec';
+  /** The ABI of that contract. */
+  abi?: Maybe<Array<Scalars['String']>>;
+  /** Ethereum address of the contract to call. */
+  address: Scalars['String'];
+  /**
+   * List of arguments to pass to method call.
+   * Protobuf 'Value' wraps an arbitrary JSON type that is mapped to an Ethereum
+   * type according to the ABI.
+   */
+  args?: Maybe<Array<Scalars['String']>>;
+  /** Filters the data returned from the contract method. */
+  filters?: Maybe<Array<Filter>>;
+  /** Name of the method on the contract to call. */
+  method: Scalars['String'];
+  /**
+   * Normalisers are used to convert the data returned from the contract method
+   * into a standard format.
+   */
+  normalisers?: Maybe<Array<Normaliser>>;
+  /** Number of confirmations required before the query is considered verified. */
+  requiredConfirmations: Scalars['Int'];
+  /** Conditions for determining when to call the contract method. */
+  trigger: EthCallTrigger;
+};
+
+/** EthCallTrigger is the type of trigger used to make calls to Ethereum network. */
+export type EthCallTrigger = {
+  __typename?: 'EthCallTrigger';
+  trigger: TriggerKind;
+};
+
+/**
+ * Trigger for an Ethereum call based on the Ethereum block timestamp. Can be
+ * one-off or repeating.
+ */
+export type EthTimeTrigger = {
+  __typename?: 'EthTimeTrigger';
+  /**
+   * Repeat the call every n seconds after the initial call. If no time for
+   * initial call was specified, begin repeating immediately.
+   */
+  every?: Maybe<Scalars['Int']>;
+  /** Trigger when the Ethereum time is greater or equal to this time, in Unix seconds. */
+  initial?: Maybe<Scalars['Timestamp']>;
+  /**
+   * If repeating, stop once Ethereum time is greater than this time, in Unix
+   * seconds. If not set, then repeat indefinitely.
+   */
+  until?: Maybe<Scalars['Timestamp']>;
 };
 
 /** An Ethereum data source */
@@ -1051,7 +1211,7 @@ export type ExternalData = {
   data: Data;
 };
 
-export type ExternalDataSourceKind = DataSourceSpecConfiguration;
+export type ExternalDataSourceKind = DataSourceSpecConfiguration | EthCallSpec;
 
 /**
  * externalDataSourceSpec is the type that wraps the DataSourceSpec type in order to be further used/extended
@@ -1102,6 +1262,88 @@ export type Filter = {
   conditions?: Maybe<Array<Condition>>;
   /** key is the data source data property key targeted by the filter. */
   key: PropertyKey;
+};
+
+/** Details of a funding interval for a perpetual market. */
+export type FundingPeriod = {
+  __typename?: 'FundingPeriod';
+  /** RFC3339Nano time when the funding period ended. */
+  endTime?: Maybe<Scalars['Timestamp']>;
+  /** Time-weighted average price calculated from data points for this period from the external data source. */
+  externalTwap?: Maybe<Scalars['String']>;
+  /** Funding payment for this period as the difference between the time-weighted average price of the external and internal data point. */
+  fundingPayment?: Maybe<Scalars['String']>;
+  /** Percentage difference between the time-weighted average price of the external and internal data point. */
+  fundingRate?: Maybe<Scalars['String']>;
+  /** Time-weighted average price calculated from data points for this period from the internal data source. */
+  internalTwap?: Maybe<Scalars['String']>;
+  /** Market the funding period relates to. */
+  marketId: Scalars['ID'];
+  /** Sequence number of the funding period. */
+  seq: Scalars['Int'];
+  /** RFC3339Nano time when the funding period started. */
+  startTime: Scalars['Timestamp'];
+};
+
+/** Connection type for retrieving cursor-based paginated funding period data for perpetual markets */
+export type FundingPeriodConnection = {
+  __typename?: 'FundingPeriodConnection';
+  /** The funding periods in this connection */
+  edges: Array<FundingPeriodEdge>;
+  /** The pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Data point for a funding period. */
+export type FundingPeriodDataPoint = {
+  __typename?: 'FundingPeriodDataPoint';
+  /** Source of the data point. */
+  dataPointSource?: Maybe<FundingPeriodDataPointSource>;
+  /** Market the data point applies to. */
+  marketId: Scalars['ID'];
+  /** Price of the asset as seen by this data point. */
+  price: Scalars['String'];
+  /** Sequence number of the funding period the data point belongs to. */
+  seq: Scalars['Int'];
+  /** RFC3339Nano timestamp when the data point was received. */
+  timestamp: Scalars['Timestamp'];
+  /** Time-weighted average price calculated from data points for this period from the data source. */
+  twap?: Maybe<Scalars['String']>;
+};
+
+/** Connection type for funding period data points */
+export type FundingPeriodDataPointConnection = {
+  __typename?: 'FundingPeriodDataPointConnection';
+  /** List of funding period data points */
+  edges: Array<FundingPeriodDataPointEdge>;
+  /** Pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type for funding period data point */
+export type FundingPeriodDataPointEdge = {
+  __typename?: 'FundingPeriodDataPointEdge';
+  /** Cursor identifying the funding period data point */
+  cursor: Scalars['String'];
+  /** The funding period data point */
+  node: FundingPeriodDataPoint;
+};
+
+/** Sources of funding period data points. */
+export enum FundingPeriodDataPointSource {
+  /** Funding period data point was sourced from an external data source. */
+  SOURCE_EXTERNAL = 'SOURCE_EXTERNAL',
+  /** Funding period data point was generated internally by the network. */
+  SOURCE_INTERNAL = 'SOURCE_INTERNAL'
+}
+
+/** Edge type containing a funding period cursor and its associated funding period data */
+export type FundingPeriodEdge = {
+  __typename?: 'FundingPeriodEdge';
+  /** Cursor identifying the funding period data */
+  cursor: Scalars['String'];
+  /** The funding period data */
+  node: FundingPeriod;
 };
 
 /** A Future product */
@@ -1169,6 +1411,15 @@ export type IcebergOrder = {
   reservedRemaining: Scalars['String'];
 };
 
+export enum IndividualScope {
+  /** All parties on the network are within the scope of this reward */
+  INDIVIDUAL_SCOPE_ALL = 'INDIVIDUAL_SCOPE_ALL',
+  /** All parties that are part of a team are within the scope of this reward */
+  INDIVIDUAL_SCOPE_IN_TEAM = 'INDIVIDUAL_SCOPE_IN_TEAM',
+  /** All parties that are not part of a team are within the scope of this reward */
+  INDIVIDUAL_SCOPE_NOT_IN_TEAM = 'INDIVIDUAL_SCOPE_NOT_IN_TEAM'
+}
+
 /** Describes something that can be traded on Vega */
 export type Instrument = {
   __typename?: 'Instrument';
@@ -1192,6 +1443,8 @@ export type InstrumentConfiguration = {
   futureProduct?: Maybe<FutureProduct>;
   /** Full and fairly descriptive name for the instrument */
   name: Scalars['String'];
+  /** Product specification */
+  product?: Maybe<ProductConfiguration>;
 };
 
 /** A set of metadata to associate to an instrument */
@@ -1201,7 +1454,19 @@ export type InstrumentMetadata = {
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
-export type InternalDataSourceKind = DataSourceSpecConfigurationTime;
+export type InternalDataSourceKind = DataSourceSpecConfigurationTime | DataSourceSpecConfigurationTimeTrigger;
+
+/** Trigger for an internal time data source */
+export type InternalTimeTrigger = {
+  __typename?: 'InternalTimeTrigger';
+  /**
+   * Repeat the trigger every n seconds after the initial. If no time for initial was specified,
+   * begin repeating immediately
+   */
+  every?: Maybe<Scalars['Int']>;
+  /** Trigger when the vega time is greater or equal to this time, in Unix seconds */
+  initial?: Maybe<Scalars['Int']>;
+};
 
 /** The interval for trade candles when subscribing via Vega GraphQL, default is I15M */
 export enum Interval {
@@ -1333,6 +1598,35 @@ export type LiquidityOrderReference = {
   order?: Maybe<Order>;
 };
 
+/** Information about a liquidity provider */
+export type LiquidityProvider = {
+  __typename?: 'LiquidityProvider';
+  /** Information used for calculating an LP's fee share, such as the equity like share, average entry valuation and liquidity score, for the given liquidity provider and market */
+  feeShare?: Maybe<LiquidityProviderFeeShare>;
+  /** Market ID the liquidity provision is for */
+  marketId: Scalars['ID'];
+  /** Party ID of the liquidity provider */
+  partyId: Scalars['ID'];
+};
+
+/** Connection type for retrieving cursor-based paginated liquidity provider information */
+export type LiquidityProviderConnection = {
+  __typename?: 'LiquidityProviderConnection';
+  /** Page of liquidity provider edges for the connection */
+  edges: Array<LiquidityProviderEdge>;
+  /** Current page information */
+  pageInfo?: Maybe<PageInfo>;
+};
+
+/** Edge type containing the liquidity provider and cursor information */
+export type LiquidityProviderEdge = {
+  __typename?: 'LiquidityProviderEdge';
+  /** Cursor for the liquidity provider */
+  cursor: Scalars['String'];
+  /** Liquidity provider's information */
+  node: LiquidityProvider;
+};
+
 /** The equity like share of liquidity fee for each liquidity provider */
 export type LiquidityProviderFeeShare = {
   __typename?: 'LiquidityProviderFeeShare';
@@ -1355,7 +1649,7 @@ export type LiquidityProvision = {
   buys: Array<LiquidityOrderReference>;
   /** Specified as a unit-less number that represents the amount of settlement asset of the market. */
   commitmentAmount: Scalars['String'];
-  /** When the liquidity provision was initially created (formatted RFC3339) */
+  /** RFC3339Nano time when the liquidity provision was initially created */
   createdAt: Scalars['Timestamp'];
   /** Nominated liquidity fee factor, which is an input to the calculation of liquidity fees on the market, as per setting fees and rewarding liquidity providers. */
   fee: Scalars['String'];
@@ -1404,7 +1698,7 @@ export type LiquidityProvisionUpdate = {
   buys: Array<LiquidityOrderReference>;
   /** Specified as a unit-less number that represents the amount of settlement asset of the market. */
   commitmentAmount: Scalars['String'];
-  /** When the liquidity provision was initially created (formatted RFC3339) */
+  /** RFC3339Nano time when the liquidity provision was initially created */
   createdAt: Scalars['Timestamp'];
   /** Nominated liquidity fee factor, which is an input to the calculation of liquidity fees on the market, as per setting fees and rewarding liquidity providers. */
   fee: Scalars['String'];
@@ -1420,7 +1714,7 @@ export type LiquidityProvisionUpdate = {
   sells: Array<LiquidityOrderReference>;
   /** The current status of this liquidity provision */
   status: LiquidityProvisionStatus;
-  /** RFC3339Nano time of when the liquidity provision was updated */
+  /** RFC3339Nano time when the liquidity provision was updated */
   updatedAt?: Maybe<Scalars['Timestamp']>;
   /** The version of this liquidity provision */
   version: Scalars['String'];
@@ -1438,6 +1732,20 @@ export type LiquidityProvisionsEdge = {
   __typename?: 'LiquidityProvisionsEdge';
   cursor: Scalars['String'];
   node: LiquidityProvision;
+};
+
+export type LiquiditySLAParameters = {
+  __typename?: 'LiquiditySLAParameters';
+  /** Specifies the minimum fraction of time LPs must spend 'on the book' providing their committed liquidity */
+  commitmentMinTimeFraction: Scalars['String'];
+  /** Specifies the number of liquidity epochs over which past performance will continue to affect rewards */
+  performanceHysteresisEpochs: Scalars['Int'];
+  priceRange: Scalars['String'];
+  /**
+   * Specifies the maximum fraction of their accrued fees an LP that meets the SLA implied by market.liquidity.commitmentMinTimeFraction will
+   * lose to liquidity providers that achieved a higher SLA performance than them.
+   */
+  slaCompetitionFactor: Scalars['String'];
 };
 
 /** Parameters for the log normal risk model */
@@ -1591,8 +1899,8 @@ export type Market = {
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
   /** The list of the liquidity provision commitments for this market */
   liquidityProvisionsConnection?: Maybe<LiquidityProvisionsConnection>;
-  /** Liquidity Provision order price range */
-  lpPriceRange: Scalars['String'];
+  /** Optional: Liquidity SLA parameters for the market */
+  liquiditySLAParameters?: Maybe<LiquiditySLAParameters>;
   /** Timestamps for state changes in the market */
   marketTimestamps: MarketTimestamps;
   /**
@@ -1742,6 +2050,8 @@ export type MarketData = {
   openInterest: Scalars['String'];
   /** A list of valid price ranges per associated trigger */
   priceMonitoringBounds?: Maybe<Array<PriceMonitoringBounds>>;
+  /** The current funding rate. This applies only to a perpetual market */
+  productData?: Maybe<ProductData>;
   /** The arithmetic average of the best static bid price and best static offer price */
   staticMidPrice: Scalars['String'];
   /** The supplied stake for the market */
@@ -1863,6 +2173,8 @@ export enum MarketState {
   STATE_SETTLED = 'STATE_SETTLED',
   /** Price monitoring or liquidity monitoring trigger */
   STATE_SUSPENDED = 'STATE_SUSPENDED',
+  /** Market suspended via governance */
+  STATE_SUSPENDED_VIA_GOVERNANCE = 'STATE_SUSPENDED_VIA_GOVERNANCE',
   /**
    * Defined by the product (i.e. from a product parameter,
    * specified in market definition, giving close date/time)
@@ -1881,13 +2193,13 @@ export type MarketTick = {
 /** Timestamps for when the market changes state */
 export type MarketTimestamps = {
   __typename?: 'MarketTimestamps';
-  /** Time when the market is closed */
+  /** RFC3339Nano time when the market is closed */
   close: Scalars['Timestamp'];
-  /** Time when the market is open and ready to accept trades */
+  /** RFC3339Nano time when the market is open and ready to accept trades */
   open: Scalars['Timestamp'];
-  /** Time when the market has been voted in and waiting to be created */
+  /** RFC3339Nano time when the market has been voted in and waiting to be created */
   pending: Scalars['Timestamp'];
-  /** Time when the market is first proposed */
+  /** RFC3339Nano time when the market is first proposed */
   proposed?: Maybe<Scalars['Timestamp']>;
 };
 
@@ -1902,7 +2214,20 @@ export enum MarketTradingMode {
   /** No trading allowed */
   TRADING_MODE_NO_TRADING = 'TRADING_MODE_NO_TRADING',
   /** Auction trading where orders are uncrossed at the end of the opening auction period */
-  TRADING_MODE_OPENING_AUCTION = 'TRADING_MODE_OPENING_AUCTION'
+  TRADING_MODE_OPENING_AUCTION = 'TRADING_MODE_OPENING_AUCTION',
+  /** Special auction mode triggered via governance market suspension */
+  TRADING_MODE_SUSPENDED_VIA_GOVERNANCE = 'TRADING_MODE_SUSPENDED_VIA_GOVERNANCE'
+}
+
+export enum MarketUpdateType {
+  /** Resume a suspended market */
+  MARKET_STATE_UPDATE_TYPE_RESUME = 'MARKET_STATE_UPDATE_TYPE_RESUME',
+  /** Suspend the market */
+  MARKET_STATE_UPDATE_TYPE_SUSPEND = 'MARKET_STATE_UPDATE_TYPE_SUSPEND',
+  /** Terminate the market */
+  MARKET_STATE_UPDATE_TYPE_TERMINATE = 'MARKET_STATE_UPDATE_TYPE_TERMINATE',
+  /** Default value, always invalid */
+  MARKET_STATE_UPDATE_TYPE_UNSPECIFIED = 'MARKET_STATE_UPDATE_TYPE_UNSPECIFIED'
 }
 
 /** Information about whether proposals are enabled, if the markets are still bootstrapping, etc.. */
@@ -1986,8 +2311,8 @@ export type NewMarket = {
   linearSlippageFactor: Scalars['String'];
   /** Liquidity monitoring parameters */
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
-  /** Liquidity Provision order price range */
-  lpPriceRange: Scalars['String'];
+  /** Liquidity SLA Parameters */
+  liquiditySLAParameters?: Maybe<LiquiditySLAParameters>;
   /** Metadata for this instrument, tags */
   metadata?: Maybe<Array<Scalars['String']>>;
   /** Decimal places for order sizes, sets what size the smallest order / position on the market can be */
@@ -2000,6 +2325,27 @@ export type NewMarket = {
   riskParameters: RiskModel;
   /** Successor market configuration. If this proposed market is meant to succeed a given market, then this needs to be set. */
   successorConfiguration?: Maybe<SuccessorConfiguration>;
+};
+
+/** Configuration for a new spot market on Vega */
+export type NewSpotMarket = {
+  __typename?: 'NewSpotMarket';
+  /** Decimal places used for the new market, sets the smallest price increment on the book */
+  decimal_places: Scalars['Int'];
+  /** New spot market instrument configuration */
+  instrument: InstrumentConfiguration;
+  /** Specifies the liquidity provision SLA parameters */
+  liquiditySLAParams: LiquiditySLAParameters;
+  /** Optional spot market metadata tags */
+  metadata: Array<Scalars['String']>;
+  /** Decimal places for order sizes, sets what size the smallest order / position on the spot market can be */
+  positionDecimalPlaces: Scalars['Int'];
+  /** Price monitoring parameters */
+  priceMonitoringParameters: PriceMonitoringParameters;
+  /** New spot market risk model parameters */
+  riskParameters?: Maybe<RiskModel>;
+  /** Specifies parameters related to liquidity target stake calculation */
+  targetStakeParameters: TargetStakeParameters;
 };
 
 export type NewTransfer = {
@@ -2193,6 +2539,16 @@ export type NodesConnection = {
   pageInfo: PageInfo;
 };
 
+/**
+ * Normaliser to convert the data returned from the contract method
+ * into a standard format.
+ */
+export type Normaliser = {
+  __typename?: 'Normaliser';
+  expression: Scalars['String'];
+  name: Scalars['String'];
+};
+
 /** The equity like share of liquidity fee for each liquidity provider */
 export type ObservableLiquidityProviderFeeShare = {
   __typename?: 'ObservableLiquidityProviderFeeShare';
@@ -2259,6 +2615,8 @@ export type ObservableMarketData = {
   openInterest: Scalars['String'];
   /** A list of valid price ranges per associated trigger */
   priceMonitoringBounds?: Maybe<Array<PriceMonitoringBounds>>;
+  /** The current funding rate. This applies only to a perpetual market */
+  productData?: Maybe<ProductData>;
   /** The arithmetic average of the best static bid price and best static offer price */
   staticMidPrice: Scalars['String'];
   /** The supplied stake for the market */
@@ -2310,14 +2668,14 @@ export type ObservableMarketDepthUpdate = {
 /** The specific details for a one-off governance transfer */
 export type OneOffGovernanceTransfer = {
   __typename?: 'OneOffGovernanceTransfer';
-  /** An optional time when the transfer should be delivered */
+  /** An optional RFC3339Nano time when the transfer should be delivered */
   deliverOn?: Maybe<Scalars['Timestamp']>;
 };
 
 /** The specific details for a one-off transfer */
 export type OneOffTransfer = {
   __typename?: 'OneOffTransfer';
-  /** An optional time when the transfer should be delivered */
+  /** An optional RFC3339Nano time when the transfer should be delivered */
   deliverOn?: Maybe<Scalars['Timestamp']>;
 };
 
@@ -2376,7 +2734,7 @@ export type Order = {
   __typename?: 'Order';
   /** RFC3339Nano formatted date and time for when the order was created (timestamp) */
   createdAt: Scalars['Timestamp'];
-  /** Expiration time of this order (ISO-8601 RFC3339+Nano formatted date) */
+  /** RFC3339Nano expiration time of this order */
   expiresAt?: Maybe<Scalars['Timestamp']>;
   /** Details of an iceberg order */
   icebergOrder?: Maybe<IcebergOrder>;
@@ -2476,7 +2834,7 @@ export type OrderEstimate = {
 };
 
 export type OrderFilter = {
-  /** Date range to retrieve orders from/to. Start and end time should be expressed as an integer value of nano-seconds past the Unix epoch */
+  /** Date range to retrieve orders from/to. Start and end time should be expressed as an integer value Unix nanoseconds */
   dateRange?: InputMaybe<DateRange>;
   excludeLiquidity?: InputMaybe<Scalars['Boolean']>;
   /**
@@ -2627,7 +2985,7 @@ export enum OrderStatus {
 /** Details of the order that will be submitted when the stop order is triggered. */
 export type OrderSubmission = {
   __typename?: 'OrderSubmission';
-  /** Expiration time of this order (ISO-8601 RFC3339+Nano formatted date) */
+  /** RFC3339Nano expiration time of this order */
   expiresAt: Scalars['Timestamp'];
   /** Details of an iceberg order */
   icebergOrder?: Maybe<IcebergOrder>;
@@ -2690,7 +3048,7 @@ export type OrderUpdate = {
   __typename?: 'OrderUpdate';
   /** RFC3339Nano formatted date and time for when the order was created (timestamp) */
   createdAt: Scalars['Timestamp'];
-  /** Expiration time of this order (ISO-8601 RFC3339+Nano formatted date) */
+  /** RFC3339Nano expiration time of this order */
   expiresAt?: Maybe<Scalars['Timestamp']>;
   /** Details of an iceberg order */
   icebergOrder?: Maybe<IcebergOrder>;
@@ -2758,6 +3116,8 @@ export type Party = {
   __typename?: 'Party';
   /** Collateral accounts relating to a party */
   accountsConnection?: Maybe<AccountsConnection>;
+  /** The activity streak */
+  activityStreak?: Maybe<PartyActivityStreak>;
   delegationsConnection?: Maybe<DelegationsConnection>;
   /** The list of all deposits for a party by the party */
   depositsConnection?: Maybe<DepositsConnection>;
@@ -2799,6 +3159,12 @@ export type PartyaccountsConnectionArgs = {
   marketId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
   type?: InputMaybe<AccountType>;
+};
+
+
+/** Represents a party on Vega, could be an ethereum wallet address in the future */
+export type PartyactivityStreakArgs = {
+  epoch?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -2902,6 +3268,27 @@ export type PartywithdrawalsConnectionArgs = {
   pagination?: InputMaybe<Pagination>;
 };
 
+/** The activity streak for a party. */
+export type PartyActivityStreak = {
+  __typename?: 'PartyActivityStreak';
+  /** The number of epochs the party has been active in a row */
+  activeFor: Scalars['Int'];
+  /** The epoch for which this information is relevant */
+  epoch: Scalars['Int'];
+  /** The number of epochs the party has been inactive in a row */
+  inactiveFor: Scalars['Int'];
+  /** If the party is considered as active, and thus eligible for rewards multipliers */
+  isActive: Scalars['Boolean'];
+  /** The open volume for the party in the given epoch */
+  openVolume: Scalars['String'];
+  /** The rewards distribution multiplier for the party */
+  rewardDistributionMultiplier: Scalars['String'];
+  /** The rewards vesting multiplier for the party */
+  rewardVestingMultiplier: Scalars['String'];
+  /** The traded volume for that party in the given epoch */
+  tradedVolume: Scalars['String'];
+};
+
 /** Connection type for retrieving cursor-based paginated party information */
 export type PartyConnection = {
   __typename?: 'PartyConnection';
@@ -2951,6 +3338,64 @@ export enum PeggedReference {
   /** Peg the order against the mid price of the order book */
   PEGGED_REFERENCE_MID = 'PEGGED_REFERENCE_MID'
 }
+
+/** Perpetual future product */
+export type Perpetual = {
+  __typename?: 'Perpetual';
+  /** Lower bound for the clamp function used as part of the funding rate calculation, in the range [-1, 1] */
+  clampLowerBound: Scalars['String'];
+  /** Upper bound for the clamp function used as part of the funding rate calculation, in the range [-1, 1] */
+  clampUpperBound: Scalars['String'];
+  /** Binding between the data source spec and the settlement data */
+  dataSourceSpecBinding: DataSourceSpecPerpetualBinding;
+  /** Data source specification describing the data source for settlement */
+  dataSourceSpecForSettlementData: DataSourceSpec;
+  /** Data source specification describing the data source for settlement schedule */
+  dataSourceSpecForSettlementSchedule: DataSourceSpec;
+  /** Continuously compounded interest rate used in funding rate calculation, in the range [-1, 1] */
+  interestRate: Scalars['String'];
+  /** Controls how much the upcoming funding payment liability contributes to party's margin, in the range [0, 1] */
+  marginFundingFactor: Scalars['String'];
+  /** Quote name of the instrument */
+  quoteName: Scalars['String'];
+  /** Underlying asset for the perpetual instrument */
+  settlementAsset: Asset;
+};
+
+/** Details of a  perpetual product. */
+export type PerpetualData = {
+  __typename?: 'PerpetualData';
+  /** Time-weighted average price calculated from data points for this period from the external data source. */
+  externalTwap?: Maybe<Scalars['String']>;
+  /** Funding payment for this period as the difference between the time-weighted average price of the external and internal data point. */
+  fundingPayment?: Maybe<Scalars['String']>;
+  /** Percentage difference between the time-weighted average price of the external and internal data point. */
+  fundingRate?: Maybe<Scalars['String']>;
+  /** Time-weighted average price calculated from data points for this period from the internal data source. */
+  internalTwap?: Maybe<Scalars['String']>;
+};
+
+export type PerpetualProduct = {
+  __typename?: 'PerpetualProduct';
+  /** Lower bound for the clamp function used as part of the funding rate calculation, in the range [-1, 1] */
+  clampLowerBound: Scalars['String'];
+  /** Upper bound for the clamp function used as part of the funding rate calculation, in the range [-1, 1] */
+  clampUpperBound: Scalars['String'];
+  /** Binding between the data source spec and the settlement data */
+  dataSourceSpecBinding: DataSourceSpecPerpetualBinding;
+  /** Data source specification describing the data source for settlement */
+  dataSourceSpecForSettlementData: DataSourceDefinition;
+  /** Data source specification describing the data source for settlement schedule */
+  dataSourceSpecForSettlementSchedule: DataSourceDefinition;
+  /** Continuously compounded interest rate used in funding rate calculation, in the range [-1, 1] */
+  interestRate: Scalars['String'];
+  /** Controls how much the upcoming funding payment liability contributes to party's margin, in the range [0, 1] */
+  marginFundingFactor: Scalars['String'];
+  /** Quote name of the instrument */
+  quoteName: Scalars['String'];
+  /** Underlying asset for the perpetual instrument */
+  settlementAsset: Asset;
+};
 
 /**
  * An individual party at any point in time is considered net long or net short. This refers to their Open Volume,
@@ -3011,7 +3456,7 @@ export type PositionEdge = {
   node: Position;
 };
 
-/** Response for the estimate of the margin level and, if available, collateral was provided in the request, liqudation price for the specified position */
+/** Response for the estimate of the margin level and, if available, collateral was provided in the request, liquidation price for the specified position */
 export type PositionEstimate = {
   __typename?: 'PositionEstimate';
   /** Liquidation price range estimate for the specified position. Only populated if available collateral was specified in the request */
@@ -3131,7 +3576,11 @@ export type PriceMonitoringTrigger = {
   probability: Scalars['Float'];
 };
 
-export type Product = Future;
+export type Product = Future | Perpetual | Spot;
+
+export type ProductConfiguration = FutureProduct | PerpetualProduct | SpotProduct;
+
+export type ProductData = PerpetualData;
 
 /** A property associates a name to a value */
 export type Property = {
@@ -3207,7 +3656,7 @@ export type Proposal = {
   votes: ProposalVotes;
 };
 
-export type ProposalChange = CancelTransfer | NewAsset | NewFreeform | NewMarket | NewTransfer | UpdateAsset | UpdateMarket | UpdateNetworkParameter;
+export type ProposalChange = CancelTransfer | NewAsset | NewFreeform | NewMarket | NewSpotMarket | NewTransfer | UpdateAsset | UpdateMarket | UpdateMarketState | UpdateNetworkParameter | UpdateReferralProgram | UpdateSpotMarket | UpdateVolumeDiscountProgram;
 
 export type ProposalDetail = {
   __typename?: 'ProposalDetail';
@@ -3304,10 +3753,16 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_INVALID_INSTRUMENT_SECURITY = 'PROPOSAL_ERROR_INVALID_INSTRUMENT_SECURITY',
   /** The market is invalid */
   PROPOSAL_ERROR_INVALID_MARKET = 'PROPOSAL_ERROR_INVALID_MARKET',
+  /** Validation of market state update has failed */
+  PROPOSAL_ERROR_INVALID_MARKET_STATE_UPDATE = 'PROPOSAL_ERROR_INVALID_MARKET_STATE_UPDATE',
+  /** Perpetual market proposal contained invalid product definition */
+  PROPOSAL_ERROR_INVALID_PERPETUAL_PRODUCT = 'PROPOSAL_ERROR_INVALID_PERPETUAL_PRODUCT',
   /** Market proposal uses an invalid risk parameter */
   PROPOSAL_ERROR_INVALID_RISK_PARAMETER = 'PROPOSAL_ERROR_INVALID_RISK_PARAMETER',
   /** Market proposal has one or more invalid liquidity shapes */
   PROPOSAL_ERROR_INVALID_SHAPE = 'PROPOSAL_ERROR_INVALID_SHAPE',
+  /** Mandatory liquidity provision SLA parameters are missing from the proposal */
+  PROPOSAL_ERROR_INVALID_SLA_PARAMS = 'PROPOSAL_ERROR_INVALID_SLA_PARAMS',
   /** Validation of spot market proposal failed */
   PROPOSAL_ERROR_INVALID_SPOT = 'PROPOSAL_ERROR_INVALID_SPOT',
   /** Validation of successor market has failed */
@@ -3322,6 +3777,8 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_MISSING_COMMITMENT_AMOUNT = 'PROPOSAL_ERROR_MISSING_COMMITMENT_AMOUNT',
   /** The ERC20 contract address is missing from an ERC20 asset proposal */
   PROPOSAL_ERROR_MISSING_ERC20_CONTRACT_ADDRESS = 'PROPOSAL_ERROR_MISSING_ERC20_CONTRACT_ADDRESS',
+  /** Validation of liquidity provision SLA parameters has failed */
+  PROPOSAL_ERROR_MISSING_SLA_PARAMS = 'PROPOSAL_ERROR_MISSING_SLA_PARAMS',
   /** Invalid key in update network parameter proposal */
   PROPOSAL_ERROR_NETWORK_PARAMETER_INVALID_KEY = 'PROPOSAL_ERROR_NETWORK_PARAMETER_INVALID_KEY',
   /** Invalid value in update network parameter proposal */
@@ -3540,6 +3997,8 @@ export type Query = {
   balanceChanges: AggregatedBalanceConnection;
   /** List core snapshots */
   coreSnapshots?: Maybe<CoreSnapshotConnection>;
+  /** Get the current referral program */
+  currentReferralProgram?: Maybe<ReferralProgram>;
   /** Find a deposit using its ID */
   deposit?: Maybe<Deposit>;
   /** Fetch all deposits */
@@ -3571,6 +4030,13 @@ export type Query = {
   estimatePosition?: Maybe<PositionEstimate>;
   /** Query for historic ethereum key rotations */
   ethereumKeyRotations: EthereumKeyRotationsConnection;
+  /**
+   * Funding period data points for a perpetual market. The data points within a funding period are used to calculate the
+   * time-weighted average price (TWAP), funding rate and funding payments for each funding period.
+   */
+  fundingPeriodDataPoints: FundingPeriodDataPointConnection;
+  /** Funding periods for perpetual markets */
+  fundingPeriods: FundingPeriodConnection;
   /** Get market data history for a specific market. If no dates are given, the latest snapshot will be returned. If only the start date is provided all history from the given date will be provided, and if only the end date is provided, all history from the start up to and including the end date will be provided. */
   getMarketDataHistoryConnectionByID?: Maybe<MarketDataConnection>;
   /** Query for historic key rotations */
@@ -3579,6 +4045,8 @@ export type Query = {
   lastBlockHeight: Scalars['String'];
   /** Get ledger entries by asset, market, party, account type, transfer type within the given date range. */
   ledgerEntries: AggregatedLedgerEntriesConnection;
+  /** List all active liquidity providers for a specific market */
+  liquidityProviders?: Maybe<LiquidityProviderConnection>;
   /** An instrument that is trading on the Vega network */
   market?: Maybe<Market>;
   /** One or more instruments that are trading on the Vega network */
@@ -3627,6 +4095,9 @@ export type Query = {
   protocolUpgradeProposals?: Maybe<ProtocolUpgradeProposalConnection>;
   /** Flag indicating whether the data-node is ready to begin the protocol upgrade */
   protocolUpgradeStatus?: Maybe<ProtocolUpgradeStatus>;
+  referralSetReferees: ReferralSetRefereeConnection;
+  /** List referral sets */
+  referralSets: ReferralSetConnection;
   /** Get statistics about the Vega node */
   statistics: Statistics;
   /** Get stop order by ID */
@@ -3635,8 +4106,22 @@ export type Query = {
   stopOrders?: Maybe<StopOrderConnection>;
   /** List markets in a succession line */
   successorMarkets?: Maybe<SuccessorMarketConnection>;
+  /** List a referee's team history */
+  teamRefereeHistory?: Maybe<TeamRefereeHistoryConnection>;
+  /** List all referees for a team */
+  teamReferees?: Maybe<TeamRefereeConnection>;
+  /**
+   * List information about all teams or filter for a specific team ID or referrer, or referee's party ID
+   * If no filter is provided all teams will be listed.
+   * If a team ID is provided, only the team with that ID will be returned
+   * If a party ID is provided, the team whose referrer party ID or a referee's party ID matches will be return
+   * If both team ID and party ID is provided, only the team ID will be used.
+   */
+  teams?: Maybe<TeamConnection>;
   /** Get a list of all trades and apply any given filters to the results */
   trades?: Maybe<TradeConnection>;
+  /** Find a transfer using its ID */
+  transfer?: Maybe<Transfer>;
   /** Get a list of all transfers for a public key */
   transfersConnection?: Maybe<TransferConnection>;
   /** Find a withdrawal using its ID */
@@ -3784,6 +4269,23 @@ export type QueryethereumKeyRotationsArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryfundingPeriodDataPointsArgs = {
+  dateRange?: InputMaybe<DateRange>;
+  marketId: Scalars['ID'];
+  pagination?: InputMaybe<Pagination>;
+  source?: InputMaybe<FundingPeriodDataPointSource>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryfundingPeriodsArgs = {
+  dateRange?: InputMaybe<DateRange>;
+  marketId: Scalars['ID'];
+  pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerygetMarketDataHistoryConnectionByIDArgs = {
   end?: InputMaybe<Scalars['Timestamp']>;
   id: Scalars['ID'];
@@ -3804,6 +4306,14 @@ export type QueryledgerEntriesArgs = {
   dateRange?: InputMaybe<DateRange>;
   filter?: InputMaybe<LedgerEntryFilter>;
   pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryliquidityProvidersArgs = {
+  marketId?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<Pagination>;
+  partyId?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -3941,6 +4451,24 @@ export type QueryprotocolUpgradeProposalsArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryreferralSetRefereesArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<Pagination>;
+  referee?: InputMaybe<Scalars['ID']>;
+  referrer?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryreferralSetsArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<Pagination>;
+  referee?: InputMaybe<Scalars['ID']>;
+  referrer?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerystopOrderArgs = {
   id: Scalars['ID'];
 };
@@ -3962,10 +4490,38 @@ export type QuerysuccessorMarketsArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryteamRefereeHistoryArgs = {
+  pagination?: InputMaybe<Pagination>;
+  referee: Scalars['ID'];
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryteamRefereesArgs = {
+  pagination?: InputMaybe<Pagination>;
+  teamId: Scalars['ID'];
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryteamsArgs = {
+  pagination?: InputMaybe<Pagination>;
+  partyId?: InputMaybe<Scalars['ID']>;
+  teamId?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerytradesArgs = {
   dateRange?: InputMaybe<DateRange>;
   filter?: InputMaybe<TradesFilter>;
   pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerytransferArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -3989,6 +4545,12 @@ export type QuerywithdrawalsArgs = {
   pagination?: InputMaybe<Pagination>;
 };
 
+export type RankTable = {
+  __typename?: 'RankTable';
+  shareRatio: Scalars['Int'];
+  startRank: Scalars['Int'];
+};
+
 export type RankingScore = {
   __typename?: 'RankingScore';
   /** The performance score of the validator */
@@ -4008,6 +4570,8 @@ export type RankingScore = {
 /** The specific details for a recurring governance transfer */
 export type RecurringGovernanceTransfer = {
   __typename?: 'RecurringGovernanceTransfer';
+  /** An optional dispatch strategy for the recurring transfer */
+  dispatchStrategy?: Maybe<DispatchStrategy>;
   /** An optional epoch at which this transfer will stop */
   endEpoch?: Maybe<Scalars['Int']>;
   /** The epoch at which this recurring transfer will start */
@@ -4027,6 +4591,125 @@ export type RecurringTransfer = {
   startEpoch: Scalars['Int'];
 };
 
+export type RefereeStats = {
+  __typename?: 'RefereeStats';
+  /** Discount factor applied to the party. */
+  discountFactor: Scalars['String'];
+  /** Unique ID of the party. */
+  partyId: Scalars['ID'];
+  /** Reward factor applied to the party. */
+  rewardFactor: Scalars['String'];
+};
+
+/** Referral program information */
+export type ReferralProgram = {
+  __typename?: 'ReferralProgram';
+  /** Defined tiers in increasing order. First element will give Tier 1, second element will give Tier 2, etc. */
+  benefitTiers: Array<BenefitTier>;
+  /** Timestamp as RFC3339Nano, after which when the current epoch ends, the programs status will become STATE_CLOSED and benefits will be disabled. */
+  endOfProgramTimestamp: Scalars['Timestamp'];
+  /** Timestamp as RFC3339Nano when the program ended. If present, the current program has ended and no program is currently running. */
+  endedAt?: Maybe<Scalars['Timestamp']>;
+  /** Unique ID generated from the proposal that created this program. */
+  id: Scalars['ID'];
+  /**
+   * Defined staking tiers in increasing order. First element will give Tier 1,
+   * second element will give Tier 2, and so on. Determines the level of
+   * benefit a party can expect based on their staking.
+   */
+  stakingTiers: Array<StakingTier>;
+  /** Incremental version of the program. It is incremented each time the referral program is edited. */
+  version: Scalars['Int'];
+  /** Number of epochs over which to evaluate a referral set's running volume. */
+  windowLength: Scalars['Int'];
+};
+
+/** Data relating to a referral set. */
+export type ReferralSet = {
+  __typename?: 'ReferralSet';
+  /** Timestamp as RFC3339Nano when the referral set was created. */
+  createdAt: Scalars['Timestamp'];
+  /** Unique ID of the created set. */
+  id: Scalars['ID'];
+  /** Party that created the set. */
+  referrer: Scalars['ID'];
+  /**
+   * Referral set statistics for the latest or specific epoch.
+   * If provided the results can be filtered for a specific referee
+   */
+  stats: ReferralSetStats;
+  /** Timestamp as RFC3339Nano when the referral set was updated. */
+  updatedAt: Scalars['Timestamp'];
+};
+
+
+/** Data relating to a referral set. */
+export type ReferralSetstatsArgs = {
+  epoch?: InputMaybe<Scalars['Int']>;
+  referee?: InputMaybe<Scalars['ID']>;
+};
+
+/** Connection type for retrieving cursor-based paginated referral set information */
+export type ReferralSetConnection = {
+  __typename?: 'ReferralSetConnection';
+  /** The referral sets in this connection */
+  edges: Array<Maybe<ReferralSetEdge>>;
+  /** The pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing the referral set and cursor information returned by a ReferralSetConnection */
+export type ReferralSetEdge = {
+  __typename?: 'ReferralSetEdge';
+  /** The cursor for this referral set */
+  cursor: Scalars['String'];
+  /** The referral set */
+  node: ReferralSet;
+};
+
+/** Data relating to referees that have joined a referral set */
+export type ReferralSetReferee = {
+  __typename?: 'ReferralSetReferee';
+  /** Epoch in which the party joined the set. */
+  atEpoch: Scalars['Int'];
+  /** Timestamp as RFC3339Nano when the party joined the set. */
+  joinedAt: Scalars['Timestamp'];
+  /** Party that joined the set. */
+  refereeId: Scalars['ID'];
+  /** Unique ID of the referral set the referee joined. */
+  referralSetId: Scalars['ID'];
+};
+
+/** Connection type for retrieving cursor-based paginated information about the referral set referees */
+export type ReferralSetRefereeConnection = {
+  __typename?: 'ReferralSetRefereeConnection';
+  /** The referral set referees in this connection */
+  edges: Array<Maybe<ReferralSetRefereeEdge>>;
+  /** The pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing the referral set referee and cursor information returned by a ReferralSetRefereeConnection */
+export type ReferralSetRefereeEdge = {
+  __typename?: 'ReferralSetRefereeEdge';
+  /** The cursor for this referral set referee */
+  cursor: Scalars['String'];
+  /** The referral set referee */
+  node: ReferralSetReferee;
+};
+
+export type ReferralSetStats = {
+  __typename?: 'ReferralSetStats';
+  /** Epoch at which the set's statistics are updated. */
+  atEpoch?: Maybe<Scalars['Int']>;
+  /** Referees' statistics for that epoch. */
+  referees_stats: Array<RefereeStats>;
+  /** Running volume for the set based on the window length of the current referral program. */
+  referralSetRunningNotionalTakerVolume: Scalars['String'];
+  /** Unique ID of the set */
+  setId: Scalars['ID'];
+};
+
 /** Reward information for a single party */
 export type Reward = {
   __typename?: 'Reward';
@@ -4042,7 +4725,7 @@ export type Reward = {
   party: Party;
   /** Percentage out of the total distributed reward */
   percentageOfTotal: Scalars['String'];
-  /** Time at which the rewards was received */
+  /** RFC3339Nano time when the rewards were received */
   receivedAt: Scalars['Timestamp'];
   /** The type of reward */
   rewardType: AccountType;
@@ -4205,6 +4888,27 @@ export type SimpleRiskModelParams = {
   factorShort: Scalars['Float'];
 };
 
+/** Spot FX product */
+export type Spot = {
+  __typename?: 'Spot';
+  /** Underlying base asset for the spot product */
+  baseAsset: Asset;
+  /** Name of the instrument */
+  name: Scalars['String'];
+  /** Underlying quote asset for the spot product */
+  quoteAsset: Asset;
+};
+
+export type SpotProduct = {
+  __typename?: 'SpotProduct';
+  /** Underlying base asset for the spot product */
+  baseAsset: Asset;
+  /** Name of the instrument */
+  name: Scalars['String'];
+  /** Underlying quote asset for the spot product */
+  quoteAsset: Asset;
+};
+
 /** A stake linking represent the intent from a party to deposit / remove stake on their account */
 export type StakeLinking = {
   __typename?: 'StakeLinking';
@@ -4212,14 +4916,14 @@ export type StakeLinking = {
   amount: Scalars['String'];
   /** The (ethereum) block height of the link/unlink */
   blockHeight: Scalars['String'];
-  /** The time at which the stake linking was fully processed by the Vega network, null until defined */
+  /** The RFC3339Nano time at which the stake linking was fully processed by the Vega network, null until defined */
   finalizedAt?: Maybe<Scalars['Timestamp']>;
   id: Scalars['ID'];
   /** The party initiating the stake linking */
   party: Party;
   /** The status of the linking */
   status: StakeLinkingStatus;
-  /** The time at which the request happened on ethereum */
+  /** The RFC3339Nano time at which the request happened on ethereum */
   timestamp: Scalars['Timestamp'];
   /** The transaction hash (ethereum) which initiated the link/unlink */
   txHash: Scalars['String'];
@@ -4290,6 +4994,14 @@ export type StakingSummarylinkingsArgs = {
   pagination?: InputMaybe<Pagination>;
 };
 
+export type StakingTier = {
+  __typename?: 'StakingTier';
+  /** Required number of governance tokens ($VEGA) a referrer must have staked to receive the multiplier */
+  minimumStakedTokens: Scalars['String'];
+  /** Multiplier applied to the referral reward factor when calculating referral rewards due to the referrer */
+  referralRewardMultiplier: Scalars['String'];
+};
+
 /** Statistics about the node */
 export type Statistics = {
   __typename?: 'Statistics';
@@ -4352,9 +5064,9 @@ export type Statistics = {
 /** A stop order in Vega */
 export type StopOrder = {
   __typename?: 'StopOrder';
-  /** Time the stop order was created. */
+  /** RFC3339Nano time the stop order was created. */
   createdAt: Scalars['Timestamp'];
-  /** Time at which the order will expire if an expiry time is set. */
+  /** RFC3339Nano time at which the order will expire if an expiry time is set. */
   expiresAt?: Maybe<Scalars['Timestamp']>;
   /** If an expiry is set, what should the stop order do when it expires. */
   expiryStrategy?: Maybe<StopOrderExpiryStrategy>;
@@ -4368,6 +5080,8 @@ export type StopOrder = {
   order?: Maybe<Order>;
   /** Party that submitted the stop order. */
   partyId: Scalars['ID'];
+  /** Optional rejection reason for an order */
+  rejectionReason?: Maybe<StopOrderRejectionReason>;
   /** Status of the stop order */
   status: StopOrderStatus;
   /** Order to submit when the stop order is triggered. */
@@ -4376,7 +5090,7 @@ export type StopOrder = {
   trigger: StopOrderTrigger;
   /** Direction the price is moving to trigger the stop order. */
   triggerDirection: StopOrderTriggerDirection;
-  /** Time the stop order was last updated. */
+  /** RFC3339Nano time the stop order was last updated. */
   updatedAt?: Maybe<Scalars['Timestamp']>;
 };
 
@@ -4410,7 +5124,7 @@ export enum StopOrderExpiryStrategy {
 
 /** Filter to be applied when querying a list of stop orders. If multiple criteria are specified, e.g. parties and markets, then the filter is applied as an AND. */
 export type StopOrderFilter = {
-  /** Date range to retrieve order from/to. Start and end time should be expressed as an integer value of nano-seconds past the Unix epoch */
+  /** Date range to retrieve order from/to. Start and end time should be expressed as an integer value of Unix nanoseconds */
   dateRange?: InputMaybe<DateRange>;
   /** Zero or more expiry strategies to filter by */
   expiryStrategy?: InputMaybe<Array<StopOrderExpiryStrategy>>;
@@ -4429,6 +5143,22 @@ export type StopOrderPrice = {
   __typename?: 'StopOrderPrice';
   price: Scalars['String'];
 };
+
+/** Why the order was rejected by the core node */
+export enum StopOrderRejectionReason {
+  /** Expiry of the stop order is in the past */
+  REJECTION_REASON_EXPIRY_IN_THE_PAST = 'REJECTION_REASON_EXPIRY_IN_THE_PAST',
+  /** Party has reached the maximum stop orders allowed for this market */
+  REJECTION_REASON_MAX_STOP_ORDERS_PER_PARTY_REACHED = 'REJECTION_REASON_MAX_STOP_ORDERS_PER_PARTY_REACHED',
+  /** Stop orders submission must be reduce only */
+  REJECTION_REASON_MUST_BE_REDUCE_ONLY = 'REJECTION_REASON_MUST_BE_REDUCE_ONLY',
+  /** This stop order does not close the position */
+  REJECTION_REASON_STOP_ORDER_DOES_NOT_CLOSE_POSITION = 'REJECTION_REASON_STOP_ORDER_DOES_NOT_CLOSE_POSITION',
+  /** Stop orders are not allowed without a position */
+  REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_WITHOUT_A_POSITION = 'REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_WITHOUT_A_POSITION',
+  /** Trading is not allowed yet */
+  REJECTION_REASON_TRADING_NOT_ALLOWED = 'REJECTION_REASON_TRADING_NOT_ALLOWED'
+}
 
 /** Valid stop order statuses, these determine several states for a stop order that cannot be expressed with other fields in StopOrder. */
 export enum StopOrderStatus {
@@ -4639,6 +5369,105 @@ export type TargetStakeParameters = {
   timeWindow: Scalars['Int'];
 };
 
+/** Team record containing the team information. */
+export type Team = {
+  __typename?: 'Team';
+  /** Link to an image of the team's avatar. */
+  avatarURL: Scalars['String'];
+  /** Tells if a party can join the team or not. */
+  closed: Scalars['Boolean'];
+  /** Time in RFC3339Nano format when the team was created. */
+  createdAt: Scalars['Timestamp'];
+  /** Epoch at which the team was created. */
+  createdAtEpoch: Scalars['Int'];
+  /** Name of the team. */
+  name: Scalars['String'];
+  /** Party ID that created the team. */
+  referrer: Scalars['ID'];
+  /** Unique ID of the team. */
+  teamId: Scalars['ID'];
+  /** Link to the team's homepage. */
+  teamURL: Scalars['String'];
+};
+
+/** Connection type for retrieving cursor-based paginated team data */
+export type TeamConnection = {
+  __typename?: 'TeamConnection';
+  /** Teams in this connection */
+  edges: Array<TeamEdge>;
+  /** Pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing a team cursor and its associated team data */
+export type TeamEdge = {
+  __typename?: 'TeamEdge';
+  /** Cursor identifying the team data */
+  cursor: Scalars['String'];
+  /** Team data */
+  node: Team;
+};
+
+/** A team's referee info */
+export type TeamReferee = {
+  __typename?: 'TeamReferee';
+  /** Time in RFC3339Nano format when the referee joined the team. */
+  joinedAt: Scalars['Timestamp'];
+  /** Epoch at which the referee joined the team. */
+  joinedAtEpoch: Scalars['Int'];
+  /** Party ID of the referee */
+  referee: Scalars['ID'];
+  /** Team ID. */
+  teamId: Scalars['ID'];
+};
+
+/** Connection type for retrieving cursor-based paginated team referee data */
+export type TeamRefereeConnection = {
+  __typename?: 'TeamRefereeConnection';
+  /** Team referees in this connection */
+  edges: Array<TeamRefereeEdge>;
+  /** Pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing a team referee cursor and its associated team referee data */
+export type TeamRefereeEdge = {
+  __typename?: 'TeamRefereeEdge';
+  /** Cursor identifying the team referee data */
+  cursor: Scalars['String'];
+  /** Team referee data */
+  node: TeamReferee;
+};
+
+/** Referee's team history, i.e. which team a referee has been a member of. */
+export type TeamRefereeHistory = {
+  __typename?: 'TeamRefereeHistory';
+  /** Time in RFC3339Nano format when the referee joined the team. */
+  joinedAt: Scalars['Timestamp'];
+  /** Epoch at which the referee joined the team. */
+  joinedAtEpoch: Scalars['Int'];
+  /** ID of the team the referee joined. */
+  teamId: Scalars['ID'];
+};
+
+/** Connection type for retrieving cursor-based paginated team referee history data */
+export type TeamRefereeHistoryConnection = {
+  __typename?: 'TeamRefereeHistoryConnection';
+  /** Team referee history in this connection */
+  edges: Array<TeamRefereeHistoryEdge>;
+  /** Pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing a team referee history cursor and its associated team referee history data */
+export type TeamRefereeHistoryEdge = {
+  __typename?: 'TeamRefereeHistoryEdge';
+  /** Cursor identifying the team referee history data */
+  cursor: Scalars['String'];
+  /** Team referee history data */
+  node: TeamRefereeHistory;
+};
+
 export type TimeUpdate = {
   __typename?: 'TimeUpdate';
   /** RFC3339Nano time of new block time */
@@ -4714,10 +5543,22 @@ export type TradeFee = {
   __typename?: 'TradeFee';
   /** The infrastructure fee, a fee paid to the validators to maintain the Vega network */
   infrastructureFee: Scalars['String'];
+  /** Referral discount on infrastructure fees for the trade */
+  infrastructureFeeReferralDiscount?: Maybe<Scalars['String']>;
+  /** Volume discount on infrastructure fees for the trade */
+  infrastructureFeeVolumeDiscount?: Maybe<Scalars['String']>;
   /** The fee paid to the liquidity providers that committed liquidity to the market */
   liquidityFee: Scalars['String'];
+  /** Referral discount on liquidity fees for the trade */
+  liquidityFeeReferralDiscount?: Maybe<Scalars['String']>;
+  /** Volume discount on liquidity fees for the trade */
+  liquidityFeeVolumeDiscount?: Maybe<Scalars['String']>;
   /** The maker fee, paid by the aggressive party to the other party (the one who had an order in the book) */
   makerFee: Scalars['String'];
+  /** Referral discount on maker fees for the trade */
+  makerFeeReferralDiscount?: Maybe<Scalars['String']>;
+  /** Volume discount on maker fees for the trade */
+  makerFeeVolumeDiscount?: Maybe<Scalars['String']>;
 };
 
 export type TradeSettlement = {
@@ -4825,7 +5666,7 @@ export type Transfer = {
   reference?: Maybe<Scalars['String']>;
   /** The status of this transfer */
   status: TransferStatus;
-  /** The time at which the transfer was submitted */
+  /** The RFC3339Nano time at which the transfer was submitted */
   timestamp: Scalars['Timestamp'];
   /** The public key of the recipient of the funds */
   to: Scalars['String'];
@@ -4917,10 +5758,16 @@ export enum TransferType {
   TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE = 'TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE',
   /** Infrastructure fee paid from general account */
   TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY = 'TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY',
+  /** Allocates liquidity fee earnings to each liquidity provider's network controlled liquidity fee account. */
+  TRANSFER_TYPE_LIQUIDITY_FEE_ALLOCATE = 'TRANSFER_TYPE_LIQUIDITY_FEE_ALLOCATE',
   /** Liquidity fee received into general account */
   TRANSFER_TYPE_LIQUIDITY_FEE_DISTRIBUTE = 'TRANSFER_TYPE_LIQUIDITY_FEE_DISTRIBUTE',
+  /** Distributes net fee earnings from liquidity provider's fee account to their general account. */
+  TRANSFER_TYPE_LIQUIDITY_FEE_NET_DISTRIBUTE = 'TRANSFER_TYPE_LIQUIDITY_FEE_NET_DISTRIBUTE',
   /** Liquidity fee paid from general account */
   TRANSFER_TYPE_LIQUIDITY_FEE_PAY = 'TRANSFER_TYPE_LIQUIDITY_FEE_PAY',
+  /** Collects penalties from the liquidity provider's fee account before the fee revenue is paid, and transfers it to the market's bonus distribution account. */
+  TRANSFER_TYPE_LIQUIDITY_FEE_UNPAID_COLLECT = 'TRANSFER_TYPE_LIQUIDITY_FEE_UNPAID_COLLECT',
   /** Funds deducted after final settlement loss */
   TRANSFER_TYPE_LOSS = 'TRANSFER_TYPE_LOSS',
   /** Maker fee paid from general account */
@@ -4937,10 +5784,24 @@ export enum TransferType {
   TRANSFER_TYPE_MTM_LOSS = 'TRANSFER_TYPE_MTM_LOSS',
   /** Funds added to margin account after mark to market gain */
   TRANSFER_TYPE_MTM_WIN = 'TRANSFER_TYPE_MTM_WIN',
+  /** Funds deducted from margin account after a perpetuals funding loss. */
+  TRANSFER_TYPE_PERPETUALS_FUNDING_LOSS = 'TRANSFER_TYPE_PERPETUALS_FUNDING_LOSS',
+  /** Funds added to margin account after a perpetuals funding gain. */
+  TRANSFER_TYPE_PERPETUALS_FUNDING_WIN = 'TRANSFER_TYPE_PERPETUALS_FUNDING_WIN',
+  /** Funds moved from the vesting account to the vested account once the vesting period is reached. */
+  TRANSFER_TYPE_REWARDS_VESTED = 'TRANSFER_TYPE_REWARDS_VESTED',
   /** Reward payout received */
   TRANSFER_TYPE_REWARD_PAYOUT = 'TRANSFER_TYPE_REWARD_PAYOUT',
+  /** Applies SLA penalty by moving funds from party's bond account to market's insurance pool. */
+  TRANSFER_TYPE_SLA_PENALTY_BOND_APPLY = 'TRANSFER_TYPE_SLA_PENALTY_BOND_APPLY',
+  /** Applies SLA penalty by moving funds from the liquidity provider's fee account to market insurance pool. */
+  TRANSFER_TYPE_SLA_PENALTY_LP_FEE_APPLY = 'TRANSFER_TYPE_SLA_PENALTY_LP_FEE_APPLY',
+  /** Distributes performance bonus from market bonus to liquidity provider's general account. */
+  TRANSFER_TYPE_SLA_PERFORMANCE_BONUS_DISTRIBUTE = 'TRANSFER_TYPE_SLA_PERFORMANCE_BONUS_DISTRIBUTE',
   /** Spot trade delivery */
   TRANSFER_TYPE_SPOT = 'TRANSFER_TYPE_SPOT',
+  /** Insurance pool fraction transfer from parent to successor market. */
+  TRANSFER_TYPE_SUCCESSOR_INSURANCE_FRACTION = 'TRANSFER_TYPE_SUCCESSOR_INSURANCE_FRACTION',
   /** A network internal instruction for the collateral engine to move funds from the pending transfers pool account into the destination account */
   TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE = 'TRANSFER_TYPE_TRANSFER_FUNDS_DISTRIBUTE',
   /** A network internal instruction for the collateral engine to move funds from a user's general account into the pending transfers pool */
@@ -4952,6 +5813,8 @@ export enum TransferType {
   /** Funds withdrawn from general account */
   TRANSFER_TYPE_WITHDRAW = 'TRANSFER_TYPE_WITHDRAW'
 }
+
+export type TriggerKind = EthTimeTrigger;
 
 /** A proposal to update an asset's details */
 export type UpdateAsset = {
@@ -4994,7 +5857,7 @@ export type UpdateFutureProduct = {
 export type UpdateInstrumentConfiguration = {
   __typename?: 'UpdateInstrumentConfiguration';
   code: Scalars['String'];
-  product: UpdateFutureProduct;
+  product: UpdateProductConfiguration;
 };
 
 /**
@@ -5009,10 +5872,21 @@ export type UpdateMarket = {
 
 export type UpdateMarketConfiguration = {
   __typename?: 'UpdateMarketConfiguration';
+  /** Updated futures market instrument configuration. */
   instrument: UpdateInstrumentConfiguration;
+  /** Linear slippage factor is used to cap the slippage component of maintenance margin - it is applied to the slippage volume. */
+  linearSlippageFactor: Scalars['String'];
+  /** Liquidity monitoring parameters. */
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
+  /** Liquidity SLA Parameters. */
+  liquiditySLAParameters?: Maybe<LiquiditySLAParameters>;
+  /** Optional futures market metadata, tags. */
   metadata?: Maybe<Array<Maybe<Scalars['String']>>>;
+  /** Price monitoring parameters. */
   priceMonitoringParameters: PriceMonitoringParameters;
+  /** Quadratic slippage factor is used to cap the slippage component of maintenance margin - it is applied to the square of the slippage volume. */
+  quadraticSlippageFactor: Scalars['String'];
+  /** Updated futures market risk model parameters. */
   riskParameters: UpdateMarketRiskParameters;
 };
 
@@ -5028,10 +5902,95 @@ export type UpdateMarketSimpleRiskModel = {
   simple?: Maybe<SimpleRiskModelParams>;
 };
 
+export type UpdateMarketState = {
+  __typename?: 'UpdateMarketState';
+  /** The market for which to update the state */
+  market: Market;
+  /** Optional settlement price for terminating and settling futures market. Must be empty for other types of updates and other types of markets */
+  price?: Maybe<Scalars['String']>;
+  /** The type of update */
+  updateType: MarketUpdateType;
+};
+
 /** Allows submitting a proposal for changing network parameters */
 export type UpdateNetworkParameter = {
   __typename?: 'UpdateNetworkParameter';
   networkParameter: NetworkParameter;
+};
+
+export type UpdatePerpetualProduct = {
+  __typename?: 'UpdatePerpetualProduct';
+  /** Lower bound for the clamp function used as part of the funding rate calculation, in the range [-1, 1] */
+  clampLowerBound: Scalars['String'];
+  /** Upper bound for the clamp function used as part of the funding rate calculation, in the range [-1, 1] */
+  clampUpperBound: Scalars['String'];
+  /** Binding between the data source spec and the settlement data */
+  dataSourceSpecBinding: DataSourceSpecPerpetualBinding;
+  /** Data source specification describing the data source for settlement */
+  dataSourceSpecForSettlementData: DataSourceDefinition;
+  /** Data source specification describing the data source for settlement schedule */
+  dataSourceSpecForSettlementSchedule: DataSourceDefinition;
+  /** Continuously compounded interest rate used in funding rate calculation, in the range [-1, 1] */
+  interestRate: Scalars['String'];
+  /** Controls how much the upcoming funding payment liability contributes to party's margin, in the range [0, 1] */
+  marginFundingFactor: Scalars['String'];
+  /** Quote name of the instrument */
+  quoteName: Scalars['String'];
+};
+
+export type UpdateProductConfiguration = UpdateFutureProduct | UpdatePerpetualProduct;
+
+export type UpdateReferralProgram = {
+  __typename?: 'UpdateReferralProgram';
+  /** Benefit tiers for the program */
+  benefitTiers: Array<BenefitTier>;
+  /** The end time of the program */
+  endOfProgramTimestamp: Scalars['Timestamp'];
+  /** ID of the proposal that created the referral program */
+  id: Scalars['ID'];
+  /** Determines the level of benefit a party can expect based on their staking */
+  stakingTiers: Array<StakingTier>;
+  /** Current version of the referral program */
+  version: Scalars['Int'];
+  /** The window legnth to consider for the referral program */
+  windowLength: Scalars['Int'];
+};
+
+/** Update an existing spot market on Vega */
+export type UpdateSpotMarket = {
+  __typename?: 'UpdateSpotMarket';
+  /** Market ID the update is for */
+  marketId: Scalars['ID'];
+  /** Updated configuration of the spot market */
+  updateSpotMarketConfiguration: UpdateSpotMarketConfiguration;
+};
+
+export type UpdateSpotMarketConfiguration = {
+  __typename?: 'UpdateSpotMarketConfiguration';
+  /** Specifies the liquidity provision SLA parameters */
+  liquiditySLAParams: LiquiditySLAParameters;
+  /** Optional spot market metadata tags */
+  metadata: Array<Scalars['String']>;
+  /** Price monitoring parameters */
+  priceMonitoringParameters: PriceMonitoringParameters;
+  /** Update spot market risk model parameters */
+  riskParameters: RiskModel;
+  /** Specifies parameters related to target stake calculation */
+  targetStakeParameters: TargetStakeParameters;
+};
+
+export type UpdateVolumeDiscountProgram = {
+  __typename?: 'UpdateVolumeDiscountProgram';
+  /** The benefit tiers for the program */
+  benefitTiers: Array<VolumeBenefitTier>;
+  /** The end time of the program */
+  endOfProgramTimestamp: Scalars['Timestamp'];
+  /** ID of the proposal that created the discount program */
+  id: Scalars['ID'];
+  /** The current version of the volume discount program */
+  version: Scalars['Int'];
+  /** The window legnth to consider for the volume discount program */
+  windowLength: Scalars['Int'];
 };
 
 /** Status of a validator node */
@@ -5043,6 +6002,14 @@ export enum ValidatorStatus {
   /** The node is taking part in Tendermint consensus */
   VALIDATOR_NODE_STATUS_TENDERMINT = 'VALIDATOR_NODE_STATUS_TENDERMINT'
 }
+
+export type VolumeBenefitTier = {
+  __typename?: 'VolumeBenefitTier';
+  /** The minimum running notional for the given benefit tier */
+  minimumRunningNotionalTakerVolume: Scalars['String'];
+  /** Discount given to those in this benefit tier */
+  volumeDiscountFactor: Scalars['String'];
+};
 
 export type Vote = {
   __typename?: 'Vote';
