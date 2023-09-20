@@ -12,3 +12,4 @@ export * from './market-data-provider';
 export * from './markets-candles-provider';
 export * from './markets-data-provider';
 export * from './markets-provider';
+export * from './product';

@@ -1,6 +1,7 @@
 import type { Provider } from '../oracle-schema';
 import type { OracleMarketSpecFieldsFragment } from '../__generated__/OracleMarketsSpec';
 import { useOracleMarketsSpecQuery } from '../__generated__/OracleMarketsSpec';
+import { getDataSourceSpecForSettlementData } from '../product';
 
 export const useOracleMarkets = (
   provider: Provider
@@ -19,12 +20,16 @@ export const useOracleMarkets = (
   const oracleMarkets = markets?.marketsConnection?.edges
     ?.map((edge) => edge.node)
     ?.filter((node) => {
-      const p = node.tradableInstrument.instrument.product;
-      const sourceType = p.dataSourceSpecForSettlementData.data.sourceType;
-      if (sourceType.__typename !== 'DataSourceDefinitionExternal') {
+      const { product } = node.tradableInstrument.instrument;
+      const sourceType =
+        getDataSourceSpecForSettlementData(product)?.data.sourceType;
+      if (sourceType?.__typename !== 'DataSourceDefinitionExternal') {
         return false;
       }
-      const signers = sourceType?.sourceType.signers;
+      const signers =
+        'signers' in sourceType.sourceType
+          ? sourceType?.sourceType.signers
+          : undefined;
       const signerKeys = signers?.filter(Boolean).map((signer) => {
         if (signer.signer.__typename === 'ETHAddress') {
           return signer.signer.address;

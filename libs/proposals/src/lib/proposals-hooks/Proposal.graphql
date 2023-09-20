@@ -20,7 +20,7 @@ fragment UpdateNetworkParameterProposal on Proposal {
     enactmentDatetime
     change {
       ... on UpdateNetworkParameter {
-        ...UpdateNetworkParameterFiels
+        ...UpdateNetworkParameterFields
       }
     }
   }

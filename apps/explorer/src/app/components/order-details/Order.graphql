@@ -31,6 +31,9 @@ fragment ExplorerDeterministicOrderFields on Order {
           ... on Future {
             quoteName
           }
+          ... on Perpetual {
+            quoteName
+          }
         }
       }
     }

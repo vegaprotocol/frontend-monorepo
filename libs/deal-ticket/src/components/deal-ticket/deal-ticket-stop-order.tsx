@@ -28,8 +28,12 @@ import {
   Intent,
   Notification,
 } from '@vegaprotocol/ui-toolkit';
-import { getDerivedPrice } from '@vegaprotocol/markets';
-import type { Market } from '@vegaprotocol/markets';
+import {
+  getAsset,
+  getDerivedPrice,
+  getQuoteName,
+  type Market,
+} from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
@@ -518,8 +522,8 @@ const NotionalAndFees = ({
 > &
   Pick<StopOrderProps, 'market' | 'marketPrice'> &
   Pick<StopOrderFormValues, 'triggerType' | 'triggerPrice'>) => {
-  const { quoteName, settlementAsset: asset } =
-    market.tradableInstrument.instrument.product;
+  const quoteName = getQuoteName(market);
+  const asset = getAsset(market);
   const isPriceTrigger = triggerType === 'price';
   const derivedPrice = getDerivedPrice(
     {
@@ -658,7 +662,7 @@ const SubmitButton = ({
   | 'type'
 > &
   Pick<StopOrderProps, 'market'> & { assetUnit?: string }) => {
-  const { quoteName } = market.tradableInstrument.instrument.product;
+  const quoteName = getQuoteName(market);
   const risesAbove =
     triggerDirection ===
     Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE;
@@ -849,7 +853,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     return () => subscription.unsubscribe();
   }, [watch, market.id, updateStoredFormValues]);
 
-  const { quoteName } = market.tradableInstrument.instrument.product;
+  const quoteName = getQuoteName(market);
   const assetUnit = getAssetUnit(
     market.tradableInstrument.instrument.metadata.tags
   );

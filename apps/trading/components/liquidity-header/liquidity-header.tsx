@@ -1,4 +1,5 @@
 import {
+  getAsset,
   tooltipMapping,
   useMarket,
   useStaticMarketData,
@@ -24,10 +25,11 @@ export const LiquidityHeader = () => {
   const { data: marketData } = useStaticMarketData(marketId);
   const targetStake = marketData?.targetStake;
   const suppliedStake = marketData?.suppliedStake;
-  const assetDecimalPlaces =
-    market?.tradableInstrument.instrument.product.settlementAsset.decimals || 0;
-  const symbol =
-    market?.tradableInstrument.instrument.product.settlementAsset.symbol;
+
+  const asset = market && getAsset(market);
+
+  const assetDecimalPlaces = asset?.decimals || 0;
+  const symbol = asset?.symbol;
 
   const { params } = useNetworkParams([
     NetworkParams.market_liquidity_stakeToCcyVolume,

@@ -23,12 +23,12 @@ import type { MarketInfo } from './market-info-data-provider';
 import { MarketProposalNotification } from '@vegaprotocol/proposals';
 import {
   CurrentFeesInfoPanel,
+  FundingInfoPanel,
   InstrumentInfoPanel,
   InsurancePoolInfoPanel,
   KeyDetailsInfoPanel,
   LiquidityInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
-  LiquidityPriceRangeInfoPanel,
   MarketPriceInfoPanel,
   MarketVolumeInfoPanel,
   MetadataInfoPanel,
@@ -40,8 +40,15 @@ import {
   SettlementAssetInfoPanel,
   SuccessionLineInfoPanel,
 } from './market-info-panels';
-import type { DataSourceDefinition } from '@vegaprotocol/types';
 import isEqual from 'lodash/isEqual';
+import {
+  getDataSourceSpecForSettlementSchedule,
+  getDataSourceSpecForSettlementData,
+  getDataSourceSpecForTradingTermination,
+  isPerpetual,
+  isFuture,
+  getSigners,
+} from '../../product';
 
 export interface MarketInfoAccordionProps {
   market: MarketInfo;
@@ -88,24 +95,27 @@ export const MarketInfoAccordion = ({
     market.accountsConnection?.edges
   );
 
-  const settlementData = market.tradableInstrument.instrument.product
-    .dataSourceSpecForSettlementData.data as DataSourceDefinition;
-  const terminationData = market.tradableInstrument.instrument.product
-    .dataSourceSpecForTradingTermination.data as DataSourceDefinition;
+  const { product } = market.tradableInstrument.instrument;
+  const settlementDataSource = getDataSourceSpecForSettlementData(product);
+  const terminationDataSource = getDataSourceSpecForTradingTermination(product);
+  const settlementScheduleDataSource =
+    getDataSourceSpecForSettlementSchedule(product);
 
-  const getSigners = (data: DataSourceDefinition) => {
-    if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
-      const signers = data.sourceType.sourceType.signers || [];
-
-      return signers.map(({ signer }, i) => {
-        return (
-          (signer.__typename === 'ETHAddress' && signer.address) ||
-          (signer.__typename === 'PubKey' && signer.key)
-        );
-      });
-    }
-    return [];
-  };
+  const showOneOracleSection =
+    (isFuture(product) &&
+      settlementDataSource &&
+      terminationDataSource &&
+      isEqual(
+        getSigners(settlementDataSource),
+        getSigners(terminationDataSource)
+      )) ||
+    (isPerpetual(product) &&
+      settlementDataSource &&
+      settlementScheduleDataSource &&
+      isEqual(
+        getSigners(settlementDataSource),
+        getSigners(settlementScheduleDataSource)
+      ));
 
   return (
     <div>
@@ -158,7 +168,16 @@ export const MarketInfoAccordion = ({
             title={t('Instrument')}
             content={<InstrumentInfoPanel market={market} />}
           />
-          {isEqual(getSigners(settlementData), getSigners(terminationData)) ? (
+          {settlementScheduleDataSource && (
+            <AccordionItem
+              itemId="funding"
+              title={t('Funding')}
+              content={
+                <FundingInfoPanel dataSource={settlementScheduleDataSource} />
+              }
+            />
+          )}
+          {showOneOracleSection ? (
             <AccordionItem
               itemId="oracles"
               title={t('Oracle')}
@@ -170,17 +189,32 @@ export const MarketInfoAccordion = ({
             <>
               <AccordionItem
                 itemId="settlement-oracle"
-                title={t('Settlement Oracle')}
+                title={t('Settlement oracle')}
                 content={
                   <OracleInfoPanel market={market} type="settlementData" />
                 }
               />
-
-              <AccordionItem
-                itemId="termination-oracle"
-                title={t('Termination Oracle')}
-                content={<OracleInfoPanel market={market} type="termination" />}
-              />
+              {isPerpetual(product) && (
+                <AccordionItem
+                  itemId="settlement-schedule-oracle"
+                  title={t('Settlement schedule oracle')}
+                  content={
+                    <OracleInfoPanel
+                      market={market}
+                      type="settlementSchedule"
+                    />
+                  }
+                />
+              )}
+              {isFuture(product) && (
+                <AccordionItem
+                  itemId="termination-oracle"
+                  title={t('Termination oracle')}
+                  content={
+                    <OracleInfoPanel market={market} type="termination" />
+                  }
+                />
+              )}
             </>
           )}
           <AccordionItem
@@ -227,7 +261,7 @@ export const MarketInfoAccordion = ({
             }
           )}
           <AccordionItem
-            itemId="liqudity-monitoring-parameters"
+            itemId="liquidity-monitoring-parameters"
             title={t('Liquidity monitoring parameters')}
             content={<LiquidityMonitoringParametersInfoPanel market={market} />}
           />
@@ -249,11 +283,6 @@ export const MarketInfoAccordion = ({
                 </div>
               </LiquidityInfoPanel>
             }
-          />
-          <AccordionItem
-            itemId="liquidity-price-range"
-            title={t('Liquidity price range')}
-            content={<LiquidityPriceRangeInfoPanel market={market} />}
           />
         </Accordion>
       </div>

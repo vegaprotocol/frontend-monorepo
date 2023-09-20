@@ -27,6 +27,7 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
           tags: [],
         },
         product: {
+          __typename: 'Future',
           settlementAsset: {
             id: 'asset-0',
             symbol: 'tDAI',
@@ -67,7 +68,6 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
             settlementDataProperty: 'settlement-data-property',
           },
           quoteName: 'BTC',
-          __typename: 'Future',
         },
         __typename: 'Instrument',
       },

@@ -92,7 +92,6 @@ export const marketInfoQuery = (
         short: '0.008571790367285281',
         long: '0.008508132993273576',
       },
-      lpPriceRange: '0.02',
       liquidityMonitoringParameters: {
         triggeringRatio: '0.7',
         targetStakeParameters: {
@@ -125,6 +124,7 @@ export const marketInfoQuery = (
             quoteName: 'BTC',
             settlementAsset: {
               __typename: 'Asset',
+              quantum: '1',
               id: 'market-0',
               symbol: 'tBTC',
               name: 'tBTC TEST',

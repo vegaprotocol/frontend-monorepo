@@ -24,35 +24,37 @@ export const AssetDropdown = ({
   }
 
   return (
-    <TradingDropdown
-      trigger={
-        <TradingDropdownTrigger data-testid="asset-trigger">
-          <MarketSelectorButton>
-            {triggerText({ assets, checkedAssets })}
-          </MarketSelectorButton>
-        </TradingDropdownTrigger>
-      }
-    >
-      <TradingDropdownContent>
-        {assets?.map((a) => {
-          return (
-            <TradingDropdownCheckboxItem
-              key={a.id}
-              checked={checkedAssets.includes(a.id)}
-              onCheckedChange={(checked) => {
-                if (typeof checked === 'boolean') {
-                  onSelect(a.id, checked);
-                }
-              }}
-              data-testid={`asset-id-${a.id}`}
-            >
-              {a.symbol}
-              <TradingDropdownItemIndicator />
-            </TradingDropdownCheckboxItem>
-          );
-        })}
-      </TradingDropdownContent>
-    </TradingDropdown>
+    assets && (
+      <TradingDropdown
+        trigger={
+          <TradingDropdownTrigger data-testid="asset-trigger">
+            <MarketSelectorButton>
+              {triggerText({ assets, checkedAssets })}
+            </MarketSelectorButton>
+          </TradingDropdownTrigger>
+        }
+      >
+        <TradingDropdownContent>
+          {assets.filter(Boolean).map((a) => {
+            return (
+              <TradingDropdownCheckboxItem
+                key={a.id}
+                checked={checkedAssets.includes(a.id)}
+                onCheckedChange={(checked) => {
+                  if (typeof checked === 'boolean') {
+                    onSelect(a.id, checked);
+                  }
+                }}
+                data-testid={`asset-id-${a.id}`}
+              >
+                {a.symbol}
+                <TradingDropdownItemIndicator />
+              </TradingDropdownCheckboxItem>
+            );
+          })}
+        </TradingDropdownContent>
+      </TradingDropdown>
+    )
   );
 };
 

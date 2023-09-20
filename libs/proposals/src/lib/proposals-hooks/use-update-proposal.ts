@@ -104,6 +104,7 @@ const fieldGetters = {
           undefined;
       return (
         proposed &&
+        'quoteName' in change.updateMarketConfiguration.instrument.product &&
         change.updateMarketConfiguration.instrument.product.quoteName.length > 0
       );
     }

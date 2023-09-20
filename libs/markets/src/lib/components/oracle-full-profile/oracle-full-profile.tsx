@@ -252,26 +252,35 @@ export const OracleFullProfile = ({
                 >
                   {MarketStateMapping[market.state]}
                 </div>
-                <div className="col-span-1">
-                  {
-                    <ExternalLink
-                      href={`${VEGA_EXPLORER_URL}/oracles/${market.tradableInstrument?.instrument.product?.dataSourceSpecForSettlementData.id}`}
-                      data-testid="block-explorer-link-settlement"
-                    >
-                      {t('Settlement')}
-                    </ExternalLink>
-                  }
-                </div>
-                <div className="col-span-1">
-                  {
-                    <ExternalLink
-                      href={`${VEGA_EXPLORER_URL}/oracles/${market.tradableInstrument?.instrument.product?.dataSourceSpecForTradingTermination.id}`}
-                      data-testid="block-explorer-link-termination"
-                    >
-                      {t('Termination')}
-                    </ExternalLink>
-                  }
-                </div>
+                {(market.tradableInstrument.instrument.product.__typename ===
+                  'Future' ||
+                  market.tradableInstrument.instrument.product.__typename ===
+                    'Perpetual') &&
+                  market.tradableInstrument.instrument.product && (
+                    <div className="col-span-1">
+                      {
+                        <ExternalLink
+                          href={`${VEGA_EXPLORER_URL}/oracles/${market.tradableInstrument?.instrument.product?.dataSourceSpecForSettlementData.id}`}
+                          data-testid="block-explorer-link-settlement"
+                        >
+                          {t('Settlement')}
+                        </ExternalLink>
+                      }
+                    </div>
+                  )}
+                {'dataSourceSpecForTradingTermination' in
+                  market.tradableInstrument.instrument.product && (
+                  <div className="col-span-1">
+                    {
+                      <ExternalLink
+                        href={`${VEGA_EXPLORER_URL}/oracles/${market.tradableInstrument?.instrument.product?.dataSourceSpecForTradingTermination.id}`}
+                        data-testid="block-explorer-link-termination"
+                      >
+                        {t('Termination')}
+                      </ExternalLink>
+                    }
+                  </div>
+                )}
               </div>
             ))}
           </div>

@@ -36,7 +36,7 @@ import {
   formatValue,
 } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
-import { getDerivedPrice } from '@vegaprotocol/markets';
+import { getAsset, getDerivedPrice, getQuoteName } from '@vegaprotocol/markets';
 import {
   validateExpiration,
   validateMarketState,
@@ -158,7 +158,7 @@ export const DealTicket = ({
   });
   const lastSubmitTime = useRef(0);
 
-  const asset = market.tradableInstrument.instrument.product.settlementAsset;
+  const asset = getAsset(market);
   const {
     accountBalance: marginAccountBalance,
     loading: loadingMarginAccountBalance,
@@ -261,8 +261,7 @@ export const DealTicket = ({
     skip: !normalizedOrder,
   });
 
-  const assetSymbol =
-    market.tradableInstrument.instrument.product.settlementAsset.symbol;
+  const assetSymbol = getAsset(market).symbol;
 
   const assetUnit = getAssetUnit(
     market.tradableInstrument.instrument.metadata.tags
@@ -348,7 +347,7 @@ export const DealTicket = ({
 
   const priceStep = toDecimal(market?.decimalPlaces);
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
-  const quoteName = market.tradableInstrument.instrument.product.quoteName;
+  const quoteName = getQuoteName(market);
   const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
 
   return (
@@ -677,7 +676,7 @@ export const DealTicket = ({
       </Button>
       <DealTicketMarginDetails
         onMarketClick={onMarketClick}
-        assetSymbol={assetSymbol}
+        assetSymbol={asset.symbol}
         marginAccountBalance={marginAccountBalance}
         generalAccountBalance={generalAccountBalance}
         positionEstimate={positionEstimate?.estimatePosition}

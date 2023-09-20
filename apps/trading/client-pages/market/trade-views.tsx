@@ -13,6 +13,7 @@ import { FillsContainer } from '../../components/fills-container';
 import { PositionsContainer } from '../../components/positions-container';
 import { AccountsContainer } from '../../components/accounts-container';
 import { LiquidityContainer } from '../../components/liquidity-container';
+import { FundingContainer } from '../../components/funding-container';
 import type { OrderContainerProps } from '../../components/orders-container';
 import { OrdersContainer } from '../../components/orders-container';
 import { StopOrdersContainer } from '../../components/stop-orders-container';
@@ -49,6 +50,10 @@ export const TradingViews = {
   liquidity: {
     label: 'Liquidity',
     component: requiresMarket(LiquidityContainer),
+  },
+  funding: {
+    label: 'Funding',
+    component: requiresMarket(FundingContainer),
   },
   orderbook: {
     label: 'Orderbook',

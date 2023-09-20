@@ -9,22 +9,10 @@ fragment OracleMarketSpecFields on Market {
       code
       product {
         ... on Future {
-          dataSourceSpecForSettlementData {
-            id
-            data {
-              ...DataSourceSpec
-            }
-          }
-          dataSourceSpecForTradingTermination {
-            id
-            data {
-              ...DataSourceSpec
-            }
-          }
-          dataSourceSpecBinding {
-            settlementDataProperty
-            tradingTerminationProperty
-          }
+          ...Future
+        }
+        ... on Perpetual {
+          ...Perpetual
         }
       }
     }

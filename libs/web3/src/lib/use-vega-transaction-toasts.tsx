@@ -49,8 +49,8 @@ import {
   useOrderByIdQuery,
   useStopOrderByIdQuery,
 } from './__generated__/Orders';
+import { getAsset, useMarketsMapProvider } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
-import { useMarketsMapProvider } from '@vegaprotocol/markets';
 import type { Side } from '@vegaprotocol/types';
 import { OrderStatusMapping } from '@vegaprotocol/types';
 import { Size } from '@vegaprotocol/datagrid';
@@ -231,9 +231,7 @@ const SubmitOrderDetails = ({
           meta={{
             positionDecimalPlaces: market.positionDecimalPlaces,
             decimalPlaces: market.decimalPlaces,
-            asset:
-              market.tradableInstrument.instrument.product.settlementAsset
-                .symbol,
+            asset: getAsset(market).symbol,
           }}
           side={side}
           size={size}
@@ -271,8 +269,7 @@ const SubmitStopOrderSetup = ({
         meta={{
           positionDecimalPlaces: market.positionDecimalPlaces,
           decimalPlaces: market.decimalPlaces,
-          asset:
-            market.tradableInstrument.instrument.product.settlementAsset.symbol,
+          asset: getAsset(market).symbol,
         }}
         side={side}
         size={size}
@@ -353,8 +350,7 @@ const EditOrderDetails = ({
       meta={{
         positionDecimalPlaces: market.positionDecimalPlaces,
         decimalPlaces: market.decimalPlaces,
-        asset:
-          market.tradableInstrument.instrument.product.settlementAsset.symbol,
+        asset: getAsset(market).symbol,
       }}
     />
   );
@@ -367,8 +363,7 @@ const EditOrderDetails = ({
       meta={{
         positionDecimalPlaces: market.positionDecimalPlaces,
         decimalPlaces: market.decimalPlaces,
-        asset:
-          market.tradableInstrument.instrument.product.settlementAsset.symbol,
+        asset: getAsset(market).symbol,
       }}
     />
   );
@@ -414,8 +409,7 @@ const CancelOrderDetails = ({
       meta={{
         positionDecimalPlaces: market.positionDecimalPlaces,
         decimalPlaces: market.decimalPlaces,
-        asset:
-          market.tradableInstrument.instrument.product.settlementAsset.symbol,
+        asset: getAsset(market).symbol,
       }}
     />
   );
@@ -456,8 +450,7 @@ const CancelStopOrderDetails = ({ stopOrderId }: { stopOrderId: string }) => {
         meta={{
           positionDecimalPlaces: market.positionDecimalPlaces,
           decimalPlaces: market.decimalPlaces,
-          asset:
-            market.tradableInstrument.instrument.product.settlementAsset.symbol,
+          asset: getAsset(market).symbol,
         }}
       />
       <br />

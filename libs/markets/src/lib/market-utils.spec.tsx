@@ -95,6 +95,7 @@ describe('calcTradedFactor', () => {
     tradableInstrument: {
       instrument: {
         product: {
+          __typename: 'Future',
           settlementAsset: {
             decimals: 18,
             quantum: '1000000000000000000', // 1
@@ -115,6 +116,7 @@ describe('calcTradedFactor', () => {
     tradableInstrument: {
       instrument: {
         product: {
+          __typename: 'Future',
           settlementAsset: {
             decimals: 18,
             quantum: '1', // 0.0000000000000000001

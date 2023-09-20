@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
 import orderBy from 'lodash/orderBy';
-import { calcTradedFactor, useMarketList } from '@vegaprotocol/markets';
+import {
+  calcTradedFactor,
+  getAsset,
+  useMarketList,
+} from '@vegaprotocol/markets';
 import { priceChangePercentage } from '@vegaprotocol/utils';
 import type { Filter } from '../../components/market-selector/market-selector';
 import { Sort } from './sort-dropdown';
@@ -32,9 +36,8 @@ export const useMarketSelectorList = ({
       })
       .filter((m) => {
         if (assets.length === 0) return true;
-        return assets.includes(
-          m.tradableInstrument.instrument.product.settlementAsset.id
-        );
+        const asset = getAsset(m);
+        return assets.includes(asset.id);
       })
       // filter based on search term
       .filter((m) => {

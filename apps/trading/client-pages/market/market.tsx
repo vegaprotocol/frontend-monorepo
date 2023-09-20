@@ -4,7 +4,7 @@ import { t } from '@vegaprotocol/i18n';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
-import { marketDataProvider, useMarket } from '@vegaprotocol/markets';
+import { getAsset, marketDataProvider, useMarket } from '@vegaprotocol/markets';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid } from './trade-grid';
 import { TradePanels } from './trade-panels';
@@ -81,26 +81,16 @@ export const MarketPage = () => {
     }
   }, [setViews, view, currentRouteId, largeScreen]);
 
+  const pinnedAsset = data && getAsset(data);
+
   const tradeView = useMemo(() => {
-    if (largeScreen) {
-      return (
-        <TradeGrid
-          market={data}
-          pinnedAsset={
-            data?.tradableInstrument.instrument.product.settlementAsset
-          }
-        />
-      );
+    if (pinnedAsset) {
+      if (largeScreen) {
+        return <TradeGrid market={data} pinnedAsset={pinnedAsset} />;
+      }
+      return <TradePanels market={data} pinnedAsset={pinnedAsset} />;
     }
-    return (
-      <TradePanels
-        market={data}
-        pinnedAsset={
-          data?.tradableInstrument.instrument.product.settlementAsset
-        }
-      />
-    );
-  }, [largeScreen, data]);
+  }, [largeScreen, data, pinnedAsset]);
 
   if (!data && marketId) {
     return (

@@ -8,7 +8,7 @@ import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { SimpleGridProps } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import type { Market, MarketData } from '@vegaprotocol/markets';
+import { getAsset, type Market, type MarketData } from '@vegaprotocol/markets';
 
 export const compileGridData = (
   market: Pick<
@@ -36,15 +36,11 @@ export const compileGridData = (
         Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET) ||
     marketData?.trigger ===
       Schema.AuctionTrigger.AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS;
+  const asset = getAsset(market);
 
   const formatStake = (value: string) => {
-    const formattedValue = addDecimalsFormatNumber(
-      value,
-      market.tradableInstrument.instrument.product.settlementAsset.decimals
-    );
-    const asset =
-      market.tradableInstrument.instrument.product.settlementAsset.symbol;
-    return `${formattedValue} ${asset}`;
+    const formattedValue = addDecimalsFormatNumber(value, asset.decimals);
+    return `${formattedValue} ${asset.symbol}`;
   };
 
   if (!marketData) return grid;

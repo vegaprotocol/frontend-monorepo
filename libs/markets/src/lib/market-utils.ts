@@ -1,5 +1,5 @@
 import { formatNumberPercentage, toBigNum } from '@vegaprotocol/utils';
-import * as Schema from '@vegaprotocol/types';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
 import type {
@@ -8,7 +8,46 @@ import type {
   MarketMaybeWithData,
   MarketMaybeWithDataAndCandles,
 } from '../';
-const { MarketState, MarketTradingMode } = Schema;
+
+export const getAsset = (market: Partial<Market>) => {
+  if (!market.tradableInstrument?.instrument.product) {
+    throw new Error('Failed to retrieve asset. Invalid tradable instrument');
+  }
+
+  const product = market.tradableInstrument.instrument.product;
+
+  if (product.__typename === 'Perpetual' || product.__typename === 'Future') {
+    return product.settlementAsset;
+  }
+
+  if (product.__typename === 'Spot') {
+    // TODO to handle baseAsset for Spots
+    throw new Error('Failed to retrieve asset. Spots not yet implemented');
+  }
+
+  throw new Error('Failed to retrieve asset. Invalid product type');
+};
+
+export const getQuoteName = (market: Partial<Market>) => {
+  if (!market.tradableInstrument?.instrument.product) {
+    throw new Error(
+      'Failed to retrieve quoteName. Invalid tradable instrument'
+    );
+  }
+
+  const product = market.tradableInstrument.instrument.product;
+
+  if (product.__typename === 'Perpetual' || product.__typename === 'Future') {
+    return product.quoteName;
+  }
+
+  if (product.__typename === 'Spot') {
+    // TODO to handle baseAsset for Spots
+    throw new Error('Failed to retrieve quoteName. Spots not yet implemented');
+  }
+
+  throw new Error('Failed to retrieve quoteName. Invalid product type');
+};
 
 export const totalFees = (fees: Market['fees']['factors']) => {
   return fees
@@ -95,12 +134,9 @@ export const calcCandleVolume = (candles: Candle[]): string | undefined =>
 export const calcTradedFactor = (m: MarketMaybeWithDataAndCandles) => {
   const volume = Number(calcCandleVolume(m.candles || []) || 0);
   const price = m.data?.markPrice ? Number(m.data.markPrice) : 0;
-  const quantum = Number(
-    m.tradableInstrument.instrument.product.settlementAsset.quantum
-  );
-  const decimals = Number(
-    m.tradableInstrument.instrument.product.settlementAsset.decimals
-  );
+  const asset = getAsset(m);
+  const quantum = Number(asset.quantum);
+  const decimals = Number(asset.decimals);
   const fp = toBigNum(price, decimals);
   const fq = toBigNum(quantum, decimals);
   const factor = fq.multipliedBy(fp).multipliedBy(volume);
