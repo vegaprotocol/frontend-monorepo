@@ -14,6 +14,8 @@ on:
       - synchronize
 jobs:
   node-modules:
+    # All jobs depend on node_modules, so none should run if the PR is in draft
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-22.04
     name: 'Cache yarn modules'
     steps:
