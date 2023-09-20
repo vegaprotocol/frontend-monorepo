@@ -312,7 +312,6 @@ export const AccountTable = ({
   ]);
 
   const data = rowData?.filter((data) => data.asset.id !== pinnedAsset?.id);
-
   return (
     <AgGrid
       {...props}
@@ -321,6 +320,9 @@ export const AccountTable = ({
       rowData={data}
       defaultColDef={defaultColDef}
       columnDefs={colDefs}
+      overlayNoRowsTemplate={
+        rowData?.length ? '<span />' : props.overlayNoRowsTemplate
+      }
       getRowHeight={getPinnedAssetRowHeight}
       pinnedTopRowData={pinnedRow ? [pinnedRow] : undefined}
     />
