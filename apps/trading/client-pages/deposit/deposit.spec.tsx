@@ -8,8 +8,8 @@ jest.mock('@vegaprotocol/deposits', () => ({
   ),
 }));
 
-jest.mock('../../components/welcome-dialog', () => ({
-  GetStartedCheckList: () => <div>GetStartedCheckList</div>,
+jest.mock('./deposit-get-started', () => ({
+  DepositGetStarted: () => <div>DepositGetStarted</div>,
 }));
 
 const renderJsx = (route = '/deposit') => {
