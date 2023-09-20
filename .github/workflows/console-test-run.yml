@@ -109,7 +109,7 @@ jobs:
       #----------------------------------------------
       - name: Run tests
         working-directory: ./console-test
-        run: poetry run pytest -v -s --numprocesses 2 --dist loadfile --durations=20
+        run: poetry run pytest -v -s
       - name: Check files
         run: |
           ls -al .
