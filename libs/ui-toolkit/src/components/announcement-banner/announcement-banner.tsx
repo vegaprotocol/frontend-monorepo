@@ -4,14 +4,27 @@ import type { ReactNode } from 'react';
 export interface BannerProps {
   children?: ReactNode;
   className?: string;
+  background?: string;
 }
 
-export const AnnouncementBanner = ({ className, children }: BannerProps) => {
-  const bannerClasses = classnames(
-    "bg-[url('https://static.vega.xyz/assets/img/banner-bg.jpg')] bg-cover bg-center bg-no-repeat",
-    'p-4',
-    className
-  );
+export const AnnouncementBanner = ({
+  className,
+  children,
+  background = 'url("https://static.vega.xyz/assets/img/banner-bg.jpg")',
+}: BannerProps) => {
+  const bannerClasses = classnames('p-4', className);
 
-  return <div className={bannerClasses}>{children}</div>;
+  return (
+    <div
+      className={bannerClasses}
+      style={{
+        background,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+      }}
+    >
+      {children}
+    </div>
+  );
 };
