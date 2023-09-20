@@ -51,11 +51,11 @@ export const routerConfig: RouteObject[] = [
         element: <Referrals />,
         children: [
           {
-            element: <LazyReferrals />,
+            element: <Referrals />,
             children: [
               {
                 index: true,
-                element: <ReferralStatisticsContainer />,
+                element: <ReferralStatistics />,
               },
               {
                 path: Routes.REFERRALS_CREATE_CODE,
