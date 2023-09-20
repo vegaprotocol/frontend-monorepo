@@ -3,8 +3,8 @@ import { useUpdateNetworkParametersToasts } from '@vegaprotocol/proposals';
 import { useVegaTransactionToasts } from '@vegaprotocol/web3';
 import { useEthereumTransactionToasts } from '@vegaprotocol/web3';
 import { useEthereumWithdrawApprovalsToasts } from '@vegaprotocol/web3';
-import { Routes } from './client-router';
 import { useReadyToWithdrawalToasts } from '@vegaprotocol/withdraws';
+import { Links } from '../lib/links';
 
 export const ToastsManager = () => {
   useUpdateNetworkParametersToasts();
@@ -12,7 +12,7 @@ export const ToastsManager = () => {
   useEthereumTransactionToasts();
   useEthereumWithdrawApprovalsToasts();
   useReadyToWithdrawalToasts({
-    withdrawalsLink: `${Routes.PORTFOLIO}`,
+    withdrawalsLink: Links.PORTFOLIO(),
   });
 
   const toasts = useToasts((store) => store.toasts);

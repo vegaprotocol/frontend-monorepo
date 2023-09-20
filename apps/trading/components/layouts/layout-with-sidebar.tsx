@@ -1,7 +1,6 @@
 import { Outlet, Routes, Route } from 'react-router-dom';
 import { Sidebar, SidebarContent, useSidebar } from '../sidebar';
 import classNames from 'classnames';
-import { Routes as AppRoutes } from '../../pages/client-router';
 import { MarketHeader } from '../market-header';
 import { LiquidityHeader } from '../liquidity-header';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
@@ -23,8 +22,8 @@ export const LayoutWithSidebar = () => {
     <div className={gridClasses}>
       <div className="col-span-full">
         <Routes>
-          <Route path={AppRoutes.MARKET} element={<MarketHeader />} />
-          <Route path={AppRoutes.LIQUIDITY} element={<LiquidityHeader />} />
+          <Route path="markets/:marketId" element={<MarketHeader />} />
+          <Route path="liquidity/:marketId" element={<LiquidityHeader />} />
         </Routes>
       </div>
       <main

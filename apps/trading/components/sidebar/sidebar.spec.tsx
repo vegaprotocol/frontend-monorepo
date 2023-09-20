@@ -11,7 +11,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { Routes as AppRoutes } from '../../pages/client-router';
+import { Routes as AppRoutes } from '../../lib/links';
 
 jest.mock('../node-health', () => ({
   NodeHealthContainer: () => <span data-testid="node-health" />,

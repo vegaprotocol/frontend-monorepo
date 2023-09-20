@@ -1,3 +1,1 @@
-import { MarketPage } from './market';
-
-export default MarketPage;
+export { MarketPage as default } from './market';
