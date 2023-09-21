@@ -4,7 +4,7 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { AgGridLazy as AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
+import { AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import type { Asset } from '@vegaprotocol/types';

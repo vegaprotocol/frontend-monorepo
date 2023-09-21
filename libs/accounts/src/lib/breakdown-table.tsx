@@ -13,7 +13,7 @@ import type {
   VegaICellRendererParams,
 } from '@vegaprotocol/datagrid';
 import { ProgressBarCell } from '@vegaprotocol/datagrid';
-import { AgGridLazy as AgGrid, PriceCell } from '@vegaprotocol/datagrid';
+import { AgGrid, PriceCell } from '@vegaprotocol/datagrid';
 import type { ColDef } from 'ag-grid-community';
 import { accountValuesComparator } from './accounts-table';
 import { MarginHealthChart } from './margin-health-chart';

@@ -7,7 +7,7 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import type { TypedDataAgGrid } from '@vegaprotocol/datagrid';
-import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGrid } from '@vegaprotocol/datagrid';
 import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import type {
   ColDef,

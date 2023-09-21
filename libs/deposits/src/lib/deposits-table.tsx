@@ -6,7 +6,7 @@ import {
   isNumeric,
 } from '@vegaprotocol/utils';
 import type { ColDef } from 'ag-grid-community';
-import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGrid } from '@vegaprotocol/datagrid';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
