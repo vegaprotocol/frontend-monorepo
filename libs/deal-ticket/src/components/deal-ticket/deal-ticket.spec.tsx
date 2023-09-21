@@ -23,6 +23,7 @@ import { OrdersDocument } from '@vegaprotocol/orders';
 import { formatForInput } from '@vegaprotocol/utils';
 import type { PartialDeep } from 'type-fest';
 import type { Market } from '@vegaprotocol/markets';
+import type { MarketData } from '@vegaprotocol/markets';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
@@ -41,17 +42,17 @@ const submit = jest.fn();
 function generateJsx(
   mocks: MockedResponse[] = [],
   marketOverrides: PartialDeep<Market> = {},
-  marketDataOverrides: Partial<YourMarketDataType> = {}
+  marketDataOverrides: Partial<MarketData> = {}
 ) {
   const joinedMarket: Market = {
     ...market,
     ...marketOverrides,
   } as Market;
 
-  const joinedMarketData: YourMarketDataType = {
+  const joinedMarketData: MarketData = {
     ...marketData,
     ...marketDataOverrides,
-  } as YourMarketDataType;
+  } as MarketData;
 
   return (
     <MockedProvider mocks={[...mocks]}>
