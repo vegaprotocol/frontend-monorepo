@@ -50,11 +50,15 @@ export type WalletType = 'injected' | 'jsonRpc' | 'view' | 'snap';
 export interface VegaConnectDialogProps {
   connectors: Connectors;
   riskMessage?: ReactNode;
+  contentOnly?: boolean;
+  closeDialogParam?: () => void;
 }
 
 export const VegaConnectDialog = ({
   connectors,
   riskMessage,
+  contentOnly,
+  closeDialogParam,
 }: VegaConnectDialogProps) => {
   const { disconnect, acknowledgeNeeded } = useVegaWallet();
   const vegaWalletDialogOpen = useVegaWalletDialogStore(
@@ -80,19 +84,24 @@ export const VegaConnectDialog = ({
   // This value will already be in the cache, if it failed the app wont render
   const { data } = useChainIdQuery();
 
+  const content = data && (
+    <ConnectDialogContainer
+      connectors={connectors}
+      appChainId={data.statistics.chainId}
+      riskMessage={riskMessage}
+      closeDialogParam={closeDialogParam}
+    />
+  );
+  if (contentOnly) {
+    return content;
+  }
   return (
     <Dialog
       open={vegaWalletDialogOpen}
       size="small"
       onChange={onVegaWalletDialogChange}
     >
-      {data && (
-        <ConnectDialogContainer
-          connectors={connectors}
-          appChainId={data.statistics.chainId}
-          riskMessage={riskMessage}
-        />
-      )}
+      {content}
     </Dialog>
   );
 };
@@ -101,15 +110,20 @@ const ConnectDialogContainer = ({
   connectors,
   appChainId,
   riskMessage,
+  closeDialogParam,
 }: {
   connectors: Connectors;
   appChainId: string;
   riskMessage?: ReactNode;
+  closeDialogParam?: () => void;
 }) => {
   const { vegaUrl, vegaWalletServiceUrl } = useVegaWallet();
-  const closeDialog = useVegaWalletDialogStore(
+  const closeVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.closeVegaWalletDialog
   );
+  const closeDialog = useCallback(() => {
+    closeDialogParam ? closeDialogParam() : closeVegaWalletDialog();
+  }, [closeVegaWalletDialog, closeDialogParam]);
   const [selectedConnector, setSelectedConnector] = useState<VegaConnector>();
   const [walletUrl, setWalletUrl] = useState(vegaWalletServiceUrl);
 
