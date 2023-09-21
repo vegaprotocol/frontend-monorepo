@@ -1,7 +1,7 @@
 import trim from 'lodash/trim';
 import { useCallback } from 'react';
 import { Networks } from '../types';
-import { useEnvironment } from './use-environment';
+import { ENV, useEnvironment } from './use-environment';
 import { stripFullStops } from '@vegaprotocol/utils';
 
 const VEGA_DOCS_URL =
@@ -84,8 +84,7 @@ export const DocsLinks = VEGA_DOCS_URL
   : undefined;
 
 export const useLinks = (dapp: DApp, network?: Net) => {
-  const { VEGA_ENV, VEGA_EXPLORER_URL, VEGA_TOKEN_URL, VEGA_CONSOLE_URL } =
-    useEnvironment();
+  const { VEGA_ENV, VEGA_EXPLORER_URL, VEGA_TOKEN_URL, VEGA_CONSOLE_URL } = ENV;
   const fallback = {
     [DApp.Explorer]: VEGA_EXPLORER_URL,
     [DApp.Governance]: VEGA_TOKEN_URL,

@@ -5,6 +5,7 @@ import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { Navbar } from './navbar';
 import { useGlobalStore } from '../../stores';
+import { ENV, FLAGS } from '@vegaprotocol/environment';
 
 jest.mock('@vegaprotocol/proposals', () => ({
   ProtocolUpgradeCountdown: () => null,
@@ -47,6 +48,14 @@ describe('Navbar', () => {
 
   beforeAll(() => {
     useGlobalStore.setState({ marketId });
+    const mockedFLAGS = jest.mocked(FLAGS);
+    mockedFLAGS.REFERRALS = true;
+    const mockedENV = jest.mocked(ENV);
+    mockedENV.VEGA_TOKEN_URL = 'governance';
+  });
+
+  afterAll(() => {
+    jest.clearAllMocks();
   });
 
   it('should be properly rendered', () => {
@@ -57,6 +66,7 @@ describe('Navbar', () => {
       ['/markets/all', 'Markets'],
       [`/markets/${marketId}`, 'Trading'],
       ['/portfolio', 'Portfolio'],
+      ['/referrals', 'Referrals'],
       [expect.stringContaining('governance'), 'Governance'],
     ];
 
@@ -89,6 +99,7 @@ describe('Navbar', () => {
       ['/markets/all', 'Markets'],
       [`/markets/${marketId}`, 'Trading'],
       ['/portfolio', 'Portfolio'],
+      ['/referrals', 'Referrals'],
       [expect.stringContaining('governance'), 'Governance'],
     ];
     const links = menu.getAllByRole('link');
