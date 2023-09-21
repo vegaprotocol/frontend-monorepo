@@ -414,6 +414,9 @@ function compileFeatureFlags(): FeatureFlags {
         process.env['NX_METAMASK_SNAPS']
       ) as string
     ),
+    REFERRALS: TRUTHY.includes(
+      windowOrDefault('NX_REFERRALS', process.env['NX_REFERRALS']) as string
+    ),
   };
   const EXPLORER_FLAGS = {
     EXPLORER_ASSETS: TRUTHY.includes(

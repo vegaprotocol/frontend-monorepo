@@ -6,6 +6,7 @@ import {
   Networks,
   DApp,
   useLinks,
+  FLAGS,
 } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import { useGlobalStore } from '../../stores';
@@ -140,10 +141,6 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
   const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
   const marketId = useGlobalStore((store) => store.marketId);
 
-  // If we have a stored marketId make Trade link go to that market
-  // otherwise always go to /markets/all
-  const tradingPath = marketId ? Links.MARKET(marketId) : Links.MARKETS();
-
   return (
     <div className="lg:flex lg:h-full gap-3">
       <NavbarList>
@@ -174,7 +171,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           </NavbarLink>
         </NavbarItem>
         <NavbarItem>
-          <NavbarLink to={tradingPath} onClick={onClick}>
+          <NavbarLink to={Links.MARKET(marketId || '')} onClick={onClick}>
             {t('Trading')}
           </NavbarLink>
         </NavbarItem>
@@ -183,6 +180,13 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
             {t('Portfolio')}
           </NavbarLink>
         </NavbarItem>
+        {FLAGS.REFERRALS && (
+          <NavbarItem>
+            <NavbarLink to={Links.REFERRALS()} onClick={onClick}>
+              {t('Referrals')}
+            </NavbarLink>
+          </NavbarItem>
+        )}
         <NavbarItem>
           <NavbarLinkExternal to={useLinks(DApp.Governance)()}>
             {t('Governance')}
