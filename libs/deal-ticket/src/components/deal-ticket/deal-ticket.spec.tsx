@@ -696,30 +696,23 @@ describe('DealTicket', () => {
       Schema.MarketState.STATE_TRADING_TERMINATED,
     ];
 
-    states.forEach((marketState) => {
-      describe(`Market State: ${marketState}`, () => {
-        beforeEach(() => {
-          const marketOverrides = { state: marketState };
-          const marketDataOverrides = { marketState: marketState };
-          render(generateJsx([], marketOverrides, marketDataOverrides));
-        });
+    it.each(states)('handles state %s correctly', async (marketState) => {
+      const marketOverrides = { state: marketState };
+      const marketDataOverrides = { marketState: marketState };
+      render(generateJsx([], marketOverrides, marketDataOverrides));
 
-        it('must display that market is not accepting orders', async () => {
-          const text = `This market is ${marketState
-            .split('_')
-            .pop()
-            ?.toLowerCase()} and not accepting orders`;
-          await waitFor(() => {
-            expect(
-              screen.getByTestId('deal-ticket-error-message-summary')
-            ).toHaveTextContent(text);
-          });
-        });
+      const text = `This market is ${marketState
+        .split('_')
+        .pop()
+        ?.toLowerCase()} and not accepting orders`;
 
-        it('should have the place-order button enabled', () => {
-          expect(screen.getByTestId('place-order')).toBeEnabled();
-        });
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('deal-ticket-error-message-summary')
+        ).toHaveTextContent(text);
       });
+
+      expect(screen.getByTestId('place-order')).toBeEnabled();
     });
   });
 });
