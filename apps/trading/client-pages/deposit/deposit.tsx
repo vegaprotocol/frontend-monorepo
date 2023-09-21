@@ -1,14 +1,317 @@
-import { DepositContainer } from '@vegaprotocol/deposits';
+import type { ReactNode} from 'react';
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import * as Radio from '@radix-ui/react-radio-group';
 import { DepositGetStarted } from './deposit-get-started';
+import type {
+  AssetFieldsFragment} from '@vegaprotocol/assets';
+import {
+  useAssetsDataProvider,
+} from '@vegaprotocol/assets';
+import { isAssetTypeERC20, truncateByChars } from '@vegaprotocol/utils';
+import { AssetStatus } from '@vegaprotocol/types';
+import { t } from '@vegaprotocol/i18n';
+import {
+  Intent,
+  TradingButton,
+  TradingInput,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
+import { useWeb3React } from '@web3-react/core';
+import { useWeb3ConnectStore } from '@vegaprotocol/web3';
+import { useDepositBalances } from '@vegaprotocol/deposits';
+import type BigNumber from 'bignumber.js';
 
 export const Deposit = () => {
+  return (
+    <div className="flex flex-col lg:flex-row gap-4">
+      <div className="lg:w-2/3">
+        <DepositFlowContainer />
+      </div>
+      <div className="lg:w-1/3">
+        <DepositGetStarted />
+      </div>
+    </div>
+  );
+};
+
+const DepositFlowContainer = () => {
   const [searchParams] = useSearchParams();
   const assetId = searchParams.get('assetId') || undefined;
+  const { data } = useAssetsDataProvider();
+
+  if (!data) return null;
+
+  return <DepositFlow assets={data} assetId={assetId} />;
+};
+
+const DepositSteps = {
+  Asset: 'Asset',
+  Approve: 'Approve',
+  Deposit: 'Deposit',
+} as const;
+type Step = keyof typeof DepositSteps;
+
+interface DepositState {
+  step: Step;
+  asset: AssetFieldsFragment | undefined;
+  amount: string;
+}
+
+const DepositFlow = ({
+  assets,
+  assetId,
+}: {
+  assets: AssetFieldsFragment[];
+  assetId?: string;
+}) => {
+  const [state, setState] = useState<DepositState>(() => {
+    const asset = assets.find((a) => a.id === assetId);
+    return {
+      step: asset ? 'Approve' : 'Asset',
+      asset,
+      amount: '',
+    };
+  });
+
+  const { getBalances, reset, balances } = useDepositBalances(state.asset);
+
   return (
-    <div className="flex flex-col gap-6">
-      <DepositContainer assetId={assetId} />
-      <DepositGetStarted />
+    <div className="flex flex-col border rounded border-default">
+      <StepWrapper title={t('Select asset')}>
+        <AssetSelector
+          asset={state.asset}
+          assets={assets}
+          onSelect={(asset) =>
+            setState((curr) => ({
+              ...curr,
+              step: DepositSteps.Approve,
+              asset,
+            }))
+          }
+        />
+      </StepWrapper>
+      <StepWrapper title={t('Approve')}>
+        <Approval
+          step={state.step}
+          asset={state.asset}
+          allowance={balances?.allowance}
+        />
+      </StepWrapper>
+      <StepWrapper title={t('Submit deposit')}>
+        <SendDeposit
+          step={state.step}
+          asset={state.asset}
+          allowance={balances?.allowance}
+          amount={state.amount}
+          setAmount={(amount) => setState((curr) => ({ ...curr, amount }))}
+        />
+      </StepWrapper>
+    </div>
+  );
+};
+
+const StepWrapper = ({
+  children,
+  title,
+}: {
+  children: ReactNode;
+  title: string;
+}) => {
+  return (
+    <div className="flex flex-col items-start p-4 border-b rounded gap-3 last:border-b-0 border-default">
+      <h3 className="text-lg">{title}</h3>
+      {children}
+    </div>
+  );
+};
+
+const AssetSelector = ({
+  asset,
+  assets,
+  onSelect,
+}: {
+  asset?: AssetFieldsFragment;
+  assets: AssetFieldsFragment[];
+  onSelect: (asset?: AssetFieldsFragment) => void;
+}) => {
+  const [search, setSearch] = useState('');
+
+  if (asset && isAssetTypeERC20(asset)) {
+    return (
+      <div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => onSelect(undefined)}
+            className="w-5 h-5 border-2 rounded border-vega-clight-600"
+          >
+            <div className="block w-4 h-4 border-2 border-white bg-vega-clight-300" />
+          </button>
+          <p className="block text-lg">
+            {asset.symbol} <small>({asset.source.contractAddress})</small>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const filteredAssets = assets
+    .filter((a) => a.status === AssetStatus.STATUS_ENABLED)
+    .filter((a) => a.source.__typename === 'ERC20')
+    .filter((a) => a.symbol.toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <div className="flex flex-col w-full gap-4">
+      <div className="flex justify-between">
+        <p>{t('Choose an asset to deposit to the Vega network')}</p>
+        <div>
+          <TradingInput
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search..."
+          />
+        </div>
+      </div>
+      <Radio.Root
+        className="flex flex-col gap-4"
+        onValueChange={(value) => {
+          onSelect(assets.find((a) => a.id === value));
+        }}
+      >
+        {filteredAssets.map((asset) => {
+          if (!isAssetTypeERC20(asset)) return null;
+          return (
+            <div key={asset.id}>
+              <div className="flex items-center gap-2">
+                <Radio.Item
+                  id={asset.id}
+                  value={asset.id}
+                  className="w-5 h-5 border-2 rounded border-vega-clight-600"
+                >
+                  <Radio.Indicator className="block w-4 h-4 border-2 border-white bg-vega-clight-300" />
+                </Radio.Item>
+                <label
+                  htmlFor={asset.id}
+                  className="block text-lg cursor-pointer"
+                >
+                  {asset.symbol}{' '}
+                  <small>
+                    ({truncateByChars(asset.source.contractAddress)})
+                  </small>
+                </label>
+              </div>
+            </div>
+          );
+        })}
+      </Radio.Root>
+    </div>
+  );
+};
+
+const Approval = ({
+  step,
+  asset,
+  allowance,
+}: {
+  step: Step;
+  asset: AssetFieldsFragment | undefined;
+  allowance: BigNumber | undefined;
+}) => {
+  const openDialog = useWeb3ConnectStore((store) => store.open);
+  const { account } = useWeb3React();
+
+  if (step !== DepositSteps.Approve) return null;
+
+  if (!asset) {
+    return <p>Please select asset</p>;
+  }
+
+  if (!account) {
+    return (
+      <TradingButton onClick={openDialog}>
+        {t('Connect Ethereum wallet')}
+      </TradingButton>
+    );
+  }
+
+  if (!allowance) {
+    return (
+      <div>
+        <p>{t('Confirming allowance...')}</p>
+      </div>
+    );
+  }
+
+  if (!allowance.isZero()) {
+    return (
+      <div>
+        <p>{t('Deposits approved')}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-between w-full">
+      <p>{t('Deposits not approved')}</p>
+      <TradingButton onClick={() => alert('TODO:')}>
+        {t('Approve %s deposits', asset.symbol)}
+      </TradingButton>
+    </div>
+  );
+};
+
+const SendDeposit = ({
+  step,
+  asset,
+  allowance,
+  amount,
+  setAmount,
+}: {
+  step: Step;
+  asset: AssetFieldsFragment | undefined;
+  allowance: BigNumber | undefined;
+  amount: string;
+  setAmount: (amount: string) => void;
+}) => {
+  const openDialog = useWeb3ConnectStore((store) => store.open);
+  const { account } = useWeb3React();
+
+  if (step === DepositSteps.Asset) return null;
+
+  if (!asset) {
+    return <p>Please select asset</p>;
+  }
+
+  if (!allowance) return null;
+  if (allowance.isZero()) return null;
+
+  if (!account) {
+    return (
+      <TradingButton onClick={openDialog}>
+        {t('Connect Ethereum wallet')}
+      </TradingButton>
+    );
+  }
+
+  return (
+    <div className="w-full">
+      <form
+        className="flex items-center justify-between gap-4"
+        onSubmit={() => alert('TODO')}
+      >
+        <div className="max-w-[300px]">
+          <TradingInput
+            name="amount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="Enter amount"
+          />
+        </div>
+        <TradingButton type="submit" intent={Intent.Success}>
+          {t('Deposit %s', asset.symbol)}
+        </TradingButton>
+      </form>
     </div>
   );
 };

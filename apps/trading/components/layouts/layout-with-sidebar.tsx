@@ -31,7 +31,7 @@ export const LayoutWithSidebar = () => {
         </Routes>
       </div>
       <main
-        className={classNames('col-start-1 col-end-1', {
+        className={classNames('col-start-1 col-end-1 min-h-0 overflow-x-auto', {
           'lg:col-end-3': !sidebarOpen,
           'hidden lg:block lg:col-end-2': sidebarOpen,
         })}
