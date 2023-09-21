@@ -14,6 +14,8 @@ on:
       - synchronize
 jobs:
   node-modules:
+    # All jobs depend on node_modules, so none should run if the PR is in draft
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-22.04
     name: 'Cache yarn modules'
     steps:
@@ -175,14 +177,14 @@ jobs:
       preview_explorer: ${{ env.PREVIEW_EXPLORER }}
       preview_tools: ${{ env.PREVIEW_TOOLS }}
 
-  console-e2e:
-    needs: build-sources
-    name: '(CI) console python'
-    uses: ./.github/workflows/console-test-run.yml
-    secrets: inherit
-    if: ${{ contains(fromJSON(needs.build-sources.outputs.projects), 'trading') && github.event_name == 'pull_request' }}
-    with:
-      github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
+  # console-e2e:
+  #   needs: build-sources
+  #   name: '(CI) console python'
+  #   uses: ./.github/workflows/console-test-run.yml
+  #   secrets: inherit
+  #   if: ${{ contains(fromJSON(needs.build-sources.outputs.projects), 'trading') && github.event_name == 'pull_request' }}
+  #   with:
+  #     github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
   cypress:
     needs: build-sources

@@ -10,7 +10,7 @@ import {
 import { DApp, EXPLORER_MARKET, useLinks } from '@vegaprotocol/environment';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useNavigate } from 'react-router-dom';
-import { Links, Routes } from '../../pages/client-router';
+import { Links } from '../../lib/links';
 
 export const MarketActionsDropdown = ({
   marketId,
@@ -52,7 +52,7 @@ export const MarketActionsDropdown = ({
       {parentMarketID && (
         <TradingDropdownItem
           onClick={() => {
-            navigate(Links[Routes.MARKET](parentMarketID));
+            navigate(Links.MARKET(parentMarketID));
           }}
         >
           <VegaIcon name={VegaIconNames.EYE} size={16} />
@@ -62,7 +62,7 @@ export const MarketActionsDropdown = ({
       {successorMarketID && (
         <TradingDropdownItem
           onClick={() => {
-            navigate(Links[Routes.MARKET](successorMarketID));
+            navigate(Links.MARKET(successorMarketID));
           }}
         >
           <VegaIcon name={VegaIconNames.EYE} size={16} />

@@ -1,76 +1,49 @@
-import { Suspense } from 'react';
 import type { RouteObject } from 'react-router-dom';
-import { Outlet, useRoutes } from 'react-router-dom';
-import dynamic from 'next/dynamic';
+import { Navigate, Outlet, useRoutes } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
-import trimEnd from 'lodash/trimEnd';
 import { LayoutWithSidebar } from '../components/layouts';
+import { LayoutCentered } from '../components/layouts/layout-centered';
+import { Home } from '../client-pages/home';
+import { Liquidity } from '../client-pages/liquidity';
+import { MarketsPage } from '../client-pages/markets';
+import { Disclaimer } from '../client-pages/disclaimer';
+import { Assets } from '../client-pages/assets';
 import { Deposit } from '../client-pages/deposit';
 import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
+import { Routes } from '../lib/links';
 
-const LazyHome = dynamic(() => import('../client-pages/home'), {
-  ssr: false,
-});
+// These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
+// Using dynamic imports is a workaround for this until pennant is published as ESM
+const MarketPage = lazy(() => import('../client-pages/market'));
+const Portfolio = lazy(() => import('../client-pages/portfolio'));
 
-const LazyLiquidity = dynamic(() => import('../client-pages/liquidity'), {
-  ssr: false,
-});
-
-const LazyMarkets = dynamic(() => import('../client-pages/markets'), {
-  ssr: false,
-});
-
-const LazyMarket = dynamic(() => import('../client-pages/market'), {
-  ssr: false,
-});
-
-const LazyPortfolio = dynamic(() => import('../client-pages/portfolio'), {
-  ssr: false,
-});
-
-const LazyDisclaimer = dynamic(() => import('../client-pages/disclaimer'), {
-  ssr: false,
-});
-
-export enum Routes {
-  HOME = '/',
-  MARKET = '/markets/:marketId',
-  MARKETS = '/markets/all',
-  PORTFOLIO = '/portfolio',
-  LIQUIDITY = '/liquidity/:marketId',
-  DISCLAIMER = '/disclaimer',
-  DEPOSIT = '/deposit',
-  WITHDRAW = '/withdraw',
-  TRANSFER = '/transfer',
-}
-
-type ConsoleLinks = { [r in Routes]: (...args: string[]) => string };
-
-export const Links: ConsoleLinks = {
-  [Routes.HOME]: () => Routes.HOME,
-  [Routes.MARKET]: (marketId: string) =>
-    trimEnd(Routes.MARKET.replace(':marketId', marketId)),
-  [Routes.MARKETS]: () => Routes.MARKETS,
-  [Routes.PORTFOLIO]: () => Routes.PORTFOLIO,
-  [Routes.LIQUIDITY]: (marketId: string) =>
-    trimEnd(Routes.LIQUIDITY.replace(':marketId', marketId)),
-  [Routes.DISCLAIMER]: () => Routes.DISCLAIMER,
-  [Routes.DEPOSIT]: () => Routes.DEPOSIT,
-  [Routes.WITHDRAW]: () => Routes.WITHDRAW,
-  [Routes.TRANSFER]: () => Routes.TRANSFER,
-};
+const NotFound = () => (
+  <Splash>
+    <p>{t('Page not found')}</p>
+  </Splash>
+);
 
 export const routerConfig: RouteObject[] = [
+  // Pages that dont use the LayoutWithSidebar must come first
+  // to ensure they are matched before the catch all route '/*'
+  {
+    path: 'disclaimer',
+    element: <LayoutCentered />,
+    id: Routes.DISCLAIMER,
+    children: [{ index: true, element: <Disclaimer /> }],
+  },
+
+  // All other pages will use the sidebar
   {
     path: '/*',
     element: <LayoutWithSidebar />,
     children: [
-      // all pages that require the Layout component (Sidebar)
       {
         index: true,
-        element: <LazyHome />,
+        element: <Home />,
         id: Routes.HOME,
       },
       {
@@ -78,49 +51,55 @@ export const routerConfig: RouteObject[] = [
         element: <Outlet />,
         children: [
           {
+            index: true,
+            element: <Navigate to="all" />,
+          },
+          {
             path: 'all',
-            element: <LazyMarkets />,
+            element: <MarketsPage />,
             id: Routes.MARKETS,
           },
           {
             path: ':marketId',
-            element: <LazyMarket />,
+            element: <MarketPage />,
             id: Routes.MARKET,
           },
         ],
       },
       {
         path: 'portfolio',
-        element: <LazyPortfolio />,
-        id: Routes.PORTFOLIO,
-      },
-      {
-        path: 'liquidity',
         element: <Outlet />,
         children: [
           {
-            path: ':marketId',
-            element: <LazyLiquidity />,
-            id: Routes.LIQUIDITY,
+            index: true,
+            element: <Portfolio />,
+            id: Routes.PORTFOLIO,
+          },
+          {
+            path: 'assets',
+            element: <Assets />,
+            id: Routes.ASSETS,
+            children: [
+              { index: true, element: <Navigate to="deposit" /> },
+              { path: 'deposit', element: <Deposit />, id: Routes.DEPOSIT },
+              { path: 'withdraw', element: <Withdraw />, id: Routes.WITHDRAW },
+              { path: 'transfer', element: <Transfer />, id: Routes.TRANSFER },
+            ],
           },
         ],
       },
+      {
+        path: 'liquidity/:marketId',
+        element: <Liquidity />,
+        id: Routes.LIQUIDITY,
+      },
+
+      // NotFound page is here so its caught within parent '/*' route
+      {
+        path: '*',
+        element: <NotFound />,
+      },
     ],
-  },
-  {
-    path: Routes.DISCLAIMER,
-    element: <LazyDisclaimer />,
-  },
-  { path: Routes.DEPOSIT, element: <Deposit /> },
-  { path: Routes.WITHDRAW, element: <Withdraw /> },
-  { path: Routes.TRANSFER, element: <Transfer /> },
-  {
-    path: '*',
-    element: (
-      <Splash>
-        <p>{t('Not found')}</p>
-      </Splash>
-    ),
   },
 ];
 
@@ -129,9 +108,9 @@ export const ClientRouter = () => {
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-center w-full h-full">
+        <Splash>
           <Loader />
-        </div>
+        </Splash>
       }
     >
       {routes}

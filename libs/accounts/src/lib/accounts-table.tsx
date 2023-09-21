@@ -312,7 +312,6 @@ export const AccountTable = ({
   ]);
 
   const data = rowData?.filter((data) => data.asset.id !== pinnedAsset?.id);
-
   return (
     <AgGrid
       {...props}
@@ -321,6 +320,13 @@ export const AccountTable = ({
       rowData={data}
       defaultColDef={defaultColDef}
       columnDefs={colDefs}
+      overlayNoRowsTemplate={
+        // account for the pinned asset is filtered out to prevent duplicate
+        // data in the pinned row and the main table rows. AgGrid will not
+        // consider the pinned row when determining whether to show the no
+        // rows template or not so we need to override it
+        rowData?.length ? '<span />' : props.overlayNoRowsTemplate
+      }
       getRowHeight={getPinnedAssetRowHeight}
       pinnedTopRowData={pinnedRow ? [pinnedRow] : undefined}
     />

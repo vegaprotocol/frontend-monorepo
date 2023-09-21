@@ -1,12 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { useCallback } from 'react';
-import { Links, Routes } from '../../pages/client-router';
+import { Links } from '../../lib/links';
 
 export const useMarketClickHandler = (replace = false) => {
   const navigate = useNavigate();
 
   return (selectedId: string, metaKey?: boolean) => {
-    const link = Links[Routes.MARKET](selectedId);
+    const link = Links.MARKET(selectedId);
     if (metaKey) {
       window.open(`/#${link}`, '_blank');
     } else {
