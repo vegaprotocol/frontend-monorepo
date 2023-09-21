@@ -268,7 +268,7 @@ const ConnectorList = ({
               </>
             }
             description={t(
-              `Connect Vega Wallet extension
+              `Connect with Vega Wallet extension
               for %s to access all features including key
               management and detailed transaction views from your
               browser.`,
@@ -300,8 +300,18 @@ const ConnectorList = ({
         {connectors['snap'] !== undefined ? (
           <div>
             {snapStatus === SnapStatus.INSTALLED ? (
-              <ConnectionOption
+              <ConnectionOptionWithDescription
                 type="snap"
+                title={
+                  <>
+                    <span>{t('Metamask Snap')}</span>
+                    {'  '}
+                    <span className="text-xs"> {t('quick start')}</span>
+                  </>
+                }
+                description={t(
+                  `Connect directly via Metamask with the Vega Snap for single key support without advanced features.`
+                )}
                 text={
                   <>
                     <div className="flex items-center justify-center w-full h-full text-base gap-1">
@@ -329,7 +339,7 @@ const ConnectorList = ({
                     </>
                   }
                   description={t(
-                    `Connect directly via Metamask with the Vega Snap for single key support without advanced features.`
+                    `Install Metamask with the Vega Snap for single key support without advanced features.`
                   )}
                   text={
                     <>
