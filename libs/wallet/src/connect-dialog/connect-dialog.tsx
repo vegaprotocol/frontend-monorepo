@@ -51,14 +51,14 @@ export interface VegaConnectDialogProps {
   connectors: Connectors;
   riskMessage?: ReactNode;
   contentOnly?: boolean;
-  closeDialogParam?: () => void;
+  onClose?: () => void;
 }
 
 export const VegaConnectDialog = ({
   connectors,
   riskMessage,
   contentOnly,
-  closeDialogParam,
+  onClose,
 }: VegaConnectDialogProps) => {
   const { disconnect, acknowledgeNeeded } = useVegaWallet();
   const vegaWalletDialogOpen = useVegaWalletDialogStore(
@@ -89,7 +89,7 @@ export const VegaConnectDialog = ({
       connectors={connectors}
       appChainId={data.statistics.chainId}
       riskMessage={riskMessage}
-      closeDialogParam={closeDialogParam}
+      onClose={onClose}
     />
   );
   if (contentOnly) {
@@ -110,20 +110,20 @@ const ConnectDialogContainer = ({
   connectors,
   appChainId,
   riskMessage,
-  closeDialogParam,
+  onClose,
 }: {
   connectors: Connectors;
   appChainId: string;
   riskMessage?: ReactNode;
-  closeDialogParam?: () => void;
+  onClose?: () => void;
 }) => {
   const { vegaUrl, vegaWalletServiceUrl } = useVegaWallet();
   const closeVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.closeVegaWalletDialog
   );
   const closeDialog = useCallback(() => {
-    closeDialogParam ? closeDialogParam() : closeVegaWalletDialog();
-  }, [closeVegaWalletDialog, closeDialogParam]);
+    onClose ? onClose() : closeVegaWalletDialog();
+  }, [closeVegaWalletDialog, onClose]);
   const [selectedConnector, setSelectedConnector] = useState<VegaConnector>();
   const [walletUrl, setWalletUrl] = useState(vegaWalletServiceUrl);
 
