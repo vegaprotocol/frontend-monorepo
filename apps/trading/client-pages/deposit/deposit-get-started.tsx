@@ -20,25 +20,24 @@ export const DepositGetStarted = () => {
   );
 
   // Dont show unless still onboarding
-  if (onboardingDismissed) {
-    return null;
-  }
+  // TODO: re add
+  // if (onboardingDismissed) {
+  //   return null;
+  // }
 
   return (
-    <div className="pt-6 border-t border-default">
-      <div className={wrapperClasses}>
-        <h3 className="text-lg">{t('Get started')}</h3>
-        <GetStartedCheckList />
-        {step > OnboardingStep.ONBOARDING_DEPOSIT_STEP && (
-          <TradingAnchorButton
-            href={Links.HOME()}
-            onClick={() => dismiss()}
-            intent={Intent.Info}
-          >
-            {t('Start trading')}
-          </TradingAnchorButton>
-        )}
-      </div>
+    <div className={wrapperClasses}>
+      <h3 className="text-lg">{t('Get started')}</h3>
+      <GetStartedCheckList />
+      {step > OnboardingStep.ONBOARDING_DEPOSIT_STEP && (
+        <TradingAnchorButton
+          href={Links.HOME()}
+          onClick={() => dismiss()}
+          intent={Intent.Info}
+        >
+          {t('Start trading')}
+        </TradingAnchorButton>
+      )}
     </div>
   );
 };
