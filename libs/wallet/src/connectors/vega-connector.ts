@@ -395,6 +395,24 @@ export interface TransferBody {
   transfer: Transfer;
 }
 
+export type ApplyReferralCode = {
+  applyReferralCode: {
+    id: string;
+  };
+};
+
+export type CreateReferralSet = {
+  createReferralSet: {
+    isTeam: boolean;
+    team?: {
+      name: string;
+      teamUrl?: string;
+      avatarUrl?: string;
+      closed: boolean;
+    };
+  };
+};
+
 export type Transaction =
   | StopOrdersSubmissionBody
   | StopOrdersCancellationBody
@@ -408,7 +426,9 @@ export type Transaction =
   | ProposalSubmissionBody
   | BatchMarketInstructionSubmissionBody
   | TransferBody
-  | LiquidityProvisionSubmission;
+  | LiquidityProvisionSubmission
+  | ApplyReferralCode
+  | CreateReferralSet;
 
 export const isWithdrawTransaction = (
   transaction: Transaction
