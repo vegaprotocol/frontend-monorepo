@@ -9,7 +9,7 @@ import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid } from './trade-grid';
 import { TradePanels } from './trade-panels';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Links, Routes } from '../../pages/client-router';
+import { Links } from '../../lib/links';
 import { ViewType, useSidebar } from '../../components/sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
@@ -96,12 +96,12 @@ export const MarketPage = () => {
     return (
       <Splash>
         <span className="flex flex-col items-center gap-2">
-          <p className="text-sm justify-center">
+          <p className="justify-center text-sm">
             {t('This market URL is not available any more.')}
           </p>
-          <p className="text-sm justify-center">
+          <p className="justify-center text-sm">
             {t(`Please choose another market from the`)}{' '}
-            <ExternalLink onClick={() => navigate(Links[Routes.MARKETS]())}>
+            <ExternalLink onClick={() => navigate(Links.MARKETS())}>
               market list
             </ExternalLink>
           </p>

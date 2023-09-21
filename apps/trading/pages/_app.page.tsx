@@ -48,8 +48,8 @@ import {
 } from '@vegaprotocol/proposals';
 import { ViewingBanner } from '../components/viewing-banner';
 import { NavHeader } from '../components/navbar/nav-header';
-import { Routes as AppRoutes } from './client-router';
 import { Telemetry } from '../components/telemetry';
+import { Routes as AppRoutes } from '../lib/links';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
