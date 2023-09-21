@@ -1,4 +1,4 @@
-import type { ReactNode} from 'react';
+import type { ReactNode } from 'react';
 import { useCallback, useEffect } from 'react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -29,6 +29,9 @@ import {
 import BigNumber from 'bignumber.js';
 import { Token } from '@vegaprotocol/smart-contracts';
 import { MaxUint256 } from '@ethersproject/constants';
+import { useTopTradedMarkets } from '../../lib/hooks/use-top-traded-markets';
+import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
+import { getAsset } from '@vegaprotocol/markets';
 
 export const Deposit = () => {
   return (
@@ -48,6 +51,7 @@ const DepositFlowContainer = () => {
   const assetId = searchParams.get('assetId') || undefined;
   const { data } = useAssetsDataProvider();
   const { config } = useEthereumConfig();
+  const { data: markets } = useTopTradedMarkets();
 
   if (!data) return null;
   if (!config) return null;
@@ -57,6 +61,7 @@ const DepositFlowContainer = () => {
       assets={data}
       assetId={assetId}
       bridgeAddress={config.collateral_bridge_contract.address}
+      markets={markets || []}
     />
   );
 };
@@ -79,10 +84,12 @@ const DepositFlow = ({
   assets,
   assetId,
   bridgeAddress,
+  markets,
 }: {
   assets: AssetFieldsFragment[];
   assetId?: string;
   bridgeAddress: string;
+  markets: MarketMaybeWithDataAndCandles[];
 }) => {
   const { provider, account } = useWeb3React();
   const [state, setState] = useState<DepositState>(() => {
@@ -156,6 +163,7 @@ const DepositFlow = ({
             asset={state.asset}
             assets={assets}
             onSelect={handleAssetChanged}
+            markets={markets}
           />
         </StepWrapper>
         <StepWrapper>
@@ -196,33 +204,46 @@ const AssetSelector = ({
   asset,
   assets,
   onSelect,
+  markets,
 }: {
   asset?: AssetFieldsFragment;
   assets: AssetFieldsFragment[];
   onSelect: (asset?: AssetFieldsFragment) => void;
+  markets: MarketMaybeWithDataAndCandles[];
 }) => {
   const [search, setSearch] = useState('');
+  const getTopMarkets = (a: AssetFieldsFragment) => {
+    return markets
+      .filter((m) => {
+        const marketAsset = getAsset(m);
+        return marketAsset.id === a.id;
+      })
+      .slice(0, 4);
+  };
 
   if (asset && isAssetTypeERC20(asset)) {
     return (
-      <div className="flex items-center w-full gap-2">
-        <button
-          onClick={() => onSelect(undefined)}
-          className="w-5 h-5 border-2 rounded border-vega-clight-600"
-        >
-          <div className="block w-4 h-4 border-2 border-white bg-vega-clight-300" />
-        </button>
-        <p className="block text-lg">
-          {asset.symbol}{' '}
-          <small>({truncateByChars(asset.source.contractAddress)})</small>
-        </p>
-        <TradingButton
-          onClick={() => onSelect(undefined)}
-          size="small"
-          className="ml-auto"
-        >
-          Change asset
-        </TradingButton>
+      <div className="flex flex-col w-full gap-2">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => onSelect(undefined)}
+            className="w-5 h-5 border-2 rounded border-vega-clight-600"
+          >
+            <div className="block w-4 h-4 border-2 border-white bg-vega-clight-300" />
+          </button>
+          <div className="flex flex-1 gap-2">
+            <div className="flex-1">
+              <p className="block text-lg">
+                {asset.symbol}{' '}
+                <small>({truncateByChars(asset.source.contractAddress)})</small>
+              </p>
+              <Markets markets={getTopMarkets(asset)} />
+            </div>
+            <TradingButton onClick={() => onSelect(undefined)} size="small">
+              Change asset
+            </TradingButton>
+          </div>
+        </div>
       </div>
     );
   }
@@ -259,7 +280,7 @@ const AssetSelector = ({
           if (!isAssetTypeERC20(asset)) return null;
           return (
             <div key={asset.id}>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <Radio.Item
                   id={asset.id}
                   value={asset.id}
@@ -267,15 +288,18 @@ const AssetSelector = ({
                 >
                   <Radio.Indicator className="block w-4 h-4 border-2 border-white bg-vega-clight-300" />
                 </Radio.Item>
-                <label
-                  htmlFor={asset.id}
-                  className="block text-lg cursor-pointer"
-                >
-                  {asset.symbol}{' '}
-                  <small>
-                    ({truncateByChars(asset.source.contractAddress)})
-                  </small>
-                </label>
+                <div className="flex-1">
+                  <label
+                    htmlFor={asset.id}
+                    className="block text-lg cursor-pointer"
+                  >
+                    {asset.symbol}{' '}
+                    <small>
+                      ({truncateByChars(asset.source.contractAddress)})
+                    </small>
+                  </label>
+                  <Markets markets={getTopMarkets(asset)} />
+                </div>
               </div>
             </div>
           );
@@ -464,6 +488,27 @@ const SendDeposit = ({
           {t('Deposit %s', asset.symbol)}
         </TradingButton>
       </form>
+    </div>
+  );
+};
+
+const Markets = ({ markets }: { markets: MarketMaybeWithDataAndCandles[] }) => {
+  return (
+    <div className="flex gap-2">
+      {markets.length ? (
+        markets.map((m) => {
+          return (
+            <div
+              key={m.id}
+              className="w-1/4 px-2 py-1 text-xs rounded bg-vega-clight-700"
+            >
+              {m.tradableInstrument.instrument.code} {m.data?.markPrice}
+            </div>
+          );
+        })
+      ) : (
+        <p className="text-xs">No markets</p>
+      )}
     </div>
   );
 };
