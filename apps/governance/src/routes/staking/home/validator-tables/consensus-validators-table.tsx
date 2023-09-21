@@ -3,7 +3,7 @@ import { forwardRef, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Button, Icon } from '@vegaprotocol/ui-toolkit';
-import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGrid } from '@vegaprotocol/datagrid';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../../lib/bignumber';
 import {
@@ -85,17 +85,17 @@ const TopThirdCellRenderer = (
       }}
       className="grid grid-cols-[60px_1fr] w-full h-full py-4 px-0 text-sm text-white text-center overflow-scroll"
     >
-      <div className="text-xs text-left px-3">
+      <div className="px-3 text-xs text-left">
         {params?.data?.rankingDisplay}
       </div>
-      <div className="whitespace-normal px-3">
+      <div className="px-3 whitespace-normal">
         <div className="mb-4">
           <Button
             data-testid="show-all-validators"
             rightIcon={
               <Icon
                 name="arrow-right"
-                className="fill-current mr-2 align-text-top"
+                className="mr-2 align-text-top fill-current"
               />
             }
             className="inline-flex items-center"
@@ -103,7 +103,7 @@ const TopThirdCellRenderer = (
             {t('Reveal top validators')}
           </Button>
         </div>
-        <p className="font-semibold text-white mb-0">
+        <p className="mb-0 font-semibold text-white">
           {t(
             'Validators with too great a stake share will have the staking rewards for their delegators penalised.'
           )}
