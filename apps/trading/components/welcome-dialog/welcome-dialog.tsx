@@ -23,7 +23,7 @@ export const WelcomeDialog = () => {
     <VegaConnectDialog
       connectors={Connectors}
       riskMessage={<RiskMessage />}
-      closeDialogParam={() => setWalletDialogOpen(false)}
+      onClose={() => setWalletDialogOpen(false)}
       contentOnly
     />
   ) : (
