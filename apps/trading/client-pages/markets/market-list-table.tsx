@@ -1,5 +1,5 @@
 import type { TypedDataAgGrid } from '@vegaprotocol/datagrid';
-import { AgGridLazy as AgGrid, PriceFlashCell } from '@vegaprotocol/datagrid';
+import { AgGrid, PriceFlashCell } from '@vegaprotocol/datagrid';
 import type { MarketMaybeWithData } from '@vegaprotocol/markets';
 import { useColumnDefs } from './use-column-defs';
 
