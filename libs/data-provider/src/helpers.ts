@@ -29,4 +29,8 @@ const hasNotFoundGraphQLErrors = (errors: GraphQLErrors, path?: string[]) => {
 };
 
 export const marketDataErrorPolicyGuard = (errors: GraphQLErrors) =>
-  errors.every((e) => e.message.match(/no market data for market:/i));
+  errors.every(
+    (e) =>
+      e.message.match(/no market data for market:/i) ||
+      e.message.match(/Conditions list is empty/)
+  );

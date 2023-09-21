@@ -2,6 +2,7 @@ import { useYesterday } from '@vegaprotocol/react-helpers';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
+  marketDataErrorPolicyGuard,
   useDataProvider,
 } from '@vegaprotocol/data-provider';
 import type {
@@ -43,6 +44,7 @@ export const marketsProvider = makeDataProvider<
   query: MarketsDocument,
   getData,
   fetchPolicy: 'cache-first',
+  errorPolicyGuard: marketDataErrorPolicyGuard,
 });
 
 export const marketsMapProvider = makeDerivedDataProvider<
