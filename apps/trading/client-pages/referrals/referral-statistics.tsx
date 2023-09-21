@@ -43,7 +43,7 @@ const CodeTile = ({
   );
 };
 
-export const ReferralStatisticsContainer = () => {
+export const ReferralStatistics = () => {
   const openWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
@@ -61,7 +61,6 @@ export const ReferralStatisticsContainer = () => {
       </div>
     );
   }
-
   if (referee?.code) {
     return <Statistics data={referee} as="referee" />;
   }

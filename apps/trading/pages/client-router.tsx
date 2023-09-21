@@ -19,6 +19,7 @@ import { Referrals } from '../client-pages/referrals/referrals';
 import { ReferralStatistics } from '../client-pages/referrals/referral-statistics';
 import { ApplyCodeForm } from '../client-pages/referrals/apply-code-form';
 import { CreateCodeContainer } from '../client-pages/referrals/create-code-form';
+import { NotFound as ReferralNotFound } from '../client-pages/referrals/error-boundary';
 import { compact } from 'lodash';
 import { FLAGS } from '@vegaprotocol/environment';
 
@@ -33,8 +34,8 @@ const NotFound = () => (
   </Splash>
 );
 
-export const routerConfig: RouteObject[] = [
-  // Pages that dont use the LayoutWithSidebar must come first
+export const routerConfig: RouteObject[] = compact([
+  // Pages that don't use the LayoutWithSidebar must come first
   // to ensure they are matched before the catch all route '/*'
   {
     path: 'disclaimer',
@@ -42,13 +43,11 @@ export const routerConfig: RouteObject[] = [
     id: Routes.DISCLAIMER,
     children: [{ index: true, element: <Disclaimer /> }],
   },
-  // Referrals routing:
-  {
-    path: Routes.REFERRALS,
-    element: <LayoutWithSky />,
-    children: [
-      {
-        element: <Referrals />,
+  // Referrals routing (the pages should be available if the feature flag is on)
+  FLAGS.REFERRALS
+    ? {
+        path: Routes.REFERRALS,
+        element: <LayoutWithSky />,
         children: [
           {
             element: <Referrals />,
@@ -67,10 +66,13 @@ export const routerConfig: RouteObject[] = [
               },
             ],
           },
+          {
+            path: '*',
+            element: <ReferralNotFound />,
+          },
         ],
-      },
-    ],
-  },
+      }
+    : undefined,
   // All other pages will use the sidebar
   {
     path: '/*',
