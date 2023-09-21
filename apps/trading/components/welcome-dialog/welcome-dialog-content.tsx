@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import { GetStarted } from './get-started';
 import { TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
-import { Links, Routes } from '../../pages/client-router';
+import { Links } from '../../lib/links';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
 import { useTopTradedMarkets } from '../../lib/hooks/use-top-traded-markets';
@@ -15,9 +15,7 @@ export const WelcomeDialogContent = () => {
 
   const { data } = useTopTradedMarkets();
   const marketId = data && data[0]?.id;
-  const link = marketId
-    ? Links[Routes.MARKET](marketId)
-    : Links[Routes.MARKETS]();
+  const link = marketId ? Links.MARKET(marketId) : Links.MARKETS();
 
   const lead =
     VEGA_ENV === Networks.MAINNET
