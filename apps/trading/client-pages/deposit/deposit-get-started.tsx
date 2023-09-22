@@ -20,10 +20,9 @@ export const DepositGetStarted = () => {
   );
 
   // Dont show unless still onboarding
-  // TODO: re add
-  // if (onboardingDismissed) {
-  //   return null;
-  // }
+  if (onboardingDismissed) {
+    return null;
+  }
 
   return (
     <div className={wrapperClasses}>
