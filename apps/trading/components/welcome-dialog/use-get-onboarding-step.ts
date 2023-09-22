@@ -12,16 +12,20 @@ import { useGlobalStore } from '../../stores';
 const ONBOARDING_STORAGE_KEY = 'vega_onboarding';
 export const useOnboardingStore = create<{
   dialogOpen: boolean;
+  walletDialogOpen: boolean;
   dismissed: boolean;
   dismiss: () => void;
   setDialogOpen: (isOpen: boolean) => void;
+  setWalletDialogOpen: (isOpen: boolean) => void;
 }>()(
   persist(
     (set) => ({
       dialogOpen: true,
+      walletDialogOpen: false,
       dismissed: false,
       dismiss: () => set({ dismissed: true }),
       setDialogOpen: (isOpen) => set({ dialogOpen: isOpen }),
+      setWalletDialogOpen: (isOpen) => set({ walletDialogOpen: isOpen }),
     }),
     {
       name: ONBOARDING_STORAGE_KEY,
