@@ -6,6 +6,11 @@ import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { ProposalDocument } from './__generated__/Proposal';
 
+jest.mock('@vegaprotocol/data-provider', () => ({
+  ...jest.requireActual('@vegaprotocol/data-provider'),
+  useDataProvider: jest.fn(() => ({ data: [], loading: false })),
+}));
+
 jest.mock('../components/proposal', () => ({
   Proposal: () => <div data-testid="proposal" />,
 }));
