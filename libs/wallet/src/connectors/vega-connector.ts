@@ -465,6 +465,11 @@ export const isTransferTransaction = (
   transaction: Transaction
 ): transaction is TransferBody => 'transfer' in transaction;
 
+export const isReferralRelatedTransaction = (
+  transaction: Transaction
+): transaction is CreateReferralSet | ApplyReferralCode =>
+  'createReferralSet' in transaction || 'applyReferralCode' in transaction;
+
 export interface TransactionResponse {
   transactionHash: string;
   signature: string; // still to be added by core
