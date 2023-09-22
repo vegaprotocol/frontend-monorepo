@@ -18,6 +18,8 @@ import {
   Loader,
   TradingButton,
   TradingInput,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import {
@@ -32,6 +34,7 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { useTopTradedMarkets } from '../../lib/hooks/use-top-traded-markets';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { getAsset } from '@vegaprotocol/markets';
+import { CompactNumber } from '@vegaprotocol/react-helpers';
 
 export const Deposit = () => {
   return (
@@ -78,6 +81,7 @@ interface DepositState {
   asset: AssetFieldsFragment | undefined;
   amount: string;
   allowance: BigNumber | undefined;
+  balance: BigNumber | undefined;
 }
 
 const DepositFlow = ({
@@ -99,6 +103,7 @@ const DepositFlow = ({
       asset,
       amount: '',
       allowance: undefined,
+      balance: undefined,
     };
   });
 
@@ -127,6 +132,7 @@ const DepositFlow = ({
         step: DepositSteps.Asset,
         asset: undefined,
         allowance: undefined,
+        balance: undefined,
       }));
       return;
     }
@@ -137,14 +143,25 @@ const DepositFlow = ({
     // ethereum wallet connect fetch current allowance and bypass approval
     // step if approval already given
     let allowance = new BigNumber(0);
+    let balance = new BigNumber(0);
     if (account) {
       const signer = provider.getSigner();
       const tokenContract = new Token(
         asset.source.contractAddress,
         signer || provider
       );
-      const res = await tokenContract.allowance(account, bridgeAddress);
-      allowance = new BigNumber(addDecimal(res.toString(), asset.decimals));
+      const allowanceRes = await tokenContract.allowance(
+        account,
+        bridgeAddress
+      );
+      allowance = new BigNumber(
+        addDecimal(allowanceRes.toString(), asset.decimals)
+      );
+
+      const balanceRes = await tokenContract.balanceOf(account);
+      balance = new BigNumber(
+        addDecimal(balanceRes.toString(), asset.decimals)
+      );
     }
 
     const step = allowance.isGreaterThan(0)
@@ -156,6 +173,7 @@ const DepositFlow = ({
       step,
       asset,
       allowance,
+      balance,
     }));
   };
 
@@ -168,6 +186,7 @@ const DepositFlow = ({
             assets={assets}
             onSelect={handleAssetChanged}
             markets={markets}
+            balance={state.balance}
           />
         </StepWrapper>
         <StepWrapper>
@@ -184,17 +203,19 @@ const DepositFlow = ({
             step={state.step}
             asset={state.asset}
             allowance={state.allowance}
+            balance={state.balance}
             amount={state.amount}
             setAmount={(amount) => setState((curr) => ({ ...curr, amount }))}
           />
         </StepWrapper>
       </div>
-      <pre className="fixed bottom-0 right-0 p-2 text-xs text-white bg-vega-pink">
-        {JSON.stringify(state, null, 2)}
-      </pre>
     </>
   );
 };
+
+// <pre className="fixed bottom-0 right-0 p-2 text-xs text-white bg-vega-pink">
+//  {JSON.stringify(state, null, 2)}
+// </pre>
 
 const StepWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -209,11 +230,13 @@ const AssetSelector = ({
   assets,
   onSelect,
   markets,
+  balance,
 }: {
   asset?: AssetFieldsFragment;
   assets: AssetFieldsFragment[];
   onSelect: (asset?: AssetFieldsFragment) => void;
   markets: MarketMaybeWithDataAndCandles[];
+  balance: BigNumber | undefined;
 }) => {
   const [search, setSearch] = useState('');
   const getTopMarkets = (a: AssetFieldsFragment) => {
@@ -228,24 +251,32 @@ const AssetSelector = ({
   if (asset && isAssetTypeERC20(asset)) {
     return (
       <div className="flex flex-col w-full gap-2">
-        <div className="flex items-center gap-2">
+        <div className="flex gap-2">
           <button
             onClick={() => onSelect(undefined)}
-            className="w-5 h-5 border-2 rounded border-vega-clight-600"
+            className="flex items-center w-5 h-5 border-2 rounded border-vega-clight-600"
           >
-            <div className="block w-4 h-4 border-2 border-white bg-vega-clight-300" />
+            <VegaIcon name={VegaIconNames.TICK} />
           </button>
           <div className="flex flex-1 gap-2">
-            <div className="flex-1">
-              <p className="block text-lg">
+            <div className="flex flex-col flex-1 gap-1">
+              <p className="text-lg">
                 {asset.symbol}{' '}
-                <small>({truncateByChars(asset.source.contractAddress)})</small>
+                <small>{truncateByChars(asset.source.contractAddress)}</small>
               </p>
               <Markets markets={getTopMarkets(asset)} />
             </div>
-            <TradingButton onClick={() => onSelect(undefined)} size="small">
-              Change asset
-            </TradingButton>
+            <div className="flex flex-col items-end">
+              {balance && (
+                <div className="font-mono text-lg">
+                  {balance.toString()}
+                  <small className="ml-1 text-muted">{asset.symbol}</small>
+                </div>
+              )}
+              <TradingButton onClick={() => onSelect(undefined)} size="small">
+                Change asset
+              </TradingButton>
+            </div>
           </div>
         </div>
       </div>
@@ -284,7 +315,7 @@ const AssetSelector = ({
           if (!isAssetTypeERC20(asset)) return null;
           return (
             <div key={asset.id}>
-              <div className="flex items-center gap-3">
+              <div className="flex gap-3">
                 <Radio.Item
                   id={asset.id}
                   value={asset.id}
@@ -292,7 +323,7 @@ const AssetSelector = ({
                 >
                   <Radio.Indicator className="block w-4 h-4 border-2 border-white bg-vega-clight-300" />
                 </Radio.Item>
-                <div className="flex-1">
+                <div className="flex flex-col flex-1 gap-1">
                   <label
                     htmlFor={asset.id}
                     className="block text-lg cursor-pointer"
@@ -357,41 +388,16 @@ const Approval = ({
     }
   }, [tx?.status, asset, onApproved]);
 
+  // No asset selected, show generic approval title
   if (!asset) {
-    return <h3 className="text-lg">Approval</h3>;
-  }
-
-  if (tx) {
-    let title = t('Approval');
-    if (tx.status === EthTxStatus.Confirmed) {
-      title = t('Approved');
-    } else if (tx.status === EthTxStatus.Pending) {
-      title = t('Waiting for approval...');
-    }
     return (
       <div className="flex items-center justify-between w-full">
-        <h3 className="text-lg">{title}</h3>
-        <TradingButton onClick={handleApprove} size="small">
-          {t('Re-approve')}
-        </TradingButton>
+        <div className="flex gap-2">
+          <div className="flex items-center w-5 h-5 border-2 rounded border-vega-clight-600" />
+          <h3 className="text-lg">{t('Approval')}</h3>
+        </div>
       </div>
     );
-  }
-
-  if (step !== DepositSteps.Approve) {
-    if (!allowance) {
-      return <h3 className="text-lg">Approval</h3>;
-    }
-    if (allowance.isGreaterThan(0)) {
-      return (
-        <div className="flex items-center justify-between w-full">
-          <h3 className="text-lg">{t('Approved')}</h3>
-          <TradingButton onClick={handleApprove} size="small">
-            {t('Re-approve')}
-          </TradingButton>
-        </div>
-      );
-    }
   }
 
   if (!account) {
@@ -405,13 +411,52 @@ const Approval = ({
     );
   }
 
-  if (!allowance) {
-    return <h3 className="text-lg">Loading balances...</h3>;
+  if (tx && tx.status === EthTxStatus.Pending) {
+    return (
+      <div className="flex items-center justify-between w-full">
+        <div className="flex items-center gap-2">
+          <Loader size="small" />
+          <h3 className="text-lg">{t('Waiting for approval...')}</h3>
+        </div>
+        <TradingButton onClick={handleApprove} size="small">
+          {t('Re-approve')}
+        </TradingButton>
+      </div>
+    );
   }
 
+  // APPROVED: show muted re-approve button
+  if (!allowance || allowance.isGreaterThan(0)) {
+    return (
+      <div className="flex items-center justify-between w-full">
+        <div className="flex gap-2">
+          <div className="flex items-center w-5 h-5 border-2 rounded border-vega-clight-600">
+            <VegaIcon name={VegaIconNames.TICK} />
+          </div>
+          <h3 className="text-lg">{t('Approved')}</h3>
+        </div>
+        <div className="flex flex-col items-end">
+          {allowance && (
+            <div className="font-mono text-lg">
+              <Allowance allowance={allowance} />
+              <small className="ml-1 text-muted">{asset.symbol}</small>
+            </div>
+          )}
+          <TradingButton onClick={handleApprove} size="small">
+            {t('Re-approve')}
+          </TradingButton>
+        </div>
+      </div>
+    );
+  }
+
+  // NOT APPROVED: show primary approve button
   return (
     <div className="flex items-center justify-between w-full">
-      <h3 className="text-lg">{t('Deposits not approved')}</h3>
+      <div className="flex gap-2">
+        <div className="flex items-center w-5 h-5 border-2 rounded border-vega-clight-600" />
+        <h3 className="text-lg">{t('Approve deposits')}</h3>
+      </div>
       <TradingButton
         onClick={() => {
           if (!provider) throw new Error('no provider');
@@ -436,35 +481,67 @@ const Approval = ({
   );
 };
 
+const Allowance = ({ allowance }: { allowance: BigNumber }) => {
+  let value = '';
+
+  const format = (divisor: string) => {
+    const result = allowance.dividedBy(divisor);
+    return result.isInteger() ? result.toString() : result.toFixed(1);
+  };
+
+  if (allowance.isGreaterThan(new BigNumber('1e14'))) {
+    value = t('>100t');
+  } else if (allowance.isGreaterThanOrEqualTo(new BigNumber('1e12'))) {
+    // Trillion
+    value = `${format('1e12')}t`;
+  } else if (allowance.isGreaterThanOrEqualTo(new BigNumber('1e9'))) {
+    // Billion
+    value = `${format('1e9')}b`;
+  } else if (allowance.isGreaterThanOrEqualTo(new BigNumber('1e6'))) {
+    // Million
+    value = `${format('1e6')}m`;
+  } else {
+    value = allowance.toString();
+  }
+
+  return <span>{value}</span>;
+};
+
 const SendDeposit = ({
   step,
   asset,
   allowance,
+  balance,
   amount,
   setAmount,
 }: {
   step: Step;
   asset: AssetFieldsFragment | undefined;
   allowance: BigNumber | undefined;
+  balance: BigNumber | undefined;
   amount: string;
   setAmount: (amount: string) => void;
 }) => {
   const openDialog = useWeb3ConnectStore((store) => store.open);
   const { account } = useWeb3React();
 
+  const fallback = (
+    <div className="flex gap-2">
+      <div className="flex items-center w-5 h-5 border-2 rounded border-vega-clight-600" />
+      <h3 className="text-lg">{t('Deposit')}</h3>
+    </div>
+  );
+
   if (step !== DepositSteps.Deposit) {
-    return <h3 className="text-lg">Confirm deposit</h3>;
+    return fallback;
   }
 
   if (!asset) {
-    return <p>Please select asset</p>;
+    return fallback;
   }
 
-  if (!allowance) {
-    return <h3 className="text-lg">Confirm deposit</h3>;
-  }
-  if (allowance.isZero()) {
-    return <h3 className="text-lg">Deposits not approved</h3>;
+  if (!allowance || allowance.isZero()) {
+    return fallback;
   }
 
   if (!account) {
@@ -477,23 +554,33 @@ const SendDeposit = ({
 
   return (
     <div className="flex items-center justify-between w-full">
-      <h3 className="text-lg">{t('Confirm deposit')}</h3>
-      <form
-        className="flex items-center justify-between w-1/2 gap-2"
-        onSubmit={() => alert('TODO')}
-      >
-        <div className="flex-1">
-          <TradingInput
-            name="amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="Enter amount"
-            className="w-full"
-          />
+      <div className="flex gap-2">
+        <div className="flex items-center w-5 h-5 border-2 rounded border-vega-clight-600" />
+        <h3 className="text-lg">{t('Deposit')}</h3>
+      </div>
+      <form className="w-1/2" onSubmit={() => alert('TODO')}>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex-1">
+            <TradingInput
+              name="amount"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="Enter amount"
+              className="w-full"
+            />
+          </div>
+          {balance && (
+            <TradingButton
+              size="small"
+              onClick={() => setAmount(balance.toString())}
+            >
+              {t('Use max')}
+            </TradingButton>
+          )}
+          <TradingButton type="submit" size="small" intent={Intent.Success}>
+            {t('Deposit %s', asset.symbol)}
+          </TradingButton>
         </div>
-        <TradingButton type="submit" size="small" intent={Intent.Success}>
-          {t('Deposit %s', asset.symbol)}
-        </TradingButton>
       </form>
     </div>
   );
