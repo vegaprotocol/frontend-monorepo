@@ -38,18 +38,36 @@ export const RainbowButton = ({
 
 const RAINBOW_TAB_STYLE = classNames(
   'inline-block',
-  'bg-vega-clight-500 dark:bg-vega-cdark-500 hover:bg-vega-clight-400 dark:hover:bg-vega-cdark-400',
-  'data-[state="active"]:text-white data-[state="active"]:bg-rainbow data-[state="active"]:hover:bg-none data-[state="active"]:hover:bg-vega-pink-500 dark:data-[state="active"]:hover:bg-vega-pink-500',
-  '[&.active]:text-white [&.active]:bg-rainbow [&.active]:hover:bg-none [&.active]:hover:bg-vega-pink-500 dark:[&.active]:hover:bg-vega-pink-500',
+  'bg-vega-clight-500 dark:bg-vega-cdark-500',
+  'hover:bg-vega-clight-400 dark:hover:bg-vega-cdark-400',
+  'data-[state="active"]:text-white data-[state="active"]:bg-rainbow',
+  'data-[state="active"]:hover:bg-none data-[state="active"]:hover:bg-vega-pink-500 dark:data-[state="active"]:hover:bg-vega-pink-500',
+  '[&.active]:text-white [&.active]:bg-rainbow',
+  '[&.active]:hover:bg-none [&.active]:hover:bg-vega-pink-500 dark:[&.active]:hover:bg-vega-pink-500',
   'px-5 py-3',
   'first:rounded-tl-lg last:rounded-tr-lg'
 );
 
+const DISABLED_RAINBOW_TAB_STYLE = classNames(
+  'pointer-events-none',
+  'text-vega-clight-100 dark:text-vega-cdark-100',
+  'data-[state="active"]:text-white',
+  '[&.active]:text-white'
+);
+
 export const RainbowTabButton = forwardRef<
   HTMLButtonElement,
-  ButtonHTMLAttributes<HTMLButtonElement>
->(({ children, ...props }, ref) => (
-  <button ref={ref} className={RAINBOW_TAB_STYLE} {...props}>
+  { disabled?: boolean } & ButtonHTMLAttributes<HTMLButtonElement>
+>(({ children, className, disabled = false, ...props }, ref) => (
+  <button
+    ref={ref}
+    className={classNames(
+      RAINBOW_TAB_STYLE,
+      { 'pointer-events-none': disabled },
+      className
+    )}
+    {...props}
+  >
     {children}
   </button>
 ));
@@ -58,9 +76,19 @@ RainbowTabButton.displayName = 'RainbowTabButton';
 export const RainbowTabLink = ({
   to,
   children,
+  className,
+  disabled = false,
   ...props
-}: ComponentProps<typeof NavLink>) => (
-  <NavLink to={to} className={RAINBOW_TAB_STYLE} {...props}>
+}: { disabled?: boolean } & ComponentProps<typeof NavLink>) => (
+  <NavLink
+    to={to}
+    className={classNames(
+      RAINBOW_TAB_STYLE,
+      disabled && DISABLED_RAINBOW_TAB_STYLE,
+      typeof className === 'string' ? className : undefined
+    )}
+    {...props}
+  >
     {children}
   </NavLink>
 );
