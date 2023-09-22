@@ -5,8 +5,6 @@ import type { MutableRefObject } from 'react';
 import { useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 
-const GRID_EVENT_DEBOUNCE_TIME = 500;
-
 const gridProps = {
   rowData: [{ id: 1 }],
   columnDefs: [
@@ -18,25 +16,29 @@ const gridProps = {
   ],
   style: { width: 500, height: 300 },
 };
+const GRID_EVENT_DEBOUNCE_TIME = 300;
+let gridRef: MutableRefObject<AgGridReact | null>;
+function TestComponent({
+  hookParams,
+}: {
+  hookParams: Parameters<typeof useDataGridEvents>;
+}) {
+  const hookCallbacks = useDataGridEvents(...hookParams);
+  gridRef = useRef<AgGridReact | null>(null);
+  return <AgGridThemed gridRef={gridRef} {...gridProps} {...hookCallbacks} />;
+}
 
 // Not using render hook so I can pass event callbacks
 // to a rendered grid
 function setup(...args: Parameters<typeof useDataGridEvents>) {
-  let gridRef;
-
-  function TestComponent() {
-    const hookCallbacks = useDataGridEvents(...args);
-    gridRef = useRef<AgGridReact | null>(null);
-    return <AgGridThemed gridRef={gridRef} {...gridProps} {...hookCallbacks} />;
-  }
-  render(<TestComponent />);
-  return gridRef as unknown as MutableRefObject<AgGridReact>;
+  return render(<TestComponent hookParams={args} />);
 }
 
 describe('useDataGridEvents', () => {
   const originalWarn = console.warn;
 
   beforeAll(() => {
+    gridRef = undefined;
     jest.useFakeTimers();
 
     // disabling some ag grid warnings that are caused by test setup only
@@ -55,15 +57,15 @@ describe('useDataGridEvents', () => {
       columnState: undefined,
     };
 
-    const result = setup(initialState, callback);
+    setup(initialState, callback);
 
     // column state was not updated, so the default width provided by the
     // col def should be set
-    expect(result.current.columnApi.getColumnState()[0].width).toEqual(
+    expect(gridRef.current?.columnApi.getColumnState()[0].width).toEqual(
       gridProps.columnDefs[0].width
     );
     // no filters set
-    expect(result.current.api.getFilterModel()).toEqual({});
+    expect(gridRef.current?.api.getFilterModel()).toEqual({});
 
     // Set filter
     const idFilter = {
@@ -72,7 +74,7 @@ describe('useDataGridEvents', () => {
       type: 'equals',
     };
     await act(async () => {
-      result.current.api.setFilterModel({
+      gridRef.current?.api.setFilterModel({
         id: idFilter,
       });
     });
@@ -88,7 +90,7 @@ describe('useDataGridEvents', () => {
       },
     });
     callback.mockClear();
-    expect(result.current.api.getFilterModel()['id']).toEqual(idFilter);
+    expect(gridRef.current?.api.getFilterModel()['id']).toEqual(idFilter);
   });
 
   it('applies grid state on ready', async () => {
@@ -105,11 +107,11 @@ describe('useDataGridEvents', () => {
       columnState: [colState],
     };
 
-    const result = setup(initialState, jest.fn());
+    setup(initialState, jest.fn());
 
     await waitFor(() => {
-      expect(result.current.api.getFilterModel()['id']).toEqual(idFilter);
-      expect(result.current.columnApi.getColumnState()[0]).toEqual(
+      expect(gridRef.current?.api.getFilterModel()['id']).toEqual(idFilter);
+      expect(gridRef.current?.columnApi.getColumnState()[0]).toEqual(
         expect.objectContaining(colState)
       );
     });
@@ -122,13 +124,13 @@ describe('useDataGridEvents', () => {
       columnState: undefined,
     };
 
-    const result = setup(initialState, callback);
+    setup(initialState, callback);
 
     const newWidth = 400;
 
     // Set col width multiple times
     await act(async () => {
-      result.current.columnApi.setColumnWidth('id', newWidth);
+      gridRef.current?.columnApi.setColumnWidth('id', newWidth);
     });
 
     expect(callback).not.toHaveBeenCalled();
@@ -138,5 +140,24 @@ describe('useDataGridEvents', () => {
     });
 
     expect(callback).toHaveBeenCalledTimes(0);
+  });
+
+  it('columns for autosizing should be handle', () => {
+    const callback = jest.fn();
+    const initialState = {
+      filterModel: undefined,
+      columnState: undefined,
+    };
+
+    const { rerender } = setup(initialState, callback, ['id']);
+    jest.spyOn(gridRef.current?.columnApi, 'autoSizeColumns');
+    rerender(<TestComponent hookParams={[initialState, callback, ['id']]} />);
+    act(() => {
+      gridRef.current?.api.setRowData([{ id: 'test-id' }]);
+      jest.advanceTimersByTime(GRID_EVENT_DEBOUNCE_TIME);
+    });
+    expect(gridRef.current?.columnApi.autoSizeColumns).toHaveBeenCalledWith([
+      'id',
+    ]);
   });
 });
