@@ -132,16 +132,20 @@ const DepositFlow = ({
     }
 
     if (!provider) throw new Error('no provider');
-    if (!account) throw new Error('no account');
     if (!isAssetTypeERC20(asset)) throw new Error('invalid asset');
 
-    const signer = provider.getSigner();
-    const tokenContract = new Token(
-      asset.source.contractAddress,
-      signer || provider
-    );
-    const res = await tokenContract.allowance(account, bridgeAddress);
-    const allowance = new BigNumber(addDecimal(res.toString(), asset.decimals));
+    // ethereum wallet connect fetch current allowance and bypass approval
+    // step if approval already given
+    let allowance = new BigNumber(0);
+    if (account) {
+      const signer = provider.getSigner();
+      const tokenContract = new Token(
+        asset.source.contractAddress,
+        signer || provider
+      );
+      const res = await tokenContract.allowance(account, bridgeAddress);
+      allowance = new BigNumber(addDecimal(res.toString(), asset.decimals));
+    }
 
     const step = allowance.isGreaterThan(0)
       ? DepositSteps.Deposit
@@ -347,10 +351,11 @@ const Approval = ({
   };
 
   useEffect(() => {
+    if (!asset) return; // this can get triggered when you clear the selected asset
     if (tx?.status === EthTxStatus.Confirmed) {
       onApproved();
     }
-  }, [tx?.status, onApproved]);
+  }, [tx?.status, asset, onApproved]);
 
   if (!asset) {
     return <h3 className="text-lg">Approval</h3>;
@@ -392,7 +397,7 @@ const Approval = ({
   if (!account) {
     return (
       <div className="flex items-center justify-between w-full">
-        <h3 className="text-lg">{t('Approved')}</h3>
+        <h3 className="text-lg">{t('Approval')}</h3>
         <TradingButton onClick={openDialog} size="small">
           {t('Connect Ethereum wallet')}
         </TradingButton>
@@ -458,7 +463,9 @@ const SendDeposit = ({
   if (!allowance) {
     return <h3 className="text-lg">Confirm deposit</h3>;
   }
-  if (allowance.isZero()) return null;
+  if (allowance.isZero()) {
+    return <h3 className="text-lg">Deposits not approved</h3>;
+  }
 
   if (!account) {
     return (
