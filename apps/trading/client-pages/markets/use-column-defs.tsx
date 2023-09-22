@@ -28,7 +28,6 @@ export const useColumnDefs = () => {
       {
         headerName: t('Market'),
         field: 'tradableInstrument.instrument.code',
-        flex: 2,
         cellRenderer: ({
           value,
           data,
@@ -50,7 +49,6 @@ export const useColumnDefs = () => {
       {
         headerName: t('Description'),
         field: 'tradableInstrument.instrument.name',
-        flex: 2,
       },
       {
         headerName: t('Trading mode'),
