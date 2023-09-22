@@ -50,11 +50,15 @@ export type WalletType = 'injected' | 'jsonRpc' | 'view' | 'snap';
 export interface VegaConnectDialogProps {
   connectors: Connectors;
   riskMessage?: ReactNode;
+  contentOnly?: boolean;
+  onClose?: () => void;
 }
 
 export const VegaConnectDialog = ({
   connectors,
   riskMessage,
+  contentOnly,
+  onClose,
 }: VegaConnectDialogProps) => {
   const { disconnect, acknowledgeNeeded } = useVegaWallet();
   const vegaWalletDialogOpen = useVegaWalletDialogStore(
@@ -80,19 +84,24 @@ export const VegaConnectDialog = ({
   // This value will already be in the cache, if it failed the app wont render
   const { data } = useChainIdQuery();
 
+  const content = data && (
+    <ConnectDialogContainer
+      connectors={connectors}
+      appChainId={data.statistics.chainId}
+      riskMessage={riskMessage}
+      onClose={onClose}
+    />
+  );
+  if (contentOnly) {
+    return content;
+  }
   return (
     <Dialog
       open={vegaWalletDialogOpen}
       size="small"
       onChange={onVegaWalletDialogChange}
     >
-      {data && (
-        <ConnectDialogContainer
-          connectors={connectors}
-          appChainId={data.statistics.chainId}
-          riskMessage={riskMessage}
-        />
-      )}
+      {content}
     </Dialog>
   );
 };
@@ -101,15 +110,20 @@ const ConnectDialogContainer = ({
   connectors,
   appChainId,
   riskMessage,
+  onClose,
 }: {
   connectors: Connectors;
   appChainId: string;
   riskMessage?: ReactNode;
+  onClose?: () => void;
 }) => {
   const { vegaUrl, vegaWalletServiceUrl } = useVegaWallet();
-  const closeDialog = useVegaWalletDialogStore(
+  const closeVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.closeVegaWalletDialog
   );
+  const closeDialog = useCallback(() => {
+    onClose ? onClose() : closeVegaWalletDialog();
+  }, [closeVegaWalletDialog, onClose]);
   const [selectedConnector, setSelectedConnector] = useState<VegaConnector>();
   const [walletUrl, setWalletUrl] = useState(vegaWalletServiceUrl);
 
@@ -255,7 +269,7 @@ const ConnectorList = ({
               </>
             }
             description={t(
-              `Connect Vega Wallet extension
+              `Connect with Vega Wallet extension
               for %s to access all features including key
               management and detailed transaction views from your
               browser.`,
@@ -287,8 +301,18 @@ const ConnectorList = ({
         {connectors['snap'] !== undefined ? (
           <div>
             {snapStatus === SnapStatus.INSTALLED ? (
-              <ConnectionOption
+              <ConnectionOptionWithDescription
                 type="snap"
+                title={
+                  <>
+                    <span>{t('Metamask Snap')}</span>
+                    {'  '}
+                    <span className="text-xs"> {t('quick start')}</span>
+                  </>
+                }
+                description={t(
+                  `Connect directly via Metamask with the Vega Snap for single key support without advanced features.`
+                )}
                 text={
                   <>
                     <div className="flex items-center justify-center w-full h-full text-base gap-1">
@@ -316,7 +340,7 @@ const ConnectorList = ({
                     </>
                   }
                   description={t(
-                    `Connect directly via Metamask with the Vega Snap for single key support without advanced features.`
+                    `Install Metamask with the Vega Snap for single key support without advanced features.`
                   )}
                   text={
                     <>
