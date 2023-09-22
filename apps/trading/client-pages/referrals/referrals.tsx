@@ -9,8 +9,14 @@ import { TiersContainer } from './tiers';
 import { RainbowTabLink } from './buttons';
 import { Outlet } from 'react-router-dom';
 import { Routes } from '../../lib/links';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useReferral } from './hooks/use-referral';
 
 export const Referrals = () => {
+  const { pubKey } = useVegaWallet();
+  const { data: referee } = useReferral(pubKey, 'referee');
+  const { data: referrer } = useReferral(pubKey, 'referrer');
+
   return (
     <>
       <LandingBanner />
@@ -19,7 +25,10 @@ export const Referrals = () => {
           <RainbowTabLink end to={Routes.REFERRALS}>
             Your referrals
           </RainbowTabLink>
-          <RainbowTabLink to={Routes.REFERRALS_APPLY_CODE}>
+          <RainbowTabLink
+            disabled={Boolean(referee || referrer)}
+            to={Routes.REFERRALS_APPLY_CODE}
+          >
             Apply a code
           </RainbowTabLink>
         </div>
