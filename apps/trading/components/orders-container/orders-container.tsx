@@ -28,14 +28,20 @@ export interface OrderContainerProps {
   filter?: Filter;
 }
 
+const AUTO_SIZE_COLUMNS = ['instrument-code'];
+
 export const OrdersContainer = ({ filter }: OrderContainerProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
   const onMarketClick = useMarketClickHandler(true);
   const onOrderTypeClick = useMarketLiquidityClickHandler();
   const { gridState, updateGridState } = useOrderListGridState(filter);
-  const gridStoreCallbacks = useDataGridEvents(gridState, (newState) => {
-    updateGridState(filter, newState);
-  });
+  const gridStoreCallbacks = useDataGridEvents(
+    gridState,
+    (newState) => {
+      updateGridState(filter, newState);
+    },
+    AUTO_SIZE_COLUMNS
+  );
 
   if (!pubKey) {
     return <Splash>{t('Please connect Vega wallet')}</Splash>;
