@@ -53,7 +53,9 @@ export const ProposalContainer = () => {
   const { data, loading, error, refetch } = useProposalQuery({
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
-    variables: { proposalId: params.proposalId || '' },
+    variables: {
+      proposalId: params.proposalId || '',
+    },
     skip: !params.proposalId,
   });
 

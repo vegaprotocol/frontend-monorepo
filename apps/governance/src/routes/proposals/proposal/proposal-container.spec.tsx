@@ -27,6 +27,7 @@ const renderComponent = (
               query: ProposalDocument,
               variables: {
                 proposalId: id,
+                includeNewMarketProductField: false,
               },
             },
             result: { data: { proposal } },

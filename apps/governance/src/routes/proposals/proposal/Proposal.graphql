@@ -1,4 +1,18 @@
-query Proposal($proposalId: ID!) {
+fragment NewMarketProductField on Proposal {
+  terms {
+    change {
+      ... on NewMarket {
+        instrument {
+          product {
+            __typename
+          }
+        }
+      }
+    }
+  }
+}
+
+query Proposal($proposalId: ID!, $includeNewMarketProductField: Boolean!) {
   proposal(id: $proposalId) {
     id
     rationale {
@@ -13,6 +27,7 @@ query Proposal($proposalId: ID!) {
       id
     }
     errorDetails
+    ...NewMarketProductField @include(if: $includeNewMarketProductField)
     terms {
       closingDatetime
       enactmentDatetime
