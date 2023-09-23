@@ -55,6 +55,7 @@ export const ProposalContainer = () => {
     errorPolicy: 'ignore',
     variables: {
       proposalId: params.proposalId || '',
+      includeNewMarketProductField: !!FLAGS.PRODUCT_PERPETUALS,
     },
     skip: !params.proposalId,
   });
