@@ -5,7 +5,7 @@ import { MarketSelector } from '../../components/market-selector/market-selector
 import { MarketHeaderStats } from '../../client-pages/market/market-header-stats';
 import { useMarket, useMarketList } from '@vegaprotocol/markets';
 import { useState } from 'react';
-import { MarketProductPill } from '@vegaprotocol/datagrid';
+import { ProductTypeShortName } from '@vegaprotocol/types';
 
 export const MarketHeader = () => {
   const { marketId } = useParams();
@@ -28,11 +28,13 @@ export const MarketHeader = () => {
             <HeaderTitle>
               <span>
                 {data.tradableInstrument.instrument.code}
-                <MarketProductPill
-                  productType={
-                    data.tradableInstrument.instrument.product.__typename
-                  }
-                />
+                <span className="ml-2 text-xs uppercase text-muted">
+                  {' '}
+                  {data.tradableInstrument.instrument.product.__typename &&
+                    ProductTypeShortName[
+                      data.tradableInstrument.instrument.product.__typename
+                    ]}{' '}
+                </span>
               </span>
               <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
             </HeaderTitle>

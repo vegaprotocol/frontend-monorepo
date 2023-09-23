@@ -108,7 +108,7 @@ export function createNewMarketProposalTxBody(): ProposalSubmissionBody {
             liquiditySlaParameters: {
               priceRange: '0.5',
               commitmentMinTimeFraction: '0.1',
-              performanceHysteresisEpochs: 0,
+              performanceHysteresisEpochs: 2,
               slaCompetitionFactor: '0.1',
             },
             quadraticSlippageFactor: '0',
@@ -243,7 +243,7 @@ export function createSuccessorMarketProposalTxBody(
             liquiditySlaParameters: {
               priceRange: '0.5',
               commitmentMinTimeFraction: '0.1',
-              performanceHysteresisEpochs: 0,
+              performanceHysteresisEpochs: 2,
               slaCompetitionFactor: '0.1',
             },
             instrument: {

@@ -38,7 +38,7 @@ import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
-import { AnnouncementBanner, UpgradeBanner } from '../components/banner';
+import { AnnouncementBanner } from '../components/banner';
 import { Navbar } from '../components/navbar';
 import classNames from 'classnames';
 import {
@@ -115,7 +115,6 @@ function AppBody({ Component }: AppProps) {
           />
           <ProtocolUpgradeInProgressNotification />
           <ViewingBanner />
-          <UpgradeBanner showVersionChange={true} />
         </div>
         <div data-testid={`pathname-${location.pathname}`}>
           <Component />
