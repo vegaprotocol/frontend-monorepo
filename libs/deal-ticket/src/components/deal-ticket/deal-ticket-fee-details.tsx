@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { t } from '@vegaprotocol/i18n';
-import { FeesBreakdown, getAsset, getQuoteName } from '@vegaprotocol/markets';
+import { getAsset, getQuoteName } from '@vegaprotocol/markets';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
@@ -8,7 +8,11 @@ import type { Market } from '@vegaprotocol/markets';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
 
-import { formatRange, formatValue } from '@vegaprotocol/utils';
+import {
+  formatNumberPercentage,
+  formatRange,
+  formatValue,
+} from '@vegaprotocol/utils';
 import { marketMarginDataProvider } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
@@ -22,15 +26,23 @@ import {
   EST_TOTAL_MARGIN_TOOLTIP_TEXT,
   MARGIN_ACCOUNT_TOOLTIP_TEXT,
 } from '../../constants';
-import { useEstimateFees } from '../../hooks';
+import {
+  sumFees,
+  sumFeesDiscounts,
+  useEstimateFees,
+} from '../../hooks/use-estimate-fees';
 import { KeyValue } from './key-value';
 import {
   Accordion,
   AccordionChevron,
   AccordionPanel,
+  Intent,
+  Pill,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
+import BigNumber from 'bignumber.js';
+import { FeesBreakdown } from '../fees-breakdown';
 
 const emptyValue = '-';
 
@@ -50,7 +62,18 @@ export const DealTicketFeeDetails = ({
   const feeEstimate = useEstimateFees(order, isMarketInAuction);
   const asset = getAsset(market);
   const { decimals: assetDecimals, quantum } = asset;
+  const totalFees = feeEstimate?.fees && sumFees(feeEstimate?.fees);
+  const totalFeesDiscounts =
+    feeEstimate?.fees && sumFeesDiscounts(feeEstimate?.fees);
 
+  const totalPercentageDiscount =
+    totalFeesDiscounts &&
+    totalFees &&
+    totalFeesDiscounts !== '0' &&
+    totalFees !== '0' &&
+    new BigNumber(totalFeesDiscounts)
+      .dividedBy(BigNumber.sum(totalFees, totalFeesDiscounts))
+      .times(100);
   return (
     <KeyValue
       label={t('Fees')}
@@ -59,8 +82,19 @@ export const DealTicketFeeDetails = ({
         `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals)}`
       }
       formattedValue={
-        feeEstimate?.totalFeeAmount &&
-        `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals, quantum)}`
+        <>
+          {totalPercentageDiscount && (
+            <Pill size="xxs" intent={Intent.Warning} className="mr-1">
+              -{formatNumberPercentage(totalPercentageDiscount, 2)}
+            </Pill>
+          )}
+          {feeEstimate?.totalFeeAmount &&
+            `~${formatValue(
+              feeEstimate?.totalFeeAmount,
+              assetDecimals,
+              quantum
+            )}`}
+        </>
       }
       labelDescription={
         <>

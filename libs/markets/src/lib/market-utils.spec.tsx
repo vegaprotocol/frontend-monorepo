@@ -3,7 +3,7 @@ import type { Market, MarketMaybeWithDataAndCandles } from './markets-provider';
 import {
   calcTradedFactor,
   filterAndSortMarkets,
-  totalFeesPercentage,
+  totalFeesFactorsPercentage,
 } from './market-utils';
 const { MarketState, MarketTradingMode } = Schema;
 
@@ -63,7 +63,7 @@ describe('mapDataToMarketList', () => {
   });
 });
 
-describe('totalFees', () => {
+describe('totalFeesFactorsPercentage', () => {
   const createFee = (...f: number[]): Market['fees']['factors'] => ({
     __typename: 'FeeFactors',
     infrastructureFee: f[0].toString(),
@@ -78,7 +78,7 @@ describe('totalFees', () => {
     { i: createFee(0.01, 0.056782, 0.003), o: '6.9782%' },
     { i: createFee(0.01, 0.056782, 0), o: '6.6782%' },
   ])('adds fees correctly', ({ i, o }) => {
-    expect(totalFeesPercentage(i)).toEqual(o);
+    expect(totalFeesFactorsPercentage(i)).toEqual(o);
   });
 });
 

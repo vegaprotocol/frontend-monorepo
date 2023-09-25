@@ -5,6 +5,24 @@ import type { EstimateFeesQuery } from './__generated__/EstimateOrder';
 import { useEstimateFeesQuery } from './__generated__/EstimateOrder';
 
 const divideByTwo = (n: string) => (BigInt(n) / BigInt(2)).toString();
+export const sumFeesDiscounts = (
+  fees: EstimateFeesQuery['estimateFees']['fees']
+) =>
+  (
+    BigInt(fees.makerFeeReferralDiscount || '0') +
+    BigInt(fees.makerFeeVolumeDiscount || '0') +
+    BigInt(fees.infrastructureFeeReferralDiscount || '0') +
+    BigInt(fees.infrastructureFeeVolumeDiscount || '0') +
+    BigInt(fees.liquidityFeeReferralDiscount || '0') +
+    BigInt(fees.liquidityFeeVolumeDiscount || '0')
+  ).toString();
+
+export const sumFees = (fees: EstimateFeesQuery['estimateFees']['fees']) =>
+  (
+    BigInt(fees.makerFee || '0') +
+    BigInt(fees.infrastructureFee || '0') +
+    BigInt(fees.liquidityFee || '0')
+  ).toString();
 
 export const useEstimateFees = (
   order?: OrderSubmissionBody['orderSubmission'],
