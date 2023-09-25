@@ -9,7 +9,7 @@ import {
   testOrderAmendment,
 } from '../support/order-validation';
 
-const orderSymbol = 'market.tradableInstrument.instrument.code';
+const orderSymbol = 'instrument-code';
 const orderSize = 'size';
 const orderType = 'type';
 const orderStatus = 'status';
@@ -229,10 +229,7 @@ describe('subscribe orders', { tags: '@smoke' }, () => {
       status: Schema.OrderStatus.STATUS_FILLED,
     });
     cy.getByTestId(`order-status-${orderId}`).should('have.text', 'Filled');
-    cy.get('[col-id="market.tradableInstrument.instrument.code"]').contains(
-      '[title="Future"]',
-      'Futr'
-    );
+    cy.get(`[col-id="${orderSymbol}"]`).contains('[title="Future"]', 'Futr');
   });
 
   it('must see a rejected order', () => {
