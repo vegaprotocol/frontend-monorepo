@@ -34,7 +34,9 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { useTopTradedMarkets } from '../../lib/hooks/use-top-traded-markets';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { getAsset } from '@vegaprotocol/markets';
-import { CompactNumber } from '@vegaprotocol/react-helpers';
+import classNames from 'classnames';
+import { Networks, useEnvironment } from '@vegaprotocol/environment';
+import { Markets } from './markets';
 
 export const Deposit = () => {
   return (
@@ -50,6 +52,7 @@ export const Deposit = () => {
 };
 
 const DepositFlowContainer = () => {
+  const { VEGA_ENV } = useEnvironment();
   const [searchParams] = useSearchParams();
   const assetId = searchParams.get('assetId') || undefined;
   const { data } = useAssetsDataProvider();
@@ -65,6 +68,7 @@ const DepositFlowContainer = () => {
       assetId={assetId}
       bridgeAddress={config.collateral_bridge_contract.address}
       markets={markets || []}
+      faucetEnabled={VEGA_ENV !== Networks.MAINNET}
     />
   );
 };
@@ -89,11 +93,13 @@ const DepositFlow = ({
   assetId,
   bridgeAddress,
   markets,
+  faucetEnabled,
 }: {
   assets: AssetFieldsFragment[];
   assetId?: string;
   bridgeAddress: string;
   markets: MarketMaybeWithDataAndCandles[];
+  faucetEnabled: boolean;
 }) => {
   const { provider, account } = useWeb3React();
   const [state, setState] = useState<DepositState>(() => {
@@ -187,6 +193,7 @@ const DepositFlow = ({
             onSelect={handleAssetChanged}
             markets={markets}
             balance={state.balance}
+            faucetEnabled={faucetEnabled}
           />
         </StepWrapper>
         <StepWrapper>
@@ -213,13 +220,9 @@ const DepositFlow = ({
   );
 };
 
-// <pre className="fixed bottom-0 right-0 p-2 text-xs text-white bg-vega-pink">
-//  {JSON.stringify(state, null, 2)}
-// </pre>
-
 const StepWrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="flex flex-col items-start p-4 border-b rounded gap-3 last:border-b-0 border-default">
+    <div className="p-4 border-b rounded gap-3 last:border-b-0 border-default">
       {children}
     </div>
   );
@@ -231,14 +234,22 @@ const AssetSelector = ({
   onSelect,
   markets,
   balance,
+  faucetEnabled,
 }: {
   asset?: AssetFieldsFragment;
   assets: AssetFieldsFragment[];
   onSelect: (asset?: AssetFieldsFragment) => void;
   markets: MarketMaybeWithDataAndCandles[];
+  faucetEnabled: boolean;
   balance: BigNumber | undefined;
 }) => {
   const [search, setSearch] = useState('');
+  const [id, setId] = useState<number | null>(null);
+  const { provider } = useWeb3React();
+  const send = useEthTransactionStore((store) => store.create);
+  const tx = useEthTransactionStore((store) => {
+    return store.transactions.find((t) => t?.id == id);
+  });
   const getTopMarkets = (a: AssetFieldsFragment) => {
     return markets
       .filter((m) => {
@@ -248,35 +259,66 @@ const AssetSelector = ({
       .slice(0, 4);
   };
 
+  const submitFaucet = async () => {
+    if (!provider) throw new Error('no provider');
+    if (!isAssetTypeERC20(asset)) throw new Error('no asset selected');
+    const signer = provider.getSigner();
+    const contract = new Token(
+      asset.source.contractAddress,
+      signer || provider
+    );
+    const id = send(contract, 'faucet', []);
+    setId(id);
+  };
+
+  if (tx && tx.status === EthTxStatus.Pending) {
+    return (
+      <div className="flex justify-between">
+        <div className="flex gap-3">
+          <div className="mt-0.5">
+            <Loader size="small" />
+          </div>
+          <div className="flex flex-col items-start gap-2">
+            <h3 className="text-lg">{t('Waiting for faucet...')}</h3>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (asset && isAssetTypeERC20(asset)) {
     return (
-      <div className="flex flex-col w-full gap-2">
-        <div className="flex gap-2">
-          <button
-            onClick={() => onSelect(undefined)}
-            className="flex items-center w-5 h-5 border-2 rounded border-vega-clight-600"
-          >
-            <VegaIcon name={VegaIconNames.TICK} />
-          </button>
-          <div className="flex flex-1 gap-2">
-            <div className="flex flex-col flex-1 gap-1">
-              <p className="text-lg">
-                {asset.symbol}{' '}
-                <small>{truncateByChars(asset.source.contractAddress)}</small>
-              </p>
+      <div className="flex gap-3">
+        <StepIndicator complete={true} />
+        <div className="flex flex-1 gap-2">
+          <div className="flex flex-col items-start flex-1 gap-2">
+            <p className="text-lg">
+              {asset.symbol}{' '}
+              <small>{truncateByChars(asset.source.contractAddress)}</small>
+            </p>
+            <div className="w-full">
               <Markets markets={getTopMarkets(asset)} />
             </div>
-            <div className="flex flex-col items-end">
-              {balance && (
-                <div className="font-mono text-lg">
-                  {balance.toString()}
-                  <small className="ml-1 text-muted">{asset.symbol}</small>
-                </div>
-              )}
+            <div className="flex gap-2">
               <TradingButton onClick={() => onSelect(undefined)} size="small">
-                Change asset
+                {t('Change asset')}
               </TradingButton>
+              {faucetEnabled && (
+                <TradingButton onClick={submitFaucet} size="small">
+                  {t('Faucet')}
+                </TradingButton>
+              )}
             </div>
+          </div>
+          <div className="text-right">
+            {balance && (
+              <p className="font-mono text-lg">
+                {balance.toString()}
+                <small className="ml-1 text-muted font-alpha">
+                  {asset.symbol}
+                </small>
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -294,7 +336,7 @@ const AssetSelector = ({
   });
 
   return (
-    <div className="flex flex-col w-full gap-4">
+    <div className="flex flex-col gap-4">
       <div className="flex justify-between">
         <p>{t('Choose an asset to deposit to the Vega network')}</p>
         <div>
@@ -392,8 +434,8 @@ const Approval = ({
   if (!asset) {
     return (
       <div className="flex items-center justify-between w-full">
-        <div className="flex gap-2">
-          <div className="flex items-center w-5 h-5 border-2 rounded border-vega-clight-600" />
+        <div className="flex gap-3">
+          <StepIndicator complete={false} />
           <h3 className="text-lg">{t('Approval')}</h3>
         </div>
       </div>
@@ -403,7 +445,10 @@ const Approval = ({
   if (!account) {
     return (
       <div className="flex items-center justify-between w-full">
-        <h3 className="text-lg">{t('Approval')}</h3>
+        <div className="flex gap-3">
+          <StepIndicator complete={false} />
+          <h3 className="text-lg">{t('Approval')}</h3>
+        </div>
         <TradingButton onClick={openDialog} size="small">
           {t('Connect Ethereum wallet')}
         </TradingButton>
@@ -413,38 +458,44 @@ const Approval = ({
 
   if (tx && tx.status === EthTxStatus.Pending) {
     return (
-      <div className="flex items-center justify-between w-full">
-        <div className="flex items-center gap-2">
-          <Loader size="small" />
-          <h3 className="text-lg">{t('Waiting for approval...')}</h3>
+      <div className="flex justify-between">
+        <div className="flex gap-3">
+          <div className="mt-0.5">
+            <Loader size="small" />
+          </div>
+          <div className="flex flex-col items-start gap-2">
+            <h3 className="text-lg">{t('Waiting for approval...')}</h3>
+            <TradingButton onClick={handleApprove} size="small">
+              {t('Re-approve')}
+            </TradingButton>
+          </div>
         </div>
-        <TradingButton onClick={handleApprove} size="small">
-          {t('Re-approve')}
-        </TradingButton>
       </div>
     );
   }
 
   // APPROVED: show muted re-approve button
-  if (!allowance || allowance.isGreaterThan(0)) {
+  if (allowance && allowance.isGreaterThan(0)) {
     return (
-      <div className="flex items-center justify-between w-full">
-        <div className="flex gap-2">
-          <div className="flex items-center w-5 h-5 border-2 rounded border-vega-clight-600">
-            <VegaIcon name={VegaIconNames.TICK} />
+      <div className="flex justify-between">
+        <div className="flex gap-3">
+          <StepIndicator complete={true} />
+          <div className="flex flex-col items-start gap-2">
+            <h3 className="text-lg">{t('Approved')}</h3>
+            <TradingButton onClick={handleApprove} size="small">
+              {t('Re-approve')}
+            </TradingButton>
           </div>
-          <h3 className="text-lg">{t('Approved')}</h3>
         </div>
-        <div className="flex flex-col items-end">
+        <div className="text-right">
           {allowance && (
             <div className="font-mono text-lg">
               <Allowance allowance={allowance} />
-              <small className="ml-1 text-muted">{asset.symbol}</small>
+              <small className="ml-1 text-muted font-alpha">
+                {asset.symbol}
+              </small>
             </div>
           )}
-          <TradingButton onClick={handleApprove} size="small">
-            {t('Re-approve')}
-          </TradingButton>
         </div>
       </div>
     );
@@ -452,31 +503,39 @@ const Approval = ({
 
   // NOT APPROVED: show primary approve button
   return (
-    <div className="flex items-center justify-between w-full">
-      <div className="flex gap-2">
-        <div className="flex items-center w-5 h-5 border-2 rounded border-vega-clight-600" />
-        <h3 className="text-lg">{t('Approve deposits')}</h3>
+    <div className="flex justify-between">
+      <div className="flex gap-3">
+        <StepIndicator complete={false} />
+        <div className="flex flex-col items-start gap-2">
+          <h3 className="text-lg">{t('Approve deposits')}</h3>
+          <p className="text-sm text-muted">
+            {t(
+              'Before you can make a deposit of %s you need to approve its use',
+              asset.symbol
+            )}
+          </p>
+          <TradingButton
+            onClick={() => {
+              if (!provider) throw new Error('no provider');
+              if (!isAssetTypeERC20(asset)) throw new Error('no provider');
+              const signer = provider.getSigner();
+              const contract = new Token(
+                asset.source.contractAddress,
+                signer || provider
+              );
+              const id = send(contract, 'approve', [
+                bridgeAddress,
+                MaxUint256.toString(),
+              ]);
+              setId(id);
+            }}
+            size="small"
+            intent={Intent.Success}
+          >
+            {t('Approve %s deposits', asset.symbol)}
+          </TradingButton>
+        </div>
       </div>
-      <TradingButton
-        onClick={() => {
-          if (!provider) throw new Error('no provider');
-          if (!isAssetTypeERC20(asset)) throw new Error('no provider');
-          const signer = provider.getSigner();
-          const contract = new Token(
-            asset.source.contractAddress,
-            signer || provider
-          );
-          const id = send(contract, 'approve', [
-            bridgeAddress,
-            MaxUint256.toString(),
-          ]);
-          setId(id);
-        }}
-        size="small"
-        intent={Intent.Success}
-      >
-        {t('Approve %s deposits', asset.symbol)}
-      </TradingButton>
     </div>
   );
 };
@@ -526,8 +585,8 @@ const SendDeposit = ({
   const { account } = useWeb3React();
 
   const fallback = (
-    <div className="flex gap-2">
-      <div className="flex items-center w-5 h-5 border-2 rounded border-vega-clight-600" />
+    <div className="flex gap-3">
+      <StepIndicator complete={false} />
       <h3 className="text-lg">{t('Deposit')}</h3>
     </div>
   );
@@ -546,63 +605,62 @@ const SendDeposit = ({
 
   if (!account) {
     return (
-      <TradingButton onClick={openDialog} size="small">
-        {t('Connect Ethereum wallet')}
-      </TradingButton>
+      <div className="flex items-center justify-between w-full">
+        <div className="flex gap-3">
+          <StepIndicator complete={false} />
+          <h3 className="text-lg">{t('Deposit')}</h3>
+        </div>
+        <TradingButton onClick={openDialog} size="small">
+          {t('Connect Ethereum wallet')}
+        </TradingButton>
+      </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-between w-full">
-      <div className="flex gap-2">
-        <div className="flex items-center w-5 h-5 border-2 rounded border-vega-clight-600" />
-        <h3 className="text-lg">{t('Deposit')}</h3>
-      </div>
-      <form className="w-1/2" onSubmit={() => alert('TODO')}>
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex-1">
-            <TradingInput
-              name="amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="Enter amount"
-              className="w-full"
-            />
-          </div>
-          {balance && (
-            <TradingButton
-              size="small"
-              onClick={() => setAmount(balance.toString())}
-            >
-              {t('Use max')}
+    <div className="flex justify-between">
+      <div className="flex gap-3">
+        <StepIndicator complete={false} />
+        <div className="flex flex-col items-start gap-2">
+          <h3 className="text-lg">{t('Deposit')}</h3>
+          <form
+            className="flex flex-col items-start gap-2"
+            onSubmit={() => alert('TODO')}
+          >
+            <div className="flex gap-2">
+              <TradingInput
+                name="amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="Enter amount"
+                className="w-[300px]"
+              />
+              {balance && (
+                <TradingButton
+                  size="small"
+                  onClick={() => setAmount(balance.toString())}
+                >
+                  {t('Use max')}
+                </TradingButton>
+              )}
+            </div>
+            <TradingButton type="submit" size="small" intent={Intent.Success}>
+              {t('Deposit %s', asset.symbol)}
             </TradingButton>
-          )}
-          <TradingButton type="submit" size="small" intent={Intent.Success}>
-            {t('Deposit %s', asset.symbol)}
-          </TradingButton>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 };
 
-const Markets = ({ markets }: { markets: MarketMaybeWithDataAndCandles[] }) => {
+const StepIndicator = ({ complete }: { complete: boolean }) => {
+  const classes = classNames(
+    'flex items-center mt-0.5 w-5 h-5 border-2 rounded border-vega-clight-600'
+  );
   return (
-    <div className="flex gap-2">
-      {markets.length ? (
-        markets.map((m) => {
-          return (
-            <div
-              key={m.id}
-              className="w-1/4 px-2 py-1 text-xs rounded bg-vega-clight-700"
-            >
-              {m.tradableInstrument.instrument.code} {m.data?.markPrice}
-            </div>
-          );
-        })
-      ) : (
-        <p className="text-xs">No markets</p>
-      )}
+    <div className={classes}>
+      {complete && <VegaIcon name={VegaIconNames.TICK} />}
     </div>
   );
 };
