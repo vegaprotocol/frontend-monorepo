@@ -9,6 +9,7 @@ import {
   createTenDigitUnixTimeStampForSpecifiedDays,
   generateFreeFormProposalTitle,
   getDateFormatForSpecifiedDays,
+  getProposalDetailsValue,
   getProposalFromTitle,
   getProposalInformationFromTable,
   goToMakeNewProposal,
@@ -384,6 +385,26 @@ describe(
       cy.getByTestId('tooltip-content', { timeout: 8000 }).should(
         'contain.text',
         'The fraction of the insurance pool balance that is carried over from the parent market to the successor.'
+      );
+    });
+
+    it('Able to see perpetual market', function () {
+      const proposalPath =
+        'src/fixtures/proposals/new-market-perpetual-raw.json';
+      const enactmentTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+      const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
+      submitUniqueRawProposal({
+        proposalBody: proposalPath,
+        enactmentTimestamp: enactmentTimestamp,
+        closingTimestamp: closingTimestamp,
+      });
+      getProposalFromTitle('perpetual market proposal').within(() =>
+        cy.getByTestId(viewProposalButton).click()
+      );
+      cy.getByTestId(marketDataToggle).click();
+      getProposalDetailsValue('Product Type').should(
+        'contain.text',
+        'Perpetual'
       );
     });
   }
