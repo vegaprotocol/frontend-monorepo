@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState, useCallback } from 'react';
+import { useMemo, useEffect, useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AsyncRenderer, Pagination } from '@vegaprotocol/ui-toolkit';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
@@ -86,12 +86,18 @@ export const EpochIndividualRewards = ({
     [epochId, page, refetch, delegationsPagination, pubKey]
   );
 
+  const prevEpochIdRef = useRef<number | null>(null);
+
   useEffect(() => {
-    // when the epoch changes, we want to refetch the data to update the current page
-    if (data) {
+    if (prevEpochIdRef.current === null) {
+      prevEpochIdRef.current = epochId;
+    } else if (epochId !== prevEpochIdRef.current) {
+      // When the epoch changes, we want to refetch the data to update the current page
       refetchData();
     }
-  }, [epochId, data, refetchData]);
+
+    prevEpochIdRef.current = epochId;
+  }, [epochId, refetchData]);
 
   return (
     <AsyncRenderer
