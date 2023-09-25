@@ -23,14 +23,10 @@ export interface TooltipProps {
 }
 
 export const TOOLTIP_TRIGGER_CLASS_NAME = (underline?: boolean) =>
-  classNames(
-    'cursor-help',
-    { 'underline underline-offset-2': underline },
-    {
-      'decoration-neutral-400 dark:decoration-neutral-400 decoration-dashed':
-        underline,
-    }
-  );
+  classNames({
+    'underline underline-offset-2 decoration-neutral-400 dark:decoration-neutral-400 decoration-dashed':
+      underline,
+  });
 
 // Conditionally rendered tooltip if description content is provided.
 export const Tooltip = ({
