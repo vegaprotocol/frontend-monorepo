@@ -18,7 +18,7 @@ import {
   VegaIconNames,
   TooltipCellComponent,
 } from '@vegaprotocol/ui-toolkit';
-import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGrid } from '@vegaprotocol/datagrid';
 import type {
   IGetRowsParams,
   IRowNode,

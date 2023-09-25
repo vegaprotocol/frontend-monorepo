@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGrid } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
 import { removePaginationWrapper } from '@vegaprotocol/utils';

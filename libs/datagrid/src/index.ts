@@ -1,4 +1,4 @@
-export * from './lib/ag-grid/ag-grid-lazy';
+export * from './lib/ag-grid/ag-grid';
 
 export * from './lib/column-definitions';
 
