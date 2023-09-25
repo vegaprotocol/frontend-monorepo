@@ -120,7 +120,7 @@ export const createProposalListFieldsFragment = (
         factorShort: 1,
       },
     },
-    metadata: [],
+    metadata: undefined,
     successorConfiguration: {
       __typename: 'SuccessorConfiguration',
       parentMarketId: 'xyz',
