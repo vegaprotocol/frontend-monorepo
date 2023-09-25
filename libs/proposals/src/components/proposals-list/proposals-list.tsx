@@ -19,6 +19,7 @@ export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
 const defaultColDef = {
   sortable: true,
   filter: true,
+  resizable: true,
   filterParams: { buttons: ['reset'] },
 };
 
