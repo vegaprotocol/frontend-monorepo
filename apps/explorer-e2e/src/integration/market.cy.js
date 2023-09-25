@@ -95,7 +95,6 @@ context('Market page', { tags: '@regression' }, function () {
       );
       cy.validate_element_from_table('Lowest Price', '0.00 fUSDC');
       cy.validate_element_from_table('Highest Price', '0.00 fUSDC');
-
       cy.getByTestId('oracle-spec-links')
         .should('have.attr', 'href')
         .and(

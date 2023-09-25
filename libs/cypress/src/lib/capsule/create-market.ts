@@ -13,7 +13,7 @@ import { createLog } from './logging';
 import { getMarkets } from './get-markets';
 import { createWalletClient } from './wallet-client';
 import { createEthereumWallet } from './ethereum-wallet';
-import { ASSET_ID_FOR_MARKET } from './contants';
+import { ASSET_ID_FOR_MARKET } from './constants';
 
 const log = createLog('create-market');
 

@@ -15,6 +15,7 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import {
+  addDecimalsFormatNumber,
   formatNumber,
   formatNumberPercentage,
   getDateTimeFormat,
@@ -58,6 +59,10 @@ import { useSuccessorMarketProposalDetailsQuery } from '@vegaprotocol/proposals'
 import { getQuoteName, getAsset } from '../../market-utils';
 import classNames from 'classnames';
 import compact from 'lodash/compact';
+import {
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/network-parameters';
 import type { DataSourceFragment } from './__generated__/MarketInfo';
 import { formatDuration } from 'date-fns';
 
@@ -652,6 +657,193 @@ export const LiquidityMonitoringParametersInfoPanel = ({
     : undefined;
 
   return <MarketInfoTable data={marketData} parentData={parentMarketData} />;
+};
+
+export const LiquidityPriceRangeInfoPanel = ({
+  market,
+  parentMarket,
+}: MarketInfoProps) => {
+  const marketLpPriceRange = market.liquiditySLAParameters?.priceRange;
+  const parentMarketLpPriceRange =
+    parentMarket?.liquiditySLAParameters?.priceRange;
+  const quoteUnit =
+    ('quoteName' in market.tradableInstrument.instrument.product &&
+      market?.tradableInstrument.instrument.product?.quoteName) ||
+    '';
+  const parentQuoteUnit =
+    (parentMarket &&
+      'quoteName' in parentMarket.tradableInstrument.instrument.product &&
+      parentMarket?.tradableInstrument.instrument.product?.quoteName) ||
+    '';
+
+  const liquidityPriceRange =
+    marketLpPriceRange &&
+    formatNumberPercentage(new BigNumber(marketLpPriceRange).times(100));
+  const parentLiquidityPriceRange =
+    parentMarket && parentMarketLpPriceRange
+      ? formatNumberPercentage(
+          new BigNumber(parentMarketLpPriceRange).times(100)
+        )
+      : null;
+
+  const { data } = useDataProvider({
+    dataProvider: marketDataProvider,
+    variables: { marketId: market.id },
+  });
+
+  const { data: parentMarketData } = useDataProvider({
+    dataProvider: marketDataProvider,
+    variables: { marketId: parentMarket?.id || '' },
+    skip: !parentMarket,
+  });
+
+  let parentData;
+
+  if (parentMarket && parentMarketData && quoteUnit === parentQuoteUnit) {
+    parentData = {
+      liquidityPriceRange: `${parentLiquidityPriceRange} of mid price`,
+      lowestPrice:
+        parentMarketLpPriceRange &&
+        parentMarketData?.midPrice &&
+        `${addDecimalsFormatNumber(
+          new BigNumber(1)
+            .minus(parentMarketLpPriceRange)
+            .times(parentMarketData.midPrice)
+            .toString(),
+          parentMarket.decimalPlaces
+        )} ${quoteUnit}`,
+      highestPrice:
+        parentMarketLpPriceRange &&
+        parentMarketData?.midPrice &&
+        `${addDecimalsFormatNumber(
+          new BigNumber(1)
+            .plus(parentMarketLpPriceRange)
+            .times(parentMarketData.midPrice)
+            .toString(),
+          parentMarket.decimalPlaces
+        )} ${quoteUnit}`,
+    };
+  }
+
+  return (
+    <>
+      <p className="text-xs mb-2 border-l-2 pl-2">
+        {`For liquidity orders to count towards a commitment, they must be
+            within the liquidity monitoring bounds.`}
+      </p>
+      <MarketInfoTable
+        data={{
+          liquidityPriceRange: `${liquidityPriceRange} of mid price`,
+          lowestPrice:
+            marketLpPriceRange &&
+            data?.midPrice &&
+            `${addDecimalsFormatNumber(
+              new BigNumber(1)
+                .minus(marketLpPriceRange)
+                .times(data.midPrice)
+                .toString(),
+              market.decimalPlaces
+            )} ${quoteUnit}`,
+          highestPrice:
+            marketLpPriceRange &&
+            data?.midPrice &&
+            `${addDecimalsFormatNumber(
+              new BigNumber(1)
+                .plus(marketLpPriceRange)
+                .times(data.midPrice)
+                .toString(),
+              market.decimalPlaces
+            )} ${quoteUnit}`,
+        }}
+        parentData={parentData}
+      />
+      <p className="text-xs mb-2 border-l-2 pl-2 mt-2">
+        {`The liquidity price range is a ${liquidityPriceRange} difference from the mid
+            price.`}
+      </p>
+    </>
+  );
+};
+
+const fromNanoSecondsToSeconds = (nanoseconds: number | string) =>
+  t('%ss', [new BigNumber(nanoseconds).dividedBy(1e9).toString()]);
+
+export const LiquiditySLAParametersInfoPanel = ({
+  market,
+  parentMarket,
+}: MarketInfoProps) => {
+  const marketData = {
+    performanceHysteresisEpochs:
+      market.liquiditySLAParameters?.performanceHysteresisEpochs,
+    SLACompetitionFactor:
+      market.liquiditySLAParameters?.slaCompetitionFactor &&
+      formatNumberPercentage(
+        new BigNumber(
+          market.liquiditySLAParameters?.slaCompetitionFactor
+        ).times(100)
+      ),
+    commitmentMinimumTimeFraction:
+      market.liquiditySLAParameters?.commitmentMinTimeFraction &&
+      formatNumberPercentage(
+        new BigNumber(
+          market.liquiditySLAParameters?.commitmentMinTimeFraction
+        ).times(100)
+      ),
+  };
+
+  const parentMarketData = parentMarket
+    ? {
+        performanceHysteresisEpochs:
+          parentMarket.liquiditySLAParameters?.performanceHysteresisEpochs,
+        slaCompetitionFactor:
+          parentMarket.liquiditySLAParameters?.slaCompetitionFactor,
+        commitmentMinimumTimeFraction:
+          parentMarket.liquiditySLAParameters?.commitmentMinTimeFraction,
+      }
+    : undefined;
+
+  const { params: networkParams } = useNetworkParams([
+    NetworkParams.market_liquidity_bondPenaltyParameter,
+    NetworkParams.market_liquidity_nonPerformanceBondPenaltySlope,
+    NetworkParams.market_liquidity_sla_nonPerformanceBondPenaltyMax,
+    NetworkParams.market_liquidity_maximumLiquidityFeeFactorLevel,
+    NetworkParams.market_liquidity_stakeToCcyVolume,
+    NetworkParams.validators_epoch_length,
+    NetworkParams.market_liquidity_earlyExitPenalty,
+    NetworkParams.market_liquidity_probabilityOfTrading_tau_scaling,
+    NetworkParams.market_liquidity_minimum_probabilityOfTrading_lpOrders,
+    NetworkParams.market_liquidity_feeCalculationTimeStep,
+  ]);
+
+  const marketNetworkParamData = {
+    epochLength: networkParams['validators_epoch_length'],
+    bondPenaltyParameter:
+      networkParams['market_liquidity_bondPenaltyParameter'],
+    nonPerformanceBondPenaltySlope:
+      networkParams['market_liquidity_nonPerformanceBondPenaltySlope'],
+    nonPerformanceBondPenaltyMax:
+      networkParams['market_liquidity_sla_nonPerformanceBondPenaltyMax'],
+    maximumLiquidityFeeFactorLevel:
+      networkParams['market_liquidity_maximumLiquidityFeeFactorLevel'],
+    stakeToCCYVolume: networkParams['market_liquidity_stakeToCcyVolume'],
+    earlyExitPenalty: networkParams['market_liquidity_earlyExitPenalty'],
+    probabilityOfTradingTauScaling:
+      networkParams['market_liquidity_probabilityOfTrading_tau_scaling'],
+    minimumProbabilityOfTradingLPOrders:
+      networkParams['market_liquidity_minimum_probabilityOfTrading_lpOrders'],
+    feeCalculationTimeStep:
+      networkParams['market_liquidity_feeCalculationTimeStep'] &&
+      fromNanoSecondsToSeconds(
+        networkParams['market_liquidity_feeCalculationTimeStep']
+      ),
+  };
+
+  return (
+    <>
+      <MarketInfoTable data={marketData} parentData={parentMarketData} />
+      <MarketInfoTable data={marketNetworkParamData} unformatted={true} />
+    </>
+  );
 };
 
 export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
