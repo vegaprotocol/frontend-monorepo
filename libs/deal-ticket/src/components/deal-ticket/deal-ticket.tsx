@@ -676,6 +676,7 @@ export const DealTicket = ({
         )}
       </Button>
       <DealTicketMarginDetails
+        side={normalizedOrder.side}
         onMarketClick={onMarketClick}
         assetSymbol={assetSymbol}
         marginAccountBalance={marginAccountBalance}
