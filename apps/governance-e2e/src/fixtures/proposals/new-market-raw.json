@@ -13,29 +13,9 @@
         "instrument": {
           "name": "Token test market",
           "code": "TEST.24h",
-          "perpetual": {
+          "future": {
             "settlementAsset": "73174a6fb1d5802ba0ac7bd7ab79e0a3a4837b262de0a4e80815a55442692bd0",
             "quoteName": "fBTC",
-            "marginFundingFactor": "0.1",
-            "interestRate": "0",
-            "clampLowerBound": "0",
-            "clampUpperBound": "0",
-            "dataSourceSpecForSettlementSchedule": {
-              "internal": {
-                "timeTrigger": {
-                  "conditions": {
-                    "operator": "OPERATOR_GREATER_THAN_OR_EQUAL",
-                    "value": "0"
-                  },
-                  "triggers": [
-                    {
-                      "initial": "1695222883",
-                      "every": "1800"
-                    }
-                  ]
-                }
-              }
-            },
             "dataSourceSpecForSettlementData": {
               "external": {
                 "oracle": {
@@ -57,6 +37,33 @@
                         {
                           "operator": "OPERATOR_GREATER_THAN",
                           "value": "0"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            "dataSourceSpecForTradingTermination": {
+              "external": {
+                "oracle": {
+                  "signers": [
+                    {
+                      "pubKey": {
+                        "key": "70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680"
+                      }
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "key": {
+                        "name": "trading.terminated.ETH5",
+                        "type": "TYPE_BOOLEAN"
+                      },
+                      "conditions": [
+                        {
+                          "operator": "OPERATOR_EQUALS",
+                          "value": "true"
                         }
                       ]
                     }
