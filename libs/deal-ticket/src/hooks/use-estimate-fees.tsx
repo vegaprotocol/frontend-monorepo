@@ -7,15 +7,23 @@ import { useEstimateFeesQuery } from './__generated__/EstimateOrder';
 const divideByTwo = (n: string) => (BigInt(n) / BigInt(2)).toString();
 export const sumFeesDiscounts = (
   fees: EstimateFeesQuery['estimateFees']['fees']
-) =>
-  (
-    BigInt(fees.makerFeeReferralDiscount || '0') +
+) => {
+  const volume = (
     BigInt(fees.makerFeeVolumeDiscount || '0') +
-    BigInt(fees.infrastructureFeeReferralDiscount || '0') +
     BigInt(fees.infrastructureFeeVolumeDiscount || '0') +
-    BigInt(fees.liquidityFeeReferralDiscount || '0') +
     BigInt(fees.liquidityFeeVolumeDiscount || '0')
   ).toString();
+  const referral = (
+    BigInt(fees.makerFeeReferralDiscount || '0') +
+    BigInt(fees.infrastructureFeeReferralDiscount || '0') +
+    BigInt(fees.liquidityFeeReferralDiscount || '0')
+  ).toString();
+  return {
+    volume,
+    referral,
+    total: (BigInt(volume) + BigInt(referral)).toString(),
+  };
+};
 
 export const sumFees = (fees: EstimateFeesQuery['estimateFees']['fees']) =>
   (

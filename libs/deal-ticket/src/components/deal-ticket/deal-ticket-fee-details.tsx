@@ -63,16 +63,16 @@ export const DealTicketFeeDetails = ({
   const asset = getAsset(market);
   const { decimals: assetDecimals, quantum } = asset;
   const totalFees = feeEstimate?.fees && sumFees(feeEstimate?.fees);
-  const totalFeesDiscounts =
+  const feesDiscounts =
     feeEstimate?.fees && sumFeesDiscounts(feeEstimate?.fees);
 
   const totalPercentageDiscount =
-    totalFeesDiscounts &&
+    feesDiscounts &&
     totalFees &&
-    totalFeesDiscounts !== '0' &&
+    feesDiscounts.total !== '0' &&
     totalFees !== '0' &&
-    new BigNumber(totalFeesDiscounts)
-      .dividedBy(BigNumber.sum(totalFees, totalFeesDiscounts))
+    new BigNumber(feesDiscounts.total)
+      .dividedBy(BigNumber.sum(totalFees, feesDiscounts.total))
       .times(100);
   return (
     <KeyValue

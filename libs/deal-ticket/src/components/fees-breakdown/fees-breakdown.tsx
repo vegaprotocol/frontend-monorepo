@@ -29,17 +29,17 @@ const FeesBreakdownItem = ({
   symbol?: string;
   decimals: number;
 }) => (
-  <tr>
-    <th className="text-left font-normal whitespace-nowrap">{label}</th>
+  <>
+    <dt className="col-span-2">{label}</dt>
     {factor && (
-      <td className="text-right">
+      <dd className="text-right col-span-1">
         {formatNumberPercentage(new BigNumber(factor).times(100), 2)}
-      </td>
+      </dd>
     )}
-    <td className="text-right whitespace-nowrap" colSpan={!factor ? 2 : 1}>
+    <dd className="text-right col-span-3">
       {formatValue(value, decimals)} {symbol || ''}
-    </td>
-  </tr>
+    </dd>
+  </>
 );
 
 export const FeesBreakdown = ({
@@ -55,10 +55,14 @@ export const FeesBreakdown = ({
 }) => {
   if (!fees) return null;
   const totalFees = sumFees(fees);
-  const totalFeesDiscount = sumFeesDiscounts(fees);
+  const {
+    total: totalDiscount,
+    referral: volumeDiscount,
+    volume: referralDiscount,
+  } = sumFeesDiscounts(fees);
   if (totalFees === '0') return null;
   return (
-    <table>
+    <dl className="grid grid-cols-6">
       <FeesBreakdownItem
         label={t('Infrastructure fee')}
         factor={
@@ -92,6 +96,28 @@ export const FeesBreakdown = ({
         symbol={symbol}
         decimals={decimals}
       />
+      {volumeDiscount && volumeDiscount !== '0' && (
+        <FeesBreakdownItem
+          label={t('Volume discount')}
+          factor={new BigNumber(volumeDiscount).dividedBy(
+            BigNumber.sum(totalFees, totalDiscount)
+          )}
+          value={volumeDiscount}
+          symbol={symbol}
+          decimals={decimals}
+        />
+      )}
+      {referralDiscount && referralDiscount !== '0' && (
+        <FeesBreakdownItem
+          label={t('Referral discount')}
+          factor={new BigNumber(referralDiscount).dividedBy(
+            BigNumber.sum(totalFees, totalDiscount)
+          )}
+          value={referralDiscount}
+          symbol={symbol}
+          decimals={decimals}
+        />
+      )}
       <FeesBreakdownItem
         label={t('Total fees')}
         factor={feeFactors ? sumFeesFactors(feeFactors) : undefined}
@@ -99,101 +125,6 @@ export const FeesBreakdown = ({
         symbol={symbol}
         decimals={decimals}
       />
-      {fees.infrastructureFeeReferralDiscount &&
-        fees.infrastructureFeeReferralDiscount !== '0' && (
-          <FeesBreakdownItem
-            label={t('Infrastructure fee referral discount')}
-            factor={new BigNumber(
-              fees.infrastructureFeeReferralDiscount
-            ).dividedBy(
-              BigNumber.sum(
-                fees.infrastructureFee,
-                fees.infrastructureFeeReferralDiscount
-              )
-            )}
-            value={fees.infrastructureFeeReferralDiscount}
-            symbol={symbol}
-            decimals={decimals}
-          />
-        )}
-      {fees.infrastructureFeeVolumeDiscount &&
-        fees.infrastructureFeeVolumeDiscount !== '0' && (
-          <FeesBreakdownItem
-            label={t('Infrastructure fee volume discount')}
-            factor={new BigNumber(
-              fees.infrastructureFeeVolumeDiscount
-            ).dividedBy(
-              BigNumber.sum(
-                fees.infrastructureFee,
-                fees.infrastructureFeeVolumeDiscount
-              )
-            )}
-            value={fees.infrastructureFeeVolumeDiscount}
-            symbol={symbol}
-            decimals={decimals}
-          />
-        )}
-      {fees.liquidityFeeReferralDiscount &&
-        fees.liquidityFeeReferralDiscount !== '0' && (
-          <FeesBreakdownItem
-            label={t('Liquidity fee referral discount')}
-            factor={new BigNumber(fees.liquidityFeeReferralDiscount).dividedBy(
-              BigNumber.sum(
-                fees.liquidityFee,
-                fees.liquidityFeeReferralDiscount
-              )
-            )}
-            value={fees.liquidityFeeReferralDiscount}
-            symbol={symbol}
-            decimals={decimals}
-          />
-        )}
-      {fees.liquidityFeeVolumeDiscount &&
-        fees.liquidityFeeVolumeDiscount !== '0' && (
-          <FeesBreakdownItem
-            label={t('Liquidity fee volume discount')}
-            factor={new BigNumber(fees.liquidityFeeVolumeDiscount).dividedBy(
-              BigNumber.sum(fees.liquidityFee, fees.liquidityFeeVolumeDiscount)
-            )}
-            value={fees.liquidityFeeVolumeDiscount}
-            symbol={symbol}
-            decimals={decimals}
-          />
-        )}
-      {fees.makerFeeReferralDiscount &&
-        fees.makerFeeReferralDiscount !== '0' && (
-          <FeesBreakdownItem
-            label={t('Maker fee referral discount')}
-            factor={new BigNumber(fees.makerFeeReferralDiscount).dividedBy(
-              BigNumber.sum(fees.makerFee, fees.makerFeeReferralDiscount)
-            )}
-            value={fees.makerFeeReferralDiscount}
-            symbol={symbol}
-            decimals={decimals}
-          />
-        )}
-      {fees.makerFeeVolumeDiscount && fees.makerFeeVolumeDiscount !== '0' && (
-        <FeesBreakdownItem
-          label={t('Maker fee volume discount')}
-          factor={new BigNumber(fees.makerFeeVolumeDiscount).dividedBy(
-            BigNumber.sum(fees.makerFee, fees.makerFeeVolumeDiscount)
-          )}
-          value={fees.makerFeeVolumeDiscount}
-          symbol={symbol}
-          decimals={decimals}
-        />
-      )}
-      {totalFeesDiscount !== '0' && (
-        <FeesBreakdownItem
-          label={t('Total Discount')}
-          factor={new BigNumber(totalFeesDiscount).dividedBy(
-            BigNumber.sum(totalFees, totalFeesDiscount)
-          )}
-          value={totalFeesDiscount}
-          symbol={symbol}
-          decimals={decimals}
-        />
-      )}
-    </table>
+    </dl>
   );
 };
