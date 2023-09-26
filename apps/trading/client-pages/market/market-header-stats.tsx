@@ -126,32 +126,20 @@ export const FundingRate = ({ marketId }: { marketId: string }) => {
   );
 };
 
-const padStart = (n: number) => n.toString().padStart(2, '0');
-
-export const FundingCountdown = ({ marketId }: { marketId: string }) => {
-  const { data: fundingPeriods } = useFundingPeriodsQuery({
-    variables: {
-      marketId: marketId,
-      pagination: { first: 1 },
-    },
-  });
-  const { data: marketInfo } = useDataProvider({
-    dataProvider: marketInfoProvider,
-    variables: { marketId },
-  });
-
+const useNow = () => {
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
     const interval = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(interval);
   }, []);
+  return now;
+};
 
-  const node = fundingPeriods?.fundingPeriods.edges?.[0]?.node;
-  let startTime: number | undefined = undefined;
-  if (node && node.startTime && !node.endTime) {
-    startTime = fromNanoSeconds(node.startTime).getTime();
-  }
-  let diffFormatted = t('Unknown');
+const useEvery = (marketId: string) => {
+  const { data: marketInfo } = useDataProvider({
+    dataProvider: marketInfoProvider,
+    variables: { marketId },
+  });
   let every: number | undefined = undefined;
   const sourceType =
     marketInfo &&
@@ -165,14 +153,51 @@ export const FundingCountdown = ({ marketId }: { marketId: string }) => {
       every *= 1000;
     }
   }
+  return every;
+};
+
+const useStartTime = (marketId: string) => {
+  const { data: fundingPeriods } = useFundingPeriodsQuery({
+    variables: {
+      marketId: marketId,
+      pagination: { first: 1 },
+    },
+  });
+  const node = fundingPeriods?.fundingPeriods.edges?.[0]?.node;
+  let startTime: number | undefined = undefined;
+  if (node && node.startTime && !node.endTime) {
+    startTime = fromNanoSeconds(node.startTime).getTime();
+  }
+  return startTime;
+};
+
+const padStart = (n: number) => n.toString().padStart(2, '0');
+
+const useFormatCountdown = (
+  now: number,
+  startTime?: number,
+  every?: number
+) => {
   if (startTime && every) {
     const diff = every - ((now - startTime) % every);
     const hours = (diff / 3.6e6) | 0;
     const mins = ((diff % 3.6e6) / 6e4) | 0;
     const secs = Math.round((diff % 6e4) / 1e3);
-    diffFormatted = `${padStart(hours)}:${padStart(mins)}:${padStart(secs)}`;
+    return `${padStart(hours)}:${padStart(mins)}:${padStart(secs)}`;
   }
-  return <div data-testid="funding-countdown">{diffFormatted}</div>;
+  return t('Unknown');
+};
+
+export const FundingCountdown = ({ marketId }: { marketId: string }) => {
+  const now = useNow();
+  const startTime = useStartTime(marketId);
+  const every = useEvery(marketId);
+
+  return (
+    <div data-testid="funding-countdown">
+      {useFormatCountdown(now, startTime, every)}
+    </div>
+  );
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {

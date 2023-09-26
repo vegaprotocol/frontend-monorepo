@@ -38,7 +38,7 @@ export const FundingContainer = ({ marketId }: { marketId: string }) => {
           if (edge.node.endTime) {
             acc?.push({
               endTime: fromNanoSeconds(edge.node.endTime),
-              fundingRate: Number(edge.node.fundingRate),
+              fundingRate: Number(edge.node.fundingRate) * 100,
             });
           }
           return acc;
@@ -51,5 +51,11 @@ export const FundingContainer = ({ marketId }: { marketId: string }) => {
   if (!data || !values?.rows.length) {
     return <Splash> {t('No funding history data')}</Splash>;
   }
-  return <LineChart data={values} theme={theme} />;
+  return (
+    <LineChart
+      data={values}
+      theme={theme}
+      priceFormat={(fundingRate) => `${fundingRate.toFixed(4)}%`}
+    />
+  );
 };

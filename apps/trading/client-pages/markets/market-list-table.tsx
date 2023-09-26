@@ -8,6 +8,7 @@ export const getRowId = ({ data }: { data: { id: string } }) => data.id;
 const defaultColDef = {
   sortable: true,
   filter: true,
+  resizable: true,
   filterParams: { buttons: ['reset'] },
 };
 

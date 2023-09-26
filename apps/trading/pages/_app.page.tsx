@@ -40,7 +40,7 @@ import { AppLoader, DynamicLoader } from '../components/app-loader';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
-import { AnnouncementBanner, UpgradeBanner } from '../components/banner';
+import { AnnouncementBanner } from '../components/banner';
 import { Navbar } from '../components/navbar';
 import classNames from 'classnames';
 import {
@@ -50,8 +50,8 @@ import {
 } from '@vegaprotocol/proposals';
 import { ViewingBanner } from '../components/viewing-banner';
 import { NavHeader } from '../components/navbar/nav-header';
-import { Routes as AppRoutes } from './client-router';
 import { Telemetry } from '../components/telemetry';
+import { Routes as AppRoutes } from '../lib/links';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -117,7 +117,6 @@ function AppBody({ Component }: AppProps) {
           />
           <ProtocolUpgradeInProgressNotification />
           <ViewingBanner />
-          <UpgradeBanner showVersionChange={true} />
         </div>
         <div data-testid={`pathname-${location.pathname}`}>
           <Component />

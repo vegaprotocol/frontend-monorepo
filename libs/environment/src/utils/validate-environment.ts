@@ -78,6 +78,7 @@ const COSMIC_ELEVATOR_FLAGS = {
   ICEBERG_ORDERS: z.optional(z.boolean()),
   PRODUCT_PERPETUALS: z.optional(z.boolean()),
   METAMASK_SNAPS: z.optional(z.boolean()),
+  REFERRALS: z.optional(z.boolean()),
 };
 
 const EXPLORER_FLAGS = {

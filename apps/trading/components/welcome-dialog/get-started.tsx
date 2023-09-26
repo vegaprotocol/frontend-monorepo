@@ -15,7 +15,7 @@ import {
   useGetOnboardingStep,
   useOnboardingStore,
 } from './use-get-onboarding-step';
-import { Links, Routes } from '../../pages/client-router';
+import { Links, Routes } from '../../lib/links';
 import { useGlobalStore } from '../../stores';
 import { useSidebar, ViewType } from '../sidebar';
 
@@ -27,8 +27,8 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   const dismiss = useOnboardingStore((store) => store.dismiss);
   const setDialogOpen = useOnboardingStore((store) => store.setDialogOpen);
   const marketId = useGlobalStore((store) => store.marketId);
-  const openVegaWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
+  const setWalletDialogOpen = useOnboardingStore(
+    (store) => store.setWalletDialogOpen
   );
   const setViews = useSidebar((store) => store.setViews);
 
@@ -40,7 +40,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
 
   if (step <= OnboardingStep.ONBOARDING_CONNECT_STEP) {
     return (
-      <TradingButton {...buttonProps} onClick={() => openVegaWalletDialog()}>
+      <TradingButton {...buttonProps} onClick={() => setWalletDialogOpen(true)}>
         {t('Connect')}
       </TradingButton>
     );
@@ -48,17 +48,18 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
     return (
       <TradingAnchorButton
         {...buttonProps}
-        href={Links[Routes.DEPOSIT]()}
+        href={Links.DEPOSIT()}
         onClick={() => setDialogOpen(false)}
       >
         {t('Deposit')}
       </TradingAnchorButton>
     );
   } else if (step >= OnboardingStep.ONBOARDING_ORDER_STEP) {
+    const link = marketId ? Links.MARKET(marketId) : Links.HOME();
     return (
       <TradingAnchorButton
         {...buttonProps}
-        href={marketId ? Links[Routes.MARKET](marketId) : Links[Routes.HOME]()}
+        href={link}
         onClick={() => {
           setViews({ type: ViewType.Order }, Routes.MARKET);
           dismiss();
@@ -70,7 +71,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   }
 
   return (
-    <TradingButton {...buttonProps} onClick={() => openVegaWalletDialog()}>
+    <TradingButton {...buttonProps} onClick={() => setWalletDialogOpen(true)}>
       {t('Get started')}
     </TradingButton>
   );

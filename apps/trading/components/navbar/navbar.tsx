@@ -6,6 +6,7 @@ import {
   Networks,
   DApp,
   useLinks,
+  FLAGS,
 } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import { useGlobalStore } from '../../stores';
@@ -15,7 +16,7 @@ import * as N from '@radix-ui/react-navigation-menu';
 import * as D from '@radix-ui/react-dialog';
 import { NavLink } from 'react-router-dom';
 
-import { Links, Routes } from '../../pages/client-router';
+import { Links } from '../../lib/links';
 import classNames from 'classnames';
 import { VegaWalletMenu } from '../vega-wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
@@ -140,12 +141,6 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
   const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
   const marketId = useGlobalStore((store) => store.marketId);
 
-  // If we have a stored marketId make Trade link go to that market
-  // otherwise always go to /markets/all
-  const tradingPath = marketId
-    ? Links[Routes.MARKET](marketId)
-    : Links[Routes.MARKET]('');
-
   return (
     <div className="lg:flex lg:h-full gap-3">
       <NavbarList>
@@ -171,20 +166,27 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
       <NavbarListDivider />
       <NavbarList>
         <NavbarItem>
-          <NavbarLink to={Links[Routes.MARKETS]()} onClick={onClick}>
+          <NavbarLink to={Links.MARKETS()} onClick={onClick}>
             {t('Markets')}
           </NavbarLink>
         </NavbarItem>
         <NavbarItem>
-          <NavbarLink to={tradingPath} onClick={onClick}>
+          <NavbarLink to={Links.MARKET(marketId || '')} onClick={onClick}>
             {t('Trading')}
           </NavbarLink>
         </NavbarItem>
         <NavbarItem>
-          <NavbarLink to={Links[Routes.PORTFOLIO]()} onClick={onClick}>
+          <NavbarLink to={Links.PORTFOLIO()} onClick={onClick}>
             {t('Portfolio')}
           </NavbarLink>
         </NavbarItem>
+        {FLAGS.REFERRALS && (
+          <NavbarItem>
+            <NavbarLink to={Links.REFERRALS()} onClick={onClick}>
+              {t('Referrals')}
+            </NavbarLink>
+          </NavbarItem>
+        )}
         <NavbarItem>
           <NavbarLinkExternal to={useLinks(DApp.Governance)()}>
             {t('Governance')}
@@ -209,7 +211,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
                 </NavbarSubItem>
               )}
               <NavbarSubItem>
-                <NavbarLink to={Links[Routes.DISCLAIMER]()} onClick={onClick}>
+                <NavbarLink to={Links.DISCLAIMER()} onClick={onClick}>
                   {t('Disclaimer')}
                 </NavbarLink>
               </NavbarSubItem>
