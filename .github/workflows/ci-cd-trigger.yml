@@ -10,7 +10,6 @@ on:
       - opened
       - ready_for_review
       - reopened
-      - edited
       - synchronize
 jobs:
   node-modules:
@@ -41,13 +40,6 @@ jobs:
       - name: yarn install
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install --pure-lockfile
-
-  lint-pr-title:
-    needs: node-modules
-    if: ${{ github.event_name == 'pull_request' }}
-    name: Verify PR title
-    uses: ./.github/workflows/lint-pr.yml
-    secrets: inherit
 
   lint-format:
     timeout-minutes: 20
