@@ -2,7 +2,7 @@ import type { ProposalListFieldsFragment } from '@vegaprotocol/proposals';
 import { VoteProgress } from '@vegaprotocol/proposals';
 import type { AgGridReact } from 'ag-grid-react';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGrid } from '@vegaprotocol/datagrid';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
@@ -105,7 +105,7 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
               ? new BigNumber(0)
               : yesTokens.multipliedBy(100).dividedBy(totalTokensVoted);
             return (
-              <div className="uppercase flex h-full items-center justify-center pt-2">
+              <div className="flex items-center justify-center h-full pt-2 uppercase">
                 <VoteProgress
                   threshold={requiredMajorityPercentage}
                   progress={yesPercentage}

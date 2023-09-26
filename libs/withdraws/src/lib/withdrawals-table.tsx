@@ -20,7 +20,7 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGrid } from '@vegaprotocol/datagrid';
 import { EtherscanLink } from '@vegaprotocol/environment';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import {

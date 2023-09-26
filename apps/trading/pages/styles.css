@@ -1,6 +1,13 @@
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-balham.css';
 
+/** Load AlphaLyrae font */
+@font-face {
+  font-family: AlphaLyrae;
+  src: url('/AlphaLyrae-Medium.woff2') format('woff2'),
+    url('/AlphaLyrae-Medium.woff') format('woff');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
