@@ -8,7 +8,7 @@ import type {
   VegaICellRendererParams,
 } from '@vegaprotocol/datagrid';
 import {
-  AgGridLazy as AgGrid,
+  AgGrid,
   COL_DEFS,
   PriceFlashCell,
   signedNumberCssClassRules,

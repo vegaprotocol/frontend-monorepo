@@ -9,5 +9,11 @@ export const AnnouncementBanner = () => {
     return null;
   }
 
-  return <Banner app="console" configUrl={ANNOUNCEMENTS_CONFIG_URL} />;
+  return (
+    <Banner
+      app="console"
+      configUrl={ANNOUNCEMENTS_CONFIG_URL}
+      background="url('/banner-bg.jpg')"
+    />
+  );
 };

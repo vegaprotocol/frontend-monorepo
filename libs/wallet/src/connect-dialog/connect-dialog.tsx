@@ -169,8 +169,7 @@ const ConnectDialogContainer = ({
 
   const isDesktopWalletRunning = useIsWalletServiceRunning(
     walletUrl,
-    connectors['jsonRpc'],
-    appChainId
+    connectors['jsonRpc']
   );
 
   const snapStatus = useSnapStatus(

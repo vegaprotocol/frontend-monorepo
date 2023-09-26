@@ -14,6 +14,7 @@ import {
 export type AnnouncementBannerProps = {
   app: AppNameType;
   configUrl: string;
+  background?: string;
 };
 
 // run only if below the allowed maximum delay ~24.8 days (https://developer.mozilla.org/en-US/docs/Web/API/setTimeout#maximum_delay_value)
@@ -36,6 +37,7 @@ const doesEndInTheFuture = (now: Date, data: Announcement) => {
 export const AnnouncementBanner = ({
   app,
   configUrl,
+  background,
 }: AnnouncementBannerProps) => {
   const [isVisible, setVisible] = useState(false);
   const { data, reload } = useAnnouncement(app, configUrl);
@@ -79,10 +81,10 @@ export const AnnouncementBanner = ({
   }
 
   return (
-    <Banner className="relative px-10">
+    <Banner className="relative px-10" background={background}>
       <div
         data-testid="app-announcement"
-        className="relative font-alpha flex gap-2 justify-center text-center text-lg text-white"
+        className="relative flex justify-center text-lg text-center text-white font-alpha gap-2"
       >
         <span>{data.text}</span>{' '}
         {data.urlText && data.url && (
@@ -90,7 +92,7 @@ export const AnnouncementBanner = ({
         )}
       </div>
       <button
-        className="absolute right-0 top-0 p-4 w-10 h-full flex items-center justify-center text-white"
+        className="absolute top-0 right-0 flex items-center justify-center w-10 h-full p-4 text-white"
         data-testid="app-announcement-close"
         onClick={() => {
           setVisible(false);

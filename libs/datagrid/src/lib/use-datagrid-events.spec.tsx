@@ -1,12 +1,11 @@
 import { act, render, waitFor } from '@testing-library/react';
-import {
-  useDataGridEvents,
-  GRID_EVENT_DEBOUNCE_TIME,
-} from './use-datagrid-events';
-import { AgGridThemed } from './ag-grid/ag-grid-lazy-themed';
+import { useDataGridEvents } from './use-datagrid-events';
+import { AgGridThemed } from './ag-grid/ag-grid-themed';
 import type { MutableRefObject } from 'react';
 import { useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
+
+const GRID_EVENT_DEBOUNCE_TIME = 500;
 
 const gridProps = {
   rowData: [{ id: 1 }],
