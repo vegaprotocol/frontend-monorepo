@@ -406,6 +406,27 @@ describe(
         'contain.text',
         'Perpetual'
       );
+      // Liquidity SLA protocols
+      getProposalDetailsValue('Performance Hysteresis Epochs').should(
+        'contain.text',
+        '1'
+      );
+      getProposalDetailsValue('SLA Competition Factor').should(
+        'contain.text',
+        '95.00%'
+      );
+      getProposalDetailsValue('Epoch Length').should('contain.text', '5s');
+      getProposalDetailsValue('Non Performance Bond Penalty Max').should(
+        'contain.text',
+        '0.05'
+      );
+      getProposalDetailsValue('Stake To CCY Volume').should(
+        'contain.text',
+        '0.3'
+      );
+      getProposalDetailsValue(
+        'Minimum Probability Of Trading LP Orders'
+      ).should('contain.text', '1e-8');
     });
   }
 );
