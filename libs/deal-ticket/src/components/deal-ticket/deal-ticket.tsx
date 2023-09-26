@@ -221,8 +221,7 @@ export const DealTicket = ({
 
   const price =
     normalizedOrder &&
-    marketPrice &&
-    getDerivedPrice(normalizedOrder, marketPrice);
+    getDerivedPrice(normalizedOrder, marketPrice ?? undefined);
 
   const notionalSize = getNotionalSize(
     price,
