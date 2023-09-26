@@ -110,8 +110,8 @@ html [data-theme='light'] {
   --pennant-color-depth-sell-fill: theme(colors.market.red.DEFAULT);
   --pennant-color-depth-sell-stroke: theme(colors.market.red.650);
 
-  --pennant-color-volume-buy: theme(colors.market.green.300);
-  --pennant-color-volume-sell: theme(colors.market.red.300);
+  --pennant-color-volume-buy: theme(colors.market.green.DEFAULT);
+  --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
 }
 
 html [data-theme='dark'] {
@@ -132,7 +132,7 @@ html [data-theme='dark'] {
   --pennant-color-depth-sell-stroke: theme(colors.market.red.DEFAULT);
 
   --pennant-color-volume-buy: theme(colors.market.green.600);
-  --pennant-color-volume-sell: theme(colors.market.red.650);
+  --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
 }
 
 /**
