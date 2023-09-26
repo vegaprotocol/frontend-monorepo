@@ -38,14 +38,16 @@ export interface DealTicketFeeDetailsProps {
   assetSymbol: string;
   order: OrderSubmissionBody['orderSubmission'];
   market: Market;
+  isMarketInAuction?: boolean;
 }
 
 export const DealTicketFeeDetails = ({
   assetSymbol,
   order,
   market,
+  isMarketInAuction,
 }: DealTicketFeeDetailsProps) => {
-  const feeEstimate = useEstimateFees(order);
+  const feeEstimate = useEstimateFees(order, isMarketInAuction);
   const { settlementAsset: asset } =
     market.tradableInstrument.instrument.product;
   const { decimals: assetDecimals, quantum } = asset;
@@ -65,7 +67,7 @@ export const DealTicketFeeDetails = ({
         <>
           <span>
             {t(
-              `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}.`
+              `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}. Fees estimated are "taker" fees and will only be payable if the order trades aggressively. Rebate equal to the maker portion will be paid to the trader if the order trades passively.`
             )}
           </span>
           <FeesBreakdown

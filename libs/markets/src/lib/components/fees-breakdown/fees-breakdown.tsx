@@ -60,6 +60,7 @@ export const FeesBreakdown = ({
     .plus(fees.infrastructureFee)
     .plus(fees.liquidityFee)
     .toString();
+  if (totalFees === '0') return null;
   const formatValue = (value: string | number | null | undefined): string => {
     return value && !isNaN(Number(value))
       ? addDecimalsFormatNumber(value, decimals)
