@@ -19,14 +19,14 @@ export interface TooltipProps {
   align?: 'start' | 'center' | 'end';
   side?: 'top' | 'right' | 'bottom' | 'left';
   sideOffset?: number;
-  noUnderline?: boolean;
+  underline?: boolean;
 }
 
-export const TOOLTIP_TRIGGER_CLASS_NAME = (noUnderline?: boolean) =>
-  classNames(
-    { 'underline underline-offset-2': !noUnderline },
-    'decoration-neutral-400 dark:decoration-neutral-400 decoration-dashed'
-  );
+export const TOOLTIP_TRIGGER_CLASS_NAME = (underline?: boolean) =>
+  classNames({
+    'underline underline-offset-2 decoration-neutral-400 dark:decoration-neutral-400 decoration-dashed':
+      underline,
+  });
 
 // Conditionally rendered tooltip if description content is provided.
 export const Tooltip = ({
@@ -36,12 +36,12 @@ export const Tooltip = ({
   sideOffset,
   align = 'start',
   side = 'bottom',
-  noUnderline,
+  underline,
 }: TooltipProps) =>
   description ? (
     <Provider delayDuration={200} skipDelayDuration={100}>
       <Root open={open}>
-        <Trigger asChild className={TOOLTIP_TRIGGER_CLASS_NAME(noUnderline)}>
+        <Trigger asChild className={TOOLTIP_TRIGGER_CLASS_NAME(underline)}>
           {children}
         </Trigger>
         {description && (

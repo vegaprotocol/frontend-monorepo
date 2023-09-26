@@ -53,7 +53,7 @@ export const HeaderStat = ({
       <div data-testid="item-header" id={id}>
         {heading}
       </div>
-      <Tooltip description={description}>
+      <Tooltip description={description} underline>
         <div
           data-testid="item-value"
           aria-labelledby={id}
