@@ -10,7 +10,6 @@ import { UserVote } from '../vote-details';
 import { ListAsset } from '../list-asset';
 import Routes from '../../../routes';
 import { ProposalMarketData } from '../proposal-market-data';
-import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { MarketInfo } from '@vegaprotocol/markets';
 import type { AssetQuery } from '@vegaprotocol/assets';
@@ -22,7 +21,7 @@ import { useVoteSubmit } from '@vegaprotocol/proposals';
 import { useUserVote } from '../vote-details/use-user-vote';
 
 export interface ProposalProps {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal: ProposalQuery['proposal'];
   networkParams: Partial<NetworkParamsResult>;
   newMarketData?: MarketInfo | null;
   parentMarketData?: MarketInfo | null;
