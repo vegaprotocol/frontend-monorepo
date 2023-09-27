@@ -2,7 +2,7 @@ import { VegaIcon, VegaIconNames } from '../icon';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
-import styles from './checkbox.module.css';
+import styles from '../checkbox/checkbox.module.css';
 
 type CheckedState = boolean | 'indeterminate';
 export interface TradingCheckboxProps {

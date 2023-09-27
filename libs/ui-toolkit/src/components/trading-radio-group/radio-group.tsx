@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
-import styles from './radio-group.module.css';
+import styles from '../checkbox/checkbox.module.css';
 
 export interface TradingRadioGroupProps {
   name?: string;

@@ -2,6 +2,7 @@ import { Icon } from '../icon';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
+import styles from './checkbox.module.css';
 
 type CheckedState = boolean | 'indeterminate';
 export interface CheckboxProps {
@@ -30,7 +31,7 @@ export const Checkbox = ({
   );
 
   return (
-    <div className="flex gap-1">
+    <label className={`flex gap-1 ${styles['label']}`} htmlFor={name}>
       <CheckboxPrimitive.Root
         name={name}
         id={name}
@@ -55,14 +56,13 @@ export const Checkbox = ({
           )}
         </CheckboxPrimitive.CheckboxIndicator>
       </CheckboxPrimitive.Root>
-      <label
-        htmlFor={name}
+      <span
         className={classNames('text-sm flex-1', {
           'dark:text-neutral-400 text-neutral-600': disabled,
         })}
       >
         {label}
-      </label>
-    </div>
+      </span>
+    </label>
   );
 };
