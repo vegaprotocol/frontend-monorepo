@@ -1,3 +1,17 @@
+fragment NewMarketProductFields on Proposal {
+  terms {
+    change {
+      ... on NewMarket {
+        instrument {
+          product {
+            __typename
+          }
+        }
+      }
+    }
+  }
+}
+
 fragment ProposalFields on Proposal {
   id
   rationale {
@@ -79,11 +93,12 @@ fragment ProposalFields on Proposal {
   }
 }
 
-query Proposals {
+query Proposals($includeNewMarketProductFields: Boolean!) {
   proposalsConnection {
     edges {
       node {
         ...ProposalFields
+        ...NewMarketProductFields @include(if: $includeNewMarketProductFields)
       }
     }
   }

@@ -16,14 +16,14 @@ import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/propos
 import { ExternalLinks } from '@vegaprotocol/environment';
 
 interface ProposalsListProps {
-  proposals: Array<ProposalFieldsFragment | ProposalQuery['proposal']>;
+  proposals: Array<ProposalQuery['proposal']>;
   protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
   lastBlockHeight?: string;
 }
 
 interface SortedProposalsProps {
-  open: Array<ProposalFieldsFragment | ProposalQuery['proposal']>;
-  closed: Array<ProposalFieldsFragment | ProposalQuery['proposal']>;
+  open: ProposalQuery['proposal'][];
+  closed: ProposalQuery['proposal'][];
 }
 
 interface SortedProtocolUpgradeProposalsProps {
@@ -31,7 +31,7 @@ interface SortedProtocolUpgradeProposalsProps {
   closed: ProtocolUpgradeProposalFieldsFragment[];
 }
 
-export const orderByDate = (arr: ProposalFieldsFragment[]) =>
+export const orderByDate = (arr: ProposalQuery['proposal'][]) =>
   orderBy(
     arr,
     [
@@ -92,12 +92,12 @@ export const ProposalsList = ({
     return {
       open:
         initialSorting.open.length > 0
-          ? orderByDate(initialSorting.open as ProposalFieldsFragment[])
+          ? orderByDate(initialSorting.open as ProposalQuery['proposal'][])
           : [],
       closed:
         initialSorting.closed.length > 0
           ? orderByDate(
-              initialSorting.closed as ProposalFieldsFragment[]
+              initialSorting.closed as ProposalQuery['proposal'][]
             ).reverse()
           : [],
     };

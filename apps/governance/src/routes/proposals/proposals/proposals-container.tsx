@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { SplashLoader } from '../../../components/splash-loader';
 import { ProposalsList } from '../components/proposals-list';
 import { useProposalsQuery } from './__generated__/Proposals';
-import { getNodes } from '@vegaprotocol/utils';
+import { getNodes, removePaginationWrapper } from '@vegaprotocol/utils';
 import {
   ProposalState,
   ProtocolUpgradeProposalStatus,
@@ -15,14 +15,13 @@ import type { NodeConnection, NodeEdge } from '@vegaprotocol/utils';
 import type { ProposalFieldsFragment } from './__generated__/Proposals';
 import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { useProtocolUpgradeProposalsQuery } from '@vegaprotocol/proposals';
+import { FLAGS } from '@vegaprotocol/environment';
 
-export function getNotRejectedProposals<T extends ProposalFieldsFragment>(
-  data?: NodeConnection<NodeEdge<T>> | null
-): T[] {
+export function getNotRejectedProposals(data?: ProposalFieldsFragment[]) {
   return flow([
     (data) =>
-      getNodes<ProposalFieldsFragment>(data, (p) =>
-        p ? p.state !== ProposalState.STATE_REJECTED : false
+      data.filter(
+        (p: ProposalFieldsFragment) => p?.state !== ProposalState.STATE_REJECTED
       ),
   ])(data);
 }
@@ -47,6 +46,9 @@ export const ProposalsContainer = () => {
     pollInterval: 5000,
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
+    variables: {
+      includeNewMarketProductFields: !!FLAGS.PRODUCT_PERPETUALS,
+    },
   });
 
   const {
@@ -60,7 +62,10 @@ export const ProposalsContainer = () => {
   });
 
   const proposals = useMemo(
-    () => getNotRejectedProposals(data?.proposalsConnection),
+    () =>
+      getNotRejectedProposals(
+        removePaginationWrapper(data?.proposalsConnection?.edges)
+      ),
     [data]
   );
 
