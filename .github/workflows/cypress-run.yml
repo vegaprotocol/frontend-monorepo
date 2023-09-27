@@ -19,7 +19,7 @@ jobs:
       matrix:
         project: ${{ fromJSON(inputs.projects) }}
     name: ${{ matrix.project }}
-    runs-on: self-hosted-runner
+    runs-on: mainnet-compatible-runner
     timeout-minutes: 120
     steps:
       # Checks if skip cache was requested
