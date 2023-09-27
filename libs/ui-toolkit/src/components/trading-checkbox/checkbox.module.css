@@ -1,0 +1,14 @@
+.label {
+  position: relative;
+}
+
+.label::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translate(0, -50%);
+  height: 24px;
+}
