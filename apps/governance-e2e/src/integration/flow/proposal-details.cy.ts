@@ -51,6 +51,7 @@ const openProposals = 'open-proposals';
 const viewProposalButton = 'view-proposal-btn';
 const proposalTermsToggle = 'proposal-json-toggle';
 const marketDataToggle = 'proposal-market-data-toggle';
+const marketProposalType = 'proposal-type';
 
 describe(
   'Governance flow for proposal details',
@@ -398,13 +399,21 @@ describe(
         enactmentTimestamp: enactmentTimestamp,
         closingTimestamp: closingTimestamp,
       });
-      getProposalFromTitle('perpetual market proposal').within(() =>
-        cy.getByTestId(viewProposalButton).click()
-      );
+      getProposalFromTitle('perpetual market proposal').within(() => {
+        cy.getByTestId(marketProposalType).should(
+          'have.text',
+          'New market - perpetual'
+        );
+        cy.getByTestId(viewProposalButton).click();
+      });
       cy.getByTestId(marketDataToggle).click();
       getProposalDetailsValue('Product Type').should(
         'contain.text',
         'Perpetual'
+      );
+      cy.getByTestId(marketProposalType).should(
+        'have.text',
+        'New market - perpetual'
       );
       // Liquidity SLA protocols
       getProposalDetailsValue('Performance Hysteresis Epochs').should(
