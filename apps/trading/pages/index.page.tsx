@@ -19,17 +19,11 @@ export default function Index() {
         <meta name="og:url" content="https://console.vega.xyz/" />
         <meta name="og:title" content="Vega Protocol - Console" />
         <meta name="og:site_name" content="Vega Protocol - Console" />
-        <meta name="og:image" content="https://static.vega.xyz/favicon.ico" />
-        <meta
-          name="twitter:card"
-          content="https://static.vega.xyz/favicon.ico"
-        />
+        <meta name="og:image" content="./favicon.ico" />
+        <meta name="twitter:card" content="./favicon.ico" />
         <meta name="twitter:title" content="Vega Protocol - Console" />
         <meta name="twitter:description" content="Vega Protocol - Console" />
-        <meta
-          name="twitter:image"
-          content="https://static.vega.xyz/favicon.ico"
-        />
+        <meta name="twitter:image" content="./favicon.ico" />
         <meta name="twitter:image:alt" content="VEGA logo" />
         <meta name="twitter:site" content="@vegaprotocol" />
       </Head>

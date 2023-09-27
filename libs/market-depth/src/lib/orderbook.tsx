@@ -175,7 +175,7 @@ export const Orderbook = ({
   );
 
   return (
-    <div className="h-full text-xs grid grid-rows-[1fr_min-content]">
+    <div className="h-full text-xs grid grid-rows-[1fr_min-content] overflow-hidden">
       <div>
         <ReactVirtualizedAutoSizer>
           {({ width, height }) => {

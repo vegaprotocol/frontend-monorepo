@@ -192,6 +192,12 @@ query MarketInfo($marketId: ID!) {
         scalingFactor
       }
     }
+    liquiditySLAParameters {
+      priceRange
+      commitmentMinTimeFraction
+      performanceHysteresisEpochs
+      slaCompetitionFactor
+    }
     tradableInstrument {
       instrument {
         id

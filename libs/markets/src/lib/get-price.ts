@@ -33,7 +33,7 @@ export const getDerivedPrice = (
     type: Schema.OrderType;
     price?: string | undefined;
   },
-  marketPrice: string
+  marketPrice?: string
 ) => {
   // If order type is market we should use either the mark price
   // or the uncrossing price. If order type is limit use the price

@@ -36,7 +36,12 @@ import {
   formatValue,
 } from '@vegaprotocol/utils';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
-import { getAsset, getDerivedPrice, getQuoteName } from '@vegaprotocol/markets';
+import {
+  getAsset,
+  getDerivedPrice,
+  getQuoteName,
+  isMarketInAuction,
+} from '@vegaprotocol/markets';
 import {
   validateExpiration,
   validateMarketState,
@@ -182,6 +187,7 @@ export const DealTicket = ({
   const iceberg = watch('iceberg');
   const peakSize = watch('peakSize');
   const expiresAt = watch('expiresAt');
+  const postOnly = watch('postOnly');
 
   useEffect(() => {
     const size = storedFormValues?.[dealTicketType]?.size;
@@ -198,7 +204,7 @@ export const DealTicket = ({
   }, [storedFormValues, dealTicketType, rawPrice, setValue]);
 
   useEffect(() => {
-    const subscription = watch((value, { name, type }) => {
+    const subscription = watch((value) => {
       updateStoredFormValues(market.id, value);
     });
     return () => subscription.unsubscribe();
@@ -211,6 +217,7 @@ export const DealTicket = ({
       size: rawSize,
       timeInForce,
       type,
+      postOnly,
     },
     market.id,
     market.decimalPlaces,
@@ -219,8 +226,7 @@ export const DealTicket = ({
 
   const price =
     normalizedOrder &&
-    marketPrice &&
-    getDerivedPrice(normalizedOrder, marketPrice);
+    getDerivedPrice(normalizedOrder, marketPrice ?? undefined);
 
   const notionalSize = getNotionalSize(
     price,
@@ -459,7 +465,7 @@ export const DealTicket = ({
           )}
         />
       )}
-      <div className="mb-4 flex flex-col gap-2 w-full">
+      <div className="flex flex-col w-full mb-4 gap-2">
         <KeyValue
           label={t('Notional')}
           value={formatValue(notionalSize, market.decimalPlaces)}
@@ -473,6 +479,7 @@ export const DealTicket = ({
           }
           assetSymbol={assetSymbol}
           market={market}
+          isMarketInAuction={isMarketInAuction(marketData.marketTradingMode)}
         />
       </div>
       <Controller
@@ -675,6 +682,7 @@ export const DealTicket = ({
         )}
       </Button>
       <DealTicketMarginDetails
+        side={normalizedOrder.side}
         onMarketClick={onMarketClick}
         assetSymbol={asset.symbol}
         marginAccountBalance={marginAccountBalance}

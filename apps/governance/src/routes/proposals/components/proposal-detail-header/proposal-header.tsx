@@ -3,7 +3,6 @@ import { Lozenge, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { shorten } from '@vegaprotocol/utils';
 import { Heading, SubHeading } from '../../../../components/heading';
 import type { ReactNode } from 'react';
-import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { truncateMiddle } from '../../../../lib/truncate-middle';
 import { CurrentProposalState } from '../current-proposal-state';
@@ -20,7 +19,7 @@ export const ProposalHeader = ({
   isListItem = true,
   voteState,
 }: {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal: ProposalQuery['proposal'];
   isListItem?: boolean;
   voteState?: VoteState | null;
 }) => {
@@ -37,7 +36,10 @@ export const ProposalHeader = ({
 
   switch (change?.__typename) {
     case 'NewMarket': {
-      proposalType = 'NewMarket';
+      proposalType =
+        FLAGS.PRODUCT_PERPETUALS && change?.instrument?.product?.__typename
+          ? `NewMarket${change?.instrument?.product?.__typename}`
+          : 'NewMarket';
       fallbackTitle = t('NewMarketProposal');
       details = (
         <>

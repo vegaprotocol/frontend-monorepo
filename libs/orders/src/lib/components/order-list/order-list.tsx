@@ -17,7 +17,7 @@ import {
 import type { ForwardedRef } from 'react';
 import { memo, forwardRef, useMemo } from 'react';
 import {
-  AgGridLazy as AgGrid,
+  AgGrid,
   SetFilter,
   DateRangeFilter,
   negativeClassNames,

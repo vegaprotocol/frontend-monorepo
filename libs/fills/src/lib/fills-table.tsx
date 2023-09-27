@@ -15,7 +15,7 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import {
-  AgGridLazy as AgGrid,
+  AgGrid,
   positiveClassNames,
   negativeClassNames,
   MarketNameCell,
@@ -299,7 +299,7 @@ const FeesBreakdownTooltip = ({
   return (
     <div
       data-testid="fee-breakdown-tooltip"
-      className="max-w-sm bg-vega-light-100 dark:bg-vega-dark-100 border border-vega-light-200 dark:border-vega-dark-200 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white"
+      className="z-20 max-w-sm px-4 py-2 text-sm text-black border rounded bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 break-word dark:text-white"
     >
       {role === MAKER && (
         <>

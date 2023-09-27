@@ -1680,8 +1680,14 @@ export type LiquidityProviderSLA = {
   lastEpochFeePenalty: Scalars['String'];
   /** Indicates how often LP met the commitment in the previous epoch. */
   lastEpochFractionOfTimeOnBook: Scalars['String'];
+  /** Notional volume of orders within the range provided on the buy side of the book. */
+  notionalVolumeBuys: Scalars['String'];
+  /** Notional volume of orders within the range provided on the sell side of the book. */
+  notionalVolumeSells: Scalars['String'];
   /** The liquidity provider party ID */
   party: Party;
+  /** Represents the total amount of funds LP must supply. The amount to be supplied is in the market’s settlement currency, spread on both buy and sell sides of the order book within a defined range. */
+  requiredLiquidity: Scalars['String'];
 };
 
 /** The command to be sent to the chain for a liquidity provision submission */
@@ -2619,8 +2625,14 @@ export type ObservableLiquidityProviderSLA = {
   lastEpochFeePenalty: Scalars['String'];
   /** Indicates how often LP meets the commitment during last epoch. */
   lastEpochFractionOfTimeOnBook: Scalars['String'];
+  /** Notional volume of orders within the range provided on the buy side of the book. */
+  notionalVolumeBuys: Scalars['String'];
+  /** Notional volume of orders within the range provided on the sell side of the book. */
+  notionalVolumeSells: Scalars['String'];
   /** The liquidity provider party ID */
   party: Scalars['ID'];
+  /** Represents the total amount of funds LP must supply. The amount to be supplied is in the market’s settlement currency, spread on both buy and sell sides of the order book within a defined range. */
+  requiredLiquidity: Scalars['String'];
 };
 
 /** Live data of a Market */
