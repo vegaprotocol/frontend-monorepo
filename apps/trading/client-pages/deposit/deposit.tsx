@@ -55,16 +55,16 @@ const DepositFlowContainer = () => {
   const { VEGA_ENV } = useEnvironment();
   const [searchParams] = useSearchParams();
   const assetId = searchParams.get('assetId') || undefined;
-  const { data } = useAssetsDataProvider();
-  const { config } = useEthereumConfig();
+  const { data: assets } = useAssetsDataProvider();
   const { data: markets } = useTopTradedMarkets();
+  const { config } = useEthereumConfig();
 
-  if (!data) return null;
+  if (!assets) return null;
   if (!config) return null;
 
   return (
     <DepositFlow
-      assets={data}
+      assets={assets}
       assetId={assetId}
       bridgeAddress={config.collateral_bridge_contract.address}
       markets={markets || []}
@@ -250,7 +250,8 @@ const AssetSelector = ({
   const tx = useEthTransactionStore((store) => {
     return store.transactions.find((t) => t?.id == id);
   });
-  const getTopMarkets = (a: AssetFieldsFragment) => {
+
+  const getMarketsForAsset = (a: AssetFieldsFragment) => {
     return markets
       .filter((m) => {
         const marketAsset = getAsset(m);
@@ -287,6 +288,8 @@ const AssetSelector = ({
   }
 
   if (asset && isAssetTypeERC20(asset)) {
+    const selectedAssetMarkets = getMarketsForAsset(asset);
+
     return (
       <div className="flex gap-3">
         <StepIndicator complete={true} />
@@ -297,7 +300,7 @@ const AssetSelector = ({
               <small>{truncateByChars(asset.source.contractAddress)}</small>
             </p>
             <div className="w-full">
-              <Markets markets={getTopMarkets(asset)} />
+              <Markets markets={selectedAssetMarkets} />
             </div>
             <div className="flex gap-2">
               <TradingButton onClick={() => onSelect(undefined)} size="small">
@@ -355,6 +358,9 @@ const AssetSelector = ({
       >
         {filteredAssets.map((asset) => {
           if (!isAssetTypeERC20(asset)) return null;
+
+          const marketsForAsset = getMarketsForAsset(asset);
+
           return (
             <div key={asset.id}>
               <div className="flex gap-3">
@@ -375,7 +381,7 @@ const AssetSelector = ({
                       ({truncateByChars(asset.source.contractAddress)})
                     </small>
                   </label>
-                  <Markets markets={getTopMarkets(asset)} />
+                  <Markets markets={marketsForAsset} />
                 </div>
               </div>
             </div>
