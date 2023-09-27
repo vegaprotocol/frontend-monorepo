@@ -1,3 +1,16 @@
+fragment UpdateMarketStateFields on UpdateMarketState {
+  market {
+    id
+    tradableInstrument {
+      instrument {
+        name
+      }
+    }
+  }
+  updateType
+  price
+}
+
 fragment NewMarketFields on NewMarket {
   instrument {
     name
@@ -426,5 +439,38 @@ query SuccessorProposalsList {
         ...SuccessorProposalListFields
       }
     }
+  }
+}
+
+fragment TerminateProposalsListFields on Proposal {
+  id
+  state
+  datetime
+  rejectionReason
+  terms {
+    closingDatetime
+    enactmentDatetime
+    change {
+      __typename
+      ... on UpdateMarketState {
+        ...UpdateMarketStateFields
+      }
+    }
+  }
+}
+
+query TerminateProposalsList {
+  proposalsConnection(inState: STATE_PASSED) {
+    edges {
+      node {
+        ...TerminateProposalsListFields
+      }
+    }
+  }
+}
+
+subscription TerminateLiveProposals {
+  proposals {
+    ...TerminateProposalsListFields
   }
 }

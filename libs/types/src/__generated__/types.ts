@@ -4637,7 +4637,7 @@ export type ReferralSet = {
    * Referral set statistics for the latest or specific epoch.
    * If provided the results can be filtered for a specific referee
    */
-  stats: ReferralSetStats;
+  stats?: Maybe<ReferralSetStats>;
   /** Timestamp as RFC3339Nano when the referral set was updated. */
   updatedAt: Scalars['Timestamp'];
 };

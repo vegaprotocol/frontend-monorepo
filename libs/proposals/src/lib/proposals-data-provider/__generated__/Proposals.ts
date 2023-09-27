@@ -3,6 +3,8 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type UpdateMarketStateFieldsFragment = { __typename?: 'UpdateMarketState', updateType: Types.MarketUpdateType, price?: string | null, market: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } };
+
 export type NewMarketFieldsFragment = { __typename?: 'NewMarket', decimalPlaces: number, metadata?: Array<string> | null, instrument: { __typename?: 'InstrumentConfiguration', name: string, code: string, futureProduct?: { __typename?: 'FutureProduct', quoteName: string, settlementAsset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string }, dataSourceSpecForSettlementData: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal' } }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal' } }, dataSourceSpecBinding: { __typename?: 'DataSourceSpecToFutureBinding', settlementDataProperty: string, tradingTerminationProperty: string } } | null }, riskParameters: { __typename?: 'LogNormalRiskModel', riskAversionParameter: number, tau: number, params: { __typename?: 'LogNormalModelParams', mu: number, r: number, sigma: number } } | { __typename?: 'SimpleRiskModel', params: { __typename?: 'SimpleRiskModelParams', factorLong: number, factorShort: number } }, successorConfiguration?: { __typename?: 'SuccessorConfiguration', parentMarketId: string } | null };
 
 export type UpdateMarketFieldsFragment = { __typename?: 'UpdateMarket', marketId: string, updateMarketConfiguration: { __typename?: 'UpdateMarketConfiguration', metadata?: Array<string | null> | null, instrument: { __typename?: 'UpdateInstrumentConfiguration', code: string, product: { __typename?: 'UpdateFutureProduct', quoteName: string, dataSourceSpecForSettlementData: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal' } }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal' } }, dataSourceSpecBinding: { __typename?: 'DataSourceSpecToFutureBinding', settlementDataProperty: string, tradingTerminationProperty: string } } | { __typename?: 'UpdatePerpetualProduct', quoteName: string, dataSourceSpecForSettlementData: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal' } }, dataSourceSpecForSettlementSchedule: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal' } }, dataSourceSpecBinding: { __typename?: 'DataSourceSpecPerpetualBinding', settlementDataProperty: string, settlementScheduleProperty: string } } }, priceMonitoringParameters: { __typename?: 'PriceMonitoringParameters', triggers?: Array<{ __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number }> | null }, liquidityMonitoringParameters: { __typename?: 'LiquidityMonitoringParameters', triggeringRatio: string, targetStakeParameters: { __typename?: 'TargetStakeParameters', timeWindow: number, scalingFactor: number } }, riskParameters: { __typename: 'UpdateMarketLogNormalRiskModel', logNormal?: { __typename?: 'LogNormalRiskModel', riskAversionParameter: number, tau: number, params: { __typename?: 'LogNormalModelParams', mu: number, r: number, sigma: number } } | null } | { __typename: 'UpdateMarketSimpleRiskModel', simple?: { __typename?: 'SimpleRiskModelParams', factorLong: number, factorShort: number } | null } } };
@@ -31,6 +33,18 @@ export type SuccessorProposalsListQueryVariables = Types.Exact<{ [key: string]: 
 
 
 export type SuccessorProposalsListQuery = { __typename?: 'Query', proposalsConnection?: { __typename?: 'ProposalsConnection', edges?: Array<{ __typename?: 'ProposalEdge', node: { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', instrument: { __typename?: 'InstrumentConfiguration', name: string }, successorConfiguration?: { __typename?: 'SuccessorConfiguration', parentMarketId: string } | null } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } } } | null> | null } | null };
+
+export type TerminateProposalsListFieldsFragment = { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, rejectionReason?: Types.ProposalRejectionReason | null, terms: { __typename?: 'ProposalTerms', closingDatetime: any, enactmentDatetime?: any | null, change: { __typename: 'CancelTransfer' } | { __typename: 'NewAsset' } | { __typename: 'NewFreeform' } | { __typename: 'NewMarket' } | { __typename: 'NewSpotMarket' } | { __typename: 'NewTransfer' } | { __typename: 'UpdateAsset' } | { __typename: 'UpdateMarket' } | { __typename: 'UpdateMarketState', updateType: Types.MarketUpdateType, price?: string | null, market: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } } | { __typename: 'UpdateNetworkParameter' } | { __typename: 'UpdateReferralProgram' } | { __typename: 'UpdateSpotMarket' } | { __typename: 'UpdateVolumeDiscountProgram' } } };
+
+export type TerminateProposalsListQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type TerminateProposalsListQuery = { __typename?: 'Query', proposalsConnection?: { __typename?: 'ProposalsConnection', edges?: Array<{ __typename?: 'ProposalEdge', node: { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, rejectionReason?: Types.ProposalRejectionReason | null, terms: { __typename?: 'ProposalTerms', closingDatetime: any, enactmentDatetime?: any | null, change: { __typename: 'CancelTransfer' } | { __typename: 'NewAsset' } | { __typename: 'NewFreeform' } | { __typename: 'NewMarket' } | { __typename: 'NewSpotMarket' } | { __typename: 'NewTransfer' } | { __typename: 'UpdateAsset' } | { __typename: 'UpdateMarket' } | { __typename: 'UpdateMarketState', updateType: Types.MarketUpdateType, price?: string | null, market: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } } | { __typename: 'UpdateNetworkParameter' } | { __typename: 'UpdateReferralProgram' } | { __typename: 'UpdateSpotMarket' } | { __typename: 'UpdateVolumeDiscountProgram' } } } } | null> | null } | null };
+
+export type TerminateLiveProposalsSubscriptionVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type TerminateLiveProposalsSubscription = { __typename?: 'Subscription', proposals: { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, datetime: any, rejectionReason?: Types.ProposalRejectionReason | null, terms: { __typename?: 'ProposalTerms', closingDatetime: any, enactmentDatetime?: any | null, change: { __typename: 'CancelTransfer' } | { __typename: 'NewAsset' } | { __typename: 'NewFreeform' } | { __typename: 'NewMarket' } | { __typename: 'NewSpotMarket' } | { __typename: 'NewTransfer' } | { __typename: 'UpdateAsset' } | { __typename: 'UpdateMarket' } | { __typename: 'UpdateMarketState', updateType: Types.MarketUpdateType, price?: string | null, market: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } } } } | { __typename: 'UpdateNetworkParameter' } | { __typename: 'UpdateReferralProgram' } | { __typename: 'UpdateSpotMarket' } | { __typename: 'UpdateVolumeDiscountProgram' } } } };
 
 export const NewMarketFieldsFragmentDoc = gql`
     fragment NewMarketFields on NewMarket {
@@ -437,6 +451,38 @@ export const SuccessorProposalListFieldsFragmentDoc = gql`
   }
 }
     ${NewMarketSuccessorFieldsFragmentDoc}`;
+export const UpdateMarketStateFieldsFragmentDoc = gql`
+    fragment UpdateMarketStateFields on UpdateMarketState {
+  market {
+    id
+    tradableInstrument {
+      instrument {
+        name
+      }
+    }
+  }
+  updateType
+  price
+}
+    `;
+export const TerminateProposalsListFieldsFragmentDoc = gql`
+    fragment TerminateProposalsListFields on Proposal {
+  id
+  state
+  datetime
+  rejectionReason
+  terms {
+    closingDatetime
+    enactmentDatetime
+    change {
+      __typename
+      ... on UpdateMarketState {
+        ...UpdateMarketStateFields
+      }
+    }
+  }
+}
+    ${UpdateMarketStateFieldsFragmentDoc}`;
 export const ProposalsListDocument = gql`
     query ProposalsList($proposalType: ProposalType, $inState: ProposalState) {
   proposalsConnection(proposalType: $proposalType, inState: $inState) {
@@ -515,3 +561,70 @@ export function useSuccessorProposalsListLazyQuery(baseOptions?: Apollo.LazyQuer
 export type SuccessorProposalsListQueryHookResult = ReturnType<typeof useSuccessorProposalsListQuery>;
 export type SuccessorProposalsListLazyQueryHookResult = ReturnType<typeof useSuccessorProposalsListLazyQuery>;
 export type SuccessorProposalsListQueryResult = Apollo.QueryResult<SuccessorProposalsListQuery, SuccessorProposalsListQueryVariables>;
+export const TerminateProposalsListDocument = gql`
+    query TerminateProposalsList {
+  proposalsConnection(inState: STATE_PASSED) {
+    edges {
+      node {
+        ...TerminateProposalsListFields
+      }
+    }
+  }
+}
+    ${TerminateProposalsListFieldsFragmentDoc}`;
+
+/**
+ * __useTerminateProposalsListQuery__
+ *
+ * To run a query within a React component, call `useTerminateProposalsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTerminateProposalsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTerminateProposalsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTerminateProposalsListQuery(baseOptions?: Apollo.QueryHookOptions<TerminateProposalsListQuery, TerminateProposalsListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TerminateProposalsListQuery, TerminateProposalsListQueryVariables>(TerminateProposalsListDocument, options);
+      }
+export function useTerminateProposalsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TerminateProposalsListQuery, TerminateProposalsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TerminateProposalsListQuery, TerminateProposalsListQueryVariables>(TerminateProposalsListDocument, options);
+        }
+export type TerminateProposalsListQueryHookResult = ReturnType<typeof useTerminateProposalsListQuery>;
+export type TerminateProposalsListLazyQueryHookResult = ReturnType<typeof useTerminateProposalsListLazyQuery>;
+export type TerminateProposalsListQueryResult = Apollo.QueryResult<TerminateProposalsListQuery, TerminateProposalsListQueryVariables>;
+export const TerminateLiveProposalsDocument = gql`
+    subscription TerminateLiveProposals {
+  proposals {
+    ...TerminateProposalsListFields
+  }
+}
+    ${TerminateProposalsListFieldsFragmentDoc}`;
+
+/**
+ * __useTerminateLiveProposalsSubscription__
+ *
+ * To run a query within a React component, call `useTerminateLiveProposalsSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useTerminateLiveProposalsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTerminateLiveProposalsSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTerminateLiveProposalsSubscription(baseOptions?: Apollo.SubscriptionHookOptions<TerminateLiveProposalsSubscription, TerminateLiveProposalsSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<TerminateLiveProposalsSubscription, TerminateLiveProposalsSubscriptionVariables>(TerminateLiveProposalsDocument, options);
+      }
+export type TerminateLiveProposalsSubscriptionHookResult = ReturnType<typeof useTerminateLiveProposalsSubscription>;
+export type TerminateLiveProposalsSubscriptionResult = Apollo.SubscriptionResult<TerminateLiveProposalsSubscription>;

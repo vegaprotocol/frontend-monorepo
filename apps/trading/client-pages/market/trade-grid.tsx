@@ -18,6 +18,7 @@ import { TradingViews } from './trade-views';
 import {
   MarketSuccessorBanner,
   MarketSuccessorProposalBanner,
+  MarketTerminationBanner,
 } from '../../components/market-banner';
 import { FLAGS } from '@vegaprotocol/environment';
 
@@ -169,6 +170,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
             <MarketSuccessorProposalBanner marketId={market?.id} />
           </>
         )}
+        <MarketTerminationBanner />
         <OracleBanner marketId={market?.id || ''} />
       </div>
       <div className="min-h-0 p-0.5">
