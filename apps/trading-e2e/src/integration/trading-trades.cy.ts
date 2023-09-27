@@ -86,8 +86,8 @@ describe('trades', { tags: '@smoke' }, () => {
   });
 
   it('copy price to deal ticket form', () => {
-    cy.getByTestId('Order').click();
     // 6005-THIS-007
+    cy.getByTestId('order-type-Limit').click();
     cy.get(colIdPrice).last().should('be.visible').click();
     cy.getByTestId('order-price').should('have.value', '171.16898');
   });
