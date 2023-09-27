@@ -4,6 +4,10 @@ fragment DataSourceFilter on Filter {
     type
     numberDecimalPlaces
   }
+  conditions {
+    value
+    operator
+  }
 }
 
 fragment DataSource on DataSourceSpec {
@@ -12,6 +16,37 @@ fragment DataSource on DataSourceSpec {
     sourceType {
       ... on DataSourceDefinitionExternal {
         sourceType {
+          ... on EthCallSpec {
+            abi
+            address
+            args
+            method
+            requiredConfirmations
+            normalisers {
+              name
+              expression
+            }
+            trigger {
+              trigger {
+                ... on EthTimeTrigger {
+                  initial
+                  every
+                  until
+                }
+              }
+            }
+            filters {
+              key {
+                name
+                type
+                numberDecimalPlaces
+              }
+              conditions {
+                value
+                operator
+              }
+            }
+          }
           ... on DataSourceSpecConfiguration {
             signers {
               signer {

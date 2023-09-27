@@ -6,13 +6,22 @@ import { t } from '@vegaprotocol/i18n';
 import { marketDataProvider } from '../../market-data-provider';
 import { totalFeesPercentage } from '../../market-utils';
 import {
+  Accordion,
+  AccordionChevron,
+  AccordionPanel,
+  CopyWithTooltip,
   ExternalLink,
+  Icon,
   Intent,
+  KeyValueTable,
+  KeyValueTableRow,
   Lozenge,
   Splash,
+  SyntaxHighlighter,
   Tooltip,
   VegaIcon,
   VegaIconNames,
+  truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import {
   formatNumber,
@@ -30,6 +39,7 @@ import { Last24hVolume } from '../last-24h-volume';
 import BigNumber from 'bignumber.js';
 import type {
   DataSourceDefinition,
+  EthCallSpec,
   MarketTradingMode,
   SignerKind,
 } from '@vegaprotocol/types';
@@ -39,6 +49,7 @@ import {
 } from '@vegaprotocol/types';
 import {
   DApp,
+  EtherscanLink,
   FLAGS,
   TOKEN_PROPOSAL,
   useEnvironment,
@@ -60,6 +71,7 @@ import classNames from 'classnames';
 import compact from 'lodash/compact';
 import type { DataSourceFragment } from './__generated__/MarketInfo';
 import { formatDuration } from 'date-fns';
+import * as AccordionPrimitive from '@radix-ui/react-accordion';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -654,6 +666,91 @@ export const LiquidityMonitoringParametersInfoPanel = ({
   return <MarketInfoTable data={marketData} parentData={parentMarketData} />;
 };
 
+export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
+  const abis = sourceType.abi?.map((abi) => JSON.parse(abi));
+  const header = 'uppercase my-2 font-bold text-left';
+  return (
+    <>
+      <h3 className={header}>{t('Ethereum Oracle')}</h3>
+      {sourceType.address && (
+        <>
+          <KeyValueTable>
+            <KeyValueTableRow noBorder>
+              <div>{t('Address')}</div>
+              <CopyWithTooltip text={sourceType.address}>
+                <button
+                  data-testid="copy-eth-oracle-address"
+                  className="underline text-right"
+                >
+                  {truncateMiddle(sourceType.address)}
+                  <Icon name="duplicate" className="ml-2" />
+                </button>
+              </CopyWithTooltip>
+            </KeyValueTableRow>
+          </KeyValueTable>
+
+          <div className="my-2">
+            <EtherscanLink address={sourceType.address}>
+              {t('View on Etherscan')}
+            </EtherscanLink>
+          </div>
+        </>
+      )}
+
+      <MarketInfoTable
+        key="eth-call-spec"
+        data={{
+          method: sourceType.method,
+          requiredConfirmations: sourceType.requiredConfirmations,
+        }}
+      />
+      <Accordion>
+        <AccordionPanel
+          itemId="abi"
+          trigger={
+            <AccordionPrimitive.Trigger
+              data-testid="accordion-toggle"
+              className={classNames(
+                'w-full pt-2',
+                'flex items-center gap-2',
+                'group'
+              )}
+            >
+              <div
+                data-testid={`abi-dropdown`}
+                key={'value-dropdown'}
+                className="flex items-center gap-2 w-full"
+              >
+                <div className="uppercase font-bold"> {t('ABI')}</div>
+                <AccordionChevron size={14} />
+                <div className="flex items-center gap-1"></div>
+              </div>
+            </AccordionPrimitive.Trigger>
+          }
+        >
+          <SyntaxHighlighter data={abis} />
+        </AccordionPanel>
+      </Accordion>
+
+      <h3 className={header}>{t('Normalisers')}</h3>
+      {sourceType.normalisers?.map((normaliser, i) => (
+        <MarketInfoTable key={i} data={normaliser} />
+      ))}
+      <h1 className={header}>{t('Filter')}</h1>
+      <h1 className={header}>{t('Key')}</h1>
+      {sourceType.filters?.map((filter, i) => (
+        <>
+          <MarketInfoTable key={i} data={filter.key} />
+          <h1 className={header}>{t('Conditions')}</h1>
+          {filter.conditions?.map((condition, i) => (
+            <MarketInfoTable key={i} data={condition} />
+          ))}
+        </>
+      ))}
+    </>
+  );
+};
+
 export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
   const asset = getAsset(market);
   const { data } = useDataProvider({
@@ -700,6 +797,50 @@ export const FundingInfoPanel = ({
   })} ${initialLabel}`;
 };
 
+export const EthOracleInfoPanel = ({
+  market,
+  type,
+  parentMarket,
+}: MarketInfoProps & {
+  type: 'settlementData' | 'termination' | 'settlementSchedule';
+}) => {
+  // If this is a successor market, this component will only receive parent market
+  // data if the termination or settlement data is different from the parent.
+  const product = market.tradableInstrument.instrument.product;
+  const parentProduct = parentMarket?.tradableInstrument?.instrument?.product;
+
+  const { dataSourceSpec } = getDataSourceSpec(product, type);
+
+  let parentDataSourceSpecId, parentDataSourceSpec;
+  if (parentProduct) {
+    parentDataSourceSpec = getDataSourceSpec(parentProduct, type);
+    parentDataSourceSpecId = parentDataSourceSpec.dataSourceSpecId;
+    parentDataSourceSpec = parentDataSourceSpec.dataSourceSpec;
+  }
+
+  const shouldShowParentData =
+    parentMarket !== undefined &&
+    parentDataSourceSpecId !== undefined &&
+    !isEqual(dataSourceSpec, parentDataSourceSpec);
+
+  if (dataSourceSpec?.sourceType.sourceType.__typename === 'EthCallSpec') {
+    return (
+      <EthOraclePanel sourceType={dataSourceSpec?.sourceType.sourceType} />
+    );
+  }
+  if (
+    shouldShowParentData &&
+    parentDataSourceSpec?.sourceType.sourceType.__typename === 'EthCallSpec'
+  ) {
+    return (
+      <EthOraclePanel
+        sourceType={parentDataSourceSpec?.sourceType.sourceType}
+      />
+    );
+  }
+  return null;
+};
+
 export const OracleInfoPanel = ({
   market,
   type,
@@ -740,6 +881,10 @@ export const OracleInfoPanel = ({
         </Lozenge>
       )}
 
+      {dataSourceSpec?.sourceType.sourceType.__typename === 'EthCallSpec' && (
+        <EthOraclePanel sourceType={dataSourceSpec?.sourceType.sourceType} />
+      )}
+
       <div className={wrapperClasses}>
         {shouldShowParentData &&
           parentDataSourceSpec &&
@@ -753,6 +898,13 @@ export const OracleInfoPanel = ({
                 type={type}
                 dataSourceSpecId={parentDataSourceSpecId}
               />
+
+              {parentDataSourceSpec?.sourceType.sourceType.__typename ===
+                'EthCallSpec' && (
+                <EthOraclePanel
+                  sourceType={parentDataSourceSpec?.sourceType.sourceType}
+                />
+              )}
 
               {dataSourceSpecId && (
                 <ExternalLink
