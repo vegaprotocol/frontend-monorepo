@@ -1,4 +1,12 @@
+import { calcCandleVolume, useCandles } from '@vegaprotocol/markets';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
+import { Sparkline } from '@vegaprotocol/ui-toolkit';
+import {
+  addDecimalsFormatNumber,
+  formatNumberPercentage,
+  priceChangePercentage,
+} from '@vegaprotocol/utils';
+import { BigNumber } from 'bignumber.js';
 
 export const Markets = ({
   markets,
@@ -9,18 +17,56 @@ export const Markets = ({
     <div className="flex gap-2">
       {markets.length ? (
         markets.map((m) => {
-          return (
-            <div
-              key={m.id}
-              className="flex w-1/4 px-2 py-1 text-xs rounded gap-2 bg-vega-clight-700"
-            >
-              {m.tradableInstrument.instrument.code} {m.data?.markPrice}
-            </div>
-          );
+          return <MarketCard key={m.id} market={m} />;
         })
       ) : (
         <p className="text-xs">No markets</p>
       )}
+    </div>
+  );
+};
+
+const MarketCard = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
+  const { oneDayCandles } = useCandles({ marketId: market.id });
+  const vol = oneDayCandles ? calcCandleVolume(oneDayCandles) : '0';
+  const volume =
+    vol && vol !== '0'
+      ? addDecimalsFormatNumber(vol, market.positionDecimalPlaces)
+      : '0.00';
+  const change = priceChangePercentage(
+    oneDayCandles?.map((c) => c.close) || []
+  );
+  return (
+    <div className="flex w-1/4 p-2 rounded gap-2 bg-vega-clight-700 dark:bg-vega-cdark-700">
+      <div className="flex-1">
+        <h3 className="overflow-hidden text-sm leading-4 whitespace-nowrap text-ellipsis">
+          {market.tradableInstrument.instrument.code}
+        </h3>
+
+        <p className="font-mono text-xs">{volume}</p>
+      </div>
+      <div className="flex justify-end w-1/3">
+        {oneDayCandles && (
+          <Sparkline
+            width={60}
+            height={13}
+            data={oneDayCandles.map((c) => Number(c.close))}
+          />
+        )}
+      </div>
+      <div className="w-1/3 font-mono text-xs text-right">
+        {market.data?.markPrice && (
+          <>
+            <div>
+              {addDecimalsFormatNumber(
+                market.data.markPrice,
+                market.decimalPlaces
+              )}
+            </div>
+            <div>{formatNumberPercentage(new BigNumber(change), 2)}</div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
