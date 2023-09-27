@@ -2041,7 +2041,7 @@ export type MarketData = {
   /** What mode the market is in (auction, continuous, etc) */
   marketTradingMode: MarketTradingMode;
   /** The market value proxy */
-  marketValueProxy: Scalars['String'];
+  marketValueProxy?: Scalars['String'];
   /** The arithmetic average of the best bid price and best offer price. */
   midPrice: Scalars['String'];
   /** RFC3339Nano time indicating the next time positions will be marked to market */
@@ -2606,7 +2606,7 @@ export type ObservableMarketData = {
   /** What mode the market is in (auction, continuous etc) */
   marketTradingMode: MarketTradingMode;
   /** The market value proxy */
-  marketValueProxy: Scalars['String'];
+  marketValueProxy?: Scalars['String'];
   /** The arithmetic average of the best bid price and best offer price */
   midPrice: Scalars['String'];
   /** RFC3339Nano time indicating the next time positions will be marked to market */

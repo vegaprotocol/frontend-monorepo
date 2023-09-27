@@ -87,7 +87,6 @@ context('Market page', { tags: '@regression' }, function () {
       // Liquidity
       cy.validate_element_from_table('Target Stake', '0.00 fUSDC');
       cy.validate_element_from_table('Supplied Stake', '0.00 fUSDC');
-      cy.validate_element_from_table('Market Value Proxy', '0.00 fUSDC');
       // Liquidity price range
       cy.validate_element_from_table(
         'Liquidity Price Range',

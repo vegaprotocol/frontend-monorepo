@@ -858,7 +858,6 @@ export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
         data={{
           targetStake: data?.targetStake,
           suppliedStake: data?.suppliedStake,
-          marketValueProxy: data?.marketValueProxy,
         }}
         decimalPlaces={asset.decimals}
         assetSymbol={asset.symbol}
