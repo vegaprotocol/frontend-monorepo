@@ -673,7 +673,7 @@ export const LiquidityMonitoringParametersInfoPanel = ({
 
 export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
   const abis = sourceType.abi?.map((abi) => JSON.parse(abi));
-  const header = 'uppercase my-2 font-bold text-left';
+  const header = 'uppercase my-2 text-left';
   return (
     <>
       <h3 className={header}>{t('Ethereum Oracle')}</h3>
@@ -687,8 +687,10 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
                   data-testid="copy-eth-oracle-address"
                   className="underline text-right"
                 >
-                  {truncateMiddle(sourceType.address)}
-                  <Icon name="duplicate" className="ml-2" />
+                  <span className="flex gap-1">
+                    {truncateMiddle(sourceType.address)}
+                    <VegaIcon name={VegaIconNames.COPY} size={16} />
+                  </span>
                 </button>
               </CopyWithTooltip>
             </KeyValueTableRow>
@@ -741,12 +743,12 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
       {sourceType.normalisers?.map((normaliser, i) => (
         <MarketInfoTable key={i} data={normaliser} />
       ))}
-      <h1 className={header}>{t('Filter')}</h1>
-      <h1 className={header}>{t('Key')}</h1>
+      <h3 className={header}>{t('Filter')}</h3>
+      <h3 className={header}>{t('Key')}</h3>
       {sourceType.filters?.map((filter, i) => (
         <>
           <MarketInfoTable key={i} data={filter.key} />
-          <h1 className={header}>{t('Conditions')}</h1>
+          <h3 className={header}>{t('Conditions')}</h3>
           {filter.conditions?.map((condition, i) => (
             <MarketInfoTable key={i} data={condition} />
           ))}
@@ -987,50 +989,6 @@ export const FundingInfoPanel = ({
     hours,
     minutes,
   })} ${initialLabel}`;
-};
-
-export const EthOracleInfoPanel = ({
-  market,
-  type,
-  parentMarket,
-}: MarketInfoProps & {
-  type: 'settlementData' | 'termination' | 'settlementSchedule';
-}) => {
-  // If this is a successor market, this component will only receive parent market
-  // data if the termination or settlement data is different from the parent.
-  const product = market.tradableInstrument.instrument.product;
-  const parentProduct = parentMarket?.tradableInstrument?.instrument?.product;
-
-  const { dataSourceSpec } = getDataSourceSpec(product, type);
-
-  let parentDataSourceSpecId, parentDataSourceSpec;
-  if (parentProduct) {
-    parentDataSourceSpec = getDataSourceSpec(parentProduct, type);
-    parentDataSourceSpecId = parentDataSourceSpec.dataSourceSpecId;
-    parentDataSourceSpec = parentDataSourceSpec.dataSourceSpec;
-  }
-
-  const shouldShowParentData =
-    parentMarket !== undefined &&
-    parentDataSourceSpecId !== undefined &&
-    !isEqual(dataSourceSpec, parentDataSourceSpec);
-
-  if (dataSourceSpec?.sourceType.sourceType.__typename === 'EthCallSpec') {
-    return (
-      <EthOraclePanel sourceType={dataSourceSpec?.sourceType.sourceType} />
-    );
-  }
-  if (
-    shouldShowParentData &&
-    parentDataSourceSpec?.sourceType.sourceType.__typename === 'EthCallSpec'
-  ) {
-    return (
-      <EthOraclePanel
-        sourceType={parentDataSourceSpec?.sourceType.sourceType}
-      />
-    );
-  }
-  return null;
 };
 
 export const OracleInfoPanel = ({
