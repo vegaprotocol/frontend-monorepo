@@ -2,7 +2,7 @@ import { VegaIcon, VegaIconNames } from '../icon';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
-import styles from '../checkbox/checkbox.module.css';
+import { labelClasses } from '../checkbox';
 
 type CheckedState = boolean | 'indeterminate';
 export interface TradingCheckboxProps {
@@ -32,7 +32,7 @@ export const TradingCheckbox = ({
   return (
     <label
       htmlFor={name}
-      className={`flex gap-1.5 items-center ${styles['label']}`}
+      className={`flex gap-1.5 items-center ${labelClasses}`}
     >
       <CheckboxPrimitive.Root
         name={name}

@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
-import styles from '../checkbox/checkbox.module.css';
+import { labelClasses } from '../checkbox';
 
 export interface TradingRadioGroupProps {
   name?: string;
@@ -62,7 +62,7 @@ interface RadioProps {
 export const TradingRadio = ({ id, value, label, disabled }: RadioProps) => {
   const wrapperClasses = classNames(
     'flex items-center gap-1.5 text-xs',
-    styles['label']
+    labelClasses
   );
   const itemClasses = classNames(
     'flex justify-center items-center',

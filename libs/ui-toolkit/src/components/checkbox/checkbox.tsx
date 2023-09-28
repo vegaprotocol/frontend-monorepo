@@ -2,9 +2,10 @@ import { Icon } from '../icon';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
-import styles from './checkbox.module.css';
 
 type CheckedState = boolean | 'indeterminate';
+export const labelClasses =
+  "relative after:content-[''] after:block after:absolute after:top-1/2	after:left-[0] after:right-[0] after:-translate-y-1/2 after:h-6";
 export interface CheckboxProps {
   checked?: CheckedState;
   label?: ReactNode;
@@ -31,7 +32,7 @@ export const Checkbox = ({
   );
 
   return (
-    <label className={`flex gap-1 ${styles['label']}`} htmlFor={name}>
+    <label className={`flex gap-1 ${labelClasses}`} htmlFor={name}>
       <CheckboxPrimitive.Root
         name={name}
         id={name}
