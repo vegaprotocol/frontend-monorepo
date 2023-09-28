@@ -80,6 +80,7 @@ describe('MarketSuccessorProposalBanner', () => {
                 node: {
                   __typename: 'Proposal',
                   id: 'proposal-2',
+                  state: Types.ProposalState.STATE_OPEN,
                   terms: {
                     __typename: 'ProposalTerms',
                     change: {
