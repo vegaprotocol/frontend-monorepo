@@ -2,7 +2,10 @@
 name: Verify PR title
 
 on:
-  workflow_call:
+  pull_request:
+    types:
+      - opened
+      - edited
 
 jobs:
   lint_pr:
