@@ -1,15 +1,16 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import * as Types from '@vegaprotocol/types';
 import { MemoryRouter } from 'react-router-dom';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { TerminateProposalsListQuery } from '@vegaprotocol/proposals';
-import { TerminateProposalsListDocument } from '@vegaprotocol/proposals';
+import type { MarketViewProposalsQuery } from '@vegaprotocol/proposals';
+import { MarketViewProposalsDocument } from '@vegaprotocol/proposals';
 import { MarketTerminationBanner } from './market-termination-banner';
 
-const proposalMock: MockedResponse<TerminateProposalsListQuery> = {
+const proposalMock: MockedResponse<MarketViewProposalsQuery> = {
   request: {
-    query: TerminateProposalsListDocument,
-    variables: undefined,
+    query: MarketViewProposalsDocument,
+    variables: { inState: Types.ProposalState.STATE_PASSED },
   },
   result: {
     data: {
@@ -18,6 +19,7 @@ const proposalMock: MockedResponse<TerminateProposalsListQuery> = {
           {
             node: {
               id: 'first-id',
+              state: Types.ProposalState.STATE_PASSED,
               terms: {
                 closingDatetime: '2023-09-27T11:48:18Z',
                 enactmentDatetime: '2023-09-30T11:48:18',
@@ -29,7 +31,8 @@ const proposalMock: MockedResponse<TerminateProposalsListQuery> = {
                     id: 'market-1',
                     tradableInstrument: {
                       instrument: {
-                        name: 'Market one',
+                        name: 'Market one name',
+                        code: 'Market one',
                       },
                     },
                   },
@@ -40,6 +43,7 @@ const proposalMock: MockedResponse<TerminateProposalsListQuery> = {
           {
             node: {
               id: 'second-id',
+              state: Types.ProposalState.STATE_PASSED,
               terms: {
                 closingDatetime: '2023-09-27T11:48:18Z',
                 enactmentDatetime: '2023-10-01T11:48:18',
@@ -51,7 +55,8 @@ const proposalMock: MockedResponse<TerminateProposalsListQuery> = {
                     id: 'market-2',
                     tradableInstrument: {
                       instrument: {
-                        name: 'Market two',
+                        name: 'Market two name',
+                        code: 'Market two',
                       },
                     },
                   },
@@ -61,7 +66,7 @@ const proposalMock: MockedResponse<TerminateProposalsListQuery> = {
           },
         ],
       },
-    } as unknown as TerminateProposalsListQuery,
+    } as unknown as MarketViewProposalsQuery,
   },
 };
 const mocks: MockedResponse[] = [proposalMock];

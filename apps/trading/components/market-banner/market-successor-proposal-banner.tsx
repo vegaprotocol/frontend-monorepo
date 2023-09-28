@@ -1,9 +1,9 @@
 import { Fragment, useState } from 'react';
 import type {
-  SuccessorProposalListFieldsFragment,
+  MarketViewProposalFieldsFragment,
   NewMarketSuccessorFieldsFragment,
 } from '@vegaprotocol/proposals';
-import { useSuccessorProposalsListQuery } from '@vegaprotocol/proposals';
+import { useMarketViewProposals } from '@vegaprotocol/proposals';
 import {
   ExternalLink,
   Intent,
@@ -11,23 +11,26 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
+import * as Types from '@vegaprotocol/types';
 
 export const MarketSuccessorProposalBanner = ({
   marketId,
 }: {
   marketId?: string;
 }) => {
-  const { data: proposals } = useSuccessorProposalsListQuery({
+  const proposals = useMarketViewProposals({
     skip: !marketId,
+    inState: Types.ProposalState.STATE_OPEN,
+    proposalType: Types.ProposalType.TYPE_NEW_MARKET,
+    typename: 'NewMarket',
   });
+
   const successors =
-    proposals?.proposalsConnection?.edges
-      ?.map((item) => item?.node as SuccessorProposalListFieldsFragment)
-      .filter(
-        (item: SuccessorProposalListFieldsFragment) =>
-          (item.terms?.change as NewMarketSuccessorFieldsFragment)
-            ?.successorConfiguration?.parentMarketId === marketId
-      ) ?? [];
+    proposals?.filter(
+      (item: MarketViewProposalFieldsFragment) =>
+        (item.terms?.change as NewMarketSuccessorFieldsFragment)
+          ?.successorConfiguration?.parentMarketId === marketId
+    ) ?? [];
   const [visible, setVisible] = useState(true);
   const tokenLink = useLinks(DApp.Governance);
   if (visible && successors.length) {

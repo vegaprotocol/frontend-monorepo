@@ -4,4 +4,4 @@ export * from './use-proposal-submit';
 export * from './use-update-proposal';
 export * from './use-update-network-paramaters-toasts';
 export * from './use-successor-market-proposal-details';
-export * from './use-get-termination-proposals';
+export * from './use-market-view-proposals';

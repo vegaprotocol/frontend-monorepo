@@ -4,14 +4,15 @@ import type {
   ProposalsListQuery,
   ProposalsListQueryVariables,
   ProposalListFieldsFragment,
-  TerminateLiveProposalsSubscription,
-  TerminateProposalsListFieldsFragment,
-  TerminateProposalsListQuery,
+  MarketViewLiveProposalsSubscription,
+  MarketViewProposalFieldsFragment,
+  MarketViewProposalsQuery,
+  MarketViewProposalsQueryVariables,
 } from './__generated__/Proposals';
 import {
+  MarketViewLiveProposalsDocument,
+  MarketViewProposalsDocument,
   ProposalsListDocument,
-  TerminateLiveProposalsDocument,
-  TerminateProposalsListDocument,
 } from './__generated__/Proposals';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 
@@ -42,8 +43,8 @@ export const proposalsDataProvider = makeDataProvider<
 });
 
 const update = (
-  data: TerminateProposalsListFieldsFragment[] | null,
-  delta: TerminateProposalsListFieldsFragment
+  data: MarketViewProposalFieldsFragment[] | null,
+  delta: MarketViewProposalFieldsFragment
 ) => {
   const updateData = produce(data || [], (draft) => {
     const { id } = delta;
@@ -61,20 +62,21 @@ const update = (
   return updateData;
 };
 
-const getTerminateProposalsData = (
-  responseData: TerminateProposalsListQuery | null
+const getMarketProposalsData = (
+  responseData: MarketViewProposalsQuery | null
 ) => removePaginationWrapper(responseData?.proposalsConnection?.edges) || [];
 
-export const proposalTerminateDataProvider = makeDataProvider<
-  TerminateProposalsListQuery,
-  TerminateProposalsListFieldsFragment[],
-  TerminateLiveProposalsSubscription,
-  TerminateProposalsListFieldsFragment
+export const marketViewProposalsDataProvider = makeDataProvider<
+  MarketViewProposalsQuery,
+  MarketViewProposalFieldsFragment[],
+  MarketViewLiveProposalsSubscription,
+  MarketViewProposalFieldsFragment,
+  MarketViewProposalsQueryVariables
 >({
-  query: TerminateProposalsListDocument,
-  subscriptionQuery: TerminateLiveProposalsDocument,
+  query: MarketViewProposalsDocument,
+  subscriptionQuery: MarketViewLiveProposalsDocument,
   update,
-  getDelta: (subscriptionData: TerminateLiveProposalsSubscription) =>
+  getDelta: (subscriptionData: MarketViewLiveProposalsSubscription) =>
     subscriptionData.proposals,
-  getData: getTerminateProposalsData,
+  getData: getMarketProposalsData,
 });

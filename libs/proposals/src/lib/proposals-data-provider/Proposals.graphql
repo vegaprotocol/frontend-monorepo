@@ -4,6 +4,7 @@ fragment UpdateMarketStateFields on UpdateMarketState {
     tradableInstrument {
       instrument {
         name
+        code
       }
     }
   }
@@ -421,32 +422,9 @@ fragment NewMarketSuccessorFields on NewMarket {
   }
 }
 
-fragment SuccessorProposalListFields on Proposal {
-  id
-  terms {
-    change {
-      ... on NewMarket {
-        ...NewMarketSuccessorFields
-      }
-    }
-  }
-}
-
-query SuccessorProposalsList {
-  proposalsConnection(proposalType: TYPE_NEW_MARKET, inState: STATE_OPEN) {
-    edges {
-      node {
-        ...SuccessorProposalListFields
-      }
-    }
-  }
-}
-
-fragment TerminateProposalsListFields on Proposal {
+fragment MarketViewProposalFields on Proposal {
   id
   state
-  datetime
-  rejectionReason
   terms {
     closingDatetime
     enactmentDatetime
@@ -455,22 +433,28 @@ fragment TerminateProposalsListFields on Proposal {
       ... on UpdateMarketState {
         ...UpdateMarketStateFields
       }
-    }
-  }
-}
-
-query TerminateProposalsList {
-  proposalsConnection(inState: STATE_PASSED) {
-    edges {
-      node {
-        ...TerminateProposalsListFields
+      ... on NewMarket {
+        ...NewMarketSuccessorFields
       }
     }
   }
 }
 
-subscription TerminateLiveProposals {
+query MarketViewProposals(
+  $proposalType: ProposalType
+  $inState: ProposalState
+) {
+  proposalsConnection(proposalType: $proposalType, inState: $inState) {
+    edges {
+      node {
+        ...MarketViewProposalFields
+      }
+    }
+  }
+}
+
+subscription MarketViewLiveProposals {
   proposals {
-    ...TerminateProposalsListFields
+    ...MarketViewProposalFields
   }
 }
