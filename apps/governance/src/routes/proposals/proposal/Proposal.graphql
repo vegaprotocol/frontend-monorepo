@@ -16,10 +16,21 @@ fragment UpdateMarketState on Proposal {
   terms {
     change {
       ...on UpdateMarketState {
+        updateType
         market {
+          decimalPlaces
           id
           tradableInstrument {
             instrument {
+              product {
+                __typename
+                ...on Future {
+                  quoteName
+                }
+                ...on Perpetual {
+                  quoteName
+                }
+              }
               name
               code
             }
