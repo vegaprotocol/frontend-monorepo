@@ -23,7 +23,7 @@ import { useUserVote } from '../vote-details/use-user-vote';
 export interface ProposalProps {
   proposal: ProposalQuery['proposal'];
   networkParams: Partial<NetworkParamsResult>;
-  newMarketData?: MarketInfo | null;
+  marketData?: MarketInfo | null;
   parentMarketData?: MarketInfo | null;
   assetData?: AssetQuery | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,7 +38,7 @@ export const Proposal = ({
   proposal,
   networkParams,
   restData,
-  newMarketData,
+  marketData,
   parentMarketData,
   assetData,
   originalMarketProposalRestData,
@@ -73,13 +73,14 @@ export const Proposal = ({
 
   if (networkParams) {
     switch (proposal.terms.change.__typename) {
+      case 'UpdateMarket':
+      case 'UpdateMarketState':
+        minVoterBalance =
+          networkParams.governance_proposal_updateMarket_minVoterBalance;
+        break;
       case 'NewMarket':
         minVoterBalance =
           networkParams.governance_proposal_market_minVoterBalance;
-        break;
-      case 'UpdateMarket':
-        minVoterBalance =
-          networkParams.governance_proposal_updateMarket_minVoterBalance;
         break;
       case 'NewAsset':
         minVoterBalance =
@@ -144,10 +145,10 @@ export const Proposal = ({
         <ProposalDescription description={proposal.rationale.description} />
       </div>
 
-      {newMarketData && (
+      {marketData && (
         <div className="mb-4">
           <ProposalMarketData
-            marketData={newMarketData}
+            marketData={marketData}
             parentMarketData={parentMarketData ? parentMarketData : undefined}
           />
         </div>

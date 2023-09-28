@@ -41,6 +41,7 @@ export const useProposalNetworkParams = ({
 
   switch (proposal?.terms.change.__typename) {
     case 'UpdateMarket':
+    case 'UpdateMarketState':
       return {
         requiredMajority:
           params.governance_proposal_updateMarket_requiredMajority,
