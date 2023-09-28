@@ -129,6 +129,12 @@ function getSuccessorTxBody(parentMarketId) {
               parentMarketId: parentMarketId,
               insurancePoolFraction: '0.75',
             },
+            liquiditySlaParameters: {
+              priceRange: '0.95',
+              commitmentMinTimeFraction: '0.5',
+              performanceHysteresisEpochs: 2,
+              slaCompetitionFactor: '0.75',
+            },
           },
         },
         closingTimestamp,
