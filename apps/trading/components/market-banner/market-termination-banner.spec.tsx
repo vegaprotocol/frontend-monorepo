@@ -1,20 +1,10 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import { MarketTerminationBanner } from './market-termination-banner';
 import type { TerminateProposalsListQuery } from '@vegaprotocol/proposals';
 import { TerminateProposalsListDocument } from '@vegaprotocol/proposals';
-import type { PositionsQuery } from '@vegaprotocol/positions';
-import { PositionsDocument } from '@vegaprotocol/positions';
-
-const walletMock = {
-  pubKey: 'pubKey',
-  pubKeys: [{ publicKey: 'pubKey' }, { publicKey: 'secondPubKey' }],
-};
-jest.mock('@vegaprotocol/wallet', () => ({
-  ...jest.requireActual('@vegaprotocol/wallet'),
-  useVegaWallet: jest.fn(() => walletMock),
-}));
+import { MarketTerminationBanner } from './market-termination-banner';
 
 const proposalMock: MockedResponse<TerminateProposalsListQuery> = {
   request: {
@@ -74,56 +64,30 @@ const proposalMock: MockedResponse<TerminateProposalsListQuery> = {
     } as unknown as TerminateProposalsListQuery,
   },
 };
-const positionsMock: MockedResponse<PositionsQuery> = {
-  request: {
-    query: PositionsDocument,
-    variables: { partyIds: ['pubKey', 'secondPubKey'] },
-  },
-  result: {
-    data: {
-      positions: {
-        edges: [
-          {
-            node: {
-              market: {
-                id: 'market-1',
-              },
-              party: {
-                id: 'pubKey',
-              },
-            },
-          },
-          {
-            node: {
-              market: {
-                id: 'market-2',
-              },
-              party: {
-                id: 'secondPubKey',
-              },
-            },
-          },
-        ],
-      },
-    } as unknown as PositionsQuery,
-  },
-};
-const mocks: MockedResponse[] = [proposalMock, positionsMock];
+const mocks: MockedResponse[] = [proposalMock];
 
 describe('MarketTerminationBanner', () => {
+  beforeAll(() => {
+    jest.useFakeTimers().setSystemTime(new Date('2023-09-28T10:10:10.000Z'));
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   it('should be properly rendered', async () => {
-    render(
-      <MockedProvider mocks={mocks}>
-        <MarketTerminationBanner />
-      </MockedProvider>
+    const { container } = render(
+      <MemoryRouter>
+        <MockedProvider mocks={mocks}>
+          <MarketTerminationBanner marketId="market-1" />
+        </MockedProvider>
+      </MemoryRouter>
     );
     await waitFor(() => {
-      expect(
-        screen.getByTestId('termination-warning-banner-market-1')
-      ).toBeInTheDocument();
+      expect(container).not.toBeEmptyDOMElement();
     });
     expect(
-      screen.getByTestId('termination-warning-banner-market-2')
+      screen.getByTestId('termination-warning-banner-market-1')
     ).toBeInTheDocument();
   });
 });
