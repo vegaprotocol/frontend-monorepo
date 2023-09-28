@@ -14,21 +14,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version-file: '.nvmrc'
-          # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
-          cache: yarn
+          node-version: 16
 
-      - name: Cache node modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+      - name: Install dependencies
+        run: |
+          rm package.json 
+          npm install --no-save @commitlint/cli @commitlint/config-conventional @commitlint/config-nx-scopes nx
 
       - name: Check PR title
         run: echo "${{ github.event.pull_request.title }}" | npx commitlint --config ./commitlint.config-ci.js
