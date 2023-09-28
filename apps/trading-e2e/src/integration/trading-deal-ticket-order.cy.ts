@@ -24,9 +24,7 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
 
   beforeEach(() => {
     cy.mockTradingPage();
-    cy.getByTestId('deal-ticket-fee-margin-required').within(() => {
-      cy.get('button').click();
-    });
+    cy.getByTestId('deal-ticket-fee-margin-required').click();
   });
 
   describe('limit order', () => {
@@ -111,6 +109,7 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
           'Total margin available100.01 tDAI'
         );
       });
+      cy.getByTestId('deal-ticket-fee-margin-required').click();
     });
 
     it('must have current margin allocation', () => {
@@ -120,6 +119,7 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
           'Current margin allocation'
         );
       });
+      cy.getByTestId('deal-ticket-fee-margin-required').click();
     });
 
     it('should open usage breakdown dialog when clicked on current margin allocation', () => {
@@ -128,6 +128,7 @@ describe('deal ticker order validation', { tags: '@smoke' }, () => {
       });
       cy.getByTestId('usage-breakdown').should('exist');
       cy.getByTestId('dialog-close').click();
+      cy.getByTestId('deal-ticket-fee-margin-required').click();
     });
   });
 });
