@@ -143,14 +143,14 @@ const DepositFlow = ({
       return;
     }
 
-    if (!provider) throw new Error('no provider');
     if (!isAssetTypeERC20(asset)) throw new Error('invalid asset');
 
-    // ethereum wallet connect fetch current allowance and bypass approval
-    // step if approval already given
     let allowance = new BigNumber(0);
     let balance = new BigNumber(0);
-    if (account) {
+
+    // if you have connected and therefore have a provider get
+    // balance and allowance
+    if (provider && account) {
       const signer = provider.getSigner();
       const tokenContract = new Token(
         asset.source.contractAddress,
@@ -450,14 +450,16 @@ const Approval = ({
 
   if (!account) {
     return (
-      <div className="flex items-center justify-between w-full">
+      <div className="flex justify-between">
         <div className="flex gap-3">
           <StepIndicator complete={false} />
-          <h3 className="text-lg">{t('Approval')}</h3>
+          <div className="flex flex-col items-start gap-2">
+            <h3 className="text-lg">{t('Approval')}</h3>
+            <TradingButton onClick={openDialog} size="small">
+              {t('Connect Ethereum wallet')}
+            </TradingButton>
+          </div>
         </div>
-        <TradingButton onClick={openDialog} size="small">
-          {t('Connect Ethereum wallet')}
-        </TradingButton>
       </div>
     );
   }
@@ -611,14 +613,16 @@ const SendDeposit = ({
 
   if (!account) {
     return (
-      <div className="flex items-center justify-between w-full">
+      <div className="flex justify-between">
         <div className="flex gap-3">
           <StepIndicator complete={false} />
-          <h3 className="text-lg">{t('Deposit')}</h3>
+          <div className="flex flex-col items-start gap-2">
+            <h3 className="text-lg">{t('Deposit')}</h3>
+            <TradingButton onClick={openDialog} size="small">
+              {t('Connect Ethereum wallet')}
+            </TradingButton>
+          </div>
         </div>
-        <TradingButton onClick={openDialog} size="small">
-          {t('Connect Ethereum wallet')}
-        </TradingButton>
       </div>
     );
   }
