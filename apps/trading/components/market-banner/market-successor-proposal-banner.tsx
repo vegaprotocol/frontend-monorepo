@@ -29,7 +29,8 @@ export const MarketSuccessorProposalBanner = ({
     proposals?.filter(
       (item: MarketViewProposalFieldsFragment) =>
         (item.terms?.change as NewMarketSuccessorFieldsFragment)
-          ?.successorConfiguration?.parentMarketId === marketId
+          ?.successorConfiguration?.parentMarketId === marketId &&
+        item.state === Types.ProposalState.STATE_OPEN
     ) ?? [];
   const [visible, setVisible] = useState(true);
   const tokenLink = useLinks(DApp.Governance);
