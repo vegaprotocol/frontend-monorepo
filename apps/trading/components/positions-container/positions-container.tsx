@@ -10,6 +10,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
+const AUTO_SIZE_COLUMNS = ['marketCode'];
+
 export const PositionsContainer = ({ allKeys }: { allKeys?: boolean }) => {
   const onMarketClick = useMarketClickHandler(true);
   const { pubKey, pubKeys, isReadOnly } = useVegaWallet();
@@ -17,7 +19,11 @@ export const PositionsContainer = ({ allKeys }: { allKeys?: boolean }) => {
   const showClosed = usePositionsStore((store) => store.showClosedMarkets);
   const gridStore = usePositionsStore((store) => store.gridStore);
   const updateGridStore = usePositionsStore((store) => store.updateGridStore);
-  const gridStoreCallbacks = useDataGridEvents(gridStore, updateGridStore);
+  const gridStoreCallbacks = useDataGridEvents(
+    gridStore,
+    updateGridStore,
+    AUTO_SIZE_COLUMNS
+  );
 
   if (!pubKey) {
     return (
