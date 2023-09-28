@@ -78,12 +78,11 @@ export const TradingRadio = ({ id, value, label, disabled }: RadioProps) => {
     'border-vega-clight-700 dark:border-vega-cdark-700'
   );
   return (
-    <label className={wrapperClasses} htmlFor={id}>
+    <label className={wrapperClasses} htmlFor={id} data-testid={id}>
       <RadioGroupPrimitive.Item
         value={value}
         className={itemClasses}
         id={id}
-        data-testid={id}
         disabled={disabled}
       >
         <RadioGroupPrimitive.Indicator className={indicatorClasses} />

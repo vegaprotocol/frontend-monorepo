@@ -258,21 +258,21 @@ export const TransferForm = ({
         )}
       </TradingFormGroup>
       <div className="mb-4">
-        <TradingCheckbox
-          name="include-transfer-fee"
-          disabled={!transferAmount}
-          label={
-            <Tooltip
-              description={t(
-                `The fee will be taken from the amount you are transferring.`
-              )}
-            >
-              <div>{t('Include transfer fee')}</div>
-            </Tooltip>
-          }
-          checked={includeFee}
-          onCheckedChange={() => setIncludeFee(!includeFee)}
-        />
+        <Tooltip
+          description={t(
+            `The fee will be taken from the amount you are transferring.`
+          )}
+        >
+          <div>
+            <TradingCheckbox
+              name="include-transfer-fee"
+              disabled={!transferAmount}
+              label={t('Include transfer fee')}
+              checked={includeFee}
+              onCheckedChange={() => setIncludeFee(!includeFee)}
+            />
+          </div>
+        </Tooltip>
       </div>
       {transferAmount && fee && (
         <TransferFee
