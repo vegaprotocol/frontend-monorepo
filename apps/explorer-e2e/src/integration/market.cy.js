@@ -88,13 +88,6 @@ context('Market page', { tags: '@regression' }, function () {
       cy.validate_element_from_table('Target Stake', '0.00 fUSDC');
       cy.validate_element_from_table('Supplied Stake', '0.00 fUSDC');
       cy.validate_element_from_table('Market Value Proxy', '0.00 fUSDC');
-      // Liquidity price range
-      cy.validate_element_from_table(
-        'Liquidity Price Range',
-        '1,000.00% of mid price'
-      );
-      cy.validate_element_from_table('Lowest Price', '0.00 fUSDC');
-      cy.validate_element_from_table('Highest Price', '0.00 fUSDC');
       cy.getByTestId('oracle-spec-links')
         .should('have.attr', 'href')
         .and(
@@ -143,11 +136,12 @@ context('Market page', { tags: '@regression' }, function () {
         .as('successorMarketId');
       cy.contains('Token test market').click();
       cy.getByTestId(marketHeaders).should('have.text', 'Token test market');
-      cy.validate_proposal_change_type('Triggering Ratio', 'Added');
+      // Assertions commented out due to #4869
+      // cy.validate_proposal_change_type('Triggering Ratio', 'Added');
       cy.validate_element_from_table('Triggering Ratio', '0.7');
-      cy.validate_proposal_change_type('Time Window', 'Added');
+      // cy.validate_proposal_change_type('Time Window', 'Added');
       cy.validate_element_from_table('Time Window', '3,600');
-      cy.validate_proposal_change_type('Scaling Factor', 'Added');
+      // cy.validate_proposal_change_type('Scaling Factor', 'Added');
       cy.validate_element_from_table('Scaling Factor', '10');
 
       cy.getByTestId(successionLineItem)

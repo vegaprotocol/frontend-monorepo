@@ -9,6 +9,7 @@ import {
   createTenDigitUnixTimeStampForSpecifiedDays,
   generateFreeFormProposalTitle,
   getDateFormatForSpecifiedDays,
+  getProposalDetailsValue,
   getProposalFromTitle,
   getProposalInformationFromTable,
   goToMakeNewProposal,
@@ -50,6 +51,7 @@ const openProposals = 'open-proposals';
 const viewProposalButton = 'view-proposal-btn';
 const proposalTermsToggle = 'proposal-json-toggle';
 const marketDataToggle = 'proposal-market-data-toggle';
+const marketProposalType = 'proposal-type';
 
 describe(
   'Governance flow for proposal details',
@@ -385,6 +387,55 @@ describe(
         'contain.text',
         'The fraction of the insurance pool balance that is carried over from the parent market to the successor.'
       );
+    });
+
+    it('Able to see perpetual market', function () {
+      const proposalPath =
+        'src/fixtures/proposals/new-market-perpetual-raw.json';
+      const enactmentTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+      const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
+      submitUniqueRawProposal({
+        proposalBody: proposalPath,
+        enactmentTimestamp: enactmentTimestamp,
+        closingTimestamp: closingTimestamp,
+      });
+      getProposalFromTitle('perpetual market proposal').within(() => {
+        cy.getByTestId(marketProposalType).should(
+          'have.text',
+          'New market - perpetual'
+        );
+        cy.getByTestId(viewProposalButton).click();
+      });
+      cy.getByTestId(marketDataToggle).click();
+      getProposalDetailsValue('Product Type').should(
+        'contain.text',
+        'Perpetual'
+      );
+      cy.getByTestId(marketProposalType).should(
+        'have.text',
+        'New market - perpetual'
+      );
+      // Liquidity SLA protocols
+      getProposalDetailsValue('Performance Hysteresis Epochs').should(
+        'contain.text',
+        '1'
+      );
+      getProposalDetailsValue('SLA Competition Factor').should(
+        'contain.text',
+        '95.00%'
+      );
+      getProposalDetailsValue('Epoch Length').should('contain.text', '5s');
+      getProposalDetailsValue('Non Performance Bond Penalty Max').should(
+        'contain.text',
+        '0.05'
+      );
+      getProposalDetailsValue('Stake To CCY Volume').should(
+        'contain.text',
+        '0.3'
+      );
+      getProposalDetailsValue(
+        'Minimum Probability Of Trading LP Orders'
+      ).should('contain.text', '1e-8');
     });
   }
 );
