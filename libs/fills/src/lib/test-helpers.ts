@@ -35,6 +35,7 @@ export const generateFill = (override?: PartialDeep<Trade>) => {
       infrastructureFee: '200',
       liquidityFee: '200',
     },
+
     market: {
       __typename: 'Market',
       id: 'market-id',
@@ -42,6 +43,9 @@ export const generateFill = (override?: PartialDeep<Trade>) => {
       decimalPlaces: 5,
       state: MarketState.STATE_ACTIVE,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      liquidityMonitoringParameters: {
+        triggeringRatio: '1',
+      },
       fees: {
         __typename: 'Fees',
         factors: {
