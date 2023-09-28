@@ -15,7 +15,7 @@ export function CopyWithTooltip({ children, text }: CopyWithTooltipProps) {
 
   return (
     <CopyToClipboard text={text} onCopy={() => setCopied(true)}>
-      {/* Needs this wrapping div as tooltip component interfere with element used to capture click for copy */}
+      {/* Needs this wrapping div as tooltip component interferes with element used to capture click for copy */}
       <span>
         <Tooltip description="Copied" open={copied} align="center">
           {children}
