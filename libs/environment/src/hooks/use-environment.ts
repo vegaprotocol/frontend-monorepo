@@ -417,10 +417,10 @@ function compileFeatureFlags(): FeatureFlags {
     REFERRALS: TRUTHY.includes(
       windowOrDefault('NX_REFERRALS', process.env['NX_REFERRALS']) as string
     ),
-    MARKET_STATUS: TRUTHY.includes(
+    UPDATE_MARKET_STATE: TRUTHY.includes(
       windowOrDefault(
-        'NX_MARKET_STATUS',
-        process.env['NX_MARKET_STATUS']
+        'NX_UPDATE_MARKET_STATE',
+        process.env['NX_UPDATE_MARKET_STATE']
       ) as string
     ),
   };

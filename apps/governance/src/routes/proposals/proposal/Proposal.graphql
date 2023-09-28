@@ -12,7 +12,27 @@ fragment NewMarketProductField on Proposal {
   }
 }
 
-query Proposal($proposalId: ID!, $includeNewMarketProductField: Boolean!) {
+fragment UpdateMarketState on Proposal {
+  terms {
+    change {
+      ...on UpdateMarketState {
+        market {
+          id
+          tradableInstrument {
+            instrument {
+              name
+              code
+            }
+          }
+        }
+        updateType
+        price
+      }
+    }
+  }
+}
+
+query Proposal($proposalId: ID!, $includeNewMarketProductField: Boolean!, $includeUpdateMarketState: Boolean!) {
   proposal(id: $proposalId) {
     id
     rationale {
@@ -28,6 +48,7 @@ query Proposal($proposalId: ID!, $includeNewMarketProductField: Boolean!) {
     }
     errorDetails
     ...NewMarketProductField @include(if: $includeNewMarketProductField)
+    ...UpdateMarketState @include(if: $includeUpdateMarketState)
     terms {
       closingDatetime
       enactmentDatetime
