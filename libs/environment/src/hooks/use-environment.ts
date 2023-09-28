@@ -417,6 +417,12 @@ function compileFeatureFlags(): FeatureFlags {
     REFERRALS: TRUTHY.includes(
       windowOrDefault('NX_REFERRALS', process.env['NX_REFERRALS']) as string
     ),
+    MARKET_STATUS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_MARKET_STATUS',
+        process.env['NX_MARKET_STATUS']
+      ) as string
+    ),
   };
   const EXPLORER_FLAGS = {
     EXPLORER_ASSETS: TRUTHY.includes(
