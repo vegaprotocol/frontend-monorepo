@@ -69,6 +69,26 @@ export const useEstimateFees = (
           ),
           liquidityFee: divideByTwo(data.estimateFees.fees.liquidityFee),
           makerFee: divideByTwo(data.estimateFees.fees.makerFee),
+          infrastructureFeeReferralDiscount:
+            data.estimateFees.fees.infrastructureFeeReferralDiscount &&
+            divideByTwo(
+              data.estimateFees.fees.infrastructureFeeReferralDiscount
+            ),
+          infrastructureFeeVolumeDiscount:
+            data.estimateFees.fees.infrastructureFeeVolumeDiscount &&
+            divideByTwo(data.estimateFees.fees.infrastructureFeeVolumeDiscount),
+          liquidityFeeReferralDiscount:
+            data.estimateFees.fees.liquidityFeeReferralDiscount &&
+            divideByTwo(data.estimateFees.fees.liquidityFeeReferralDiscount),
+          liquidityFeeVolumeDiscount:
+            data.estimateFees.fees.liquidityFeeVolumeDiscount &&
+            divideByTwo(data.estimateFees.fees.liquidityFeeVolumeDiscount),
+          makerFeeReferralDiscount:
+            data.estimateFees.fees.makerFeeReferralDiscount &&
+            divideByTwo(data.estimateFees.fees.makerFeeReferralDiscount),
+          makerFeeVolumeDiscount:
+            data.estimateFees.fees.makerFeeVolumeDiscount &&
+            divideByTwo(data.estimateFees.fees.makerFeeVolumeDiscount),
         },
       }
     : data?.estimateFees;
