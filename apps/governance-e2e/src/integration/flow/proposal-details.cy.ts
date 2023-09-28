@@ -374,15 +374,12 @@ describe(
       });
 
       // 3003-PMAN-011
-      cy.get('.underline').contains('Parent Market ID').realHover();
+      cy.contains('Parent Market ID').realHover();
       cy.getByTestId('tooltip-content', { timeout: 8000 }).should(
         'contain.text',
         'The ID of the market this market succeeds.'
       );
-      cy.get('.underline')
-        .contains('Insurance Pool Fraction')
-        .realMouseUp()
-        .realHover();
+      cy.contains('Insurance Pool Fraction').realMouseUp().realHover();
       cy.getByTestId('tooltip-content', { timeout: 8000 }).should(
         'contain.text',
         'The fraction of the insurance pool balance that is carried over from the parent market to the successor.'
