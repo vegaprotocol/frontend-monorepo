@@ -136,12 +136,8 @@ context('Market page', { tags: '@regression' }, function () {
         .as('successorMarketId');
       cy.contains('Token test market').click();
       cy.getByTestId(marketHeaders).should('have.text', 'Token test market');
-      // Assertions commented out due to #4869
-      // cy.validate_proposal_change_type('Triggering Ratio', 'Added');
       cy.validate_element_from_table('Triggering Ratio', '0.7');
-      // cy.validate_proposal_change_type('Time Window', 'Added');
       cy.validate_element_from_table('Time Window', '3,600');
-      // cy.validate_proposal_change_type('Scaling Factor', 'Added');
       cy.validate_element_from_table('Scaling Factor', '10');
 
       cy.getByTestId(successionLineItem)

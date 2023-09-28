@@ -65,7 +65,10 @@ context(
             cy.getByTestId(viewProposalButton).click();
           });
       });
-      cy.getByTestId('proposal-type').should('have.text', 'New market');
+      cy.getByTestId('proposal-type').should(
+        'have.text',
+        'New market - future'
+      );
       cy.getByTestId(proposalStatus).should('have.text', 'Enacted');
       cy.getByTestId(votesTable).within(() => {
         cy.contains('Voting has ended.').should('be.visible');
