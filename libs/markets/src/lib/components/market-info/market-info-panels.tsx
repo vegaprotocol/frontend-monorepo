@@ -673,7 +673,7 @@ export const LiquidityMonitoringParametersInfoPanel = ({
 
 export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
   const abis = sourceType.abi?.map((abi) => JSON.parse(abi));
-  const header = 'uppercase my-2 text-left';
+  const header = 'font-bold underline my-1 text-left';
   return (
     <>
       <h3 className={header}>{t('Ethereum Oracle')}</h3>
@@ -728,7 +728,9 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
                 key={'value-dropdown'}
                 className="flex items-center gap-2 w-full"
               >
-                <div className="uppercase font-bold"> {t('ABI')}</div>
+                <div className="font-bold underline">
+                  {t('ABI specification')}
+                </div>
                 <AccordionChevron size={14} />
                 <div className="flex items-center gap-1"></div>
               </div>
@@ -743,14 +745,16 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
       {sourceType.normalisers?.map((normaliser, i) => (
         <MarketInfoTable key={i} data={normaliser} />
       ))}
-      <h3 className={header}>{t('Filter')}</h3>
+      <h3 className={header}>{t('Filters')}</h3>
       <h3 className={header}>{t('Key')}</h3>
       {sourceType.filters?.map((filter, i) => (
         <>
           <MarketInfoTable key={i} data={filter.key} />
           <h3 className={header}>{t('Conditions')}</h3>
           {filter.conditions?.map((condition, i) => (
-            <MarketInfoTable key={i} data={condition} />
+            <span>
+              {ConditionOperatorMapping[condition.operator]} {condition.value}
+            </span>
           ))}
         </>
       ))}
