@@ -16,6 +16,7 @@ import type { AssetQuery } from '@vegaprotocol/assets';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
 import { ProposalMarketChanges } from '../proposal-market-changes';
+import { ProposalUpdateMarketState } from '../proposal-update-market-state';
 import type { NetworkParamsResult } from '@vegaprotocol/network-parameters';
 import { useVoteSubmit } from '@vegaprotocol/proposals';
 import { useUserVote } from '../vote-details/use-user-vote';
@@ -151,6 +152,12 @@ export const Proposal = ({
             marketData={marketData}
             parentMarketData={parentMarketData ? parentMarketData : undefined}
           />
+        </div>
+      )}
+
+      {proposal.terms.change.__typename === 'UpdateMarketState' && (
+        <div className="mb-4">
+          <ProposalUpdateMarketState proposal={proposal} />
         </div>
       )}
 
