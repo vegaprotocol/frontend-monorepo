@@ -15,7 +15,7 @@ fragment NewMarketProductField on Proposal {
 fragment UpdateMarketState on Proposal {
   terms {
     change {
-      ...on UpdateMarketState {
+      ... on UpdateMarketState {
         updateType
         market {
           decimalPlaces
@@ -24,10 +24,10 @@ fragment UpdateMarketState on Proposal {
             instrument {
               product {
                 __typename
-                ...on Future {
+                ... on Future {
                   quoteName
                 }
-                ...on Perpetual {
+                ... on Perpetual {
                   quoteName
                 }
               }
@@ -43,7 +43,11 @@ fragment UpdateMarketState on Proposal {
   }
 }
 
-query Proposal($proposalId: ID!, $includeNewMarketProductField: Boolean!, $includeUpdateMarketState: Boolean!) {
+query Proposal(
+  $proposalId: ID!
+  $includeNewMarketProductField: Boolean!
+  $includeUpdateMarketState: Boolean!
+) {
   proposal(id: $proposalId) {
     id
     rationale {
