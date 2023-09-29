@@ -672,7 +672,7 @@ export const LiquidityMonitoringParametersInfoPanel = ({
 
 export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
   const abis = sourceType.abi?.map((abi) => JSON.parse(abi));
-  const header = 'font-bold underline my-1 text-left';
+  const header = 'uppercase my-1 text-left';
   return (
     <>
       <h3 className={header}>{t('Ethereum Oracle')}</h3>
@@ -684,7 +684,7 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
               <CopyWithTooltip text={sourceType.address}>
                 <button
                   data-testid="copy-eth-oracle-address"
-                  className="underline text-right"
+                  className="uppercase text-right"
                 >
                   <span className="flex gap-1">
                     {truncateMiddle(sourceType.address)}
@@ -727,7 +727,7 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
                 key={'value-dropdown'}
                 className="flex items-center gap-2 w-full"
               >
-                <div className="font-bold underline">
+                <div className="underline underline-offset-4 mb-1 uppercase">
                   {t('ABI specification')}
                 </div>
                 <AccordionChevron size={14} />
@@ -884,7 +884,7 @@ export const LiquiditySLAParametersInfoPanel = ({
           market.liquiditySLAParameters?.slaCompetitionFactor
         ).times(100)
       ),
-    commitmentMinimumTimeFraction:
+    commitmentMinTimeFraction:
       market.liquiditySLAParameters?.commitmentMinTimeFraction &&
       formatNumberPercentage(
         new BigNumber(
@@ -899,7 +899,7 @@ export const LiquiditySLAParametersInfoPanel = ({
           parentMarket.liquiditySLAParameters?.performanceHysteresisEpochs,
         slaCompetitionFactor:
           parentMarket.liquiditySLAParameters?.slaCompetitionFactor,
-        commitmentMinimumTimeFraction:
+        commitmentMinTimeFraction:
           parentMarket.liquiditySLAParameters?.commitmentMinTimeFraction,
       }
     : undefined;
@@ -925,13 +925,13 @@ export const LiquiditySLAParametersInfoPanel = ({
       networkParams['market_liquidity_nonPerformanceBondPenaltySlope'],
     nonPerformanceBondPenaltyMax:
       networkParams['market_liquidity_sla_nonPerformanceBondPenaltyMax'],
-    maximumLiquidityFeeFactorLevel:
+    maxLiquidityFeeFactorLevel:
       networkParams['market_liquidity_maximumLiquidityFeeFactorLevel'],
     stakeToCCYVolume: networkParams['market_liquidity_stakeToCcyVolume'],
     earlyExitPenalty: networkParams['market_liquidity_earlyExitPenalty'],
     probabilityOfTradingTauScaling:
       networkParams['market_liquidity_probabilityOfTrading_tau_scaling'],
-    minimumProbabilityOfTradingLPOrders:
+    minProbabilityOfTradingLPOrders:
       networkParams['market_liquidity_minimum_probabilityOfTrading_lpOrders'],
     feeCalculationTimeStep:
       networkParams['market_liquidity_feeCalculationTimeStep'] &&
