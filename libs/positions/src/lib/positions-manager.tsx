@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { PositionsTable } from './positions-table';
 import * as Schema from '@vegaprotocol/types';
-import { useVegaTransactionStore } from '@vegaprotocol/wallet';
+import { useVegaTransactionStore, useVegaWallet } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
@@ -9,7 +9,6 @@ import {
   positionsMarketsProvider,
 } from './positions-data-providers';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 
 interface PositionsManagerProps {
   partyIds: string[];
@@ -19,7 +18,7 @@ interface PositionsManagerProps {
   showClosed?: boolean;
 }
 
-const MAXUINT64 = '18446744073709551615';
+const MAXINT64 = '9223372036854775807';
 
 export const PositionsManager = ({
   partyIds,
@@ -48,7 +47,7 @@ export const PositionsManager = ({
               side: openVolume.startsWith('-')
                 ? Schema.Side.SIDE_BUY
                 : Schema.Side.SIDE_SELL,
-              size: MAXUINT64, // workaround for avoiding leftovers filled in the meantime
+              size: MAXINT64, // workaround for avoiding leftovers filled in the meantime
               reduceOnly: true,
             },
           ],
