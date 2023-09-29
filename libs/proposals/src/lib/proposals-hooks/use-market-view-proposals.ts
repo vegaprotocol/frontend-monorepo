@@ -8,7 +8,7 @@ export const useMarketViewProposals = ({
   proposalType,
   inState,
 }: {
-  typename: string;
+  typename: Types.ProposalChange['__typename']
   skip?: boolean;
   inState: Types.ProposalState;
   proposalType?: Types.ProposalType;
