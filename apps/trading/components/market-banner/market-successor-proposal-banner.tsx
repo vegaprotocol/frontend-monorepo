@@ -1,8 +1,5 @@
 import { Fragment, useState } from 'react';
-import type {
-  MarketViewProposalFieldsFragment,
-  NewMarketSuccessorFieldsFragment,
-} from '@vegaprotocol/proposals';
+import type { NewMarketSuccessorFieldsFragment } from '@vegaprotocol/proposals';
 import { useMarketViewProposals } from '@vegaprotocol/proposals';
 import {
   ExternalLink,
