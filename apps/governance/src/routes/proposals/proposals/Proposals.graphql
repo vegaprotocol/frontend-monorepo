@@ -12,6 +12,37 @@ fragment NewMarketProductFields on Proposal {
   }
 }
 
+fragment UpdateMarketStates on Proposal {
+  terms {
+    change {
+      ... on UpdateMarketState {
+        updateType
+        market {
+          decimalPlaces
+          id
+          tradableInstrument {
+            instrument {
+              product {
+                __typename
+                ... on Future {
+                  quoteName
+                }
+                ... on Perpetual {
+                  quoteName
+                }
+              }
+              name
+              code
+            }
+          }
+        }
+        updateType
+        price
+      }
+    }
+  }
+}
+
 fragment ProposalFields on Proposal {
   id
   rationale {
@@ -93,12 +124,16 @@ fragment ProposalFields on Proposal {
   }
 }
 
-query Proposals($includeNewMarketProductFields: Boolean!) {
+query Proposals(
+  $includeNewMarketProductFields: Boolean!
+  $includeUpdateMarketStates: Boolean!
+) {
   proposalsConnection {
     edges {
       node {
         ...ProposalFields
         ...NewMarketProductFields @include(if: $includeNewMarketProductFields)
+        ...UpdateMarketStates @include(if: $includeUpdateMarketStates)
       }
     }
   }
