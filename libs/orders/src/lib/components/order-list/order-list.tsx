@@ -79,6 +79,7 @@ export const OrderListTable = memo<
         () => [
           {
             headerName: t('Market'),
+            colId: 'instrument-code',
             field: 'market.tradableInstrument.instrument.code',
             cellRenderer: 'MarketNameCell',
             cellRendererParams: { idPath: 'market.id', onMarketClick },

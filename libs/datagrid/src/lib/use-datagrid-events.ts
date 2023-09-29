@@ -6,6 +6,7 @@ import type {
   FilterChangedEvent,
   FirstDataRenderedEvent,
   SortChangedEvent,
+  GridReadyEvent,
 } from 'ag-grid-community';
 import { useCallback } from 'react';
 
@@ -17,7 +18,8 @@ type State = {
 
 export const useDataGridEvents = (
   state: State,
-  callback: (data: State) => void
+  callback: (data: State) => void,
+  autoSizeColumns?: string[]
 ) => {
   /**
    * Callback for filter events
@@ -78,7 +80,7 @@ export const useDataGridEvents = (
    * State only applied if found, otherwise columns sized to fit available space
    */
   const onGridReady = useCallback(
-    ({ api, columnApi }: FirstDataRenderedEvent) => {
+    ({ api, columnApi }: GridReadyEvent) => {
       if (!api || !columnApi) return;
 
       if (state.columnState) {
@@ -97,6 +99,16 @@ export const useDataGridEvents = (
     [state]
   );
 
+  const onFirstDataRendered = useCallback(
+    ({ columnApi }: FirstDataRenderedEvent) => {
+      if (!columnApi) return;
+      if (!state?.columnState && autoSizeColumns?.length) {
+        columnApi.autoSizeColumns(autoSizeColumns);
+      }
+    },
+    [state, autoSizeColumns]
+  );
+
   return {
     onGridReady,
     // these events don't use the 'finished' flag
@@ -106,5 +118,6 @@ export const useDataGridEvents = (
     // these trigger a lot so this callback uses the 'finished' flag
     onColumnMoved: onDebouncedColumnChange,
     onColumnResized: onDebouncedColumnChange,
+    onFirstDataRendered,
   };
 };

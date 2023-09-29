@@ -79,6 +79,7 @@ const COSMIC_ELEVATOR_FLAGS = {
   PRODUCT_PERPETUALS: z.optional(z.boolean()),
   METAMASK_SNAPS: z.optional(z.boolean()),
   REFERRALS: z.optional(z.boolean()),
+  UPDATE_MARKET_STATE: z.optional(z.boolean()),
 };
 
 const EXPLORER_FLAGS = {
