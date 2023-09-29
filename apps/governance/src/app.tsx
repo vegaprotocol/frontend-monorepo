@@ -308,7 +308,7 @@ const AppContainer = () => {
     <Router>
       <ScrollToTop />
       <AppStateProvider>
-        <div className="min-h-full text-white">
+        <div className="min-h-full text-white grid">
           <NodeGuard
             skeleton={<div>{t('Loading')}</div>}
             failure={

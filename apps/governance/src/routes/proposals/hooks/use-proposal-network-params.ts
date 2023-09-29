@@ -28,17 +28,20 @@ export const useProposalNetworkParams = ({
     NetworkParams.governance_proposal_freeform_requiredParticipation,
   ]);
 
+  const fallback = {
+    requiredMajority: new BigNumber(1),
+    requiredMajorityLP: new BigNumber(0),
+    requiredParticipation: new BigNumber(1),
+    requiredParticipationLP: new BigNumber(0),
+  };
+
   if (!params) {
-    return {
-      requiredMajority: new BigNumber(1),
-      requiredMajorityLP: new BigNumber(0),
-      requiredParticipation: new BigNumber(1),
-      requiredParticipationLP: new BigNumber(0),
-    };
+    return fallback;
   }
 
   switch (proposal?.terms.change.__typename) {
     case 'UpdateMarket':
+    case 'UpdateMarketState':
       return {
         requiredMajority:
           params.governance_proposal_updateMarket_requiredMajority,
@@ -89,6 +92,6 @@ export const useProposalNetworkParams = ({
         ),
       };
     default:
-      throw new Error('Unknown proposal type');
+      return fallback;
   }
 };
