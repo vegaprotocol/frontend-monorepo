@@ -6,7 +6,7 @@ import { MockedProvider } from '@apollo/client/testing';
 
 const mockCreate = jest.fn();
 jest.mock('@vegaprotocol/wallet', () => ({
-  ...jest.requireActual(''),
+  ...jest.requireActual('@vegaprotocol/wallet'),
   useVegaWallet: jest.fn(() => ({ pubKey: 'partyId' })),
   useVegaTransactionStore: jest.fn(() => mockCreate),
 }));
