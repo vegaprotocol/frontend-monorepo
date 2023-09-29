@@ -27,8 +27,8 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   const dismiss = useOnboardingStore((store) => store.dismiss);
   const setDialogOpen = useOnboardingStore((store) => store.setDialogOpen);
   const marketId = useGlobalStore((store) => store.marketId);
-  const openVegaWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
+  const setWalletDialogOpen = useOnboardingStore(
+    (store) => store.setWalletDialogOpen
   );
   const setViews = useSidebar((store) => store.setViews);
 
@@ -40,7 +40,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
 
   if (step <= OnboardingStep.ONBOARDING_CONNECT_STEP) {
     return (
-      <TradingButton {...buttonProps} onClick={() => openVegaWalletDialog()}>
+      <TradingButton {...buttonProps} onClick={() => setWalletDialogOpen(true)}>
         {t('Connect')}
       </TradingButton>
     );
@@ -70,7 +70,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   }
 
   return (
-    <TradingButton {...buttonProps} onClick={() => openVegaWalletDialog()}>
+    <TradingButton {...buttonProps} onClick={() => setWalletDialogOpen(true)}>
       {t('Get started')}
     </TradingButton>
   );
