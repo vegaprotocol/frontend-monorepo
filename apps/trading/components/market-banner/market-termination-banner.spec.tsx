@@ -4,7 +4,21 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { MarketViewProposalsQuery } from '@vegaprotocol/proposals';
 import { MarketViewProposalsDocument } from '@vegaprotocol/proposals';
+import type { Market } from '@vegaprotocol/markets';
 import { MarketTerminationBanner } from './market-termination-banner';
+
+const marketMock = {
+  id: 'market-1',
+  decimalPlaces: 3,
+  tradableInstrument: {
+    instrument: {
+      product: {
+        __typename: 'Future',
+        quoteName: 'tDAI',
+      },
+    },
+  },
+} as Market;
 
 const proposalMock: MockedResponse<MarketViewProposalsQuery> = {
   request: {
@@ -84,7 +98,7 @@ describe('MarketTerminationBanner', () => {
   it('should be properly rendered', async () => {
     const { container } = render(
       <MockedProvider mocks={mocks}>
-        <MarketTerminationBanner marketId="market-1" />
+        <MarketTerminationBanner market={marketMock} />
       </MockedProvider>
     );
     await waitFor(() => {

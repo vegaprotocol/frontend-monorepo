@@ -170,7 +170,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
             <MarketSuccessorProposalBanner marketId={market?.id} />
           </>
         )}
-        <MarketTerminationBanner marketId={market?.id} />
+        <MarketTerminationBanner market={market} />
         <OracleBanner marketId={market?.id || ''} />
       </div>
       <div className="min-h-0 p-0.5">
