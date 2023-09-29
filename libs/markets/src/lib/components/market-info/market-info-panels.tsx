@@ -11,7 +11,6 @@ import {
   AccordionPanel,
   CopyWithTooltip,
   ExternalLink,
-  Icon,
   Intent,
   KeyValueTable,
   KeyValueTableRow,
