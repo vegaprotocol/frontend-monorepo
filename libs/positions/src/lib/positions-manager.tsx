@@ -19,6 +19,8 @@ interface PositionsManagerProps {
   showClosed?: boolean;
 }
 
+const MAXUINT64 = '18446744073709551615';
+
 export const PositionsManager = ({
   partyIds,
   onMarketClick,
@@ -46,7 +48,7 @@ export const PositionsManager = ({
               side: openVolume.startsWith('-')
                 ? Schema.Side.SIDE_BUY
                 : Schema.Side.SIDE_SELL,
-              size: openVolume.replace('-', ''),
+              size: MAXUINT64, // workaround for avoiding leftovers filled in the meantime
               reduceOnly: true,
             },
           ],
