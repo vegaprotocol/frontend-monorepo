@@ -63,12 +63,31 @@ export const ProposalHeader = ({
       );
       break;
     }
+    case 'UpdateMarketState': {
+      proposalType =
+        FLAGS.UPDATE_MARKET_STATE && change?.updateType
+          ? t(change.updateType)
+          : 'UpdateMarketState';
+      fallbackTitle = t('UpdateMarketStateProposal');
+      details = (
+        <span>
+          {FLAGS.UPDATE_MARKET_STATE &&
+          change?.market?.id &&
+          change.updateType ? (
+            <>
+              {t(change.updateType)}: {truncateMiddle(change.market.id)}
+            </>
+          ) : null}
+        </span>
+      );
+      break;
+    }
     case 'UpdateMarket': {
       proposalType = 'UpdateMarket';
       fallbackTitle = t('UpdateMarketProposal');
       details = (
         <>
-          <span>{t('Market change')}:</span>{' '}
+          <span>{t('MarketChange')}:</span>{' '}
           <span>{truncateMiddle(change.marketId)}</span>
         </>
       );

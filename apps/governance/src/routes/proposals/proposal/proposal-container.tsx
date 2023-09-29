@@ -56,6 +56,7 @@ export const ProposalContainer = () => {
     variables: {
       proposalId: params.proposalId || '',
       includeNewMarketProductField: !!FLAGS.PRODUCT_PERPETUALS,
+      includeUpdateMarketState: !!FLAGS.UPDATE_MARKET_STATE,
     },
     skip: !params.proposalId,
   });
@@ -94,9 +95,9 @@ export const ProposalContainer = () => {
   );
 
   const {
-    data: newMarketData,
-    loading: newMarketLoading,
-    error: newMarketError,
+    data: marketData,
+    loading: marketLoading,
+    error: marketError,
   } = useDataProvider({
     dataProvider: marketInfoProvider,
     skipUpdates: true,
@@ -112,9 +113,9 @@ export const ProposalContainer = () => {
     error: parentMarketIdError,
   } = useParentMarketIdQuery({
     variables: {
-      marketId: newMarketData?.id || '',
+      marketId: marketData?.id || '',
     },
-    skip: !FLAGS.SUCCESSOR_MARKETS || !isSuccessor || !newMarketData?.id,
+    skip: !FLAGS.SUCCESSOR_MARKETS || !isSuccessor || !marketData?.id,
   });
 
   const {
@@ -194,7 +195,7 @@ export const ProposalContainer = () => {
     <AsyncRenderer
       loading={
         loading ||
-        newMarketLoading ||
+        marketLoading ||
         assetLoading ||
         networkParamsLoading ||
         parentMarketIdLoading ||
@@ -209,7 +210,7 @@ export const ProposalContainer = () => {
       }
       error={
         error ||
-        newMarketError ||
+        marketError ||
         assetError ||
         networkParamsError ||
         parentMarketIdError ||
@@ -221,7 +222,7 @@ export const ProposalContainer = () => {
       data={{
         ...data,
         ...networkParams,
-        ...(newMarketData ? { newMarketData } : {}),
+        ...(marketData ? { newMarketData: marketData } : {}),
         ...(parentMarketData ? { parentMarketData } : {}),
         ...(assetData ? { assetData } : {}),
         ...(restData ? { restData } : {}),
@@ -238,7 +239,7 @@ export const ProposalContainer = () => {
           proposal={data.proposal}
           networkParams={networkParams}
           restData={restData}
-          newMarketData={newMarketData}
+          marketData={marketData}
           parentMarketData={parentMarketData}
           assetData={assetData}
           originalMarketProposalRestData={originalMarketProposalRestData}

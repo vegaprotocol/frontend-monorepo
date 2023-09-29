@@ -48,6 +48,7 @@ export const ProposalsContainer = () => {
     errorPolicy: 'ignore',
     variables: {
       includeNewMarketProductFields: !!FLAGS.PRODUCT_PERPETUALS,
+      includeUpdateMarketStates: !!FLAGS.UPDATE_MARKET_STATE,
     },
   });
 
