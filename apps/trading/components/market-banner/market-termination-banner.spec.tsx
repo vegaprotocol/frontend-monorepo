@@ -1,6 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import * as Types from '@vegaprotocol/types';
-import { MemoryRouter } from 'react-router-dom';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { MarketViewProposalsQuery } from '@vegaprotocol/proposals';
@@ -25,7 +24,8 @@ const proposalMock: MockedResponse<MarketViewProposalsQuery> = {
                 enactmentDatetime: '2023-09-30T11:48:18',
                 change: {
                   __typename: 'UpdateMarketState',
-                  updateType: '',
+                  updateType:
+                    Types.MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE,
                   price: '',
                   market: {
                     id: 'market-1',
@@ -49,7 +49,8 @@ const proposalMock: MockedResponse<MarketViewProposalsQuery> = {
                 enactmentDatetime: '2023-10-01T11:48:18',
                 change: {
                   __typename: 'UpdateMarketState',
-                  updateType: '',
+                  updateType:
+                    Types.MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE,
                   price: '',
                   market: {
                     id: 'market-2',
@@ -66,7 +67,7 @@ const proposalMock: MockedResponse<MarketViewProposalsQuery> = {
           },
         ],
       },
-    } as unknown as MarketViewProposalsQuery,
+    },
   },
 };
 const mocks: MockedResponse[] = [proposalMock];
@@ -82,11 +83,9 @@ describe('MarketTerminationBanner', () => {
 
   it('should be properly rendered', async () => {
     const { container } = render(
-      <MemoryRouter>
-        <MockedProvider mocks={mocks}>
-          <MarketTerminationBanner marketId="market-1" />
-        </MockedProvider>
-      </MemoryRouter>
+      <MockedProvider mocks={mocks}>
+        <MarketTerminationBanner marketId="market-1" />
+      </MockedProvider>
     );
     await waitFor(() => {
       expect(container).not.toBeEmptyDOMElement();

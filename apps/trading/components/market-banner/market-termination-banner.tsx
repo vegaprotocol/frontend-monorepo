@@ -23,6 +23,8 @@ export const MarketTerminationBanner = ({
     (item) =>
       item.terms.change.__typename === 'UpdateMarketState' &&
       item.terms.change.market.id === marketId &&
+      item.terms.change.updateType ===
+        Types.MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE &&
       item.state === Types.ProposalState.STATE_PASSED // subscription doesn't have state parameter
   );
 

@@ -26,12 +26,18 @@ export const MarketSuccessorProposalBanner = ({
   });
 
   const successors =
-    proposals?.filter(
-      (item: MarketViewProposalFieldsFragment) =>
-        (item.terms?.change as NewMarketSuccessorFieldsFragment)
-          ?.successorConfiguration?.parentMarketId === marketId &&
-        item.state === Types.ProposalState.STATE_OPEN
-    ) ?? [];
+    proposals?.filter((item) => {
+      if (item.terms.change.__typename === 'NewMarket') {
+        const newMarket = item.terms.change;
+        if (
+          newMarket.successorConfiguration?.parentMarketId === marketId &&
+          item.state === Types.ProposalState.STATE_OPEN
+        ) {
+          return true;
+        }
+      }
+      return false;
+    }) ?? [];
   const [visible, setVisible] = useState(true);
   const tokenLink = useLinks(DApp.Governance);
   if (visible && successors.length) {
