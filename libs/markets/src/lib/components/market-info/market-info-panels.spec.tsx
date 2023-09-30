@@ -115,7 +115,7 @@ describe('DataSourceProof', () => {
     const condition = {
       __typename: 'Condition' as const,
       operator: ConditionOperator.OPERATOR_GREATER_THAN,
-      value: '100',
+      value: '1/1/1970, 1:00:00 AM',
     };
     const props = {
       data: {
