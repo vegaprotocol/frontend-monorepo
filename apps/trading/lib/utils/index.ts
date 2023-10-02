@@ -5,6 +5,7 @@ const MARKET_TEMPLATE = [
   MarketState.STATE_ACTIVE,
   MarketState.STATE_SUSPENDED,
   MarketState.STATE_PENDING,
+  MarketState.STATE_SUSPENDED_VIA_GOVERNANCE,
 ];
 
 export const isMarketActive = (state: MarketState) => {
