@@ -56,7 +56,7 @@ const TitleUpdater = ({
   return null;
 };
 
-export const MarketPage = () => {
+export const MarketPage = ({ closed }: { closed?: boolean }) => {
   const { marketId } = useParams();
   const navigate = useNavigate();
   const currentRouteId = useGetCurrentRouteId();
@@ -70,16 +70,20 @@ export const MarketPage = () => {
   const { data, error, loading } = useMarket(marketId);
 
   useEffect(() => {
-    if (data?.id && data.id !== lastMarketId) {
+    if (data?.id && data.id !== lastMarketId && !closed) {
       update({ marketId: data.id });
     }
-  }, [update, lastMarketId, data?.id]);
+  }, [update, lastMarketId, data?.id, closed]);
 
   useEffect(() => {
     if (largeScreen && view === undefined) {
-      setViews({ type: ViewType.Order }, currentRouteId);
+      if (closed) {
+        setViews({ type: ViewType.Info }, currentRouteId);
+      } else {
+        setViews({ type: ViewType.Order }, currentRouteId);
+      }
     }
-  }, [setViews, view, currentRouteId, largeScreen]);
+  }, [setViews, view, currentRouteId, largeScreen, closed]);
 
   const pinnedAsset = data && getAsset(data);
 

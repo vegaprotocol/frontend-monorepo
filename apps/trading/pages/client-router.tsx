@@ -26,6 +26,7 @@ import { FLAGS } from '@vegaprotocol/environment';
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
 const MarketPage = lazy(() => import('../client-pages/market'));
+const ClosedMarketPage = lazy(() => import('../client-pages/closed-market'));
 const Portfolio = lazy(() => import('../client-pages/portfolio'));
 
 const NotFound = () => (
@@ -100,6 +101,11 @@ export const routerConfig: RouteObject[] = compact([
             path: ':marketId',
             element: <MarketPage />,
             id: Routes.MARKET,
+          },
+          {
+            path: 'all/closed/:marketId',
+            element: <ClosedMarketPage />,
+            id: Routes.CLOSED_MARKETS,
           },
         ],
       },
