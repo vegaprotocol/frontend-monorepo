@@ -35,6 +35,9 @@ fragment MarketFields on Market {
     open
     close
   }
+  liquidityMonitoringParameters {
+    triggeringRatio
+  }
 }
 
 query Markets {

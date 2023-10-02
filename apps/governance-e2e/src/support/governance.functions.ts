@@ -232,21 +232,25 @@ export function getDownloadedProposalJsonPath(proposalType: string) {
   return filepath;
 }
 
+export function getProposalDetailsValue(RowName: string) {
+  return cy
+    .contains(RowName)
+    .parentsUntil(proposalInformationTableRows)
+    .parent()
+    .first();
+}
+
 export function validateProposalDetailsDiff(
   RowName: string,
   changeType: proposalChangeType,
   newValue: string,
   oldValue?: string
 ) {
-  cy.contains(RowName)
-    .parentsUntil(proposalInformationTableRows)
-    .parent()
-    .first()
-    .within(() => {
-      cy.contains(changeType).should('be.visible');
-      cy.contains(newValue).should('be.visible');
-      if (oldValue) cy.contains(oldValue).should('have.class', 'line-through');
-    });
+  getProposalDetailsValue(RowName).within(() => {
+    cy.contains(changeType).should('be.visible');
+    cy.contains(newValue).should('be.visible');
+    if (oldValue) cy.contains(oldValue).should('have.class', 'line-through');
+  });
 }
 
 function getFormattedTime() {

@@ -156,6 +156,44 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
     );
+    // 7002-SORD-018
+    expect(screen.getByTestId('order-price').nextSibling).toHaveTextContent(
+      'BTC'
+    );
+  });
+
+  it('market order should not display price', async () => {
+    render(generateJsx());
+    await userEvent.click(screen.getByTestId('order-type-Market'));
+    // 7002-SORD-018ß
+    expect(screen.queryByTestId('order-price')).not.toBeInTheDocument();
+  });
+
+  it('market order must warn for whole numbers', async () => {
+    const marketOverrides = { positionDecimalPlaces: 0 };
+    render(generateJsx([], marketOverrides));
+    await userEvent.click(screen.getByTestId('order-type-Market'));
+    await userEvent.click(screen.getByTestId('place-order'));
+    await userEvent.type(screen.getByTestId('order-size'), '1.231');
+    // 7002-SORD-060
+    expect(screen.queryByTestId('place-order')).toBeEnabled();
+    // 7002-SORD-016
+    expect(
+      screen.queryByTestId('deal-ticket-error-message-size')
+    ).toHaveTextContent('Size must be whole numbers for this market');
+  });
+
+  it('market order must warn if order size set to 0', async () => {
+    render(generateJsx());
+    await userEvent.click(screen.getByTestId('order-type-Market'));
+    await userEvent.click(screen.getByTestId('place-order'));
+    await userEvent.type(screen.getByTestId('order-size'), '0');
+    // 7002-SORD-060
+    expect(screen.queryByTestId('place-order')).toBeEnabled();
+    // 7002-SORD-016
+    expect(
+      screen.queryByTestId('deal-ticket-error-message-size')
+    ).toHaveTextContent('Size cannot be lower than 0.1');
   });
 
   it('should use local storage state for initial values', () => {
@@ -686,7 +724,6 @@ describe('DealTicket', () => {
       new Date(screen.getByTestId<HTMLInputElement>(datePicker).value).getTime()
     ).toEqual(now);
   });
-
   describe('market states not accepting orders', () => {
     const states = [
       Schema.MarketState.STATE_REJECTED,
@@ -713,6 +750,82 @@ describe('DealTicket', () => {
       });
 
       expect(screen.getByTestId('place-order')).toBeEnabled();
+    });
+  });
+  it('must see warning if price has too many digits after decimal place', async () => {
+    // 7002-SORD-059
+    // Render component
+    render(generateJsx());
+
+    // Elements
+    const toggleLimit = screen.getByTestId('order-type-Limit');
+    const orderTIFDropDown = screen.getByTestId('order-tif');
+    const orderSizeField = screen.getByTestId('order-price');
+    const orderPriceField = screen.getByTestId('order-price');
+    const placeOrderBtn = screen.getByTestId('place-order');
+
+    // Actions
+    await userEvent.click(toggleLimit);
+    await userEvent.selectOptions(orderTIFDropDown, 'TIME_IN_FORCE_GTC');
+    await userEvent.clear(orderSizeField);
+    await userEvent.type(orderSizeField, '1');
+    await userEvent.clear(orderPriceField);
+    await userEvent.type(orderPriceField, '1.123456');
+    await userEvent.click(placeOrderBtn);
+
+    // Expectations
+    await waitFor(() => {
+      const errorMessage = screen.getByTestId(
+        'deal-ticket-error-message-price'
+      );
+      expect(errorMessage).toHaveTextContent(
+        'Price accepts up to 2 decimal places'
+      );
+    });
+  });
+  it('must see warning when placing an order with expiry date in past', async () => {
+    // Render component
+    render(generateJsx());
+
+    const now = Date.now();
+    jest.spyOn(global.Date, 'now').mockImplementation(() => now);
+    // Elements
+    const toggleLimit = screen.getByTestId('order-type-Limit');
+    const orderPriceField = screen.getByTestId('order-price');
+    const orderSizeField = screen.getByTestId('order-price');
+    const orderTIFDropDown = screen.getByTestId('order-tif');
+    const datePicker = 'date-picker-field';
+    const placeOrderBtn = screen.getByTestId('place-order');
+
+    // Actions
+    userEvent.click(toggleLimit);
+    userEvent.clear(orderPriceField);
+    userEvent.type(orderPriceField, '0.1');
+    userEvent.clear(orderSizeField);
+    userEvent.type(orderSizeField, '1');
+    await userEvent.selectOptions(
+      orderTIFDropDown,
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
+    );
+
+    // Set date to past
+    const expiresAt = new Date(now - 24 * 60 * 60 * 1000);
+    const expiresAtInputValue = formatForInput(expiresAt);
+    fireEvent.change(screen.getByTestId(datePicker), {
+      target: { value: expiresAtInputValue },
+    });
+
+    // Place order
+    userEvent.click(placeOrderBtn);
+
+    // Expectations
+    await waitFor(() => {
+      const errorMessage = screen.getByTestId(
+        'deal-ticket-error-message-expiry'
+      );
+      expect(errorMessage).toHaveTextContent(
+        'The expiry date that you have entered appears to be in the past'
+      );
     });
   });
 });

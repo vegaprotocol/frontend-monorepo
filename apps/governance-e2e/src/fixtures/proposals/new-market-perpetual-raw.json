@@ -1,0 +1,138 @@
+{
+  "rationale": {
+    "description": "## Summary\n\nThis proposal requests to list BTC PERPS Incentive as a market with USD-P as a settlement asset on the Vega Network as discussed in: https://community.vega.xyz/.\n\n## Rationale\n\n- BTC is the largest Crypto asset with the highest volume and Marketcap.\n- Given the price, 1 decimal places will be used for price due to the number of valid digits in asset price. \n- Position decimal places will be set to 4 considering the value per contract\n- USDT is chosen as settlement asset due to its stability.",
+    "title": "perpetual market proposal"
+  },
+  "terms": {
+    "closingTimestamp": 0,
+    "enactmentTimestamp": 0,
+    "newMarket": {
+      "changes": {
+        "instrument": {
+          "name": "Token test market",
+          "code": "TEST.24h",
+          "perpetual": {
+            "clampLowerBound": "0",
+            "clampUpperBound": "0",
+            "interestRate": "0",
+            "marginFundingFactor": "0.1",
+            "settlementAsset": "73174a6fb1d5802ba0ac7bd7ab79e0a3a4837b262de0a4e80815a55442692bd0",
+            "quoteName": "fBTC",
+            "dataSourceSpecForSettlementData": {
+              "external": {
+                "ethOracle": {
+                  "address": "0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43",
+                  "abi": "[{\"inputs\":[],\"name\":\"latestAnswer\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+                  "method": "latestAnswer",
+                  "normalisers": [
+                    {
+                      "name": "btc.price",
+                      "expression": "$[0]"
+                    }
+                  ],
+                  "requiredConfirmations": 3,
+                  "trigger": {
+                    "timeTrigger": {
+                      "every": 30
+                    }
+                  },
+                  "filters": [
+                    {
+                      "key": {
+                        "name": "btc.price",
+                        "type": "TYPE_INTEGER",
+                        "numberDecimalPlaces": 8
+                      },
+                      "conditions": [
+                        {
+                          "operator": "OPERATOR_GREATER_THAN_OR_EQUAL",
+                          "value": "0"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            "dataSourceSpecForSettlementSchedule": {
+              "internal": {
+                "timeTrigger": {
+                  "conditions": [
+                    {
+                      "operator": "OPERATOR_GREATER_THAN_OR_EQUAL",
+                      "value": "0"
+                    }
+                  ],
+                  "triggers": [
+                    {
+                      "every": 1800
+                    }
+                  ]
+                }
+              }
+            },
+            "dataSourceSpecBinding": {
+              "settlementDataProperty": "btc.price",
+              "settlementScheduleProperty": "vegaprotocol.builtin.timetrigger"
+            }
+          }
+        },
+        "metadata": [
+          "base:BTC",
+          "quote:USD-P",
+          "class:fx/crypto",
+          "quarterly",
+          "sector:defi",
+          "enactment:2023-06-15T14:00:00Z",
+          "settlement:2023-09-30T08:00:00Z"
+        ],
+        "priceMonitoringParameters": {
+          "triggers": [
+            {
+              "horizon": "3600",
+              "probability": "0.9999",
+              "auctionExtension": "120"
+            },
+            {
+              "horizon": "14400",
+              "probability": "0.9999",
+              "auctionExtension": "180"
+            },
+            {
+              "horizon": "43200",
+              "probability": "0.9999",
+              "auctionExtension": "300"
+            }
+          ]
+        },
+        "liquidityMonitoringParameters": {
+          "targetStakeParameters": {
+            "timeWindow": "3600",
+            "scalingFactor": 1
+          },
+          "triggeringRatio": "0.7",
+          "auctionExtension": "1"
+        },
+
+        "liquiditySlaParameters": {
+          "priceRange": "0.05",
+          "commitmentMinTimeFraction": "0.95",
+          "performanceHysteresisEpochs": 1,
+          "slaCompetitionFactor": "0.95"
+        },
+
+        "logNormal": {
+          "riskAversionParameter": 0.000001,
+          "tau": 0.0001140771161,
+          "params": {
+            "sigma": 1.5
+          }
+        },
+        "decimalPlaces": "1",
+        "positionDecimalPlaces": "4",
+        "linearSlippageFactor": "0.001",
+        "quadraticSlippageFactor": "0.0"
+      }
+    }
+  }
+}
