@@ -149,6 +149,9 @@ describe('WithdrawFormContainer', () => {
               liquidityFee: '0.001',
             },
           },
+          liquidityMonitoringParameters: {
+            triggeringRatio: '0.7',
+          },
           tradableInstrument: {
             __typename: 'TradableInstrument',
             instrument: {

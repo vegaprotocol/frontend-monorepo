@@ -858,7 +858,6 @@ export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
         data={{
           targetStake: data?.targetStake,
           suppliedStake: data?.suppliedStake,
-          marketValueProxy: data?.marketValueProxy,
         }}
         decimalPlaces={asset.decimals}
         assetSymbol={asset.symbol}
@@ -1033,9 +1032,13 @@ export const DataSourceProof = ({
           <h3>{t('Internal conditions')}</h3>
           {data.sourceType.sourceType?.conditions?.map((condition, i) => {
             if (!condition) return null;
+            const dateFromUnixTimestamp = condition.value
+              ? getDateTimeFormat().format(new Date(parseInt(condition.value)))
+              : '-';
             return (
               <p key={i}>
-                {ConditionOperatorMapping[condition.operator]} {condition.value}
+                {ConditionOperatorMapping[condition.operator]}{' '}
+                {dateFromUnixTimestamp}
               </p>
             );
           })}
