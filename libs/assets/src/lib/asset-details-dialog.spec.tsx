@@ -62,6 +62,20 @@ const WrappedAssetDetailsDialog = ({ assetId }: { assetId: string }) => (
 );
 
 describe('AssetDetailsDialog', () => {
+  // 7001-COLL-008
+  // 6501-ASSE-001
+  // 6501-ASSE-002
+  // 6501-ASSE-003
+  // 6501-ASSE-004
+  // 6501-ASSE-005
+  // 6501-ASSE-006
+  // 6501-ASSE-007
+  // 6501-ASSE-008
+  // 6501-ASSE-009
+  // 6501-ASSE-010
+  // 6501-ASSE-011
+  // 6501-ASSE-012
+  // 6501-ASSE-013
   it('should show no data message given unknown asset symbol', async () => {
     render(<WrappedAssetDetailsDialog assetId={'UNKNOWN_FOR_SURE'} />);
     expect((await screen.findByTestId('splash')).textContent).toContain(
