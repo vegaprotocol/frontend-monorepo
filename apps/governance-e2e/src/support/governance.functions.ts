@@ -54,6 +54,7 @@ export function submitUniqueRawProposal(proposalFields: {
   proposalBody?: string;
   proposalTitle?: string;
   proposalDescription?: string;
+  updateMarketId?: string;
   closingTimestamp?: number;
   enactmentTimestamp?: number;
   submit?: boolean;
@@ -70,6 +71,10 @@ export function submitUniqueRawProposal(proposalFields: {
     }
     if (proposalFields.proposalDescription) {
       rawProposal.rationale.description = proposalFields.proposalDescription;
+    }
+    if (proposalFields.updateMarketId) {
+      rawProposal.terms.updateMarketState.changes.marketId =
+        proposalFields.updateMarketId;
     }
     if (proposalFields.closingTimestamp) {
       rawProposal.terms.closingTimestamp = proposalFields.closingTimestamp;

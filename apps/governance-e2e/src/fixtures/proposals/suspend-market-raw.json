@@ -1,0 +1,16 @@
+{
+  "rationale": {
+    "title": "Market suspended test",
+    "description": "E2E test for market suspended proposal"
+  },
+  "terms": {
+    "updateMarketState": {
+      "changes": {
+        "marketId": "",
+        "updateType": "MARKET_STATE_UPDATE_TYPE_SUSPEND"
+      }
+    },
+    "closingTimestamp": 0,
+    "enactmentTimestamp": 0
+  }
+}

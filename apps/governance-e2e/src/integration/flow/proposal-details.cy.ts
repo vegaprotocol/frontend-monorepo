@@ -60,6 +60,17 @@ describe(
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
       ethereumWalletConnect();
+      cy.createMarket();
+      navigateTo(navigation.proposals);
+      cy.getByTestId('closed-proposals').within(() => {
+        cy.contains('Add Lorem Ipsum market')
+          .parentsUntil(proposalListItem)
+          .last()
+          .within(() => {
+            cy.getByTestId(viewProposalButton).click();
+          });
+      });
+      getProposalInformationFromTable('ID').invoke('text').as('parentMarketId');
     });
 
     beforeEach('visit proposals tab', function () {
@@ -298,9 +309,6 @@ describe(
     });
 
     it('Able to see successor market details with new and updated values', function () {
-      cy.createMarket();
-      cy.reload();
-      waitForSpinner();
       cy.getByTestId('closed-proposals').within(() => {
         cy.contains('Add Lorem Ipsum market')
           .parentsUntil(proposalListItem)
@@ -309,14 +317,9 @@ describe(
             cy.getByTestId(viewProposalButton).click();
           });
       });
-      getProposalInformationFromTable('ID')
-        .invoke('text')
-        .as('parentMarketId')
-        .then(() => {
-          cy.VegaWalletSubmitProposal(
-            createSuccessorMarketProposalTxBody(this.parentMarketId)
-          );
-        });
+      cy.VegaWalletSubmitProposal(
+        createSuccessorMarketProposalTxBody(this.parentMarketId)
+      );
       navigateTo(navigation.proposals);
       cy.reload();
       getProposalFromTitle('Test successor market proposal details').within(
@@ -433,6 +436,88 @@ describe(
       getProposalDetailsValue(
         'Minimum Probability Of Trading LP Orders'
       ).should('contain.text', '1e-8');
+    });
+
+    it('Able to see suspended market proposal', function () {
+      const proposalPath = 'src/fixtures/proposals/suspend-market-raw.json';
+      const enactmentTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+      const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
+      submitUniqueRawProposal({
+        proposalBody: proposalPath,
+        updateMarketId: this.parentMarketId,
+        enactmentTimestamp: enactmentTimestamp,
+        closingTimestamp: closingTimestamp,
+      });
+      getProposalFromTitle('Market suspended test').within(() => {
+        cy.getByTestId(marketProposalType).should(
+          'have.text',
+          'Suspend market'
+        );
+        cy.getByTestId(viewProposalButton).click();
+      });
+      cy.getByTestId(marketProposalType).should('have.text', 'Suspend market');
+      cy.getByTestId(marketDataToggle).click();
+      cy.getByTestId('proposal-update-market-state').within(() => {
+        getProposalInformationFromTable('Market ID')
+          .invoke('text')
+          .and('eq', this.parentMarketId);
+      });
+    });
+
+    it('Able to see resume market proposal', function () {
+      const proposalPath = 'src/fixtures/proposals/resume-market-raw.json';
+      const enactmentTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+      const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
+      submitUniqueRawProposal({
+        proposalBody: proposalPath,
+        updateMarketId: this.parentMarketId,
+        enactmentTimestamp: enactmentTimestamp,
+        closingTimestamp: closingTimestamp,
+      });
+      getProposalFromTitle('Market resume test').within(() => {
+        cy.getByTestId(marketProposalType).should('have.text', 'Resume market');
+        cy.getByTestId(viewProposalButton).click();
+      });
+      cy.getByTestId(marketProposalType).should('have.text', 'Resume market');
+      cy.getByTestId(marketDataToggle).click();
+      cy.getByTestId('proposal-update-market-state').within(() => {
+        getProposalInformationFromTable('Market ID')
+          .invoke('text')
+          .and('eq', this.parentMarketId);
+      });
+    });
+
+    it('Able to see terminate market proposal', function () {
+      const proposalPath = 'src/fixtures/proposals/terminate-market-raw.json';
+      const enactmentTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+      const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
+      submitUniqueRawProposal({
+        proposalBody: proposalPath,
+        updateMarketId: this.parentMarketId,
+        enactmentTimestamp: enactmentTimestamp,
+        closingTimestamp: closingTimestamp,
+      });
+      getProposalFromTitle('Market terminate test').within(() => {
+        cy.getByTestId(marketProposalType).should(
+          'have.text',
+          'Terminate market'
+        );
+        cy.getByTestId(viewProposalButton).click();
+      });
+      cy.getByTestId(marketProposalType).should(
+        'have.text',
+        'Terminate market'
+      );
+      cy.getByTestId(marketDataToggle).click();
+      cy.getByTestId('proposal-update-market-state').within(() => {
+        getProposalInformationFromTable('Market ID')
+          .invoke('text')
+          .and('eq', this.parentMarketId);
+        getProposalDetailsValue('Termination Price').should(
+          'contain.text',
+          '0.001 fUSDC'
+        );
+      });
     });
   }
 );
