@@ -104,7 +104,17 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           field: 'market',
           valueFormatter: formatFeeDiscount(partyId),
           type: 'rightAligned',
-          tooltipField: 'market',
+          // return null to disable tooltip if fee discount is 0 or empty
+          tooltipValueGetter: ({ valueFormatted, value }) => {
+            return valueFormatted && /[1-9]/.test(valueFormatted)
+              ? valueFormatted
+              : null;
+          },
+          cellRenderer: ({
+            value,
+            valueFormatted,
+          }: VegaICellRendererParams<Trade, 'market'>) =>
+            `${valueFormatted} ${(value && getAsset(value))?.symbol}`,
           tooltipComponent: FeesDiscountBreakdownTooltip,
           tooltipComponentParams: { partyId },
         },
@@ -253,7 +263,7 @@ const formatFeeDiscount = (partyId: string) => {
     if (!fees) return '-';
 
     const total = getTotalFeesDiscounts(fees);
-    return `${addDecimalsFormatNumber(total, asset.decimals)} ${asset.symbol}`;
+    return addDecimalsFormatNumber(total, asset.decimals);
   };
 };
 
@@ -390,13 +400,12 @@ const FeesDiscountBreakdownTooltipItem = ({
 
 export const FeesDiscountBreakdownTooltip = ({
   data,
-  value: market,
   partyId,
 }: ITooltipParams<Trade, Trade['market']> & { partyId?: string }) => {
-  if (!market || !data) {
+  if (!data || !data.market) {
     return null;
   }
-  const asset = getAsset(market);
+  const asset = getAsset(data.market);
 
   const { fees } = getRoleAndFees({ data, partyId }) ?? {};
   if (!fees) return null;
@@ -406,36 +415,38 @@ export const FeesDiscountBreakdownTooltip = ({
       data-testid="fee-discount-breakdown-tooltip"
       className="max-w-sm bg-vega-light-100 dark:bg-vega-dark-100 border border-vega-light-200 dark:border-vega-dark-200 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white"
     >
-      <FeesDiscountBreakdownTooltipItem
-        value={fees.infrastructureFeeReferralDiscount}
-        label={t('Infrastructure Fee Referral Discount')}
-        asset={asset}
-      />
-      <FeesDiscountBreakdownTooltipItem
-        value={fees.infrastructureFeeVolumeDiscount}
-        label={t('Infrastructure Fee Volume Discount')}
-        asset={asset}
-      />
-      <FeesDiscountBreakdownTooltipItem
-        value={fees.liquidityFeeReferralDiscount}
-        label={t('Liquidity Fee Referral Discount')}
-        asset={asset}
-      />
-      <FeesDiscountBreakdownTooltipItem
-        value={fees.liquidityFeeVolumeDiscount}
-        label={t('Liquidity Fee Volume Discount')}
-        asset={asset}
-      />
-      <FeesDiscountBreakdownTooltipItem
-        value={fees.makerFeeReferralDiscount}
-        label={t('Maker Fee Referral Discount')}
-        asset={asset}
-      />
-      <FeesDiscountBreakdownTooltipItem
-        value={fees.makerFeeVolumeDiscount}
-        label={t('Maker Fee Volume Discount')}
-        asset={asset}
-      />
+      <dl className="grid grid-cols-2 gap-x-1">
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.infrastructureFeeReferralDiscount}
+          label={t('Infrastructure Fee Referral Discount')}
+          asset={asset}
+        />
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.infrastructureFeeVolumeDiscount}
+          label={t('Infrastructure Fee Volume Discount')}
+          asset={asset}
+        />
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.liquidityFeeReferralDiscount}
+          label={t('Liquidity Fee Referral Discount')}
+          asset={asset}
+        />
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.liquidityFeeVolumeDiscount}
+          label={t('Liquidity Fee Volume Discount')}
+          asset={asset}
+        />
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.makerFeeReferralDiscount}
+          label={t('Maker Fee Referral Discount')}
+          asset={asset}
+        />
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.makerFeeVolumeDiscount}
+          label={t('Maker Fee Volume Discount')}
+          asset={asset}
+        />
+      </dl>
     </div>
   );
 };

@@ -57,8 +57,8 @@ export const FeesBreakdown = ({
   const totalFees = sumFees(fees);
   const {
     total: totalDiscount,
-    referral: volumeDiscount,
-    volume: referralDiscount,
+    referral: referralDiscount,
+    volume: volumeDiscount,
   } = sumFeesDiscounts(fees);
   if (totalFees === '0') return null;
   return (
