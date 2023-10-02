@@ -6,6 +6,7 @@ import {
 import { DataSourceProof, SuccessionLineInfoPanel } from './market-info-panels';
 import { MockedProvider } from '@apollo/react-testing';
 import { SuccessorMarketIdsDocument } from '../../__generated__';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 
 jest.mock('../../hooks/use-oracle-markets', () => ({
   useOracleMarkets: () => [],
@@ -116,7 +117,7 @@ describe('MarketInfoPanels', () => {
       const condition = {
         __typename: 'Condition' as const,
         operator: ConditionOperator.OPERATOR_GREATER_THAN,
-        value: '100',
+        value: '1696238009',
       };
       const props = {
         data: {
@@ -133,9 +134,14 @@ describe('MarketInfoPanels', () => {
       };
       render(<DataSourceProof dataSourceSpecId={''} {...props} />);
       expect(screen.getByText('Internal conditions')).toBeInTheDocument();
+      const dateFromUnixTimestamp = condition.value
+        ? getDateTimeFormat().format(new Date(parseInt(condition.value)))
+        : '-';
       expect(
         screen.getByText(
-          `${ConditionOperatorMapping[condition.operator]} 1/1/1970, 1:00:00 AM`
+          `${
+            ConditionOperatorMapping[condition.operator]
+          } ${dateFromUnixTimestamp}`
         )
       ).toBeInTheDocument();
     });
