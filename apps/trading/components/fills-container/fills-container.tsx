@@ -9,7 +9,7 @@ import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
-export const FillsContainer = ({ marketId }: { marketId?: string }) => {
+export const FillsContainer = () => {
   const onMarketClick = useMarketClickHandler(true);
   const { pubKey } = useVegaWallet();
 
@@ -31,7 +31,6 @@ export const FillsContainer = ({ marketId }: { marketId?: string }) => {
   return (
     <FillsManager
       partyId={pubKey}
-      marketId={marketId}
       onMarketClick={onMarketClick}
       gridProps={gridStoreCallbacks}
     />
