@@ -9,6 +9,7 @@ import {
   positionsMarketsProvider,
 } from './positions-data-providers';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
+import { MAXGOINT64 } from '@vegaprotocol/utils';
 
 interface PositionsManagerProps {
   partyIds: string[];
@@ -17,8 +18,6 @@ interface PositionsManagerProps {
   gridProps?: ReturnType<typeof useDataGridEvents>;
   showClosed?: boolean;
 }
-
-const MAXINT64 = '9223372036854775807';
 
 export const PositionsManager = ({
   partyIds,
@@ -47,7 +46,7 @@ export const PositionsManager = ({
               side: openVolume.startsWith('-')
                 ? Schema.Side.SIDE_BUY
                 : Schema.Side.SIDE_SELL,
-              size: MAXINT64, // workaround for avoiding leftovers filled in the meantime
+              size: MAXGOINT64, // improvement for avoiding leftovers filled in the meantime when close request has been sent
               reduceOnly: true,
             },
           ],
