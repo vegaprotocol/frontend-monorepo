@@ -57,19 +57,19 @@ describe('AccountsActionsDropdown', () => {
     );
 
     await userEvent.click(screen.getByTestId('icon-kebab'));
-    await userEvent.click(await screen.findByTestId('deposit'));
+    await userEvent.click(screen.getByTestId('deposit'));
     expect(onClickDeposit).toHaveBeenCalledTimes(1);
 
     await userEvent.click(screen.getByTestId('icon-kebab'));
-    await userEvent.click(await screen.findByTestId('withdraw'));
+    await userEvent.click(screen.getByTestId('withdraw'));
     expect(onClickWithdraw).toHaveBeenCalledTimes(1);
 
     await userEvent.click(screen.getByTestId('icon-kebab'));
-    await userEvent.click(await screen.findByTestId('transfer'));
+    await userEvent.click(screen.getByTestId('transfer'));
     expect(onClickTransfer).toHaveBeenCalledTimes(1);
 
     await userEvent.click(screen.getByTestId('icon-kebab'));
-    await userEvent.click(await screen.findByTestId('breakdown'));
+    await userEvent.click(screen.getByTestId('breakdown'));
     expect(onClickBreakdown).toHaveBeenCalledTimes(1);
   });
 });
