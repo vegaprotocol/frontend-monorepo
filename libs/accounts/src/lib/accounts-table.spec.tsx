@@ -26,6 +26,13 @@ const singleRowData = [singleRow];
 
 describe('AccountsTable', () => {
   it('should render correct columns', async () => {
+    // 7001-COLL-001
+    // 7001-COLL-002
+    // 7001-COLL-003
+    // 7001-COLL-004
+    // 7001-COLL-007
+    // 1003-TRAN-001
+    // 7001-COLL-012
     await act(async () => {
       render(
         <AccountTable

@@ -11,59 +11,6 @@ describe('accounts', { tags: '@smoke' }, () => {
     cy.visit('/#/markets/market-0');
   });
 
-  it('renders accounts', () => {
-    // 7001-COLL-001
-    // 7001-COLL-002
-    // 7001-COLL-003
-    // 7001-COLL-004
-    // 7001-COLL-005
-    // 7001-COLL-006
-    // 7001-COLL-007
-    // 1003-TRAN-001
-    // 7001-COLL-012
-
-    const tradingAccountRowId = '[row-id="t-0"]';
-    cy.getByTestId('Collateral').click();
-
-    cy.getByTestId('tab-accounts').should('be.visible');
-
-    cy.getByTestId('tab-accounts')
-      .get(tradingAccountRowId)
-      .find('[col-id="asset.symbol"]')
-      .should('have.text', 'AST0');
-
-    cy.getByTestId('tab-accounts')
-      .get(tradingAccountRowId)
-      .find('[col-id="used"]')
-      .should('have.text', '1.01' + '1.00%');
-
-    cy.getByTestId('tab-accounts')
-      .get(tradingAccountRowId)
-      .find('[col-id="available"]')
-      .should('have.text', '100.00');
-
-    cy.getByTestId('tab-accounts')
-      .get(tradingAccountRowId)
-      .find('[col-id="total"]')
-      .should('have.text', '101.01');
-
-    cy.getByTestId('tab-accounts')
-      .get(tradingAccountRowId)
-      .find('[col-id="accounts-actions"]')
-      .should('have.text', '');
-
-    cy.getByTestId('tab-accounts')
-      .get('[col-id="accounts-actions"]')
-      .find('[data-testid="dropdown-menu"]')
-      .eq(1)
-      .click();
-    cy.getByTestId('deposit').should('be.visible');
-    cy.getByTestId('withdraw').should('be.visible');
-    cy.getByTestId('transfer').should('be.visible');
-    cy.getByTestId('breakdown').should('be.visible');
-    cy.getByTestId('Collateral').click({ force: true });
-  });
-
   it('should open usage breakdown dialog when clicked on used', () => {
     // 7001-COLL-009
     cy.get('[col-id="used"]').contains('1.01').click();
