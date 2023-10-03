@@ -100,7 +100,8 @@ describe('ProposalsList', () => {
     const container = within(
       document.querySelector(rowContainerSelector) as HTMLElement
     );
-    expect(container.getAllByRole('row')).toHaveLength(
+
+    expect(await container.findAllByRole('row')).toHaveLength(
       // @ts-ignore data is mocked
       mock?.result?.data.proposalsConnection.edges.length
     );

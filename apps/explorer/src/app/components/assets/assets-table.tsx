@@ -4,7 +4,7 @@ import { AssetTypeMapping, AssetStatusMapping } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
-import { AgGridLazy as AgGrid } from '@vegaprotocol/datagrid';
+import { AgGrid } from '@vegaprotocol/datagrid';
 import type { VegaICellRendererParams } from '@vegaprotocol/datagrid';
 import { useRef, useLayoutEffect } from 'react';
 import { BREAKPOINT_MD } from '../../config/breakpoints';

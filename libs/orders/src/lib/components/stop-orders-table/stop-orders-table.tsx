@@ -18,7 +18,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { memo, useMemo } from 'react';
 import {
-  AgGridLazy as AgGrid,
+  AgGrid,
   SetFilter,
   DateRangeFilter,
   negativeClassNames,

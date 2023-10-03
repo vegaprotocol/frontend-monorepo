@@ -12,6 +12,7 @@ import { formatRange, formatValue } from '@vegaprotocol/utils';
 import { marketMarginDataProvider } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
+import * as Schema from '@vegaprotocol/types';
 
 import {
   MARGIN_DIFF_TOOLTIP_TEXT,
@@ -37,14 +38,16 @@ export interface DealTicketFeeDetailsProps {
   assetSymbol: string;
   order: OrderSubmissionBody['orderSubmission'];
   market: Market;
+  isMarketInAuction?: boolean;
 }
 
 export const DealTicketFeeDetails = ({
   assetSymbol,
   order,
   market,
+  isMarketInAuction,
 }: DealTicketFeeDetailsProps) => {
-  const feeEstimate = useEstimateFees(order);
+  const feeEstimate = useEstimateFees(order, isMarketInAuction);
   const asset = getAsset(market);
   const { decimals: assetDecimals, quantum } = asset;
 
@@ -63,7 +66,7 @@ export const DealTicketFeeDetails = ({
         <>
           <span>
             {t(
-              `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}.`
+              `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}. Fees estimated are "taker" fees and will only be payable if the order trades aggressively. Rebate equal to the maker portion will be paid to the trader if the order trades passively.`
             )}
           </span>
           <FeesBreakdown
@@ -86,6 +89,7 @@ export interface DealTicketMarginDetailsProps {
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   assetSymbol: string;
   positionEstimate: EstimatePositionQuery['estimatePosition'];
+  side: Schema.Side;
 }
 
 export const DealTicketMarginDetails = ({
@@ -95,6 +99,7 @@ export const DealTicketMarginDetails = ({
   market,
   onMarketClick,
   positionEstimate,
+  side,
 }: DealTicketMarginDetailsProps) => {
   const [breakdownDialog, setBreakdownDialog] = useState(false);
   const { pubKey: partyId } = useVegaWallet();
@@ -163,10 +168,7 @@ export const DealTicketMarginDetails = ({
             : '0',
           assetDecimals
         )}
-        formattedValue={formatRange(
-          deductionFromCollateralBestCase > 0
-            ? deductionFromCollateralBestCase.toString()
-            : '0',
+        formattedValue={formatValue(
           deductionFromCollateralWorstCase > 0
             ? deductionFromCollateralWorstCase.toString()
             : '0',
@@ -185,8 +187,7 @@ export const DealTicketMarginDetails = ({
           marginEstimate?.worstCase.initialLevel,
           assetDecimals
         )}
-        formattedValue={formatRange(
-          marginEstimate?.bestCase.initialLevel,
+        formattedValue={formatValue(
           marginEstimate?.worstCase.initialLevel,
           assetDecimals,
           quantum
@@ -198,6 +199,7 @@ export const DealTicketMarginDetails = ({
   }
 
   let liquidationPriceEstimate = emptyValue;
+  let liquidationPriceEstimateRange = emptyValue;
 
   if (liquidationEstimate) {
     const liquidationEstimateBestCaseIncludingBuyOrders = BigInt(
@@ -207,8 +209,7 @@ export const DealTicketMarginDetails = ({
       liquidationEstimate.bestCase.including_sell_orders.replace(/\..*/, '')
     );
     const liquidationEstimateBestCase =
-      liquidationEstimateBestCaseIncludingBuyOrders >
-      liquidationEstimateBestCaseIncludingSellOrders
+      side === Schema.Side.SIDE_BUY
         ? liquidationEstimateBestCaseIncludingBuyOrders
         : liquidationEstimateBestCaseIncludingSellOrders;
 
@@ -219,14 +220,19 @@ export const DealTicketMarginDetails = ({
       liquidationEstimate.worstCase.including_sell_orders.replace(/\..*/, '')
     );
     const liquidationEstimateWorstCase =
-      liquidationEstimateWorstCaseIncludingBuyOrders >
-      liquidationEstimateWorstCaseIncludingSellOrders
+      side === Schema.Side.SIDE_BUY
         ? liquidationEstimateWorstCaseIncludingBuyOrders
         : liquidationEstimateWorstCaseIncludingSellOrders;
 
     // The estimate order query API gives us the liquidation price in formatted by asset decimals.
     // We need to calculate it with asset decimals, but display it with market decimals precision until the API changes.
-    liquidationPriceEstimate = formatRange(
+    liquidationPriceEstimate = formatValue(
+      liquidationEstimateWorstCase.toString(),
+      assetDecimals,
+      undefined,
+      market.decimalPlaces
+    );
+    liquidationPriceEstimateRange = formatRange(
       (liquidationEstimateBestCase < liquidationEstimateWorstCase
         ? liquidationEstimateBestCase
         : liquidationEstimateWorstCase
@@ -249,7 +255,7 @@ export const DealTicketMarginDetails = ({
   const quoteName = getQuoteName(market);
 
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex flex-col w-full gap-2">
       <Accordion>
         <AccordionPanel
           itemId="margin"
@@ -265,7 +271,7 @@ export const DealTicketMarginDetails = ({
               <div
                 data-testid={`deal-ticket-fee-margin-required`}
                 key={'value-dropdown'}
-                className="flex items-center gap-2 justify-between w-full"
+                className="flex items-center justify-between w-full gap-2"
               >
                 <div className="flex items-center gap-1">
                   <Tooltip description={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}>
@@ -282,11 +288,9 @@ export const DealTicketMarginDetails = ({
                       assetDecimals
                     ) ?? '-'
                   }
-                  noUnderline
                 >
                   <div className="font-mono text-right">
-                    {formatRange(
-                      marginRequiredBestCase,
+                    {formatValue(
                       marginRequiredWorstCase,
                       assetDecimals,
                       quantum
@@ -298,7 +302,7 @@ export const DealTicketMarginDetails = ({
             </AccordionPrimitive.Trigger>
           }
         >
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col w-full gap-2">
             <KeyValue
               label={t('Total margin available')}
               indent
@@ -344,7 +348,7 @@ export const DealTicketMarginDetails = ({
       {projectedMargin}
       <KeyValue
         label={t('Liquidation')}
-        value={liquidationPriceEstimate}
+        value={liquidationPriceEstimateRange}
         formattedValue={liquidationPriceEstimate}
         symbol={quoteName}
         labelDescription={LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT}

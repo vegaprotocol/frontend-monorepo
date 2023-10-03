@@ -12,7 +12,7 @@ import { useRefreshAfterEpoch } from '../../hooks/use-refresh-after-epoch';
 import { ProposalsListItem } from '../proposals/components/proposals-list-item';
 import { ProtocolUpgradeProposalsListItem } from '../proposals/components/protocol-upgrade-proposals-list-item/protocol-upgrade-proposals-list-item';
 import Routes from '../routes';
-import { ExternalLinks } from '@vegaprotocol/environment';
+import { ExternalLinks, FLAGS } from '@vegaprotocol/environment';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useNodesQuery } from '../staking/home/__generated__/Nodes';
 import { useProposalsQuery } from '../proposals/proposals/__generated__/Proposals';
@@ -23,7 +23,6 @@ import {
 import { Heading, SubHeading } from '../../components/heading';
 import * as Schema from '@vegaprotocol/types';
 import type { RouteChildProps } from '..';
-import type { ProposalFieldsFragment } from '../proposals/proposals/__generated__/Proposals';
 import type { NodesFragmentFragment } from '../staking/home/__generated__/Nodes';
 import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { useProtocolUpgradeProposalsQuery } from '@vegaprotocol/proposals';
@@ -32,6 +31,7 @@ import {
   orderByUpgradeBlockHeight,
 } from '../proposals/components/proposals-list/proposals-list';
 import { BigNumber } from '../../lib/bignumber';
+import type { ProposalQuery } from '../proposals/proposal/__generated__/Proposal';
 
 const nodesToShow = 6;
 
@@ -39,7 +39,7 @@ const HomeProposals = ({
   proposals,
   protocolUpgradeProposals,
 }: {
-  proposals: ProposalFieldsFragment[];
+  proposals: ProposalQuery['proposal'][];
   protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
 }) => {
   const { t } = useTranslation();
@@ -60,9 +60,12 @@ const HomeProposals = ({
           <ProtocolUpgradeProposalsListItem key={index} proposal={proposal} />
         ))}
 
-        {proposals.map((proposal) => (
-          <ProposalsListItem key={proposal.id} proposal={proposal} />
-        ))}
+        {proposals.map(
+          (proposal) =>
+            proposal?.id && (
+              <ProposalsListItem key={proposal.id} proposal={proposal} />
+            )
+        )}
       </ul>
 
       <div className="mt-6">
@@ -182,6 +185,10 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
     pollInterval: 5000,
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
+    variables: {
+      includeNewMarketProductFields: !!FLAGS.PRODUCT_PERPETUALS,
+      includeUpdateMarketStates: !!FLAGS.UPDATE_MARKET_STATE,
+    },
   });
 
   const {
@@ -206,7 +213,9 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
   const proposals = useMemo(
     () =>
       proposalsData
-        ? getNotRejectedProposals(proposalsData.proposalsConnection)
+        ? getNotRejectedProposals(
+            removePaginationWrapper(proposalsData.proposalsConnection?.edges)
+          )
         : [],
     [proposalsData]
   );

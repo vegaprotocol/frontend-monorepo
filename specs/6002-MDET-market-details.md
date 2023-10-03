@@ -105,7 +105,6 @@ When I look into market info I **Must** see following specification:
 - Liquidity: (<a name="6002-MDET-214" href="#6002-MDET-214">6002-MDET-214</a>)
   - Target Stake
   - Supplied Stake
-  - Market Value Proxy
   - link to liquidity provision table
 - Liquidity price range: (<a name="6002-MDET-215" href="#6002-MDET-215">6002-MDET-215</a>)
   - Liquidity Price Range

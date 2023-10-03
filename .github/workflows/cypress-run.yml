@@ -13,13 +13,35 @@ on:
         type: string
 
 jobs:
+  runner-choice:
+    runs-on: ubuntu-latest
+    outputs:
+      runner: ${{ steps.step.outputs.runner }}
+    steps:
+      - name: Check branch
+        id: step
+        run: |
+          if [ ${{ github.base_ref }} == 'main' ]; then
+            echo "runner=mainnet-compatible-runner" >> $GITHUB_OUTPUT
+          elif [ ${{ github.base_ref }} == 'develop' ] && [ ${{ github.ref_name }} == 'main' ]; then
+            echo "runner=mainnet-compatible-runner" >> $GITHUB_OUTPUT
+          elif [ ${{ github.event_name }} == 'push' ] && [ ${{ contains(github.ref_name, 'release/mainnet') }} ]; then
+            echo "runner=mainnet-compatible-runner" >> $GITHUB_OUTPUT
+          else
+            echo "runner=self-hosted-runner" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Print runner
+        run: echo ${{ steps.step.outputs.runner }}
+
   e2e:
     strategy:
       fail-fast: false
       matrix:
         project: ${{ fromJSON(inputs.projects) }}
     name: ${{ matrix.project }}
-    runs-on: self-hosted-runner
+    needs: runner-choice
+    runs-on: ${{ needs.runner-choice.outputs.runner }}
     timeout-minutes: 120
     steps:
       # Checks if skip cache was requested

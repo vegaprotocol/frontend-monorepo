@@ -9,6 +9,7 @@ import {
   createTenDigitUnixTimeStampForSpecifiedDays,
   generateFreeFormProposalTitle,
   getDateFormatForSpecifiedDays,
+  getProposalDetailsValue,
   getProposalFromTitle,
   getProposalInformationFromTable,
   goToMakeNewProposal,
@@ -50,6 +51,7 @@ const openProposals = 'open-proposals';
 const viewProposalButton = 'view-proposal-btn';
 const proposalTermsToggle = 'proposal-json-toggle';
 const marketDataToggle = 'proposal-market-data-toggle';
+const marketProposalType = 'proposal-type';
 
 describe(
   'Governance flow for proposal details',
@@ -58,6 +60,17 @@ describe(
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
       ethereumWalletConnect();
+      cy.createMarket();
+      navigateTo(navigation.proposals);
+      cy.getByTestId('closed-proposals').within(() => {
+        cy.contains('Add Lorem Ipsum market')
+          .parentsUntil(proposalListItem)
+          .last()
+          .within(() => {
+            cy.getByTestId(viewProposalButton).click();
+          });
+      });
+      getProposalInformationFromTable('ID').invoke('text').as('parentMarketId');
     });
 
     beforeEach('visit proposals tab', function () {
@@ -296,9 +309,6 @@ describe(
     });
 
     it('Able to see successor market details with new and updated values', function () {
-      cy.createMarket();
-      cy.reload();
-      waitForSpinner();
       cy.getByTestId('closed-proposals').within(() => {
         cy.contains('Add Lorem Ipsum market')
           .parentsUntil(proposalListItem)
@@ -307,14 +317,9 @@ describe(
             cy.getByTestId(viewProposalButton).click();
           });
       });
-      getProposalInformationFromTable('ID')
-        .invoke('text')
-        .as('parentMarketId')
-        .then(() => {
-          cy.VegaWalletSubmitProposal(
-            createSuccessorMarketProposalTxBody(this.parentMarketId)
-          );
-        });
+      cy.VegaWalletSubmitProposal(
+        createSuccessorMarketProposalTxBody(this.parentMarketId)
+      );
       navigateTo(navigation.proposals);
       cy.reload();
       getProposalFromTitle('Test successor market proposal details').within(
@@ -372,19 +377,147 @@ describe(
       });
 
       // 3003-PMAN-011
-      cy.get('.underline').contains('Parent Market ID').realHover();
+      cy.contains('Parent Market ID').realHover();
       cy.getByTestId('tooltip-content', { timeout: 8000 }).should(
         'contain.text',
         'The ID of the market this market succeeds.'
       );
-      cy.get('.underline')
-        .contains('Insurance Pool Fraction')
-        .realMouseUp()
-        .realHover();
+      cy.contains('Insurance Pool Fraction').realMouseUp().realHover();
       cy.getByTestId('tooltip-content', { timeout: 8000 }).should(
         'contain.text',
         'The fraction of the insurance pool balance that is carried over from the parent market to the successor.'
       );
+    });
+
+    it('Able to see perpetual market', function () {
+      const proposalPath =
+        'src/fixtures/proposals/new-market-perpetual-raw.json';
+      const enactmentTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+      const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
+      submitUniqueRawProposal({
+        proposalBody: proposalPath,
+        enactmentTimestamp: enactmentTimestamp,
+        closingTimestamp: closingTimestamp,
+      });
+      getProposalFromTitle('perpetual market proposal').within(() => {
+        cy.getByTestId(marketProposalType).should(
+          'have.text',
+          'New market - perpetual'
+        );
+        cy.getByTestId(viewProposalButton).click();
+      });
+      cy.getByTestId(marketDataToggle).click();
+      getProposalDetailsValue('Product Type').should(
+        'contain.text',
+        'Perpetual'
+      );
+      cy.getByTestId(marketProposalType).should(
+        'have.text',
+        'New market - perpetual'
+      );
+      // Liquidity SLA protocols
+      getProposalDetailsValue('Performance Hysteresis Epochs').should(
+        'contain.text',
+        '1'
+      );
+      getProposalDetailsValue('SLA Competition Factor').should(
+        'contain.text',
+        '95.00%'
+      );
+      getProposalDetailsValue('Epoch Length').should('contain.text', '5s');
+      getProposalDetailsValue('Non Performance Bond Penalty Max').should(
+        'contain.text',
+        '0.05'
+      );
+      getProposalDetailsValue('Stake To CCY Volume').should(
+        'contain.text',
+        '0.3'
+      );
+      getProposalDetailsValue(
+        'Minimum Probability Of Trading LP Orders'
+      ).should('contain.text', '1e-8');
+    });
+
+    it('Able to see suspended market proposal', function () {
+      const proposalPath = 'src/fixtures/proposals/suspend-market-raw.json';
+      const enactmentTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+      const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
+      submitUniqueRawProposal({
+        proposalBody: proposalPath,
+        updateMarketId: this.parentMarketId,
+        enactmentTimestamp: enactmentTimestamp,
+        closingTimestamp: closingTimestamp,
+      });
+      getProposalFromTitle('Market suspended test').within(() => {
+        cy.getByTestId(marketProposalType).should(
+          'have.text',
+          'Suspend market'
+        );
+        cy.getByTestId(viewProposalButton).click();
+      });
+      cy.getByTestId(marketProposalType).should('have.text', 'Suspend market');
+      cy.getByTestId(marketDataToggle).click();
+      cy.getByTestId('proposal-update-market-state').within(() => {
+        getProposalInformationFromTable('Market ID')
+          .invoke('text')
+          .and('eq', this.parentMarketId);
+      });
+    });
+
+    it('Able to see resume market proposal', function () {
+      const proposalPath = 'src/fixtures/proposals/resume-market-raw.json';
+      const enactmentTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+      const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
+      submitUniqueRawProposal({
+        proposalBody: proposalPath,
+        updateMarketId: this.parentMarketId,
+        enactmentTimestamp: enactmentTimestamp,
+        closingTimestamp: closingTimestamp,
+      });
+      getProposalFromTitle('Market resume test').within(() => {
+        cy.getByTestId(marketProposalType).should('have.text', 'Resume market');
+        cy.getByTestId(viewProposalButton).click();
+      });
+      cy.getByTestId(marketProposalType).should('have.text', 'Resume market');
+      cy.getByTestId(marketDataToggle).click();
+      cy.getByTestId('proposal-update-market-state').within(() => {
+        getProposalInformationFromTable('Market ID')
+          .invoke('text')
+          .and('eq', this.parentMarketId);
+      });
+    });
+
+    it('Able to see terminate market proposal', function () {
+      const proposalPath = 'src/fixtures/proposals/terminate-market-raw.json';
+      const enactmentTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+      const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
+      submitUniqueRawProposal({
+        proposalBody: proposalPath,
+        updateMarketId: this.parentMarketId,
+        enactmentTimestamp: enactmentTimestamp,
+        closingTimestamp: closingTimestamp,
+      });
+      getProposalFromTitle('Market terminate test').within(() => {
+        cy.getByTestId(marketProposalType).should(
+          'have.text',
+          'Terminate market'
+        );
+        cy.getByTestId(viewProposalButton).click();
+      });
+      cy.getByTestId(marketProposalType).should(
+        'have.text',
+        'Terminate market'
+      );
+      cy.getByTestId(marketDataToggle).click();
+      cy.getByTestId('proposal-update-market-state').within(() => {
+        getProposalInformationFromTable('Market ID')
+          .invoke('text')
+          .and('eq', this.parentMarketId);
+        getProposalDetailsValue('Termination Price').should(
+          'contain.text',
+          '0.001 fUSDC'
+        );
+      });
     });
   }
 );

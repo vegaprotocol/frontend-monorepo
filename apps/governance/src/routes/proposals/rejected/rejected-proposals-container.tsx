@@ -6,11 +6,11 @@ import { SplashLoader } from '../../../components/splash-loader';
 import { RejectedProposalsList } from '../components/proposals-list';
 import type { ProposalFieldsFragment } from '../proposals/__generated__/Proposals';
 import { useProposalsQuery } from '../proposals/__generated__/Proposals';
-import type { NodeConnection, NodeEdge } from '@vegaprotocol/utils';
-import { getNodes } from '@vegaprotocol/utils';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
 import { ProposalState } from '@vegaprotocol/types';
+import { FLAGS } from '@vegaprotocol/environment';
 
 const orderByDate = (arr: ProposalFieldsFragment[]) =>
   orderBy(
@@ -22,13 +22,11 @@ const orderByDate = (arr: ProposalFieldsFragment[]) =>
     ['desc', 'desc']
   );
 
-export function getRejectedProposals<T extends ProposalFieldsFragment>(
-  data?: NodeConnection<NodeEdge<ProposalFieldsFragment>> | null
-): T[] {
+export function getRejectedProposals(data?: ProposalFieldsFragment[] | null) {
   return flow([
     (data) =>
-      getNodes<ProposalFieldsFragment>(data, (p) =>
-        p ? p?.state === ProposalState.STATE_REJECTED : false
+      data.filter(
+        (p: ProposalFieldsFragment) => p?.state === ProposalState.STATE_REJECTED
       ),
     orderByDate,
   ])(data);
@@ -36,11 +34,21 @@ export function getRejectedProposals<T extends ProposalFieldsFragment>(
 
 export const RejectedProposalsContainer = () => {
   const { t } = useTranslation();
-  const { data, loading, error } = useProposalsQuery();
+  const { data, loading, error } = useProposalsQuery({
+    pollInterval: 5000,
+    fetchPolicy: 'network-only',
+    errorPolicy: 'ignore',
+    variables: {
+      includeNewMarketProductFields: !!FLAGS.PRODUCT_PERPETUALS,
+      includeUpdateMarketStates: !!FLAGS.UPDATE_MARKET_STATE,
+    },
+  });
 
   const proposals = useMemo(
     () =>
-      getRejectedProposals<ProposalFieldsFragment>(data?.proposalsConnection),
+      getRejectedProposals(
+        removePaginationWrapper(data?.proposalsConnection?.edges)
+      ),
     [data]
   );
 

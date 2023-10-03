@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { PositionsTable } from './positions-table';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
@@ -9,7 +10,7 @@ import {
   positionsMarketsProvider,
 } from './positions-data-providers';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { MAXGOINT64 } from '@vegaprotocol/utils';
 
 interface PositionsManagerProps {
   partyIds: string[];
@@ -46,7 +47,7 @@ export const PositionsManager = ({
               side: openVolume.startsWith('-')
                 ? Schema.Side.SIDE_BUY
                 : Schema.Side.SIDE_SELL,
-              size: openVolume.replace('-', ''),
+              size: MAXGOINT64, // improvement for avoiding leftovers filled in the meantime when close request has been sent
               reduceOnly: true,
             },
           ],

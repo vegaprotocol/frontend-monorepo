@@ -10,21 +10,21 @@ import { UserVote } from '../vote-details';
 import { ListAsset } from '../list-asset';
 import Routes from '../../../routes';
 import { ProposalMarketData } from '../proposal-market-data';
-import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { MarketInfo } from '@vegaprotocol/markets';
 import type { AssetQuery } from '@vegaprotocol/assets';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
 import { ProposalMarketChanges } from '../proposal-market-changes';
+import { ProposalUpdateMarketState } from '../proposal-update-market-state';
 import type { NetworkParamsResult } from '@vegaprotocol/network-parameters';
 import { useVoteSubmit } from '@vegaprotocol/proposals';
 import { useUserVote } from '../vote-details/use-user-vote';
 
 export interface ProposalProps {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal: ProposalQuery['proposal'];
   networkParams: Partial<NetworkParamsResult>;
-  newMarketData?: MarketInfo | null;
+  marketData?: MarketInfo | null;
   parentMarketData?: MarketInfo | null;
   assetData?: AssetQuery | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,7 +39,7 @@ export const Proposal = ({
   proposal,
   networkParams,
   restData,
-  newMarketData,
+  marketData,
   parentMarketData,
   assetData,
   originalMarketProposalRestData,
@@ -74,13 +74,14 @@ export const Proposal = ({
 
   if (networkParams) {
     switch (proposal.terms.change.__typename) {
+      case 'UpdateMarket':
+      case 'UpdateMarketState':
+        minVoterBalance =
+          networkParams.governance_proposal_updateMarket_minVoterBalance;
+        break;
       case 'NewMarket':
         minVoterBalance =
           networkParams.governance_proposal_market_minVoterBalance;
-        break;
-      case 'UpdateMarket':
-        minVoterBalance =
-          networkParams.governance_proposal_updateMarket_minVoterBalance;
         break;
       case 'NewAsset':
         minVoterBalance =
@@ -145,12 +146,18 @@ export const Proposal = ({
         <ProposalDescription description={proposal.rationale.description} />
       </div>
 
-      {newMarketData && (
+      {marketData && (
         <div className="mb-4">
           <ProposalMarketData
-            marketData={newMarketData}
+            marketData={marketData}
             parentMarketData={parentMarketData ? parentMarketData : undefined}
           />
+        </div>
+      )}
+
+      {proposal.terms.change.__typename === 'UpdateMarketState' && (
+        <div className="mb-4">
+          <ProposalUpdateMarketState proposal={proposal} />
         </div>
       )}
 
