@@ -46,7 +46,7 @@ export function stakingValidatorPageAddStake(stake: string) {
 
 export function stakingValidatorPageRemoveStake(stake: string) {
   cy.highlight(`Removing a stake of ${stake}`);
-  cy.get(removeStakeRadioButton, epochTimeout).click();
+  cy.get(removeStakeRadioButton, epochTimeout).click({ force: true });
   cy.get(tokenAmountInputBox).type(stake);
   waitForBeginningOfEpoch();
   cy.get(tokenSubmitButton)
@@ -70,9 +70,13 @@ export function stakingPageAssociateTokens(
   cy.highlight(`Associating ${amount} tokens from ${type}`);
   cy.get(ethWalletAssociateButton).first().click();
   if (type === 'wallet') {
-    cy.get(associateWalletRadioButton, { timeout: 30000 }).click();
+    cy.get(associateWalletRadioButton, { timeout: 30000 }).click({
+      force: true,
+    });
   } else if (type === 'contract') {
-    cy.get(associateContractRadioButton, { timeout: 30000 }).click();
+    cy.get(associateContractRadioButton, { timeout: 30000 }).click({
+      force: true,
+    });
   } else {
     cy.highlight(`${type} is not association option`);
   }
