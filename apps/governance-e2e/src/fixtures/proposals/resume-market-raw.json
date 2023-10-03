@@ -1,0 +1,16 @@
+{
+  "rationale": {
+    "title": "Market resume test",
+    "description": "E2E test for market resume proposal"
+  },
+  "terms": {
+    "updateMarketState": {
+      "changes": {
+        "marketId": "b33bb4157e12355db22e41f277ddd0c10104dec29a4d6960bbcb96d186c40cbd",
+        "updateType": "MARKET_STATE_UPDATE_TYPE_RESUME"
+      }
+    },
+    "closingTimestamp": 0,
+    "enactmentTimestamp": 0
+  }
+}

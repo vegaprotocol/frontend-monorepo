@@ -114,6 +114,20 @@ export const TradingModeTooltip = ({
         </section>
       );
     }
+    case Schema.MarketTradingMode.TRADING_MODE_SUSPENDED_VIA_GOVERNANCE: {
+      return (
+        <section data-testid="trading-mode-suspended-via-governance">
+          {t(
+            `This market has been suspended via a governance vote and can be resumed or terminated by further votes.`
+          )}
+          {DocsLinks && (
+            <ExternalLink href={DocsLinks.MARKET_LIFECYCLE} className="ml-1">
+              {t('Find out more')}
+            </ExternalLink>
+          )}
+        </section>
+      );
+    }
     case Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION: {
       switch (trigger) {
         case Schema.AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET: {

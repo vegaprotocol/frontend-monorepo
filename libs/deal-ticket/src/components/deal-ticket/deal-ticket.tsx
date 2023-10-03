@@ -264,7 +264,11 @@ export const DealTicket = ({
     orders,
     collateralAvailable:
       marginAccountBalance || generalAccountBalance ? balance : undefined,
-    skip: !normalizedOrder,
+    skip:
+      !normalizedOrder ||
+      (normalizedOrder.type !== Schema.OrderType.TYPE_MARKET &&
+        (!normalizedOrder.price || normalizedOrder.price === '0')) ||
+      normalizedOrder.size === '0',
   });
 
   const assetSymbol = getAsset(market).symbol;

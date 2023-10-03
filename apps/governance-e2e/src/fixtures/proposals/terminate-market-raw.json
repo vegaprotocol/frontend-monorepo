@@ -1,0 +1,17 @@
+{
+  "rationale": {
+    "title": "Market terminate test",
+    "description": "E2E test for market terminate proposal"
+  },
+  "terms": {
+    "updateMarketState": {
+      "changes": {
+        "marketId": "",
+        "updateType": "MARKET_STATE_UPDATE_TYPE_TERMINATE",
+        "price": "100"
+      }
+    },
+    "closingTimestamp": 0,
+    "enactmentTimestamp": 0
+  }
+}
