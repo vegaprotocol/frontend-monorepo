@@ -187,11 +187,11 @@ jobs:
       - name: Check branch
         id: check-test
         run: |
-          if [ '${{ github.base_ref }}' == 'develop' ]; then
+          if [[ "${{ github.base_ref }}" == "develop" ]]; then
             echo "e2e-needed=true" >> $GITHUB_OUTPUT
-          elif [ '${{ github.base_ref }}' == 'main' ]; then 
+          elif [[ "${{ github.base_ref }}" == "main" ]]; then 
             echo "e2e-needed=true" >> $GITHUB_OUTPUT
-          elif [[ '${{ github.event_name }}' == 'push'  &&  ${{ contains(github.ref_name, 'release/') }} ]]; then
+          elif [[ "${{ github.event_name }}" == "push"  &&  "${{ github.ref_name }} == *"release/"* ]]; then
             echo "e2e-needed=true" >> $GITHUB_OUTPUT
           else
             echo "e2e-needed=false" >> $GITHUB_OUTPUT
