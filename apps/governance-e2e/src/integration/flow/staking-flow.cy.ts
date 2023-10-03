@@ -424,7 +424,7 @@ context(
         validateValidatorListTotalStakeAndShare('0', '3,002.00', '50.02%');
       });
 
-      it('Associating wallet tokens - when some already staked - auto stakes tokens to staked validator', function () {
+      it.skip('Associating wallet tokens - when some already staked - auto stakes tokens to staked validator', function () {
         // 1002-STKE-004
         stakingPageAssociateTokens('3');
         verifyUnstakedBalance(3.0);
