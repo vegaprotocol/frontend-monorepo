@@ -131,7 +131,12 @@ const Error = ({
   );
 
   if (error) {
-    if (error.message === InjectedConnectorErrors.INVALID_CHAIN.message) {
+    if (error.message === InjectedConnectorErrors.USER_REJECTED.message) {
+      title = t('User rejected');
+      text = t('The user rejected the wallet connection');
+    } else if (
+      error.message === InjectedConnectorErrors.INVALID_CHAIN.message
+    ) {
       title = t('Wrong network');
       text = t(
         'To complete your wallet connection, set your wallet network in your app to "%s".',
