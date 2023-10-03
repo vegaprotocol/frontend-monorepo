@@ -77,11 +77,10 @@ export const MarketPage = ({ closed }: { closed?: boolean }) => {
 
   useEffect(() => {
     if (largeScreen && view === undefined) {
-      if (closed) {
-        setViews({ type: ViewType.Info }, currentRouteId);
-      } else {
-        setViews({ type: ViewType.Order }, currentRouteId);
-      }
+      setViews(
+        { type: closed ? ViewType.Info : ViewType.Order },
+        currentRouteId
+      );
     }
   }, [setViews, view, currentRouteId, largeScreen, closed]);
 
