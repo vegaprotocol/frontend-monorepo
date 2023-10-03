@@ -1,7 +1,7 @@
 import * as Types from '@vegaprotocol/types';
 
 import { gql } from '@apollo/client';
-import { NewTransferFieldsFragmentDoc, CancelTransferFieldsFragmentDoc, UpdateNetworkParameterFieldsFragmentDoc } from '../../proposals-data-provider/__generated__/Proposals';
+import { UpdateNetworkParameterFieldsFragmentDoc, NewTransferFieldsFragmentDoc, CancelTransferFieldsFragmentDoc } from '../../proposals-data-provider/__generated__/Proposals';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type ProposalEventFieldsFragment = { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null };
@@ -46,14 +46,14 @@ export type NewTransferDetailsQueryVariables = Types.Exact<{
 }>;
 
 
-export type NewTransferDetailsQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'NewTransfer', source: string, sourceType: Types.AccountType, destination: string, destinationType: Types.AccountType, fraction_of_balance: string, amount: string, transferType: Types.GovernanceTransferType, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string }, kind: { __typename: 'OneOffGovernanceTransfer', deliverOn?: any | null } | { __typename: 'RecurringGovernanceTransfer', startEpoch: number, endEpoch?: number | null } } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter' } } } | null };
+export type NewTransferDetailsQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer', source: string, sourceType: Types.AccountType, destination: string, destinationType: Types.AccountType, fraction_of_balance: string, amount: string, transferType: Types.GovernanceTransferType, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string }, kind: { __typename: 'OneOffGovernanceTransfer', deliverOn?: any | null } | { __typename: 'RecurringGovernanceTransfer', startEpoch: number, endEpoch?: number | null } } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } } | null };
 
 export type CancelTransferDetailsQueryVariables = Types.Exact<{
   proposalId: Types.Scalars['ID'];
 }>;
 
 
-export type CancelTransferDetailsQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer', transferId: string } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateNetworkParameter' } } } | null };
+export type CancelTransferDetailsQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer', transferId: string } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } } | null };
 
 export const ProposalEventFieldsFragmentDoc = gql`
     fragment ProposalEventFields on Proposal {

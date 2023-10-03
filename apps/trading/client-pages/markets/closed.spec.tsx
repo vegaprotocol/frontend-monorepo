@@ -1,4 +1,4 @@
-import { act, render, screen, within } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Closed } from './closed';
 import { MarketStateMapping, PropertyKeyType } from '@vegaprotocol/types';
@@ -300,9 +300,11 @@ describe('Closed', () => {
       ].includes(m.node.state);
     });
 
-    // check rows length is correct
-    const rows = container.getAllByRole('row');
-    expect(rows).toHaveLength(expectedRows.length);
+    await waitFor(() => {
+      // check rows length is correct
+      const rows = container.getAllByRole('row');
+      expect(rows).toHaveLength(expectedRows.length);
+    });
 
     // check that only included ids are shown
     const cells = screen

@@ -96,6 +96,7 @@ export const createMarketFragment = (
                   filters: [
                     {
                       __typename: 'Filter',
+                      conditions: [],
                       key: {
                         __typename: 'PropertyKey',
                         name: 'settlement-data-property',
@@ -129,6 +130,7 @@ export const createMarketFragment = (
                   filters: [
                     {
                       __typename: 'Filter',
+                      conditions: [],
                       key: {
                         __typename: 'PropertyKey',
                         name: 'settlement-data-property',
