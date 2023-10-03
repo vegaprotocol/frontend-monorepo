@@ -25,7 +25,7 @@ export const useClosedMarketClickHandler = (replace = false) => {
   const navigate = useNavigate();
 
   return (selectedId: string, metaKey?: boolean) => {
-    const link = Links.CLOSED_MARKETS(selectedId);
+    const link = Links[Routes.CLOSED_MARKETS](selectedId);
     if (metaKey) {
       window.open(`/#${link}`, '_blank');
     } else {

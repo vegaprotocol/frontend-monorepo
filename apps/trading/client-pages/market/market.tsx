@@ -80,7 +80,7 @@ export const MarketPage = ({ closed }: { closed?: boolean }) => {
       currentRouteId !== Routes.CLOSED_MARKETS &&
       marketId
     ) {
-      navigate(Links.CLOSED_MARKETS(marketId));
+      navigate(Links[Routes.CLOSED_MARKETS](marketId));
     }
   }, [data?.state, currentRouteId, navigate, marketId]);
 
