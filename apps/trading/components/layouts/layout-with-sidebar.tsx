@@ -23,6 +23,10 @@ export const LayoutWithSidebar = () => {
       <div className="col-span-full">
         <Routes>
           <Route path="markets/:marketId" element={<MarketHeader />} />
+          <Route
+            path="markets/all/closed/:marketId"
+            element={<MarketHeader />}
+          />
           <Route path="liquidity/:marketId" element={<LiquidityHeader />} />
         </Routes>
       </div>
