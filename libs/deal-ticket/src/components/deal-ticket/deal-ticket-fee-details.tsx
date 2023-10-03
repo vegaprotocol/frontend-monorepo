@@ -290,7 +290,6 @@ export const DealTicketMarginDetails = ({
                       assetDecimals
                     ) ?? '-'
                   }
-                  noUnderline
                 >
                   <div className="font-mono text-right">
                     {formatValue(

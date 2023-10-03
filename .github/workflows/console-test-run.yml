@@ -6,23 +6,37 @@ on:
       github-sha:
         required: true
         type: string
+  workflow_dispatch:
+    inputs:
+      console-test-branch:
+        type: choice
+        description: 'main: v0.72.14, develop: v0.73.0-preview7'
+        options:
+          - main
+          - develop
 
 jobs:
   run-tests:
     name: run-tests
-    runs-on: console-test
+    runs-on: 8-cores
     timeout-minutes: 20
     steps:
       #----------------------------------------------
       #       check-out frontend-monorepo
       #----------------------------------------------
-      - name: Checkout console test repo
+      - name: Checkout frontend-monorepo
         uses: actions/checkout@v3
         with:
-          ref: ${{ inputs.github-sha }}
+          ref: ${{ inputs.github-sha || github.sha }}
       #----------------------------------------------
       #       cache node modules
       #----------------------------------------------
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: yarn
+
       - name: Cache node modules
         id: cache
         uses: actions/cache@v3
@@ -65,32 +79,42 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: vegaprotocol/console-test
+          ref: ${{ inputs.console-test-branch }}
           path: './console-test'
+
+      - name: Load console test envs
+        id: console-test-env
+        uses: falti/dotenv-action@v1.0.4
+        with:
+          path: './console-test/.env.${{ inputs.console-test-branch }}'
+          export-variables: true
+          keys-case: upper
+          log-variables: true
+
       #----------------------------------------------
       # install dependencies if cache does not exist
       #----------------------------------------------
       - name: Install dependencies
         working-directory: ./console-test
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
       #----------------------------------------------
       # install vega binaries
       #----------------------------------------------
       - name: Install vega binaries
         working-directory: ./console-test
-        run: poetry run python -m vega_sim.tools.load_binaries --force
+        run: poetry run python -m vega_sim.tools.load_binaries --force --version ${{ env.VEGA_VERSION }}
       #----------------------------------------------
       # install playwright
       #----------------------------------------------
       - name: install playwright
-        run: poetry run playwright install
+        run: poetry run playwright install --with-deps chromium
         working-directory: ./console-test
       #----------------------------------------------
       # run tests
       #----------------------------------------------
       - name: Run tests
         working-directory: ./console-test
-        run: poetry run pytest -v -s --numprocesses 2 --dist loadfile --durations=20
+        run: poetry run pytest -v -s --numprocesses 4 --dist loadfile --durations=15
       - name: Check files
         run: |
           ls -al .
@@ -104,4 +128,14 @@ jobs:
         with:
           name: playwright-trace
           path: ./traces/
+          retention-days: 15
+      #----------------------------------------------
+      #  -----  upload logs  -----
+      #----------------------------------------------
+      - name: Upload worker logs
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: worker-logs
+          path: ./logs/
           retention-days: 15
