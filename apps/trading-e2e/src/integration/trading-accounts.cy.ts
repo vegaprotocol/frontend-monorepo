@@ -12,6 +12,7 @@ describe('accounts', { tags: '@smoke' }, () => {
   });
 
   it('should open usage breakdown dialog when clicked on used', () => {
+    cy.getByTestId('Collateral').click();
     // 7001-COLL-009
     cy.get('[col-id="used"]').contains('1.01').click();
     const headers = ['Market', 'Account type', 'Balance', 'Margin health'];
