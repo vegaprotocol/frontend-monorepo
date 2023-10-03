@@ -1,4 +1,9 @@
-import type { ConditionOperator, PeggedReference } from './__generated__/types';
+import type {
+  ConditionOperator,
+  GovernanceTransferKind,
+  GovernanceTransferType,
+  PeggedReference,
+} from './__generated__/types';
 import type { AccountType } from './__generated__/types';
 import type {
   AuctionTrigger,
@@ -517,6 +522,34 @@ export const DescriptionTransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_SLA_PERFORMANCE_BONUS_DISTRIBUTE:
     'SLA performance bonus distributed',
   TRANSFER_TYPE_SUCCESSOR_INSURANCE_FRACTION: 'Successor insurance fraction',
+};
+
+/**
+ * Governance transfers
+ */
+type GovernanceTransferTypeMap = {
+  [T in GovernanceTransferType]: string;
+};
+export const GovernanceTransferTypeMapping: GovernanceTransferTypeMap = {
+  GOVERNANCE_TRANSFER_TYPE_ALL_OR_NOTHING: 'All or nothing',
+  GOVERNANCE_TRANSFER_TYPE_BEST_EFFORT: 'Best effort',
+  GOVERNANCE_TRANSFER_TYPE_UNSPECIFIED: 'Unspecified',
+};
+export const DescriptionGovernanceTransferTypeMapping: GovernanceTransferTypeMap =
+  {
+    GOVERNANCE_TRANSFER_TYPE_ALL_OR_NOTHING:
+      'Transfers the specified amount or does not transfer anything',
+    GOVERNANCE_TRANSFER_TYPE_BEST_EFFORT:
+      'Transfers the specified amount or the max allowable amount if this is less than the specified amount',
+    GOVERNANCE_TRANSFER_TYPE_UNSPECIFIED: 'Default value, always invalid',
+  };
+
+type GovernanceTransferKindMap = {
+  [T in NonNullable<GovernanceTransferKind['__typename']>]: string;
+};
+export const GovernanceTransferKindMapping: GovernanceTransferKindMap = {
+  OneOffGovernanceTransfer: 'One off',
+  RecurringGovernanceTransfer: 'Recurring',
 };
 
 type DispatchMetricLabel = {

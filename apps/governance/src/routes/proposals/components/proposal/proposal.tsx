@@ -20,6 +20,11 @@ import { ProposalUpdateMarketState } from '../proposal-update-market-state';
 import type { NetworkParamsResult } from '@vegaprotocol/network-parameters';
 import { useVoteSubmit } from '@vegaprotocol/proposals';
 import { useUserVote } from '../vote-details/use-user-vote';
+import {
+  ProposalCancelTransferDetails,
+  ProposalTransferDetails,
+} from '../proposal-transfer';
+import { FLAGS } from '@vegaprotocol/environment';
 
 export interface ProposalProps {
   proposal: ProposalQuery['proposal'];
@@ -99,8 +104,36 @@ export const Proposal = ({
         minVoterBalance =
           networkParams.governance_proposal_freeform_minVoterBalance;
         break;
+      case 'NewTransfer':
+        // TODO: check minVoterBalance for 'NewTransfer'
+        minVoterBalance =
+          networkParams.governance_proposal_freeform_minVoterBalance;
+        break;
+      case 'CancelTransfer':
+        // TODO: check minVoterBalance for 'CancelTransfer'
+        minVoterBalance =
+          networkParams.governance_proposal_freeform_minVoterBalance;
     }
   }
+
+  // Show governance transfer details only if the GOVERNANCE_TRANSFERS flag is on.
+  const governanceTransferDetails = FLAGS.GOVERNANCE_TRANSFERS && (
+    <>
+      {proposal.terms.change.__typename === 'NewTransfer' && (
+        /** Governance New Transfer Details */
+        <div className="mb-4">
+          <ProposalTransferDetails proposal={proposal} />
+        </div>
+      )}
+
+      {proposal.terms.change.__typename === 'CancelTransfer' && (
+        /** Governance Cancel Transfer Details */
+        <div className="mb-4">
+          <ProposalCancelTransferDetails proposal={proposal} />
+        </div>
+      )}
+    </>
+  );
 
   return (
     <section data-testid="proposal">
@@ -186,6 +219,8 @@ export const Proposal = ({
             <ProposalAssetDetails asset={asset} />
           </div>
         )}
+
+      {governanceTransferDetails}
 
       <div className="mb-10">
         <RoundedWrapper paddingBottom={true}>
