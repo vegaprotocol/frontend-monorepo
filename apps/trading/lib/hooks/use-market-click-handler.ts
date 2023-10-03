@@ -20,3 +20,16 @@ export const useMarketLiquidityClickHandler = () => {
     window.open(`/#/liquidity/${selectedId}`, metaKey ? '_blank' : '_self');
   }, []);
 };
+
+export const useClosedMarketClickHandler = (replace = false) => {
+  const navigate = useNavigate();
+
+  return (selectedId: string, metaKey?: boolean) => {
+    const link = Links.CLOSED_MARKETS(selectedId);
+    if (metaKey) {
+      window.open(`/#${link}`, '_blank');
+    } else {
+      navigate(link, { replace });
+    }
+  };
+};

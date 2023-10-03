@@ -24,6 +24,7 @@ export const LayoutWithSidebar = () => {
       <div className="col-span-full">
         <Routes>
           <Route path={AppRoutes.MARKET} element={<MarketHeader />} />
+          <Route path={AppRoutes.CLOSED_MARKETS} element={<MarketHeader />} />
           <Route path={AppRoutes.LIQUIDITY} element={<LiquidityHeader />} />
         </Routes>
       </div>

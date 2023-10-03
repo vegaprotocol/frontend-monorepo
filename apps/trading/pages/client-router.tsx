@@ -23,6 +23,10 @@ const LazyMarket = dynamic(() => import('../client-pages/market'), {
   ssr: false,
 });
 
+const ClosedMarket = dynamic(() => import('../client-pages/closed-market'), {
+  ssr: false,
+});
+
 const LazyPortfolio = dynamic(() => import('../client-pages/portfolio'), {
   ssr: false,
 });
@@ -39,6 +43,7 @@ export enum Routes {
   HOME = '/',
   MARKET = '/markets/:marketId',
   MARKETS = '/markets/all',
+  CLOSED_MARKETS = '/markets/all/closed/:marketId',
   PORTFOLIO = '/portfolio',
   LIQUIDITY = '/liquidity/:marketId',
   DISCLAIMER = '/disclaimer',
@@ -52,6 +57,8 @@ export const Links: ConsoleLinks = {
   [Routes.MARKET]: (marketId: string) =>
     trimEnd(Routes.MARKET.replace(':marketId', marketId)),
   [Routes.MARKETS]: () => Routes.MARKETS,
+  [Routes.CLOSED_MARKETS]: (marketId: string) =>
+    trimEnd(Routes.CLOSED_MARKETS.replace(':marketId', marketId)),
   [Routes.PORTFOLIO]: () => Routes.PORTFOLIO,
   [Routes.LIQUIDITY]: (marketId: string) =>
     trimEnd(Routes.LIQUIDITY.replace(':marketId', marketId)),
@@ -83,6 +90,11 @@ export const routerConfig: RouteObject[] = [
             path: ':marketId',
             element: <LazyMarket />,
             id: Routes.MARKET,
+          },
+          {
+            path: 'all/closed/:marketId',
+            element: <ClosedMarket />,
+            id: Routes.CLOSED_MARKETS,
           },
         ],
       },

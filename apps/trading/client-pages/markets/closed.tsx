@@ -24,6 +24,8 @@ import { SettlementPriceCell } from './settlement-price-cell';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { MarketActionsDropdown } from './market-table-actions';
 import { MarketCodeCell } from './market-code-cell';
+import type { CellClickedEvent } from 'ag-grid-community';
+import { useClosedMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
 type SettlementAsset =
   MarketMaybeWithData['tradableInstrument']['instrument']['product']['settlementAsset'];
@@ -112,6 +114,7 @@ const ClosedMarketsDataGrid = ({
   rowData: Row[];
   error: Error | undefined;
 }) => {
+  const handleOnSelect = useClosedMarketClickHandler();
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
 
   const colDefs = useMemo(() => {
@@ -268,6 +271,27 @@ const ClosedMarketsDataGrid = ({
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
       components={components}
       rowHeight={45}
+      onCellClicked={({ data, column, event }: CellClickedEvent<Row>) => {
+        if (!data) return;
+
+        // prevent navigating to the market page if any of the below cells are clicked
+        // event.preventDefault or event.stopPropagation dont seem to apply for aggird
+        const colId = column.getColId();
+
+        if (
+          [
+            'settlementDate',
+            'settlementDataOracleId',
+            'settlementAsset',
+            'market-actions',
+          ].includes(colId)
+        ) {
+          return;
+        }
+
+        // @ts-ignore metaKey exists
+        handleOnSelect(data.id, event ? event.metaKey : false);
+      }}
     />
   );
 };
