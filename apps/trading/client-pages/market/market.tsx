@@ -12,6 +12,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Links, Routes } from '../../pages/client-router';
 import { ViewType, useSidebar } from '../../components/sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
+import { MarketState } from '@vegaprotocol/types';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -68,6 +69,20 @@ export const MarketPage = ({ closed }: { closed?: boolean }) => {
   const lastMarketId = useGlobalStore((store) => store.marketId);
 
   const { data, error, loading } = useMarket(marketId);
+
+  useEffect(() => {
+    if (
+      data?.state &&
+      [
+        MarketState.STATE_SETTLED,
+        MarketState.STATE_TRADING_TERMINATED,
+      ].includes(data.state) &&
+      currentRouteId !== Routes.CLOSED_MARKETS &&
+      marketId
+    ) {
+      navigate(Links.CLOSED_MARKETS(marketId));
+    }
+  }, [data?.state, currentRouteId, navigate, marketId]);
 
   useEffect(() => {
     if (data?.id && data.id !== lastMarketId && !closed) {
