@@ -191,7 +191,7 @@ jobs:
             echo "e2e-needed=true" >> $GITHUB_OUTPUT
           elif [[ "${{ github.base_ref }}" == "main" ]]; then 
             echo "e2e-needed=true" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event_name }}" == "push"  &&  "${{ github.ref_name }} == *"release/"* ]]; then
+          elif [[ "${{ github.event_name }}" == "push"  &&  "${{ github.ref_name }}" == *"release/"* ]]; then
             echo "e2e-needed=true" >> $GITHUB_OUTPUT
           else
             echo "e2e-needed=false" >> $GITHUB_OUTPUT
