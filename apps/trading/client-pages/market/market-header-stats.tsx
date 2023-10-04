@@ -43,8 +43,6 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
   return (
     <div className="flex gap-8">
       <HeaderStat heading={t('Mark Price')} testId="market-price">
-        market.decimalPlaces: {market.decimalPlaces}
-        <br />
         <MarketMarkPrice
           marketId={market.id}
           decimalPlaces={market.decimalPlaces}
@@ -117,7 +115,6 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
         'Perpetual' && (
         <HeaderStat heading={`${t('Index Price')}`} testId="index-price">
           <div className="flex justify-between gap-2">
-            market.decimalPlaces: {market.decimalPlaces}
             <IndexPrice
               marketId={market.id}
               decimalPlaces={market.decimalPlaces}
