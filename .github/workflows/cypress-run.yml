@@ -21,11 +21,11 @@ jobs:
       - name: Check branch
         id: step
         run: |
-          if [ ${{ github.base_ref }} == 'main' ]; then
+          if [[ "${{ github.base_ref }}" == "main" ]]; then
             echo "runner=mainnet-compatible-runner" >> $GITHUB_OUTPUT
-          elif [ ${{ github.base_ref }} == 'develop' ] && [ ${{ github.ref_name }} == 'main' ]; then
+          elif [[ "${{ github.base_ref }}" == "develop" && "${{ github.ref_name }}" == "main" ]]; then
             echo "runner=mainnet-compatible-runner" >> $GITHUB_OUTPUT
-          elif [ ${{ github.event_name }} == 'push' ] && [ ${{ contains(github.ref_name, 'release/mainnet') }} ]; then
+          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref_name }}" == *"release/mainnet"* ]]; then
             echo "runner=mainnet-compatible-runner" >> $GITHUB_OUTPUT
           else
             echo "runner=self-hosted-runner" >> $GITHUB_OUTPUT
@@ -85,6 +85,7 @@ jobs:
       - name: Run Vegacapsule network and Vega wallet
         id: setup-vega
         uses: ./frontend-monorepo/.github/actions/run-vegacapsule
+        timeout-minutes: 10
 
       ######
       ## Run some tests

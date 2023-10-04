@@ -136,7 +136,7 @@ const MainGrid = memo(
                 </Tab>
               ) : null}
               <Tab id="fills" name={t('Fills')}>
-                <TradingViews.fills.component marketId={marketId} />
+                <TradingViews.fills.component />
               </Tab>
               <Tab
                 id="accounts"

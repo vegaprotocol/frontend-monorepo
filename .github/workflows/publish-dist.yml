@@ -63,7 +63,7 @@ jobs:
           echo IS_IPFS_RELEASE=true >> $GITHUB_ENV
 
       - name: Is S3 Release
-        if: ${{ env.IS_IPFS_RELEASE == 'false' && github.event_name == 'push' }}
+        if: ${{ env.IS_IPFS_RELEASE == 'false' && github.event_name == 'push' && github.ref_name != 'main'}}
         run: |
           echo IS_S3_RELEASE=true >> $GITHUB_ENV
 
@@ -195,7 +195,7 @@ jobs:
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             vegaprotocol/${{ matrix.app }}:${{ github.sha }}
-            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || env.IS_DEV_IMAGE == 'true' && 'develop' || env.IS_MAIN_IMAGE == 'true && main' || '' }}
+            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || env.IS_DEV_IMAGE == 'true' && 'develop' || env.IS_MAIN_IMAGE == 'true' && 'main' || '' }}
 
       - name: Publish dist as docker image (ghcr - retry)
         uses: docker/build-push-action@v3
@@ -222,7 +222,7 @@ jobs:
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             vegaprotocol/${{ matrix.app }}:${{ github.sha }}
-            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || env.IS_DEV_IMAGE == 'true' && 'develop' || env.IS_MAIN_IMAGE == 'true && main' || '' }}
+            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || env.IS_DEV_IMAGE == 'true' && 'develop' || env.IS_MAIN_IMAGE == 'true' && 'main' || '' }}
 
       # bucket creation in github.com/vegaprotocol/terraform//frontend
       - name: Publish dist to s3
