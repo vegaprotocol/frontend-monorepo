@@ -148,11 +148,13 @@ export const IndexPrice = ({
   decimalPlaces?: number;
 }) => {
   const { data: externalTwap } = useExternalTwap(marketId);
-  return (
+  return externalTwap && decimalPlaces ? (
     <PriceCell
       value={Number(externalTwap)}
       valueFormatted={addDecimalsFormatNumber(externalTwap, decimalPlaces, 2)}
     />
+  ) : (
+    '-'
   );
 };
 
