@@ -310,7 +310,9 @@ context(
         closeStakingDialog();
         navigateTo(navigation.validators);
         clickOnValidatorFromList(0);
-        cy.getByTestId(stakeRemoveStakeRadioButton, txTimeout).click();
+        cy.getByTestId(stakeRemoveStakeRadioButton, txTimeout).click({
+          force: true,
+        });
         cy.getByTestId(stakeTokenAmountInputBox).type('-0.1');
         cy.contains('Waiting for next epoch to start', epochTimeout);
         cy.getByTestId(stakeTokenSubmitButton)
@@ -331,7 +333,7 @@ context(
         closeStakingDialog();
         navigateTo(navigation.validators);
         clickOnValidatorFromList(0);
-        cy.getByTestId(stakeRemoveStakeRadioButton).click();
+        cy.getByTestId(stakeRemoveStakeRadioButton).click({ force: true });
         cy.getByTestId(stakeTokenAmountInputBox).type('4');
         cy.contains('Waiting for next epoch to start', epochTimeout);
         cy.getByTestId(stakeTokenSubmitButton)

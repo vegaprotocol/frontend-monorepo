@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
+import { labelClasses } from '../checkbox';
 
 export interface TradingRadioGroupProps {
   name?: string;
@@ -59,7 +60,10 @@ interface RadioProps {
 }
 
 export const TradingRadio = ({ id, value, label, disabled }: RadioProps) => {
-  const wrapperClasses = classNames('flex items-center gap-1.5 text-xs');
+  const wrapperClasses = classNames(
+    'flex items-center gap-1.5 text-xs',
+    labelClasses
+  );
   const itemClasses = classNames(
     'flex justify-center items-center',
     'w-3 h-3 rounded-full border',
@@ -74,7 +78,7 @@ export const TradingRadio = ({ id, value, label, disabled }: RadioProps) => {
     'border-vega-clight-700 dark:border-vega-cdark-700'
   );
   return (
-    <div className={wrapperClasses}>
+    <label className={wrapperClasses} htmlFor={id}>
       <RadioGroupPrimitive.Item
         value={value}
         className={itemClasses}
@@ -84,8 +88,7 @@ export const TradingRadio = ({ id, value, label, disabled }: RadioProps) => {
       >
         <RadioGroupPrimitive.Indicator className={indicatorClasses} />
       </RadioGroupPrimitive.Item>
-      <label
-        htmlFor={id}
+      <span
         className={
           disabled
             ? 'text-vega-clight-200 dark:text-vega-cdark-200'
@@ -93,7 +96,7 @@ export const TradingRadio = ({ id, value, label, disabled }: RadioProps) => {
         }
       >
         {label}
-      </label>
-    </div>
+      </span>
+    </label>
   );
 };
