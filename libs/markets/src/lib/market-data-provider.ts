@@ -132,6 +132,23 @@ export const useFundingRate = (marketId?: string, skip?: boolean) =>
     skip: skip || !marketId,
   });
 
+export const externalTwapProvider = makeDerivedDataProvider<
+  string,
+  never,
+  MarketDataQueryVariables
+>([marketDataProvider], (parts) => {
+  return (
+    (parts[0] as ReturnType<typeof getData>)?.productData?.externalTwap || null
+  );
+});
+
+export const useExternalTwap = (marketId?: string, skip?: boolean) =>
+  useDataProvider({
+    dataProvider: externalTwapProvider,
+    variables: { marketId: marketId || '' },
+    skip: skip || !marketId,
+  });
+
 export const useStaticMarketData = (marketId?: string, skip?: boolean) => {
   return useDataProvider({
     dataProvider: staticMarketDataProvider,

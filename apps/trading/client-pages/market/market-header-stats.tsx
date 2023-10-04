@@ -4,6 +4,7 @@ import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
 import { MarketProposalNotification } from '@vegaprotocol/proposals';
 import type { Market } from '@vegaprotocol/markets';
 import {
+  addDecimalsFormatNumber,
   fromNanoSeconds,
   getExpiryDate,
   getMarketExpiryDate,
@@ -17,6 +18,7 @@ import {
   marketInfoProvider,
   useFundingPeriodsQuery,
   useFundingRate,
+  useExternalTwap,
 } from '@vegaprotocol/markets';
 import { MarketState as State } from '@vegaprotocol/types';
 import { HeaderStat } from '../../components/header';
@@ -26,6 +28,7 @@ import { MarketState } from '../../components/market-state';
 import { MarketLiquiditySupplied } from '../../components/liquidity-supplied';
 import { useEffect, useState } from 'react';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { PriceCell } from '@vegaprotocol/datagrid';
 
 interface MarketHeaderStatsProps {
   market: Market;
@@ -38,34 +41,10 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
   const asset = getAsset(market);
 
   return (
-    <>
-      {market.tradableInstrument.instrument.product.__typename === 'Future' && (
-        <HeaderStat
-          heading={t('Expiry')}
-          description={
-            <ExpiryTooltipContent
-              market={market}
-              explorerUrl={VEGA_EXPLORER_URL}
-            />
-          }
-          testId="market-expiry"
-        >
-          <ExpiryLabel market={market} />
-        </HeaderStat>
-      )}
-      {market.tradableInstrument.instrument.product.__typename ===
-        'Perpetual' && (
-        <HeaderStat
-          heading={`${t('Funding')} / ${t('Countdown')}`}
-          testId="market-funding"
-        >
-          <div className="flex justify-between gap-2">
-            <FundingRate marketId={market.id} />
-            <FundingCountdown marketId={market.id} />
-          </div>
-        </HeaderStat>
-      )}
-      <HeaderStat heading={t('Price')} testId="market-price">
+    <div className="flex gap-8">
+      <HeaderStat heading={t('Mark Price')} testId="market-price">
+        market.decimalPlaces: {market.decimalPlaces}
+        <br />
         <MarketMarkPrice
           marketId={market.id}
           decimalPlaces={market.decimalPlaces}
@@ -108,8 +87,46 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
         marketId={market.id}
         assetDecimals={asset?.decimals || 0}
       />
+      {market.tradableInstrument.instrument.product.__typename === 'Future' && (
+        <HeaderStat
+          heading={t('Expiry')}
+          description={
+            <ExpiryTooltipContent
+              market={market}
+              explorerUrl={VEGA_EXPLORER_URL}
+            />
+          }
+          testId="market-expiry"
+        >
+          <ExpiryLabel market={market} />
+        </HeaderStat>
+      )}
+      {market.tradableInstrument.instrument.product.__typename ===
+        'Perpetual' && (
+        <HeaderStat
+          heading={`${t('Funding Rate')} / ${t('Countdown')}`}
+          testId="market-funding"
+        >
+          <div className="flex justify-between gap-2">
+            <FundingRate marketId={market.id} />
+            <FundingCountdown marketId={market.id} />
+          </div>
+        </HeaderStat>
+      )}
+      {market.tradableInstrument.instrument.product.__typename ===
+        'Perpetual' && (
+        <HeaderStat heading={`${t('Index Price')}`} testId="index-price">
+          <div className="flex justify-between gap-2">
+            market.decimalPlaces: {market.decimalPlaces}
+            <IndexPrice
+              marketId={market.id}
+              decimalPlaces={market.decimalPlaces}
+            />
+          </div>
+        </HeaderStat>
+      )}
       <MarketProposalNotification marketId={market.id} />
-    </>
+    </div>
   );
 };
 
@@ -123,6 +140,22 @@ export const FundingRate = ({ marketId }: { marketId: string }) => {
     <div data-testid="funding-rate">
       {fundingRate ? `${(Number(fundingRate) * 100).toFixed(4)}%` : '-'}
     </div>
+  );
+};
+
+export const IndexPrice = ({
+  marketId,
+  decimalPlaces,
+}: {
+  marketId: string;
+  decimalPlaces?: number;
+}) => {
+  const { data: externalTwap } = useExternalTwap(marketId);
+  return (
+    <PriceCell
+      value={Number(externalTwap)}
+      valueFormatted={addDecimalsFormatNumber(externalTwap, decimalPlaces, 2)}
+    />
   );
 };
 
