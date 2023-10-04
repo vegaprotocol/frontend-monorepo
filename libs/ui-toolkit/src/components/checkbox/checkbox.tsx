@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 
 type CheckedState = boolean | 'indeterminate';
 export const labelClasses =
-  "relative after:content-[''] after:block after:absolute after:top-1/2	after:left-[0] after:right-[0] after:-translate-y-1/2 after:h-6";
+  "relative before:content-[''] before:block before:absolute before:top-1/2	before:left-[0] before:right-[0] before:-translate-y-1/2 before:h-6";
 export interface CheckboxProps {
   checked?: CheckedState;
   label?: ReactNode;
