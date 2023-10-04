@@ -1,6 +1,6 @@
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import { useEnvironment } from '@vegaprotocol/environment';
-import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
+import { DocsLinks, useEnvironment } from '@vegaprotocol/environment';
+import { ButtonLink, ExternalLink, Link } from '@vegaprotocol/ui-toolkit';
 import { MarketProposalNotification } from '@vegaprotocol/proposals';
 import type { Market } from '@vegaprotocol/markets';
 import {
@@ -113,13 +113,29 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
       )}
       {market.tradableInstrument.instrument.product.__typename ===
         'Perpetual' && (
-        <HeaderStat heading={`${t('Index Price')}`} testId="index-price">
-          <div className="flex justify-between gap-2">
-            <IndexPrice
-              marketId={market.id}
-              decimalPlaces={market.decimalPlaces}
-            />
-          </div>
+        <HeaderStat
+          heading={`${t('Index Price')}`}
+          description={
+            <div className="p1">
+              {t(
+                'The external time weighted average price (TWAP) received from the data source defined in the data sourcing specification.'
+              )}
+              {DocsLinks && (
+                <ExternalLink
+                  href={DocsLinks.ETH_DATA_SOURCES}
+                  className="mt-2"
+                >
+                  {t('Find out more')}
+                </ExternalLink>
+              )}
+            </div>
+          }
+          testId="index-price"
+        >
+          <IndexPrice
+            marketId={market.id}
+            decimalPlaces={market.decimalPlaces}
+          />
         </HeaderStat>
       )}
       <MarketProposalNotification marketId={market.id} />
