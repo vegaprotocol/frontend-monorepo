@@ -32,12 +32,6 @@ fragment OrderFields on Order {
   }
 }
 
-query OrderById($orderId: ID!) {
-  orderByID(id: $orderId) {
-    ...OrderFields
-  }
-}
-
 query Orders(
   $partyId: ID!
   $marketIds: [ID!]
@@ -151,11 +145,5 @@ query StopOrders($filter: StopOrderFilter) {
         ...StopOrderFields
       }
     }
-  }
-}
-
-query StopOrderById($stopOrderId: ID!) {
-  stopOrder(id: $stopOrderId) {
-    ...StopOrderFields
   }
 }

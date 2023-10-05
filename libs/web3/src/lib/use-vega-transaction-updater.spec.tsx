@@ -38,7 +38,7 @@ const render = (mocks?: MockedResponse[]) => {
 
 const pubKey = 'pubKey';
 
-jest.mock('./use-vega-wallet', () => ({
+jest.mock('@vegaprotocol/wallet', () => ({
   useVegaWallet: () => ({
     pubKey,
   }),

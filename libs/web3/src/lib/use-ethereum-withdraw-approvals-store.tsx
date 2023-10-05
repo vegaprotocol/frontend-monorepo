@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import produce from 'immer';
 import type BigNumber from 'bignumber.js';
-import type { WithdrawalBusEventFieldsFragment } from '@vegaprotocol/wallet';
-import { useVegaTransactionStore } from '@vegaprotocol/wallet';
+import type { WithdrawalBusEventFieldsFragment } from './__generated__/TransactionResult';
+import { useVegaTransactionStore } from './use-vega-transaction-store';
 
-import type { WithdrawalApprovalQuery } from '@vegaprotocol/wallet';
+import type { WithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
 import { subscribeWithSelector } from 'zustand/middleware';
 
 export enum ApprovalStatus {

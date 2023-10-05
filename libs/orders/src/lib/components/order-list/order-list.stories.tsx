@@ -1,8 +1,6 @@
 import type { Story, Meta } from '@storybook/react';
 import { OrderListTable } from './order-list';
 import { useState } from 'react';
-import type { VegaTxState } from '@vegaprotocol/wallet';
-import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
 import { generateOrdersArray } from '../mocks';
 import { OrderEditDialog } from './order-edit-dialog';
 import type { Order } from '../order-data-provider';
@@ -32,25 +30,15 @@ const Template: Story = (args) => {
 };
 
 const Template2: Story = (args) => {
-  const [open, setOpen] = useState(false);
   const [editOrder, setEditOrder] = useState<Order>();
-  const cancel = () => {
-    setOpen(!open);
-    return Promise.resolve();
-  };
-  const transaction: VegaTxState = {
-    status: VegaTxStatus.Requested,
-    error: null,
-    txHash: null,
-    signature: null,
-    dialogOpen: false,
-  };
   return (
     <>
       <div style={{ height: 1000 }}>
         <OrderListTable
           rowData={args.data}
-          onCancel={cancel}
+          onCancel={() => {
+            return;
+          }}
           onEdit={setEditOrder}
           onView={() => {
             return;
@@ -58,11 +46,6 @@ const Template2: Story = (args) => {
           isReadOnly={false}
         />
       </div>
-      <VegaTransactionDialog
-        isOpen={open}
-        onChange={setOpen}
-        transaction={transaction}
-      />
       {editOrder && (
         <OrderEditDialog
           isOpen={Boolean(editOrder)}

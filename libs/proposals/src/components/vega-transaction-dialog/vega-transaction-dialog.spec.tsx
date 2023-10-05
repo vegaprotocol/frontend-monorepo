@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import { WalletError } from '../connectors';
-import type { VegaWalletContextShape } from '../context';
-import { VegaWalletContext } from '../context';
-import { VegaTxStatus } from '../types';
+import { WalletError } from '@vegaprotocol/wallet';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
+import { VegaWalletContext } from '@vegaprotocol/wallet';
+import { VegaTxStatus } from '../../lib/proposals-hooks/use-vega-transaction';
 import type { VegaTransactionDialogProps } from './vega-transaction-dialog';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
 

@@ -11,7 +11,6 @@ import {
   waitForBeginningOfEpoch,
 } from '../../support/staking.functions';
 import { previousEpochData } from '../../fixtures/mocks/previous-epoch';
-import { chainIdQuery, statisticsQuery } from '@vegaprotocol/mock';
 
 const guideLink = 'staking-guide-link';
 const validatorTitle = 'validator-node-title';
@@ -38,17 +37,11 @@ const txTimeout = Cypress.env('txTimeout');
 
 context('Validators Page - verify elements on page', function () {
   before('navigate to validators page', () => {
-    cy.mockGQL((req) => {
-      aliasGQLQuery(req, 'ChainId', chainIdQuery());
-      aliasGQLQuery(req, 'Statistics', statisticsQuery());
-    });
+    cy.mockChainId();
     cy.visit('/validators');
   });
   beforeEach(() => {
-    cy.mockGQL((req) => {
-      aliasGQLQuery(req, 'ChainId', chainIdQuery());
-      aliasGQLQuery(req, 'Statistics', statisticsQuery());
-    });
+    cy.mockChainId();
   });
 
   describe('with wallets disconnected', { tags: '@smoke' }, function () {
@@ -189,10 +182,7 @@ context('Validators Page - verify elements on page', function () {
     { tags: '@smoke' },
     function () {
       before('connect wallets and click on validator', function () {
-        cy.mockGQL((req) => {
-          aliasGQLQuery(req, 'ChainId', chainIdQuery());
-          aliasGQLQuery(req, 'Statistics', statisticsQuery());
-        });
+        cy.mockChainId();
         cy.visit('/validators');
         cy.connectVegaWallet();
         clickOnValidatorFromList(0);

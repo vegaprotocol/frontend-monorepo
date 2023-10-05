@@ -7,7 +7,7 @@ import type { Token } from '@vegaprotocol/smart-contracts';
 import type {
   DepositBusEventFieldsFragment,
   WithdrawalBusEventFieldsFragment,
-} from '@vegaprotocol/wallet';
+} from './__generated__/TransactionResult';
 
 import type { EthTxState } from './use-ethereum-transaction';
 import { EthTxStatus } from './use-ethereum-transaction';

@@ -1,7 +1,5 @@
-import { useVegaWallet } from './use-vega-wallet';
+import { useVegaWallet, WalletError, ClientErrors } from '@vegaprotocol/wallet';
 import { useEffect, useRef } from 'react';
-import { WalletError } from './connectors';
-import { ClientErrors } from './connectors';
 import { useVegaTransactionStore } from './use-vega-transaction-store';
 import {
   WalletClientError,

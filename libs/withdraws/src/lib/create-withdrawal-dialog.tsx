@@ -4,7 +4,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { WithdrawFormContainer } from './withdraw-form-container';
 import { useWeb3ConnectStore } from '@vegaprotocol/web3';
 import { useWithdrawalDialog } from './withdrawal-dialog';
-import { useVegaTransactionStore } from '@vegaprotocol/wallet';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
 
 export const CreateWithdrawalDialog = () => {
   const { assetId, isOpen, open, close } = useWithdrawalDialog();

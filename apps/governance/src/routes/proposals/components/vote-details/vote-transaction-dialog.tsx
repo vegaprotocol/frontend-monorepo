@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import { VoteState } from './use-user-vote';
-import type { DialogProps, VegaTxState } from '@vegaprotocol/wallet';
+import type { DialogProps, VegaTxState } from '@vegaprotocol/proposals';
 
 interface VoteTransactionDialogProps {
   voteState: VoteState;
