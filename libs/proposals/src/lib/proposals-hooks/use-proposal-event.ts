@@ -7,7 +7,7 @@ import type {
   ProposalEventFieldsFragment,
 } from './__generated__/Proposal';
 import type { Subscription } from 'zen-observable-ts';
-import type { VegaTxState } from '@vegaprotocol/wallet';
+import type { VegaTxState } from '../proposals-hooks/use-vega-transaction';
 
 export const useProposalEvent = (transaction: VegaTxState) => {
   const client = useApolloClient();

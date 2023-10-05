@@ -7,7 +7,8 @@ import {
 } from '@vegaprotocol/network-parameters';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { Transfer } from '@vegaprotocol/wallet';
-import { useVegaTransactionStore, useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useMemo } from 'react';
 import { accountsDataProvider } from './accounts-data-provider';
 import { TransferForm } from './transfer-form';

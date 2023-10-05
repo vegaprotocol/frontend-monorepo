@@ -7,7 +7,6 @@ import {
   assetQuery,
   assetsQuery,
   candlesQuery,
-  chainIdQuery,
   chartQuery,
   depositsQuery,
   estimateFeesQuery,
@@ -25,7 +24,6 @@ import {
   estimatePositionQuery,
   positionsQuery,
   proposalListQuery,
-  statisticsQuery,
   tradesQuery,
   withdrawalsQuery,
   protocolUpgradeProposalsQuery,
@@ -91,8 +89,6 @@ const mockTradingPage = (
   tradingMode?: Schema.MarketTradingMode,
   trigger?: Schema.AuctionTrigger
 ) => {
-  aliasGQLQuery(req, 'ChainId', chainIdQuery());
-  aliasGQLQuery(req, 'NodeCheck', statisticsQuery());
   aliasGQLQuery(req, 'NodeGuard', nodeGuardQuery());
   aliasGQLQuery(
     req,
@@ -218,6 +214,7 @@ export const addMockTradingPage = () => {
       trigger,
       oracleStatus
     ) => {
+      cy.mockChainId();
       cy.mockGQL((req) => {
         mockTradingPage(req, state, tradingMode, trigger);
       });

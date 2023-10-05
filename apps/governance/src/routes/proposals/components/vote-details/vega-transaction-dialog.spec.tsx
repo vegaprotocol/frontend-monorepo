@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { VoteTransactionDialog } from './vote-transaction-dialog';
 import { VoteState } from './use-user-vote';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
+import { VegaTxStatus } from '@vegaprotocol/proposals';
 
 describe('VoteTransactionDialog', () => {
   const mockTransactionDialog = jest.fn(({ title, content }) => (

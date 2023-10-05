@@ -1,12 +1,12 @@
 import { useEthWithdrawApprovalsStore } from './use-ethereum-withdraw-approvals-store';
-import type { VegaStoredTxState } from '@vegaprotocol/wallet';
+import type { VegaStoredTxState } from './use-vega-transaction-store';
 import { ApprovalStatus } from './use-ethereum-withdraw-approvals-store';
 import type { EthWithdrawalApprovalState } from './use-ethereum-withdraw-approvals-store';
 
 const mockFindVegaTransaction = jest.fn<VegaStoredTxState, []>();
 const mockDismissVegaTransaction = jest.fn();
 
-jest.mock('@vegaprotocol/wallet', () => ({
+jest.mock('./use-vega-transaction-store', () => ({
   useVegaTransactionStore: {
     getState: () => ({
       transactions: {

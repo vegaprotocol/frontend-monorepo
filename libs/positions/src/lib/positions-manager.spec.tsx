@@ -9,6 +9,9 @@ const mockCreate = jest.fn();
 jest.mock('@vegaprotocol/wallet', () => ({
   ...jest.requireActual('@vegaprotocol/wallet'),
   useVegaWallet: jest.fn(() => ({ pubKey: 'partyId' })),
+}));
+jest.mock('@vegaprotocol/web3', () => ({
+  ...jest.requireActual('@vegaprotocol/web3'),
   useVegaTransactionStore: jest.fn(() => mockCreate),
 }));
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any

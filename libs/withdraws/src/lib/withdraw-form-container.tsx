@@ -4,9 +4,10 @@ import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
-import type { WithdrawalArgs } from './use-create-withdraw';
+
 import { WithdrawManager } from './withdraw-manager';
 import * as Types from '@vegaprotocol/types';
+import type { WithdrawalArgs } from './withdraw-form';
 
 interface WithdrawFormContainerProps {
   partyId?: string;
