@@ -82,3 +82,38 @@ jobs:
             https://${{ env.IPFS_V1 }}.ipfs.dweb.link/
             https://${{ env.IPFS_V1 }}.ipfs.cf-ipfs.com/
             ipfs://${{ env.IPFS_V0 }}/
+
+      - name: Ensure 'Released' label exists
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPO="${{ github.repository }}"
+          LABEL_EXIST=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                            -H "Accept: application/vnd.github.v3+json" \
+                            "https://api.github.com/repos/$REPO/labels/Released")
+          if [[ "$LABEL_EXIST" == *"Not Found"* ]]; then
+            curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                  -H "Accept: application/vnd.github.v3+json" \
+                  -X POST "https://api.github.com/repos/$REPO/labels" \
+                  -d '{"name": "Released", "color": "FFFFFF"}'
+          fi
+
+      - name: Extract issues from release notes
+        id: extract-issues
+        run: |
+          ISSUES=$(echo "${{ github.event.release.body }}" | grep -o -E '#[0-9]+' | tr -d '#' | jq -R . | jq -cs .)
+          echo "Issues to label: $ISSUES"
+          echo "::set-output name=issue_numbers::$ISSUES"
+
+      - name: Add 'Released' label to issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBERS="${{ steps.extract-issues.outputs.issue_numbers }}"
+          REPO="${{ github.repository }}"
+          for ISSUE in $(echo "$ISSUE_NUMBERS" | jq -r '.[]'); do
+            curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                  -H "Accept: application/vnd.github.v3+json" \
+                  -X POST "https://api.github.com/repos/$REPO/issues/$ISSUE/labels" \
+                  -d '{"labels": ["Released"]}'
+          done
