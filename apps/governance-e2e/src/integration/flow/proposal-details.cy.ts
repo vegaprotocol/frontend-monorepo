@@ -32,7 +32,10 @@ import {
 } from '../../support/wallet-functions';
 import type { testFreeformProposal } from '../../support/common-interfaces';
 import { formatDateWithLocalTimezone } from '@vegaprotocol/utils';
-import { createSuccessorMarketProposalTxBody } from '../../support/proposal.functions';
+import {
+  createGovernanceTransferProposalTxBody,
+  createSuccessorMarketProposalTxBody,
+} from '../../support/proposal.functions';
 
 const proposalListItem = '[data-testid="proposals-list-item"]';
 const participationNotMet = 'token-participation-not-met';
@@ -519,6 +522,11 @@ describe(
           '0.001 fUSDC'
         );
       });
+    });
+
+    it.only('Able to see governance transfer proposal', function () {
+      cy.VegaWalletSubmitProposal(createGovernanceTransferProposalTxBody());
+      cy.pause();
     });
   }
 );

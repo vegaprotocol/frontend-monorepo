@@ -235,6 +235,32 @@ interface ProposalUpdateAssetTerms {
   enactmentTimestamp: number;
 }
 
+interface ProposalTransferTerms {
+  newTransfer: {
+    changes: {
+      fractionOfBalance: string;
+      amount: string;
+      sourceType: string;
+      destinationType: string;
+      destination: string;
+      asset: string;
+      recurring: {
+        startEpoch: number;
+        endEpoch: number;
+      };
+    };
+  };
+  closingTimestamp: number;
+  enactmentTimestamp: number;
+}
+
+interface Kind {
+  recurring: {
+    startEpoch: number;
+    endEpoch: number;
+  };
+}
+
 interface DataSourceSpecBinding {
   settlementDataProperty: string;
   tradingTerminationProperty: string;
@@ -342,7 +368,8 @@ export interface ProposalSubmission {
     | ProposalUpdateMarketTerms
     | ProposalNetworkParameterTerms
     | ProposalNewAssetTerms
-    | ProposalUpdateAssetTerms;
+    | ProposalUpdateAssetTerms
+    | ProposalTransferTerms;
 }
 
 export interface ProposalSubmissionBody {
