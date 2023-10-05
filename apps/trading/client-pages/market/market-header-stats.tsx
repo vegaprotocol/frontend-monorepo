@@ -134,7 +134,10 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
         >
           <IndexPrice
             marketId={market.id}
-            decimalPlaces={market.decimalPlaces}
+            decimalPlaces={
+              market.tradableInstrument.instrument.product.settlementAsset
+                .decimals
+            }
           />
         </HeaderStat>
       )}
@@ -167,7 +170,7 @@ export const IndexPrice = ({
   return externalTwap && decimalPlaces ? (
     <PriceCell
       value={Number(externalTwap)}
-      valueFormatted={addDecimalsFormatNumber(externalTwap, decimalPlaces, 2)}
+      valueFormatted={addDecimalsFormatNumber(externalTwap, decimalPlaces)}
     />
   ) : (
     '-'
