@@ -74,26 +74,12 @@ context(
     });
 
     it('should be able to see a working link for - find out more about Vega governance', function () {
-      // 3001-VOTE-001
+      // 3001-VOTE-001 3002-PROP-001
       cy.getByTestId(proposalDocumentationLink)
         .should('be.visible')
         .and('have.text', 'Find out more about Vega governance')
         .and('have.attr', 'href')
         .and('equal', governanceDocsUrl);
-
-      //Commented out due to odd cypress screenshot crash
-      // 3002-PROP-001
-      /* cy.request(governanceDocsUrl)
-        .its('body')
-        .then((body) => {
-          if (!body.includes('Govern the network')) {
-            assert.include(
-              body,
-              'Govern the network',
-              `Checking that governance link destination includes 'Govern the network' text`
-            );
-          }
-        }); */
     });
 
     // 3007-PNE-021
