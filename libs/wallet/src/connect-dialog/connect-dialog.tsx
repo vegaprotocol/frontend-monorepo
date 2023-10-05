@@ -15,6 +15,7 @@ import { useCallback, useState } from 'react';
 import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { t } from '@vegaprotocol/i18n';
 import type { Connectors, VegaConnector } from '../connectors';
+import { DEFAULT_SNAP_VERSION } from '../connectors';
 import {
   DEFAULT_SNAP_ID,
   InjectedConnector,
@@ -352,7 +353,9 @@ const ConnectorList = ({
                     </>
                   }
                   onClick={() => {
-                    requestSnap(DEFAULT_SNAP_ID);
+                    requestSnap(DEFAULT_SNAP_ID, {
+                      version: DEFAULT_SNAP_VERSION,
+                    });
                   }}
                 />
                 {snapStatus === SnapStatus.NOT_SUPPORTED ? (
