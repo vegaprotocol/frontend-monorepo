@@ -9,6 +9,7 @@ import { usePageTitleStore } from '../../stores';
 import { AccountsContainer } from '../../components/accounts-container';
 import { DepositsContainer } from '../../components/deposits-container';
 import { FillsContainer } from '../../components/fills-container';
+import { FundingPaymentsContainer } from '../../components/funding-payments-container';
 import { PositionsContainer } from '../../components/positions-container';
 import { WithdrawalsContainer } from '../../components/withdrawals-container';
 import { OrdersContainer } from '../../components/orders-container';
@@ -76,6 +77,9 @@ export const Portfolio = () => {
               </Tab>
               <Tab id="fills" name={t('Fills')}>
                 <FillsContainer />
+              </Tab>
+              <Tab id="fills" name={t('Funding payments')}>
+                <FundingPaymentsContainer />
               </Tab>
               <Tab id="ledger-entries" name={t('Ledger entries')}>
                 <LedgerContainer />

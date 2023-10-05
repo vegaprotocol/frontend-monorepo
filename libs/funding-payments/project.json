@@ -1,0 +1,37 @@
+{
+  "name": "funding-payments",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/funding-payments/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/funding-payments/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/funding-payments"],
+      "options": {
+        "jestConfig": "libs/funding-payments/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "build-spec": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./libs/funding-payments/tsconfig.spec.json"
+      }
+    }
+  }
+}
