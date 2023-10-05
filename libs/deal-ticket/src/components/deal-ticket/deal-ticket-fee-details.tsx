@@ -273,7 +273,7 @@ export const DealTicketMarginDetails = ({
                 key={'value-dropdown'}
                 className="flex items-center justify-between w-full gap-2"
               >
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 text-left">
                   <Tooltip description={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}>
                     <span className="text-muted">{t('Margin required')}</span>
                   </Tooltip>
