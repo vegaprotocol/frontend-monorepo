@@ -433,9 +433,10 @@ describe(
         'contain.text',
         '0.3'
       );
-      getProposalDetailsValue(
-        'Minimum Probability Of Trading LP Orders'
-      ).should('contain.text', '1e-8');
+      getProposalDetailsValue('Min Probability Of Trading LP Orders').should(
+        'contain.text',
+        '1e-8'
+      );
     });
 
     it('Able to see suspended market proposal', function () {
