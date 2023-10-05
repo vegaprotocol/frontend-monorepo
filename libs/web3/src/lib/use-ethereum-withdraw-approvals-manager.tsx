@@ -15,9 +15,9 @@ import { useWeb3React } from '@web3-react/core';
 import type {
   WithdrawalApprovalQuery,
   WithdrawalApprovalQueryVariables,
-} from '@vegaprotocol/wallet';
+} from './__generated__/WithdrawalApproval';
 
-import { WithdrawalApprovalDocument } from '@vegaprotocol/wallet';
+import { WithdrawalApprovalDocument } from './__generated__/WithdrawalApproval';
 
 import { useEthTransactionStore } from './use-ethereum-transaction-store';
 import {

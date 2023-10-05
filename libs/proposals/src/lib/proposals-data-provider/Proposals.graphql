@@ -348,6 +348,36 @@ fragment UpdateNetworkParameterFields on UpdateNetworkParameter {
   }
 }
 
+fragment NewTransferFields on NewTransfer {
+  source
+  sourceType
+  destination
+  destinationType
+  asset {
+    id
+    symbol
+    decimals
+    quantum
+  }
+  fraction_of_balance
+  amount
+  transferType
+  kind {
+    __typename
+    ... on OneOffGovernanceTransfer {
+      deliverOn
+    }
+    ... on RecurringGovernanceTransfer {
+      startEpoch
+      endEpoch
+    }
+  }
+}
+
+fragment CancelTransferFields on CancelTransfer {
+  transferId
+}
+
 fragment ProposalListFields on Proposal {
   id
   rationale {

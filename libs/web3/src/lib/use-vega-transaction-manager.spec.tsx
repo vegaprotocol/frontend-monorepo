@@ -1,19 +1,20 @@
 import { useVegaTransactionManager } from './use-vega-transaction-manager';
 import { renderHook } from '@testing-library/react';
 import waitForNextTick from 'flush-promises';
-import type { TransactionResponse } from './connectors/vega-connector';
+import type { TransactionResponse } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from './types';
 import type {
   VegaTransactionStore,
   VegaStoredTxState,
 } from './use-vega-transaction-store';
 
-const mockSendTx = jest.fn<Promise<Partial<TransactionResponse> | null>, []>();
+const mockSendTx = jest.fn();
 
 const pubKey = 'pubKey';
 
 const mockDisconnect = jest.fn();
-jest.mock('./use-vega-wallet', () => ({
+jest.mock('@vegaprotocol/wallet', () => ({
+  ...jest.requireActual('@vegaprotocol/wallet'),
   useVegaWallet: () => ({
     sendTx: mockSendTx,
     pubKey,

@@ -2,9 +2,9 @@ import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { WalletClientError } from '@vegaprotocol/wallet-client';
-import type { VegaTxState } from '../types';
-import { VegaTxStatus } from '../types';
-import { useVegaWallet } from '../use-vega-wallet';
+import type { VegaTxState } from '../../lib/proposals-hooks/use-vega-transaction';
+import { VegaTxStatus } from '../../lib/proposals-hooks/use-vega-transaction';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export type VegaTransactionContentMap = {
   [C in VegaTxStatus]?: JSX.Element;

@@ -1,5 +1,5 @@
 import { useApolloClient } from '@apollo/client';
-import { useVegaWallet } from './use-vega-wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
   useOrderTxUpdateSubscription,
   useWithdrawalBusEventSubscription,

@@ -126,10 +126,12 @@ export const MarketSelector = ({
           onSelect={onSelect}
           noItems={
             filter.product === Product.Perpetual
-              ? t('Perpetual markets coming soon.')
+              ? t('No perpetual markets.')
               : filter.product === Product.Spot
               ? t('Spot markets coming soon.')
-              : t('No markets')
+              : filter.product === Product.Future
+              ? t('No future markets.')
+              : t('No markets.')
           }
           allProducts={allProducts}
         />

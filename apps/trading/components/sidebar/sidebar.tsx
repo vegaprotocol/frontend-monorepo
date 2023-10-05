@@ -135,6 +135,21 @@ export const Sidebar = () => {
               </>
             }
           />
+          <Route
+            path="markets/all/closed/:marketId"
+            element={
+              <>
+                <AssetSidebarButtons />
+                <SidebarDivider />
+                <SidebarButton
+                  view={ViewType.Info}
+                  icon={VegaIconNames.BREAKDOWN}
+                  tooltip={t('Market specification')}
+                  routeId={currentRouteId}
+                />
+              </>
+            }
+          />
         </Routes>
       </nav>
       <nav className={classNames(navClasses, 'ml-auto lg:mt-auto lg:ml-0')}>

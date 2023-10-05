@@ -67,3 +67,29 @@ query InstrumentDetails($marketId: ID!) {
     }
   }
 }
+
+query NewTransferDetails($proposalId: ID!) {
+  proposal(id: $proposalId) {
+    id
+    terms {
+      change {
+        ... on NewTransfer {
+          ...NewTransferFields
+        }
+      }
+    }
+  }
+}
+
+query CancelTransferDetails($proposalId: ID!) {
+  proposal(id: $proposalId) {
+    id
+    terms {
+      change {
+        ... on CancelTransfer {
+          ...CancelTransferFields
+        }
+      }
+    }
+  }
+}

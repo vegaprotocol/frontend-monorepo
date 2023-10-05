@@ -423,6 +423,12 @@ function compileFeatureFlags(): FeatureFlags {
         process.env['NX_UPDATE_MARKET_STATE']
       ) as string
     ),
+    GOVERNANCE_TRANSFERS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_GOVERNANCE_TRANSFERS',
+        process.env['NX_GOVERNANCE_TRANSFERS']
+      ) as string
+    ),
   };
   const EXPLORER_FLAGS = {
     EXPLORER_ASSETS: TRUTHY.includes(

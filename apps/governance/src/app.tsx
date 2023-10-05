@@ -26,11 +26,11 @@ import {
 } from '@vegaprotocol/web3';
 import { Web3Provider } from '@vegaprotocol/web3';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
+import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import {
   useVegaTransactionManager,
   useVegaTransactionUpdater,
-  VegaWalletProvider,
-} from '@vegaprotocol/wallet';
+} from '@vegaprotocol/web3';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import {

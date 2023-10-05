@@ -1,6 +1,6 @@
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { WithdrawFormContainer } from '@vegaprotocol/withdraws';
-import { useVegaTransactionStore } from '@vegaprotocol/wallet';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
 
 export const WithdrawContainer = ({ assetId }: { assetId?: string }) => {
   const { pubKey } = useVegaWallet();

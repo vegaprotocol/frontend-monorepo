@@ -26,7 +26,6 @@ import { useEffect, type ButtonHTMLAttributes } from 'react';
 import type { ControllerRenderProps } from 'react-hook-form';
 import { formatDistanceToNow } from 'date-fns';
 import { useForm, Controller, useWatch } from 'react-hook-form';
-import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawLimits } from './withdraw-limits';
 import {
   ETHEREUM_EAGER_CONNECT,
@@ -35,6 +34,13 @@ import {
 } from '@vegaprotocol/web3';
 import { AssetBalance } from './asset-balance';
 import { DocsLinks } from '@vegaprotocol/environment';
+
+export interface WithdrawalArgs {
+  amount: string;
+  asset: string;
+  receiverAddress: string;
+  availableTimestamp: number | null;
+}
 
 interface FormFields {
   asset: string;

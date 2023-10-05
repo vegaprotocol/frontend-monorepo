@@ -42,6 +42,7 @@ declare global {
 }
 
 export const InjectedConnectorErrors = {
+  USER_REJECTED: new Error('Connection denied'),
   VEGA_UNDEFINED: new Error('window.vega not found'),
   INVALID_CHAIN: new Error('Invalid chain'),
 };

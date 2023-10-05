@@ -264,7 +264,11 @@ export const DealTicket = ({
     orders,
     collateralAvailable:
       marginAccountBalance || generalAccountBalance ? balance : undefined,
-    skip: !normalizedOrder,
+    skip:
+      !normalizedOrder ||
+      (normalizedOrder.type !== Schema.OrderType.TYPE_MARKET &&
+        (!normalizedOrder.price || normalizedOrder.price === '0')) ||
+      normalizedOrder.size === '0',
   });
 
   const assetSymbol = getAsset(market).symbol;
@@ -544,62 +548,62 @@ export const DealTicket = ({
           name="postOnly"
           control={control}
           render={({ field }) => (
-            <Checkbox
-              name="post-only"
-              checked={!disablePostOnlyCheckbox && field.value}
-              disabled={disablePostOnlyCheckbox}
-              onCheckedChange={(postOnly) => {
-                field.onChange(postOnly);
-                setValue('reduceOnly', false);
-              }}
-              label={
-                <Tooltip
-                  description={
-                    <span>
-                      {disablePostOnlyCheckbox
-                        ? t(
-                            '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
-                          )
-                        : t(
-                            '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
-                          )}
-                    </span>
-                  }
-                >
-                  <span className="text-xs">{t('Post only')}</span>
-                </Tooltip>
+            <Tooltip
+              description={
+                <span>
+                  {disablePostOnlyCheckbox
+                    ? t(
+                        '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
+                      )
+                    : t(
+                        '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
+                      )}
+                </span>
               }
-            />
+            >
+              <div>
+                <Checkbox
+                  name="post-only"
+                  checked={!disablePostOnlyCheckbox && field.value}
+                  disabled={disablePostOnlyCheckbox}
+                  onCheckedChange={(postOnly) => {
+                    field.onChange(postOnly);
+                    setValue('reduceOnly', false);
+                  }}
+                  label={t('Post only')}
+                />
+              </div>
+            </Tooltip>
           )}
         />
         <Controller
           name="reduceOnly"
           control={control}
           render={({ field }) => (
-            <Checkbox
-              name="reduce-only"
-              checked={!disableReduceOnlyCheckbox && field.value}
-              disabled={disableReduceOnlyCheckbox}
-              onCheckedChange={(reduceOnly) => {
-                field.onChange(reduceOnly);
-                setValue('postOnly', false);
-              }}
-              label={
-                <Tooltip
-                  description={
-                    <span>
-                      {disableReduceOnlyCheckbox
-                        ? t(
-                            '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
-                          )
-                        : t(REDUCE_ONLY_TOOLTIP)}
-                    </span>
-                  }
-                >
-                  <span className="text-xs">{t('Reduce only')}</span>
-                </Tooltip>
+            <Tooltip
+              description={
+                <span>
+                  {disableReduceOnlyCheckbox
+                    ? t(
+                        '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
+                      )
+                    : t(REDUCE_ONLY_TOOLTIP)}
+                </span>
               }
-            />
+            >
+              <div>
+                <Checkbox
+                  name="reduce-only"
+                  checked={!disableReduceOnlyCheckbox && field.value}
+                  disabled={disableReduceOnlyCheckbox}
+                  onCheckedChange={(reduceOnly) => {
+                    field.onChange(reduceOnly);
+                    setValue('postOnly', false);
+                  }}
+                  label={t('Reduce only')}
+                />
+              </div>
+            </Tooltip>
           )}
         />
       </div>
@@ -610,26 +614,26 @@ export const DealTicket = ({
               name="iceberg"
               control={control}
               render={({ field }) => (
-                <Checkbox
-                  name="iceberg"
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  disabled={disableIcebergCheckbox}
-                  label={
-                    <Tooltip
-                      description={
-                        <p>
-                          {t(`Trade only a fraction of the order size at once.
+                <Tooltip
+                  description={
+                    <p>
+                      {t(`Trade only a fraction of the order size at once.
                             After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away.
                             For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each.
                             Note that the full volume of the order is not hidden and is still reflected in the order book.`)}
-                        </p>
-                      }
-                    >
-                      <span className="text-xs">{t('Iceberg')}</span>
-                    </Tooltip>
+                    </p>
                   }
-                />
+                >
+                  <div>
+                    <Checkbox
+                      name="iceberg"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      disabled={disableIcebergCheckbox}
+                      label={t('Iceberg')}
+                    />
+                  </div>
+                </Tooltip>
               )}
             />
           </div>

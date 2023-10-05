@@ -6,39 +6,13 @@ import * as Schema from '@vegaprotocol/types';
 import { PositionStatus } from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { singleRow } from './positions.mock';
 
 jest.mock('./liquidation-price', () => ({
   LiquidationPrice: () => (
     <span data-testid="liquidation-price">liquidation price</span>
   ),
 }));
-
-const singleRow: Position = {
-  partyId: 'partyId',
-  assetId: 'asset-id',
-  assetSymbol: 'BTC',
-  averageEntryPrice: '133',
-  currentLeverage: 1.1,
-  assetDecimals: 2, // this is settlementAsset.decimals
-  quantum: '0.1',
-  lossSocializationAmount: '0',
-  marginAccountBalance: '12345600',
-  marketDecimalPlaces: 1,
-  marketId: 'string',
-  marketCode: 'ETHBTC.QM21',
-  marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-  marketState: Schema.MarketState.STATE_ACTIVE,
-  markPrice: '123',
-  notional: '12300',
-  openVolume: '100',
-  positionDecimalPlaces: 0,
-  realisedPNL: '123',
-  status: PositionStatus.POSITION_STATUS_UNSPECIFIED,
-  totalBalance: '123456',
-  unrealisedPNL: '456',
-  updatedAt: '2022-07-27T15:02:58.400Z',
-  productType: 'Future',
-};
 
 describe('Positions', () => {
   const renderComponent = async (rowData: Position) => {
