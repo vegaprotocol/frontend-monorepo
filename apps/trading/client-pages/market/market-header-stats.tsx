@@ -14,9 +14,11 @@ import {
   Last24hVolume,
   getAsset,
   getDataSourceSpecForSettlementSchedule,
+  isMarketInAuction,
   marketInfoProvider,
   useFundingPeriodsQuery,
   useFundingRate,
+  useMarketTradingMode,
 } from '@vegaprotocol/markets';
 import { MarketState as State } from '@vegaprotocol/types';
 import { HeaderStat } from '../../components/header';
@@ -136,9 +138,11 @@ const useNow = () => {
 };
 
 const useEvery = (marketId: string) => {
+  const { data: marketTradingMode } = useMarketTradingMode(marketId);
   const { data: marketInfo } = useDataProvider({
     dataProvider: marketInfoProvider,
     variables: { marketId },
+    skip: !marketTradingMode || isMarketInAuction(marketTradingMode),
   });
   let every: number | undefined = undefined;
   const sourceType =
