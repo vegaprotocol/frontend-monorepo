@@ -4,8 +4,6 @@ import {
   vegaWalletFaucetAssetsWithoutCheck,
   vegaWalletTeardown,
 } from '../../support/wallet-functions';
-import { aliasGQLQuery } from '@vegaprotocol/cypress';
-import { chainIdQuery, statisticsQuery } from '@vegaprotocol/mock';
 
 const walletContainer = 'aside [data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
@@ -88,10 +86,7 @@ context(
 
     describe('when vega wallet connected', function () {
       before('connect vega wallet', function () {
-        cy.mockGQL((req) => {
-          aliasGQLQuery(req, 'ChainId', chainIdQuery());
-          aliasGQLQuery(req, 'Statistics', statisticsQuery());
-        });
+        cy.mockChainId();
         cy.visit('/');
         cy.wait('@ChainId');
         cy.connectVegaWallet();
@@ -276,10 +271,7 @@ context(
         ];
 
         before('faucet assets to connected vega wallet', function () {
-          cy.mockGQL((req) => {
-            aliasGQLQuery(req, 'ChainId', chainIdQuery());
-            aliasGQLQuery(req, 'Statistics', statisticsQuery());
-          });
+          cy.mockChainId();
           for (const { id, amount } of assets) {
             vegaWalletFaucetAssetsWithoutCheck(id, amount, vegaWalletPublicKey);
           }

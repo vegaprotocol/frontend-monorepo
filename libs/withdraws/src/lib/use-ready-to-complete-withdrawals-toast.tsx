@@ -1,8 +1,5 @@
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import {
-  useVegaWallet,
-  useWithdrawalApprovalQuery,
-} from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
 import { Button, Intent, Panel, ToastHeading } from '@vegaprotocol/ui-toolkit';
@@ -15,6 +12,7 @@ import {
   useEthWithdrawApprovalsStore,
   useGetWithdrawDelay,
   useGetWithdrawThreshold,
+  useWithdrawalApprovalQuery,
 } from '@vegaprotocol/web3';
 import { withdrawalProvider } from './withdrawals-provider';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';

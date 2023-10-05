@@ -4,7 +4,7 @@ import type {
   OrderAmendmentBody,
   OrderCancellationBody,
   WithdrawSubmissionBody,
-} from './connectors/vega-connector';
+} from '@vegaprotocol/wallet';
 import {
   OrderStatus,
   OrderTimeInForce,
@@ -13,8 +13,8 @@ import {
 } from '@vegaprotocol/types';
 import { VegaTxStatus } from './types';
 
-jest.mock('./utils', () => ({
-  ...jest.requireActual('./utils'),
+jest.mock('@vegaprotocol/wallet', () => ({
+  ...jest.requireActual('@vegaprotocol/wallet'),
   determineId: jest.fn((v) => v),
 }));
 

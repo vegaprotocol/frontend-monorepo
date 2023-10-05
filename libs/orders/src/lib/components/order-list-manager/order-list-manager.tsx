@@ -5,11 +5,9 @@ import { OrderListTable } from '../order-list/order-list';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
-import {
-  normalizeOrderAmendment,
-  useVegaTransactionStore,
-} from '@vegaprotocol/wallet';
-import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/wallet';
+import { normalizeOrderAmendment } from '@vegaprotocol/wallet';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/web3';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order } from '../order-data-provider';
 import { OrderViewDialog } from '../order-list/order-view-dialog';

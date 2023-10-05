@@ -1,0 +1,74 @@
+query OrderById($orderId: ID!) {
+  orderByID(id: $orderId) {
+    id
+    market {
+      id
+    }
+    type
+    side
+    size
+    status
+    rejectionReason
+    price
+    timeInForce
+    remaining
+    expiresAt
+    createdAt
+    updatedAt
+    postOnly
+    reduceOnly
+    liquidityProvision {
+      __typename
+    }
+    peggedOrder {
+      __typename
+      reference
+      offset
+    }
+    icebergOrder {
+      __typename
+      peakSize
+      minimumVisibleSize
+      reservedRemaining
+    }
+  }
+}
+
+query StopOrderById($stopOrderId: ID!) {
+  stopOrder(id: $stopOrderId) {
+    id
+    ocoLinkId
+    expiresAt
+    expiryStrategy
+    triggerDirection
+    status
+    createdAt
+    updatedAt
+    partyId
+    marketId
+    trigger {
+      ... on StopOrderPrice {
+        price
+      }
+      ... on StopOrderTrailingPercentOffset {
+        trailingPercentOffset
+      }
+    }
+    submission {
+      marketId
+      price
+      size
+      side
+      timeInForce
+      expiresAt
+      type
+      reference
+      peggedOrder {
+        reference
+        offset
+      }
+      postOnly
+      reduceOnly
+    }
+  }
+}
