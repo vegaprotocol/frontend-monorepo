@@ -74,7 +74,7 @@ context(
     });
 
     it('should be able to see a working link for - find out more about Vega governance', function () {
-      // 3001-VOTE-001 3002-PROP-001
+      // 3001-VOTE-001  // 3002-PROP-001
       cy.getByTestId(proposalDocumentationLink)
         .should('be.visible')
         .and('have.text', 'Find out more about Vega governance')
