@@ -93,19 +93,56 @@ jobs:
           name: console-image
           path: /tmp/console-image.tar
 
+  console-test-branch:
+    name: Choose console-test branch to run on
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    outputs:
+      console-branch: ${{ steps.output-step.outputs.branch }}
+    steps:
+      - name: Workflow dispatch input
+        id: dispatch-step
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "branch=${{ inputs.console-test-branch }}" >> $GITHUB_OUTPUT
+
+      - name: Print Workflow dispatch input
+        if: github.event_name == 'workflow_dispatch'
+        run: echo ${{ steps.dispatch-step.outputs.branch }}
+
+      - name: Workflow_call input
+        id: workflow_call-step
+        if: github.event_name != 'workflow_dispatch'
+        run: |
+          if [[ "${{ github.base_ref }}" == "main" ]]; then
+            echo "branch=main" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.base_ref }}" == "develop" && "${{ github.ref_name }}" == "main" ]]; then
+            echo "branch=main" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref_name }}" == *"release/mainnet"* ]]; then
+            echo "branch=main" >> $GITHUB_OUTPUT
+          else
+            echo "branch=develop" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Print Workflow_call input
+        if: github.event_name != 'workflow_dispatch'
+        run: echo ${{ steps.workflow_call-step.outputs.branch }}
+
+      - name: Set output
+        id: output-step
+        run: echo "branch=${{ steps.dispatch-step.outputs.branch || steps.workflow_call-step.outputs.branch }}" >> $GITHUB_OUTPUT
+
+      - name: Print final output
+        run: echo ${{ steps.output-step.outputs.branch }}
+
   run-tests:
     name: run-tests
     runs-on: 8-cores
-    needs: create-docker-image
+    needs: [create-docker-image, console-test-branch]
     timeout-minutes: 20
     steps:
       #----------------------------------------------
       #       load docker image
       #----------------------------------------------
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Download docker image from previous job
         uses: actions/download-artifact@v3
         with:
@@ -124,13 +161,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: vegaprotocol/console-test
-          ref: ${{ inputs.console-test-branch }}
+          ref: ${{ needs.console-test-branch.outputs.console-branch }}
 
       - name: Load console test envs
         id: console-test-env
         uses: falti/dotenv-action@v1.0.4
         with:
-          path: '.env.${{ inputs.console-test-branch }}'
+          path: '.env.${{ needs.console-test-branch.outputs.console-branch  }}'
           export-variables: true
           keys-case: upper
           log-variables: true

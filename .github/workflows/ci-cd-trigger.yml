@@ -168,15 +168,6 @@ jobs:
       preview_explorer: ${{ env.PREVIEW_EXPLORER }}
       preview_tools: ${{ env.PREVIEW_TOOLS }}
 
-  # console-e2e:
-  #   needs: build-sources
-  #   name: '(CI) console python'
-  #   uses: ./.github/workflows/console-test-run.yml
-  #   secrets: inherit
-  #   if: ${{ contains(fromJSON(needs.build-sources.outputs.projects), 'trading') && github.event_name == 'pull_request' }}
-  #   with:
-  #     github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
-
   check-e2e-needed:
     runs-on: ubuntu-latest
     needs: build-sources
@@ -209,6 +200,15 @@ jobs:
     with:
       projects: ${{ needs.build-sources.outputs.projects-e2e }}
       tags: '@smoke'
+
+  console-e2e:
+    needs: [build-sources, check-e2e-needed]
+    name: '(CI) console python'
+    uses: ./.github/workflows/console-test-run.yml
+    secrets: inherit
+    if: ${{ needs.check-e2e-needed.outputs.run-tests == 'true' }} && ${{ contains(fromJSON(needs.build-sources.outputs.projects), 'trading') }}
+    with:
+      github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
   publish-dist:
     needs: build-sources
