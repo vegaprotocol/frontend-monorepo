@@ -19,28 +19,16 @@ import {
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
 import { useStakeAvailable } from './hooks/use-stake-available';
+import {
+  ABOUT_REFERRAL_DOCS_LINK,
+  DISCLAIMER_REFERRAL_DOCS_LINK,
+} from './constants';
 
 export const CreateCodeContainer = () => {
-  const { stakeAvailable, requiredStake } = useStakeAvailable();
-  if (stakeAvailable == null || requiredStake == null) {
-    return null;
-  }
-
-  return (
-    <CreateCodeForm
-      currentStakeAvailable={stakeAvailable}
-      requiredStake={requiredStake}
-    />
-  );
+  return <CreateCodeForm />;
 };
 
-export const CreateCodeForm = ({
-  currentStakeAvailable,
-  requiredStake,
-}: {
-  currentStakeAvailable: bigint;
-  requiredStake: bigint;
-}) => {
+export const CreateCodeForm = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const openWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
@@ -48,41 +36,35 @@ export const CreateCodeForm = ({
   const { pubKey } = useVegaWallet();
 
   return (
-    <div className="w-1/2 mx-auto">
-      <h3 className="mb-5 text-xl text-center uppercase calt">
-        Create a referral code
-      </h3>
-      <p className="mb-6 text-center">
+    <div className="w-2/3 max-w-md mx-auto bg-vega-clight-800 dark:bg-vega-cdark-800 p-8 rounded-lg">
+      <h3 className="mb-4 text-2xl text-center calt">Create a referral code</h3>
+      <p className="mb-4 text-center text-base">
         Generate a referral code to share with your friends and start earning
         commission.
       </p>
-      <div className="mb-5">
-        <div className="text-center">
-          <RainbowButton
-            variant="border"
-            onClick={() => {
-              if (pubKey) {
-                setDialogOpen(true);
-              } else {
-                openWalletDialog();
-              }
-            }}
-          >
-            {pubKey ? 'Create a referral code' : 'Connect wallet'}
-          </RainbowButton>
-        </div>
+
+      <div className="w-full flex flex-col">
+        <RainbowButton
+          variant="border"
+          onClick={() => {
+            if (pubKey) {
+              setDialogOpen(true);
+            } else {
+              openWalletDialog();
+            }
+          }}
+        >
+          {pubKey ? 'Create a referral code' : 'Connect wallet'}
+        </RainbowButton>
       </div>
+
       <Dialog
         title="Create a referral code"
         open={dialogOpen}
         onChange={() => setDialogOpen(false)}
         size="small"
       >
-        <CreateCodeDialog
-          currentStakeAvailable={currentStakeAvailable}
-          setDialogOpen={setDialogOpen}
-          requiredStake={requiredStake}
-        />
+        <CreateCodeDialog setDialogOpen={setDialogOpen} />
       </Dialog>
     </div>
   );
@@ -90,12 +72,8 @@ export const CreateCodeForm = ({
 
 const CreateCodeDialog = ({
   setDialogOpen,
-  currentStakeAvailable,
-  requiredStake,
 }: {
   setDialogOpen: (open: boolean) => void;
-  currentStakeAvailable: bigint;
-  requiredStake: bigint;
 }) => {
   const createLink = useLinks(DApp.Governance);
   const { isReadOnly, pubKey, sendTx } = useVegaWallet();
@@ -104,6 +82,9 @@ const CreateCodeDialog = ({
   const [status, setStatus] = useState<
     'idle' | 'loading' | 'success' | 'error'
   >('idle');
+
+  const { stakeAvailable: currentStakeAvailable, requiredStake } =
+    useStakeAvailable();
 
   const onSubmit = () => {
     if (isReadOnly || !pubKey) {
@@ -161,11 +142,21 @@ const CreateCodeDialog = ({
     }
   };
 
-  // TODO: Add when network parameters are updated
-  if (
-    currentStakeAvailable === BigInt(0) ||
-    currentStakeAvailable < requiredStake
-  ) {
+  if (!pubKey || currentStakeAvailable == null || requiredStake == null) {
+    return (
+      <div className="flex flex-col gap-4">
+        <p>You must be connected to the Vega wallet.</p>
+        <TradingButton
+          intent={Intent.Primary}
+          onClick={() => setDialogOpen(false)}
+        >
+          Close
+        </TradingButton>
+      </div>
+    );
+  }
+
+  if (currentStakeAvailable < requiredStake) {
     return (
       <div className="flex flex-col gap-4">
         <p>
@@ -215,10 +206,13 @@ const CreateCodeDialog = ({
         {...getButtonProps()}
       />
       {err && <InputError>{err}</InputError>}
-      {/* TODO: Add links */}
       <div className="flex justify-center pt-5 mt-2 text-sm border-t gap-4 text-default border-default">
-        <ExternalLink>About the referral program</ExternalLink>
-        <ExternalLink>Disclaimer</ExternalLink>
+        <ExternalLink href={ABOUT_REFERRAL_DOCS_LINK}>
+          About the referral program
+        </ExternalLink>
+        <ExternalLink href={DISCLAIMER_REFERRAL_DOCS_LINK}>
+          Disclaimer
+        </ExternalLink>
       </div>
     </div>
   );

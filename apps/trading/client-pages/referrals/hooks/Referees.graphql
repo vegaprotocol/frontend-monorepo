@@ -1,0 +1,12 @@
+query Referees($code: ID!) {
+  referralSetReferees(id: $code) {
+    edges {
+      node {
+        referralSetId
+        refereeId
+        joinedAt
+        atEpoch
+      }
+    }
+  }
+}

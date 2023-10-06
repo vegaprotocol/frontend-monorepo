@@ -1,0 +1,14 @@
+query ReferralSetStats($code: ID!, $epoch: Int) {
+  referralSetStats(id: $code, epoch: $epoch) {
+    edges {
+      node {
+        atEpoch
+        partyId
+        discountFactor
+        rewardFactor
+        epochNotionalTakerVolume
+        referralSetRunningNotionalTakerVolume
+      }
+    }
+  }
+}

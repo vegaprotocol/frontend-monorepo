@@ -1,54 +1,14 @@
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
+import { useCallback } from 'react';
+import { ReferrerDocument } from './__generated__/Referrer';
+import { RefereeDocument } from './__generated__/Referee';
+import { useRefereesQuery } from './__generated__/Referees';
+import compact from 'lodash/compact';
 
-const REFERRER_QUERY = gql`
-  query ReferralSets($partyId: ID!) {
-    referralSets(referrer: $partyId) {
-      edges {
-        node {
-          id
-          referrer
-          createdAt
-          updatedAt
-        }
-      }
-    }
-  }
-`;
-
-const REFEREE_QUERY = gql`
-  query ReferralSets($partyId: ID!) {
-    referralSets(referee: $partyId) {
-      edges {
-        node {
-          id
-          referrer
-          createdAt
-          updatedAt
-        }
-      }
-    }
-  }
-`;
-
-const REFEREES_QUERY = gql`
-  query ReferralSets($code: ID!) {
-    referralSetReferees(id: $code) {
-      edges {
-        node {
-          referralSetId
-          refereeId
-          joinedAt
-          atEpoch
-        }
-      }
-    }
-  }
-`;
-
-// TODO: generate types after perps work is merged
 export type ReferralData = {
   code: string;
+  createdAt: string;
   referees: Array<{
     refereeId: string;
     joinedAt: string;
@@ -61,14 +21,15 @@ export const useReferral = (
   role: 'referrer' | 'referee'
 ) => {
   const query = {
-    referrer: REFERRER_QUERY,
-    referee: REFEREE_QUERY,
+    referrer: ReferrerDocument,
+    referee: RefereeDocument,
   };
 
   const {
     data: referralData,
     loading: referralLoading,
     error: referralError,
+    refetch: referralRefetch,
   } = useQuery(query[role], {
     variables: {
       partyId: pubKey,
@@ -86,7 +47,8 @@ export const useReferral = (
     data: refereesData,
     loading: refereesLoading,
     error: refereesError,
-  } = useQuery(REFEREES_QUERY, {
+    refetch: refereesRefetch,
+  } = useRefereesQuery({
     variables: {
       code: referral?.id,
     },
@@ -94,14 +56,20 @@ export const useReferral = (
     fetchPolicy: 'cache-and-network',
   });
 
-  const referees = removePaginationWrapper(
-    refereesData?.referralSetReferees.edges
+  const referees = compact(
+    removePaginationWrapper(refereesData?.referralSetReferees.edges)
   );
+
+  const refetch = useCallback(() => {
+    referralRefetch();
+    refereesRefetch();
+  }, [refereesRefetch, referralRefetch]);
 
   const data =
     referral && refereesData
       ? {
           code: referral.id,
+          createdAt: referral.createdAt,
           referees,
         }
       : undefined;
@@ -110,5 +78,6 @@ export const useReferral = (
     data: data as ReferralData | undefined,
     loading: referralLoading || refereesLoading,
     error: referralError || refereesError,
+    refetch,
   };
 };

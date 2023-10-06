@@ -1,0 +1,12 @@
+query Referee($partyId: ID!) {
+  referralSets(referee: $partyId) {
+    edges {
+      node {
+        id
+        referrer
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}

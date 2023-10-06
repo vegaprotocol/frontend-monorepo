@@ -16,20 +16,23 @@ export const RainbowButton = ({
 }: RainbowButtonProps & ButtonHTMLAttributes<HTMLButtonElement>) => (
   <button
     className={classNames(
-      'bg-rainbow hover:bg-none hover:bg-rainbow enabled:hover:bg-vega-pink-500 rounded-lg overflow-hidden disabled:opacity-40',
+      'bg-rainbow rounded-lg overflow-hidden disabled:opacity-40',
+      'hover:bg-rainbow-180 hover:animate-spin-rainbow',
       {
         'px-5 py-3 text-white': variant === 'full',
         'p-[0.125rem]': variant === 'border',
-      },
-      className
+      }
     )}
     {...props}
   >
     <div
-      className={classNames({
-        'bg-white dark:bg-vega-cdark-900 text-black dark:text-white px-5 py-3 rounded-[0.35rem] overflow-hidden':
-          variant === 'border',
-      })}
+      className={classNames(
+        {
+          'bg-vega-clight-800 dark:bg-vega-cdark-800 text-black dark:text-white px-5 py-3 rounded-[0.35rem] overflow-hidden':
+            variant === 'border',
+        },
+        className
+      )}
     >
       {children}
     </div>
@@ -54,6 +57,20 @@ const DISABLED_RAINBOW_TAB_STYLE = classNames(
   'data-[state="active"]:text-white',
   '[&.active]:text-white'
 );
+
+const TAB_STYLE = classNames(
+  'inline-block',
+  'bg-transparent',
+  'text-vega-clight-200 dark:text-vega-cdark-200',
+  'hover:text-vega-clight-100 dark:hover:text-vega-cdark-100',
+  'data-[state="active"]:text-black dark:data-[state="active"]:text-white',
+  'data-[state="active"]:border-b-2 data-[state="active"]:border-b-black dark:data-[state="active"]:border-b-white',
+  '[&.active]:text-black dark:[&.active]:text-white',
+  '[&.active]:border-b-2 [&.active]:border-b-black dark:[&.active]:border-b-white',
+  'mx-4 px-0 py-3',
+  'uppercase'
+);
+const DISABLED_TAB_STYLE = classNames('pointer-events-none');
 
 export const RainbowTabButton = forwardRef<
   HTMLButtonElement,
@@ -85,6 +102,26 @@ export const RainbowTabLink = ({
     className={classNames(
       RAINBOW_TAB_STYLE,
       disabled && DISABLED_RAINBOW_TAB_STYLE,
+      typeof className === 'string' ? className : undefined
+    )}
+    {...props}
+  >
+    {children}
+  </NavLink>
+);
+
+export const TabLink = ({
+  to,
+  children,
+  className,
+  disabled = false,
+  ...props
+}: { disabled?: boolean } & ComponentProps<typeof NavLink>) => (
+  <NavLink
+    to={to}
+    className={classNames(
+      TAB_STYLE,
+      disabled && DISABLED_TAB_STYLE,
       typeof className === 'string' ? className : undefined
     )}
     {...props}

@@ -8,14 +8,19 @@ import type { FieldValues } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import classNames from 'classnames';
 import { Navigate, useSearchParams } from 'react-router-dom';
+import type { ButtonHTMLAttributes, MouseEventHandler } from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { Button } from './buttons';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { RainbowButton } from './buttons';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useReferral } from './hooks/use-referral';
 import { Routes } from '../../lib/links';
 import { useTransactionEventSubscription } from '@vegaprotocol/web3';
 
 export const ApplyCodeForm = () => {
+  const openWalletDialog = useVegaWalletDialogStore(
+    (store) => store.openVegaWalletDialog
+  );
+
   const [status, setStatus] = useState<
     'requested' | 'failed' | 'successful' | null
   >(null);
@@ -65,9 +70,13 @@ export const ApplyCodeForm = () => {
         if (err.message.includes('user rejected')) {
           setStatus(null);
         } else {
+          setStatus(null);
           setError('code', {
             type: 'required',
-            message: 'Your code has been rejected',
+            message:
+              err instanceof Error
+                ? err.message
+                : 'Your code has been rejected',
           });
         }
       });
@@ -117,10 +126,23 @@ export const ApplyCodeForm = () => {
   }
 
   const getButtonProps = () => {
-    if (isReadOnly || !pubKey) {
+    if (!pubKey) {
+      return {
+        disabled: false,
+        children: 'Connect wallet',
+        type: 'button' as ButtonHTMLAttributes<HTMLButtonElement>['type'],
+        onClick: ((event) => {
+          event.preventDefault();
+          openWalletDialog();
+        }) as MouseEventHandler,
+      };
+    }
+
+    if (isReadOnly) {
       return {
         disabled: true,
-        children: 'Apply',
+        children: 'Apply a code',
+        type: 'submit' as ButtonHTMLAttributes<HTMLButtonElement>['type'],
       };
     }
 
@@ -128,42 +150,46 @@ export const ApplyCodeForm = () => {
       return {
         disabled: true,
         children: 'Confirm in wallet...',
+        type: 'submit' as ButtonHTMLAttributes<HTMLButtonElement>['type'],
       };
     }
 
     return {
       disabled: false,
-      children: 'Apply',
+      children: 'Apply a code',
+      type: 'submit' as ButtonHTMLAttributes<HTMLButtonElement>['type'],
     };
   };
 
   return (
-    <div className="w-1/2 mx-auto">
-      <h3 className="mb-5 text-xl text-center uppercase calt">
-        Apply a referral code
-      </h3>
-      <p className="mb-6 text-center">Enter a referral code</p>
+    <div className="w-2/3 max-w-md mx-auto bg-vega-clight-800 dark:bg-vega-cdark-800 p-8 rounded-lg">
+      <h3 className="mb-4 text-2xl text-center calt">Apply a referral code</h3>
+      <p className="mb-4 text-center text-base">
+        Enter a referral code to get trading discounts.
+      </p>
       <form
-        className={classNames('w-full flex flex-col gap-3', {
+        className={classNames('w-full flex flex-col gap-4', {
           'animate-shake': Boolean(errors.code),
         })}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <label className="flex-grow">
-          <span className="block mb-1 text-sm text-vega-clight-100 dark:text-vega-cdark-100">
-            Your referral code
-          </span>
+        <label>
+          <span className="sr-only">Your referral code</span>
           <Input
             hasError={Boolean(errors.code)}
             {...register('code', {
               required: 'You have to provide a code to apply it.',
             })}
+            placeholder="Enter a code"
+            className="mb-2 bg-vega-clight-900 dark:bg-vega-cdark-700"
           />
         </label>
-        <Button className="w-full" type="submit" {...getButtonProps()} />
+        <RainbowButton variant="border" {...getButtonProps()} />
       </form>
       {errors.code && (
-        <InputError>{errors.code.message?.toString()}</InputError>
+        <InputError className="break-words overflow-auto">
+          {errors.code.message?.toString()}
+        </InputError>
       )}
     </div>
   );
