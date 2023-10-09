@@ -270,7 +270,8 @@ export const AccountTable = ({
                     onClickDeposit && onClickDeposit(assetId);
                   }}
                 >
-                  <VegaIcon name={VegaIconNames.DEPOSIT} /> {t('Deposit')}
+                  <VegaIcon name={VegaIconNames.DEPOSIT} size={14} />{' '}
+                  {t('Deposit')}
                 </TradingButton>
               </CenteredGridCellWrapper>
             );
