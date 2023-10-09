@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import type { MockedResponse } from '@apollo/client/testing';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { EstimatePositionDocument } from './__generated__/Positions';
 import type { EstimatePositionQuery } from './__generated__/Positions';
