@@ -23,6 +23,8 @@ export const marketInfoQuery = (
           description: '',
         },
       },
+      linearSlippageFactor: '0.01',
+      quadraticSlippageFactor: '0.0001',
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         open: '2022-11-15T02:15:24.543614154Z',

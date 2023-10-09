@@ -61,8 +61,8 @@ export const KeyValueTableRow = ({
   numerical,
   inline = true,
   noBorder = false,
-  dtClassName,
-  ddClassName,
+  dtClassName = 'text-sm',
+  ddClassName = 'text-sm',
   id,
 }: KeyValueTableRowProps) => {
   const dlClassName = classNames(
@@ -74,9 +74,13 @@ export const KeyValueTableRow = ({
     { 'flex-row items-center': inline },
     className
   );
-  const dtClassNames = `break-words ${dtClassName}`;
+  const dtClassNames = classNames(
+    'break-words',
+    dtClassName,
+    'text-neutral-500 dark:text-neutral-300'
+  );
   const ddClassNames = classNames(
-    'break-words text-neutral-500 dark:text-neutral-300',
+    'break-words',
     {
       'font-mono': numerical,
     },

@@ -44,8 +44,6 @@ export const Row = ({
   // a specific parentValue is missing. These values are only used when we
   // have successor market parent data.
 
-  const className = 'text-sm';
-
   const getFormattedValue = (value: ReactNode) => {
     if (typeof value !== 'string' && typeof value !== 'number') return value;
     if (unformatted || isNaN(Number(value))) {
@@ -71,13 +69,7 @@ export const Row = ({
   const valueDiffersFromParentMarket = parentValue && parentValue !== value;
 
   return (
-    <KeyValueTableRow
-      key={field}
-      inline={true}
-      noBorder={noBorder}
-      dtClassName={className}
-      ddClassName={className}
-    >
+    <KeyValueTableRow key={field} inline={true} noBorder={noBorder}>
       <div className="flex items-center gap-3">
         <Tooltip description={tooltipMapping[field]} align="start">
           <div tabIndex={-1}>{startCase(t(field))}</div>
