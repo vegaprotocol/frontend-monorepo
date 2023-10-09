@@ -259,11 +259,9 @@ export const DealTicketMarginDetails = ({
         ? liquidationEstimateWorstCaseIncludingBuyOrders
         : liquidationEstimateWorstCaseIncludingSellOrders;
 
-    // The estimate order query API gives us the liquidation price in formatted by asset decimals.
-    // We need to calculate it with asset decimals, but display it with market decimals precision until the API changes.
     liquidationPriceEstimate = formatValue(
       liquidationEstimateWorstCase.toString(),
-      assetDecimals,
+      market.decimalPlaces,
       undefined,
       market.decimalPlaces
     );
@@ -276,7 +274,7 @@ export const DealTicketMarginDetails = ({
         ? liquidationEstimateBestCase
         : liquidationEstimateWorstCase
       ).toString(),
-      assetDecimals,
+      market.decimalPlaces,
       undefined,
       market.decimalPlaces
     );
@@ -308,7 +306,7 @@ export const DealTicketMarginDetails = ({
                 key={'value-dropdown'}
                 className="flex items-center justify-between w-full gap-2"
               >
-                <div className="flex items-center gap-1 text-left">
+                <div className="flex items-center text-left gap-1">
                   <Tooltip description={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}>
                     <span className="text-muted">{t('Margin required')}</span>
                   </Tooltip>
