@@ -49,6 +49,11 @@ query EstimatePosition(
     openVolume: $openVolume
     orders: $orders
     collateralAvailable: $collateralAvailable
+    # Everywhere in the codebase we expect price values of the underlying to have the right
+    # number of digits for formatting with market.decimalPlaces. By default the estimatePosition
+    # query will return a full value requiring formatting using asset.decimals. For consistency
+    # we can set this variable to true so that we can format with market.decimalPlaces
+    scaleLiquidationPriceToMarketDecimals: true
   ) {
     margin {
       worstCase {

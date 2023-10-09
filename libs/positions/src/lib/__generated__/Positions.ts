@@ -130,6 +130,7 @@ export const EstimatePositionDocument = gql`
     openVolume: $openVolume
     orders: $orders
     collateralAvailable: $collateralAvailable
+    scaleLiquidationPriceToMarketDecimals: true
   ) {
     margin {
       worstCase {
