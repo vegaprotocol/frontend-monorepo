@@ -93,6 +93,11 @@ export const ProposalHeader = ({
       );
       break;
     }
+    case 'UpdateReferralProgram': {
+      proposalType = 'UpdateReferralProgram';
+      fallbackTitle = t('UpdateReferralProgramProposal');
+      break;
+    }
     case 'NewAsset': {
       proposalType = 'NewAsset';
       fallbackTitle = t('NewAssetProposal');
