@@ -69,7 +69,13 @@ export const Row = ({
   const valueDiffersFromParentMarket = parentValue && parentValue !== value;
 
   return (
-    <KeyValueTableRow key={field} inline={true} noBorder={noBorder}>
+    <KeyValueTableRow
+      key={field}
+      inline={true}
+      noBorder={noBorder}
+      dtClassName="text-xs"
+      ddClassName="text-xs"
+    >
       <div className="flex items-center gap-3">
         <Tooltip description={tooltipMapping[field]} align="start">
           <div tabIndex={-1}>{startCase(t(field))}</div>

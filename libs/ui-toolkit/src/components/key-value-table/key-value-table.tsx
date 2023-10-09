@@ -61,8 +61,8 @@ export const KeyValueTableRow = ({
   numerical,
   inline = true,
   noBorder = false,
-  dtClassName = 'text-sm',
-  ddClassName = 'text-sm',
+  dtClassName,
+  ddClassName,
   id,
 }: KeyValueTableRowProps) => {
   const dlClassName = classNames(

@@ -453,8 +453,8 @@ export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
         asset={asset}
         inline={true}
         noBorder={true}
-        dtClassName="text-black dark:text-white text-ui !px-0 !font-normal"
-        ddClassName="text-black dark:text-white text-ui !px-0 !font-normal max-w-full"
+        dtClassName="text-black dark:text-white text-ui !px-0 text-xs"
+        ddClassName="text-black dark:text-white text-ui !px-0 max-w-full text-xs"
       />
       <p className="mt-4 text-xs">
         {t(
