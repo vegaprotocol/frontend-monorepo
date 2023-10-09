@@ -78,7 +78,7 @@ export const Portfolio = () => {
               <Tab id="fills" name={t('Fills')}>
                 <FillsContainer />
               </Tab>
-              <Tab id="fills" name={t('Funding payments')}>
+              <Tab id="funding-payments" name={t('Funding payments')}>
                 <FundingPaymentsContainer />
               </Tab>
               <Tab id="ledger-entries" name={t('Ledger entries')}>
