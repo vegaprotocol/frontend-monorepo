@@ -33,7 +33,7 @@ import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import { AccountsActionsDropdown } from './accounts-actions-dropdown';
 
-const colorClass = (percentageUsed: number, neutral = false) => {
+const colorClass = (percentageUsed: number) => {
   return classNames('text-right', {
     'text-vega-orange': percentageUsed >= 75 && percentageUsed < 90,
     'text-vega-red': percentageUsed >= 90,
@@ -210,7 +210,7 @@ export const AccountTable = ({
         },
         cellClass: ({ data }) => {
           const percentageUsed = percentageValue(data?.used, data?.total);
-          return colorClass(percentageUsed, true);
+          return colorClass(percentageUsed);
         },
         valueFormatter: ({
           value,
