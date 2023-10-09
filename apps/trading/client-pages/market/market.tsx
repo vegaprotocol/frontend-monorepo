@@ -110,37 +110,37 @@ export const MarketPage = ({ closed }: { closed?: boolean }) => {
     }
   }, [largeScreen, data, pinnedAsset]);
 
-  if (!data && marketId) {
-    return (
-      <Splash>
-        <span className="flex flex-col items-center gap-2">
-          <p className="justify-center text-sm">
-            {t('This market URL is not available any more.')}
-          </p>
-          <p className="justify-center text-sm">
-            {t(`Please choose another market from the`)}{' '}
-            <ExternalLink onClick={() => navigate(Links.MARKETS())}>
-              market list
-            </ExternalLink>
-          </p>
-        </span>
-      </Splash>
-    );
-  }
-
   return (
     <AsyncRenderer
       loading={loading}
       error={error}
       data={data || undefined}
-      noDataCondition={(data) => false}
+      noDataCondition={() => false}
     >
-      <TitleUpdater
-        marketId={data?.id}
-        marketName={data?.tradableInstrument.instrument.name}
-        decimalPlaces={data?.decimalPlaces}
-      />
-      {tradeView}
+      {data ? (
+        <>
+          <TitleUpdater
+            marketId={data?.id}
+            marketName={data?.tradableInstrument.instrument.name}
+            decimalPlaces={data?.decimalPlaces}
+          />
+          {tradeView}
+        </>
+      ) : (
+        <Splash>
+          <span className="flex flex-col items-center gap-2">
+            <p className="justify-center text-sm">
+              {t('This market URL is not available any more.')}
+            </p>
+            <p className="justify-center text-sm">
+              {t(`Please choose another market from the`)}{' '}
+              <ExternalLink onClick={() => navigate(Links.MARKETS())}>
+                {t('market list')}
+              </ExternalLink>
+            </p>
+          </span>
+        </Splash>
+      )}
     </AsyncRenderer>
   );
 };
