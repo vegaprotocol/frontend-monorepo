@@ -57,6 +57,7 @@ export const ProposalContainer = () => {
       proposalId: params.proposalId || '',
       includeNewMarketProductField: !!FLAGS.PRODUCT_PERPETUALS,
       includeUpdateMarketState: !!FLAGS.UPDATE_MARKET_STATE,
+      includeUpdateReferralProgram: !!FLAGS.REFERRALS,
     },
     skip: !params.proposalId,
   });

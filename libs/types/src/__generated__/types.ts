@@ -505,6 +505,29 @@ export type CoreSnapshotEdge = {
   node: CoreSnapshotData;
 };
 
+/** Referral program information reported by data node with additional endedAt timestamp. */
+export type CurrentReferralProgram = {
+  __typename?: 'CurrentReferralProgram';
+  /** Defined tiers in increasing order. First element will give Tier 1, second element will give Tier 2, etc. */
+  benefitTiers: Array<BenefitTier>;
+  /** Timestamp as RFC3339Nano, after which when the current epoch ends, the program will end and benefits will be disabled. */
+  endOfProgramTimestamp: Scalars['Timestamp'];
+  /** Timestamp as RFC3339Nano when the program ended. If present, the current program has ended and no program is currently running. */
+  endedAt?: Maybe<Scalars['Timestamp']>;
+  /** Unique ID generated from the proposal that created this program. */
+  id: Scalars['ID'];
+  /**
+   * Defined staking tiers in increasing order. First element will give Tier 1,
+   * second element will give Tier 2, and so on. Determines the level of
+   * benefit a party can expect based on their staking.
+   */
+  stakingTiers: Array<StakingTier>;
+  /** Incremental version of the program. It is incremented each time the referral program is edited. */
+  version: Scalars['Int'];
+  /** Number of epochs over which to evaluate a referral set's running volume. */
+  windowLength: Scalars['Int'];
+};
+
 /** A data source contains the data sent by a data source */
 export type Data = {
   __typename?: 'Data';
@@ -1264,6 +1287,39 @@ export type Filter = {
   key: PropertyKey;
 };
 
+/** The funding payment from a perpetual market. */
+export type FundingPayment = {
+  __typename?: 'FundingPayment';
+  /** Amount transferred */
+  amount?: Maybe<Scalars['String']>;
+  /** Sequence number of the funding period the funding payment belongs to. */
+  fundingPeriodSeq: Scalars['Int'];
+  /** Market the funding payment applies to. */
+  marketId: Scalars['ID'];
+  /** Party the funding payment applies to. */
+  partyId: Scalars['ID'];
+  /** RFC3339Nano timestamp when the data point was received. */
+  timestamp: Scalars['Timestamp'];
+};
+
+/** Connection type for funding payment */
+export type FundingPaymentConnection = {
+  __typename?: 'FundingPaymentConnection';
+  /** List of funding payments */
+  edges: Array<FundingPaymentEdge>;
+  /** Pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type for funding payment */
+export type FundingPaymentEdge = {
+  __typename?: 'FundingPaymentEdge';
+  /** Cursor identifying the funding payment */
+  cursor: Scalars['String'];
+  /** The funding payment */
+  node: FundingPayment;
+};
+
 /** Details of a funding interval for a perpetual market. */
 export type FundingPeriod = {
   __typename?: 'FundingPeriod';
@@ -1607,6 +1663,8 @@ export type LiquidityProvider = {
   marketId: Scalars['ID'];
   /** Party ID of the liquidity provider */
   partyId: Scalars['ID'];
+  /** SLA performance statistics */
+  sla?: Maybe<LiquidityProviderSLA>;
 };
 
 /** Connection type for retrieving cursor-based paginated liquidity provider information */
@@ -1640,6 +1698,29 @@ export type LiquidityProviderFeeShare = {
   party: Party;
   /** The virtual stake for this liquidity provider */
   virtualStake: Scalars['String'];
+};
+
+/** The SLA statistics for each liquidity provider */
+export type LiquidityProviderSLA = {
+  __typename?: 'LiquidityProviderSLA';
+  /** Indicates how often LP meets the commitment during the current epoch. */
+  currentEpochFractionOfTimeOnBook: Scalars['String'];
+  /** Determines how the fee penalties from past epochs affect future fee revenue. */
+  hysteresisPeriodFeePenalties?: Maybe<Array<Scalars['String']>>;
+  /** Indicates the bond penalty amount applied in the previous epoch. */
+  lastEpochBondPenalty: Scalars['String'];
+  /** Indicates the fee penalty amount applied in the previous epoch. */
+  lastEpochFeePenalty: Scalars['String'];
+  /** Indicates how often LP met the commitment in the previous epoch. */
+  lastEpochFractionOfTimeOnBook: Scalars['String'];
+  /** Notional volume of orders within the range provided on the buy side of the book. */
+  notionalVolumeBuys: Scalars['String'];
+  /** Notional volume of orders within the range provided on the sell side of the book. */
+  notionalVolumeSells: Scalars['String'];
+  /** The liquidity provider party ID */
+  party: Party;
+  /** Represents the total amount of funds LP must supply. The amount to be supplied is in the market’s settlement currency, spread on both buy and sell sides of the order book within a defined range. */
+  requiredLiquidity: Scalars['String'];
 };
 
 /** The command to be sent to the chain for a liquidity provision submission */
@@ -2030,6 +2111,8 @@ export type MarketData = {
   lastTradedPrice: Scalars['String'];
   /** The equity like share of liquidity fee for each liquidity provider */
   liquidityProviderFeeShare?: Maybe<Array<LiquidityProviderFeeShare>>;
+  /** SLA performance statistics */
+  liquidityProviderSla?: Maybe<Array<LiquidityProviderSLA>>;
   /** The mark price (an unsigned integer) */
   markPrice: Scalars['String'];
   /** Market of the associated mark price */
@@ -2562,6 +2645,29 @@ export type ObservableLiquidityProviderFeeShare = {
   partyId: Scalars['ID'];
 };
 
+/** The SLA statistics for each liquidity provider */
+export type ObservableLiquidityProviderSLA = {
+  __typename?: 'ObservableLiquidityProviderSLA';
+  /** Indicates how often LP meets the commitment during the current epoch. */
+  currentEpochFractionOfTimeOnBook: Scalars['String'];
+  /** Determines how the fee penalties from past epochs affect future fee revenue. */
+  hysteresisPeriodFeePenalties?: Maybe<Array<Scalars['String']>>;
+  /** Indicates the bond penalty amount applied in the previous epoch. */
+  lastEpochBondPenalty: Scalars['String'];
+  /** Indicates the fee penalty amount applied in the previous epoch. */
+  lastEpochFeePenalty: Scalars['String'];
+  /** Indicates how often LP meets the commitment during last epoch. */
+  lastEpochFractionOfTimeOnBook: Scalars['String'];
+  /** Notional volume of orders within the range provided on the buy side of the book. */
+  notionalVolumeBuys: Scalars['String'];
+  /** Notional volume of orders within the range provided on the sell side of the book. */
+  notionalVolumeSells: Scalars['String'];
+  /** The liquidity provider party ID */
+  party: Scalars['ID'];
+  /** Represents the total amount of funds LP must supply. The amount to be supplied is in the market’s settlement currency, spread on both buy and sell sides of the order book within a defined range. */
+  requiredLiquidity: Scalars['String'];
+};
+
 /** Live data of a Market */
 export type ObservableMarketData = {
   __typename?: 'ObservableMarketData';
@@ -2595,6 +2701,8 @@ export type ObservableMarketData = {
   lastTradedPrice: Scalars['String'];
   /** The equity like share of liquidity fee for each liquidity provider */
   liquidityProviderFeeShare?: Maybe<Array<ObservableLiquidityProviderFeeShare>>;
+  /** SLA performance statistics */
+  liquidityProviderSla?: Maybe<Array<ObservableLiquidityProviderSLA>>;
   /** The mark price (an unsigned integer) */
   markPrice: Scalars['String'];
   /** The market growth factor for the last market time window */
@@ -3289,6 +3397,15 @@ export type PartyActivityStreak = {
   tradedVolume: Scalars['String'];
 };
 
+/** An amount received by a party as a reward or a discount */
+export type PartyAmount = {
+  __typename?: 'PartyAmount';
+  /** Amount received by the party */
+  amount: Scalars['String'];
+  /** Id of the party that received the payment */
+  partyId: Scalars['String'];
+};
+
 /** Connection type for retrieving cursor-based paginated party information */
 export type PartyConnection = {
   __typename?: 'PartyConnection';
@@ -3861,6 +3978,8 @@ export type ProposalTerms = {
 
 /** Various proposal types that are supported by Vega */
 export enum ProposalType {
+  /** Proposal to cancel a transfer */
+  TYPE_CANCEL_TRANSFER = 'TYPE_CANCEL_TRANSFER',
   /** Proposal to change Vega network parameters */
   TYPE_NETWORK_PARAMETERS = 'TYPE_NETWORK_PARAMETERS',
   /** Proposal to add a new asset */
@@ -3869,10 +3988,22 @@ export enum ProposalType {
   TYPE_NEW_FREE_FORM = 'TYPE_NEW_FREE_FORM',
   /** Propose a new market */
   TYPE_NEW_MARKET = 'TYPE_NEW_MARKET',
+  /** Propose a new spot market */
+  TYPE_NEW_SPOT_MARKET = 'TYPE_NEW_SPOT_MARKET',
+  /** Propose a new transfer */
+  TYPE_NEW_TRANSFER = 'TYPE_NEW_TRANSFER',
   /** Proposal to update an existing asset */
   TYPE_UPDATE_ASSET = 'TYPE_UPDATE_ASSET',
   /** Update an existing market */
-  TYPE_UPDATE_MARKET = 'TYPE_UPDATE_MARKET'
+  TYPE_UPDATE_MARKET = 'TYPE_UPDATE_MARKET',
+  /** Proposal for updating the state of a market */
+  TYPE_UPDATE_MARKET_STATE = 'TYPE_UPDATE_MARKET_STATE',
+  /** Proposal to update the referral program */
+  TYPE_UPDATE_REFERRAL_PROGRAM = 'TYPE_UPDATE_REFERRAL_PROGRAM',
+  /** Update an existing spot market */
+  TYPE_UPDATE_SPOT_MARKET = 'TYPE_UPDATE_SPOT_MARKET',
+  /** Proposal to update the volume discount program */
+  TYPE_UPDATE_VOLUME_DISCOUNT_PROGRAM = 'TYPE_UPDATE_VOLUME_DISCOUNT_PROGRAM'
 }
 
 export type ProposalVote = {
@@ -3998,7 +4129,9 @@ export type Query = {
   /** List core snapshots */
   coreSnapshots?: Maybe<CoreSnapshotConnection>;
   /** Get the current referral program */
-  currentReferralProgram?: Maybe<ReferralProgram>;
+  currentReferralProgram?: Maybe<CurrentReferralProgram>;
+  /** Get the current volume discount program */
+  currentVolumeDiscountProgram?: Maybe<VolumeDiscountProgram>;
   /** Find a deposit using its ID */
   deposit?: Maybe<Deposit>;
   /** Fetch all deposits */
@@ -4030,6 +4163,8 @@ export type Query = {
   estimatePosition?: Maybe<PositionEstimate>;
   /** Query for historic ethereum key rotations */
   ethereumKeyRotations: EthereumKeyRotationsConnection;
+  /** Funding payment for perpetual markets. */
+  fundingPayments: FundingPaymentConnection;
   /**
    * Funding period data points for a perpetual market. The data points within a funding period are used to calculate the
    * time-weighted average price (TWAP), funding rate and funding payments for each funding period.
@@ -4095,7 +4230,11 @@ export type Query = {
   protocolUpgradeProposals?: Maybe<ProtocolUpgradeProposalConnection>;
   /** Flag indicating whether the data-node is ready to begin the protocol upgrade */
   protocolUpgradeStatus?: Maybe<ProtocolUpgradeStatus>;
+  /** Get referrer fee and discount stats */
+  referralFeeStats?: Maybe<ReferralSetFeeStats>;
   referralSetReferees: ReferralSetRefereeConnection;
+  /** Get referral set statistics */
+  referralSetStats: ReferralSetStatsConnection;
   /** List referral sets */
   referralSets: ReferralSetConnection;
   /** Get statistics about the Vega node */
@@ -4124,6 +4263,8 @@ export type Query = {
   transfer?: Maybe<Transfer>;
   /** Get a list of all transfers for a public key */
   transfersConnection?: Maybe<TransferConnection>;
+  /** Get volume discount statistics */
+  volumeDiscountStats: VolumeDiscountStatsConnection;
   /** Find a withdrawal using its ID */
   withdrawal?: Maybe<Withdrawal>;
   /** Fetch all withdrawals */
@@ -4259,12 +4400,21 @@ export type QueryestimatePositionArgs = {
   marketId: Scalars['ID'];
   openVolume: Scalars['String'];
   orders?: InputMaybe<Array<OrderInfo>>;
+  scaleLiquidationPriceToMarketDecimals?: InputMaybe<Scalars['Boolean']>;
 };
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryethereumKeyRotationsArgs = {
   nodeId?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryfundingPaymentsArgs = {
+  marketId?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<Pagination>;
+  partyId: Scalars['ID'];
 };
 
 
@@ -4451,11 +4601,28 @@ export type QueryprotocolUpgradeProposalsArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryreferralFeeStatsArgs = {
+  assetId?: InputMaybe<Scalars['ID']>;
+  epoch?: InputMaybe<Scalars['Int']>;
+  marketId?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryreferralSetRefereesArgs = {
   id?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
   referee?: InputMaybe<Scalars['ID']>;
   referrer?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryreferralSetStatsArgs = {
+  epoch?: InputMaybe<Scalars['Int']>;
+  id: Scalars['ID'];
+  pagination?: InputMaybe<Pagination>;
+  partyId?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -4534,6 +4701,14 @@ export type QuerytransfersConnectionArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryvolumeDiscountStatsArgs = {
+  epoch?: InputMaybe<Scalars['Int']>;
+  pagination?: InputMaybe<Pagination>;
+  partyId?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerywithdrawalArgs = {
   id: Scalars['ID'];
 };
@@ -4591,25 +4766,13 @@ export type RecurringTransfer = {
   startEpoch: Scalars['Int'];
 };
 
-export type RefereeStats = {
-  __typename?: 'RefereeStats';
-  /** Discount factor applied to the party. */
-  discountFactor: Scalars['String'];
-  /** Unique ID of the party. */
-  partyId: Scalars['ID'];
-  /** Reward factor applied to the party. */
-  rewardFactor: Scalars['String'];
-};
-
 /** Referral program information */
 export type ReferralProgram = {
   __typename?: 'ReferralProgram';
   /** Defined tiers in increasing order. First element will give Tier 1, second element will give Tier 2, etc. */
   benefitTiers: Array<BenefitTier>;
-  /** Timestamp as RFC3339Nano, after which when the current epoch ends, the programs status will become STATE_CLOSED and benefits will be disabled. */
-  endOfProgramTimestamp: Scalars['Timestamp'];
-  /** Timestamp as RFC3339Nano when the program ended. If present, the current program has ended and no program is currently running. */
-  endedAt?: Maybe<Scalars['Timestamp']>;
+  /** Timestamp as RFC3339, after which when the current epoch ends, the programs will end and benefits will be disabled. */
+  endOfProgramTimestamp: Scalars['String'];
   /** Unique ID generated from the proposal that created this program. */
   id: Scalars['ID'];
   /**
@@ -4633,20 +4796,8 @@ export type ReferralSet = {
   id: Scalars['ID'];
   /** Party that created the set. */
   referrer: Scalars['ID'];
-  /**
-   * Referral set statistics for the latest or specific epoch.
-   * If provided the results can be filtered for a specific referee
-   */
-  stats?: Maybe<ReferralSetStats>;
   /** Timestamp as RFC3339Nano when the referral set was updated. */
   updatedAt: Scalars['Timestamp'];
-};
-
-
-/** Data relating to a referral set. */
-export type ReferralSetstatsArgs = {
-  epoch?: InputMaybe<Scalars['Int']>;
-  referee?: InputMaybe<Scalars['ID']>;
 };
 
 /** Connection type for retrieving cursor-based paginated referral set information */
@@ -4665,6 +4816,25 @@ export type ReferralSetEdge = {
   cursor: Scalars['String'];
   /** The referral set */
   node: ReferralSet;
+};
+
+/** Referral rewards and discounts that have been applied on a specific market/asset up to the given epoch. */
+export type ReferralSetFeeStats = {
+  __typename?: 'ReferralSetFeeStats';
+  /** The settlement asset of the market. */
+  assetId: Scalars['String'];
+  /** The epoch for which these stats were valid. */
+  epoch: Scalars['Int'];
+  /** The market the fees were paid in */
+  marketId: Scalars['String'];
+  /** The total referral discounts applied to all referee taker fees */
+  refereesDiscountApplied: Array<PartyAmount>;
+  /** The total referral rewards generated by all referee taker fees. */
+  referrerRewardsGenerated: Array<ReferrerRewardsGenerated>;
+  /** The total referral rewards paid to the referrer of the referral set. */
+  totalRewardsPaid: Array<PartyAmount>;
+  /** The total volume discounts applied to all referee taker fees */
+  volumeDiscountApplied: Array<PartyAmount>;
 };
 
 /** Data relating to referees that have joined a referral set */
@@ -4700,14 +4870,45 @@ export type ReferralSetRefereeEdge = {
 
 export type ReferralSetStats = {
   __typename?: 'ReferralSetStats';
-  /** Epoch at which the set's statistics are updated. */
-  atEpoch?: Maybe<Scalars['Int']>;
-  /** Referees' statistics for that epoch. */
-  referees_stats: Array<RefereeStats>;
+  /** Epoch at which the statistics are updated. */
+  atEpoch: Scalars['Int'];
+  /** Discount factor applied to the party. */
+  discountFactor: Scalars['String'];
+  /** Current referee notional taker volume */
+  epochNotionalTakerVolume: Scalars['String'];
+  /** Unique ID of the party. */
+  partyId: Scalars['ID'];
   /** Running volume for the set based on the window length of the current referral program. */
   referralSetRunningNotionalTakerVolume: Scalars['String'];
-  /** Unique ID of the set */
-  setId: Scalars['ID'];
+  /** Reward factor applied to the party. */
+  rewardFactor: Scalars['String'];
+};
+
+/** Connection type for retrieving cursor-based paginated referral set statistics information */
+export type ReferralSetStatsConnection = {
+  __typename?: 'ReferralSetStatsConnection';
+  /** The referral set statistics in this connection */
+  edges: Array<Maybe<ReferralSetStatsEdge>>;
+  /** The pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing the referral set statistics and cursor information returned by a ReferralSetStatsConnection */
+export type ReferralSetStatsEdge = {
+  __typename?: 'ReferralSetStatsEdge';
+  /** The cursor for this referral set statistics */
+  cursor: Scalars['String'];
+  /** The referral set statistics */
+  node: ReferralSetStats;
+};
+
+/** Rewards generated for referrers by each of their referees */
+export type ReferrerRewardsGenerated = {
+  __typename?: 'ReferrerRewardsGenerated';
+  /** The amount of rewards generated per party */
+  generatedReward: Array<PartyAmount>;
+  /** ID of the referral set's referrer */
+  referrerId: Scalars['String'];
 };
 
 /** Reward information for a single party */
@@ -5152,10 +5353,10 @@ export enum StopOrderRejectionReason {
   REJECTION_REASON_MAX_STOP_ORDERS_PER_PARTY_REACHED = 'REJECTION_REASON_MAX_STOP_ORDERS_PER_PARTY_REACHED',
   /** Stop orders submission must be reduce only */
   REJECTION_REASON_MUST_BE_REDUCE_ONLY = 'REJECTION_REASON_MUST_BE_REDUCE_ONLY',
-  /** This stop order does not close the position */
-  REJECTION_REASON_STOP_ORDER_DOES_NOT_CLOSE_POSITION = 'REJECTION_REASON_STOP_ORDER_DOES_NOT_CLOSE_POSITION',
   /** Stop orders are not allowed without a position */
   REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_WITHOUT_A_POSITION = 'REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_WITHOUT_A_POSITION',
+  /** This stop order does not close the position */
+  REJECTION_REASON_STOP_ORDER_NOT_CLOSING_THE_POSITION = 'REJECTION_REASON_STOP_ORDER_NOT_CLOSING_THE_POSITION',
   /** Trading is not allowed yet */
   REJECTION_REASON_TRADING_NOT_ALLOWED = 'REJECTION_REASON_TRADING_NOT_ALLOWED'
 }
@@ -5942,18 +6143,7 @@ export type UpdateProductConfiguration = UpdateFutureProduct | UpdatePerpetualPr
 
 export type UpdateReferralProgram = {
   __typename?: 'UpdateReferralProgram';
-  /** Benefit tiers for the program */
-  benefitTiers: Array<BenefitTier>;
-  /** The end time of the program */
-  endOfProgramTimestamp: Scalars['Timestamp'];
-  /** ID of the proposal that created the referral program */
-  id: Scalars['ID'];
-  /** Determines the level of benefit a party can expect based on their staking */
-  stakingTiers: Array<StakingTier>;
-  /** Current version of the referral program */
-  version: Scalars['Int'];
-  /** The window legnth to consider for the referral program */
-  windowLength: Scalars['Int'];
+  changes: ReferralProgram;
 };
 
 /** Update an existing spot market on Vega */
@@ -6009,6 +6199,53 @@ export type VolumeBenefitTier = {
   minimumRunningNotionalTakerVolume: Scalars['String'];
   /** Discount given to those in this benefit tier */
   volumeDiscountFactor: Scalars['String'];
+};
+
+/** Volume discount program information */
+export type VolumeDiscountProgram = {
+  __typename?: 'VolumeDiscountProgram';
+  /** Defined tiers in increasing order. First element will give Tier 1, second element will give Tier 2, etc. */
+  benefitTiers: Array<VolumeBenefitTier>;
+  /** Timestamp as Unix time in nanoseconds, after which when the current epoch ends, the programs will end and benefits will be disabled. */
+  endOfProgramTimestamp: Scalars['Timestamp'];
+  /** Timestamp as RFC3339Nano when the program ended. If present, the current program has ended and no program is currently running. */
+  endedAt?: Maybe<Scalars['Timestamp']>;
+  /** Unique ID generated from the proposal that created this program. */
+  id: Scalars['ID'];
+  /** Incremental version of the program. It is incremented each time the volume discount program is edited. */
+  version: Scalars['Int'];
+  /** Number of epochs over which to evaluate parties' running volume. */
+  windowLength: Scalars['Int'];
+};
+
+export type VolumeDiscountStats = {
+  __typename?: 'VolumeDiscountStats';
+  /** Epoch at which the statistics are updated. */
+  atEpoch: Scalars['Int'];
+  /** Discount factor applied to the party. */
+  discountFactor: Scalars['String'];
+  /** Unique ID of the party. */
+  partyId: Scalars['ID'];
+  /** Party's running volume. */
+  runningVolume: Scalars['String'];
+};
+
+/** Connection type for retrieving cursor-based paginated volume discount statistics information */
+export type VolumeDiscountStatsConnection = {
+  __typename?: 'VolumeDiscountStatsConnection';
+  /** The volume discount statistics in this connection */
+  edges: Array<Maybe<VolumeDiscountStatsEdge>>;
+  /** The pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing the volume discount statistics and cursor information returned by a VolumeDiscountStatsConnection */
+export type VolumeDiscountStatsEdge = {
+  __typename?: 'VolumeDiscountStatsEdge';
+  /** The cursor for this volume discount statistics */
+  cursor: Scalars['String'];
+  /** The volume discount statistics */
+  node: VolumeDiscountStats;
 };
 
 export type Vote = {

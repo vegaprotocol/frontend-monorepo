@@ -43,6 +43,31 @@ fragment UpdateMarketStates on Proposal {
   }
 }
 
+fragment UpdateReferralPrograms on Proposal {
+  terms {
+    change {
+      ... on UpdateReferralProgram {
+        changes {
+          id
+          version
+          benefitTiers {
+            minimumEpochs
+            minimumRunningNotionalTakerVolume
+            referralDiscountFactor
+            referralRewardFactor
+          }
+          endOfProgramTimestamp
+          windowLength
+          stakingTiers {
+            minimumStakedTokens
+            referralRewardMultiplier
+          }
+        }
+      }
+    }
+  }
+}
+
 fragment ProposalFields on Proposal {
   id
   rationale {
@@ -127,6 +152,7 @@ fragment ProposalFields on Proposal {
 query Proposals(
   $includeNewMarketProductFields: Boolean!
   $includeUpdateMarketStates: Boolean!
+  $includeUpdateReferralPrograms: Boolean!
 ) {
   proposalsConnection {
     edges {
@@ -134,6 +160,7 @@ query Proposals(
         ...ProposalFields
         ...NewMarketProductFields @include(if: $includeNewMarketProductFields)
         ...UpdateMarketStates @include(if: $includeUpdateMarketStates)
+        ...UpdateReferralPrograms @include(if: $includeUpdateReferralPrograms)
       }
     }
   }
