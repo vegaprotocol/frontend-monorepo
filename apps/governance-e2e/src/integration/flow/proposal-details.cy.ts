@@ -34,7 +34,6 @@ import {
 import type { testFreeformProposal } from '../../support/common-interfaces';
 import { formatDateWithLocalTimezone } from '@vegaprotocol/utils';
 import {
-  createGovernanceCancelTransferProposalTxBody,
   createGovernanceTransferProposalTxBody,
   createSuccessorMarketProposalTxBody,
 } from '../../support/proposal.functions';
