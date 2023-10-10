@@ -10,7 +10,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { useWithdrawalApprovalQuery } from '@vegaprotocol/wallet';
+import { useWithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
 import omit from 'lodash/omit';
 import { create } from 'zustand';
 

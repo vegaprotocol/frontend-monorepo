@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js';
 import { AddressField, TransferFee, TransferForm } from './transfer-form';
 import { AccountType } from '@vegaprotocol/types';
 import { addDecimal, formatNumber, removeDecimal } from '@vegaprotocol/utils';
+import userEvent from '@testing-library/user-event';
 
 describe('TransferForm', () => {
   const submit = () => fireEvent.submit(screen.getByTestId('transfer-form'));
@@ -32,6 +33,59 @@ describe('TransferForm', () => {
     feeFactor: '0.001',
     submitTransfer: jest.fn(),
   };
+
+  it('form tooltips correctly displayed', async () => {
+    // 1003-TRAN-015
+    // 1003-TRAN-016
+    // 1003-TRAN-017
+    // 1003-TRAN-018
+    // 1003-TRAN-019
+    render(<TransferForm {...props} />);
+    // Select a pubkey
+    fireEvent.change(screen.getByLabelText('Vega key'), {
+      target: { value: props.pubKeys[1] },
+    });
+
+    // Select asset
+    fireEvent.change(
+      // Bypass RichSelect and target hidden native select
+      // eslint-disable-next-line
+      document.querySelector('select[name="asset"]')!,
+      { target: { value: asset.id } }
+    );
+    // set valid amount
+    fireEvent.change(screen.getByLabelText('Amount'), {
+      target: { value: amount },
+    });
+
+    userEvent.hover(screen.getByText('Include transfer fee'));
+
+    await waitFor(() => {
+      const tooltips = screen.getAllByTestId('tooltip-content');
+      expect(tooltips[0]).toBeVisible();
+    });
+
+    userEvent.hover(screen.getByText('Transfer fee'));
+
+    await waitFor(() => {
+      const tooltips = screen.getAllByTestId('tooltip-content');
+      expect(tooltips[0]).toBeVisible();
+    });
+
+    userEvent.hover(screen.getByText('Amount to be transferred'));
+
+    await waitFor(() => {
+      const tooltips = screen.getAllByTestId('tooltip-content');
+      expect(tooltips[0]).toBeVisible();
+    });
+
+    userEvent.hover(screen.getByText('Total amount (with fee)'));
+
+    await waitFor(() => {
+      const tooltips = screen.getAllByTestId('tooltip-content');
+      expect(tooltips[0]).toBeVisible();
+    });
+  });
 
   it('validates a manually entered address', async () => {
     render(<TransferForm {...props} />);
@@ -174,6 +228,7 @@ describe('TransferForm', () => {
 
       const amountInput = screen.getByLabelText('Amount');
       const checkbox = screen.getByTestId('include-transfer-fee');
+      // 1003-TRAN-022
       expect(checkbox).not.toBeChecked();
       act(() => {
         /* fire events that update state */
@@ -190,6 +245,7 @@ describe('TransferForm', () => {
         .times(props.feeFactor)
         .toFixed();
       const expectedAmount = new BigNumber(amount).minus(expectedFee).toFixed();
+      // 1003-TRAN-020
       expect(screen.getByTestId('transfer-fee')).toHaveTextContent(expectedFee);
       expect(screen.getByTestId('transfer-amount')).toHaveTextContent(
         expectedAmount
@@ -201,6 +257,8 @@ describe('TransferForm', () => {
       submit();
 
       await waitFor(() => {
+        // 1003-TRAN-023
+
         expect(props.submitTransfer).toHaveBeenCalledTimes(1);
         expect(props.submitTransfer).toHaveBeenCalledWith({
           fromAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
@@ -263,6 +321,7 @@ describe('TransferForm', () => {
         .times(props.feeFactor)
         .toFixed();
       const total = new BigNumber(amount).plus(expectedFee).toFixed();
+      // 1003-TRAN-021
       expect(screen.getByTestId('transfer-fee')).toHaveTextContent(expectedFee);
       expect(screen.getByTestId('transfer-amount')).toHaveTextContent(amount);
       expect(screen.getByTestId('total-transfer-fee')).toHaveTextContent(total);

@@ -30,9 +30,11 @@ export const usePositionEstimate = ({
     fetchPolicy: 'no-cache',
   });
   useEffect(() => {
-    if (data) {
+    if (skip) {
+      setEstimates(undefined);
+    } else if (data) {
       setEstimates(data);
     }
-  }, [data]);
+  }, [data, skip]);
   return estimates;
 };

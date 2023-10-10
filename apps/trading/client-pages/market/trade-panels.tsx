@@ -11,6 +11,7 @@ import classNames from 'classnames';
 import {
   MarketSuccessorBanner,
   MarketSuccessorProposalBanner,
+  MarketTerminationBanner,
 } from '../../components/market-banner';
 import { FLAGS } from '@vegaprotocol/environment';
 
@@ -59,6 +60,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
             <MarketSuccessorProposalBanner marketId={market?.id} />
           </>
         )}
+        <MarketTerminationBanner market={market} />
         <OracleBanner marketId={market?.id || ''} />
       </div>
       <div>{renderMenu()}</div>

@@ -24,6 +24,8 @@ describe('TradesTable', () => {
     await act(async () => {
       render(<TradesTable rowData={[trade]} />);
     });
+    // 6005-THIS-001
+    // 6005-THIS-002
     const expectedHeaders = ['Price', 'Size', 'Created at'];
     const headers = screen.getAllByRole('columnheader');
     expect(headers).toHaveLength(expectedHeaders.length);
@@ -31,6 +33,8 @@ describe('TradesTable', () => {
   });
 
   it('should format number and data columns', async () => {
+    // 6005-THIS-003
+    // 6005-THIS-004
     await act(async () => {
       render(<TradesTable rowData={[trade]} />);
     });
@@ -72,5 +76,35 @@ describe('TradesTable', () => {
     expect(priceCells[1]).not.toHaveClass(SELL_CLASS);
     expect(sizeCells[1]).not.toHaveClass(SELL_CLASS);
     expect(sizeCells[1]).not.toHaveClass(BUY_CLASS);
+  });
+
+  it('should be in created at desc order', async () => {
+    // 6005-THIS-005
+    // 6005-THIS-006
+    const earlierDate = new Date(trade.createdAt);
+    earlierDate.setMinutes(earlierDate.getMinutes() - 1);
+    const trade2 = {
+      ...trade,
+      id: 'trade-id-2',
+      price: (Number(trade.price) + 10).toString(),
+      size: (Number(trade.size) - 10).toString(),
+      createdAt: earlierDate.toISOString(),
+    };
+
+    await act(async () => {
+      render(<TradesTable rowData={[trade2, trade]} />);
+    });
+
+    const cells = screen.getAllByRole('gridcell');
+
+    const createdAtCells = cells.filter(
+      (cell) => cell.getAttribute('col-id') === 'createdAt'
+    );
+
+    const [firstDateCell, secondDateCell] = createdAtCells;
+
+    // Compare the times as strings
+    expect(firstDateCell.textContent).toBe('6:59:00 PM');
+    expect(secondDateCell.textContent).toBe('7:00:00 PM');
   });
 });

@@ -891,6 +891,8 @@
   "HowToProposeRawStep1": "1. Sense check your proposal with the community on the forum:",
   "HowToProposeRawStep2": "2. Use the appropriate proposal template in the docs:",
   "HowToProposeRawStep3": "3. Submit on-chain below",
+  "proposalTransferDetails": "New governance transfer details",
+  "proposalCancelTransferDetails": "Cancel governance transfer details",
   "BenefitTiers": "Benefit tiers",
   "BenefitTierMinimumEpochs": "Minimum epochs",
   "BenefitTierMinimumEpochsDescription": "The minimum number of epochs the party needs to be in the referral set to be eligible for the benefit",

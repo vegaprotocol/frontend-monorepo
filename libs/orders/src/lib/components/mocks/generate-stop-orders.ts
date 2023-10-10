@@ -21,6 +21,9 @@ export const generateStopOrder = (
       __typename: 'Market',
       id: 'market-id',
       decimalPlaces: 1,
+      liquidityMonitoringParameters: {
+        triggeringRatio: '0.7',
+      },
       fees: {
         __typename: 'Fees',
         factors: {

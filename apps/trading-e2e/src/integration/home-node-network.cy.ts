@@ -61,7 +61,7 @@ describe('home', { tags: '@regression' }, () => {
       // 0006-NETW-020
       cy.getByTestId(nodeHealthTrigger).click();
       cy.getByTestId('connect').should('be.disabled');
-      cy.getByTestId('node-url-custom').click();
+      cy.getByTestId('node-url-custom').click({ force: true });
       cy.getByTestId('connect').should('be.disabled');
       cy.get("input[placeholder='https://']")
         .focus()

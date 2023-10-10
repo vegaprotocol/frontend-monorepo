@@ -1,8 +1,5 @@
 name: (CI) Console tests
 
-env:
-  VEGA_VERSION: v0.72.14
-
 on:
   workflow_call:
     inputs:
@@ -19,9 +16,9 @@ on:
           - develop
 
 jobs:
-  run-tests:
-    name: run-tests
-    runs-on: 8-cores
+  create-docker-image:
+    name: Create docker image for console-test
+    runs-on: ubuntu-22.04
     timeout-minutes: 20
     steps:
       #----------------------------------------------
@@ -58,23 +55,105 @@ jobs:
       #----------------------------------------------
       #       build trading
       #----------------------------------------------
-      - name: Build affected spec
+      - name: Build trading app
         run: |
           yarn env-cmd -f ./apps/trading/.env.stagnet1 yarn nx export trading
+          DIST_LOCATION=dist/apps/trading/exported
+          mv $DIST_LOCATION dist-result
+          tree dist-result
+
       #----------------------------------------------
-      #       run trading server
+      #       export trading app docker image
       #----------------------------------------------
-      - name: Run trading server
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and export to local Docker
+        id: docker_build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/node-outside-docker.Dockerfile
+          load: true
+          build-args: |
+            APP=trading
+            ENV_NAME=stagnet1
+          tags: ci/trading:local
+          outputs: type=docker,dest=/tmp/console-image.tar
+
+      - name: Verify docker image created
         run: |
-          docker run -d -p 80:4200 -v $PWD/docker/nginx.conf:/etc/nginx/conf.d/default.conf -v $PWD/dist/apps/trading/exported:/usr/share/nginx/html nginx:1.23-alpine@sha256:6318314189b40e73145a48060bff4783a116c34cc7241532d0d94198fb2c9629
-          sleep 5
-          docker ps
-      #----------------------------------------------
-      #       check if container persists between runs
-      #----------------------------------------------
-      - name: Check server
+          echo ${{ steps.docker_build.outputs.digest }}
+          echo ${{ steps.docker_build.outputs.imageid }}
+
+      - name: Upload docker image for console-test usage
+        uses: actions/upload-artifact@v3
+        with:
+          name: console-image
+          path: /tmp/console-image.tar
+
+  console-test-branch:
+    name: Choose console-test branch to run on
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    outputs:
+      console-branch: ${{ steps.output-step.outputs.branch }}
+    steps:
+      - name: Workflow dispatch input
+        id: dispatch-step
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "branch=${{ inputs.console-test-branch }}" >> $GITHUB_OUTPUT
+
+      - name: Print Workflow dispatch input
+        if: github.event_name == 'workflow_dispatch'
+        run: echo ${{ steps.dispatch-step.outputs.branch }}
+
+      - name: Workflow_call input
+        id: workflow_call-step
+        if: github.event_name != 'workflow_dispatch'
         run: |
-          docker ps
+          if [[ "${{ github.base_ref }}" == "main" ]]; then
+            echo "branch=main" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.base_ref }}" == "develop" && "${{ github.ref_name }}" == "main" ]]; then
+            echo "branch=main" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref_name }}" == *"release/mainnet"* ]]; then
+            echo "branch=main" >> $GITHUB_OUTPUT
+          else
+            echo "branch=develop" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Print Workflow_call input
+        if: github.event_name != 'workflow_dispatch'
+        run: echo ${{ steps.workflow_call-step.outputs.branch }}
+
+      - name: Set output
+        id: output-step
+        run: echo "branch=${{ steps.dispatch-step.outputs.branch || steps.workflow_call-step.outputs.branch }}" >> $GITHUB_OUTPUT
+
+      - name: Print final output
+        run: echo ${{ steps.output-step.outputs.branch }}
+
+  run-tests:
+    name: run-tests
+    runs-on: 8-cores
+    needs: [create-docker-image, console-test-branch]
+    timeout-minutes: 20
+    steps:
+      #----------------------------------------------
+      #       load docker image
+      #----------------------------------------------
+      - name: Download docker image from previous job
+        uses: actions/download-artifact@v3
+        with:
+          name: console-image
+          path: /tmp
+
+      - name: Load Docker image
+        run: |
+          docker load --input /tmp/console-image.tar
+          docker image ls -a
+
       #----------------------------------------------
       #       check-out tests repo
       #----------------------------------------------
@@ -82,62 +161,55 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: vegaprotocol/console-test
-          ref: ${{ inputs.console-test-branch }}
-          path: './console-test'
+          ref: ${{ needs.console-test-branch.outputs.console-branch }}
 
       - name: Load console test envs
         id: console-test-env
         uses: falti/dotenv-action@v1.0.4
         with:
-          path: './console-test/.env.${{ inputs.console-test-branch }}'
+          path: '.env.${{ needs.console-test-branch.outputs.console-branch  }}'
           export-variables: true
           keys-case: upper
           log-variables: true
 
       #----------------------------------------------
-      #       install dependencies
+      #  -----  Setup python  -----
+      #----------------------------------------------
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      #----------------------------------------------
+      #  -----  install & configure poetry  -----
+      #----------------------------------------------
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          virtualenvs-path: .venv
+
+      #----------------------------------------------
+      # install python dependencies
       #----------------------------------------------
       - name: Install dependencies
-        working-directory: ./console-test
         run: poetry install --no-interaction --no-root
       #----------------------------------------------
-      #       find vega binaries path
-      #----------------------------------------------
-      - name: Find vega binaries path
-        id: vega_bin_path
-        working-directory: ./console-test
-        run: echo path=$(poetry run python -c "import vega_sim; print(vega_sim.vega_bin_path)") >> $GITHUB_OUTPUT
-      #----------------------------------------------
-      #       vega binaries cache
-      #----------------------------------------------
-      - name: Vega binaries cache
-        uses: actions/cache@v3
-        id: vega_binaries_cache
-        with:
-          path: ${{ steps.vega_bin_path.outputs.path }}
-          key: ${{ runner.os }}-vega-binaries-${{ env.VEGA_VERSION }}
-      #----------------------------------------------
-      #       install vega binaries
+      # install vega binaries
       #----------------------------------------------
       - name: Install vega binaries
-        working-directory: ./console-test
         run: poetry run python -m vega_sim.tools.load_binaries --force --version ${{ env.VEGA_VERSION }}
       #----------------------------------------------
       # install playwright
       #----------------------------------------------
       - name: install playwright
         run: poetry run playwright install --with-deps chromium
-        working-directory: ./console-test
       #----------------------------------------------
       # run tests
       #----------------------------------------------
       - name: Run tests
-        working-directory: ./console-test
-        run: poetry run pytest -v -s --numprocesses 4 --dist loadfile --durations=15
-      - name: Check files
-        run: |
-          ls -al .
-          ls -al console-test
+        run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -v -s --numprocesses 4 --dist loadfile --durations=15
+
       #----------------------------------------------
       # upload traces
       #----------------------------------------------

@@ -1,8 +1,6 @@
 import { DepositStatus } from '@vegaprotocol/types';
-import {
-  useDepositBusEventSubscription,
-  useVegaWallet,
-} from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useDepositBusEventSubscription } from './__generated__/TransactionResult';
 import { useEthTransactionStore } from './use-ethereum-transaction-store';
 
 export const useEthTransactionUpdater = () => {

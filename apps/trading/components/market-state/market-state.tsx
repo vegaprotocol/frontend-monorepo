@@ -7,6 +7,8 @@ import * as Schema from '@vegaprotocol/types';
 import { HeaderStat } from '../header';
 import { useCallback, useRef, useState } from 'react';
 import * as constants from '../constants';
+import { DocsLinks } from '@vegaprotocol/environment';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 export const MarketState = ({ market }: { market: Market | null }) => {
   const [marketState, setMarketState] = useState<Schema.MarketState | null>(
@@ -87,6 +89,21 @@ const getMarketStateTooltip = (state: Schema.MarketState | null) => {
   if (state === Schema.MarketState.STATE_TRADING_TERMINATED) {
     return t(
       'Trading has been terminated as a result of the product definition'
+    );
+  }
+
+  if (state === Schema.MarketState.STATE_SUSPENDED_VIA_GOVERNANCE) {
+    return (
+      <p>
+        {t(
+          `This market has been suspended via a governance vote and can be resumed or terminated by further votes.`
+        )}
+        {DocsLinks && (
+          <ExternalLink href={DocsLinks.MARKET_LIFECYCLE} className="ml-1">
+            {t('Find out more')}
+          </ExternalLink>
+        )}
+      </p>
     );
   }
 

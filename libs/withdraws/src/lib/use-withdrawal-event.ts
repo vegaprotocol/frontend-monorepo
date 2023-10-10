@@ -1,5 +1,5 @@
 import { useApolloClient } from '@apollo/client';
-import type { VegaTxState } from '@vegaprotocol/wallet';
+import type { VegaTxState } from '@vegaprotocol/web3';
 import { useCallback, useEffect, useRef } from 'react';
 import type { Subscription } from 'zen-observable-ts';
 import { WithdrawalEventDocument } from './__generated__/Withdrawal';

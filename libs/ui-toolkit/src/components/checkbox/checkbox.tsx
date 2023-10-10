@@ -4,6 +4,8 @@ import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
 type CheckedState = boolean | 'indeterminate';
+export const labelClasses =
+  "relative before:content-[''] before:block before:absolute before:top-1/2	before:left-[0] before:right-[0] before:-translate-y-1/2 before:h-6";
 export interface CheckboxProps {
   checked?: CheckedState;
   label?: ReactNode;
@@ -30,7 +32,7 @@ export const Checkbox = ({
   );
 
   return (
-    <div className="flex gap-1">
+    <label className={`flex gap-1 ${labelClasses}`} htmlFor={name}>
       <CheckboxPrimitive.Root
         name={name}
         id={name}
@@ -55,14 +57,13 @@ export const Checkbox = ({
           )}
         </CheckboxPrimitive.CheckboxIndicator>
       </CheckboxPrimitive.Root>
-      <label
-        htmlFor={name}
+      <span
         className={classNames('text-sm flex-1', {
           'dark:text-neutral-400 text-neutral-600': disabled,
         })}
       >
         {label}
-      </label>
-    </div>
+      </span>
+    </label>
   );
 };

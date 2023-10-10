@@ -10,12 +10,10 @@ import classNames from 'classnames';
 import { Navigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './buttons';
-import {
-  useTransactionEventSubscription,
-  useVegaWallet,
-} from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useReferral } from './hooks/use-referral';
 import { Routes } from '../../lib/links';
+import { useTransactionEventSubscription } from '@vegaprotocol/web3';
 
 export const ApplyCodeForm = () => {
   const [status, setStatus] = useState<

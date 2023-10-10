@@ -1,6 +1,4 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import type { MockedResponse } from '@apollo/client/testing';
-import { MockedProvider } from '@apollo/client/testing';
 import type { VegaWalletConfig } from '../provider';
 import { VegaWalletProvider } from '../provider';
 import { VegaConnectDialog, CLOSE_DELAY } from './connect-dialog';
@@ -13,8 +11,6 @@ import {
   ViewConnector,
   WalletError,
 } from '../connectors';
-import type { ChainIdQuery } from './__generated__/ChainId';
-import { ChainIdDocument } from './__generated__/ChainId';
 import {
   mockBrowserWallet,
   clearBrowserWallet,
@@ -26,11 +22,16 @@ const mockUpdateDialogOpen = jest.fn();
 const mockCloseVegaDialog = jest.fn();
 
 let mockIsDesktopRunning = true;
+const mockChainId = 'chain-id';
 
 jest.mock('../use-is-wallet-service-running', () => ({
   useIsWalletServiceRunning: jest
     .fn()
     .mockImplementation(() => mockIsDesktopRunning),
+}));
+
+jest.mock('./use-chain-id', () => ({
+  useChainId: jest.fn().mockImplementation(() => mockChainId),
 }));
 
 let defaultProps: VegaConnectDialogProps;
@@ -60,8 +61,6 @@ beforeEach(() => {
   });
 });
 
-const mockChainId = 'chain-id';
-
 const defaultConfig: VegaWalletConfig = {
   network: 'TESTNET',
   vegaUrl: 'https://vega.xyz',
@@ -78,24 +77,10 @@ function generateJSX(
   props?: Partial<VegaConnectDialogProps>,
   config?: Partial<VegaWalletConfig>
 ) {
-  const chainIdMock: MockedResponse<ChainIdQuery> = {
-    request: {
-      query: ChainIdDocument,
-    },
-    result: {
-      data: {
-        statistics: {
-          chainId: mockChainId,
-        },
-      },
-    },
-  };
   return (
-    <MockedProvider mocks={[chainIdMock]}>
-      <VegaWalletProvider config={{ ...defaultConfig, ...config }}>
-        <VegaConnectDialog {...defaultProps} {...props} />
-      </VegaWalletProvider>
-    </MockedProvider>
+    <VegaWalletProvider config={{ ...defaultConfig, ...config }}>
+      <VegaConnectDialog {...defaultProps} {...props} />
+    </VegaWalletProvider>
   );
 }
 

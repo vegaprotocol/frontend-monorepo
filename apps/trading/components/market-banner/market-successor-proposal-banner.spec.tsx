@@ -3,12 +3,17 @@ import type { SingleExecutionResult } from '@apollo/client';
 import type { MockedResponse } from '@apollo/react-testing';
 import { MockedProvider } from '@apollo/react-testing';
 import { MarketSuccessorProposalBanner } from './market-successor-proposal-banner';
-import type { SuccessorProposalsListQuery } from '@vegaprotocol/proposals';
-import { SuccessorProposalsListDocument } from '@vegaprotocol/proposals';
+import type { MarketViewProposalsQuery } from '@vegaprotocol/proposals';
+import { MarketViewProposalsDocument } from '@vegaprotocol/proposals';
+import * as Types from '@vegaprotocol/types';
 
-const marketProposalMock: MockedResponse<SuccessorProposalsListQuery> = {
+const marketProposalMock: MockedResponse<MarketViewProposalsQuery> = {
   request: {
-    query: SuccessorProposalsListDocument,
+    query: MarketViewProposalsDocument,
+    variables: {
+      inState: Types.ProposalState.STATE_OPEN,
+      proposalType: Types.ProposalType.TYPE_NEW_MARKET,
+    },
   },
   result: {
     data: {
@@ -18,8 +23,11 @@ const marketProposalMock: MockedResponse<SuccessorProposalsListQuery> = {
             node: {
               __typename: 'Proposal',
               id: 'proposal-1',
+              state: Types.ProposalState.STATE_OPEN,
               terms: {
                 __typename: 'ProposalTerms',
+                closingDatetime: '2023-09-27',
+                enactmentDatetime: '2023-09-28',
                 change: {
                   __typename: 'NewMarket',
                   instrument: {
@@ -66,12 +74,13 @@ describe('MarketSuccessorProposalBanner', () => {
           proposalsConnection: {
             edges: [
               ...((
-                marketProposalMock?.result as SingleExecutionResult<SuccessorProposalsListQuery>
+                marketProposalMock?.result as SingleExecutionResult<MarketViewProposalsQuery>
               )?.data?.proposalsConnection?.edges ?? []),
               {
                 node: {
                   __typename: 'Proposal',
                   id: 'proposal-2',
+                  state: Types.ProposalState.STATE_OPEN,
                   terms: {
                     __typename: 'ProposalTerms',
                     change: {

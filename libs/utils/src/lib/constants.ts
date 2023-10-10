@@ -1,0 +1,1 @@
+export const MAXGOINT64 = '9223372036854775807';
