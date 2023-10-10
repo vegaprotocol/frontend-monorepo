@@ -58,7 +58,7 @@ describe('Market trading page', () => {
       // 6002-MDET-003
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketPrice).within(() => {
-          cy.getByTestId(itemHeader).should('have.text', 'Price');
+          cy.getByTestId(itemHeader).should('have.text', 'Mark Price');
           cy.getByTestId(itemValue).should('not.be.empty');
         });
       });
