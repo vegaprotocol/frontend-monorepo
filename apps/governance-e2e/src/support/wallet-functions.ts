@@ -41,6 +41,9 @@ export async function depositAsset(
 ) {
   // Approve asset
   const faucet = new Token(assetEthAddress, signer);
+  // Wait needed to allow Eth chain to catch up
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(4000);
   cy.wrap(
     faucet.approve(Erc20BridgeAddress, amount + '0'.repeat(decimalPlaces + 1)),
     transactionTimeout

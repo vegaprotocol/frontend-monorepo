@@ -84,8 +84,8 @@ describe(
       cy.mockChainId();
       cy.reload();
       waitForSpinner();
-      ethereumWalletConnect();
       cy.connectVegaWallet();
+      ethereumWalletConnect();
       ensureSpecifiedUnstakedTokensAreAssociated('1');
       navigateTo(navigation.proposals);
     });
@@ -535,6 +535,7 @@ describe(
       );
       cy.VegaWalletTopUpNetworkAccount('100');
       cy.VegaWalletSubmitProposal(createGovernanceTransferProposalTxBody());
+      cy.reload();
       getProposalFromTitle('Governance transfer proposal').within(() => {
         cy.getByTestId(marketProposalType).should('have.text', 'NewTransfer');
         cy.getByTestId(viewProposalButton).click();
@@ -577,7 +578,9 @@ describe(
         closingTimestamp: closingTimestamp,
         submit: false,
       });
-      cy.getByTestId('icon-cross').click();
+      cy.getByTestId('proposal-submit').should('be.visible').click();
+      cy.getByTestId('dialog-title').should('have.text', 'Proposal rejected');
+      cy.getByTestId('icon-cross').last().click();
       navigateTo(navigation.proposals);
       cy.get('[href="/proposals/rejected"]').click();
       getProposalFromTitle('Governance cancel transfer proposal').within(() => {
