@@ -81,6 +81,7 @@ export const DocsLinks = VEGA_DOCS_URL
       WITHDRAWAL_LIMITS: `${VEGA_DOCS_URL}/concepts/assets/deposits-withdrawals#withdrawal-limits`,
       VALIDATOR_SCORES_REWARDS: `${VEGA_DOCS_URL}/concepts/vega-chain/validator-scores-and-rewards`,
       MARKET_LIFECYCLE: `${VEGA_DOCS_URL}/concepts/trading-on-vega/market-lifecycle`,
+      ETH_DATA_SOURCES: `${VEGA_DOCS_URL}/concepts/trading-on-vega/data-sources#ethereum-data-sources`,
     }
   : undefined;
 

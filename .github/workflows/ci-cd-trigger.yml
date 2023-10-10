@@ -208,7 +208,7 @@ jobs:
     name: '(CI) console python'
     uses: ./.github/workflows/console-test-run.yml
     secrets: inherit
-    if: ${{ needs.check-e2e-needed.outputs.run-tests == 'true' }} && ${{ contains(fromJSON(needs.build-sources.outputs.projects), 'trading') }}
+    if: needs.check-e2e-needed.outputs.run-tests == 'true' && contains(needs.build-sources.outputs.projects, 'trading')
     with:
       github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 

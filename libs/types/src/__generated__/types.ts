@@ -1287,6 +1287,39 @@ export type Filter = {
   key: PropertyKey;
 };
 
+/** The funding payment from a perpetual market. */
+export type FundingPayment = {
+  __typename?: 'FundingPayment';
+  /** Amount transferred */
+  amount?: Maybe<Scalars['String']>;
+  /** Sequence number of the funding period the funding payment belongs to. */
+  fundingPeriodSeq: Scalars['Int'];
+  /** Market the funding payment applies to. */
+  marketId: Scalars['ID'];
+  /** Party the funding payment applies to. */
+  partyId: Scalars['ID'];
+  /** RFC3339Nano timestamp when the data point was received. */
+  timestamp: Scalars['Timestamp'];
+};
+
+/** Connection type for funding payment */
+export type FundingPaymentConnection = {
+  __typename?: 'FundingPaymentConnection';
+  /** List of funding payments */
+  edges: Array<FundingPaymentEdge>;
+  /** Pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type for funding payment */
+export type FundingPaymentEdge = {
+  __typename?: 'FundingPaymentEdge';
+  /** Cursor identifying the funding payment */
+  cursor: Scalars['String'];
+  /** The funding payment */
+  node: FundingPayment;
+};
+
 /** Details of a funding interval for a perpetual market. */
 export type FundingPeriod = {
   __typename?: 'FundingPeriod';
@@ -4097,6 +4130,8 @@ export type Query = {
   coreSnapshots?: Maybe<CoreSnapshotConnection>;
   /** Get the current referral program */
   currentReferralProgram?: Maybe<CurrentReferralProgram>;
+  /** Get the current volume discount program */
+  currentVolumeDiscountProgram?: Maybe<VolumeDiscountProgram>;
   /** Find a deposit using its ID */
   deposit?: Maybe<Deposit>;
   /** Fetch all deposits */
@@ -4128,6 +4163,8 @@ export type Query = {
   estimatePosition?: Maybe<PositionEstimate>;
   /** Query for historic ethereum key rotations */
   ethereumKeyRotations: EthereumKeyRotationsConnection;
+  /** Funding payment for perpetual markets. */
+  fundingPayments: FundingPaymentConnection;
   /**
    * Funding period data points for a perpetual market. The data points within a funding period are used to calculate the
    * time-weighted average price (TWAP), funding rate and funding payments for each funding period.
@@ -4196,6 +4233,8 @@ export type Query = {
   /** Get referrer fee and discount stats */
   referralFeeStats?: Maybe<ReferralSetFeeStats>;
   referralSetReferees: ReferralSetRefereeConnection;
+  /** Get referral set statistics */
+  referralSetStats: ReferralSetStatsConnection;
   /** List referral sets */
   referralSets: ReferralSetConnection;
   /** Get statistics about the Vega node */
@@ -4224,6 +4263,8 @@ export type Query = {
   transfer?: Maybe<Transfer>;
   /** Get a list of all transfers for a public key */
   transfersConnection?: Maybe<TransferConnection>;
+  /** Get volume discount statistics */
+  volumeDiscountStats: VolumeDiscountStatsConnection;
   /** Find a withdrawal using its ID */
   withdrawal?: Maybe<Withdrawal>;
   /** Fetch all withdrawals */
@@ -4366,6 +4407,14 @@ export type QueryestimatePositionArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryethereumKeyRotationsArgs = {
   nodeId?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryfundingPaymentsArgs = {
+  marketId?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<Pagination>;
+  partyId: Scalars['ID'];
 };
 
 
@@ -4569,6 +4618,15 @@ export type QueryreferralSetRefereesArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryreferralSetStatsArgs = {
+  epoch?: InputMaybe<Scalars['Int']>;
+  id: Scalars['ID'];
+  pagination?: InputMaybe<Pagination>;
+  partyId?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryreferralSetsArgs = {
   id?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
@@ -4643,6 +4701,14 @@ export type QuerytransfersConnectionArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryvolumeDiscountStatsArgs = {
+  epoch?: InputMaybe<Scalars['Int']>;
+  pagination?: InputMaybe<Pagination>;
+  partyId?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerywithdrawalArgs = {
   id: Scalars['ID'];
 };
@@ -4700,18 +4766,6 @@ export type RecurringTransfer = {
   startEpoch: Scalars['Int'];
 };
 
-export type RefereeStats = {
-  __typename?: 'RefereeStats';
-  /** Discount factor applied to the party. */
-  discountFactor: Scalars['String'];
-  /** Current referee notional taker volume */
-  epochNotionalTakerVolume: Scalars['String'];
-  /** Unique ID of the party. */
-  partyId: Scalars['ID'];
-  /** Reward factor applied to the party. */
-  rewardFactor: Scalars['String'];
-};
-
 /** Referral program information */
 export type ReferralProgram = {
   __typename?: 'ReferralProgram';
@@ -4742,20 +4796,8 @@ export type ReferralSet = {
   id: Scalars['ID'];
   /** Party that created the set. */
   referrer: Scalars['ID'];
-  /**
-   * Referral set statistics for the latest or specific epoch.
-   * If provided the results can be filtered for a specific referee
-   */
-  stats?: Maybe<ReferralSetStats>;
   /** Timestamp as RFC3339Nano when the referral set was updated. */
   updatedAt: Scalars['Timestamp'];
-};
-
-
-/** Data relating to a referral set. */
-export type ReferralSetstatsArgs = {
-  epoch?: InputMaybe<Scalars['Int']>;
-  referee?: InputMaybe<Scalars['ID']>;
 };
 
 /** Connection type for retrieving cursor-based paginated referral set information */
@@ -4828,14 +4870,36 @@ export type ReferralSetRefereeEdge = {
 
 export type ReferralSetStats = {
   __typename?: 'ReferralSetStats';
-  /** Epoch at which the set's statistics are updated. */
-  atEpoch?: Maybe<Scalars['Int']>;
-  /** Referees' statistics for that epoch. */
-  referees_stats: Array<RefereeStats>;
+  /** Epoch at which the statistics are updated. */
+  atEpoch: Scalars['Int'];
+  /** Discount factor applied to the party. */
+  discountFactor: Scalars['String'];
+  /** Current referee notional taker volume */
+  epochNotionalTakerVolume: Scalars['String'];
+  /** Unique ID of the party. */
+  partyId: Scalars['ID'];
   /** Running volume for the set based on the window length of the current referral program. */
   referralSetRunningNotionalTakerVolume: Scalars['String'];
-  /** Unique ID of the set */
-  setId: Scalars['ID'];
+  /** Reward factor applied to the party. */
+  rewardFactor: Scalars['String'];
+};
+
+/** Connection type for retrieving cursor-based paginated referral set statistics information */
+export type ReferralSetStatsConnection = {
+  __typename?: 'ReferralSetStatsConnection';
+  /** The referral set statistics in this connection */
+  edges: Array<Maybe<ReferralSetStatsEdge>>;
+  /** The pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing the referral set statistics and cursor information returned by a ReferralSetStatsConnection */
+export type ReferralSetStatsEdge = {
+  __typename?: 'ReferralSetStatsEdge';
+  /** The cursor for this referral set statistics */
+  cursor: Scalars['String'];
+  /** The referral set statistics */
+  node: ReferralSetStats;
 };
 
 /** Rewards generated for referrers by each of their referees */
@@ -6135,6 +6199,53 @@ export type VolumeBenefitTier = {
   minimumRunningNotionalTakerVolume: Scalars['String'];
   /** Discount given to those in this benefit tier */
   volumeDiscountFactor: Scalars['String'];
+};
+
+/** Volume discount program information */
+export type VolumeDiscountProgram = {
+  __typename?: 'VolumeDiscountProgram';
+  /** Defined tiers in increasing order. First element will give Tier 1, second element will give Tier 2, etc. */
+  benefitTiers: Array<VolumeBenefitTier>;
+  /** Timestamp as Unix time in nanoseconds, after which when the current epoch ends, the programs will end and benefits will be disabled. */
+  endOfProgramTimestamp: Scalars['Timestamp'];
+  /** Timestamp as RFC3339Nano when the program ended. If present, the current program has ended and no program is currently running. */
+  endedAt?: Maybe<Scalars['Timestamp']>;
+  /** Unique ID generated from the proposal that created this program. */
+  id: Scalars['ID'];
+  /** Incremental version of the program. It is incremented each time the volume discount program is edited. */
+  version: Scalars['Int'];
+  /** Number of epochs over which to evaluate parties' running volume. */
+  windowLength: Scalars['Int'];
+};
+
+export type VolumeDiscountStats = {
+  __typename?: 'VolumeDiscountStats';
+  /** Epoch at which the statistics are updated. */
+  atEpoch: Scalars['Int'];
+  /** Discount factor applied to the party. */
+  discountFactor: Scalars['String'];
+  /** Unique ID of the party. */
+  partyId: Scalars['ID'];
+  /** Party's running volume. */
+  runningVolume: Scalars['String'];
+};
+
+/** Connection type for retrieving cursor-based paginated volume discount statistics information */
+export type VolumeDiscountStatsConnection = {
+  __typename?: 'VolumeDiscountStatsConnection';
+  /** The volume discount statistics in this connection */
+  edges: Array<Maybe<VolumeDiscountStatsEdge>>;
+  /** The pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Edge type containing the volume discount statistics and cursor information returned by a VolumeDiscountStatsConnection */
+export type VolumeDiscountStatsEdge = {
+  __typename?: 'VolumeDiscountStatsEdge';
+  /** The cursor for this volume discount statistics */
+  cursor: Scalars['String'];
+  /** The volume discount statistics */
+  node: VolumeDiscountStats;
 };
 
 export type Vote = {
