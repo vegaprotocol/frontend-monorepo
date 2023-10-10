@@ -1,4 +1,4 @@
-import type { Dispatch, FormEvent, SetStateAction} from 'react';
+import type { Dispatch, FormEvent, SetStateAction } from 'react';
 import { useCallback } from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -51,14 +51,17 @@ export const Deposit = () => {
   if (!config) return null;
 
   return (
-    <DepositFlow
-      assets={assets}
-      assetId={assetId}
-      bridgeAddress={config.collateral_bridge_contract.address}
-      confirmations={config.confirmations}
-      markets={markets || []}
-      faucetEnabled={VEGA_ENV !== Networks.MAINNET}
-    />
+    <div className="flex flex-col gap-4">
+      <DepositFlow
+        assets={assets}
+        assetId={assetId}
+        bridgeAddress={config.collateral_bridge_contract.address}
+        confirmations={config.confirmations}
+        markets={markets || []}
+        faucetEnabled={VEGA_ENV !== Networks.MAINNET}
+      />
+      <DepositGetStarted />
+    </div>
   );
 };
 
