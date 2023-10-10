@@ -10,6 +10,7 @@ export * from '../deposits/src/lib/deposit.mock';
 export * from '../environment/src/utils/node.mock';
 export * from '../environment/src/components/node-guard/node-guard.mock';
 export * from '../fills/src/lib/fills.mock';
+export * from '../funding-payments/src/lib/funding-payments.mock';
 export * from '../proposals/src/lib/proposals-data-provider/proposals.mock';
 export * from '../market-depth/src/lib/market-depth.mock';
 export * from '../markets/src/lib/components/market-info/market-info.mock';

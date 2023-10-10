@@ -139,6 +139,9 @@ const MainGrid = memo(
               <Tab id="fills" name={t('Fills')}>
                 <TradingViews.fills.component />
               </Tab>
+              <Tab id="funding-payments" name={t('Funding payments')}>
+                <TradingViews.fundingPayments.component />
+              </Tab>
               <Tab
                 id="accounts"
                 name={t('Collateral')}

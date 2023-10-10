@@ -1,0 +1,24 @@
+fragment FundingPaymentFields on FundingPayment {
+  marketId
+  partyId
+  fundingPeriodSeq
+  amount
+  timestamp
+}
+
+query FundingPayments($partyId: ID!, $pagination: Pagination) {
+  fundingPayments(partyId: $partyId, pagination: $pagination) {
+    edges {
+      node {
+        ...FundingPaymentFields
+      }
+      cursor
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}
