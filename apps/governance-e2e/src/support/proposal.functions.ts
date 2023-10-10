@@ -1,10 +1,10 @@
-import { addSeconds, millisecondsToSeconds } from 'date-fns';
+import { addDays, addSeconds, millisecondsToSeconds } from 'date-fns';
 import type { ProposalSubmissionBody } from '@vegaprotocol/wallet';
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { upgradeProposalsData } from '../fixtures/mocks/network-upgrade';
 import { proposalsData } from '../fixtures/mocks/proposals';
 import { nodeData } from '../fixtures/mocks/nodes';
-import { AccountType } from '@vegaprotocol/types';
+import { AccountType, GovernanceTransferType } from '@vegaprotocol/types';
 
 export function createUpdateNetworkProposalTxBody(): ProposalSubmissionBody {
   const MIN_CLOSE_SEC = 5;
@@ -363,29 +363,32 @@ export function createGovernanceTransferProposalTxBody(): ProposalSubmissionBody
   const MIN_CLOSE_SEC = 5;
   const MIN_ENACT_SEC = 7;
 
-  const closingDate = addSeconds(new Date(), MIN_CLOSE_SEC);
-  const enactmentDate = addSeconds(closingDate, MIN_ENACT_SEC);
+  const closingDate = addDays(new Date(), MIN_CLOSE_SEC);
+  const enactmentDate = addDays(closingDate, MIN_ENACT_SEC);
   const closingTimestamp = millisecondsToSeconds(closingDate.getTime());
   const enactmentTimestamp = millisecondsToSeconds(enactmentDate.getTime());
+  const destination = Cypress.env('vegaWalletPublicKey');
   return {
     proposalSubmission: {
       rationale: {
         title: 'Governance transfer proposal',
-        description: 'E2E fail test',
+        description: 'E2E test for transfer proposal test',
       },
       terms: {
         newTransfer: {
           changes: {
             fractionOfBalance: '0.5',
-            amount: '1000',
-            sourceType: AccountType.ACCOUNT_TYPE_GENERAL,
+            amount: '100' + '0'.repeat(18),
+            sourceType: AccountType.ACCOUNT_TYPE_NETWORK_TREASURY,
+            source: '',
+            transferType:
+              GovernanceTransferType.GOVERNANCE_TRANSFER_TYPE_ALL_OR_NOTHING,
             destinationType: AccountType.ACCOUNT_TYPE_GENERAL,
-            destination: '',
+            destination,
             asset:
               'b4f2726571fbe8e33b442dc92ed2d7f0d810e21835b7371a7915a365f07ccd9b',
-            recurring: {
-              startEpoch: 10,
-              endEpoch: 40,
+            oneOff: {
+              deliverOn: '0',
             },
           },
         },

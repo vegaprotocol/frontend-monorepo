@@ -241,23 +241,30 @@ interface ProposalTransferTerms {
       fractionOfBalance: string;
       amount: string;
       sourceType: string;
+      source: string;
+      transferType: string;
       destinationType: string;
       destination: string;
       asset: string;
-      recurring: {
+      recurring?: {
         startEpoch: number;
         endEpoch: number;
+      };
+      oneOff?: {
+        deliverOn: string;
       };
     };
   };
   closingTimestamp: number;
   enactmentTimestamp: number;
+  validationTimestamp?: number;
 }
 
-interface Kind {
-  recurring: {
-    startEpoch: number;
-    endEpoch: number;
+interface ProposalCancelTransferTerms {
+  cancelTransfer: {
+    changes: {
+      transferId: string;
+    };
   };
 }
 
@@ -369,7 +376,8 @@ export interface ProposalSubmission {
     | ProposalNetworkParameterTerms
     | ProposalNewAssetTerms
     | ProposalUpdateAssetTerms
-    | ProposalTransferTerms;
+    | ProposalTransferTerms
+    | ProposalCancelTransferTerms;
 }
 
 export interface ProposalSubmissionBody {
