@@ -655,9 +655,9 @@ export const RiskFactorsInfoPanel = ({
       if (!number) return undefined;
       const value = new BigNumber(number);
       if (value.gte(10)) {
-        return value.toFixed(0);
+        return value.toFixed(3);
       } else {
-        return value.toFixed(1);
+        return value.toFixed(5);
       }
     };
 
