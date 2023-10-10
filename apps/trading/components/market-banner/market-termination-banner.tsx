@@ -64,12 +64,12 @@ export const MarketTerminationBanner = ({
         </div>
         <div>
           {t(
-            'This market will close to trading in %s. You will not be able to hold a position on this market after %s.',
-            [formattedDuration, dayMonthDate]
+            'You will no longer be able to hold a position on this market when it closes in %s.',
+            [formattedDuration]
           )}{' '}
           {price &&
             assetSymbol &&
-            t('The final price will be %s %s', [
+            t('The final price will be %s %s.', [
               addDecimalsFormatNumber(price, market.decimalPlaces),
               assetSymbol,
             ])}
