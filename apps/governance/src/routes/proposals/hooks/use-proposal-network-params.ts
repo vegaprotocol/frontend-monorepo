@@ -19,6 +19,8 @@ export const useProposalNetworkParams = ({
     NetworkParams.governance_proposal_market_requiredMajority,
     NetworkParams.governance_proposal_market_requiredParticipation,
     NetworkParams.governance_proposal_updateAsset_requiredMajority,
+    NetworkParams.governance_proposal_referralProgram_requiredMajority,
+    NetworkParams.governance_proposal_referralProgram_requiredParticipation,
     NetworkParams.governance_proposal_updateAsset_requiredParticipation,
     NetworkParams.governance_proposal_asset_requiredMajority,
     NetworkParams.governance_proposal_asset_requiredParticipation,
@@ -89,6 +91,14 @@ export const useProposalNetworkParams = ({
         requiredMajority: params.governance_proposal_freeform_requiredMajority,
         requiredParticipation: new BigNumber(
           params.governance_proposal_freeform_requiredParticipation
+        ),
+      };
+    case 'UpdateReferralProgram':
+      return {
+        requiredMajority:
+          params.governance_proposal_referralProgram_requiredMajority,
+        requiredParticipation: new BigNumber(
+          params.governance_proposal_referralProgram_requiredParticipation
         ),
       };
     default:
