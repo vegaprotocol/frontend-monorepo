@@ -1,3 +1,17 @@
+fragment UpdateMarketStateFields on UpdateMarketState {
+  market {
+    id
+    tradableInstrument {
+      instrument {
+        name
+        code
+      }
+    }
+  }
+  updateType
+  price
+}
+
 fragment NewMarketFields on NewMarket {
   instrument {
     name
@@ -438,10 +452,17 @@ fragment NewMarketSuccessorFields on NewMarket {
   }
 }
 
-fragment SuccessorProposalListFields on Proposal {
+fragment MarketViewProposalFields on Proposal {
   id
+  state
   terms {
+    closingDatetime
+    enactmentDatetime
     change {
+      __typename
+      ... on UpdateMarketState {
+        ...UpdateMarketStateFields
+      }
       ... on NewMarket {
         ...NewMarketSuccessorFields
       }
@@ -449,12 +470,21 @@ fragment SuccessorProposalListFields on Proposal {
   }
 }
 
-query SuccessorProposalsList {
-  proposalsConnection(proposalType: TYPE_NEW_MARKET, inState: STATE_OPEN) {
+query MarketViewProposals(
+  $proposalType: ProposalType
+  $inState: ProposalState
+) {
+  proposalsConnection(proposalType: $proposalType, inState: $inState) {
     edges {
       node {
-        ...SuccessorProposalListFields
+        ...MarketViewProposalFields
       }
     }
+  }
+}
+
+subscription MarketViewLiveProposals {
+  proposals {
+    ...MarketViewProposalFields
   }
 }

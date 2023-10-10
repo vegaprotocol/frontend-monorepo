@@ -1,10 +1,20 @@
 import { makeDataProvider } from '@vegaprotocol/data-provider';
+import produce from 'immer';
 import type {
   ProposalsListQuery,
   ProposalsListQueryVariables,
   ProposalListFieldsFragment,
+  MarketViewLiveProposalsSubscription,
+  MarketViewProposalFieldsFragment,
+  MarketViewProposalsQuery,
+  MarketViewProposalsQueryVariables,
 } from './__generated__/Proposals';
-import { ProposalsListDocument } from './__generated__/Proposals';
+import {
+  MarketViewLiveProposalsDocument,
+  MarketViewProposalsDocument,
+  ProposalsListDocument,
+} from './__generated__/Proposals';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 
 const getData = (responseData: ProposalsListQuery | null) =>
   responseData?.proposalsConnection?.edges
@@ -30,4 +40,43 @@ export const proposalsDataProvider = makeDataProvider<
    */
   errorPolicyGuard: (errors) =>
     errors.every((e) => e.message.match(/failed to get asset for ID/)),
+});
+
+const update = (
+  data: MarketViewProposalFieldsFragment[] | null,
+  delta: MarketViewProposalFieldsFragment
+) => {
+  const updateData = produce(data || [], (draft) => {
+    const { id } = delta;
+    const index = draft.findIndex((item) => item.id === id);
+    if (index === -1) {
+      draft.unshift(delta);
+    } else {
+      const currNode = draft[index];
+      draft[index] = {
+        ...currNode,
+        ...delta,
+      };
+    }
+  });
+  return updateData;
+};
+
+const getMarketProposalsData = (
+  responseData: MarketViewProposalsQuery | null
+) => removePaginationWrapper(responseData?.proposalsConnection?.edges) || [];
+
+export const marketViewProposalsDataProvider = makeDataProvider<
+  MarketViewProposalsQuery,
+  MarketViewProposalFieldsFragment[],
+  MarketViewLiveProposalsSubscription,
+  MarketViewProposalFieldsFragment,
+  MarketViewProposalsQueryVariables
+>({
+  query: MarketViewProposalsDocument,
+  subscriptionQuery: MarketViewLiveProposalsDocument,
+  update,
+  getDelta: (subscriptionData: MarketViewLiveProposalsSubscription) =>
+    subscriptionData.proposals,
+  getData: getMarketProposalsData,
 });

@@ -128,7 +128,7 @@ When I look into market info I **Must** see following governance information:
 
   When I look at the succession line list I **Should** easily distinguish which market is the currently viewed market so I can see the ancestor-descendant relations between the current and other markets on the list.
 
-## Market successor
+## Market successor & warning for termination
 
 When I'm tranding on the market, I **Must** see there are:
 
@@ -139,3 +139,8 @@ When I'm tranding on the market, I **Must** see there are:
 - Proposal for the market successor : (<a name="6002-MDET-402" href="#6002-MDET-402">6002-MDET-402</a>)
   - link to governance proposal
   - name of the proposed market
+- Enacted proposal for the market termination: (<a name="6002-MDET-403" href="#6002-MDET-403">6002-MDET-403</a>)
+  - I should be informed immediately when a close market proposal for a market I have a position in is successful
+  - I can tell how much time remains before the market will close and/or the exact time of closure
+  - I can tell what the final price will be at the time of closing
+  - The notification is showed regardless of market type
