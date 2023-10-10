@@ -3,6 +3,7 @@ import * as Types from '@vegaprotocol/types';
 import type { AccountFields } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
 import { AccountTable } from './accounts-table';
+import userEvent from '@testing-library/user-event';
 
 const singleRow = {
   __typename: 'AccountBalance',
@@ -23,6 +24,26 @@ const singleRow = {
   total: '251200000',
 } as AccountFields;
 const singleRowData = [singleRow];
+
+const secondRow = {
+  __typename: 'AccountBalance',
+  type: Types.AccountType.ACCOUNT_TYPE_MARGIN,
+  balance: '125600002',
+  market: {
+    __typename: 'Market',
+    id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
+  },
+  asset: {
+    __typename: 'Asset',
+    id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+    symbol: 'aBTC',
+    decimals: 5,
+  },
+  available: '125600001',
+  used: '125600001',
+  total: '251200002',
+} as AccountFields;
+const multiRowData = [singleRow, secondRow];
 
 describe('AccountsTable', () => {
   it('should render correct columns', async () => {
@@ -66,6 +87,25 @@ describe('AccountsTable', () => {
     });
     const rows = container.querySelector('.ag-center-cols-container');
     expect(rows?.childElementCount).toBe(1);
+  });
+
+  it('should sort assets', async () => {
+    // 7001-COLL-010
+    const { container } = render(
+      <AccountTable
+        rowData={multiRowData}
+        onClickAsset={() => null}
+        isReadOnly={false}
+      />
+    );
+
+    const headerCell = screen.getByText('Asset');
+    await userEvent.click(headerCell);
+    const rows = container.querySelectorAll(
+      '.ag-center-cols-container .ag-row'
+    );
+    expect(rows[0].textContent).toContain('aBTC');
+    expect(rows[1].textContent).toContain('tBTC');
   });
 
   it('should apply correct formatting in view as user mode', async () => {
