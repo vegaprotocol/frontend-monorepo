@@ -62,8 +62,6 @@ const mockReferralProposal = generateProposal({
     change: {
       __typename: 'UpdateReferralProgram',
       changes: {
-        id: '',
-        version: 0,
         benefitTiers: [
           {
             minimumEpochs: 6,
@@ -132,10 +130,7 @@ describe('<ProposalReferralProgramDetails />', () => {
       terms: {
         change: {
           __typename: 'UpdateReferralProgram',
-          changes: {
-            id: '',
-            version: 0,
-          },
+          changes: {},
         },
       },
     });
