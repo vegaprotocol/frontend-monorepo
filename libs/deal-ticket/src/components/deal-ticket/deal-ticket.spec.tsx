@@ -153,6 +153,7 @@ describe('DealTicket', () => {
       'checked'
     );
     expect(screen.getByTestId('order-size')).toHaveDisplayValue('0');
+    // 7002-SORD-031
     expect(screen.getByTestId('order-tif')).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
     );
@@ -235,7 +236,7 @@ describe('DealTicket', () => {
     );
   });
 
-  it('should set values for a non-persistent reduce only order and disable post only checkbox', () => {
+  it('should set values for a non-persistent reduce only order and disable post only checkbox', async () => {
     const expectedOrder = {
       marketId: market.id,
       type: Schema.OrderType.TYPE_LIMIT,
@@ -273,13 +274,28 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('order-price')).toHaveDisplayValue(
       expectedOrder.price
     );
+    // 7003-SORD-054
+    // 7003-SORD-055
+    // 7003-SORD-057
     expect(screen.getByTestId('post-only')).toBeDisabled();
     expect(screen.getByTestId('reduce-only')).toBeEnabled();
     expect(screen.getByTestId('reduce-only')).toBeChecked();
     expect(screen.getByTestId('post-only')).not.toBeChecked();
+    userEvent.hover(screen.getByText('Reduce only'));
+    // 7003-SORD-056
+    await waitFor(() => {
+      const tooltips = screen.getAllByTestId('tooltip-content');
+      expect(tooltips[0]).toBeVisible();
+    });
+
+    userEvent.hover(screen.getByText('Post only'));
+    await waitFor(() => {
+      const tooltips = screen.getAllByTestId('tooltip-content');
+      expect(tooltips[0]).toBeVisible();
+    });
   });
 
-  it('should set values for a persistent post only order and disable reduce only checkbox', () => {
+  it('should set values for a persistent post only order and disable reduce only checkbox', async () => {
     const expectedOrder = {
       marketId: market.id,
       type: Schema.OrderType.TYPE_LIMIT,
@@ -318,10 +334,49 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('order-price')).toHaveDisplayValue(
       expectedOrder.price
     );
+    // 7003-SORD-054
+    // 7003-SORD-055
+    // 7003-SORD-057
     expect(screen.getByTestId('post-only')).toBeEnabled();
     expect(screen.getByTestId('reduce-only')).toBeDisabled();
     expect(screen.getByTestId('post-only')).toBeChecked();
     expect(screen.getByTestId('reduce-only')).not.toBeChecked();
+
+    userEvent.hover(screen.getByText('Reduce only'));
+    // 7003-SORD-056
+    await waitFor(() => {
+      const tooltips = screen.getAllByTestId('tooltip-content');
+      expect(tooltips[0]).toBeVisible();
+    });
+    userEvent.hover(screen.getByText('Post only'));
+    await waitFor(() => {
+      const tooltips = screen.getAllByTestId('tooltip-content');
+      expect(tooltips[0]).toBeVisible();
+    });
+  });
+
+  it('should see an explanation of post only', async () => {
+    render(generateJsx());
+    userEvent.hover(screen.getByText('Post only'));
+    // 7003-SORD-058
+    await waitFor(() => {
+      const tooltips = screen.getAllByTestId('tooltip-content');
+      expect(tooltips[0]).toHaveTextContent(
+        `"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.`
+      );
+    });
+  });
+
+  it('should see an explanation of reduce only', async () => {
+    render(generateJsx());
+    userEvent.hover(screen.getByText('Reduce only'));
+    // 7003-SORD-058
+    await waitFor(() => {
+      const tooltips = screen.getAllByTestId('tooltip-content');
+      expect(tooltips[0]).toHaveTextContent(
+        `"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".`
+      );
+    });
   });
 
   it('should set values for a persistent post only iceberg order and disable reduce only checkbox', () => {
@@ -430,6 +485,12 @@ describe('DealTicket', () => {
     });
 
     // Only FOK and IOC should be present for type market order
+    // 7002-SORD-023
+    // 7002-SORD-024
+    // 7002-SORD-025
+    // 7002-SORD-026
+    // 7002-SORD-027
+    // 7002-SORD-028
     expect(
       Array.from(screen.getByTestId('order-tif').children).map(
         (o) => o.textContent
@@ -437,6 +498,7 @@ describe('DealTicket', () => {
     ).toEqual(['Fill or Kill (FOK)', 'Immediate or Cancel (IOC)']);
 
     // IOC should be default
+    // 7002-SORD-030
     expect(screen.getByTestId('order-tif')).toHaveDisplayValue(
       'Immediate or Cancel (IOC)'
     );
@@ -451,6 +513,12 @@ describe('DealTicket', () => {
     );
 
     // Switch to type limit order -> all TIF options should be shown
+    // 7002-SORD-023
+    // 7002-SORD-024
+    // 7002-SORD-025
+    // 7002-SORD-026
+    // 7002-SORD-027
+    // 7002-SORD-028
     await userEvent.click(screen.getByTestId('order-type-Limit'));
     expect(screen.getByTestId('order-tif').children).toHaveLength(
       Object.keys(Schema.OrderTimeInForce).length
