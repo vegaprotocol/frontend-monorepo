@@ -1,6 +1,6 @@
 import { useRef, memo, useState, useCallback } from 'react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { type AgGridReact } from 'ag-grid-react';
 import {
@@ -22,6 +22,7 @@ const AccountBreakdown = ({
   partyId: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }) => {
+  const t = useT();
   const gridRef = useRef<AgGridReact>(null);
   const { data } = useDataProvider({
     dataProvider: aggregatedAccountDataProvider,
@@ -118,6 +119,7 @@ export const AccountManager = ({
   onMarketClick,
   gridProps,
 }: AccountManagerProps) => {
+  const t = useT();
   const [breakdownAssetId, setBreakdownAssetId] = useState<string>();
   const { data, error } = useDataProvider({
     dataProvider: aggregatedAccountsDataProvider,

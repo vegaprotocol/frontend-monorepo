@@ -4,7 +4,7 @@ import { Tooltip, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketMarginDataProvider } from './margin-data-provider';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 import { useAccountBalance } from './use-account-balance';
 import { useMarketAccountBalance } from './use-market-account-balance';
 
@@ -58,6 +58,7 @@ export const MarginHealthChartTooltip = ({
   decimals: number;
   marginAccountBalance?: string;
 }) => {
+  const t = useT();
   const tooltipContent = [
     <MarginHealthChartTooltipRow
       key={'maintenance'}

@@ -3,7 +3,7 @@ import {
   addDecimalsFormatNumber,
   addDecimalsFormatNumberQuantum,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 import { Intent, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 import { type AgGridReact, type AgGridReactProps } from 'ag-grid-react';
 import { type AccountFields } from './accounts-data-provider';
@@ -31,6 +31,7 @@ interface BreakdownTableProps extends AgGridReactProps {
 
 const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
   ({ data }, ref) => {
+    const t = useT();
     const coldefs = useMemo(() => {
       const defs: ColDef[] = [
         {

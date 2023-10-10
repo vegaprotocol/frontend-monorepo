@@ -5,7 +5,7 @@ import {
   isNumeric,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
@@ -96,6 +96,7 @@ export const AccountTable = ({
   pinnedAsset,
   ...props
 }: AccountTableProps) => {
+  const t = useT();
   const pinnedRow = useMemo(() => {
     if (!pinnedAsset) {
       return;

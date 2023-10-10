@@ -8,7 +8,7 @@ import {
   addDecimalsFormatNumber,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 import {
   TradingFormGroup,
   TradingInput,
@@ -66,6 +66,7 @@ export const TransferForm = ({
   accounts,
   minQuantumMultiple,
 }: TransferFormProps) => {
+  const t = useT();
   const {
     control,
     register,
@@ -473,6 +474,7 @@ export const TransferFee = ({
   fee?: string;
   decimals?: number;
 }) => {
+  const t = useT();
   if (!feeFactor || !amount || !transferAmount || !fee) return null;
   if (
     isNaN(Number(feeFactor)) ||
@@ -546,6 +548,7 @@ export const AddressField = ({
   mode,
   onChange,
 }: AddressInputProps) => {
+  const t = useT();
   const isInput = mode === 'input';
   return (
     <>

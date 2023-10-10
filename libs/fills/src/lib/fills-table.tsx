@@ -12,7 +12,6 @@ import {
   getDateTimeFormat,
   isNumeric,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import {
   AgGrid,
@@ -35,6 +34,7 @@ import {
 } from './__generated__/Fills';
 import { FillActionsDropdown } from './fill-actions-dropdown';
 import { getAsset } from '@vegaprotocol/markets';
+import { useT } from './use-t';
 
 const TAKER = 'Taker';
 const MAKER = 'Maker';
@@ -48,6 +48,7 @@ export type Props = (AgGridReactProps | AgReactUiProps) & {
 
 export const FillsTable = forwardRef<AgGridReact, Props>(
   ({ partyId, onMarketClick, ...props }, ref) => {
+    const t = useT();
     const columnDefs = useMemo<ColDef[]>(
       () => [
         {
@@ -144,7 +145,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           ...COL_DEFS.actions,
         },
       ],
-      [onMarketClick, partyId]
+      [onMarketClick, partyId, t]
     );
     return (
       <AgGrid
@@ -323,6 +324,7 @@ const FeesBreakdownTooltip = ({
   value: market,
   partyId,
 }: ITooltipParams<Trade, Trade['market']> & { partyId?: string }) => {
+  const t = useT();
   if (!market || !data) {
     return null;
   }
@@ -404,6 +406,7 @@ export const FeesDiscountBreakdownTooltip = ({
   data,
   partyId,
 }: ITooltipParams<Trade, Trade['market']> & { partyId?: string }) => {
+  const t = useT();
   if (!data || !data.market) {
     return null;
   }
