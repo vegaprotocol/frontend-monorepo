@@ -625,13 +625,13 @@ export const RiskFactorsInfoPanel = ({
 
     const { short, long } = market.riskFactors;
 
-    const maxLeverageLong = new BigNumber(1)
-      .dividedBy(new BigNumber(market.linearSlippageFactor).plus(long))
-      .toString();
+    const maxLeverageLong = new BigNumber(1).dividedBy(
+      new BigNumber(market.linearSlippageFactor).plus(long)
+    );
 
-    const maxLeverageShort = new BigNumber(1)
-      .dividedBy(new BigNumber(market.linearSlippageFactor).plus(short))
-      .toString();
+    const maxLeverageShort = new BigNumber(1).dividedBy(
+      new BigNumber(market.linearSlippageFactor).plus(short)
+    );
 
     const maxInitialLeverageLong = !market.tradableInstrument.marginCalculator
       ? undefined
@@ -640,8 +640,7 @@ export const RiskFactorsInfoPanel = ({
             market.tradableInstrument.marginCalculator.scalingFactors
               .initialMargin
           )
-          .times(maxLeverageLong)
-          .toString();
+          .times(maxLeverageLong);
 
     const maxInitialLeverageShort = !market.tradableInstrument.marginCalculator
       ? undefined
@@ -650,16 +649,25 @@ export const RiskFactorsInfoPanel = ({
             market.tradableInstrument.marginCalculator.scalingFactors
               .initialMargin
           )
-          .times(maxLeverageShort)
-          .toString();
+          .times(maxLeverageShort);
+
+    const formatValue = (number: BigNumber | string | undefined) => {
+      if (!number) return undefined;
+      const value = new BigNumber(number);
+      if (value.gte(10)) {
+        return value.toFixed(0);
+      } else {
+        return value.toFixed(1);
+      }
+    };
 
     const data = {
-      long,
-      short,
-      maxLeverageLong,
-      maxLeverageShort,
-      maxInitialLeverageLong,
-      maxInitialLeverageShort,
+      long: formatValue(long),
+      short: formatValue(short),
+      maxLeverageLong: formatValue(maxLeverageLong),
+      maxLeverageShort: formatValue(maxLeverageShort),
+      maxInitialLeverageLong: formatValue(maxInitialLeverageLong),
+      maxInitialLeverageShort: formatValue(maxInitialLeverageShort),
     };
     return data;
   };
