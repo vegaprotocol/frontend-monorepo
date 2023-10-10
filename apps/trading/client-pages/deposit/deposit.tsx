@@ -40,11 +40,11 @@ import { Markets } from './markets';
 
 export const Deposit = () => {
   return (
-    <div className="flex flex-col lg:flex-row gap-4">
-      <div className="lg:w-2/3">
+    <div className="flex flex-col gap-4">
+      <div>
         <DepositFlowContainer />
       </div>
-      <div className="lg:w-1/3">
+      <div>
         <DepositGetStarted />
       </div>
     </div>
@@ -372,15 +372,17 @@ const AssetSelector = ({
                   <Radio.Indicator className="block w-4 h-4 border-2 border-white bg-vega-clight-300" />
                 </Radio.Item>
                 <div className="flex flex-col flex-1 gap-1">
-                  <label
-                    htmlFor={asset.id}
-                    className="block text-lg cursor-pointer"
-                  >
-                    {asset.symbol}{' '}
-                    <small>
-                      ({truncateByChars(asset.source.contractAddress)})
-                    </small>
-                  </label>
+                  <div>
+                    <label
+                      htmlFor={asset.id}
+                      className="text-lg cursor-pointer"
+                    >
+                      {asset.symbol}{' '}
+                      <small>
+                        ({truncateByChars(asset.source.contractAddress)})
+                      </small>
+                    </label>
+                  </div>
                   <Markets markets={marketsForAsset} />
                 </div>
               </div>
