@@ -7,6 +7,7 @@ import {
   priceChangePercentage,
 } from '@vegaprotocol/utils';
 import { BigNumber } from 'bignumber.js';
+import { t } from '@vegaprotocol/i18n';
 
 export const Markets = ({
   markets,
@@ -14,14 +15,17 @@ export const Markets = ({
   markets: MarketMaybeWithDataAndCandles[];
 }) => {
   return (
-    <div className="flex gap-2">
-      {markets.length ? (
-        markets.map((m) => {
-          return <MarketCard key={m.id} market={m} />;
-        })
-      ) : (
-        <p className="text-xs">No markets</p>
-      )}
+    <div>
+      <p className="mb-1 text-xs text-muted">{t('Currently traded in')}</p>
+      <div className="flex gap-2">
+        {markets.length ? (
+          markets.map((m) => {
+            return <MarketCard key={m.id} market={m} />;
+          })
+        ) : (
+          <p className="text-xs">No markets</p>
+        )}
+      </div>
     </div>
   );
 };
@@ -37,7 +41,7 @@ const MarketCard = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
     oneDayCandles?.map((c) => c.close) || []
   );
   return (
-    <div className="flex w-1/4 p-2 rounded gap-2 bg-vega-clight-700 dark:bg-vega-cdark-700">
+    <div className="flex w-1/4 p-2 rounded gap-2 bg-vega-clight-500 dark:bg-vega-cdark-500">
       <div className="flex-1">
         <h3 className="overflow-hidden text-sm leading-4 whitespace-nowrap text-ellipsis">
           {market.tradableInstrument.instrument.code}

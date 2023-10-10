@@ -1,26 +1,19 @@
-import type { ReactNode } from 'react';
-import { useCallback, useEffect } from 'react';
+import type { Dispatch, FormEvent, SetStateAction} from 'react';
+import { useCallback } from 'react';
+import { useEffect } from 'react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import * as Radio from '@radix-ui/react-radio-group';
 import { DepositGetStarted } from './deposit-get-started';
+import { useEnabledAssets } from '@vegaprotocol/assets';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
-import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import {
   addDecimal,
   isAssetTypeERC20,
+  removeDecimal,
   truncateByChars,
 } from '@vegaprotocol/utils';
-import { AssetStatus } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/i18n';
-import {
-  Intent,
-  Loader,
-  TradingButton,
-  TradingInput,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Intent, TradingButton, TradingInput } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import {
   EthTxStatus,
@@ -29,7 +22,11 @@ import {
   useWeb3ConnectStore,
 } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
-import { Token } from '@vegaprotocol/smart-contracts';
+import {
+  CollateralBridge,
+  prepend0x,
+  Token,
+} from '@vegaprotocol/smart-contracts';
 import { MaxUint256 } from '@ethersproject/constants';
 import { useTopTradedMarkets } from '../../lib/hooks/use-top-traded-markets';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
@@ -37,25 +34,16 @@ import { getAsset } from '@vegaprotocol/markets';
 import classNames from 'classnames';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { Markets } from './markets';
+import { Balance } from './balance';
+import { Allowance } from './allowance';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import { Faucet } from './faucet';
 
 export const Deposit = () => {
-  return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <DepositFlowContainer />
-      </div>
-      <div>
-        <DepositGetStarted />
-      </div>
-    </div>
-  );
-};
-
-const DepositFlowContainer = () => {
   const { VEGA_ENV } = useEnvironment();
   const [searchParams] = useSearchParams();
   const assetId = searchParams.get('assetId') || undefined;
-  const { data: assets } = useAssetsDataProvider();
+  const { data: assets } = useEnabledAssets();
   const { data: markets } = useTopTradedMarkets();
   const { config } = useEthereumConfig();
 
@@ -67,37 +55,33 @@ const DepositFlowContainer = () => {
       assets={assets}
       assetId={assetId}
       bridgeAddress={config.collateral_bridge_contract.address}
+      confirmations={config.confirmations}
       markets={markets || []}
       faucetEnabled={VEGA_ENV !== Networks.MAINNET}
     />
   );
 };
 
-const DepositSteps = {
-  Asset: 'Asset',
-  Approve: 'Approve',
-  Deposit: 'Deposit',
-} as const;
-type Step = keyof typeof DepositSteps;
-
 interface DepositState {
-  step: Step;
   asset: AssetFieldsFragment | undefined;
   amount: string;
   allowance: BigNumber | undefined;
   balance: BigNumber | undefined;
 }
+type SetDepositState = Dispatch<SetStateAction<DepositState>>;
 
 const DepositFlow = ({
   assets,
   assetId,
   bridgeAddress,
+  confirmations,
   markets,
   faucetEnabled,
 }: {
   assets: AssetFieldsFragment[];
   assetId?: string;
   bridgeAddress: string;
+  confirmations: number;
   markets: MarketMaybeWithDataAndCandles[];
   faucetEnabled: boolean;
 }) => {
@@ -105,7 +89,6 @@ const DepositFlow = ({
   const [state, setState] = useState<DepositState>(() => {
     const asset = assets.find((a) => a.id === assetId);
     return {
-      step: asset ? 'Approve' : 'Asset',
       asset,
       amount: '',
       allowance: undefined,
@@ -113,143 +96,101 @@ const DepositFlow = ({
     };
   });
 
-  const onApproved = useCallback(async () => {
-    if (!provider) throw new Error('no provider');
-    if (!account) throw new Error('no account');
-    if (!isAssetTypeERC20(state.asset)) throw new Error('no asset');
+  const handleAssetChanged = useCallback(
+    async (assetId: string | undefined) => {
+      const asset = assets.find((a) => a.id === assetId);
 
-    const signer = provider.getSigner();
-    const tokenContract = new Token(
-      state.asset.source.contractAddress,
-      signer || provider
-    );
-    const res = await tokenContract.allowance(account, bridgeAddress);
-    const allowance = new BigNumber(
-      addDecimal(res.toString(), state.asset.decimals)
-    );
+      if (!asset) {
+        setState((curr) => ({
+          ...curr,
+          asset: undefined,
+          allowance: undefined,
+          balance: undefined,
+        }));
+        return;
+      }
 
-    setState((curr) => ({ ...curr, step: DepositSteps.Deposit, allowance }));
-  }, [state.asset, bridgeAddress, account, provider]);
+      if (!isAssetTypeERC20(asset)) throw new Error('invalid asset');
 
-  const handleAssetChanged = async (asset: AssetFieldsFragment | undefined) => {
-    if (!asset) {
+      let allowance = new BigNumber(0);
+      let balance = new BigNumber(0);
+
+      // if you have connected and therefore have a provider get
+      // balance and allowance
+      if (provider && account) {
+        const signer = provider.getSigner();
+        const tokenContract = new Token(
+          asset.source.contractAddress,
+          signer || provider
+        );
+        const allowanceRes = await tokenContract.allowance(
+          account,
+          bridgeAddress
+        );
+        allowance = new BigNumber(
+          addDecimal(allowanceRes.toString(), asset.decimals)
+        );
+
+        const balanceRes = await tokenContract.balanceOf(account);
+        balance = new BigNumber(
+          addDecimal(balanceRes.toString(), asset.decimals)
+        );
+      }
+
       setState((curr) => ({
         ...curr,
-        step: DepositSteps.Asset,
-        asset: undefined,
-        allowance: undefined,
-        balance: undefined,
+        asset,
+        allowance,
+        balance,
       }));
-      return;
-    }
-
-    if (!isAssetTypeERC20(asset)) throw new Error('invalid asset');
-
-    let allowance = new BigNumber(0);
-    let balance = new BigNumber(0);
-
-    // if you have connected and therefore have a provider get
-    // balance and allowance
-    if (provider && account) {
-      const signer = provider.getSigner();
-      const tokenContract = new Token(
-        asset.source.contractAddress,
-        signer || provider
-      );
-      const allowanceRes = await tokenContract.allowance(
-        account,
-        bridgeAddress
-      );
-      allowance = new BigNumber(
-        addDecimal(allowanceRes.toString(), asset.decimals)
-      );
-
-      const balanceRes = await tokenContract.balanceOf(account);
-      balance = new BigNumber(
-        addDecimal(balanceRes.toString(), asset.decimals)
-      );
-    }
-
-    const step = allowance.isGreaterThan(0)
-      ? DepositSteps.Deposit
-      : DepositSteps.Approve;
-
-    setState((curr) => ({
-      ...curr,
-      step,
-      asset,
-      allowance,
-      balance,
-    }));
-  };
-
-  return (
-    <>
-      <div className="flex flex-col border rounded border-default">
-        <StepWrapper>
-          <AssetSelector
-            asset={state.asset}
-            assets={assets}
-            onSelect={handleAssetChanged}
-            markets={markets}
-            balance={state.balance}
-            faucetEnabled={faucetEnabled}
-          />
-        </StepWrapper>
-        <StepWrapper>
-          <Approval
-            step={state.step}
-            asset={state.asset}
-            allowance={state.allowance}
-            bridgeAddress={bridgeAddress}
-            onApproved={onApproved}
-          />
-        </StepWrapper>
-        <StepWrapper>
-          <SendDeposit
-            step={state.step}
-            asset={state.asset}
-            allowance={state.allowance}
-            balance={state.balance}
-            amount={state.amount}
-            setAmount={(amount) => setState((curr) => ({ ...curr, amount }))}
-          />
-        </StepWrapper>
-      </div>
-    </>
+    },
+    [account, assets, bridgeAddress, provider]
   );
-};
 
-const StepWrapper = ({ children }: { children: ReactNode }) => {
+  const refetchBalances = useCallback(() => {
+    // refetch balance and allowance
+    if (state.asset) {
+      handleAssetChanged(state.asset.id);
+    }
+  }, [state.asset, handleAssetChanged]);
+
   return (
-    <div className="p-4 border-b rounded gap-3 last:border-b-0 border-default">
-      {children}
-    </div>
+    <AssetSelector
+      state={state}
+      setState={setState}
+      assets={assets}
+      onSelect={handleAssetChanged}
+      markets={markets}
+      faucetEnabled={faucetEnabled}
+      bridgeAddress={bridgeAddress}
+      confirmations={confirmations}
+      refetchBalances={refetchBalances}
+    />
   );
 };
 
 const AssetSelector = ({
-  asset,
+  state,
+  setState,
   assets,
   onSelect,
   markets,
-  balance,
   faucetEnabled,
+  bridgeAddress,
+  confirmations,
+  refetchBalances,
 }: {
-  asset?: AssetFieldsFragment;
+  state: DepositState;
+  setState: SetDepositState;
   assets: AssetFieldsFragment[];
-  onSelect: (asset?: AssetFieldsFragment) => void;
+  onSelect: (assetId: string | undefined) => void;
   markets: MarketMaybeWithDataAndCandles[];
   faucetEnabled: boolean;
-  balance: BigNumber | undefined;
+  bridgeAddress: string;
+  confirmations: number;
+  refetchBalances: () => void;
 }) => {
   const [search, setSearch] = useState('');
-  const [id, setId] = useState<number | null>(null);
-  const { provider } = useWeb3React();
-  const send = useEthTransactionStore((store) => store.create);
-  const tx = useEthTransactionStore((store) => {
-    return store.transactions.find((t) => t?.id == id);
-  });
 
   const getMarketsForAsset = (a: AssetFieldsFragment) => {
     return markets
@@ -260,68 +201,45 @@ const AssetSelector = ({
       .slice(0, 4);
   };
 
-  const submitFaucet = async () => {
-    if (!provider) throw new Error('no provider');
-    if (!isAssetTypeERC20(asset)) throw new Error('no asset selected');
-    const signer = provider.getSigner();
-    const contract = new Token(
-      asset.source.contractAddress,
-      signer || provider
-    );
-    const id = send(contract, 'faucet', []);
-    setId(id);
-  };
-
-  if (tx && tx.status === EthTxStatus.Pending) {
+  if (state.asset && isAssetTypeERC20(state.asset)) {
     return (
-      <div className="flex justify-between">
-        <div className="flex gap-3">
-          <div className="mt-0.5">
-            <Loader size="small" />
-          </div>
-          <div className="flex flex-col items-start gap-2">
-            <h3 className="text-lg">{t('Waiting for faucet...')}</h3>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (asset && isAssetTypeERC20(asset)) {
-    const selectedAssetMarkets = getMarketsForAsset(asset);
-
-    return (
-      <div className="flex gap-3">
-        <StepIndicator complete={true} />
-        <div className="flex flex-1 gap-2">
-          <div className="flex flex-col items-start flex-1 gap-2">
+      <div
+        className={classNames(
+          'p-4 rounded',
+          'bg-vega-clight-600 dark:bg-vega-cdark-600'
+        )}
+      >
+        <div className="flex flex-col flex-1 gap-1">
+          <div className="flex justify-between">
             <p className="text-lg">
-              {asset.symbol}{' '}
-              <small>{truncateByChars(asset.source.contractAddress)}</small>
+              {state.asset.symbol}{' '}
+              <small>
+                ({truncateByChars(state.asset.source.contractAddress)})
+              </small>
             </p>
-            <div className="w-full">
-              <Markets markets={selectedAssetMarkets} />
-            </div>
-            <div className="flex gap-2">
-              <TradingButton onClick={() => onSelect(undefined)} size="small">
-                {t('Change asset')}
-              </TradingButton>
-              {faucetEnabled && (
-                <TradingButton onClick={submitFaucet} size="small">
-                  {t('Faucet')}
-                </TradingButton>
-              )}
+            <div className="text-right">
+              <Balance asset={state.asset} balance={state.balance} />
             </div>
           </div>
-          <div className="text-right">
-            {balance && (
-              <p className="font-mono text-lg">
-                {balance.toString()}
-                <small className="ml-1 text-muted font-alpha">
-                  {asset.symbol}
-                </small>
-              </p>
-            )}
+          <Markets markets={getMarketsForAsset(state.asset)} />
+          <div className="relative pt-4 mt-4 border-t border-vega-clight-400 dark:border-vega-cdark-400">
+            <TransactionContainer
+              state={state}
+              setState={setState}
+              bridgeAddress={bridgeAddress}
+              confirmations={confirmations}
+              refetchBalances={refetchBalances}
+              faucetEnabled={faucetEnabled}
+            />
+            <div className="absolute bottom-0 right-0">
+              <TradingButton
+                onClick={() => onSelect(undefined)}
+                size="small"
+                intent={Intent.Danger}
+              >
+                {t('Cancel')}
+              </TradingButton>
+            </div>
           </div>
         </div>
       </div>
@@ -329,7 +247,6 @@ const AssetSelector = ({
   }
 
   const filteredAssets = assets
-    .filter((a) => a.status === AssetStatus.STATUS_ENABLED)
     .filter((a) => a.source.__typename === 'ERC20')
     .filter((a) => a.symbol.toLowerCase().includes(search.toLowerCase()));
   filteredAssets.sort((a, b) => {
@@ -350,62 +267,105 @@ const AssetSelector = ({
           />
         </div>
       </div>
-      <Radio.Root
-        className="flex flex-col gap-4"
-        onValueChange={(value) => {
-          onSelect(assets.find((a) => a.id === value));
-        }}
-      >
-        {filteredAssets.map((asset) => {
-          if (!isAssetTypeERC20(asset)) return null;
+      <div className="flex flex-col gap-4">
+        {filteredAssets.map((a) => {
+          if (!isAssetTypeERC20(a)) return null;
 
-          const marketsForAsset = getMarketsForAsset(asset);
+          const marketsForAsset = getMarketsForAsset(a);
 
-          return (
-            <div key={asset.id}>
-              <div className="flex gap-3">
-                <Radio.Item
-                  id={asset.id}
-                  value={asset.id}
-                  className="w-5 h-5 border-2 rounded border-vega-clight-600"
-                >
-                  <Radio.Indicator className="block w-4 h-4 border-2 border-white bg-vega-clight-300" />
-                </Radio.Item>
-                <div className="flex flex-col flex-1 gap-1">
-                  <div>
-                    <label
-                      htmlFor={asset.id}
-                      className="text-lg cursor-pointer"
-                    >
-                      {asset.symbol}{' '}
-                      <small>
-                        ({truncateByChars(asset.source.contractAddress)})
-                      </small>
-                    </label>
-                  </div>
-                  <Markets markets={marketsForAsset} />
+          const content = (
+            <div className="flex flex-col flex-1 gap-1">
+              <div className="flex justify-between">
+                <p className="text-lg">
+                  {a.symbol}{' '}
+                  <small>({truncateByChars(a.source.contractAddress)})</small>
+                </p>
+                <div className="text-right">
+                  <Balance asset={a} />
                 </div>
               </div>
+              <Markets markets={marketsForAsset} />
             </div>
           );
+
+          // TODO handle selected and hover states
+          if (a.id === state.asset?.id) {
+            return (
+              <div
+                key={a.id}
+                className={classNames(
+                  'p-4 rounded',
+                  'bg-vega-clight-600 dark:bg-vega-cdark-600'
+                )}
+              >
+                {content}
+              </div>
+            );
+          }
+
+          return (
+            <button
+              key={a.id}
+              onClick={() => {
+                onSelect(a.id);
+              }}
+              className={classNames(
+                'p-4 rounded text-left',
+                'bg-vega-clight-800 dark:bg-vega-cdark-800 hover:bg-vega-clight-600 dark:hover:bg-vega-cdark-600 cursor-pointer'
+              )}
+            >
+              {content}
+            </button>
+          );
         })}
-      </Radio.Root>
+      </div>
+    </div>
+  );
+};
+
+const TransactionContainer = ({
+  state,
+  setState,
+  bridgeAddress,
+  confirmations,
+  refetchBalances,
+  faucetEnabled,
+}: {
+  state: DepositState;
+  setState: SetDepositState;
+  bridgeAddress: string;
+  confirmations: number;
+  refetchBalances: () => void;
+  faucetEnabled: boolean;
+}) => {
+  return (
+    <div className="flex flex-col gap-2">
+      <Approval
+        state={state}
+        bridgeAddress={bridgeAddress}
+        refetchBalances={refetchBalances}
+      />
+      <SendDeposit
+        state={state}
+        amount={state.amount}
+        bridgeAddress={bridgeAddress}
+        confirmations={confirmations}
+        setAmount={(amount) => setState((curr) => ({ ...curr, amount }))}
+        faucetEnabled={faucetEnabled}
+        refetchBalances={refetchBalances}
+      />
     </div>
   );
 };
 
 const Approval = ({
-  step,
-  asset,
-  allowance,
+  state,
   bridgeAddress,
-  onApproved,
+  refetchBalances,
 }: {
-  step: Step;
-  asset: AssetFieldsFragment | undefined;
-  allowance: BigNumber | undefined;
+  state: DepositState;
   bridgeAddress: string;
-  onApproved: () => void;
+  refetchBalances: () => void;
 }) => {
   const openDialog = useWeb3ConnectStore((store) => store.open);
   const { account, provider } = useWeb3React();
@@ -416,12 +376,14 @@ const Approval = ({
   });
   const send = useEthTransactionStore((store) => store.create);
 
-  const handleApprove = () => {
+  const submitApproval = () => {
     if (!provider) throw new Error('no provider');
-    if (!isAssetTypeERC20(asset)) throw new Error('no provider');
+    if (!isAssetTypeERC20(state.asset)) {
+      throw new Error('no provider');
+    }
     const signer = provider.getSigner();
     const contract = new Token(
-      asset.source.contractAddress,
+      state.asset.source.contractAddress,
       signer || provider
     );
     const id = send(contract, 'approve', [
@@ -432,77 +394,47 @@ const Approval = ({
   };
 
   useEffect(() => {
-    if (!asset) return; // this can get triggered when you clear the selected asset
+    if (!state.asset) return; // this can get triggered when you clear the selected asset
     if (tx?.status === EthTxStatus.Confirmed) {
-      onApproved();
+      refetchBalances();
     }
-  }, [tx?.status, asset, onApproved]);
+  }, [tx?.status, state.asset, refetchBalances]);
+
+  if (!state.asset) return null;
 
   // No asset selected, show generic approval title
-  if (!asset) {
-    return (
-      <div className="flex items-center justify-between w-full">
-        <div className="flex gap-3">
-          <StepIndicator complete={false} />
-          <h3 className="text-lg">{t('Approval')}</h3>
-        </div>
-      </div>
-    );
-  }
-
   if (!account) {
     return (
-      <div className="flex justify-between">
-        <div className="flex gap-3">
-          <StepIndicator complete={false} />
-          <div className="flex flex-col items-start gap-2">
-            <h3 className="text-lg">{t('Approval')}</h3>
-            <TradingButton onClick={openDialog} size="small">
-              {t('Connect Ethereum wallet')}
-            </TradingButton>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (tx && tx.status === EthTxStatus.Pending) {
-    return (
-      <div className="flex justify-between">
-        <div className="flex gap-3">
-          <div className="mt-0.5">
-            <Loader size="small" />
-          </div>
-          <div className="flex flex-col items-start gap-2">
-            <h3 className="text-lg">{t('Waiting for approval...')}</h3>
-            <TradingButton onClick={handleApprove} size="small">
-              {t('Re-approve')}
-            </TradingButton>
-          </div>
-        </div>
+      <div>
+        <TradingButton onClick={openDialog} size="small">
+          {t('Connect Ethereum wallet')}
+        </TradingButton>
       </div>
     );
   }
 
   // APPROVED: show muted re-approve button
-  if (allowance && allowance.isGreaterThan(0)) {
+  if (state.allowance && state.allowance.isGreaterThan(0)) {
     return (
       <div className="flex justify-between">
-        <div className="flex gap-3">
-          <StepIndicator complete={true} />
-          <div className="flex flex-col items-start gap-2">
-            <h3 className="text-lg">{t('Approved')}</h3>
-            <TradingButton onClick={handleApprove} size="small">
+        <div className="flex flex-col items-start gap-2">
+          <p className="text-sm">{t('Approved for use')}</p>
+          {tx && tx.status === EthTxStatus.Pending ? (
+            <TradingButton disabled={true} size="small">
+              {t('Approving...')}
+            </TradingButton>
+          ) : (
+            <TradingButton onClick={submitApproval} size="small">
               {t('Re-approve')}
             </TradingButton>
-          </div>
+          )}
         </div>
         <div className="text-right">
-          {allowance && (
+          {state.allowance && (
             <div className="font-mono text-lg">
-              <Allowance allowance={allowance} />
-              <small className="ml-1 text-muted font-alpha">
-                {asset.symbol}
+              <Allowance allowance={state.allowance} />
+              <small className="ml-1 text-xs text-muted font-alpha">
+                {t('Approved')}
               </small>
             </div>
           )}
@@ -513,166 +445,136 @@ const Approval = ({
 
   // NOT APPROVED: show primary approve button
   return (
-    <div className="flex justify-between">
-      <div className="flex gap-3">
-        <StepIndicator complete={false} />
-        <div className="flex flex-col items-start gap-2">
-          <h3 className="text-lg">{t('Approve deposits')}</h3>
-          <p className="text-sm text-muted">
-            {t(
-              'Before you can make a deposit of %s you need to approve its use',
-              asset.symbol
-            )}
-          </p>
-          <TradingButton
-            onClick={() => {
-              if (!provider) throw new Error('no provider');
-              if (!isAssetTypeERC20(asset)) throw new Error('no provider');
-              const signer = provider.getSigner();
-              const contract = new Token(
-                asset.source.contractAddress,
-                signer || provider
-              );
-              const id = send(contract, 'approve', [
-                bridgeAddress,
-                MaxUint256.toString(),
-              ]);
-              setId(id);
-            }}
-            size="small"
-            intent={Intent.Success}
-          >
-            {t('Approve %s deposits', asset.symbol)}
-          </TradingButton>
-        </div>
+    <div className="flex flex-col items-start gap-2">
+      <div>
+        <h3 className="text-sm">{t('Approve deposits')}</h3>
+        <p className="text-sm text-muted">
+          {t(
+            'Before you can make a deposit of %s you need to approve its use with Vega in your Ethereum wallet.',
+            state.asset.symbol
+          )}
+        </p>
       </div>
+      {tx && tx.status === EthTxStatus.Pending ? (
+        <TradingButton intent={Intent.Success} disabled={true} size="small">
+          {t('Approving...')}
+        </TradingButton>
+      ) : (
+        <TradingButton
+          onClick={submitApproval}
+          size="small"
+          intent={Intent.Success}
+        >
+          {t('Approve %s deposits', state.asset.symbol)}
+        </TradingButton>
+      )}
     </div>
   );
-};
-
-const Allowance = ({ allowance }: { allowance: BigNumber }) => {
-  let value = '';
-
-  const format = (divisor: string) => {
-    const result = allowance.dividedBy(divisor);
-    return result.isInteger() ? result.toString() : result.toFixed(1);
-  };
-
-  if (allowance.isGreaterThan(new BigNumber('1e14'))) {
-    value = t('>100t');
-  } else if (allowance.isGreaterThanOrEqualTo(new BigNumber('1e12'))) {
-    // Trillion
-    value = `${format('1e12')}t`;
-  } else if (allowance.isGreaterThanOrEqualTo(new BigNumber('1e9'))) {
-    // Billion
-    value = `${format('1e9')}b`;
-  } else if (allowance.isGreaterThanOrEqualTo(new BigNumber('1e6'))) {
-    // Million
-    value = `${format('1e6')}m`;
-  } else {
-    value = allowance.toString();
-  }
-
-  return <span>{value}</span>;
 };
 
 const SendDeposit = ({
-  step,
-  asset,
-  allowance,
-  balance,
+  state,
   amount,
   setAmount,
+  bridgeAddress,
+  confirmations,
+  faucetEnabled,
+  refetchBalances,
 }: {
-  step: Step;
-  asset: AssetFieldsFragment | undefined;
-  allowance: BigNumber | undefined;
-  balance: BigNumber | undefined;
+  state: DepositState;
   amount: string;
+  bridgeAddress: string;
+  confirmations: number;
   setAmount: (amount: string) => void;
+  faucetEnabled: boolean;
+  refetchBalances: () => void;
 }) => {
-  const openDialog = useWeb3ConnectStore((store) => store.open);
-  const { account } = useWeb3React();
+  const { pubKey } = useVegaWallet();
+  const { provider, account } = useWeb3React();
 
-  const fallback = (
-    <div className="flex gap-3">
-      <StepIndicator complete={false} />
-      <h3 className="text-lg">{t('Deposit')}</h3>
-    </div>
-  );
+  const [id, setId] = useState<number | null>(null);
+  const send = useEthTransactionStore((store) => store.create);
+  const tx = useEthTransactionStore((store) => {
+    return store.transactions.find((t) => t?.id == id);
+  });
 
-  if (step !== DepositSteps.Deposit) {
-    return fallback;
-  }
+  const submitDeposit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!provider) {
+      throw new Error('no provider');
+    }
+    if (!pubKey) {
+      throw new Error('no vega pubkey');
+    }
+    if (!isAssetTypeERC20(state.asset)) {
+      throw new Error('no asset selected');
+    }
+    const signer = provider.getSigner();
+    const contract = new CollateralBridge(bridgeAddress, signer || provider);
+    const id = send(
+      contract,
+      'deposit_asset',
+      [
+        state.asset.source.contractAddress,
+        removeDecimal(amount, state.asset.decimals),
+        prepend0x(pubKey),
+      ],
+      state.asset.id,
+      confirmations ?? 1,
+      true
+    );
+    setId(id);
+  };
 
-  if (!asset) {
-    return fallback;
-  }
-
-  if (!allowance || allowance.isZero()) {
-    return fallback;
+  useEffect(() => {
+    if (!state.asset) return; // this can get triggered when you clear the selected asset
+    if (tx?.status === EthTxStatus.Confirmed) {
+      refetchBalances();
+    }
+  }, [tx?.status, state.asset, refetchBalances]);
+  if (!state.asset) {
+    return null;
   }
 
   if (!account) {
-    return (
-      <div className="flex justify-between">
-        <div className="flex gap-3">
-          <StepIndicator complete={false} />
-          <div className="flex flex-col items-start gap-2">
-            <h3 className="text-lg">{t('Deposit')}</h3>
-            <TradingButton onClick={openDialog} size="small">
-              {t('Connect Ethereum wallet')}
-            </TradingButton>
-          </div>
-        </div>
-      </div>
-    );
+    return null;
+  }
+
+  // Dont show deposit ui unless approved
+  if (!state.allowance || state.allowance.isZero()) {
+    return null;
   }
 
   return (
-    <div className="flex justify-between">
-      <div className="flex gap-3">
-        <StepIndicator complete={false} />
-        <div className="flex flex-col items-start gap-2">
-          <h3 className="text-lg">{t('Deposit')}</h3>
-          <form
-            className="flex flex-col items-start gap-2"
-            onSubmit={() => alert('TODO')}
+    <div className="flex flex-col items-start gap-2">
+      <h3 className="text-sm">{t('Deposit')}</h3>
+      <form className="flex gap-2" onSubmit={submitDeposit}>
+        <TradingInput
+          name="amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          placeholder="Enter amount"
+          className="w-[300px]"
+        />
+        {state.balance && (
+          <TradingButton
+            size="small"
+            onClick={() =>
+              setAmount(state.balance ? state.balance.toString() : '')
+            }
           >
-            <div className="flex gap-2">
-              <TradingInput
-                name="amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="Enter amount"
-                className="w-[300px]"
-              />
-              {balance && (
-                <TradingButton
-                  size="small"
-                  onClick={() => setAmount(balance.toString())}
-                >
-                  {t('Use max')}
-                </TradingButton>
-              )}
-            </div>
-            <TradingButton type="submit" size="small" intent={Intent.Success}>
-              {t('Deposit %s', asset.symbol)}
-            </TradingButton>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const StepIndicator = ({ complete }: { complete: boolean }) => {
-  const classes = classNames(
-    'flex items-center mt-0.5 w-5 h-5 border-2 rounded border-vega-clight-600'
-  );
-  return (
-    <div className={classes}>
-      {complete && <VegaIcon name={VegaIconNames.TICK} />}
+            <span className="whitespace-nowrap">{t('Use max')}</span>
+          </TradingButton>
+        )}
+        {faucetEnabled && (
+          <Faucet asset={state.asset} refetchBalances={refetchBalances} />
+        )}
+        <TradingButton type="submit" size="small" intent={Intent.Success}>
+          <span className="whitespace-nowrap">
+            {t('Deposit %s', state.asset.symbol)}
+          </span>
+        </TradingButton>
+      </form>
     </div>
   );
 };
