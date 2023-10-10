@@ -16,6 +16,7 @@ import type {
   MarketDataQueryVariables,
 } from './__generated__/market-data';
 import { getMarketPrice } from './get-price';
+import { isMarketInAuction } from './is-market-in-auction';
 
 export type MarketData = MarketDataFieldsFragment;
 
@@ -115,14 +116,25 @@ export const staticMarketDataProvider = makeDerivedDataProvider<
   });
 });
 
+export const marketTradingModeProvider = makeDerivedDataProvider<
+  MarketDataFieldsFragment['marketTradingMode'] | undefined,
+  never,
+  MarketDataQueryVariables
+>(
+  [marketDataProvider],
+  (parts, variables, prevData) =>
+    (parts[0] as ReturnType<typeof getData>)?.marketTradingMode
+);
+
 export const fundingRateProvider = makeDerivedDataProvider<
   string,
   never,
   MarketDataQueryVariables
 >([marketDataProvider], (parts) => {
-  return (
-    (parts[0] as ReturnType<typeof getData>)?.productData?.fundingRate || null
-  );
+  const marketData = parts[0] as ReturnType<typeof getData>;
+  return marketData && !isMarketInAuction(marketData.marketTradingMode)
+    ? marketData?.productData?.fundingRate || null
+    : null;
 });
 
 export const useFundingRate = (marketId?: string, skip?: boolean) =>
@@ -152,6 +164,14 @@ export const useExternalTwap = (marketId?: string, skip?: boolean) =>
 export const useStaticMarketData = (marketId?: string, skip?: boolean) => {
   return useDataProvider({
     dataProvider: staticMarketDataProvider,
+    variables: { marketId: marketId || '' },
+    skip: skip || !marketId,
+  });
+};
+
+export const useMarketTradingMode = (marketId?: string, skip?: boolean) => {
+  return useDataProvider({
+    dataProvider: marketTradingModeProvider,
     variables: { marketId: marketId || '' },
     skip: skip || !marketId,
   });
