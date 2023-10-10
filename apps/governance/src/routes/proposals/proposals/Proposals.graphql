@@ -48,8 +48,6 @@ fragment UpdateReferralPrograms on Proposal {
     change {
       ... on UpdateReferralProgram {
         changes {
-          id
-          version
           benefitTiers {
             minimumEpochs
             minimumRunningNotionalTakerVolume
