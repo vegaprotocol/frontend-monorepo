@@ -119,6 +119,10 @@ export const Proposal = ({
         minVoterBalance =
           networkParams.governance_proposal_referralProgram_minVoterBalance;
         break;
+      case 'UpdateVolumeDiscountProgram':
+        minVoterBalance =
+          networkParams.governance_proposal_VolumeDiscountProgram_minVoterBalance;
+        break;
     }
   }
 

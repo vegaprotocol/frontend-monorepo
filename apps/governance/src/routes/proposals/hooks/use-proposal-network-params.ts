@@ -28,6 +28,8 @@ export const useProposalNetworkParams = ({
     NetworkParams.governance_proposal_updateNetParam_requiredParticipation,
     NetworkParams.governance_proposal_freeform_requiredMajority,
     NetworkParams.governance_proposal_freeform_requiredParticipation,
+    NetworkParams.governance_proposal_VolumeDiscountProgram_requiredMajority,
+    NetworkParams.governance_proposal_VolumeDiscountProgram_requiredParticipation,
   ]);
 
   const fallback = {
@@ -99,6 +101,14 @@ export const useProposalNetworkParams = ({
           params.governance_proposal_referralProgram_requiredMajority,
         requiredParticipation: new BigNumber(
           params.governance_proposal_referralProgram_requiredParticipation
+        ),
+      };
+    case 'UpdateVolumeDiscountProgram':
+      return {
+        requiredMajority:
+          params.governance_proposal_VolumeDiscountProgram_requiredMajority,
+        requiredParticipation: new BigNumber(
+          params.governance_proposal_VolumeDiscountProgram_requiredParticipation
         ),
       };
     default:
