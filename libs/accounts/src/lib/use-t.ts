@@ -1,3 +1,3 @@
 import { useTranslation } from 'react-i18next';
-
-export const useT = () => useTranslation('accounts').t;
+export const ns = 'accounts';
+export const useT = () => useTranslation(ns).t;
