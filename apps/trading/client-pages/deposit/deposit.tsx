@@ -89,7 +89,9 @@ const DepositFlow = ({
   faucetEnabled: boolean;
 }) => {
   const [search, setSearch] = useState('');
+
   const { provider, account } = useWeb3React();
+
   const [state, setState] = useState<DepositState>(() => {
     const asset = assets.find((a) => a.id === assetId);
     return {
@@ -169,13 +171,20 @@ const DepositFlow = ({
 
   if (state.asset && isAssetTypeERC20(state.asset)) {
     return (
-      <div
-        className={classNames(
-          'p-4 rounded',
-          'bg-vega-clight-600 dark:bg-vega-cdark-600'
-        )}
-      >
-        <div className="flex flex-col flex-1 gap-1">
+      <div className="flex flex-col gap-4">
+        <div>
+          {isApproved(state.allowance) ? (
+            <StepTitle step={3} title={t('Enter amount and deposit')} />
+          ) : (
+            <StepTitle step={2} title={t('Approve deposits')} />
+          )}
+        </div>
+        <div
+          className={classNames(
+            'p-4 rounded flex flex-col gap-1',
+            'bg-vega-clight-700 dark:bg-vega-cdark-700'
+          )}
+        >
           <div className="flex justify-between">
             <p className="text-lg">
               {state.asset.symbol}{' '}
@@ -224,7 +233,10 @@ const DepositFlow = ({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between">
-        <p>{t('Choose an asset to deposit to the Vega network')}</p>
+        <StepTitle
+          step={1}
+          title={t('Choose an asset to deposit to the Vega network')}
+        />
         <div>
           <TradingInput
             value={search}
@@ -239,36 +251,6 @@ const DepositFlow = ({
 
           const marketsForAsset = getMarketsForAsset(a);
 
-          const content = (
-            <div className="flex flex-col flex-1 gap-1">
-              <div className="flex justify-between">
-                <p className="text-lg">
-                  {a.symbol}{' '}
-                  <small>({truncateByChars(a.source.contractAddress)})</small>
-                </p>
-                <div className="text-right">
-                  <Balance asset={a} />
-                </div>
-              </div>
-              <Markets markets={marketsForAsset} />
-            </div>
-          );
-
-          // TODO handle selected and hover states
-          if (a.id === state.asset?.id) {
-            return (
-              <div
-                key={a.id}
-                className={classNames(
-                  'p-4 rounded',
-                  'bg-vega-clight-600 dark:bg-vega-cdark-600'
-                )}
-              >
-                {content}
-              </div>
-            );
-          }
-
           return (
             <button
               key={a.id}
@@ -277,10 +259,21 @@ const DepositFlow = ({
               }}
               className={classNames(
                 'p-4 rounded text-left',
-                'bg-vega-clight-800 dark:bg-vega-cdark-800 hover:bg-vega-clight-600 dark:hover:bg-vega-cdark-600 cursor-pointer'
+                'bg-vega-clight-800 dark:bg-vega-cdark-800 hover:bg-vega-clight-700 dark:hover:bg-vega-cdark-700 cursor-pointer'
               )}
             >
-              {content}
+              <div className="flex flex-col flex-1 gap-1">
+                <div className="flex justify-between">
+                  <p className="text-lg">
+                    {a.symbol}{' '}
+                    <small>({truncateByChars(a.source.contractAddress)})</small>
+                  </p>
+                  <div className="text-right">
+                    <Balance asset={a} />
+                  </div>
+                </div>
+                <Markets markets={marketsForAsset} />
+              </div>
             </button>
           );
         })}
@@ -371,16 +364,14 @@ const Approval = ({
   // No asset selected, show generic approval title
   if (!account) {
     return (
-      <div>
-        <TradingButton onClick={openDialog} size="small">
-          {t('Connect Ethereum wallet')}
-        </TradingButton>
-      </div>
+      <TradingButton onClick={openDialog} size="small">
+        {t('Connect Ethereum wallet')}
+      </TradingButton>
     );
   }
 
   // APPROVED: show muted re-approve button
-  if (state.allowance && state.allowance.isGreaterThan(0)) {
+  if (isApproved(state.allowance)) {
     return (
       <div className="flex justify-between">
         <div className="flex flex-col items-start gap-2">
@@ -498,6 +489,7 @@ const SendDeposit = ({
       refetchBalances();
     }
   }, [tx?.status, state.asset, refetchBalances]);
+
   if (!state.asset) {
     return null;
   }
@@ -507,12 +499,12 @@ const SendDeposit = ({
   }
 
   // Dont show deposit ui unless approved
-  if (!state.allowance || state.allowance.isZero()) {
+  if (!isApproved(state.allowance)) {
     return null;
   }
 
   return (
-    <div className="flex flex-col items-start gap-2">
+    <div className="flex flex-col items-start pt-4 mt-4 border-t gap-2 border-vega-clight-400 dark:border-vega-cdark-400">
       <h3 className="text-sm">{t('Deposit')}</h3>
       <form className="flex gap-2" onSubmit={submitDeposit}>
         <TradingInput
@@ -543,4 +535,18 @@ const SendDeposit = ({
       </form>
     </div>
   );
+};
+
+const StepTitle = ({ step, title }: { step: number; title: string }) => {
+  return (
+    <h3 className="flex flex-col gap-0.5">
+      <small className="text-muted">{t('%s/3', step.toString())}</small>
+      <span>{title}</span>
+    </h3>
+  );
+};
+
+const isApproved = (allowance: BigNumber | undefined) => {
+  if (!allowance) return false;
+  return allowance.isGreaterThan(0);
 };

@@ -14,7 +14,7 @@ export const Assets = () => {
   };
 
   return (
-    <div className="container px-4 mx-auto my-4">
+    <div className="container px-4 mx-auto my-4 max-w-[1200px]">
       <nav className="flex items-end my-6 text-lg gap-4">
         <NavLink to={Links.DEPOSIT()} className={linkClasses}>
           {t('Deposit')}
