@@ -166,6 +166,12 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
           {t('Download')}
         </TradingButton>
       </div>
+      <p className="text-xs text-neutral-400 mt-1">
+        {t(
+          'The time in the downloaded file will be in UTC time zone. Your time zone has been offset from UTC by %s hours',
+          [String(new Date().getTimezoneOffset() / 60)]
+        )}
+      </p>
     </form>
   );
 };
