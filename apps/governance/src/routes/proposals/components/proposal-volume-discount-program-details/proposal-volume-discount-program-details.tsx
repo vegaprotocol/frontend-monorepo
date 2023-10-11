@@ -6,7 +6,6 @@ import {
   RoundedWrapper,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { useAppState } from '../../../../contexts/app-state/app-state-context';
 import {
   formatEndOfProgramTimestamp,
   formatMinimumRunningNotionalTakerVolume,
