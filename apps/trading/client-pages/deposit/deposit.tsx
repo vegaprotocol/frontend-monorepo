@@ -232,7 +232,7 @@ const DepositFlow = ({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-between">
+      <div className="flex items-end justify-between">
         <StepTitle
           step={1}
           title={t('Choose an asset to deposit to the Vega network')}
@@ -512,7 +512,7 @@ const SendDeposit = ({
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           placeholder="Enter amount"
-          className="w-[300px]"
+          className="min-w-[250px]"
         />
         {state.balance && (
           <TradingButton
