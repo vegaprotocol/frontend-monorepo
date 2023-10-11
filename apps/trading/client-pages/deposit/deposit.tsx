@@ -88,6 +88,7 @@ const DepositFlow = ({
   markets: MarketMaybeWithDataAndCandles[];
   faucetEnabled: boolean;
 }) => {
+  const [search, setSearch] = useState('');
   const { provider, account } = useWeb3React();
   const [state, setState] = useState<DepositState>(() => {
     const asset = assets.find((a) => a.id === assetId);
@@ -157,44 +158,6 @@ const DepositFlow = ({
     }
   }, [state.asset, handleAssetChanged]);
 
-  return (
-    <AssetSelector
-      state={state}
-      setState={setState}
-      assets={assets}
-      onSelect={handleAssetChanged}
-      markets={markets}
-      faucetEnabled={faucetEnabled}
-      bridgeAddress={bridgeAddress}
-      confirmations={confirmations}
-      refetchBalances={refetchBalances}
-    />
-  );
-};
-
-const AssetSelector = ({
-  state,
-  setState,
-  assets,
-  onSelect,
-  markets,
-  faucetEnabled,
-  bridgeAddress,
-  confirmations,
-  refetchBalances,
-}: {
-  state: DepositState;
-  setState: SetDepositState;
-  assets: AssetFieldsFragment[];
-  onSelect: (assetId: string | undefined) => void;
-  markets: MarketMaybeWithDataAndCandles[];
-  faucetEnabled: boolean;
-  bridgeAddress: string;
-  confirmations: number;
-  refetchBalances: () => void;
-}) => {
-  const [search, setSearch] = useState('');
-
   const getMarketsForAsset = (a: AssetFieldsFragment) => {
     return markets
       .filter((m) => {
@@ -236,7 +199,7 @@ const AssetSelector = ({
             />
             <div className="absolute bottom-0 right-0">
               <TradingButton
-                onClick={() => onSelect(undefined)}
+                onClick={() => handleAssetChanged(undefined)}
                 size="small"
                 intent={Intent.Danger}
               >
@@ -310,7 +273,7 @@ const AssetSelector = ({
             <button
               key={a.id}
               onClick={() => {
-                onSelect(a.id);
+                handleAssetChanged(a.id);
               }}
               className={classNames(
                 'p-4 rounded text-left',
