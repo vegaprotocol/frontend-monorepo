@@ -90,12 +90,22 @@ When I look into market info I **Must** see following specification:
 - Risk model: (<a name="6002-MDET-209" href="#6002-MDET-209">6002-MDET-209</a>)
   - Tau
   - Risk Aversion Parameter
-- Risk parameters: (<a name="6002-MDET-210" href="#6002-MDET-210">6002-MDET-210</a>)
+  - R
   - Sigma
+- Margin scaling factors (<a name="6002-MDET-210" href="#6002-MDET-210">6002-MDET-210</a>)
+  - Linear Slippage Factor
+  - Quadratic Slippage Factor
+  - Search Level
+  - Initial Margin
+  - Collateral Release
 - Risk factors: (<a name="6002-MDET-211" href="#6002-MDET-211">6002-MDET-211</a>)
-  - Short
   - Long
-- price monitoring bounds <i>(multiple bounds possible)</i>: (<a name="6002-MDET-212" href="#6002-MDET-212">6002-MDET-212</a>)
+  - Short
+  - Max Leverage Long
+  - Max Leverage Short
+  - Max Initial Leverage Long
+  - Max Initial Leverage Short
+- Price monitoring bounds <i>(multiple bounds possible)</i>: (<a name="6002-MDET-212" href="#6002-MDET-212">6002-MDET-212</a>)
   - Highest Price
   - Lowest Price
 - Liquidity monitoring parameters: (<a name="6002-MDET-213" href="#6002-MDET-213">6002-MDET-213</a>)

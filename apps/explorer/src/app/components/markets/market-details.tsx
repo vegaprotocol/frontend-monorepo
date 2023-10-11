@@ -3,6 +3,7 @@ import type { MarketInfoWithData } from '@vegaprotocol/markets';
 import {
   LiquidityPriceRangeInfoPanel,
   LiquiditySLAParametersInfoPanel,
+  MarginScalingFactorsPanel,
   PriceMonitoringBoundsInfoPanel,
   SuccessionLineInfoPanel,
   getDataSourceSpecForSettlementData,
@@ -17,7 +18,6 @@ import {
   OracleInfoPanel,
   RiskFactorsInfoPanel,
   RiskModelInfoPanel,
-  RiskParametersInfoPanel,
   SettlementAssetInfoPanel,
 } from '@vegaprotocol/markets';
 import { MarketInfoTable } from '@vegaprotocol/markets';
@@ -69,8 +69,8 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
       <MetadataInfoPanel market={market} />
       <h2 className={headerClassName}>{t('Risk model')}</h2>
       <RiskModelInfoPanel market={market} />
-      <h2 className={headerClassName}>{t('Risk parameters')}</h2>
-      <RiskParametersInfoPanel market={market} />
+      <h2 className={headerClassName}>{t('Margin scaling factors')}</h2>
+      <MarginScalingFactorsPanel market={market} />
       <h2 className={headerClassName}>{t('Risk factors')}</h2>
       <RiskFactorsInfoPanel market={market} />
       {(market.data?.priceMonitoringBounds || []).map((trigger, i) => (
