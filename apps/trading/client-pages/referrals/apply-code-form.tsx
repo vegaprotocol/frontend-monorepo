@@ -7,7 +7,7 @@ import {
 import type { FieldValues } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import classNames from 'classnames';
-import { Navigate, useSearchParams } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import type { ButtonHTMLAttributes, MouseEventHandler } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { RainbowButton } from './buttons';
@@ -15,8 +15,12 @@ import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useReferral } from './hooks/use-referral';
 import { Routes } from '../../lib/links';
 import { useTransactionEventSubscription } from '@vegaprotocol/web3';
+import { clearTimeout } from 'timers';
+
+const RELOAD_DELAY = 3000;
 
 export const ApplyCodeForm = () => {
+  const navigate = useNavigate();
   const openWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
@@ -107,6 +111,19 @@ export const ApplyCodeForm = () => {
         }
       }),
   });
+
+  // go to main page when successfully applied
+  useEffect(() => {
+    let to: ReturnType<typeof setTimeout>;
+    if (status === 'successful') {
+      to = setTimeout(() => {
+        navigate(Routes.REFERRALS);
+      }, RELOAD_DELAY);
+    }
+    return () => {
+      clearTimeout(to);
+    };
+  }, [navigate, status]);
 
   if (referee || referrer) {
     return <Navigate to={Routes.REFERRALS} />;

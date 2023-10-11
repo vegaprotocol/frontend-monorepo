@@ -6,7 +6,10 @@ import { RefereeDocument } from './__generated__/Referee';
 import { useRefereesQuery } from './__generated__/Referees';
 import compact from 'lodash/compact';
 
+export type Role = 'referrer' | 'referee';
 export type ReferralData = {
+  pubKey: string;
+  role: Role;
   code: string;
   createdAt: string;
   referees: Array<{
@@ -16,10 +19,7 @@ export type ReferralData = {
   }>;
 };
 
-export const useReferral = (
-  pubKey: string | null,
-  role: 'referrer' | 'referee'
-) => {
+export const useReferral = (pubKey: string | null, role: Role) => {
   const query = {
     referrer: ReferrerDocument,
     referee: RefereeDocument,
@@ -68,6 +68,8 @@ export const useReferral = (
   const data =
     referral && refereesData
       ? {
+          pubKey,
+          role,
           code: referral.id,
           createdAt: referral.createdAt,
           referees,

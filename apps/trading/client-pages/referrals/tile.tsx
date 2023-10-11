@@ -52,7 +52,13 @@ const FADE_OUT_STYLE = classNames(
   'after:bg-gradient-to-l after:from-vega-clight-800 after:dark:from-vega-cdark-800 after:to-transparent'
 );
 
-export const CodeTile = ({ code }: { code: string }) => {
+export const CodeTile = ({
+  code,
+  className,
+}: {
+  code: string;
+  className?: string;
+}) => {
   return (
     <StatTile title="Your referral code">
       <div className="flex gap-2 items-center justify-between">

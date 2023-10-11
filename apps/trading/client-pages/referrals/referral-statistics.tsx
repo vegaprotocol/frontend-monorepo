@@ -16,6 +16,7 @@ import {
   getDateFormat,
   getDateTimeFormat,
   getNumberFormat,
+  getUserLocale,
   removePaginationWrapper,
 } from '@vegaprotocol/utils';
 import { useReferralSetStatsQuery } from './hooks/__generated__/ReferralSetStats';
@@ -25,6 +26,7 @@ import { useStakeAvailable } from './hooks/use-stake-available';
 import minBy from 'lodash/minBy';
 import sortBy from 'lodash/sortBy';
 import { useLayoutEffect, useRef, useState } from 'react';
+import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
@@ -50,29 +52,34 @@ const Statistics = ({
   data: ReferralData;
   as: 'referrer' | 'referee';
 }) => {
+  const { data: epochData } = useCurrentEpochInfoQuery();
   const { stakeAvailable } = useStakeAvailable();
-  const { stakingTiers } = useReferralProgram();
+  const { stakingTiers, benefitTiers } = useReferralProgram();
   const { data: statsData } = useReferralSetStatsQuery({
     variables: {
       code: data.code,
-      // epoch: 116632,
     },
     skip: !data?.code,
     fetchPolicy: 'cache-and-network',
   });
 
+  const currentEpoch = Number(epochData?.epoch.id);
+
   const stats =
     statsData?.referralSetStats.edges &&
     compact(removePaginationWrapper(statsData.referralSetStats.edges));
+  const refereeInfo = data.referees.find((r) => r.refereeId === data.pubKey);
+
+  const refereeStats = stats?.find((r) => r.partyId === data.pubKey);
 
   // console.table(stats);
 
   const baseCommissionValue =
     stats && stats.length > 0 ? Number(stats[0].rewardFactor) : 0;
-  // const runningVolumeValue =
-  //   stats && stats.length > 0
-  //     ? Number(stats[0].referralSetRunningNotionalTakerVolume)
-  //     : 0;
+  const runningVolumeValue =
+    stats && stats.length > 0
+      ? Number(stats[0].referralSetRunningNotionalTakerVolume)
+      : 0;
   const stakingTier =
     stakingTiers &&
     stakeAvailable &&
@@ -82,51 +89,138 @@ const Statistics = ({
       ),
       (st) => BigInt(st.minimumStakedTokens)
     )?.tier;
+  const finalCommissionValue =
+    !stakingTier || isNaN(stakingTier)
+      ? baseCommissionValue
+      : stakingTier * baseCommissionValue;
+
+  const discountFactorValue = refereeStats?.discountFactor
+    ? Number(refereeStats.discountFactor)
+    : 0;
+  const currentBenefitTierValue = benefitTiers.find(
+    (t) =>
+      !isNaN(discountFactorValue) &&
+      !isNaN(t.discountFactor) &&
+      t.discountFactor === discountFactorValue
+  );
+  const nextBenefitTierValue =
+    currentBenefitTierValue &&
+    benefitTiers.find((t) => t.tier === currentBenefitTierValue.tier - 1);
+  const epochsValue =
+    !isNaN(currentEpoch) && refereeInfo?.atEpoch
+      ? currentEpoch - refereeInfo?.atEpoch
+      : 0;
+  const nextBenefitTierVolumeValue = nextBenefitTierValue
+    ? nextBenefitTierValue.minimumVolume - runningVolumeValue
+    : 0;
+  const nextBenefitTierEpochsValue = nextBenefitTierValue
+    ? nextBenefitTierValue.epochs - epochsValue
+    : 0;
+
+  const baseCommissionTile = (
+    <StatTile title="Base commission rate">
+      {baseCommissionValue * 100}%
+    </StatTile>
+  );
+  const stakingMultiplierTile = (
+    <StatTile
+      title="Staking multiplier"
+      description={`(${addDecimalsFormatNumber(
+        stakeAvailable?.toString() || 0,
+        18
+      )} $VEGA staked)`}
+    >
+      {stakingTier || 'None'}
+    </StatTile>
+  );
+  const finalCommissionTile = (
+    <StatTile title="Final commission rate">
+      {finalCommissionValue * 100}%
+    </StatTile>
+  );
   const numberOfTradersValue = data.referees.length;
+  const numberOfTradersTile = (
+    <StatTile title="Number of traders">{numberOfTradersValue}</StatTile>
+  );
+
+  const codeTile = <CodeTile code={data?.code} />;
+  const createdAtTile = (
+    <StatTile title="Created at">
+      <span className="text-3xl">
+        {getDateFormat().format(new Date(data.createdAt))}
+      </span>
+    </StatTile>
+  );
+
+  const totalCommissionTile = (
+    <StatTile title="Running total commission" description="(Quantum)">
+      ...
+    </StatTile>
+  );
 
   const referrerTiles = (
     <>
-      <div className="grid grid-rows-1 gap-5 grid-cols-3">
-        <CodeTile code={data?.code} />
-        <StatTile title="Base commission rate">
-          {baseCommissionValue * 100}%
-        </StatTile>
-        <StatTile title="Created at">
-          <span className="_text-2xl">
-            {getDateFormat().format(new Date(data.createdAt))}
-          </span>
-        </StatTile>
+      <div className="grid grid-rows-1 gap-5 grid-cols-1 md:grid-cols-3">
+        {baseCommissionTile}
+        {stakingMultiplierTile}
+        {finalCommissionTile}
       </div>
 
-      <div className="grid grid-rows-1 gap-5 grid-cols-4">
-        <StatTile
-          title="Staking multiplier"
-          description={`(${addDecimalsFormatNumber(
-            stakeAvailable?.toString() || 0,
-            18
-          )} $VEGA staked)`}
-        >
-          {stakingTier || 'None'}
-        </StatTile>
-        <StatTile title="Final commission rate">
-          {!stakingTier || isNaN(stakingTier)
-            ? baseCommissionValue * 100
-            : stakingTier * baseCommissionValue * 100}
-          %
-        </StatTile>
-        <StatTile title="Number of traders">{numberOfTradersValue}</StatTile>
-
-        <StatTile title="Running total commission" description="(Quantum)">
-          ...
-        </StatTile>
+      <div className="grid grid-rows-1 gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
+        {codeTile}
+        {createdAtTile}
+        {numberOfTradersTile}
+        {totalCommissionTile}
       </div>
     </>
   );
 
+  const compactNumFormat = new Intl.NumberFormat(getUserLocale(), {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+    notation: 'compact',
+    compactDisplay: 'short',
+  });
+
+  const currentBenefitTierTile = (
+    <StatTile title="Current tier">
+      {currentBenefitTierValue?.tier || '-'}
+    </StatTile>
+  );
+  const discountFactorTile = (
+    <StatTile title="Discount">{discountFactorValue * 100}%</StatTile>
+  );
+  const runningVolumeTile = (
+    <StatTile title="Combined volume">
+      {compactNumFormat.format(runningVolumeValue)}
+    </StatTile>
+  );
+  const epochsTile = <StatTile title="Epochs in set">{epochsValue}</StatTile>;
+  const nextTierVolumeTile = (
+    <StatTile title="Volume to next tier">
+      {nextBenefitTierVolumeValue <= 0
+        ? '-'
+        : compactNumFormat.format(nextBenefitTierVolumeValue)}
+    </StatTile>
+  );
+  const nextTierEpochsTile = (
+    <StatTile title="Epochs to next tier">
+      {nextBenefitTierEpochsValue <= 0 ? '-' : nextBenefitTierEpochsValue}
+    </StatTile>
+  );
+
   const refereeTiles = (
     <>
-      <div className="grid grid-rows-1 gap-5 grid-cols-1">
-        <CodeTile code={data?.code} />
+      <div className="grid grid-rows-1 gap-5 grid-cols-1 md:grid-cols-3">
+        {currentBenefitTierTile}
+        {discountFactorTile}
+        {codeTile}
+      </div>
+      <div className="grid grid-rows-1 gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
+        {runningVolumeTile}
+        {nextTierVolumeTile}
+        {epochsTile}
+        {nextTierEpochsTile}
       </div>
     </>
   );
@@ -143,17 +237,16 @@ const Statistics = ({
     <>
       {/* Stats tiles */}
       <div
-        className={classNames('grid grid-cols-1 grid-rows-1 gap-5 mx-auto', {
-          'md:w-1/2': as === 'referee',
-          // 'md:w-': as === 'referrer',
-        })}
+        className={classNames(
+          'grid grid-cols-1 grid-rows-1 gap-5 mx-auto mb-20'
+        )}
       >
         {as === 'referrer' && referrerTiles}
         {as === 'referee' && refereeTiles}
       </div>
 
       {/* Referees (only for referrer view) */}
-      {as === 'referrer' && (
+      {as === 'referrer' && data.referees.length > 0 && (
         <div className="mt-20 mb-20">
           <h2 className="text-2xl mb-5">Referees</h2>
           <div

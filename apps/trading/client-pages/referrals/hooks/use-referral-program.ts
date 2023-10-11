@@ -84,8 +84,11 @@ export const useReferralProgram = () => {
     .map((t, i) => {
       return {
         tier: i + 1,
+        rewardFactor: Number(t.referralRewardFactor),
         commission: Number(t.referralRewardFactor) * 100 + '%',
+        discountFactor: Number(t.referralDiscountFactor),
         discount: Number(t.referralDiscountFactor) * 100 + '%',
+        minimumVolume: Number(t.minimumRunningNotionalTakerVolume),
         volume: getNumberFormat(0).format(
           Number(t.minimumRunningNotionalTakerVolume)
         ),
