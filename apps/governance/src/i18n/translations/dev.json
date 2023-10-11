@@ -912,5 +912,7 @@
   "WindowLength": "Window length",
   "WindowLengthDescription": "Number of epochs over which to evaluate a referral set's running volume",
   "EndOfProgramTimestamp": "End of program",
-  "EndOfProgramTimestampDescription": "Time after which when the current epoch ends, the programs will end and benefits will be disabled."
+  "EndOfProgramTimestampDescription": "Time after which when the current epoch ends, the programs will end and benefits will be disabled.",
+  "BenefitTierVolumeDiscountFactor": "Volume discount factor",
+  "BenefitTierVolumeDiscountFactorDescription": "Discount given to those in this benefit tier"
 }
