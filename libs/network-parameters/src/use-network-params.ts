@@ -112,6 +112,26 @@ export const NetworkParams = {
     'governance_proposal_referralProgram_requiredMajority',
   governance_proposal_referralProgram_requiredParticipation:
     'governance_proposal_referralProgram_requiredParticipation',
+  governance_proposal_transfer_maxAmount:
+    'governance_proposal_transfer_maxAmount',
+  governance_proposal_transfer_maxClose:
+    'governance_proposal_transfer_maxClose',
+  governance_proposal_transfer_maxEnact:
+    'governance_proposal_transfer_maxEnact',
+  governance_proposal_transfer_maxFraction:
+    'governance_proposal_transfer_maxFraction',
+  governance_proposal_transfer_minClose:
+    'governance_proposal_transfer_minClose',
+  governance_proposal_transfer_minEnact:
+    'governance_proposal_transfer_minEnact',
+  governance_proposal_transfer_minProposerBalance:
+    'governance_proposal_transfer_minProposerBalance',
+  governance_proposal_transfer_minVoterBalance:
+    'governance_proposal_transfer_minVoterBalance',
+  governance_proposal_transfer_requiredMajority:
+    'governance_proposal_transfer_requiredMajority',
+  governance_proposal_transfer_requiredParticipation:
+    'governance_proposal_transfer_requiredParticipation',
   validators_delegation_minAmount: 'validators_delegation_minAmount',
   spam_protection_minimumWithdrawalQuantumMultiple:
     'spam_protection_minimumWithdrawalQuantumMultiple',
