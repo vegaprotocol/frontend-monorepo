@@ -197,7 +197,7 @@ const DepositFlow = ({
             </div>
           </div>
           <Markets markets={getMarketsForAsset(state.asset)} />
-          <div className="relative pt-4 mt-4 border-t border-vega-clight-400 dark:border-vega-cdark-400">
+          <div className="relative">
             <TransactionContainer
               state={state}
               setState={setState}
@@ -298,7 +298,7 @@ const TransactionContainer = ({
   faucetEnabled: boolean;
 }) => {
   return (
-    <div className="flex flex-col gap-2">
+    <>
       <Approval
         state={state}
         bridgeAddress={bridgeAddress}
@@ -313,7 +313,7 @@ const TransactionContainer = ({
         faucetEnabled={faucetEnabled}
         refetchBalances={refetchBalances}
       />
-    </div>
+    </>
   );
 };
 
@@ -370,60 +370,58 @@ const Approval = ({
     );
   }
 
-  // APPROVED: show muted re-approve button
-  if (isApproved(state.allowance)) {
-    return (
-      <div className="flex justify-between">
+  return (
+    <div className="pt-4 mt-4 border-t border-vega-clight-400 dark:border-vega-cdark-400">
+      {isApproved(state.allowance) ? (
+        <div className="flex justify-between">
+          <div className="flex flex-col items-start gap-2">
+            <p className="text-sm">{t('Approved for use')}</p>
+            {tx && tx.status === EthTxStatus.Pending ? (
+              <TradingButton disabled={true} size="small">
+                {t('Approving...')}
+              </TradingButton>
+            ) : (
+              <TradingButton onClick={submitApproval} size="small">
+                {t('Re-approve')}
+              </TradingButton>
+            )}
+          </div>
+          <div className="text-right">
+            {state.allowance && (
+              <div className="font-mono text-lg">
+                <Allowance allowance={state.allowance} />
+                <small className="ml-1 text-xs text-muted font-alpha">
+                  {t('Approved')}
+                </small>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
         <div className="flex flex-col items-start gap-2">
-          <p className="text-sm">{t('Approved for use')}</p>
+          <div>
+            <h3 className="text-sm">{t('Approve deposits')}</h3>
+            <p className="text-sm text-muted">
+              {t(
+                'Before you can make a deposit of %s you need to approve its use with Vega in your Ethereum wallet.',
+                state.asset.symbol
+              )}
+            </p>
+          </div>
           {tx && tx.status === EthTxStatus.Pending ? (
-            <TradingButton disabled={true} size="small">
+            <TradingButton intent={Intent.Success} disabled={true} size="small">
               {t('Approving...')}
             </TradingButton>
           ) : (
-            <TradingButton onClick={submitApproval} size="small">
-              {t('Re-approve')}
+            <TradingButton
+              onClick={submitApproval}
+              size="small"
+              intent={Intent.Success}
+            >
+              {t('Approve %s deposits', state.asset.symbol)}
             </TradingButton>
           )}
         </div>
-        <div className="text-right">
-          {state.allowance && (
-            <div className="font-mono text-lg">
-              <Allowance allowance={state.allowance} />
-              <small className="ml-1 text-xs text-muted font-alpha">
-                {t('Approved')}
-              </small>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // NOT APPROVED: show primary approve button
-  return (
-    <div className="flex flex-col items-start gap-2">
-      <div>
-        <h3 className="text-sm">{t('Approve deposits')}</h3>
-        <p className="text-sm text-muted">
-          {t(
-            'Before you can make a deposit of %s you need to approve its use with Vega in your Ethereum wallet.',
-            state.asset.symbol
-          )}
-        </p>
-      </div>
-      {tx && tx.status === EthTxStatus.Pending ? (
-        <TradingButton intent={Intent.Success} disabled={true} size="small">
-          {t('Approving...')}
-        </TradingButton>
-      ) : (
-        <TradingButton
-          onClick={submitApproval}
-          size="small"
-          intent={Intent.Success}
-        >
-          {t('Approve %s deposits', state.asset.symbol)}
-        </TradingButton>
       )}
     </div>
   );
