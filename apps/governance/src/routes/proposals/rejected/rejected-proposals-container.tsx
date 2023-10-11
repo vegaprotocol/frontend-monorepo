@@ -41,6 +41,7 @@ export const RejectedProposalsContainer = () => {
     variables: {
       includeNewMarketProductFields: !!FLAGS.PRODUCT_PERPETUALS,
       includeUpdateMarketStates: !!FLAGS.UPDATE_MARKET_STATE,
+      includeUpdateReferralPrograms: !!FLAGS.REFERRALS,
     },
   });
 

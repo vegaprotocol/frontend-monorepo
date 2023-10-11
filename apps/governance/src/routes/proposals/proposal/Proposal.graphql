@@ -43,10 +43,34 @@ fragment UpdateMarketState on Proposal {
   }
 }
 
+fragment UpdateReferralProgram on Proposal {
+  terms {
+    change {
+      ... on UpdateReferralProgram {
+        changes {
+          benefitTiers {
+            minimumEpochs
+            minimumRunningNotionalTakerVolume
+            referralDiscountFactor
+            referralRewardFactor
+          }
+          endOfProgramTimestamp
+          windowLength
+          stakingTiers {
+            minimumStakedTokens
+            referralRewardMultiplier
+          }
+        }
+      }
+    }
+  }
+}
+
 query Proposal(
   $proposalId: ID!
   $includeNewMarketProductField: Boolean!
   $includeUpdateMarketState: Boolean!
+  $includeUpdateReferralProgram: Boolean!
 ) {
   proposal(id: $proposalId) {
     id
@@ -64,6 +88,7 @@ query Proposal(
     errorDetails
     ...NewMarketProductField @include(if: $includeNewMarketProductField)
     ...UpdateMarketState @include(if: $includeUpdateMarketState)
+    ...UpdateReferralProgram @include(if: $includeUpdateReferralProgram)
     terms {
       closingDatetime
       enactmentDatetime

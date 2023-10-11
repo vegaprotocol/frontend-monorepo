@@ -100,6 +100,18 @@ export const NetworkParams = {
     'governance_proposal_freeform_requiredMajority',
   governance_proposal_freeform_minProposerBalance:
     'governance_proposal_freeform_minProposerBalance',
+  governance_proposal_referralProgram_minClose:
+    'governance_proposal_referralProgram_minClose',
+  governance_proposal_referralProgram_minEnact:
+    'governance_proposal_referralProgram_minEnact',
+  governance_proposal_referralProgram_minProposerBalance:
+    'governance_proposal_referralProgram_minProposerBalance',
+  governance_proposal_referralProgram_minVoterBalance:
+    'governance_proposal_referralProgram_minVoterBalance',
+  governance_proposal_referralProgram_requiredMajority:
+    'governance_proposal_referralProgram_requiredMajority',
+  governance_proposal_referralProgram_requiredParticipation:
+    'governance_proposal_referralProgram_requiredParticipation',
   validators_delegation_minAmount: 'validators_delegation_minAmount',
   spam_protection_minimumWithdrawalQuantumMultiple:
     'spam_protection_minimumWithdrawalQuantumMultiple',
