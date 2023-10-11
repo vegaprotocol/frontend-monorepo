@@ -1,3 +1,5 @@
+// Lots of assets on testnet are no longer used this is an allow
+// list, only the assets listed below should be used
 export const TESTNET_ASSET_ALLOWLIST = [
   'deadbeef00000000000000000000000000000000000000000000000000000001', // XYZalpha
   'deadbeef00000000000000000000000000000000000000000000000000000002', // XYZbeta
