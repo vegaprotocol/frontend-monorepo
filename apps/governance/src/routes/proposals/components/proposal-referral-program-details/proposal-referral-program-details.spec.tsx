@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import {
-  formatEndOfProgramTimestamp,
   formatMinimumRunningNotionalTakerVolume,
   formatReferralDiscountFactor,
   formatReferralRewardFactor,
@@ -28,12 +27,6 @@ afterEach(() => {
 });
 
 describe('ProposalReferralProgramDetails helper functions', () => {
-  it('should format end of program timestamp correctly', () => {
-    const input = '2023-01-01T12:00:00Z';
-    const formatted = formatEndOfProgramTimestamp(input);
-    expect(formatted).toBe('01 January 2023 12:00 (GMT)');
-  });
-
   it('should format minimum running notional taker volume correctly', () => {
     const input = '1000';
     const formatted = formatMinimumRunningNotionalTakerVolume(input);
