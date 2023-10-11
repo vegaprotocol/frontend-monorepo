@@ -15,6 +15,16 @@ import { subDays } from 'date-fns';
 
 const DEFAULT_EXPORT_FILE_NAME = 'ledger_entries.csv';
 
+const toHoursAndMinutes = (totalMinutes: number) => {
+  const minutes = totalMinutes % 60;
+  const hours = Math.floor(totalMinutes / 60);
+  return `${hours > 0 ? '+' : '-'}${padTo2Digits(hours)}:${padTo2Digits(
+    minutes
+  )}`;
+};
+
+const padTo2Digits = (num: number) => Math.abs(num).toString().padStart(2, '0');
+
 const getProtoHost = (vegaurl: string) => {
   const loc = new URL(vegaurl);
   return `${loc.protocol}//${loc.host}`;
@@ -120,6 +130,8 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
     return null;
   }
 
+  const offset = new Date().getTimezoneOffset();
+
   return (
     <form onSubmit={startDownload} className="p-4 w-[350px]">
       <h2 className="mb-4">{t('Export ledger entries')}</h2>
@@ -166,12 +178,14 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
           {t('Download')}
         </TradingButton>
       </div>
-      <p className="text-xs text-neutral-400 mt-1">
-        {t(
-          'The time in the downloaded file will be in UTC time zone. Your time zone has been offset from UTC by %s hours',
-          [String(new Date().getTimezoneOffset() / 60)]
-        )}
-      </p>
+      {offset && (
+        <p className="text-xs text-neutral-400 mt-1">
+          {t(
+            'The downloaded file uses the UTC time zone for all listed times. Your time zone is UTC%s.',
+            [toHoursAndMinutes(offset)]
+          )}
+        </p>
+      )}
     </form>
   );
 };
