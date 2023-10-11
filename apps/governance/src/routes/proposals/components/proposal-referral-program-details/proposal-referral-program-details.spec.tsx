@@ -18,6 +18,15 @@ jest.mock('../../../../contexts/app-state/app-state-context', () => ({
   }),
 }));
 
+beforeEach(() => {
+  jest.useFakeTimers();
+  jest.setSystemTime(0);
+});
+
+afterEach(() => {
+  jest.useRealTimers();
+});
+
 describe('ProposalReferralProgramDetails helper functions', () => {
   it('should format end of program timestamp correctly', () => {
     const input = '2023-01-01T12:00:00Z';
