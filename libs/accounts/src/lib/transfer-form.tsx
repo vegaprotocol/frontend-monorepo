@@ -492,8 +492,8 @@ export const TransferFee = ({
       <div className="flex flex-wrap items-center justify-between gap-1">
         <Tooltip
           description={t(
-            `The transfer fee is set by the network parameter transfer.fee.factor, currently set to %s`,
-            [feeFactor]
+            `The transfer fee is set by the network parameter transfer.fee.factor, currently set to {{feeFactor}}`,
+            { feeFactor }
           )}
         >
           <div>{t('Transfer fee')}</div>

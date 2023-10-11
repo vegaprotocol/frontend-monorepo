@@ -46,10 +46,10 @@ const AccountBreakdown = ({
       </h1>
       {data && (
         <p className="mb-2 text-sm">
-          {t('You have %s %s in total.', [
-            addDecimalsFormatNumber(data.total, data.asset.decimals),
-            data.asset.symbol,
-          ])}
+          {t('You have {{value}} {{symbol}} in total.', {
+            value: addDecimalsFormatNumber(data.total, data.asset.decimals),
+            symbol: data.asset.symbol,
+          })}
         </p>
       )}
       <BreakdownTable
