@@ -60,6 +60,7 @@ export const ProposalContainer = () => {
       includeNewMarketProductField: !!FLAGS.PRODUCT_PERPETUALS,
       includeUpdateMarketState: !!FLAGS.UPDATE_MARKET_STATE,
       includeUpdateReferralProgram: !!FLAGS.REFERRALS,
+      includeUpdateVolumeDiscountProgram: !!FLAGS.VOLUME_DISCOUNTS,
     },
     skip: !params.proposalId,
   });
