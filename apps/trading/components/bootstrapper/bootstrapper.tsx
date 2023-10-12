@@ -4,6 +4,7 @@ import {
   AppLoader,
   DocsLinks,
   NetworkLoader,
+  NodeFailure,
   NodeGuard,
   useEnvironment,
 } from '@vegaprotocol/environment';
@@ -37,7 +38,7 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
     !MOZILLA_EXTENSION_URL ||
     !DocsLinks
   ) {
-    return null;
+    return <AppLoader />;
   }
 
   return (
@@ -50,9 +51,14 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
     >
       <NodeGuard
         skeleton={<AppLoader />}
-        failure={<AppFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
+        failure={<NodeFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
       >
-        <Web3Provider>
+        <Web3Provider
+          skeleton={<AppLoader />}
+          failure={
+            <AppFailure title={t(`Could not configure web3 provider`)} />
+          }
+        >
           <VegaWalletProvider
             config={{
               network: VEGA_ENV,
