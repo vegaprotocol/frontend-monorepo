@@ -92,8 +92,19 @@ export const LiquidityTable = ({
     const defs: ColDef[] = [
       {
         headerName: t('Party'),
-        field: 'party.id',
+        field: 'partyId',
         headerTooltip: t('The public key of the party making this commitment.'),
+      },
+      {
+        headerName: t('Status'),
+        headerTooltip: t('The current status of this liquidity provision.'),
+        field: 'status',
+        valueFormatter: ({ value }) => {
+          if (!value) return value;
+          return LiquidityProvisionStatusMapping[
+            value as LiquidityProvisionStatus
+          ];
+        },
       },
       {
         headerName: t(`Commitment (${symbol})`),
@@ -106,30 +117,26 @@ export const LiquidityTable = ({
         tooltipValueGetter: assetDecimalsFormatter,
       },
       {
-        headerName: t(`Share`),
-        field: 'equityLikeShare',
-        type: 'rightAligned',
-        headerTooltip: t(
-          'The equity-like share of liquidity of the market used to determine allocation of LP fees. Calculated based on share of total liquidity, with a premium added for length of commitment.'
-        ),
-        valueFormatter: percentageFormatter,
-      },
-      {
-        headerName: t('Proposed fee'),
-        headerTooltip: t(
-          'The fee percentage (per trade) proposed by each liquidity provider.'
-        ),
-        field: 'fee',
-        type: 'rightAligned',
-        valueFormatter: percentageFormatter,
-      },
-      {
         headerName: t('Market valuation at entry'),
-        field: 'averageEntryValuation',
+        field: 'feeShare.averageEntryValuation',
         type: 'rightAligned',
         headerTooltip: t(
           'The valuation of the market at the time the liquidity commitment was made. Commitments made at a lower valuation earlier in the lifetime of the market would be expected to have a higher equity-like share if the market has grown. If a commitment is amended, value will reflect the average of the market valuations across the lifetime of the commitment.'
         ),
+        valueFormatter: assetDecimalsQuantumFormatter,
+        tooltipValueGetter: assetDecimalsFormatter,
+      },
+      {
+        headerName: t('Average score'),
+        field: 'feeShare.averageScore',
+        type: 'rightAligned',
+        headerTooltip: t('The average score of the liquidity provider.'),
+      },
+      {
+        headerName: t('Virtual stake'),
+        field: 'feeShare.virtualStake',
+        type: 'rightAligned',
+        headerTooltip: t('The virtual stake of the liquidity provider.'),
         valueFormatter: assetDecimalsQuantumFormatter,
         tooltipValueGetter: assetDecimalsFormatter,
       },
@@ -154,15 +161,75 @@ export const LiquidityTable = ({
         tooltipValueGetter: stakeToCcyVolumeFormatter,
       },
       {
-        headerName: t('Status'),
-        headerTooltip: t('The current status of this liquidity provision.'),
-        field: 'status',
-        valueFormatter: ({ value }) => {
-          if (!value) return value;
-          return LiquidityProvisionStatusMapping[
-            value as LiquidityProvisionStatus
-          ];
-        },
+        headerName: t(`(Current) Fraction on the book`),
+        field: 'sla.currentEpochFractionOfTimeOnBook',
+        type: 'rightAligned',
+        headerTooltip: t('Current epoch fraction of time on the book.'),
+        valueFormatter: percentageFormatter,
+      },
+      {
+        headerName: t(`(Last) Fraction on the book`),
+        field: 'sla.lastEpochFractionOfTimeOnBook',
+        type: 'rightAligned',
+        headerTooltip: t('Last epoch fraction of time on the book.'),
+        valueFormatter: percentageFormatter,
+      },
+      {
+        headerName: t(`(Last) Fee penalty`),
+        field: 'sla.lastEpochFeePenalty',
+        type: 'rightAligned',
+        headerTooltip: t('Last epoch fee penalty.'),
+        valueFormatter: percentageFormatter,
+      },
+      {
+        headerName: t(`(Last) Bond penalty`),
+        field: 'sla.lastEpochBondPenalty',
+        type: 'rightAligned',
+        headerTooltip: t('Last epoch bond penalty.'),
+        valueFormatter: percentageFormatter,
+      },
+      // {
+      //   headerName: t(`Hysteresis period fee penalties`),
+      //   field: 'sla.hysteresisPeriodFeePenalties[0]',
+      //   type: 'rightAligned',
+      //   headerTooltip: t('Hysteresis period fee penalties.'),
+      //   valueFormatter: percentageFormatter,
+      // },
+      // {
+      //   headerName: t(`Required liquidity`),
+      //   field: 'sla.requiredLiquidity',
+      //   type: 'rightAligned',
+      //   headerTooltip: t('Required liquidity.'),
+      // },
+      // {
+      //   headerName: t(`Buys (Notional volume)`),
+      //   field: 'sla.notionalVolumeBuys',
+      //   type: 'rightAligned',
+      //   headerTooltip: t('Notional volume buys.'),
+      // },
+      // {
+      //   headerName: t(`Sells (Notional volume)`),
+      //   field: 'sla.notionalVolumeSells',
+      //   type: 'rightAligned',
+      //   headerTooltip: t('Notional volume sells.'),
+      // },
+      {
+        headerName: t(`Share`),
+        field: 'feeShare.equityLikeShare',
+        type: 'rightAligned',
+        headerTooltip: t(
+          'The equity-like share of liquidity of the market used to determine allocation of LP fees. Calculated based on share of total liquidity, with a premium added for length of commitment.'
+        ),
+        valueFormatter: percentageFormatter,
+      },
+      {
+        headerName: t('Proposed fee'),
+        headerTooltip: t(
+          'The fee percentage (per trade) proposed by each liquidity provider.'
+        ),
+        field: 'fee',
+        type: 'rightAligned',
+        valueFormatter: percentageFormatter,
       },
       {
         headerName: t('Created'),
@@ -185,7 +252,6 @@ export const LiquidityTable = ({
     ];
     return defs;
   }, [assetDecimalPlaces, quantum, stakeToCcyVolume, symbol]);
-
   return (
     <AgGrid
       overlayNoRowsTemplate={t('No liquidity provisions')}

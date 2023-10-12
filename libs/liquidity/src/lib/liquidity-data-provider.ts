@@ -5,86 +5,50 @@ import {
 } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
-import produce from 'immer';
 
 import {
-  LiquidityProviderFeeShareDocument,
+  LiquidityProvidersDocument,
   LiquidityProvisionsDocument,
-  LiquidityProvisionsUpdateDocument,
 } from './__generated__/MarketLiquidity';
 
 import type {
-  LiquidityProviderFeeShareFieldsFragment,
-  LiquidityProviderFeeShareQuery,
-  LiquidityProviderFeeShareQueryVariables,
+  LiquidityProviderFieldsFragment,
+  LiquidityProvidersQuery,
+  LiquidityProvidersQueryVariables,
   LiquidityProvisionFieldsFragment,
   LiquidityProvisionsQuery,
   LiquidityProvisionsQueryVariables,
-  LiquidityProvisionsUpdateSubscription,
 } from './__generated__/MarketLiquidity';
 
 export const liquidityProvisionsDataProvider = makeDataProvider<
   LiquidityProvisionsQuery,
   LiquidityProvisionFieldsFragment[],
-  LiquidityProvisionsUpdateSubscription,
-  LiquidityProvisionsUpdateSubscription['liquidityProvisions'],
+  never,
+  never,
   LiquidityProvisionsQueryVariables
 >({
   query: LiquidityProvisionsDocument,
-  subscriptionQuery: LiquidityProvisionsUpdateDocument,
-  update: (
-    data: LiquidityProvisionFieldsFragment[] | null,
-    deltas: LiquidityProvisionsUpdateSubscription['liquidityProvisions']
-  ) => {
-    return produce(data || [], (draft) => {
-      deltas?.forEach((delta) => {
-        const index = draft.findIndex((a) => delta.id === a.id);
-        if (index !== -1) {
-          draft[index].commitmentAmount = delta.commitmentAmount;
-          draft[index].fee = delta.fee;
-          draft[index].updatedAt = delta.updatedAt;
-          draft[index].status = delta.status;
-        } else {
-          draft.unshift({
-            id: delta.id,
-            commitmentAmount: delta.commitmentAmount,
-            fee: delta.fee,
-            status: delta.status,
-            updatedAt: delta.updatedAt,
-            createdAt: delta.createdAt,
-            party: {
-              id: delta.partyID,
-            },
-            // TODO add accounts connection to the subscription
-          });
-        }
-      });
-    });
-  },
   getData: (responseData: LiquidityProvisionsQuery | null) => {
     return (
       responseData?.market?.liquidityProvisionsConnection?.edges?.map(
         (e) => e?.node
       ) ?? []
-    ).filter((e) => !!e) as LiquidityProvisionFieldsFragment[];
-  },
-  getDelta: (
-    subscriptionData: LiquidityProvisionsUpdateSubscription
-  ): LiquidityProvisionsUpdateSubscription['liquidityProvisions'] => {
-    return subscriptionData.liquidityProvisions;
+    ).filter((n) => !!n) as LiquidityProvisionFieldsFragment[];
   },
 });
 
-export const liquidityFeeShareDataProvider = makeDataProvider<
-  LiquidityProviderFeeShareQuery,
-  LiquidityProviderFeeShareFieldsFragment[],
+export const lpDataProvider = makeDataProvider<
+  LiquidityProvidersQuery,
+  LiquidityProviderFieldsFragment[],
   never,
   never,
-  LiquidityProviderFeeShareQueryVariables
+  LiquidityProvidersQueryVariables
 >({
-  query: LiquidityProviderFeeShareDocument,
+  query: LiquidityProvidersDocument,
   getData: (data) => {
-    return data?.market?.data?.liquidityProviderFeeShare || [];
+    return (
+      data?.liquidityProviders?.edges.filter(Boolean).map((e) => e.node) ?? []
+    );
   },
 });
 
@@ -101,17 +65,17 @@ export const lpAggregatedDataProvider = makeDerivedDataProvider<
         marketId: variables.marketId,
       }),
     (callback, client, variables) =>
-      liquidityFeeShareDataProvider(callback, client, {
+      lpDataProvider(callback, client, {
         marketId: variables.marketId,
       }),
   ],
   (
-    [liquidityProvisions, liquidityFeeShare],
+    [liquidityProvisions, liquidityProvider],
     { filter }
   ): LiquidityProvisionData[] => {
     return getLiquidityProvision(
       liquidityProvisions,
-      liquidityFeeShare,
+      liquidityProvider,
       filter
     );
   }
@@ -139,9 +103,17 @@ export const matchFilter = (
   return true;
 };
 
+export interface LiquidityProvisionData
+  extends Omit<LiquidityProvisionFieldsFragment, '__typename'> {
+  assetDecimalPlaces?: number;
+  balance?: string;
+  averageEntryValuation?: string;
+  equityLikeShare?: string;
+}
+
 export const getLiquidityProvision = (
   liquidityProvisions: LiquidityProvisionFieldsFragment[],
-  liquidityFeeShare: LiquidityProviderFeeShareFieldsFragment[],
+  liquidityProvider: LiquidityProviderFieldsFragment[],
   filter?: Filter
 ): LiquidityProvisionData[] => {
   return liquidityProvisions
@@ -161,10 +133,8 @@ export const getLiquidityProvision = (
       return true;
     })
     .map((lp) => {
-      const feeShare = liquidityFeeShare.find(
-        (f) => f.party.id === lp.party.id
-      );
-      if (!feeShare) return lp;
+      const lpObj = liquidityProvider.find((f) => lp.party.id === f.partyId);
+      if (!lpObj) return lp;
       const accounts = compact(lp.party.accountsConnection?.edges).map(
         (e) => e.node
       );
@@ -180,17 +150,9 @@ export const getLiquidityProvision = (
           .toString() || '0';
       return {
         ...lp,
-        averageEntryValuation: feeShare?.averageEntryValuation,
-        equityLikeShare: feeShare?.equityLikeShare,
+        ...lpObj,
         balance,
+        __typename: undefined,
       };
     });
 };
-
-export interface LiquidityProvisionData
-  extends LiquidityProvisionFieldsFragment {
-  assetDecimalPlaces?: number;
-  balance?: string;
-  averageEntryValuation?: string;
-  equityLikeShare?: string;
-}
