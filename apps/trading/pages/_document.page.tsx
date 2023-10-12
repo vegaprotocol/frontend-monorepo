@@ -22,9 +22,6 @@ export default function Document() {
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" content="/favicon.ico" />
 
-        {/* eslint-disable-next-line @next/next/no-css-tags */}
-        <link rel="stylesheet" href="/preloader.css" media="all" />
-
         {/* scripts */}
         <script src="/theme-setter.js" type="text/javascript" async />
       </Head>
