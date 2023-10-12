@@ -66,6 +66,21 @@ fragment UpdateReferralPrograms on Proposal {
   }
 }
 
+fragment UpdateVolumeDiscountPrograms on Proposal {
+  terms {
+    change {
+      ... on UpdateVolumeDiscountProgram {
+        benefitTiers {
+          minimumRunningNotionalTakerVolume
+          volumeDiscountFactor
+        }
+        endOfProgramTimestamp
+        windowLength
+      }
+    }
+  }
+}
+
 fragment ProposalFields on Proposal {
   id
   rationale {
@@ -151,6 +166,7 @@ query Proposals(
   $includeNewMarketProductFields: Boolean!
   $includeUpdateMarketStates: Boolean!
   $includeUpdateReferralPrograms: Boolean!
+  $includeUpdateVolumeDiscountPrograms: Boolean!
 ) {
   proposalsConnection {
     edges {
@@ -159,6 +175,8 @@ query Proposals(
         ...NewMarketProductFields @include(if: $includeNewMarketProductFields)
         ...UpdateMarketStates @include(if: $includeUpdateMarketStates)
         ...UpdateReferralPrograms @include(if: $includeUpdateReferralPrograms)
+        ...UpdateVolumeDiscountPrograms
+          @include(if: $includeUpdateVolumeDiscountPrograms)
       }
     }
   }

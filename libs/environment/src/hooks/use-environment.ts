@@ -429,6 +429,12 @@ function compileFeatureFlags(): FeatureFlags {
         process.env['NX_GOVERNANCE_TRANSFERS']
       ) as string
     ),
+    VOLUME_DISCOUNTS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_VOLUME_DISCOUNTS',
+        process.env['NX_VOLUME_DISCOUNTS']
+      ) as string
+    ),
   };
   const EXPLORER_FLAGS = {
     EXPLORER_ASSETS: TRUTHY.includes(
