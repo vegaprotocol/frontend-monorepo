@@ -26,7 +26,13 @@ export default function Document() {
         <script src="/theme-setter.js" type="text/javascript" async />
       </Head>
       <Html>
-        <body className="bg-white dark:bg-vega-cdark-900 text-default font-alpha">
+        <body
+          // Nextjs will set body to display none until js runs. Because the entire app is client rendered
+          // and delivered via ipfs we override this to show a server side render loading animation until the
+          // js is downloaded and react takes over rendering
+          style={{ display: 'block' }}
+          className="bg-white dark:bg-vega-cdark-900 text-default font-alpha"
+        >
           <Main />
           <NextScript />
         </body>

@@ -53,6 +53,7 @@ import { ViewingBanner } from '../components/viewing-banner';
 import { NavHeader } from '../components/navbar/nav-header';
 import { Telemetry } from '../components/telemetry';
 import { Routes as AppRoutes } from '../lib/links';
+import { SSRLoader } from './ssr-loader';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -145,11 +146,7 @@ function VegaTradingApp(props: AppProps) {
   // Prevent HashRouter from being server side rendered as it
   // relies on presence of document object
   if (status === 'default') {
-    return (
-      <div>
-        <p>Loading...</p>
-      </div>
-    );
+    return <SSRLoader />;
   }
 
   return (
