@@ -14,8 +14,8 @@ import {
   isValid,
 } from 'date-fns';
 import { formatForInput } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { TradingInputError } from '@vegaprotocol/ui-toolkit';
+import { useT } from '../use-t';
 
 const defaultValue: DateRange = {};
 export interface DateRangeFilterProps extends IFilterParams {
@@ -27,6 +27,7 @@ export interface DateRangeFilterProps extends IFilterParams {
 
 export const DateRangeFilter = forwardRef(
   (props: DateRangeFilterProps, ref) => {
+    const t = useT();
     const defaultDates = props?.defaultValue || defaultValue;
     const [value, setValue] = useState<DateRange>(defaultDates);
     const valueRef = useRef<DateRange>(value);
@@ -119,8 +120,10 @@ export const DateRangeFilter = forwardRef(
       ) {
         setError(
           t(
-            'The earliest data that can be queried is %s days ago.',
-            String(props.maxSubDays)
+            'The earliest data that can be queried is {{maxSubDays}} days ago.',
+            {
+              maxSubDays: String(props.maxSubDays),
+            }
           )
         );
         return false;
@@ -137,8 +140,8 @@ export const DateRangeFilter = forwardRef(
         ) {
           setError(
             t(
-              'The maximum time range that can be queried is %s days.',
-              String(props.maxDaysRange)
+              'The maximum time range that can be queried is {{maxDaysRange}} days.',
+              { maxDaysRange: String(props.maxDaysRange) }
             )
           );
           return false;

@@ -1,9 +1,9 @@
 import type { MouseEvent } from 'react';
 import { useMemo } from 'react';
 import { useCallback } from 'react';
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { useT } from '../use-t';
 
 interface OrderTypeCellProps {
   value?: Schema.OrderType;
@@ -17,6 +17,7 @@ export const OrderTypeCell = ({
   onClick,
 }: OrderTypeCellProps) => {
   const id = order?.market?.id ?? '';
+  const t = useT();
 
   const label = useMemo(() => {
     if (!order) {
@@ -25,7 +26,9 @@ export const OrderTypeCell = ({
     if (!value) return '-';
 
     if (order?.icebergOrder) {
-      return t('%s (Iceberg)', [Schema.OrderTypeMapping[value]]);
+      return t('{{orderType}} (Iceberg)', {
+        orderType: Schema.OrderTypeMapping[value],
+      });
     }
 
     if (order?.peggedOrder) {
@@ -37,14 +40,18 @@ export const OrderTypeCell = ({
         order.peggedOrder?.offset,
         order.market.decimalPlaces
       );
-      return t('%s %s %s Peg limit', [reference, side, offset]);
+      return t('{{reference}} {{side}} {{offset}} Peg limit', {
+        reference,
+        side,
+        offset,
+      });
     }
 
     if (order?.liquidityProvision) {
       return t('Liquidity provision');
     }
     return Schema.OrderTypeMapping[value];
-  }, [order, value]);
+  }, [order, value, t]);
 
   const handleOnClick = useCallback(
     (ev: MouseEvent<HTMLButtonElement>) => {

@@ -23,6 +23,7 @@ i18n
       'accounts',
       'assets',
       'candles-chart',
+      'datagrid',
       'fills',
       'funding-payments',
       'trading',

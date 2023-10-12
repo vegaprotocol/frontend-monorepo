@@ -101,8 +101,8 @@ export const AssetDetailsDialog = ({
       {content}
       <p className="my-4 text-xs">
         {t(
-          'There is 1 unit of the settlement asset (%s) to every 1 quote unit.',
-          [assetSymbol]
+          'There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit.',
+          { assetSymbol }
         )}
       </p>
       <div className="w-1/4">
