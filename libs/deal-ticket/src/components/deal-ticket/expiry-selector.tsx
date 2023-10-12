@@ -4,7 +4,6 @@ import {
   TradingInputError,
 } from '@vegaprotocol/ui-toolkit';
 import { formatForInput } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { useRef } from 'react';
 
 interface ExpirySelectorProps {
@@ -18,6 +17,7 @@ export const ExpirySelector = ({
   onSelect,
   errorMessage,
 }: ExpirySelectorProps) => {
+  const t = useT();
   const minDateRef = useRef(new Date());
 
   return (

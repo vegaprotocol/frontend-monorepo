@@ -2,13 +2,13 @@ import { Controller, type Control } from 'react-hook-form';
 import type { Market } from '@vegaprotocol/markets';
 import type { OrderFormValues } from '../../hooks/use-form-values';
 import { toDecimal, validateAmount } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import {
   TradingFormGroup,
   TradingInput,
   TradingInputError,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
+import { useT } from '../../use-t';
 
 export interface DealTicketSizeIcebergProps {
   control: Control<OrderFormValues>;
@@ -27,6 +27,7 @@ export const DealTicketSizeIceberg = ({
   size,
   peakSize,
 }: DealTicketSizeIcebergProps) => {
+  const t = useT();
   const sizeStep = toDecimal(market?.positionDecimalPlaces);
 
   const renderPeakSizeError = () => {
@@ -81,13 +82,15 @@ export const DealTicketSizeIceberg = ({
                 required: t('You need to provide a peak size'),
                 min: {
                   value: sizeStep,
-                  message: t('Peak size cannot be lower than ' + sizeStep),
+                  message: t('Peak size cannot be lower than {{stepSize}}', {
+                    sizeStep,
+                  }),
                 },
                 max: {
                   value: size,
                   message: t(
-                    'Peak size cannot be greater than the size (%s) ',
-                    [size]
+                    'Peak size cannot be greater than the size ({{size}}) ',
+                    { size }
                   ),
                 },
                 validate: validateAmount(sizeStep, 'peakSize'),
@@ -138,14 +141,15 @@ export const DealTicketSizeIceberg = ({
                 min: {
                   value: sizeStep,
                   message: t(
-                    'Minimum visible size cannot be lower than ' + sizeStep
+                    'Minimum visible size cannot be lower than {{sizeStep}}',
+                    { sizeStep }
                   ),
                 },
                 max: peakSize && {
                   value: peakSize,
                   message: t(
-                    'Minimum visible size cannot be greater than the peak size (%s)',
-                    [peakSize]
+                    'Minimum visible size cannot be greater than the peak size ({{peakSize}})',
+                    { peakSize }
                   ),
                 },
                 validate: validateAmount(sizeStep, 'minimumVisibleSize'),

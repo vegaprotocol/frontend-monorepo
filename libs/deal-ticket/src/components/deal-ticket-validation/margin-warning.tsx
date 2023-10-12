@@ -1,5 +1,4 @@
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import {
   Intent,
   VegaIcon,
@@ -7,6 +6,7 @@ import {
   Tooltip,
   TradingButton,
 } from '@vegaprotocol/ui-toolkit';
+import { useT } from '../../use-t';
 
 interface Props {
   margin: string;
@@ -20,18 +20,19 @@ interface Props {
 }
 
 export const MarginWarning = ({ margin, balance, asset, onDeposit }: Props) => {
+  const t = useT();
   const description = (
     <div className="flex flex-col items-start gap-2 p-2">
       <p className="text-sm">
-        {t('%s %s is currently required.', [
-          addDecimalsFormatNumber(margin, asset.decimals),
-          asset.symbol,
-        ])}
+        {t('{{amount}} {{assetSymbol}} is currently required.', {
+          amount: addDecimalsFormatNumber(margin, asset.decimals),
+          assetSymbol: asset.symbol,
+        })}
       </p>
       <p className="text-sm">
-        {t('You have only %s.', [
-          addDecimalsFormatNumber(balance, asset.decimals),
-        ])}
+        {t('You have only {{amount}}.', {
+          amount: addDecimalsFormatNumber(balance, asset.decimals),
+        })}
       </p>
 
       <TradingButton
@@ -41,7 +42,7 @@ export const MarginWarning = ({ margin, balance, asset, onDeposit }: Props) => {
         data-testid="deal-ticket-deposit-dialog-button"
         type="button"
       >
-        {t('Deposit %s', [asset.symbol])}
+        {t('Deposit {{assetSymbol}}', { assetSymbol: asset.symbol })}
       </TradingButton>
     </div>
   );

@@ -6,7 +6,6 @@ import {
   SimpleGrid,
 } from '@vegaprotocol/ui-toolkit';
 import * as Schema from '@vegaprotocol/types';
-import { t } from '@vegaprotocol/i18n';
 import { timeInForceLabel } from '@vegaprotocol/orders';
 import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
@@ -36,6 +35,7 @@ export const TimeInForceSelector = ({
   marketData,
   errorMessage,
 }: TimeInForceSelectorProps) => {
+  const t = useT();
   const options =
     orderType === Schema.OrderType.TYPE_LIMIT
       ? typeLimitOptions
@@ -54,7 +54,7 @@ export const TimeInForceSelector = ({
           {t('This market is in auction until it reaches')}{' '}
           <Tooltip
             description={
-              <SimpleGrid grid={compileGridData(market, marketData)} />
+              <SimpleGrid grid={compileGridData(t, market, marketData, t)} />
             }
           >
             <span>{t('sufficient liquidity')}</span>
@@ -73,7 +73,7 @@ export const TimeInForceSelector = ({
           {t('This market is in auction due to')}{' '}
           <Tooltip
             description={
-              <SimpleGrid grid={compileGridData(market, marketData)} />
+              <SimpleGrid grid={compileGridData(t, market, marketData)} />
             }
           >
             <span>{t('high price volatility')}</span>

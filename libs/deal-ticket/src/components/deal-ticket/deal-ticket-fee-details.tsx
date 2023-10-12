@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { t } from '@vegaprotocol/i18n';
 import { getAsset, getQuoteName } from '@vegaprotocol/markets';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -41,6 +40,7 @@ import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { FeesBreakdown } from '../fees-breakdown';
 import { getTotalDiscountFactor, getDiscountedFee } from '../discounts';
+import { useT } from '../../use-t';
 
 const emptyValue = '-';
 
@@ -57,6 +57,7 @@ export const DealTicketFeeDetails = ({
   market,
   isMarketInAuction,
 }: DealTicketFeeDetailsProps) => {
+  const t = useT();
   const feeEstimate = useEstimateFees(order, isMarketInAuction);
   const asset = getAsset(market);
   const { decimals: assetDecimals, quantum } = asset;
@@ -98,7 +99,8 @@ export const DealTicketFeeDetails = ({
         <div className="flex flex-col gap-2">
           <p>
             {t(
-              `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}. Fees estimated are "taker" fees and will only be payable if the order trades aggressively. Rebate equal to the maker portion will be paid to the trader if the order trades passively.`
+              'An estimate of the most you would be expected to pay in fees, in the market\'s settlement asset {{assetSymbol}}. Fees estimated are "taker" fees and will only be payable if the order trades aggressively. Rebate equal to the maker portion will be paid to the trader if the order trades passively.',
+              { assetSymbol }
             )}
           </p>
           <FeesBreakdown
@@ -136,6 +138,7 @@ export const DealTicketMarginDetails = ({
   positionEstimate,
   side,
 }: DealTicketMarginDetailsProps) => {
+  const t = useT();
   const [breakdownDialog, setBreakdownDialog] = useState(false);
   const { pubKey: partyId } = useVegaWallet();
   const { data: currentMargins } = useDataProvider({

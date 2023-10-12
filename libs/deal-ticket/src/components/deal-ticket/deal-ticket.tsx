@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { type FormEventHandler } from 'react';
 import { memo, useCallback, useEffect, useRef, useMemo } from 'react';
@@ -9,7 +8,7 @@ import {
 } from './deal-ticket-fee-details';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
-import { TimeInForceSelector } from './time-in-force-selector';
+import { TimeInForceSelector } from './TimeInForceSelector';
 import { TypeSelector } from './type-selector';
 import { type OrderSubmission } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -79,6 +78,7 @@ import noop from 'lodash/noop';
 import { isNonPersistentOrder } from '../../utils/time-in-force-persistance';
 import { KeyValue } from './key-value';
 import { DocsLinks } from '@vegaprotocol/environment';
+import { useT } from '../../use-t';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -142,6 +142,7 @@ export const DealTicket = ({
   submit,
   onDeposit,
 }: DealTicketProps) => {
+  const t = useT();
   const { pubKey, isReadOnly } = useVegaWallet();
   const setType = useDealTicketFormValues((state) => state.setType);
   const storedFormValues = useDealTicketFormValues(
@@ -307,7 +308,10 @@ export const DealTicket = ({
       };
     }
 
-    const marketTradingModeError = validateMarketTradingMode(marketTradingMode);
+    const marketTradingModeError = validateMarketTradingMode(
+      marketTradingMode,
+      t('Trading terminated')
+    );
     if (marketTradingModeError !== true) {
       return {
         message: marketTradingModeError,
@@ -317,6 +321,7 @@ export const DealTicket = ({
 
     return undefined;
   }, [
+    t,
     marketState,
     marketTradingMode,
     generalAccountBalance,
@@ -404,7 +409,7 @@ export const DealTicket = ({
           required: t('You need to provide a size'),
           min: {
             value: sizeStep,
-            message: t('Size cannot be lower than ' + sizeStep),
+            message: t('Size cannot be lower than {{sizeStep}}', { sizeStep }),
           },
           validate: validateAmount(sizeStep, 'Size'),
           deps: ['peakSize', 'minimumVisibleSize'],
@@ -440,7 +445,9 @@ export const DealTicket = ({
             required: t('You need provide a price'),
             min: {
               value: priceStep,
-              message: t('Price cannot be lower than ' + priceStep),
+              message: t('Price cannot be lower than {{priceStep}}', {
+                priceStep,
+              }),
             },
             validate: validateAmount(priceStep, 'Price'),
           }}
@@ -534,7 +541,11 @@ export const DealTicket = ({
             control={control}
             rules={{
               required: t('You need provide a expiry time/date'),
-              validate: validateExpiration,
+              validate: validateExpiration(
+                t(
+                  'The expiry date that you have entered appears to be in the past'
+                )
+              ),
             }}
             render={({ field }) => (
               <ExpirySelector
@@ -756,6 +767,7 @@ const SummaryMessage = memo(
     pubKey,
     onDeposit,
   }: SummaryMessageProps) => {
+    const t = useT();
     // Specific error UI for if balance is so we can
     // render a deposit dialog
     if (isReadOnly || !pubKey) {

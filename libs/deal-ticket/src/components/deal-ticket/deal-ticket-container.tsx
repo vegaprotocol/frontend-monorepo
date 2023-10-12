@@ -3,16 +3,16 @@ import {
   isStopOrderType,
   useDealTicketFormValues,
 } from '../../hooks/use-form-values';
-import { StopOrder } from './deal-ticket-stop-order';
+import { StopOrder } from './StopOrder';
 import {
   useStaticMarketData,
   useMarket,
   useMarketPrice,
 } from '@vegaprotocol/markets';
 import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
 import { DealTicket } from './deal-ticket';
 import { FLAGS } from '@vegaprotocol/environment';
+import { useT } from '../../use-t';
 
 interface DealTicketContainerProps {
   marketId: string;
@@ -24,6 +24,7 @@ export const DealTicketContainer = ({
   marketId,
   ...props
 }: DealTicketContainerProps) => {
+  const t = useT();
   const showStopOrder = useDealTicketFormValues((state) =>
     isStopOrderType(state.formValues[marketId]?.type)
   );

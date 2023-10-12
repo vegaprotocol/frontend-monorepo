@@ -6,7 +6,9 @@
   },
   "files": [
     "../../node_modules/@nx/react/typings/cssmodule.d.ts",
-    "../../node_modules/@nx/react/typings/image.d.ts"
+    "../../node_modules/@nx/react/typings/image.d.ts",
+    "./src/components/deal-ticket/TimeInForceSelector.tsx",
+    "./src/components/deal-ticket/StopOrder.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",
