@@ -18,4 +18,5 @@
 
 # Chart
 
-- **Must** see Funding tab on trading page (<a name="7008-FUND-010" href="#7008-FUND-010">7008-FUND-009</a>)
+- **Must** see Funding tab on trading page for perp market only (<a name="7008-FUND-010" href="#7008-FUND-010">7008-FUND-010</a>)
+- **Must** see funding rate on hover (<a name="7008-FUND-011" href="#7008-FUND-011">7008-FUND-011</a>)
