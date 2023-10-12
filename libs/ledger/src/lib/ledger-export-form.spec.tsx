@@ -161,6 +161,50 @@ describe('LedgerExportForm', () => {
       expect(screen.queryByTestId('download-spinner')).not.toBeInTheDocument();
     });
   });
+
+  it('Time zone sentence should be properly displayed', () => {
+    let timeZoneOffset = -120;
+    Date.prototype.getTimezoneOffset = jest.fn(() => timeZoneOffset);
+
+    const { rerender } = render(
+      <LedgerExportForm
+        partyId={partyId}
+        vegaUrl={vegaUrl}
+        assets={assetsMock}
+      />
+    );
+
+    expect(
+      screen.getByText(/^The downloaded file uses the UTC/)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Your time zone is UTC-02:00\.$/)
+    ).toBeInTheDocument();
+
+    timeZoneOffset = 270;
+    rerender(
+      <LedgerExportForm
+        partyId={partyId}
+        vegaUrl={vegaUrl}
+        assets={assetsMock}
+      />
+    );
+    expect(
+      screen.getByText(/Your time zone is UTC\+04:30\.$/)
+    ).toBeInTheDocument();
+
+    timeZoneOffset = 0;
+    rerender(
+      <LedgerExportForm
+        partyId={partyId}
+        vegaUrl={vegaUrl}
+        assets={assetsMock}
+      />
+    );
+    expect(
+      screen.queryByText(/^The downloaded file uses the UTC/)
+    ).not.toBeInTheDocument();
+  });
 });
 
 describe('createDownloadUrl', () => {
