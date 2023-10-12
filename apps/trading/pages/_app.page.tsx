@@ -37,7 +37,7 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
-import { Bootstrapper } from '../components/app-loader';
+import { Bootstrapper } from '../components/bootstrapper';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';

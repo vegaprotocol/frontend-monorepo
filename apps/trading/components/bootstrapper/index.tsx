@@ -1,2 +1,2 @@
-export * from './app-loader';
+export * from './bootstrapper';
 export * from './web3-provider';
