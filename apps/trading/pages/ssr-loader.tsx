@@ -38,7 +38,7 @@ export const SSRLoader = () => {
                 width: 10,
                 height: 10,
                 animation: 'flickering 0.4s linear alternate infinite',
-                animationDelay: `${randomDelay()}s`,
+                animationDelay: `-${randomDelay()}s`,
                 animationDirection: i % 2 === 0 ? 'reverse' : 'alternate',
                 background: 'black',
                 opacity: Math.random() > 0.5 ? 1 : 0,
