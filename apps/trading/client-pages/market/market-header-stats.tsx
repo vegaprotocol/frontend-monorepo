@@ -43,7 +43,7 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
   const asset = getAsset(market);
 
   return (
-    <div className="flex gap-8">
+    <>
       <HeaderStat heading={t('Mark Price')} testId="market-price">
         <MarketMarkPrice
           marketId={market.id}
@@ -144,7 +144,7 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
         </HeaderStat>
       )}
       <MarketProposalNotification marketId={market.id} />
-    </div>
+    </>
   );
 };
 
