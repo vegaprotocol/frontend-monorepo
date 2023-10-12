@@ -47,19 +47,17 @@ fragment UpdateReferralPrograms on Proposal {
   terms {
     change {
       ... on UpdateReferralProgram {
-        changes {
-          benefitTiers {
-            minimumEpochs
-            minimumRunningNotionalTakerVolume
-            referralDiscountFactor
-            referralRewardFactor
-          }
-          endOfProgramTimestamp
-          windowLength
-          stakingTiers {
-            minimumStakedTokens
-            referralRewardMultiplier
-          }
+        benefitTiers {
+          minimumEpochs
+          minimumRunningNotionalTakerVolume
+          referralDiscountFactor
+          referralRewardFactor
+        }
+        endOfProgram: endOfProgramTimestamp
+        windowLength
+        stakingTiers {
+          minimumStakedTokens
+          referralRewardMultiplier
         }
       }
     }
