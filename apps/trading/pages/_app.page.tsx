@@ -17,6 +17,7 @@ import {
   useEthWithdrawApprovalsManager,
 } from '@vegaprotocol/web3';
 import {
+  AppLoader,
   envTriggerMapping,
   Networks,
   NodeSwitcherDialog,
@@ -36,7 +37,7 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import { Connectors } from '../lib/vega-connectors';
-import { AppLoader, DynamicLoader } from '../components/app-loader';
+import { Bootstrapper } from '../components/app-loader';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
@@ -144,14 +145,14 @@ function VegaTradingApp(props: AppProps) {
   // Prevent HashRouter from being server side rendered as it
   // relies on presence of document object
   if (status === 'default') {
-    return <DynamicLoader />;
+    return <AppLoader />;
   }
 
   return (
     <HashRouter>
-      <AppLoader>
+      <Bootstrapper>
         <AppBody {...props} />
-      </AppLoader>
+      </Bootstrapper>
       <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
     </HashRouter>
   );

@@ -1,6 +1,7 @@
 import type { InMemoryCacheConfig } from '@apollo/client';
 import {
   AppFailure,
+  AppLoader,
   DocsLinks,
   NetworkLoader,
   NodeGuard,
@@ -9,15 +10,10 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import { MaintenancePage } from '@vegaprotocol/ui-toolkit';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
-import dynamic from 'next/dynamic';
 import type { ReactNode } from 'react';
 import { Web3Provider } from './web3-provider';
 
-export const DynamicLoader = dynamic(() => import('../preloader/preloader'), {
-  loading: () => <>Loading...</>,
-});
-
-export const AppLoader = ({ children }: { children: ReactNode }) => {
+export const Bootstrapper = ({ children }: { children: ReactNode }) => {
   const {
     error,
     VEGA_URL,
@@ -47,13 +43,13 @@ export const AppLoader = ({ children }: { children: ReactNode }) => {
   return (
     <NetworkLoader
       cache={cacheConfig}
-      skeleton={<DynamicLoader />}
+      skeleton={<AppLoader />}
       failure={
         <AppFailure title={t('Could not initialize app')} error={error} />
       }
     >
       <NodeGuard
-        skeleton={<DynamicLoader />}
+        skeleton={<AppLoader />}
         failure={<AppFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
       >
         <Web3Provider>
