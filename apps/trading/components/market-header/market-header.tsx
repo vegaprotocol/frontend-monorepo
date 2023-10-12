@@ -28,12 +28,11 @@ export const MarketHeader = () => {
             <HeaderTitle>
               <span>
                 {data.tradableInstrument.instrument.code}
-                <span className="ml-2 text-xs uppercase text-muted">
-                  {' '}
+                <span className="ml-1 text-xs uppercase text-muted">
                   {data.tradableInstrument.instrument.product.__typename &&
                     ProductTypeShortName[
                       data.tradableInstrument.instrument.product.__typename
-                    ]}{' '}
+                    ]}
                 </span>
               </span>
               <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
