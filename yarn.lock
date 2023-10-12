@@ -20500,10 +20500,10 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
 
-pennant@1.13.3:
-  version "1.13.3"
-  resolved "https://registry.yarnpkg.com/pennant/-/pennant-1.13.3.tgz#f7f1e58dc5a3f7fe8d3b290df2f06c3f3bf5ebdd"
-  integrity sha512-U1q5nEzxC3gP5rKiwEN4ClTAO7swopyhG5JAFJgQ+RibfxuncybcgVG5a0JCsFoRNOvdtRWnuTVylG+cfo51LA==
+pennant@1.13.4:
+  version "1.13.4"
+  resolved "https://registry.yarnpkg.com/pennant/-/pennant-1.13.4.tgz#33a5f3413634a2341a7b91c917f023c59ecc44c7"
+  integrity sha512-sqwkUiYHxmS97RY8jToMfgR9ePcEr5PWVQu9BPrhdUIa1Q/NztE36SWM5tVIsPPTx3pPIHYTNEVJm02Ubl8cZQ==
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@d3fc/d3fc-technical-indicator" "^8.0.1"
