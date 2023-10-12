@@ -145,7 +145,11 @@ function VegaTradingApp(props: AppProps) {
   // Prevent HashRouter from being server side rendered as it
   // relies on presence of document object
   if (status === 'default') {
-    return <AppLoader />;
+    return (
+      <div>
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   return (
