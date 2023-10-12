@@ -10,8 +10,10 @@ const singleRow = {
   commitmentAmount: '56298653179',
   fee: '0.001',
   status: Schema.LiquidityProvisionStatus.STATUS_ACTIVE,
-  equityLikeShare: '0.5',
-  averageEntryValuation: '0.5',
+  feeShare: {
+    equityLikeShare: '0.5',
+    averageEntryValuation: '0.5',
+  },
   supplied: '67895',
   obligation: '56785',
 } as unknown as LiquidityProvisionData;
@@ -42,13 +44,19 @@ describe('LiquidityTable', () => {
     );
     const expectedHeaders = [
       'Party',
+      'Status',
       'Commitment ()',
-      'Share',
-      'Proposed fee',
       'Market valuation at entry',
+      'Average score',
+      'Virtual stake',
       'Obligation',
       'Supplied',
-      'Status',
+      '(Current) Fraction on the book',
+      '(Last) Fraction on the book',
+      '(Last) Fee penalty',
+      '(Last) Bond penalty',
+      'Share',
+      'Proposed fee',
       'Created',
       'Updated',
     ];
