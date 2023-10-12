@@ -49,18 +49,17 @@ export const getQuoteName = (market: Partial<Market>) => {
   throw new Error('Failed to retrieve quoteName. Invalid product type');
 };
 
-export const totalFees = (fees: Market['fees']['factors']) => {
+export const sumFeesFactors = (fees: Market['fees']['factors']) => {
   return fees
     ? new BigNumber(fees.makerFee)
         .plus(fees.liquidityFee)
         .plus(fees.infrastructureFee)
-        .times(100)
     : undefined;
 };
 
-export const totalFeesPercentage = (fees: Market['fees']['factors']) => {
-  const total = fees && totalFees(fees);
-  return total ? formatNumberPercentage(total) : undefined;
+export const totalFeesFactorsPercentage = (fees: Market['fees']['factors']) => {
+  const total = fees && sumFeesFactors(fees);
+  return total ? formatNumberPercentage(total.times(100)) : undefined;
 };
 
 export const filterAndSortMarkets = (markets: MarketMaybeWithData[]) => {

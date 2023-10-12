@@ -6,11 +6,17 @@ import type { EstimateFeesQuery } from './__generated__/EstimateOrder';
 
 const data: EstimateFeesQuery = {
   estimateFees: {
-    totalFeeAmount: '12',
+    totalFeeAmount: '120',
     fees: {
-      infrastructureFee: '2',
-      liquidityFee: '4',
-      makerFee: '6',
+      infrastructureFee: '20',
+      infrastructureFeeReferralDiscount: '2',
+      infrastructureFeeVolumeDiscount: '4',
+      liquidityFee: '40',
+      liquidityFeeReferralDiscount: '6',
+      liquidityFeeVolumeDiscount: '8',
+      makerFee: '60',
+      makerFeeReferralDiscount: '10',
+      makerFeeVolumeDiscount: '12',
     },
   },
 };
@@ -67,11 +73,17 @@ describe('useEstimateFees', () => {
       )
     );
     expect(result.current).toEqual({
-      totalFeeAmount: '6',
+      totalFeeAmount: '60',
       fees: {
-        infrastructureFee: '1',
-        liquidityFee: '2',
-        makerFee: '3',
+        infrastructureFee: '10',
+        infrastructureFeeReferralDiscount: '1',
+        infrastructureFeeVolumeDiscount: '2',
+        liquidityFee: '20',
+        liquidityFeeReferralDiscount: '3',
+        liquidityFeeVolumeDiscount: '4',
+        makerFee: '30',
+        makerFeeReferralDiscount: '5',
+        makerFeeVolumeDiscount: '6',
       },
     });
   });

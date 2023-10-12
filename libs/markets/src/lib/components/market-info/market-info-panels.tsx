@@ -4,7 +4,7 @@ import { Fragment, useMemo, useState } from 'react';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
 import { marketDataProvider } from '../../market-data-provider';
-import { totalFeesPercentage } from '../../market-utils';
+import { totalFeesFactorsPercentage } from '../../market-utils';
 import {
   Accordion,
   AccordionChevron,
@@ -91,7 +91,7 @@ export const CurrentFeesInfoPanel = ({ market }: MarketInfoProps) => (
         makerFee: market.fees.factors.makerFee,
         infrastructureFee: market.fees.factors.infrastructureFee,
         liquidityFee: market.fees.factors.liquidityFee,
-        totalFees: totalFeesPercentage(market.fees.factors),
+        totalFees: totalFeesFactorsPercentage(market.fees.factors),
       }}
       asPercentage={true}
     />

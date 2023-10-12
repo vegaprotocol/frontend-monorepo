@@ -1,4 +1,3 @@
-export * from './fees-breakdown';
 export * from './last-24h-price-change';
 export * from './last-24h-volume';
 export * from './market-info';

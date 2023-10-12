@@ -9,7 +9,7 @@ export interface KeyValuePros {
   symbol: string;
   indent?: boolean | undefined;
   labelDescription?: ReactNode;
-  formattedValue?: string;
+  formattedValue?: ReactNode;
   onClick?: () => void;
 }
 
@@ -23,7 +23,11 @@ export const KeyValue = ({
   onClick,
   formattedValue,
 }: KeyValuePros) => {
-  const displayValue = `${formattedValue ?? '-'} ${symbol || ''}`;
+  const displayValue = (
+    <>
+      {formattedValue || '-'} {symbol || ''}
+    </>
+  );
   const valueElement = onClick ? (
     <button onClick={onClick} className="font-mono ml-auto">
       {displayValue}
