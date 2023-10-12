@@ -17,7 +17,6 @@ import {
   useEthWithdrawApprovalsManager,
 } from '@vegaprotocol/web3';
 import {
-  AppLoader,
   envTriggerMapping,
   Networks,
   NodeSwitcherDialog,
