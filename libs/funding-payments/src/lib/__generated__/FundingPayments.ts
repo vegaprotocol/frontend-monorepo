@@ -8,6 +8,7 @@ export type FundingPaymentFieldsFragment = { __typename?: 'FundingPayment', mark
 export type FundingPaymentsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
   pagination?: Types.InputMaybe<Types.Pagination>;
+  marketId?: Types.InputMaybe<Types.Scalars['ID']>;
 }>;
 
 
@@ -23,8 +24,8 @@ export const FundingPaymentFieldsFragmentDoc = gql`
 }
     `;
 export const FundingPaymentsDocument = gql`
-    query FundingPayments($partyId: ID!, $pagination: Pagination) {
-  fundingPayments(partyId: $partyId, pagination: $pagination) {
+    query FundingPayments($partyId: ID!, $pagination: Pagination, $marketId: ID) {
+  fundingPayments(partyId: $partyId, pagination: $pagination, marketId: $marketId) {
     edges {
       node {
         ...FundingPaymentFields
@@ -55,6 +56,7 @@ export const FundingPaymentsDocument = gql`
  *   variables: {
  *      partyId: // value for 'partyId'
  *      pagination: // value for 'pagination'
+ *      marketId: // value for 'marketId'
  *   },
  * });
  */
