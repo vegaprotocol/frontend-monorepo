@@ -1,0 +1,15 @@
+{
+  "rationale": {
+    "title": "Governance cancel transfer proposal",
+    "description": "Rejected cancel transfer proposal"
+  },
+  "terms": {
+    "cancelTransfer": {
+      "changes": {
+        "transferId": "invalid transfer id"
+      }
+    },
+    "closingTimestamp": 0,
+    "enactmentTimestamp": 0
+  }
+}
