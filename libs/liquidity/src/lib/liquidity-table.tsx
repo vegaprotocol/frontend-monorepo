@@ -24,6 +24,11 @@ const percentageFormatter = ({ value }: ValueFormatterParams) => {
   return formatNumberPercentage(new BigNumber(value).times(100), 2) || '-';
 };
 
+const numericalFormatter = ({ value }: ValueFormatterParams) => {
+  if (!value) return '-';
+  return new BigNumber(value).toFixed(2) || '-';
+};
+
 const dateValueFormatter = ({ value }: { value?: string | null }) => {
   if (!value) {
     return '-';
@@ -131,6 +136,7 @@ export const LiquidityTable = ({
         field: 'feeShare.averageScore',
         type: 'rightAligned',
         headerTooltip: t('The average score of the liquidity provider.'),
+        valueFormatter: numericalFormatter,
       },
       {
         headerName: t('Virtual stake'),
