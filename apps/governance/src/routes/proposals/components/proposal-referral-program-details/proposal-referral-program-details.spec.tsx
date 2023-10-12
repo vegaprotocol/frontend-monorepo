@@ -130,7 +130,6 @@ describe('<ProposalReferralProgramDetails />', () => {
       terms: {
         change: {
           __typename: 'UpdateReferralProgram',
-          changes: {},
         },
       },
     });
