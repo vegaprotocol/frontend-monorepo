@@ -6,6 +6,8 @@ import { ProposalDescription } from '../proposal-description';
 import { ProposalChangeTable } from '../proposal-change-table';
 import { ProposalJson } from '../proposal-json';
 import { ProposalAssetDetails } from '../proposal-asset-details';
+import { ProposalReferralProgramDetails } from '../proposal-referral-program-details';
+import { ProposalVolumeDiscountProgramDetails } from '../proposal-volume-discount-program-details';
 import { UserVote } from '../vote-details';
 import { ListAsset } from '../list-asset';
 import Routes from '../../../routes';
@@ -113,6 +115,15 @@ export const Proposal = ({
         // TODO: check minVoterBalance for 'CancelTransfer'
         minVoterBalance =
           networkParams.governance_proposal_freeform_minVoterBalance;
+        break;
+      case 'UpdateReferralProgram':
+        minVoterBalance =
+          networkParams.governance_proposal_referralProgram_minVoterBalance;
+        break;
+      case 'UpdateVolumeDiscountProgram':
+        minVoterBalance =
+          networkParams.governance_proposal_VolumeDiscountProgram_minVoterBalance;
+        break;
     }
   }
 
@@ -219,6 +230,18 @@ export const Proposal = ({
             <ProposalAssetDetails asset={asset} />
           </div>
         )}
+
+      {proposal.terms.change.__typename === 'UpdateReferralProgram' && (
+        <div className="mb-4">
+          <ProposalReferralProgramDetails proposal={proposal} />
+        </div>
+      )}
+
+      {proposal.terms.change.__typename === 'UpdateVolumeDiscountProgram' && (
+        <div className="mb-4">
+          <ProposalVolumeDiscountProgramDetails proposal={proposal} />
+        </div>
+      )}
 
       {governanceTransferDetails}
 

@@ -69,21 +69,23 @@ The specs no longer exist in this repo and can be found [here](https://github.co
 ## `6000` Markets and analysis
 
 - `6001-MARK` [Find markets](6001-MARK-find_markets.md)
-- `6002-MARD` [View market specification](6002-MDET-market-details.md) `TODO`
-- `6003-ORDB` [Analyze Order book](6003-ORDB-order_book.md) `TODO`
+- `6002-MARD` [View market specification](6002-MDET-market-details.md)
+- `6003-ORDB` [Analyze Order book](6003-ORDB-order_book.md)
 - `6004-PHIS` [Analyze price history](6004-PHIS-price_history.md) `TODO`
-- `6005-THIS` [Analyze trade history](6005-THIS-trade_history.md) `TODO`
+- `6005-THIS` [Analyze trade history](6005-THIS-trade_history.md)
 - `6006-DEPC` [View depth chart](6006-DEPC-chart.md)
 - `6007-CHAR` [View chart](6007-CHAR-chart.md)
 
-## `7000` Collateral, Orders, Positions and Fills
+## `7000` Collateral, Orders, Positions, Fills and Funding
 
 - `7001-COLL` [View my collateral / accounts](7001-COLL-collateral.md)
 - `7002-SORD` [Submit an order](7002-SORD-submit_orders.md)
 - `7003-MORD` [Manage my orders](7003-MORD-manage_orders.md)
-- `7004-POSI` [View my positions](7004-POSI-positions.md) `TODO`
+- `7004-POSI` [View my positions](7004-POSI-positions.md)
 - `7005-FILL` [View my trades/fills](7005-FILL-fills.md)
 - `7006-FEES` [View my trading fees](7006-FEES-fees.md) `TODO`
+- `7007-LEEN` [View ledger entries](7006-FEES-fees.md)
+- `7008-FUND` [View my funding payment](7006-FEES-fees.md)
 
 ## `8000` Understand transactions and blocks
 

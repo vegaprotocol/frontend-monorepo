@@ -123,11 +123,9 @@ export const OrderViewDialog = ({
               {t('rejection reason')}
             </div>
             <div data-testid={`order-rejection-reason-value`}>
-              {
-                Schema.OrderRejectionReasonMapping[
-                  order.rejectionReason as Schema.OrderRejectionReason
-                ]
-              }
+              {Schema.OrderRejectionReasonMapping[
+                order.rejectionReason as Schema.OrderRejectionReason
+              ] || order.rejectionReason}
             </div>
           </KeyValueTableRow>
         )}

@@ -4,7 +4,7 @@ import { Fragment, useMemo, useState } from 'react';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
 import { marketDataProvider } from '../../market-data-provider';
-import { totalFeesPercentage } from '../../market-utils';
+import { totalFeesFactorsPercentage } from '../../market-utils';
 import {
   Accordion,
   AccordionChevron,
@@ -45,6 +45,7 @@ import type {
 } from '@vegaprotocol/types';
 import {
   ConditionOperatorMapping,
+  MarketStateMapping,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
 import {
@@ -90,7 +91,7 @@ export const CurrentFeesInfoPanel = ({ market }: MarketInfoProps) => (
         makerFee: market.fees.factors.makerFee,
         infrastructureFee: market.fees.factors.infrastructureFee,
         liquidityFee: market.fees.factors.liquidityFee,
-        totalFees: totalFeesPercentage(market.fees.factors),
+        totalFees: totalFeesFactorsPercentage(market.fees.factors),
       }}
       asPercentage={true}
     />
@@ -220,58 +221,78 @@ export const KeyDetailsInfoPanel = ({
   const assetDecimals = getAsset(market).decimals;
 
   return (
-    <MarketInfoTable
-      data={
-        FLAGS.SUCCESSOR_MARKETS
-          ? {
-              name: market.tradableInstrument.instrument.name,
-              marketID: market.id,
-              parentMarketID: parentMarketIdData?.market?.parentMarketID || '-',
-              insurancePoolFraction:
-                (successorProposalDetails?.proposal?.terms.change.__typename ===
-                  'NewMarket' &&
-                  successorProposalDetails.proposal.terms.change
-                    .successorConfiguration?.insurancePoolFraction) ||
-                '-',
-              tradingMode:
-                market.tradingMode &&
-                MarketTradingModeMapping[market.tradingMode],
-              marketDecimalPlaces: market.decimalPlaces,
-              positionDecimalPlaces: market.positionDecimalPlaces,
-              settlementAssetDecimalPlaces: assetDecimals,
-            }
-          : {
-              name: market.tradableInstrument.instrument.name,
-              marketID: market.id,
-              tradingMode:
-                market.tradingMode &&
-                MarketTradingModeMapping[market.tradingMode],
-              marketDecimalPlaces: market.decimalPlaces,
-              positionDecimalPlaces: market.positionDecimalPlaces,
-              settlementAssetDecimalPlaces: assetDecimals,
-            }
-      }
-      parentData={
-        parentMarket && {
-          name: parentMarket?.tradableInstrument?.instrument?.name,
-          marketID: parentMarket?.id,
-          parentMarketID: grandparentMarketIdData?.market?.parentMarketID,
-          insurancePoolFraction:
-            parentSuccessorProposalDetails?.proposal?.terms.change
-              .__typename === 'NewMarket' &&
-            parentSuccessorProposalDetails.proposal.terms.change
-              .successorConfiguration?.insurancePoolFraction,
-          tradingMode:
-            parentMarket?.tradingMode &&
-            MarketTradingModeMapping[
-              parentMarket.tradingMode as MarketTradingMode
-            ],
-          marketDecimalPlaces: parentMarket?.decimalPlaces,
-          positionDecimalPlaces: parentMarket?.positionDecimalPlaces,
-          settlementAssetDecimalPlaces: assetDecimals,
+    <>
+      <KeyValueTable>
+        <KeyValueTableRow noBorder>
+          <div>{t('Market ID')}</div>
+          <CopyWithTooltip text={market.id}>
+            <button
+              data-testid="copy-eth-oracle-address"
+              className="uppercase text-right"
+            >
+              <span className="flex gap-1">
+                {truncateMiddle(market.id)}
+                <VegaIcon name={VegaIconNames.COPY} size={16} />
+              </span>
+            </button>
+          </CopyWithTooltip>
+        </KeyValueTableRow>
+      </KeyValueTable>
+      <MarketInfoTable
+        data={
+          FLAGS.SUCCESSOR_MARKETS
+            ? {
+                name: market.tradableInstrument.instrument.name,
+                parentMarketID:
+                  parentMarketIdData?.market?.parentMarketID || '-',
+                insurancePoolFraction:
+                  (successorProposalDetails?.proposal?.terms.change
+                    .__typename === 'NewMarket' &&
+                    successorProposalDetails.proposal.terms.change
+                      .successorConfiguration?.insurancePoolFraction) ||
+                  '-',
+                status: market.state && MarketStateMapping[market.state],
+                tradingMode:
+                  market.tradingMode &&
+                  MarketTradingModeMapping[market.tradingMode],
+                marketDecimalPlaces: market.decimalPlaces,
+                positionDecimalPlaces: market.positionDecimalPlaces,
+                settlementAssetDecimalPlaces: assetDecimals,
+              }
+            : {
+                name: market.tradableInstrument.instrument.name,
+                status: market.state && MarketStateMapping[market.state],
+                tradingMode:
+                  market.tradingMode &&
+                  MarketTradingModeMapping[market.tradingMode],
+                marketDecimalPlaces: market.decimalPlaces,
+                positionDecimalPlaces: market.positionDecimalPlaces,
+                settlementAssetDecimalPlaces: assetDecimals,
+              }
         }
-      }
-    />
+        parentData={
+          parentMarket && {
+            name: parentMarket?.tradableInstrument?.instrument?.name,
+            parentMarketID: grandparentMarketIdData?.market?.parentMarketID,
+            insurancePoolFraction:
+              parentSuccessorProposalDetails?.proposal?.terms.change
+                .__typename === 'NewMarket' &&
+              parentSuccessorProposalDetails.proposal.terms.change
+                .successorConfiguration?.insurancePoolFraction,
+            status:
+              parentMarket?.state && MarketStateMapping[parentMarket.state],
+            tradingMode:
+              parentMarket?.tradingMode &&
+              MarketTradingModeMapping[
+                parentMarket.tradingMode as MarketTradingMode
+              ],
+            marketDecimalPlaces: parentMarket?.decimalPlaces,
+            positionDecimalPlaces: parentMarket?.positionDecimalPlaces,
+            settlementAssetDecimalPlaces: assetDecimals,
+          }
+        }
+      />
+    </>
   );
 };
 
@@ -432,8 +453,8 @@ export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
         asset={asset}
         inline={true}
         noBorder={true}
-        dtClassName="text-black dark:text-white text-ui !px-0 !font-normal"
-        ddClassName="text-black dark:text-white text-ui !px-0 !font-normal max-w-full"
+        dtClassName="text-black dark:text-white text-ui !px-0 text-xs"
+        ddClassName="text-black dark:text-white text-ui !px-0 max-w-full text-xs"
       />
       <p className="mt-4 text-xs">
         {t(
@@ -505,18 +526,53 @@ export const RiskModelInfoPanel = ({
   }
 
   return (
-    <MarketInfoTable
-      data={{ tau, riskAversionParameter }}
-      parentData={parentData}
-      unformatted
-    />
+    <>
+      <MarketInfoTable
+        data={{ tau, riskAversionParameter }}
+        parentData={parentData}
+        unformatted
+      />
+      <RiskParametersInfoPanel market={market} parentMarket={parentMarket} />
+    </>
   );
 };
 
-export const RiskParametersInfoPanel = ({
+export const MarginScalingFactorsPanel = ({
   market,
   parentMarket,
 }: MarketInfoProps) => {
+  const data = {
+    linearSlippageFactor: market.linearSlippageFactor,
+    quadraticSlippageFactor: market.quadraticSlippageFactor,
+    searchLevel:
+      market.tradableInstrument.marginCalculator?.scalingFactors.searchLevel,
+    initialMargin:
+      market.tradableInstrument.marginCalculator?.scalingFactors.initialMargin,
+    collateralRelease:
+      market.tradableInstrument.marginCalculator?.scalingFactors
+        .collateralRelease,
+  };
+
+  const parentData = parentMarket
+    ? {
+        linearSlippageFactor: parentMarket?.linearSlippageFactor,
+        quadraticSlippageFactor: parentMarket?.quadraticSlippageFactor,
+        searchLevel:
+          parentMarket?.tradableInstrument.marginCalculator?.scalingFactors
+            .searchLevel,
+        initialMargin:
+          parentMarket?.tradableInstrument.marginCalculator?.scalingFactors
+            .initialMargin,
+        collateralRelease:
+          parentMarket?.tradableInstrument.marginCalculator?.scalingFactors
+            .collateralRelease,
+      }
+    : undefined;
+
+  return <MarketInfoTable data={data} parentData={parentData} unformatted />;
+};
+
+const RiskParametersInfoPanel = ({ market, parentMarket }: MarketInfoProps) => {
   const marketType = market.tradableInstrument.riskModel.__typename;
 
   let data, parentData;
@@ -562,27 +618,66 @@ export const RiskFactorsInfoPanel = ({
   market,
   parentMarket,
 }: MarketInfoProps) => {
-  if (!market.riskFactors) {
-    return null;
-  }
+  const getLeverageFactors = (market: MarketInfo) => {
+    if (!market.riskFactors) {
+      return undefined;
+    }
 
-  const { short, long } = market.riskFactors;
+    const { short, long } = market.riskFactors;
 
-  let parentData;
+    const maxLeverageLong = new BigNumber(1).dividedBy(
+      new BigNumber(market.linearSlippageFactor).plus(long)
+    );
 
-  if (parentMarket?.riskFactors) {
-    const parentShort = parentMarket.riskFactors.short;
-    const parentLong = parentMarket.riskFactors.long;
-    parentData = { short: parentShort, long: parentLong };
-  }
+    const maxLeverageShort = new BigNumber(1).dividedBy(
+      new BigNumber(market.linearSlippageFactor).plus(short)
+    );
 
-  return (
-    <MarketInfoTable
-      data={{ short, long }}
-      parentData={parentData}
-      unformatted
-    />
-  );
+    const maxInitialLeverageLong = !market.tradableInstrument.marginCalculator
+      ? undefined
+      : new BigNumber(1)
+          .dividedBy(
+            market.tradableInstrument.marginCalculator.scalingFactors
+              .initialMargin
+          )
+          .times(maxLeverageLong);
+
+    const maxInitialLeverageShort = !market.tradableInstrument.marginCalculator
+      ? undefined
+      : new BigNumber(1)
+          .dividedBy(
+            market.tradableInstrument.marginCalculator.scalingFactors
+              .initialMargin
+          )
+          .times(maxLeverageShort);
+
+    const formatValue = (number: BigNumber | string | undefined) => {
+      if (!number) return undefined;
+      const value = new BigNumber(number);
+      if (value.gte(10)) {
+        return value.toFixed(3);
+      } else {
+        return value.toFixed(5);
+      }
+    };
+
+    const data = {
+      long: formatValue(long),
+      short: formatValue(short),
+      maxLeverageLong: formatValue(maxLeverageLong),
+      maxLeverageShort: formatValue(maxLeverageShort),
+      maxInitialLeverageLong: formatValue(maxInitialLeverageLong),
+      maxInitialLeverageShort: formatValue(maxInitialLeverageShort),
+    };
+    return data;
+  };
+
+  const data = getLeverageFactors(market);
+  const parentData = parentMarket
+    ? getLeverageFactors(parentMarket)
+    : undefined;
+
+  return <MarketInfoTable data={data} parentData={parentData} unformatted />;
 };
 
 export const PriceMonitoringBoundsInfoPanel = ({

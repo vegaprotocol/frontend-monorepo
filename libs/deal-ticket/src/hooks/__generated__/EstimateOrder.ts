@@ -15,7 +15,7 @@ export type EstimateFeesQueryVariables = Types.Exact<{
 }>;
 
 
-export type EstimateFeesQuery = { __typename?: 'Query', estimateFees: { __typename?: 'FeeEstimate', totalFeeAmount: string, fees: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string } } };
+export type EstimateFeesQuery = { __typename?: 'Query', estimateFees: { __typename?: 'FeeEstimate', totalFeeAmount: string, fees: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string, makerFeeReferralDiscount?: string | null, makerFeeVolumeDiscount?: string | null, infrastructureFeeReferralDiscount?: string | null, infrastructureFeeVolumeDiscount?: string | null, liquidityFeeReferralDiscount?: string | null, liquidityFeeVolumeDiscount?: string | null } } };
 
 
 export const EstimateFeesDocument = gql`
@@ -34,6 +34,12 @@ export const EstimateFeesDocument = gql`
       makerFee
       infrastructureFee
       liquidityFee
+      makerFeeReferralDiscount
+      makerFeeVolumeDiscount
+      infrastructureFeeReferralDiscount
+      infrastructureFeeVolumeDiscount
+      liquidityFeeReferralDiscount
+      liquidityFeeVolumeDiscount
     }
     totalFeeAmount
   }

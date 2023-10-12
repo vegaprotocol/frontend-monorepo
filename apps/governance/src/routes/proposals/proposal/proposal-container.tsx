@@ -36,6 +36,8 @@ export const ProposalContainer = () => {
     NetworkParams.governance_proposal_updateAsset_minVoterBalance,
     NetworkParams.governance_proposal_updateNetParam_minVoterBalance,
     NetworkParams.governance_proposal_freeform_minVoterBalance,
+    NetworkParams.governance_proposal_referralProgram_minVoterBalance,
+    NetworkParams.governance_proposal_VolumeDiscountProgram_minVoterBalance,
     NetworkParams.spam_protection_voting_min_tokens,
     NetworkParams.governance_proposal_market_requiredMajority,
     NetworkParams.governance_proposal_updateMarket_requiredMajority,
@@ -44,6 +46,8 @@ export const ProposalContainer = () => {
     NetworkParams.governance_proposal_updateAsset_requiredMajority,
     NetworkParams.governance_proposal_updateNetParam_requiredMajority,
     NetworkParams.governance_proposal_freeform_requiredMajority,
+    NetworkParams.governance_proposal_referralProgram_requiredMajority,
+    NetworkParams.governance_proposal_VolumeDiscountProgram_requiredMajority,
   ]);
 
   const {
@@ -57,6 +61,8 @@ export const ProposalContainer = () => {
       proposalId: params.proposalId || '',
       includeNewMarketProductField: !!FLAGS.PRODUCT_PERPETUALS,
       includeUpdateMarketState: !!FLAGS.UPDATE_MARKET_STATE,
+      includeUpdateReferralProgram: !!FLAGS.REFERRALS,
+      includeUpdateVolumeDiscountProgram: !!FLAGS.VOLUME_DISCOUNTS,
     },
     skip: !params.proposalId,
   });
