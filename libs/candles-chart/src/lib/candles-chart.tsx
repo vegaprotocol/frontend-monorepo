@@ -6,12 +6,11 @@ import { useMemo } from 'react';
 import debounce from 'lodash/debounce';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { t } from '@vegaprotocol/i18n';
 import {
   STUDY_SIZE,
   useCandlesChartSettings,
 } from './use-candles-chart-settings';
+import { useT } from './use-t';
 
 export type CandlesChartContainerProps = {
   marketId: string;
@@ -25,6 +24,7 @@ export const CandlesChartContainer = ({
   const client = useApolloClient();
   const { pubKey } = useVegaWallet();
   const { theme } = useThemeSwitcher();
+  const t = useT();
 
   const {
     interval,

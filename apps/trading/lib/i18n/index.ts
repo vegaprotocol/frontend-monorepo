@@ -19,7 +19,14 @@ i18n
     fallbackLng: 'en',
     debug: true,
     // have a common namespace used around the full app
-    ns: ['funding-payments', 'fills', 'trading', 'accounts', 'assets'],
+    ns: [
+      'accounts',
+      'assets',
+      'candles-chart',
+      'fills',
+      'funding-payments',
+      'trading',
+    ],
     defaultNS: 'trading',
     keySeparator: false, // we use content as keys
     backend: locizeOptions,
