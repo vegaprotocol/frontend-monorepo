@@ -81,6 +81,7 @@ const COSMIC_ELEVATOR_FLAGS = {
   REFERRALS: z.optional(z.boolean()),
   UPDATE_MARKET_STATE: z.optional(z.boolean()),
   GOVERNANCE_TRANSFERS: z.optional(z.boolean()),
+  VOLUME_DISCOUNTS: z.optional(z.boolean()),
 };
 
 const EXPLORER_FLAGS = {
