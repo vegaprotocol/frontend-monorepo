@@ -63,44 +63,42 @@ const mockReferralProposal = generateProposal({
   terms: {
     change: {
       __typename: 'UpdateReferralProgram',
-      changes: {
-        benefitTiers: [
-          {
-            minimumEpochs: 6,
-            minimumRunningNotionalTakerVolume: '10000',
-            referralDiscountFactor: '0.001',
-            referralRewardFactor: '0.001',
-          },
-          {
-            minimumEpochs: 24,
-            minimumRunningNotionalTakerVolume: '500000',
-            referralDiscountFactor: '0.005',
-            referralRewardFactor: '0.005',
-          },
-          {
-            minimumEpochs: 48,
-            minimumRunningNotionalTakerVolume: '1000000',
-            referralDiscountFactor: '0.01',
-            referralRewardFactor: '0.01',
-          },
-        ],
-        endOfProgramTimestamp: '2026-10-03T10:34:34Z',
-        windowLength: 3,
-        stakingTiers: [
-          {
-            minimumStakedTokens: '1',
-            referralRewardMultiplier: '1',
-          },
-          {
-            minimumStakedTokens: '2',
-            referralRewardMultiplier: '2',
-          },
-          {
-            minimumStakedTokens: '5',
-            referralRewardMultiplier: '3',
-          },
-        ],
-      },
+      benefitTiers: [
+        {
+          minimumEpochs: 6,
+          minimumRunningNotionalTakerVolume: '10000',
+          referralDiscountFactor: '0.001',
+          referralRewardFactor: '0.001',
+        },
+        {
+          minimumEpochs: 24,
+          minimumRunningNotionalTakerVolume: '500000',
+          referralDiscountFactor: '0.005',
+          referralRewardFactor: '0.005',
+        },
+        {
+          minimumEpochs: 48,
+          minimumRunningNotionalTakerVolume: '1000000',
+          referralDiscountFactor: '0.01',
+          referralRewardFactor: '0.01',
+        },
+      ],
+      endOfProgram: '2026-10-03T10:34:34Z',
+      windowLength: 3,
+      stakingTiers: [
+        {
+          minimumStakedTokens: '1',
+          referralRewardMultiplier: '1',
+        },
+        {
+          minimumStakedTokens: '2',
+          referralRewardMultiplier: '2',
+        },
+        {
+          minimumStakedTokens: '5',
+          referralRewardMultiplier: '3',
+        },
+      ],
     },
   },
 });
