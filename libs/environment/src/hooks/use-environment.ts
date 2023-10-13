@@ -338,9 +338,6 @@ function compileEnvVars() {
       'GITHUB_FEEDBACK_URL',
       process.env['NX_GITHUB_FEEDBACK_URL']
     ),
-    MAINTENANCE_PAGE: parseBoolean(
-      windowOrDefault('MAINTENANCE_PAGE', process.env['NX_MAINTENANCE_PAGE'])
-    ),
     GIT_BRANCH: windowOrDefault(
       'GIT_COMMIT_BRANCH',
       process.env['GIT_COMMIT_BRANCH']
