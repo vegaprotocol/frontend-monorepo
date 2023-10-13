@@ -29,7 +29,8 @@ export const MarketSuccessorBanner = ({
 }: {
   market: Market | null;
 }) => {
-  const { data: successorData } = useSuccessorMarket(market?.id);
+  const isSettled = market?.state === Types.MarketState.STATE_SETTLED;
+  const { data: successorData, loading } = useSuccessorMarket(market?.id);
 
   const [visible, setVisible] = useState(true);
 
@@ -44,11 +45,6 @@ export const MarketSuccessorBanner = ({
     expiry && isBefore(new Date(), expiry)
       ? intervalToDuration({ start: new Date(), end: expiry })
       : null;
-
-  const isInContinuesMode =
-    successorData?.state === Types.MarketState.STATE_ACTIVE &&
-    successorData?.tradingMode ===
-      Types.MarketTradingMode.TRADING_MODE_CONTINUOUS;
 
   const { oneDayCandles } = useCandles({
     marketId: successorData?.id,
@@ -66,7 +62,7 @@ export const MarketSuccessorBanner = ({
         )
       : null;
 
-  if (isInContinuesMode && visible) {
+  if (!loading && (isSettled || successorData) && visible) {
     return (
       <NotificationBanner
         intent={Intent.Primary}
@@ -75,7 +71,9 @@ export const MarketSuccessorBanner = ({
         }}
       >
         <div className="uppercase mb-1">
-          {t('This market has been succeeded')}
+          {successorData
+            ? t('This market has been succeeded')
+            : t('This market is settled')}
         </div>
         <div>
           {duration && (
@@ -93,13 +91,18 @@ export const MarketSuccessorBanner = ({
                 }),
               ])}
             </span>
-          )}{' '}
-          {t('The successor market')}{' '}
-          <ExternalLink href={`/#/markets/${successorData?.id}`}>
-            {successorData?.tradableInstrument.instrument.name}
-          </ExternalLink>
-          {successorVolume && (
-            <span> {t('has %s 24h vol.', [successorVolume])}</span>
+          )}
+          {successorData && (
+            <>
+              {' '}
+              {t('The successor market')}{' '}
+              <ExternalLink href={`/#/markets/${successorData?.id}`}>
+                {successorData?.tradableInstrument.instrument.name}
+              </ExternalLink>
+              {successorVolume && (
+                <span> {t('has %s 24h vol.', [successorVolume])}</span>
+              )}
+            </>
           )}
         </div>
       </NotificationBanner>

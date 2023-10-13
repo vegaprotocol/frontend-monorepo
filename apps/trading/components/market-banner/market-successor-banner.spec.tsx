@@ -82,28 +82,17 @@ describe('MarketSuccessorBanner', () => {
       expect(container).toBeEmptyDOMElement();
     });
 
-    it('successor market not in continuous mode', () => {
-      mockDataSuccessorMarket = {
-        ...mockDataSuccessorMarket,
-        tradingMode: Types.MarketTradingMode.TRADING_MODE_NO_TRADING,
-      };
-      const { container } = render(<MarketSuccessorBanner market={market} />, {
-        wrapper: MockedProvider,
-      });
-      expect(container).toBeEmptyDOMElement();
-      expect(allUtils.getMarketExpiryDate).toHaveBeenCalled();
-    });
-
-    it('successor market is not active', () => {
-      mockDataSuccessorMarket = {
-        ...mockDataSuccessorMarket,
-        state: Types.MarketState.STATE_PENDING,
-      };
-      const { container } = render(<MarketSuccessorBanner market={market} />, {
-        wrapper: MockedProvider,
-      });
-      expect(container).toBeEmptyDOMElement();
-      expect(allUtils.getMarketExpiryDate).toHaveBeenCalled();
+    it('no successor market data, market settled', () => {
+      mockDataSuccessorMarket = null;
+      render(
+        <MarketSuccessorBanner
+          market={{ ...market, state: Types.MarketState.STATE_SETTLED }}
+        />,
+        {
+          wrapper: MockedProvider,
+        }
+      );
+      expect(screen.getByText('This market is settled')).toBeInTheDocument();
     });
   });
 
