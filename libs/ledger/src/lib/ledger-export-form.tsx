@@ -1,19 +1,28 @@
-import { useRef, useState } from 'react';
-import { z } from 'zod';
+import type { ReactNode } from 'react';
+import { format } from 'date-fns';
+import { useCallback, useRef, useState } from 'react';
+import type { Toast } from '@vegaprotocol/ui-toolkit';
 import {
-  TradingButton,
+  Intent,
   Loader,
+  TradingButton,
   TradingFormGroup,
   TradingInput,
   TradingSelect,
+  useToasts,
 } from '@vegaprotocol/ui-toolkit';
-import { toNanoSeconds, VEGA_ID_REGEX } from '@vegaprotocol/utils';
+import { z } from 'zod';
+import {
+  formatForInput,
+  toNanoSeconds,
+  VEGA_ID_REGEX,
+} from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { localLoggerFactory } from '@vegaprotocol/logger';
-import { formatForInput } from '@vegaprotocol/utils';
 import { subDays } from 'date-fns';
 
 const DEFAULT_EXPORT_FILE_NAME = 'ledger_entries.csv';
+const DOWNLOAD_LEDGER_TOAST_ID = 'ledger_entries_toast_id';
 
 const toHoursAndMinutes = (totalMinutes: number) => {
   const minutes = totalMinutes % 60;
@@ -64,6 +73,23 @@ interface Props {
   assets: Record<string, string>;
 }
 
+const ErrorContent = () => (
+  <>
+    <h4 className="mb-1 text-sm">{t('Something went wrong')}</h4>
+    <p>{t('Try again later')}</p>
+  </>
+);
+
+const InfoContent = ({ progress = false }) => (
+  <>
+    <h4 className="mb-1 text-sm">
+      {progress ? t('Still in progress') : t('Download has been started')}
+    </h4>
+    <p>{t('Please note this can take several minutes.')}</p>
+    <p>{t('You will be noticed here when file will be ready.')}</p>
+  </>
+);
+
 export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
   const now = useRef(new Date());
   const [dateFrom, setDateFrom] = useState(() => {
@@ -77,6 +103,46 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
   const [assetId, setAssetId] = useState(Object.keys(assets)[0]);
   const protohost = getProtoHost(vegaUrl);
   const disabled = Boolean(!assetId || isDownloading);
+
+  const [setToast, updateToast, hasToast, removeToast] = useToasts((store) => [
+    store.setToast,
+    store.update,
+    store.hasToast,
+    store.remove,
+  ]);
+
+  const onDownloadClose = useCallback(() => {
+    removeToast(DOWNLOAD_LEDGER_TOAST_ID);
+  }, [removeToast]);
+
+  const createToast = (
+    content: ReactNode,
+    intent: Intent = Intent.Primary,
+    loader = true
+  ) => {
+    const title = t('Downloading ledger entries of %s from %s till %s', [
+      assets[assetId],
+      format(new Date(dateFrom), 'dd MMMM yyyy HH:mm'),
+      format(new Date(dateTo || Date.now()), 'dd MMMM yyyy HH:mm'),
+    ]);
+    const toast: Toast = {
+      id: DOWNLOAD_LEDGER_TOAST_ID,
+      intent,
+      content: (
+        <>
+          <h3 className="mb-1 text-md uppercase">{title}</h3>
+          {content}
+        </>
+      ),
+      onClose: onDownloadClose,
+      loader,
+    };
+    if (hasToast(DOWNLOAD_LEDGER_TOAST_ID)) {
+      updateToast(DOWNLOAD_LEDGER_TOAST_ID, toast);
+    } else {
+      setToast(toast);
+    }
+  };
 
   const assetDropDown = (
     <TradingSelect
@@ -99,7 +165,12 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
 
   const startDownload = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const ts = setTimeout(() => {
+      createToast(<InfoContent progress />, Intent.Warning);
+    }, 1000 * 30);
+
     try {
+      createToast(<InfoContent />, Intent.Primary);
       const link = createDownloadUrl({
         protohost,
         partyId,
@@ -114,15 +185,27 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
       const filename = nameHeader?.split('=').pop() ?? DEFAULT_EXPORT_FILE_NAME;
       const blob = await resp.blob();
       if (blob) {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = filename;
-        link.click();
+        const content = (
+          <>
+            <h4 className="mb-1 text-sm">{t('File is ready')}</h4>
+            <a
+              onClick={onDownloadClose}
+              href={URL.createObjectURL(blob)}
+              download={filename}
+              className="underline"
+            >
+              {t('Get file here')}
+            </a>
+          </>
+        );
+        createToast(content, Intent.Success, false);
       }
     } catch (err) {
       localLoggerFactory({ application: 'ledger' }).error('Download file', err);
+      createToast(<ErrorContent />, Intent.Danger);
     } finally {
       setIsDownloading(false);
+      clearTimeout(ts);
     }
   };
 
