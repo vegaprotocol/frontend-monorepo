@@ -13,7 +13,12 @@ import {
   truncateByChars,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import { Intent, TradingButton, TradingInput } from '@vegaprotocol/ui-toolkit';
+import {
+  Intent,
+  TokenIcon,
+  TradingButton,
+  TradingInput,
+} from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import {
   EthTxStatus,
@@ -264,10 +269,15 @@ const DepositFlow = ({
             >
               <div className="flex flex-col flex-1 gap-1">
                 <div className="flex justify-between">
-                  <p className="text-lg">
-                    {a.symbol}{' '}
-                    <small>({truncateByChars(a.source.contractAddress)})</small>
-                  </p>
+                  <div className="flex items-center text-lg gap-2">
+                    <TokenIcon address={a.source.contractAddress} />
+                    <h3 className="text-lg">
+                      {a.symbol}{' '}
+                      <small>
+                        ({truncateByChars(a.source.contractAddress)})
+                      </small>
+                    </h3>
+                  </div>
                   <div className="text-right">
                     <Balance asset={a} />
                   </div>

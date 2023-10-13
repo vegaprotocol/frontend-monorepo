@@ -46,6 +46,7 @@ export * from './theme-switcher';
 export * from './thumbs';
 export * from './tiny-scroll';
 export * from './toast';
+export * from './token-icons';
 export * from './toggle';
 export * from './tooltip';
 export * from './traffic-light';
