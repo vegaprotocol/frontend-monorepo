@@ -9,7 +9,6 @@ import {
   useEnvironment,
 } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
-import { MaintenancePage } from '@vegaprotocol/ui-toolkit';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { Web3Provider } from './web3-provider';
@@ -21,14 +20,9 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
     VEGA_ENV,
     VEGA_WALLET_URL,
     VEGA_EXPLORER_URL,
-    MAINTENANCE_PAGE,
     MOZILLA_EXTENSION_URL,
     CHROME_EXTENSION_URL,
   } = useEnvironment();
-
-  if (MAINTENANCE_PAGE) {
-    return <MaintenancePage />;
-  }
 
   if (
     !VEGA_URL ||
