@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
-import { Route, Routes, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { create } from 'zustand';
 import { TransferContainer } from '@vegaprotocol/accounts';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
@@ -50,93 +50,14 @@ type SidebarView =
       type: ViewType.Settings;
     };
 
-const MarketSidebarButtons = () => {
-  const currentRouteId = useGetCurrentRouteId();
-
-  return (
-    <>
-      <SidebarButton
-        view={ViewType.Order}
-        icon={VegaIconNames.TICKET}
-        tooltip={t('Order')}
-        routeId={currentRouteId}
-      />
-      <SidebarButton
-        view={ViewType.Info}
-        icon={VegaIconNames.BREAKDOWN}
-        tooltip={t('Market specification')}
-        routeId={currentRouteId}
-      />
-    </>
-  );
-};
-
-const AssetSidebarButtons = () => {
-  const currentRouteId = useGetCurrentRouteId();
-
-  return (
-    <>
-      <SidebarButton
-        view={ViewType.Deposit}
-        icon={VegaIconNames.DEPOSIT}
-        tooltip={t('Deposit')}
-        routeId={currentRouteId}
-      />
-      <SidebarButton
-        view={ViewType.Withdraw}
-        icon={VegaIconNames.WITHDRAW}
-        tooltip={t('Withdraw')}
-        routeId={currentRouteId}
-      />
-      <SidebarButton
-        view={ViewType.Transfer}
-        icon={VegaIconNames.TRANSFER}
-        tooltip={t('Transfer')}
-        routeId={currentRouteId}
-      />
-    </>
-  );
-};
-
-export const Sidebar = () => {
+export const Sidebar = ({ options }: { options?: ReactNode }) => {
   const currentRouteId = useGetCurrentRouteId();
   const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
   const setViewAsDialogOpen = useViewAsDialog((state) => state.setOpen);
   const { pubKeys } = useVegaWallet();
   return (
     <div className="flex h-full p-1 lg:flex-col gap-2" data-testid="sidebar">
-      <nav className={navClasses}>
-        <Routes>
-          <Route path="markets/all" element={<AssetSidebarButtons />} />
-          <Route path="portfolio">
-            <Route
-              // Show deposit/withdraw/transfer sidebar options only on portflio dashboard (index)
-              index={true}
-              element={<AssetSidebarButtons />}
-            />
-          </Route>
-          <Route
-            path="markets/:marketId"
-            element={
-              <>
-                <AssetSidebarButtons />
-                <SidebarDivider />
-                <MarketSidebarButtons />
-              </>
-            }
-          />
-          <Route
-            path="liquidity/:marketId"
-            element={
-              <>
-                <AssetSidebarButtons />
-                <SidebarDivider />
-                <MarketSidebarButtons />
-              </>
-            }
-          />
-        </Routes>
-      </nav>
+      {options && <nav className={navClasses}>{options}</nav>}
       <nav className={classNames(navClasses, 'ml-auto lg:mt-auto lg:ml-0')}>
         <SidebarButton
           view={ViewType.ViewAs}
@@ -219,7 +140,7 @@ export const SidebarButton = ({
   );
 };
 
-const SidebarDivider = () => {
+export const SidebarDivider = () => {
   return (
     <div
       className="w-px h-4 bg-vega-clight-600 dark:bg-vega-cdark-600 lg:w-4 lg:h-px"
