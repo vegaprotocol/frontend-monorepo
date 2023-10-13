@@ -56,7 +56,7 @@ const TitleUpdater = ({
   return null;
 };
 
-export const MarketPage = ({ closed }: { closed?: boolean }) => {
+export const MarketPage = () => {
   const { marketId } = useParams();
   const navigate = useNavigate();
   const currentRouteId = useGetCurrentRouteId();
@@ -73,7 +73,7 @@ export const MarketPage = ({ closed }: { closed?: boolean }) => {
     if (data?.id && data.id !== lastMarketId && !closed) {
       update({ marketId: data.id });
     }
-  }, [update, lastMarketId, data?.id, closed]);
+  }, [update, lastMarketId, data?.id]);
 
   useEffect(() => {
     if (largeScreen && view === undefined) {
@@ -82,7 +82,7 @@ export const MarketPage = ({ closed }: { closed?: boolean }) => {
         currentRouteId
       );
     }
-  }, [setViews, view, currentRouteId, largeScreen, closed]);
+  }, [setViews, view, currentRouteId, largeScreen]);
 
   const pinnedAsset = data && getAsset(data);
 
