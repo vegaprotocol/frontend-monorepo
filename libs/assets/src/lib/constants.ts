@@ -4,7 +4,8 @@ export const WITHDRAW_THRESHOLD_TOOLTIP_TEXT = t(
   "The maximum you can withdraw instantly. There's no limit on the size of a withdrawal, but all withdrawals over the threshold will have a delay time added to them"
 );
 
-export const OBSOLETE_ASSETS: Record<string, string[]> = {
+// List of defunct and no longer used assets that were created for various testnets
+export const DENY_LIST: Record<string, string[]> = {
   TESTNET: [
     '07f8ce4e3df6c649f3fd794112f545ede9fbd9cfa76a9e380a7502a8d525e4db',
     '0b87ac58d4af7fc11c8b417153fcb62631cfd9643835ef28db3f5a1caef0b379',
