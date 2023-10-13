@@ -41,7 +41,7 @@ const MarketCard = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
     oneDayCandles?.map((c) => c.close) || []
   );
   return (
-    <div className="flex w-1/4 p-2 rounded gap-2 bg-vega-clight-500 dark:bg-vega-cdark-500">
+    <div className="flex w-1/4 p-2 rounded gap-2 bg-vega-clight-600 dark:bg-vega-cdark-600">
       <div className="flex-1">
         <h3 className="overflow-hidden text-sm leading-4 whitespace-nowrap text-ellipsis">
           {market.tradableInstrument.instrument.code}
@@ -53,7 +53,7 @@ const MarketCard = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
         {oneDayCandles && (
           <Sparkline
             width={60}
-            height={13}
+            height={20}
             data={oneDayCandles.map((c) => Number(c.close))}
           />
         )}
