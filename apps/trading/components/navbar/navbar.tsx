@@ -264,6 +264,7 @@ const NavbarLink = ({
     <N.Link asChild={true}>
       <NavLink
         to={to}
+        end={true}
         className={classNames(
           'block lg:flex lg:h-full flex-col justify-center',
           'px-6 py-2 lg:p-0 text-lg lg:text-sm',

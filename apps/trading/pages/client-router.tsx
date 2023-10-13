@@ -89,10 +89,6 @@ export const routerConfig: RouteObject[] = compact([
         children: [
           {
             index: true,
-            element: <Navigate to="all" />,
-          },
-          {
-            path: 'all',
             element: <MarketsPage />,
             id: Routes.MARKETS,
           },
