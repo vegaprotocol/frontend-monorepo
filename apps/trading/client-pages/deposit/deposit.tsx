@@ -41,7 +41,7 @@ import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { Markets } from './markets';
 import { Balance } from './balance';
 import { Allowance } from './allowance';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Faucet } from './faucet';
 
 export const Deposit = () => {
@@ -443,6 +443,9 @@ const SendDeposit = ({
   faucetEnabled: boolean;
   refetchBalances: () => void;
 }) => {
+  const openVegaWalletDialog = useVegaWalletDialogStore(
+    (store) => store.openVegaWalletDialog
+  );
   const { pubKey } = useVegaWallet();
   const { provider, account } = useWeb3React();
 
@@ -498,6 +501,16 @@ const SendDeposit = ({
   // Dont show deposit ui unless approved
   if (!isApproved(state.allowance)) {
     return null;
+  }
+
+  if (!pubKey) {
+    return (
+      <div className="flex flex-col items-start pt-4 mt-4 border-t gap-2 border-vega-clight-400 dark:border-vega-cdark-400">
+        <TradingButton onClick={openVegaWalletDialog} size="small">
+          {t('Connect Vega wallet')}
+        </TradingButton>
+      </div>
+    );
   }
 
   return (
