@@ -23,7 +23,7 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { MarketCodeCell } from './market-code-cell';
 import { MarketActionsDropdown } from './market-table-actions';
 import type { CellClickedEvent } from 'ag-grid-community';
-import { useClosedMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
+import { useNavigate } from 'react-router-dom';
 
 type SettlementAsset = Pick<
   Asset,
@@ -127,7 +127,7 @@ const ClosedMarketsDataGrid = ({
   rowData: Row[];
   error: Error | undefined;
 }) => {
-  const handleOnSelect = useClosedMarketClickHandler();
+  const navigate = useNavigate();
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
 
   const colDefs = useMemo(() => {
@@ -302,8 +302,7 @@ const ClosedMarketsDataGrid = ({
           return;
         }
 
-        // @ts-ignore metaKey exists
-        handleOnSelect(data.id, event ? event.metaKey : false);
+        navigate(data.id);
       }}
     />
   );
