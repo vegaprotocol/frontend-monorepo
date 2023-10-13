@@ -186,17 +186,12 @@ const DepositFlow = ({
         </div>
         <div
           className={classNames(
-            'p-4 rounded flex flex-col gap-1',
+            'p-5 rounded flex flex-col gap-3',
             'bg-vega-clight-700 dark:bg-vega-cdark-700'
           )}
         >
           <div className="flex justify-between">
-            <p className="text-lg">
-              {state.asset.symbol}{' '}
-              <small>
-                ({truncateByChars(state.asset.source.contractAddress)})
-              </small>
-            </p>
+            <TokenHeader asset={state.asset} />
             <div className="text-right">
               <Balance asset={state.asset} balance={state.balance} />
             </div>
@@ -263,21 +258,13 @@ const DepositFlow = ({
                 handleAssetChanged(a.id);
               }}
               className={classNames(
-                'p-4 rounded text-left',
+                'p-5 rounded text-left',
                 'bg-vega-clight-800 dark:bg-vega-cdark-800 hover:bg-vega-clight-700 dark:hover:bg-vega-cdark-700 cursor-pointer'
               )}
             >
-              <div className="flex flex-col flex-1 gap-1">
+              <div className="flex flex-col flex-1 gap-3">
                 <div className="flex justify-between">
-                  <div className="flex items-center text-lg gap-2">
-                    <TokenIcon address={a.source.contractAddress} />
-                    <h3 className="text-lg">
-                      {a.symbol}{' '}
-                      <small>
-                        ({truncateByChars(a.source.contractAddress)})
-                      </small>
-                    </h3>
-                  </div>
+                  <TokenHeader asset={a} />
                   <div className="text-right">
                     <Balance asset={a} />
                   </div>
@@ -374,9 +361,11 @@ const Approval = ({
   // No asset selected, show generic approval title
   if (!account) {
     return (
-      <TradingButton onClick={openDialog} size="small">
-        {t('Connect Ethereum wallet')}
-      </TradingButton>
+      <div className="pt-4 mt-4 border-t border-vega-clight-400 dark:border-vega-cdark-400">
+        <TradingButton onClick={openDialog} size="small">
+          {t('Connect Ethereum wallet')}
+        </TradingButton>
+      </div>
     );
   }
 
@@ -541,6 +530,23 @@ const SendDeposit = ({
           </span>
         </TradingButton>
       </form>
+    </div>
+  );
+};
+
+const TokenHeader = ({ asset }: { asset: AssetFieldsFragment }) => {
+  const isErc20 = isAssetTypeERC20(asset);
+  return (
+    <div className="flex items-center text-lg gap-2">
+      {isErc20 && <TokenIcon address={asset.source.contractAddress} />}
+      <h3 className="text-lg">
+        {asset.symbol}
+        {isErc20 && (
+          <small className="ml-1">
+            ({truncateByChars(asset.source.contractAddress)})
+          </small>
+        )}
+      </h3>
     </div>
   );
 };

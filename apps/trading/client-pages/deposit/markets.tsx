@@ -16,8 +16,8 @@ export const Markets = ({
 }) => {
   return (
     <div>
-      <p className="mb-1 text-xs text-muted">{t('Currently traded in')}</p>
-      <div className="flex gap-2">
+      <p className="mb-2 text-xs text-muted">{t('Currently traded in')}</p>
+      <div className="flex gap-4">
         {markets.length ? (
           markets.map((m) => {
             return <MarketCard key={m.id} market={m} />;
