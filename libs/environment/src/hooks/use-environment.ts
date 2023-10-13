@@ -521,10 +521,6 @@ function parseNetworks(value?: string) {
   return {};
 }
 
-function parseBoolean(value?: string) {
-  return ['true', '1', 'yes'].includes(value?.toLowerCase() || '');
-}
-
 /**
  * Provides a fallback ethereum provider url for test purposes in some apps
  */
