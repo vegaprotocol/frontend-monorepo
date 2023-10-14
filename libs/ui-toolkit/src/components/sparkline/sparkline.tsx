@@ -1,6 +1,6 @@
 import { extent } from 'd3-array';
 import { scaleLinear } from 'd3-scale';
-import { line } from 'd3-shape';
+import { area, line } from 'd3-shape';
 import isEqual from 'lodash/isEqual';
 import React from 'react';
 
@@ -62,12 +62,17 @@ export const SparklineView = ({
     preMarketData.push(marketData[0] as [number, number]);
   }
 
-  const xScale = scaleLinear().domain([0, points]).range([0, 100]);
-  const yScale = scaleLinear().domain([min, max]).range([100, 0]);
+  const xScale = scaleLinear().domain([0, points]).range([0, width]);
+  const yScale = scaleLinear().domain([min, max]).range([height, 0]);
 
   const lineSeries = line()
     .x((d) => xScale(d[0]))
     .y((d) => yScale(d[1]));
+
+  const areaSeries = area()
+    .x((d) => xScale(d[0]))
+    .y0(height)
+    .y1((d) => yScale(d[1]));
 
   // Get the color of the marketData line
   const [firstVal, lastVal] = [data[0], data[data.length - 1]];
@@ -80,6 +85,7 @@ export const SparklineView = ({
   // Create paths
   const preMarketCreationPath = lineSeries(preMarketData);
   const mainPath = lineSeries(marketData);
+  const shadedArea = areaSeries(marketData);
   const pathProps = {
     'data-testid': 'sparkline-path',
     className: `[vector-effect:non-scaling-stroke] ${strokeClassName}`,
@@ -101,6 +107,9 @@ export const SparklineView = ({
         <path {...pathProps} d={preMarketCreationPath} />
       )}
       {mainPath && <path {...pathProps} d={mainPath} />}
+      {shadedArea && (
+        <path fill="rgba(0,255,0,0.25)" stroke="none" d={shadedArea} />
+      )}
     </svg>
   );
 };
