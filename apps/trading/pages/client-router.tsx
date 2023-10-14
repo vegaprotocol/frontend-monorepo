@@ -96,6 +96,10 @@ export const routerConfig: RouteObject[] = compact([
         id: AppRoutes.MARKETS,
       },
       {
+        path: 'all',
+        element: <Navigate to="/markets" />,
+      },
+      {
         path: ':marketId',
         element: <MarketPage />,
         id: AppRoutes.MARKET,
