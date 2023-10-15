@@ -8,9 +8,15 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import type { TypedDataAgGrid } from '@vegaprotocol/datagrid';
 import { AgGrid } from '@vegaprotocol/datagrid';
-import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
+import {
+  CopyWithTooltip,
+  TooltipCellComponent,
+  VegaIcon,
+  VegaIconNames,
+  truncateMiddle,
+} from '@vegaprotocol/ui-toolkit';
 import type {
-  ColDef,
+  ColGroupDef,
   ITooltipParams,
   ValueFormatterParams,
 } from 'ag-grid-community';
@@ -24,9 +30,16 @@ const percentageFormatter = ({ value }: ValueFormatterParams) => {
   return formatNumberPercentage(new BigNumber(value).times(100), 2) || '-';
 };
 
-const numericalFormatter = ({ value }: ValueFormatterParams) => {
+const copyCellRenderer = ({ value }: { value?: string | null }) => {
   if (!value) return '-';
-  return new BigNumber(value).toFixed(2) || '-';
+  return (
+    <CopyWithTooltip data-testid="copy-to-clipboard" text={value}>
+      <button className="flex gap-1">
+        {truncateMiddle(value)}
+        <VegaIcon name={VegaIconNames.COPY} size={12} />
+      </button>
+    </CopyWithTooltip>
+  );
 };
 
 const dateValueFormatter = ({ value }: { value?: string | null }) => {
@@ -94,166 +107,173 @@ export const LiquidityTable = ({
       )}`;
     };
 
-    const defs: ColDef[] = [
+    const defs: ColGroupDef[] = [
       {
-        headerName: t('Party'),
-        field: 'partyId',
-        headerTooltip: t('The public key of the party making this commitment.'),
+        headerName: 'Party',
+        children: [
+          {
+            headerName: t('Party'),
+            field: 'partyId',
+            headerTooltip: t(
+              'The public key of the party making this commitment.'
+            ),
+            cellRenderer: copyCellRenderer,
+          },
+        ],
+      },
+      {
+        headerName: 'Commitment details',
+        marryChildren: true,
+        children: [
+          {
+            headerName: t(`Commitment (${symbol})`),
+            field: 'commitmentAmount',
+            type: 'rightAligned',
+            headerTooltip: t(
+              'The amount committed to the market by this liquidity provider.'
+            ),
+            valueFormatter: assetDecimalsQuantumFormatter,
+            tooltipValueGetter: assetDecimalsFormatter,
+          },
+          {
+            headerName: t('Obligation'),
+            field: 'commitmentAmount',
+            type: 'rightAligned',
+            headerTooltip: t(
+              `The liquidity provider's obligation to the market, calculated as the liquidity commitment amount multiplied by the value of the stake_to_ccy_volume network parameter to convert into units of liquidity volume. The obligation can be met by a combination of LP orders and limit orders on the order book.`
+            ),
+            valueFormatter: stakeToCcyVolumeQuantumFormatter,
+            tooltipValueGetter: stakeToCcyVolumeFormatter,
+            columnGroupShow: 'open',
+          },
+          {
+            headerName: t('Fee'),
+            headerTooltip: t(
+              'The fee percentage (per trade) proposed by each liquidity provider.'
+            ),
+            field: 'fee',
+            type: 'rightAligned',
+            valueFormatter: percentageFormatter,
+            columnGroupShow: 'open',
+          },
+          {
+            headerName: t('Adjusted stake share'),
+            field: 'feeShare.virtualStake',
+            type: 'rightAligned',
+            headerTooltip: t('The virtual stake of the liquidity provider.'),
+            columnGroupShow: 'open',
+            valueFormatter: assetDecimalsQuantumFormatter,
+            tooltipValueGetter: assetDecimalsFormatter,
+          },
+          {
+            headerName: t(`Share`),
+            field: 'feeShare.equityLikeShare',
+            type: 'rightAligned',
+            headerTooltip: t(
+              'The equity-like share of liquidity of the market used to determine allocation of LP fees. Calculated based on share of total liquidity, with a premium added for length of commitment.'
+            ),
+            valueFormatter: percentageFormatter,
+            columnGroupShow: 'open',
+          },
+        ],
+      },
+      {
+        headerName: 'Live liquidity details',
+        marryChildren: true,
+        children: [
+          {
+            headerName: t('Live supplied liquidity'),
+            field: 'balance',
+            type: 'rightAligned',
+            headerTooltip: t(
+              `The amount of liquidity volume supplied by the LP order in order to meet the obligation. If the obligation is already met in full by other limit orders from the same Vega key the LP order is not required and this value will be zero. Also note if the target stake for the market is less than the obligation the full value of the obligation may not be required.`
+            ),
+            valueFormatter: stakeToCcyVolumeQuantumFormatter,
+            tooltipValueGetter: stakeToCcyVolumeFormatter,
+            columnGroupShow: 'open',
+          },
+          {
+            headerName: t(`Live time fraction on book`),
+            field: 'sla.currentEpochFractionOfTimeOnBook',
+            type: 'rightAligned',
+            headerTooltip: t('Current epoch fraction of time on the book.'),
+            valueFormatter: percentageFormatter,
+          },
+          {
+            headerName: t('Live liquidity quality score (%)'),
+            field: 'feeShare.averageScore',
+            type: 'rightAligned',
+            headerTooltip: t('The average score of the liquidity provider.'),
+            valueFormatter: percentageFormatter,
+            columnGroupShow: 'open',
+          },
+        ],
+      },
+      {
+        headerName: 'Last epoch SLA details',
+        marryChildren: true,
+        children: [
+          {
+            headerName: t(`Last time fraction on the book`),
+            field: 'sla.lastEpochFractionOfTimeOnBook',
+            type: 'rightAligned',
+            headerTooltip: t('Last epoch fraction of time on the book.'),
+            valueFormatter: percentageFormatter,
+          },
+          {
+            headerName: t(`Last fee penalty`),
+            field: 'sla.lastEpochFeePenalty',
+            type: 'rightAligned',
+            headerTooltip: t('Last epoch fee penalty.'),
+            valueFormatter: percentageFormatter,
+            columnGroupShow: 'open',
+          },
+          {
+            headerName: t(`Last bond penalty`),
+            field: 'sla.lastEpochBondPenalty',
+            type: 'rightAligned',
+            headerTooltip: t('Last epoch bond penalty.'),
+            valueFormatter: percentageFormatter,
+            columnGroupShow: 'open',
+          },
+        ],
       },
       {
         headerName: t('Status'),
-        headerTooltip: t('The current status of this liquidity provision.'),
-        field: 'status',
-        valueFormatter: ({ value }) => {
-          if (!value) return value;
-          return LiquidityProvisionStatusMapping[
-            value as LiquidityProvisionStatus
-          ];
-        },
-      },
-      {
-        headerName: t(`Commitment (${symbol})`),
-        field: 'commitmentAmount',
-        type: 'rightAligned',
-        headerTooltip: t(
-          'The amount committed to the market by this liquidity provider.'
-        ),
-        valueFormatter: assetDecimalsQuantumFormatter,
-        tooltipValueGetter: assetDecimalsFormatter,
-      },
-      {
-        headerName: t('Market valuation at entry'),
-        field: 'feeShare.averageEntryValuation',
-        type: 'rightAligned',
-        headerTooltip: t(
-          'The valuation of the market at the time the liquidity commitment was made. Commitments made at a lower valuation earlier in the lifetime of the market would be expected to have a higher equity-like share if the market has grown. If a commitment is amended, value will reflect the average of the market valuations across the lifetime of the commitment.'
-        ),
-        valueFormatter: assetDecimalsQuantumFormatter,
-        tooltipValueGetter: assetDecimalsFormatter,
-      },
-      {
-        headerName: t('Average score'),
-        field: 'feeShare.averageScore',
-        type: 'rightAligned',
-        headerTooltip: t('The average score of the liquidity provider.'),
-        valueFormatter: numericalFormatter,
-      },
-      {
-        headerName: t('Virtual stake'),
-        field: 'feeShare.virtualStake',
-        type: 'rightAligned',
-        headerTooltip: t('The virtual stake of the liquidity provider.'),
-        valueFormatter: assetDecimalsQuantumFormatter,
-        tooltipValueGetter: assetDecimalsFormatter,
-      },
-      {
-        headerName: t('Obligation'),
-        field: 'commitmentAmount',
-        type: 'rightAligned',
-        headerTooltip: t(
-          `The liquidity provider's obligation to the market, calculated as the liquidity commitment amount multiplied by the value of the stake_to_ccy_volume network parameter to convert into units of liquidity volume. The obligation can be met by a combination of LP orders and limit orders on the order book.`
-        ),
-        valueFormatter: stakeToCcyVolumeQuantumFormatter,
-        tooltipValueGetter: stakeToCcyVolumeFormatter,
-      },
-      {
-        headerName: t('Supplied'),
-        field: 'balance',
-        type: 'rightAligned',
-        headerTooltip: t(
-          `The amount of liquidity volume supplied by the LP order in order to meet the obligation. If the obligation is already met in full by other limit orders from the same Vega key the LP order is not required and this value will be zero. Also note if the target stake for the market is less than the obligation the full value of the obligation may not be required.`
-        ),
-        valueFormatter: stakeToCcyVolumeQuantumFormatter,
-        tooltipValueGetter: stakeToCcyVolumeFormatter,
-      },
-      {
-        headerName: t(`(Current) Fraction on the book`),
-        field: 'sla.currentEpochFractionOfTimeOnBook',
-        type: 'rightAligned',
-        headerTooltip: t('Current epoch fraction of time on the book.'),
-        valueFormatter: percentageFormatter,
-      },
-      {
-        headerName: t(`(Last) Fraction on the book`),
-        field: 'sla.lastEpochFractionOfTimeOnBook',
-        type: 'rightAligned',
-        headerTooltip: t('Last epoch fraction of time on the book.'),
-        valueFormatter: percentageFormatter,
-      },
-      {
-        headerName: t(`(Last) Fee penalty`),
-        field: 'sla.lastEpochFeePenalty',
-        type: 'rightAligned',
-        headerTooltip: t('Last epoch fee penalty.'),
-        valueFormatter: percentageFormatter,
-      },
-      {
-        headerName: t(`(Last) Bond penalty`),
-        field: 'sla.lastEpochBondPenalty',
-        type: 'rightAligned',
-        headerTooltip: t('Last epoch bond penalty.'),
-        valueFormatter: percentageFormatter,
-      },
-      // {
-      //   headerName: t(`Hysteresis period fee penalties`),
-      //   field: 'sla.hysteresisPeriodFeePenalties[0]',
-      //   type: 'rightAligned',
-      //   headerTooltip: t('Hysteresis period fee penalties.'),
-      //   valueFormatter: percentageFormatter,
-      // },
-      // {
-      //   headerName: t(`Required liquidity`),
-      //   field: 'sla.requiredLiquidity',
-      //   type: 'rightAligned',
-      //   headerTooltip: t('Required liquidity.'),
-      // },
-      // {
-      //   headerName: t(`Buys (Notional volume)`),
-      //   field: 'sla.notionalVolumeBuys',
-      //   type: 'rightAligned',
-      //   headerTooltip: t('Notional volume buys.'),
-      // },
-      // {
-      //   headerName: t(`Sells (Notional volume)`),
-      //   field: 'sla.notionalVolumeSells',
-      //   type: 'rightAligned',
-      //   headerTooltip: t('Notional volume sells.'),
-      // },
-      {
-        headerName: t(`Share`),
-        field: 'feeShare.equityLikeShare',
-        type: 'rightAligned',
-        headerTooltip: t(
-          'The equity-like share of liquidity of the market used to determine allocation of LP fees. Calculated based on share of total liquidity, with a premium added for length of commitment.'
-        ),
-        valueFormatter: percentageFormatter,
-      },
-      {
-        headerName: t('Proposed fee'),
-        headerTooltip: t(
-          'The fee percentage (per trade) proposed by each liquidity provider.'
-        ),
-        field: 'fee',
-        type: 'rightAligned',
-        valueFormatter: percentageFormatter,
-      },
-      {
-        headerName: t('Created'),
-        headerTooltip: t(
-          'The date and time this liquidity provision was created.'
-        ),
-        field: 'createdAt',
-        type: 'rightAligned',
-        valueFormatter: dateValueFormatter,
-      },
-      {
-        headerName: t('Updated'),
-        headerTooltip: t(
-          'The date and time this liquidity provision was last updated.'
-        ),
-        field: 'updatedAt',
-        type: 'rightAligned',
-        valueFormatter: dateValueFormatter,
+        marryChildren: true,
+        children: [
+          {
+            headerName: t('Status'),
+            headerTooltip: t('The current status of this liquidity provision.'),
+            field: 'status',
+            valueFormatter: ({ value }) => {
+              if (!value) return value;
+              return LiquidityProvisionStatusMapping[
+                value as LiquidityProvisionStatus
+              ];
+            },
+          },
+          {
+            headerName: t('Created'),
+            headerTooltip: t(
+              'The date and time this liquidity provision was created.'
+            ),
+            field: 'createdAt',
+            type: 'rightAligned',
+            valueFormatter: dateValueFormatter,
+            columnGroupShow: 'open',
+          },
+          {
+            headerName: t('Updated'),
+            headerTooltip: t(
+              'The date and time this liquidity provision was last updated.'
+            ),
+            field: 'updatedAt',
+            type: 'rightAligned',
+            valueFormatter: dateValueFormatter,
+            columnGroupShow: 'open',
+          },
+        ],
       },
     ];
     return defs;

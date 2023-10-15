@@ -43,22 +43,16 @@ describe('LiquidityTable', () => {
       h.querySelector('[ref="eText"]')?.textContent?.trim()
     );
     const expectedHeaders = [
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
       'Party',
-      'Status',
       'Commitment ()',
-      'Market valuation at entry',
-      'Average score',
-      'Virtual stake',
-      'Obligation',
-      'Supplied',
-      '(Current) Fraction on the book',
-      '(Last) Fraction on the book',
-      '(Last) Fee penalty',
-      '(Last) Bond penalty',
-      'Share',
-      'Proposed fee',
-      'Created',
-      'Updated',
+      'Live time fraction on book',
+      'Last time fraction on the book',
+      'Status',
     ];
     expect(headers).toHaveLength(expectedHeaders.length);
     expect(headerTexts).toEqual(expectedHeaders);
