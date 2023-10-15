@@ -130,7 +130,10 @@ describe('<ProposalReferralProgramDetails />', () => {
       terms: {
         change: {
           __typename: 'UpdateReferralProgram',
-          changes: {},
+          windowLength: 3,
+          endOfProgram: '2026-10-03T10:34:34Z',
+          benefitTiers: [],
+          stakingTiers: [],
         },
       },
     });
