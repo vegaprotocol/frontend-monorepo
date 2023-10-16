@@ -4,18 +4,6 @@ import { SELL_CLASS, TradesTable, BUY_CLASS } from './trades-table';
 import type { Trade } from './trades-data-provider';
 import { Side } from '@vegaprotocol/types';
 
-const timezoneMock = function (zone: string) {
-  const DateTimeFormat = Intl.DateTimeFormat;
-  jest.spyOn(global.Intl, 'DateTimeFormat').mockImplementation(
-    (locale, options) =>
-      new DateTimeFormat(locale, {
-        ...options,
-        hour12: false,
-        timeZone: zone,
-      })
-  );
-};
-
 const trade: Trade = {
   __typename: 'Trade',
   id: 'trade-id',
@@ -32,7 +20,32 @@ const trade: Trade = {
 };
 
 describe('TradesTable', () => {
-  timezoneMock('Europe/London');
+  let originalIntlDateTimeFormat: typeof Intl.DateTimeFormat;
+
+  beforeAll(() => {
+    // Save the original Intl.DateTimeFormat to restore it later
+    originalIntlDateTimeFormat = global.Intl.DateTimeFormat;
+
+    // Create a timezone mock
+    const timezoneMock = function (zone: string) {
+      const DateTimeFormat = originalIntlDateTimeFormat;
+      jest.spyOn(global.Intl, 'DateTimeFormat').mockImplementation(
+        (locale, options) =>
+          new DateTimeFormat(locale, {
+            ...options,
+            hour12: false,
+            timeZone: zone,
+          })
+      );
+    };
+
+    timezoneMock('Europe/London');
+  });
+
+  afterAll(() => {
+    // Restore the original Intl.DateTimeFormat
+    global.Intl.DateTimeFormat = originalIntlDateTimeFormat;
+  });
   it('should render correct columns', async () => {
     await act(async () => {
       render(<TradesTable rowData={[trade]} />);
