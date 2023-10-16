@@ -1,4 +1,5 @@
 * @vegaprotocol/frontend
 *.cy.* @vegaprotocol/frontend-qa
 *.spec.* @vegaprotocol/frontend-qa
+*.mock.* @vegaprotocol/frontend-qa
 *.graphql @vegaprotocol/core
