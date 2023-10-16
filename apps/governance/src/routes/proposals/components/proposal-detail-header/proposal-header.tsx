@@ -263,7 +263,10 @@ const NewTransferSummary = ({ proposalId }: { proposalId?: string | null }) => {
   return (
     <span>
       {GovernanceTransferKindMapping[details.kind.__typename]}{' '}
-      {t('transfer from')} <Lozenge>{truncateMiddle(details.source)}</Lozenge>{' '}
+      {t('transfer from')}{' '}
+      <Lozenge>
+        {truncateMiddle(details.source) || t(details.sourceType)}
+      </Lozenge>{' '}
       {t('to')} <Lozenge>{truncateMiddle(details.destination)}</Lozenge>
     </span>
   );
