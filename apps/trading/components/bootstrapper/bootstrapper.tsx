@@ -1,37 +1,28 @@
 import type { InMemoryCacheConfig } from '@apollo/client';
 import {
   AppFailure,
+  AppLoader,
   DocsLinks,
   NetworkLoader,
+  NodeFailure,
   NodeGuard,
   useEnvironment,
 } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
-import { MaintenancePage } from '@vegaprotocol/ui-toolkit';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
-import dynamic from 'next/dynamic';
 import type { ReactNode } from 'react';
 import { Web3Provider } from './web3-provider';
 
-export const DynamicLoader = dynamic(() => import('../preloader/preloader'), {
-  loading: () => <>Loading...</>,
-});
-
-export const AppLoader = ({ children }: { children: ReactNode }) => {
+export const Bootstrapper = ({ children }: { children: ReactNode }) => {
   const {
     error,
     VEGA_URL,
     VEGA_ENV,
     VEGA_WALLET_URL,
     VEGA_EXPLORER_URL,
-    MAINTENANCE_PAGE,
     MOZILLA_EXTENSION_URL,
     CHROME_EXTENSION_URL,
   } = useEnvironment();
-
-  if (MAINTENANCE_PAGE) {
-    return <MaintenancePage />;
-  }
 
   if (
     !VEGA_URL ||
@@ -41,22 +32,27 @@ export const AppLoader = ({ children }: { children: ReactNode }) => {
     !MOZILLA_EXTENSION_URL ||
     !DocsLinks
   ) {
-    return null;
+    return <AppLoader />;
   }
 
   return (
     <NetworkLoader
       cache={cacheConfig}
-      skeleton={<DynamicLoader />}
+      skeleton={<AppLoader />}
       failure={
         <AppFailure title={t('Could not initialize app')} error={error} />
       }
     >
       <NodeGuard
-        skeleton={<DynamicLoader />}
-        failure={<AppFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
+        skeleton={<AppLoader />}
+        failure={<NodeFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
       >
-        <Web3Provider>
+        <Web3Provider
+          skeleton={<AppLoader />}
+          failure={
+            <AppFailure title={t(`Could not configure web3 provider`)} />
+          }
+        >
           <VegaWalletProvider
             config={{
               network: VEGA_ENV,

@@ -30,11 +30,8 @@ export const Loader = ({ size = 'large', forceTheme }: LoaderProps) => {
   const generate = useMemo(() => pseudoRandom(1), []);
 
   return (
-    <div
-      className="flex flex-col items-center pre-loader-center"
-      data-testid="loader"
-    >
-      <div className={`${wrapperClasses} flex flex-wrap pre-loader-wrapper`}>
+    <div className="flex flex-col items-center" data-testid="loader">
+      <div className={`${wrapperClasses} flex flex-wrap`}>
         {new Array(items).fill(null).map((_, i) => {
           return (
             <div

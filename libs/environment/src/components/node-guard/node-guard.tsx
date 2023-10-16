@@ -11,11 +11,10 @@ export const NodeGuard = ({
   skeleton: ReactNode;
 }) => {
   const { data, error, loading } = useNodeGuardQuery();
-  const wrapperClasses =
-    'h-full min-h-screen flex items-center justify-center text-black dark:text-white';
 
   if (loading) {
-    return <div className={wrapperClasses}>{skeleton}</div>;
+    // eslint-disable-next-line
+    return <>{skeleton}</>;
   }
 
   // It is possible for nodes to have a functioning datanode, but not return
@@ -23,9 +22,10 @@ export const NodeGuard = ({
   const netParamEdges = data?.networkParametersConnection.edges;
 
   if (error || !netParamEdges || !netParamEdges.length) {
-    return <div className={wrapperClasses}>{failure}</div>;
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{failure}</>;
   }
 
-  // eslint-disable-next-line
+  // eslint-disable-next-line react/jsx-no-useless-fragment
   return <>{children}</>;
 };
