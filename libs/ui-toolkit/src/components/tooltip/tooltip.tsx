@@ -53,7 +53,10 @@ export const Tooltip = ({
               className={tooltipContentClasses}
               sideOffset={sideOffset}
             >
-              <div className="relative z-0" data-testid="tooltip-content">
+              <div
+                className="relative z-0 break-words"
+                data-testid="tooltip-content"
+              >
                 {description}
               </div>
             </Content>

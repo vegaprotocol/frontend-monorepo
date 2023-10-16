@@ -10,6 +10,7 @@ import type { TypedDataAgGrid } from '@vegaprotocol/datagrid';
 import { AgGrid } from '@vegaprotocol/datagrid';
 import {
   CopyWithTooltip,
+  Tooltip,
   TooltipCellComponent,
   VegaIcon,
   VegaIconNames,
@@ -24,6 +25,7 @@ import BigNumber from 'bignumber.js';
 import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
 import type { LiquidityProvisionData } from './liquidity-data-provider';
+import { ToolPanelComponent } from 'ag-grid-community/dist/lib/components/framework/componentTypes';
 
 const percentageFormatter = ({ value }: ValueFormatterParams) => {
   if (!value) return '-';
@@ -35,7 +37,9 @@ const copyCellRenderer = ({ value }: { value?: string | null }) => {
   return (
     <CopyWithTooltip data-testid="copy-to-clipboard" text={value}>
       <button className="flex gap-1">
-        {truncateMiddle(value)}
+        <Tooltip description={value}>
+          <span className="break-words">{truncateMiddle(value)}</span>
+        </Tooltip>
         <VegaIcon name={VegaIconNames.COPY} size={12} />
       </button>
     </CopyWithTooltip>

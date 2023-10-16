@@ -1,10 +1,7 @@
 import merge from 'lodash/merge';
 import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
-import type {
-  LiquidityProviderFeeShareQuery,
-  LiquidityProvisionsQuery,
-} from './__generated__/MarketLiquidity';
+import type { LiquidityProvisionsQuery } from './__generated__/MarketLiquidity';
 import type { LiquidityProvisionFieldsFragment } from './__generated__/MarketLiquidity';
 
 export const liquidityProvisionsQuery = (
@@ -21,45 +18,6 @@ export const liquidityProvisionsQuery = (
           };
         }),
       },
-    },
-  };
-  return merge(defaultResult, override);
-};
-
-export const liquidityProviderFeeShareQuery = (
-  override?: PartialDeep<LiquidityProviderFeeShareQuery>
-): LiquidityProviderFeeShareQuery => {
-  const defaultResult: LiquidityProviderFeeShareQuery = {
-    market: {
-      id: 'market-0',
-      data: {
-        market: {
-          id: 'market-0',
-          __typename: 'Market',
-        },
-        liquidityProviderFeeShare: [
-          {
-            party: {
-              id: '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
-              __typename: 'Party',
-            },
-            equityLikeShare: '1',
-            averageEntryValuation: '68585293691.5598054356207737',
-            __typename: 'LiquidityProviderFeeShare',
-          },
-          {
-            party: {
-              id: 'cc464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
-              __typename: 'Party',
-            },
-            equityLikeShare: '1',
-            averageEntryValuation: '68585293691.5598054356207737',
-            __typename: 'LiquidityProviderFeeShare',
-          },
-        ],
-        __typename: 'MarketData',
-      },
-      __typename: 'Market',
     },
   };
   return merge(defaultResult, override);
