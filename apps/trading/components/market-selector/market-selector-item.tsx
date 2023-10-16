@@ -56,6 +56,7 @@ const MarketData = ({
     variables: {
       marketId: market.id,
     },
+    fetchPolicy: 'no-cache',
   });
 
   const marketData = data?.marketsData[0];

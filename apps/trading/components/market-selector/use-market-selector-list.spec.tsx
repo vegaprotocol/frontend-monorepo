@@ -4,7 +4,10 @@ import { useMarketSelectorList } from './use-market-selector-list';
 import { isMarketActive } from '../../lib/utils';
 import { Product } from './product-selector';
 import { Sort } from './sort-dropdown';
-import { createMarketFragment } from '@vegaprotocol/mock';
+import {
+  createMarketFragment,
+  createMarketsDataFragment,
+} from '@vegaprotocol/mock';
 import { MarketState } from '@vegaprotocol/types';
 import { useMarketList } from '@vegaprotocol/markets';
 import type { Filter } from './market-selector';
@@ -31,22 +34,40 @@ describe('useMarketSelectorList', () => {
 
   it('returns all markets active and suspended markets', () => {
     const markets = [
-      createMarketFragment({ id: 'market-0' }),
+      createMarketFragment({
+        id: 'market-0',
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
+      }),
       createMarketFragment({
         id: 'market-1',
-        state: MarketState.STATE_SUSPENDED,
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_SUSPENDED,
+        }),
       }),
       createMarketFragment({
         id: 'market-2',
-        state: MarketState.STATE_CLOSED,
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_CLOSED,
+        }),
       }),
       createMarketFragment({
         id: 'market-3',
-        state: MarketState.STATE_CLOSED,
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_CLOSED,
+        }),
       }),
       createMarketFragment({
         id: 'market-4',
-        state: MarketState.STATE_PENDING,
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_PENDING,
+        }),
       }),
     ];
     mockUseMarketList.mockReturnValue({
@@ -56,7 +77,8 @@ describe('useMarketSelectorList', () => {
     });
     const { result } = setup();
     const expectedFilteredMarkets = markets.filter((m) =>
-      isMarketActive(m.state)
+      // @ts-ignore candles get joined outside this type
+      isMarketActive(m.data.marketState)
     );
     expect(result.current).toEqual({
       data: markets,
@@ -70,6 +92,10 @@ describe('useMarketSelectorList', () => {
     const markets = [
       createMarketFragment({
         id: 'market-0',
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         tradableInstrument: {
           instrument: {
             product: {
@@ -90,6 +116,10 @@ describe('useMarketSelectorList', () => {
       // }),
       createMarketFragment({
         id: 'market-2',
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         tradableInstrument: {
           instrument: {
             product: {
@@ -135,6 +165,10 @@ describe('useMarketSelectorList', () => {
     const markets = [
       createMarketFragment({
         id: 'market-0',
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         tradableInstrument: {
           instrument: {
             product: {
@@ -148,6 +182,10 @@ describe('useMarketSelectorList', () => {
       }),
       createMarketFragment({
         id: 'market-1',
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         tradableInstrument: {
           instrument: {
             product: {
@@ -161,6 +199,10 @@ describe('useMarketSelectorList', () => {
       }),
       createMarketFragment({
         id: 'market-2',
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         tradableInstrument: {
           instrument: {
             product: {
@@ -174,6 +216,10 @@ describe('useMarketSelectorList', () => {
       }),
       createMarketFragment({
         id: 'market-3',
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         tradableInstrument: {
           instrument: {
             product: {
@@ -238,6 +284,10 @@ describe('useMarketSelectorList', () => {
     const markets = [
       createMarketFragment({
         id: 'market-0',
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         tradableInstrument: {
           instrument: {
             code: 'abc',
@@ -247,6 +297,10 @@ describe('useMarketSelectorList', () => {
       }),
       createMarketFragment({
         id: 'market-1',
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         tradableInstrument: {
           instrument: {
             code: 'def',
@@ -256,6 +310,10 @@ describe('useMarketSelectorList', () => {
       }),
       createMarketFragment({
         id: 'market-2',
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         tradableInstrument: {
           instrument: {
             code: 'defg',
@@ -265,6 +323,10 @@ describe('useMarketSelectorList', () => {
       }),
       createMarketFragment({
         id: 'market-3',
+        // @ts-ignore candles get joined outside this type
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         tradableInstrument: {
           instrument: {
             code: 'ggg',
@@ -333,11 +395,11 @@ describe('useMarketSelectorList', () => {
     const markets = [
       createMarketFragment({
         id: 'market-0',
-        state: MarketState.STATE_ACTIVE,
         // @ts-ignore data not on fragment
-        data: {
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
           markPrice: '1',
-        },
+        }),
         // @ts-ignore candles not on fragment
         candles: [
           {
@@ -349,9 +411,10 @@ describe('useMarketSelectorList', () => {
         id: 'market-1',
         state: MarketState.STATE_ACTIVE,
         // @ts-ignore data not on fragment
-        data: {
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
           markPrice: '1',
-        },
+        }),
         // @ts-ignore candles not on fragment
         candles: [
           {
@@ -363,9 +426,10 @@ describe('useMarketSelectorList', () => {
         id: 'market-2',
         state: MarketState.STATE_ACTIVE,
         // @ts-ignore data not on fragment
-        data: {
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
           markPrice: '1',
-        },
+        }),
         // @ts-ignore candles not on fragment
         candles: [
           {
@@ -377,9 +441,10 @@ describe('useMarketSelectorList', () => {
         id: 'market-3',
         state: MarketState.STATE_ACTIVE,
         // @ts-ignore data not on fragment
-        data: {
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
           markPrice: '1',
-        },
+        }),
         // @ts-ignore candles not on fragment
         candles: [
           {
@@ -414,6 +479,10 @@ describe('useMarketSelectorList', () => {
     const markets = [
       createMarketFragment({
         id: 'market-0',
+        // @ts-ignore data not on fragment
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         // @ts-ignore actual fragment doesn't contain candles and is joined later
         candles: [
           {
@@ -426,6 +495,10 @@ describe('useMarketSelectorList', () => {
       }),
       createMarketFragment({
         id: 'market-1',
+        // @ts-ignore data not on fragment
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         // @ts-ignore actual fragment doesn't contain candles and is joined later
         candles: [
           {
@@ -438,6 +511,10 @@ describe('useMarketSelectorList', () => {
       }),
       createMarketFragment({
         id: 'market-2',
+        // @ts-ignore data not on fragment
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         // @ts-ignore actual fragment doesn't contain candles and is joined later
         candles: [
           {
@@ -482,18 +559,30 @@ describe('useMarketSelectorList', () => {
     const markets = [
       createMarketFragment({
         id: 'market-0',
+        // @ts-ignore data not on fragment
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         marketTimestamps: {
           open: subDays(new Date(), 3).toISOString(),
         },
       }),
       createMarketFragment({
         id: 'market-1',
+        // @ts-ignore data not on fragment
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         marketTimestamps: {
           open: subDays(new Date(), 1).toISOString(),
         },
       }),
       createMarketFragment({
         id: 'market-2',
+        // @ts-ignore data not on fragment
+        data: createMarketsDataFragment({
+          marketState: MarketState.STATE_ACTIVE,
+        }),
         marketTimestamps: {
           open: subDays(new Date(), 2).toISOString(),
         },
