@@ -30,6 +30,8 @@ export const useProposalNetworkParams = ({
     NetworkParams.governance_proposal_freeform_requiredParticipation,
     NetworkParams.governance_proposal_VolumeDiscountProgram_requiredMajority,
     NetworkParams.governance_proposal_VolumeDiscountProgram_requiredParticipation,
+    NetworkParams.governance_proposal_transfer_requiredParticipation,
+    NetworkParams.governance_proposal_transfer_requiredMajority,
   ]);
 
   const fallback = {
@@ -109,6 +111,14 @@ export const useProposalNetworkParams = ({
           params.governance_proposal_VolumeDiscountProgram_requiredMajority,
         requiredParticipation: new BigNumber(
           params.governance_proposal_VolumeDiscountProgram_requiredParticipation
+        ),
+      };
+    case 'NewTransfer':
+    case 'CancelTransfer':
+      return {
+        requiredMajority: params.governance_proposal_transfer_requiredMajority,
+        requiredParticipation: new BigNumber(
+          params.governance_proposal_transfer_requiredParticipation
         ),
       };
     default:
