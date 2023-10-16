@@ -118,7 +118,7 @@ describe('TradesTable', () => {
     );
 
     const [firstDateCell, secondDateCell] = createdAtCells;
-    expect(firstDateCell.textContent).toBe('18:59:00');
-    expect(secondDateCell.textContent).toBe('19:00:00');
+    expect(firstDateCell).toHaveTextContent('18:59:00');
+    expect(secondDateCell).toHaveTextContent('19:00:00');
   });
 });
