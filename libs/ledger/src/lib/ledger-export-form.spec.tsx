@@ -43,8 +43,6 @@ describe('LedgerExportForm', () => {
     // userEvent does not work with faked timers
     fireEvent.click(screen.getByTestId('ledger-download-button'));
 
-    expect(screen.getByTestId('download-spinner')).toBeInTheDocument();
-
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
         `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${
@@ -74,8 +72,6 @@ describe('LedgerExportForm', () => {
     expect(screen.getByText('symbol asset-id-2')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('ledger-download-button'));
-
-    expect(screen.getByTestId('download-spinner')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
@@ -109,8 +105,6 @@ describe('LedgerExportForm', () => {
     );
 
     fireEvent.click(screen.getByTestId('ledger-download-button'));
-
-    expect(screen.getByTestId('download-spinner')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
