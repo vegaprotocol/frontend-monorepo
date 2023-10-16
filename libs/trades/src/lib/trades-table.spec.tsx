@@ -4,6 +4,18 @@ import { SELL_CLASS, TradesTable, BUY_CLASS } from './trades-table';
 import type { Trade } from './trades-data-provider';
 import { Side } from '@vegaprotocol/types';
 
+const timezoneMock = function (zone: string) {
+  const DateTimeFormat = Intl.DateTimeFormat;
+  jest.spyOn(global.Intl, 'DateTimeFormat').mockImplementation(
+    (locale, options) =>
+      new DateTimeFormat(locale, {
+        ...options,
+        hour12: false,
+        timeZone: zone,
+      })
+  );
+};
+
 const trade: Trade = {
   __typename: 'Trade',
   id: 'trade-id',
@@ -79,8 +91,8 @@ describe('TradesTable', () => {
   });
 
   it('should be in created at desc order', async () => {
-    // 6005-THIS-005
-    // 6005-THIS-006
+    timezoneMock('Europe/London');
+
     const earlierDate = new Date(trade.createdAt);
     earlierDate.setMinutes(earlierDate.getMinutes() - 1);
     const trade2 = {
@@ -96,15 +108,12 @@ describe('TradesTable', () => {
     });
 
     const cells = screen.getAllByRole('gridcell');
-
     const createdAtCells = cells.filter(
       (cell) => cell.getAttribute('col-id') === 'createdAt'
     );
 
     const [firstDateCell, secondDateCell] = createdAtCells;
-
-    // Compare the times as strings
-    expect(firstDateCell.textContent).toBe('6:59:00 PM');
-    expect(secondDateCell.textContent).toBe('7:00:00 PM');
+    expect(firstDateCell.textContent).toBe('18:59:00');
+    expect(secondDateCell.textContent).toBe('19:00:00');
   });
 });

@@ -363,12 +363,12 @@ describe('Closed', () => {
     const container = within(
       document.querySelector('.ag-center-cols-container') as HTMLElement
     );
-    const cell = container.getAllByRole('gridcell', {
-      name: (_name, element) => element.getAttribute('col-id') === 'code',
-    })[0];
 
-    expect(within(cell).getByTestId('stack-cell-secondary')).toHaveTextContent(
-      'PRNT'
-    );
+    const cells = await container.findAllByRole('gridcell');
+    const cell = cells.find((el) => el.getAttribute('col-id') === 'code');
+
+    expect(
+      within(cell as HTMLElement).getByTestId('stack-cell-secondary')
+    ).toHaveTextContent('PRNT');
   });
 });
