@@ -25,7 +25,6 @@ import BigNumber from 'bignumber.js';
 import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
 import type { LiquidityProvisionData } from './liquidity-data-provider';
-import { ToolPanelComponent } from 'ag-grid-community/dist/lib/components/framework/componentTypes';
 
 const percentageFormatter = ({ value }: ValueFormatterParams) => {
   if (!value) return '-';
