@@ -9,10 +9,9 @@ import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid } from './trade-grid';
 import { TradePanels } from './trade-panels';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Links, Routes } from '../../lib/links';
+import { Links } from '../../lib/links';
 import { ViewType, useSidebar } from '../../components/sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
-import { MarketState } from '@vegaprotocol/types';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -57,7 +56,7 @@ const TitleUpdater = ({
   return null;
 };
 
-export const MarketPage = ({ closed }: { closed?: boolean }) => {
+export const MarketPage = () => {
   const { marketId } = useParams();
   const navigate = useNavigate();
   const currentRouteId = useGetCurrentRouteId();
@@ -71,24 +70,10 @@ export const MarketPage = ({ closed }: { closed?: boolean }) => {
   const { data, loading } = useMarket(marketId);
 
   useEffect(() => {
-    if (
-      data?.state &&
-      [
-        MarketState.STATE_SETTLED,
-        MarketState.STATE_TRADING_TERMINATED,
-      ].includes(data.state) &&
-      currentRouteId !== Routes.CLOSED_MARKETS &&
-      marketId
-    ) {
-      navigate(Links.CLOSED_MARKETS(marketId));
-    }
-  }, [data?.state, currentRouteId, navigate, marketId]);
-
-  useEffect(() => {
     if (data?.id && data.id !== lastMarketId && !closed) {
       update({ marketId: data.id });
     }
-  }, [update, lastMarketId, data?.id, closed]);
+  }, [update, lastMarketId, data?.id]);
 
   useEffect(() => {
     if (largeScreen && view === undefined) {
@@ -97,7 +82,7 @@ export const MarketPage = ({ closed }: { closed?: boolean }) => {
         currentRouteId
       );
     }
-  }, [setViews, view, currentRouteId, largeScreen, closed]);
+  }, [setViews, view, currentRouteId, largeScreen]);
 
   const pinnedAsset = data && getAsset(data);
 

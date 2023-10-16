@@ -1,5 +1,5 @@
 import type { RouteObject } from 'react-router-dom';
-import { Navigate, Outlet, useRoutes } from 'react-router-dom';
+import { Navigate, useRoutes } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
@@ -13,7 +13,7 @@ import { Assets } from '../client-pages/assets';
 import { Deposit } from '../client-pages/deposit';
 import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
-import { Routes } from '../lib/links';
+import { Routes as AppRoutes } from '../lib/links';
 import { LayoutWithSky } from '../client-pages/referrals/layout';
 import { Referrals } from '../client-pages/referrals/referrals';
 import { ReferralStatistics } from '../client-pages/referrals/referral-statistics';
@@ -22,11 +22,15 @@ import { CreateCodeContainer } from '../client-pages/referrals/create-code-form'
 import { NotFound as ReferralNotFound } from '../client-pages/referrals/error-boundary';
 import { compact } from 'lodash';
 import { FLAGS } from '@vegaprotocol/environment';
+import { LiquidityHeader } from '../components/liquidity-header';
+import { MarketHeader } from '../components/market-header';
+import { PortfolioSidebar } from '../client-pages/portfolio/portfolio-sidebar';
+import { LiquiditySidebar } from '../client-pages/liquidity/liquidity-sidebar';
+import { MarketsSidebar } from '../client-pages/markets/markets-sidebar';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
 const MarketPage = lazy(() => import('../client-pages/market'));
-const ClosedMarketPage = lazy(() => import('../client-pages/closed-market'));
 const Portfolio = lazy(() => import('../client-pages/portfolio'));
 
 const NotFound = () => (
@@ -36,18 +40,21 @@ const NotFound = () => (
 );
 
 export const routerConfig: RouteObject[] = compact([
-  // Pages that don't use the LayoutWithSidebar must come first
-  // to ensure they are matched before the catch all route '/*'
+  {
+    index: true,
+    element: <Home />,
+    id: AppRoutes.HOME,
+  },
   {
     path: 'disclaimer',
     element: <LayoutCentered />,
-    id: Routes.DISCLAIMER,
+    id: AppRoutes.DISCLAIMER,
     children: [{ index: true, element: <Disclaimer /> }],
   },
   // Referrals routing (the pages should be available if the feature flag is on)
   FLAGS.REFERRALS
     ? {
-        path: Routes.REFERRALS,
+        path: AppRoutes.REFERRALS,
         element: <LayoutWithSky />,
         children: [
           {
@@ -58,11 +65,11 @@ export const routerConfig: RouteObject[] = compact([
                 element: <ReferralStatistics />,
               },
               {
-                path: Routes.REFERRALS_CREATE_CODE,
+                path: AppRoutes.REFERRALS_CREATE_CODE,
                 element: <CreateCodeContainer />,
               },
               {
-                path: Routes.REFERRALS_APPLY_CODE,
+                path: AppRoutes.REFERRALS_APPLY_CODE,
                 element: <ApplyCodeForm />,
               },
             ],
@@ -74,74 +81,73 @@ export const routerConfig: RouteObject[] = compact([
         ],
       }
     : undefined,
-  // All other pages will use the sidebar
   {
-    path: '/*',
-    element: <LayoutWithSidebar />,
+    path: 'markets/*',
+    element: (
+      <LayoutWithSidebar
+        header={<MarketHeader />}
+        sidebar={<MarketsSidebar />}
+      />
+    ),
     children: [
       {
         index: true,
-        element: <Home />,
-        id: Routes.HOME,
+        element: <MarketsPage />,
+        id: AppRoutes.MARKETS,
       },
       {
-        path: 'markets',
-        element: <Outlet />,
-        children: [
-          {
-            index: true,
-            element: <Navigate to="all" />,
-          },
-          {
-            path: 'all',
-            element: <MarketsPage />,
-            id: Routes.MARKETS,
-          },
-          {
-            path: ':marketId',
-            element: <MarketPage />,
-            id: Routes.MARKET,
-          },
-          {
-            path: 'all/closed/:marketId',
-            element: <ClosedMarketPage />,
-            id: Routes.CLOSED_MARKETS,
-          },
-        ],
+        path: 'all',
+        element: <Navigate to="/markets" />,
       },
       {
-        path: 'portfolio',
-        element: <Outlet />,
-        children: [
-          {
-            index: true,
-            element: <Portfolio />,
-            id: Routes.PORTFOLIO,
-          },
-          {
-            path: 'assets',
-            element: <Assets />,
-            id: Routes.ASSETS,
-            children: [
-              { index: true, element: <Navigate to="deposit" /> },
-              { path: 'deposit', element: <Deposit />, id: Routes.DEPOSIT },
-              { path: 'withdraw', element: <Withdraw />, id: Routes.WITHDRAW },
-              { path: 'transfer', element: <Transfer />, id: Routes.TRANSFER },
-            ],
-          },
-        ],
-      },
-      {
-        path: 'liquidity/:marketId',
-        element: <Liquidity />,
-        id: Routes.LIQUIDITY,
-      },
-      // NotFound page is here so its caught within parent '/*' route
-      {
-        path: '*',
-        element: <NotFound />,
+        path: ':marketId',
+        element: <MarketPage />,
+        id: AppRoutes.MARKET,
       },
     ],
+  },
+  {
+    path: 'portfolio/*',
+    element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+    children: [
+      {
+        index: true,
+        element: <Portfolio />,
+        id: AppRoutes.PORTFOLIO,
+      },
+      {
+        path: 'assets',
+        element: <Assets />,
+        id: AppRoutes.ASSETS,
+        children: [
+          { index: true, element: <Navigate to="deposit" /> },
+          { path: 'deposit', element: <Deposit />, id: AppRoutes.DEPOSIT },
+          { path: 'withdraw', element: <Withdraw />, id: AppRoutes.WITHDRAW },
+          { path: 'transfer', element: <Transfer />, id: AppRoutes.TRANSFER },
+        ],
+      },
+    ],
+  },
+
+  {
+    path: 'liquidity/*',
+    element: (
+      <LayoutWithSidebar
+        header={<LiquidityHeader />}
+        sidebar={<LiquiditySidebar />}
+      />
+    ),
+    id: AppRoutes.LIQUIDITY,
+    children: [
+      {
+        path: ':marketId',
+        element: <Liquidity />,
+      },
+    ],
+  },
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ]);
 

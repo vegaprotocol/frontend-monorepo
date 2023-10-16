@@ -38,79 +38,68 @@ const walletContext = {
 } as VegaWalletContextShape;
 
 describe('Sidebar', () => {
-  it.each(['/markets/all', '/portfolio'])(
-    'does not render ticket and info',
-    (path) => {
-      render(
-        <VegaWalletContext.Provider value={walletContext}>
-          <MemoryRouter initialEntries={[path]}>
-            <Sidebar />
-          </MemoryRouter>
-        </VegaWalletContext.Provider>
-      );
+  beforeEach(() => {
+    useSidebar.setState({ views: {} });
+  });
 
-      expect(screen.getByTestId(ViewType.ViewAs)).toBeInTheDocument();
-      expect(screen.getByTestId(ViewType.Settings)).toBeInTheDocument();
-      expect(screen.getByTestId(ViewType.Transfer)).toBeInTheDocument();
-      expect(screen.getByTestId(ViewType.Deposit)).toBeInTheDocument();
-      expect(screen.getByTestId(ViewType.Withdraw)).toBeInTheDocument();
-      expect(screen.getByTestId('node-health')).toBeInTheDocument();
-
-      // no order or info sidebars
-      expect(screen.queryByTestId(ViewType.Order)).not.toBeInTheDocument();
-      expect(screen.queryByTestId(ViewType.Info)).not.toBeInTheDocument();
-    }
-  );
-
-  it('renders ticket and info on market pages', () => {
+  it('renders options prop', () => {
     render(
       <VegaWalletContext.Provider value={walletContext}>
-        <MemoryRouter initialEntries={['/markets/ABC']}>
-          <Sidebar />
+        <MemoryRouter>
+          <Sidebar options={<div data-testid="options" />} />
         </MemoryRouter>
       </VegaWalletContext.Provider>
     );
 
     expect(screen.getByTestId(ViewType.ViewAs)).toBeInTheDocument();
     expect(screen.getByTestId(ViewType.Settings)).toBeInTheDocument();
-    expect(screen.getByTestId(ViewType.Transfer)).toBeInTheDocument();
-    expect(screen.getByTestId(ViewType.Deposit)).toBeInTheDocument();
-    expect(screen.getByTestId(ViewType.Withdraw)).toBeInTheDocument();
     expect(screen.getByTestId('node-health')).toBeInTheDocument();
-
-    // order and info sidebars are shown
-    expect(screen.getByTestId(ViewType.Order)).toBeInTheDocument();
-    expect(screen.getByTestId(ViewType.Info)).toBeInTheDocument();
+    expect(screen.getByTestId('options')).toBeInTheDocument();
   });
 
   it('renders selected state', async () => {
+    const routeId = '/markets/ABC';
     render(
       <VegaWalletContext.Provider value={walletContext}>
-        <MemoryRouter initialEntries={['/markets/ABC']}>
-          <Sidebar />
+        <MemoryRouter initialEntries={[routeId]}>
+          <Sidebar
+            options={
+              <SidebarButton
+                view={ViewType.Deposit}
+                icon={VegaIconNames.DEPOSIT}
+                tooltip="Deposit"
+                routeId={'/markets/:marketId'}
+              />
+            }
+          />
         </MemoryRouter>
       </VegaWalletContext.Provider>
     );
 
     const settingsButton = screen.getByTestId(ViewType.Settings);
-    const orderButton = screen.getByTestId(ViewType.Order);
+    const depositButton = screen.getByTestId(ViewType.Deposit);
 
     // select settings first
     await userEvent.click(settingsButton);
     expect(settingsButton).toHaveClass('bg-vega-yellow text-black');
 
-    // switch to order
-    await userEvent.click(orderButton);
+    // switch to deposit
+    await userEvent.click(depositButton);
+
     expect(settingsButton).not.toHaveClass('bg-vega-yellow text-black');
-    expect(orderButton).toHaveClass('bg-vega-yellow text-black');
+    expect(depositButton).toHaveClass('bg-vega-yellow text-black');
 
     // close order
-    await userEvent.click(orderButton);
-    expect(orderButton).not.toHaveClass('bg-vega-yellow text-black');
+    await userEvent.click(depositButton);
+    expect(depositButton).not.toHaveClass('bg-vega-yellow text-black');
   });
 });
 
 describe('SidebarContent', () => {
+  beforeEach(() => {
+    useSidebar.setState({ views: {} });
+  });
+
   it('renders the correct content', () => {
     const { container } = render(
       <VegaWalletContext.Provider value={walletContext}>
