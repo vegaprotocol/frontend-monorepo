@@ -1,11 +1,24 @@
 import type { ReactNode } from 'react';
+import compact from 'lodash/compact';
 import classNames from 'classnames';
 import { t } from '@vegaprotocol/i18n';
 import type { FeesQuery } from './__generated__/Fees';
 import { useFeesQuery } from './__generated__/Fees';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export const FeesContainer = () => {
-  const { data, loading, error } = useFeesQuery();
+  const { pubKey } = useVegaWallet();
+  const { data, loading, error } = useFeesQuery({
+    variables: {
+      partyId:
+        '9e2445e0e98c0e0ca1c260baaab1e7a2f1b9c7256c27196be6e614ee44d1a1e7',
+    },
+    skip: !pubKey,
+  });
+
+  if (!pubKey) {
+    return <p>Pleae connect wallet</p>;
+  }
 
   if (error) {
     return <p>Failed to fetch fee data</p>;
@@ -16,14 +29,14 @@ export const FeesContainer = () => {
   }
 
   return (
-    <div className="p-2">
+    <div className="p-3">
       <h1 className="mb-2 text-xl">{t('Fees')}</h1>
-      <div className="grid lg:auto-rows-min lg:grid-cols-4 gap-2">
+      <div className="grid lg:auto-rows-min lg:grid-cols-4 gap-3">
         <FeeCard title={t('Trading fees')}>
           <TradingFees />
         </FeeCard>
         <FeeCard title={t('Current volume')}>
-          <CurrentVolume />
+          <CurrentVolume data={data.volumeDiscountStats} />
         </FeeCard>
         <FeeCard title={t('Referral benefits')}>
           <ReferralBenefits />
@@ -72,8 +85,27 @@ const TradingFees = () => {
   return <div>Trading Fees</div>;
 };
 
-const CurrentVolume = () => {
-  return <div>Current Volume</div>;
+const CurrentVolume = ({
+  data,
+}: {
+  data: FeesQuery['volumeDiscountStats'];
+}) => {
+  const total = compact(data.edges)
+    .map((e) => e.node)
+    .reduce((sum, d) => {
+      return sum + BigInt(d.runningVolume);
+    }, BigInt(0));
+
+  return (
+    <div>
+      <p className="pt-6 leading-none">
+        <span className="block text-3xl leading-none">{total.toString()}</span>
+        <small className="block text-sm text-muted">
+          {t('over the last 7 epochs')}
+        </small>
+      </p>
+    </div>
+  );
 };
 
 const ReferralBenefits = () => {

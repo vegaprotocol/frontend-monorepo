@@ -3,14 +3,16 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type FeesQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type FeesQueryVariables = Types.Exact<{
+  partyId: Types.Scalars['ID'];
+}>;
 
 
-export type FeesQuery = { __typename?: 'Query', currentReferralProgram?: { __typename?: 'CurrentReferralProgram', benefitTiers: Array<{ __typename?: 'BenefitTier', minimumEpochs: number, minimumRunningNotionalTakerVolume: string, referralDiscountFactor: string, referralRewardFactor: string }> } | null, currentVolumeDiscountProgram?: { __typename?: 'VolumeDiscountProgram', benefitTiers: Array<{ __typename?: 'VolumeBenefitTier', minimumRunningNotionalTakerVolume: string, volumeDiscountFactor: string }> } | null };
+export type FeesQuery = { __typename?: 'Query', currentReferralProgram?: { __typename?: 'CurrentReferralProgram', benefitTiers: Array<{ __typename?: 'BenefitTier', minimumEpochs: number, minimumRunningNotionalTakerVolume: string, referralDiscountFactor: string, referralRewardFactor: string }> } | null, currentVolumeDiscountProgram?: { __typename?: 'VolumeDiscountProgram', benefitTiers: Array<{ __typename?: 'VolumeBenefitTier', minimumRunningNotionalTakerVolume: string, volumeDiscountFactor: string }> } | null, volumeDiscountStats: { __typename?: 'VolumeDiscountStatsConnection', edges: Array<{ __typename?: 'VolumeDiscountStatsEdge', node: { __typename?: 'VolumeDiscountStats', atEpoch: number, discountFactor: string, runningVolume: string } } | null> } };
 
 
 export const FeesDocument = gql`
-    query Fees {
+    query Fees($partyId: ID!) {
   currentReferralProgram {
     benefitTiers {
       minimumEpochs
@@ -23,6 +25,15 @@ export const FeesDocument = gql`
     benefitTiers {
       minimumRunningNotionalTakerVolume
       volumeDiscountFactor
+    }
+  }
+  volumeDiscountStats(partyId: $partyId, pagination: {last: 7}) {
+    edges {
+      node {
+        atEpoch
+        discountFactor
+        runningVolume
+      }
     }
   }
 }
@@ -40,10 +51,11 @@ export const FeesDocument = gql`
  * @example
  * const { data, loading, error } = useFeesQuery({
  *   variables: {
+ *      partyId: // value for 'partyId'
  *   },
  * });
  */
-export function useFeesQuery(baseOptions?: Apollo.QueryHookOptions<FeesQuery, FeesQueryVariables>) {
+export function useFeesQuery(baseOptions: Apollo.QueryHookOptions<FeesQuery, FeesQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<FeesQuery, FeesQueryVariables>(FeesDocument, options);
       }

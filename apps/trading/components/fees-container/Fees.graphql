@@ -1,4 +1,4 @@
-query Fees {
+query Fees($partyId: ID!) {
   currentReferralProgram {
     benefitTiers {
       minimumEpochs
@@ -11,6 +11,15 @@ query Fees {
     benefitTiers {
       minimumRunningNotionalTakerVolume
       volumeDiscountFactor
+    }
+  }
+  volumeDiscountStats(partyId: $partyId, pagination: { last: 7 }) {
+    edges {
+      node {
+        atEpoch
+        discountFactor
+        runningVolume
+      }
     }
   }
 }
