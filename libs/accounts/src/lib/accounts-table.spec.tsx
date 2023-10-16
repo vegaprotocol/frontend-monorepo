@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import * as Types from '@vegaprotocol/types';
 import type { AccountFields } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
@@ -94,7 +94,7 @@ describe('AccountsTable', () => {
   });
 
   it('should render deposit button', async () => {
-    const { container } = render(
+    render(
       <AccountTable
         rowData={zeroBalanceRowData}
         onClickAsset={() => null}
@@ -108,13 +108,9 @@ describe('AccountsTable', () => {
         }}
       />
     );
-    const depositButton = container.querySelector('[data-testid="deposit"');
+    const depositButton = screen.getByTestId('deposit');
     expect(depositButton).toBeVisible();
-    if (depositButton) {
-      fireEvent.click(depositButton);
-    } else {
-      throw new Error('Deposit button not found');
-    }
+    await userEvent.click(depositButton);
     expect(onClickDepositMock).toHaveBeenCalled();
   });
 
