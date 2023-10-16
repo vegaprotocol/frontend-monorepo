@@ -6,16 +6,14 @@ import { Side } from '@vegaprotocol/types';
 
 const timezoneMock = function (zone: string) {
   const DateTimeFormat = Intl.DateTimeFormat;
-  jest
-    .spyOn(global.Intl, 'DateTimeFormat')
-    .mockImplementation(
-      (locale, options) =>
-        new DateTimeFormat(locale, {
-          ...options,
-          hour12: false,
-          timeZone: zone,
-        })
-    );
+  jest.spyOn(global.Intl, 'DateTimeFormat').mockImplementation(
+    (locale, options) =>
+      new DateTimeFormat(locale, {
+        ...options,
+        hour12: false,
+        timeZone: zone,
+      })
+  );
 };
 
 const trade: Trade = {
@@ -34,6 +32,7 @@ const trade: Trade = {
 };
 
 describe('TradesTable', () => {
+  timezoneMock('Europe/London');
   it('should render correct columns', async () => {
     await act(async () => {
       render(<TradesTable rowData={[trade]} />);
@@ -93,8 +92,6 @@ describe('TradesTable', () => {
   });
 
   it('should be in created at desc order', async () => {
-    timezoneMock('Europe/London');
-
     const earlierDate = new Date(trade.createdAt);
     earlierDate.setMinutes(earlierDate.getMinutes() - 1);
     const trade2 = {
