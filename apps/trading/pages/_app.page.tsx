@@ -1,21 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { t } from '@vegaprotocol/i18n';
-import {
-  useEagerConnect as useVegaEagerConnect,
-  useVegaWallet,
-} from '@vegaprotocol/wallet';
-import {
-  useVegaTransactionManager,
-  useVegaTransactionUpdater,
-} from '@vegaprotocol/web3';
-import {
-  useEagerConnect as useEthereumEagerConnect,
-  useEthTransactionManager,
-  useEthTransactionUpdater,
-  useEthWithdrawApprovalsManager,
-} from '@vegaprotocol/web3';
 import {
   envTriggerMapping,
   Networks,
@@ -25,21 +11,11 @@ import {
   useNodeSwitcherStore,
 } from '@vegaprotocol/environment';
 import './styles.css';
-import { useGlobalStore, usePageTitleStore } from '../stores';
+import { usePageTitleStore } from '../stores';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
-import {
-  HashRouter,
-  useLocation,
-  Route,
-  Routes,
-  useSearchParams,
-} from 'react-router-dom';
-import { Connectors } from '../lib/vega-connectors';
+import { HashRouter, useLocation, Route, Routes } from 'react-router-dom';
 import { Bootstrapper } from '../components/bootstrapper';
-import { useDataProvider } from '@vegaprotocol/data-provider';
-import { activeOrdersProvider } from '@vegaprotocol/orders';
-import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
 import { AnnouncementBanner } from '../components/banner';
 import { Navbar } from '../components/navbar';
 import classNames from 'classnames';
@@ -53,6 +29,9 @@ import { NavHeader } from '../components/navbar/nav-header';
 import { Telemetry } from '../components/telemetry';
 import { Routes as AppRoutes } from '../lib/links';
 import { SSRLoader } from './ssr-loader';
+import { PartyActiveOrdersHandler } from './party-active-orders-handler';
+import { MaybeConnectEagerly } from './maybe-connect-eagerly';
+import { TransactionHandlers } from './transaction-handlers';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -75,15 +54,6 @@ const Title = () => {
       <title>{title}</title>
     </Head>
   );
-};
-
-const InitializeHandlers = () => {
-  useVegaTransactionManager();
-  useVegaTransactionUpdater();
-  useEthTransactionManager();
-  useEthTransactionUpdater();
-  useEthWithdrawApprovalsManager();
-  return null;
 };
 
 function AppBody({ Component }: AppProps) {
@@ -125,9 +95,9 @@ function AppBody({ Component }: AppProps) {
       </div>
       <DialogsContainer />
       <ToastsManager />
-      <InitializeHandlers />
+      <TransactionHandlers />
       <MaybeConnectEagerly />
-      <PartyData />
+      <PartyActiveOrdersHandler />
       <Telemetry />
     </div>
   );
@@ -140,10 +110,14 @@ function VegaTradingApp(props: AppProps) {
     store.setDialogOpen,
   ]);
 
+  // Start validation of env vars and determine VEGA_URL
   useInitializeEnv();
 
   // Prevent HashRouter from being server side rendered as it
   // relies on presence of document object
+  //
+  // This is the last point at which we get pregenerated
+  // HTML so render a ssr friendly loader component
   if (status === 'default') {
     return <SSRLoader />;
   }
@@ -159,36 +133,3 @@ function VegaTradingApp(props: AppProps) {
 }
 
 export default VegaTradingApp;
-
-const PartyData = () => {
-  const { pubKey } = useVegaWallet();
-  const variables = { partyId: pubKey || '' };
-  const skip = !pubKey;
-  useDataProvider({
-    dataProvider: activeOrdersProvider,
-    variables,
-    skip,
-  });
-  return null;
-};
-
-const MaybeConnectEagerly = () => {
-  const { VEGA_ENV, SENTRY_DSN } = useEnvironment();
-  const update = useGlobalStore((store) => store.update);
-  const eagerConnecting = useVegaEagerConnect(Connectors);
-  const [isTelemetryApproved] = useTelemetryApproval();
-  useEthereumEagerConnect(
-    isTelemetryApproved ? { dsn: SENTRY_DSN, env: VEGA_ENV } : {}
-  );
-
-  const { pubKey, connect } = useVegaWallet();
-  const [searchParams] = useSearchParams();
-  const [query] = useState(searchParams.get('address'));
-  if (query && !pubKey) {
-    connect(Connectors['view']);
-  }
-  useEffect(() => {
-    update({ eagerConnecting });
-  }, [update, eagerConnecting]);
-  return null;
-};
