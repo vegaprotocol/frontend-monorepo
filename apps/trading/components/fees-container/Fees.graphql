@@ -1,4 +1,7 @@
 query Fees($partyId: ID!, $volumeDiscountStatsEpochs: Int!) {
+  epoch {
+    id
+  }
   currentReferralProgram {
     benefitTiers {
       minimumEpochs
@@ -13,12 +16,33 @@ query Fees($partyId: ID!, $volumeDiscountStatsEpochs: Int!) {
       volumeDiscountFactor
     }
   }
-  volumeDiscountStats(partyId: $partyId, pagination: { last: $volumeDiscountStatsEpochs }) {
+  volumeDiscountStats(
+    partyId: $partyId
+    pagination: { last: $volumeDiscountStatsEpochs }
+  ) {
     edges {
       node {
         atEpoch
         discountFactor
         runningVolume
+      }
+    }
+  }
+  referralSetReferees(referee: $partyId, aggregationDays: 7) {
+    edges {
+      node {
+        referralSetId
+        joinedAt
+        atEpoch
+        totalRefereeNotionalTakerVolume
+      }
+    }
+  }
+  referralSetStats(partyId: $partyId) {
+    edges {
+      node {
+        atEpoch
+        discountFactor
       }
     }
   }

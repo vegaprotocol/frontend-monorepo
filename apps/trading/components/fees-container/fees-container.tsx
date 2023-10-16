@@ -5,11 +5,19 @@ import { t } from '@vegaprotocol/i18n';
 import type { FeesQuery } from './__generated__/Fees';
 import { useFeesQuery } from './__generated__/Fees';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import {
+  useNetworkParams,
+  NetworkParams,
+} from '@vegaprotocol/network-parameters';
 
 const VOLUME_EPOCHS = 7;
 
 export const FeesContainer = () => {
   const { pubKey } = useVegaWallet();
+  const { params } = useNetworkParams([
+    NetworkParams.market_fee_factors_makerFee,
+    NetworkParams.market_fee_factors_infrastructureFee,
+  ]);
   const { data, loading, error } = useFeesQuery({
     variables: {
       partyId:
@@ -31,23 +39,24 @@ export const FeesContainer = () => {
     return <p>Loading...</p>;
   }
 
-  console.log(data);
-
   return (
     <div className="p-3">
       <h1 className="mb-2 text-xl">{t('Fees')}</h1>
       <div className="grid lg:auto-rows-min lg:grid-cols-4 gap-3">
         <FeeCard title={t('Trading fees')}>
-          <TradingFees />
+          <TradingFees params={params} />
         </FeeCard>
         <FeeCard title={t('Current volume')}>
           <CurrentVolume data={data.volumeDiscountStats} />
         </FeeCard>
         <FeeCard title={t('Referral benefits')}>
-          <ReferralBenefits />
+          <ReferralBenefits
+            currentEpoch={data.epoch}
+            data={data.referralSetReferees}
+          />
         </FeeCard>
         <FeeCard title={t('Total discount')}>
-          <TotalDiscount />
+          <TotalDiscount data={data.referralSetStats} />
         </FeeCard>
         <FeeCard title={t('Volume discount')} className="lg:col-span-2">
           <VolumeTiers program={data.currentVolumeDiscountProgram} />
@@ -86,8 +95,37 @@ const FeeCard = ({
   );
 };
 
-const TradingFees = () => {
-  return <div>Trading Fees</div>;
+const TradingFees = ({
+  params,
+}: {
+  params: {
+    market_fee_factors_infrastructureFee: string;
+    market_fee_factors_makerFee: string;
+  };
+}) => {
+  return (
+    <div>
+      <p className="pt-6 leading-none">
+        <span className="block text-3xl leading-none">TODO</span>
+        <table className="w-full text-sm text-muted">
+          <tbody>
+            <tr>
+              <th className="font-normal text-left">{t('Infrastructure')}</th>
+              <td className="text-right">
+                {params.market_fee_factors_infrastructureFee}
+              </td>
+            </tr>
+            <tr>
+              <th className="font-normal text-left ">{t('Maker')}</th>
+              <td className="text-right">
+                {params.market_fee_factors_makerFee}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </p>
+    </div>
+  );
 };
 
 const CurrentVolume = ({
@@ -103,22 +141,45 @@ const CurrentVolume = ({
 
   return (
     <div>
-      <p className="pt-6 leading-none">
-        <span className="block text-3xl leading-none">{total.toString()}</span>
-        <small className="block text-sm text-muted">
-          {t('over the last %s epochs', VOLUME_EPOCHS.toString())}
-        </small>
-      </p>
+      <Stat
+        value={total.toString()}
+        text={t('over the last %s epochs', VOLUME_EPOCHS.toString())}
+      />
     </div>
   );
 };
 
-const ReferralBenefits = () => {
-  return <div>Referral Benefits</div>;
+const ReferralBenefits = ({
+  currentEpoch,
+  data,
+}: {
+  currentEpoch: FeesQuery['epoch'];
+  data: FeesQuery['referralSetReferees'];
+}) => {
+  const referralSets = compact(data.edges).map((e) => e.node);
+  // you can only be in one referral set at a time
+  const referralSet = referralSets[0];
+  const epochsInSet = Number(currentEpoch.id) - referralSet.atEpoch;
+
+  return (
+    <div>
+      <Stat value={referralSet.totalRefereeNotionalTakerVolume} text={'bar'} />
+      <Stat value={epochsInSet} text={t('epochs in referral set')} />
+    </div>
+  );
 };
 
-const TotalDiscount = () => {
-  return <div>Total Discount</div>;
+const TotalDiscount = ({ data }: { data: FeesQuery['referralSetStats'] }) => {
+  const stats = compact(data.edges).map((e) => e.node);
+  const referralDiscount = stats[0].discountFactor;
+  return (
+    <div>
+      <Stat
+        value={referralDiscount}
+        text={t('combined volume & referral discounts')}
+      />
+    </div>
+  );
 };
 
 const VolumeTiers = ({
@@ -224,5 +285,14 @@ const THead = ({ children }: { children: ReactNode }) => {
     <thead className="border-b bg-vega-clight-700 dark:bg-vega-cdark-700 border-vega-clight-600 dark:border-vega-cdark-600">
       {children}
     </thead>
+  );
+};
+
+const Stat = ({ value, text }: { value: string | number; text: string }) => {
+  return (
+    <p className="pt-2 leading-none first:pt-6">
+      <span className="block text-3xl leading-none">{value}</span>
+      <small className="block text-sm text-muted">{text}</small>
+    </p>
   );
 };
