@@ -1,3 +1,4 @@
 * @vegaprotocol/frontend
-* @vegaprotocol/frontend-qa
+*.cy.* @vegaprotocol/frontend-qa
+*.spec.* @vegaprotocol/frontend-qa
 *.graphql @vegaprotocol/core
