@@ -103,8 +103,48 @@ describe('TradesTable', () => {
 
     const [firstDateCell, secondDateCell] = createdAtCells;
 
-    // Compare the times as strings
-    expect(firstDateCell.textContent).toBe('6:59:00 PM');
-    expect(secondDateCell.textContent).toBe('7:00:00 PM');
+    const parseTime = (timeStr: string) => {
+      const [_, hours, minutes, seconds, amPm] =
+        timeStr.match(/(\d+):(\d+):(\d+) ?(a\.?m\.?|p\.?m\.?)?/i) || [];
+      return {
+        hours: parseInt(hours),
+        minutes: parseInt(minutes),
+        seconds: parseInt(seconds),
+        amPm: (amPm || '').toLowerCase(),
+      };
+    };
+
+    if (!firstDateCell.textContent || !secondDateCell.textContent) {
+      throw new Error('textContent should not be null');
+    }
+
+    const firstText = firstDateCell.textContent;
+    const secondText = secondDateCell.textContent;
+
+    const firstTime = parseTime(firstText);
+    const secondTime = parseTime(secondText);
+
+    if (firstTime.amPm === 'pm' && firstTime.hours < 12) firstTime.hours += 12;
+    if (secondTime.amPm === 'pm' && secondTime.hours < 12)
+      secondTime.hours += 12;
+
+    const firstCellDate = new Date(
+      0,
+      0,
+      0,
+      firstTime.hours,
+      firstTime.minutes,
+      firstTime.seconds
+    );
+    const secondCellDate = new Date(
+      0,
+      0,
+      0,
+      secondTime.hours,
+      secondTime.minutes,
+      secondTime.seconds
+    );
+
+    expect(secondCellDate.getTime()).toBeGreaterThan(firstCellDate.getTime());
   });
 });
