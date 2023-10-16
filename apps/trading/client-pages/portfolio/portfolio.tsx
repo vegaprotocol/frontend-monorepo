@@ -15,6 +15,7 @@ import { PositionsMenu } from '../../components/positions-menu';
 import { WithdrawalsContainer } from '../../components/withdrawals-container';
 import { OrdersContainer } from '../../components/orders-container';
 import { LedgerContainer } from '../../components/ledger-container';
+import { FeesContainer } from '../../components/fees-container';
 import {
   ResizableGrid,
   ResizableGridPanel,
@@ -32,7 +33,7 @@ const WithdrawalsIndicator = () => {
     return null;
   }
   return (
-    <span className="bg-vega-clight-500 dark:bg-vega-cdark-500 text-default rounded p-1 leading-none">
+    <span className="p-1 leading-none rounded bg-vega-clight-500 dark:bg-vega-cdark-500 text-default">
       {ready.length}
     </span>
   );
@@ -85,6 +86,9 @@ export const Portfolio = () => {
               <Tab id="ledger-entries" name={t('Ledger entries')}>
                 <LedgerContainer />
               </Tab>
+              <Tab id="fees" name={t('Fees')}>
+                <FeesContainer />
+              </Tab>
             </Tabs>
           </PortfolioGridChild>
         </ResizableGridPanel>
@@ -128,7 +132,7 @@ interface PortfolioGridChildProps {
 const PortfolioGridChild = ({ children }: PortfolioGridChildProps) => {
   return (
     <section className="h-full p-1">
-      <div className="border border-default h-full rounded-sm">{children}</div>
+      <div className="h-full border rounded-sm border-default">{children}</div>
     </section>
   );
 };
