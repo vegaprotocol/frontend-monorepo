@@ -1,5 +1,5 @@
 query ReferralSetStats($code: ID!, $epoch: Int) {
-  referralSetStats(id: $code, epoch: $epoch) {
+  referralSetStats(setId: $code, epoch: $epoch) {
     edges {
       node {
         atEpoch

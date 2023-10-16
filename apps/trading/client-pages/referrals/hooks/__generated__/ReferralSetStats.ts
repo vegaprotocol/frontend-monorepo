@@ -14,7 +14,7 @@ export type ReferralSetStatsQuery = { __typename?: 'Query', referralSetStats: { 
 
 export const ReferralSetStatsDocument = gql`
     query ReferralSetStats($code: ID!, $epoch: Int) {
-  referralSetStats(id: $code, epoch: $epoch) {
+  referralSetStats(setId: $code, epoch: $epoch) {
     edges {
       node {
         atEpoch
