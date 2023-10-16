@@ -1,3 +1,4 @@
+import type { CellClickedEvent } from 'ag-grid-community';
 import compact from 'lodash/compact';
 import { isAfter } from 'date-fns';
 import type {
@@ -5,6 +6,7 @@ import type {
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import type { Asset } from '@vegaprotocol/types';
@@ -17,13 +19,11 @@ import {
 import { closedMarketsWithDataProvider, getAsset } from '@vegaprotocol/markets';
 import type { DataSourceFilterFragment } from '@vegaprotocol/markets';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
-import { useDataProvider } from '@vegaprotocol/data-provider';
 import { MarketCodeCell } from './market-code-cell';
 import { MarketActionsDropdown } from './market-table-actions';
-import type { CellClickedEvent } from 'ag-grid-community';
-import { useClosedMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 
 type SettlementAsset = Pick<
   Asset,
@@ -127,7 +127,7 @@ const ClosedMarketsDataGrid = ({
   rowData: Row[];
   error: Error | undefined;
 }) => {
-  const handleOnSelect = useClosedMarketClickHandler();
+  const handleOnSelect = useMarketClickHandler();
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
 
   const colDefs = useMemo(() => {
@@ -302,8 +302,11 @@ const ClosedMarketsDataGrid = ({
           return;
         }
 
-        // @ts-ignore metaKey exists
-        handleOnSelect(data.id, event ? event.metaKey : false);
+        handleOnSelect(
+          data.id,
+          // @ts-ignore metaKey exists
+          event ? event.metaKey : false
+        );
       }}
     />
   );
