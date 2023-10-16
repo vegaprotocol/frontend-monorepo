@@ -6,14 +6,16 @@ import { Side } from '@vegaprotocol/types';
 
 const timezoneMock = function (zone: string) {
   const DateTimeFormat = Intl.DateTimeFormat;
-  jest.spyOn(global.Intl, 'DateTimeFormat').mockImplementation(
-    (locale, options) =>
-      new DateTimeFormat(locale, {
-        ...options,
-        hour12: false,
-        timeZone: zone,
-      })
-  );
+  jest
+    .spyOn(global.Intl, 'DateTimeFormat')
+    .mockImplementation(
+      (locale, options) =>
+        new DateTimeFormat(locale, {
+          ...options,
+          hour12: false,
+          timeZone: zone,
+        })
+    );
 };
 
 const trade: Trade = {
