@@ -53,6 +53,7 @@ import { NavHeader } from '../components/navbar/nav-header';
 import { Telemetry } from '../components/telemetry';
 import { Routes as AppRoutes } from '../lib/links';
 import { SSRLoader } from './ssr-loader';
+import { useLedgerDownloadManager } from '@vegaprotocol/ledger';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -83,6 +84,7 @@ const InitializeHandlers = () => {
   useEthTransactionManager();
   useEthTransactionUpdater();
   useEthWithdrawApprovalsManager();
+  useLedgerDownloadManager();
   return null;
 };
 

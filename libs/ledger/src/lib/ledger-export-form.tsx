@@ -1,7 +1,5 @@
-import type { ReactNode } from 'react';
-import { format } from 'date-fns';
-import { useCallback, useRef, useState } from 'react';
-import type { Toast } from '@vegaprotocol/ui-toolkit';
+import { useRef, useState } from 'react';
+import { format, subDays } from 'date-fns';
 import {
   Intent,
   Loader,
@@ -9,7 +7,6 @@ import {
   TradingFormGroup,
   TradingInput,
   TradingSelect,
-  useToasts,
 } from '@vegaprotocol/ui-toolkit';
 import { z } from 'zod';
 import {
@@ -19,10 +16,9 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { localLoggerFactory } from '@vegaprotocol/logger';
-import { subDays } from 'date-fns';
+import { useLedgerDownloadFile } from './ledger-download-store';
 
 const DEFAULT_EXPORT_FILE_NAME = 'ledger_entries.csv';
-const DOWNLOAD_LEDGER_TOAST_ID = 'ledger_entries_toast_id';
 
 const toHoursAndMinutes = (totalMinutes: number) => {
   const minutes = totalMinutes % 60;
@@ -73,23 +69,6 @@ interface Props {
   assets: Record<string, string>;
 }
 
-const ErrorContent = () => (
-  <>
-    <h4 className="mb-1 text-sm">{t('Something went wrong')}</h4>
-    <p>{t('Try again later')}</p>
-  </>
-);
-
-const InfoContent = ({ progress = false }) => (
-  <>
-    <h4 className="mb-1 text-sm">
-      {progress ? t('Still in progress') : t('Download has been started')}
-    </h4>
-    <p>{t('Please note this can take several minutes.')}</p>
-    <p>{t('You will be noticed here when file will be ready.')}</p>
-  </>
-);
-
 export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
   const now = useRef(new Date());
   const [dateFrom, setDateFrom] = useState(() => {
@@ -104,45 +83,9 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
   const protohost = getProtoHost(vegaUrl);
   const disabled = Boolean(!assetId || isDownloading);
 
-  const [setToast, updateToast, hasToast, removeToast] = useToasts((store) => [
-    store.setToast,
-    store.update,
-    store.hasToast,
-    store.remove,
-  ]);
-
-  const onDownloadClose = useCallback(() => {
-    removeToast(DOWNLOAD_LEDGER_TOAST_ID);
-  }, [removeToast]);
-
-  const createToast = (
-    content: ReactNode,
-    intent: Intent = Intent.Primary,
-    loader = true
-  ) => {
-    const title = t('Downloading ledger entries of %s from %s till %s', [
-      assets[assetId],
-      format(new Date(dateFrom), 'dd MMMM yyyy HH:mm'),
-      format(new Date(dateTo || Date.now()), 'dd MMMM yyyy HH:mm'),
-    ]);
-    const toast: Toast = {
-      id: DOWNLOAD_LEDGER_TOAST_ID,
-      intent,
-      content: (
-        <>
-          <h3 className="mb-1 text-md uppercase">{title}</h3>
-          {content}
-        </>
-      ),
-      onClose: onDownloadClose,
-      loader,
-    };
-    if (hasToast(DOWNLOAD_LEDGER_TOAST_ID)) {
-      updateToast(DOWNLOAD_LEDGER_TOAST_ID, toast);
-    } else {
-      setToast(toast);
-    }
-  };
+  const updateDownloadQueue = useLedgerDownloadFile(
+    (store) => store.updateQueue
+  );
 
   const assetDropDown = (
     <TradingSelect
@@ -165,44 +108,65 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
 
   const startDownload = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const title = t('Downloading ledger entries of %s from %s till %s', [
+      assets[assetId],
+      format(new Date(dateFrom), 'dd MMMM yyyy HH:mm'),
+      format(new Date(dateTo || Date.now()), 'dd MMMM yyyy HH:mm'),
+    ]);
+
+    const link = createDownloadUrl({
+      protohost,
+      partyId,
+      assetId,
+      dateFrom,
+      dateTo,
+    });
+
+    const downloadStoreItem = {
+      title,
+      link,
+      isChanged: true,
+    };
+
     const ts = setTimeout(() => {
-      createToast(<InfoContent progress />, Intent.Warning);
+      updateDownloadQueue({
+        ...downloadStoreItem,
+        intent: Intent.Warning,
+        isDelayed: true,
+        isChanged: true,
+      });
     }, 1000 * 30);
 
     try {
-      createToast(<InfoContent />, Intent.Primary);
-      const link = createDownloadUrl({
-        protohost,
-        partyId,
-        assetId,
-        dateFrom,
-        dateTo,
-      });
+      updateDownloadQueue(downloadStoreItem);
       setIsDownloading(true);
       const resp = await fetch(link);
       const { headers } = resp;
       const nameHeader = headers.get('content-disposition');
       const filename = nameHeader?.split('=').pop() ?? DEFAULT_EXPORT_FILE_NAME;
+      updateDownloadQueue({
+        ...downloadStoreItem,
+        filename,
+      });
       const blob = await resp.blob();
       if (blob) {
-        const content = (
-          <>
-            <h4 className="mb-1 text-sm">{t('File is ready')}</h4>
-            <a
-              onClick={onDownloadClose}
-              href={URL.createObjectURL(blob)}
-              download={filename}
-              className="underline"
-            >
-              {t('Get file here')}
-            </a>
-          </>
-        );
-        createToast(content, Intent.Success, false);
+        updateDownloadQueue({
+          ...downloadStoreItem,
+          blob,
+          isDownloaded: true,
+          isChanged: true,
+          intent: Intent.Success,
+        });
       }
     } catch (err) {
       localLoggerFactory({ application: 'ledger' }).error('Download file', err);
-      createToast(<ErrorContent />, Intent.Danger);
+      updateDownloadQueue({
+        ...downloadStoreItem,
+        intent: Intent.Danger,
+        isError: true,
+        isChanged: true,
+      });
     } finally {
       setIsDownloading(false);
       clearTimeout(ts);
