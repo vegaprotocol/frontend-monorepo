@@ -20,15 +20,9 @@ const trade: Trade = {
 };
 
 describe('TradesTable', () => {
-  let originalIntlDateTimeFormat: typeof Intl.DateTimeFormat;
-
   beforeAll(() => {
-    // Save the original Intl.DateTimeFormat to restore it later
-    originalIntlDateTimeFormat = global.Intl.DateTimeFormat;
-
-    // Create a timezone mock
     const timezoneMock = function (zone: string) {
-      const DateTimeFormat = originalIntlDateTimeFormat;
+      const DateTimeFormat = Intl.DateTimeFormat;
       jest.spyOn(global.Intl, 'DateTimeFormat').mockImplementation(
         (locale, options) =>
           new DateTimeFormat(locale, {
@@ -43,8 +37,7 @@ describe('TradesTable', () => {
   });
 
   afterAll(() => {
-    // Restore the original Intl.DateTimeFormat
-    global.Intl.DateTimeFormat = originalIntlDateTimeFormat;
+    jest.clearAllMocks();
   });
   it('should render correct columns', async () => {
     await act(async () => {
