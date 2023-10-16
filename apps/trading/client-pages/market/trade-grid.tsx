@@ -73,8 +73,17 @@ const MainGrid = memo(
                   {market &&
                   market.tradableInstrument.instrument.product.__typename ===
                     'Perpetual' ? (
-                    <Tab id="funding" name={t('Funding')}>
+                    <Tab id="funding-history" name={t('Funding history')}>
                       <TradingViews.funding.component marketId={marketId} />
+                    </Tab>
+                  ) : null}
+                  {market &&
+                  market.tradableInstrument.instrument.product.__typename ===
+                    'Perpetual' ? (
+                    <Tab id="funding-payments" name={t('Funding payments')}>
+                      <TradingViews.fundingPayments.component
+                        marketId={marketId}
+                      />
                     </Tab>
                   ) : null}
                 </Tabs>
@@ -138,9 +147,6 @@ const MainGrid = memo(
               ) : null}
               <Tab id="fills" name={t('Fills')}>
                 <TradingViews.fills.component />
-              </Tab>
-              <Tab id="funding-payments" name={t('Funding payments')}>
-                <TradingViews.fundingPayments.component />
               </Tab>
               <Tab
                 id="accounts"

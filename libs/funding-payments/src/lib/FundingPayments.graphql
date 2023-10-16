@@ -6,8 +6,12 @@ fragment FundingPaymentFields on FundingPayment {
   timestamp
 }
 
-query FundingPayments($partyId: ID!, $pagination: Pagination) {
-  fundingPayments(partyId: $partyId, pagination: $pagination) {
+query FundingPayments($partyId: ID!, $pagination: Pagination, $marketId: ID) {
+  fundingPayments(
+    partyId: $partyId
+    pagination: $pagination
+    marketId: $marketId
+  ) {
     edges {
       node {
         ...FundingPaymentFields

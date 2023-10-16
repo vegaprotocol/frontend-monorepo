@@ -8,12 +8,14 @@ import { fundingPaymentsWithMarketProvider } from './funding-payments-data-provi
 
 interface FundingPaymentsManagerProps {
   partyId: string;
+  marketId?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   gridProps: ReturnType<typeof useDataGridEvents>;
 }
 
 export const FundingPaymentsManager = ({
   partyId,
+  marketId,
   onMarketClick,
   gridProps,
 }: FundingPaymentsManagerProps) => {
@@ -27,7 +29,7 @@ export const FundingPaymentsManager = ({
       }
       return false;
     },
-    variables: { partyId },
+    variables: { partyId, marketId },
   });
 
   return (
