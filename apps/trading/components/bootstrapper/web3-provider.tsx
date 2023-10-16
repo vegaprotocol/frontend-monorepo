@@ -6,14 +6,20 @@ import {
   useWeb3ConnectStore,
   createDefaultProvider,
 } from '@vegaprotocol/web3';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-export const Web3Provider = ({ children }: { children: ReactNode }) => {
+export const Web3Provider = ({
+  children,
+  skeleton,
+  failure,
+}: {
+  children: ReactNode;
+  skeleton: ReactNode;
+  failure: ReactNode;
+}) => {
   const { config, loading, error } = useEthereumConfig();
   const { ETHEREUM_PROVIDER_URL, ETH_LOCAL_PROVIDER_URL, ETH_WALLET_MNEMONIC } =
     useEnvironment();
@@ -49,23 +55,20 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
     ETH_WALLET_MNEMONIC,
   ]);
 
+  if (error) {
+    return <>{failure}</>;
+  }
+
+  if (loading || !connectors.length) {
+    return <>{skeleton}</>;
+  }
+
   return (
-    <AsyncRenderer
-      loading={loading}
-      error={error}
-      data={connectors}
-      noDataCondition={(d) => {
-        if (!d) return true;
-        return d.length < 1;
-      }}
-      noDataMessage={t('Could not fetch Ethereum configuration')}
+    <Web3ProviderInternal
+      connectors={connectors}
+      defaultProvider={defaultProvider}
     >
-      <Web3ProviderInternal
-        connectors={connectors}
-        defaultProvider={defaultProvider}
-      >
-        <>{children}</>
-      </Web3ProviderInternal>
-    </AsyncRenderer>
+      <>{children}</>
+    </Web3ProviderInternal>
   );
 };

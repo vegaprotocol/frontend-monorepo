@@ -22,7 +22,6 @@ export * from './key-value-table';
 export * from './link';
 export * from './loader';
 export * from './lozenge';
-export * from './maintenance-page';
 export * from './nav-dropdown';
 export * from './nav';
 export * from './navigation';

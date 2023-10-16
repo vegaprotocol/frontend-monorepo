@@ -1,6 +1,6 @@
 import {
-  AppFailure,
   NetworkLoader,
+  NodeFailure,
   NodeGuard,
   NodeSwitcherDialog,
   useEnvironment,
@@ -31,7 +31,7 @@ function App() {
       <NetworkLoader cache={DEFAULT_CACHE_CONFIG}>
         <NodeGuard
           skeleton={<div>{t('Loading')}</div>}
-          failure={<AppFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
+          failure={<NodeFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
         >
           <Suspense fallback={splashLoading}>
             <RouterProvider router={router} fallbackElement={splashLoading} />

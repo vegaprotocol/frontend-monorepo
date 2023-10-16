@@ -4605,6 +4605,8 @@ export type QueryreferralFeeStatsArgs = {
   assetId?: InputMaybe<Scalars['ID']>;
   epoch?: InputMaybe<Scalars['Int']>;
   marketId?: InputMaybe<Scalars['ID']>;
+  referee?: InputMaybe<Scalars['ID']>;
+  referrer?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -4620,9 +4622,9 @@ export type QueryreferralSetRefereesArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryreferralSetStatsArgs = {
   epoch?: InputMaybe<Scalars['Int']>;
-  id: Scalars['ID'];
   pagination?: InputMaybe<Pagination>;
   partyId?: InputMaybe<Scalars['ID']>;
+  setId?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -4882,6 +4884,10 @@ export type ReferralSetStats = {
   referralSetRunningNotionalTakerVolume: Scalars['String'];
   /** Reward factor applied to the party. */
   rewardFactor: Scalars['String'];
+  /** The proportion of the referees taker fees to be rewarded to the referrer. */
+  rewardsFactorMultiplier: Scalars['String'];
+  /** The multiplier applied to the referral reward factor when calculating referral rewards due to the referrer. */
+  rewardsMultiplier: Scalars['String'];
 };
 
 /** Connection type for retrieving cursor-based paginated referral set statistics information */
@@ -6143,7 +6149,18 @@ export type UpdateProductConfiguration = UpdateFutureProduct | UpdatePerpetualPr
 
 export type UpdateReferralProgram = {
   __typename?: 'UpdateReferralProgram';
-  changes: ReferralProgram;
+  /** Defined tiers in increasing order. First element will give Tier 1, second element will give Tier 2, etc. */
+  benefitTiers: Array<BenefitTier>;
+  /** Timestamp as RFC3339, after which when the current epoch ends, the programs will end and benefits will be disabled. */
+  endOfProgramTimestamp: Scalars['String'];
+  /**
+   * Defined staking tiers in increasing order. First element will give Tier 1,
+   * second element will give Tier 2, and so on. Determines the level of
+   * benefit a party can expect based on their staking.
+   */
+  stakingTiers: Array<StakingTier>;
+  /** Number of epochs over which to evaluate a referral set's running volume. */
+  windowLength: Scalars['Int'];
 };
 
 /** Update an existing spot market on Vega */
@@ -6175,11 +6192,7 @@ export type UpdateVolumeDiscountProgram = {
   benefitTiers: Array<VolumeBenefitTier>;
   /** The end time of the program */
   endOfProgramTimestamp: Scalars['Timestamp'];
-  /** ID of the proposal that created the discount program */
-  id: Scalars['ID'];
-  /** The current version of the volume discount program */
-  version: Scalars['Int'];
-  /** The window legnth to consider for the volume discount program */
+  /** The window length to consider for the volume discount program */
   windowLength: Scalars['Int'];
 };
 
