@@ -45,6 +45,28 @@ const secondRow = {
 } as AccountFields;
 const multiRowData = [singleRow, secondRow];
 
+const zeroBalanceRow = {
+  __typename: 'AccountBalance',
+  type: Types.AccountType.ACCOUNT_TYPE_MARGIN,
+  balance: '0',
+  market: {
+    __typename: 'Market',
+    id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
+  },
+  asset: {
+    __typename: 'Asset',
+    id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+    symbol: 'tBTC',
+    decimals: 5,
+  },
+  available: '0',
+  used: '0',
+  total: '0',
+} as AccountFields;
+const zeroBalanceRowData = [zeroBalanceRow];
+
+const onClickDepositMock = jest.fn();
+
 describe('AccountsTable', () => {
   it('should render correct columns', async () => {
     // 7001-COLL-001
@@ -69,6 +91,27 @@ describe('AccountsTable', () => {
     expect(
       headers?.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
     ).toEqual(expectedHeaders);
+  });
+
+  it('should render deposit button', async () => {
+    render(
+      <AccountTable
+        rowData={zeroBalanceRowData}
+        onClickAsset={() => null}
+        isReadOnly={false}
+        onClickDeposit={onClickDepositMock}
+        pinnedAsset={{
+          decimals: 5,
+          id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+          symbol: 'tBTC',
+          name: 'tBTC',
+        }}
+      />
+    );
+    const depositButton = screen.getByTestId('deposit');
+    expect(depositButton).toBeVisible();
+    await userEvent.click(depositButton);
+    expect(onClickDepositMock).toHaveBeenCalled();
   });
 
   it('should apply correct formatting', async () => {
