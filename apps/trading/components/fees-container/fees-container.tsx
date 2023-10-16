@@ -56,7 +56,10 @@ export const FeesContainer = () => {
           />
         </FeeCard>
         <FeeCard title={t('Total discount')}>
-          <TotalDiscount data={data.referralSetStats} />
+          <TotalDiscount
+            referralData={data.referralSetStats}
+            volumeData={data.volumeDiscountStats}
+          />
         </FeeCard>
         <FeeCard title={t('Volume discount')} className="lg:col-span-2">
           <VolumeTiers program={data.currentVolumeDiscountProgram} />
@@ -169,13 +172,26 @@ const ReferralBenefits = ({
   );
 };
 
-const TotalDiscount = ({ data }: { data: FeesQuery['referralSetStats'] }) => {
-  const stats = compact(data.edges).map((e) => e.node);
-  const referralDiscount = stats[0].discountFactor;
+const TotalDiscount = ({
+  referralData,
+  volumeData,
+}: {
+  referralData: FeesQuery['referralSetStats'];
+  volumeData: FeesQuery['volumeDiscountStats'];
+}) => {
+  const referralStats = compact(referralData.edges).map((e) => e.node);
+  const referralDiscount = referralStats[0].discountFactor;
+  const volumeStats = compact(volumeData.edges).map((e) => e.node);
+  const volumeDiscount = volumeStats[0].discountFactor;
+  // round and trim result to 2 decimal places to avoid rounding errors
+  const totalDiscount = parseFloat(
+    (Number(referralDiscount) + Number(volumeDiscount)).toFixed(2)
+  );
+
   return (
     <div>
       <Stat
-        value={referralDiscount}
+        value={totalDiscount * 100 + '%'}
         text={t('combined volume & referral discounts')}
       />
     </div>
