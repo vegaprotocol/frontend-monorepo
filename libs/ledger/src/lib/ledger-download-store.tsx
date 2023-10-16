@@ -21,6 +21,7 @@ type DownloadSettings = {
 
 export type LedgerDownloadFileStore = {
   queue: DownloadSettings[];
+  hasItem: (link: string) => boolean;
   removeItem: (link: string) => void;
   updateQueue: (item: DownloadSettings) => void;
 };
@@ -28,6 +29,8 @@ export type LedgerDownloadFileStore = {
 export const useLedgerDownloadFile = create<LedgerDownloadFileStore>()(
   subscribeWithSelector((set, get) => ({
     queue: [],
+    hasItem: (link: string) =>
+      get().queue.findIndex((item) => item.link === link) > -1,
     removeItem: (link: string) => {
       const queue = get().queue;
       const index = queue.findIndex((item) => item.link === link);
