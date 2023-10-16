@@ -29,11 +29,6 @@ export function addVegaWalletTopUpRewardsPool() {
           .then((epochText) => {
             transferStartEpoch = Number(epochText.replace('Epoch', '')) + 5;
             transferEndEpoch = transferStartEpoch + 100;
-
-            /* eslint-disable no-console */
-            console.log(transferStartEpoch);
-            console.log(transferEndEpoch);
-            /* eslint-enable */
           });
       })
       .then(() => {

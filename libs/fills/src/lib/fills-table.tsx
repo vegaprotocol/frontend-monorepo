@@ -28,7 +28,10 @@ import type {
 import { forwardRef } from 'react';
 import BigNumber from 'bignumber.js';
 import type { Trade } from './fills-data-provider';
-import type { FillFieldsFragment } from './__generated__/Fills';
+import type {
+  FillFieldsFragment,
+  TradeFeeFieldsFragment,
+} from './__generated__/Fills';
 import { FillActionsDropdown } from './fill-actions-dropdown';
 import { getAsset } from '@vegaprotocol/markets';
 
@@ -87,11 +90,32 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
         },
         {
           headerName: t('Fee'),
-          field: 'market.tradableInstrument.instrument.product',
+          colId: 'fee',
+          field: 'market',
           valueFormatter: formatFee(partyId),
           type: 'rightAligned',
-          tooltipField: 'market.tradableInstrument.instrument.product',
+          tooltipField: 'market',
           tooltipComponent: FeesBreakdownTooltip,
+          tooltipComponentParams: { partyId },
+        },
+        {
+          headerName: t('Fee Discount'),
+          colId: 'fee-discount',
+          field: 'market',
+          valueFormatter: formatFeeDiscount(partyId),
+          type: 'rightAligned',
+          // return null to disable tooltip if fee discount is 0 or empty
+          tooltipValueGetter: ({ valueFormatted, value }) => {
+            return valueFormatted && /[1-9]/.test(valueFormatted)
+              ? valueFormatted
+              : null;
+          },
+          cellRenderer: ({
+            value,
+            valueFormatted,
+          }: VegaICellRendererParams<Trade, 'market'>) =>
+            `${valueFormatted} ${(value && getAsset(value))?.symbol}`,
+          tooltipComponent: FeesDiscountBreakdownTooltip,
           tooltipComponentParams: { partyId },
         },
         {
@@ -214,20 +238,32 @@ const formatRole = (partyId: string) => {
 
 const formatFee = (partyId: string) => {
   return ({
-    value,
+    value: market,
     data,
-  }: VegaValueFormatterParams<
-    Trade,
-    'market.tradableInstrument.instrument.product'
-  >) => {
-    if (!value || !data || !data?.market) return '-';
-    const asset = getAsset(data.market);
+  }: VegaValueFormatterParams<Trade, 'market'>) => {
+    if (!market || !data) return '-';
+    const asset = getAsset(market);
     const { fees: feesObj, role } = getRoleAndFees({ data, partyId });
     if (!feesObj) return '-';
 
     const { totalFee } = getFeesBreakdown(role, feesObj);
     const totalFees = addDecimalsFormatNumber(totalFee, asset.decimals);
     return `${totalFees} ${asset.symbol}`;
+  };
+};
+
+const formatFeeDiscount = (partyId: string) => {
+  return ({
+    value: market,
+    data,
+  }: VegaValueFormatterParams<Trade, 'market'>) => {
+    if (!market || !data) return '-';
+    const asset = getAsset(market);
+    const { fees } = getRoleAndFees({ data, partyId });
+    if (!fees) return '-';
+
+    const total = getTotalFeesDiscounts(fees);
+    return addDecimalsFormatNumber(total, asset.decimals);
   };
 };
 
@@ -251,50 +287,50 @@ export const getRoleAndFees = ({
   partyId?: string;
 }) => {
   let role: Role;
-  let feesObj;
+  let fees;
   if (data?.buyer.id === partyId) {
     if (data.aggressor === Schema.Side.SIDE_BUY) {
       role = TAKER;
-      feesObj = data?.buyerFee;
+      fees = data?.buyerFee;
     } else if (data.aggressor === Schema.Side.SIDE_SELL) {
       role = MAKER;
-      feesObj = data?.sellerFee;
+      fees = data?.sellerFee;
     } else {
       role = '-';
-      feesObj = !isEmptyFeeObj(data?.buyerFee) ? data.buyerFee : data.sellerFee;
+      fees = !isEmptyFeeObj(data?.buyerFee) ? data.buyerFee : data.sellerFee;
     }
   } else if (data?.seller.id === partyId) {
     if (data.aggressor === Schema.Side.SIDE_SELL) {
       role = TAKER;
-      feesObj = data?.sellerFee;
+      fees = data?.sellerFee;
     } else if (data.aggressor === Schema.Side.SIDE_BUY) {
       role = MAKER;
-      feesObj = data?.buyerFee;
+      fees = data?.buyerFee;
     } else {
       role = '-';
-      feesObj = !isEmptyFeeObj(data.sellerFee) ? data.sellerFee : data.buyerFee;
+      fees = !isEmptyFeeObj(data.sellerFee) ? data.sellerFee : data.buyerFee;
     }
   } else {
-    return { role: '-', feesObj: '-' };
+    return { role: '-', fees: undefined };
   }
-  return { role, fees: feesObj };
+  return { role, fees };
 };
 
 const FeesBreakdownTooltip = ({
   data,
-  value,
+  value: market,
   partyId,
-}: ITooltipParams & { partyId?: string }) => {
-  if (!value?.settlementAsset || !data) {
+}: ITooltipParams<Trade, Trade['market']> & { partyId?: string }) => {
+  if (!market || !data) {
     return null;
   }
 
-  const asset = value.settlementAsset;
+  const asset = getAsset(market);
 
-  const { role, fees: feesObj } = getRoleAndFees({ data, partyId }) ?? {};
-  if (!feesObj) return null;
+  const { role, fees } = getRoleAndFees({ data, partyId }) ?? {};
+  if (!fees) return null;
   const { infrastructureFee, liquidityFee, makerFee, totalFee } =
-    getFeesBreakdown(role, feesObj);
+    getFeesBreakdown(role, fees);
 
   return (
     <div
@@ -344,14 +380,91 @@ const FeesBreakdownTooltip = ({
   );
 };
 
+const FeesDiscountBreakdownTooltipItem = ({
+  value,
+  label,
+  asset,
+}: {
+  value?: string | null;
+  label: string;
+  asset: ReturnType<typeof getAsset>;
+}) =>
+  value ? (
+    <>
+      <dt className="col-span-1">{label}</dt>
+      <dd className="text-right col-span-1">
+        {addDecimalsFormatNumber(value, asset.decimals)} {asset.symbol}
+      </dd>
+    </>
+  ) : null;
+
+export const FeesDiscountBreakdownTooltip = ({
+  data,
+  partyId,
+}: ITooltipParams<Trade, Trade['market']> & { partyId?: string }) => {
+  if (!data || !data.market) {
+    return null;
+  }
+  const asset = getAsset(data.market);
+
+  const { fees } = getRoleAndFees({ data, partyId }) ?? {};
+  if (!fees) return null;
+
+  return (
+    <div
+      data-testid="fee-discount-breakdown-tooltip"
+      className="max-w-sm bg-vega-light-100 dark:bg-vega-dark-100 border border-vega-light-200 dark:border-vega-dark-200 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white"
+    >
+      <dl className="grid grid-cols-2 gap-x-1">
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.infrastructureFeeReferralDiscount}
+          label={t('Infrastructure Fee Referral Discount')}
+          asset={asset}
+        />
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.infrastructureFeeVolumeDiscount}
+          label={t('Infrastructure Fee Volume Discount')}
+          asset={asset}
+        />
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.liquidityFeeReferralDiscount}
+          label={t('Liquidity Fee Referral Discount')}
+          asset={asset}
+        />
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.liquidityFeeVolumeDiscount}
+          label={t('Liquidity Fee Volume Discount')}
+          asset={asset}
+        />
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.makerFeeReferralDiscount}
+          label={t('Maker Fee Referral Discount')}
+          asset={asset}
+        />
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.makerFeeVolumeDiscount}
+          label={t('Maker Fee Volume Discount')}
+          asset={asset}
+        />
+      </dl>
+    </div>
+  );
+};
+
+export const getTotalFeesDiscounts = (fees: TradeFeeFieldsFragment) => {
+  return (
+    BigInt(fees.infrastructureFeeReferralDiscount || '0') +
+    BigInt(fees.infrastructureFeeVolumeDiscount || '0') +
+    BigInt(fees.liquidityFeeReferralDiscount || '0') +
+    BigInt(fees.liquidityFeeVolumeDiscount || '0') +
+    BigInt(fees.makerFeeReferralDiscount || '0') +
+    BigInt(fees.makerFeeVolumeDiscount || '0')
+  ).toString();
+};
+
 export const getFeesBreakdown = (
   role: Role,
-  feesObj: {
-    __typename?: 'TradeFee' | undefined;
-    makerFee: string;
-    infrastructureFee: string;
-    liquidityFee: string;
-  }
+  feesObj: TradeFeeFieldsFragment
 ) => {
   const makerFee =
     role === MAKER

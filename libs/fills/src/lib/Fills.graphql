@@ -1,3 +1,15 @@
+fragment TradeFeeFields on TradeFee {
+  makerFee
+  infrastructureFee
+  liquidityFee
+  makerFeeReferralDiscount
+  makerFeeVolumeDiscount
+  infrastructureFeeReferralDiscount
+  infrastructureFeeVolumeDiscount
+  liquidityFeeReferralDiscount
+  liquidityFeeVolumeDiscount
+}
+
 fragment FillFields on Trade {
   id
   market {
@@ -16,14 +28,10 @@ fragment FillFields on Trade {
     id
   }
   buyerFee {
-    makerFee
-    infrastructureFee
-    liquidityFee
+    ...TradeFeeFields
   }
   sellerFee {
-    makerFee
-    infrastructureFee
-    liquidityFee
+    ...TradeFeeFields
   }
 }
 
@@ -61,14 +69,10 @@ fragment FillUpdateFields on TradeUpdate {
   createdAt
   type
   buyerFee {
-    makerFee
-    infrastructureFee
-    liquidityFee
+    ...TradeFeeFields
   }
   sellerFee {
-    makerFee
-    infrastructureFee
-    liquidityFee
+    ...TradeFeeFields
   }
 }
 

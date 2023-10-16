@@ -22,6 +22,12 @@ query EstimateFees(
       makerFee
       infrastructureFee
       liquidityFee
+      makerFeeReferralDiscount
+      makerFeeVolumeDiscount
+      infrastructureFeeReferralDiscount
+      infrastructureFeeVolumeDiscount
+      liquidityFeeReferralDiscount
+      liquidityFeeVolumeDiscount
     }
     totalFeeAmount
   }
