@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import classNames from 'classnames';
 import { t } from '@vegaprotocol/i18n';
-import type { FeesQuery} from './__generated__/Fees';
+import type { FeesQuery } from './__generated__/Fees';
 import { useFeesQuery } from './__generated__/Fees';
 
 export const FeesContainer = () => {
@@ -57,12 +57,12 @@ const FeeCard = ({
   return (
     <div
       className={classNames(
-        'px-4 py-3 bg-vega-clight-600 dark:bg-vega-cdark-600 col-span-full lg:col-auto',
+        'p-4 bg-vega-clight-800 dark:bg-vega-cdark-800 col-span-full lg:col-auto',
         'rounded-lg',
         className
       )}
     >
-      <h2 className="mb-2">{title}</h2>
+      <h2 className="mb-3">{title}</h2>
       {children}
     </div>
   );
@@ -176,7 +176,7 @@ const Td = ({ children }: { children: ReactNode }) => {
 
 const Table = ({ children }: { children: ReactNode }) => {
   return (
-    <table className="w-full border border-vega-clight-400 dark:border-vega-cdark-400">
+    <table className="w-full border border-vega-clight-600 dark:border-vega-cdark-600">
       {children}
     </table>
   );
@@ -184,7 +184,7 @@ const Table = ({ children }: { children: ReactNode }) => {
 
 const THead = ({ children }: { children: ReactNode }) => {
   return (
-    <thead className="border-b bg-vega-cdark-500 border-vega-clight-400 dark:border-vega-cdark-400">
+    <thead className="border-b bg-vega-clight-700 dark:bg-vega-cdark-700 border-vega-clight-600 dark:border-vega-cdark-600">
       {children}
     </thead>
   );
