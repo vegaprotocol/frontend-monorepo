@@ -6,12 +6,15 @@ import type { FeesQuery } from './__generated__/Fees';
 import { useFeesQuery } from './__generated__/Fees';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
+const VOLUME_EPOCHS = 7;
+
 export const FeesContainer = () => {
   const { pubKey } = useVegaWallet();
   const { data, loading, error } = useFeesQuery({
     variables: {
       partyId:
         '9e2445e0e98c0e0ca1c260baaab1e7a2f1b9c7256c27196be6e614ee44d1a1e7',
+      volumeDiscountStatsEpochs: VOLUME_EPOCHS,
     },
     skip: !pubKey,
   });
@@ -27,6 +30,8 @@ export const FeesContainer = () => {
   if (loading || !data) {
     return <p>Loading...</p>;
   }
+
+  console.log(data);
 
   return (
     <div className="p-3">
@@ -101,7 +106,7 @@ const CurrentVolume = ({
       <p className="pt-6 leading-none">
         <span className="block text-3xl leading-none">{total.toString()}</span>
         <small className="block text-sm text-muted">
-          {t('over the last 7 epochs')}
+          {t('over the last %s epochs', VOLUME_EPOCHS.toString())}
         </small>
       </p>
     </div>

@@ -5,6 +5,7 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type FeesQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
+  volumeDiscountStatsEpochs: Types.Scalars['Int'];
 }>;
 
 
@@ -12,7 +13,7 @@ export type FeesQuery = { __typename?: 'Query', currentReferralProgram?: { __typ
 
 
 export const FeesDocument = gql`
-    query Fees($partyId: ID!) {
+    query Fees($partyId: ID!, $volumeDiscountStatsEpochs: Int!) {
   currentReferralProgram {
     benefitTiers {
       minimumEpochs
@@ -27,7 +28,10 @@ export const FeesDocument = gql`
       volumeDiscountFactor
     }
   }
-  volumeDiscountStats(partyId: $partyId, pagination: {last: 7}) {
+  volumeDiscountStats(
+    partyId: $partyId
+    pagination: {last: $volumeDiscountStatsEpochs}
+  ) {
     edges {
       node {
         atEpoch
@@ -52,6 +56,7 @@ export const FeesDocument = gql`
  * const { data, loading, error } = useFeesQuery({
  *   variables: {
  *      partyId: // value for 'partyId'
+ *      volumeDiscountStatsEpochs: // value for 'volumeDiscountStatsEpochs'
  *   },
  * });
  */
