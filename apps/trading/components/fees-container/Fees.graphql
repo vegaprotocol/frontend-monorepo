@@ -1,0 +1,16 @@
+query Fees {
+  currentReferralProgram {
+    benefitTiers {
+      minimumEpochs
+      minimumRunningNotionalTakerVolume
+      referralDiscountFactor
+      referralRewardFactor
+    }
+  }
+  currentVolumeDiscountProgram {
+    benefitTiers {
+      minimumRunningNotionalTakerVolume
+      volumeDiscountFactor
+    }
+  }
+}

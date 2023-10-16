@@ -1,12 +1,24 @@
 import type { ReactNode } from 'react';
 import classNames from 'classnames';
 import { t } from '@vegaprotocol/i18n';
+import type { FeesQuery} from './__generated__/Fees';
+import { useFeesQuery } from './__generated__/Fees';
 
 export const FeesContainer = () => {
+  const { data, loading, error } = useFeesQuery();
+
+  if (error) {
+    return <p>Failed to fetch fee data</p>;
+  }
+
+  if (loading || !data) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className="p-2">
       <h1 className="mb-2 text-xl">{t('Fees')}</h1>
-      <div className="grid lg:grid-rows-3 lg:grid-cols-4 gap-2">
+      <div className="grid lg:auto-rows-min lg:grid-cols-4 gap-2">
         <FeeCard title={t('Trading fees')}>
           <TradingFees />
         </FeeCard>
@@ -20,10 +32,10 @@ export const FeesContainer = () => {
           <TotalDiscount />
         </FeeCard>
         <FeeCard title={t('Volume discount')} className="lg:col-span-2">
-          <VolumeTiers />
+          <VolumeTiers program={data.currentVolumeDiscountProgram} />
         </FeeCard>
         <FeeCard title={t('Referral discount')} className="lg:col-span-2">
-          <ReferralTiers />
+          <ReferralTiers program={data.currentReferralProgram} />
         </FeeCard>
         <FeeCard title={t('Liquidity fees')} className="lg:col-span-full">
           <LiquidityFees />
@@ -50,7 +62,7 @@ const FeeCard = ({
         className
       )}
     >
-      <h2 className="text-sm">{title}</h2>
+      <h2 className="mb-2">{title}</h2>
       {children}
     </div>
   );
@@ -72,14 +84,108 @@ const TotalDiscount = () => {
   return <div>Total Discount</div>;
 };
 
-const VolumeTiers = () => {
-  return <div>Volume Tiers</div>;
+const VolumeTiers = ({
+  program,
+}: {
+  program?: FeesQuery['currentVolumeDiscountProgram'];
+}) => {
+  if (!program || !program.benefitTiers.length) {
+    return <p>{t('No referral program active')}</p>;
+  }
+
+  const tiers = Array.from(program.benefitTiers).reverse();
+
+  return (
+    <div>
+      <Table>
+        <THead>
+          <tr>
+            <Th>{t('Tier')}</Th>
+            <Th>{t('Discount')}</Th>
+            <Th>{t('Combined trading volume')}</Th>
+          </tr>
+        </THead>
+        <tbody>
+          {tiers.map((t, i) => {
+            return (
+              <tr key={i}>
+                <Td>{i + 1}</Td>
+                <Td>{t.volumeDiscountFactor}%</Td>
+                <Td>{t.minimumRunningNotionalTakerVolume}</Td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+    </div>
+  );
 };
 
-const ReferralTiers = () => {
-  return <div>Referral Tiers</div>;
+const ReferralTiers = ({
+  program,
+}: {
+  program?: FeesQuery['currentReferralProgram'];
+}) => {
+  if (!program || !program.benefitTiers.length) {
+    return <p>{t('No referral program active')}</p>;
+  }
+
+  const tiers = Array.from(program.benefitTiers).reverse();
+
+  return (
+    <div>
+      <Table>
+        <THead>
+          <tr>
+            <Th>{t('Tier')}</Th>
+            <Th>{t('Discount')}</Th>
+            <Th>{t('Combined trading volume')}</Th>
+            <Th>{t('Required epochs')}</Th>
+          </tr>
+        </THead>
+        <tbody>
+          {tiers.map((t, i) => {
+            return (
+              <tr key={i}>
+                <Td>{i + 1}</Td>
+                <Td>{t.referralDiscountFactor}%</Td>
+                <Td>{t.minimumRunningNotionalTakerVolume}</Td>
+                <Td>{t.minimumEpochs}</Td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+    </div>
+  );
 };
 
 const LiquidityFees = () => {
   return <div>Liquidity Fees</div>;
+};
+
+const cellClass = 'px-4 py-2 text-sm font-normal text-left';
+
+const Th = ({ children }: { children: ReactNode }) => {
+  return <th className={cellClass}>{children}</th>;
+};
+
+const Td = ({ children }: { children: ReactNode }) => {
+  return <th className={cellClass}>{children}</th>;
+};
+
+const Table = ({ children }: { children: ReactNode }) => {
+  return (
+    <table className="w-full border border-vega-clight-400 dark:border-vega-cdark-400">
+      {children}
+    </table>
+  );
+};
+
+const THead = ({ children }: { children: ReactNode }) => {
+  return (
+    <thead className="border-b bg-vega-cdark-500 border-vega-clight-400 dark:border-vega-cdark-400">
+      {children}
+    </thead>
+  );
 };
