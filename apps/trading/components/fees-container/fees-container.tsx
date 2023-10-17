@@ -19,7 +19,6 @@ import { Table, Td, Th, THead } from './table';
 
 /**
  * TODO:
- * - Liquidity fees for market
  * - 'Your tier' pills
  * - Styles for ag grid dont work inside these cards
  * - Better loading states
@@ -65,6 +64,18 @@ export const FeesContainer = () => {
   );
   const volumeDiscount = Number(volumeStats[0].discountFactor || 0);
 
+  const lastEpochVolumeStats = data.volumeDiscountStats
+    ? maxBy(compact(data.volumeDiscountStats.edges), (e) => e.node.atEpoch)
+    : undefined;
+  const lastEpochVolume = Number(lastEpochVolumeStats?.node.runningVolume || 0);
+
+  const tierIndex = data.currentVolumeDiscountProgram?.benefitTiers.length
+    ? getVolumeTier(
+        lastEpochVolume,
+        data.currentVolumeDiscountProgram.benefitTiers
+      )
+    : undefined;
+
   return (
     <div className="p-3">
       <h1 className="px-4 pt-2 pb-4 text-2xl">{t('Fees')}</h1>
@@ -81,7 +92,8 @@ export const FeesContainer = () => {
         <FeeCard title={t('My current volume')}>
           <CurrentVolume
             volumeProgram={data.currentVolumeDiscountProgram}
-            volumeStats={data.volumeDiscountStats}
+            lastEpochVolume={lastEpochVolume}
+            tierIndex={tierIndex}
           />
         </FeeCard>
         <FeeCard title={t('Referral benefits')}>
@@ -197,11 +209,13 @@ const TradingFees = ({
 };
 
 const CurrentVolume = ({
-  volumeStats,
   volumeProgram,
+  tierIndex,
+  lastEpochVolume,
 }: {
-  volumeStats: FeesQuery['volumeDiscountStats'];
   volumeProgram?: FeesQuery['currentVolumeDiscountProgram'];
+  tierIndex: number | undefined;
+  lastEpochVolume: number;
 }) => {
   // TODO: clarify if volume discount is only for the last epoch, so no need
   // to sum up running volume
@@ -212,33 +226,18 @@ const CurrentVolume = ({
   //     return sum + BigInt(d.runningVolume);
   //   }, BigInt(0));
 
-  const lastEpochTotal = volumeStats
-    ? maxBy(compact(volumeStats.edges), (e) => e.node.atEpoch)
-    : undefined;
-
-  const tierIndex = volumeProgram?.benefitTiers.length
-    ? getVolumeTier(
-        Number(lastEpochTotal?.node.runningVolume || 0),
-        volumeProgram.benefitTiers
-      )
-    : undefined;
-
   let requiredForNextTier = 0;
 
   if (tierIndex) {
     const nextTier = volumeProgram?.benefitTiers[tierIndex + 1];
     requiredForNextTier = nextTier
-      ? Number(nextTier.minimumRunningNotionalTakerVolume) -
-        Number(lastEpochTotal?.node.runningVolume || 0)
+      ? Number(nextTier.minimumRunningNotionalTakerVolume) - lastEpochVolume
       : 0;
   }
 
   return (
     <div>
-      <Stat
-        value={lastEpochTotal?.node.runningVolume || 0}
-        text={t('Over the last epoch')}
-      />
+      <Stat value={lastEpochVolume} text={t('Over the last epoch')} />
       {requiredForNextTier > 0 && (
         <Stat value={requiredForNextTier} text={t('Required for next tier')} />
       )}
@@ -270,8 +269,9 @@ const ReferralBenefits = ({
   return (
     <div>
       <Stat
+        // all sets volume (not just current party)
         value={referralStats.referralSetRunningNotionalTakerVolume}
-        text={'combined running notional over the last 7 epochs'}
+        text={'Combined running notional over the last epoch'}
       />
       <Stat value={epochsInSet} text={t('epochs in referral set')} />
     </div>
