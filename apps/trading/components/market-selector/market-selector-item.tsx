@@ -56,6 +56,7 @@ const MarketData = ({
     variables: {
       marketId: market.id,
     },
+    fetchPolicy: 'no-cache',
   });
 
   const marketData = data?.marketsData[0];
@@ -70,6 +71,8 @@ const MarketData = ({
 
   const marketTradingMode = marketData
     ? marketData.marketTradingMode
+    : market.data
+    ? market.data.marketTradingMode
     : market.tradingMode;
 
   const mode = [
@@ -95,7 +98,7 @@ const MarketData = ({
     <>
       <div className="w-2/5" role="gridcell">
         <h3 className="flex items-baseline">
-          <span className="text-sm lg:text-base text-ellipsis whitespace-nowrap overflow-hidden">
+          <span className="overflow-hidden text-sm lg:text-base text-ellipsis whitespace-nowrap">
             {market.tradableInstrument.instrument.code}
           </span>
           {allProducts && productType && (
