@@ -125,7 +125,7 @@ export const LiquidityTable = ({
         ],
       },
       {
-        headerName: 'Commitment details',
+        headerName: t('Commitment details'),
         marryChildren: true,
         children: [
           {
@@ -181,7 +181,7 @@ export const LiquidityTable = ({
         ],
       },
       {
-        headerName: 'Live liquidity details',
+        headerName: t('Live liquidity details'),
         marryChildren: true,
         children: [
           {
@@ -213,7 +213,7 @@ export const LiquidityTable = ({
         ],
       },
       {
-        headerName: 'Last epoch SLA details',
+        headerName: t('Last epoch SLA details'),
         marryChildren: true,
         children: [
           {
