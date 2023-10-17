@@ -5,7 +5,6 @@ import type { Toast } from '@vegaprotocol/ui-toolkit';
 import { useToasts, Intent } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import { subscribeWithSelector } from 'zustand/middleware';
-import assert from 'assert';
 
 type DownloadSettings = {
   title: string;
@@ -39,7 +38,7 @@ export const useLedgerDownloadFile = create<LedgerDownloadFileStore>()(
         set({ queue: [...queue] });
       }
     },
-    updateQueue(newitem: DownloadSettings) {
+    updateQueue: (newitem: DownloadSettings) => {
       const queue = get().queue;
       const index = queue.findIndex((item) => item.link === newitem.link);
       if (index > -1) {
@@ -122,7 +121,7 @@ export const useLedgerDownloadManager = () => {
         </>
       ),
       onClose: () => onDownloadClose(item.link),
-      loader: !item.isDownloaded,
+      loader: !item.isDownloaded && !item.isError,
     };
     if (hasToast(toast.id)) {
       updateToast(toast.id, toast);

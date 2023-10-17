@@ -143,6 +143,9 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
     try {
       updateDownloadQueue(downloadStoreItem);
       const resp = await fetch(link);
+      if (!resp?.ok) {
+        throw new Error('Download of ledger entries failed');
+      }
       const { headers } = resp;
       const nameHeader = headers.get('content-disposition');
       const filename = nameHeader?.split('=').pop() ?? DEFAULT_EXPORT_FILE_NAME;
