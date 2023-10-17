@@ -5,29 +5,31 @@ export const getVolumeTier = (
   volume: number,
   tiers: Array<{
     minimumRunningNotionalTakerVolume: string;
-    volumeDiscountFactor: string;
   }>
 ) => {
-  for (let i = 0; i < tiers.length; i++) {
-    const currTier = tiers[i];
-    const nextTier = tiers[i + 1];
-    const currRequiredVol = Number(currTier.minimumRunningNotionalTakerVolume);
-    const nextRequiredVol = Number(nextTier.minimumRunningNotionalTakerVolume);
+  return tiers.findIndex((tier) => {
+    return volume >= Number(tier.minimumRunningNotionalTakerVolume);
+  });
+};
 
-    // User has less than volume than required for lowest tier
-    if (i === 0 && volume < currRequiredVol) {
-      return -1;
-    }
+export const getReferralBenefitTier = (
+  epochsInSet: number,
+  volume: number,
+  tiers: Array<{
+    minimumRunningNotionalTakerVolume: string;
+    minimumEpochs: number;
+  }>
+) => {
+  const indexByEpoch = tiers.findIndex((tier) => {
+    return epochsInSet >= tier.minimumEpochs;
+  });
+  const indexByVolume = tiers.findIndex((tier) => {
+    return volume >= Number(tier.minimumRunningNotionalTakerVolume);
+  });
 
-    // User has more volume than required for the highest tier
-    if (i === tiers.length - 1 && volume > currRequiredVol) {
-      return i;
-    }
-
-    if (volume > currRequiredVol && volume < nextRequiredVol) {
-      return i;
-    }
+  if (indexByEpoch === -1 || indexByVolume === -1) {
+    return -1;
   }
 
-  return -1;
+  return Math.max(indexByEpoch, indexByVolume);
 };

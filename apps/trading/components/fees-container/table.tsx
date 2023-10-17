@@ -1,10 +1,12 @@
+import type { ReactNode } from 'react';
+
 const cellClass = 'px-4 py-2 text-sm font-normal text-left';
 
-export const Th = ({ children }: { children: ReactNode }) => {
+export const Th = ({ children }: { children?: ReactNode }) => {
   return <th className={cellClass}>{children}</th>;
 };
 
-export const Td = ({ children }: { children: ReactNode }) => {
+export const Td = ({ children }: { children?: ReactNode }) => {
   return <th className={cellClass}>{children}</th>;
 };
 

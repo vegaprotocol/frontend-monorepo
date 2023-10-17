@@ -14,7 +14,7 @@ import {
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { useMarketList } from '@vegaprotocol/markets';
 import { MarketFees } from './market-fees';
-import { format, getVolumeTier } from './utils';
+import { format, getReferralBenefitTier, getVolumeTier } from './utils';
 import { Table, Td, Th, THead } from './table';
 
 /**
@@ -57,24 +57,51 @@ export const FeesContainer = () => {
     return <p>Loading...</p>;
   }
 
-  const referralStats = compact(data.referralSetStats.edges).map((e) => e.node);
-  const referralDiscount = Number(referralStats[0].discountFactor || 0);
+  // Referral data
+  const referralSetsStats = compact(data.referralSetStats.edges).map(
+    (e) => e.node
+  );
+  const referralSets = compact(data.referralSetReferees.edges).map(
+    (e) => e.node
+  );
+
+  if (referralSets.length > 1 || referralSetsStats.length > 1) {
+    throw new Error('more than one referral set for user');
+  }
+
+  const referralSet = referralSets[0];
+  const referralStats = referralSetsStats[0];
+
+  const epochsInSet = Number(data.epoch.id) - referralSet.atEpoch;
+  const referralDiscount = Number(referralStats.discountFactor || 0);
+
+  const referralTiers = data.currentReferralProgram?.benefitTiers.length
+    ? [...data.currentReferralProgram.benefitTiers].reverse()
+    : [];
+
+  const referralTierIndex = getReferralBenefitTier(
+    epochsInSet,
+    Number(referralStats.referralSetRunningNotionalTakerVolume),
+    referralTiers
+  );
+
+  // Volume data
   const volumeStats = compact(data.volumeDiscountStats.edges).map(
     (e) => e.node
   );
+
   const volumeDiscount = Number(volumeStats[0].discountFactor || 0);
 
   const lastEpochVolumeStats = data.volumeDiscountStats
-    ? maxBy(compact(data.volumeDiscountStats.edges), (e) => e.node.atEpoch)
+    ? maxBy(volumeStats, (s) => s.atEpoch)
     : undefined;
-  const lastEpochVolume = Number(lastEpochVolumeStats?.node.runningVolume || 0);
+  const lastEpochVolume = Number(lastEpochVolumeStats?.runningVolume || 0);
 
-  const tierIndex = data.currentVolumeDiscountProgram?.benefitTiers.length
-    ? getVolumeTier(
-        lastEpochVolume,
-        data.currentVolumeDiscountProgram.benefitTiers
-      )
-    : undefined;
+  const volumeTiers = data.currentVolumeDiscountProgram?.benefitTiers.length
+    ? [...data.currentVolumeDiscountProgram.benefitTiers].reverse()
+    : [];
+
+  const volumeTierIndex = getVolumeTier(lastEpochVolume, volumeTiers);
 
   return (
     <div className="p-3">
@@ -93,21 +120,26 @@ export const FeesContainer = () => {
           <CurrentVolume
             volumeProgram={data.currentVolumeDiscountProgram}
             lastEpochVolume={lastEpochVolume}
-            tierIndex={tierIndex}
+            tierIndex={volumeTierIndex}
           />
         </FeeCard>
         <FeeCard title={t('Referral benefits')}>
           <ReferralBenefits
-            currentEpoch={data.epoch}
-            setReferees={data.referralSetReferees}
-            setStats={data.referralSetStats}
+            setRunningNotionalTakerVolume={Number(
+              referralStats.referralSetRunningNotionalTakerVolume
+            )}
+            epochsInSet={epochsInSet}
           />
         </FeeCard>
         <FeeCard title={t('Volume discount')} className="lg:col-span-2">
-          <VolumeTiers program={data.currentVolumeDiscountProgram} />
+          <VolumeTiers
+            tiers={volumeTiers}
+            tierIndex={volumeTierIndex}
+            lastEpochVolume={lastEpochVolume}
+          />
         </FeeCard>
         <FeeCard title={t('Referral discount')} className="lg:col-span-2">
-          <ReferralTiers program={data.currentReferralProgram} />
+          <ReferralTiers tiers={referralTiers} tierIndex={referralTierIndex} />
         </FeeCard>
         <FeeCard title={t('Liquidity fees')} className="lg:col-span-full">
           <MarketFees
@@ -214,7 +246,7 @@ const CurrentVolume = ({
   lastEpochVolume,
 }: {
   volumeProgram?: FeesQuery['currentVolumeDiscountProgram'];
-  tierIndex: number | undefined;
+  tierIndex: number;
   lastEpochVolume: number;
 }) => {
   // TODO: clarify if volume discount is only for the last epoch, so no need
@@ -246,31 +278,17 @@ const CurrentVolume = ({
 };
 
 const ReferralBenefits = ({
-  currentEpoch,
-  setReferees,
-  setStats,
+  epochsInSet,
+  setRunningNotionalTakerVolume,
 }: {
-  currentEpoch: FeesQuery['epoch'];
-  setReferees: FeesQuery['referralSetReferees'];
-  setStats: FeesQuery['referralSetStats'];
+  epochsInSet: number;
+  setRunningNotionalTakerVolume: number;
 }) => {
-  const referralSetsStats = compact(setStats.edges).map((e) => e.node);
-  const referralSets = compact(setReferees.edges).map((e) => e.node);
-
-  if (referralSets.length > 1 || referralSetsStats.length > 1) {
-    throw new Error('more than one referral set for user');
-  }
-
-  // you can only be in one referral set at a time
-  const referralSet = referralSets[0];
-  const referralStats = referralSetsStats[0];
-  const epochsInSet = Number(currentEpoch.id) - referralSet.atEpoch;
-
   return (
     <div>
       <Stat
         // all sets volume (not just current party)
-        value={referralStats.referralSetRunningNotionalTakerVolume}
+        value={setRunningNotionalTakerVolume}
         text={'Combined running notional over the last epoch'}
       />
       <Stat value={epochsInSet} text={t('epochs in referral set')} />
@@ -305,15 +323,20 @@ const TotalDiscount = ({
 };
 
 const VolumeTiers = ({
-  program,
+  tiers,
+  tierIndex,
+  lastEpochVolume,
 }: {
-  program?: FeesQuery['currentVolumeDiscountProgram'];
+  tiers: Array<{
+    volumeDiscountFactor: string;
+    minimumRunningNotionalTakerVolume: string;
+  }>;
+  tierIndex: number;
+  lastEpochVolume: number;
 }) => {
-  if (!program || !program.benefitTiers.length) {
+  if (!tiers.length) {
     return <p>{t('No referral program active')}</p>;
   }
-
-  const tiers = Array.from(program.benefitTiers).reverse();
 
   return (
     <div>
@@ -323,15 +346,21 @@ const VolumeTiers = ({
             <Th>{t('Tier')}</Th>
             <Th>{t('Discount')}</Th>
             <Th>{t('Min. trading volume')}</Th>
+            <Th>{t('My volume (last epoch)')}</Th>
+            <Th />
           </tr>
         </THead>
         <tbody>
-          {tiers.map((t, i) => {
+          {tiers.map((tier, i) => {
+            const isUserTier = tierIndex === i;
+
             return (
               <tr key={i}>
                 <Td>{i + 1}</Td>
-                <Td>{t.volumeDiscountFactor}%</Td>
-                <Td>{t.minimumRunningNotionalTakerVolume}</Td>
+                <Td>{tier.volumeDiscountFactor}%</Td>
+                <Td>{tier.minimumRunningNotionalTakerVolume}</Td>
+                <Td>{isUserTier ? lastEpochVolume : ''}</Td>
+                <Td>{isUserTier ? <YourTier /> : null}</Td>
               </tr>
             );
           })}
@@ -342,15 +371,19 @@ const VolumeTiers = ({
 };
 
 const ReferralTiers = ({
-  program,
+  tiers,
+  tierIndex,
 }: {
-  program?: FeesQuery['currentReferralProgram'];
+  tiers: Array<{
+    referralDiscountFactor: string;
+    minimumRunningNotionalTakerVolume: string;
+    minimumEpochs: number;
+  }>;
+  tierIndex: number;
 }) => {
-  if (!program || !program.benefitTiers.length) {
+  if (!tiers.length) {
     return <p>{t('No referral program active')}</p>;
   }
-
-  const tiers = Array.from(program.benefitTiers).reverse();
 
   return (
     <div>
@@ -361,16 +394,20 @@ const ReferralTiers = ({
             <Th>{t('Discount')}</Th>
             <Th>{t('Min. trading volume')}</Th>
             <Th>{t('Required epochs')}</Th>
+            <Th />
           </tr>
         </THead>
         <tbody>
           {tiers.map((t, i) => {
+            const isUserTier = tierIndex === i;
+
             return (
               <tr key={i}>
                 <Td>{i + 1}</Td>
                 <Td>{t.referralDiscountFactor}%</Td>
                 <Td>{t.minimumRunningNotionalTakerVolume}</Td>
                 <Td>{t.minimumEpochs}</Td>
+                <Td>{isUserTier ? <YourTier /> : null}</Td>
               </tr>
             );
           })}
@@ -386,5 +423,11 @@ const Stat = ({ value, text }: { value: string | number; text?: string }) => {
       <span className="block text-3xl leading-none">{value}</span>
       {text && <small className="block text-xs text-muted">{text}</small>}
     </p>
+  );
+};
+
+const YourTier = () => {
+  return (
+    <span className="px-4 py-1.5 rounded-xl bg-rainbow">{t('Your tier')}</span>
   );
 };
