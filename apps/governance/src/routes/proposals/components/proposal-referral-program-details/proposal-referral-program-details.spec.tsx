@@ -83,7 +83,7 @@ const mockReferralProposal = generateProposal({
           referralRewardFactor: '0.01',
         },
       ],
-      endOfProgramTimestamp: '2026-10-03T10:34:34Z',
+      endOfProgram: '2026-10-03T10:34:34Z',
       windowLength: 3,
       stakingTiers: [
         {

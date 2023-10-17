@@ -53,7 +53,7 @@ fragment UpdateReferralProgram on Proposal {
           referralDiscountFactor
           referralRewardFactor
         }
-        endOfProgramTimestamp
+        endOfProgram: endOfProgramTimestamp
         windowLength
         stakingTiers {
           minimumStakedTokens

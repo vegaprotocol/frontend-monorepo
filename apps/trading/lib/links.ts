@@ -4,8 +4,7 @@ import trimEnd from 'lodash/trimEnd';
 // href creation
 export const Routes = {
   HOME: '/',
-  MARKETS: '/markets/all',
-  CLOSED_MARKETS: '/markets/all/closed/:marketId',
+  MARKETS: '/markets',
   MARKET: '/markets/:marketId',
   LIQUIDITY: '/liquidity/:marketId',
   PORTFOLIO: '/portfolio',
@@ -29,8 +28,6 @@ export const Links: ConsoleLinks = {
   MARKET: (marketId: string) =>
     trimEnd(Routes.MARKET.replace(':marketId', marketId)),
   MARKETS: () => Routes.MARKETS,
-  CLOSED_MARKETS: (marketId: string) =>
-    trimEnd(Routes.CLOSED_MARKETS.replace(':marketId', marketId)),
   PORTFOLIO: () => Routes.PORTFOLIO,
   LIQUIDITY: (marketId: string) =>
     trimEnd(Routes.LIQUIDITY.replace(':marketId', marketId)),

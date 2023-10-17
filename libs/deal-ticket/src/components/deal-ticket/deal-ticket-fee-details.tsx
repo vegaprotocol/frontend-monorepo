@@ -37,6 +37,7 @@ import {
   AccordionChevron,
   AccordionPanel,
   Intent,
+  ExternalLink,
   Pill,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
@@ -385,7 +386,21 @@ export const DealTicketMarginDetails = ({
         value={liquidationPriceEstimateRange}
         formattedValue={liquidationPriceEstimate}
         symbol={quoteName}
-        labelDescription={LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT}
+        labelDescription={
+          <>
+            <span>{LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT}</span>{' '}
+            <span>
+              {t('For full details please see ')}
+              <ExternalLink
+                href={
+                  'https://github.com/vegaprotocol/specs/blob/master/non-protocol-specs/0012-NP-LIPE-liquidation-price-estimate.md'
+                }
+              >
+                {t('liquidation price estimate documentation.')}
+              </ExternalLink>
+            </span>
+          </>
+        }
       />
       {partyId && (
         <AccountBreakdownDialog

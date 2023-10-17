@@ -57,7 +57,7 @@ export const ProposalReferralProgramDetails = ({
   const benefitTiers = proposal?.terms?.change?.benefitTiers;
   const stakingTiers = proposal?.terms?.change?.stakingTiers;
   const windowLength = proposal?.terms?.change?.windowLength;
-  const endOfProgramTimestamp = proposal?.terms?.change?.endOfProgramTimestamp;
+  const endOfProgramTimestamp = proposal?.terms?.change?.endOfProgram;
 
   if (
     !benefitTiers &&

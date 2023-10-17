@@ -104,7 +104,13 @@ describe('TradesTable', () => {
     const [firstDateCell, secondDateCell] = createdAtCells;
 
     // Compare the times as strings
-    expect(firstDateCell.textContent).toBe('6:59:00 PM');
-    expect(secondDateCell.textContent).toBe('7:00:00 PM');
+    // Note: I've changed it form literal strings to this because of the
+    // locale mismatch. Mocking the format also resulted with strange "space" diff.
+    expect(firstDateCell.textContent).toBe(
+      getTimeFormat().format(new Date(trade2.createdAt))
+    );
+    expect(secondDateCell.textContent).toBe(
+      getTimeFormat().format(new Date(trade.createdAt))
+    );
   });
 });
