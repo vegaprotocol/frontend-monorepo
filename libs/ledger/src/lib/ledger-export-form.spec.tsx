@@ -1,10 +1,21 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { createDownloadUrl, LedgerExportForm } from './ledger-export-form';
 import { formatForInput, toNanoSeconds } from '@vegaprotocol/utils';
+import {
+  useLedgerDownloadManager,
+  useLedgerDownloadFile,
+} from './ledger-download-store';
+import { Intent } from '@vegaprotocol/ui-toolkit';
 
+const mockSetToast = jest.fn();
+jest.mock('@vegaprotocol/ui-toolkit', () => ({
+  ...jest.requireActual('@vegaprotocol/ui-toolkit'),
+  useToasts: jest.fn(() => [mockSetToast, jest.fn(), jest.fn(() => false)]),
+}));
 const vegaUrl = 'https://vega-url.co.uk/querystuff';
 
 const mockResponse = {
+  ok: true,
   headers: { get: jest.fn() },
   blob: () => '',
 };
@@ -28,6 +39,7 @@ describe('LedgerExportForm', () => {
 
   afterAll(() => {
     jest.useRealTimers();
+    jest.clearAllMocks();
   });
 
   it('should be properly rendered', async () => {
@@ -43,17 +55,12 @@ describe('LedgerExportForm', () => {
     // userEvent does not work with faked timers
     fireEvent.click(screen.getByTestId('ledger-download-button'));
 
-    expect(screen.getByTestId('download-spinner')).toBeInTheDocument();
-
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
         `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${
           Object.keys(assetsMock)[0]
         }&dateRange.startTimestamp=1691057410000000000`
       );
-    });
-    await waitFor(() => {
-      expect(screen.queryByTestId('download-spinner')).not.toBeInTheDocument();
     });
   });
 
@@ -75,17 +82,12 @@ describe('LedgerExportForm', () => {
 
     fireEvent.click(screen.getByTestId('ledger-download-button'));
 
-    expect(screen.getByTestId('download-spinner')).toBeInTheDocument();
-
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
         `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${
           Object.keys(assetsMock)[1]
         }&dateRange.startTimestamp=1691057410000000000`
       );
-    });
-    await waitFor(() => {
-      expect(screen.queryByTestId('download-spinner')).not.toBeInTheDocument();
     });
   });
 
@@ -110,18 +112,12 @@ describe('LedgerExportForm', () => {
 
     fireEvent.click(screen.getByTestId('ledger-download-button'));
 
-    expect(screen.getByTestId('download-spinner')).toBeInTheDocument();
-
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
         `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${
           Object.keys(assetsMock)[0]
         }&dateRange.startTimestamp=${toNanoSeconds(newDate)}`
       );
-    });
-
-    await waitFor(() => {
-      expect(screen.queryByTestId('download-spinner')).not.toBeInTheDocument();
     });
   });
 
@@ -155,10 +151,6 @@ describe('LedgerExportForm', () => {
           newDate
         )}`
       );
-    });
-
-    await waitFor(() => {
-      expect(screen.queryByTestId('download-spinner')).not.toBeInTheDocument();
     });
   });
 
@@ -204,6 +196,50 @@ describe('LedgerExportForm', () => {
     expect(
       screen.queryByText(/^The downloaded file uses the UTC/)
     ).not.toBeInTheDocument();
+  });
+
+  it('A toast notification should be displayed', async () => {
+    useLedgerDownloadFile.setState({ queue: [] });
+    const TestWrapper = () => {
+      useLedgerDownloadManager();
+      return (
+        <LedgerExportForm
+          partyId={partyId}
+          vegaUrl={vegaUrl}
+          assets={assetsMock}
+        />
+      );
+    };
+
+    render(<TestWrapper />);
+    expect(screen.getByText('symbol asset-id')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('ledger-download-button'));
+
+    const link = `https://vega-url.co.uk/api/v2/ledgerentry/export?partyId=${partyId}&assetId=${
+      Object.keys(assetsMock)[0]
+    }&dateRange.startTimestamp=1691057410000000000`;
+
+    await waitFor(() => {
+      expect(mockSetToast).toHaveBeenCalledWith({
+        id: link,
+        content: expect.any(Object),
+        onClose: expect.any(Function),
+        intent: Intent.Primary,
+        loader: true,
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(link);
+    });
+
+    mockSetToast.mockClear();
+    (global.fetch as jest.Mock).mockClear();
+    fireEvent.click(screen.getByTestId('ledger-download-button')); // click again
+
+    await waitFor(() => {
+      expect(mockSetToast).toHaveBeenCalled();
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
   });
 });
 
