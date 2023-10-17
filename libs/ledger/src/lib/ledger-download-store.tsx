@@ -13,6 +13,7 @@ type DownloadSettings = {
   isDownloaded?: boolean;
   isChanged?: boolean;
   isError?: boolean;
+  errorMessage?: string;
   isDelayed?: boolean;
   intent?: Intent;
   blob?: Blob;
@@ -51,17 +52,17 @@ export const useLedgerDownloadFile = create<LedgerDownloadFileStore>()(
   }))
 );
 
-const ErrorContent = () => (
+const ErrorContent = ({ message }: { message?: string }) => (
   <>
     <h4 className="mb-1 text-sm">{t('Something went wrong')}</h4>
-    <p>{t('Try again later')}</p>
+    <p>{message || t('Try again later')}</p>
   </>
 );
 
 const InfoContent = ({ progress = false }) => (
   <>
     <p>{t('Please note this can take several minutes.')}</p>
-    <p>{t('You will be notified here when file will be ready.')}</p>
+    <p>{t('You will be notified here when your file is ready.')}</p>
     <h4 className="my-2">
       {progress ? t('Still in progress') : t('Download has been started')}
     </h4>
@@ -91,12 +92,12 @@ export const useLedgerDownloadManager = () => {
     let content: ReactNode;
     switch (true) {
       case item.isError:
-        content = <ErrorContent />;
+        content = <ErrorContent message={item.errorMessage} />;
         break;
       case Boolean(item.blob):
         content = (
           <>
-            <h4 className="mb-1 text-sm">{t('File is ready')}</h4>
+            <h4 className="mb-1 text-sm">{t('Your file is ready')}</h4>
             <a
               onClick={() => onDownloadClose(item.link)}
               href={URL.createObjectURL(item.blob as Blob)}

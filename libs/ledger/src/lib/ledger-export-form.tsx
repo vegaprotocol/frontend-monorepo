@@ -116,7 +116,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
   const startDownload = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const title = t('Downloading ledger entries of %s from %s till %s', [
+    const title = t('Downloading for %s from %s till %s', [
       assets[assetId],
       format(new Date(dateFrom), 'dd MMMM yyyy HH:mm'),
       format(new Date(dateTo || Date.now()), 'dd MMMM yyyy HH:mm'),
@@ -144,6 +144,9 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
       updateDownloadQueue(downloadStoreItem);
       const resp = await fetch(link);
       if (!resp?.ok) {
+        if (resp?.status === 429) {
+          throw new Error('Too many requests. Try again later.');
+        }
         throw new Error('Download of ledger entries failed');
       }
       const { headers } = resp;
@@ -170,6 +173,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
         intent: Intent.Danger,
         isError: true,
         isChanged: true,
+        errorMessage: err.message || undefined,
       });
     } finally {
       clearTimeout(ts);
