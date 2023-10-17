@@ -1,5 +1,8 @@
+import { useMemo } from 'react';
 import type { ReactNode } from 'react';
 import compact from 'lodash/compact';
+import maxBy from 'lodash/maxBy';
+import minBy from 'lodash/minBy';
 import classNames from 'classnames';
 import { t } from '@vegaprotocol/i18n';
 import type { FeesQuery } from './__generated__/Fees';
@@ -9,6 +12,19 @@ import {
   useNetworkParams,
   NetworkParams,
 } from '@vegaprotocol/network-parameters';
+import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
+import { useMarketList } from '@vegaprotocol/markets';
+import { AgGrid } from '@vegaprotocol/datagrid';
+import { ProductTypeMapping } from '@vegaprotocol/types';
+
+/**
+ * TODO:
+ * - Liquidity fees for market
+ * - 'Your tier' pills
+ * - Styles for ag grid dont work inside these cards
+ * - Better loading states
+ * - Remove hardcoded partyId
+ */
 
 const VOLUME_EPOCHS = 7;
 
@@ -21,30 +37,41 @@ export const FeesContainer = () => {
   const { data, loading, error } = useFeesQuery({
     variables: {
       partyId:
+        // TODO: change for pubkey
         '9e2445e0e98c0e0ca1c260baaab1e7a2f1b9c7256c27196be6e614ee44d1a1e7',
       volumeDiscountStatsEpochs: VOLUME_EPOCHS,
     },
     skip: !pubKey,
   });
+  const { data: markets } = useMarketList();
 
   if (!pubKey) {
-    return <p>Pleae connect wallet</p>;
+    return <p>Please connect wallet</p>;
   }
 
   if (error) {
     return <p>Failed to fetch fee data</p>;
   }
 
+  // TODO: skeleton loading states
   if (loading || !data) {
     return <p>Loading...</p>;
   }
 
+  const referralStats = compact(data.referralSetStats.edges).map((e) => e.node);
+  const referralDiscount = referralStats[0].discountFactor;
+  const volumeStats = compact(data.volumeDiscountStats.edges).map(
+    (e) => e.node
+  );
+  const volumeDiscount = volumeStats[0].discountFactor;
+  const totalDiscount = Number(referralDiscount) + Number(volumeDiscount);
+
   return (
     <div className="p-3">
-      <h1 className="mb-2 text-xl">{t('Fees')}</h1>
+      <h1 className="px-4 pt-2 pb-4 text-2xl">{t('Fees')}</h1>
       <div className="grid lg:auto-rows-min lg:grid-cols-4 gap-3">
         <FeeCard title={t('Trading fees')}>
-          <TradingFees params={params} />
+          <TradingFees params={params} markets={markets} />
         </FeeCard>
         <FeeCard title={t('Current volume')}>
           <CurrentVolume data={data.volumeDiscountStats} />
@@ -56,10 +83,7 @@ export const FeesContainer = () => {
           />
         </FeeCard>
         <FeeCard title={t('Total discount')}>
-          <TotalDiscount
-            referralData={data.referralSetStats}
-            volumeData={data.volumeDiscountStats}
-          />
+          <TotalDiscount totalDiscount={totalDiscount} />
         </FeeCard>
         <FeeCard title={t('Volume discount')} className="lg:col-span-2">
           <VolumeTiers program={data.currentVolumeDiscountProgram} />
@@ -68,7 +92,7 @@ export const FeesContainer = () => {
           <ReferralTiers program={data.currentReferralProgram} />
         </FeeCard>
         <FeeCard title={t('Liquidity fees')} className="lg:col-span-full">
-          <LiquidityFees />
+          <LiquidityFees markets={markets} totalDiscount={totalDiscount} />
         </FeeCard>
       </div>
     </div>
@@ -100,33 +124,64 @@ const FeeCard = ({
 
 const TradingFees = ({
   params,
+  markets,
 }: {
   params: {
     market_fee_factors_infrastructureFee: string;
     market_fee_factors_makerFee: string;
   };
+  markets: MarketMaybeWithDataAndCandles[] | null;
 }) => {
+  // Show min and max liquidity fees from all markets
+  const minLiq = minBy(markets, (m) => Number(m.fees.factors.liquidityFee));
+  const maxLiq = maxBy(markets, (m) => Number(m.fees.factors.liquidityFee));
+
+  const total =
+    Number(params.market_fee_factors_makerFee) +
+    Number(params.market_fee_factors_infrastructureFee);
+
+  let minTotal = total;
+  let maxTotal = total;
+
+  if (minLiq && maxLiq) {
+    minTotal = total + Number(minLiq.fees.factors.liquidityFee);
+    maxTotal = total + Number(maxLiq.fees.factors.liquidityFee);
+  }
+
   return (
     <div>
-      <p className="pt-6 leading-none">
-        <span className="block text-3xl leading-none">TODO</span>
-        <table className="w-full text-sm text-muted">
+      <div className="pt-6 leading-none">
+        <p className="block text-3xl leading-none">
+          {minLiq && maxLiq
+            ? `${format(minTotal)}%-${format(maxTotal)}%`
+            : `${format(total)}%`}
+        </p>
+        <table className="w-full text-xs text-muted">
           <tbody>
             <tr>
               <th className="font-normal text-left">{t('Infrastructure')}</th>
               <td className="text-right">
-                {params.market_fee_factors_infrastructureFee}
+                {format(Number(params.market_fee_factors_infrastructureFee))}%
               </td>
             </tr>
             <tr>
               <th className="font-normal text-left ">{t('Maker')}</th>
               <td className="text-right">
-                {params.market_fee_factors_makerFee}
+                {format(Number(params.market_fee_factors_makerFee))}%
               </td>
             </tr>
+            {minLiq && maxLiq && (
+              <tr>
+                <th className="font-normal text-left ">{t('Liquidity')}</th>
+                <td className="text-right">
+                  {format(Number(minLiq.fees.factors.liquidityFee))}%{'-'}
+                  {format(Number(maxLiq.fees.factors.liquidityFee))}%
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
-      </p>
+      </div>
     </div>
   );
 };
@@ -166,32 +221,20 @@ const ReferralBenefits = ({
 
   return (
     <div>
-      <Stat value={referralSet.totalRefereeNotionalTakerVolume} text={'bar'} />
+      <Stat
+        value={referralSet.totalRefereeNotionalTakerVolume}
+        text={'combined running notional over the last 7 epochs'}
+      />
       <Stat value={epochsInSet} text={t('epochs in referral set')} />
     </div>
   );
 };
 
-const TotalDiscount = ({
-  referralData,
-  volumeData,
-}: {
-  referralData: FeesQuery['referralSetStats'];
-  volumeData: FeesQuery['volumeDiscountStats'];
-}) => {
-  const referralStats = compact(referralData.edges).map((e) => e.node);
-  const referralDiscount = referralStats[0].discountFactor;
-  const volumeStats = compact(volumeData.edges).map((e) => e.node);
-  const volumeDiscount = volumeStats[0].discountFactor;
-  // round and trim result to 2 decimal places to avoid rounding errors
-  const totalDiscount = parseFloat(
-    (Number(referralDiscount) + Number(volumeDiscount)).toFixed(2)
-  );
-
+const TotalDiscount = ({ totalDiscount }: { totalDiscount: number }) => {
   return (
     <div>
       <Stat
-        value={totalDiscount * 100 + '%'}
+        value={format(totalDiscount) + '%'}
         text={t('combined volume & referral discounts')}
       />
     </div>
@@ -216,7 +259,7 @@ const VolumeTiers = ({
           <tr>
             <Th>{t('Tier')}</Th>
             <Th>{t('Discount')}</Th>
-            <Th>{t('Combined trading volume')}</Th>
+            <Th>{t('Min. trading volume')}</Th>
           </tr>
         </THead>
         <tbody>
@@ -253,7 +296,7 @@ const ReferralTiers = ({
           <tr>
             <Th>{t('Tier')}</Th>
             <Th>{t('Discount')}</Th>
-            <Th>{t('Combined trading volume')}</Th>
+            <Th>{t('Min. trading volume')}</Th>
             <Th>{t('Required epochs')}</Th>
           </tr>
         </THead>
@@ -274,8 +317,65 @@ const ReferralTiers = ({
   );
 };
 
-const LiquidityFees = () => {
-  return <div>Liquidity Fees</div>;
+const LiquidityFees = ({
+  markets,
+  totalDiscount,
+}: {
+  markets: MarketMaybeWithDataAndCandles[] | null;
+  totalDiscount: number;
+}) => {
+  const rows = useMemo(() => {
+    if (!markets?.length) return [];
+
+    return compact(markets).map((m) => {
+      const infraFee = Number(m.fees.factors.infrastructureFee);
+      const makerFee = Number(m.fees.factors.makerFee);
+      const liquidityFee = Number(m.fees.factors.liquidityFee);
+      const feeBeforeDiscount = infraFee + makerFee + liquidityFee;
+      // I don't think its possible to calculate this value without
+      // knowing to what value its being applied
+      const feeAfterDiscount = 'TODO: can we calc this?';
+
+      return {
+        code: m.tradableInstrument.instrument.code,
+        product: m.tradableInstrument.instrument.product.__typename
+          ? ProductTypeMapping[
+              m.tradableInstrument.instrument.product.__typename
+            ]
+          : '-',
+        infraFee,
+        makerFee,
+        liquidityFee,
+        feeBeforeDiscount: format(feeBeforeDiscount),
+        feeAfterDiscount: feeAfterDiscount,
+      };
+    });
+  }, [markets]);
+
+  const columnDefs = useMemo(() => {
+    return [
+      { field: 'code' },
+      { field: 'product' },
+      { field: 'infraFee' },
+      { field: 'makerFee' },
+      { field: 'liquidityFee' },
+      { field: 'feeBeforeDiscount' },
+      { field: 'feeAfterDiscount' },
+    ];
+  }, []);
+
+  return (
+    <div className="border border-default">
+      <AgGrid
+        columnDefs={columnDefs}
+        rowData={rows}
+        domLayout="autoHeight"
+        onFirstDataRendered={({ columnApi }) => {
+          columnApi?.autoSizeAllColumns();
+        }}
+      />
+    </div>
+  );
 };
 
 const cellClass = 'px-4 py-2 text-sm font-normal text-left';
@@ -306,9 +406,11 @@ const THead = ({ children }: { children: ReactNode }) => {
 
 const Stat = ({ value, text }: { value: string | number; text: string }) => {
   return (
-    <p className="pt-2 leading-none first:pt-6">
+    <p className="pt-3 leading-none first:pt-6">
       <span className="block text-3xl leading-none">{value}</span>
-      <small className="block text-sm text-muted">{text}</small>
+      <small className="block text-xs text-muted">{text}</small>
     </p>
   );
 };
+
+const format = (num: number) => parseFloat((num * 100).toFixed(5));
