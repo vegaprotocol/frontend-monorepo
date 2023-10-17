@@ -20,7 +20,7 @@ const marketMock = {
   },
 } as Market;
 
-const proposalMock: MockedResponse<MarketViewProposalsQuery> = {
+const passedProposalMock: MockedResponse<MarketViewProposalsQuery> = {
   request: {
     query: MarketViewProposalsDocument,
     variables: { inState: Types.ProposalState.STATE_PASSED },
@@ -31,7 +31,7 @@ const proposalMock: MockedResponse<MarketViewProposalsQuery> = {
         edges: [
           {
             node: {
-              id: 'first-id',
+              id: '1',
               state: Types.ProposalState.STATE_PASSED,
               terms: {
                 closingDatetime: '2023-09-27T11:48:18Z',
@@ -56,7 +56,7 @@ const proposalMock: MockedResponse<MarketViewProposalsQuery> = {
           },
           {
             node: {
-              id: 'second-id',
+              id: '2',
               state: Types.ProposalState.STATE_PASSED,
               terms: {
                 closingDatetime: '2023-09-27T11:48:18Z',
@@ -84,7 +84,96 @@ const proposalMock: MockedResponse<MarketViewProposalsQuery> = {
     },
   },
 };
-const mocks: MockedResponse[] = [proposalMock];
+const openProposalMock: MockedResponse<MarketViewProposalsQuery> = {
+  request: {
+    query: MarketViewProposalsDocument,
+    variables: { inState: Types.ProposalState.STATE_OPEN },
+  },
+  result: {
+    data: {
+      proposalsConnection: {
+        edges: [
+          {
+            node: {
+              id: '3',
+              state: Types.ProposalState.STATE_OPEN,
+              terms: {
+                closingDatetime: '2023-09-27T11:48:18Z',
+                enactmentDatetime: '2023-10-01T11:48:18',
+                change: {
+                  __typename: 'UpdateMarketState',
+                  updateType:
+                    Types.MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE,
+                  price: '',
+                  market: {
+                    id: 'market-3',
+                    tradableInstrument: {
+                      instrument: {
+                        name: 'Market three name',
+                        code: 'Market three',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            node: {
+              id: '4',
+              state: Types.ProposalState.STATE_OPEN,
+              terms: {
+                closingDatetime: '2023-09-27T11:48:18Z',
+                enactmentDatetime: '2023-10-11T11:48:18',
+                change: {
+                  __typename: 'UpdateMarketState',
+                  updateType:
+                    Types.MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE,
+                  price: '',
+                  market: {
+                    id: 'market-3',
+                    tradableInstrument: {
+                      instrument: {
+                        name: 'Market three name',
+                        code: 'Market three',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            node: {
+              id: '5',
+              state: Types.ProposalState.STATE_OPEN,
+              terms: {
+                closingDatetime: '2023-09-27T11:48:18Z',
+                enactmentDatetime: '2023-10-01T11:48:18',
+                change: {
+                  __typename: 'UpdateMarketState',
+                  updateType:
+                    Types.MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE,
+                  price: '',
+                  market: {
+                    id: 'market-4',
+                    tradableInstrument: {
+                      instrument: {
+                        name: 'Market four name',
+                        code: 'Market four',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        ],
+      },
+    },
+  },
+};
+const mocks: MockedResponse[] = [passedProposalMock, openProposalMock];
 
 describe('MarketTerminationBanner', () => {
   beforeAll(() => {
@@ -107,5 +196,29 @@ describe('MarketTerminationBanner', () => {
     expect(
       screen.getByTestId('termination-warning-banner-market-1')
     ).toBeInTheDocument();
+  });
+
+  it('should render link to proposals', async () => {
+    const { container } = render(
+      <MockedProvider mocks={mocks}>
+        <MarketTerminationBanner market={{ ...marketMock, id: 'market-3' }} />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      expect(container).not.toBeEmptyDOMElement();
+    });
+    expect(screen.getByText('View proposals')).toBeInTheDocument();
+  });
+
+  it('should render link to proposal', async () => {
+    const { container } = render(
+      <MockedProvider mocks={mocks}>
+        <MarketTerminationBanner market={{ ...marketMock, id: 'market-4' }} />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      expect(container).not.toBeEmptyDOMElement();
+    });
+    expect(screen.getByText('View proposal')).toBeInTheDocument();
   });
 });
