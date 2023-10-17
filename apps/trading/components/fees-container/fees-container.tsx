@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import type { ReactNode } from 'react';
 import compact from 'lodash/compact';
 import maxBy from 'lodash/maxBy';
@@ -14,8 +13,9 @@ import {
 } from '@vegaprotocol/network-parameters';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { useMarketList } from '@vegaprotocol/markets';
-import { AgGrid } from '@vegaprotocol/datagrid';
-import { ProductTypeMapping } from '@vegaprotocol/types';
+import { MarketFees } from './market-fees';
+import { format, getVolumeTier } from './utils';
+import { Table, Td, Th, THead } from './table';
 
 /**
  * TODO:
@@ -59,31 +59,37 @@ export const FeesContainer = () => {
   }
 
   const referralStats = compact(data.referralSetStats.edges).map((e) => e.node);
-  const referralDiscount = referralStats[0].discountFactor;
+  const referralDiscount = Number(referralStats[0].discountFactor || 0);
   const volumeStats = compact(data.volumeDiscountStats.edges).map(
     (e) => e.node
   );
-  const volumeDiscount = volumeStats[0].discountFactor;
-  const totalDiscount = Number(referralDiscount) + Number(volumeDiscount);
+  const volumeDiscount = Number(volumeStats[0].discountFactor || 0);
 
   return (
     <div className="p-3">
       <h1 className="px-4 pt-2 pb-4 text-2xl">{t('Fees')}</h1>
       <div className="grid lg:auto-rows-min lg:grid-cols-4 gap-3">
-        <FeeCard title={t('Trading fees')}>
+        <FeeCard title={t('My trading fees')}>
           <TradingFees params={params} markets={markets} />
         </FeeCard>
-        <FeeCard title={t('Current volume')}>
-          <CurrentVolume data={data.volumeDiscountStats} />
+        <FeeCard title={t('Total discount')}>
+          <TotalDiscount
+            referralDiscount={referralDiscount}
+            volumeDiscount={volumeDiscount}
+          />
+        </FeeCard>
+        <FeeCard title={t('My current volume')}>
+          <CurrentVolume
+            volumeProgram={data.currentVolumeDiscountProgram}
+            volumeStats={data.volumeDiscountStats}
+          />
         </FeeCard>
         <FeeCard title={t('Referral benefits')}>
           <ReferralBenefits
             currentEpoch={data.epoch}
-            data={data.referralSetReferees}
+            setReferees={data.referralSetReferees}
+            setStats={data.referralSetStats}
           />
-        </FeeCard>
-        <FeeCard title={t('Total discount')}>
-          <TotalDiscount totalDiscount={totalDiscount} />
         </FeeCard>
         <FeeCard title={t('Volume discount')} className="lg:col-span-2">
           <VolumeTiers program={data.currentVolumeDiscountProgram} />
@@ -92,7 +98,11 @@ export const FeesContainer = () => {
           <ReferralTiers program={data.currentReferralProgram} />
         </FeeCard>
         <FeeCard title={t('Liquidity fees')} className="lg:col-span-full">
-          <LiquidityFees markets={markets} totalDiscount={totalDiscount} />
+          <MarketFees
+            markets={markets}
+            referralDiscount={referralDiscount}
+            volumeDiscount={volumeDiscount}
+          />
         </FeeCard>
       </div>
     </div>
@@ -187,42 +197,80 @@ const TradingFees = ({
 };
 
 const CurrentVolume = ({
-  data,
+  volumeStats,
+  volumeProgram,
 }: {
-  data: FeesQuery['volumeDiscountStats'];
+  volumeStats: FeesQuery['volumeDiscountStats'];
+  volumeProgram?: FeesQuery['currentVolumeDiscountProgram'];
 }) => {
-  const total = compact(data.edges)
-    .map((e) => e.node)
-    .reduce((sum, d) => {
-      return sum + BigInt(d.runningVolume);
-    }, BigInt(0));
+  // TODO: clarify if volume discount is only for the last epoch, so no need
+  // to sum up running volume
+
+  // const total = compact(volumeStats.edges)
+  //   .map((e) => e.node)
+  //   .reduce((sum, d) => {
+  //     return sum + BigInt(d.runningVolume);
+  //   }, BigInt(0));
+
+  const lastEpochTotal = volumeStats
+    ? maxBy(compact(volumeStats.edges), (e) => e.node.atEpoch)
+    : undefined;
+
+  const tierIndex = volumeProgram?.benefitTiers.length
+    ? getVolumeTier(
+        Number(lastEpochTotal?.node.runningVolume || 0),
+        volumeProgram.benefitTiers
+      )
+    : undefined;
+
+  let requiredForNextTier = 0;
+
+  if (tierIndex) {
+    const nextTier = volumeProgram?.benefitTiers[tierIndex + 1];
+    requiredForNextTier = nextTier
+      ? Number(nextTier.minimumRunningNotionalTakerVolume) -
+        Number(lastEpochTotal?.node.runningVolume || 0)
+      : 0;
+  }
 
   return (
     <div>
       <Stat
-        value={total.toString()}
-        text={t('over the last %s epochs', VOLUME_EPOCHS.toString())}
+        value={lastEpochTotal?.node.runningVolume || 0}
+        text={t('Over the last epoch')}
       />
+      {requiredForNextTier > 0 && (
+        <Stat value={requiredForNextTier} text={t('Required for next tier')} />
+      )}
     </div>
   );
 };
 
 const ReferralBenefits = ({
   currentEpoch,
-  data,
+  setReferees,
+  setStats,
 }: {
   currentEpoch: FeesQuery['epoch'];
-  data: FeesQuery['referralSetReferees'];
+  setReferees: FeesQuery['referralSetReferees'];
+  setStats: FeesQuery['referralSetStats'];
 }) => {
-  const referralSets = compact(data.edges).map((e) => e.node);
+  const referralSetsStats = compact(setStats.edges).map((e) => e.node);
+  const referralSets = compact(setReferees.edges).map((e) => e.node);
+
+  if (referralSets.length > 1 || referralSetsStats.length > 1) {
+    throw new Error('more than one referral set for user');
+  }
+
   // you can only be in one referral set at a time
   const referralSet = referralSets[0];
+  const referralStats = referralSetsStats[0];
   const epochsInSet = Number(currentEpoch.id) - referralSet.atEpoch;
 
   return (
     <div>
       <Stat
-        value={referralSet.totalRefereeNotionalTakerVolume}
+        value={referralStats.referralSetRunningNotionalTakerVolume}
         text={'combined running notional over the last 7 epochs'}
       />
       <Stat value={epochsInSet} text={t('epochs in referral set')} />
@@ -230,13 +278,28 @@ const ReferralBenefits = ({
   );
 };
 
-const TotalDiscount = ({ totalDiscount }: { totalDiscount: number }) => {
+const TotalDiscount = ({
+  referralDiscount,
+  volumeDiscount,
+}: {
+  referralDiscount: number;
+  volumeDiscount: number;
+}) => {
   return (
     <div>
-      <Stat
-        value={format(totalDiscount) + '%'}
-        text={t('combined volume & referral discounts')}
-      />
+      <Stat value={format(referralDiscount + volumeDiscount) + '%'} />
+      <table className="w-full text-xs text-muted">
+        <tbody>
+          <tr>
+            <th className="font-normal text-left">{t('Volume discount')}</th>
+            <td className="text-right">{format(volumeDiscount)}%</td>
+          </tr>
+          <tr>
+            <th className="font-normal text-left ">{t('Referral discount')}</th>
+            <td className="text-right">{referralDiscount}%</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };
@@ -317,112 +380,11 @@ const ReferralTiers = ({
   );
 };
 
-const feesTableColumnDefs = [
-  { field: 'code' },
-  {
-    field: 'product',
-  },
-  {
-    field: 'infraFee',
-    valueFormatter: ({ value }: { value: number }) => value + '%',
-  },
-  {
-    field: 'makerFee',
-    valueFormatter: ({ value }: { value: number }) => value + '%',
-  },
-  {
-    field: 'liquidityFee',
-    valueFormatter: ({ value }: { value: number }) => value + '%',
-  },
-  {
-    field: 'totalFee',
-    valueFormatter: ({ value }: { value: number }) => value + '%',
-  },
-  {
-    field: 'feeAfterDiscount',
-    valueFormatter: ({ value }: { value: number }) => value + '%',
-  },
-];
-
-const feesTableDefaultColDef = {
-  flex: 1,
-  resizable: true,
-  sortable: true,
-};
-
-const LiquidityFees = ({
-  markets,
-  totalDiscount,
-}: {
-  markets: MarketMaybeWithDataAndCandles[] | null;
-  totalDiscount: number;
-}) => {
-  const rows = compact(markets || []).map((m) => {
-    const infraFee = Number(m.fees.factors.infrastructureFee);
-    const makerFee = Number(m.fees.factors.makerFee);
-    const liquidityFee = Number(m.fees.factors.liquidityFee);
-    const totalFee = infraFee + makerFee + liquidityFee;
-    const feeAfterDiscount = totalFee * Math.max(0, 1 - totalDiscount);
-
-    return {
-      code: m.tradableInstrument.instrument.code,
-      product: m.tradableInstrument.instrument.product.__typename
-        ? ProductTypeMapping[m.tradableInstrument.instrument.product.__typename]
-        : '-',
-      infraFee: format(infraFee),
-      makerFee: format(makerFee),
-      liquidityFee: format(liquidityFee),
-      totalFee: format(totalFee),
-      feeAfterDiscount: format(feeAfterDiscount),
-    };
-  });
-
-  return (
-    <div className="border border-default">
-      <AgGrid
-        columnDefs={feesTableColumnDefs}
-        rowData={rows}
-        defaultColDef={feesTableDefaultColDef}
-        domLayout="autoHeight"
-      />
-    </div>
-  );
-};
-
-const cellClass = 'px-4 py-2 text-sm font-normal text-left';
-
-const Th = ({ children }: { children: ReactNode }) => {
-  return <th className={cellClass}>{children}</th>;
-};
-
-const Td = ({ children }: { children: ReactNode }) => {
-  return <th className={cellClass}>{children}</th>;
-};
-
-const Table = ({ children }: { children: ReactNode }) => {
-  return (
-    <table className="w-full border border-vega-clight-600 dark:border-vega-cdark-600">
-      {children}
-    </table>
-  );
-};
-
-const THead = ({ children }: { children: ReactNode }) => {
-  return (
-    <thead className="border-b bg-vega-clight-700 dark:bg-vega-cdark-700 border-vega-clight-600 dark:border-vega-cdark-600">
-      {children}
-    </thead>
-  );
-};
-
-const Stat = ({ value, text }: { value: string | number; text: string }) => {
+const Stat = ({ value, text }: { value: string | number; text?: string }) => {
   return (
     <p className="pt-3 leading-none first:pt-6">
       <span className="block text-3xl leading-none">{value}</span>
-      <small className="block text-xs text-muted">{text}</small>
+      {text && <small className="block text-xs text-muted">{text}</small>}
     </p>
   );
 };
-
-/** Convert a number between 0-1 into a percentage value between 0-100 */
-const format = (num: number) => parseFloat((num * 100).toFixed(5));

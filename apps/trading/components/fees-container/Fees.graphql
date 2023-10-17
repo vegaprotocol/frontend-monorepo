@@ -43,6 +43,8 @@ query Fees($partyId: ID!, $volumeDiscountStatsEpochs: Int!) {
       node {
         atEpoch
         discountFactor
+        epochNotionalTakerVolume
+        referralSetRunningNotionalTakerVolume
       }
     }
   }

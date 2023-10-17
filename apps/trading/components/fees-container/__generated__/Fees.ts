@@ -9,7 +9,7 @@ export type FeesQueryVariables = Types.Exact<{
 }>;
 
 
-export type FeesQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string }, currentReferralProgram?: { __typename?: 'CurrentReferralProgram', benefitTiers: Array<{ __typename?: 'BenefitTier', minimumEpochs: number, minimumRunningNotionalTakerVolume: string, referralDiscountFactor: string, referralRewardFactor: string }> } | null, currentVolumeDiscountProgram?: { __typename?: 'VolumeDiscountProgram', benefitTiers: Array<{ __typename?: 'VolumeBenefitTier', minimumRunningNotionalTakerVolume: string, volumeDiscountFactor: string }> } | null, volumeDiscountStats: { __typename?: 'VolumeDiscountStatsConnection', edges: Array<{ __typename?: 'VolumeDiscountStatsEdge', node: { __typename?: 'VolumeDiscountStats', atEpoch: number, discountFactor: string, runningVolume: string } } | null> }, referralSetReferees: { __typename?: 'ReferralSetRefereeConnection', edges: Array<{ __typename?: 'ReferralSetRefereeEdge', node: { __typename?: 'ReferralSetReferee', referralSetId: string, joinedAt: any, atEpoch: number, totalRefereeNotionalTakerVolume: string } } | null> }, referralSetStats: { __typename?: 'ReferralSetStatsConnection', edges: Array<{ __typename?: 'ReferralSetStatsEdge', node: { __typename?: 'ReferralSetStats', atEpoch: number, discountFactor: string } } | null> } };
+export type FeesQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string }, currentReferralProgram?: { __typename?: 'CurrentReferralProgram', benefitTiers: Array<{ __typename?: 'BenefitTier', minimumEpochs: number, minimumRunningNotionalTakerVolume: string, referralDiscountFactor: string, referralRewardFactor: string }> } | null, currentVolumeDiscountProgram?: { __typename?: 'VolumeDiscountProgram', benefitTiers: Array<{ __typename?: 'VolumeBenefitTier', minimumRunningNotionalTakerVolume: string, volumeDiscountFactor: string }> } | null, volumeDiscountStats: { __typename?: 'VolumeDiscountStatsConnection', edges: Array<{ __typename?: 'VolumeDiscountStatsEdge', node: { __typename?: 'VolumeDiscountStats', atEpoch: number, discountFactor: string, runningVolume: string } } | null> }, referralSetReferees: { __typename?: 'ReferralSetRefereeConnection', edges: Array<{ __typename?: 'ReferralSetRefereeEdge', node: { __typename?: 'ReferralSetReferee', referralSetId: string, joinedAt: any, atEpoch: number, totalRefereeNotionalTakerVolume: string } } | null> }, referralSetStats: { __typename?: 'ReferralSetStatsConnection', edges: Array<{ __typename?: 'ReferralSetStatsEdge', node: { __typename?: 'ReferralSetStats', atEpoch: number, discountFactor: string, epochNotionalTakerVolume: string, referralSetRunningNotionalTakerVolume: string } } | null> } };
 
 
 export const FeesDocument = gql`
@@ -37,6 +37,7 @@ export const FeesDocument = gql`
   ) {
     edges {
       node {
+        partyId
         atEpoch
         discountFactor
         runningVolume
@@ -58,6 +59,8 @@ export const FeesDocument = gql`
       node {
         atEpoch
         discountFactor
+        epochNotionalTakerVolume
+        referralSetRunningNotionalTakerVolume
       }
     }
   }
