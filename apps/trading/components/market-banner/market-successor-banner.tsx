@@ -72,41 +72,43 @@ export const MarketSuccessorBanner = ({
           setVisible(false);
         }}
       >
-        <div className="uppercase mb-1">
+        <div className="uppercase">
           {successorData
             ? t('This market has been succeeded')
             : t('This market has been settled')}
         </div>
-        <div>
-          {duration && (
-            <span>
-              {t('This market expires in %s.', [
-                formatDuration(duration, {
-                  format: [
-                    'years',
-                    'months',
-                    'weeks',
-                    'days',
-                    'hours',
-                    'minutes',
-                  ],
-                }),
-              ])}
-            </span>
-          )}
-          {successorData && (
-            <>
-              {' '}
-              {t('The successor market')}{' '}
-              <ExternalLink href={`/#/markets/${successorData?.id}`}>
-                {successorData?.tradableInstrument.instrument.name}
-              </ExternalLink>
-              {successorVolume && (
-                <span> {t('has %s 24h vol.', [successorVolume])}</span>
-              )}
-            </>
-          )}
-        </div>
+        {(duration || successorData) && (
+          <div className="mt-1">
+            {duration && (
+              <span>
+                {t('This market expires in %s.', [
+                  formatDuration(duration, {
+                    format: [
+                      'years',
+                      'months',
+                      'weeks',
+                      'days',
+                      'hours',
+                      'minutes',
+                    ],
+                  }),
+                ])}
+              </span>
+            )}
+            {successorData && (
+              <>
+                {' '}
+                {t('The successor market')}{' '}
+                <ExternalLink href={`/#/markets/${successorData?.id}`}>
+                  {successorData?.tradableInstrument.instrument.name}
+                </ExternalLink>
+                {successorVolume && (
+                  <span> {t('has %s 24h vol.', [successorVolume])}</span>
+                )}
+              </>
+            )}
+          </div>
+        )}
       </NotificationBanner>
     );
   }
