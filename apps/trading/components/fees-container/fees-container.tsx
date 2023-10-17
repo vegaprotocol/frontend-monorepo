@@ -317,6 +317,39 @@ const ReferralTiers = ({
   );
 };
 
+const feesTableColumnDefs = [
+  { field: 'code' },
+  {
+    field: 'product',
+  },
+  {
+    field: 'infraFee',
+    valueFormatter: ({ value }: { value: number }) => value + '%',
+  },
+  {
+    field: 'makerFee',
+    valueFormatter: ({ value }: { value: number }) => value + '%',
+  },
+  {
+    field: 'liquidityFee',
+    valueFormatter: ({ value }: { value: number }) => value + '%',
+  },
+  {
+    field: 'totalFee',
+    valueFormatter: ({ value }: { value: number }) => value + '%',
+  },
+  {
+    field: 'feeAfterDiscount',
+    valueFormatter: ({ value }: { value: number }) => value + '%',
+  },
+];
+
+const feesTableDefaultColDef = {
+  flex: 1,
+  resizable: true,
+  sortable: true,
+};
+
 const LiquidityFees = ({
   markets,
   totalDiscount,
@@ -324,55 +357,33 @@ const LiquidityFees = ({
   markets: MarketMaybeWithDataAndCandles[] | null;
   totalDiscount: number;
 }) => {
-  const rows = useMemo(() => {
-    if (!markets?.length) return [];
+  const rows = compact(markets || []).map((m) => {
+    const infraFee = Number(m.fees.factors.infrastructureFee);
+    const makerFee = Number(m.fees.factors.makerFee);
+    const liquidityFee = Number(m.fees.factors.liquidityFee);
+    const totalFee = infraFee + makerFee + liquidityFee;
+    const feeAfterDiscount = totalFee * Math.max(0, 1 - totalDiscount);
 
-    return compact(markets).map((m) => {
-      const infraFee = Number(m.fees.factors.infrastructureFee);
-      const makerFee = Number(m.fees.factors.makerFee);
-      const liquidityFee = Number(m.fees.factors.liquidityFee);
-      const feeBeforeDiscount = infraFee + makerFee + liquidityFee;
-      // I don't think its possible to calculate this value without
-      // knowing to what value its being applied
-      const feeAfterDiscount = 'TODO: can we calc this?';
-
-      return {
-        code: m.tradableInstrument.instrument.code,
-        product: m.tradableInstrument.instrument.product.__typename
-          ? ProductTypeMapping[
-              m.tradableInstrument.instrument.product.__typename
-            ]
-          : '-',
-        infraFee,
-        makerFee,
-        liquidityFee,
-        feeBeforeDiscount: format(feeBeforeDiscount),
-        feeAfterDiscount: feeAfterDiscount,
-      };
-    });
-  }, [markets]);
-
-  const columnDefs = useMemo(() => {
-    return [
-      { field: 'code' },
-      { field: 'product' },
-      { field: 'infraFee' },
-      { field: 'makerFee' },
-      { field: 'liquidityFee' },
-      { field: 'feeBeforeDiscount' },
-      { field: 'feeAfterDiscount' },
-    ];
-  }, []);
+    return {
+      code: m.tradableInstrument.instrument.code,
+      product: m.tradableInstrument.instrument.product.__typename
+        ? ProductTypeMapping[m.tradableInstrument.instrument.product.__typename]
+        : '-',
+      infraFee: format(infraFee),
+      makerFee: format(makerFee),
+      liquidityFee: format(liquidityFee),
+      totalFee: format(totalFee),
+      feeAfterDiscount: format(feeAfterDiscount),
+    };
+  });
 
   return (
     <div className="border border-default">
       <AgGrid
-        columnDefs={columnDefs}
+        columnDefs={feesTableColumnDefs}
         rowData={rows}
+        defaultColDef={feesTableDefaultColDef}
         domLayout="autoHeight"
-        onFirstDataRendered={({ columnApi }) => {
-          columnApi?.autoSizeAllColumns();
-        }}
       />
     </div>
   );
@@ -413,4 +424,5 @@ const Stat = ({ value, text }: { value: string | number; text: string }) => {
   );
 };
 
+/** Convert a number between 0-1 into a percentage value between 0-100 */
 const format = (num: number) => parseFloat((num * 100).toFixed(5));
