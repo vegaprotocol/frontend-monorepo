@@ -4,6 +4,7 @@ import type { Market } from '@vegaprotocol/markets';
 import {
   calcCandleVolume,
   useCandles,
+  useMarketState,
   useSuccessorMarket,
 } from '@vegaprotocol/markets';
 import {
@@ -29,7 +30,8 @@ export const MarketSuccessorBanner = ({
 }: {
   market: Market | null;
 }) => {
-  const isSettled = market?.state === Types.MarketState.STATE_SETTLED;
+  const { data: marketState } = useMarketState(market?.id);
+  const isSettled = marketState === Types.MarketState.STATE_SETTLED;
   const { data: successorData, loading } = useSuccessorMarket(market?.id);
 
   const [visible, setVisible] = useState(true);
