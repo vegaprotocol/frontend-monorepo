@@ -3,14 +3,12 @@ import { Filter, OrderListManager } from '@vegaprotocol/orders';
 import { t } from '@vegaprotocol/i18n';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import {
-  useMarketClickHandler,
-  useMarketLiquidityClickHandler,
-} from '../../lib/hooks/use-market-click-handler';
+import { useNavigateWithMeta } from '../../lib/hooks/use-market-click-handler';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { DataGridStore } from '../../stores/datagrid-store-slice';
 import { OrderStatus } from '@vegaprotocol/types';
+import { Links } from '../../lib/links';
 
 export const FilterStatusValue = {
   [Filter.Open]: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
@@ -32,8 +30,7 @@ const AUTO_SIZE_COLUMNS = ['instrument-code'];
 
 export const OrdersContainer = ({ filter }: OrderContainerProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
-  const onMarketClick = useMarketClickHandler(true);
-  const onOrderTypeClick = useMarketLiquidityClickHandler();
+  const navigate = useNavigateWithMeta();
   const { gridState, updateGridState } = useOrderListGridState(filter);
   const gridStoreCallbacks = useDataGridEvents(
     gridState,
@@ -51,8 +48,12 @@ export const OrdersContainer = ({ filter }: OrderContainerProps) => {
     <OrderListManager
       partyId={pubKey}
       filter={filter}
-      onMarketClick={onMarketClick}
-      onOrderTypeClick={onOrderTypeClick}
+      onMarketClick={(marketId, metaKey) => {
+        navigate(Links.MARKET(marketId), metaKey);
+      }}
+      onOrderTypeClick={(marketId, metaKey) =>
+        navigate(Links.LIQUIDITY(marketId), metaKey)
+      }
       isReadOnly={isReadOnly}
       gridProps={gridStoreCallbacks}
     />
