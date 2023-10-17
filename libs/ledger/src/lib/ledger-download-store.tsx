@@ -61,11 +61,11 @@ const ErrorContent = () => (
 
 const InfoContent = ({ progress = false }) => (
   <>
-    <h4 className="mb-1 text-sm">
+    <p>{t('Please note this can take several minutes.')}</p>
+    <p>{t('You will be notified here when file will be ready.')}</p>
+    <h4 className="my-2">
       {progress ? t('Still in progress') : t('Download has been started')}
     </h4>
-    <p>{t('Please note this can take several minutes.')}</p>
-    <p>{t('You will be noticed here when file will be ready.')}</p>
   </>
 );
 
