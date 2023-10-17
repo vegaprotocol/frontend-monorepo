@@ -21,7 +21,7 @@ const market = {
 } as unknown as Market;
 
 let mockDataSuccessorMarket: PartialDeep<Market> | null = null;
-const mockDataMarketState: Market['state'] = Types.MarketState.STATE_SETTLED;
+let mockDataMarketState: Market['state'] | null = null;
 jest.mock('@vegaprotocol/data-provider', () => ({
   ...jest.requireActual('@vegaprotocol/data-provider'),
   useDataProvider: jest.fn().mockImplementation((args) => {
@@ -105,6 +105,7 @@ describe('MarketSuccessorBanner', () => {
 
     it('no successor market data, market settled', () => {
       mockDataSuccessorMarket = null;
+      mockDataMarketState = Types.MarketState.STATE_SETTLED;
       render(<MarketSuccessorBanner market={market} />, {
         wrapper: MockedProvider,
       });

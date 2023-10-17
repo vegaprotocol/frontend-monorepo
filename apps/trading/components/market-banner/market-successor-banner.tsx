@@ -98,7 +98,8 @@ export const MarketSuccessorBanner = ({
             {successorData && (
               <>
                 {' '}
-                {t('The successor market is ')}{' '}
+                {t('The successor market')}
+                {!successorVolume ? ' is ' : ' '}
                 <ExternalLink href={`/#/markets/${successorData?.id}`}>
                   {successorData?.tradableInstrument.instrument.name}
                 </ExternalLink>
