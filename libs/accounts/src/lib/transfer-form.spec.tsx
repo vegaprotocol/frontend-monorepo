@@ -88,6 +88,9 @@ describe('TransferForm', () => {
   });
 
   it('validates a manually entered address', async () => {
+    // 1003-TRAN-012
+    // 1003-TRAN-013
+    // 1003-TRAN-004
     render(<TransferForm {...props} />);
     submit();
     expect(await screen.findAllByText('Required')).toHaveLength(3);
@@ -116,6 +119,11 @@ describe('TransferForm', () => {
   });
 
   it('validates fields and submits', async () => {
+    // 1003-TRAN-002
+    // 1003-TRAN-003
+    // 1002-WITH-010
+    // 1003-TRAN-011
+    // 1003-TRAN-014
     render(<TransferForm {...props} />);
 
     // check current pubkey not shown
