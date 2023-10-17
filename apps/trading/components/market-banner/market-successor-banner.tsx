@@ -75,7 +75,7 @@ export const MarketSuccessorBanner = ({
         <div className="uppercase mb-1">
           {successorData
             ? t('This market has been succeeded')
-            : t('This market is settled')}
+            : t('This market has settled')}
         </div>
         <div>
           {duration && (

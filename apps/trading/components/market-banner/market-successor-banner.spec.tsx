@@ -108,7 +108,7 @@ describe('MarketSuccessorBanner', () => {
       render(<MarketSuccessorBanner market={market} />, {
         wrapper: MockedProvider,
       });
-      expect(screen.getByText('This market is settled')).toBeInTheDocument();
+      expect(screen.getByText('This market has settled')).toBeInTheDocument();
     });
 
     it('should display optionally successor volume', () => {
