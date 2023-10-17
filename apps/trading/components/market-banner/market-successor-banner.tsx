@@ -104,7 +104,10 @@ export const MarketSuccessorBanner = ({
                   {successorData?.tradableInstrument.instrument.name}
                 </ExternalLink>
                 {successorVolume && (
-                  <span> {t('has %s 24h vol.', [successorVolume])}</span>
+                  <span>
+                    {' '}
+                    {t('has a 24h trading volume of %s', [successorVolume])}
+                  </span>
                 )}
               </>
             )}

@@ -131,7 +131,9 @@ describe('MarketSuccessorBanner', () => {
       render(<MarketSuccessorBanner market={market} />, {
         wrapper: MockedProvider,
       });
-      expect(screen.getByText('has 101.367 24h vol.')).toBeInTheDocument();
+      expect(
+        screen.getByText('has a 24h trading volume of 101.367')
+      ).toBeInTheDocument();
     });
 
     it('should display optionally duration', () => {
