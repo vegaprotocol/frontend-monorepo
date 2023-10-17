@@ -173,7 +173,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
         intent: Intent.Danger,
         isError: true,
         isChanged: true,
-        errorMessage: err.message || undefined,
+        errorMessage: (err as Error).message || undefined,
       });
     } finally {
       clearTimeout(ts);
