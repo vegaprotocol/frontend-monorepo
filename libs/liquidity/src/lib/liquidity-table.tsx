@@ -147,7 +147,6 @@ export const LiquidityTable = ({
             ),
             valueFormatter: stakeToCcyVolumeQuantumFormatter,
             tooltipValueGetter: stakeToCcyVolumeFormatter,
-            columnGroupShow: 'open',
           },
           {
             headerName: t('Fee'),
@@ -157,14 +156,13 @@ export const LiquidityTable = ({
             field: 'fee',
             type: 'rightAligned',
             valueFormatter: percentageFormatter,
-            columnGroupShow: 'open',
           },
           {
             headerName: t('Adjusted stake share'),
             field: 'feeShare.virtualStake',
             type: 'rightAligned',
             headerTooltip: t('The virtual stake of the liquidity provider.'),
-            columnGroupShow: 'open',
+
             valueFormatter: assetDecimalsQuantumFormatter,
             tooltipValueGetter: assetDecimalsFormatter,
           },
@@ -176,7 +174,6 @@ export const LiquidityTable = ({
               'The equity-like share of liquidity of the market used to determine allocation of LP fees. Calculated based on share of total liquidity, with a premium added for length of commitment.'
             ),
             valueFormatter: percentageFormatter,
-            columnGroupShow: 'open',
           },
         ],
       },
@@ -193,7 +190,6 @@ export const LiquidityTable = ({
             ),
             valueFormatter: stakeToCcyVolumeQuantumFormatter,
             tooltipValueGetter: stakeToCcyVolumeFormatter,
-            columnGroupShow: 'open',
           },
           {
             headerName: t(`Live time fraction on book`),
@@ -208,7 +204,6 @@ export const LiquidityTable = ({
             type: 'rightAligned',
             headerTooltip: t('The average score of the liquidity provider.'),
             valueFormatter: percentageFormatter,
-            columnGroupShow: 'open',
           },
         ],
       },
@@ -229,7 +224,6 @@ export const LiquidityTable = ({
             type: 'rightAligned',
             headerTooltip: t('Last epoch fee penalty.'),
             valueFormatter: percentageFormatter,
-            columnGroupShow: 'open',
           },
           {
             headerName: t(`Last bond penalty`),
@@ -237,7 +231,6 @@ export const LiquidityTable = ({
             type: 'rightAligned',
             headerTooltip: t('Last epoch bond penalty.'),
             valueFormatter: percentageFormatter,
-            columnGroupShow: 'open',
           },
         ],
       },
@@ -264,7 +257,6 @@ export const LiquidityTable = ({
             field: 'createdAt',
             type: 'rightAligned',
             valueFormatter: dateValueFormatter,
-            // columnGroupShow: 'open',
           },
           {
             headerName: t('Updated'),
@@ -274,7 +266,6 @@ export const LiquidityTable = ({
             field: 'updatedAt',
             type: 'rightAligned',
             valueFormatter: dateValueFormatter,
-            // columnGroupShow: 'open',
           },
         ],
       },
