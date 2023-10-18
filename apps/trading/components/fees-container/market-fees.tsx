@@ -3,11 +3,14 @@ import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { ProductTypeMapping } from '@vegaprotocol/types';
 import { format } from './utils';
 import { AgGrid } from '@vegaprotocol/datagrid';
+import { t } from '@vegaprotocol/i18n';
 
 const feesTableColumnDefs = [
   { field: 'code' },
   {
-    field: 'product',
+    field: 'feeAfterDiscount',
+    headerName: t('Total fee after discount'),
+    valueFormatter: ({ value }: { value: number }) => value + '%',
   },
   {
     field: 'infraFee',
@@ -23,10 +26,7 @@ const feesTableColumnDefs = [
   },
   {
     field: 'totalFee',
-    valueFormatter: ({ value }: { value: number }) => value + '%',
-  },
-  {
-    field: 'feeAfterDiscount',
+    headerName: t('Total fee before discount'),
     valueFormatter: ({ value }: { value: number }) => value + '%',
   },
 ];

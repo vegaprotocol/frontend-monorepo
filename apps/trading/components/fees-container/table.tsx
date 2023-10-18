@@ -15,6 +15,14 @@ export const Td = ({ children }: { children?: ReactNode }) => {
   return <th className={cellClass}>{children}</th>;
 };
 
+export const Tr = ({ children }: { children?: ReactNode }) => {
+  return (
+    <tr className="hover:bg-vega-clight-600 dark:hover:bg-vega-cdark-700">
+      {children}
+    </tr>
+  );
+};
+
 export const Table = ({ children }: { children: ReactNode }) => {
   return (
     <table className="w-full border border-vega-clight-600 dark:border-vega-cdark-600">
