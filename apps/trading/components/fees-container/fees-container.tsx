@@ -35,22 +35,15 @@ export const FeesContainer = () => {
 
   const { data: markets, loading: marketsLoading } = useMarketList();
 
-  const {
-    data: programData,
-    loading: programLoading,
-    error: programError,
-  } = useDiscountProgramsQuery();
+  const { data: programData, loading: programLoading } =
+    useDiscountProgramsQuery();
 
   const volumeDiscountEpochs =
     programData?.currentVolumeDiscountProgram?.windowLength || 1;
   const referralDiscountEpochs =
     programData?.currentReferralProgram?.windowLength || 1;
 
-  const {
-    data: feesData,
-    loading: feesLoading,
-    error: feesError,
-  } = useFeesQuery({
+  const { data: feesData, loading: feesLoading } = useFeesQuery({
     variables: {
       partyId:
         // TODO: change for pubkey
@@ -84,14 +77,6 @@ export const FeesContainer = () => {
     return (
       <Splash>
         <p className="text-xs">{t('Please connect Vega wallet')}</p>
-      </Splash>
-    );
-  }
-
-  if (feesError) {
-    return (
-      <Splash>
-        <p className="text-xs">{t('Failed to fetch fees data')}</p>
       </Splash>
     );
   }
@@ -168,7 +153,7 @@ export const FeesContainer = () => {
         <FeeCard
           title={t('Liquidity fees')}
           className="lg:col-span-full"
-          loading={loading}
+          loading={marketsLoading}
         >
           <MarketFees
             markets={markets}

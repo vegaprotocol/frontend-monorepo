@@ -9,12 +9,14 @@ export const useReferralStats = (
   program?: DiscountProgramsQuery['currentReferralProgram'],
   epoch?: FeesQuery['epoch']
 ) => {
+  const referralTiers = program ? [...program.benefitTiers].reverse() : [];
+
   if (!setStats || !setReferees || !program || !epoch) {
     return {
       referralDiscount: 0,
       referralVolumeInWindow: 0,
       referralTierIndex: -1,
-      referralTiers: [],
+      referralTiers,
       epochsInSet: 0,
     };
   }
@@ -31,8 +33,6 @@ export const useReferralStats = (
   const referralVolumeInWindow = Number(
     referralStats?.referralSetRunningNotionalTakerVolume || 0
   );
-
-  const referralTiers = [...program.benefitTiers].reverse();
 
   const referralTierIndex = referralStats
     ? getReferralBenefitTier(

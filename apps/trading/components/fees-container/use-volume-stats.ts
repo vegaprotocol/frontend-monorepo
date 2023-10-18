@@ -7,12 +7,14 @@ export const useVolumeStats = (
   stats?: FeesQuery['volumeDiscountStats'],
   program?: DiscountProgramsQuery['currentVolumeDiscountProgram']
 ) => {
+  const volumeTiers = program ? [...program.benefitTiers].reverse() : [];
+
   if (!stats || !program) {
     return {
       volumeDiscount: 0,
       volumeTierIndex: -1,
       volumeInWindow: 0,
-      volumeTiers: [],
+      volumeTiers,
     };
   }
 
@@ -22,8 +24,6 @@ export const useVolumeStats = (
 
   const lastEpochStats = maxBy(volumeStats, (s) => s.atEpoch);
   const volumeInWindow = Number(lastEpochStats?.runningVolume || 0);
-
-  const volumeTiers = [...program.benefitTiers].reverse();
 
   const volumeTierIndex = getVolumeTier(volumeInWindow, volumeTiers);
 
