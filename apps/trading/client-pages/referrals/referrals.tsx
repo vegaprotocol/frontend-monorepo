@@ -27,15 +27,24 @@ const Nav = () => (
 export const Referrals = () => {
   const { pubKey } = useVegaWallet();
 
-  const { data: referee, loading: refereeLoading } = useReferral({
+  const {
+    data: referee,
+    loading: refereeLoading,
+    error: refereeError,
+  } = useReferral({
     pubKey,
     role: 'referee',
   });
-  const { data: referrer, loading: referrerLoading } = useReferral({
+  const {
+    data: referrer,
+    loading: referrerLoading,
+    error: referrerError,
+  } = useReferral({
     pubKey,
     role: 'referrer',
   });
 
+  const error = refereeError || referrerError;
   const loading = refereeLoading || referrerLoading;
   const showNav = !loading && !referrer && !referee;
 
@@ -47,12 +56,16 @@ export const Referrals = () => {
       <div
         className={classNames({
           'py-16': showNav,
-          'h-[300px] relative': loading,
+          'h-[300px] relative': loading || error,
         })}
       >
         {loading ? (
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <Loader />
+          </div>
+        ) : error ? (
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            Something went wrong
           </div>
         ) : (
           <Outlet />
