@@ -20,7 +20,6 @@ import { useReferralStats } from './use-referral-stats';
 
 /**
  * TODO:
- * - 'Your tier' pills
  * - Styles for ag grid dont work inside these cards
  * - Better loading states
  * - Remove hardcoded partyId
@@ -277,7 +276,10 @@ const TotalDiscount = ({
 }) => {
   return (
     <div>
-      <Stat value={format(referralDiscount + volumeDiscount) + '%'} />
+      <Stat
+        value={format(referralDiscount + volumeDiscount) + '%'}
+        highlight={true}
+      />
       <table className="w-full text-xs text-muted">
         <tbody>
           <tr>
@@ -307,7 +309,11 @@ const VolumeTiers = ({
   lastEpochVolume: number;
 }) => {
   if (!tiers.length) {
-    return <p>{t('No referral program active')}</p>;
+    return (
+      <p className="text-sm text-muted">
+        {t('No volume discount program active')}
+      </p>
+    );
   }
 
   return (
@@ -354,7 +360,9 @@ const ReferralTiers = ({
   tierIndex: number;
 }) => {
   if (!tiers.length) {
-    return <p>{t('No referral program active')}</p>;
+    return (
+      <p className="text-sm text-muted">{t('No referral program active')}</p>
+    );
   }
 
   return (
@@ -389,10 +397,24 @@ const ReferralTiers = ({
   );
 };
 
-const Stat = ({ value, text }: { value: string | number; text?: string }) => {
+const Stat = ({
+  value,
+  text,
+  highlight,
+}: {
+  value: string | number;
+  text?: string;
+  highlight?: boolean;
+}) => {
   return (
     <p className="pt-3 leading-none first:pt-6">
-      <span className="block text-3xl leading-none">{value}</span>
+      <span
+        className={classNames('inline-block text-3xl leading-none', {
+          'text-transparent bg-rainbow bg-clip-text': highlight,
+        })}
+      >
+        {value}
+      </span>
       {text && <small className="block text-xs text-muted">{text}</small>}
     </p>
   );
@@ -400,6 +422,8 @@ const Stat = ({ value, text }: { value: string | number; text?: string }) => {
 
 const YourTier = () => {
   return (
-    <span className="px-4 py-1.5 rounded-xl bg-rainbow">{t('Your tier')}</span>
+    <span className="px-4 py-1.5 rounded-xl bg-rainbow whitespace-nowrap">
+      {t('Your tier')}
+    </span>
   );
 };
