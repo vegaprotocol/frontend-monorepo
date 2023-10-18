@@ -20,12 +20,6 @@ import { formatNumber } from '@vegaprotocol/utils';
 import { Stat } from './stat';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 
-/**
- * TODO:
- * - Better loading states
- * - Remove hardcoded partyId
- */
-
 export const FeesContainer = () => {
   const { pubKey } = useVegaWallet();
   const { params, loading: paramsLoading } = useNetworkParams([
@@ -45,9 +39,7 @@ export const FeesContainer = () => {
 
   const { data: feesData, loading: feesLoading } = useFeesQuery({
     variables: {
-      partyId:
-        // TODO: change for pubkey
-        '9e2445e0e98c0e0ca1c260baaab1e7a2f1b9c7256c27196be6e614ee44d1a1e7',
+      partyId: pubKey || '',
       volumeDiscountEpochs,
       referralDiscountEpochs,
     },
