@@ -8,6 +8,15 @@ describe('useReferralStats', () => {
         __typename: 'ReferralSetStatsEdge' as const,
         node: {
           __typename: 'ReferralSetStats' as const,
+          atEpoch: 9,
+          discountFactor: '0.2',
+          referralSetRunningNotionalTakerVolume: '100',
+        },
+      },
+      {
+        __typename: 'ReferralSetStatsEdge' as const,
+        node: {
+          __typename: 'ReferralSetStats' as const,
           atEpoch: 10,
           discountFactor: '0.3',
           referralSetRunningNotionalTakerVolume: '200',
@@ -18,6 +27,11 @@ describe('useReferralStats', () => {
 
   const sets = {
     edges: [
+      {
+        node: {
+          atEpoch: 4,
+        },
+      },
       {
         node: {
           atEpoch: 5,
@@ -67,7 +81,9 @@ describe('useReferralStats', () => {
       useReferralStats(setStats, sets, program, epoch)
     );
 
-    const stats = setStats.edges[0].node;
+    // should use stats from latest epoch
+    const stats = setStats.edges[1].node;
+    const set = sets.edges[1].node;
 
     expect(result.current).toEqual({
       referralDiscount: Number(stats.discountFactor),
@@ -76,7 +92,7 @@ describe('useReferralStats', () => {
       ),
       referralTierIndex: 2,
       referralTiers: [...program.benefitTiers].reverse(),
-      epochsInSet: Number(epoch.id) - sets.edges[0].node.atEpoch,
+      epochsInSet: Number(epoch.id) - set.atEpoch,
     });
   });
 
@@ -89,7 +105,7 @@ describe('useReferralStats', () => {
     { epoch: 3, index: 1 },
     { epoch: 2, index: 0 },
     { epoch: 1, index: 0 },
-  ])('limits tier by number of epochs $epoch', (obj) => {
+  ])('epoch: $epoch should be index: $index', (obj) => {
     const statsA = {
       edges: [
         {
@@ -127,7 +143,7 @@ describe('useReferralStats', () => {
     { volume: '250', index: 1 },
     { volume: '300', index: 0 },
     { volume: '999', index: 0 },
-  ])('limits tier by number required volume $volume', (obj) => {
+  ])('volume: $volume should be index: $index', (obj) => {
     const statsA = {
       edges: [
         {

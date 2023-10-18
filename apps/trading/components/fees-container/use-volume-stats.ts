@@ -19,12 +19,9 @@ export const useVolumeStats = (
   }
 
   const volumeStats = compact(stats.edges).map((e) => e.node);
-
-  const volumeDiscount = Number(volumeStats[0].discountFactor || 0);
-
   const lastEpochStats = maxBy(volumeStats, (s) => s.atEpoch);
+  const volumeDiscount = Number(lastEpochStats?.discountFactor || 0);
   const volumeInWindow = Number(lastEpochStats?.runningVolume || 0);
-
   const volumeTierIndex = getVolumeTier(volumeInWindow, volumeTiers);
 
   return {
