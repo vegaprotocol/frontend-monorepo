@@ -1,12 +1,12 @@
 import compact from 'lodash/compact';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
-import { ProductTypeMapping } from '@vegaprotocol/types';
-import { format } from './utils';
 import { AgGrid } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
+import { format } from './utils';
+import { MarketCodeCell } from '../../client-pages/markets/market-code-cell';
 
 const feesTableColumnDefs = [
-  { field: 'code' },
+  { field: 'code', cellRenderer: 'MarketCodeCell' },
   {
     field: 'feeAfterDiscount',
     headerName: t('Total fee after discount'),
@@ -37,6 +37,10 @@ const feesTableDefaultColDef = {
   sortable: true,
 };
 
+const components = {
+  MarketCodeCell,
+};
+
 export const MarketFees = ({
   markets,
   referralDiscount,
@@ -56,14 +60,14 @@ export const MarketFees = ({
 
     return {
       code: m.tradableInstrument.instrument.code,
-      product: m.tradableInstrument.instrument.product.__typename
-        ? ProductTypeMapping[m.tradableInstrument.instrument.product.__typename]
-        : '-',
+      productType: m.tradableInstrument.instrument.product.__typename,
       infraFee: format(infraFee),
       makerFee: format(makerFee),
       liquidityFee: format(liquidityFee),
       totalFee: format(totalFee),
       feeAfterDiscount: format(feeAfterDiscount),
+      parentMarketID: m.parentMarketID,
+      successorMarketID: m.successorMarketID,
     };
   });
 
@@ -74,6 +78,8 @@ export const MarketFees = ({
         rowData={rows}
         defaultColDef={feesTableDefaultColDef}
         domLayout="autoHeight"
+        components={components}
+        rowHeight={45}
       />
     </div>
   );
