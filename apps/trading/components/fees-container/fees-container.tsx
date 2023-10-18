@@ -12,7 +12,7 @@ import {
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { useMarketList } from '@vegaprotocol/markets';
 import { MarketFees } from './market-fees';
-import { formatPercentage } from './utils';
+import { formatPercentage, getAdjustedFee } from './utils';
 import { Table, Td, Th, THead, Tr } from './table';
 import { useVolumeStats } from './use-volume-stats';
 import { useReferralStats } from './use-referral-stats';
@@ -22,7 +22,6 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 
 /**
  * TODO:
- * - Add windowLengths to queries and use it to calculate running total over last 'x' epochs
  * - Better loading states
  * - Remove hardcoded partyId
  */
@@ -103,7 +102,12 @@ export const FeesContainer = () => {
       <h1 className="px-4 pt-2 pb-4 text-2xl">{t('Fees')}</h1>
       <div className="grid auto-rows-min grid-cols-4 gap-3">
         <FeeCard title={t('My trading fees')} className="sm:col-span-2">
-          <TradingFees params={params} markets={markets} />
+          <TradingFees
+            params={params}
+            markets={markets}
+            referralDiscount={referralDiscount}
+            volumeDiscount={volumeDiscount}
+          />
         </FeeCard>
         <FeeCard title={t('Total discount')} className="sm:col-span-2">
           <TotalDiscount
@@ -180,12 +184,16 @@ const FeeCard = ({
 const TradingFees = ({
   params,
   markets,
+  referralDiscount,
+  volumeDiscount,
 }: {
   params: {
     market_fee_factors_infrastructureFee: string;
     market_fee_factors_makerFee: string;
   };
   markets: MarketMaybeWithDataAndCandles[] | null;
+  referralDiscount: number;
+  volumeDiscount: number;
 }) => {
   // Show min and max liquidity fees from all markets
   const minLiq = minBy(markets, (m) => Number(m.fees.factors.liquidityFee));
@@ -195,24 +203,59 @@ const TradingFees = ({
     Number(params.market_fee_factors_makerFee) +
     Number(params.market_fee_factors_infrastructureFee);
 
-  let minTotal = total;
-  let maxTotal = total;
+  const adjustedTotal = getAdjustedFee(
+    [total],
+    [referralDiscount, volumeDiscount]
+  );
+
+  let minTotal;
+  let maxTotal;
+
+  let minAdjustedTotal;
+  let maxAdjustedTotal;
 
   if (minLiq && maxLiq) {
-    minTotal = total + Number(minLiq.fees.factors.liquidityFee);
-    maxTotal = total + Number(maxLiq.fees.factors.liquidityFee);
+    const minLiqFee = Number(minLiq.fees.factors.liquidityFee);
+    const maxLiqFee = Number(maxLiq.fees.factors.liquidityFee);
+
+    minTotal = total + minLiqFee;
+    maxTotal = total + maxLiqFee;
+
+    minAdjustedTotal = getAdjustedFee(
+      [total, minLiqFee],
+      [referralDiscount, volumeDiscount]
+    );
+
+    maxAdjustedTotal = getAdjustedFee(
+      [total, maxLiqFee],
+      [referralDiscount, volumeDiscount]
+    );
   }
 
   return (
     <div>
       <div className="pt-6 leading-none">
         <p className="block text-3xl leading-none">
-          {minLiq && maxLiq
-            ? `${formatPercentage(minTotal)}%-${formatPercentage(maxTotal)}%`
-            : `${formatPercentage(total)}%`}
+          {minAdjustedTotal !== undefined && maxAdjustedTotal !== undefined
+            ? `${formatPercentage(minAdjustedTotal)}%-${formatPercentage(
+                maxAdjustedTotal
+              )}%`
+            : `${formatPercentage(adjustedTotal)}%`}
         </p>
-        <table className="w-full text-xs text-muted">
+        <table className="w-full mt-0.5 text-xs text-muted">
           <tbody>
+            <tr>
+              <th className="font-normal text-left text-default">
+                {t('Total fee before discount')}
+              </th>
+              <td className="text-right text-default">
+                {minTotal !== undefined && maxTotal !== undefined
+                  ? `${formatPercentage(minTotal)}%-${formatPercentage(
+                      maxTotal
+                    )}%`
+                  : `${formatPercentage(total)}%`}
+              </td>
+            </tr>
             <tr>
               <th className="font-normal text-left">{t('Infrastructure')}</th>
               <td className="text-right">
@@ -320,7 +363,7 @@ const TotalDiscount = ({
         value={formatPercentage(referralDiscount + volumeDiscount) + '%'}
         highlight={true}
       />
-      <table className="w-full text-xs text-muted">
+      <table className="w-full mt-0.5 text-xs text-muted">
         <tbody>
           <tr>
             <th className="font-normal text-left">{t('Volume discount')}</th>

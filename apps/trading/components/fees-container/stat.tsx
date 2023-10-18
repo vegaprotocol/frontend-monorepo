@@ -18,7 +18,9 @@ export const Stat = ({
       >
         {value}
       </span>
-      {text && <small className="block text-xs text-muted">{text}</small>}
+      {text && (
+        <small className="block mt-0.5 text-xs text-muted">{text}</small>
+      )}
     </p>
   );
 };

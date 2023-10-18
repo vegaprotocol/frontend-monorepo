@@ -34,3 +34,9 @@ export const getReferralBenefitTier = (
 
   return Math.max(indexByEpoch, indexByVolume);
 };
+
+export const getAdjustedFee = (fees: number[], discounts: number[]) => {
+  const totalFee = fees.reduce((sum, f) => sum + f, 0);
+  const totalDiscount = discounts.reduce((sum, d) => sum + d, 0);
+  return totalFee * Math.max(0, 1 - totalDiscount);
+};
