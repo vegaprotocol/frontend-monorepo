@@ -28,12 +28,12 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 
 export const FeesContainer = () => {
   const { pubKey } = useVegaWallet();
-  const { params } = useNetworkParams([
+  const { params, loading: paramsLoading } = useNetworkParams([
     NetworkParams.market_fee_factors_makerFee,
     NetworkParams.market_fee_factors_infrastructureFee,
   ]);
 
-  const { data: markets } = useMarketList();
+  const { data: markets, loading: marketsLoading } = useMarketList();
 
   const {
     data: programData,
@@ -46,7 +46,11 @@ export const FeesContainer = () => {
   const referralDiscountEpochs =
     programData?.currentReferralProgram?.windowLength || 1;
 
-  const { data, loading, error } = useFeesQuery({
+  const {
+    data: feesData,
+    loading: feesLoading,
+    error: feesError,
+  } = useFeesQuery({
     variables: {
       partyId:
         // TODO: change for pubkey
@@ -59,7 +63,7 @@ export const FeesContainer = () => {
 
   const { volumeDiscount, volumeTierIndex, volumeInWindow, volumeTiers } =
     useVolumeStats(
-      data?.volumeDiscountStats,
+      feesData?.volumeDiscountStats,
       programData?.currentVolumeDiscountProgram
     );
 
@@ -70,10 +74,10 @@ export const FeesContainer = () => {
     referralTiers,
     epochsInSet,
   } = useReferralStats(
-    data?.referralSetStats,
-    data?.referralSetReferees,
+    feesData?.referralSetStats,
+    feesData?.referralSetReferees,
     programData?.currentReferralProgram,
-    data?.epoch
+    feesData?.epoch
   );
 
   if (!pubKey) {
@@ -84,7 +88,7 @@ export const FeesContainer = () => {
     );
   }
 
-  if (error) {
+  if (feesError) {
     return (
       <Splash>
         <p className="text-xs">{t('Failed to fetch fees data')}</p>
@@ -92,16 +96,17 @@ export const FeesContainer = () => {
     );
   }
 
-  // TODO: skeleton loading states
-  if (loading || programLoading) {
-    return <p>Loading...</p>;
-  }
+  const loading = paramsLoading || feesLoading || programLoading;
 
   return (
     <div className="p-3">
       <h1 className="px-4 pt-2 pb-4 text-2xl">{t('Fees')}</h1>
       <div className="grid auto-rows-min grid-cols-4 gap-3">
-        <FeeCard title={t('My trading fees')} className="sm:col-span-2">
+        <FeeCard
+          title={t('My trading fees')}
+          className="sm:col-span-2"
+          loading={loading}
+        >
           <TradingFees
             params={params}
             markets={markets}
@@ -109,13 +114,21 @@ export const FeesContainer = () => {
             volumeDiscount={volumeDiscount}
           />
         </FeeCard>
-        <FeeCard title={t('Total discount')} className="sm:col-span-2">
+        <FeeCard
+          title={t('Total discount')}
+          className="sm:col-span-2"
+          loading={loading}
+        >
           <TotalDiscount
             referralDiscount={referralDiscount}
             volumeDiscount={volumeDiscount}
           />
         </FeeCard>
-        <FeeCard title={t('My current volume')} className="sm:col-span-2">
+        <FeeCard
+          title={t('My current volume')}
+          className="sm:col-span-2"
+          loading={loading}
+        >
           <CurrentVolume
             tiers={volumeTiers}
             tierIndex={volumeTierIndex}
@@ -123,7 +136,11 @@ export const FeesContainer = () => {
             epochs={volumeDiscountEpochs}
           />
         </FeeCard>
-        <FeeCard title={t('Referral benefits')} className="sm:col-span-2">
+        <FeeCard
+          title={t('Referral benefits')}
+          className="sm:col-span-2"
+          loading={loading}
+        >
           <ReferralBenefits
             setRunningNotionalTakerVolume={referralVolumeInWindow}
             epochsInSet={epochsInSet}
@@ -133,6 +150,7 @@ export const FeesContainer = () => {
         <FeeCard
           title={t('Volume discount')}
           className="lg:col-span-full xl:col-span-2"
+          loading={loading}
         >
           <VolumeTiers
             tiers={volumeTiers}
@@ -143,10 +161,15 @@ export const FeesContainer = () => {
         <FeeCard
           title={t('Referral discount')}
           className="lg:col-span-full xl:col-span-2"
+          loading={loading}
         >
           <ReferralTiers tiers={referralTiers} tierIndex={referralTierIndex} />
         </FeeCard>
-        <FeeCard title={t('Liquidity fees')} className="lg:col-span-full">
+        <FeeCard
+          title={t('Liquidity fees')}
+          className="lg:col-span-full"
+          loading={loading}
+        >
           <MarketFees
             markets={markets}
             referralDiscount={referralDiscount}
@@ -162,10 +185,12 @@ const FeeCard = ({
   children,
   title,
   className,
+  loading = false,
 }: {
   children: ReactNode;
   title: string;
   className?: string;
+  loading?: boolean;
 }) => {
   return (
     <div
@@ -176,7 +201,16 @@ const FeeCard = ({
       )}
     >
       <h2 className="mb-3">{title}</h2>
-      {children}
+      {loading ? <FeeCardLoader /> : children}
+    </div>
+  );
+};
+
+const FeeCardLoader = () => {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="w-full h-5 bg-vega-clight-600 dark:bg-vega-cdark-600" />
+      <div className="w-3/4 h-6 bg-vega-clight-600 dark:bg-vega-cdark-600" />
     </div>
   );
 };
