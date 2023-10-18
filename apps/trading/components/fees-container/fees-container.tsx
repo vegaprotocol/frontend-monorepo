@@ -263,7 +263,7 @@ export const TradingFees = ({
   );
 };
 
-const CurrentVolume = ({
+export const CurrentVolume = ({
   tiers,
   tierIndex,
   windowLengthVolume,

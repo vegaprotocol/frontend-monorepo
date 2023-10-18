@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { TradingFees } from './fees-container';
+import { CurrentVolume, TradingFees } from './fees-container';
 import { formatPercentage, getAdjustedFee } from './utils';
 
 describe('TradingFees', () => {
@@ -55,6 +55,31 @@ describe('TradingFees', () => {
 
     expect(screen.getByTestId('adjusted-fees')).toHaveTextContent(
       `${minAdjustedFees}%-${maxAdjustedFees}%`
+    );
+  });
+});
+
+describe('CurerntVolume', () => {
+  it('renders the reuqire amount for the next tier', () => {
+    const props = {
+      tiers: [
+        { minimumRunningNotionalTakerVolume: '3000' },
+        { minimumRunningNotionalTakerVolume: '2000' },
+        { minimumRunningNotionalTakerVolume: '1000' },
+      ],
+      tierIndex: 2,
+      windowLengthVolume: 1500,
+      epochs: 5,
+    };
+
+    render(<CurrentVolume {...props} />);
+
+    expect(screen.getByText('1,500').nextElementSibling).toHaveTextContent(
+      `Past ${props.epochs} epochs`
+    );
+
+    expect(screen.getByText('500').nextElementSibling).toHaveTextContent(
+      'Required for next tier'
     );
   });
 });
