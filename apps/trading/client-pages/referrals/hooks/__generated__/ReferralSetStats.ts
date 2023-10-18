@@ -9,7 +9,7 @@ export type ReferralSetStatsQueryVariables = Types.Exact<{
 }>;
 
 
-export type ReferralSetStatsQuery = { __typename?: 'Query', referralSetStats: { __typename?: 'ReferralSetStatsConnection', edges: Array<{ __typename?: 'ReferralSetStatsEdge', node: { __typename?: 'ReferralSetStats', atEpoch: number, partyId: string, discountFactor: string, rewardFactor: string, epochNotionalTakerVolume: string, referralSetRunningNotionalTakerVolume: string } } | null> } };
+export type ReferralSetStatsQuery = { __typename?: 'Query', referralSetStats: { __typename?: 'ReferralSetStatsConnection', edges: Array<{ __typename?: 'ReferralSetStatsEdge', node: { __typename?: 'ReferralSetStats', atEpoch: number, partyId: string, discountFactor: string, rewardFactor: string, epochNotionalTakerVolume: string, referralSetRunningNotionalTakerVolume: string, rewardsMultiplier: string, rewardsFactorMultiplier: string } } | null> } };
 
 
 export const ReferralSetStatsDocument = gql`
@@ -23,6 +23,8 @@ export const ReferralSetStatsDocument = gql`
         rewardFactor
         epochNotionalTakerVolume
         referralSetRunningNotionalTakerVolume
+        rewardsMultiplier
+        rewardsFactorMultiplier
       }
     }
   }

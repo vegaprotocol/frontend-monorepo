@@ -5,21 +5,24 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type RefereesQueryVariables = Types.Exact<{
   code: Types.Scalars['ID'];
+  aggregationDays?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 
-export type RefereesQuery = { __typename?: 'Query', referralSetReferees: { __typename?: 'ReferralSetRefereeConnection', edges: Array<{ __typename?: 'ReferralSetRefereeEdge', node: { __typename?: 'ReferralSetReferee', referralSetId: string, refereeId: string, joinedAt: any, atEpoch: number } } | null> } };
+export type RefereesQuery = { __typename?: 'Query', referralSetReferees: { __typename?: 'ReferralSetRefereeConnection', edges: Array<{ __typename?: 'ReferralSetRefereeEdge', node: { __typename?: 'ReferralSetReferee', referralSetId: string, refereeId: string, joinedAt: any, atEpoch: number, totalRefereeNotionalTakerVolume: string, totalRefereeGeneratedRewards: string } } | null> } };
 
 
 export const RefereesDocument = gql`
-    query Referees($code: ID!) {
-  referralSetReferees(id: $code) {
+    query Referees($code: ID!, $aggregationDays: Int) {
+  referralSetReferees(id: $code, aggregationDays: $aggregationDays) {
     edges {
       node {
         referralSetId
         refereeId
         joinedAt
         atEpoch
+        totalRefereeNotionalTakerVolume
+        totalRefereeGeneratedRewards
       }
     }
   }
@@ -39,6 +42,7 @@ export const RefereesDocument = gql`
  * const { data, loading, error } = useRefereesQuery({
  *   variables: {
  *      code: // value for 'code'
+ *      aggregationDays: // value for 'aggregationDays'
  *   },
  * });
  */

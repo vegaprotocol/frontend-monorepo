@@ -1,4 +1,5 @@
 import {
+  Loader,
   TradingAnchorButton,
   VegaIcon,
   VegaIconNames,
@@ -25,18 +26,37 @@ const Nav = () => (
 
 export const Referrals = () => {
   const { pubKey } = useVegaWallet();
-  const { data: referee } = useReferral(pubKey, 'referee');
-  const { data: referrer } = useReferral(pubKey, 'referrer');
 
-  const showNav = !referrer && !referee;
+  const { data: referee, loading: refereeLoading } = useReferral({
+    pubKey,
+    role: 'referee',
+  });
+  const { data: referrer, loading: referrerLoading } = useReferral({
+    pubKey,
+    role: 'referrer',
+  });
+
+  const loading = refereeLoading || referrerLoading;
+  const showNav = !loading && !referrer && !referee;
 
   return (
     <>
       <LandingBanner />
 
       {showNav && <Nav />}
-      <div className={classNames({ 'py-16': showNav })}>
-        <Outlet />
+      <div
+        className={classNames({
+          'py-16': showNav,
+          'h-[300px] relative': loading,
+        })}
+      >
+        {loading ? (
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <Loader />
+          </div>
+        ) : (
+          <Outlet />
+        )}
       </div>
 
       <TiersContainer />

@@ -1,12 +1,8 @@
-import { useQuery } from '@apollo/client';
 import { getNumberFormat } from '@vegaprotocol/utils';
 import { addDays } from 'date-fns';
 import sortBy from 'lodash/sortBy';
 import omit from 'lodash/omit';
-import {
-  ReferralProgramDocument,
-  useReferralProgramQuery,
-} from './__generated__/CurrentReferralProgram';
+import { useReferralProgramQuery } from './__generated__/CurrentReferralProgram';
 
 const STAKING_TIERS_MAPPING: Record<number, string> = {
   1: 'Tradestarter',

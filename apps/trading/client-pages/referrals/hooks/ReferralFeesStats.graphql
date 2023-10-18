@@ -1,0 +1,32 @@
+query ReferralFeesStats(
+  $marketId: ID
+  $assetId: ID
+  $partyId: ID
+  $epoch: Int
+) {
+  feesStats(
+    marketId: $marketId
+    assetId: $assetId
+    partyId: $partyId
+    epoch: $epoch
+  ) {
+    marketId
+    assetId
+    epoch
+    totalRewardsPaid {
+      partyId
+      amount
+    }
+    referrerRewardsGenerated {
+      referrerId
+      generatedReward {
+        partyId
+        amount
+      }
+    }
+    refereesDiscountApplied {
+      partyId
+      amount
+    }
+  }
+}

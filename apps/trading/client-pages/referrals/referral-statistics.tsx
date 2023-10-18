@@ -6,7 +6,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type { ReferralData } from './hooks/use-referral';
 import { useReferral } from './hooks/use-referral';
 import { CreateCodeContainer } from './create-code-form';
 import classNames from 'classnames';
@@ -23,16 +22,22 @@ import { useReferralSetStatsQuery } from './hooks/__generated__/ReferralSetStats
 import compact from 'lodash/compact';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { useStakeAvailable } from './hooks/use-stake-available';
-import minBy from 'lodash/minBy';
 import sortBy from 'lodash/sortBy';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
+import BigNumber from 'bignumber.js';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
 
-  const { data: referee } = useReferral(pubKey, 'referee');
-  const { data: referrer } = useReferral(pubKey, 'referrer');
+  const { data: referee } = useReferral({
+    pubKey,
+    role: 'referee',
+  });
+  const { data: referrer } = useReferral({
+    pubKey,
+    role: 'referrer',
+  });
 
   if (referee?.code) {
     return <Statistics data={referee} as="referee" />;
@@ -45,16 +50,16 @@ export const ReferralStatistics = () => {
   return <CreateCodeContainer />;
 };
 
-const Statistics = ({
+export const Statistics = ({
   data,
   as,
 }: {
-  data: ReferralData;
+  data: NonNullable<ReturnType<typeof useReferral>['data']>;
   as: 'referrer' | 'referee';
 }) => {
   const { data: epochData } = useCurrentEpochInfoQuery();
   const { stakeAvailable } = useStakeAvailable();
-  const { stakingTiers, benefitTiers } = useReferralProgram();
+  const { benefitTiers } = useReferralProgram();
   const { data: statsData } = useReferralSetStatsQuery({
     variables: {
       code: data.code,
@@ -68,31 +73,24 @@ const Statistics = ({
   const stats =
     statsData?.referralSetStats.edges &&
     compact(removePaginationWrapper(statsData.referralSetStats.edges));
-  const refereeInfo = data.referees.find((r) => r.refereeId === data.pubKey);
+  const refereeInfo = data.referee;
+  const refereeStats = stats?.find(
+    (r) => r.partyId === data.referee?.refereeId
+  );
 
-  const refereeStats = stats?.find((r) => r.partyId === data.pubKey);
-
-  // console.table(stats);
-
-  const baseCommissionValue =
-    stats && stats.length > 0 ? Number(stats[0].rewardFactor) : 0;
-  const runningVolumeValue =
-    stats && stats.length > 0
-      ? Number(stats[0].referralSetRunningNotionalTakerVolume)
-      : 0;
-  const stakingTier =
-    stakingTiers &&
-    stakeAvailable &&
-    minBy(
-      stakingTiers.filter(
-        (st) => BigInt(st.minimumStakedTokens) <= stakeAvailable
-      ),
-      (st) => BigInt(st.minimumStakedTokens)
-    )?.tier;
-  const finalCommissionValue =
-    !stakingTier || isNaN(stakingTier)
-      ? baseCommissionValue
-      : stakingTier * baseCommissionValue;
+  const statsAvailable = stats && stats.length > 0 && stats[0];
+  const baseCommissionValue = statsAvailable
+    ? Number(statsAvailable.rewardFactor)
+    : 0;
+  const runningVolumeValue = statsAvailable
+    ? Number(statsAvailable.referralSetRunningNotionalTakerVolume)
+    : 0;
+  const multiplier = statsAvailable
+    ? Number(statsAvailable.rewardsMultiplier)
+    : 1;
+  const finalCommissionValue = !isNaN(multiplier)
+    ? baseCommissionValue
+    : multiplier * baseCommissionValue;
 
   const discountFactorValue = refereeStats?.discountFactor
     ? Number(refereeStats.discountFactor)
@@ -130,7 +128,7 @@ const Statistics = ({
         18
       )} $VEGA staked)`}
     >
-      {stakingTier || 'None'}
+      {multiplier || 'None'}
     </StatTile>
   );
   const finalCommissionTile = (
@@ -152,9 +150,12 @@ const Statistics = ({
     </StatTile>
   );
 
+  const totalCommissionValue = data.referees
+    .map((r) => new BigNumber(r.totalRefereeGeneratedRewards))
+    .reduce((all, r) => all.plus(r), new BigNumber(0));
   const totalCommissionTile = (
-    <StatTile title="Running total commission" description="(Quantum)">
-      ...
+    <StatTile title="Total commission (last 30 days)" description="(Quantum)">
+      {getNumberFormat(0).format(Number(totalCommissionValue))}
     </StatTile>
   );
 
@@ -274,23 +275,29 @@ const Statistics = ({
               columns={[
                 { name: 'party', displayName: 'Trader' },
                 { name: 'joined', displayName: 'Date Joined' },
-                { name: 'volume', displayName: 'Volume' },
+                { name: 'volume', displayName: 'Volume (last 30 days)' },
+                {
+                  name: 'commission',
+                  displayName: 'Commission earned (last 30 days)',
+                },
               ]}
               data={sortBy(
                 data.referees.map((r) => ({
-                  party: <span>{truncateMiddle(r.refereeId)}</span>,
+                  party: (
+                    <span title={r.refereeId}>
+                      {truncateMiddle(r.refereeId)}
+                    </span>
+                  ),
                   joined: getDateTimeFormat().format(new Date(r.joinedAt)),
-                  volume:
-                    Number(
-                      stats?.find((s) => s.partyId === r.refereeId)
-                        ?.epochNotionalTakerVolume
-                    ) || 0,
+                  volume: Number(r.totalRefereeNotionalTakerVolume),
+                  commission: Number(r.totalRefereeGeneratedRewards),
                 })),
                 (r) => r.volume
               )
                 .map((r) => ({
                   ...r,
                   volume: getNumberFormat(0).format(r.volume),
+                  commission: getNumberFormat(0).format(r.commission),
                 }))
                 .reverse()}
             />

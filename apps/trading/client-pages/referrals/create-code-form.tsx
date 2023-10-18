@@ -23,6 +23,7 @@ import {
   ABOUT_REFERRAL_DOCS_LINK,
   DISCLAIMER_REFERRAL_DOCS_LINK,
 } from './constants';
+import { useReferral } from './hooks/use-referral';
 
 export const CreateCodeContainer = () => {
   return <CreateCodeForm />;
@@ -33,7 +34,7 @@ export const CreateCodeForm = () => {
   const openWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const { pubKey } = useVegaWallet();
+  const { pubKey, isReadOnly } = useVegaWallet();
 
   return (
     <div className="w-2/3 max-w-md mx-auto bg-vega-clight-800 dark:bg-vega-cdark-800 p-8 rounded-lg">
@@ -46,6 +47,7 @@ export const CreateCodeForm = () => {
       <div className="w-full flex flex-col">
         <RainbowButton
           variant="border"
+          disabled={isReadOnly}
           onClick={() => {
             if (pubKey) {
               setDialogOpen(true);
@@ -77,6 +79,7 @@ const CreateCodeDialog = ({
 }) => {
   const createLink = useLinks(DApp.Governance);
   const { isReadOnly, pubKey, sendTx } = useVegaWallet();
+  const { refetch } = useReferral({ pubKey, role: 'referrer' });
   const [err, setErr] = useState<string | null>(null);
   const [code, setCode] = useState<string | null>(null);
   const [status, setStatus] = useState<
@@ -137,7 +140,10 @@ const CreateCodeDialog = ({
       return {
         children: 'Close',
         intent: Intent.Success,
-        onClick: () => setDialogOpen(false),
+        onClick: () => {
+          refetch();
+          setDialogOpen(false);
+        },
       };
     }
   };

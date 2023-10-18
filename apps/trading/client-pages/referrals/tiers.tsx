@@ -5,6 +5,8 @@ import classNames from 'classnames';
 import { BORDER_COLOR, GRADIENT } from './constants';
 import { Tag } from './tag';
 import type { ComponentProps, ReactNode } from 'react';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { DApp, TOKEN_PROPOSALS, useLinks } from '@vegaprotocol/environment';
 
 const Loading = ({ variant }: { variant: 'large' | 'inline' }) => (
   <div
@@ -67,11 +69,25 @@ const StakingTier = ({
 };
 
 export const TiersContainer = () => {
-  const { benefitTiers, stakingTiers, details, loading } = useReferralProgram();
+  const { benefitTiers, stakingTiers, details, loading, error } =
+    useReferralProgram();
 
   const ends = details?.endOfProgramTimestamp
     ? getDateTimeFormat().format(new Date(details.endOfProgramTimestamp))
     : undefined;
+
+  const governanceLink = useLinks(DApp.Governance);
+
+  if ((!loading && !details) || error) {
+    return (
+      <div className="text-base px-5 py-10 text-center">
+        We&apos;re sorry but we don&apos;t have an active referral programme
+        currently running. You can propose a new programme{' '}
+        <ExternalLink href={governanceLink(TOKEN_PROPOSALS)}>here</ExternalLink>
+        .
+      </div>
+    );
+  }
 
   return (
     <>

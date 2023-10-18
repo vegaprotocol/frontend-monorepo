@@ -8,6 +8,8 @@ query ReferralSetStats($code: ID!, $epoch: Int) {
         rewardFactor
         epochNotionalTakerVolume
         referralSetRunningNotionalTakerVolume
+        rewardsMultiplier
+        rewardsFactorMultiplier
       }
     }
   }
