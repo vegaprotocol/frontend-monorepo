@@ -1,6 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useEffect } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
+import type { FilterChangedEvent } from 'ag-grid-community';
 import { OrderListTable } from '../order-list/order-list';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -11,6 +12,7 @@ import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/web3';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order } from '../order-data-provider';
 import { OrderViewDialog } from '../order-list/order-view-dialog';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 
 export enum Filter {
   'Open' = 'Open',
@@ -25,6 +27,7 @@ export interface OrderListManagerProps {
   isReadOnly: boolean;
   filter?: Filter;
   gridProps?: ReturnType<typeof useDataGridEvents>;
+  noRowsMessage?: string;
 }
 
 export const OrderListManager = ({
@@ -34,6 +37,7 @@ export const OrderListManager = ({
   isReadOnly,
   filter,
   gridProps,
+  noRowsMessage,
 }: OrderListManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
@@ -56,6 +60,29 @@ export const OrderListManager = ({
     },
   });
 
+  const onFilterChanged = useCallback(
+    (event: FilterChangedEvent) => {
+      gridProps?.onFilterChanged?.(event);
+      if (event.api) {
+        const isEmpty = event.api.getDisplayedRowCount() === 0;
+        if (isEmpty) {
+          event.api.showNoRowsOverlay();
+        } else {
+          event.api.hideOverlay();
+        }
+      }
+    },
+    [gridProps]
+  );
+
+  useEffect(() => {
+    if (!data || !data.length) {
+      gridRef.current?.api?.showNoRowsOverlay();
+    } else {
+      gridRef.current?.api?.hideOverlay();
+    }
+  }, [data]);
+
   const cancel = useCallback(
     (order: Order) => {
       if (!order.market) return;
@@ -68,6 +95,10 @@ export const OrderListManager = ({
     },
     [create]
   );
+
+  if (error) {
+    return <Splash>{t(`Something went wrong: ${error.message}`)}</Splash>;
+  }
 
   return (
     <>
@@ -82,8 +113,9 @@ export const OrderListManager = ({
           onMarketClick={onMarketClick}
           onOrderTypeClick={onOrderTypeClick}
           isReadOnly={isReadOnly}
-          overlayNoRowsTemplate={error ? error.message : t('No orders')}
+          overlayNoRowsTemplate={noRowsMessage || t('No orders')}
           {...gridProps}
+          onFilterChanged={onFilterChanged}
         />
       </div>
       {editOrder && (
