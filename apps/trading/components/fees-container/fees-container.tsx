@@ -274,19 +274,15 @@ export const CurrentVolume = ({
   windowLengthVolume,
   epochs,
 }: {
-  tiers?: Array<{ minimumRunningNotionalTakerVolume: string }>;
+  tiers: Array<{ minimumRunningNotionalTakerVolume: string }>;
   tierIndex: number;
   windowLengthVolume: number;
   epochs: number;
 }) => {
-  let requiredForNextTier = 0;
-
-  if (tiers && tierIndex) {
-    const nextTier = tiers[tierIndex - 1];
-    requiredForNextTier = nextTier
-      ? Number(nextTier.minimumRunningNotionalTakerVolume) - windowLengthVolume
-      : 0;
-  }
+  const nextTier = tiers[tierIndex + 1];
+  const requiredForNextTier = nextTier
+    ? Number(nextTier.minimumRunningNotionalTakerVolume) - windowLengthVolume
+    : 0;
 
   return (
     <div>

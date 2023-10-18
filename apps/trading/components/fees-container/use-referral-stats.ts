@@ -9,7 +9,7 @@ export const useReferralStats = (
   program?: DiscountProgramsQuery['currentReferralProgram'],
   epoch?: FeesQuery['epoch']
 ) => {
-  const referralTiers = program ? [...program.benefitTiers].reverse() : [];
+  const referralTiers = program?.benefitTiers || [];
 
   if (!setStats || !setReferees || !program || !epoch) {
     return {

@@ -63,17 +63,17 @@ describe('useReferralStats', () => {
       volumeDiscount: Number(stats.discountFactor),
       volumeInWindow: Number(stats.runningVolume),
       volumeTierIndex: 1,
-      volumeTiers: [...program.benefitTiers].reverse(),
+      volumeTiers: program.benefitTiers,
     });
   });
 
   it.each([
-    { volume: '100', index: 2 },
-    { volume: '150', index: 2 },
+    { volume: '100', index: 0 },
+    { volume: '150', index: 0 },
     { volume: '200', index: 1 },
     { volume: '250', index: 1 },
-    { volume: '300', index: 0 },
-    { volume: '350', index: 0 },
+    { volume: '300', index: 2 },
+    { volume: '350', index: 2 },
   ])('returns index: $index for the running volume: $volume', (obj) => {
     const statsA = {
       edges: [

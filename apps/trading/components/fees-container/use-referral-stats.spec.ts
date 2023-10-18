@@ -29,12 +29,12 @@ describe('useReferralStats', () => {
     edges: [
       {
         node: {
-          atEpoch: 4,
+          atEpoch: 3,
         },
       },
       {
         node: {
-          atEpoch: 5,
+          atEpoch: 4,
         },
       },
     ],
@@ -90,22 +90,22 @@ describe('useReferralStats', () => {
       referralVolumeInWindow: Number(
         stats.referralSetRunningNotionalTakerVolume
       ),
-      referralTierIndex: 2,
-      referralTiers: [...program.benefitTiers].reverse(),
+      referralTierIndex: 1,
+      referralTiers: program.benefitTiers,
       epochsInSet: Number(epoch.id) - set.atEpoch,
     });
   });
 
   it.each([
-    { epoch: 8, index: -1 },
-    { epoch: 7, index: -1 },
-    { epoch: 6, index: 2 },
-    { epoch: 5, index: 2 },
-    { epoch: 4, index: 1 },
-    { epoch: 3, index: 1 },
-    { epoch: 2, index: 0 },
-    { epoch: 1, index: 0 },
-  ])('epoch: $epoch should be index: $index', (obj) => {
+    { joinedAt: 2, index: -1 },
+    { joinedAt: 3, index: -1 },
+    { joinedAt: 4, index: 0 },
+    { joinedAt: 5, index: 0 },
+    { joinedAt: 6, index: 1 },
+    { joinedAt: 7, index: 1 },
+    { joinedAt: 8, index: 2 },
+    { joinedAt: 9, index: 2 },
+  ])('joined at epoch: $joinedAt should be index: $index', (obj) => {
     const statsA = {
       edges: [
         {
@@ -123,7 +123,7 @@ describe('useReferralStats', () => {
       edges: [
         {
           node: {
-            atEpoch: obj.epoch,
+            atEpoch: Number(epoch.id) - obj.joinedAt,
           },
         },
       ],
@@ -137,12 +137,12 @@ describe('useReferralStats', () => {
 
   it.each([
     { volume: '50', index: -1 },
-    { volume: '100', index: 2 },
-    { volume: '150', index: 2 },
+    { volume: '100', index: 0 },
+    { volume: '150', index: 0 },
     { volume: '200', index: 1 },
     { volume: '250', index: 1 },
-    { volume: '300', index: 0 },
-    { volume: '999', index: 0 },
+    { volume: '300', index: 2 },
+    { volume: '999', index: 2 },
   ])('volume: $volume should be index: $index', (obj) => {
     const statsA = {
       edges: [

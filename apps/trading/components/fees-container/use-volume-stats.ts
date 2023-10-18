@@ -7,7 +7,7 @@ export const useVolumeStats = (
   stats?: FeesQuery['volumeDiscountStats'],
   program?: DiscountProgramsQuery['currentVolumeDiscountProgram']
 ) => {
-  const volumeTiers = program ? [...program.benefitTiers].reverse() : [];
+  const volumeTiers = program?.benefitTiers || [];
 
   if (!stats || !program) {
     return {

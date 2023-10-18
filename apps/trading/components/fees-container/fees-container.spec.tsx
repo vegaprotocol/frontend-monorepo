@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { formatNumber } from '@vegaprotocol/utils';
 import { CurrentVolume, TradingFees } from './fees-container';
 import { formatPercentage, getAdjustedFee } from './utils';
 
@@ -60,26 +61,30 @@ describe('TradingFees', () => {
 });
 
 describe('CurerntVolume', () => {
-  it('renders the reuqire amount for the next tier', () => {
+  it('renders the required amount for the next tier', () => {
+    const windowLengthVolume = 1500;
+    const nextTierVolume = 2000;
+
     const props = {
       tiers: [
-        { minimumRunningNotionalTakerVolume: '3000' },
-        { minimumRunningNotionalTakerVolume: '2000' },
         { minimumRunningNotionalTakerVolume: '1000' },
+        { minimumRunningNotionalTakerVolume: nextTierVolume.toString() },
+        { minimumRunningNotionalTakerVolume: '3000' },
       ],
-      tierIndex: 2,
-      windowLengthVolume: 1500,
+      tierIndex: 0,
+      windowLengthVolume,
       epochs: 5,
     };
 
     render(<CurrentVolume {...props} />);
 
-    expect(screen.getByText('1,500').nextElementSibling).toHaveTextContent(
-      `Past ${props.epochs} epochs`
-    );
+    expect(
+      screen.getByText(formatNumber(windowLengthVolume)).nextElementSibling
+    ).toHaveTextContent(`Past ${props.epochs} epochs`);
 
-    expect(screen.getByText('500').nextElementSibling).toHaveTextContent(
-      'Required for next tier'
-    );
+    expect(
+      screen.getByText(formatNumber(nextTierVolume - windowLengthVolume))
+        .nextElementSibling
+    ).toHaveTextContent('Required for next tier');
   });
 });
