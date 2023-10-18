@@ -1,24 +1,22 @@
-import type { ReactNode } from 'react';
 import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
-import classNames from 'classnames';
 import { t } from '@vegaprotocol/i18n';
-import { useDiscountProgramsQuery, useFeesQuery } from './__generated__/Fees';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
   useNetworkParams,
   NetworkParams,
 } from '@vegaprotocol/network-parameters';
-import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { useMarketList } from '@vegaprotocol/markets';
+import { formatNumber } from '@vegaprotocol/utils';
+import { Splash } from '@vegaprotocol/ui-toolkit';
+import { useDiscountProgramsQuery, useFeesQuery } from './__generated__/Fees';
+import { FeeCard } from './fees-card';
 import { MarketFees } from './market-fees';
-import { formatPercentage, getAdjustedFee } from './utils';
-import { Table, Td, Th, THead, Tr } from './table';
+import { Stat } from './stat';
 import { useVolumeStats } from './use-volume-stats';
 import { useReferralStats } from './use-referral-stats';
-import { formatNumber } from '@vegaprotocol/utils';
-import { Stat } from './stat';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { formatPercentage, getAdjustedFee } from './utils';
+import { Table, Td, Th, THead, Tr } from './table';
 
 export const FeesContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -158,41 +156,7 @@ export const FeesContainer = () => {
   );
 };
 
-const FeeCard = ({
-  children,
-  title,
-  className,
-  loading = false,
-}: {
-  children: ReactNode;
-  title: string;
-  className?: string;
-  loading?: boolean;
-}) => {
-  return (
-    <div
-      className={classNames(
-        'p-4 bg-vega-clight-800 dark:bg-vega-cdark-800 col-span-full lg:col-auto',
-        'rounded-lg',
-        className
-      )}
-    >
-      <h2 className="mb-3">{title}</h2>
-      {loading ? <FeeCardLoader /> : children}
-    </div>
-  );
-};
-
-const FeeCardLoader = () => {
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="w-full h-5 bg-vega-clight-600 dark:bg-vega-cdark-600" />
-      <div className="w-3/4 h-6 bg-vega-clight-600 dark:bg-vega-cdark-600" />
-    </div>
-  );
-};
-
-const TradingFees = ({
+export const TradingFees = ({
   params,
   markets,
   referralDiscount,
@@ -202,7 +166,7 @@ const TradingFees = ({
     market_fee_factors_infrastructureFee: string;
     market_fee_factors_makerFee: string;
   };
-  markets: MarketMaybeWithDataAndCandles[] | null;
+  markets: Array<{ fees: { factors: { liquidityFee: string } } }> | null;
   referralDiscount: number;
   volumeDiscount: number;
 }) => {
@@ -246,7 +210,7 @@ const TradingFees = ({
   return (
     <div>
       <div className="pt-6 leading-none">
-        <p className="block text-3xl leading-none">
+        <p className="block text-3xl leading-none" data-testid="adjusted-fees">
           {minAdjustedTotal !== undefined && maxAdjustedTotal !== undefined
             ? `${formatPercentage(minAdjustedTotal)}%-${formatPercentage(
                 maxAdjustedTotal
@@ -310,8 +274,6 @@ const CurrentVolume = ({
   windowLengthVolume: number;
   epochs: number;
 }) => {
-  // TODO sum windowLength volume
-
   let requiredForNextTier = 0;
 
   if (tiers && tierIndex) {
