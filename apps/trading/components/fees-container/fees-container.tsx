@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import compact from 'lodash/compact';
 import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
 import classNames from 'classnames';
@@ -14,8 +13,10 @@ import {
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { useMarketList } from '@vegaprotocol/markets';
 import { MarketFees } from './market-fees';
-import { format, getReferralBenefitTier, getVolumeTier } from './utils';
+import { format } from './utils';
 import { Table, Td, Th, THead } from './table';
+import { useVolumeStats } from './use-volume-stats';
+import { useReferralStats } from './use-referral-stats';
 
 /**
  * TODO:
@@ -44,6 +45,25 @@ export const FeesContainer = () => {
   });
   const { data: markets } = useMarketList();
 
+  const { volumeDiscount, volumeTierIndex, volumeLastEpoch, volumeTiers } =
+    useVolumeStats(
+      data?.volumeDiscountStats,
+      data?.currentVolumeDiscountProgram
+    );
+
+  const {
+    referralDiscount,
+    referralVolume,
+    referralTierIndex,
+    referralTiers,
+    epochsInSet,
+  } = useReferralStats(
+    data?.referralSetStats,
+    data?.referralSetReferees,
+    data?.currentReferralProgram,
+    data?.epoch
+  );
+
   if (!pubKey) {
     return <p>Please connect wallet</p>;
   }
@@ -56,52 +76,6 @@ export const FeesContainer = () => {
   if (loading || !data) {
     return <p>Loading...</p>;
   }
-
-  // Referral data
-  const referralSetsStats = compact(data.referralSetStats.edges).map(
-    (e) => e.node
-  );
-  const referralSets = compact(data.referralSetReferees.edges).map(
-    (e) => e.node
-  );
-
-  if (referralSets.length > 1 || referralSetsStats.length > 1) {
-    throw new Error('more than one referral set for user');
-  }
-
-  const referralSet = referralSets[0];
-  const referralStats = referralSetsStats[0];
-
-  const epochsInSet = Number(data.epoch.id) - referralSet.atEpoch;
-  const referralDiscount = Number(referralStats.discountFactor || 0);
-
-  const referralTiers = data.currentReferralProgram?.benefitTiers.length
-    ? [...data.currentReferralProgram.benefitTiers].reverse()
-    : [];
-
-  const referralTierIndex = getReferralBenefitTier(
-    epochsInSet,
-    Number(referralStats.referralSetRunningNotionalTakerVolume),
-    referralTiers
-  );
-
-  // Volume data
-  const volumeStats = compact(data.volumeDiscountStats.edges).map(
-    (e) => e.node
-  );
-
-  const volumeDiscount = Number(volumeStats[0].discountFactor || 0);
-
-  const lastEpochVolumeStats = data.volumeDiscountStats
-    ? maxBy(volumeStats, (s) => s.atEpoch)
-    : undefined;
-  const lastEpochVolume = Number(lastEpochVolumeStats?.runningVolume || 0);
-
-  const volumeTiers = data.currentVolumeDiscountProgram?.benefitTiers.length
-    ? [...data.currentVolumeDiscountProgram.benefitTiers].reverse()
-    : [];
-
-  const volumeTierIndex = getVolumeTier(lastEpochVolume, volumeTiers);
 
   return (
     <div className="p-3">
@@ -118,16 +92,14 @@ export const FeesContainer = () => {
         </FeeCard>
         <FeeCard title={t('My current volume')}>
           <CurrentVolume
-            volumeProgram={data.currentVolumeDiscountProgram}
-            lastEpochVolume={lastEpochVolume}
+            tiers={volumeTiers}
             tierIndex={volumeTierIndex}
+            lastEpochVolume={volumeLastEpoch}
           />
         </FeeCard>
         <FeeCard title={t('Referral benefits')}>
           <ReferralBenefits
-            setRunningNotionalTakerVolume={Number(
-              referralStats.referralSetRunningNotionalTakerVolume
-            )}
+            setRunningNotionalTakerVolume={referralVolume}
             epochsInSet={epochsInSet}
           />
         </FeeCard>
@@ -135,7 +107,7 @@ export const FeesContainer = () => {
           <VolumeTiers
             tiers={volumeTiers}
             tierIndex={volumeTierIndex}
-            lastEpochVolume={lastEpochVolume}
+            lastEpochVolume={volumeLastEpoch}
           />
         </FeeCard>
         <FeeCard title={t('Referral discount')} className="lg:col-span-2">
@@ -241,11 +213,11 @@ const TradingFees = ({
 };
 
 const CurrentVolume = ({
-  volumeProgram,
+  tiers,
   tierIndex,
   lastEpochVolume,
 }: {
-  volumeProgram?: FeesQuery['currentVolumeDiscountProgram'];
+  tiers?: Array<{ minimumRunningNotionalTakerVolume: string }>;
   tierIndex: number;
   lastEpochVolume: number;
 }) => {
@@ -260,8 +232,8 @@ const CurrentVolume = ({
 
   let requiredForNextTier = 0;
 
-  if (tierIndex) {
-    const nextTier = volumeProgram?.benefitTiers[tierIndex + 1];
+  if (tiers && tierIndex) {
+    const nextTier = tiers[tierIndex - 1];
     requiredForNextTier = nextTier
       ? Number(nextTier.minimumRunningNotionalTakerVolume) - lastEpochVolume
       : 0;
