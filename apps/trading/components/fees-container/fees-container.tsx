@@ -3,7 +3,6 @@ import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
 import classNames from 'classnames';
 import { t } from '@vegaprotocol/i18n';
-import type { FeesQuery } from './__generated__/Fees';
 import { useFeesQuery } from './__generated__/Fees';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
@@ -13,10 +12,12 @@ import {
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { useMarketList } from '@vegaprotocol/markets';
 import { MarketFees } from './market-fees';
-import { format } from './utils';
+import { formatPercentage } from './utils';
 import { Table, Td, Th, THead, Tr } from './table';
 import { useVolumeStats } from './use-volume-stats';
 import { useReferralStats } from './use-referral-stats';
+import { formatNumber } from '@vegaprotocol/utils';
+import { Stat } from './stat';
 
 /**
  * TODO:
@@ -183,29 +184,33 @@ const TradingFees = ({
       <div className="pt-6 leading-none">
         <p className="block text-3xl leading-none">
           {minLiq && maxLiq
-            ? `${format(minTotal)}%-${format(maxTotal)}%`
-            : `${format(total)}%`}
+            ? `${formatPercentage(minTotal)}%-${formatPercentage(maxTotal)}%`
+            : `${formatPercentage(total)}%`}
         </p>
         <table className="w-full text-xs text-muted">
           <tbody>
             <tr>
               <th className="font-normal text-left">{t('Infrastructure')}</th>
               <td className="text-right">
-                {format(Number(params.market_fee_factors_infrastructureFee))}%
+                {formatPercentage(
+                  Number(params.market_fee_factors_infrastructureFee)
+                )}
+                %
               </td>
             </tr>
             <tr>
               <th className="font-normal text-left ">{t('Maker')}</th>
               <td className="text-right">
-                {format(Number(params.market_fee_factors_makerFee))}%
+                {formatPercentage(Number(params.market_fee_factors_makerFee))}%
               </td>
             </tr>
             {minLiq && maxLiq && (
               <tr>
                 <th className="font-normal text-left ">{t('Liquidity')}</th>
                 <td className="text-right">
-                  {format(Number(minLiq.fees.factors.liquidityFee))}%{'-'}
-                  {format(Number(maxLiq.fees.factors.liquidityFee))}%
+                  {formatPercentage(Number(minLiq.fees.factors.liquidityFee))}%
+                  {'-'}
+                  {formatPercentage(Number(maxLiq.fees.factors.liquidityFee))}%
                 </td>
               </tr>
             )}
@@ -245,9 +250,15 @@ const CurrentVolume = ({
 
   return (
     <div>
-      <Stat value={lastEpochVolume} text={t('Over the last epoch')} />
+      <Stat
+        value={formatNumber(lastEpochVolume)}
+        text={t('Over the last epoch')}
+      />
       {requiredForNextTier > 0 && (
-        <Stat value={requiredForNextTier} text={t('Required for next tier')} />
+        <Stat
+          value={formatNumber(requiredForNextTier)}
+          text={t('Required for next tier')}
+        />
       )}
     </div>
   );
@@ -264,7 +275,7 @@ const ReferralBenefits = ({
     <div>
       <Stat
         // all sets volume (not just current party)
-        value={setRunningNotionalTakerVolume}
+        value={formatNumber(setRunningNotionalTakerVolume)}
         text={'Combined running notional over the last epoch'}
       />
       <Stat value={epochsInSet} text={t('epochs in referral set')} />
@@ -282,18 +293,20 @@ const TotalDiscount = ({
   return (
     <div>
       <Stat
-        value={format(referralDiscount + volumeDiscount) + '%'}
+        value={formatPercentage(referralDiscount + volumeDiscount) + '%'}
         highlight={true}
       />
       <table className="w-full text-xs text-muted">
         <tbody>
           <tr>
             <th className="font-normal text-left">{t('Volume discount')}</th>
-            <td className="text-right">{format(volumeDiscount)}%</td>
+            <td className="text-right">{formatPercentage(volumeDiscount)}%</td>
           </tr>
           <tr>
             <th className="font-normal text-left ">{t('Referral discount')}</th>
-            <td className="text-right">{referralDiscount}%</td>
+            <td className="text-right">
+              {formatPercentage(referralDiscount)}%
+            </td>
           </tr>
         </tbody>
       </table>
@@ -340,9 +353,9 @@ const VolumeTiers = ({
             return (
               <Tr key={i}>
                 <Td>{i + 1}</Td>
-                <Td>{tier.volumeDiscountFactor}%</Td>
-                <Td>{tier.minimumRunningNotionalTakerVolume}</Td>
-                <Td>{isUserTier ? lastEpochVolume : ''}</Td>
+                <Td>{formatPercentage(Number(tier.volumeDiscountFactor))}%</Td>
+                <Td>{formatNumber(tier.minimumRunningNotionalTakerVolume)}</Td>
+                <Td>{isUserTier ? formatNumber(lastEpochVolume) : ''}</Td>
                 <Td>{isUserTier ? <YourTier /> : null}</Td>
               </Tr>
             );
@@ -389,8 +402,8 @@ const ReferralTiers = ({
             return (
               <Tr key={i}>
                 <Td>{i + 1}</Td>
-                <Td>{t.referralDiscountFactor}%</Td>
-                <Td>{t.minimumRunningNotionalTakerVolume}</Td>
+                <Td>{formatPercentage(Number(t.referralDiscountFactor))}%</Td>
+                <Td>{formatNumber(t.minimumRunningNotionalTakerVolume)}</Td>
                 <Td>{t.minimumEpochs}</Td>
                 <Td>{isUserTier ? <YourTier /> : null}</Td>
               </Tr>
@@ -399,29 +412,6 @@ const ReferralTiers = ({
         </tbody>
       </Table>
     </div>
-  );
-};
-
-const Stat = ({
-  value,
-  text,
-  highlight,
-}: {
-  value: string | number;
-  text?: string;
-  highlight?: boolean;
-}) => {
-  return (
-    <p className="pt-3 leading-none first:pt-6">
-      <span
-        className={classNames('inline-block text-3xl leading-none', {
-          'text-transparent bg-rainbow bg-clip-text': highlight,
-        })}
-      >
-        {value}
-      </span>
-      {text && <small className="block text-xs text-muted">{text}</small>}
-    </p>
   );
 };
 

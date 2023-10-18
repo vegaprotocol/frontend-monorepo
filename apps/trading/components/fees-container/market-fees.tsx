@@ -2,7 +2,7 @@ import compact from 'lodash/compact';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { AgGrid } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
-import { format } from './utils';
+import { formatPercentage } from './utils';
 import { MarketCodeCell } from '../../client-pages/markets/market-code-cell';
 
 const feesTableColumnDefs = [
@@ -61,11 +61,11 @@ export const MarketFees = ({
     return {
       code: m.tradableInstrument.instrument.code,
       productType: m.tradableInstrument.instrument.product.__typename,
-      infraFee: format(infraFee),
-      makerFee: format(makerFee),
-      liquidityFee: format(liquidityFee),
-      totalFee: format(totalFee),
-      feeAfterDiscount: format(feeAfterDiscount),
+      infraFee: formatPercentage(infraFee),
+      makerFee: formatPercentage(makerFee),
+      liquidityFee: formatPercentage(liquidityFee),
+      totalFee: formatPercentage(totalFee),
+      feeAfterDiscount: formatPercentage(feeAfterDiscount),
       parentMarketID: m.parentMarketID,
       successorMarketID: m.successorMarketID,
     };

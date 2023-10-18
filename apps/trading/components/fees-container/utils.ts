@@ -1,5 +1,6 @@
 /** Convert a number between 0-1 into a percentage value between 0-100 */
-export const format = (num: number) => parseFloat((num * 100).toFixed(5));
+export const formatPercentage = (num: number) =>
+  parseFloat((num * 100).toFixed(5));
 
 export const getVolumeTier = (
   volume: number,
