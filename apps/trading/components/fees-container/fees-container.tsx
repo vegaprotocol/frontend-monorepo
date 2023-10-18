@@ -20,7 +20,6 @@ import { useReferralStats } from './use-referral-stats';
 
 /**
  * TODO:
- * - Styles for ag grid dont work inside these cards
  * - Better loading states
  * - Remove hardcoded partyId
  */
