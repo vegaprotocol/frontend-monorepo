@@ -138,7 +138,12 @@ export const FeesContainer = () => {
           className="lg:col-span-full xl:col-span-2"
           loading={loading}
         >
-          <ReferralTiers tiers={referralTiers} tierIndex={referralTierIndex} />
+          <ReferralTiers
+            tiers={referralTiers}
+            tierIndex={referralTierIndex}
+            epochsInSet={epochsInSet}
+            referralVolumeInWindow={referralVolumeInWindow}
+          />
         </FeeCard>
         <FeeCard
           title={t('Liquidity fees')}
@@ -409,6 +414,8 @@ const VolumeTiers = ({
 const ReferralTiers = ({
   tiers,
   tierIndex,
+  epochsInSet,
+  referralVolumeInWindow,
 }: {
   tiers: Array<{
     referralDiscountFactor: string;
@@ -416,6 +423,8 @@ const ReferralTiers = ({
     minimumEpochs: number;
   }>;
   tierIndex: number;
+  epochsInSet: number;
+  referralVolumeInWindow: number;
 }) => {
   if (!tiers.length) {
     return (
@@ -439,13 +448,27 @@ const ReferralTiers = ({
           {tiers.map((t, i) => {
             const isUserTier = tierIndex === i;
 
+            const requiredVolume = Number(t.minimumRunningNotionalTakerVolume);
+            let unlocksIn = null;
+
+            if (
+              referralVolumeInWindow >= requiredVolume &&
+              epochsInSet < t.minimumEpochs
+            ) {
+              unlocksIn = (
+                <span className="text-muted">
+                  Unlocks in {t.minimumEpochs - epochsInSet} epochs
+                </span>
+              );
+            }
+
             return (
               <Tr key={i}>
                 <Td>{i + 1}</Td>
                 <Td>{formatPercentage(Number(t.referralDiscountFactor))}%</Td>
                 <Td>{formatNumber(t.minimumRunningNotionalTakerVolume)}</Td>
                 <Td>{t.minimumEpochs}</Td>
-                <Td>{isUserTier ? <YourTier /> : null}</Td>
+                <Td>{isUserTier ? <YourTier /> : unlocksIn}</Td>
               </Tr>
             );
           })}

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
-const cellClass = 'px-4 py-2 text-xs font-normal text-left';
+const cellClass = 'px-4 py-2 text-xs font-normal text-left last:text-right';
 
 export const Th = ({ children }: { children?: ReactNode }) => {
   return (
