@@ -8,6 +8,7 @@ describe('useReferralStats', () => {
         __typename: 'ReferralSetStatsEdge' as const,
         node: {
           __typename: 'ReferralSetStats' as const,
+          atEpoch: 10,
           discountFactor: '0.3',
           referralSetRunningNotionalTakerVolume: '200',
         },
@@ -30,6 +31,7 @@ describe('useReferralStats', () => {
   };
 
   const program = {
+    windowLength: 5,
     benefitTiers: [
       {
         minimumEpochs: 4,
@@ -53,7 +55,7 @@ describe('useReferralStats', () => {
     const { result } = renderHook(() => useReferralStats());
     expect(result.current).toEqual({
       referralDiscount: 0,
-      referralVolume: 0,
+      referralVolumeInWindow: 0,
       referralTierIndex: -1,
       referralTiers: [],
       epochsInSet: 0,
@@ -69,7 +71,9 @@ describe('useReferralStats', () => {
 
     expect(result.current).toEqual({
       referralDiscount: Number(stats.discountFactor),
-      referralVolume: Number(stats.referralSetRunningNotionalTakerVolume),
+      referralVolumeInWindow: Number(
+        stats.referralSetRunningNotionalTakerVolume
+      ),
       referralTierIndex: 2,
       referralTiers: [...program.benefitTiers].reverse(),
       epochsInSet: Number(epoch.id) - sets.edges[0].node.atEpoch,
@@ -92,6 +96,7 @@ describe('useReferralStats', () => {
           __typename: 'ReferralSetStatsEdge' as const,
           node: {
             __typename: 'ReferralSetStats' as const,
+            atEpoch: 10,
             discountFactor: '0.3',
             referralSetRunningNotionalTakerVolume: '100000',
           },
@@ -129,6 +134,7 @@ describe('useReferralStats', () => {
           __typename: 'ReferralSetStatsEdge' as const,
           node: {
             __typename: 'ReferralSetStats' as const,
+            atEpoch: 10,
             discountFactor: '0.3',
             referralSetRunningNotionalTakerVolume: obj.volume,
           },
