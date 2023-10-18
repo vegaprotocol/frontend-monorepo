@@ -1,23 +1,32 @@
-query Fees($partyId: ID!, $volumeDiscountStatsEpochs: Int!) {
-  epoch {
-    id
-  }
+query DiscountPrograms {
   currentReferralProgram {
     benefitTiers {
       minimumEpochs
       minimumRunningNotionalTakerVolume
       referralDiscountFactor
     }
+    windowLength
   }
   currentVolumeDiscountProgram {
     benefitTiers {
       minimumRunningNotionalTakerVolume
       volumeDiscountFactor
     }
+    windowLength
+  }
+}
+
+query Fees(
+  $partyId: ID!
+  $volumeDiscountEpochs: Int!
+  $referralDiscountEpochs: Int!
+) {
+  epoch {
+    id
   }
   volumeDiscountStats(
     partyId: $partyId
-    pagination: { last: $volumeDiscountStatsEpochs }
+    pagination: { last: $volumeDiscountEpochs }
   ) {
     edges {
       node {
@@ -27,16 +36,20 @@ query Fees($partyId: ID!, $volumeDiscountStatsEpochs: Int!) {
       }
     }
   }
-  referralSetReferees(referee: $partyId, aggregationDays: 7) {
+  referralSetReferees(referee: $partyId) {
     edges {
       node {
         atEpoch
       }
     }
   }
-  referralSetStats(partyId: $partyId) {
+  referralSetStats(
+    partyId: $partyId
+    pagination: { last: $referralDiscountEpochs }
+  ) {
     edges {
       node {
+        atEpoch
         discountFactor
         referralSetRunningNotionalTakerVolume
       }

@@ -3,7 +3,7 @@ import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
 import classNames from 'classnames';
 import { t } from '@vegaprotocol/i18n';
-import { useFeesQuery } from './__generated__/Fees';
+import { useDiscountProgramsQuery, useFeesQuery } from './__generated__/Fees';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
   useNetworkParams,
@@ -27,41 +27,53 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
  * - Remove hardcoded partyId
  */
 
-const VOLUME_EPOCHS = 7;
-
 export const FeesContainer = () => {
   const { pubKey } = useVegaWallet();
   const { params } = useNetworkParams([
     NetworkParams.market_fee_factors_makerFee,
     NetworkParams.market_fee_factors_infrastructureFee,
   ]);
+
+  const { data: markets } = useMarketList();
+
+  const {
+    data: programData,
+    loading: programLoading,
+    error: programError,
+  } = useDiscountProgramsQuery();
+
+  const volumeDiscountEpochs =
+    programData?.currentVolumeDiscountProgram?.windowLength || 1;
+  const referralDiscountEpochs =
+    programData?.currentReferralProgram?.windowLength || 1;
+
   const { data, loading, error } = useFeesQuery({
     variables: {
       partyId:
         // TODO: change for pubkey
         '9e2445e0e98c0e0ca1c260baaab1e7a2f1b9c7256c27196be6e614ee44d1a1e7',
-      volumeDiscountStatsEpochs: VOLUME_EPOCHS,
+      volumeDiscountEpochs,
+      referralDiscountEpochs,
     },
-    skip: !pubKey,
+    skip: !pubKey || !programData,
   });
-  const { data: markets } = useMarketList();
 
-  const { volumeDiscount, volumeTierIndex, volumeLastEpoch, volumeTiers } =
+  const { volumeDiscount, volumeTierIndex, volumeInWindow, volumeTiers } =
     useVolumeStats(
       data?.volumeDiscountStats,
-      data?.currentVolumeDiscountProgram
+      programData?.currentVolumeDiscountProgram
     );
 
   const {
     referralDiscount,
-    referralVolume,
+    referralVolumeInWindow,
     referralTierIndex,
     referralTiers,
     epochsInSet,
   } = useReferralStats(
     data?.referralSetStats,
     data?.referralSetReferees,
-    data?.currentReferralProgram,
+    programData?.currentReferralProgram,
     data?.epoch
   );
 
@@ -82,7 +94,7 @@ export const FeesContainer = () => {
   }
 
   // TODO: skeleton loading states
-  if (loading || !data) {
+  if (loading || programLoading) {
     return <p>Loading...</p>;
   }
 
@@ -103,13 +115,15 @@ export const FeesContainer = () => {
           <CurrentVolume
             tiers={volumeTiers}
             tierIndex={volumeTierIndex}
-            lastEpochVolume={volumeLastEpoch}
+            windowLengthVolume={volumeInWindow}
+            epochs={volumeDiscountEpochs}
           />
         </FeeCard>
         <FeeCard title={t('Referral benefits')} className="sm:col-span-2">
           <ReferralBenefits
-            setRunningNotionalTakerVolume={referralVolume}
+            setRunningNotionalTakerVolume={referralVolumeInWindow}
             epochsInSet={epochsInSet}
+            epochs={referralDiscountEpochs}
           />
         </FeeCard>
         <FeeCard
@@ -119,7 +133,7 @@ export const FeesContainer = () => {
           <VolumeTiers
             tiers={volumeTiers}
             tierIndex={volumeTierIndex}
-            lastEpochVolume={volumeLastEpoch}
+            lastEpochVolume={volumeInWindow}
           />
         </FeeCard>
         <FeeCard
@@ -234,24 +248,31 @@ const TradingFees = ({
 const CurrentVolume = ({
   tiers,
   tierIndex,
-  lastEpochVolume,
+  windowLengthVolume,
+  epochs,
 }: {
   tiers?: Array<{ minimumRunningNotionalTakerVolume: string }>;
   tierIndex: number;
-  lastEpochVolume: number;
+  windowLengthVolume: number;
+  epochs: number;
 }) => {
+  // TODO sum windowLength volume
+
   let requiredForNextTier = 0;
 
   if (tiers && tierIndex) {
     const nextTier = tiers[tierIndex - 1];
     requiredForNextTier = nextTier
-      ? Number(nextTier.minimumRunningNotionalTakerVolume) - lastEpochVolume
+      ? Number(nextTier.minimumRunningNotionalTakerVolume) - windowLengthVolume
       : 0;
   }
 
   return (
     <div>
-      <Stat value={formatNumber(lastEpochVolume)} text={t('Past 7 epochs')} />
+      <Stat
+        value={formatNumber(windowLengthVolume)}
+        text={t('Past %s epochs', epochs.toString())}
+      />
       {requiredForNextTier > 0 && (
         <Stat
           value={formatNumber(requiredForNextTier)}
@@ -265,16 +286,21 @@ const CurrentVolume = ({
 const ReferralBenefits = ({
   epochsInSet,
   setRunningNotionalTakerVolume,
+  epochs,
 }: {
   epochsInSet: number;
   setRunningNotionalTakerVolume: number;
+  epochs: number;
 }) => {
   return (
     <div>
       <Stat
         // all sets volume (not just current party)
         value={formatNumber(setRunningNotionalTakerVolume)}
-        text={'Combined running notional over the last epoch'}
+        text={t(
+          'Combined running notional over the %s epochs',
+          epochs.toString()
+        )}
       />
       <Stat value={epochsInSet} text={t('epochs in referral set')} />
     </div>

@@ -3,36 +3,75 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type DiscountProgramsQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type DiscountProgramsQuery = { __typename?: 'Query', currentReferralProgram?: { __typename?: 'CurrentReferralProgram', windowLength: number, benefitTiers: Array<{ __typename?: 'BenefitTier', minimumEpochs: number, minimumRunningNotionalTakerVolume: string, referralDiscountFactor: string }> } | null, currentVolumeDiscountProgram?: { __typename?: 'VolumeDiscountProgram', windowLength: number, benefitTiers: Array<{ __typename?: 'VolumeBenefitTier', minimumRunningNotionalTakerVolume: string, volumeDiscountFactor: string }> } | null };
+
 export type FeesQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
-  volumeDiscountStatsEpochs: Types.Scalars['Int'];
+  volumeDiscountEpochs: Types.Scalars['Int'];
+  referralDiscountEpochs: Types.Scalars['Int'];
 }>;
 
 
-export type FeesQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string }, currentReferralProgram?: { __typename?: 'CurrentReferralProgram', benefitTiers: Array<{ __typename?: 'BenefitTier', minimumEpochs: number, minimumRunningNotionalTakerVolume: string, referralDiscountFactor: string }> } | null, currentVolumeDiscountProgram?: { __typename?: 'VolumeDiscountProgram', benefitTiers: Array<{ __typename?: 'VolumeBenefitTier', minimumRunningNotionalTakerVolume: string, volumeDiscountFactor: string }> } | null, volumeDiscountStats: { __typename?: 'VolumeDiscountStatsConnection', edges: Array<{ __typename?: 'VolumeDiscountStatsEdge', node: { __typename?: 'VolumeDiscountStats', atEpoch: number, discountFactor: string, runningVolume: string } } | null> }, referralSetReferees: { __typename?: 'ReferralSetRefereeConnection', edges: Array<{ __typename?: 'ReferralSetRefereeEdge', node: { __typename?: 'ReferralSetReferee', atEpoch: number } } | null> }, referralSetStats: { __typename?: 'ReferralSetStatsConnection', edges: Array<{ __typename?: 'ReferralSetStatsEdge', node: { __typename?: 'ReferralSetStats', discountFactor: string, referralSetRunningNotionalTakerVolume: string } } | null> } };
+export type FeesQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string }, volumeDiscountStats: { __typename?: 'VolumeDiscountStatsConnection', edges: Array<{ __typename?: 'VolumeDiscountStatsEdge', node: { __typename?: 'VolumeDiscountStats', atEpoch: number, discountFactor: string, runningVolume: string } } | null> }, referralSetReferees: { __typename?: 'ReferralSetRefereeConnection', edges: Array<{ __typename?: 'ReferralSetRefereeEdge', node: { __typename?: 'ReferralSetReferee', atEpoch: number } } | null> }, referralSetStats: { __typename?: 'ReferralSetStatsConnection', edges: Array<{ __typename?: 'ReferralSetStatsEdge', node: { __typename?: 'ReferralSetStats', atEpoch: number, discountFactor: string, referralSetRunningNotionalTakerVolume: string } } | null> } };
 
 
-export const FeesDocument = gql`
-    query Fees($partyId: ID!, $volumeDiscountStatsEpochs: Int!) {
-  epoch {
-    id
-  }
+export const DiscountProgramsDocument = gql`
+    query DiscountPrograms {
   currentReferralProgram {
     benefitTiers {
       minimumEpochs
       minimumRunningNotionalTakerVolume
       referralDiscountFactor
     }
+    windowLength
   }
   currentVolumeDiscountProgram {
     benefitTiers {
       minimumRunningNotionalTakerVolume
       volumeDiscountFactor
     }
+    windowLength
+  }
+}
+    `;
+
+/**
+ * __useDiscountProgramsQuery__
+ *
+ * To run a query within a React component, call `useDiscountProgramsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDiscountProgramsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDiscountProgramsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDiscountProgramsQuery(baseOptions?: Apollo.QueryHookOptions<DiscountProgramsQuery, DiscountProgramsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DiscountProgramsQuery, DiscountProgramsQueryVariables>(DiscountProgramsDocument, options);
+      }
+export function useDiscountProgramsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DiscountProgramsQuery, DiscountProgramsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DiscountProgramsQuery, DiscountProgramsQueryVariables>(DiscountProgramsDocument, options);
+        }
+export type DiscountProgramsQueryHookResult = ReturnType<typeof useDiscountProgramsQuery>;
+export type DiscountProgramsLazyQueryHookResult = ReturnType<typeof useDiscountProgramsLazyQuery>;
+export type DiscountProgramsQueryResult = Apollo.QueryResult<DiscountProgramsQuery, DiscountProgramsQueryVariables>;
+export const FeesDocument = gql`
+    query Fees($partyId: ID!, $volumeDiscountEpochs: Int!, $referralDiscountEpochs: Int!) {
+  epoch {
+    id
   }
   volumeDiscountStats(
     partyId: $partyId
-    pagination: {last: $volumeDiscountStatsEpochs}
+    pagination: {last: $volumeDiscountEpochs}
   ) {
     edges {
       node {
@@ -42,16 +81,17 @@ export const FeesDocument = gql`
       }
     }
   }
-  referralSetReferees(referee: $partyId, aggregationDays: 7) {
+  referralSetReferees(referee: $partyId) {
     edges {
       node {
         atEpoch
       }
     }
   }
-  referralSetStats(partyId: $partyId) {
+  referralSetStats(partyId: $partyId, pagination: {last: $referralDiscountEpochs}) {
     edges {
       node {
+        atEpoch
         discountFactor
         referralSetRunningNotionalTakerVolume
       }
@@ -73,7 +113,8 @@ export const FeesDocument = gql`
  * const { data, loading, error } = useFeesQuery({
  *   variables: {
  *      partyId: // value for 'partyId'
- *      volumeDiscountStatsEpochs: // value for 'volumeDiscountStatsEpochs'
+ *      volumeDiscountEpochs: // value for 'volumeDiscountEpochs'
+ *      referralDiscountEpochs: // value for 'referralDiscountEpochs'
  *   },
  * });
  */
