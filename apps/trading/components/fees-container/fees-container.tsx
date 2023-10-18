@@ -18,9 +18,11 @@ import { useVolumeStats } from './use-volume-stats';
 import { useReferralStats } from './use-referral-stats';
 import { formatNumber } from '@vegaprotocol/utils';
 import { Stat } from './stat';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 
 /**
  * TODO:
+ * - Add windowLengths to queries and use it to calculate running total over last 'x' epochs
  * - Better loading states
  * - Remove hardcoded partyId
  */
@@ -64,11 +66,19 @@ export const FeesContainer = () => {
   );
 
   if (!pubKey) {
-    return <p>Please connect wallet</p>;
+    return (
+      <Splash>
+        <p className="text-xs">{t('Please connect Vega wallet')}</p>
+      </Splash>
+    );
   }
 
   if (error) {
-    return <p>Failed to fetch fee data</p>;
+    return (
+      <Splash>
+        <p className="text-xs">{t('Failed to fetch fees data')}</p>
+      </Splash>
+    );
   }
 
   // TODO: skeleton loading states
@@ -230,15 +240,6 @@ const CurrentVolume = ({
   tierIndex: number;
   lastEpochVolume: number;
 }) => {
-  // TODO: clarify if volume discount is only for the last epoch, so no need
-  // to sum up running volume
-
-  // const total = compact(volumeStats.edges)
-  //   .map((e) => e.node)
-  //   .reduce((sum, d) => {
-  //     return sum + BigInt(d.runningVolume);
-  //   }, BigInt(0));
-
   let requiredForNextTier = 0;
 
   if (tiers && tierIndex) {
@@ -250,10 +251,7 @@ const CurrentVolume = ({
 
   return (
     <div>
-      <Stat
-        value={formatNumber(lastEpochVolume)}
-        text={t('Over the last epoch')}
-      />
+      <Stat value={formatNumber(lastEpochVolume)} text={t('Past 7 epochs')} />
       {requiredForNextTier > 0 && (
         <Stat
           value={formatNumber(requiredForNextTier)}
