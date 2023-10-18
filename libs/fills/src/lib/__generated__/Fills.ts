@@ -12,6 +12,7 @@ export type FillEdgeFragment = { __typename?: 'TradeEdge', cursor: string, node:
 export type FillsQueryVariables = Types.Exact<{
   filter?: Types.InputMaybe<Types.TradesFilter>;
   pagination?: Types.InputMaybe<Types.Pagination>;
+  dateRange?: Types.InputMaybe<Types.DateRange>;
 }>;
 
 
@@ -95,8 +96,8 @@ export const FillUpdateFieldsFragmentDoc = gql`
 }
     ${TradeFeeFieldsFragmentDoc}`;
 export const FillsDocument = gql`
-    query Fills($filter: TradesFilter, $pagination: Pagination) {
-  trades(filter: $filter, pagination: $pagination) {
+    query Fills($filter: TradesFilter, $pagination: Pagination, $dateRange: DateRange) {
+  trades(filter: $filter, dateRange: $dateRange, pagination: $pagination) {
     edges {
       ...FillEdge
     }
@@ -124,6 +125,7 @@ export const FillsDocument = gql`
  *   variables: {
  *      filter: // value for 'filter'
  *      pagination: // value for 'pagination'
+ *      dateRange: // value for 'dateRange'
  *   },
  * });
  */

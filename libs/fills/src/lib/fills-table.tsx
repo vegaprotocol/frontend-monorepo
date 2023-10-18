@@ -20,6 +20,7 @@ import {
   negativeClassNames,
   MarketNameCell,
   COL_DEFS,
+  DateRangeFilter,
 } from '@vegaprotocol/datagrid';
 import type {
   VegaValueFormatterParams,
@@ -120,6 +121,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
         },
         {
           headerName: t('Date'),
+          filter: DateRangeFilter,
           field: 'createdAt',
           valueFormatter: ({
             value,
