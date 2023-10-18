@@ -14,7 +14,7 @@ import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { useMarketList } from '@vegaprotocol/markets';
 import { MarketFees } from './market-fees';
 import { format } from './utils';
-import { Table, Td, Th, THead } from './table';
+import { Table, Td, Th, THead, Tr } from './table';
 import { useVolumeStats } from './use-volume-stats';
 import { useReferralStats } from './use-referral-stats';
 
@@ -79,37 +79,43 @@ export const FeesContainer = () => {
   return (
     <div className="p-3">
       <h1 className="px-4 pt-2 pb-4 text-2xl">{t('Fees')}</h1>
-      <div className="grid lg:auto-rows-min lg:grid-cols-4 gap-3">
-        <FeeCard title={t('My trading fees')}>
+      <div className="grid auto-rows-min grid-cols-4 gap-3">
+        <FeeCard title={t('My trading fees')} className="sm:col-span-2">
           <TradingFees params={params} markets={markets} />
         </FeeCard>
-        <FeeCard title={t('Total discount')}>
+        <FeeCard title={t('Total discount')} className="sm:col-span-2">
           <TotalDiscount
             referralDiscount={referralDiscount}
             volumeDiscount={volumeDiscount}
           />
         </FeeCard>
-        <FeeCard title={t('My current volume')}>
+        <FeeCard title={t('My current volume')} className="sm:col-span-2">
           <CurrentVolume
             tiers={volumeTiers}
             tierIndex={volumeTierIndex}
             lastEpochVolume={volumeLastEpoch}
           />
         </FeeCard>
-        <FeeCard title={t('Referral benefits')}>
+        <FeeCard title={t('Referral benefits')} className="sm:col-span-2">
           <ReferralBenefits
             setRunningNotionalTakerVolume={referralVolume}
             epochsInSet={epochsInSet}
           />
         </FeeCard>
-        <FeeCard title={t('Volume discount')} className="lg:col-span-2">
+        <FeeCard
+          title={t('Volume discount')}
+          className="lg:col-span-full xl:col-span-2"
+        >
           <VolumeTiers
             tiers={volumeTiers}
             tierIndex={volumeTierIndex}
             lastEpochVolume={volumeLastEpoch}
           />
         </FeeCard>
-        <FeeCard title={t('Referral discount')} className="lg:col-span-2">
+        <FeeCard
+          title={t('Referral discount')}
+          className="lg:col-span-full xl:col-span-2"
+        >
           <ReferralTiers tiers={referralTiers} tierIndex={referralTierIndex} />
         </FeeCard>
         <FeeCard title={t('Liquidity fees')} className="lg:col-span-full">
@@ -333,13 +339,13 @@ const VolumeTiers = ({
             const isUserTier = tierIndex === i;
 
             return (
-              <tr key={i}>
+              <Tr key={i}>
                 <Td>{i + 1}</Td>
                 <Td>{tier.volumeDiscountFactor}%</Td>
                 <Td>{tier.minimumRunningNotionalTakerVolume}</Td>
                 <Td>{isUserTier ? lastEpochVolume : ''}</Td>
                 <Td>{isUserTier ? <YourTier /> : null}</Td>
-              </tr>
+              </Tr>
             );
           })}
         </tbody>
@@ -382,13 +388,13 @@ const ReferralTiers = ({
             const isUserTier = tierIndex === i;
 
             return (
-              <tr key={i}>
+              <Tr key={i}>
                 <Td>{i + 1}</Td>
                 <Td>{t.referralDiscountFactor}%</Td>
                 <Td>{t.minimumRunningNotionalTakerVolume}</Td>
                 <Td>{t.minimumEpochs}</Td>
                 <Td>{isUserTier ? <YourTier /> : null}</Td>
-              </tr>
+              </Tr>
             );
           })}
         </tbody>
@@ -422,7 +428,7 @@ const Stat = ({
 
 const YourTier = () => {
   return (
-    <span className="px-4 py-1.5 rounded-xl bg-rainbow whitespace-nowrap">
+    <span className="px-4 py-1.5 rounded-xl bg-rainbow whitespace-nowrap text-white">
       {t('Your tier')}
     </span>
   );
