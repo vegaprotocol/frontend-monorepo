@@ -7,6 +7,7 @@ import {
   useEthTransactionUpdater,
   useEthWithdrawApprovalsManager,
 } from '@vegaprotocol/web3';
+import { useLedgerDownloadManager } from '@vegaprotocol/ledger';
 
 export const TransactionHandlers = () => {
   useVegaTransactionManager();
@@ -14,5 +15,6 @@ export const TransactionHandlers = () => {
   useEthTransactionManager();
   useEthTransactionUpdater();
   useEthWithdrawApprovalsManager();
+  useLedgerDownloadManager();
   return null;
 };

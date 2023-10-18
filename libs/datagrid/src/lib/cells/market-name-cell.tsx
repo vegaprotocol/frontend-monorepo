@@ -14,16 +14,17 @@ export const MarketProductPill = ({
 }: {
   productType?: ProductType;
 }) => {
+  if (!productType) {
+    return null;
+  }
   return (
-    productType && (
-      <Pill
-        size="xxs"
-        className="uppercase ml-0.5"
-        title={ProductTypeMapping[productType]}
-      >
-        {ProductTypeShortName[productType]}
-      </Pill>
-    )
+    <Pill
+      size="xxs"
+      className="uppercase ml-0.5"
+      title={ProductTypeMapping[productType]}
+    >
+      {ProductTypeShortName[productType]}
+    </Pill>
   );
 };
 
