@@ -128,13 +128,7 @@ describe('<ProposalReferralProgramDetails />', () => {
   it('should not render if there are no relevant fields', () => {
     const incompleteProposal = generateProposal({
       terms: {
-        change: {
-          __typename: 'UpdateReferralProgram',
-          windowLength: 3,
-          endOfProgram: '2026-10-03T10:34:34Z',
-          benefitTiers: [],
-          stakingTiers: [],
-        },
+        change: {},
       },
     });
 

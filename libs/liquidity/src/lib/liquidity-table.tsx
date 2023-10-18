@@ -112,7 +112,7 @@ export const LiquidityTable = ({
 
     const defs: ColGroupDef[] = [
       {
-        headerName: 'Party',
+        headerName: '',
         children: [
           {
             headerName: t('Party'),
@@ -242,7 +242,7 @@ export const LiquidityTable = ({
         ],
       },
       {
-        headerName: t('Status'),
+        headerName: '',
         marryChildren: true,
         children: [
           {
@@ -264,7 +264,7 @@ export const LiquidityTable = ({
             field: 'createdAt',
             type: 'rightAligned',
             valueFormatter: dateValueFormatter,
-            columnGroupShow: 'open',
+            // columnGroupShow: 'open',
           },
           {
             headerName: t('Updated'),
@@ -274,7 +274,7 @@ export const LiquidityTable = ({
             field: 'updatedAt',
             type: 'rightAligned',
             valueFormatter: dateValueFormatter,
-            columnGroupShow: 'open',
+            // columnGroupShow: 'open',
           },
         ],
       },
