@@ -11,13 +11,7 @@ import type {
   MarketDepthQuery,
   MarketDepthQueryVariables,
   MarketDepthUpdateSubscription,
-  PriceLevelFieldsFragment,
 } from './__generated__/MarketDepth';
-
-export type OrderbookData = {
-  asks: PriceLevelFieldsFragment[];
-  bids: PriceLevelFieldsFragment[];
-};
 
 interface OrderbookManagerProps {
   marketId: string;
