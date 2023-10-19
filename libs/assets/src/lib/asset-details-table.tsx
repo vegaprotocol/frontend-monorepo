@@ -57,7 +57,16 @@ export const rows: Rows = [
     key: AssetDetail.ID,
     label: t('ID'),
     tooltip: '',
-    value: (asset) => truncateMiddle(asset.id),
+    value: (asset) => (
+      <>
+        {truncateMiddle(asset.id)}{' '}
+        <CopyWithTooltip text={asset.id}>
+          <button title={t('Copy id to clipboard')}>
+            <VegaIcon size={14} name={VegaIconNames.COPY} />
+          </button>
+        </CopyWithTooltip>
+      </>
+    ),
   },
   {
     key: AssetDetail.TYPE,
