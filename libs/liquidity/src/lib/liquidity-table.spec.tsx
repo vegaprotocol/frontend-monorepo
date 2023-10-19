@@ -50,9 +50,19 @@ describe('LiquidityTable', () => {
       undefined,
       'Party',
       'Commitment ()',
+      'Obligation',
+      'Fee',
+      'Adjusted stake share',
+      'Share',
+      'Live supplied liquidity',
       'Live time fraction on book',
+      'Live liquidity quality score (%)',
       'Last time fraction on the book',
+      'Last fee penalty',
+      'Last bond penalty',
       'Status',
+      'Created',
+      'Updated',
     ];
     expect(headers).toHaveLength(expectedHeaders.length);
     expect(headerTexts).toEqual(expectedHeaders);
