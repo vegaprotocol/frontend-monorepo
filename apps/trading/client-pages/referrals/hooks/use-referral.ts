@@ -77,7 +77,7 @@ export const useReferral = (args: UseReferralArgs) => {
     },
     skip: !referralSet?.id,
     fetchPolicy: 'cache-and-network',
-    //context: { isEnlargedTimeout: true },
+    context: { isEnlargedTimeout: true },
   });
 
   const referees = compact(
