@@ -46,7 +46,7 @@ export const Referrals = () => {
 
   const error = refereeError || referrerError;
   const loading = refereeLoading || referrerLoading;
-  const showNav = !loading && !referrer && !referee;
+  const showNav = !loading && !error && !referrer && !referee;
 
   return (
     <>
@@ -64,8 +64,9 @@ export const Referrals = () => {
             <Loader />
           </div>
         ) : error ? (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            Something went wrong
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+            <p>Something went wrong</p>
+            <span className="text-xs">{error.message}</span>
           </div>
         ) : (
           <Outlet />

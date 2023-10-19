@@ -133,15 +133,11 @@ export const ApplyCodeForm = () => {
 
   // go to main page when successfully applied
   useEffect(() => {
-    let to: ReturnType<typeof setTimeout>;
     if (status === 'successful') {
-      to = setTimeout(() => {
+      setTimeout(() => {
         navigate(Routes.REFERRALS);
       }, RELOAD_DELAY);
     }
-    return () => {
-      if (to) clearTimeout(to);
-    };
   }, [navigate, status]);
 
   // go to main page if the current pubkey is already a referrer or referee
