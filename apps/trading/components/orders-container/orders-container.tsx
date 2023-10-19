@@ -10,6 +10,19 @@ import type { DataGridStore } from '../../stores/datagrid-store-slice';
 import { OrderStatus } from '@vegaprotocol/types';
 import { Links } from '../../lib/links';
 
+const resolveNoRowsMessage = (filter?: Filter) => {
+  switch (filter) {
+    case Filter.Open:
+      return t('No open orders');
+    case Filter.Closed:
+      return t('No closed orders');
+    case Filter.Rejected:
+      return t('No rejected orders');
+    default:
+      return t('No orders');
+  }
+};
+
 export const FilterStatusValue = {
   [Filter.Open]: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
   [Filter.Closed]: [
@@ -43,6 +56,7 @@ export const OrdersContainer = ({ filter }: OrderContainerProps) => {
   if (!pubKey) {
     return <Splash>{t('Please connect Vega wallet')}</Splash>;
   }
+  const noRowsMessage = resolveNoRowsMessage(filter);
 
   return (
     <OrderListManager
@@ -56,6 +70,7 @@ export const OrdersContainer = ({ filter }: OrderContainerProps) => {
       }
       isReadOnly={isReadOnly}
       gridProps={gridStoreCallbacks}
+      noRowsMessage={noRowsMessage}
     />
   );
 };
