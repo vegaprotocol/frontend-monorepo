@@ -1,4 +1,4 @@
-import { render, screen, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import type { OrderListManagerProps } from './order-list-manager';
 import { OrderListManager, Filter } from './order-list-manager';
 import * as useDataProviderHook from '@vegaprotocol/data-provider';
