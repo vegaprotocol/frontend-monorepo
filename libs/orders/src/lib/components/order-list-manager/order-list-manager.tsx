@@ -2,7 +2,7 @@ import { t } from '@vegaprotocol/i18n';
 import { useCallback, useRef, useState, useEffect } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { FilterChangedEvent } from 'ag-grid-community';
-import { OrderListTable } from '../order-list/order-list';
+import { OrderListTable } from '../order-list';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
