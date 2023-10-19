@@ -74,7 +74,7 @@ export const MarketFees = ({
   });
 
   return (
-    <div className="border border-default">
+    <div className="border rounded-sm border-default">
       <AgGrid
         columnDefs={feesTableColumnDefs}
         rowData={rows}

@@ -25,7 +25,7 @@ export const Tr = ({ children }: { children?: ReactNode }) => {
 
 export const Table = ({ children }: { children: ReactNode }) => {
   return (
-    <table className="w-full border border-vega-clight-600 dark:border-vega-cdark-600">
+    <table className="w-full border border-separate rounded-sm border-spacing-0 border-vega-clight-600 dark:border-vega-cdark-600">
       {children}
     </table>
   );
