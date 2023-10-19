@@ -12,18 +12,19 @@ import {
   generateProposal,
   generateYesVotes,
 } from '../../test-helpers/generate-proposals';
-import { ProposalHeader } from './proposal-header';
+import { ProposalHeader, NewTransferSummary } from './proposal-header';
 import {
   lastWeek,
   nextWeek,
   mockWalletContext,
   createUserVoteQueryMock,
 } from '../../test-helpers/mocks';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
-import type { MockedResponse } from '@apollo/client/testing';
 import { FLAGS } from '@vegaprotocol/environment';
 import { BrowserRouter } from 'react-router-dom';
 import { VoteState } from '../vote-details/use-user-vote';
+import { useNewTransferProposalDetails } from '@vegaprotocol/proposals';
+import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import type { MockedResponse } from '@apollo/client/testing';
 
 jest.mock('@vegaprotocol/proposals', () => ({
   ...jest.requireActual('@vegaprotocol/proposals'),
@@ -31,6 +32,7 @@ jest.mock('@vegaprotocol/proposals', () => ({
     code: 'PARENT_CODE',
     parentMarketId: 'PARENT_ID',
   }),
+  useNewTransferProposalDetails: jest.fn(),
 }));
 
 const renderComponent = (
@@ -416,5 +418,80 @@ describe('Proposal header', () => {
       VoteState.Yes
     );
     expect(await screen.findByTestId('user-voted-yes')).toBeInTheDocument();
+  });
+});
+
+jest.mock('@vegaprotocol/proposals');
+
+describe('<NewTransferSummary />', () => {
+  it('renders null if no details are provided', () => {
+    (useNewTransferProposalDetails as jest.Mock).mockReturnValue(null);
+    const { container } = render(<NewTransferSummary proposalId="1" />);
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('handles OneOffGovernanceTransfer', () => {
+    (useNewTransferProposalDetails as jest.Mock).mockReturnValue({
+      kind: { __typename: 'OneOffGovernanceTransfer', deliverOn: null },
+      source: '0x123',
+      sourceType: 'wallet',
+      destination: '0x456',
+      destinationType: 'contract',
+    });
+    const { getByText } = render(<NewTransferSummary proposalId="1" />);
+    const textMatch = (content: string) => content.includes('One off transfer');
+    expect(getByText(textMatch)).toBeInTheDocument();
+  });
+
+  it('handles RecurringGovernanceTransfer', () => {
+    (useNewTransferProposalDetails as jest.Mock).mockReturnValue({
+      kind: {
+        __typename: 'RecurringGovernanceTransfer',
+        startEpoch: 1,
+        endEpoch: 5,
+      },
+      source: '0x123',
+      sourceType: 'wallet',
+      destination: '0x456',
+      destinationType: 'contract',
+    });
+    const { getByText } = render(<NewTransferSummary proposalId="1" />);
+    const textMatch = (content: string) =>
+      content.includes('Recurring transfer');
+    expect(getByText(textMatch)).toBeInTheDocument();
+  });
+
+  it('should fallback to translated sourceType when source is not set', () => {
+    (useNewTransferProposalDetails as jest.Mock).mockReturnValue({
+      kind: {
+        __typename: 'RecurringGovernanceTransfer',
+        startEpoch: 1,
+        endEpoch: 5,
+      },
+      source: undefined,
+      sourceType: 'ACCOUNT_TYPE_GENERAL',
+      destination: '0x456',
+      destinationType: 'ACCOUNT_TYPE_GENERAL',
+    });
+
+    render(<NewTransferSummary proposalId="1" />);
+    expect(screen.getByText('General account')).toBeInTheDocument();
+  });
+
+  it('should fallback to translated destinationType when destination is not set', () => {
+    (useNewTransferProposalDetails as jest.Mock).mockReturnValue({
+      kind: {
+        __typename: 'RecurringGovernanceTransfer',
+        startEpoch: 1,
+        endEpoch: 5,
+      },
+      source: '0x123',
+      sourceType: 'ACCOUNT_TYPE_GENERAL',
+      destination: undefined,
+      destinationType: 'ACCOUNT_TYPE_GLOBAL_INSURANCE',
+    });
+
+    render(<NewTransferSummary proposalId="1" />);
+    expect(screen.getByText('Global insurance account')).toBeInTheDocument();
   });
 });

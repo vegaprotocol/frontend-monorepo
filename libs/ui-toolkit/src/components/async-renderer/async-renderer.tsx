@@ -29,7 +29,7 @@ export function AsyncRenderer<T = object>({
   reload,
 }: AsyncRendererProps<T>) {
   if (error) {
-    if (!data) {
+    if (!data || (Array.isArray(data) && !data.length)) {
       return (
         <div className="h-full flex items-center justify-center">
           <div className="h-12 flex flex-col  items-center">
