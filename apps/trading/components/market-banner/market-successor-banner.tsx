@@ -4,6 +4,7 @@ import type { Market } from '@vegaprotocol/markets';
 import {
   calcCandleVolume,
   useCandles,
+  useMarketState,
   useSuccessorMarket,
 } from '@vegaprotocol/markets';
 import {
@@ -29,7 +30,9 @@ export const MarketSuccessorBanner = ({
 }: {
   market: Market | null;
 }) => {
-  const { data: successorData } = useSuccessorMarket(market?.id);
+  const { data: marketState } = useMarketState(market?.id);
+  const isSettled = marketState === Types.MarketState.STATE_SETTLED;
+  const { data: successorData, loading } = useSuccessorMarket(market?.id);
 
   const [visible, setVisible] = useState(true);
 
@@ -44,11 +47,6 @@ export const MarketSuccessorBanner = ({
     expiry && isBefore(new Date(), expiry)
       ? intervalToDuration({ start: new Date(), end: expiry })
       : null;
-
-  const isInContinuesMode =
-    successorData?.state === Types.MarketState.STATE_ACTIVE &&
-    successorData?.tradingMode ===
-      Types.MarketTradingMode.TRADING_MODE_CONTINUOUS;
 
   const { oneDayCandles } = useCandles({
     marketId: successorData?.id,
@@ -66,7 +64,7 @@ export const MarketSuccessorBanner = ({
         )
       : null;
 
-  if (isInContinuesMode && visible) {
+  if (!loading && (isSettled || successorData) && visible) {
     return (
       <NotificationBanner
         intent={Intent.Primary}
@@ -74,34 +72,47 @@ export const MarketSuccessorBanner = ({
           setVisible(false);
         }}
       >
-        <div className="uppercase mb-1">
-          {t('This market has been succeeded')}
+        <div className="uppercase">
+          {successorData
+            ? t('This market has been succeeded')
+            : t('This market has been settled')}
         </div>
-        <div>
-          {duration && (
-            <span>
-              {t('This market expires in %s.', [
-                formatDuration(duration, {
-                  format: [
-                    'years',
-                    'months',
-                    'weeks',
-                    'days',
-                    'hours',
-                    'minutes',
-                  ],
-                }),
-              ])}
-            </span>
-          )}{' '}
-          {t('The successor market')}{' '}
-          <ExternalLink href={`/#/markets/${successorData?.id}`}>
-            {successorData?.tradableInstrument.instrument.name}
-          </ExternalLink>
-          {successorVolume && (
-            <span> {t('has %s 24h vol.', [successorVolume])}</span>
-          )}
-        </div>
+        {(duration || successorData) && (
+          <div className="mt-1">
+            {duration && (
+              <span>
+                {t('This market expires in %s.', [
+                  formatDuration(duration, {
+                    format: [
+                      'years',
+                      'months',
+                      'weeks',
+                      'days',
+                      'hours',
+                      'minutes',
+                    ],
+                  }),
+                ])}
+              </span>
+            )}
+            {successorData && (
+              <>
+                {' '}
+                {t('The successor market')}
+                {!successorVolume ? ' is ' : ' '}
+                <ExternalLink href={`/#/markets/${successorData?.id}`}>
+                  {successorData?.tradableInstrument.instrument.name}
+                </ExternalLink>
+                {successorVolume && (
+                  <span>
+                    {' '}
+                    {t('has a 24h trading volume of %s', [successorVolume])}
+                  </span>
+                )}
+              </>
+            )}
+          </div>
+        )}
       </NotificationBanner>
     );
   }
