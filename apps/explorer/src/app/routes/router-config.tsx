@@ -30,6 +30,7 @@ import { remove0x } from '@vegaprotocol/utils';
 import { PartyAccountsByAsset } from './parties/id/accounts';
 import { Disclaimer } from './pages/disclaimer';
 import { FLAGS } from '@vegaprotocol/environment';
+import RestrictedPage from './restricted';
 
 export type Navigable = {
   path: string;
@@ -355,6 +356,14 @@ export const routerConfig: Route[] = [
       ...networkParametersRoutes,
       ...validators,
     ],
+  },
+  {
+    path: Routes.RESTRICTED,
+    element: <RestrictedPage />,
+    handle: {
+      name: t('Restricted'),
+      text: t('Restricted'),
+    },
   },
 ];
 
