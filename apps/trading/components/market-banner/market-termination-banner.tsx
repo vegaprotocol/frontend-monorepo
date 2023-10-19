@@ -93,11 +93,11 @@ export const MarketTerminationBanner = ({
 
   const assetSymbol = getQuoteName(market);
   const proposalLink =
-    !openProposals.length && passedProposals[0]?.id
-      ? governanceLink(TOKEN_PROPOSAL.replace(':id', passedProposals[0]?.id))
+    !passedProposals.length && openProposals[0]?.id
+      ? governanceLink(TOKEN_PROPOSAL.replace(':id', openProposals[0]?.id))
       : undefined;
   const proposalsLink =
-    passedProposals.length > 1 ? governanceLink(TOKEN_PROPOSALS) : undefined;
+    openProposals.length > 1 ? governanceLink(TOKEN_PROPOSALS) : undefined;
   let content: ReactNode;
   if (passedProposals.length) {
     const { date, duration, price } = getMessageVariables(passedProposals[0]);
