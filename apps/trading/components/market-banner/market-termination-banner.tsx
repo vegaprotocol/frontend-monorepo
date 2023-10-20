@@ -7,7 +7,7 @@ import {
   NotificationBanner,
 } from '@vegaprotocol/ui-toolkit';
 import type { MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
-import { useMarketViewProposals } from '@vegaprotocol/proposals';
+import { marketViewProposalsDataProvider } from '@vegaprotocol/proposals';
 import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/markets';
@@ -20,9 +20,10 @@ import {
   TOKEN_PROPOSALS,
   useLinks,
 } from '@vegaprotocol/environment';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 
 const filterProposals = (
-  data: MarketViewProposalFieldsFragment[],
+  data: MarketViewProposalFieldsFragment[] | null,
   marketId: string,
   now: number
 ) =>
@@ -69,16 +70,24 @@ export const MarketTerminationBanner = ({
 }) => {
   const [visible, setVisible] = useState(true);
   const skip = !market || !visible;
-  const passedProposalsData = useMarketViewProposals({
+  const { data: passedProposalsData } = useDataProvider({
+    dataProvider: marketViewProposalsDataProvider,
     skip,
-    inState: Types.ProposalState.STATE_PASSED,
-    typename: 'UpdateMarketState',
+    variables: {
+      inState: Types.ProposalState.STATE_PASSED,
+      proposalType: Types.ProposalType.TYPE_UPDATE_MARKET_STATE,
+    },
   });
-  const openProposalsData = useMarketViewProposals({
+
+  const { data: openProposalsData } = useDataProvider({
+    dataProvider: marketViewProposalsDataProvider,
     skip,
-    inState: Types.ProposalState.STATE_OPEN,
-    typename: 'UpdateMarketState',
+    variables: {
+      inState: Types.ProposalState.STATE_OPEN,
+      proposalType: Types.ProposalType.TYPE_UPDATE_MARKET_STATE,
+    },
   });
+
   const governanceLink = useLinks(DApp.Governance);
 
   if (!market) return null;
