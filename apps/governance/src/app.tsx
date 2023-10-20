@@ -106,6 +106,7 @@ const Web3Container = ({
     useEthWithdrawApprovalsManager();
     return null;
   };
+
   const [connectors, initializeConnectors] = useWeb3ConnectStore((store) => [
     store.connectors,
     store.initialize,
@@ -239,6 +240,9 @@ const AppContainer = () => {
     store.setDialogOpen,
   ]);
 
+  // Hacky skip all the loading & web3 init for geo restricted users
+  const isRestricted = document?.location?.pathname?.includes('/restricted');
+
   useEffect(() => {
     if (ENV.dsn && telemetryOn === 'true') {
       Sentry.init({
@@ -303,6 +307,14 @@ const AppContainer = () => {
       Sentry.close();
     }
   }, [GIT_COMMIT_HASH, GIT_BRANCH, VEGA_ENV, telemetryOn]);
+
+  if (isRestricted) {
+    return (
+      <Router>
+        <AppRouter />
+      </Router>
+    );
+  }
 
   return (
     <Router>

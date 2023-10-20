@@ -4,6 +4,7 @@ import Home from './token';
 import NotFound from './not-found';
 import NotPermitted from './not-permitted';
 import Routes from './routes';
+import Restricted from './restricted';
 
 const LazyTranches = React.lazy(
   () =>
@@ -361,8 +362,13 @@ const routerConfig = [
     element: <LazyDisclaimer name="Disclaimer" />,
   },
   {
-    path: '*',
+    path: Routes.RESTRICTED,
     // Not lazy as loaded when a user first hits the site
+    element: <Restricted name="451 Unavailable" />,
+  },
+  {
+    path: '*',
+    // Also not lazy as loaded when a user first hits the site
     element: <NotFound name="NotFound" />,
   },
   ...redirects,
