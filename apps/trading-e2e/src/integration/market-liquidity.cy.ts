@@ -23,7 +23,7 @@ const colUpdatedAt = '[col-id="updatedAt"] button';
 
 const headers = [
   'Party',
-  'Commitment ()',
+  'Commitment (tDAI)',
   'Obligation',
   'Fee',
   'Adjusted stake share',
