@@ -8,7 +8,6 @@ import {
 } from '@vegaprotocol/network-parameters';
 import { useMarketList } from '@vegaprotocol/markets';
 import { formatNumber } from '@vegaprotocol/utils';
-import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useDiscountProgramsQuery, useFeesQuery } from './__generated__/Fees';
 import { FeeCard } from './fees-card';
 import { MarketFees } from './market-fees';
@@ -63,65 +62,62 @@ export const FeesContainer = () => {
     feesData?.epoch
   );
 
-  if (!pubKey) {
-    return (
-      <Splash>
-        <p className="text-xs">{t('Please connect Vega wallet')}</p>
-      </Splash>
-    );
-  }
-
   const loading = paramsLoading || feesLoading || programLoading;
+  const isConnected = Boolean(pubKey);
 
   return (
     <div className="p-3">
       <h1 className="px-4 pt-2 pb-4 text-2xl">{t('Fees')}</h1>
       <div className="grid auto-rows-min grid-cols-4 gap-3">
-        <FeeCard
-          title={t('My trading fees')}
-          className="sm:col-span-2"
-          loading={loading}
-        >
-          <TradingFees
-            params={params}
-            markets={markets}
-            referralDiscount={referralDiscount}
-            volumeDiscount={volumeDiscount}
-          />
-        </FeeCard>
-        <FeeCard
-          title={t('Total discount')}
-          className="sm:col-span-2"
-          loading={loading}
-        >
-          <TotalDiscount
-            referralDiscount={referralDiscount}
-            volumeDiscount={volumeDiscount}
-          />
-        </FeeCard>
-        <FeeCard
-          title={t('My current volume')}
-          className="sm:col-span-2"
-          loading={loading}
-        >
-          <CurrentVolume
-            tiers={volumeTiers}
-            tierIndex={volumeTierIndex}
-            windowLengthVolume={volumeInWindow}
-            epochs={volumeDiscountEpochs}
-          />
-        </FeeCard>
-        <FeeCard
-          title={t('Referral benefits')}
-          className="sm:col-span-2"
-          loading={loading}
-        >
-          <ReferralBenefits
-            setRunningNotionalTakerVolume={referralVolumeInWindow}
-            epochsInSet={epochsInSet}
-            epochs={referralDiscountEpochs}
-          />
-        </FeeCard>
+        {isConnected && (
+          <>
+            <FeeCard
+              title={t('My trading fees')}
+              className="sm:col-span-2"
+              loading={loading}
+            >
+              <TradingFees
+                params={params}
+                markets={markets}
+                referralDiscount={referralDiscount}
+                volumeDiscount={volumeDiscount}
+              />
+            </FeeCard>
+            <FeeCard
+              title={t('Total discount')}
+              className="sm:col-span-2"
+              loading={loading}
+            >
+              <TotalDiscount
+                referralDiscount={referralDiscount}
+                volumeDiscount={volumeDiscount}
+              />
+            </FeeCard>
+            <FeeCard
+              title={t('My current volume')}
+              className="sm:col-span-2"
+              loading={loading}
+            >
+              <CurrentVolume
+                tiers={volumeTiers}
+                tierIndex={volumeTierIndex}
+                windowLengthVolume={volumeInWindow}
+                epochs={volumeDiscountEpochs}
+              />
+            </FeeCard>
+            <FeeCard
+              title={t('Referral benefits')}
+              className="sm:col-span-2"
+              loading={loading}
+            >
+              <ReferralBenefits
+                setRunningNotionalTakerVolume={referralVolumeInWindow}
+                epochsInSet={epochsInSet}
+                epochs={referralDiscountEpochs}
+              />
+            </FeeCard>
+          </>
+        )}
         <FeeCard
           title={t('Volume discount')}
           className="lg:col-span-full xl:col-span-2"
