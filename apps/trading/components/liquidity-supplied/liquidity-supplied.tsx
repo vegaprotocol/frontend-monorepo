@@ -18,7 +18,7 @@ import BigNumber from 'bignumber.js';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
 import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 import {
-  addDecimalsFormatNumber,
+  addDecimalsFormatNumberQuantum,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -30,12 +30,14 @@ interface Props {
   marketId?: string;
   noUpdate?: boolean;
   assetDecimals: number;
+  quantum: string;
 }
 
 export const MarketLiquiditySupplied = ({
   marketId,
   assetDecimals,
   noUpdate = false,
+  quantum,
 }: Props) => {
   const [market, setMarket] = useState<MarketData>();
   const { params } = useNetworkParams([
@@ -79,11 +81,12 @@ export const MarketLiquiditySupplied = ({
   });
 
   const supplied = market?.suppliedStake
-    ? addDecimalsFormatNumber(
+    ? addDecimalsFormatNumberQuantum(
         new BigNumber(market?.suppliedStake)
           .multipliedBy(stakeToCcyVolume || 1)
           .toString(),
-        assetDecimals
+        assetDecimals,
+        quantum
       )
     : '-';
 
@@ -108,9 +111,10 @@ export const MarketLiquiditySupplied = ({
             <span>{t('Supplied stake')}</span>
             <span>
               {market?.suppliedStake
-                ? addDecimalsFormatNumber(
-                    new BigNumber(market?.suppliedStake).toString(),
-                    assetDecimals
+                ? addDecimalsFormatNumberQuantum(
+                    market?.suppliedStake,
+                    assetDecimals,
+                    quantum
                   )
                 : '-'}
             </span>
@@ -119,9 +123,10 @@ export const MarketLiquiditySupplied = ({
             <span>{t('Target stake')}</span>
             <span>
               {market?.targetStake
-                ? addDecimalsFormatNumber(
-                    new BigNumber(market?.targetStake).toString(),
-                    assetDecimals
+                ? addDecimalsFormatNumberQuantum(
+                    market?.targetStake,
+                    assetDecimals,
+                    quantum
                   )
                 : '-'}
             </span>

@@ -86,6 +86,7 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
       <MarketLiquiditySupplied
         marketId={market.id}
         assetDecimals={asset?.decimals || 0}
+        quantum={asset.quantum}
       />
       {market.tradableInstrument.instrument.product.__typename === 'Future' && (
         <HeaderStat
