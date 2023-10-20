@@ -239,11 +239,11 @@ export const hasActiveOrderProvider = makeDerivedDataProvider<
 export const hasAmendableOrderProvider = makeDerivedDataProvider<
   boolean,
   never,
-  { partyId: string; marketId?: string }
+  { partyId: string }
 >([activeOrdersProvider], (parts) => {
   const activeOrders = parts[0] as ReturnType<typeof getData>;
   const hasAmendableOrder = activeOrders.some(
-    (order) => !(order.liquidityProvision || order.peggedOrder)
+    (order) => !order.liquidityProvision
   );
   return hasAmendableOrder;
 });

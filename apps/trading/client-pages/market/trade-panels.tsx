@@ -43,7 +43,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
 
       return (
         <div className="flex gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
-          <Menu marketId={market?.id || ''} />
+          <Menu />
         </div>
       );
     }
