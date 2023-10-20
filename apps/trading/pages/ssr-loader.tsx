@@ -1,8 +1,8 @@
-export const SSRLoader = () => {
-  const randomDelay = () => {
-    return parseFloat((Math.random() * (4 - 1) + 1).toFixed(2));
-  };
+import { pseudoRandom } from '@vegaprotocol/ui-toolkit';
 
+const generate = pseudoRandom(1);
+
+export const SSRLoader = () => {
   return (
     <div
       style={{
@@ -38,10 +38,9 @@ export const SSRLoader = () => {
                 width: 10,
                 height: 10,
                 animation: 'flickering 0.4s linear alternate infinite',
-                animationDelay: `-${randomDelay()}s`,
+                animationDelay: `-${generate()}s`,
                 animationDirection: i % 2 === 0 ? 'reverse' : 'alternate',
                 background: 'black',
-                opacity: Math.random() > 0.5 ? 1 : 0,
               }}
             />
           );

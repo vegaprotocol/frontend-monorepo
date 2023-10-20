@@ -22,8 +22,12 @@ export const useMarketSelectorList = ({
   const markets = useMemo(() => {
     if (!data?.length) return [];
     const markets = data
-      // only active
-      .filter((m) => isMarketActive(m.state))
+      // show only active markets, using m.data.marketState as this will be
+      // data that will get refreshed when calling reload
+      .filter((m) => {
+        if (!m.data) return false;
+        return isMarketActive(m.data.marketState);
+      })
       // only selected product type
       .filter((m) => {
         if (

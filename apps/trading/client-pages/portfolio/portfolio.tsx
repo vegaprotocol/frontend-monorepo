@@ -15,7 +15,6 @@ import { PositionsMenu } from '../../components/positions-menu';
 import { WithdrawalsContainer } from '../../components/withdrawals-container';
 import { OrdersContainer } from '../../components/orders-container';
 import { LedgerContainer } from '../../components/ledger-container';
-import { AccountHistoryContainer } from './account-history-container';
 import {
   ResizableGrid,
   ResizableGridPanel,
@@ -66,10 +65,7 @@ export const Portfolio = () => {
       <ResizableGrid vertical onChange={handleOnLayoutChange}>
         <ResizableGridPanel minSize={75}>
           <PortfolioGridChild>
-            <Tabs storageKey="console-portfolio-top">
-              <Tab id="account-history" name={t('Account history')}>
-                <AccountHistoryContainer />
-              </Tab>
+            <Tabs storageKey="console-portfolio-top-1">
               <Tab
                 id="positions"
                 name={t('Positions')}

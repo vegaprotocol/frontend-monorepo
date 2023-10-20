@@ -237,7 +237,11 @@ export const ProposalHeader = ({
   );
 };
 
-const SuccessorCode = ({ proposalId }: { proposalId?: string | null }) => {
+export const SuccessorCode = ({
+  proposalId,
+}: {
+  proposalId?: string | null;
+}) => {
   const { t } = useTranslation();
   const successor = useSuccessorMarketProposalDetails(proposalId);
 
@@ -254,7 +258,11 @@ const SuccessorCode = ({ proposalId }: { proposalId?: string | null }) => {
   ) : null;
 };
 
-const NewTransferSummary = ({ proposalId }: { proposalId?: string | null }) => {
+export const NewTransferSummary = ({
+  proposalId,
+}: {
+  proposalId?: string | null;
+}) => {
   const { t } = useTranslation();
   const details = useNewTransferProposalDetails(proposalId);
 
@@ -265,14 +273,21 @@ const NewTransferSummary = ({ proposalId }: { proposalId?: string | null }) => {
       {GovernanceTransferKindMapping[details.kind.__typename]}{' '}
       {t('transfer from')}{' '}
       <Lozenge>
-        {truncateMiddle(details.source) || t(details.sourceType)}
+        {details.source
+          ? truncateMiddle(details.source)
+          : t(details.sourceType)}
       </Lozenge>{' '}
-      {t('to')} <Lozenge>{truncateMiddle(details.destination)}</Lozenge>
+      {t('to')}{' '}
+      <Lozenge>
+        {details.destination
+          ? truncateMiddle(details.destination)
+          : t(details.destinationType)}
+      </Lozenge>
     </span>
   );
 };
 
-const CancelTransferSummary = ({
+export const CancelTransferSummary = ({
   proposalId,
 }: {
   proposalId?: string | null;

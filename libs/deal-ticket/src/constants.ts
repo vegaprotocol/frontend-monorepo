@@ -60,7 +60,7 @@ export const EST_FEES_TOOLTIP_TEXT = t(
 );
 
 export const LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT = t(
-  'This is an approximation (or a range) for the liquidation price for that particular contract position, assuming nothing else changes, which may affect your margin and collateral balances.'
+  'This is an approximation for the liquidation price for that particular contract position, assuming nothing else changes, which may affect your margin and collateral balances.'
 );
 
 export const EST_SLIPPAGE = t(

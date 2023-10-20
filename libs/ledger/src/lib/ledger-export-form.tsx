@@ -1,17 +1,22 @@
 import { useRef, useState } from 'react';
-import { z } from 'zod';
+import { format, subDays } from 'date-fns';
 import {
-  TradingButton,
+  Intent,
   Loader,
+  TradingButton,
   TradingFormGroup,
   TradingInput,
   TradingSelect,
 } from '@vegaprotocol/ui-toolkit';
-import { toNanoSeconds, VEGA_ID_REGEX } from '@vegaprotocol/utils';
+import { z } from 'zod';
+import {
+  formatForInput,
+  toNanoSeconds,
+  VEGA_ID_REGEX,
+} from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { localLoggerFactory } from '@vegaprotocol/logger';
-import { formatForInput } from '@vegaprotocol/utils';
-import { subDays } from 'date-fns';
+import { useLedgerDownloadFile } from './ledger-download-store';
 
 const DEFAULT_EXPORT_FILE_NAME = 'ledger_entries.csv';
 
@@ -73,10 +78,14 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
   const maxFromDate = formatForInput(new Date(dateTo || now.current));
   const maxToDate = formatForInput(now.current);
 
-  const [isDownloading, setIsDownloading] = useState(false);
   const [assetId, setAssetId] = useState(Object.keys(assets)[0]);
   const protohost = getProtoHost(vegaUrl);
-  const disabled = Boolean(!assetId || isDownloading);
+  const disabled = Boolean(!assetId);
+
+  const hasItem = useLedgerDownloadFile((store) => store.hasItem);
+  const updateDownloadQueue = useLedgerDownloadFile(
+    (store) => store.updateQueue
+  );
 
   const assetDropDown = (
     <TradingSelect
@@ -87,7 +96,6 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
       }}
       className="w-full"
       data-testid="select-ledger-asset"
-      disabled={isDownloading}
     >
       {Object.keys(assets).map((assetKey) => (
         <option key={assetKey} value={assetKey}>
@@ -97,32 +105,78 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
     </TradingSelect>
   );
 
+  const link = createDownloadUrl({
+    protohost,
+    partyId,
+    assetId,
+    dateFrom,
+    dateTo,
+  });
+
   const startDownload = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      const link = createDownloadUrl({
-        protohost,
-        partyId,
-        assetId,
-        dateFrom,
-        dateTo,
+
+    const title = t('Downloading for %s from %s till %s', [
+      assets[assetId],
+      format(new Date(dateFrom), 'dd MMMM yyyy HH:mm'),
+      format(new Date(dateTo || Date.now()), 'dd MMMM yyyy HH:mm'),
+    ]);
+
+    const downloadStoreItem = {
+      title,
+      link,
+      isChanged: true,
+    };
+    if (hasItem(link)) {
+      updateDownloadQueue(downloadStoreItem);
+      return;
+    }
+    const ts = setTimeout(() => {
+      updateDownloadQueue({
+        ...downloadStoreItem,
+        intent: Intent.Warning,
+        isDelayed: true,
+        isChanged: true,
       });
-      setIsDownloading(true);
+    }, 1000 * 30);
+
+    try {
+      updateDownloadQueue(downloadStoreItem);
       const resp = await fetch(link);
+      if (!resp?.ok) {
+        if (resp?.status === 429) {
+          throw new Error('Too many requests. Try again later.');
+        }
+        throw new Error('Download of ledger entries failed');
+      }
       const { headers } = resp;
       const nameHeader = headers.get('content-disposition');
       const filename = nameHeader?.split('=').pop() ?? DEFAULT_EXPORT_FILE_NAME;
+      updateDownloadQueue({
+        ...downloadStoreItem,
+        filename,
+      });
       const blob = await resp.blob();
       if (blob) {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = filename;
-        link.click();
+        updateDownloadQueue({
+          ...downloadStoreItem,
+          blob,
+          isDownloaded: true,
+          isChanged: true,
+          intent: Intent.Success,
+        });
       }
     } catch (err) {
       localLoggerFactory({ application: 'ledger' }).error('Download file', err);
+      updateDownloadQueue({
+        ...downloadStoreItem,
+        intent: Intent.Danger,
+        isError: true,
+        isChanged: true,
+        errorMessage: (err as Error).message || undefined,
+      });
     } finally {
-      setIsDownloading(false);
+      clearTimeout(ts);
     }
   };
 
@@ -145,7 +199,6 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
           id="date-from"
           value={dateFrom}
           onChange={(e) => setDateFrom(e.target.value)}
-          disabled={disabled}
           max={maxFromDate}
         />
       </TradingFormGroup>
@@ -156,19 +209,10 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
           id="date-to"
           value={dateTo}
           onChange={(e) => setDateTo(e.target.value)}
-          disabled={disabled}
           max={maxToDate}
         />
       </TradingFormGroup>
       <div className="relative text-sm" title={t('Download all to .csv file')}>
-        {isDownloading && (
-          <div
-            className="absolute flex items-center justify-center w-full h-full"
-            data-testid="download-spinner"
-          >
-            <Loader size="small" />
-          </div>
-        )}
         <TradingButton
           fill
           disabled={disabled}
