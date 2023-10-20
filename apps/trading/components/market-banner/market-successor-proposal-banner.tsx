@@ -1,6 +1,9 @@
 import { Fragment, useState } from 'react';
-import type { NewMarketSuccessorFieldsFragment } from '@vegaprotocol/proposals';
-import { useMarketViewProposals } from '@vegaprotocol/proposals';
+import {
+  marketViewProposalsDataProvider,
+  type NewMarketSuccessorFieldsFragment,
+} from '@vegaprotocol/proposals';
+
 import {
   ExternalLink,
   Intent,
@@ -9,17 +12,20 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
 import * as Types from '@vegaprotocol/types';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 
 export const MarketSuccessorProposalBanner = ({
   marketId,
 }: {
   marketId?: string;
 }) => {
-  const proposals = useMarketViewProposals({
+  const { data: proposals } = useDataProvider({
+    dataProvider: marketViewProposalsDataProvider,
     skip: !marketId,
-    inState: Types.ProposalState.STATE_OPEN,
-    proposalType: Types.ProposalType.TYPE_NEW_MARKET,
-    typename: 'NewMarket',
+    variables: {
+      inState: Types.ProposalState.STATE_OPEN,
+      proposalType: Types.ProposalType.TYPE_NEW_MARKET,
+    },
   });
 
   const successors =
