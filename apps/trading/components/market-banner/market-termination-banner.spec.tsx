@@ -23,7 +23,10 @@ const marketMock = {
 const passedProposalMock: MockedResponse<MarketViewProposalsQuery> = {
   request: {
     query: MarketViewProposalsDocument,
-    variables: { inState: Types.ProposalState.STATE_PASSED },
+    variables: {
+      inState: Types.ProposalState.STATE_PASSED,
+      proposalType: Types.ProposalType.TYPE_UPDATE_MARKET_STATE,
+    },
   },
   result: {
     data: {
@@ -87,7 +90,10 @@ const passedProposalMock: MockedResponse<MarketViewProposalsQuery> = {
 const openProposalMock: MockedResponse<MarketViewProposalsQuery> = {
   request: {
     query: MarketViewProposalsDocument,
-    variables: { inState: Types.ProposalState.STATE_OPEN },
+    variables: {
+      inState: Types.ProposalState.STATE_OPEN,
+      proposalType: Types.ProposalType.TYPE_UPDATE_MARKET_STATE,
+    },
   },
   result: {
     data: {
