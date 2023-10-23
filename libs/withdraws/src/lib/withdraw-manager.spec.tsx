@@ -57,6 +57,8 @@ describe('WithdrawManager', () => {
   );
 
   it('calls submit if valid form submission', async () => {
+    // 1002-WITH-002
+    // 1002-WITH-003
     const { container } = render(generateJsx(props));
     await act(async () => {
       await submitValid(container);
@@ -70,12 +72,20 @@ describe('WithdrawManager', () => {
   });
 
   it('validates correctly', async () => {
+    // 1002-WITH-010
+    // 1002-WITH-005
+    // 1002-WITH-008
+    // 1002-WITH-018
     render(generateJsx(props));
 
     // Set other fields to be valid
     fireEvent.change(screen.getByLabelText('Asset'), {
       target: { value: props.assets[0].id },
     });
+    expect(
+      await screen.getByTestId('connect-eth-wallet-btn')
+    ).toBeInTheDocument();
+
     fireEvent.change(screen.getByLabelText('To (Ethereum address)'), {
       target: { value: ethereumAddress },
     });
@@ -103,6 +113,13 @@ describe('WithdrawManager', () => {
       await screen.findByText('Insufficient amount in account')
     ).toBeInTheDocument();
     expect(props.submit).not.toBeCalled();
+  });
+  it('can set amount using use maximum button', async () => {
+    // 1002-WITH-004
+    render(generateJsx(props));
+
+    fireEvent.click(screen.getByTestId('use-maximum'));
+    expect(await screen.getByTestId('amount-input')).toHaveValue(1);
   });
 
   const submitValid = async (container: HTMLElement) => {
