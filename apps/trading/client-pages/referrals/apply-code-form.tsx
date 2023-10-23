@@ -16,7 +16,6 @@ import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useReferral } from './hooks/use-referral';
 import { Routes } from '../../lib/links';
 import { useTransactionEventSubscription } from '@vegaprotocol/web3';
-import { clearTimeout } from 'timers';
 import { t } from '@vegaprotocol/i18n';
 import { Statistics } from './referral-statistics';
 
