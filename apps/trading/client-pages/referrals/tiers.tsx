@@ -4,7 +4,9 @@ import { Table } from './table';
 import classNames from 'classnames';
 import { BORDER_COLOR, GRADIENT } from './constants';
 import { Tag } from './tag';
-import type { ComponentProps } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { DApp, TOKEN_PROPOSALS, useLinks } from '@vegaprotocol/environment';
 
 const Loading = ({ variant }: { variant: 'large' | 'inline' }) => (
   <div
@@ -38,51 +40,63 @@ const StakingTier = ({
       className={classNames(
         'overflow-hidden',
         'border rounded-md w-full',
+        'flex flex-row',
+        GRADIENT,
         BORDER_COLOR
       )}
     >
-      <div aria-hidden>
+      <div aria-hidden className="max-w-[120px]">
         {tier < 4 && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={`/${tier}x.png`}
             alt={`${referralRewardMultiplier}x multiplier`}
-            width={768}
-            height={400}
-            className="w-full"
+            width={240}
+            height={240}
+            className="w-full h-full"
           />
         )}
       </div>
-      <div className={classNames('p-3', GRADIENT)}>
-        <h3 className="mb-3 text-xl">{label}</h3>
-        <p className="text-base text-vega-clight-100 dark:text-vega-cdark-100">
+      <div className={classNames('p-3')}>
+        <Tag color={color[tier]}>Multiplier {referralRewardMultiplier}x</Tag>
+        <h3 className="mt-1 mb-1 text-base">{label}</h3>
+        <p className="text-sm text-vega-clight-100 dark:text-vega-cdark-100">
           Stake a minimum of {minimumStakedTokens} $VEGA tokens
         </p>
-        <Tag color={color[tier]}>
-          Reward multiplier {referralRewardMultiplier}x
-        </Tag>
       </div>
     </div>
   );
 };
 
 export const TiersContainer = () => {
-  const { benefitTiers, stakingTiers, details, loading } = useReferralProgram();
+  const { benefitTiers, stakingTiers, details, loading, error } =
+    useReferralProgram();
 
   const ends = details?.endOfProgramTimestamp
     ? getDateTimeFormat().format(new Date(details.endOfProgramTimestamp))
     : undefined;
 
+  const governanceLink = useLinks(DApp.Governance);
+
+  if ((!loading && !details) || error) {
+    return (
+      <div className="text-base px-5 py-10 text-center">
+        We&apos;re sorry but we don&apos;t have an active referral programme
+        currently running. You can propose a new programme{' '}
+        <ExternalLink href={governanceLink(TOKEN_PROPOSALS)}>here</ExternalLink>
+        .
+      </div>
+    );
+  }
+
   return (
     <>
-      <div className="flex flex-row items-baseline justify-between mt-10 mb-5">
+      {/* Benefit tiers */}
+      <div className="flex flex-col items-baseline justify-between mt-10 mb-5">
         <h2 className="text-2xl">Referral tiers</h2>
         {ends && (
-          <span className="text-base">
-            <span className="text-vega-clight-200 dark:text-vega-cdark-200">
-              Program ends:
-            </span>{' '}
-            {ends}
+          <span className="text-sm text-vega-clight-200 dark:text-vega-cdark-200">
+            Program ends: {ends}
           </span>
         )}
       </div>
@@ -90,14 +104,24 @@ export const TiersContainer = () => {
         {loading || !benefitTiers || benefitTiers.length === 0 ? (
           <Loading variant="large" />
         ) : (
-          <TiersTable data={benefitTiers} />
+          <TiersTable
+            data={benefitTiers.map((bt) => ({
+              ...bt,
+              tierElement: (
+                <div className="rounded-full bg-vega-clight-900 dark:bg-vega-cdark-900 p-1 w-8 h-8 text-center">
+                  {bt.tier}
+                </div>
+              ),
+            }))}
+          />
         )}
       </div>
 
+      {/* Staking tiers */}
       <div className="flex flex-row items-baseline justify-between mb-5">
         <h2 className="text-2xl">Staking multipliers</h2>
       </div>
-      <div className="flex flex-col mb-20 justify-items-stretch md:flex-row gap-5">
+      <div className="mb-20 flex flex-col justify-items-stretch lg:flex-row gap-5">
         {loading || !stakingTiers || stakingTiers.length === 0 ? (
           <>
             <Loading variant="large" />
@@ -137,6 +161,7 @@ const TiersTable = ({
 }: {
   data: Array<{
     tier: number;
+    tierElement: ReactNode;
     commission: string;
     discount: string;
     volume: string;
@@ -145,7 +170,7 @@ const TiersTable = ({
   return (
     <Table
       columns={[
-        { name: 'tier', displayName: 'Tier' },
+        { name: 'tierElement', displayName: 'Tier' },
         {
           name: 'commission',
           displayName: 'Referrer commission',
@@ -153,6 +178,7 @@ const TiersTable = ({
         },
         { name: 'discount', displayName: 'Referrer trading discount' },
         { name: 'volume', displayName: 'Min. trading volume' },
+        { name: 'epochs', displayName: 'Min. epochs' },
       ]}
       data={data.map((d) => ({
         ...d,

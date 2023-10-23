@@ -1,0 +1,12 @@
+query ReferralSets($id: ID, $referrer: ID, $referee: ID) {
+  referralSets(id: $id, referrer: $referrer, referee: $referee) {
+    edges {
+      node {
+        id
+        referrer
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
