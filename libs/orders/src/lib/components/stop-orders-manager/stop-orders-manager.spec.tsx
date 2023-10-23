@@ -30,6 +30,7 @@ describe('StopOrdersManager', () => {
       flush: jest.fn(),
       reload: jest.fn(),
       load: jest.fn(),
+      pageInfo: null,
     });
     await act(async () => {
       render(generateJsx());

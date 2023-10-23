@@ -166,7 +166,7 @@ export const ordersProvider = makeDataProvider<
   pagination: {
     getPageInfo,
     append,
-    first: 5000,
+    first: 1000,
   },
   resetDelay: 1000,
   additionalContext: { isEnlargedTimeout: true },
