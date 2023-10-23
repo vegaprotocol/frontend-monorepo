@@ -66,93 +66,90 @@ export const FeesContainer = () => {
   const isConnected = Boolean(pubKey);
 
   return (
-    <div className="p-3">
-      <h1 className="px-4 pt-2 pb-4 text-2xl">{t('Fees')}</h1>
-      <div className="grid auto-rows-min grid-cols-4 gap-3">
-        {isConnected && (
-          <>
-            <FeeCard
-              title={t('My trading fees')}
-              className="sm:col-span-2"
-              loading={loading}
-            >
-              <TradingFees
-                params={params}
-                markets={markets}
-                referralDiscount={referralDiscount}
-                volumeDiscount={volumeDiscount}
-              />
-            </FeeCard>
-            <FeeCard
-              title={t('Total discount')}
-              className="sm:col-span-2"
-              loading={loading}
-            >
-              <TotalDiscount
-                referralDiscount={referralDiscount}
-                volumeDiscount={volumeDiscount}
-              />
-            </FeeCard>
-            <FeeCard
-              title={t('My current volume')}
-              className="sm:col-span-2"
-              loading={loading}
-            >
-              <CurrentVolume
-                tiers={volumeTiers}
-                tierIndex={volumeTierIndex}
-                windowLengthVolume={volumeInWindow}
-                epochs={volumeDiscountEpochs}
-              />
-            </FeeCard>
-            <FeeCard
-              title={t('Referral benefits')}
-              className="sm:col-span-2"
-              loading={loading}
-            >
-              <ReferralBenefits
-                setRunningNotionalTakerVolume={referralVolumeInWindow}
-                epochsInSet={epochsInSet}
-                epochs={referralDiscountEpochs}
-              />
-            </FeeCard>
-          </>
-        )}
-        <FeeCard
-          title={t('Volume discount')}
-          className="lg:col-span-full xl:col-span-2"
-          loading={loading}
-        >
-          <VolumeTiers
-            tiers={volumeTiers}
-            tierIndex={volumeTierIndex}
-            lastEpochVolume={volumeInWindow}
-          />
-        </FeeCard>
-        <FeeCard
-          title={t('Referral discount')}
-          className="lg:col-span-full xl:col-span-2"
-          loading={loading}
-        >
-          <ReferralTiers
-            tiers={referralTiers}
-            tierIndex={referralTierIndex}
-            epochsInSet={epochsInSet}
-            referralVolumeInWindow={referralVolumeInWindow}
-          />
-        </FeeCard>
-        <FeeCard
-          title={t('Liquidity fees')}
-          className="lg:col-span-full"
-          loading={marketsLoading}
-        >
-          <MarketFees
-            markets={markets}
-            referralDiscount={referralDiscount}
-            volumeDiscount={volumeDiscount}
-          />
-        </FeeCard>
-      </div>
+    <div className="grid auto-rows-min grid-cols-4 gap-3">
+      {isConnected && (
+        <>
+          <FeeCard
+            title={t('My trading fees')}
+            className="sm:col-span-2"
+            loading={loading}
+          >
+            <TradingFees
+              params={params}
+              markets={markets}
+              referralDiscount={referralDiscount}
+              volumeDiscount={volumeDiscount}
+            />
+          </FeeCard>
+          <FeeCard
+            title={t('Total discount')}
+            className="sm:col-span-2"
+            loading={loading}
+          >
+            <TotalDiscount
+              referralDiscount={referralDiscount}
+              volumeDiscount={volumeDiscount}
+            />
+          </FeeCard>
+          <FeeCard
+            title={t('My current volume')}
+            className="sm:col-span-2"
+            loading={loading}
+          >
+            <CurrentVolume
+              tiers={volumeTiers}
+              tierIndex={volumeTierIndex}
+              windowLengthVolume={volumeInWindow}
+              epochs={volumeDiscountEpochs}
+            />
+          </FeeCard>
+          <FeeCard
+            title={t('Referral benefits')}
+            className="sm:col-span-2"
+            loading={loading}
+          >
+            <ReferralBenefits
+              setRunningNotionalTakerVolume={referralVolumeInWindow}
+              epochsInSet={epochsInSet}
+              epochs={referralDiscountEpochs}
+            />
+          </FeeCard>
+        </>
+      )}
+      <FeeCard
+        title={t('Volume discount')}
+        className="lg:col-span-full xl:col-span-2"
+        loading={loading}
+      >
+        <VolumeTiers
+          tiers={volumeTiers}
+          tierIndex={volumeTierIndex}
+          lastEpochVolume={volumeInWindow}
+        />
+      </FeeCard>
+      <FeeCard
+        title={t('Referral discount')}
+        className="lg:col-span-full xl:col-span-2"
+        loading={loading}
+      >
+        <ReferralTiers
+          tiers={referralTiers}
+          tierIndex={referralTierIndex}
+          epochsInSet={epochsInSet}
+          referralVolumeInWindow={referralVolumeInWindow}
+        />
+      </FeeCard>
+      <FeeCard
+        title={t('Liquidity fees')}
+        className="lg:col-span-full"
+        loading={marketsLoading}
+      >
+        <MarketFees
+          markets={markets}
+          referralDiscount={referralDiscount}
+          volumeDiscount={volumeDiscount}
+        />
+      </FeeCard>
     </div>
   );
 };

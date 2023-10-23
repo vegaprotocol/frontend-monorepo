@@ -13,6 +13,7 @@ import { Assets } from '../client-pages/assets';
 import { Deposit } from '../client-pages/deposit';
 import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
+import { Fees } from '../client-pages/fees';
 import { Routes as AppRoutes } from '../lib/links';
 import { LayoutWithSky } from '../client-pages/referrals/layout';
 import { Referrals } from '../client-pages/referrals/referrals';
@@ -85,6 +86,16 @@ export const routerConfig: RouteObject[] = compact([
         ],
       }
     : undefined,
+  {
+    path: 'fees/*',
+    element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+    children: [
+      {
+        index: true,
+        element: <Fees />,
+      },
+    ],
+  },
   {
     path: 'markets/*',
     element: (
