@@ -1,9 +1,9 @@
-import { proposalsDataProvider } from '..';
 import * as Schema from '@vegaprotocol/types';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useMemo } from 'react';
 import first from 'lodash/first';
-import type { ProposalListFieldsFragment } from '..';
+import { proposalsDataProvider } from '../proposals-data-provider';
+import type { ProposalListFieldsFragment } from '../proposals-data-provider';
 
 type UseUpdateProposalProps = {
   id?: string;
