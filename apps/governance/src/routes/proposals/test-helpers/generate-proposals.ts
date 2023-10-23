@@ -142,6 +142,12 @@ export const generateYesVotes = (
                 })
                 .toString(),
         },
+        vestingBalancesSummary: {
+          __typename: 'PartyVestingBalancesSummary',
+          epoch: null,
+          lockedBalances: [],
+          vestingBalances: [],
+        },
       },
       datetime: faker.date.past().toISOString(),
     };
@@ -191,6 +197,12 @@ export const generateNoVotes = (
                   max: 10000000000000000000000,
                 })
                 .toString(),
+        },
+        vestingBalancesSummary: {
+          __typename: 'PartyVestingBalancesSummary',
+          epoch: null,
+          lockedBalances: [],
+          vestingBalances: [],
         },
       },
       datetime: faker.date.past().toISOString(),

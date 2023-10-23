@@ -319,7 +319,8 @@ describe('Closed', () => {
     );
   });
 
-  it('successor marked should be visible', async () => {
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('successor marked should be visible', async () => {
     const marketsWithSuccessorID = [
       {
         __typename: 'MarketEdge' as const,

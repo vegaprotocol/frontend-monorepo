@@ -1,0 +1,19 @@
+query ReferralProgram {
+  currentReferralProgram {
+    id
+    version
+    endOfProgramTimestamp
+    windowLength
+    endedAt
+    benefitTiers {
+      minimumEpochs
+      minimumRunningNotionalTakerVolume
+      referralDiscountFactor
+      referralRewardFactor
+    }
+    stakingTiers {
+      minimumStakedTokens
+      referralRewardMultiplier
+    }
+  }
+}

@@ -1,0 +1,9 @@
+query CurrentEpochInfo {
+  epoch {
+    id
+    timestamps {
+      start
+      end
+    }
+  }
+}
