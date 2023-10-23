@@ -1,4 +1,3 @@
-export * from './asset-proposal-notification';
 export * from './market-proposal-notification';
 export * from './proposals-list';
 export * from './protocol-upgrade-countdown';

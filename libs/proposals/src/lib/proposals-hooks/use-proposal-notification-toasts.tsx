@@ -1,4 +1,5 @@
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
+import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { ProposalStateMapping, MarketUpdateType } from '@vegaprotocol/types';
@@ -35,6 +36,7 @@ const NotificationProposalToastContent = ({
 }: {
   proposal: Proposal;
 }) => {
+  const { data: assets } = useAssetsDataProvider();
   const tokenLink = useLinks(DApp.Governance);
   const change = proposal.terms.change;
   let pretitle = 'New';
@@ -65,6 +67,17 @@ const NotificationProposalToastContent = ({
               ])}
             </span>
           )}
+        </p>
+      );
+      break;
+    case 'UpdateMarket':
+      pretitle = t('Update market');
+      content = (
+        <p>
+          {t('Market ')}
+          <span className="break-all">
+            {change.updateMarketConfiguration.instrument.code}
+          </span>
         </p>
       );
       break;
@@ -100,7 +113,8 @@ const NotificationProposalToastContent = ({
           <span className="break-all">
             {change.name} ({change.symbol})
           </span>
-          {t(', type %s', [
+          {', '}
+          {t('type %s', [
             change.source.__typename === 'ERC20' ? 'ERC20' : 'Builtin asset',
           ])}
         </p>
@@ -110,7 +124,10 @@ const NotificationProposalToastContent = ({
       pretitle = t('Update asset');
       content = (
         <p>
-          <span className="break-all">{change.assetId}</span>
+          <span className="break-all">
+            {assets?.find((asset) => asset.id === change.assetId)?.name ??
+              change.assetId}
+          </span>
         </p>
       );
       break;

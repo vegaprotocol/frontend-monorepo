@@ -9,7 +9,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { create } from 'zustand';
 import { AssetDetailsTable } from './asset-details-table';
-import { AssetProposalNotification } from '@vegaprotocol/proposals';
+import { AssetProposalNotification } from './asset-proposal-notification';
 import { useAssetDataProvider } from './asset-data-provider';
 
 export type AssetDetailsDialogStore = {
@@ -47,6 +47,7 @@ export interface AssetDetailsDialogProps {
   open: boolean;
   onChange: (open: boolean) => void;
   asJson?: boolean;
+  proposalId?: string;
 }
 
 export const AssetDetailsDialog = ({
@@ -55,6 +56,7 @@ export const AssetDetailsDialog = ({
   open,
   onChange,
   asJson = false,
+  proposalId,
 }: AssetDetailsDialogProps) => {
   const { data: asset } = useAssetDataProvider(assetId);
 
@@ -62,7 +64,7 @@ export const AssetDetailsDialog = ({
 
   const content = asset ? (
     <div className="my-2">
-      <AssetProposalNotification assetId={asset.id} />
+      <AssetProposalNotification proposalId={proposalId} />
       {asJson ? (
         <div className="pr-8">
           <SyntaxHighlighter size="smaller" data={asset} />

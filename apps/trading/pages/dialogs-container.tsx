@@ -1,7 +1,3 @@
-import {
-  AssetDetailsDialog,
-  useAssetDetailsDialogStore,
-} from '@vegaprotocol/assets';
 import { VegaConnectDialog, ViewAsDialog } from '@vegaprotocol/wallet';
 import { Connectors } from '../lib/vega-connectors';
 import {
@@ -10,9 +6,9 @@ import {
 } from '@vegaprotocol/web3';
 import { WelcomeDialog } from '../components/welcome-dialog';
 import { RiskMessage } from '../components/welcome-dialog';
+import { LocalAssetDetailsDialog as AssetDetailsDialog } from '../components/asset-details-dialog';
 
 const DialogsContainer = () => {
-  const { isOpen, id, trigger, setOpen } = useAssetDetailsDialogStore();
   return (
     <>
       <VegaConnectDialog
@@ -20,12 +16,7 @@ const DialogsContainer = () => {
         riskMessage={<RiskMessage />}
       />
       <ViewAsDialog connector={Connectors.view} />
-      <AssetDetailsDialog
-        assetId={id}
-        trigger={trigger || null}
-        open={isOpen}
-        onChange={setOpen}
-      />
+      <AssetDetailsDialog />
       <WelcomeDialog />
       <Web3ConnectUncontrolledDialog />
       <WithdrawalApprovalDialogContainer />
