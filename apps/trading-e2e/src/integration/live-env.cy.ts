@@ -69,7 +69,7 @@ describe(
       cy.contains('Something went wrong').should('not.exist');
       cy.contains('Application error').should('not.exist');
       cy.getByTestId('tab-liquidity').within(() => {
-        cy.get('[col-id="party.id"]').eq(1).should('not.be.empty');
+        cy.get('[col-id="partyId"]').eq(1).should('not.be.empty');
       });
     });
   }

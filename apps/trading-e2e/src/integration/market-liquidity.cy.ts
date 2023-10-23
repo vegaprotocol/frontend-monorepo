@@ -12,8 +12,7 @@ const marketSummaryBlock = 'header-summary';
 const itemValue = 'item-value';
 const itemHeader = 'item-header';
 const colCommitmentAmount = '[col-id="commitmentAmount"]';
-const colAverageEntryValuation = '[col-id="averageEntryValuation"]';
-const colEquityLikeShare = '[col-id="equityLikeShare"]';
+const colEquityLikeShare = '[col-id="feeShare.equityLikeShare"]';
 const colFee = '[col-id="fee"]';
 const colCommitmentAmount_1 = '[col-id="commitmentAmount_1"]';
 const colBalance = '[col-id="balance"]';
@@ -69,11 +68,8 @@ describe('liquidity table - trading', { tags: '@smoke' }, () => {
     // 5002-LIQP-002
     cy.get(rowSelector)
       .first()
-      .find('[col-id="party.id"]')
-      .should(
-        'have.text',
-        '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f'
-      );
+      .find('[col-id="partyId"]')
+      .should('have.text', '69464e…dc6f');
 
     cy.get(rowSelector)
       .first()
@@ -86,12 +82,6 @@ describe('liquidity table - trading', { tags: '@smoke' }, () => {
       .should('have.text', '100.00%');
 
     cy.get(rowSelector).first().find(colFee).should('have.text', '0.09%');
-
-    // 5002-LIQP-013
-    cy.get(rowSelector)
-      .first()
-      .find(colAverageEntryValuation)
-      .should('have.text', '685,852.93692');
 
     cy.get(rowSelector)
       .first()
@@ -109,7 +99,8 @@ describe('liquidity table - trading', { tags: '@smoke' }, () => {
     cy.get(rowSelector).first().find(colCreatedAt).should('not.be.empty');
     cy.get(rowSelector).first().find(colUpdatedAt).should('not.be.empty');
   });
-  it.skip('liquidity status column should be sorted properly', () => {
+
+  it('liquidity status column should be sorted properly', () => {
     // 5002-LIQP-003
     const liquidityColDefault = ['Active', 'Pending'];
     const liquidityColAsc = ['Active', 'Pending'];
@@ -225,11 +216,8 @@ describe('liquidity table view', { tags: '@smoke' }, () => {
       // 5002-LIQP-011
       cy.get(rowSelectorLiquidityActive)
         .first()
-        .find('[col-id="party.id"]')
-        .should(
-          'have.text',
-          '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f'
-        );
+        .find('[col-id="partyId"]')
+        .should('have.text', '69464e…dc6f');
 
       cy.get(rowSelectorLiquidityActive)
         .first()
@@ -245,12 +233,6 @@ describe('liquidity table view', { tags: '@smoke' }, () => {
         .first()
         .find(colFee)
         .should('have.text', '0.09%');
-
-      // 5002-LIQP-013
-      cy.get(rowSelectorLiquidityActive)
-        .first()
-        .find(colAverageEntryValuation)
-        .should('have.text', '685,852.93692');
 
       cy.get(rowSelectorLiquidityActive)
         .first()
@@ -282,11 +264,8 @@ describe('liquidity table view', { tags: '@smoke' }, () => {
       cy.getByTestId('Inactive').click();
       cy.get(rowSelectorLiquidityInactive)
         .first()
-        .find('[col-id="party.id"]')
-        .should(
-          'have.text',
-          'cc464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f'
-        );
+        .find('[col-id="partyId"]')
+        .should('have.text', 'cc464e…dc6f');
 
       cy.get(rowSelectorLiquidityInactive)
         .first()
@@ -302,11 +281,6 @@ describe('liquidity table view', { tags: '@smoke' }, () => {
         .first()
         .find(colFee)
         .should('have.text', '0.40%');
-
-      cy.get(rowSelectorLiquidityInactive)
-        .first()
-        .find(colAverageEntryValuation)
-        .should('have.text', '685,852.93692');
 
       cy.get(rowSelectorLiquidityInactive)
         .first()
