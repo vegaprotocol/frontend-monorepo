@@ -14,6 +14,10 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useReferral } from './hooks/use-referral';
 import { REFERRAL_DOCS_LINK } from './constants';
 import classNames from 'classnames';
+import { usePageTitleStore } from '../../stores';
+import { useEffect } from 'react';
+import { titlefy } from '@vegaprotocol/utils';
+import { t } from '@vegaprotocol/i18n';
 
 const Nav = () => (
   <div className="flex justify-center border-b border-vega-cdark-500">
@@ -47,6 +51,14 @@ export const Referrals = () => {
   const error = refereeError || referrerError;
   const loading = refereeLoading || referrerLoading;
   const showNav = !loading && !error && !referrer && !referee;
+
+  const { updateTitle } = usePageTitleStore((store) => ({
+    updateTitle: store.updateTitle,
+  }));
+
+  useEffect(() => {
+    updateTitle(titlefy([t('Referrals')]));
+  }, [updateTitle]);
 
   return (
     <>
