@@ -1,7 +1,6 @@
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import type { UpdateNetworkParameter } from '@vegaprotocol/types';
 import { ProposalStateMapping, MarketUpdateType } from '@vegaprotocol/types';
 import { ProposalState } from '@vegaprotocol/types';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
@@ -19,7 +18,16 @@ export const PROPOSAL_STATES_TO_TOAST = [
   ProposalState.STATE_OPEN,
   ProposalState.STATE_PASSED,
 ];
-const CLOSE_AFTER = 0;
+
+const PROPOSAL_TYPES_TO_TOAST = [
+  'UpdateNetworkParameter',
+  'NewAsset',
+  'NewMarket',
+  'UpdateAsset',
+  'UpdateMarket',
+  'UpdateMarketState',
+];
+
 type Proposal = NotificationProposalsFieldsFragment;
 
 const NotificationProposalToastContent = ({
@@ -163,7 +171,9 @@ export const useProposalNotificationToasts = () => {
       // note proposals is poorly named, it is actually a single proposal
       const proposal = data.data?.proposals;
       if (!proposal) return;
-
+      if (!PROPOSAL_TYPES_TO_TOAST.includes(proposal.terms.change.__typename)) {
+        return;
+      }
       // if one of the following states show a toast
       if (PROPOSAL_STATES_TO_TOAST.includes(proposal.state)) {
         displayToast(fromProposal(proposal));

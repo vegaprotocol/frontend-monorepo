@@ -11,9 +11,9 @@ import type {
   UpdateNetworkParameterProposalFragment,
   OnUpdateNetworkParametersSubscription,
 } from './__generated__/Proposal';
-import { OnUpdateNetworkParametersDocument } from './__generated__/Proposal';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { waitFor, renderHook } from '@testing-library/react';
+import { NotificationProposalsDocument } from '../proposals-data-provider/__generated__/Proposals';
 
 const render = (mocks?: MockedResponse[]) => {
   const wrapper = ({ children }: { children: ReactNode }) => (
@@ -61,7 +61,7 @@ describe('useProposalNotificationToasts', () => {
       const mockOpenProposal: MockedResponse<OnUpdateNetworkParametersSubscription> =
         {
           request: {
-            query: OnUpdateNetworkParametersDocument,
+            query: NotificationProposalsDocument,
           },
           result: {
             data: {
@@ -89,7 +89,7 @@ describe('useProposalNotificationToasts', () => {
     const mockFailedProposal: MockedResponse<OnUpdateNetworkParametersSubscription> =
       {
         request: {
-          query: OnUpdateNetworkParametersDocument,
+          query: NotificationProposalsDocument,
         },
         result: {
           data: {
@@ -117,7 +117,7 @@ describe('useProposalNotificationToasts', () => {
     const mockEmptyProposal: MockedResponse<OnUpdateNetworkParametersSubscription> =
       {
         request: {
-          query: OnUpdateNetworkParametersDocument,
+          query: NotificationProposalsDocument,
         },
         result: {
           data: {
@@ -142,7 +142,7 @@ describe('useProposalNotificationToasts', () => {
       {
         terms: {
           change: {
-            __typename: 'NewMarket',
+            __typename: 'NewSpotMarket',
           },
         },
       }
@@ -150,7 +150,7 @@ describe('useProposalNotificationToasts', () => {
     const mockWrongProposalType: MockedResponse<OnUpdateNetworkParametersSubscription> =
       {
         request: {
-          query: OnUpdateNetworkParametersDocument,
+          query: NotificationProposalsDocument,
         },
         result: {
           data: {
