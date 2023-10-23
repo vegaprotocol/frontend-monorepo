@@ -7,6 +7,7 @@ const Routes = {
   PROPOSALS_REJECTED: '/proposals/rejected',
   PROTOCOL_UPGRADES: '/protocol-upgrades',
   NOT_PERMITTED: '/not-permitted',
+  RESTRICTED: '/restricted',
   NOT_FOUND: '/not-found',
   CONTRACTS: '/contracts',
   TOKEN: '/token',
@@ -32,6 +33,10 @@ export const TOP_LEVEL_ROUTES = [
   {
     name: 'Rewards',
     path: Routes.REWARDS,
+  },
+  {
+    name: 'Restricted',
+    path: Routes.RESTRICTED,
   },
 ];
 

@@ -58,7 +58,7 @@ type ThemeStore = {
   setTheme: (theme?: Theme) => void;
 };
 
-const useThemeStore = create<ThemeStore>((set) => ({
+const useThemeStore = create<ThemeStore>()((set) => ({
   theme: getCurrentTheme(),
   setTheme: (newTheme) => {
     set((state) => {

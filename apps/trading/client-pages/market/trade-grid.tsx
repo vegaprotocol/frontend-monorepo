@@ -123,7 +123,7 @@ const MainGrid = memo(
               <Tab
                 id="open-orders"
                 name={t('Open')}
-                menu={<TradingViews.activeOrders.menu marketId={marketId} />}
+                menu={<TradingViews.activeOrders.menu />}
               >
                 <TradingViews.orders.component filter={Filter.Open} />
               </Tab>
@@ -136,7 +136,7 @@ const MainGrid = memo(
               <Tab
                 id="orders"
                 name={t('All')}
-                menu={<TradingViews.orders.menu marketId={marketId} />}
+                menu={<TradingViews.orders.menu />}
               >
                 <TradingViews.orders.component />
               </Tab>

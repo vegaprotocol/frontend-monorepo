@@ -1,2 +1,5 @@
-export * from './proposals-data-provider';
+export {
+  marketViewProposalsDataProvider,
+  proposalsDataProvider,
+} from './proposals-data-provider';
 export * from './__generated__/Proposals';

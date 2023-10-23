@@ -1,5 +1,7 @@
+import type { Update } from '@vegaprotocol/data-provider';
 import { makeDataProvider } from '@vegaprotocol/data-provider';
 import produce from 'immer';
+import * as Types from '@vegaprotocol/types';
 import type {
   ProposalsListQuery,
   ProposalsListQueryVariables,
@@ -8,6 +10,7 @@ import type {
   MarketViewProposalFieldsFragment,
   MarketViewProposalsQuery,
   MarketViewProposalsQueryVariables,
+  MarketViewLiveProposalsSubscriptionVariables,
 } from './__generated__/Proposals';
 import {
   MarketViewLiveProposalsDocument,
@@ -42,21 +45,61 @@ export const proposalsDataProvider = makeDataProvider<
     errors.every((e) => e.message.match(/failed to get asset for ID/)),
 });
 
-const update = (
+const ProposalTypeMap: Record<
+  Types.ProposalType,
+  Types.ProposalChange['__typename']
+> = {
+  [Types.ProposalType.TYPE_CANCEL_TRANSFER]: 'CancelTransfer',
+  [Types.ProposalType.TYPE_NETWORK_PARAMETERS]: 'UpdateNetworkParameter',
+  [Types.ProposalType.TYPE_NEW_ASSET]: 'NewAsset',
+  [Types.ProposalType.TYPE_NEW_FREE_FORM]: 'NewFreeform',
+  [Types.ProposalType.TYPE_NEW_MARKET]: 'NewMarket',
+  [Types.ProposalType.TYPE_NEW_SPOT_MARKET]: 'NewSpotMarket',
+  [Types.ProposalType.TYPE_NEW_TRANSFER]: 'NewTransfer',
+  [Types.ProposalType.TYPE_UPDATE_ASSET]: 'UpdateAsset',
+  [Types.ProposalType.TYPE_UPDATE_MARKET]: 'UpdateMarket',
+  [Types.ProposalType.TYPE_UPDATE_MARKET_STATE]: 'UpdateMarketState',
+  [Types.ProposalType.TYPE_UPDATE_REFERRAL_PROGRAM]: 'UpdateReferralProgram',
+  [Types.ProposalType.TYPE_UPDATE_SPOT_MARKET]: 'UpdateSpotMarket',
+  [Types.ProposalType.TYPE_UPDATE_VOLUME_DISCOUNT_PROGRAM]:
+    'UpdateVolumeDiscountProgram',
+};
+
+const matchFilter = (
+  data: MarketViewProposalFieldsFragment,
+  variables: MarketViewProposalsQueryVariables
+) => {
+  return (
+    (!variables.inState || data.state === variables.inState) &&
+    (!variables.proposalType ||
+      data.terms.change.__typename === ProposalTypeMap[variables.proposalType])
+  );
+};
+
+export const update: Update<
+  MarketViewProposalFieldsFragment[] | null,
+  MarketViewProposalFieldsFragment,
+  MarketViewProposalsQueryVariables
+> = (
   data: MarketViewProposalFieldsFragment[] | null,
-  delta: MarketViewProposalFieldsFragment
+  delta: MarketViewProposalFieldsFragment,
+  reload,
+  variables
 ) => {
   const updateData = produce(data || [], (draft) => {
     const { id } = delta;
     const index = draft.findIndex((item) => item.id === id);
+    const match = matchFilter(delta, variables);
     if (index === -1) {
-      draft.unshift(delta);
+      if (match) {
+        draft.unshift(delta);
+      }
     } else {
-      const currNode = draft[index];
-      draft[index] = {
-        ...currNode,
-        ...delta,
-      };
+      if (match) {
+        draft[index] = delta;
+      } else {
+        draft.splice(index, 1);
+      }
     }
   });
   return updateData;
@@ -66,12 +109,15 @@ const getMarketProposalsData = (
   responseData: MarketViewProposalsQuery | null
 ) => removePaginationWrapper(responseData?.proposalsConnection?.edges) || [];
 
+const subscriptionVariables: MarketViewLiveProposalsSubscriptionVariables = {};
+
 export const marketViewProposalsDataProvider = makeDataProvider<
   MarketViewProposalsQuery,
   MarketViewProposalFieldsFragment[],
   MarketViewLiveProposalsSubscription,
   MarketViewProposalFieldsFragment,
-  MarketViewProposalsQueryVariables
+  MarketViewProposalsQueryVariables,
+  MarketViewLiveProposalsSubscriptionVariables
 >({
   query: MarketViewProposalsDocument,
   subscriptionQuery: MarketViewLiveProposalsDocument,
@@ -79,4 +125,5 @@ export const marketViewProposalsDataProvider = makeDataProvider<
   getDelta: (subscriptionData: MarketViewLiveProposalsSubscription) =>
     subscriptionData.proposals,
   getData: getMarketProposalsData,
+  getSubscriptionVariables: () => subscriptionVariables,
 });
