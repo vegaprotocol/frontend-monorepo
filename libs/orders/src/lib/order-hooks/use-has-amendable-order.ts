@@ -3,7 +3,7 @@ import { hasAmendableOrderProvider } from '../components/order-data-provider';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
-export const useHasAmendableOrder = (marketId?: string) => {
+export const useHasAmendableOrder = () => {
   const { pubKey } = useVegaWallet();
   const [hasAmendableOrder, setHasAmendableOrder] = useState(false);
   const update = useCallback(({ data }: { data: boolean | null }) => {
@@ -15,7 +15,6 @@ export const useHasAmendableOrder = (marketId?: string) => {
     update,
     variables: {
       partyId: pubKey || '',
-      marketId,
     },
     skip: !pubKey,
   });
