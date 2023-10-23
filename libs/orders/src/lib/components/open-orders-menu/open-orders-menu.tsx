@@ -4,10 +4,10 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { useHasAmendableOrder } from '../../order-hooks';
 
-export const OpenOrdersMenu = ({ marketId }: { marketId: string }) => {
+export const OpenOrdersMenu = () => {
   const { isReadOnly } = useVegaWallet();
   const create = useVegaTransactionStore((state) => state.create);
-  const hasAmendableOrder = useHasAmendableOrder(marketId);
+  const hasAmendableOrder = useHasAmendableOrder();
 
   if (isReadOnly) {
     return null;
