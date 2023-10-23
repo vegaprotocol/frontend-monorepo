@@ -319,6 +319,7 @@ fragment NewAssetFields on NewAsset {
   decimals
   quantum
   source {
+    __typename
     ... on BuiltinAsset {
       maxFaucetAmountMint
     }
@@ -486,5 +487,41 @@ query MarketViewProposals(
 subscription MarketViewLiveProposals {
   proposals {
     ...MarketViewProposalFields
+  }
+}
+
+fragment NotificationProposalsFields on Proposal {
+  id
+  state
+  terms {
+    closingDatetime
+    enactmentDatetime
+    change {
+      __typename
+      ... on UpdateMarketState {
+        ...UpdateMarketStateFields
+      }
+      ... on NewMarket {
+        ...NewMarketSuccessorFields
+      }
+      ... on UpdateMarket {
+        ...UpdateMarketFields
+      }
+      ... on NewAsset {
+        ...NewAssetFields
+      }
+      ... on UpdateAsset {
+        ...UpdateAssetFields
+      }
+      ... on UpdateNetworkParameter {
+        ...UpdateNetworkParameterFields
+      }
+    }
+  }
+}
+
+subscription NotificationProposals {
+  proposals {
+    ...NotificationProposalsFields
   }
 }

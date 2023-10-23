@@ -5,8 +5,8 @@ import { ProposalState } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import {
   PROPOSAL_STATES_TO_TOAST,
-  useUpdateNetworkParametersToasts,
-} from './use-update-network-paramaters-toasts';
+  useProposalNotificationToasts,
+} from './use-proposal-notification-toasts';
 import type {
   UpdateNetworkParameterProposalFragment,
   OnUpdateNetworkParametersSubscription,
@@ -19,7 +19,7 @@ const render = (mocks?: MockedResponse[]) => {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MockedProvider mocks={mocks}>{children}</MockedProvider>
   );
-  return renderHook(() => useUpdateNetworkParametersToasts(), { wrapper });
+  return renderHook(() => useProposalNotificationToasts(), { wrapper });
 };
 
 const generateUpdateNetworkParametersProposal = (
@@ -51,7 +51,7 @@ const clear = () => {
   useToasts.setState(INITIAL);
 };
 
-describe('useUpdateNetworkParametersToasts', () => {
+describe('useProposalNotificationToasts', () => {
   beforeEach(clear);
   afterAll(clear);
 
