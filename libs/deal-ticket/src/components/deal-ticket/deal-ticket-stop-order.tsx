@@ -43,7 +43,7 @@ import {
   REDUCE_ONLY_TOOLTIP,
   stopSubmit,
   getNotionalSize,
-  getAssetUnit,
+  getBaseQuoteUnit,
 } from './deal-ticket';
 import { TypeToggle } from './type-selector';
 import {
@@ -854,7 +854,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   }, [watch, market.id, updateStoredFormValues]);
 
   const quoteName = getQuoteName(market);
-  const assetUnit = getAssetUnit(
+  const assetUnit = getBaseQuoteUnit(
     market.tradableInstrument.instrument.metadata.tags
   );
 

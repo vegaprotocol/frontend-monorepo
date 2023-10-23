@@ -127,7 +127,7 @@ const getDefaultValues = (
   ...storedValues,
 });
 
-export const getAssetUnit = (tags?: string[] | null) =>
+export const getBaseQuoteUnit = (tags?: string[] | null) =>
   tags
     ?.find((tag) => tag.startsWith('base:') || tag.startsWith('ticker:'))
     ?.replace(/^[^:]*:/, '');
@@ -273,9 +273,7 @@ export const DealTicket = ({
 
   const assetSymbol = getAsset(market).symbol;
 
-  const assetUnit = getAssetUnit(
-    market.tradableInstrument.instrument.metadata.tags
-  );
+  const assetUnit = getQuoteName(market);
 
   const summaryError = useMemo(() => {
     if (!pubKey) {
