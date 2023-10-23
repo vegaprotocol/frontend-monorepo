@@ -34,10 +34,6 @@ export const TOP_LEVEL_ROUTES = [
     name: 'Rewards',
     path: Routes.REWARDS,
   },
-  {
-    name: 'Restricted',
-    path: Routes.RESTRICTED,
-  },
 ];
 
 export const TOKEN_DROPDOWN_ROUTES = [
