@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { AnimatedDudeWithWire } from './graphics/dude';
+import { t } from '@vegaprotocol/i18n';
 
 export const LandingBanner = () => {
   return (
@@ -13,16 +14,17 @@ export const LandingBanner = () => {
         </div>
         <div className="pt-32 sm:w-[50%]">
           <h1 className="text-6xl font-alpha calt mb-10">
-            Earn commission & stake rewards
+            {t('Earn commission & stake rewards')}
           </h1>
           <p className="text-lg mb-10">
-            Invite friends and earn commission in the form of Vega rewards from
-            the trading fees they pay. Stake those rewards to earn multipliers
-            on future rewards.
+            {t(
+              'Invite friends and earn commission in the form of Vega rewards from the trading fees they pay. Stake those rewards to earn multipliers on future rewards.'
+            )}
           </p>
           <p className="text-lg">
-            Any friends that join using the code will receive discounts off
-            trading fees.
+            {t(
+              'Any friends that join using the code will receive discounts off trading fees.'
+            )}
           </p>
         </div>
       </div>

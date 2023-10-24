@@ -3,6 +3,7 @@ import { RainbowButton } from './buttons';
 import { AnimatedDudeWithWire } from './graphics/dude';
 import { LayoutWithSky } from './layout';
 import { Routes } from '../../lib/links';
+import { t } from '@vegaprotocol/i18n';
 
 export const ErrorBoundary = () => {
   const error = useRouteError();
@@ -39,7 +40,7 @@ export const ErrorBoundary = () => {
           variant="border"
           className="text-xs"
         >
-          Go back and try again
+          {t('Go back and try again')}
         </RainbowButton>
       </p>
     </LayoutWithSky>
@@ -60,7 +61,7 @@ export const NotFound = () => {
       <h1 className="text-6xl font-alpha calt mb-10">{'Not found'}</h1>
 
       <p className="text-lg mb-10">
-        {"The page you're looking for doesn't exists."}
+        {t("The page you're looking for doesn't exists.")}
       </p>
 
       <p className="text-lg mb-10">
@@ -69,7 +70,7 @@ export const NotFound = () => {
           variant="border"
           className="text-xs"
         >
-          Go back and try again
+          {t('Go back and try again')}
         </RainbowButton>
       </p>
     </div>

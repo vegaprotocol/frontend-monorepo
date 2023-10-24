@@ -81,7 +81,7 @@ export const ApplyCodeForm = () => {
         if (!res) {
           setError('code', {
             type: 'required',
-            message: 'The transaction could not be sent',
+            message: t('The transaction could not be sent'),
           });
         }
         if (res) {
@@ -98,7 +98,7 @@ export const ApplyCodeForm = () => {
             message:
               err instanceof Error
                 ? err.message
-                : 'Your code has been rejected',
+                : t('Your code has been rejected'),
           });
         }
       });
@@ -152,7 +152,7 @@ export const ApplyCodeForm = () => {
           <span className="text-vega-green-500">
             <VegaIcon name={VegaIconNames.TICK} size={20} />
           </span>{' '}
-          <span className="pt-1">Code applied</span>
+          <span className="pt-1">{t('Code applied')}</span>
         </h3>
       </div>
     );
@@ -162,7 +162,7 @@ export const ApplyCodeForm = () => {
     if (!pubKey) {
       return {
         disabled: false,
-        children: 'Connect wallet',
+        children: t('Connect wallet'),
         type: 'button' as ButtonHTMLAttributes<HTMLButtonElement>['type'],
         onClick: ((event) => {
           event.preventDefault();
@@ -174,7 +174,7 @@ export const ApplyCodeForm = () => {
     if (isReadOnly) {
       return {
         disabled: true,
-        children: 'Apply a code',
+        children: t('Apply a code'),
         type: 'submit' as ButtonHTMLAttributes<HTMLButtonElement>['type'],
       };
     }
@@ -182,14 +182,14 @@ export const ApplyCodeForm = () => {
     if (status === 'requested') {
       return {
         disabled: true,
-        children: 'Confirm in wallet...',
+        children: t('Confirm in wallet...'),
         type: 'submit' as ButtonHTMLAttributes<HTMLButtonElement>['type'],
       };
     }
 
     return {
       disabled: false,
-      children: 'Apply a code',
+      children: t('Apply a code'),
       type: 'submit' as ButtonHTMLAttributes<HTMLButtonElement>['type'],
     };
   };
@@ -198,10 +198,10 @@ export const ApplyCodeForm = () => {
     <>
       <div className="w-2/3 max-w-md mx-auto bg-vega-clight-800 dark:bg-vega-cdark-800 p-8 rounded-lg">
         <h3 className="mb-4 text-2xl text-center calt">
-          Apply a referral code
+          {t('Apply a referral code')}
         </h3>
         <p className="mb-4 text-center text-base">
-          Enter a referral code to get trading discounts.
+          {t('Enter a referral code to get trading discounts.')}
         </p>
         <form
           className={classNames('w-full flex flex-col gap-4', {
@@ -210,11 +210,11 @@ export const ApplyCodeForm = () => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <label>
-            <span className="sr-only">Your referral code</span>
+            <span className="sr-only">{t('Your referral code')}</span>
             <Input
               hasError={Boolean(errors.code)}
               {...register('code', {
-                required: 'You have to provide a code to apply it.',
+                required: t('You have to provide a code to apply it.'),
                 validate: validateCode,
               })}
               placeholder="Enter a code"
@@ -236,7 +236,7 @@ export const ApplyCodeForm = () => {
       ) : null}
       {previewData ? (
         <div className="mt-10">
-          <h2 className="text-2xl mb-5">You are joining</h2>
+          <h2 className="text-2xl mb-5">{t('You are joining')}</h2>
           <Statistics data={previewData} as="referee" />
         </div>
       ) : null}

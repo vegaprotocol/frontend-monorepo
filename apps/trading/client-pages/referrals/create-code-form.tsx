@@ -24,6 +24,7 @@ import {
   DISCLAIMER_REFERRAL_DOCS_LINK,
 } from './constants';
 import { useReferral } from './hooks/use-referral';
+import { t } from '@vegaprotocol/i18n';
 
 export const CreateCodeContainer = () => {
   return <CreateCodeForm />;
@@ -38,10 +39,13 @@ export const CreateCodeForm = () => {
 
   return (
     <div className="w-2/3 max-w-md mx-auto bg-vega-clight-800 dark:bg-vega-cdark-800 p-8 rounded-lg">
-      <h3 className="mb-4 text-2xl text-center calt">Create a referral code</h3>
+      <h3 className="mb-4 text-2xl text-center calt">
+        {t('Create a referral code')}
+      </h3>
       <p className="mb-4 text-center text-base">
-        Generate a referral code to share with your friends and start earning
-        commission.
+        {t(
+          'Generate a referral code to share with your friends and start earning commission.'
+        )}
       </p>
 
       <div className="w-full flex flex-col">
@@ -56,12 +60,12 @@ export const CreateCodeForm = () => {
             }
           }}
         >
-          {pubKey ? 'Create a referral code' : 'Connect wallet'}
+          {pubKey ? t('Create a referral code') : t('Connect wallet')}
         </RainbowButton>
       </div>
 
       <Dialog
-        title="Create a referral code"
+        title={t('Create a referral code')}
         open={dialogOpen}
         onChange={() => setDialogOpen(false)}
         size="small"
@@ -124,21 +128,21 @@ const CreateCodeDialog = ({
   const getButtonProps = () => {
     if (status === 'idle' || status === 'error') {
       return {
-        children: 'Generate code',
+        children: t('Generate code'),
         onClick: () => onSubmit(),
       };
     }
 
     if (status === 'loading') {
       return {
-        children: 'Confirm in wallet...',
+        children: t('Confirm in wallet...'),
         disabled: true,
       };
     }
 
     if (status === 'success') {
       return {
-        children: 'Close',
+        children: t('Close'),
         intent: Intent.Success,
         onClick: () => {
           refetch();
@@ -151,12 +155,12 @@ const CreateCodeDialog = ({
   if (!pubKey || currentStakeAvailable == null || requiredStake == null) {
     return (
       <div className="flex flex-col gap-4">
-        <p>You must be connected to the Vega wallet.</p>
+        <p>{t('You must be connected to the Vega wallet.')}</p>
         <TradingButton
           intent={Intent.Primary}
           onClick={() => setDialogOpen(false)}
         >
-          Close
+          {t('Close')}
         </TradingButton>
       </div>
     );
@@ -166,16 +170,18 @@ const CreateCodeDialog = ({
     return (
       <div className="flex flex-col gap-4">
         <p>
-          You need at least{' '}
-          {addDecimalsFormatNumber(requiredStake.toString(), 18)} VEGA staked to
-          generate a referral code and participate in the referral program.
+          {t('You need at least')}{' '}
+          {addDecimalsFormatNumber(requiredStake.toString(), 18)}{' '}
+          {t(
+            'VEGA staked to generate a referral code and participate in the referral program.'
+          )}
         </p>
         <TradingAnchorButton
           href={createLink(TokenStaticLinks.ASSOCIATE)}
           intent={Intent.Primary}
           target="_blank"
         >
-          Stake some $VEGA now
+          {t('Stake some $VEGA now')}
         </TradingAnchorButton>
       </div>
     );
@@ -185,8 +191,9 @@ const CreateCodeDialog = ({
     <div className="flex flex-col gap-4">
       {(status === 'idle' || status === 'loading' || status === 'error') && (
         <p>
-          Generate a referral code to share with your friends and start earning
-          commission.
+          {t(
+            'Generate a referral code to share with your friends and start earning commission.'
+          )}
         </p>
       )}
       {status === 'success' && code && (
@@ -201,7 +208,7 @@ const CreateCodeDialog = ({
               className="text-sm no-underline"
               icon={<VegaIcon name={VegaIconNames.COPY} />}
             >
-              <span>Copy</span>
+              <span>{t('Copy')}</span>
             </TradingButton>
           </CopyWithTooltip>
         </div>
@@ -214,10 +221,10 @@ const CreateCodeDialog = ({
       {err && <InputError>{err}</InputError>}
       <div className="flex justify-center pt-5 mt-2 text-sm border-t gap-4 text-default border-default">
         <ExternalLink href={ABOUT_REFERRAL_DOCS_LINK}>
-          About the referral program
+          {t('About the referral program')}
         </ExternalLink>
         <ExternalLink href={DISCLAIMER_REFERRAL_DOCS_LINK}>
-          Disclaimer
+          {t('Disclaimer')}
         </ExternalLink>
       </div>
     </div>
