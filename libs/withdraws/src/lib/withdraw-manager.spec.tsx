@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateAccount, generateAsset } from './test-helpers';
 import type { WithdrawManagerProps } from './withdraw-manager';
@@ -62,11 +62,11 @@ describe('WithdrawManager', () => {
     const { container } = render(generateJsx(props));
     const select = container.querySelector('select[name="asset"]') as Element;
     await userEvent.selectOptions(select, props.assets[0].id);
+    await userEvent.clear(screen.getByLabelText('To (Ethereum address)'));
     await userEvent.type(
       screen.getByLabelText('To (Ethereum address)'),
       ethereumAddress
     );
-
     await userEvent.type(screen.getByLabelText('Amount'), '0.01');
     await userEvent.click(screen.getByTestId('submit-withdrawal'));
     expect(props.submit).toHaveBeenCalledWith({
@@ -86,7 +86,7 @@ describe('WithdrawManager', () => {
 
     // Set other fields to be valid
     const select = container.querySelector('select[name="asset"]') as Element;
-    await await userEvent.selectOptions(select, props.assets[0].id);
+    await userEvent.selectOptions(select, props.assets[0].id);
     expect(screen.getByTestId('connect-eth-wallet-btn')).toBeInTheDocument();
 
     await userEvent.type(
@@ -124,18 +124,6 @@ describe('WithdrawManager', () => {
     await userEvent.click(screen.getByTestId('use-maximum'));
     expect(await screen.getByTestId('amount-input')).toHaveValue(1);
   });
-
-  const submitValid = async (container: HTMLElement) => {
-    const select = container.querySelector('select[name="asset"]') as Element;
-    await await userEvent.selectOptions(select, props.assets[0].id);
-    await userEvent.type(
-      screen.getByLabelText('To (Ethereum address)'),
-      ethereumAddress
-    );
-
-    await userEvent.type(screen.getByLabelText('Amount'), '0.01');
-    await userEvent.click(screen.getByTestId('submit-withdrawal'));
-  };
 
   it('shows withdraw delay notification if amount greater than threshold', async () => {
     render(generateJsx(props));
