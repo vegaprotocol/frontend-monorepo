@@ -122,7 +122,7 @@ describe('WithdrawManager', () => {
     render(generateJsx(props));
 
     await userEvent.click(screen.getByTestId('use-maximum'));
-    expect(await screen.getByTestId('amount-input')).toHaveValue(1);
+    expect(screen.getByTestId('amount-input')).toHaveValue(1);
   });
 
   it('shows withdraw delay notification if amount greater than threshold', async () => {
