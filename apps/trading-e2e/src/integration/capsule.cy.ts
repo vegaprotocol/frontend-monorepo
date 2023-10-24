@@ -48,6 +48,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     cy.get('@markets').then((markets) => {
       cy.wrap(markets[0]).as('market');
     });
+    cy.setOnBoardingViewed();
     cy.visit('/#/portfolio');
   });
 
@@ -182,6 +183,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     cy.get('@markets').then((markets) => {
       cy.wrap(markets[0]).as('market');
     });
+    cy.setOnBoardingViewed();
     cy.setVegaWallet();
   });
 
