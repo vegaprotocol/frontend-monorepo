@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateAccount, generateAsset } from './test-helpers';
 import type { WithdrawManagerProps } from './withdraw-manager';
@@ -60,9 +60,15 @@ describe('WithdrawManager', () => {
     // 1002-WITH-002
     // 1002-WITH-003
     const { container } = render(generateJsx(props));
-    await act(async () => {
-      await submitValid(container);
-    });
+    const select = container.querySelector('select[name="asset"]') as Element;
+    await userEvent.selectOptions(select, props.assets[0].id);
+    await userEvent.type(
+      screen.getByLabelText('To (Ethereum address)'),
+      ethereumAddress
+    );
+
+    await userEvent.type(screen.getByLabelText('Amount'), '0.01');
+    await userEvent.click(screen.getByTestId('submit-withdrawal'));
     expect(props.submit).toHaveBeenCalledWith({
       amount: '1000',
       asset: props.assets[0].id,
@@ -76,39 +82,36 @@ describe('WithdrawManager', () => {
     // 1002-WITH-005
     // 1002-WITH-008
     // 1002-WITH-018
-    render(generateJsx(props));
+    const { container } = render(generateJsx(props));
 
     // Set other fields to be valid
-    fireEvent.change(screen.getByLabelText('Asset'), {
-      target: { value: props.assets[0].id },
-    });
-    expect(
-      await screen.getByTestId('connect-eth-wallet-btn')
-    ).toBeInTheDocument();
+    const select = container.querySelector('select[name="asset"]') as Element;
+    await await userEvent.selectOptions(select, props.assets[0].id);
+    expect(screen.getByTestId('connect-eth-wallet-btn')).toBeInTheDocument();
 
-    fireEvent.change(screen.getByLabelText('To (Ethereum address)'), {
-      target: { value: ethereumAddress },
-    });
+    await userEvent.type(
+      screen.getByLabelText('To (Ethereum address)'),
+      ethereumAddress
+    );
 
     // Min amount
-    fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: '0.00000001' },
-    });
-    fireEvent.submit(screen.getByTestId('withdraw-form'));
+    await userEvent.clear(screen.getByLabelText('Amount'));
+    await userEvent.type(screen.getByLabelText('Amount'), '0.00000001');
+    await userEvent.click(screen.getByTestId('submit-withdrawal'));
+
     expect(
       await screen.findByText('Value is below minimum')
     ).toBeInTheDocument();
     expect(props.submit).not.toBeCalled();
 
-    fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: '0.00001' },
-    });
+    await userEvent.clear(screen.getByLabelText('Amount'));
+    await userEvent.type(screen.getByLabelText('Amount'), '0.00001');
 
     // Max amount (balance is 1)
-    fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: '2' },
-    });
-    fireEvent.submit(screen.getByTestId('withdraw-form'));
+    await userEvent.clear(screen.getByLabelText('Amount'));
+    await userEvent.type(screen.getByLabelText('Amount'), '2');
+
+    await userEvent.click(screen.getByTestId('submit-withdrawal'));
     expect(
       await screen.findByText('Insufficient amount in account')
     ).toBeInTheDocument();
@@ -118,27 +121,25 @@ describe('WithdrawManager', () => {
     // 1002-WITH-004
     render(generateJsx(props));
 
-    fireEvent.click(screen.getByTestId('use-maximum'));
+    await userEvent.click(screen.getByTestId('use-maximum'));
     expect(await screen.getByTestId('amount-input')).toHaveValue(1);
   });
 
   const submitValid = async (container: HTMLElement) => {
     const select = container.querySelector('select[name="asset"]') as Element;
-    await userEvent.selectOptions(select, props.assets[0].id);
-    fireEvent.change(screen.getByLabelText('To (Ethereum address)'), {
-      target: { value: ethereumAddress },
-    });
-    fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: '0.01' },
-    });
-    fireEvent.submit(screen.getByTestId('withdraw-form'));
+    await await userEvent.selectOptions(select, props.assets[0].id);
+    await userEvent.type(
+      screen.getByLabelText('To (Ethereum address)'),
+      ethereumAddress
+    );
+
+    await userEvent.type(screen.getByLabelText('Amount'), '0.01');
+    await userEvent.click(screen.getByTestId('submit-withdrawal'));
   };
 
   it('shows withdraw delay notification if amount greater than threshold', async () => {
     render(generateJsx(props));
-    fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: '1001' },
-    });
+    await userEvent.type(screen.getByLabelText('Amount'), '1001');
     expect(
       await screen.findByTestId('amount-withdrawal-delay-notification')
     ).toBeInTheDocument();
@@ -147,9 +148,7 @@ describe('WithdrawManager', () => {
   it('shows withdraw delay notification if threshold is 0', async () => {
     withdrawAsset.threshold = new BigNumber(0);
     render(generateJsx(props));
-    fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: '0.01' },
-    });
+    await userEvent.type(screen.getByLabelText('Amount'), '0.01');
     expect(
       await screen.findByTestId('withdrawals-delay-notification')
     ).toBeInTheDocument();
