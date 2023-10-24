@@ -80,13 +80,13 @@ export const OrderListManager = ({
     [create]
   );
 
-  const [displayedRowCount, setDisplayedRowCount] = useState<
-    number | undefined
-  >(undefined);
+  const [hasDisplayedRow, setHasDisplayedRow] = useState<boolean | undefined>(
+    undefined
+  );
   const { onFilterChanged, ...props } = gridProps || {};
   const onRowDataUpdated = useCallback(
     ({ api }: { api: AgGridReact['api'] }) => {
-      setDisplayedRowCount(api.getDisplayedRowCount());
+      setHasDisplayedRow(!!api.getDisplayedRowCount());
     },
     []
   );
@@ -145,7 +145,7 @@ export const OrderListManager = ({
                 ) : null}
               </div>
             ) : null}
-            {data?.length && displayedRowCount === 0 ? (
+            {data?.length && hasDisplayedRow === false ? (
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs">
                 {t('No orders matching selected filters')}
               </div>
