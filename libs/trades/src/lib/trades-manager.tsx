@@ -23,21 +23,13 @@ export const TradesManager = ({
     dataProvider: tradesWithMarketProvider,
     variables: { marketId },
   });
-  const [hasFilteredRows, setHasFilteredRowsCount] = useState<
-    boolean | undefined
+  const [displayedRowCount, setDisplayedRowCount] = useState<
+    number | undefined
   >(undefined);
-  const { onFilterChanged, ...props } = gridProps;
+  const { onFilterChanged, ...props } = gridProps || {};
   const onRowDataUpdated = useCallback(
     ({ api }: { api: AgGridReact['api'] }) => {
-      let hasFilteredRows = false;
-      try {
-        api.forEachNodeAfterFilter(() => {
-          throw new Error();
-        });
-      } catch (e) {
-        hasFilteredRows = true;
-      }
-      setHasFilteredRowsCount(hasFilteredRows);
+      setDisplayedRowCount(api.getDisplayedRowCount());
     },
     []
   );
@@ -75,7 +67,7 @@ export const TradesManager = ({
             </Button>
           ) : null}
         </div>
-        {data?.length && hasFilteredRows === false ? (
+        {data?.length && displayedRowCount === 0 ? (
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs">
             {t('No trades matching selected filters')}
           </div>

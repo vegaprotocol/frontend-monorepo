@@ -23,28 +23,20 @@ export const FillsManager = ({
   const filter: Schema.TradesFilter | Schema.TradesSubscriptionFilter = {
     partyIds: [partyId],
   };
-  const [hasFilteredRows, setHasFilteredRowsCount] = useState<
-    boolean | undefined
+  const [displayedRowCount, setDisplayedRowCount] = useState<
+    number | undefined
   >(undefined);
+  const { onFilterChanged, ...props } = gridProps || {};
+  const onRowDataUpdated = useCallback(
+    ({ api }: { api: AgGridReact['api'] }) => {
+      setDisplayedRowCount(api.getDisplayedRowCount());
+    },
+    []
+  );
   const { data, error, load, pageInfo } = useDataProvider({
     dataProvider: fillsWithMarketProvider,
     variables: { filter },
   });
-  const { onFilterChanged, ...props } = gridProps;
-  const onRowDataUpdated = useCallback(
-    ({ api }: { api: AgGridReact['api'] }) => {
-      let hasFilteredRows = false;
-      try {
-        api.forEachNodeAfterFilter(() => {
-          throw new Error();
-        });
-      } catch (e) {
-        hasFilteredRows = true;
-      }
-      setHasFilteredRowsCount(hasFilteredRows);
-    },
-    []
-  );
   return (
     <div className="flex flex-col h-full">
       <FillsTable
@@ -79,7 +71,7 @@ export const FillsManager = ({
             </Button>
           ) : null}
         </div>
-        {data?.length && hasFilteredRows === false ? (
+        {data?.length && displayedRowCount === 0 ? (
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs">
             {t('No fills matching selected filters')}
           </div>

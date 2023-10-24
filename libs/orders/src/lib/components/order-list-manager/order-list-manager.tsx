@@ -80,21 +80,13 @@ export const OrderListManager = ({
     [create]
   );
 
-  const [hasFilteredRows, setHasFilteredRowsCount] = useState<
-    boolean | undefined
+  const [displayedRowCount, setDisplayedRowCount] = useState<
+    number | undefined
   >(undefined);
   const { onFilterChanged, ...props } = gridProps || {};
   const onRowDataUpdated = useCallback(
     ({ api }: { api: AgGridReact['api'] }) => {
-      let hasFilteredRows = false;
-      try {
-        api.forEachNodeAfterFilter(() => {
-          throw new Error();
-        });
-      } catch (e) {
-        hasFilteredRows = true;
-      }
-      setHasFilteredRowsCount(hasFilteredRows);
+      setDisplayedRowCount(api.getDisplayedRowCount());
     },
     []
   );
@@ -129,9 +121,11 @@ export const OrderListManager = ({
           />
           <div className="flex justify-between border-t border-default p-1 items-center">
             <div className="text-xs">
-              {t(
-                'Depending on data node retention you may not be able see the "full" history'
-              )}
+              {variables.filter?.liveOnly
+                ? null
+                : t(
+                    'Depending on data node retention you may not be able see the "full" history'
+                  )}
             </div>
             {data ? (
               <div className="flex text-xs items-center">
@@ -151,7 +145,7 @@ export const OrderListManager = ({
                 ) : null}
               </div>
             ) : null}
-            {data?.length && hasFilteredRows === false ? (
+            {data?.length && displayedRowCount === 0 ? (
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs">
                 {t('No orders matching selected filters')}
               </div>
