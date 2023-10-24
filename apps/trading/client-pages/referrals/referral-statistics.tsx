@@ -26,6 +26,7 @@ import sortBy from 'lodash/sortBy';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 import BigNumber from 'bignumber.js';
+import { t } from '@vegaprotocol/i18n';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
@@ -116,34 +117,34 @@ export const Statistics = ({
     : 0;
 
   const baseCommissionTile = (
-    <StatTile title="Base commission rate">
+    <StatTile title={t('Base commission rate')}>
       {baseCommissionValue * 100}%
     </StatTile>
   );
   const stakingMultiplierTile = (
     <StatTile
-      title="Staking multiplier"
+      title={t('Staking multiplier')}
       description={`(${addDecimalsFormatNumber(
         stakeAvailable?.toString() || 0,
         18
       )} $VEGA staked)`}
     >
-      {multiplier || 'None'}
+      {multiplier || t('None')}
     </StatTile>
   );
   const finalCommissionTile = (
-    <StatTile title="Final commission rate">
+    <StatTile title={t('Final commission rate')}>
       {finalCommissionValue * 100}%
     </StatTile>
   );
   const numberOfTradersValue = data.referees.length;
   const numberOfTradersTile = (
-    <StatTile title="Number of traders">{numberOfTradersValue}</StatTile>
+    <StatTile title={t('Number of traders')}>{numberOfTradersValue}</StatTile>
   );
 
   const codeTile = <CodeTile code={data?.code} />;
   const createdAtTile = (
-    <StatTile title="Created at">
+    <StatTile title={t('Created at')}>
       <span className="text-3xl">
         {getDateFormat().format(new Date(data.createdAt))}
       </span>
@@ -154,7 +155,10 @@ export const Statistics = ({
     .map((r) => new BigNumber(r.totalRefereeGeneratedRewards))
     .reduce((all, r) => all.plus(r), new BigNumber(0));
   const totalCommissionTile = (
-    <StatTile title="Total commission (last 30 days)" description="(Quantum)">
+    <StatTile
+      title={t('Total commission (last 30 days)')}
+      description={t('(qUSD)')}
+    >
       {getNumberFormat(0).format(Number(totalCommissionValue))}
     </StatTile>
   );
@@ -184,29 +188,31 @@ export const Statistics = ({
   });
 
   const currentBenefitTierTile = (
-    <StatTile title="Current tier">
+    <StatTile title={t('Current tier')}>
       {currentBenefitTierValue?.tier || '-'}
     </StatTile>
   );
   const discountFactorTile = (
-    <StatTile title="Discount">{discountFactorValue * 100}%</StatTile>
+    <StatTile title={t('Discount')}>{discountFactorValue * 100}%</StatTile>
   );
   const runningVolumeTile = (
-    <StatTile title="Combined volume">
+    <StatTile title={t('Combined volume')}>
       {compactNumFormat.format(runningVolumeValue)}
     </StatTile>
   );
-  const epochsTile = <StatTile title="Epochs in set">{epochsValue}</StatTile>;
+  const epochsTile = (
+    <StatTile title={t('Epochs in set')}>{epochsValue}</StatTile>
+  );
   const nextTierVolumeTile = (
-    <StatTile title="Volume to next tier">
+    <StatTile title={t('Volume to next tier')}>
       {nextBenefitTierVolumeValue <= 0
-        ? '-'
+        ? '0'
         : compactNumFormat.format(nextBenefitTierVolumeValue)}
     </StatTile>
   );
   const nextTierEpochsTile = (
-    <StatTile title="Epochs to next tier">
-      {nextBenefitTierEpochsValue <= 0 ? '-' : nextBenefitTierEpochsValue}
+    <StatTile title={t('Epochs to next tier')}>
+      {nextBenefitTierEpochsValue <= 0 ? '0' : nextBenefitTierEpochsValue}
     </StatTile>
   );
 
@@ -249,7 +255,7 @@ export const Statistics = ({
       {/* Referees (only for referrer view) */}
       {as === 'referrer' && data.referees.length > 0 && (
         <div className="mt-20 mb-20">
-          <h2 className="text-2xl mb-5">Referees</h2>
+          <h2 className="text-2xl mb-5">{t('Referees')}</h2>
           <div
             className={classNames(
               collapsed && [
@@ -273,12 +279,12 @@ export const Statistics = ({
             <Table
               ref={tableRef}
               columns={[
-                { name: 'party', displayName: 'Trader' },
-                { name: 'joined', displayName: 'Date Joined' },
-                { name: 'volume', displayName: 'Volume (last 30 days)' },
+                { name: 'party', displayName: t('Trader') },
+                { name: 'joined', displayName: t('Date Joined') },
+                { name: 'volume', displayName: t('Volume (last 30 days)') },
                 {
                   name: 'commission',
-                  displayName: 'Commission earned (last 30 days)',
+                  displayName: t('Commission earned (last 30 days)'),
                 },
               ]}
               data={sortBy(

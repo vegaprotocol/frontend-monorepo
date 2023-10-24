@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/i18n';
 import { Table } from './table';
 
 export const HowItWorksTable = () => (
@@ -13,7 +14,9 @@ export const HowItWorksTable = () => (
             1
           </span>
         ),
-        step: 'Referrers generate a code assigned to their key via an on chain transaction',
+        step: t(
+          'Referrers generate a code assigned to their key via an on chain transaction'
+        ),
       },
       {
         number: (
@@ -21,7 +24,9 @@ export const HowItWorksTable = () => (
             2
           </span>
         ),
-        step: 'Anyone with the referral link can apply it to their key(s) of choice via an on chain transaction',
+        step: t(
+          'Anyone with the referral link can apply it to their key(s) of choice via an on chain transaction'
+        ),
       },
       {
         number: (
@@ -29,7 +34,9 @@ export const HowItWorksTable = () => (
             3
           </span>
         ),
-        step: 'Discounts are applied automatically during trading based on the key(s) used',
+        step: t(
+          'Discounts are applied automatically during trading based on the key(s) used'
+        ),
       },
       {
         number: (
@@ -37,7 +44,9 @@ export const HowItWorksTable = () => (
             4
           </span>
         ),
-        step: 'Referrers earn commission based on a percentage of the taker fees their referees pay',
+        step: t(
+          'Referrers earn commission based on a percentage of the taker fees their referees pay'
+        ),
       },
       {
         number: (
@@ -45,7 +54,9 @@ export const HowItWorksTable = () => (
             5
           </span>
         ),
-        step: 'The commission is taken from the infrastructure fee, maker fee, and liquidity provider fee, not from the referee',
+        step: t(
+          'The commission is taken from the infrastructure fee, maker fee, and liquidity provider fee, not from the referee'
+        ),
       },
     ]}
   ></Table>

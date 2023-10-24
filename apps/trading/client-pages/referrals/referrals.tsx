@@ -22,9 +22,9 @@ import { t } from '@vegaprotocol/i18n';
 const Nav = () => (
   <div className="flex justify-center border-b border-vega-cdark-500">
     <TabLink end to={Routes.REFERRALS}>
-      I want a code
+      {t('I want a code')}
     </TabLink>
-    <TabLink to={Routes.REFERRALS_APPLY_CODE}>I have a code</TabLink>
+    <TabLink to={Routes.REFERRALS_APPLY_CODE}>{t('I have a code')}</TabLink>
   </div>
 );
 
@@ -77,7 +77,7 @@ export const Referrals = () => {
           </div>
         ) : error ? (
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-            <p>Something went wrong</p>
+            <p>{t('Something went wrong')}</p>
             <span className="text-xs">{error.message}</span>
           </div>
         ) : (
@@ -88,7 +88,7 @@ export const Referrals = () => {
       <TiersContainer />
 
       <div className="mt-10 mb-5 text-center">
-        <h2 className="text-2xl">How it works</h2>
+        <h2 className="text-2xl">{t('How it works')}</h2>
       </div>
       <div className="md:w-[60%] mx-auto">
         <HowItWorksTable />
@@ -98,7 +98,8 @@ export const Referrals = () => {
             href={REFERRAL_DOCS_LINK}
             target="_blank"
           >
-            Read the terms <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
+            {t('Read the terms')}{' '}
+            <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
           </TradingAnchorButton>
         </div>
       </div>

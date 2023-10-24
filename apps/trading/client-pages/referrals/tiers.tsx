@@ -7,6 +7,7 @@ import { Tag } from './tag';
 import type { ComponentProps, ReactNode } from 'react';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { DApp, TOKEN_PROPOSALS, useLinks } from '@vegaprotocol/environment';
+import { t } from '@vegaprotocol/i18n';
 
 const Loading = ({ variant }: { variant: 'large' | 'inline' }) => (
   <div
@@ -61,7 +62,7 @@ const StakingTier = ({
         <Tag color={color[tier]}>Multiplier {referralRewardMultiplier}x</Tag>
         <h3 className="mt-1 mb-1 text-base">{label}</h3>
         <p className="text-sm text-vega-clight-100 dark:text-vega-cdark-100">
-          Stake a minimum of {minimumStakedTokens} $VEGA tokens
+          {t('Stake a minimum of')} {minimumStakedTokens} {t('$VEGA tokens')}
         </p>
       </div>
     </div>
@@ -81,9 +82,12 @@ export const TiersContainer = () => {
   if ((!loading && !details) || error) {
     return (
       <div className="text-base px-5 py-10 text-center">
-        We&apos;re sorry but we don&apos;t have an active referral programme
-        currently running. You can propose a new programme{' '}
-        <ExternalLink href={governanceLink(TOKEN_PROPOSALS)}>here</ExternalLink>
+        {t(
+          "We're sorry but we don't have an active referral programme currently running. You can propose a new programme"
+        )}{' '}
+        <ExternalLink href={governanceLink(TOKEN_PROPOSALS)}>
+          {t('here')}
+        </ExternalLink>
         .
       </div>
     );
@@ -93,10 +97,10 @@ export const TiersContainer = () => {
     <>
       {/* Benefit tiers */}
       <div className="flex flex-col items-baseline justify-between mt-10 mb-5">
-        <h2 className="text-2xl">Referral tiers</h2>
+        <h2 className="text-2xl">{t('Referral tiers')}</h2>
         {ends && (
           <span className="text-sm text-vega-clight-200 dark:text-vega-cdark-200">
-            Program ends: {ends}
+            {t('Program ends:')} {ends}
           </span>
         )}
       </div>
@@ -119,7 +123,7 @@ export const TiersContainer = () => {
 
       {/* Staking tiers */}
       <div className="flex flex-row items-baseline justify-between mb-5">
-        <h2 className="text-2xl">Staking multipliers</h2>
+        <h2 className="text-2xl">{t('Staking multipliers')}</h2>
       </div>
       <div className="mb-20 flex flex-col justify-items-stretch lg:flex-row gap-5">
         {loading || !stakingTiers || stakingTiers.length === 0 ? (
@@ -170,15 +174,15 @@ const TiersTable = ({
   return (
     <Table
       columns={[
-        { name: 'tierElement', displayName: 'Tier' },
+        { name: 'tierElement', displayName: t('Tier') },
         {
           name: 'commission',
-          displayName: 'Referrer commission',
-          tooltip: 'A percentage of commission earned by the referrer',
+          displayName: t('Referrer commission'),
+          tooltip: t('A percentage of commission earned by the referrer'),
         },
-        { name: 'discount', displayName: 'Referrer trading discount' },
-        { name: 'volume', displayName: 'Min. trading volume' },
-        { name: 'epochs', displayName: 'Min. epochs' },
+        { name: 'discount', displayName: t('Referrer trading discount') },
+        { name: 'volume', displayName: t('Min. trading volume') },
+        { name: 'epochs', displayName: t('Min. epochs') },
       ]}
       data={data.map((d) => ({
         ...d,
