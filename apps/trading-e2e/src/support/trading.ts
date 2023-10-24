@@ -30,11 +30,11 @@ import {
   blockStatisticsQuery,
   networkParamQuery,
   liquidityProvisionsQuery,
-  liquidityProviderFeeShareQuery,
   successorMarketQuery,
   parentMarketIdQuery,
   successorMarketIdsQuery,
   successorMarketProposalDetailsQuery,
+  liquidityProvidersQuery,
 } from '@vegaprotocol/mock';
 import type { PartialDeep } from 'type-fest';
 import type { MarketDataQuery, MarketsQuery } from '@vegaprotocol/markets';
@@ -162,11 +162,7 @@ const mockTradingPage = (
   aliasGQLQuery(req, 'Trades', tradesQuery());
   aliasGQLQuery(req, 'Chart', chartQuery());
   aliasGQLQuery(req, 'LiquidityProvisions', liquidityProvisionsQuery());
-  aliasGQLQuery(
-    req,
-    'LiquidityProviderFeeShare',
-    liquidityProviderFeeShareQuery
-  );
+  aliasGQLQuery(req, 'LiquidityProviders', liquidityProvidersQuery());
   aliasGQLQuery(req, 'Candles', candlesQuery());
   aliasGQLQuery(req, 'Withdrawals', withdrawalsQuery());
   aliasGQLQuery(req, 'NetworkParams', networkParamsQuery());

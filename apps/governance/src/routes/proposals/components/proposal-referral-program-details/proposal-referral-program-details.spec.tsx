@@ -128,9 +128,7 @@ describe('<ProposalReferralProgramDetails />', () => {
   it('should not render if there are no relevant fields', () => {
     const incompleteProposal = generateProposal({
       terms: {
-        change: {
-          __typename: 'UpdateReferralProgram',
-        },
+        change: {},
       },
     });
 

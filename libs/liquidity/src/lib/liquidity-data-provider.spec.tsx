@@ -1,7 +1,9 @@
-import type { LiquidityProviderFeeShare } from '@vegaprotocol/types';
 import { AccountType } from '@vegaprotocol/types';
 import { getLiquidityProvision } from './liquidity-data-provider';
-import type { LiquidityProvisionFieldsFragment } from './__generated__/MarketLiquidity';
+import type {
+  LiquidityProviderFieldsFragment,
+  LiquidityProvisionFieldsFragment,
+} from './__generated__/MarketLiquidity';
 
 const input = {
   liquidityProvisions: [
@@ -31,28 +33,32 @@ const input = {
       __typename: 'LiquidityProvision',
     } as LiquidityProvisionFieldsFragment,
   ],
-  liquidityFeeShare: [
+  liquidityProviders: [
     {
-      party: {
-        id: 'dde288688af2aeb5feb349dd72d3679a7a9be34c7375f6a4a48ef2f6140e7e59',
-        __typename: 'Party',
+      partyId:
+        'dde288688af2aeb5feb349dd72d3679a7a9be34c7375f6a4a48ef2f6140e7e59',
+      feeShare: {
+        equityLikeShare: '1',
+        averageEntryValuation: '12064118310408958216220.7224556301338111',
+        __typename: 'LiquidityProviderFeeShare',
       },
-      equityLikeShare: '1',
-      averageEntryValuation: '12064118310408958216220.7224556301338111',
-      __typename: 'LiquidityProviderFeeShare',
-    } as LiquidityProviderFeeShare,
+    } as LiquidityProviderFieldsFragment,
   ],
 };
 
 const result = [
   {
-    __typename: 'LiquidityProvision',
-    averageEntryValuation: '12064118310408958216220.7224556301338111',
+    __typename: undefined,
     balance: '1.8003328918633596575e+22',
     commitmentAmount: '18003328918633596575000',
     createdAt: '2022-12-16T09:28:29.071781Z',
-    equityLikeShare: '1',
+    feeShare: {
+      equityLikeShare: '1',
+      __typename: 'LiquidityProviderFeeShare',
+      averageEntryValuation: '12064118310408958216220.7224556301338111',
+    },
     fee: '0.001',
+    partyId: 'dde288688af2aeb5feb349dd72d3679a7a9be34c7375f6a4a48ef2f6140e7e59',
     party: {
       __typename: 'Party',
       accountsConnection: {
@@ -84,13 +90,13 @@ describe('getLiquidityProvision', () => {
   it('should return correct array when correct liquidity provision parameters are provided', () => {
     const data = getLiquidityProvision(
       input.liquidityProvisions,
-      input.liquidityFeeShare
+      input.liquidityProviders
     );
     expect(data).toStrictEqual(result);
   });
 
   it('should return empty array when no liquidity provision parameters are provided', () => {
-    const data = getLiquidityProvision([], input.liquidityFeeShare);
+    const data = getLiquidityProvision([], input.liquidityProviders);
     expect(data).toStrictEqual([]);
   });
 
