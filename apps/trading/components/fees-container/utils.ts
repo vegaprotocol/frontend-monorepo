@@ -1,8 +1,22 @@
+import { getUserLocale } from '@vegaprotocol/utils';
+
 /**
  * Convert a number between 0-1 into a percentage value between 0-100
+ *
+ * Not using formatNumberPercentage from vegaprotocol/utils as this
+ * returns a string and includes extra 0s on the end. We need these
+ * values in aggrid as numbers for sorting
  */
-export const formatPercentage = (num: number) =>
-  parseFloat((num * 100).toFixed(5));
+export const formatPercentage = (num: number) => {
+  const pct = num * 100;
+  const parts = pct.toString().split('.');
+  const dps = parts[1] ? parts[1].length : 0;
+  const formatter = new Intl.NumberFormat(getUserLocale(), {
+    minimumFractionDigits: dps,
+    maximumFractionDigits: dps,
+  });
+  return formatter.format(parseFloat(pct.toFixed(5)));
+};
 
 /**
  * Return the index of the benefit tier for volume discounts. A user
