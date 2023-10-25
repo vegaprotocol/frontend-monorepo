@@ -82,6 +82,8 @@ export const DocsLinks = VEGA_DOCS_URL
       VALIDATOR_SCORES_REWARDS: `${VEGA_DOCS_URL}/concepts/vega-chain/validator-scores-and-rewards`,
       MARKET_LIFECYCLE: `${VEGA_DOCS_URL}/concepts/trading-on-vega/market-lifecycle`,
       ETH_DATA_SOURCES: `${VEGA_DOCS_URL}/concepts/trading-on-vega/data-sources#ethereum-data-sources`,
+      ICEBERG_ORDERS: `${VEGA_DOCS_URL}/concepts/trading-on-vega/orders#iceberg-order`,
+      POST_REDUCE_ONLY: `${VEGA_DOCS_URL}/concepts/trading-on-vega/orders#conditional-order-parameters`,
     }
   : undefined;
 

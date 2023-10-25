@@ -8,20 +8,12 @@ export const LiquidationPrice = ({
   openVolume,
   collateralAvailable,
   decimalPlaces,
-  formatDecimals,
 }: {
   marketId: string;
   openVolume: string;
   collateralAvailable: string;
   decimalPlaces: number;
-  formatDecimals: number;
 }) => {
-  // NOTE!
-  //
-  // The estimate order query API gives us the liquidation price unformatted but expecting to be converted
-  // using asset decimal placse.
-  //
-  // We need to convert it with asset decimals, but display it formatted with market decimals precision until the API changes.
   const { data: currentData, previousData } = useEstimatePositionQuery({
     variables: {
       marketId,
@@ -38,21 +30,11 @@ export const LiquidationPrice = ({
     return <span>-</span>;
   }
 
-  let bestCase = '-';
-  let worstCase = '-';
+  let bestCase = data.estimatePosition.liquidation.bestCase.open_volume_only;
+  let worstCase = data.estimatePosition.liquidation.worstCase.open_volume_only;
 
-  bestCase =
-    data.estimatePosition?.liquidation?.bestCase.open_volume_only.replace(
-      /\..*/,
-      ''
-    );
-  worstCase =
-    data.estimatePosition?.liquidation?.worstCase.open_volume_only.replace(
-      /\..*/,
-      ''
-    );
-  worstCase = addDecimalsFormatNumber(worstCase, decimalPlaces, formatDecimals);
-  bestCase = addDecimalsFormatNumber(bestCase, decimalPlaces, formatDecimals);
+  worstCase = addDecimalsFormatNumber(worstCase, decimalPlaces, decimalPlaces);
+  bestCase = addDecimalsFormatNumber(bestCase, decimalPlaces, decimalPlaces);
 
   return (
     <Tooltip
