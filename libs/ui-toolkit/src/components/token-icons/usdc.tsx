@@ -1,4 +1,4 @@
-export const USDC = ({ size = 16 }: { size?: number }) => {
+export const USDc = ({ size = 16 }: { size?: number }) => {
   return (
     <svg width={size} height={size} viewBox="0 0 2000 2000">
       <path
