@@ -555,8 +555,8 @@ const TokenHeader = ({ asset }: { asset: AssetFieldsFragment }) => {
       <h3 className="text-lg">
         {asset.symbol}
         {isErc20 && (
-          <small className="ml-1">
-            ({truncateByChars(asset.source.contractAddress)})
+          <small className="ml-1 text-muted">
+            {truncateByChars(asset.source.contractAddress)}
           </small>
         )}
       </h3>
