@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { formatNumber } from '@vegaprotocol/utils';
+import BigNumber from 'bignumber.js';
 import { CurrentVolume, TradingFees } from './fees-container';
 import { formatPercentage, getAdjustedFee } from './utils';
 
@@ -12,6 +13,13 @@ describe('TradingFees', () => {
 
     const referralDiscount = 0.01;
     const volumeDiscount = 0.01;
+
+    const makerBigNum = new BigNumber(makerFee);
+    const infraBigNum = new BigNumber(infraFee);
+    const minLiqBigNum = new BigNumber(minLiqFee);
+    const maxLiqBigNum = new BigNumber(maxLiqFee);
+    const referralBigNum = new BigNumber(referralDiscount);
+    const volumeBigNum = new BigNumber(volumeDiscount);
 
     const props = {
       params: {
@@ -28,8 +36,13 @@ describe('TradingFees', () => {
     };
     render(<TradingFees {...props} />);
 
-    const minFee = formatPercentage(makerFee + infraFee + minLiqFee);
-    const maxFee = formatPercentage(makerFee + infraFee + maxLiqFee);
+    const minFee = formatPercentage(
+      makerBigNum.plus(infraFee).plus(minLiqFee).toNumber()
+    );
+    const maxFee = formatPercentage(
+      makerBigNum.plus(infraFee).plus(maxLiqFee).toNumber()
+    );
+
     expect(
       screen.getByText('Total fee before discount').nextElementSibling
     ).toHaveTextContent(`${minFee}%-${maxFee}%`);
@@ -42,15 +55,15 @@ describe('TradingFees', () => {
 
     const minAdjustedFees = formatPercentage(
       getAdjustedFee(
-        [makerFee, infraFee, minLiqFee],
-        [referralDiscount, volumeDiscount]
+        [makerBigNum, infraBigNum, minLiqBigNum],
+        [referralBigNum, volumeBigNum]
       )
     );
 
     const maxAdjustedFees = formatPercentage(
       getAdjustedFee(
-        [makerFee, infraFee, maxLiqFee],
-        [referralDiscount, volumeDiscount]
+        [makerBigNum, infraBigNum, maxLiqBigNum],
+        [referralBigNum, volumeBigNum]
       )
     );
 

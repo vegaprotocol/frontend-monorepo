@@ -1,4 +1,5 @@
 import { getUserLocale } from '@vegaprotocol/utils';
+import BigNumber from 'bignumber.js';
 
 /**
  * Convert a number between 0-1 into a percentage value between 0-100
@@ -8,12 +9,11 @@ import { getUserLocale } from '@vegaprotocol/utils';
  * values in aggrid as numbers for sorting
  */
 export const formatPercentage = (num: number) => {
-  const pct = num * 100;
-  const parts = pct.toString().split('.');
-  const dps = parts[1] ? parts[1].length : 0;
+  const pct = new BigNumber(num).times(100);
+  const dps = pct.decimalPlaces();
   const formatter = new Intl.NumberFormat(getUserLocale(), {
-    minimumFractionDigits: dps,
-    maximumFractionDigits: dps,
+    minimumFractionDigits: dps || 0,
+    maximumFractionDigits: dps || 0,
   });
   return formatter.format(parseFloat(pct.toFixed(5)));
 };
@@ -89,8 +89,13 @@ export const getReferralBenefitTier = (
  * Given a set of fees and a set of discounts return
  * the adjusted fee factor
  */
-export const getAdjustedFee = (fees: number[], discounts: number[]) => {
-  const totalFee = fees.reduce((sum, f) => sum + f, 0);
-  const totalDiscount = discounts.reduce((sum, d) => sum + d, 0);
-  return totalFee * Math.max(0, 1 - totalDiscount);
+export const getAdjustedFee = (fees: BigNumber[], discounts: BigNumber[]) => {
+  const totalFee = fees.reduce((sum, f) => sum.plus(f), new BigNumber(0));
+  const totalDiscount = discounts.reduce(
+    (sum, d) => sum.plus(d),
+    new BigNumber(0)
+  );
+  return totalFee
+    .times(BigNumber.max(0, new BigNumber(1).minus(totalDiscount)))
+    .toNumber();
 };

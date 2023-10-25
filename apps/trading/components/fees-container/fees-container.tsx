@@ -16,6 +16,7 @@ import { useVolumeStats } from './use-volume-stats';
 import { useReferralStats } from './use-referral-stats';
 import { formatPercentage, getAdjustedFee } from './utils';
 import { Table, Td, Th, THead, Tr } from './table';
+import BigNumber from 'bignumber.js';
 
 export const FeesContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -168,17 +169,20 @@ export const TradingFees = ({
   referralDiscount: number;
   volumeDiscount: number;
 }) => {
+  const referralDiscountBigNum = new BigNumber(referralDiscount);
+  const volumeDiscountBigNum = new BigNumber(volumeDiscount);
+
   // Show min and max liquidity fees from all markets
   const minLiq = minBy(markets, (m) => Number(m.fees.factors.liquidityFee));
   const maxLiq = maxBy(markets, (m) => Number(m.fees.factors.liquidityFee));
 
-  const total =
-    Number(params.market_fee_factors_makerFee) +
-    Number(params.market_fee_factors_infrastructureFee);
+  const total = new BigNumber(params.market_fee_factors_makerFee).plus(
+    new BigNumber(params.market_fee_factors_infrastructureFee)
+  );
 
   const adjustedTotal = getAdjustedFee(
     [total],
-    [referralDiscount, volumeDiscount]
+    [referralDiscountBigNum, volumeDiscountBigNum]
   );
 
   let minTotal;
@@ -188,20 +192,20 @@ export const TradingFees = ({
   let maxAdjustedTotal;
 
   if (minLiq && maxLiq) {
-    const minLiqFee = Number(minLiq.fees.factors.liquidityFee);
-    const maxLiqFee = Number(maxLiq.fees.factors.liquidityFee);
+    const minLiqFee = new BigNumber(minLiq.fees.factors.liquidityFee);
+    const maxLiqFee = new BigNumber(maxLiq.fees.factors.liquidityFee);
 
-    minTotal = total + minLiqFee;
-    maxTotal = total + maxLiqFee;
+    minTotal = total.plus(minLiqFee);
+    maxTotal = total.plus(maxLiqFee);
 
     minAdjustedTotal = getAdjustedFee(
       [total, minLiqFee],
-      [referralDiscount, volumeDiscount]
+      [referralDiscountBigNum, volumeDiscountBigNum]
     );
 
     maxAdjustedTotal = getAdjustedFee(
       [total, maxLiqFee],
-      [referralDiscount, volumeDiscount]
+      [referralDiscountBigNum, volumeDiscountBigNum]
     );
   }
 
@@ -223,10 +227,10 @@ export const TradingFees = ({
               </th>
               <td className="text-right text-default">
                 {minTotal !== undefined && maxTotal !== undefined
-                  ? `${formatPercentage(minTotal)}%-${formatPercentage(
-                      maxTotal
-                    )}%`
-                  : `${formatPercentage(total)}%`}
+                  ? `${formatPercentage(
+                      minTotal.toNumber()
+                    )}%-${formatPercentage(maxTotal.toNumber())}%`
+                  : `${formatPercentage(total.toNumber())}%`}
               </td>
             </tr>
             <tr>

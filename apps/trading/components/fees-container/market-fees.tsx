@@ -4,6 +4,7 @@ import { AgGrid } from '@vegaprotocol/datagrid';
 import { t } from '@vegaprotocol/i18n';
 import { formatPercentage, getAdjustedFee } from './utils';
 import { MarketCodeCell } from '../../client-pages/markets/market-code-cell';
+import BigNumber from 'bignumber.js';
 
 const feesTableColumnDefs = [
   { field: 'code', cellRenderer: 'MarketCodeCell' },
@@ -51,22 +52,23 @@ export const MarketFees = ({
   volumeDiscount: number;
 }) => {
   const rows = compact(markets || []).map((m) => {
-    const infraFee = Number(m.fees.factors.infrastructureFee);
-    const makerFee = Number(m.fees.factors.makerFee);
-    const liquidityFee = Number(m.fees.factors.liquidityFee);
-    const totalFee = infraFee + makerFee + liquidityFee;
+    const infraFee = new BigNumber(m.fees.factors.infrastructureFee);
+    const makerFee = new BigNumber(m.fees.factors.makerFee);
+    const liquidityFee = new BigNumber(m.fees.factors.liquidityFee);
+    const totalFee = infraFee.plus(makerFee).plus(liquidityFee);
+
     const feeAfterDiscount = getAdjustedFee(
       [infraFee, makerFee, liquidityFee],
-      [referralDiscount, volumeDiscount]
+      [new BigNumber(referralDiscount), new BigNumber(volumeDiscount)]
     );
 
     return {
       code: m.tradableInstrument.instrument.code,
       productType: m.tradableInstrument.instrument.product.__typename,
-      infraFee: formatPercentage(infraFee),
-      makerFee: formatPercentage(makerFee),
-      liquidityFee: formatPercentage(liquidityFee),
-      totalFee: formatPercentage(totalFee),
+      infraFee: formatPercentage(infraFee.toNumber()),
+      makerFee: formatPercentage(makerFee.toNumber()),
+      liquidityFee: formatPercentage(liquidityFee.toNumber()),
+      totalFee: formatPercentage(totalFee.toNumber()),
       feeAfterDiscount: formatPercentage(feeAfterDiscount),
       parentMarketID: m.parentMarketID,
       successorMarketID: m.successorMarketID,
