@@ -273,7 +273,9 @@ export const DealTicket = ({
 
   const assetSymbol = getAsset(market).symbol;
 
-  const assetUnit = getQuoteName(market);
+  const assetUnit = getBaseQuoteUnit(
+    market.tradableInstrument.instrument.metadata.tags
+  );
 
   const summaryError = useMemo(() => {
     if (!pubKey) {
