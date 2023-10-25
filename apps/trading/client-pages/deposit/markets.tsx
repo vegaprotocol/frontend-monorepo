@@ -18,7 +18,7 @@ export const Markets = ({
   return (
     <div>
       <p className="mb-2 text-xs text-muted">{t('Currently traded in')}</p>
-      <div className="flex gap-4">
+      <div className="grid grid-cols-4 gap-1 md:gap-4">
         {markets.length ? (
           markets.map((m) => {
             return <MarketCard key={m.id} market={m} />;
@@ -43,29 +43,32 @@ const MarketCard = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
   );
 
   return (
-    <div className="flex flex-col w-1/4 p-4 rounded-lg gap-2 bg-vega-clight-600 dark:bg-vega-cdark-600">
-      <div>
+    <div className="flex flex-col p-2 rounded-lg md:p-4 col-span-2 lg:col-span-1 gap-1 lg:gap-2 bg-vega-clight-600 dark:bg-vega-cdark-600">
+      <div className="text-sm lg:text-base">
         <h3 className="leading-none">
           {market.tradableInstrument.instrument.code}
         </h3>
         <p className="text-muted">Vol {volume}</p>
       </div>
-      <div className="flex items-end justify-between gap-8">
+      <div className="items-end justify-between hidden md:flex gap-2 lg:gap-8">
         <div>
           {market.data?.markPrice && (
             <>
-              <p className="leading-none">
+              <p className="text-sm leading-none lg:text-base">
                 {addDecimalsFormatNumber(
                   market.data.markPrice,
                   market.decimalPlaces
                 )}
               </p>
               <p
-                className={classNames('text-sm leading-tight align-baseline', {
-                  'text-market-green': change.isGreaterThan(0),
-                  'text-market-red': change.isLessThan(0),
-                  'text-muted': change.isZero(),
-                })}
+                className={classNames(
+                  'text-xs lg:text-sm leading-tight align-baseline',
+                  {
+                    'text-market-green': change.isGreaterThan(0),
+                    'text-market-red': change.isLessThan(0),
+                    'text-muted': change.isZero(),
+                  }
+                )}
               >
                 {formatNumberPercentage(change, 2)}
               </p>
