@@ -107,7 +107,7 @@ export const CandlesMenu = () => {
         trigger={
           <TradingDropdownTrigger className={triggerClasses}>
             <TradingButton {...triggerButtonProps}>
-              {t('Overlays')}
+              {t('Indicators')}
             </TradingButton>
           </TradingDropdownTrigger>
         }
@@ -132,18 +132,6 @@ export const CandlesMenu = () => {
               <TradingDropdownItemIndicator />
             </TradingDropdownCheckboxItem>
           ))}
-        </TradingDropdownContent>
-      </TradingDropdown>
-      <TradingDropdown
-        trigger={
-          <TradingDropdownTrigger className={triggerClasses}>
-            <TradingButton {...triggerButtonProps}>
-              {t('Studies')}
-            </TradingButton>
-          </TradingDropdownTrigger>
-        }
-      >
-        <TradingDropdownContent align={contentAlign}>
           {Object.values(Study).map((study) => (
             <TradingDropdownCheckboxItem
               key={study}
