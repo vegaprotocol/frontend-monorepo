@@ -32,7 +32,7 @@ const WithdrawalsIndicator = () => {
     return null;
   }
   return (
-    <span className="bg-vega-clight-500 dark:bg-vega-cdark-500 text-default rounded p-1 leading-none">
+    <span className="p-1 leading-none rounded bg-vega-clight-500 dark:bg-vega-cdark-500 text-default">
       {ready.length}
     </span>
   );
@@ -128,7 +128,7 @@ interface PortfolioGridChildProps {
 const PortfolioGridChild = ({ children }: PortfolioGridChildProps) => {
   return (
     <section className="h-full p-1">
-      <div className="border border-default h-full rounded-sm">{children}</div>
+      <div className="h-full border rounded-sm border-default">{children}</div>
     </section>
   );
 };

@@ -67,6 +67,7 @@ describe('Navbar', () => {
       [`/markets/${marketId}`, 'Trading'],
       ['/portfolio', 'Portfolio'],
       ['/referrals', 'Referrals'],
+      ['/fees', 'Fees'],
       [expect.stringContaining('governance'), 'Governance'],
     ];
 
@@ -100,6 +101,7 @@ describe('Navbar', () => {
       [`/markets/${marketId}`, 'Trading'],
       ['/portfolio', 'Portfolio'],
       ['/referrals', 'Referrals'],
+      ['/fees', 'Fees'],
       [expect.stringContaining('governance'), 'Governance'],
     ];
     const links = menu.getAllByRole('link');
