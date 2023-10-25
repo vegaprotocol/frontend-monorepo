@@ -48,11 +48,11 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     cy.get('@markets').then((markets) => {
       cy.wrap(markets[0]).as('market');
     });
-    cy.setOnBoardingViewed();
     cy.visit('/#/portfolio');
   });
 
   it('can deposit', function () {
+    cy.setOnBoardingViewed();
     cy.visit('/#/portfolio');
     cy.get('[data-testid="pathname-/portfolio"]').should('exist');
 
@@ -183,7 +183,6 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     cy.get('@markets').then((markets) => {
       cy.wrap(markets[0]).as('market');
     });
-    cy.setOnBoardingViewed();
     cy.setVegaWallet();
   });
 
