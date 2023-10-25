@@ -26,8 +26,6 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const setAssociatedBalances = useRefreshAssociatedBalances();
   const [balancesLoaded, setBalancesLoaded] = React.useState(false);
 
-  const loaded = balancesLoaded;
-
   React.useEffect(() => {
     const run = async () => {
       try {
@@ -150,7 +148,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
     );
   }
 
-  if (!loaded) {
+  if (!balancesLoaded) {
     return (
       <Splash>
         <SplashLoader />
