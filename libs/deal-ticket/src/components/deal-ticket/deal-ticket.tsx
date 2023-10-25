@@ -24,6 +24,7 @@ import {
   Tooltip,
   TradingButton as Button,
   Pill,
+  ExternalLink,
 } from '@vegaprotocol/ui-toolkit';
 
 import { useOpenVolume } from '@vegaprotocol/positions';
@@ -77,6 +78,7 @@ import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 import noop from 'lodash/noop';
 import { isNonPersistentOrder } from '../../utils/time-in-force-persistance';
 import { KeyValue } from './key-value';
+import { DocsLinks } from '@vegaprotocol/environment';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -548,15 +550,20 @@ export const DealTicket = ({
           render={({ field }) => (
             <Tooltip
               description={
-                <span>
-                  {disablePostOnlyCheckbox
-                    ? t(
-                        '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
-                      )
-                    : t(
-                        '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
-                      )}
-                </span>
+                <>
+                  <span>
+                    {disablePostOnlyCheckbox
+                      ? t(
+                          '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
+                        )
+                      : t(
+                          '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
+                        )}
+                  </span>{' '}
+                  <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
+                    {t('Find out more')}
+                  </ExternalLink>
+                </>
               }
             >
               <div>
@@ -580,13 +587,18 @@ export const DealTicket = ({
           render={({ field }) => (
             <Tooltip
               description={
-                <span>
-                  {disableReduceOnlyCheckbox
-                    ? t(
-                        '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
-                      )
-                    : t(REDUCE_ONLY_TOOLTIP)}
-                </span>
+                <>
+                  <span>
+                    {disableReduceOnlyCheckbox
+                      ? t(
+                          '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
+                        )
+                      : t(REDUCE_ONLY_TOOLTIP)}
+                  </span>{' '}
+                  <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
+                    {t('Find out more')}
+                  </ExternalLink>
+                </>
               }
             >
               <div>
@@ -618,7 +630,10 @@ export const DealTicket = ({
                       {t(`Trade only a fraction of the order size at once.
                             After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away.
                             For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each.
-                            Note that the full volume of the order is not hidden and is still reflected in the order book.`)}
+                            Note that the full volume of the order is not hidden and is still reflected in the order book.`)}{' '}
+                      <ExternalLink href={DocsLinks?.ICEBERG_ORDERS}>
+                        {t('Find out more')}
+                      </ExternalLink>{' '}
                     </p>
                   }
                 >
