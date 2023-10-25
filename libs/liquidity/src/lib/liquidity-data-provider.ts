@@ -141,8 +141,19 @@ export const getLiquidityProvision = (
       const bondAccounts = accounts?.filter(
         (a) => a?.type === Schema.AccountType.ACCOUNT_TYPE_BOND
       );
+      const feeAccounts = accounts?.filter(
+        (a) => a?.type === Schema.AccountType.ACCOUNT_TYPE_LP_LIQUIDITY_FEES
+      );
       const balance =
         bondAccounts
+          ?.reduce(
+            (acc, a) => acc.plus(new BigNumber(a.balance ?? 0)),
+            new BigNumber(0)
+          )
+          .toString() || '0';
+
+      const earmarkedFees =
+        feeAccounts
           ?.reduce(
             (acc, a) => acc.plus(new BigNumber(a.balance ?? 0)),
             new BigNumber(0)
@@ -152,6 +163,7 @@ export const getLiquidityProvision = (
         ...lp,
         ...lpObj,
         balance,
+        earmarkedFees,
         __typename: undefined,
       };
     });

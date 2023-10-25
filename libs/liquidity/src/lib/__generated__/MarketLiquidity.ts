@@ -30,7 +30,7 @@ export const LiquidityProvisionFieldsFragmentDoc = gql`
   id
   party {
     id
-    accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {
+    accountsConnection(marketId: $marketId) {
       edges {
         node {
           type

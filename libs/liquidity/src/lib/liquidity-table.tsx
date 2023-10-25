@@ -192,6 +192,14 @@ export const LiquidityTable = ({
             tooltipValueGetter: stakeToCcyVolumeFormatter,
           },
           {
+            headerName: t('Live earmarked fees'),
+            field: 'earmarkedFees',
+            type: 'rightAligned',
+            headerTooltip: t(``),
+            valueFormatter: stakeToCcyVolumeQuantumFormatter,
+            tooltipValueGetter: stakeToCcyVolumeFormatter,
+          },
+          {
             headerName: t(`Live time fraction on book`),
             field: 'sla.currentEpochFractionOfTimeOnBook',
             type: 'rightAligned',
