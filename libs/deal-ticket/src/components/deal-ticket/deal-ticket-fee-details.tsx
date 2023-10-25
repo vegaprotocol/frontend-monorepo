@@ -214,7 +214,11 @@ export const DealTicketMarginDetails = ({
           quantum
         )}
         symbol={assetSymbol}
-        labelDescription={DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT(assetSymbol)}
+        labelDescription={t(
+          'DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT',
+          DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT,
+          { assetSymbol }
+        )}
       />
     );
     projectedMargin = (
@@ -231,7 +235,10 @@ export const DealTicketMarginDetails = ({
           quantum
         )}
         symbol={assetSymbol}
-        labelDescription={EST_TOTAL_MARGIN_TOOLTIP_TEXT}
+        labelDescription={t(
+          'EST_TOTAL_MARGIN_TOOLTIP_TEXT',
+          EST_TOTAL_MARGIN_TOOLTIP_TEXT
+        )}
       />
     );
   }
@@ -310,7 +317,13 @@ export const DealTicketMarginDetails = ({
                 className="flex items-center justify-between w-full gap-2"
               >
                 <div className="flex items-center text-left gap-1">
-                  <Tooltip description={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}>
+                  <Tooltip
+                    description={t(
+                      'MARGIN_DIFF_TOOLTIP_TEXT',
+                      MARGIN_DIFF_TOOLTIP_TEXT,
+                      { assetSymbol }
+                    )}
+                  >
                     <span className="text-muted">{t('Margin required')}</span>
                   </Tooltip>
 
@@ -349,15 +362,27 @@ export const DealTicketMarginDetails = ({
                 quantum
               )}
               symbol={assetSymbol}
-              labelDescription={TOTAL_MARGIN_AVAILABLE(
-                formatValue(generalAccountBalance, assetDecimals, quantum),
-                formatValue(marginAccountBalance, assetDecimals, quantum),
-                formatValue(
-                  currentMargins?.maintenanceLevel,
-                  assetDecimals,
-                  quantum
-                ),
-                assetSymbol
+              labelDescription={t(
+                'TOTAL_MARGIN_AVAILABLE',
+                TOTAL_MARGIN_AVAILABLE,
+                {
+                  generalAccountBalance: formatValue(
+                    generalAccountBalance,
+                    assetDecimals,
+                    quantum
+                  ),
+                  marginAccountBalance: formatValue(
+                    marginAccountBalance,
+                    assetDecimals,
+                    quantum
+                  ),
+                  marginMaintenance: formatValue(
+                    currentMargins?.maintenanceLevel,
+                    assetDecimals,
+                    quantum
+                  ),
+                  assetSymbol,
+                }
               )}
             />
             {deductionFromCollateral}
@@ -371,7 +396,10 @@ export const DealTicketMarginDetails = ({
               }
               value={formatValue(marginAccountBalance, assetDecimals)}
               symbol={assetSymbol}
-              labelDescription={MARGIN_ACCOUNT_TOOLTIP_TEXT}
+              labelDescription={t(
+                'MARGIN_ACCOUNT_TOOLTIP_TEXT',
+                MARGIN_ACCOUNT_TOOLTIP_TEXT
+              )}
               formattedValue={formatValue(
                 marginAccountBalance,
                 assetDecimals,
@@ -389,7 +417,12 @@ export const DealTicketMarginDetails = ({
         symbol={quoteName}
         labelDescription={
           <>
-            <span>{LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT}</span>{' '}
+            <span>
+              {t(
+                'LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT',
+                LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT
+              )}
+            </span>{' '}
             <span>
               {t('For full details please see ')}
               <ExternalLink

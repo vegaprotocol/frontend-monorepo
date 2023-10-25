@@ -3,7 +3,7 @@ import {
   isStopOrderType,
   useDealTicketFormValues,
 } from '../../hooks/use-form-values';
-import { StopOrder } from './StopOrder';
+import { StopOrder } from './deal-ticket-stop-order';
 import {
   useStaticMarketData,
   useMarket,

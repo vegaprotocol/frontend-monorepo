@@ -5,6 +5,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { formatForInput } from '@vegaprotocol/utils';
 import { useRef } from 'react';
+import { useT } from '../../use-t';
 
 interface ExpirySelectorProps {
   value?: string;

@@ -558,7 +558,11 @@ const NotionalAndFees = ({
         value={formatValue(notionalSize, market.decimalPlaces)}
         formattedValue={formatValue(notionalSize, market.decimalPlaces)}
         symbol={quoteName}
-        labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName)}
+        labelDescription={t(
+          'NOTIONAL_SIZE_TOOLTIP_TEXT',
+          NOTIONAL_SIZE_TOOLTIP_TEXT,
+          { quoteName }
+        )}
       />
       <DealTicketFeeDetails
         order={{

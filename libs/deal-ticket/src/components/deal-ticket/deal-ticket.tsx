@@ -8,7 +8,7 @@ import {
 } from './deal-ticket-fee-details';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
-import { TimeInForceSelector } from './TimeInForceSelector';
+import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import { type OrderSubmission } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -44,7 +44,6 @@ import {
 } from '@vegaprotocol/markets';
 import {
   validateExpiration,
-  validateMarketState,
   validateMarketTradingMode,
   validateTimeInForce,
   validateType,
@@ -288,7 +287,28 @@ export const DealTicket = ({
       };
     }
 
-    const marketStateError = validateMarketState(marketState);
+    let marketStateError: true | string = true;
+
+    if (
+      [
+        Schema.MarketState.STATE_SETTLED,
+        Schema.MarketState.STATE_REJECTED,
+        Schema.MarketState.STATE_TRADING_TERMINATED,
+        Schema.MarketState.STATE_CANCELLED,
+        Schema.MarketState.STATE_CLOSED,
+      ].includes(marketState)
+    ) {
+      marketStateError = t(
+        `This market is {{marketState}} and not accepting orders`,
+        {
+          marketState:
+            marketState === Schema.MarketState.STATE_TRADING_TERMINATED
+              ? t('terminated')
+              : t(Schema.MarketStateMapping[marketState]).toLowerCase(),
+        }
+      );
+    }
+
     if (marketStateError !== true) {
       return {
         message: marketStateError,
@@ -484,7 +504,11 @@ export const DealTicket = ({
           value={formatValue(notionalSize, market.decimalPlaces)}
           formattedValue={formatValue(notionalSize, market.decimalPlaces)}
           symbol={quoteName}
-          labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName)}
+          labelDescription={t(
+            'NOTIONAL_SIZE_TOOLTIP_TEXT',
+            NOTIONAL_SIZE_TOOLTIP_TEXT,
+            { quoteName }
+          )}
         />
         <DealTicketFeeDetails
           order={
@@ -508,7 +532,7 @@ export const DealTicket = ({
           <TimeInForceSelector
             value={field.value}
             orderType={type}
-            onSelect={(value) => {
+            onSelect={(value: Schema.OrderTimeInForce) => {
               // If GTT is selected and no expiresAt time is set, or its
               // behind current time then reset the value to current time
               const now = Date.now();

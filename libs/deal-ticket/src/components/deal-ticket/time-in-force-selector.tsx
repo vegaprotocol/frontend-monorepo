@@ -10,6 +10,7 @@ import { timeInForceLabel } from '@vegaprotocol/orders';
 import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
 import type { Market, StaticMarketData } from '@vegaprotocol/markets';
+import { useT } from '../../use-t';
 
 interface TimeInForceSelectorProps {
   value: Schema.OrderTimeInForce;
