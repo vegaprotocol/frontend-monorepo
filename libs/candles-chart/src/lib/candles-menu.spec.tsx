@@ -39,7 +39,7 @@ describe('CandlesMenu', () => {
     );
   });
 
-  it.each(Object.values(Study))('can set %s overlay', async (study) => {
+  it.each(Object.values(Study))('can set %s study', async (study) => {
     render(<CandlesMenu />);
 
     await openDropdown();
