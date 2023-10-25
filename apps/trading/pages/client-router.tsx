@@ -55,10 +55,14 @@ export const routerConfig: RouteObject[] = compact([
   FLAGS.REFERRALS
     ? {
         path: AppRoutes.REFERRALS,
-        element: <LayoutWithSky />,
+        element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
         children: [
           {
-            element: <Referrals />,
+            element: (
+              <LayoutWithSky>
+                <Referrals />
+              </LayoutWithSky>
+            ),
             children: [
               {
                 index: true,
