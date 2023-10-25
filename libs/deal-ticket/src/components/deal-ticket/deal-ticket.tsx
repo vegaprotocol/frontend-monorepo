@@ -275,7 +275,9 @@ export const DealTicket = ({
 
   const assetSymbol = getAsset(market).symbol;
 
-  const assetUnit = getQuoteName(market);
+  const baseQuote = getBaseQuoteUnit(
+    market.tradableInstrument.instrument.metadata.tags
+  );
 
   const summaryError = useMemo(() => {
     if (!pubKey) {
@@ -414,7 +416,7 @@ export const DealTicket = ({
                 id="order-size"
                 className="w-full"
                 type="number"
-                appendElement={assetUnit && <Pill size="xs">{assetUnit}</Pill>}
+                appendElement={baseQuote && <Pill size="xs">{baseQuote}</Pill>}
                 step={sizeStep}
                 min={sizeStep}
                 data-testid="order-size"
@@ -683,7 +685,7 @@ export const DealTicket = ({
         subLabel={`${formatValue(
           normalizedOrder.size,
           market.positionDecimalPlaces
-        )} ${assetUnit} @ ${
+        )} ${baseQuote} @ ${
           type === Schema.OrderType.TYPE_MARKET
             ? 'market'
             : `${formatValue(
