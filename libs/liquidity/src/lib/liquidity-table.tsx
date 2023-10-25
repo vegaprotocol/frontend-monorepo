@@ -192,7 +192,7 @@ export const LiquidityTable = ({
             tooltipValueGetter: stakeToCcyVolumeFormatter,
           },
           {
-            headerName: t('Live earmarked fees'),
+            headerName: t('Fees accrued this epoch'),
             field: 'earmarkedFees',
             type: 'rightAligned',
             headerTooltip: t(``),
