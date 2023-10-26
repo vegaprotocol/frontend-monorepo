@@ -5,11 +5,21 @@ import isEqual from 'lodash/isEqual';
 import React from 'react';
 
 function colorByChange(a: number, b: number) {
-  return a === b
-    ? 'stroke-black/40 dark:stroke-white/40'
-    : a < b
-    ? 'stroke-market-green-600 dark:stroke-market-green'
-    : 'stroke-market-red dark:stroke-market-red';
+  if (a < b) {
+    return 'stroke-market-green-600 dark:stroke-market-green';
+  } else if (a > b) {
+    return 'stroke-market-red dark:stroke-market-red';
+  }
+  return 'stroke-black/40 dark:stroke-white/40';
+}
+
+function shadedColor(a: number, b: number) {
+  if (a < b) {
+    return 'fill-market-green-600 dark:fill-market-green';
+  } else if (a > b) {
+    return 'fill-market-red-600 dark:fill-market-red';
+  }
+  return 'fill-black dark:fill-white';
 }
 
 export interface SparklineProps {
@@ -18,49 +28,33 @@ export interface SparklineProps {
   height?: number;
   points?: number;
   className?: string;
-  muted?: boolean;
 }
 
 export const SparklineView = ({
   data,
   width = 60,
   height = 15,
-  points = 25,
-  muted = false,
+  points = 24,
   className,
 }: SparklineProps) => {
-  // How many points are missing. If market is 12 hours old the 25 - 12
-  const preMarketLength = points - data.length;
-
-  // Create two dimensional array for sparkline points [x, y]
-  const marketData: [number, number][] = data.map((d, i) => [
-    preMarketLength + i,
-    d,
-  ]);
-  // Empty two dimensional array for gray, 'no data' line
-  let preMarketData: [number, number][] = [];
-
   // Get the extent for our y value
-  const [min, max] = extent(marketData, (d) => d[1]);
+  const [min, max] = extent(data, (d) => d);
 
   if (typeof min !== 'number' || typeof max !== 'number') {
     return null;
   }
 
-  // Create a second set of data to render a gray line for any
-  // missing points if the market is less than 24 hours old
-  if (marketData.length < points) {
-    // Populate preMarketData with the average of our extents
-    // so that the line renders centered vertically
-    const fillValue = (min + max) / 2;
-    preMarketData = new Array(points - marketData.length)
-      .fill(fillValue)
-      .map((d: number, i) => [i, d] as [number, number]);
+  const midValue = (min + max) / 2;
 
-    // Add the first point of or market data so that the two
-    // lines join up
-    preMarketData.push(marketData[0] as [number, number]);
-  }
+  // Market may be less than 24hr old so padd the data array
+  // with values that is the mid value (avg of min and max).
+  // This will rendera  horizontal line until the real data shifts the line
+  const padCount = points - data.length;
+  const padArr = new Array(padCount).fill(midValue);
+
+  const lineData: [number, number][] = [...padArr, ...data].map((d, i) => {
+    return [i, d];
+  });
 
   const xScale = scaleLinear().domain([0, points]).range([0, width]);
   const yScale = scaleLinear().domain([min, max]).range([height, 0]);
@@ -74,25 +68,16 @@ export const SparklineView = ({
     .y0(height)
     .y1((d) => yScale(d[1]));
 
-  // Get the color of the marketData line
-  const [firstVal, lastVal] = [data[0], data[data.length - 1]];
-  const strokeClassName = muted
-    ? data.length >= 24
-      ? colorByChange(firstVal, lastVal)
-      : 'stroke-black/40 dark:stroke-white/40'
-    : colorByChange(firstVal, lastVal);
+  const firstVal = data[0];
+  const lastVal = data[data.length - 1];
+
+  // Get the color of the marketData line depending on market movement
+  const strokeClassName = colorByChange(firstVal, lastVal);
+  const areaClassName = shadedColor(firstVal, lastVal);
 
   // Create paths
-  const preMarketCreationPath = lineSeries(preMarketData);
-  const mainPath = lineSeries(marketData);
-  const shadedArea = areaSeries(marketData);
-  const pathProps = {
-    'data-testid': 'sparkline-path',
-    className: `[vector-effect:non-scaling-stroke] ${strokeClassName}`,
-    stroke: 'strokeCurrent',
-    strokeWidth: 1,
-    fill: 'transparent',
-  };
+  const mainPath = lineSeries(lineData);
+  const shadedArea = areaSeries(lineData);
 
   return (
     <svg
@@ -100,15 +85,24 @@ export const SparklineView = ({
       className={className}
       width={width}
       height={height}
-      viewBox="0 0 100 100"
+      viewBox={`0 0 ${width} ${height}`}
       preserveAspectRatio="none"
     >
-      {preMarketCreationPath && (
-        <path {...pathProps} d={preMarketCreationPath} />
+      {mainPath && (
+        <path
+          d={mainPath}
+          data-testid="sparkline-path"
+          className={`[vector-effect:non-scaling-stroke] fill-transparent ${strokeClassName}`}
+          strokeWidth={1}
+        />
       )}
-      {mainPath && <path {...pathProps} d={mainPath} />}
       {shadedArea && (
-        <path fill="rgba(0,255,0,0.25)" stroke="none" d={shadedArea} />
+        <path
+          className={areaClassName}
+          fillOpacity={0.2}
+          stroke="none"
+          d={shadedArea}
+        />
       )}
     </svg>
   );
