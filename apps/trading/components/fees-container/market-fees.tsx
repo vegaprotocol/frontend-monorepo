@@ -5,6 +5,8 @@ import { t } from '@vegaprotocol/i18n';
 import { formatPercentage, getAdjustedFee } from './utils';
 import { MarketCodeCell } from '../../client-pages/markets/market-code-cell';
 import BigNumber from 'bignumber.js';
+import { useNavigateWithMeta } from '../../lib/hooks/use-market-click-handler';
+import { Links } from '../../lib/links';
 
 const feesTableColumnDefs = [
   { field: 'code', cellRenderer: 'MarketCodeCell' },
@@ -51,6 +53,8 @@ export const MarketFees = ({
   referralDiscount: number;
   volumeDiscount: number;
 }) => {
+  const navigateWithMeta = useNavigateWithMeta();
+
   const rows = compact(markets || []).map((m) => {
     const infraFee = new BigNumber(m.fees.factors.infrastructureFee);
     const makerFee = new BigNumber(m.fees.factors.makerFee);
@@ -63,6 +67,7 @@ export const MarketFees = ({
     );
 
     return {
+      id: m.id,
       code: m.tradableInstrument.instrument.code,
       productType: m.tradableInstrument.instrument.product.__typename,
       infraFee: formatPercentage(infraFee.toNumber()),
@@ -80,10 +85,19 @@ export const MarketFees = ({
       <AgGrid
         columnDefs={feesTableColumnDefs}
         rowData={rows}
+        getRowId={({ data }) => data.id}
         defaultColDef={feesTableDefaultColDef}
         domLayout="autoHeight"
         components={components}
         rowHeight={45}
+        rowClass="cursor-pointer"
+        onRowClicked={({ data, event }) => {
+          navigateWithMeta(
+            Links.MARKET(data.id),
+            // @ts-ignore metaKey and ctrlKey exist
+            event.metaKey || event.ctrlKey
+          );
+        }}
       />
     </div>
   );
