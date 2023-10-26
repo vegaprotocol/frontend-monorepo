@@ -34,13 +34,11 @@ import type {
 } from './__generated__/Candles';
 import type { Subscription } from 'zen-observable-ts';
 import * as Schema from '@vegaprotocol/types';
-import { OrdersDocument, OrdersUpdateDocument } from '@vegaprotocol/orders';
+import { OrdersUpdateDocument } from '@vegaprotocol/orders';
 
 import type {
   OrderFieldsFragment,
   OrderUpdateFieldsFragment,
-  OrdersQuery,
-  OrdersQueryVariables,
   OrdersUpdateSubscription,
   OrdersUpdateSubscriptionVariables,
 } from '@vegaprotocol/orders';
@@ -67,10 +65,11 @@ const defaultConfig = {
   ],
 };
 
-const liveOnlyOrderStatuses = [
+const ACTIVE_ORDER_STATUSES = [
   Schema.OrderStatus.STATUS_ACTIVE,
   Schema.OrderStatus.STATUS_PARKED,
 ];
+const ORDER_MAX = 5;
 
 /**
  * A data access object that provides access to the Vega GraphQL API.
@@ -81,10 +80,11 @@ export class VegaDataSource implements DataSource {
   partyId: null | string;
   _decimalPlaces = 0;
   _positionDecimalPlaces = 0;
-  orders: (OrderFieldsFragment | OrderUpdateFieldsFragment)[] = [];
+  orders: OrderUpdateFieldsFragment[] = [];
 
   candlesSub: Subscription | null = null;
   ordersSub: Subscription | null = null;
+  showOrders = false;
 
   /**
    * Indicates the number of decimal places that an integer must be shifted by in order to get a correct
@@ -111,11 +111,13 @@ export class VegaDataSource implements DataSource {
   constructor(
     client: ApolloClient<object>,
     marketId: string,
-    partyId: null | string = null
+    partyId: null | string = null,
+    showOrders = false
   ) {
     this.client = client;
     this.marketId = marketId;
     this.partyId = partyId;
+    this.showOrders = showOrders;
   }
 
   /**
@@ -258,71 +260,52 @@ export class VegaDataSource implements DataSource {
     if (this.partyId === null) {
       return;
     }
-
-    const { data } = await this.client.query<OrdersQuery, OrdersQueryVariables>(
-      {
-        query: OrdersDocument,
-        variables: {
-          marketIds: this.marketId,
-          partyId: this.partyId,
-        },
-        fetchPolicy: 'no-cache',
-      }
-    );
-
-    if (data.party?.ordersConnection?.edges) {
-      this.orders = data.party.ordersConnection.edges
-        .map((edge) => edge.node)
-        .filter((order) => liveOnlyOrderStatuses.includes(order.status))
-        .sort();
-
-      const annotations = this.orders.map((order) =>
-        parseOrder(order, this.decimalPlaces, this.positionDecimalPlaces)
-      );
-
-      onSubscriptionAnnotations(annotations);
+    if (!this.showOrders) {
+      return;
     }
 
-    const res = this.client.subscribe<
+    const sub = this.client.subscribe<
       OrdersUpdateSubscription,
       OrdersUpdateSubscriptionVariables
     >({
       query: OrdersUpdateDocument,
       variables: {
-        marketIds: this.marketId,
+        marketIds: [this.marketId],
         partyId: this.partyId,
       },
     });
 
-    this.ordersSub = res.subscribe(({ data }) => {
-      if (data && data.orders) {
-        for (const orderUpdate of filterOrderUpdates(data.orders)) {
-          const index =
-            this.orders.findIndex((order) => order.id === orderUpdate.id) ?? -1;
+    // subscription will return a snap shot of curernt orders immediately
+    // and then subsequent messages will be sent for updates
+    this.ordersSub = sub.subscribe(({ data }) => {
+      if (!data?.orders?.length) return;
 
-          const newer =
-            this.orders.length > 0 ||
-            orderUpdate.createdAt >= this.orders[0].createdAt;
+      const orders = filterOrderUpdates(data.orders);
 
-          const isLive = liveOnlyOrderStatuses.includes(orderUpdate.status);
+      for (const order of orders) {
+        const index = this.orders.findIndex((o) => o.id === order.id) ?? -1;
+        const isActive = ACTIVE_ORDER_STATUSES.includes(order.status);
 
-          if (index !== -1) {
-            if (isLive) {
-              this.orders[index] = { ...this.orders[index], ...orderUpdate };
-            } else {
-              this.orders.splice(index, 1);
-            }
-          } else if (newer && isLive) {
-            this.orders.unshift(orderUpdate);
+        if (index !== -1) {
+          if (isActive) {
+            this.orders[index] = order;
+          } else {
+            this.orders.splice(index, 1);
+          }
+        } else {
+          this.orders.unshift(order);
+
+          if (this.orders.length > ORDER_MAX) {
+            this.orders.pop();
           }
         }
-
-        const annotations = this.orders.map((order) =>
-          parseOrder(order, this.decimalPlaces, this.positionDecimalPlaces)
-        );
-
-        onSubscriptionAnnotations(annotations);
       }
+
+      onSubscriptionAnnotations(
+        this.orders.map((o) =>
+          createOrderLabel(o, this.decimalPlaces, this.positionDecimalPlaces)
+        )
+      );
     });
   }
 
@@ -425,7 +408,7 @@ function parseCandle(
   };
 }
 
-function parseOrder(
+function createOrderLabel(
   order: OrderFieldsFragment | OrderUpdateFieldsFragment,
   decimalPlaces: number,
   positionDecimalPlaces: number
