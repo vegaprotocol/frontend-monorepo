@@ -28,6 +28,7 @@ const headers = [
   'Adjusted stake share',
   'Share',
   'Live supplied liquidity',
+  'Fees accrued this epoch',
   'Live time fraction on book',
   'Live liquidity quality score (%)',
   'Last time fraction on the book',
