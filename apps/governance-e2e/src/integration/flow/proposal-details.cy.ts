@@ -537,10 +537,10 @@ describe(
       cy.VegaWalletSubmitProposal(createGovernanceTransferProposalTxBody());
       cy.reload();
       getProposalFromTitle('Governance transfer proposal').within(() => {
-        cy.getByTestId(marketProposalType).should('have.text', 'NewTransfer');
+        cy.getByTestId(marketProposalType).should('have.text', 'New transfer');
         cy.getByTestId(viewProposalButton).click();
       });
-      cy.getByTestId(marketProposalType).should('have.text', 'NewTransfer');
+      cy.getByTestId(marketProposalType).should('have.text', 'New transfer');
       cy.getByTestId(governanceTransferToggle).click();
       cy.getByTestId('proposal-transfer-details-table').within(() => {
         getProposalInformationFromTable('Source Type')
@@ -590,7 +590,7 @@ describe(
         );
         cy.getByTestId(viewProposalButton).click();
       });
-      cy.getByTestId(marketProposalType).should('have.text', 'CancelTransfer');
+      cy.getByTestId(marketProposalType).should('have.text', 'Cancel transfer');
       getProposalInformationFromTable('Error details')
         .invoke('text')
         .and('eq', 'Governance transfer invalid transfer id not found');
