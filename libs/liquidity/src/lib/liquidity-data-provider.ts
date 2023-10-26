@@ -109,6 +109,7 @@ export interface LiquidityProvisionData
   balance?: string;
   averageEntryValuation?: string;
   equityLikeShare?: string;
+  earmarkedFees?: string;
 }
 
 export const getLiquidityProvision = (

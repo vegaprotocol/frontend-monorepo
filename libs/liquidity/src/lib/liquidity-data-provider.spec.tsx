@@ -50,6 +50,7 @@ const result = [
   {
     __typename: undefined,
     balance: '1.8003328918633596575e+22',
+    earmarkedFees: '0',
     commitmentAmount: '18003328918633596575000',
     createdAt: '2022-12-16T09:28:29.071781Z',
     feeShare: {
