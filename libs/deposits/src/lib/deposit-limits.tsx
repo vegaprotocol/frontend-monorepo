@@ -1,5 +1,4 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { t } from '@vegaprotocol/i18n';
 import { CompactNumber } from '@vegaprotocol/react-helpers';
 import {
   KeyValueTable,
@@ -8,6 +7,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type BigNumber from 'bignumber.js';
 import { formatNumber, quantumDecimalPlaces } from '@vegaprotocol/utils';
+import { useT } from './use-t';
 
 // Note: all of the values here are with correct asset's decimals
 // See `libs/deposits/src/lib/use-deposit-balances.ts`
@@ -29,6 +29,7 @@ export const DepositLimits = ({
   allowance,
   exempt,
 }: DepositLimitsProps) => {
+  const t = useT();
   const limits = [
     {
       key: 'BALANCE_AVAILABLE',

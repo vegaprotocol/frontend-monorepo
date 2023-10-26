@@ -1,6 +1,5 @@
 import type { Asset } from '@vegaprotocol/assets';
 import { EtherscanLink } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/i18n';
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import {
   formatNumber,
@@ -11,6 +10,7 @@ import type { EthStoredTxState } from '@vegaprotocol/web3';
 import { EthTxStatus, useEthTransactionStore } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import type { DepositBalances } from './use-deposit-balances';
+import { useT } from './use-t';
 
 interface ApproveNotificationProps {
   isActive: boolean;
@@ -33,6 +33,7 @@ export const ApproveNotification = ({
   approveTxId,
   intent = Intent.Warning,
 }: ApproveNotificationProps) => {
+  const t = useT();
   const tx = useEthTransactionStore((state) => {
     return state.transactions.find((t) => t?.id === approveTxId);
   });

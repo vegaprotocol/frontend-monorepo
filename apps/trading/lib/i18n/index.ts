@@ -25,6 +25,7 @@ i18n
       'candles-chart',
       'datagrid',
       'deal-ticket',
+      'deposits',
       'fills',
       'funding-payments',
       'trading',

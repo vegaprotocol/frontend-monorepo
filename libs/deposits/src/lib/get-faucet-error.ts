@@ -1,7 +1,8 @@
-import { t } from '@vegaprotocol/i18n';
 import type { TxError } from '@vegaprotocol/web3';
+import { useT } from './use-t';
 
-export const getFaucetError = (error: TxError | null, symbol: string) => {
+export const useGetFaucetError = (error: TxError | null, symbol?: string) => {
+  const t = useT();
   const reasonMap: {
     [reason: string]: string;
   } = {
