@@ -49,12 +49,16 @@ export const SparklineView = ({
   // Market may be less than 24hr old so padd the data array
   // with values that is the mid value (avg of min and max).
   // This will rendera  horizontal line until the real data shifts the line
-  const padCount = points - data.length;
+  const padCount = data.length < points ? points - data.length : 0;
   const padArr = new Array(padCount).fill(midValue);
+  const trimmedData = data.slice(-points);
 
-  const lineData: [number, number][] = [...padArr, ...data].map((d, i) => {
-    return [i, d];
-  });
+  // Get the last 24 values if data has more than needed
+  const lineData: [number, number][] = [...padArr, ...trimmedData].map(
+    (d, i) => {
+      return [i, d];
+    }
+  );
 
   const xScale = scaleLinear().domain([0, points]).range([0, width]);
   const yScale = scaleLinear().domain([min, max]).range([height, 0]);
@@ -68,16 +72,16 @@ export const SparklineView = ({
     .y0(height)
     .y1((d) => yScale(d[1]));
 
-  const firstVal = data[0];
-  const lastVal = data[data.length - 1];
+  const firstVal = trimmedData[0];
+  const lastVal = trimmedData[trimmedData.length - 1];
 
   // Get the color of the marketData line depending on market movement
   const strokeClassName = colorByChange(firstVal, lastVal);
   const areaClassName = shadedColor(firstVal, lastVal);
 
   // Create paths
-  const mainPath = lineSeries(lineData);
-  const shadedArea = areaSeries(lineData);
+  const linePath = lineSeries(lineData);
+  const areaPath = areaSeries(lineData);
 
   return (
     <svg
@@ -88,20 +92,20 @@ export const SparklineView = ({
       viewBox={`0 0 ${width} ${height}`}
       preserveAspectRatio="none"
     >
-      {mainPath && (
+      {linePath && (
         <path
-          d={mainPath}
+          d={linePath}
           data-testid="sparkline-path"
           className={`[vector-effect:non-scaling-stroke] fill-transparent ${strokeClassName}`}
           strokeWidth={1}
         />
       )}
-      {shadedArea && (
+      {areaPath && (
         <path
           className={areaClassName}
           fillOpacity={0.2}
           stroke="none"
-          d={shadedArea}
+          d={areaPath}
         />
       )}
     </svg>
