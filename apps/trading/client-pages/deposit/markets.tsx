@@ -78,7 +78,7 @@ const MarketCard = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
         <div className="flex-1 max-w-[50%]">
           {oneDayCandles && (
             <Sparkline
-              width="100%"
+              width={100}
               height={36}
               data={oneDayCandles.map((c) => Number(c.close))}
             />
