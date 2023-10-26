@@ -153,6 +153,8 @@ export const NetworkParams = {
     'spam_protection_minimumWithdrawalQuantumMultiple',
   spam_protection_voting_min_tokens: 'spam_protection_voting_min_tokens',
   spam_protection_proposal_min_tokens: 'spam_protection_proposal_min_tokens',
+  market_fee_factors_infrastructureFee: 'market_fee_factors_infrastructureFee',
+  market_fee_factors_makerFee: 'market_fee_factors_makerFee',
   market_liquidity_targetstake_triggering_ratio:
     'market_liquidity_targetstake_triggering_ratio',
   market_liquidity_bondPenaltyParameter:

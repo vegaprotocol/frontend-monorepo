@@ -1,0 +1,58 @@
+query DiscountPrograms {
+  currentReferralProgram {
+    benefitTiers {
+      minimumEpochs
+      minimumRunningNotionalTakerVolume
+      referralDiscountFactor
+    }
+    windowLength
+  }
+  currentVolumeDiscountProgram {
+    benefitTiers {
+      minimumRunningNotionalTakerVolume
+      volumeDiscountFactor
+    }
+    windowLength
+  }
+}
+
+query Fees(
+  $partyId: ID!
+  $volumeDiscountEpochs: Int!
+  $referralDiscountEpochs: Int!
+) {
+  epoch {
+    id
+  }
+  volumeDiscountStats(
+    partyId: $partyId
+    pagination: { last: $volumeDiscountEpochs }
+  ) {
+    edges {
+      node {
+        atEpoch
+        discountFactor
+        runningVolume
+      }
+    }
+  }
+  referralSetReferees(referee: $partyId) {
+    edges {
+      node {
+        atEpoch
+      }
+    }
+  }
+  referralSetStats(
+    partyId: $partyId
+    pagination: { last: $referralDiscountEpochs }
+  ) {
+    edges {
+      node {
+        atEpoch
+        discountFactor
+        referralSetRunningNotionalTakerVolume
+      }
+    }
+  }
+}
