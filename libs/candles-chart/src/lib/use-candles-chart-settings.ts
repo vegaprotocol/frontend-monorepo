@@ -13,6 +13,7 @@ interface StoredSettings {
   overlays: Overlay[];
   studies: Study[];
   studySizes: StudySizes;
+  showOrders: boolean;
 }
 
 export const STUDY_SIZE = 90;
@@ -30,6 +31,7 @@ const DEFAULT_CHART_SETTINGS = {
   overlays: [Overlay.MOVING_AVERAGE],
   studies: [Study.MACD, Study.VOLUME],
   studySizes: {},
+  showOrders: true,
 };
 
 export const useCandlesChartSettingsStore = create<
@@ -39,6 +41,7 @@ export const useCandlesChartSettingsStore = create<
     setOverlays: (overlays?: Overlay[]) => void;
     setStudies: (studies?: Study[]) => void;
     setStudySizes: (sizes: number[]) => void;
+    setShowOrders: (show?: boolean) => void;
   }
 >()(
   persist(
@@ -79,6 +82,11 @@ export const useCandlesChartSettingsStore = create<
             const size = sizes[i];
             state.studySizes[s] = size;
           });
+        });
+      },
+      setShowOrders: (show) => {
+        set((state) => {
+          state.showOrders = show === undefined ? !state.showOrders : show;
         });
       },
     })),
@@ -127,10 +135,12 @@ export const useCandlesChartSettings = () => {
     overlays,
     studies,
     studySizes,
+    showOrders: settings.showOrders,
     setInterval: settings.setInterval,
     setType: settings.setType,
     setStudies: settings.setStudies,
     setOverlays: settings.setOverlays,
     setStudySizes: settings.setStudySizes,
+    setShowOrders: settings.setShowOrders,
   };
 };

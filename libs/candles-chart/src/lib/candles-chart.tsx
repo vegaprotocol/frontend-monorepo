@@ -32,6 +32,7 @@ export const CandlesChartContainer = ({
     overlays,
     studies,
     studySizes,
+    showOrders,
     setStudies,
     setStudySizes,
     setOverlays,
@@ -47,8 +48,8 @@ export const CandlesChartContainer = ({
   );
 
   const dataSource = useMemo(() => {
-    return new VegaDataSource(client, marketId, pubKey);
-  }, [client, marketId, pubKey]);
+    return new VegaDataSource(client, marketId, pubKey, showOrders);
+  }, [client, marketId, pubKey, showOrders]);
 
   return (
     <AutoSizer>

@@ -38,21 +38,26 @@ export const CandlesMenu = () => {
     chartType,
     studies,
     overlays,
+    showOrders,
     setInterval,
     setType,
     setStudies,
     setOverlays,
+    setShowOrders,
   } = useCandlesChartSettings();
   const triggerClasses = 'text-xs';
   const contentAlign = 'end';
-  const triggerButtonProps = { size: 'extra-small' } as const;
+  const buttonProps = { size: 'extra-small' } as const;
 
   return (
     <>
+      <TradingButton {...buttonProps} onClick={() => setShowOrders()}>
+        {showOrders ? t('Hide orders') : t('Show orders')}
+      </TradingButton>
       <TradingDropdown
         trigger={
           <TradingDropdownTrigger className={triggerClasses}>
-            <TradingButton {...triggerButtonProps}>
+            <TradingButton {...buttonProps}>
               {t(`Interval: ${intervalLabels[interval]}`)}
             </TradingButton>
           </TradingDropdownTrigger>
@@ -81,7 +86,7 @@ export const CandlesMenu = () => {
       <TradingDropdown
         trigger={
           <TradingDropdownTrigger className={triggerClasses}>
-            <TradingButton {...triggerButtonProps}>
+            <TradingButton {...buttonProps}>
               <Icon name={chartTypeIcon.get(chartType) as IconName} />
             </TradingButton>
           </TradingDropdownTrigger>
@@ -106,9 +111,7 @@ export const CandlesMenu = () => {
       <TradingDropdown
         trigger={
           <TradingDropdownTrigger className={triggerClasses}>
-            <TradingButton {...triggerButtonProps}>
-              {t('Overlays')}
-            </TradingButton>
+            <TradingButton {...buttonProps}>{t('Overlays')}</TradingButton>
           </TradingDropdownTrigger>
         }
       >
@@ -137,9 +140,7 @@ export const CandlesMenu = () => {
       <TradingDropdown
         trigger={
           <TradingDropdownTrigger className={triggerClasses}>
-            <TradingButton {...triggerButtonProps}>
-              {t('Studies')}
-            </TradingButton>
+            <TradingButton {...buttonProps}>{t('Studies')}</TradingButton>
           </TradingDropdownTrigger>
         }
       >
