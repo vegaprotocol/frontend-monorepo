@@ -3,7 +3,7 @@ export * from './use-proposal-event';
 export * from './use-vega-transaction';
 export * from './use-proposal-submit';
 export * from './use-update-proposal';
-export * from './use-update-network-paramaters-toasts';
+export * from './use-proposal-toasts';
 export * from './use-successor-market-proposal-details';
 export * from './use-new-transfer-proposal-details';
 export * from './use-cancel-transfer-proposal-details';

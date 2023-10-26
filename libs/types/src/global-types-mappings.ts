@@ -3,6 +3,7 @@ import type {
   GovernanceTransferKind,
   GovernanceTransferType,
   PeggedReference,
+  ProposalChange,
 } from './__generated__/types';
 import type { AccountType } from './__generated__/types';
 import type {
@@ -297,6 +298,29 @@ export const OrderTypeMapping: {
   TYPE_LIMIT: 'Limit',
   TYPE_MARKET: 'Market',
   TYPE_NETWORK: 'Network',
+};
+
+/**
+ * Proposal change type mapping
+ */
+export const ProposalChangeMapping: Record<
+  NonNullable<ProposalChange['__typename']>,
+  string
+> = {
+  NewMarket: 'New market',
+  UpdateMarket: 'Update market',
+  UpdateNetworkParameter: 'Update network parameter',
+  NewAsset: 'New asset',
+  UpdateAsset: 'Update asset',
+  /* cspell:disable-next-line */
+  NewFreeform: 'New free-form',
+  NewTransfer: 'New transfer',
+  CancelTransfer: 'Cancel transfer',
+  UpdateMarketState: 'Update market state',
+  NewSpotMarket: 'New spot market',
+  UpdateSpotMarket: 'Update spot market',
+  UpdateVolumeDiscountProgram: 'Update volume discount program',
+  UpdateReferralProgram: 'Update referral program',
 };
 
 /**
