@@ -10,7 +10,7 @@ export type LiquidityProvisionsQueryVariables = Types.Exact<{
 }>;
 
 
-export type LiquidityProvisionsQuery = { __typename?: 'Query', market?: { __typename?: 'Market', liquidityProvisionsConnection?: { __typename?: 'LiquidityProvisionsConnection', edges?: Array<{ __typename?: 'LiquidityProvisionsEdge', node: { __typename?: 'LiquidityProvision', id: string, createdAt: any, updatedAt?: any | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string } } | null> | null } | null } } } | null> | null } | null } | null };
+export type LiquidityProvisionsQuery = { __typename?: 'Query', market?: { __typename?: 'Market', liquidityProvisions?: { __typename?: 'LiquidityProvisionsWithPendingConnection', edges?: Array<{ __typename?: 'LiquidityProvisionWithPendingEdge', node: { __typename?: 'LiquidityProvisionWithPending', current: { __typename?: 'LiquidityProvision', id: string, createdAt: any, updatedAt?: any | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string } } | null> | null } | null } }, pending?: { __typename?: 'LiquidityProvision', id: string, createdAt: any, updatedAt?: any | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string } } | null> | null } | null } } | null } } | null> | null } | null } | null };
 
 export type LiquidityProviderFeeShareFieldsFragment = { __typename?: 'LiquidityProviderFeeShare', equityLikeShare: string, averageEntryValuation: string, averageScore: string, virtualStake: string };
 
@@ -82,10 +82,15 @@ ${LiquidityProviderSLAFieldsFragmentDoc}`;
 export const LiquidityProvisionsDocument = gql`
     query LiquidityProvisions($marketId: ID!) {
   market(id: $marketId) {
-    liquidityProvisionsConnection(live: true) {
+    liquidityProvisions(live: true) {
       edges {
         node {
-          ...LiquidityProvisionFields
+          current {
+            ...LiquidityProvisionFields
+          }
+          pending {
+            ...LiquidityProvisionFields
+          }
         }
       }
     }

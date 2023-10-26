@@ -195,7 +195,9 @@ export const LiquidityTable = ({
             headerName: t('Fees accrued this epoch'),
             field: 'earmarkedFees',
             type: 'rightAligned',
-            headerTooltip: t(`The liquidity fees accrued by each provider, which will be distributed at the end of the epoch after applying any penalties.`),
+            headerTooltip: t(
+              `The liquidity fees accrued by each provider, which will be distributed at the end of the epoch after applying any penalties.`
+            ),
             valueFormatter: stakeToCcyVolumeQuantumFormatter,
             tooltipValueGetter: stakeToCcyVolumeFormatter,
           },
@@ -283,7 +285,9 @@ export const LiquidityTable = ({
   return (
     <AgGrid
       overlayNoRowsTemplate={t('No liquidity provisions')}
-      getRowId={({ data }: { data: LiquidityProvisionData }) => data.id || ''}
+      getRowId={({ data }: { data: LiquidityProvisionData }) => {
+        return data.id || '';
+      }}
       tooltipShowDelay={500}
       defaultColDef={defaultColDef}
       {...props}

@@ -30,8 +30,8 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
   query: LiquidityProvisionsDocument,
   getData: (responseData: LiquidityProvisionsQuery | null) => {
     return (
-      responseData?.market?.liquidityProvisionsConnection?.edges?.map(
-        (e) => e?.node
+      responseData?.market?.liquidityProvisions?.edges?.map(
+        (e) => e?.node.current
       ) ?? []
     ).filter((n) => !!n) as LiquidityProvisionFieldsFragment[];
   },

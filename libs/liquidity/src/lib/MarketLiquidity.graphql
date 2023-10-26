@@ -22,10 +22,15 @@ fragment LiquidityProvisionFields on LiquidityProvision {
 
 query LiquidityProvisions($marketId: ID!) {
   market(id: $marketId) {
-    liquidityProvisionsConnection(live: true) {
+    liquidityProvisions(live: true) {
       edges {
         node {
-          ...LiquidityProvisionFields
+          current {
+            ...LiquidityProvisionFields
+          }
+          pending {
+            ...LiquidityProvisionFields
+          }
         }
       }
     }
