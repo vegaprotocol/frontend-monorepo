@@ -4,7 +4,10 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { DepositGetStarted } from './deposit-get-started';
-import { useEnabledAssets } from '@vegaprotocol/assets';
+import {
+  useAssetDetailsDialogStore,
+  useEnabledAssets,
+} from '@vegaprotocol/assets';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import {
   addDecimal,
@@ -252,10 +255,17 @@ const DepositFlow = ({
           const marketsForAsset = getMarketsForAsset(a);
 
           return (
-            <button
+            <div
               key={a.id}
               onClick={() => {
                 handleAssetChanged(a.id);
+              }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleAssetChanged(a.id);
+                }
               }}
               className={classNames(
                 'p-5 rounded text-left',
@@ -271,7 +281,7 @@ const DepositFlow = ({
                 </div>
                 <Markets markets={marketsForAsset} />
               </div>
-            </button>
+            </div>
           );
         })}
       </div>
@@ -549,15 +559,23 @@ const SendDeposit = ({
 
 const TokenHeader = ({ asset }: { asset: AssetFieldsFragment }) => {
   const isErc20 = isAssetTypeERC20(asset);
+  const openDialog = useAssetDetailsDialogStore((store) => store.open);
+
   return (
     <div className="flex items-center text-lg gap-2">
       {isErc20 && <TokenIcon address={asset.source.contractAddress} />}
       <h3 className="text-lg">
         {asset.symbol}
         {isErc20 && (
-          <small className="ml-1 text-muted">
+          <button
+            className="ml-1 text-sm underline underline-offset-2 text-muted"
+            onClick={(e) => {
+              e.stopPropagation();
+              openDialog(asset.id);
+            }}
+          >
             {truncateByChars(asset.source.contractAddress)}
-          </small>
+          </button>
         )}
       </h3>
     </div>
