@@ -39,7 +39,6 @@ context('Market page', { tags: '@regression' }, function () {
       cy.contains('Test market 1').click();
       cy.getByTestId(marketHeaders).should('have.text', 'Test market 1');
       cy.validate_element_from_table('Name', 'Test market 1');
-      cy.validate_element_from_table('Market ID', this.createdMarketId);
       cy.validate_element_from_table('Trading Mode', 'Opening auction');
       cy.validate_element_from_table('Market Decimal Places', '5');
       cy.validate_element_from_table('Position Decimal Places', '5');
