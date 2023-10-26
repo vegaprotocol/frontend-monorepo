@@ -15,9 +15,9 @@ function colorByChange(a: number, b: number) {
 
 function shadedColor(a: number, b: number) {
   if (a < b) {
-    return 'fill-market-green-600 dark:fill-market-green';
+    return 'fill-market-green-600';
   } else if (a > b) {
-    return 'fill-market-red-600 dark:fill-market-red';
+    return 'fill-market-red';
   }
   return 'fill-black dark:fill-white';
 }
