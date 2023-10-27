@@ -1,5 +1,5 @@
 import { ToastsContainer, useToasts } from '@vegaprotocol/ui-toolkit';
-import { useUpdateNetworkParametersToasts } from '@vegaprotocol/proposals';
+import { useProposalToasts } from '@vegaprotocol/proposals';
 import { useVegaTransactionToasts } from '@vegaprotocol/web3';
 import { useEthereumTransactionToasts } from '@vegaprotocol/web3';
 import { useEthereumWithdrawApprovalsToasts } from '@vegaprotocol/web3';
@@ -7,7 +7,7 @@ import { useReadyToWithdrawalToasts } from '@vegaprotocol/withdraws';
 import { Links } from '../lib/links';
 
 export const ToastsManager = () => {
-  useUpdateNetworkParametersToasts();
+  useProposalToasts();
   useVegaTransactionToasts();
   useEthereumTransactionToasts();
   useEthereumWithdrawApprovalsToasts();

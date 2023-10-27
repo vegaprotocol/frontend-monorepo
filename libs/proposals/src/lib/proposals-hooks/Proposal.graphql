@@ -12,10 +12,15 @@ subscription ProposalEvent($partyId: ID!) {
   }
 }
 
-fragment UpdateNetworkParameterProposal on Proposal {
+fragment OnProposalFragment on Proposal {
   id
   state
   datetime
+  rationale {
+    title
+    description
+  }
+  rejectionReason
   terms {
     enactmentDatetime
     change {
@@ -26,9 +31,9 @@ fragment UpdateNetworkParameterProposal on Proposal {
   }
 }
 
-subscription OnUpdateNetworkParameters {
+subscription OnProposal {
   proposals {
-    ...UpdateNetworkParameterProposal
+    ...OnProposalFragment
   }
 }
 

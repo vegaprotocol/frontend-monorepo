@@ -3387,6 +3387,8 @@ export type Party = {
   transfersConnection?: Maybe<TransferConnection>;
   /** The current reward vesting summary of the party for the last epoch */
   vestingBalancesSummary: PartyVestingBalancesSummary;
+  /** The current statistics about a party's vesting rewards for the last epoch */
+  vestingStats?: Maybe<PartyVestingStats>;
   /** All votes on proposals in the Vega network by the given party */
   votesConnection?: Maybe<ProposalVoteConnection>;
   /** The list of all withdrawals initiated by the party */
@@ -3502,6 +3504,7 @@ export type PartytradesConnectionArgs = {
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartytransfersConnectionArgs = {
   direction?: InputMaybe<TransferDirection>;
+  isReward?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -3614,6 +3617,15 @@ export type PartyVestingBalancesSummary = {
   lockedBalances?: Maybe<Array<PartyLockedBalance>>;
   /** The party vesting balances */
   vestingBalances?: Maybe<Array<PartyVestingBalance>>;
+};
+
+/** Statistics about a party's vesting rewards */
+export type PartyVestingStats = {
+  __typename?: 'PartyVestingStats';
+  /** Epoch for which the statistics are valid */
+  epochSeq: Scalars['Int'];
+  /** The reward bonus multiplier */
+  rewardBonusMultiplier: Scalars['String'];
 };
 
 /** Create an order linked to an index rather than a price */
@@ -4905,6 +4917,7 @@ export type QuerytransferArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerytransfersConnectionArgs = {
   direction?: InputMaybe<TransferDirection>;
+  isReward?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
   partyId?: InputMaybe<Scalars['ID']>;
 };
@@ -5081,6 +5094,8 @@ export type ReferralSetStats = {
   rewardsFactorMultiplier: Scalars['String'];
   /** The multiplier applied to the referral reward factor when calculating referral rewards due to the referrer. */
   rewardsMultiplier: Scalars['String'];
+  /** Indicates if the referral set was eligible to be part of the referral program. */
+  wasEligible: Scalars['Boolean'];
 };
 
 /** Connection type for retrieving cursor-based paginated referral set statistics information */
@@ -6102,10 +6117,30 @@ export enum TransferDirection {
 export type TransferEdge = {
   __typename?: 'TransferEdge';
   cursor: Scalars['String'];
-  node: Transfer;
+  node: TransferNode;
+};
+
+/** A transfer fee record */
+export type TransferFee = {
+  __typename?: 'TransferFee';
+  /** The fee amount */
+  amount: Scalars['String'];
+  /** The epoch when this fee was paid */
+  epoch: Scalars['Int'];
+  /** Transfer ID of the transfer for which the fee was paid */
+  transferId: Scalars['ID'];
 };
 
 export type TransferKind = OneOffGovernanceTransfer | OneOffTransfer | RecurringGovernanceTransfer | RecurringTransfer;
+
+/** A transfer record with the fee payments associated with the transfer */
+export type TransferNode = {
+  __typename?: 'TransferNode';
+  /** The list of fee payments made */
+  fees?: Maybe<Array<Maybe<TransferFee>>>;
+  /** The transfer record */
+  transfer: Transfer;
+};
 
 export type TransferResponse = {
   __typename?: 'TransferResponse';
