@@ -1001,7 +1001,7 @@ export const LiquiditySLAParametersInfoPanel = ({
 
   const { params: networkParams } = useNetworkParams([
     NetworkParams.market_liquidity_bondPenaltyParameter,
-    NetworkParams.market_liquidity_nonPerformanceBondPenaltySlope,
+    NetworkParams.market_liquidity_sla_nonPerformanceBondPenaltySlope,
     NetworkParams.market_liquidity_sla_nonPerformanceBondPenaltyMax,
     NetworkParams.market_liquidity_maximumLiquidityFeeFactorLevel,
     NetworkParams.market_liquidity_stakeToCcyVolume,
@@ -1017,7 +1017,7 @@ export const LiquiditySLAParametersInfoPanel = ({
     bondPenaltyParameter:
       networkParams['market_liquidity_bondPenaltyParameter'],
     nonPerformanceBondPenaltySlope:
-      networkParams['market_liquidity_nonPerformanceBondPenaltySlope'],
+      networkParams['market_liquidity_sla_nonPerformanceBondPenaltySlope'],
     nonPerformanceBondPenaltyMax:
       networkParams['market_liquidity_sla_nonPerformanceBondPenaltyMax'],
     maxLiquidityFeeFactorLevel:

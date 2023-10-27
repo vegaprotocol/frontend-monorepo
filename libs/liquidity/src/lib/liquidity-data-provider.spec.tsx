@@ -1,13 +1,12 @@
 import { AccountType } from '@vegaprotocol/types';
+import type { LiquidityProvisionFields } from './liquidity-data-provider';
 import { getLiquidityProvision } from './liquidity-data-provider';
-import type {
-  LiquidityProviderFieldsFragment,
-  LiquidityProvisionFieldsFragment,
-} from './__generated__/MarketLiquidity';
+import type { LiquidityProviderFieldsFragment } from './__generated__/MarketLiquidity';
 
 const input = {
   liquidityProvisions: [
     {
+      id: 'dde288688af2aeb5feb349dd72d3679a7a9be34c7375f6a4a48ef2f6140e7e59',
       party: {
         id: 'dde288688af2aeb5feb349dd72d3679a7a9be34c7375f6a4a48ef2f6140e7e59',
         accountsConnection: {
@@ -31,7 +30,11 @@ const input = {
       fee: '0.001',
       status: 'STATUS_ACTIVE',
       __typename: 'LiquidityProvision',
-    } as LiquidityProvisionFieldsFragment,
+      priceRange: '0',
+      commitmentMinTimeFraction: '0.5',
+      performanceHysteresisEpochs: 5678,
+      slaCompetitionFactor: '0',
+    } as unknown as LiquidityProvisionFields,
   ],
   liquidityProviders: [
     {
@@ -49,10 +52,12 @@ const input = {
 const result = [
   {
     __typename: undefined,
-    balance: '1.8003328918633596575e+22',
-    earmarkedFees: '0',
+    balance: 1.8003328918633597e22,
+    earmarkedFees: 0,
     commitmentAmount: '18003328918633596575000',
     createdAt: '2022-12-16T09:28:29.071781Z',
+    commitmentMinTimeFraction: '0.5',
+    id: 'dde288688af2aeb5feb349dd72d3679a7a9be34c7375f6a4a48ef2f6140e7e59',
     feeShare: {
       equityLikeShare: '1',
       __typename: 'LiquidityProviderFeeShare',
@@ -60,6 +65,9 @@ const result = [
     },
     fee: '0.001',
     partyId: 'dde288688af2aeb5feb349dd72d3679a7a9be34c7375f6a4a48ef2f6140e7e59',
+    performanceHysteresisEpochs: 5678,
+    priceRange: '0',
+    slaCompetitionFactor: '0',
     party: {
       __typename: 'Party',
       accountsConnection: {
@@ -107,7 +115,9 @@ describe('getLiquidityProvision', () => {
       {
         __typename: 'LiquidityProvision',
         commitmentAmount: '18003328918633596575000',
+        commitmentMinTimeFraction: '0.5',
         createdAt: '2022-12-16T09:28:29.071781Z',
+        id: 'dde288688af2aeb5feb349dd72d3679a7a9be34c7375f6a4a48ef2f6140e7e59',
         fee: '0.001',
         party: {
           __typename: 'Party',
@@ -126,6 +136,9 @@ describe('getLiquidityProvision', () => {
           },
           id: 'dde288688af2aeb5feb349dd72d3679a7a9be34c7375f6a4a48ef2f6140e7e59',
         },
+        performanceHysteresisEpochs: 5678,
+        priceRange: '0',
+        slaCompetitionFactor: '0',
         status: 'STATUS_ACTIVE',
         updatedAt: '2023-01-04T22:13:27.761985Z',
       },
