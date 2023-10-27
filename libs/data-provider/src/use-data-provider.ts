@@ -3,7 +3,12 @@ import throttle from 'lodash/throttle';
 import isEqualWith from 'lodash/isEqualWith';
 import { useApolloClient } from '@apollo/client';
 import type { OperationVariables } from '@apollo/client';
-import type { Subscribe, Load, UpdateCallback } from './generic-data-provider';
+import type {
+  Subscribe,
+  Load,
+  UpdateCallback,
+  PageInfo,
+} from './generic-data-provider';
 import { variablesIsEqualCustomizer } from './generic-data-provider';
 
 export interface useDataProviderParams<
@@ -12,13 +17,23 @@ export interface useDataProviderParams<
   Variables extends OperationVariables | undefined = undefined
 > {
   dataProvider: Subscribe<Data, Delta, Variables>;
-  update?: ({ delta, data }: { delta?: Delta; data: Data | null }) => boolean;
+  update?: ({
+    delta,
+    data,
+    pageInfo,
+  }: {
+    delta?: Delta;
+    data: Data | null;
+    pageInfo: PageInfo | null;
+  }) => boolean;
   insert?: ({
     insertionData,
     data,
+    pageInfo,
   }: {
     insertionData?: Data | null;
     data: Data | null;
+    pageInfo: PageInfo | null;
   }) => boolean;
   variables: Variables;
   skipUpdates?: boolean;
@@ -30,7 +45,7 @@ export interface useDataProviderParams<
  * @param dataProvider subscribe function created by makeDataProvider
  * @param update optional function called on each delta received in subscription, if returns true updated data will be not passed from hook (component handles updates internally)
  * @param variables optional
- * @returns state: data, loading, error, methods: flush (pass updated data to update function without delta), restart: () => void}};
+ * @returns state: data, loading, pageInfo, error, methods: flush (pass updated data to update function without delta), restart: () => void}};
  */
 export const useDataProvider = <
   Data,
@@ -48,6 +63,7 @@ export const useDataProvider = <
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState<boolean>(!skip);
   const [error, setError] = useState<Error | undefined>(undefined);
+  const [pageInfo, setPageInfo] = useState<PageInfo | null>(null);
   const flushRef = useRef<(() => void) | undefined>(undefined);
   const reloadRef = useRef<((force?: boolean) => void) | undefined>(undefined);
   const loadRef = useRef<Load<Data> | undefined>(undefined);
@@ -93,6 +109,7 @@ export const useDataProvider = <
       isInsert,
       isUpdate,
       loaded,
+      pageInfo,
     } = args;
     setError(error);
     setLoading(!loaded && loading);
@@ -104,21 +121,22 @@ export const useDataProvider = <
         (skipUpdatesRef.current ||
           (!skipUpdatesRef.current &&
             updateRef.current &&
-            updateRef.current({ delta, data })))
+            updateRef.current({ delta, data, pageInfo })))
       ) {
         return;
       }
       if (
         isInsert &&
         insertRef.current &&
-        insertRef.current({ insertionData, data })
+        insertRef.current({ insertionData, data, pageInfo })
       ) {
         return;
       }
     }
     setData(data);
+    setPageInfo(pageInfo);
     if (!loading && !isUpdate && updateRef.current) {
-      updateRef.current({ data });
+      updateRef.current({ data, pageInfo });
     }
   }, []);
 
@@ -136,15 +154,13 @@ export const useDataProvider = <
 
   useEffect(() => {
     setData(null);
+    setPageInfo(null);
     setError(undefined);
     if (updateRef.current) {
-      updateRef.current({ data: null });
+      updateRef.current({ data: null, pageInfo: null });
     }
     if (skip) {
       setLoading(false);
-      if (updateRef.current) {
-        updateRef.current({ data: null });
-      }
       return;
     }
     setLoading(true);
@@ -165,6 +181,7 @@ export const useDataProvider = <
   }, [client, dataProvider, callback, variables, skip]);
   return {
     data,
+    pageInfo,
     loading,
     error,
     flush,

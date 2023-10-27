@@ -27,6 +27,7 @@ describe('OrderListManager', () => {
       flush: jest.fn(),
       reload: jest.fn(),
       load: jest.fn(),
+      pageInfo: null,
     });
     render(generateJsx());
 
@@ -45,6 +46,7 @@ describe('OrderListManager', () => {
       flush: jest.fn(),
       reload: jest.fn(),
       load: jest.fn(),
+      pageInfo: null,
     });
 
     render(generateJsx());
@@ -62,6 +64,7 @@ describe('OrderListManager', () => {
       flush: jest.fn(),
       reload: jest.fn(),
       load: jest.fn(),
+      pageInfo: null,
     });
 
     render(

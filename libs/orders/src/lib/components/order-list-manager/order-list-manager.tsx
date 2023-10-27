@@ -1,7 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import { useCallback, useRef, useState, useEffect } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
-import type { FilterChangedEvent } from 'ag-grid-community';
 import { OrderListTable } from '../order-list';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -12,7 +11,7 @@ import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/web3';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order } from '../order-data-provider';
 import { OrderViewDialog } from '../order-list/order-view-dialog';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { Splash, TradingButton as Button } from '@vegaprotocol/ui-toolkit';
 
 export enum Filter {
   'Open' = 'Open',
@@ -48,32 +47,10 @@ export const OrderListManager = ({
       ? { partyId, filter: { liveOnly: true } }
       : { partyId };
 
-  const { data, error } = useDataProvider({
+  const { data, error, pageInfo, load } = useDataProvider({
     dataProvider: ordersWithMarketProvider,
     variables,
-    update: ({ data }) => {
-      if (data && gridRef.current?.api) {
-        gridRef.current.api.setRowData(data);
-        return true;
-      }
-      return false;
-    },
   });
-
-  const onFilterChanged = useCallback(
-    (event: FilterChangedEvent) => {
-      gridProps?.onFilterChanged?.(event);
-      if (event.api) {
-        const isEmpty = event.api.getDisplayedRowCount() === 0;
-        if (isEmpty) {
-          event.api.showNoRowsOverlay();
-        } else {
-          event.api.hideOverlay();
-        }
-      }
-    },
-    [gridProps]
-  );
 
   useEffect(() => {
     if (!data || !data.length) {
@@ -96,6 +73,17 @@ export const OrderListManager = ({
     [create]
   );
 
+  const [hasDisplayedRow, setHasDisplayedRow] = useState<boolean | undefined>(
+    undefined
+  );
+  const { onFilterChanged, ...props } = gridProps || {};
+  const onRowDataUpdated = useCallback(
+    ({ api }: { api: AgGridReact['api'] }) => {
+      setHasDisplayedRow(!!api.getDisplayedRowCount());
+    },
+    []
+  );
+
   if (error) {
     return <Splash>{t(`Something went wrong: ${error.message}`)}</Splash>;
   }
@@ -103,20 +91,60 @@ export const OrderListManager = ({
   return (
     <>
       <div className="h-full relative">
-        <OrderListTable
-          rowData={data}
-          ref={gridRef}
-          filter={filter}
-          onCancel={cancel}
-          onEdit={setEditOrder}
-          onView={setViewOrder}
-          onMarketClick={onMarketClick}
-          onOrderTypeClick={onOrderTypeClick}
-          isReadOnly={isReadOnly}
-          overlayNoRowsTemplate={noRowsMessage || t('No orders')}
-          {...gridProps}
-          onFilterChanged={onFilterChanged}
-        />
+        <div className="flex flex-col h-full">
+          <OrderListTable
+            rowData={data}
+            ref={gridRef}
+            filter={filter}
+            onCancel={cancel}
+            onEdit={setEditOrder}
+            onView={setViewOrder}
+            onMarketClick={onMarketClick}
+            onOrderTypeClick={onOrderTypeClick}
+            onFilterChanged={(event) => {
+              onRowDataUpdated(event);
+              if (onFilterChanged) {
+                onFilterChanged(event);
+              }
+            }}
+            onRowDataUpdated={onRowDataUpdated}
+            isReadOnly={isReadOnly}
+            overlayNoRowsTemplate={noRowsMessage || t('No orders')}
+            {...props}
+          />
+          <div className="flex justify-between border-t border-default p-1 items-center">
+            <div className="text-xs">
+              {variables.filter?.liveOnly
+                ? null
+                : t(
+                    'Depending on data node retention you may not be able see the "full" history'
+                  )}
+            </div>
+            {data ? (
+              <div className="flex text-xs items-center">
+                {data?.length && !pageInfo?.hasNextPage
+                  ? t('all %s items loaded', [data.length.toString()])
+                  : t('%s items loaded', [
+                      data?.length ? data.length.toString() : ' ',
+                    ])}
+                {pageInfo?.hasNextPage ? (
+                  <Button
+                    size="extra-small"
+                    className="ml-1"
+                    onClick={() => load()}
+                  >
+                    {t('Load more')}
+                  </Button>
+                ) : null}
+              </div>
+            ) : null}
+            {data?.length && hasDisplayedRow === false ? (
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs">
+                {t('No orders matching selected filters')}
+              </div>
+            ) : null}
+          </div>
+        </div>
       </div>
       {editOrder && (
         <OrderEditDialog

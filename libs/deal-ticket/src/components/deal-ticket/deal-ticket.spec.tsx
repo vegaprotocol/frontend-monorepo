@@ -109,7 +109,7 @@ describe('DealTicket', () => {
         variables: {
           partyId: 'pubKey',
           filter: { liveOnly: true },
-          pagination: { first: 5000 },
+          pagination: { first: 1000 },
         },
       },
       result: {

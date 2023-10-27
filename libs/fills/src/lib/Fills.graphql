@@ -42,8 +42,12 @@ fragment FillEdge on TradeEdge {
   cursor
 }
 
-query Fills($filter: TradesFilter, $pagination: Pagination) {
-  trades(filter: $filter, pagination: $pagination) {
+query Fills(
+  $filter: TradesFilter
+  $pagination: Pagination
+  $dateRange: DateRange
+) {
+  trades(filter: $filter, dateRange: $dateRange, pagination: $pagination) {
     edges {
       ...FillEdge
     }
