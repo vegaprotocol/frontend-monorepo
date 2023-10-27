@@ -101,7 +101,7 @@ query ExplorerOracleFormMarkets {
         dataSourceSpec {
           ...ExplorerOracleDataSourceSpec
         }
-        dataConnection(pagination: { first: 1 }) {
+        dataConnection(pagination: { last: 1 }) {
           edges {
             node {
               externalData {

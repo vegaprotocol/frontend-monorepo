@@ -21,7 +21,7 @@ export type ExplorerOracleSpecByIdQuery = { __typename?: 'Query', oracleSpec?: {
 
 export const ExplorerOracleDataConnectionFragmentDoc = gql`
     fragment ExplorerOracleDataConnection on OracleSpec {
-  dataConnection(pagination: {last: 30}) {
+  dataConnection(pagination: {first: 30}) {
     edges {
       node {
         externalData {
@@ -163,7 +163,7 @@ export const ExplorerOracleDataSourceFragmentDoc = gql`
     ${ExplorerOracleDataConnectionFragmentDoc}`;
 export const ExplorerOracleSpecsDocument = gql`
     query ExplorerOracleSpecs {
-  oracleSpecsConnection(pagination: {last: 30}) {
+  oracleSpecsConnection(pagination: {first: 30}) {
     pageInfo {
       hasNextPage
     }

@@ -125,7 +125,7 @@ export const ExplorerOracleFormMarketsDocument = gql`
         dataSourceSpec {
           ...ExplorerOracleDataSourceSpec
         }
-        dataConnection(pagination: {first: 1}) {
+        dataConnection(pagination: {last: 1}) {
           edges {
             node {
               externalData {
