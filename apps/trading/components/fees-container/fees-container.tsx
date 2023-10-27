@@ -7,7 +7,7 @@ import {
   NetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { useMarketList } from '@vegaprotocol/markets';
-import { formatNumber } from '@vegaprotocol/utils';
+import { formatNumber, formatNumberRounded } from '@vegaprotocol/utils';
 import { useDiscountProgramsQuery, useFeesQuery } from './__generated__/Fees';
 import { FeeCard } from './fees-card';
 import { MarketFees } from './market-fees';
@@ -284,7 +284,7 @@ export const CurrentVolume = ({
   return (
     <div>
       <Stat
-        value={formatNumber(windowLengthVolume)}
+        value={formatNumberRounded(new BigNumber(windowLengthVolume))}
         text={t('Past %s epochs', epochs.toString())}
       />
       {requiredForNextTier > 0 && (

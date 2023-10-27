@@ -88,14 +88,18 @@ export const getReferralBenefitTier = (
 /**
  * Given a set of fees and a set of discounts return
  * the adjusted fee factor
+ *
+ * Formula for calculating the adjusted fees
+ *  total_discount_factor = 1 - (1 - volumeDiscount) * (1 - referralDiscount)
  */
 export const getAdjustedFee = (fees: BigNumber[], discounts: BigNumber[]) => {
   const totalFee = fees.reduce((sum, f) => sum.plus(f), new BigNumber(0));
-  const totalDiscount = discounts.reduce(
-    (sum, d) => sum.plus(d),
-    new BigNumber(0)
-  );
-  return totalFee
-    .times(BigNumber.max(0, new BigNumber(1).minus(totalDiscount)))
-    .toNumber();
+
+  const combinedFactors = discounts.reduce((acc, d) => {
+    return acc.times(new BigNumber(1).minus(d));
+  }, new BigNumber(1));
+
+  const totalFactor = new BigNumber(1).minus(combinedFactors);
+
+  return totalFee.times(BigNumber.max(0, totalFactor)).toNumber();
 };

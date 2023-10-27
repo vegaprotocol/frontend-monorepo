@@ -179,3 +179,33 @@ export const toNumberParts = (
 export const isNumeric = (
   value?: string | number | BigNumber | bigint | null
 ): value is NonNullable<number | string> => /^-?\d*\.?\d+$/.test(String(value));
+
+/**
+ * Format a number greater than 1 million with m for million, b for billion
+ * and t for trillion
+ */
+export const formatNumberRounded = (num: BigNumber) => {
+  let value = '';
+
+  const format = (divisor: string) => {
+    const result = num.dividedBy(divisor);
+    return result.isInteger() ? result.toString() : result.toFixed(1);
+  };
+
+  if (num.isGreaterThan(new BigNumber('1e14'))) {
+    value = '>100t';
+  } else if (num.isGreaterThanOrEqualTo(new BigNumber('1e12'))) {
+    // Trillion
+    value = `${format('1e12')}t`;
+  } else if (num.isGreaterThanOrEqualTo(new BigNumber('1e9'))) {
+    // Billion
+    value = `${format('1e9')}b`;
+  } else if (num.isGreaterThanOrEqualTo(new BigNumber('1e6'))) {
+    // Million
+    value = `${format('1e6')}m`;
+  } else {
+    value = formatNumber(num);
+  }
+
+  return value;
+};
