@@ -24,7 +24,7 @@ const STUDY_ORDER: Study[] = [
   Study.VOLUME,
 ];
 
-const DEFAULT_CHART_SETTINGS = {
+export const DEFAULT_CHART_SETTINGS = {
   interval: Interval.I15M,
   type: ChartType.CANDLE,
   overlays: [Overlay.MOVING_AVERAGE],
