@@ -5,7 +5,7 @@ import compact from 'lodash/compact';
 import type { ReferralSetsQueryVariables } from './__generated__/ReferralSets';
 import { useReferralSetsQuery } from './__generated__/ReferralSets';
 
-const DEFAULT_AGGREGATION_DAYS = 30;
+export const DEFAULT_AGGREGATION_DAYS = 30;
 
 export type Role = 'referrer' | 'referee';
 type UseReferralArgs = (

@@ -109,6 +109,7 @@ export const TiersContainer = () => {
           <Loading variant="large" />
         ) : (
           <TiersTable
+            windowLength={details?.windowLength}
             data={benefitTiers.map((bt) => ({
               ...bt,
               tierElement: (
@@ -162,6 +163,7 @@ const StakingTiers = ({
 
 const TiersTable = ({
   data,
+  windowLength,
 }: {
   data: Array<{
     tier: number;
@@ -170,6 +172,7 @@ const TiersTable = ({
     discount: string;
     volume: string;
   }>;
+  windowLength?: number;
 }) => {
   return (
     <Table
@@ -181,7 +184,15 @@ const TiersTable = ({
           tooltip: t('A percentage of commission earned by the referrer'),
         },
         { name: 'discount', displayName: t('Referrer trading discount') },
-        { name: 'volume', displayName: t('Min. trading volume') },
+        {
+          name: 'volume',
+          displayName: t(
+            'Min. trading volume %s',
+            windowLength
+              ? t('(last %s days)', windowLength.toString())
+              : undefined
+          ),
+        },
         { name: 'epochs', displayName: t('Min. epochs') },
       ]}
       data={data.map((d) => ({

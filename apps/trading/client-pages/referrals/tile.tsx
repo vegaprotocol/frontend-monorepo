@@ -7,6 +7,7 @@ import {
 import classNames from 'classnames';
 import type { HTMLAttributes, ReactNode } from 'react';
 import { Button } from './buttons';
+import { t } from '@vegaprotocol/i18n';
 
 export const Tile = ({
   className,
@@ -54,13 +55,18 @@ const FADE_OUT_STYLE = classNames(
 
 export const CodeTile = ({
   code,
+  createdAt,
   className,
 }: {
   code: string;
+  createdAt?: string;
   className?: string;
 }) => {
   return (
-    <StatTile title="Your referral code">
+    <StatTile
+      title={t('Your referral code')}
+      description={createdAt ? t('(Created at: %s)', createdAt) : undefined}
+    >
       <div className="flex gap-2 items-center justify-between">
         <Tooltip
           description={
@@ -82,7 +88,7 @@ export const CodeTile = ({
         </Tooltip>
         <CopyWithTooltip text={code}>
           <Button className="text-sm no-underline !py-0 !px-0 h-fit !bg-transparent">
-            <span className="sr-only">Copy</span>
+            <span className="sr-only">{t('Copy')}</span>
             <VegaIcon size={24} name={VegaIconNames.COPY} />
           </Button>
         </CopyWithTooltip>

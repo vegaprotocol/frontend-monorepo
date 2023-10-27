@@ -18,6 +18,7 @@ import { Routes } from '../../lib/links';
 import { useTransactionEventSubscription } from '@vegaprotocol/web3';
 import { t } from '@vegaprotocol/i18n';
 import { Statistics } from './referral-statistics';
+import { useReferralProgram } from './hooks/use-referral-program';
 
 const RELOAD_DELAY = 3000;
 
@@ -32,6 +33,7 @@ const validateCode = (value: string) => {
 };
 
 export const ApplyCodeForm = () => {
+  const program = useReferralProgram();
   const navigate = useNavigate();
   const openWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
@@ -237,7 +239,7 @@ export const ApplyCodeForm = () => {
       {previewData ? (
         <div className="mt-10">
           <h2 className="text-2xl mb-5">{t('You are joining')}</h2>
-          <Statistics data={previewData} as="referee" />
+          <Statistics data={previewData} program={program} as="referee" />
         </div>
       ) : null}
     </>
