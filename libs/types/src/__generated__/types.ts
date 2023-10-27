@@ -1299,6 +1299,21 @@ export type FeesStats = {
   volumeDiscountApplied: Array<PartyAmount>;
 };
 
+/** Fees that have been applied on a specific asset for a given party. */
+export type FeesStatsForParty = {
+  __typename?: 'FeesStatsForParty';
+  /** The settlement asset of the market. */
+  assetId: Scalars['String'];
+  /** The total referral discounts applied to all referee taker fees */
+  refereesDiscountApplied: Scalars['String'];
+  /** The total maker fees received by the maker side. */
+  totalMakerFeesReceived: Scalars['String'];
+  /** The total referral rewards received by referrer of the referral set. */
+  totalRewardsReceived: Scalars['String'];
+  /** The total volume discounts applied to all referee taker fees */
+  volumeDiscountApplied: Scalars['String'];
+};
+
 /**
  * Filter describes the conditions under which oracle data is considered of
  * interest or not.
@@ -4343,6 +4358,8 @@ export type Query = {
   ethereumKeyRotations: EthereumKeyRotationsConnection;
   /** Get fees statistics */
   feesStats?: Maybe<FeesStats>;
+  /** Get fees statistics for a given party */
+  feesStatsForParty?: Maybe<Array<Maybe<FeesStatsForParty>>>;
   /** Funding payment for perpetual markets. */
   fundingPayments: FundingPaymentConnection;
   /**
@@ -4361,10 +4378,10 @@ export type Query = {
   /**
    * Get ledger entries by asset, market, party, account type, transfer type within the given date range.
    * Note: The date range is restricted to any 5 days.
-   *       If no start or end date is provided, only ledger entries from the last 5 days will be returned.
-   *       If a start and end date are provided, but the end date is more than 5 days after the start date, only data up to 5 days after the start date will be returned.
-   *       If a start date is provided but no end date, the end date will be set to 5 days after the start date.
-   *       If no start date is provided, but the end date is, the start date will be set to 5 days before the end date.
+   * If no start or end date is provided, only ledger entries from the last 5 days will be returned.
+   * If a start and end date are provided, but the end date is more than 5 days after the start date, only data up to 5 days after the start date will be returned.
+   * If a start date is provided but no end date, the end date will be set to 5 days after the start date.
+   * If no start date is provided, but the end date is, the start date will be set to 5 days before the end date.
    */
   ledgerEntries: AggregatedLedgerEntriesConnection;
   /** List all active liquidity providers for a specific market */
@@ -4603,6 +4620,15 @@ export type QueryfeesStatsArgs = {
   epoch?: InputMaybe<Scalars['Int']>;
   marketId?: InputMaybe<Scalars['ID']>;
   partyId?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryfeesStatsForPartyArgs = {
+  assetId?: InputMaybe<Scalars['ID']>;
+  fromEpoch?: InputMaybe<Scalars['Int']>;
+  partyId: Scalars['ID'];
+  toEpoch?: InputMaybe<Scalars['Int']>;
 };
 
 

@@ -1,42 +1,22 @@
 import { Routes } from '../../../routes/route-names';
 import { Link } from 'react-router-dom';
-import type { OracleSpecEdge } from '@vegaprotocol/types';
 
 import type { ComponentProps } from 'react';
 import Hash from '../hash';
 
-function hasOracleSeenReports(
-  data: OracleSpecEdge[],
-  oracleId: string
-): boolean {
-  const node = data
-    .filter((o) => o.node.dataSourceSpec.spec.id === oracleId)
-    .at(0);
-
-  if (!node) {
-    return false;
-  }
-
-  const count = node.node.dataConnection.edges?.length || 0;
-
-  return count > 0;
-}
-
 export type OracleLinkProps = Partial<ComponentProps<typeof Link>> & {
   id: string;
   status?: string;
-  data: OracleSpecEdge[];
+  hasSeenOracleReports?: boolean;
 };
 
-const OracleLink = ({
+export const OracleLink = ({
   id,
   status,
-  data,
+  hasSeenOracleReports = false,
   children,
   ...props
 }: OracleLinkProps) => {
-  const d = hasOracleSeenReports(data, id);
-
   const bgColour =
     status === 'STATUS_ACTIVE'
       ? 'bg-yellow-100 hover:bg-yellow-200 border-yellow-200'
@@ -53,7 +33,7 @@ const OracleLink = ({
       to={`/${Routes.ORACLES}/${id}`}
     >
       <Hash text={id} truncate={true} />
-      {d ? (
+      {hasSeenOracleReports ? (
         <strong
           className={`absolute top-0 right-0 w-1 h-full font-thin ${indicatorColour}`}
           title="Oracle has matched data"

@@ -1,3 +1,4 @@
+import compact from 'lodash/compact';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { RouteTitle } from '../../../components/route-title';
 import { t } from '@vegaprotocol/i18n';
@@ -5,7 +6,7 @@ import { useDocumentTitle } from '../../../hooks/use-document-title';
 import { useScrollToLocation } from '../../../hooks/scroll-to-location';
 import { useExplorerOracleFormMarketsQuery } from '../__generated__/OraclesForMarkets';
 import { MarketLink } from '../../../components/links';
-import OracleLink from '../../../components/links/oracle-link/oracle-link';
+import { OracleLink } from '../../../components/links/oracle-link/oracle-link';
 import { useState } from 'react';
 import { MarketStateMapping } from '@vegaprotocol/types';
 import type { MarketState } from '@vegaprotocol/types';
@@ -50,6 +51,7 @@ const Oracles = () => {
           <tbody>
             {data?.marketsConnection?.edges
               ? data.marketsConnection.edges.map((o) => {
+                  let hasSeenOracleReports = false;
                   let settlementOracle = '-';
                   let settlementOracleStatus = '-';
                   let terminationOracle = '-';
@@ -93,7 +95,20 @@ const Oracles = () => {
                       o.node.tradableInstrument.instrument.product
                         .dataSourceSpecForSettlementSchedule.status;
                   }
-                  const oracleInformation = data.oracleSpecsConnection?.edges;
+                  const oracleInformationUnfiltered =
+                    data?.oracleSpecsConnection?.edges?.map((e) =>
+                      e && e.node ? e.node : undefined
+                    ) || [];
+                  const oracleInformation = compact(oracleInformationUnfiltered)
+                    .filter((o) => o.dataSourceSpec.spec.id === id)
+                    .at(0);
+                  if (
+                    oracleInformation?.dataConnection.edges?.length &&
+                    oracleInformation.dataConnection.edges.length > 0
+                  ) {
+                    hasSeenOracleReports = true;
+                  }
+
                   const oracleList = `${settlementOracle} ${terminationOracle}`;
 
                   return (
@@ -125,7 +140,7 @@ const Oracles = () => {
                         <OracleLink
                           id={settlementOracle}
                           status={settlementOracleStatus}
-                          data={oracleInformation}
+                          hasSeenOracleReports={hasSeenOracleReports}
                           onMouseOver={() => setHoveredOracle(settlementOracle)}
                           onMouseOut={() => setHoveredOracle('')}
                         />
@@ -134,7 +149,7 @@ const Oracles = () => {
                         <OracleLink
                           id={terminationOracle}
                           status={terminationOracleStatus}
-                          data={oracleInformation}
+                          hasSeenOracleReports={hasSeenOracleReports}
                           onMouseOver={() =>
                             setHoveredOracle(terminationOracle)
                           }
