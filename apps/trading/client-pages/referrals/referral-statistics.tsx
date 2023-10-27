@@ -27,6 +27,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 import BigNumber from 'bignumber.js';
 import { t } from '@vegaprotocol/i18n';
+import maxBy from 'lodash/maxBy';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
@@ -102,9 +103,9 @@ export const Statistics = ({
       !isNaN(t.discountFactor) &&
       t.discountFactor === discountFactorValue
   );
-  const nextBenefitTierValue =
-    currentBenefitTierValue &&
-    benefitTiers.find((t) => t.tier === currentBenefitTierValue.tier - 1);
+  const nextBenefitTierValue = currentBenefitTierValue
+    ? benefitTiers.find((t) => t.tier === currentBenefitTierValue.tier - 1)
+    : maxBy(benefitTiers, (bt) => bt.tier); // max tier number is lowest tier
   const epochsValue =
     !isNaN(currentEpoch) && refereeInfo?.atEpoch
       ? currentEpoch - refereeInfo?.atEpoch
@@ -189,7 +190,7 @@ export const Statistics = ({
 
   const currentBenefitTierTile = (
     <StatTile title={t('Current tier')}>
-      {currentBenefitTierValue?.tier || '-'}
+      {currentBenefitTierValue?.tier || 'None'}
     </StatTile>
   );
   const discountFactorTile = (
@@ -204,14 +205,24 @@ export const Statistics = ({
     <StatTile title={t('Epochs in set')}>{epochsValue}</StatTile>
   );
   const nextTierVolumeTile = (
-    <StatTile title={t('Volume to next tier')}>
+    <StatTile
+      title={t(
+        'Volume to next tier %s',
+        nextBenefitTierValue?.tier ? `(${nextBenefitTierValue.tier})` : ''
+      )}
+    >
       {nextBenefitTierVolumeValue <= 0
         ? '0'
         : compactNumFormat.format(nextBenefitTierVolumeValue)}
     </StatTile>
   );
   const nextTierEpochsTile = (
-    <StatTile title={t('Epochs to next tier')}>
+    <StatTile
+      title={t(
+        'Epochs to next tier %s',
+        nextBenefitTierValue?.tier ? `(${nextBenefitTierValue.tier})` : ''
+      )}
+    >
       {nextBenefitTierEpochsValue <= 0 ? '0' : nextBenefitTierEpochsValue}
     </StatTile>
   );
