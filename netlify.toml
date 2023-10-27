@@ -1,2 +1,4 @@
-[functions]
-  included_files = ["!node_modules/@sentry/cli/sentry-cli"]
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
