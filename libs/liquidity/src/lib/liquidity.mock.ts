@@ -12,12 +12,14 @@ export const liquidityProvisionsQuery = (
 ): LiquidityProvisionsQuery => {
   const defaultResult: LiquidityProvisionsQuery = {
     market: {
-      liquidityProvisionsConnection: {
-        __typename: 'LiquidityProvisionsConnection',
+      liquidityProvisions: {
+        __typename: 'LiquidityProvisionsWithPendingConnection',
         edges: liquidityFields.map((node) => {
           return {
-            __typename: 'LiquidityProvisionsEdge',
-            node,
+            __typename: 'LiquidityProvisionWithPendingEdge',
+            node: {
+              current: node,
+            },
           };
         }),
       },

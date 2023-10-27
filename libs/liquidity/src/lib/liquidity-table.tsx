@@ -96,6 +96,58 @@ export const LiquidityTable = ({
       return `${addDecimalsFormatNumber(newValue, assetDecimalPlaces ?? 0)}`;
     };
 
+    const feesAccruedTooltip = ({ value, data }: ITooltipParams) => {
+      if (!value) return '-';
+      const newValue = new BigNumber(value)
+        .times(Number(stakeToCcyVolume) || 1)
+        .toString();
+      let lessThanFull = false,
+        lessThanMinimum = false;
+      if (data.sla) {
+        lessThanFull =
+          data.sla &&
+          new BigNumber(data.sla.currentEpochFractionOfTimeOnBook).isLessThan(
+            1
+          );
+        lessThanMinimum =
+          data.sla &&
+          new BigNumber(data.sla.currentEpochFractionOfTimeOnBook).isLessThan(
+            data.commitmentMinTimeFraction
+          );
+      }
+      if (lessThanMinimum) {
+        return t(
+          `This LP's time on the book in the current epoch (%s) is less than the minimum required (%s), so they could lose all fee revenue for this epoch.`,
+          [
+            formatNumberPercentage(
+              new BigNumber(data.sla.currentEpochFractionOfTimeOnBook).times(
+                100
+              ),
+              2
+            ),
+            formatNumberPercentage(
+              new BigNumber(data.commitmentMinTimeFraction).times(100),
+              2
+            ),
+          ]
+        );
+      }
+      if (lessThanFull) {
+        return t(
+          `This LP's time on the book in the current epoch (%s) is less than 100%, so they could lose some fees to a better performing LP.`,
+          [
+            formatNumberPercentage(
+              new BigNumber(data.sla.currentEpochFractionOfTimeOnBook).times(
+                100
+              ),
+              2
+            ),
+          ]
+        );
+      }
+      return addDecimalsFormatNumber(newValue, assetDecimalPlaces ?? 0);
+    };
+
     const stakeToCcyVolumeQuantumFormatter = ({
       value,
     }: ValueFormatterParams) => {
@@ -178,7 +230,7 @@ export const LiquidityTable = ({
         ],
       },
       {
-        headerName: t('Live liquidity details'),
+        headerName: t('Live liquidity data'),
         marryChildren: true,
         children: [
           {
@@ -192,7 +244,41 @@ export const LiquidityTable = ({
             tooltipValueGetter: stakeToCcyVolumeFormatter,
           },
           {
-            headerName: t(`Live time fraction on book`),
+            headerName: t('Fees accrued this epoch'),
+            field: 'earmarkedFees',
+            type: 'rightAligned',
+            headerTooltip: t(
+              `The liquidity fees accrued by each provider, which will be distributed at the end of the epoch after applying any penalties.`
+            ),
+            valueFormatter: stakeToCcyVolumeQuantumFormatter,
+            tooltipValueGetter: feesAccruedTooltip,
+            cellClassRules: {
+              'text-warning': ({ data }: { data: LiquidityProvisionData }) => {
+                if (!data.sla) return false;
+                return (
+                  new BigNumber(
+                    data.sla.currentEpochFractionOfTimeOnBook
+                  ).isLessThan(1) &&
+                  new BigNumber(
+                    data.sla.currentEpochFractionOfTimeOnBook
+                  ).isGreaterThan(data.commitmentMinTimeFraction)
+                );
+              },
+              'text-red-500': ({ data }: { data: LiquidityProvisionData }) => {
+                if (!data.sla) return false;
+                return (
+                  new BigNumber(
+                    data.sla.currentEpochFractionOfTimeOnBook
+                  ).isLessThan(data.commitmentMinTimeFraction) &&
+                  new BigNumber(
+                    data.sla.currentEpochFractionOfTimeOnBook
+                  ).isGreaterThan(0)
+                );
+              },
+            },
+          },
+          {
+            headerName: t(`Live time on book`),
             field: 'sla.currentEpochFractionOfTimeOnBook',
             type: 'rightAligned',
             headerTooltip: t('Current epoch fraction of time on the book.'),
@@ -212,7 +298,7 @@ export const LiquidityTable = ({
         marryChildren: true,
         children: [
           {
-            headerName: t(`Last time fraction on the book`),
+            headerName: t(`Last time on the book`),
             field: 'sla.lastEpochFractionOfTimeOnBook',
             type: 'rightAligned',
             headerTooltip: t('Last epoch fraction of time on the book.'),
@@ -275,7 +361,9 @@ export const LiquidityTable = ({
   return (
     <AgGrid
       overlayNoRowsTemplate={t('No liquidity provisions')}
-      getRowId={({ data }: { data: LiquidityProvisionData }) => data.id || ''}
+      getRowId={({ data }: { data: LiquidityProvisionData }) => {
+        return data.id || '';
+      }}
       tooltipShowDelay={500}
       defaultColDef={defaultColDef}
       {...props}

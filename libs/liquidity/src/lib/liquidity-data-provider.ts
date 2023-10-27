@@ -20,20 +20,24 @@ import type {
   LiquidityProvisionsQueryVariables,
 } from './__generated__/MarketLiquidity';
 
+export type LiquidityProvisionFields = LiquidityProvisionFieldsFragment &
+  Schema.LiquiditySLAParameters;
+
 export const liquidityProvisionsDataProvider = makeDataProvider<
   LiquidityProvisionsQuery,
-  LiquidityProvisionFieldsFragment[],
+  LiquidityProvisionFields[],
   never,
   never,
   LiquidityProvisionsQueryVariables
 >({
   query: LiquidityProvisionsDocument,
   getData: (responseData: LiquidityProvisionsQuery | null) => {
-    return (
-      responseData?.market?.liquidityProvisionsConnection?.edges?.map(
-        (e) => e?.node
-      ) ?? []
-    ).filter((n) => !!n) as LiquidityProvisionFieldsFragment[];
+    return (responseData?.market?.liquidityProvisions?.edges
+      ?.filter((n) => !!n)
+      .map((e) => ({
+        ...e?.node.current,
+        ...responseData.market?.liquiditySLAParameters,
+      })) ?? []) as LiquidityProvisionFields[];
   },
 });
 
@@ -81,10 +85,7 @@ export const lpAggregatedDataProvider = makeDerivedDataProvider<
   }
 );
 
-export const matchFilter = (
-  filter: Filter,
-  lp: LiquidityProvisionFieldsFragment
-) => {
+export const matchFilter = (filter: Filter, lp: LiquidityProvisionData) => {
   if (filter.partyId && lp.party.id !== filter.partyId) {
     return false;
   }
@@ -104,15 +105,18 @@ export const matchFilter = (
 };
 
 export interface LiquidityProvisionData
-  extends Omit<LiquidityProvisionFieldsFragment, '__typename'> {
+  extends Omit<LiquidityProvisionFieldsFragment, '__typename'>,
+    Partial<LiquidityProviderFieldsFragment>,
+    Omit<Schema.LiquiditySLAParameters, '__typename'> {
   assetDecimalPlaces?: number;
-  balance?: string;
+  balance?: number;
   averageEntryValuation?: string;
   equityLikeShare?: string;
+  earmarkedFees?: number;
 }
 
 export const getLiquidityProvision = (
-  liquidityProvisions: LiquidityProvisionFieldsFragment[],
+  liquidityProvisions: LiquidityProvisionFields[],
   liquidityProvider: LiquidityProviderFieldsFragment[],
   filter?: Filter
 ): LiquidityProvisionData[] => {
@@ -141,17 +145,29 @@ export const getLiquidityProvision = (
       const bondAccounts = accounts?.filter(
         (a) => a?.type === Schema.AccountType.ACCOUNT_TYPE_BOND
       );
+      const feeAccounts = accounts?.filter(
+        (a) => a?.type === Schema.AccountType.ACCOUNT_TYPE_LP_LIQUIDITY_FEES
+      );
       const balance =
         bondAccounts
           ?.reduce(
             (acc, a) => acc.plus(new BigNumber(a.balance ?? 0)),
             new BigNumber(0)
           )
-          .toString() || '0';
+          .toNumber() ?? 0;
+
+      const earmarkedFees =
+        feeAccounts
+          ?.reduce(
+            (acc, a) => acc.plus(new BigNumber(a.balance ?? 0)),
+            new BigNumber(0)
+          )
+          .toNumber() ?? 0;
       return {
         ...lp,
         ...lpObj,
         balance,
+        earmarkedFees,
         __typename: undefined,
       };
     });

@@ -4,7 +4,7 @@ fragment LiquidityProvisionFields on LiquidityProvision {
   id
   party {
     id
-    accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {
+    accountsConnection(marketId: $marketId) {
       edges {
         node {
           type
@@ -22,10 +22,21 @@ fragment LiquidityProvisionFields on LiquidityProvision {
 
 query LiquidityProvisions($marketId: ID!) {
   market(id: $marketId) {
-    liquidityProvisionsConnection(live: true) {
+    liquiditySLAParameters {
+      priceRange
+      commitmentMinTimeFraction
+      performanceHysteresisEpochs
+      slaCompetitionFactor
+    }
+    liquidityProvisions(live: true) {
       edges {
         node {
-          ...LiquidityProvisionFields
+          current {
+            ...LiquidityProvisionFields
+          }
+          pending {
+            ...LiquidityProvisionFields
+          }
         }
       }
     }

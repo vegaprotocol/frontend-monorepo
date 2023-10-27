@@ -159,8 +159,8 @@ export const NetworkParams = {
     'market_liquidity_targetstake_triggering_ratio',
   market_liquidity_bondPenaltyParameter:
     'market_liquidity_bondPenaltyParameter',
-  market_liquidity_nonPerformanceBondPenaltySlope:
-    'market_liquidity_nonPerformanceBondPenaltySlope',
+  market_liquidity_sla_nonPerformanceBondPenaltySlope:
+    'market_liquidity_sla_nonPerformanceBondPenaltySlope',
   market_liquidity_sla_nonPerformanceBondPenaltyMax:
     'market_liquidity_sla_nonPerformanceBondPenaltyMax',
   market_liquidity_maximumLiquidityFeeFactorLevel:
