@@ -189,7 +189,7 @@ const TiersTable = ({
           displayName: t(
             'Min. trading volume %s',
             windowLength
-              ? t('(last %s days)', windowLength.toString())
+              ? t('(last %s epochs)', windowLength.toString())
               : undefined
           ),
         },

@@ -139,10 +139,10 @@ export const Statistics = ({
   const baseCommissionTile = (
     <StatTile
       title={t('Base commission rate')}
-      description={t(
-        '(Combined Volume %s)',
-        compactNumFormat.format(runningVolumeValue)
-      )}
+      description={t('(Combined set volume %s over last %s epochs)', [
+        compactNumFormat.format(runningVolumeValue),
+        (details?.windowLength || DEFAULT_AGGREGATION_DAYS).toString(),
+      ])}
     >
       {baseCommissionValue * 100}%
     </StatTile>
@@ -190,7 +190,7 @@ export const Statistics = ({
   const referrerVolumeTile = (
     <StatTile
       title={t(
-        'My volume (last %s days)',
+        'My volume (last %s epochs)',
         (details?.windowLength || DEFAULT_AGGREGATION_DAYS).toString()
       )}
     >
@@ -204,7 +204,7 @@ export const Statistics = ({
   const totalCommissionTile = (
     <StatTile
       title={t(
-        'Total commission (last %s days)',
+        'Total commission (last %s epochs)',
         (details?.windowLength || DEFAULT_AGGREGATION_DAYS).toString()
       )}
       description={t('(qUSD)')}
@@ -337,7 +337,7 @@ export const Statistics = ({
                 {
                   name: 'volume',
                   displayName: t(
-                    'Volume (last %s days)',
+                    'Volume (last %s epochs)',
                     (
                       details?.windowLength || DEFAULT_AGGREGATION_DAYS
                     ).toString()
@@ -346,7 +346,7 @@ export const Statistics = ({
                 {
                   name: 'commission',
                   displayName: t(
-                    'Commission earned (last %s days)',
+                    'Commission earned (last %s epochs)',
                     (
                       details?.windowLength || DEFAULT_AGGREGATION_DAYS
                     ).toString()
