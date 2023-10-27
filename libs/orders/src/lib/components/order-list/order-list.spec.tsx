@@ -46,6 +46,12 @@ const generateJsx = (
 
 describe('OrderListTable', () => {
   it('should render correct columns', async () => {
+    //  7003-MORD-001
+    //  7003-MORD-002
+    //  7003-MORD-003
+    //  7003-MORD-004
+    //  7003-MORD-005
+    //  7003-MORD-006
     await act(async () => {
       render(generateJsx({ rowData: [marketOrder, limitOrder] }));
     });
@@ -184,6 +190,7 @@ describe('OrderListTable', () => {
 
   describe('amend cell', () => {
     it('allows cancelling and editing for permitted orders', async () => {
+      //  7003-MORD-007
       const mockEdit = jest.fn();
       const mockCancel = jest.fn();
       const order = generateOrder({
@@ -209,6 +216,7 @@ describe('OrderListTable', () => {
     });
 
     it('does not allow cancelling and editing for permitted orders if read only', async () => {
+      // 7003-MORD-008
       const mockEdit = jest.fn();
       const mockCancel = jest.fn();
       const order = generateOrder({
@@ -233,6 +241,7 @@ describe('OrderListTable', () => {
     });
 
     it('shows if an order is a liquidity provision order and does not show order actions', async () => {
+      // 7003-MORD-008
       const order = generateOrder({
         type: Schema.OrderType.TYPE_LIMIT,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
@@ -251,6 +260,7 @@ describe('OrderListTable', () => {
     });
 
     it('shows if an order is a pegged order and does not show order actions', async () => {
+      // 7003-MORD-008
       const order = generateOrder({
         type: Schema.OrderType.TYPE_LIMIT,
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,

@@ -21,6 +21,7 @@ const market = {
 } as unknown as Market;
 
 let mockDataSuccessorMarket: PartialDeep<Market> | null = null;
+let mockDataMarketState: Market['state'] | null = null;
 jest.mock('@vegaprotocol/data-provider', () => ({
   ...jest.requireActual('@vegaprotocol/data-provider'),
   useDataProvider: jest.fn().mockImplementation((args) => {
@@ -43,6 +44,12 @@ jest.mock('@vegaprotocol/utils', () => ({
 let mockCandles = {};
 jest.mock('@vegaprotocol/markets', () => ({
   ...jest.requireActual('@vegaprotocol/markets'),
+  useMarketState: (marketId: string) =>
+    marketId
+      ? {
+          data: mockDataMarketState,
+        }
+      : { data: undefined },
   useSuccessorMarket: (marketId: string) =>
     marketId
       ? {
@@ -81,30 +88,6 @@ describe('MarketSuccessorBanner', () => {
       });
       expect(container).toBeEmptyDOMElement();
     });
-
-    it('successor market not in continuous mode', () => {
-      mockDataSuccessorMarket = {
-        ...mockDataSuccessorMarket,
-        tradingMode: Types.MarketTradingMode.TRADING_MODE_NO_TRADING,
-      };
-      const { container } = render(<MarketSuccessorBanner market={market} />, {
-        wrapper: MockedProvider,
-      });
-      expect(container).toBeEmptyDOMElement();
-      expect(allUtils.getMarketExpiryDate).toHaveBeenCalled();
-    });
-
-    it('successor market is not active', () => {
-      mockDataSuccessorMarket = {
-        ...mockDataSuccessorMarket,
-        state: Types.MarketState.STATE_PENDING,
-      };
-      const { container } = render(<MarketSuccessorBanner market={market} />, {
-        wrapper: MockedProvider,
-      });
-      expect(container).toBeEmptyDOMElement();
-      expect(allUtils.getMarketExpiryDate).toHaveBeenCalled();
-    });
   });
 
   describe('should be displayed', () => {
@@ -118,6 +101,17 @@ describe('MarketSuccessorBanner', () => {
       expect(
         screen.getByRole('link', { name: 'Successor Market Name' })
       ).toHaveAttribute('href', '/#/markets/successorMarketID');
+    });
+
+    it('no successor market data, market settled', () => {
+      mockDataSuccessorMarket = null;
+      mockDataMarketState = Types.MarketState.STATE_SETTLED;
+      render(<MarketSuccessorBanner market={market} />, {
+        wrapper: MockedProvider,
+      });
+      expect(
+        screen.getByText('This market has been settled')
+      ).toBeInTheDocument();
     });
 
     it('should display optionally successor volume', () => {
@@ -137,7 +131,9 @@ describe('MarketSuccessorBanner', () => {
       render(<MarketSuccessorBanner market={market} />, {
         wrapper: MockedProvider,
       });
-      expect(screen.getByText('has 101.367 24h vol.')).toBeInTheDocument();
+      expect(
+        screen.getByText('has a 24h trading volume of 101.367')
+      ).toBeInTheDocument();
     });
 
     it('should display optionally duration', () => {

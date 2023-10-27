@@ -37,6 +37,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
           headerName: t('Market'),
           field: 'market.tradableInstrument.instrument.code',
           minWidth: 200,
+          sort: 'desc',
           cellRenderer: ({
             value,
             data,
@@ -140,6 +141,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         tooltipShowDelay={500}
         defaultColDef={defaultColDef}
         columnDefs={coldefs}
+        domLayout="autoHeight"
       />
     );
   }

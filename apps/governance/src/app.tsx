@@ -26,11 +26,11 @@ import {
 } from '@vegaprotocol/web3';
 import { Web3Provider } from '@vegaprotocol/web3';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
+import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import {
   useVegaTransactionManager,
   useVegaTransactionUpdater,
-  VegaWalletProvider,
-} from '@vegaprotocol/wallet';
+} from '@vegaprotocol/web3';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import {
@@ -38,10 +38,10 @@ import {
   NetworkLoader,
   useInitializeEnv,
   NodeGuard,
-  AppFailure,
   NodeSwitcherDialog,
   useNodeSwitcherStore,
   DocsLinks,
+  NodeFailure,
 } from '@vegaprotocol/environment';
 import { ENV } from './config';
 import type { InMemoryCacheConfig } from '@apollo/client';
@@ -185,7 +185,7 @@ const Web3Container = ({
                     <TemplateSidebar sidebar={sideBar}>
                       <AppRouter />
                     </TemplateSidebar>
-                    <footer className="p-4 border-t border-neutral-700 break-all">
+                    <footer className="p-4 break-all border-t border-neutral-700">
                       <NetworkInfo />
                     </footer>
                   </AppLayout>
@@ -324,7 +324,7 @@ const AppContainer = () => {
           <NodeGuard
             skeleton={<div>{t('Loading')}</div>}
             failure={
-              <AppFailure title={t('NodeUnsuitable', { url: VEGA_URL })} />
+              <NodeFailure title={t('NodeUnsuitable', { url: VEGA_URL })} />
             }
           >
             <AsyncRenderer<EthereumConfig | null>

@@ -40,7 +40,7 @@ context.skip('Node switcher', { tags: '@regression' }, function () {
       const errorTypeTxt = 'Error: invalid url';
       const nodeErrorTxt = 'fakeUrl is not a valid url.';
 
-      cy.getByTestId('node-url-custom').click();
+      cy.getByTestId('node-url-custom').click({ force: true });
 
       cy.getByTestId(customNodeBtn).within(() => {
         cy.get('input').clear().type('fakeUrl');

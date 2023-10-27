@@ -41,6 +41,7 @@ const ethereumRequest = <T>(args: RequestArguments): Promise<T> => {
 
 export const LOCAL_SNAP_ID = 'local:http://localhost:8080';
 export const DEFAULT_SNAP_ID = 'npm:@vegaprotocol/snap';
+export const DEFAULT_SNAP_VERSION = '0.3.1';
 
 type GetSnapsResponse = Record<string, Snap>;
 

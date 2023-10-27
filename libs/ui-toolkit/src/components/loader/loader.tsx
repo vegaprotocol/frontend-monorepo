@@ -1,14 +1,15 @@
 import classNames from 'classnames';
-import { useMemo } from 'react';
 import styles from './loader.module.scss';
 
-const pseudoRandom = (seed: number) => {
+export const pseudoRandom = (seed: number) => {
   let value = seed;
   return () => {
     value = (value * 16807) % 2147483647;
     return value / 1000000000;
   };
 };
+
+const generate = pseudoRandom(1);
 
 export interface LoaderProps {
   size?: 'small' | 'large';
@@ -27,14 +28,9 @@ export const Loader = ({ size = 'large', forceTheme }: LoaderProps) => {
     size === 'small' ? 'w-[15px] h-[15px]' : 'w-[50px] h-[50px]';
   const items = size === 'small' ? 9 : 25;
 
-  const generate = useMemo(() => pseudoRandom(1), []);
-
   return (
-    <div
-      className="flex flex-col items-center pre-loader-center"
-      data-testid="loader"
-    >
-      <div className={`${wrapperClasses} flex flex-wrap pre-loader-wrapper`}>
+    <div className="flex flex-col items-center" data-testid="loader">
+      <div className={`${wrapperClasses} flex flex-wrap`}>
         {new Array(items).fill(null).map((_, i) => {
           return (
             <div

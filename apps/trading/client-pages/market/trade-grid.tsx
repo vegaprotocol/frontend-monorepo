@@ -18,6 +18,7 @@ import { TradingViews } from './trade-views';
 import {
   MarketSuccessorBanner,
   MarketSuccessorProposalBanner,
+  MarketTerminationBanner,
 } from '../../components/market-banner';
 import { FLAGS } from '@vegaprotocol/environment';
 
@@ -72,8 +73,17 @@ const MainGrid = memo(
                   {market &&
                   market.tradableInstrument.instrument.product.__typename ===
                     'Perpetual' ? (
-                    <Tab id="funding" name={t('Funding')}>
+                    <Tab id="funding-history" name={t('Funding history')}>
                       <TradingViews.funding.component marketId={marketId} />
+                    </Tab>
+                  ) : null}
+                  {market &&
+                  market.tradableInstrument.instrument.product.__typename ===
+                    'Perpetual' ? (
+                    <Tab id="funding-payments" name={t('Funding payments')}>
+                      <TradingViews.fundingPayments.component
+                        marketId={marketId}
+                      />
                     </Tab>
                   ) : null}
                 </Tabs>
@@ -113,7 +123,7 @@ const MainGrid = memo(
               <Tab
                 id="open-orders"
                 name={t('Open')}
-                menu={<TradingViews.activeOrders.menu marketId={marketId} />}
+                menu={<TradingViews.activeOrders.menu />}
               >
                 <TradingViews.orders.component filter={Filter.Open} />
               </Tab>
@@ -126,7 +136,7 @@ const MainGrid = memo(
               <Tab
                 id="orders"
                 name={t('All')}
-                menu={<TradingViews.orders.menu marketId={marketId} />}
+                menu={<TradingViews.orders.menu />}
               >
                 <TradingViews.orders.component />
               </Tab>
@@ -136,7 +146,7 @@ const MainGrid = memo(
                 </Tab>
               ) : null}
               <Tab id="fills" name={t('Fills')}>
-                <TradingViews.fills.component marketId={marketId} />
+                <TradingViews.fills.component />
               </Tab>
               <Tab
                 id="accounts"
@@ -169,6 +179,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
             <MarketSuccessorProposalBanner marketId={market?.id} />
           </>
         )}
+        <MarketTerminationBanner market={market} />
         <OracleBanner marketId={market?.id || ''} />
       </div>
       <div className="min-h-0 p-0.5">

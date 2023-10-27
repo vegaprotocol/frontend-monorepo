@@ -7,15 +7,21 @@ export type NewMarketProductFieldsFragment = { __typename?: 'Proposal', terms: {
 
 export type UpdateMarketStatesFragment = { __typename?: 'Proposal', terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState', updateType: Types.MarketUpdateType, price?: string | null, market: { __typename?: 'Market', decimalPlaces: number, id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, code: string, product: { __typename: 'Future', quoteName: string } | { __typename: 'Perpetual', quoteName: string } | { __typename: 'Spot' } } } } } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } };
 
+export type UpdateReferralProgramsFragment = { __typename?: 'Proposal', terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram', windowLength: number, endOfProgram: any, benefitTiers: Array<{ __typename?: 'BenefitTier', minimumEpochs: number, minimumRunningNotionalTakerVolume: string, referralDiscountFactor: string, referralRewardFactor: string }>, stakingTiers: Array<{ __typename?: 'StakingTier', minimumStakedTokens: string, referralRewardMultiplier: string }> } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } };
+
+export type UpdateVolumeDiscountProgramsFragment = { __typename?: 'Proposal', terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram', endOfProgramTimestamp: any, windowLength: number, benefitTiers: Array<{ __typename?: 'VolumeBenefitTier', minimumRunningNotionalTakerVolume: string, volumeDiscountFactor: string }> } } };
+
 export type ProposalFieldsFragment = { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, datetime: any, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null, rationale: { __typename?: 'ProposalRationale', title: string, description: string }, party: { __typename?: 'Party', id: string }, terms: { __typename?: 'ProposalTerms', closingDatetime: any, enactmentDatetime?: any | null, change: { __typename?: 'CancelTransfer' } | { __typename: 'NewAsset', name: string, symbol: string, decimals: number, quantum: string, source: { __typename?: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename?: 'ERC20', contractAddress: string, withdrawThreshold: string, lifetimeLimit: string } } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', instrument: { __typename?: 'InstrumentConfiguration', name: string, code: string, futureProduct?: { __typename?: 'FutureProduct', settlementAsset: { __typename?: 'Asset', symbol: string } } | null } } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset', quantum: string, assetId: string, source: { __typename?: 'UpdateERC20', lifetimeLimit: string, withdrawThreshold: string } } | { __typename?: 'UpdateMarket', marketId: string } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } }, votes: { __typename?: 'ProposalVotes', yes: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalEquityLikeShareWeight: string }, no: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalEquityLikeShareWeight: string } } };
 
 export type ProposalsQueryVariables = Types.Exact<{
   includeNewMarketProductFields: Types.Scalars['Boolean'];
   includeUpdateMarketStates: Types.Scalars['Boolean'];
+  includeUpdateReferralPrograms: Types.Scalars['Boolean'];
+  includeUpdateVolumeDiscountPrograms: Types.Scalars['Boolean'];
 }>;
 
 
-export type ProposalsQuery = { __typename?: 'Query', proposalsConnection?: { __typename?: 'ProposalsConnection', edges?: Array<{ __typename?: 'ProposalEdge', node: { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, datetime: any, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null, rationale: { __typename?: 'ProposalRationale', title: string, description: string }, party: { __typename?: 'Party', id: string }, terms: { __typename?: 'ProposalTerms', closingDatetime: any, enactmentDatetime?: any | null, change: { __typename?: 'CancelTransfer' } | { __typename: 'NewAsset', name: string, symbol: string, decimals: number, quantum: string, source: { __typename?: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename?: 'ERC20', contractAddress: string, withdrawThreshold: string, lifetimeLimit: string } } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', instrument: { __typename?: 'InstrumentConfiguration', name: string, code: string, futureProduct?: { __typename?: 'FutureProduct', settlementAsset: { __typename?: 'Asset', symbol: string } } | null, product?: { __typename: 'FutureProduct' } | { __typename: 'PerpetualProduct' } | { __typename: 'SpotProduct' } | null } } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset', quantum: string, assetId: string, source: { __typename?: 'UpdateERC20', lifetimeLimit: string, withdrawThreshold: string } } | { __typename?: 'UpdateMarket', marketId: string } | { __typename?: 'UpdateMarketState', updateType: Types.MarketUpdateType, price?: string | null, market: { __typename?: 'Market', decimalPlaces: number, id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, code: string, product: { __typename: 'Future', quoteName: string } | { __typename: 'Perpetual', quoteName: string } | { __typename: 'Spot' } } } } } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } }, votes: { __typename?: 'ProposalVotes', yes: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalEquityLikeShareWeight: string }, no: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalEquityLikeShareWeight: string } } } } | null> | null } | null };
+export type ProposalsQuery = { __typename?: 'Query', proposalsConnection?: { __typename?: 'ProposalsConnection', edges?: Array<{ __typename?: 'ProposalEdge', node: { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, datetime: any, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null, rationale: { __typename?: 'ProposalRationale', title: string, description: string }, party: { __typename?: 'Party', id: string }, terms: { __typename?: 'ProposalTerms', closingDatetime: any, enactmentDatetime?: any | null, change: { __typename?: 'CancelTransfer' } | { __typename: 'NewAsset', name: string, symbol: string, decimals: number, quantum: string, source: { __typename?: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename?: 'ERC20', contractAddress: string, withdrawThreshold: string, lifetimeLimit: string } } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', instrument: { __typename?: 'InstrumentConfiguration', name: string, code: string, futureProduct?: { __typename?: 'FutureProduct', settlementAsset: { __typename?: 'Asset', symbol: string } } | null, product?: { __typename: 'FutureProduct' } | { __typename: 'PerpetualProduct' } | { __typename: 'SpotProduct' } | null } } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset', quantum: string, assetId: string, source: { __typename?: 'UpdateERC20', lifetimeLimit: string, withdrawThreshold: string } } | { __typename?: 'UpdateMarket', marketId: string } | { __typename?: 'UpdateMarketState', updateType: Types.MarketUpdateType, price?: string | null, market: { __typename?: 'Market', decimalPlaces: number, id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, code: string, product: { __typename: 'Future', quoteName: string } | { __typename: 'Perpetual', quoteName: string } | { __typename: 'Spot' } } } } } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } | { __typename?: 'UpdateReferralProgram', windowLength: number, endOfProgram: any, benefitTiers: Array<{ __typename?: 'BenefitTier', minimumEpochs: number, minimumRunningNotionalTakerVolume: string, referralDiscountFactor: string, referralRewardFactor: string }>, stakingTiers: Array<{ __typename?: 'StakingTier', minimumStakedTokens: string, referralRewardMultiplier: string }> } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram', endOfProgramTimestamp: any, windowLength: number, benefitTiers: Array<{ __typename?: 'VolumeBenefitTier', minimumRunningNotionalTakerVolume: string, volumeDiscountFactor: string }> } }, votes: { __typename?: 'ProposalVotes', yes: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalEquityLikeShareWeight: string }, no: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalEquityLikeShareWeight: string } } } } | null> | null } | null };
 
 export const NewMarketProductFieldsFragmentDoc = gql`
     fragment NewMarketProductFields on Proposal {
@@ -59,6 +65,44 @@ export const UpdateMarketStatesFragmentDoc = gql`
         }
         updateType
         price
+      }
+    }
+  }
+}
+    `;
+export const UpdateReferralProgramsFragmentDoc = gql`
+    fragment UpdateReferralPrograms on Proposal {
+  terms {
+    change {
+      ... on UpdateReferralProgram {
+        benefitTiers {
+          minimumEpochs
+          minimumRunningNotionalTakerVolume
+          referralDiscountFactor
+          referralRewardFactor
+        }
+        endOfProgram: endOfProgramTimestamp
+        windowLength
+        stakingTiers {
+          minimumStakedTokens
+          referralRewardMultiplier
+        }
+      }
+    }
+  }
+}
+    `;
+export const UpdateVolumeDiscountProgramsFragmentDoc = gql`
+    fragment UpdateVolumeDiscountPrograms on Proposal {
+  terms {
+    change {
+      ... on UpdateVolumeDiscountProgram {
+        benefitTiers {
+          minimumRunningNotionalTakerVolume
+          volumeDiscountFactor
+        }
+        endOfProgramTimestamp
+        windowLength
       }
     }
   }
@@ -147,20 +191,24 @@ export const ProposalFieldsFragmentDoc = gql`
 }
     `;
 export const ProposalsDocument = gql`
-    query Proposals($includeNewMarketProductFields: Boolean!, $includeUpdateMarketStates: Boolean!) {
+    query Proposals($includeNewMarketProductFields: Boolean!, $includeUpdateMarketStates: Boolean!, $includeUpdateReferralPrograms: Boolean!, $includeUpdateVolumeDiscountPrograms: Boolean!) {
   proposalsConnection {
     edges {
       node {
         ...ProposalFields
         ...NewMarketProductFields @include(if: $includeNewMarketProductFields)
         ...UpdateMarketStates @include(if: $includeUpdateMarketStates)
+        ...UpdateReferralPrograms @include(if: $includeUpdateReferralPrograms)
+        ...UpdateVolumeDiscountPrograms @include(if: $includeUpdateVolumeDiscountPrograms)
       }
     }
   }
 }
     ${ProposalFieldsFragmentDoc}
 ${NewMarketProductFieldsFragmentDoc}
-${UpdateMarketStatesFragmentDoc}`;
+${UpdateMarketStatesFragmentDoc}
+${UpdateReferralProgramsFragmentDoc}
+${UpdateVolumeDiscountProgramsFragmentDoc}`;
 
 /**
  * __useProposalsQuery__
@@ -176,6 +224,8 @@ ${UpdateMarketStatesFragmentDoc}`;
  *   variables: {
  *      includeNewMarketProductFields: // value for 'includeNewMarketProductFields'
  *      includeUpdateMarketStates: // value for 'includeUpdateMarketStates'
+ *      includeUpdateReferralPrograms: // value for 'includeUpdateReferralPrograms'
+ *      includeUpdateVolumeDiscountPrograms: // value for 'includeUpdateVolumeDiscountPrograms'
  *   },
  * });
  */

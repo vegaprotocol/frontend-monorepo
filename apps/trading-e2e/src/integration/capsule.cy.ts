@@ -48,8 +48,8 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     cy.get('@markets').then((markets) => {
       cy.wrap(markets[0]).as('market');
     });
+    cy.setOnBoardingViewed();
     cy.visit('/#/portfolio');
-    cy.connectVegaWallet();
   });
 
   it('can deposit', function () {
@@ -70,6 +70,8 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('Unknown');
     selectAsset(btcName);
+    cy.get('[data-testid="rich-select-option"]').eq(btcName).click();
+
     cy.getByTestId('approve-default').should(
       'contain.text',
       `Before you can make a deposit of your chosen asset, ${btcSymbol}, you need to approve its use in your Ethereum wallet`
@@ -120,7 +122,7 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     cy.get('[data-testid="pathname-/portfolio"]').should('exist');
 
     cy.getByTestId(collateralTab).click();
-    cy.getByTestId('open-transfer').click();
+    cy.getByTestId('open-transfer').eq(1).click();
     cy.getByTestId('transfer-form').should('be.visible');
     cy.getByTestId('transfer-form').find('[name="toAddress"]').select(1);
     cy.get('select option')
@@ -147,7 +149,8 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     // 0003-WTXN-011
     cy.getByTestId('Withdrawals').click();
     cy.getByTestId('withdraw-dialog-button').click();
-    selectAsset(0);
+    selectAsset(btcName);
+    cy.get('[data-testid="rich-select-option"]').eq(btcName).click();
     cy.get(amountField).focus();
     cy.get(amountField).clear().type('1');
     cy.getByTestId('submit-withdrawal').click();
@@ -180,24 +183,21 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     cy.get('@markets').then((markets) => {
       cy.wrap(markets[0]).as('market');
     });
+    cy.setOnBoardingViewed();
     cy.setVegaWallet();
   });
 
   it('shows node health', function () {
     // 0006-NETW-010
+    const regex = /^Operational\d+$/;
     const market = this.market;
     cy.visit(`/#/markets/${market.id}`);
     cy.getByTestId('node-health-trigger').realHover();
     cy.getByTestId('node-health')
       .children()
       .first()
-      .should('contain.text', 'Operational')
-      .then(($el) => {
-        const blockHeight = parseInt($el.text());
-        // block height will increase over the course of the test run so best
-        // we can do here is check that its showing something sensible
-        expect(blockHeight).to.be.greaterThan(0);
-      });
+      .invoke('text')
+      .should('match', regex);
     cy.getByTestId('node-health')
       .children()
       .eq(1)
@@ -239,7 +239,6 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
       .should('contain.text', order.size);
 
     cy.getByTestId(openOrdersTab).click();
-    cy.getByTestId('edit', txTimeout).should('contain.text', 'Edit');
     cy.getByTestId('tab-open-orders').within(() => {
       cy.get('.ag-center-cols-container')
         .children()
@@ -280,8 +279,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     cy.visit(`/#/markets/${market.id}`);
     cy.getByTestId(toastCloseBtn, txTimeout).click();
     cy.getByTestId(openOrdersTab).click();
-    cy.getByTestId('edit', txTimeout).should('be.visible');
-    cy.getByTestId('edit').first().should('be.visible').click();
+    cy.getByTestId('edit').first().click();
     cy.getByTestId('dialog-title').should('contain.text', 'Edit order');
     cy.get('#limitPrice').focus().clear().type(newPrice);
     cy.getByTestId('edit-order').find('[type="submit"]').click();
@@ -350,6 +348,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     cy.getByTestId('withdraw-dialog-button').click();
     connectEthereumWallet('Unknown');
     selectAsset(btcName);
+    cy.get('[data-testid="rich-select-option"]').eq(btcName).click();
     cy.get(amountField).clear().type('1');
     cy.getByTestId('submit-withdrawal').click();
     cy.getByTestId(toastContent, txTimeout).should(
@@ -437,6 +436,7 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('Unknown');
     selectAsset(btcName);
+    cy.get('[data-testid="rich-select-option"]').eq(btcName).click();
     cy.contains('Deposits of tBTC not approved').should('not.exist');
     cy.contains('Use maximum').should('be.visible');
     cy.get(amountField).clear().type('20000000');

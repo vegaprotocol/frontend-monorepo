@@ -338,9 +338,6 @@ function compileEnvVars() {
       'GITHUB_FEEDBACK_URL',
       process.env['NX_GITHUB_FEEDBACK_URL']
     ),
-    MAINTENANCE_PAGE: parseBoolean(
-      windowOrDefault('MAINTENANCE_PAGE', process.env['NX_MAINTENANCE_PAGE'])
-    ),
     GIT_BRANCH: windowOrDefault(
       'GIT_COMMIT_BRANCH',
       process.env['GIT_COMMIT_BRANCH']
@@ -421,6 +418,18 @@ function compileFeatureFlags(): FeatureFlags {
       windowOrDefault(
         'NX_UPDATE_MARKET_STATE',
         process.env['NX_UPDATE_MARKET_STATE']
+      ) as string
+    ),
+    GOVERNANCE_TRANSFERS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_GOVERNANCE_TRANSFERS',
+        process.env['NX_GOVERNANCE_TRANSFERS']
+      ) as string
+    ),
+    VOLUME_DISCOUNTS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_VOLUME_DISCOUNTS',
+        process.env['NX_VOLUME_DISCOUNTS']
       ) as string
     ),
   };
@@ -510,10 +519,6 @@ function parseNetworks(value?: string) {
     }
   }
   return {};
-}
-
-function parseBoolean(value?: string) {
-  return ['true', '1', 'yes'].includes(value?.toLowerCase() || '');
 }
 
 /**

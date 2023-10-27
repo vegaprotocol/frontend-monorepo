@@ -133,7 +133,7 @@ export const ErrorBoundary = () => {
   );
 };
 
-const GHOST = (
+export const GHOST = (
   <svg
     width="56"
     height="85"

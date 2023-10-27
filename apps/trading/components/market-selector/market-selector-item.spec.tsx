@@ -61,7 +61,6 @@ describe('MarketSelectorItem', () => {
     indicativeVolume: '100',
     marketState: MarketState.STATE_ACTIVE,
     marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-    marketValueProxy: '100',
     markPrice: '50000',
     midPrice: '100',
     staticMidPrice: '100',

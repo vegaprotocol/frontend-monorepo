@@ -9,11 +9,12 @@ import { usePageTitleStore } from '../../stores';
 import { AccountsContainer } from '../../components/accounts-container';
 import { DepositsContainer } from '../../components/deposits-container';
 import { FillsContainer } from '../../components/fills-container';
+import { FundingPaymentsContainer } from '../../components/funding-payments-container';
 import { PositionsContainer } from '../../components/positions-container';
+import { PositionsMenu } from '../../components/positions-menu';
 import { WithdrawalsContainer } from '../../components/withdrawals-container';
 import { OrdersContainer } from '../../components/orders-container';
 import { LedgerContainer } from '../../components/ledger-container';
-import { AccountHistoryContainer } from './account-history-container';
 import {
   ResizableGrid,
   ResizableGridPanel,
@@ -31,7 +32,7 @@ const WithdrawalsIndicator = () => {
     return null;
   }
   return (
-    <span className="bg-vega-clight-500 dark:bg-vega-cdark-500 text-default rounded p-1 leading-none">
+    <span className="p-1 leading-none rounded bg-vega-clight-500 dark:bg-vega-cdark-500 text-default">
       {ready.length}
     </span>
   );
@@ -64,11 +65,12 @@ export const Portfolio = () => {
       <ResizableGrid vertical onChange={handleOnLayoutChange}>
         <ResizableGridPanel minSize={75}>
           <PortfolioGridChild>
-            <Tabs storageKey="console-portfolio-top">
-              <Tab id="account-history" name={t('Account history')}>
-                <AccountHistoryContainer />
-              </Tab>
-              <Tab id="positions" name={t('Positions')}>
+            <Tabs storageKey="console-portfolio-top-1">
+              <Tab
+                id="positions"
+                name={t('Positions')}
+                menu={<PositionsMenu />}
+              >
                 <PositionsContainer allKeys />
               </Tab>
               <Tab id="orders" name={t('Orders')}>
@@ -76,6 +78,9 @@ export const Portfolio = () => {
               </Tab>
               <Tab id="fills" name={t('Fills')}>
                 <FillsContainer />
+              </Tab>
+              <Tab id="funding-payments" name={t('Funding payments')}>
+                <FundingPaymentsContainer />
               </Tab>
               <Tab id="ledger-entries" name={t('Ledger entries')}>
                 <LedgerContainer />
@@ -123,7 +128,7 @@ interface PortfolioGridChildProps {
 const PortfolioGridChild = ({ children }: PortfolioGridChildProps) => {
   return (
     <section className="h-full p-1">
-      <div className="border border-default h-full rounded-sm">{children}</div>
+      <div className="h-full border rounded-sm border-default">{children}</div>
     </section>
   );
 };

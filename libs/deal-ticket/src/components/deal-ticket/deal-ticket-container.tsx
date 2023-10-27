@@ -1,4 +1,4 @@
-import { useVegaTransactionStore } from '@vegaprotocol/wallet';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import {
   isStopOrderType,
   useDealTicketFormValues,

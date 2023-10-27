@@ -12,10 +12,6 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import { ExternalLink, Indicator } from '@vegaprotocol/ui-toolkit';
 import { DocsLinks } from '@vegaprotocol/environment';
-import {
-  NetworkParams,
-  useNetworkParams,
-} from '@vegaprotocol/network-parameters';
 import { useCheckLiquidityStatus } from '@vegaprotocol/liquidity';
 import { useParams } from 'react-router-dom';
 
@@ -31,12 +27,8 @@ export const LiquidityHeader = () => {
   const assetDecimalPlaces = asset?.decimals || 0;
   const symbol = asset?.symbol;
 
-  const { params } = useNetworkParams([
-    NetworkParams.market_liquidity_stakeToCcyVolume,
-    NetworkParams.market_liquidity_targetstake_triggering_ratio,
-  ]);
   const triggeringRatio =
-    params.market_liquidity_targetstake_triggering_ratio || '1';
+    market?.liquidityMonitoringParameters.triggeringRatio || '1';
 
   const { percentage, status } = useCheckLiquidityStatus({
     suppliedStake: suppliedStake || 0,

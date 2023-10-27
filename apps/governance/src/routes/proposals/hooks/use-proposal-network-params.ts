@@ -19,6 +19,8 @@ export const useProposalNetworkParams = ({
     NetworkParams.governance_proposal_market_requiredMajority,
     NetworkParams.governance_proposal_market_requiredParticipation,
     NetworkParams.governance_proposal_updateAsset_requiredMajority,
+    NetworkParams.governance_proposal_referralProgram_requiredMajority,
+    NetworkParams.governance_proposal_referralProgram_requiredParticipation,
     NetworkParams.governance_proposal_updateAsset_requiredParticipation,
     NetworkParams.governance_proposal_asset_requiredMajority,
     NetworkParams.governance_proposal_asset_requiredParticipation,
@@ -26,6 +28,10 @@ export const useProposalNetworkParams = ({
     NetworkParams.governance_proposal_updateNetParam_requiredParticipation,
     NetworkParams.governance_proposal_freeform_requiredMajority,
     NetworkParams.governance_proposal_freeform_requiredParticipation,
+    NetworkParams.governance_proposal_VolumeDiscountProgram_requiredMajority,
+    NetworkParams.governance_proposal_VolumeDiscountProgram_requiredParticipation,
+    NetworkParams.governance_proposal_transfer_requiredParticipation,
+    NetworkParams.governance_proposal_transfer_requiredMajority,
   ]);
 
   const fallback = {
@@ -89,6 +95,30 @@ export const useProposalNetworkParams = ({
         requiredMajority: params.governance_proposal_freeform_requiredMajority,
         requiredParticipation: new BigNumber(
           params.governance_proposal_freeform_requiredParticipation
+        ),
+      };
+    case 'UpdateReferralProgram':
+      return {
+        requiredMajority:
+          params.governance_proposal_referralProgram_requiredMajority,
+        requiredParticipation: new BigNumber(
+          params.governance_proposal_referralProgram_requiredParticipation
+        ),
+      };
+    case 'UpdateVolumeDiscountProgram':
+      return {
+        requiredMajority:
+          params.governance_proposal_VolumeDiscountProgram_requiredMajority,
+        requiredParticipation: new BigNumber(
+          params.governance_proposal_VolumeDiscountProgram_requiredParticipation
+        ),
+      };
+    case 'NewTransfer':
+    case 'CancelTransfer':
+      return {
+        requiredMajority: params.governance_proposal_transfer_requiredMajority,
+        requiredParticipation: new BigNumber(
+          params.governance_proposal_transfer_requiredParticipation
         ),
       };
     default:

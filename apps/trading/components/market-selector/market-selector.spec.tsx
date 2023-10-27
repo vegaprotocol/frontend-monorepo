@@ -2,7 +2,10 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MarketSelector } from './market-selector';
 import { useMarketList } from '@vegaprotocol/markets';
-import { createMarketFragment } from '@vegaprotocol/mock';
+import {
+  createMarketFragment,
+  createMarketsDataFragment,
+} from '@vegaprotocol/mock';
 import { MarketState } from '@vegaprotocol/types';
 import { MemoryRouter } from 'react-router-dom';
 import type { ReactNode } from 'react';
@@ -36,6 +39,10 @@ describe('MarketSelector', () => {
   const markets = [
     createMarketFragment({
       id: 'market-0',
+      // @ts-ignore candles get joined outside this type
+      data: createMarketsDataFragment({
+        marketState: MarketState.STATE_ACTIVE,
+      }),
       tradableInstrument: {
         instrument: {
           code: 'a',
@@ -56,7 +63,10 @@ describe('MarketSelector', () => {
     }),
     createMarketFragment({
       id: 'market-1',
-      state: MarketState.STATE_SUSPENDED,
+      // @ts-ignore candles get joined outside this type
+      data: createMarketsDataFragment({
+        marketState: MarketState.STATE_SUSPENDED,
+      }),
       tradableInstrument: {
         instrument: {
           code: 'b',
@@ -77,7 +87,10 @@ describe('MarketSelector', () => {
     }),
     createMarketFragment({
       id: 'market-2',
-      state: MarketState.STATE_CLOSED,
+      // @ts-ignore candles get joined outside this type
+      data: createMarketsDataFragment({
+        marketState: MarketState.STATE_CLOSED,
+      }),
       tradableInstrument: {
         instrument: {
           product: {
@@ -91,7 +104,10 @@ describe('MarketSelector', () => {
     }),
     createMarketFragment({
       id: 'market-3',
-      state: MarketState.STATE_ACTIVE,
+      // @ts-ignore candles get joined outside this type
+      data: createMarketsDataFragment({
+        marketState: MarketState.STATE_ACTIVE,
+      }),
       tradableInstrument: {
         instrument: {
           code: 'c',
@@ -112,6 +128,10 @@ describe('MarketSelector', () => {
     }),
     createMarketFragment({
       id: 'market-4',
+      // @ts-ignore candles get joined outside this type
+      data: createMarketsDataFragment({
+        marketState: MarketState.STATE_ACTIVE,
+      }),
       tradableInstrument: {
         instrument: {
           code: 'cd',
@@ -132,7 +152,10 @@ describe('MarketSelector', () => {
     }),
   ];
 
-  const activeMarkets = markets.filter((m) => isMarketActive(m.state));
+  const activeMarkets = markets.filter((m) =>
+    // @ts-ignore candles get joined outside this type
+    isMarketActive(m.data.marketState)
+  );
   mockUseMarketList.mockReturnValue({
     data: markets,
     loading: false,

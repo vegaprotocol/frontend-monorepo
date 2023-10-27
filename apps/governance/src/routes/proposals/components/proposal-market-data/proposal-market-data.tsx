@@ -12,12 +12,12 @@ import {
   PriceMonitoringBoundsInfoPanel,
   RiskFactorsInfoPanel,
   RiskModelInfoPanel,
-  RiskParametersInfoPanel,
   SettlementAssetInfoPanel,
   getDataSourceSpecForSettlementSchedule,
   getDataSourceSpecForSettlementData,
   getDataSourceSpecForTradingTermination,
   getSigners,
+  MarginScalingFactorsPanel,
 } from '@vegaprotocol/markets';
 import {
   Button,
@@ -219,8 +219,10 @@ export const ProposalMarketData = ({
               parentMarket={parentMarketData}
             />
 
-            <h2 className={marketDataHeaderStyles}>{t('Risk parameters')}</h2>
-            <RiskParametersInfoPanel
+            <h2 className={marketDataHeaderStyles}>
+              {t('Margin scaling factors')}
+            </h2>
+            <MarginScalingFactorsPanel
               market={marketData}
               parentMarket={parentMarketData}
             />

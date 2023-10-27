@@ -34,7 +34,7 @@ import type {
 } from '@vegaprotocol/datagrid';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Order } from '../order-data-provider';
-import { Filter } from '../order-list-manager';
+import { Filter } from '../order-list-manager/order-list-manager';
 import type { ColDef } from 'ag-grid-community';
 
 const defaultColDef = {
@@ -79,6 +79,7 @@ export const OrderListTable = memo<
         () => [
           {
             headerName: t('Market'),
+            colId: 'instrument-code',
             field: 'market.tradableInstrument.instrument.code',
             cellRenderer: 'MarketNameCell',
             cellRendererParams: { idPath: 'market.id', onMarketClick },

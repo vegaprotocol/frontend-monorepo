@@ -4,7 +4,7 @@ import trimEnd from 'lodash/trimEnd';
 // href creation
 export const Routes = {
   HOME: '/',
-  MARKETS: '/markets/all',
+  MARKETS: '/markets',
   MARKET: '/markets/:marketId',
   LIQUIDITY: '/liquidity/:marketId',
   PORTFOLIO: '/portfolio',
@@ -17,6 +17,7 @@ export const Routes = {
   REFERRALS_APPLY_CODE: '/referrals/apply-code',
   REFERRALS_CREATE_CODE: '/referrals/create-code',
   TEAMS: '/teams',
+  FEES: '/fees',
 } as const;
 
 type ConsoleLinks = {
@@ -40,4 +41,5 @@ export const Links: ConsoleLinks = {
   REFERRALS_APPLY_CODE: () => Routes.REFERRALS_APPLY_CODE,
   REFERRALS_CREATE_CODE: () => Routes.REFERRALS_CREATE_CODE,
   TEAMS: () => Routes.TEAMS,
+  FEES: () => Routes.FEES,
 };

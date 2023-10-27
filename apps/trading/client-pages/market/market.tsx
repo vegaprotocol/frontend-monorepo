@@ -3,7 +3,7 @@ import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
-import { AsyncRenderer, ExternalLink, Splash } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink, Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { getAsset, marketDataProvider, useMarket } from '@vegaprotocol/markets';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid } from './trade-grid';
@@ -67,17 +67,20 @@ export const MarketPage = () => {
   const update = useGlobalStore((store) => store.update);
   const lastMarketId = useGlobalStore((store) => store.marketId);
 
-  const { data, error, loading } = useMarket(marketId);
+  const { data, loading } = useMarket(marketId);
 
   useEffect(() => {
-    if (data?.id && data.id !== lastMarketId) {
+    if (data?.id && data.id !== lastMarketId && !closed) {
       update({ marketId: data.id });
     }
   }, [update, lastMarketId, data?.id]);
 
   useEffect(() => {
     if (largeScreen && view === undefined) {
-      setViews({ type: ViewType.Order }, currentRouteId);
+      setViews(
+        { type: closed ? ViewType.Info : ViewType.Order },
+        currentRouteId
+      );
     }
   }, [setViews, view, currentRouteId, largeScreen]);
 
@@ -92,7 +95,15 @@ export const MarketPage = () => {
     }
   }, [largeScreen, data, pinnedAsset]);
 
-  if (!data && marketId) {
+  if (loading) {
+    return (
+      <Splash>
+        <Loader />
+      </Splash>
+    );
+  }
+
+  if (!data) {
     return (
       <Splash>
         <span className="flex flex-col items-center gap-2">
@@ -102,7 +113,7 @@ export const MarketPage = () => {
           <p className="justify-center text-sm">
             {t(`Please choose another market from the`)}{' '}
             <ExternalLink onClick={() => navigate(Links.MARKETS())}>
-              market list
+              {t('market list')}
             </ExternalLink>
           </p>
         </span>
@@ -111,18 +122,13 @@ export const MarketPage = () => {
   }
 
   return (
-    <AsyncRenderer
-      loading={loading}
-      error={error}
-      data={data || undefined}
-      noDataCondition={(data) => false}
-    >
+    <>
       <TitleUpdater
         marketId={data?.id}
         marketName={data?.tradableInstrument.instrument.name}
         decimalPlaces={data?.decimalPlaces}
       />
       {tradeView}
-    </AsyncRenderer>
+    </>
   );
 };

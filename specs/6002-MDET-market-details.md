@@ -90,12 +90,22 @@ When I look into market info I **Must** see following specification:
 - Risk model: (<a name="6002-MDET-209" href="#6002-MDET-209">6002-MDET-209</a>)
   - Tau
   - Risk Aversion Parameter
-- Risk parameters: (<a name="6002-MDET-210" href="#6002-MDET-210">6002-MDET-210</a>)
+  - R
   - Sigma
+- Margin scaling factors (<a name="6002-MDET-210" href="#6002-MDET-210">6002-MDET-210</a>)
+  - Linear Slippage Factor
+  - Quadratic Slippage Factor
+  - Search Level
+  - Initial Margin
+  - Collateral Release
 - Risk factors: (<a name="6002-MDET-211" href="#6002-MDET-211">6002-MDET-211</a>)
-  - Short
   - Long
-- price monitoring bounds <i>(multiple bounds possible)</i>: (<a name="6002-MDET-212" href="#6002-MDET-212">6002-MDET-212</a>)
+  - Short
+  - Max Leverage Long
+  - Max Leverage Short
+  - Max Initial Leverage Long
+  - Max Initial Leverage Short
+- Price monitoring bounds <i>(multiple bounds possible)</i>: (<a name="6002-MDET-212" href="#6002-MDET-212">6002-MDET-212</a>)
   - Highest Price
   - Lowest Price
 - Liquidity monitoring parameters: (<a name="6002-MDET-213" href="#6002-MDET-213">6002-MDET-213</a>)
@@ -105,7 +115,6 @@ When I look into market info I **Must** see following specification:
 - Liquidity: (<a name="6002-MDET-214" href="#6002-MDET-214">6002-MDET-214</a>)
   - Target Stake
   - Supplied Stake
-  - Market Value Proxy
   - link to liquidity provision table
 - Liquidity price range: (<a name="6002-MDET-215" href="#6002-MDET-215">6002-MDET-215</a>)
   - Liquidity Price Range
@@ -129,7 +138,7 @@ When I look into market info I **Must** see following governance information:
 
   When I look at the succession line list I **Should** easily distinguish which market is the currently viewed market so I can see the ancestor-descendant relations between the current and other markets on the list.
 
-## Market successor
+## Market successor & warning for termination
 
 When I'm tranding on the market, I **Must** see there are:
 
@@ -140,3 +149,8 @@ When I'm tranding on the market, I **Must** see there are:
 - Proposal for the market successor : (<a name="6002-MDET-402" href="#6002-MDET-402">6002-MDET-402</a>)
   - link to governance proposal
   - name of the proposed market
+- Enacted proposal for the market termination: (<a name="6002-MDET-403" href="#6002-MDET-403">6002-MDET-403</a>)
+  - I should be informed immediately when a close market proposal for a market I have a position in is successful
+  - I can tell how much time remains before the market will close and/or the exact time of closure
+  - I can tell what the final price will be at the time of closing
+  - The notification is showed regardless of market type

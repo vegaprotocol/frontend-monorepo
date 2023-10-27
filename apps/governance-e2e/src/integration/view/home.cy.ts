@@ -156,7 +156,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
         cy.getByTestId('subscription-cell').should('have.text', 'Yes');
       });
       cy.getByTestId('connect').should('be.disabled');
-      cy.getByTestId('node-url-custom').click();
+      cy.getByTestId('node-url-custom').click({ force: true });
       cy.get('input').should('exist');
       cy.getByTestId('connect').should('be.disabled');
       cy.getByTestId('icon-cross').click();

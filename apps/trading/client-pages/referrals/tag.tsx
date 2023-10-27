@@ -12,7 +12,7 @@ export const Tag = ({
 }: TagProps & HTMLAttributes<HTMLDivElement>) => (
   <div
     className={classNames(
-      'mt-3 w-max border rounded-[1rem] py-[0.125rem] px-2 text-xs',
+      'w-max border rounded-[1rem] py-[0.125rem] px-2 text-xs',
       {
         'border-vega-yellow-500  text-vega-yellow-500': color === 'yellow',
         'border-vega-green-500  text-vega-green-500': color === 'green',

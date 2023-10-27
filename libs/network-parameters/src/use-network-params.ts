@@ -100,17 +100,67 @@ export const NetworkParams = {
     'governance_proposal_freeform_requiredMajority',
   governance_proposal_freeform_minProposerBalance:
     'governance_proposal_freeform_minProposerBalance',
+  governance_proposal_referralProgram_minClose:
+    'governance_proposal_referralProgram_minClose',
+  governance_proposal_referralProgram_minEnact:
+    'governance_proposal_referralProgram_minEnact',
+  governance_proposal_referralProgram_minProposerBalance:
+    'governance_proposal_referralProgram_minProposerBalance',
+  governance_proposal_referralProgram_minVoterBalance:
+    'governance_proposal_referralProgram_minVoterBalance',
+  governance_proposal_referralProgram_requiredMajority:
+    'governance_proposal_referralProgram_requiredMajority',
+  governance_proposal_referralProgram_requiredParticipation:
+    'governance_proposal_referralProgram_requiredParticipation',
+  governance_proposal_VolumeDiscountProgram_maxClose:
+    'governance_proposal_VolumeDiscountProgram_maxClose',
+  governance_proposal_VolumeDiscountProgram_maxEnact:
+    'governance_proposal_VolumeDiscountProgram_maxEnact',
+  governance_proposal_VolumeDiscountProgram_minClose:
+    'governance_proposal_VolumeDiscountProgram_minClose',
+  governance_proposal_VolumeDiscountProgram_minEnact:
+    'governance_proposal_VolumeDiscountProgram_minEnact',
+  governance_proposal_VolumeDiscountProgram_minProposerBalance:
+    'governance_proposal_VolumeDiscountProgram_minProposerBalance',
+  governance_proposal_VolumeDiscountProgram_minVoterBalance:
+    'governance_proposal_VolumeDiscountProgram_minVoterBalance',
+  governance_proposal_VolumeDiscountProgram_requiredMajority:
+    'governance_proposal_VolumeDiscountProgram_requiredMajority',
+  governance_proposal_VolumeDiscountProgram_requiredParticipation:
+    'governance_proposal_VolumeDiscountProgram_requiredParticipation',
+  governance_proposal_transfer_maxAmount:
+    'governance_proposal_transfer_maxAmount',
+  governance_proposal_transfer_maxClose:
+    'governance_proposal_transfer_maxClose',
+  governance_proposal_transfer_maxEnact:
+    'governance_proposal_transfer_maxEnact',
+  governance_proposal_transfer_maxFraction:
+    'governance_proposal_transfer_maxFraction',
+  governance_proposal_transfer_minClose:
+    'governance_proposal_transfer_minClose',
+  governance_proposal_transfer_minEnact:
+    'governance_proposal_transfer_minEnact',
+  governance_proposal_transfer_minProposerBalance:
+    'governance_proposal_transfer_minProposerBalance',
+  governance_proposal_transfer_minVoterBalance:
+    'governance_proposal_transfer_minVoterBalance',
+  governance_proposal_transfer_requiredMajority:
+    'governance_proposal_transfer_requiredMajority',
+  governance_proposal_transfer_requiredParticipation:
+    'governance_proposal_transfer_requiredParticipation',
   validators_delegation_minAmount: 'validators_delegation_minAmount',
   spam_protection_minimumWithdrawalQuantumMultiple:
     'spam_protection_minimumWithdrawalQuantumMultiple',
   spam_protection_voting_min_tokens: 'spam_protection_voting_min_tokens',
   spam_protection_proposal_min_tokens: 'spam_protection_proposal_min_tokens',
+  market_fee_factors_infrastructureFee: 'market_fee_factors_infrastructureFee',
+  market_fee_factors_makerFee: 'market_fee_factors_makerFee',
   market_liquidity_targetstake_triggering_ratio:
     'market_liquidity_targetstake_triggering_ratio',
   market_liquidity_bondPenaltyParameter:
     'market_liquidity_bondPenaltyParameter',
-  market_liquidity_nonPerformanceBondPenaltySlope:
-    'market_liquidity_nonPerformanceBondPenaltySlope',
+  market_liquidity_sla_nonPerformanceBondPenaltySlope:
+    'market_liquidity_sla_nonPerformanceBondPenaltySlope',
   market_liquidity_sla_nonPerformanceBondPenaltyMax:
     'market_liquidity_sla_nonPerformanceBondPenaltyMax',
   market_liquidity_maximumLiquidityFeeFactorLevel:

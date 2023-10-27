@@ -1,5 +1,6 @@
 export const Routes = {
   HOME: '/',
+  RESTRICTED: '/restricted',
   TX: 'txs',
   BLOCKS: 'blocks',
   PARTIES: 'parties',

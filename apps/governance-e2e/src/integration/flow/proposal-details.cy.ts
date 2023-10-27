@@ -27,12 +27,16 @@ import {
 } from '../../../../governance-e2e/src/support/staking.functions';
 import { ethereumWalletConnect } from '../../../../governance-e2e/src/support/wallet-eth.functions';
 import {
+  depositAsset,
   switchVegaWalletPubKey,
   vegaWalletSetSpecifiedApprovalAmount,
 } from '../../support/wallet-functions';
 import type { testFreeformProposal } from '../../support/common-interfaces';
 import { formatDateWithLocalTimezone } from '@vegaprotocol/utils';
-import { createSuccessorMarketProposalTxBody } from '../../support/proposal.functions';
+import {
+  createGovernanceTransferProposalTxBody,
+  createSuccessorMarketProposalTxBody,
+} from '../../support/proposal.functions';
 
 const proposalListItem = '[data-testid="proposals-list-item"]';
 const participationNotMet = 'token-participation-not-met';
@@ -51,6 +55,7 @@ const openProposals = 'open-proposals';
 const viewProposalButton = 'view-proposal-btn';
 const proposalTermsToggle = 'proposal-json-toggle';
 const marketDataToggle = 'proposal-market-data-toggle';
+const governanceTransferToggle = 'proposal-transfer-details';
 const marketProposalType = 'proposal-type';
 
 describe(
@@ -60,6 +65,17 @@ describe(
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
       ethereumWalletConnect();
+      cy.createMarket();
+      navigateTo(navigation.proposals);
+      cy.getByTestId('closed-proposals').within(() => {
+        cy.contains('Add Lorem Ipsum market')
+          .parentsUntil(proposalListItem)
+          .last()
+          .within(() => {
+            cy.getByTestId(viewProposalButton).click();
+          });
+      });
+      getProposalInformationFromTable('ID').invoke('text').as('parentMarketId');
     });
 
     beforeEach('visit proposals tab', function () {
@@ -298,9 +314,6 @@ describe(
     });
 
     it('Able to see successor market details with new and updated values', function () {
-      cy.createMarket();
-      cy.reload();
-      waitForSpinner();
       cy.getByTestId('closed-proposals').within(() => {
         cy.contains('Add Lorem Ipsum market')
           .parentsUntil(proposalListItem)
@@ -309,14 +322,9 @@ describe(
             cy.getByTestId(viewProposalButton).click();
           });
       });
-      getProposalInformationFromTable('ID')
-        .invoke('text')
-        .as('parentMarketId')
-        .then(() => {
-          cy.VegaWalletSubmitProposal(
-            createSuccessorMarketProposalTxBody(this.parentMarketId)
-          );
-        });
+      cy.VegaWalletSubmitProposal(
+        createSuccessorMarketProposalTxBody(this.parentMarketId)
+      );
       navigateTo(navigation.proposals);
       cy.reload();
       getProposalFromTitle('Test successor market proposal details').within(
@@ -430,9 +438,165 @@ describe(
         'contain.text',
         '0.3'
       );
-      getProposalDetailsValue(
-        'Minimum Probability Of Trading LP Orders'
-      ).should('contain.text', '1e-8');
+      getProposalDetailsValue('Min Probability Of Trading LP Orders').should(
+        'contain.text',
+        '1e-8'
+      );
+    });
+
+    it('Able to see suspended market proposal', function () {
+      const proposalPath = 'src/fixtures/proposals/suspend-market-raw.json';
+      const enactmentTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+      const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
+      submitUniqueRawProposal({
+        proposalBody: proposalPath,
+        updateMarketId: this.parentMarketId,
+        enactmentTimestamp: enactmentTimestamp,
+        closingTimestamp: closingTimestamp,
+      });
+      getProposalFromTitle('Market suspended test').within(() => {
+        cy.getByTestId(marketProposalType).should(
+          'have.text',
+          'Suspend market'
+        );
+        cy.getByTestId(viewProposalButton).click();
+      });
+      cy.getByTestId(marketProposalType).should('have.text', 'Suspend market');
+      cy.getByTestId(marketDataToggle).click();
+      cy.getByTestId('proposal-update-market-state').within(() => {
+        getProposalInformationFromTable('Market ID')
+          .invoke('text')
+          .and('eq', this.parentMarketId);
+      });
+    });
+
+    it('Able to see resume market proposal', function () {
+      const proposalPath = 'src/fixtures/proposals/resume-market-raw.json';
+      const enactmentTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+      const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
+      submitUniqueRawProposal({
+        proposalBody: proposalPath,
+        updateMarketId: this.parentMarketId,
+        enactmentTimestamp: enactmentTimestamp,
+        closingTimestamp: closingTimestamp,
+      });
+      getProposalFromTitle('Market resume test').within(() => {
+        cy.getByTestId(marketProposalType).should('have.text', 'Resume market');
+        cy.getByTestId(viewProposalButton).click();
+      });
+      cy.getByTestId(marketProposalType).should('have.text', 'Resume market');
+      cy.getByTestId(marketDataToggle).click();
+      cy.getByTestId('proposal-update-market-state').within(() => {
+        getProposalInformationFromTable('Market ID')
+          .invoke('text')
+          .and('eq', this.parentMarketId);
+      });
+    });
+
+    it('Able to see terminate market proposal', function () {
+      const proposalPath = 'src/fixtures/proposals/terminate-market-raw.json';
+      const enactmentTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(3);
+      const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
+      submitUniqueRawProposal({
+        proposalBody: proposalPath,
+        updateMarketId: this.parentMarketId,
+        enactmentTimestamp: enactmentTimestamp,
+        closingTimestamp: closingTimestamp,
+      });
+      getProposalFromTitle('Market terminate test').within(() => {
+        cy.getByTestId(marketProposalType).should(
+          'have.text',
+          'Terminate market'
+        );
+        cy.getByTestId(viewProposalButton).click();
+      });
+      cy.getByTestId(marketProposalType).should(
+        'have.text',
+        'Terminate market'
+      );
+      cy.getByTestId(marketDataToggle).click();
+      cy.getByTestId('proposal-update-market-state').within(() => {
+        getProposalInformationFromTable('Market ID')
+          .invoke('text')
+          .and('eq', this.parentMarketId);
+        getProposalDetailsValue('Termination Price').should(
+          'contain.text',
+          '0.001 fUSDC'
+        );
+      });
+    });
+
+    it('Able to see governance transfer proposal', function () {
+      const vegaAssetAddress = '0x67175Da1D5e966e40D11c4B2519392B2058373de';
+      depositAsset(vegaAssetAddress, '1000', 18);
+      cy.getByTestId('currency-title', Cypress.env('txTimeout')).should(
+        'contain.text',
+        'Collateral'
+      );
+      cy.VegaWalletTopUpNetworkAccount('100');
+      cy.VegaWalletSubmitProposal(createGovernanceTransferProposalTxBody());
+      cy.reload();
+      getProposalFromTitle('Governance transfer proposal').within(() => {
+        cy.getByTestId(marketProposalType).should('have.text', 'NewTransfer');
+        cy.getByTestId(viewProposalButton).click();
+      });
+      cy.getByTestId(marketProposalType).should('have.text', 'NewTransfer');
+      cy.getByTestId(governanceTransferToggle).click();
+      cy.getByTestId('proposal-transfer-details-table').within(() => {
+        getProposalInformationFromTable('Source Type')
+          .invoke('text')
+          .and('eq', 'Network Treasury');
+        getProposalInformationFromTable('Destination')
+          .invoke('text')
+          .and('eq', Cypress.env('vegaWalletPublicKey'));
+        getProposalInformationFromTable('Asset')
+          .invoke('text')
+          .and('eq', 'VEGA');
+        getProposalInformationFromTable('Fraction Of Balance')
+          .invoke('text')
+          .and('eq', '50%');
+        getProposalInformationFromTable('Amount')
+          .invoke('text')
+          .and('eq', '100.00');
+        getProposalInformationFromTable('Transfer Type')
+          .invoke('text')
+          .and('eq', 'All or nothing');
+        getProposalInformationFromTable('Kind')
+          .invoke('text')
+          .and('eq', 'One off');
+      });
+    });
+
+    it(' Able to see cancel transfer proposal - rejected', function () {
+      const proposalPath = 'src/fixtures/proposals/cancel-transfer-raw.json';
+      const enactmentTimestamp =
+        createTenDigitUnixTimeStampForSpecifiedDays(11);
+      const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(10);
+      submitUniqueRawProposal({
+        proposalBody: proposalPath,
+        enactmentTimestamp: enactmentTimestamp,
+        closingTimestamp: closingTimestamp,
+        submit: false,
+      });
+      cy.getByTestId('proposal-submit').should('be.visible').click();
+      cy.getByTestId('dialog-title').should('have.text', 'Proposal rejected');
+      cy.getByTestId('icon-cross').last().click();
+      navigateTo(navigation.proposals);
+      cy.get('[href="/proposals/rejected"]').click();
+      getProposalFromTitle('Governance cancel transfer proposal').within(() => {
+        cy.getByTestId(marketProposalType).should(
+          'have.text',
+          'CancelTransfer'
+        );
+        cy.getByTestId(viewProposalButton).click();
+      });
+      cy.getByTestId(marketProposalType).should('have.text', 'CancelTransfer');
+      getProposalInformationFromTable('Error details')
+        .invoke('text')
+        .and('eq', 'Governance transfer invalid transfer id not found');
+      getProposalInformationFromTable('transferId')
+        .invoke('text')
+        .and('eq', 'invalid transfer id');
     });
   }
 );

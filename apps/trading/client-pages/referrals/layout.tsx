@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import type { HTMLAttributes } from 'react';
 import { SKY_BACKGROUND } from './constants';
 import { Outlet } from 'react-router-dom';
+import { TinyScroll } from '@vegaprotocol/ui-toolkit';
 
 export const Layout = ({
   className,
@@ -28,8 +29,10 @@ export const LayoutWithSky = ({
   ...props
 }: HTMLAttributes<HTMLDivElement>) => {
   return (
-    <div className={classNames('h-full overflow-auto', SKY_BACKGROUND)}>
+    <TinyScroll
+      className={classNames('max-h-full overflow-auto', SKY_BACKGROUND)}
+    >
       <Layout className={className} {...props} />
-    </div>
+    </TinyScroll>
   );
 };

@@ -238,7 +238,7 @@ export const Orderbook = ({
                   </>
                 ) : (
                   <div className="absolute inset-0">
-                    <Splash>{t('No data')}</Splash>
+                    <Splash>{t('No open orders')}</Splash>
                   </div>
                 )}
               </div>

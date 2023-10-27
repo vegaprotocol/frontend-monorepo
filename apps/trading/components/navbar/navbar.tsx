@@ -182,11 +182,16 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
         </NavbarItem>
         {FLAGS.REFERRALS && (
           <NavbarItem>
-            <NavbarLink to={Links.REFERRALS()} onClick={onClick}>
+            <NavbarLink end={false} to={Links.REFERRALS()} onClick={onClick}>
               {t('Referrals')}
             </NavbarLink>
           </NavbarItem>
         )}
+        <NavbarItem>
+          <NavbarLink to={Links.FEES()} onClick={onClick}>
+            {t('Fees')}
+          </NavbarLink>
+        </NavbarItem>
         <NavbarItem>
           <NavbarLinkExternal to={useLinks(DApp.Governance)()}>
             {t('Governance')}
@@ -255,15 +260,18 @@ const NavbarLink = ({
   children,
   to,
   onClick,
+  end = true,
 }: {
   children: ReactNode;
   to: string;
   onClick?: () => void;
+  end?: boolean;
 }) => {
   return (
     <N.Link asChild={true}>
       <NavLink
         to={to}
+        end={end}
         className={classNames(
           'block lg:flex lg:h-full flex-col justify-center',
           'px-6 py-2 lg:p-0 text-lg lg:text-sm',

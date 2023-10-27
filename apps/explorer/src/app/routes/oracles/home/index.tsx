@@ -8,7 +8,9 @@ import { useScrollToLocation } from '../../../hooks/scroll-to-location';
 import filter from 'recursive-key-filter';
 
 const Oracles = () => {
-  const { data, loading, error } = useExplorerOracleSpecsQuery();
+  const { data, loading, error } = useExplorerOracleSpecsQuery({
+    errorPolicy: 'ignore',
+  });
 
   useDocumentTitle(['Oracles']);
   useScrollToLocation();

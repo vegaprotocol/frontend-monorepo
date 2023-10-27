@@ -1,114 +1,116 @@
-import { gql, useQuery } from '@apollo/client';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
+import { useCallback } from 'react';
+import { useRefereesQuery } from './__generated__/Referees';
+import compact from 'lodash/compact';
+import type { ReferralSetsQueryVariables } from './__generated__/ReferralSets';
+import { useReferralSetsQuery } from './__generated__/ReferralSets';
 
-const REFERRER_QUERY = gql`
-  query ReferralSets($partyId: ID!) {
-    referralSets(referrer: $partyId) {
-      edges {
-        node {
-          id
-          referrer
-          createdAt
-          updatedAt
-        }
-      }
-    }
-  }
-`;
+const DEFAULT_AGGREGATION_DAYS = 30;
 
-const REFEREE_QUERY = gql`
-  query ReferralSets($partyId: ID!) {
-    referralSets(referee: $partyId) {
-      edges {
-        node {
-          id
-          referrer
-          createdAt
-          updatedAt
-        }
-      }
-    }
-  }
-`;
-
-const REFEREES_QUERY = gql`
-  query ReferralSets($code: ID!) {
-    referralSetReferees(id: $code) {
-      edges {
-        node {
-          referralSetId
-          refereeId
-          joinedAt
-          atEpoch
-        }
-      }
-    }
-  }
-`;
-
-// TODO: generate types after perps work is merged
-export type ReferralData = {
-  code: string;
-  referees: Array<{
-    refereeId: string;
-    joinedAt: string;
-    atEpoch: number;
-  }>;
+export type Role = 'referrer' | 'referee';
+type UseReferralArgs = (
+  | { code: string }
+  | { pubKey: string | null; role: Role }
+) & {
+  aggregationDays?: number;
 };
 
-export const useReferral = (
-  pubKey: string | null,
-  role: 'referrer' | 'referee'
-) => {
-  const query = {
-    referrer: REFERRER_QUERY,
-    referee: REFEREE_QUERY,
-  };
+const prepareVariables = (
+  args: UseReferralArgs
+): [ReferralSetsQueryVariables, boolean] => {
+  const byCode = 'code' in args;
+  const byRole = 'pubKey' in args && 'role' in args;
+  let variables = {};
+  let skip = true;
+  if (byCode) {
+    variables = {
+      id: args.code,
+    };
+    skip = !args.code;
+  }
+  if (byRole) {
+    if (args.role === 'referee') {
+      variables = { referee: args.pubKey };
+    }
+    if (args.role === 'referrer') {
+      variables = { referrer: args.pubKey };
+    }
+    skip = !args.pubKey;
+  }
+
+  return [variables, skip];
+};
+
+export const useReferral = (args: UseReferralArgs) => {
+  const [variables, skip] = prepareVariables(args);
 
   const {
     data: referralData,
     loading: referralLoading,
     error: referralError,
-  } = useQuery(query[role], {
-    variables: {
-      partyId: pubKey,
-    },
-    skip: !pubKey,
+    refetch: referralRefetch,
+  } = useReferralSetsQuery({
+    variables,
+    skip,
     fetchPolicy: 'cache-and-network',
   });
 
   // A user can only have 1 active referral program at a time
-  const referral = referralData?.referralSets.edges.length
-    ? referralData.referralSets.edges[0].node
-    : undefined;
+  const referralSet =
+    referralData?.referralSets.edges &&
+    referralData.referralSets.edges.length > 0
+      ? referralData.referralSets.edges[0]?.node
+      : undefined;
 
   const {
     data: refereesData,
     loading: refereesLoading,
     error: refereesError,
-  } = useQuery(REFEREES_QUERY, {
+    refetch: refereesRefetch,
+  } = useRefereesQuery({
     variables: {
-      code: referral?.id,
+      code: referralSet?.id as string,
+      aggregationDays:
+        args.aggregationDays != null
+          ? args.aggregationDays
+          : DEFAULT_AGGREGATION_DAYS,
     },
-    skip: !referral?.id,
+    skip: !referralSet?.id,
     fetchPolicy: 'cache-and-network',
+    context: { isEnlargedTimeout: true },
   });
 
-  const referees = removePaginationWrapper(
-    refereesData?.referralSetReferees.edges
+  const referees = compact(
+    removePaginationWrapper(refereesData?.referralSetReferees.edges)
   );
 
+  const refetch = useCallback(() => {
+    referralRefetch();
+    refereesRefetch();
+  }, [refereesRefetch, referralRefetch]);
+
+  const byReferee =
+    'role' in args && 'pubKey' in args && args.role === 'referee';
+  const referee = byReferee
+    ? referees.find((r) => r.refereeId === args.pubKey) || null
+    : null;
+
   const data =
-    referral && refereesData
+    referralSet && refereesData
       ? {
-          code: referral.id,
+          code: referralSet.id,
+          role: 'role' in args ? args.role : null,
+          referee: referee,
+          referrerId: referralSet.referrer,
+          createdAt: referralSet.createdAt,
           referees,
         }
       : undefined;
 
   return {
-    data: data as ReferralData | undefined,
+    data,
     loading: referralLoading || refereesLoading,
     error: referralError || refereesError,
+    refetch,
   };
 };

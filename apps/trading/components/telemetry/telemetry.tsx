@@ -6,7 +6,7 @@ import { TelemetryApproval } from './telemetry-approval';
 import { t } from '@vegaprotocol/i18n';
 import { useOnboardingStore } from '../welcome-dialog/use-get-onboarding-step';
 
-const TELEMETRY_APPROVAL_TOAST_ID = 'telemetry_tost_id';
+const TELEMETRY_APPROVAL_TOAST_ID = 'telemetry_toast_id';
 
 export const Telemetry = () => {
   const onboardingDissmissed = useOnboardingStore((store) => store.dismissed);

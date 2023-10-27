@@ -1,11 +1,16 @@
-import { Outlet, Routes, Route } from 'react-router-dom';
+import type { ReactNode } from 'react';
+import { Outlet } from 'react-router-dom';
 import { Sidebar, SidebarContent, useSidebar } from '../sidebar';
 import classNames from 'classnames';
-import { MarketHeader } from '../market-header';
-import { LiquidityHeader } from '../liquidity-header';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
-export const LayoutWithSidebar = () => {
+export const LayoutWithSidebar = ({
+  header,
+  sidebar,
+}: {
+  header?: ReactNode;
+  sidebar?: ReactNode;
+}) => {
   const currentRouteId = useGetCurrentRouteId();
   const views = useSidebar((store) => store.views);
   const sidebarView = views[currentRouteId] || null;
@@ -20,14 +25,9 @@ export const LayoutWithSidebar = () => {
 
   return (
     <div className={gridClasses}>
-      <div className="col-span-full">
-        <Routes>
-          <Route path="markets/:marketId" element={<MarketHeader />} />
-          <Route path="liquidity/:marketId" element={<LiquidityHeader />} />
-        </Routes>
-      </div>
+      <div className="col-span-full">{header}</div>
       <main
-        className={classNames('col-start-1 col-end-1', {
+        className={classNames('col-start-1 col-end-1 overflow-y-auto', {
           'lg:col-end-3': !sidebarOpen,
           'hidden lg:block lg:col-end-2': sidebarOpen,
         })}
@@ -36,9 +36,12 @@ export const LayoutWithSidebar = () => {
       </main>
       <aside
         // min-h-0 is needed as this element is part of a grid, we want the content to be scrollable, without it it will push the grid element taller
-        className={classNames('col-start-1 lg:col-start-2 min-h-0', {
-          hidden: !sidebarOpen,
-        })}
+        className={classNames(
+          'col-start-1 lg:col-start-2 min-h-0 lg:border-l border-default lg:bg-vega-clight-800 dark:lg:bg-vega-cdark-800',
+          {
+            hidden: !sidebarOpen,
+          }
+        )}
       >
         <SidebarContent />
       </aside>
@@ -50,7 +53,7 @@ export const LayoutWithSidebar = () => {
           'lg:row-start-2 lg:row-span-full lg:col-start-3'
         )}
       >
-        <Sidebar />
+        <Sidebar options={sidebar} />
       </div>
     </div>
   );

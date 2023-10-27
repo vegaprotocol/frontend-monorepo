@@ -17,7 +17,7 @@ import { VoteState } from './use-user-vote';
 import { ProposalMinRequirements, ProposalUserAction } from '../shared';
 import { VoteTransactionDialog } from './vote-transaction-dialog';
 import { useVoteButtonsQuery } from './__generated__/Stake';
-import type { DialogProps, VegaTxState } from '@vegaprotocol/wallet';
+import type { DialogProps, VegaTxState } from '@vegaprotocol/proposals';
 
 interface VoteButtonsContainerProps {
   voteState: VoteState | null;

@@ -15,6 +15,7 @@ import { useCallback, useState } from 'react';
 import type { WalletClientError } from '@vegaprotocol/wallet-client';
 import { t } from '@vegaprotocol/i18n';
 import type { Connectors, VegaConnector } from '../connectors';
+import { DEFAULT_SNAP_VERSION } from '../connectors';
 import {
   DEFAULT_SNAP_ID,
   InjectedConnector,
@@ -35,13 +36,13 @@ import type { Status as JsonRpcStatus } from '../use-json-rpc-connect';
 import { useJsonRpcConnect } from '../use-json-rpc-connect';
 import type { Status as InjectedStatus } from '../use-injected-connector';
 import { useInjectedConnector } from '../use-injected-connector';
-import { useChainIdQuery } from './__generated__/ChainId';
 import { useVegaWallet } from '../use-vega-wallet';
 import { InjectedConnectorForm } from './injected-connector-form';
 import { isBrowserWalletInstalled } from '../utils';
 import { useIsWalletServiceRunning } from '../use-is-wallet-service-running';
 import { SnapStatus, useSnapStatus } from '../use-snap-status';
 import { useVegaWalletDialogStore } from './vega-wallet-dialog-store';
+import { useChainId } from './use-chain-id';
 
 export const CLOSE_DELAY = 1700;
 
@@ -82,12 +83,12 @@ export const VegaConnectDialog = ({
 
   // Ensure we have a chain Id so we can compare with wallet chain id.
   // This value will already be in the cache, if it failed the app wont render
-  const { data } = useChainIdQuery();
+  const chainId = useChainId();
 
-  const content = data && (
+  const content = chainId && (
     <ConnectDialogContainer
       connectors={connectors}
-      appChainId={data.statistics.chainId}
+      appChainId={chainId}
       riskMessage={riskMessage}
       onClose={onClose}
     />
@@ -352,7 +353,9 @@ const ConnectorList = ({
                     </>
                   }
                   onClick={() => {
-                    requestSnap(DEFAULT_SNAP_ID);
+                    requestSnap(DEFAULT_SNAP_ID, {
+                      version: DEFAULT_SNAP_VERSION,
+                    });
                   }}
                 />
                 {snapStatus === SnapStatus.NOT_SUPPORTED ? (

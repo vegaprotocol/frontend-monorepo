@@ -10,31 +10,27 @@ export type LiquidityProvisionsQueryVariables = Types.Exact<{
 }>;
 
 
-export type LiquidityProvisionsQuery = { __typename?: 'Query', market?: { __typename?: 'Market', liquidityProvisionsConnection?: { __typename?: 'LiquidityProvisionsConnection', edges?: Array<{ __typename?: 'LiquidityProvisionsEdge', node: { __typename?: 'LiquidityProvision', id: string, createdAt: any, updatedAt?: any | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string } } | null> | null } | null } } } | null> | null } | null } | null };
+export type LiquidityProvisionsQuery = { __typename?: 'Query', market?: { __typename?: 'Market', liquiditySLAParameters?: { __typename?: 'LiquiditySLAParameters', priceRange: string, commitmentMinTimeFraction: string, performanceHysteresisEpochs: number, slaCompetitionFactor: string } | null, liquidityProvisions?: { __typename?: 'LiquidityProvisionsWithPendingConnection', edges?: Array<{ __typename?: 'LiquidityProvisionWithPendingEdge', node: { __typename?: 'LiquidityProvisionWithPending', current: { __typename?: 'LiquidityProvision', id: string, createdAt: any, updatedAt?: any | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string } } | null> | null } | null } }, pending?: { __typename?: 'LiquidityProvision', id: string, createdAt: any, updatedAt?: any | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string } } | null> | null } | null } } | null } } | null> | null } | null } | null };
 
-export type LiquidityProvisionsUpdateSubscriptionVariables = Types.Exact<{
-  partyId?: Types.InputMaybe<Types.Scalars['ID']>;
-  marketId?: Types.InputMaybe<Types.Scalars['ID']>;
-}>;
+export type LiquidityProviderFeeShareFieldsFragment = { __typename?: 'LiquidityProviderFeeShare', equityLikeShare: string, averageEntryValuation: string, averageScore: string, virtualStake: string };
 
+export type LiquidityProviderSLAFieldsFragment = { __typename?: 'LiquidityProviderSLA', currentEpochFractionOfTimeOnBook: string, lastEpochFractionOfTimeOnBook: string, lastEpochFeePenalty: string, lastEpochBondPenalty: string, hysteresisPeriodFeePenalties?: Array<string> | null, requiredLiquidity: string, notionalVolumeBuys: string, notionalVolumeSells: string };
 
-export type LiquidityProvisionsUpdateSubscription = { __typename?: 'Subscription', liquidityProvisions?: Array<{ __typename?: 'LiquidityProvisionUpdate', id: string, partyID: string, createdAt: any, updatedAt?: any | null, marketID: string, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus }> | null };
-
-export type LiquidityProviderFeeShareFieldsFragment = { __typename?: 'LiquidityProviderFeeShare', equityLikeShare: string, averageEntryValuation: string, party: { __typename?: 'Party', id: string } };
-
-export type LiquidityProviderFeeShareQueryVariables = Types.Exact<{
+export type LiquidityProvidersQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
 
 
-export type LiquidityProviderFeeShareQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, data?: { __typename?: 'MarketData', market: { __typename?: 'Market', id: string }, liquidityProviderFeeShare?: Array<{ __typename?: 'LiquidityProviderFeeShare', equityLikeShare: string, averageEntryValuation: string, party: { __typename?: 'Party', id: string } }> | null } | null } | null };
+export type LiquidityProvidersQuery = { __typename?: 'Query', liquidityProviders?: { __typename?: 'LiquidityProviderConnection', edges: Array<{ __typename?: 'LiquidityProviderEdge', node: { __typename?: 'LiquidityProvider', partyId: string, marketId: string, feeShare?: { __typename?: 'LiquidityProviderFeeShare', equityLikeShare: string, averageEntryValuation: string, averageScore: string, virtualStake: string } | null, sla?: { __typename?: 'LiquidityProviderSLA', currentEpochFractionOfTimeOnBook: string, lastEpochFractionOfTimeOnBook: string, lastEpochFeePenalty: string, lastEpochBondPenalty: string, hysteresisPeriodFeePenalties?: Array<string> | null, requiredLiquidity: string, notionalVolumeBuys: string, notionalVolumeSells: string } | null } }> } | null };
+
+export type LiquidityProviderFieldsFragment = { __typename?: 'LiquidityProvider', partyId: string, marketId: string, feeShare?: { __typename?: 'LiquidityProviderFeeShare', equityLikeShare: string, averageEntryValuation: string, averageScore: string, virtualStake: string } | null, sla?: { __typename?: 'LiquidityProviderSLA', currentEpochFractionOfTimeOnBook: string, lastEpochFractionOfTimeOnBook: string, lastEpochFeePenalty: string, lastEpochBondPenalty: string, hysteresisPeriodFeePenalties?: Array<string> | null, requiredLiquidity: string, notionalVolumeBuys: string, notionalVolumeSells: string } | null };
 
 export const LiquidityProvisionFieldsFragmentDoc = gql`
     fragment LiquidityProvisionFields on LiquidityProvision {
   id
   party {
     id
-    accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {
+    accountsConnection(marketId: $marketId) {
       edges {
         node {
           type
@@ -52,20 +48,55 @@ export const LiquidityProvisionFieldsFragmentDoc = gql`
     `;
 export const LiquidityProviderFeeShareFieldsFragmentDoc = gql`
     fragment LiquidityProviderFeeShareFields on LiquidityProviderFeeShare {
-  party {
-    id
-  }
   equityLikeShare
   averageEntryValuation
+  averageScore
+  virtualStake
 }
     `;
+export const LiquidityProviderSLAFieldsFragmentDoc = gql`
+    fragment LiquidityProviderSLAFields on LiquidityProviderSLA {
+  currentEpochFractionOfTimeOnBook
+  lastEpochFractionOfTimeOnBook
+  lastEpochFeePenalty
+  lastEpochBondPenalty
+  hysteresisPeriodFeePenalties
+  requiredLiquidity
+  notionalVolumeBuys
+  notionalVolumeSells
+}
+    `;
+export const LiquidityProviderFieldsFragmentDoc = gql`
+    fragment LiquidityProviderFields on LiquidityProvider {
+  partyId
+  marketId
+  feeShare {
+    ...LiquidityProviderFeeShareFields
+  }
+  sla {
+    ...LiquidityProviderSLAFields
+  }
+}
+    ${LiquidityProviderFeeShareFieldsFragmentDoc}
+${LiquidityProviderSLAFieldsFragmentDoc}`;
 export const LiquidityProvisionsDocument = gql`
     query LiquidityProvisions($marketId: ID!) {
   market(id: $marketId) {
-    liquidityProvisionsConnection(live: true) {
+    liquiditySLAParameters {
+      priceRange
+      commitmentMinTimeFraction
+      performanceHysteresisEpochs
+      slaCompetitionFactor
+    }
+    liquidityProvisions(live: true) {
       edges {
         node {
-          ...LiquidityProvisionFields
+          current {
+            ...LiquidityProvisionFields
+          }
+          pending {
+            ...LiquidityProvisionFields
+          }
         }
       }
     }
@@ -100,84 +131,42 @@ export function useLiquidityProvisionsLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type LiquidityProvisionsQueryHookResult = ReturnType<typeof useLiquidityProvisionsQuery>;
 export type LiquidityProvisionsLazyQueryHookResult = ReturnType<typeof useLiquidityProvisionsLazyQuery>;
 export type LiquidityProvisionsQueryResult = Apollo.QueryResult<LiquidityProvisionsQuery, LiquidityProvisionsQueryVariables>;
-export const LiquidityProvisionsUpdateDocument = gql`
-    subscription LiquidityProvisionsUpdate($partyId: ID, $marketId: ID) {
-  liquidityProvisions(partyId: $partyId, marketId: $marketId) {
-    id
-    partyID
-    createdAt
-    updatedAt
-    marketID
-    commitmentAmount
-    fee
-    status
-  }
-}
-    `;
-
-/**
- * __useLiquidityProvisionsUpdateSubscription__
- *
- * To run a query within a React component, call `useLiquidityProvisionsUpdateSubscription` and pass it any options that fit your needs.
- * When your component renders, `useLiquidityProvisionsUpdateSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useLiquidityProvisionsUpdateSubscription({
- *   variables: {
- *      partyId: // value for 'partyId'
- *      marketId: // value for 'marketId'
- *   },
- * });
- */
-export function useLiquidityProvisionsUpdateSubscription(baseOptions?: Apollo.SubscriptionHookOptions<LiquidityProvisionsUpdateSubscription, LiquidityProvisionsUpdateSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<LiquidityProvisionsUpdateSubscription, LiquidityProvisionsUpdateSubscriptionVariables>(LiquidityProvisionsUpdateDocument, options);
-      }
-export type LiquidityProvisionsUpdateSubscriptionHookResult = ReturnType<typeof useLiquidityProvisionsUpdateSubscription>;
-export type LiquidityProvisionsUpdateSubscriptionResult = Apollo.SubscriptionResult<LiquidityProvisionsUpdateSubscription>;
-export const LiquidityProviderFeeShareDocument = gql`
-    query LiquidityProviderFeeShare($marketId: ID!) {
-  market(id: $marketId) {
-    id
-    data {
-      market {
-        id
-      }
-      liquidityProviderFeeShare {
-        ...LiquidityProviderFeeShareFields
+export const LiquidityProvidersDocument = gql`
+    query LiquidityProviders($marketId: ID!) {
+  liquidityProviders(marketId: $marketId) {
+    edges {
+      node {
+        ...LiquidityProviderFields
       }
     }
   }
 }
-    ${LiquidityProviderFeeShareFieldsFragmentDoc}`;
+    ${LiquidityProviderFieldsFragmentDoc}`;
 
 /**
- * __useLiquidityProviderFeeShareQuery__
+ * __useLiquidityProvidersQuery__
  *
- * To run a query within a React component, call `useLiquidityProviderFeeShareQuery` and pass it any options that fit your needs.
- * When your component renders, `useLiquidityProviderFeeShareQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useLiquidityProvidersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLiquidityProvidersQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useLiquidityProviderFeeShareQuery({
+ * const { data, loading, error } = useLiquidityProvidersQuery({
  *   variables: {
  *      marketId: // value for 'marketId'
  *   },
  * });
  */
-export function useLiquidityProviderFeeShareQuery(baseOptions: Apollo.QueryHookOptions<LiquidityProviderFeeShareQuery, LiquidityProviderFeeShareQueryVariables>) {
+export function useLiquidityProvidersQuery(baseOptions: Apollo.QueryHookOptions<LiquidityProvidersQuery, LiquidityProvidersQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<LiquidityProviderFeeShareQuery, LiquidityProviderFeeShareQueryVariables>(LiquidityProviderFeeShareDocument, options);
+        return Apollo.useQuery<LiquidityProvidersQuery, LiquidityProvidersQueryVariables>(LiquidityProvidersDocument, options);
       }
-export function useLiquidityProviderFeeShareLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LiquidityProviderFeeShareQuery, LiquidityProviderFeeShareQueryVariables>) {
+export function useLiquidityProvidersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LiquidityProvidersQuery, LiquidityProvidersQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<LiquidityProviderFeeShareQuery, LiquidityProviderFeeShareQueryVariables>(LiquidityProviderFeeShareDocument, options);
+          return Apollo.useLazyQuery<LiquidityProvidersQuery, LiquidityProvidersQueryVariables>(LiquidityProvidersDocument, options);
         }
-export type LiquidityProviderFeeShareQueryHookResult = ReturnType<typeof useLiquidityProviderFeeShareQuery>;
-export type LiquidityProviderFeeShareLazyQueryHookResult = ReturnType<typeof useLiquidityProviderFeeShareLazyQuery>;
-export type LiquidityProviderFeeShareQueryResult = Apollo.QueryResult<LiquidityProviderFeeShareQuery, LiquidityProviderFeeShareQueryVariables>;
+export type LiquidityProvidersQueryHookResult = ReturnType<typeof useLiquidityProvidersQuery>;
+export type LiquidityProvidersLazyQueryHookResult = ReturnType<typeof useLiquidityProvidersLazyQuery>;
+export type LiquidityProvidersQueryResult = Apollo.QueryResult<LiquidityProvidersQuery, LiquidityProvidersQueryVariables>;

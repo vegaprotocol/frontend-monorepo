@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { t } from '@vegaprotocol/i18n';
-import { FeesBreakdown, getAsset, getQuoteName } from '@vegaprotocol/markets';
+import { getAsset, getQuoteName } from '@vegaprotocol/markets';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
@@ -8,7 +8,11 @@ import type { Market } from '@vegaprotocol/markets';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
 
-import { formatRange, formatValue } from '@vegaprotocol/utils';
+import {
+  formatNumberPercentage,
+  formatRange,
+  formatValue,
+} from '@vegaprotocol/utils';
 import { marketMarginDataProvider } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
@@ -22,15 +26,24 @@ import {
   EST_TOTAL_MARGIN_TOOLTIP_TEXT,
   MARGIN_ACCOUNT_TOOLTIP_TEXT,
 } from '../../constants';
-import { useEstimateFees } from '../../hooks';
+import {
+  sumFees,
+  sumFeesDiscounts,
+  useEstimateFees,
+} from '../../hooks/use-estimate-fees';
 import { KeyValue } from './key-value';
 import {
   Accordion,
   AccordionChevron,
   AccordionPanel,
+  Intent,
+  ExternalLink,
+  Pill,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
+import BigNumber from 'bignumber.js';
+import { FeesBreakdown } from '../fees-breakdown';
 
 const emptyValue = '-';
 
@@ -50,7 +63,18 @@ export const DealTicketFeeDetails = ({
   const feeEstimate = useEstimateFees(order, isMarketInAuction);
   const asset = getAsset(market);
   const { decimals: assetDecimals, quantum } = asset;
+  const totalFees = feeEstimate?.fees && sumFees(feeEstimate?.fees);
+  const feesDiscounts =
+    feeEstimate?.fees && sumFeesDiscounts(feeEstimate?.fees);
 
+  const totalPercentageDiscount =
+    feesDiscounts &&
+    totalFees &&
+    feesDiscounts.total !== '0' &&
+    totalFees !== '0' &&
+    new BigNumber(feesDiscounts.total)
+      .dividedBy(BigNumber.sum(totalFees, feesDiscounts.total))
+      .times(100);
   return (
     <KeyValue
       label={t('Fees')}
@@ -59,8 +83,19 @@ export const DealTicketFeeDetails = ({
         `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals)}`
       }
       formattedValue={
-        feeEstimate?.totalFeeAmount &&
-        `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals, quantum)}`
+        <>
+          {totalPercentageDiscount && (
+            <Pill size="xxs" intent={Intent.Warning} className="mr-1">
+              -{formatNumberPercentage(totalPercentageDiscount, 2)}
+            </Pill>
+          )}
+          {feeEstimate?.totalFeeAmount &&
+            `~${formatValue(
+              feeEstimate?.totalFeeAmount,
+              assetDecimals,
+              quantum
+            )}`}
+        </>
       }
       labelDescription={
         <>
@@ -224,11 +259,9 @@ export const DealTicketMarginDetails = ({
         ? liquidationEstimateWorstCaseIncludingBuyOrders
         : liquidationEstimateWorstCaseIncludingSellOrders;
 
-    // The estimate order query API gives us the liquidation price in formatted by asset decimals.
-    // We need to calculate it with asset decimals, but display it with market decimals precision until the API changes.
     liquidationPriceEstimate = formatValue(
       liquidationEstimateWorstCase.toString(),
-      assetDecimals,
+      market.decimalPlaces,
       undefined,
       market.decimalPlaces
     );
@@ -241,7 +274,7 @@ export const DealTicketMarginDetails = ({
         ? liquidationEstimateBestCase
         : liquidationEstimateWorstCase
       ).toString(),
-      assetDecimals,
+      market.decimalPlaces,
       undefined,
       market.decimalPlaces
     );
@@ -273,7 +306,7 @@ export const DealTicketMarginDetails = ({
                 key={'value-dropdown'}
                 className="flex items-center justify-between w-full gap-2"
               >
-                <div className="flex items-center gap-1">
+                <div className="flex items-center text-left gap-1">
                   <Tooltip description={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}>
                     <span className="text-muted">{t('Margin required')}</span>
                   </Tooltip>
@@ -351,7 +384,21 @@ export const DealTicketMarginDetails = ({
         value={liquidationPriceEstimateRange}
         formattedValue={liquidationPriceEstimate}
         symbol={quoteName}
-        labelDescription={LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT}
+        labelDescription={
+          <>
+            <span>{LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT}</span>{' '}
+            <span>
+              {t('For full details please see ')}
+              <ExternalLink
+                href={
+                  'https://github.com/vegaprotocol/specs/blob/master/non-protocol-specs/0012-NP-LIPE-liquidation-price-estimate.md'
+                }
+              >
+                {t('liquidation price estimate documentation.')}
+              </ExternalLink>
+            </span>
+          </>
+        }
       />
       {partyId && (
         <AccountBreakdownDialog

@@ -3,14 +3,25 @@ import { Filter, OrderListManager } from '@vegaprotocol/orders';
 import { t } from '@vegaprotocol/i18n';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import {
-  useMarketClickHandler,
-  useMarketLiquidityClickHandler,
-} from '../../lib/hooks/use-market-click-handler';
+import { useNavigateWithMeta } from '../../lib/hooks/use-market-click-handler';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { DataGridStore } from '../../stores/datagrid-store-slice';
 import { OrderStatus } from '@vegaprotocol/types';
+import { Links } from '../../lib/links';
+
+const resolveNoRowsMessage = (filter?: Filter) => {
+  switch (filter) {
+    case Filter.Open:
+      return t('No open orders');
+    case Filter.Closed:
+      return t('No closed orders');
+    case Filter.Rejected:
+      return t('No rejected orders');
+    default:
+      return t('No orders');
+  }
+};
 
 export const FilterStatusValue = {
   [Filter.Open]: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
@@ -28,27 +39,38 @@ export interface OrderContainerProps {
   filter?: Filter;
 }
 
+const AUTO_SIZE_COLUMNS = ['instrument-code'];
+
 export const OrdersContainer = ({ filter }: OrderContainerProps) => {
   const { pubKey, isReadOnly } = useVegaWallet();
-  const onMarketClick = useMarketClickHandler(true);
-  const onOrderTypeClick = useMarketLiquidityClickHandler();
+  const navigate = useNavigateWithMeta();
   const { gridState, updateGridState } = useOrderListGridState(filter);
-  const gridStoreCallbacks = useDataGridEvents(gridState, (newState) => {
-    updateGridState(filter, newState);
-  });
+  const gridStoreCallbacks = useDataGridEvents(
+    gridState,
+    (newState) => {
+      updateGridState(filter, newState);
+    },
+    AUTO_SIZE_COLUMNS
+  );
 
   if (!pubKey) {
     return <Splash>{t('Please connect Vega wallet')}</Splash>;
   }
+  const noRowsMessage = resolveNoRowsMessage(filter);
 
   return (
     <OrderListManager
       partyId={pubKey}
       filter={filter}
-      onMarketClick={onMarketClick}
-      onOrderTypeClick={onOrderTypeClick}
+      onMarketClick={(marketId, metaKey) => {
+        navigate(Links.MARKET(marketId), metaKey);
+      }}
+      onOrderTypeClick={(marketId, metaKey) =>
+        navigate(Links.LIQUIDITY(marketId), metaKey)
+      }
       isReadOnly={isReadOnly}
       gridProps={gridStoreCallbacks}
+      noRowsMessage={noRowsMessage}
     />
   );
 };

@@ -14,6 +14,7 @@ import { PositionsContainer } from '../../components/positions-container';
 import { AccountsContainer } from '../../components/accounts-container';
 import { LiquidityContainer } from '../../components/liquidity-container';
 import { FundingContainer } from '../../components/funding-container';
+import { FundingPaymentsContainer } from '../../components/funding-payments-container';
 import type { OrderContainerProps } from '../../components/orders-container';
 import { OrdersContainer } from '../../components/orders-container';
 import { StopOrdersContainer } from '../../components/stop-orders-container';
@@ -54,6 +55,10 @@ export const TradingViews = {
   funding: {
     label: 'Funding',
     component: requiresMarket(FundingContainer),
+  },
+  fundingPayments: {
+    label: 'Funding Payments',
+    component: FundingPaymentsContainer,
   },
   orderbook: {
     label: 'Orderbook',

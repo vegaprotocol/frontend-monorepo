@@ -33,15 +33,14 @@ export function NetworkLoader({
     return undefined;
   }, [VEGA_URL, status, cache]);
 
-  const nonIdealWrapperClasses =
-    'h-full min-h-screen flex items-center justify-center';
-
   if (status === 'failed') {
-    return <div className={nonIdealWrapperClasses}>{failure}</div>;
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{failure}</>;
   }
 
   if (status === 'default' || status === 'pending' || !client) {
-    return <div className={nonIdealWrapperClasses}>{skeleton}</div>;
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{skeleton}</>;
   }
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

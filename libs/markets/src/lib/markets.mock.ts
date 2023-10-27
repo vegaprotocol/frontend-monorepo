@@ -53,6 +53,9 @@ export const createMarketFragment = (
         liquidityFee: '',
       },
     },
+    liquidityMonitoringParameters: {
+      triggeringRatio: '1',
+    },
     tradableInstrument: {
       instrument: {
         id: '',
@@ -93,6 +96,7 @@ export const createMarketFragment = (
                   filters: [
                     {
                       __typename: 'Filter',
+                      conditions: [],
                       key: {
                         __typename: 'PropertyKey',
                         name: 'settlement-data-property',
@@ -126,6 +130,7 @@ export const createMarketFragment = (
                   filters: [
                     {
                       __typename: 'Filter',
+                      conditions: [],
                       key: {
                         __typename: 'PropertyKey',
                         name: 'settlement-data-property',

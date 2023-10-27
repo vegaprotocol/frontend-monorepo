@@ -16,8 +16,8 @@ import type {
 } from './use-ethereum-withdraw-approvals-store';
 import type { EthTransactionStore } from './use-ethereum-transaction-store';
 
-import { WithdrawalApprovalDocument } from '@vegaprotocol/wallet';
-import type { WithdrawalApprovalQuery } from '@vegaprotocol/wallet';
+import { WithdrawalApprovalDocument } from './__generated__/WithdrawalApproval';
+import type { WithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
 
 import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
 import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';

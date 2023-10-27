@@ -1,5 +1,5 @@
 import { addGetTestIdcommand } from './lib/commands/get-by-test-id';
-import { addMockGQLCommand } from './lib/mock-gql';
+import { addMockGQLCommand, addMockStatistics } from './lib/mock-gql';
 import { addMockSubscription } from './lib/mock-ws';
 import { addMockWalletCommand } from './lib/mock-rest';
 import { addMockWeb3ProviderCommand } from './lib/commands/mock-web3-provider';
@@ -25,9 +25,11 @@ import { addImportNodeWallets } from './lib/commands/import-node-wallets';
 import { addVegaWalletTopUpRewardsPool } from './lib/commands/vega-wallet-top-up-rewards-pool';
 import { addAssociateTokensToVegaWallet } from './lib/commands/associate-tokens-to-vega-wallet';
 import { addMockChainId } from './lib/commands/mock-chain-id';
+import { addVegaWalletTopUpNetworkAccount } from './lib/commands/vega-wallet-fund-network-account';
 
 addGetTestIdcommand();
 addMockGQLCommand();
+addMockStatistics();
 addMockSubscription();
 addMockWalletCommand();
 addMockWeb3ProviderCommand();
@@ -51,6 +53,7 @@ addImportNodeWallets();
 addVegaWalletTopUpRewardsPool();
 addAssociateTokensToVegaWallet();
 addMockChainId();
+addVegaWalletTopUpNetworkAccount();
 
 export {
   mockConnectWallet,

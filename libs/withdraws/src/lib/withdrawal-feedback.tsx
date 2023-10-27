@@ -6,7 +6,7 @@ import {
   KeyValueTable,
   KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
-import type { VegaTxState } from '@vegaprotocol/wallet';
+import type { VegaTxState } from '@vegaprotocol/web3';
 import { getChainName, useWeb3ConnectStore } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import { formatDistanceToNow } from 'date-fns';

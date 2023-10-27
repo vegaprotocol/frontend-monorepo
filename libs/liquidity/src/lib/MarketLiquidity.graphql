@@ -4,7 +4,7 @@ fragment LiquidityProvisionFields on LiquidityProvision {
   id
   party {
     id
-    accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {
+    accountsConnection(marketId: $marketId) {
       edges {
         node {
           type
@@ -22,49 +22,64 @@ fragment LiquidityProvisionFields on LiquidityProvision {
 
 query LiquidityProvisions($marketId: ID!) {
   market(id: $marketId) {
-    liquidityProvisionsConnection(live: true) {
+    liquiditySLAParameters {
+      priceRange
+      commitmentMinTimeFraction
+      performanceHysteresisEpochs
+      slaCompetitionFactor
+    }
+    liquidityProvisions(live: true) {
       edges {
         node {
-          ...LiquidityProvisionFields
+          current {
+            ...LiquidityProvisionFields
+          }
+          pending {
+            ...LiquidityProvisionFields
+          }
         }
       }
     }
   }
 }
 
-subscription LiquidityProvisionsUpdate($partyId: ID, $marketId: ID) {
-  liquidityProvisions(partyId: $partyId, marketId: $marketId) {
-    id
-    partyID
-    createdAt
-    updatedAt
-    marketID
-    commitmentAmount
-    fee
-    status
-  }
-}
-
 # Liquidity Provider Share Fee
 
 fragment LiquidityProviderFeeShareFields on LiquidityProviderFeeShare {
-  party {
-    id
-  }
   equityLikeShare
   averageEntryValuation
+  averageScore
+  virtualStake
 }
 
-query LiquidityProviderFeeShare($marketId: ID!) {
-  market(id: $marketId) {
-    id
-    data {
-      market {
-        id
-      }
-      liquidityProviderFeeShare {
-        ...LiquidityProviderFeeShareFields
+fragment LiquidityProviderSLAFields on LiquidityProviderSLA {
+  currentEpochFractionOfTimeOnBook
+  lastEpochFractionOfTimeOnBook
+  lastEpochFeePenalty
+  lastEpochBondPenalty
+  hysteresisPeriodFeePenalties
+  requiredLiquidity
+  notionalVolumeBuys
+  notionalVolumeSells
+}
+
+query LiquidityProviders($marketId: ID!) {
+  liquidityProviders(marketId: $marketId) {
+    edges {
+      node {
+        ...LiquidityProviderFields
       }
     }
+  }
+}
+
+fragment LiquidityProviderFields on LiquidityProvider {
+  partyId
+  marketId
+  feeShare {
+    ...LiquidityProviderFeeShareFields
+  }
+  sla {
+    ...LiquidityProviderSLAFields
   }
 }

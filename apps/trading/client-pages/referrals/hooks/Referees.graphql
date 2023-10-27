@@ -1,0 +1,14 @@
+query Referees($code: ID!, $aggregationDays: Int) {
+  referralSetReferees(id: $code, aggregationDays: $aggregationDays) {
+    edges {
+      node {
+        referralSetId
+        refereeId
+        joinedAt
+        atEpoch
+        totalRefereeNotionalTakerVolume
+        totalRefereeGeneratedRewards
+      }
+    }
+  }
+}

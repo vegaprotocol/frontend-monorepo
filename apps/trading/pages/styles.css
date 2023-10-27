@@ -184,10 +184,10 @@ html [data-theme='dark'] {
 
 /* Light variables */
 .ag-theme-balham {
-  --ag-background-color: theme(colors.white);
+  --ag-background-color: transparent;
   --ag-border-color: theme(colors.vega.clight.600);
   --ag-header-background-color: theme(colors.vega.clight.700);
-  --ag-odd-row-background-color: theme(colors.white);
+  --ag-odd-row-background-color: transparent;
   --ag-header-column-separator-color: theme(colors.vega.clight.500);
   --ag-row-border-color: theme(colors.vega.clight.600);
   --ag-row-hover-color: theme(colors.vega.clight.800);
@@ -196,10 +196,10 @@ html [data-theme='dark'] {
 
 /* Dark variables */
 .ag-theme-balham-dark {
-  --ag-background-color: theme(colors.vega.cdark.900);
+  --ag-background-color: transparent;
   --ag-border-color: theme(colors.vega.cdark.600);
   --ag-header-background-color: theme(colors.vega.cdark.700);
-  --ag-odd-row-background-color: theme(colors.vega.cdark.900);
+  --ag-odd-row-background-color: transparent;
   --ag-header-column-separator-color: theme(colors.vega.cdark.500);
   --ag-row-border-color: theme(colors.vega.cdark.600);
   --ag-row-hover-color: theme(colors.vega.cdark.800);

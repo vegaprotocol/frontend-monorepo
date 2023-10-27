@@ -7,12 +7,17 @@ import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { truncateMiddle } from '../../../../lib/truncate-middle';
 import { CurrentProposalState } from '../current-proposal-state';
 import { ProposalInfoLabel } from '../proposal-info-label';
-import { useSuccessorMarketProposalDetails } from '@vegaprotocol/proposals';
+import {
+  useCancelTransferProposalDetails,
+  useNewTransferProposalDetails,
+  useSuccessorMarketProposalDetails,
+} from '@vegaprotocol/proposals';
 import { FLAGS } from '@vegaprotocol/environment';
 import Routes from '../../../routes';
 import { Link } from 'react-router-dom';
 import type { VoteState } from '../vote-details/use-user-vote';
 import { VoteBreakdown } from '../vote-breakdown';
+import { GovernanceTransferKindMapping } from '@vegaprotocol/types';
 
 export const ProposalHeader = ({
   proposal,
@@ -93,6 +98,16 @@ export const ProposalHeader = ({
       );
       break;
     }
+    case 'UpdateReferralProgram': {
+      proposalType = 'UpdateReferralProgram';
+      fallbackTitle = t('UpdateReferralProgramProposal');
+      break;
+    }
+    case 'UpdateVolumeDiscountProgram': {
+      proposalType = 'UpdateVolumeDiscountProgram';
+      fallbackTitle = t('UpdateVolumeDiscountProgramProposal');
+      break;
+    }
     case 'NewAsset': {
       proposalType = 'NewAsset';
       fallbackTitle = t('NewAssetProposal');
@@ -147,6 +162,20 @@ export const ProposalHeader = ({
       );
       break;
     }
+    case 'NewTransfer':
+      proposalType = 'NewTransfer';
+      fallbackTitle = t('NewTransferProposal');
+      details = FLAGS.GOVERNANCE_TRANSFERS ? (
+        <NewTransferSummary proposalId={proposal?.id} />
+      ) : null;
+      break;
+    case 'CancelTransfer':
+      proposalType = 'CancelTransfer';
+      fallbackTitle = t('CancelTransferProposal');
+      details = FLAGS.GOVERNANCE_TRANSFERS ? (
+        <CancelTransferSummary proposalId={proposal?.id} />
+      ) : null;
+      break;
   }
 
   return (
@@ -208,7 +237,11 @@ export const ProposalHeader = ({
   );
 };
 
-const SuccessorCode = ({ proposalId }: { proposalId?: string | null }) => {
+export const SuccessorCode = ({
+  proposalId,
+}: {
+  proposalId?: string | null;
+}) => {
   const { t } = useTranslation();
   const successor = useSuccessorMarketProposalDetails(proposalId);
 
@@ -223,4 +256,51 @@ const SuccessorCode = ({ proposalId }: { proposalId?: string | null }) => {
       </Link>
     </span>
   ) : null;
+};
+
+export const NewTransferSummary = ({
+  proposalId,
+}: {
+  proposalId?: string | null;
+}) => {
+  const { t } = useTranslation();
+  const details = useNewTransferProposalDetails(proposalId);
+
+  if (!details) return null;
+
+  return (
+    <span>
+      {GovernanceTransferKindMapping[details.kind.__typename]}{' '}
+      {t('transfer from')}{' '}
+      <Lozenge>
+        {details.source
+          ? truncateMiddle(details.source)
+          : t(details.sourceType)}
+      </Lozenge>{' '}
+      {t('to')}{' '}
+      <Lozenge>
+        {details.destination
+          ? truncateMiddle(details.destination)
+          : t(details.destinationType)}
+      </Lozenge>
+    </span>
+  );
+};
+
+export const CancelTransferSummary = ({
+  proposalId,
+}: {
+  proposalId?: string | null;
+}) => {
+  const { t } = useTranslation();
+  const details = useCancelTransferProposalDetails(proposalId);
+
+  if (!details) return null;
+
+  return (
+    <span>
+      {t('Cancel transfer: ')}{' '}
+      <Lozenge>{truncateMiddle(details.transferId)}</Lozenge>
+    </span>
+  );
 };

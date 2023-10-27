@@ -106,10 +106,9 @@ export const getLiquidityForMarket = (
   markets: LiquidityProvisionMarket[]
 ) => {
   const liquidity =
-    markets.find((m) => m.id === marketId)?.liquidityProvisionsConnection
-      ?.edges || [];
+    markets.find((m) => m.id === marketId)?.liquidityProvisions?.edges || [];
 
-  return liquidity.map((l) => l?.node);
+  return liquidity.map((l) => l?.node.current);
 };
 
 export const getTargetStake = (

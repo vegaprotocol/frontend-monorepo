@@ -1,32 +1,8 @@
-import { gql, useQuery } from '@apollo/client';
 import { getNumberFormat } from '@vegaprotocol/utils';
 import { addDays } from 'date-fns';
 import sortBy from 'lodash/sortBy';
 import omit from 'lodash/omit';
-
-// TODO: Generate query
-// eslint-disable-next-line
-const REFERRAL_PROGRAM_QUERY = gql`
-  query ReferralProgram {
-    currentReferralProgram {
-      id
-      version
-      endOfProgramTimestamp
-      windowLength
-      endedAt
-      benefitTiers {
-        minimumEpochs
-        minimumRunningNotionalTakerVolume
-        referralDiscountFactor
-        referralRewardFactor
-      }
-      stakingTiers {
-        minimumStakedTokens
-        referralRewardMultiplier
-      }
-    }
-  }
-`;
+import { useReferralProgramQuery } from './__generated__/CurrentReferralProgram';
 
 const STAKING_TIERS_MAPPING: Record<number, string> = {
   1: 'Tradestarter',
@@ -83,11 +59,11 @@ const MOCK = {
 };
 
 export const useReferralProgram = () => {
-  const { data, loading, error } = useQuery(REFERRAL_PROGRAM_QUERY, {
+  const { data, loading, error } = useReferralProgramQuery({
     fetchPolicy: 'cache-and-network',
   });
 
-  if (!data) {
+  if (!data || !data.currentReferralProgram) {
     return {
       benefitTiers: [],
       stakingTiers: [],
@@ -104,11 +80,15 @@ export const useReferralProgram = () => {
     .map((t, i) => {
       return {
         tier: i + 1,
+        rewardFactor: Number(t.referralRewardFactor),
         commission: Number(t.referralRewardFactor) * 100 + '%',
+        discountFactor: Number(t.referralDiscountFactor),
         discount: Number(t.referralDiscountFactor) * 100 + '%',
+        minimumVolume: Number(t.minimumRunningNotionalTakerVolume),
         volume: getNumberFormat(0).format(
           Number(t.minimumRunningNotionalTakerVolume)
         ),
+        epochs: Number(t.minimumEpochs),
       };
     });
 
@@ -123,10 +103,16 @@ export const useReferralProgram = () => {
     };
   });
 
+  const details = omit(
+    data.currentReferralProgram,
+    'benefitTiers',
+    'stakingTiers'
+  );
+
   return {
     benefitTiers,
     stakingTiers,
-    details: omit(data.currentReferralProgram, 'benefitTiers', 'stakingTiers'),
+    details,
     loading,
     error,
   };

@@ -9,14 +9,12 @@ import { fillsWithMarketProvider } from './fills-data-provider';
 
 interface FillsManagerProps {
   partyId: string;
-  marketId?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   gridProps: ReturnType<typeof useDataGridEvents>;
 }
 
 export const FillsManager = ({
   partyId,
-  marketId,
   onMarketClick,
   gridProps,
 }: FillsManagerProps) => {
@@ -24,9 +22,6 @@ export const FillsManager = ({
   const filter: Schema.TradesFilter | Schema.TradesSubscriptionFilter = {
     partyIds: [partyId],
   };
-  if (marketId) {
-    filter.marketIds = [marketId];
-  }
   const { data, error } = useDataProvider({
     dataProvider: fillsWithMarketProvider,
     update: ({ data }) => {

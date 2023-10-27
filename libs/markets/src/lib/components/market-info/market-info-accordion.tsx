@@ -32,6 +32,7 @@ import {
   LiquidityMonitoringParametersInfoPanel,
   LiquidityPriceRangeInfoPanel,
   LiquiditySLAParametersInfoPanel,
+  MarginScalingFactorsPanel,
   MarketPriceInfoPanel,
   MarketVolumeInfoPanel,
   MetadataInfoPanel,
@@ -39,7 +40,6 @@ import {
   PriceMonitoringBoundsInfoPanel,
   RiskFactorsInfoPanel,
   RiskModelInfoPanel,
-  RiskParametersInfoPanel,
   SettlementAssetInfoPanel,
   SuccessionLineInfoPanel,
 } from './market-info-panels';
@@ -236,9 +236,9 @@ export const MarketInfoAccordion = ({
             content={<RiskModelInfoPanel market={market} />}
           />
           <AccordionItem
-            itemId="risk-parameters"
-            title={t('Risk parameters')}
-            content={<RiskParametersInfoPanel market={market} />}
+            itemId="margin-scaling-factors"
+            title={t('Margin scaling factors')}
+            content={<MarginScalingFactorsPanel market={market} />}
           />
           <AccordionItem
             itemId="risk-factors"

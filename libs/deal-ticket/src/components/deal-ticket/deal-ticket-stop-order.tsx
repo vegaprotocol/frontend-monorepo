@@ -43,7 +43,7 @@ import {
   REDUCE_ONLY_TOOLTIP,
   stopSubmit,
   getNotionalSize,
-  getAssetUnit,
+  getBaseQuoteUnit,
 } from './deal-ticket';
 import { TypeToggle } from './type-selector';
 import {
@@ -494,16 +494,16 @@ const TimeInForce = ({
 );
 
 const ReduceOnly = () => (
-  <Checkbox
-    name="reduce-only"
-    checked={true}
-    disabled={true}
-    label={
-      <Tooltip description={<span>{t(REDUCE_ONLY_TOOLTIP)}</span>}>
-        <>{t('Reduce only')}</>
-      </Tooltip>
-    }
-  />
+  <Tooltip description={<span>{t(REDUCE_ONLY_TOOLTIP)}</span>}>
+    <div>
+      <Checkbox
+        name="reduce-only"
+        checked={true}
+        disabled={true}
+        label={t('Reduce only')}
+      />
+    </div>
+  </Tooltip>
 );
 
 const NotionalAndFees = ({
@@ -854,7 +854,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   }, [watch, market.id, updateStoredFormValues]);
 
   const quoteName = getQuoteName(market);
-  const assetUnit = getAssetUnit(
+  const assetUnit = getBaseQuoteUnit(
     market.tradableInstrument.instrument.metadata.tags
   );
 

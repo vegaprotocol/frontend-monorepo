@@ -50,7 +50,6 @@ export const envSchema = z
       message: 'The NX_ETHERSCAN_URL environment variable must be a valid url',
     }),
     HOSTED_WALLET_URL: z.optional(z.string()),
-    MAINTENANCE_PAGE: z.optional(z.boolean()),
     ETH_LOCAL_PROVIDER_URL: z.optional(z.string()),
     ETH_WALLET_MNEMONIC: z.optional(z.string()),
     ANNOUNCEMENTS_CONFIG_URL: z.optional(z.string()),
@@ -80,6 +79,8 @@ const COSMIC_ELEVATOR_FLAGS = {
   METAMASK_SNAPS: z.optional(z.boolean()),
   REFERRALS: z.optional(z.boolean()),
   UPDATE_MARKET_STATE: z.optional(z.boolean()),
+  GOVERNANCE_TRANSFERS: z.optional(z.boolean()),
+  VOLUME_DISCOUNTS: z.optional(z.boolean()),
 };
 
 const EXPLORER_FLAGS = {

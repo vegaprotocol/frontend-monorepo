@@ -19,70 +19,58 @@ import {
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
 import { useStakeAvailable } from './hooks/use-stake-available';
+import {
+  ABOUT_REFERRAL_DOCS_LINK,
+  DISCLAIMER_REFERRAL_DOCS_LINK,
+} from './constants';
+import { useReferral } from './hooks/use-referral';
+import { t } from '@vegaprotocol/i18n';
 
 export const CreateCodeContainer = () => {
-  const { stakeAvailable, requiredStake } = useStakeAvailable();
-  if (stakeAvailable == null || requiredStake == null) {
-    return null;
-  }
-
-  return (
-    <CreateCodeForm
-      currentStakeAvailable={stakeAvailable}
-      requiredStake={requiredStake}
-    />
-  );
+  return <CreateCodeForm />;
 };
 
-export const CreateCodeForm = ({
-  currentStakeAvailable,
-  requiredStake,
-}: {
-  currentStakeAvailable: bigint;
-  requiredStake: bigint;
-}) => {
+export const CreateCodeForm = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const openWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const { pubKey } = useVegaWallet();
+  const { pubKey, isReadOnly } = useVegaWallet();
 
   return (
-    <div className="w-1/2 mx-auto">
-      <h3 className="mb-5 text-xl text-center uppercase calt">
-        Create a referral code
+    <div className="w-2/3 max-w-md mx-auto bg-vega-clight-800 dark:bg-vega-cdark-800 p-8 rounded-lg">
+      <h3 className="mb-4 text-2xl text-center calt">
+        {t('Create a referral code')}
       </h3>
-      <p className="mb-6 text-center">
-        Generate a referral code to share with your friends and start earning
-        commission.
+      <p className="mb-4 text-center text-base">
+        {t(
+          'Generate a referral code to share with your friends and start earning commission.'
+        )}
       </p>
-      <div className="mb-5">
-        <div className="text-center">
-          <RainbowButton
-            variant="border"
-            onClick={() => {
-              if (pubKey) {
-                setDialogOpen(true);
-              } else {
-                openWalletDialog();
-              }
-            }}
-          >
-            {pubKey ? 'Create a referral code' : 'Connect wallet'}
-          </RainbowButton>
-        </div>
+
+      <div className="w-full flex flex-col">
+        <RainbowButton
+          variant="border"
+          disabled={isReadOnly}
+          onClick={() => {
+            if (pubKey) {
+              setDialogOpen(true);
+            } else {
+              openWalletDialog();
+            }
+          }}
+        >
+          {pubKey ? t('Create a referral code') : t('Connect wallet')}
+        </RainbowButton>
       </div>
+
       <Dialog
-        title="Create a referral code"
+        title={t('Create a referral code')}
         open={dialogOpen}
         onChange={() => setDialogOpen(false)}
         size="small"
       >
-        <CreateCodeDialog
-          currentStakeAvailable={currentStakeAvailable}
-          setDialogOpen={setDialogOpen}
-          requiredStake={requiredStake}
-        />
+        <CreateCodeDialog setDialogOpen={setDialogOpen} />
       </Dialog>
     </div>
   );
@@ -90,20 +78,20 @@ export const CreateCodeForm = ({
 
 const CreateCodeDialog = ({
   setDialogOpen,
-  currentStakeAvailable,
-  requiredStake,
 }: {
   setDialogOpen: (open: boolean) => void;
-  currentStakeAvailable: bigint;
-  requiredStake: bigint;
 }) => {
   const createLink = useLinks(DApp.Governance);
   const { isReadOnly, pubKey, sendTx } = useVegaWallet();
+  const { refetch } = useReferral({ pubKey, role: 'referrer' });
   const [err, setErr] = useState<string | null>(null);
   const [code, setCode] = useState<string | null>(null);
   const [status, setStatus] = useState<
     'idle' | 'loading' | 'success' | 'error'
   >('idle');
+
+  const { stakeAvailable: currentStakeAvailable, requiredStake } =
+    useStakeAvailable();
 
   const onSubmit = () => {
     if (isReadOnly || !pubKey) {
@@ -140,45 +128,60 @@ const CreateCodeDialog = ({
   const getButtonProps = () => {
     if (status === 'idle' || status === 'error') {
       return {
-        children: 'Generate code',
+        children: t('Generate code'),
         onClick: () => onSubmit(),
       };
     }
 
     if (status === 'loading') {
       return {
-        children: 'Confirm in wallet...',
+        children: t('Confirm in wallet...'),
         disabled: true,
       };
     }
 
     if (status === 'success') {
       return {
-        children: 'Close',
+        children: t('Close'),
         intent: Intent.Success,
-        onClick: () => setDialogOpen(false),
+        onClick: () => {
+          refetch();
+          setDialogOpen(false);
+        },
       };
     }
   };
 
-  // TODO: Add when network parameters are updated
-  if (
-    currentStakeAvailable === BigInt(0) ||
-    currentStakeAvailable < requiredStake
-  ) {
+  if (!pubKey || currentStakeAvailable == null || requiredStake == null) {
+    return (
+      <div className="flex flex-col gap-4">
+        <p>{t('You must be connected to the Vega wallet.')}</p>
+        <TradingButton
+          intent={Intent.Primary}
+          onClick={() => setDialogOpen(false)}
+        >
+          {t('Close')}
+        </TradingButton>
+      </div>
+    );
+  }
+
+  if (currentStakeAvailable < requiredStake) {
     return (
       <div className="flex flex-col gap-4">
         <p>
-          You need at least{' '}
-          {addDecimalsFormatNumber(requiredStake.toString(), 18)} VEGA staked to
-          generate a referral code and participate in the referral program.
+          {t('You need at least')}{' '}
+          {addDecimalsFormatNumber(requiredStake.toString(), 18)}{' '}
+          {t(
+            'VEGA staked to generate a referral code and participate in the referral program.'
+          )}
         </p>
         <TradingAnchorButton
           href={createLink(TokenStaticLinks.ASSOCIATE)}
           intent={Intent.Primary}
           target="_blank"
         >
-          Stake some $VEGA now
+          {t('Stake some $VEGA now')}
         </TradingAnchorButton>
       </div>
     );
@@ -188,8 +191,9 @@ const CreateCodeDialog = ({
     <div className="flex flex-col gap-4">
       {(status === 'idle' || status === 'loading' || status === 'error') && (
         <p>
-          Generate a referral code to share with your friends and start earning
-          commission.
+          {t(
+            'Generate a referral code to share with your friends and start earning commission.'
+          )}
         </p>
       )}
       {status === 'success' && code && (
@@ -204,7 +208,7 @@ const CreateCodeDialog = ({
               className="text-sm no-underline"
               icon={<VegaIcon name={VegaIconNames.COPY} />}
             >
-              <span>Copy</span>
+              <span>{t('Copy')}</span>
             </TradingButton>
           </CopyWithTooltip>
         </div>
@@ -215,10 +219,13 @@ const CreateCodeDialog = ({
         {...getButtonProps()}
       />
       {err && <InputError>{err}</InputError>}
-      {/* TODO: Add links */}
       <div className="flex justify-center pt-5 mt-2 text-sm border-t gap-4 text-default border-default">
-        <ExternalLink>About the referral program</ExternalLink>
-        <ExternalLink>Disclaimer</ExternalLink>
+        <ExternalLink href={ABOUT_REFERRAL_DOCS_LINK}>
+          {t('About the referral program')}
+        </ExternalLink>
+        <ExternalLink href={DISCLAIMER_REFERRAL_DOCS_LINK}>
+          {t('Disclaimer')}
+        </ExternalLink>
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ import {
   SPECIAL_CASE_NETWORK,
   SPECIAL_CASE_NETWORK_ID,
 } from '../../links/party-link/party-link';
+import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 
 type Transfer = components['schemas']['commandsv1Transfer'];
 
@@ -63,9 +64,15 @@ export const TxDetailsTransfer = ({
   return (
     <>
       <TableWithTbody className="mb-8" allowWrap={true}>
-        <TableRow modifier="bordered">
+        <TableRow modifier="bordered" data-testid="type">
           <TableCell {...sharedHeaderProps}>{t('Type')}</TableCell>
           <TableCell>{getTypeLabelForTransfer(transfer)}</TableCell>
+        </TableRow>
+        <TableRow modifier="bordered" data-testid="id">
+          <TableCell {...sharedHeaderProps}>{t('Transfer ID')}</TableCell>
+          <TableCell>
+            {txSignatureToDeterministicId(txData.signature.value)}
+          </TableCell>
         </TableRow>
         <TxDetailsShared
           txData={txData}
@@ -74,7 +81,7 @@ export const TxDetailsTransfer = ({
           hideTypeRow={true}
         />
         {from ? (
-          <TableRow modifier="bordered">
+          <TableRow modifier="bordered" data-testid="from">
             <TableCell>{t('From')}</TableCell>
             <TableCell>
               <PartyLink id={from} />
@@ -82,7 +89,7 @@ export const TxDetailsTransfer = ({
           </TableRow>
         ) : null}
         {transfer.to ? (
-          <TableRow modifier="bordered">
+          <TableRow modifier="bordered" data-testid="to">
             <TableCell>{t('To')}</TableCell>
             <TableCell>
               <PartyLink id={transfer.to} />
@@ -90,7 +97,7 @@ export const TxDetailsTransfer = ({
           </TableRow>
         ) : null}
         {transfer.asset && transfer.amount ? (
-          <TableRow modifier="bordered">
+          <TableRow modifier="bordered" data-testid="amount">
             <TableCell>{t('Amount')}</TableCell>
             <TableCell>
               <SizeInAsset assetId={transfer.asset} size={transfer.amount} />

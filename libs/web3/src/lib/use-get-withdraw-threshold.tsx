@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useBridgeContract } from './use-bridge-contract';
 import BigNumber from 'bignumber.js';
 import { addDecimal } from '@vegaprotocol/utils';
-import type { WithdrawalBusEventFieldsFragment } from '@vegaprotocol/wallet';
+import type { WithdrawalBusEventFieldsFragment } from './__generated__/TransactionResult';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 
 type Asset = Pick<

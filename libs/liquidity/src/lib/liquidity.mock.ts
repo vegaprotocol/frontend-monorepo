@@ -2,7 +2,7 @@ import merge from 'lodash/merge';
 import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type {
-  LiquidityProviderFeeShareQuery,
+  LiquidityProvidersQuery,
   LiquidityProvisionsQuery,
 } from './__generated__/MarketLiquidity';
 import type { LiquidityProvisionFieldsFragment } from './__generated__/MarketLiquidity';
@@ -12,12 +12,14 @@ export const liquidityProvisionsQuery = (
 ): LiquidityProvisionsQuery => {
   const defaultResult: LiquidityProvisionsQuery = {
     market: {
-      liquidityProvisionsConnection: {
-        __typename: 'LiquidityProvisionsConnection',
+      liquidityProvisions: {
+        __typename: 'LiquidityProvisionsWithPendingConnection',
         edges: liquidityFields.map((node) => {
           return {
-            __typename: 'LiquidityProvisionsEdge',
-            node,
+            __typename: 'LiquidityProvisionWithPendingEdge',
+            node: {
+              current: node,
+            },
           };
         }),
       },
@@ -26,40 +28,61 @@ export const liquidityProvisionsQuery = (
   return merge(defaultResult, override);
 };
 
-export const liquidityProviderFeeShareQuery = (
-  override?: PartialDeep<LiquidityProviderFeeShareQuery>
-): LiquidityProviderFeeShareQuery => {
-  const defaultResult: LiquidityProviderFeeShareQuery = {
-    market: {
-      id: 'market-0',
-      data: {
-        market: {
-          id: 'market-0',
-          __typename: 'Market',
+export const liquidityProvidersQuery = (
+  override?: PartialDeep<LiquidityProvidersQuery>
+): LiquidityProvidersQuery => {
+  const defaultResult: LiquidityProvidersQuery = {
+    liquidityProviders: {
+      edges: [
+        {
+          node: {
+            partyId:
+              '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
+            marketId:
+              '5ddb6f1570c0ef7aea41ebfef234dbded4ce2c11722cf033954459c45c30c057',
+            feeShare: {
+              equityLikeShare: '1',
+              averageEntryValuation: '3570452966575.2571864668476351',
+              averageScore: '0',
+              virtualStake: '296386536856.9999884883855020',
+            },
+            sla: {
+              currentEpochFractionOfTimeOnBook: '0',
+              lastEpochFractionOfTimeOnBook: '0',
+              lastEpochFeePenalty: '1',
+              lastEpochBondPenalty: '0.05',
+              hysteresisPeriodFeePenalties: ['1'],
+              requiredLiquidity: '',
+              notionalVolumeBuys: '',
+              notionalVolumeSells: '',
+            },
+          },
         },
-        liquidityProviderFeeShare: [
-          {
-            party: {
-              id: '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
-              __typename: 'Party',
+        {
+          node: {
+            partyId:
+              'cc464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
+            marketId:
+              '5ddb6f1570c0ef7aea41ebfef234dbded4ce2c11722cf033954459c45c30c057',
+            feeShare: {
+              equityLikeShare: '1',
+              averageEntryValuation: '3570452966575.2571864668476351',
+              averageScore: '0',
+              virtualStake: '296386536856.9999884883855020',
             },
-            equityLikeShare: '1',
-            averageEntryValuation: '68585293691.5598054356207737',
-            __typename: 'LiquidityProviderFeeShare',
-          },
-          {
-            party: {
-              id: 'cc464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
-              __typename: 'Party',
+            sla: {
+              currentEpochFractionOfTimeOnBook: '0',
+              lastEpochFractionOfTimeOnBook: '0',
+              lastEpochFeePenalty: '1',
+              lastEpochBondPenalty: '0.05',
+              hysteresisPeriodFeePenalties: ['1'],
+              requiredLiquidity: '',
+              notionalVolumeBuys: '',
+              notionalVolumeSells: '',
             },
-            equityLikeShare: '1',
-            averageEntryValuation: '68585293691.5598054356207737',
-            __typename: 'LiquidityProviderFeeShare',
           },
-        ],
-        __typename: 'MarketData',
-      },
-      __typename: 'Market',
+        },
+      ],
     },
   };
   return merge(defaultResult, override);

@@ -22,7 +22,6 @@ fragment MarketDataUpdateFields on ObservableMarketData {
   indicativeVolume
   marketState
   marketTradingMode
-  marketValueProxy
   markPrice
   midPrice
   openInterest
@@ -75,7 +74,6 @@ fragment MarketDataFields on MarketData {
   indicativeVolume
   marketState
   marketTradingMode
-  marketValueProxy
   markPrice
   midPrice
   openInterest
