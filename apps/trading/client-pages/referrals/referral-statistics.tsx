@@ -184,6 +184,7 @@ export const Statistics = ({
     />
   );
 
+  // TODO: replace this crude calculation with a value coming from the API (once available)
   const referrerVolumeValue = new BigNumber(runningVolumeValue)
     .minus(refereesVolumeValue)
     .toNumber();
