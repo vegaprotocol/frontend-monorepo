@@ -6,28 +6,28 @@ import type { EstimateFeesQuery } from './__generated__/EstimateOrder';
 
 const data: EstimateFeesQuery = {
   epoch: {
-    id: '1',
+    id: '2',
   },
   volumeDiscountStats: {
     edges: [
-      /*{
+      {
         node: {
-          atEpoch: 2,
+          atEpoch: 1,
           discountFactor: '0.1',
           runningVolume: '100',
         },
-      },*/
+      },
     ],
   },
   referralSetStats: {
     edges: [
-      /*{
+      {
         node: {
-          atEpoch: 2,
-          discountFactor: '0.1',
-          runningVolume: '100',
+          atEpoch: 1,
+          discountFactor: '0.2',
+          referralSetRunningNotionalTakerVolume: '100',
         },
-      },*/
+      },
     ],
   },
   estimateFees: {
@@ -115,5 +115,43 @@ describe('useEstimateFees', () => {
       referralDiscountFactor: '0',
       volumeDiscountFactor: '0',
     });
+  });
+
+  it('returns 0 discounts is they are not at current epoch', () => {
+    const { result } = renderHook(() =>
+      useEstimateFees(
+        {
+          marketId: 'marketId',
+          side: Side.SIDE_BUY,
+          size: '1',
+          price: '1',
+          timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+          type: OrderType.TYPE_LIMIT,
+        },
+        true
+      )
+    );
+    expect(result.current?.referralDiscountFactor).toEqual('0');
+    expect(result.current?.volumeDiscountFactor).toEqual('0');
+  });
+
+  it('returns discounts', () => {
+    data.epoch.id = '1';
+    const { result } = renderHook(() =>
+      useEstimateFees(
+        {
+          marketId: 'marketId',
+          side: Side.SIDE_BUY,
+          size: '1',
+          price: '1',
+          timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+          type: OrderType.TYPE_LIMIT,
+        },
+        true
+      )
+    );
+
+    expect(result.current?.referralDiscountFactor).toEqual('0.2');
+    expect(result.current?.volumeDiscountFactor).toEqual('0.1');
   });
 });

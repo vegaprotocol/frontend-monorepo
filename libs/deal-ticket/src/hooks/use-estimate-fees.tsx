@@ -35,9 +35,15 @@ export const useEstimateFees = (
   });
   const data = loading ? currentData || previousData : currentData;
   const volumeDiscountFactor =
-    data?.volumeDiscountStats.edges[0]?.node.discountFactor || '0';
+    (data?.volumeDiscountStats.edges[0]?.node.atEpoch.toString() ===
+      data?.epoch.id &&
+      data?.volumeDiscountStats.edges[0]?.node.discountFactor) ||
+    '0';
   const referralDiscountFactor =
-    data?.referralSetStats.edges[0]?.node.discountFactor || '0';
+    (data?.referralSetStats.edges[0]?.node.atEpoch.toString() ===
+      data?.epoch.id &&
+      data?.referralSetStats.edges[0]?.node.discountFactor) ||
+    '0';
   if (order?.postOnly) {
     return {
       volumeDiscountFactor,

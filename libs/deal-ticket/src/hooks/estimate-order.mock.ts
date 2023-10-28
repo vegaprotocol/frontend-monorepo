@@ -6,6 +6,15 @@ export const estimateFeesQuery = (
   override?: PartialDeep<EstimateFeesQuery>
 ): EstimateFeesQuery => {
   const defaultResult: EstimateFeesQuery = {
+    epoch: {
+      id: '1',
+    },
+    referralSetStats: {
+      edges: [],
+    },
+    volumeDiscountStats: {
+      edges: [],
+    },
     estimateFees: {
       __typename: 'FeeEstimate',
       totalFeeAmount: '0.0006',
