@@ -5,6 +5,31 @@ import { Side, OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import type { EstimateFeesQuery } from './__generated__/EstimateOrder';
 
 const data: EstimateFeesQuery = {
+  epoch: {
+    id: '1',
+  },
+  volumeDiscountStats: {
+    edges: [
+      /*{
+        node: {
+          atEpoch: 2,
+          discountFactor: '0.1',
+          runningVolume: '100',
+        },
+      },*/
+    ],
+  },
+  referralSetStats: {
+    edges: [
+      /*{
+        node: {
+          atEpoch: 2,
+          discountFactor: '0.1',
+          runningVolume: '100',
+        },
+      },*/
+    ],
+  },
   estimateFees: {
     totalFeeAmount: '120',
     fees: {
@@ -54,6 +79,8 @@ describe('useEstimateFees', () => {
         liquidityFee: '0',
         makerFee: '0',
       },
+      referralDiscountFactor: '0',
+      volumeDiscountFactor: '0',
     });
     expect(mockUseEstimateFeesQuery.mock.lastCall?.[0].skip).toBeTruthy();
   });
@@ -85,6 +112,8 @@ describe('useEstimateFees', () => {
         makerFeeReferralDiscount: '5',
         makerFeeVolumeDiscount: '6',
       },
+      referralDiscountFactor: '0',
+      volumeDiscountFactor: '0',
     });
   });
 });

@@ -5,39 +5,22 @@ import type { EstimateFeesQuery } from './__generated__/EstimateOrder';
 import { useEstimateFeesQuery } from './__generated__/EstimateOrder';
 
 const divideByTwo = (n: string) => (BigInt(n) / BigInt(2)).toString();
-export const sumFeesDiscounts = (
-  fees: EstimateFeesQuery['estimateFees']['fees']
-) => {
-  const volume = (
-    BigInt(fees.makerFeeVolumeDiscount || '0') +
-    BigInt(fees.infrastructureFeeVolumeDiscount || '0') +
-    BigInt(fees.liquidityFeeVolumeDiscount || '0')
-  ).toString();
-  const referral = (
-    BigInt(fees.makerFeeReferralDiscount || '0') +
-    BigInt(fees.infrastructureFeeReferralDiscount || '0') +
-    BigInt(fees.liquidityFeeReferralDiscount || '0')
-  ).toString();
-  return {
-    volume,
-    referral,
-    total: (BigInt(volume) + BigInt(referral)).toString(),
-  };
-};
-
-export const sumFees = (fees: EstimateFeesQuery['estimateFees']['fees']) =>
-  (
-    BigInt(fees.makerFee || '0') +
-    BigInt(fees.infrastructureFee || '0') +
-    BigInt(fees.liquidityFee || '0')
-  ).toString();
 
 export const useEstimateFees = (
   order?: OrderSubmissionBody['orderSubmission'],
   isMarketInAuction?: boolean
-): EstimateFeesQuery['estimateFees'] | undefined => {
+):
+  | (EstimateFeesQuery['estimateFees'] & {
+      referralDiscountFactor: string;
+      volumeDiscountFactor: string;
+    })
+  | undefined => {
   const { pubKey } = useVegaWallet();
-  const { data } = useEstimateFeesQuery({
+  const {
+    data: currentData,
+    previousData,
+    loading,
+  } = useEstimateFeesQuery({
     variables: order && {
       marketId: order.marketId,
       partyId: pubKey || '',
@@ -50,8 +33,15 @@ export const useEstimateFees = (
     fetchPolicy: 'no-cache',
     skip: !pubKey || !order?.size || !order?.price || order.postOnly,
   });
+  const data = loading ? currentData || previousData : currentData;
+  const volumeDiscountFactor =
+    data?.volumeDiscountStats.edges[0]?.node.discountFactor || '0';
+  const referralDiscountFactor =
+    data?.referralSetStats.edges[0]?.node.discountFactor || '0';
   if (order?.postOnly) {
     return {
+      volumeDiscountFactor,
+      referralDiscountFactor,
       totalFeeAmount: '0',
       fees: {
         infrastructureFee: '0',
@@ -60,8 +50,13 @@ export const useEstimateFees = (
       },
     };
   }
-  return isMarketInAuction && data?.estimateFees
+  if (!data?.estimateFees) {
+    return undefined;
+  }
+  return isMarketInAuction
     ? {
+        volumeDiscountFactor,
+        referralDiscountFactor,
         totalFeeAmount: divideByTwo(data.estimateFees.totalFeeAmount),
         fees: {
           infrastructureFee: divideByTwo(
@@ -91,5 +86,9 @@ export const useEstimateFees = (
             divideByTwo(data.estimateFees.fees.makerFeeVolumeDiscount),
         },
       }
-    : data?.estimateFees;
+    : {
+        volumeDiscountFactor,
+        referralDiscountFactor,
+        ...data.estimateFees,
+      };
 };

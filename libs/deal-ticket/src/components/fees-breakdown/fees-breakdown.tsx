@@ -6,7 +6,7 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import BigNumber from 'bignumber.js';
-import { sumFees, sumFeesDiscounts } from '../../hooks';
+import { getDiscountedFee } from '../discounts';
 
 const formatValue = (
   value: string | number | null | undefined,
@@ -24,7 +24,7 @@ const FeesBreakdownItem = ({
   decimals,
 }: {
   label: string;
-  factor?: BigNumber;
+  factor?: string;
   value: string;
   symbol?: string;
   decimals: number;
@@ -43,76 +43,86 @@ const FeesBreakdownItem = ({
 );
 
 export const FeesBreakdown = ({
+  totalFeeAmount,
   fees,
   feeFactors,
   symbol,
   decimals,
+  referralDiscountFactor,
+  volumeDiscountFactor,
 }: {
+  totalFeeAmount?: string;
   fees?: TradeFee;
   feeFactors?: FeeFactors;
   symbol?: string;
   decimals: number;
+  referralDiscountFactor?: string;
+  volumeDiscountFactor?: string;
 }) => {
-  if (!fees) return null;
-  const totalFees = sumFees(fees);
-  const {
-    total: totalDiscount,
-    referral: referralDiscount,
-    volume: volumeDiscount,
-  } = sumFeesDiscounts(fees);
-  if (totalFees === '0') return null;
+  if (!fees || !totalFeeAmount || totalFeeAmount === '0') return null;
+
+  const { discountedFee: discountedInfrastructureFee } = getDiscountedFee(
+    fees.infrastructureFee,
+    referralDiscountFactor,
+    volumeDiscountFactor
+  );
+
+  const { discountedFee: discountedLiquidityFee } = getDiscountedFee(
+    fees.liquidityFee,
+    referralDiscountFactor,
+    volumeDiscountFactor
+  );
+
+  const { discountedFee: discountedMakerFee } = getDiscountedFee(
+    fees.makerFee,
+    referralDiscountFactor,
+    volumeDiscountFactor
+  );
+
+  const { volumeDiscount, referralDiscount } = getDiscountedFee(
+    totalFeeAmount,
+    referralDiscountFactor,
+    volumeDiscountFactor
+  );
+
   return (
     <dl className="grid grid-cols-6">
       <FeesBreakdownItem
         label={t('Infrastructure fee')}
-        factor={
-          feeFactors?.infrastructureFee
-            ? new BigNumber(feeFactors?.infrastructureFee)
-            : undefined
-        }
-        value={fees.infrastructureFee}
+        factor={feeFactors?.infrastructureFee}
+        value={discountedInfrastructureFee}
         symbol={symbol}
         decimals={decimals}
       />
 
       <FeesBreakdownItem
         label={t('Liquidity fee')}
-        factor={
-          feeFactors?.liquidityFee
-            ? new BigNumber(feeFactors?.liquidityFee)
-            : undefined
-        }
-        value={fees.liquidityFee}
+        factor={feeFactors?.liquidityFee}
+        value={discountedLiquidityFee}
         symbol={symbol}
         decimals={decimals}
       />
 
       <FeesBreakdownItem
         label={t('Maker fee')}
-        factor={
-          feeFactors?.makerFee ? new BigNumber(feeFactors?.makerFee) : undefined
-        }
-        value={fees.makerFee}
+        factor={feeFactors?.makerFee}
+        value={discountedMakerFee}
         symbol={symbol}
         decimals={decimals}
       />
-      {volumeDiscount && volumeDiscount !== '0' && (
+      {volumeDiscountFactor && volumeDiscount !== '0' && (
         <FeesBreakdownItem
           label={t('Volume discount')}
-          factor={new BigNumber(volumeDiscount).dividedBy(
-            BigNumber.sum(totalFees, totalDiscount)
-          )}
+          factor={volumeDiscountFactor}
           value={volumeDiscount}
           symbol={symbol}
           decimals={decimals}
         />
       )}
-      {referralDiscount && referralDiscount !== '0' && (
+      {referralDiscountFactor && referralDiscount !== '0' && (
         <FeesBreakdownItem
           label={t('Referral discount')}
-          factor={new BigNumber(referralDiscount).dividedBy(
-            BigNumber.sum(totalFees, totalDiscount)
-          )}
+          factor={referralDiscountFactor}
           value={referralDiscount}
           symbol={symbol}
           decimals={decimals}
@@ -120,8 +130,8 @@ export const FeesBreakdown = ({
       )}
       <FeesBreakdownItem
         label={t('Total fees')}
-        factor={feeFactors ? sumFeesFactors(feeFactors) : undefined}
-        value={totalFees}
+        factor={feeFactors ? sumFeesFactors(feeFactors)?.toString() : undefined}
+        value={totalFeeAmount}
         symbol={symbol}
         decimals={decimals}
       />
