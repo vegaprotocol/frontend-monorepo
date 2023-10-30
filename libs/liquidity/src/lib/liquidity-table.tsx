@@ -380,7 +380,7 @@ export const LiquidityTable = ({
                 data?.status === LiquidityProvisionStatus.STATUS_PENDING &&
                 (data?.currentCommitmentAmount || data?.currentFee)
               ) {
-                return t('Update pending');
+                return t('Updating next epoch');
               }
               return LiquidityProvisionStatusMapping[
                 value as LiquidityProvisionStatus
