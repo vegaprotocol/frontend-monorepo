@@ -13,10 +13,7 @@ import {
 import { formatNumberPercentage } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 
-interface ProposalReferralProgramDetailsProps {
-  proposal: ProposalQuery['proposal'];
-}
-
+// These types are not generated as it's not known how dynamic these are
 type VestingBenefitTier = {
   minimum_quantum_balance: string;
   reward_multiplier: string;
@@ -45,6 +42,18 @@ export const formatVolumeDiscountFactor = (value: string) => {
   return formatNumberPercentage(new BigNumber(value).times(100));
 };
 
+interface ProposalReferralProgramDetailsProps {
+  proposal: ProposalQuery['proposal'];
+}
+
+/**
+ * Special rendered for network proposals that change any benefit tiers,
+ * which is detected by:
+ * 1) it being a network parameter change
+ * 2) the name of the field ending in `.benefitTiers`
+ *
+ * It only renders known fields so that they can be formatted correctly.
+ */
 export const ProposalUpdateBenefitTiers = ({
   proposal,
 }: ProposalReferralProgramDetailsProps) => {
@@ -64,7 +73,7 @@ export const ProposalUpdateBenefitTiers = ({
   }
 
   return (
-    <div data-testid="proposal-volume-discount-program-details">
+    <div data-testid="proposal-update-benefit-tiers">
       <RoundedWrapper paddingBottom={true}>
         {benefitTiers && (
           <div
