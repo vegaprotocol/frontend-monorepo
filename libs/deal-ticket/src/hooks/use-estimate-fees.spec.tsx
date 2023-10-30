@@ -117,7 +117,7 @@ describe('useEstimateFees', () => {
     });
   });
 
-  it('returns 0 discounts is they are not at current epoch', () => {
+  it('returns 0 discounts if discount stats are not at the current epoch', () => {
     const { result } = renderHook(() =>
       useEstimateFees(
         {
