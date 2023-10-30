@@ -197,7 +197,7 @@ export const LiquidityTable = ({
               LiquidityProvisionData,
               'commitmentAmount'
             >) => {
-              if (!value || !data?.currentCommitmentAmount) return '-';
+              if (!value) return '-';
               const formattedCommitmentAmount = addDecimalsFormatNumberQuantum(
                 value,
                 assetDecimalPlaces ?? 0,
