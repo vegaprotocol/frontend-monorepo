@@ -43,7 +43,7 @@ export const fundingPaymentsProvider = makeDataProvider<
   pagination: {
     getPageInfo,
     append,
-    first: 100,
+    first: 1000,
   },
 });
 
