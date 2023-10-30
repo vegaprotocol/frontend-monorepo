@@ -99,23 +99,6 @@ export const LiquidityHeader = () => {
       <HeaderStat heading={t('Liquidity supplied')} testId="liquidity-supplied">
         <Indicator variant={status} /> {formatNumberPercentage(percentage, 2)}
       </HeaderStat>
-      {marketId && (
-        <HeaderStat heading={t('Market ID')} testId="liquidity-market-id">
-          <div className="break-word">
-            <CopyWithTooltip text={marketId}>
-              <button
-                data-testid="copy-eth-oracle-address"
-                className="uppercase text-right"
-              >
-                <span className="flex gap-1">
-                  {truncateMiddle(marketId)}
-                  <VegaIcon name={VegaIconNames.COPY} size={16} />
-                </span>
-              </button>
-            </CopyWithTooltip>
-          </div>
-        </HeaderStat>
-      )}
       <HeaderStat
         heading={t('Fees paid')}
         description={t(
@@ -133,6 +116,23 @@ export const LiquidityHeader = () => {
             : '-'}
         </div>
       </HeaderStat>
+      {marketId && (
+        <HeaderStat heading={t('Market ID')} testId="liquidity-market-id">
+          <div className="break-word">
+            <CopyWithTooltip text={marketId}>
+              <button
+                data-testid="copy-eth-oracle-address"
+                className="uppercase text-right"
+              >
+                <span className="flex gap-1">
+                  {truncateMiddle(marketId)}
+                  <VegaIcon name={VegaIconNames.COPY} size={16} />
+                </span>
+              </button>
+            </CopyWithTooltip>
+          </div>
+        </HeaderStat>
+      )}
       <HeaderStat heading={t('Learn more')} testId="liquidity-learn-more">
         {DocsLinks ? (
           <ExternalLink href={DocsLinks.LIQUIDITY}>
