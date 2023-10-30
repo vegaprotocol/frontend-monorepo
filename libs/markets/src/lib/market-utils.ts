@@ -50,11 +50,12 @@ export const getQuoteName = (market: Partial<Market>) => {
 };
 
 export const sumFeesFactors = (fees: Market['fees']['factors']) => {
-  return fees
-    ? Number(fees.makerFee) +
-        Number(fees.liquidityFee) +
-        Number(fees.infrastructureFee)
-    : undefined;
+  if (!fees) return;
+
+  return new BigNumber(fees.makerFee)
+    .plus(fees.liquidityFee)
+    .plus(fees.infrastructureFee)
+    .toNumber();
 };
 
 export const totalFeesFactorsPercentage = (fees: Market['fees']['factors']) => {

@@ -3,6 +3,7 @@ import type { Market, MarketMaybeWithDataAndCandles } from './markets-provider';
 import {
   calcTradedFactor,
   filterAndSortMarkets,
+  sumFeesFactors,
   totalFeesFactorsPercentage,
 } from './market-utils';
 const { MarketState, MarketTradingMode } = Schema;
@@ -130,5 +131,17 @@ describe('calcTradedFactor', () => {
     const fb = calcTradedFactor(marketB as MarketMaybeWithDataAndCandles);
     // it should be true because market a's asset is "more valuable" than b's
     expect(fa > fb).toBeTruthy();
+  });
+});
+
+describe('sumFeesFactors', () => {
+  it('does not result in flop errors', () => {
+    expect(
+      sumFeesFactors({
+        makerFee: '0.1',
+        infrastructureFee: '0.2',
+        liquidityFee: '0.3',
+      })
+    ).toEqual(0.6);
   });
 });
