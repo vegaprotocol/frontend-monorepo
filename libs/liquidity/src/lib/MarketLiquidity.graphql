@@ -20,6 +20,19 @@ fragment LiquidityProvisionFields on LiquidityProvision {
   status
 }
 
+query PaidFees($marketId: ID) {
+  paidLiquidityFees(marketId: $marketId) {
+    edges {
+      node {
+        marketId
+        assetId
+        epoch
+        totalFeesPaid
+      }
+    }
+  }
+}
+
 query LiquidityProvisions($marketId: ID!) {
   market(id: $marketId) {
     liquiditySLAParameters {

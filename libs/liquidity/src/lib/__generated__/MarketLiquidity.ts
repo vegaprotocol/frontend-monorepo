@@ -5,6 +5,13 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type LiquidityProvisionFieldsFragment = { __typename?: 'LiquidityProvision', id: string, createdAt: any, updatedAt?: any | null, commitmentAmount: string, fee: string, status: Types.LiquidityProvisionStatus, party: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string } } | null> | null } | null } };
 
+export type PaidFeesQueryVariables = Types.Exact<{
+  marketId?: Types.InputMaybe<Types.Scalars['ID']>;
+}>;
+
+
+export type PaidFeesQuery = { __typename?: 'Query', paidLiquidityFees?: { __typename?: 'PaidLiquidityFeesConnection', edges: Array<{ __typename?: 'PaidLiquidityFeesEdge', node: { __typename?: 'PaidLiquidityFees', marketId: string, assetId: string, epoch: number, totalFeesPaid: string } } | null> } | null };
+
 export type LiquidityProvisionsQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
@@ -79,6 +86,48 @@ export const LiquidityProviderFieldsFragmentDoc = gql`
 }
     ${LiquidityProviderFeeShareFieldsFragmentDoc}
 ${LiquidityProviderSLAFieldsFragmentDoc}`;
+export const PaidFeesDocument = gql`
+    query PaidFees($marketId: ID) {
+  paidLiquidityFees(marketId: $marketId) {
+    edges {
+      node {
+        marketId
+        assetId
+        epoch
+        totalFeesPaid
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __usePaidFeesQuery__
+ *
+ * To run a query within a React component, call `usePaidFeesQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePaidFeesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePaidFeesQuery({
+ *   variables: {
+ *      marketId: // value for 'marketId'
+ *   },
+ * });
+ */
+export function usePaidFeesQuery(baseOptions?: Apollo.QueryHookOptions<PaidFeesQuery, PaidFeesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PaidFeesQuery, PaidFeesQueryVariables>(PaidFeesDocument, options);
+      }
+export function usePaidFeesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PaidFeesQuery, PaidFeesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PaidFeesQuery, PaidFeesQueryVariables>(PaidFeesDocument, options);
+        }
+export type PaidFeesQueryHookResult = ReturnType<typeof usePaidFeesQuery>;
+export type PaidFeesLazyQueryHookResult = ReturnType<typeof usePaidFeesLazyQuery>;
+export type PaidFeesQueryResult = Apollo.QueryResult<PaidFeesQuery, PaidFeesQueryVariables>;
 export const LiquidityProvisionsDocument = gql`
     query LiquidityProvisions($marketId: ID!) {
   market(id: $marketId) {
