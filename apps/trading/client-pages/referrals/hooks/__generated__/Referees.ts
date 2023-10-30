@@ -5,7 +5,7 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type RefereesQueryVariables = Types.Exact<{
   code: Types.Scalars['ID'];
-  aggregationDays?: Types.InputMaybe<Types.Scalars['Int']>;
+  aggregationEpochs?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 
@@ -13,8 +13,8 @@ export type RefereesQuery = { __typename?: 'Query', referralSetReferees: { __typ
 
 
 export const RefereesDocument = gql`
-    query Referees($code: ID!, $aggregationDays: Int) {
-  referralSetReferees(id: $code, aggregationDays: $aggregationDays) {
+    query Referees($code: ID!, $aggregationEpochs: Int) {
+  referralSetReferees(id: $code, aggregationEpochs: $aggregationEpochs) {
     edges {
       node {
         referralSetId
@@ -42,7 +42,7 @@ export const RefereesDocument = gql`
  * const { data, loading, error } = useRefereesQuery({
  *   variables: {
  *      code: // value for 'code'
- *      aggregationDays: // value for 'aggregationDays'
+ *      aggregationEpochs: // value for 'aggregationEpochs'
  *   },
  * });
  */

@@ -37,12 +37,12 @@ export const ReferralStatistics = () => {
   const { data: referee } = useReferral({
     pubKey,
     role: 'referee',
-    aggregationDays: program.details?.windowLength,
+    aggregationEpochs: program.details?.windowLength,
   });
   const { data: referrer } = useReferral({
     pubKey,
     role: 'referrer',
-    aggregationDays: program.details?.windowLength,
+    aggregationEpochs: program.details?.windowLength,
   });
 
   if (referee?.code) {
@@ -309,7 +309,7 @@ export const Statistics = ({
       {/* Referees (only for referrer view) */}
       {as === 'referrer' && data.referees.length > 0 && (
         <div className="mt-20 mb-20">
-          <h2 className="text-2xl mb-5">{t('Referees')}</h2>
+          <h2 className="mb-5 text-2xl">{t('Referees')}</h2>
           <div
             className={classNames(
               collapsed && [

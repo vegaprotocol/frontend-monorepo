@@ -1,5 +1,5 @@
-query Referees($code: ID!, $aggregationDays: Int) {
-  referralSetReferees(id: $code, aggregationDays: $aggregationDays) {
+query Referees($code: ID!, $aggregationEpochs: Int) {
+  referralSetReferees(id: $code, aggregationEpochs: $aggregationEpochs) {
     edges {
       node {
         referralSetId
