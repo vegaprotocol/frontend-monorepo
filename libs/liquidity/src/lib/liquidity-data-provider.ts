@@ -39,9 +39,14 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
       ?.filter((n) => !!n)
       .map((e) => {
         let node;
-        if (!e?.node.pending) {
+        if (!e?.node.pending && e?.node.current) {
           node = {
             ...e?.node.current,
+            ...responseData.market?.liquiditySLAParameters,
+          };
+        } else if (!e?.node.current && e?.node.pending) {
+          node = {
+            ...e?.node.pending,
             ...responseData.market?.liquiditySLAParameters,
           };
         } else {
@@ -49,7 +54,6 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
             ...e?.node.pending,
             currentCommitmentAmount: e?.node.current.commitmentAmount,
             currentFee: e?.node.current.fee,
-            status: Schema.LiquidityProvisionStatus.STATUS_PENDING,
             ...responseData.market?.liquiditySLAParameters,
           };
         }

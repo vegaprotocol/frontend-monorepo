@@ -203,7 +203,10 @@ export const LiquidityTable = ({
                 assetDecimalPlaces ?? 0,
                 quantum ?? 0
               );
-              if (data?.currentCommitmentAmount) {
+              if (
+                data?.currentCommitmentAmount &&
+                data?.currentCommitmentAmount !== value
+              ) {
                 return `${addDecimalsFormatNumberQuantum(
                   data.currentCommitmentAmount,
                   assetDecimalPlaces ?? 0,
@@ -240,7 +243,7 @@ export const LiquidityTable = ({
               const formattedValue =
                 formatNumberPercentage(new BigNumber(value).times(100), 2) ||
                 '-';
-              if (data?.currentFee) {
+              if (data?.currentFee && data?.currentFee !== value) {
                 return `${formatNumberPercentage(
                   new BigNumber(data.currentFee).times(100),
                   2
