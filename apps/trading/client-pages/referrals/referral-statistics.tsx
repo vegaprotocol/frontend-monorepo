@@ -100,6 +100,9 @@ export const Statistics = ({
   const runningVolumeValue = statsAvailable
     ? Number(statsAvailable.referralSetRunningNotionalTakerVolume)
     : 0;
+  const referrerVolumeValue = statsAvailable
+    ? Number(statsAvailable.referrerTakerVolume)
+    : 0;
   const multiplier = statsAvailable
     ? Number(statsAvailable.rewardsMultiplier)
     : 1;
@@ -129,12 +132,6 @@ export const Statistics = ({
   const nextBenefitTierEpochsValue = nextBenefitTierValue
     ? nextBenefitTierValue.epochs - epochsValue
     : 0;
-
-  // sum of all referees volumes
-  const refereesVolumeValue = data.referees.reduce(
-    (all, r) => all.plus(new BigNumber(r.totalRefereeNotionalTakerVolume)),
-    new BigNumber(0)
-  );
 
   const baseCommissionTile = (
     <StatTile
@@ -184,10 +181,6 @@ export const Statistics = ({
     />
   );
 
-  // TODO: replace this crude calculation with a value coming from the API (once available)
-  const referrerVolumeValue = new BigNumber(runningVolumeValue)
-    .minus(refereesVolumeValue)
-    .toNumber();
   const referrerVolumeTile = (
     <StatTile
       title={t(
