@@ -27,6 +27,7 @@ import {
   ProposalTransferDetails,
 } from '../proposal-transfer';
 import { FLAGS } from '@vegaprotocol/environment';
+import { ProposalUpdateBenefitTiers } from '../proposal-update-benefit-tiers';
 
 export interface ProposalProps {
   proposal: ProposalQuery['proposal'];
@@ -242,6 +243,14 @@ export const Proposal = ({
           <ProposalVolumeDiscountProgramDetails proposal={proposal} />
         </div>
       )}
+
+      {proposal.terms.change.__typename === 'UpdateNetworkParameter' &&
+        proposal.terms.change.networkParameter.key.slice(-13) ===
+          '.benefitTiers' && (
+          <div className="mb-4">
+            <ProposalUpdateBenefitTiers proposal={proposal} />
+          </div>
+        )}
 
       {governanceTransferDetails}
 
