@@ -5,6 +5,31 @@ import { Side, OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import type { EstimateFeesQuery } from './__generated__/EstimateOrder';
 
 const data: EstimateFeesQuery = {
+  epoch: {
+    id: '2',
+  },
+  volumeDiscountStats: {
+    edges: [
+      {
+        node: {
+          atEpoch: 1,
+          discountFactor: '0.1',
+          runningVolume: '100',
+        },
+      },
+    ],
+  },
+  referralSetStats: {
+    edges: [
+      {
+        node: {
+          atEpoch: 1,
+          discountFactor: '0.2',
+          referralSetRunningNotionalTakerVolume: '100',
+        },
+      },
+    ],
+  },
   estimateFees: {
     totalFeeAmount: '120',
     fees: {
@@ -54,6 +79,8 @@ describe('useEstimateFees', () => {
         liquidityFee: '0',
         makerFee: '0',
       },
+      referralDiscountFactor: '0',
+      volumeDiscountFactor: '0',
     });
     expect(mockUseEstimateFeesQuery.mock.lastCall?.[0].skip).toBeTruthy();
   });
@@ -85,6 +112,46 @@ describe('useEstimateFees', () => {
         makerFeeReferralDiscount: '5',
         makerFeeVolumeDiscount: '6',
       },
+      referralDiscountFactor: '0',
+      volumeDiscountFactor: '0',
     });
+  });
+
+  it('returns 0 discounts if discount stats are not at the current epoch', () => {
+    const { result } = renderHook(() =>
+      useEstimateFees(
+        {
+          marketId: 'marketId',
+          side: Side.SIDE_BUY,
+          size: '1',
+          price: '1',
+          timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+          type: OrderType.TYPE_LIMIT,
+        },
+        true
+      )
+    );
+    expect(result.current?.referralDiscountFactor).toEqual('0');
+    expect(result.current?.volumeDiscountFactor).toEqual('0');
+  });
+
+  it('returns discounts', () => {
+    data.epoch.id = '1';
+    const { result } = renderHook(() =>
+      useEstimateFees(
+        {
+          marketId: 'marketId',
+          side: Side.SIDE_BUY,
+          size: '1',
+          price: '1',
+          timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+          type: OrderType.TYPE_LIMIT,
+        },
+        true
+      )
+    );
+
+    expect(result.current?.referralDiscountFactor).toEqual('0.2');
+    expect(result.current?.volumeDiscountFactor).toEqual('0.1');
   });
 });

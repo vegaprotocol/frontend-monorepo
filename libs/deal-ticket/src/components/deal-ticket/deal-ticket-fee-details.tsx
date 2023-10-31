@@ -26,11 +26,7 @@ import {
   EST_TOTAL_MARGIN_TOOLTIP_TEXT,
   MARGIN_ACCOUNT_TOOLTIP_TEXT,
 } from '../../constants';
-import {
-  sumFees,
-  sumFeesDiscounts,
-  useEstimateFees,
-} from '../../hooks/use-estimate-fees';
+import { useEstimateFees } from '../../hooks/use-estimate-fees';
 import { KeyValue } from './key-value';
 import {
   Accordion,
@@ -44,6 +40,7 @@ import {
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { FeesBreakdown } from '../fees-breakdown';
+import { getTotalDiscountFactor, getDiscountedFee } from '../discounts';
 
 const emptyValue = '-';
 
@@ -63,48 +60,49 @@ export const DealTicketFeeDetails = ({
   const feeEstimate = useEstimateFees(order, isMarketInAuction);
   const asset = getAsset(market);
   const { decimals: assetDecimals, quantum } = asset;
-  const totalFees = feeEstimate?.fees && sumFees(feeEstimate?.fees);
-  const feesDiscounts =
-    feeEstimate?.fees && sumFeesDiscounts(feeEstimate?.fees);
 
-  const totalPercentageDiscount =
-    feesDiscounts &&
-    totalFees &&
-    feesDiscounts.total !== '0' &&
-    totalFees !== '0' &&
-    new BigNumber(feesDiscounts.total)
-      .dividedBy(BigNumber.sum(totalFees, feesDiscounts.total))
-      .times(100);
+  const totalDiscountFactor = getTotalDiscountFactor(feeEstimate);
+  const totalDiscountedFeeAmount =
+    feeEstimate?.totalFeeAmount &&
+    getDiscountedFee(
+      feeEstimate.totalFeeAmount,
+      feeEstimate.referralDiscountFactor,
+      feeEstimate.volumeDiscountFactor
+    ).discountedFee;
+
   return (
     <KeyValue
       label={t('Fees')}
       value={
-        feeEstimate?.totalFeeAmount &&
-        `~${formatValue(feeEstimate?.totalFeeAmount, assetDecimals)}`
+        totalDiscountedFeeAmount &&
+        `~${formatValue(totalDiscountedFeeAmount, assetDecimals)}`
       }
       formattedValue={
         <>
-          {totalPercentageDiscount && (
+          {totalDiscountFactor && (
             <Pill size="xxs" intent={Intent.Warning} className="mr-1">
-              -{formatNumberPercentage(totalPercentageDiscount, 2)}
+              -
+              {formatNumberPercentage(
+                new BigNumber(totalDiscountFactor).multipliedBy(100),
+                2
+              )}
             </Pill>
           )}
-          {feeEstimate?.totalFeeAmount &&
-            `~${formatValue(
-              feeEstimate?.totalFeeAmount,
-              assetDecimals,
-              quantum
-            )}`}
+          {totalDiscountedFeeAmount &&
+            `~${formatValue(totalDiscountedFeeAmount, assetDecimals, quantum)}`}
         </>
       }
       labelDescription={
         <>
-          <span>
+          <p className="mb-2">
             {t(
               `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}. Fees estimated are "taker" fees and will only be payable if the order trades aggressively. Rebate equal to the maker portion will be paid to the trader if the order trades passively.`
             )}
-          </span>
+          </p>
           <FeesBreakdown
+            totalFeeAmount={feeEstimate?.totalFeeAmount}
+            referralDiscountFactor={feeEstimate?.referralDiscountFactor}
+            volumeDiscountFactor={feeEstimate?.volumeDiscountFactor}
             fees={feeEstimate?.fees}
             feeFactors={market.fees.factors}
             symbol={assetSymbol}

@@ -15,7 +15,7 @@ export type EstimateFeesQueryVariables = Types.Exact<{
 }>;
 
 
-export type EstimateFeesQuery = { __typename?: 'Query', estimateFees: { __typename?: 'FeeEstimate', totalFeeAmount: string, fees: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string, makerFeeReferralDiscount?: string | null, makerFeeVolumeDiscount?: string | null, infrastructureFeeReferralDiscount?: string | null, infrastructureFeeVolumeDiscount?: string | null, liquidityFeeReferralDiscount?: string | null, liquidityFeeVolumeDiscount?: string | null } } };
+export type EstimateFeesQuery = { __typename?: 'Query', estimateFees: { __typename?: 'FeeEstimate', totalFeeAmount: string, fees: { __typename?: 'TradeFee', makerFee: string, infrastructureFee: string, liquidityFee: string, makerFeeReferralDiscount?: string | null, makerFeeVolumeDiscount?: string | null, infrastructureFeeReferralDiscount?: string | null, infrastructureFeeVolumeDiscount?: string | null, liquidityFeeReferralDiscount?: string | null, liquidityFeeVolumeDiscount?: string | null } }, epoch: { __typename?: 'Epoch', id: string }, volumeDiscountStats: { __typename?: 'VolumeDiscountStatsConnection', edges: Array<{ __typename?: 'VolumeDiscountStatsEdge', node: { __typename?: 'VolumeDiscountStats', atEpoch: number, discountFactor: string, runningVolume: string } } | null> }, referralSetStats: { __typename?: 'ReferralSetStatsConnection', edges: Array<{ __typename?: 'ReferralSetStatsEdge', node: { __typename?: 'ReferralSetStats', atEpoch: number, discountFactor: string, referralSetRunningNotionalTakerVolume: string } } | null> } };
 
 
 export const EstimateFeesDocument = gql`
@@ -42,6 +42,27 @@ export const EstimateFeesDocument = gql`
       liquidityFeeVolumeDiscount
     }
     totalFeeAmount
+  }
+  epoch {
+    id
+  }
+  volumeDiscountStats(partyId: $partyId, pagination: {last: 1}) {
+    edges {
+      node {
+        atEpoch
+        discountFactor
+        runningVolume
+      }
+    }
+  }
+  referralSetStats(partyId: $partyId, pagination: {last: 1}) {
+    edges {
+      node {
+        atEpoch
+        discountFactor
+        referralSetRunningNotionalTakerVolume
+      }
+    }
   }
 }
     `;

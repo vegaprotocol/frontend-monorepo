@@ -50,16 +50,19 @@ export const getQuoteName = (market: Partial<Market>) => {
 };
 
 export const sumFeesFactors = (fees: Market['fees']['factors']) => {
-  return fees
-    ? new BigNumber(fees.makerFee)
-        .plus(fees.liquidityFee)
-        .plus(fees.infrastructureFee)
-    : undefined;
+  if (!fees) return;
+
+  return new BigNumber(fees.makerFee)
+    .plus(fees.liquidityFee)
+    .plus(fees.infrastructureFee)
+    .toNumber();
 };
 
 export const totalFeesFactorsPercentage = (fees: Market['fees']['factors']) => {
   const total = fees && sumFeesFactors(fees);
-  return total ? formatNumberPercentage(total.times(100)) : undefined;
+  return total
+    ? formatNumberPercentage(new BigNumber(total).times(100))
+    : undefined;
 };
 
 export const filterAndSortMarkets = (markets: MarketMaybeWithData[]) => {
