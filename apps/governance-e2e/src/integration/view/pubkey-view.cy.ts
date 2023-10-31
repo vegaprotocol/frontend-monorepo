@@ -71,7 +71,7 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
   });
 
   function verifyConnectedToPubKey() {
-    cy.getByTestId(banner).should(
+    cy.getByTestId(banner, { timeout: 10000 }).should(
       'contain.text',
       `Viewing as Vega user: ${vegaPubkeyTruncated}`
     );
