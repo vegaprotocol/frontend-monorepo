@@ -44,14 +44,12 @@ export const SparklineView = ({
     return null;
   }
 
-  const midValue = (min + max) / 2;
-
   // Market may be less than 24hr old so padd the data array
   // with values that is the mid value (avg of min and max).
   // This will rendera  horizontal line until the real data shifts the line
-  const padCount = data.length < points ? points - data.length : 0;
-  const padArr = new Array(padCount).fill(midValue);
   const trimmedData = data.slice(-points);
+  const padCount = data.length < points ? points - data.length : 0;
+  const padArr = new Array(padCount).fill(trimmedData[0]);
 
   // Get the last 24 values if data has more than needed
   const lineData: [number, number][] = [...padArr, ...trimmedData].map(

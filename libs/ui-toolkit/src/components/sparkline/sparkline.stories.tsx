@@ -72,7 +72,7 @@ LessThan24HoursIncrease.args = {
 
 export const LessThan24HoursDecrease = Template.bind({});
 LessThan24HoursDecrease.args = {
-  data: [20, 21, 22, 23, 24, 6, 7, 9, 11, 13, 11, 9],
+  data: [20990000, 20939973, 20980130],
   width: 110,
   height: 30,
 };
