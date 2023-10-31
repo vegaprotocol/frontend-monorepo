@@ -3,10 +3,10 @@ import { useCallback, useRef, useState } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { FillsTable } from './fills-table';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
+import { Pagination } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type * as Schema from '@vegaprotocol/types';
 import { fillsWithMarketProvider } from './fills-data-provider';
-import { TradingButton as Button } from '@vegaprotocol/ui-toolkit';
 
 interface FillsManagerProps {
   partyId: string;
@@ -52,31 +52,13 @@ export const FillsManager = ({
         overlayNoRowsTemplate={error ? error.message : t('No fills')}
         {...props}
       />
-
-      <div className="flex justify-between border-t border-default p-1 items-center">
-        <div className="text-xs">
-          {t(
-            'Depending on data node retention you may not be able see the "full" history'
-          )}
-        </div>
-        <div className="flex text-xs items-center">
-          {data?.length && !pageInfo?.hasNextPage
-            ? t('all %s items loaded', [data.length.toString()])
-            : t('%s items loaded', [
-                data?.length ? data.length.toString() : ' ',
-              ])}
-          {pageInfo?.hasNextPage ? (
-            <Button size="extra-small" className="ml-1" onClick={() => load()}>
-              {t('Load more')}
-            </Button>
-          ) : null}
-        </div>
-        {data?.length && hasDisplayedRow === false ? (
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs">
-            {t('No fills matching selected filters')}
-          </div>
-        ) : null}
-      </div>
+      <Pagination
+        count={data?.length || 0}
+        pageInfo={pageInfo}
+        showRetentionMessage={true}
+        onLoad={load}
+        hasDisplayedRows={hasDisplayedRow || false}
+      />
     </div>
   );
 };
