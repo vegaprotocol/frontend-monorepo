@@ -233,7 +233,12 @@ export const Statistics = ({
     <StatTile title={t('Discount')}>{discountFactorValue * 100}%</StatTile>
   );
   const runningVolumeTile = (
-    <StatTile title={t('Combined volume')}>
+    <StatTile
+      title={t(
+        'Combined volume (last %s epochs)',
+        details?.windowLength.toString()
+      )}
+    >
       {compactNumFormat.format(runningVolumeValue)}
     </StatTile>
   );
@@ -241,24 +246,14 @@ export const Statistics = ({
     <StatTile title={t('Epochs in set')}>{epochsValue}</StatTile>
   );
   const nextTierVolumeTile = (
-    <StatTile
-      title={t(
-        'Volume to next tier %s',
-        nextBenefitTierValue?.tier ? `(${nextBenefitTierValue.tier})` : ''
-      )}
-    >
+    <StatTile title={t('Volume to next tier')}>
       {nextBenefitTierVolumeValue <= 0
         ? '0'
         : compactNumFormat.format(nextBenefitTierVolumeValue)}
     </StatTile>
   );
   const nextTierEpochsTile = (
-    <StatTile
-      title={t(
-        'Epochs to next tier %s',
-        nextBenefitTierValue?.tier ? `(${nextBenefitTierValue.tier})` : ''
-      )}
-    >
+    <StatTile title={t('Epochs to next tier')}>
       {nextBenefitTierEpochsValue <= 0 ? '0' : nextBenefitTierEpochsValue}
     </StatTile>
   );
