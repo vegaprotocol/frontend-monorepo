@@ -24,11 +24,13 @@ import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { AssetOption, Balance } from '@vegaprotocol/assets';
+import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 
 interface FormFields {
   toAddress: string;
   asset: string;
   amount: string;
+  fromAccount: AccountType;
 }
 
 interface TransferFormProps {
@@ -40,6 +42,14 @@ interface TransferFormProps {
     name: string;
     decimals: number;
     balance: string;
+  }>;
+  accounts: Array<{
+    type: AccountType;
+    balance: string;
+    asset: {
+      id: string;
+      symbol: string;
+    };
   }>;
   assetId?: string;
   feeFactor: string | null;
@@ -53,6 +63,7 @@ export const TransferForm = ({
   assetId: initialAssetId,
   feeFactor,
   submitTransfer,
+  accounts,
 }: TransferFormProps) => {
   const {
     control,
@@ -102,10 +113,16 @@ export const TransferForm = ({
       if (!transferAmount) {
         throw new Error('Submitted transfer with no amount selected');
       }
-      const transfer = normalizeTransfer(fields.toAddress, transferAmount, {
-        id: asset.id,
-        decimals: asset.decimals,
-      });
+      const transfer = normalizeTransfer(
+        fields.toAddress,
+        transferAmount,
+        fields.fromAccount,
+        AccountType.ACCOUNT_TYPE_GENERAL, // field is readonly in the form
+        {
+          id: asset.id,
+          decimals: asset.decimals,
+        }
+      );
       submitTransfer(transfer);
     },
     [asset, submitTransfer, transferAmount]
@@ -151,13 +168,15 @@ export const TransferForm = ({
                 {t('Please select')}
               </option>
               {pubKeys?.length &&
-                pubKeys
-                  .filter((pk) => pk !== pubKey) // remove currently selected pubkey
-                  .map((pk) => (
+                pubKeys.map((pk) => {
+                  const text = pk === pubKey ? t('Current key: ') + pk : pk;
+
+                  return (
                     <option key={pk} value={pk}>
-                      {pk}
+                      {text}
                     </option>
-                  ))}
+                  );
+                })}
             </TradingSelect>
           }
           input={
@@ -170,12 +189,6 @@ export const TransferForm = ({
                 validate: {
                   required,
                   vegaPublicKey,
-                  sameKey: (value) => {
-                    if (value === pubKey) {
-                      return t('Vega key is the same as current key');
-                    }
-                    return true;
-                  },
                 },
               })}
             />
@@ -187,7 +200,7 @@ export const TransferForm = ({
           </TradingInputError>
         )}
       </TradingFormGroup>
-      <TradingFormGroup label="Asset" labelFor="asset">
+      <TradingFormGroup label={t('Asset')} labelFor="asset">
         <Controller
           control={control}
           name="asset"
@@ -227,6 +240,47 @@ export const TransferForm = ({
             {errors.asset.message}
           </TradingInputError>
         )}
+      </TradingFormGroup>
+      <TradingFormGroup label={t('From account')} labelFor="fromAccount">
+        <TradingSelect
+          id="fromAccount"
+          {...register('fromAccount', {
+            validate: {
+              required,
+            },
+          })}
+        >
+          <option value="" disabled={true}>
+            {t('Please select')}
+          </option>
+          {accounts
+            .filter((a) => {
+              if (!assetId) return true;
+              return assetId === a.asset.id;
+            })
+            .map((a) => {
+              return (
+                <option value={a.type} key={`${a.type}-${a.asset.id}`}>
+                  {AccountTypeMapping[a.type]} ({a.asset.symbol})
+                </option>
+              );
+            })}
+        </TradingSelect>
+        {errors.fromAccount?.message && (
+          <TradingInputError forInput="fromAccount">
+            {errors.fromAccount.message}
+          </TradingInputError>
+        )}
+      </TradingFormGroup>
+      <TradingFormGroup label={t('To account')} labelFor="toAccount">
+        <TradingSelect
+          id="toAccount"
+          defaultValue={AccountType.ACCOUNT_TYPE_GENERAL}
+        >
+          <option value={AccountType.ACCOUNT_TYPE_GENERAL} selected={true}>
+            {AccountTypeMapping[AccountType.ACCOUNT_TYPE_GENERAL]}
+          </option>
+        </TradingSelect>
       </TradingFormGroup>
       <TradingFormGroup label="Amount" labelFor="amount">
         <TradingInput
@@ -391,7 +445,7 @@ export const AddressField = ({
             setIsInput((curr) => !curr);
             onChange();
           }}
-          className="absolute top-0 right-0 ml-auto text-sm underline"
+          className="absolute top-0 right-0 ml-auto text-xs underline"
         >
           {isInput ? t('Select from wallet') : t('Enter manually')}
         </button>

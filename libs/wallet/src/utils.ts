@@ -1,6 +1,6 @@
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
 import type { Market, Order } from '@vegaprotocol/types';
-import { AccountType } from '@vegaprotocol/types';
+import type { AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { sha3_256 } from 'js-sha3';
@@ -47,15 +47,17 @@ export const normalizeOrderAmendment = <T extends Exact<OrderAmendment, T>>(
 export const normalizeTransfer = <T extends Exact<Transfer, T>>(
   address: string,
   amount: string,
+  fromAccountType: AccountType,
+  toAccountType: AccountType,
   asset: {
     id: string;
     decimals: number;
   }
 ): Transfer => {
   return {
-    fromAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
     to: address,
-    toAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
+    fromAccountType,
+    toAccountType,
     asset: asset.id,
     amount: removeDecimal(amount, asset.decimals),
     // oneOff or recurring required otherwise wallet will error
