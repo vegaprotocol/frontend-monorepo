@@ -6,7 +6,10 @@ import {
   getDateTimeFormat,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import type { TypedDataAgGrid } from '@vegaprotocol/datagrid';
+import type {
+  TypedDataAgGrid,
+  VegaValueFormatterParams,
+} from '@vegaprotocol/datagrid';
 import { AgGrid } from '@vegaprotocol/datagrid';
 import {
   CopyWithTooltip,
@@ -22,7 +25,7 @@ import type {
   ValueFormatterParams,
 } from 'ag-grid-community';
 import BigNumber from 'bignumber.js';
-import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
+import { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
 import type { LiquidityProvisionData } from './liquidity-data-provider';
 
@@ -187,7 +190,32 @@ export const LiquidityTable = ({
             headerTooltip: t(
               'The amount committed to the market by this liquidity provider.'
             ),
-            valueFormatter: assetDecimalsQuantumFormatter,
+            valueFormatter: ({
+              data,
+              value,
+            }: VegaValueFormatterParams<
+              LiquidityProvisionData,
+              'commitmentAmount'
+            >) => {
+              if (!value) return '-';
+              const formattedCommitmentAmount = addDecimalsFormatNumberQuantum(
+                value,
+                assetDecimalPlaces ?? 0,
+                quantum ?? 0
+              );
+              if (
+                data?.currentCommitmentAmount &&
+                data?.currentCommitmentAmount !== value
+              ) {
+                return `${addDecimalsFormatNumberQuantum(
+                  data.currentCommitmentAmount,
+                  assetDecimalPlaces ?? 0,
+                  quantum ?? 0
+                )}/${formattedCommitmentAmount}`;
+              } else {
+                return formattedCommitmentAmount;
+              }
+            },
             tooltipValueGetter: assetDecimalsFormatter,
           },
           {
@@ -207,7 +235,22 @@ export const LiquidityTable = ({
             ),
             field: 'fee',
             type: 'rightAligned',
-            valueFormatter: percentageFormatter,
+            valueFormatter: ({
+              data,
+              value,
+            }: ValueFormatterParams<LiquidityProvisionData, 'fee'>) => {
+              if (!value) return '-';
+              const formattedValue =
+                formatNumberPercentage(new BigNumber(value).times(100), 2) ||
+                '-';
+              if (data?.currentFee && data?.currentFee !== value) {
+                return `${formatNumberPercentage(
+                  new BigNumber(data.currentFee).times(100),
+                  2
+                )}/${formattedValue}`;
+              }
+              return formattedValue;
+            },
           },
           {
             headerName: t('Adjusted stake share'),
@@ -328,8 +371,17 @@ export const LiquidityTable = ({
             headerName: t('Status'),
             headerTooltip: t('The current status of this liquidity provision.'),
             field: 'status',
-            valueFormatter: ({ value }) => {
+            valueFormatter: ({
+              data,
+              value,
+            }: ValueFormatterParams<LiquidityProvisionData, 'status'>) => {
               if (!value) return value;
+              if (
+                data?.status === LiquidityProvisionStatus.STATUS_PENDING &&
+                (data?.currentCommitmentAmount || data?.currentFee)
+              ) {
+                return t('Updating next epoch');
+              }
               return LiquidityProvisionStatusMapping[
                 value as LiquidityProvisionStatus
               ];

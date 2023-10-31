@@ -21,7 +21,10 @@ import type {
 } from './__generated__/MarketLiquidity';
 
 export type LiquidityProvisionFields = LiquidityProvisionFieldsFragment &
-  Schema.LiquiditySLAParameters;
+  Schema.LiquiditySLAParameters & {
+    currentCommitmentAmount?: string;
+    currentFee?: string;
+  };
 
 export const liquidityProvisionsDataProvider = makeDataProvider<
   LiquidityProvisionsQuery,
@@ -34,10 +37,28 @@ export const liquidityProvisionsDataProvider = makeDataProvider<
   getData: (responseData: LiquidityProvisionsQuery | null) => {
     return (responseData?.market?.liquidityProvisions?.edges
       ?.filter((n) => !!n)
-      .map((e) => ({
-        ...e?.node.current,
-        ...responseData.market?.liquiditySLAParameters,
-      })) ?? []) as LiquidityProvisionFields[];
+      .map((e) => {
+        let node;
+        if (!e?.node.pending && e?.node.current) {
+          node = {
+            ...e?.node.current,
+            ...responseData.market?.liquiditySLAParameters,
+          };
+        } else if (!e?.node.current && e?.node.pending) {
+          node = {
+            ...e?.node.pending,
+            ...responseData.market?.liquiditySLAParameters,
+          };
+        } else {
+          node = {
+            ...e?.node.pending,
+            currentCommitmentAmount: e?.node.current.commitmentAmount,
+            currentFee: e?.node.current.fee,
+            ...responseData.market?.liquiditySLAParameters,
+          };
+        }
+        return node;
+      }) ?? []) as LiquidityProvisionFields[];
   },
 });
 
@@ -91,7 +112,8 @@ export const matchFilter = (filter: Filter, lp: LiquidityProvisionData) => {
   }
   if (
     filter.active === true &&
-    lp.status !== Schema.LiquidityProvisionStatus.STATUS_ACTIVE
+    lp.status !== Schema.LiquidityProvisionStatus.STATUS_ACTIVE &&
+    lp.status !== Schema.LiquidityProvisionStatus.STATUS_PENDING
   ) {
     return false;
   }
@@ -105,7 +127,7 @@ export const matchFilter = (filter: Filter, lp: LiquidityProvisionData) => {
 };
 
 export interface LiquidityProvisionData
-  extends Omit<LiquidityProvisionFieldsFragment, '__typename'>,
+  extends Omit<LiquidityProvisionFields, '__typename'>,
     Partial<LiquidityProviderFieldsFragment>,
     Omit<Schema.LiquiditySLAParameters, '__typename'> {
   assetDecimalPlaces?: number;
@@ -113,11 +135,12 @@ export interface LiquidityProvisionData
   averageEntryValuation?: string;
   equityLikeShare?: string;
   earmarkedFees?: number;
+  status: Schema.LiquidityProvisionStatus;
 }
 
 export const getLiquidityProvision = (
   liquidityProvisions: LiquidityProvisionFields[],
-  liquidityProvider: LiquidityProviderFieldsFragment[],
+  liquidityProviders: LiquidityProviderFieldsFragment[],
   filter?: Filter
 ): LiquidityProvisionData[] => {
   return liquidityProvisions
@@ -136,12 +159,14 @@ export const getLiquidityProvision = (
       }
       return true;
     })
-    .map((lp) => {
-      const lpObj = liquidityProvider.find((f) => lp.party.id === f.partyId);
-      if (!lpObj) return lp;
-      const accounts = compact(lp.party.accountsConnection?.edges).map(
-        (e) => e.node
+    .map((liquidityProvision) => {
+      const liquidityProvider = liquidityProviders.find(
+        (f) => liquidityProvision.party.id === f.partyId
       );
+      if (!liquidityProvider) return liquidityProvision;
+      const accounts = compact(
+        liquidityProvision.party.accountsConnection?.edges
+      ).map((e) => e.node);
       const bondAccounts = accounts?.filter(
         (a) => a?.type === Schema.AccountType.ACCOUNT_TYPE_BOND
       );
@@ -164,8 +189,8 @@ export const getLiquidityProvision = (
           )
           .toNumber() ?? 0;
       return {
-        ...lp,
-        ...lpObj,
+        ...liquidityProvision,
+        ...liquidityProvider,
         balance,
         earmarkedFees,
         __typename: undefined,
