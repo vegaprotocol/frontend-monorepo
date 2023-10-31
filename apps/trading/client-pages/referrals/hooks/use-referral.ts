@@ -5,14 +5,14 @@ import compact from 'lodash/compact';
 import type { ReferralSetsQueryVariables } from './__generated__/ReferralSets';
 import { useReferralSetsQuery } from './__generated__/ReferralSets';
 
-const DEFAULT_AGGREGATION_DAYS = 30;
+export const DEFAULT_AGGREGATION_DAYS = 30;
 
 export type Role = 'referrer' | 'referee';
 type UseReferralArgs = (
   | { code: string }
   | { pubKey: string | null; role: Role }
 ) & {
-  aggregationDays?: number;
+  aggregationEpochs?: number;
 };
 
 const prepareVariables = (
@@ -70,9 +70,9 @@ export const useReferral = (args: UseReferralArgs) => {
   } = useRefereesQuery({
     variables: {
       code: referralSet?.id as string,
-      aggregationDays:
-        args.aggregationDays != null
-          ? args.aggregationDays
+      aggregationEpochs:
+        args.aggregationEpochs != null
+          ? args.aggregationEpochs
           : DEFAULT_AGGREGATION_DAYS,
     },
     skip: !referralSet?.id,

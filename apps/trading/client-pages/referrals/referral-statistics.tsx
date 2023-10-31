@@ -6,7 +6,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useReferral } from './hooks/use-referral';
+import { DEFAULT_AGGREGATION_DAYS, useReferral } from './hooks/use-referral';
 import { CreateCodeContainer } from './create-code-form';
 import classNames from 'classnames';
 import { Table } from './table';
@@ -32,21 +32,25 @@ import maxBy from 'lodash/maxBy';
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
 
+  const program = useReferralProgram();
+
   const { data: referee } = useReferral({
     pubKey,
     role: 'referee',
+    aggregationEpochs: program.details?.windowLength,
   });
   const { data: referrer } = useReferral({
     pubKey,
     role: 'referrer',
+    aggregationEpochs: program.details?.windowLength,
   });
 
   if (referee?.code) {
-    return <Statistics data={referee} as="referee" />;
+    return <Statistics data={referee} program={program} as="referee" />;
   }
 
   if (referrer?.code) {
-    return <Statistics data={referrer} as="referrer" />;
+    return <Statistics data={referrer} program={program} as="referrer" />;
   }
 
   return <CreateCodeContainer />;
@@ -54,14 +58,16 @@ export const ReferralStatistics = () => {
 
 export const Statistics = ({
   data,
+  program,
   as,
 }: {
   data: NonNullable<ReturnType<typeof useReferral>['data']>;
+  program: ReturnType<typeof useReferralProgram>;
   as: 'referrer' | 'referee';
 }) => {
+  const { benefitTiers, details } = program;
   const { data: epochData } = useCurrentEpochInfoQuery();
   const { stakeAvailable } = useStakeAvailable();
-  const { benefitTiers } = useReferralProgram();
   const { data: statsData } = useReferralSetStatsQuery({
     variables: {
       code: data.code,
@@ -71,6 +77,13 @@ export const Statistics = ({
   });
 
   const currentEpoch = Number(epochData?.epoch.id);
+
+  const compactNumFormat = new Intl.NumberFormat(getUserLocale(), {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+    notation: 'compact',
+    compactDisplay: 'short',
+  });
 
   const stats =
     statsData?.referralSetStats.edges &&
@@ -87,10 +100,13 @@ export const Statistics = ({
   const runningVolumeValue = statsAvailable
     ? Number(statsAvailable.referralSetRunningNotionalTakerVolume)
     : 0;
+  const referrerVolumeValue = statsAvailable
+    ? Number(statsAvailable.referrerTakerVolume)
+    : 0;
   const multiplier = statsAvailable
     ? Number(statsAvailable.rewardsMultiplier)
     : 1;
-  const finalCommissionValue = !isNaN(multiplier)
+  const finalCommissionValue = isNaN(multiplier)
     ? baseCommissionValue
     : multiplier * baseCommissionValue;
 
@@ -118,7 +134,13 @@ export const Statistics = ({
     : 0;
 
   const baseCommissionTile = (
-    <StatTile title={t('Base commission rate')}>
+    <StatTile
+      title={t('Base commission rate')}
+      description={t('(Combined set volume %s over last %s epochs)', [
+        compactNumFormat.format(runningVolumeValue),
+        (details?.windowLength || DEFAULT_AGGREGATION_DAYS).toString(),
+      ])}
+    >
       {baseCommissionValue * 100}%
     </StatTile>
   );
@@ -134,7 +156,16 @@ export const Statistics = ({
     </StatTile>
   );
   const finalCommissionTile = (
-    <StatTile title={t('Final commission rate')}>
+    <StatTile
+      title={t('Final commission rate')}
+      description={
+        !isNaN(multiplier)
+          ? `(${baseCommissionValue * 100}% ⨉ ${multiplier} = ${
+              finalCommissionValue * 100
+            }%)`
+          : undefined
+      }
+    >
       {finalCommissionValue * 100}%
     </StatTile>
   );
@@ -143,12 +174,21 @@ export const Statistics = ({
     <StatTile title={t('Number of traders')}>{numberOfTradersValue}</StatTile>
   );
 
-  const codeTile = <CodeTile code={data?.code} />;
-  const createdAtTile = (
-    <StatTile title={t('Created at')}>
-      <span className="text-3xl">
-        {getDateFormat().format(new Date(data.createdAt))}
-      </span>
+  const codeTile = (
+    <CodeTile
+      code={data?.code}
+      createdAt={getDateFormat().format(new Date(data.createdAt))}
+    />
+  );
+
+  const referrerVolumeTile = (
+    <StatTile
+      title={t(
+        'My volume (last %s epochs)',
+        (details?.windowLength || DEFAULT_AGGREGATION_DAYS).toString()
+      )}
+    >
+      {compactNumFormat.format(referrerVolumeValue)}
     </StatTile>
   );
 
@@ -157,7 +197,10 @@ export const Statistics = ({
     .reduce((all, r) => all.plus(r), new BigNumber(0));
   const totalCommissionTile = (
     <StatTile
-      title={t('Total commission (last 30 days)')}
+      title={t(
+        'Total commission (last %s epochs)',
+        (details?.windowLength || DEFAULT_AGGREGATION_DAYS).toString()
+      )}
       description={t('(qUSD)')}
     >
       {getNumberFormat(0).format(Number(totalCommissionValue))}
@@ -174,19 +217,12 @@ export const Statistics = ({
 
       <div className="grid grid-rows-1 gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
         {codeTile}
-        {createdAtTile}
+        {referrerVolumeTile}
         {numberOfTradersTile}
         {totalCommissionTile}
       </div>
     </>
   );
-
-  const compactNumFormat = new Intl.NumberFormat(getUserLocale(), {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-    notation: 'compact',
-    compactDisplay: 'short',
-  });
 
   const currentBenefitTierTile = (
     <StatTile title={t('Current tier')}>
@@ -266,7 +302,7 @@ export const Statistics = ({
       {/* Referees (only for referrer view) */}
       {as === 'referrer' && data.referees.length > 0 && (
         <div className="mt-20 mb-20">
-          <h2 className="text-2xl mb-5">{t('Referees')}</h2>
+          <h2 className="mb-5 text-2xl">{t('Referees')}</h2>
           <div
             className={classNames(
               collapsed && [
@@ -292,10 +328,23 @@ export const Statistics = ({
               columns={[
                 { name: 'party', displayName: t('Trader') },
                 { name: 'joined', displayName: t('Date Joined') },
-                { name: 'volume', displayName: t('Volume (last 30 days)') },
+                {
+                  name: 'volume',
+                  displayName: t(
+                    'Volume (last %s epochs)',
+                    (
+                      details?.windowLength || DEFAULT_AGGREGATION_DAYS
+                    ).toString()
+                  ),
+                },
                 {
                   name: 'commission',
-                  displayName: t('Commission earned (last 30 days)'),
+                  displayName: t(
+                    'Commission earned (last %s epochs)',
+                    (
+                      details?.windowLength || DEFAULT_AGGREGATION_DAYS
+                    ).toString()
+                  ),
                 },
               ]}
               data={sortBy(

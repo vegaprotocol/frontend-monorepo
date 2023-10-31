@@ -10,6 +10,7 @@ query ReferralSetStats($code: ID!, $epoch: Int) {
         referralSetRunningNotionalTakerVolume
         rewardsMultiplier
         rewardsFactorMultiplier
+        referrerTakerVolume
       }
     }
   }

@@ -813,7 +813,7 @@ export type DispatchStrategy = {
   /** Minimum notional time-weighted averaged position required for a party to be considered eligible */
   notionalTimeWeightedAveragePositionRequirement: Scalars['String'];
   /** Ascending order list of start rank and corresponding share ratio */
-  rankTable?: Maybe<RankTable>;
+  rankTable?: Maybe<Array<Maybe<RankTable>>>;
   /** Minimum number of governance tokens, e.g. VEGA, staked for a party to be considered eligible */
   stakingRequirement: Scalars['String'];
   /** The teams in scope for the reward, if the entity is teams */
@@ -3624,6 +3624,8 @@ export type PartyVestingStats = {
   __typename?: 'PartyVestingStats';
   /** Epoch for which the statistics are valid */
   epochSeq: Scalars['Int'];
+  /** The balance of the party, in quantum. */
+  quantumBalance: Scalars['String'];
   /** The reward bonus multiplier */
   rewardBonusMultiplier: Scalars['String'];
 };
@@ -4831,7 +4833,7 @@ export type QueryprotocolUpgradeProposalsArgs = {
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryreferralSetRefereesArgs = {
-  aggregationDays?: InputMaybe<Scalars['Int']>;
+  aggregationEpochs?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
   referee?: InputMaybe<Scalars['ID']>;
@@ -5088,6 +5090,8 @@ export type ReferralSetStats = {
   partyId: Scalars['ID'];
   /** Running volume for the set based on the window length of the current referral program. */
   referralSetRunningNotionalTakerVolume: Scalars['String'];
+  /** The referrer's taker volume */
+  referrerTakerVolume: Scalars['String'];
   /** Reward factor applied to the party. */
   rewardFactor: Scalars['String'];
   /** The proportion of the referees taker fees to be rewarded to the referrer. */
