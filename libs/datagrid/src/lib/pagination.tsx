@@ -14,6 +14,18 @@ export const Pagination = ({
   hasDisplayedRows: boolean;
   showRetentionMessage: boolean;
 }) => {
+  let rowMessage = '';
+
+  if (count && !pageInfo?.hasNextPage) {
+    rowMessage = t('all %s rows loaded', count.toString());
+  } else {
+    if (count === 1) {
+      rowMessage = t('%s row loaded', count.toString());
+    } else {
+      rowMessage = t('%s rows loaded', count.toString());
+    }
+  }
+
   return (
     <div className="flex items-center justify-between p-1 border-t border-default">
       <div className="text-xs">
@@ -24,9 +36,7 @@ export const Pagination = ({
           )}
       </div>
       <div className="flex items-center text-xs">
-        {count && !pageInfo?.hasNextPage
-          ? t('all %s items loaded', count.toString())
-          : t('%s items loaded', count.toString())}
+        <span>{rowMessage}</span>
         {pageInfo?.hasNextPage ? (
           <Button size="extra-small" className="ml-1" onClick={onLoad}>
             {t('Load more')}
