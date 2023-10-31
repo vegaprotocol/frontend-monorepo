@@ -71,7 +71,7 @@ export const useReferral = (args: UseReferralArgs) => {
     variables: {
       code: referralSet?.id as string,
       aggregationEpochs:
-        args.aggregationEpochs != null
+        args.aggregationEpochs !== null
           ? args.aggregationEpochs
           : DEFAULT_AGGREGATION_DAYS,
     },

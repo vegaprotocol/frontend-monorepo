@@ -339,7 +339,13 @@ export const Statistics = ({
                   name: 'commission',
                   displayName: (
                     <>
-                      {t('Commission earned')} <QUSDTooltip />
+                      {t('Commission earned in')} <QUSDTooltip />{' '}
+                      {t(
+                        '(last %s epochs)',
+                        (
+                          details?.windowLength || DEFAULT_AGGREGATION_DAYS
+                        ).toString()
+                      )}
                     </>
                   ),
                 },
@@ -389,6 +395,6 @@ export const QUSDTooltip = () => (
     }
     underline={true}
   >
-    <span>{t('(qUSD)')}</span>
+    <span>{t('qUSD')}</span>
   </Tooltip>
 );
