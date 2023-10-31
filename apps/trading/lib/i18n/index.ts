@@ -26,6 +26,7 @@ i18n
       'datagrid',
       'deal-ticket',
       'deposits',
+      'environment',
       'fills',
       'funding-payments',
       'trading',

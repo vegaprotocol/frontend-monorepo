@@ -3,7 +3,7 @@ import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { t } from '@vegaprotocol/i18n';
 import {
-  envTriggerMapping,
+  useEnvTriggerMapping,
   Networks,
   NodeSwitcherDialog,
   useEnvironment,
@@ -40,7 +40,7 @@ const Title = () => {
   const { pageTitle } = usePageTitleStore((store) => ({
     pageTitle: store.pageTitle,
   }));
-
+  const envTriggerMapping = useEnvTriggerMapping();
   const { VEGA_ENV } = useEnvironment();
   const networkName = envTriggerMapping[VEGA_ENV];
 

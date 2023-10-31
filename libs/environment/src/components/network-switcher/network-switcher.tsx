@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import { t } from '@vegaprotocol/i18n';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,32 +12,42 @@ import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
 import { DApp, TOKEN_NEW_NETWORK_PARAM_PROPOSAL, useLinks } from '../../hooks';
 import classNames from 'classnames';
+import { useT } from '../../use-t';
 
-export const envNameMapping: Record<Networks, string> = {
-  [Networks.VALIDATOR_TESTNET]: t('VALIDATOR_TESTNET'),
-  [Networks.MAINNET_MIRROR]: t('Mainnet-mirror'),
-  [Networks.CUSTOM]: t('Custom'),
-  [Networks.DEVNET]: t('Devnet'),
-  [Networks.STAGNET1]: t('Stagnet'),
-  [Networks.TESTNET]: t('Fairground testnet'),
-  [Networks.MAINNET]: t('Mainnet'),
+export const useEnvNameMapping: () => Record<Networks, string> = () => {
+  const t = useT();
+  return {
+    [Networks.VALIDATOR_TESTNET]: t('VALIDATOR_TESTNET'),
+    [Networks.MAINNET_MIRROR]: t('Mainnet-mirror'),
+    [Networks.CUSTOM]: t('Custom'),
+    [Networks.DEVNET]: t('Devnet'),
+    [Networks.STAGNET1]: t('Stagnet'),
+    [Networks.TESTNET]: t('Fairground testnet'),
+    [Networks.MAINNET]: t('Mainnet'),
+  };
 };
 
-export const envTriggerMapping: Record<Networks, string> = {
-  ...envNameMapping,
-  [Networks.TESTNET]: t('Fairground'),
+export const useEnvTriggerMapping: () => Record<Networks, string> = () => {
+  const t = useT();
+  return {
+    ...useEnvNameMapping(),
+    [Networks.TESTNET]: t('Fairground'),
+  };
 };
 
-export const envDescriptionMapping: Record<Networks, string> = {
-  [Networks.CUSTOM]: '',
-  [Networks.VALIDATOR_TESTNET]: t('The validator deployed testnet'),
-  [Networks.MAINNET_MIRROR]: t('The mainnet-mirror network'),
-  [Networks.DEVNET]: t('The latest Vega code auto-deployed'),
-  [Networks.STAGNET1]: t('A release candidate for the staging environment'),
-  [Networks.TESTNET]: t(
-    'Public testnet run by the Vega team, often used for incentives'
-  ),
-  [Networks.MAINNET]: t('The vega mainnet'),
+export const useEnvDescriptionMapping: () => Record<Networks, string> = () => {
+  const t = useT();
+  return {
+    [Networks.CUSTOM]: '',
+    [Networks.VALIDATOR_TESTNET]: t('The validator deployed testnet'),
+    [Networks.MAINNET_MIRROR]: t('The mainnet-mirror network'),
+    [Networks.DEVNET]: t('The latest Vega code auto-deployed'),
+    [Networks.STAGNET1]: t('A release candidate for the staging environment'),
+    [Networks.TESTNET]: t(
+      'Public testnet run by the Vega team, often used for incentives'
+    ),
+    [Networks.MAINNET]: t('The vega mainnet'),
+  };
 };
 
 const standardNetworkKeys = [Networks.MAINNET, Networks.TESTNET];
@@ -53,10 +62,11 @@ type NetworkLabelProps = {
   isAvailable: boolean;
 };
 
-const getLabelText = ({
+const useLabelText = ({
   isCurrent = false,
   isAvailable = false,
 }: NetworkLabelProps) => {
+  const t = useT();
   if (isCurrent) {
     return ` (${t('current')})`;
   }
@@ -71,7 +81,7 @@ const NetworkLabel = ({
   isAvailable = false,
 }: NetworkLabelProps) => (
   <span className="text-vega-dark-300 dark:text-vega-light-300">
-    {getLabelText({ isCurrent, isAvailable })}
+    {useLabelText({ isCurrent, isAvailable })}
   </span>
 );
 
@@ -86,6 +96,7 @@ export const NetworkSwitcher = ({
   currentNetwork,
   className,
 }: NetworkSwitcherProps) => {
+  const t = useT();
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
   const tokenLink = useLinks(DApp.Governance);
   const [isOpen, setOpen] = useState(false);
@@ -102,6 +113,9 @@ export const NetworkSwitcher = ({
   );
 
   const current = currentNetwork || VEGA_ENV;
+  const envTriggerMapping = useEnvTriggerMapping();
+  const envNameMapping = useEnvNameMapping();
+  const envDescriptionMapping = useEnvDescriptionMapping();
 
   return (
     <DropdownMenu

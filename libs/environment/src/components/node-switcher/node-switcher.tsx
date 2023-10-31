@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 import { isValidUrl } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import {
   Button,
   ButtonLink,
@@ -15,8 +14,10 @@ import { LayoutCell } from './layout-cell';
 import { LayoutRow } from './layout-row';
 import { ApolloWrapper } from './apollo-wrapper';
 import { RowData } from './row-data';
+import { useT } from '../../use-t';
 
 export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
+  const t = useT();
   const { nodes, setUrl, status, VEGA_ENV, VEGA_URL } = useEnvironment(
     (store) => ({
       status: store.status,
@@ -153,6 +154,7 @@ const CustomRowWrapper = ({
   nodeRadio,
   onBlockHeight,
 }: CustomRowWrapperProps) => {
+  const t = useT();
   const [displayCustom, setDisplayCustom] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const showInput = nodeRadio === CUSTOM_NODE_KEY || nodes.length <= 0;

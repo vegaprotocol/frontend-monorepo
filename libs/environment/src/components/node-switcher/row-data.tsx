@@ -1,5 +1,4 @@
 import { isValidUrl } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { TradingRadio } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useState } from 'react';
 import { CUSTOM_NODE_KEY } from '../../types';
@@ -8,6 +7,7 @@ import {
   useNodeCheckTimeUpdateSubscription,
 } from '../../utils/__generated__/NodeCheck';
 import { LayoutCell } from './layout-cell';
+import { useT } from '../../use-t';
 
 export const POLL_INTERVAL = 1000;
 export const SUBSCRIPTION_TIMEOUT = 3000;
@@ -128,6 +128,7 @@ export const RowData = ({
   highestBlock,
   onBlockHeight,
 }: RowDataProps) => {
+  const t = useT();
   const { status: subStatus } = useNodeSubscriptionStatus();
   const { status, currentBlockHeight } = useNodeBasicStatus();
   const { responseTime } = useResponseTime(url, currentBlockHeight); // measure response time (ms) every time we get data (block height)
@@ -150,7 +151,7 @@ export const RowData = ({
         hasError={status === Result.Failed}
         dataTestId="response-time-cell"
       >
-        {display(status, formatResponseTime(responseTime))}
+        {display(status, formatResponseTime(responseTime), t('n/a'))}
       </LayoutCell>
       <LayoutCell
         label={t('Block')}
@@ -169,7 +170,7 @@ export const RowData = ({
             status === Result.Failed ? 'failed' : currentBlockHeight
           }
         >
-          {display(status, currentBlockHeight)}
+          {display(status, currentBlockHeight, t('n/a'))}
         </span>
       </LayoutCell>
       <LayoutCell
@@ -190,7 +191,7 @@ const formatResponseTime = (time: number | undefined) =>
 const display = (
   status: Result,
   yes: string | number | undefined,
-  no = t('n/a')
+  no: string | number | undefined
 ) => {
   switch (status) {
     case Result.Successful:
