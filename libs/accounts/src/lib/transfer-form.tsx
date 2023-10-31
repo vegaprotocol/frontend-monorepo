@@ -78,6 +78,7 @@ export const TransferForm = ({
     },
   });
 
+  const selectedPubKey = watch('toAddress');
   const amount = watch('amount');
   const assetId = watch('asset');
 
@@ -154,14 +155,14 @@ export const TransferForm = ({
       className="text-sm"
       data-testid="transfer-form"
     >
-      <TradingFormGroup label="Vega key" labelFor="to-address">
+      <TradingFormGroup label="Vega key" labelFor="toAddress">
         <AddressField
           pubKeys={pubKeys}
           onChange={() => setValue('toAddress', '')}
           select={
             <TradingSelect
               {...register('toAddress')}
-              id="to-address"
+              id="toAddress"
               defaultValue=""
             >
               <option value="" disabled={true}>
@@ -247,6 +248,15 @@ export const TransferForm = ({
           {...register('fromAccount', {
             validate: {
               required,
+              sameAccount: (value) => {
+                if (
+                  pubKey === selectedPubKey &&
+                  value === AccountType.ACCOUNT_TYPE_GENERAL
+                ) {
+                  return t('Cannot transfer to the same account');
+                }
+                return true;
+              },
             },
           })}
         >
