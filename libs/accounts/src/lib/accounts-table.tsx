@@ -311,6 +311,7 @@ export const AccountTable = ({
     onClickTransfer,
     isReadOnly,
     showDepositButton,
+    t,
   ]);
 
   const data = rowData?.filter((data) => data.asset.id !== pinnedAsset?.id);

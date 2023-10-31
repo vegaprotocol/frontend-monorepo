@@ -11,6 +11,7 @@ import {
   useCandlesChartSettings,
 } from './use-candles-chart-settings';
 import { useT } from './use-t';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 
 export type CandlesChartContainerProps = {
   marketId: string;

@@ -133,6 +133,7 @@ const ApprovalTxFeedback = ({
   selectedAsset: Asset;
   allowance?: BigNumber;
 }) => {
+  const t = useT();
   if (!tx) return null;
 
   const txLink = tx.txHash && (

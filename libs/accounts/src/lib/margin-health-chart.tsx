@@ -123,6 +123,7 @@ export const MarginHealthChart = ({
   marketId: string;
   assetId: string;
 }) => {
+  const t = useT();
   const { data: assetsMap } = useAssetsMapProvider();
   const { pubKey: partyId } = useVegaWallet();
   const { data } = useDataProvider({

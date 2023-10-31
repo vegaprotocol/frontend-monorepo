@@ -127,7 +127,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         },
       ];
       return defs;
-    }, []);
+    }, [t]);
 
     return (
       <AgGrid
