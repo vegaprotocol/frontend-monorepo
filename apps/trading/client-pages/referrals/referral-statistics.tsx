@@ -3,6 +3,8 @@ import {
   VegaIcon,
   VegaIconNames,
   truncateMiddle,
+  ExternalLink,
+  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -28,6 +30,7 @@ import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 import BigNumber from 'bignumber.js';
 import { t } from '@vegaprotocol/i18n';
 import maxBy from 'lodash/maxBy';
+import { DocsLinks } from '@vegaprotocol/environment';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
@@ -201,7 +204,7 @@ export const Statistics = ({
         'Total commission (last %s epochs)',
         (details?.windowLength || DEFAULT_AGGREGATION_DAYS).toString()
       )}
-      description={t('(qUSD)')}
+      description={<QUSDTooltip />}
     >
       {getNumberFormat(0).format(Number(totalCommissionValue))}
     </StatTile>
@@ -334,11 +337,10 @@ export const Statistics = ({
                 },
                 {
                   name: 'commission',
-                  displayName: t(
-                    'Commission earned (last %s epochs)',
-                    (
-                      details?.windowLength || DEFAULT_AGGREGATION_DAYS
-                    ).toString()
+                  displayName: (
+                    <>
+                      {t('Commission earned')} <QUSDTooltip />
+                    </>
                   ),
                 },
               ]}
@@ -368,3 +370,25 @@ export const Statistics = ({
     </>
   );
 };
+
+export const QUSDTooltip = () => (
+  <Tooltip
+    description={
+      <>
+        <p className="mb-1">
+          {t(
+            'qUSD provides a rough USD equivalent of balances across all assets using the value of "Quantum" for that asset'
+          )}
+        </p>
+        {DocsLinks && (
+          <ExternalLink href={DocsLinks.QUANTUM}>
+            {t('Find out more')}
+          </ExternalLink>
+        )}
+      </>
+    }
+    underline={true}
+  >
+    <span>{t('(qUSD)')}</span>
+  </Tooltip>
+);
