@@ -79,7 +79,7 @@ export const DealTicketFeeDetails = ({
       }
       formattedValue={
         <>
-          {totalDiscountFactor && (
+          {totalDiscountFactor ? (
             <Pill size="xxs" intent={Intent.Warning} className="mr-1">
               -
               {formatNumberPercentage(
@@ -87,7 +87,7 @@ export const DealTicketFeeDetails = ({
                 2
               )}
             </Pill>
-          )}
+          ) : null}
           {totalDiscountedFeeAmount &&
             `~${formatValue(totalDiscountedFeeAmount, assetDecimals, quantum)}`}
         </>
