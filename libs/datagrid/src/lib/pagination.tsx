@@ -32,7 +32,7 @@ export const Pagination = ({
         {false}
         {showRetentionMessage &&
           t(
-            'Depending on data node retention you may not be able see the "full" history'
+            'Depending on data node retention you may not be able see the full history'
           )}
       </div>
       <div className="flex items-center text-xs">
