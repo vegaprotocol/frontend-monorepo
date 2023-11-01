@@ -5,6 +5,7 @@ import {
   vegaPublicKey,
   addDecimal,
   formatNumber,
+  addDecimalsFormatNumber,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
@@ -47,7 +48,8 @@ interface TransferFormProps {
   assets: Array<Asset>;
   accounts: Array<{
     type: AccountType;
-    asset: { id: string; symbol: string };
+    balance: string;
+    asset: { id: string; symbol: string; decimals: number };
   }>;
   assetId?: string;
   feeFactor: string | null;
@@ -79,6 +81,7 @@ export const TransferForm = ({
   const selectedPubKey = watch('toAddress');
   const amount = watch('amount');
   const assetId = watch('asset');
+  const asset = assets.find((a) => a.id === assetId);
 
   const [includeFee, setIncludeFee] = useState(false);
 
@@ -99,10 +102,6 @@ export const TransferForm = ({
       feeFactor && new BigNumber(feeFactor).times(transferAmount).toString()
     );
   }, [amount, includeFee, transferAmount, feeFactor]);
-
-  const asset = useMemo(() => {
-    return assets.find((a) => a.id === assetId);
-  }, [assets, assetId]);
 
   const onSubmit = useCallback(
     (fields: FormFields) => {
@@ -146,6 +145,13 @@ export const TransferForm = ({
       setValue('asset', '');
     }
   }, [setValue, pubKey]);
+
+  // General account for the selected asset
+  const generalAccount = accounts.find((a) => {
+    return (
+      a.asset.id === assetId && a.type === AccountType.ACCOUNT_TYPE_GENERAL
+    );
+  });
 
   return (
     <form
@@ -272,7 +278,9 @@ export const TransferForm = ({
             .map((a) => {
               return (
                 <option value={a.type} key={`${a.type}-${a.asset.id}`}>
-                  {AccountTypeMapping[a.type]} ({a.asset.symbol})
+                  {AccountTypeMapping[a.type]} (
+                  {addDecimalsFormatNumber(a.balance, a.asset.decimals)}{' '}
+                  {a.asset.symbol})
                 </option>
               );
             })}
@@ -289,10 +297,13 @@ export const TransferForm = ({
           defaultValue={AccountType.ACCOUNT_TYPE_GENERAL}
         >
           <option value={AccountType.ACCOUNT_TYPE_GENERAL}>
-            {asset
-              ? `${AccountTypeMapping[AccountType.ACCOUNT_TYPE_GENERAL]} (${
-                  asset.symbol
-                })`
+            {generalAccount
+              ? `${
+                  AccountTypeMapping[AccountType.ACCOUNT_TYPE_GENERAL]
+                } (${addDecimalsFormatNumber(
+                  generalAccount.balance,
+                  generalAccount.asset.decimals
+                )} ${generalAccount.asset.symbol})`
               : AccountTypeMapping[AccountType.ACCOUNT_TYPE_GENERAL]}
           </option>
         </TradingSelect>
