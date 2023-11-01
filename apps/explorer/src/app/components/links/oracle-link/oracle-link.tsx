@@ -78,10 +78,12 @@ export const OracleLink = ({
         className={`pl-2 pr-2 font-mono dark:text-black ${bgColour} rounded-sm border-solid border-2 relative`}
         {...props}
         to={`/${Routes.ORACLES}/${id}`}
+        data-status={getStatusString(status)}
       >
         <Hash text={id} truncate={true} />
         {hasSeenOracleReports ? (
           <strong
+            data-testid="oracle-data-indicator"
             className={`absolute top-0 right-0 w-1 h-full font-thin ${indicatorColour}`}
             title="Oracle has matched data"
           ></strong>
