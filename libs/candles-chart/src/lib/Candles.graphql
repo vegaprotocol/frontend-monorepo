@@ -20,7 +20,11 @@ query Candles($marketId: ID!, $interval: Interval!, $since: String!) {
         code
       }
     }
-    candlesConnection(interval: $interval, since: $since) {
+    candlesConnection(
+      interval: $interval
+      since: $since
+      pagination: { last: 1000 }
+    ) {
       edges {
         node {
           ...CandleFields

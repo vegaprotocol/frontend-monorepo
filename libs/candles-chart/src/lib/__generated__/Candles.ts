@@ -46,7 +46,7 @@ export const CandlesDocument = gql`
         code
       }
     }
-    candlesConnection(interval: $interval, since: $since) {
+    candlesConnection(interval: $interval, since: $since, pagination: {last: 1000}) {
       edges {
         node {
           ...CandleFields
