@@ -14,6 +14,10 @@ export interface BlockExplorerTransactionResult {
     value: string;
   };
   error?: string;
+  // These aren't strictly optional but are new in 0.73.0 so we need to make them optional
+  createdAt?: string;
+  version?: string;
+  pow?: string;
 }
 
 export interface BlockExplorerTransactions {

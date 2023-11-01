@@ -82,7 +82,7 @@ describe('Txs infinite list item', () => {
     expect(screen.getByText('Missing vital data')).toBeInTheDocument();
   });
 
-  it('renders data correctly', () => {
+  it('renders data even with missing time', () => {
     render(
       <MockedProvider>
         <MemoryRouter>
@@ -105,5 +105,33 @@ describe('Txs infinite list item', () => {
     expect(screen.getByTestId('pub-key')).toHaveTextContent('testPubKey');
     expect(screen.getByTestId('tx-type')).toHaveTextContent('testType');
     expect(screen.getByTestId('tx-block')).toHaveTextContent('1');
+    expect(screen.getByTestId('tx-time')).toHaveTextContent('-');
+  });
+
+  it('renders data correctly', () => {
+    render(
+      <MockedProvider>
+        <MemoryRouter>
+          <table>
+            <tbody>
+              <TxsInfiniteListItem
+                type="testType"
+                submitter="testPubKey"
+                hash="testTxHash"
+                block="1"
+                code={0}
+                command={{}}
+                createdAt="1970-11-01T18:07:15Z"
+              />
+            </tbody>
+          </table>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+    expect(screen.getByTestId('tx-hash')).toHaveTextContent('testTxHash');
+    expect(screen.getByTestId('pub-key')).toHaveTextContent('testPubKey');
+    expect(screen.getByTestId('tx-type')).toHaveTextContent('testType');
+    expect(screen.getByTestId('tx-block')).toHaveTextContent('1');
+    expect(screen.getByTestId('tx-time').textContent).toMatch(/years ago/);
   });
 });
