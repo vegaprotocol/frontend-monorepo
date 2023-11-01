@@ -87,9 +87,11 @@ export const TxsInfiniteListItem = ({
           endChars={5}
         />
       </td>
-      <td className="text-sm items-center font-mono" data-testid="tx-time">
-        {createdAt ? <TimeAgo date={createdAt} /> : '-'}
-      </td>
+      {['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize) && (
+        <td className="text-sm items-center font-mono" data-testid="tx-time">
+          {createdAt ? <TimeAgo date={createdAt} /> : '-'}
+        </td>
+      )}
     </tr>
   );
 };

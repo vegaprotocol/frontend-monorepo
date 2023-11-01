@@ -3,6 +3,7 @@ import { TxsInfiniteListItem } from './txs-infinite-list-item';
 import type { BlockExplorerTransactionResult } from '../../routes/types/block-explorer-response';
 import EmptyList from '../empty-list/empty-list';
 import { Loader } from '@vegaprotocol/ui-toolkit';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 interface TxsInfiniteListProps {
   hasMoreTxs: boolean;
@@ -49,6 +50,7 @@ export const TxsInfiniteList = ({
   className,
   hasFilters = false,
 }: TxsInfiniteListProps) => {
+  const { screenSize } = useScreenDimensions();
   if (!txs || txs.length === 0) {
     if (!areTxsLoading) {
       return (
@@ -76,7 +78,9 @@ export const TxsInfiniteList = ({
             <th>{t('Type')}</th>
             <th className="text-left">{t('From')}</th>
             <th>{t('Block')}</th>
-            <th>{t('Time')}</th>
+            {['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize) && (
+              <th>{t('Time')}</th>
+            )}
           </tr>
         </thead>
         <tbody>
