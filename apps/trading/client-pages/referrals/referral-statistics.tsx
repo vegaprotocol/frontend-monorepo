@@ -3,6 +3,8 @@ import {
   VegaIcon,
   VegaIconNames,
   truncateMiddle,
+  ExternalLink,
+  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -28,6 +30,7 @@ import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 import BigNumber from 'bignumber.js';
 import { t } from '@vegaprotocol/i18n';
 import maxBy from 'lodash/maxBy';
+import { DocsLinks } from '@vegaprotocol/environment';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
@@ -201,7 +204,7 @@ export const Statistics = ({
         'Total commission (last %s epochs)',
         (details?.windowLength || DEFAULT_AGGREGATION_DAYS).toString()
       )}
-      description={t('(qUSD)')}
+      description={<QUSDTooltip />}
     >
       {getNumberFormat(0).format(Number(totalCommissionValue))}
     </StatTile>
@@ -233,7 +236,12 @@ export const Statistics = ({
     <StatTile title={t('Discount')}>{discountFactorValue * 100}%</StatTile>
   );
   const runningVolumeTile = (
-    <StatTile title={t('Combined volume')}>
+    <StatTile
+      title={t(
+        'Combined volume (last %s epochs)',
+        details?.windowLength.toString()
+      )}
+    >
       {compactNumFormat.format(runningVolumeValue)}
     </StatTile>
   );
@@ -241,24 +249,14 @@ export const Statistics = ({
     <StatTile title={t('Epochs in set')}>{epochsValue}</StatTile>
   );
   const nextTierVolumeTile = (
-    <StatTile
-      title={t(
-        'Volume to next tier %s',
-        nextBenefitTierValue?.tier ? `(${nextBenefitTierValue.tier})` : ''
-      )}
-    >
+    <StatTile title={t('Volume to next tier')}>
       {nextBenefitTierVolumeValue <= 0
         ? '0'
         : compactNumFormat.format(nextBenefitTierVolumeValue)}
     </StatTile>
   );
   const nextTierEpochsTile = (
-    <StatTile
-      title={t(
-        'Epochs to next tier %s',
-        nextBenefitTierValue?.tier ? `(${nextBenefitTierValue.tier})` : ''
-      )}
-    >
+    <StatTile title={t('Epochs to next tier')}>
       {nextBenefitTierEpochsValue <= 0 ? '0' : nextBenefitTierEpochsValue}
     </StatTile>
   );
@@ -339,11 +337,16 @@ export const Statistics = ({
                 },
                 {
                   name: 'commission',
-                  displayName: t(
-                    'Commission earned (last %s epochs)',
-                    (
-                      details?.windowLength || DEFAULT_AGGREGATION_DAYS
-                    ).toString()
+                  displayName: (
+                    <>
+                      {t('Commission earned in')} <QUSDTooltip />{' '}
+                      {t(
+                        '(last %s epochs)',
+                        (
+                          details?.windowLength || DEFAULT_AGGREGATION_DAYS
+                        ).toString()
+                      )}
+                    </>
                   ),
                 },
               ]}
@@ -373,3 +376,25 @@ export const Statistics = ({
     </>
   );
 };
+
+export const QUSDTooltip = () => (
+  <Tooltip
+    description={
+      <>
+        <p className="mb-1">
+          {t(
+            'qUSD provides a rough USD equivalent of balances across all assets using the value of "Quantum" for that asset'
+          )}
+        </p>
+        {DocsLinks && (
+          <ExternalLink href={DocsLinks.QUANTUM}>
+            {t('Find out more')}
+          </ExternalLink>
+        )}
+      </>
+    }
+    underline={true}
+  >
+    <span>{t('qUSD')}</span>
+  </Tooltip>
+);

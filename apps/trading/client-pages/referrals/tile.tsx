@@ -29,7 +29,7 @@ export const Tile = ({
 
 type StatTileProps = {
   title: string;
-  description?: string;
+  description?: ReactNode;
   children?: ReactNode;
 };
 export const StatTile = ({ title, description, children }: StatTileProps) => {
@@ -67,11 +67,11 @@ export const CodeTile = ({
       title={t('Your referral code')}
       description={createdAt ? t('(Created at: %s)', createdAt) : undefined}
     >
-      <div className="flex gap-2 items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <Tooltip
           description={
             <div className="break-all">
-              <span className="text-xl bg-rainbow bg-clip-text text-transparent">
+              <span className="text-xl text-transparent bg-rainbow bg-clip-text">
                 {code}
               </span>
             </div>

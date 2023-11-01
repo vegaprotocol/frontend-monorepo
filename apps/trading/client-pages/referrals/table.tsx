@@ -1,10 +1,10 @@
 import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, type ReactNode, type HTMLAttributes } from 'react';
 import { BORDER_COLOR, GRADIENT } from './constants';
 
 type TableColumnDefinition = {
-  displayName?: string;
+  displayName?: ReactNode;
   name: string;
   tooltip?: string;
   className?: string;
@@ -46,7 +46,7 @@ export const Table = forwardRef<
                 INNER_BORDER_STYLE
               )}
             >
-              <span className="flex flex-row gap-2 items-center">
+              <span className="flex flex-row items-center gap-2">
                 <span>{displayName}</span>
                 {tooltip ? (
                   <Tooltip description={tooltip}>
@@ -102,17 +102,14 @@ export const Table = forwardRef<
                   key={`${i}-${name}`}
                 >
                   {/** display column name in mobile view */}
-                  {!noCollapse &&
-                    !noHeader &&
-                    displayName &&
-                    displayName.length > 0 && (
-                      <span
-                        aria-hidden
-                        className="md:hidden  font-mono text-xs px-0 text-vega-clight-100 dark:text-vega-cdark-100"
-                      >
-                        {displayName}
-                      </span>
-                    )}
+                  {!noCollapse && !noHeader && displayName && (
+                    <span
+                      aria-hidden
+                      className="px-0 font-mono text-xs md:hidden text-vega-clight-100 dark:text-vega-cdark-100"
+                    >
+                      {displayName}
+                    </span>
+                  )}
                   <span>{d[name]}</span>
                 </td>
               ))}
