@@ -3,6 +3,7 @@ import { useCallback, useRef, useState, useEffect } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import { OrderListTable } from '../order-list';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
+import { Pagination } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
 import { normalizeOrderAmendment } from '@vegaprotocol/wallet';
@@ -11,7 +12,7 @@ import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/web3';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
 import type { Order } from '../order-data-provider';
 import { OrderViewDialog } from '../order-list/order-view-dialog';
-import { Splash, TradingButton as Button } from '@vegaprotocol/ui-toolkit';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 
 export enum Filter {
   'Open' = 'Open',
@@ -90,61 +91,34 @@ export const OrderListManager = ({
 
   return (
     <>
-      <div className="h-full relative">
-        <div className="flex flex-col h-full">
-          <OrderListTable
-            rowData={data}
-            ref={gridRef}
-            filter={filter}
-            onCancel={cancel}
-            onEdit={setEditOrder}
-            onView={setViewOrder}
-            onMarketClick={onMarketClick}
-            onOrderTypeClick={onOrderTypeClick}
-            onFilterChanged={(event) => {
-              onRowDataUpdated(event);
-              if (onFilterChanged) {
-                onFilterChanged(event);
-              }
-            }}
-            onRowDataUpdated={onRowDataUpdated}
-            isReadOnly={isReadOnly}
-            overlayNoRowsTemplate={noRowsMessage || t('No orders')}
-            {...props}
-          />
-          <div className="flex justify-between border-t border-default p-1 items-center">
-            <div className="text-xs">
-              {variables.filter?.liveOnly
-                ? null
-                : t(
-                    'Depending on data node retention you may not be able see the "full" history'
-                  )}
-            </div>
-            {data ? (
-              <div className="flex text-xs items-center">
-                {data?.length && !pageInfo?.hasNextPage
-                  ? t('all %s items loaded', [data.length.toString()])
-                  : t('%s items loaded', [
-                      data?.length ? data.length.toString() : ' ',
-                    ])}
-                {pageInfo?.hasNextPage ? (
-                  <Button
-                    size="extra-small"
-                    className="ml-1"
-                    onClick={() => load()}
-                  >
-                    {t('Load more')}
-                  </Button>
-                ) : null}
-              </div>
-            ) : null}
-            {data?.length && hasDisplayedRow === false ? (
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs">
-                {t('No orders matching selected filters')}
-              </div>
-            ) : null}
-          </div>
-        </div>
+      <div className="relative flex flex-col h-full">
+        <OrderListTable
+          rowData={data}
+          ref={gridRef}
+          filter={filter}
+          onCancel={cancel}
+          onEdit={setEditOrder}
+          onView={setViewOrder}
+          onMarketClick={onMarketClick}
+          onOrderTypeClick={onOrderTypeClick}
+          onFilterChanged={(event) => {
+            onRowDataUpdated(event);
+            if (onFilterChanged) {
+              onFilterChanged(event);
+            }
+          }}
+          onRowDataUpdated={onRowDataUpdated}
+          isReadOnly={isReadOnly}
+          overlayNoRowsTemplate={noRowsMessage || t('No orders')}
+          {...props}
+        />
+        <Pagination
+          count={data?.length || 0}
+          pageInfo={pageInfo}
+          onLoad={load}
+          hasDisplayedRows={hasDisplayedRow || false}
+          showRetentionMessage={variables.filter?.liveOnly || true}
+        />
       </div>
       {editOrder && (
         <OrderEditDialog
