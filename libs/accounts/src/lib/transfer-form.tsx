@@ -252,7 +252,9 @@ export const TransferForm = ({
                   pubKey === selectedPubKey &&
                   value === AccountType.ACCOUNT_TYPE_GENERAL
                 ) {
-                  return t('Cannot transfer to the same account');
+                  return t(
+                    'Cannot transfer to the same account type for the connected key'
+                  );
                 }
                 return true;
               },
