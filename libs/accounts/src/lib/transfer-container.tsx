@@ -9,11 +9,16 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { Transfer } from '@vegaprotocol/wallet';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { accountsDataProvider } from './accounts-data-provider';
 import { TransferForm } from './transfer-form';
 import sortBy from 'lodash/sortBy';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
+
+export const ALLOWED_ACCOUNTS = [
+  Schema.AccountType.ACCOUNT_TYPE_GENERAL,
+  Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
+];
 
 export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   const { pubKey, pubKeys } = useVegaWallet();
@@ -33,20 +38,19 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
     [create]
   );
 
-  const assets = useMemo(() => {
-    if (!data) return [];
-    return data
-      .filter(
-        (account) => account.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL
-      )
-      .map((account) => ({
-        id: account.asset.id,
-        symbol: account.asset.symbol,
-        name: account.asset.name,
-        decimals: account.asset.decimals,
-        balance: addDecimal(account.balance, account.asset.decimals),
-      }));
-  }, [data]);
+  const accounts = data
+    ? data.filter((account) => ALLOWED_ACCOUNTS.includes(account.type))
+    : [];
+
+  const assets = accounts.map((account) => ({
+    id: account.asset.id,
+    symbol: account.asset.symbol,
+    name: account.asset.name,
+    decimals: account.asset.decimals,
+    balance: addDecimal(account.balance, account.asset.decimals),
+  }));
+
+  if (data === null) return null;
 
   return (
     <>
@@ -69,6 +73,7 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
         assetId={assetId}
         feeFactor={param}
         submitTransfer={transfer}
+        accounts={accounts}
       />
     </>
   );
