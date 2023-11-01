@@ -23,7 +23,7 @@ query Candles($marketId: ID!, $interval: Interval!, $since: String!) {
     candlesConnection(
       interval: $interval
       since: $since
-      pagination: { last: 1000 }
+      pagination: { last: 5000 }
     ) {
       edges {
         node {
