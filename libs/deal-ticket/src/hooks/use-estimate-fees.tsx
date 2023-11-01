@@ -34,14 +34,13 @@ export const useEstimateFees = (
     skip: !pubKey || !order?.size || !order?.price || order.postOnly,
   });
   const data = loading ? currentData || previousData : currentData;
+  const atEpoch = (Number(data?.epoch.id) || 0) - 1;
   const volumeDiscountFactor =
-    (data?.volumeDiscountStats.edges[0]?.node.atEpoch.toString() ===
-      data?.epoch.id &&
+    (data?.volumeDiscountStats.edges[0]?.node.atEpoch === atEpoch &&
       data?.volumeDiscountStats.edges[0]?.node.discountFactor) ||
     '0';
   const referralDiscountFactor =
-    (data?.referralSetStats.edges[0]?.node.atEpoch.toString() ===
-      data?.epoch.id &&
+    (data?.referralSetStats.edges[0]?.node.atEpoch === atEpoch &&
       data?.referralSetStats.edges[0]?.node.discountFactor) ||
     '0';
   if (order?.postOnly) {
