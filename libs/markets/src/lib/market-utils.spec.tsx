@@ -72,10 +72,10 @@ describe('totalFeesFactorsPercentage', () => {
     makerFee: f[2].toString(),
   });
   it.each([
-    { i: createFee(0, 0, 1), o: '100.00%' },
-    { i: createFee(0, 1, 0), o: '100.00%' },
-    { i: createFee(1, 0, 0), o: '100.00%' },
-    { i: createFee(0.01, 0.02, 0.003), o: '3.30%' },
+    { i: createFee(0, 0, 1), o: '100%' },
+    { i: createFee(0, 1, 0), o: '100%' },
+    { i: createFee(1, 0, 0), o: '100%' },
+    { i: createFee(0.01, 0.02, 0.003), o: '3.3%' },
     { i: createFee(0.01, 0.056782, 0.003), o: '6.9782%' },
     { i: createFee(0.01, 0.056782, 0), o: '6.6782%' },
   ])('adds fees correctly', ({ i, o }) => {

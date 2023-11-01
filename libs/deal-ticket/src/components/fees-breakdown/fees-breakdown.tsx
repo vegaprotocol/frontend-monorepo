@@ -33,7 +33,7 @@ const FeesBreakdownItem = ({
     <dt className="col-span-2">{label}</dt>
     {factor && (
       <dd className="text-right col-span-1">
-        {formatNumberPercentage(new BigNumber(factor).times(100), 2)}
+        {formatNumberPercentage(new BigNumber(factor).times(100))}
       </dd>
     )}
     <dd className="text-right col-span-3">

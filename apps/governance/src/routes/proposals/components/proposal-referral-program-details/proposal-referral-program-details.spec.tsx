@@ -36,13 +36,13 @@ describe('ProposalReferralProgramDetails helper functions', () => {
   it('should format referral discount factor correctly', () => {
     const input = '0.05';
     const formatted = formatReferralDiscountFactor(input);
-    expect(formatted).toBe('5.00%');
+    expect(formatted).toBe('5%');
   });
 
   it('should format referral reward factor correctly', () => {
     const input = '0.1';
     const formatted = formatReferralRewardFactor(input);
-    expect(formatted).toBe('10.00%');
+    expect(formatted).toBe('10%');
   });
 
   it('should format minimum staked tokens correctly', () => {
