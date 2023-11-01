@@ -52,19 +52,23 @@ export const DepositLimits = ({
             <>
               <p>
                 {t(
-                  'VEGA has a lifetime deposit limit of %s %s per address. This can be changed through governance',
-                  [formatNumber(max.toString()), asset.symbol]
+                  'VEGA has a lifetime deposit limit of {{amount}} {{assetSymbol}} per address. This can be changed through governance',
+                  {
+                    amount: formatNumber(max.toString()),
+                    assetSymbol: asset.symbol,
+                  }
                 )}
               </p>
               <p>
                 {t(
-                  'To date, %s %s has been deposited from this Ethereum address, so you can deposit up to %s %s more.',
-                  [
-                    formatNumber(deposited.toString()),
-                    asset.symbol,
-                    formatNumber(max.minus(deposited).toString()),
-                    asset.symbol,
-                  ]
+                  'To date, {{currentDeposit}} {{assetSymbol}} has been deposited from this Ethereum address, so you can deposit up to {{remainingDeposit}} {{assetSymbol}} more.',
+                  {
+                    currentDeposit: formatNumber(deposited.toString()),
+                    assetSymbol: asset.symbol,
+                    remainingDeposit: formatNumber(
+                      max.minus(deposited).toString()
+                    ),
+                  }
                 )}
               </p>
             </>
@@ -90,8 +94,8 @@ export const DepositLimits = ({
           description={
             <p>
               {t(
-                'The deposit cap is set when you approve an asset for use with this app. To increase this cap, approve %s again and choose a higher cap. Check the documentation for your Ethereum wallet app for details.',
-                asset.symbol
+                'The deposit cap is set when you approve an asset for use with this app. To increase this cap, approve {{assetSymbol}} again and choose a higher cap. Check the documentation for your Ethereum wallet app for details.',
+                { assetSymbol: asset.symbol }
               )}
             </p>
           }

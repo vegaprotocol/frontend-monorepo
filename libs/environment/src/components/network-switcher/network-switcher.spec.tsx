@@ -217,7 +217,7 @@ describe('Network switcher', () => {
 
     expect(label).toBeInTheDocument();
     expect(label.parentNode?.parentNode?.firstElementChild).toHaveTextContent(
-      'The latest Vega code auto-deployed'
+      'Devnet'
     );
   });
 

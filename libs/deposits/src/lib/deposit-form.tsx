@@ -326,11 +326,11 @@ export const DepositForm = ({
                   const allowance = new BigNumber(balances?.allowance || 0);
                   if (value.isGreaterThan(allowance)) {
                     return t(
-                      "You can't deposit more than your approved deposit amount, %s %s",
-                      [
-                        formatNumber(allowance.toString()),
-                        selectedAsset?.symbol || ' ',
-                      ]
+                      "You can't deposit more than your approved deposit amount, {{amount}} {{assetSymbol}}",
+                      {
+                        amount: formatNumber(allowance.toString()),
+                        assetSymbol: selectedAsset?.symbol || ' ',
+                      }
                     );
                   }
                   return true;
@@ -348,11 +348,11 @@ export const DepositForm = ({
 
                   if (value.isGreaterThan(lifetimeLimit)) {
                     return t(
-                      "You can't deposit more than your remaining deposit allowance, %s %s",
-                      [
-                        formatNumber(lifetimeLimit.toString()),
-                        selectedAsset?.symbol || ' ',
-                      ]
+                      "You can't deposit more than your remaining deposit allowance, {{amount}} {{assetSymbol}}",
+                      {
+                        amount: formatNumber(lifetimeLimit.toString()),
+                        assetSymbol: selectedAsset?.symbol || ' ',
+                      }
                     );
                   }
                   return true;
@@ -362,8 +362,11 @@ export const DepositForm = ({
                   const balance = new BigNumber(balances?.balance || 0);
                   if (value.isGreaterThan(balance)) {
                     return t(
-                      "You can't deposit more than you have in your Ethereum wallet, %s %s",
-                      [formatNumber(balance), selectedAsset?.symbol || ' ']
+                      "You can't deposit more than you have in your Ethereum wallet,  {{amount}} {{assetSymbol}}",
+                      {
+                        amount: formatNumber(balance),
+                        assetSymbol: selectedAsset?.symbol || ' ',
+                      }
                     );
                   }
                   return true;

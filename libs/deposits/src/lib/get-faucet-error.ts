@@ -7,8 +7,8 @@ export const useGetFaucetError = (error: TxError | null, symbol?: string) => {
     [reason: string]: string;
   } = {
     'faucet not enabled': t(
-      'The %s faucet is not available at this time',
-      symbol
+      'The {{symbol}} faucet is not available at this time',
+      { symbol }
     ),
     'must wait faucetCallLimit between faucet calls': t(
       'You have exceeded the maximum number of faucet attempts allowed'
@@ -21,5 +21,5 @@ export const useGetFaucetError = (error: TxError | null, symbol?: string) => {
   // to a non generic error message
   return error && 'reason' in error && reasonMap[error.reason]
     ? reasonMap[error.reason]
-    : t('Faucet of %s failed', symbol);
+    : t('Faucet of {{symbol}} failed', { symbol });
 };

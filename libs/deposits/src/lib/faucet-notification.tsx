@@ -75,8 +75,8 @@ export const FaucetNotification = ({
             <>
               <p className="mb-2">
                 {t(
-                  'Your request for funds from the %s faucet is being confirmed by the Ethereum network',
-                  selectedAsset.symbol
+                  'Your request for funds from the {{assetSymbol}} faucet is being confirmed by the Ethereum network',
+                  { assetSymbol: selectedAsset.symbol }
                 )}{' '}
               </p>
               {tx.txHash && (
@@ -103,8 +103,10 @@ export const FaucetNotification = ({
             <>
               <p className="mb-2">
                 {t(
-                  '%s has been deposited in your Ethereum wallet',
-                  selectedAsset.symbol
+                  '{{assetSymbol}} has been deposited in your Ethereum wallet',
+                  {
+                    assetSymbol: selectedAsset.symbol,
+                  }
                 )}{' '}
               </p>
               {tx.txHash && (
