@@ -287,7 +287,11 @@ export const TransferForm = ({
           defaultValue={AccountType.ACCOUNT_TYPE_GENERAL}
         >
           <option value={AccountType.ACCOUNT_TYPE_GENERAL}>
-            {AccountTypeMapping[AccountType.ACCOUNT_TYPE_GENERAL]}
+            {asset
+              ? `${AccountTypeMapping[AccountType.ACCOUNT_TYPE_GENERAL]} (${
+                  asset.symbol
+                })`
+              : AccountTypeMapping[AccountType.ACCOUNT_TYPE_GENERAL]}
           </option>
         </TradingSelect>
       </TradingFormGroup>
