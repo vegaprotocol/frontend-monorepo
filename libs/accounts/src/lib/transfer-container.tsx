@@ -50,8 +50,6 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
     balance: addDecimal(account.balance, account.asset.decimals),
   }));
 
-  if (data === null) return null;
-
   return (
     <>
       <p className="mb-4 text-sm" data-testid="transfer-intro-text">
