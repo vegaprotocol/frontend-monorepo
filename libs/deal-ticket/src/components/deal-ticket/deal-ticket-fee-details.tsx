@@ -93,8 +93,8 @@ export const DealTicketFeeDetails = ({
         </>
       }
       labelDescription={
-        <>
-          <p className="mb-2">
+        <div className="flex flex-col gap-2">
+          <p>
             {t(
               `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}. Fees estimated are "taker" fees and will only be payable if the order trades aggressively. Rebate equal to the maker portion will be paid to the trader if the order trades passively.`
             )}
@@ -108,7 +108,7 @@ export const DealTicketFeeDetails = ({
             symbol={assetSymbol}
             decimals={assetDecimals}
           />
-        </>
+        </div>
       }
       symbol={assetSymbol}
     />
