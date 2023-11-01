@@ -8,27 +8,42 @@ import {
   DataSourceSpecStatus,
   DataSourceSpecStatusMapping,
 } from '@vegaprotocol/types';
-import { getTypeString } from '../../../routes/oracles/components/oracle-details-type';
+import { t } from '@vegaprotocol/i18n';
 
+/**
+ * Returns a human-readable string for the given status, or a meaningful
+ * default if the status is unrecognised
+ * @param status string status
+ */
 export function getStatusString(status: string | undefined): string {
   if (status && status in DataSourceSpecStatus) {
     return DataSourceSpecStatusMapping[status as DataSourceSpecStatus];
   }
 
-  return 'Unknown';
+  return t('Unknown');
 }
 
 export type OracleLinkProps = Partial<ComponentProps<typeof Link>> & {
+  // The Oracle ID
   id: string;
+  // If available, the oracle status
   status?: string;
+  // If the oracle has corresponding data in the OracleDataConnection
   hasSeenOracleReports?: boolean;
 };
 
+/**
+ * Given an Oracle ID, renders a data-dense link to the Oracle page. Data density is achieved by:
+ * - Colour coding the link based on the Oracle's status
+ * - Showing a small indicator if the Oracle has matched data
+ * - Showing a tooltip with the Oracle's status and whether it has matched data
+ *
+ * @returns
+ */
 export const OracleLink = ({
   id,
   status,
   hasSeenOracleReports = false,
-  children,
   ...props
 }: OracleLinkProps) => {
   const bgColour =
