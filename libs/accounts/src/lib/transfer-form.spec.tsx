@@ -5,14 +5,40 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import BigNumber from 'bignumber.js';
 import { AddressField, TransferFee, TransferForm } from './transfer-form';
 import { AccountType } from '@vegaprotocol/types';
 import { addDecimal, formatNumber, removeDecimal } from '@vegaprotocol/utils';
-import userEvent from '@testing-library/user-event';
 
 describe('TransferForm', () => {
-  const submit = () => fireEvent.submit(screen.getByTestId('transfer-form'));
+  const submit = async () => {
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Confirm transfer' })
+    );
+  };
+
+  const selectAsset = async (asset: {
+    id: string;
+    balance: string;
+    name: string;
+    decimals: number;
+  }) => {
+    // Bypass RichSelect and target hidden native select
+    // eslint-disable-next-line
+    fireEvent.change(document.querySelector('select[name="asset"]')!, {
+      target: { value: asset.id },
+    });
+
+    // assert rich select as updated
+    expect(await screen.findByTestId('select-asset')).toHaveTextContent(
+      asset.name
+    );
+    expect(await screen.findByTestId('asset-balance')).toHaveTextContent(
+      formatNumber(asset.balance, asset.decimals)
+    );
+  };
+
   const amount = '100';
   const pubKey =
     '70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680';
@@ -32,6 +58,18 @@ describe('TransferForm', () => {
     assets: [asset],
     feeFactor: '0.001',
     submitTransfer: jest.fn(),
+    accounts: [
+      {
+        type: AccountType.ACCOUNT_TYPE_GENERAL,
+        asset,
+        balance: '100',
+      },
+      {
+        type: AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
+        asset,
+        balance: '100',
+      },
+    ],
   };
 
   it('form tooltips correctly displayed', async () => {
@@ -42,49 +80,45 @@ describe('TransferForm', () => {
     // 1003-TRAN-019
     render(<TransferForm {...props} />);
     // Select a pubkey
-    fireEvent.change(screen.getByLabelText('Vega key'), {
-      target: { value: props.pubKeys[1] },
-    });
+    await userEvent.selectOptions(
+      screen.getByLabelText('Vega key'),
+      props.pubKeys[1]
+    );
 
     // Select asset
-    fireEvent.change(
-      // Bypass RichSelect and target hidden native select
-      // eslint-disable-next-line
-      document.querySelector('select[name="asset"]')!,
-      { target: { value: asset.id } }
-    );
+    await selectAsset(asset);
+
     // set valid amount
-    fireEvent.change(screen.getByLabelText('Amount'), {
-      target: { value: amount },
-    });
+    const amountInput = screen.getByLabelText('Amount');
+    await userEvent.type(amountInput, amount);
+    expect(amountInput).toHaveValue(amount);
 
-    userEvent.hover(screen.getByText('Include transfer fee'));
+    const includeTransferLabel = screen.getByText('Include transfer fee');
+    await userEvent.hover(includeTransferLabel);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(
+      'The fee will be taken from the amount you are transferring.'
+    );
+    await userEvent.unhover(screen.getByText('Include transfer fee'));
 
-    await waitFor(() => {
-      const tooltips = screen.getAllByTestId('tooltip-content');
-      expect(tooltips[0]).toBeVisible();
-    });
+    const transferFee = screen.getByText('Transfer fee');
+    await userEvent.hover(transferFee);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(
+      /transfer.fee.factor/
+    );
+    await userEvent.unhover(transferFee);
 
-    userEvent.hover(screen.getByText('Transfer fee'));
+    const amountToBeTransferred = screen.getByText('Amount to be transferred');
+    await userEvent.hover(amountToBeTransferred);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(
+      /without the fee/
+    );
+    await userEvent.unhover(amountToBeTransferred);
 
-    await waitFor(() => {
-      const tooltips = screen.getAllByTestId('tooltip-content');
-      expect(tooltips[0]).toBeVisible();
-    });
-
-    userEvent.hover(screen.getByText('Amount to be transferred'));
-
-    await waitFor(() => {
-      const tooltips = screen.getAllByTestId('tooltip-content');
-      expect(tooltips[0]).toBeVisible();
-    });
-
-    userEvent.hover(screen.getByText('Total amount (with fee)'));
-
-    await waitFor(() => {
-      const tooltips = screen.getAllByTestId('tooltip-content');
-      expect(tooltips[0]).toBeVisible();
-    });
+    const totalAmountWithFee = screen.getByText('Total amount (with fee)');
+    await userEvent.hover(totalAmountWithFee);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(
+      /total amount taken from your account/
+    );
   });
 
   it('validates a manually entered address', async () => {
@@ -92,30 +126,17 @@ describe('TransferForm', () => {
     // 1003-TRAN-013
     // 1003-TRAN-004
     render(<TransferForm {...props} />);
-    submit();
-    expect(await screen.findAllByText('Required')).toHaveLength(3);
+    await submit();
+    expect(await screen.findAllByText('Required')).toHaveLength(4);
     const toggle = screen.getByText('Enter manually');
-    fireEvent.click(toggle);
+    await userEvent.click(toggle);
     // has switched to input
     expect(toggle).toHaveTextContent('Select from wallet');
     expect(screen.getByLabelText('Vega key')).toHaveAttribute('type', 'text');
-    fireEvent.change(screen.getByLabelText('Vega key'), {
-      target: { value: 'invalid-address' },
-    });
-    await waitFor(() => {
-      const errors = screen.getAllByTestId('input-error-text');
-      expect(errors[0]).toHaveTextContent('Invalid Vega key');
-    });
-
-    // same pubkey
-    fireEvent.change(screen.getByLabelText('Vega key'), {
-      target: { value: pubKey },
-    });
-
-    await waitFor(() => {
-      const errors = screen.getAllByTestId('input-error-text');
-      expect(errors[0]).toHaveTextContent('Vega key is the same');
-    });
+    await userEvent.type(screen.getByLabelText('Vega key'), 'invalid-address');
+    expect(screen.getAllByTestId('input-error-text')[0]).toHaveTextContent(
+      'Invalid Vega key'
+    );
   });
 
   it('validates fields and submits', async () => {
@@ -127,28 +148,25 @@ describe('TransferForm', () => {
     render(<TransferForm {...props} />);
 
     // check current pubkey not shown
-    const keySelect: HTMLSelectElement = screen.getByLabelText('Vega key');
-    expect(keySelect.children).toHaveLength(2);
+    const keySelect = screen.getByLabelText<HTMLSelectElement>('Vega key');
+    expect(keySelect.children).toHaveLength(3);
     expect(Array.from(keySelect.options).map((o) => o.value)).toEqual([
       '',
+      pubKey,
       props.pubKeys[1],
     ]);
 
-    submit();
-    expect(await screen.findAllByText('Required')).toHaveLength(3);
+    await submit();
+    expect(await screen.findAllByText('Required')).toHaveLength(4);
 
     // Select a pubkey
-    fireEvent.change(screen.getByLabelText('Vega key'), {
-      target: { value: props.pubKeys[1] },
-    });
+    await userEvent.selectOptions(
+      screen.getByLabelText('Vega key'),
+      props.pubKeys[1]
+    );
 
     // Select asset
-    fireEvent.change(
-      // Bypass RichSelect and target hidden native select
-      // eslint-disable-next-line
-      document.querySelector('select[name="asset"]')!,
-      { target: { value: asset.id } }
-    );
+    await selectAsset(asset);
 
     // assert rich select as updated
     expect(await screen.findByTestId('select-asset')).toHaveTextContent(
@@ -158,37 +176,38 @@ describe('TransferForm', () => {
       formatNumber(asset.balance, asset.decimals)
     );
 
+    await userEvent.selectOptions(
+      screen.getByLabelText('From account'),
+      AccountType.ACCOUNT_TYPE_VESTED_REWARDS
+    );
+
     const amountInput = screen.getByLabelText('Amount');
 
     // Test amount validation
-    fireEvent.change(amountInput, {
-      target: { value: '0.00000001' },
-    });
+    await userEvent.type(amountInput, '0.00000001');
     expect(
       await screen.findByText('Value is below minimum')
     ).toBeInTheDocument();
 
-    fireEvent.change(amountInput, {
-      target: { value: '9999999' },
-    });
+    await userEvent.clear(amountInput);
+    await userEvent.type(amountInput, '9999999');
     expect(
       await screen.findByText(/cannot transfer more/i)
     ).toBeInTheDocument();
 
     // set valid amount
-    fireEvent.change(amountInput, {
-      target: { value: amount },
-    });
+    await userEvent.clear(amountInput);
+    await userEvent.type(amountInput, amount);
     expect(screen.getByTestId('transfer-fee')).toHaveTextContent(
       new BigNumber(props.feeFactor).times(amount).toFixed()
     );
 
-    submit();
+    await submit();
 
     await waitFor(() => {
       expect(props.submitTransfer).toHaveBeenCalledTimes(1);
       expect(props.submitTransfer).toHaveBeenCalledWith({
-        fromAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
+        fromAccountType: AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
         toAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
         to: props.pubKeys[1],
         asset: asset.id,
@@ -200,59 +219,50 @@ describe('TransferForm', () => {
 
   describe('IncludeFeesCheckbox', () => {
     it('validates fields and submits when checkbox is checked', async () => {
-      render(<TransferForm {...props} />);
+      const mockSubmit = jest.fn();
+      render(<TransferForm {...props} submitTransfer={mockSubmit} />);
 
       // check current pubkey not shown
-      const keySelect: HTMLSelectElement = screen.getByLabelText('Vega key');
-      expect(keySelect.children).toHaveLength(2);
-      expect(Array.from(keySelect.options).map((o) => o.value)).toEqual([
-        '',
-        props.pubKeys[1],
-      ]);
+      const keySelect = screen.getByLabelText<HTMLSelectElement>('Vega key');
+      const pubKeyOptions = ['', pubKey, props.pubKeys[1]];
+      expect(keySelect.children).toHaveLength(pubKeyOptions.length);
+      expect(Array.from(keySelect.options).map((o) => o.value)).toEqual(
+        pubKeyOptions
+      );
 
-      submit();
-      expect(await screen.findAllByText('Required')).toHaveLength(3);
+      await submit();
+      expect(await screen.findAllByText('Required')).toHaveLength(4);
 
       // Select a pubkey
-      fireEvent.change(screen.getByLabelText('Vega key'), {
-        target: { value: props.pubKeys[1] },
-      });
+      await userEvent.selectOptions(
+        screen.getByLabelText('Vega key'),
+        props.pubKeys[1]
+      );
 
       // Select asset
-      fireEvent.change(
-        // Bypass RichSelect and target hidden native select
-        // eslint-disable-next-line
-        document.querySelector('select[name="asset"]')!,
-        { target: { value: asset.id } }
-      );
+      await selectAsset(asset);
 
-      // assert rich select as updated
-      expect(await screen.findByTestId('select-asset')).toHaveTextContent(
-        asset.name
-      );
-      expect(await screen.findByTestId('asset-balance')).toHaveTextContent(
-        formatNumber(asset.balance, asset.decimals)
+      await userEvent.selectOptions(
+        screen.getByLabelText('From account'),
+        AccountType.ACCOUNT_TYPE_VESTED_REWARDS
       );
 
       const amountInput = screen.getByLabelText('Amount');
       const checkbox = screen.getByTestId('include-transfer-fee');
+
       // 1003-TRAN-022
       expect(checkbox).not.toBeChecked();
-      act(() => {
-        /* fire events that update state */
-        // set valid amount
-        fireEvent.change(amountInput, {
-          target: { value: amount },
-        });
-        // check include fees checkbox
-        fireEvent.click(checkbox);
-      });
+
+      await userEvent.clear(amountInput);
+      await userEvent.type(amountInput, amount);
+      await userEvent.click(checkbox);
 
       expect(checkbox).toBeChecked();
       const expectedFee = new BigNumber(amount)
         .times(props.feeFactor)
         .toFixed();
       const expectedAmount = new BigNumber(amount).minus(expectedFee).toFixed();
+
       // 1003-TRAN-020
       expect(screen.getByTestId('transfer-fee')).toHaveTextContent(expectedFee);
       expect(screen.getByTestId('transfer-amount')).toHaveTextContent(
@@ -262,18 +272,17 @@ describe('TransferForm', () => {
         amount
       );
 
-      submit();
+      await submit();
 
       await waitFor(() => {
         // 1003-TRAN-023
-
-        expect(props.submitTransfer).toHaveBeenCalledTimes(1);
-        expect(props.submitTransfer).toHaveBeenCalledWith({
-          fromAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
+        expect(mockSubmit).toHaveBeenCalledTimes(1);
+        expect(mockSubmit).toHaveBeenCalledWith({
+          fromAccountType: AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
           toAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
           to: props.pubKeys[1],
           asset: asset.id,
-          amount: removeDecimal(amount, asset.decimals),
+          amount: removeDecimal(expectedAmount, asset.decimals),
           oneOff: {},
         });
       });
@@ -284,46 +293,29 @@ describe('TransferForm', () => {
 
       // check current pubkey not shown
       const keySelect: HTMLSelectElement = screen.getByLabelText('Vega key');
-      expect(keySelect.children).toHaveLength(2);
-      expect(Array.from(keySelect.options).map((o) => o.value)).toEqual([
-        '',
-        props.pubKeys[1],
-      ]);
+      const pubKeyOptions = ['', pubKey, props.pubKeys[1]];
+      expect(keySelect.children).toHaveLength(pubKeyOptions.length);
+      expect(Array.from(keySelect.options).map((o) => o.value)).toEqual(
+        pubKeyOptions
+      );
 
-      submit();
-      expect(await screen.findAllByText('Required')).toHaveLength(3);
+      await submit();
+      expect(await screen.findAllByText('Required')).toHaveLength(4);
 
       // Select a pubkey
-      fireEvent.change(screen.getByLabelText('Vega key'), {
-        target: { value: props.pubKeys[1] },
-      });
+      await userEvent.selectOptions(
+        screen.getByLabelText('Vega key'),
+        props.pubKeys[1]
+      );
 
       // Select asset
-      fireEvent.change(
-        // Bypass RichSelect and target hidden native select
-        // eslint-disable-next-line
-        document.querySelector('select[name="asset"]')!,
-        { target: { value: asset.id } }
-      );
-
-      // assert rich select as updated
-      expect(await screen.findByTestId('select-asset')).toHaveTextContent(
-        asset.name
-      );
-      expect(await screen.findByTestId('asset-balance')).toHaveTextContent(
-        formatNumber(asset.balance, asset.decimals)
-      );
+      await selectAsset(asset);
 
       const amountInput = screen.getByLabelText('Amount');
       const checkbox = screen.getByTestId('include-transfer-fee');
       expect(checkbox).not.toBeChecked();
-      act(() => {
-        /* fire events that update state */
-        // set valid amount
-        fireEvent.change(amountInput, {
-          target: { value: amount },
-        });
-      });
+
+      await userEvent.type(amountInput, amount);
       expect(checkbox).not.toBeChecked();
       const expectedFee = new BigNumber(amount)
         .times(props.feeFactor)
@@ -351,11 +343,11 @@ describe('TransferForm', () => {
       // select should be shown as multiple pubkeys provided
       expect(screen.getByText('select')).toBeInTheDocument();
       expect(screen.queryByText('input')).not.toBeInTheDocument();
-      fireEvent.click(screen.getByText('Enter manually'));
+      await userEvent.click(screen.getByText('Enter manually'));
       expect(screen.queryByText('select')).not.toBeInTheDocument();
       expect(screen.getByText('input')).toBeInTheDocument();
       expect(mockOnChange).toHaveBeenCalledTimes(1);
-      fireEvent.click(screen.getByText('Select from wallet'));
+      await userEvent.click(screen.getByText('Select from wallet'));
       expect(screen.getByText('select')).toBeInTheDocument();
       expect(screen.queryByText('input')).not.toBeInTheDocument();
       expect(mockOnChange).toHaveBeenCalledTimes(2);

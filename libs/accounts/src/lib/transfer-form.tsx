@@ -33,23 +33,21 @@ interface FormFields {
   fromAccount: AccountType;
 }
 
+interface Asset {
+  id: string;
+  symbol: string;
+  name: string;
+  decimals: number;
+  balance: string;
+}
+
 interface TransferFormProps {
   pubKey: string | null;
   pubKeys: string[] | null;
-  assets: Array<{
-    id: string;
-    symbol: string;
-    name: string;
-    decimals: number;
-    balance: string;
-  }>;
+  assets: Array<Asset>;
   accounts: Array<{
     type: AccountType;
-    balance: string;
-    asset: {
-      id: string;
-      symbol: string;
-    };
+    asset: { id: string; symbol: string };
   }>;
   assetId?: string;
   feeFactor: string | null;
@@ -184,7 +182,7 @@ export const TransferForm = ({
             <TradingInput
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus={true} // focus input immediately after is shown
-              id="to-address"
+              id="toAddress"
               type="text"
               {...register('toAddress', {
                 validate: {
@@ -196,7 +194,7 @@ export const TransferForm = ({
           }
         />
         {errors.toAddress?.message && (
-          <TradingInputError forInput="to-address">
+          <TradingInputError forInput="toAddress">
             {errors.toAddress.message}
           </TradingInputError>
         )}
@@ -245,6 +243,7 @@ export const TransferForm = ({
       <TradingFormGroup label={t('From account')} labelFor="fromAccount">
         <TradingSelect
           id="fromAccount"
+          defaultValue=""
           {...register('fromAccount', {
             validate: {
               required,
@@ -287,7 +286,7 @@ export const TransferForm = ({
           id="toAccount"
           defaultValue={AccountType.ACCOUNT_TYPE_GENERAL}
         >
-          <option value={AccountType.ACCOUNT_TYPE_GENERAL} selected={true}>
+          <option value={AccountType.ACCOUNT_TYPE_GENERAL}>
             {AccountTypeMapping[AccountType.ACCOUNT_TYPE_GENERAL]}
           </option>
         </TradingSelect>
