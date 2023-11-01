@@ -6,7 +6,7 @@ import type { EstimateFeesQuery } from './__generated__/EstimateOrder';
 
 const data: EstimateFeesQuery = {
   epoch: {
-    id: '2',
+    id: '3',
   },
   volumeDiscountStats: {
     edges: [
@@ -117,7 +117,7 @@ describe('useEstimateFees', () => {
     });
   });
 
-  it('returns 0 discounts if discount stats are not at the current epoch', () => {
+  it('returns 0 discounts if discount stats are not at the current epoch -1', () => {
     const { result } = renderHook(() =>
       useEstimateFees(
         {
@@ -136,7 +136,7 @@ describe('useEstimateFees', () => {
   });
 
   it('returns discounts', () => {
-    data.epoch.id = '1';
+    data.epoch.id = '2';
     const { result } = renderHook(() =>
       useEstimateFees(
         {
