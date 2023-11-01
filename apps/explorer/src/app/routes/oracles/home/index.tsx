@@ -99,13 +99,17 @@ const Oracles = () => {
                     data?.oracleSpecsConnection?.edges?.map((e) =>
                       e && e.node ? e.node : undefined
                     ) || [];
+
                   const oracleInformation = compact(oracleInformationUnfiltered)
-                    .filter((o) => o.dataSourceSpec.spec.id === id)
+                    .filter(
+                      (o) =>
+                        o.dataConnection.edges &&
+                        o.dataConnection.edges.length > 0 &&
+                        (o.dataSourceSpec.spec.id === settlementOracle ||
+                          o.dataSourceSpec.spec.id === terminationOracle)
+                    )
                     .at(0);
-                  if (
-                    oracleInformation?.dataConnection.edges?.length &&
-                    oracleInformation.dataConnection.edges.length > 0
-                  ) {
+                  if (oracleInformation) {
                     hasSeenOracleReports = true;
                   }
 
@@ -118,7 +122,7 @@ const Oracles = () => {
                       className={
                         hoveredOracle.length > 0 &&
                         oracleList.indexOf(hoveredOracle) > -1
-                          ? 'bg-gray-100'
+                          ? 'bg-gray-100 dark:bg-gray-800'
                           : ''
                       }
                       data-testid="oracle-details"
@@ -136,7 +140,14 @@ const Oracles = () => {
                       <td className={cellSpacing}>
                         {MarketStateMapping[o.node.state as MarketState]}
                       </td>
-                      <td className={cellSpacing}>
+                      <td
+                        className={
+                          hoveredOracle.length > 0 &&
+                          hoveredOracle === settlementOracle
+                            ? `indent-1 ${cellSpacing}`
+                            : cellSpacing
+                        }
+                      >
                         <OracleLink
                           id={settlementOracle}
                           status={settlementOracleStatus}
@@ -145,7 +156,14 @@ const Oracles = () => {
                           onMouseOut={() => setHoveredOracle('')}
                         />
                       </td>
-                      <td className={cellSpacing}>
+                      <td
+                        className={
+                          hoveredOracle.length > 0 &&
+                          hoveredOracle === terminationOracle
+                            ? `indent-1 ${cellSpacing}`
+                            : cellSpacing
+                        }
+                      >
                         <OracleLink
                           id={terminationOracle}
                           status={terminationOracleStatus}

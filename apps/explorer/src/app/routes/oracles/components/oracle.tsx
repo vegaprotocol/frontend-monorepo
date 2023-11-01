@@ -16,6 +16,7 @@ import { OracleMarkets } from './oracle-markets';
 import { OracleSigners } from './oracle-signers';
 import { OracleEthSource } from './oracle-eth-source';
 import Hash from '../../../components/links/hash';
+import { getStatusString } from '../../../components/links/oracle-link/oracle-link';
 
 export type SourceType =
   ExplorerOracleDataSourceFragment['dataSourceSpec']['spec']['data']['sourceType'];
@@ -55,7 +56,7 @@ export const OracleDetails = ({
         <TableRow modifier="bordered">
           <TableHeader scope="row">{t('Status')}</TableHeader>
           <TableCell modifier="bordered">
-            {dataSource.dataSourceSpec.spec.status}
+            {getStatusString(dataSource.dataSourceSpec.spec.status)}
           </TableCell>
         </TableRow>
         <OracleSigners sourceType={sourceType} />

@@ -34,6 +34,11 @@ export function getExternalType(s: SourceType) {
   }
 }
 
+export function getTypeString(s: SourceType) {
+  const isInternal = isInternalSourceType(s);
+  return isInternal ? 'Internal data' : getExternalType(s);
+}
+
 interface OracleDetailsTypeProps {
   sourceType: SourceType;
 }
@@ -47,14 +52,10 @@ export function OracleDetailsType({ sourceType }: OracleDetailsTypeProps) {
     return null;
   }
 
-  const isInternal = isInternalSourceType(sourceType);
-
   return (
     <TableRow modifier="bordered">
       <TableHeader scope="row">Type</TableHeader>
-      <TableCell modifier="bordered">
-        {isInternal ? 'Internal data' : getExternalType(sourceType)}
-      </TableCell>
+      <TableCell modifier="bordered">{getTypeString(sourceType)}</TableCell>
     </TableRow>
   );
 }
