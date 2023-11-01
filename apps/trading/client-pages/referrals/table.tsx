@@ -102,17 +102,14 @@ export const Table = forwardRef<
                   key={`${i}-${name}`}
                 >
                   {/** display column name in mobile view */}
-                  {!noCollapse &&
-                    !noHeader &&
-                    displayName &&
-                    displayName.length > 0 && (
-                      <span
-                        aria-hidden
-                        className="px-0 font-mono text-xs md:hidden text-vega-clight-100 dark:text-vega-cdark-100"
-                      >
-                        {displayName}
-                      </span>
-                    )}
+                  {!noCollapse && !noHeader && displayName && (
+                    <span
+                      aria-hidden
+                      className="px-0 font-mono text-xs md:hidden text-vega-clight-100 dark:text-vega-cdark-100"
+                    >
+                      {displayName}
+                    </span>
+                  )}
                   <span>{d[name]}</span>
                 </td>
               ))}
