@@ -42,18 +42,6 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
     ? data.filter((account) => ALLOWED_ACCOUNTS.includes(account.type))
     : [];
 
-  const assets = accounts
-    // Theres only one general account for each asset, this will give us a list
-    // of assets the user has accounts for
-    .filter((a) => a.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL)
-    .map((account) => ({
-      id: account.asset.id,
-      symbol: account.asset.symbol,
-      name: account.asset.name,
-      decimals: account.asset.decimals,
-      balance: addDecimal(account.balance, account.asset.decimals),
-    }));
-
   return (
     <>
       <p className="mb-4 text-sm" data-testid="transfer-intro-text">
@@ -71,7 +59,6 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
       <TransferForm
         pubKey={pubKey}
         pubKeys={pubKeys ? pubKeys?.map((pk) => pk.publicKey) : null}
-        assets={sortBy(assets, 'name')}
         assetId={assetId}
         feeFactor={param}
         submitTransfer={transfer}

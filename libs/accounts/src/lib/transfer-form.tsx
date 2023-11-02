@@ -1,3 +1,4 @@
+import sortBy from 'lodash/sortBy';
 import {
   minSafe,
   maxSafe,
@@ -34,22 +35,13 @@ interface FormFields {
   fromAccount: AccountType;
 }
 
-interface Asset {
-  id: string;
-  symbol: string;
-  name: string;
-  decimals: number;
-  balance: string;
-}
-
 interface TransferFormProps {
   pubKey: string | null;
   pubKeys: string[] | null;
-  assets: Array<Asset>;
   accounts: Array<{
     type: AccountType;
     balance: string;
-    asset: { id: string; symbol: string; decimals: number };
+    asset: { id: string; symbol: string; name: string; decimals: number };
   }>;
   assetId?: string;
   feeFactor: string | null;
@@ -59,7 +51,6 @@ interface TransferFormProps {
 export const TransferForm = ({
   pubKey,
   pubKeys,
-  assets,
   assetId: initialAssetId,
   feeFactor,
   submitTransfer,
@@ -81,10 +72,43 @@ export const TransferForm = ({
 
   const selectedPubKey = watch('toVegaKey');
   const amount = watch('amount');
+  const fromAccount = watch('fromAccount');
   const assetId = watch('asset');
-  const asset = assets.find((a) => a.id === assetId);
+
+  const account = accounts.find(
+    (a) => a.asset.id === assetId && a.type === fromAccount
+  );
+  const accountBalance =
+    account && addDecimal(account.balance, account.asset.decimals);
+
+  const asset = account?.asset;
+
+  const assets = sortBy(
+    accounts
+      .filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
+      .map((account) => ({
+        ...account.asset,
+        balance: addDecimal(account.balance, account.asset.decimals),
+      })),
+    'name'
+  );
+
+  // General account for the selected asset
+  const generalAccount = accounts.find((a) => {
+    return (
+      a.asset.id === assetId && a.type === AccountType.ACCOUNT_TYPE_GENERAL
+    );
+  });
 
   const [includeFee, setIncludeFee] = useState(false);
+
+  // Min viable amount given asset decimals EG for WEI 0.000000000000000001
+  const min = asset
+    ? new BigNumber(addDecimal('1', asset.decimals))
+    : new BigNumber(0);
+
+  // Max amount given selected asset and from account
+  const max = accountBalance ? new BigNumber(accountBalance) : new BigNumber(0);
 
   const transferAmount = useMemo(() => {
     if (!amount) return undefined;
@@ -127,32 +151,12 @@ export const TransferForm = ({
     [asset, submitTransfer, transferAmount]
   );
 
-  const min = useMemo(() => {
-    // Min viable amount given asset decimals EG for WEI 0.000000000000000001
-    const minViableAmount = asset
-      ? new BigNumber(addDecimal('1', asset.decimals))
-      : new BigNumber(0);
-    return minViableAmount;
-  }, [asset]);
-
-  const max = useMemo(() => {
-    const maxAmount = asset ? new BigNumber(asset.balance) : new BigNumber(0);
-    return maxAmount;
-  }, [asset]);
-
   // reset for placeholder workaround https://github.com/radix-ui/primitives/issues/1569
   useEffect(() => {
     if (!pubKey) {
       setValue('asset', '');
     }
   }, [setValue, pubKey]);
-
-  // General account for the selected asset
-  const generalAccount = accounts.find((a) => {
-    return (
-      a.asset.id === assetId && a.type === AccountType.ACCOUNT_TYPE_GENERAL
-    );
-  });
 
   return (
     <form
@@ -317,15 +321,24 @@ export const TransferForm = ({
               maxSafe: (v) => {
                 const value = new BigNumber(v);
                 if (value.isGreaterThan(max)) {
-                  return t(
-                    'You cannot transfer more than your available collateral'
-                  );
+                  return t('You cannot transfer more than available');
                 }
                 return maxSafe(max)(v);
               },
             },
           })}
         />
+        {accountBalance && (
+          <button
+            type="button"
+            className="absolute top-0 right-0 ml-auto text-xs underline"
+            onClick={() =>
+              setValue('amount', parseFloat(accountBalance).toString())
+            }
+          >
+            {t('Use max')}
+          </button>
+        )}
         {errors.amount?.message && (
           <TradingInputError forInput="amount">
             {errors.amount.message}
