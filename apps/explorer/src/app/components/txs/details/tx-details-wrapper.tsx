@@ -16,7 +16,6 @@ import { TxDetailsOrderAmend } from './tx-order-amend';
 import { TxDetailsWithdrawSubmission } from './tx-withdraw-submission';
 import { TxDetailsDelegate } from './tx-delegation';
 import { TxDetailsUndelegate } from './tx-undelegation';
-import { TxDetailsLiquiditySubmission } from './tx-liquidity-submission';
 import { TxDetailsLiquidityAmendment } from './tx-liquidity-amend';
 import { TxDetailsLiquidityCancellation } from './tx-liquidity-cancel';
 import { TxDetailsDataSubmission } from './tx-data-submission';
@@ -105,8 +104,6 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsNodeVote;
     case 'Withdraw':
       return TxDetailsWithdrawSubmission;
-    case 'Liquidity Provision Order':
-      return TxDetailsLiquiditySubmission;
     case 'Amend LiquidityProvision Order':
       return TxDetailsLiquidityAmendment;
     case 'Cancel LiquidityProvision Order':
