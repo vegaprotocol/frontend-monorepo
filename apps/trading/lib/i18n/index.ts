@@ -1,23 +1,58 @@
+import type { Module } from 'i18next';
 import i18n from 'i18next';
-import Backend from 'i18next-locize-backend';
+import HttpBackend from 'i18next-http-backend';
+import LocizeBackend from 'i18next-locize-backend';
+import type { HttpBackendOptions, RequestCallback } from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
-const locizeOptions = {
-  projectId: '254663a5-971a-47f9-8408-99c25a75d8cc',
-  apiKey: '998713c7-4d0d-43dd-8dd2-d94defef0cc7', // YOU should not expose your apps API key to production!!!
-  referenceLng: 'en',
-};
+const isInDev = process.env.NODE_ENV === 'development';
+
+const backend = isInDev
+  ? {
+      projectId: '96ac1231-4bdd-455a-b9d7-f5322a2e7430',
+      apiKey: process.env.NX_LOCIZE_API_KEY,
+      referenceLng: 'en',
+    }
+  : {
+      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      request: (
+        options: HttpBackendOptions,
+        url: string,
+        payload: string,
+        callback: RequestCallback
+      ) => {
+        if (typeof window === 'undefined') {
+          callback(false, { status: 200, data: {} });
+          return;
+        }
+        fetch(url).then((response) => {
+          if (!response.ok) {
+            return callback(response.statusText || 'Error', {
+              status: response.status,
+              data: {},
+            });
+          }
+          response
+            .text()
+            .then((data) => {
+              callback(null, { status: response.status, data });
+            })
+            .catch((error) => callback(error, { status: 200, data: {} }));
+        });
+      },
+    };
+
+const Backend: Module = isInDev ? LocizeBackend : HttpBackend;
 
 i18n
   .use(Backend)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    // we init with resources
+    load: 'languageOnly',
     lng: undefined,
     fallbackLng: 'en',
-    debug: true,
     // have a common namespace used around the full app
     ns: [
       'accounts',
@@ -33,8 +68,10 @@ i18n
     ],
     defaultNS: 'trading',
     keySeparator: false, // we use content as keys
-    backend: locizeOptions,
-    saveMissing: true,
+    backend,
+    debug: isInDev,
+    react: { wait: true, useSuspense: false },
+    saveMissing: isInDev && !!process.env.NX_LOCIZE_API_KEY,
     interpolation: {
       escapeValue: false,
     },

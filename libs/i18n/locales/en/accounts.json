@@ -1,0 +1,35 @@
+{
+  "0": {
+    "00%": "0.00%"
+  },
+  "Asset": "Asset",
+  "Asset is the collateral that is deposited into the Vega protocol": [],
+  "Available": "Available",
+  "Confirm transfer": "Confirm transfer",
+  "Copy asset ID": "Copy asset ID",
+  "Currently allocated to a market as margin or bond": {
+    " Check the breakdown for details": []
+  },
+  "Deposit": "Deposit",
+  "Deposited on the network, but not allocated to a market": {
+    " Free to use for placing orders or providing liquidity": []
+  },
+  "Enter manually": "Enter manually",
+  "Include transfer fee": "Include transfer fee",
+  "No accounts": "No accounts",
+  "Please select": "Please select",
+  "Please select an asset": "Please select an asset",
+  "The fee will be taken from the amount you are transferring": [],
+  "The total amount of each asset on this key": {
+    " Includes used and available collateral": []
+  },
+  "Total": "Total",
+  "Transfer": "Transfer",
+  "TRANSFER_FUNDS_TO_ANOTHER_KNOWN_VEGA_KEY": "Transfer funds to another Vega key <0>{{pubKey}}</0>. If you are at all unsure, stop and seek advice.",
+  "TRANSFER_FUNDS_TO_ANOTHER_VEGA_KEY": "Transfer funds to another Vega key. If you are at all unsure, stop and seek advice.",
+  "Used": "Used",
+  "View asset details": "View asset details",
+  "View on Etherscan": "View on Etherscan",
+  "View usage breakdown": "View usage breakdown",
+  "Withdraw": "Withdraw"
+}

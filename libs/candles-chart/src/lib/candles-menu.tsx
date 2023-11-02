@@ -55,7 +55,8 @@ export const CandlesMenu = () => {
           <TradingDropdownTrigger className={triggerClasses}>
             <TradingButton {...triggerButtonProps}>
               {t('Interval: {{interval}}', {
-                interval: intervalLabels[interval],
+                replace: { interval: intervalLabels[interval] },
+                nsSeparator: '|',
               })}
             </TradingButton>
           </TradingDropdownTrigger>

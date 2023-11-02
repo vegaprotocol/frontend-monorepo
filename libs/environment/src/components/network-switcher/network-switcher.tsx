@@ -17,7 +17,9 @@ import { useT } from '../../use-t';
 export const useEnvNameMapping: () => Record<Networks, string> = () => {
   const t = useT();
   return {
-    [Networks.VALIDATOR_TESTNET]: t('VALIDATOR_TESTNET'),
+    [Networks.VALIDATOR_TESTNET]: t('VALIDATOR_TESTNET', {
+      contextSeparator: '|',
+    }),
     [Networks.MAINNET_MIRROR]: t('Mainnet-mirror'),
     [Networks.CUSTOM]: t('Custom'),
     [Networks.DEVNET]: t('Devnet'),
