@@ -101,7 +101,7 @@ export const FeesContainer = () => {
               tiers={volumeTiers}
               tierIndex={volumeTierIndex}
               windowLengthVolume={volumeInWindow}
-              epochs={volumeDiscountWindowLength}
+              windowLength={volumeDiscountWindowLength}
             />
           </FeeCard>
           <FeeCard
@@ -270,12 +270,12 @@ export const CurrentVolume = ({
   tiers,
   tierIndex,
   windowLengthVolume,
-  epochs,
+  windowLength,
 }: {
   tiers: Array<{ minimumRunningNotionalTakerVolume: string }>;
   tierIndex: number;
   windowLengthVolume: number;
-  epochs: number;
+  windowLength: number;
 }) => {
   const nextTier = tiers[tierIndex + 1];
   const requiredForNextTier = nextTier
@@ -286,7 +286,7 @@ export const CurrentVolume = ({
     <div>
       <Stat
         value={formatNumberRounded(new BigNumber(windowLengthVolume))}
-        text={t('Past %s epochs', epochs.toString())}
+        text={t('Past %s epochs', windowLength.toString())}
       />
       {requiredForNextTier > 0 && (
         <Stat
