@@ -1,5 +1,5 @@
 import * as Schema from '@vegaprotocol/types';
-import { addDecimal, truncateByChars } from '@vegaprotocol/utils';
+import { truncateByChars } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   NetworkParams,
@@ -12,7 +12,6 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback } from 'react';
 import { accountsDataProvider } from './accounts-data-provider';
 import { TransferForm } from './transfer-form';
-import sortBy from 'lodash/sortBy';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
 
 export const ALLOWED_ACCOUNTS = [
