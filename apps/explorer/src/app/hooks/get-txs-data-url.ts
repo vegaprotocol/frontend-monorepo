@@ -43,7 +43,7 @@ export const getTxsDataUrl = (params: IGetTxsDataUrl) => {
     url.searchParams.append('first', count);
     url.searchParams.append('after', params.after);
   } else {
-    url.searchParams.append('first', count);
+    url.searchParams.append('last', count);
   }
 
   // Hacky fix for param as array

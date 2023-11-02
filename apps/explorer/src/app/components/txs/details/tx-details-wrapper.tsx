@@ -27,6 +27,7 @@ import { TxDetailsStateVariable } from './tx-state-variable-proposal';
 import { TxProposal } from './tx-proposal';
 import { TxDetailsTransfer } from './tx-transfer';
 import { TxDetailsStopOrderSubmission } from './tx-stop-order-submission';
+import { TxDetailsLiquiditySubmission } from './tx-liquidity-submission';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -104,7 +105,9 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsNodeVote;
     case 'Withdraw':
       return TxDetailsWithdrawSubmission;
-    case 'Amend LiquidityProvision Order':
+    case 'Liquidity Provision Order':
+      return TxDetailsLiquiditySubmission;
+    case 'Amend Liquidity Provision Order':
       return TxDetailsLiquidityAmendment;
     case 'Cancel LiquidityProvision Order':
       return TxDetailsLiquidityCancellation;

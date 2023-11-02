@@ -6,7 +6,7 @@ describe('getTxsDataUrl', () => {
       count: 10,
       baseUrl: 'https://example.com/transactions',
     };
-    const expectedUrl = 'https://example.com/transactions?first=10';
+    const expectedUrl = 'https://example.com/transactions?last=10';
 
     expect(getTxsDataUrl(params)).toEqual(expectedUrl);
   });
@@ -41,7 +41,7 @@ describe('getTxsDataUrl', () => {
       baseUrl: 'https://example.com/transactions',
     };
     const expectedUrl =
-      'https://example.com/transactions?first=10&filters[cmd.type]=Made%20Up%20Transaction&filters[tx.submitter]=1234';
+      'https://example.com/transactions?last=10&filters[cmd.type]=Made%20Up%20Transaction&filters[tx.submitter]=1234';
 
     expect(getTxsDataUrl(params)).toEqual(expectedUrl);
   });
