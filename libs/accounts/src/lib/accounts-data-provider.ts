@@ -105,6 +105,8 @@ export interface AccountFields extends Account {
   breakdown?: AccountFields[];
 }
 
+// The total balance of these accounts will be used for the 'used' column in the
+// collateral table
 const USE_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_MARGIN,
   AccountType.ACCOUNT_TYPE_BOND,
@@ -112,8 +114,6 @@ const USE_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
   AccountType.ACCOUNT_TYPE_FEES_MAKER,
   AccountType.ACCOUNT_TYPE_PENDING_TRANSFERS,
-  AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
-  AccountType.ACCOUNT_TYPE_VESTING_REWARDS,
 ];
 
 const getAssetIds = (data: Account[]) =>
@@ -152,9 +152,6 @@ const getAssetAccountAggregation = (
   };
 
   const breakdown = accounts
-    .filter((a) =>
-      [...USE_ACCOUNT_TYPES, AccountType.ACCOUNT_TYPE_GENERAL].includes(a.type)
-    )
     .map((a) => ({
       ...a,
       asset: accounts[0].asset,
