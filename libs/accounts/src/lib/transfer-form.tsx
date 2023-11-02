@@ -75,6 +75,7 @@ export const TransferForm = ({
   } = useForm<FormFields>({
     defaultValues: {
       asset: initialAssetId,
+      toAddress: pubKey || '',
     },
   });
 
@@ -159,29 +160,23 @@ export const TransferForm = ({
       className="text-sm"
       data-testid="transfer-form"
     >
-      <TradingFormGroup label="Vega key" labelFor="toAddress">
+      <TradingFormGroup label="To Vega key" labelFor="toAddress">
         <AddressField
-          pubKeys={pubKeys}
           onChange={() => setValue('toAddress', '')}
           select={
-            <TradingSelect
-              {...register('toAddress')}
-              id="toAddress"
-              defaultValue=""
-            >
+            <TradingSelect {...register('toAddress')} id="toAddress">
               <option value="" disabled={true}>
                 {t('Please select')}
               </option>
-              {pubKeys?.length &&
-                pubKeys.map((pk) => {
-                  const text = pk === pubKey ? t('Current key: ') + pk : pk;
+              {pubKeys?.map((pk) => {
+                const text = pk === pubKey ? t('Current key: ') + pk : pk;
 
-                  return (
-                    <option key={pk} value={pk}>
-                      {text}
-                    </option>
-                  );
-                })}
+                return (
+                  <option key={pk} value={pk}>
+                    {text}
+                  </option>
+                );
+              })}
             </TradingSelect>
           }
           input={
@@ -442,40 +437,31 @@ export const TransferFee = ({
 };
 
 interface AddressInputProps {
-  pubKeys: string[] | null;
   select: ReactNode;
   input: ReactNode;
   onChange: () => void;
 }
 
 export const AddressField = ({
-  pubKeys,
   select,
   input,
   onChange,
 }: AddressInputProps) => {
-  const [isInput, setIsInput] = useState(() => {
-    if (pubKeys && pubKeys.length <= 1) {
-      return true;
-    }
-    return false;
-  });
+  const [isInput, setIsInput] = useState(false);
 
   return (
     <>
       {isInput ? input : select}
-      {pubKeys && pubKeys.length > 1 && (
-        <button
-          type="button"
-          onClick={() => {
-            setIsInput((curr) => !curr);
-            onChange();
-          }}
-          className="absolute top-0 right-0 ml-auto text-xs underline"
-        >
-          {isInput ? t('Select from wallet') : t('Enter manually')}
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={() => {
+          setIsInput((curr) => !curr);
+          onChange();
+        }}
+        className="absolute top-0 right-0 ml-auto text-xs underline"
+      >
+        {isInput ? t('Select from wallet') : t('Enter manually')}
+      </button>
     </>
   );
 };
