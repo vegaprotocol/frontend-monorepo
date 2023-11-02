@@ -28,7 +28,7 @@ import { AssetOption, Balance } from '@vegaprotocol/assets';
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 
 interface FormFields {
-  toAddress: string;
+  toVegaKey: string;
   asset: string;
   amount: string;
   fromAccount: AccountType;
@@ -75,11 +75,11 @@ export const TransferForm = ({
   } = useForm<FormFields>({
     defaultValues: {
       asset: initialAssetId,
-      toAddress: pubKey || '',
+      toVegaKey: pubKey || '',
     },
   });
 
-  const selectedPubKey = watch('toAddress');
+  const selectedPubKey = watch('toVegaKey');
   const amount = watch('amount');
   const assetId = watch('asset');
   const asset = assets.find((a) => a.id === assetId);
@@ -113,7 +113,7 @@ export const TransferForm = ({
         throw new Error('Submitted transfer with no amount selected');
       }
       const transfer = normalizeTransfer(
-        fields.toAddress,
+        fields.toVegaKey,
         transferAmount,
         fields.fromAccount,
         AccountType.ACCOUNT_TYPE_GENERAL, // field is readonly in the form
@@ -160,11 +160,11 @@ export const TransferForm = ({
       className="text-sm"
       data-testid="transfer-form"
     >
-      <TradingFormGroup label="To Vega key" labelFor="toAddress">
+      <TradingFormGroup label="To Vega key" labelFor="toVegaKey">
         <AddressField
-          onChange={() => setValue('toAddress', '')}
+          onChange={() => setValue('toVegaKey', '')}
           select={
-            <TradingSelect {...register('toAddress')} id="toAddress">
+            <TradingSelect {...register('toVegaKey')} id="toVegaKey">
               <option value="" disabled={true}>
                 {t('Please select')}
               </option>
@@ -183,9 +183,9 @@ export const TransferForm = ({
             <TradingInput
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus={true} // focus input immediately after is shown
-              id="toAddress"
+              id="toVegaKey"
               type="text"
-              {...register('toAddress', {
+              {...register('toVegaKey', {
                 validate: {
                   required,
                   vegaPublicKey,
@@ -194,9 +194,9 @@ export const TransferForm = ({
             />
           }
         />
-        {errors.toAddress?.message && (
-          <TradingInputError forInput="toAddress">
-            {errors.toAddress.message}
+        {errors.toVegaKey?.message && (
+          <TradingInputError forInput="toVegaKey">
+            {errors.toVegaKey.message}
           </TradingInputError>
         )}
       </TradingFormGroup>
