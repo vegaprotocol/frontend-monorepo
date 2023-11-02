@@ -36,30 +36,50 @@ const PERCENTAGE_PARAMS = [
   'governance.proposal.updateNetParam.requiredMajority',
   'governance.proposal.updateNetParam.requiredParticipation',
   'governance.proposal.updateMarket.minProposerEquityLikeShare',
+  'governance.proposal.VolumeDiscountProgram.requiredMajority',
+  'governance.proposal.VolumeDiscountProgram.requiredParticipation',
+  'governance.proposal.referralProgram.requiredMajority',
+  'governance.proposal.transfer.requiredMajority',
+  'governance.proposal.updateAsset.requiredMajority',
+  'governance.proposal.updateAsset.requiredParticipation',
+  'governance.proposal.transfer.requiredParticipation',
+  'governance.proposal.referralProgram.requiredParticipation',
+  'network.validators.ersatz.rewardFactor',
+  'network.validators.ersatz.multipleOfTendermintValidators',
   'validators.vote.required',
-];
+  'referralProgram.maxReferralRewardFactor',
+  'referralProgram.maxReferralDiscountFactor',
+  'referralProgram.maxReferralRewardProportion',
+].map((p) => p.toLowerCase());
 
 const BIG_NUMBER_PARAMS = [
   'spam.protection.delegation.min.tokens',
   'validators.delegation.minAmount',
+  'governance.proposal.transfer.maxAmount',
   'reward.staking.delegation.minimumValidatorStake',
   'reward.staking.delegation.maxPayoutPerParticipant',
   'reward.staking.delegation.maxPayoutPerEpoch',
   'spam.protection.voting.min.tokens',
+  'spam.protection.proposal.min.tokens',
+  'governance.proposal.transfer.minVoterBalance',
   'governance.proposal.freeform.minProposerBalance',
   'governance.proposal.updateNetParam.minVoterBalance',
   'governance.proposal.updateMarket.minVoterBalance',
   'governance.proposal.asset.minVoterBalance',
   'governance.proposal.updateNetParam.minProposerBalance',
   'governance.proposal.freeform.minVoterBalance',
-  'spam.protection.proposal.min.tokens',
   'governance.proposal.updateMarket.minProposerBalance',
   'governance.proposal.asset.minProposerBalance',
+  'governance.proposal.transfer.minProposerBalance',
   'governance.proposal.market.minProposerBalance',
   'governance.proposal.market.minVoterBalance',
   'governance.proposal.updateAsset.minProposerBalance',
   'governance.proposal.updateAsset.minVoterBalance',
-];
+  'governance.proposal.referralProgram.minProposerBalance',
+  'governance.proposal.referralProgram.minVoterBalance',
+  'governance.proposal.VolumeDiscountProgram.minProposerBalance',
+  'governance.proposal.VolumeDiscountProgram.minVoterBalance',
+].map((p) => p.toLowerCase());
 
 export const renderGroupedParams = (
   group: GroupedParams,
@@ -131,12 +151,12 @@ export const NetworkParameterRow = ({
         <div className="pb-2">
           <SyntaxHighlighter data={JSON.parse(value)} />
         </div>
+      ) : BIG_NUMBER_PARAMS.includes(key.toLowerCase()) ? (
+        addDecimalsFormatNumber(Number(value), 18)
+      ) : PERCENTAGE_PARAMS.includes(key.toLowerCase()) ? (
+        `${formatNumber(Number(value) * 100, 0)}%`
       ) : isNaN(Number(value)) ? (
         value
-      ) : BIG_NUMBER_PARAMS.includes(key) ? (
-        addDecimalsFormatNumber(Number(value), 18)
-      ) : PERCENTAGE_PARAMS.includes(key) ? (
-        `${formatNumber(Number(value) * 100, 0)}%`
       ) : (
         formatNumber(Number(value), 4)
       )}
