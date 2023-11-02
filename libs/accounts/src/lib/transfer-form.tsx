@@ -70,19 +70,6 @@ export const TransferForm = ({
     },
   });
 
-  const selectedPubKey = watch('toVegaKey');
-  const amount = watch('amount');
-  const fromAccount = watch('fromAccount');
-  const assetId = watch('asset');
-
-  const account = accounts.find(
-    (a) => a.asset.id === assetId && a.type === fromAccount
-  );
-  const accountBalance =
-    account && addDecimal(account.balance, account.asset.decimals);
-
-  const asset = account?.asset;
-
   const assets = sortBy(
     accounts
       .filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
@@ -92,6 +79,19 @@ export const TransferForm = ({
       })),
     'name'
   );
+
+  const selectedPubKey = watch('toVegaKey');
+  const amount = watch('amount');
+  const fromAccount = watch('fromAccount');
+  const assetId = watch('asset');
+
+  const asset = assets.find((a) => a.id === assetId);
+
+  const account = accounts.find(
+    (a) => a.asset.id === assetId && a.type === fromAccount
+  );
+  const accountBalance =
+    account && addDecimal(account.balance, account.asset.decimals);
 
   // General account for the selected asset
   const generalAccount = accounts.find((a) => {
