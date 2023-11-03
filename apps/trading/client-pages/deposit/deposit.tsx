@@ -21,6 +21,8 @@ import {
   TokenIcon,
   TradingButton,
   TradingInput,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import {
@@ -81,6 +83,18 @@ interface DepositState {
 }
 type SetDepositState = Dispatch<SetStateAction<DepositState>>;
 
+const getMarketsForAsset = (
+  markets: MarketMaybeWithDataAndCandles[],
+  asset: AssetFieldsFragment
+) => {
+  return markets
+    .filter((m) => {
+      const marketAsset = getAsset(m);
+      return marketAsset.id === asset.id;
+    })
+    .slice(0, 4);
+};
+
 const DepositFlow = ({
   assets,
   assetId,
@@ -111,7 +125,7 @@ const DepositFlow = ({
   });
 
   const handleAssetChanged = useCallback(
-    async (assetId: string | undefined) => {
+    async (assetId?: string) => {
       const asset = assets.find((a) => a.id === assetId);
 
       if (!asset) {
@@ -168,62 +182,6 @@ const DepositFlow = ({
     }
   }, [state.asset, handleAssetChanged]);
 
-  const getMarketsForAsset = (a: AssetFieldsFragment) => {
-    return markets
-      .filter((m) => {
-        const marketAsset = getAsset(m);
-        return marketAsset.id === a.id;
-      })
-      .slice(0, 4);
-  };
-
-  if (state.asset && isAssetTypeERC20(state.asset)) {
-    return (
-      <div className="flex flex-col gap-4">
-        <div>
-          {isApproved(state.allowance) ? (
-            <StepTitle step={3} title={t('Enter amount and deposit')} />
-          ) : (
-            <StepTitle step={2} title={t('Approve deposits')} />
-          )}
-        </div>
-        <div
-          className={classNames(
-            'p-5 rounded flex flex-col gap-3',
-            'bg-vega-clight-700 dark:bg-vega-cdark-700'
-          )}
-        >
-          <div className="flex justify-between">
-            <TokenHeader asset={state.asset} />
-            <div className="text-right">
-              <Balance asset={state.asset} balance={state.balance} />
-            </div>
-          </div>
-          <Markets markets={getMarketsForAsset(state.asset)} />
-          <div className="relative">
-            <TransactionContainer
-              state={state}
-              setState={setState}
-              bridgeAddress={bridgeAddress}
-              confirmations={confirmations}
-              refetchBalances={refetchBalances}
-              faucetEnabled={faucetEnabled}
-            />
-            <div className="absolute bottom-0 right-0">
-              <TradingButton
-                onClick={() => handleAssetChanged(undefined)}
-                size="small"
-                intent={Intent.Danger}
-              >
-                {t('Cancel')}
-              </TradingButton>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   const filteredAssets = assets
     .filter((a) => a.source.__typename === 'ERC20')
     .filter((a) => a.symbol.toLowerCase().includes(search.toLowerCase()));
@@ -233,62 +191,162 @@ const DepositFlow = ({
     return 0;
   });
 
+  const isAssetSelected = state.asset && isAssetTypeERC20(state.asset);
+
+  let step = 0;
+  if (isAssetSelected) {
+    if (!state.allowance || state.allowance.isLessThanOrEqualTo(0)) {
+      step = 1;
+    } else {
+      step = 2;
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-end justify-between">
-        <StepTitle
-          step={1}
-          title={t('Choose an asset to deposit to the Vega network')}
-        />
+        <StepBreadcrumb step={step} />
         <div>
-          <TradingInput
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search..."
-          />
+          {!isAssetSelected && (
+            <TradingInput
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search..."
+            />
+          )}
         </div>
       </div>
-      <div className="flex flex-col gap-4">
-        {filteredAssets.map((a) => {
-          if (!isAssetTypeERC20(a)) return null;
-
-          const marketsForAsset = getMarketsForAsset(a);
-
-          return (
-            <div
-              key={a.id}
-              onClick={() => {
-                handleAssetChanged(a.id);
-              }}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleAssetChanged(a.id);
-                }
-              }}
-              className={classNames(
-                'p-5 rounded text-left',
-                'bg-vega-clight-800 dark:bg-vega-cdark-800 hover:bg-vega-clight-700 dark:hover:bg-vega-cdark-700 cursor-pointer'
-              )}
-            >
-              <div className="flex flex-col flex-1 gap-3">
-                <div className="flex justify-between">
-                  <TokenHeader asset={a} />
-                  <div className="text-right">
-                    <Balance asset={a} />
-                  </div>
-                </div>
-                <Markets markets={marketsForAsset} />
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      {isAssetSelected ? (
+        <AssetSelected
+          state={state}
+          setState={setState}
+          markets={markets}
+          confirmations={confirmations}
+          bridgeAddress={bridgeAddress}
+          faucetEnabled={faucetEnabled}
+          onCancel={() => handleAssetChanged()}
+          refetchBalances={refetchBalances}
+        />
+      ) : (
+        <AssetList
+          assets={filteredAssets}
+          markets={markets}
+          onSelect={handleAssetChanged}
+        />
+      )}
     </div>
   );
 };
 
+const AssetList = ({
+  assets,
+  markets,
+  onSelect,
+}: {
+  assets: AssetFieldsFragment[];
+  markets: MarketMaybeWithDataAndCandles[];
+  onSelect: (assetId: string) => void;
+}) => {
+  return (
+    <div className="flex flex-col gap-4">
+      {assets.map((a) => {
+        if (!isAssetTypeERC20(a)) return null;
+
+        const marketsForAsset = getMarketsForAsset(markets, a);
+
+        return (
+          <div
+            key={a.id}
+            onClick={() => {
+              onSelect(a.id);
+            }}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                onSelect(a.id);
+              }
+            }}
+            className={classNames(
+              'p-5 rounded text-left',
+              'bg-vega-clight-800 dark:bg-vega-cdark-800 hover:bg-vega-clight-700 dark:hover:bg-vega-cdark-700 cursor-pointer'
+            )}
+          >
+            <div className="flex flex-col flex-1 gap-3">
+              <div className="flex justify-between">
+                <TokenHeader asset={a} />
+                <div className="text-right">
+                  <Balance asset={a} />
+                </div>
+              </div>
+              <Markets markets={marketsForAsset} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const AssetSelected = ({
+  state,
+  setState,
+  markets,
+  bridgeAddress,
+  confirmations,
+  faucetEnabled,
+  refetchBalances,
+  onCancel,
+}: {
+  state: DepositState;
+  setState: SetDepositState;
+  markets: MarketMaybeWithDataAndCandles[];
+  bridgeAddress: string;
+  confirmations: number;
+  faucetEnabled: boolean;
+  refetchBalances: () => void;
+  onCancel: () => void;
+}) => {
+  if (!state.asset) {
+    throw new Error('no asset selected');
+  }
+
+  return (
+    <div
+      className={classNames(
+        'p-5 rounded flex flex-col gap-3',
+        'bg-vega-clight-700 dark:bg-vega-cdark-700'
+      )}
+    >
+      <div className="flex justify-between">
+        <TokenHeader asset={state.asset} />
+        <div className="text-right">
+          <Balance asset={state.asset} balance={state.balance} />
+        </div>
+      </div>
+      <Markets markets={getMarketsForAsset(markets, state.asset)} />
+      <div className="relative">
+        <TransactionContainer
+          state={state}
+          setState={setState}
+          bridgeAddress={bridgeAddress}
+          confirmations={confirmations}
+          refetchBalances={refetchBalances}
+          faucetEnabled={faucetEnabled}
+        />
+        <div className="absolute bottom-0 right-0">
+          <TradingButton
+            onClick={() => onCancel()}
+            size="small"
+            intent={Intent.Danger}
+          >
+            {t('Cancel')}
+          </TradingButton>
+        </div>
+      </div>
+    </div>
+  );
+};
 const TransactionContainer = ({
   state,
   setState,
@@ -582,12 +640,34 @@ const TokenHeader = ({ asset }: { asset: AssetFieldsFragment }) => {
   );
 };
 
-const StepTitle = ({ step, title }: { step: number; title: string }) => {
+const StepBreadcrumb = ({ step }: { step: number }) => {
   return (
-    <h3 className="flex flex-col gap-0.5">
-      <small className="text-muted">{t('%s/3', step.toString())}</small>
-      <span>{title}</span>
-    </h3>
+    <ol className="text-sm">
+      {[
+        'Choose an asset to deposit to the Vega network',
+        'Approve deposits',
+        'Deposit',
+      ].map((text, i) => {
+        const stepNum = i + 1;
+        return (
+          <li key={i} className="flex items-center gap-2">
+            {step >= stepNum ? (
+              <span className="block inline w-4 text-vega-green-600 dark:text-vega-green">
+                <VegaIcon name={VegaIconNames.TICK} />
+              </span>
+            ) : (
+              <span
+                // align number with center of tick
+                className="inline-block w-4 text-center text-muted"
+              >
+                {stepNum}
+              </span>
+            )}{' '}
+            <span>{text}</span>
+          </li>
+        );
+      })}
+    </ol>
   );
 };
 
