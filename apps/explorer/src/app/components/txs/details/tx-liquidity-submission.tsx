@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
-import { MarketLink } from '../../links/';
+import { MarketLink } from '../../links';
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
@@ -11,20 +11,20 @@ import BigNumber from 'bignumber.js';
 export type LiquiditySubmission =
   components['schemas']['v1LiquidityProvisionSubmission'];
 
-interface TxDetailsLiquiditySubmissionProps {
+interface TxDetailsLiquidityAmendmentProps {
   txData: BlockExplorerTransactionResult | undefined;
   pubKey: string | undefined;
   blockData: TendermintBlocksResponse | undefined;
 }
 
 /**
- * Someone cancelled an order
+ * An existing liquidity order is being created.
  */
 export const TxDetailsLiquiditySubmission = ({
   txData,
   pubKey,
   blockData,
-}: TxDetailsLiquiditySubmissionProps) => {
+}: TxDetailsLiquidityAmendmentProps) => {
   if (!txData || !txData.command.liquidityProvisionSubmission) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
@@ -62,6 +62,12 @@ export const TxDetailsLiquiditySubmission = ({
         <TableRow modifier="bordered">
           <TableCell>{t('Fee')}</TableCell>
           <TableCell>{fee}%</TableCell>
+        </TableRow>
+      ) : null}
+      {submission.reference ? (
+        <TableRow modifier="bordered">
+          <TableCell>{t('Reference')}</TableCell>
+          <TableCell>{submission.reference}</TableCell>
         </TableRow>
       ) : null}
     </TableWithTbody>

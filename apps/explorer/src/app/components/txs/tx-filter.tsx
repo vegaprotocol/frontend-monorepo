@@ -18,11 +18,13 @@ import { FilterLabel } from './tx-filter-label';
 export type FilterOption =
   | 'Amend LiquidityProvision Order'
   | 'Amend Order'
+  | 'Apply Referral Code'
   | 'Batch Market Instructions'
   | 'Cancel LiquidityProvision Order'
   | 'Cancel Order'
   | 'Cancel Transfer Funds'
   | 'Chain Event'
+  | 'Create Referral Set'
   | 'Delegate'
   | 'Ethereum Key Rotate Submission'
   | 'Issue Signatures'
@@ -40,6 +42,7 @@ export type FilterOption =
   | 'Submit Order'
   | 'Transfer Funds'
   | 'Undelegate'
+  | 'Update Referral Set'
   | 'Validator Heartbeat'
   | 'Vote on Proposal'
   | 'Withdraw';

@@ -1,11 +1,19 @@
 import { t } from '@vegaprotocol/i18n';
+import type { components } from '../../../../../types/explorer';
 import { TableCell, TableRow } from '../../../table';
 import { Side, PeggedReferenceMapping } from '@vegaprotocol/types';
 import { useExplorerMarketQuery } from '../../../links/market-link/__generated__/Market';
 import type { ExplorerMarketQuery } from '../../../links/market-link/__generated__/Market';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import type { components } from '../../../../../types/explorer';
+
 export type VegaPeggedReference = components['schemas']['vegaPeggedReference'];
+
+export const LiquidityReferenceLabel: Record<VegaPeggedReference, string> = {
+  PEGGED_REFERENCE_BEST_ASK: t('Best Ask'),
+  PEGGED_REFERENCE_BEST_BID: t('Best Bid'),
+  PEGGED_REFERENCE_MID: t('Mid'),
+  PEGGED_REFERENCE_UNSPECIFIED: '-',
+};
 
 export interface TxDetailsOrderProps {
   offset: string;
