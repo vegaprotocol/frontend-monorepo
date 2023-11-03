@@ -1,3 +1,4 @@
+import sortBy from 'lodash/sortBy';
 import {
   minSafe,
   maxSafe,
@@ -28,28 +29,19 @@ import { AssetOption, Balance } from '@vegaprotocol/assets';
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 
 interface FormFields {
-  toAddress: string;
+  toVegaKey: string;
   asset: string;
   amount: string;
   fromAccount: AccountType;
 }
 
-interface Asset {
-  id: string;
-  symbol: string;
-  name: string;
-  decimals: number;
-  balance: string;
-}
-
 interface TransferFormProps {
   pubKey: string | null;
   pubKeys: string[] | null;
-  assets: Array<Asset>;
   accounts: Array<{
     type: AccountType;
     balance: string;
-    asset: { id: string; symbol: string; decimals: number };
+    asset: { id: string; symbol: string; name: string; decimals: number };
   }>;
   assetId?: string;
   feeFactor: string | null;
@@ -59,7 +51,6 @@ interface TransferFormProps {
 export const TransferForm = ({
   pubKey,
   pubKeys,
-  assets,
   assetId: initialAssetId,
   feeFactor,
   submitTransfer,
@@ -75,15 +66,49 @@ export const TransferForm = ({
   } = useForm<FormFields>({
     defaultValues: {
       asset: initialAssetId,
+      toVegaKey: pubKey || '',
     },
   });
 
-  const selectedPubKey = watch('toAddress');
+  const assets = sortBy(
+    accounts
+      .filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
+      .map((account) => ({
+        ...account.asset,
+        balance: addDecimal(account.balance, account.asset.decimals),
+      })),
+    'name'
+  );
+
+  const selectedPubKey = watch('toVegaKey');
   const amount = watch('amount');
+  const fromAccount = watch('fromAccount');
   const assetId = watch('asset');
+
   const asset = assets.find((a) => a.id === assetId);
 
+  const account = accounts.find(
+    (a) => a.asset.id === assetId && a.type === fromAccount
+  );
+  const accountBalance =
+    account && addDecimal(account.balance, account.asset.decimals);
+
+  // General account for the selected asset
+  const generalAccount = accounts.find((a) => {
+    return (
+      a.asset.id === assetId && a.type === AccountType.ACCOUNT_TYPE_GENERAL
+    );
+  });
+
   const [includeFee, setIncludeFee] = useState(false);
+
+  // Min viable amount given asset decimals EG for WEI 0.000000000000000001
+  const min = asset
+    ? new BigNumber(addDecimal('1', asset.decimals))
+    : new BigNumber(0);
+
+  // Max amount given selected asset and from account
+  const max = accountBalance ? new BigNumber(accountBalance) : new BigNumber(0);
 
   const transferAmount = useMemo(() => {
     if (!amount) return undefined;
@@ -112,7 +137,7 @@ export const TransferForm = ({
         throw new Error('Submitted transfer with no amount selected');
       }
       const transfer = normalizeTransfer(
-        fields.toAddress,
+        fields.toVegaKey,
         transferAmount,
         fields.fromAccount,
         AccountType.ACCOUNT_TYPE_GENERAL, // field is readonly in the form
@@ -126,19 +151,6 @@ export const TransferForm = ({
     [asset, submitTransfer, transferAmount]
   );
 
-  const min = useMemo(() => {
-    // Min viable amount given asset decimals EG for WEI 0.000000000000000001
-    const minViableAmount = asset
-      ? new BigNumber(addDecimal('1', asset.decimals))
-      : new BigNumber(0);
-    return minViableAmount;
-  }, [asset]);
-
-  const max = useMemo(() => {
-    const maxAmount = asset ? new BigNumber(asset.balance) : new BigNumber(0);
-    return maxAmount;
-  }, [asset]);
-
   // reset for placeholder workaround https://github.com/radix-ui/primitives/issues/1569
   useEffect(() => {
     if (!pubKey) {
@@ -146,51 +158,38 @@ export const TransferForm = ({
     }
   }, [setValue, pubKey]);
 
-  // General account for the selected asset
-  const generalAccount = accounts.find((a) => {
-    return (
-      a.asset.id === assetId && a.type === AccountType.ACCOUNT_TYPE_GENERAL
-    );
-  });
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="text-sm"
       data-testid="transfer-form"
     >
-      <TradingFormGroup label="Vega key" labelFor="toAddress">
+      <TradingFormGroup label="To Vega key" labelFor="toVegaKey">
         <AddressField
-          pubKeys={pubKeys}
-          onChange={() => setValue('toAddress', '')}
+          onChange={() => setValue('toVegaKey', '')}
           select={
-            <TradingSelect
-              {...register('toAddress')}
-              id="toAddress"
-              defaultValue=""
-            >
+            <TradingSelect {...register('toVegaKey')} id="toVegaKey">
               <option value="" disabled={true}>
                 {t('Please select')}
               </option>
-              {pubKeys?.length &&
-                pubKeys.map((pk) => {
-                  const text = pk === pubKey ? t('Current key: ') + pk : pk;
+              {pubKeys?.map((pk) => {
+                const text = pk === pubKey ? t('Current key: ') + pk : pk;
 
-                  return (
-                    <option key={pk} value={pk}>
-                      {text}
-                    </option>
-                  );
-                })}
+                return (
+                  <option key={pk} value={pk}>
+                    {text}
+                  </option>
+                );
+              })}
             </TradingSelect>
           }
           input={
             <TradingInput
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus={true} // focus input immediately after is shown
-              id="toAddress"
+              id="toVegaKey"
               type="text"
-              {...register('toAddress', {
+              {...register('toVegaKey', {
                 validate: {
                   required,
                   vegaPublicKey,
@@ -199,9 +198,9 @@ export const TransferForm = ({
             />
           }
         />
-        {errors.toAddress?.message && (
-          <TradingInputError forInput="toAddress">
-            {errors.toAddress.message}
+        {errors.toVegaKey?.message && (
+          <TradingInputError forInput="toVegaKey">
+            {errors.toVegaKey.message}
           </TradingInputError>
         )}
       </TradingFormGroup>
@@ -322,15 +321,24 @@ export const TransferForm = ({
               maxSafe: (v) => {
                 const value = new BigNumber(v);
                 if (value.isGreaterThan(max)) {
-                  return t(
-                    'You cannot transfer more than your available collateral'
-                  );
+                  return t('You cannot transfer more than available');
                 }
                 return maxSafe(max)(v);
               },
             },
           })}
         />
+        {accountBalance && (
+          <button
+            type="button"
+            className="absolute top-0 right-0 ml-auto text-xs underline"
+            onClick={() =>
+              setValue('amount', parseFloat(accountBalance).toString())
+            }
+          >
+            {t('Use max')}
+          </button>
+        )}
         {errors.amount?.message && (
           <TradingInputError forInput="amount">
             {errors.amount.message}
@@ -442,40 +450,31 @@ export const TransferFee = ({
 };
 
 interface AddressInputProps {
-  pubKeys: string[] | null;
   select: ReactNode;
   input: ReactNode;
   onChange: () => void;
 }
 
 export const AddressField = ({
-  pubKeys,
   select,
   input,
   onChange,
 }: AddressInputProps) => {
-  const [isInput, setIsInput] = useState(() => {
-    if (pubKeys && pubKeys.length <= 1) {
-      return true;
-    }
-    return false;
-  });
+  const [isInput, setIsInput] = useState(false);
 
   return (
     <>
       {isInput ? input : select}
-      {pubKeys && pubKeys.length > 1 && (
-        <button
-          type="button"
-          onClick={() => {
-            setIsInput((curr) => !curr);
-            onChange();
-          }}
-          className="absolute top-0 right-0 ml-auto text-xs underline"
-        >
-          {isInput ? t('Select from wallet') : t('Enter manually')}
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={() => {
+          setIsInput((curr) => !curr);
+          onChange();
+        }}
+        className="absolute top-0 right-0 ml-auto text-xs underline"
+      >
+        {isInput ? t('Select from wallet') : t('Enter manually')}
+      </button>
     </>
   );
 };

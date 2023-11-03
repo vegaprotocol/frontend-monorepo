@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import BigNumber from 'bignumber.js';
 import { AddressField, TransferFee, TransferForm } from './transfer-form';
 import { AccountType } from '@vegaprotocol/types';
-import { addDecimal, formatNumber, removeDecimal } from '@vegaprotocol/utils';
+import { removeDecimal } from '@vegaprotocol/utils';
 
 describe('TransferForm', () => {
   const submit = async () => {
@@ -14,7 +14,6 @@ describe('TransferForm', () => {
 
   const selectAsset = async (asset: {
     id: string;
-    balance: string;
     name: string;
     decimals: number;
   }) => {
@@ -28,9 +27,6 @@ describe('TransferForm', () => {
     expect(await screen.findByTestId('select-asset')).toHaveTextContent(
       asset.name
     );
-    expect(await screen.findByTestId('asset-balance')).toHaveTextContent(
-      formatNumber(asset.balance, asset.decimals)
-    );
   };
 
   const amount = '100';
@@ -41,7 +37,6 @@ describe('TransferForm', () => {
     symbol: '€',
     name: 'EUR',
     decimals: 2,
-    balance: addDecimal(100000, 2), // 1000
   };
   const props = {
     pubKey,
@@ -49,19 +44,18 @@ describe('TransferForm', () => {
       pubKey,
       'a4b6e3de5d7ef4e31ae1b090be49d1a2ef7bcefff60cccf7658a0d4922651cce',
     ],
-    assets: [asset],
     feeFactor: '0.001',
     submitTransfer: jest.fn(),
     accounts: [
       {
         type: AccountType.ACCOUNT_TYPE_GENERAL,
         asset,
-        balance: '100',
+        balance: '100000',
       },
       {
         type: AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
         asset,
-        balance: '100',
+        balance: '100000',
       },
     ],
   };
@@ -75,7 +69,7 @@ describe('TransferForm', () => {
     render(<TransferForm {...props} />);
     // Select a pubkey
     await userEvent.selectOptions(
-      screen.getByLabelText('Vega key'),
+      screen.getByLabelText('To Vega key'),
       props.pubKeys[1]
     );
 
@@ -121,13 +115,19 @@ describe('TransferForm', () => {
     // 1003-TRAN-004
     render(<TransferForm {...props} />);
     await submit();
-    expect(await screen.findAllByText('Required')).toHaveLength(4);
+    expect(await screen.findAllByText('Required')).toHaveLength(3); // pubkey is set as default value
     const toggle = screen.getByText('Enter manually');
     await userEvent.click(toggle);
     // has switched to input
     expect(toggle).toHaveTextContent('Select from wallet');
-    expect(screen.getByLabelText('Vega key')).toHaveAttribute('type', 'text');
-    await userEvent.type(screen.getByLabelText('Vega key'), 'invalid-address');
+    expect(screen.getByLabelText('To Vega key')).toHaveAttribute(
+      'type',
+      'text'
+    );
+    await userEvent.type(
+      screen.getByLabelText('To Vega key'),
+      'invalid-address'
+    );
     expect(screen.getAllByTestId('input-error-text')[0]).toHaveTextContent(
       'Invalid Vega key'
     );
@@ -142,7 +142,7 @@ describe('TransferForm', () => {
     render(<TransferForm {...props} />);
 
     // check current pubkey not shown
-    const keySelect = screen.getByLabelText<HTMLSelectElement>('Vega key');
+    const keySelect = screen.getByLabelText<HTMLSelectElement>('To Vega key');
     expect(keySelect.children).toHaveLength(3);
     expect(Array.from(keySelect.options).map((o) => o.value)).toEqual([
       '',
@@ -151,24 +151,16 @@ describe('TransferForm', () => {
     ]);
 
     await submit();
-    expect(await screen.findAllByText('Required')).toHaveLength(4);
+    expect(await screen.findAllByText('Required')).toHaveLength(3); // pubkey is set as default value
 
     // Select a pubkey
     await userEvent.selectOptions(
-      screen.getByLabelText('Vega key'),
+      screen.getByLabelText('To Vega key'),
       props.pubKeys[1]
     );
 
     // Select asset
     await selectAsset(asset);
-
-    // assert rich select as updated
-    expect(await screen.findByTestId('select-asset')).toHaveTextContent(
-      asset.name
-    );
-    expect(await screen.findByTestId('asset-balance')).toHaveTextContent(
-      formatNumber(asset.balance, asset.decimals)
-    );
 
     await userEvent.selectOptions(
       screen.getByLabelText('From account'),
@@ -217,7 +209,7 @@ describe('TransferForm', () => {
       render(<TransferForm {...props} submitTransfer={mockSubmit} />);
 
       // check current pubkey not shown
-      const keySelect = screen.getByLabelText<HTMLSelectElement>('Vega key');
+      const keySelect = screen.getByLabelText<HTMLSelectElement>('To Vega key');
       const pubKeyOptions = ['', pubKey, props.pubKeys[1]];
       expect(keySelect.children).toHaveLength(pubKeyOptions.length);
       expect(Array.from(keySelect.options).map((o) => o.value)).toEqual(
@@ -225,11 +217,11 @@ describe('TransferForm', () => {
       );
 
       await submit();
-      expect(await screen.findAllByText('Required')).toHaveLength(4);
+      expect(await screen.findAllByText('Required')).toHaveLength(3); // pubkey set as default value
 
       // Select a pubkey
       await userEvent.selectOptions(
-        screen.getByLabelText('Vega key'),
+        screen.getByLabelText('To Vega key'),
         props.pubKeys[1]
       );
 
@@ -286,7 +278,7 @@ describe('TransferForm', () => {
       render(<TransferForm {...props} />);
 
       // check current pubkey not shown
-      const keySelect: HTMLSelectElement = screen.getByLabelText('Vega key');
+      const keySelect: HTMLSelectElement = screen.getByLabelText('To Vega key');
       const pubKeyOptions = ['', pubKey, props.pubKeys[1]];
       expect(keySelect.children).toHaveLength(pubKeyOptions.length);
       expect(Array.from(keySelect.options).map((o) => o.value)).toEqual(
@@ -294,11 +286,11 @@ describe('TransferForm', () => {
       );
 
       await submit();
-      expect(await screen.findAllByText('Required')).toHaveLength(4);
+      expect(await screen.findAllByText('Required')).toHaveLength(3); // pubkey set as default value
 
       // Select a pubkey
       await userEvent.selectOptions(
-        screen.getByLabelText('Vega key'),
+        screen.getByLabelText('To Vega key'),
         props.pubKeys[1]
       );
 
@@ -324,7 +316,6 @@ describe('TransferForm', () => {
 
   describe('AddressField', () => {
     const props = {
-      pubKeys: ['pubkey-1', 'pubkey-2'],
       select: <div>select</div>,
       input: <div>input</div>,
       onChange: jest.fn(),
@@ -334,7 +325,7 @@ describe('TransferForm', () => {
       const mockOnChange = jest.fn();
       render(<AddressField {...props} onChange={mockOnChange} />);
 
-      // select should be shown as multiple pubkeys provided
+      // select should be shown by default
       expect(screen.getByText('select')).toBeInTheDocument();
       expect(screen.queryByText('input')).not.toBeInTheDocument();
       await userEvent.click(screen.getByText('Enter manually'));
@@ -345,12 +336,6 @@ describe('TransferForm', () => {
       expect(screen.getByText('select')).toBeInTheDocument();
       expect(screen.queryByText('input')).not.toBeInTheDocument();
       expect(mockOnChange).toHaveBeenCalledTimes(2);
-    });
-
-    it('Does not provide select option if there is only a single key', () => {
-      render(<AddressField {...props} pubKeys={['single-pubKey']} />);
-      expect(screen.getByText('input')).toBeInTheDocument();
-      expect(screen.queryByText('Select from wallet')).not.toBeInTheDocument();
     });
   });
 
