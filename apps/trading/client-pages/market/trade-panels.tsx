@@ -82,6 +82,13 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
               'bg-vega-clight-500 dark:bg-vega-cdark-500': isActive,
             }
           );
+          if (
+            market?.tradableInstrument.instrument.product.__typename !==
+              'Perpetual' &&
+            (key === 'funding' || key === 'fundingPayments')
+          ) {
+            return null;
+          }
           return (
             <button
               data-testid={key}
