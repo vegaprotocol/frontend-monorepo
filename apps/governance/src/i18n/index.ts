@@ -1,29 +1,39 @@
+import type { Module } from 'i18next';
 import i18n from 'i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
+import HttpBackend from 'i18next-http-backend';
+import LocizeBackend from 'i18next-locize-backend';
+// import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
-import dev from './translations/dev.json';
+const isInDev = process.env.NODE_ENV === 'development';
+
+const backend = isInDev
+  ? {
+      projectId: '96ac1231-4bdd-455a-b9d7-f5322a2e7430',
+      apiKey: process.env.NX_LOCIZE_API_KEY,
+      referenceLng: 'en',
+    }
+  : {
+      loadPath: '/assets/locales/{{lng}}/{{ns}}.json',
+    };
+
+const Backend: Module = isInDev ? LocizeBackend : HttpBackend;
 
 i18n
-  .use(LanguageDetector)
+  .use(Backend)
+  //  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    // we init with resources
-    resources: {
-      en: {
-        translations: {
-          ...dev,
-        },
-      },
-    },
-    lng: undefined,
+    lng: 'en',
     fallbackLng: 'en',
     debug: true,
     // have a common namespace used around the full app
-    ns: ['translations'],
-    defaultNS: 'translations',
+    ns: ['governance'],
+    defaultNS: 'governance',
     keySeparator: false, // we use content as keys
-
+    backend,
+    // react: { wait: true, useSuspense: false },
+    saveMissing: isInDev && !!process.env.NX_LOCIZE_API_KEY,
     interpolation: {
       escapeValue: false,
     },
