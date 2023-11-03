@@ -86,14 +86,14 @@ describe('CurerntVolume', () => {
       ],
       tierIndex: 0,
       windowLengthVolume,
-      epochs: 5,
+      windowLength: 5,
     };
 
     render(<CurrentVolume {...props} />);
 
     expect(
       screen.getByText(formatNumber(windowLengthVolume)).nextElementSibling
-    ).toHaveTextContent(`Past ${props.epochs} epochs`);
+    ).toHaveTextContent(`Past ${props.windowLength} epochs`);
 
     expect(
       screen.getByText(formatNumber(nextTierVolume - windowLengthVolume))

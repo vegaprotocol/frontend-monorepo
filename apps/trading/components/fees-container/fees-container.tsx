@@ -30,16 +30,16 @@ export const FeesContainer = () => {
   const { data: programData, loading: programLoading } =
     useDiscountProgramsQuery();
 
-  const volumeDiscountEpochs =
+  const volumeDiscountWindowLength =
     programData?.currentVolumeDiscountProgram?.windowLength || 1;
-  const referralDiscountEpochs =
+  const referralDiscountWindowLength =
     programData?.currentReferralProgram?.windowLength || 1;
 
   const { data: feesData, loading: feesLoading } = useFeesQuery({
     variables: {
       partyId: pubKey || '',
-      volumeDiscountEpochs,
-      referralDiscountEpochs,
+      volumeDiscountEpochs: volumeDiscountWindowLength,
+      referralDiscountEpochs: referralDiscountWindowLength,
     },
     skip: !pubKey || !programData,
   });
@@ -101,7 +101,7 @@ export const FeesContainer = () => {
               tiers={volumeTiers}
               tierIndex={volumeTierIndex}
               windowLengthVolume={volumeInWindow}
-              epochs={volumeDiscountEpochs}
+              windowLength={volumeDiscountWindowLength}
             />
           </FeeCard>
           <FeeCard
@@ -112,7 +112,7 @@ export const FeesContainer = () => {
             <ReferralBenefits
               setRunningNotionalTakerVolume={referralVolumeInWindow}
               epochsInSet={epochsInSet}
-              epochs={referralDiscountEpochs}
+              epochs={referralDiscountWindowLength}
             />
           </FeeCard>
         </>
@@ -126,6 +126,7 @@ export const FeesContainer = () => {
           tiers={volumeTiers}
           tierIndex={volumeTierIndex}
           lastEpochVolume={volumeInWindow}
+          windowLength={volumeDiscountWindowLength}
         />
       </FeeCard>
       <FeeCard
@@ -269,12 +270,12 @@ export const CurrentVolume = ({
   tiers,
   tierIndex,
   windowLengthVolume,
-  epochs,
+  windowLength,
 }: {
   tiers: Array<{ minimumRunningNotionalTakerVolume: string }>;
   tierIndex: number;
   windowLengthVolume: number;
-  epochs: number;
+  windowLength: number;
 }) => {
   const nextTier = tiers[tierIndex + 1];
   const requiredForNextTier = nextTier
@@ -285,7 +286,7 @@ export const CurrentVolume = ({
     <div>
       <Stat
         value={formatNumberRounded(new BigNumber(windowLengthVolume))}
-        text={t('Past %s epochs', epochs.toString())}
+        text={t('Past %s epochs', windowLength.toString())}
       />
       {requiredForNextTier > 0 && (
         <Stat
@@ -356,6 +357,7 @@ const VolumeTiers = ({
   tiers,
   tierIndex,
   lastEpochVolume,
+  windowLength,
 }: {
   tiers: Array<{
     volumeDiscountFactor: string;
@@ -363,6 +365,7 @@ const VolumeTiers = ({
   }>;
   tierIndex: number;
   lastEpochVolume: number;
+  windowLength: number;
 }) => {
   if (!tiers.length) {
     return (
@@ -380,7 +383,7 @@ const VolumeTiers = ({
             <Th>{t('Tier')}</Th>
             <Th>{t('Discount')}</Th>
             <Th>{t('Min. trading volume')}</Th>
-            <Th>{t('My volume (last epoch)')}</Th>
+            <Th>{t('My volume (last %s epochs)', windowLength.toString())}</Th>
             <Th />
           </tr>
         </THead>
