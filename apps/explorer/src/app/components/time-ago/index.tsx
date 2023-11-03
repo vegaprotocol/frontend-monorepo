@@ -22,5 +22,9 @@ export const TimeAgo = ({ date, ...props }: TimeAgoProps) => {
     return <>{t('Date unknown')}</>;
   }
 
-  return <span {...props}>{t(`${distanceToNow} ago`)}</span>;
+  return (
+    <span {...props} title={date} className="underline decoration-dotted">
+      {t(`${distanceToNow} ago`)}
+    </span>
+  );
 };

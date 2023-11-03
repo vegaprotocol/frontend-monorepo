@@ -40,10 +40,9 @@ export const Oracle = () => {
               id={id || ''}
               dataSource={data?.oracleSpec}
               dataConnection={data?.oracleSpec.dataConnection}
-              showBroadcasts={true}
             />
-            <details>
-              <summary className="pointer">JSON</summary>
+            <details className="mt-5 cursor-pointer">
+              <summary>JSON</summary>
               <SyntaxHighlighter data={filter(data, ['__typename'])} />
             </details>
           </div>

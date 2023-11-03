@@ -1,22 +1,85 @@
+fragment ExplorerOraclePerpetual on Perpetual {
+  dataSourceSpecForSettlementData {
+    id
+    status
+  }
+  dataSourceSpecForSettlementSchedule {
+    id
+    status
+  }
+}
+
+fragment ExplorerOracleFuture on Future {
+  dataSourceSpecForSettlementData {
+    id
+    status
+  }
+  dataSourceSpecForTradingTermination {
+    id
+    status
+  }
+}
+
 fragment ExplorerOracleForMarketsMarket on Market {
   id
+  state
   tradableInstrument {
     instrument {
       product {
         ... on Future {
-          dataSourceSpecForSettlementData {
-            id
-          }
-          dataSourceSpecForTradingTermination {
-            id
-          }
+          ...ExplorerOracleFuture
         }
         ... on Perpetual {
-          dataSourceSpecForSettlementData {
-            id
+          ...ExplorerOraclePerpetual
+        }
+      }
+    }
+  }
+}
+
+fragment ExplorerOracleDataSourceSpec on ExternalDataSourceSpec {
+  spec {
+    id
+    status
+    data {
+      sourceType {
+        ... on DataSourceDefinitionInternal {
+          sourceType {
+            ... on DataSourceSpecConfigurationTime {
+              conditions {
+                value
+                operator
+              }
+            }
+            ... on DataSourceSpecConfigurationTimeTrigger {
+              conditions {
+                value
+                operator
+              }
+              triggers {
+                initial
+                every
+              }
+            }
           }
-          dataSourceSpecForSettlementSchedule {
-            id
+        }
+        ... on DataSourceDefinitionExternal {
+          sourceType {
+            ... on EthCallSpec {
+              address
+            }
+            ... on DataSourceSpecConfiguration {
+              signers {
+                signer {
+                  ... on ETHAddress {
+                    address
+                  }
+                  ... on PubKey {
+                    key
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -29,6 +92,29 @@ query ExplorerOracleFormMarkets {
     edges {
       node {
         ...ExplorerOracleForMarketsMarket
+      }
+    }
+  }
+  oracleSpecsConnection {
+    edges {
+      node {
+        dataSourceSpec {
+          ...ExplorerOracleDataSourceSpec
+        }
+        dataConnection(pagination: { last: 1 }) {
+          edges {
+            node {
+              externalData {
+                data {
+                  data {
+                    name
+                    value
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

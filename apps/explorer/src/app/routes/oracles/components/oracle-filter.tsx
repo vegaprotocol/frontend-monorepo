@@ -1,36 +1,15 @@
-import { t } from '@vegaprotocol/i18n';
-import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
-import filter from 'recursive-key-filter';
 import type { ExplorerOracleDataSourceFragment } from '../__generated__/Oracles';
+import { OracleSpecInternalTimeTrigger } from './oracle-spec/internal-time-trigger';
+import { OracleSpecCondition } from './oracle-spec/condition';
+import { getCharacterForOperator } from './oracle-spec/operator';
 
 interface OracleFilterProps {
   data: ExplorerOracleDataSourceFragment;
 }
 
-export type Filter =
-  ExplorerOracleDataSourceFragment['dataSourceSpec']['spec']['data']['sourceType']['sourceType'];
-
-/**
- * Given the main Filter view just uses a JSON dump view, this function
- * selects the correct filter to dump in to that view. Internal oracles
- * (i.e. the Time oracle) have conditions while external data sources
- * have filters
- *
- * @param s A data source
- * @returns Object an object containing conditions or filters
- */
-export function getConditionsOrFilters(s: Filter) {
-  if (s.__typename === 'DataSourceSpecConfiguration') {
-    return s.filters;
-  } else if (s.__typename === 'DataSourceSpecConfigurationTime') {
-    return s.conditions;
-  }
-  return null;
-}
-
 /**
  * Shows the conditions that this oracle is using to filter
- * data sources.
+ * data sources, as a list.
  *
  * Renders nothing if there is no data (which will frequently)
  * be the case) and if there is data, currently renders a simple
@@ -42,16 +21,53 @@ export function OracleFilter({ data }: OracleFilterProps) {
   }
 
   const s = data.dataSourceSpec.spec.data.sourceType.sourceType;
-  const f = getConditionsOrFilters(s);
+  if (s.__typename === 'DataSourceSpecConfigurationTime' && s.conditions) {
+    return (
+      <ul>
+        {s.conditions
+          .filter((c) => !!c)
+          .map((c) => {
+            if (!c) {
+              return null;
+            }
+            return (
+              <OracleSpecCondition key={c.value} data={c} type={s.__typename} />
+            );
+          })}
+      </ul>
+    );
+  } else if (
+    s.__typename === 'DataSourceSpecConfigurationTimeTrigger' &&
+    s.triggers
+  ) {
+    return <OracleSpecInternalTimeTrigger data={s} />;
+  } else if (
+    s.__typename === 'EthCallSpec' ||
+    s.__typename === 'DataSourceSpecConfiguration'
+  ) {
+    if (s.filters !== null && s.filters && 'filters' in s) {
+      return (
+        <ul>
+          {s.filters.map((f) => {
+            const prop = <code title={f.key.type}>{f.key.name}</code>;
 
-  if (!f) {
-    return null;
+            if (!f.conditions || f.conditions.length === 0) {
+              return prop;
+            } else {
+              return f.conditions.map((c) => {
+                return (
+                  <li key={`${prop}${c.value}`}>
+                    {prop} {getCharacterForOperator(c.operator)}{' '}
+                    <code>{c.value ? c.value : '-'}</code>
+                  </li>
+                );
+              });
+            }
+          })}
+        </ul>
+      );
+    }
   }
 
-  return (
-    <details>
-      <summary>{t('Filter')}</summary>
-      <SyntaxHighlighter data={filter(f, ['__typename'])} />
-    </details>
-  );
+  return null;
 }

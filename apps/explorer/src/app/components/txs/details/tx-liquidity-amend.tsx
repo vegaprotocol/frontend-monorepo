@@ -5,7 +5,6 @@ import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import type { components } from '../../../../types/explorer';
-import { LiquidityProvisionDetails } from './liquidity-provision/liquidity-provision-details';
 import PriceInMarket from '../../price-in-market/price-in-market';
 import BigNumber from 'bignumber.js';
 
@@ -40,40 +39,32 @@ export const TxDetailsLiquidityAmendment = ({
     : '-';
 
   return (
-    <>
-      <TableWithTbody className="mb-8" allowWrap={true}>
-        <TxDetailsShared
-          txData={txData}
-          pubKey={pubKey}
-          blockData={blockData}
-        />
+    <TableWithTbody className="mb-8" allowWrap={true}>
+      <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
+      <TableRow modifier="bordered">
+        <TableCell>{t('Market')}</TableCell>
+        <TableCell>
+          <MarketLink id={marketId} />
+        </TableCell>
+      </TableRow>
+      {amendment.commitmentAmount ? (
         <TableRow modifier="bordered">
-          <TableCell>{t('Market')}</TableCell>
+          <TableCell>{t('Commitment amount')}</TableCell>
           <TableCell>
-            <MarketLink id={marketId} />
+            <PriceInMarket
+              price={amendment.commitmentAmount}
+              marketId={marketId}
+              decimalSource="SETTLEMENT_ASSET"
+            />
           </TableCell>
         </TableRow>
-        {amendment.commitmentAmount ? (
-          <TableRow modifier="bordered">
-            <TableCell>{t('Commitment amount')}</TableCell>
-            <TableCell>
-              <PriceInMarket
-                price={amendment.commitmentAmount}
-                marketId={marketId}
-                decimalSource="SETTLEMENT_ASSET"
-              />
-            </TableCell>
-          </TableRow>
-        ) : null}
-        {amendment.fee ? (
-          <TableRow modifier="bordered">
-            <TableCell>{t('Fee')}</TableCell>
-            <TableCell>{fee}%</TableCell>
-          </TableRow>
-        ) : null}
-      </TableWithTbody>
-
-      <LiquidityProvisionDetails provision={amendment} />
-    </>
+      ) : null}
+      {amendment.fee ? (
+        <TableRow modifier="bordered">
+          <TableCell>{t('Fee')}</TableCell>
+          <TableCell>{fee}%</TableCell>
+        </TableRow>
+      ) : null}
+    </TableWithTbody>
   );
 };

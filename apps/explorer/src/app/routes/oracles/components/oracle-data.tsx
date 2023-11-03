@@ -1,39 +1,55 @@
-import { t } from '@vegaprotocol/i18n';
-import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
-import filter from 'recursive-key-filter';
 import type { ExplorerOracleDataConnectionFragment } from '../__generated__/Oracles';
+import { TimeAgo } from '../../../components/time-ago';
+import { t } from '@vegaprotocol/i18n';
+
+const cellSpacing = 'px-3';
 
 interface OracleDataTypeProps {
   data: ExplorerOracleDataConnectionFragment['dataConnection'];
 }
 
-/**
- * If there is data that has matched this oracle, this view will
- * render the data inside a collapsed element so that it can be viewed.
- * Currently the data is just rendered as a JSON view, because
- * that Does The Job, rather than because it's good.
- */
 export function OracleData({ data }: OracleDataTypeProps) {
-  if (!data || !data.edges?.length || data.edges.length > 1) {
+  if (!data || !data.edges?.length) {
     return null;
   }
 
   return (
-    <details data-testid="oracle-data">
-      <summary>{t('Broadcast data')}</summary>
-      <ul>
-        {data.edges.map((d) => {
-          if (!d) {
-            return null;
-          }
+    <>
+      <h2 className="text-3xl font-bold mb-4 display-5 mt-5">
+        {t('Recent data')}
+      </h2>
+      <table>
+        <thead>
+          <tr className="text-left">
+            <th className={cellSpacing}>Value</th>
+            <th className={cellSpacing}>Key</th>
+            <th className={cellSpacing}>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.edges.map((d) => {
+            if (!d) {
+              return null;
+            }
 
-          return (
-            <li key={d.node.externalData.data.broadcastAt}>
-              <SyntaxHighlighter data={filter(d, ['__typename'])} />
-            </li>
-          );
-        })}
-      </ul>
-    </details>
+            const broadcastAt = d.node.externalData.data.broadcastAt;
+            const node = d.node.externalData.data.data?.at(0);
+            if (!node || !node.value || !node.name || !node || !broadcastAt) {
+              return null;
+            }
+
+            return (
+              <tr key={d.node.externalData.data.broadcastAt}>
+                <td className={`${cellSpacing} font-mono`}>{node.value}</td>
+                <td className={`${cellSpacing} font-mono`}>{node.name}</td>
+                <td className={cellSpacing}>
+                  <TimeAgo date={broadcastAt} />
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </>
   );
 }

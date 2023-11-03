@@ -1,5 +1,4 @@
 import { getNodes } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { MarketLink } from '../../../components/links';
 import { TableRow, TableCell, TableHeader } from '../../../components/table';
 import type { ExplorerOracleForMarketsMarketFragment } from '../__generated__/OraclesForMarkets';
@@ -24,38 +23,37 @@ export function OracleMarkets({ id }: OracleMarketsProps) {
   );
 
   if (markets) {
-    const m = markets.find((m) => {
-      const p = m.tradableInstrument.instrument.product;
+    const m = markets.filter((market) => {
+      const p = market.tradableInstrument.instrument.product;
       if (
         ((p.__typename === 'Future' || p.__typename === 'Perpetual') &&
           p.dataSourceSpecForSettlementData.id === id) ||
         ('dataSourceSpecForTradingTermination' in p &&
-          p.dataSourceSpecForTradingTermination.id === id)
+          p.dataSourceSpecForTradingTermination.id === id) ||
+        (p.__typename === 'Perpetual' &&
+          p.dataSourceSpecForSettlementSchedule.id === id)
       ) {
         return true;
       }
       return false;
     });
 
-    if (m && m.id) {
+    if (m && m.length > 0) {
       return (
-        <TableRow modifier="bordered">
-          <TableHeader scope="row">{getLabel(id, m)}</TableHeader>
-          <TableCell modifier="bordered" data-testid={`m-${m.id}`}>
-            <MarketLink id={m.id} />
-          </TableCell>
-        </TableRow>
+        <>
+          {m.map((market) => (
+            <TableRow modifier="bordered" key={`m-${market.id}`}>
+              <TableHeader scope="row">{getLabel(id, market)}</TableHeader>
+              <TableCell modifier="bordered" data-testid={`m-${market.id}`}>
+                <MarketLink id={market.id} />
+              </TableCell>
+            </TableRow>
+          ))}
+        </>
       );
     }
   }
-  return (
-    <TableRow modifier="bordered">
-      <TableHeader scope="row">{t('Market')}</TableHeader>
-      <TableCell modifier="bordered">
-        <span>{id}</span>
-      </TableCell>
-    </TableRow>
-  );
+  return null;
 }
 
 export function getLabel(

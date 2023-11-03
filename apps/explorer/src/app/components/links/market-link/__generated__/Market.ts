@@ -17,6 +17,7 @@ export const ExplorerMarketDocument = gql`
     id
     decimalPlaces
     positionDecimalPlaces
+    state
     tradableInstrument {
       instrument {
         name
@@ -36,7 +37,6 @@ export const ExplorerMarketDocument = gql`
         }
       }
     }
-    state
   }
 }
     `;

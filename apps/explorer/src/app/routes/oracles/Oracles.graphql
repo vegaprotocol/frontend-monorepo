@@ -1,5 +1,5 @@
 fragment ExplorerOracleDataConnection on OracleSpec {
-  dataConnection {
+  dataConnection(pagination: { first: 30 }) {
     edges {
       node {
         externalData {
@@ -43,6 +43,16 @@ fragment ExplorerOracleDataSource on OracleSpec {
                 conditions {
                   value
                   operator
+                }
+              }
+              ... on DataSourceSpecConfigurationTimeTrigger {
+                conditions {
+                  value
+                  operator
+                }
+                triggers {
+                  initial
+                  every
                 }
               }
             }
@@ -103,6 +113,23 @@ fragment ExplorerOracleDataSource on OracleSpec {
                   }
                 }
               }
+              ... on EthCallSpec {
+                abi
+                address
+                requiredConfirmations
+                method
+                filters {
+                  key {
+                    type
+                    name
+                    numberDecimalPlaces
+                  }
+                  conditions {
+                    value
+                    operator
+                  }
+                }
+              }
             }
           }
         }
@@ -112,7 +139,7 @@ fragment ExplorerOracleDataSource on OracleSpec {
 }
 
 query ExplorerOracleSpecs {
-  oracleSpecsConnection(pagination: { first: 50 }) {
+  oracleSpecsConnection(pagination: { first: 30 }) {
     pageInfo {
       hasNextPage
     }

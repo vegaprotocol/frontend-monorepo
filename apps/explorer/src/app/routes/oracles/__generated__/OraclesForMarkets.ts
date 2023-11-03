@@ -3,33 +3,106 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type ExplorerOracleForMarketsMarketFragment = { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', product: { __typename?: 'Future', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceSpec', id: string } } | { __typename?: 'Perpetual', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string }, dataSourceSpecForSettlementSchedule: { __typename?: 'DataSourceSpec', id: string } } | { __typename?: 'Spot' } } } };
+export type ExplorerOraclePerpetualFragment = { __typename?: 'Perpetual', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string, status: Types.DataSourceSpecStatus }, dataSourceSpecForSettlementSchedule: { __typename?: 'DataSourceSpec', id: string, status: Types.DataSourceSpecStatus } };
+
+export type ExplorerOracleFutureFragment = { __typename?: 'Future', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string, status: Types.DataSourceSpecStatus }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceSpec', id: string, status: Types.DataSourceSpecStatus } };
+
+export type ExplorerOracleForMarketsMarketFragment = { __typename?: 'Market', id: string, state: Types.MarketState, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', product: { __typename?: 'Future', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string, status: Types.DataSourceSpecStatus }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceSpec', id: string, status: Types.DataSourceSpecStatus } } | { __typename?: 'Perpetual', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string, status: Types.DataSourceSpecStatus }, dataSourceSpecForSettlementSchedule: { __typename?: 'DataSourceSpec', id: string, status: Types.DataSourceSpecStatus } } | { __typename?: 'Spot' } } } };
+
+export type ExplorerOracleDataSourceSpecFragment = { __typename?: 'ExternalDataSourceSpec', spec: { __typename?: 'DataSourceSpec', id: string, status: Types.DataSourceSpecStatus, data: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null } | { __typename?: 'EthCallSpec', address: string } } | { __typename?: 'DataSourceDefinitionInternal', sourceType: { __typename?: 'DataSourceSpecConfigurationTime', conditions: Array<{ __typename?: 'Condition', value?: string | null, operator: Types.ConditionOperator } | null> } | { __typename?: 'DataSourceSpecConfigurationTimeTrigger', conditions: Array<{ __typename?: 'Condition', value?: string | null, operator: Types.ConditionOperator } | null>, triggers: Array<{ __typename?: 'InternalTimeTrigger', initial?: number | null, every?: number | null } | null> } } } } };
 
 export type ExplorerOracleFormMarketsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type ExplorerOracleFormMarketsQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', product: { __typename?: 'Future', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceSpec', id: string } } | { __typename?: 'Perpetual', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string }, dataSourceSpecForSettlementSchedule: { __typename?: 'DataSourceSpec', id: string } } | { __typename?: 'Spot' } } } } }> } | null };
+export type ExplorerOracleFormMarketsQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, state: Types.MarketState, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', product: { __typename?: 'Future', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string, status: Types.DataSourceSpecStatus }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceSpec', id: string, status: Types.DataSourceSpecStatus } } | { __typename?: 'Perpetual', dataSourceSpecForSettlementData: { __typename?: 'DataSourceSpec', id: string, status: Types.DataSourceSpecStatus }, dataSourceSpecForSettlementSchedule: { __typename?: 'DataSourceSpec', id: string, status: Types.DataSourceSpecStatus } } | { __typename?: 'Spot' } } } } }> } | null, oracleSpecsConnection?: { __typename?: 'OracleSpecsConnection', edges?: Array<{ __typename?: 'OracleSpecEdge', node: { __typename?: 'OracleSpec', dataSourceSpec: { __typename?: 'ExternalDataSourceSpec', spec: { __typename?: 'DataSourceSpec', id: string, status: Types.DataSourceSpecStatus, data: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null } | { __typename?: 'EthCallSpec', address: string } } | { __typename?: 'DataSourceDefinitionInternal', sourceType: { __typename?: 'DataSourceSpecConfigurationTime', conditions: Array<{ __typename?: 'Condition', value?: string | null, operator: Types.ConditionOperator } | null> } | { __typename?: 'DataSourceSpecConfigurationTimeTrigger', conditions: Array<{ __typename?: 'Condition', value?: string | null, operator: Types.ConditionOperator } | null>, triggers: Array<{ __typename?: 'InternalTimeTrigger', initial?: number | null, every?: number | null } | null> } } } } }, dataConnection: { __typename?: 'OracleDataConnection', edges?: Array<{ __typename?: 'OracleDataEdge', node: { __typename?: 'OracleData', externalData: { __typename?: 'ExternalData', data: { __typename?: 'Data', data?: Array<{ __typename?: 'Property', name: string, value: string }> | null } } } } | null> | null } } } | null> | null } | null };
 
+export const ExplorerOracleFutureFragmentDoc = gql`
+    fragment ExplorerOracleFuture on Future {
+  dataSourceSpecForSettlementData {
+    id
+    status
+  }
+  dataSourceSpecForTradingTermination {
+    id
+    status
+  }
+}
+    `;
+export const ExplorerOraclePerpetualFragmentDoc = gql`
+    fragment ExplorerOraclePerpetual on Perpetual {
+  dataSourceSpecForSettlementData {
+    id
+    status
+  }
+  dataSourceSpecForSettlementSchedule {
+    id
+    status
+  }
+}
+    `;
 export const ExplorerOracleForMarketsMarketFragmentDoc = gql`
     fragment ExplorerOracleForMarketsMarket on Market {
   id
+  state
   tradableInstrument {
     instrument {
       product {
         ... on Future {
-          dataSourceSpecForSettlementData {
-            id
-          }
-          dataSourceSpecForTradingTermination {
-            id
-          }
+          ...ExplorerOracleFuture
         }
         ... on Perpetual {
-          dataSourceSpecForSettlementData {
-            id
+          ...ExplorerOraclePerpetual
+        }
+      }
+    }
+  }
+}
+    ${ExplorerOracleFutureFragmentDoc}
+${ExplorerOraclePerpetualFragmentDoc}`;
+export const ExplorerOracleDataSourceSpecFragmentDoc = gql`
+    fragment ExplorerOracleDataSourceSpec on ExternalDataSourceSpec {
+  spec {
+    id
+    status
+    data {
+      sourceType {
+        ... on DataSourceDefinitionInternal {
+          sourceType {
+            ... on DataSourceSpecConfigurationTime {
+              conditions {
+                value
+                operator
+              }
+            }
+            ... on DataSourceSpecConfigurationTimeTrigger {
+              conditions {
+                value
+                operator
+              }
+              triggers {
+                initial
+                every
+              }
+            }
           }
-          dataSourceSpecForSettlementSchedule {
-            id
+        }
+        ... on DataSourceDefinitionExternal {
+          sourceType {
+            ... on EthCallSpec {
+              address
+            }
+            ... on DataSourceSpecConfiguration {
+              signers {
+                signer {
+                  ... on ETHAddress {
+                    address
+                  }
+                  ... on PubKey {
+                    key
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -46,8 +119,32 @@ export const ExplorerOracleFormMarketsDocument = gql`
       }
     }
   }
+  oracleSpecsConnection {
+    edges {
+      node {
+        dataSourceSpec {
+          ...ExplorerOracleDataSourceSpec
+        }
+        dataConnection(pagination: {last: 1}) {
+          edges {
+            node {
+              externalData {
+                data {
+                  data {
+                    name
+                    value
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
-    ${ExplorerOracleForMarketsMarketFragmentDoc}`;
+    ${ExplorerOracleForMarketsMarketFragmentDoc}
+${ExplorerOracleDataSourceSpecFragmentDoc}`;
 
 /**
  * __useExplorerOracleFormMarketsQuery__

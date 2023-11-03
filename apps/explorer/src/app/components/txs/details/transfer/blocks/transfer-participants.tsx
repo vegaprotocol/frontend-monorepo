@@ -33,6 +33,14 @@ const AccountType: Record<AccountTypes, string> = {
   ACCOUNT_TYPE_HOLDING: 'Holding',
   ACCOUNT_TYPE_LIQUIDITY_FEES_BONUS_DISTRIBUTION: 'Bonus Distribution',
   ACCOUNT_TYPE_LP_LIQUIDITY_FEES: 'LP Liquidity Fees',
+  ACCOUNT_TYPE_NETWORK_TREASURY: 'Network Treasury',
+  ACCOUNT_TYPE_VESTING_REWARDS: 'Vesting Rewards',
+  ACCOUNT_TYPE_VESTED_REWARDS: 'Vested Rewards',
+  ACCOUNT_TYPE_REWARD_AVERAGE_POSITION: 'Reward Average Position',
+  ACCOUNT_TYPE_REWARD_RELATIVE_RETURN: 'Reward Relative Return',
+  ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY: 'Reward Return Volatility',
+  ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING: 'Reward Validator Ranking',
+  ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD: 'Pending Fee Referral Reward',
 };
 
 interface TransferParticipantsProps {

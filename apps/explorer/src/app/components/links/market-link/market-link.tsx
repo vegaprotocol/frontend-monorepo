@@ -23,6 +23,7 @@ const MarketLink = ({
 }: MarketLinkProps) => {
   const { data, error, loading } = useExplorerMarketQuery({
     variables: { id },
+    fetchPolicy: 'cache-first',
   });
 
   let label = <span>{id}</span>;
