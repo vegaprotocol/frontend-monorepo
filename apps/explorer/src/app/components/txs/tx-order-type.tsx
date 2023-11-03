@@ -104,10 +104,30 @@ export function getLabelForProposal(
     }
   } else if (proposal.terms?.updateMarket) {
     return t('Proposal: Update market');
+  } else if (proposal.terms?.updateSpotMarket) {
+    return t('Proposal: Update spot');
+  } else if (proposal.terms?.updateMarketState) {
+    const type = proposal.terms.updateMarketState.changes?.updateType;
+    if (type === 'MARKET_STATE_UPDATE_TYPE_TERMINATE') {
+      return t('Proposal: Market terminate');
+    } else if (type === 'MARKET_STATE_UPDATE_TYPE_SUSPEND') {
+      return t('Proposal: Market suspend');
+    } else if (type === 'MARKET_STATE_UPDATE_TYPE_RESUME') {
+      return t('Proposal: Market resume');
+    }
+    return t('Proposal: Market state');
   } else if (proposal.terms?.updateNetworkParameter) {
     return t('Proposal: Network parameter');
+  } else if (proposal.terms?.updateReferralProgram) {
+    return t('Proposal: Referral program');
+  } else if (proposal.terms?.updateVolumeDiscountProgram) {
+    return t('Proposal: Discount program');
   } else if (proposal.terms?.newFreeform) {
     return t('Proposal: Freeform');
+  } else if (proposal.terms?.newTransfer) {
+    return t('Proposal: Transfer');
+  } else if (proposal.terms?.cancelTransfer) {
+    return t('Proposal: Transfer cancel');
   } else {
     return t('Proposal');
   }
