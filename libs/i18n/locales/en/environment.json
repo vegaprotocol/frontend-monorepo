@@ -1,3 +1,26 @@
 {
-  "k": "v"
+  "A release candidate for the staging environment": "A release candidate for the staging environment",
+  "Advanced": "Advanced",
+  "blocksBehind_one": "{{count}} Block behind",
+  "blocksBehind_other": "{{count}} Blocks behind",
+  "Custom": "Custom",
+  "Devnet": "Devnet",
+  "Erroneous latency ( >{{errorLatency}} sec): {{blockUpdateLatency}} sec": "Erroneous latency ( >{{errorLatency}} sec): {{blockUpdateLatency}} sec",
+  "Fairground": "Fairground",
+  "Fairground testnet": "Fairground testnet",
+  "k": "v",
+  "Mainnet": "Mainnet",
+  "Mainnet-mirror": "Mainnet-mirror",
+  "Non operational": "Non operational",
+  "Offline": "Offline",
+  "Operational": "Operational",
+  "Propose a network parameter change": "Propose a network parameter change",
+  "Public testnet run by the Vega team, often used for incentives": "Public testnet run by the Vega team, often used for incentives",
+  "Stagnet": "Stagnet",
+  "The latest Vega code auto-deployed": "The latest Vega code auto-deployed",
+  "The mainnet-mirror network": "The mainnet-mirror network",
+  "The validator deployed testnet": "The validator deployed testnet",
+  "The vega mainnet": "The vega mainnet",
+  "VALIDATOR_TESTNET": "VALIDATOR_TESTNET",
+  "Warning delay ( >{{warningLatency}} sec): {{blockUpdateLatency}} sec": "Warning delay ( >{{warningLatency}} sec): {{blockUpdateLatency}} sec"
 }

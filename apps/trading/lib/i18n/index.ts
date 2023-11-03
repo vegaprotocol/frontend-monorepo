@@ -70,7 +70,6 @@ i18n
     keySeparator: false, // we use content as keys
     backend,
     debug: isInDev,
-    react: { wait: true, useSuspense: false },
     saveMissing: isInDev && !!process.env.NX_LOCIZE_API_KEY,
     interpolation: {
       escapeValue: false,

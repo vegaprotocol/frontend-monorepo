@@ -1,5 +1,14 @@
 {
-  "Loading": [],
+  "Depending on data node retention you may not be able see the full history": "Depending on data node retention you may not be able see the full history",
+  "Load more": "Load more",
+  "Loading...": "Loading...",
   "No data": "No data",
+  "No rows matching selected filters": "No rows matching selected filters",
+  "paginationAllLoaded": "all {{count}} rows loaded",
+  "paginationAllLoaded_one": "all {{count}} row loaded",
+  "paginationAllLoaded_other": "all {{count}} rows loaded",
+  "paginationLoaded": "{{count}} rows loaded",
+  "paginationLoaded_one": "{{count}} row loaded",
+  "paginationLoaded_other": "{{count}} rows loaded",
   "Reset": "Reset"
 }

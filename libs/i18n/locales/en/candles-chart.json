@@ -1,3 +1,5 @@
 {
-  "k": "v"
+  "Indicators": "Indicators",
+  "Interval: {{interval}}": "Interval: {{interval}}",
+  "No open orders": "No open orders"
 }

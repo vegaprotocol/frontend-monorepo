@@ -162,7 +162,9 @@ const Trigger = ({
               required: t('You need provide a price'),
               min: {
                 value: priceStep,
-                message: t('Price cannot be lower than ' + priceStep),
+                message: t('Price cannot be lower than {{priceStep}}', {
+                  priceStep,
+                }),
               },
               validate: validateAmount(priceStep, 'Price'),
             }}
@@ -1175,8 +1177,8 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             intent={Intent.Warning}
             testId={'stop-order-warning-limit'}
             message={t(
-              'There is a limit of %s active stop orders per market. Orders submitted above the limit will be immediately rejected.',
-              [MAX_NUMBER_OF_ACTIVE_STOP_ORDERS.toString()]
+              'There is a limit of {{maxNumberOfOrders}} active stop orders per market. Orders submitted above the limit will be immediately rejected.',
+              { maxNumberOfOrders: MAX_NUMBER_OF_ACTIVE_STOP_ORDERS.toString() }
             )}
           />
         </div>

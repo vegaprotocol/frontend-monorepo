@@ -40,8 +40,7 @@
   "The rewards acquired based on the liquidity provision fees in this asset": "The rewards acquired based on the liquidity provision fees in this asset",
   "The rewards acquired based on the market proposer reward in this asset": "The rewards acquired based on the market proposer reward in this asset",
   "The status of the asset in the Vega network": "The status of the asset in the Vega network",
-  "There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit": [],
-  "There is 1 unit of the settlement asset (%s) to every 1 quote unit": [],
+  "There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit.": "There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit.",
   "Type": "Type",
   "WITHDRAW_THRESHOLD_TOOLTIP_TEXT": "The maximum you can withdraw instantly. There's no limit on the size of a withdrawal, but all withdrawals over the threshold will have a delay time added to them",
   "Withdrawal threshold": "Withdrawal threshold"

@@ -10,7 +10,7 @@ import {
 } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/i18n';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
-import type { ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 import { Web3Provider } from './web3-provider';
 
 export const Bootstrapper = ({ children }: { children: ReactNode }) => {
@@ -36,41 +36,43 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <NetworkLoader
-      cache={cacheConfig}
-      skeleton={<AppLoader />}
-      failure={
-        <AppFailure title={t('Could not initialize app')} error={error} />
-      }
-    >
-      <NodeGuard
+    <Suspense fallback={<AppLoader />}>
+      <NetworkLoader
+        cache={cacheConfig}
         skeleton={<AppLoader />}
-        failure={<NodeFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
+        failure={
+          <AppFailure title={t('Could not initialize app')} error={error} />
+        }
       >
-        <Web3Provider
+        <NodeGuard
           skeleton={<AppLoader />}
-          failure={
-            <AppFailure title={t(`Could not configure web3 provider`)} />
-          }
+          failure={<NodeFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
         >
-          <VegaWalletProvider
-            config={{
-              network: VEGA_ENV,
-              vegaUrl: VEGA_URL,
-              vegaWalletServiceUrl: VEGA_WALLET_URL,
-              links: {
-                explorer: VEGA_EXPLORER_URL,
-                concepts: DocsLinks.VEGA_WALLET_CONCEPTS_URL,
-                chromeExtensionUrl: CHROME_EXTENSION_URL,
-                mozillaExtensionUrl: MOZILLA_EXTENSION_URL,
-              },
-            }}
+          <Web3Provider
+            skeleton={<AppLoader />}
+            failure={
+              <AppFailure title={t(`Could not configure web3 provider`)} />
+            }
           >
-            {children}
-          </VegaWalletProvider>
-        </Web3Provider>
-      </NodeGuard>
-    </NetworkLoader>
+            <VegaWalletProvider
+              config={{
+                network: VEGA_ENV,
+                vegaUrl: VEGA_URL,
+                vegaWalletServiceUrl: VEGA_WALLET_URL,
+                links: {
+                  explorer: VEGA_EXPLORER_URL,
+                  concepts: DocsLinks.VEGA_WALLET_CONCEPTS_URL,
+                  chromeExtensionUrl: CHROME_EXTENSION_URL,
+                  mozillaExtensionUrl: MOZILLA_EXTENSION_URL,
+                },
+              }}
+            >
+              {children}
+            </VegaWalletProvider>
+          </Web3Provider>
+        </NodeGuard>
+      </NetworkLoader>
+    </Suspense>
   );
 };
 

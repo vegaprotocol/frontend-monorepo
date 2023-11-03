@@ -192,7 +192,7 @@ export const AccountTable = ({
             <>
               <span className="underline">{valueFormatted}</span>
               <span className="inline-block ml-2 w-14 text-muted">
-                {t('0.00%')}
+                {(0).toFixed(2)}%
               </span>
             </>
           );

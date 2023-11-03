@@ -1,17 +1,14 @@
 {
-  "\"Post only\" can not be used on \"Fill or Kill\" or \"Immediate or Cancel\" orders": [],
-  "\"Reduce only\" will ensure that this order will not increase the size of an open position": {
-    " When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position": {
-      " If applied to a limit order that is not instantly filled, the order will be stopped": []
-    }
-  },
+  "\"Post only\" can not be used on \"Fill or Kill\" or \"Immediate or Cancel\" orders.": "\"Post only\" can not be used on \"Fill or Kill\" or \"Immediate or Cancel\" orders.",
+  "\"Post only\" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.": "\"Post only\" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.",
+  "\"Reduce only\" can be used only with non-persistent orders, such as \"Fill or Kill\" or \"Immediate or Cancel\".": "\"Reduce only\" can be used only with non-persistent orders, such as \"Fill or Kill\" or \"Immediate or Cancel\".",
+  "\"Reduce only\" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.": "\"Reduce only\" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.",
+  "A release candidate for the staging environment": "A release candidate for the staging environment",
   "above": "above",
-  "An estimate of the most you would be expected to pay in fees, in the market's settlement asset {{assetSymbol}}": {
-    " Fees estimated are \"taker\" fees and will only be payable if the order trades aggressively": {
-      " Rebate equal to the maker portion will be paid to the trader if the order trades passively": []
-    }
-  },
+  "Advanced": "Advanced",
+  "An estimate of the most you would be expected to pay in fees, in the market's settlement asset {{assetSymbol}}. Fees estimated are \"taker\" fees and will only be payable if the order trades aggressively. Rebate equal to the maker portion will be paid to the trader if the order trades passively.": "An estimate of the most you would be expected to pay in fees, in the market's settlement asset {{assetSymbol}}. Fees estimated are \"taker\" fees and will only be payable if the order trades aggressively. Rebate equal to the maker portion will be paid to the trader if the order trades passively.",
   "below": "below",
+  "Closed": "Closed",
   "Could not load market": "Could not load market",
   "Current margin allocation": "Current margin allocation",
   "Custom": "Custom",
@@ -26,11 +23,12 @@
   "Fees": "Fees",
   "Find out more": "Find out more",
   "For full details please see ": "For full details please see ",
+  "Iceberg": "Iceberg",
   "Infrastructure fee": "Infrastructure fee",
   "k": "v",
   "Limit": "Limit",
   "Liquidation": "Liquidation",
-  "liquidation price estimate documentation": [],
+  "liquidation price estimate documentation.": "liquidation price estimate documentation.",
   "LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT": "This is an approximation for the liquidation price for that particular contract position, assuming nothing else changes, which may affect your margin and collateral balances.",
   "Liquidity fee": "Liquidity fee",
   "Long": "Long",
@@ -47,6 +45,7 @@
   "NOTIONAL_SIZE_TOOLTIP_TEXT": "The notional size represents the position size in the settlement asset {{quoteName}} of the futures contract. This is calculated by multiplying the number of contracts by the prices of the contract. For example 10 contracts traded at a price of $50 has a notional size of $500.",
   "OCO": "OCO",
   "One cancels another": "One cancels another",
+  "Place limit order": "Place limit order",
   "Place limit stop order": "Place limit stop order",
   "Place market order": "Place market order",
   "Place market stop order": "Place market stop order",
@@ -54,10 +53,9 @@
   "Post only": "Post only",
   "Price": "Price",
   "Price cannot be lower than {{priceStep}}": "Price cannot be lower than {{priceStep}}",
-  "Price cannot be lower than 0": {
-    "00001": "Price cannot be lower than 0.00001"
-  },
   "Projected margin": "Projected margin",
+  "Propose a network parameter change": "Propose a network parameter change",
+  "Public testnet run by the Vega team, often used for incentives": "Public testnet run by the Vega team, often used for incentives",
   "Reduce only": "Reduce only",
   "Short": "Short",
   "Size": "Size",
@@ -68,15 +66,21 @@
   "Stop Market": "Stop Market",
   "Strategy": "Strategy",
   "The expiry date that you have entered appears to be in the past": "The expiry date that you have entered appears to be in the past",
+  "The latest Vega code auto-deployed": "The latest Vega code auto-deployed",
+  "The mainnet-mirror network": "The mainnet-mirror network",
+  "The validator deployed testnet": "The validator deployed testnet",
+  "The vega mainnet": "The vega mainnet",
+  "This market is {{marketState}} and not accepting orders": "This market is {{marketState}} and not accepting orders",
   "Time in force": "Time in force",
   "Total fees": "Total fees",
   "Total margin available": "Total margin available",
   "TOTAL_MARGIN_AVAILABLE": "Total margin available = general {{assetSymbol}} balance ({{generalAccountBalance}} {{assetSymbol}}) + margin balance ({{marginAccountBalance}} {{assetSymbol}}) - maintenance level ({{marginMaintenance}} {{assetSymbol}}).",
+  "Trade only a fraction of the order size at once.\n                            After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away.\n                            For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each.\n                            Note that the full volume of the order is not hidden and is still reflected in the order book.": "Trade only a fraction of the order size at once.\n                            After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away.\n                            For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each.\n                            Note that the full volume of the order is not hidden and is still reflected in the order book.",
   "Trading terminated": "Trading terminated",
   "Trigger": "Trigger",
   "Type": "Type",
   "VALIDATOR_TESTNET": "VALIDATOR_TESTNET",
-  "You need {{symbol}} in your wallet to trade in this market": [],
+  "You need {{symbol}} in your wallet to trade in this market. ": "You need {{symbol}} in your wallet to trade in this market. ",
   "You need provide a expiry time/date": "You need provide a expiry time/date",
   "You need provide a price": "You need provide a price",
   "You need to provide a size": "You need to provide a size"

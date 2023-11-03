@@ -1,3 +1,16 @@
 {
-  "k": "v"
+  "Asset": "Asset",
+  "Connect": "Connect",
+  "Connect Ethereum wallet": "Connect Ethereum wallet",
+  "Deposit": "Deposit",
+  "Enter manually": "Enter manually",
+  "Faucet of {{symbol}} failed": "Faucet of {{symbol}} failed",
+  "From (Ethereum address)": "From (Ethereum address)",
+  "k": "v",
+  "Please select": "Please select",
+  "Please select an asset": "Please select an asset",
+  "The {{symbol}} faucet is not available at this time": "The {{symbol}} faucet is not available at this time",
+  "The faucet transaction was rejected by the connected Ethereum wallet": "The faucet transaction was rejected by the connected Ethereum wallet",
+  "To (Vega key)": "To (Vega key)",
+  "You have exceeded the maximum number of faucet attempts allowed": "You have exceeded the maximum number of faucet attempts allowed"
 }

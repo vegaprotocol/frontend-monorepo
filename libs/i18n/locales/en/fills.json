@@ -1,6 +1,10 @@
 {
+  "Copy buy order ID": "Copy buy order ID",
+  "Copy sell order ID": "Copy sell order ID",
+  "Copy trade ID": "Copy trade ID",
   "Date": "Date",
   "Fee": "Fee",
+  "Fee Discount": "Fee Discount",
   "Market": "Market",
   "No fills": "No fills",
   "Notional": "Notional",
