@@ -75,14 +75,6 @@ export const Deposit = () => {
   );
 };
 
-interface DepositState {
-  asset: AssetFieldsFragment | undefined;
-  amount: string;
-  allowance: BigNumber | undefined;
-  balance: BigNumber | undefined;
-}
-type SetDepositState = Dispatch<SetStateAction<DepositState>>;
-
 const getMarketsForAsset = (
   markets: MarketMaybeWithDataAndCandles[],
   asset: AssetFieldsFragment
@@ -94,6 +86,15 @@ const getMarketsForAsset = (
     })
     .slice(0, 4);
 };
+
+interface DepositState {
+  asset: AssetFieldsFragment | undefined;
+  amount: string;
+  allowance: BigNumber | undefined;
+  balance: BigNumber | undefined;
+}
+
+type SetDepositState = Dispatch<SetStateAction<DepositState>>;
 
 const DepositFlow = ({
   assets,
@@ -333,6 +334,7 @@ const AssetSelected = ({
           confirmations={confirmations}
           refetchBalances={refetchBalances}
           faucetEnabled={faucetEnabled}
+          onCancel={onCancel}
         />
         <div className="absolute bottom-0 right-0">
           <TradingButton
@@ -354,6 +356,7 @@ const TransactionContainer = ({
   confirmations,
   refetchBalances,
   faucetEnabled,
+  onCancel,
 }: {
   state: DepositState;
   setState: SetDepositState;
@@ -361,6 +364,7 @@ const TransactionContainer = ({
   confirmations: number;
   refetchBalances: () => void;
   faucetEnabled: boolean;
+  onCancel: () => void;
 }) => {
   return (
     <>
@@ -377,6 +381,7 @@ const TransactionContainer = ({
         setAmount={(amount) => setState((curr) => ({ ...curr, amount }))}
         faucetEnabled={faucetEnabled}
         refetchBalances={refetchBalances}
+        onCancel={onCancel}
       />
     </>
   );
@@ -502,6 +507,7 @@ const SendDeposit = ({
   confirmations,
   faucetEnabled,
   refetchBalances,
+  onCancel,
 }: {
   state: DepositState;
   amount: string;
@@ -510,6 +516,7 @@ const SendDeposit = ({
   setAmount: (amount: string) => void;
   faucetEnabled: boolean;
   refetchBalances: () => void;
+  onCancel: () => void;
 }) => {
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
@@ -571,9 +578,12 @@ const SendDeposit = ({
     return null;
   }
 
+  const wrapperClass =
+    'flex flex-col items-start pt-4 mt-4 border-t gap-2 border-vega-clight-400 dark:border-vega-cdark-400';
+
   if (!pubKey) {
     return (
-      <div className="flex flex-col items-start pt-4 mt-4 border-t gap-2 border-vega-clight-400 dark:border-vega-cdark-400">
+      <div className={wrapperClass}>
         <TradingButton onClick={openVegaWalletDialog} size="small">
           {t('Connect Vega wallet')}
         </TradingButton>
@@ -581,8 +591,23 @@ const SendDeposit = ({
     );
   }
 
+  // TODO get all markets and show a list of markets to start trading in for the selected asset
+  if (tx?.status === EthTxStatus.Confirmed) {
+    return (
+      <div className={wrapperClass}>
+        <h3 className="text-sm">{t('Deposit complete')}</h3>
+        <div className="flex gap-2">
+          <TradingButton onClick={() => onCancel()}>
+            Deposit another asset
+          </TradingButton>
+          <TradingButton>Start trading</TradingButton>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col items-start pt-4 mt-4 border-t gap-2 border-vega-clight-400 dark:border-vega-cdark-400">
+    <div className={wrapperClass}>
       <h3 className="text-sm">{t('Deposit')}</h3>
       <form className="flex gap-2" onSubmit={submitDeposit}>
         <TradingInput
