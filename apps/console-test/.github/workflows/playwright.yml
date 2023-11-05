@@ -1,0 +1,125 @@
+name: Build and Run Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+    inputs:
+      VEGA_VERSION:
+        description: 'Vega version to test'
+        required: true
+        default: v0.73.0-rc.2
+      CONSOLE_IMAGE_NAME:
+        description: 'Console image name'
+        required: true
+        default: vegaprotocol/trading:develop
+jobs:
+  test:
+    timeout-minutes: 15
+    runs-on: 8-cores
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Load inputs
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo "VEGA_VERSION=${{ github.event.inputs.VEGA_VERSION }}" >> $GITHUB_ENV
+          echo "CONSOLE_IMAGE_NAME=${{ github.event.inputs.CONSOLE_IMAGE_NAME }}" >> $GITHUB_ENV
+
+      - name: Import env from dotenv (push)
+        if: ${{ github.event_name == 'push' }}
+        uses: falti/dotenv-action@v1.0.4
+        with:
+          path: .env.${{ github.ref_name }}
+          export-variables: true
+          keys-case: upper
+          log-variables: true
+
+      - name: Import env from dotenv (pull_request)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: falti/dotenv-action@v1.0.4
+        with:
+          path: .env.${{ github.base_ref }}
+          keys-case: upper
+          export-variables: true
+          log-variables: true
+      #----------------------------------------------
+      #  -----  install dependencies  -----
+      #----------------------------------------------
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      #----------------------------------------------
+      #  -----  install & configure poetry  -----
+      #----------------------------------------------
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          virtualenvs-path: console-test/.venv
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root
+
+      #----------------------------------------------
+      #  -----  find vega binaries path  -----
+      #----------------------------------------------
+      - name: Find vega binaries path
+        id: vega_bin_path
+        run: echo path=$(poetry run python -c "import vega_sim; print(vega_sim.vega_bin_path)") >> $GITHUB_OUTPUT
+      #----------------------------------------------
+      #  -----  vega binaries cache -----
+      #----------------------------------------------
+      - name: Vega binaries cache
+        uses: actions/cache@v3
+        id: vega_binaries_cache
+        with:
+          path: ${{ steps.vega_bin_path.outputs.path }}
+          key: ${{ runner.os }}-vega-binaries-${{ env.VEGA_VERSION }}
+      #----------------------------------------------
+      #  -----  install vega binaries. -----
+      #----------------------------------------------
+      - name: Install vega binaries
+        if: steps.vega_binaries_cache.outputs.cache-hit != 'true'
+        run: poetry run python -m vega_sim.tools.load_binaries --force --version ${{ env.VEGA_VERSION }}
+      #----------------------------------------------
+      #  -----  pull console. -----
+      #----------------------------------------------
+      - name: pull console
+        run: |
+          poetry run docker pull ${{ env.CONSOLE_IMAGE_NAME }}
+      #----------------------------------------------
+      #  -----  install playwright. -----
+      #----------------------------------------------
+      - name: Install Playwright
+        run: poetry run playwright install --with-deps chromium
+      #----------------------------------------------
+      #  ----- run tests. -----
+      #----------------------------------------------
+      - name: Run tests
+        run: poetry run pytest -v -s --numprocesses 4 --dist loadfile --durations=10
+      #----------------------------------------------
+      #  -----  upload traces  -----
+      #----------------------------------------------
+      - name: Upload Playwright Trace
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-trace
+          path: ./traces/
+          retention-days: 15
+
+      #----------------------------------------------
+      #  -----  upload logs  -----
+      #----------------------------------------------
+      - name: Upload worker logs
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: worker-logs
+          path: ./logs/
+          retention-days: 15

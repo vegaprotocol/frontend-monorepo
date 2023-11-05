@@ -13,7 +13,10 @@
     "lint:all": "nx run-many --all --target=lint",
     "e2e:all": "nx run-many --all --target=e2e",
     "vegacapsule": "vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl",
-    "release": "git checkout develop ; git pull ; node scripts/make-release.js"
+    "release": "git checkout develop ; git pull ; node scripts/make-release.js",
+    "install:console-test": "cd apps/console-test && poetry install && poetry run playwright install chromium && python -m vega_sim.tools.load_binaries --force --version v0.73.1",
+    "console-test": "cd apps/console-test && poetry run pytest -k",
+    "console-test:all": "cd apps/console-test && poetry run pytest -s --headed --numprocesses 8 --dist loadfile"
   },
   "engines": {
     "node": ">=16.15.1"
