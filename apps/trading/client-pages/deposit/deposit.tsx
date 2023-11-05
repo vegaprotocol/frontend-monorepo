@@ -342,7 +342,7 @@ const AssetSelected = ({
             size="small"
             intent={Intent.Danger}
           >
-            {t('Cancel')}
+            {t('Change asset')}
           </TradingButton>
         </div>
       </div>
