@@ -228,6 +228,57 @@ export const LiquidityTable = ({
               'commitmentAmount'
             >) => {
               if (!value) return '-';
+              const currentCommitmentAmount = data?.currentCommitmentAmount;
+              const pendingCommitmentAmount = value;
+
+              const formattedPendingCommitmentAmount =
+                addDecimalsFormatNumberQuantum(
+                  pendingCommitmentAmount,
+                  assetDecimalPlaces ?? 0,
+                  quantum ?? 0
+                );
+
+              if (
+                currentCommitmentAmount &&
+                currentCommitmentAmount !== pendingCommitmentAmount
+              ) {
+                const formattedCurrentCommitmentAmount =
+                  addDecimalsFormatNumberQuantum(
+                    currentCommitmentAmount,
+                    assetDecimalPlaces ?? 0,
+                    quantum ?? 0
+                  );
+
+                return (
+                  <>
+                    <span>{formattedCurrentCommitmentAmount}</span> (
+                    <span className="text-warning">
+                      {formattedPendingCommitmentAmount}
+                    </span>
+                    )
+                  </>
+                );
+              } else {
+                return formattedPendingCommitmentAmount;
+              }
+            },
+            tooltipValueGetter: assetDecimalsFormatter,
+          },
+          {
+            headerName: t('Obligation'),
+            field: 'commitmentAmount',
+            type: 'rightAligned',
+            headerTooltip: t(
+              `The liquidity provider's obligation to the market, calculated as the liquidity commitment amount multiplied by the value of the stake_to_ccy_volume network parameter to convert into units of liquidity volume.`
+            ),
+            cellRenderer: ({
+              data,
+              value,
+            }: VegaICellRendererParams<
+              LiquidityProvisionData,
+              'commitmentAmount'
+            >) => {
+              if (!value) return '-';
 
               const currentCommitmentAmount = data?.currentCommitmentAmount
                 ? new BigNumber(data?.currentCommitmentAmount)

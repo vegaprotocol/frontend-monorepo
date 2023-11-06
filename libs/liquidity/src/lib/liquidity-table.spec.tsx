@@ -51,6 +51,7 @@ describe('LiquidityTable', () => {
       'Party',
       'Status',
       'Commitment ()',
+      'Obligation',
       'Fee',
       'Adjusted stake share',
       'Share',
