@@ -49,8 +49,8 @@ describe('LiquidityTable', () => {
       undefined,
       undefined,
       'Party',
+      'Status',
       'Commitment ()',
-      'Obligation',
       'Fee',
       'Adjusted stake share',
       'Share',
@@ -61,7 +61,6 @@ describe('LiquidityTable', () => {
       'Last time on the book',
       'Last fee penalty',
       'Last bond penalty',
-      'Status',
       'Created',
       'Updated',
     ];

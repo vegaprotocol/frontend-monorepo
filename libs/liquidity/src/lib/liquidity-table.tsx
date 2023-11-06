@@ -8,6 +8,7 @@ import {
 import { t } from '@vegaprotocol/i18n';
 import type {
   TypedDataAgGrid,
+  VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { AgGrid } from '@vegaprotocol/datagrid';
@@ -184,48 +185,92 @@ export const LiquidityTable = ({
         marryChildren: true,
         children: [
           {
+            headerName: t('Status'),
+            headerTooltip: t('The current status of this liquidity provision.'),
+            field: 'status',
+            cellRenderer: ({
+              data,
+              value,
+            }: VegaICellRendererParams<LiquidityProvisionData, 'status'>) => {
+              if (!value) return value;
+              if (
+                data?.status === LiquidityProvisionStatus.STATUS_PENDING &&
+                (data?.currentCommitmentAmount || data?.currentFee)
+              ) {
+                return (
+                  <span className="text-warning">
+                    {t('Updating next epoch')}
+                  </span>
+                );
+              }
+              return (
+                <span>
+                  {
+                    LiquidityProvisionStatusMapping[
+                      value as LiquidityProvisionStatus
+                    ]
+                  }
+                </span>
+              );
+            },
+          },
+          {
             headerName: t(`Commitment (${symbol})`),
             field: 'commitmentAmount',
             type: 'rightAligned',
             headerTooltip: t(
               'The amount committed to the market by this liquidity provider.'
             ),
-            valueFormatter: ({
+            cellRenderer: ({
               data,
               value,
-            }: VegaValueFormatterParams<
+            }: VegaICellRendererParams<
               LiquidityProvisionData,
               'commitmentAmount'
             >) => {
               if (!value) return '-';
-              const formattedCommitmentAmount = addDecimalsFormatNumberQuantum(
-                value,
-                assetDecimalPlaces ?? 0,
-                quantum ?? 0
-              );
-              if (
-                data?.currentCommitmentAmount &&
-                data?.currentCommitmentAmount !== value
-              ) {
-                return `${addDecimalsFormatNumberQuantum(
-                  data.currentCommitmentAmount,
+
+              const currentCommitmentAmount = data?.currentCommitmentAmount
+                ? new BigNumber(data?.currentCommitmentAmount)
+                    .times(Number(stakeToCcyVolume) || 1)
+                    .toString()
+                : undefined;
+
+              const pendingCommitmentAmount = new BigNumber(value)
+                .times(Number(stakeToCcyVolume) || 1)
+                .toString();
+
+              const formattedPendingCommitmentAmount =
+                addDecimalsFormatNumberQuantum(
+                  pendingCommitmentAmount,
                   assetDecimalPlaces ?? 0,
                   quantum ?? 0
-                )}/${formattedCommitmentAmount}`;
+                );
+
+              if (
+                currentCommitmentAmount &&
+                currentCommitmentAmount !== pendingCommitmentAmount
+              ) {
+                const formattedCurrentCommitmentAmount =
+                  addDecimalsFormatNumberQuantum(
+                    currentCommitmentAmount,
+                    assetDecimalPlaces ?? 0,
+                    quantum ?? 0
+                  );
+
+                return (
+                  <>
+                    <span>{formattedCurrentCommitmentAmount}</span> (
+                    <span className="text-warning">
+                      {formattedPendingCommitmentAmount}
+                    </span>
+                    )
+                  </>
+                );
               } else {
-                return formattedCommitmentAmount;
+                return formattedPendingCommitmentAmount;
               }
             },
-            tooltipValueGetter: assetDecimalsFormatter,
-          },
-          {
-            headerName: t('Obligation'),
-            field: 'commitmentAmount',
-            type: 'rightAligned',
-            headerTooltip: t(
-              `The liquidity provider's obligation to the market, calculated as the liquidity commitment amount multiplied by the value of the stake_to_ccy_volume network parameter to convert into units of liquidity volume. The obligation can be met by a combination of LP orders and limit orders on the order book.`
-            ),
-            valueFormatter: stakeToCcyVolumeQuantumFormatter,
             tooltipValueGetter: stakeToCcyVolumeFormatter,
           },
           {
@@ -235,21 +280,27 @@ export const LiquidityTable = ({
             ),
             field: 'fee',
             type: 'rightAligned',
-            valueFormatter: ({
+            cellRenderer: ({
               data,
               value,
-            }: ValueFormatterParams<LiquidityProvisionData, 'fee'>) => {
+            }: VegaICellRendererParams<LiquidityProvisionData, 'fee'>) => {
               if (!value) return '-';
-              const formattedValue =
+              const formattedPendingFee =
                 formatNumberPercentage(new BigNumber(value).times(100), 2) ||
                 '-';
               if (data?.currentFee && data?.currentFee !== value) {
-                return `${formatNumberPercentage(
+                const formattedCurrentFee = formatNumberPercentage(
                   new BigNumber(data.currentFee).times(100),
                   2
-                )}/${formattedValue}`;
+                );
+                return (
+                  <>
+                    <span>{formattedCurrentFee}</span> (
+                    <span className="text-warning">{formattedPendingFee}</span>)
+                  </>
+                );
               }
-              return formattedValue;
+              return formattedPendingFee;
             },
           },
           {
@@ -367,26 +418,6 @@ export const LiquidityTable = ({
         headerName: '',
         marryChildren: true,
         children: [
-          {
-            headerName: t('Status'),
-            headerTooltip: t('The current status of this liquidity provision.'),
-            field: 'status',
-            valueFormatter: ({
-              data,
-              value,
-            }: ValueFormatterParams<LiquidityProvisionData, 'status'>) => {
-              if (!value) return value;
-              if (
-                data?.status === LiquidityProvisionStatus.STATUS_PENDING &&
-                (data?.currentCommitmentAmount || data?.currentFee)
-              ) {
-                return t('Updating next epoch');
-              }
-              return LiquidityProvisionStatusMapping[
-                value as LiquidityProvisionStatus
-              ];
-            },
-          },
           {
             headerName: t('Created'),
             headerTooltip: t(
