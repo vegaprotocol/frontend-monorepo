@@ -31,6 +31,16 @@ export const Settings = () => {
       <SettingsGroup label={t('Toast location')}>
         <ToastPositionSetter />
       </SettingsGroup>
+      {process.env.GIT_TAG && (
+        <SettingsGroup label={t('App version')}>
+          <p className="text-sm whitespace-nowrap">{process.env.GIT_TAG}</p>
+        </SettingsGroup>
+      )}
+      <SettingsGroup label={t('Commit hash')}>
+        <p className="text-sm break-words max-w-[100px]">
+          {process.env.GIT_COMMIT}
+        </p>
+      </SettingsGroup>
     </div>
   );
 };
@@ -45,10 +55,10 @@ const SettingsGroup = ({
   children: ReactNode;
 }) => {
   return (
-    <div className="flex justify-between items-start mb-4">
+    <div className="flex items-start justify-between mb-4 gap-2">
       <div className="w-3/4">
         <label className="text-sm">{label}</label>
-        {helpText && <p className="text-muted text-xs">{helpText}</p>}
+        {helpText && <p className="text-xs text-muted">{helpText}</p>}
       </div>
       {children}
     </div>
