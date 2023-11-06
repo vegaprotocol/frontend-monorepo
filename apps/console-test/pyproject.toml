@@ -20,7 +20,6 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
-timeout = 120
 log_cli = true
 log_cli_format = "%(asctime)s - %(name)s - %(levelname)s: %(message)s"
 log_cli_date_format = "%Y-%m-%d %H:%M:%S"

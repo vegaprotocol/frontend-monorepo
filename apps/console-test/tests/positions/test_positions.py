@@ -9,7 +9,7 @@ from fixtures.market import (
 def test_closed_market_position(vega: VegaService, page: Page):
     market_id = setup_continuous_market(vega)
 
-    vega.settle_market(
+    vega.submit_termination_and_settlement_data(
         settlement_key="FJMKnwfZdd48C8NqvYrG",
         settlement_price=110,
         market_id=market_id,

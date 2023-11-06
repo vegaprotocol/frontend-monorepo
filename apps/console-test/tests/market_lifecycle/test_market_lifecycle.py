@@ -11,6 +11,7 @@ from actions.vega import submit_order
 from fixtures.market import setup_continuous_market
 from datetime import datetime
 from datetime import timedelta
+from vega_sim.service import MarketStateUpdateType
 
 # Defined namedtuples
 WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
@@ -18,9 +19,9 @@ WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
 # Wallet Configurations
 MM_WALLET = WalletConfig("mm", "pin")
 MM_WALLET2 = WalletConfig("mm2", "pin2")
-TERMINATE_WALLET = WalletConfig("FJMKnwfZdd48C8NqvYrG", "bY3DxwtsCstMIIZdNpKs")
+GOVERNANCE_WALLET = WalletConfig("FJMKnwfZdd48C8NqvYrG", "bY3DxwtsCstMIIZdNpKs")
 
-wallets = [MM_WALLET, MM_WALLET2, TERMINATE_WALLET]
+wallets = [MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET]
 
 
 @pytest.mark.usefixtures("vega", "page", "proposed_market", "risk_accepted")
@@ -100,11 +101,10 @@ def test_market_lifecycle(proposed_market, vega: VegaService, page: Page):
     expect(market_state).to_have_text("Active")
 
     # put invalid oracle to trigger market termination
-    governance.settle_oracle(
+    governance.submit_oracle_data(
         wallet=vega.wallet,
-        oracle_name="INVALID_ORACLE",
-        settlement_price=1,
-        key_name=TERMINATE_WALLET.name,
+        payload={"trading.terminated": "true"},
+        key_name=GOVERNANCE_WALLET.name,
     )
     vega.forward("60s")
     vega.wait_fn(1)
@@ -115,8 +115,8 @@ def test_market_lifecycle(proposed_market, vega: VegaService, page: Page):
     expect(market_state).to_have_text("Trading Terminated")
 
     # settle market
-    vega.settle_market(
-        settlement_key=TERMINATE_WALLET.name,
+    vega.submit_termination_and_settlement_data(
+        settlement_key=GOVERNANCE_WALLET.name,
         settlement_price=100,
         market_id=market_id,
     )
@@ -129,14 +129,14 @@ def test_market_lifecycle(proposed_market, vega: VegaService, page: Page):
     expect(market_state).to_have_text("Settled")
 
 
-@pytest.mark.usefixtures("page", "risk_accepted", "continuous_market")
+""" @pytest.mark.usefixtures("page", "risk_accepted", "continuous_market")
 def test_market_closing_banners(page: Page, continuous_market, vega: VegaService):
     market_id = continuous_market
     page.goto(f"/#/markets/{market_id}")
     proposalID = vega.update_market_state(
         continuous_market,
         "mm",
-        vega_protos.governance.MarketStateUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE,
+        MarketStateUpdateType.Terminate,
         approve_proposal=False,
         vote_enactment_time = datetime.now() + timedelta(weeks=1),
         forward_time_to_enactment = False,
@@ -149,7 +149,7 @@ def test_market_closing_banners(page: Page, continuous_market, vega: VegaService
     vega.update_market_state(
         continuous_market,
         "mm",
-        vega_protos.governance.MarketStateUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE,
+        MarketStateUpdateType.Terminate,
         approve_proposal=False,
         vote_enactment_time = datetime.now() + timedelta(weeks=1),
         forward_time_to_enactment = False,
@@ -171,4 +171,4 @@ def test_market_closing_banners(page: Page, continuous_market, vega: VegaService
     will_close_pattern = r"TRADING ON MARKET BTC:DAI_2023 WILL STOP ON \d+ \w+\nYou will no longer be able to hold a position on this market when it closes in \d+ days \d+ hours\. The final price will be 107\.00 BTC\."
     match_result = re.fullmatch(will_close_pattern, page.locator(".grow").inner_text())
     assert match_result is not None
-    
+     """

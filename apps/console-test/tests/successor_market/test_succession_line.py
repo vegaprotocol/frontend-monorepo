@@ -12,7 +12,7 @@ def successor_market(vega: VegaService):
     successor_market_id = setup_simple_successor_market(
         vega, parent_market_id, tdai_id, "successor_market"
     )
-    vega.settle_market(
+    vega.submit_termination_and_settlement_data(
         settlement_key="FJMKnwfZdd48C8NqvYrG",
         settlement_price=110,
         market_id=parent_market_id,

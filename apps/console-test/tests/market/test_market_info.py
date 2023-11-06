@@ -17,8 +17,8 @@ def vega():
 
 # setting up everything in this single fixture, as all of the tests need the same setup, so no point in creating separate ones
 @pytest.fixture(scope="module")
-def page(vega, browser, request):
-    with init_page(vega, browser, request) as page:
+def page(vega, browser, request, port):
+    with init_page(vega, browser, request, port) as page:
         setup_continuous_market(vega)
         risk_accepted_setup(page)
         page.goto("/")
@@ -49,9 +49,9 @@ def test_market_info_current_fees(page: Page):
     # 6002-MDET-101
     page.get_by_test_id(market_title_test_id).get_by_text("Current fees").click()
     fields = [
-        ["Maker Fee", "10.00%"],
+        ["Maker Fee", "10%"],
         ["Infrastructure Fee", "0.05%"],
-        ["Liquidity Fee", "0.00%"],
+        ["Liquidity Fee", "0%"],
         ["Total Fees", "10.05%"],
     ]
     validate_info_section(page, fields)

@@ -10,7 +10,7 @@ on:
       VEGA_VERSION:
         description: 'Vega version to test'
         required: true
-        default: v0.73.0-rc.2
+        default: v0.73.1
       CONSOLE_IMAGE_NAME:
         description: 'Console image name'
         required: true

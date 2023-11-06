@@ -12,11 +12,10 @@ def vega():
     with init_vega() as vega:
         yield vega
 
-
 @pytest.fixture(scope="class")
-def create_settled_market(vega):
+def create_settled_market(vega: VegaService):
     market_id = setup_continuous_market(vega)
-    vega.settle_market(
+    vega.submit_termination_and_settlement_data(
         settlement_key="FJMKnwfZdd48C8NqvYrG",
         settlement_price=110,
         market_id=market_id,
@@ -115,10 +114,10 @@ class TestSettledMarket:
 @pytest.mark.usefixtures("risk_accepted", "auth")
 def test_terminated_market_no_settlement_date(page: Page, vega: VegaService):
     setup_continuous_market(vega)
-    governance.settle_oracle(
+    print("I have started test_terminated_market_no_settlement_date")
+    governance.submit_oracle_data(
         wallet=vega.wallet,
-        oracle_name="INVALID_ORACLE",
-        settlement_price=110,
+        payload={"trading.terminated": "true"},
         key_name="FJMKnwfZdd48C8NqvYrG",
     )
     vega.forward("60s")
