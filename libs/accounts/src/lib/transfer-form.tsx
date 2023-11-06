@@ -72,8 +72,26 @@ export const TransferForm = ({
 
   const assets = sortBy(
     accounts
-      .filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
+      .filter(
+        (a) =>
+          a.type === AccountType.ACCOUNT_TYPE_GENERAL ||
+          a.type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS
+      )
+      .reduce((merged, account) => {
+        const existing = merged.findIndex(
+          (m) => m.asset.id === account.asset.id
+        );
+        if (existing > -1) {
+          const balance = new BigNumber(merged[existing].balance)
+            .plus(new BigNumber(account.balance))
+            .toString();
+          merged[existing] = { ...merged[existing], balance };
+          return merged;
+        }
+        return [...merged, account];
+      }, [] as typeof accounts)
       .map((account) => ({
+        key: account.asset.id,
         ...account.asset,
         balance: addDecimal(account.balance, account.asset.decimals),
       })),
@@ -226,7 +244,7 @@ export const TransferForm = ({
             >
               {assets.map((a) => (
                 <AssetOption
-                  key={a.id}
+                  key={a.key}
                   asset={a}
                   balance={
                     <Balance

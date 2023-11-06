@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useAnimateValue } from '../../hooks/use-animate-value';
 import type { BigNumber } from '../../lib/bignumber';
 import { useNumberParts } from '@vegaprotocol/react-helpers';
+import * as Schema from '@vegaprotocol/types';
+import { useTranslation } from 'react-i18next';
+import { AnchorButton, Tooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  CONSOLE_TRANSFER_ASSET,
+  DApp,
+  useLinks,
+} from '@vegaprotocol/environment';
+import { useNetworkParam } from '@vegaprotocol/network-parameters';
 
 interface WalletCardProps {
   children: React.ReactNode;
@@ -100,8 +109,10 @@ export interface WalletCardAssetProps {
   symbol: string;
   balance: BigNumber;
   decimals: number;
+  assetId?: string;
   border?: boolean;
   subheading?: string;
+  type?: Schema.AccountType;
 }
 
 export const WalletCardAsset = ({
@@ -110,16 +121,37 @@ export const WalletCardAsset = ({
   symbol,
   balance,
   decimals,
+  assetId,
   border,
   subheading,
+  type,
 }: WalletCardAssetProps) => {
   const [integers, decimalsPlaces, separator] = useNumberParts(
     balance,
     decimals
   );
+  const { t } = useTranslation();
+  const consoleLink = useLinks(DApp.Console);
+  const transferAssetLink = (assetId: string) =>
+    consoleLink(CONSOLE_TRANSFER_ASSET.replace(':assetId', assetId));
+  const { param: baseRate } = useNetworkParam('rewards_vesting_baseRate');
+
+  const isRedeemable =
+    type === Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS && assetId;
+
+  const accountTypeTooltip = useMemo(() => {
+    if (type === Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS) {
+      return t('VestedRewardsTooltip');
+    }
+    if (type === Schema.AccountType.ACCOUNT_TYPE_VESTING_REWARDS && baseRate) {
+      return t('VestingRewardsTooltip', { baseRate });
+    }
+
+    return null;
+  }, [baseRate, t, type]);
 
   return (
-    <div className="flex flex-nowrap mt-2 mb-4">
+    <div className="flex flex-nowrap gap-2 mt-2 mb-4">
       <img
         alt="Vega"
         src={image}
@@ -129,15 +161,37 @@ export const WalletCardAsset = ({
       />
       <div>
         <div
-          className="flex align-center text-base"
+          className="flex align-center items-baseline text-base gap-2"
           data-testid="currency-title"
         >
-          <div className="mb-0 px-2 uppercase">{name}</div>
+          <div className="mb-0 uppercase">{name}</div>
           <div className="mb-0 uppercase text-neutral-400">
             {subheading || symbol}
           </div>
         </div>
-        <div className="px-2 basis-full font-mono" data-testid="currency-value">
+        {type ? (
+          <div className="mb-[2px] flex gap-2 items-baseline">
+            <Tooltip description={accountTypeTooltip}>
+              <span className="px-2 py-1 leading-none text-xs bg-vega-cdark-700 rounded">
+                {Schema.AccountTypeMapping[type]}
+              </span>
+            </Tooltip>
+            {isRedeemable ? (
+              <Tooltip description={t('RedeemRewardsTooltip')}>
+                <AnchorButton
+                  variant="primary"
+                  size="xs"
+                  href={transferAssetLink(assetId)}
+                  target="_blank"
+                  className="px-2 py-1 leading-none text-xs bg-vega-yellow text-black rounded"
+                >
+                  {t('Redeem')}
+                </AnchorButton>
+              </Tooltip>
+            ) : null}
+          </div>
+        ) : null}
+        <div className="basis-full font-mono" data-testid="currency-value">
           <span>
             {integers}
             {separator}

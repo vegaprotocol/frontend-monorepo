@@ -126,6 +126,11 @@ export const useEtherscanLink = () => {
   return link;
 };
 
+// Console pages
+export const CONSOLE_TRANSFER = '#/portfolio/assets/transfer';
+export const CONSOLE_TRANSFER_ASSET =
+  '#/portfolio/assets/transfer?assetId=:assetId';
+
 // Governance pages
 export const TOKEN_NEW_MARKET_PROPOSAL = '/proposals/propose/new-market';
 export const TOKEN_NEW_NETWORK_PARAM_PROPOSAL =

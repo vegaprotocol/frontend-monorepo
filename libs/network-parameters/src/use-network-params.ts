@@ -12,6 +12,7 @@ export const NetworkParams = {
     'rewards_marketCreationQuantumMultiple',
   reward_staking_delegation_payoutDelay:
     'reward_staking_delegation_payoutDelay',
+  rewards_vesting_baseRate: 'rewards_vesting_baseRate',
   governance_proposal_market_minVoterBalance:
     'governance_proposal_market_minVoterBalance',
   governance_proposal_market_minClose: 'governance_proposal_market_minClose',
