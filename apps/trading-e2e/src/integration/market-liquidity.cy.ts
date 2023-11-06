@@ -22,6 +22,7 @@ const colUpdatedAt = '[col-id="updatedAt"] button';
 
 const headers = [
   'Party',
+  'Status',
   'Commitment (tDAI)',
   'Obligation',
   'Fee',
@@ -34,7 +35,6 @@ const headers = [
   'Last time on the book',
   'Last fee penalty',
   'Last bond penalty',
-  'Status',
   'Created',
   'Updated',
 ];
