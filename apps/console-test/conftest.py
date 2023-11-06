@@ -5,6 +5,7 @@ import os
 import json
 import requests
 import time
+import subprocess
 
 from contextlib import contextmanager
 from vega_sim.null_service import VegaServiceNull
@@ -46,6 +47,11 @@ def pytest_configure(config):
             level=config.getini("log_file_level"),
         )
 
+@pytest.fixture(scope="session", autouse=True)
+def build_trading_platform():
+    # Build the trading platform before any tests run
+    print("Building the trading platform...")
+    subprocess.run(["yarn", "nx", "build", "trading"], check=True)
 
 # Start VegaServiceNull and start up docker container for website
 @contextmanager
@@ -59,7 +65,6 @@ def init_vega(request=None):
         "Starting VegaServiceNull",
         extra={"worker_id": os.environ.get("PYTEST_XDIST_WORKER")},
     )
-    logger.info(f"Using console image: {console_image_name}")
     logger.info(f"Using vega version: {vega_version}")
     with VegaServiceNull(
         run_with_console=False,
@@ -71,25 +76,24 @@ def init_vega(request=None):
         seconds_per_block=seconds_per_block,
     ) as vega:
         try:
-            container = docker_client.containers.run(
-                console_image_name, detach=True, ports={"80/tcp": vega.console_port}
-            )
-            # docker setup
-            logger.info(
-                f"Container {container.id} started",
-                extra={"worker_id": os.environ.get("PYTEST_XDIST_WORKER")},
-            )
+            env = os.environ.copy()
+            env["PORT"] = str(vega.console_port)
+            logger.info(f"Starting the trading platform server on port {vega.console_port}...")
+            serve_command = ["yarn", "nx", "serve", "trading", "--port", str(vega.console_port)]
+            serve_process = subprocess.Popen(serve_command, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             yield vega
         except docker.errors.APIError as e:
             logger.info(f"Container creation failed.")
             logger.info(e)
             raise e
         finally:
-            logger.info(f"Stopping container {container.id}")
-            container.stop()
-            # Remove the container
-            logger.info(f"Removing container {container.id}")
-            container.remove()
+            logger.info("Shutting down the trading platform server...")
+            serve_process.terminate()
+            try:
+                serve_process.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                serve_process.kill()
+                logger.info("Server did not shut down gracefully, forcefully terminated.")
 
 
 @contextmanager
