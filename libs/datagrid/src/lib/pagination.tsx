@@ -18,9 +18,15 @@ export const Pagination = ({
   let rowMessage = '';
 
   if (count && !pageInfo?.hasNextPage) {
-    rowMessage = t('paginationAllLoaded', { count });
+    rowMessage = t('paginationAllLoaded', {
+      replace: { count },
+      defaultValue: 'All {{count}} rows loaded',
+    });
   } else {
-    rowMessage = t('paginationLoaded', { count });
+    rowMessage = t('paginationLoaded', {
+      replace: { count },
+      defaultValue: '{{count}} rows loaded',
+    });
   }
 
   return (
