@@ -1,11 +1,28 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import BigNumber from 'bignumber.js';
-import { AddressField, TransferFee, TransferForm } from './transfer-form';
+import {
+  AddressField,
+  TransferFee,
+  TransferForm,
+  type TransferFormProps,
+} from './transfer-form';
 import { AccountType } from '@vegaprotocol/types';
 import { removeDecimal } from '@vegaprotocol/utils';
+import { MockedProvider } from '@apollo/client/testing';
 
 describe('TransferForm', () => {
+  const renderComponent = (props: TransferFormProps) => {
+    return render(
+      // Wrap with mock provider as the form will make queries to fetch the selected
+      // toVegaKey accounts. We don't test this for now but we need to wrap so that
+      // the component has access to the client
+      <MockedProvider>
+        <TransferForm {...props} />
+      </MockedProvider>
+    );
+  };
+
   const submit = async () => {
     await userEvent.click(
       screen.getByRole('button', { name: 'Confirm transfer' })
@@ -66,7 +83,7 @@ describe('TransferForm', () => {
     // 1003-TRAN-017
     // 1003-TRAN-018
     // 1003-TRAN-019
-    render(<TransferForm {...props} />);
+    renderComponent(props);
     // Select a pubkey
     await userEvent.selectOptions(
       screen.getByLabelText('To Vega key'),
@@ -113,7 +130,7 @@ describe('TransferForm', () => {
     // 1003-TRAN-012
     // 1003-TRAN-013
     // 1003-TRAN-004
-    render(<TransferForm {...props} />);
+    renderComponent(props);
     await submit();
     expect(await screen.findAllByText('Required')).toHaveLength(3); // pubkey is set as default value
     const toggle = screen.getByText('Enter manually');
@@ -139,7 +156,7 @@ describe('TransferForm', () => {
     // 1002-WITH-010
     // 1003-TRAN-011
     // 1003-TRAN-014
-    render(<TransferForm {...props} />);
+    renderComponent(props);
 
     // check current pubkey not shown
     const keySelect = screen.getByLabelText<HTMLSelectElement>('To Vega key');
@@ -206,7 +223,7 @@ describe('TransferForm', () => {
   describe('IncludeFeesCheckbox', () => {
     it('validates fields and submits when checkbox is checked', async () => {
       const mockSubmit = jest.fn();
-      render(<TransferForm {...props} submitTransfer={mockSubmit} />);
+      renderComponent({ ...props, submitTransfer: mockSubmit });
 
       // check current pubkey not shown
       const keySelect = screen.getByLabelText<HTMLSelectElement>('To Vega key');
@@ -275,7 +292,7 @@ describe('TransferForm', () => {
     });
 
     it('validates fields when checkbox is not checked', async () => {
-      render(<TransferForm {...props} />);
+      renderComponent(props);
 
       // check current pubkey not shown
       const keySelect: HTMLSelectElement = screen.getByLabelText('To Vega key');

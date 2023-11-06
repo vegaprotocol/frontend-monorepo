@@ -37,7 +37,7 @@ interface FormFields {
   fromAccount: AccountType;
 }
 
-interface TransferFormProps {
+export interface TransferFormProps {
   pubKey: string | null;
   pubKeys: string[] | null;
   accounts: Array<{
