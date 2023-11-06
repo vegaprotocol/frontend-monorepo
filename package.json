@@ -16,7 +16,7 @@
     "release": "git checkout develop ; git pull ; node scripts/make-release.js",
     "install:console-test": "cd apps/console-test && poetry install && poetry run playwright install chromium && python -m vega_sim.tools.load_binaries --force --version v0.73.1",
     "console-test": "cd apps/console-test && poetry run pytest -k",
-    "console-test:all": "cd apps/console-test && poetry run pytest -s --numprocesses 8 --dist loadfile"
+    "console-test:all": "cd apps/console-test && poetry run pytest -s --numprocesses 6 --dist loadfile"
   },
   "engines": {
     "node": ">=16.15.1"
