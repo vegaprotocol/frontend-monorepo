@@ -19,7 +19,7 @@ export const MarketsCandlesDocument = gql`
     edges {
       node {
         id
-        candlesConnection(interval: $interval, since: $since) {
+        candlesConnection(interval: $interval, since: $since, pagination: {last: 1000}) {
           edges {
             node {
               ...MarketCandlesFields

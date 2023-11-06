@@ -11,7 +11,11 @@ query MarketCandles($interval: Interval!, $since: String!, $marketId: ID!) {
   marketsConnection(id: $marketId) {
     edges {
       node {
-        candlesConnection(interval: $interval, since: $since) {
+        candlesConnection(
+          interval: $interval
+          since: $since
+          pagination: { last: 1000 }
+        ) {
           edges {
             node {
               ...MarketCandlesFields
