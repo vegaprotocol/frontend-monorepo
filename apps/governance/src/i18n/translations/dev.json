@@ -953,5 +953,8 @@
   "ACCOUNT_TYPE_REWARD_RELATIVE_RETURN": "Relative return reward account",
   "ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY": "Return volatility reward account",
   "ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING": "Validator ranking reward account",
-  "ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD": "Pending fee referral reward account"
+  "ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD": "Pending fee referral reward account",
+  "VestingRewardsTooltip": "Vesting rewards will be moved to vested account at a rate of {{baseRate}} per epoch.",
+  "VestedRewardsTooltip": "Vested rewards can be redeemed using Console",
+  "RedeemRewardsTooltip": "Click to redeem vested rewards in Console"
 }

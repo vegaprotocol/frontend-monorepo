@@ -8,6 +8,7 @@ import { ENV } from '../../config';
 
 import noIcon from '../../images/token-no-icon.png';
 import vegaBlack from '../../images/vega_black.png';
+import vegaVesting from '../../images/vega_vesting.png';
 import { BigNumber } from '../../lib/bignumber';
 import type { WalletCardAssetProps } from '../wallet-card';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -102,7 +103,10 @@ export const usePollForDelegations = () => {
             setAccounts(
               accounts
                 .filter(
-                  (a) => a.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL
+                  (a) =>
+                    a.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL ||
+                    a.type === Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS ||
+                    a.type === Schema.AccountType.ACCOUNT_TYPE_VESTING_REWARDS
                 )
                 .map((a) => {
                   const isVega =
@@ -115,14 +119,23 @@ export const usePollForDelegations = () => {
                     subheading: isVega ? t('collateral') : a.asset.symbol,
                     symbol: a.asset.symbol,
                     decimals: a.asset.decimals,
+                    assetId: a.asset.id,
                     balance: new BigNumber(
                       addDecimal(a.balance, a.asset.decimals)
                     ),
-                    image: isVega ? vegaBlack : noIcon,
+                    image: isVega
+                      ? vegaBlack
+                      : a.type ===
+                          Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS ||
+                        a.type ===
+                          Schema.AccountType.ACCOUNT_TYPE_VESTING_REWARDS
+                      ? vegaVesting
+                      : noIcon,
                     border: isVega,
                     address: isAssetTypeERC20(a.asset)
                       ? a.asset.source.contractAddress
                       : undefined,
+                    type: a.type,
                   };
                 })
                 .sort((a, b) => {

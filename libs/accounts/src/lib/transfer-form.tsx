@@ -27,6 +27,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { AssetOption, Balance } from '@vegaprotocol/assets';
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
+import { useDataProvider } from '@vegaprotocol/data-provider';
+import { accountsDataProvider } from './accounts-data-provider';
 
 interface FormFields {
   toVegaKey: string;
@@ -35,7 +37,7 @@ interface FormFields {
   fromAccount: AccountType;
 }
 
-interface TransferFormProps {
+export interface TransferFormProps {
   pubKey: string | null;
   pubKeys: string[] | null;
   accounts: Array<{
@@ -72,8 +74,28 @@ export const TransferForm = ({
 
   const assets = sortBy(
     accounts
-      .filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
+      .filter(
+        (a) =>
+          a.type === AccountType.ACCOUNT_TYPE_GENERAL ||
+          a.type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS
+      )
+      // Sum the general and vested account balances so the value shown in the asset
+      // dropdown is correct for all transferable accounts
+      .reduce((merged, account) => {
+        const existing = merged.findIndex(
+          (m) => m.asset.id === account.asset.id
+        );
+        if (existing > -1) {
+          const balance = new BigNumber(merged[existing].balance)
+            .plus(new BigNumber(account.balance))
+            .toString();
+          merged[existing] = { ...merged[existing], balance };
+          return merged;
+        }
+        return [...merged, account];
+      }, [] as typeof accounts)
       .map((account) => ({
+        key: account.asset.id,
         ...account.asset,
         balance: addDecimal(account.balance, account.asset.decimals),
       })),
@@ -87,18 +109,30 @@ export const TransferForm = ({
 
   const asset = assets.find((a) => a.id === assetId);
 
+  const { data: toAccounts } = useDataProvider({
+    dataProvider: accountsDataProvider,
+    variables: {
+      partyId: selectedPubKey,
+    },
+    skip: !selectedPubKey,
+  });
+
   const account = accounts.find(
     (a) => a.asset.id === assetId && a.type === fromAccount
   );
   const accountBalance =
     account && addDecimal(account.balance, account.asset.decimals);
 
-  // General account for the selected asset
-  const generalAccount = accounts.find((a) => {
-    return (
-      a.asset.id === assetId && a.type === AccountType.ACCOUNT_TYPE_GENERAL
-    );
-  });
+  // The general account of the selected pubkey. You can only transfer
+  // to general accounts, either when redeeming vested rewards or just
+  // during normal general -> general transfers
+  const toGeneralAccount =
+    toAccounts &&
+    toAccounts.find((a) => {
+      return (
+        a.asset.id === assetId && a.type === AccountType.ACCOUNT_TYPE_GENERAL
+      );
+    });
 
   const [includeFee, setIncludeFee] = useState(false);
 
@@ -226,7 +260,7 @@ export const TransferForm = ({
             >
               {assets.map((a) => (
                 <AssetOption
-                  key={a.id}
+                  key={a.key}
                   asset={a}
                   balance={
                     <Balance
@@ -296,14 +330,16 @@ export const TransferForm = ({
           defaultValue={AccountType.ACCOUNT_TYPE_GENERAL}
         >
           <option value={AccountType.ACCOUNT_TYPE_GENERAL}>
-            {generalAccount
+            {toGeneralAccount
               ? `${
                   AccountTypeMapping[AccountType.ACCOUNT_TYPE_GENERAL]
                 } (${addDecimalsFormatNumber(
-                  generalAccount.balance,
-                  generalAccount.asset.decimals
-                )} ${generalAccount.asset.symbol})`
-              : AccountTypeMapping[AccountType.ACCOUNT_TYPE_GENERAL]}
+                  toGeneralAccount.balance,
+                  toGeneralAccount.asset.decimals
+                )} ${toGeneralAccount.asset.symbol})`
+              : `${AccountTypeMapping[AccountType.ACCOUNT_TYPE_GENERAL]} ${
+                  asset ? `(0 ${asset.symbol})` : ''
+                }`}
           </option>
         </TradingSelect>
       </TradingFormGroup>
