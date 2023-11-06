@@ -9,7 +9,6 @@ import { t } from '@vegaprotocol/i18n';
 import type {
   TypedDataAgGrid,
   VegaICellRendererParams,
-  VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { AgGrid } from '@vegaprotocol/datagrid';
 import {
