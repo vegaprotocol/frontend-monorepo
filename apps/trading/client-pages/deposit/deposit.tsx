@@ -1,4 +1,4 @@
-import type { Dispatch, FormEvent, SetStateAction } from 'react';
+import type { Dispatch, FormEvent, ReactNode, SetStateAction } from 'react';
 import { useCallback } from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -48,6 +48,7 @@ import { Balance } from './balance';
 import { Allowance } from './allowance';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { Faucet } from './faucet';
+import { AssetSelect } from './asset-select';
 
 export const Deposit = () => {
   const { VEGA_ENV } = useEnvironment();
@@ -61,21 +62,23 @@ export const Deposit = () => {
   if (!config) return null;
 
   return (
-    <div className="flex flex-col gap-4">
-      <DepositFlow
-        assets={assets}
-        assetId={assetId}
-        bridgeAddress={config.collateral_bridge_contract.address}
-        confirmations={config.confirmations}
-        markets={markets || []}
-        faucetEnabled={VEGA_ENV !== Networks.MAINNET}
-      />
-      <DepositGetStarted />
+    <div className="flex">
+      <div className="flex flex-col w-2/3 gap-4">
+        <DepositFlow
+          assets={assets}
+          assetId={assetId}
+          bridgeAddress={config.collateral_bridge_contract.address}
+          confirmations={config.confirmations}
+          markets={markets || []}
+          faucetEnabled={VEGA_ENV !== Networks.MAINNET}
+        />
+        <DepositGetStarted />
+      </div>
     </div>
   );
 };
 
-const getMarketsForAsset = (
+export const getMarketsForAsset = (
   markets: MarketMaybeWithDataAndCandles[],
   asset: AssetFieldsFragment
 ) => {
@@ -92,11 +95,174 @@ interface DepositState {
   amount: string;
   allowance: BigNumber | undefined;
   balance: BigNumber | undefined;
+  step: number;
 }
 
 type SetDepositState = Dispatch<SetStateAction<DepositState>>;
 
 const DepositFlow = ({
+  assets,
+  assetId,
+  bridgeAddress,
+  confirmations,
+  markets,
+  faucetEnabled,
+}: {
+  assets: AssetFieldsFragment[];
+  assetId?: string;
+  bridgeAddress: string;
+  confirmations: number;
+  markets: MarketMaybeWithDataAndCandles[];
+  faucetEnabled: boolean;
+}) => {
+  const { provider, account } = useWeb3React();
+  const [state, setState] = useState<DepositState>(() => {
+    const asset = assets.find((a) => a.id === assetId);
+    return {
+      asset,
+      amount: '',
+      allowance: undefined,
+      balance: undefined,
+      step: asset ? 1 : 0,
+    };
+  });
+
+  const handleAssetChanged = useCallback(
+    async (assetId?: string) => {
+      const asset = assets.find((a) => a.id === assetId);
+
+      if (!asset) {
+        setState((curr) => ({
+          ...curr,
+          asset: undefined,
+          allowance: undefined,
+          balance: undefined,
+          step: 0,
+        }));
+        return;
+      }
+
+      if (!isAssetTypeERC20(asset)) throw new Error('invalid asset');
+
+      let allowance = new BigNumber(0);
+      let balance = new BigNumber(0);
+
+      // if you have connected and therefore have a provider get
+      // balance and allowance
+      if (provider && account) {
+        const signer = provider.getSigner();
+        const tokenContract = new Token(
+          asset.source.contractAddress,
+          signer || provider
+        );
+        const allowanceRes = await tokenContract.allowance(
+          account,
+          bridgeAddress
+        );
+        allowance = new BigNumber(
+          addDecimal(allowanceRes.toString(), asset.decimals)
+        );
+
+        const balanceRes = await tokenContract.balanceOf(account);
+        balance = new BigNumber(
+          addDecimal(balanceRes.toString(), asset.decimals)
+        );
+      }
+
+      setState((curr) => ({
+        ...curr,
+        asset,
+        allowance,
+        balance,
+        step: isApproved(allowance) ? 2 : 1,
+      }));
+    },
+    [account, assets, bridgeAddress, provider]
+  );
+
+  const refetchBalances = useCallback(() => {
+    // refetch balance and allowance
+    if (state.asset) {
+      handleAssetChanged(state.asset.id);
+    }
+  }, [state.asset, handleAssetChanged]);
+
+  return (
+    <div className="flex flex-col gap-4">
+      <StepWrapper step={0} currentStep={state.step} title={'Select asset'}>
+        <AssetSelect
+          asset={state.asset}
+          assets={assets}
+          markets={markets}
+          onSelect={handleAssetChanged}
+        />
+      </StepWrapper>
+      <StepWrapper step={1} currentStep={state.step} title={'Approve'}>
+        <Approval
+          state={state}
+          bridgeAddress={bridgeAddress}
+          refetchBalances={refetchBalances}
+        />
+      </StepWrapper>
+      <StepWrapper step={2} currentStep={state.step} title={'Deposit'}>
+        <SendDeposit
+          state={state}
+          setState={setState}
+          bridgeAddress={bridgeAddress}
+          faucetEnabled={faucetEnabled}
+          refetchBalances={refetchBalances}
+          confirmations={confirmations}
+        />
+      </StepWrapper>
+      {state.step === 3 && (
+        <div className="flex gap-2">
+          <TradingButton onClick={() => handleAssetChanged()}>
+            {t('Deposit another asset')}
+          </TradingButton>
+          <TradingButton>{t('Start trading')}</TradingButton>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const StepWrapper = ({
+  children,
+  step,
+  currentStep,
+  title,
+}: {
+  children: ReactNode;
+  step: number;
+  currentStep: number;
+  title: string;
+}) => {
+  const complete = currentStep > step;
+  const hidden = currentStep < step;
+  return (
+    <section className="flex flex-col gap-3">
+      <h3
+        className={classNames('flex gap-3', {
+          'text-muted': hidden,
+        })}
+      >
+        {complete ? (
+          <span className="inline-block w-4 text-vega-green-600 dar:text-vega-green">
+            <VegaIcon name={VegaIconNames.TICK} size={18} />
+          </span>
+        ) : (
+          <span className="inline-block w-6 h-6 text-center rounded-full bg-vega-clight-600">
+            {step + 1}
+          </span>
+        )}{' '}
+        {title}
+      </h3>
+      {!hidden && <div className="pl-7">{children}</div>}
+    </section>
+  );
+};
+
+const DepositFlow2 = ({
   assets,
   assetId,
   bridgeAddress,
@@ -122,6 +288,7 @@ const DepositFlow = ({
       amount: '',
       allowance: undefined,
       balance: undefined,
+      complete: false,
     };
   });
 
@@ -375,7 +542,6 @@ const TransactionContainer = ({
       />
       <SendDeposit
         state={state}
-        amount={state.amount}
         bridgeAddress={bridgeAddress}
         confirmations={confirmations}
         setAmount={(amount) => setState((curr) => ({ ...curr, amount }))}
@@ -434,66 +600,58 @@ const Approval = ({
   // No asset selected, show generic approval title
   if (!account) {
     return (
-      <div className="pt-4 mt-4 border-t border-vega-clight-400 dark:border-vega-cdark-400">
-        <TradingButton onClick={openDialog} size="small">
-          {t('Connect Ethereum wallet')}
-        </TradingButton>
-      </div>
+      <TradingButton onClick={openDialog} size="small">
+        {t('Connect Ethereum wallet')}
+      </TradingButton>
     );
   }
 
-  return (
-    <div className="pt-4 mt-4 border-t border-vega-clight-400 dark:border-vega-cdark-400">
-      {isApproved(state.allowance) ? (
-        <div className="flex justify-between">
-          <div className="flex flex-col items-start gap-2">
-            <p className="text-sm">{t('Approved for use')}</p>
-            {tx && tx.status === EthTxStatus.Pending ? (
-              <TradingButton disabled={true} size="small">
-                {t('Approving...')}
-              </TradingButton>
-            ) : (
-              <TradingButton onClick={submitApproval} size="small">
-                {t('Re-approve')}
-              </TradingButton>
-            )}
+  return isApproved(state.allowance) ? (
+    <div className="flex justify-between gap-2">
+      <div>
+        {tx && tx.status === EthTxStatus.Pending ? (
+          <TradingButton disabled={true} size="small">
+            {t('Approving...')}
+          </TradingButton>
+        ) : (
+          <TradingButton onClick={submitApproval} size="small">
+            {t('Re-approve')}
+          </TradingButton>
+        )}
+      </div>
+      <div>
+        {state.allowance && (
+          <div className="font-mono text-lg">
+            <Allowance allowance={state.allowance} />
+            <small className="ml-1 text-xs text-muted font-alpha">
+              {t('Approved')}
+            </small>
           </div>
-          <div className="text-right">
-            {state.allowance && (
-              <div className="font-mono text-lg">
-                <Allowance allowance={state.allowance} />
-                <small className="ml-1 text-xs text-muted font-alpha">
-                  {t('Approved')}
-                </small>
-              </div>
-            )}
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-col items-start gap-2">
-          <div>
-            <h3 className="text-sm">{t('Approve deposits')}</h3>
-            <p className="text-sm text-muted">
-              {t(
-                'Before you can make a deposit of %s you need to approve its use with Vega in your Ethereum wallet.',
-                state.asset.symbol
-              )}
-            </p>
-          </div>
-          {tx && tx.status === EthTxStatus.Pending ? (
-            <TradingButton intent={Intent.Success} disabled={true} size="small">
-              {t('Approving...')}
-            </TradingButton>
-          ) : (
-            <TradingButton
-              onClick={submitApproval}
-              size="small"
-              intent={Intent.Success}
-            >
-              {t('Approve %s deposits', state.asset.symbol)}
-            </TradingButton>
+        )}
+      </div>
+    </div>
+  ) : (
+    <div className="flex flex-col items-start gap-1">
+      <div>
+        <p className="text-sm text-muted">
+          {t(
+            'Before you can make a deposit of %s you need to approve its use with Vega in your Ethereum wallet.',
+            state.asset.symbol
           )}
-        </div>
+        </p>
+      </div>
+      {tx && tx.status === EthTxStatus.Pending ? (
+        <TradingButton intent={Intent.Success} disabled={true} size="small">
+          {t('Approving...')}
+        </TradingButton>
+      ) : (
+        <TradingButton
+          onClick={submitApproval}
+          size="small"
+          intent={Intent.Success}
+        >
+          {t('Approve %s deposits', state.asset.symbol)}
+        </TradingButton>
       )}
     </div>
   );
@@ -501,22 +659,18 @@ const Approval = ({
 
 const SendDeposit = ({
   state,
-  amount,
-  setAmount,
+  setState,
   bridgeAddress,
   confirmations,
   faucetEnabled,
   refetchBalances,
-  onCancel,
 }: {
   state: DepositState;
-  amount: string;
+  setState: SetDepositState;
   bridgeAddress: string;
   confirmations: number;
-  setAmount: (amount: string) => void;
   faucetEnabled: boolean;
   refetchBalances: () => void;
-  onCancel: () => void;
 }) => {
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
@@ -548,7 +702,7 @@ const SendDeposit = ({
       'deposit_asset',
       [
         state.asset.source.contractAddress,
-        removeDecimal(amount, state.asset.decimals),
+        removeDecimal(state.amount, state.asset.decimals),
         prepend0x(pubKey),
       ],
       state.asset.id,
@@ -562,8 +716,10 @@ const SendDeposit = ({
     if (!state.asset) return; // this can get triggered when you clear the selected asset
     if (tx?.status === EthTxStatus.Confirmed) {
       refetchBalances();
+      setId(null);
+      setState((curr) => ({ ...curr, step: 3 }));
     }
-  }, [tx?.status, state.asset, refetchBalances]);
+  }, [tx?.status, state.asset, setState, refetchBalances]);
 
   if (!state.asset) {
     return null;
@@ -578,51 +734,36 @@ const SendDeposit = ({
     return null;
   }
 
-  const wrapperClass =
-    'flex flex-col items-start pt-4 mt-4 border-t gap-2 border-vega-clight-400 dark:border-vega-cdark-400';
-
   if (!pubKey) {
     return (
-      <div className={wrapperClass}>
-        <TradingButton onClick={openVegaWalletDialog} size="small">
-          {t('Connect Vega wallet')}
-        </TradingButton>
-      </div>
-    );
-  }
-
-  // TODO get all markets and show a list of markets to start trading in for the selected asset
-  if (tx?.status === EthTxStatus.Confirmed) {
-    return (
-      <div className={wrapperClass}>
-        <h3 className="text-sm">{t('Deposit complete')}</h3>
-        <div className="flex gap-2">
-          <TradingButton onClick={() => onCancel()}>
-            Deposit another asset
-          </TradingButton>
-          <TradingButton>Start trading</TradingButton>
-        </div>
-      </div>
+      <TradingButton onClick={openVegaWalletDialog} size="small">
+        {t('Connect Vega wallet')}
+      </TradingButton>
     );
   }
 
   return (
-    <div className={wrapperClass}>
-      <h3 className="text-sm">{t('Deposit')}</h3>
-      <form className="flex gap-2" onSubmit={submitDeposit}>
-        <TradingInput
-          name="amount"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          placeholder="Enter amount"
-          className="min-w-[250px]"
-        />
+    <form className="flex flex-col items-start gap-2" onSubmit={submitDeposit}>
+      <div className="flex self-stretch gap-1 ">
+        <div className="flex-1">
+          <TradingInput
+            name="amount"
+            value={state.amount}
+            onChange={(e) =>
+              setState((curr) => ({ ...curr, amount: e.target.value }))
+            }
+            placeholder="Enter amount"
+          />
+        </div>
         {state.balance && (
           <TradingButton
             size="small"
-            onClick={() =>
-              setAmount(state.balance ? state.balance.toString() : '')
-            }
+            onClick={() => {
+              setState((curr) => ({
+                ...curr,
+                amount: state.balance ? state.balance.toString() : '',
+              }));
+            }}
           >
             <span className="whitespace-nowrap">{t('Use max')}</span>
           </TradingButton>
@@ -630,13 +771,13 @@ const SendDeposit = ({
         {faucetEnabled && (
           <Faucet asset={state.asset} refetchBalances={refetchBalances} />
         )}
-        <TradingButton type="submit" size="small" intent={Intent.Success}>
-          <span className="whitespace-nowrap">
-            {t('Deposit %s', state.asset.symbol)}
-          </span>
-        </TradingButton>
-      </form>
-    </div>
+      </div>
+      <TradingButton type="submit" size="small" intent={Intent.Success}>
+        <span className="whitespace-nowrap">
+          {t('Deposit %s', state.asset.symbol)}
+        </span>
+      </TradingButton>
+    </form>
   );
 };
 

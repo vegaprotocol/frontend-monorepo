@@ -9,6 +9,12 @@ import { useTokenContract } from '@vegaprotocol/web3';
 const REFETCH_DELAY = 5000;
 
 export const AssetBalance = ({ asset }: { asset: AssetFieldsFragment }) => {
+  const balance = useAssetBalance(asset);
+
+  return <Balance balance={balance} symbol={asset.symbol} />;
+};
+
+export const useAssetBalance = (asset: AssetFieldsFragment) => {
   const [setBalance, getBalance] = useBalancesStore((state) => [
     state.setBalance,
     state.getBalance,
@@ -33,10 +39,5 @@ export const AssetBalance = ({ asset }: { asset: AssetFieldsFragment }) => {
     }
   }, [asset.id, fetchFromEth, getBalance]);
 
-  return (
-    <Balance
-      balance={getBalance(asset.id)?.balanceOnEth?.toString()}
-      symbol={asset.symbol}
-    />
-  );
+  return getBalance(asset.id)?.balanceOnEth?.toString();
 };

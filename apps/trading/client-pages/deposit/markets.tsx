@@ -9,17 +9,14 @@ export const Markets = ({
   markets: MarketMaybeWithDataAndCandles[];
 }) => {
   return (
-    <div>
-      <p className="mb-2 text-xs text-muted">{t('Currently traded in')}</p>
-      <div className="grid grid-cols-4 gap-1 md:gap-4">
-        {markets.length ? (
-          markets.map((m) => {
-            return <MarketCard key={m.id} market={m} />;
-          })
-        ) : (
-          <p className="text-xs">No markets</p>
-        )}
-      </div>
+    <div className="grid grid-cols-4 gap-1 md:gap-4">
+      {markets.length ? (
+        markets.map((m) => {
+          return <MarketCard key={m.id} market={m} />;
+        })
+      ) : (
+        <p className="text-xs">{t('Traded in 0 markets')}</p>
+      )}
     </div>
   );
 };
@@ -33,9 +30,9 @@ const MarketCard = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
       : '0.00';
 
   return (
-    <div className="p-2 rounded-lg col-span-2 lg:col-span-1 bg-vega-clight-600 dark:bg-vega-cdark-600">
+    <div className="flex flex-col justify-between p-2 text-xs rounded-lg col-span-2 lg:col-span-1 bg-vega-clight-600 dark:bg-vega-cdark-600">
       <h3>{market.tradableInstrument.instrument.code}</h3>
-      <p className="text-xs text-muted">Vol {volume}</p>
+      <p className="text-muted">Vol {volume}</p>
     </div>
   );
 };
