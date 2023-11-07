@@ -17,7 +17,8 @@ expire = "expire"
 
 @pytest.fixture(scope="module")
 def vega(request):
-    with init_vega(request) as vega:
+    with init_vega(request) as vega_tuple:
+        vega, _ = vega_tuple
         yield vega
 
 

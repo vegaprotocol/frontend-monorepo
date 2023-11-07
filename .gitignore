@@ -55,9 +55,9 @@ cypress.env.json
 
 #console-test
 apps/console-test/node_modules/
-apps/console-test//test-results/
-apps/console-test//playwright-report/
-apps/console-test//playwright/.cache/
+apps/console-test/test-results/
+apps/console-test/playwright-report/
+apps/console-test/playwright/.cache/
 apps/console-test/*.pyc
 apps/console-test/.pytest_cache
 apps/console-test/traces/

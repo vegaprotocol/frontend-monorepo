@@ -6,6 +6,7 @@ import json
 import requests
 import time
 import subprocess
+import socket
 
 from contextlib import contextmanager
 from vega_sim.null_service import VegaServiceNull
@@ -47,11 +48,17 @@ def pytest_configure(config):
             level=config.getini("log_file_level"),
         )
 
-@pytest.fixture(scope="session", autouse=True)
+""" @pytest.fixture(scope="session", autouse=True)
 def build_trading_platform():
     # Build the trading platform before any tests run
     print("Building the trading platform...")
-    subprocess.run(["yarn", "nx", "build", "trading"], check=True)
+    subprocess.run(["yarn", "nx", "build", "trading"], check=True) """
+
+def find_free_port():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("", 0))
+        s.listen(1)
+        return s.getsockname()[1]
 
 # Start VegaServiceNull and start up docker container for website
 @contextmanager
@@ -76,17 +83,20 @@ def init_vega(request=None):
         seconds_per_block=seconds_per_block,
     ) as vega:
         try:
+            # Start the development server
+            port = find_free_port()
             env = os.environ.copy()
-            env["PORT"] = str(vega.console_port)
-            logger.info(f"Starting the trading platform server on port {vega.console_port}...")
-            serve_command = ["yarn", "nx", "serve", "trading", "--port", str(vega.console_port)]
+            env["PORT"] = str(port)
+            logger.info(f"Starting the trading platform server on port {port}...")
+            serve_command = ["yarn", "nx", "serve", "trading", "--port", str(port)]
             serve_process = subprocess.Popen(serve_command, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            yield vega
-        except docker.errors.APIError as e:
-            logger.info(f"Container creation failed.")
-            logger.info(e)
-            raise e
+
+            #TODO add proper check for server
+            logger.info("Waiting for the server to start...")
+            time.sleep(10)  # Adjust this time as necessary.
+            yield vega, port
         finally:
+            # Shutdown actions below this line
             logger.info("Shutting down the trading platform server...")
             serve_process.terminate()
             try:
@@ -97,10 +107,10 @@ def init_vega(request=None):
 
 
 @contextmanager
-def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRequest):
+def init_page(vega: VegaServiceNull, port, browser: Browser, request: pytest.FixtureRequest):
     with browser.new_context(
         viewport={"width": 1920, "height": 1080},
-        base_url=f"http://localhost:{vega.console_port}",
+        base_url=f"http://localhost:{port}",
     ) as context, context.new_page() as page:
         context.tracing.start(screenshots=True, snapshots=True, sources=True)
         try:
@@ -109,7 +119,7 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
             while attempts < 100:
                 try:
                     code = requests.get(
-                        f"http://localhost:{vega.console_port}/"
+                        f"http://localhost:{port}/"
                     ).status_code
                     if code == 200:
                         break
@@ -144,19 +154,23 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
                 except Exception as e:
                     logger.error(f"Failed to save trace: {e}")
 
+@pytest.fixture()
+def vega_port(request):
+    with init_vega(request) as vega_instance:
+        _, port = vega_instance  # Unpack only port here if you want to yield just the port.
+        yield port
 
-# default vega & page fixtures with function scope (refreshed at each test) that can be used in tests
-# separate fixtures may be defined in tests if we prefer different scope
 @pytest.fixture
 def vega(request):
-    with init_vega(request) as vega:
+    with init_vega(request) as vega_tuple:
+        vega, _ = vega_tuple
         yield vega
 
 
 @pytest.fixture
-def page(vega, browser, request):
-    with init_page(vega, browser, request) as page:
-        yield page
+def page(vega, vega_port, browser, request):
+    with init_page(vega, vega_port, browser, request) as page_instance:
+        yield page_instance
 
 
 # Set auth token so eager connection for MarketSim wallet is successful

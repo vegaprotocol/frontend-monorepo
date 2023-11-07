@@ -5,7 +5,8 @@ from fixtures.market import setup_continuous_market
 
 @pytest.fixture(scope="module")
 def vega(request):
-    with init_vega(request) as vega:
+    with init_vega(request) as vega_tuple:
+        vega, _ = vega_tuple
         yield vega
 
 @pytest.fixture(scope="module")

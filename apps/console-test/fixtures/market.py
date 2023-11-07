@@ -1,5 +1,5 @@
 from collections import namedtuple
-from vega_sim.service import VegaService, PeggedOrder
+from vega_sim.service import VegaService
 from actions.vega import submit_multiple_orders, submit_order, submit_liquidity
 
 

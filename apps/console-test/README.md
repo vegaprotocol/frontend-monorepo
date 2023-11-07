@@ -13,7 +13,7 @@
 1. **Install Docker**: Follow the instructions on the [offical Docker website](https://docs.docker.com/desktop/).
 1. **Install Dependencies**:
    ```bash
-   npm run install:console-test
+   npm run trading:test:install
    ```
 
 If you want to run against specific vega binaries you can update the command in package.json
@@ -32,7 +32,7 @@ If you want to run against specific vega binaries you can update the command in 
 
 1. **Run the tests**: To run a specific test (or group of tests) using its name, use the following command:
    ```bash
-   npm run console-test -- "test_name" -s --headed
+   npm run trading:test -- "test_name" -s --headed
    ```
 
 ## Running Tests in Parallel
@@ -40,5 +40,5 @@ If you want to run against specific vega binaries you can update the command in 
 If you want to run tests in parallel, use the --numprocesses auto option. --dist loadfile makes sure that there are no multiple runners assigned to single test file:
 
 ```bash
-npm run console-test:all
+npm run trading:test:all
 ```
