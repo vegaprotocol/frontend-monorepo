@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
-export const FeeCard = ({
+export const Card = ({
   children,
   title,
   className,
@@ -21,12 +21,12 @@ export const FeeCard = ({
       )}
     >
       <h2 className="mb-3">{title}</h2>
-      {loading ? <FeeCardLoader /> : children}
+      {loading ? <CardLoader /> : children}
     </div>
   );
 };
 
-export const FeeCardLoader = () => {
+export const CardLoader = () => {
   return (
     <div className="flex flex-col gap-2">
       <div className="w-full h-5 bg-vega-clight-600 dark:bg-vega-cdark-600" />

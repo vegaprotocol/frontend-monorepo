@@ -9,9 +9,8 @@ import {
 import { useMarketList } from '@vegaprotocol/markets';
 import { formatNumber, formatNumberRounded } from '@vegaprotocol/utils';
 import { useDiscountProgramsQuery, useFeesQuery } from './__generated__/Fees';
-import { FeeCard } from './fees-card';
+import { Card, CardStat, CardTable, CardTableTD, CardTableTH } from '../card';
 import { MarketFees } from './market-fees';
-import { Stat } from './stat';
 import { useVolumeStats } from './use-volume-stats';
 import { useReferralStats } from './use-referral-stats';
 import { formatPercentage, getAdjustedFee } from './utils';
@@ -55,7 +54,7 @@ export const FeesContainer = () => {
   const { volumeDiscount, volumeTierIndex, volumeInWindow, volumeTiers } =
     useVolumeStats(
       feesData?.volumeDiscountStats,
-      programData?.currentVolumeDiscountProgram
+      programData?.currentVolumeDiscountProgram,
     );
 
   const {
@@ -72,7 +71,7 @@ export const FeesContainer = () => {
     programData?.currentReferralProgram,
     feesData?.epoch,
     feesData?.referrer,
-    feesData?.referee
+    feesData?.referee,
   );
 
   const loading = paramsLoading || feesLoading || programLoading;
@@ -80,14 +79,14 @@ export const FeesContainer = () => {
 
   const isReferralProgramRunning = Boolean(programData?.currentReferralProgram);
   const isVolumeDiscountProgramRunning = Boolean(
-    programData?.currentVolumeDiscountProgram
+    programData?.currentVolumeDiscountProgram,
   );
 
   return (
     <div className="grid auto-rows-min grid-cols-4 gap-3">
       {isConnected && (
         <>
-          <FeeCard
+          <Card
             title={t('My trading fees')}
             className="sm:col-span-2"
             loading={loading}
@@ -98,8 +97,8 @@ export const FeesContainer = () => {
               referralDiscount={referralDiscount}
               volumeDiscount={volumeDiscount}
             />
-          </FeeCard>
-          <FeeCard
+          </Card>
+          <Card
             title={t('Total discount')}
             className="sm:col-span-2"
             loading={loading}
@@ -110,8 +109,8 @@ export const FeesContainer = () => {
               isReferralProgramRunning={isReferralProgramRunning}
               isVolumeDiscountProgramRunning={isVolumeDiscountProgramRunning}
             />
-          </FeeCard>
-          <FeeCard
+          </Card>
+          <Card
             title={t('My current volume')}
             className="sm:col-span-2"
             loading={loading}
@@ -128,8 +127,8 @@ export const FeesContainer = () => {
                 {t('No volume discount program active')}
               </p>
             )}
-          </FeeCard>
-          <FeeCard
+          </Card>
+          <Card
             title={t('Referral benefits')}
             className="sm:col-span-2"
             loading={loading}
@@ -147,10 +146,10 @@ export const FeesContainer = () => {
                 {t('No referral program active')}
               </p>
             )}
-          </FeeCard>
+          </Card>
         </>
       )}
-      <FeeCard
+      <Card
         title={t('Volume discount')}
         className="lg:col-span-full xl:col-span-2"
         loading={loading}
@@ -161,8 +160,8 @@ export const FeesContainer = () => {
           lastEpochVolume={volumeInWindow}
           windowLength={volumeDiscountWindowLength}
         />
-      </FeeCard>
-      <FeeCard
+      </Card>
+      <Card
         title={t('Referral discount')}
         className="lg:col-span-full xl:col-span-2"
         loading={loading}
@@ -173,8 +172,8 @@ export const FeesContainer = () => {
           epochsInSet={epochsInSet}
           referralVolumeInWindow={referralVolumeInWindow}
         />
-      </FeeCard>
-      <FeeCard
+      </Card>
+      <Card
         title={t('Fees by market')}
         className="lg:col-span-full"
         loading={marketsLoading}
@@ -184,7 +183,7 @@ export const FeesContainer = () => {
           referralDiscount={referralDiscount}
           volumeDiscount={volumeDiscount}
         />
-      </FeeCard>
+      </Card>
     </div>
   );
 };
@@ -211,12 +210,12 @@ export const TradingFees = ({
   const maxLiq = maxBy(markets, (m) => Number(m.fees.factors.liquidityFee));
 
   const total = new BigNumber(params.market_fee_factors_makerFee).plus(
-    new BigNumber(params.market_fee_factors_infrastructureFee)
+    new BigNumber(params.market_fee_factors_infrastructureFee),
   );
 
   const adjustedTotal = getAdjustedFee(
     [total],
-    [referralDiscountBigNum, volumeDiscountBigNum]
+    [referralDiscountBigNum, volumeDiscountBigNum],
   );
 
   let minTotal;
@@ -234,66 +233,62 @@ export const TradingFees = ({
 
     minAdjustedTotal = getAdjustedFee(
       [total, minLiqFee],
-      [referralDiscountBigNum, volumeDiscountBigNum]
+      [referralDiscountBigNum, volumeDiscountBigNum],
     );
 
     maxAdjustedTotal = getAdjustedFee(
       [total, maxLiqFee],
-      [referralDiscountBigNum, volumeDiscountBigNum]
+      [referralDiscountBigNum, volumeDiscountBigNum],
     );
   }
 
   return (
-    <div>
-      <div className="pt-6 leading-none">
+    <div className="pt-4">
+      <div className="leading-none">
         <p className="block text-3xl leading-none" data-testid="adjusted-fees">
           {minAdjustedTotal !== undefined && maxAdjustedTotal !== undefined
             ? `${formatPercentage(minAdjustedTotal)}%-${formatPercentage(
-                maxAdjustedTotal
+                maxAdjustedTotal,
               )}%`
             : `${formatPercentage(adjustedTotal)}%`}
         </p>
-        <table className="w-full mt-0.5 text-xs text-muted">
-          <tbody>
+        <CardTable>
+          <tr className="text-defualt">
+            <CardTableTH>{t('Total fee before discount')}</CardTableTH>
+            <CardTableTD>
+              {minTotal !== undefined && maxTotal !== undefined
+                ? `${formatPercentage(minTotal.toNumber())}%-${formatPercentage(
+                    maxTotal.toNumber(),
+                  )}%`
+                : `${formatPercentage(total.toNumber())}%`}
+            </CardTableTD>
+          </tr>
+          <tr>
+            <CardTableTH>{t('Infrastructure')}</CardTableTH>
+            <CardTableTD>
+              {formatPercentage(
+                Number(params.market_fee_factors_infrastructureFee),
+              )}
+              %
+            </CardTableTD>
+          </tr>
+          <tr>
+            <CardTableTH>{t('Maker')}</CardTableTH>
+            <CardTableTD>
+              {formatPercentage(Number(params.market_fee_factors_makerFee))}%
+            </CardTableTD>
+          </tr>
+          {minLiq && maxLiq && (
             <tr>
-              <th className="font-normal text-left text-default">
-                {t('Total fee before discount')}
-              </th>
-              <td className="text-right text-default">
-                {minTotal !== undefined && maxTotal !== undefined
-                  ? `${formatPercentage(
-                      minTotal.toNumber()
-                    )}%-${formatPercentage(maxTotal.toNumber())}%`
-                  : `${formatPercentage(total.toNumber())}%`}
-              </td>
+              <CardTableTH>{t('Liquidity')}</CardTableTH>
+              <CardTableTD>
+                {formatPercentage(Number(minLiq.fees.factors.liquidityFee))}%
+                {'-'}
+                {formatPercentage(Number(maxLiq.fees.factors.liquidityFee))}%
+              </CardTableTD>
             </tr>
-            <tr>
-              <th className="font-normal text-left">{t('Infrastructure')}</th>
-              <td className="text-right">
-                {formatPercentage(
-                  Number(params.market_fee_factors_infrastructureFee)
-                )}
-                %
-              </td>
-            </tr>
-            <tr>
-              <th className="font-normal text-left ">{t('Maker')}</th>
-              <td className="text-right">
-                {formatPercentage(Number(params.market_fee_factors_makerFee))}%
-              </td>
-            </tr>
-            {minLiq && maxLiq && (
-              <tr>
-                <th className="font-normal text-left ">{t('Liquidity')}</th>
-                <td className="text-right">
-                  {formatPercentage(Number(minLiq.fees.factors.liquidityFee))}%
-                  {'-'}
-                  {formatPercentage(Number(maxLiq.fees.factors.liquidityFee))}%
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+          )}
+        </CardTable>
       </div>
     </div>
   );
@@ -316,13 +311,13 @@ export const CurrentVolume = ({
     : 0;
 
   return (
-    <div>
-      <Stat
+    <div className="flex flex-col pt-4 gap-3">
+      <CardStat
         value={formatNumberRounded(new BigNumber(windowLengthVolume))}
         text={t('Past %s epochs', windowLength.toString())}
       />
       {requiredForNextTier > 0 && (
-        <Stat
+        <CardStat
           value={formatNumber(requiredForNextTier)}
           text={t('Required for next tier')}
         />
@@ -341,16 +336,16 @@ const ReferralBenefits = ({
   epochs: number;
 }) => {
   return (
-    <div>
-      <Stat
+    <div className="flex flex-col pt-4 gap-3">
+      <CardStat
         // all sets volume (not just current party)
         value={formatNumber(setRunningNotionalTakerVolume)}
         text={t(
           'Combined running notional over the %s epochs',
-          epochs.toString()
+          epochs.toString(),
         )}
       />
-      <Stat value={epochsInSet} text={t('epochs in referral set')} />
+      <CardStat value={epochsInSet} text={t('epochs in referral set')} />
     </div>
   );
 };
@@ -368,7 +363,7 @@ const TotalDiscount = ({
 }) => {
   const totalDiscount = 1 - (1 - volumeDiscount) * (1 - referralDiscount);
   const totalDiscountDescription = t(
-    'The total discount is calculated according to the following formula: '
+    'The total discount is calculated according to the following formula: ',
   );
   const formula = (
     <span className="italic">
@@ -377,8 +372,8 @@ const TotalDiscount = ({
   );
 
   return (
-    <div>
-      <Stat
+    <div className="pt-4">
+      <CardStat
         description={
           <>
             {totalDiscountDescription}
@@ -388,38 +383,36 @@ const TotalDiscount = ({
         value={formatPercentage(totalDiscount) + '%'}
         highlight={true}
       />
-      <table className="w-full mt-0.5 text-xs text-muted">
-        <tbody>
-          <tr>
-            <th className="font-normal text-left">{t('Volume discount')}</th>
-            <td className="text-right">
-              {formatPercentage(volumeDiscount)}%
-              {!isVolumeDiscountProgramRunning && (
-                <Tooltip description={t('No active volume discount programme')}>
-                  <span className="cursor-help">
-                    {' '}
-                    <VegaIcon name={VegaIconNames.INFO} size={12} />
-                  </span>
-                </Tooltip>
-              )}
-            </td>
-          </tr>
-          <tr>
-            <th className="font-normal text-left ">{t('Referral discount')}</th>
-            <td className="text-right">
-              {formatPercentage(referralDiscount)}%
-              {!isReferralProgramRunning && (
-                <Tooltip description={t('No active referral programme')}>
-                  <span className="cursor-help">
-                    {' '}
-                    <VegaIcon name={VegaIconNames.INFO} size={12} />
-                  </span>
-                </Tooltip>
-              )}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <CardTable>
+        <tr>
+          <CardTableTH>{t('Volume discount')}</CardTableTH>
+          <CardTableTD>
+            {formatPercentage(volumeDiscount)}%
+            {!isVolumeDiscountProgramRunning && (
+              <Tooltip description={t('No active volume discount programme')}>
+                <span className="cursor-help">
+                  {' '}
+                  <VegaIcon name={VegaIconNames.INFO} size={12} />
+                </span>
+              </Tooltip>
+            )}
+          </CardTableTD>
+        </tr>
+        <tr>
+          <CardTableTH>{t('Referral discount')}</CardTableTH>
+          <CardTableTD>
+            {formatPercentage(referralDiscount)}%
+            {!isReferralProgramRunning && (
+              <Tooltip description={t('No active referral programme')}>
+                <span className="cursor-help">
+                  {' '}
+                  <VegaIcon name={VegaIconNames.INFO} size={12} />
+                </span>
+              </Tooltip>
+            )}
+          </CardTableTD>
+        </tr>
+      </CardTable>
     </div>
   );
 };
@@ -524,7 +517,7 @@ const ReferralTiers = ({
               const isUserTier = tiers.length - 1 - tierIndex === i;
 
               const requiredVolume = Number(
-                t.minimumRunningNotionalTakerVolume
+                t.minimumRunningNotionalTakerVolume,
               );
               let unlocksIn = null;
 
