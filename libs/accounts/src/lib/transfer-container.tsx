@@ -3,7 +3,7 @@ import { truncateByChars } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
   NetworkParams,
-  useNetworkParam,
+  useNetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { Transfer } from '@vegaprotocol/wallet';
@@ -21,7 +21,11 @@ export const ALLOWED_ACCOUNTS = [
 
 export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   const { pubKey, pubKeys } = useVegaWallet();
-  const { param } = useNetworkParam(NetworkParams.transfer_fee_factor);
+  const { params } = useNetworkParams([
+    NetworkParams.transfer_fee_factor,
+    NetworkParams.transfer_minTransferQuantumMultiple,
+  ]);
+
   const { data } = useDataProvider({
     dataProvider: accountsDataProvider,
     variables: { partyId: pubKey || '' },
@@ -59,7 +63,8 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
         pubKey={pubKey}
         pubKeys={pubKeys ? pubKeys?.map((pk) => pk.publicKey) : null}
         assetId={assetId}
-        feeFactor={param}
+        feeFactor={params.transfer_fee_factor}
+        minQuantumMultiple={params.transfer_minTransferQuantumMultiple}
         submitTransfer={transfer}
         accounts={accounts}
       />

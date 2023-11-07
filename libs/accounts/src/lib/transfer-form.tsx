@@ -1,12 +1,12 @@
 import sortBy from 'lodash/sortBy';
 import {
-  minSafe,
   maxSafe,
   required,
   vegaPublicKey,
   addDecimal,
   formatNumber,
   addDecimalsFormatNumber,
+  toBigNum,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
@@ -35,16 +35,25 @@ interface FormFields {
   fromAccount: string; // AccountType-AssetId
 }
 
+interface Asset {
+  id: string;
+  symbol: string;
+  name: string;
+  decimals: number;
+  quantum: string;
+}
+
 export interface TransferFormProps {
   pubKey: string | null;
   pubKeys: string[] | null;
   accounts: Array<{
     type: AccountType;
     balance: string;
-    asset: { id: string; symbol: string; name: string; decimals: number };
+    asset: Asset;
   }>;
   assetId?: string;
   feeFactor: string | null;
+  minQuantumMultiple: string | null;
   submitTransfer: (transfer: Transfer) => void;
 }
 
@@ -55,6 +64,7 @@ export const TransferForm = ({
   feeFactor,
   submitTransfer,
   accounts,
+  minQuantumMultiple,
 }: TransferFormProps) => {
   const {
     control,
@@ -121,11 +131,6 @@ export const TransferForm = ({
     account && addDecimal(account.balance, account.asset.decimals);
 
   const [includeFee, setIncludeFee] = useState(false);
-
-  // Min viable amount given asset decimals EG for WEI 0.000000000000000001
-  const min = asset
-    ? new BigNumber(addDecimal('1', asset.decimals))
-    : new BigNumber(0);
 
   // Max amount given selected asset and from account
   const max = accountBalance ? new BigNumber(accountBalance) : new BigNumber(0);
@@ -354,7 +359,43 @@ export const TransferForm = ({
           {...register('amount', {
             validate: {
               required,
-              minSafe: (value) => minSafe(new BigNumber(min))(value),
+              minSafe: (v) => {
+                if (!asset || !minQuantumMultiple) return true;
+
+                const value = new BigNumber(v);
+
+                if (value.isZero()) {
+                  return t('Amount cannot be 0');
+                }
+
+                const minByQuantumMultiple = toBigNum(
+                  minQuantumMultiple,
+                  asset.decimals
+                );
+
+                if (fromVested) {
+                  // special conditions which let you bypass min transfer rules set by quantum multiple
+                  if (value.isGreaterThanOrEqualTo(max)) {
+                    return true;
+                  }
+
+                  if (value.isLessThan(minByQuantumMultiple)) {
+                    return t(
+                      'Amount below minimum requirements for partial transfer. Use max to bypass'
+                    );
+                  }
+
+                  return true;
+                } else {
+                  if (value.isLessThan(minByQuantumMultiple)) {
+                    return t(
+                      'Amount below minimum requirement set by transfer.minTransferQuantumMultiple'
+                    );
+                  }
+                }
+
+                return true;
+              },
               maxSafe: (v) => {
                 const value = new BigNumber(v);
                 if (value.isGreaterThan(max)) {
@@ -370,7 +411,9 @@ export const TransferForm = ({
             type="button"
             className="absolute top-0 right-0 ml-auto text-xs underline"
             onClick={() =>
-              setValue('amount', parseFloat(accountBalance).toString())
+              setValue('amount', parseFloat(accountBalance).toString(), {
+                shouldValidate: true,
+              })
             }
           >
             {t('Use max')}

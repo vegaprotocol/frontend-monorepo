@@ -46,6 +46,7 @@ describe('TransferForm', () => {
     symbol: '€',
     name: 'EUR',
     decimals: 2,
+    quantum: '1',
   };
   const props = {
     pubKey,
@@ -64,9 +65,10 @@ describe('TransferForm', () => {
       {
         type: AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
         asset,
-        balance: '200000',
+        balance: '10000',
       },
     ],
+    minQuantumMultiple: '1',
   };
 
   it('form tooltips correctly displayed', async () => {
@@ -184,9 +186,9 @@ describe('TransferForm', () => {
 
     // Test amount validation
     await userEvent.clear(amountInput);
-    await userEvent.type(amountInput, '0.00000001');
+    await userEvent.type(amountInput, '0.001'); // Below quantum multiple amount
     expect(
-      await screen.findByText('Value is below minimum')
+      await screen.findByText(/Amount below minimum requirement/)
     ).toBeInTheDocument();
 
     await userEvent.clear(amountInput);
@@ -219,7 +221,11 @@ describe('TransferForm', () => {
 
   it('sends transfer from vested accounts', async () => {
     const mockSubmit = jest.fn();
-    renderComponent({ ...props, submitTransfer: mockSubmit });
+    renderComponent({
+      ...props,
+      submitTransfer: mockSubmit,
+      minQuantumMultiple: '100000',
+    });
 
     // check current pubkey not shown
     const keySelect: HTMLSelectElement = screen.getByLabelText('To Vega key');
@@ -251,15 +257,17 @@ describe('TransferForm', () => {
 
     const amountInput = screen.getByLabelText('Amount');
 
-    // Test use max button
-    await userEvent.click(screen.getByRole('button', { name: 'Use max' }));
-    expect(amountInput).toHaveValue('2000');
-
     const checkbox = screen.getByTestId('include-transfer-fee');
     expect(checkbox).not.toBeChecked();
 
     await userEvent.clear(amountInput);
-    await userEvent.type(amountInput, amount);
+    await userEvent.type(amountInput, '50');
+
+    expect(await screen.findByText(/Use max to bypass/)).toBeInTheDocument();
+
+    // Test use max button
+    await userEvent.click(screen.getByRole('button', { name: 'Use max' }));
+    expect(amountInput).toHaveValue('100');
 
     // If transfering from a vested account 'include fees' checkbox should
     // be disabled and fees should be 0

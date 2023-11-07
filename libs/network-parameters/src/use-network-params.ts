@@ -176,6 +176,7 @@ export const NetworkParams = {
   market_liquidity_feeCalculationTimeStep:
     'market_liquidity_feeCalculationTimeStep',
   transfer_fee_factor: 'transfer_fee_factor',
+  transfer_minTransferQuantumMultiple: 'transfer_minTransferQuantumMultiple',
   network_validators_incumbentBonus: 'network_validators_incumbentBonus',
 } as const;
 
