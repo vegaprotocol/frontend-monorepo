@@ -109,7 +109,7 @@ export const TransferForm = ({
         ...account.asset,
         balance: addDecimal(account.balance, account.asset.decimals),
       })),
-    'name'
+    (a) => a.symbol.toLowerCase()
   );
 
   const selectedPubKey = watch('toVegaKey');

@@ -1,3 +1,4 @@
+import sortBy from 'lodash/sortBy';
 import * as Schema from '@vegaprotocol/types';
 import { truncateByChars } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -44,6 +45,7 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   const accounts = data
     ? data.filter((account) => ALLOWED_ACCOUNTS.includes(account.type))
     : [];
+  const sortedAccounts = sortBy(accounts, (a) => a.asset.symbol.toLowerCase());
 
   return (
     <>
@@ -66,7 +68,7 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
         feeFactor={params.transfer_fee_factor}
         minQuantumMultiple={params.transfer_minTransferQuantumMultiple}
         submitTransfer={transfer}
-        accounts={accounts}
+        accounts={sortedAccounts}
       />
     </>
   );
