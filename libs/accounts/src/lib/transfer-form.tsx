@@ -32,7 +32,7 @@ interface FormFields {
   toVegaKey: string;
   asset: string;
   amount: string;
-  fromAccount: AccountType;
+  fromAccount: string; // AccountType-AssetId
 }
 
 export interface TransferFormProps {
@@ -105,12 +105,17 @@ export const TransferForm = ({
   const selectedPubKey = watch('toVegaKey');
   const amount = watch('amount');
   const fromAccount = watch('fromAccount');
-  const assetId = watch('asset');
-  const fromVested = fromAccount === AccountType.ACCOUNT_TYPE_VESTED_REWARDS;
-  const asset = assets.find((a) => a.id === assetId);
+  const selectedAssetId = watch('asset');
+
+  // Convert the account type (Type-AssetId) into separate values
+  const [accountType, accountAssetId] = fromAccount
+    ? parseFromAccount(fromAccount)
+    : [undefined, undefined];
+  const fromVested = accountType === AccountType.ACCOUNT_TYPE_VESTED_REWARDS;
+  const asset = assets.find((a) => a.id === accountAssetId);
 
   const account = accounts.find(
-    (a) => a.asset.id === assetId && a.type === fromAccount
+    (a) => a.asset.id === accountAssetId && a.type === accountType
   );
   const accountBalance =
     account && addDecimal(account.balance, account.asset.decimals);
@@ -145,16 +150,21 @@ export const TransferForm = ({
 
   const onSubmit = useCallback(
     (fields: FormFields) => {
-      if (!asset) {
-        throw new Error('Submitted transfer with no asset selected');
-      }
       if (!transferAmount) {
         throw new Error('Submitted transfer with no amount selected');
       }
+
+      const [type, assetId] = parseFromAccount(fields.fromAccount);
+      const asset = assets.find((a) => a.id === assetId);
+
+      if (!asset) {
+        throw new Error('Submitted transfer with no asset selected');
+      }
+
       const transfer = normalizeTransfer(
         fields.toVegaKey,
         transferAmount,
-        fields.fromAccount,
+        type,
         AccountType.ACCOUNT_TYPE_GENERAL, // field is readonly in the form
         {
           id: asset.id,
@@ -163,7 +173,7 @@ export const TransferForm = ({
       );
       submitTransfer(transfer);
     },
-    [asset, submitTransfer, transferAmount]
+    [submitTransfer, transferAmount]
   );
 
   // reset for placeholder workaround https://github.com/radix-ui/primitives/issues/1569
@@ -190,6 +200,7 @@ export const TransferForm = ({
               name={field.name}
               onValueChange={(value) => {
                 field.onChange(value);
+                setValue('fromAccount', '');
               }}
               placeholder={t('Please select an asset')}
               value={field.value}
@@ -260,12 +271,13 @@ export const TransferForm = ({
               </option>
               {accounts
                 .filter((a) => {
-                  if (!assetId) return true;
-                  return assetId === a.asset.id;
+                  if (!selectedAssetId) return true;
+                  return selectedAssetId === a.asset.id;
                 })
                 .map((a) => {
+                  const id = `${a.type}-${a.asset.id}`;
                   return (
-                    <option value={a.type} key={`${a.type}-${a.asset.id}`}>
+                    <option value={id} key={id}>
                       {AccountTypeMapping[a.type]} (
                       {addDecimalsFormatNumber(a.balance, a.asset.decimals)}{' '}
                       {a.asset.symbol})
@@ -500,4 +512,8 @@ export const AddressField = ({
       </button>
     </>
   );
+};
+
+const parseFromAccount = (fromAccountStr: string) => {
+  return fromAccountStr.split('-') as [AccountType, string];
 };
