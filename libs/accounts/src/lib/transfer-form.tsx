@@ -27,8 +27,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { AssetOption, Balance } from '@vegaprotocol/assets';
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
-import { useDataProvider } from '@vegaprotocol/data-provider';
-import { accountsDataProvider } from './accounts-data-provider';
 
 interface FormFields {
   toVegaKey: string;
@@ -72,6 +70,8 @@ export const TransferForm = ({
     },
   });
 
+  const [toVegaKeyMode, setToVegaKeyMode] = useState<ToVegaKeyMode>('select');
+
   const assets = sortBy(
     accounts
       .filter(
@@ -106,33 +106,14 @@ export const TransferForm = ({
   const amount = watch('amount');
   const fromAccount = watch('fromAccount');
   const assetId = watch('asset');
-
+  const fromVested = fromAccount === AccountType.ACCOUNT_TYPE_VESTED_REWARDS;
   const asset = assets.find((a) => a.id === assetId);
-
-  const { data: toAccounts } = useDataProvider({
-    dataProvider: accountsDataProvider,
-    variables: {
-      partyId: selectedPubKey,
-    },
-    skip: !selectedPubKey,
-  });
 
   const account = accounts.find(
     (a) => a.asset.id === assetId && a.type === fromAccount
   );
   const accountBalance =
     account && addDecimal(account.balance, account.asset.decimals);
-
-  // The general account of the selected pubkey. You can only transfer
-  // to general accounts, either when redeeming vested rewards or just
-  // during normal general -> general transfers
-  const toGeneralAccount =
-    toAccounts &&
-    toAccounts.find((a) => {
-      return (
-        a.asset.id === assetId && a.type === AccountType.ACCOUNT_TYPE_GENERAL
-      );
-    });
 
   const [includeFee, setIncludeFee] = useState(false);
 
@@ -198,55 +179,10 @@ export const TransferForm = ({
       className="text-sm"
       data-testid="transfer-form"
     >
-      <TradingFormGroup label="To Vega key" labelFor="toVegaKey">
-        <AddressField
-          onChange={() => setValue('toVegaKey', '')}
-          select={
-            <TradingSelect {...register('toVegaKey')} id="toVegaKey">
-              <option value="" disabled={true}>
-                {t('Please select')}
-              </option>
-              {pubKeys?.map((pk) => {
-                const text = pk === pubKey ? t('Current key: ') + pk : pk;
-
-                return (
-                  <option key={pk} value={pk}>
-                    {text}
-                  </option>
-                );
-              })}
-            </TradingSelect>
-          }
-          input={
-            <TradingInput
-              // eslint-disable-next-line jsx-a11y/no-autofocus
-              autoFocus={true} // focus input immediately after is shown
-              id="toVegaKey"
-              type="text"
-              {...register('toVegaKey', {
-                validate: {
-                  required,
-                  vegaPublicKey,
-                },
-              })}
-            />
-          }
-        />
-        {errors.toVegaKey?.message && (
-          <TradingInputError forInput="toVegaKey">
-            {errors.toVegaKey.message}
-          </TradingInputError>
-        )}
-      </TradingFormGroup>
       <TradingFormGroup label={t('Asset')} labelFor="asset">
         <Controller
           control={control}
           name="asset"
-          rules={{
-            validate: {
-              required,
-            },
-          }}
           render={({ field }) => (
             <TradingRichSelect
               data-testid="select-asset"
@@ -280,10 +216,10 @@ export const TransferForm = ({
         )}
       </TradingFormGroup>
       <TradingFormGroup label={t('From account')} labelFor="fromAccount">
-        <TradingSelect
-          id="fromAccount"
-          defaultValue=""
-          {...register('fromAccount', {
+        <Controller
+          control={control}
+          name="fromAccount"
+          rules={{
             validate: {
               required,
               sameAccount: (value) => {
@@ -298,50 +234,101 @@ export const TransferForm = ({
                 return true;
               },
             },
-          })}
-        >
-          <option value="" disabled={true}>
-            {t('Please select')}
-          </option>
-          {accounts
-            .filter((a) => {
-              if (!assetId) return true;
-              return assetId === a.asset.id;
-            })
-            .map((a) => {
-              return (
-                <option value={a.type} key={`${a.type}-${a.asset.id}`}>
-                  {AccountTypeMapping[a.type]} (
-                  {addDecimalsFormatNumber(a.balance, a.asset.decimals)}{' '}
-                  {a.asset.symbol})
-                </option>
-              );
-            })}
-        </TradingSelect>
+          }}
+          render={({ field }) => (
+            <TradingSelect
+              id="fromAccount"
+              defaultValue=""
+              {...field}
+              onChange={(e) => {
+                field.onChange(e);
+
+                // Enforce that if transfering from a vested rewards account it must go to
+                // the current connected general account
+                if (
+                  e.target.value === AccountType.ACCOUNT_TYPE_VESTED_REWARDS &&
+                  pubKey
+                ) {
+                  setValue('toVegaKey', pubKey);
+                  setToVegaKeyMode('select');
+                  setIncludeFee(false);
+                }
+              }}
+            >
+              <option value="" disabled={true}>
+                {t('Please select')}
+              </option>
+              {accounts
+                .filter((a) => {
+                  if (!assetId) return true;
+                  return assetId === a.asset.id;
+                })
+                .map((a) => {
+                  return (
+                    <option value={a.type} key={`${a.type}-${a.asset.id}`}>
+                      {AccountTypeMapping[a.type]} (
+                      {addDecimalsFormatNumber(a.balance, a.asset.decimals)}{' '}
+                      {a.asset.symbol})
+                    </option>
+                  );
+                })}
+            </TradingSelect>
+          )}
+        />
         {errors.fromAccount?.message && (
           <TradingInputError forInput="fromAccount">
             {errors.fromAccount.message}
           </TradingInputError>
         )}
       </TradingFormGroup>
-      <TradingFormGroup label={t('To account')} labelFor="toAccount">
-        <TradingSelect
-          id="toAccount"
-          defaultValue={AccountType.ACCOUNT_TYPE_GENERAL}
-        >
-          <option value={AccountType.ACCOUNT_TYPE_GENERAL}>
-            {toGeneralAccount
-              ? `${
-                  AccountTypeMapping[AccountType.ACCOUNT_TYPE_GENERAL]
-                } (${addDecimalsFormatNumber(
-                  toGeneralAccount.balance,
-                  toGeneralAccount.asset.decimals
-                )} ${toGeneralAccount.asset.symbol})`
-              : `${AccountTypeMapping[AccountType.ACCOUNT_TYPE_GENERAL]} ${
-                  asset ? `(0 ${asset.symbol})` : ''
-                }`}
-          </option>
-        </TradingSelect>
+      <TradingFormGroup label="To Vega key" labelFor="toVegaKey">
+        <AddressField
+          onChange={() => {
+            setValue('toVegaKey', '');
+            setToVegaKeyMode((curr) => (curr === 'input' ? 'select' : 'input'));
+          }}
+          mode={toVegaKeyMode}
+          select={
+            <TradingSelect
+              {...register('toVegaKey')}
+              disabled={fromVested}
+              id="toVegaKey"
+            >
+              <option value="" disabled={true}>
+                {t('Please select')}
+              </option>
+              {pubKeys?.map((pk) => {
+                const text = pk === pubKey ? t('Current key: ') + pk : pk;
+
+                return (
+                  <option key={pk} value={pk}>
+                    {text}
+                  </option>
+                );
+              })}
+            </TradingSelect>
+          }
+          input={
+            <TradingInput
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus={true} // focus input immediately after is shown
+              id="toVegaKey"
+              type="text"
+              disabled={fromVested}
+              {...register('toVegaKey', {
+                validate: {
+                  required,
+                  vegaPublicKey,
+                },
+              })}
+            />
+          }
+        />
+        {errors.toVegaKey?.message && (
+          <TradingInputError forInput="toVegaKey">
+            {errors.toVegaKey.message}
+          </TradingInputError>
+        )}
       </TradingFormGroup>
       <TradingFormGroup label="Amount" labelFor="amount">
         <TradingInput
@@ -390,10 +377,10 @@ export const TransferForm = ({
           <div>
             <TradingCheckbox
               name="include-transfer-fee"
-              disabled={!transferAmount}
+              disabled={!transferAmount || fromVested}
               label={t('Include transfer fee')}
               checked={includeFee}
-              onCheckedChange={() => setIncludeFee(!includeFee)}
+              onCheckedChange={() => setIncludeFee((x) => !x)}
             />
           </div>
         </Tooltip>
@@ -403,7 +390,7 @@ export const TransferForm = ({
           amount={transferAmount}
           transferAmount={transferAmount}
           feeFactor={feeFactor}
-          fee={fee}
+          fee={fromVested ? '0' : fee}
           decimals={asset?.decimals}
         />
       )}
@@ -485,28 +472,28 @@ export const TransferFee = ({
   );
 };
 
+type ToVegaKeyMode = 'input' | 'select';
+
 interface AddressInputProps {
   select: ReactNode;
   input: ReactNode;
+  mode: ToVegaKeyMode;
   onChange: () => void;
 }
 
 export const AddressField = ({
   select,
   input,
+  mode,
   onChange,
 }: AddressInputProps) => {
-  const [isInput, setIsInput] = useState(false);
-
+  const isInput = mode === 'input';
   return (
     <>
       {isInput ? input : select}
       <button
         type="button"
-        onClick={() => {
-          setIsInput((curr) => !curr);
-          onChange();
-        }}
+        onClick={onChange}
         className="absolute top-0 right-0 ml-auto text-xs underline"
       >
         {isInput ? t('Select from wallet') : t('Enter manually')}

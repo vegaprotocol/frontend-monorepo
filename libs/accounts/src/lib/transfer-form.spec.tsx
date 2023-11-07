@@ -9,18 +9,10 @@ import {
 } from './transfer-form';
 import { AccountType } from '@vegaprotocol/types';
 import { removeDecimal } from '@vegaprotocol/utils';
-import { MockedProvider } from '@apollo/client/testing';
 
 describe('TransferForm', () => {
   const renderComponent = (props: TransferFormProps) => {
-    return render(
-      // Wrap with mock provider as the form will make queries to fetch the selected
-      // toVegaKey accounts. We don't test this for now but we need to wrap so that
-      // the component has access to the client
-      <MockedProvider>
-        <TransferForm {...props} />
-      </MockedProvider>
-    );
+    return render(<TransferForm {...props} />);
   };
 
   const submit = async () => {
