@@ -54,7 +54,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
                 }
               />
             ) : (
-              'None'
+              t('None')
             );
           },
         },

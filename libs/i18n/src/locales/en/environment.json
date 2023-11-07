@@ -22,5 +22,6 @@
   "The validator deployed testnet": "The validator deployed testnet",
   "The vega mainnet": "The vega mainnet",
   "VALIDATOR_TESTNET": "VALIDATOR_TESTNET",
+  "View on Etherscan (opens in a new tab)": "View on Etherscan (opens in a new tab)",
   "Warning delay ( >{{warningLatency}} sec): {{blockUpdateLatency}} sec": "Warning delay ( >{{warningLatency}} sec): {{blockUpdateLatency}} sec"
 }

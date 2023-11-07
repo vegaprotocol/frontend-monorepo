@@ -50,9 +50,10 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    load: 'languageOnly',
-    lng: undefined,
+    lng: 'en',
     fallbackLng: 'en',
+    supportedLngs: ['en'],
+    load: 'languageOnly',
     // have a common namespace used around the full app
     ns: [
       'accounts',

@@ -1,7 +1,7 @@
 import {
   TradingInputError,
   SimpleGrid,
-  Tooltip,
+  TextChildrenTooltip as Tooltip,
   TradingDropdown,
   TradingDropdownContent,
   TradingDropdownItemIndicator,
@@ -20,7 +20,7 @@ import * as RadioGroup from '@radix-ui/react-radio-group';
 import classNames from 'classnames';
 import { FLAGS } from '@vegaprotocol/environment';
 import { Trans } from 'react-i18next';
-import { useT } from '../../use-t';
+import { useT, ns } from '../../use-t';
 
 interface TypeSelectorProps {
   value: DealTicketType;
@@ -146,17 +146,21 @@ export const TypeSelector = ({
     if (errorType === MarketModeValidationType.LiquidityMonitoringAuction) {
       return (
         <span>
-          <Trans i18nKey="TYPE_SELECTOR_LIQUIDITY_MONITORING_AUCTION" t={t}>
-            This market is in auction until it reaches{' '}
-            <Tooltip
-              description={
-                <SimpleGrid grid={compileGridData(t, market, marketData)} />
-              }
-            >
-              <span>{t('sufficient liquidity')}</span>
-            </Tooltip>
-            . {t('Only limit orders are permitted when market is in auction.')}
-          </Trans>
+          <Trans
+            i18nKey="TYPE_SELECTOR_LIQUIDITY_MONITORING_AUCTION"
+            defaults="This market is in auction until it reaches <0>sufficient liquidity</0>. Only limit orders are permitted when market is in auction."
+            ns={ns}
+            components={[
+              <Tooltip
+                description={
+                  <SimpleGrid grid={compileGridData(t, market, marketData)} />
+                }
+              >
+                sufficient liquidity
+              </Tooltip>,
+            ]}
+            t={t}
+          />
         </span>
       );
     }
@@ -164,17 +168,21 @@ export const TypeSelector = ({
     if (errorType === MarketModeValidationType.PriceMonitoringAuction) {
       return (
         <span>
-          <Trans i18nKey={'TYPE_SELECTOR_PRICE_MONITORING_AUCTION'} t={t}>
-            This market is in auction due to{' '}
-            <Tooltip
-              description={
-                <SimpleGrid grid={compileGridData(t, market, marketData)} />
-              }
-            >
-              <span>high price volatility</span>
-            </Tooltip>
-            . {t('Only limit orders are permitted when market is in auction.')}
-          </Trans>
+          <Trans
+            i18nKey="TYPE_SELECTOR_PRICE_MONITORING_AUCTION"
+            defaults="This market is in auction due to <0>high price volatility</0>. Only limit orders are permitted when market is in auction."
+            ns={ns}
+            components={[
+              <Tooltip
+                description={
+                  <SimpleGrid grid={compileGridData(t, market, marketData)} />
+                }
+              >
+                sufficient liquidity
+              </Tooltip>,
+            ]}
+            t={t}
+          />
         </span>
       );
     }

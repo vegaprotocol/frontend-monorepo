@@ -605,7 +605,7 @@ const formatSizeAtPrice = (
     positionDecimalPlaces
   )} ${assetUnit} @ ${
     type === Schema.OrderType.TYPE_MARKET
-      ? 'market'
+      ? t('SIZE_AT_PRICE_MARKET', 'market')
       : `${formatValue(
           removeDecimal(price || '0', decimalPlaces),
           decimalPlaces
