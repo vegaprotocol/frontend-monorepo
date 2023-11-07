@@ -8,7 +8,7 @@ jest.mock('../../components/withdraw-container', () => ({
   ),
 }));
 
-jest.mock('../../components/welcome-dialog/get-started.ts', () => ({
+jest.mock('../../components/welcome-dialog/get-started', () => ({
   GetStarted: () => <div>GetStarted</div>,
 }));
 

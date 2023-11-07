@@ -79,7 +79,11 @@ export const FeesBreakdown = ({
     volumeDiscountFactor
   );
 
-  const { volumeDiscount, referralDiscount } = getDiscountedFee(
+  const {
+    discountedFee: discountedTotalFeeAmount,
+    volumeDiscount,
+    referralDiscount,
+  } = getDiscountedFee(
     totalFeeAmount,
     referralDiscountFactor,
     volumeDiscountFactor
@@ -131,7 +135,7 @@ export const FeesBreakdown = ({
       <FeesBreakdownItem
         label={t('Total fees')}
         factor={feeFactors ? sumFeesFactors(feeFactors)?.toString() : undefined}
-        value={totalFeeAmount}
+        value={discountedTotalFeeAmount}
         symbol={symbol}
         decimals={decimals}
       />

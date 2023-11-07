@@ -289,17 +289,30 @@ describe('FeesDiscountBreakdownTooltip', () => {
     const { container } = render(<FeesDiscountBreakdownTooltip {...props} />);
     const dt = container.querySelectorAll('dt');
     const dd = container.querySelectorAll('dd');
-    const expected = [
-      { label: 'Infrastructure Fee Referral Discount', value: '0.05 BTC' },
-      { label: 'Infrastructure Fee Volume Discount', value: '0.06 BTC' },
-      { label: 'Liquidity Fee Referral Discount', value: '0.01 BTC' },
-      { label: 'Liquidity Fee Volume Discount', value: '0.02 BTC' },
-      { label: 'Maker Fee Referral Discount', value: '0.03 BTC' },
-      { label: 'Maker Fee Volume Discount', value: '0.04 BTC' },
+    const expectedDt = [
+      'Infrastructure Fee',
+      'Referral Discount',
+      'Volume Discount',
+      'Liquidity Fee',
+      'Referral Discount',
+      'Volume Discount',
+      'Maker Fee',
+      'Referral Discount',
+      'Volume Discount',
     ];
-    expected.forEach(({ label, value }, i) => {
+    const expectedDD = [
+      '0.05 BTC',
+      '0.06 BTC',
+      '0.01 BTC',
+      '0.02 BTC',
+      '0.03 BTC',
+      '0.04 BTC',
+    ];
+    expectedDt.forEach((label, i) => {
       expect(dt[i]).toHaveTextContent(label);
-      expect(dd[i]).toHaveTextContent(value);
+    });
+    expectedDD.forEach((label, i) => {
+      expect(dd[i]).toHaveTextContent(label);
     });
   });
 });

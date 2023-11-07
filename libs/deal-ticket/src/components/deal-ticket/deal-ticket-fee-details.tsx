@@ -72,15 +72,11 @@ export const DealTicketFeeDetails = ({
 
   return (
     <KeyValue
-      label={t('Fees')}
-      value={
-        totalDiscountedFeeAmount &&
-        `~${formatValue(totalDiscountedFeeAmount, assetDecimals)}`
-      }
-      formattedValue={
+      label={
         <>
+          {t('Fees')}
           {totalDiscountFactor ? (
-            <Pill size="xxs" intent={Intent.Warning} className="mr-1">
+            <Pill size="xxs" intent={Intent.Info} className="ml-1">
               -
               {formatNumberPercentage(
                 new BigNumber(totalDiscountFactor).multipliedBy(100),
@@ -88,9 +84,15 @@ export const DealTicketFeeDetails = ({
               )}
             </Pill>
           ) : null}
-          {totalDiscountedFeeAmount &&
-            `~${formatValue(totalDiscountedFeeAmount, assetDecimals, quantum)}`}
         </>
+      }
+      value={
+        totalDiscountedFeeAmount &&
+        `~${formatValue(totalDiscountedFeeAmount, assetDecimals)}`
+      }
+      formattedValue={
+        totalDiscountedFeeAmount &&
+        `~${formatValue(totalDiscountedFeeAmount, assetDecimals, quantum)}`
       }
       labelDescription={
         <div className="flex flex-col gap-2">

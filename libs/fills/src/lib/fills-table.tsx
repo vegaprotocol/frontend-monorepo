@@ -391,7 +391,7 @@ const FeesDiscountBreakdownTooltipItem = ({
   label: string;
   asset: ReturnType<typeof getAsset>;
 }) =>
-  value ? (
+  value && value !== '0' ? (
     <>
       <dt className="col-span-1">{label}</dt>
       <dd className="text-right col-span-1">
@@ -418,34 +418,47 @@ export const FeesDiscountBreakdownTooltip = ({
       className="max-w-sm bg-vega-light-100 dark:bg-vega-dark-100 border border-vega-light-200 dark:border-vega-dark-200 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white"
     >
       <dl className="grid grid-cols-2 gap-x-1">
+        {(fees.infrastructureFeeReferralDiscount || '0') !== '0' ||
+        (fees.infrastructureFeeVolumeDiscount || '0') !== '0' ? (
+          <dt className="col-span-2">{t('Infrastructure Fee')}</dt>
+        ) : null}
         <FeesDiscountBreakdownTooltipItem
           value={fees.infrastructureFeeReferralDiscount}
-          label={t('Infrastructure Fee Referral Discount')}
+          label={t('Referral Discount')}
           asset={asset}
         />
         <FeesDiscountBreakdownTooltipItem
           value={fees.infrastructureFeeVolumeDiscount}
-          label={t('Infrastructure Fee Volume Discount')}
+          label={t('Volume Discount')}
           asset={asset}
         />
+        {(fees.liquidityFeeReferralDiscount || '0') !== '0' ||
+        (fees.liquidityFeeVolumeDiscount || '0') !== '0' ? (
+          <dt className="col-span-2">{t('Liquidity Fee')}</dt>
+        ) : null}
+
         <FeesDiscountBreakdownTooltipItem
           value={fees.liquidityFeeReferralDiscount}
-          label={t('Liquidity Fee Referral Discount')}
+          label={t('Referral Discount')}
           asset={asset}
         />
         <FeesDiscountBreakdownTooltipItem
           value={fees.liquidityFeeVolumeDiscount}
-          label={t('Liquidity Fee Volume Discount')}
+          label={t('Volume Discount')}
           asset={asset}
         />
+        {(fees.makerFeeReferralDiscount || '0') !== '0' ||
+        (fees.makerFeeVolumeDiscount || '0') !== '0' ? (
+          <dt className="col-span-2">{t('Maker Fee')}</dt>
+        ) : null}
         <FeesDiscountBreakdownTooltipItem
           value={fees.makerFeeReferralDiscount}
-          label={t('Maker Fee Referral Discount')}
+          label={t('Referral Discount')}
           asset={asset}
         />
         <FeesDiscountBreakdownTooltipItem
           value={fees.makerFeeVolumeDiscount}
-          label={t('Maker Fee Volume Discount')}
+          label={t('Volume Discount')}
           asset={asset}
         />
       </dl>
