@@ -41,6 +41,7 @@ import {
   toBigNum,
   truncateByChars,
   formatTrigger,
+  MAXGOINT64,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
@@ -953,7 +954,19 @@ export const getVegaTransactionContentIntent = (tx: VegaStoredTxState) => {
     isWithdrawTransaction(tx.body) &&
     Intent.Warning;
 
+  // Toast for an IOC should go green when it is stopped,
+  // because stopping an IOC once all available volume has filled is the correct behaviour (it is immediate or cancel),
+  // this behaviour should apply to all IOC, not just those created due to "Close position"
+  const intentForClosedPosition =
+    tx.order &&
+    tx.order.status === Schema.OrderStatus.STATUS_STOPPED &&
+    tx.order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_IOC &&
+    tx.order.size === MAXGOINT64 &&
+    // isClosePositionTransaction(tx) &&
+    Intent.Success;
+
   const intent =
+    intentForClosedPosition ||
     intentForRejectedOrder ||
     intentForCompletedWithdrawal ||
     intentMap[tx.status];

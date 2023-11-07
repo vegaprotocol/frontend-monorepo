@@ -685,7 +685,7 @@ export const DealTicket = ({
         subLabel={`${formatValue(
           normalizedOrder.size,
           market.positionDecimalPlaces
-        )} ${baseQuote} @ ${
+        )} ${baseQuote || ''} @ ${
           type === Schema.OrderType.TYPE_MARKET
             ? 'market'
             : `${formatValue(
