@@ -1,0 +1,15 @@
+query RewardsPage($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    activityStreak {
+      isActive
+      activeFor
+      inactiveFor
+      rewardDistributionMultiplier
+      rewardVestingMultiplier
+      epoch
+      tradedVolume
+      openVolume
+    }
+  }
+}

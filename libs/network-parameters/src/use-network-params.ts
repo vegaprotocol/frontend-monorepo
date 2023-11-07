@@ -8,6 +8,7 @@ import {
 export const NetworkParams = {
   blockchains_ethereumConfig: 'blockchains_ethereumConfig',
   reward_asset: 'reward_asset',
+  rewards_activityStreak_benefitTiers: 'rewards_activityStreak_benefitTiers',
   rewards_marketCreationQuantumMultiple:
     'rewards_marketCreationQuantumMultiple',
   reward_staking_delegation_payoutDelay:
@@ -178,7 +179,6 @@ export const NetworkParams = {
   transfer_fee_factor: 'transfer_fee_factor',
   transfer_minTransferQuantumMultiple: 'transfer_minTransferQuantumMultiple',
   network_validators_incumbentBonus: 'network_validators_incumbentBonus',
-  rewards_activityStreak_benefitTiers: 'rewards_activityStreak_benefitTiers',
 } as const;
 
 type Params = typeof NetworkParams;

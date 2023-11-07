@@ -1,1 +1,1 @@
-export { Card } from './card';
+export { Card, CardStat, CardTable, CardTableTH, CardTableTD } from './card';

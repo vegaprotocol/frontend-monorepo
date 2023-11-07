@@ -253,7 +253,7 @@ export const TradingFees = ({
             : `${formatPercentage(adjustedTotal)}%`}
         </p>
         <CardTable>
-          <tr className="text-defualt">
+          <tr className="text-default">
             <CardTableTH>{t('Total fee before discount')}</CardTableTH>
             <CardTableTD>
               {minTotal !== undefined && maxTotal !== undefined
