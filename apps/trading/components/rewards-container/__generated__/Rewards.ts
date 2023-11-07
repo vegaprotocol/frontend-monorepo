@@ -10,7 +10,7 @@ export type RewardsPageQueryVariables = Types.Exact<{
 }>;
 
 
-export type RewardsPageQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, activityStreak?: { __typename?: 'PartyActivityStreak', isActive: boolean, activeFor: number, inactiveFor: number, rewardDistributionMultiplier: string, rewardVestingMultiplier: string, epoch: number, tradedVolume: string, openVolume: string } | null } | null, epochRewardSummaries?: { __typename?: 'EpochRewardSummaryConnection', edges?: Array<{ __typename?: 'EpochRewardSummaryEdge', node: { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType } } | null> | null } | null };
+export type RewardsPageQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, activityStreak?: { __typename?: 'PartyActivityStreak', isActive: boolean, activeFor: number, inactiveFor: number, rewardDistributionMultiplier: string, rewardVestingMultiplier: string, epoch: number, tradedVolume: string, openVolume: string } | null, vestingBalancesSummary: { __typename?: 'PartyVestingBalancesSummary', epoch?: number | null, vestingBalances?: Array<{ __typename?: 'PartyVestingBalance', balance: string, asset: { __typename?: 'Asset', id: string, symbol: string } }> | null, lockedBalances?: Array<{ __typename?: 'PartyLockedBalance', balance: string, untilEpoch: number, asset: { __typename?: 'Asset', id: string, symbol: string } }> | null } } | null, epochRewardSummaries?: { __typename?: 'EpochRewardSummaryConnection', edges?: Array<{ __typename?: 'EpochRewardSummaryEdge', node: { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType } } | null> | null } | null };
 
 export type RewardsPageEpochQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
@@ -31,6 +31,24 @@ export const RewardsPageDocument = gql`
       epoch
       tradedVolume
       openVolume
+    }
+    vestingBalancesSummary {
+      epoch
+      vestingBalances {
+        asset {
+          id
+          symbol
+        }
+        balance
+      }
+      lockedBalances {
+        asset {
+          id
+          symbol
+        }
+        balance
+        untilEpoch
+      }
     }
   }
   epochRewardSummaries(

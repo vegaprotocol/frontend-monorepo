@@ -41,16 +41,12 @@ import {
 import { formatPercentage } from '../fees-container/utils';
 import { AgGrid, StackedCell } from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
+import type { ValueFormatterFunc} from 'ag-grid-community';
 import { type ColDef } from 'ag-grid-community';
 import {
   addDecimalsFormatNumberQuantum,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
-
-const REWARD_ACCOUNT_TYPES = [
-  AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
-  AccountType.ACCOUNT_TYPE_VESTING_REWARDS,
-];
 
 export const RewardsContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -89,7 +85,11 @@ export const RewardsContainer = () => {
           className="lg:col-span-2"
           loading={loading}
         >
-          <RewardPot accounts={accounts} rewardAssetId={params.reward_asset} />
+          <VegaRewardPot
+            accounts={accounts}
+            rewardAssetId={params.reward_asset}
+            summary={rewardsData?.party?.vestingBalancesSummary}
+          />
         </Card>
         <Card title={t('Vesting')} className="lg:col-span-2" loading={loading}>
           <Vesting baseRate={params.rewards_vesting_baseRate} />
@@ -120,93 +120,89 @@ export const RewardsContainer = () => {
   );
 };
 
-export const RewardPot = ({
+export const VegaRewardPot = ({
   accounts,
   rewardAssetId,
+  summary,
 }: {
   accounts: Account[] | null;
   rewardAssetId: string; // VEGA
+  summary:
+    | {
+        epoch: number | null | undefined;
+        vestingBalances:
+          | Array<{ asset: { id: string; symbol: string }; balance: string }>
+          | null
+          | undefined;
+        lockedBalances:
+          | Array<{
+              asset: { id: string; symbol: string };
+              balance: string;
+              untilEpoch: number;
+            }>
+          | null
+          | undefined;
+      }
+    | undefined;
 }) => {
-  const rewardAccounts = accounts
-    ? accounts.filter((a) => REWARD_ACCOUNT_TYPES.includes(a.type))
-    : [];
-
-  const totalRewards = BigNumber.sum.apply(
-    null,
-    rewardAccounts.length
-      ? rewardAccounts.map((a) => getQuantumValue(a.balance, a.asset.quantum))
-      : [0]
-  );
-
-  const rewardAssetAccounts = accounts
+  const availableRewardAssetAccounts = accounts
     ? accounts.filter((a) => {
-        return a.asset.id === rewardAssetId;
+        return (
+          a.asset.id === rewardAssetId &&
+          a.type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS
+        );
       })
     : [];
 
-  const vestedRewardAssetAccounts = rewardAssetAccounts.filter(
-    (a) => a.type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS
-  );
-
-  const vestingRewardAssetAccounts = rewardAssetAccounts.filter(
-    (a) => a.type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS
-  );
-
+  // Total available to withdraw
   const totalVestedRewardsByRewardAsset = BigNumber.sum.apply(
     null,
-    vestedRewardAssetAccounts.length
-      ? vestedRewardAssetAccounts.map((a) => a.balance)
+    availableRewardAssetAccounts.length
+      ? availableRewardAssetAccounts.map((a) => a.balance)
       : [0]
   );
 
-  const totalVestingRewardsByRewardAsset = BigNumber.sum.apply(
-    null,
-    vestingRewardAssetAccounts.length
-      ? vestingRewardAssetAccounts.map((a) => a.balance)
-      : [0]
+  const lockedEntries = summary?.lockedBalances?.filter(
+    (b) => b.asset.id === rewardAssetId
   );
+  const lockedBalances = lockedEntries?.length
+    ? lockedEntries.map((e) => e.balance)
+    : [0];
+  const totalLocked = BigNumber.sum.apply(null, lockedBalances);
 
-  const totalRewardAsset = totalVestedRewardsByRewardAsset.plus(
-    totalVestingRewardsByRewardAsset
+  const vestingEntries = summary?.vestingBalances?.filter(
+    (b) => b.asset.id === rewardAssetId
   );
+  const vestingBalances = vestingEntries?.length
+    ? vestingEntries.map((e) => e.balance)
+    : [0];
+  const totalVesting = BigNumber.sum.apply(null, vestingBalances);
+
+  const totalRewards = totalLocked.plus(totalVesting);
 
   return (
     <div className="pt-4">
-      <div className="flex justify-between">
-        <CardStat
-          value={
-            <span data-testid="total-rewards">
-              {totalRewardAsset.toString()} {t('VEGA')}
-            </span>
-          }
-        />
-        <CardStat
-          value={
-            <span data-testid="total-rewards">
-              {totalRewards.toString()}{' '}
-              <span className="calt">{t('qUSD')}</span>
-            </span>
-          }
-        />
-      </div>
+      <CardStat
+        value={
+          <span data-testid="total-rewards">
+            {totalRewards.toString()} {t('VEGA')}
+          </span>
+        }
+      />
       <div className="flex flex-col gap-4">
         <CardTable>
           <tr>
             <CardTableTH>
               <span className="flex items-center gap-1">
-                {t('Vesting VEGA')}
+                {t('Locked VEGA')}
                 <VegaIcon name={VegaIconNames.LOCK} size={12} />
               </span>
             </CardTableTH>
-            <CardTableTD>
-              {totalVestingRewardsByRewardAsset.toString()}
-            </CardTableTD>
+            <CardTableTD>{totalLocked.toString()}</CardTableTD>
           </tr>
           <tr>
-            <CardTableTH>{t('Vested VEGA')}</CardTableTH>
-            <CardTableTD>
-              {totalVestedRewardsByRewardAsset.toString()}
-            </CardTableTD>
+            <CardTableTH>{t('Vesting VEGA')}</CardTableTH>
+            <CardTableTD>{totalVesting.toString()}</CardTableTD>
           </tr>
           <tr>
             <CardTableTH>{t('Available to withdraw this epoch')}</CardTableTH>
@@ -352,13 +348,13 @@ const RewardHistory = ({
   });
 
   const columnDefs = useMemo<ColDef<RewardRow>[]>(() => {
-    const rewardValueFormatter = ({
+    const rewardValueFormatter: ValueFormatterFunc<RewardRow> = ({
       data,
       value,
-    }: {
-      data: RewardRow;
-      value: number;
     }) => {
+      if (!value || !data) {
+        return '-';
+      }
       return addDecimalsFormatNumberQuantum(
         value,
         data.asset.decimals,
@@ -375,7 +371,7 @@ const RewardHistory = ({
       value: number;
       valueFormatted: string;
     }) => {
-      if (value <= 0) {
+      if (!value || value <= 0 || !data) {
         return <span className="text-muted">-</span>;
       }
 

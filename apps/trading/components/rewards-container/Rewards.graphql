@@ -15,6 +15,24 @@ query RewardsPage(
       tradedVolume
       openVolume
     }
+    vestingBalancesSummary {
+      epoch
+      vestingBalances {
+        asset {
+          id
+          symbol
+        }
+        balance
+      }
+      lockedBalances {
+        asset {
+          id
+          symbol
+        }
+        balance
+        untilEpoch
+      }
+    }
   }
   epochRewardSummaries(
     filter: $epochRewardSummariesFilter
