@@ -1,4 +1,8 @@
-query RewardsPage($partyId: ID!) {
+query RewardsPage(
+  $partyId: ID!
+  $epochRewardSummariesFilter: RewardSummaryFilter
+  $epochRewardSummariesPagination: Pagination
+) {
   party(id: $partyId) {
     id
     activityStreak {
@@ -11,5 +15,24 @@ query RewardsPage($partyId: ID!) {
       tradedVolume
       openVolume
     }
+  }
+  epochRewardSummaries(
+    filter: $epochRewardSummariesFilter
+    pagination: $epochRewardSummariesPagination
+  ) {
+    edges {
+      node {
+        epoch
+        assetId
+        amount
+        rewardType
+      }
+    }
+  }
+}
+
+query RewardsPageEpoch {
+  epoch {
+    id
   }
 }

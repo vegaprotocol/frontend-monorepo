@@ -1,3 +1,9 @@
+// TODO:
+// - Rewards history toggle for switching between user and all rewards
+// - Verify data in top cards is correct
+
+import groupBy from 'lodash/groupBy';
+import compact from 'lodash/compact';
 import type { Account } from '@vegaprotocol/accounts';
 import { useAccounts } from '@vegaprotocol/accounts';
 import { t } from '@vegaprotocol/i18n';
@@ -17,14 +23,29 @@ import {
   CardTableTD,
   CardTableTH,
 } from '../card/card';
-import { getQuantumValue } from '@vegaprotocol/assets';
-import { useRewardsPageQuery } from './__generated__/Rewards';
+import {
+  type AssetFieldsFragment,
+  getQuantumValue,
+  useAssetsMapProvider,
+} from '@vegaprotocol/assets';
+import {
+  type RewardsPageQuery,
+  useRewardsPageEpochQuery,
+  useRewardsPageQuery,
+} from './__generated__/Rewards';
 import {
   TradingButton,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { formatPercentage } from '../fees-container/utils';
+import { AgGrid, StackedCell } from '@vegaprotocol/datagrid';
+import { useMemo } from 'react';
+import { type ColDef } from 'ag-grid-community';
+import {
+  addDecimalsFormatNumberQuantum,
+  formatNumberPercentage,
+} from '@vegaprotocol/utils';
 
 const REWARD_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
@@ -39,19 +60,30 @@ export const RewardsContainer = () => {
     NetworkParams.rewards_vesting_baseRate,
   ]);
   const { data: accounts, loading: accountsLoading } = useAccounts(pubKey);
+
+  const { data: epochData } = useRewardsPageEpochQuery();
+
   const { data: rewardsData, loading: rewardsLoading } = useRewardsPageQuery({
     variables: {
       partyId: pubKey || '',
+      epochRewardSummariesFilter: {
+        // TODO: remove these hard coded values
+        fromEpoch: 9799, // Number(epochData?.epoch.id || 1) - 1,
+        toEpoch: 9799,
+      },
     },
-    skip: !pubKey,
+    skip: !pubKey || !epochData?.epoch.id,
   });
+
+  const { data: assets } = useAssetsMapProvider();
 
   const loading = paramsLoading || accountsLoading || rewardsLoading;
 
+  // TODO: Fix grid rows, they break on small screens when things stack
   return (
-    <div className="p-4">
+    <div className="flex flex-col h-full p-4">
       <h3 className="mb-4">Rewards</h3>
-      <div className="grid auto-rows-min grid-cols-6 gap-3">
+      <div className="flex-1 grid auto-rows-min grid-cols-6 gap-3">
         <Card
           title={t('Reward pot')}
           className="lg:col-span-2"
@@ -78,7 +110,10 @@ export const RewardsContainer = () => {
         </Card>
         */}
         <Card title={t('Rewards history')} className="lg:col-span-full">
-          TODO:
+          <RewardHistory
+            epochRewardSummaries={rewardsData?.epochRewardSummaries}
+            assets={assets}
+          />
         </Card>
       </div>
     </div>
@@ -136,20 +171,21 @@ export const RewardPot = ({
   );
 
   return (
-    <div>
+    <div className="pt-4">
       <div className="flex justify-between">
         <CardStat
           value={
-            <p data-testid="total-rewards">
+            <span data-testid="total-rewards">
               {totalRewardAsset.toString()} {t('VEGA')}
-            </p>
+            </span>
           }
         />
         <CardStat
           value={
-            <p data-testid="total-rewards">
-              {totalRewards.toString()} {t('qUSD')}
-            </p>
+            <span data-testid="total-rewards">
+              {totalRewards.toString()}{' '}
+              <span className="calt">{t('qUSD')}</span>
+            </span>
           }
         />
       </div>
@@ -158,16 +194,18 @@ export const RewardPot = ({
           <tr>
             <CardTableTH>
               <span className="flex items-center gap-1">
-                {t('Locked VEGA')}
+                {t('Vesting VEGA')}
                 <VegaIcon name={VegaIconNames.LOCK} size={12} />
               </span>
             </CardTableTH>
-            <CardTableTD>FOO</CardTableTD>
-          </tr>
-          <tr>
-            <CardTableTH>{t('Vesting VEGA')}</CardTableTH>
             <CardTableTD>
               {totalVestingRewardsByRewardAsset.toString()}
+            </CardTableTD>
+          </tr>
+          <tr>
+            <CardTableTH>{t('Vested VEGA')}</CardTableTH>
+            <CardTableTD>
+              {totalVestedRewardsByRewardAsset.toString()}
             </CardTableTD>
           </tr>
           <tr>
@@ -188,7 +226,7 @@ export const RewardPot = ({
 const Vesting = ({ baseRate }: { baseRate: string }) => {
   const baseRateFormatted = formatPercentage(Number(baseRate));
   return (
-    <div>
+    <div className="pt-4">
       <CardStat value={baseRateFormatted + '%'} />
       <CardTable>
         <tr>
@@ -210,8 +248,210 @@ const Vesting = ({ baseRate }: { baseRate: string }) => {
 
 const Multipliers = () => {
   return (
-    <div>
+    <div className="pt-4">
       <p className="text-sm text-muted">{t('No active reward bonuses')}</p>
     </div>
+  );
+};
+
+const defaultColDef = {
+  flex: 1,
+  resizable: true,
+  sortable: true,
+};
+
+interface RewardRow {
+  asset: AssetFieldsFragment;
+  staking: number;
+  priceTaking: number;
+  priceMaking: number;
+  liquidityProvision: number;
+  marketCreation: number;
+  averagePosition: number;
+  relativeReturns: number;
+  returnsVolatility: number;
+  validatorRanking: number;
+  total: number;
+}
+
+const RewardHistory = ({
+  epochRewardSummaries,
+  assets,
+}: {
+  epochRewardSummaries: RewardsPageQuery['epochRewardSummaries'];
+  assets: Record<string, AssetFieldsFragment> | null;
+}) => {
+  const nodes = epochRewardSummaries?.edges
+    ? compact(epochRewardSummaries.edges).map((e) => e.node)
+    : [];
+
+  const byId = groupBy(nodes, 'assetId');
+
+  const rowData = Object.keys(byId).map((assetId) => {
+    const asset = assets ? assets[assetId] : undefined;
+    const summaries = byId[assetId];
+
+    const sumTypes = (type: AccountType) => {
+      const accounts = summaries
+        .filter((a) => a.rewardType === type)
+        .map((a) => a.amount);
+
+      return BigNumber.sum.apply(null, accounts.length ? accounts : [0]);
+    };
+
+    const totals = new Map<AccountType, number>();
+
+    const rewardAccountTypes = [
+      AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
+      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+      AccountType.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION,
+      AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN,
+      AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY,
+      AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING,
+    ];
+
+    rewardAccountTypes.forEach((type) => {
+      totals.set(type, sumTypes(type).toNumber());
+    });
+
+    const total = BigNumber.sum.apply(
+      null,
+      Array.from(totals).map((entry) => entry[1])
+    );
+
+    return {
+      asset,
+      staking: totals.get(AccountType.ACCOUNT_TYPE_GLOBAL_REWARD),
+      priceTaking: totals.get(AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES),
+      priceMaking: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES
+      ),
+      liquidityProvision: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES
+      ),
+      marketCreation: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS
+      ),
+      averagePosition: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION
+      ),
+      relativeReturns: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN
+      ),
+      returnsVolatility: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY
+      ),
+      validatorRanking: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING
+      ),
+      total: total.toNumber(),
+    };
+  });
+
+  const columnDefs = useMemo<ColDef<RewardRow>[]>(() => {
+    const rewardValueFormatter = ({
+      data,
+      value,
+    }: {
+      data: RewardRow;
+      value: number;
+    }) => {
+      return addDecimalsFormatNumberQuantum(
+        value,
+        data.asset.decimals,
+        data.asset.quantum
+      );
+    };
+
+    const rewardCellRenderer = ({
+      data,
+      value,
+      valueFormatted,
+    }: {
+      data: RewardRow;
+      value: number;
+      valueFormatted: string;
+    }) => {
+      if (value <= 0) {
+        return <span className="text-muted">-</span>;
+      }
+
+      const pctOfTotal = new BigNumber(value).dividedBy(data.total).times(100);
+
+      return (
+        <StackedCell
+          primary={valueFormatted}
+          secondary={formatNumberPercentage(pctOfTotal, 2)}
+        />
+      );
+    };
+
+    const colDefs: ColDef[] = [
+      { field: 'asset.symbol' },
+      {
+        field: 'staking',
+        valueFormatter: rewardValueFormatter,
+        cellRenderer: rewardCellRenderer,
+      },
+      {
+        field: 'priceTaking',
+        valueFormatter: rewardValueFormatter,
+        cellRenderer: rewardCellRenderer,
+      },
+      {
+        field: 'priceMaking',
+        valueFormatter: rewardValueFormatter,
+        cellRenderer: rewardCellRenderer,
+      },
+      {
+        field: 'liquidityProvision',
+        valueFormatter: rewardValueFormatter,
+        cellRenderer: rewardCellRenderer,
+      },
+      {
+        field: 'marketCreation',
+        valueFormatter: rewardValueFormatter,
+        cellRenderer: rewardCellRenderer,
+      },
+      {
+        field: 'averagePosition',
+        valueFormatter: rewardValueFormatter,
+        cellRenderer: rewardCellRenderer,
+      },
+      {
+        field: 'relativeReturns',
+        valueFormatter: rewardValueFormatter,
+        cellRenderer: rewardCellRenderer,
+      },
+      {
+        field: 'returnsVolatility',
+        valueFormatter: rewardValueFormatter,
+        cellRenderer: rewardCellRenderer,
+      },
+      {
+        field: 'validatorRanking',
+        valueFormatter: rewardValueFormatter,
+        cellRenderer: rewardCellRenderer,
+      },
+      {
+        field: 'total',
+        type: 'rightAligned',
+        valueFormatter: rewardValueFormatter,
+      },
+    ];
+    return colDefs;
+  }, []);
+
+  return (
+    <AgGrid
+      columnDefs={columnDefs}
+      defaultColDef={defaultColDef}
+      rowData={rowData}
+      rowHeight={45}
+      domLayout="autoHeight"
+    />
   );
 };

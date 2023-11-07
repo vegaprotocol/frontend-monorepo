@@ -21,7 +21,7 @@ export const Card = ({
         className,
       )}
     >
-      <h2 className="mb-9">{title}</h2>
+      <h2 className="mb-3">{title}</h2>
       {loading ? <CardLoader /> : children}
     </div>
   );
