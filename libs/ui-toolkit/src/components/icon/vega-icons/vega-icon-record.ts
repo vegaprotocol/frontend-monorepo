@@ -21,6 +21,7 @@ import { IconGlobe } from './svg-icons/icon-globe';
 import { IconInfo } from './svg-icons/icon-info';
 import { IconKebab } from './svg-icons/icon-kebab';
 import { IconLinkedIn } from './svg-icons/icon-linkedin';
+import { IconLock } from './svg-icons/icon-lock';
 import { IconMetaMask } from './svg-icons/icon-metamask';
 import { IconMinus } from './svg-icons/icon-minus';
 import { IconMoon } from './svg-icons/icon-moon';
@@ -63,6 +64,7 @@ export enum VegaIconNames {
   INFO = 'info',
   KEBAB = 'kebab',
   LINKEDIN = 'linkedin',
+  LOCK = 'lock',
   METAMASK = 'metamask',
   MINUS = 'minus',
   MOON = 'moon',
@@ -113,6 +115,7 @@ export const VegaIconNameMap: Record<
   info: IconInfo,
   kebab: IconKebab,
   linkedin: IconLinkedIn,
+  lock: IconLock,
   metamask: IconMetaMask,
   minus: IconMinus,
   moon: IconMoon,

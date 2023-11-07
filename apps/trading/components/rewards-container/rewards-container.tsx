@@ -19,7 +19,11 @@ import {
 } from '../card/card';
 import { getQuantumValue } from '@vegaprotocol/assets';
 import { useRewardsPageQuery } from './__generated__/Rewards';
-import { TradingButton } from '@vegaprotocol/ui-toolkit';
+import {
+  TradingButton,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { formatPercentage } from '../fees-container/utils';
 
 const REWARD_ACCOUNT_TYPES = [
@@ -152,7 +156,12 @@ export const RewardPot = ({
       <div className="flex flex-col gap-4">
         <CardTable>
           <tr>
-            <CardTableTH>{t('Locked VEGA')}</CardTableTH>
+            <CardTableTH>
+              <span className="flex items-center gap-1">
+                {t('Locked VEGA')}
+                <VegaIcon name={VegaIconNames.LOCK} size={12} />
+              </span>
+            </CardTableTH>
             <CardTableTD>FOO</CardTableTD>
           </tr>
           <tr>
