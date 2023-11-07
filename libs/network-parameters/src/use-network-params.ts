@@ -178,6 +178,7 @@ export const NetworkParams = {
   transfer_fee_factor: 'transfer_fee_factor',
   transfer_minTransferQuantumMultiple: 'transfer_minTransferQuantumMultiple',
   network_validators_incumbentBonus: 'network_validators_incumbentBonus',
+  rewards_activityStreak_benefitTiers: 'rewards_activityStreak_benefitTiers',
 } as const;
 
 type Params = typeof NetworkParams;
