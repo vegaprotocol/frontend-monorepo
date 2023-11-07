@@ -30,7 +30,7 @@ import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 
 interface FormFields {
   toVegaKey: string;
-  asset: string;
+  asset: string; // This is used to simply filter the from account list, the fromAccount type should be used in the tx
   amount: string;
   fromAccount: string; // AccountType-AssetId
 }
@@ -254,10 +254,12 @@ export const TransferForm = ({
               onChange={(e) => {
                 field.onChange(e);
 
+                const [type] = parseFromAccount(e.target.value);
+
                 // Enforce that if transfering from a vested rewards account it must go to
                 // the current connected general account
                 if (
-                  e.target.value === AccountType.ACCOUNT_TYPE_VESTED_REWARDS &&
+                  type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS &&
                   pubKey
                 ) {
                   setValue('toVegaKey', pubKey);

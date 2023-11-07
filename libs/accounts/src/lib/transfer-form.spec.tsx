@@ -64,7 +64,7 @@ describe('TransferForm', () => {
       {
         type: AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
         asset,
-        balance: '100000',
+        balance: '200000',
       },
     ],
   };
@@ -124,7 +124,7 @@ describe('TransferForm', () => {
     // 1003-TRAN-004
     renderComponent(props);
     await submit();
-    expect(await screen.findAllByText('Required')).toHaveLength(3); // pubkey is set as default value
+    expect(await screen.findAllByText('Required')).toHaveLength(2); // pubkey is set as default value
     const toggle = screen.getByText('Enter manually');
     await userEvent.click(toggle);
     // has switched to input
@@ -137,12 +137,12 @@ describe('TransferForm', () => {
       screen.getByLabelText('To Vega key'),
       'invalid-address'
     );
-    expect(screen.getAllByTestId('input-error-text')[0]).toHaveTextContent(
+    expect(screen.getAllByTestId('input-error-text')[1]).toHaveTextContent(
       'Invalid Vega key'
     );
   });
 
-  it('validates fields and submits', async () => {
+  it('sends transfer from general accounts', async () => {
     // 1003-TRAN-002
     // 1003-TRAN-003
     // 1002-WITH-010
@@ -160,7 +160,7 @@ describe('TransferForm', () => {
     ]);
 
     await submit();
-    expect(await screen.findAllByText('Required')).toHaveLength(3); // pubkey is set as default value
+    expect(await screen.findAllByText('Required')).toHaveLength(2); // pubkey is set as default value
 
     // Select a pubkey
     await userEvent.selectOptions(
@@ -173,12 +173,17 @@ describe('TransferForm', () => {
 
     await userEvent.selectOptions(
       screen.getByLabelText('From account'),
-      AccountType.ACCOUNT_TYPE_VESTED_REWARDS
+      `${AccountType.ACCOUNT_TYPE_GENERAL}-${asset.id}`
     );
 
     const amountInput = screen.getByLabelText('Amount');
 
+    // Test use max button
+    await userEvent.click(screen.getByRole('button', { name: 'Use max' }));
+    expect(amountInput).toHaveValue('1000');
+
     // Test amount validation
+    await userEvent.clear(amountInput);
     await userEvent.type(amountInput, '0.00000001');
     expect(
       await screen.findByText('Value is below minimum')
@@ -202,9 +207,80 @@ describe('TransferForm', () => {
     await waitFor(() => {
       expect(props.submitTransfer).toHaveBeenCalledTimes(1);
       expect(props.submitTransfer).toHaveBeenCalledWith({
-        fromAccountType: AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
+        fromAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
         toAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
         to: props.pubKeys[1],
+        asset: asset.id,
+        amount: removeDecimal(amount, asset.decimals),
+        oneOff: {},
+      });
+    });
+  });
+
+  it('sends transfer from vested accounts', async () => {
+    const mockSubmit = jest.fn();
+    renderComponent({ ...props, submitTransfer: mockSubmit });
+
+    // check current pubkey not shown
+    const keySelect: HTMLSelectElement = screen.getByLabelText('To Vega key');
+    const pubKeyOptions = ['', pubKey, props.pubKeys[1]];
+    expect(keySelect.children).toHaveLength(pubKeyOptions.length);
+    expect(Array.from(keySelect.options).map((o) => o.value)).toEqual(
+      pubKeyOptions
+    );
+
+    await submit();
+    expect(await screen.findAllByText('Required')).toHaveLength(2); // pubkey set as default value
+
+    // Select a pubkey
+    await userEvent.selectOptions(
+      screen.getByLabelText('To Vega key'),
+      props.pubKeys[1] // Use not current pubkey so we can check it switches to current pubkey later
+    );
+
+    // Select asset
+    await selectAsset(asset);
+
+    await userEvent.selectOptions(
+      screen.getByLabelText('From account'),
+      `${AccountType.ACCOUNT_TYPE_VESTED_REWARDS}-${asset.id}`
+    );
+
+    // Check switch back to connected key
+    expect(screen.getByLabelText('To Vega key')).toHaveValue(props.pubKey);
+
+    const amountInput = screen.getByLabelText('Amount');
+
+    // Test use max button
+    await userEvent.click(screen.getByRole('button', { name: 'Use max' }));
+    expect(amountInput).toHaveValue('2000');
+
+    const checkbox = screen.getByTestId('include-transfer-fee');
+    expect(checkbox).not.toBeChecked();
+
+    await userEvent.clear(amountInput);
+    await userEvent.type(amountInput, amount);
+
+    // If transfering from a vested account 'include fees' checkbox should
+    // be disabled and fees should be 0
+    expect(checkbox).not.toBeChecked();
+    expect(checkbox).toBeDisabled();
+    const expectedFee = '0';
+    const total = new BigNumber(amount).plus(expectedFee).toFixed();
+
+    expect(screen.getByTestId('transfer-fee')).toHaveTextContent(expectedFee);
+    expect(screen.getByTestId('transfer-amount')).toHaveTextContent(amount);
+    expect(screen.getByTestId('total-transfer-fee')).toHaveTextContent(total);
+
+    await submit();
+
+    await waitFor(() => {
+      // 1003-TRAN-023
+      expect(mockSubmit).toHaveBeenCalledTimes(1);
+      expect(mockSubmit).toHaveBeenCalledWith({
+        fromAccountType: AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
+        toAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
+        to: props.pubKey,
         asset: asset.id,
         amount: removeDecimal(amount, asset.decimals),
         oneOff: {},
@@ -226,7 +302,7 @@ describe('TransferForm', () => {
       );
 
       await submit();
-      expect(await screen.findAllByText('Required')).toHaveLength(3); // pubkey set as default value
+      expect(await screen.findAllByText('Required')).toHaveLength(2); // pubkey set as default value
 
       // Select a pubkey
       await userEvent.selectOptions(
@@ -239,7 +315,7 @@ describe('TransferForm', () => {
 
       await userEvent.selectOptions(
         screen.getByLabelText('From account'),
-        AccountType.ACCOUNT_TYPE_VESTED_REWARDS
+        `${AccountType.ACCOUNT_TYPE_GENERAL}-${asset.id}`
       );
 
       const amountInput = screen.getByLabelText('Amount');
@@ -273,7 +349,7 @@ describe('TransferForm', () => {
         // 1003-TRAN-023
         expect(mockSubmit).toHaveBeenCalledTimes(1);
         expect(mockSubmit).toHaveBeenCalledWith({
-          fromAccountType: AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
+          fromAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
           toAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
           to: props.pubKeys[1],
           asset: asset.id,
@@ -295,7 +371,7 @@ describe('TransferForm', () => {
       );
 
       await submit();
-      expect(await screen.findAllByText('Required')).toHaveLength(3); // pubkey set as default value
+      expect(await screen.findAllByText('Required')).toHaveLength(2); // pubkey set as default value
 
       // Select a pubkey
       await userEvent.selectOptions(
@@ -305,6 +381,11 @@ describe('TransferForm', () => {
 
       // Select asset
       await selectAsset(asset);
+
+      await userEvent.selectOptions(
+        screen.getByLabelText('From account'),
+        `${AccountType.ACCOUNT_TYPE_GENERAL}-${asset.id}`
+      );
 
       const amountInput = screen.getByLabelText('Amount');
       const checkbox = screen.getByTestId('include-transfer-fee');
@@ -325,26 +406,28 @@ describe('TransferForm', () => {
 
   describe('AddressField', () => {
     const props = {
+      mode: 'select' as const,
       select: <div>select</div>,
       input: <div>input</div>,
       onChange: jest.fn(),
     };
 
-    it('toggles content and calls onChange', async () => {
+    it('renders correct content by mode prop and calls onChange', async () => {
       const mockOnChange = jest.fn();
-      render(<AddressField {...props} onChange={mockOnChange} />);
+      const { rerender } = render(
+        <AddressField {...props} onChange={mockOnChange} />
+      );
 
       // select should be shown by default
       expect(screen.getByText('select')).toBeInTheDocument();
       expect(screen.queryByText('input')).not.toBeInTheDocument();
       await userEvent.click(screen.getByText('Enter manually'));
+      expect(mockOnChange).toHaveBeenCalled();
+
+      rerender(<AddressField {...props} mode="input" />);
+
       expect(screen.queryByText('select')).not.toBeInTheDocument();
       expect(screen.getByText('input')).toBeInTheDocument();
-      expect(mockOnChange).toHaveBeenCalledTimes(1);
-      await userEvent.click(screen.getByText('Select from wallet'));
-      expect(screen.getByText('select')).toBeInTheDocument();
-      expect(screen.queryByText('input')).not.toBeInTheDocument();
-      expect(mockOnChange).toHaveBeenCalledTimes(2);
     });
   });
 
