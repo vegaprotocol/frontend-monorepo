@@ -103,5 +103,7 @@ export const getAdjustedFee = (fees: BigNumber[], discounts: BigNumber[]) => {
 
   const totalFactor = new BigNumber(1).minus(combinedFactors);
 
-  return totalFee.times(BigNumber.max(0, totalFactor)).toNumber();
+  return totalFee
+    .times(new BigNumber(1).minus(BigNumber.max(0, totalFactor)))
+    .toNumber();
 };
