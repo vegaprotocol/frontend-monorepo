@@ -84,54 +84,52 @@ export const RewardsContainer = () => {
 
   // TODO: Fix grid rows, they break on small screens when things stack
   return (
-    <div className="flex flex-col h-full p-4">
-      <h3 className="mb-4">Rewards</h3>
-      <div className="flex-1 grid auto-rows-min grid-cols-6 gap-3">
-        {/* Always show the rewards pot for the reward asset AKA Vega */}
-        <Card
-          key={params.reward_asset}
-          title={t('Vega Reward pot')}
-          className="lg:col-span-2"
-          loading={loading}
-          highlight={true}
-        >
-          <RewardPot
-            accounts={accounts}
-            assetId={params.reward_asset}
-            vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
-          />
-        </Card>
-        {/* Show all other rewards */}
-        {Object.keys(rewardAssetsMap).map((assetId) => {
-          const asset = rewardAssetsMap[assetId][0].asset;
-          return (
-            <Card
-              key={assetId}
-              title={t('%s Reward pot', asset.symbol)}
-              className="lg:col-span-2"
-              loading={loading}
-            >
-              <RewardPot
-                accounts={accounts}
-                assetId={assetId}
-                vestingBalancesSummary={
-                  rewardsData?.party?.vestingBalancesSummary
-                }
-              />
-            </Card>
-          );
-        })}
-        <Card title={t('Vesting')} className="lg:col-span-2" loading={loading}>
-          <Vesting baseRate={params.rewards_vesting_baseRate} />
-        </Card>
-        <Card
-          title={t('Rewards multipliers')}
-          className="lg:col-span-2"
-          loading={loading}
-        >
-          <Multipliers />
-        </Card>
-        {/*
+    <div className="grid auto-rows-min grid-cols-6 gap-3">
+      {/* Always show the rewards pot for the reward asset AKA Vega */}
+      <Card
+        key={params.reward_asset}
+        title={t('Vega Reward pot')}
+        className="lg:col-span-2"
+        loading={loading}
+        highlight={true}
+      >
+        <RewardPot
+          accounts={accounts}
+          assetId={params.reward_asset}
+          vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
+        />
+      </Card>
+      {/* Show all other rewards */}
+      {Object.keys(rewardAssetsMap).map((assetId) => {
+        const asset = rewardAssetsMap[assetId][0].asset;
+        return (
+          <Card
+            key={assetId}
+            title={t('%s Reward pot', asset.symbol)}
+            className="lg:col-span-2"
+            loading={loading}
+          >
+            <RewardPot
+              accounts={accounts}
+              assetId={assetId}
+              vestingBalancesSummary={
+                rewardsData?.party?.vestingBalancesSummary
+              }
+            />
+          </Card>
+        );
+      })}
+      <Card title={t('Vesting')} className="lg:col-span-2" loading={loading}>
+        <Vesting baseRate={params.rewards_vesting_baseRate} />
+      </Card>
+      <Card
+        title={t('Rewards multipliers')}
+        className="lg:col-span-2"
+        loading={loading}
+      >
+        <Multipliers />
+      </Card>
+      {/*
         <Card title={t('Activity streak')} className="lg:col-span-3">
           TODO:
         </Card>
@@ -139,17 +137,16 @@ export const RewardsContainer = () => {
           TODO:
         </Card>
         */}
-        <Card
-          title={t('Rewards history')}
-          className="lg:col-span-full"
-          loading={loading}
-        >
-          <RewardHistory
-            epochRewardSummaries={rewardsData?.epochRewardSummaries}
-            assets={assets}
-          />
-        </Card>
-      </div>
+      <Card
+        title={t('Rewards history')}
+        className="lg:col-span-full"
+        loading={loading}
+      >
+        <RewardHistory
+          epochRewardSummaries={rewardsData?.epochRewardSummaries}
+          assets={assets}
+        />
+      </Card>
     </div>
   );
 };
@@ -348,7 +345,7 @@ interface RewardRow {
   total: number;
 }
 
-const RewardHistory = ({
+export const RewardHistory = ({
   epochRewardSummaries,
   assets,
 }: {

@@ -15,7 +15,6 @@ import { PositionsMenu } from '../../components/positions-menu';
 import { WithdrawalsContainer } from '../../components/withdrawals-container';
 import { OrdersContainer } from '../../components/orders-container';
 import { LedgerContainer } from '../../components/ledger-container';
-import { RewardsContainer } from '../../components/rewards-container';
 import {
   ResizableGrid,
   ResizableGridPanel,
@@ -85,9 +84,6 @@ export const Portfolio = () => {
               </Tab>
               <Tab id="ledger-entries" name={t('Ledger entries')}>
                 <LedgerContainer />
-              </Tab>
-              <Tab id="rewards" name={t('Rewards')}>
-                <RewardsContainer />
               </Tab>
             </Tabs>
           </PortfolioGridChild>
