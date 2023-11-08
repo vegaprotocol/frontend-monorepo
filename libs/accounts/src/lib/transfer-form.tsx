@@ -261,7 +261,7 @@ export const TransferForm = ({
 
                 const [type] = parseFromAccount(e.target.value);
 
-                // Enforce that if transfering from a vested rewards account it must go to
+                // Enforce that if transferring from a vested rewards account it must go to
                 // the current connected general account
                 if (
                   type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS &&
@@ -313,9 +313,11 @@ export const TransferForm = ({
               disabled={fromVested}
               id="toVegaKey"
             >
-              <option value="" disabled={true}>
-                {t('Please select')}
-              </option>
+              {!fromVested && (
+                <option value="" disabled={true}>
+                  {t('Please select')}
+                </option>
+              )}
               {pubKeys?.map((pk) => {
                 const text = pk === pubKey ? t('Current key: ') + pk : pk;
 
