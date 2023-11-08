@@ -5,21 +5,23 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type RewardsPageQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
-  epochRewardSummariesFilter?: Types.InputMaybe<Types.RewardSummaryFilter>;
   epochRewardSummariesPagination?: Types.InputMaybe<Types.Pagination>;
+  partyRewardsPagination?: Types.InputMaybe<Types.Pagination>;
+  fromEpoch?: Types.InputMaybe<Types.Scalars['Int']>;
+  toEpoch?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 
-export type RewardsPageQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, activityStreak?: { __typename?: 'PartyActivityStreak', isActive: boolean, activeFor: number, inactiveFor: number, rewardDistributionMultiplier: string, rewardVestingMultiplier: string, epoch: number, tradedVolume: string, openVolume: string } | null, vestingBalancesSummary: { __typename?: 'PartyVestingBalancesSummary', epoch?: number | null, vestingBalances?: Array<{ __typename?: 'PartyVestingBalance', balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null, lockedBalances?: Array<{ __typename?: 'PartyLockedBalance', balance: string, untilEpoch: number, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null } } | null, epochRewardSummaries?: { __typename?: 'EpochRewardSummaryConnection', edges?: Array<{ __typename?: 'EpochRewardSummaryEdge', node: { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType } } | null> | null } | null };
+export type RewardsPageQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, activityStreak?: { __typename?: 'PartyActivityStreak', isActive: boolean, activeFor: number, inactiveFor: number, rewardDistributionMultiplier: string, rewardVestingMultiplier: string, epoch: number, tradedVolume: string, openVolume: string } | null, rewardsConnection?: { __typename?: 'RewardsConnection', edges?: Array<{ __typename?: 'RewardEdge', node: { __typename?: 'Reward', amount: string, percentageOfTotal: string, receivedAt: any, rewardType: Types.AccountType, asset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number }, party: { __typename?: 'Party', id: string }, epoch: { __typename?: 'Epoch', id: string } } } | null> | null } | null, vestingBalancesSummary: { __typename?: 'PartyVestingBalancesSummary', epoch?: number | null, vestingBalances?: Array<{ __typename?: 'PartyVestingBalance', balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null, lockedBalances?: Array<{ __typename?: 'PartyLockedBalance', balance: string, untilEpoch: number, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null } } | null, epochRewardSummaries?: { __typename?: 'EpochRewardSummaryConnection', edges?: Array<{ __typename?: 'EpochRewardSummaryEdge', node: { __typename?: 'EpochRewardSummary', epoch: number, assetId: string, amount: string, rewardType: Types.AccountType } } | null> | null } | null };
 
-export type RewardsPageEpochQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type RewardsEpochQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type RewardsPageEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string } };
+export type RewardsEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string } };
 
 
 export const RewardsPageDocument = gql`
-    query RewardsPage($partyId: ID!, $epochRewardSummariesFilter: RewardSummaryFilter, $epochRewardSummariesPagination: Pagination) {
+    query RewardsPage($partyId: ID!, $epochRewardSummariesPagination: Pagination, $partyRewardsPagination: Pagination, $fromEpoch: Int, $toEpoch: Int) {
   party(id: $partyId) {
     id
     activityStreak {
@@ -31,6 +33,32 @@ export const RewardsPageDocument = gql`
       epoch
       tradedVolume
       openVolume
+    }
+    rewardsConnection(
+      fromEpoch: $fromEpoch
+      toEpoch: $toEpoch
+      pagination: $partyRewardsPagination
+    ) {
+      edges {
+        node {
+          amount
+          percentageOfTotal
+          receivedAt
+          rewardType
+          asset {
+            id
+            symbol
+            name
+            decimals
+          }
+          party {
+            id
+          }
+          epoch {
+            id
+          }
+        }
+      }
     }
     vestingBalancesSummary {
       epoch
@@ -56,7 +84,7 @@ export const RewardsPageDocument = gql`
     }
   }
   epochRewardSummaries(
-    filter: $epochRewardSummariesFilter
+    filter: {fromEpoch: $fromEpoch, toEpoch: $toEpoch}
     pagination: $epochRewardSummariesPagination
   ) {
     edges {
@@ -84,8 +112,10 @@ export const RewardsPageDocument = gql`
  * const { data, loading, error } = useRewardsPageQuery({
  *   variables: {
  *      partyId: // value for 'partyId'
- *      epochRewardSummariesFilter: // value for 'epochRewardSummariesFilter'
  *      epochRewardSummariesPagination: // value for 'epochRewardSummariesPagination'
+ *      partyRewardsPagination: // value for 'partyRewardsPagination'
+ *      fromEpoch: // value for 'fromEpoch'
+ *      toEpoch: // value for 'toEpoch'
  *   },
  * });
  */
@@ -100,8 +130,8 @@ export function useRewardsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type RewardsPageQueryHookResult = ReturnType<typeof useRewardsPageQuery>;
 export type RewardsPageLazyQueryHookResult = ReturnType<typeof useRewardsPageLazyQuery>;
 export type RewardsPageQueryResult = Apollo.QueryResult<RewardsPageQuery, RewardsPageQueryVariables>;
-export const RewardsPageEpochDocument = gql`
-    query RewardsPageEpoch {
+export const RewardsEpochDocument = gql`
+    query RewardsEpoch {
   epoch {
     id
   }
@@ -109,28 +139,28 @@ export const RewardsPageEpochDocument = gql`
     `;
 
 /**
- * __useRewardsPageEpochQuery__
+ * __useRewardsEpochQuery__
  *
- * To run a query within a React component, call `useRewardsPageEpochQuery` and pass it any options that fit your needs.
- * When your component renders, `useRewardsPageEpochQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useRewardsEpochQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRewardsEpochQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useRewardsPageEpochQuery({
+ * const { data, loading, error } = useRewardsEpochQuery({
  *   variables: {
  *   },
  * });
  */
-export function useRewardsPageEpochQuery(baseOptions?: Apollo.QueryHookOptions<RewardsPageEpochQuery, RewardsPageEpochQueryVariables>) {
+export function useRewardsEpochQuery(baseOptions?: Apollo.QueryHookOptions<RewardsEpochQuery, RewardsEpochQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<RewardsPageEpochQuery, RewardsPageEpochQueryVariables>(RewardsPageEpochDocument, options);
+        return Apollo.useQuery<RewardsEpochQuery, RewardsEpochQueryVariables>(RewardsEpochDocument, options);
       }
-export function useRewardsPageEpochLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RewardsPageEpochQuery, RewardsPageEpochQueryVariables>) {
+export function useRewardsEpochLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RewardsEpochQuery, RewardsEpochQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<RewardsPageEpochQuery, RewardsPageEpochQueryVariables>(RewardsPageEpochDocument, options);
+          return Apollo.useLazyQuery<RewardsEpochQuery, RewardsEpochQueryVariables>(RewardsEpochDocument, options);
         }
-export type RewardsPageEpochQueryHookResult = ReturnType<typeof useRewardsPageEpochQuery>;
-export type RewardsPageEpochLazyQueryHookResult = ReturnType<typeof useRewardsPageEpochLazyQuery>;
-export type RewardsPageEpochQueryResult = Apollo.QueryResult<RewardsPageEpochQuery, RewardsPageEpochQueryVariables>;
+export type RewardsEpochQueryHookResult = ReturnType<typeof useRewardsEpochQuery>;
+export type RewardsEpochLazyQueryHookResult = ReturnType<typeof useRewardsEpochLazyQuery>;
+export type RewardsEpochQueryResult = Apollo.QueryResult<RewardsEpochQuery, RewardsEpochQueryVariables>;

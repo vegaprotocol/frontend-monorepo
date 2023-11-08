@@ -28,23 +28,27 @@ import {
 import {
   type RewardsPageQuery,
   useRewardsPageQuery,
+  useRewardsEpochQuery,
 } from './__generated__/Rewards';
 import {
+  Intent,
   TradingButton,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { formatPercentage } from '../fees-container/utils';
 import { AgGrid, StackedCell } from '@vegaprotocol/datagrid';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { ValueFormatterFunc } from 'ag-grid-community';
 import { type ColDef } from 'ag-grid-community';
 import {
   addDecimalsFormatNumberQuantum,
   formatNumberPercentage,
+  removePaginationWrapper,
 } from '@vegaprotocol/utils';
 import { ViewType, useSidebar } from '../sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
+import classNames from 'classnames';
 
 export const RewardsContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -55,12 +59,19 @@ export const RewardsContainer = () => {
   ]);
   const { data: accounts, loading: accountsLoading } = useAccounts(pubKey);
 
+  const { data: epochData } = useRewardsEpochQuery();
+
+  const fromEpoch = Number(epochData?.epoch.id) - 1000;
+  const toEpoch = Number(epochData?.epoch.id) - 1;
+
   // No need to specify the fromEpoch as it will by default give you the last
   const { data: rewardsData, loading: rewardsLoading } = useRewardsPageQuery({
     variables: {
       partyId: pubKey || '',
+      fromEpoch,
+      toEpoch,
     },
-    skip: !pubKey,
+    skip: !pubKey || !epochData?.epoch.id,
   });
 
   const { data: assets, loading: assetsLoading } = useAssetsMapProvider();
@@ -99,6 +110,7 @@ export const RewardsContainer = () => {
           vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
         />
       </Card>
+
       {/* Show all other rewards */}
       {Object.keys(rewardAssetsMap).map((assetId) => {
         const asset = rewardAssetsMap[assetId][0].asset;
@@ -144,7 +156,11 @@ export const RewardsContainer = () => {
       >
         <RewardHistory
           epochRewardSummaries={rewardsData?.epochRewardSummaries}
+          partyRewards={rewardsData?.party?.rewardsConnection}
           assets={assets}
+          partyId={pubKey}
+          fromEpoch={fromEpoch}
+          toEpoch={toEpoch}
         />
       </Card>
     </div>
@@ -222,12 +238,10 @@ export const RewardPot = ({
       {rewardAsset ? (
         <>
           <CardStat
-            value={`${parseFloat(
-              addDecimalsFormatNumberQuantum(
-                totalRewards.toString(),
-                rewardAsset.decimals,
-                rewardAsset.quantum
-              )
+            value={`${addDecimalsFormatNumberQuantum(
+              totalRewards.toString(),
+              rewardAsset.decimals,
+              rewardAsset.quantum
             )} ${rewardAsset.symbol}`}
             testId="total-rewards"
           />
@@ -239,24 +253,20 @@ export const RewardPot = ({
                   <VegaIcon name={VegaIconNames.LOCK} size={12} />
                 </CardTableTH>
                 <CardTableTD>
-                  {parseFloat(
-                    addDecimalsFormatNumberQuantum(
-                      totalLocked.toString(),
-                      rewardAsset.decimals,
-                      rewardAsset.quantum
-                    )
+                  {addDecimalsFormatNumberQuantum(
+                    totalLocked.toString(),
+                    rewardAsset.decimals,
+                    rewardAsset.quantum
                   )}
                 </CardTableTD>
               </tr>
               <tr>
                 <CardTableTH>{t(`Vesting ${rewardAsset.symbol}`)}</CardTableTH>
                 <CardTableTD>
-                  {parseFloat(
-                    addDecimalsFormatNumberQuantum(
-                      totalVesting.toString(),
-                      rewardAsset.decimals,
-                      rewardAsset.quantum
-                    )
+                  {addDecimalsFormatNumberQuantum(
+                    totalVesting.toString(),
+                    rewardAsset.decimals,
+                    rewardAsset.quantum
                   )}
                 </CardTableTD>
               </tr>
@@ -265,12 +275,10 @@ export const RewardPot = ({
                   {t('Available to withdraw this epoch')}
                 </CardTableTH>
                 <CardTableTD>
-                  {parseFloat(
-                    addDecimalsFormatNumberQuantum(
-                      totalVestedRewardsByRewardAsset.toString(),
-                      rewardAsset.decimals,
-                      rewardAsset.quantum
-                    )
+                  {addDecimalsFormatNumberQuantum(
+                    totalVestedRewardsByRewardAsset.toString(),
+                    rewardAsset.decimals,
+                    rewardAsset.quantum
                   )}
                 </CardTableTD>
               </tr>
@@ -345,81 +353,32 @@ interface RewardRow {
   total: number;
 }
 
+type PartyRewardsConnection = NonNullable<
+  RewardsPageQuery['party']
+>['rewardsConnection'];
+
 export const RewardHistory = ({
   epochRewardSummaries,
+  partyRewards,
   assets,
+  partyId,
+  fromEpoch,
+  toEpoch,
 }: {
   epochRewardSummaries: RewardsPageQuery['epochRewardSummaries'];
+  partyRewards: PartyRewardsConnection;
   assets: Record<string, AssetFieldsFragment> | null;
+  partyId: string | null;
+  fromEpoch: number;
+  toEpoch: number;
 }) => {
-  const nodes = epochRewardSummaries?.edges
-    ? compact(epochRewardSummaries.edges).map((e) => e.node)
-    : [];
+  const [isParty, setIsParty] = useState(false);
 
-  const byId = groupBy(nodes, 'assetId');
-
-  const rowData = Object.keys(byId).map((assetId) => {
-    const asset = assets ? assets[assetId] : undefined;
-    const summaries = byId[assetId];
-
-    const sumTypes = (type: AccountType) => {
-      const accounts = summaries
-        .filter((a) => a.rewardType === type)
-        .map((a) => a.amount);
-
-      return BigNumber.sum.apply(null, accounts.length ? accounts : [0]);
-    };
-
-    const totals = new Map<AccountType, number>();
-
-    const rewardAccountTypes = [
-      AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
-      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-      AccountType.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION,
-      AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN,
-      AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY,
-      AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING,
-    ];
-
-    rewardAccountTypes.forEach((type) => {
-      totals.set(type, sumTypes(type).toNumber());
-    });
-
-    const total = BigNumber.sum.apply(
-      null,
-      Array.from(totals).map((entry) => entry[1])
-    );
-
-    return {
-      asset,
-      staking: totals.get(AccountType.ACCOUNT_TYPE_GLOBAL_REWARD),
-      priceTaking: totals.get(AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES),
-      priceMaking: totals.get(
-        AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES
-      ),
-      liquidityProvision: totals.get(
-        AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES
-      ),
-      marketCreation: totals.get(
-        AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS
-      ),
-      averagePosition: totals.get(
-        AccountType.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION
-      ),
-      relativeReturns: totals.get(
-        AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN
-      ),
-      returnsVolatility: totals.get(
-        AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY
-      ),
-      validatorRanking: totals.get(
-        AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING
-      ),
-      total: total.toNumber(),
-    };
+  const rowData = useRowData({
+    epochRewardSummaries,
+    partyRewards,
+    assets,
+    partyId: isParty ? partyId : null,
   });
 
   const columnDefs = useMemo<ColDef<RewardRow>[]>(() => {
@@ -430,13 +389,11 @@ export const RewardHistory = ({
       if (!value || !data) {
         return '-';
       }
-      return parseFloat(
-        addDecimalsFormatNumberQuantum(
-          value,
-          data.asset.decimals,
-          data.asset.quantum
-        )
-      ).toString();
+      return addDecimalsFormatNumberQuantum(
+        value,
+        data.asset.decimals,
+        data.asset.quantum
+      );
     };
 
     const rewardCellRenderer = ({
@@ -463,7 +420,13 @@ export const RewardHistory = ({
     };
 
     const colDefs: ColDef[] = [
-      { field: 'asset.symbol' },
+      {
+        field: 'asset.symbol',
+        cellRenderer: ({ value, data }: { value: string; data: RewardRow }) => {
+          if (!value || !data) return <span>-</span>;
+          return <StackedCell primary={value} secondary={data.asset.name} />;
+        },
+      },
       {
         field: 'staking',
         valueFormatter: rewardValueFormatter,
@@ -519,12 +482,138 @@ export const RewardHistory = ({
   }, []);
 
   return (
-    <AgGrid
-      columnDefs={columnDefs}
-      defaultColDef={defaultColDef}
-      rowData={rowData}
-      rowHeight={45}
-      domLayout="autoHeight"
-    />
+    <div>
+      <div className="flex justify-between gap-2 items-center mb-2">
+        <h4 className="text-muted text-xs">
+          From {fromEpoch} to {toEpoch}
+        </h4>
+        <div className="flex gap-2">
+          <TradingButton
+            onClick={() => setIsParty(false)}
+            size="extra-small"
+            className={classNames({
+              'bg-transparent dark:bg-transparent': isParty,
+            })}
+          >
+            {t('Total distributed')}
+          </TradingButton>
+          <TradingButton
+            onClick={() => setIsParty(true)}
+            size="extra-small"
+            className={classNames({
+              'bg-transparent dark:bg-transparent': !isParty,
+            })}
+          >
+            {t('Earned by me')}
+          </TradingButton>
+        </div>
+      </div>
+      <AgGrid
+        columnDefs={columnDefs}
+        defaultColDef={defaultColDef}
+        rowData={rowData}
+        rowHeight={45}
+        domLayout="autoHeight"
+      />
+    </div>
   );
+};
+
+const getPartyRewards = (
+  rewards: Array<{
+    rewardType: AccountType;
+    assetId: string;
+    amount: string;
+  }>,
+  assets: Record<string, AssetFieldsFragment> | null
+) => {
+  const assetMap = groupBy(rewards, 'assetId');
+
+  return Object.keys(assetMap).map((assetId) => {
+    const r = assetMap[assetId];
+    const asset = assets ? assets[assetId] : undefined;
+
+    const totals = new Map<AccountType, number>();
+
+    const rewardAccountTypes = [
+      AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
+      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+      AccountType.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION,
+      AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN,
+      AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY,
+      AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING,
+    ];
+
+    rewardAccountTypes.forEach((type) => {
+      const amountsByType = r
+        .filter((a) => a.rewardType === type)
+        .map((a) => a.amount);
+      const typeTotal = BigNumber.sum.apply(
+        null,
+        amountsByType.length ? amountsByType : [0]
+      );
+
+      totals.set(type, typeTotal.toNumber());
+    });
+
+    const total = BigNumber.sum.apply(
+      null,
+      Array.from(totals).map((entry) => entry[1])
+    );
+
+    return {
+      asset,
+      staking: totals.get(AccountType.ACCOUNT_TYPE_GLOBAL_REWARD),
+      priceTaking: totals.get(AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES),
+      priceMaking: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES
+      ),
+      liquidityProvision: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES
+      ),
+      marketCreation: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS
+      ),
+      averagePosition: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION
+      ),
+      relativeReturns: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN
+      ),
+      returnsVolatility: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY
+      ),
+      validatorRanking: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING
+      ),
+      total: total.toNumber(),
+    };
+  });
+};
+
+const useRowData = ({
+  partyRewards,
+  epochRewardSummaries,
+  assets,
+  partyId,
+}: {
+  partyRewards: PartyRewardsConnection;
+  epochRewardSummaries: RewardsPageQuery['epochRewardSummaries'];
+  assets: Record<string, AssetFieldsFragment> | null;
+  partyId: string | null;
+}) => {
+  if (partyId) {
+    const rewards = removePaginationWrapper(partyRewards?.edges).map((r) => ({
+      rewardType: r.rewardType,
+      assetId: r.asset.id,
+      amount: r.amount,
+    }));
+    return getPartyRewards(rewards, assets);
+  }
+
+  const rewards = removePaginationWrapper(epochRewardSummaries?.edges);
+  return getPartyRewards(rewards, assets);
 };

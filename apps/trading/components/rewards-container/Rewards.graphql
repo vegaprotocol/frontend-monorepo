@@ -1,7 +1,9 @@
 query RewardsPage(
   $partyId: ID!
-  $epochRewardSummariesFilter: RewardSummaryFilter
   $epochRewardSummariesPagination: Pagination
+  $partyRewardsPagination: Pagination
+  $fromEpoch: Int
+  $toEpoch: Int
 ) {
   party(id: $partyId) {
     id
@@ -14,6 +16,32 @@ query RewardsPage(
       epoch
       tradedVolume
       openVolume
+    }
+    rewardsConnection(
+      fromEpoch: $fromEpoch
+      toEpoch: $toEpoch
+      pagination: $partyRewardsPagination
+    ) {
+      edges {
+        node {
+          amount
+          percentageOfTotal
+          receivedAt
+          rewardType
+          asset {
+            id
+            symbol
+            name
+            decimals
+          }
+          party {
+            id
+          }
+          epoch {
+            id
+          }
+        }
+      }
     }
     vestingBalancesSummary {
       epoch
@@ -39,7 +67,7 @@ query RewardsPage(
     }
   }
   epochRewardSummaries(
-    filter: $epochRewardSummariesFilter
+    filter: { fromEpoch: $fromEpoch, toEpoch: $toEpoch }
     pagination: $epochRewardSummariesPagination
   ) {
     edges {
@@ -50,5 +78,11 @@ query RewardsPage(
         rewardType
       }
     }
+  }
+}
+
+query RewardsEpoch {
+  epoch {
+    id
   }
 }
