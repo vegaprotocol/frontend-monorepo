@@ -93,6 +93,7 @@ export const RewardsContainer = () => {
           title={t('Vega Reward pot')}
           className="lg:col-span-2"
           loading={loading}
+          highlight={true}
         >
           <RewardPot
             accounts={accounts}

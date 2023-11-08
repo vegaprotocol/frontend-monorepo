@@ -7,22 +7,29 @@ export const Card = ({
   title,
   className,
   loading = false,
+  highlight = false,
 }: {
   children: ReactNode;
   title: string;
   className?: string;
   loading?: boolean;
+  highlight?: boolean;
 }) => {
   return (
     <div
       className={classNames(
-        'p-4 bg-vega-clight-800 dark:bg-vega-cdark-800 col-span-full lg:col-auto',
+        'p-0.5 bg-vega-clight-800 dark:bg-vega-cdark-800 col-span-full lg:col-auto',
         'rounded-lg',
+        {
+          'bg-rainbow': highlight,
+        },
         className,
       )}
     >
-      <h2 className="mb-3">{title}</h2>
-      {loading ? <CardLoader /> : children}
+      <div className="p-4 rounded w-full h-full bg-vega-clight-800 dark:bg-vega-cdark-800">
+        <h2 className="mb-3">{title}</h2>
+        {loading ? <CardLoader /> : children}
+      </div>
     </div>
   );
 };
