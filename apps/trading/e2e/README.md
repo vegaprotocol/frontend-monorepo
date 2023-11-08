@@ -10,37 +10,69 @@
 ## Getting Started
 
 1. **Install Poetry**: Follow the instructions on the [official Poetry website](https://python-poetry.org/docs/#installing-with-the-official-installer).
-1. **Install Docker**: Follow the instructions on the [offical Docker website](https://docs.docker.com/desktop/).
-1. **Install Dependencies**:
+
+2. **Install Docker**: Follow the instructions on the [official Docker website](https://docs.docker.com/desktop/).
+
+3. **Set Up a Poetry Environment**:
+   Execute the command below to configure the Poetry environment.
+
    ```bash
-   npm run trading:test:install
+   nom run trading:test:install
    ```
 
-If you want to run against specific vega binaries you can update the command in package.json
-
-1. **Pull the docker image of the trading app**:
-   You can pull the image you want to test, for example:
+4. **Download Necessary Binaries**:
+   Use the following command within your Python environment. The `--force` flag ensures the binaries are overwritten, and the `--version` specifies the desired version.
    ```bash
-   docker pull vegaprotocol/trading:develop
-   ```
-   or
-   ```bash
-   docker pull vegaprotocol/trading:main
-   ```
-   All available images can be found [here](https://hub.docker.com/r/vegaprotocol/trading/tags).
-1. **Start Docker**: Make sure your Docker daemon is running.
-
-1. **Run the tests**: To run a specific test (or group of tests) using its name, use the following command:
-   ```bash
-   npm run trading:test -- "test_name" -s --headed
+   python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
    ```
 
-## Running Tests in Parallel
+## You now have two options:
 
-If you want to run tests in parallel, use the --numprocesses auto option. --dist loadfile makes sure that there are no multiple runners assigned to single test file:
+### Pull the Docker Image of the Trading App
 
-```bash
-npm run trading:test:all
-```
+Pull the desired image:
+`bash docker pull vegaprotocol/trading:develop `
+or
+`bash docker pull vegaprotocol/trading:main `
+Find all available images on [Docker Hub](https://hub.docker.com/r/vegaprotocol/trading/tags).
 
-docker build -f docker/node-outside-docker.Dockerfile --build-arg APP=trading --build-arg ENV_NAME=stagnet1 -t vegaprotocol/trading:latest .
+### Create a Docker Image of Your Locally Built Trading App
+
+To build your Docker image, use the following commands:
+`bash yarn nx build trading ./docker/prepare-dist.sh docker build -f docker/node-outside-docker.Dockerfile --build-arg APP=trading --build-arg ENV_NAME=stagnet1 -t vegaprotocol/trading:latest . `
+
+## **Launching Docker** 🐳
+
+Ensure the Docker daemon is running.
+
+## Running Specific Tests 🧪
+
+To run a specific test, use the `-k` option followed by the name of the test.
+
+### From within the console-test folder:
+
+    ```bash
+    poetry run pytest -k "order_match" -s
+    ```
+
+### From anywhere:
+
+    ```bash
+    npm run trading:test -- "test_name" -s
+    ```
+
+## Running Tests in Parallel 🔢
+
+To run tests in parallel, use the `--numprocesses auto` option. The `--dist loadfile` setting ensures that multiple runners are not assigned to a single test file.
+
+### From within the console-test folder:
+
+    ```bash
+    poetry run pytest -s --numprocesses auto --dist loadfile
+    ```
+
+### From anywhere:
+
+    ```bash
+    npm run trading:test:all
+    ```

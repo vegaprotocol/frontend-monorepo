@@ -155,24 +155,6 @@ jobs:
           docker image ls -a
 
       #----------------------------------------------
-      #       check-out tests repo
-      #----------------------------------------------
-      - name: Checkout console test repo
-        uses: actions/checkout@v3
-        with:
-          repository: vegaprotocol/console-test
-          ref: ${{ needs.console-test-branch.outputs.console-branch }}
-
-      - name: Load console test envs
-        id: console-test-env
-        uses: falti/dotenv-action@v1.0.4
-        with:
-          path: '.env.${{ needs.console-test-branch.outputs.console-branch  }}'
-          export-variables: true
-          keys-case: upper
-          log-variables: true
-
-      #----------------------------------------------
       #  -----  Setup python  -----
       #----------------------------------------------
       - name: Setup Python
@@ -209,6 +191,7 @@ jobs:
       #----------------------------------------------
       - name: Run tests
         run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -v -s --numprocesses 4 --dist loadfile --durations=15
+        working-directory: apps/trading/e2e
 
       #----------------------------------------------
       # upload traces
