@@ -6,8 +6,9 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
 const isInDev = process.env.NODE_ENV === 'development';
+const useLocize = isInDev && !!process.env.NX_USE_LOCIZE;
 
-const backend = isInDev
+const backend = useLocize
   ? {
       projectId: '96ac1231-4bdd-455a-b9d7-f5322a2e7430',
       apiKey: process.env.NX_LOCIZE_API_KEY,
@@ -17,7 +18,7 @@ const backend = isInDev
       loadPath: '/assets/locales/{{lng}}/{{ns}}.json',
     };
 
-const Backend: Module = isInDev ? LocizeBackend : HttpBackend;
+const Backend: Module = useLocize ? LocizeBackend : HttpBackend;
 
 i18n
   .use(Backend)
@@ -34,8 +35,7 @@ i18n
     defaultNS: 'governance',
     keySeparator: false, // we use content as keys
     backend,
-    // react: { wait: true, useSuspense: false },
-    saveMissing: isInDev && !!process.env.NX_LOCIZE_API_KEY,
+    saveMissing: useLocize && !!process.env.NX_LOCIZE_API_KEY,
     interpolation: {
       escapeValue: false,
     },
