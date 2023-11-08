@@ -2,9 +2,9 @@ import { render, screen } from '@testing-library/react';
 import type { Account } from '@vegaprotocol/accounts';
 import { AccountType, AssetStatus } from '@vegaprotocol/types';
 import { MemoryRouter } from 'react-router-dom';
-import { RewardPot, type RewardPotProps } from './rewards-container';
+import { RewardPot, Vesting, type RewardPotProps } from './rewards-container';
 
-describe('VegaRewardPot', () => {
+describe('RewardPot', () => {
   const rewardAsset = {
     id: 'asset-1',
     symbol: 'ASSET 1',
@@ -79,12 +79,12 @@ describe('VegaRewardPot', () => {
         asset: asset2,
       },
       {
-        type: AccountType.ACCOUNT_TYPE_VESTING_REWARDS,
+        type: AccountType.ACCOUNT_TYPE_VESTING_REWARDS, // should be ignored as its vesting
         balance: '100',
         asset: rewardAsset,
       },
       {
-        type: AccountType.ACCOUNT_TYPE_VESTING_REWARDS,
+        type: AccountType.ACCOUNT_TYPE_VESTING_REWARDS, // should be ignored
         balance: '2000000',
         asset: asset2,
       },
@@ -132,18 +132,28 @@ describe('VegaRewardPot', () => {
     renderComponent(props);
 
     expect(screen.getByTestId('total-rewards')).toHaveTextContent(
-      `7.00 ${rewardAsset.symbol}`
+      `7 ${rewardAsset.symbol}`
     );
 
     expect(screen.getByText(/Locked/).nextElementSibling).toHaveTextContent(
-      '2.50'
+      '2.5'
     );
     expect(screen.getByText(/Vesting/).nextElementSibling).toHaveTextContent(
-      '4.50'
+      '4.5'
     );
 
     expect(
       screen.getByText(/Available to withdraw/).nextElementSibling
-    ).toHaveTextContent('1.50');
+    ).toHaveTextContent('1.5');
+  });
+});
+
+describe('Vesting', () => {
+  it('renders the base rate', () => {
+    render(<Vesting baseRate={'0.25'} />);
+
+    expect(screen.getByText(/Base rate/).nextElementSibling).toHaveTextContent(
+      '25%'
+    );
   });
 });

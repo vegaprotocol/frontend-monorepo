@@ -297,7 +297,7 @@ export const RewardPot = ({
   );
 };
 
-const Vesting = ({ baseRate }: { baseRate: string }) => {
+export const Vesting = ({ baseRate }: { baseRate: string }) => {
   const baseRateFormatted = formatPercentage(Number(baseRate));
   return (
     <div className="pt-4">
