@@ -78,6 +78,11 @@ export const FeesContainer = () => {
   const loading = paramsLoading || feesLoading || programLoading;
   const isConnected = Boolean(pubKey);
 
+  const isReferralProgramRunning = Boolean(programData?.currentReferralProgram);
+  const isVolumeDiscountProgramRunning = Boolean(
+    programData?.currentVolumeDiscountProgram
+  );
+
   return (
     <div className="grid auto-rows-min grid-cols-4 gap-3">
       {isConnected && (
@@ -102,12 +107,8 @@ export const FeesContainer = () => {
             <TotalDiscount
               referralDiscount={referralDiscount}
               volumeDiscount={volumeDiscount}
-              isReferralProgramRunning={Boolean(
-                programData?.currentReferralProgram
-              )}
-              isVolumeDiscountProgramRunning={Boolean(
-                programData?.currentVolumeDiscountProgram
-              )}
+              isReferralProgramRunning={isReferralProgramRunning}
+              isVolumeDiscountProgramRunning={isVolumeDiscountProgramRunning}
             />
           </FeeCard>
           <FeeCard
@@ -115,12 +116,18 @@ export const FeesContainer = () => {
             className="sm:col-span-2"
             loading={loading}
           >
-            <CurrentVolume
-              tiers={volumeTiers}
-              tierIndex={volumeTierIndex}
-              windowLengthVolume={volumeInWindow}
-              windowLength={volumeDiscountWindowLength}
-            />
+            {isVolumeDiscountProgramRunning ? (
+              <CurrentVolume
+                tiers={volumeTiers}
+                tierIndex={volumeTierIndex}
+                windowLengthVolume={volumeInWindow}
+                windowLength={volumeDiscountWindowLength}
+              />
+            ) : (
+              <p className="pt-3 text-sm text-muted">
+                {t('No volume discount program active')}
+              </p>
+            )}
           </FeeCard>
           <FeeCard
             title={t('Referral benefits')}
@@ -129,12 +136,16 @@ export const FeesContainer = () => {
           >
             {isReferrer ? (
               <ReferrerInfo code={code} />
-            ) : (
+            ) : isReferralProgramRunning ? (
               <ReferralBenefits
                 setRunningNotionalTakerVolume={referralVolumeInWindow}
                 epochsInSet={epochsInSet}
                 epochs={referralDiscountWindowLength}
               />
+            ) : (
+              <p className="pt-3 text-sm text-muted">
+                {t('No referral program active')}
+              </p>
             )}
           </FeeCard>
         </>
