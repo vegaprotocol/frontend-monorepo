@@ -73,6 +73,8 @@ describe('useReferralStats', () => {
       referralTierIndex: -1,
       referralTiers: [],
       epochsInSet: 0,
+      code: undefined,
+      isReferrer: false,
     });
   });
 
@@ -93,6 +95,8 @@ describe('useReferralStats', () => {
       referralTierIndex: 1,
       referralTiers: program.benefitTiers,
       epochsInSet: Number(epoch.id) - set.atEpoch,
+      code: undefined,
+      isReferrer: false,
     });
   });
 
