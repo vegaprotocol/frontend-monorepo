@@ -586,6 +586,23 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
         <Panel>
           {t('Close position for')}{' '}
           <strong>{market.tradableInstrument.instrument.code}</strong>
+          {tx.order?.remaining && (
+            <p>
+              {t('Filled')}{' '}
+              <SizeAtPrice
+                meta={{
+                  positionDecimalPlaces: market.positionDecimalPlaces,
+                  decimalPlaces: market.decimalPlaces,
+                  asset: getAsset(market).symbol,
+                }}
+                side={tx.order.side}
+                size={(
+                  BigInt(tx.order.size) - BigInt(tx.order.remaining)
+                ).toString()}
+                price={tx.order.price}
+              />
+            </p>
+          )}
         </Panel>
       );
     }
