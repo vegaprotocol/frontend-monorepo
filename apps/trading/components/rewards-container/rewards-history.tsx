@@ -202,7 +202,19 @@ export const RewardHistory = ({
   );
 };
 
-const getPartyRewards = (
+const REWARD_ACCOUNT_TYPES = [
+  AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
+  AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+  AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
+  AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
+  AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
+  AccountType.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION,
+  AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN,
+  AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY,
+  AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING,
+];
+
+const getRewards = (
   rewards: Array<{
     rewardType: AccountType;
     assetId: string;
@@ -210,7 +222,10 @@ const getPartyRewards = (
   }>,
   assets: Record<string, AssetFieldsFragment> | null
 ) => {
-  const assetMap = groupBy(rewards, 'assetId');
+  const assetMap = groupBy(
+    rewards.filter((r) => REWARD_ACCOUNT_TYPES.includes(r.rewardType)),
+    'assetId'
+  );
 
   return Object.keys(assetMap).map((assetId) => {
     const r = assetMap[assetId];
@@ -218,19 +233,7 @@ const getPartyRewards = (
 
     const totals = new Map<AccountType, number>();
 
-    const rewardAccountTypes = [
-      AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
-      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-      AccountType.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION,
-      AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN,
-      AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY,
-      AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING,
-    ];
-
-    rewardAccountTypes.forEach((type) => {
+    REWARD_ACCOUNT_TYPES.forEach((type) => {
       const amountsByType = r
         .filter((a) => a.rewardType === type)
         .map((a) => a.amount);
@@ -294,9 +297,9 @@ const useRowData = ({
       assetId: r.asset.id,
       amount: r.amount,
     }));
-    return getPartyRewards(rewards, assets);
+    return getRewards(rewards, assets);
   }
 
   const rewards = removePaginationWrapper(epochRewardSummaries?.edges);
-  return getPartyRewards(rewards, assets);
+  return getRewards(rewards, assets);
 };
