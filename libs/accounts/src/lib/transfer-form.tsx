@@ -178,7 +178,7 @@ export const TransferForm = ({
       );
       submitTransfer(transfer);
     },
-    [submitTransfer, transferAmount]
+    [submitTransfer, transferAmount, assets]
   );
 
   // reset for placeholder workaround https://github.com/radix-ui/primitives/issues/1569
