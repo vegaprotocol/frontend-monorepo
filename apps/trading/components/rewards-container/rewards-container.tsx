@@ -25,7 +25,6 @@ import {
 } from '../card/card';
 import {
   type AssetFieldsFragment,
-  getQuantumValue,
   useAssetsMapProvider,
 } from '@vegaprotocol/assets';
 import {
@@ -41,7 +40,7 @@ import {
 import { formatPercentage } from '../fees-container/utils';
 import { AgGrid, StackedCell } from '@vegaprotocol/datagrid';
 import { useMemo } from 'react';
-import type { ValueFormatterFunc} from 'ag-grid-community';
+import type { ValueFormatterFunc } from 'ag-grid-community';
 import { type ColDef } from 'ag-grid-community';
 import {
   addDecimalsFormatNumberQuantum,
@@ -88,7 +87,7 @@ export const RewardsContainer = () => {
           <VegaRewardPot
             accounts={accounts}
             rewardAssetId={params.reward_asset}
-            summary={rewardsData?.party?.vestingBalancesSummary}
+            vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
           />
         </Card>
         <Card title={t('Vesting')} className="lg:col-span-2" loading={loading}>
@@ -120,30 +119,18 @@ export const RewardsContainer = () => {
   );
 };
 
+type VestingBalances = NonNullable<
+  RewardsPageQuery['party']
+>['vestingBalancesSummary'];
+
 export const VegaRewardPot = ({
   accounts,
   rewardAssetId,
-  summary,
+  vestingBalancesSummary,
 }: {
   accounts: Account[] | null;
   rewardAssetId: string; // VEGA
-  summary:
-    | {
-        epoch: number | null | undefined;
-        vestingBalances:
-          | Array<{ asset: { id: string; symbol: string }; balance: string }>
-          | null
-          | undefined;
-        lockedBalances:
-          | Array<{
-              asset: { id: string; symbol: string };
-              balance: string;
-              untilEpoch: number;
-            }>
-          | null
-          | undefined;
-      }
-    | undefined;
+  vestingBalancesSummary: VestingBalances | undefined;
 }) => {
   const availableRewardAssetAccounts = accounts
     ? accounts.filter((a) => {
@@ -162,7 +149,7 @@ export const VegaRewardPot = ({
       : [0]
   );
 
-  const lockedEntries = summary?.lockedBalances?.filter(
+  const lockedEntries = vestingBalancesSummary?.lockedBalances?.filter(
     (b) => b.asset.id === rewardAssetId
   );
   const lockedBalances = lockedEntries?.length
@@ -170,7 +157,7 @@ export const VegaRewardPot = ({
     : [0];
   const totalLocked = BigNumber.sum.apply(null, lockedBalances);
 
-  const vestingEntries = summary?.vestingBalances?.filter(
+  const vestingEntries = vestingBalancesSummary?.vestingBalances?.filter(
     (b) => b.asset.id === rewardAssetId
   );
   const vestingBalances = vestingEntries?.length
