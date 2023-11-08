@@ -2,12 +2,15 @@ import compact from 'lodash/compact';
 import maxBy from 'lodash/maxBy';
 import { getReferralBenefitTier } from './utils';
 import type { DiscountProgramsQuery, FeesQuery } from './__generated__/Fees';
+import { first } from 'lodash';
 
 export const useReferralStats = (
   setStats?: FeesQuery['referralSetStats'],
   setReferees?: FeesQuery['referralSetReferees'],
   program?: DiscountProgramsQuery['currentReferralProgram'],
-  epoch?: FeesQuery['epoch']
+  epoch?: FeesQuery['epoch'],
+  setIfReferrer?: FeesQuery['referrer'],
+  setIfReferee?: FeesQuery['referee']
 ) => {
   const referralTiers = program?.benefitTiers || [];
 
@@ -18,8 +21,17 @@ export const useReferralStats = (
       referralTierIndex: -1,
       referralTiers,
       epochsInSet: 0,
+      code: undefined,
+      isReferrer: false,
     };
   }
+
+  const setIfReferrerData = first(
+    compact(setIfReferrer?.edges).map((e) => e.node)
+  );
+  const setIfRefereeData = first(
+    compact(setIfReferee?.edges).map((e) => e.node)
+  );
 
   const referralSetsStats = compact(setStats.edges).map((e) => e.node);
   const referralSets = compact(setReferees.edges).map((e) => e.node);
@@ -48,5 +60,7 @@ export const useReferralStats = (
     referralTierIndex,
     referralTiers,
     epochsInSet,
+    code: (setIfReferrerData || setIfRefereeData)?.id,
+    isReferrer: Boolean(setIfReferrerData),
   };
 };
