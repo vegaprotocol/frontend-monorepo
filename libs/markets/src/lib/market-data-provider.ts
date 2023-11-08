@@ -16,7 +16,7 @@ import type {
   MarketDataQueryVariables,
 } from './__generated__/market-data';
 import { getMarketPrice } from './get-price';
-import { isMarketInAuction } from './is-market-in-auction';
+import { MarketTradingMode } from '@vegaprotocol/types';
 
 export type MarketData = MarketDataFieldsFragment;
 
@@ -142,7 +142,11 @@ export const fundingRateProvider = makeDerivedDataProvider<
   MarketDataQueryVariables
 >([marketDataProvider], (parts) => {
   const marketData = parts[0] as ReturnType<typeof getData>;
-  return marketData && !isMarketInAuction(marketData.marketTradingMode)
+  return marketData &&
+    ![
+      MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+      MarketTradingMode.TRADING_MODE_SUSPENDED_VIA_GOVERNANCE,
+    ].includes(marketData.marketTradingMode)
     ? marketData?.productData?.fundingRate || null
     : null;
 });
