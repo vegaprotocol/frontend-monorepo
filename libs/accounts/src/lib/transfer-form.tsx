@@ -313,11 +313,9 @@ export const TransferForm = ({
               disabled={fromVested}
               id="toVegaKey"
             >
-              {!fromVested && (
-                <option value="" disabled={true}>
-                  {t('Please select')}
-                </option>
-              )}
+              <option value="" disabled={true}>
+                {t('Please select')}
+              </option>
               {pubKeys?.map((pk) => {
                 const text = pk === pubKey ? t('Current key: ') + pk : pk;
 
@@ -330,19 +328,21 @@ export const TransferForm = ({
             </TradingSelect>
           }
           input={
-            <TradingInput
-              // eslint-disable-next-line jsx-a11y/no-autofocus
-              autoFocus={true} // focus input immediately after is shown
-              id="toVegaKey"
-              type="text"
-              disabled={fromVested}
-              {...register('toVegaKey', {
-                validate: {
-                  required,
-                  vegaPublicKey,
-                },
-              })}
-            />
+            fromVested ? null : (
+              <TradingInput
+                // eslint-disable-next-line jsx-a11y/no-autofocus
+                autoFocus={true} // focus input immediately after is shown
+                id="toVegaKey"
+                type="text"
+                disabled={fromVested}
+                {...register('toVegaKey', {
+                  validate: {
+                    required,
+                    vegaPublicKey,
+                  },
+                })}
+              />
+            )
           }
         />
         {errors.toVegaKey?.message && (
@@ -550,13 +550,15 @@ export const AddressField = ({
   return (
     <>
       {isInput ? input : select}
-      <button
-        type="button"
-        onClick={onChange}
-        className="absolute top-0 right-0 ml-auto text-xs underline"
-      >
-        {isInput ? t('Select from wallet') : t('Enter manually')}
-      </button>
+      {select && input && (
+        <button
+          type="button"
+          onClick={onChange}
+          className="absolute top-0 right-0 ml-auto text-xs underline"
+        >
+          {isInput ? t('Select from wallet') : t('Enter manually')}
+        </button>
+      )}
     </>
   );
 };
