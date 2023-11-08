@@ -13,9 +13,7 @@ import {
 } from '@vegaprotocol/network-parameters';
 import { AccountType } from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { Links } from '../../lib/links';
 import BigNumber from 'bignumber.js';
-import { Link } from 'react-router-dom';
 import {
   Card,
   CardStat,
@@ -29,7 +27,6 @@ import {
 } from '@vegaprotocol/assets';
 import {
   type RewardsPageQuery,
-  useRewardsPageEpochQuery,
   useRewardsPageQuery,
 } from './__generated__/Rewards';
 import {
@@ -46,6 +43,8 @@ import {
   addDecimalsFormatNumberQuantum,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
+import { ViewType, useSidebar } from '../sidebar';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 export const RewardsContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -56,40 +55,71 @@ export const RewardsContainer = () => {
   ]);
   const { data: accounts, loading: accountsLoading } = useAccounts(pubKey);
 
-  const { data: epochData } = useRewardsPageEpochQuery();
-
+  // No need to specify the fromEpoch as it will by default give you the last
   const { data: rewardsData, loading: rewardsLoading } = useRewardsPageQuery({
     variables: {
       partyId: pubKey || '',
-      epochRewardSummariesFilter: {
-        // TODO: remove these hard coded values
-        fromEpoch: 9799, // Number(epochData?.epoch.id || 1) - 1,
-        toEpoch: 9799,
-      },
     },
-    skip: !pubKey || !epochData?.epoch.id,
+    skip: !pubKey,
   });
 
-  const { data: assets } = useAssetsMapProvider();
+  const { data: assets, loading: assetsLoading } = useAssetsMapProvider();
 
-  const loading = paramsLoading || accountsLoading || rewardsLoading;
+  const loading =
+    paramsLoading || accountsLoading || rewardsLoading || assetsLoading;
+
+  const rewardAccounts = accounts
+    ? accounts.filter((a) =>
+        [
+          AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
+          AccountType.ACCOUNT_TYPE_VESTING_REWARDS,
+        ].includes(a.type)
+      )
+    : [];
+
+  const rewardAssetsMap = groupBy(
+    rewardAccounts.filter((a) => a.asset.id !== params.reward_asset),
+    'asset.id'
+  );
 
   // TODO: Fix grid rows, they break on small screens when things stack
   return (
     <div className="flex flex-col h-full p-4">
       <h3 className="mb-4">Rewards</h3>
       <div className="flex-1 grid auto-rows-min grid-cols-6 gap-3">
+        {/* Always show the rewards pot for the reward asset AKA Vega */}
         <Card
-          title={t('Reward pot')}
+          key={params.reward_asset}
+          title={t('Vega Reward pot')}
           className="lg:col-span-2"
           loading={loading}
         >
-          <VegaRewardPot
+          <RewardPot
             accounts={accounts}
-            rewardAssetId={params.reward_asset}
+            assetId={params.reward_asset}
             vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
           />
         </Card>
+        {/* Show all other rewards */}
+        {Object.keys(rewardAssetsMap).map((assetId) => {
+          const asset = rewardAssetsMap[assetId][0].asset;
+          return (
+            <Card
+              key={assetId}
+              title={t('%s Reward pot', asset.symbol)}
+              className="lg:col-span-2"
+              loading={loading}
+            >
+              <RewardPot
+                accounts={accounts}
+                assetId={assetId}
+                vestingBalancesSummary={
+                  rewardsData?.party?.vestingBalancesSummary
+                }
+              />
+            </Card>
+          );
+        })}
         <Card title={t('Vesting')} className="lg:col-span-2" loading={loading}>
           <Vesting baseRate={params.rewards_vesting_baseRate} />
         </Card>
@@ -108,7 +138,11 @@ export const RewardsContainer = () => {
           TODO:
         </Card>
         */}
-        <Card title={t('Rewards history')} className="lg:col-span-full">
+        <Card
+          title={t('Rewards history')}
+          className="lg:col-span-full"
+          loading={loading}
+        >
           <RewardHistory
             epochRewardSummaries={rewardsData?.epochRewardSummaries}
             assets={assets}
@@ -123,25 +157,33 @@ type VestingBalances = NonNullable<
   RewardsPageQuery['party']
 >['vestingBalancesSummary'];
 
-export const VegaRewardPot = ({
-  accounts,
-  rewardAssetId,
-  vestingBalancesSummary,
-}: {
+export type RewardPotProps = {
   accounts: Account[] | null;
-  rewardAssetId: string; // VEGA
+  assetId: string; // VEGA
   vestingBalancesSummary: VestingBalances | undefined;
-}) => {
+};
+
+export const RewardPot = ({
+  accounts,
+  assetId,
+  vestingBalancesSummary,
+}: RewardPotProps) => {
+  // TODO: Opening the sidebar for the first time works, but then clicking on redeem
+  // for a different asset does not update the form
+  const currentRouteId = useGetCurrentRouteId();
+  const setViews = useSidebar((store) => store.setViews);
+
+  // All vested rewards accounts
   const availableRewardAssetAccounts = accounts
     ? accounts.filter((a) => {
         return (
-          a.asset.id === rewardAssetId &&
+          a.asset.id === assetId &&
           a.type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS
         );
       })
     : [];
 
-  // Total available to withdraw
+  // Sum of all vested reward account balances
   const totalVestedRewardsByRewardAsset = BigNumber.sum.apply(
     null,
     availableRewardAssetAccounts.length
@@ -150,7 +192,7 @@ export const VegaRewardPot = ({
   );
 
   const lockedEntries = vestingBalancesSummary?.lockedBalances?.filter(
-    (b) => b.asset.id === rewardAssetId
+    (b) => b.asset.id === assetId
   );
   const lockedBalances = lockedEntries?.length
     ? lockedEntries.map((e) => e.balance)
@@ -158,7 +200,7 @@ export const VegaRewardPot = ({
   const totalLocked = BigNumber.sum.apply(null, lockedBalances);
 
   const vestingEntries = vestingBalancesSummary?.vestingBalances?.filter(
-    (b) => b.asset.id === rewardAssetId
+    (b) => b.asset.id === assetId
   );
   const vestingBalances = vestingEntries?.length
     ? vestingEntries.map((e) => e.balance)
@@ -167,41 +209,81 @@ export const VegaRewardPot = ({
 
   const totalRewards = totalLocked.plus(totalVesting);
 
+  let rewardAsset = undefined;
+
+  if (availableRewardAssetAccounts.length) {
+    rewardAsset = availableRewardAssetAccounts[0].asset;
+  } else if (lockedEntries?.length) {
+    rewardAsset = lockedEntries[0].asset;
+  } else if (vestingEntries?.length) {
+    rewardAsset = vestingEntries[0].asset;
+  }
+
   return (
     <div className="pt-4">
-      <CardStat
-        value={
-          <span data-testid="total-rewards">
-            {totalRewards.toString()} {t('VEGA')}
-          </span>
-        }
-      />
-      <div className="flex flex-col gap-4">
-        <CardTable>
-          <tr>
-            <CardTableTH>
-              <span className="flex items-center gap-1">
-                {t('Locked VEGA')}
-                <VegaIcon name={VegaIconNames.LOCK} size={12} />
-              </span>
-            </CardTableTH>
-            <CardTableTD>{totalLocked.toString()}</CardTableTD>
-          </tr>
-          <tr>
-            <CardTableTH>{t('Vesting VEGA')}</CardTableTH>
-            <CardTableTD>{totalVesting.toString()}</CardTableTD>
-          </tr>
-          <tr>
-            <CardTableTH>{t('Available to withdraw this epoch')}</CardTableTH>
-            <CardTableTD>
-              {totalVestedRewardsByRewardAsset.toString()}
-            </CardTableTD>
-          </tr>
-        </CardTable>
-        <Link to={Links.TRANSFER()}>
-          <TradingButton size="small">{t('Redeem')}</TradingButton>
-        </Link>
-      </div>
+      {rewardAsset ? (
+        <>
+          <CardStat
+            value={`${addDecimalsFormatNumberQuantum(
+              totalRewards.toString(),
+              rewardAsset.decimals,
+              rewardAsset.quantum
+            )} ${rewardAsset.symbol}`}
+            testId="total-rewards"
+          />
+          <div className="flex flex-col gap-4">
+            <CardTable>
+              <tr>
+                <CardTableTH className="flex items-center gap-1">
+                  {t(`Locked ${rewardAsset.symbol}`)}
+                  <VegaIcon name={VegaIconNames.LOCK} size={12} />
+                </CardTableTH>
+                <CardTableTD>
+                  {addDecimalsFormatNumberQuantum(
+                    totalLocked.toString(),
+                    rewardAsset.decimals,
+                    rewardAsset.quantum
+                  )}
+                </CardTableTD>
+              </tr>
+              <tr>
+                <CardTableTH>{t(`Vesting ${rewardAsset.symbol}`)}</CardTableTH>
+                <CardTableTD>
+                  {addDecimalsFormatNumberQuantum(
+                    totalVesting.toString(),
+                    rewardAsset.decimals,
+                    rewardAsset.quantum
+                  )}
+                </CardTableTD>
+              </tr>
+              <tr>
+                <CardTableTH>
+                  {t('Available to withdraw this epoch')}
+                </CardTableTH>
+                <CardTableTD>
+                  {addDecimalsFormatNumberQuantum(
+                    totalVestedRewardsByRewardAsset.toString(),
+                    rewardAsset.decimals,
+                    rewardAsset.quantum
+                  )}
+                </CardTableTD>
+              </tr>
+            </CardTable>
+            <div>
+              <TradingButton
+                onClick={() =>
+                  setViews({ type: ViewType.Transfer, assetId }, currentRouteId)
+                }
+                size="small"
+              >
+                {t('Redeem')}
+              </TradingButton>
+            </div>
+          </div>
+        </>
+      ) : (
+        <p className="text-sm text-muted">{t('No rewards')}</p>
+      )}
     </div>
   );
 };

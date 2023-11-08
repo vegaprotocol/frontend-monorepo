@@ -21,6 +21,8 @@ query RewardsPage(
         asset {
           id
           symbol
+          decimals
+          quantum
         }
         balance
       }
@@ -28,6 +30,8 @@ query RewardsPage(
         asset {
           id
           symbol
+          decimals
+          quantum
         }
         balance
         untilEpoch
@@ -46,11 +50,5 @@ query RewardsPage(
         rewardType
       }
     }
-  }
-}
-
-query RewardsPageEpoch {
-  epoch {
-    id
   }
 }

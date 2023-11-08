@@ -1,6 +1,6 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
-import type { ReactNode } from 'react';
+import type { HTMLProps, ReactNode } from 'react';
 
 export const Card = ({
   children,
@@ -41,11 +41,13 @@ export const CardStat = ({
   text,
   highlight,
   description,
+  testId,
 }: {
   value: ReactNode;
   text?: string;
   highlight?: boolean;
   description?: ReactNode;
+  testId?: string;
 }) => {
   const val = (
     <span
@@ -53,6 +55,7 @@ export const CardStat = ({
         'text-transparent bg-rainbow bg-clip-text': highlight,
         'cursor-help': description,
       })}
+      data-test={testId}
     >
       {value}
     </span>
@@ -68,18 +71,25 @@ export const CardStat = ({
   );
 };
 
-export const CardTable = ({ children }: { children: ReactNode }) => {
+export const CardTable = (props: HTMLProps<HTMLTableElement>) => {
   return (
-    <table className="w-full mt-0.5 text-xs text-muted">
-      <tbody>{children}</tbody>
+    <table {...props} className="w-full mt-0.5 text-xs text-muted">
+      <tbody>{props.children}</tbody>
     </table>
   );
 };
 
-export const CardTableTH = ({ children }: { children: ReactNode }) => {
-  return <th className="font-normal text-left">{children}</th>;
+export const CardTableTH = (props: HTMLProps<HTMLTableHeaderCellElement>) => {
+  return (
+    <th
+      {...props}
+      className={classNames('font-normal text-left', props.className)}
+    />
+  );
 };
 
-export const CardTableTD = ({ children }: { children: ReactNode }) => {
-  return <td className="text-right">{children}</td>;
+export const CardTableTD = (props: HTMLProps<HTMLTableCellElement>) => {
+  return (
+    <td {...props} className={classNames('text-right', props.className)} />
+  );
 };
