@@ -225,10 +225,12 @@ export const RewardPot = ({
       {rewardAsset ? (
         <>
           <CardStat
-            value={`${addDecimalsFormatNumberQuantum(
-              totalRewards.toString(),
-              rewardAsset.decimals,
-              rewardAsset.quantum
+            value={`${parseFloat(
+              addDecimalsFormatNumberQuantum(
+                totalRewards.toString(),
+                rewardAsset.decimals,
+                rewardAsset.quantum
+              )
             )} ${rewardAsset.symbol}`}
             testId="total-rewards"
           />
@@ -240,20 +242,24 @@ export const RewardPot = ({
                   <VegaIcon name={VegaIconNames.LOCK} size={12} />
                 </CardTableTH>
                 <CardTableTD>
-                  {addDecimalsFormatNumberQuantum(
-                    totalLocked.toString(),
-                    rewardAsset.decimals,
-                    rewardAsset.quantum
+                  {parseFloat(
+                    addDecimalsFormatNumberQuantum(
+                      totalLocked.toString(),
+                      rewardAsset.decimals,
+                      rewardAsset.quantum
+                    )
                   )}
                 </CardTableTD>
               </tr>
               <tr>
                 <CardTableTH>{t(`Vesting ${rewardAsset.symbol}`)}</CardTableTH>
                 <CardTableTD>
-                  {addDecimalsFormatNumberQuantum(
-                    totalVesting.toString(),
-                    rewardAsset.decimals,
-                    rewardAsset.quantum
+                  {parseFloat(
+                    addDecimalsFormatNumberQuantum(
+                      totalVesting.toString(),
+                      rewardAsset.decimals,
+                      rewardAsset.quantum
+                    )
                   )}
                 </CardTableTD>
               </tr>
@@ -262,10 +268,12 @@ export const RewardPot = ({
                   {t('Available to withdraw this epoch')}
                 </CardTableTH>
                 <CardTableTD>
-                  {addDecimalsFormatNumberQuantum(
-                    totalVestedRewardsByRewardAsset.toString(),
-                    rewardAsset.decimals,
-                    rewardAsset.quantum
+                  {parseFloat(
+                    addDecimalsFormatNumberQuantum(
+                      totalVestedRewardsByRewardAsset.toString(),
+                      rewardAsset.decimals,
+                      rewardAsset.quantum
+                    )
                   )}
                 </CardTableTD>
               </tr>
@@ -277,7 +285,7 @@ export const RewardPot = ({
                 }
                 size="small"
               >
-                {t('Redeem')}
+                {t('Redeem rewards')}
               </TradingButton>
             </div>
           </div>
@@ -305,7 +313,7 @@ const Vesting = ({ baseRate }: { baseRate: string }) => {
         </tr>
         <tr>
           <CardTableTH>{t('Available to withdraw next epoch')}</CardTableTH>
-          <CardTableTD>0%</CardTableTD>
+          <CardTableTD>0</CardTableTD>
         </tr>
       </CardTable>
     </div>
@@ -425,11 +433,13 @@ const RewardHistory = ({
       if (!value || !data) {
         return '-';
       }
-      return addDecimalsFormatNumberQuantum(
-        value,
-        data.asset.decimals,
-        data.asset.quantum
-      );
+      return parseFloat(
+        addDecimalsFormatNumberQuantum(
+          value,
+          data.asset.decimals,
+          data.asset.quantum
+        )
+      ).toString();
     };
 
     const rewardCellRenderer = ({
