@@ -71,7 +71,7 @@ export const RewardsContainer = () => {
       fromEpoch,
       toEpoch,
     },
-    skip: !pubKey || !epochData?.epoch.id,
+    skip: !epochData?.epoch.id,
   });
 
   const { data: assets, loading: assetsLoading } = useAssetsMapProvider();
@@ -487,7 +487,7 @@ export const RewardHistory = ({
         <h4 className="text-muted text-xs">
           From {fromEpoch} to {toEpoch}
         </h4>
-        <div className="flex gap-2">
+        <div className="flex gap-0.5">
           <TradingButton
             onClick={() => setIsParty(false)}
             size="extra-small"
@@ -503,6 +503,7 @@ export const RewardHistory = ({
             className={classNames({
               'bg-transparent dark:bg-transparent': !isParty,
             })}
+            disabled={!partyId}
           >
             {t('Earned by me')}
           </TradingButton>
