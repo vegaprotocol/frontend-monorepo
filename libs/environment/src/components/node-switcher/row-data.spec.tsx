@@ -1,6 +1,12 @@
 import type { MockedResponse } from '@apollo/react-testing';
 import { MockedProvider } from '@apollo/react-testing';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  render,
+  renderHook,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { RadioGroup } from '@vegaprotocol/ui-toolkit';
 import type {
   NodeCheckTimeUpdateSubscription,
@@ -11,30 +17,33 @@ import {
   NodeCheckTimeUpdateDocument,
 } from '../../utils/__generated__/NodeCheck';
 import type { RowDataProps } from './row-data';
-import { POLL_INTERVAL } from './row-data';
+import {
+  POLL_INTERVAL,
+  Result,
+  SUBSCRIPTION_TIMEOUT,
+  useNodeBasicStatus,
+  useNodeSubscriptionStatus,
+  useResponseTime,
+} from './row-data';
 import { BLOCK_THRESHOLD, RowData } from './row-data';
-import type { HeaderEntry } from '@vegaprotocol/apollo-client';
-import { useHeaderStore } from '@vegaprotocol/apollo-client';
 import { CUSTOM_NODE_KEY } from '../../types';
 
-jest.mock('@vegaprotocol/apollo-client', () => ({
-  useHeaderStore: jest.fn().mockReturnValue({}),
-}));
-
-const statsQueryMock: MockedResponse<NodeCheckQuery> = {
+const mockStatsQuery = (
+  blockHeight = '1234'
+): MockedResponse<NodeCheckQuery> => ({
   request: {
     query: NodeCheckDocument,
   },
   result: {
     data: {
       statistics: {
-        blockHeight: '1234', // the actual value used in the component is the value from the header store
+        blockHeight,
         vegaTime: new Date().toISOString(),
         chainId: 'test-chain-id',
       },
     },
   },
-};
+});
 
 const subMock: MockedResponse<NodeCheckTimeUpdateSubscription> = {
   request: {
@@ -59,18 +68,6 @@ global.performance.getEntriesByName = jest.fn().mockReturnValue([
   },
 ]);
 
-const mockHeaders = (
-  url: string,
-  headers: Partial<HeaderEntry> = {
-    blockHeight: 100,
-    timestamp: new Date(),
-  }
-) => {
-  (useHeaderStore as unknown as jest.Mock).mockReturnValue({
-    [url]: headers,
-  });
-};
-
 const renderComponent = (
   props: RowDataProps,
   queryMock: MockedResponse<NodeCheckQuery>,
@@ -86,6 +83,98 @@ const renderComponent = (
   );
 };
 
+describe('useNodeSubscriptionStatus', () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+  const mockWrapper =
+    (withData = false) =>
+    ({ children }: { children: React.ReactNode }) =>
+      (
+        <MockedProvider mocks={withData ? [subMock, subMock, subMock] : []}>
+          {children}
+        </MockedProvider>
+      );
+  it('results initially as loading', async () => {
+    const { result } = renderHook(() => useNodeSubscriptionStatus(), {
+      wrapper: mockWrapper(true),
+    });
+    expect(result.current.status).toBe(Result.Loading);
+  });
+  it('results as successful when data received', async () => {
+    const { result } = renderHook(() => useNodeSubscriptionStatus(), {
+      wrapper: mockWrapper(true),
+    });
+    expect(result.current.status).toBe(Result.Loading);
+    await act(() => {
+      jest.advanceTimersByTime(SUBSCRIPTION_TIMEOUT);
+    });
+    expect(result.current.status).toBe(Result.Successful);
+  });
+  it('result as failed when no data received', async () => {
+    const { result } = renderHook(() => useNodeSubscriptionStatus(), {
+      wrapper: mockWrapper(false),
+    });
+    expect(result.current.status).toBe(Result.Loading);
+    await act(() => {
+      jest.advanceTimersByTime(SUBSCRIPTION_TIMEOUT);
+    });
+    expect(result.current.status).toBe(Result.Failed);
+  });
+});
+
+describe('useNodeBasicStatus', () => {
+  const mockWrapper =
+    (withData = false) =>
+    ({ children }: { children: React.ReactNode }) =>
+      (
+        <MockedProvider mocks={withData ? [mockStatsQuery('1234')] : []}>
+          {children}
+        </MockedProvider>
+      );
+  it('results initially as loading', async () => {
+    const { result } = renderHook(() => useNodeBasicStatus(), {
+      wrapper: mockWrapper(true),
+    });
+    expect(result.current.status).toBe(Result.Loading);
+    expect(result.current.currentBlockHeight).toBeNaN();
+  });
+  it('results as successful when data received', async () => {
+    const { result } = renderHook(() => useNodeBasicStatus(), {
+      wrapper: mockWrapper(true),
+    });
+    await waitFor(() => {
+      expect(result.current.status).toBe(Result.Successful);
+      expect(result.current.currentBlockHeight).toBe(1234);
+    });
+  });
+  it('result as failed when no data received', async () => {
+    const { result } = renderHook(() => useNodeBasicStatus(), {
+      wrapper: mockWrapper(false),
+    });
+    await waitFor(() => {
+      expect(result.current.status).toBe(Result.Failed);
+      expect(result.current.currentBlockHeight).toBeNaN();
+    });
+  });
+});
+
+describe('useResponseTime', () => {
+  it('returns response time when url is valid', () => {
+    const { result } = renderHook(() =>
+      useResponseTime('https://localhost:1234')
+    );
+    expect(result.current.responseTime).toBe(50);
+  });
+  it('does not return response time when url is invalid', () => {
+    const { result } = renderHook(() => useResponseTime('nope'));
+    expect(result.current.responseTime).toBeUndefined();
+  });
+});
+
 describe('RowData', () => {
   const props = {
     id: '0',
@@ -94,9 +183,13 @@ describe('RowData', () => {
     onBlockHeight: jest.fn(),
   };
 
+  afterAll(() => {
+    jest.useRealTimers();
+    jest.resetAllMocks();
+  });
+
   it('radio button enabled after stats query successful', async () => {
-    mockHeaders(props.url);
-    render(renderComponent(props, statsQueryMock, subMock));
+    render(renderComponent(props, mockStatsQuery('100'), subMock));
 
     // radio should be enabled until query resolves
     expect(
@@ -127,8 +220,6 @@ describe('RowData', () => {
   });
 
   it('radio button still enabled if query fails', async () => {
-    mockHeaders(props.url, {});
-
     const failedQueryMock: MockedResponse<NodeCheckQuery> = {
       request: {
         query: NodeCheckDocument,
@@ -178,12 +269,11 @@ describe('RowData', () => {
 
   it('highlights rows with a slow block height', async () => {
     const blockHeight = 100;
-    mockHeaders(props.url, { blockHeight });
 
     const { rerender } = render(
       renderComponent(
         { ...props, highestBlock: blockHeight + BLOCK_THRESHOLD },
-        statsQueryMock,
+        mockStatsQuery(String(blockHeight)),
         subMock
       )
     );
@@ -201,7 +291,7 @@ describe('RowData', () => {
     rerender(
       renderComponent(
         { ...props, highestBlock: blockHeight + BLOCK_THRESHOLD + 1 },
-        statsQueryMock,
+        mockStatsQuery(String(blockHeight)),
         subMock
       )
     );
@@ -216,7 +306,7 @@ describe('RowData', () => {
           ...props,
           id: CUSTOM_NODE_KEY,
         },
-        statsQueryMock,
+        mockStatsQuery('1234'),
         subMock
       )
     );
@@ -230,16 +320,17 @@ describe('RowData', () => {
   it('updates highest block after new header received', async () => {
     const mockOnBlockHeight = jest.fn();
     const blockHeight = 200;
-    mockHeaders(props.url, { blockHeight });
     render(
       renderComponent(
         { ...props, onBlockHeight: mockOnBlockHeight },
-        statsQueryMock,
+        mockStatsQuery(String(blockHeight)),
         subMock
       )
     );
 
-    expect(mockOnBlockHeight).toHaveBeenCalledWith(blockHeight);
+    await waitFor(() => {
+      expect(mockOnBlockHeight).toHaveBeenCalledWith(blockHeight);
+    });
   });
 
   it('should poll the query unless an errors is returned', async () => {
@@ -275,7 +366,6 @@ describe('RowData', () => {
       };
     };
 
-    mockHeaders(props.url);
     const statsQueryMock1 = createStatsQueryMock('1234');
     const statsQueryMock2 = createStatsQueryMock('1235');
     const statsQueryMock3 = createFailedStatsQueryMock();
