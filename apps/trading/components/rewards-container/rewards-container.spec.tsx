@@ -30,6 +30,7 @@ describe('RewardPot', () => {
 
   it('Shows no rewards message if no accounts or vesting balances provided', () => {
     renderComponent({
+      pubKey: 'pubkey',
       assetId: rewardAsset.id,
       accounts: [],
       vestingBalancesSummary: {
@@ -91,6 +92,7 @@ describe('RewardPot', () => {
     ];
 
     const props = {
+      pubKey: 'pubkey',
       assetId: rewardAsset.id,
       accounts: accounts,
       vestingBalancesSummary: {
@@ -132,25 +134,25 @@ describe('RewardPot', () => {
     renderComponent(props);
 
     expect(screen.getByTestId('total-rewards')).toHaveTextContent(
-      `7 ${rewardAsset.symbol}`
+      `7.00 ${rewardAsset.symbol}`
     );
 
     expect(screen.getByText(/Locked/).nextElementSibling).toHaveTextContent(
-      '2.5'
+      '2.50'
     );
     expect(screen.getByText(/Vesting/).nextElementSibling).toHaveTextContent(
-      '4.5'
+      '4.50'
     );
 
     expect(
       screen.getByText(/Available to withdraw/).nextElementSibling
-    ).toHaveTextContent('1.5');
+    ).toHaveTextContent('1.50');
   });
 });
 
 describe('Vesting', () => {
   it('renders the base rate', () => {
-    render(<Vesting baseRate={'0.25'} />);
+    render(<Vesting baseRate={'0.25'} pubKey="pubKey" />);
 
     expect(screen.getByText(/Base rate/).nextElementSibling).toHaveTextContent(
       '25%'
