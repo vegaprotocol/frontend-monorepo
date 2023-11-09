@@ -266,16 +266,21 @@ export const RewardPot = ({
                 </CardTableTD>
               </tr>
             </CardTable>
-            <div>
-              <TradingButton
-                onClick={() =>
-                  setViews({ type: ViewType.Transfer, assetId }, currentRouteId)
-                }
-                size="small"
-              >
-                {t('Redeem rewards')}
-              </TradingButton>
-            </div>
+            {totalVestedRewardsByRewardAsset.isGreaterThan(0) && (
+              <div>
+                <TradingButton
+                  onClick={() =>
+                    setViews(
+                      { type: ViewType.Transfer, assetId },
+                      currentRouteId
+                    )
+                  }
+                  size="small"
+                >
+                  {t('Redeem rewards')}
+                </TradingButton>
+              </div>
+            )}
           </div>
         </>
       ) : (
