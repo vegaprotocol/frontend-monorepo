@@ -12,7 +12,9 @@ export const formatPercentage = (num: number) => {
   const pct = new BigNumber(num).times(100);
   const dps = pct.decimalPlaces();
   const formatter = new Intl.NumberFormat(getUserLocale(), {
-    minimumFractionDigits: dps || 0,
+    // set to 0 in order to remove the "trailing zeroes" for numbers such as:
+    // 0.123456789 -non-zero-min-> 12.3456800% -zero-min-> 12.34568%
+    minimumFractionDigits: 0,
     maximumFractionDigits: dps || 0,
   });
   return formatter.format(parseFloat(pct.toFixed(5)));
@@ -101,5 +103,7 @@ export const getAdjustedFee = (fees: BigNumber[], discounts: BigNumber[]) => {
 
   const totalFactor = new BigNumber(1).minus(combinedFactors);
 
-  return totalFee.times(BigNumber.max(0, totalFactor)).toNumber();
+  return totalFee
+    .times(new BigNumber(1).minus(BigNumber.max(0, totalFactor)))
+    .toNumber();
 };
