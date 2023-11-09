@@ -30,7 +30,7 @@ import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { toBigNum } from '@vegaprotocol/utils';
 import { usePendingBalancesStore } from '../../hooks/use-pending-balances-manager';
 import { StakingEventType } from '../../hooks/use-get-association-breakdown';
-import { groupBy, omit } from 'lodash';
+import omit from 'lodash/omit';
 
 export const VegaWallet = () => {
   const { t } = useTranslation();
