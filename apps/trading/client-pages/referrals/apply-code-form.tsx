@@ -16,13 +16,13 @@ import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useReferral } from './hooks/use-referral';
 import { Routes } from '../../lib/links';
 import { useTransactionEventSubscription } from '@vegaprotocol/web3';
-import { t } from '@vegaprotocol/i18n';
 import { Statistics, useStats } from './referral-statistics';
 import { useReferralProgram } from './hooks/use-referral-program';
+import { useT } from '../../lib/use-t';
 
 const RELOAD_DELAY = 3000;
 
-const validateCode = (value: string) => {
+const validateCode = (value: string, t: ReturnType<typeof useT>) => {
   const number = +`0x${value}`;
   if (!value || value.length !== 64) {
     return t('Code must be 64 characters in length');
@@ -33,10 +33,11 @@ const validateCode = (value: string) => {
 };
 
 export const ApplyCodeForm = () => {
+  const t = useT();
   const program = useReferralProgram();
   const navigate = useNavigate();
   const openWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
+    (store) => store.openVegaWalletDialog,
   );
 
   const [status, setStatus] = useState<
@@ -59,7 +60,7 @@ export const ApplyCodeForm = () => {
 
   const codeField = watch('code');
   const { data: previewData, loading: previewLoading } = useReferral({
-    code: validateCode(codeField) ? codeField : undefined,
+    code: validateCode(codeField, t) ? codeField : undefined,
   });
 
   useEffect(() => {
@@ -223,7 +224,7 @@ export const ApplyCodeForm = () => {
               hasError={Boolean(errors.code)}
               {...register('code', {
                 required: t('You have to provide a code to apply it.'),
-                validate: validateCode,
+                validate: (value) => validateCode(value, t),
               })}
               placeholder="Enter a code"
               className="mb-2 bg-vega-clight-900 dark:bg-vega-cdark-700"
@@ -247,7 +248,7 @@ export const ApplyCodeForm = () => {
           <h2 className="text-2xl mb-5">
             {t(
               'You are joining the group shown, but will not have access to benefits until you have completed at least %s epochs.',
-              [nextBenefitTierEpochsValue.toString()]
+              [nextBenefitTierEpochsValue.toString()],
             )}
           </h2>
           <Statistics data={previewData} program={program} as="referee" />

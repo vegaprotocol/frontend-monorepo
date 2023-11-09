@@ -8,7 +8,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { marketViewProposalsDataProvider } from '@vegaprotocol/proposals';
-import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/markets';
 import { getQuoteName } from '@vegaprotocol/markets';
@@ -21,6 +20,7 @@ import {
   useLinks,
 } from '@vegaprotocol/environment';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { useT } from '../../lib/use-t';
 
 const filterProposals = (
   data: MarketViewProposalFieldsFragment[] | null,
@@ -68,6 +68,7 @@ export const MarketTerminationBanner = ({
 }: {
   market: Market | null;
 }) => {
+  const t = useT();
   const [visible, setVisible] = useState(true);
   const skip = !market || !visible;
   const { data: passedProposalsData } = useDataProvider({

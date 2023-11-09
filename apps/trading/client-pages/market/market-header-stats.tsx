@@ -9,7 +9,6 @@ import {
   getExpiryDate,
   getMarketExpiryDate,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import {
   Last24hPriceChange,
   Last24hVolume,
@@ -31,12 +30,14 @@ import { MarketLiquiditySupplied } from '../../components/liquidity-supplied';
 import { useEffect, useState } from 'react';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { PriceCell } from '@vegaprotocol/datagrid';
+import { useT } from '../../lib/use-t';
 
 interface MarketHeaderStatsProps {
   market: Market;
 }
 
 export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
+  const t = useT();
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
@@ -234,6 +235,7 @@ const useFormatCountdown = (
   startTime?: number,
   every?: number
 ) => {
+  const t = useT();
   if (startTime && every) {
     const diff = every - ((now - startTime) % every);
     const hours = (diff / 3.6e6) | 0;
@@ -276,6 +278,7 @@ const ExpiryTooltipContent = ({
   market,
   explorerUrl,
 }: ExpiryTooltipContentProps) => {
+  const t = useT();
   if (market.marketTimestamps.close === null) {
     const oracleId =
       market.tradableInstrument.instrument.product.__typename === 'Future'

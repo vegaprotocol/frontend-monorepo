@@ -7,8 +7,8 @@ import {
   DApp,
   useLinks,
   FLAGS,
+  useEnvNameMapping,
 } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/i18n';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import { VegaIconNames, VegaIcon, VLogo } from '@vegaprotocol/ui-toolkit';
@@ -22,6 +22,7 @@ import { VegaWalletMenu } from '../vega-wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { WalletIcon } from '../icons/wallet';
 import { ProtocolUpgradeCountdown } from '@vegaprotocol/proposals';
+import { useT } from '../../lib/use-t';
 
 type MenuState = 'wallet' | 'nav' | null;
 type Theme = 'system' | 'yellow';
@@ -33,6 +34,7 @@ export const Navbar = ({
   children?: ReactNode;
   theme?: Theme;
 }) => {
+  const t = useT();
   // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
 
@@ -138,6 +140,8 @@ export const Navbar = ({
  * of the navigation
  */
 const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
+  const t = useT();
+  const envNameMapping = useEnvNameMapping();
   const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
   const marketId = useGlobalStore((store) => store.marketId);
 
@@ -410,16 +414,6 @@ const NavbarMobileButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
       )}
     />
   );
-};
-
-const envNameMapping: Record<Networks, string> = {
-  [Networks.VALIDATOR_TESTNET]: t('VALIDATOR_TESTNET'),
-  [Networks.CUSTOM]: t('Custom'),
-  [Networks.DEVNET]: t('Devnet'),
-  [Networks.STAGNET1]: t('Stagnet'),
-  [Networks.TESTNET]: t('Fairground testnet'),
-  [Networks.MAINNET_MIRROR]: t('Mirror'),
-  [Networks.MAINNET]: t('Mainnet'),
 };
 
 // https://github.com/radix-ui/primitives/issues/1630

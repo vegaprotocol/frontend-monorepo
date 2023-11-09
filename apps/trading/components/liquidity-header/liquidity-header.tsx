@@ -9,7 +9,6 @@ import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import {
   CopyWithTooltip,
   ExternalLink,
@@ -24,8 +23,10 @@ import {
   usePaidFeesQuery,
 } from '@vegaprotocol/liquidity';
 import { useParams } from 'react-router-dom';
+import { useT } from '../../lib/use-t';
 
 export const LiquidityHeader = () => {
+  const t = useT();
   const { marketId } = useParams();
   const { data: market } = useMarket(marketId);
   const { data: marketData } = useStaticMarketData(marketId);

@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { t } from '@vegaprotocol/i18n';
 import {
   ExternalLink,
   Intent,
@@ -18,12 +17,14 @@ import {
 import { Links, Routes } from '../../lib/links';
 import { useGlobalStore } from '../../stores';
 import { useSidebar, ViewType } from '../sidebar';
+import { useT } from '../../lib/use-t';
 
 interface Props {
   lead?: string;
 }
 
 const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
+  const t = useT();
   const dismiss = useOnboardingStore((store) => store.dismiss);
   const setDialogOpen = useOnboardingStore((store) => store.setDialogOpen);
   const marketId = useGlobalStore((store) => store.marketId);
@@ -78,6 +79,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
 };
 
 export const GetStartedCheckList = () => {
+  const t = useT();
   const { pubKey } = useVegaWallet();
   const currentStep = useGetOnboardingStep();
   return (
@@ -104,6 +106,7 @@ export const GetStartedCheckList = () => {
 };
 
 export const GetStarted = ({ lead }: Props) => {
+  const t = useT();
   const { pubKey } = useVegaWallet();
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
   const openVegaWalletDialog = useVegaWalletDialogStore(

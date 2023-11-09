@@ -4,7 +4,6 @@ import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
-import { t } from '@vegaprotocol/i18n';
 import { OracleBanner, useMarket } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
 import { Filter } from '@vegaprotocol/orders';
@@ -21,6 +20,7 @@ import {
   MarketTerminationBanner,
 } from '../../components/market-banner';
 import { FLAGS } from '@vegaprotocol/environment';
+import { useT } from '../../lib/use-t';
 
 interface TradeGridProps {
   market: Market | null;
@@ -35,6 +35,7 @@ const MainGrid = memo(
     marketId: string;
     pinnedAsset?: PinnedAsset;
   }) => {
+    const t = useT();
     const { data: market } = useMarket(marketId);
     const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });
     const [sizesMiddle, handleOnMiddleLayoutChange] = usePaneLayout({

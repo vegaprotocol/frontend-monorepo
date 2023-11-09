@@ -2,10 +2,8 @@ import type { PinnedAsset } from '@vegaprotocol/accounts';
 import type { Market } from '@vegaprotocol/markets';
 import { OracleBanner } from '@vegaprotocol/markets';
 import type { TradingView } from './trade-views';
-import { TradingViews } from './trade-views';
+import { NoMarketSplash, TradingViews } from './trade-views';
 import { useState } from 'react';
-import { Splash } from '@vegaprotocol/ui-toolkit';
-import { NO_MARKET } from './constants';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
 import {
@@ -30,7 +28,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
       throw new Error(`No component for view: ${view}`);
     }
 
-    if (!market) return <Splash>{NO_MARKET}</Splash>;
+    if (!market) return <NoMarketSplash />;
 
     return <Component marketId={market?.id} pinnedAsset={pinnedAsset} />;
   };

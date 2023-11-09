@@ -7,7 +7,7 @@ import {
 import classNames from 'classnames';
 import type { HTMLAttributes, ReactNode } from 'react';
 import { Button } from './buttons';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../lib/use-t';
 
 export const Tile = ({
   className,
@@ -62,6 +62,7 @@ export const CodeTile = ({
   createdAt?: string;
   className?: string;
 }) => {
+  const t = useT();
   return (
     <StatTile
       title={t('Your referral code')}

@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 import { ExternalLink, Loader, Splash } from '@vegaprotocol/ui-toolkit';
@@ -12,6 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Links } from '../../lib/links';
 import { ViewType, useSidebar } from '../../components/sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
+import { useT } from '../../lib/use-t';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -57,6 +57,7 @@ const TitleUpdater = ({
 };
 
 export const MarketPage = () => {
+  const t = useT();
   const { marketId } = useParams();
   const navigate = useNavigate();
   const currentRouteId = useGetCurrentRouteId();

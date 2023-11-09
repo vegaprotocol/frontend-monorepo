@@ -9,16 +9,17 @@ import {
   Intent,
   NotificationBanner,
 } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
 import * as Types from '@vegaprotocol/types';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { useT } from '../../lib/use-t';
 
 export const MarketSuccessorProposalBanner = ({
   marketId,
 }: {
   marketId?: string;
 }) => {
+  const t = useT();
   const { data: proposals } = useDataProvider({
     dataProvider: marketViewProposalsDataProvider,
     skip: !marketId,

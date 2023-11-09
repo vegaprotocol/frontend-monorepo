@@ -7,7 +7,7 @@ import { Tag } from './tag';
 import type { ComponentProps, ReactNode } from 'react';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { DApp, TOKEN_PROPOSALS, useLinks } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../lib/use-t';
 
 const Loading = ({ variant }: { variant: 'large' | 'inline' }) => (
   <div
@@ -31,6 +31,7 @@ const StakingTier = ({
   referralRewardMultiplier: string;
   minimumStakedTokens: string;
 }) => {
+  const t = useT();
   const color: Record<number, ComponentProps<typeof Tag>['color']> = {
     1: 'green',
     2: 'blue',
@@ -70,6 +71,7 @@ const StakingTier = ({
 };
 
 export const TiersContainer = () => {
+  const t = useT();
   const { benefitTiers, stakingTiers, details, loading, error } =
     useReferralProgram();
 
@@ -174,6 +176,7 @@ const TiersTable = ({
   }>;
   windowLength?: number;
 }) => {
+  const t = useT();
   return (
     <Table
       columns={[

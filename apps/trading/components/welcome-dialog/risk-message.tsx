@@ -1,9 +1,10 @@
-import { t } from '@vegaprotocol/i18n';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import { Links } from '../../lib/links';
+import { useT } from '../../lib/use-t';
 
 export const RiskMessage = () => {
+  const t = useT();
   return (
     <>
       <div className="p-6 mb-6 bg-vega-light-100 dark:bg-vega-dark-100">

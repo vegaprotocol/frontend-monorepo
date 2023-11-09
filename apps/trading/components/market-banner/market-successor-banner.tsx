@@ -17,8 +17,8 @@ import {
   getMarketExpiryDate,
   isNumeric,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
+import { useT } from '../../lib/use-t';
 
 const getExpiryDate = (tags: string[], close?: string): Date | null => {
   const expiryDate = getMarketExpiryDate(tags);
@@ -30,6 +30,7 @@ export const MarketSuccessorBanner = ({
 }: {
   market: Market | null;
 }) => {
+  const t = useT();
   const { data: marketState } = useMarketState(market?.id);
   const isSettled = marketState === Types.MarketState.STATE_SETTLED;
   const { data: successorData, loading } = useSuccessorMarket(market?.id);

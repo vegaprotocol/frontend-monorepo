@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { titlefy } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import {
   LocalStoragePersistTabs as Tabs,
   Tab,
@@ -15,8 +14,10 @@ import {
   TOKEN_NEW_MARKET_PROPOSAL,
   useLinks,
 } from '@vegaprotocol/environment';
+import { useT } from '../../lib/use-t';
 
 export const MarketsPage = () => {
+  const t = useT();
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
   }));

@@ -6,7 +6,6 @@ import {
   CandlesMenu,
 } from '@vegaprotocol/candles-chart';
 import { Filter, OpenOrdersMenu } from '@vegaprotocol/orders';
-import { NO_MARKET } from './constants';
 import { TradesContainer } from '../../components/trades-container';
 import { OrderbookContainer } from '../../components/orderbook-container';
 import { FillsContainer } from '../../components/fills-container';
@@ -20,6 +19,7 @@ import { OrdersContainer } from '../../components/orders-container';
 import { StopOrdersContainer } from '../../components/stop-orders-container';
 import { AccountsMenu } from '../../components/accounts-menu';
 import { PositionsMenu } from '../../components/positions-menu';
+import { useT } from '../../lib/use-t';
 
 type MarketDependantView =
   | typeof CandlesChartContainer
@@ -29,9 +29,14 @@ type MarketDependantView =
 
 type MarketDependantViewProps = ComponentProps<MarketDependantView>;
 
+export const NoMarketSplash = () => {
+  const t = useT();
+  return <Splash>{t('No market')}</Splash>;
+};
+
 const requiresMarket = (View: MarketDependantView) => {
   const WrappedComponent = (props: MarketDependantViewProps) =>
-    props.marketId ? <View {...props} /> : <Splash>{NO_MARKET}</Splash>;
+    props.marketId ? <View {...props} /> : <NoMarketSplash />;
   WrappedComponent.displayName = `RequiresMarket(${View.name})`;
   return WrappedComponent;
 };

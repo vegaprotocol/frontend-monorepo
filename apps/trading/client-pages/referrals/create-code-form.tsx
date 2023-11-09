@@ -24,13 +24,14 @@ import {
   DISCLAIMER_REFERRAL_DOCS_LINK,
 } from './constants';
 import { useReferral } from './hooks/use-referral';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../lib/use-t';
 
 export const CreateCodeContainer = () => {
   return <CreateCodeForm />;
 };
 
 export const CreateCodeForm = () => {
+  const t = useT();
   const [dialogOpen, setDialogOpen] = useState(false);
   const openWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
@@ -81,6 +82,7 @@ const CreateCodeDialog = ({
 }: {
   setDialogOpen: (open: boolean) => void;
 }) => {
+  const t = useT();
   const createLink = useLinks(DApp.Governance);
   const { isReadOnly, pubKey, sendTx } = useVegaWallet();
   const { refetch } = useReferral({ pubKey, role: 'referrer' });

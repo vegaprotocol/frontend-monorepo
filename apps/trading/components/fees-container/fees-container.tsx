@@ -1,6 +1,5 @@
 import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
-import { t } from '@vegaprotocol/i18n';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
   useNetworkParams,
@@ -24,8 +23,10 @@ import {
   VegaIconNames,
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
+import { useT } from '../../lib/use-t';
 
 export const FeesContainer = () => {
+  const t = useT();
   const { pubKey } = useVegaWallet();
   const { params, loading: paramsLoading } = useNetworkParams([
     NetworkParams.market_fee_factors_makerFee,
@@ -54,7 +55,7 @@ export const FeesContainer = () => {
   const { volumeDiscount, volumeTierIndex, volumeInWindow, volumeTiers } =
     useVolumeStats(
       feesData?.volumeDiscountStats,
-      programData?.currentVolumeDiscountProgram
+      programData?.currentVolumeDiscountProgram,
     );
 
   const {
@@ -71,7 +72,7 @@ export const FeesContainer = () => {
     programData?.currentReferralProgram,
     feesData?.epoch,
     feesData?.referrer,
-    feesData?.referee
+    feesData?.referee,
   );
 
   const loading = paramsLoading || feesLoading || programLoading;
@@ -79,7 +80,7 @@ export const FeesContainer = () => {
 
   const isReferralProgramRunning = Boolean(programData?.currentReferralProgram);
   const isVolumeDiscountProgramRunning = Boolean(
-    programData?.currentVolumeDiscountProgram
+    programData?.currentVolumeDiscountProgram,
   );
 
   return (
@@ -202,6 +203,7 @@ export const TradingFees = ({
   referralDiscount: number;
   volumeDiscount: number;
 }) => {
+  const t = useT();
   const referralDiscountBigNum = new BigNumber(referralDiscount);
   const volumeDiscountBigNum = new BigNumber(volumeDiscount);
 
@@ -210,12 +212,12 @@ export const TradingFees = ({
   const maxLiq = maxBy(markets, (m) => Number(m.fees.factors.liquidityFee));
 
   const total = new BigNumber(params.market_fee_factors_makerFee).plus(
-    new BigNumber(params.market_fee_factors_infrastructureFee)
+    new BigNumber(params.market_fee_factors_infrastructureFee),
   );
 
   const adjustedTotal = getAdjustedFee(
     [total],
-    [referralDiscountBigNum, volumeDiscountBigNum]
+    [referralDiscountBigNum, volumeDiscountBigNum],
   );
 
   let minTotal;
@@ -233,12 +235,12 @@ export const TradingFees = ({
 
     minAdjustedTotal = getAdjustedFee(
       [total, minLiqFee],
-      [referralDiscountBigNum, volumeDiscountBigNum]
+      [referralDiscountBigNum, volumeDiscountBigNum],
     );
 
     maxAdjustedTotal = getAdjustedFee(
       [total, maxLiqFee],
-      [referralDiscountBigNum, volumeDiscountBigNum]
+      [referralDiscountBigNum, volumeDiscountBigNum],
     );
   }
 
@@ -248,7 +250,7 @@ export const TradingFees = ({
         <p className="block text-3xl leading-none" data-testid="adjusted-fees">
           {minAdjustedTotal !== undefined && maxAdjustedTotal !== undefined
             ? `${formatPercentage(minAdjustedTotal)}%-${formatPercentage(
-                maxAdjustedTotal
+                maxAdjustedTotal,
               )}%`
             : `${formatPercentage(adjustedTotal)}%`}
         </p>
@@ -258,7 +260,7 @@ export const TradingFees = ({
             <CardTableTD>
               {minTotal !== undefined && maxTotal !== undefined
                 ? `${formatPercentage(minTotal.toNumber())}%-${formatPercentage(
-                    maxTotal.toNumber()
+                    maxTotal.toNumber(),
                   )}%`
                 : `${formatPercentage(total.toNumber())}%`}
             </CardTableTD>
@@ -267,7 +269,7 @@ export const TradingFees = ({
             <CardTableTH>{t('Infrastructure')}</CardTableTH>
             <CardTableTD>
               {formatPercentage(
-                Number(params.market_fee_factors_infrastructureFee)
+                Number(params.market_fee_factors_infrastructureFee),
               )}
               %
             </CardTableTD>
@@ -305,6 +307,7 @@ export const CurrentVolume = ({
   windowLengthVolume: number;
   windowLength: number;
 }) => {
+  const t = useT();
   const nextTier = tiers[tierIndex + 1];
   const requiredForNextTier = nextTier
     ? Number(nextTier.minimumRunningNotionalTakerVolume) - windowLengthVolume
@@ -335,6 +338,7 @@ const ReferralBenefits = ({
   setRunningNotionalTakerVolume: number;
   epochs: number;
 }) => {
+  const t = useT();
   return (
     <div className="flex flex-col gap-3 pt-4">
       <CardStat
@@ -342,7 +346,7 @@ const ReferralBenefits = ({
         value={formatNumber(setRunningNotionalTakerVolume)}
         text={t(
           'Combined running notional over the %s epochs',
-          epochs.toString()
+          epochs.toString(),
         )}
       />
       <CardStat value={epochsInSet} text={t('epochs in referral set')} />
@@ -361,9 +365,10 @@ const TotalDiscount = ({
   isReferralProgramRunning: boolean;
   isVolumeDiscountProgramRunning: boolean;
 }) => {
+  const t = useT();
   const totalDiscount = 1 - (1 - volumeDiscount) * (1 - referralDiscount);
   const totalDiscountDescription = t(
-    'The total discount is calculated according to the following formula: '
+    'The total discount is calculated according to the following formula: ',
   );
   const formula = (
     <span className="italic">
@@ -431,6 +436,7 @@ const VolumeTiers = ({
   lastEpochVolume: number;
   windowLength: number;
 }) => {
+  const t = useT();
   if (!tiers.length) {
     return (
       <p className="text-muted text-sm">
@@ -492,6 +498,7 @@ const ReferralTiers = ({
   epochsInSet: number;
   referralVolumeInWindow: number;
 }) => {
+  const t = useT();
   if (!tiers.length) {
     return (
       <p className="text-muted text-sm">{t('No referral program active')}</p>
@@ -517,7 +524,7 @@ const ReferralTiers = ({
               const isUserTier = tiers.length - 1 - tierIndex === i;
 
               const requiredVolume = Number(
-                t.minimumRunningNotionalTakerVolume
+                t.minimumRunningNotionalTakerVolume,
               );
               let unlocksIn = null;
 
@@ -549,6 +556,7 @@ const ReferralTiers = ({
 };
 
 const YourTier = () => {
+  const t = useT();
   return (
     <span className="bg-rainbow whitespace-nowrap rounded-xl px-4 py-1.5 text-white">
       {t('Your tier')}

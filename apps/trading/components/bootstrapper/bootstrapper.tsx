@@ -8,12 +8,13 @@ import {
   NodeGuard,
   useEnvironment,
 } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/i18n';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import { Suspense, type ReactNode } from 'react';
 import { Web3Provider } from './web3-provider';
+import { useT } from '../../lib/use-t';
 
 export const Bootstrapper = ({ children }: { children: ReactNode }) => {
+  const t = useT();
   const {
     error,
     VEGA_URL,
@@ -46,12 +47,16 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
       >
         <NodeGuard
           skeleton={<AppLoader />}
-          failure={<NodeFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
+          failure={
+            <NodeFailure
+              title={t('Node: {{VEGA_URL}} is unsuitable', { VEGA_URL })}
+            />
+          }
         >
           <Web3Provider
             skeleton={<AppLoader />}
             failure={
-              <AppFailure title={t(`Could not configure web3 provider`)} />
+              <AppFailure title={t('Could not configure web3 provider')} />
             }
           >
             <VegaWalletProvider
