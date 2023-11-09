@@ -1,5 +1,7 @@
 ## Trading
 
+test
+
 ## Development
 
 First copy the configuration of the application you are starting:
