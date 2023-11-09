@@ -16,7 +16,6 @@ import {
   CardTableTD,
   CardTableTH,
 } from '../card/card';
-import { useAssetsMapProvider } from '@vegaprotocol/assets';
 import {
   type RewardsPageQuery,
   useRewardsPageQuery,
@@ -31,7 +30,7 @@ import { formatPercentage } from '../fees-container/utils';
 import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
 import { ViewType, useSidebar } from '../sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
-import { RewardHistory } from './rewards-history';
+import { RewardsHistoryContainer } from './rewards-history';
 
 export const RewardsContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -44,23 +43,16 @@ export const RewardsContainer = () => {
 
   const { data: epochData } = useRewardsEpochQuery();
 
-  const fromEpoch = Number(epochData?.epoch.id) - 1000;
-  const toEpoch = Number(epochData?.epoch.id) - 1;
-
   // No need to specify the fromEpoch as it will by default give you the last
   const { data: rewardsData, loading: rewardsLoading } = useRewardsPageQuery({
     variables: {
       partyId: pubKey || '',
-      fromEpoch,
-      toEpoch,
     },
-    skip: !epochData?.epoch.id,
   });
 
-  const { data: assets, loading: assetsLoading } = useAssetsMapProvider();
+  if (!epochData?.epoch) return null;
 
-  const loading =
-    paramsLoading || accountsLoading || rewardsLoading || assetsLoading;
+  const loading = paramsLoading || accountsLoading || rewardsLoading;
 
   const rewardAccounts = accounts
     ? accounts.filter((a) =>
@@ -135,15 +127,11 @@ export const RewardsContainer = () => {
       <Card
         title={t('Rewards history')}
         className="lg:col-span-full"
-        loading={loading}
+        loading={rewardsLoading}
       >
-        <RewardHistory
-          epochRewardSummaries={rewardsData?.epochRewardSummaries}
-          partyRewards={rewardsData?.party?.rewardsConnection}
-          assets={assets}
-          partyId={pubKey}
-          fromEpoch={fromEpoch}
-          toEpoch={toEpoch}
+        <RewardsHistoryContainer
+          epoch={Number(epochData?.epoch.id)}
+          pubKey={pubKey}
         />
       </Card>
     </div>

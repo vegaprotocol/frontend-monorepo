@@ -1,22 +1,53 @@
-query RewardsPage(
+query RewardsPage($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    vestingBalancesSummary {
+      epoch
+      vestingBalances {
+        asset {
+          id
+          symbol
+          decimals
+          quantum
+        }
+        balance
+      }
+      lockedBalances {
+        asset {
+          id
+          symbol
+          decimals
+          quantum
+        }
+        balance
+        untilEpoch
+      }
+    }
+  }
+}
+
+query RewardsHistory(
   $partyId: ID!
   $epochRewardSummariesPagination: Pagination
   $partyRewardsPagination: Pagination
   $fromEpoch: Int
   $toEpoch: Int
 ) {
+  epochRewardSummaries(
+    filter: { fromEpoch: $fromEpoch, toEpoch: $toEpoch }
+    pagination: $epochRewardSummariesPagination
+  ) {
+    edges {
+      node {
+        epoch
+        assetId
+        amount
+        rewardType
+      }
+    }
+  }
   party(id: $partyId) {
     id
-    activityStreak {
-      isActive
-      activeFor
-      inactiveFor
-      rewardDistributionMultiplier
-      rewardVestingMultiplier
-      epoch
-      tradedVolume
-      openVolume
-    }
     rewardsConnection(
       fromEpoch: $fromEpoch
       toEpoch: $toEpoch
@@ -41,41 +72,6 @@ query RewardsPage(
             id
           }
         }
-      }
-    }
-    vestingBalancesSummary {
-      epoch
-      vestingBalances {
-        asset {
-          id
-          symbol
-          decimals
-          quantum
-        }
-        balance
-      }
-      lockedBalances {
-        asset {
-          id
-          symbol
-          decimals
-          quantum
-        }
-        balance
-        untilEpoch
-      }
-    }
-  }
-  epochRewardSummaries(
-    filter: { fromEpoch: $fromEpoch, toEpoch: $toEpoch }
-    pagination: $epochRewardSummariesPagination
-  ) {
-    edges {
-      node {
-        epoch
-        assetId
-        amount
-        rewardType
       }
     }
   }

@@ -1,9 +1,13 @@
 import groupBy from 'lodash/groupBy';
+import debounce from 'lodash/debounce';
 import classNames from 'classnames';
 import { useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef, ValueFormatterFunc } from 'ag-grid-community';
-import type { AssetFieldsFragment } from '@vegaprotocol/assets';
+import {
+  useAssetsMapProvider,
+  type AssetFieldsFragment,
+} from '@vegaprotocol/assets';
 import {
   addDecimalsFormatNumberQuantum,
   formatNumberPercentage,
@@ -13,7 +17,62 @@ import { AgGrid, StackedCell } from '@vegaprotocol/datagrid';
 import { TradingButton } from '@vegaprotocol/ui-toolkit';
 import { AccountType } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/i18n';
-import type { RewardsPageQuery } from './__generated__/Rewards';
+import {
+  useRewardsHistoryQuery,
+  type RewardsHistoryQuery,
+} from './__generated__/Rewards';
+
+export const RewardsHistoryContainer = ({
+  epoch,
+  pubKey,
+}: {
+  pubKey: string | null;
+  epoch: number;
+}) => {
+  const [epochVariables, setEpochVariables] = useState(() => ({
+    from: epoch - 100,
+    to: epoch,
+  }));
+
+  const { data: assets } = useAssetsMapProvider();
+
+  // No need to specify the fromEpoch as it will by default give you the last
+  const { refetch, data: rewardsData } = useRewardsHistoryQuery({
+    variables: {
+      partyId: pubKey || '',
+      fromEpoch: epoch - 100,
+      toEpoch: epoch,
+    },
+  });
+
+  const debouncedRefetch = useMemo(
+    () => debounce((variables) => refetch(variables), 400),
+    [refetch]
+  );
+
+  const handleEpochChange = (x: { from?: number; to?: number }) => {
+    setEpochVariables((curr) => ({
+      ...curr,
+      ...x,
+    }));
+    debouncedRefetch({
+      partyId: pubKey || '',
+      fromEpoch: x.from,
+      toEpoch: x.to,
+    });
+  };
+
+  return (
+    <RewardHistory
+      pubKey={pubKey}
+      epochRewardSummaries={rewardsData?.epochRewardSummaries}
+      partyRewards={rewardsData?.party?.rewardsConnection}
+      onEpochChange={handleEpochChange}
+      epochVariables={epochVariables}
+      assets={assets}
+    />
+  );
+};
 
 const defaultColDef = {
   flex: 1,
@@ -36,23 +95,26 @@ interface RewardRow {
 }
 
 type PartyRewardsConnection = NonNullable<
-  RewardsPageQuery['party']
+  RewardsHistoryQuery['party']
 >['rewardsConnection'];
 
-export const RewardHistory = ({
+const RewardHistory = ({
   epochRewardSummaries,
   partyRewards,
   assets,
-  partyId,
-  fromEpoch,
-  toEpoch,
+  pubKey,
+  epochVariables,
+  onEpochChange,
 }: {
-  epochRewardSummaries: RewardsPageQuery['epochRewardSummaries'];
+  epochRewardSummaries: RewardsHistoryQuery['epochRewardSummaries'];
   partyRewards: PartyRewardsConnection;
   assets: Record<string, AssetFieldsFragment> | null;
-  partyId: string | null;
-  fromEpoch: number;
-  toEpoch: number;
+  pubKey: string | null;
+  epochVariables: {
+    from: number;
+    to: number;
+  };
+  onEpochChange: (x: { from?: number; to?: number }) => void;
 }) => {
   const [isParty, setIsParty] = useState(false);
 
@@ -60,7 +122,7 @@ export const RewardHistory = ({
     epochRewardSummaries,
     partyRewards,
     assets,
-    partyId: isParty ? partyId : null,
+    partyId: isParty ? pubKey : null,
   });
 
   const columnDefs = useMemo<ColDef<RewardRow>[]>(() => {
@@ -108,6 +170,7 @@ export const RewardHistory = ({
           if (!value || !data) return <span>-</span>;
           return <StackedCell primary={value} secondary={data.asset.name} />;
         },
+        sort: 'desc',
       },
       {
         field: 'staking',
@@ -166,8 +229,25 @@ export const RewardHistory = ({
   return (
     <div>
       <div className="flex justify-between gap-2 items-center mb-2">
-        <h4 className="text-muted text-xs">
-          From {fromEpoch} to {toEpoch}
+        <h4 className="text-muted text-xs flex items-center gap-2">
+          {t('From epoch')}
+          <span className="relative">
+            <span className="py-2 px-1 opacity-0">{epochVariables.from}</span>
+            <input
+              onChange={(e) => onEpochChange({ from: Number(e.target.value) })}
+              value={epochVariables.from}
+              className="py-2 px-1 rounded absolute top-0 left-0 w-full h-full bg-vega-clight-600 dark:bg-vega-cdark-600"
+            />
+          </span>
+          {t('to')}
+          <span className="relative">
+            <span className="py-2 px-1 opacity-0">{epochVariables.to}</span>
+            <input
+              onChange={(e) => onEpochChange({ to: Number(e.target.value) })}
+              value={epochVariables.to}
+              className="py-2 px-1 rounded absolute top-0 left-0 w-full h-full bg-vega-clight-600 dark:bg-vega-cdark-600"
+            />
+          </span>
         </h4>
         <div className="flex gap-0.5">
           <TradingButton
@@ -185,7 +265,7 @@ export const RewardHistory = ({
             className={classNames({
               'bg-transparent dark:bg-transparent': !isParty,
             })}
-            disabled={!partyId}
+            disabled={!pubKey}
           >
             {t('Earned by me')}
           </TradingButton>
@@ -287,7 +367,7 @@ const useRowData = ({
   partyId,
 }: {
   partyRewards: PartyRewardsConnection;
-  epochRewardSummaries: RewardsPageQuery['epochRewardSummaries'];
+  epochRewardSummaries: RewardsHistoryQuery['epochRewardSummaries'];
   assets: Record<string, AssetFieldsFragment> | null;
   partyId: string | null;
 }) => {
