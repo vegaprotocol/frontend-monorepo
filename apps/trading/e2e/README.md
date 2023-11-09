@@ -16,11 +16,26 @@
 1. **Install Python**: Follow the instructions on the [official Python website](https://www.python.org/)
    **ensure you install a version between 3.9 and 3.11.**
 
+1. **Install Playwright**:
+   Execute the command below to Install Playwright.
+
+   ```bash
+   playwright install chromium
+   ```
+
 1. **Set Up a Poetry Environment**:
    Execute the command below to configure the Poetry environment.
 
    ```bash
-   yarn trading:test:install
+   cd apps/trading/e2e
+   ```
+
+   ```bash
+   poetry shell
+   ```
+
+   ```bash
+   poetry install
    ```
 
 1. **Download Necessary Binaries**:
@@ -64,10 +79,14 @@ Ensure the Docker daemon is running.
 
 To run a specific test, use the `-k` option followed by the name of the test.
 
-### From within the console-test folder:
+### From within the e2e folder:
 
 ```bash
-poetry run pytest -k "order_match" -s
+cd apps/trading/e2e
+```
+
+```bash
+poetry run pytest -k "test_name" -s
 ```
 
 ### From anywhere:
@@ -81,6 +100,10 @@ yarn trading:test -- "test_name" -s
 To run tests in parallel, use the `--numprocesses auto` option. The `--dist loadfile` setting ensures that multiple runners are not assigned to a single test file.
 
 ### From within the console-test folder:
+
+```bash
+cd apps/trading/e2e
+```
 
 ```bash
 poetry run pytest -s --numprocesses auto --dist loadfile
