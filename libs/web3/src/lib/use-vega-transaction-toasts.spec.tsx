@@ -193,6 +193,7 @@ const submitOrder: VegaStoredTxState = {
     createdAt: new Date(),
     marketId: 'market-1',
     status: OrderStatus.STATUS_ACTIVE,
+    remaining: '10',
   },
 };
 
@@ -249,6 +250,7 @@ const editOrder: VegaStoredTxState = {
     createdAt: new Date(),
     marketId: 'market-1',
     status: OrderStatus.STATUS_ACTIVE,
+    remaining: '10',
   },
 };
 
@@ -489,6 +491,7 @@ describe('getRejectionReason', () => {
         timeInForce: Types.OrderTimeInForce.TIME_IN_FORCE_FOK,
         side: Types.Side.SIDE_BUY,
         marketId: '',
+        remaining: '',
       })
     ).toBe('Insufficient asset balance');
   });
@@ -505,6 +508,7 @@ describe('getRejectionReason', () => {
         timeInForce: Types.OrderTimeInForce.TIME_IN_FORCE_FOK,
         side: Types.Side.SIDE_BUY,
         marketId: '',
+        remaining: '',
       })
     ).toBe(
       'Your Fill or Kill (FOK) order was not filled and it has been stopped'

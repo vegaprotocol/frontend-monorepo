@@ -76,6 +76,7 @@ const orderUpdate: OrderTxUpdateFieldsFragment = {
   createdAt: '2022-07-05T14:25:47.815283706Z',
   expiresAt: '2022-07-05T14:25:47.815283706Z',
   size: '10',
+  remaining: '10',
   price: '300000',
   timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
   side: Side.SIDE_BUY,
