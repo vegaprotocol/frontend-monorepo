@@ -80,6 +80,7 @@ export const RewardsContainer = () => {
         highlight={true}
       >
         <RewardPot
+          pubKey={pubKey}
           accounts={accounts}
           assetId={params.reward_asset}
           vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
@@ -97,6 +98,7 @@ export const RewardsContainer = () => {
             loading={loading}
           >
             <RewardPot
+              pubKey={pubKey}
               accounts={accounts}
               assetId={assetId}
               vestingBalancesSummary={
@@ -107,7 +109,7 @@ export const RewardsContainer = () => {
         );
       })}
       <Card title={t('Vesting')} className="lg:col-span-2" loading={loading}>
-        <Vesting baseRate={params.rewards_vesting_baseRate} />
+        <Vesting pubKey={pubKey} baseRate={params.rewards_vesting_baseRate} />
       </Card>
       <Card
         title={t('Rewards multipliers')}
@@ -143,12 +145,14 @@ type VestingBalances = NonNullable<
 >['vestingBalancesSummary'];
 
 export type RewardPotProps = {
+  pubKey: string | null;
   accounts: Account[] | null;
   assetId: string; // VEGA
   vestingBalancesSummary: VestingBalances | undefined;
 };
 
 export const RewardPot = ({
+  pubKey,
   accounts,
   assetId,
   vestingBalancesSummary,
@@ -202,6 +206,14 @@ export const RewardPot = ({
     rewardAsset = lockedEntries[0].asset;
   } else if (vestingEntries?.length) {
     rewardAsset = vestingEntries[0].asset;
+  }
+
+  if (!pubKey) {
+    return (
+      <div className="pt-4">
+        <p className="text-sm text-muted">{t('Not connected')}</p>
+      </div>
+    );
   }
 
   return (
@@ -273,7 +285,13 @@ export const RewardPot = ({
   );
 };
 
-export const Vesting = ({ baseRate }: { baseRate: string }) => {
+export const Vesting = ({
+  pubKey,
+  baseRate,
+}: {
+  pubKey: string | null;
+  baseRate: string;
+}) => {
   const baseRateFormatted = formatPercentage(Number(baseRate));
   return (
     <div className="pt-4">
@@ -283,14 +301,18 @@ export const Vesting = ({ baseRate }: { baseRate: string }) => {
           <CardTableTH>{t('Base rate')}</CardTableTH>
           <CardTableTD>{baseRateFormatted}%</CardTableTD>
         </tr>
-        <tr>
-          <CardTableTH>{t('Vesting multiplier')}</CardTableTH>
-          <CardTableTD>0%</CardTableTD>
-        </tr>
-        <tr>
-          <CardTableTH>{t('Available to withdraw next epoch')}</CardTableTH>
-          <CardTableTD>0</CardTableTD>
-        </tr>
+        {pubKey && (
+          <>
+            <tr>
+              <CardTableTH>{t('Vesting multiplier')}</CardTableTH>
+              <CardTableTD>0%</CardTableTD>
+            </tr>
+            <tr>
+              <CardTableTH>{t('Available to withdraw next epoch')}</CardTableTH>
+              <CardTableTD>0</CardTableTD>
+            </tr>
+          </>
+        )}
       </CardTable>
     </div>
   );
