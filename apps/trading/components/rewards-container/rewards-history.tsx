@@ -1,4 +1,3 @@
-import groupBy from 'lodash/groupBy';
 import debounce from 'lodash/debounce';
 import classNames from 'classnames';
 import { useMemo, useState } from 'react';
@@ -11,16 +10,19 @@ import {
 import {
   addDecimalsFormatNumberQuantum,
   formatNumberPercentage,
-  removePaginationWrapper,
 } from '@vegaprotocol/utils';
 import { AgGrid, StackedCell } from '@vegaprotocol/datagrid';
-import { TradingButton } from '@vegaprotocol/ui-toolkit';
-import { AccountType } from '@vegaprotocol/types';
+import {
+  TradingButton,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
 import {
   useRewardsHistoryQuery,
   type RewardsHistoryQuery,
 } from './__generated__/Rewards';
+import { useRewardsRowData } from './use-reward-row-data';
 
 export const RewardsHistoryContainer = ({
   epoch,
@@ -50,24 +52,41 @@ export const RewardsHistoryContainer = ({
     [refetch]
   );
 
-  const handleEpochChange = (x: { from?: number; to?: number }) => {
-    setEpochVariables((curr) => ({
-      ...curr,
-      ...x,
-    }));
+  const handleEpochChange = (incoming: { from: number; to: number }) => {
+    if (!Number.isInteger(incoming.from) || !Number.isInteger(incoming.to)) {
+      return;
+    }
+
+    if (incoming.from > incoming.to) {
+      return;
+    }
+
+    if (incoming.from < -1 || incoming.to < -1) {
+      return;
+    }
+
+    if (incoming.from > epoch || incoming.to > epoch) {
+      return;
+    }
+
+    setEpochVariables({
+      from: incoming.from,
+      to: Math.min(incoming.to, epoch),
+    });
     debouncedRefetch({
       partyId: pubKey || '',
-      fromEpoch: x.from,
-      toEpoch: x.to,
+      fromEpoch: incoming.from,
+      toEpoch: incoming.to,
     });
   };
 
   return (
-    <RewardHistory
+    <RewardHistoryTable
       pubKey={pubKey}
       epochRewardSummaries={rewardsData?.epochRewardSummaries}
       partyRewards={rewardsData?.party?.rewardsConnection}
       onEpochChange={handleEpochChange}
+      epoch={epoch}
       epochVariables={epochVariables}
       assets={assets}
     />
@@ -94,37 +113,38 @@ interface RewardRow {
   total: number;
 }
 
-type PartyRewardsConnection = NonNullable<
+export type PartyRewardsConnection = NonNullable<
   RewardsHistoryQuery['party']
 >['rewardsConnection'];
 
-const RewardHistory = ({
+const RewardHistoryTable = ({
   epochRewardSummaries,
   partyRewards,
   assets,
   pubKey,
   epochVariables,
+  epoch,
   onEpochChange,
 }: {
   epochRewardSummaries: RewardsHistoryQuery['epochRewardSummaries'];
   partyRewards: PartyRewardsConnection;
   assets: Record<string, AssetFieldsFragment> | null;
   pubKey: string | null;
+  epoch: number;
   epochVariables: {
     from: number;
     to: number;
   };
-  onEpochChange: (x: { from?: number; to?: number }) => void;
+  onEpochChange: (x: { from: number; to: number }) => void;
 }) => {
   const [isParty, setIsParty] = useState(false);
 
-  const rowData = useRowData({
+  const rowData = useRewardsRowData({
     epochRewardSummaries,
     partyRewards,
     assets,
     partyId: isParty ? pubKey : null,
   });
-
   const columnDefs = useMemo<ColDef<RewardRow>[]>(() => {
     const rewardValueFormatter: ValueFormatterFunc<RewardRow> = ({
       data,
@@ -229,25 +249,55 @@ const RewardHistory = ({
   return (
     <div>
       <div className="flex justify-between gap-2 items-center mb-2">
-        <h4 className="text-muted text-xs flex items-center gap-2">
+        <h4 className="text-muted text-sm flex items-center gap-2">
           {t('From epoch')}
-          <span className="relative">
-            <span className="py-2 px-1 opacity-0">{epochVariables.from}</span>
-            <input
-              onChange={(e) => onEpochChange({ from: Number(e.target.value) })}
-              value={epochVariables.from}
-              className="py-2 px-1 rounded absolute top-0 left-0 w-full h-full bg-vega-clight-600 dark:bg-vega-cdark-600"
-            />
-          </span>
+          <EpochInput
+            value={epochVariables.from}
+            max={epochVariables.to}
+            onChange={(value) =>
+              onEpochChange({
+                from: value,
+                to: epochVariables.to,
+              })
+            }
+            onIncrement={() =>
+              onEpochChange({
+                from: epochVariables.from + 1,
+                to: epochVariables.to,
+              })
+            }
+            onDecrement={() =>
+              onEpochChange({
+                from: epochVariables.from - 1,
+                to: epochVariables.to,
+              })
+            }
+          />
+
           {t('to')}
-          <span className="relative">
-            <span className="py-2 px-1 opacity-0">{epochVariables.to}</span>
-            <input
-              onChange={(e) => onEpochChange({ to: Number(e.target.value) })}
-              value={epochVariables.to}
-              className="py-2 px-1 rounded absolute top-0 left-0 w-full h-full bg-vega-clight-600 dark:bg-vega-cdark-600"
-            />
-          </span>
+
+          <EpochInput
+            value={epochVariables.to}
+            max={epoch}
+            onChange={(value) =>
+              onEpochChange({
+                from: epochVariables.from,
+                to: value,
+              })
+            }
+            onIncrement={() =>
+              onEpochChange({
+                from: epochVariables.from,
+                to: epochVariables.to + 1,
+              })
+            }
+            onDecrement={() =>
+              onEpochChange({
+                from: epochVariables.from,
+                to: epochVariables.to - 1,
+              })
+            }
+          />
         </h4>
         <div className="flex gap-0.5">
           <TradingButton
@@ -282,104 +332,51 @@ const RewardHistory = ({
   );
 };
 
-const REWARD_ACCOUNT_TYPES = [
-  AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
-  AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-  AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-  AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-  AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-  AccountType.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION,
-  AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN,
-  AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY,
-  AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING,
-];
-
-const getRewards = (
-  rewards: Array<{
-    rewardType: AccountType;
-    assetId: string;
-    amount: string;
-  }>,
-  assets: Record<string, AssetFieldsFragment> | null
-) => {
-  const assetMap = groupBy(
-    rewards.filter((r) => REWARD_ACCOUNT_TYPES.includes(r.rewardType)),
-    'assetId'
-  );
-
-  return Object.keys(assetMap).map((assetId) => {
-    const r = assetMap[assetId];
-    const asset = assets ? assets[assetId] : undefined;
-
-    const totals = new Map<AccountType, number>();
-
-    REWARD_ACCOUNT_TYPES.forEach((type) => {
-      const amountsByType = r
-        .filter((a) => a.rewardType === type)
-        .map((a) => a.amount);
-      const typeTotal = BigNumber.sum.apply(
-        null,
-        amountsByType.length ? amountsByType : [0]
-      );
-
-      totals.set(type, typeTotal.toNumber());
-    });
-
-    const total = BigNumber.sum.apply(
-      null,
-      Array.from(totals).map((entry) => entry[1])
-    );
-
-    return {
-      asset,
-      staking: totals.get(AccountType.ACCOUNT_TYPE_GLOBAL_REWARD),
-      priceTaking: totals.get(AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES),
-      priceMaking: totals.get(
-        AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES
-      ),
-      liquidityProvision: totals.get(
-        AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES
-      ),
-      marketCreation: totals.get(
-        AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS
-      ),
-      averagePosition: totals.get(
-        AccountType.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION
-      ),
-      relativeReturns: totals.get(
-        AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN
-      ),
-      returnsVolatility: totals.get(
-        AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY
-      ),
-      validatorRanking: totals.get(
-        AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING
-      ),
-      total: total.toNumber(),
-    };
-  });
-};
-
-const useRowData = ({
-  partyRewards,
-  epochRewardSummaries,
-  assets,
-  partyId,
+const EpochInput = ({
+  value,
+  max,
+  min = 1,
+  step = 1,
+  onChange,
+  onIncrement,
+  onDecrement,
 }: {
-  partyRewards: PartyRewardsConnection;
-  epochRewardSummaries: RewardsHistoryQuery['epochRewardSummaries'];
-  assets: Record<string, AssetFieldsFragment> | null;
-  partyId: string | null;
+  value: number;
+  max?: number;
+  min?: number;
+  step?: number;
+  onChange: (value: number) => void;
+  onIncrement: () => void;
+  onDecrement: () => void;
 }) => {
-  if (partyId) {
-    const rewards = removePaginationWrapper(partyRewards?.edges).map((r) => ({
-      rewardType: r.rewardType,
-      assetId: r.asset.id,
-      amount: r.amount,
-    }));
-    return getRewards(rewards, assets);
-  }
-
-  const rewards = removePaginationWrapper(epochRewardSummaries?.edges);
-  return getRewards(rewards, assets);
+  return (
+    <span className="flex gap-0.5">
+      <span className="relative bg-vega-clight-600 dark:bg-vega-cdark-600 rounded-l-sm">
+        <span className="px-2 opacity-0">{value}</span>
+        <input
+          onChange={(e) => onChange(Number(e.target.value))}
+          value={value}
+          className="px-2 absolute top-0 left-0 w-full h-full appearance-none bg-transparent focus:outline-none dark:focus:bg-vega-cdark-700"
+          type="number"
+          step={step}
+          min={min}
+          max={max}
+        />
+      </span>
+      <span className="flex flex-col gap-0.5 rounded-r-sm overflow-hidden">
+        <button
+          onClick={onIncrement}
+          className="px-1 flex-1 flex items-center bg-vega-clight-600 dark:bg-vega-cdark-600"
+        >
+          <VegaIcon name={VegaIconNames.CHEVRON_UP} size={12} />
+        </button>
+        <button
+          onClick={onDecrement}
+          className="px-1 flex-1 flex items-center bg-vega-clight-600 dark:bg-vega-cdark-600"
+        >
+          <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={12} />
+        </button>
+      </span>
+    </span>
+  );
 };
