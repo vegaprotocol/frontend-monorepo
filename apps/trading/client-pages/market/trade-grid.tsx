@@ -13,7 +13,7 @@ import {
   ResizableGridPanel,
   usePaneLayout,
 } from '../../components/resizable-grid';
-import { TradingViews } from './trade-views';
+import { useTradingViews } from './trade-views';
 import {
   MarketSuccessorBanner,
   MarketSuccessorProposalBanner,
@@ -35,6 +35,7 @@ const MainGrid = memo(
     marketId: string;
     pinnedAsset?: PinnedAsset;
   }) => {
+    const TradingViews = useTradingViews();
     const t = useT();
     const { data: market } = useMarket(marketId);
     const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });

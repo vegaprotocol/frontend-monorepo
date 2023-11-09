@@ -76,7 +76,9 @@ const triggerText = (
     const asset = assets.find((a) => a.id === assetId);
     text = asset ? asset.symbol : t('Asset (1)');
   } else if (checkedAssets.length > 1) {
-    text = t(`${checkedAssets.length} Assets`);
+    text = t('{{checkedAssets}} Assets', {
+      checkedAssets: checkedAssets.length,
+    });
   }
 
   return text;

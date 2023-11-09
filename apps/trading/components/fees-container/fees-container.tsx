@@ -317,7 +317,7 @@ export const CurrentVolume = ({
     <div className="flex flex-col gap-3 pt-4">
       <CardStat
         value={formatNumberRounded(new BigNumber(windowLengthVolume))}
-        text={t('Past %s epochs', windowLength.toString())}
+        text={t('Past {{count}} epochs', { count: windowLength })}
       />
       {requiredForNextTier > 0 && (
         <CardStat
@@ -344,10 +344,9 @@ const ReferralBenefits = ({
       <CardStat
         // all sets volume (not just current party)
         value={formatNumber(setRunningNotionalTakerVolume)}
-        text={t(
-          'Combined running notional over the %s epochs',
-          epochs.toString(),
-        )}
+        text={t('Combined running notional over the {{count}} epochs', {
+          count: epochs,
+        })}
       />
       <CardStat value={epochsInSet} text={t('epochs in referral set')} />
     </div>
@@ -453,7 +452,9 @@ const VolumeTiers = ({
             <Th>{t('Tier')}</Th>
             <Th>{t('Discount')}</Th>
             <Th>{t('Min. trading volume')}</Th>
-            <Th>{t('My volume (last %s epochs)', windowLength.toString())}</Th>
+            <Th>
+              {t('My volume (last {{count}} epochs)', { count: windowLength })}
+            </Th>
             <Th />
           </tr>
         </THead>
@@ -499,6 +500,7 @@ const ReferralTiers = ({
   referralVolumeInWindow: number;
 }) => {
   const t = useT();
+
   if (!tiers.length) {
     return (
       <p className="text-muted text-sm">{t('No referral program active')}</p>
@@ -557,6 +559,7 @@ const ReferralTiers = ({
 
 const YourTier = () => {
   const t = useT();
+
   return (
     <span className="bg-rainbow whitespace-nowrap rounded-xl px-4 py-1.5 text-white">
       {t('Your tier')}
@@ -564,30 +567,34 @@ const YourTier = () => {
   );
 };
 
-const ReferrerInfo = ({ code }: { code?: string }) => (
-  <div className="text-vega-clight-200 dark:vega-cdark-200 pt-3 text-sm">
-    <p className="mb-1">
-      {t('Connected key is owner of the referral set')}
-      {code && (
-        <>
-          {' '}
-          <span className="bg-rainbow bg-clip-text text-transparent">
-            {truncateMiddle(code)}
-          </span>
-        </>
-      )}
-      {'. '}
-      {t('As owner, it is eligible for commission not fee discounts.')}
-    </p>
-    <p>
-      {t('See')}{' '}
-      <Link
-        className="text-black underline dark:text-white"
-        to={Links.REFERRALS()}
-      >
-        {t('Referrals')}
-      </Link>{' '}
-      {t('for more information.')}
-    </p>
-  </div>
-);
+const ReferrerInfo = ({ code }: { code?: string }) => {
+  const t = useT();
+
+  return (
+    <div className="text-vega-clight-200 dark:vega-cdark-200 pt-3 text-sm">
+      <p className="mb-1">
+        {t('Connected key is owner of the referral set')}
+        {code && (
+          <>
+            {' '}
+            <span className="bg-rainbow bg-clip-text text-transparent">
+              {truncateMiddle(code)}
+            </span>
+          </>
+        )}
+        {'. '}
+        {t('As owner, it is eligible for commission not fee discounts.')}
+      </p>
+      <p>
+        {t('See')}{' '}
+        <Link
+          className="text-black underline dark:text-white"
+          to={Links.REFERRALS()}
+        >
+          {t('Referrals')}
+        </Link>{' '}
+        {t('for more information.')}
+      </p>
+    </div>
+  );
+};

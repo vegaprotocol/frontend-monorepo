@@ -32,12 +32,12 @@ export const SettlementDateCell = ({
 
     if (expiryHasPassed) {
       if (marketState !== MarketState.STATE_SETTLED) {
-        text = t('Expected %s ago', distance);
+        text = t('Expected {{distance}} ago', { distance });
       } else {
-        text = t('%s ago', distance);
+        text = t('{{distance}} ago', { distance });
       }
     } else {
-      text = t('Expected in %s', distance);
+      text = t('Expected in {{distance}}', { distance });
     }
   }
 

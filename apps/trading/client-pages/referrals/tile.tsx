@@ -66,7 +66,9 @@ export const CodeTile = ({
   return (
     <StatTile
       title={t('Your referral code')}
-      description={createdAt ? t('(Created at: %s)', createdAt) : undefined}
+      description={
+        createdAt ? t('(Created at: {{createdAt}})', { createdAt }) : undefined
+      }
     >
       <div className="flex items-center justify-between gap-2">
         <Tooltip

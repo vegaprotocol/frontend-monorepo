@@ -172,10 +172,14 @@ const CreateCodeDialog = ({
     return (
       <div className="flex flex-col gap-4">
         <p>
-          {t('You need at least')}{' '}
-          {addDecimalsFormatNumber(requiredStake.toString(), 18)}{' '}
           {t(
-            'VEGA staked to generate a referral code and participate in the referral program.'
+            'You need at least {{requiredStake}} VEGA staked to generate a referral code and participate in the referral program.',
+            {
+              requiredStake: addDecimalsFormatNumber(
+                requiredStake.toString(),
+                18
+              ),
+            }
           )}
         </p>
         <TradingAnchorButton

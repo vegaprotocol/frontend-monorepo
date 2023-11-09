@@ -98,7 +98,7 @@ const useGetMarketStateTooltip = (state: Schema.MarketState | null) => {
     return (
       <p>
         {t(
-          `This market has been suspended via a governance vote and can be resumed or terminated by further votes.`
+          'This market has been suspended via a governance vote and can be resumed or terminated by further votes.'
         )}
         {DocsLinks && (
           <ExternalLink href={DocsLinks.MARKET_LIFECYCLE} className="ml-1">

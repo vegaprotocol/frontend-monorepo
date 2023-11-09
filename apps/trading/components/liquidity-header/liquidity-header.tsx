@@ -61,10 +61,9 @@ export const LiquidityHeader = () => {
         marketId && (
           <HeaderTitle>
             {market.tradableInstrument.instrument.code &&
-              t(
-                '%s liquidity provision',
-                market.tradableInstrument.instrument.code
-              )}
+              t('{{instrumentCode}} liquidity provision', {
+                instrumentCode: market.tradableInstrument.instrument.code,
+              })}
           </HeaderTitle>
         )
       }
@@ -103,8 +102,8 @@ export const LiquidityHeader = () => {
       <HeaderStat
         heading={t('Fees paid')}
         description={t(
-          'The amount of fees paid to liquidity providers across the whole market during the last epoch %s.',
-          feesObject?.node.epoch.toString() || '-'
+          'The amount of fees paid to liquidity providers across the whole market during the last epoch {{epoch}}.',
+          { epoch: feesObject?.node.epoch.toString() || '-' }
         )}
         testId="fees-paid"
       >

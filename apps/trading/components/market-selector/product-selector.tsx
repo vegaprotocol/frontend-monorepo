@@ -14,15 +14,6 @@ export const Product = {
 
 export type ProductType = keyof typeof Product;
 
-const ProductTypeMapping: {
-  [key in ProductType]: string;
-} = {
-  [Product.All]: 'All',
-  [Product.Future]: 'Futures',
-  [Product.Spot]: 'Spot',
-  [Product.Perpetual]: 'Perpetuals',
-};
-
 export const ProductSelector = ({
   product,
   onSelect,
@@ -31,6 +22,14 @@ export const ProductSelector = ({
   onSelect: (product: ProductType) => void;
 }) => {
   const t = useT();
+  const ProductTypeMapping: {
+    [key in ProductType]: string;
+  } = {
+    [Product.All]: t('All'),
+    [Product.Future]: t('Futures'),
+    [Product.Spot]: t('Spot'),
+    [Product.Perpetual]: t('Perpetuals'),
+  };
   return (
     <div className="flex mb-2">
       {Object.keys(Product).map((t) => {

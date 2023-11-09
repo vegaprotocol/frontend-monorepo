@@ -11,7 +11,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Links } from '../../lib/links';
 import { ViewType, useSidebar } from '../../components/sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
-import { useT } from '../../lib/use-t';
+import { useT, ns } from '../../lib/use-t';
+import { Trans } from 'react-i18next';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -112,10 +113,19 @@ export const MarketPage = () => {
             {t('This market URL is not available any more.')}
           </p>
           <p className="justify-center text-sm">
-            {t(`Please choose another market from the`)}{' '}
-            <ExternalLink onClick={() => navigate(Links.MARKETS())}>
-              {t('market list')}
-            </ExternalLink>
+            <Trans
+              i18nKey="CHOOSE_ANOTHER_MARKET"
+              defaults="Please choose another market from the <0>market list<0>"
+              ns={ns}
+              components={[
+                <ExternalLink
+                  onClick={() => navigate(Links.MARKETS())}
+                  key="link"
+                >
+                  market list
+                </ExternalLink>,
+              ]}
+            />
           </p>
         </span>
       </Splash>

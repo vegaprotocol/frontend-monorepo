@@ -2,7 +2,7 @@ import type { PinnedAsset } from '@vegaprotocol/accounts';
 import type { Market } from '@vegaprotocol/markets';
 import { OracleBanner } from '@vegaprotocol/markets';
 import type { TradingView } from './trade-views';
-import { NoMarketSplash, TradingViews } from './trade-views';
+import { NoMarketSplash, useTradingViews } from './trade-views';
 import { useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
@@ -19,6 +19,7 @@ interface TradePanelsProps {
 }
 
 export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
+  const TradingViews = useTradingViews();
   const [view, setView] = useState<TradingView>('candles');
 
   const renderView = () => {

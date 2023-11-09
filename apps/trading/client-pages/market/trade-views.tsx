@@ -41,75 +41,78 @@ const requiresMarket = (View: MarketDependantView) => {
   return WrappedComponent;
 };
 
-export type TradingView = keyof typeof TradingViews;
+export type TradingView = keyof ReturnType<typeof useTradingViews>;
 
-export const TradingViews = {
-  candles: {
-    label: 'Candles',
-    component: requiresMarket(CandlesChartContainer),
-    menu: CandlesMenu,
-  },
-  depth: {
-    label: 'Depth',
-    component: requiresMarket(DepthChartContainer),
-  },
-  liquidity: {
-    label: 'Liquidity',
-    component: requiresMarket(LiquidityContainer),
-  },
-  funding: {
-    label: 'Funding',
-    component: requiresMarket(FundingContainer),
-  },
-  fundingPayments: {
-    label: 'Funding Payments',
-    component: FundingPaymentsContainer,
-  },
-  orderbook: {
-    label: 'Orderbook',
-    component: requiresMarket(OrderbookContainer),
-  },
-  trades: {
-    label: 'Trades',
-    component: requiresMarket(TradesContainer),
-  },
-  positions: {
-    label: 'Positions',
-    component: PositionsContainer,
-    menu: PositionsMenu,
-  },
-  activeOrders: {
-    label: 'Active',
-    component: (props: OrderContainerProps) => (
-      <OrdersContainer {...props} filter={Filter.Open} />
-    ),
-    menu: OpenOrdersMenu,
-  },
-  closedOrders: {
-    label: 'Closed',
-    component: (props: OrderContainerProps) => (
-      <OrdersContainer {...props} filter={Filter.Closed} />
-    ),
-  },
-  rejectedOrders: {
-    label: 'Rejected',
-    component: (props: OrderContainerProps) => (
-      <OrdersContainer {...props} filter={Filter.Rejected} />
-    ),
-  },
-  orders: {
-    label: 'All',
-    component: OrdersContainer,
-    menu: OpenOrdersMenu,
-  },
-  stopOrders: {
-    label: 'Stop',
-    component: StopOrdersContainer,
-  },
-  collateral: {
-    label: 'Collateral',
-    component: AccountsContainer,
-    menu: AccountsMenu,
-  },
-  fills: { label: 'Fills', component: FillsContainer },
+export const useTradingViews = () => {
+  const t = useT();
+  return {
+    candles: {
+      label: t('Candles'),
+      component: requiresMarket(CandlesChartContainer),
+      menu: CandlesMenu,
+    },
+    depth: {
+      label: t('Depth'),
+      component: requiresMarket(DepthChartContainer),
+    },
+    liquidity: {
+      label: t('Liquidity'),
+      component: requiresMarket(LiquidityContainer),
+    },
+    funding: {
+      label: t('Funding'),
+      component: requiresMarket(FundingContainer),
+    },
+    fundingPayments: {
+      label: t('Funding Payments'),
+      component: FundingPaymentsContainer,
+    },
+    orderbook: {
+      label: t('Orderbook'),
+      component: requiresMarket(OrderbookContainer),
+    },
+    trades: {
+      label: t('Trades'),
+      component: requiresMarket(TradesContainer),
+    },
+    positions: {
+      label: t('Positions'),
+      component: PositionsContainer,
+      menu: PositionsMenu,
+    },
+    activeOrders: {
+      label: t('Active'),
+      component: (props: OrderContainerProps) => (
+        <OrdersContainer {...props} filter={Filter.Open} />
+      ),
+      menu: OpenOrdersMenu,
+    },
+    closedOrders: {
+      label: t('Closed'),
+      component: (props: OrderContainerProps) => (
+        <OrdersContainer {...props} filter={Filter.Closed} />
+      ),
+    },
+    rejectedOrders: {
+      label: t('Rejected'),
+      component: (props: OrderContainerProps) => (
+        <OrdersContainer {...props} filter={Filter.Rejected} />
+      ),
+    },
+    orders: {
+      label: t('All'),
+      component: OrdersContainer,
+      menu: OpenOrdersMenu,
+    },
+    stopOrders: {
+      label: t('Stop'),
+      component: StopOrdersContainer,
+    },
+    collateral: {
+      label: t('Collateral'),
+      component: AccountsContainer,
+      menu: AccountsMenu,
+    },
+    fills: { label: t('Fills'), component: FillsContainer },
+  };
 };

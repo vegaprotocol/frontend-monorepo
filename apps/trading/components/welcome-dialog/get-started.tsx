@@ -17,7 +17,8 @@ import {
 import { Links, Routes } from '../../lib/links';
 import { useGlobalStore } from '../../stores';
 import { useSidebar, ViewType } from '../sidebar';
-import { useT } from '../../lib/use-t';
+import { useT, ns } from '../../lib/use-t';
+import { Trans } from 'react-i18next';
 
 interface Props {
   lead?: string;
@@ -135,18 +136,26 @@ export const GetStarted = ({ lead }: Props) => {
         </div>
         {VEGA_ENV === Networks.MAINNET && (
           <p className="text-sm">
-            {t('Experiment for free with virtual assets on')}{' '}
-            <ExternalLink href={VEGA_NETWORKS.TESTNET}>
-              {t('Fairground Testnet')}
-            </ExternalLink>
+            <Trans
+              defaults="Experiment for free with virtual assets on <0>Fairground Testnet</0>"
+              components={[
+                <ExternalLink href={VEGA_NETWORKS.TESTNET} key="link">
+                  Fairground Testnet
+                </ExternalLink>,
+              ]}
+            />
           </p>
         )}
         {VEGA_ENV === Networks.TESTNET && (
           <p className="text-sm">
-            {t('Ready to trade with real funds?')}{' '}
-            <ExternalLink href={VEGA_NETWORKS.MAINNET}>
-              {t('Switch to Mainnet')}
-            </ExternalLink>
+            <Trans
+              defaults="Ready to trade with real funds? <0>Switch to Mainnet</0>"
+              components={[
+                <ExternalLink href={VEGA_NETWORKS.MAINNET} key="link">
+                  Switch to Mainnet
+                </ExternalLink>,
+              ]}
+            />
           </p>
         )}
       </div>
@@ -157,11 +166,14 @@ export const GetStarted = ({ lead }: Props) => {
     return (
       <div className={wrapperClasses}>
         <p className="mb-1 text-sm">
-          You need a{' '}
-          <ExternalLink href="https://vega.xyz/wallet">
-            Vega wallet
-          </ExternalLink>{' '}
-          to start trading in this market.
+          <Trans
+            defaults="You need a <0>Vega wallet</0> to start trading in this market."
+            components={[
+              <ExternalLink href="https://vega.xyz/wallet" key="link">
+                Vega wallet
+              </ExternalLink>,
+            ]}
+          />
         </p>
         <TradingButton
           onClick={openVegaWalletDialog}
