@@ -54,7 +54,7 @@ export const FeesContainer = () => {
   const { volumeDiscount, volumeTierIndex, volumeInWindow, volumeTiers } =
     useVolumeStats(
       feesData?.volumeDiscountStats,
-      programData?.currentVolumeDiscountProgram,
+      programData?.currentVolumeDiscountProgram
     );
 
   const {
@@ -71,7 +71,7 @@ export const FeesContainer = () => {
     programData?.currentReferralProgram,
     feesData?.epoch,
     feesData?.referrer,
-    feesData?.referee,
+    feesData?.referee
   );
 
   const loading = paramsLoading || feesLoading || programLoading;
@@ -79,7 +79,7 @@ export const FeesContainer = () => {
 
   const isReferralProgramRunning = Boolean(programData?.currentReferralProgram);
   const isVolumeDiscountProgramRunning = Boolean(
-    programData?.currentVolumeDiscountProgram,
+    programData?.currentVolumeDiscountProgram
   );
 
   return (
@@ -210,12 +210,12 @@ export const TradingFees = ({
   const maxLiq = maxBy(markets, (m) => Number(m.fees.factors.liquidityFee));
 
   const total = new BigNumber(params.market_fee_factors_makerFee).plus(
-    new BigNumber(params.market_fee_factors_infrastructureFee),
+    new BigNumber(params.market_fee_factors_infrastructureFee)
   );
 
   const adjustedTotal = getAdjustedFee(
     [total],
-    [referralDiscountBigNum, volumeDiscountBigNum],
+    [referralDiscountBigNum, volumeDiscountBigNum]
   );
 
   let minTotal;
@@ -233,12 +233,12 @@ export const TradingFees = ({
 
     minAdjustedTotal = getAdjustedFee(
       [total, minLiqFee],
-      [referralDiscountBigNum, volumeDiscountBigNum],
+      [referralDiscountBigNum, volumeDiscountBigNum]
     );
 
     maxAdjustedTotal = getAdjustedFee(
       [total, maxLiqFee],
-      [referralDiscountBigNum, volumeDiscountBigNum],
+      [referralDiscountBigNum, volumeDiscountBigNum]
     );
   }
 
@@ -248,7 +248,7 @@ export const TradingFees = ({
         <p className="block text-3xl leading-none" data-testid="adjusted-fees">
           {minAdjustedTotal !== undefined && maxAdjustedTotal !== undefined
             ? `${formatPercentage(minAdjustedTotal)}%-${formatPercentage(
-                maxAdjustedTotal,
+                maxAdjustedTotal
               )}%`
             : `${formatPercentage(adjustedTotal)}%`}
         </p>
@@ -258,7 +258,7 @@ export const TradingFees = ({
             <CardTableTD>
               {minTotal !== undefined && maxTotal !== undefined
                 ? `${formatPercentage(minTotal.toNumber())}%-${formatPercentage(
-                    maxTotal.toNumber(),
+                    maxTotal.toNumber()
                   )}%`
                 : `${formatPercentage(total.toNumber())}%`}
             </CardTableTD>
@@ -267,7 +267,7 @@ export const TradingFees = ({
             <CardTableTH>{t('Infrastructure')}</CardTableTH>
             <CardTableTD>
               {formatPercentage(
-                Number(params.market_fee_factors_infrastructureFee),
+                Number(params.market_fee_factors_infrastructureFee)
               )}
               %
             </CardTableTD>
@@ -342,7 +342,7 @@ const ReferralBenefits = ({
         value={formatNumber(setRunningNotionalTakerVolume)}
         text={t(
           'Combined running notional over the %s epochs',
-          epochs.toString(),
+          epochs.toString()
         )}
       />
       <CardStat value={epochsInSet} text={t('epochs in referral set')} />
@@ -363,7 +363,7 @@ const TotalDiscount = ({
 }) => {
   const totalDiscount = 1 - (1 - volumeDiscount) * (1 - referralDiscount);
   const totalDiscountDescription = t(
-    'The total discount is calculated according to the following formula: ',
+    'The total discount is calculated according to the following formula: '
   );
   const formula = (
     <span className="italic">
@@ -517,7 +517,7 @@ const ReferralTiers = ({
               const isUserTier = tiers.length - 1 - tierIndex === i;
 
               const requiredVolume = Number(
-                t.minimumRunningNotionalTakerVolume,
+                t.minimumRunningNotionalTakerVolume
               );
               let unlocksIn = null;
 

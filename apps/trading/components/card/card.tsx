@@ -23,7 +23,7 @@ export const Card = ({
         {
           'bg-rainbow': highlight,
         },
-        className,
+        className
       )}
     >
       <div className="p-4 rounded w-full h-full bg-vega-clight-800 dark:bg-vega-cdark-800">
@@ -62,7 +62,7 @@ export const CardStat = ({
         'text-transparent bg-rainbow bg-clip-text': highlight,
         'cursor-help': description,
       })}
-      data-test={testId}
+      data-testid={testId}
     >
       {value}
     </span>
