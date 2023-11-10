@@ -3,6 +3,7 @@ import { Switch, ToastPositionSetter } from '@vegaprotocol/ui-toolkit';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import type { ReactNode } from 'react';
+import classNames from 'classnames';
 
 export const Settings = () => {
   const { theme, setTheme } = useThemeSwitcher();
@@ -31,15 +32,17 @@ export const Settings = () => {
       <SettingsGroup label={t('Toast location')}>
         <ToastPositionSetter />
       </SettingsGroup>
-      {process.env.GIT_TAG && (
-        <SettingsGroup label={t('App version')}>
-          <p className="text-sm whitespace-nowrap">{process.env.GIT_TAG}</p>
-        </SettingsGroup>
-      )}
-      <SettingsGroup label={t('Commit hash')}>
-        <p className="text-sm break-words max-w-[100px]">
-          {process.env.GIT_COMMIT}
-        </p>
+      <SettingsGroup inline={false} label={t('App information')}>
+        <dl className="text-sm grid grid-cols-2 gap-1">
+          {process.env.GIT_TAG && (
+            <>
+              <dt className="text-muted">{t('Version')}</dt>
+              <dd>{process.env.GIT_TAG}</dd>
+            </>
+          )}
+          <dt className="text-muted">{t('Git commit hash')}</dt>
+          <dd className="break-words">{process.env.GIT_COMMIT}</dd>
+        </dl>
       </SettingsGroup>
     </div>
   );
@@ -49,14 +52,20 @@ const SettingsGroup = ({
   label,
   helpText,
   children,
+  inline = true,
 }: {
   label: string;
-  helpText?: string;
   children: ReactNode;
+  helpText?: string;
+  inline?: boolean;
 }) => {
   return (
-    <div className="flex items-start justify-between mb-4 gap-2">
-      <div className="w-3/4">
+    <div
+      className={classNames('mb-4 gap-2', {
+        'flex items-start justify-between gap-2': inline,
+      })}
+    >
+      <div className={classNames({ 'w-3/4': inline, 'mb-2': !inline })}>
         <label className="text-sm">{label}</label>
         {helpText && <p className="text-xs text-muted">{helpText}</p>}
       </div>
