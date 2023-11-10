@@ -32,7 +32,7 @@ export const RewardsHistoryContainer = ({
   epoch: number;
 }) => {
   const [epochVariables, setEpochVariables] = useState(() => ({
-    from: epoch - 100,
+    from: epoch - 1,
     to: epoch,
   }));
 
@@ -42,8 +42,8 @@ export const RewardsHistoryContainer = ({
   const { refetch, data: rewardsData } = useRewardsHistoryQuery({
     variables: {
       partyId: pubKey || '',
-      fromEpoch: epoch - 100,
-      toEpoch: epoch,
+      fromEpoch: epochVariables.from,
+      toEpoch: epochVariables.to,
     },
   });
 
@@ -135,7 +135,7 @@ export const RewardHistoryTable = ({
     from: number;
     to: number;
   };
-  onEpochChange: (x: { from: number; to: number }) => void;
+  onEpochChange: (epochVariables: { from: number; to: number }) => void;
 }) => {
   const [isParty, setIsParty] = useState(false);
 
@@ -250,8 +250,9 @@ export const RewardHistoryTable = ({
     <div>
       <div className="flex justify-between gap-2 items-center mb-2">
         <h4 className="text-muted text-sm flex items-center gap-2">
-          {t('From epoch')}
+          <label htmlFor="fromEpoch">{t('From epoch')}</label>
           <EpochInput
+            id="fromEpoch"
             value={epochVariables.from}
             max={epochVariables.to}
             onChange={(value) =>
@@ -274,9 +275,10 @@ export const RewardHistoryTable = ({
             }
           />
 
-          {t('to')}
+          <label htmlFor="toEpoch">{t('to')}</label>
 
           <EpochInput
+            id="toEpoch"
             value={epochVariables.to}
             max={epoch}
             onChange={(value) =>
@@ -333,6 +335,7 @@ export const RewardHistoryTable = ({
 };
 
 const EpochInput = ({
+  id,
   value,
   max,
   min = 1,
@@ -341,6 +344,7 @@ const EpochInput = ({
   onIncrement,
   onDecrement,
 }: {
+  id: string;
   value: number;
   max?: number;
   min?: number;
@@ -350,7 +354,7 @@ const EpochInput = ({
   onDecrement: () => void;
 }) => {
   return (
-    <span className="flex gap-0.5">
+    <span className="flex gap-0.5" data-testid={id}>
       <span className="relative bg-vega-clight-600 dark:bg-vega-cdark-600 rounded-l-sm">
         <span className="px-2 opacity-0">{value}</span>
         <input
@@ -361,6 +365,8 @@ const EpochInput = ({
           step={step}
           min={min}
           max={max}
+          id={id}
+          name={id}
         />
       </span>
       <span className="flex flex-col gap-0.5 rounded-r-sm overflow-hidden">
