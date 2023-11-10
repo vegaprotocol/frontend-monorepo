@@ -88,8 +88,7 @@ export const TiersContainer = () => {
     return (
       <div className="text-base px-5 py-10 text-center">
         <Trans
-          i18nKey="REFERRALS_TIERS_NO_PROGRAM"
-          defaultValue="We're sorry but we don't have an active referral programme currently running. You can propose a new programme <0>here</0>."
+          defaults="We're sorry but we don't have an active referral programme currently running. You can propose a new programme <0>here</0>."
           components={[
             <ExternalLink href={governanceLink(TOKEN_PROPOSALS)} key="link">
               {t('here')}

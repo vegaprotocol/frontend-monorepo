@@ -392,7 +392,7 @@ export const Statistics = ({
                   name: 'commission',
                   displayName: (
                     <Trans
-                      i18nKey="REFERRAL_STATISTICS_COMMISSION"
+                      i18nKey="referral-statistics-commission"
                       defaults="Commission earned in <0>qUSD</0> (last {{count}} epochs)"
                       values={{
                         count:

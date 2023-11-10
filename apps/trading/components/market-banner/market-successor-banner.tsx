@@ -67,6 +67,7 @@ export const MarketSuccessorBanner = ({
       : null;
 
   if (!loading && (isSettled || successorData) && visible) {
+    const v = t('This market has been succeeded');
     return (
       <NotificationBanner
         intent={Intent.Primary}
@@ -102,26 +103,7 @@ export const MarketSuccessorBanner = ({
                 {' '}
                 {successorVolume ? (
                   <Trans
-                    i18nKey="MARKET_SUCCESSOR_BANNER_EXPIRY_WITH_VOLUME"
-                    defaultValue="The successor market is <0>{{instrumentName}}</0>"
-                    values={{
-                      instrumentName:
-                        successorData?.tradableInstrument.instrument.name,
-                    }}
-                    components={[
-                      <ExternalLink
-                        href={`/#/markets/${successorData?.id}`}
-                        key="link"
-                      >
-                        successor market name
-                      </ExternalLink>,
-                    ]}
-                    ns={ns}
-                  />
-                ) : (
-                  <Trans
-                    i18nKey="MARKET_SUCCESSOR_BANNER_EXPIRY_NO_VOLUME"
-                    defaultValue="The successor market <0>{{instrumentName}}</0> has a 24h trading volume of {{successorVolume}}"
+                    defaults="The successor market <0>{{instrumentName}}</0> has a 24h trading volume of {{successorVolume}}"
                     values={{
                       successorVolume,
                       instrumentName:
@@ -135,6 +117,23 @@ export const MarketSuccessorBanner = ({
                         successor market name
                       </ExternalLink>,
                     ]}
+                  />
+                ) : (
+                  <Trans
+                    defaults="The successor market is <0>{{instrumentName}}</0>"
+                    values={{
+                      instrumentName:
+                        successorData?.tradableInstrument.instrument.name,
+                    }}
+                    components={[
+                      <ExternalLink
+                        href={`/#/markets/${successorData?.id}`}
+                        key="link"
+                      >
+                        successor market name
+                      </ExternalLink>,
+                    ]}
+                    ns={ns}
                   />
                 )}
               </>
