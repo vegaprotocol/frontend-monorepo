@@ -118,14 +118,6 @@ export const RewardsContainer = () => {
       >
         <Multipliers />
       </Card>
-      {/*
-        <Card title={t('Activity streak')} className="lg:col-span-3">
-          TODO:
-        </Card>
-        <Card title={t('Reward hoarder bonus')} className="lg:col-span-3">
-          TODO:
-        </Card>
-        */}
       <Card
         title={t('Rewards history')}
         className="lg:col-span-full"

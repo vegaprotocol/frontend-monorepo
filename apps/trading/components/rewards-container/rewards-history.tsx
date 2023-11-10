@@ -117,7 +117,7 @@ export type PartyRewardsConnection = NonNullable<
   RewardsHistoryQuery['party']
 >['rewardsConnection'];
 
-const RewardHistoryTable = ({
+export const RewardHistoryTable = ({
   epochRewardSummaries,
   partyRewards,
   assets,
