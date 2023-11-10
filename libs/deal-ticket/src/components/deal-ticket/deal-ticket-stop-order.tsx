@@ -247,8 +247,8 @@ const Trigger = ({
               min: {
                 value: trailingPercentOffsetStep,
                 message: t(
-                  'Trailing percent offset cannot be lower than ' +
-                    trailingPercentOffsetStep
+                  'Trailing percent offset cannot be lower than {{trailingPercentOffsetStep}}',
+                  { trailingPercentOffsetStep }
                 ),
               },
               max: {
@@ -605,7 +605,7 @@ const formatSizeAtPrice = (
     positionDecimalPlaces
   )} ${assetUnit} @ ${
     type === Schema.OrderType.TYPE_MARKET
-      ? t('SIZE_AT_PRICE_MARKET', 'market')
+      ? t('sizeAtPrice-market', 'market')
       : `${formatValue(
           removeDecimal(price || '0', decimalPlaces),
           decimalPlaces
@@ -642,9 +642,12 @@ const formatTrigger = (
           removeDecimal(triggerPrice || '', decimalPlaces),
           decimalPlaces
         )} ${quoteName}`
-      : `${(Number(triggerTrailingPercentOffset) || 0).toFixed(1)}% ${t(
-          'trailing'
-        )}`
+      : t('{{triggerTrailingPercentOffset}}% trailing', {
+          triggerTrailingPercentOffset: (
+            Number(triggerTrailingPercentOffset) || 0
+          ).toFixed(1),
+        })
+  }
   }`;
 
 const SubmitButton = ({
@@ -1129,14 +1132,14 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                         Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT
                       }
                       id="expiryStrategy-submit"
-                      label={'Submit'}
+                      label={t('Submit')}
                     />
                     <Radio
                       value={
                         Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS
                       }
                       id="expiryStrategy-cancel"
-                      label={'Cancel'}
+                      label={t('Cancel')}
                     />
                   </RadioGroup>
                 );

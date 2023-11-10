@@ -4,9 +4,10 @@ import { Tooltip, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketMarginDataProvider } from './margin-data-provider';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
-import { useT } from './use-t';
+import { useT, ns } from './use-t';
 import { useAccountBalance } from './use-account-balance';
 import { useMarketAccountBalance } from './use-market-account-balance';
+import { Trans } from 'react-i18next';
 
 const MarginHealthChartTooltipRow = ({
   label,
@@ -123,7 +124,6 @@ export const MarginHealthChart = ({
   marketId: string;
   assetId: string;
 }) => {
-  const t = useT();
   const { data: assetsMap } = useAssetsMapProvider();
   const { pubKey: partyId } = useVegaWallet();
   const { data } = useDataProvider({
@@ -171,14 +171,23 @@ export const MarginHealthChart = ({
 
   return (
     <div data-testid="margin-health-chart">
-      {addDecimalsFormatNumber(
-        (BigInt(marginAccountBalance) - BigInt(maintenanceLevel)).toString(),
-        decimals
-      )}{' '}
-      {t('above')}{' '}
-      <ExternalLink href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-maintenance">
-        {t('maintenance level')}
-      </ExternalLink>
+      <Trans
+        defaults="{{balance}} above <0>maintenance level</0>"
+        components={[
+          <ExternalLink href="https://docs.vega.xyz/testnet/concepts/trading-on-vega/positions-margin#margin-level-maintenance">
+            maintenance level
+          </ExternalLink>,
+        ]}
+        values={{
+          balance: addDecimalsFormatNumber(
+            (
+              BigInt(marginAccountBalance) - BigInt(maintenanceLevel)
+            ).toString(),
+            decimals
+          ),
+        }}
+        ns={ns}
+      />
       <Tooltip description={tooltip}>
         <div
           data-testid="margin-health-chart-track"

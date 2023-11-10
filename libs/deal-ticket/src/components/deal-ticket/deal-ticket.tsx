@@ -2,10 +2,8 @@ import * as Schema from '@vegaprotocol/types';
 import { type FormEventHandler } from 'react';
 import { memo, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Controller, useController, useForm } from 'react-hook-form';
-import {
-  DealTicketFeeDetails,
-  DealTicketMarginDetails,
-} from './deal-ticket-fee-details';
+import { DealTicketFeeDetails } from './deal-ticket-fee-details';
+import { DealTicketMarginDetails } from './DealTicketMarginDetails';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
@@ -766,13 +764,14 @@ interface SummaryMessageProps {
 export const NoWalletWarning = ({
   isReadOnly,
 }: Pick<SummaryMessageProps, 'isReadOnly'>) => {
+  const t = useT();
   if (isReadOnly) {
     return (
       <div className="mb-2">
         <InputError testId="deal-ticket-error-message-summary">
-          {
+          {t(
             'You need to connect your own wallet to start trading on this market'
-          }
+          )}
         </InputError>
       </div>
     );

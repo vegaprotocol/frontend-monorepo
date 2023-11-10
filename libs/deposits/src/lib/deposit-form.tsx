@@ -285,7 +285,7 @@ export const DepositForm = ({
         )}
         {isActive && isFaucetable && selectedAsset && (
           <UseButton onClick={submitFaucet}>
-            {t(`Get ${selectedAsset.symbol}`)}
+            {t('Get {{assetSymbol}}', { assetSymbol: selectedAsset.symbol })}
           </UseButton>
         )}
         {!errors.asset?.message && selectedAsset && (
@@ -434,9 +434,9 @@ const FormButton = ({ approved, selectedAsset }: FormButtonProps) => {
           <Notification
             intent={Intent.Danger}
             testId="chain-error"
-            message={t(
-              `This app only works on ${getChainName(desiredChainId)}.`
-            )}
+            message={t('This app only works on {{chainId}}.', {
+              chainId: getChainName(desiredChainId),
+            })}
           />
         </div>
       )}

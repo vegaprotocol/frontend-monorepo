@@ -301,7 +301,7 @@ export const TransferForm = ({
           </TradingInputError>
         )}
       </TradingFormGroup>
-      <TradingFormGroup label="To Vega key" labelFor="toVegaKey">
+      <TradingFormGroup label={t('To Vega key')} labelFor="toVegaKey">
         <AddressField
           onChange={() => {
             setValue('toVegaKey', '');
@@ -318,7 +318,10 @@ export const TransferForm = ({
                 {t('Please select')}
               </option>
               {pubKeys?.map((pk) => {
-                const text = pk === pubKey ? t('Current key: ') + pk : pk;
+                const text =
+                  pk === pubKey
+                    ? t('Current key: {{pubKey}}', { pubKey: pk }) + pk
+                    : pk;
 
                 return (
                   <option key={pk} value={pk}>
@@ -352,7 +355,7 @@ export const TransferForm = ({
           </TradingInputError>
         )}
       </TradingFormGroup>
-      <TradingFormGroup label="Amount" labelFor="amount">
+      <TradingFormGroup label={t('Amount')} labelFor="amount">
         <TradingInput
           id="amount"
           autoComplete="off"

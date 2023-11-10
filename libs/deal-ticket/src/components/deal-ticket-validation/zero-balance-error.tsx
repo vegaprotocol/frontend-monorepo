@@ -21,7 +21,7 @@ export const ZeroBalanceError = ({
       message={
         <>
           {t(
-            'You need {{symbol}} in your wallet to trade in this market. ',
+            'You need {{symbol}} in your wallet to trade in this market.',
             asset
           )}
         </>

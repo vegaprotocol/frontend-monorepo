@@ -89,7 +89,7 @@ export const DealTicketSizeIceberg = ({
                 max: {
                   value: size,
                   message: t(
-                    'Peak size cannot be greater than the size ({{size}}) ',
+                    'Peak size cannot be greater than the size ({{size}})',
                     { size }
                   ),
                 },

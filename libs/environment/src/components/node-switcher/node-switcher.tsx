@@ -74,7 +74,8 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
         <div>
           <p className="mb-2 text-sm text-center">
             {t(
-              `This app will only work on ${VEGA_ENV}. Select a node to connect to.`
+              'This app will only work on {{VEGA_ENV}}. Select a node to connect to.',
+              { VEGA_ENV }
             )}
           </p>
           <TradingRadioGroup

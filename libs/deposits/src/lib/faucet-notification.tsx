@@ -58,7 +58,8 @@ export const FaucetNotification = ({
           intent={Intent.Warning}
           testId="faucet-requested"
           message={t(
-            `Confirm the transaction in your Ethereum wallet to use the ${selectedAsset?.symbol} faucet`
+            'Confirm the transaction in your Ethereum wallet to use the {{assetSymbol}} faucet',
+            { assetSymbol: selectedAsset?.symbol }
           )}
         />
       </div>

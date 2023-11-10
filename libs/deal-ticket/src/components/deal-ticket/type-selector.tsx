@@ -117,7 +117,7 @@ export const TypeToggle = ({
                     id={`order-type-${itemValue}`}
                     data-testid={`order-type-${itemValue}`}
                   >
-                    {t(label)}
+                    {label}
                     <TradingDropdownItemIndicator />
                   </TradingDropdownRadioItem>
                 ))}

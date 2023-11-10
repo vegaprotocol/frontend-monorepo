@@ -12,8 +12,10 @@ export const TOTAL_MARGIN_AVAILABLE =
 
 export const CONTRACTS_MARGIN_TOOLTIP_TEXT =
   'The number of contracts determines how many units of the futures contract to buy or sell. For example, this is similar to buying one share of a listed company. The value of 1 contract is equivalent to the price of the contract. For example, if the current price is $50, then one contract is worth $50.';
-export const EST_CLOSEOUT_TOOLTIP_TEXT = `If the price drops below this number, measured in the market price quote unit {{quote}}, you will be closed out, based on your current position and account balance.`;
-export const NOTIONAL_SIZE_TOOLTIP_TEXT = `The notional size represents the position size in the settlement asset {{quoteName}} of the futures contract. This is calculated by multiplying the number of contracts by the prices of the contract. For example 10 contracts traded at a price of $50 has a notional size of $500.`;
+export const EST_CLOSEOUT_TOOLTIP_TEXT =
+  'If the price drops below this number, measured in the market price quote unit {{quote}}, you will be closed out, based on your current position and account balance.';
+export const NOTIONAL_SIZE_TOOLTIP_TEXT =
+  'The notional size represents the position size in the settlement asset {{quoteName}} of the futures contract. This is calculated by multiplying the number of contracts by the prices of the contract. For example 10 contracts traded at a price of $50 has a notional size of $500.';
 export const EST_FEES_TOOLTIP_TEXT =
   'When you execute a new buy or sell order, you must pay a small amount of commission to the network for doing so. This fee is used to provide income to the node operates of the network and market makers who make prices on the futures market you are trading.';
 

@@ -244,11 +244,11 @@ export const useAssetTypeMapping = () => {
   return useMemo<Mapping>(
     () => ({
       BuiltinAsset: {
-        value: 'Builtin asset',
+        value: t('Builtin asset'),
         tooltip: t('A Vega builtin asset'),
       },
       ERC20: {
-        value: 'ERC20',
+        value: t('ERC20'),
         tooltip: t('An asset originated from an Ethereum ERC20 Token'),
       },
     }),
