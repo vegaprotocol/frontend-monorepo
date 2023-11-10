@@ -113,6 +113,7 @@ export type WalletCardAssetProps = {
   border?: boolean;
   subheading?: string;
   type?: Schema.AccountType;
+  allowZeroBalance?: boolean;
 };
 
 export type WalletCardAssetWithMultipleBalancesProps = Omit<
@@ -130,6 +131,7 @@ export const WalletCardAsset = ({
   assetId,
   border,
   subheading,
+  allowZeroBalance = false,
   ...props
 }: WalletCardAssetProps | WalletCardAssetWithMultipleBalancesProps) => {
   const balance = 'balance' in props ? props.balance : undefined;
@@ -140,6 +142,32 @@ export const WalletCardAsset = ({
       : balance
       ? [{ balance, type }]
       : undefined;
+
+  const values =
+    balances &&
+    balances.length > 0 &&
+    balances
+      .filter((b) => allowZeroBalance || !b.balance.isZero())
+      .sort((a, b) => {
+        const order = [
+          Schema.AccountType.ACCOUNT_TYPE_VESTING_REWARDS,
+          Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
+          Schema.AccountType.ACCOUNT_TYPE_GENERAL,
+          undefined,
+        ];
+        return order.indexOf(a.type) - order.indexOf(b.type);
+      })
+      .map(({ balance, type }, i) => (
+        <CurrencyValue
+          key={i}
+          balance={balance}
+          decimals={decimals}
+          type={type}
+          assetId={assetId}
+        />
+      ));
+
+  if (!values || values.length === 0) return;
 
   return (
     <div className="flex flex-nowrap gap-2 mt-2 mb-4">
@@ -160,27 +188,7 @@ export const WalletCardAsset = ({
             {subheading || symbol}
           </div>
         </div>
-        {balances &&
-          balances.length > 0 &&
-          balances
-            .filter((b) => !b.balance.isZero())
-            .sort((a, b) => {
-              const order = [
-                Schema.AccountType.ACCOUNT_TYPE_VESTING_REWARDS,
-                Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
-                Schema.AccountType.ACCOUNT_TYPE_GENERAL,
-                undefined,
-              ];
-              return order.indexOf(a.type) - order.indexOf(b.type);
-            })
-            .map(({ balance, type }) => (
-              <CurrencyValue
-                balance={balance}
-                decimals={decimals}
-                type={type}
-                assetId={assetId}
-              />
-            ))}
+        {values}
       </div>
     </div>
   );
@@ -249,14 +257,18 @@ const CurrencyValue = ({
   ) : null;
 
   return (
-    <div className="basis-full font-mono mb-1" data-testid="currency-value">
+    <div
+      className="basis-full font-mono mb-1"
+      data-account-type={type?.toLowerCase() || 'unspecified'}
+      data-testid="currency-value"
+    >
       {type && (
-        <div className="flex gap-1">
+        <div data-type className="flex gap-1">
           {accountType}
           {redeemBtn}
         </div>
       )}
-      <div>
+      <div data-value>
         <span>
           {integers}
           {separator}

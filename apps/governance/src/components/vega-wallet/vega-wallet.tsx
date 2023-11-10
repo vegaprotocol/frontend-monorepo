@@ -203,6 +203,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
         subheading={t('Associated')}
         symbol="VEGA"
         balance={currentStakeAvailable}
+        allowZeroBalance={true}
       />
       {totalPending.eq(0) ? null : (
         <>
@@ -213,6 +214,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
             subheading={t('Pending association')}
             symbol="VEGA"
             balance={totalPending}
+            allowZeroBalance={true}
           />
           <WalletCardAsset
             image={vegaWhite}
@@ -221,6 +223,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
             subheading={t('Total associated after pending')}
             symbol="VEGA"
             balance={pendingStakeAmount}
+            allowZeroBalance={true}
           />
         </>
       )}
