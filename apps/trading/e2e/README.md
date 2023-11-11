@@ -12,47 +12,41 @@ This direcotry contains end-to-end tests for the trading application using vega-
 
 1. **Install Poetry**: Follow the instructions on the [official Poetry website](https://python-poetry.org/docs/#installing-with-the-official-installer).
 
-1. **Install Docker**: Follow the instructions on the [official Docker website](https://docs.docker.com/desktop/).
-1. **Install Python**: Follow the instructions on the [official Python website](https://www.python.org/)
+2. **Install Docker**: Follow the instructions on the [official Docker website](https://docs.docker.com/desktop/).
+3. **Install Python**: Follow the instructions on the [official Python website](https://www.python.org/)
    **ensure you install a version between 3.9 and 3.11.**
-1. **Install playwright**:
-
-```bash
-  pip install pytest-playwright
-```
-
-1. **Install Playwright**: Execute the command below to Install Playwright.
-
-```bash
-playwright install chromium
-```
-
-1. **Start up a Poetry environment**: Execute the commands below to configure the Poetry environment.
+4. **Start up a Poetry environment**: Execute the commands below to configure the Poetry environment.
 
 ```bash
 poetry shell
 ```
 
-1. **Install python dependencies**
+5. **Install python dependencies**
 
 ```bash
 poetry install
 ```
 
-1. **Download necessary binaries**:
+6. **Install Playwright Browsers**: Execute the command below to browsers for Playwright.
+
+```bash
+playwright install chromium
+```
+
+7. **Download necessary binaries**:
    Use the following command within your Python environment. The `--force` flag ensures the binaries are overwritten, and the `--version` specifies the desired version. e.g. `v0.73.1`
 
 ```bash
 python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
 ```
 
-1. **Pull the desired Docker image**
+8. **Pull the desired Docker image**
 
 ```bash
 docker pull vegaprotocol/trading:develop
 ```
 
-1. **Run tests**: Poetry/Python will serve the app from docker
+9. **Run tests**: Poetry/Python will serve the app from docker
 
 ```bash
 poetry run pytest
