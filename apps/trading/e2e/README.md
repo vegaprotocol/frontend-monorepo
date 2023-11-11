@@ -1,6 +1,6 @@
-# Console-Test
+# Trading End-To-End Tests
 
-`console-test` is a repository containing end-to-end tests for a console application using vega-market-sim. This README will guide you through setting up your environment and running the tests.
+This direcotry contains end-to-end tests for the console application using vega-market-sim. This README will guide you through setting up your environment and running the tests.
 
 ## Prerequisites
 
@@ -82,10 +82,6 @@ To run a specific test, use the `-k` option followed by the name of the test.
 ### From within the e2e folder:
 
 ```bash
-cd apps/trading/e2e
-```
-
-```bash
 poetry run pytest -k "test_name" -s
 ```
 
@@ -99,11 +95,7 @@ yarn trading:test -- "test_name" -s
 
 To run tests in parallel, use the `--numprocesses auto` option. The `--dist loadfile` setting ensures that multiple runners are not assigned to a single test file.
 
-### From within the console-test folder:
-
-```bash
-cd apps/trading/e2e
-```
+### From within the e2e folder:
 
 ```bash
 poetry run pytest -s --numprocesses auto --dist loadfile
