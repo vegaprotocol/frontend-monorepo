@@ -15,32 +15,36 @@ This direcotry contains end-to-end tests for the trading application using vega-
 1. **Install Docker**: Follow the instructions on the [official Docker website](https://docs.docker.com/desktop/).
 1. **Install Python**: Follow the instructions on the [official Python website](https://www.python.org/)
    **ensure you install a version between 3.9 and 3.11.**
-1. **Install Playwright**:
-   Execute the command below to Install Playwright.
+1. **Install playwright**:
 
-   ```bash
-   playwright install chromium
-   ```
+```bash
+  pip install pytest-playwright
+```
 
-1. **Start up a Poetry environment**:
-   Execute the commands below to configure the Poetry environment.
+1. **Install Playwright**: Execute the command below to Install Playwright.
 
-   ```bash
-   poetry shell
-   ```
+```bash
+playwright install chromium
+```
+
+1. **Start up a Poetry environment**: Execute the commands below to configure the Poetry environment.
+
+```bash
+poetry shell
+```
 
 1. **Install python dependencies**
 
-   ```bash
-   poetry install
-   ```
+```bash
+poetry install
+```
 
 1. **Download necessary binaries**:
    Use the following command within your Python environment. The `--force` flag ensures the binaries are overwritten, and the `--version` specifies the desired version. e.g. `v0.73.1`
 
-   ```bash
-   python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
-   ```
+```bash
+python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
+```
 
 1. **Pull the desired Docker image**
 
