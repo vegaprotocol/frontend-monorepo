@@ -16,7 +16,7 @@
     "release": "git checkout develop ; git pull ; node scripts/make-release.js"
   },
   "engines": {
-    "node": ">=18.17.1"
+    "node": ">=20.9.0"
   },
   "private": true,
   "dependencies": {
