@@ -153,7 +153,13 @@ jobs:
         run: |
           docker load --input /tmp/console-image.tar
           docker image ls -a
-
+      #----------------------------------------------
+      #       check-out frontend-monorepo
+      #----------------------------------------------
+      - name: Checkout frontend-monorepo
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.github-sha || github.sha }}
       #----------------------------------------------
       #  -----  Setup python  -----
       #----------------------------------------------
@@ -192,7 +198,6 @@ jobs:
       - name: Run tests
         run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -v -s --numprocesses 4 --dist loadfile --durations=15
         working-directory: apps/trading/e2e
-
       #----------------------------------------------
       # upload traces
       #----------------------------------------------
