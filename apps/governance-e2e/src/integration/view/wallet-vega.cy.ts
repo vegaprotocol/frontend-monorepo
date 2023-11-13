@@ -5,6 +5,11 @@ import {
   vegaWalletTeardown,
 } from '../../support/wallet-functions';
 
+// For some reason in this the below imports are typed as the jest version, importing
+// them directly is an easy work around.
+import { it } from 'mocha';
+import { expect } from 'chai';
+
 const walletContainer = 'aside [data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
 const connectButton = 'connect-vega-wallet';

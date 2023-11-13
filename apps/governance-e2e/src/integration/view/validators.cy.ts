@@ -12,6 +12,10 @@ import {
 } from '../../support/staking.functions';
 import { previousEpochData } from '../../fixtures/mocks/previous-epoch';
 
+// For some reason in this the below imports are typed as the jest version, importing
+// them directly is an easy work around.
+import { before, beforeEach, describe, it } from 'mocha';
+
 const guideLink = 'staking-guide-link';
 const validatorTitle = 'validator-node-title';
 const validatorId = 'validator-id';

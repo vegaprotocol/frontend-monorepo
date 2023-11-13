@@ -12,6 +12,10 @@ import {
 } from '../../support/governance.functions';
 import { vegaWalletFaucetAssetsWithoutCheck } from '../../support/wallet-functions';
 
+// For some reason in this the below imports are typed as the jest version, importing
+// them directly is an easy work around.
+import { before, beforeEach, it } from 'mocha';
+
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey2');
 const vegaPubkeyTruncated = Cypress.env('vegaWalletPublicKey2Short');
 const banner = 'view-banner';

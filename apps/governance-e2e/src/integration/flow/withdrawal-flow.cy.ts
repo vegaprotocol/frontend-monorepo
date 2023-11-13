@@ -7,6 +7,10 @@ import {
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import { depositAsset } from '../../support/wallet-functions';
 
+// For some reason in this the below imports are typed as the jest version, importing
+// them directly is an easy work around.
+import { before, beforeEach, it } from 'mocha';
+
 const withdraw = 'withdraw';
 const withdrawalForm = 'withdraw-form';
 const ethAddressInput = 'eth-address-input';

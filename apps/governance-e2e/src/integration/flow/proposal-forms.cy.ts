@@ -30,6 +30,10 @@ import {
   vegaWalletTeardown,
 } from '../../support/wallet-functions';
 
+// For some reason in this the below imports are typed as the jest version, importing
+// them directly is an easy work around.
+import { before, beforeEach, it } from 'mocha';
+
 const proposalListItem = '[data-testid="proposals-list-item"]';
 const openProposals = 'open-proposals';
 const proposalType = 'proposal-type';

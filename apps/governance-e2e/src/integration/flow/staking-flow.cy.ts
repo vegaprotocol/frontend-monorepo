@@ -26,6 +26,10 @@ import {
   vegaWalletTeardown,
 } from '../../support/wallet-functions';
 
+// For some reason in this the below imports are typed as the jest version, importing
+// them directly is an easy work around.
+import { before, beforeEach, describe, it } from 'mocha';
+
 const stakeValidatorListTotalStake = 'total-stake';
 const stakeValidatorListTotalShare = 'total-stake-share';
 const stakeValidatorListStakePercentage = 'stake-percentage';

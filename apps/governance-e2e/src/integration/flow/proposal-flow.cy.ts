@@ -36,6 +36,10 @@ import {
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import type { testFreeformProposal } from '../../support/common-interfaces';
 
+// For some reason in this the below imports are typed as the jest version, importing
+// them directly is an easy work around.
+import { before, beforeEach } from 'mocha';
+
 const vegaWalletStakedBalances = 'vega-wallet-balance-staked-validators';
 const vegaWalletAssociatedBalance = 'associated-amount';
 const vegaWalletNameElement = 'wallet-name';
@@ -301,6 +305,7 @@ context(
       cy.getByTestId(voteButtons).should('not.exist');
       cy.getByTestId('min-proposal-requirements').should(
         'have.text',
+        // @ts-ignore this is any
         `You must have at least ${this.minVoterBalance} VEGA associated to vote on this proposal`
       );
     });

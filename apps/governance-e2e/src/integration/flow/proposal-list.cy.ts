@@ -33,6 +33,10 @@ const voteMajorityNotMet = 'token-majority-not-met';
 const voteMajorityMet = 'token-majority-met';
 const votesForPercentage = 'votes-for-percentage';
 
+// For some reason in this the below imports are typed as the jest version, importing
+// them directly is an easy work around.
+import { before, beforeEach, describe, it } from 'mocha';
+
 describe('Governance flow for proposal list', { tags: '@slow' }, function () {
   before('connect wallets and set approval limit', function () {
     vegaWalletSetSpecifiedApprovalAmount('1000');

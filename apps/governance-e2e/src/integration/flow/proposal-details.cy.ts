@@ -38,6 +38,10 @@ import {
   createSuccessorMarketProposalTxBody,
 } from '../../support/proposal.functions';
 
+// For some reason in this the below imports are typed as the jest version, importing
+// them directly is an easy work around.
+import { before, beforeEach, describe } from 'mocha';
+
 const proposalListItem = '[data-testid="proposals-list-item"]';
 const participationNotMet = 'token-participation-not-met';
 const voteStatus = 'vote-status';
@@ -323,6 +327,7 @@ describe(
           });
       });
       cy.VegaWalletSubmitProposal(
+        // @ts-ignore this is any
         createSuccessorMarketProposalTxBody(this.parentMarketId)
       );
       navigateTo(navigation.proposals);
@@ -334,6 +339,7 @@ describe(
       cy.getByTestId(proposalTermsToggle).click();
       cy.get('.language-json').within(() => {
         cy.get('.hljs-attr').should('contain.text', 'parentMarketId');
+        // @ts-ignore this is any
         cy.get('.hljs-string').should('contain.text', this.parentMarketId);
         cy.get('.hljs-attr').should('contain.text', 'insurancePoolFraction');
         cy.get('.hljs-string').should('contain.text', '0.75');
@@ -352,6 +358,7 @@ describe(
         validateProposalDetailsDiff(
           'Parent Market ID',
           proposalChangeType.ADDED,
+          // @ts-ignore this is any
           this.parentMarketId
         );
         validateProposalDetailsDiff(
@@ -450,6 +457,7 @@ describe(
       const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
       submitUniqueRawProposal({
         proposalBody: proposalPath,
+        // @ts-ignore this is any
         updateMarketId: this.parentMarketId,
         enactmentTimestamp: enactmentTimestamp,
         closingTimestamp: closingTimestamp,
@@ -466,6 +474,7 @@ describe(
       cy.getByTestId('proposal-update-market-state').within(() => {
         getProposalInformationFromTable('Market ID')
           .invoke('text')
+          // @ts-ignore this is any
           .and('eq', this.parentMarketId);
       });
     });
@@ -476,6 +485,7 @@ describe(
       const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
       submitUniqueRawProposal({
         proposalBody: proposalPath,
+        // @ts-ignore this is any
         updateMarketId: this.parentMarketId,
         enactmentTimestamp: enactmentTimestamp,
         closingTimestamp: closingTimestamp,
@@ -489,6 +499,7 @@ describe(
       cy.getByTestId('proposal-update-market-state').within(() => {
         getProposalInformationFromTable('Market ID')
           .invoke('text')
+          // @ts-ignore this is any
           .and('eq', this.parentMarketId);
       });
     });
@@ -499,6 +510,7 @@ describe(
       const closingTimestamp = createTenDigitUnixTimeStampForSpecifiedDays(2);
       submitUniqueRawProposal({
         proposalBody: proposalPath,
+        // @ts-ignore this is any
         updateMarketId: this.parentMarketId,
         enactmentTimestamp: enactmentTimestamp,
         closingTimestamp: closingTimestamp,
@@ -518,6 +530,7 @@ describe(
       cy.getByTestId('proposal-update-market-state').within(() => {
         getProposalInformationFromTable('Market ID')
           .invoke('text')
+          // @ts-ignore this is any
           .and('eq', this.parentMarketId);
         getProposalDetailsValue('Termination Price').should(
           'contain.text',

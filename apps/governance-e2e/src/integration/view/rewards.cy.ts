@@ -5,6 +5,11 @@ import {
 } from '../../support/common.functions';
 import { waitForBeginningOfEpoch } from '../../support/staking.functions';
 
+// For some reason in this the below imports are typed as the jest version, importing
+// them directly is an easy work around.
+import { before, describe, it } from 'mocha';
+import { expect } from 'chai';
+
 const viewToggle = 'epoch-reward-view-toggle-total';
 const warning = 'callout';
 
