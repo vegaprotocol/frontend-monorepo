@@ -24,7 +24,7 @@ import {
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
-import { useT } from '../../use-t';
+import { useT, ns } from '../../use-t';
 import { Trans } from 'react-i18next';
 import type { DealTicketMarginDetailsProps } from './deal-ticket-fee-details';
 import { emptyValue } from './deal-ticket-fee-details';

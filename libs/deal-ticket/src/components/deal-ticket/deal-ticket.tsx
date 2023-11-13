@@ -3,7 +3,7 @@ import { type FormEventHandler } from 'react';
 import { memo, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Controller, useController, useForm } from 'react-hook-form';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
-import { DealTicketMarginDetails } from './DealTicketMarginDetails';
+import { DealTicketMarginDetails } from './deal-ticket-margin-details';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';

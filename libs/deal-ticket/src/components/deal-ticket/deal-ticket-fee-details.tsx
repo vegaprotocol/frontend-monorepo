@@ -43,7 +43,7 @@ import { getTotalDiscountFactor, getDiscountedFee } from '../discounts';
 import { useT, ns } from '../../use-t';
 import { Trans } from 'react-i18next';
 
-const emptyValue = '-';
+export const emptyValue = '-';
 
 export interface DealTicketFeeDetailsProps {
   assetSymbol: string;
