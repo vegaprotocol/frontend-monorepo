@@ -182,16 +182,19 @@ jobs:
       #----------------------------------------------
       - name: Install dependencies
         run: poetry install --no-interaction --no-root
+        working-directory: apps/trading/e2e
       #----------------------------------------------
       # install vega binaries
       #----------------------------------------------
       - name: Install vega binaries
         run: poetry run python -m vega_sim.tools.load_binaries --force --version ${{ env.VEGA_VERSION }}
+        working-directory: apps/trading/e2e
       #----------------------------------------------
-      # install playwright
+      # install playwrightworking-directory: apps/trading/e2e
       #----------------------------------------------
       - name: install playwright
         run: poetry run playwright install --with-deps chromium
+        working-directory: apps/trading/e2e
       #----------------------------------------------
       # run tests
       #----------------------------------------------
