@@ -44,12 +44,6 @@ jobs:
     runs-on: ${{ needs.runner-choice.outputs.runner }}
     timeout-minutes: 120
     steps:
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-
       # Checks if skip cache was requested
       - name: Set skip-nx-cache flag
         if: ${{ inputs.skip-cache == true }}

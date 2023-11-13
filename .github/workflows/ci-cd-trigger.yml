@@ -34,7 +34,7 @@ jobs:
             ${{ runner.os }}-cache-node-modules-
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           node-version-file: '.nvmrc'
@@ -57,7 +57,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
@@ -96,7 +96,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
@@ -128,7 +128,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
@@ -182,7 +182,7 @@ jobs:
         run: |
           if [[ "${{ github.base_ref }}" == "develop" ]]; then
             echo "e2e-needed=true" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.base_ref }}" == "main" ]]; then 
+          elif [[ "${{ github.base_ref }}" == "main" ]]; then
             echo "e2e-needed=true" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event_name }}" == "push"  &&  "${{ github.ref_name }}" == *"release/"* ]]; then
             echo "e2e-needed=true" >> $GITHUB_OUTPUT
