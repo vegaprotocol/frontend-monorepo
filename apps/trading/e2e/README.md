@@ -11,7 +11,6 @@ This direcotry contains end-to-end tests for the trading application using vega-
 ## Getting Started
 
 1. **Install Poetry**: Follow the instructions on the [official Poetry website](https://python-poetry.org/docs/#installing-with-the-official-installer).
-
 2. **Install Docker**: Follow the instructions on the [official Docker website](https://docs.docker.com/desktop/).
 3. **Install Python**: Follow the instructions on the [official Python website](https://www.python.org/)
    **ensure you install a version between 3.9 and 3.11.**
