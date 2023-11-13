@@ -161,6 +161,13 @@ jobs:
         with:
           ref: ${{ inputs.github-sha || github.sha }}
       #----------------------------------------------
+      #       get vega version
+      #----------------------------------------------
+      - name: Set VEGA_VERSION from .env
+        id: set_vega_version
+        run: echo "VEGA_VERSION=$(grep VEGA_VERSION apps/trading/e2e/.env | cut -d '=' -f2)" >> $GITHUB_ENV
+        working-directory: apps/trading/e2e
+      #----------------------------------------------
       #  -----  Setup python  -----
       #----------------------------------------------
       - name: Setup Python
