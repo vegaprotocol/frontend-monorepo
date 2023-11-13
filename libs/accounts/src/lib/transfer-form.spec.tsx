@@ -9,7 +9,6 @@ import {
 } from './transfer-form';
 import { AccountType } from '@vegaprotocol/types';
 import { removeDecimal } from '@vegaprotocol/utils';
-import { setTimeout } from 'timers/promises';
 
 describe('TransferForm', () => {
   const renderComponent = (props: TransferFormProps) => {
