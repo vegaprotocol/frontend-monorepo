@@ -22,7 +22,7 @@ jobs:
         id: Node
         uses: actions/setup-node@v2
         with:
-          node-version: 16.15.1
+          node-version-file: '.nvmrc'
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v4
