@@ -4,7 +4,7 @@
   "sourceRoot": "libs/smart-contracts/src",
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/smart-contracts/**/*.ts"]
@@ -14,14 +14,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/smart-contracts"],
       "options": {
-        "jestConfig": "libs/smart-contracts/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "libs/smart-contracts/jest.config.ts"
       }
     },
     "build-spec": {

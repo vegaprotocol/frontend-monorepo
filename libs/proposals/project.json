@@ -6,7 +6,7 @@
   "tags": [],
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/proposals/**/*.{ts,tsx,js,jsx}"]
@@ -16,8 +16,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/proposals"],
       "options": {
-        "jestConfig": "libs/proposals/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/proposals/jest.config.ts"
       }
     },
     "build-spec": {

@@ -8,3 +8,5 @@ __generated___
 apps/static/src/assets/devnet-tranches.json
 apps/static/src/assets/mainnet-tranches.json
 apps/static/src/assets/testnet-tranches.json
+
+/.nx/cache
