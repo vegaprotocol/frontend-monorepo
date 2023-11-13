@@ -225,6 +225,7 @@ describe('Amend order details', () => {
     expect(await res.findByText('-7879')).toBeInTheDocument();
   });
 
+  // eslint-disable-next-line jest/no-disabled-tests
   it.skip('Fetches latest version when version is not specified', async () => {
     const amend: Amend = {
       price: '-7879',
