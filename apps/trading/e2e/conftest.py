@@ -57,7 +57,7 @@ class CustomHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.path = 'dist/apps/trading/exported/index.html'
         return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
-""" # Start VegaServiceNull
+# Start VegaServiceNull
 @contextmanager
 def init_vega(request=None):
     default_seconds = 1
@@ -99,53 +99,7 @@ def init_vega(request=None):
             container.stop()
             # Remove the container
             logger.info(f"Removing container {container.id}")
-            container.remove() """
-
-### http server version
-@contextmanager
-def init_vega(request=None):
-    default_seconds = 1
-    seconds_per_block = default_seconds
-    if request and hasattr(request, "param"):
-        seconds_per_block = request.param
-
-    logger.info(
-        "Starting VegaServiceNull",
-        extra={"worker_id": os.environ.get("PYTEST_XDIST_WORKER")},
-    )
-    logger.info(f"Using console image: {console_image_name}")
-    logger.info(f"Using vega version: {vega_version}")
-    with VegaServiceNull(
-        run_with_console=False,
-        launch_graphql=False,
-        retain_log_files=True,
-        use_full_vega_wallet=True,
-        store_transactions=True,
-        transactions_per_block=1000,
-        seconds_per_block=seconds_per_block,
-    ) as vega:
-        try:
-            # Start a simple HTTP server
-            Handler = CustomHttpRequestHandler
-            console_port = vega.console_port  
-            httpd = socketserver.TCPServer(("", console_port), Handler)
-            
-            # Start the server in a separate thread
-            server_thread = Thread(target=httpd.serve_forever)
-            server_thread.daemon = True
-            server_thread.start()
-            yield vega 
-        finally:
-            if httpd:
-                httpd.shutdown()
-                httpd.server_close()  # Properly close the server socket
-
-            # Ensure the server thread is joined
-            if server_thread:
-                server_thread.join()
-
-            # Log the clean-up
-            logger.info("Clean-up completed and all services have been shut down.")
+            container.remove()
 
 @contextmanager
 def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRequest):
