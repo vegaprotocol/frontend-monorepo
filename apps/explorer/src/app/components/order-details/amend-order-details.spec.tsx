@@ -3,16 +3,10 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import AmendOrderDetails from './amend-order-details';
-import {
-  ExplorerDeterministicOrderDocument,
-  type ExplorerDeterministicOrderQuery,
-} from './__generated__/Order';
+import { ExplorerDeterministicOrderDocument } from './__generated__/Order';
 import { render } from '@testing-library/react';
 import * as Schema from '@vegaprotocol/types';
-import {
-  ExplorerMarketDocument,
-  type ExplorerMarketQuery,
-} from '../links/market-link/__generated__/Market';
+import { ExplorerMarketDocument } from '../links/market-link/__generated__/Market';
 
 type Amend = components['schemas']['v1OrderAmendment'];
 
