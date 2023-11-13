@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import {
   addDecimalsFormatNumber,
   addDecimalsFormatNumberQuantum,
-  formatNumberPercentage,
   getDateTimeFormat,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -28,6 +27,12 @@ import BigNumber from 'bignumber.js';
 import { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
 import type { LiquidityProvisionData } from './liquidity-data-provider';
+
+const formatNumberPercentage = (value: BigNumber, decimals?: number) => {
+  const decimalPlaces =
+    typeof decimals === 'undefined' ? value.dp() || 0 : decimals;
+  return `${value.toFixed(decimalPlaces, 1)}%`;
+};
 
 const percentageFormatter = ({ value }: ValueFormatterParams) => {
   if (!value) return '-';
@@ -126,11 +131,11 @@ export const LiquidityTable = ({
               new BigNumber(data.sla.currentEpochFractionOfTimeOnBook).times(
                 100
               ),
-              2
+              4
             ),
             formatNumberPercentage(
               new BigNumber(data.commitmentMinTimeFraction).times(100),
-              2
+              4
             ),
           ]
         );
@@ -143,7 +148,7 @@ export const LiquidityTable = ({
               new BigNumber(data.sla.currentEpochFractionOfTimeOnBook).times(
                 100
               ),
-              2
+              4
             ),
           ]
         );
