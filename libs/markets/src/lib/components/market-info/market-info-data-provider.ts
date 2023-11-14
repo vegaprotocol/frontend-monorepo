@@ -4,9 +4,9 @@ import {
   marketDataErrorPolicyGuard,
 } from '@vegaprotocol/data-provider';
 import {
+  MarketInfoDocument,
   type MarketInfoQuery,
   type MarketInfoQueryVariables,
-  type MarketInfoDocument,
 } from './__generated__/MarketInfo';
 import {
   marketDataProvider,
