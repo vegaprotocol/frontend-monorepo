@@ -183,7 +183,9 @@ describe('Vesting', () => {
 
 describe('Multipliers', () => {
   it('shows combined multipliers', () => {
-    render(<Multipliers streakMultiplier="3" hoarderMultiplier="2" />);
+    render(
+      <Multipliers pubKey="pubkey" streakMultiplier="3" hoarderMultiplier="2" />
+    );
     expect(screen.getByTestId('combined-multipliers')).toHaveTextContent('6x');
     expect(
       screen.getByText('Streak reward multiplier').nextElementSibling
@@ -191,5 +193,23 @@ describe('Multipliers', () => {
     expect(
       screen.getByText('Hoarder reward multiplier').nextElementSibling
     ).toHaveTextContent('2x');
+  });
+
+  it('shows not connected state', () => {
+    render(
+      <Multipliers pubKey={null} streakMultiplier="3" hoarderMultiplier="2" />
+    );
+
+    expect(
+      screen.queryByTestId('combined-multipliers')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Streak reward multiplier')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Hoarder reward multiplier')
+    ).not.toBeInTheDocument();
+
+    expect(screen.getByText('Not connected')).toBeInTheDocument();
   });
 });

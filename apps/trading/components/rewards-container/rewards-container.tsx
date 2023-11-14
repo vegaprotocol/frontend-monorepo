@@ -105,6 +105,7 @@ export const RewardsContainer = () => {
         highlight={true}
       >
         <Multipliers
+          pubKey={pubKey}
           hoarderMultiplier={
             rewardsData?.party?.vestingStats?.rewardBonusMultiplier
           }
@@ -332,15 +333,25 @@ export const Vesting = ({
 };
 
 export const Multipliers = ({
+  pubKey,
   streakMultiplier = '1',
   hoarderMultiplier = '1',
 }: {
+  pubKey: string | null;
   streakMultiplier?: string;
   hoarderMultiplier?: string;
 }) => {
   const combinedMultiplier = new BigNumber(streakMultiplier).times(
     hoarderMultiplier
   );
+
+  if (!pubKey) {
+    return (
+      <div className="pt-4">
+        <p className="text-muted text-sm">{t('Not connected')}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-4">
