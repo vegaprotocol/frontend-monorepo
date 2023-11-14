@@ -18,7 +18,7 @@ export const Card = ({
   return (
     <div
       className={classNames(
-        'p-0.5 bg-vega-clight-800 dark:bg-vega-cdark-800 col-span-full lg:col-auto',
+        'bg-vega-clight-800 dark:bg-vega-cdark-800 col-span-full p-0.5 lg:col-auto',
         'rounded-lg',
         {
           'bg-rainbow': highlight,
@@ -26,7 +26,7 @@ export const Card = ({
         className
       )}
     >
-      <div className="p-4 rounded w-full h-full bg-vega-clight-800 dark:bg-vega-cdark-800">
+      <div className="bg-vega-clight-800 dark:bg-vega-cdark-800 h-full w-full rounded p-4">
         <h2 className="mb-3">{title}</h2>
         {loading ? <CardLoader /> : children}
       </div>
@@ -37,8 +37,8 @@ export const Card = ({
 export const CardLoader = () => {
   return (
     <div className="flex flex-col gap-2">
-      <div className="w-full h-5 bg-vega-clight-600 dark:bg-vega-cdark-600" />
-      <div className="w-3/4 h-6 bg-vega-clight-600 dark:bg-vega-cdark-600" />
+      <div className="bg-vega-clight-600 dark:bg-vega-cdark-600 h-5 w-full" />
+      <div className="bg-vega-clight-600 dark:bg-vega-cdark-600 h-6 w-3/4" />
     </div>
   );
 };
@@ -59,7 +59,7 @@ export const CardStat = ({
   const val = (
     <span
       className={classNames('inline-block text-3xl leading-none', {
-        'text-transparent bg-rainbow bg-clip-text': highlight,
+        'bg-rainbow bg-clip-text text-transparent': highlight,
         'cursor-help': description,
       })}
       data-testid={testId}
@@ -72,7 +72,7 @@ export const CardStat = ({
     <p className="leading-none">
       {description ? <Tooltip description={description}>{val}</Tooltip> : val}
       {text && (
-        <small className="block mt-0.5 text-xs text-muted">{text}</small>
+        <small className="text-muted mt-0.5 block text-xs">{text}</small>
       )}
     </p>
   );
@@ -80,7 +80,7 @@ export const CardStat = ({
 
 export const CardTable = (props: HTMLProps<HTMLTableElement>) => {
   return (
-    <table {...props} className="w-full mt-0.5 text-xs text-muted">
+    <table {...props} className="text-muted mt-0.5 w-full text-xs">
       <tbody>{props.children}</tbody>
     </table>
   );
@@ -90,7 +90,7 @@ export const CardTableTH = (props: HTMLProps<HTMLTableHeaderCellElement>) => {
   return (
     <th
       {...props}
-      className={classNames('font-normal text-left', props.className)}
+      className={classNames('text-left font-normal', props.className)}
     />
   );
 };

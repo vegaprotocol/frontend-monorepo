@@ -123,7 +123,7 @@ export const FeesContainer = () => {
                 windowLength={volumeDiscountWindowLength}
               />
             ) : (
-              <p className="pt-3 text-sm text-muted">
+              <p className="text-muted pt-3 text-sm">
                 {t('No volume discount program active')}
               </p>
             )}
@@ -142,7 +142,7 @@ export const FeesContainer = () => {
                 epochs={referralDiscountWindowLength}
               />
             ) : (
-              <p className="pt-3 text-sm text-muted">
+              <p className="text-muted pt-3 text-sm">
                 {t('No referral program active')}
               </p>
             )}
@@ -311,7 +311,7 @@ export const CurrentVolume = ({
     : 0;
 
   return (
-    <div className="flex flex-col pt-4 gap-3">
+    <div className="flex flex-col gap-3 pt-4">
       <CardStat
         value={formatNumberRounded(new BigNumber(windowLengthVolume))}
         text={t('Past %s epochs', windowLength.toString())}
@@ -336,7 +336,7 @@ const ReferralBenefits = ({
   epochs: number;
 }) => {
   return (
-    <div className="flex flex-col pt-4 gap-3">
+    <div className="flex flex-col gap-3 pt-4">
       <CardStat
         // all sets volume (not just current party)
         value={formatNumber(setRunningNotionalTakerVolume)}
@@ -433,7 +433,7 @@ const VolumeTiers = ({
 }) => {
   if (!tiers.length) {
     return (
-      <p className="text-sm text-muted">
+      <p className="text-muted text-sm">
         {t('No volume discount program active')}
       </p>
     );
@@ -494,7 +494,7 @@ const ReferralTiers = ({
 }) => {
   if (!tiers.length) {
     return (
-      <p className="text-sm text-muted">{t('No referral program active')}</p>
+      <p className="text-muted text-sm">{t('No referral program active')}</p>
     );
   }
 
@@ -550,20 +550,20 @@ const ReferralTiers = ({
 
 const YourTier = () => {
   return (
-    <span className="px-4 py-1.5 rounded-xl bg-rainbow whitespace-nowrap text-white">
+    <span className="bg-rainbow whitespace-nowrap rounded-xl px-4 py-1.5 text-white">
       {t('Your tier')}
     </span>
   );
 };
 
 const ReferrerInfo = ({ code }: { code?: string }) => (
-  <div className="pt-3 text-sm text-vega-clight-200 dark:vega-cdark-200">
+  <div className="text-vega-clight-200 dark:vega-cdark-200 pt-3 text-sm">
     <p className="mb-1">
       {t('Connected key is owner of the referral set')}
       {code && (
         <>
           {' '}
-          <span className="text-transparent bg-rainbow bg-clip-text">
+          <span className="bg-rainbow bg-clip-text text-transparent">
             {truncateMiddle(code)}
           </span>
         </>
@@ -574,7 +574,7 @@ const ReferrerInfo = ({ code }: { code?: string }) => (
     <p>
       {t('See')}{' '}
       <Link
-        className="underline text-black dark:text-white"
+        className="text-black underline dark:text-white"
         to={Links.REFERRALS()}
       >
         {t('Referrals')}
