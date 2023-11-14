@@ -8,7 +8,7 @@ describe('Link', () => {
         Link text
       </Link>
     );
-    const link = screen.getByRole('link', { name: 'Link title' });
+    const link = screen.getByRole('link', { name: 'Link text' });
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('data-testid', 'link');
     expect(link).toHaveAttribute('referrerPolicy', 'strict-origin');
@@ -24,7 +24,7 @@ describe('Link', () => {
         <span>Link text</span>
       </Link>
     );
-    const link = screen.getByRole('link', { name: 'Link title' });
+    const link = screen.getByRole('link', { name: 'Link text' });
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('data-testid', 'link');
     expect(link).toHaveAttribute('referrerPolicy', 'strict-origin');

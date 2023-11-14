@@ -37,7 +37,7 @@ describe('LiquidityTable', () => {
       );
     });
 
-    const headers = await screen.getAllByRole('columnheader');
+    const headers = await screen.findAllByRole('columnheader');
 
     const headerTexts = headers.map((h) =>
       h.querySelector('[ref="eText"]')?.textContent?.trim()

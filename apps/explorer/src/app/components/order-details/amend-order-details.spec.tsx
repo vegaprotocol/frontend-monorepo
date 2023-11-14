@@ -17,7 +17,7 @@ function renderAmendOrderDetails(
   mocks: MockedResponse[]
 ) {
   return render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter>
         <AmendOrderDetails version={version} id={id} amend={amend} />
       </MemoryRouter>
@@ -44,18 +44,18 @@ function renderExistingAmend(
           orderByID: {
             __typename: 'Order',
             id: '123',
-            type: 'GTT',
+            type: Schema.OrderType.TYPE_LIMIT,
             status: Schema.OrderStatus.STATUS_ACTIVE,
-            version: version,
+            version: version ? version.toString() : '',
             createdAt: '123',
             updatedAt: '456',
             expiresAt: '789',
             timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
             price: '200',
-            side: 'BUY',
+            side: Schema.Side.SIDE_BUY,
             peggedOrder: null,
             remaining: '99',
-            rejectionReason: 'rejection',
+            rejectionReason: Schema.OrderRejectionReason.ORDER_ERROR_NOT_FOUND,
             reference: '123',
             size: '100',
             party: {
@@ -65,18 +65,15 @@ function renderExistingAmend(
             market: {
               __typename: 'Market',
               id: '789',
-              state: 'STATUS_ACTIVE',
+              state: Schema.MarketState.STATE_ACTIVE,
               positionDecimalPlaces: 2,
-              decimalPlaces: '5',
+              decimalPlaces: 0,
               tradableInstrument: {
                 instrument: {
                   name: 'test',
                   product: {
                     __typename: 'Future',
                     quoteName: '123',
-                    settlementAsset: {
-                      decimals: 8,
-                    },
                   },
                 },
               },
@@ -97,18 +94,18 @@ function renderExistingAmend(
           orderByID: {
             __typename: 'Order',
             id: '123',
-            type: 'GTT',
+            type: Schema.OrderType.TYPE_LIMIT,
             status: Schema.OrderStatus.STATUS_ACTIVE,
-            version: 100,
+            version: '100',
             createdAt: '123',
             updatedAt: '456',
             expiresAt: '789',
             timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
             peggedOrder: null,
             price: '200',
-            side: 'BUY',
+            side: Schema.Side.SIDE_BUY,
             remaining: '99',
-            rejectionReason: 'rejection',
+            rejectionReason: Schema.OrderRejectionReason.ORDER_ERROR_NOT_FOUND,
             reference: '123',
             size: '200',
             party: {
@@ -117,19 +114,16 @@ function renderExistingAmend(
             },
             market: {
               __typename: 'Market',
-              id: 'amend-to-order-latest-version',
-              state: 'STATUS_ACTIVE',
+              id: '8888',
+              state: Schema.MarketState.STATE_ACTIVE,
               positionDecimalPlaces: 2,
-              decimalPlaces: '5',
+              decimalPlaces: 0,
               tradableInstrument: {
                 instrument: {
                   name: 'amend-to-order-latest-version-test',
                   product: {
                     __typename: 'Future',
                     quoteName: '123',
-                    settlementAsset: {
-                      decimals: 8,
-                    },
                   },
                 },
               },
@@ -142,13 +136,13 @@ function renderExistingAmend(
       request: {
         query: ExplorerMarketDocument,
         variables: {
-          id: '789',
+          id: '8888',
         },
       },
       result: {
         data: {
           market: {
-            id: '789',
+            id: '8888',
             decimalPlaces: 5,
             positionDecimalPlaces: 2,
             state: 'irrelevant-test-data',
@@ -225,12 +219,10 @@ describe('Amend order details', () => {
 
   it('Fetches latest version when version is not specified', async () => {
     const amend: Amend = {
-      price: '-7879',
+      price: '123',
     };
 
     const res = renderExistingAmend('123', undefined, amend);
-    expect(
-      await res.findByText('amend-to-order-latest-version')
-    ).toBeInTheDocument();
+    expect(await res.findByText('test-label')).toBeInTheDocument();
   });
 });

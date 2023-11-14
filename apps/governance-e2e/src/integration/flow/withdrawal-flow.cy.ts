@@ -48,6 +48,7 @@ context(
       depositAsset(usdcEthAddress, '1000', 5);
     });
 
+    // @ts-ignore clash between jest and cypress
     beforeEach('Navigate to withdrawal page', function () {
       cy.clearLocalStorage();
       turnTelemetryOff();
@@ -101,6 +102,7 @@ context(
     // eslint-disable-next-line
     it.skip(
       'Able to withdraw asset: -eth wallet connected -withdraw funds button',
+      // @ts-ignore clash between jest and cypress
       { tags: '@smoke' },
       function () {
         // fill in withdrawal form

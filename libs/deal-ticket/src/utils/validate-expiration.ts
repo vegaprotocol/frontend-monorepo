@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import type { Validate } from 'react-hook-form';
 
-export const validateExpiration: Validate<string | undefined> = (
+export const validateExpiration: Validate<string | undefined, object> = (
   value?: string
 ) => {
   const now = new Date();

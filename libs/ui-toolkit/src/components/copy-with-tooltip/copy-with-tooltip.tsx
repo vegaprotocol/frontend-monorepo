@@ -15,7 +15,8 @@ export function CopyWithTooltip({ children, text }: CopyWithTooltipProps) {
 
   return (
     <CopyToClipboard text={text} onCopy={() => setCopied(true)}>
-      {/* Needs this wrapping div as tooltip component interferes with element used to capture click for copy */}
+      {/*
+      // @ts-ignore not sure about this typescript error. Needs this wrapping span as tooltip component interferes with element used to capture click for copy */}
       <span>
         <Tooltip description="Copied" open={copied} align="center">
           {children}
