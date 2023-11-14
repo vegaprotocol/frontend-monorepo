@@ -4,22 +4,22 @@ import { AccountType, AssetStatus } from '@vegaprotocol/types';
 import { MemoryRouter } from 'react-router-dom';
 import { RewardPot, Vesting, type RewardPotProps } from './rewards-container';
 
-describe('RewardPot', () => {
-  const rewardAsset = {
-    id: 'asset-1',
-    symbol: 'ASSET 1',
-    name: 'Asset 1',
-    decimals: 2,
-    quantum: '1',
-    status: AssetStatus.STATUS_ENABLED,
-    source: {
-      __typename: 'ERC20' as const,
-      contractAddress: '0x123',
-      lifetimeLimit: '100',
-      withdrawThreshold: '100',
-    },
-  };
+const rewardAsset = {
+  id: 'asset-1',
+  symbol: 'ASSET 1',
+  name: 'Asset 1',
+  decimals: 2,
+  quantum: '1',
+  status: AssetStatus.STATUS_ENABLED,
+  source: {
+    __typename: 'ERC20' as const,
+    contractAddress: '0x123',
+    lifetimeLimit: '100',
+    withdrawThreshold: '100',
+  },
+};
 
+describe('RewardPot', () => {
   const renderComponent = (props: RewardPotProps) => {
     return render(
       <MemoryRouter>
@@ -152,7 +152,34 @@ describe('RewardPot', () => {
 
 describe('Vesting', () => {
   it('renders the base rate', () => {
-    render(<Vesting baseRate={'0.25'} pubKey="pubKey" />);
+    render(
+      <Vesting
+        assetId={rewardAsset.id}
+        baseRate={'0.25'}
+        pubKey="pubKey"
+        vestingBalancesSummary={{
+          epoch: 1,
+          lockedBalances: [
+            {
+              balance: '150',
+              asset: rewardAsset,
+              untilEpoch: 1,
+            },
+            {
+              balance: '100',
+              asset: rewardAsset,
+              untilEpoch: 1,
+            },
+            {
+              balance: '100',
+              asset: rewardAsset,
+              untilEpoch: 1,
+            },
+          ],
+        }}
+        epoch={1}
+      />
+    );
 
     expect(screen.getByText(/Base rate/).nextElementSibling).toHaveTextContent(
       '25%'
