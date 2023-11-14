@@ -110,7 +110,7 @@ def test_transfer_vesting_below_minimum(continuous_market, vega: VegaService, pa
     page.locator('[data-testid=transfer-form] input[name="amount"]').fill('0.000001')
     page.locator('[data-testid=transfer-form] [type="submit"]').click()
     expect(page.get_by_test_id('input-error-text')).to_be_visible
-    expect(page.get_by_test_id('input-error-text')).to_have_text("Value is below minimum ")
+    expect(page.get_by_test_id('input-error-text')).to_have_text("Amount below minimum requirements for partial transfer. Use max to bypass")
     vega.one_off_transfer(
         from_key_name=PARTY_B.name,
         to_key_name=PARTY_B.name,

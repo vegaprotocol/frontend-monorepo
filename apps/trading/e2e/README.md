@@ -124,3 +124,13 @@ poetry run pytest -s --numprocesses auto --dist loadfile
 ```bash
 yarn trading:test:all
 ```
+
+# Things to know
+
+If you "intellisense" isn't working follow these steps:
+
+1. ```bash
+   poetry run which python
+   ```
+
+2. Then open the command menu in vscode (cmd + shift + p) and type `select interpreter` , press enter, select enter interpreter path press enter then paste in the output from that above command you should get the right python again
