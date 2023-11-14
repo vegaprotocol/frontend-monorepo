@@ -2,7 +2,12 @@ import { render, screen } from '@testing-library/react';
 import type { Account } from '@vegaprotocol/accounts';
 import { AccountType, AssetStatus } from '@vegaprotocol/types';
 import { MemoryRouter } from 'react-router-dom';
-import { RewardPot, Vesting, type RewardPotProps } from './rewards-container';
+import {
+  RewardPot,
+  Vesting,
+  type RewardPotProps,
+  Multipliers,
+} from './rewards-container';
 
 const rewardAsset = {
   id: 'asset-1',
@@ -173,5 +178,18 @@ describe('Vesting', () => {
       '25%'
     );
     expect(screen.queryByText('Vesting multiplier')).not.toBeInTheDocument();
+  });
+});
+
+describe('Multipliers', () => {
+  it('shows combined multipliers', () => {
+    render(<Multipliers streakMultiplier="3" hoarderMultiplier="2" />);
+    expect(screen.getByTestId('combined-multipliers')).toHaveTextContent('6x');
+    expect(
+      screen.getByText('Streak reward multiplier').nextElementSibling
+    ).toHaveTextContent('3x');
+    expect(
+      screen.getByText('Hoarder reward multiplier').nextElementSibling
+    ).toHaveTextContent('2x');
   });
 });

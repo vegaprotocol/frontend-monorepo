@@ -311,7 +311,7 @@ export const Vesting = ({
 
   return (
     <div className="pt-4">
-      <CardStat value={rateFormatted + '%'} testId={'vesting-rate'} />
+      <CardStat value={rateFormatted + '%'} testId="vesting-rate" />
       <CardTable>
         <tr>
           <CardTableTH>{t('Base rate')}</CardTableTH>
@@ -328,7 +328,7 @@ export const Vesting = ({
   );
 };
 
-const Multipliers = ({
+export const Multipliers = ({
   streakMultiplier = '1',
   hoarderMultiplier = '1',
 }: {
@@ -343,7 +343,7 @@ const Multipliers = ({
     <div className="pt-4">
       <CardStat
         value={combinedMultiplier.toString() + 'x'}
-        testId={'vesting-rate'}
+        testId="combined-multipliers"
         highlight={true}
       />
       <CardTable>
