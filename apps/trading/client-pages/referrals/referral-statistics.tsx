@@ -25,7 +25,7 @@ import compact from 'lodash/compact';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { useStakeAvailable } from './hooks/use-stake-available';
 import sortBy from 'lodash/sortBy';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 import BigNumber from 'bignumber.js';
 import { t } from '@vegaprotocol/i18n';
@@ -165,6 +165,11 @@ export const Statistics = ({
     nextBenefitTierEpochsValue,
   } = useStats({ data, program, as });
 
+  const isApplyCodePreview = useMemo(
+    () => data.referee === null,
+    [data.referee]
+  );
+
   const { benefitTiers } = useReferralProgram();
 
   const { stakeAvailable } = useStakeAvailable();
@@ -270,14 +275,16 @@ export const Statistics = ({
 
   const currentBenefitTierTile = (
     <StatTile title={t('Current tier')}>
-      {currentBenefitTierValue?.tier || benefitTiers[0]?.tier || 'None'}
+      {isApplyCodePreview
+        ? currentBenefitTierValue?.tier || benefitTiers[0]?.tier || 'None'
+        : currentBenefitTierValue?.tier || 'None'}
     </StatTile>
   );
   const discountFactorTile = (
     <StatTile title={t('Discount')}>
-      {discountFactorValue
-        ? discountFactorValue * 100
-        : benefitTiers[0].discountFactor * 100}
+      {isApplyCodePreview
+        ? benefitTiers[0].discountFactor * 100
+        : discountFactorValue * 100}
       %
     </StatTile>
   );
