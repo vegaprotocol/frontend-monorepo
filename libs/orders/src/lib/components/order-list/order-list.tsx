@@ -1,3 +1,4 @@
+import { memo, forwardRef, useMemo, type ForwardedRef } from 'react';
 import {
   MAXGOINT64,
   addDecimalsFormatNumber,
@@ -15,8 +16,6 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import type { ForwardedRef } from 'react';
-import { memo, forwardRef, useMemo } from 'react';
 import {
   AgGrid,
   SetFilter,
@@ -26,17 +25,15 @@ import {
   MarketNameCell,
   OrderTypeCell,
   COL_DEFS,
+  type TypedDataAgGrid,
+  type VegaICellRendererParams,
+  type VegaValueFormatterParams,
+  type VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
-import type {
-  TypedDataAgGrid,
-  VegaICellRendererParams,
-  VegaValueFormatterParams,
-  VegaValueGetterParams,
-} from '@vegaprotocol/datagrid';
-import type { AgGridReact } from 'ag-grid-react';
-import type { Order } from '../order-data-provider';
+import { AgGridReact } from 'ag-grid-react';
+import { type Order } from '../order-data-provider';
 import { Filter } from '../order-list-manager/order-list-manager';
-import type { ColDef } from 'ag-grid-community';
+import { type ColDef } from 'ag-grid-community';
 
 const defaultColDef = {
   resizable: true,

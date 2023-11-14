@@ -4,15 +4,17 @@ import { t } from '@vegaprotocol/i18n';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 import { createClient } from '@vegaprotocol/apollo-client';
-import type {
-  NodeCheckTimeUpdateSubscription,
-  NodeCheckQuery,
-} from '../utils/__generated__/NodeCheck';
 import {
   NodeCheckDocument,
   NodeCheckTimeUpdateDocument,
+  type NodeCheckTimeUpdateSubscription,
+  type NodeCheckQuery,
 } from '../utils/__generated__/NodeCheck';
-import type { CosmicElevatorFlags, Environment, FeatureFlags } from '../types';
+import {
+  type CosmicElevatorFlags,
+  type Environment,
+  type FeatureFlags,
+} from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';

@@ -22,9 +22,9 @@ import {
   PendingStakeRenderer,
   VotingPowerRenderer,
 } from './shared';
-import type { AgGridReact } from 'ag-grid-react';
-import type { ColDef } from 'ag-grid-community';
-import type { ValidatorsTableProps } from './shared';
+import { type AgGridReact } from 'ag-grid-react';
+import { type ColDef } from 'ag-grid-community';
+import { type ValidatorsTableProps } from './shared';
 import {
   formatNumber,
   formatNumberPercentage,

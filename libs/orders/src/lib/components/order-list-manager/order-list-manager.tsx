@@ -1,18 +1,17 @@
 import { t } from '@vegaprotocol/i18n';
 import { useCallback, useRef, useState, useEffect } from 'react';
-import type { AgGridReact } from 'ag-grid-react';
-import { OrderListTable } from '../order-list';
-import type { useDataGridEvents } from '@vegaprotocol/datagrid';
-import { Pagination } from '@vegaprotocol/datagrid';
+import { type AgGridReact } from 'ag-grid-react';
+import { Pagination, type useDataGridEvents } from '@vegaprotocol/datagrid';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
 import { normalizeOrderAmendment } from '@vegaprotocol/wallet';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/web3';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
-import type { Order } from '../order-data-provider';
+import { type Order } from '../order-data-provider';
 import { OrderViewDialog } from '../order-list/order-view-dialog';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { OrderListTable } from '../order-list';
+import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
 
 export enum Filter {
   'Open' = 'Open',
@@ -91,7 +90,7 @@ export const OrderListManager = ({
 
   return (
     <>
-      <div className="relative flex flex-col h-full">
+      <div className="relative flex h-full flex-col">
         <OrderListTable
           rowData={data}
           ref={gridRef}

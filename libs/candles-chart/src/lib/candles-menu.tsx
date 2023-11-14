@@ -20,7 +20,7 @@ import {
   TradingDropdownTrigger,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import type { IconName } from '@blueprintjs/icons';
+import { type IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import { t } from '@vegaprotocol/i18n';
 import { useCandlesChartSettings } from './use-candles-chart-settings';

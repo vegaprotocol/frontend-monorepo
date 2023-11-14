@@ -1,9 +1,9 @@
 import { makeDataProvider, useDataProvider } from '@vegaprotocol/data-provider';
 
-import type {
-  AssetQuery,
-  AssetFieldsFragment,
-  AssetQueryVariables,
+import {
+  type AssetQuery,
+  type AssetQueryVariables,
+  type AssetFieldsFragment,
 } from './__generated__/Asset';
 import { AssetDocument } from './__generated__/Asset';
 

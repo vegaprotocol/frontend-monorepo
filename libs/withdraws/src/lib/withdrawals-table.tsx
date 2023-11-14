@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
-import type { ColDef } from 'ag-grid-community';
+import { type ColDef } from 'ag-grid-community';
 import {
   addDecimalsFormatNumber,
   convertToCountdownString,
@@ -15,20 +15,20 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import type {
-  TypedDataAgGrid,
-  VegaICellRendererParams,
-  VegaValueFormatterParams,
+import {
+  type TypedDataAgGrid,
+  type VegaICellRendererParams,
+  type VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { AgGrid } from '@vegaprotocol/datagrid';
 import { EtherscanLink } from '@vegaprotocol/environment';
-import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
+import { type WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import {
   useEthWithdrawApprovalsStore,
   useWithdrawalApprovalDialog,
 } from '@vegaprotocol/web3';
 import * as Schema from '@vegaprotocol/types';
-import type { TimestampedWithdrawals } from './use-ready-to-complete-withdrawals-toast';
+import { type TimestampedWithdrawals } from './use-ready-to-complete-withdrawals-toast';
 import classNames from 'classnames';
 
 export const WithdrawalsTable = ({

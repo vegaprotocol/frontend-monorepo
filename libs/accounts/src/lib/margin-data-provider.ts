@@ -7,12 +7,10 @@ import {
 import {
   MarginsSubscriptionDocument,
   MarginsDocument,
-} from './__generated__/Margins';
-import type {
-  MarginsQuery,
-  MarginFieldsFragment,
-  MarginsSubscriptionSubscription,
-  MarginsQueryVariables,
+  type MarginsQuery,
+  type MarginFieldsFragment,
+  type MarginsSubscriptionSubscription,
+  type MarginsQueryVariables,
 } from './__generated__/Margins';
 
 const update = (

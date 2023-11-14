@@ -1,14 +1,14 @@
 import { useSearchParams } from 'react-router-dom';
-import type { URLSearchParamsInit } from 'react-router-dom';
+import { type URLSearchParamsInit } from 'react-router-dom';
 import { useCallback } from 'react';
 import { useFetch } from '@vegaprotocol/react-helpers';
-import type {
-  BlockExplorerTransactionResult,
-  BlockExplorerTransactions,
+import {
+  type BlockExplorerTransactionResult,
+  type BlockExplorerTransactions,
 } from '../routes/types/block-explorer-response';
 import isNumber from 'lodash/isNumber';
 import { AllFilterOptions } from '../components/txs/tx-filter';
-import type { FilterOption } from '../components/txs/tx-filter';
+import { type FilterOption } from '../components/txs/tx-filter';
 import { BE_TXS_PER_REQUEST, getTxsDataUrl } from './get-txs-data-url';
 
 export function getTypeFilters(filters?: Set<FilterOption>) {

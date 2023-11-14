@@ -2,34 +2,35 @@ import isEqual from 'lodash/isEqual';
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
 import sortBy from 'lodash/sortBy';
-import type { Account } from '@vegaprotocol/accounts';
+import { type Account } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import { toBigNum, removePaginationWrapper } from '@vegaprotocol/utils';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/data-provider';
-import * as Schema from '@vegaprotocol/types';
-import type {
-  MarketMaybeWithData,
-  MarketDataQueryVariables,
-} from '@vegaprotocol/markets';
 import {
+  type MarketMaybeWithData,
+  type MarketDataQueryVariables,
   allMarketsWithLiveDataProvider,
   getAsset,
 } from '@vegaprotocol/markets';
-import type {
-  PositionsQuery,
-  PositionFieldsFragment,
-  PositionsSubscriptionSubscription,
-  PositionsQueryVariables,
-  PositionsSubscriptionSubscriptionVariables,
-} from './__generated__/Positions';
 import {
   PositionsDocument,
   PositionsSubscriptionDocument,
+  type PositionsQuery,
+  type PositionFieldsFragment,
+  type PositionsSubscriptionSubscription,
+  type PositionsQueryVariables,
+  type PositionsSubscriptionSubscriptionVariables,
 } from './__generated__/Positions';
-import type { PositionStatus, ProductType } from '@vegaprotocol/types';
+import {
+  AccountType,
+  MarketState,
+  type MarketTradingMode,
+  type PositionStatus,
+  type ProductType,
+} from '@vegaprotocol/types';
 
 export interface Position {
   assetId: string;
@@ -43,8 +44,8 @@ export interface Position {
   marketDecimalPlaces: number;
   marketId: string;
   marketCode: string;
-  marketTradingMode: Schema.MarketTradingMode;
-  marketState: Schema.MarketState;
+  marketTradingMode: MarketTradingMode;
+  marketState: MarketState;
   markPrice: string | undefined;
   notional: string | undefined;
   openVolume: string;
@@ -81,7 +82,7 @@ export const getMetrics = (
     const generalAccount = accounts?.find(
       (account) =>
         account.asset.id === asset.id &&
-        account.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL
+        account.type === AccountType.ACCOUNT_TYPE_GENERAL
     );
 
     const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =
@@ -263,9 +264,9 @@ export const preparePositions = (metrics: Position[], showClosed: boolean) => {
 
     if (
       [
-        Schema.MarketState.STATE_ACTIVE,
-        Schema.MarketState.STATE_PENDING,
-        Schema.MarketState.STATE_SUSPENDED,
+        MarketState.STATE_ACTIVE,
+        MarketState.STATE_PENDING,
+        MarketState.STATE_SUSPENDED,
       ].includes(p.marketState)
     ) {
       return true;

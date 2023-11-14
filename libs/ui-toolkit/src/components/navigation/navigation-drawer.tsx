@@ -1,9 +1,9 @@
 import classNames from 'classnames';
-import type { CSSProperties, HTMLAttributes } from 'react';
+import { type CSSProperties, type HTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import { createContext } from 'react';
 import { create } from 'zustand';
-import type { NavigationProps } from './navigation-utils';
+import { type NavigationProps } from './navigation-utils';
 
 export const NavigationDrawerContext = createContext<true | undefined>(
   undefined
@@ -36,7 +36,7 @@ export const BurgerIcon = ({
       y1={3.5}
       y2={3.5}
       className={classNames('transition-transform duration-75', {
-        'rotate-45 translate-y-[4px] origin-[8px_3.5px]': variant === 'close',
+        'origin-[8px_3.5px] translate-y-[4px] rotate-45': variant === 'close',
       })}
     />
     <line
@@ -45,7 +45,7 @@ export const BurgerIcon = ({
       y1={11.5}
       y2={11.5}
       className={classNames('transition-transform duration-75', {
-        'rotate-[-45deg] translate-y-[-4px] origin-[8px_11.5px]':
+        'origin-[8px_11.5px] translate-y-[-4px] rotate-[-45deg]':
           variant === 'close',
       })}
     />
@@ -99,8 +99,8 @@ export const NavigationDrawerContent = ({
       <div
         className={classNames(
           'drawer-content',
-          'border-l h-full relative overflow-auto',
-          'px-4 pb-8 font-alpha',
+          'relative h-full overflow-auto border-l',
+          'font-alpha px-4 pb-8',
           // text
           {
             'text-vega-light-300 dark:text-vega-dark-300':

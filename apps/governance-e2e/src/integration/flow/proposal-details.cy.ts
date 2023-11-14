@@ -31,7 +31,7 @@ import {
   switchVegaWalletPubKey,
   vegaWalletSetSpecifiedApprovalAmount,
 } from '../../support/wallet-functions';
-import type { testFreeformProposal } from '../../support/common-interfaces';
+import { type testFreeformProposal } from '../../support/common-interfaces';
 import { formatDateWithLocalTimezone } from '@vegaprotocol/utils';
 import {
   createGovernanceTransferProposalTxBody,

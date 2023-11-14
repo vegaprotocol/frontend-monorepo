@@ -1,12 +1,5 @@
-import { useMemo } from 'react';
-import type { CSSProperties, ReactNode } from 'react';
-import type { ColDef, ITooltipParams } from 'ag-grid-community';
-import type {
-  VegaValueFormatterParams,
-  VegaValueGetterParams,
-  TypedDataAgGrid,
-  VegaICellRendererParams,
-} from '@vegaprotocol/datagrid';
+import { useMemo, type CSSProperties, type ReactNode } from 'react';
+import { type ColDef, type ITooltipParams } from 'ag-grid-community';
 import {
   AgGrid,
   COL_DEFS,
@@ -16,6 +9,10 @@ import {
   ProgressBarCell,
   MarketProductPill,
   StackedCell,
+  type VegaValueFormatterParams,
+  type VegaValueGetterParams,
+  type TypedDataAgGrid,
+  type VegaICellRendererParams,
 } from '@vegaprotocol/datagrid';
 import {
   ButtonLink,
@@ -32,7 +29,7 @@ import {
   addDecimalsFormatNumberQuantum,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import type { Position } from './positions-data-providers';
+import { type Position } from './positions-data-providers';
 import {
   MarketTradingMode,
   PositionStatus,
@@ -557,7 +554,7 @@ const WarningCell = ({
           <VegaIcon name={VegaIconNames.EXCLAIMATION_MARK} size={12} />
         </span>
       )}
-      <span className="overflow-hidden whitespace-nowrap text-ellipsis">
+      <span className="overflow-hidden text-ellipsis whitespace-nowrap">
         {children}
       </span>
     </div>

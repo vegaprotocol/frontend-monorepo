@@ -1,11 +1,14 @@
-import type { AgGridReact } from 'ag-grid-react';
+import { type AgGridReact } from 'ag-grid-react';
 import { useCallback, useRef, useState } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { FillsTable } from './fills-table';
-import type { useDataGridEvents } from '@vegaprotocol/datagrid';
+import { type useDataGridEvents } from '@vegaprotocol/datagrid';
 import { Pagination } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type * as Schema from '@vegaprotocol/types';
+import {
+  type TradesFilter,
+  type TradesSubscriptionFilter,
+} from '@vegaprotocol/types';
 import { fillsWithMarketProvider } from './fills-data-provider';
 
 interface FillsManagerProps {
@@ -20,7 +23,7 @@ export const FillsManager = ({
   gridProps,
 }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const filter: Schema.TradesFilter | Schema.TradesSubscriptionFilter = {
+  const filter: TradesFilter | TradesSubscriptionFilter = {
     partyIds: [partyId],
   };
   const [hasDisplayedRow, setHasDisplayedRow] = useState<boolean | undefined>(
@@ -38,7 +41,7 @@ export const FillsManager = ({
     variables: { filter },
   });
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       <FillsTable
         ref={gridRef}
         rowData={data}

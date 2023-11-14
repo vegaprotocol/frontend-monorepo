@@ -4,7 +4,7 @@ import { useFetch } from '@vegaprotocol/react-helpers';
 import { DATA_SOURCES } from '../../../config';
 import { RenderFetched } from '../../../components/render-fetched';
 import { TxDetails } from './tx-details';
-import type { BlockExplorerTransaction } from '../../../routes/types/block-explorer-response';
+import { type BlockExplorerTransaction } from '../../../routes/types/block-explorer-response';
 import { toNonHex } from '../../../components/search/detect-search';
 import { PageHeader } from '../../../components/page-header';
 import { useDocumentTitle } from '../../../hooks/use-document-title';

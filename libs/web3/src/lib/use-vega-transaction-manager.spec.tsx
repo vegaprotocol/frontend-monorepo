@@ -1,11 +1,11 @@
 import { useVegaTransactionManager } from './use-vega-transaction-manager';
 import { renderHook } from '@testing-library/react';
 import waitForNextTick from 'flush-promises';
-import type { TransactionResponse } from '@vegaprotocol/wallet';
+import { type TransactionResponse } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from './types';
-import type {
-  VegaTransactionStore,
-  VegaStoredTxState,
+import {
+  type VegaTransactionStore,
+  type VegaStoredTxState,
 } from './use-vega-transaction-store';
 
 const mockSendTx = jest.fn();

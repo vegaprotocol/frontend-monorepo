@@ -1,9 +1,9 @@
 import { useRef, useCallback, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import type {
-  AgGridReactProps,
-  AgReactUiProps,
-  AgGridReact as AgGridReactType,
+import {
+  type AgGridReactProps,
+  type AgReactUiProps,
+  type AgGridReact as AgGridReactType,
 } from 'ag-grid-react';
 import classNames from 'classnames';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -34,7 +34,7 @@ export const Grid = ({ isRowClickable, ...props }: Props) => {
 
   return (
     <AgGridReact
-      className={classNames('ag-theme-alpine h-full font-alpha calt', {
+      className={classNames('ag-theme-alpine font-alpha calt h-full', {
         'row-hover': isRowClickable,
       })}
       rowHeight={92}

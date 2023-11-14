@@ -1,8 +1,10 @@
 import { getNodes } from '@vegaprotocol/utils';
 import { MarketLink } from '../../../components/links';
 import { TableRow, TableCell, TableHeader } from '../../../components/table';
-import type { ExplorerOracleForMarketsMarketFragment } from '../__generated__/OraclesForMarkets';
-import { useExplorerOracleFormMarketsQuery } from '../__generated__/OraclesForMarkets';
+import {
+  useExplorerOracleFormMarketsQuery,
+  type ExplorerOracleForMarketsMarketFragment,
+} from '../__generated__/OraclesForMarkets';
 
 interface OracleMarketsProps {
   id: string;

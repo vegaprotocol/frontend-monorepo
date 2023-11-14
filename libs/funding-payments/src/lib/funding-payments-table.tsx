@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import type {
-  AgGridReact,
-  AgGridReactProps,
-  AgReactUiProps,
+import {
+  type AgGridReact,
+  type AgGridReactProps,
+  type AgReactUiProps,
 } from 'ag-grid-react';
-import type { ColDef } from 'ag-grid-community';
+import { type ColDef } from 'ag-grid-community';
 import {
   addDecimalsFormatNumber,
   getDateTimeFormat,

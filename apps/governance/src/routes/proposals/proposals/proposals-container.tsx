@@ -5,15 +5,17 @@ import { useTranslation } from 'react-i18next';
 
 import { SplashLoader } from '../../../components/splash-loader';
 import { ProposalsList } from '../components/proposals-list';
-import { useProposalsQuery } from './__generated__/Proposals';
 import { getNodes, removePaginationWrapper } from '@vegaprotocol/utils';
 import {
   ProposalState,
   ProtocolUpgradeProposalStatus,
 } from '@vegaprotocol/types';
-import type { NodeConnection, NodeEdge } from '@vegaprotocol/utils';
-import type { ProposalFieldsFragment } from './__generated__/Proposals';
-import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { type NodeConnection, type NodeEdge } from '@vegaprotocol/utils';
+import {
+  useProposalsQuery,
+  type ProposalFieldsFragment,
+} from './__generated__/Proposals';
+import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { useProtocolUpgradeProposalsQuery } from '@vegaprotocol/proposals';
 import { FLAGS } from '@vegaprotocol/environment';
 

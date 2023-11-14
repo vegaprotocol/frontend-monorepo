@@ -1,12 +1,12 @@
 import { useApolloClient } from '@apollo/client';
 import * as Schema from '@vegaprotocol/types';
 import { useCallback, useEffect, useRef } from 'react';
-import type { Subscription } from 'zen-observable-ts';
-import type {
-  TransactionEventSubscription,
-  TransactionEventSubscriptionVariables,
+import { type Subscription } from 'zen-observable-ts';
+import {
+  TransactionEventDocument,
+  type TransactionEventSubscription,
+  type TransactionEventSubscriptionVariables,
 } from './__generated__/TransactionResult';
-import { TransactionEventDocument } from './__generated__/TransactionResult';
 
 export interface TransactionResult {
   partyId: string;

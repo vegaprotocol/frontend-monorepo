@@ -8,12 +8,12 @@ import {
   useGetWithdrawDelay,
   useGetWithdrawThreshold,
 } from '@vegaprotocol/web3';
-import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
-import type {
-  Erc20ApprovalQuery,
-  Erc20ApprovalQueryVariables,
+import { type WithdrawalFieldsFragment } from './__generated__/Withdrawal';
+import {
+  Erc20ApprovalDocument,
+  type Erc20ApprovalQuery,
+  type Erc20ApprovalQueryVariables,
 } from './__generated__/Erc20Approval';
-import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
 import { useApolloClient } from '@apollo/client';
 
 export interface VerifyState {

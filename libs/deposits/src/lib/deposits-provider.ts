@@ -2,16 +2,14 @@ import uniqBy from 'lodash/uniqBy';
 import orderBy from 'lodash/orderBy';
 import { getEvents, removePaginationWrapper } from '@vegaprotocol/utils';
 import { makeDataProvider } from '@vegaprotocol/data-provider';
-import * as Schema from '@vegaprotocol/types';
+import { BusEventType } from '@vegaprotocol/types';
 import {
   DepositsDocument,
   DepositEventDocument,
-} from './__generated__/Deposit';
-import type {
-  DepositFieldsFragment,
-  DepositsQuery,
-  DepositEventSubscription,
-  DepositEventSubscriptionVariables,
+  type DepositFieldsFragment,
+  type DepositsQuery,
+  type DepositEventSubscription,
+  type DepositEventSubscriptionVariables,
 } from './__generated__/Deposit';
 
 export const depositsProvider = makeDataProvider<
@@ -38,7 +36,7 @@ export const depositsProvider = makeDataProvider<
       return data;
     }
     const incoming = getEvents<DepositFieldsFragment>(
-      Schema.BusEventType.Deposit,
+      BusEventType.Deposit,
       delta.busEvents
     );
     return uniqBy([...incoming, ...(data || [])], 'id');

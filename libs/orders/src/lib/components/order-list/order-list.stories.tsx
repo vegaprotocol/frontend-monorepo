@@ -3,7 +3,7 @@ import { OrderListTable } from './order-list';
 import { useState } from 'react';
 import { generateOrdersArray } from '../mocks';
 import { OrderEditDialog } from './order-edit-dialog';
-import type { Order } from '../order-data-provider';
+import { type Order } from '../order-data-provider';
 
 export default {
   component: OrderListTable,

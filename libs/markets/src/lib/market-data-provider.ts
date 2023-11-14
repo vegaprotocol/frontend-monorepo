@@ -7,13 +7,11 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   MarketDataDocument,
   MarketDataUpdateDocument,
-} from './__generated__/market-data';
-import type {
-  MarketDataQuery,
-  MarketDataFieldsFragment,
-  MarketDataUpdateSubscription,
-  MarketDataUpdateFieldsFragment,
-  MarketDataQueryVariables,
+  type MarketDataQuery,
+  type MarketDataFieldsFragment,
+  type MarketDataUpdateSubscription,
+  type MarketDataUpdateFieldsFragment,
+  type MarketDataQueryVariables,
 } from './__generated__/market-data';
 import { getMarketPrice } from './get-price';
 import { MarketTradingMode } from '@vegaprotocol/types';
