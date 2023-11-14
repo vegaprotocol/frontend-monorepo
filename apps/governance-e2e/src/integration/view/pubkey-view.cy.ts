@@ -25,6 +25,7 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
     );
   });
 
+  // @ts-ignore clash between jest and cypress
   beforeEach('visit home page', function () {
     cy.clearLocalStorage();
     turnTelemetryOff();

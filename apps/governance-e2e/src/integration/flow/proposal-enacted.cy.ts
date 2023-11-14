@@ -37,6 +37,7 @@ context(
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
+    // @ts-ignore clash between jest and cypress
     beforeEach('visit proposals', function () {
       cy.clearLocalStorage();
       turnTelemetryOff();

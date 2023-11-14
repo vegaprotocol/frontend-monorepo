@@ -21,7 +21,7 @@ describe('getAdjustedFee', () => {
       new BigNumber(referralDiscount),
     ];
 
-    // 1 - 0.5 - 0.5
+    // 1 - 0.5 = 0.5
     const v = new BigNumber(1).minus(new BigNumber(volumeDiscount));
 
     // 1 - 0.5 = 0.5
@@ -34,13 +34,15 @@ describe('getAdjustedFee', () => {
     // 0.1 + 0.1 + 0.1 = 0.3
     const totalFees = fees.reduce((sum, x) => sum.plus(x), new BigNumber(0));
 
-    // 0.3 * 0.75 = 0.225
-    const expected = new BigNumber(totalFees).times(factor).toNumber();
+    // (1 - 0.3) * 0.75 = 0.525
+    const expected = new BigNumber(totalFees)
+      .times(new BigNumber(1).minus(factor))
+      .toNumber();
 
     expect(getAdjustedFee(fees, discounts)).toBe(expected);
   });
 
-  it('combines discount factors multiplicativly', () => {
+  it('combines discount factors multiplicatively', () => {
     const volumeDiscount = 0.4;
     const referralDiscount = 0.1;
 
@@ -67,7 +69,9 @@ describe('getAdjustedFee', () => {
     // summed fees
     const totalFees = fees.reduce((sum, x) => sum.plus(x), new BigNumber(0));
 
-    const expected = new BigNumber(totalFees).times(factor).toNumber();
+    const expected = new BigNumber(totalFees)
+      .times(new BigNumber(1).minus(factor))
+      .toNumber();
 
     expect(getAdjustedFee(fees, discounts)).toBe(expected);
   });

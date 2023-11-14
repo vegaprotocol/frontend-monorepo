@@ -7,7 +7,7 @@ const SERVER_SIDE_DIMENSIONS = {
 
 export const useResize = () => {
   const [windowSize, setWindowSize] = useState(
-    typeof window !== undefined
+    typeof window !== 'undefined'
       ? {
           width: window.innerWidth,
           height: window.innerHeight,

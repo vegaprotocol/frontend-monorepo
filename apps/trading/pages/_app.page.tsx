@@ -60,7 +60,7 @@ function AppBody({ Component }: AppProps) {
   const location = useLocation();
   const { VEGA_ENV } = useEnvironment();
   const gridClasses = classNames(
-    'h-full relative z-0 grid',
+    'grid relative h-full z-0',
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
   );
   return (

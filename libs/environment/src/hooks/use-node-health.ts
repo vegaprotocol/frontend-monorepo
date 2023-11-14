@@ -22,7 +22,7 @@ export const useNodeHealth = () => {
   });
 
   const blockDiff = useMemo(() => {
-    if (!data?.statistics.blockHeight) {
+    if (!data?.statistics?.blockHeight) {
       return null;
     }
 
@@ -31,7 +31,7 @@ export const useNodeHealth = () => {
     }
 
     return Number(data.statistics.blockHeight) - headers.blockHeight;
-  }, [data?.statistics.blockHeight, headers?.blockHeight]);
+  }, [data?.statistics?.blockHeight, headers?.blockHeight]);
 
   useEffect(() => {
     if (error) {

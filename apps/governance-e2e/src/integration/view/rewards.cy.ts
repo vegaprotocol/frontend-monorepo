@@ -52,6 +52,7 @@ context(
               .invoke('text')
               .then(($newPageNumber) => {
                 const newPageNumber = Number($newPageNumber.slice(5));
+                // @ts-ignore clash between jest and cypress
                 expect(newPageNumber).to.be.greaterThan(currentPageNumber);
                 cy.getByTestId('goto-previous-page').click();
                 cy.getByTestId('page-info').should(

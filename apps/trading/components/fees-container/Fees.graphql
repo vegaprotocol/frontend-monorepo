@@ -36,6 +36,22 @@ query Fees(
       }
     }
   }
+  referrer: referralSets(referrer: $partyId) {
+    edges {
+      node {
+        id
+        referrer
+      }
+    }
+  }
+  referee: referralSets(referee: $partyId) {
+    edges {
+      node {
+        id
+        referrer
+      }
+    }
+  }
   referralSetReferees(referee: $partyId) {
     edges {
       node {

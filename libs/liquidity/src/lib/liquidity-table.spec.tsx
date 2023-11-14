@@ -37,7 +37,7 @@ describe('LiquidityTable', () => {
       );
     });
 
-    const headers = await screen.getAllByRole('columnheader');
+    const headers = await screen.findAllByRole('columnheader');
 
     const headerTexts = headers.map((h) =>
       h.querySelector('[ref="eText"]')?.textContent?.trim()
@@ -49,6 +49,7 @@ describe('LiquidityTable', () => {
       undefined,
       undefined,
       'Party',
+      'Status',
       'Commitment ()',
       'Obligation',
       'Fee',
@@ -61,7 +62,6 @@ describe('LiquidityTable', () => {
       'Last time on the book',
       'Last fee penalty',
       'Last bond penalty',
-      'Status',
       'Created',
       'Updated',
     ];

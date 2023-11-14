@@ -1,4 +1,5 @@
 import {
+  MAXGOINT64,
   addDecimalsFormatNumber,
   getDateTimeFormat,
   isNumeric,
@@ -144,11 +145,22 @@ export const OrderListTable = memo<
               if (!data?.market || !isNumeric(data.size)) {
                 return '-';
               }
+
               const prefix = data
                 ? data.side === Schema.Side.SIDE_BUY
                   ? '+'
                   : '-'
                 : '';
+
+              if (
+                data.size === MAXGOINT64 &&
+                data.timeInForce ===
+                  Schema.OrderTimeInForce.TIME_IN_FORCE_IOC &&
+                data.reduceOnly
+              ) {
+                return t('MAX');
+              }
+
               return (
                 prefix +
                 addDecimalsFormatNumber(

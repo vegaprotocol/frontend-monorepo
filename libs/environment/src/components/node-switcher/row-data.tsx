@@ -1,5 +1,3 @@
-import type { ApolloError } from '@apollo/client';
-import { useHeaderStore } from '@vegaprotocol/apollo-client';
 import { isValidUrl } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { TradingRadio } from '@vegaprotocol/ui-toolkit';
@@ -12,6 +10,7 @@ import {
 import { LayoutCell } from './layout-cell';
 
 export const POLL_INTERVAL = 1000;
+export const SUBSCRIPTION_TIMEOUT = 3000;
 export const BLOCK_THRESHOLD = 3;
 
 export interface RowDataProps {
@@ -21,15 +20,39 @@ export interface RowDataProps {
   onBlockHeight: (blockHeight: number) => void;
 }
 
-export const RowData = ({
-  id,
-  url,
-  highestBlock,
-  onBlockHeight,
-}: RowDataProps) => {
-  const [subFailed, setSubFailed] = useState(false);
-  const [time, setTime] = useState<number>();
-  // no use of data here as we need the data nodes reference to block height
+export enum Result {
+  Successful,
+  Failed,
+  Loading,
+}
+
+export const useNodeSubscriptionStatus = () => {
+  const [status, setStatus] = useState<Result>(Result.Loading);
+  const { data, error } = useNodeCheckTimeUpdateSubscription();
+  useEffect(() => {
+    if (error) {
+      setStatus(Result.Failed);
+    }
+    if (data?.busEvents && data.busEvents.length > 0) {
+      setStatus(Result.Successful);
+    }
+    // set as failed when no data received after SUBSCRIPTION_TIMEOUT ms
+    const timeout = setTimeout(() => {
+      if (!data || error) {
+        setStatus(Result.Failed);
+      }
+    }, SUBSCRIPTION_TIMEOUT);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [data, error]);
+
+  return { status };
+};
+
+export const useNodeBasicStatus = () => {
+  const [status, setStatus] = useState<Result>(Result.Loading);
+
   const { data, error, loading, startPolling, stopPolling } = useNodeCheckQuery(
     {
       pollInterval: POLL_INTERVAL,
@@ -38,28 +61,7 @@ export const RowData = ({
       ssr: false,
     }
   );
-  const headerStore = useHeaderStore();
-  const headers = headerStore[url];
 
-  const {
-    data: subData,
-    error: subError,
-    loading: subLoading,
-  } = useNodeCheckTimeUpdateSubscription();
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!subData) {
-        setSubFailed(true);
-      }
-    }, 3000);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [subData]);
-
-  // handle polling
   useEffect(() => {
     const handleStartPoll = () => {
       if (error) return;
@@ -83,56 +85,57 @@ export const RowData = ({
     };
   }, [startPolling, stopPolling, error]);
 
-  // measure response time
+  const currentBlockHeight = parseInt(
+    data?.statistics.blockHeight || 'NONE',
+    10
+  );
+
+  useEffect(() => {
+    if (loading) {
+      setStatus(Result.Loading);
+      return;
+    }
+    if (!error && !isNaN(currentBlockHeight)) {
+      setStatus(Result.Successful);
+      return;
+    }
+    setStatus(Result.Failed);
+  }, [currentBlockHeight, error, loading]);
+
+  return {
+    status,
+    currentBlockHeight,
+  };
+};
+
+export const useResponseTime = (url: string, trigger?: unknown) => {
+  const [responseTime, setResponseTime] = useState<number>();
   useEffect(() => {
     if (!isValidUrl(url)) return;
     if (typeof window.performance.getEntriesByName !== 'function') return; // protection for test environment
-    // every time we get data measure response speed
     const requestUrl = new URL(url);
     const requests = window.performance.getEntriesByName(requestUrl.href);
     const { duration } =
       (requests.length && requests[requests.length - 1]) || {};
-    setTime(duration);
-  }, [url, data]);
+    setResponseTime(duration);
+  }, [url, trigger]);
+  return { responseTime };
+};
 
+export const RowData = ({
+  id,
+  url,
+  highestBlock,
+  onBlockHeight,
+}: RowDataProps) => {
+  const { status: subStatus } = useNodeSubscriptionStatus();
+  const { status, currentBlockHeight } = useNodeBasicStatus();
+  const { responseTime } = useResponseTime(url, currentBlockHeight); // measure response time (ms) every time we get data (block height)
   useEffect(() => {
-    if (headers?.blockHeight) {
-      onBlockHeight(headers.blockHeight);
+    if (!isNaN(currentBlockHeight)) {
+      onBlockHeight(currentBlockHeight);
     }
-  }, [headers?.blockHeight, onBlockHeight]);
-
-  const getHasError = () => {
-    // the stats query errored
-    if (error) {
-      return true;
-    }
-
-    // if we are still awaiting a header entry its not an error
-    // we are still waiting for the query to resolve
-    if (!headers) {
-      return false;
-    }
-
-    // highlight this node as 'error' if its more than BLOCK_THRESHOLD blocks behind the most
-    // advanced node
-    if (
-      highestBlock !== null &&
-      headers.blockHeight < highestBlock - BLOCK_THRESHOLD
-    ) {
-      return true;
-    }
-
-    return false;
-  };
-
-  const getSubFailed = (
-    subError: ApolloError | undefined,
-    subFailed: boolean
-  ) => {
-    if (subError) return true;
-    if (subFailed) return true;
-    return false;
-  };
+  }, [currentBlockHeight, onBlockHeight]);
 
   return (
     <>
@@ -143,72 +146,58 @@ export const RowData = ({
       )}
       <LayoutCell
         label={t('Response time')}
-        isLoading={!error && loading}
-        hasError={Boolean(error)}
+        isLoading={status === Result.Loading}
+        hasError={status === Result.Failed}
         dataTestId="response-time-cell"
       >
-        {getResponseTimeDisplayValue(time, error)}
+        {display(status, formatResponseTime(responseTime))}
       </LayoutCell>
       <LayoutCell
         label={t('Block')}
-        isLoading={loading}
-        hasError={getHasError()}
+        isLoading={status === Result.Loading}
+        hasError={
+          status === Result.Failed ||
+          (highestBlock != null &&
+            !isNaN(currentBlockHeight) &&
+            currentBlockHeight < highestBlock - BLOCK_THRESHOLD)
+        }
         dataTestId="block-height-cell"
       >
         <span
           data-testid="query-block-height"
           data-query-block-height={
-            error ? 'failed' : data?.statistics.blockHeight
+            status === Result.Failed ? 'failed' : currentBlockHeight
           }
         >
-          {getBlockDisplayValue(headers?.blockHeight, error)}
+          {display(status, currentBlockHeight)}
         </span>
       </LayoutCell>
       <LayoutCell
         label={t('Subscription')}
-        isLoading={subFailed ? false : subLoading}
-        hasError={getSubFailed(subError, subFailed)}
+        isLoading={subStatus === Result.Loading}
+        hasError={subStatus === Result.Failed}
         dataTestId="subscription-cell"
       >
-        {getSubscriptionDisplayValue(subFailed, subData?.busEvents, subError)}
+        {display(subStatus, t('Yes'), t('No'))}
       </LayoutCell>
     </>
   );
 };
 
-const getResponseTimeDisplayValue = (
-  responseTime?: number,
-  error?: ApolloError
-) => {
-  if (error) {
-    return t('n/a');
-  }
-  if (typeof responseTime === 'number') {
-    return `${Number(responseTime).toFixed(2)}ms`;
-  }
-  return '-';
-};
+const formatResponseTime = (time: number | undefined) =>
+  time != null ? `${Number(time).toFixed(2)}ms` : '-';
 
-const getBlockDisplayValue = (block?: number, error?: ApolloError) => {
-  if (error) {
-    return t('n/a');
-  }
-  if (block) {
-    return block;
-  }
-  return '-';
-};
-
-const getSubscriptionDisplayValue = (
-  subFailed: boolean,
-  events?: { id: string }[] | null,
-  error?: ApolloError
+const display = (
+  status: Result,
+  yes: string | number | undefined,
+  no = t('n/a')
 ) => {
-  if (subFailed || error) {
-    return t('No');
+  switch (status) {
+    case Result.Successful:
+      return yes;
+    case Result.Failed:
+      return no;
+    default:
+      return '-';
   }
-  if (events?.length) {
-    return t('Yes');
-  }
-  return '-';
 };

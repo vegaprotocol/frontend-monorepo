@@ -148,6 +148,7 @@ export const OrderListManager = ({
               expiresAt: editOrder.expiresAt,
               side: editOrder.side,
               marketId: editOrder.market.id,
+              remaining: editOrder.remaining,
             };
             create({ orderAmendment }, originalOrder);
             setEditOrder(null);
