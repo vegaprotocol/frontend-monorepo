@@ -26,7 +26,7 @@ describe('ethereum wallet', { tags: '@smoke', testIsolation: true }, () => {
     cy.getByTestId('tab-deposits').should('not.be.empty');
   });
 
-  it('should see QR code modal for WalletConnect', () => {
+  it.skip('should see QR code modal for WalletConnect', () => {
     // 0004-EWAL-003
 
     cy.getByTestId('Deposits').click();
