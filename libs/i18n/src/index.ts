@@ -13,6 +13,7 @@ import en_trading from './locales/en/trading.json';
 import en_markets from './locales/en/markets.json';
 import en_web3 from './locales/en/web3.json';
 
+import en_positions from './locales/en/positions.json';
 export const locales = {
   en: {
     accounts: en_accounts,
@@ -28,5 +29,6 @@ export const locales = {
     trading: en_trading,
     markets: en_markets,
     web3: en_web3,
+    positions: en_positions,
   },
 };
