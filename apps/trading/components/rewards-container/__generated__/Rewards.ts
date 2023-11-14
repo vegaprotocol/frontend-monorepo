@@ -8,7 +8,7 @@ export type RewardsPageQueryVariables = Types.Exact<{
 }>;
 
 
-export type RewardsPageQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, vestingBalancesSummary: { __typename?: 'PartyVestingBalancesSummary', epoch?: number | null, vestingBalances?: Array<{ __typename?: 'PartyVestingBalance', balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null, lockedBalances?: Array<{ __typename?: 'PartyLockedBalance', balance: string, untilEpoch: number, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null } } | null };
+export type RewardsPageQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, vestingStats?: { __typename?: 'PartyVestingStats', epochSeq: number, rewardBonusMultiplier: string, quantumBalance: string } | null, vestingBalancesSummary: { __typename?: 'PartyVestingBalancesSummary', epoch?: number | null, vestingBalances?: Array<{ __typename?: 'PartyVestingBalance', balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null, lockedBalances?: Array<{ __typename?: 'PartyLockedBalance', balance: string, untilEpoch: number, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null } } | null };
 
 export type RewardsHistoryQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -31,6 +31,11 @@ export const RewardsPageDocument = gql`
     query RewardsPage($partyId: ID!) {
   party(id: $partyId) {
     id
+    vestingStats {
+      epochSeq
+      rewardBonusMultiplier
+      quantumBalance
+    }
     vestingBalancesSummary {
       epoch
       vestingBalances {

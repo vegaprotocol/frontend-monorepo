@@ -31,6 +31,7 @@ import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
 import { ViewType, useSidebar } from '../sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { RewardsHistoryContainer } from './rewards-history';
+import { useAssetDataProvider } from '@vegaprotocol/assets';
 
 export const RewardsContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -109,7 +110,14 @@ export const RewardsContainer = () => {
         );
       })}
       <Card title={t('Vesting')} className="lg:col-span-2" loading={loading}>
-        <Vesting pubKey={pubKey} baseRate={params.rewards_vesting_baseRate} />
+        <Vesting
+          pubKey={pubKey}
+          assetId={params.reward_asset}
+          baseRate={params.rewards_vesting_baseRate}
+          multiplier={rewardsData?.party?.vestingStats?.rewardBonusMultiplier}
+          vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
+          epoch={Number(epochData.epoch.id)}
+        />
       </Card>
       <Card
         title={t('Rewards multipliers')}
@@ -203,7 +211,7 @@ export const RewardPot = ({
   if (!pubKey) {
     return (
       <div className="pt-4">
-        <p className="text-sm text-muted">{t('Not connected')}</p>
+        <p className="text-muted text-sm">{t('Not connected')}</p>
       </div>
     );
   }
@@ -276,20 +284,47 @@ export const RewardPot = ({
           </div>
         </>
       ) : (
-        <p className="text-sm text-muted">{t('No rewards')}</p>
+        <p className="text-muted text-sm">{t('No rewards')}</p>
       )}
     </div>
   );
 };
 
 export const Vesting = ({
+  assetId,
   pubKey,
   baseRate,
+  multiplier,
+  vestingBalancesSummary,
+  epoch,
 }: {
+  assetId: string;
   pubKey: string | null;
   baseRate: string;
+  multiplier: string | undefined;
+  vestingBalancesSummary: VestingBalances | undefined;
+  epoch: number;
 }) => {
+  const { data: asset } = useAssetDataProvider(assetId);
+
+  if (!asset) return null;
+
   const baseRateFormatted = formatPercentage(Number(baseRate));
+
+  const lockedEntries = vestingBalancesSummary?.lockedBalances?.filter(
+    (b) => b.asset.id === assetId
+  );
+
+  const unlockingNextEpoch = lockedEntries?.filter(
+    (e) => e.untilEpoch === epoch + 1
+  );
+
+  const nextEpochBalances = unlockingNextEpoch?.length
+    ? unlockingNextEpoch.map((e) => e.balance)
+    : [0];
+
+  const totalUnlockingNextEpoch = BigNumber.sum.apply(null, nextEpochBalances);
+
   return (
     <div className="pt-4">
       <CardStat value={baseRateFormatted + '%'} />
@@ -302,11 +337,17 @@ export const Vesting = ({
           <>
             <tr>
               <CardTableTH>{t('Vesting multiplier')}</CardTableTH>
-              <CardTableTD>0%</CardTableTD>
+              <CardTableTD>{multiplier}</CardTableTD>
             </tr>
             <tr>
               <CardTableTH>{t('Available to withdraw next epoch')}</CardTableTH>
-              <CardTableTD>0</CardTableTD>
+              <CardTableTD>
+                {addDecimalsFormatNumberQuantum(
+                  totalUnlockingNextEpoch.toString(),
+                  asset.decimals,
+                  asset.quantum
+                )}
+              </CardTableTD>
             </tr>
           </>
         )}
@@ -318,7 +359,7 @@ export const Vesting = ({
 const Multipliers = () => {
   return (
     <div className="pt-4">
-      <p className="text-sm text-muted">{t('No active reward bonuses')}</p>
+      <p className="text-muted text-sm">{t('No active reward bonuses')}</p>
     </div>
   );
 };
