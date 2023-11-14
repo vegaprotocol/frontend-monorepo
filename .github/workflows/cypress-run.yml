@@ -63,6 +63,7 @@ jobs:
           node-version-file: './frontend-monorepo/.nvmrc'
           # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
           cache: yarn
+          cache-dependency-path: './frontend-monorepo/yarn.lock'
 
       # Restore node_modules from cache if possible
       - name: Restore node_modules from cache
