@@ -26,10 +26,6 @@ import {
   vegaWalletTeardown,
 } from '../../support/wallet-functions';
 
-// For some reason in this the below imports are typed as the jest version, importing
-// them directly is an easy work around.
-import { before, beforeEach, describe, it } from 'mocha';
-
 const stakeValidatorListTotalStake = 'total-stake';
 const stakeValidatorListTotalShare = 'total-stake-share';
 const stakeValidatorListStakePercentage = 'stake-percentage';
@@ -68,6 +64,7 @@ context(
 
     describe('Eth wallet - contains VEGA tokens', function () {
       beforeEach(
+        // @ts-ignore clash between jest and cypress
         'teardown wallet & drill into a specific validator',
         function () {
           cy.clearLocalStorage();
@@ -241,6 +238,7 @@ context(
       // 1002-STKE-041 1002-STKE-053
       it(
         'Able to remove part of a stake against a validator',
+        // @ts-ignore clash between jest and cypress
         { tags: '@smoke' },
         function () {
           ensureSpecifiedUnstakedTokensAreAssociated('4');

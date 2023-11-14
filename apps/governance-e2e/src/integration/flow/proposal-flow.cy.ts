@@ -36,10 +36,6 @@ import {
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import type { testFreeformProposal } from '../../support/common-interfaces';
 
-// For some reason in this the below imports are typed as the jest version, importing
-// them directly is an easy work around.
-import { before, beforeEach } from 'mocha';
-
 const vegaWalletStakedBalances = 'vega-wallet-balance-staked-validators';
 const vegaWalletAssociatedBalance = 'associated-amount';
 const vegaWalletNameElement = 'wallet-name';
@@ -82,6 +78,7 @@ context(
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
+    // @ts-ignore clash between jest and cypress
     beforeEach('visit governance tab', function () {
       cy.clearLocalStorage();
       turnTelemetryOff();

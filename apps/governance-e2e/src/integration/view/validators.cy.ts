@@ -12,10 +12,6 @@ import {
 } from '../../support/staking.functions';
 import { previousEpochData } from '../../fixtures/mocks/previous-epoch';
 
-// For some reason in this the below imports are typed as the jest version, importing
-// them directly is an easy work around.
-import { before, beforeEach, describe, it } from 'mocha';
-
 const guideLink = 'staking-guide-link';
 const validatorTitle = 'validator-node-title';
 const validatorId = 'validator-id';
@@ -48,6 +44,7 @@ context('Validators Page - verify elements on page', function () {
     cy.mockChainId();
   });
 
+  // @ts-ignore clash between jest and cypress
   describe('with wallets disconnected', { tags: '@smoke' }, function () {
     it('Should have validators tab highlighted', function () {
       verifyTabHighlighted(navigation.validators);
@@ -80,6 +77,7 @@ context('Validators Page - verify elements on page', function () {
   describe(
     'Should be able to see validator list from the staking page',
     { tags: '@regression' },
+    // @ts-ignore clash between jest and cypress
     function () {
       // 1002-STKE-050
       it('Should be able to see validator names', function () {
@@ -184,6 +182,7 @@ context('Validators Page - verify elements on page', function () {
   describe(
     'Should be able to see static information about a validator',
     { tags: '@smoke' },
+    // @ts-ignore clash between jest and cypress
     function () {
       before('connect wallets and click on validator', function () {
         cy.mockChainId();

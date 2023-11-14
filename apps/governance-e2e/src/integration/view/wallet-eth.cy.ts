@@ -1,11 +1,6 @@
 import { convertTokenValueToNumber } from '../../support/common.functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 
-// For some reason in this the below imports are typed as the jest version, importing
-// them directly is an easy work around.
-import { describe, before } from 'mocha';
-import { expect } from 'chai';
-
 const walletContainer = 'aside [data-testid="ethereum-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
 const connectToEthButton =
@@ -203,6 +198,7 @@ context(
                 });
             })
             .then(function () {
+              // @ts-ignore clash between jest and cypress
               expect(parseFloat(this.value).toFixed(1)).to.equal(
                 (Math.round((this.locked + this.unlocked) * 100) / 100).toFixed(
                   1
@@ -275,6 +271,7 @@ context(
                 });
             })
             .then(function () {
+              // @ts-ignore clash between jest and cypress
               expect(this.value).to.equal(this.locked + this.unlocked);
             });
         });

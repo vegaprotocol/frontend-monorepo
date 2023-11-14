@@ -7,10 +7,6 @@ import {
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import { depositAsset } from '../../support/wallet-functions';
 
-// For some reason in this the below imports are typed as the jest version, importing
-// them directly is an easy work around.
-import { before, beforeEach, it } from 'mocha';
-
 const withdraw = 'withdraw';
 const withdrawalForm = 'withdraw-form';
 const ethAddressInput = 'eth-address-input';
@@ -52,6 +48,7 @@ context(
       depositAsset(usdcEthAddress, '1000', 5);
     });
 
+    // @ts-ignore clash between jest and cypress
     beforeEach('Navigate to withdrawal page', function () {
       cy.clearLocalStorage();
       turnTelemetryOff();
@@ -105,6 +102,7 @@ context(
     // eslint-disable-next-line
     it.skip(
       'Able to withdraw asset: -eth wallet connected -withdraw funds button',
+      // @ts-ignore clash between jest and cypress
       { tags: '@smoke' },
       function () {
         // fill in withdrawal form

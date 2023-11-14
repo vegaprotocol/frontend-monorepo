@@ -5,11 +5,6 @@ import {
 } from '../../support/common.functions';
 import { waitForBeginningOfEpoch } from '../../support/staking.functions';
 
-// For some reason in this the below imports are typed as the jest version, importing
-// them directly is an easy work around.
-import { before, describe, it } from 'mocha';
-import { expect } from 'chai';
-
 const viewToggle = 'epoch-reward-view-toggle-total';
 const warning = 'callout';
 
@@ -57,6 +52,7 @@ context(
               .invoke('text')
               .then(($newPageNumber) => {
                 const newPageNumber = Number($newPageNumber.slice(5));
+                // @ts-ignore clash between jest and cypress
                 expect(newPageNumber).to.be.greaterThan(currentPageNumber);
                 cy.getByTestId('goto-previous-page').click();
                 cy.getByTestId('page-info').should(

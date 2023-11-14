@@ -38,10 +38,6 @@ import {
   createSuccessorMarketProposalTxBody,
 } from '../../support/proposal.functions';
 
-// For some reason in this the below imports are typed as the jest version, importing
-// them directly is an easy work around.
-import { before, beforeEach, describe } from 'mocha';
-
 const proposalListItem = '[data-testid="proposals-list-item"]';
 const participationNotMet = 'token-participation-not-met';
 const voteStatus = 'vote-status';
@@ -65,6 +61,7 @@ const marketProposalType = 'proposal-type';
 describe(
   'Governance flow for proposal details',
   { tags: '@slow' },
+  // @ts-ignore clash between jest and cypress
   function () {
     before('connect wallets and set approval limit', function () {
       cy.visit('/');
@@ -82,6 +79,7 @@ describe(
       getProposalInformationFromTable('ID').invoke('text').as('parentMarketId');
     });
 
+    // @ts-ignore clash between jest and cypress
     beforeEach('visit proposals tab', function () {
       cy.clearLocalStorage();
       turnTelemetryOff();

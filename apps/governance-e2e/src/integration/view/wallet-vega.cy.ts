@@ -5,11 +5,6 @@ import {
   vegaWalletTeardown,
 } from '../../support/wallet-functions';
 
-// For some reason in this the below imports are typed as the jest version, importing
-// them directly is an easy work around.
-import { it } from 'mocha';
-import { expect } from 'chai';
-
 const walletContainer = 'aside [data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
 const connectButton = 'connect-vega-wallet';
@@ -110,6 +105,7 @@ context(
       // 0002-WCON-008
       it(
         'should have truncated account number visible',
+        // @ts-ignore clash between jest and cypress
         { tags: '@smoke' },
         function () {
           cy.get(walletContainer).within(() => {
@@ -130,6 +126,7 @@ context(
 
       it(
         'should have Vega Associated currency value visible',
+        // @ts-ignore clash between jest and cypress
         { tags: '@smoke' },
         function () {
           cy.get(walletContainer).within(() => {
@@ -140,14 +137,19 @@ context(
         }
       );
 
-      it('should have Unstaked value visible', { tags: '@smoke' }, function () {
-        cy.get(walletContainer).within(() => {
-          cy.get(vegaUnstaked)
-            .should('be.visible')
-            .invoke('text')
-            .and('not.be.empty');
-        });
-      });
+      it(
+        'should have Unstaked value visible',
+        // @ts-ignore clash between jest and cypress
+        { tags: '@smoke' },
+        function () {
+          cy.get(walletContainer).within(() => {
+            cy.get(vegaUnstaked)
+              .should('be.visible')
+              .invoke('text')
+              .and('not.be.empty');
+          });
+        }
+      );
 
       it('should have Governance button visible', function () {
         cy.get(walletContainer).within(() => {
@@ -304,6 +306,7 @@ context(
                 .siblings(txTimeout)
                 .should((elementAmount) => {
                   const displayedAmount = parseFloat(elementAmount.text());
+                  // @ts-ignore clash between jest and cypress
                   expect(displayedAmount).be.gte(expectedAmount);
                 });
 

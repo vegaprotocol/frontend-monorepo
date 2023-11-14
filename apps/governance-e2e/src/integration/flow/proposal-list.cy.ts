@@ -33,16 +33,14 @@ const voteMajorityNotMet = 'token-majority-not-met';
 const voteMajorityMet = 'token-majority-met';
 const votesForPercentage = 'votes-for-percentage';
 
-// For some reason in this the below imports are typed as the jest version, importing
-// them directly is an easy work around.
-import { before, beforeEach, describe, it } from 'mocha';
-
+// @ts-ignore clash between jest and cypress
 describe('Governance flow for proposal list', { tags: '@slow' }, function () {
   before('connect wallets and set approval limit', function () {
     vegaWalletSetSpecifiedApprovalAmount('1000');
     cy.visit('/');
   });
 
+  // @ts-ignore clash between jest and cypress
   beforeEach('visit proposals tab', function () {
     cy.clearLocalStorage();
     turnTelemetryOff();
@@ -110,6 +108,7 @@ describe('Governance flow for proposal list', { tags: '@slow' }, function () {
   it('Newly created proposals list - shows open proposals in an open state', function () {
     // 3001-VOTE-004
     // 3001-VOTE-035
+    // @ts-ignore clash between jest and cypress
     createRawProposal(this.minProposerBalance);
     cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
       getProposalFromTitle(rawProposal.rationale.title).within(() => {
