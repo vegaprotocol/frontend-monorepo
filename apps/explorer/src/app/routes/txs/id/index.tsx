@@ -9,8 +9,10 @@ import { toNonHex } from '../../../components/search/detect-search';
 import { PageHeader } from '../../../components/page-header';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 
+type Params = { txHash: string };
+
 const Tx = () => {
-  const { txHash } = useParams<{ txHash: string }>();
+  const { txHash } = useParams<Params>();
   const hash = txHash ? toNonHex(txHash) : '';
   let errorMessage: string | undefined = undefined;
 

@@ -28,12 +28,14 @@ interface StakingNodeProps {
   previousEpochData?: PreviousEpochQuery;
 }
 
+type Params = { node: string };
+
 export const StakingNode = ({ data, previousEpochData }: StakingNodeProps) => {
   const { pubKey: vegaKey } = useVegaWallet();
   const {
     appState: { decimals },
   } = useAppState();
-  const { node } = useParams<{ node: string }>();
+  const { node } = useParams<Params>();
   const { t } = useTranslation();
 
   const { nodeInfo, currentEpoch, delegations } = React.useMemo(

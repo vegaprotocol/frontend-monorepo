@@ -60,19 +60,21 @@ const useMarketDetails = (marketId: string | undefined) => {
   };
 };
 
+type Params = { marketId: string };
+
 export const Detail = () => {
-  const { marketId } = useParams<{ marketId: string }>();
+  const { marketId } = useParams<Params>();
   const { data, loading, error } = useMarketDetails(marketId);
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      <div className="px-16 pt-14 pb-12 bg-greys-light-100">
-        <div className="max-w-screen-xl mx-auto">
+      <div className="bg-greys-light-100 px-16 pb-12 pt-14">
+        <div className="mx-auto max-w-screen-xl">
           <Header name={data.name} symbol={data.symbol} />
         </div>
       </div>
       <div className="px-16">
-        <div className="max-w-screen-xl mx-auto">
+        <div className="mx-auto max-w-screen-xl">
           <div className="py-12">
             {marketId && (
               <Market
@@ -86,7 +88,7 @@ export const Detail = () => {
             )}
           </div>
           <div>
-            <h2 className="font-alpha calt text-2xl mb-4">
+            <h2 className="font-alpha calt mb-4 text-2xl">
               {t('Current Liquidity Provision')}
             </h2>
             <LPProvidersGrid

@@ -17,8 +17,10 @@ import { NodeLink } from '../../../components/links';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 import EmptyList from '../../../components/empty-list/empty-list';
 
+type Params = { block: string };
+
 const Block = () => {
-  const { block } = useParams<{ block: string }>();
+  const { block } = useParams<Params>();
   useDocumentTitle(['Blocks', `Block #${block}`]);
   const {
     state: { data: blockData, loading, error },
@@ -29,7 +31,7 @@ const Block = () => {
       <RouteTitle data-testid="block-header">{t(`BLOCK ${block}`)}</RouteTitle>
       <AsyncRenderer data={blockData} error={error} loading={!!loading}>
         <>
-          <div className="grid grid-cols-2 gap-2 mb-8">
+          <div className="mb-8 grid grid-cols-2 gap-2">
             <Link
               data-testid="previous-block"
               to={`/${Routes.BLOCKS}/${Number(block) - 1}`}
