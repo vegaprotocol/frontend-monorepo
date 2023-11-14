@@ -1,7 +1,7 @@
 #!/bin/bash -e
 yarn --pure-lockfile
 app=${1:-trading}
-envCmd="envCmd="yarn -f ./apps/${app}/.env.${2:-mainnet}"
+envCmd="yarn -f ./apps/${app}/.env.${2:-mainnet}"
 yarn install
 if [ "${app}" = "trading" ]; then
   $envCmd yarn nx export trading
