@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "console-test"
+name = "trading market-sim e2e"
 version = "0.1.0"
 description = ""
 authors = ["Matthew Russell <mattrussell36@gmail.com>"]
 readme = "README.md"
-packages = [{include = "console_test"}]
+packages = [{include = "trading market-sim e2e"}]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"

@@ -1,4 +1,4 @@
-# Trading End-To-End Tests
+# Trading Market-Sim End-To-End Tests
 
 This direcotry contains end-to-end tests for the trading application using vega-market-sim. This README will guide you through setting up your environment and running the tests.
 
@@ -15,6 +15,8 @@ This direcotry contains end-to-end tests for the trading application using vega-
 3. **Install Python**: Follow the instructions on the [official Python website](https://www.python.org/)
    **ensure you install a version between 3.9 and 3.11.**
 4. **Start up a Poetry environment**: Execute the commands below to configure the Poetry environment.
+
+### Ensure you are in the tests folder before running commands
 
 ```bash
 poetry shell
@@ -33,7 +35,7 @@ playwright install chromium
 ```
 
 7. **Download necessary binaries**:
-   Use the following command within your Python environment. The `--force` flag ensures the binaries are overwritten, and the `--version` specifies the desired version. e.g. `v0.73.1`
+   Use the following command within your Python environment. The `--force` flag ensures the binaries are overwritten, and the `--version` specifies the desired version. e.g. `v0.73.4`
 
 ```bash
 python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
@@ -46,6 +48,8 @@ docker pull vegaprotocol/trading:develop
 ```
 
 9. **Run tests**: Poetry/Python will serve the app from docker
+
+### Update the .env file with the correct trading image.
 
 ```bash
 poetry run pytest
@@ -74,7 +78,11 @@ Find all available images on [Docker Hub](https://hub.docker.com/r/vegaprotocol/
 To build your Docker image, use the following commands:
 
 ```bash
-yarn nx build trading ./docker/prepare-dist.sh docker build -f docker/node-outside-docker.Dockerfile --build-arg APP=trading --build-arg ENV_NAME=stagnet1 -t vegaprotocol/trading:latest .
+yarn nx build trading ./docker/prepare-dist.sh
+```
+
+```bash
+docker build -f docker/node-outside-docker.Dockerfile --build-arg APP=trading --build-arg ENV_NAME=stagnet1 -t vegaprotocol/trading:latest .
 ```
 
 ## Running Tests 🧪
