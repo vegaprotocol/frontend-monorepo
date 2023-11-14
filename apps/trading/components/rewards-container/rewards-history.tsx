@@ -61,7 +61,8 @@ export const RewardsHistoryContainer = ({
       return;
     }
 
-    if (incoming.from < -1 || incoming.to < -1) {
+    // Must be at least the first epoch
+    if (incoming.from < 1 || incoming.to < 1) {
       return;
     }
 
@@ -248,8 +249,8 @@ export const RewardHistoryTable = ({
 
   return (
     <div>
-      <div className="flex justify-between gap-2 items-center mb-2">
-        <h4 className="text-muted text-sm flex items-center gap-2">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <h4 className="text-muted flex items-center gap-2 text-sm">
           <label htmlFor="fromEpoch">{t('From epoch')}</label>
           <EpochInput
             id="fromEpoch"
@@ -355,12 +356,12 @@ const EpochInput = ({
 }) => {
   return (
     <span className="flex gap-0.5" data-testid={id}>
-      <span className="relative bg-vega-clight-600 dark:bg-vega-cdark-600 rounded-l-sm">
+      <span className="bg-vega-clight-600 dark:bg-vega-cdark-600 relative rounded-l-sm">
         <span className="px-2 opacity-0">{value}</span>
         <input
           onChange={(e) => onChange(Number(e.target.value))}
           value={value}
-          className="px-2 absolute top-0 left-0 w-full h-full appearance-none bg-transparent focus:outline-none dark:focus:bg-vega-cdark-700"
+          className="dark:focus:bg-vega-cdark-700 absolute left-0 top-0 h-full w-full appearance-none bg-transparent px-2 focus:outline-none"
           type="number"
           step={step}
           min={min}
@@ -369,16 +370,16 @@ const EpochInput = ({
           name={id}
         />
       </span>
-      <span className="flex flex-col gap-0.5 rounded-r-sm overflow-hidden">
+      <span className="flex flex-col gap-0.5 overflow-hidden rounded-r-sm">
         <button
           onClick={onIncrement}
-          className="px-1 flex-1 flex items-center bg-vega-clight-600 dark:bg-vega-cdark-600"
+          className="bg-vega-clight-600 dark:bg-vega-cdark-600 flex flex-1 items-center px-1"
         >
           <VegaIcon name={VegaIconNames.CHEVRON_UP} size={12} />
         </button>
         <button
           onClick={onDecrement}
-          className="px-1 flex-1 flex items-center bg-vega-clight-600 dark:bg-vega-cdark-600"
+          className="bg-vega-clight-600 dark:bg-vega-cdark-600 flex flex-1 items-center px-1"
         >
           <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={12} />
         </button>
