@@ -329,7 +329,7 @@ export const Vesting = ({
 
   return (
     <div className="pt-4">
-      <CardStat value={rateFormatted + '%'} />
+      <CardStat value={rateFormatted + '%'} testId={'vesting-rate'} />
       <CardTable>
         <tr>
           <CardTableTH>{t('Base rate')}</CardTableTH>
