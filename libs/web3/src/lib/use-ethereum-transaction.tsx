@@ -8,6 +8,7 @@ import {
   EthereumTransactionDialog,
   getTransactionContent,
 } from './ethereum-transaction-dialog';
+import { useT } from './use-t';
 
 export enum EthTxStatus {
   Default = 'Default',
@@ -51,6 +52,7 @@ export const useEthereumTransaction = <
   requiredConfirmations = 1,
   requiresConfirmation = false
 ) => {
+  const t = useT();
   const [transaction, _setTransaction] = useState<EthTxState>(initialState);
 
   const setTransaction = useCallback((update: Partial<EthTxState>) => {
@@ -173,8 +175,9 @@ export const useEthereumTransaction = <
         transaction,
         requiredConfirmations,
         reset,
+        t,
       }),
-    [methodName, requiredConfirmations, reset, transaction]
+    [methodName, requiredConfirmations, reset, transaction, t]
   );
 
   return { perform, transaction, reset, setConfirmed, Dialog, TxContent };

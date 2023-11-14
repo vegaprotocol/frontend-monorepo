@@ -10,8 +10,9 @@ import en_fills from './locales/en/fills.json';
 import en_funding_payments from './locales/en/funding-payments.json';
 import en_governance from './locales/en/governance.json';
 import en_trading from './locales/en/trading.json';
-
 import en_markets from './locales/en/markets.json';
+import en_web3 from './locales/en/web3.json';
+
 export const locales = {
   en: {
     accounts: en_accounts,
@@ -26,5 +27,6 @@ export const locales = {
     governance: en_governance,
     trading: en_trading,
     markets: en_markets,
+    web3: en_web3,
   },
 };
