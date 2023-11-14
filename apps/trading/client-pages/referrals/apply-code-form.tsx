@@ -17,7 +17,7 @@ import { useReferral } from './hooks/use-referral';
 import { Routes } from '../../lib/links';
 import { useTransactionEventSubscription } from '@vegaprotocol/web3';
 import { t } from '@vegaprotocol/i18n';
-import { Statistics } from './referral-statistics';
+import { Statistics, useStats } from './referral-statistics';
 import { useReferralProgram } from './hooks/use-referral-program';
 
 const RELOAD_DELAY = 3000;
@@ -132,6 +132,8 @@ export const ApplyCodeForm = () => {
       }),
   });
 
+  const { epochsValue, nextBenefitTierValue } = useStats({ program });
+
   // go to main page when successfully applied
   useEffect(() => {
     if (status === 'successful') {
@@ -196,6 +198,10 @@ export const ApplyCodeForm = () => {
     };
   };
 
+  const nextBenefitTierEpochsValue = nextBenefitTierValue
+    ? nextBenefitTierValue.epochs - epochsValue
+    : 0;
+
   return (
     <>
       <div className="w-2/3 max-w-md mx-auto bg-vega-clight-800 dark:bg-vega-cdark-800 p-8 rounded-lg">
@@ -238,7 +244,12 @@ export const ApplyCodeForm = () => {
       ) : null}
       {previewData ? (
         <div className="mt-10">
-          <h2 className="text-2xl mb-5">{t('You are joining')}</h2>
+          <h2 className="text-2xl mb-5">
+            {t(
+              'You are joining the group shown, but will not have access to benefits until you have completed at least %s epochs.',
+              [nextBenefitTierEpochsValue.toString()]
+            )}
+          </h2>
           <Statistics data={previewData} program={program} as="referee" />
         </div>
       ) : null}
