@@ -31,7 +31,6 @@ import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
 import { ViewType, useSidebar } from '../sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { RewardsHistoryContainer } from './rewards-history';
-import { useAssetDataProvider } from '@vegaprotocol/assets';
 
 export const RewardsContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -72,7 +71,7 @@ export const RewardsContainer = () => {
   // TODO: Fix grid rows, they break on small screens when things stack
   return (
     <div className="grid auto-rows-min grid-cols-6 gap-3">
-      {/* Always show the rewards pot for the reward asset AKA Vega */}
+      {/* Always show reward information for vega */}
       <Card
         key={params.reward_asset}
         title={t('Vega Reward pot')}
@@ -87,8 +86,32 @@ export const RewardsContainer = () => {
           vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
         />
       </Card>
+      <Card title={t('Vesting')} className="lg:col-span-2" loading={loading}>
+        <Vesting
+          pubKey={pubKey}
+          baseRate={params.rewards_vesting_baseRate}
+          multiplier={
+            rewardsData?.party?.activityStreak?.rewardVestingMultiplier
+          }
+        />
+      </Card>
+      <Card
+        title={t('Rewards multipliers')}
+        className="lg:col-span-2"
+        loading={loading}
+        highlight={true}
+      >
+        <Multipliers
+          hoarderMultiplier={
+            rewardsData?.party?.vestingStats?.rewardBonusMultiplier
+          }
+          streakMultiplier={
+            rewardsData?.party?.activityStreak?.rewardDistributionMultiplier
+          }
+        />
+      </Card>
 
-      {/* Show all other rewards */}
+      {/* Show all other reward pots, most of the time users will not have other rewards */}
       {Object.keys(rewardAssetsMap).map((assetId) => {
         const asset = rewardAssetsMap[assetId][0].asset;
         return (
@@ -109,23 +132,6 @@ export const RewardsContainer = () => {
           </Card>
         );
       })}
-      <Card title={t('Vesting')} className="lg:col-span-2" loading={loading}>
-        <Vesting
-          pubKey={pubKey}
-          assetId={params.reward_asset}
-          baseRate={params.rewards_vesting_baseRate}
-          multiplier={rewardsData?.party?.vestingStats?.rewardBonusMultiplier}
-          vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
-          epoch={Number(epochData.epoch.id)}
-        />
-      </Card>
-      <Card
-        title={t('Rewards multipliers')}
-        className="lg:col-span-2"
-        loading={loading}
-      >
-        <Multipliers />
-      </Card>
       <Card
         title={t('Rewards history')}
         className="lg:col-span-full"
@@ -291,41 +297,17 @@ export const RewardPot = ({
 };
 
 export const Vesting = ({
-  assetId,
   pubKey,
   baseRate,
   multiplier = '1',
-  vestingBalancesSummary,
-  epoch,
 }: {
-  assetId: string;
   pubKey: string | null;
   baseRate: string;
   multiplier?: string;
-  vestingBalancesSummary: VestingBalances | undefined;
-  epoch: number;
 }) => {
-  const { data: asset } = useAssetDataProvider(assetId);
-
-  if (!asset) return null;
-
   const rate = new BigNumber(baseRate).times(multiplier);
   const rateFormatted = formatPercentage(Number(rate));
   const baseRateFormatted = formatPercentage(Number(baseRate));
-
-  const lockedEntries = vestingBalancesSummary?.lockedBalances?.filter(
-    (b) => b.asset.id === assetId
-  );
-
-  const unlockingNextEpoch = lockedEntries?.filter(
-    (e) => e.untilEpoch === epoch + 1
-  );
-
-  const nextEpochBalances = unlockingNextEpoch?.length
-    ? unlockingNextEpoch.map((e) => e.balance)
-    : [0];
-
-  const totalUnlockingNextEpoch = BigNumber.sum.apply(null, nextEpochBalances);
 
   return (
     <div className="pt-4">
@@ -336,32 +318,44 @@ export const Vesting = ({
           <CardTableTD>{baseRateFormatted}%</CardTableTD>
         </tr>
         {pubKey && (
-          <>
-            <tr>
-              <CardTableTH>{t('Vesting multiplier')}</CardTableTH>
-              <CardTableTD>{multiplier}</CardTableTD>
-            </tr>
-            <tr>
-              <CardTableTH>{t('Available to withdraw next epoch')}</CardTableTH>
-              <CardTableTD>
-                {addDecimalsFormatNumberQuantum(
-                  totalUnlockingNextEpoch.toString(),
-                  asset.decimals,
-                  asset.quantum
-                )}
-              </CardTableTD>
-            </tr>
-          </>
+          <tr>
+            <CardTableTH>{t('Vesting multiplier')}</CardTableTH>
+            <CardTableTD>{multiplier}x</CardTableTD>
+          </tr>
         )}
       </CardTable>
     </div>
   );
 };
 
-const Multipliers = () => {
+const Multipliers = ({
+  streakMultiplier = '1',
+  hoarderMultiplier = '1',
+}: {
+  streakMultiplier?: string;
+  hoarderMultiplier?: string;
+}) => {
+  const combinedMultiplier = new BigNumber(streakMultiplier).times(
+    hoarderMultiplier
+  );
+
   return (
     <div className="pt-4">
-      <p className="text-muted text-sm">{t('No active reward bonuses')}</p>
+      <CardStat
+        value={combinedMultiplier.toString() + 'x'}
+        testId={'vesting-rate'}
+        highlight={true}
+      />
+      <CardTable>
+        <tr>
+          <CardTableTH>{t('Streak reward multiplier')}</CardTableTH>
+          <CardTableTD>{streakMultiplier}x</CardTableTD>
+        </tr>
+        <tr>
+          <CardTableTH>{t('Hoarder reward multiplier')}</CardTableTH>
+          <CardTableTD>{hoarderMultiplier}x</CardTableTD>
+        </tr>
+      </CardTable>
     </div>
   );
 };

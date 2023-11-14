@@ -3,9 +3,6 @@ import type { Account } from '@vegaprotocol/accounts';
 import { AccountType, AssetStatus } from '@vegaprotocol/types';
 import { MemoryRouter } from 'react-router-dom';
 import { RewardPot, Vesting, type RewardPotProps } from './rewards-container';
-import type { MockedResponse } from '@apollo/react-testing';
-import { MockedProvider } from '@apollo/react-testing';
-import { type AssetQuery, AssetDocument } from '@vegaprotocol/assets';
 
 const rewardAsset = {
   id: 'asset-1',
@@ -154,65 +151,27 @@ describe('RewardPot', () => {
 });
 
 describe('Vesting', () => {
-  it('renders vesting rates', async () => {
-    const assetMock: MockedResponse<AssetQuery> = {
-      request: {
-        query: AssetDocument,
-        variables: {
-          assetId: rewardAsset.id,
-        },
-      },
-      result: {
-        data: {
-          assetsConnection: {
-            edges: [
-              {
-                node: rewardAsset,
-              },
-            ],
-          },
-        },
-      },
-    };
-    render(
-      <MockedProvider mocks={[assetMock]}>
-        <Vesting
-          assetId={rewardAsset.id}
-          baseRate={'0.25'}
-          pubKey="pubKey"
-          multiplier="2"
-          vestingBalancesSummary={{
-            epoch: 5,
-            lockedBalances: [
-              {
-                balance: '150',
-                asset: rewardAsset,
-                untilEpoch: 6,
-              },
-              {
-                balance: '100',
-                asset: rewardAsset,
-                untilEpoch: 6,
-              },
-              {
-                balance: '100',
-                asset: rewardAsset,
-                untilEpoch: 7,
-              },
-            ],
-          }}
-          epoch={5}
-        />
-      </MockedProvider>
+  it('renders vesting rates', () => {
+    render(<Vesting baseRate={'0.25'} pubKey="pubKey" multiplier="2" />);
+
+    expect(screen.getByTestId('vesting-rate')).toHaveTextContent('50%');
+
+    expect(screen.getByText('Base rate').nextElementSibling).toHaveTextContent(
+      '25%'
     );
+    expect(
+      screen.getByText('Vesting multiplier').nextSibling
+    ).toHaveTextContent('2x');
+  });
 
-    const computedRate = await screen.findByTestId('vesting-rate');
-    expect(computedRate).toHaveTextContent('50%');
+  it('doesnt use multiplier if not connected', () => {
+    render(<Vesting baseRate={'0.25'} pubKey={null} multiplier={undefined} />);
 
-    const baseRateLabel = screen.getByText(/Base rate/);
-    expect(baseRateLabel.nextElementSibling).toHaveTextContent('25%');
+    expect(screen.getByTestId('vesting-rate')).toHaveTextContent('25%');
 
-    const nextEpochLabel = screen.getByText('Available to withdraw next epoch');
-    expect(nextEpochLabel.nextElementSibling).toHaveTextContent('2.50');
+    expect(screen.getByText('Base rate').nextElementSibling).toHaveTextContent(
+      '25%'
+    );
+    expect(screen.queryByText('Vesting multiplier')).not.toBeInTheDocument();
   });
 });

@@ -2,9 +2,14 @@ query RewardsPage($partyId: ID!) {
   party(id: $partyId) {
     id
     vestingStats {
-      epochSeq
+      # AKA hoarder reward multiplier
       rewardBonusMultiplier
-      quantumBalance
+    }
+    activityStreak {
+      # vesting multiplier
+      rewardVestingMultiplier
+      # AKA streak multiplier
+      rewardDistributionMultiplier
     }
     vestingBalancesSummary {
       epoch
