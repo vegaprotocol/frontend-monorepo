@@ -1,12 +1,3 @@
-fragment MarketCandlesFields on Candle {
-  high
-  low
-  open
-  close
-  volume
-  periodStart
-}
-
 query MarketsCandles($interval: Interval!, $since: String!) {
   marketsConnection {
     edges {

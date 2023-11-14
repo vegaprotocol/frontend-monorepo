@@ -1,10 +1,9 @@
 import * as Types from '@vegaprotocol/types';
 
 import { gql } from '@apollo/client';
+import { MarketCandlesFieldsFragmentDoc } from './market-candles';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type MarketCandlesFieldsFragment = { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string, periodStart: any };
-
 export type MarketsCandlesQueryVariables = Types.Exact<{
   interval: Types.Interval;
   since: Types.Scalars['String'];
@@ -13,16 +12,7 @@ export type MarketsCandlesQueryVariables = Types.Exact<{
 
 export type MarketsCandlesQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, candlesConnection?: { __typename?: 'CandleDataConnection', edges?: Array<{ __typename?: 'CandleEdge', node: { __typename?: 'Candle', high: string, low: string, open: string, close: string, volume: string, periodStart: any } } | null> | null } | null } }> } | null };
 
-export const MarketCandlesFieldsFragmentDoc = gql`
-    fragment MarketCandlesFields on Candle {
-  high
-  low
-  open
-  close
-  volume
-  periodStart
-}
-    `;
+
 export const MarketsCandlesDocument = gql`
     query MarketsCandles($interval: Interval!, $since: String!) {
   marketsConnection {
