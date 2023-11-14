@@ -39,7 +39,7 @@ export const RewardsHistoryContainer = ({
   const { data: assets } = useAssetsMapProvider();
 
   // No need to specify the fromEpoch as it will by default give you the last
-  const { refetch, data: rewardsData } = useRewardsHistoryQuery({
+  const { refetch, data, loading } = useRewardsHistoryQuery({
     variables: {
       partyId: pubKey || '',
       fromEpoch: epochVariables.from,
@@ -48,7 +48,7 @@ export const RewardsHistoryContainer = ({
   });
 
   const debouncedRefetch = useMemo(
-    () => debounce((variables) => refetch(variables), 400),
+    () => debounce((variables) => refetch(variables), 800),
     [refetch]
   );
 
@@ -62,7 +62,7 @@ export const RewardsHistoryContainer = ({
     }
 
     // Must be at least the first epoch
-    if (incoming.from < 1 || incoming.to < 1) {
+    if (incoming.from < 0 || incoming.to < 0) {
       return;
     }
 
@@ -84,12 +84,13 @@ export const RewardsHistoryContainer = ({
   return (
     <RewardHistoryTable
       pubKey={pubKey}
-      epochRewardSummaries={rewardsData?.epochRewardSummaries}
-      partyRewards={rewardsData?.party?.rewardsConnection}
+      epochRewardSummaries={data?.epochRewardSummaries}
+      partyRewards={data?.party?.rewardsConnection}
       onEpochChange={handleEpochChange}
       epoch={epoch}
       epochVariables={epochVariables}
       assets={assets}
+      loading={loading}
     />
   );
 };
@@ -126,6 +127,7 @@ export const RewardHistoryTable = ({
   epochVariables,
   epoch,
   onEpochChange,
+  loading,
 }: {
   epochRewardSummaries: RewardsHistoryQuery['epochRewardSummaries'];
   partyRewards: PartyRewardsConnection;
@@ -137,6 +139,7 @@ export const RewardHistoryTable = ({
     to: number;
   };
   onEpochChange: (epochVariables: { from: number; to: number }) => void;
+  loading: boolean;
 }) => {
   const [isParty, setIsParty] = useState(false);
 
@@ -146,6 +149,7 @@ export const RewardHistoryTable = ({
     assets,
     partyId: isParty ? pubKey : null,
   });
+
   const columnDefs = useMemo<ColDef<RewardRow>[]>(() => {
     const rewardValueFormatter: ValueFormatterFunc<RewardRow> = ({
       data,
@@ -330,6 +334,8 @@ export const RewardHistoryTable = ({
         rowData={rowData}
         rowHeight={45}
         domLayout="autoHeight"
+        // Show loading message without wiping out the current rows
+        overlayNoRowsTemplate={loading ? t('Loading...') : t('No rows')}
       />
     </div>
   );

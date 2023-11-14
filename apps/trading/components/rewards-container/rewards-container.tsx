@@ -75,7 +75,7 @@ export const RewardsContainer = () => {
       <Card
         key={params.reward_asset}
         title={t('Vega Reward pot')}
-        className="lg:col-span-2"
+        className="lg:col-span-3 xl:col-span-2"
         loading={loading}
         highlight={true}
       >
@@ -86,7 +86,11 @@ export const RewardsContainer = () => {
           vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
         />
       </Card>
-      <Card title={t('Vesting')} className="lg:col-span-2" loading={loading}>
+      <Card
+        title={t('Vesting')}
+        className="lg:col-span-3 xl:col-span-2"
+        loading={loading}
+      >
         <Vesting
           pubKey={pubKey}
           baseRate={params.rewards_vesting_baseRate}
@@ -97,7 +101,7 @@ export const RewardsContainer = () => {
       </Card>
       <Card
         title={t('Rewards multipliers')}
-        className="lg:col-span-2"
+        className="lg:col-span-3 xl:col-span-2"
         loading={loading}
         highlight={true}
       >
@@ -118,7 +122,7 @@ export const RewardsContainer = () => {
           <Card
             key={assetId}
             title={t('%s Reward pot', asset.symbol)}
-            className="lg:col-span-2"
+            className="lg:col-span-3 xl:col-span-2"
             loading={loading}
           >
             <RewardPot
