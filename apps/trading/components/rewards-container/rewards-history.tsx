@@ -1,5 +1,4 @@
 import debounce from 'lodash/debounce';
-import classNames from 'classnames';
 import { useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef, ValueFormatterFunc } from 'ag-grid-community';
@@ -306,23 +305,20 @@ export const RewardHistoryTable = ({
             }
           />
         </h4>
+
         <div className="flex gap-0.5">
           <TradingButton
             onClick={() => setIsParty(false)}
             size="extra-small"
-            className={classNames({
-              'bg-transparent dark:bg-transparent': isParty,
-            })}
+            minimal={isParty}
           >
             {t('Total distributed')}
           </TradingButton>
           <TradingButton
             onClick={() => setIsParty(true)}
             size="extra-small"
-            className={classNames({
-              'bg-transparent dark:bg-transparent': !isParty,
-            })}
             disabled={!pubKey}
+            minimal={!isParty}
           >
             {t('Earned by me')}
           </TradingButton>
