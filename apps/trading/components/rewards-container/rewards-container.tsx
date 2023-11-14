@@ -68,7 +68,6 @@ export const RewardsContainer = () => {
     'asset.id'
   );
 
-  // TODO: Fix grid rows, they break on small screens when things stack
   return (
     <div className="grid auto-rows-min grid-cols-6 gap-3">
       {/* Always show reward information for vega */}
