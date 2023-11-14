@@ -294,14 +294,14 @@ export const Vesting = ({
   assetId,
   pubKey,
   baseRate,
-  multiplier,
+  multiplier = '1',
   vestingBalancesSummary,
   epoch,
 }: {
   assetId: string;
   pubKey: string | null;
   baseRate: string;
-  multiplier: string | undefined;
+  multiplier?: string;
   vestingBalancesSummary: VestingBalances | undefined;
   epoch: number;
 }) => {
@@ -309,6 +309,8 @@ export const Vesting = ({
 
   if (!asset) return null;
 
+  const rate = new BigNumber(baseRate).times(multiplier);
+  const rateFormatted = formatPercentage(Number(rate));
   const baseRateFormatted = formatPercentage(Number(baseRate));
 
   const lockedEntries = vestingBalancesSummary?.lockedBalances?.filter(
@@ -327,7 +329,7 @@ export const Vesting = ({
 
   return (
     <div className="pt-4">
-      <CardStat value={baseRateFormatted + '%'} />
+      <CardStat value={rateFormatted + '%'} />
       <CardTable>
         <tr>
           <CardTableTH>{t('Base rate')}</CardTableTH>
