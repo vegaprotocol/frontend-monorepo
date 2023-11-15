@@ -25,7 +25,7 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
   const showColumnsOnDesktop = () => {
     ref.current?.columnApi.setColumnsVisible(
       ['id', 'type', 'status'],
-      window.innerWidth > BREAKPOINT_MD,
+      window.innerWidth > BREAKPOINT_MD
     );
   };
 
@@ -85,7 +85,7 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
           ),
       },
     ],
-    [navigate, assetStatusMapping, assetTypeMapping],
+    [navigate, assetStatusMapping, assetTypeMapping]
   );
 
   return (
