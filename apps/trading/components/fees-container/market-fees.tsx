@@ -7,34 +7,38 @@ import BigNumber from 'bignumber.js';
 import { useNavigateWithMeta } from '../../lib/hooks/use-market-click-handler';
 import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
+import { useMemo } from 'react';
 
 const useFeesTableColumnDefs = () => {
   const t = useT();
-  return [
-    { field: 'code', cellRenderer: 'MarketCodeCell' },
-    {
-      field: 'feeAfterDiscount',
-      headerName: t('Total fee after discount'),
-      valueFormatter: ({ value }: { value: number }) => value + '%',
-    },
-    {
-      field: 'infraFee',
-      valueFormatter: ({ value }: { value: number }) => value + '%',
-    },
-    {
-      field: 'makerFee',
-      valueFormatter: ({ value }: { value: number }) => value + '%',
-    },
-    {
-      field: 'liquidityFee',
-      valueFormatter: ({ value }: { value: number }) => value + '%',
-    },
-    {
-      field: 'totalFee',
-      headerName: t('Total fee before discount'),
-      valueFormatter: ({ value }: { value: number }) => value + '%',
-    },
-  ];
+  return useMemo(
+    () => [
+      { field: 'code', cellRenderer: 'MarketCodeCell' },
+      {
+        field: 'feeAfterDiscount',
+        headerName: t('Total fee after discount'),
+        valueFormatter: ({ value }: { value: number }) => value + '%',
+      },
+      {
+        field: 'infraFee',
+        valueFormatter: ({ value }: { value: number }) => value + '%',
+      },
+      {
+        field: 'makerFee',
+        valueFormatter: ({ value }: { value: number }) => value + '%',
+      },
+      {
+        field: 'liquidityFee',
+        valueFormatter: ({ value }: { value: number }) => value + '%',
+      },
+      {
+        field: 'totalFee',
+        headerName: t('Total fee before discount'),
+        valueFormatter: ({ value }: { value: number }) => value + '%',
+      },
+    ],
+    [t]
+  );
 };
 
 const feesTableDefaultColDef = {
