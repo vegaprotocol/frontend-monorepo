@@ -1,5 +1,3 @@
-import time
-
 from collections import namedtuple
 from playwright.sync_api import Page
 from vega_sim.null_service import VegaServiceNull
