@@ -5,7 +5,6 @@ import {
   addDecimalsFormatNumber,
   validateAmount,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -19,6 +18,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import type { Order } from '../order-data-provider';
+import { useT } from '../../use-t';
 
 interface OrderEditDialogProps {
   isOpen: boolean;
@@ -38,6 +38,7 @@ export const OrderEditDialog = ({
   order,
   onSubmit,
 }: OrderEditDialogProps) => {
+  const t = useT();
   const headerClassName = 'text-xs font-bold text-black dark:text-white';
   const {
     register,
@@ -60,7 +61,7 @@ export const OrderEditDialog = ({
       title={t('Edit order')}
       icon={<VegaIcon name={VegaIconNames.EDIT} />}
     >
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
         {order.market && (
           <div className="md:col-span-2">
             <p className={headerClassName}>{t(`Market`)}</p>
@@ -99,10 +100,10 @@ export const OrderEditDialog = ({
       <form
         onSubmit={handleSubmit(onSubmit)}
         data-testid="edit-order"
-        className="w-full mt-4"
+        className="mt-4 w-full"
         noValidate
       >
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col gap-4 md:flex-row">
           <TradingFormGroup
             label={t('Price')}
             labelFor="limitPrice"

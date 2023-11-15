@@ -6,7 +6,6 @@ import {
   isNumeric,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import {
   ActionsDropdown,
@@ -30,10 +29,11 @@ import {
   type VegaValueFormatterParams,
   type VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
-import { AgGridReact } from 'ag-grid-react';
+import { type AgGridReact } from 'ag-grid-react';
 import { type Order } from '../order-data-provider';
 import { Filter } from '../order-list-manager/order-list-manager';
 import { type ColDef } from 'ag-grid-community';
+import { useT } from '../../use-t';
 
 const defaultColDef = {
   resizable: true,
@@ -68,6 +68,7 @@ export const OrderListTable = memo<
       },
       ref
     ) => {
+      const t = useT();
       const showAllActions = props.isReadOnly
         ? false
         : filter === undefined || filter === Filter.Open
@@ -252,11 +253,14 @@ export const OrderListTable = memo<
               }
 
               const tifLabel = value ? Schema.OrderTimeInForceCode[value] : '';
-              const label = `${tifLabel}${
-                data?.postOnly ? t('. Post Only') : ''
-              }${data?.reduceOnly ? t('. Reduce only') : ''}`;
+              if (data?.postOnly) {
+                return t('{{tifLabel}}. Post Only', { tifLabel });
+              }
+              if (data?.reduceOnly) {
+                return t('{{tifLabel}}. Reduce only', { tifLabel });
+              }
 
-              return label;
+              return tifLabel;
             },
           },
           {
@@ -336,6 +340,7 @@ export const OrderListTable = memo<
           onOrderTypeClick,
           props.isReadOnly,
           showAllActions,
+          t,
         ]
       );
 

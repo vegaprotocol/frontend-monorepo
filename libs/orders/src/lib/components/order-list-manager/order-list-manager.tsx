@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import { useCallback, useRef, useState, useEffect } from 'react';
 import { type AgGridReact } from 'ag-grid-react';
 import { Pagination, type useDataGridEvents } from '@vegaprotocol/datagrid';
@@ -12,6 +11,7 @@ import { type Order } from '../order-data-provider';
 import { OrderViewDialog } from '../order-list/order-view-dialog';
 import { OrderListTable } from '../order-list';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
+import { useT } from '../../use-t';
 
 export enum Filter {
   'Open' = 'Open',
@@ -38,6 +38,7 @@ export const OrderListManager = ({
   gridProps,
   noRowsMessage,
 }: OrderListManagerProps) => {
+  const t = useT();
   const gridRef = useRef<AgGridReact | null>(null);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const [viewOrder, setViewOrder] = useState<Order | null>(null);
@@ -85,7 +86,13 @@ export const OrderListManager = ({
   );
 
   if (error) {
-    return <Splash>{t(`Something went wrong: ${error.message}`)}</Splash>;
+    return (
+      <Splash>
+        {t(`Something went wrong: {{errorMessage}}`, {
+          errorMessage: error.message,
+        })}
+      </Splash>
+    );
   }
 
   return (

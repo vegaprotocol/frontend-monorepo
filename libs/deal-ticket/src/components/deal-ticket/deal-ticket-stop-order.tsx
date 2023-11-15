@@ -36,7 +36,6 @@ import {
 } from '@vegaprotocol/markets';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
-import { timeInForceLabel } from '@vegaprotocol/orders';
 import {
   NoWalletWarning,
   REDUCE_ONLY_TOOLTIP,
@@ -479,13 +478,21 @@ const TimeInForce = ({
                   key={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
                   value={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
                 >
-                  {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_IOC)}
+                  {
+                    Schema.OrderTimeInForceMapping[
+                      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
+                    ]
+                  }
                 </option>
                 <option
                   key={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
                   value={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
                 >
-                  {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_FOK)}
+                  {
+                    Schema.OrderTimeInForceMapping[
+                      Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
+                    ]
+                  }
                 </option>
               </Select>
             </FormGroup>

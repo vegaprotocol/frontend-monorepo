@@ -71,6 +71,7 @@ i18n
     defaultNS: 'trading',
     nsSeparator: false,
     keySeparator: false, // we use content as keys
+    nsSeparator: false,
     backend,
     debug: isInDev,
     saveMissing: useLocize && !!process.env.NX_LOCIZE_API_KEY,
