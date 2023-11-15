@@ -1,5 +1,5 @@
 import { useAssetDataProvider } from '@vegaprotocol/assets';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { addDecimalsFixedFormatNumber } from '@vegaprotocol/utils';
 import { AssetLink } from '../links';
 
 export type AssetBalanceProps = {
@@ -23,12 +23,12 @@ const AssetBalance = ({
 
   const label =
     !loading && asset && asset.decimals
-      ? addDecimalsFormatNumber(price, asset.decimals)
+      ? addDecimalsFixedFormatNumber(price, asset.decimals)
       : price;
 
   return (
     <div className="inline-block">
-      <span>{label}</span>{' '}
+      <span className="font-mono">{label}</span>{' '}
       {showAssetLink && asset?.id ? (
         <AssetLink showAssetSymbol={showAssetSymbol} assetId={assetId} />
       ) : null}
