@@ -1,4 +1,3 @@
-export * from './__generated__';
 export * from './components';
 export * from './oracle-schema';
 export * from './oracle-spec-data-connection.mock';
@@ -13,3 +12,13 @@ export * from './markets-candles-provider';
 export * from './markets-data-provider';
 export * from './markets-provider';
 export * from './product';
+
+export * from './__generated__/funding-periods';
+export * from './__generated__/market-candles';
+export * from './__generated__/markets-candles';
+export * from './__generated__/market-data';
+export * from './__generated__/markets';
+export * from './__generated__/markets-data';
+export * from './__generated__/OracleMarketsSpec';
+export * from './__generated__/OracleSpecDataConnection';
+export * from './__generated__/SuccessorMarket';

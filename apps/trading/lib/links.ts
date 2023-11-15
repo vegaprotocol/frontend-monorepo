@@ -18,6 +18,7 @@ export const Routes = {
   REFERRALS_CREATE_CODE: '/referrals/create-code',
   TEAMS: '/teams',
   FEES: '/fees',
+  REWARDS: '/rewards',
 } as const;
 
 type ConsoleLinks = {
@@ -42,4 +43,5 @@ export const Links: ConsoleLinks = {
   REFERRALS_CREATE_CODE: () => Routes.REFERRALS_CREATE_CODE,
   TEAMS: () => Routes.TEAMS,
   FEES: () => Routes.FEES,
+  REWARDS: () => Routes.REWARDS,
 };

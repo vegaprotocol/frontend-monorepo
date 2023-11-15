@@ -7,3 +7,4 @@ export * from './asset-option';
 export * from './assets-data-provider';
 export * from './constants';
 export * from './use-balances-store';
+export * from './utils';

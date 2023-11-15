@@ -4,6 +4,7 @@ import { marketsMapProvider } from '@vegaprotocol/markets';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
+  useDataProvider,
 } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import { type Market } from '@vegaprotocol/markets';
@@ -214,3 +215,13 @@ export const aggregatedAccountDataProvider = makeDerivedDataProvider<
       (account) => account.asset.id === assetId
     ) || null
 );
+
+export const useAccounts = (partyId: string | null) => {
+  return useDataProvider({
+    dataProvider: accountsDataProvider,
+    variables: {
+      partyId: partyId || '',
+    },
+    skip: !partyId,
+  });
+};
