@@ -74,15 +74,6 @@
         ]
       }
     },
-    "build-netlify": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "cp apps/explorer/netlify.toml netlify.toml",
-          "nx build explorer"
-        ]
-      }
-    },
     "build-spec": {
       "executor": "nx:run-commands",
       "outputs": [],

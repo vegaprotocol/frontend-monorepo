@@ -69,15 +69,6 @@
         "jestConfig": "apps/governance/jest.config.ts"
       }
     },
-    "build-netlify": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "cp apps/governance/netlify.toml netlify.toml",
-          "nx build token"
-        ]
-      }
-    },
     "build-spec": {
       "executor": "nx:run-commands",
       "outputs": [],
