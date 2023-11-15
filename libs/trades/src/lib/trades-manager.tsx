@@ -2,8 +2,8 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
 import { useDealTicketFormValues } from '@vegaprotocol/deal-ticket';
-import { t } from '@vegaprotocol/i18n';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
+import { useT } from './use-t';
 
 interface TradesContainerProps {
   marketId: string;
@@ -14,6 +14,7 @@ export const TradesManager = ({
   marketId,
   gridProps,
 }: TradesContainerProps) => {
+  const t = useT();
   const update = useDealTicketFormValues((state) => state.updateAll);
 
   const { data, error } = useDataProvider({
