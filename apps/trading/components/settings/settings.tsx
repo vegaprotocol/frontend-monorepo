@@ -21,7 +21,7 @@ export const Settings = () => {
       <SettingsGroup
         label={t('Share usage data')}
         helpText={t(
-          'Help identify bugs and improve the service by sharing anonymous usage data.',
+          'Help identify bugs and improve the service by sharing anonymous usage data.'
         )}
       >
         <Switch

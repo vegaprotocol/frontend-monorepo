@@ -37,7 +37,7 @@ export const ApplyCodeForm = () => {
   const program = useReferralProgram();
   const navigate = useNavigate();
   const openWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog,
+    (store) => store.openVegaWalletDialog
   );
 
   const [status, setStatus] = useState<
@@ -248,7 +248,7 @@ export const ApplyCodeForm = () => {
           <h2 className="text-2xl mb-5">
             {t(
               'You are joining the group shown, but will not have access to benefits until you have completed at least %s epochs.',
-              [nextBenefitTierEpochsValue.toString()],
+              [nextBenefitTierEpochsValue.toString()]
             )}
           </h2>
           <Statistics data={previewData} program={program} as="referee" />
