@@ -85,6 +85,7 @@ describe('RewarsHistoryTable', () => {
       to: 10,
     },
     onEpochChange: jest.fn(),
+    loading: false,
   };
 
   it('Renders table with accounts summed up by asset', () => {
