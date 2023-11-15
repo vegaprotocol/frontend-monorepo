@@ -1,23 +1,21 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import type { MockedResponse } from '@apollo/client/testing';
+import { type MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useVegaTransactionUpdater } from './use-vega-transaction-updater';
 import {
   OrderTxUpdateDocument,
   TransactionEventDocument,
   WithdrawalBusEventDocument,
-} from './__generated__/TransactionResult';
-import type {
-  OrderTxUpdateSubscription,
-  OrderTxUpdateFieldsFragment,
-  WithdrawalBusEventSubscription,
-  WithdrawalBusEventFieldsFragment,
-  TransactionEventSubscription,
-  TransactionEventFieldsFragment,
+  type OrderTxUpdateSubscription,
+  type OrderTxUpdateFieldsFragment,
+  type WithdrawalBusEventSubscription,
+  type WithdrawalBusEventFieldsFragment,
+  type TransactionEventSubscription,
+  type TransactionEventFieldsFragment,
 } from './__generated__/TransactionResult';
 
-import type { VegaTransactionStore } from './use-vega-transaction-store';
+import { type VegaTransactionStore } from './use-vega-transaction-store';
 import {
   AssetStatus,
   BusEventType,

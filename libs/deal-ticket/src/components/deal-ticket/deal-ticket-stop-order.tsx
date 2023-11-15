@@ -1,8 +1,8 @@
 import { useRef, useCallback, useEffect } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import type {
-  OrderSubmissionBody,
-  StopOrdersSubmission,
+import {
+  type OrderSubmissionBody,
+  type StopOrdersSubmission,
 } from '@vegaprotocol/wallet';
 import {
   formatForInput,
@@ -11,7 +11,7 @@ import {
   toDecimal,
   validateAmount,
 } from '@vegaprotocol/utils';
-import type { Control, UseFormWatch } from 'react-hook-form';
+import { type Control, type UseFormWatch } from 'react-hook-form';
 import { useForm, Controller, useController } from 'react-hook-form';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -52,7 +52,7 @@ import {
   dealTicketTypeToOrderType,
   isStopOrderType,
 } from '../../hooks/use-form-values';
-import type { StopOrderFormValues } from '../../hooks/use-form-values';
+import { type StopOrderFormValues } from '../../hooks/use-form-values';
 import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values-to-submission';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { validateExpiration } from '../../utils';
@@ -542,7 +542,7 @@ const NotionalAndFees = ({
     market.positionDecimalPlaces
   );
   return (
-    <div className="mb-4 flex flex-col gap-2 w-full">
+    <div className="mb-4 flex w-full flex-col gap-2">
       <KeyValue
         label={t('Notional')}
         value={formatValue(notionalSize, market.decimalPlaces)}
@@ -909,7 +909,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         marketPrice={marketPrice}
         decimalPlaces={market.decimalPlaces}
       />
-      <hr className="mb-4 border-vega-clight-500 dark:border-vega-cdark-500" />
+      <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-4" />
       <Size
         control={control}
         sizeStep={sizeStep}
@@ -934,11 +934,11 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         type={type}
       />
       <TimeInForce control={control} />
-      <div className="flex justify-end pb-3 gap-2">
+      <div className="flex justify-end gap-2 pb-3">
         <ReduceOnly />
       </div>
-      <hr className="mb-4 border-vega-clight-500 dark:border-vega-cdark-500" />
-      <div className="flex justify-between pb-2 gap-2">
+      <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-4" />
+      <div className="flex justify-between gap-2 pb-2">
         <Controller
           name="oco"
           control={control}
@@ -1005,7 +1005,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             decimalPlaces={market.decimalPlaces}
             oco
           />
-          <hr className="mb-2 border-vega-clight-500 dark:border-vega-cdark-500" />
+          <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-2" />
           <Size
             control={control}
             sizeStep={sizeStep}
@@ -1034,7 +1034,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             type={ocoType}
           />
           <TimeInForce control={control} oco />
-          <div className="flex justify-end mb-2 gap-2">
+          <div className="mb-2 flex justify-end gap-2">
             <ReduceOnly />
           </div>
         </>

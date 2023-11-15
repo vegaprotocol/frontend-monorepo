@@ -1,9 +1,9 @@
-import type { AgGridReact } from 'ag-grid-react';
+import { type AgGridReact } from 'ag-grid-react';
 import { useCallback, useRef, useState } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import { FundingPaymentsTable } from './funding-payments-table';
 import { Pagination } from '@vegaprotocol/datagrid';
-import type { useDataGridEvents } from '@vegaprotocol/datagrid';
+import { type useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { fundingPaymentsWithMarketProvider } from './funding-payments-data-provider';
 
@@ -44,7 +44,7 @@ export const FundingPaymentsManager = ({
   });
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       <FundingPaymentsTable
         ref={gridRef}
         rowData={data}

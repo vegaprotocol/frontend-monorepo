@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
-import type { FormEventHandler } from 'react';
+import { type FormEventHandler } from 'react';
 import { memo, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Controller, useController, useForm } from 'react-hook-form';
 import {
@@ -11,7 +11,7 @@ import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-import type { OrderSubmission } from '@vegaprotocol/wallet';
+import { type OrderSubmission } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { mapFormValuesToOrderSubmission } from '../../utils/map-form-values-to-submission';
 import {
@@ -66,7 +66,7 @@ import {
   useAccountBalance,
 } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type { OrderFormValues } from '../../hooks';
+import { type OrderFormValues } from '../../hooks';
 import {
   DealTicketType,
   dealTicketTypeToOrderType,
@@ -471,7 +471,7 @@ export const DealTicket = ({
           )}
         />
       )}
-      <div className="flex flex-col w-full mb-4 gap-2">
+      <div className="mb-4 flex w-full flex-col gap-2">
         <KeyValue
           label={t('Notional')}
           value={formatValue(notionalSize, market.decimalPlaces)}
@@ -545,7 +545,7 @@ export const DealTicket = ({
             )}
           />
         )}
-      <div className="flex justify-between pb-2 gap-2">
+      <div className="flex justify-between gap-2 pb-2">
         <Controller
           name="postOnly"
           control={control}
@@ -621,7 +621,7 @@ export const DealTicket = ({
       </div>
       {isLimitType && (
         <>
-          <div className="flex justify-between pb-2 gap-2">
+          <div className="flex justify-between gap-2 pb-2">
             <Controller
               name="iceberg"
               control={control}

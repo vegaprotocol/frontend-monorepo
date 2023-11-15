@@ -1,7 +1,6 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import classNames from 'classnames';
-import type { ComponentProps, ReactNode } from 'react';
-import { forwardRef } from 'react';
+import { forwardRef, type ComponentProps, type ReactNode } from 'react';
 import { VegaIcon, VegaIconNames } from '../icon';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import CopyToClipboard from 'react-copy-to-clipboard';

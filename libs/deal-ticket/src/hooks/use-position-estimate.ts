@@ -1,6 +1,6 @@
-import type {
-  EstimatePositionQueryVariables,
-  EstimatePositionQuery,
+import {
+  type EstimatePositionQuery,
+  type EstimatePositionQueryVariables,
 } from '@vegaprotocol/positions';
 import { useEstimatePositionQuery } from '@vegaprotocol/positions';
 import { useEffect, useState } from 'react';

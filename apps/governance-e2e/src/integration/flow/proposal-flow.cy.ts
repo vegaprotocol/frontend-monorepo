@@ -34,7 +34,7 @@ import {
   vegaWalletTeardown,
 } from '../../support/wallet-functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
-import type { testFreeformProposal } from '../../support/common-interfaces';
+import { type testFreeformProposal } from '../../support/common-interfaces';
 
 const vegaWalletStakedBalances = 'vega-wallet-balance-staked-validators';
 const vegaWalletAssociatedBalance = 'associated-amount';

@@ -2,14 +2,14 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/data-provider';
-import type { Market } from '@vegaprotocol/markets';
+import { type Market } from '@vegaprotocol/markets';
 import { marketsMapProvider } from '@vegaprotocol/markets';
-import type {
-  StopOrderFieldsFragment,
-  StopOrdersQuery,
-  StopOrdersQueryVariables,
+import {
+  StopOrdersDocument,
+  type StopOrdersQuery,
+  type StopOrdersQueryVariables,
+  type StopOrderFieldsFragment,
 } from './__generated__/Orders';
-import { StopOrdersDocument } from './__generated__/Orders';
 
 export type StopOrder = StopOrderFieldsFragment & {
   market: Market;

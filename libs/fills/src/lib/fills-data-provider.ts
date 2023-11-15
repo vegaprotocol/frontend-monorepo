@@ -1,20 +1,21 @@
 import orderBy from 'lodash/orderBy';
-import type { PageInfo, Cursor } from '@vegaprotocol/data-provider';
+import { type PageInfo, type Cursor } from '@vegaprotocol/data-provider';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
   defaultAppend as append,
 } from '@vegaprotocol/data-provider';
-import type { Market } from '@vegaprotocol/markets';
+import { type Market } from '@vegaprotocol/markets';
 import { marketsMapProvider } from '@vegaprotocol/markets';
-import { FillsDocument, FillsEventDocument } from './__generated__/Fills';
-import type {
-  FillsQuery,
-  FillsQueryVariables,
-  FillFieldsFragment,
-  FillsEventSubscription,
-  FillUpdateFieldsFragment,
-  FillsEventSubscriptionVariables,
+import {
+  FillsDocument,
+  FillsEventDocument,
+  type FillsQuery,
+  type FillsQueryVariables,
+  type FillFieldsFragment,
+  type FillsEventSubscription,
+  type FillUpdateFieldsFragment,
+  type FillsEventSubscriptionVariables,
 } from './__generated__/Fills';
 
 export type Trade = Omit<FillFieldsFragment, 'market'> & {

@@ -1,10 +1,10 @@
-import type { ApolloClient } from '@apollo/client';
-import type { VegaStoredTxState } from './use-vega-transaction-store';
-import type {
-  WithdrawalApprovalQuery,
-  WithdrawalApprovalQueryVariables,
+import { type ApolloClient } from '@apollo/client';
+import { type VegaStoredTxState } from './use-vega-transaction-store';
+import {
+  WithdrawalApprovalDocument,
+  type WithdrawalApprovalQuery,
+  type WithdrawalApprovalQueryVariables,
 } from './__generated__/WithdrawalApproval';
-import { WithdrawalApprovalDocument } from './__generated__/WithdrawalApproval';
 
 export const waitForWithdrawalApproval = (
   withdrawalId: string,

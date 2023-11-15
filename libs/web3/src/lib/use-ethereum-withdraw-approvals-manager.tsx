@@ -8,17 +8,13 @@ import { t } from '@vegaprotocol/i18n';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 
 import { CollateralBridge } from '@vegaprotocol/smart-contracts';
-
 import { useEthereumConfig } from './use-ethereum-config';
 import { useWeb3React } from '@web3-react/core';
-
-import type {
-  WithdrawalApprovalQuery,
-  WithdrawalApprovalQueryVariables,
+import {
+  WithdrawalApprovalDocument,
+  type WithdrawalApprovalQuery,
+  type WithdrawalApprovalQueryVariables,
 } from './__generated__/WithdrawalApproval';
-
-import { WithdrawalApprovalDocument } from './__generated__/WithdrawalApproval';
-
 import { useEthTransactionStore } from './use-ethereum-transaction-store';
 import {
   ApprovalStatus,

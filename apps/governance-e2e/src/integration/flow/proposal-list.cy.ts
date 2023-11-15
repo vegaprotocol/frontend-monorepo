@@ -1,4 +1,4 @@
-import type { testFreeformProposal } from '../../support/common-interfaces';
+import { type testFreeformProposal } from '../../support/common-interfaces';
 import {
   navigateTo,
   navigation,

@@ -1,13 +1,11 @@
 import { makeDataProvider } from '@vegaprotocol/data-provider';
-import type {
-  MarketCandlesQuery,
-  MarketCandlesQueryVariables,
-  MarketCandlesUpdateSubscription,
-  MarketCandlesFieldsFragment,
-} from './__generated__/market-candles';
 import {
   MarketCandlesDocument,
   MarketCandlesUpdateDocument,
+  type MarketCandlesQuery,
+  type MarketCandlesQueryVariables,
+  type MarketCandlesUpdateSubscription,
+  type MarketCandlesFieldsFragment,
 } from './__generated__/market-candles';
 
 export type Candle = MarketCandlesFieldsFragment;

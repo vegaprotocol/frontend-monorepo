@@ -19,11 +19,13 @@ import type { FilterOption } from '../../../components/txs/tx-filter';
 import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
 import { useSearchParams } from 'react-router-dom';
 
+type Params = { party: string };
+
 const Party = () => {
   const [params] = useSearchParams();
 
   const [filters, setFilters] = useState(new Set(AllFilterOptions));
-  const { party } = useParams<{ party: string }>();
+  const { party } = useParams<Params>();
 
   useDocumentTitle(['Public keys', party || '-']);
   const navigate = useNavigate();
@@ -60,7 +62,7 @@ const Party = () => {
 
   if (!isValidPartyId(partyId)) {
     return (
-      <div className="max-w-sm mx-auto">
+      <div className="mx-auto max-w-sm">
         <Notification
           message={t('Invalid party ID')}
           intent={Intent.Danger}
@@ -84,7 +86,7 @@ const Party = () => {
         truncateEnd={visibleChars}
       />
 
-      <div className="grid md:grid-flow-col grid-flow-row md:space-x-4 grid-cols-1 md:grid-cols-2 w-full">
+      <div className="grid w-full grid-flow-row grid-cols-1 md:grid-flow-col md:grid-cols-2 md:space-x-4">
         <PartyBlockAccounts
           accountError={AccountError}
           accountLoading={AccountLoading}

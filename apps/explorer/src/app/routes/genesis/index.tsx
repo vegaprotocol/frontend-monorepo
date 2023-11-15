@@ -3,7 +3,7 @@ import { useFetch } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../components/route-title';
 import { AsyncRenderer, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { DATA_SOURCES } from '../../config';
-import type { TendermintGenesisResponse } from './tendermint-genesis-response';
+import { type TendermintGenesisResponse } from './tendermint-genesis-response';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 
 const Genesis = () => {

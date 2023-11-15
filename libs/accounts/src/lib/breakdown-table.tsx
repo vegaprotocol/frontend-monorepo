@@ -5,12 +5,12 @@ import {
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { Intent, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
-import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
-import type { AccountFields } from './accounts-data-provider';
+import { type AgGridReact, type AgGridReactProps } from 'ag-grid-react';
+import { type AccountFields } from './accounts-data-provider';
 import { AccountTypeMapping } from '@vegaprotocol/types';
-import type {
-  VegaValueFormatterParams,
-  VegaICellRendererParams,
+import {
+  type VegaValueFormatterParams,
+  type VegaICellRendererParams,
 } from '@vegaprotocol/datagrid';
 import { ProgressBarCell } from '@vegaprotocol/datagrid';
 import { AgGrid, PriceCell } from '@vegaprotocol/datagrid';

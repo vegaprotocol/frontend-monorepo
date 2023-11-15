@@ -5,9 +5,9 @@ import * as faker from 'faker';
 import isArray from 'lodash/isArray';
 import mergeWith from 'lodash/mergeWith';
 
-import type { PartialDeep } from 'type-fest';
-import type { ProposalQuery } from '../proposal/__generated__/Proposal';
-import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { type PartialDeep } from 'type-fest';
+import { type ProposalQuery } from '../proposal/__generated__/Proposal';
+import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 
 export function generateProtocolUpgradeProposal(
   override: PartialDeep<ProtocolUpgradeProposalFieldsFragment> = {}

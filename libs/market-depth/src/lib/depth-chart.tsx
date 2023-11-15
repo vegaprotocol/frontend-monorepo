@@ -8,13 +8,13 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketDepthProvider } from './market-depth-provider';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
-import type { MarketData } from '@vegaprotocol/markets';
-import type {
-  MarketDepthQuery,
-  MarketDepthUpdateSubscription,
-  PriceLevelFieldsFragment,
+import { type MarketData } from '@vegaprotocol/markets';
+import {
+  type MarketDepthQuery,
+  type MarketDepthUpdateSubscription,
+  type PriceLevelFieldsFragment,
 } from './__generated__/MarketDepth';
-import type { DepthChartProps } from 'pennant';
+import { type DepthChartProps } from 'pennant';
 import { parseLevel, updateLevels } from './depth-chart-utils';
 
 interface DepthChartManagerProps {
@@ -238,7 +238,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
           volumeFormat={volumeFormat}
           priceFormat={priceFormat}
           notEnoughDataText={
-            <span className="text-xs text-center">{t('No open orders')}</span>
+            <span className="text-center text-xs">{t('No open orders')}</span>
           }
         />
       )}

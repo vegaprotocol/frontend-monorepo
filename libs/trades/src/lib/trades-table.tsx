@@ -1,20 +1,24 @@
 import { useMemo } from 'react';
-import type { ColDef } from 'ag-grid-community';
-import type {
-  VegaICellRendererParams,
-  VegaValueFormatterParams,
+import {
+  AgGrid,
+  NumericCell,
+  type VegaICellRendererParams,
+  type VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { AgGrid, NumericCell } from '@vegaprotocol/datagrid';
 import {
   addDecimal,
   addDecimalsFormatNumber,
   getTimeFormat,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
-import type { CellClassParams } from 'ag-grid-community';
-import type { AgGridReactProps } from 'ag-grid-react';
-import type { Trade } from './trades-data-provider';
+import {
+  type ColDef,
+  type CellClassParams,
+  type IDatasource,
+  type IGetRowsParams,
+} from 'ag-grid-community';
+import { type AgGridReactProps } from 'ag-grid-react';
+import { type Trade } from './trades-data-provider';
 import { Side } from '@vegaprotocol/types';
 
 export const BUY_CLASS = 'text-market-green-600 dark:text-market-green';

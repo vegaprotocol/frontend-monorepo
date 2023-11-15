@@ -1,14 +1,11 @@
 import {
   NodeCheckDocument,
   NodeCheckTimeUpdateDocument,
-} from '../../utils/__generated__/NodeCheck';
-import type {
-  NodeCheckQuery,
-  NodeCheckTimeUpdateSubscription,
+  type NodeCheckQuery,
+  type NodeCheckTimeUpdateSubscription,
 } from '../../utils/__generated__/NodeCheck';
 import { Networks } from '../../types';
-import type { RequestHandlerResponse } from 'mock-apollo-client';
-import { createMockClient } from 'mock-apollo-client';
+import { createMockClient, RequestHandlerResponse } from 'mock-apollo-client';
 
 export type MockRequestConfig = {
   hasError?: boolean;

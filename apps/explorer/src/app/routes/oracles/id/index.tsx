@@ -9,8 +9,10 @@ import { AsyncRenderer, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import filter from 'recursive-key-filter';
 import { TruncateInline } from '../../../components/truncate/truncate';
 
+type Params = { id: string };
+
 export const Oracle = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<Params>();
 
   useDocumentTitle(['Oracle', `Oracle #${truncateByChars(id || '1', 5, 5)}`]);
 

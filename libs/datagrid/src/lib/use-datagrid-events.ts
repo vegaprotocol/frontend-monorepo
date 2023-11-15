@@ -1,12 +1,12 @@
-import type {
-  ColumnMovedEvent,
-  ColumnResizedEvent,
-  ColumnState,
-  ColumnVisibleEvent,
-  FilterChangedEvent,
-  FirstDataRenderedEvent,
-  SortChangedEvent,
-  GridReadyEvent,
+import {
+  type ColumnMovedEvent,
+  type ColumnResizedEvent,
+  type ColumnState,
+  type ColumnVisibleEvent,
+  type FilterChangedEvent,
+  type FirstDataRenderedEvent,
+  type SortChangedEvent,
+  type GridReadyEvent,
 } from 'ag-grid-community';
 import { useCallback } from 'react';
 

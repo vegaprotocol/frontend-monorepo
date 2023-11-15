@@ -3,11 +3,11 @@ import throttle from 'lodash/throttle';
 import isEqualWith from 'lodash/isEqualWith';
 import { useApolloClient } from '@apollo/client';
 import type { OperationVariables } from '@apollo/client';
-import type {
-  Subscribe,
-  Load,
-  UpdateCallback,
-  PageInfo,
+import {
+  type UpdateCallback,
+  type PageInfo,
+  type Subscribe,
+  type Load,
 } from './generic-data-provider';
 import { variablesIsEqualCustomizer } from './generic-data-provider';
 

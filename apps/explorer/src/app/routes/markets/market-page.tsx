@@ -11,10 +11,12 @@ import { JsonViewerDialog } from '../../components/dialogs/json-viewer-dialog';
 import { marketInfoWithDataProvider } from '@vegaprotocol/markets';
 import { PageTitle } from '../../components/page-helpers/page-title';
 
+type Params = { marketId: string };
+
 export const MarketPage = () => {
   useScrollToLocation();
 
-  const { marketId } = useParams<{ marketId: string }>();
+  const { marketId } = useParams<Params>();
 
   const { data, loading, error } = useDataProvider({
     dataProvider: marketInfoWithDataProvider,
