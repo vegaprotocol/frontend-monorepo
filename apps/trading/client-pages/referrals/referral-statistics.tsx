@@ -69,7 +69,7 @@ export const useStats = ({
   program: ReturnType<typeof useReferralProgram>;
   as?: 'referrer' | 'referee';
 }) => {
-  const { benefitTiers, details } = program;
+  const { benefitTiers } = program;
   const { data: epochData } = useCurrentEpochInfoQuery();
   const { data: statsData } = useReferralSetStatsQuery({
     variables: {
@@ -86,7 +86,7 @@ export const useStats = ({
     compact(removePaginationWrapper(statsData.referralSetStats.edges));
   const refereeInfo = data?.referee;
   const refereeStats = stats?.find(
-    (r) => r.partyId === data?.referee?.refereeId,
+    (r) => r.partyId === data?.referee?.refereeId
   );
 
   const statsAvailable = stats && stats.length > 0 && stats[0];
@@ -113,7 +113,7 @@ export const useStats = ({
     (t) =>
       !isNaN(discountFactorValue) &&
       !isNaN(t.discountFactor) &&
-      t.discountFactor === discountFactorValue,
+      t.discountFactor === discountFactorValue
   );
   const nextBenefitTierValue = currentBenefitTierValue
     ? benefitTiers.find((t) => t.tier === currentBenefitTierValue.tier - 1)
@@ -169,7 +169,7 @@ export const Statistics = ({
 
   const isApplyCodePreview = useMemo(
     () => data.referee === null,
-    [data.referee],
+    [data.referee]
   );
 
   const { benefitTiers } = useReferralProgram();
@@ -194,7 +194,7 @@ export const Statistics = ({
           epochs: (
             details?.windowLength || DEFAULT_AGGREGATION_DAYS
           ).toString(),
-        },
+        }
       )}
     >
       {baseCommissionValue * 100}%
@@ -346,7 +346,7 @@ export const Statistics = ({
       {/* Stats tiles */}
       <div
         className={classNames(
-          'grid grid-cols-1 grid-rows-1 gap-5 mx-auto mb-20',
+          'grid grid-cols-1 grid-rows-1 gap-5 mx-auto mb-20'
         )}
       >
         {as === 'referrer' && referrerTiles}
@@ -363,7 +363,7 @@ export const Statistics = ({
                 'relative max-h-96 overflow-hidden',
                 'after:w-full after:h-20 after:absolute after:bottom-0 after:left-0',
                 'after:bg-gradient-to-t after:from-white after:dark:from-vega-cdark-900 after:to-transparent',
-              ],
+              ]
             )}
           >
             <button
@@ -371,7 +371,7 @@ export const Statistics = ({
                 'absolute left-1/2 bottom-0 z-10 p-2 translate-x-[-50%]',
                 {
                   hidden: !collapsed,
-                },
+                }
               )}
               onClick={() => setCollapsed(false)}
             >
@@ -414,7 +414,7 @@ export const Statistics = ({
                   volume: Number(r.totalRefereeNotionalTakerVolume),
                   commission: Number(r.totalRefereeGeneratedRewards),
                 })),
-                (r) => r.volume,
+                (r) => r.volume
               )
                 .map((r) => ({
                   ...r,
@@ -438,7 +438,7 @@ export const QUSDTooltip = () => {
         <>
           <p className="mb-1">
             {t(
-              'qUSD provides a rough USD equivalent of balances across all assets using the value of "Quantum" for that asset',
+              'qUSD provides a rough USD equivalent of balances across all assets using the value of "Quantum" for that asset'
             )}
           </p>
           {DocsLinks && (
