@@ -3,7 +3,7 @@ import {
   getDateTimeFormat,
   isNumeric,
   toBigNum,
-  formatTrigger,
+  useFormatTrigger,
 } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -52,6 +52,7 @@ export type StopOrdersTableProps = TypedDataAgGrid<StopOrder> & {
 export const StopOrdersTable = memo(
   ({ onCancel, onMarketClick, onView, ...props }: StopOrdersTableProps) => {
     const t = useT();
+    const formatTrigger = useFormatTrigger();
     const showAllActions = !props.isReadOnly;
     const columnDefs: ColDef[] = useMemo(
       () => [
@@ -110,10 +111,10 @@ export const StopOrdersTable = memo(
             return data?.submission.size && data.market
               ? toBigNum(
                   data.submission.size,
-                  data.market.positionDecimalPlaces ?? 0
+                  data.market.positionDecimalPlaces ?? 0,
                 )
                   .multipliedBy(
-                    data.submission.side === Schema.Side.SIDE_SELL ? -1 : 1
+                    data.submission.side === Schema.Side.SIDE_SELL ? -1 : 1,
                   )
                   .toNumber()
               : undefined;
@@ -136,7 +137,7 @@ export const StopOrdersTable = memo(
               prefix +
               addDecimalsFormatNumber(
                 data.submission.size,
-                data.market.positionDecimalPlaces
+                data.market.positionDecimalPlaces,
               )
             );
           },
@@ -282,7 +283,15 @@ export const StopOrdersTable = memo(
           },
         },
       ],
-      [onCancel, onMarketClick, onView, props.isReadOnly, showAllActions, t]
+      [
+        onCancel,
+        onMarketClick,
+        onView,
+        props.isReadOnly,
+        showAllActions,
+        t,
+        formatTrigger,
+      ],
     );
 
     return (
@@ -294,5 +303,5 @@ export const StopOrdersTable = memo(
         {...props}
       />
     );
-  }
+  },
 );

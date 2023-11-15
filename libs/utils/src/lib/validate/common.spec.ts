@@ -1,6 +1,10 @@
-import { ethereumAddress, vegaPublicKey } from './common';
+import { renderHook } from '@testing-library/react';
+import { useEthereumAddress, useVegaPublicKey } from './common';
 
 it('ethereumAddress', () => {
+  const result = renderHook(useEthereumAddress);
+  const ethereumAddress = result.result.current;
+
   const errorMessage = 'Invalid Ethereum address';
 
   const validAddress = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
@@ -17,6 +21,9 @@ it('ethereumAddress', () => {
 });
 
 it('vegaPublicKey', () => {
+  const result = renderHook(useVegaPublicKey);
+  const vegaPublicKey = result.result.current;
+
   const errorMessage = 'Invalid Vega key';
 
   const validKey =
