@@ -7,6 +7,7 @@ import { IconBreakdown } from './svg-icons/icon-breakdown';
 import { IconBullet } from './svg-icons/icon-bullet';
 import { IconChevronDown } from './svg-icons/icon-chevron-down';
 import { IconChevronLeft } from './svg-icons/icon-chevron-left';
+import { IconChevronRight } from './svg-icons/icon-chevron-right';
 import { IconChevronUp } from './svg-icons/icon-chevron-up';
 import { IconCog } from './svg-icons/icon-cog';
 import { IconCopy } from './svg-icons/icon-copy';
@@ -21,6 +22,7 @@ import { IconGlobe } from './svg-icons/icon-globe';
 import { IconInfo } from './svg-icons/icon-info';
 import { IconKebab } from './svg-icons/icon-kebab';
 import { IconLinkedIn } from './svg-icons/icon-linkedin';
+import { IconLock } from './svg-icons/icon-lock';
 import { IconMetaMask } from './svg-icons/icon-metamask';
 import { IconMinus } from './svg-icons/icon-minus';
 import { IconMoon } from './svg-icons/icon-moon';
@@ -49,6 +51,7 @@ export enum VegaIconNames {
   BULLET = 'bullet',
   CHEVRON_DOWN = 'chevron-down',
   CHEVRON_LEFT = 'chevron-left',
+  CHEVRON_RIGHT = 'chevron-right',
   CHEVRON_UP = 'chevron-up',
   COG = 'cog',
   COPY = 'copy',
@@ -63,6 +66,7 @@ export enum VegaIconNames {
   INFO = 'info',
   KEBAB = 'kebab',
   LINKEDIN = 'linkedin',
+  LOCK = 'lock',
   METAMASK = 'metamask',
   MINUS = 'minus',
   MOON = 'moon',
@@ -93,6 +97,7 @@ export const VegaIconNameMap: Record<
   'arrow-up': IconArrowUp,
   'chevron-down': IconChevronDown,
   'chevron-left': IconChevronLeft,
+  'chevron-right': IconChevronRight,
   'chevron-up': IconChevronUp,
   'eye-off': IconEyeOff,
   'exclaimation-mark': IconExclaimationMark,
@@ -113,6 +118,7 @@ export const VegaIconNameMap: Record<
   info: IconInfo,
   kebab: IconKebab,
   linkedin: IconLinkedIn,
+  lock: IconLock,
   metamask: IconMetaMask,
   minus: IconMinus,
   moon: IconMoon,
