@@ -29,7 +29,7 @@ const getClassName = (
     TradingButtonProps,
     'size' | 'subLabel' | 'intent' | 'fill' | 'minimal'
   >,
-  className?: string,
+  className?: string
 ) =>
   classNames(
     'flex gap-2 items-center justify-center rounded disabled:opacity-40',
@@ -80,7 +80,7 @@ const getClassName = (
       '[&_[data-sub-label]]:text-vega-clight-100': intent === Intent.Primary,
     },
     { 'w-full': fill },
-    className,
+    className
   );
 
 const Content = ({
@@ -122,7 +122,7 @@ export const TradingButton = forwardRef<
       fill,
       ...props
     },
-    ref,
+    ref
   ) => (
     <button
       ref={ref}
@@ -130,13 +130,13 @@ export const TradingButton = forwardRef<
       data-trading-button
       className={getClassName(
         { size, subLabel, intent, fill, minimal },
-        className,
+        className
       )}
       {...props}
     >
       <Content icon={icon} subLabel={subLabel} children={children} />
     </button>
-  ),
+  )
 );
 
 export const TradingAnchorButton = ({
