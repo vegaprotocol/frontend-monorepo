@@ -66,15 +66,6 @@
         "jestConfig": "apps/multisig-signer/jest.config.ts"
       }
     },
-    "build-netlify": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "cp apps/multisig-signer/netlify.toml netlify.toml",
-          "nx build multisig-signer"
-        ]
-      }
-    },
     "build-spec": {
       "executor": "nx:run-commands",
       "outputs": [],
