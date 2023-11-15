@@ -6,7 +6,6 @@ from actions.vega import submit_order
 from datetime import datetime, timedelta
 from conftest import init_vega
 from fixtures.market import setup_continuous_market
-from actions.utils import wait_for_graphql_response
 
 # Defined namedtuples
 WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
@@ -93,7 +92,6 @@ def test_submit_stop_order_rejected(continuous_market, vega: VegaService, page: 
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     page.get_by_test_id(close_toast).click()
-    wait_for_graphql_response(page, "stopOrders")
     page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
     expect((page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
         "BTC:DAI_2023Futr"
@@ -149,7 +147,6 @@ def test_submit_stop_market_order_triggered(
     vega.wait_for_total_catchup()
     page.wait_for_selector('[data-testid="toast-close"]', state="visible")
     page.get_by_test_id(close_toast).click()
-    wait_for_graphql_response(page, "stopOrders")
 
     page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
     expect((page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
@@ -210,7 +207,6 @@ def test_submit_stop_limit_order_pending(
 
     page.wait_for_selector('[data-testid="toast-close"]', state="visible")
     page.get_by_test_id(close_toast).click()
-    wait_for_graphql_response(page, "stopOrders")
     page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
     expect((page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
         "BTC:DAI_2023Futr"
@@ -262,7 +258,6 @@ def test_submit_stop_limit_order_cancel(
     vega.wait_for_total_catchup()
 
     page.get_by_test_id(close_toast).first.click()
-    wait_for_graphql_response(page, "stopOrders")
     page.get_by_test_id(cancel).click()
     vega.forward("10s")
     vega.wait_fn(1)
@@ -384,7 +379,6 @@ class TestStopOcoValidation:
             vega.wait_for_total_catchup()
             if page.get_by_test_id(close_toast).is_visible():
                 page.get_by_test_id(close_toast).click()
-            wait_for_graphql_response(page, "stopOrders")
         # 7002-SORD-011
         expect(page.get_by_test_id("stop-order-warning-limit")).to_have_text(
             "There is a limit of 4 active stop orders per market. Orders submitted above the limit will be immediately rejected."

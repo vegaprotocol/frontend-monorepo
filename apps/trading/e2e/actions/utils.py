@@ -1,5 +1,6 @@
-from collections import namedtuple
+import time
 
+from collections import namedtuple
 from playwright.sync_api import Page
 from vega_sim.null_service import VegaServiceNull
 from typing import Optional
@@ -36,28 +37,3 @@ def next_epoch(vega: VegaServiceNull):
             )
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-
-def wait_for_graphql_response(page, query_name, timeout=5000):
-    response_data = {}
-
-    def handle_response(route, request):
-        if "graphql" in request.url:
-            response = request.response()
-            if response is not None:
-                json_response = response.json()
-                if json_response and "data" in json_response:
-                    data = json_response["data"]
-                    if query_name in data:
-                        response_data["data"] = data
-                        route.continue_()
-                        return
-        route.continue_()
-
-    # Register the route handler
-    page.route("**", handle_response)
-
-    # Wait for the response data to be populated
-    page.wait_for_timeout(timeout)
-
-    # Unregister the route handler
-    page.unroute("**", handle_response)

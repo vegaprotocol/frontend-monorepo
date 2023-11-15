@@ -4,7 +4,6 @@ import logging
 from playwright.sync_api import expect
 from actions.vega import submit_order
 from conftest import init_vega
-from actions.utils import wait_for_graphql_response
 from playwright.sync_api import Page
 from vega_sim.null_service import VegaService
 
@@ -21,8 +20,6 @@ def vega():
 def verify_data_grid(page: Page, data_test_id, expected_pattern):
     page.get_by_test_id(data_test_id).click()
     # Required so that we can get liquidation price
-    if data_test_id == "Positions":
-        wait_for_graphql_response(page, "EstimatePosition")
     expect(
         page.locator(
             f'[data-testid^="tab-{data_test_id.lower()}"] >> .ag-center-cols-container .ag-row-first'
@@ -51,11 +48,9 @@ def verify_data_grid(page: Page, data_test_id, expected_pattern):
 @pytest.mark.usefixtures("page", "continuous_market", "auth", "risk_accepted")
 def test_limit_order_new_trade_top_of_list(continuous_market, vega: VegaService, page: Page):
     submit_order(vega, "Key 1", continuous_market, "SIDE_BUY", 1, 110)
-    page.goto(f"/#/markets/{continuous_market}")
-
-    vega.forward("10s")
-    vega.wait_fn(10)
+    vega.wait_fn(1)
     vega.wait_for_total_catchup()
+    page.goto(f"/#/markets/{continuous_market}")
     expected_trade = [
         "103.50",
         "1",
@@ -76,7 +71,6 @@ def test_limit_order_new_trade_top_of_list(continuous_market, vega: VegaService,
 def test_price_copied_to_deal_ticket(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id("Trades").click()
-    wait_for_graphql_response(page, "Trades")
     page.locator("[col-id=price]").last.click()
     # 6005-THIS-007
     expect(page.get_by_test_id("order-price")).to_have_value("107.50000")

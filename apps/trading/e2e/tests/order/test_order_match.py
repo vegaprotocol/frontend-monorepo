@@ -5,18 +5,13 @@ from playwright.sync_api import expect, Page
 from vega_sim.service import VegaService
 from playwright.sync_api import expect
 from actions.vega import submit_order
-from actions.utils import wait_for_graphql_response
-
 
 logger = logging.getLogger()
 
-
 # Could be turned into a helper function in the future.
-def verify_data_grid(page, data_test_id, expected_pattern):
+def verify_data_grid(page: Page, data_test_id, expected_pattern):
     page.get_by_test_id(data_test_id).click()
     # Required so that we can get liquidation price
-    if data_test_id == "Positions":
-        wait_for_graphql_response(page, "EstimatePosition")
     expect(
         page.locator(
             f'[data-testid^="tab-{data_test_id.lower()}"] >> .ag-center-cols-container .ag-row-first'
@@ -42,7 +37,7 @@ def verify_data_grid(page, data_test_id, expected_pattern):
                 raise AssertionError(f"Pattern does not match: {expected} != {actual}")
 
 
-def submit_order(vega, wallet_name, market_id, side, volume, price):
+def submit_order(vega: VegaService, wallet_name, market_id, side, volume, price):
     vega.submit_order(
         trading_key=wallet_name,
         market_id=market_id,
@@ -64,7 +59,6 @@ def test_limit_order_trade_open_order(
     submit_order(vega, "Key 1", market_id, "SIDE_BUY", 1, 110)
 
     page.goto(f"/#/markets/{market_id}")
-
     # Assert that the user order is displayed on the orderbook
     orderbook_trade = page.get_by_test_id("price-11000000").nth(1)
     # 6003-ORDB-001
@@ -161,4 +155,5 @@ def test_limit_order_trade_order_trade_away(continuous_market, page: Page):
     page.get_by_test_id("Orderbook").click()
     price_element = page.get_by_test_id("price-11000000").nth(1)
     # 6003-ORDB-010
+    print(price_element)
     expect(price_element).to_be_hidden()
