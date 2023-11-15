@@ -12,7 +12,7 @@ import { type VegaICellRendererParams } from '@vegaprotocol/datagrid';
 import { useRef, useLayoutEffect } from 'react';
 import { BREAKPOINT_MD } from '../../config/breakpoints';
 import { useNavigate } from 'react-router-dom';
-import { type RowClickedEvent, ColDef } from 'ag-grid-community';
+import type { RowClickedEvent, ColDef } from 'ag-grid-community';
 
 type AssetsTableProps = {
   data: AssetFieldsFragment[] | null;
