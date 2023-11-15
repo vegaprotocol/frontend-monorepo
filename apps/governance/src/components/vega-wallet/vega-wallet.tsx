@@ -11,7 +11,10 @@ import { BigNumber } from '../../lib/bignumber';
 import { truncateMiddle } from '../../lib/truncate-middle';
 import Routes from '../../routes/routes';
 import { BulletHeader } from '../bullet-header';
-import type { WalletCardAssetProps } from '../wallet-card';
+import type {
+  WalletCardAssetProps,
+  WalletCardAssetWithMultipleBalancesProps,
+} from '../wallet-card';
 import {
   WalletCard,
   WalletCardActions,
@@ -27,6 +30,7 @@ import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { toBigNum } from '@vegaprotocol/utils';
 import { usePendingBalancesStore } from '../../hooks/use-pending-balances-manager';
 import { StakingEventType } from '../../hooks/use-get-association-breakdown';
+import omit from 'lodash/omit';
 
 export const VegaWallet = () => {
   const { t } = useTranslation();
@@ -99,12 +103,29 @@ const VegaWalletAssetList = ({ accounts }: VegaWalletAssetsListProps) => {
   if (!accounts.length) {
     return null;
   }
+
+  const groupedByAsset = accounts.reduce((all, a) => {
+    const foundIndex = all.findIndex((acc) => acc.assetId === a.assetId);
+    if (foundIndex > -1) {
+      const found = all[foundIndex];
+      all[foundIndex] = {
+        ...found,
+        balances: [...found.balances, { balance: a.balance, type: a.type }],
+      };
+      return all;
+    }
+    const acc = {
+      ...omit(a, 'balance', 'type'),
+      balances: [{ balance: a.balance, type: a.type }],
+    };
+    return [...all, acc];
+  }, [] as WalletCardAssetWithMultipleBalancesProps[]);
   return (
     <>
       <WalletCardHeader>
         <BulletHeader tag="h2">{t('assets')}</BulletHeader>
       </WalletCardHeader>
-      {accounts.map((a, i) => (
+      {groupedByAsset.map((a, i) => (
         <WalletCardAsset key={i} {...a} />
       ))}
     </>
@@ -182,6 +203,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
         subheading={t('Associated')}
         symbol="VEGA"
         balance={currentStakeAvailable}
+        allowZeroBalance={true}
       />
       {totalPending.eq(0) ? null : (
         <>
@@ -192,6 +214,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
             subheading={t('Pending association')}
             symbol="VEGA"
             balance={totalPending}
+            allowZeroBalance={true}
           />
           <WalletCardAsset
             image={vegaWhite}
@@ -200,6 +223,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
             subheading={t('Total associated after pending')}
             symbol="VEGA"
             balance={pendingStakeAmount}
+            allowZeroBalance={true}
           />
         </>
       )}
