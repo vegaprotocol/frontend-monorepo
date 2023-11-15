@@ -6,6 +6,7 @@ from actions.vega import submit_order
 from datetime import datetime, timedelta
 from conftest import init_vega
 from fixtures.market import setup_continuous_market
+from actions.utils import wait_for_graphql_response
 
 # Defined namedtuples
 WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
@@ -46,32 +47,6 @@ price_col = '[col-id="submission.price"]'
 timeInForce_col = '[col-id="submission.timeInForce"]'
 updatedAt_col = '[col-id="updatedAt"]'
 close_toast = "toast-close"
-
-
-def wait_for_graphql_response(page, query_name, timeout=5000):
-    response_data = {}
-
-    def handle_response(route, request):
-        if "graphql" in request.url:
-            response = request.response()
-            if response is not None:
-                json_response = response.json()
-                if json_response and "data" in json_response:
-                    data = json_response["data"]
-                    if query_name in data:
-                        response_data["data"] = data
-                        route.continue_()
-                        return
-        route.continue_()
-
-    # Register the route handler
-    page.route("**", handle_response)
-
-    # Wait for the response data to be populated
-    page.wait_for_timeout(timeout)
-
-    # Unregister the route handler
-    page.unroute("**", handle_response)
 
 
 def create_position(vega: VegaService, market_id):
