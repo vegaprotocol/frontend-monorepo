@@ -46,15 +46,6 @@
           "buildTarget": "static:build:production"
         }
       }
-    },
-    "build-netlify": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "cp apps/static/netlify.toml netlify.toml",
-          "nx build static"
-        ]
-      }
     }
   }
 }

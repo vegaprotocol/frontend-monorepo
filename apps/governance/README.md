@@ -49,10 +49,6 @@ There are a few different configuration options offered for this app:
 | `NX_ETH_WALLET_MNEMONIC` (optional) | The mnemonic to be used to sign transactions with in browser                                                                                         |
 | `NX_LOCAL_PROVIDER_URL` (optional)  | The local node to use to send transaction to when signing in browser                                                                                 |
 
-## Example configs:
-
-For example configurations, check out our [netlify.toml](./netlify.toml).
-
 ## Testing
 
 To run the minimal set of unit tests, run the following:

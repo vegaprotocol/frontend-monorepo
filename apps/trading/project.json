@@ -51,15 +51,6 @@
         "lintFilePatterns": ["apps/trading/**/*.{ts,tsx,js,jsx}"]
       }
     },
-    "build-netlify": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "cp apps/trading/netlify.toml netlify.toml",
-          "nx build trading"
-        ]
-      }
-    },
     "build-spec": {
       "executor": "nx:run-commands",
       "outputs": [],
