@@ -47,5 +47,5 @@ def test_should_show_an_error_if_your_balance_is_zero(continuous_market, vega: V
     # 7002-SORD-060
     expect(page.get_by_test_id(place_order)).to_be_enabled()
     # 7002-SORD-003
-    expect(page.get_by_test_id("deal-ticket-error-message-zero-balance")).to_have_text("You need tDAI in your wallet to trade in this market. Make a deposit")
+    expect(page.get_by_test_id("deal-ticket-error-message-zero-balance")).to_have_text("You need tDAI in your wallet to trade in this market.Make a deposit")
     expect(page.get_by_test_id(deal_ticket_deposit_dialog_button)).to_be_visible()    
