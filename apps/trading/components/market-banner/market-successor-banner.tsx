@@ -67,7 +67,6 @@ export const MarketSuccessorBanner = ({
       : null;
 
   if (!loading && (isSettled || successorData) && visible) {
-    const v = t('This market has been succeeded');
     return (
       <NotificationBanner
         intent={Intent.Primary}

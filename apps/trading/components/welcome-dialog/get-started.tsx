@@ -17,7 +17,7 @@ import {
 import { Links, Routes } from '../../lib/links';
 import { useGlobalStore } from '../../stores';
 import { useSidebar, ViewType } from '../sidebar';
-import { useT, ns } from '../../lib/use-t';
+import { useT } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
 
 interface Props {
