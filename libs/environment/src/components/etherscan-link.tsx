@@ -1,7 +1,7 @@
-import { t } from '@vegaprotocol/i18n';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import type { ComponentProps } from 'react';
 import { ETHERSCAN_ADDRESS, ETHERSCAN_TX, useEtherscanLink } from '../hooks';
+import { useT } from '../use-t';
 
 export const EtherscanLink = ({
   address,
@@ -12,6 +12,7 @@ export const EtherscanLink = ({
   address?: string;
   tx?: string;
 } & ComponentProps<typeof ExternalLink>) => {
+  const t = useT();
   const etherscanLink = useEtherscanLink();
   let href = '';
 

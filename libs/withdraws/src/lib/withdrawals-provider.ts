@@ -5,12 +5,10 @@ import * as Schema from '@vegaprotocol/types';
 import {
   WithdrawalsDocument,
   WithdrawalEventDocument,
-} from './__generated__/Withdrawal';
-import type {
-  WithdrawalsQuery,
-  WithdrawalFieldsFragment,
-  WithdrawalEventSubscription,
-  WithdrawalEventSubscriptionVariables,
+  type WithdrawalsQuery,
+  type WithdrawalFieldsFragment,
+  type WithdrawalEventSubscription,
+  type WithdrawalEventSubscriptionVariables,
 } from './__generated__/Withdrawal';
 
 const sortWithdrawals = (data: WithdrawalFieldsFragment[]) =>

@@ -1,17 +1,14 @@
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
-import type { FormEventHandler } from 'react';
+import { type FormEventHandler } from 'react';
 import { memo, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Controller, useController, useForm } from 'react-hook-form';
-import {
-  DealTicketFeeDetails,
-  DealTicketMarginDetails,
-} from './deal-ticket-fee-details';
+import { DealTicketFeeDetails } from './deal-ticket-fee-details';
+import { DealTicketMarginDetails } from './deal-ticket-margin-details';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-import type { OrderSubmission } from '@vegaprotocol/wallet';
+import { type OrderSubmission } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { mapFormValuesToOrderSubmission } from '../../utils/map-form-values-to-submission';
 import {
@@ -45,7 +42,6 @@ import {
 } from '@vegaprotocol/markets';
 import {
   validateExpiration,
-  validateMarketState,
   validateMarketTradingMode,
   validateTimeInForce,
   validateType,
@@ -66,7 +62,7 @@ import {
   useAccountBalance,
 } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type { OrderFormValues } from '../../hooks';
+import { type OrderFormValues } from '../../hooks';
 import {
   DealTicketType,
   dealTicketTypeToOrderType,
@@ -79,6 +75,7 @@ import noop from 'lodash/noop';
 import { isNonPersistentOrder } from '../../utils/time-in-force-persistance';
 import { KeyValue } from './key-value';
 import { DocsLinks } from '@vegaprotocol/environment';
+import { useT } from '../../use-t';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -142,6 +139,7 @@ export const DealTicket = ({
   submit,
   onDeposit,
 }: DealTicketProps) => {
+  const t = useT();
   const { pubKey, isReadOnly } = useVegaWallet();
   const setType = useDealTicketFormValues((state) => state.setType);
   const storedFormValues = useDealTicketFormValues(
@@ -287,7 +285,28 @@ export const DealTicket = ({
       };
     }
 
-    const marketStateError = validateMarketState(marketState);
+    let marketStateError: true | string = true;
+
+    if (
+      [
+        Schema.MarketState.STATE_SETTLED,
+        Schema.MarketState.STATE_REJECTED,
+        Schema.MarketState.STATE_TRADING_TERMINATED,
+        Schema.MarketState.STATE_CANCELLED,
+        Schema.MarketState.STATE_CLOSED,
+      ].includes(marketState)
+    ) {
+      marketStateError = t(
+        `This market is {{marketState}} and not accepting orders`,
+        {
+          marketState:
+            marketState === Schema.MarketState.STATE_TRADING_TERMINATED
+              ? t('terminated')
+              : t(Schema.MarketStateMapping[marketState]).toLowerCase(),
+        }
+      );
+    }
+
     if (marketStateError !== true) {
       return {
         message: marketStateError,
@@ -307,7 +326,10 @@ export const DealTicket = ({
       };
     }
 
-    const marketTradingModeError = validateMarketTradingMode(marketTradingMode);
+    const marketTradingModeError = validateMarketTradingMode(
+      marketTradingMode,
+      t('Trading terminated')
+    );
     if (marketTradingModeError !== true) {
       return {
         message: marketTradingModeError,
@@ -317,6 +339,7 @@ export const DealTicket = ({
 
     return undefined;
   }, [
+    t,
     marketState,
     marketTradingMode,
     generalAccountBalance,
@@ -404,7 +427,7 @@ export const DealTicket = ({
           required: t('You need to provide a size'),
           min: {
             value: sizeStep,
-            message: t('Size cannot be lower than ' + sizeStep),
+            message: t('Size cannot be lower than {{sizeStep}}', { sizeStep }),
           },
           validate: validateAmount(sizeStep, 'Size'),
           deps: ['peakSize', 'minimumVisibleSize'],
@@ -440,7 +463,9 @@ export const DealTicket = ({
             required: t('You need provide a price'),
             min: {
               value: priceStep,
-              message: t('Price cannot be lower than ' + priceStep),
+              message: t('Price cannot be lower than {{priceStep}}', {
+                priceStep,
+              }),
             },
             validate: validateAmount(priceStep, 'Price'),
           }}
@@ -471,13 +496,17 @@ export const DealTicket = ({
           )}
         />
       )}
-      <div className="flex flex-col w-full mb-4 gap-2">
+      <div className="mb-4 flex w-full flex-col gap-2">
         <KeyValue
           label={t('Notional')}
           value={formatValue(notionalSize, market.decimalPlaces)}
           formattedValue={formatValue(notionalSize, market.decimalPlaces)}
           symbol={quoteName}
-          labelDescription={NOTIONAL_SIZE_TOOLTIP_TEXT(quoteName)}
+          labelDescription={t(
+            'NOTIONAL_SIZE_TOOLTIP_TEXT',
+            NOTIONAL_SIZE_TOOLTIP_TEXT,
+            { quoteName }
+          )}
         />
         <DealTicketFeeDetails
           order={
@@ -501,7 +530,7 @@ export const DealTicket = ({
           <TimeInForceSelector
             value={field.value}
             orderType={type}
-            onSelect={(value) => {
+            onSelect={(value: Schema.OrderTimeInForce) => {
               // If GTT is selected and no expiresAt time is set, or its
               // behind current time then reset the value to current time
               const now = Date.now();
@@ -534,7 +563,11 @@ export const DealTicket = ({
             control={control}
             rules={{
               required: t('You need provide a expiry time/date'),
-              validate: validateExpiration,
+              validate: validateExpiration(
+                t(
+                  'The expiry date that you have entered appears to be in the past'
+                )
+              ),
             }}
             render={({ field }) => (
               <ExpirySelector
@@ -545,7 +578,7 @@ export const DealTicket = ({
             )}
           />
         )}
-      <div className="flex justify-between pb-2 gap-2">
+      <div className="flex justify-between gap-2 pb-2">
         <Controller
           name="postOnly"
           control={control}
@@ -621,7 +654,7 @@ export const DealTicket = ({
       </div>
       {isLimitType && (
         <>
-          <div className="flex justify-between pb-2 gap-2">
+          <div className="flex justify-between gap-2 pb-2">
             <Controller
               name="iceberg"
               control={control}
@@ -629,10 +662,10 @@ export const DealTicket = ({
                 <Tooltip
                   description={
                     <p>
-                      {t(`Trade only a fraction of the order size at once.
-                            After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away.
-                            For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each.
-                            Note that the full volume of the order is not hidden and is still reflected in the order book.`)}{' '}
+                      {t(
+                        'ICEBERG_TOOLTIP',
+                        'Trade only a fraction of the order size at once. After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away. For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each. Note that the full volume of the order is not hidden and is still reflected in the order book.'
+                      )}{' '}
                       <ExternalLink href={DocsLinks?.ICEBERG_ORDERS}>
                         {t('Find out more')}
                       </ExternalLink>{' '}
@@ -685,7 +718,7 @@ export const DealTicket = ({
         subLabel={`${formatValue(
           normalizedOrder.size,
           market.positionDecimalPlaces
-        )} ${baseQuote} @ ${
+        )} ${baseQuote || ''} @ ${
           type === Schema.OrderType.TYPE_MARKET
             ? 'market'
             : `${formatValue(
@@ -731,13 +764,14 @@ interface SummaryMessageProps {
 export const NoWalletWarning = ({
   isReadOnly,
 }: Pick<SummaryMessageProps, 'isReadOnly'>) => {
+  const t = useT();
   if (isReadOnly) {
     return (
       <div className="mb-2">
         <InputError testId="deal-ticket-error-message-summary">
-          {
+          {t(
             'You need to connect your own wallet to start trading on this market'
-          }
+          )}
         </InputError>
       </div>
     );
@@ -756,6 +790,7 @@ const SummaryMessage = memo(
     pubKey,
     onDeposit,
   }: SummaryMessageProps) => {
+    const t = useT();
     // Specific error UI for if balance is so we can
     // render a deposit dialog
     if (isReadOnly || !pubKey) {

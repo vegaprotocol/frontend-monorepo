@@ -16,10 +16,12 @@ import Routes from '../routes';
 import { TrancheLabel } from './tranche-label';
 import { useTranches } from '../../lib/tranches/tranches-store';
 
+type Params = { trancheId: string; address: string };
+
 export const Tranche = () => {
   const tranches = useTranches((state) => state.tranches);
   const { t } = useTranslation();
-  const { trancheId } = useParams<{ trancheId: string; address: string }>();
+  const { trancheId } = useParams<Params>();
   const { chainId } = useWeb3React();
   const tranche = tranches?.find(
     (tranche) => trancheId && parseInt(trancheId) === tranche.tranche_id
@@ -41,7 +43,7 @@ export const Tranche = () => {
         }
       />
       <div
-        className="flex justify-between gap-x-4 py-2 px-4"
+        className="flex justify-between gap-x-4 px-4 py-2"
         data-testid="redeemed-tranche-tokens"
       >
         <span>{t('alreadyRedeemed')}</span>

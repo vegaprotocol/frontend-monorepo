@@ -1,2 +1,4 @@
 * @vegaprotocol/frontend
+apps/ @vegaprotocol/frontend-qa
+libs/ @vegaprotocol/frontend-qa
 *.graphql @vegaprotocol/core

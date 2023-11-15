@@ -1,18 +1,19 @@
 import { parse as tomlParse } from 'toml';
 import { isValidUrl, LocalStorage } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 import { createClient } from '@vegaprotocol/apollo-client';
-import type {
-  NodeCheckTimeUpdateSubscription,
-  NodeCheckQuery,
-} from '../utils/__generated__/NodeCheck';
 import {
   NodeCheckDocument,
   NodeCheckTimeUpdateDocument,
+  type NodeCheckTimeUpdateSubscription,
+  type NodeCheckQuery,
 } from '../utils/__generated__/NodeCheck';
-import type { CosmicElevatorFlags, Environment, FeatureFlags } from '../types';
+import {
+  type CosmicElevatorFlags,
+  type Environment,
+  type FeatureFlags,
+} from '../types';
 import { Networks } from '../types';
 import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
@@ -62,7 +63,7 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
       set({ ...safeVars });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      const headline = t('Error processing the Vega environment');
+      const headline = 'Error processing the Vega environment';
       set({
         status: 'failed',
         error: headline,
@@ -106,7 +107,7 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
     if (!nodes || !nodes.length) {
       set({
         status: 'failed',
-        error: t(`Failed to fetch node config from ${state.VEGA_CONFIG_URL}`),
+        error: `Failed to fetch node config from ${state.VEGA_CONFIG_URL}`,
       });
       return;
     }
@@ -138,9 +139,9 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
     else {
       set({
         status: 'failed',
-        error: t('No node found'),
+        error: 'No node found',
       });
-      console.warn(t('No suitable vega node was found'));
+      console.warn('No suitable vega node was found');
     }
   },
 }));

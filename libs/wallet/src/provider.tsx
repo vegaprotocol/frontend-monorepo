@@ -1,12 +1,11 @@
 import { LocalStorage } from '@vegaprotocol/utils';
-import type { ReactNode } from 'react';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import { WalletClientError } from '@vegaprotocol/wallet-client';
-import type { VegaWalletContextShape } from '.';
-import type {
-  PubKey,
-  Transaction,
-  VegaConnector,
+import { type VegaWalletContextShape } from '.';
+import {
+  type PubKey,
+  type VegaConnector,
+  type Transaction,
 } from './connectors/vega-connector';
 import { VegaWalletContext } from './context';
 import { WALLET_KEY, WALLET_RISK_ACCEPTED_KEY } from './storage';

@@ -1,4 +1,6 @@
+import { memo, forwardRef, useMemo, type ForwardedRef } from 'react';
 import {
+  MAXGOINT64,
   addDecimalsFormatNumber,
   getDateTimeFormat,
   isNumeric,
@@ -14,8 +16,6 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import type { ForwardedRef } from 'react';
-import { memo, forwardRef, useMemo } from 'react';
 import {
   AgGrid,
   SetFilter,
@@ -25,17 +25,15 @@ import {
   MarketNameCell,
   OrderTypeCell,
   COL_DEFS,
+  type TypedDataAgGrid,
+  type VegaICellRendererParams,
+  type VegaValueFormatterParams,
+  type VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
-import type {
-  TypedDataAgGrid,
-  VegaICellRendererParams,
-  VegaValueFormatterParams,
-  VegaValueGetterParams,
-} from '@vegaprotocol/datagrid';
-import type { AgGridReact } from 'ag-grid-react';
-import type { Order } from '../order-data-provider';
+import { AgGridReact } from 'ag-grid-react';
+import { type Order } from '../order-data-provider';
 import { Filter } from '../order-list-manager/order-list-manager';
-import type { ColDef } from 'ag-grid-community';
+import { type ColDef } from 'ag-grid-community';
 
 const defaultColDef = {
   resizable: true,
@@ -144,11 +142,22 @@ export const OrderListTable = memo<
               if (!data?.market || !isNumeric(data.size)) {
                 return '-';
               }
+
               const prefix = data
                 ? data.side === Schema.Side.SIDE_BUY
                   ? '+'
                   : '-'
                 : '';
+
+              if (
+                data.size === MAXGOINT64 &&
+                data.timeInForce ===
+                  Schema.OrderTimeInForce.TIME_IN_FORCE_IOC &&
+                data.reduceOnly
+              ) {
+                return t('MAX');
+              }
+
               return (
                 prefix +
                 addDecimalsFormatNumber(

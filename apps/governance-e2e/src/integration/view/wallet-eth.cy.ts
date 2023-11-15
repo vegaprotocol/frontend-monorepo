@@ -198,6 +198,7 @@ context(
                 });
             })
             .then(function () {
+              // @ts-ignore clash between jest and cypress
               expect(parseFloat(this.value).toFixed(1)).to.equal(
                 (Math.round((this.locked + this.unlocked) * 100) / 100).toFixed(
                   1
@@ -270,6 +271,7 @@ context(
                 });
             })
             .then(function () {
+              // @ts-ignore clash between jest and cypress
               expect(this.value).to.equal(this.locked + this.unlocked);
             });
         });

@@ -3,29 +3,29 @@ import {
   makeDerivedDataProvider,
   defaultAppend,
 } from './generic-data-provider';
-import type {
-  CombineDerivedData,
-  CombineDerivedDelta,
-  CombineInsertionData,
-  Query,
-  UpdateCallback,
-  Update,
-  PageInfo,
-  Reload,
-  Load,
+import {
+  type CombineDerivedData,
+  type CombineDerivedDelta,
+  type CombineInsertionData,
+  type UpdateCallback,
+  type Update,
+  type Query,
+  type PageInfo,
+  type Reload,
+  type Load,
 } from './generic-data-provider';
-import type {
-  ApolloClient,
-  FetchResult,
-  SubscriptionOptions,
-  OperationVariables,
-  ApolloQueryResult,
-  QueryOptions,
+import {
+  type FetchResult,
+  type SubscriptionOptions,
+  type OperationVariables,
+  type ApolloQueryResult,
+  type QueryOptions,
+  type ApolloClient,
 } from '@apollo/client';
 import { ApolloError } from '@apollo/client';
 import type { GraphQLErrors } from '@apollo/client/errors';
 import { GraphQLError } from 'graphql';
-import type { Subscription, Observable } from 'zen-observable-ts';
+import { Subscription, Observable } from 'zen-observable-ts';
 import { waitFor } from '@testing-library/react';
 
 type Item = {

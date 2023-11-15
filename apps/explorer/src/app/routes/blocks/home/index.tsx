@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 import { DATA_SOURCES } from '../../../config';
-import type {
-  BlockMeta,
-  TendermintBlockchainResponse,
+import {
+  type BlockMeta,
+  type TendermintBlockchainResponse,
 } from '../tendermint-blockchain-response';
 import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';

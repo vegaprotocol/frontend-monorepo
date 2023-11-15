@@ -10,7 +10,7 @@ on:
     inputs:
       console-test-branch:
         type: choice
-        description: 'main: v0.72.14, develop: v0.73.0-preview7'
+        description: 'main: v0.72.14, develop: v0.73.4'
         options:
           - main
           - develop
@@ -32,9 +32,9 @@ jobs:
       #       cache node modules
       #----------------------------------------------
       - name: setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version-file: '.nvmrc'
           cache: yarn
 
       - name: Cache node modules
@@ -153,25 +153,19 @@ jobs:
         run: |
           docker load --input /tmp/console-image.tar
           docker image ls -a
-
       #----------------------------------------------
-      #       check-out tests repo
+      #       check-out frontend-monorepo
       #----------------------------------------------
-      - name: Checkout console test repo
+      - name: Checkout frontend-monorepo
         uses: actions/checkout@v3
         with:
-          repository: vegaprotocol/console-test
-          ref: ${{ needs.console-test-branch.outputs.console-branch }}
-
-      - name: Load console test envs
-        id: console-test-env
-        uses: falti/dotenv-action@v1.0.4
-        with:
-          path: '.env.${{ needs.console-test-branch.outputs.console-branch  }}'
-          export-variables: true
-          keys-case: upper
-          log-variables: true
-
+          ref: ${{ inputs.github-sha || github.sha }}
+      #----------------------------------------------
+      #       get vega version
+      #----------------------------------------------
+      - name: Set VEGA_VERSION from .env
+        id: set_vega_version
+        run: echo "VEGA_VERSION=$(grep VEGA_VERSION apps/trading/e2e/.env | cut -d '=' -f2)" >> $GITHUB_ENV
       #----------------------------------------------
       #  -----  Setup python  -----
       #----------------------------------------------
@@ -194,22 +188,25 @@ jobs:
       #----------------------------------------------
       - name: Install dependencies
         run: poetry install --no-interaction --no-root
+        working-directory: apps/trading/e2e
       #----------------------------------------------
       # install vega binaries
       #----------------------------------------------
       - name: Install vega binaries
         run: poetry run python -m vega_sim.tools.load_binaries --force --version ${{ env.VEGA_VERSION }}
+        working-directory: apps/trading/e2e
       #----------------------------------------------
-      # install playwright
+      # install playwrightworking-directory: apps/trading/e2e
       #----------------------------------------------
       - name: install playwright
         run: poetry run playwright install --with-deps chromium
+        working-directory: apps/trading/e2e
       #----------------------------------------------
       # run tests
       #----------------------------------------------
       - name: Run tests
         run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -v -s --numprocesses 4 --dist loadfile --durations=15
-
+        working-directory: apps/trading/e2e
       #----------------------------------------------
       # upload traces
       #----------------------------------------------

@@ -5,14 +5,14 @@ import {
   truncateByChars,
   isNumeric,
 } from '@vegaprotocol/utils';
-import type { ColDef } from 'ag-grid-community';
+import { type ColDef } from 'ag-grid-community';
 import { AgGrid } from '@vegaprotocol/datagrid';
-import type {
-  VegaICellRendererParams,
-  VegaValueFormatterParams,
-  TypedDataAgGrid,
+import {
+  type VegaICellRendererParams,
+  type VegaValueFormatterParams,
+  type TypedDataAgGrid,
 } from '@vegaprotocol/datagrid';
-import type { DepositFieldsFragment } from './__generated__/Deposit';
+import { type DepositFieldsFragment } from './__generated__/Deposit';
 import { EtherscanLink } from '@vegaprotocol/environment';
 import { DepositStatusMapping } from '@vegaprotocol/types';
 

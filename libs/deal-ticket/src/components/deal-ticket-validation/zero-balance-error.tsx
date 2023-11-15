@@ -1,5 +1,5 @@
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../use-t';
 
 interface ZeroBalanceErrorProps {
   asset: {
@@ -13,6 +13,7 @@ export const ZeroBalanceError = ({
   asset,
   onDeposit,
 }: ZeroBalanceErrorProps) => {
+  const t = useT();
   return (
     <Notification
       intent={Intent.Warning}
@@ -20,8 +21,8 @@ export const ZeroBalanceError = ({
       message={
         <>
           {t(
-            'You need %s in your wallet to trade in this market. ',
-            asset.symbol
+            'You need {{symbol}} in your wallet to trade in this market.',
+            asset
           )}
         </>
       }

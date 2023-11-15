@@ -15,6 +15,7 @@ import isUndefined from 'lodash/isUndefined';
 import type { BlockExplorerTransactionResult } from '../../../../routes/types/block-explorer-response';
 import { TxDetailsChainEventWithdrawal } from './tx-erc20-withdrawal';
 import { TxDetailsChainEventErc20AssetDelist } from './tx-erc20-asset-delist';
+import { TxDetailsContractCall } from './tx-contract-call';
 
 interface ChainEventProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -38,7 +39,7 @@ export const ChainEvent = ({ txData }: ChainEventProps) => {
     return null;
   }
 
-  const { builtin, erc20, erc20Multisig, stakingEvent } =
+  const { builtin, erc20, erc20Multisig, stakingEvent, contractCall } =
     txData.command.chainEvent;
 
   // Builtin Asset events
@@ -138,6 +139,10 @@ export const ChainEvent = ({ txData }: ChainEventProps) => {
         />
       );
     }
+  }
+
+  if (contractCall) {
+    return <TxDetailsContractCall contractCall={contractCall} />;
   }
 
   // If we hit this return, tx-shared-details should give a basic overview

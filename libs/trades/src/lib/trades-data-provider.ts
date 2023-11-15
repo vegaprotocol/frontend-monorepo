@@ -1,21 +1,22 @@
+import orderBy from 'lodash/orderBy';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
   defaultAppend as append,
 } from '@vegaprotocol/data-provider';
-import type { PageInfo, Cursor } from '@vegaprotocol/data-provider';
-import type { Market } from '@vegaprotocol/markets';
+import { type PageInfo, type Cursor } from '@vegaprotocol/data-provider';
+import { type Market } from '@vegaprotocol/markets';
 import { marketsMapProvider } from '@vegaprotocol/markets';
-import type {
-  TradesQuery,
-  TradesQueryVariables,
-  TradeFieldsFragment,
-  TradesUpdateSubscription,
-  TradeUpdateFieldsFragment,
-  TradesUpdateSubscriptionVariables,
+import {
+  TradesDocument,
+  TradesUpdateDocument,
+  type TradesQuery,
+  type TradesQueryVariables,
+  type TradeFieldsFragment,
+  type TradesUpdateSubscription,
+  type TradeUpdateFieldsFragment,
+  type TradesUpdateSubscriptionVariables,
 } from './__generated__/Trades';
-import { TradesDocument, TradesUpdateDocument } from './__generated__/Trades';
-import orderBy from 'lodash/orderBy';
 
 export const MAX_TRADES = 500;
 

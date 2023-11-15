@@ -17,6 +17,14 @@ import { useReferralStats } from './use-referral-stats';
 import { formatPercentage, getAdjustedFee } from './utils';
 import { Table, Td, Th, THead, Tr } from './table';
 import BigNumber from 'bignumber.js';
+import { Links } from '../../lib/links';
+import { Link } from 'react-router-dom';
+import {
+  Tooltip,
+  VegaIcon,
+  VegaIconNames,
+  truncateMiddle,
+} from '@vegaprotocol/ui-toolkit';
 
 export const FeesContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -56,15 +64,24 @@ export const FeesContainer = () => {
     referralTierIndex,
     referralTiers,
     epochsInSet,
+    code,
+    isReferrer,
   } = useReferralStats(
     feesData?.referralSetStats,
     feesData?.referralSetReferees,
     programData?.currentReferralProgram,
-    feesData?.epoch
+    feesData?.epoch,
+    feesData?.referrer,
+    feesData?.referee
   );
 
   const loading = paramsLoading || feesLoading || programLoading;
   const isConnected = Boolean(pubKey);
+
+  const isReferralProgramRunning = Boolean(programData?.currentReferralProgram);
+  const isVolumeDiscountProgramRunning = Boolean(
+    programData?.currentVolumeDiscountProgram
+  );
 
   return (
     <div className="grid auto-rows-min grid-cols-4 gap-3">
@@ -90,6 +107,8 @@ export const FeesContainer = () => {
             <TotalDiscount
               referralDiscount={referralDiscount}
               volumeDiscount={volumeDiscount}
+              isReferralProgramRunning={isReferralProgramRunning}
+              isVolumeDiscountProgramRunning={isVolumeDiscountProgramRunning}
             />
           </FeeCard>
           <FeeCard
@@ -97,23 +116,37 @@ export const FeesContainer = () => {
             className="sm:col-span-2"
             loading={loading}
           >
-            <CurrentVolume
-              tiers={volumeTiers}
-              tierIndex={volumeTierIndex}
-              windowLengthVolume={volumeInWindow}
-              windowLength={volumeDiscountWindowLength}
-            />
+            {isVolumeDiscountProgramRunning ? (
+              <CurrentVolume
+                tiers={volumeTiers}
+                tierIndex={volumeTierIndex}
+                windowLengthVolume={volumeInWindow}
+                windowLength={volumeDiscountWindowLength}
+              />
+            ) : (
+              <p className="pt-3 text-sm text-muted">
+                {t('No volume discount program active')}
+              </p>
+            )}
           </FeeCard>
           <FeeCard
             title={t('Referral benefits')}
             className="sm:col-span-2"
             loading={loading}
           >
-            <ReferralBenefits
-              setRunningNotionalTakerVolume={referralVolumeInWindow}
-              epochsInSet={epochsInSet}
-              epochs={referralDiscountWindowLength}
-            />
+            {isReferrer ? (
+              <ReferrerInfo code={code} />
+            ) : isReferralProgramRunning ? (
+              <ReferralBenefits
+                setRunningNotionalTakerVolume={referralVolumeInWindow}
+                epochsInSet={epochsInSet}
+                epochs={referralDiscountWindowLength}
+              />
+            ) : (
+              <p className="pt-3 text-sm text-muted">
+                {t('No referral program active')}
+              </p>
+            )}
           </FeeCard>
         </>
       )}
@@ -142,7 +175,7 @@ export const FeesContainer = () => {
         />
       </FeeCard>
       <FeeCard
-        title={t('Liquidity fees')}
+        title={t('Fees by market')}
         className="lg:col-span-full"
         loading={marketsLoading}
       >
@@ -325,26 +358,64 @@ const ReferralBenefits = ({
 const TotalDiscount = ({
   referralDiscount,
   volumeDiscount,
+  isReferralProgramRunning,
+  isVolumeDiscountProgramRunning,
 }: {
   referralDiscount: number;
   volumeDiscount: number;
+  isReferralProgramRunning: boolean;
+  isVolumeDiscountProgramRunning: boolean;
 }) => {
+  const totalDiscount = 1 - (1 - volumeDiscount) * (1 - referralDiscount);
+  const totalDiscountDescription = t(
+    'The total discount is calculated according to the following formula: '
+  );
+  const formula = (
+    <span className="italic">
+      1 - (1 - d<sub>volume</sub>) ⋇ (1 - d<sub>referral</sub>)
+    </span>
+  );
+
   return (
     <div>
       <Stat
-        value={formatPercentage(referralDiscount + volumeDiscount) + '%'}
+        description={
+          <>
+            {totalDiscountDescription}
+            {formula}
+          </>
+        }
+        value={formatPercentage(totalDiscount) + '%'}
         highlight={true}
       />
       <table className="w-full mt-0.5 text-xs text-muted">
         <tbody>
           <tr>
             <th className="font-normal text-left">{t('Volume discount')}</th>
-            <td className="text-right">{formatPercentage(volumeDiscount)}%</td>
+            <td className="text-right">
+              {formatPercentage(volumeDiscount)}%
+              {!isVolumeDiscountProgramRunning && (
+                <Tooltip description={t('No active volume discount programme')}>
+                  <span className="cursor-help">
+                    {' '}
+                    <VegaIcon name={VegaIconNames.INFO} size={12} />
+                  </span>
+                </Tooltip>
+              )}
+            </td>
           </tr>
           <tr>
             <th className="font-normal text-left ">{t('Referral discount')}</th>
             <td className="text-right">
               {formatPercentage(referralDiscount)}%
+              {!isReferralProgramRunning && (
+                <Tooltip description={t('No active referral programme')}>
+                  <span className="cursor-help">
+                    {' '}
+                    <VegaIcon name={VegaIconNames.INFO} size={12} />
+                  </span>
+                </Tooltip>
+              )}
             </td>
           </tr>
         </tbody>
@@ -491,3 +562,31 @@ const YourTier = () => {
     </span>
   );
 };
+
+const ReferrerInfo = ({ code }: { code?: string }) => (
+  <div className="pt-3 text-sm text-vega-clight-200 dark:vega-cdark-200">
+    <p className="mb-1">
+      {t('Connected key is owner of the referral set')}
+      {code && (
+        <>
+          {' '}
+          <span className="text-transparent bg-rainbow bg-clip-text">
+            {truncateMiddle(code)}
+          </span>
+        </>
+      )}
+      {'. '}
+      {t('As owner, it is eligible for commission not fee discounts.')}
+    </p>
+    <p>
+      {t('See')}{' '}
+      <Link
+        className="underline text-black dark:text-white"
+        to={Links.REFERRALS()}
+      >
+        {t('Referrals')}
+      </Link>{' '}
+      {t('for more information.')}
+    </p>
+  </div>
+);

@@ -65,6 +65,7 @@ fragment OrderTxUpdateFields on OrderUpdate {
   expiresAt
   side
   marketId
+  remaining
 }
 
 subscription OrderTxUpdate($partyId: ID!) {

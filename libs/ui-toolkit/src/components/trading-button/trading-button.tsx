@@ -1,9 +1,9 @@
 import classNames from 'classnames';
-import { forwardRef } from 'react';
-import type {
-  AnchorHTMLAttributes,
-  ButtonHTMLAttributes,
-  ReactNode,
+import {
+  forwardRef,
+  type AnchorHTMLAttributes,
+  type ReactNode,
+  type ButtonHTMLAttributes,
 } from 'react';
 import { Intent } from '../../utils/intent';
 import { Link } from 'react-router-dom';
@@ -74,14 +74,14 @@ const Content = ({
   children,
 }: Pick<TradingButtonProps, 'icon' | 'subLabel' | 'children'>) => (
   <>
-    <span data-label className="leading-none font-alpha" key="children">
+    <span data-label className="font-alpha leading-none" key="children">
       {children}
     </span>
     {icon}
     {subLabel && (
       <span
         data-sub-label
-        className="font-mono text-xs leading-tight mt-0.5"
+        className="mt-0.5 font-mono text-xs leading-tight"
         key="trading-button-sub-label"
       >
         {subLabel}

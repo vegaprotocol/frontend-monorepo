@@ -2,15 +2,16 @@ import {
   getDateTimeFormat,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { Link as UILink } from '@vegaprotocol/ui-toolkit';
 import type { SimpleGridProps } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { getAsset, type Market, type MarketData } from '@vegaprotocol/markets';
+import type { useT } from '../../use-t';
 
 export const compileGridData = (
+  t: ReturnType<typeof useT>,
   market: Pick<
     Market,
     'id' | 'tradableInstrument' | 'decimalPlaces' | 'positionDecimalPlaces'

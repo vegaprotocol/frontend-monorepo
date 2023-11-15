@@ -1,5 +1,5 @@
 import { ETHERSCAN_ADDRESS, useEtherscanLink } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 import {
   ActionsDropdown,
   TradingDropdownCopyItem,
@@ -27,7 +27,7 @@ export const AccountsActionsDropdown = ({
 }) => {
   const etherscanLink = useEtherscanLink();
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
-
+  const t = useT();
   return (
     <ActionsDropdown>
       <TradingDropdownItem

@@ -1,21 +1,19 @@
-import type { Update } from '@vegaprotocol/data-provider';
+import { type Update } from '@vegaprotocol/data-provider';
 import { makeDataProvider } from '@vegaprotocol/data-provider';
 import produce from 'immer';
 import * as Types from '@vegaprotocol/types';
-import type {
-  ProposalsListQuery,
-  ProposalsListQueryVariables,
-  ProposalListFieldsFragment,
-  MarketViewLiveProposalsSubscription,
-  MarketViewProposalFieldsFragment,
-  MarketViewProposalsQuery,
-  MarketViewProposalsQueryVariables,
-  MarketViewLiveProposalsSubscriptionVariables,
-} from './__generated__/Proposals';
 import {
   MarketViewLiveProposalsDocument,
   MarketViewProposalsDocument,
   ProposalsListDocument,
+  type ProposalsListQuery,
+  type ProposalsListQueryVariables,
+  type ProposalListFieldsFragment,
+  type MarketViewLiveProposalsSubscription,
+  type MarketViewProposalFieldsFragment,
+  type MarketViewProposalsQuery,
+  type MarketViewProposalsQueryVariables,
+  type MarketViewLiveProposalsSubscriptionVariables,
 } from './__generated__/Proposals';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 

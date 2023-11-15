@@ -6,22 +6,18 @@ import {
   makeDerivedDataProvider,
 } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
-import type { Market } from '@vegaprotocol/markets';
+import { type Market } from '@vegaprotocol/markets';
 import produce from 'immer';
-
+import { type IterableElement } from 'type-fest';
 import {
   AccountEventsDocument,
   AccountsDocument,
-} from './__generated__/Accounts';
-
-import type { IterableElement } from 'type-fest';
-import type {
   AccountFieldsFragment,
   AccountsQuery,
   AccountEventsSubscription,
   AccountsQueryVariables,
 } from './__generated__/Accounts';
-import type { Asset } from '@vegaprotocol/assets';
+import { type Asset } from '@vegaprotocol/assets';
 
 const AccountType = Schema.AccountType;
 

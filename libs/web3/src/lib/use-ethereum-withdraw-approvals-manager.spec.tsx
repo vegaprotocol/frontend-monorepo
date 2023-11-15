@@ -1,26 +1,26 @@
 import { useEthWithdrawApprovalsManager } from './use-ethereum-withdraw-approvals-manager';
 import { renderHook, waitFor } from '@testing-library/react';
-import type { MockedResponse } from '@apollo/client/testing';
-import type { ReactNode } from 'react';
+import { type MockedResponse } from '@apollo/client/testing';
+import { type ReactNode } from 'react';
 import { MockedProvider } from '@apollo/client/testing';
 import waitForNextTick from 'flush-promises';
 import * as Schema from '@vegaprotocol/types';
+import BigNumber from 'bignumber.js';
 import {
   ApprovalStatus,
   WithdrawalFailure,
+  type EthWithdrawApprovalStore,
+  type EthWithdrawalApprovalState,
 } from './use-ethereum-withdraw-approvals-store';
-import BigNumber from 'bignumber.js';
-import type {
-  EthWithdrawApprovalStore,
-  EthWithdrawalApprovalState,
-} from './use-ethereum-withdraw-approvals-store';
-import type { EthTransactionStore } from './use-ethereum-transaction-store';
-
-import { WithdrawalApprovalDocument } from './__generated__/WithdrawalApproval';
-import type { WithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
-
-import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
-import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
+import { type EthTransactionStore } from './use-ethereum-transaction-store';
+import {
+  WithdrawalApprovalDocument,
+  type WithdrawalApprovalQuery,
+} from './__generated__/WithdrawalApproval';
+import {
+  NetworkParamsDocument,
+  type NetworkParamsQuery,
+} from '@vegaprotocol/network-parameters';
 
 const mockWeb3Provider = jest.fn();
 

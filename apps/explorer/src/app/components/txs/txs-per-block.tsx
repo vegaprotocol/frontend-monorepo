@@ -1,7 +1,7 @@
 import { Table, TableRow } from '../table';
 import { t } from '@vegaprotocol/i18n';
 import { useFetch } from '@vegaprotocol/react-helpers';
-import type { BlockExplorerTransactions } from '../../routes/types/block-explorer-response';
+import { type BlockExplorerTransactions } from '../../routes/types/block-explorer-response';
 import { getTxsDataUrl } from '../../hooks/get-txs-data-url';
 import { AsyncRenderer, Loader } from '@vegaprotocol/ui-toolkit';
 import EmptyList from '../empty-list/empty-list';
@@ -22,7 +22,7 @@ export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
   return (
     <AsyncRenderer data={data} error={error} loading={!!loading}>
       {data && data.transactions.length > 0 ? (
-        <div className="overflow-x-auto whitespace-nowrap mb-28">
+        <div className="mb-28 overflow-x-auto whitespace-nowrap">
           <Table>
             <thead>
               <TableRow modifier="bordered" className="font-mono">

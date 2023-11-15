@@ -1,10 +1,10 @@
 import { useEthTransactionManager } from './use-ethereum-transaction-manager';
 import { renderHook } from '@testing-library/react';
 import waitForNextTick from 'flush-promises';
-import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
-import type {
-  EthTransactionStore,
-  EthStoredTxState,
+import { type CollateralBridge } from '@vegaprotocol/smart-contracts';
+import {
+  type EthTransactionStore,
+  type EthStoredTxState,
 } from './use-ethereum-transaction-store';
 
 import { EthTxStatus } from './use-ethereum-transaction';

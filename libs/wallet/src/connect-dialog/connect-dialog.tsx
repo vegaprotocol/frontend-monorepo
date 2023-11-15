@@ -10,11 +10,10 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import type { ReactNode } from 'react';
-import { useCallback, useState } from 'react';
-import type { WalletClientError } from '@vegaprotocol/wallet-client';
+import { useCallback, useState, type ReactNode } from 'react';
+import { type WalletClientError } from '@vegaprotocol/wallet-client';
 import { t } from '@vegaprotocol/i18n';
-import type { Connectors, VegaConnector } from '../connectors';
+import { type Connectors, type VegaConnector } from '../connectors';
 import { DEFAULT_SNAP_VERSION } from '../connectors';
 import {
   DEFAULT_SNAP_ID,
@@ -32,10 +31,14 @@ import {
   ConnectDialogFooter,
   ConnectDialogTitle,
 } from './connect-dialog-elements';
-import type { Status as JsonRpcStatus } from '../use-json-rpc-connect';
-import { useJsonRpcConnect } from '../use-json-rpc-connect';
-import type { Status as InjectedStatus } from '../use-injected-connector';
-import { useInjectedConnector } from '../use-injected-connector';
+import {
+  useJsonRpcConnect,
+  type Status as JsonRpcStatus,
+} from '../use-json-rpc-connect';
+import {
+  useInjectedConnector,
+  type Status as InjectedStatus,
+} from '../use-injected-connector';
 import { useVegaWallet } from '../use-vega-wallet';
 import { InjectedConnectorForm } from './injected-connector-form';
 import { isBrowserWalletInstalled } from '../utils';
@@ -229,7 +232,7 @@ const ConnectorList = ({
 
   const extendedText = (
     <>
-      <div className="flex items-center justify-center w-full h-full text-base gap-1">
+      <div className="flex h-full w-full items-center justify-center gap-1 text-base">
         {t('Connect')}
       </div>
       <BrowserIcon
@@ -255,7 +258,7 @@ const ConnectorList = ({
           'Connect securely, deposit funds and approve or reject transactions with the Vega wallet'
         )}
       </p>
-      <div data-testid="connectors-list" className="flex flex-col mt-4 gap-2">
+      <div data-testid="connectors-list" className="mt-4 flex flex-col gap-2">
         {isBrowserWalletInstalled() ? (
           <ConnectionOptionWithDescription
             type="injected"
@@ -315,10 +318,10 @@ const ConnectorList = ({
                 )}
                 text={
                   <>
-                    <div className="flex items-center justify-center w-full h-full text-base gap-1">
+                    <div className="flex h-full w-full items-center justify-center gap-1 text-base">
                       {t('Connect via Vega MetaMask Snap')}
                     </div>
-                    <div className="absolute top-0 flex items-center h-8 right-1">
+                    <div className="absolute right-1 top-0 flex h-8 items-center">
                       <VegaIcon name={VegaIconNames.METAMASK} size={24} />
                     </div>
                   </>
@@ -344,10 +347,10 @@ const ConnectorList = ({
                   )}
                   text={
                     <>
-                      <div className="flex items-center justify-center w-full h-full text-base gap-1">
+                      <div className="flex h-full w-full items-center justify-center gap-1 text-base">
                         {t('Install Vega MetaMask Snap')}
                       </div>
-                      <div className="absolute top-0 flex items-center h-8 right-1">
+                      <div className="absolute right-1 top-0 flex h-8 items-center">
                         <VegaIcon name={VegaIconNames.METAMASK} size={24} />
                       </div>
                     </>
@@ -359,7 +362,7 @@ const ConnectorList = ({
                   }}
                 />
                 {snapStatus === SnapStatus.NOT_SUPPORTED ? (
-                  <p className="pt-1 text-xs leading-tight text-muted">
+                  <p className="text-muted pt-1 text-xs leading-tight">
                     {t('No MetaMask version that supports snaps detected.')}{' '}
                     {t('Learn more about')}{' '}
                     <ExternalLink href="https://metamask.io/snaps/">
@@ -372,7 +375,7 @@ const ConnectorList = ({
           </div>
         ) : null}
         <div>
-          <h1 className="mb-1 text-md">{t('Advanced / Other options...')}</h1>
+          <h1 className="text-md mb-1">{t('Advanced / Other options...')}</h1>
           <ConnectionOption
             type="view"
             text={t('View as party')}
@@ -482,7 +485,7 @@ export const GetWalletButton = ({
 
   const buttonContent = (
     <>
-      <div className="flex items-center justify-center text-base gap-1">
+      <div className="flex items-center justify-center gap-1 text-base">
         {t('Get the Vega Wallet')}
         <Pill size="xxs" intent={Intent.Info}>
           ALPHA
@@ -502,7 +505,7 @@ export const GetWalletButton = ({
       className={classNames(
         [
           'bg-vega-blue-350 hover:bg-vega-blue-400 dark:bg-vega-blue-650 dark:hover:bg-vega-blue-600',
-          'flex gap-2 items-center justify-center rounded h-8 px-3 relative',
+          'relative flex h-8 items-center justify-center gap-2 rounded px-3',
         ],
         className
       )}
@@ -544,7 +547,7 @@ const ConnectionOptionWithDescription = ({
   return (
     <div>
       <h1 className="text-md">{title}</h1>
-      <p className="mb-2 text-sm text-gray-60 text-muted">{description}</p>
+      <p className="text-gray-60 text-muted mb-2 text-sm">{description}</p>
       <ConnectionOption
         disabled={disabled}
         type={type}
@@ -600,10 +603,10 @@ const CustomUrlInput = ({
   const [urlInputExpanded, setUrlInputExpanded] = useState(false);
   return urlInputExpanded ? (
     <>
-      <div className="flex justify-between mb-1.5">
-        <p className="text-sm text-secondary">{t('Custom wallet location')}</p>
+      <div className="mb-1.5 flex justify-between">
+        <p className="text-secondary text-sm">{t('Custom wallet location')}</p>
         <button
-          className="text-sm text-muted"
+          className="text-muted text-sm"
           onClick={() => setUrlInputExpanded(false)}
         >
           <VegaIcon name={VegaIconNames.ARROW_LEFT} />{' '}
@@ -637,7 +640,7 @@ const CustomUrlInput = ({
         onClick={() => onSelect('jsonRpc')}
       />
       {isDesktopWalletRunning !== null && (
-        <div className="pt-1 mb-2 text-sm">
+        <div className="mb-2 pt-1 text-sm">
           {isDesktopWalletRunning ? (
             <button
               className="text-muted"
@@ -650,7 +653,7 @@ const CustomUrlInput = ({
               <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
             </button>
           ) : (
-            <p className="leading-tight text-muted">
+            <p className="text-muted leading-tight">
               <span className="text-xs">
                 {t(
                   'No running Desktop App/CLI detected. Open your app now to connect or enter a'

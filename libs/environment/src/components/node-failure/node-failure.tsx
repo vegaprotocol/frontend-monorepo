@@ -1,6 +1,6 @@
-import { t } from '@vegaprotocol/i18n';
 import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { useNodeSwitcherStore } from '../../hooks/use-node-switcher-store';
+import { useT } from '../../use-t';
 
 export const NodeFailure = ({
   title,
@@ -10,6 +10,7 @@ export const NodeFailure = ({
   error?: string | null;
 }) => {
   const setNodeSwitcher = useNodeSwitcherStore((store) => store.setDialogOpen);
+  const t = useT();
   return (
     <Splash>
       <div className="text-center">

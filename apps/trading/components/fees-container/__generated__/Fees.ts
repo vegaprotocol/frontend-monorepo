@@ -15,7 +15,7 @@ export type FeesQueryVariables = Types.Exact<{
 }>;
 
 
-export type FeesQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string }, volumeDiscountStats: { __typename?: 'VolumeDiscountStatsConnection', edges: Array<{ __typename?: 'VolumeDiscountStatsEdge', node: { __typename?: 'VolumeDiscountStats', atEpoch: number, discountFactor: string, runningVolume: string } } | null> }, referralSetReferees: { __typename?: 'ReferralSetRefereeConnection', edges: Array<{ __typename?: 'ReferralSetRefereeEdge', node: { __typename?: 'ReferralSetReferee', atEpoch: number } } | null> }, referralSetStats: { __typename?: 'ReferralSetStatsConnection', edges: Array<{ __typename?: 'ReferralSetStatsEdge', node: { __typename?: 'ReferralSetStats', atEpoch: number, discountFactor: string, referralSetRunningNotionalTakerVolume: string } } | null> } };
+export type FeesQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string }, volumeDiscountStats: { __typename?: 'VolumeDiscountStatsConnection', edges: Array<{ __typename?: 'VolumeDiscountStatsEdge', node: { __typename?: 'VolumeDiscountStats', atEpoch: number, discountFactor: string, runningVolume: string } } | null> }, referrer: { __typename?: 'ReferralSetConnection', edges: Array<{ __typename?: 'ReferralSetEdge', node: { __typename?: 'ReferralSet', id: string, referrer: string } } | null> }, referee: { __typename?: 'ReferralSetConnection', edges: Array<{ __typename?: 'ReferralSetEdge', node: { __typename?: 'ReferralSet', id: string, referrer: string } } | null> }, referralSetReferees: { __typename?: 'ReferralSetRefereeConnection', edges: Array<{ __typename?: 'ReferralSetRefereeEdge', node: { __typename?: 'ReferralSetReferee', atEpoch: number } } | null> }, referralSetStats: { __typename?: 'ReferralSetStatsConnection', edges: Array<{ __typename?: 'ReferralSetStatsEdge', node: { __typename?: 'ReferralSetStats', atEpoch: number, discountFactor: string, referralSetRunningNotionalTakerVolume: string } } | null> } };
 
 
 export const DiscountProgramsDocument = gql`
@@ -78,6 +78,22 @@ export const FeesDocument = gql`
         atEpoch
         discountFactor
         runningVolume
+      }
+    }
+  }
+  referrer: referralSets(referrer: $partyId) {
+    edges {
+      node {
+        id
+        referrer
+      }
+    }
+  }
+  referee: referralSets(referee: $partyId) {
+    edges {
+      node {
+        id
+        referrer
       }
     }
   }

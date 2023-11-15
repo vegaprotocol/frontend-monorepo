@@ -1,20 +1,25 @@
 import { useMemo } from 'react';
-import type { AssetFieldsFragment } from '@vegaprotocol/assets';
-import { AssetTypeMapping, AssetStatusMapping } from '@vegaprotocol/assets';
+import {
+  useAssetTypeMapping,
+  useAssetStatusMapping,
+  type AssetFieldsFragment,
+} from '@vegaprotocol/assets';
 import { t } from '@vegaprotocol/i18n';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
-import type { AgGridReact } from 'ag-grid-react';
+import { type AgGridReact } from 'ag-grid-react';
 import { AgGrid } from '@vegaprotocol/datagrid';
-import type { VegaICellRendererParams } from '@vegaprotocol/datagrid';
+import { type VegaICellRendererParams } from '@vegaprotocol/datagrid';
 import { useRef, useLayoutEffect } from 'react';
 import { BREAKPOINT_MD } from '../../config/breakpoints';
 import { useNavigate } from 'react-router-dom';
-import type { RowClickedEvent, ColDef } from 'ag-grid-community';
+import { type RowClickedEvent, ColDef } from 'ag-grid-community';
 
 type AssetsTableProps = {
   data: AssetFieldsFragment[] | null;
 };
 export const AssetsTable = ({ data }: AssetsTableProps) => {
+  const assetTypeMapping = useAssetTypeMapping();
+  const assetStatusMapping = useAssetStatusMapping();
   const navigate = useNavigate();
   const ref = useRef<AgGridReact>(null);
   const showColumnsOnDesktop = () => {
@@ -47,14 +52,14 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
         field: 'source.__typename',
         hide: window.innerWidth < BREAKPOINT_MD,
         valueFormatter: ({ value }: { value?: string }) =>
-          value ? AssetTypeMapping[value].value : '',
+          value ? assetTypeMapping[value].value : '',
       },
       {
         headerName: t('Status'),
         field: 'status',
         hide: window.innerWidth < BREAKPOINT_MD,
         valueFormatter: ({ value }: { value?: string }) =>
-          value ? AssetStatusMapping[value].value : '',
+          value ? assetStatusMapping[value].value : '',
       },
       {
         colId: 'actions',
@@ -69,7 +74,7 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
         }: VegaICellRendererParams<AssetFieldsFragment, 'id'>) =>
           value ? (
             <ButtonLink
-              onClick={(e) => {
+              onClick={() => {
                 navigate(value);
               }}
             >
@@ -80,7 +85,7 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
           ),
       },
     ],
-    [navigate]
+    [navigate, assetStatusMapping, assetTypeMapping]
   );
 
   return (

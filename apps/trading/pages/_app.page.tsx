@@ -3,7 +3,7 @@ import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { t } from '@vegaprotocol/i18n';
 import {
-  envTriggerMapping,
+  useEnvTriggerMapping,
   Networks,
   NodeSwitcherDialog,
   useEnvironment,
@@ -32,6 +32,7 @@ import { SSRLoader } from './ssr-loader';
 import { PartyActiveOrdersHandler } from './party-active-orders-handler';
 import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
+import '../lib/i18n';
 
 const DEFAULT_TITLE = t('Welcome to Vega trading!');
 
@@ -39,7 +40,7 @@ const Title = () => {
   const { pageTitle } = usePageTitleStore((store) => ({
     pageTitle: store.pageTitle,
   }));
-
+  const envTriggerMapping = useEnvTriggerMapping();
   const { VEGA_ENV } = useEnvironment();
   const networkName = envTriggerMapping[VEGA_ENV];
 
@@ -60,7 +61,7 @@ function AppBody({ Component }: AppProps) {
   const location = useLocation();
   const { VEGA_ENV } = useEnvironment();
   const gridClasses = classNames(
-    'h-full relative z-0 grid',
+    'grid relative h-full z-0',
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
   );
   return (

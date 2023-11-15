@@ -42,6 +42,7 @@ import {
   useNodeSwitcherStore,
   DocsLinks,
   NodeFailure,
+  AppLoader as Loader,
 } from '@vegaprotocol/environment';
 import { ENV } from './config';
 import type { InMemoryCacheConfig } from '@apollo/client';
@@ -352,9 +353,11 @@ function App() {
   useInitializeEnv();
 
   return (
-    <NetworkLoader cache={cache}>
-      <AppContainer />
-    </NetworkLoader>
+    <React.Suspense fallback={<Loader />}>
+      <NetworkLoader cache={cache}>
+        <AppContainer />
+      </NetworkLoader>
+    </React.Suspense>
   );
 }
 

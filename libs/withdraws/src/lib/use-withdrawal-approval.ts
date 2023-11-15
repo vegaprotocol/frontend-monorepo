@@ -1,9 +1,9 @@
 import { useApolloClient } from '@apollo/client';
 import { useCallback, useEffect, useRef } from 'react';
-import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
-import type {
-  Erc20ApprovalQuery,
-  Erc20ApprovalQueryVariables,
+import {
+  Erc20ApprovalDocument,
+  type Erc20ApprovalQuery,
+  type Erc20ApprovalQueryVariables,
 } from './__generated__/Erc20Approval';
 
 type WaitForApproval = (

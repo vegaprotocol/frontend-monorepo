@@ -25,7 +25,7 @@ import compact from 'lodash/compact';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { useStakeAvailable } from './hooks/use-stake-available';
 import sortBy from 'lodash/sortBy';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 import BigNumber from 'bignumber.js';
 import { t } from '@vegaprotocol/i18n';
@@ -59,21 +59,20 @@ export const ReferralStatistics = () => {
   return <CreateCodeContainer />;
 };
 
-export const Statistics = ({
+export const useStats = ({
   data,
   program,
   as,
 }: {
-  data: NonNullable<ReturnType<typeof useReferral>['data']>;
+  data?: NonNullable<ReturnType<typeof useReferral>['data']>;
   program: ReturnType<typeof useReferralProgram>;
-  as: 'referrer' | 'referee';
+  as?: 'referrer' | 'referee';
 }) => {
-  const { benefitTiers, details } = program;
+  const { benefitTiers } = program;
   const { data: epochData } = useCurrentEpochInfoQuery();
-  const { stakeAvailable } = useStakeAvailable();
   const { data: statsData } = useReferralSetStatsQuery({
     variables: {
-      code: data.code,
+      code: data?.code || '',
     },
     skip: !data?.code,
     fetchPolicy: 'cache-and-network',
@@ -81,19 +80,12 @@ export const Statistics = ({
 
   const currentEpoch = Number(epochData?.epoch.id);
 
-  const compactNumFormat = new Intl.NumberFormat(getUserLocale(), {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-    notation: 'compact',
-    compactDisplay: 'short',
-  });
-
   const stats =
     statsData?.referralSetStats.edges &&
     compact(removePaginationWrapper(statsData.referralSetStats.edges));
-  const refereeInfo = data.referee;
+  const refereeInfo = data?.referee;
   const refereeStats = stats?.find(
-    (r) => r.partyId === data.referee?.refereeId
+    (r) => r.partyId === data?.referee?.refereeId
   );
 
   const statsAvailable = stats && stats.length > 0 && stats[0];
@@ -135,6 +127,60 @@ export const Statistics = ({
   const nextBenefitTierEpochsValue = nextBenefitTierValue
     ? nextBenefitTierValue.epochs - epochsValue
     : 0;
+
+  return {
+    baseCommissionValue,
+    runningVolumeValue,
+    referrerVolumeValue,
+    multiplier,
+    finalCommissionValue,
+    discountFactorValue,
+    currentBenefitTierValue,
+    nextBenefitTierValue,
+    epochsValue,
+    nextBenefitTierVolumeValue,
+    nextBenefitTierEpochsValue,
+  };
+};
+
+export const Statistics = ({
+  data,
+  program,
+  as,
+}: {
+  data: NonNullable<ReturnType<typeof useReferral>['data']>;
+  program: ReturnType<typeof useReferralProgram>;
+  as: 'referrer' | 'referee';
+}) => {
+  const {
+    baseCommissionValue,
+    runningVolumeValue,
+    referrerVolumeValue,
+    multiplier,
+    finalCommissionValue,
+    discountFactorValue,
+    currentBenefitTierValue,
+    epochsValue,
+    nextBenefitTierVolumeValue,
+    nextBenefitTierEpochsValue,
+  } = useStats({ data, program, as });
+
+  const isApplyCodePreview = useMemo(
+    () => data.referee === null,
+    [data.referee]
+  );
+
+  const { benefitTiers } = useReferralProgram();
+
+  const { stakeAvailable } = useStakeAvailable();
+  const { details } = program;
+
+  const compactNumFormat = new Intl.NumberFormat(getUserLocale(), {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+    notation: 'compact',
+    compactDisplay: 'short',
+  });
 
   const baseCommissionTile = (
     <StatTile
@@ -229,11 +275,18 @@ export const Statistics = ({
 
   const currentBenefitTierTile = (
     <StatTile title={t('Current tier')}>
-      {currentBenefitTierValue?.tier || 'None'}
+      {isApplyCodePreview
+        ? currentBenefitTierValue?.tier || benefitTiers[0]?.tier || 'None'
+        : currentBenefitTierValue?.tier || 'None'}
     </StatTile>
   );
   const discountFactorTile = (
-    <StatTile title={t('Discount')}>{discountFactorValue * 100}%</StatTile>
+    <StatTile title={t('Discount')}>
+      {isApplyCodePreview
+        ? benefitTiers[0].discountFactor * 100
+        : discountFactorValue * 100}
+      %
+    </StatTile>
   );
   const runningVolumeTile = (
     <StatTile
@@ -265,11 +318,11 @@ export const Statistics = ({
     <>
       <div className="grid grid-rows-1 gap-5 grid-cols-1 md:grid-cols-3">
         {currentBenefitTierTile}
-        {discountFactorTile}
+        {runningVolumeTile}
         {codeTile}
       </div>
       <div className="grid grid-rows-1 gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
-        {runningVolumeTile}
+        {discountFactorTile}
         {nextTierVolumeTile}
         {epochsTile}
         {nextTierEpochsTile}

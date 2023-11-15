@@ -70,6 +70,7 @@ context(
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
+    // @ts-ignore clash between jest and cypress
     beforeEach('visit governance tab', function () {
       cy.clearLocalStorage();
       turnTelemetryOff();
@@ -216,6 +217,7 @@ context(
     // 3003-PMAN-001
     it(
       'Able to submit valid new market proposal',
+      // @ts-ignore clash between jest and cypress
       { tags: '@smoke' },
       function () {
         const proposalTitle = 'Test new market proposal';
@@ -631,6 +633,7 @@ context(
       );
       cy.fixture('/proposals/successor-market').then((newMarketProposal) => {
         newMarketProposal.changes.successor.parentMarketId =
+          // @ts-ignore clash between jest and cypress
           this.parentMarketId;
         const newMarketPayload = JSON.stringify(newMarketProposal);
         cy.getByTestId(newProposalTerms).type(newMarketPayload, {
@@ -658,6 +661,7 @@ context(
           .should('have.text', 'Successor market to: TEST.24h')
           .find('a')
           .should('have.attr', 'href')
+          // @ts-ignore clash between jest and cypress
           .and('contain', this.parentMarketId);
       });
     });

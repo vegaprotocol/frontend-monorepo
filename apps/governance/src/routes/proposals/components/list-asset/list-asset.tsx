@@ -1,4 +1,4 @@
-import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
+import { type CollateralBridge } from '@vegaprotocol/smart-contracts';
 import * as Schema from '@vegaprotocol/types';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { useBridgeContract, useEthereumTransaction } from '@vegaprotocol/web3';
@@ -88,7 +88,7 @@ export const ListAsset = ({
     assetData.erc20ListAssetBundle;
   return (
     <div className="mb-8">
-      <h3 className="text-xl mb-2">{t('ListAsset')}</h3>
+      <h3 className="mb-2 text-xl">{t('ListAsset')}</h3>
       <p className="pr-8">{t('ListAssetDescription')}</p>
       <EthWalletContainer>
         <Button

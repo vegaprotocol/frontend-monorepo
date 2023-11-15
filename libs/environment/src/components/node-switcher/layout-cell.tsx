@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import classnames from 'classnames';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../use-t';
 
 type LayoutCellProps = {
   label?: string;
@@ -17,6 +17,7 @@ export const LayoutCell = ({
   children,
   dataTestId,
 }: LayoutCellProps) => {
+  const t = useT();
   const classes = [
     'lg:text-right flex justify-between lg:block',
     'my-2 lg:my-0',

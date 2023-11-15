@@ -71,7 +71,25 @@ describe('TransferForm', () => {
     minQuantumMultiple: '1',
   };
 
-  it('form tooltips correctly displayed', async () => {
+  it.each([
+    {
+      targetText: 'Include transfer fee',
+      tooltipText:
+        'The fee will be taken from the amount you are transferring.',
+    },
+    {
+      targetText: 'Transfer fee',
+      tooltipText: /transfer\.fee\.factor/,
+    },
+    {
+      targetText: 'Amount to be transferred',
+      tooltipText: /without the fee/,
+    },
+    {
+      targetText: 'Total amount (with fee)',
+      tooltipText: /total amount taken from your account/,
+    },
+  ])('Tooltip for "$targetText" shows', async (o) => {
     // 1003-TRAN-015
     // 1003-TRAN-016
     // 1003-TRAN-017
@@ -92,32 +110,9 @@ describe('TransferForm', () => {
     await userEvent.type(amountInput, amount);
     expect(amountInput).toHaveValue(amount);
 
-    const includeTransferLabel = screen.getByText('Include transfer fee');
-    await userEvent.hover(includeTransferLabel);
-    expect(await screen.findByRole('tooltip')).toHaveTextContent(
-      'The fee will be taken from the amount you are transferring.'
-    );
-    await userEvent.unhover(screen.getByText('Include transfer fee'));
-
-    const transferFee = screen.getByText('Transfer fee');
-    await userEvent.hover(transferFee);
-    expect(await screen.findByRole('tooltip')).toHaveTextContent(
-      /transfer.fee.factor/
-    );
-    await userEvent.unhover(transferFee);
-
-    const amountToBeTransferred = screen.getByText('Amount to be transferred');
-    await userEvent.hover(amountToBeTransferred);
-    expect(await screen.findByRole('tooltip')).toHaveTextContent(
-      /without the fee/
-    );
-    await userEvent.unhover(amountToBeTransferred);
-
-    const totalAmountWithFee = screen.getByText('Total amount (with fee)');
-    await userEvent.hover(totalAmountWithFee);
-    expect(await screen.findByRole('tooltip')).toHaveTextContent(
-      /total amount taken from your account/
-    );
+    const label = screen.getByText(o.targetText);
+    await userEvent.hover(label);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(o.tooltipText);
   });
 
   it('validates a manually entered address', async () => {

@@ -4,8 +4,8 @@ import { useHeaderStore } from '@vegaprotocol/apollo-client';
 import { useEnvironment } from './use-environment';
 import { useNavigatorOnline } from '@vegaprotocol/react-helpers';
 import { Intent } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
 import { isTestEnv } from '@vegaprotocol/utils';
+import { useT } from '../use-t';
 
 const POLL_INTERVAL = 1000;
 const BLOCK_THRESHOLD = 3;
@@ -13,6 +13,7 @@ const ERROR_LATENCY = 10000;
 const WARNING_LATENCY = 3000;
 
 export const useNodeHealth = () => {
+  const t = useT();
   const online = useNavigatorOnline();
   const url = useEnvironment((store) => store.VEGA_URL);
   const headerStore = useHeaderStore();
@@ -22,7 +23,7 @@ export const useNodeHealth = () => {
   });
 
   const blockDiff = useMemo(() => {
-    if (!data?.statistics.blockHeight) {
+    if (!data?.statistics?.blockHeight) {
       return null;
     }
 
@@ -31,7 +32,7 @@ export const useNodeHealth = () => {
     }
 
     return Number(data.statistics.blockHeight) - headers.blockHeight;
-  }, [data?.statistics.blockHeight, headers?.blockHeight]);
+  }, [data?.statistics?.blockHeight, headers?.blockHeight]);
 
   useEffect(() => {
     if (error) {
@@ -50,7 +51,7 @@ export const useNodeHealth = () => {
 
   const [text, intent] = useMemo(() => {
     let intent = Intent.Success;
-    let text = 'Operational';
+    let text = t('Operational');
 
     if (!online) {
       text = t('Offline');
@@ -60,23 +61,38 @@ export const useNodeHealth = () => {
       text = t('Non operational');
       intent = Intent.Danger;
     } else if (blockUpdateMsLatency > ERROR_LATENCY) {
-      text = t('Erroneous latency ( >%s sec): %s sec', [
-        (ERROR_LATENCY / 1000).toString(),
-        (blockUpdateMsLatency / 1000).toFixed(2),
-      ]);
+      text = t(
+        'Erroneous latency ( >{{errorLatency}} sec): {{blockUpdateLatency}} sec',
+        {
+          nsSeparator: '|',
+          replace: {
+            errorLatency: (ERROR_LATENCY / 1000).toString(),
+            blockUpdateLatency: (blockUpdateMsLatency / 1000).toFixed(2),
+          },
+        }
+      );
       intent = Intent.Danger;
     } else if (blockDiff >= BLOCK_THRESHOLD) {
-      text = t(`%s Blocks behind`, String(blockDiff));
+      text = t('blocksBehind', {
+        defaultValue: '{{count}} Blocks behind',
+        replace: { count: blockDiff },
+      });
       intent = Intent.Warning;
     } else if (blockUpdateMsLatency > WARNING_LATENCY) {
-      text = t('Warning delay ( >%s sec): %s sec', [
-        (WARNING_LATENCY / 1000).toString(),
-        (blockUpdateMsLatency / 1000).toFixed(2),
-      ]);
+      text = t(
+        'Warning delay ( >{{warningLatency}} sec): {{blockUpdateLatency}} sec',
+        {
+          nsSeparator: '|',
+          replace: {
+            warningLatency: (WARNING_LATENCY / 1000).toString(),
+            blockUpdateLatency: (blockUpdateMsLatency / 1000).toFixed(2),
+          },
+        }
+      );
       intent = Intent.Warning;
     }
     return [text, intent];
-  }, [online, blockDiff, blockUpdateMsLatency]);
+  }, [online, blockDiff, blockUpdateMsLatency, t]);
 
   return {
     datanodeBlockHeight: headers?.blockHeight,
