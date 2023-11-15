@@ -100,13 +100,13 @@ poetry run pytest
 Run a targeted test:
 
 ```bash
-poetry run pytest -k "test_name" -s
+poetry run pytest -k "test_name" -s --headed
 ```
 
 Run from anywhere:
 
 ```bash
-yarn trading:test -- "test_name" -s
+yarn trading:test -- "test_name" -s --headed
 ```
 
 ## Running Tests in Parallel 🔢
