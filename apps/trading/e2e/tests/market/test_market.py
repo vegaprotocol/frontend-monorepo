@@ -206,9 +206,3 @@ def test_price_monitoring(simple_market, vega: VegaService, page: Page):
     expect(
         page.get_by_test_id(liquidity_supplied).get_by_test_id(item_value)
     ).to_have_text("50.00 (>100%)")
-
-@pytest.mark.usefixtures("vega", "page", "perps_market", "risk_accepted")
-def test_perps_market(perps_market, vega: VegaService, page: Page):
-    page.goto(f"/#/markets/all")
-    page.pause()
-    expect(page)
