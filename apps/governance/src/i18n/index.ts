@@ -34,6 +34,7 @@ i18n
     ns: ['governance'],
     defaultNS: 'governance',
     keySeparator: false, // we use content as keys
+    nsSeparator: false,
     backend,
     saveMissing: useLocize && !!process.env.NX_LOCIZE_API_KEY,
     interpolation: {

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, Suspense } from 'react';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import {
@@ -8,6 +8,7 @@ import {
   useEnvironment,
   useInitializeEnv,
   useNodeSwitcherStore,
+  AppLoader,
 } from '@vegaprotocol/environment';
 import './styles.css';
 import { usePageTitleStore } from '../stores';
@@ -124,12 +125,14 @@ function VegaTradingApp(props: AppProps) {
   }
 
   return (
-    <HashRouter>
-      <Bootstrapper>
-        <AppBody {...props} />
-      </Bootstrapper>
-      <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
-    </HashRouter>
+    <Suspense fallback={<AppLoader />}>
+      <HashRouter>
+        <Bootstrapper>
+          <AppBody {...props} />
+        </Bootstrapper>
+        <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
+      </HashRouter>
+    </Suspense>
   );
 }
 

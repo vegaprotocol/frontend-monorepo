@@ -69,6 +69,7 @@ i18n
       'trading',
     ],
     defaultNS: 'trading',
+    nsSeparator: false,
     keySeparator: false, // we use content as keys
     backend,
     debug: isInDev,
