@@ -1,6 +1,5 @@
 import { type AgGridReact } from 'ag-grid-react';
 import { useCallback, useRef, useState } from 'react';
-import { t } from '@vegaprotocol/i18n';
 import { FillsTable } from './fills-table';
 import { type useDataGridEvents } from '@vegaprotocol/datagrid';
 import { Pagination } from '@vegaprotocol/datagrid';
@@ -10,6 +9,7 @@ import {
   type TradesSubscriptionFilter,
 } from '@vegaprotocol/types';
 import { fillsWithMarketProvider } from './fills-data-provider';
+import { useT } from './use-t';
 
 interface FillsManagerProps {
   partyId: string;
@@ -22,6 +22,7 @@ export const FillsManager = ({
   onMarketClick,
   gridProps,
 }: FillsManagerProps) => {
+  const t = useT();
   const gridRef = useRef<AgGridReact | null>(null);
   const filter: TradesFilter | TradesSubscriptionFilter = {
     partyIds: [partyId],

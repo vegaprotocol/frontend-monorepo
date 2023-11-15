@@ -4,9 +4,9 @@ import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import BigNumber from 'bignumber.js';
 import { getDiscountedFee } from '../discounts';
+import { useT } from '../../use-t';
 
 const formatValue = (
   value: string | number | null | undefined,
@@ -59,6 +59,7 @@ export const FeesBreakdown = ({
   referralDiscountFactor?: string;
   volumeDiscountFactor?: string;
 }) => {
+  const t = useT();
   if (!fees || !totalFeeAmount || totalFeeAmount === '0') return null;
 
   const { discountedFee: discountedInfrastructureFee } = getDiscountedFee(

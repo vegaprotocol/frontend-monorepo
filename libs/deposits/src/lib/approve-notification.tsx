@@ -1,6 +1,5 @@
 import type { Asset } from '@vegaprotocol/assets';
 import { EtherscanLink } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/i18n';
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import {
   formatNumber,
@@ -11,6 +10,7 @@ import type { EthStoredTxState } from '@vegaprotocol/web3';
 import { EthTxStatus, useEthTransactionStore } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import type { DepositBalances } from './use-deposit-balances';
+import { useT } from './use-t';
 
 interface ApproveNotificationProps {
   isActive: boolean;
@@ -33,6 +33,7 @@ export const ApproveNotification = ({
   approveTxId,
   intent = Intent.Warning,
 }: ApproveNotificationProps) => {
+  const t = useT();
   const tx = useEthTransactionStore((state) => {
     return state.transactions.find((t) => t?.id === approveTxId);
   });
@@ -55,12 +56,14 @@ export const ApproveNotification = ({
         intent={intent}
         testId="approve-default"
         message={t(
-          'Before you can make a deposit of your chosen asset, %s, you need to approve its use in your Ethereum wallet',
-          selectedAsset?.symbol
+          'Before you can make a deposit of your chosen asset, {{assetSymbol}}, you need to approve its use in your Ethereum wallet',
+          { assetSymbol: selectedAsset?.symbol }
         )}
         buttonProps={{
           size: 'small',
-          text: t('Approve %s', selectedAsset?.symbol),
+          text: t('Approve {{assetSymbol}}', {
+            assetSymbol: selectedAsset?.symbol,
+          }),
           action: onApprove,
           dataTestId: 'approve-submit',
         }}
@@ -72,13 +75,14 @@ export const ApproveNotification = ({
       <Notification
         intent={intent}
         testId="reapprove-default"
-        message={t(
-          'Approve again to deposit more than %s',
-          formatNumber(balances.allowance.toString())
-        )}
+        message={t('Approve again to deposit more than {{allowance}}', {
+          allowance: formatNumber(balances.allowance.toString()),
+        })}
         buttonProps={{
           size: 'small',
-          text: t('Approve %s', selectedAsset?.symbol),
+          text: t('Approve {{assetSymbol}}', {
+            assetSymbol: selectedAsset?.symbol,
+          }),
           action: onApprove,
           dataTestId: 'reapprove-submit',
         }}
@@ -132,6 +136,7 @@ const ApprovalTxFeedback = ({
   selectedAsset: Asset;
   allowance?: BigNumber;
 }) => {
+  const t = useT();
   if (!tx) return null;
 
   const txLink = tx.txHash && (
@@ -161,8 +166,8 @@ const ApprovalTxFeedback = ({
           intent={Intent.Warning}
           testId="approve-requested"
           message={t(
-            'Go to your Ethereum wallet and approve the transaction to enable the use of %s',
-            selectedAsset?.symbol
+            'Go to your Ethereum wallet and approve the transaction to enable the use of {{assetSymbol}}',
+            { assetSymbol: selectedAsset?.symbol }
           )}
         />
       </div>
@@ -179,8 +184,8 @@ const ApprovalTxFeedback = ({
             <>
               <p>
                 {t(
-                  'Your %s approval is being confirmed by the Ethereum network. When this is complete, you can continue your deposit',
-                  selectedAsset?.symbol
+                  'Your {{assetSymbol}} approval is being confirmed by the Ethereum network. When this is complete, you can continue your deposit',
+                  { assetSymbol: selectedAsset?.symbol }
                 )}{' '}
               </p>
               {txLink && <p>{txLink}</p>}
@@ -209,10 +214,15 @@ const ApprovalTxFeedback = ({
           message={
             <>
               <p>
-                {t('You approved deposits of up to %s %s.', [
-                  selectedAsset?.symbol,
-                  approvedAllowanceValue,
-                ])}
+                {t(
+                  'You approved deposits of up to {{assetSymbol}} {{approvedAllowanceValue}}.',
+                  [
+                    {
+                      assetSymbol: selectedAsset?.symbol,
+                      approvedAllowanceValue,
+                    },
+                  ]
+                )}
               </p>
               {txLink && <p>{txLink}</p>}
             </>

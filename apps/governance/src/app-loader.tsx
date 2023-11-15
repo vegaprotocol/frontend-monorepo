@@ -4,7 +4,7 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useEagerConnect } from '@vegaprotocol/wallet';
 import { FLAGS, useEnvironment } from '@vegaprotocol/environment';
 import { useWeb3React } from '@web3-react/core';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SplashError } from './components/splash-error';
@@ -164,13 +164,14 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
     );
   }
 
-  if (!loaded) {
-    return (
-      <Splash>
-        <SplashLoader />
-      </Splash>
-    );
-  }
+  const loading = (
+    <Splash>
+      <SplashLoader />
+    </Splash>
+  );
 
-  return children;
+  if (!loaded) {
+    return loading;
+  }
+  return <Suspense fallback={loading}>{children}</Suspense>;
 };

@@ -1,11 +1,10 @@
 import type { Asset } from '@vegaprotocol/assets';
 import { EtherscanLink } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/i18n';
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { EthTxStatus, useEthTransactionStore } from '@vegaprotocol/web3';
-import { getFaucetError } from './get-faucet-error';
-
-interface FaucetNotificationProps {
+import { useGetFaucetError } from './get-faucet-error';
+import { useT } from './use-t';
+export interface FaucetNotificationProps {
   isActive: boolean;
   selectedAsset?: Asset;
   faucetTxId: number | null;
@@ -14,14 +13,20 @@ interface FaucetNotificationProps {
 /**
  * Render a notification for the faucet transaction
  */
+
 export const FaucetNotification = ({
   isActive,
   selectedAsset,
   faucetTxId,
 }: FaucetNotificationProps) => {
+  const t = useT();
   const tx = useEthTransactionStore((state) => {
     return state.transactions.find((t) => t?.id === faucetTxId);
   });
+  const errorMessage = useGetFaucetError(
+    tx?.status === EthTxStatus.Error ? tx.error : null,
+    selectedAsset?.symbol
+  );
 
   if (!isActive) {
     return null;
@@ -34,9 +39,7 @@ export const FaucetNotification = ({
   if (!tx) {
     return null;
   }
-
-  if (tx.status === EthTxStatus.Error) {
-    const errorMessage = getFaucetError(tx.error, selectedAsset.symbol);
+  if (errorMessage) {
     return (
       <div className="mb-4">
         <Notification
@@ -55,7 +58,8 @@ export const FaucetNotification = ({
           intent={Intent.Warning}
           testId="faucet-requested"
           message={t(
-            `Confirm the transaction in your Ethereum wallet to use the ${selectedAsset?.symbol} faucet`
+            'Confirm the transaction in your Ethereum wallet to use the {{assetSymbol}} faucet',
+            { assetSymbol: selectedAsset?.symbol }
           )}
         />
       </div>
@@ -72,8 +76,8 @@ export const FaucetNotification = ({
             <>
               <p className="mb-2">
                 {t(
-                  'Your request for funds from the %s faucet is being confirmed by the Ethereum network',
-                  selectedAsset.symbol
+                  'Your request for funds from the {{assetSymbol}} faucet is being confirmed by the Ethereum network',
+                  { assetSymbol: selectedAsset.symbol }
                 )}{' '}
               </p>
               {tx.txHash && (
@@ -100,8 +104,10 @@ export const FaucetNotification = ({
             <>
               <p className="mb-2">
                 {t(
-                  '%s has been deposited in your Ethereum wallet',
-                  selectedAsset.symbol
+                  '{{assetSymbol}} has been deposited in your Ethereum wallet',
+                  {
+                    assetSymbol: selectedAsset.symbol,
+                  }
                 )}{' '}
               </p>
               {tx.txHash && (

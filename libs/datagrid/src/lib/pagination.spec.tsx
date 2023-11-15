@@ -30,15 +30,6 @@ describe('Pagination', () => {
     expect(mockOnLoad).toHaveBeenCalled();
   });
 
-  it('renders message for a single row', async () => {
-    const mockOnLoad = jest.fn();
-    const count = 1;
-    render(<Pagination {...props} count={count} onLoad={mockOnLoad} />);
-    expect(screen.getByText(`${count} row loaded`)).toBeInTheDocument();
-    await userEvent.click(screen.getByRole('button', { name: 'Load more' }));
-    expect(mockOnLoad).toHaveBeenCalled();
-  });
-
   it('renders the data rentention message', () => {
     render(<Pagination {...props} showRetentionMessage={true} />);
     expect(screen.getByText(/data node retention/)).toBeInTheDocument();

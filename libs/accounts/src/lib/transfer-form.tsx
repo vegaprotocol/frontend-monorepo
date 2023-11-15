@@ -8,7 +8,7 @@ import {
   addDecimalsFormatNumber,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 import {
   TradingFormGroup,
   TradingInput,
@@ -66,6 +66,7 @@ export const TransferForm = ({
   accounts,
   minQuantumMultiple,
 }: TransferFormProps) => {
+  const t = useT();
   const {
     control,
     register,
@@ -300,7 +301,7 @@ export const TransferForm = ({
           </TradingInputError>
         )}
       </TradingFormGroup>
-      <TradingFormGroup label="To Vega key" labelFor="toVegaKey">
+      <TradingFormGroup label={t('To Vega key')} labelFor="toVegaKey">
         <AddressField
           onChange={() => {
             setValue('toVegaKey', '');
@@ -317,7 +318,10 @@ export const TransferForm = ({
                 {t('Please select')}
               </option>
               {pubKeys?.map((pk) => {
-                const text = pk === pubKey ? t('Current key: ') + pk : pk;
+                const text =
+                  pk === pubKey
+                    ? t('Current key: {{pubKey}}', { pubKey: pk }) + pk
+                    : pk;
 
                 return (
                   <option key={pk} value={pk}>
@@ -351,7 +355,7 @@ export const TransferForm = ({
           </TradingInputError>
         )}
       </TradingFormGroup>
-      <TradingFormGroup label="Amount" labelFor="amount">
+      <TradingFormGroup label={t('Amount')} labelFor="amount">
         <TradingInput
           id="amount"
           autoComplete="off"
@@ -473,6 +477,7 @@ export const TransferFee = ({
   fee?: string;
   decimals?: number;
 }) => {
+  const t = useT();
   if (!feeFactor || !amount || !transferAmount || !fee) return null;
   if (
     isNaN(Number(feeFactor)) ||
@@ -490,8 +495,8 @@ export const TransferFee = ({
       <div className="flex flex-wrap items-center justify-between gap-1">
         <Tooltip
           description={t(
-            `The transfer fee is set by the network parameter transfer.fee.factor, currently set to %s`,
-            [feeFactor]
+            `The transfer fee is set by the network parameter transfer.fee.factor, currently set to {{feeFactor}}`,
+            { feeFactor }
           )}
         >
           <div>{t('Transfer fee')}</div>
@@ -546,6 +551,7 @@ export const AddressField = ({
   mode,
   onChange,
 }: AddressInputProps) => {
+  const t = useT();
   const isInput = mode === 'input';
   return (
     <>

@@ -1,11 +1,11 @@
 import { type AgGridReact } from 'ag-grid-react';
 import { useCallback, useRef, useState } from 'react';
-import { t } from '@vegaprotocol/i18n';
 import { FundingPaymentsTable } from './funding-payments-table';
 import { Pagination } from '@vegaprotocol/datagrid';
 import { type useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { fundingPaymentsWithMarketProvider } from './funding-payments-data-provider';
+import { useT } from './use-t';
 
 interface FundingPaymentsManagerProps {
   partyId: string;
@@ -20,6 +20,7 @@ export const FundingPaymentsManager = ({
   onMarketClick,
   gridProps,
 }: FundingPaymentsManagerProps) => {
+  const t = useT();
   const gridRef = useRef<AgGridReact | null>(null);
   const [hasDisplayedRow, setHasDisplayedRow] = useState<boolean | undefined>(
     undefined

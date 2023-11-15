@@ -1,0 +1,20 @@
+{
+  "Copy buy order ID": "Copy buy order ID",
+  "Copy sell order ID": "Copy sell order ID",
+  "Copy trade ID": "Copy trade ID",
+  "Date": "Date",
+  "Fee": "Fee",
+  "Fee Discount": "Fee Discount",
+  "Fees to be paid by the taker.": "Fees to be paid by the taker.",
+  "If the market is active the maker will pay zero infrastructure and liquidity fees.": "If the market is active the maker will pay zero infrastructure and liquidity fees.",
+  "If the market is in monitoring auction, half of the infrastructure and liquidity fees will be paid.": "If the market is in monitoring auction, half of the infrastructure and liquidity fees will be paid.",
+  "Infrastructure Fee": "Infrastructure Fee",
+  "Market": "Market",
+  "No fills": "No fills",
+  "Notional": "Notional",
+  "Price": "Price",
+  "Referral Discount": "Referral Discount",
+  "Role": "Role",
+  "Size": "Size",
+  "Volume Discount": "Volume Discount"
+}

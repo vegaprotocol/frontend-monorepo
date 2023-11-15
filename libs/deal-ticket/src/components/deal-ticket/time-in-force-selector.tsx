@@ -2,15 +2,16 @@ import {
   TradingFormGroup,
   TradingInputError,
   TradingSelect,
-  Tooltip,
+  TextChildrenTooltip as Tooltip,
   SimpleGrid,
 } from '@vegaprotocol/ui-toolkit';
 import * as Schema from '@vegaprotocol/types';
-import { t } from '@vegaprotocol/i18n';
 import { timeInForceLabel } from '@vegaprotocol/orders';
 import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
 import type { Market, StaticMarketData } from '@vegaprotocol/markets';
+import { Trans } from 'react-i18next';
+import { useT, ns } from '../../use-t';
 
 interface TimeInForceSelectorProps {
   value: Schema.OrderTimeInForce;
@@ -36,6 +37,7 @@ export const TimeInForceSelector = ({
   marketData,
   errorMessage,
 }: TimeInForceSelectorProps) => {
+  const t = useT();
   const options =
     orderType === Schema.OrderType.TYPE_LIMIT
       ? typeLimitOptions
@@ -44,25 +46,30 @@ export const TimeInForceSelector = ({
   const renderError = (errorType: string) => {
     if (errorType === MarketModeValidationType.Auction) {
       return t(
-        `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
+        'Until the auction ends, you can only place GFA, GTT, or GTC limit orders'
       );
     }
 
     if (errorType === MarketModeValidationType.LiquidityMonitoringAuction) {
       return (
         <span>
-          {t('This market is in auction until it reaches')}{' '}
-          <Tooltip
-            description={
-              <SimpleGrid grid={compileGridData(market, marketData)} />
-            }
-          >
-            <span>{t('sufficient liquidity')}</span>
-          </Tooltip>
-          {'. '}
-          {t(
-            `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
-          )}
+          <Trans
+            i18nKey="TIME_IN_FORCE_SELECTOR_LIQUIDITY_MONITORING_AUCTION"
+            defaults="This market is in auction until it reaches <0>sufficient liquidity</0>. Until the auction ends, you can only place GFA, GTT, or GTC limit orders."
+            ns={ns}
+            components={[
+              <Tooltip
+                description={
+                  <SimpleGrid
+                    grid={compileGridData(t, market, marketData, t)}
+                  />
+                }
+              >
+                sufficient liquidity
+              </Tooltip>,
+            ]}
+            t={t}
+          />
         </span>
       );
     }
@@ -70,18 +77,23 @@ export const TimeInForceSelector = ({
     if (errorType === MarketModeValidationType.PriceMonitoringAuction) {
       return (
         <span>
-          {t('This market is in auction due to')}{' '}
-          <Tooltip
-            description={
-              <SimpleGrid grid={compileGridData(market, marketData)} />
-            }
-          >
-            <span>{t('high price volatility')}</span>
-          </Tooltip>
-          {'. '}
-          {t(
-            `Until the auction ends, you can only place GFA, GTT, or GTC limit orders`
-          )}
+          <Trans
+            i18nKey="TIME_IN_FORCE_SELECTOR_PRICE_MONITORING_AUCTION"
+            defaults="This market is in auction due to <0>high price volatility</0>. Until the auction ends, you can only place GFA, GTT, or GTC limit orders."
+            ns={ns}
+            components={[
+              <Tooltip
+                description={
+                  <SimpleGrid
+                    grid={compileGridData(t, market, marketData, t)}
+                  />
+                }
+              >
+                high price volatility
+              </Tooltip>,
+            ]}
+            t={t}
+          />
         </span>
       );
     }
