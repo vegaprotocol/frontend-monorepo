@@ -399,7 +399,7 @@ export const LiquidityTable = ({
             headerTooltip: t(
               `The liquidity fees accrued by each provider, which will be distributed at the end of the epoch after applying any penalties.`
             ),
-            valueFormatter: stakeToCcyVolumeQuantumFormatter,
+            valueFormatter: assetDecimalsQuantumFormatter,
             tooltipValueGetter: feesAccruedTooltip,
             cellClassRules: {
               'text-warning': ({ data }: { data: LiquidityProvisionData }) => {
