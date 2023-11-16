@@ -26,15 +26,6 @@ import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provid
 import { ProposalActionsDropdown } from '../proposal-actions-dropdown';
 
 export const useColumnDefs = () => {
-  const { params } = useNetworkParams([
-    NetworkParams.governance_proposal_market_requiredMajority,
-  ]);
-  const requiredMajorityPercentage = useMemo(() => {
-    const requiredMajority =
-      params?.governance_proposal_market_requiredMajority ?? 1;
-    return new BigNumber(requiredMajority).times(100);
-  }, [params?.governance_proposal_market_requiredMajority]);
-
   const columnDefs: ColDef[] = useMemo(() => {
     return compact([
       {
@@ -138,7 +129,7 @@ export const useColumnDefs = () => {
         },
       },
     ]);
-  }, [requiredMajorityPercentage]);
+  }, []);
 
   return columnDefs;
 };
