@@ -48,12 +48,12 @@ cypress.env.json
 # Next.js
 .next
 
-#cypress
+# cypress
 /apps/**/cypress/reports/
 /apps/**/cypress/downloads/
 /apps/**/fixtures/wallet/node**
 
-#console-test
+# apps/trading/e2e
 __pycache__/
 apps/trading/e2e/logs/
 apps/trading/e2e/.pytest_cache/

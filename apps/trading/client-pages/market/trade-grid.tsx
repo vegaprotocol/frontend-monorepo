@@ -4,10 +4,8 @@ import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
-import { t } from '@vegaprotocol/i18n';
 import { OracleBanner, useMarket } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
-import { Filter } from '@vegaprotocol/orders';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import {
   ResizableGrid,
@@ -21,6 +19,7 @@ import {
   MarketTerminationBanner,
 } from '../../components/market-banner';
 import { FLAGS } from '@vegaprotocol/environment';
+import { useT } from '../../lib/use-t';
 
 interface TradeGridProps {
   market: Market | null;
@@ -35,6 +34,7 @@ const MainGrid = memo(
     marketId: string;
     pinnedAsset?: PinnedAsset;
   }) => {
+    const t = useT();
     const { data: market } = useMarket(marketId);
     const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });
     const [sizesMiddle, handleOnMiddleLayoutChange] = usePaneLayout({
@@ -125,13 +125,13 @@ const MainGrid = memo(
                 name={t('Open')}
                 menu={<TradingViews.activeOrders.menu />}
               >
-                <TradingViews.orders.component filter={Filter.Open} />
+                <TradingViews.activeOrders.component />
               </Tab>
               <Tab id="closed-orders" name={t('Closed')}>
-                <TradingViews.orders.component filter={Filter.Closed} />
+                <TradingViews.closedOrders.component />
               </Tab>
               <Tab id="rejected-orders" name={t('Rejected')}>
-                <TradingViews.orders.component filter={Filter.Rejected} />
+                <TradingViews.rejectedOrders.component />
               </Tab>
               <Tab
                 id="orders"

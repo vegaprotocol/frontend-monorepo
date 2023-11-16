@@ -7,7 +7,8 @@ import { Tag } from './tag';
 import type { ComponentProps, ReactNode } from 'react';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { DApp, TOKEN_PROPOSALS, useLinks } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/i18n';
+import { useT, ns } from '../../lib/use-t';
+import { Trans } from 'react-i18next';
 
 const Loading = ({ variant }: { variant: 'large' | 'inline' }) => (
   <div
@@ -31,6 +32,7 @@ const StakingTier = ({
   referralRewardMultiplier: string;
   minimumStakedTokens: string;
 }) => {
+  const t = useT();
   const color: Record<number, ComponentProps<typeof Tag>['color']> = {
     1: 'green',
     2: 'blue',
@@ -62,7 +64,9 @@ const StakingTier = ({
         <Tag color={color[tier]}>Multiplier {referralRewardMultiplier}x</Tag>
         <h3 className="mt-1 mb-1 text-base">{label}</h3>
         <p className="text-sm text-vega-clight-100 dark:text-vega-cdark-100">
-          {t('Stake a minimum of')} {minimumStakedTokens} {t('$VEGA tokens')}
+          {t('Stake a minimum of {{minimumStakedTokens}} $VEGA tokens', {
+            minimumStakedTokens,
+          })}
         </p>
       </div>
     </div>
@@ -70,6 +74,7 @@ const StakingTier = ({
 };
 
 export const TiersContainer = () => {
+  const t = useT();
   const { benefitTiers, stakingTiers, details, loading, error } =
     useReferralProgram();
 
@@ -82,13 +87,15 @@ export const TiersContainer = () => {
   if ((!loading && !details) || error) {
     return (
       <div className="text-base px-5 py-10 text-center">
-        {t(
-          "We're sorry but we don't have an active referral programme currently running. You can propose a new programme"
-        )}{' '}
-        <ExternalLink href={governanceLink(TOKEN_PROPOSALS)}>
-          {t('here')}
-        </ExternalLink>
-        .
+        <Trans
+          defaults="We're sorry but we don't have an active referral programme currently running. You can propose a new programme <0>here</0>."
+          components={[
+            <ExternalLink href={governanceLink(TOKEN_PROPOSALS)} key="link">
+              {t('here')}
+            </ExternalLink>,
+          ]}
+          ns={ns}
+        />
       </div>
     );
   }
@@ -174,6 +181,7 @@ const TiersTable = ({
   }>;
   windowLength?: number;
 }) => {
+  const t = useT();
   return (
     <Table
       columns={[
@@ -186,12 +194,9 @@ const TiersTable = ({
         { name: 'discount', displayName: t('Referrer trading discount') },
         {
           name: 'volume',
-          displayName: t(
-            'Min. trading volume %s',
-            windowLength
-              ? t('(last %s epochs)', windowLength.toString())
-              : undefined
-          ),
+          displayName: t('Min. trading volume (last {{count}} epochs)', {
+            count: windowLength,
+          }),
         },
         { name: 'epochs', displayName: t('Min. epochs') },
       ]}

@@ -64,11 +64,8 @@ export const useNodeHealth = () => {
       text = t(
         'Erroneous latency ( >{{errorLatency}} sec): {{blockUpdateLatency}} sec',
         {
-          nsSeparator: '|',
-          replace: {
-            errorLatency: (ERROR_LATENCY / 1000).toString(),
-            blockUpdateLatency: (blockUpdateMsLatency / 1000).toFixed(2),
-          },
+          errorLatency: (ERROR_LATENCY / 1000).toString(),
+          blockUpdateLatency: (blockUpdateMsLatency / 1000).toFixed(2),
         }
       );
       intent = Intent.Danger;
@@ -82,11 +79,8 @@ export const useNodeHealth = () => {
       text = t(
         'Warning delay ( >{{warningLatency}} sec): {{blockUpdateLatency}} sec',
         {
-          nsSeparator: '|',
-          replace: {
-            warningLatency: (WARNING_LATENCY / 1000).toString(),
-            blockUpdateLatency: (blockUpdateMsLatency / 1000).toFixed(2),
-          },
+          warningLatency: (WARNING_LATENCY / 1000).toString(),
+          blockUpdateLatency: (blockUpdateMsLatency / 1000).toFixed(2),
         }
       );
       intent = Intent.Warning;

@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { t } from '@vegaprotocol/i18n';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -13,12 +12,14 @@ import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { ViewType, useSidebar } from '../sidebar';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
+import { useT } from '../../lib/use-t';
 
 export const AccountsContainer = ({
   pinnedAsset,
 }: {
   pinnedAsset?: PinnedAsset;
 }) => {
+  const t = useT();
   const onMarketClick = useMarketClickHandler(true);
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();

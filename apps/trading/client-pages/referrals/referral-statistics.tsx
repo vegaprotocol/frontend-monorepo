@@ -28,9 +28,10 @@ import sortBy from 'lodash/sortBy';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 import BigNumber from 'bignumber.js';
-import { t } from '@vegaprotocol/i18n';
 import maxBy from 'lodash/maxBy';
 import { DocsLinks } from '@vegaprotocol/environment';
+import { useT, ns } from '../../lib/use-t';
+import { Trans } from 'react-i18next';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
@@ -152,6 +153,7 @@ export const Statistics = ({
   program: ReturnType<typeof useReferralProgram>;
   as: 'referrer' | 'referee';
 }) => {
+  const t = useT();
   const {
     baseCommissionValue,
     runningVolumeValue,
@@ -185,10 +187,15 @@ export const Statistics = ({
   const baseCommissionTile = (
     <StatTile
       title={t('Base commission rate')}
-      description={t('(Combined set volume %s over last %s epochs)', [
-        compactNumFormat.format(runningVolumeValue),
-        (details?.windowLength || DEFAULT_AGGREGATION_DAYS).toString(),
-      ])}
+      description={t(
+        '(Combined set volume {{runningVolume}} over last {{epochs}} epochs)',
+        {
+          runningVolume: compactNumFormat.format(runningVolumeValue),
+          epochs: (
+            details?.windowLength || DEFAULT_AGGREGATION_DAYS
+          ).toString(),
+        }
+      )}
     >
       {baseCommissionValue * 100}%
     </StatTile>
@@ -196,10 +203,9 @@ export const Statistics = ({
   const stakingMultiplierTile = (
     <StatTile
       title={t('Staking multiplier')}
-      description={`(${addDecimalsFormatNumber(
-        stakeAvailable?.toString() || 0,
-        18
-      )} $VEGA staked)`}
+      description={t('{{amount}} $VEGA staked', {
+        amount: addDecimalsFormatNumber(stakeAvailable?.toString() || 0, 18),
+      })}
     >
       {multiplier || t('None')}
     </StatTile>
@@ -232,10 +238,9 @@ export const Statistics = ({
 
   const referrerVolumeTile = (
     <StatTile
-      title={t(
-        'My volume (last %s epochs)',
-        (details?.windowLength || DEFAULT_AGGREGATION_DAYS).toString()
-      )}
+      title={t('My volume (last {{count}} epochs)', {
+        count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
+      })}
     >
       {compactNumFormat.format(referrerVolumeValue)}
     </StatTile>
@@ -246,10 +251,9 @@ export const Statistics = ({
     .reduce((all, r) => all.plus(r), new BigNumber(0));
   const totalCommissionTile = (
     <StatTile
-      title={t(
-        'Total commission (last %s epochs)',
-        (details?.windowLength || DEFAULT_AGGREGATION_DAYS).toString()
-      )}
+      title={t('Total commission (last {{count}}} epochs)', {
+        count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
+      })}
       description={<QUSDTooltip />}
     >
       {getNumberFormat(0).format(Number(totalCommissionValue))}
@@ -290,10 +294,9 @@ export const Statistics = ({
   );
   const runningVolumeTile = (
     <StatTile
-      title={t(
-        'Combined volume (last %s epochs)',
-        details?.windowLength.toString()
-      )}
+      title={t('Combined volume (last {{count}} epochs)', {
+        count: details?.windowLength,
+      })}
     >
       {compactNumFormat.format(runningVolumeValue)}
     </StatTile>
@@ -381,25 +384,22 @@ export const Statistics = ({
                 { name: 'joined', displayName: t('Date Joined') },
                 {
                   name: 'volume',
-                  displayName: t(
-                    'Volume (last %s epochs)',
-                    (
-                      details?.windowLength || DEFAULT_AGGREGATION_DAYS
-                    ).toString()
-                  ),
+                  displayName: t('Volume (last {{count}} epochs)', {
+                    count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
+                  }),
                 },
                 {
                   name: 'commission',
                   displayName: (
-                    <>
-                      {t('Commission earned in')} <QUSDTooltip />{' '}
-                      {t(
-                        '(last %s epochs)',
-                        (
-                          details?.windowLength || DEFAULT_AGGREGATION_DAYS
-                        ).toString()
-                      )}
-                    </>
+                    <Trans
+                      i18nKey="referral-statistics-commission"
+                      defaults="Commission earned in <0>qUSD</0> (last {{count}} epochs)"
+                      values={{
+                        count:
+                          details?.windowLength || DEFAULT_AGGREGATION_DAYS,
+                      }}
+                      ns={ns}
+                    />
                   ),
                 },
               ]}
@@ -430,24 +430,27 @@ export const Statistics = ({
   );
 };
 
-export const QUSDTooltip = () => (
-  <Tooltip
-    description={
-      <>
-        <p className="mb-1">
-          {t(
-            'qUSD provides a rough USD equivalent of balances across all assets using the value of "Quantum" for that asset'
+export const QUSDTooltip = () => {
+  const t = useT();
+  return (
+    <Tooltip
+      description={
+        <>
+          <p className="mb-1">
+            {t(
+              'qUSD provides a rough USD equivalent of balances across all assets using the value of "Quantum" for that asset'
+            )}
+          </p>
+          {DocsLinks && (
+            <ExternalLink href={DocsLinks.QUANTUM}>
+              {t('Find out more')}
+            </ExternalLink>
           )}
-        </p>
-        {DocsLinks && (
-          <ExternalLink href={DocsLinks.QUANTUM}>
-            {t('Find out more')}
-          </ExternalLink>
-        )}
-      </>
-    }
-    underline={true}
-  >
-    <span>{t('qUSD')}</span>
-  </Tooltip>
-);
+        </>
+      }
+      underline={true}
+    >
+      <span>{t('qUSD')}</span>
+    </Tooltip>
+  );
+};

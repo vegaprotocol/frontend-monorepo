@@ -1,5 +1,4 @@
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
-import { t } from '@vegaprotocol/i18n';
 import { PositionsManager } from '@vegaprotocol/positions';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -9,10 +8,12 @@ import type { StateCreator } from 'zustand';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
+import { useT } from '../../lib/use-t';
 
 const AUTO_SIZE_COLUMNS = ['marketCode'];
 
 export const PositionsContainer = ({ allKeys }: { allKeys?: boolean }) => {
+  const t = useT();
   const onMarketClick = useMarketClickHandler(true);
   const { pubKey, pubKeys, isReadOnly } = useVegaWallet();
 

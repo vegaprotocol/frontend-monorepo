@@ -3,21 +3,22 @@ import { RainbowButton } from './buttons';
 import { AnimatedDudeWithWire } from './graphics/dude';
 import { LayoutWithSky } from './layout';
 import { Routes } from '../../lib/links';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../lib/use-t';
 
 export const ErrorBoundary = () => {
+  const t = useT();
   const error = useRouteError();
   const navigate = useNavigate();
 
   const title = isRouteErrorResponse(error)
     ? `${error.status} ${error.statusText}`
-    : 'Something went wrong';
+    : t('Something went wrong');
 
   const code = isRouteErrorResponse(error) ? error.status : 0;
 
   const messages: Record<number, string> = {
-    0: 'An unknown error occurred.',
-    404: "The page you're looking for doesn't exists.",
+    0: t('An unknown error occurred.'),
+    404: t("The page you're looking for doesn't exists."),
   };
 
   return (
@@ -48,6 +49,7 @@ export const ErrorBoundary = () => {
 };
 
 export const NotFound = () => {
+  const t = useT();
   const navigate = useNavigate();
 
   return (

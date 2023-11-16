@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import { VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import {
   SidebarButton,
@@ -6,8 +5,10 @@ import {
   ViewType,
 } from '../../components/sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
+import { useT } from '../../lib/use-t';
 
 export const LiquiditySidebar = () => {
+  const t = useT();
   const currentRouteId = useGetCurrentRouteId();
 
   return (
