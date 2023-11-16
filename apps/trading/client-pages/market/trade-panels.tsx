@@ -2,7 +2,7 @@ import type { PinnedAsset } from '@vegaprotocol/accounts';
 import type { Market } from '@vegaprotocol/markets';
 import { OracleBanner } from '@vegaprotocol/markets';
 import type { TradingView } from './trade-views';
-import { NoMarketSplash, useTradingViews } from './trade-views';
+import { TradingViews } from './trade-views';
 import { useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
@@ -12,6 +12,8 @@ import {
   MarketTerminationBanner,
 } from '../../components/market-banner';
 import { FLAGS } from '@vegaprotocol/environment';
+import { useT } from '../../lib/use-t';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 
 interface TradePanelsProps {
   market: Market | null;
@@ -19,7 +21,6 @@ interface TradePanelsProps {
 }
 
 export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
-  const TradingViews = useTradingViews();
   const [view, setView] = useState<TradingView>('candles');
 
   const renderView = () => {
@@ -31,6 +32,8 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
 
     if (!market) return <NoMarketSplash />;
 
+    // Watch out here, we don't know what component is being rendered
+    // so watch out for clashes in props
     return <Component marketId={market?.id} pinnedAsset={pinnedAsset} />;
   };
 
@@ -73,33 +76,89 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
         </AutoSizer>
       </div>
       <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
-        {Object.keys(TradingViews).map((key) => {
-          const isActive = view === key;
-          const className = classNames(
-            'py-2 px-4 min-w-[100px] capitalize text-sm',
-            {
-              'bg-vega-clight-500 dark:bg-vega-cdark-500': isActive,
+        {Object.keys(TradingViews)
+          // filter to control available views for the current market
+          // eg only perps should get the funding views
+          .filter((_key) => {
+            const key = _key as TradingView;
+            const perpOnlyViews = ['funding', 'fundingPayments'];
+
+            if (
+              market?.tradableInstrument.instrument.product.__typename ===
+              'Perpetual'
+            ) {
+              return true;
             }
-          );
-          if (
-            market?.tradableInstrument.instrument.product.__typename !==
-              'Perpetual' &&
-            (key === 'funding' || key === 'fundingPayments')
-          ) {
-            return null;
-          }
-          return (
-            <button
-              data-testid={key}
-              onClick={() => setView(key as TradingView)}
-              className={className}
-              key={key}
-            >
-              {TradingViews[key as keyof typeof TradingViews].label}
-            </button>
-          );
-        })}
+
+            if (perpOnlyViews.includes(key)) {
+              return false;
+            }
+
+            return true;
+          })
+          .map((_key) => {
+            const key = _key as TradingView;
+            const isActive = view === key;
+            return (
+              <ViewButton
+                key={key}
+                view={key}
+                isActive={isActive}
+                onClick={() => setView(key)}
+              />
+            );
+          })}
       </div>
     </div>
   );
+};
+
+export const NoMarketSplash = () => {
+  const t = useT();
+  return <Splash>{t('No market')}</Splash>;
+};
+
+const ViewButton = ({
+  view,
+  isActive,
+  onClick,
+}: {
+  view: TradingView;
+  isActive: boolean;
+  onClick: () => void;
+}) => {
+  const label = useViewLabel(view);
+  const className = classNames('py-2 px-4 min-w-[100px] capitalize text-sm', {
+    'bg-vega-clight-500 dark:bg-vega-cdark-500': isActive,
+  });
+
+  return (
+    <button data-testid={view} onClick={onClick} className={className}>
+      {label}
+    </button>
+  );
+};
+
+const useViewLabel = (view: TradingView) => {
+  const t = useT();
+
+  const labels = {
+    candles: t('Candles'),
+    depth: t('Depth'),
+    liquidity: t('Liquidity'),
+    funding: t('Funding'),
+    fundingPayments: t('Funding Payments'),
+    orderbook: t('Orderbook'),
+    trades: t('Trades'),
+    positions: t('Positions'),
+    activeOrders: t('Active'),
+    closedOrders: t('Closed'),
+    rejectedOrders: t('Rejected'),
+    orders: t('All'),
+    stopOrders: t('Stop'),
+    collateral: t('Collateral'),
+    fills: t('Fills'),
+  };
+
+  return labels[view];
 };
