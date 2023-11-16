@@ -3,14 +3,14 @@ import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { BigNumber } from 'bignumber.js';
 import { getIntentBackground, Intent } from '../../utils/intent';
 import { Indicator } from '../indicator';
 import { Tooltip } from '../tooltip';
+import { useT } from '../../use-t';
 
 const Remainder = () => (
-  <div className="bg-greys-light-200 h-[inherit] relative flex-1" />
+  <div className="bg-greys-light-200 relative h-[inherit] flex-1" />
 );
 
 const Target = ({
@@ -22,6 +22,7 @@ const Target = ({
   target: string;
   decimals: number;
 }) => {
+  const t = useT();
   return (
     <Tooltip
       description={
@@ -30,20 +31,23 @@ const Target = ({
             <Indicator variant={Intent.None} />
           </div>
           <span>
-            {t('Target stake')} {addDecimalsFormatNumber(target, decimals)}
+            {t('Target stake {{target}}', {
+              target: addDecimalsFormatNumber(target, decimals),
+            })}{' '}
+            {}
           </span>
         </div>
       }
     >
       <div
         className={classNames(
-          'absolute top-1/2 left-1/2 -translate-x-2/4 -translate-y-1/2 px-1.5 group'
+          'group absolute left-1/2 top-1/2 -translate-x-2/4 -translate-y-1/2 px-1.5'
         )}
         style={{ left: '50%' }}
       >
         <div
           className={classNames(
-            'health-target w-0.5 bg-vega-dark-100 dark:bg-vega-light-100 group-hover:scale-x-150 group-hover:scale-y-108',
+            'health-target bg-vega-dark-100 dark:bg-vega-light-100 group-hover:scale-y-108 w-0.5 group-hover:scale-x-150',
             {
               'h-6': !isLarge,
               'h-12': isLarge,
@@ -66,6 +70,7 @@ const AuctionTarget = ({
   rangeLimit: number;
   decimals: number;
 }) => {
+  const t = useT();
   const leftPosition = new BigNumber(trigger).div(rangeLimit).multipliedBy(100);
   return (
     <Tooltip
@@ -75,15 +80,16 @@ const AuctionTarget = ({
             <Indicator variant={Intent.None} />
           </div>
           <span>
-            {t('Auction Trigger stake')}{' '}
-            {addDecimalsFormatNumber(trigger, decimals)}
+            {t('Auction Trigger stake {{trigger}}', {
+              trigger: addDecimalsFormatNumber(trigger, decimals),
+            })}
           </span>
         </div>
       }
     >
       <div
         className={classNames(
-          'absolute top-1/2 left-1/2 -translate-x-2/4 -translate-y-1/2 px-1.5 group'
+          'group absolute left-1/2 top-1/2 -translate-x-2/4 -translate-y-1/2 px-1.5'
         )}
         style={{
           left: `${leftPosition}%`,
@@ -91,7 +97,7 @@ const AuctionTarget = ({
       >
         <div
           className={classNames(
-            'health-target w-0.5 group-hover:scale-x-150 group-hover:scale-y-108 dashed-background',
+            'health-target group-hover:scale-y-108 dashed-background w-0.5 group-hover:scale-x-150',
             {
               'h-6': !isLarge,
               'h-12': isLarge,
@@ -120,6 +126,7 @@ const Level = ({
   decimals: number;
   intent: Intent;
 }) => {
+  const t = useT();
   const width = new BigNumber(commitmentAmount)
     .div(rangeLimit)
     .multipliedBy(100)
@@ -134,9 +141,7 @@ const Level = ({
       <div className="mt-1.5 inline-flex">
         <Indicator variant={intent} />
       </div>
-      <span>
-        {formattedFee} {t('Fee')}
-      </span>
+      <span>{t('{{fee}} Fee', { fee: formattedFee })}</span>
       <div className="flex  flex-col">
         <span>
           {prevLevel ? addDecimalsFormatNumber(prevLevel, decimals) : '0'} -{' '}
@@ -149,14 +154,14 @@ const Level = ({
   return (
     <Tooltip description={tooltipContent}>
       <div
-        className={classNames(`relative h-[inherit] w-full group min-w-[1px]`)}
+        className={classNames(`group relative h-[inherit] w-full min-w-[1px]`)}
         style={{
           width: `${width}%`,
         }}
       >
         <div
           className={classNames(
-            'relative w-full h-[inherit] group-hover:scale-y-150',
+            'relative h-[inherit] w-full group-hover:scale-y-150',
             getIntentBackground(intent)
           )}
           style={{ opacity }}
@@ -167,7 +172,7 @@ const Level = ({
 };
 
 const Full = () => (
-  <div className="bg-transparent w-full h-[inherit] absolute bottom-0 left-0" />
+  <div className="absolute bottom-0 left-0 h-[inherit] w-full bg-transparent" />
 );
 
 interface Levels {
@@ -190,6 +195,7 @@ export const HealthBar = ({
   intent: Intent;
   triggerRatio?: string;
 }) => {
+  const t = useT();
   const targetNumber = parseInt(target, 10);
   const rangeLimit = targetNumber * 2;
 
@@ -220,7 +226,7 @@ export const HealthBar = ({
         })}
       >
         <div
-          className={classNames('health-inner relative w-full flex', {
+          className={classNames('health-inner relative flex w-full', {
             'h-4': !isLarge,
             'h-8': isLarge,
           })}
@@ -228,8 +234,8 @@ export const HealthBar = ({
           <Full />
 
           <div
-            className="health-bars h-[inherit] flex w-full
-              gap-0.5 outline outline-vega-light-200 dark:outline-vega-dark-200"
+            className="health-bars outline-vega-light-200 dark:outline-vega-dark-200 flex
+              h-[inherit] w-full gap-0.5 outline"
           >
             {levels.map((p, index) => {
               const { commitmentAmount, fee } = p;
@@ -253,11 +259,11 @@ export const HealthBar = ({
               <Tooltip
                 description={
                   <div className="text-vega-dark-100 dark:text-vega-light-200">
-                    t( 'Providers greater than 2x target stake not shown' )
+                    {t('Providers greater than 2x target stake not shown')}
                   </div>
                 }
               >
-                <div className="h-[inherit] relative flex-1 leading-4">...</div>
+                <div className="relative h-[inherit] flex-1 leading-4">...</div>
               </Tooltip>
             )}
           </div>

@@ -1,7 +1,7 @@
 import { Splash } from '../splash';
 import type { ReactNode } from 'react';
-import { t } from '@vegaprotocol/i18n';
 import { Button } from '../button';
+import { useT } from '../../use-t';
 
 interface AsyncRendererProps<T> {
   loading: boolean;
@@ -28,15 +28,18 @@ export function AsyncRenderer<T = object>({
   render,
   reload,
 }: AsyncRendererProps<T>) {
+  const t = useT();
   if (error) {
     if (!data || (Array.isArray(data) && !data.length)) {
       return (
-        <div className="h-full flex items-center justify-center">
-          <div className="h-12 flex flex-col  items-center">
+        <div className="flex h-full items-center justify-center">
+          <div className="flex h-12 flex-col  items-center">
             <Splash>
               {errorMessage
                 ? errorMessage
-                : t(`Something went wrong: ${error.message}`)}
+                : t(`Something went wrong: {{errorMessage}}`, {
+                    errorMessage: error.message,
+                  })}
             </Splash>
             {reload && error.message === 'Timeout exceeded' && (
               <Button
@@ -77,6 +80,7 @@ export function AsyncRendererInline<T>({
   render,
   reload,
 }: AsyncRendererProps<T>) {
+  const t = useT();
   const wrapperClasses = 'text-sm';
   if (error) {
     if (!data) {
@@ -85,7 +89,9 @@ export function AsyncRendererInline<T>({
           <p>
             {errorMessage
               ? errorMessage
-              : t(`Something went wrong: ${error.message}`)}
+              : t(`Something went wrong: {{errorMessage}}`, {
+                  errorMessage: error.message,
+                })}
           </p>
           {reload && error.message === 'Timeout exceeded' && (
             <Button

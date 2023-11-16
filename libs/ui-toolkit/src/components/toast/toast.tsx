@@ -17,7 +17,7 @@ import {
 import { Intent } from '../../utils/intent';
 import { Icon, VegaIcon, VegaIconNames } from '../icon';
 import { Loader } from '../loader';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../use-t';
 
 export type ToastContent = JSX.Element | undefined;
 
@@ -83,6 +83,7 @@ export const CollapsiblePanel = forwardRef<
   HTMLDivElement,
   CollapsiblePanelProps & HTMLAttributes<HTMLDivElement>
 >(({ children, className, actions, ...props }, ref) => {
+  const t = useT();
   const [collapsed, setCollapsed] = useState(true);
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
