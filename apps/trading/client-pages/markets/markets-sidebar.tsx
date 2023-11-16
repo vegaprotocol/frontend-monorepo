@@ -1,7 +1,5 @@
 import { Route, Routes, useParams } from 'react-router-dom';
-import { MarketState } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/i18n';
-import { useMarket } from '@vegaprotocol/markets';
 import { VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import {
   SidebarButton,
