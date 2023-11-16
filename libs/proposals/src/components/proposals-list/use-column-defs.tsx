@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef } from 'ag-grid-community';
 import {
-  CenteredGridCellWrapper,
   COL_DEFS,
   DateRangeFilter,
   SetFilter,
@@ -24,7 +23,6 @@ import {
   ProposalStateMapping,
 } from '@vegaprotocol/types';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
-import { VoteProgress } from '../voting-progress';
 import { ProposalActionsDropdown } from '../proposal-actions-dropdown';
 
 export const useColumnDefs = () => {
