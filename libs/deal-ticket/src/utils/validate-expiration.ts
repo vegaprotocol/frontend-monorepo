@@ -1,7 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 import type { Validate } from 'react-hook-form';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateExpiration: Validate<string | undefined> = (
   value?: string
 ) => {
