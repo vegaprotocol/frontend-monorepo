@@ -1,10 +1,9 @@
-from math import exp
 import pytest
 from collections import namedtuple
 from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService
 from actions.vega import submit_order
-from conftest import init_vega, page
+from conftest import init_vega
 from fixtures.market import setup_continuous_market
 from actions.utils import wait_for_toast_confirmation
 
@@ -54,37 +53,9 @@ trigger_price_oco = "triggerPrice-oco"
 order_size_oco = "order-size-oco"
 order_limit_price_oco = "order-price-oco"
 
-
-def wait_for_graphql_response(page, query_name, timeout=5000):
-    response_data = {}
-
-    def handle_response(route, request):
-        if "graphql" in request.url:
-            response = request.response()
-            if response is not None:
-                json_response = response.json()
-                if json_response and "data" in json_response:
-                    data = json_response["data"]
-                    if query_name in data:
-                        response_data["data"] = data
-                        route.continue_()
-                        return
-        route.continue_()
-
-    # Register the route handler
-    page.route("**", handle_response)
-
-    # Wait for the response data to be populated
-    page.wait_for_timeout(timeout)
-
-    # Unregister the route handler
-    page.unroute("**", handle_response)
-
-
 def create_position(vega: VegaService, market_id):
     submit_order(vega, "Key 1", market_id, "SIDE_SELL", 100, 110)
     submit_order(vega, "Key 1", market_id, "SIDE_BUY", 100, 110)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup
 
@@ -93,10 +64,8 @@ def create_position(vega: VegaService, market_id):
 def test_submit_stop_order_market_oco_rejected(
     continuous_market, vega: VegaService, page: Page
 ):
-    market_id = continuous_market
-    page.goto(f"/#/markets/{market_id}")
+    page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(stop_orders_tab).click()
-    wait_for_graphql_response(page, "stopOrders")
     page.get_by_test_id(stop_order_btn).click()
     page.get_by_test_id(stop_market_order_btn).is_visible()
     page.get_by_test_id(stop_market_order_btn).click()
@@ -116,12 +85,8 @@ def test_submit_stop_order_market_oco_rejected(
     page.get_by_test_id(order_size_oco).fill("3")
     page.get_by_test_id(submit_stop_order).click()
     wait_for_toast_confirmation(page)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-
-    page.get_by_test_id(close_toast).click()
-    wait_for_graphql_response(page, "stopOrders")
     page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
 
     expect((page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
@@ -176,11 +141,10 @@ def test_submit_stop_order_market_oco_rejected(
 def test_submit_stop_oco_market_order_triggered(
     continuous_market, vega: VegaService, page: Page
 ):
-    market_id = continuous_market
-    page.goto(f"/#/markets/{market_id}")
+    create_position(vega, continuous_market)
+    page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(stop_orders_tab).click()
-    create_position(vega, market_id)
-    wait_for_graphql_response(page, "stopOrders")
+    
     page.get_by_test_id(stop_order_btn).click()
     page.get_by_test_id(stop_market_order_btn).is_visible()
     page.get_by_test_id(stop_market_order_btn).click()
@@ -198,12 +162,8 @@ def test_submit_stop_oco_market_order_triggered(
     page.get_by_test_id(order_size_oco).fill("3")
     page.get_by_test_id(submit_stop_order).click()
     wait_for_toast_confirmation(page)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-
-    page.get_by_test_id(close_toast).click()
-    wait_for_graphql_response(page, "stopOrders")
     page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
 
     expect((page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
@@ -257,12 +217,10 @@ def test_submit_stop_oco_market_order_triggered(
 @pytest.mark.usefixtures("page", "vega", "continuous_market", "auth", "risk_accepted")
 def test_submit_stop_oco_market_order_pending(
     continuous_market, vega: VegaService, page: Page
-):
-    market_id = continuous_market
-    page.goto(f"/#/markets/{market_id}")
+):  
+    create_position(vega, continuous_market)
+    page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(stop_orders_tab).click()
-    create_position(vega, market_id)
-    wait_for_graphql_response(page, "stopOrders")
     page.get_by_test_id(stop_order_btn).click()
     page.get_by_test_id(stop_market_order_btn).is_visible()
     page.get_by_test_id(stop_market_order_btn).click()
@@ -276,11 +234,9 @@ def test_submit_stop_oco_market_order_pending(
     page.get_by_test_id(order_size_oco).fill("2")
     page.get_by_test_id(submit_stop_order).click()
     wait_for_toast_confirmation(page)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     page.get_by_test_id(close_toast).click()
-    wait_for_graphql_response(page, "stopOrders")
     page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
 
     expect((page.get_by_role(row_table).locator(status_col)).nth(1)).to_have_text(
@@ -290,16 +246,13 @@ def test_submit_stop_oco_market_order_pending(
         "PendingOCO"
     )
 
-
 @pytest.mark.usefixtures("page", "vega", "continuous_market", "auth", "risk_accepted")
 def test_submit_stop_oco_limit_order_pending(
     continuous_market, vega: VegaService, page: Page
 ):
-    market_id = continuous_market
-    page.goto(f"/#/markets/{market_id}")
+    create_position(vega, continuous_market)
+    page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(stop_orders_tab).click()
-    create_position(vega, market_id)
-    wait_for_graphql_response(page, "stopOrders")
     page.get_by_test_id(stop_order_btn).click()
     page.get_by_test_id(stop_limit_order_btn).is_visible()
     page.get_by_test_id(stop_limit_order_btn).click()
@@ -317,12 +270,10 @@ def test_submit_stop_oco_limit_order_pending(
     page.get_by_test_id(order_limit_price_oco).fill("99")
     page.get_by_test_id(submit_stop_order).click()
     wait_for_toast_confirmation(page)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
     page.get_by_test_id(close_toast).click()
-    wait_for_graphql_response(page, "stopOrders")
     page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
 
     expect((page.get_by_role(row_table).locator(submission_type)).nth(1)).to_have_text(
@@ -350,11 +301,8 @@ def test_submit_stop_oco_limit_order_pending(
 def test_submit_stop_oco_limit_order_cancel(
     continuous_market, vega: VegaService, page: Page
 ):
-    market_id = continuous_market
-    page.goto(f"/#/markets/{market_id}")
-    page.get_by_test_id(stop_orders_tab).click()
-    create_position(vega, market_id)
-    wait_for_graphql_response(page, "stopOrders")
+    create_position(vega, continuous_market)
+    page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(stop_order_btn).click()
     page.get_by_test_id(stop_limit_order_btn).is_visible()
     page.get_by_test_id(stop_limit_order_btn).click()
@@ -373,26 +321,20 @@ def test_submit_stop_oco_limit_order_cancel(
     page.get_by_test_id(order_limit_price_oco).fill("99")
     page.get_by_test_id(submit_stop_order).click()
     wait_for_toast_confirmation(page)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-
     page.get_by_test_id(close_toast).click()
-    wait_for_graphql_response(page, "stopOrders")
+    page.get_by_test_id(stop_orders_tab).click()
     page.get_by_test_id(cancel).first.click()
     wait_for_toast_confirmation(page)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    page.get_by_test_id(close_toast).first.click()
-
     expect(
         page.locator(".ag-center-cols-container").locator('[col-id="status"]').first
     ).to_have_text("CancelledOCO")
     expect(
         page.locator(".ag-center-cols-container").locator('[col-id="status"]').last
     ).to_have_text("CancelledOCO")
-
 
 class TestStopOcoValidation:
     @pytest.fixture(scope="class")
@@ -406,8 +348,7 @@ class TestStopOcoValidation:
 
     @pytest.mark.usefixtures("page", "auth", "risk_accepted")
     def test_stop_market_order_oco_form_validation(self, continuous_market, page: Page):
-        market_id = continuous_market
-        page.goto(f"/#/markets/{market_id}")
+        page.goto(f"/#/markets/{continuous_market}")
         page.get_by_test_id(stop_order_btn).click()
         page.get_by_test_id(stop_market_order_btn).is_visible()
         page.get_by_test_id(stop_market_order_btn).click()
@@ -434,8 +375,7 @@ class TestStopOcoValidation:
 
     @pytest.mark.usefixtures("page", "auth", "risk_accepted")
     def test_stop_limit_order_oco_form_validation(self, continuous_market, page: Page):
-        market_id = continuous_market
-        page.goto(f"/#/markets/{market_id}")
+        page.goto(f"/#/markets/{continuous_market}")
         page.get_by_test_id(stop_order_btn).click()
         page.get_by_test_id(stop_market_order_btn).is_visible()
         page.get_by_test_id(stop_limit_order_btn).click()
@@ -465,12 +405,8 @@ class TestStopOcoValidation:
     @pytest.mark.usefixtures("page", "auth", "risk_accepted")
     def test_maximum_number_of_active_stop_orders_oco(
         self, continuous_market, vega: VegaService, page: Page
-    ):
-        market_id = continuous_market
-        page.goto(f"/#/markets/{market_id}")
-        page.get_by_test_id(stop_orders_tab).click()
-        create_position(vega, market_id)
-        wait_for_graphql_response(page, "stopOrders")
+    ):  
+        page.goto(f"/#/markets/{continuous_market}")   
         page.get_by_test_id(stop_order_btn).click()
         page.get_by_test_id(stop_limit_order_btn).is_visible()
         page.get_by_test_id(stop_limit_order_btn).click()
@@ -486,12 +422,11 @@ class TestStopOcoValidation:
         for i in range(2):
             page.get_by_test_id(submit_stop_order).click()
             wait_for_toast_confirmation(page)
-            vega.forward("10s")
             vega.wait_fn(1)
+            vega.forward("20s")
             vega.wait_for_total_catchup()
             if page.get_by_test_id(close_toast).is_visible():
-                page.get_by_test_id(close_toast).click()
-            wait_for_graphql_response(page, "stopOrders")
+               page.get_by_test_id(close_toast).click()
         # 7002-SORD-011
         expect(page.get_by_test_id("stop-order-warning-limit")).to_have_text(
             "There is a limit of 4 active stop orders per market. Orders submitted above the limit will be immediately rejected."
