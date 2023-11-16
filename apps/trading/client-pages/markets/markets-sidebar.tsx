@@ -11,12 +11,7 @@ import {
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 export const MarketsSidebar = () => {
-  const { marketId } = useParams();
   const currentRouteId = useGetCurrentRouteId();
-  const { data } = useMarket(marketId);
-  const active =
-    data &&
-    [MarketState.STATE_ACTIVE, MarketState.STATE_PENDING].includes(data.state);
 
   return (
     <>
