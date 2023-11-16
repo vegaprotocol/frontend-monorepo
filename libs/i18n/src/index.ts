@@ -13,6 +13,7 @@ import en_governance from './locales/en/governance.json';
 import en_trading from './locales/en/trading.json';
 import en_markets from './locales/en/markets.json';
 import en_web3 from './locales/en/web3.json';
+import en_proposals from './locales/en/proposals.json';
 import en_positions from './locales/en/positions.json';
 import en_trades from './locales/en/trading.json';
 import en_ui_toolkit from './locales/en/ui-toolkit.json';
@@ -33,6 +34,7 @@ export const locales = {
     markets: en_markets,
     web3: en_web3,
     positions: en_positions,
+    proposals: en_proposals,
     trades: en_trades,
     'ui-toolkit': en_ui_toolkit,
   },
