@@ -1,7 +1,5 @@
-import { Route, Routes, useParams } from 'react-router-dom';
-import { MarketState } from '@vegaprotocol/types';
+import { Route, Routes } from 'react-router-dom';
 import { t } from '@vegaprotocol/i18n';
-import { useMarket } from '@vegaprotocol/markets';
 import { VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import {
   SidebarButton,
@@ -11,12 +9,7 @@ import {
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 export const MarketsSidebar = () => {
-  const { marketId } = useParams();
   const currentRouteId = useGetCurrentRouteId();
-  const { data } = useMarket(marketId);
-  const active =
-    data &&
-    [MarketState.STATE_ACTIVE, MarketState.STATE_PENDING].includes(data.state);
 
   return (
     <>
@@ -44,14 +37,12 @@ export const MarketsSidebar = () => {
           element={
             <>
               <SidebarDivider />
-              {active && (
-                <SidebarButton
-                  view={ViewType.Order}
-                  icon={VegaIconNames.TICKET}
-                  tooltip={t('Order')}
-                  routeId={currentRouteId}
-                />
-              )}
+              <SidebarButton
+                view={ViewType.Order}
+                icon={VegaIconNames.TICKET}
+                tooltip={t('Order')}
+                routeId={currentRouteId}
+              />
               <SidebarButton
                 view={ViewType.Info}
                 icon={VegaIconNames.BREAKDOWN}
