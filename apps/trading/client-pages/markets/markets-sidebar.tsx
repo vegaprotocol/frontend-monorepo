@@ -44,14 +44,12 @@ export const MarketsSidebar = () => {
           element={
             <>
               <SidebarDivider />
-              {active && (
-                <SidebarButton
-                  view={ViewType.Order}
-                  icon={VegaIconNames.TICKET}
-                  tooltip={t('Order')}
-                  routeId={currentRouteId}
-                />
-              )}
+              <SidebarButton
+                view={ViewType.Order}
+                icon={VegaIconNames.TICKET}
+                tooltip={t('Order')}
+                routeId={currentRouteId}
+              />
               <SidebarButton
                 view={ViewType.Info}
                 icon={VegaIconNames.BREAKDOWN}
