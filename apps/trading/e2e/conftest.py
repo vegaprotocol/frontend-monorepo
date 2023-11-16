@@ -6,8 +6,6 @@ import requests
 import time
 import docker
 import http.server
-import socketserver
-from threading import Thread
 
 
 from contextlib import contextmanager
@@ -18,6 +16,7 @@ from fixtures.market import (
     setup_simple_market,
     setup_opening_auction_market,
     setup_continuous_market,
+    setup_perps_market,
 )
 
 import sys
@@ -241,3 +240,11 @@ def continuous_market(vega):
 @pytest.fixture(scope="function")
 def proposed_market(vega):
     return setup_simple_market(vega, approve_proposal=False)
+
+
+@pytest.fixture(scope="function")
+def perps_market(vega, request):
+    kwargs = {}
+    if hasattr(request, "param"):
+        kwargs.update(request.param)
+    return setup_perps_market(vega, **kwargs)
