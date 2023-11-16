@@ -154,3 +154,88 @@ def setup_continuous_market(vega: VegaService, market_id: str = None, **kwargs):
     vega.wait_for_total_catchup()
 
     return market_id
+
+def setup_perps_market(
+    vega: VegaService,
+    custom_asset_name="tDAI",
+    custom_asset_symbol="tDAI",
+):
+    for wallet in wallets:
+        vega.create_key(wallet.name)
+
+    vega.mint(
+        MM_WALLET.name,
+        asset="VOTE",
+        amount=mint_amount,
+    )
+
+    vega.update_network_parameter(
+        MM_WALLET.name, parameter="market.fee.factors.makerFee", new_value="0.1"
+    )
+    vega.forward("10s")
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+
+    vega.create_asset(
+        MM_WALLET.name,
+        name=custom_asset_name,
+        symbol=custom_asset_symbol,
+        decimals=5,
+        max_faucet_amount=1e10,
+    )
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    tdai_id = vega.find_asset_id(symbol=custom_asset_symbol)
+    logger.info(f"Created asset: {custom_asset_symbol}")
+
+    vega.mint(
+        "Key 1",
+        asset=tdai_id,
+        amount=mint_amount,
+    )
+
+    vega.mint(
+        MM_WALLET.name,
+        asset=tdai_id,
+        amount=mint_amount,
+    )
+
+    vega.mint(
+        MM_WALLET2.name,
+        asset=tdai_id,
+        amount=mint_amount,
+    )
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+
+    vega.update_network_parameter(
+        proposal_key=MM_WALLET.name,
+        parameter="limits.markets.proposePerpetualEnabled",
+        new_value="1",
+    )
+
+    vega.wait_for_total_catchup()
+
+    market_id = vega.create_simple_perps_market(
+        market_name="BTC:DAI_Perpetual",
+        proposal_key=MM_WALLET.name,
+        settlement_asset_id=tdai_id,
+        settlement_data_key=TERMINATE_WALLET.name,
+        funding_payment_frequency_in_seconds=10,
+        market_decimals=5,
+        )
+    vega.wait_for_total_catchup()
+
+    submit_liquidity(vega, MM_WALLET.name, market_id)
+    submit_multiple_orders(
+        vega, MM_WALLET.name, market_id, "SIDE_SELL", [[1, 110], [1, 105]]
+    )
+    submit_multiple_orders(
+        vega, MM_WALLET2.name, market_id, "SIDE_BUY", [[1, 90], [1, 95]]
+    )
+    submit_order(vega, "Key 1", market_id, "SIDE_BUY", 1, 110)
+    vega.forward("10s")
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+
+    return market_id
