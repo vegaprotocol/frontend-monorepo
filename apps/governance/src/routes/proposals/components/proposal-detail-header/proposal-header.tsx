@@ -39,6 +39,18 @@ export const ProposalHeader = ({
 
   const titleContent = shorten(title ?? '', 100);
 
+  const getAsset = (proposal: ProposalQuery['proposal']) => {
+    const terms = proposal?.terms;
+    if (
+      terms?.change.__typename === 'NewMarket' &&
+      (terms.change.instrument.product?.__typename === 'FutureProduct' ||
+        terms.change.instrument.product?.__typename === 'PerpetualProduct')
+    ) {
+      return terms.change.instrument.product.settlementAsset;
+    }
+    return undefined;
+  };
+
   switch (change?.__typename) {
     case 'NewMarket': {
       proposalType =
@@ -54,10 +66,10 @@ export const ProposalHeader = ({
           <span>
             {t('Code')}: {change.instrument.code}.
           </span>{' '}
-          {change.instrument.futureProduct?.settlementAsset.symbol ? (
+          {proposal?.terms && getAsset(proposal)?.symbol ? (
             <>
               <span className="font-semibold">
-                {change.instrument.futureProduct.settlementAsset.symbol}
+                {getAsset(proposal)?.symbol}
               </span>{' '}
               {t('settled future')}.
             </>

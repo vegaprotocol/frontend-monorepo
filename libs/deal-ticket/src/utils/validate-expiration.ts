@@ -1,7 +1,8 @@
 import { t } from '@vegaprotocol/i18n';
 import type { Validate } from 'react-hook-form';
 
-export const validateExpiration: Validate<string | undefined> = (
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const validateExpiration: Validate<string | undefined, any> = (
   value?: string
 ) => {
   const now = new Date();

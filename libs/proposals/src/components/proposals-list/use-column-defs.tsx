@@ -20,8 +20,7 @@ import type {
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import {
-  ProductTypeMapping,
-  ProductTypeShortName,
+  ProposalProductTypeShortName,
   ProposalStateMapping,
 } from '@vegaprotocol/types';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
@@ -54,27 +53,38 @@ export const useColumnDefs = () => {
         }) => {
           if (!value || !data) return '-';
 
-          // TODO: update when we switch to ProductConfiguration
-          const productType = 'Future';
+          const getProductType = (data: ProposalListFieldsFragment) => {
+            if (
+              data.terms.__typename === 'ProposalTerms' &&
+              data.terms.change.__typename === 'NewMarket'
+            ) {
+              return data.terms.change.instrument.product?.__typename;
+            }
+            return undefined;
+          };
+
+          const productType = getProductType(data);
           return (
-            <StackedCell
-              primary={value}
-              secondary={
-                <span
-                  title={ProductTypeMapping[productType]}
-                  className="uppercase"
-                >
-                  {ProductTypeShortName[productType]}
-                </span>
-              }
-            />
+            productType && (
+              <StackedCell
+                primary={value}
+                secondary={
+                  <span
+                    title={ProposalProductTypeShortName[productType]}
+                    className="uppercase"
+                  >
+                    {ProposalProductTypeShortName[productType]}
+                  </span>
+                }
+              />
+            )
           );
         },
       },
       {
         colId: 'asset',
         headerName: t('Settlement asset'),
-        field: 'terms.change.instrument.futureProduct.settlementAsset.symbol',
+        field: 'terms.change.instrument.product.settlementAsset.symbol',
       },
       {
         colId: 'state',
