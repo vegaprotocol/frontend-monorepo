@@ -105,32 +105,6 @@ export const useColumnDefs = () => {
         cellRenderer: 'ParentMarketCell',
       },
       {
-        colId: 'voting',
-        headerName: t('Voting'),
-        cellRenderer: ({
-          data,
-        }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
-          if (data) {
-            const yesTokens = new BigNumber(data.votes.yes.totalTokens);
-            const noTokens = new BigNumber(data.votes.no.totalTokens);
-            const totalTokensVoted = yesTokens.plus(noTokens);
-            const yesPercentage = totalTokensVoted.isZero()
-              ? new BigNumber(0)
-              : yesTokens.multipliedBy(100).dividedBy(totalTokensVoted);
-            return (
-              <CenteredGridCellWrapper>
-                <VoteProgress
-                  threshold={requiredMajorityPercentage}
-                  progress={yesPercentage}
-                />
-              </CenteredGridCellWrapper>
-            );
-          }
-          return '-';
-        },
-        filter: false,
-      },
-      {
         colId: 'closing-date',
         headerName: t('Closing date'),
         field: 'terms.closingDatetime',
