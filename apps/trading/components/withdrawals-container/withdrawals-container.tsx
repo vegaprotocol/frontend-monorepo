@@ -5,10 +5,11 @@ import {
   useIncompleteWithdrawals,
 } from '@vegaprotocol/withdraws';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { useT } from '../../lib/use-t';
 
 export const WithdrawalsContainer = () => {
+  const t = useT();
   const { pubKey } = useVegaWallet();
   const { data, error } = useDataProvider({
     dataProvider: withdrawalProvider,

@@ -1,8 +1,9 @@
 import classNames from 'classnames';
 import { AnimatedDudeWithWire } from './graphics/dude';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../lib/use-t';
 
 export const LandingBanner = () => {
+  const t = useT();
   return (
     <div className={classNames('relative mb-20')}>
       <div className="">

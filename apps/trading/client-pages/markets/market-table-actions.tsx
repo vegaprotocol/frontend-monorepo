@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import {
   TradingDropdownItem,
   TradingDropdownCopyItem,
@@ -11,6 +10,7 @@ import { DApp, EXPLORER_MARKET, useLinks } from '@vegaprotocol/environment';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useNavigate } from 'react-router-dom';
 import { Links } from '../../lib/links';
+import { useT } from '../../lib/use-t';
 
 export const MarketActionsDropdown = ({
   marketId,
@@ -23,6 +23,7 @@ export const MarketActionsDropdown = ({
   successorMarketID: string | null | undefined;
   parentMarketID: string | null | undefined;
 }) => {
+  const t = useT();
   const navigate = useNavigate();
   const open = useAssetDetailsDialogStore((store) => store.open);
   const linkCreator = useLinks(DApp.Explorer);

@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import type { ColDef, ValueFormatterParams } from 'ag-grid-community';
-import { t } from '@vegaprotocol/i18n';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
@@ -18,10 +17,12 @@ import type {
 import { MarketActionsDropdown } from './market-table-actions';
 import { calcCandleVolume, getAsset } from '@vegaprotocol/markets';
 import { MarketCodeCell } from './market-code-cell';
+import { useT } from '../../lib/use-t';
 
 const { MarketTradingMode, AuctionTrigger } = Schema;
 
 export const useColumnDefs = () => {
+  const t = useT();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return useMemo<ColDef[]>(
     () => [
@@ -216,6 +217,6 @@ export const useColumnDefs = () => {
         },
       },
     ],
-    [openAssetDetailsDialog]
+    [openAssetDetailsDialog, t]
   );
 };

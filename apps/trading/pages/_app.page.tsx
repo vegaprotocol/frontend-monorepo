@@ -1,7 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo, Suspense } from 'react';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
-import { t } from '@vegaprotocol/i18n';
 import {
   useEnvTriggerMapping,
   Networks,
@@ -9,6 +8,7 @@ import {
   useEnvironment,
   useInitializeEnv,
   useNodeSwitcherStore,
+  AppLoader,
 } from '@vegaprotocol/environment';
 import './styles.css';
 import { usePageTitleStore } from '../stores';
@@ -33,10 +33,11 @@ import { PartyActiveOrdersHandler } from './party-active-orders-handler';
 import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
 import '../lib/i18n';
-
-const DEFAULT_TITLE = t('Welcome to Vega trading!');
+import { useT } from '../lib/use-t';
 
 const Title = () => {
+  const t = useT();
+  const DEFAULT_TITLE = t('Welcome to Vega trading!');
   const { pageTitle } = usePageTitleStore((store) => ({
     pageTitle: store.pageTitle,
   }));
@@ -48,7 +49,7 @@ const Title = () => {
     if (!pageTitle) return DEFAULT_TITLE;
     if (networkName) return `${pageTitle} [${networkName}]`;
     return pageTitle;
-  }, [pageTitle, networkName]);
+  }, [pageTitle, networkName, DEFAULT_TITLE]);
 
   return (
     <Head>
@@ -124,12 +125,14 @@ function VegaTradingApp(props: AppProps) {
   }
 
   return (
-    <HashRouter>
-      <Bootstrapper>
-        <AppBody {...props} />
-      </Bootstrapper>
-      <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
-    </HashRouter>
+    <Suspense fallback={<AppLoader />}>
+      <HashRouter>
+        <Bootstrapper>
+          <AppBody {...props} />
+        </Bootstrapper>
+        <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
+      </HashRouter>
+    </Suspense>
   );
 }
 

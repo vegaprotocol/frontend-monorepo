@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { proposalsDataProvider } from '@vegaprotocol/proposals';
 import take from 'lodash/take';
@@ -12,8 +11,10 @@ import {
   TOKEN_PROPOSALS,
   useLinks,
 } from '@vegaprotocol/environment';
+import { useT } from '../../lib/use-t';
 
 export const ProposedMarkets = () => {
+  const t = useT();
   const variables = useMemo(() => {
     return {
       proposalType: Types.ProposalType.TYPE_NEW_MARKET,
@@ -75,6 +76,6 @@ export const ProposedMarkets = () => {
         )}
       </div>
     ),
-    [newMarkets, tokenLink]
+    [newMarkets, tokenLink, t]
   );
 };

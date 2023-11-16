@@ -1,6 +1,5 @@
 import { Route, Routes, useParams } from 'react-router-dom';
 import { MarketState } from '@vegaprotocol/types';
-import { t } from '@vegaprotocol/i18n';
 import { useMarket } from '@vegaprotocol/markets';
 import { VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import {
@@ -9,8 +8,10 @@ import {
   ViewType,
 } from '../../components/sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
+import { useT } from '../../lib/use-t';
 
 export const MarketsSidebar = () => {
+  const t = useT();
   const { marketId } = useParams();
   const currentRouteId = useGetCurrentRouteId();
   const { data } = useMarket(marketId);

@@ -7,7 +7,7 @@ import {
 import classNames from 'classnames';
 import type { HTMLAttributes, ReactNode } from 'react';
 import { Button } from './buttons';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../lib/use-t';
 
 export const Tile = ({
   className,
@@ -62,10 +62,13 @@ export const CodeTile = ({
   createdAt?: string;
   className?: string;
 }) => {
+  const t = useT();
   return (
     <StatTile
       title={t('Your referral code')}
-      description={createdAt ? t('(Created at: %s)', createdAt) : undefined}
+      description={
+        createdAt ? t('(Created at: {{createdAt}})', { createdAt }) : undefined
+      }
     >
       <div className="flex items-center justify-between gap-2">
         <Tooltip

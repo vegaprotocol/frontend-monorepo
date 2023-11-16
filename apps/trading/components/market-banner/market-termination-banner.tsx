@@ -8,7 +8,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { marketViewProposalsDataProvider } from '@vegaprotocol/proposals';
-import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
 import type { Market } from '@vegaprotocol/markets';
 import { getQuoteName } from '@vegaprotocol/markets';
@@ -21,6 +20,7 @@ import {
   useLinks,
 } from '@vegaprotocol/environment';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { useT } from '../../lib/use-t';
 
 const filterProposals = (
   data: MarketViewProposalFieldsFragment[] | null,
@@ -68,6 +68,7 @@ export const MarketTerminationBanner = ({
 }: {
   market: Market | null;
 }) => {
+  const t = useT();
   const [visible, setVisible] = useState(true);
   const skip = !market || !visible;
   const { data: passedProposalsData } = useDataProvider({
@@ -113,19 +114,22 @@ export const MarketTerminationBanner = ({
     content = (
       <>
         <div className="uppercase mb-1">
-          {t('Trading on Market %s will stop on %s', [name, date])}
+          {t('Trading on Market {{name}} will stop on {{date}}', {
+            name,
+            date,
+          })}
         </div>
         <div>
           {t(
-            'You will no longer be able to hold a position on this market when it closes in %s.',
-            [duration]
+            'You will no longer be able to hold a position on this market when it closes in {{duration}}.',
+            { duration }
           )}{' '}
           {price &&
             assetSymbol &&
-            t('The final price will be %s %s.', [
-              addDecimalsFormatNumber(price, market.decimalPlaces),
+            t('The final price will be {{price}} {{assetSymbol}}.', {
+              price: addDecimalsFormatNumber(price, market.decimalPlaces),
               assetSymbol,
-            ])}
+            })}
         </div>
       </>
     );
@@ -134,8 +138,8 @@ export const MarketTerminationBanner = ({
       <>
         <div className="uppercase mb-1">
           {t(
-            'Trading on Market %s may stop. There are open proposals to close this market',
-            [name]
+            'Trading on Market {{name}} may stop. There are open proposals to close this market',
+            { name }
           )}
         </div>
         <div>
@@ -151,17 +155,17 @@ export const MarketTerminationBanner = ({
       <>
         <div className="uppercase mb-1">
           {t(
-            'Trading on Market %s may stop on %s. There is open proposal to close this market.',
-            [name, date]
+            'Trading on Market {{name}} may stop on {{date}}. There is open proposal to close this market.',
+            { name, date }
           )}
         </div>
         <div>
           {price &&
             assetSymbol &&
-            t('Proposed final price is %s %s.', [
-              addDecimalsFormatNumber(price, market.decimalPlaces),
+            t('Proposed final price is {{price}} {{assetSymbol}}.', {
+              price: addDecimalsFormatNumber(price, market.decimalPlaces),
               assetSymbol,
-            ])}
+            })}
         </div>
         <div>
           <ExternalLink href={proposalLink}>{t('View proposal')}</ExternalLink>

@@ -1,11 +1,12 @@
-import { t } from '@vegaprotocol/i18n';
 import { Switch, ToastPositionSetter } from '@vegaprotocol/ui-toolkit';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import type { ReactNode } from 'react';
 import classNames from 'classnames';
+import { useT } from '../../lib/use-t';
 
 export const Settings = () => {
+  const t = useT();
   const { theme, setTheme } = useThemeSwitcher();
   const [isApproved, setIsApproved] = useTelemetryApproval();
   return (

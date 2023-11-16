@@ -24,13 +24,14 @@ import {
   DISCLAIMER_REFERRAL_DOCS_LINK,
 } from './constants';
 import { useReferral } from './hooks/use-referral';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../lib/use-t';
 
 export const CreateCodeContainer = () => {
   return <CreateCodeForm />;
 };
 
 export const CreateCodeForm = () => {
+  const t = useT();
   const [dialogOpen, setDialogOpen] = useState(false);
   const openWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
@@ -81,6 +82,7 @@ const CreateCodeDialog = ({
 }: {
   setDialogOpen: (open: boolean) => void;
 }) => {
+  const t = useT();
   const createLink = useLinks(DApp.Governance);
   const { isReadOnly, pubKey, sendTx } = useVegaWallet();
   const { refetch } = useReferral({ pubKey, role: 'referrer' });
@@ -170,10 +172,14 @@ const CreateCodeDialog = ({
     return (
       <div className="flex flex-col gap-4">
         <p>
-          {t('You need at least')}{' '}
-          {addDecimalsFormatNumber(requiredStake.toString(), 18)}{' '}
           {t(
-            'VEGA staked to generate a referral code and participate in the referral program.'
+            'You need at least {{requiredStake}} VEGA staked to generate a referral code and participate in the referral program.',
+            {
+              requiredStake: addDecimalsFormatNumber(
+                requiredStake.toString(),
+                18
+              ),
+            }
           )}
         </p>
         <TradingAnchorButton

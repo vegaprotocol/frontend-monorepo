@@ -17,8 +17,9 @@ import {
   getMarketExpiryDate,
   isNumeric,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
+import { useT, ns } from '../../lib/use-t';
+import { Trans } from 'react-i18next';
 
 const getExpiryDate = (tags: string[], close?: string): Date | null => {
   const expiryDate = getMarketExpiryDate(tags);
@@ -30,6 +31,7 @@ export const MarketSuccessorBanner = ({
 }: {
   market: Market | null;
 }) => {
+  const t = useT();
   const { data: marketState } = useMarketState(market?.id);
   const isSettled = marketState === Types.MarketState.STATE_SETTLED;
   const { data: successorData, loading } = useSuccessorMarket(market?.id);
@@ -81,8 +83,8 @@ export const MarketSuccessorBanner = ({
           <div className="mt-1">
             {duration && (
               <span>
-                {t('This market expires in %s.', [
-                  formatDuration(duration, {
+                {t('This market expires in {{duration}}.', {
+                  duration: formatDuration(duration, {
                     format: [
                       'years',
                       'months',
@@ -92,22 +94,46 @@ export const MarketSuccessorBanner = ({
                       'minutes',
                     ],
                   }),
-                ])}
+                })}
               </span>
             )}
             {successorData && (
               <>
                 {' '}
-                {t('The successor market')}
-                {!successorVolume ? ' is ' : ' '}
-                <ExternalLink href={`/#/markets/${successorData?.id}`}>
-                  {successorData?.tradableInstrument.instrument.name}
-                </ExternalLink>
-                {successorVolume && (
-                  <span>
-                    {' '}
-                    {t('has a 24h trading volume of %s', [successorVolume])}
-                  </span>
+                {successorVolume ? (
+                  <Trans
+                    defaults="The successor market <0>{{instrumentName}}</0> has a 24h trading volume of {{successorVolume}}"
+                    values={{
+                      successorVolume,
+                      instrumentName:
+                        successorData?.tradableInstrument.instrument.name,
+                    }}
+                    components={[
+                      <ExternalLink
+                        href={`/#/markets/${successorData?.id}`}
+                        key="link"
+                      >
+                        successor market name
+                      </ExternalLink>,
+                    ]}
+                  />
+                ) : (
+                  <Trans
+                    defaults="The successor market is <0>{{instrumentName}}</0>"
+                    values={{
+                      instrumentName:
+                        successorData?.tradableInstrument.instrument.name,
+                    }}
+                    components={[
+                      <ExternalLink
+                        href={`/#/markets/${successorData?.id}`}
+                        key="link"
+                      >
+                        successor market name
+                      </ExternalLink>,
+                    ]}
+                    ns={ns}
+                  />
                 )}
               </>
             )}

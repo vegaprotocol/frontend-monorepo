@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import { GetStarted } from './get-started';
 import { TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
 import { Links } from '../../lib/links';
@@ -6,8 +5,10 @@ import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
 import { useTopTradedMarkets } from '../../lib/hooks/use-top-traded-markets';
 import { useOnboardingStore } from './use-get-onboarding-step';
+import { useT } from '../../lib/use-t';
 
 export const WelcomeDialogContent = () => {
+  const t = useT();
   const { VEGA_ENV } = useEnvironment();
   const setOnboardingDialog = useOnboardingStore(
     (store) => store.setDialogOpen

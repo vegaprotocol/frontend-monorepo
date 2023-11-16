@@ -1,11 +1,11 @@
 import { matchFilter, lpAggregatedDataProvider } from '@vegaprotocol/liquidity';
-import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { LiquidityContainer } from '../../components/liquidity-container';
+import { useT } from '../../lib/use-t';
 
 const enum LiquidityTabs {
   Active = 'active',
@@ -24,6 +24,7 @@ export const LiquidityViewContainer = ({
 }: {
   marketId: string | undefined;
 }) => {
+  const t = useT();
   const [tab, setTab] = useState<string | undefined>(undefined);
   const { pubKey } = useVegaWallet();
 

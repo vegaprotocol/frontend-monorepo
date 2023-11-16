@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import uniqBy from 'lodash/uniqBy';
 import {
   getAsset,
@@ -21,6 +20,7 @@ import type { SortType } from './sort-dropdown';
 import { Sort, SortDropdown } from './sort-dropdown';
 import { MarketSelectorItem } from './market-selector-item';
 import classNames from 'classnames';
+import { useT } from '../../lib/use-t';
 
 export type Filter = {
   searchTerm: string;
@@ -40,6 +40,7 @@ export const MarketSelector = ({
   currentMarketId?: string;
   onSelect: (marketId: string) => void;
 }) => {
+  const t = useT();
   const [filter, setFilter] = useState<Filter>({
     searchTerm: '',
     product: Product.All,
@@ -158,6 +159,7 @@ const MarketList = ({
   noItems: string;
   allProducts: boolean;
 }) => {
+  const t = useT();
   const itemSize = 45;
   const listRef = useRef<HTMLDivElement | null>(null);
   const rect = listRef.current?.getBoundingClientRect();
