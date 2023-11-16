@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import BigNumber from 'bignumber.js';
 import type { ColDef } from 'ag-grid-community';
 import {
   COL_DEFS,
@@ -10,10 +9,6 @@ import {
 import compact from 'lodash/compact';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import {
-  NetworkParams,
-  useNetworkParams,
-} from '@vegaprotocol/network-parameters';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
