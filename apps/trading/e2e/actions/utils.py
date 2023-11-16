@@ -35,3 +35,8 @@ def next_epoch(vega: VegaServiceNull):
             )
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
+
+def truncate_middle(market_id, start=6, end=4):
+    if len(market_id) < 11:
+        return market_id
+    return market_id[:start] + '\u2026' + market_id[-end:]
