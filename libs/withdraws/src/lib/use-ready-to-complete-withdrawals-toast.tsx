@@ -5,7 +5,6 @@ import type { Toast } from '@vegaprotocol/ui-toolkit';
 import { Button, Intent, Panel, ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { t } from '@vegaprotocol/i18n';
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -17,6 +16,7 @@ import {
 import { withdrawalProvider } from './withdrawals-provider';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import uniqBy from 'lodash/uniqBy';
+import { useT } from './use-t';
 
 const CHECK_INTERVAL = 1000;
 const ON_APP_START_TOAST_ID = `ready-to-withdraw`;
@@ -199,15 +199,15 @@ const MultipleReadyToWithdrawToastContent = ({
   count: number;
   withdrawalsLink?: string;
 }) => {
+  const t = useT();
   const navigate = useNavigate();
   return (
     <>
       <ToastHeading>{t('Withdrawals ready')}</ToastHeading>
       <p>
-        {t(
-          'Complete these %s withdrawals to release your funds',
-          count.toString()
-        )}
+        {t('Complete these {{count}} withdrawals to release your funds', {
+          count,
+        })}
       </p>
       <p className="mt-2">
         <Button
@@ -229,6 +229,7 @@ const SingleReadyToWithdrawToastContent = ({
 }: {
   withdrawal: WithdrawalFieldsFragment;
 }) => {
+  const t = useT();
   const { createEthWithdrawalApproval } = useEthWithdrawApprovalsStore(
     (state) => ({
       createEthWithdrawalApproval: state.create,
@@ -266,7 +267,10 @@ const SingleReadyToWithdrawToastContent = ({
       <p>{t('Complete the withdrawal to release your funds')}</p>
       <Panel>
         <strong>
-          {t('Withdraw')} {amount} {withdrawal.asset.symbol}
+          {t('Withdraw {{amount}} {{symbol}}', {
+            amount,
+            assetSymbol: withdrawal.asset.symbol,
+          })}
         </strong>
       </Panel>
       {completeButton}

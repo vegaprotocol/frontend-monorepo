@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import { addDecimal } from '@vegaprotocol/utils';
 import { localLoggerFactory } from '@vegaprotocol/logger';
-import { t } from '@vegaprotocol/i18n';
 import {
   ApprovalStatus,
   useGetWithdrawDelay,
@@ -15,6 +14,7 @@ import {
   type Erc20ApprovalQueryVariables,
 } from './__generated__/Erc20Approval';
 import { useApolloClient } from '@apollo/client';
+import { useT } from './use-t';
 
 export interface VerifyState {
   status: ApprovalStatus;
@@ -33,6 +33,7 @@ const initialState = {
 };
 
 export const useVerifyWithdrawal = () => {
+  const t = useT();
   const client = useApolloClient();
   const getThreshold = useGetWithdrawThreshold();
   const getDelay = useGetWithdrawDelay();
@@ -62,9 +63,9 @@ export const useVerifyWithdrawal = () => {
         if (withdrawal.asset.source.__typename !== 'ERC20') {
           setState({
             status: ApprovalStatus.Error,
-            message: t(
-              `Invalid asset source: ${withdrawal.asset.source.__typename}`
-            ),
+            message: t(`Invalid asset source: {{source}}`, {
+              source: withdrawal.asset.source.__typename,
+            }),
           });
           return false;
         }
@@ -132,7 +133,7 @@ export const useVerifyWithdrawal = () => {
         return false;
       }
     },
-    [getThreshold, getDelay, client, setState]
+    [getThreshold, getDelay, client, setState, t]
   );
 
   return { verify, state, reset };
