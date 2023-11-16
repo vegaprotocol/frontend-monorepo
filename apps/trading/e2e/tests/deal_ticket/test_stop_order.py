@@ -48,32 +48,6 @@ updatedAt_col = '[col-id="updatedAt"]'
 close_toast = "toast-close"
 
 
-def wait_for_graphql_response(page, query_name, timeout=5000):
-    response_data = {}
-
-    def handle_response(route, request):
-        if "graphql" in request.url:
-            response = request.response()
-            if response is not None:
-                json_response = response.json()
-                if json_response and "data" in json_response:
-                    data = json_response["data"]
-                    if query_name in data:
-                        response_data["data"] = data
-                        route.continue_()
-                        return
-        route.continue_()
-
-    # Register the route handler
-    page.route("**", handle_response)
-
-    # Wait for the response data to be populated
-    page.wait_for_timeout(timeout)
-
-    # Unregister the route handler
-    page.unroute("**", handle_response)
-
-
 def create_position(vega: VegaService, market_id):
     submit_order(vega, "Key 1", market_id, "SIDE_SELL", 100, 110)
     submit_order(vega, "Key 1", market_id, "SIDE_BUY", 100, 110)
@@ -118,7 +92,6 @@ def test_submit_stop_order_rejected(continuous_market, vega: VegaService, page: 
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     page.get_by_test_id(close_toast).click()
-    wait_for_graphql_response(page, "stopOrders")
     page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
     expect((page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
         "BTC:DAI_2023Futr"
@@ -174,7 +147,6 @@ def test_submit_stop_market_order_triggered(
     vega.wait_for_total_catchup()
     page.wait_for_selector('[data-testid="toast-close"]', state="visible")
     page.get_by_test_id(close_toast).click()
-    wait_for_graphql_response(page, "stopOrders")
 
     page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
     expect((page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
@@ -235,7 +207,6 @@ def test_submit_stop_limit_order_pending(
 
     page.wait_for_selector('[data-testid="toast-close"]', state="visible")
     page.get_by_test_id(close_toast).click()
-    wait_for_graphql_response(page, "stopOrders")
     page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
     expect((page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
         "BTC:DAI_2023Futr"
@@ -287,7 +258,6 @@ def test_submit_stop_limit_order_cancel(
     vega.wait_for_total_catchup()
 
     page.get_by_test_id(close_toast).first.click()
-    wait_for_graphql_response(page, "stopOrders")
     page.get_by_test_id(cancel).click()
     vega.forward("10s")
     vega.wait_fn(1)
@@ -409,7 +379,6 @@ class TestStopOcoValidation:
             vega.wait_for_total_catchup()
             if page.get_by_test_id(close_toast).is_visible():
                 page.get_by_test_id(close_toast).click()
-            wait_for_graphql_response(page, "stopOrders")
         # 7002-SORD-011
         expect(page.get_by_test_id("stop-order-warning-limit")).to_have_text(
             "There is a limit of 4 active stop orders per market. Orders submitted above the limit will be immediately rejected."

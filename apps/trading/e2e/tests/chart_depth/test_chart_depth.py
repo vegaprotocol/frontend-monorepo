@@ -1,7 +1,6 @@
 import pytest
 from playwright.sync_api import expect, Page
 
-
 @pytest.mark.usefixtures("page", "continuous_market", "risk_accepted")
 def test_see_market_depth_chart(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
