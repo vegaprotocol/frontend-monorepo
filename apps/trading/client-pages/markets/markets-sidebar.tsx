@@ -1,4 +1,4 @@
-import { Route, Routes, useParams } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { t } from '@vegaprotocol/i18n';
 import { VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import {
