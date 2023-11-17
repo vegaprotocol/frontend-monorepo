@@ -77,7 +77,7 @@ describe('Proposal header', () => {
               __typename: 'InstrumentConfiguration',
               name: 'Some market',
               code: 'FX:BTCUSD/DEC99',
-              futureProduct: {
+              product: {
                 __typename: 'FutureProduct',
                 settlementAsset: {
                   __typename: 'Asset',

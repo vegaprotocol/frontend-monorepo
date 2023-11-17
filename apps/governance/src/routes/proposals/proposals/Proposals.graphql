@@ -101,9 +101,16 @@ fragment ProposalFields on Proposal {
         instrument {
           name
           code
-          futureProduct {
-            settlementAsset {
-              symbol
+          product {
+            ... on FutureProduct {
+              settlementAsset {
+                symbol
+              }
+            }
+            ... on PerpetualProduct {
+              settlementAsset {
+                symbol
+              }
             }
           }
         }

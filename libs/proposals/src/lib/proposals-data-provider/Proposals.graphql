@@ -16,78 +16,90 @@ fragment NewMarketFields on NewMarket {
   instrument {
     name
     code
-    futureProduct {
-      settlementAsset {
-        id
-        name
-        symbol
-        decimals
-        quantum
-      }
-      quoteName
-      dataSourceSpecForSettlementData {
-        sourceType {
-          ... on DataSourceDefinitionExternal {
-            sourceType {
-              ... on DataSourceSpecConfiguration {
-                signers {
-                  signer {
-                    ... on PubKey {
-                      key
-                    }
-                    ... on ETHAddress {
-                      address
+    product {
+      ... on FutureProduct {
+        settlementAsset {
+          id
+          name
+          symbol
+          decimals
+          quantum
+        }
+        quoteName
+        dataSourceSpecForSettlementData {
+          sourceType {
+            ... on DataSourceDefinitionExternal {
+              sourceType {
+                ... on DataSourceSpecConfiguration {
+                  signers {
+                    signer {
+                      ... on PubKey {
+                        key
+                      }
+                      ... on ETHAddress {
+                        address
+                      }
                     }
                   }
-                }
-                filters {
-                  key {
-                    name
-                    type
-                  }
-                  conditions {
-                    operator
-                    value
+                  filters {
+                    key {
+                      name
+                      type
+                    }
+                    conditions {
+                      operator
+                      value
+                    }
                   }
                 }
               }
             }
           }
         }
-      }
-      dataSourceSpecForTradingTermination {
-        sourceType {
-          ... on DataSourceDefinitionExternal {
-            sourceType {
-              ... on DataSourceSpecConfiguration {
-                signers {
-                  signer {
-                    ... on PubKey {
-                      key
-                    }
-                    ... on ETHAddress {
-                      address
+        dataSourceSpecForTradingTermination {
+          sourceType {
+            ... on DataSourceDefinitionExternal {
+              sourceType {
+                ... on DataSourceSpecConfiguration {
+                  signers {
+                    signer {
+                      ... on PubKey {
+                        key
+                      }
+                      ... on ETHAddress {
+                        address
+                      }
                     }
                   }
-                }
-                filters {
-                  key {
-                    name
-                    type
-                  }
-                  conditions {
-                    operator
-                    value
+                  filters {
+                    key {
+                      name
+                      type
+                    }
+                    conditions {
+                      operator
+                      value
+                    }
                   }
                 }
               }
             }
           }
         }
+        dataSourceSpecBinding {
+          settlementDataProperty
+          tradingTerminationProperty
+        }
       }
-      dataSourceSpecBinding {
-        settlementDataProperty
-        tradingTerminationProperty
+      ... on PerpetualProduct {
+        settlementAsset {
+          id
+          name
+          symbol
+          decimals
+          quantum
+        }
+        quoteName
       }
     }
   }
