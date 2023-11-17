@@ -4,7 +4,6 @@ import {
   addDecimalsFormatNumberQuantum,
   getDateTimeFormat,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import type {
   TypedDataAgGrid,
   VegaICellRendererParams,
@@ -27,6 +26,7 @@ import BigNumber from 'bignumber.js';
 import { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
 import type { LiquidityProvisionData } from './liquidity-data-provider';
+import { useT } from './use-t';
 
 const formatNumberPercentage = (value: BigNumber, decimals?: number) => {
   const decimalPlaces =
@@ -81,6 +81,7 @@ export const LiquidityTable = ({
   quantum,
   ...props
 }: LiquidityTableProps) => {
+  const t = useT();
   const colDefs = useMemo(() => {
     const assetDecimalsFormatter = ({ value }: ITooltipParams) => {
       if (!value) return '-';
@@ -125,32 +126,32 @@ export const LiquidityTable = ({
       }
       if (lessThanMinimum) {
         return t(
-          `This LP's time on the book in the current epoch (%s) is less than the minimum required (%s), so they could lose all fee revenue for this epoch.`,
-          [
-            formatNumberPercentage(
+          "This LP's time on the book in the current epoch ({{currentEpoch}}) is less than the minimum required ({{minimumRequired}}), so they could lose all fee revenue for this epoch.",
+          {
+            currentEpoch: formatNumberPercentage(
               new BigNumber(data.sla.currentEpochFractionOfTimeOnBook).times(
                 100
               ),
               4
             ),
-            formatNumberPercentage(
+            minimumRequired: formatNumberPercentage(
               new BigNumber(data.commitmentMinTimeFraction).times(100),
               4
             ),
-          ]
+          }
         );
       }
       if (lessThanFull) {
         return t(
-          `This LP's time on the book in the current epoch (%s) is less than 100%, so they could lose some fees to a better performing LP.`,
-          [
-            formatNumberPercentage(
+          "This LP's time on the book in the current epoch ({{currentEpoch}}) is less than 100%, so they could lose some fees to a better performing LP.",
+          {
+            currentEpoch: formatNumberPercentage(
               new BigNumber(data.sla.currentEpochFractionOfTimeOnBook).times(
                 100
               ),
               4
             ),
-          ]
+          }
         );
       }
       return addDecimalsFormatNumber(newValue, assetDecimalPlaces ?? 0);
@@ -219,7 +220,7 @@ export const LiquidityTable = ({
             },
           },
           {
-            headerName: t(`Commitment (${symbol})`),
+            headerName: t(`Commitment ({{symbol}})`, { symbol }),
             field: 'commitmentAmount',
             type: 'rightAligned',
             headerTooltip: t(
@@ -495,7 +496,7 @@ export const LiquidityTable = ({
       },
     ];
     return defs;
-  }, [assetDecimalPlaces, quantum, stakeToCcyVolume, symbol]);
+  }, [assetDecimalPlaces, quantum, stakeToCcyVolume, symbol, t]);
   return (
     <AgGrid
       overlayNoRowsTemplate={t('No liquidity provisions')}
