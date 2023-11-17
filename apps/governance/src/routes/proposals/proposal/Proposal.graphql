@@ -84,7 +84,6 @@ query Proposal(
   $includeNewMarketProductField: Boolean!
   $includeUpdateMarketState: Boolean!
   $includeUpdateReferralProgram: Boolean!
-  $includeUpdateVolumeDiscountProgram: Boolean!
 ) {
   proposal(id: $proposalId) {
     id
@@ -104,7 +103,6 @@ query Proposal(
     ...UpdateMarketState @include(if: $includeUpdateMarketState)
     ...UpdateReferralProgram @include(if: $includeUpdateReferralProgram)
     ...UpdateVolumeDiscountProgram
-      @include(if: $includeUpdateVolumeDiscountProgram)
     terms {
       closingDatetime
       enactmentDatetime

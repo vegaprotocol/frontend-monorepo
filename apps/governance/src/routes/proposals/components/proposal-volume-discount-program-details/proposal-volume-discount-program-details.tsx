@@ -78,7 +78,7 @@ export const ProposalVolumeDiscountProgramDetails = ({
               {t('BenefitTiers')}
             </h3>
             <KeyValueTable>
-              {benefitTiers
+              {[...benefitTiers]
                 .sort(
                   (a, b) =>
                     Number(a.minimumRunningNotionalTakerVolume) -
