@@ -495,12 +495,15 @@ describe('DealTicket', () => {
       Array.from(screen.getByTestId('order-tif').children).map(
         (o) => o.textContent
       )
-    ).toEqual(['Fill or Kill (FOK)', 'Immediate or Cancel (IOC)']);
+    ).toEqual([
+      Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+    ]);
 
     // IOC should be default
     // 7002-SORD-030
     expect(screen.getByTestId('order-tif')).toHaveDisplayValue(
-      'Immediate or Cancel (IOC)'
+      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
     );
 
     // Select FOK - FOK should be selected
@@ -509,7 +512,7 @@ describe('DealTicket', () => {
       Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
     );
     expect(screen.getByTestId('order-tif')).toHaveDisplayValue(
-      'Fill or Kill (FOK)'
+      Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
     );
 
     // Switch to type limit order -> all TIF options should be shown
