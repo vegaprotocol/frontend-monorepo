@@ -409,7 +409,10 @@ export const DealTicketMarginDetails = ({
                   }
                   value={formatValue(marginAccountBalance, assetDecimals)}
                   symbol={assetSymbol}
-                  labelDescription={MARGIN_ACCOUNT_TOOLTIP_TEXT}
+                  labelDescription={t(
+                    'MARGIN_ACCOUNT_TOOLTIP_TEXT',
+                    MARGIN_ACCOUNT_TOOLTIP_TEXT
+                  )}
                   formattedValue={formatValue(
                     marginAccountBalance,
                     assetDecimals,
