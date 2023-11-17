@@ -6,7 +6,6 @@ import {
   SimpleGrid,
 } from '@vegaprotocol/ui-toolkit';
 import * as Schema from '@vegaprotocol/types';
-import { OrderTimeInForceMapping } from '@vegaprotocol/types';
 import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
 import type { Market, StaticMarketData } from '@vegaprotocol/markets';
@@ -119,9 +118,7 @@ export const TimeInForceSelector = ({
           hasError={!!errorMessage}
         >
           {options.map(([key, value]) => (
-            <option key={key} value={value}>
-              {OrderTimeInForceMapping[value]}
-            </option>
+            <TimeInForceOption key={key} value={value} />
           ))}
         </TradingSelect>
         {errorMessage && (
@@ -132,4 +129,9 @@ export const TimeInForceSelector = ({
       </TradingFormGroup>
     </div>
   );
+};
+
+const TimeInForceOption = ({ value }: { value: Schema.OrderTimeInForce }) => {
+  const t = useT();
+  return <option value={value}>{t(value)}</option>;
 };
