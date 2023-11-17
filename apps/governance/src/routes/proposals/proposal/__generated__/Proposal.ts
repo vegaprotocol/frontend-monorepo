@@ -16,7 +16,6 @@ export type ProposalQueryVariables = Types.Exact<{
   includeNewMarketProductField: Types.Scalars['Boolean'];
   includeUpdateMarketState: Types.Scalars['Boolean'];
   includeUpdateReferralProgram: Types.Scalars['Boolean'];
-  includeUpdateVolumeDiscountProgram: Types.Scalars['Boolean'];
 }>;
 
 
@@ -108,7 +107,7 @@ export const UpdateVolumeDiscountProgramFragmentDoc = gql`
 }
     `;
 export const ProposalDocument = gql`
-    query Proposal($proposalId: ID!, $includeNewMarketProductField: Boolean!, $includeUpdateMarketState: Boolean!, $includeUpdateReferralProgram: Boolean!, $includeUpdateVolumeDiscountProgram: Boolean!) {
+    query Proposal($proposalId: ID!, $includeNewMarketProductField: Boolean!, $includeUpdateMarketState: Boolean!, $includeUpdateReferralProgram: Boolean!) {
   proposal(id: $proposalId) {
     id
     rationale {
@@ -126,7 +125,7 @@ export const ProposalDocument = gql`
     ...NewMarketProductField @include(if: $includeNewMarketProductField)
     ...UpdateMarketState @include(if: $includeUpdateMarketState)
     ...UpdateReferralProgram @include(if: $includeUpdateReferralProgram)
-    ...UpdateVolumeDiscountProgram @include(if: $includeUpdateVolumeDiscountProgram)
+    ...UpdateVolumeDiscountProgram
     terms {
       closingDatetime
       enactmentDatetime
@@ -434,7 +433,6 @@ ${UpdateVolumeDiscountProgramFragmentDoc}`;
  *      includeNewMarketProductField: // value for 'includeNewMarketProductField'
  *      includeUpdateMarketState: // value for 'includeUpdateMarketState'
  *      includeUpdateReferralProgram: // value for 'includeUpdateReferralProgram'
- *      includeUpdateVolumeDiscountProgram: // value for 'includeUpdateVolumeDiscountProgram'
  *   },
  * });
  */
