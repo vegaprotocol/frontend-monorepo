@@ -133,7 +133,7 @@ export const proposalsData = {
               instrument: {
                 name: 'UNIDAI Monthly (Dec 2022)',
                 code: 'UNIDAI.MF21',
-                futureProduct: {
+                product: {
                   settlementAsset: { symbol: 'tDAI', __typename: 'Asset' },
                   __typename: 'FutureProduct',
                 },
@@ -240,7 +240,7 @@ export const proposalsData = {
               instrument: {
                 name: 'ETHBTC Quarterly (Feb 2023)',
                 code: 'ETHBTC.QM21',
-                futureProduct: {
+                product: {
                   settlementAsset: { symbol: 'tBTC', __typename: 'Asset' },
                   __typename: 'FutureProduct',
                 },

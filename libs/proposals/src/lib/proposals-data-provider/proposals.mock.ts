@@ -128,7 +128,7 @@ export const createProposalListFieldsFragment = (
     instrument: {
       code: 'ETHUSD',
       name: 'ETHUSD',
-      futureProduct: {
+      product: {
         settlementAsset: {
           id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
           name: 'tDAI TEST',
@@ -262,7 +262,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
         instrument: {
           code: 'ETHUSD',
           name: 'ETHUSD',
-          futureProduct: {
+          product: {
             settlementAsset: {
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
@@ -352,7 +352,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
         instrument: {
           code: 'LINKUSD',
           name: 'LINKUSD',
-          futureProduct: {
+          product: {
             settlementAsset: {
               id: 'eb30d55e90e1f9e5c4727d6fa2a5a8cd36ab9ae9738eb8f3faf53e2bee4861ee',
               name: 'mUSDT-II',
@@ -442,7 +442,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
         instrument: {
           code: 'LINKUSD',
           name: 'LINKUSD',
-          futureProduct: {
+          product: {
             settlementAsset: {
               id: 'eb30d55e90e1f9e5c4727d6fa2a5a8cd36ab9ae9738eb8f3faf53e2bee4861ee',
               name: 'mUSDT-II',
@@ -532,7 +532,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
         instrument: {
           code: 'ETHUSD',
           name: 'ETHUSD',
-          futureProduct: {
+          product: {
             settlementAsset: {
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
@@ -622,7 +622,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
         instrument: {
           code: 'LINKUSD',
           name: 'LINKUSD',
-          futureProduct: {
+          product: {
             settlementAsset: {
               id: 'eb30d55e90e1f9e5c4727d6fa2a5a8cd36ab9ae9738eb8f3faf53e2bee4861ee',
               name: 'mUSDT-II',
@@ -712,7 +712,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
         instrument: {
           code: 'ETHDAI.MF21',
           name: 'ETHDAI Monthly (Dec 2022)',
-          futureProduct: {
+          product: {
             settlementAsset: {
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
@@ -802,7 +802,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
         instrument: {
           code: 'AAPL.MF21',
           name: 'Apple Monthly (Dec 2022)',
-          futureProduct: {
+          product: {
             settlementAsset: {
               id: 'c9fe6fc24fce121b2cc72680543a886055abb560043fda394ba5376203b7527d',
               name: 'tUSDC TEST',
@@ -892,7 +892,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
         instrument: {
           code: 'BTCUSD.MF21',
           name: 'BTCUSD Monthly (Dec 2022)',
-          futureProduct: {
+          product: {
             settlementAsset: {
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
@@ -982,7 +982,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
         instrument: {
           code: 'TSLA.QM21',
           name: 'Tesla Quarterly (Feb 2023)',
-          futureProduct: {
+          product: {
             settlementAsset: {
               id: '177e8f6c25a955bd18475084b99b2b1d37f28f3dec393fab7755a7e69c3d8c3b',
               name: 'tEURO TEST',
@@ -1072,7 +1072,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
         instrument: {
           code: 'AAVEDAI.MF21',
           name: 'AAVEDAI Monthly (Dec 2022)',
-          futureProduct: {
+          product: {
             settlementAsset: {
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
@@ -1162,7 +1162,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
         instrument: {
           code: 'ETHBTC.QM21',
           name: 'ETHBTC Quarterly (Feb 2023)',
-          futureProduct: {
+          product: {
             settlementAsset: {
               id: 'cee709223217281d7893b650850ae8ee8a18b7539b5658f9b4cc24de95dd18ad',
               name: 'tBTC TEST',
@@ -1252,7 +1252,7 @@ const proposalListFields: ProposalListFieldsFragment[] = [
         instrument: {
           code: 'UNIDAI.MF21',
           name: 'UNIDAI Monthly (Dec 2022)',
-          futureProduct: {
+          product: {
             settlementAsset: {
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',

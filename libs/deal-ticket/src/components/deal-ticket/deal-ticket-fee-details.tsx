@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { getAsset, getQuoteName } from '@vegaprotocol/markets';
+import { getAsset, getProductType, getQuoteName } from '@vegaprotocol/markets';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
@@ -297,120 +297,134 @@ export const DealTicketMarginDetails = ({
   );
 
   const quoteName = getQuoteName(market);
+  const productType = getProductType(market);
 
   return (
-    <div className="flex flex-col w-full gap-2">
-      <Accordion>
-        <AccordionPanel
-          itemId="margin"
-          trigger={
-            <AccordionPrimitive.Trigger
-              data-testid="accordion-toggle"
-              className={classNames(
-                'w-full pt-2',
-                'flex items-center gap-2 text-xs',
-                'group'
-              )}
-            >
-              <div
-                data-testid={`deal-ticket-fee-margin-required`}
-                key={'value-dropdown'}
-                className="flex items-center justify-between w-full gap-2"
-              >
-                <div className="flex items-center text-left gap-1">
-                  <Tooltip
-                    description={t(
-                      'MARGIN_DIFF_TOOLTIP_TEXT',
-                      MARGIN_DIFF_TOOLTIP_TEXT,
-                      { assetSymbol }
-                    )}
-                  >
-                    <span className="text-muted">{t('Margin required')}</span>
-                  </Tooltip>
+    <div className="flex flex-col w-full gap-2 pt-2">
+      {/*
+      TODO: remove this conditional check once the following PRs are deployed
+      and the estimatePosition query is working for perps
 
-                  <AccordionChevron size={10} />
-                </div>
-                <Tooltip
-                  description={
-                    formatRange(
-                      marginRequiredBestCase,
-                      marginRequiredWorstCase,
-                      assetDecimals
-                    ) ?? '-'
-                  }
+      - https://github.com/vegaprotocol/vega/pull/10119
+      - https://github.com/vegaprotocol/vega/pull/10122
+      */}
+      {productType === 'Future' && (
+        <>
+          <Accordion>
+            <AccordionPanel
+              itemId="margin"
+              trigger={
+                <AccordionPrimitive.Trigger
+                  data-testid="accordion-toggle"
+                  className={classNames(
+                    'w-full',
+                    'flex items-center gap-2 text-xs',
+                    'group'
+                  )}
                 >
-                  <div className="font-mono text-right">
-                    {formatValue(
-                      marginRequiredWorstCase,
-                      assetDecimals,
-                      quantum
-                    )}{' '}
-                    {assetSymbol || ''}
+                  <div
+                    data-testid={`deal-ticket-fee-margin-required`}
+                    key={'value-dropdown'}
+                    className="flex items-center justify-between w-full gap-2"
+                  >
+                    <div className="flex items-center text-left gap-1">
+                      <Tooltip
+                        description={t(
+                          'MARGIN_DIFF_TOOLTIP_TEXT',
+                          MARGIN_DIFF_TOOLTIP_TEXT,
+                          { assetSymbol }
+                        )}
+                      >
+                        <span className="text-muted">
+                          {t('Margin required')}
+                        </span>
+                      </Tooltip>
+
+                      <AccordionChevron size={10} />
+                    </div>
+                    <Tooltip
+                      description={
+                        formatRange(
+                          marginRequiredBestCase,
+                          marginRequiredWorstCase,
+                          assetDecimals
+                        ) ?? '-'
+                      }
+                    >
+                      <div className="font-mono text-right">
+                        {formatValue(
+                          marginRequiredWorstCase,
+                          assetDecimals,
+                          quantum
+                        )}{' '}
+                        {assetSymbol || ''}
+                      </div>
+                    </Tooltip>
                   </div>
-                </Tooltip>
-              </div>
-            </AccordionPrimitive.Trigger>
-          }
-        >
-          <div className="flex flex-col w-full gap-2">
-            <KeyValue
-              label={t('Total margin available')}
-              indent
-              value={formatValue(totalMarginAvailable, assetDecimals)}
-              formattedValue={formatValue(
-                totalMarginAvailable,
-                assetDecimals,
-                quantum
-              )}
-              symbol={assetSymbol}
-              labelDescription={t(
-                'TOTAL_MARGIN_AVAILABLE',
-                TOTAL_MARGIN_AVAILABLE,
-                {
-                  generalAccountBalance: formatValue(
-                    generalAccountBalance,
+                </AccordionPrimitive.Trigger>
+              }
+            >
+              <div className="flex flex-col w-full gap-2">
+                <KeyValue
+                  label={t('Total margin available')}
+                  indent
+                  value={formatValue(totalMarginAvailable, assetDecimals)}
+                  formattedValue={formatValue(
+                    totalMarginAvailable,
                     assetDecimals,
                     quantum
-                  ),
-                  marginAccountBalance: formatValue(
+                  )}
+                  symbol={assetSymbol}
+                  labelDescription={t(
+                    'TOTAL_MARGIN_AVAILABLE',
+                    TOTAL_MARGIN_AVAILABLE,
+                    {
+                      generalAccountBalance: formatValue(
+                        generalAccountBalance,
+                        assetDecimals,
+                        quantum
+                      ),
+                      marginAccountBalance: formatValue(
+                        marginAccountBalance,
+                        assetDecimals,
+                        quantum
+                      ),
+                      marginMaintenance: formatValue(
+                        currentMargins?.maintenanceLevel,
+                        assetDecimals,
+                        quantum
+                      ),
+                      assetSymbol,
+                    }
+                  )}
+                />
+                {deductionFromCollateral}
+                <KeyValue
+                  label={t('Current margin allocation')}
+                  indent
+                  onClick={
+                    generalAccountBalance
+                      ? () => setBreakdownDialog(true)
+                      : undefined
+                  }
+                  value={formatValue(marginAccountBalance, assetDecimals)}
+                  symbol={assetSymbol}
+                  labelDescription={t(
+                    'MARGIN_ACCOUNT_TOOLTIP_TEXT',
+                    MARGIN_ACCOUNT_TOOLTIP_TEXT
+                  )}
+                  formattedValue={formatValue(
                     marginAccountBalance,
                     assetDecimals,
                     quantum
-                  ),
-                  marginMaintenance: formatValue(
-                    currentMargins?.maintenanceLevel,
-                    assetDecimals,
-                    quantum
-                  ),
-                  assetSymbol,
-                }
-              )}
-            />
-            {deductionFromCollateral}
-            <KeyValue
-              label={t('Current margin allocation')}
-              indent
-              onClick={
-                generalAccountBalance
-                  ? () => setBreakdownDialog(true)
-                  : undefined
-              }
-              value={formatValue(marginAccountBalance, assetDecimals)}
-              symbol={assetSymbol}
-              labelDescription={t(
-                'MARGIN_ACCOUNT_TOOLTIP_TEXT',
-                MARGIN_ACCOUNT_TOOLTIP_TEXT
-              )}
-              formattedValue={formatValue(
-                marginAccountBalance,
-                assetDecimals,
-                quantum
-              )}
-            />
-          </div>
-        </AccordionPanel>
-      </Accordion>
-      {projectedMargin}
+                  )}
+                />
+              </div>
+            </AccordionPanel>
+          </Accordion>
+          {projectedMargin}
+        </>
+      )}
       <KeyValue
         label={t('Liquidation')}
         value={liquidationPriceEstimateRange}
