@@ -1,8 +1,8 @@
 import { calcCandleVolume } from '../../market-utils';
 import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useCandles } from '../../hooks';
+import { useT } from '../../use-t';
 
 interface Props {
   marketId?: string;
@@ -17,6 +17,7 @@ export const Last24hVolume = ({
   formatDecimals,
   initialValue,
 }: Props) => {
+  const t = useT();
   const { oneDayCandles, fiveDaysCandles } = useCandles({
     marketId,
   });
@@ -41,8 +42,8 @@ export const Last24hVolume = ({
           <div>
             <span className="flex flex-col">
               {t(
-                '24 hour change is unavailable at this time. The volume change in the last 120 hours is %s',
-                [candleVolumeValue]
+                '24 hour change is unavailable at this time. The volume change in the last 120 hours is {{candleVolumeValue}}',
+                { candleVolumeValue }
               )}
             </span>
           </div>

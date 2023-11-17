@@ -2,7 +2,6 @@ import isEqual from 'lodash/isEqual';
 import type { ReactNode } from 'react';
 import { Fragment, useMemo, useState } from 'react';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
-import { t } from '@vegaprotocol/i18n';
 import { marketDataProvider } from '../../market-data-provider';
 import { totalFeesFactorsPercentage } from '../../market-utils';
 import {
@@ -77,6 +76,7 @@ import {
 import type { DataSourceFragment } from './__generated__/MarketInfo';
 import { formatDuration } from 'date-fns';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
+import { useT } from '../../use-t';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -84,26 +84,30 @@ type MarketInfoProps = {
   children?: ReactNode;
 };
 
-export const CurrentFeesInfoPanel = ({ market }: MarketInfoProps) => (
-  <>
-    <MarketInfoTable
-      data={{
-        makerFee: market.fees.factors.makerFee,
-        infrastructureFee: market.fees.factors.infrastructureFee,
-        liquidityFee: market.fees.factors.liquidityFee,
-        totalFees: totalFeesFactorsPercentage(market.fees.factors),
-      }}
-      asPercentage={true}
-    />
-    <p className="text-xs">
-      {t(
-        'All fees are paid by price takers and are a % of the trade notional value. Fees are not paid during auction uncrossing.'
-      )}
-    </p>
-  </>
-);
+export const CurrentFeesInfoPanel = ({ market }: MarketInfoProps) => {
+  const t = useT();
+  return (
+    <>
+      <MarketInfoTable
+        data={{
+          makerFee: market.fees.factors.makerFee,
+          infrastructureFee: market.fees.factors.infrastructureFee,
+          liquidityFee: market.fees.factors.liquidityFee,
+          totalFees: totalFeesFactorsPercentage(market.fees.factors),
+        }}
+        asPercentage={true}
+      />
+      <p className="text-xs">
+        {t(
+          'All fees are paid by price takers and are a % of the trade notional value. Fees are not paid during auction uncrossing.'
+        )}
+      </p>
+    </>
+  );
+};
 
 export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
+  const t = useT();
   const assetSymbol = getAsset(market).symbol;
   const quoteUnit = getQuoteName(market);
   const { data } = useDataProvider({
@@ -123,8 +127,8 @@ export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
       />
       <p className="mt-2 text-xs">
         {t(
-          'There is 1 unit of the settlement asset (%s) to every 1 quote unit (%s).',
-          [assetSymbol, quoteUnit]
+          'There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit ({{quoteUnit}}).',
+          { assetSymbol, quoteUnit }
         )}
       </p>
     </>
@@ -185,6 +189,7 @@ export const KeyDetailsInfoPanel = ({
   market,
   parentMarket,
 }: MarketInfoProps) => {
+  const t = useT();
   const { data: parentMarketIdData } = useParentMarketIdQuery({
     variables: {
       marketId: market.id,
@@ -228,7 +233,7 @@ export const KeyDetailsInfoPanel = ({
           <CopyWithTooltip text={market.id}>
             <button
               data-testid="copy-eth-oracle-address"
-              className="uppercase text-right"
+              className="text-right uppercase"
             >
               <span className="flex gap-1">
                 {truncateMiddle(market.id)}
@@ -303,6 +308,7 @@ const SuccessionLineItem = ({
   marketId: string;
   isCurrent?: boolean;
 }) => {
+  const t = useT();
   const { data } = useSuccessorMarketQuery({
     variables: {
       marketId,
@@ -319,7 +325,7 @@ const SuccessionLineItem = ({
     <div
       data-testid="succession-line-item"
       className={classNames(
-        'rounded p-2 bg-vega-clight-700 dark:bg-vega-cdark-700',
+        'bg-vega-clight-700 dark:bg-vega-cdark-700 rounded p-2',
         'font-alpha',
         'flex flex-col '
       )}
@@ -335,7 +341,7 @@ const SuccessionLineItem = ({
               marketData.tradableInstrument.instrument.code
             )
           ) : (
-            <span className="block w-20 h-4 mb-1 bg-vega-clight-500 dark:bg-vega-cdark-500 animate-pulse"></span>
+            <span className="bg-vega-clight-500 dark:bg-vega-cdark-500 mb-1 block h-4 w-20 animate-pulse"></span>
           )}
         </div>
         {isCurrent && (
@@ -350,12 +356,12 @@ const SuccessionLineItem = ({
         {marketData ? (
           marketData.tradableInstrument.instrument.name
         ) : (
-          <span className="block h-4 w-28 bg-vega-clight-500 dark:bg-vega-cdark-500 animate-pulse"></span>
+          <span className="bg-vega-clight-500 dark:bg-vega-cdark-500 block h-4 w-28 animate-pulse"></span>
         )}
       </div>
       <div
         data-testid="succession-line-item-market-id"
-        className="mt-1 text-xs truncate"
+        className="mt-1 truncate text-xs"
       >
         {marketId}
       </div>
@@ -364,7 +370,7 @@ const SuccessionLineItem = ({
 };
 
 const SuccessionLink = () => (
-  <div className="leading-none text-center" aria-hidden>
+  <div className="text-center leading-none" aria-hidden>
     <VegaIcon name={VegaIconNames.ARROW_DOWN} size={12} />
   </div>
 );
@@ -442,6 +448,7 @@ export const InstrumentInfoPanel = ({
 };
 
 export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
+  const t = useT();
   const assetSymbol = getAsset(market).symbol;
   const quoteUnit = getQuoteName(market);
   const assetId = useMemo(() => getAsset(market).id, [market]);
@@ -458,8 +465,8 @@ export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
       />
       <p className="mt-4 text-xs">
         {t(
-          'There is 1 unit of the settlement asset (%s) to every 1 quote unit (%s).',
-          [assetSymbol, quoteUnit]
+          'There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit ({{quoteUnit}}).',
+          { assetSymbol, quoteUnit }
         )}
       </p>
     </>
@@ -686,6 +693,7 @@ export const PriceMonitoringBoundsInfoPanel = ({
 }: MarketInfoProps & {
   triggerIndex: number;
 }) => {
+  const t = useT();
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: { marketId: market.id },
@@ -706,16 +714,18 @@ export const PriceMonitoringBoundsInfoPanel = ({
   }
   return (
     <>
-      <div className="mb-2 text-sm grid grid-cols-2">
+      <div className="mb-2 grid grid-cols-2 text-sm">
         <p className="col-span-1">
-          {t('%s probability price bounds', [
-            formatNumberPercentage(
+          {t('{{probability}} probability price bounds', {
+            probability: formatNumberPercentage(
               new BigNumber(trigger.probability).times(100)
             ),
-          ])}
+          })}
         </p>
-        <p className="text-right col-span-1">
-          {t('Within %s seconds', [formatNumber(trigger.horizonSecs)])}
+        <p className="col-span-1 text-right">
+          {t('Within %s seconds', {
+            horizonSecs: formatNumber(trigger.horizonSecs),
+          })}
         </p>
       </div>
       {bounds && (
@@ -729,9 +739,9 @@ export const PriceMonitoringBoundsInfoPanel = ({
         />
       )}
       <p className="mt-2 text-xs">
-        {t('Results in %s seconds auction if breached', [
-          trigger.auctionExtensionSecs.toString(),
-        ])}
+        {t('Results in {{auctionExtensionSecs}} seconds auction if breached', {
+          auctionExtensionSecs: trigger.auctionExtensionSecs.toString(),
+        })}
       </p>
     </>
   );
@@ -766,6 +776,7 @@ export const LiquidityMonitoringParametersInfoPanel = ({
 };
 
 export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
+  const t = useT();
   const abis = sourceType.abi?.map((abi) => JSON.parse(abi));
   const header = 'uppercase my-1 text-left';
   return (
@@ -779,7 +790,7 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
               <CopyWithTooltip text={sourceType.address}>
                 <button
                   data-testid="copy-eth-oracle-address"
-                  className="uppercase text-right"
+                  className="text-right uppercase"
                 >
                   <span className="flex gap-1">
                     {truncateMiddle(sourceType.address)}
@@ -820,9 +831,9 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
               <div
                 data-testid={`abi-dropdown`}
                 key={'value-dropdown'}
-                className="flex items-center gap-2 w-full"
+                className="flex w-full items-center gap-2"
               >
-                <div className="underline underline-offset-4 mb-1 uppercase">
+                <div className="mb-1 uppercase underline underline-offset-4">
                   {t('ABI specification')}
                 </div>
                 <AccordionChevron size={14} />
@@ -860,6 +871,7 @@ export const LiquidityPriceRangeInfoPanel = ({
   market,
   parentMarket,
 }: MarketInfoProps) => {
+  const t = useT();
   const marketLpPriceRange = market.liquiditySLAParameters?.priceRange;
   const parentMarketLpPriceRange =
     parentMarket?.liquiditySLAParameters?.priceRange;
@@ -898,7 +910,9 @@ export const LiquidityPriceRangeInfoPanel = ({
 
   if (parentMarket && parentMarketData && quoteUnit === parentQuoteUnit) {
     parentData = {
-      liquidityPriceRange: `${parentLiquidityPriceRange} of mid price`,
+      liquidityPriceRange: t(`{{parentLiquidityPriceRange}} of mid price`, {
+        parentLiquidityPriceRange,
+      }),
       lowestPrice:
         parentMarketLpPriceRange &&
         parentMarketData?.midPrice &&
@@ -924,13 +938,16 @@ export const LiquidityPriceRangeInfoPanel = ({
 
   return (
     <>
-      <p className="text-xs mb-2 border-l-2 pl-2">
-        {`For liquidity orders to count towards a commitment, they must be
-            within the liquidity monitoring bounds.`}
+      <p className="mb-2 border-l-2 pl-2 text-xs">
+        {t(
+          `For liquidity orders to count towards a commitment, they must be within the liquidity monitoring bounds.`
+        )}
       </p>
       <MarketInfoTable
         data={{
-          liquidityPriceRange: `${liquidityPriceRange} of mid price`,
+          liquidityPriceRange: t(`{{liquidityPriceRange}} of mid price`, {
+            liquidityPriceRange,
+          }),
           lowestPrice:
             marketLpPriceRange &&
             data?.midPrice &&
@@ -954,16 +971,18 @@ export const LiquidityPriceRangeInfoPanel = ({
         }}
         parentData={parentData}
       />
-      <p className="text-xs mb-2 border-l-2 pl-2 mt-2">
-        {`The liquidity price range is a ${liquidityPriceRange} difference from the mid
-            price.`}
+      <p className="mb-2 mt-2 border-l-2 pl-2 text-xs">
+        {t(
+          'The liquidity price range is a {{{liquidityPriceRange}} difference from the mid price.',
+          { liquidityPriceRange }
+        )}
       </p>
     </>
   );
 };
 
 const fromNanoSecondsToSeconds = (nanoseconds: number | string) =>
-  t('%ss', [new BigNumber(nanoseconds).dividedBy(1e9).toString()]);
+  `${new BigNumber(nanoseconds).dividedBy(1e9).toString()}s`;
 
 export const LiquiditySLAParametersInfoPanel = ({
   market,
@@ -1069,6 +1088,7 @@ export const FundingInfoPanel = ({
 }: {
   dataSource: DataSourceFragment;
 }) => {
+  const t = useT();
   const sourceType = dataSource.data.sourceType.sourceType;
   if (
     sourceType.__typename !== 'DataSourceSpecConfigurationTimeTrigger' ||
@@ -1079,13 +1099,16 @@ export const FundingInfoPanel = ({
   const { every, initial } = sourceType.triggers[0];
   const hours = Math.floor(every / (60 * 60));
   const minutes = Math.floor(every / 60) % 60;
-  const initialLabel = initial
-    ? ` ${t('from')} ${getDateTimeFormat().format(new Date(initial * 1000))}`
-    : '';
-  return `${t('every')} ${formatDuration({
+  const duration = formatDuration({
     hours,
     minutes,
-  })} ${initialLabel}`;
+  });
+  return initial
+    ? t('every {{duration}} from {{initialTime}}', {
+        duration,
+        initialTime: getDateTimeFormat().format(new Date(initial * 1000)),
+      })
+    : t('every {{duration}}', { duration });
 };
 
 export const OracleInfoPanel = ({
@@ -1097,6 +1120,7 @@ export const OracleInfoPanel = ({
 }) => {
   // If this is a successor market, this component will only receive parent market
   // data if the termination or settlement data is different from the parent.
+  const t = useT();
   const product = market.tradableInstrument.instrument.product;
   const parentProduct = parentMarket?.tradableInstrument?.instrument?.product;
   const { VEGA_EXPLORER_URL, ORACLE_PROOFS_URL } = useEnvironment();
@@ -1137,7 +1161,7 @@ export const OracleInfoPanel = ({
           parentDataSourceSpec &&
           parentDataSourceSpecId &&
           parentProduct && (
-            <div className="flex flex-col line-through gap-2 text-vega-dark-300">
+            <div className="text-vega-dark-300 flex flex-col gap-2 line-through">
               <DataSourceProof
                 data-testid="oracle-proof-links"
                 data={parentDataSourceSpec}
@@ -1208,6 +1232,7 @@ export const DataSourceProof = ({
   type: 'settlementData' | 'termination' | 'settlementSchedule';
   dataSourceSpecId: string;
 }) => {
+  const t = useT();
   if (data.sourceType.__typename === 'DataSourceDefinitionExternal') {
     const signers =
       ('signers' in data.sourceType.sourceType &&
@@ -1375,12 +1400,12 @@ const NoOracleProof = ({
 }: {
   type: 'settlementData' | 'termination' | 'settlementSchedule';
 }) => {
+  const t = useT();
   return (
     <p>
-      {t(
-        'No oracle proof for %s',
-        type === 'settlementData' ? 'settlement data' : 'termination'
-      )}
+      {type === 'settlementData'
+        ? t('No oracle proof for settlement data')
+        : t('No oracle proof for termination')}
     </p>
   );
 };

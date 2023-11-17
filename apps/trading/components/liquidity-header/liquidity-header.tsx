@@ -1,6 +1,6 @@
 import {
   getAsset,
-  tooltipMapping,
+  useTooltipMapping,
   useMarket,
   useStaticMarketData,
 } from '@vegaprotocol/markets';
@@ -27,6 +27,7 @@ import { useT } from '../../lib/use-t';
 
 export const LiquidityHeader = () => {
   const t = useT();
+  const tooltipMapping = useTooltipMapping();
   const { marketId } = useParams();
   const { data: market } = useMarket(marketId);
   const { data: marketData } = useStaticMarketData(marketId);
@@ -122,7 +123,7 @@ export const LiquidityHeader = () => {
             <CopyWithTooltip text={marketId}>
               <button
                 data-testid="copy-eth-oracle-address"
-                className="uppercase text-right"
+                className="text-right uppercase"
               >
                 <span className="flex gap-1">
                   {truncateMiddle(marketId)}

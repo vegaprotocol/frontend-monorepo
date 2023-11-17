@@ -2,7 +2,6 @@ import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import {
   Intent,
   KeyValueTable,
@@ -13,9 +12,10 @@ import {
 import BigNumber from 'bignumber.js';
 import startCase from 'lodash/startCase';
 
-import { tooltipMapping } from './tooltip-mapping';
+import { useTooltipMapping } from './tooltip-mapping';
 
 import type { ReactNode } from 'react';
+import { useT } from '../../use-t';
 interface RowProps {
   field: string;
   value: ReactNode;
@@ -39,6 +39,8 @@ export const Row = ({
   parentValue,
   hasParentData,
 }: RowProps) => {
+  const t = useT();
+  const tooltipMapping = useTooltipMapping();
   // Note: we need both 'parentValue' and 'hasParentData' to do a conditional
   // check to differentiate between when parentData itself is missing and when
   // a specific parentValue is missing. These values are only used when we
