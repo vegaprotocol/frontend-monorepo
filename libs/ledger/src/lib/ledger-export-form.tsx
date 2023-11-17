@@ -14,9 +14,9 @@ import {
   toNanoSeconds,
   VEGA_ID_REGEX,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 import { useLedgerDownloadFile } from './ledger-download-store';
+import { useT } from './use-t';
 
 const DEFAULT_EXPORT_FILE_NAME = 'ledger_entries.csv';
 
@@ -70,6 +70,7 @@ interface Props {
 }
 
 export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
+  const t = useT();
   const now = useRef(new Date());
   const [dateFrom, setDateFrom] = useState(() => {
     return formatForInput(subDays(now.current, 7));
@@ -116,11 +117,14 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
   const startDownload = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const title = t('Downloading for %s from %s till %s', [
-      assets[assetId],
-      format(new Date(dateFrom), 'dd MMMM yyyy HH:mm'),
-      format(new Date(dateTo || Date.now()), 'dd MMMM yyyy HH:mm'),
-    ]);
+    const title = t(
+      'Downloading for {{asset}} from {{startDate}} till {{endDate}}',
+      {
+        asset: assets[assetId],
+        startDate: format(new Date(dateFrom), 'dd MMMM yyyy HH:mm'),
+        endDate: format(new Date(dateTo || Date.now()), 'dd MMMM yyyy HH:mm'),
+      }
+    );
 
     const downloadStoreItem = {
       title,
@@ -225,8 +229,8 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
       {offset && (
         <p className="text-xs text-neutral-400 mt-1">
           {t(
-            'The downloaded file uses the UTC time zone for all listed times. Your time zone is UTC%s.',
-            [toHoursAndMinutes(offset)]
+            'The downloaded file uses the UTC time zone for all listed times. Your time zone is UTC{{offset}}.',
+            { offset: toHoursAndMinutes(offset) }
           )}
         </p>
       )}
