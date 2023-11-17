@@ -17,7 +17,6 @@ export type ProposalsQueryVariables = Types.Exact<{
   includeNewMarketProductFields: Types.Scalars['Boolean'];
   includeUpdateMarketStates: Types.Scalars['Boolean'];
   includeUpdateReferralPrograms: Types.Scalars['Boolean'];
-  includeUpdateVolumeDiscountPrograms: Types.Scalars['Boolean'];
 }>;
 
 
@@ -198,7 +197,7 @@ export const ProposalFieldsFragmentDoc = gql`
 }
     `;
 export const ProposalsDocument = gql`
-    query Proposals($includeNewMarketProductFields: Boolean!, $includeUpdateMarketStates: Boolean!, $includeUpdateReferralPrograms: Boolean!, $includeUpdateVolumeDiscountPrograms: Boolean!) {
+    query Proposals($includeNewMarketProductFields: Boolean!, $includeUpdateMarketStates: Boolean!, $includeUpdateReferralPrograms: Boolean!) {
   proposalsConnection {
     edges {
       node {
@@ -206,7 +205,7 @@ export const ProposalsDocument = gql`
         ...NewMarketProductFields @include(if: $includeNewMarketProductFields)
         ...UpdateMarketStates @include(if: $includeUpdateMarketStates)
         ...UpdateReferralPrograms @include(if: $includeUpdateReferralPrograms)
-        ...UpdateVolumeDiscountPrograms @include(if: $includeUpdateVolumeDiscountPrograms)
+        ...UpdateVolumeDiscountPrograms
       }
     }
   }
@@ -232,7 +231,6 @@ ${UpdateVolumeDiscountProgramsFragmentDoc}`;
  *      includeNewMarketProductFields: // value for 'includeNewMarketProductFields'
  *      includeUpdateMarketStates: // value for 'includeUpdateMarketStates'
  *      includeUpdateReferralPrograms: // value for 'includeUpdateReferralPrograms'
- *      includeUpdateVolumeDiscountPrograms: // value for 'includeUpdateVolumeDiscountPrograms'
  *   },
  * });
  */
