@@ -23,14 +23,10 @@ export const ViewingAsBanner = ({
 }: ViewingAsBannerProps) => {
   const t = useT();
   return (
-    <NotificationBanner
-      data-testid="view-banner"
-      intent={Intent.None}
-      className={SHORT}
-    >
+    <NotificationBanner intent={Intent.None} className={SHORT}>
       <div className="flex items-baseline justify-between">
-        <span className="mr-1">
-          {t('Viewing as Vega user:{{pubKey}}', {
+        <span data-testid="view-banner">
+          {t('Viewing as Vega user: {{pubKey}}', {
             pubKey: pubKey && truncateMiddle(pubKey),
           })}
         </span>
