@@ -132,46 +132,25 @@ query Proposal(
           instrument {
             name
             code
-            futureProduct {
-              settlementAsset {
-                id
-                name
-                symbol
-                decimals
-                quantum
-              }
-              quoteName
-
-              dataSourceSpecForSettlementData {
-                sourceType {
-                  ... on DataSourceDefinitionInternal {
-                    sourceType {
-                      ... on DataSourceSpecConfigurationTime {
-                        conditions {
-                          operator
-                          value
-                        }
-                      }
-                    }
-                  }
-                  ... on DataSourceDefinitionExternal {
-                    sourceType {
-                      ... on DataSourceSpecConfiguration {
-                        signers {
-                          signer {
-                            ... on PubKey {
-                              key
-                            }
-                            ... on ETHAddress {
-                              address
-                            }
-                          }
-                        }
-                        filters {
-                          key {
-                            name
-                            type
-                          }
+            product {
+              ... on FutureProduct {
+                settlementAsset {
+                  id
+                  name
+                  symbol
+                  decimals
+                  quantum
+                }
+                quoteName
+                dataSourceSpecBinding {
+                  settlementDataProperty
+                  tradingTerminationProperty
+                }
+                dataSourceSpecForSettlementData {
+                  sourceType {
+                    ... on DataSourceDefinitionInternal {
+                      sourceType {
+                        ... on DataSourceSpecConfigurationTime {
                           conditions {
                             operator
                             value
@@ -179,52 +158,44 @@ query Proposal(
                         }
                       }
                     }
+                    ... on DataSourceDefinitionExternal {
+                      sourceType {
+                        ... on DataSourceSpecConfiguration {
+                          signers {
+                            signer {
+                              ... on PubKey {
+                                key
+                              }
+                              ... on ETHAddress {
+                                address
+                              }
+                            }
+                          }
+                          filters {
+                            key {
+                              name
+                              type
+                            }
+                            conditions {
+                              operator
+                              value
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
-              # dataSourceSpecForTradingTermination {
-              #   sourceType {
-              #     ... on DataSourceDefinitionInternal {
-              #       sourceType {
-              #         ... on DataSourceSpecConfigurationTime {
-              #           conditions {
-              #             operator
-              #             value
-              #           }
-              #         }
-              #       }
-              #     }
-              #     ... on DataSourceDefinitionExternal {
-              #       sourceType {
-              #         ... on DataSourceSpecConfiguration {
-              #           signers {
-              #             signer {
-              #               ... on PubKey {
-              #                 key
-              #               }
-              #               ... on ETHAddress {
-              #                 address
-              #               }
-              #             }
-              #           }
-              #           filters {
-              #             key {
-              #               name
-              #               type
-              #             }
-              #             conditions {
-              #               operator
-              #               value
-              #             }
-              #           }
-              #         }
-              #       }
-              #     }
-              #   }
-              # }
-              dataSourceSpecBinding {
-                settlementDataProperty
-                tradingTerminationProperty
+              ... on PerpetualProduct {
+                settlementAsset {
+                  id
+                  name
+                  symbol
+                  decimals
+                  quantum
+                }
+                quoteName
               }
             }
           }
