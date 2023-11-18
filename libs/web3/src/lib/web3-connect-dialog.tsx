@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
   Dialog,
@@ -16,6 +15,7 @@ import type { Web3ReactHooks } from '@web3-react/core';
 import { useWeb3ConnectStore } from './web3-connect-store';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import classNames from 'classnames';
+import { useT } from './use-t';
 
 interface Web3ConnectDialogProps {
   dialogOpen: boolean;
@@ -29,33 +29,36 @@ export const Web3ConnectDialog = ({
   setDialogOpen,
   connectors,
   desiredChainId,
-}: Web3ConnectDialogProps) => (
-  <Dialog
-    open={dialogOpen}
-    onChange={setDialogOpen}
-    onInteractOutside={(e) => {
-      // do not close dialog when clicked outside (wallet connect modal)
-      e.preventDefault();
-    }}
-    intent={Intent.None}
-    title={t('Connect to your Ethereum wallet')}
-    size="small"
-  >
-    <ul className="grid grid-cols-2 gap-2" data-testid="web3-connector-list">
-      {connectors.map((connector, i) => (
-        <li key={i} className="mb-2 last:mb-0">
-          <ConnectButton
-            connector={connector}
-            desiredChainId={desiredChainId}
-            onClick={() => {
-              setDialogOpen(false);
-            }}
-          />
-        </li>
-      ))}
-    </ul>
-  </Dialog>
-);
+}: Web3ConnectDialogProps) => {
+  const t = useT();
+  return (
+    <Dialog
+      open={dialogOpen}
+      onChange={setDialogOpen}
+      onInteractOutside={(e) => {
+        // do not close dialog when clicked outside (wallet connect modal)
+        e.preventDefault();
+      }}
+      intent={Intent.None}
+      title={t('Connect to your Ethereum wallet')}
+      size="small"
+    >
+      <ul className="grid grid-cols-2 gap-2" data-testid="web3-connector-list">
+        {connectors.map((connector, i) => (
+          <li key={i} className="mb-2 last:mb-0">
+            <ConnectButton
+              connector={connector}
+              desiredChainId={desiredChainId}
+              onClick={() => {
+                setDialogOpen(false);
+              }}
+            />
+          </li>
+        ))}
+      </ul>
+    </Dialog>
+  );
+};
 
 const ConnectButton = ({
   connector,
@@ -66,9 +69,10 @@ const ConnectButton = ({
   desiredChainId?: number;
   onClick?: () => void;
 }) => {
+  const t = useT();
   const [connectorInstance, { useIsActivating }] = connector;
   const isActivating = useIsActivating();
-  const info = getConnectorInfo(connectorInstance);
+  const info = getConnectorInfo(connectorInstance, t);
   const [, setEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
   return (
     <button
@@ -120,7 +124,7 @@ export const Web3ConnectUncontrolledDialog = () => {
   );
 };
 
-function getConnectorInfo(connector: Connector) {
+function getConnectorInfo(connector: Connector, t: ReturnType<typeof useT>) {
   if (connector instanceof MetaMask) {
     return {
       icon: <VegaIcon name={VegaIconNames.METAMASK} size={32} />,

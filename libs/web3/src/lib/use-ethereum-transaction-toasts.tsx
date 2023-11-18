@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import { EtherscanLink } from '@vegaprotocol/environment';
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '@vegaprotocol/ui-toolkit';
@@ -17,6 +16,7 @@ import { EthTxStatus } from './use-ethereum-transaction';
 import { isEthereumError } from './ethereum-error';
 import { TransactionContent } from './ethereum-transaction-dialog';
 import { useEthTransactionStore } from './use-ethereum-transaction-store';
+import { useT } from './use-t';
 
 const intentMap: { [s in EthTxStatus]: Intent } = {
   Default: Intent.Primary,
@@ -34,6 +34,7 @@ const isDepositTransaction = (tx: EthStoredTxState) =>
   tx.methodName === 'deposit_asset';
 
 const EthTransactionDetails = ({ tx }: { tx: EthStoredTxState }) => {
+  const t = useT();
   const { data: assets } = useAssetsDataProvider();
   if (!assets) return null;
 
@@ -64,8 +65,10 @@ const EthTransactionDetails = ({ tx }: { tx: EthStoredTxState }) => {
         {tx.status === EthTxStatus.Pending && (
           <>
             <p className="mt-[2px]">
-              {t('Awaiting confirmations')}{' '}
-              {`(${tx.confirmations}/${tx.requiredConfirmations})`}
+              {t(
+                'Awaiting confirmations {{confirmations}}/{[requiredConfirmations}}',
+                tx
+              )}
             </p>
             <ProgressBar
               value={(tx.confirmations / tx.requiredConfirmations) * 100}
@@ -84,6 +87,7 @@ type EthTxToastContentProps = {
 };
 
 const EthTxRequestedToastContent = ({ tx }: EthTxToastContentProps) => {
+  const t = useT();
   return (
     <>
       <ToastHeading>{t('Action required')}</ToastHeading>
@@ -98,6 +102,7 @@ const EthTxRequestedToastContent = ({ tx }: EthTxToastContentProps) => {
 };
 
 const EthTxPendingToastContent = ({ tx }: EthTxToastContentProps) => {
+  const t = useT();
   return (
     <>
       <ToastHeading>{t('Awaiting confirmation')}</ToastHeading>
@@ -111,6 +116,7 @@ const EthTxPendingToastContent = ({ tx }: EthTxToastContentProps) => {
 };
 
 const EthTxErrorToastContent = ({ tx }: EthTxToastContentProps) => {
+  const t = useT();
   let errorMessage = '';
 
   if (isEthereumError(tx.error)) {
@@ -128,6 +134,7 @@ const EthTxErrorToastContent = ({ tx }: EthTxToastContentProps) => {
 };
 
 const EthTxConfirmedToastContent = ({ tx }: EthTxToastContentProps) => {
+  const t = useT();
   return (
     <>
       <ToastHeading>{t('Transaction confirmed')}</ToastHeading>
@@ -141,11 +148,12 @@ const EthTxConfirmedToastContent = ({ tx }: EthTxToastContentProps) => {
 };
 
 const EthTxCompletedToastContent = ({ tx }: EthTxToastContentProps) => {
+  const t = useT();
   const isDeposit = isDepositTransaction(tx);
   return (
     <>
       <ToastHeading>
-        {t('Processing')} {isDeposit && t('deposit')}
+        {isDeposit ? t('Processing deposit') : t('Processing')}
       </ToastHeading>
       <p>
         {t('Your transaction has been completed.')}{' '}

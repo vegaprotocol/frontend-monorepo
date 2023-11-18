@@ -1,11 +1,12 @@
-import { t } from '@vegaprotocol/i18n';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { EtherscanLink, useEnvironment } from '@vegaprotocol/environment';
 import { EthTxStatus } from '../use-ethereum-transaction';
+import { useT } from '../use-t';
 
 const ACTIVE_CLASSES = 'text-black dark:text-white';
 
 export const ConfirmRow = ({ status }: { status: EthTxStatus }) => {
+  const t = useT();
   if (status === EthTxStatus.Requested) {
     return (
       <p className="text-black dark:text-white">
@@ -32,6 +33,7 @@ export const TxRow = ({
   requiredConfirmations,
   highlightComplete = true,
 }: TxRowProps) => {
+  const t = useT();
   const { ETHERSCAN_URL } = useEnvironment();
 
   if (status === EthTxStatus.Pending) {
@@ -39,7 +41,8 @@ export const TxRow = ({
       <p className={`flex justify-between ${ACTIVE_CLASSES}`}>
         <span>
           {t(
-            `Awaiting Ethereum transaction ${confirmations}/${requiredConfirmations} confirmations...`
+            `Awaiting Ethereum transaction {{confirmations}}/{{requiredConfirmations}} confirmations...`,
+            { confirmations, requiredConfirmations }
           )}
         </span>
         <Link
@@ -82,6 +85,7 @@ interface ConfirmationEventRowProps {
 }
 
 export const ConfirmationEventRow = ({ status }: ConfirmationEventRowProps) => {
+  const t = useT();
   if (status !== EthTxStatus.Complete && status !== EthTxStatus.Confirmed) {
     return <p>{t('Vega confirmation')}</p>;
   }

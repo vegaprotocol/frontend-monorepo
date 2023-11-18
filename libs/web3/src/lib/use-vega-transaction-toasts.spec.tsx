@@ -418,32 +418,33 @@ describe('getVegaTransactionContentIntent', () => {
   });
 });
 describe('getOrderToastTitle', () => {
+  const t = (v: string) => v;
   it('should return the correct title', () => {
-    expect(getOrderToastTitle(Types.OrderStatus.STATUS_ACTIVE)).toBe(
+    expect(getOrderToastTitle(Types.OrderStatus.STATUS_ACTIVE, t)).toBe(
       'Order submitted'
     );
-    expect(getOrderToastTitle(Types.OrderStatus.STATUS_FILLED)).toBe(
+    expect(getOrderToastTitle(Types.OrderStatus.STATUS_FILLED, t)).toBe(
       'Order filled'
     );
-    expect(getOrderToastTitle(Types.OrderStatus.STATUS_PARTIALLY_FILLED)).toBe(
-      'Order partially filled'
-    );
-    expect(getOrderToastTitle(Types.OrderStatus.STATUS_PARKED)).toBe(
+    expect(
+      getOrderToastTitle(Types.OrderStatus.STATUS_PARTIALLY_FILLED, t)
+    ).toBe('Order partially filled');
+    expect(getOrderToastTitle(Types.OrderStatus.STATUS_PARKED, t)).toBe(
       'Order parked'
     );
-    expect(getOrderToastTitle(Types.OrderStatus.STATUS_STOPPED)).toBe(
+    expect(getOrderToastTitle(Types.OrderStatus.STATUS_STOPPED, t)).toBe(
       'Order stopped'
     );
-    expect(getOrderToastTitle(Types.OrderStatus.STATUS_CANCELLED)).toBe(
+    expect(getOrderToastTitle(Types.OrderStatus.STATUS_CANCELLED, t)).toBe(
       'Order cancelled'
     );
-    expect(getOrderToastTitle(Types.OrderStatus.STATUS_EXPIRED)).toBe(
+    expect(getOrderToastTitle(Types.OrderStatus.STATUS_EXPIRED, t)).toBe(
       'Order expired'
     );
-    expect(getOrderToastTitle(Types.OrderStatus.STATUS_REJECTED)).toBe(
+    expect(getOrderToastTitle(Types.OrderStatus.STATUS_REJECTED, t)).toBe(
       'Order rejected'
     );
-    expect(getOrderToastTitle(undefined)).toBe(undefined);
+    expect(getOrderToastTitle(undefined, t)).toBe(undefined);
   });
 });
 
@@ -480,38 +481,42 @@ describe('getOrderToastIntent', () => {
 describe('getRejectionReason', () => {
   it('should return the correct rejection reason for insufficient asset balance', () => {
     expect(
-      getRejectionReason({
-        rejectionReason:
-          Types.OrderRejectionReason.ORDER_ERROR_INSUFFICIENT_ASSET_BALANCE,
-        status: Types.OrderStatus.STATUS_REJECTED,
-        id: '',
-        createdAt: undefined,
-        size: '',
-        price: '',
-        timeInForce: Types.OrderTimeInForce.TIME_IN_FORCE_FOK,
-        side: Types.Side.SIDE_BUY,
-        marketId: '',
-        remaining: '',
-      })
+      getRejectionReason(
+        {
+          rejectionReason:
+            Types.OrderRejectionReason.ORDER_ERROR_INSUFFICIENT_ASSET_BALANCE,
+          status: Types.OrderStatus.STATUS_REJECTED,
+          id: '',
+          createdAt: undefined,
+          size: '',
+          price: '',
+          timeInForce: Types.OrderTimeInForce.TIME_IN_FORCE_FOK,
+          side: Types.Side.SIDE_BUY,
+          marketId: '',
+          remaining: '',
+        },
+        (v) => v
+      )
     ).toBe('Insufficient asset balance');
   });
 
   it('should return the correct rejection reason when order is stopped', () => {
     expect(
-      getRejectionReason({
-        rejectionReason: null,
-        status: Types.OrderStatus.STATUS_STOPPED,
-        id: '',
-        createdAt: undefined,
-        size: '',
-        price: '',
-        timeInForce: Types.OrderTimeInForce.TIME_IN_FORCE_FOK,
-        side: Types.Side.SIDE_BUY,
-        marketId: '',
-        remaining: '',
-      })
-    ).toBe(
-      'Your Fill or Kill (FOK) order was not filled and it has been stopped'
-    );
+      getRejectionReason(
+        {
+          rejectionReason: null,
+          status: Types.OrderStatus.STATUS_STOPPED,
+          id: '',
+          createdAt: undefined,
+          size: '',
+          price: '',
+          timeInForce: Types.OrderTimeInForce.TIME_IN_FORCE_FOK,
+          side: Types.Side.SIDE_BUY,
+          marketId: '',
+          remaining: '',
+        },
+        (v) => v
+      )
+    ).toBe('Your {{timeInForce}} order was not filled and it has been stopped');
   });
 });
