@@ -178,7 +178,7 @@ const Error = ({
       title = t('Wrong network');
       text = t(
         'To complete your wallet connection, set your wallet network in your app to "{{appChainId}}".',
-        appChainId
+        { appChainId }
       );
     } else if (error.code === ServiceErrors.NO_HEALTHY_NODE) {
       title = error.title;
@@ -200,8 +200,8 @@ const Error = ({
       text = (
         <>
           {t(
-            `To complete your wallet connection, set your wallet network in your app to "{{appChainId}}".`,
-            appChainId
+            'To complete your wallet connection, set your wallet network in your app to "{{appChainId}}".',
+            { appChainId }
           )}
         </>
       );

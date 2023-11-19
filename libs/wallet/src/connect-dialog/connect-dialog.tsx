@@ -273,7 +273,7 @@ const ConnectorList = ({
               />
             }
             description={t(
-              `Connect with Vega Wallet extension for {{browserName}} to access all features including key management and detailed transaction views from your browser.`,
+              'Connect with Vega Wallet extension for {{browserName}} to access all features including key management and detailed transaction views from your browser.',
               { browserName }
             )}
           />
@@ -287,7 +287,7 @@ const ConnectorList = ({
             </h1>
             <p className="mb-2 text-sm">
               {t(
-                `Install Vega Wallet extension for {{browserName}} to access all features including key management and detailed transaction views from your browser.`,
+                'Install Vega Wallet extension for {{browserName}} to access all features including key management and detailed transaction views from your browser.',
                 { browserName }
               )}
             </p>
