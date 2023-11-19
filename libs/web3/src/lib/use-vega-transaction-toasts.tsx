@@ -62,7 +62,7 @@ import { useT } from './use-t';
 
 export const getRejectionReason = (
   order: OrderTxUpdateFieldsFragment,
-  t: ReturnType<typeof useT>,
+  t: ReturnType<typeof useT>
 ): string | null => {
   switch (order.status) {
     case Schema.OrderStatus.STATUS_STOPPED:
@@ -70,7 +70,7 @@ export const getRejectionReason = (
         `Your {{timeInForce}} order was not filled and it has been stopped`,
         {
           timeInForce: Schema.OrderTimeInForceMapping[order.timeInForce],
-        },
+        }
       );
     default:
       return order.rejectionReason
@@ -81,7 +81,7 @@ export const getRejectionReason = (
 
 export const getOrderToastTitle = (
   status: Schema.OrderStatus | undefined,
-  t: ReturnType<typeof useT>,
+  t: ReturnType<typeof useT>
 ): string | undefined => {
   if (!status) {
     return;
@@ -110,7 +110,7 @@ export const getOrderToastTitle = (
 };
 
 export const getOrderToastIntent = (
-  status?: Schema.OrderStatus,
+  status?: Schema.OrderStatus
 ): Intent | undefined => {
   if (!status) {
     return;
@@ -293,7 +293,7 @@ const SubmitStopOrderSetup = ({
             trigger,
           },
           market.decimalPlaces,
-          '',
+          ''
         )}
     </p>
   );
@@ -496,7 +496,7 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
     if (asset) {
       const amount = formatNumber(
         toBigNum(transactionDetails.withdrawSubmission.amount, asset.decimals),
-        asset.decimals,
+        asset.decimals
       );
       return (
         <Panel>
@@ -600,8 +600,9 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
 
   if (isClosePositionTransaction(tx)) {
     const transaction = tx.body as BatchMarketInstructionSubmissionBody;
-    const marketId = first(transaction.batchMarketInstructions.cancellations)
-      ?.marketId;
+    const marketId = first(
+      transaction.batchMarketInstructions.cancellations
+    )?.marketId;
     const market = markets?.[marketId || ''];
     if (market) {
       return (
@@ -668,7 +669,7 @@ const VegaTxRequestedToastContent = ({ tx }: VegaTxToastContentProps) => {
       <ToastHeading>{t('Action required')}</ToastHeading>
       <p>
         {t(
-          'Please go to your Vega wallet application and approve or reject the transaction.',
+          'Please go to your Vega wallet application and approve or reject the transaction.'
         )}
       </p>
       <VegaTransactionDetails tx={tx} />
@@ -678,7 +679,7 @@ const VegaTxRequestedToastContent = ({ tx }: VegaTxToastContentProps) => {
 
 const VegaTxPendingToastContentProps = (
   { tx }: VegaTxToastContentProps,
-  t: ReturnType<typeof useT>,
+  t: ReturnType<typeof useT>
 ) => {
   const explorerLink = useLinks(DApp.Explorer);
   return (
@@ -705,7 +706,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   const { createEthWithdrawalApproval } = useEthWithdrawApprovalsStore(
     (state) => ({
       createEthWithdrawalApproval: state.create,
-    }),
+    })
   );
   const explorerLink = useLinks(DApp.Explorer);
 
@@ -718,7 +719,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
           onClick={() => {
             createEthWithdrawalApproval(
               tx.withdrawal as WithdrawalBusEventFieldsFragment,
-              tx.withdrawalApproval,
+              tx.withdrawalApproval
             );
           }}
         >
@@ -902,7 +903,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
       'Your order has been rejected because: {{rejectionReason}}',
       {
         rejectionReason: orderRejection || tx.order?.rejectionReason || ' ',
-      },
+      }
     );
   }
   if (walletError) {
@@ -948,7 +949,7 @@ export const useVegaTransactionToasts = () => {
       }
       removeToast(`vega-${tx.id}`);
     },
-    [deleteTx, dismissTx, removeToast],
+    [deleteTx, dismissTx, removeToast]
   );
 
   const fromVegaTransaction = (tx: VegaStoredTxState): Toast => {
@@ -977,12 +978,12 @@ export const useVegaTransactionToasts = () => {
     (state) =>
       compact(
         state.transactions.filter(
-          (tx) => tx?.dialogOpen && isTransactionTypeSupported(tx),
-        ),
+          (tx) => tx?.dialogOpen && isTransactionTypeSupported(tx)
+        )
       ),
     (txs) => {
       txs.forEach((tx) => setToast(fromVegaTransaction(tx)));
-    },
+    }
   );
 };
 

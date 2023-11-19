@@ -111,10 +111,10 @@ export const StopOrdersTable = memo(
             return data?.submission.size && data.market
               ? toBigNum(
                   data.submission.size,
-                  data.market.positionDecimalPlaces ?? 0,
+                  data.market.positionDecimalPlaces ?? 0
                 )
                   .multipliedBy(
-                    data.submission.side === Schema.Side.SIDE_SELL ? -1 : 1,
+                    data.submission.side === Schema.Side.SIDE_SELL ? -1 : 1
                   )
                   .toNumber()
               : undefined;
@@ -137,7 +137,7 @@ export const StopOrdersTable = memo(
               prefix +
               addDecimalsFormatNumber(
                 data.submission.size,
-                data.market.positionDecimalPlaces,
+                data.market.positionDecimalPlaces
               )
             );
           },
@@ -291,7 +291,7 @@ export const StopOrdersTable = memo(
         showAllActions,
         t,
         formatTrigger,
-      ],
+      ]
     );
 
     return (
@@ -303,5 +303,5 @@ export const StopOrdersTable = memo(
         {...props}
       />
     );
-  },
+  }
 );
