@@ -37,7 +37,7 @@ export function AsyncRenderer<T = object>({
             <Splash>
               {errorMessage
                 ? errorMessage
-                : t(`Something went wrong: {{errorMessage}}`, {
+                : t('Something went wrong: {{errorMessage}}', {
                     errorMessage: error.message,
                   })}
             </Splash>
@@ -89,7 +89,7 @@ export function AsyncRendererInline<T>({
           <p>
             {errorMessage
               ? errorMessage
-              : t(`Something went wrong: {{errorMessage}}`, {
+              : t('Something went wrong: {{errorMessage}}', {
                   errorMessage: error.message,
                 })}
           </p>

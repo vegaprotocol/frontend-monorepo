@@ -34,7 +34,6 @@ const Target = ({
             {t('Target stake {{target}}', {
               target: addDecimalsFormatNumber(target, decimals),
             })}{' '}
-            {}
           </span>
         </div>
       }
@@ -154,7 +153,7 @@ const Level = ({
   return (
     <Tooltip description={tooltipContent}>
       <div
-        className={classNames(`group relative h-[inherit] w-full min-w-[1px]`)}
+        className="group relative h-[inherit] w-full min-w-[1px]"
         style={{
           width: `${width}%`,
         }}
