@@ -2,6 +2,7 @@
   "All {{symbol}} withdrawals are subject to a {{delay}} delay.": "All {{symbol}} withdrawals are subject to a {{delay}} delay.",
   "Amount": "Amount",
   "Asset": "Asset",
+  "Available to withdraw in {{availableTimestamp}}": "Available to withdraw in {{availableTimestamp}}",
   "Balance available": "Balance available",
   "Complete the withdrawal to release your funds": "Complete the withdrawal to release your funds",
   "Complete these {{count}} withdrawals to release your funds": "Complete these {{count}} withdrawals to release your funds",

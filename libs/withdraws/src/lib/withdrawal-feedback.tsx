@@ -84,11 +84,9 @@ export const WithdrawalFeedback = ({
         <ActionButton withdrawal={withdrawal} submitWithdraw={submitWithdraw} />
       ) : (
         <p className="text-danger">
-          {t(
-            `Available to withdraw in ${formatDistanceToNow(
-              availableTimestamp
-            )}`
-          )}
+          {t('Available to withdraw in {{availableTimestamp}}', {
+            availableTimestamp: formatDistanceToNow(availableTimestamp),
+          })}
         </p>
       )}
     </div>
@@ -122,7 +120,7 @@ const ActionButton = ({
     return (
       <>
         <p className="text-danger mb-2">
-          {t(`This app only works on {{chainName}}. Please change chain.`, {
+          {t('This app only works on {{chainName}}. Please change chain.', {
             chainName,
           })}
         </p>
