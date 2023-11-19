@@ -2,7 +2,6 @@ import { DepthChart } from 'pennant';
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { addDecimal, getNumberFormat } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketDepthProvider } from './market-depth-provider';
@@ -16,6 +15,7 @@ import {
 } from './__generated__/MarketDepth';
 import { type DepthChartProps } from 'pennant';
 import { parseLevel, updateLevels } from './depth-chart-utils';
+import { useT } from './use-t';
 
 interface DepthChartManagerProps {
   marketId: string;
@@ -39,6 +39,7 @@ const getMidPrice = (
 type DepthData = Pick<DepthChartProps, 'data' | 'midPrice'>;
 
 export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
+  const t = useT();
   const { theme } = useThemeSwitcher();
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const [depthData, setDepthData] = useState<DepthData | null>(null);
