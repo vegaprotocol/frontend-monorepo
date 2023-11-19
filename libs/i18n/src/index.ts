@@ -1,4 +1,5 @@
 export * from './lib/i18n';
+
 import en_accounts from './locales/en/accounts.json';
 import en_assets from './locales/en/assets.json';
 import en_candles_chart from './locales/en/candles-chart.json';
@@ -12,8 +13,9 @@ import en_governance from './locales/en/governance.json';
 import en_trading from './locales/en/trading.json';
 import en_markets from './locales/en/markets.json';
 import en_web3 from './locales/en/web3.json';
-
 import en_positions from './locales/en/positions.json';
+import en_trades from './locales/en/trading.json';
+
 export const locales = {
   en: {
     accounts: en_accounts,
@@ -30,5 +32,6 @@ export const locales = {
     markets: en_markets,
     web3: en_web3,
     positions: en_positions,
+    trades: en_trades,
   },
 };
