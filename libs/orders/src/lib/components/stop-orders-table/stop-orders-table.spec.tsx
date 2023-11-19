@@ -191,6 +191,7 @@ describe('StopOrdersTable', () => {
       expect(cells[i]).toHaveTextContent(expectedValue)
     );
   });
+
   it('formats status column', async () => {
     await act(async () => {
       render(generateJsx({ rowData }));
@@ -260,14 +261,13 @@ describe('StopOrdersTable', () => {
     await act(async () => {
       render(generateJsx({ rowData, onView }));
     });
-    const dropdownMenuButtons = screen.getByTestId('dropdown-menu');
-    dropdownMenuButtons.click();
-    await user.click(dropdownMenuButtons as HTMLButtonElement);
-    const menuItems = screen.getAllByRole('menuitem');
+    const button = screen.getByTestId('icon-kebab');
+    await user.click(button);
+    const menuItems = await screen.findAllByRole('menuitem');
     expect(menuItems).toHaveLength(2);
     expect(menuItems[0]).toHaveTextContent('Copy order ID');
     expect(menuItems[1]).toHaveTextContent('View order details');
-    menuItems[1].click();
+    await user.click(menuItems[1]);
     expect(onView).toBeCalled();
   });
 });

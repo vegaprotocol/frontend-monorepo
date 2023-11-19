@@ -36,7 +36,6 @@ import {
 } from '@vegaprotocol/markets';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
-import { timeInForceLabel } from '@vegaprotocol/orders';
 import {
   NoWalletWarning,
   REDUCE_ONLY_TOOLTIP,
@@ -479,13 +478,13 @@ const TimeInForce = ({
                   key={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
                   value={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
                 >
-                  {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_IOC)}
+                  {t(Schema.OrderTimeInForce.TIME_IN_FORCE_IOC)}
                 </option>
                 <option
                   key={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
                   value={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
                 >
-                  {timeInForceLabel(Schema.OrderTimeInForce.TIME_IN_FORCE_FOK)}
+                  {t(Schema.OrderTimeInForce.TIME_IN_FORCE_FOK)}
                 </option>
               </Select>
             </FormGroup>
@@ -1181,7 +1180,9 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             testId={'stop-order-warning-limit'}
             message={t(
               'There is a limit of {{maxNumberOfOrders}} active stop orders per market. Orders submitted above the limit will be immediately rejected.',
-              { maxNumberOfOrders: MAX_NUMBER_OF_ACTIVE_STOP_ORDERS.toString() }
+              {
+                maxNumberOfOrders: MAX_NUMBER_OF_ACTIVE_STOP_ORDERS.toString(),
+              }
             )}
           />
         </div>

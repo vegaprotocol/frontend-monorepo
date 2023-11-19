@@ -128,5 +128,11 @@
   "You need to connect your own wallet to start trading on this market": "You need to connect your own wallet to start trading on this market",
   "You need to provide a minimum visible size": "You need to provide a minimum visible size",
   "You need to provide a peak size": "You need to provide a peak size",
-  "You need to provide a size": "You need to provide a size"
+  "You need to provide a size": "You need to provide a size",
+  "TIME_IN_FORCE_FOK": "Fill or Kill (FOK)",
+  "TIME_IN_FORCE_GFA": "Good for Auction (GFA)",
+  "TIME_IN_FORCE_GFN": "Good for Normal (GFN)",
+  "TIME_IN_FORCE_GTC": "Good 'til Cancelled (GTC)",
+  "TIME_IN_FORCE_GTT": "Good 'til Time (GTT)",
+  "TIME_IN_FORCE_IOC": "Immediate or Cancel (IOC)"
 }
