@@ -63,7 +63,7 @@ export const useVerifyWithdrawal = () => {
         if (withdrawal.asset.source.__typename !== 'ERC20') {
           setState({
             status: ApprovalStatus.Error,
-            message: t(`Invalid asset source: {{source}}`, {
+            message: t('Invalid asset source: {{source}}', {
               source: withdrawal.asset.source.__typename,
             }),
           });
