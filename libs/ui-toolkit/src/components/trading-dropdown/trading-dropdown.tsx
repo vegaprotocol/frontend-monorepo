@@ -4,7 +4,7 @@ import { forwardRef, type ComponentProps, type ReactNode } from 'react';
 import { VegaIcon, VegaIconNames } from '../icon';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../use-t';
 
 const itemClass = classNames(
   'relative flex gap-2 items-center rounded-sm p-2 text-sm',
@@ -188,6 +188,7 @@ export const TradingDropdownCopyItem = ({
   value: string;
   text: string;
 }) => {
+  const t = useT();
   const [copied, setCopied] = useCopyTimeout();
 
   return (
