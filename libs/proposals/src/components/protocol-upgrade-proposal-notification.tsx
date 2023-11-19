@@ -9,7 +9,7 @@ import { ProtocolUpgradeCountdownMode } from './protocol-upgrade-countdown';
 import { convertToCountdownString } from '@vegaprotocol/utils';
 import { useState } from 'react';
 import { useT } from '../use-t';
-import { Trans } from 'i18';
+import { Trans } from 'react-i18next';
 
 type ProtocolUpgradeProposalNotificationProps = {
   mode?: ProtocolUpgradeCountdownMode;
