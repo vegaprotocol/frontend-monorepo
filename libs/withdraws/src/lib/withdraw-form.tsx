@@ -87,14 +87,14 @@ const WithdrawDelayNotification = ({
         threshold.isEqualTo(0)
           ? t(
               'All {{symbol}} withdrawals are subject to a {{delay}} delay.',
-              replacements,
+              replacements
             )
           : t(
               'Withdrawals of {{threshold}} {{symbol}} or more will be delayed for {{delay}}.',
               {
                 threshold: formatNumber(threshold, decimals),
                 ...replacements,
-              },
+              }
             ),
         DocsLinks?.WITHDRAWAL_LIMITS ? (
           <ExternalLink className="ml-1" href={DocsLinks.WITHDRAWAL_LIMITS}>
