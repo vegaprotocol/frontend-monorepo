@@ -9,7 +9,7 @@ import {
   formatValue,
   removeDecimal,
   toDecimal,
-  validateAmount,
+  useValidateAmount,
 } from '@vegaprotocol/utils';
 import { type Control, type UseFormWatch } from 'react-hook-form';
 import { useForm, Controller, useController } from 'react-hook-form';
@@ -109,6 +109,7 @@ const Trigger = ({
   decimalPlaces: number;
 }) => {
   const t = useT();
+  const validateAmount = useValidateAmount();
   const triggerType = watch(oco ? 'ocoTriggerType' : 'triggerType');
   const triggerDirection = watch('triggerDirection');
   const isPriceTrigger = triggerType === 'price';
@@ -341,6 +342,7 @@ const Size = ({
   assetUnit?: string;
 }) => {
   const t = useT();
+  const validateAmount = useValidateAmount();
   return (
     <Controller
       name={oco ? 'ocoSize' : 'size'}
@@ -401,6 +403,7 @@ const Price = ({
   oco?: boolean;
 }) => {
   const t = useT();
+  const validateAmount = useValidateAmount();
   if (watch(oco ? 'ocoType' : 'type') === Schema.OrderType.TYPE_MARKET) {
     return null;
   }

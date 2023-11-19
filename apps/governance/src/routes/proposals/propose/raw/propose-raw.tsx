@@ -14,7 +14,7 @@ import {
   RoundedWrapper,
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
-import { validateJson } from '@vegaprotocol/utils';
+import { useValidateJson } from '@vegaprotocol/utils';
 import {
   NetworkParams,
   useNetworkParams,
@@ -31,6 +31,7 @@ export interface RawProposalFormFields {
 }
 
 export const ProposeRaw = () => {
+  const validateJson = useValidateJson();
   const {
     params,
     loading: networkParamsLoading,

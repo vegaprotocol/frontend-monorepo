@@ -1,0 +1,15 @@
+{
+  "Expired on {{date}}": "Expired on {{date}}",
+  "Not time-based": "Not time-based",
+  "Expired": "Expired",
+  "Mark": "Mark",
+  "Required": "Required",
+  "Invalid Ethereum address": "Invalid Ethereum address",
+  "Invalid Vega key": "Invalid Vega key",
+  "Value is below minimum": "Value is below minimum",
+  "Value is above maximum": "Value is above maximum",
+  "Must be valid JSON": "Must be valid JSON",
+  "{{field}} must be a multiple of {{step}} for this market": "{{field}} must be a multiple of {{step}} for this market",
+  "{{field}} must be whole numbers for this market": "{{field}} must be whole numbers for this market",
+  "{{field}} accepts up to {{decimals}} decimal places": "{{field}} accepts up to {{decimals}} decimal places"
+}

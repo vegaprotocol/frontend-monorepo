@@ -1,11 +1,11 @@
 import type { Asset, AssetFieldsFragment } from '@vegaprotocol/assets';
 import { AssetOption } from '@vegaprotocol/assets';
 import {
-  ethereumAddress,
-  required,
-  vegaPublicKey,
-  minSafe,
-  maxSafe,
+  useEthereumAddress,
+  useRequired,
+  useVegaPublicKey,
+  useMinSafe,
+  useMaxSafe,
   addDecimal,
   isAssetTypeERC20,
   formatNumber,
@@ -85,6 +85,11 @@ export const DepositForm = ({
   isFaucetable,
 }: DepositFormProps) => {
   const t = useT();
+  const ethereumAddress = useEthereumAddress();
+  const required = useRequired();
+  const vegaPublicKey = useVegaPublicKey();
+  const minSafe = useMinSafe();
+  const maxSafe = useMaxSafe();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const openDialog = useWeb3ConnectStore((store) => store.open);
   const { isActive, account } = useWeb3React();
@@ -459,7 +464,7 @@ const UseButton = (props: UseButtonProps) => {
     <button
       {...props}
       type="button"
-      className="absolute top-0 right-0 ml-auto text-sm underline"
+      className="absolute right-0 top-0 ml-auto text-sm underline"
     />
   );
 };
@@ -519,7 +524,7 @@ export const AddressField = ({
             setIsInput((curr) => !curr);
             onChange();
           }}
-          className="absolute top-0 right-0 ml-auto text-sm underline"
+          className="absolute right-0 top-0 ml-auto text-sm underline"
           data-testid="enter-pubkey-manually"
         >
           {isInput ? t('Select from wallet') : t('Enter manually')}

@@ -3,7 +3,7 @@ import {
   getDateTimeFormat,
   addDecimal,
   addDecimalsFormatNumber,
-  validateAmount,
+  useValidateAmount,
 } from '@vegaprotocol/utils';
 import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
@@ -39,6 +39,7 @@ export const OrderEditDialog = ({
   onSubmit,
 }: OrderEditDialogProps) => {
   const t = useT();
+  const validateAmount = useValidateAmount();
   const headerClassName = 'text-xs font-bold text-black dark:text-white';
   const {
     register,

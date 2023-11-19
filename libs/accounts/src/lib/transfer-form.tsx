@@ -1,8 +1,8 @@
 import sortBy from 'lodash/sortBy';
 import {
-  maxSafe,
-  required,
-  vegaPublicKey,
+  useMaxSafe,
+  useRequired,
+  useVegaPublicKey,
   addDecimal,
   formatNumber,
   addDecimalsFormatNumber,
@@ -67,6 +67,9 @@ export const TransferForm = ({
   minQuantumMultiple,
 }: TransferFormProps) => {
   const t = useT();
+  const maxSafe = useMaxSafe();
+  const required = useRequired();
+  const vegaPublicKey = useVegaPublicKey();
   const {
     control,
     register,
@@ -415,7 +418,7 @@ export const TransferForm = ({
         {accountBalance && (
           <button
             type="button"
-            className="absolute top-0 right-0 ml-auto text-xs underline"
+            className="absolute right-0 top-0 ml-auto text-xs underline"
             onClick={() =>
               setValue('amount', parseFloat(accountBalance).toString(), {
                 shouldValidate: true,
@@ -491,7 +494,7 @@ export const TransferFee = ({
   const totalValue = new BigNumber(transferAmount).plus(fee).toString();
 
   return (
-    <div className="flex flex-col mb-4 text-xs gap-2">
+    <div className="mb-4 flex flex-col gap-2 text-xs">
       <div className="flex flex-wrap items-center justify-between gap-1">
         <Tooltip
           description={t(
@@ -560,7 +563,7 @@ export const AddressField = ({
         <button
           type="button"
           onClick={onChange}
-          className="absolute top-0 right-0 ml-auto text-xs underline"
+          className="absolute right-0 top-0 ml-auto text-xs underline"
         >
           {isInput ? t('Select from wallet') : t('Enter manually')}
         </button>

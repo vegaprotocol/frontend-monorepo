@@ -3,7 +3,7 @@ import {
   getDateTimeFormat,
   isNumeric,
   toBigNum,
-  formatTrigger,
+  useFormatTrigger,
 } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -52,6 +52,7 @@ export type StopOrdersTableProps = TypedDataAgGrid<StopOrder> & {
 export const StopOrdersTable = memo(
   ({ onCancel, onMarketClick, onView, ...props }: StopOrdersTableProps) => {
     const t = useT();
+    const formatTrigger = useFormatTrigger();
     const showAllActions = !props.isReadOnly;
     const columnDefs: ColDef[] = useMemo(
       () => [
@@ -282,7 +283,15 @@ export const StopOrdersTable = memo(
           },
         },
       ],
-      [onCancel, onMarketClick, onView, props.isReadOnly, showAllActions, t]
+      [
+        onCancel,
+        onMarketClick,
+        onView,
+        props.isReadOnly,
+        showAllActions,
+        t,
+        formatTrigger,
+      ]
     );
 
     return (

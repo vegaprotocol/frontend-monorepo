@@ -40,7 +40,7 @@ import {
   formatNumber,
   toBigNum,
   truncateByChars,
-  formatTrigger,
+  useFormatTrigger,
   MAXGOINT64,
 } from '@vegaprotocol/utils';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
@@ -260,6 +260,7 @@ const SubmitStopOrderSetup = ({
   triggerDirection: Schema.StopOrderTriggerDirection;
   market: Market;
 }) => {
+  const formatTrigger = useFormatTrigger();
   if (!market || !stopOrderSetup) return null;
 
   const { price, size, side } = stopOrderSetup.orderSubmission;
@@ -446,6 +447,7 @@ const CancelOrderDetails = ({
 
 const CancelStopOrderDetails = ({ stopOrderId }: { stopOrderId: string }) => {
   const t = useT();
+  const formatTrigger = useFormatTrigger();
   const { data: orderById } = useStopOrderByIdQuery({
     variables: { stopOrderId },
   });
@@ -732,7 +734,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
         <p>{t('Your funds have been unlocked for withdrawal.')}</p>
         {tx.txHash && (
           <ExternalLink
-            className="block mb-[5px] break-all"
+            className="mb-[5px] block break-all"
             href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
             rel="noreferrer"
           >

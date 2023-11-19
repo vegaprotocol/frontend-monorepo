@@ -1,40 +1,71 @@
 import BigNumber from 'bignumber.js';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../use-t';
+import { useCallback } from 'react';
 
-export const required = (value: string) => {
-  if (value === null || value === undefined || value === '') {
-    return t('Required');
-  }
-  return true;
+export const useRequired = () => {
+  const t = useT();
+  return useCallback(
+    (value: string) => {
+      if (value === null || value === undefined || value === '') {
+        return t('Required');
+      }
+      return true;
+    },
+    [t]
+  );
 };
 
-export const ethereumAddress = (value: string) => {
-  if (!/^0x[0-9a-fA-F]{40}$/i.test(value)) {
-    return t('Invalid Ethereum address');
-  }
-  return true;
+export const useEthereumAddress = () => {
+  const t = useT();
+  return useCallback(
+    (value: string) => {
+      if (!/^0x[0-9a-fA-F]{40}$/i.test(value)) {
+        return t('Invalid Ethereum address');
+      }
+      return true;
+    },
+    [t]
+  );
 };
 
 export const VEGA_ID_REGEX = /^[A-Fa-f0-9]{64}$/i;
-export const vegaPublicKey = (value: string) => {
-  if (!VEGA_ID_REGEX.test(value)) {
-    return t('Invalid Vega key');
-  }
-  return true;
+export const useVegaPublicKey = () => {
+  const t = useT();
+  return useCallback(
+    (value: string) => {
+      if (!VEGA_ID_REGEX.test(value)) {
+        return t('Invalid Vega key');
+      }
+      return true;
+    },
+    [t]
+  );
 };
 
-export const minSafe = (min: BigNumber) => (value: string) => {
-  if (new BigNumber(value).isLessThan(min)) {
-    return t('Value is below minimum');
-  }
-  return true;
+export const useMinSafe = () => {
+  const t = useT();
+  return useCallback(
+    (min: BigNumber) => (value: string) => {
+      if (new BigNumber(value).isLessThan(min)) {
+        return t('Value is below minimum');
+      }
+      return true;
+    },
+    [t]
+  );
 };
 
-export const maxSafe = (max: BigNumber) => (value: string) => {
-  if (new BigNumber(value).isGreaterThan(max)) {
-    return t('Value is above maximum');
-  }
-  return true;
+export const useMaxSafe = () => {
+  const t = useT();
+  return useCallback(
+    (max: BigNumber) => (value: string) => {
+      if (new BigNumber(value).isGreaterThan(max)) {
+        return t('Value is above maximum');
+      }
+      return true;
+    },
+    [t]
+  );
 };
 
 export const suitableForSyntaxHighlighter = (str: string) => {
@@ -46,11 +77,17 @@ export const suitableForSyntaxHighlighter = (str: string) => {
   }
 };
 
-export const validateJson = (value: string) => {
-  try {
-    JSON.parse(value);
-    return true;
-  } catch (e) {
-    return t('Must be valid JSON');
-  }
+export const useValidateJson = () => {
+  const t = useT();
+  return useCallback(
+    (value: string) => {
+      try {
+        JSON.parse(value);
+        return true;
+      } catch (e) {
+        return t('Must be valid JSON');
+      }
+    },
+    [t]
+  );
 };
