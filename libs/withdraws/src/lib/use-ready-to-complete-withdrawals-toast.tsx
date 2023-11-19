@@ -269,7 +269,7 @@ const SingleReadyToWithdrawToastContent = ({
         <strong>
           {t('Withdraw {{amount}} {{symbol}}', {
             amount,
-            assetSymbol: withdrawal.asset.symbol,
+            symbol: withdrawal.asset.symbol,
           })}
         </strong>
       </Panel>
