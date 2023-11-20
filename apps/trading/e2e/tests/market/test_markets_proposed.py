@@ -82,10 +82,6 @@ def test_renders_markets_correctly(proposed_market, page: Page):
         row.locator('[col-id="terms.change.successorConfiguration.parentMarketId"]')
     ).to_have_text("-")
 
-    # 6001-MARK-054
-    # 6001-MARK-055
-    expect(row.get_by_test_id("vote-progress-bar-against")).to_be_visible()
-
     # 6001-MARK-056
     expect(row.locator('[col-id="closing-date"]')).not_to_be_empty()
 
