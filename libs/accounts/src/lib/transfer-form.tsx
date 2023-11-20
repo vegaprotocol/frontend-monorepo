@@ -213,12 +213,7 @@ export const TransferForm = ({
                 <AssetOption
                   key={a.key}
                   asset={a}
-                  balance={
-                    <Balance
-                      balance={formatNumber(a.balance, a.decimals)}
-                      symbol={a.symbol}
-                    />
-                  }
+                  balance={<Balance balance={a.balance} symbol={a.symbol} />}
                 />
               ))}
             </TradingRichSelect>
