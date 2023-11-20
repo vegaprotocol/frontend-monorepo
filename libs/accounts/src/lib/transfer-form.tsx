@@ -5,7 +5,6 @@ import {
   vegaPublicKey,
   addDecimal,
   formatNumber,
-  addDecimalsFormatNumber,
   toBigNum,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -286,8 +285,8 @@ export const TransferForm = ({
                   return (
                     <option value={id} key={id}>
                       {AccountTypeMapping[a.type]} (
-                      {addDecimalsFormatNumber(a.balance, a.asset.decimals)}{' '}
-                      {a.asset.symbol})
+                      {addDecimal(a.balance, a.asset.decimals)} {a.asset.symbol}
+                      )
                     </option>
                   );
                 })}
