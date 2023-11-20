@@ -413,7 +413,7 @@ export const TransferForm = ({
             type="button"
             className="absolute top-0 right-0 ml-auto text-xs underline"
             onClick={() =>
-              setValue('amount', parseFloat(accountBalance).toString(), {
+              setValue('amount', accountBalance, {
                 shouldValidate: true,
               })
             }
