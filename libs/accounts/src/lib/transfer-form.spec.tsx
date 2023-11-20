@@ -182,7 +182,7 @@ describe('TransferForm', () => {
 
     // Test use max button
     await userEvent.click(screen.getByRole('button', { name: 'Use max' }));
-    expect(amountInput).toHaveValue('1000');
+    expect(amountInput).toHaveValue('1000.00');
 
     // Test amount validation
     await userEvent.clear(amountInput);
@@ -267,7 +267,7 @@ describe('TransferForm', () => {
 
     // Test use max button
     await userEvent.click(screen.getByRole('button', { name: 'Use max' }));
-    expect(amountInput).toHaveValue('100');
+    expect(amountInput).toHaveValue('100.00');
 
     // If transfering from a vested account 'include fees' checkbox should
     // be disabled and fees should be 0
