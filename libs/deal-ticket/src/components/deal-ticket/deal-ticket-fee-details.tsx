@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { t } from '@vegaprotocol/i18n';
-import { getAsset, getProductType, getQuoteName } from '@vegaprotocol/markets';
+import { getAsset, getQuoteName } from '@vegaprotocol/markets';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
@@ -151,6 +151,7 @@ export const DealTicketMarginDetails = ({
   const { decimals: assetDecimals, quantum } = asset;
   let marginRequiredBestCase: string | undefined = undefined;
   let marginRequiredWorstCase: string | undefined = undefined;
+
   if (marginEstimate) {
     if (currentMargins) {
       marginRequiredBestCase = (
