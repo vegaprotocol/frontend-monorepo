@@ -32,12 +32,12 @@ def test_share_usage_data(page: Page):
 
 # Define a mapping of icon selectors to toast selectors
 ICON_TO_TOAST = {
-    'aria-label="arrow-top-left icon"': 'class="group absolute z-20 top-0 left-0 max-w-full max-h-full overflow-x-hidden overflow-y-auto p-4"',
-    'aria-label="arrow-up icon"': 'class="group absolute z-20 top-0 left-[50%] translate-x-[-50%] max-w-full max-h-full overflow-x-hidden overflow-y-auto p-4"',
-    'aria-label="arrow-top-right icon"': 'class="group absolute z-20 top-0 right-0 max-w-full max-h-full overflow-x-hidden overflow-y-auto p-4"',
-    'aria-label="arrow-bottom-left icon"': 'class="group absolute z-20 bottom-0 left-0 max-w-full max-h-full overflow-x-hidden overflow-y-auto p-4"',
-    'aria-label="arrow-down icon"': 'class="group absolute z-20 bottom-0 left-[50%] translate-x-[-50%] max-w-full max-h-full overflow-x-hidden overflow-y-auto p-4"',
-    'aria-label="arrow-bottom-right icon"': 'class="group absolute z-20 bottom-0 right-0 max-w-full max-h-full overflow-x-hidden overflow-y-auto p-4"',
+    'aria-label="arrow-top-left icon"': 'class="relative flex-1 overflow-auto p-4 pr-[40px] [&>p]:mb-[2.5px]"',
+    'aria-label="arrow-up icon"': 'class="relative flex-1 overflow-auto p-4 pr-[40px] [&>p]:mb-[2.5px]"',
+    'aria-label="arrow-top-right icon"': 'class="relative flex-1 overflow-auto p-4 pr-[40px] [&>p]:mb-[2.5px]"',
+    'aria-label="arrow-bottom-left icon"': 'class="relative flex-1 overflow-auto p-4 pr-[40px] [&>p]:mb-[2.5px]"',
+    'aria-label="arrow-down icon"': 'class="relative flex-1 overflow-auto p-4 pr-[40px] [&>p]:mb-[2.5px]"',
+    'aria-label="arrow-bottom-right icon"': 'class="relative flex-1 overflow-auto p-4 pr-[40px] [&>p]:mb-[2.5px]"',
 }
 
 

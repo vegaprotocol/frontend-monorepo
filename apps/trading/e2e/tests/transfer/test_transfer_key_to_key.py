@@ -42,7 +42,7 @@ def test_transfer_submit(continuous_market, vega: VegaService, page: Page):
     vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    expected_confirmation_text = re.compile(r"Transfer completeYour transaction has been confirmed View in block explorerTransferTo .{6}….{6}1\.00 tDAI")
+    expected_confirmation_text = re.compile(r"Transfer completeYour transaction has been confirmedView in block explorerTransferTo .{6}….{6}1\.00 tDAI")
     actual_confirmation_text = page.get_by_test_id('toast-content').text_content()
     assert expected_confirmation_text.search(actual_confirmation_text), f"Expected pattern not found in {actual_confirmation_text}"
     
@@ -129,6 +129,6 @@ def test_transfer_vesting_below_minimum(continuous_market, vega: VegaService, pa
     vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    expected_confirmation_text = re.compile(r"Transfer completeYour transaction has been confirmed View in block explorerTransferTo .{6}….{6}0\.00001 tDAI")
+    expected_confirmation_text = re.compile(r"Transfer completeYour transaction has been confirmedView in block explorerTransferTo .{6}….{6}0\.00001 tDAI")
     actual_confirmation_text = page.get_by_test_id('toast-content').text_content()
     assert expected_confirmation_text.search(actual_confirmation_text), f"Expected pattern not found in {actual_confirmation_text}"
