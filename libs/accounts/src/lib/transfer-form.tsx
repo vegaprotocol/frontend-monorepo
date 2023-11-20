@@ -5,7 +5,6 @@ import {
   vegaPublicKey,
   addDecimal,
   formatNumber,
-  addDecimalsFormatNumber,
   toBigNum,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
@@ -214,12 +213,7 @@ export const TransferForm = ({
                 <AssetOption
                   key={a.key}
                   asset={a}
-                  balance={
-                    <Balance
-                      balance={formatNumber(a.balance, a.decimals)}
-                      symbol={a.symbol}
-                    />
-                  }
+                  balance={<Balance balance={a.balance} symbol={a.symbol} />}
                 />
               ))}
             </TradingRichSelect>
@@ -286,8 +280,8 @@ export const TransferForm = ({
                   return (
                     <option value={id} key={id}>
                       {AccountTypeMapping[a.type]} (
-                      {addDecimalsFormatNumber(a.balance, a.asset.decimals)}{' '}
-                      {a.asset.symbol})
+                      {addDecimal(a.balance, a.asset.decimals)} {a.asset.symbol}
+                      )
                     </option>
                   );
                 })}
@@ -413,7 +407,7 @@ export const TransferForm = ({
             type="button"
             className="absolute top-0 right-0 ml-auto text-xs underline"
             onClick={() =>
-              setValue('amount', parseFloat(accountBalance).toString(), {
+              setValue('amount', accountBalance, {
                 shouldValidate: true,
               })
             }

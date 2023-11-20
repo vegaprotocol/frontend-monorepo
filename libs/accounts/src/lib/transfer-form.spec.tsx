@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import BigNumber from 'bignumber.js';
 import {
@@ -7,7 +13,7 @@ import {
   TransferForm,
   type TransferFormProps,
 } from './transfer-form';
-import { AccountType } from '@vegaprotocol/types';
+import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 import { removeDecimal } from '@vegaprotocol/utils';
 
 describe('TransferForm', () => {
@@ -39,8 +45,7 @@ describe('TransferForm', () => {
   };
 
   const amount = '100';
-  const pubKey =
-    '70d14a321e02e71992fd115563df765000ccc4775cbe71a0e2f9ff5a3b9dc680';
+  const pubKey = '1'.repeat(64);
   const asset = {
     id: 'eur',
     symbol: '€',
@@ -50,10 +55,7 @@ describe('TransferForm', () => {
   };
   const props = {
     pubKey,
-    pubKeys: [
-      pubKey,
-      'a4b6e3de5d7ef4e31ae1b090be49d1a2ef7bcefff60cccf7658a0d4922651cce',
-    ],
+    pubKeys: [pubKey, '2'.repeat(64)],
     feeFactor: '0.001',
     submitTransfer: jest.fn(),
     accounts: [
@@ -182,7 +184,7 @@ describe('TransferForm', () => {
 
     // Test use max button
     await userEvent.click(screen.getByRole('button', { name: 'Use max' }));
-    expect(amountInput).toHaveValue('1000');
+    expect(amountInput).toHaveValue('1000.00');
 
     // Test amount validation
     await userEvent.clear(amountInput);
@@ -267,7 +269,7 @@ describe('TransferForm', () => {
 
     // Test use max button
     await userEvent.click(screen.getByRole('button', { name: 'Use max' }));
-    expect(amountInput).toHaveValue('100');
+    expect(amountInput).toHaveValue('100.00');
 
     // If transfering from a vested account 'include fees' checkbox should
     // be disabled and fees should be 0
@@ -291,6 +293,88 @@ describe('TransferForm', () => {
         to: props.pubKey,
         asset: asset.id,
         amount: removeDecimal(amount, asset.decimals),
+        oneOff: {},
+      });
+    });
+  });
+
+  it('handles lots of decimal places', async () => {
+    const balance = '904195168829277777';
+    const expectedBalance = '0.904195168829277777';
+
+    const longDecimalAsset = {
+      id: 'assetId',
+      symbol: 'VEGA',
+      name: 'VEGA',
+      decimals: 18,
+      quantum: '1',
+    };
+
+    const account = {
+      type: AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
+      asset: longDecimalAsset,
+      balance,
+    };
+
+    const mockSubmit = jest.fn();
+
+    renderComponent({
+      ...props,
+      accounts: [account],
+      submitTransfer: mockSubmit,
+      minQuantumMultiple: '100000',
+    });
+
+    // Select a pubkey
+    await userEvent.selectOptions(
+      screen.getByLabelText('To Vega key'),
+      props.pubKeys[1] // Use not current pubkey so we can check it switches to current pubkey later
+    );
+
+    // Select asset
+    await selectAsset(longDecimalAsset);
+
+    const accountSelect = screen.getByLabelText('From account');
+    const option = within(accountSelect)
+      .getAllByRole('option')
+      .find(
+        (o) => o.getAttribute('value') === `${account.type}-${account.asset.id}`
+      );
+    // plus one for disabled 'please select' option
+
+    expect(option).toHaveTextContent(
+      `${AccountTypeMapping[account.type]} (${expectedBalance} ${
+        account.asset.symbol
+      })`
+    );
+
+    await userEvent.selectOptions(
+      accountSelect,
+      `${AccountType.ACCOUNT_TYPE_VESTED_REWARDS}-${longDecimalAsset.id}`
+    );
+
+    expect(accountSelect).toHaveValue(
+      `${AccountType.ACCOUNT_TYPE_VESTED_REWARDS}-${longDecimalAsset.id}`
+    );
+
+    // Check switch back to connected key
+    const amountInput = screen.getByLabelText('Amount');
+
+    // Test use max button
+    await userEvent.click(screen.getByRole('button', { name: 'Use max' }));
+    expect(amountInput).toHaveValue(expectedBalance);
+
+    await submit();
+
+    await waitFor(() => {
+      // 1003-TRAN-023
+      expect(mockSubmit).toHaveBeenCalledTimes(1);
+      expect(mockSubmit).toHaveBeenCalledWith({
+        fromAccountType: AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
+        toAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
+        to: props.pubKey,
+        asset: longDecimalAsset.id,
+        amount: balance,
         oneOff: {},
       });
     });
