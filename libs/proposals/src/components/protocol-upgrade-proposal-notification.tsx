@@ -4,11 +4,12 @@ import {
   NotificationBanner,
 } from '@vegaprotocol/ui-toolkit';
 import { useNextProtocolUpgradeProposal, useTimeToUpgrade } from '../lib';
-import { t } from '@vegaprotocol/i18n';
 import { useProtocolUpgradeProposalLink } from '@vegaprotocol/environment';
 import { ProtocolUpgradeCountdownMode } from './protocol-upgrade-countdown';
 import { convertToCountdownString } from '@vegaprotocol/utils';
 import { useState } from 'react';
+import { useT } from '../use-t';
+import { Trans } from 'react-i18next';
 
 type ProtocolUpgradeProposalNotificationProps = {
   mode?: ProtocolUpgradeCountdownMode;
@@ -16,6 +17,7 @@ type ProtocolUpgradeProposalNotificationProps = {
 export const ProtocolUpgradeProposalNotification = ({
   mode = ProtocolUpgradeCountdownMode.IN_BLOCKS,
 }: ProtocolUpgradeProposalNotificationProps) => {
+  const t = useT();
   const [visible, setVisible] = useState(true);
   const { data, lastBlockHeight } = useNextProtocolUpgradeProposal();
   const detailsLink = useProtocolUpgradeProposalLink();
@@ -40,10 +42,13 @@ export const ProtocolUpgradeProposalNotification = ({
   switch (mode) {
     case ProtocolUpgradeCountdownMode.IN_BLOCKS:
       countdown = (
-        <>
-          <span className="text-vega-orange-500">{blocksLeft}</span>{' '}
-          {t('blocks')}
-        </>
+        <Trans
+          defaults="<0>{{count}}</0> blocks"
+          components={[<span className="text-vega-orange-500">count</span>]}
+          values={{
+            count: blocksLeft,
+          }}
+        />
       );
       break;
     case ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING:
@@ -72,10 +77,13 @@ export const ProtocolUpgradeProposalNotification = ({
       }}
     >
       <div className="uppercase ">
-        {t('The network will upgrade to %s in ', [data.vegaReleaseTag])}
-        {countdown}
+        {t('The network will upgrade to {{vegaReleaseTag}} in {{countdown}}', {
+          vegaReleaseTag: data.vegaReleaseTag,
+          countdown,
+        })}
       </div>
       <div>
+        <Trans />
         {t(
           'Trading activity will be interrupted, manage your risk appropriately.'
         )}{' '}

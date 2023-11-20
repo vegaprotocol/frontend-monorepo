@@ -1,11 +1,11 @@
 import type { FC } from 'react';
 import { AgGrid } from '@vegaprotocol/datagrid';
-import { t } from '@vegaprotocol/i18n';
 import * as Types from '@vegaprotocol/types';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { useProposalsListQuery } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { useColumnDefs } from './use-column-defs';
+import { useT } from '../../use-t';
 
 export const getNewMarketProposals = (data: ProposalListFieldsFragment[]) =>
   data.filter((proposal) =>
@@ -30,6 +30,7 @@ interface ProposalListProps {
 }
 
 export const ProposalsList = ({ cellRenderers }: ProposalListProps) => {
+  const t = useT();
   const { data } = useProposalsListQuery({
     variables: {
       proposalType: Types.ProposalType.TYPE_NEW_MARKET,
