@@ -1,38 +1,57 @@
 import LiquidityTable from './liquidity-table';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import * as Schema from '@vegaprotocol/types';
 import type { LiquidityProvisionData } from './liquidity-data-provider';
 import userEvent from '@testing-library/user-event';
 
-const singleRow = {
-  party: 'a3f762f0a6e998e1d0c6e73017a13ec8a22386c30f7f64a1bdca47330bc592dd',
+const partyId1 = 'party1';
+const partyId2 = 'party2';
+
+const singleRow: LiquidityProvisionData = {
+  id: 'lp-single',
+  commitmentMinTimeFraction: '100',
+  performanceHysteresisEpochs: 4,
+  priceRange: '1',
+  slaCompetitionFactor: '1',
+  partyId: partyId1,
+  party: {
+    id: partyId1,
+  },
   createdAt: '2022-08-19T17:18:36.257028Z',
   updatedAt: '2022-08-19T17:18:36.257028Z',
-  commitmentAmount: '56298653179',
+  commitmentAmount: '100',
   fee: '0.001',
   status: Schema.LiquidityProvisionStatus.STATUS_ACTIVE,
   feeShare: {
     equityLikeShare: '0.5',
     averageEntryValuation: '0.5',
+    virtualStake: '0.5',
+    averageScore: '0.5',
   },
-  supplied: '67895',
-  obligation: '56785',
-} as unknown as LiquidityProvisionData;
+};
 
-const multiRow = {
-  party: 'a3f762f0a6e998e1d0c6e73017a13ec8a22386c30f7f64a1bdca47330bc592de',
+const multiRow: LiquidityProvisionData = {
+  id: 'lp-multi',
+  commitmentMinTimeFraction: '100',
+  performanceHysteresisEpochs: 4,
+  priceRange: '1',
+  slaCompetitionFactor: '1',
+  partyId: partyId2,
+  party: {
+    id: partyId2,
+  },
   createdAt: '2022-08-19T17:18:37.257028Z',
   updatedAt: '2022-08-19T17:18:37.257028Z',
-  commitmentAmount: '56298653180',
+  commitmentAmount: '200',
   fee: '0.002',
-  status: Schema.LiquidityProvisionStatus.STATUS_PENDING,
+  status: Schema.LiquidityProvisionStatus.STATUS_ACTIVE,
   feeShare: {
     equityLikeShare: '0.5',
     averageEntryValuation: '0.5',
+    virtualStake: '0.5',
+    averageScore: '0.5',
   },
-  supplied: '67896',
-  obligation: '56786',
-} as unknown as LiquidityProvisionData;
+};
 
 const singleRowData = [singleRow];
 const multiRowData = [singleRow, multiRow];
@@ -98,16 +117,18 @@ describe('LiquidityTable', () => {
       );
     });
     const headers = await screen.findAllByRole('columnheader');
-    await userEvent.click(headers[7]);
 
-    const rows = screen.getAllByRole('row');
+    const commitmentHeader = headers.find(
+      (h) => h.getAttribute('col-id') === 'commitmentAmount'
+    );
+
+    if (!commitmentHeader) {
+      throw new Error('No commitment header found');
+    }
+
     // 5002-LIQP-003
-    // TODO update test to correctly sort.
-    expect(rows[2]).toHaveTextContent(
-      '-Active56,298,653,179.0016,889,595,953.700.10%-50.00%-------8/19/2022, 6:18:36 PM8/19/2022, 6:18:36 PM'
-    );
-    expect(rows[3]).toHaveTextContent(
-      '-Pending56,298,653,180.0016,889,595,954.000.20%-50.00%-------8/19/2022, 6:18:37 PM8/19/2022, 6:18:37 PM'
-    );
+    expect(commitmentHeader).toHaveAttribute('aria-sort', 'none');
+    await userEvent.click(within(commitmentHeader).getByText(/commitment/i));
+    expect(commitmentHeader).toHaveAttribute('aria-sort', 'ascending');
   });
 });
