@@ -1,7 +1,6 @@
 import groupBy from 'lodash/groupBy';
 import type { Account } from '@vegaprotocol/accounts';
 import { useAccounts } from '@vegaprotocol/accounts';
-import { t } from '@vegaprotocol/i18n';
 import {
   NetworkParams,
   useNetworkParams,
@@ -31,8 +30,10 @@ import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
 import { ViewType, useSidebar } from '../sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { RewardsHistoryContainer } from './rewards-history';
+import { useT } from '../../lib/use-t';
 
 export const RewardsContainer = () => {
+  const t = useT();
   const { pubKey } = useVegaWallet();
   const { params, loading: paramsLoading } = useNetworkParams([
     NetworkParams.reward_asset,
@@ -121,7 +122,9 @@ export const RewardsContainer = () => {
         return (
           <Card
             key={assetId}
-            title={t('%s Reward pot', asset.symbol)}
+            title={t('{{assetSymbol}} Reward pot', {
+              assetSymbol: asset.symbol,
+            })}
             className="lg:col-span-3 xl:col-span-2"
             loading={loading}
           >
@@ -167,6 +170,7 @@ export const RewardPot = ({
   assetId,
   vestingBalancesSummary,
 }: RewardPotProps) => {
+  const t = useT();
   // TODO: Opening the sidebar for the first time works, but then clicking on redeem
   // for a different asset does not update the form
   const currentRouteId = useGetCurrentRouteId();
@@ -242,7 +246,9 @@ export const RewardPot = ({
             <CardTable>
               <tr>
                 <CardTableTH className="flex items-center gap-1">
-                  {t(`Locked ${rewardAsset.symbol}`)}
+                  {t('Locked {{assetSymbol}}', {
+                    assetSymbol: rewardAsset.symbol,
+                  })}
                   <VegaIcon name={VegaIconNames.LOCK} size={12} />
                 </CardTableTH>
                 <CardTableTD>
@@ -254,7 +260,11 @@ export const RewardPot = ({
                 </CardTableTD>
               </tr>
               <tr>
-                <CardTableTH>{t(`Vesting ${rewardAsset.symbol}`)}</CardTableTH>
+                <CardTableTH>
+                  {t('Vesting {{assetSymbol}}', {
+                    assetSymbol: rewardAsset.symbol,
+                  })}
+                </CardTableTH>
                 <CardTableTD>
                   {addDecimalsFormatNumberQuantum(
                     totalVesting.toString(),
@@ -309,6 +319,7 @@ export const Vesting = ({
   baseRate: string;
   multiplier?: string;
 }) => {
+  const t = useT();
   const rate = new BigNumber(baseRate).times(multiplier);
   const rateFormatted = formatPercentage(Number(rate));
   const baseRateFormatted = formatPercentage(Number(baseRate));
@@ -341,6 +352,7 @@ export const Multipliers = ({
   streakMultiplier?: string;
   hoarderMultiplier?: string;
 }) => {
+  const t = useT();
   const combinedMultiplier = new BigNumber(streakMultiplier).times(
     hoarderMultiplier
   );

@@ -723,7 +723,7 @@ export const PriceMonitoringBoundsInfoPanel = ({
           })}
         </p>
         <p className="col-span-1 text-right">
-          {t('Within %s seconds', {
+          {t('Within {{horizonSecs}} seconds', {
             horizonSecs: formatNumber(trigger.horizonSecs),
           })}
         </p>

@@ -16,12 +16,12 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
 import {
   useRewardsHistoryQuery,
   type RewardsHistoryQuery,
 } from './__generated__/Rewards';
 import { useRewardsRowData } from './use-reward-row-data';
+import { useT } from '../../lib/use-t';
 
 export const RewardsHistoryContainer = ({
   epoch,
@@ -140,6 +140,7 @@ export const RewardHistoryTable = ({
   onEpochChange: (epochVariables: { from: number; to: number }) => void;
   loading: boolean;
 }) => {
+  const t = useT();
   const [isParty, setIsParty] = useState(false);
 
   const rowData = useRewardsRowData({
