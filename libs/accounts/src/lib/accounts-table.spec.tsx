@@ -1,10 +1,23 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import * as Types from '@vegaprotocol/types';
 import type { AccountFields } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
 import { AccountTable } from './accounts-table';
 import userEvent from '@testing-library/user-event';
-
+const asset1 = {
+  __typename: 'Asset',
+  id: 'asset-1',
+  symbol: 'tBTC',
+  decimals: 5,
+  name: 'T BTC',
+};
+const asset2 = {
+  __typename: 'Asset',
+  id: 'asset-2',
+  symbol: 'aBTC',
+  decimals: 5,
+  name: 'A BTC',
+};
 const singleRow = {
   __typename: 'AccountBalance',
   type: Types.AccountType.ACCOUNT_TYPE_MARGIN,
@@ -13,12 +26,7 @@ const singleRow = {
     __typename: 'Market',
     id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
   },
-  asset: {
-    __typename: 'Asset',
-    id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
-    symbol: 'tBTC',
-    decimals: 5,
-  },
+  asset: asset1,
   available: '125600000',
   used: '125600000',
   total: '251200000',
@@ -33,12 +41,7 @@ const secondRow = {
     __typename: 'Market',
     id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
   },
-  asset: {
-    __typename: 'Asset',
-    id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
-    symbol: 'aBTC',
-    decimals: 5,
-  },
+  asset: asset2,
   available: '125600001',
   used: '125600001',
   total: '251200002',
@@ -134,7 +137,7 @@ describe('AccountsTable', () => {
 
   it('should sort assets', async () => {
     // 7001-COLL-010
-    const { container } = render(
+    render(
       <AccountTable
         rowData={multiRowData}
         onClickAsset={() => null}
@@ -142,13 +145,13 @@ describe('AccountsTable', () => {
       />
     );
 
-    const headerCell = screen.getByText('Asset');
-    await userEvent.click(headerCell);
-    const rows = container.querySelectorAll(
-      '.ag-center-cols-container .ag-row'
-    );
-    expect(rows[0].textContent).toContain('aBTC');
-    expect(rows[1].textContent).toContain('tBTC');
+    const headerCell = screen
+      .getAllByRole('columnheader')
+      .find((h) => h?.getAttribute('col-id') === 'asset.symbol') as HTMLElement;
+
+    await userEvent.click(within(headerCell).getByText(/asset/i));
+
+    expect(headerCell).toHaveAttribute('aria-sort', 'ascending');
   });
 
   it('should apply correct formatting in view as user mode', async () => {
@@ -176,12 +179,7 @@ describe('AccountsTable', () => {
         rowData={singleRowData}
         onClickAsset={() => null}
         isReadOnly={false}
-        pinnedAsset={{
-          decimals: 5,
-          id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
-          symbol: 'tBTC',
-          name: 'tBTC',
-        }}
+        pinnedAsset={asset1}
       />
     );
     await screen.findAllByRole('rowgroup');
@@ -213,23 +211,13 @@ describe('AccountsTable', () => {
     const result = getAccountData([singleRow]);
     const expected = [
       {
-        asset: {
-          __typename: 'Asset',
-          decimals: 5,
-          id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
-          symbol: 'tBTC',
-        },
+        asset: asset1,
         available: '0',
         balance: '0',
         breakdown: [
           {
             __typename: 'AccountBalance',
-            asset: {
-              __typename: 'Asset',
-              decimals: 5,
-              id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
-              symbol: 'tBTC',
-            },
+            asset: asset1,
             available: '0',
             balance: '125600000',
             total: '125600000',
