@@ -31,16 +31,17 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
     cy.visit('/#/portfolio');
     cy.get('[data-testid="pathname-/portfolio"]').should('exist');
 
-    // 1001-DEPO-001
     // 1001-DEPO-002
-    // 1001-DEPO-003
-    // 1001-DEPO-005
-    // 1001-DEPO-006
-    // 1001-DEPO-007
-    // 1001-DEPO-008
-    // 1001-DEPO-009
-    // 1001-DEPO-010
+    /* must select the asset that I want to deposit (1001-DEPO-002)
+    should easily see the assets that I have a non-zero balance for (in the connected eth wallet)
+    should see the ERC20 token address of the asset
+    should see the Vega asset symbol
+    should see the Vega asset name */
 
+    // 1001-DEPO-009
+    // must see feedback on the deposit ETH transaction (1001-DEPO-009)
+    // 1001-DEPO-010
+    // must see feedback that the deposit has or has not been credited to the Vega key (1001-DEPO-010)
     cy.getByTestId(depositsTab).click();
     cy.getByTestId('deposit-button').click();
     connectEthereumWallet('Unknown');
@@ -137,14 +138,9 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
 
   it('can withdrawal', function () {
     // 1002-WITH-0014
-    // 1002-WITH-006
-    // 1002-WITH-009
-    // 1002-WITH-011
+
     // 1002-WITH-024
-    // 1002-WITH-012
-    // 1002-WITH-013
-    // 1002-WITH-014
-    // 1002-WITH-015
+
     // 1002-WITH-016
     // 1002-WITH-017
     // 1002-WITH-019
@@ -235,28 +231,6 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
 
     cy.getByTestId('withdraw-dialog-button').click({ force: true });
     // cy.getByTestId('BALANCE_AVAILABLE_value').should('have.text', '6.999');
-  });
-
-  it('approved amount is less than deposit', function () {
-    // 1001-DEPO-006
-    // 1001-DEPO-007
-    cy.visit('/#/portfolio');
-    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
-    cy.getByTestId(toastCloseBtn, txTimeout).click();
-    cy.getByTestId(depositsTab).click();
-    cy.getByTestId('deposit-button').click();
-    connectEthereumWallet('Unknown');
-    selectAsset(btcName);
-    cy.get('[data-testid="rich-select-option"]').eq(btcName).click();
-    cy.contains('Deposits of tBTC not approved').should('not.exist');
-    cy.contains('Use maximum').should('be.visible');
-    cy.get(amountField).clear().type('20000000');
-    cy.getByTestId(depositSubmit).should('be.visible');
-    cy.getByTestId(depositSubmit).click();
-    cy.getByTestId('input-error-text').should(
-      'contain.text',
-      `You can't deposit more than you have in your Ethereum wallet`
-    );
   });
 
   it('withdraw - delay verification', function () {

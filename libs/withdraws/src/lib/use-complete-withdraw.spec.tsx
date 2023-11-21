@@ -60,6 +60,7 @@ it('Should perform the Ethereum transaction with the fetched approval', async ()
   act(() => {
     result.current.submit(withdrawalId);
   });
+  // 1002-WITH-011
   await waitFor(() => {
     expect(mockPerform).toHaveBeenCalledWith(
       erc20WithdrawalApproval.assetSource,

@@ -46,6 +46,7 @@ describe('Withdrawal form', () => {
     render(<WithdrawForm {...props} />);
 
     expect(screen.getByLabelText('Asset')).toHaveValue('');
+    // 1002-WITH-006
     expect(screen.getByLabelText('To (Ethereum address)')).toHaveValue(
       MOCK_ETH_ADDRESS
     );

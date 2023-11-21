@@ -84,6 +84,19 @@ beforeEach(() => {
   });
 });
 
+// Missing ACs
+// 1001-DEPO-002
+/* must select the asset that I want to deposit (1001-DEPO-002)
+    should easily see the assets that I have a non-zero balance for (in the connected eth wallet)
+    should see the ERC20 token address of the asset
+    should see the Vega asset symbol
+    should see the Vega asset name */
+
+// 1001-DEPO-009
+// must see feedback on the deposit ETH transaction (1001-DEPO-009)
+// 1001-DEPO-010
+// must see feedback that the deposit has or has not been credited to the Vega key (1001-DEPO-010)
+
 describe('Deposit form', () => {
   it('renders with default values', async () => {
     render(<DepositForm {...props} />);
@@ -95,6 +108,7 @@ describe('Deposit form', () => {
     );
     expect(screen.getByLabelText('Asset')).toHaveValue('');
     expect(screen.getByLabelText('To (Vega key)')).toHaveValue('');
+    // 1001-DEPO-003
     expect(screen.getByLabelText('Amount')).toHaveValue(null);
   });
 
@@ -104,6 +118,7 @@ describe('Deposit form', () => {
 
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
+      // 1001-DEPO-005
       expect(props.submitDeposit).not.toHaveBeenCalled();
       const validationMessages = await screen.findAllByRole('alert');
       expect(validationMessages).toHaveLength(3);
@@ -120,7 +135,7 @@ describe('Deposit form', () => {
       render(<DepositForm {...props} />);
 
       fireEvent.submit(screen.getByTestId('deposit-form'));
-
+      // 1001-DEPO-001
       expect(
         await screen.findByText('Connect Ethereum wallet')
       ).toBeInTheDocument();
@@ -191,6 +206,8 @@ describe('Deposit form', () => {
       });
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
+      // 1001-DEPO-006
+      // 1001-DEPO-007
       expect(
         await screen.findByText(
           "You can't deposit more than your approved deposit amount, 30"
@@ -306,7 +323,8 @@ describe('Deposit form', () => {
     });
 
     fireEvent.click(screen.getByRole('button', { name: 'Deposit' }));
-
+    // 1001-DEPO-005
+    // 1001-DEPO-008
     await waitFor(() => {
       expect(props.submitDeposit).toHaveBeenCalledWith({
         // @ts-ignore contract address definitely defined
@@ -314,6 +332,7 @@ describe('Deposit form', () => {
         amount: '8',
         vegaPublicKey: pubKey,
       });
+      screen.debug();
     });
   });
 

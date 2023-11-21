@@ -76,6 +76,10 @@ describe('Withdrawals', () => {
         'Completed',
         '0x1234…121314',
       ];
+      // 1002-WITH-012
+      // 1002-WITH-013
+      // 1002-WITH-014
+      // 1002-WITH-015
       cells.forEach((cell, i) => {
         expect(cell).toHaveTextContent(expectedValues[i]);
       });

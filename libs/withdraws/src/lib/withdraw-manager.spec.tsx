@@ -69,6 +69,7 @@ describe('WithdrawManager', () => {
     );
     await userEvent.type(screen.getByLabelText('Amount'), '0.01');
     await userEvent.click(screen.getByTestId('submit-withdrawal'));
+    // 1002-WITH-009
     expect(props.submit).toHaveBeenCalledWith({
       amount: '1000',
       asset: props.assets[0].id,
