@@ -193,7 +193,7 @@ export const addDecimalsFixedFormatNumber = (
 export const formatNumberPercentage = (value: BigNumber, decimals?: number) => {
   const decimalPlaces =
     typeof decimals === 'undefined' ? value.dp() || 0 : decimals;
-  return `${formatNumber(value, decimalPlaces)}%`;
+  return `${value.toFormat(decimalPlaces)}%`;
 };
 
 export const toNumberParts = (
