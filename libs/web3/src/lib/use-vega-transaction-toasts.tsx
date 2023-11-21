@@ -677,10 +677,8 @@ const VegaTxRequestedToastContent = ({ tx }: VegaTxToastContentProps) => {
   );
 };
 
-const VegaTxPendingToastContentProps = (
-  { tx }: VegaTxToastContentProps,
-  t: ReturnType<typeof useT>
-) => {
+const VegaTxPendingToastContent = ({ tx }: VegaTxToastContentProps) => {
+  const t = useT();
   const explorerLink = useLinks(DApp.Explorer);
   return (
     <>
@@ -750,7 +748,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
               // eslint-disable-next-line jsx-a11y/anchor-is-valid
               <a
                 href="#"
-                className="inline underline underline-offset-4 cursor-pointer text-inherit break-words"
+                className="inline cursor-pointer break-words text-inherit underline underline-offset-4"
                 data-testid="toast-withdrawal-details"
                 onClick={(e) => {
                   e.preventDefault();
@@ -993,7 +991,7 @@ export const getVegaTransactionContentIntent = (tx: VegaStoredTxState) => {
     content = <VegaTxRequestedToastContent tx={tx} />;
   }
   if (tx.status === VegaTxStatus.Pending) {
-    content = <VegaTxPendingToastContentProps tx={tx} />;
+    content = <VegaTxPendingToastContent tx={tx} />;
   }
   if (tx.status === VegaTxStatus.Complete) {
     content = <VegaTxCompleteToastsContent tx={tx} />;

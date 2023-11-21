@@ -189,7 +189,7 @@ export const OracleFullProfile = ({
                         'verifyProofs',
                         'Verify {{count}} proofs of ownership',
                         {
-                          proofs: signedMessageProofs,
+                          count: signedMessageProofs.length,
                         }
                       )}{' '}
                       <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />

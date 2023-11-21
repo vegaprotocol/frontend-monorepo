@@ -114,7 +114,7 @@ export const MarketPage = () => {
           </p>
           <p className="justify-center text-sm">
             <Trans
-              defaults="Please choose another market from the <0>market list<0>"
+              defaults="Please choose another market from the <0>market list</0>"
               ns={ns}
               components={[
                 <ExternalLink

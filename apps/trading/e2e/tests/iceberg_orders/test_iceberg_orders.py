@@ -52,7 +52,7 @@ class TestIcebergOrdersValidations:
         vega.wait_fn(1)
         vega.wait_for_total_catchup()
         expect(page.get_by_test_id("toast-content")).to_have_text(
-            "Order filledYour transaction has been confirmed View in block explorerSubmit order - filledBTC:DAI_2023+3 @ 107.00 tDAI"
+            "Order filledYour transaction has been confirmedView in block explorerSubmit order - filledBTC:DAI_2023+3 @ 107.00 tDAI"
         )
         page.get_by_test_id("All").click()
         expect(

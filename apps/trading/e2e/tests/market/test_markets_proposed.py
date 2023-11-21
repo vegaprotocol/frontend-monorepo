@@ -54,7 +54,6 @@ def test_can_see_table_headers(proposed_market, page: Page):
         "Settlement asset",
         "State",
         "Parent market",
-        "Voting",
         "Closing date",
         "Enactment date",
         "",
@@ -82,10 +81,6 @@ def test_renders_markets_correctly(proposed_market, page: Page):
     expect(
         row.locator('[col-id="terms.change.successorConfiguration.parentMarketId"]')
     ).to_have_text("-")
-
-    # 6001-MARK-054
-    # 6001-MARK-055
-    expect(row.get_by_test_id("vote-progress-bar-against")).to_be_visible()
 
     # 6001-MARK-056
     expect(row.locator('[col-id="closing-date"]')).not_to_be_empty()
@@ -124,8 +119,8 @@ def test_can_drag_and_drop_columns(proposed_market, page: Page):
     page.goto("/#/markets/all")
     page.click('[data-testid="Proposed markets"]')
     col_market = page.locator('[col-id="market"]').first
-    col_vote = page.locator('[col-id="voting"]').first
-    col_market.drag_to(col_vote)
+    col_state = page.locator('[col-id="state"]').first
+    col_market.drag_to(col_state)
 
     # Check the attribute of the dragged element
     attribute_value = col_market.get_attribute("aria-colindex")

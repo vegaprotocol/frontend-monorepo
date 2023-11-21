@@ -139,5 +139,5 @@
   "View settlement data specification": "View settlement data specification",
   "View settlement schedule specification": "View settlement schedule specification",
   "View termination specification": "View termination specification",
-  "Within %s seconds": "Within %s seconds"
+  "Within {{horizonSecs}} seconds": "Within {{horizonSecs}} seconds"
 }
