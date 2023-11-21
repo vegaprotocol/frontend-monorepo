@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js';
-import isNil from 'lodash/isNil';
 import memoize from 'lodash/memoize';
 
 import { getUserLocale } from '../get-user-locale';
@@ -83,9 +82,6 @@ export const UNLIMITED_THRESHOLD = new BigNumber(2).pow(256).times(0.8);
 export const getUnlimitedThreshold = (decimalPlaces: number) =>
   UNLIMITED_THRESHOLD.dividedBy(Math.pow(10, decimalPlaces));
 
-const MIN_FRACTION_DIGITS = 2;
-const MAX_FRACTION_DIGITS = 20;
-
 export function toDecimal(numberOfDecimals: number) {
   return new BigNumber(1)
     .dividedBy(new BigNumber(10).exponentiatedBy(numberOfDecimals))
@@ -119,17 +115,6 @@ export function removeDecimal(
   const times = new BigNumber(10).exponentiatedBy(decimals);
   return new BigNumber(value || 0).times(times).toFixed(0);
 }
-
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
-export const getNumberFormat = memoize((digits: number) => {
-  if (isNil(digits) || digits < 0) {
-    return new Intl.NumberFormat(getUserLocale());
-  }
-  return new Intl.NumberFormat(getUserLocale(), {
-    minimumFractionDigits: Math.min(Math.max(0, digits), MIN_FRACTION_DIGITS),
-    maximumFractionDigits: Math.min(Math.max(0, digits), MAX_FRACTION_DIGITS),
-  });
-});
 
 /** formatNumber will format the number with fixed decimals
  * @param rawValue - should be a number that is not outside the safe range fail as in https://mikemcl.github.io/bignumber.js/#toN

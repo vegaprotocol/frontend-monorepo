@@ -16,7 +16,6 @@ import {
   addDecimalsFormatNumber,
   getDateFormat,
   getDateTimeFormat,
-  getNumberFormat,
   getUserLocale,
   removePaginationWrapper,
 } from '@vegaprotocol/utils';
@@ -256,7 +255,7 @@ export const Statistics = ({
       })}
       description={<QUSDTooltip />}
     >
-      {getNumberFormat(0).format(Number(totalCommissionValue))}
+      {addDecimalsFormatNumber(totalCommissionValue.toString(), 0)}
     </StatTile>
   );
 
@@ -418,8 +417,8 @@ export const Statistics = ({
               )
                 .map((r) => ({
                   ...r,
-                  volume: getNumberFormat(0).format(r.volume),
-                  commission: getNumberFormat(0).format(r.commission),
+                  volume: addDecimalsFormatNumber(r.volume, 0),
+                  commission: addDecimalsFormatNumber(r.commission, 0),
                 }))
                 .reverse()}
             />

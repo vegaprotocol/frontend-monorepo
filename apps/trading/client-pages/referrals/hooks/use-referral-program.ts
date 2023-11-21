@@ -1,8 +1,8 @@
-import { getNumberFormat } from '@vegaprotocol/utils';
 import { addDays } from 'date-fns';
 import sortBy from 'lodash/sortBy';
 import omit from 'lodash/omit';
 import { useReferralProgramQuery } from './__generated__/CurrentReferralProgram';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 const STAKING_TIERS_MAPPING: Record<number, string> = {
   1: 'Tradestarter',
@@ -85,9 +85,7 @@ export const useReferralProgram = () => {
         discountFactor: Number(t.referralDiscountFactor),
         discount: Number(t.referralDiscountFactor) * 100 + '%',
         minimumVolume: Number(t.minimumRunningNotionalTakerVolume),
-        volume: getNumberFormat(0).format(
-          Number(t.minimumRunningNotionalTakerVolume)
-        ),
+        volume: addDecimalsFormatNumber(t.minimumRunningNotionalTakerVolume, 0),
         epochs: Number(t.minimumEpochs),
       };
     });
