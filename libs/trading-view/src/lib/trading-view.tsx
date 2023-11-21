@@ -1,11 +1,6 @@
-import styles from './trading-view.module.scss';
-
-/* eslint-disable-next-line */
-export interface TradingViewProps {}
-
-export function TradingView(props: TradingViewProps) {
+export function TradingView() {
   return (
-    <div className={styles['container']}>
+    <div>
       <h1>Welcome to TradingView!</h1>
     </div>
   );
