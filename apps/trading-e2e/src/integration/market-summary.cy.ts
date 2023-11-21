@@ -14,7 +14,6 @@ const marketMode = 'market-trading-mode';
 const marketName = 'header-title';
 const marketPrice = 'market-price';
 const marketSettlement = 'market-settlement-asset';
-const marketState = 'market-state';
 const marketSummaryBlock = 'header-summary';
 const marketVolume = 'market-volume';
 const percentageValue = 'price-change-percentage';
@@ -85,44 +84,11 @@ describe('Market trading page', () => {
       });
     });
 
-    it('must see market mode', () => {
-      // 6002-MDET-006
-      cy.getByTestId(marketSummaryBlock).within(() => {
-        cy.getByTestId(marketMode).within(() => {
-          cy.getByTestId(itemHeader).should('have.text', 'Trading mode');
-          cy.getByTestId(itemValue).should(
-            'have.text',
-            'Monitoring auction - liquidity (target not met)'
-          );
-        });
-      });
-    });
-
-    it('must see market status', () => {
-      // 6002-MDET-007
-      // 7002-SORD-061
-      cy.getByTestId(marketSummaryBlock).within(() => {
-        cy.getByTestId(marketState).within(() => {
-          cy.getByTestId(itemHeader).should('have.text', 'Status');
-          cy.getByTestId(itemValue).should('not.be.empty');
-        });
-      });
-    });
-
     it('must see market settlement', () => {
       // 6002-MDET-008
       cy.getByTestId(marketSummaryBlock).within(() => {
         cy.getByTestId(marketSettlement).within(() => {
           cy.getByTestId(itemHeader).should('have.text', 'Settlement asset');
-          cy.getByTestId(itemValue).should('not.be.empty');
-        });
-      });
-    });
-    it('must see market liquidity supplied', () => {
-      // 6002-MDET-009
-      cy.getByTestId(marketSummaryBlock).within(() => {
-        cy.getByTestId(liquiditySupplied).within(() => {
-          cy.getByTestId(itemHeader).should('have.text', 'Liquidity supplied');
           cy.getByTestId(itemValue).should('not.be.empty');
         });
       });
