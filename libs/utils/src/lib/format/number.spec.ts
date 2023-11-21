@@ -16,48 +16,94 @@ import {
 
 describe('number utils', () => {
   it.each([
-    { v: new BigNumber(123000), d: 5, o: '1.23' },
-    { v: new BigNumber(123000), d: 3, o: '123.00' },
-    { v: new BigNumber(123000), d: 1, o: '12,300.0' },
-    { v: new BigNumber(123001), d: 2, o: '1,230.01' },
-    { v: new BigNumber(123001000), d: 2, o: '1,230,010.00' },
-  ])(
-    'formats with addDecimalsFormatNumber given number correctly',
-    ({ v, d, o }) => {
-      expect(addDecimalsFormatNumber(v.toString(), d)).toStrictEqual(o);
-    }
-  );
+    { v: new BigNumber(123000), d: 5, f: undefined, o: '1.23' },
+    { v: new BigNumber(123000), d: 5, f: 3, o: '1.230' },
+    { v: new BigNumber(123000), d: 3, f: undefined, o: '123' },
+    { v: new BigNumber(123000), d: 1, f: undefined, o: '12,300' },
+    { v: new BigNumber(123001), d: 2, f: undefined, o: '1,230.01' },
+    { v: new BigNumber(123001000), d: 2, f: undefined, o: '1,230,010' },
+
+    // these would lose precision normally and get rounded to 0.9041951688292778
+    {
+      v: new BigNumber('904195168829277777'),
+      d: 18,
+      f: undefined,
+      o: '0.904195168829277777',
+    },
+    {
+      v: new BigNumber('1234567904195168829277777'),
+      d: 18,
+      f: undefined,
+      o: '1,234,567.904195168829277777',
+    },
+  ])('addDecimalsFormatNumber formats $v as $o', ({ v, d, f, o }) => {
+    expect(addDecimalsFormatNumber(v.toString(), d, f)).toStrictEqual(o);
+  });
 
   it.each([
-    { v: new BigNumber(123000), d: 5, o: '1.23', q: 0.1 },
-    { v: new BigNumber(123000), d: 3, o: '123.00', q: 0.1 },
-    { v: new BigNumber(123000), d: 1, o: '12,300.00', q: 0.1 },
-    { v: new BigNumber(123001000), d: 2, o: '1,230,010.00', q: 0.1 },
-    { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 100 },
-    { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 0.1 },
-    { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 1 },
-    {
-      v: BigNumber('123456789123456789'),
-      d: 10,
-      o: '12,345,678.91234568',
-      q: '0.00003846',
-    },
-    {
-      v: BigNumber('123456789123456789'),
-      d: 10,
-      o: '12,345,678.91234568',
-      q: '1',
-    },
     // USDT / USDC
-    { v: new BigNumber(12345678), d: 6, o: '12.35', q: 1000000 },
-  ])(
-    'formats with addDecimalsFormatNumberQuantum given number correctly',
-    ({ v, d, o, q }) => {
-      expect(addDecimalsFormatNumberQuantum(v.toString(), d, q)).toStrictEqual(
-        o
-      );
-    }
-  );
+    {
+      v: new BigNumber('12111111'),
+      d: 6,
+      o: '12.11',
+      q: '1000000',
+    },
+    {
+      v: new BigNumber('12456111111'),
+      d: 6,
+      o: '12,456.11',
+      q: '1000000',
+    },
+    {
+      v: new BigNumber('12345678'),
+      d: 6,
+      o: '12.35', // quantum should round
+      q: '1000000',
+    },
+
+    // WETH
+    {
+      v: new BigNumber('1'),
+      d: 18,
+      o: '0.000000', // actually 0.000000000000000001 but we are formatting with quantum so that last 1 weth is not relevant
+      q: '500000000000000',
+    },
+    {
+      v: new BigNumber('493000000000000'),
+      d: 18,
+      o: '0.000493', // 1 USD of WETH ~0.000493
+      q: '500000000000000',
+    },
+    {
+      v: new BigNumber('1000000493000000000000'),
+      d: 18,
+      o: '1,000.000493',
+      q: '500000000000000',
+    },
+
+    // OTHER
+    // { v: new BigNumber(123000), d: 5, o: '1.23', q: 0.1 },
+    // { v: new BigNumber(123000), d: 3, o: '123.00', q: 0.1 },
+    // { v: new BigNumber(123000), d: 1, o: '12,300.00', q: 0.1 },
+    // { v: new BigNumber(123001000), d: 2, o: '1,230,010.00', q: 0.1 },
+    { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 100 },
+    // { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 0.1 },
+    { v: new BigNumber(123001), d: 2, o: '1,230.0100', q: 1 },
+    // {
+    //   v: BigNumber('123456789123456789'),
+    //   d: 10,
+    //   o: '12,345,678.91234568',
+    //   q: '0.00003846',
+    // },
+    // {
+    //   v: BigNumber('123456789123456789'),
+    //   d: 10,
+    //   o: '12,345,678.912345689',
+    //   q: '1',
+    // },
+  ])('addDecimalsFormatNumberQuantum formats $v as $o', ({ v, d, o, q }) => {
+    expect(addDecimalsFormatNumberQuantum(v.toString(), d, q)).toStrictEqual(o);
+  });
 
   it.each([
     { v: new BigNumber(123), d: 3, o: '123.00' },

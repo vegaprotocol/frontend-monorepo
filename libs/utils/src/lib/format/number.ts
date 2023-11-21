@@ -4,6 +4,36 @@ import memoize from 'lodash/memoize';
 
 import { getUserLocale } from '../get-user-locale';
 
+// get formatting characters for users locale
+const nativeFormatter = new Intl.NumberFormat(getUserLocale());
+// 1000.1 will get us a group character (, for thousand groups, . for decimals in en-GB)
+const parts = nativeFormatter.formatToParts(1000.1);
+
+const decimalSeparator = parts.find((part) => part.type === 'decimal');
+const groupSeparator = parts.find((part) => part.type === 'group');
+
+if (!decimalSeparator) {
+  throw new Error('Could not get locales decimalSeparator');
+}
+
+if (!groupSeparator) {
+  throw new Error('Could not get locales groupSeparator');
+}
+
+// Format for bignumber formatting
+const FORMAT = {
+  prefix: '',
+  decimalSeparator: decimalSeparator.value,
+  groupSeparator: groupSeparator.value,
+  groupSize: 3,
+  secondaryGroupSize: 0,
+  fractionGroupSeparator: ' ',
+  fractionGroupSize: 0,
+  suffix: '',
+};
+
+BigNumber.config({ FORMAT });
+
 /**
  * A raw unformatted value greater than this is considered and displayed
  * as UNLIMITED.
@@ -128,22 +158,26 @@ export const addDecimalsFormatNumberQuantum = (
   decimalPlaces: number,
   quantum: number | string
 ) => {
+  const val = toBigNum(rawValue, decimalPlaces);
+  let formatDps = val.dp() ?? decimalPlaces;
+
   if (isNaN(Number(quantum))) {
-    return addDecimalsFormatNumber(rawValue, decimalPlaces);
+    return val.toFormat(formatDps);
   }
-  const quantumValue = addDecimal(quantum, decimalPlaces);
-  const numberDP = Math.max(0, Math.log10(100 / Number(quantumValue)));
-  return addDecimalsFormatNumber(rawValue, decimalPlaces, Math.ceil(numberDP));
+
+  formatDps = quantumDecimalPlaces(quantum, decimalPlaces);
+
+  return val.toFormat(formatDps);
 };
 
 export const addDecimalsFormatNumber = (
   rawValue: string | number,
   decimalPlaces: number,
-  formatDecimals: number = decimalPlaces
+  formatDecimals?: number
 ) => {
-  const x = addDecimal(rawValue, decimalPlaces);
-
-  return formatNumber(x, formatDecimals);
+  const val = toBigNum(rawValue, decimalPlaces);
+  const formatDps = formatDecimals === undefined ? val.dp() : formatDecimals;
+  return val.toFormat(formatDps || 0);
 };
 
 export const addDecimalsFixedFormatNumber = (
