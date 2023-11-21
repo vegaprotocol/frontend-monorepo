@@ -6,9 +6,9 @@ import {
 } from '@vegaprotocol/datagrid';
 import type { MarketMaybeWithData } from '@vegaprotocol/markets';
 import { useColumnDefs } from './use-column-defs';
-import { StateCreator, create } from 'zustand';
+import type { DataGridStore } from '../../stores/datagrid-store-slice';
+import { type StateCreator, create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { DataGridStore } from 'apps/trading/stores/datagrid-store-slice';
 
 export const getRowId = ({ data }: { data: { id: string } }) => data.id;
 
