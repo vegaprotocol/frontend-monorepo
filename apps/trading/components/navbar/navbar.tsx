@@ -16,6 +16,7 @@ import {
   VegaIcon,
   VLogo,
   LanguageSelector,
+  ThemeSwitcher,
 } from '@vegaprotocol/ui-toolkit';
 import * as N from '@radix-ui/react-navigation-menu';
 import * as D from '@radix-ui/react-dialog';
@@ -85,6 +86,7 @@ export const Navbar = ({
       {/* Right section */}
       <div className="ml-auto flex items-center justify-end gap-2">
         <ProtocolUpgradeCountdown />
+        <ThemeSwitcher />
         {supportedLngs.length > 1 ? (
           <LanguageSelector
             languages={supportedLngs}
