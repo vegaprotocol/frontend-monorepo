@@ -152,8 +152,8 @@ export const ApplyCodeForm = () => {
   // show "code applied" message when successfully applied
   if (status === 'successful') {
     return (
-      <div className="w-1/2 mx-auto">
-        <h3 className="mb-5 text-xl text-center uppercase calt flex flex-row gap-2 justify-center items-center">
+      <div className="mx-auto w-1/2">
+        <h3 className="calt mb-5 flex flex-row items-center justify-center gap-2 text-center text-xl uppercase">
           <span className="text-vega-green-500">
             <VegaIcon name={VegaIconNames.TICK} size={20} />
           </span>{' '}
@@ -205,15 +205,15 @@ export const ApplyCodeForm = () => {
 
   return (
     <>
-      <div className="w-2/3 max-w-md mx-auto bg-vega-clight-800 dark:bg-vega-cdark-800 p-8 rounded-lg">
-        <h3 className="mb-4 text-2xl text-center calt">
+      <div className="bg-vega-clight-800 dark:bg-vega-cdark-800 mx-auto w-2/3 max-w-md rounded-lg p-8">
+        <h3 className="calt mb-4 text-center text-2xl">
           {t('Apply a referral code')}
         </h3>
         <p className="mb-4 text-center text-base">
           {t('Enter a referral code to get trading discounts.')}
         </p>
         <form
-          className={classNames('w-full flex flex-col gap-4', {
+          className={classNames('flex w-full flex-col gap-4', {
             'animate-shake': Boolean(errors.code),
           })}
           onSubmit={handleSubmit(onSubmit)}
@@ -227,13 +227,13 @@ export const ApplyCodeForm = () => {
                 validate: (value) => validateCode(value, t),
               })}
               placeholder="Enter a code"
-              className="mb-2 bg-vega-clight-900 dark:bg-vega-cdark-700"
+              className="bg-vega-clight-900 dark:bg-vega-cdark-700 mb-2"
             />
           </label>
           <RainbowButton variant="border" {...getButtonProps()} />
         </form>
         {errors.code && (
-          <InputError className="break-words overflow-auto">
+          <InputError className="overflow-auto break-words">
             {errors.code.message?.toString()}
           </InputError>
         )}
@@ -245,10 +245,10 @@ export const ApplyCodeForm = () => {
       ) : null}
       {previewData ? (
         <div className="mt-10">
-          <h2 className="text-2xl mb-5">
+          <h2 className="mb-5 text-2xl">
             {t(
-              'You are joining the group shown, but will not have access to benefits until you have completed at least %s epochs.',
-              [nextBenefitTierEpochsValue.toString()]
+              'You are joining the group shown, but will not have access to benefits until you have completed at least {{count}} epochs.',
+              { count: nextBenefitTierEpochsValue }
             )}
           </h2>
           <Statistics data={previewData} program={program} as="referee" />
