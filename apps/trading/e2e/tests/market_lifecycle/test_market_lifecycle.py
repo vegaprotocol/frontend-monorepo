@@ -36,6 +36,9 @@ def test_market_lifecycle(proposed_market, vega: VegaService, page: Page):
     page.goto(f"/#/markets/{market_id}")
 
     # check that market is in proposed state
+    # 6002-MDET-006
+    # 6002-MDET-007
+    # 7002-SORD-061
     expect(trading_mode).to_have_text("No trading")
     expect(market_state).to_have_text("Proposed")
 
