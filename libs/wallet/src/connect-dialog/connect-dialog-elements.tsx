@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import {
   ExternalLink,
   VegaIcon,
@@ -9,10 +8,11 @@ import type { ReactNode } from 'react';
 import { MozillaIcon } from './mozilla-icon';
 import { ChromeIcon } from './chrome-icon';
 import { useVegaWallet } from '../use-vega-wallet';
+import { useT } from '../use-t';
 
 export const ConnectDialogTitle = ({ children }: { children: ReactNode }) => {
   return (
-    <h1 data-testid="wallet-dialog-title" className="mb-6 text-2xl font-alpha">
+    <h1 data-testid="wallet-dialog-title" className="font-alpha mb-6 text-2xl">
       {children}
     </h1>
   );
@@ -23,6 +23,7 @@ export const ConnectDialogContent = ({ children }: { children: ReactNode }) => {
 };
 
 export const ConnectDialogFooter = () => {
+  const t = useT();
   const { links } = useVegaWallet();
   const wrapperClasses = classNames(
     'flex justify-center gap-4 mt-4',
@@ -56,7 +57,7 @@ export const BrowserIcon = ({
   const isItMozilla =
     window.navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
   return (
-    <div className="absolute top-0 flex items-center h-8 right-1">
+    <div className="absolute right-1 top-0 flex h-8 items-center">
       {!isItChrome && !isItMozilla ? (
         <>
           <a href={mozillaExtensionUrl} target="_blank" rel="noreferrer">

@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import {
   TradingFormGroup,
   TradingInput,
@@ -12,6 +11,7 @@ import { useForm } from 'react-hook-form';
 import type { ViewConnector } from '../connectors';
 import { useVegaWallet } from '../use-vega-wallet';
 import { ConnectDialogTitle } from './connect-dialog-elements';
+import { useT } from '../use-t';
 
 interface FormFields {
   address: string;
@@ -28,6 +28,7 @@ export function ViewConnectorForm({
   onConnect,
   reset,
 }: ViewConnectorFormProps) {
+  const t = useT();
   const { connect } = useVegaWallet();
   const {
     register,

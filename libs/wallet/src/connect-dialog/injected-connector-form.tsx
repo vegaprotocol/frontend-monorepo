@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import { Status } from '../use-injected-connector';
 import { ConnectDialogTitle } from './connect-dialog-elements';
 import type { ReactNode } from 'react';
@@ -12,6 +11,7 @@ import {
 import { setAcknowledged } from '../storage';
 import { useVegaWallet } from '../use-vega-wallet';
 import { InjectedConnectorErrors, SnapConnectorErrors } from '../connectors';
+import { useT } from '../use-t';
 
 export const InjectedConnectorForm = ({
   status,
@@ -28,6 +28,7 @@ export const InjectedConnectorForm = ({
   reset: () => void;
   riskMessage?: React.ReactNode;
 }) => {
+  const t = useT();
   const { disconnect } = useVegaWallet();
 
   if (status === Status.Idle) {
@@ -109,7 +110,7 @@ export const InjectedConnectorForm = ({
 
 const Center = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="flex items-center justify-center my-6">{children}</div>
+    <div className="my-6 flex items-center justify-center">{children}</div>
   );
 };
 
@@ -122,6 +123,7 @@ const Error = ({
   appChainId: string;
   onTryAgain: () => void;
 }) => {
+  const t = useT();
   let title = t('Something went wrong');
   let text: ReactNode | undefined = t('An unknown error occurred');
   const tryAgain: ReactNode | null = (
@@ -139,8 +141,8 @@ const Error = ({
     ) {
       title = t('Wrong network');
       text = t(
-        'To complete your wallet connection, set your wallet network in your app to "%s".',
-        appChainId
+        'To complete your wallet connection, set your wallet network in your app to "{{appChainId}}".',
+        { appChainId }
       );
     } else if (
       error.message === InjectedConnectorErrors.VEGA_UNDEFINED.message

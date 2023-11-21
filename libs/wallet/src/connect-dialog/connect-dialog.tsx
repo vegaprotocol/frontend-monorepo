@@ -12,7 +12,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useState, type ReactNode } from 'react';
 import { type WalletClientError } from '@vegaprotocol/wallet-client';
-import { t } from '@vegaprotocol/i18n';
 import { type Connectors, type VegaConnector } from '../connectors';
 import { DEFAULT_SNAP_VERSION } from '../connectors';
 import {
@@ -46,6 +45,8 @@ import { useIsWalletServiceRunning } from '../use-is-wallet-service-running';
 import { SnapStatus, useSnapStatus } from '../use-snap-status';
 import { useVegaWalletDialogStore } from './vega-wallet-dialog-store';
 import { useChainId } from './use-chain-id';
+import { useT } from '../use-t';
+import { Trans } from 'react-i18next';
 
 export const CLOSE_DELAY = 1700;
 
@@ -225,6 +226,7 @@ const ConnectorList = ({
   isDesktopWalletRunning: boolean | null;
   snapStatus: SnapStatus;
 }) => {
+  const t = useT();
   const { pubKey, links } = useVegaWallet();
   const title = isBrowserWalletInstalled()
     ? t('Connect Vega wallet')
@@ -248,7 +250,7 @@ const ConnectorList = ({
     ? 'Chrome'
     : isItMozilla
     ? 'Firefox'
-    : 'your browser';
+    : t('your browser');
 
   return (
     <>
@@ -265,34 +267,28 @@ const ConnectorList = ({
             text={extendedText}
             onClick={() => onSelect('injected')}
             title={
-              <>
-                <span>{t('Vega Wallet')}</span>
-                {'  '}
-                <span className="text-xs">{t('full featured')}</span>
-              </>
+              <Trans
+                defaults="Vega Wallet <0>full featured<0>"
+                components={[<span className="text-xs">full featured</span>]}
+              />
             }
             description={t(
-              `Connect with Vega Wallet extension
-              for %s to access all features including key
-              management and detailed transaction views from your
-              browser.`,
-              [browserName]
+              'Connect with Vega Wallet extension for {{browserName}} to access all features including key management and detailed transaction views from your browser.',
+              { browserName }
             )}
           />
         ) : (
           <div>
             <h1 className="mb-1 text-lg">
-              <span>{t('Vega Wallet')}</span>
-              {'  '}
-              <span className="text-xs"> {t('full featured')}</span>
+              <Trans
+                defaults="Vega Wallet <0>full featured<0>"
+                components={[<span className="text-xs">full featured</span>]}
+              />
             </h1>
             <p className="mb-2 text-sm">
               {t(
-                `Install Vega Wallet extension
-              for %s to access all features including key
-              management and detailed transaction views from your
-              browser.`,
-                [browserName]
+                'Install Vega Wallet extension for {{browserName}} to access all features including key management and detailed transaction views from your browser.',
+                { browserName }
               )}
             </p>
             <GetWalletButton
@@ -307,11 +303,10 @@ const ConnectorList = ({
               <ConnectionOptionWithDescription
                 type="snap"
                 title={
-                  <>
-                    <span>{t('Metamask Snap')}</span>
-                    {'  '}
-                    <span className="text-xs"> {t('quick start')}</span>
-                  </>
+                  <Trans
+                    defaults="Metamask Snap <0>quick start</0>"
+                    components={[<span className="text-xs">quick start</span>]}
+                  />
                 }
                 description={t(
                   `Connect directly via Metamask with the Vega Snap for single key support without advanced features.`
@@ -336,11 +331,12 @@ const ConnectorList = ({
                   type="snap"
                   disabled={snapStatus === SnapStatus.NOT_SUPPORTED}
                   title={
-                    <>
-                      <span>{t('Metamask Snap')}</span>
-                      {'  '}
-                      <span className="text-xs"> {t('quick start')}</span>
-                    </>
+                    <Trans
+                      defaults="Metamask Snap <0>quick start</0>"
+                      components={[
+                        <span className="text-xs">quick start</span>,
+                      ]}
+                    />
                   }
                   description={t(
                     `Install Metamask with the Vega Snap for single key support without advanced features.`
@@ -363,11 +359,14 @@ const ConnectorList = ({
                 />
                 {snapStatus === SnapStatus.NOT_SUPPORTED ? (
                   <p className="text-muted pt-1 text-xs leading-tight">
-                    {t('No MetaMask version that supports snaps detected.')}{' '}
-                    {t('Learn more about')}{' '}
-                    <ExternalLink href="https://metamask.io/snaps/">
-                      MetaMask Snaps
-                    </ExternalLink>
+                    <Trans
+                      defaults="No MetaMask version that supports snaps detected. Learn more about <0>MetaMask Snaps</0>"
+                      components={[
+                        <ExternalLink href="https://metamask.io/snaps/">
+                          MetaMask Snaps
+                        </ExternalLink>,
+                      ]}
+                    />
                   </p>
                 ) : null}
               </>
@@ -469,6 +468,7 @@ export const GetWalletButton = ({
   mozillaExtensionUrl?: string;
   className?: string;
 }) => {
+  const t = useT();
   const isItChrome = window.navigator.userAgent.includes('Chrome');
   const isItMozilla =
     window.navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
@@ -599,6 +599,7 @@ const CustomUrlInput = ({
   isDesktopWalletRunning: boolean | null;
   onSelect: (type: WalletType) => void;
 }) => {
+  const t = useT();
   const { pubKey } = useVegaWallet();
   const [urlInputExpanded, setUrlInputExpanded] = useState(false);
   return urlInputExpanded ? (
@@ -654,18 +655,22 @@ const CustomUrlInput = ({
             </button>
           ) : (
             <p className="text-muted leading-tight">
-              <span className="text-xs">
-                {t(
-                  'No running Desktop App/CLI detected. Open your app now to connect or enter a'
-                )}
-              </span>{' '}
-              <button
-                className="text-xs underline"
-                onClick={() => setUrlInputExpanded(true)}
-                disabled={Boolean(pubKey)}
-              >
-                {t('custom wallet location')}
-              </button>
+              <Trans
+                defaults="<0>No running Desktop App/CLI detected. Open your app now to connect or enter a</0> <1>custom wallet location</1>"
+                components={[
+                  <span className="text-xs">
+                    No running Desktop App/CLI detected. Open your app now to
+                    connect or enter a
+                  </span>,
+                  <button
+                    className="text-xs underline"
+                    onClick={() => setUrlInputExpanded(true)}
+                    disabled={Boolean(pubKey)}
+                  >
+                    custom wallet location
+                  </button>,
+                ]}
+              />
             </p>
           )}
         </div>

@@ -1,5 +1,4 @@
 import { truncateByChars } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import {
   Button,
   Dialog,
@@ -8,6 +7,7 @@ import {
   Icon,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '../use-vega-wallet';
+import { useT } from '../use-t';
 
 export interface VegaManageDialogProps {
   dialogOpen: boolean;
@@ -18,6 +18,7 @@ export const VegaManageDialog = ({
   dialogOpen,
   setDialogOpen,
 }: VegaManageDialogProps) => {
+  const t = useT();
   const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
   return (
     <Dialog
@@ -38,13 +39,13 @@ export const VegaManageDialog = ({
                 className="mb-2 last:mb-0"
               >
                 <div
-                  className="flex justify-between text-sm gap-4"
+                  className="flex justify-between gap-4 text-sm"
                   data-testid={isSelected ? 'selected-key' : ''}
                 >
                   <p data-testid="vega-public-key-full">
                     {truncateByChars(pk.publicKey)}
                   </p>
-                  <div className="flex ml-auto gap-4">
+                  <div className="ml-auto flex gap-4">
                     {!isSelected && (
                       <button
                         onClick={() => {
