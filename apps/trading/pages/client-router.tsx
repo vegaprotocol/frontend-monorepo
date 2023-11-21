@@ -18,7 +18,7 @@ import { Routes as AppRoutes } from '../lib/links';
 import { LayoutWithSky } from '../client-pages/referrals/layout';
 import { Referrals } from '../client-pages/referrals/referrals';
 import { ReferralStatistics } from '../client-pages/referrals/referral-statistics';
-import { ApplyCodeForm } from '../client-pages/referrals/apply-code-form';
+import { ApplyCodeFormContainer } from '../client-pages/referrals/apply-code-form';
 import { CreateCodeContainer } from '../client-pages/referrals/create-code-form';
 import { NotFound as ReferralNotFound } from '../client-pages/referrals/error-boundary';
 import { compact } from 'lodash';
@@ -79,7 +79,7 @@ export const routerConfig: RouteObject[] = compact([
               },
               {
                 path: AppRoutes.REFERRALS_APPLY_CODE,
-                element: <ApplyCodeForm />,
+                element: <ApplyCodeFormContainer />,
               },
             ],
           },

@@ -5,6 +5,7 @@ import { useEthereumTransactionToasts } from '@vegaprotocol/web3';
 import { useEthereumWithdrawApprovalsToasts } from '@vegaprotocol/web3';
 import { useReadyToWithdrawalToasts } from '@vegaprotocol/withdraws';
 import { Links } from '../lib/links';
+import { useReferralToasts } from '../client-pages/referrals/hooks/use-referral-toasts';
 
 export const ToastsManager = () => {
   useProposalToasts();
@@ -14,6 +15,7 @@ export const ToastsManager = () => {
   useReadyToWithdrawalToasts({
     withdrawalsLink: Links.PORTFOLIO(),
   });
+  useReferralToasts();
 
   const toasts = useToasts((store) => store.toasts);
   return <ToastsContainer order="desc" toasts={toasts} />;

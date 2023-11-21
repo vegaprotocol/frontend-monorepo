@@ -32,6 +32,19 @@ const validateCode = (value: string, t: ReturnType<typeof useT>) => {
   return true;
 };
 
+export const ApplyCodeFormContainer = () => {
+  const { pubKey } = useVegaWallet();
+  const { data: referee } = useReferral({ pubKey, role: 'referee' });
+  const { data: referrer } = useReferral({ pubKey, role: 'referrer' });
+
+  // go to main page if the current pubkey is already a referrer or referee
+  if (referee || referrer) {
+    return <Navigate to={Routes.REFERRALS} />;
+  }
+
+  return <ApplyCodeForm />;
+};
+
 export const ApplyCodeForm = () => {
   const t = useT();
   const program = useReferralProgram();
@@ -54,9 +67,6 @@ export const ApplyCodeForm = () => {
     watch,
   } = useForm();
   const [params] = useSearchParams();
-
-  const { data: referee } = useReferral({ pubKey, role: 'referee' });
-  const { data: referrer } = useReferral({ pubKey, role: 'referrer' });
 
   const codeField = watch('code');
   const { data: previewData, loading: previewLoading } = useReferral({
@@ -143,11 +153,6 @@ export const ApplyCodeForm = () => {
       }, RELOAD_DELAY);
     }
   }, [navigate, status]);
-
-  // go to main page if the current pubkey is already a referrer or referee
-  if (referee || referrer) {
-    return <Navigate to={Routes.REFERRALS} />;
-  }
 
   // show "code applied" message when successfully applied
   if (status === 'successful') {
@@ -243,13 +248,13 @@ export const ApplyCodeForm = () => {
           <Loader />
         </div>
       ) : null}
+      {/* TODO: Re-check plural forms once i18n is updated */}
       {previewData ? (
         <div className="mt-10">
-          <h2 className="mb-5 text-2xl">
-            {t(
-              'You are joining the group shown, but will not have access to benefits until you have completed at least {{count}} epochs.',
-              { count: nextBenefitTierEpochsValue }
-            )}
+          <h2 className="text-2xl mb-5">
+            {t('referralApplyPreviewMessage', {
+              count: nextBenefitTierEpochsValue,
+            })}
           </h2>
           <Statistics data={previewData} program={program} as="referee" />
         </div>
