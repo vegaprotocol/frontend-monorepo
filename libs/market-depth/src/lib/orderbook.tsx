@@ -172,8 +172,9 @@ export const Orderbook = ({
 
   // we'll want to only display a relevant number of dps based on the
   // current resolution selection
-  const priceFormatDecimalPlaces = Math.ceil(
-    decimalPlaces - Math.log10(resolution)
+  const priceFormatDecimalPlaces = Math.max(
+    0,
+    Math.ceil(decimalPlaces - Math.log10(resolution))
   );
 
   return (

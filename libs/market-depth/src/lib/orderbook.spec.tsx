@@ -43,7 +43,7 @@ describe('Orderbook', () => {
     );
     expect(
       screen.getByTestId(`last-traded-${params.lastTradedPrice}`)
-    ).toHaveTextContent('122.90');
+    ).toHaveTextContent('122.9');
   });
 
   it('should format correctly the numbers on resolution change', async () => {

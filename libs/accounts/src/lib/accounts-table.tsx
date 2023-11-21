@@ -178,20 +178,28 @@ export const AccountTable = ({
 
           return data.breakdown ? (
             <>
-              <span className="underline">{valueFormatted}</span>
+              <span className="underline" data-testid="used-amount">
+                {valueFormatted}
+              </span>
               <span
                 className={classNames(
                   colorClass(percentageUsed),
                   'ml-1 inline-block w-14'
                 )}
+                data-testid="used-pct"
               >
                 {percentageUsed.toFixed(2)}%
               </span>
             </>
           ) : (
             <>
-              <span className="underline">{valueFormatted}</span>
-              <span className="inline-block ml-2 w-14 text-muted">
+              <span className="underline" data-testid="used-amount">
+                {valueFormatted}
+              </span>
+              <span
+                className="inline-block ml-2 w-14 text-muted"
+                data-testid="used-pct"
+              >
                 {(0).toFixed(2)}%
               </span>
             </>

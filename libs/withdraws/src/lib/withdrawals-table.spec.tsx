@@ -41,7 +41,7 @@ describe('Withdrawals', () => {
       const cells = screen.getAllByRole('gridcell');
       const expectedValues = [
         'asset-symbol',
-        '1.00',
+        '1',
         '123456…123456',
         getTimeFormat().format(new Date(withdrawal.createdTimestamp as string)),
         '-',
@@ -67,7 +67,7 @@ describe('Withdrawals', () => {
       const cells = screen.getAllByRole('gridcell');
       const expectedValues = [
         'asset-symbol',
-        '1.00',
+        '1',
         '123456…123456',
         getTimeFormat().format(new Date(withdrawal.createdTimestamp as string)),
         getTimeFormat().format(

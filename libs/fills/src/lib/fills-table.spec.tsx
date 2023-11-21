@@ -84,11 +84,11 @@ describe('FillsTable', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       buyerFill.market?.tradableInstrument.instrument.code || '',
-      '+3.00',
-      '1.00 BTC',
+      '+3',
+      '1 BTC',
       '3.00 BTC',
       'Maker',
-      '2.00 BTC',
+      '2 BTC',
       '0.27 BTC',
       getDateTimeFormat().format(new Date(buyerFill.createdAt)),
       '', // action column
@@ -121,8 +121,8 @@ describe('FillsTable', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       buyerFill.market?.tradableInstrument.instrument.code || '',
-      '-3.00',
-      '1.00 BTC',
+      '-3',
+      '1 BTC',
       '3.00 BTC',
       'Taker',
       '0.03 BTC',
@@ -158,8 +158,8 @@ describe('FillsTable', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       buyerFill.market?.tradableInstrument.instrument.code || '',
-      '-3.00',
-      '1.00 BTC',
+      '-3',
+      '1 BTC',
       '3.00 BTC',
       '-',
       '0.03 BTC',

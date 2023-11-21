@@ -140,8 +140,8 @@ describe('StopOrdersTable', () => {
     const cells = grid.querySelectorAll('.ag-body [col-id="trigger"]');
 
     const expectedValues: string[] = [
-      'Mark < 8.0',
-      'Mark > 9.0',
+      'Mark < 8',
+      'Mark > 9',
       'Mark +10.0%',
       'Mark -20.0%',
     ];
@@ -173,7 +173,7 @@ describe('StopOrdersTable', () => {
     const grid = screen.getByRole('treegrid');
     const cells = grid.querySelectorAll('.ag-body [col-id="submission.size"]');
 
-    const expectedValues: string[] = ['+1.00', '-1.10'];
+    const expectedValues: string[] = ['+1', '-1.1'];
     expectedValues.forEach((expectedValue, i) =>
       expect(cells[i]).toHaveTextContent(expectedValue)
     );
@@ -219,7 +219,7 @@ describe('StopOrdersTable', () => {
     const grid = screen.getByRole('treegrid');
     const cells = grid.querySelectorAll('.ag-body [col-id="submission.price"]');
 
-    const expectedValues: string[] = ['12.0', '-'];
+    const expectedValues: string[] = ['12', '-'];
     expectedValues.forEach((expectedValue, i) =>
       expect(cells[i]).toHaveTextContent(expectedValue)
     );

@@ -162,17 +162,15 @@ describe('OrderViewDialog', () => {
     expect(screen.getByTestId('order-type-label')).toHaveTextContent('Type');
     expect(screen.getByTestId('order-type-value')).toHaveTextContent('Limit');
     expect(screen.getByTestId('order-price-label')).toHaveTextContent('Price');
-    expect(screen.getByTestId('order-price-value')).toHaveTextContent('150.00');
+    expect(screen.getByTestId('order-price-value')).toHaveTextContent('150');
     expect(screen.getByTestId('order-size-label')).toHaveTextContent('Size');
-    expect(screen.getByTestId('order-size-value')).toHaveTextContent('+10.00');
+    expect(screen.getByTestId('order-size-value')).toHaveTextContent('+10');
     expect(screen.getByTestId('order-remaining-label')).toHaveTextContent(
       'Remaining'
     );
-    expect(screen.getByTestId('order-remaining-value')).toHaveTextContent(
-      '+5.00'
-    );
+    expect(screen.getByTestId('order-remaining-value')).toHaveTextContent('+5');
     expect(
       screen.getByTestId('order-iceberg-order-reserved-remaining-value')
-    ).toHaveTextContent('5.00');
+    ).toHaveTextContent('5');
   });
 });

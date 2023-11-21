@@ -69,6 +69,6 @@ describe('Size in Market component', () => {
 
   it('Renders the formatted size when market data is fetched', async () => {
     const res = render(renderComponent('100', '123', [fullMock]));
-    expect(await res.findByText('1.00')).toBeInTheDocument();
+    expect(await res.findByText('1')).toBeInTheDocument();
   });
 });

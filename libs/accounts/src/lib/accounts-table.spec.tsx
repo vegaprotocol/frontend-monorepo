@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import * as Types from '@vegaprotocol/types';
 import type { AccountFields } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
@@ -123,11 +123,13 @@ describe('AccountsTable', () => {
       />
     );
 
-    const cells = await screen.findAllByRole('gridcell');
-    const expectedValues = ['tBTC', '1,256.00', '1,256.00', '2,512.00', ''];
-    cells.forEach((cell, i) => {
-      expect(cell).toHaveTextContent(expectedValues[i]);
+    await assertCells({
+      usedAmount: '1,256',
+      usedPct: '0.00%',
+      available: '1,256',
+      total: '2,512',
     });
+
     const rows = container.querySelector('.ag-center-cols-container');
     expect(rows?.childElementCount).toBe(1);
   });
@@ -160,12 +162,13 @@ describe('AccountsTable', () => {
       />
     );
 
-    const cells = await screen.findAllByRole('gridcell');
-    const expectedValues = ['tBTC', '1,256.00', '1,256.00', '2,512.00', ''];
-    expect(cells.length).toBe(expectedValues.length);
-    cells.forEach((cell, i) => {
-      expect(cell).toHaveTextContent(expectedValues[i]);
+    await assertCells({
+      usedAmount: '1,256',
+      usedPct: '0.00%',
+      available: '1,256',
+      total: '2,512',
     });
+
     const rows = container.querySelector('.ag-center-cols-container');
     expect(rows?.childElementCount).toBe(1);
   });
@@ -248,4 +251,36 @@ describe('AccountsTable', () => {
     ];
     expect(result).toEqual(expected);
   });
+
+  const assertCells = async ({
+    usedAmount,
+    usedPct,
+    available,
+    total,
+  }: {
+    usedAmount: string;
+    usedPct: string;
+    available: string;
+    total: string;
+  }) => {
+    const cells = await screen.findAllByRole('gridcell');
+
+    const usedCell = within(
+      cells.find(
+        (cell) => cell.getAttribute('col-id') === 'used'
+      ) as HTMLElement
+    );
+    expect(usedCell.getByTestId('used-amount')).toHaveTextContent(usedAmount);
+    expect(usedCell.getByTestId('used-pct')).toHaveTextContent(usedPct);
+
+    const availableCell = cells.find(
+      (cell) => cell.getAttribute('col-id') === 'available'
+    );
+    expect(availableCell).toHaveTextContent(available);
+
+    const totalCell = cells.find(
+      (cell) => cell.getAttribute('col-id') === 'total'
+    );
+    expect(totalCell).toHaveTextContent(total);
+  };
 });

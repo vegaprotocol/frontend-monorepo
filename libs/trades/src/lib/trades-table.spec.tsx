@@ -41,8 +41,8 @@ describe('TradesTable', () => {
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
-      '1,111,222.00',
-      '20.00',
+      '1,111,222',
+      '20',
       getTimeFormat().format(new Date(trade.createdAt)),
     ];
     cells.forEach((cell, i) => {

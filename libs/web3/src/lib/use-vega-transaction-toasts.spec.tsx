@@ -365,20 +365,20 @@ describe('VegaTransactionDetails', () => {
   });
   it.each([
     { tx: withdraw, details: 'Withdraw 12.34 $A' },
-    { tx: submitOrder, details: 'Submit order - activeM1+0.10 @ 12.34 $A' },
+    { tx: submitOrder, details: 'Submit order - activeM1+0.1 @ 12.34 $A' },
     {
       tx: submitStopOrder,
-      details: 'Submit stop orderM1+0.10 @ ~ $AMark > 12.34',
+      details: 'Submit stop orderM1+0.1 @ ~ $AMark > 12.34',
     },
     {
       tx: editOrder,
-      details: 'Edit order - activeM1+0.10 @ 12.34 $A+0.11 @ 10.00 $A',
+      details: 'Edit order - activeM1+0.1 @ 12.34 $A+0.11 @ 10 $A',
     },
-    { tx: cancelOrder, details: 'Cancel orderM1+0.10 @ 12.34 $A' },
+    { tx: cancelOrder, details: 'Cancel orderM1+0.1 @ 12.34 $A' },
     { tx: cancelAll, details: 'Cancel all orders' },
     {
       tx: cancelStopOrder,
-      details: 'Cancel stop orderM1-0.10 @ 12.34 $AMark > 12.34',
+      details: 'Cancel stop orderM1-0.1 @ 12.34 $AMark > 12.34',
     },
     { tx: closePosition, details: 'Close position for M1' },
     { tx: batch, details: 'Batch market instruction' },

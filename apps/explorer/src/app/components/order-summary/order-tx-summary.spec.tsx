@@ -120,6 +120,6 @@ describe('Order TX Summary component', () => {
     // After fetch renders formatted price and asset quotename
     expect(await res.findByText('3.33')).toBeInTheDocument();
     expect(await res.findByText('TEST')).toBeInTheDocument();
-    expect(await res.getByText('0.10')).toBeInTheDocument();
+    expect(await res.findByText('0.1')).toBeInTheDocument();
   });
 });

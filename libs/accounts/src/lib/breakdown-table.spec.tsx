@@ -63,9 +63,9 @@ describe('BreakdownTable', () => {
     const expectedValues = [
       'BTCUSD.MF21',
       'Margin',
-      '1,256.00 (50%)',
-      '1,256.00',
-      '1,256.00',
+      '1,256 (50%)',
+      '1,256',
+      '1,256',
     ];
     cells.slice(0, -1).forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);

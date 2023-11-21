@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import classNames from 'classnames';
-import { getDecimalSeparator, isNumeric } from '@vegaprotocol/utils';
+import { getNumberParts, isNumeric } from '@vegaprotocol/utils';
 
 interface NumericCellProps {
   value: number | bigint | null | undefined;
@@ -23,7 +23,7 @@ export const NumericCell = forwardRef<HTMLSpanElement, NumericCellProps>(
       );
     }
 
-    const decimalSeparator = getDecimalSeparator();
+    const decimalSeparator = getNumberParts().decimalSeparator;
     const valueSplit: string[] = decimalSeparator
       ? valueFormatted.split(decimalSeparator).map((v) => `${v}`)
       : [`${value}`];

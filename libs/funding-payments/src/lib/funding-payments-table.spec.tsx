@@ -55,7 +55,7 @@ describe('FundingPaymentsTable', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       fundingPayment.market?.tradableInstrument.instrument.code || '',
-      '1.00 BTC',
+      '1 BTC',
       getDateTimeFormat().format(new Date(fundingPayment.timestamp)),
     ];
     cells.forEach((cell, i) => {
@@ -77,7 +77,7 @@ describe('FundingPaymentsTable', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       fundingPayment.market?.tradableInstrument.instrument.code || '',
-      '-1.00 BTC',
+      '-1 BTC',
       getDateTimeFormat().format(new Date(fundingPayment.timestamp)),
     ];
     cells.forEach((cell, i) => {

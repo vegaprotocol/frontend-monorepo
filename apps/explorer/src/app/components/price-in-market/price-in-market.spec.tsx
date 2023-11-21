@@ -64,7 +64,7 @@ describe('Price in Market component', () => {
 
   it('Renders the formatted price when market data is fetched, using market decimals by default', async () => {
     const res = render(renderComponent('100', '123', [fullMock]));
-    expect(await res.findByText('1.00')).toBeInTheDocument();
+    expect(await res.findByText('1')).toBeInTheDocument();
     expect(await res.findByText('dai')).toBeInTheDocument();
   });
 

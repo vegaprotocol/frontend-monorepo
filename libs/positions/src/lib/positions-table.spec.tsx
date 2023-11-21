@@ -74,7 +74,7 @@ describe('Positions', () => {
       '+100'
     );
     expect(within(cell).getByTestId('stack-cell-secondary')).toHaveTextContent(
-      '1,230.0'
+      '1,230'
     );
   });
 
@@ -90,7 +90,7 @@ describe('Positions', () => {
       '-100'
     );
     expect(within(cell).getByTestId('stack-cell-secondary')).toHaveTextContent(
-      '1,230.0'
+      '1,230'
     );
   });
 
@@ -334,7 +334,7 @@ describe('Positions', () => {
       const tooltip = within(await screen.findByRole('tooltip'));
       expect(tooltip.getByText('Realised PNL: 1.23')).toBeInTheDocument();
       expect(
-        tooltip.getByText('Lifetime loss socialisation deductions: 5.00')
+        tooltip.getByText('Lifetime loss socialisation deductions: 5')
       ).toBeInTheDocument();
       expect(
         tooltip.getByText(

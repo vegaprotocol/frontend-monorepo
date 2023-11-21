@@ -4,27 +4,42 @@ import memoize from 'lodash/memoize';
 
 import { getUserLocale } from '../get-user-locale';
 
+const DEFAULT_DECIMAL_SEPARATOR = '.';
+const DEFAULT_GROUP_SEPARATOR = ',';
+
 // get formatting characters for users locale
-const nativeFormatter = new Intl.NumberFormat(getUserLocale());
-// 1000.1 will get us a group character (, for thousand groups, . for decimals in en-GB)
-const parts = nativeFormatter.formatToParts(1000.1);
+export const getNumberParts = memoize(() => {
+  // 1000.1 will get us a group character (, for thousand groups, . for decimals in en-GB)
+  const parts = new Intl.NumberFormat(getUserLocale()).formatToParts(1000.1);
 
-const decimalSeparator = parts.find((part) => part.type === 'decimal');
-const groupSeparator = parts.find((part) => part.type === 'group');
+  const decimalSeparator = parts.find((part) => part.type === 'decimal');
+  const groupSeparator = parts.find((part) => part.type === 'group');
 
-if (!decimalSeparator) {
-  throw new Error('Could not get locales decimalSeparator');
-}
+  if (!decimalSeparator) {
+    console.warn('Could not get locales decimalSeparator');
+  }
 
-if (!groupSeparator) {
-  throw new Error('Could not get locales groupSeparator');
-}
+  if (!groupSeparator) {
+    console.warn('Could not get locales groupSeparator');
+  }
+
+  return {
+    decimalSeparator: decimalSeparator
+      ? decimalSeparator.value
+      : DEFAULT_DECIMAL_SEPARATOR,
+    groupSeparator: groupSeparator
+      ? groupSeparator.value
+      : DEFAULT_GROUP_SEPARATOR,
+  };
+});
+
+const parts = getNumberParts();
 
 // Format for bignumber formatting
 const FORMAT = {
   prefix: '',
-  decimalSeparator: decimalSeparator.value,
-  groupSeparator: groupSeparator.value,
+  decimalSeparator: parts.decimalSeparator,
+  groupSeparator: parts.groupSeparator,
   groupSize: 3,
   secondaryGroupSize: 0,
   fractionGroupSeparator: ' ',
@@ -33,6 +48,28 @@ const FORMAT = {
 };
 
 BigNumber.config({ FORMAT });
+
+export const isNumeric = (
+  value?: string | number | BigNumber | bigint | null
+): value is NonNullable<number | string> => /^-?\d*\.?\d+$/.test(String(value));
+
+export const toNumberParts = (
+  value: BigNumber | null | undefined
+): [integers: string, decimalPlaces: string, separator: string] => {
+  if (!value) {
+    return ['0', '', '.'];
+  }
+
+  const separator = getNumberParts().decimalSeparator;
+
+  const dps = value.dp() || 0;
+
+  const [integers, decimalsPlaces] = formatNumber(value, dps)
+    .toString()
+    .split(separator);
+
+  return [integers, decimalsPlaces || '', separator];
+};
 
 /**
  * A raw unformatted value greater than this is considered and displayed
@@ -105,13 +142,6 @@ export const getFixedNumberFormat = memoize((digits: number) => {
   });
 });
 
-export const getDecimalSeparator = memoize(
-  () =>
-    getNumberFormat(1)
-      .formatToParts(1.1)
-      .find((part) => part.type === 'decimal')?.value
-);
-
 /** formatNumber will format the number with fixed decimals
  * @param rawValue - should be a number that is not outside the safe range fail as in https://mikemcl.github.io/bignumber.js/#toN
  * @param formatDecimals - number of decimals to use
@@ -120,18 +150,7 @@ export const formatNumber = (
   rawValue: string | number | BigNumber,
   formatDecimals = 0
 ) => {
-  return getNumberFormat(formatDecimals).format(Number(rawValue));
-};
-
-/** formatNumberFixed will format the number with fixed decimals
- * @param rawValue - should be a number that is not outside the safe range fail as in https://mikemcl.github.io/bignumber.js/#toN
- * @param formatDecimals - number of decimals to use
- */
-export const formatNumberFixed = (
-  rawValue: string | number | BigNumber,
-  formatDecimals = 0
-) => {
-  return getFixedNumberFormat(formatDecimals).format(Number(rawValue));
+  return new BigNumber(rawValue).toFormat(formatDecimals);
 };
 
 export const quantumDecimalPlaces = (
@@ -147,7 +166,11 @@ export const quantumDecimalPlaces = (
       ? decimalPlaces
       : Math.max(
           0,
-          Math.log10(100 / Number(addDecimal(rawQuantum, decimalPlaces)))
+          Math.log10(
+            new BigNumber(100)
+              .dividedBy(toBigNum(rawQuantum, decimalPlaces))
+              .toNumber()
+          )
         );
 
   return Math.ceil(formatDecimals);
@@ -176,43 +199,22 @@ export const addDecimalsFormatNumber = (
   formatDecimals?: number
 ) => {
   const val = toBigNum(rawValue, decimalPlaces);
-  const formatDps = formatDecimals === undefined ? val.dp() : formatDecimals;
+  const naturalDp = val.dp() ?? 0;
+  const formatDps = Math.max(
+    0,
+    formatDecimals === undefined ? naturalDp : formatDecimals
+  );
   return val.toFormat(formatDps || 0);
 };
 
-export const addDecimalsFixedFormatNumber = (
-  rawValue: string | number,
-  decimalPlaces: number,
-  formatDecimals: number = decimalPlaces
+export const formatNumberPercentage = (
+  value: BigNumber,
+  formatDecimals?: number
 ) => {
-  const x = addDecimal(rawValue, decimalPlaces);
-
-  return formatNumberFixed(x, formatDecimals);
-};
-
-export const formatNumberPercentage = (value: BigNumber, decimals?: number) => {
   const decimalPlaces =
-    typeof decimals === 'undefined' ? value.dp() || 0 : decimals;
+    typeof formatDecimals === 'undefined' ? value.dp() || 0 : formatDecimals;
   return `${value.toFormat(decimalPlaces)}%`;
 };
-
-export const toNumberParts = (
-  value: BigNumber | null | undefined,
-  decimals = 18
-): [integers: string, decimalPlaces: string, separator: string] => {
-  if (!value) {
-    return ['0', '0'.repeat(decimals), '.'];
-  }
-  const separator = getDecimalSeparator() || '.';
-  const [integers, decimalsPlaces] = formatNumber(value, decimals)
-    .toString()
-    .split(separator);
-  return [integers, decimalsPlaces || '', separator];
-};
-
-export const isNumeric = (
-  value?: string | number | BigNumber | bigint | null
-): value is NonNullable<number | string> => /^-?\d*\.?\d+$/.test(String(value));
 
 /**
  * Format a number greater than 1 million with m for million, b for billion
@@ -238,7 +240,7 @@ export const formatNumberRounded = (num: BigNumber) => {
     // Million
     value = `${format('1e6')}m`;
   } else {
-    value = formatNumber(num);
+    value = num.toFormat();
   }
 
   return value;

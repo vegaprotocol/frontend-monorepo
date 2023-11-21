@@ -102,12 +102,7 @@ export const OrderbookControls = ({
 };
 
 export const formatResolution = (r: number, decimalPlaces: number) => {
-  let num = addDecimalsFormatNumber(r, decimalPlaces);
-
-  // Remove trailing zeroes
-  num = num.replace(/\.?0+$/, '');
-
-  return num;
+  return addDecimalsFormatNumber(r, decimalPlaces);
 };
 
 /**

@@ -74,7 +74,7 @@ describe('MarginHealthChart', () => {
   it('should render correct values', async () => {
     render(<MarginHealthChart marketId="marketId" assetId="assetId" />);
     const chart = screen.getByTestId('margin-health-chart');
-    expect(chart).toHaveTextContent('3.00 above maintenance level');
+    expect(chart).toHaveTextContent('3 above maintenance level');
     const red = screen.getByTestId('margin-health-chart-red');
     const orange = screen.getByTestId('margin-health-chart-orange');
     const yellow = screen.getByTestId('margin-health-chart-yellow');
@@ -121,7 +121,7 @@ describe('MarginHealthChartTooltip', () => {
       expect(value).toHaveTextContent(expectedLabels[i]);
     });
     const values = await screen.findAllByTestId('margin-health-tooltip-value');
-    const expectedValues = ['4.00', '5.00', '6.00', '8.00', '10.00'];
+    const expectedValues = ['4', '5', '6', '8', '10'];
     values.forEach((value, i) => {
       expect(value).toHaveTextContent(expectedValues[i]);
     });
@@ -137,7 +137,7 @@ describe('MarginHealthChartTooltip', () => {
     );
 
     let values = await screen.findAllByTestId('margin-health-tooltip-value');
-    expect(values[2]).toHaveTextContent('7.00');
+    expect(values[2]).toHaveTextContent('7');
 
     rerender(
       <MarginHealthChartTooltip
@@ -149,6 +149,6 @@ describe('MarginHealthChartTooltip', () => {
 
     values = await screen.findAllByTestId('margin-health-tooltip-value');
     expect(values.length).toBe(5);
-    expect(values[3]).toHaveTextContent('9.00');
+    expect(values[3]).toHaveTextContent('9');
   });
 });

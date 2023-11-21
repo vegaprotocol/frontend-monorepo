@@ -139,7 +139,7 @@ describe('RewardPot', () => {
     renderComponent(props);
 
     expect(screen.getByTestId('total-rewards')).toHaveTextContent(
-      `7.00 ${rewardAsset.symbol}`
+      `7.0000 ${rewardAsset.symbol}`
     );
 
     expect(screen.getByText(/Locked/).nextElementSibling).toHaveTextContent(

@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { addDecimalsFixedFormatNumber } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { NumericCell } from './numeric-cell';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 
@@ -57,7 +57,7 @@ export const CumulativeVol = memo(
         (
         <NumericCell
           value={Number(indicativeVolume)}
-          valueFormatted={addDecimalsFixedFormatNumber(
+          valueFormatted={addDecimalsFormatNumber(
             indicativeVolume,
             positionDecimalPlaces ?? 0
           )}
@@ -69,7 +69,7 @@ export const CumulativeVol = memo(
         {ask ? (
           <NumericCell
             value={ask}
-            valueFormatted={addDecimalsFixedFormatNumber(
+            valueFormatted={addDecimalsFormatNumber(
               ask,
               positionDecimalPlaces ?? 0
             )}
@@ -79,7 +79,7 @@ export const CumulativeVol = memo(
         {bid ? (
           <NumericCell
             value={ask}
-            valueFormatted={addDecimalsFixedFormatNumber(
+            valueFormatted={addDecimalsFormatNumber(
               bid,
               positionDecimalPlaces ?? 0
             )}

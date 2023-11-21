@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js';
 import {
   addDecimalsFormatNumber,
   addDecimalsFormatNumberQuantum,
-  formatNumber,
   formatNumberPercentage,
   getUnlimitedThreshold,
   isNumeric,
@@ -12,6 +11,7 @@ import {
   quantumDecimalPlaces,
   toDecimal,
   toNumberParts,
+  formatNumberRounded,
 } from './number';
 
 describe('number utils', () => {
@@ -36,6 +36,18 @@ describe('number utils', () => {
       f: undefined,
       o: '1,234,567.904195168829277777',
     },
+    {
+      v: new BigNumber('1234567904195168829277777'),
+      d: 18,
+      f: 2,
+      o: '1,234,567.90',
+    },
+    {
+      v: new BigNumber('1234567906195168829277777'),
+      d: 18,
+      f: 2,
+      o: '1,234,567.91', // should round here
+    },
   ])('addDecimalsFormatNumber formats $v as $o', ({ v, d, f, o }) => {
     expect(addDecimalsFormatNumber(v.toString(), d, f)).toStrictEqual(o);
   });
@@ -45,107 +57,94 @@ describe('number utils', () => {
     {
       v: new BigNumber('12111111'),
       d: 6,
-      o: '12.11',
       q: '1000000',
+      o: '12.11',
     },
     {
       v: new BigNumber('12456111111'),
       d: 6,
-      o: '12,456.11',
       q: '1000000',
+      o: '12,456.11',
     },
     {
       v: new BigNumber('12345678'),
       d: 6,
-      o: '12.35', // quantum should round
       q: '1000000',
+      o: '12.35', // quantum should round
     },
 
     // WETH
     {
       v: new BigNumber('1'),
       d: 18,
-      o: '0.000000', // actually 0.000000000000000001 but we are formatting with quantum so that last 1 weth is not relevant
       q: '500000000000000',
+      o: '0.000000', // actually 0.000000000000000001 but we are formatting with quantum so that last 1 weth is not relevant
     },
     {
       v: new BigNumber('493000000000000'),
       d: 18,
-      o: '0.000493', // 1 USD of WETH ~0.000493
       q: '500000000000000',
+      o: '0.000493', // 1 USD of WETH ~0.000493
     },
     {
       v: new BigNumber('1000000493000000000000'),
       d: 18,
-      o: '1,000.000493',
       q: '500000000000000',
+      o: '1,000.000493',
+    },
+    { v: new BigNumber(123001), d: 2, q: 1, o: '1,230.0100' },
+    { v: new BigNumber(123001), d: 2, q: 100, o: '1,230.01' },
+    {
+      v: BigNumber('123456789123456789'),
+      d: 10,
+      q: '1',
+      o: '12,345,678.912345678900',
     },
 
-    // OTHER
-    // { v: new BigNumber(123000), d: 5, o: '1.23', q: 0.1 },
-    // { v: new BigNumber(123000), d: 3, o: '123.00', q: 0.1 },
-    // { v: new BigNumber(123000), d: 1, o: '12,300.00', q: 0.1 },
-    // { v: new BigNumber(123001000), d: 2, o: '1,230,010.00', q: 0.1 },
-    { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 100 },
-    // { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 0.1 },
-    { v: new BigNumber(123001), d: 2, o: '1,230.0100', q: 1 },
-    // {
-    //   v: BigNumber('123456789123456789'),
-    //   d: 10,
-    //   o: '12,345,678.91234568',
-    //   q: '0.00003846',
-    // },
-    // {
-    //   v: BigNumber('123456789123456789'),
-    //   d: 10,
-    //   o: '12,345,678.912345689',
-    //   q: '1',
-    // },
-  ])('addDecimalsFormatNumberQuantum formats $v as $o', ({ v, d, o, q }) => {
+    // FRACTIONAL QUANTUM
+    { v: new BigNumber(123000), d: 5, q: 0.1, o: '1.23000000' },
+    { v: new BigNumber(123000), d: 3, q: 0.1, o: '123.000000' },
+    { v: new BigNumber(123000), d: 1, q: 0.1, o: '12,300.0000' },
+    { v: new BigNumber(123001000), d: 2, q: 0.1, o: '1,230,010.00000' },
+    { v: new BigNumber(123001), d: 2, q: 0.1, o: '1,230.01000' },
+    {
+      v: BigNumber('123456789123456789'),
+      d: 10,
+      q: '0.00003846',
+      o: '12,345,678.91234567890000000',
+    },
+  ])('addDecimalsFormatNumberQuantum($v, $d, $q) = $o', ({ v, d, q, o }) => {
     expect(addDecimalsFormatNumberQuantum(v.toString(), d, q)).toStrictEqual(o);
   });
 
   it.each([
-    { v: new BigNumber(123), d: 3, o: '123.00' },
-    { v: new BigNumber(123.123), d: 3, o: '123.123' },
-    { v: new BigNumber(123.6666), d: 3, o: '123.667' },
-    { v: new BigNumber(123.123), d: 6, o: '123.123' },
-    { v: new BigNumber(123.123), d: 0, o: '123' },
-    { v: new BigNumber(123), d: undefined, o: '123' },
-    { v: new BigNumber(30000), d: undefined, o: '30,000' },
-    { v: new BigNumber(3.000001), d: undefined, o: '3' },
-  ])('formats with formatNumber given number correctly', ({ v, d, o }) => {
-    expect(formatNumber(v, d)).toStrictEqual(o);
-  });
-
-  it.each([
-    { v: new BigNumber(123), d: 3, o: '123.00%' },
+    { v: new BigNumber(123), d: 3, o: '123.000%' },
     { v: new BigNumber(123.123), d: 3, o: '123.123%' },
-    { v: new BigNumber(123.123), d: 6, o: '123.123%' },
+    { v: new BigNumber(123.123), d: 6, o: '123.123000%' },
     { v: new BigNumber(123.123), d: 0, o: '123%' },
     { v: new BigNumber(123), d: undefined, o: '123%' }, // it default to 2 decimal places
     { v: new BigNumber(30000), d: undefined, o: '30,000%' },
     { v: new BigNumber(3.000001), d: undefined, o: '3.000001%' },
-  ])('formats given number correctly', ({ v, d, o }) => {
+  ])('formatNumberRounded($v, $d) -> $o', ({ v, d, o }) => {
     expect(formatNumberPercentage(v, d)).toStrictEqual(o);
   });
 
   describe('toNumberParts', () => {
     it.each([
-      { v: null, d: 3, o: ['0', '000', '.'] },
-      { v: undefined, d: 3, o: ['0', '000', '.'] },
-      { v: new BigNumber(123), d: 3, o: ['123', '00', '.'] },
-      { v: new BigNumber(123.123), d: 3, o: ['123', '123', '.'] },
-      { v: new BigNumber(123.123), d: 6, o: ['123', '123', '.'] },
-      { v: new BigNumber(123.123), d: 0, o: ['123', '', '.'] },
-      { v: new BigNumber(123), d: undefined, o: ['123', '00', '.'] },
+      { v: null, o: ['0', '', '.'] },
+      { v: undefined, o: ['0', '', '.'] },
+      { v: new BigNumber(123), o: ['123', '', '.'] },
+      { v: new BigNumber(123.123), o: ['123', '123', '.'] },
+      { v: new BigNumber(123.123), o: ['123', '123', '.'] },
+      { v: new BigNumber(123.123), o: ['123', '123', '.'] },
+      { v: new BigNumber(123), o: ['123', '', '.'] },
       {
         v: new BigNumber(30000),
         d: undefined,
-        o: ['30,000', '00', '.'],
+        o: ['30,000', '', '.'],
       },
-    ])('returns correct tuple given the different arguments', ({ v, d, o }) => {
-      expect(toNumberParts(v, d)).toStrictEqual(o);
+    ])('$v  -> $o', ({ v, o }) => {
+      expect(toNumberParts(v)).toStrictEqual(o);
     });
   });
 
@@ -291,4 +290,24 @@ describe('getUnlimitedThreshold', () => {
       expect(getUnlimitedThreshold(decimals).toString()).toEqual(output);
     }
   );
+});
+
+describe('formatNumberRounded', () => {
+  it.each([
+    { n: new BigNumber(123), o: '123' },
+    { n: new BigNumber(1234), o: '1,234' },
+    { n: new BigNumber(404000), o: '404,000' },
+    { n: new BigNumber(500000), o: '500,000' },
+    { n: new BigNumber(1000000), o: '1m' },
+    { n: new BigNumber(1500000), o: '1.5m' },
+    { n: new BigNumber(1500001), o: '1.5m' },
+    { n: new BigNumber(1510001), o: '1.5m' },
+    { n: new BigNumber(1000000000), o: '1b' },
+    { n: new BigNumber(1500000000), o: '1.5b' },
+    { n: new BigNumber(1000000000000), o: '1t' },
+    { n: new BigNumber(1500000000000), o: '1.5t' },
+    { n: new BigNumber(99510000000000), o: '99.5t' },
+  ])('$n -> $o', ({ n, o }) => {
+    expect(formatNumberRounded(n)).toEqual(o);
+  });
 });

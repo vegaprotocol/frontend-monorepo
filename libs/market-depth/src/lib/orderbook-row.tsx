@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { memo } from 'react';
-import { addDecimal, addDecimalsFixedFormatNumber } from '@vegaprotocol/utils';
+import { addDecimal, addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { NumericCell } from '@vegaprotocol/datagrid';
 import { VolumeType } from './orderbook-data';
 import classNames from 'classnames';
@@ -55,7 +55,7 @@ export const OrderbookRow = memo(
             <NumericCell
               testId={`price-${price}`}
               value={BigInt(price)}
-              valueFormatted={addDecimalsFixedFormatNumber(
+              valueFormatted={addDecimalsFormatNumber(
                 price,
                 decimalPlaces,
                 priceFormatDecimalPlaces
@@ -76,7 +76,7 @@ export const OrderbookRow = memo(
               <NumericCell
                 testId={`${txtId}-vol-${price}`}
                 value={volume}
-                valueFormatted={addDecimalsFixedFormatNumber(
+                valueFormatted={addDecimalsFormatNumber(
                   volume,
                   positionDecimalPlaces ?? 0
                 )}
@@ -94,7 +94,7 @@ export const OrderbookRow = memo(
               <NumericCell
                 testId={`cumulative-vol-${price}`}
                 value={cumulativeVolume}
-                valueFormatted={addDecimalsFixedFormatNumber(
+                valueFormatted={addDecimalsFormatNumber(
                   cumulativeVolume,
                   positionDecimalPlaces
                 )}
