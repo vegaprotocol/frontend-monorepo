@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { toBigNum } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
@@ -8,6 +7,7 @@ import { accountsDataProvider } from '@vegaprotocol/accounts';
 import { WithdrawManager } from './withdraw-manager';
 import * as Types from '@vegaprotocol/types';
 import type { WithdrawalArgs } from './withdraw-form';
+import { useT } from './use-t';
 
 interface WithdrawFormContainerProps {
   partyId?: string;
@@ -20,6 +20,7 @@ export const WithdrawFormContainer = ({
   partyId,
   submit,
 }: WithdrawFormContainerProps) => {
+  const t = useT();
   const { data, loading, error } = useDataProvider({
     dataProvider: accountsDataProvider,
     variables: { partyId: partyId || '' },

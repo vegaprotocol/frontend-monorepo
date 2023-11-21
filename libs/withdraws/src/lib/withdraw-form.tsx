@@ -8,7 +8,6 @@ import {
   isAssetTypeERC20,
   formatNumber,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
   TradingFormGroup,
@@ -33,6 +32,7 @@ import {
 } from '@vegaprotocol/web3';
 import { AssetBalance } from './asset-balance';
 import { DocsLinks } from '@vegaprotocol/environment';
+import { useT } from './use-t';
 
 export interface WithdrawalArgs {
   amount: string;
@@ -69,10 +69,11 @@ const WithdrawDelayNotification = ({
   symbol: string;
   decimals: number;
 }) => {
-  const replacements = [
+  const t = useT();
+  const replacements = {
     symbol,
-    delay ? formatDistanceToNow(Date.now() + delay * 1000) : ' ',
-  ];
+    delay: delay ? formatDistanceToNow(Date.now() + delay * 1000) : ' ',
+  };
   return (
     <Notification
       intent={Intent.Warning}
@@ -84,11 +85,17 @@ const WithdrawDelayNotification = ({
       }
       message={[
         threshold.isEqualTo(0)
-          ? t('All %s withdrawals are subject to a %s delay.', replacements)
-          : t('Withdrawals of %s %s or more will be delayed for %s.', [
-              formatNumber(threshold, decimals),
-              ...replacements,
-            ]),
+          ? t(
+              'All {{symbol}} withdrawals are subject to a {{delay}} delay.',
+              replacements
+            )
+          : t(
+              'Withdrawals of {{threshold}} {{symbol}} or more will be delayed for {{delay}}.',
+              {
+                threshold: formatNumber(threshold, decimals),
+                ...replacements,
+              }
+            ),
         DocsLinks?.WITHDRAWAL_LIMITS ? (
           <ExternalLink className="ml-1" href={DocsLinks.WITHDRAWAL_LIMITS}>
             {t('Read more')}
@@ -111,10 +118,10 @@ export const WithdrawForm = ({
   onSelectAsset,
   submitWithdraw,
 }: WithdrawFormProps) => {
+  const t = useT();
   const ethereumAddress = useEthereumAddress();
   const required = useRequired();
   const minSafe = useMinSafe();
-
   const { account: address } = useWeb3React();
   const {
     register,
@@ -315,6 +322,7 @@ const UseButton = (props: UseButtonProps) => {
 };
 
 const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
+  const t = useT();
   const openDialog = useWeb3ConnectStore((state) => state.open);
   const { isActive, connector } = useWeb3React();
   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
