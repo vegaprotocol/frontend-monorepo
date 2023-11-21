@@ -1,27 +1,11 @@
 import pytest
 import vega_sim.api.governance as governance
-import re
-
-from collections import namedtuple
 from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService, PeggedOrder
-import vega_sim.proto.vega as vega_protos
 import vega_sim.api.governance as governance
 from actions.vega import submit_order
-from fixtures.market import setup_continuous_market
-from datetime import datetime
-from datetime import timedelta
-from vega_sim.service import MarketStateUpdateType
+from wallet_config import MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET
 
-# Defined namedtuples
-WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
-
-# Wallet Configurations
-MM_WALLET = WalletConfig("mm", "pin")
-MM_WALLET2 = WalletConfig("mm2", "pin2")
-GOVERNANCE_WALLET = WalletConfig("FJMKnwfZdd48C8NqvYrG", "bY3DxwtsCstMIIZdNpKs")
-
-wallets = [MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET]
 
 
 @pytest.mark.usefixtures("vega", "page", "proposed_market", "risk_accepted")
@@ -135,7 +119,7 @@ def test_market_closing_banners(page: Page, continuous_market, vega: VegaService
     page.goto(f"/#/markets/{market_id}")
     proposalID = vega.update_market_state(
         continuous_market,
-        "mm",
+        "market_maker",
         MarketStateUpdateType.Terminate,
         approve_proposal=False,
         vote_enactment_time = datetime.now() + timedelta(weeks=1),
@@ -148,7 +132,7 @@ def test_market_closing_banners(page: Page, continuous_market, vega: VegaService
 
     vega.update_market_state(
         continuous_market,
-        "mm",
+        "market_maker",
         MarketStateUpdateType.Terminate,
         approve_proposal=False,
         vote_enactment_time = datetime.now() + timedelta(weeks=1),
@@ -161,7 +145,7 @@ def test_market_closing_banners(page: Page, continuous_market, vega: VegaService
     governance.approve_proposal( 
         proposal_id=proposalID,
         wallet=vega.wallet,
-        key_name="mm"
+        key_name="market_maker"
         
     )
     vega.forward("60s")

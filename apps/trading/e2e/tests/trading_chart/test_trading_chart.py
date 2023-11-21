@@ -18,8 +18,8 @@
 #     page.goto(f"/#/markets/{continuous_market}")
 #     vega.forward("24h")
 #     vega.wait_for_total_catchup()
-#     submit_order(vega, "mm", continuous_market, "SIDE_SELL", 1, 101.50000)
-#     submit_order(vega, "mm2", continuous_market, "SIDE_SELL", 1, 101.50000)
+#     submit_order(vega, "market_maker", continuous_market, "SIDE_SELL", 1, 101.50000)
+#     submit_order(vega, "market_maker_2", continuous_market, "SIDE_SELL", 1, 101.50000)
 #     vega.forward("10s")
 #     vega.wait_for_total_catchup()
 

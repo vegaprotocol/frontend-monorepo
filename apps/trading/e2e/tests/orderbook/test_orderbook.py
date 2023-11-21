@@ -1,19 +1,10 @@
 import pytest
-from collections import namedtuple
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
 from typing import List
 from actions.vega import submit_order, submit_liquidity, submit_multiple_orders
 from conftest import init_vega
 from fixtures.market import setup_simple_market
-
-# Defined namedtuples
-WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
-
-# Wallet Configurations
-MM_WALLET = WalletConfig("mm", "pin")
-MM_WALLET2 = WalletConfig("mm2", "pin2")
-
+from wallet_config import MM_WALLET, MM_WALLET2
 
 @pytest.fixture(scope="module")
 def vega():

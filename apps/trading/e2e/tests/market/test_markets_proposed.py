@@ -1,24 +1,11 @@
-from math import exp
 import pytest
 import vega_sim.api.governance as governance
 import re
-
-from collections import namedtuple
 from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService
-
 from conftest import init_vega
 from fixtures.market import setup_simple_market
-
-# Defined namedtuples
-WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
-
-# Wallet Configurations
-MM_WALLET = WalletConfig("mm", "pin")
-MM_WALLET2 = WalletConfig("mm2", "pin2")
-TERMINATE_WALLET = WalletConfig("FJMKnwfZdd48C8NqvYrG", "bY3DxwtsCstMIIZdNpKs")
-
-wallets = [MM_WALLET, MM_WALLET2, TERMINATE_WALLET]
+from wallet_config import MM_WALLET, MM_WALLET2, TERMINATE_WALLET, wallets
 
 row_selector = '[data-testid="tab-proposed-markets"] .ag-center-cols-container .ag-row'
 col_market_id = '[col-id="market"] [data-testid="stack-cell-primary"]'
@@ -28,7 +15,6 @@ col_market_id = '[col-id="market"] [data-testid="stack-cell-primary"]'
 def vega(request):
     with init_vega(request) as vega:
         yield vega
-
 
 @pytest.fixture(scope="module")
 def proposed_market(vega: VegaService):

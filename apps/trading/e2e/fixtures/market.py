@@ -1,25 +1,12 @@
-from collections import namedtuple
 from vega_sim.service import VegaService
 from actions.vega import submit_multiple_orders, submit_order, submit_liquidity
-
-
+from wallet_config import MM_WALLET, MM_WALLET2, TERMINATE_WALLET, wallets
 import logging
 
 logger = logging.getLogger()
 
-# Defined namedtuples
-WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
-
-# Wallet Configurations
-MM_WALLET = WalletConfig("mm", "pin")
-MM_WALLET2 = WalletConfig("mm2", "pin2")
-TERMINATE_WALLET = WalletConfig("FJMKnwfZdd48C8NqvYrG", "bY3DxwtsCstMIIZdNpKs")
-
-wallets = [MM_WALLET, MM_WALLET2, TERMINATE_WALLET]
-
 mint_amount: float = 10e5
 market_name = "BTC:DAI_2023"
-
 
 def setup_simple_market(
     vega: VegaService,

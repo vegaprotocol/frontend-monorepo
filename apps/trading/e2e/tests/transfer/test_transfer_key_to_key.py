@@ -2,7 +2,7 @@ import pytest
 import re
 from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService
-from actions.utils import wait_for_toast_confirmation, create_and_faucet_wallet, WalletConfig, next_epoch
+from actions.utils import wait_for_toast_confirmation, create_and_faucet_wallet, WalletConfig, next_epoch, change_keys
 import vega_sim.proto.vega as vega_protos
 
 LIQ = WalletConfig("liq", "liq")
@@ -50,7 +50,7 @@ def test_transfer_submit(continuous_market, vega: VegaService, page: Page):
 @pytest.mark.usefixtures("page", "auth", "risk_accepted")
 def test_transfer_vesting_below_minimum(continuous_market, vega: VegaService, page: Page):
     vega.update_network_parameter(
-    "mm", parameter="transfer.minTransferQuantumMultiple", new_value="100000" 
+    "market_maker", parameter="transfer.minTransferQuantumMultiple", new_value="100000" 
     )
     vega.wait_for_total_catchup()
     
@@ -97,9 +97,7 @@ def test_transfer_vesting_below_minimum(continuous_market, vega: VegaService, pa
     page.goto('/#/portfolio')
     expect(page.get_by_test_id('transfer-form')).to_be_visible
     
-    page.get_by_test_id("manage-vega-wallet").click()
-    page.locator('[role="menuitemradio"]').nth(5).click()
-    page.reload()
+    change_keys(page, vega, "party_b")
     page.get_by_test_id('select-asset').click()
     page.get_by_test_id('rich-select-option').click()
     
