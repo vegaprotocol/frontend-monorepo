@@ -32,7 +32,8 @@ import { SSRLoader } from './ssr-loader';
 import { PartyActiveOrdersHandler } from './party-active-orders-handler';
 import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
-import '../lib/i18n';
+import i18n from '../lib/i18n';
+import { I18nextProvider } from 'react-i18next';
 import { useT } from '../lib/use-t';
 
 const Title = () => {
@@ -66,42 +67,44 @@ function AppBody({ Component }: AppProps) {
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
   );
   return (
-    <div className="h-full overflow-hidden">
-      <Head>
-        {/* Cannot use meta tags in _document.page.tsx see https://nextjs.org/docs/messages/no-document-viewport-meta */}
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-      <Title />
-      <div className={gridClasses}>
-        <AnnouncementBanner />
-        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'}>
-          <Routes>
-            <Route
-              path={AppRoutes.MARKETS}
-              // render nothing for markets/all, otherwise markets/:marketId will match with markets/all
-              element={null}
+    <I18nextProvider i18n={i18n}>
+      <div className="h-full overflow-hidden">
+        <Head>
+          {/* Cannot use meta tags in _document.page.tsx see https://nextjs.org/docs/messages/no-document-viewport-meta */}
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </Head>
+        <Title />
+        <div className={gridClasses}>
+          <AnnouncementBanner />
+          <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'}>
+            <Routes>
+              <Route
+                path={AppRoutes.MARKETS}
+                // render nothing for markets/all, otherwise markets/:marketId will match with markets/all
+                element={null}
+              />
+              <Route path={AppRoutes.MARKET} element={<NavHeader />} />
+            </Routes>
+          </Navbar>
+          <div data-testid="banners">
+            <ProtocolUpgradeProposalNotification
+              mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
             />
-            <Route path={AppRoutes.MARKET} element={<NavHeader />} />
-          </Routes>
-        </Navbar>
-        <div data-testid="banners">
-          <ProtocolUpgradeProposalNotification
-            mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
-          />
-          <ProtocolUpgradeInProgressNotification />
-          <ViewingBanner />
+            <ProtocolUpgradeInProgressNotification />
+            <ViewingBanner />
+          </div>
+          <div data-testid={`pathname-${location.pathname}`}>
+            <Component />
+          </div>
         </div>
-        <div data-testid={`pathname-${location.pathname}`}>
-          <Component />
-        </div>
+        <DialogsContainer />
+        <ToastsManager />
+        <TransactionHandlers />
+        <MaybeConnectEagerly />
+        <PartyActiveOrdersHandler />
+        <Telemetry />
       </div>
-      <DialogsContainer />
-      <ToastsManager />
-      <TransactionHandlers />
-      <MaybeConnectEagerly />
-      <PartyActiveOrdersHandler />
-      <Telemetry />
-    </div>
+    </I18nextProvider>
   );
 }
 
