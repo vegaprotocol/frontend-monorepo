@@ -52,6 +52,29 @@ export const useColumnDefs = () => {
         field: 'tradableInstrument.instrument.name',
       },
       {
+        headerName: t('Settlement asset'),
+        field: 'tradableInstrument.instrument.product.settlementAsset.symbol',
+        cellRenderer: ({
+          data,
+        }: VegaICellRendererParams<
+          MarketMaybeWithData,
+          'tradableInstrument.instrument.product.settlementAsset.symbol'
+        >) => {
+          const value = data && getAsset(data);
+          return value ? (
+            <ButtonLink
+              onClick={(e) => {
+                openAssetDetailsDialog(value.id, e.target as HTMLElement);
+              }}
+            >
+              {value.symbol}
+            </ButtonLink>
+          ) : (
+            ''
+          );
+        },
+      },
+      {
         headerName: t('Trading mode'),
         field: 'tradingMode',
         cellRenderer: ({
@@ -142,27 +165,21 @@ export const useColumnDefs = () => {
         },
       },
       {
-        headerName: t('Settlement asset'),
-        field: 'tradableInstrument.instrument.product.settlementAsset.symbol',
-        cellRenderer: ({
+        headerName: t('Open Interest'),
+        field: 'data.openInterest',
+        type: 'rightAligned',
+        valueFormatter: ({
           data,
-        }: VegaICellRendererParams<
+        }: VegaValueFormatterParams<
           MarketMaybeWithData,
-          'tradableInstrument.instrument.product.settlementAsset.symbol'
-        >) => {
-          const value = data && getAsset(data);
-          return value ? (
-            <ButtonLink
-              onClick={(e) => {
-                openAssetDetailsDialog(value.id, e.target as HTMLElement);
-              }}
-            >
-              {value.symbol}
-            </ButtonLink>
-          ) : (
-            ''
-          );
-        },
+          'data.openInterest'
+        >) =>
+          data?.data?.openInterest === undefined
+            ? '-'
+            : addDecimalsFormatNumber(
+                data?.data?.openInterest,
+                data?.positionDecimalPlaces
+              ),
       },
       {
         headerName: t('Spread'),
