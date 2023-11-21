@@ -80,7 +80,7 @@ describe('OrderListTable', () => {
     const expectedValues: string[] = [
       marketOrder.market?.tradableInstrument.instrument.code || '',
       '0.05',
-      '0.10',
+      '0.1',
       Schema.OrderTypeMapping[marketOrder.type as Schema.OrderType] || '',
       Schema.OrderStatusMapping[marketOrder.status],
       '-',
@@ -102,7 +102,7 @@ describe('OrderListTable', () => {
     const expectedValues: string[] = [
       limitOrder.market?.tradableInstrument.instrument.code || '',
       '0.05',
-      '0.10',
+      '0.1',
       Schema.OrderTypeMapping[limitOrder.type || Schema.OrderType.TYPE_LIMIT],
       Schema.OrderStatusMapping[limitOrder.status],
       '-',
@@ -135,8 +135,8 @@ describe('OrderListTable', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues: string[] = [
       icebergOrder.market?.tradableInstrument.instrument.code || '',
-      '0.00',
-      '+1.00',
+      '0',
+      '+1',
       Schema.OrderTypeMapping[
         icebergOrder.type || Schema.OrderType.TYPE_LIMIT
       ] + ' (Iceberg)',
@@ -277,7 +277,7 @@ describe('OrderListTable', () => {
 
       const amendCell = getAmendCell();
       const typeCell = screen.getAllByRole('gridcell')[3];
-      expect(typeCell).toHaveTextContent('Mid - 10.0 Peg limit');
+      expect(typeCell).toHaveTextContent('Mid - 10 Peg limit');
       expect(amendCell.queryByTestId('edit')).toBeInTheDocument();
       expect(amendCell.queryByTestId('cancel')).toBeInTheDocument();
     });
