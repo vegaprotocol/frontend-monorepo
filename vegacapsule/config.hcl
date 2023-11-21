@@ -19,7 +19,7 @@ EOT
 
   pre_start {
     docker_service "ganache-1" {
-      image = "vegaprotocol/ganache:v7.9.0"
+      image = "vegaprotocol/ganache:v1.2.4"
       cmd = "ganache-cli"
       args = [
         "--blockTime", "1",
