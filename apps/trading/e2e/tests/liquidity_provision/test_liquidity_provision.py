@@ -3,7 +3,7 @@ from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService
 from conftest import init_vega
 from fixtures.market import setup_continuous_market
-from actions.utils import next_epoch, truncate_middle
+from actions.utils import next_epoch, truncate_middle, change_keys
 
 
 @pytest.fixture(scope="module")
@@ -21,11 +21,7 @@ def continuous_market(vega):
 def test_liquidity_provision_amendment(continuous_market, vega: VegaService, page: Page):
     # TODO Refactor asserting the grid
     page.goto(f"/#/liquidity/{continuous_market}")
-    page.get_by_test_id("manage-vega-wallet").click()
-    #TODO Rename "mm" to "marketMaker" so that we don't have to specify where to click when switching wallets
-    # Currently the default click will click the middle of the element which will click the copy wallet key button
-    page.locator('[role="menuitemradio"] >> .mr-2.uppercase').nth(1).click(position={ "x": 0, "y": 0}, force=True)
-    page.reload()
+    change_keys(page, vega, "market_maker")
     row = page.get_by_test_id("tab-myLP").locator(".ag-center-cols-container .ag-row").first
     expect(row).to_contain_text(
         "Active"
@@ -44,7 +40,7 @@ def test_liquidity_provision_amendment(continuous_market, vega: VegaService, pag
     expect(page.get_by_test_id("liquidity-learn-more").get_by_test_id("external-link")).to_have_attribute("href", "https://docs.vega.xyz/testnet/concepts/liquidity/provision")
 
     vega.submit_simple_liquidity(
-        key_name="mm",
+        key_name="market_maker",
         market_id=continuous_market,
         commitment_amount=1,
         fee=0.001,
@@ -66,22 +62,19 @@ def test_liquidity_provision_amendment(continuous_market, vega: VegaService, pag
     expect(row).to_contain_text(
         "Active"
     )
+
 @pytest.mark.skip("Waiting for the ability to cancel LP")
 @pytest.mark.usefixtures("page", "auth", "risk_accepted")
 def test_liquidity_provision_inactive(continuous_market, vega: VegaService, page: Page):
     # TODO Refactor asserting the grid
     page.goto(f"/#/liquidity/{continuous_market}")
-    page.get_by_test_id("manage-vega-wallet").click()
-    #TODO Rename "mm" to "marketMaker" so that we don't have to specify where to click when switching wallets
-    # Currently the default click will click the middle of the element which will click the copy wallet key button
-    page.locator('[role="menuitemradio"] >> .mr-2.uppercase').nth(1).click(position={ "x": 0, "y": 0}, force=True)
-    page.reload()
+    change_keys(page,vega, "market_maker")
     row = page.get_by_test_id("tab-myLP").locator(".ag-center-cols-container .ag-row").first
     expect(row).to_contain_text(
         "Active"
     )
     vega.submit_simple_liquidity(
-        key_name="mm",
+        key_name="market_maker",
         market_id=continuous_market,
         commitment_amount=0,
         fee=0,
@@ -90,5 +83,3 @@ def test_liquidity_provision_inactive(continuous_market, vega: VegaService, page
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     
-    page.reload()
-    expect()

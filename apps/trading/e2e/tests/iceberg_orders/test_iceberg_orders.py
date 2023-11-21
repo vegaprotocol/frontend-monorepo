@@ -1,22 +1,10 @@
 import pytest
-from collections import namedtuple
 from playwright.sync_api import expect, Page
 from vega_sim.service import VegaService
 from actions.vega import submit_order
 from conftest import init_vega
 from fixtures.market import setup_continuous_market
-
-# Defined namedtuples
-WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
-
-# Wallet Configurations
-MM_WALLET = WalletConfig("mm", "pin")
-MM_WALLET2 = WalletConfig("mm2", "pin2")
-TERMINATE_WALLET = WalletConfig("FJMKnwfZdd48C8NqvYrG", "bY3DxwtsCstMIIZdNpKs")
-
-
-wallets = [MM_WALLET, MM_WALLET2, TERMINATE_WALLET]
-
+from wallet_config import MM_WALLET2
 
 def hover_and_assert_tooltip(page: Page, element_text):
     element = page.get_by_text(element_text)

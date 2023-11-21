@@ -1,19 +1,10 @@
 import pytest
-from collections import namedtuple
 from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService
 from actions.vega import submit_order
 from datetime import datetime, timedelta
 from conftest import init_vega
 from fixtures.market import setup_continuous_market
-
-# Defined namedtuples
-WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
-
-# Wallet Configurations
-MM_WALLET = WalletConfig("mm", "pin")
-MM_WALLET2 = WalletConfig("mm2", "pin2")
-TERMINATE_WALLET = WalletConfig("FJMKnwfZdd48C8NqvYrG", "bY3DxwtsCstMIIZdNpKs")
 
 stop_order_btn = "order-type-Stop"
 stop_limit_order_btn = "order-type-StopLimit"

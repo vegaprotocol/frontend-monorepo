@@ -1,15 +1,8 @@
 import pytest
-from collections import namedtuple
 from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService
 from actions.vega import submit_order
 from actions.utils import wait_for_toast_confirmation
-
-# Defined namedtuples
-WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
-
-# Wallet Configurations
-MM_WALLET = WalletConfig("mm", "pin")
 
 notional = "deal-ticket-fee-notional"
 fees = "deal-ticket-fee-fees"
