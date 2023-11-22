@@ -2,10 +2,8 @@ import pytest
 from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService
 from actions.vega import submit_order
-from conftest import init_vega
-from fixtures.market import setup_continuous_market
 from actions.utils import wait_for_toast_confirmation
-from wallet_config import MM_WALLET, MM_WALLET2, TERMINATE_WALLET, wallets
+
 
 stop_order_btn = "order-type-Stop"
 stop_limit_order_btn = "order-type-StopLimit"
@@ -328,98 +326,4 @@ def test_submit_stop_oco_limit_order_cancel(
         page.locator(".ag-center-cols-container").locator('[col-id="status"]').last
     ).to_have_text("CancelledOCO")
 
-class TestStopOcoValidation:
-    @pytest.fixture(scope="class")
-    def vega(self, request):
-        with init_vega(request) as vega:
-            yield vega
 
-    @pytest.fixture(scope="class")
-    def continuous_market(self, vega):
-        return setup_continuous_market(vega)
-
-    @pytest.mark.usefixtures("page", "auth", "risk_accepted")
-    def test_stop_market_order_oco_form_validation(self, continuous_market, page: Page):
-        page.goto(f"/#/markets/{continuous_market}")
-        page.get_by_test_id(stop_order_btn).click()
-        page.get_by_test_id(stop_market_order_btn).is_visible()
-        page.get_by_test_id(stop_market_order_btn).click()
-        page.get_by_test_id(oco).click()
-        expect(
-            page.get_by_test_id("sidebar-content").get_by_text("Trigger").last
-        ).to_be_visible()
-        # 7002-SORD-084
-        expect(page.locator('[for="triggerDirection-risesAbove-oco"]')).to_have_text(
-            "Rises above"
-        )
-        # 7002-SORD-085
-        expect(page.locator('[for="triggerDirection-fallsBelow-oco"]')).to_have_text(
-            "Falls below"
-        )
-        # 7002-SORD-087
-        expect(page.locator('[for="triggerType-price-oco"]')).to_have_text("Price")
-        expect(page.locator('[for="triggerType-price"]')).to_be_checked
-        # 7002-SORD-088
-        expect(
-            page.locator('[for="triggerType-trailingPercentOffset-oco"]')
-        ).to_have_text("Trailing Percent Offset")
-        expect(page.locator('[for="order-size-oco"]')).to_have_text("Size")
-
-    @pytest.mark.usefixtures("page", "auth", "risk_accepted")
-    def test_stop_limit_order_oco_form_validation(self, continuous_market, page: Page):
-        page.goto(f"/#/markets/{continuous_market}")
-        page.get_by_test_id(stop_order_btn).click()
-        page.get_by_test_id(stop_market_order_btn).is_visible()
-        page.get_by_test_id(stop_limit_order_btn).click()
-        page.get_by_test_id(oco).click()
-        expect(
-            page.get_by_test_id("sidebar-content").get_by_text("Trigger").last
-        ).to_be_visible()
-        # 7002-SORD-099
-        expect(page.locator('[for="triggerDirection-risesAbove-oco"]')).to_have_text(
-            "Rises above"
-        )
-        # 7002-SORD-091
-        expect(page.locator('[for="triggerDirection-fallsBelow-oco"]')).to_have_text(
-            "Falls below"
-        )
-        # 7002-SORD-095
-        expect(page.locator('[for="triggerType-price-oco"]')).to_have_text("Price")
-        expect(page.locator('[for="triggerType-price"]')).to_be_checked
-        # 7002-SORD-095
-        expect(
-            page.locator('[for="triggerType-trailingPercentOffset-oco"]')
-        ).to_have_text("Trailing Percent Offset")
-
-        expect(page.locator('[for="order-size-oco"]')).to_have_text("Size")
-        expect(page.locator('[for="order-price-oco"]')).to_have_text("Price")
-    
-    @pytest.mark.usefixtures("page", "auth", "risk_accepted")
-    def test_maximum_number_of_active_stop_orders_oco(
-        self, continuous_market, vega: VegaService, page: Page
-    ):  
-        page.goto(f"/#/markets/{continuous_market}")   
-        page.get_by_test_id(stop_order_btn).click()
-        page.get_by_test_id(stop_limit_order_btn).is_visible()
-        page.get_by_test_id(stop_limit_order_btn).click()
-        page.get_by_test_id(order_side_sell).click()
-        page.locator("label").filter(has_text="Falls below").click()
-        page.get_by_test_id(trigger_price).fill("102")
-        page.get_by_test_id(order_size).fill("3")
-        page.get_by_test_id(order_price).fill("103")
-        page.get_by_test_id(oco).click()
-        page.get_by_test_id(trigger_price_oco).fill("120")
-        page.get_by_test_id(order_size_oco).fill("2")
-        page.get_by_test_id(order_limit_price_oco).fill("99")
-        for i in range(2):
-            page.get_by_test_id(submit_stop_order).click()
-            wait_for_toast_confirmation(page)
-            vega.wait_fn(1)
-            vega.forward("20s")
-            vega.wait_for_total_catchup()
-            if page.get_by_test_id(close_toast).is_visible():
-               page.get_by_test_id(close_toast).click()
-        # 7002-SORD-011
-        expect(page.get_by_test_id("stop-order-warning-limit")).to_have_text(
-            "There is a limit of 4 active stop orders per market. Orders submitted above the limit will be immediately rejected."
-        )
