@@ -136,8 +136,11 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
             page.add_init_script(script=window_env)
             yield page
         finally:
-            if not os.path.exists("apps/trading/e2e/traces"):
-                os.makedirs("apps/trading/e2e/traces")
+            try:
+                if not os.path.exists("apps/trading/e2e/traces"):
+                    os.makedirs("apps/trading/e2e/traces")
+            except OSError as e:
+                print(f"Failed to create directory '{'apps/trading/e2e/traces'}': {e}")
 
             # Check whether this test failed or passed
             outcome = request.config.cache.get(request.node.nodeid, None)
