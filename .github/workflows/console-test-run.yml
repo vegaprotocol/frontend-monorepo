@@ -215,7 +215,7 @@ jobs:
         if: always()
         with:
           name: playwright-trace
-          path: ./traces/
+          path: apps/trading/e2e/traces/
           retention-days: 15
       #----------------------------------------------
       #  -----  upload logs  -----
