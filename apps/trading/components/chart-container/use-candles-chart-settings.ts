@@ -6,8 +6,10 @@ import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
 type StudySizes = { [S in Study]?: number };
+type Chartlib = 'pennant' | 'tradingview';
 
 interface StoredSettings {
+  chartlib: Chartlib;
   interval: Interval;
   type: ChartType;
   overlays: Overlay[];
@@ -25,6 +27,7 @@ const STUDY_ORDER: Study[] = [
 ];
 
 export const DEFAULT_CHART_SETTINGS = {
+  chartlib: 'tradingview' as const,
   interval: Interval.I15M,
   type: ChartType.CANDLE,
   overlays: [Overlay.MOVING_AVERAGE],
@@ -39,6 +42,7 @@ export const useCandlesChartSettingsStore = create<
     setOverlays: (overlays?: Overlay[]) => void;
     setStudies: (studies?: Study[]) => void;
     setStudySizes: (sizes: number[]) => void;
+    setChartlib: (lib: Chartlib) => void;
   }
 >()(
   persist(
@@ -81,11 +85,16 @@ export const useCandlesChartSettingsStore = create<
           });
         });
       },
+      setChartlib: (lib) => {
+        set((state) => {
+          state.chartlib = lib;
+        });
+      },
     })),
     {
       name: 'vega_candles_chart_store',
-    }
-  )
+    },
+  ),
 );
 
 export const useCandlesChartSettings = () => {
@@ -94,25 +103,25 @@ export const useCandlesChartSettings = () => {
   const interval: Interval = getValidItem(
     settings.interval,
     Object.values(Interval),
-    Interval.I15M
+    Interval.I15M,
   );
 
   const chartType: ChartType = getValidItem(
     settings.type,
     Object.values(ChartType),
-    ChartType.CANDLE
+    ChartType.CANDLE,
   );
 
   const overlays: Overlay[] = getValidSubset(
     settings.overlays,
     Object.values(Overlay),
-    []
+    [],
   );
 
   const studies: Study[] = getValidSubset(
     settings.studies,
     Object.values(Study),
-    [Study.VOLUME]
+    [Study.VOLUME],
   );
 
   // find the study size
@@ -122,6 +131,7 @@ export const useCandlesChartSettings = () => {
   });
 
   return {
+    chartlib: settings.chartlib,
     interval,
     chartType,
     overlays,
@@ -132,5 +142,6 @@ export const useCandlesChartSettings = () => {
     setStudies: settings.setStudies,
     setOverlays: settings.setOverlays,
     setStudySizes: settings.setStudySizes,
+    setChartlib: settings.setChartlib,
   };
 };

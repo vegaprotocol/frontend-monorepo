@@ -57,7 +57,7 @@
       "@vegaprotocol/wallet": ["libs/wallet/src/index.ts"],
       "@vegaprotocol/web3": ["libs/web3/src/index.ts"],
       "@vegaprotocol/withdraws": ["libs/withdraws/src/index.ts"],
-      "trading-view": ["libs/trading-view/src/index.ts"]
+      "@vegaprotocol/trading-view": ["libs/trading-view/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"],

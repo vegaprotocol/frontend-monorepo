@@ -1,8 +1,4 @@
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
-import {
-  CandlesChartContainer,
-  CandlesMenu,
-} from '@vegaprotocol/candles-chart';
 import { Filter, OpenOrdersMenu } from '@vegaprotocol/orders';
 import { TradesContainer } from '../../components/trades-container';
 import { OrderbookContainer } from '../../components/orderbook-container';
@@ -16,13 +12,14 @@ import { OrdersContainer } from '../../components/orders-container';
 import { StopOrdersContainer } from '../../components/stop-orders-container';
 import { AccountsMenu } from '../../components/accounts-menu';
 import { PositionsMenu } from '../../components/positions-menu';
+import { ChartContainer, ChartMenu } from '../../components/chart-container';
 
 export type TradingView = keyof typeof TradingViews;
 
 export const TradingViews = {
   candles: {
-    component: CandlesChartContainer,
-    menu: CandlesMenu,
+    component: ChartContainer,
+    menu: ChartMenu,
   },
   depth: {
     component: DepthChartContainer,

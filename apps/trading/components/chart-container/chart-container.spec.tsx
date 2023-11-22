@@ -1,18 +1,18 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { CandlesMenu } from './candles-menu';
+import { ChartMenu } from './chart-container';
 import {
   useCandlesChartSettingsStore,
   DEFAULT_CHART_SETTINGS,
 } from './use-candles-chart-settings';
 import { Overlay, Study, overlayLabels, studyLabels } from 'pennant';
 
-describe('CandlesMenu', () => {
+describe('ChartMenu', () => {
   const openDropdown = async () => {
     await userEvent.click(
       screen.getByRole('button', {
         name: 'Indicators',
-      })
+      }),
     );
   };
 
@@ -22,7 +22,7 @@ describe('CandlesMenu', () => {
   });
 
   it.each(Object.values(Overlay))('can set %s overlay', async (overlay) => {
-    render(<CandlesMenu />);
+    render(<ChartMenu />);
 
     await openDropdown();
 
@@ -35,12 +35,12 @@ describe('CandlesMenu', () => {
 
     expect(screen.getByText(overlayLabels[overlay as Overlay])).toHaveAttribute(
       'data-state',
-      'checked'
+      'checked',
     );
   });
 
   it.each(Object.values(Study))('can set %s study', async (study) => {
-    render(<CandlesMenu />);
+    render(<ChartMenu />);
 
     await openDropdown();
 
@@ -53,33 +53,33 @@ describe('CandlesMenu', () => {
 
     expect(screen.getByText(studyLabels[study as Study])).toHaveAttribute(
       'data-state',
-      'checked'
+      'checked',
     );
   });
 
   it('should render with the correct default studies and overlays', async () => {
     useCandlesChartSettingsStore.setState(DEFAULT_CHART_SETTINGS);
 
-    render(<CandlesMenu />);
+    render(<ChartMenu />);
 
     await userEvent.click(
       screen.getByRole('button', {
         name: 'Indicators',
-      })
+      }),
     );
     const menu = within(await screen.findByRole('menu'));
 
     expect(menu.getByText(studyLabels.volume)).toHaveAttribute(
       'data-state',
-      'checked'
+      'checked',
     );
     expect(menu.getByText(studyLabels.macd)).toHaveAttribute(
       'data-state',
-      'checked'
+      'checked',
     );
     expect(menu.getByText(overlayLabels.movingAverage)).toHaveAttribute(
       'data-state',
-      'checked'
+      'checked',
     );
   });
 });

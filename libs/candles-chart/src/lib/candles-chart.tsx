@@ -6,37 +6,40 @@ import { useMemo } from 'react';
 import debounce from 'lodash/debounce';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import {
-  STUDY_SIZE,
-  useCandlesChartSettings,
-} from './use-candles-chart-settings';
 import { useT } from './use-t';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 
 export type CandlesChartContainerProps = {
   marketId: string;
+  interval: any;
+  chartType: any;
+  overlays: any;
+  studies: any;
+  studySizes: any;
+  defaultStudySize: number;
+  setStudies: any;
+  setStudySizes: any;
+  setOverlays: any;
 };
 
 const CANDLES_TO_WIDTH_FACTOR = 0.2;
 
 export const CandlesChartContainer = ({
   marketId,
+  interval,
+  chartType,
+  overlays,
+  studies,
+  studySizes,
+  defaultStudySize,
+  setStudies,
+  setStudySizes,
+  setOverlays,
 }: CandlesChartContainerProps) => {
   const client = useApolloClient();
   const { pubKey } = useVegaWallet();
   const { theme } = useThemeSwitcher();
   const t = useT();
-
-  const {
-    interval,
-    chartType,
-    overlays,
-    studies,
-    studySizes,
-    setStudies,
-    setStudySizes,
-    setOverlays,
-  } = useCandlesChartSettings();
 
   const handlePaneChange = useMemo(
     () =>
@@ -44,7 +47,7 @@ export const CandlesChartContainer = ({
         // first number is main pain, which is greedy so we don't store it
         setStudySizes(sizes.filter((_, i) => i !== 0));
       }, 300),
-    [setStudySizes]
+    [setStudySizes],
   );
 
   const dataSource = useMemo(() => {
@@ -69,7 +72,7 @@ export const CandlesChartContainer = ({
                   </span>
                 ),
                 initialNumCandlesToDisplay: candlesCount,
-                studySize: STUDY_SIZE,
+                studySize: defaultStudySize,
                 studySizes,
               }}
               interval={interval}

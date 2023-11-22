@@ -1,5 +1,7 @@
 import Head from 'next/head';
 import { ClientRouter } from './client-router';
+import Script from 'next/script';
+import { useState } from 'react';
 
 /**
  * Next only handles this single index page, react-router takes over after the page
@@ -7,6 +9,7 @@ import { ClientRouter } from './client-router';
  * have to serve a static site via next export
  */
 export default function Index() {
+  const [isScriptReady, setIsScriptReady] = useState(false);
   return (
     <>
       <Head>
@@ -27,7 +30,14 @@ export default function Index() {
         <meta name="twitter:image:alt" content="VEGA logo" />
         <meta name="twitter:site" content="@vegaprotocol" />
       </Head>
-      <ClientRouter />
+      <Script
+        src="/bundle.js"
+        strategy="lazyOnload"
+        onReady={() => {
+          setIsScriptReady(true);
+        }}
+      />
+      {isScriptReady && <ClientRouter />}
     </>
   );
 }
