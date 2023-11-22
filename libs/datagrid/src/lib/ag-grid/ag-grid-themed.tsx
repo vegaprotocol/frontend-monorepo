@@ -39,6 +39,7 @@ export const AgGridThemed = ({
         ref={gridRef}
         overlayLoadingTemplate={t('Loading...')}
         overlayNoRowsTemplate={t('No data')}
+        suppressDragLeaveHidesColumns
         {...defaultProps}
         {...props}
       />

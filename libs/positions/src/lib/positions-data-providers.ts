@@ -267,6 +267,7 @@ export const preparePositions = (metrics: Position[], showClosed: boolean) => {
         MarketState.STATE_ACTIVE,
         MarketState.STATE_PENDING,
         MarketState.STATE_SUSPENDED,
+        MarketState.STATE_SUSPENDED_VIA_GOVERNANCE,
       ].includes(p.marketState)
     ) {
       return true;
