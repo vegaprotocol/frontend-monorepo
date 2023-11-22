@@ -8,7 +8,7 @@ import {
   networkParamsQueryMock,
   nextWeek,
 } from '../../test-helpers/mocks';
-import { VoteBreakdown } from './vote-breakdown';
+import { CompactVotes, VoteBreakdown } from './vote-breakdown';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { MockedResponse } from '@apollo/client/testing';
 import {
@@ -344,5 +344,24 @@ describe('VoteBreakdown', () => {
     const element = screen.getByTestId('lp-participation-progress');
     const style = window.getComputedStyle(element);
     expect(style.width).toBe(`${expectedProgress}%`);
+  });
+});
+
+describe('CompactVotes', () => {
+  it.each([
+    [0, '0'],
+    [1, '1'],
+    [12, '12'],
+    [123, '123'],
+    [1234, '1.2K'],
+    [12345, '12.3K'],
+    [123456, '123.5K'],
+    [1234567, '1.2M'],
+    [12345678, '12.3M'],
+    [123456789, '123.5M'],
+    [1234567890, '1.2B'],
+  ])('compacts %s to %s', (input, output) => {
+    const { getByTestId } = render(<CompactVotes number={BigNumber(input)} />);
+    expect(getByTestId('compact-number').textContent).toBe(output);
   });
 });

@@ -22,11 +22,13 @@ export const CompactNumber = ({
   decimals = 'infer',
   compactDisplay = 'short',
   testId = 'compact-number',
+  compactAbove = DEFAULT_COMPACT_ABOVE,
 }: {
   number: BigNumber;
   decimals?: number | 'infer';
   compactDisplay?: 'short' | 'long';
   testId?: string;
+  compactAbove?: number;
 }) => {
   if (!number.isFinite()) {
     return (
@@ -44,7 +46,7 @@ export const CompactNumber = ({
     return <span data-testid={testId}>{INFINITY}</span>;
   }
 
-  if (number.isLessThan(DEFAULT_COMPACT_ABOVE)) {
+  if (number.isLessThan(compactAbove)) {
     return (
       <span data-testid={testId}>{formatNumber(number, decimalPlaces)}</span>
     );
