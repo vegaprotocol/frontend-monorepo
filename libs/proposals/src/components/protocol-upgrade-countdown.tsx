@@ -48,6 +48,7 @@ export const ProtocolUpgradeCountdown = ({
     case ProtocolUpgradeCountdownMode.IN_BLOCKS:
       countdown = (
         <Trans
+          i18nKey="numberOfBlocks"
           defaults="<0>{{count}}</0> blocks"
           components={[<span className={emphasis}>count</span>]}
           values={{

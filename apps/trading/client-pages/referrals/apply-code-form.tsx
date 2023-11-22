@@ -276,10 +276,12 @@ export const ApplyCodeForm = () => {
       {/* TODO: Re-check plural forms once i18n is updated */}
       {previewData && previewData.isEligible ? (
         <div className="mt-10">
-          <h2 className="text-2xl mb-5">
-            {t('referralApplyPreviewMessage', {
-              count: nextBenefitTierEpochsValue,
-            })}
+          <h2 className="mb-5 text-2xl">
+            {t(
+              'youAreJoiningTheGroup',
+              'You are joining the group shown, but will not have access to benefits until you have completed at least {{count}} epochs.',
+              { count: nextBenefitTierEpochsValue }
+            )}
           </h2>
           <Statistics data={previewData} program={program} as="referee" />
         </div>

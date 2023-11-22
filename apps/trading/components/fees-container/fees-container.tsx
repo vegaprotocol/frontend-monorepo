@@ -317,7 +317,7 @@ export const CurrentVolume = ({
     <div className="flex flex-col gap-3 pt-4">
       <CardStat
         value={formatNumberRounded(new BigNumber(windowLengthVolume))}
-        text={t('Past {{count}} epochs', { count: windowLength })}
+        text={t('pastEpochs', 'Past {{count}} epochs', { count: windowLength })}
       />
       {requiredForNextTier > 0 && (
         <CardStat
@@ -344,9 +344,13 @@ const ReferralBenefits = ({
       <CardStat
         // all sets volume (not just current party)
         value={formatNumber(setRunningNotionalTakerVolume)}
-        text={t('Combined running notional over the {{count}} epochs', {
-          count: epochs,
-        })}
+        text={t(
+          'runningNotionalOverEpochs',
+          'Combined running notional over the {{count}} epochs',
+          {
+            count: epochs,
+          }
+        )}
       />
       <CardStat value={epochsInSet} text={t('epochs in referral set')} />
     </div>
@@ -453,7 +457,9 @@ const VolumeTiers = ({
             <Th>{t('Discount')}</Th>
             <Th>{t('Min. trading volume')}</Th>
             <Th>
-              {t('My volume (last {{count}} epochs)', { count: windowLength })}
+              {t('myVolume', 'My volume (last {{count}} epochs)', {
+                count: windowLength,
+              })}
             </Th>
             <Th />
           </tr>

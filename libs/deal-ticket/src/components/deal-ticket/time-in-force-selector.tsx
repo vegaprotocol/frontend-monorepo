@@ -59,9 +59,7 @@ export const TimeInForceSelector = ({
             components={[
               <Tooltip
                 description={
-                  <SimpleGrid
-                    grid={compileGridData(t, market, marketData, t)}
-                  />
+                  <SimpleGrid grid={compileGridData(t, market, marketData)} />
                 }
               >
                 sufficient liquidity
@@ -83,9 +81,7 @@ export const TimeInForceSelector = ({
             components={[
               <Tooltip
                 description={
-                  <SimpleGrid
-                    grid={compileGridData(t, market, marketData, t)}
-                  />
+                  <SimpleGrid grid={compileGridData(t, market, marketData)} />
                 }
               >
                 high price volatility

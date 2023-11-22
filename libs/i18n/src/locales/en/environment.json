@@ -2,6 +2,7 @@
   "A release candidate for the staging environment": "A release candidate for the staging environment",
   "Advanced": "Advanced",
   "Block": "Block",
+  "blocksBehind": "{{count}} Blocks behind",
   "blocksBehind_one": "{{count}} Block behind",
   "blocksBehind_other": "{{count}} Blocks behind",
   "Change node": "Change node",

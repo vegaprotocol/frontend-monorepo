@@ -261,7 +261,7 @@ export const Statistics = ({
 
   const referrerVolumeTile = (
     <StatTile
-      title={t('My volume (last {{count}} epochs)', {
+      title={t('myVolume', 'My volume (last {{count}} epochs)', {
         count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
       })}
     >
@@ -274,7 +274,7 @@ export const Statistics = ({
     .reduce((all, r) => all.plus(r), new BigNumber(0));
   const totalCommissionTile = (
     <StatTile
-      title={t('Total commission (last {{count}}} epochs)', {
+      title={t('totalCommission', 'Total commission (last {{count}}} epochs)', {
         count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
       })}
       description={<QUSDTooltip />}
@@ -317,9 +317,13 @@ export const Statistics = ({
   );
   const runningVolumeTile = (
     <StatTile
-      title={t('Combined volume (last {{count}} epochs)', {
-        count: details?.windowLength,
-      })}
+      title={t(
+        'runningNotionalOverEpochs',
+        'Combined volume (last {{count}} epochs)',
+        {
+          count: details?.windowLength,
+        }
+      )}
     >
       {compactNumFormat.format(runningVolumeValue)}
     </StatTile>
@@ -439,15 +443,19 @@ export const RefereesTable = ({
                 { name: 'joined', displayName: t('Date Joined') },
                 {
                   name: 'volume',
-                  displayName: t('Volume (last {{count}} epochs)', {
-                    count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
-                  }),
+                  displayName: t(
+                    'volumeLastEpochs',
+                    'Volume (last {{count}} epochs)',
+                    {
+                      count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
+                    }
+                  ),
                 },
                 {
                   name: 'commission',
                   displayName: (
                     <Trans
-                      i18nKey="referral-statistics-commission"
+                      i18nKey="referralStatisticsCommission"
                       defaults="Commission earned in <0>qUSD</0> (last {{count}} epochs)"
                       values={{
                         count:

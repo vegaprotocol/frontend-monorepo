@@ -1,7 +1,6 @@
 {
   "[This is {{network}} transaction only]": "[This is {{network}} transaction only]",
   "{{proposalChange}} proposal {{proposalState}}": "{{proposalChange}} proposal {{proposalState}}",
-  "<0>{{count}}</0> blocks": "<0>{{count}}</0> blocks",
   "Awaiting network confirmation": "Awaiting network confirmation",
   "blocks": "blocks",
   "Changes have been proposed for this asset.": "Changes have been proposed for this asset.",
@@ -15,6 +14,9 @@
   "Market": "Market",
   "Network upgrade in {{countdown}}": "Network upgrade in {{countdown}}",
   "No proposed markets": "No proposed markets",
+  "numberOfBlocks": "<0>{{count}}</0> blocks",
+  "numberOfBlocks_one": "<0>{{count}}</0> block",
+  "numberOfBlocks_other": "<0>{{count}}</0> blocks",
   "Parent market": "Parent market",
   "Please open your wallet application and confirm or reject the transaction": "Please open your wallet application and confirm or reject the transaction",
   "Please wait for your transaction to be confirmed": "Please wait for your transaction to be confirmed",

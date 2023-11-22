@@ -70,10 +70,7 @@ export const useNodeHealth = () => {
       );
       intent = Intent.Danger;
     } else if (blockDiff >= BLOCK_THRESHOLD) {
-      text = t('blocksBehind', {
-        defaultValue: '{{count}} Blocks behind',
-        replace: { count: blockDiff },
-      });
+      text = t('blocksBehind', '{{count}} Blocks behind', { count: blockDiff });
       intent = Intent.Warning;
     } else if (blockUpdateMsLatency > WARNING_LATENCY) {
       text = t(
