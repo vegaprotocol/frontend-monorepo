@@ -25,15 +25,15 @@ def test_table_headers(page: Page, create_markets):
     headers = [
         "Market",
         "Description",
+        "Settlement asset",
         "Trading mode",
         "Status",
         "Mark price",
         "24h volume",
-        "Settlement asset",
+        "Open Interest",
         "Spread",
         "",
     ]
-
     page.wait_for_selector('[data-testid="tab-open-markets"]', state="visible")
     page_headers = (
         page.get_by_test_id("tab-open-markets").locator(".ag-header-cell-text").all()
@@ -157,4 +157,4 @@ def test_drag_and_drop_column(page: Page, create_markets):
     page.locator(col_instrument_code).drag_to(
         page.locator('.ag-header-row [col-id="data.bestBidPrice"]')
     )
-    expect(page.locator(col_instrument_code)).to_have_attribute("aria-colindex", "8")
+    expect(page.locator(col_instrument_code)).to_have_attribute("aria-colindex", "9")
