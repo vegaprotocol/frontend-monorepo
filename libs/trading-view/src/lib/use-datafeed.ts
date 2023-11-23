@@ -2,12 +2,15 @@ import { useEffect, useMemo, useRef } from 'react';
 import compact from 'lodash/compact';
 import { useApolloClient } from '@apollo/client';
 import { type Subscription } from 'zen-observable-ts';
+/*
+ * TODO: figure out how we can get the chart types
 import {
   type LibrarySymbolInfo,
   type IBasicDataFeed,
   type ResolutionString,
   type SeriesFormat,
 } from '../charting_library/charting_library';
+*/
 import {
   GetBarsDocument,
   LastBarDocument,
@@ -42,6 +45,7 @@ const configurationData = {
   exchanges: undefined,
 
   // Represents the resolutions for bars supported by your datafeed
+  // @ts-ignore cant improt types as chartin_library is external
   supported_resolutions: supportedResolutions as ResolutionString[],
 } as const;
 
@@ -50,16 +54,22 @@ export const useDatafeed = () => {
   const client = useApolloClient();
 
   const datafeed = useMemo(() => {
+    // @ts-ignore cant improt types as chartin_library is external
     const feed: IBasicDataFeed = {
+      // @ts-ignore cant improt types as chartin_library is external
       onReady: (callback) => {
         setTimeout(() => callback(configurationData));
       },
       searchSymbols: () => {
         /* no op, we handle finding markets in app */
       },
+
       resolveSymbol: async (
+        // @ts-ignore cant improt types as chartin_library is external
         marketId,
+        // @ts-ignore cant improt types as chartin_library is external
         onSymbolResolvedCallback,
+        // @ts-ignore cant improt types as chartin_library is external
         onResolveErrorCallback
       ) => {
         try {
@@ -86,11 +96,14 @@ export const useDatafeed = () => {
             return;
           }
 
+          // @ts-ignore cant improt types as chartin_library is external
           const symbolInfo: LibrarySymbolInfo = {
             ticker: market.id,
             name: instrument.code,
             full_name: instrument.code,
             listed_exchange: 'vega',
+
+            // @ts-ignore cant improt types as chartin_library is external
             format: 'price' as SeriesFormat,
             description: instrument.name,
             type: 'futures', // TODO no hard code
@@ -117,10 +130,15 @@ export const useDatafeed = () => {
         }
       },
       getBars: async (
+        // @ts-ignore cant improt types as chartin_library is external
         symbolInfo,
+        // @ts-ignore cant improt types as chartin_library is external
         resolution,
+        // @ts-ignore cant improt types as chartin_library is external
         periodParams,
+        // @ts-ignore cant improt types as chartin_library is external
         onHistoryCallback,
+        // @ts-ignore cant improt types as chartin_library is external
         onErrorCallback
       ) => {
         if (!symbolInfo.ticker) {
@@ -170,8 +188,11 @@ export const useDatafeed = () => {
       },
 
       subscribeBars: (
+        // @ts-ignore cant improt types as chartin_library is external
         symbolInfo,
+        // @ts-ignore cant improt types as chartin_library is external
         resolution,
+        // @ts-ignore cant improt types as chartin_library is external
         onTick
 
         // subscriberUID,  // chart will subscribe and unsbuscribe when the parent market of the page changes so we don't need to use subscriberUID as of now

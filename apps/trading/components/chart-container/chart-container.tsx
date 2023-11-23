@@ -209,7 +209,7 @@ export const ChartMenu = () => {
                   onCheckedChange={() => {
                     const newOverlays = [...overlays];
                     const index = overlays.findIndex(
-                      (item) => item === overlay,
+                      (item) => item === overlay
                     );
 
                     index !== -1

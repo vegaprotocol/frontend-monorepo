@@ -192,7 +192,7 @@ const MainGrid = memo(
         </ResizableGridPanel>
       </ResizableGrid>
     );
-  },
+  }
 );
 MainGrid.displayName = 'MainGrid';
 
@@ -200,7 +200,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
   const featureFlags = useFeatureFlags((state) => state.flags);
   const wrapperClasses = classNames(
     'h-full grid',
-    'grid-rows-[min-content_1fr]',
+    'grid-rows-[min-content_1fr]'
   );
 
   return (

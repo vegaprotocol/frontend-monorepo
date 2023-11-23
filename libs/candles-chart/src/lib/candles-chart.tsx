@@ -1,5 +1,11 @@
 import 'pennant/dist/style.css';
-import { CandlestickChart } from 'pennant';
+import {
+  CandlestickChart,
+  type Overlay,
+  type ChartType,
+  type Interval,
+  type Study,
+} from 'pennant';
 import { VegaDataSource } from './data-source';
 import { useApolloClient } from '@apollo/client';
 import { useMemo } from 'react';
@@ -11,15 +17,15 @@ import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 
 export type CandlesChartContainerProps = {
   marketId: string;
-  interval: any;
-  chartType: any;
-  overlays: any;
-  studies: any;
-  studySizes: any;
+  interval: Interval;
+  chartType: ChartType;
+  overlays: Overlay[];
+  studies: Study[];
+  studySizes: number[];
   defaultStudySize: number;
-  setStudies: any;
-  setStudySizes: any;
-  setOverlays: any;
+  setStudies: (studies?: Study[]) => void;
+  setStudySizes: (sizes: number[]) => void;
+  setOverlays: (overlays?: Overlay[]) => void;
 };
 
 const CANDLES_TO_WIDTH_FACTOR = 0.2;
@@ -47,7 +53,7 @@ export const CandlesChartContainer = ({
         // first number is main pain, which is greedy so we don't store it
         setStudySizes(sizes.filter((_, i) => i !== 0));
       }, 300),
-    [setStudySizes],
+    [setStudySizes]
   );
 
   const dataSource = useMemo(() => {

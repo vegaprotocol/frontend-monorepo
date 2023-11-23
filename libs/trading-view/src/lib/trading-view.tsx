@@ -1,11 +1,14 @@
 import { useEffect, useRef } from 'react';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+/**
+ * TODO: figure out how to import types
 import {
   type ChartingLibraryWidgetOptions,
   type LanguageCode,
   type ResolutionString,
   widget,
 } from '../charting_library';
+*/
 import { useDatafeed } from './use-datafeed';
 
 export const TradingView = ({ marketId }: { marketId: string }) => {
@@ -16,16 +19,20 @@ export const TradingView = ({ marketId }: { marketId: string }) => {
   const datafeed = useDatafeed();
 
   useEffect(() => {
+    // @ts-ignore cant improt types as chartin_library is external
+    // eslint-disable-next-line
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: marketId,
       // BEWARE: no trailing slash is expected in feed URL
       // eslint-disable-next-line
 
       datafeed,
+      // @ts-ignore cant improt types as chartin_library is external
       interval: '1' as ResolutionString,
       container: chartContainerRef.current,
       library_path: '/charting_library/',
       custom_css_url: '/trading-view-styles.css',
+      // @ts-ignore cant improt types as chartin_library is external
       locale: 'en' as LanguageCode,
       disabled_features: [
         'use_localstorage_for_settings',
@@ -47,10 +54,13 @@ export const TradingView = ({ marketId }: { marketId: string }) => {
       },
     };
 
-    const tvWidget = new widget(widgetOptions);
+    // @ts-ignore cant improt types as chartin_library is external
+
+    // TODO: import charting_library
+    // const tvWidget = new widget(widgetOptions);
 
     return () => {
-      tvWidget.remove();
+      // tvWidget.remove();
     };
   }, [theme, datafeed, marketId]);
 

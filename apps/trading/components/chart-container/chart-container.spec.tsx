@@ -12,7 +12,7 @@ describe('ChartMenu', () => {
     await userEvent.click(
       screen.getByRole('button', {
         name: 'Indicators',
-      }),
+      })
     );
   };
 
@@ -35,7 +35,7 @@ describe('ChartMenu', () => {
 
     expect(screen.getByText(overlayLabels[overlay as Overlay])).toHaveAttribute(
       'data-state',
-      'checked',
+      'checked'
     );
   });
 
@@ -53,7 +53,7 @@ describe('ChartMenu', () => {
 
     expect(screen.getByText(studyLabels[study as Study])).toHaveAttribute(
       'data-state',
-      'checked',
+      'checked'
     );
   });
 
@@ -65,21 +65,21 @@ describe('ChartMenu', () => {
     await userEvent.click(
       screen.getByRole('button', {
         name: 'Indicators',
-      }),
+      })
     );
     const menu = within(await screen.findByRole('menu'));
 
     expect(menu.getByText(studyLabels.volume)).toHaveAttribute(
       'data-state',
-      'checked',
+      'checked'
     );
     expect(menu.getByText(studyLabels.macd)).toHaveAttribute(
       'data-state',
-      'checked',
+      'checked'
     );
     expect(menu.getByText(overlayLabels.movingAverage)).toHaveAttribute(
       'data-state',
-      'checked',
+      'checked'
     );
   });
 });

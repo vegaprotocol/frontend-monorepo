@@ -93,8 +93,8 @@ export const useCandlesChartSettingsStore = create<
     })),
     {
       name: 'vega_candles_chart_store',
-    },
-  ),
+    }
+  )
 );
 
 export const useCandlesChartSettings = () => {
@@ -103,25 +103,25 @@ export const useCandlesChartSettings = () => {
   const interval: Interval = getValidItem(
     settings.interval,
     Object.values(Interval),
-    Interval.I15M,
+    Interval.I15M
   );
 
   const chartType: ChartType = getValidItem(
     settings.type,
     Object.values(ChartType),
-    ChartType.CANDLE,
+    ChartType.CANDLE
   );
 
   const overlays: Overlay[] = getValidSubset(
     settings.overlays,
     Object.values(Overlay),
-    [],
+    []
   );
 
   const studies: Study[] = getValidSubset(
     settings.studies,
     Object.values(Study),
-    [Study.VOLUME],
+    [Study.VOLUME]
   );
 
   // find the study size
