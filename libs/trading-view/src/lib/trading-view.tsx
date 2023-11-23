@@ -6,14 +6,14 @@ import {
   type ResolutionString,
   widget,
 } from '../charting_library';
-import { useDataFeed } from './datafeed';
+import { useDatafeed } from './use-datafeed';
 
 export const TradingView = ({ marketId }: { marketId: string }) => {
   const { theme } = useThemeSwitcher();
   const chartContainerRef =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
 
-  const datafeed = useDataFeed(marketId);
+  const datafeed = useDatafeed();
 
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
@@ -42,26 +42,6 @@ export const TradingView = ({ marketId }: { marketId: string }) => {
     };
 
     const tvWidget = new widget(widgetOptions);
-
-    // Add a custom button
-    tvWidget.onChartReady(() => {
-      tvWidget.headerReady().then(() => {
-        const button = tvWidget.createButton();
-        button.setAttribute('title', 'Click to show a notification popup');
-        button.classList.add('apply-common-tooltip');
-        button.addEventListener('click', () =>
-          tvWidget.showNoticeDialog({
-            title: 'Notification',
-            body: 'TradingView Charting Library API works correctly',
-            callback: () => {
-              console.log('Noticed!');
-            },
-          }),
-        );
-
-        button.innerHTML = 'Check API';
-      });
-    });
 
     return () => {
       tvWidget.remove();
