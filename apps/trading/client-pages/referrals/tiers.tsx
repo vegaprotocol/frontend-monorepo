@@ -6,7 +6,12 @@ import { BORDER_COLOR, GRADIENT } from './constants';
 import { Tag } from './tag';
 import type { ComponentProps, ReactNode } from 'react';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { DApp, TOKEN_PROPOSALS, useLinks } from '@vegaprotocol/environment';
+import {
+  DApp,
+  DocsLinks,
+  TOKEN_PROPOSALS,
+  useLinks,
+} from '@vegaprotocol/environment';
 import { useT, ns } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
 
@@ -88,10 +93,19 @@ export const TiersContainer = () => {
     return (
       <div className="text-base px-5 py-10 text-center">
         <Trans
-          defaults="We're sorry but we don't have an active referral programme currently running. You can propose a new programme <0>here</0>."
+          defaults="There are currently no active referral programs. Check the <0>Governance App</0> to see if there are any proposals in progress and vote."
           components={[
             <ExternalLink href={governanceLink(TOKEN_PROPOSALS)} key="link">
-              {t('here')}
+              {t('Governance App')}
+            </ExternalLink>,
+          ]}
+          ns={ns}
+        />
+        <Trans
+          defaults="You can propose a new program via the <0>Docs</0>."
+          components={[
+            <ExternalLink href={DocsLinks?.REFERRALS} key="link">
+              {t('Docs')}
             </ExternalLink>,
           ]}
           ns={ns}
