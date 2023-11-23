@@ -44,4 +44,5 @@ def truncate_middle(market_id, start=6, end=4):
 def change_keys(page: Page, vega:VegaServiceNull, key_name):
     page.get_by_test_id("manage-vega-wallet").click()
     page.get_by_test_id("key-" + vega.wallet.public_key(key_name)).click()
+    page.click(f'data-testid=key-{vega.wallet.public_key(key_name)} >> .inline-flex')
     page.reload()
