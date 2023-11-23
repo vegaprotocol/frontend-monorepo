@@ -25,6 +25,7 @@ export const TradingView = ({ marketId }: { marketId: string }) => {
       interval: '1' as ResolutionString,
       container: chartContainerRef.current,
       library_path: '/charting_library/',
+      custom_css_url: '/trading-view-styles.css',
       locale: 'en' as LanguageCode,
       disabled_features: [
         'use_localstorage_for_settings',
@@ -39,6 +40,11 @@ export const TradingView = ({ marketId }: { marketId: string }) => {
       fullscreen: false,
       autosize: true,
       theme,
+      overrides: {
+        // colors set here, trading view lets the user set a color
+        'paneProperties.background': theme === 'dark' ? '#05060C' : '#fff',
+        'paneProperties.backgroundType': 'solid',
+      },
     };
 
     const tvWidget = new widget(widgetOptions);
