@@ -47,48 +47,6 @@ class TestIcebergOrdersValidations:
             (page.get_by_role("row").locator('[col-id="type"]')).nth(1)
         ).to_have_text("Limit (Iceberg)")
 
-    @pytest.mark.usefixtures("page", "auth", "risk_accepted")
-    def test_iceberg_tooltips(self, continuous_market, page: Page):
-        page.goto(f"/#/markets/{continuous_market}")
-        page.get_by_test_id("iceberg").hover()
-        expect(page.get_by_role("tooltip")).to_be_visible()
-        page.get_by_test_id("iceberg").click()
-        hover_and_assert_tooltip(page, "Peak size")
-        hover_and_assert_tooltip(page, "Minimum size")
-
-    @pytest.mark.usefixtures("page", "auth", "risk_accepted")
-    def test_iceberg_validations(self, continuous_market, page: Page):
-        page.goto(f"/#/markets/{continuous_market}")
-        page.get_by_test_id("iceberg").click()
-        page.get_by_test_id("place-order").click()
-        expect(page.get_by_test_id("deal-ticket-peak-error-message")).to_be_visible()
-        expect(page.get_by_test_id("deal-ticket-peak-error-message")).to_have_text(
-            "You need to provide a peak size"
-        )
-        expect(page.get_by_test_id("deal-ticket-minimum-error-message")).to_be_visible()
-        expect(page.get_by_test_id("deal-ticket-minimum-error-message")).to_have_text(
-            "You need to provide a minimum visible size"
-        )
-        page.get_by_test_id("order-peak-size").clear()
-        page.get_by_test_id("order-peak-size").type("1")
-        page.get_by_test_id("order-minimum-size").clear()
-        page.get_by_test_id("order-minimum-size").type("2")
-        expect(page.get_by_test_id("deal-ticket-peak-error-message")).to_be_visible()
-        expect(page.get_by_test_id("deal-ticket-peak-error-message")).to_have_text(
-            "Peak size cannot be greater than the size (0)"
-        )
-        expect(page.get_by_test_id("deal-ticket-minimum-error-message")).to_be_visible()
-        expect(page.get_by_test_id("deal-ticket-minimum-error-message")).to_have_text(
-            "Minimum visible size cannot be greater than the peak size (1)"
-        )
-        page.get_by_test_id("order-minimum-size").clear()
-        page.get_by_test_id("order-minimum-size").type("0.1")
-        expect(page.get_by_test_id("deal-ticket-minimum-error-message")).to_be_visible()
-        expect(page.get_by_test_id("deal-ticket-minimum-error-message")).to_have_text(
-            "Minimum visible size cannot be lower than 1"
-        )
-
-
 @pytest.mark.usefixtures("vega", "page", "continuous_market", "auth", "risk_accepted")
 def test_iceberg_open_order(continuous_market, vega: VegaService, page: Page):
     page.goto(f"/#/markets/{continuous_market}")

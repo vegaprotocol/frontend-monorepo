@@ -29,11 +29,12 @@ def continuous_market(vega):
 @pytest.mark.usefixtures("page", "auth", "risk_accepted")
 def test_limit_buy_order_GTT(continuous_market, vega: VegaService, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
+    page.get_by_test_id(tif).select_option("Good 'til Time (GTT)")
     page.get_by_test_id(order_size).fill("10")
     page.get_by_test_id(order_price).fill("120")
-    page.get_by_test_id(tif).select_option("Good 'til Time (GTT)")
     expires_at = datetime.now() + timedelta(days=1)
     expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
+    page.get_by_test_id("date-picker-field").clear()
     page.get_by_test_id("date-picker-field").fill(expires_at_input_value)
     # 7002-SORD-011
     expect(page.get_by_test_id("place-order").locator("span").first).to_have_text(
