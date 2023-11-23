@@ -367,6 +367,29 @@ describe('DealTicket', () => {
     });
   });
 
+  it('should see an explanation of peak size', async () => {
+    render(generateJsx());
+    await userEvent.click(screen.getByTestId('iceberg'));
+    await userEvent.hover(screen.getByText('Peak size'));
+    await waitFor(() => {
+      const tooltips = screen.getAllByTestId('tooltip-content');
+      expect(tooltips[0]).toHaveTextContent(
+        `The maximum volume that can be traded at once. Must be less than the total size of the order.`
+      );
+    });
+  });
+  it('should see an explanation of minimum size', async () => {
+    render(generateJsx());
+    await userEvent.click(screen.getByTestId('iceberg'));
+    await userEvent.hover(screen.getByText('Minimum size'));
+    await waitFor(() => {
+      const tooltips = screen.getAllByTestId('tooltip-content');
+      expect(tooltips[0]).toHaveTextContent(
+        `When the order trades and its size falls below this threshold, it will be reset to the peak size and moved to the back of the priority order. Must be less than or equal to peak size, and greater than 0.`
+      );
+    });
+  });
+
   it('should see an explanation of reduce only', async () => {
     render(generateJsx());
     userEvent.hover(screen.getByText('Reduce only'));
