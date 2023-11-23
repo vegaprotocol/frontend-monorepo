@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import classNames from 'classnames';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import type { ButtonHTMLAttributes, MouseEventHandler } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { RainbowButton } from './buttons';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useReferral } from './hooks/use-referral';
@@ -72,6 +72,24 @@ export const ApplyCodeForm = () => {
   const { data: previewData, loading: previewLoading } = useReferral({
     code: validateCode(codeField, t) ? codeField : undefined,
   });
+
+  /**
+   * Validates the set a user tries to apply to.
+   */
+  const validateSet = useCallback(() => {
+    if (
+      codeField &&
+      !previewLoading &&
+      previewData &&
+      !previewData.isEligible
+    ) {
+      return t('The code is no longer valid.');
+    }
+    if (codeField && !previewLoading && !previewData) {
+      return t('The code is invalid');
+    }
+    return true;
+  }, [codeField, previewData, previewLoading, t]);
 
   useEffect(() => {
     const code = params.get('code');
@@ -229,7 +247,11 @@ export const ApplyCodeForm = () => {
               hasError={Boolean(errors.code)}
               {...register('code', {
                 required: t('You have to provide a code to apply it.'),
-                validate: (value) => validateCode(value, t),
+                validate: (value) => {
+                  const err = validateCode(value, t);
+                  if (err !== true) return err;
+                  return validateSet();
+                },
               })}
               placeholder="Enter a code"
               className="bg-vega-clight-900 dark:bg-vega-cdark-700 mb-2"
@@ -243,13 +265,13 @@ export const ApplyCodeForm = () => {
           </InputError>
         )}
       </div>
-      {previewLoading && !previewData ? (
+      {validateCode(codeField, t) === true && previewLoading && !previewData ? (
         <div className="mt-10">
           <Loader />
         </div>
       ) : null}
       {/* TODO: Re-check plural forms once i18n is updated */}
-      {previewData ? (
+      {previewData && previewData.isEligible ? (
         <div className="mt-10">
           <h2 className="text-2xl mb-5">
             {t('referralApplyPreviewMessage', {

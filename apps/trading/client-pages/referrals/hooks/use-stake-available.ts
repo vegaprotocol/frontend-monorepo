@@ -20,10 +20,9 @@ export const useStakeAvailable = (pubKey?: string) => {
   const stakeAvailable = data
     ? BigInt(data.party?.stakingSummary.currentStakeAvailable || '0')
     : undefined;
-  // const requiredStake = data
-  //   ? BigInt(data.networkParameter?.value || '0')
-  //   : undefined;
-  const requiredStake = BigInt(10);
+  const requiredStake = data
+    ? BigInt(data.networkParameter?.value || '0')
+    : undefined;
 
   return {
     stakeAvailable,
