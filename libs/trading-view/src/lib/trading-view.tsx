@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 /**
  * TODO: figure out how to import types
@@ -12,6 +12,36 @@ import {
 import { useDatafeed } from './use-datafeed';
 
 export const TradingView = ({ marketId }: { marketId: string }) => {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    const loadTradingViewLib = async () => {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src =
+          'http://localhost:8080/charting_library/charting_library.standalone.js';
+        script.async = true;
+        script.onload = () => resolve(script);
+        script.onerror = () =>
+          reject(new Error('Failed to load trading view script'));
+        document.body.appendChild(script);
+      });
+    };
+
+    loadTradingViewLib()
+      .then(() => {
+        setReady(true);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  if (!ready) {
+    return null;
+  }
+
+  return <TradingViewChart marketId={marketId} />;
+};
+
+export const TradingViewChart = ({ marketId }: { marketId: string }) => {
   const { theme } = useThemeSwitcher();
   const chartContainerRef =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
@@ -30,7 +60,7 @@ export const TradingView = ({ marketId }: { marketId: string }) => {
       // @ts-ignore cant improt types as chartin_library is external
       interval: '1' as ResolutionString,
       container: chartContainerRef.current,
-      library_path: '/charting_library/',
+      library_path: 'http://localhost:8080/charting_library/',
       custom_css_url: '/trading-view-styles.css',
       // @ts-ignore cant improt types as chartin_library is external
       locale: 'en' as LanguageCode,
@@ -54,13 +84,11 @@ export const TradingView = ({ marketId }: { marketId: string }) => {
       },
     };
 
-    // @ts-ignore cant improt types as chartin_library is external
-
-    // TODO: import charting_library
-    // const tvWidget = new widget(widgetOptions);
+    // @ts-ignore parent component loads TradingView onto window obj
+    const tvWidget = new window.TradingView.widget(widgetOptions);
 
     return () => {
-      // tvWidget.remove();
+      tvWidget.remove();
     };
   }, [theme, datafeed, marketId]);
 
