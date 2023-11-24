@@ -50,32 +50,37 @@ export const Settings = () => {
           {t('Reset')}
         </TradingButton>
         <Dialog open={open} title={t('Reset')}>
-          <div className="flex flex-col gap-4">
-            <p className="">
+          <div className="mb-4">
+            <p>
+              {t(
+                'You will lose all persisted settings and you will be logged out.'
+              )}
+            </p>
+            <p>
               {t('Are you sure you want to reset all settings to default?')}
             </p>
+          </div>
 
-            <div className="flex flex-col gap-4">
-              <TradingButton
-                name="reset-to-defaults-cancel"
-                intent={Intent.Primary}
-                onClick={() => {
-                  localStorage.clear();
-                  window.location.reload();
-                }}
-              >
-                {t('Yes, clear cache and refresh')}
-              </TradingButton>
-              <TradingButton
-                name="reset-to-defaults-cancel"
-                intent={Intent.None}
-                onClick={() => {
-                  setOpen(false);
-                }}
-              >
-                {t('No, keep settings')}
-              </TradingButton>
-            </div>
+          <div className="flex flex-col gap-4">
+            <TradingButton
+              name="reset-to-defaults-cancel"
+              intent={Intent.Primary}
+              onClick={() => {
+                localStorage.clear();
+                window.location.reload();
+              }}
+            >
+              {t('Yes, clear cache and refresh')}
+            </TradingButton>
+            <TradingButton
+              name="reset-to-defaults-cancel"
+              intent={Intent.None}
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              {t('No, keep settings')}
+            </TradingButton>
           </div>
         </Dialog>
       </SettingsGroup>
