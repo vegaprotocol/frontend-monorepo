@@ -1,4 +1,5 @@
 import { act, render, screen, waitFor, within } from '@testing-library/react';
+// import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { Closed } from './closed';
 import { MarketStateMapping, PropertyKeyType } from '@vegaprotocol/types';
@@ -168,8 +169,7 @@ describe('Closed', () => {
     Date.now = originalNow;
   });
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('renders correctly formatted and filtered rows', async () => {
+  it('renders correct headers', async () => {
     await act(async () => {
       render(
         <MemoryRouter>
@@ -200,6 +200,25 @@ describe('Closed', () => {
     ];
     expect(headers).toHaveLength(expectedHeaders.length);
     expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
+  });
+
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('renders correctly formatted and filtered rows', async () => {
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <MockedProvider
+            mocks={[marketsMock, marketsDataMock, oracleDataMock]}
+          >
+            <VegaWalletContext.Provider
+              value={{ pubKey } as VegaWalletContextShape}
+            >
+              <Closed />
+            </VegaWalletContext.Provider>
+          </MockedProvider>
+        </MemoryRouter>
+      );
+    });
 
     const assetSymbol = getAsset(market).symbol;
 
@@ -317,6 +336,93 @@ describe('Closed', () => {
     expect(cells).toEqual(
       expectedRows.map((m) => m.node.tradableInstrument.instrument.code)
     );
+  });
+
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('display market actions', async () => {
+    // TODO finish test to replace test_markets_content from apps/trading/e2e/tests/market/test_markets_actions.py
+    const mixedMarkets = [
+      {
+        // include as settled
+        __typename: 'MarketEdge' as const,
+        node: createMarketFragment({
+          id: 'include-0',
+          state: MarketState.STATE_SETTLED,
+        }),
+      },
+      {
+        // omit this market
+        __typename: 'MarketEdge' as const,
+        node: createMarketFragment({
+          id: 'discard-0',
+          state: MarketState.STATE_SUSPENDED,
+        }),
+      },
+      {
+        // include as terminated
+        __typename: 'MarketEdge' as const,
+        node: createMarketFragment({
+          id: 'include-1',
+          state: MarketState.STATE_TRADING_TERMINATED,
+        }),
+      },
+      {
+        // omit this market
+        __typename: 'MarketEdge' as const,
+        node: createMarketFragment({
+          id: 'discard-1',
+          state: MarketState.STATE_ACTIVE,
+        }),
+      },
+    ];
+    const mixedMarketsMock: MockedResponse<MarketsQuery> = {
+      request: {
+        query: MarketsDocument,
+      },
+      result: {
+        data: {
+          marketsConnection: {
+            __typename: 'MarketConnection',
+            edges: mixedMarkets,
+          },
+        },
+      },
+    };
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <MockedProvider
+            mocks={[mixedMarketsMock, marketsDataMock, oracleDataMock]}
+          >
+            <VegaWalletContext.Provider
+              value={{ pubKey } as VegaWalletContextShape}
+            >
+              <Closed />
+            </VegaWalletContext.Provider>
+          </MockedProvider>
+        </MemoryRouter>
+      );
+    });
+
+    const container = within(
+      document.querySelector('.ag-body ag-layout-normal') as HTMLElement
+    );
+    // eslint-disable-next-line no-console
+    console.log(container);
+    container.getByTestId('dropdown-menu').click();
+
+    await waitFor(() => {
+      // check rows length is correct
+      const rows = container.getAllByRole('row');
+      // eslint-disable-next-line no-console
+      console.log(rows);
+    });
+
+    // check that only included ids are shown
+    const cells = screen.getAllByRole('gridcell');
+    // eslint-disable-next-line no-console
+    console.log(cells);
+    expect(cells).toEqual(1);
   });
 
   // eslint-disable-next-line jest/no-disabled-tests

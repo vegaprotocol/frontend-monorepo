@@ -20,43 +20,6 @@ def create_markets(vega):
 
 
 @pytest.mark.usefixtures("risk_accepted")
-def test_table_headers(page: Page, create_markets):
-    page.goto(f"/#/markets/all")
-    headers = [
-        "Market",
-        "Description",
-        "Settlement asset",
-        "Trading mode",
-        "Status",
-        "Mark price",
-        "24h volume",
-        "Open Interest",
-        "Spread",
-        "",
-    ]
-    page.wait_for_selector('[data-testid="tab-open-markets"]', state="visible")
-    page_headers = (
-        page.get_by_test_id("tab-open-markets").locator(".ag-header-cell-text").all()
-    )
-    for i, header in enumerate(headers):
-        expect(page_headers[i]).to_have_text(header)
-
-
-@pytest.mark.usefixtures("risk_accepted")
-def test_markets_tab(page: Page, create_markets):
-    page.goto(f"/#/markets/all")
-    expect(page.get_by_test_id("Open markets")).to_have_attribute(
-        "data-state", "active"
-    )
-    expect(page.get_by_test_id("Proposed markets")).to_have_attribute(
-        "data-state", "inactive"
-    )
-    expect(page.get_by_test_id("Closed markets")).to_have_attribute(
-        "data-state", "inactive"
-    )
-
-
-@pytest.mark.usefixtures("risk_accepted")
 def test_markets_content(page: Page, create_markets):
     page.goto(f"/#/markets/all")
     row_selector = page.locator(
@@ -126,27 +89,6 @@ def test_market_actions(page: Page, create_markets):
 
     for i, action in enumerate(actions):
         expect(action_elements[i]).to_have_text(action)
-
-
-@pytest.mark.usefixtures("risk_accepted")
-def test_sort_markets(page: Page, create_markets):
-    # 6001-MARK-064
-
-    page.goto(f"/#/markets/all")
-    sorted_market_names = [
-        "AAPL.MF21",
-        "BTCUSD.MF21",
-        "ETHBTC.QM21",
-        "SOLUSD",
-    ]
-    page.locator('.ag-header-row [col-id="tradableInstrument.instrument.code"]').click()
-    for i, market_name in enumerate(sorted_market_names):
-        expect(
-            page.locator(
-                f'[row-index="{i}"] [col-id="tradableInstrument.instrument.name"]'
-            )
-        ).to_have_text(market_name)
-
 
 @pytest.mark.usefixtures("risk_accepted")
 def test_drag_and_drop_column(page: Page, create_markets):
