@@ -11,32 +11,43 @@ import {
 */
 import { useDatafeed } from './use-datafeed';
 
-export const TradingView = ({ marketId }: { marketId: string }) => {
-  const [ready, setReady] = useState(false);
+const LIBRARY_PATH =
+  'http://localhost:8080/charting_library/charting_library.standalone.js';
+
+export const useScript = (url: string) => {
+  const [loaded, setLoaded] = useState(false);
+
   useEffect(() => {
-    const loadTradingViewLib = async () => {
+    const loadTradingViewLib = () => {
       return new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src =
-          'http://localhost:8080/charting_library/charting_library.standalone.js';
+        script.src = url;
+
         script.async = true;
+
         script.onload = () => resolve(script);
+
         script.onerror = () =>
-          reject(new Error('Failed to load trading view script'));
+          reject(new Error(`failed to load script: ${url}`));
+
         document.body.appendChild(script);
       });
     };
 
     loadTradingViewLib()
       .then(() => {
-        setReady(true);
+        setLoaded(true);
       })
       .catch((err) => console.error(err));
-  }, []);
+  }, [url]);
 
-  if (!ready) {
-    return null;
-  }
+  return loaded;
+};
+
+export const TradingView = ({ marketId }: { marketId: string }) => {
+  const loaded = useScript(LIBRARY_PATH);
+
+  if (!loaded) return null;
 
   return <TradingViewChart marketId={marketId} />;
 };
