@@ -1,1 +1,2 @@
-export { ChartContainer, ChartMenu } from './chart-container';
+export { ChartContainer } from './chart-container';
+export { ChartMenu } from './chart-menu';

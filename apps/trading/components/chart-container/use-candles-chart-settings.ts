@@ -6,7 +6,7 @@ import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
 type StudySizes = { [S in Study]?: number };
-type Chartlib = 'pennant' | 'tradingview';
+export type Chartlib = 'pennant' | 'tradingview';
 
 interface StoredSettings {
   chartlib: Chartlib;
