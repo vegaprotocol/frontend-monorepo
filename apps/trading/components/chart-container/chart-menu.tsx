@@ -63,8 +63,8 @@ export const ChartMenu = () => {
       <TradingDropdownContent align={contentAlign}>
         <TradingDropdownRadioGroup
           value={chartlib}
-          onValueChange={(value: Chartlib) => {
-            setChartlib(value);
+          onValueChange={(value) => {
+            setChartlib(value as Chartlib);
           }}
         >
           <TradingDropdownRadioItem inset value="tradingview">
@@ -103,8 +103,8 @@ export const ChartMenu = () => {
             <TradingDropdownContent align={contentAlign}>
               <TradingDropdownRadioGroup
                 value={interval}
-                onValueChange={(value: Interval) => {
-                  setInterval(value);
+                onValueChange={(value) => {
+                  setInterval(value as Interval);
                 }}
               >
                 {Object.values(Interval).map((timeInterval) => (
@@ -132,8 +132,8 @@ export const ChartMenu = () => {
             <TradingDropdownContent align={contentAlign}>
               <TradingDropdownRadioGroup
                 value={chartType}
-                onValueChange={(value: ChartType) => {
-                  setType(value);
+                onValueChange={(value) => {
+                  setType(value as ChartType);
                 }}
               >
                 {Object.values(ChartType).map((type) => (

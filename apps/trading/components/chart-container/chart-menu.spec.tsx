@@ -8,6 +8,23 @@ import {
 import { Overlay, Study, overlayLabels, studyLabels } from 'pennant';
 
 describe('ChartMenu', () => {
+  describe('tradingview', () => {
+    beforeEach(() => {
+      // clear store each time to avoid conditional testing of defaults
+      useCandlesChartSettingsStore.setState({
+        chartlib: 'tradingview',
+      });
+    });
+
+    it('only shows chartlib dropdown', () => {
+      render(<ChartMenu />);
+
+      const buttons = screen.getAllByRole('button');
+      expect(buttons).toHaveLength(1);
+      expect(buttons[0]).toHaveTextContent('tradingview');
+    });
+  });
+
   describe('pennant', () => {
     const openDropdown = async () => {
       await userEvent.click(
