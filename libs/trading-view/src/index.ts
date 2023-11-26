@@ -1,1 +1,1 @@
-export * from './lib/trading-view';
+export { TradingViewContainer } from './lib/trading-view';

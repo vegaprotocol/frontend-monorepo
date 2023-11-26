@@ -44,15 +44,15 @@ export const useScript = (url: string) => {
   return loaded;
 };
 
-export const TradingView = ({ marketId }: { marketId: string }) => {
+export const TradingViewContainer = ({ marketId }: { marketId: string }) => {
   const loaded = useScript(LIBRARY_PATH);
 
   if (!loaded) return null;
 
-  return <TradingViewChart marketId={marketId} />;
+  return <TradingView marketId={marketId} />;
 };
 
-export const TradingViewChart = ({ marketId }: { marketId: string }) => {
+export const TradingView = ({ marketId }: { marketId: string }) => {
   const { theme } = useThemeSwitcher();
   const chartContainerRef =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;

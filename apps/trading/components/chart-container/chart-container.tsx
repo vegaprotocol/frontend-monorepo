@@ -3,7 +3,7 @@ import {
   useCandlesChartSettings,
   STUDY_SIZE,
 } from './use-candles-chart-settings';
-import { TradingViewContainer } from '../../components/trading-view-container';
+import { TradingViewContainer } from '@vegaprotocol/trading-view';
 
 /**
  * Renders either the pennant chart or the tradingview chart
