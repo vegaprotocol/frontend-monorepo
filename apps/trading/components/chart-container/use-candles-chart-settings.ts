@@ -1,9 +1,10 @@
-import { getValidItem, getValidSubset } from '@vegaprotocol/react-helpers';
 import { ChartType, Interval, Study } from 'pennant';
 import { Overlay } from 'pennant';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+import { getValidItem, getValidSubset } from '@vegaprotocol/react-helpers';
+import { ENV } from '@vegaprotocol/environment';
 
 type StudySizes = { [S in Study]?: number };
 export type Chartlib = 'pennant' | 'tradingview';
@@ -27,7 +28,10 @@ const STUDY_ORDER: Study[] = [
 ];
 
 export const DEFAULT_CHART_SETTINGS = {
-  chartlib: 'tradingview' as const,
+  // default to tradingview if its set
+  chartlib: ENV.CHARTING_LIBRARY_PATH
+    ? ('tradingview' as const)
+    : ('pennant' as const),
   interval: Interval.I15M,
   type: ChartType.CANDLE,
   overlays: [Overlay.MOVING_AVERAGE],

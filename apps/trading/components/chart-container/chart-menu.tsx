@@ -25,6 +25,7 @@ import {
   useCandlesChartSettings,
   type Chartlib,
 } from './use-candles-chart-settings';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 const chartTypeIcon = new Map<ChartType, IconName>([
   [ChartType.AREA, IconNames.TIMELINE_AREA_CHART],
@@ -34,6 +35,7 @@ const chartTypeIcon = new Map<ChartType, IconName>([
 ]);
 
 export const ChartMenu = () => {
+  const { CHARTING_LIBRARY_PATH } = useEnvironment();
   const {
     chartlib,
     interval,
@@ -63,6 +65,7 @@ export const ChartMenu = () => {
       <TradingDropdownContent align={contentAlign}>
         <TradingDropdownRadioGroup
           value={chartlib}
+          className="capitalize"
           onValueChange={(value) => {
             setChartlib(value as Chartlib);
           }}
@@ -81,6 +84,121 @@ export const ChartMenu = () => {
     </TradingDropdown>
   );
 
+  const pennantDropdowns = (
+    <>
+      <TradingDropdown
+        trigger={
+          <TradingDropdownTrigger className={triggerClasses}>
+            <TradingButton {...triggerButtonProps}>
+              {t('Interval: {{interval}}', {
+                interval: intervalLabels[interval],
+              })}
+            </TradingButton>
+          </TradingDropdownTrigger>
+        }
+      >
+        <TradingDropdownContent align={contentAlign}>
+          <TradingDropdownRadioGroup
+            value={interval}
+            onValueChange={(value) => {
+              setInterval(value as Interval);
+            }}
+          >
+            {Object.values(Interval).map((timeInterval) => (
+              <TradingDropdownRadioItem
+                key={timeInterval}
+                inset
+                value={timeInterval}
+              >
+                {intervalLabels[timeInterval]}
+                <TradingDropdownItemIndicator />
+              </TradingDropdownRadioItem>
+            ))}
+          </TradingDropdownRadioGroup>
+        </TradingDropdownContent>
+      </TradingDropdown>
+      <TradingDropdown
+        trigger={
+          <TradingDropdownTrigger className={triggerClasses}>
+            <TradingButton {...triggerButtonProps}>
+              <Icon name={chartTypeIcon.get(chartType) as IconName} />
+            </TradingButton>
+          </TradingDropdownTrigger>
+        }
+      >
+        <TradingDropdownContent align={contentAlign}>
+          <TradingDropdownRadioGroup
+            value={chartType}
+            onValueChange={(value) => {
+              setType(value as ChartType);
+            }}
+          >
+            {Object.values(ChartType).map((type) => (
+              <TradingDropdownRadioItem key={type} inset value={type}>
+                {chartTypeLabels[type]}
+                <TradingDropdownItemIndicator />
+              </TradingDropdownRadioItem>
+            ))}
+          </TradingDropdownRadioGroup>
+        </TradingDropdownContent>
+      </TradingDropdown>
+      <TradingDropdown
+        trigger={
+          <TradingDropdownTrigger className={triggerClasses}>
+            <TradingButton {...triggerButtonProps}>
+              {t('Indicators')}
+            </TradingButton>
+          </TradingDropdownTrigger>
+        }
+      >
+        <TradingDropdownContent align={contentAlign}>
+          {Object.values(Overlay).map((overlay) => (
+            <TradingDropdownCheckboxItem
+              key={overlay}
+              checked={overlays.includes(overlay)}
+              onCheckedChange={() => {
+                const newOverlays = [...overlays];
+                const index = overlays.findIndex((item) => item === overlay);
+
+                index !== -1
+                  ? newOverlays.splice(index, 1)
+                  : newOverlays.push(overlay);
+
+                setOverlays(newOverlays);
+              }}
+            >
+              {overlayLabels[overlay]}
+              <TradingDropdownItemIndicator />
+            </TradingDropdownCheckboxItem>
+          ))}
+          {Object.values(Study).map((study) => (
+            <TradingDropdownCheckboxItem
+              key={study}
+              checked={studies.includes(study)}
+              onCheckedChange={() => {
+                const newStudies = [...studies];
+                const index = studies.findIndex((item) => item === study);
+
+                index !== -1
+                  ? newStudies.splice(index, 1)
+                  : newStudies.push(study);
+
+                setStudies(newStudies);
+              }}
+            >
+              {studyLabels[study]}
+              <TradingDropdownItemIndicator />
+            </TradingDropdownCheckboxItem>
+          ))}
+        </TradingDropdownContent>
+      </TradingDropdown>
+    </>
+  );
+
+  if (!CHARTING_LIBRARY_PATH) {
+    return pennantDropdowns;
+  }
+
   switch (chartlib) {
     case 'tradingview': {
       return chartlibDropdown;
@@ -89,114 +207,7 @@ export const ChartMenu = () => {
       return (
         <>
           {chartlibDropdown}
-          <TradingDropdown
-            trigger={
-              <TradingDropdownTrigger className={triggerClasses}>
-                <TradingButton {...triggerButtonProps}>
-                  {t('Interval: {{interval}}', {
-                    interval: intervalLabels[interval],
-                  })}
-                </TradingButton>
-              </TradingDropdownTrigger>
-            }
-          >
-            <TradingDropdownContent align={contentAlign}>
-              <TradingDropdownRadioGroup
-                value={interval}
-                onValueChange={(value) => {
-                  setInterval(value as Interval);
-                }}
-              >
-                {Object.values(Interval).map((timeInterval) => (
-                  <TradingDropdownRadioItem
-                    key={timeInterval}
-                    inset
-                    value={timeInterval}
-                  >
-                    {intervalLabels[timeInterval]}
-                    <TradingDropdownItemIndicator />
-                  </TradingDropdownRadioItem>
-                ))}
-              </TradingDropdownRadioGroup>
-            </TradingDropdownContent>
-          </TradingDropdown>
-          <TradingDropdown
-            trigger={
-              <TradingDropdownTrigger className={triggerClasses}>
-                <TradingButton {...triggerButtonProps}>
-                  <Icon name={chartTypeIcon.get(chartType) as IconName} />
-                </TradingButton>
-              </TradingDropdownTrigger>
-            }
-          >
-            <TradingDropdownContent align={contentAlign}>
-              <TradingDropdownRadioGroup
-                value={chartType}
-                onValueChange={(value) => {
-                  setType(value as ChartType);
-                }}
-              >
-                {Object.values(ChartType).map((type) => (
-                  <TradingDropdownRadioItem key={type} inset value={type}>
-                    {chartTypeLabels[type]}
-                    <TradingDropdownItemIndicator />
-                  </TradingDropdownRadioItem>
-                ))}
-              </TradingDropdownRadioGroup>
-            </TradingDropdownContent>
-          </TradingDropdown>
-          <TradingDropdown
-            trigger={
-              <TradingDropdownTrigger className={triggerClasses}>
-                <TradingButton {...triggerButtonProps}>
-                  {t('Indicators')}
-                </TradingButton>
-              </TradingDropdownTrigger>
-            }
-          >
-            <TradingDropdownContent align={contentAlign}>
-              {Object.values(Overlay).map((overlay) => (
-                <TradingDropdownCheckboxItem
-                  key={overlay}
-                  checked={overlays.includes(overlay)}
-                  onCheckedChange={() => {
-                    const newOverlays = [...overlays];
-                    const index = overlays.findIndex(
-                      (item) => item === overlay
-                    );
-
-                    index !== -1
-                      ? newOverlays.splice(index, 1)
-                      : newOverlays.push(overlay);
-
-                    setOverlays(newOverlays);
-                  }}
-                >
-                  {overlayLabels[overlay]}
-                  <TradingDropdownItemIndicator />
-                </TradingDropdownCheckboxItem>
-              ))}
-              {Object.values(Study).map((study) => (
-                <TradingDropdownCheckboxItem
-                  key={study}
-                  checked={studies.includes(study)}
-                  onCheckedChange={() => {
-                    const newStudies = [...studies];
-                    const index = studies.findIndex((item) => item === study);
-
-                    index !== -1
-                      ? newStudies.splice(index, 1)
-                      : newStudies.push(study);
-
-                    setStudies(newStudies);
-                  }}
-                >
-                  {studyLabels[study]}
-                  <TradingDropdownItemIndicator />
-                </TradingDropdownCheckboxItem>
-              ))}
-            </TradingDropdownContent>
-          </TradingDropdown>
+          {pennantDropdowns}
         </>
       );
     }

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { useEffect, useRef } from 'react';
+import { useScript, useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 /**
  * TODO: figure out how to import types
 import {
@@ -11,43 +12,24 @@ import {
 */
 import { useDatafeed } from './use-datafeed';
 
-const LIBRARY_PATH =
-  'http://localhost:8080/charting_library/charting_library.standalone.js';
+export const TradingViewContainer = ({
+  marketId,
+  libraryPath,
+}: {
+  marketId: string;
+  libraryPath: string;
+}) => {
+  const scriptState = useScript(libraryPath + 'charting_library.standalone.js');
 
-export const useScript = (url: string) => {
-  const [loaded, setLoaded] = useState(false);
+  if (scriptState === 'pending') return null;
 
-  useEffect(() => {
-    const loadTradingViewLib = () => {
-      return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = url;
-
-        script.async = true;
-
-        script.onload = () => resolve(script);
-
-        script.onerror = () =>
-          reject(new Error(`failed to load script: ${url}`));
-
-        document.body.appendChild(script);
-      });
-    };
-
-    loadTradingViewLib()
-      .then(() => {
-        setLoaded(true);
-      })
-      .catch((err) => console.error(err));
-  }, [url]);
-
-  return loaded;
-};
-
-export const TradingViewContainer = ({ marketId }: { marketId: string }) => {
-  const loaded = useScript(LIBRARY_PATH);
-
-  if (!loaded) return null;
+  if (scriptState === 'error') {
+    return (
+      <Splash>
+        <p>Failed to initialize Trading view</p>
+      </Splash>
+    );
+  }
 
   return <TradingView marketId={marketId} />;
 };

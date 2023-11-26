@@ -154,6 +154,7 @@ const compileEnvVars = () => {
     'VEGA_ENV',
     process.env['NX_VEGA_ENV']
   ) as Networks;
+
   const env: Environment = {
     VEGA_URL: windowOrDefault('VEGA_URL', process.env['NX_VEGA_URL']),
     VEGA_ENV,
@@ -252,6 +253,10 @@ const compileEnvVars = () => {
     MOZILLA_EXTENSION_URL: windowOrDefault(
       'NX_MOZILLA_EXTENSION_URL',
       process.env['NX_MOZILLA_EXTENSION_URL']
+    ),
+    CHARTING_LIBRARY_PATH: windowOrDefault(
+      'NX_CHARTING_LIBRARY_PATH',
+      process.env['NX_CHARTING_LIBRARY_PATH']
     ),
   };
 
@@ -360,6 +365,7 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
       ) as string
     ),
   };
+
   const EXPLORER_FLAGS = {
     EXPLORER_ASSETS: TRUTHY.includes(
       windowOrDefault(
@@ -416,6 +422,7 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
       ) as string
     ),
   };
+
   const GOVERNANCE_FLAGS = {
     GOVERNANCE_NETWORK_DOWN: TRUTHY.includes(
       windowOrDefault(

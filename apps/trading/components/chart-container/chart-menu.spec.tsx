@@ -6,10 +6,52 @@ import {
   DEFAULT_CHART_SETTINGS,
 } from './use-candles-chart-settings';
 import { Overlay, Study, overlayLabels, studyLabels } from 'pennant';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 describe('ChartMenu', () => {
+  it('doesnt show trading view option if library path undefined', () => {
+    useEnvironment.setState({ CHARTING_LIBRARY_PATH: undefined });
+
+    render(<ChartMenu />);
+
+    expect(
+      screen.queryByRole('button', { name: 'pennant' })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'tradingview' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows trading view option if library path is set', async () => {
+    useEnvironment.setState({ CHARTING_LIBRARY_PATH: 'dummy' });
+
+    useCandlesChartSettingsStore.setState({
+      chartlib: 'tradingview',
+    });
+
+    render(<ChartMenu />);
+
+    await userEvent.click(screen.getByRole('button', { name: 'tradingview' }));
+
+    const pennantOption = screen.getByRole('menuitemradio', {
+      name: 'Pennant',
+    });
+    const tradingviewOption = screen.getByRole('menuitemradio', {
+      name: 'Tradingview',
+    });
+
+    expect(pennantOption).toBeInTheDocument();
+    expect(tradingviewOption).toBeInTheDocument();
+
+    await userEvent.click(pennantOption);
+
+    expect(useCandlesChartSettingsStore.getState().chartlib).toEqual('pennant');
+  });
+
   describe('tradingview', () => {
     beforeEach(() => {
+      useEnvironment.setState({ CHARTING_LIBRARY_PATH: 'dummy-path' });
+
       // clear store each time to avoid conditional testing of defaults
       useCandlesChartSettingsStore.setState({
         chartlib: 'tradingview',
