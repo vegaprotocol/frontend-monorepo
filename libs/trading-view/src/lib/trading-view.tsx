@@ -74,9 +74,12 @@ export const TradingView = ({
         'header_compare',
       ],
       enabled_features: ['study_templates'],
+      // TODO: remove
       charts_storage_url: 'https://saveload.tradingview.com',
       charts_storage_api_version: '1.1',
+      // TODO: remove
       client_id: 'tradingview.com',
+      // TODO: remove
       user_id: 'public_user_id',
       fullscreen: false,
       autosize: true,
@@ -94,7 +97,7 @@ export const TradingView = ({
     return () => {
       tvWidget.remove();
     };
-  }, [theme, datafeed, marketId]);
+  }, [theme, datafeed, marketId, libraryPath]);
 
   return <div ref={chartContainerRef} className="w-full h-full" />;
 };
