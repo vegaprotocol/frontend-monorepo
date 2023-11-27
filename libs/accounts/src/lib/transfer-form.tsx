@@ -249,15 +249,16 @@ export const TransferForm = ({
               },
             },
           }}
-          render={({ field }) => (
-            <TradingSelect
-              id="fromAccount"
-              defaultValue=""
-              {...field}
-              onChange={(e) => {
-                field.onChange(e);
+          render={({ field }) =>
+            accounts.length > 0 ? (
+              <TradingSelect
+                id="fromAccount"
+                defaultValue=""
+                {...field}
+                onChange={(e) => {
+                  field.onChange(e);
 
-                const [type] = parseFromAccount(e.target.value);
+                  const [type] = parseFromAccount(e.target.value);
 
                 // Enforce that if transferring from a vested rewards account it must go to
                 // the current connected general account
