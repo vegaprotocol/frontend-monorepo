@@ -1,4 +1,4 @@
-import pytest 
+import pytest
 import re
 from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService
@@ -20,40 +20,40 @@ def test_transfer_submit(continuous_market, vega: VegaService, page: Page):
     # 1003-TRAN-010
     # 1003-TRAN-023
     page.goto('/#/portfolio')
-    
+
     expect(page.get_by_test_id('transfer-form')).to_be_visible
     page.get_by_test_id('select-asset').click()
     expect(page.get_by_test_id('rich-select-option')).to_have_count(1)
-    
+
     page.get_by_test_id('rich-select-option').click()
     page.select_option('[data-testid=transfer-form] [name="toVegaKey"]', index=2)
     page.select_option('[data-testid=transfer-form] [name="fromAccount"]', index=1)
-    
+
     expected_asset_text = re.compile(r"tDAI tDAI999,991.49731 tDAI.{6}….{4}")
     actual_asset_text = page.get_by_test_id('select-asset').text_content().strip()
-   
+
     assert expected_asset_text.search(actual_asset_text), f"Expected pattern not found in {actual_asset_text}"
-    
+
     page.locator('[data-testid=transfer-form] input[name="amount"]').fill('1')
     expect(page.locator('[data-testid=transfer-form] input[name="amount"]')).not_to_be_empty()
-    
+
     page.locator('[data-testid=transfer-form] [type="submit"]').click()
     wait_for_toast_confirmation(page)
     vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    expected_confirmation_text = re.compile(r"Transfer completeYour transaction has been confirmedView in block explorerTransferTo .{6}….{6}1\.00 tDAI")
+    expected_confirmation_text = re.compile(r"Transfer completeYour transaction has been confirmed View in block explorerTransferTo .{6}….{6}1\.00 tDAI")
     actual_confirmation_text = page.get_by_test_id('toast-content').text_content()
     assert expected_confirmation_text.search(actual_confirmation_text), f"Expected pattern not found in {actual_confirmation_text}"
-    
+
 
 @pytest.mark.usefixtures("page", "auth", "risk_accepted")
 def test_transfer_vesting_below_minimum(continuous_market, vega: VegaService, page: Page):
     vega.update_network_parameter(
-    "market_maker", parameter="transfer.minTransferQuantumMultiple", new_value="100000" 
+    "market_maker", parameter="transfer.minTransferQuantumMultiple", new_value="100000"
     )
     vega.wait_for_total_catchup()
-    
+
     create_and_faucet_wallet(vega=vega, wallet=PARTY_A, amount=1e3)
     create_and_faucet_wallet(vega=vega, wallet=PARTY_B, amount=1e5)
     create_and_faucet_wallet(vega=vega, wallet=PARTY_C, amount=1e5)
@@ -96,11 +96,11 @@ def test_transfer_vesting_below_minimum(continuous_market, vega: VegaService, pa
     next_epoch(vega=vega)
     page.goto('/#/portfolio')
     expect(page.get_by_test_id('transfer-form')).to_be_visible
-    
+
     change_keys(page, vega, "party_b")
     page.get_by_test_id('select-asset').click()
     page.get_by_test_id('rich-select-option').click()
-    
+
     option_value = page.locator('[data-testid="transfer-form"] [name="fromAccount"] option[value^="ACCOUNT_TYPE_VESTED_REWARDS"]').first.get_attribute("value")
 
     page.select_option('[data-testid="transfer-form"] [name="fromAccount"]', option_value)
@@ -120,13 +120,13 @@ def test_transfer_vesting_below_minimum(continuous_market, vega: VegaService, pa
     vega.forward("10s")
     vega.wait_fn(10)
     vega.wait_for_total_catchup()
-    
+
     page.get_by_text("Use max").first.click()
     page.locator('[data-testid=transfer-form] [type="submit"]').click()
     wait_for_toast_confirmation(page)
     vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    expected_confirmation_text = re.compile(r"Transfer completeYour transaction has been confirmedView in block explorerTransferTo .{6}….{6}0\.00001 tDAI")
+    expected_confirmation_text = re.compile(r"Transfer completeYour transaction has been confirmed View in block explorerTransferTo .{6}….{6}0\.00001 tDAI")
     actual_confirmation_text = page.get_by_test_id('toast-content').text_content()
     assert expected_confirmation_text.search(actual_confirmation_text), f"Expected pattern not found in {actual_confirmation_text}"
