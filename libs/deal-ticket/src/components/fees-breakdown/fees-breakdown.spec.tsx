@@ -14,13 +14,16 @@ describe('FeesBreakdown', () => {
       liquidityFee: '100',
     };
     const props = {
-      totalFeeAmount: '100',
-      fees,
       feeFactors,
       symbol: 'USD',
       decimals: 2,
-      referralDiscountFactor: '0.01',
-      volumeDiscountFactor: '0.01',
+
+      feeEstimate: {
+        referralDiscountFactor: '0.01',
+        volumeDiscountFactor: '0.01',
+        totalFeeAmount: '100',
+        fees,
+      },
     };
     render(<FeesBreakdown {...props} />);
     expect(screen.getByText('Maker fee').nextElementSibling).toHaveTextContent(

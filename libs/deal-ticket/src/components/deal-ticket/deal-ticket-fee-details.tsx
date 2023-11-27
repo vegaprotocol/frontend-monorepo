@@ -77,12 +77,10 @@ export const DealTicketFeeDetails = ({
       label={
         <>
           {t('Fees')}
-          {totalDiscountFactor ? (
+          {totalDiscountFactor !== '0' ? (
             <Pill size="xxs" intent={Intent.Info} className="ml-1">
-              -
               {formatNumberPercentage(
-                new BigNumber(totalDiscountFactor).multipliedBy(100),
-                2
+                new BigNumber(totalDiscountFactor).multipliedBy(100)
               )}
             </Pill>
           ) : null}
@@ -105,10 +103,7 @@ export const DealTicketFeeDetails = ({
             )}
           </p>
           <FeesBreakdown
-            totalFeeAmount={feeEstimate?.totalFeeAmount}
-            referralDiscountFactor={feeEstimate?.referralDiscountFactor}
-            volumeDiscountFactor={feeEstimate?.volumeDiscountFactor}
-            fees={feeEstimate?.fees}
+            feeEstimate={feeEstimate}
             feeFactors={market.fees.factors}
             symbol={assetSymbol}
             decimals={assetDecimals}
