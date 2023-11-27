@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 
-const appendScript = (url: string) => {
+const appendScript = (url: string, integrity: string) => {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script');
 
     script.src = url;
     script.async = true;
+    script.crossOrigin = 'anonymous';
+    script.integrity = integrity;
     script.onload = () => resolve(script);
     script.onerror = () => reject(new Error(`failed to load script: ${url}`));
 
@@ -13,11 +15,11 @@ const appendScript = (url: string) => {
   });
 };
 
-export const useScript = (url: string) => {
+export const useScript = (url: string, integrity: string) => {
   const [state, setState] = useState<'pending' | 'loaded' | 'error'>('pending');
 
   useEffect(() => {
-    appendScript(url)
+    appendScript(url, integrity)
       .then(() => {
         setState('loaded');
       })
@@ -25,7 +27,7 @@ export const useScript = (url: string) => {
         console.error(err);
         setState('error');
       });
-  }, [url]);
+  }, [url, integrity]);
 
   return state;
 };

@@ -12,6 +12,9 @@ import {
 */
 import { useDatafeed } from './use-datafeed';
 
+// TODO: get actual hash
+const INTEGRITY_HASH = '';
+
 export const TradingViewContainer = ({
   marketId,
   libraryPath,
@@ -19,7 +22,10 @@ export const TradingViewContainer = ({
   marketId: string;
   libraryPath: string;
 }) => {
-  const scriptState = useScript(libraryPath + 'charting_library.standalone.js');
+  const scriptState = useScript(
+    libraryPath + 'charting_library.standalone.js',
+    INTEGRITY_HASH
+  );
 
   if (scriptState === 'pending') return null;
 
@@ -31,10 +37,16 @@ export const TradingViewContainer = ({
     );
   }
 
-  return <TradingView marketId={marketId} />;
+  return <TradingView marketId={marketId} libraryPath={libraryPath} />;
 };
 
-export const TradingView = ({ marketId }: { marketId: string }) => {
+export const TradingView = ({
+  marketId,
+  libraryPath,
+}: {
+  marketId: string;
+  libraryPath: string;
+}) => {
   const { theme } = useThemeSwitcher();
   const chartContainerRef =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
@@ -53,8 +65,8 @@ export const TradingView = ({ marketId }: { marketId: string }) => {
       // @ts-ignore cant import types as chartin_library is external
       interval: '1' as ResolutionString,
       container: chartContainerRef.current,
-      library_path: 'http://localhost:8080/charting_library/',
-      custom_css_url: '/trading-view-styles.css',
+      library_path: libraryPath,
+      custom_css_url: 'vega_styles.css',
       // @ts-ignore cant import types as chartin_library is external
       locale: 'en' as LanguageCode,
       disabled_features: [
