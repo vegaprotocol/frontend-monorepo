@@ -27,11 +27,13 @@ jest.mock('@vegaprotocol/data-provider', () => ({
 }));
 
 describe('PositionsManager', () => {
-  it('should close position with max uint64', async () => {
+  // TODO: Close position temporarily disabled in https://github.com/vegaprotocol/frontend-monorepo/pull/5350
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('should close position with max uint64', async () => {
     render(<PositionsManager partyIds={['partyId']} isReadOnly={false} />, {
       wrapper: MockedProvider,
     });
-    expect(await screen.getByTestId('close-position')).toBeInTheDocument();
+    expect(await screen.findByTestId('close-position')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('close-position'));
 
