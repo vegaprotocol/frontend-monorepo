@@ -12,19 +12,18 @@ import {
 */
 import { useDatafeed } from './use-datafeed';
 
-// TODO: get actual hash
-const INTEGRITY_HASH = '';
-
 export const TradingViewContainer = ({
   marketId,
   libraryPath,
+  libraryHash,
 }: {
   marketId: string;
   libraryPath: string;
+  libraryHash: string;
 }) => {
   const scriptState = useScript(
     libraryPath + 'charting_library.standalone.js',
-    INTEGRITY_HASH
+    libraryHash
   );
 
   if (scriptState === 'pending') return null;

@@ -13,7 +13,7 @@ import { useEnvironment } from '@vegaprotocol/environment';
  * Renders either the pennant chart or the tradingview chart
  */
 export const ChartContainer = ({ marketId }: { marketId: string }) => {
-  const { CHARTING_LIBRARY_PATH } = useEnvironment();
+  const { CHARTING_LIBRARY_PATH, CHARTING_LIBRARY_HASH } = useEnvironment();
 
   const {
     chartlib,
@@ -46,7 +46,7 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
     return pennantChart;
   }
 
-  if (!CHARTING_LIBRARY_PATH) {
+  if (!CHARTING_LIBRARY_PATH || !CHARTING_LIBRARY_HASH) {
     return pennantChart;
   }
 
@@ -56,6 +56,7 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
         <TradingViewContainer
           marketId={marketId}
           libraryPath={CHARTING_LIBRARY_PATH}
+          libraryHash={CHARTING_LIBRARY_HASH}
         />
       );
     }

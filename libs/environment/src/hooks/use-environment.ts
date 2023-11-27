@@ -258,6 +258,10 @@ const compileEnvVars = () => {
       'NX_CHARTING_LIBRARY_PATH',
       process.env['NX_CHARTING_LIBRARY_PATH']
     ),
+    CHARTING_LIBRARY_HASH: windowOrDefault(
+      'NX_CHARTING_LIBRARY_HASH',
+      process.env['NX_CHARTING_LIBRARY_HASH']
+    ),
   };
 
   return env;

@@ -61,6 +61,7 @@ export const envSchema = z
     CHROME_EXTENSION_URL: z.optional(z.string()),
     MOZILLA_EXTENSION_URL: z.optional(z.string()),
     CHARTING_LIBRARY_PATH: z.optional(z.string()),
+    CHARTING_LIBRARY_HASH: z.optional(z.string()),
   })
   .refine(
     (data) => {

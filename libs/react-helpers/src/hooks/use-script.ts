@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
 
-const appendScript = (url: string, integrity: string) => {
+const appendScript = (url: string, hash: string) => {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script');
 
+    script.id = hash;
     script.src = url;
     script.async = true;
-    script.crossOrigin = 'anonymous';
-    script.integrity = integrity;
+    script.crossOrigin = 'anonymous'; // make sure sri is respected with cross origin request
+    script.integrity = `sha256-${hash}`;
     script.onload = () => resolve(script);
     script.onerror = () => reject(new Error(`failed to load script: ${url}`));
 
-    document.body.appendChild(script);
+    if (!document.getElementById(hash)) {
+      document.body.appendChild(script);
+    }
   });
 };
 
