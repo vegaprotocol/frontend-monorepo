@@ -7,10 +7,11 @@ import {
   useRef,
 } from 'react';
 import type { IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../use-t';
 
 export const SetFilter = forwardRef(
   (props: IFilterParams & { readonly?: boolean }, ref) => {
+    const t = useT();
     const [value, setValue] = useState<string[]>([]);
     const valueRef = useRef(value);
     const { readonly } = props;

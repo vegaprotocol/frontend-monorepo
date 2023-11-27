@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
-import { t } from '@vegaprotocol/i18n';
-import { getAsset, getQuoteName } from '@vegaprotocol/markets';
+import { getAsset, getProductType, getQuoteName } from '@vegaprotocol/markets';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
@@ -41,8 +40,10 @@ import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { FeesBreakdown } from '../fees-breakdown';
 import { getTotalDiscountFactor, getDiscountedFee } from '../discounts';
+import { useT, ns } from '../../use-t';
+import { Trans } from 'react-i18next';
 
-const emptyValue = '-';
+export const emptyValue = '-';
 
 export interface DealTicketFeeDetailsProps {
   assetSymbol: string;
@@ -57,6 +58,7 @@ export const DealTicketFeeDetails = ({
   market,
   isMarketInAuction,
 }: DealTicketFeeDetailsProps) => {
+  const t = useT();
   const feeEstimate = useEstimateFees(order, isMarketInAuction);
   const asset = getAsset(market);
   const { decimals: assetDecimals, quantum } = asset;
@@ -98,7 +100,8 @@ export const DealTicketFeeDetails = ({
         <div className="flex flex-col gap-2">
           <p>
             {t(
-              `An estimate of the most you would be expected to pay in fees, in the market's settlement asset ${assetSymbol}. Fees estimated are "taker" fees and will only be payable if the order trades aggressively. Rebate equal to the maker portion will be paid to the trader if the order trades passively.`
+              'An estimate of the most you would be expected to pay in fees, in the market\'s settlement asset {{assetSymbol}}. Fees estimated are "taker" fees and will only be payable if the order trades aggressively. Rebate equal to the maker portion will be paid to the trader if the order trades passively.',
+              { assetSymbol }
             )}
           </p>
           <FeesBreakdown
@@ -136,6 +139,7 @@ export const DealTicketMarginDetails = ({
   positionEstimate,
   side,
 }: DealTicketMarginDetailsProps) => {
+  const t = useT();
   const [breakdownDialog, setBreakdownDialog] = useState(false);
   const { pubKey: partyId } = useVegaWallet();
   const { data: currentMargins } = useDataProvider({
@@ -151,7 +155,6 @@ export const DealTicketMarginDetails = ({
   const { decimals: assetDecimals, quantum } = asset;
   let marginRequiredBestCase: string | undefined = undefined;
   let marginRequiredWorstCase: string | undefined = undefined;
-
   if (marginEstimate) {
     if (currentMargins) {
       marginRequiredBestCase = (
@@ -212,7 +215,11 @@ export const DealTicketMarginDetails = ({
           quantum
         )}
         symbol={assetSymbol}
-        labelDescription={DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT(assetSymbol)}
+        labelDescription={t(
+          'DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT',
+          DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT,
+          { assetSymbol }
+        )}
       />
     );
     projectedMargin = (
@@ -229,7 +236,10 @@ export const DealTicketMarginDetails = ({
           quantum
         )}
         symbol={assetSymbol}
-        labelDescription={EST_TOTAL_MARGIN_TOOLTIP_TEXT}
+        labelDescription={t(
+          'EST_TOTAL_MARGIN_TOOLTIP_TEXT',
+          EST_TOTAL_MARGIN_TOOLTIP_TEXT
+        )}
       />
     );
   }
@@ -287,99 +297,134 @@ export const DealTicketMarginDetails = ({
   );
 
   const quoteName = getQuoteName(market);
+  const productType = getProductType(market);
 
   return (
     <div className="flex flex-col w-full gap-2 pt-2">
-      <Accordion>
-        <AccordionPanel
-          itemId="margin"
-          trigger={
-            <AccordionPrimitive.Trigger
-              data-testid="accordion-toggle"
-              className={classNames(
-                'w-full',
-                'flex items-center gap-2 text-xs',
-                'group'
-              )}
-            >
-              <div
-                data-testid={`deal-ticket-fee-margin-required`}
-                key={'value-dropdown'}
-                className="flex items-center justify-between w-full gap-2"
-              >
-                <div className="flex items-center text-left gap-1">
-                  <Tooltip description={MARGIN_DIFF_TOOLTIP_TEXT(assetSymbol)}>
-                    <span className="text-muted">{t('Margin required')}</span>
-                  </Tooltip>
+      {/*
+      TODO: remove this conditional check once the following PRs are deployed
+      and the estimatePosition query is working for perps
 
-                  <AccordionChevron size={10} />
-                </div>
-                <Tooltip
-                  description={
-                    formatRange(
-                      marginRequiredBestCase,
-                      marginRequiredWorstCase,
-                      assetDecimals
-                    ) ?? '-'
-                  }
+      - https://github.com/vegaprotocol/vega/pull/10119
+      - https://github.com/vegaprotocol/vega/pull/10122
+      */}
+      {productType === 'Future' && (
+        <>
+          <Accordion>
+            <AccordionPanel
+              itemId="margin"
+              trigger={
+                <AccordionPrimitive.Trigger
+                  data-testid="accordion-toggle"
+                  className={classNames(
+                    'w-full',
+                    'flex items-center gap-2 text-xs',
+                    'group'
+                  )}
                 >
-                  <div className="font-mono text-right">
-                    {formatValue(
-                      marginRequiredWorstCase,
-                      assetDecimals,
-                      quantum
-                    )}{' '}
-                    {assetSymbol || ''}
+                  <div
+                    data-testid={`deal-ticket-fee-margin-required`}
+                    key={'value-dropdown'}
+                    className="flex items-center justify-between w-full gap-2"
+                  >
+                    <div className="flex items-center text-left gap-1">
+                      <Tooltip
+                        description={t(
+                          'MARGIN_DIFF_TOOLTIP_TEXT',
+                          MARGIN_DIFF_TOOLTIP_TEXT,
+                          { assetSymbol }
+                        )}
+                      >
+                        <span className="text-muted">
+                          {t('Margin required')}
+                        </span>
+                      </Tooltip>
+
+                      <AccordionChevron size={10} />
+                    </div>
+                    <Tooltip
+                      description={
+                        formatRange(
+                          marginRequiredBestCase,
+                          marginRequiredWorstCase,
+                          assetDecimals
+                        ) ?? '-'
+                      }
+                    >
+                      <div className="font-mono text-right">
+                        {formatValue(
+                          marginRequiredWorstCase,
+                          assetDecimals,
+                          quantum
+                        )}{' '}
+                        {assetSymbol || ''}
+                      </div>
+                    </Tooltip>
                   </div>
-                </Tooltip>
-              </div>
-            </AccordionPrimitive.Trigger>
-          }
-        >
-          <div className="flex flex-col w-full gap-2">
-            <KeyValue
-              label={t('Total margin available')}
-              indent
-              value={formatValue(totalMarginAvailable, assetDecimals)}
-              formattedValue={formatValue(
-                totalMarginAvailable,
-                assetDecimals,
-                quantum
-              )}
-              symbol={assetSymbol}
-              labelDescription={TOTAL_MARGIN_AVAILABLE(
-                formatValue(generalAccountBalance, assetDecimals, quantum),
-                formatValue(marginAccountBalance, assetDecimals, quantum),
-                formatValue(
-                  currentMargins?.maintenanceLevel,
-                  assetDecimals,
-                  quantum
-                ),
-                assetSymbol
-              )}
-            />
-            {deductionFromCollateral}
-            <KeyValue
-              label={t('Current margin allocation')}
-              indent
-              onClick={
-                generalAccountBalance
-                  ? () => setBreakdownDialog(true)
-                  : undefined
+                </AccordionPrimitive.Trigger>
               }
-              value={formatValue(marginAccountBalance, assetDecimals)}
-              symbol={assetSymbol}
-              labelDescription={MARGIN_ACCOUNT_TOOLTIP_TEXT}
-              formattedValue={formatValue(
-                marginAccountBalance,
-                assetDecimals,
-                quantum
-              )}
-            />
-          </div>
-        </AccordionPanel>
-      </Accordion>
-      {projectedMargin}
+            >
+              <div className="flex flex-col w-full gap-2">
+                <KeyValue
+                  label={t('Total margin available')}
+                  indent
+                  value={formatValue(totalMarginAvailable, assetDecimals)}
+                  formattedValue={formatValue(
+                    totalMarginAvailable,
+                    assetDecimals,
+                    quantum
+                  )}
+                  symbol={assetSymbol}
+                  labelDescription={t(
+                    'TOTAL_MARGIN_AVAILABLE',
+                    TOTAL_MARGIN_AVAILABLE,
+                    {
+                      generalAccountBalance: formatValue(
+                        generalAccountBalance,
+                        assetDecimals,
+                        quantum
+                      ),
+                      marginAccountBalance: formatValue(
+                        marginAccountBalance,
+                        assetDecimals,
+                        quantum
+                      ),
+                      marginMaintenance: formatValue(
+                        currentMargins?.maintenanceLevel,
+                        assetDecimals,
+                        quantum
+                      ),
+                      assetSymbol,
+                    }
+                  )}
+                />
+                {deductionFromCollateral}
+                <KeyValue
+                  label={t('Current margin allocation')}
+                  indent
+                  onClick={
+                    generalAccountBalance
+                      ? () => setBreakdownDialog(true)
+                      : undefined
+                  }
+                  value={formatValue(marginAccountBalance, assetDecimals)}
+                  symbol={assetSymbol}
+                  labelDescription={t(
+                    'MARGIN_ACCOUNT_TOOLTIP_TEXT',
+                    MARGIN_ACCOUNT_TOOLTIP_TEXT
+                  )}
+                  formattedValue={formatValue(
+                    marginAccountBalance,
+                    assetDecimals,
+                    quantum
+                  )}
+                />
+              </div>
+            </AccordionPanel>
+          </Accordion>
+          {projectedMargin}
+        </>
+      )}
       <KeyValue
         label={t('Liquidation')}
         value={liquidationPriceEstimateRange}
@@ -387,16 +432,26 @@ export const DealTicketMarginDetails = ({
         symbol={quoteName}
         labelDescription={
           <>
-            <span>{LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT}</span>{' '}
             <span>
-              {t('For full details please see ')}
-              <ExternalLink
-                href={
-                  'https://github.com/vegaprotocol/specs/blob/master/non-protocol-specs/0012-NP-LIPE-liquidation-price-estimate.md'
-                }
-              >
-                {t('liquidation price estimate documentation.')}
-              </ExternalLink>
+              {t(
+                'LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT',
+                LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT
+              )}
+            </span>{' '}
+            <span>
+              <Trans
+                defaults="For full details please see <0>liquidation price estimate documentation</0>."
+                components={[
+                  <ExternalLink
+                    href={
+                      'https://github.com/vegaprotocol/specs/blob/master/non-protocol-specs/0012-NP-LIPE-liquidation-price-estimate.md'
+                    }
+                  >
+                    liquidation price estimate documentation
+                  </ExternalLink>,
+                ]}
+                ns={ns}
+              />
             </span>
           </>
         }

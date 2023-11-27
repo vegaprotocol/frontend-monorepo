@@ -52,6 +52,7 @@ context(
 
     describe('Eth wallet - contains VEGA tokens', function () {
       beforeEach(
+        // @ts-ignore clash between jest and cypress
         'teardown wallet & drill into a specific validator',
         function () {
           cy.clearLocalStorage();
@@ -67,6 +68,7 @@ context(
 
       it(
         'Able to associate tokens - from wallet',
+        // @ts-ignore clash between jest and cypress
         { tags: '@smoke' },
         function () {
           //1004-ASSO-003

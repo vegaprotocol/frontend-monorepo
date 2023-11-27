@@ -105,6 +105,7 @@ context(
       // 0002-WCON-008
       it(
         'should have truncated account number visible',
+        // @ts-ignore clash between jest and cypress
         { tags: '@smoke' },
         function () {
           cy.get(walletContainer).within(() => {
@@ -125,6 +126,7 @@ context(
 
       it(
         'should have Vega Associated currency value visible',
+        // @ts-ignore clash between jest and cypress
         { tags: '@smoke' },
         function () {
           cy.get(walletContainer).within(() => {
@@ -135,14 +137,19 @@ context(
         }
       );
 
-      it('should have Unstaked value visible', { tags: '@smoke' }, function () {
-        cy.get(walletContainer).within(() => {
-          cy.get(vegaUnstaked)
-            .should('be.visible')
-            .invoke('text')
-            .and('not.be.empty');
-        });
-      });
+      it(
+        'should have Unstaked value visible',
+        // @ts-ignore clash between jest and cypress
+        { tags: '@smoke' },
+        function () {
+          cy.get(walletContainer).within(() => {
+            cy.get(vegaUnstaked)
+              .should('be.visible')
+              .invoke('text')
+              .and('not.be.empty');
+          });
+        }
+      );
 
       it('should have Governance button visible', function () {
         cy.get(walletContainer).within(() => {
@@ -295,13 +302,17 @@ context(
 
               cy.getByTestId(vegaWalletCurrencyTitle)
                 .contains(name)
-                .parent()
-                .siblings(txTimeout)
-                .should((elementAmount) => {
-                  const displayedAmount = parseFloat(elementAmount.text());
-                  expect(displayedAmount).be.gte(expectedAmount);
+                .parent() // back to currency-title
+                .parent() // back to container
+                .within(() => {
+                  cy.get(
+                    '[data-account-type="account_type_general"] [data-value]'
+                  ).should((elementAmount) => {
+                    const displayedAmount = parseFloat(elementAmount.text());
+                    // @ts-ignore clash between jest and cypress
+                    expect(displayedAmount).be.gte(expectedAmount);
+                  });
                 });
-
               cy.getByTestId(vegaWalletCurrencyTitle)
                 .contains(name)
                 .parent()

@@ -2,18 +2,18 @@ import { useMemo } from 'react';
 import { getAsset, type MarketFieldsFragment } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
-import type { AgGridReact } from 'ag-grid-react';
-import type { ColDef } from 'ag-grid-community';
+import { type AgGridReact } from 'ag-grid-react';
+import { type ColDef } from 'ag-grid-community';
 import { AgGrid } from '@vegaprotocol/datagrid';
-import type {
-  VegaICellRendererParams,
-  VegaValueGetterParams,
+import {
+  type VegaICellRendererParams,
+  type VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
 import { useRef, useLayoutEffect } from 'react';
 import { BREAKPOINT_MD } from '../../config/breakpoints';
 import { MarketStateMapping } from '@vegaprotocol/types';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import type { RowClickedEvent } from 'ag-grid-community';
+import { type RowClickedEvent } from 'ag-grid-community';
 import { Link, useNavigate } from 'react-router-dom';
 
 type MarketsTableProps = {

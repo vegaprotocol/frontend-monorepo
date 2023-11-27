@@ -1,13 +1,13 @@
 import { useApolloClient } from '@apollo/client';
 import { useCallback, useEffect, useRef } from 'react';
-import { ProposalEventDocument } from './__generated__/Proposal';
-import type {
-  ProposalEventSubscriptionVariables,
-  ProposalEventSubscription,
-  ProposalEventFieldsFragment,
+import {
+  ProposalEventDocument,
+  type ProposalEventSubscriptionVariables,
+  type ProposalEventSubscription,
+  type ProposalEventFieldsFragment,
 } from './__generated__/Proposal';
-import type { Subscription } from 'zen-observable-ts';
-import type { VegaTxState } from '../proposals-hooks/use-vega-transaction';
+import { type Subscription } from 'zen-observable-ts';
+import { type VegaTxState } from '../proposals-hooks/use-vega-transaction';
 
 export const useProposalEvent = (transaction: VegaTxState) => {
   const client = useApolloClient();

@@ -7,8 +7,8 @@ import {
   DApp,
   useLinks,
   FLAGS,
+  useEnvNameMapping,
 } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/i18n';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import { VegaIconNames, VegaIcon, VLogo } from '@vegaprotocol/ui-toolkit';
@@ -22,6 +22,7 @@ import { VegaWalletMenu } from '../vega-wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { WalletIcon } from '../icons/wallet';
 import { ProtocolUpgradeCountdown } from '@vegaprotocol/proposals';
+import { useT } from '../../lib/use-t';
 
 type MenuState = 'wallet' | 'nav' | null;
 type Theme = 'system' | 'yellow';
@@ -33,6 +34,7 @@ export const Navbar = ({
   children?: ReactNode;
   theme?: Theme;
 }) => {
+  const t = useT();
   // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
 
@@ -73,7 +75,7 @@ export const Navbar = ({
       </div>
 
       {/* Right section */}
-      <div className="flex items-center justify-end ml-auto gap-2">
+      <div className="ml-auto flex items-center justify-end gap-2">
         <ProtocolUpgradeCountdown />
         <NavbarMobileButton
           onClick={() => {
@@ -107,18 +109,18 @@ export const Navbar = ({
           onOpenChange={(open) => setMenu((x) => (open ? x : null))}
         >
           <D.Overlay
-            className="fixed inset-0 z-20 lg:hidden dark:bg-black/80 bg-black/50"
+            className="fixed inset-0 z-20 bg-black/50 dark:bg-black/80 lg:hidden"
             data-testid="navbar-menu-overlay"
           />
           <D.Content
             className={classNames(
               'lg:hidden',
-              'fixed top-0 right-0 z-20 w-3/4 h-screen border-l border-default bg-vega-clight-700 dark:bg-vega-cdark-700',
+              'border-default bg-vega-clight-700 dark:bg-vega-cdark-700 fixed right-0 top-0 z-20 h-screen w-3/4 border-l',
               navTextClasses
             )}
             data-testid="navbar-menu-content"
           >
-            <div className="flex items-center justify-end h-10 p-1">
+            <div className="flex h-10 items-center justify-end p-1">
               <NavbarMobileButton onClick={() => setMenu(null)}>
                 <span className="sr-only">{t('Close menu')}</span>
                 <VegaIcon name={VegaIconNames.CROSS} size={24} />
@@ -138,11 +140,13 @@ export const Navbar = ({
  * of the navigation
  */
 const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
+  const t = useT();
+  const envNameMapping = useEnvNameMapping();
   const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
   const marketId = useGlobalStore((store) => store.marketId);
 
   return (
-    <div className="lg:flex lg:h-full gap-3">
+    <div className="gap-3 lg:flex lg:h-full">
       <NavbarList>
         <NavbarItem>
           <NavbarTrigger data-testid="navbar-network-switcher-trigger">
@@ -190,6 +194,11 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
         <NavbarItem>
           <NavbarLink to={Links.FEES()} onClick={onClick}>
             {t('Fees')}
+          </NavbarLink>
+        </NavbarItem>
+        <NavbarItem>
+          <NavbarLink to={Links.REWARDS()} onClick={onClick}>
+            {t('Rewards')}
           </NavbarLink>
         </NavbarItem>
         <NavbarItem>
@@ -241,8 +250,8 @@ const NavbarTrigger = ({
       onPointerMove={preventHover}
       onPointerLeave={preventHover}
       className={classNames(
-        'w-full lg:w-auto lg:h-full',
-        'flex items-center justify-between lg:justify-center gap-2 px-6 py-2 lg:p-0',
+        'w-full lg:h-full lg:w-auto',
+        'flex items-center justify-between gap-2 px-6 py-2 lg:justify-center lg:p-0',
         'text-lg lg:text-sm',
         'hover:text-vega-clight-100 dark:hover:text-vega-cdark-100'
       )}
@@ -273,8 +282,8 @@ const NavbarLink = ({
         to={to}
         end={end}
         className={classNames(
-          'block lg:flex lg:h-full flex-col justify-center',
-          'px-6 py-2 lg:p-0 text-lg lg:text-sm',
+          'block flex-col justify-center lg:flex lg:h-full',
+          'px-6 py-2 text-lg lg:p-0 lg:text-sm',
           'hover:text-vega-clight-100 dark:hover:text-vega-cdark-100'
         )}
         onClick={onClick}
@@ -297,7 +306,7 @@ const NavbarLink = ({
               </span>
               <span
                 className={classNames(
-                  'hidden lg:block absolute left-0 bottom-0 w-full h-0',
+                  'absolute bottom-0 left-0 hidden h-0 w-full lg:block',
                   borderClasses
                 )}
               />
@@ -318,7 +327,7 @@ const NavbarSubItem = (props: LiHTMLAttributes<HTMLElement>) => {
 };
 
 const NavbarList = (props: N.NavigationMenuListProps) => {
-  return <N.List {...props} className="lg:flex lg:h-full gap-6" />;
+  return <N.List {...props} className="gap-6 lg:flex lg:h-full" />;
 };
 
 /**
@@ -329,10 +338,10 @@ const NavbarContent = (props: N.NavigationMenuContentProps) => {
     <N.Content
       {...props}
       className={classNames(
-        'group navbar-content',
-        'lg:absolute lg:mt-2 pl-2 lg:pl-0 z-20 lg:min-w-[290px]',
+        'navbar-content group',
+        'z-20 pl-2 lg:absolute lg:mt-2 lg:min-w-[290px] lg:pl-0',
         'lg:bg-vega-clight-700 lg:dark:bg-vega-cdark-700',
-        'lg:border border-vega-clight-500 dark:border-vega-cdark-500 lg:rounded'
+        'border-vega-clight-500 dark:border-vega-cdark-500 lg:rounded lg:border'
       )}
       onPointerEnter={preventHover}
       onPointerLeave={preventHover}
@@ -357,8 +366,8 @@ const NavbarLinkExternal = ({
       <NavLink
         to={to}
         className={classNames(
-          'flex gap-2 lg:h-full items-center',
-          'px-6 py-2 lg:p-0 text-lg lg:text-sm',
+          'flex items-center gap-2 lg:h-full',
+          'px-6 py-2 text-lg lg:p-0 lg:text-sm',
           'hover:text-vega-clight-100 dark:hover:text-vega-cdark-100'
         )}
         onClick={onClick}
@@ -386,7 +395,7 @@ const BurgerIcon = () => (
 const NavbarListDivider = () => {
   return (
     <div className="px-6 py-2 lg:px-0" role="separator">
-      <div className="w-full h-px lg:h-full lg:w-px bg-vega-clight-500 dark:bg-vega-cdark-500" />
+      <div className="bg-vega-clight-500 dark:bg-vega-cdark-500 h-px w-full lg:h-full lg:w-px" />
     </div>
   );
 };
@@ -399,22 +408,12 @@ const NavbarMobileButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
     <button
       {...props}
       className={classNames(
-        'w-8 h-8 lg:hidden flex items-center p-1 rounded ',
+        'flex h-8 w-8 items-center rounded p-1 lg:hidden ',
         'hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500',
         'hover:text-vega-clight-50 dark:hover:text-vega-cdark-50'
       )}
     />
   );
-};
-
-const envNameMapping: Record<Networks, string> = {
-  [Networks.VALIDATOR_TESTNET]: t('VALIDATOR_TESTNET'),
-  [Networks.CUSTOM]: t('Custom'),
-  [Networks.DEVNET]: t('Devnet'),
-  [Networks.STAGNET1]: t('Stagnet'),
-  [Networks.TESTNET]: t('Fairground testnet'),
-  [Networks.MAINNET_MIRROR]: t('Mirror'),
-  [Networks.MAINNET]: t('Mainnet'),
 };
 
 // https://github.com/radix-ui/primitives/issues/1630

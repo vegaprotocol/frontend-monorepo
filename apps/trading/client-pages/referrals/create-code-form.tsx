@@ -24,13 +24,14 @@ import {
   DISCLAIMER_REFERRAL_DOCS_LINK,
 } from './constants';
 import { useReferral } from './hooks/use-referral';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../lib/use-t';
 
 export const CreateCodeContainer = () => {
   return <CreateCodeForm />;
 };
 
 export const CreateCodeForm = () => {
+  const t = useT();
   const [dialogOpen, setDialogOpen] = useState(false);
   const openWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
@@ -81,6 +82,7 @@ const CreateCodeDialog = ({
 }: {
   setDialogOpen: (open: boolean) => void;
 }) => {
+  const t = useT();
   const createLink = useLinks(DApp.Governance);
   const { isReadOnly, pubKey, sendTx } = useVegaWallet();
   const { refetch } = useReferral({ pubKey, role: 'referrer' });
@@ -92,6 +94,11 @@ const CreateCodeDialog = ({
 
   const { stakeAvailable: currentStakeAvailable, requiredStake } =
     useStakeAvailable();
+
+  const { data: referralSets } = useReferral({
+    pubKey,
+    role: 'referrer',
+  });
 
   const onSubmit = () => {
     if (isReadOnly || !pubKey) {
@@ -170,10 +177,14 @@ const CreateCodeDialog = ({
     return (
       <div className="flex flex-col gap-4">
         <p>
-          {t('You need at least')}{' '}
-          {addDecimalsFormatNumber(requiredStake.toString(), 18)}{' '}
           {t(
-            'VEGA staked to generate a referral code and participate in the referral program.'
+            'You need at least {{requiredStake}} VEGA staked to generate a referral code and participate in the referral program.',
+            {
+              requiredStake: addDecimalsFormatNumber(
+                requiredStake.toString(),
+                18
+              ),
+            }
           )}
         </p>
         <TradingAnchorButton
@@ -183,6 +194,68 @@ const CreateCodeDialog = ({
         >
           {t('Stake some $VEGA now')}
         </TradingAnchorButton>
+      </div>
+    );
+  }
+
+  if (!referralSets) {
+    return (
+      <div className="flex flex-col gap-4">
+        {(status === 'idle' || status === 'loading' || status === 'error') && (
+          <>
+            {
+              <p>
+                {t(
+                  'There is currently no referral program active, are you sure you want to create a code?'
+                )}
+              </p>
+            }
+          </>
+        )}
+        {status === 'success' && code && (
+          <div className="flex items-center gap-2">
+            <div className="flex-1 min-w-0 p-2 text-sm rounded bg-vega-clight-700 dark:bg-vega-cdark-700">
+              <p className="overflow-hidden whitespace-nowrap text-ellipsis">
+                {code}
+              </p>
+            </div>
+            <CopyWithTooltip text={code}>
+              <TradingButton
+                className="text-sm no-underline"
+                icon={<VegaIcon name={VegaIconNames.COPY} />}
+              >
+                <span>{t('Copy')}</span>
+              </TradingButton>
+            </CopyWithTooltip>
+          </div>
+        )}
+        <TradingButton
+          fill={true}
+          intent={Intent.Primary}
+          onClick={() => onSubmit()}
+          {...getButtonProps()}
+        ></TradingButton>
+        {status === 'idle' && (
+          <TradingButton
+            fill={true}
+            intent={Intent.Primary}
+            onClick={() => {
+              refetch();
+              setDialogOpen(false);
+            }}
+          >
+            {t('No')}
+          </TradingButton>
+        )}
+        {err && <InputError>{err}</InputError>}
+        <div className="flex justify-center pt-5 mt-2 text-sm border-t gap-4 text-default border-default">
+          <ExternalLink href={ABOUT_REFERRAL_DOCS_LINK}>
+            {t('About the referral program')}
+          </ExternalLink>
+          <ExternalLink href={DISCLAIMER_REFERRAL_DOCS_LINK}>
+            {t('Disclaimer')}
+          </ExternalLink>
+        </div>
       </div>
     );
   }

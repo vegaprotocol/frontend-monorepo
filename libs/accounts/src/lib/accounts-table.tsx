@@ -5,7 +5,7 @@ import {
   isNumeric,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
@@ -96,6 +96,7 @@ export const AccountTable = ({
   pinnedAsset,
   ...props
 }: AccountTableProps) => {
+  const t = useT();
   const pinnedRow = useMemo(() => {
     if (!pinnedAsset) {
       return;
@@ -191,7 +192,7 @@ export const AccountTable = ({
             <>
               <span className="underline">{valueFormatted}</span>
               <span className="inline-block ml-2 w-14 text-muted">
-                {t('0.00%')}
+                {(0).toFixed(2)}%
               </span>
             </>
           );
@@ -310,6 +311,7 @@ export const AccountTable = ({
     onClickTransfer,
     isReadOnly,
     showDepositButton,
+    t,
   ]);
 
   const data = rowData?.filter((data) => data.asset.id !== pinnedAsset?.id);

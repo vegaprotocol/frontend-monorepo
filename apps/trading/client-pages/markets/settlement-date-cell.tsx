@@ -1,8 +1,8 @@
 import { DApp, EXPLORER_ORACLE, useLinks } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/i18n';
 import { MarketState } from '@vegaprotocol/types';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
+import { useT } from '../../lib/use-t';
 import { formatDistanceToNowStrict, isAfter } from 'date-fns';
 
 export interface SettlementDataCellProps {
@@ -18,6 +18,7 @@ export const SettlementDateCell = ({
   closeTimestamp,
   marketState,
 }: SettlementDataCellProps) => {
+  const t = useT();
   const linkCreator = useLinks(DApp.Explorer);
   const date = closeTimestamp ? new Date(closeTimestamp) : metaDate;
 
@@ -31,12 +32,12 @@ export const SettlementDateCell = ({
 
     if (expiryHasPassed) {
       if (marketState !== MarketState.STATE_SETTLED) {
-        text = t('Expected %s ago', distance);
+        text = t('Expected {{distance}} ago', { distance });
       } else {
-        text = t('%s ago', distance);
+        text = t('{{distance}} ago', { distance });
       }
     } else {
-      text = t('Expected in %s', distance);
+      text = t('Expected in {{distance}}', { distance });
     }
   }
 

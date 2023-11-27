@@ -40,6 +40,7 @@ export const createMarketsDataFragment = (
     bestStaticBidPrice: '0',
     bestStaticOfferPrice: '0',
     indicativeVolume: '0',
+    openInterest: '0',
     bestBidPrice: '0',
     bestOfferPrice: '0',
     markPrice: '4612690058',

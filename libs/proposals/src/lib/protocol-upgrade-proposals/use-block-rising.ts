@@ -2,8 +2,10 @@ import { createClient } from '@vegaprotocol/apollo-client';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { useBlockInfo } from '@vegaprotocol/tendermint';
 import { useEffect, useMemo, useState } from 'react';
-import type { BlockStatisticsQuery } from './__generated__/BlockStatistics';
-import { BlockStatisticsDocument } from './__generated__/BlockStatistics';
+import {
+  BlockStatisticsDocument,
+  type BlockStatisticsQuery,
+} from './__generated__/BlockStatistics';
 import compact from 'lodash/compact';
 import max from 'lodash/max';
 

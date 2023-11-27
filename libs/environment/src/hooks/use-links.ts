@@ -85,6 +85,7 @@ export const DocsLinks = VEGA_DOCS_URL
       ICEBERG_ORDERS: `${VEGA_DOCS_URL}/concepts/trading-on-vega/orders#iceberg-order`,
       POST_REDUCE_ONLY: `${VEGA_DOCS_URL}/concepts/trading-on-vega/orders#conditional-order-parameters`,
       QUANTUM: `${VEGA_DOCS_URL}/concepts/assets/asset-framework#quantum`,
+      REFERRALS: `${VEGA_DOCS_URL}/tutorials/proposals/referral-program-proposal`,
     }
   : undefined;
 

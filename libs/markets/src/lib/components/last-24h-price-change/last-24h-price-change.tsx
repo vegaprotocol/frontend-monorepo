@@ -7,10 +7,10 @@ import {
 } from '@vegaprotocol/utils';
 import { PriceChangeCell, signedNumberCssClass } from '@vegaprotocol/datagrid';
 import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
 import { useCandles } from '../../hooks/use-candles';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
+import { useT } from '../../use-t';
 
 interface Props {
   marketId?: string;
@@ -25,6 +25,7 @@ export const Last24hPriceChange = ({
   decimalPlaces,
   initialValue,
 }: Props) => {
+  const t = useT();
   const { oneDayCandles, error, fiveDaysCandles } = useCandles({
     marketId,
   });

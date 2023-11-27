@@ -3,11 +3,12 @@ import {
   useNodeHealth,
   useNodeSwitcherStore,
 } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/i18n';
 import { Indicator, ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { Tooltip } from '../../components/tooltip';
+import { useT } from '../../lib/use-t';
 
 export const NodeHealthContainer = () => {
+  const t = useT();
   const { VEGA_URL, VEGA_INCIDENT_URL } = useEnvironment();
   const setNodeSwitcher = useNodeSwitcherStore((store) => store.setDialogOpen);
   const { text, intent, datanodeBlockHeight } = useNodeHealth();
@@ -57,6 +58,7 @@ interface NodeUrlProps {
 }
 
 export const NodeUrl = ({ url }: NodeUrlProps) => {
+  const t = useT();
   const urlObj = new URL(url);
   const nodeUrl = urlObj.hostname;
   return <span title={t('Connected node')}>{nodeUrl}</span>;

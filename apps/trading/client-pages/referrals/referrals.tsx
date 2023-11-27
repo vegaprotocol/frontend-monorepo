@@ -17,18 +17,22 @@ import classNames from 'classnames';
 import { usePageTitleStore } from '../../stores';
 import { useEffect } from 'react';
 import { titlefy } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../lib/use-t';
 
-const Nav = () => (
-  <div className="flex justify-center border-b border-vega-cdark-500">
-    <TabLink end to={Routes.REFERRALS}>
-      {t('I want a code')}
-    </TabLink>
-    <TabLink to={Routes.REFERRALS_APPLY_CODE}>{t('I have a code')}</TabLink>
-  </div>
-);
+const Nav = () => {
+  const t = useT();
+  return (
+    <div className="flex justify-center border-b border-vega-cdark-500">
+      <TabLink end to={Routes.REFERRALS}>
+        {t('I want a code')}
+      </TabLink>
+      <TabLink to={Routes.REFERRALS_APPLY_CODE}>{t('I have a code')}</TabLink>
+    </div>
+  );
+};
 
 export const Referrals = () => {
+  const t = useT();
   const { pubKey } = useVegaWallet();
 
   const {
@@ -58,7 +62,7 @@ export const Referrals = () => {
 
   useEffect(() => {
     updateTitle(titlefy([t('Referrals')]));
-  }, [updateTitle]);
+  }, [updateTitle, t]);
 
   return (
     <>

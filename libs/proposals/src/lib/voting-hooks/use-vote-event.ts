@@ -1,12 +1,12 @@
 import { useApolloClient } from '@apollo/client';
 import { useCallback, useEffect, useRef } from 'react';
-import { VoteEventDocument } from './__generated__/VoteSubsciption';
-import type { Subscription } from 'zen-observable-ts';
-import type { VegaTxState } from '../proposals-hooks/use-vega-transaction';
-import type {
-  VoteEventFieldsFragment,
-  VoteEventSubscription,
-  VoteEventSubscriptionVariables,
+import { type Subscription } from 'zen-observable-ts';
+import { type VegaTxState } from '../proposals-hooks/use-vega-transaction';
+import {
+  VoteEventDocument,
+  type VoteEventSubscription,
+  type VoteEventSubscriptionVariables,
+  type VoteEventFieldsFragment,
 } from './__generated__/VoteSubsciption';
 
 export const useVoteEvent = (transaction: VegaTxState) => {

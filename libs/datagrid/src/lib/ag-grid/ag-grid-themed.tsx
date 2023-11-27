@@ -1,14 +1,12 @@
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import { AgGridReact } from 'ag-grid-react';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { t } from '@vegaprotocol/i18n';
 import classNames from 'classnames';
 import type { ColDef } from 'ag-grid-community';
+import { useT } from '../use-t';
 
 const defaultProps: AgGridReactProps = {
   enableCellTextSelection: true,
-  overlayLoadingTemplate: t('Loading...'),
-  overlayNoRowsTemplate: t('No data'),
   suppressCellFocus: true,
   suppressColumnMoveAnimation: true,
 };
@@ -26,6 +24,7 @@ export const AgGridThemed = ({
   style?: React.CSSProperties;
   gridRef?: React.ForwardedRef<AgGridReact>;
 }) => {
+  const t = useT();
   const { theme } = useThemeSwitcher();
 
   const wrapperClasses = classNames('vega-ag-grid', 'w-full h-full', {
@@ -38,6 +37,9 @@ export const AgGridThemed = ({
       <AgGridReact
         defaultColDef={defaultColDef}
         ref={gridRef}
+        overlayLoadingTemplate={t('Loading...')}
+        overlayNoRowsTemplate={t('No data')}
+        suppressDragLeaveHidesColumns
         {...defaultProps}
         {...props}
       />

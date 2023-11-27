@@ -103,7 +103,7 @@ export const WalletCardActions = ({
   return <div className="flex justify-end gap-2 mb-4">{children}</div>;
 };
 
-export interface WalletCardAssetProps {
+export type WalletCardAssetProps = {
   image: string;
   name: string;
   symbol: string;
@@ -113,42 +113,61 @@ export interface WalletCardAssetProps {
   border?: boolean;
   subheading?: string;
   type?: Schema.AccountType;
-}
+  allowZeroBalance?: boolean;
+};
+
+export type WalletCardAssetWithMultipleBalancesProps = Omit<
+  WalletCardAssetProps,
+  'balance' | 'type'
+> & {
+  balances: { balance: BigNumber; type?: Schema.AccountType }[];
+};
 
 export const WalletCardAsset = ({
   image,
   name,
   symbol,
-  balance,
   decimals,
   assetId,
   border,
   subheading,
-  type,
-}: WalletCardAssetProps) => {
-  const [integers, decimalsPlaces, separator] = useNumberParts(
-    balance,
-    decimals
-  );
-  const { t } = useTranslation();
-  const consoleLink = useLinks(DApp.Console);
-  const transferAssetLink = (assetId: string) =>
-    consoleLink(CONSOLE_TRANSFER_ASSET.replace(':assetId', assetId));
-  const { param: baseRate } = useNetworkParam('rewards_vesting_baseRate');
+  allowZeroBalance = false,
+  ...props
+}: WalletCardAssetProps | WalletCardAssetWithMultipleBalancesProps) => {
+  const balance = 'balance' in props ? props.balance : undefined;
+  const type = 'type' in props ? props.type : undefined;
+  const balances =
+    'balances' in props
+      ? props.balances
+      : balance
+      ? [{ balance, type }]
+      : undefined;
 
-  const isRedeemable =
-    type === Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS && assetId;
+  const values =
+    balances &&
+    balances.length > 0 &&
+    balances
+      .filter((b) => allowZeroBalance || !b.balance.isZero())
+      .sort((a, b) => {
+        const order = [
+          Schema.AccountType.ACCOUNT_TYPE_VESTING_REWARDS,
+          Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
+          Schema.AccountType.ACCOUNT_TYPE_GENERAL,
+          undefined,
+        ];
+        return order.indexOf(a.type) - order.indexOf(b.type);
+      })
+      .map(({ balance, type }, i) => (
+        <CurrencyValue
+          key={i}
+          balance={balance}
+          decimals={decimals}
+          type={type}
+          assetId={assetId}
+        />
+      ));
 
-  const accountTypeTooltip = useMemo(() => {
-    if (type === Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS) {
-      return t('VestedRewardsTooltip');
-    }
-    if (type === Schema.AccountType.ACCOUNT_TYPE_VESTING_REWARDS && baseRate) {
-      return t('VestingRewardsTooltip', { baseRate });
-    }
-
-    return null;
-  }, [baseRate, t, type]);
+  if (!values || values.length === 0) return;
 
   return (
     <div className="flex flex-nowrap gap-2 mt-2 mb-4">
@@ -169,35 +188,92 @@ export const WalletCardAsset = ({
             {subheading || symbol}
           </div>
         </div>
-        {type ? (
-          <div className="mb-[2px] flex gap-2 items-baseline">
-            <Tooltip description={accountTypeTooltip}>
-              <span className="px-2 py-1 leading-none text-xs bg-vega-cdark-700 rounded">
-                {Schema.AccountTypeMapping[type]}
-              </span>
-            </Tooltip>
-            {isRedeemable ? (
-              <Tooltip description={t('RedeemRewardsTooltip')}>
-                <AnchorButton
-                  variant="primary"
-                  size="xs"
-                  href={transferAssetLink(assetId)}
-                  target="_blank"
-                  className="px-2 py-1 leading-none text-xs bg-vega-yellow text-black rounded"
-                >
-                  {t('Redeem')}
-                </AnchorButton>
-              </Tooltip>
-            ) : null}
-          </div>
-        ) : null}
-        <div className="basis-full font-mono" data-testid="currency-value">
-          <span>
-            {integers}
-            {separator}
-          </span>
-          <span className="text-neutral-400">{decimalsPlaces}</span>
+        {values}
+      </div>
+    </div>
+  );
+};
+
+const useAccountTypeTooltip = (type?: Schema.AccountType) => {
+  const { t } = useTranslation();
+  const { param: baseRate } = useNetworkParam('rewards_vesting_baseRate');
+  const accountTypeTooltip = useMemo(() => {
+    if (type === Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS) {
+      return t('VestedRewardsTooltip');
+    }
+    if (type === Schema.AccountType.ACCOUNT_TYPE_VESTING_REWARDS && baseRate) {
+      return t('VestingRewardsTooltip', { baseRate });
+    }
+
+    return null;
+  }, [baseRate, t, type]);
+
+  return accountTypeTooltip;
+};
+
+const CurrencyValue = ({
+  balance,
+  decimals,
+  type,
+  assetId,
+}: {
+  balance: BigNumber;
+  decimals: number;
+  type?: Schema.AccountType;
+  assetId?: string;
+}) => {
+  const { t } = useTranslation();
+  const consoleLink = useLinks(DApp.Console);
+  const transferAssetLink = (assetId: string) =>
+    consoleLink(CONSOLE_TRANSFER_ASSET.replace(':assetId', assetId));
+
+  const [integers, decimalsPlaces, separator] = useNumberParts(
+    balance,
+    decimals
+  );
+  const accountTypeTooltip = useAccountTypeTooltip(type);
+
+  const accountType = type && (
+    <Tooltip description={accountTypeTooltip}>
+      <span className="px-2 py-1 leading-none text-xs bg-vega-cdark-700 rounded">
+        {Schema.AccountTypeMapping[type]}
+      </span>
+    </Tooltip>
+  );
+  const isRedeemable =
+    type === Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS && assetId;
+  const redeemBtn = isRedeemable ? (
+    <Tooltip description={t('RedeemRewardsTooltip')}>
+      <AnchorButton
+        variant="primary"
+        size="xs"
+        href={transferAssetLink(assetId)}
+        target="_blank"
+        className="px-2 py-1 leading-none text-xs bg-vega-yellow text-black rounded"
+      >
+        {t('Redeem')}
+      </AnchorButton>
+    </Tooltip>
+  ) : null;
+
+  return (
+    <div
+      className="basis-full font-mono mb-1"
+      data-account-type={type?.toLowerCase() || 'unspecified'}
+      data-testid="currency-value"
+    >
+      {type && (
+        <div data-type className="flex gap-1">
+          {accountType}
+          {redeemBtn}
         </div>
+      )}
+      <div data-value>
+        <span>
+          {integers}
+          {separator}
+        </span>
+        <span className="text-neutral-400">{decimalsPlaces}</span>
       </div>
     </div>
   );

@@ -1,11 +1,10 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import classNames from 'classnames';
-import type { ComponentProps, ReactNode } from 'react';
-import { forwardRef } from 'react';
+import { forwardRef, type ComponentProps, type ReactNode } from 'react';
 import { VegaIcon, VegaIconNames } from '../icon';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../use-t';
 
 const itemClass = classNames(
   'relative flex gap-2 items-center rounded-sm p-2 text-sm',
@@ -76,8 +75,8 @@ export const TradingDropdownContent = forwardRef<
       ref={forwardedRef}
       className={classNames(
         'bg-vega-clight-700 dark:bg-vega-cdark-700',
-        'border border-vega-clight-500 dark:border-vega-cdark-500',
-        'p-2 rounded z-20 text-default'
+        'border-vega-clight-500 dark:border-vega-cdark-500 border',
+        'text-default z-20 rounded p-2'
       )}
       align={align}
       sideOffset={sideOffset}
@@ -164,7 +163,7 @@ export const TradingDropdownSeparator = forwardRef<
     {...separatorProps}
     ref={forwardedRef}
     className={classNames(
-      'h-px my-1 mx-2 bg-vega-clight-500 dark:bg-vega-cdark-500',
+      'bg-vega-clight-500 dark:bg-vega-cdark-500 mx-2 my-1 h-px',
       className
     )}
   />
@@ -189,10 +188,13 @@ export const TradingDropdownCopyItem = ({
   value: string;
   text: string;
 }) => {
+  const t = useT();
   const [copied, setCopied] = useCopyTimeout();
 
   return (
     <CopyToClipboard text={value} onCopy={() => setCopied(true)}>
+      {/*
+      // @ts-ignore Not sure about this typescript error */}
       <TradingDropdownItem
         onClick={(e) => {
           e.preventDefault();

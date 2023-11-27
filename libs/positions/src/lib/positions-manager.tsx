@@ -3,7 +3,6 @@ import { PositionsTable } from './positions-table';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   positionsMetricsProvider,
@@ -11,6 +10,7 @@ import {
 } from './positions-data-providers';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { MAXGOINT64 } from '@vegaprotocol/utils';
+import { useT } from '../use-t';
 
 interface PositionsManagerProps {
   partyIds: string[];
@@ -27,6 +27,7 @@ export const PositionsManager = ({
   gridProps,
   showClosed = false,
 }: PositionsManagerProps) => {
+  const t = useT();
   const { pubKeys, pubKey } = useVegaWallet();
   const create = useVegaTransactionStore((store) => store.create);
   const onClose = useCallback(

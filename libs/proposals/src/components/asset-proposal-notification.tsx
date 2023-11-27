@@ -1,8 +1,8 @@
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { ExternalLink, Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { useUpdateProposal } from '../lib';
+import { useT } from '../use-t';
 
 type AssetProposalNotificationProps = {
   assetId?: string;
@@ -10,6 +10,7 @@ type AssetProposalNotificationProps = {
 export const AssetProposalNotification = ({
   assetId,
 }: AssetProposalNotificationProps) => {
+  const t = useT();
   const tokenLink = useLinks(DApp.Governance);
   const { data: proposal } = useUpdateProposal({
     id: assetId,

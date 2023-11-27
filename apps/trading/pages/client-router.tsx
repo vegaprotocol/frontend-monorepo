@@ -1,7 +1,6 @@
 import type { RouteObject } from 'react-router-dom';
 import { Navigate, useRoutes } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import { t } from '@vegaprotocol/i18n';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { LayoutWithSidebar } from '../components/layouts';
 import { LayoutCentered } from '../components/layouts/layout-centered';
@@ -14,6 +13,7 @@ import { Deposit } from '../client-pages/deposit';
 import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
 import { Fees } from '../client-pages/fees';
+import { Rewards } from '../client-pages/rewards';
 import { Routes as AppRoutes } from '../lib/links';
 import { LayoutWithSky } from '../client-pages/referrals/layout';
 import { Referrals } from '../client-pages/referrals/referrals';
@@ -28,17 +28,21 @@ import { MarketHeader } from '../components/market-header';
 import { PortfolioSidebar } from '../client-pages/portfolio/portfolio-sidebar';
 import { LiquiditySidebar } from '../client-pages/liquidity/liquidity-sidebar';
 import { MarketsSidebar } from '../client-pages/markets/markets-sidebar';
+import { useT } from '../lib/use-t';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
 const MarketPage = lazy(() => import('../client-pages/market'));
 const Portfolio = lazy(() => import('../client-pages/portfolio'));
 
-const NotFound = () => (
-  <Splash>
-    <p>{t('Page not found')}</p>
-  </Splash>
-);
+const NotFound = () => {
+  const t = useT();
+  return (
+    <Splash>
+      <p>{t('Page not found')}</p>
+    </Splash>
+  );
+};
 
 export const routerConfig: RouteObject[] = compact([
   {
@@ -93,6 +97,16 @@ export const routerConfig: RouteObject[] = compact([
       {
         index: true,
         element: <Fees />,
+      },
+    ],
+  },
+  {
+    path: 'rewards/*',
+    element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+    children: [
+      {
+        index: true,
+        element: <Rewards />,
       },
     ],
   },

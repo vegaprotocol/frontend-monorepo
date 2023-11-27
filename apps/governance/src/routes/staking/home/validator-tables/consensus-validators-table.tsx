@@ -26,9 +26,9 @@ import {
   ValidatorRenderer,
   VotingPowerRenderer,
 } from './shared';
-import type { AgGridReact } from 'ag-grid-react';
-import type { ColDef, RowHeightParams } from 'ag-grid-community';
-import type { ValidatorsTableProps } from './shared';
+import { type AgGridReact } from 'ag-grid-react';
+import { type ColDef, type RowHeightParams } from 'ag-grid-community';
+import { type ValidatorsTableProps } from './shared';
 import {
   formatNumber,
   formatNumberPercentage,
@@ -83,19 +83,19 @@ const TopThirdCellRenderer = (
         e.preventDefault();
         setHideTopThird(false);
       }}
-      className="grid grid-cols-[60px_1fr] w-full h-full py-4 px-0 text-sm text-white text-center overflow-scroll"
+      className="grid h-full w-full grid-cols-[60px_1fr] overflow-scroll px-0 py-4 text-center text-sm text-white"
     >
-      <div className="px-3 text-xs text-left">
+      <div className="px-3 text-left text-xs">
         {params?.data?.rankingDisplay}
       </div>
-      <div className="px-3 whitespace-normal">
+      <div className="whitespace-normal px-3">
         <div className="mb-4">
           <Button
             data-testid="show-all-validators"
             rightIcon={
               <Icon
                 name="arrow-right"
-                className="mr-2 align-text-top fill-current"
+                className="mr-2 fill-current align-text-top"
               />
             }
             className="inline-flex items-center"

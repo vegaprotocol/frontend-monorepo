@@ -6,17 +6,18 @@ import {
   useDataProvider,
 } from '@vegaprotocol/data-provider';
 import { useYesterday } from '@vegaprotocol/react-helpers';
-import type {
-  MarketCandles,
-  MarketMaybeWithDataAndCandles,
-  MarketsCandlesQueryVariables,
+import {
+  type MarketsCandlesQueryVariables,
+  type MarketCandles,
+  type MarketMaybeWithDataAndCandles,
 } from '@vegaprotocol/markets';
 
 import { marketListProvider } from '@vegaprotocol/markets';
 
-import type { LiquidityProvisionMarketsQuery } from './__generated__/MarketsLiquidity';
-import { LiquidityProvisionMarketsDocument } from './__generated__/MarketsLiquidity';
-
+import {
+  LiquidityProvisionMarketsDocument,
+  type LiquidityProvisionMarketsQuery,
+} from './__generated__/MarketsLiquidity';
 import {
   calcDayVolume,
   getCandle24hAgo,
@@ -26,7 +27,7 @@ import {
   getFeeLevels,
   getTargetStake,
 } from './utils/liquidity-utils';
-import type { Provider, LiquidityProvisionMarket } from './utils';
+import { type Provider, type LiquidityProvisionMarket } from './utils';
 
 export interface FeeLevels {
   commitmentAmount: number;

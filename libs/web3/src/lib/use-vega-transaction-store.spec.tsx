@@ -56,6 +56,7 @@ describe('useVegaTransactionStore', () => {
     side: Side.SIDE_BUY,
     marketId:
       '3aa2a828687cc3d59e92445d294891cbbd40e2165bbfb15674158ef5d4e8848d',
+    remaining: '12',
   };
 
   const processedTransactionUpdate = {

@@ -9,11 +9,13 @@ import { JsonViewerDialog } from '../../components/dialogs/json-viewer-dialog';
 import { useState } from 'react';
 import { PageTitle } from '../../components/page-helpers/page-title';
 
+type Params = { assetId: string };
+
 export const AssetPage = () => {
   useDocumentTitle(['Assets']);
   useScrollToLocation();
 
-  const { assetId } = useParams<{ assetId: string }>();
+  const { assetId } = useParams<Params>();
   const { data, loading, error } = useAssetDataProvider(assetId || '');
 
   const title = data ? data.name : error ? t('Asset not found') : '';
@@ -41,7 +43,7 @@ export const AssetPage = () => {
           loading={loading}
           error={error}
         >
-          <div className="h-full relative">
+          <div className="relative h-full">
             <AssetDetailsTable asset={data as AssetFieldsFragment} />
           </div>
         </AsyncRenderer>

@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useCallback, useEffect, useState } from 'react';
-import type { ReleasesState } from './use-releases';
+import { type ReleasesState } from './use-releases';
 import { ReleasesFeed } from './use-releases';
 import { fetchReleases } from './use-releases';
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
-import type { ColDef } from 'ag-grid-community';
+import { type ColDef } from 'ag-grid-community';
 import {
   addDecimalsFormatNumber,
   convertToCountdownString,
@@ -7,7 +7,6 @@ import {
   isNumeric,
   truncateByChars,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import {
   ActionsDropdown,
   ButtonLink,
@@ -15,21 +14,22 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import type {
-  TypedDataAgGrid,
-  VegaICellRendererParams,
-  VegaValueFormatterParams,
+import {
+  type TypedDataAgGrid,
+  type VegaICellRendererParams,
+  type VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { AgGrid } from '@vegaprotocol/datagrid';
 import { EtherscanLink } from '@vegaprotocol/environment';
-import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
+import { type WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import {
   useEthWithdrawApprovalsStore,
   useWithdrawalApprovalDialog,
 } from '@vegaprotocol/web3';
 import * as Schema from '@vegaprotocol/types';
-import type { TimestampedWithdrawals } from './use-ready-to-complete-withdrawals-toast';
+import { type TimestampedWithdrawals } from './use-ready-to-complete-withdrawals-toast';
 import classNames from 'classnames';
+import { useT } from './use-t';
 
 export const WithdrawalsTable = ({
   delayed,
@@ -39,13 +39,14 @@ export const WithdrawalsTable = ({
   ready?: TimestampedWithdrawals;
   delayed?: TimestampedWithdrawals;
 }) => {
+  const t = useT();
   const createWithdrawApproval = useEthWithdrawApprovalsStore(
     (store) => store.create
   );
 
   const columnDefs = useMemo<ColDef[]>(
     () => [
-      { headerName: 'Asset', field: 'asset.symbol' },
+      { headerName: t('Asset'), field: 'asset.symbol' },
       {
         headerName: t('Amount'),
         field: 'amount',
@@ -128,7 +129,7 @@ export const WithdrawalsTable = ({
         }),
       },
     ],
-    [createWithdrawApproval, delayed, ready]
+    [createWithdrawApproval, delayed, ready, t]
   );
   return (
     <AgGrid
@@ -151,6 +152,7 @@ export type CompleteCellProps = {
   complete: (withdrawal: WithdrawalFieldsFragment) => void;
 };
 export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
+  const t = useT();
   const open = useWithdrawalApprovalDialog((state) => state.open);
   const ref = useRef<HTMLButtonElement>(null);
 
@@ -206,8 +208,8 @@ export const StatusCell = ({
   ready?: TimestampedWithdrawals;
   delayed?: TimestampedWithdrawals;
 }) => {
+  const t = useT();
   const READY_TO_COMPLETE = t('Ready to complete');
-  const DELAYED = (readyIn: string) => t('Delayed (ready in %s)', readyIn);
   const PENDING = t('Pending');
   const COMPLETED = t('Completed');
   const REJECTED = t('Rejected');
@@ -246,7 +248,11 @@ export const StatusCell = ({
       if (isDelayed.timestamp == null) return;
       const remaining = Date.now() - isDelayed.timestamp;
       if (remaining < 0) {
-        setLabel(DELAYED(convertToCountdownString(remaining, '0:00:00:00')));
+        setLabel(
+          t('Delayed (ready in {{readyIn}})', {
+            readyIn: convertToCountdownString(remaining, '0:00:00:00'),
+          })
+        );
       } else {
         setLabel(READY_TO_COMPLETE);
       }
@@ -254,7 +260,7 @@ export const StatusCell = ({
     return () => {
       clearInterval(interval);
     };
-  }, [READY_TO_COMPLETE, data, delayed, isDelayed, isPending]);
+  }, [READY_TO_COMPLETE, data, delayed, isDelayed, isPending, t]);
 
   return data ? (
     <span

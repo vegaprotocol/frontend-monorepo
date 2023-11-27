@@ -22,11 +22,13 @@ interface UserBalances {
   balance: BigNumber;
 }
 
+type Params = { address: string };
+
 export const RedemptionInformation = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const tranches = useTranches((state) => state.tranches);
-  const { address } = useParams<{ address: string }>();
+  const { address } = useParams<Params>();
   const [userBalances, setUserBalances] = useState<null | UserBalances>();
   const getUsersBalances = useGetUserBalances(address);
   useEffect(() => {
@@ -84,7 +86,7 @@ export const RedemptionInformation = () => {
               i18nKey="noVestingTokens"
               components={{
                 tranchesLink: (
-                  <Link className="underline text-white" to={Routes.SUPPLY} />
+                  <Link className="text-white underline" to={Routes.SUPPLY} />
                 ),
               }}
             />
@@ -160,7 +162,7 @@ export const RedemptionInformation = () => {
         intent={Intent.Warning}
       >
         <p>{t('Find out more about Staking.')}</p>
-        <Link to={Routes.VALIDATORS} className="underline text-white">
+        <Link to={Routes.VALIDATORS} className="text-white underline">
           {t('Stake VEGA tokens')}
         </Link>
       </Callout>

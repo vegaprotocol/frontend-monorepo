@@ -1,5 +1,4 @@
 import capitalize from 'lodash/capitalize';
-import { t } from '@vegaprotocol/i18n';
 import {
   Button,
   ButtonLink,
@@ -16,6 +15,7 @@ import { ConnectDialogTitle } from './connect-dialog-elements';
 import { Status } from '../use-json-rpc-connect';
 import { useVegaWallet } from '../use-vega-wallet';
 import { setAcknowledged } from '../storage';
+import { useT } from '../use-t';
 
 export const ServiceErrors = {
   NO_HEALTHY_NODE: 1000,
@@ -39,6 +39,7 @@ export const JsonRpcConnectorForm = ({
   reset: () => void;
   riskMessage?: React.ReactNode;
 }) => {
+  const t = useT();
   const { disconnect } = useVegaWallet();
   if (status === Status.Idle) {
     return null;
@@ -140,7 +141,7 @@ export const JsonRpcConnectorForm = ({
 
 const Center = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="flex justify-center items-center my-6">{children}</div>
+    <div className="my-6 flex items-center justify-center">{children}</div>
   );
 };
 
@@ -155,6 +156,7 @@ const Error = ({
   appChainId: string;
   onTryAgain: () => void;
 }) => {
+  const t = useT();
   const { links } = useVegaWallet();
   let title = t('Something went wrong');
   let text: ReactNode | undefined = t('An unknown error occurred');
@@ -168,13 +170,15 @@ const Error = ({
     if (error.code === ClientErrors.NO_SERVICE.code) {
       title = t('No wallet detected');
       text = connectorUrl
-        ? t('No wallet application running at %s', connectorUrl)
+        ? t('No wallet application running at {{connectorUrl}}', {
+            connectorUrl,
+          })
         : t('No Vega Wallet application running');
     } else if (error.code === ClientErrors.WRONG_NETWORK.code) {
       title = t('Wrong network');
       text = t(
-        'To complete your wallet connection, set your wallet network in your app to "%s".',
-        appChainId
+        'To complete your wallet connection, set your wallet network in your app to "{{appChainId}}".',
+        { appChainId }
       );
     } else if (error.code === ServiceErrors.NO_HEALTHY_NODE) {
       title = error.title;
@@ -196,9 +200,8 @@ const Error = ({
       text = (
         <>
           {t(
-            `To complete your wallet connection, set your wallet network in your
-            app to %s.`,
-            appChainId
+            'To complete your wallet connection, set your wallet network in your app to "{{appChainId}}".',
+            { appChainId }
           )}
         </>
       );
@@ -213,15 +216,15 @@ const Error = ({
         </span>
       );
     } else {
-      title = t(error.title);
-      text = t(error.message);
+      title = error.title;
+      text = error.message;
     }
   }
 
   return (
     <>
       <ConnectDialogTitle>{title}</ConnectDialogTitle>
-      <p className="text-center mb-2 first-letter:uppercase">{text}</p>
+      <p className="mb-2 text-center first-letter:uppercase">{text}</p>
       {tryAgain}
     </>
   );

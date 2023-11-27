@@ -53,7 +53,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/explorer/**/*.{ts,tsx,js,jsx}"]
@@ -63,14 +63,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/explorer"],
       "options": {
-        "jestConfig": "apps/explorer/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "apps/explorer/jest.config.ts"
       }
     },
     "generate-types": {
@@ -78,15 +71,6 @@
       "options": {
         "commands": [
           "npx openapi-typescript https://raw.githubusercontent.com/vegaprotocol/documentation/main/specs/v0.73.1/blockexplorer.openapi.json --output apps/explorer/src/types/explorer.d.ts --immutable-types"
-        ]
-      }
-    },
-    "build-netlify": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "cp apps/explorer/netlify.toml netlify.toml",
-          "nx build explorer"
         ]
       }
     },

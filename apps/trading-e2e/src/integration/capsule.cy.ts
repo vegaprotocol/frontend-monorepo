@@ -1,23 +1,6 @@
-import { removeDecimal } from '@vegaprotocol/cypress';
-import * as Schema from '@vegaprotocol/types';
-import {
-  OrderStatusMapping,
-  OrderTypeMapping,
-  Side,
-} from '@vegaprotocol/types';
-import { isBefore, isAfter, addSeconds, subSeconds } from 'date-fns';
-import { createOrder } from '../support/create-order';
 import { connectEthereumWallet } from '../support/ethereum-wallet';
 import { selectAsset } from '../support/helpers';
 
-const orderSize = 'size';
-const orderType = 'type';
-const orderStatus = 'status';
-const orderRemaining = 'remaining';
-const orderPrice = 'price';
-const orderTimeInForce = 'timeInForce';
-const orderUpdatedAt = 'updatedAt';
-const assetSelectField = 'select[name="asset"]';
 const amountField = 'input[name="amount"]';
 const txTimeout = Cypress.env('txTimeout');
 const sepoliaUrl = Cypress.env('ETHERSCAN_URL');
@@ -25,18 +8,10 @@ const btcName = 0;
 const vegaName = 4;
 const btcSymbol = 'tBTC';
 const vegaSymbol = 'VEGA';
-const usdcSymbol = 'fUSDC';
 const toastContent = 'toast-content';
-const openOrdersTab = 'Open';
 const depositsTab = 'Deposits';
-const collateralTab = 'Collateral';
 const toastCloseBtn = 'toast-close';
-const price = '390';
-const size = '0.0005';
-const newPrice = '200';
 const completeWithdrawalBtn = 'complete-withdrawal';
-const submitTransferBtn = '[type="submit"]';
-const transferForm = 'transfer-form';
 const depositSubmit = 'deposit-submit';
 const approveSubmit = 'approve-submit';
 const dialogContent = 'dialog-content';
@@ -116,33 +91,6 @@ describe('capsule - without MultiSign', { tags: '@slow' }, () => {
       });
   });
 
-  it('can key to key transfers', function () {
-    // 1003-TRAN-023
-    // 1003-TRAN-006
-    cy.get('[data-testid="pathname-/portfolio"]').should('exist');
-
-    cy.getByTestId(collateralTab).click();
-    cy.getByTestId('open-transfer').eq(1).click();
-    cy.getByTestId('transfer-form').should('be.visible');
-    cy.getByTestId('transfer-form').find('[name="toAddress"]').select(1);
-    cy.get('select option')
-      .contains('BTC')
-      .invoke('index')
-      .then((index) => {
-        cy.get(assetSelectField).select(index, { force: true });
-      });
-    cy.getByTestId(transferForm)
-      .find(amountField)
-      .focus()
-      .type('1', { delay: 100 });
-    cy.getByTestId(transferForm).find(submitTransferBtn).click();
-    cy.getByTestId(toastContent).should(
-      'contain.text',
-      'Transfer completeYour transaction has been confirmed View in block explorerTransferTo 7f9cf0…c255351.00 tBTC'
-    );
-    cy.getByTestId(toastCloseBtn).click();
-  });
-
   it('can not withdrawal because of no MultiSign', function () {
     // 1002-WITH-022
     // 1002-WITH-023
@@ -185,143 +133,6 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     });
     cy.setOnBoardingViewed();
     cy.setVegaWallet();
-  });
-
-  it('shows node health', function () {
-    // 0006-NETW-010
-    const regex = /^Operational\d+$/;
-    const market = this.market;
-    cy.visit(`/#/markets/${market.id}`);
-    cy.getByTestId('node-health-trigger').realHover();
-    cy.getByTestId('node-health')
-      .children()
-      .first()
-      .invoke('text')
-      .should('match', regex);
-    cy.getByTestId('node-health')
-      .children()
-      .eq(1)
-      .should('contain.text', new URL(Cypress.env('VEGA_URL')).hostname);
-  });
-
-  it('can place and receive an order', function () {
-    const market = this.market;
-    cy.visit(`/#/markets/${market.id}`);
-    const order = {
-      marketId: market.id,
-      type: Schema.OrderType.TYPE_LIMIT,
-      side: Schema.Side.SIDE_BUY,
-      size: size,
-      price: price,
-      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_GTC,
-    };
-    const rawPrice = removeDecimal(order.price, market.decimalPlaces);
-    cy.getByTestId(toastCloseBtn, txTimeout).click();
-    cy.getByTestId('Collateral').click();
-    cy.get('[col-id="asset.symbol"]', txTimeout).should(
-      'contain.text',
-      usdcSymbol
-    );
-
-    createOrder(order);
-
-    cy.getByTestId(toastContent).should(
-      'contain.text',
-      `Order submittedYour transaction has been confirmed View in block explorerSubmit order - activeTEST.24h+${order.size} @ ${order.price}.00 ${usdcSymbol}`,
-      { matchCase: false }
-    );
-    cy.getByTestId(toastCloseBtn).click();
-    // orderbook cells are keyed by price level
-    cy.getByTestId('tab-orderbook')
-      .get(`[data-testid="price-${rawPrice}"]`)
-      .should('contain.text', order.price)
-      .get(`[data-testid="bid-vol-${rawPrice}"]`)
-      .should('contain.text', order.size);
-
-    cy.getByTestId(openOrdersTab).click();
-    cy.getByTestId('tab-open-orders').within(() => {
-      cy.get('.ag-center-cols-container')
-        .children()
-        .first()
-        .within(() => {
-          cy.get(`[col-id='${orderSize}']`).should(
-            'contain.text',
-            order.side === Side.SIDE_BUY ? '+' : '-' + order.size
-          );
-
-          cy.get(`[col-id='${orderType}']`).should(
-            'contain.text',
-            OrderTypeMapping[order.type]
-          );
-
-          cy.get(`[col-id='${orderStatus}']`).should(
-            'contain.text',
-            OrderStatusMapping.STATUS_ACTIVE
-          );
-
-          cy.get(`[col-id='${orderRemaining}']`).should('contain.text', '0.00');
-
-          cy.get(`[col-id='${orderPrice}']`).then(($price) => {
-            expect(parseFloat($price.text())).to.equal(parseFloat(order.price));
-          });
-
-          cy.get(`[col-id='${orderTimeInForce}']`).should(
-            'contain.text',
-            'GTC'
-          );
-
-          checkIfDataAndTimeOfCreationAndUpdateIsEqual(orderUpdatedAt);
-        });
-    });
-  });
-  it('can edit order', function () {
-    const market = this.market;
-    cy.visit(`/#/markets/${market.id}`);
-    cy.getByTestId(toastCloseBtn, txTimeout).click();
-    cy.getByTestId(openOrdersTab).click();
-    cy.getByTestId('edit').first().click();
-    cy.getByTestId('dialog-title').should('contain.text', 'Edit order');
-    cy.get('#limitPrice').focus().clear().type(newPrice);
-    cy.getByTestId('edit-order').find('[type="submit"]').click();
-
-    cy.getByTestId(toastContent).should(
-      'contain.text',
-      `Order submittedYour transaction has been confirmed View in block explorerEdit order - activeTEST.24h+${size} @ ${price}.00 ${usdcSymbol}+${size} @ ${newPrice}.00 ${usdcSymbol}`,
-      { matchCase: false }
-    );
-
-    cy.getByTestId(toastCloseBtn).click({ multiple: true });
-    cy.getByTestId(openOrdersTab).click();
-    cy.get('.ag-center-cols-container')
-      .children()
-      .first()
-      .within(() => {
-        cy.get(`[col-id='${orderPrice}']`).then(($price) => {
-          expect(parseFloat($price.text())).to.equal(parseFloat(newPrice));
-        });
-        checkIfDataAndTimeOfCreationAndUpdateIsEqual(orderUpdatedAt);
-      });
-  });
-
-  it('can cancel order', function () {
-    const market = this.market;
-    cy.visit(`/#/markets/${market.id}`);
-    cy.getByTestId(toastCloseBtn, txTimeout).click();
-    cy.getByTestId(openOrdersTab).click();
-    cy.getByTestId('cancel').first().click();
-    cy.getByTestId(toastContent).should(
-      'contain.text',
-      `Order cancelledYour transaction has been confirmed View in block explorerCancel order - cancelledTEST.24h+${size} @ ${newPrice}.00 ${usdcSymbol}`,
-      { matchCase: false }
-    );
-    cy.getByTestId(toastCloseBtn).click({ multiple: true });
-    cy.getByTestId('Closed').click();
-    cy.getByTestId('tab-closed-orders')
-      .get('.ag-center-cols-container')
-      .children()
-      .first()
-      .get(`[col-id='${orderStatus}']`, txTimeout)
-      .should('contain.text', OrderStatusMapping.STATUS_CANCELLED);
   });
 
   it('can withdrawal', function () {
@@ -524,22 +335,3 @@ describe('capsule', { tags: '@slow', testIsolation: true }, () => {
     });
   });
 });
-
-function checkIfDataAndTimeOfCreationAndUpdateIsEqual(date: string) {
-  cy.get(`[col-id='${date}'] .ag-cell-wrapper`)
-    .children('span')
-    .children('span')
-    .invoke('data', 'value')
-    .then(($dateTime) => {
-      // allow a date 5 seconds either side to allow for
-      // unexpected latency
-      const minBefore = subSeconds(new Date(), 5);
-      const maxAfter = addSeconds(new Date(), 5);
-      // eslint-disable-next-line no-console
-      console.log(maxAfter);
-      const date = new Date($dateTime.toString());
-      expect(isAfter(date, minBefore) && isBefore(date, maxAfter)).to.equal(
-        true
-      );
-    });
-}

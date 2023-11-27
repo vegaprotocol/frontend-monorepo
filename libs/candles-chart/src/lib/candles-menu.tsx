@@ -20,10 +20,10 @@ import {
   TradingDropdownTrigger,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import type { IconName } from '@blueprintjs/icons';
+import { type IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
-import { t } from '@vegaprotocol/i18n';
 import { useCandlesChartSettings } from './use-candles-chart-settings';
+import { useT } from './use-t';
 
 const chartTypeIcon = new Map<ChartType, IconName>([
   [ChartType.AREA, IconNames.TIMELINE_AREA_CHART],
@@ -43,6 +43,7 @@ export const CandlesMenu = () => {
     setStudies,
     setOverlays,
   } = useCandlesChartSettings();
+  const t = useT();
   const triggerClasses = 'text-xs';
   const contentAlign = 'end';
   const triggerButtonProps = { size: 'extra-small' } as const;
@@ -53,7 +54,9 @@ export const CandlesMenu = () => {
         trigger={
           <TradingDropdownTrigger className={triggerClasses}>
             <TradingButton {...triggerButtonProps}>
-              {t(`Interval: ${intervalLabels[interval]}`)}
+              {t('Interval: {{interval}}', {
+                interval: intervalLabels[interval],
+              })}
             </TradingButton>
           </TradingDropdownTrigger>
         }

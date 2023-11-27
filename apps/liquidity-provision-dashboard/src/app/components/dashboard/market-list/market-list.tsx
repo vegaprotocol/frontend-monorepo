@@ -1,5 +1,5 @@
 import { DApp, useLinks } from '@vegaprotocol/environment';
-import type { Market } from '@vegaprotocol/liquidity';
+import { type Market } from '@vegaprotocol/liquidity';
 import {
   displayChange,
   formatWithAsset,
@@ -12,7 +12,7 @@ import {
   toBigNum,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import type { VegaValueFormatterParams } from '@vegaprotocol/datagrid';
+import { type VegaValueFormatterParams } from '@vegaprotocol/datagrid';
 import { PriceChangeCell } from '@vegaprotocol/datagrid';
 import type * as Schema from '@vegaprotocol/types';
 import {
@@ -21,10 +21,10 @@ import {
   HealthBar,
   TooltipCellComponent,
 } from '@vegaprotocol/ui-toolkit';
-import type {
-  GetRowIdParams,
-  RowClickedEvent,
-  ColDef,
+import {
+  type GetRowIdParams,
+  type RowClickedEvent,
+  type ColDef,
 } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
@@ -253,7 +253,7 @@ export const MarketList = () => {
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       <div
-        className="grow w-full"
+        className="w-full grow"
         style={{ minHeight: 500, overflow: 'hidden' }}
       >
         <Grid

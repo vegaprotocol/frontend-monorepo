@@ -4,7 +4,6 @@ import {
   useEnvironment,
 } from '@vegaprotocol/environment';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -52,6 +51,7 @@ import {
   isFuture,
   getSigners,
 } from '../../product';
+import { useT } from '../../use-t';
 
 export interface MarketInfoAccordionProps {
   market: MarketInfo;
@@ -66,6 +66,7 @@ export const MarketInfoAccordionContainer = ({
   marketId,
   onSelect,
 }: MarketInfoContainerProps) => {
+  const t = useT();
   const { data, loading, error, reload } = useDataProvider({
     dataProvider: marketInfoProvider,
     skipUpdates: true,
@@ -89,6 +90,7 @@ export const MarketInfoAccordion = ({
   market,
   onSelect,
 }: MarketInfoAccordionProps) => {
+  const t = useT();
   const { VEGA_TOKEN_URL } = useEnvironment();
   const headerClassName = 'uppercase text-lg';
 
@@ -252,7 +254,9 @@ export const MarketInfoAccordion = ({
                 <AccordionItem
                   key={id}
                   itemId={id}
-                  title={t(`Price monitoring bounds ${triggerIndex + 1}`)}
+                  title={t('Price monitoring bounds {{index}}', {
+                    index: triggerIndex + 1,
+                  })}
                   content={
                     <PriceMonitoringBoundsInfoPanel
                       market={market}

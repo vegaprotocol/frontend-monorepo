@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { MultisigControl } from '@vegaprotocol/smart-contracts';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import type { ContractsContextShape } from './contracts-context';
+import { type ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useEnvironment } from '@vegaprotocol/environment';

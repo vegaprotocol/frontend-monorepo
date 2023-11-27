@@ -256,10 +256,7 @@ export function validateWalletCurrency(
     .parent()
     .parent()
     .within(() => {
-      cy.getByTestId('currency-value', txTimeout).should(
-        'have.text',
-        expectedAmount
-      );
+      cy.get('[data-value]', txTimeout).should('have.text', expectedAmount);
     });
 }
 

@@ -1,7 +1,7 @@
-import { t } from '@vegaprotocol/i18n';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { SunIcon, MoonIcon } from './icons';
 import { Toggle } from '../toggle';
+import { useT } from '../../use-t';
 
 export const ThemeSwitcher = ({
   className,
@@ -10,6 +10,7 @@ export const ThemeSwitcher = ({
   className?: string;
   withMobile?: boolean;
 }) => {
+  const t = useT();
   const { theme, setTheme } = useThemeSwitcher();
   const button = (
     <button
@@ -35,7 +36,7 @@ export const ThemeSwitcher = ({
   ];
   return withMobile ? (
     <>
-      <div className="flex grow gap-6 md:hidden whitespace-nowrap justify-between">
+      <div className="flex grow justify-between gap-6 whitespace-nowrap md:hidden">
         {button}{' '}
         <Toggle
           name="theme-switch"

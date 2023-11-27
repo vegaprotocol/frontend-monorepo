@@ -40,9 +40,9 @@ import {
   formatNumber,
   toBigNum,
   truncateByChars,
-  formatTrigger,
+  useFormatTrigger,
+  MAXGOINT64,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
 import { useEthWithdrawApprovalsStore } from './use-ethereum-withdraw-approvals-store';
 import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';
@@ -57,26 +57,31 @@ import { OrderStatusMapping } from '@vegaprotocol/types';
 import { Size } from '@vegaprotocol/datagrid';
 import { useWithdrawalApprovalDialog } from './withdrawal-approval-dialog';
 import * as Schema from '@vegaprotocol/types';
+import { Trans } from 'react-i18next';
+import { useT } from './use-t';
 
 export const getRejectionReason = (
-  order: OrderTxUpdateFieldsFragment
+  order: OrderTxUpdateFieldsFragment,
+  t: ReturnType<typeof useT>
 ): string | null => {
   switch (order.status) {
     case Schema.OrderStatus.STATUS_STOPPED:
       return t(
-        `Your ${
-          Schema.OrderTimeInForceMapping[order.timeInForce]
-        } order was not filled and it has been stopped`
+        `Your {{timeInForce}} order was not filled and it has been stopped`,
+        {
+          timeInForce: Schema.OrderTimeInForceMapping[order.timeInForce],
+        }
       );
     default:
       return order.rejectionReason
-        ? t(Schema.OrderRejectionReasonMapping[order.rejectionReason])
+        ? Schema.OrderRejectionReasonMapping[order.rejectionReason]
         : '';
   }
 };
 
 export const getOrderToastTitle = (
-  status?: Schema.OrderStatus
+  status: Schema.OrderStatus | undefined,
+  t: ReturnType<typeof useT>
 ): string | undefined => {
   if (!status) {
     return;
@@ -211,6 +216,7 @@ const SubmitOrderDetails = ({
   data: OrderSubmission;
   order?: OrderTxUpdateFieldsFragment;
 }) => {
+  const t = useT();
   const { data: markets } = useMarketsMapProvider();
   const market = markets?.[order?.marketId || ''];
   if (!market) return null;
@@ -223,9 +229,9 @@ const SubmitOrderDetails = ({
     <Panel>
       <h4>
         {order
-          ? t(
-              `Submit order - ${OrderStatusMapping[order.status].toLowerCase()}`
-            )
+          ? t(`Submit order - {{status}}`, {
+              status: OrderStatusMapping[order.status].toLowerCase(),
+            })
           : t('Submit order')}
       </h4>
       <p>{market?.tradableInstrument.instrument.code}</p>
@@ -254,6 +260,7 @@ const SubmitStopOrderSetup = ({
   triggerDirection: Schema.StopOrderTriggerDirection;
   market: Market;
 }) => {
+  const formatTrigger = useFormatTrigger();
   if (!market || !stopOrderSetup) return null;
 
   const { price, size, side } = stopOrderSetup.orderSubmission;
@@ -293,6 +300,7 @@ const SubmitStopOrderSetup = ({
 };
 
 const SubmitStopOrderDetails = ({ data }: { data: StopOrdersSubmission }) => {
+  const t = useT();
   const { data: markets } = useMarketsMapProvider();
   const marketId =
     data.fallsBelow?.orderSubmission.marketId ||
@@ -334,6 +342,7 @@ const EditOrderDetails = ({
   data: OrderAmendment;
   order?: OrderTxUpdateFieldsFragment;
 }) => {
+  const t = useT();
   const { data: orderById } = useOrderByIdQuery({
     variables: { orderId: data.orderId },
     fetchPolicy: 'no-cache',
@@ -375,7 +384,9 @@ const EditOrderDetails = ({
     <Panel title={data.orderId}>
       <h4>
         {order
-          ? t(`Edit order - ${OrderStatusMapping[order.status].toLowerCase()}`)
+          ? t(`Edit order - {{status}}`, {
+              status: OrderStatusMapping[order.status].toLowerCase(),
+            })
           : t('Edit order')}
       </h4>
       <p>{market?.tradableInstrument.instrument.code}</p>
@@ -394,6 +405,7 @@ const CancelOrderDetails = ({
   orderId: string;
   order?: OrderTxUpdateFieldsFragment;
 }) => {
+  const t = useT();
   const { data: orderById } = useOrderByIdQuery({
     variables: { orderId },
   });
@@ -420,9 +432,9 @@ const CancelOrderDetails = ({
     <Panel title={orderId}>
       <h4>
         {order
-          ? t(
-              `Cancel order - ${OrderStatusMapping[order.status].toLowerCase()}`
-            )
+          ? t(`Cancel order - {{status}}`, {
+              status: OrderStatusMapping[order.status].toLowerCase(),
+            })
           : t('Cancel order')}
       </h4>
       <p>{market?.tradableInstrument.instrument.code}</p>
@@ -434,6 +446,8 @@ const CancelOrderDetails = ({
 };
 
 const CancelStopOrderDetails = ({ stopOrderId }: { stopOrderId: string }) => {
+  const t = useT();
+  const formatTrigger = useFormatTrigger();
   const { data: orderById } = useStopOrderByIdQuery({
     variables: { stopOrderId },
   });
@@ -472,6 +486,7 @@ const CancelStopOrderDetails = ({ stopOrderId }: { stopOrderId: string }) => {
 };
 
 export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
+  const t = useT();
   const { data: assets } = useAssetsMapProvider();
   const { data: markets } = useMarketsMapProvider();
 
@@ -479,14 +494,17 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
     const transactionDetails = tx.body;
     const asset = assets?.[transactionDetails.withdrawSubmission.asset];
     if (asset) {
-      const num = formatNumber(
+      const amount = formatNumber(
         toBigNum(transactionDetails.withdrawSubmission.amount, asset.decimals),
         asset.decimals
       );
       return (
         <Panel>
           <strong>
-            {t('Withdraw')} {num} {asset.symbol}
+            {t('Withdraw {{amount}} {{symbol}}', {
+              amount,
+              symbol: asset.symbol,
+            })}
           </strong>
         </Panel>
       );
@@ -525,7 +543,10 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
       if (marketName) {
         return (
           <Panel>
-            {t('Cancel all orders for')} <strong>{marketName}</strong>
+            <Trans
+              defaults="Cancel all orders for <strong>{{marketName}}</strong>"
+              values={{ marketName }}
+            />
           </Panel>
         );
       }
@@ -555,7 +576,10 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
       if (marketName) {
         return (
           <Panel>
-            {t('Cancel all stop orders for')} <strong>{marketName}</strong>
+            <Trans
+              defaults="Cancel all stop orders for <strong>{{marketName}}</strong>"
+              values={{ marketName }}
+            />
           </Panel>
         );
       }
@@ -583,8 +607,29 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
     if (market) {
       return (
         <Panel>
-          {t('Close position for')}{' '}
-          <strong>{market.tradableInstrument.instrument.code}</strong>
+          <Trans
+            defaults="Close position for <strong>{{instrumentCode}}</strong>"
+            values={{
+              instrumentCode: market.tradableInstrument.instrument.code,
+            }}
+          />
+          {tx.order?.remaining && (
+            <p>
+              {t('Filled')}{' '}
+              <SizeAtPrice
+                meta={{
+                  positionDecimalPlaces: market.positionDecimalPlaces,
+                  decimalPlaces: market.decimalPlaces,
+                  asset: getAsset(market).symbol,
+                }}
+                side={tx.order.side}
+                size={(
+                  BigInt(tx.order.size) - BigInt(tx.order.remaining)
+                ).toString()}
+                price={tx.order.price}
+              />
+            </p>
+          )}
         </Panel>
       );
     }
@@ -603,9 +648,7 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
       return (
         <Panel>
           <h4>{t('Transfer')}</h4>
-          <p>
-            {t('To')} {truncateByChars(to)}
-          </p>
+          <p>{t('To {{address}}', { address: truncateByChars(to) })}</p>
           <p>
             {value} {transferAsset.symbol}
           </p>
@@ -619,19 +662,23 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
 
 type VegaTxToastContentProps = { tx: VegaStoredTxState };
 
-const VegaTxRequestedToastContent = ({ tx }: VegaTxToastContentProps) => (
-  <>
-    <ToastHeading>{t('Action required')}</ToastHeading>
-    <p>
-      {t(
-        'Please go to your Vega wallet application and approve or reject the transaction.'
-      )}
-    </p>
-    <VegaTransactionDetails tx={tx} />
-  </>
-);
+const VegaTxRequestedToastContent = ({ tx }: VegaTxToastContentProps) => {
+  const t = useT();
+  return (
+    <>
+      <ToastHeading>{t('Action required')}</ToastHeading>
+      <p>
+        {t(
+          'Please go to your Vega wallet application and approve or reject the transaction.'
+        )}
+      </p>
+      <VegaTransactionDetails tx={tx} />
+    </>
+  );
+};
 
-const VegaTxPendingToastContentProps = ({ tx }: VegaTxToastContentProps) => {
+const VegaTxPendingToastContent = ({ tx }: VegaTxToastContentProps) => {
+  const t = useT();
   const explorerLink = useLinks(DApp.Explorer);
   return (
     <>
@@ -653,6 +700,7 @@ const VegaTxPendingToastContentProps = ({ tx }: VegaTxToastContentProps) => {
 };
 
 const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
+  const t = useT();
   const { createEthWithdrawalApproval } = useEthWithdrawApprovalsStore(
     (state) => ({
       createEthWithdrawalApproval: state.create,
@@ -678,31 +726,13 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
       </p>
     );
 
-    const dialogTrigger = (
-      // It has to stay as <a> due to the word breaking issue
-      // eslint-disable-next-line jsx-a11y/anchor-is-valid
-      <a
-        href="#"
-        className="inline underline underline-offset-4 cursor-pointer text-inherit break-words"
-        data-testid="toast-withdrawal-details"
-        onClick={(e) => {
-          e.preventDefault();
-          if (tx.withdrawal?.id) {
-            useWithdrawalApprovalDialog.getState().open(tx.withdrawal?.id);
-          }
-        }}
-      >
-        {t('save your withdrawal details')}
-      </a>
-    );
-
     return (
       <>
         <ToastHeading>{t('Funds unlocked')}</ToastHeading>
         <p>{t('Your funds have been unlocked for withdrawal.')}</p>
         {tx.txHash && (
           <ExternalLink
-            className="block mb-[5px] break-all"
+            className="mb-[5px] block break-all"
             href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
             rel="noreferrer"
           >
@@ -711,7 +741,28 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
         )}
         {/* TODO: Delay message - This withdrawal is subject to a delay. Come back in 5 days to complete the withdrawal. */}
         <p className="break-words">
-          {t('You can')} {dialogTrigger} {t('for extra security.')}
+          <Trans
+            defaults="You can <0>save your withdrawal details</0> for extra security."
+            components={[
+              // It has to stay as <a> due to the word breaking issue
+              // eslint-disable-next-line jsx-a11y/anchor-is-valid
+              <a
+                href="#"
+                className="inline cursor-pointer break-words text-inherit underline underline-offset-4"
+                data-testid="toast-withdrawal-details"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (tx.withdrawal?.id) {
+                    useWithdrawalApprovalDialog
+                      .getState()
+                      .open(tx.withdrawal?.id);
+                  }
+                }}
+              >
+                save your withdrawal details
+              </a>,
+            ]}
+          />
         </p>
         <VegaTransactionDetails tx={tx} />
         {completeWithdrawalButton}
@@ -720,26 +771,31 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   }
 
   if (tx.order && tx.order.rejectionReason) {
-    const rejectionReason = getRejectionReason(tx.order);
+    const rejectionReason = getRejectionReason(tx.order, t);
     return (
       <>
-        <ToastHeading>{getOrderToastTitle(tx.order.status)}</ToastHeading>
+        <ToastHeading>{getOrderToastTitle(tx.order.status, t)}</ToastHeading>
         {rejectionReason ? (
           <p>
-            {t('Your order has been %s because: %s', [
-              tx.order.status === Schema.OrderStatus.STATUS_STOPPED
-                ? 'stopped'
-                : 'rejected',
-              rejectionReason,
-            ])}
+            {tx.order.status === Schema.OrderStatus.STATUS_STOPPED
+              ? t('Your order has been stopped because: {{rejectionReason}}', {
+                  nsSeparator: '*',
+                  replace: {
+                    rejectionReason,
+                  },
+                })
+              : t('Your order has been rejected because: {{rejectionReason}}', {
+                  nsSeparator: '*',
+                  replace: {
+                    rejectionReason,
+                  },
+                })}
           </p>
         ) : (
           <p>
-            {t('Your order has been %s.', [
-              tx.order.status === Schema.OrderStatus.STATUS_STOPPED
-                ? 'stopped'
-                : 'rejected',
-            ])}
+            {tx.order.status === Schema.OrderStatus.STATUS_STOPPED
+              ? t('Your order has been stopped')
+              : t('Your order has been rejected')}
           </p>
         )}
         {tx.txHash && (
@@ -760,7 +816,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   if (isOrderSubmissionTransaction(tx.body) && tx.order?.rejectionReason) {
     return (
       <div>
-        <h3 className="font-bold">{getOrderToastTitle(tx.order.status)}</h3>
+        <h3 className="font-bold">{getOrderToastTitle(tx.order.status, t)}</h3>
         <p>{t('Your order was rejected.')}</p>
         {tx.txHash && (
           <p className="break-all">
@@ -781,7 +837,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
     return (
       <div>
         <h3 className="font-bold">{t('Transfer complete')}</h3>
-        <p>{t('Your transaction has been confirmed ')}</p>
+        <p>{t('Your transaction has been confirmed')}</p>
         {tx.txHash && (
           <p className="break-all">
             <ExternalLink
@@ -801,10 +857,10 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
     <>
       <ToastHeading>
         {tx.order?.status
-          ? getOrderToastTitle(tx.order.status)
+          ? getOrderToastTitle(tx.order.status, t)
           : t('Confirmed')}
       </ToastHeading>
-      <p>{t('Your transaction has been confirmed ')}</p>
+      <p>{t('Your transaction has been confirmed')}</p>
       {tx.txHash && (
         <p className="break-all">
           <ExternalLink
@@ -821,6 +877,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
 };
 
 const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
+  const t = useT();
   let label = t('Error occurred');
   let errorMessage =
     tx.error instanceof WalletError
@@ -829,7 +886,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
 
   const reconnectVegaWallet = useReconnectVegaWallet();
 
-  const orderRejection = tx.order && getRejectionReason(tx.order);
+  const orderRejection = tx.order && getRejectionReason(tx.order, t);
   const walletNoConnectionCodes = [
     ClientErrors.NO_SERVICE.code,
     ClientErrors.NO_CLIENT.code,
@@ -839,10 +896,13 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
     walletNoConnectionCodes.includes(tx.error.code);
 
   if (orderRejection) {
-    label = getOrderToastTitle(tx.order?.status) || t('Order rejected');
-    errorMessage = t('Your order has been rejected because: %s', [
-      orderRejection || tx.order?.rejectionReason || ' ',
-    ]);
+    label = getOrderToastTitle(tx.order?.status, t) || t('Order rejected');
+    errorMessage = t(
+      'Your order has been rejected because: {{rejectionReason}}',
+      {
+        rejectionReason: orderRejection || tx.order?.rejectionReason || ' ',
+      }
+    );
   }
   if (walletError) {
     label = t('Wallet disconnected');
@@ -931,7 +991,7 @@ export const getVegaTransactionContentIntent = (tx: VegaStoredTxState) => {
     content = <VegaTxRequestedToastContent tx={tx} />;
   }
   if (tx.status === VegaTxStatus.Pending) {
-    content = <VegaTxPendingToastContentProps tx={tx} />;
+    content = <VegaTxPendingToastContent tx={tx} />;
   }
   if (tx.status === VegaTxStatus.Complete) {
     content = <VegaTxCompleteToastsContent tx={tx} />;
@@ -953,7 +1013,19 @@ export const getVegaTransactionContentIntent = (tx: VegaStoredTxState) => {
     isWithdrawTransaction(tx.body) &&
     Intent.Warning;
 
+  // Toast for an IOC should go green when it is stopped,
+  // because stopping an IOC once all available volume has filled is the correct behaviour (it is immediate or cancel),
+  // this behaviour should apply to all IOC, not just those created due to "Close position"
+  const intentForClosedPosition =
+    tx.order &&
+    tx.order.status === Schema.OrderStatus.STATUS_STOPPED &&
+    tx.order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_IOC &&
+    tx.order.size === MAXGOINT64 &&
+    // isClosePositionTransaction(tx) &&
+    Intent.Success;
+
   const intent =
+    intentForClosedPosition ||
     intentForRejectedOrder ||
     intentForCompletedWithdrawal ||
     intentMap[tx.status];

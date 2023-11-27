@@ -1,17 +1,17 @@
 import { useRef, memo, useState, useCallback } from 'react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type { AgGridReact } from 'ag-grid-react';
+import { type AgGridReact } from 'ag-grid-react';
 import {
   aggregatedAccountsDataProvider,
   aggregatedAccountDataProvider,
 } from './accounts-data-provider';
-import type { PinnedAsset } from './accounts-table';
+import { type PinnedAsset } from './accounts-table';
 import { AccountTable } from './accounts-table';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import BreakdownTable from './breakdown-table';
-import type { useDataGridEvents } from '@vegaprotocol/datagrid';
+import { type useDataGridEvents } from '@vegaprotocol/datagrid';
 
 const AccountBreakdown = ({
   assetId,
@@ -22,6 +22,7 @@ const AccountBreakdown = ({
   partyId: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }) => {
+  const t = useT();
   const gridRef = useRef<AgGridReact>(null);
   const { data } = useDataProvider({
     dataProvider: aggregatedAccountDataProvider,
@@ -37,18 +38,18 @@ const AccountBreakdown = ({
 
   return (
     <div
-      className="h-[35vh] w-full m-auto flex flex-col"
+      className="m-auto flex h-[35vh] w-full flex-col"
       data-testid="usage-breakdown"
     >
-      <h1 className="text-xl mb-4">
+      <h1 className="mb-4 text-xl">
         {data?.asset?.symbol} {t('usage breakdown')}
       </h1>
       {data && (
         <p className="mb-2 text-sm">
-          {t('You have %s %s in total.', [
-            addDecimalsFormatNumber(data.total, data.asset.decimals),
-            data.asset.symbol,
-          ])}
+          {t('You have {{value}} {{symbol}} in total.', {
+            value: addDecimalsFormatNumber(data.total, data.asset.decimals),
+            symbol: data.asset.symbol,
+          })}
         </p>
       )}
       <BreakdownTable
@@ -118,6 +119,7 @@ export const AccountManager = ({
   onMarketClick,
   gridProps,
 }: AccountManagerProps) => {
+  const t = useT();
   const [breakdownAssetId, setBreakdownAssetId] = useState<string>();
   const { data, error } = useDataProvider({
     dataProvider: aggregatedAccountsDataProvider,

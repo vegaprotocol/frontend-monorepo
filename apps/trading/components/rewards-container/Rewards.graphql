@@ -1,0 +1,94 @@
+query RewardsPage($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    vestingStats {
+      # AKA hoarder reward multiplier
+      rewardBonusMultiplier
+    }
+    activityStreak {
+      # vesting multiplier
+      rewardVestingMultiplier
+      # AKA streak multiplier
+      rewardDistributionMultiplier
+    }
+    vestingBalancesSummary {
+      epoch
+      vestingBalances {
+        asset {
+          id
+          symbol
+          decimals
+          quantum
+        }
+        balance
+      }
+      lockedBalances {
+        asset {
+          id
+          symbol
+          decimals
+          quantum
+        }
+        balance
+        untilEpoch
+      }
+    }
+  }
+}
+
+query RewardsHistory(
+  $partyId: ID!
+  $epochRewardSummariesPagination: Pagination
+  $partyRewardsPagination: Pagination
+  $fromEpoch: Int
+  $toEpoch: Int
+) {
+  epochRewardSummaries(
+    filter: { fromEpoch: $fromEpoch, toEpoch: $toEpoch }
+    pagination: $epochRewardSummariesPagination
+  ) {
+    edges {
+      node {
+        epoch
+        assetId
+        amount
+        rewardType
+      }
+    }
+  }
+  party(id: $partyId) {
+    id
+    rewardsConnection(
+      fromEpoch: $fromEpoch
+      toEpoch: $toEpoch
+      pagination: $partyRewardsPagination
+    ) {
+      edges {
+        node {
+          amount
+          percentageOfTotal
+          receivedAt
+          rewardType
+          asset {
+            id
+            symbol
+            name
+            decimals
+          }
+          party {
+            id
+          }
+          epoch {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+
+query RewardsEpoch {
+  epoch {
+    id
+  }
+}

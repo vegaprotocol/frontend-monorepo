@@ -1,6 +1,7 @@
 # Add files here to ignore them from prettier formatting
 
 /dist
+/dist-result
 /coverage
 __generated__
 __generated___
@@ -8,3 +9,15 @@ __generated___
 apps/static/src/assets/devnet-tranches.json
 apps/static/src/assets/mainnet-tranches.json
 apps/static/src/assets/testnet-tranches.json
+
+/apps/**/cypress/reports/
+/apps/**/cypress/downloads/
+
+/.nx/cache
+
+# apps/trading/e2e
+__pycache__/
+apps/trading/e2e/logs/
+apps/trading/e2e/.pytest_cache/
+apps/trading/e2e/traces/
+.pytest_cache/

@@ -1,7 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import ReactVirtualizedAutoSizer from 'react-virtualized-auto-sizer';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { usePrevious } from '@vegaprotocol/react-helpers';
 import { OrderbookRow } from './orderbook-row';
 import type { OrderbookRowData } from './orderbook-data';
@@ -10,6 +9,7 @@ import { Splash, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 import { OrderbookControls } from './orderbook-controls';
+import { useT } from './use-t';
 
 // Sets row height, will be used to calculate number of rows that can be
 // displayed each side of the book without overflow
@@ -85,6 +85,7 @@ export const OrderbookMid = ({
   bestAskPrice: string;
   bestBidPrice: string;
 }) => {
+  const t = useT();
   const previousLastTradedPrice = usePrevious(lastTradedPrice);
   const priceChangeRef = useRef<'up' | 'down' | 'none'>('none');
   const spread = (BigInt(bestAskPrice) - BigInt(bestBidPrice)).toString();
@@ -153,6 +154,7 @@ export const Orderbook = ({
   bids,
   assetSymbol,
 }: OrderbookProps) => {
+  const t = useT();
   const [resolution, setResolution] = useState(1);
 
   const groupedAsks = useMemo(() => {

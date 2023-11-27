@@ -1,8 +1,8 @@
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { ExternalLink, Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
 import { useUpdateProposal } from '../lib';
+import { useT } from '../use-t';
 
 type MarketProposalNotificationProps = {
   marketId?: string;
@@ -10,6 +10,7 @@ type MarketProposalNotificationProps = {
 export const MarketProposalNotification = ({
   marketId,
 }: MarketProposalNotificationProps) => {
+  const t = useT();
   const tokenLink = useLinks(DApp.Governance);
   const { data: proposal } = useUpdateProposal({
     id: marketId,
@@ -29,7 +30,7 @@ export const MarketProposalNotification = ({
       </div>
     );
     return (
-      <div className="border-l border-default pl-1 pr-1 pb-1 min-w-min whitespace-nowrap">
+      <div className="border-default min-w-min whitespace-nowrap border-l pb-1 pl-1 pr-1">
         <Notification
           intent={Intent.Warning}
           message={message}

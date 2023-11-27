@@ -2,7 +2,7 @@ import compact from 'lodash/compact';
 import type { ProductType } from '@vegaprotocol/types';
 import { ProductTypeMapping, ProductTypeShortName } from '@vegaprotocol/types';
 import { StackedCell } from '@vegaprotocol/datagrid';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../lib/use-t';
 
 export interface MarketCodeCellProps {
   value: string | undefined; // market code
@@ -14,6 +14,7 @@ export interface MarketCodeCellProps {
 }
 
 export const MarketCodeCell = ({ value, data }: MarketCodeCellProps) => {
+  const t = useT();
   if (!value || !data || !data.productType) return null;
 
   const infoSpanClasses =

@@ -1,19 +1,19 @@
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import classNames from 'classnames';
+import { useT } from '../../use-t';
 
 interface SideSelectorProps {
   value: Schema.Side;
   onValueChange: (side: Schema.Side) => void;
 }
 
-const toggles = [
-  { label: t('Long'), value: Schema.Side.SIDE_BUY },
-  { label: t('Short'), value: Schema.Side.SIDE_SELL },
-];
-
 export const SideSelector = (props: SideSelectorProps) => {
+  const t = useT();
+  const toggles = [
+    { label: t('Long'), value: Schema.Side.SIDE_BUY },
+    { label: t('Short'), value: Schema.Side.SIDE_SELL },
+  ];
   return (
     <RadioGroup.Root
       name="order-side"

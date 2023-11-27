@@ -1,14 +1,14 @@
-import type { ProposalListFieldsFragment } from '@vegaprotocol/proposals';
+import { type ProposalListFieldsFragment } from '@vegaprotocol/proposals';
 import { VoteProgress } from '@vegaprotocol/proposals';
-import type { AgGridReact } from 'ag-grid-react';
+import { type AgGridReact } from 'ag-grid-react';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { AgGrid } from '@vegaprotocol/datagrid';
-import type {
-  VegaICellRendererParams,
-  VegaValueFormatterParams,
+import {
+  type VegaICellRendererParams,
+  type VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { RowClickedEvent, ColDef } from 'ag-grid-community';
+import { type RowClickedEvent, ColDef } from 'ag-grid-community';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
@@ -105,7 +105,7 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
               ? new BigNumber(0)
               : yesTokens.multipliedBy(100).dividedBy(totalTokensVoted);
             return (
-              <div className="flex items-center justify-center h-full pt-2 uppercase">
+              <div className="flex h-full items-center justify-center pt-2 uppercase">
                 <VoteProgress
                   threshold={requiredMajorityPercentage}
                   progress={yesPercentage}

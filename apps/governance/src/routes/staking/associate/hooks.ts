@@ -11,12 +11,12 @@ import { useTransaction } from '../../../hooks/use-transaction';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { removeDecimal, removePaginationWrapper } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
-import type {
-  LinkingsFieldsFragment,
-  PartyStakeLinkingsQuery,
-  PartyStakeLinkingsQueryVariables,
+import {
+  PartyStakeLinkingsDocument,
+  type LinkingsFieldsFragment,
+  type PartyStakeLinkingsQuery,
+  type PartyStakeLinkingsQueryVariables,
 } from './__generated__/PartyStakeLinkings';
-import { PartyStakeLinkingsDocument } from './__generated__/PartyStakeLinkings';
 
 export const useAddStake = (
   address: string,

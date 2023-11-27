@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
-import { t } from '@vegaprotocol/i18n';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { WalletClientError } from '@vegaprotocol/wallet-client';
 import type { VegaTxState } from '../../lib/proposals-hooks/use-vega-transaction';
 import { VegaTxStatus } from '../../lib/proposals-hooks/use-vega-transaction';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useT } from '../../use-t';
 
 export type VegaTransactionContentMap = {
   [C in VegaTxStatus]?: JSX.Element;
@@ -28,8 +28,9 @@ export const VegaTransactionDialog = ({
   icon,
   content,
 }: VegaTransactionDialogProps) => {
+  const t = useT();
   const computedIntent = intent ? intent : getIntent(transaction);
-  const computedTitle = title ? title : getTitle(transaction);
+  const computedTitle = title ? title : getTitle(transaction, t);
   const computedIcon = icon ? icon : getIcon(transaction);
 
   return (
@@ -86,6 +87,7 @@ interface VegaDialogProps {
  * Default dialog content
  */
 export const VegaDialog = ({ transaction }: VegaDialogProps) => {
+  const t = useT();
   const { links, network } = useVegaWallet();
 
   let content = null;
@@ -99,7 +101,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
         </p>
         {network !== 'MAINNET' && (
           <p data-testid="testnet-transaction-info">
-            {t('[This is %s transaction only]').replace('%s', network)}
+            {t('[This is {{network}} transaction only]', { network })}
           </p>
         )}
       </>
@@ -176,7 +178,7 @@ const getIntent = (transaction: VegaTxState) => {
   }
 };
 
-const getTitle = (transaction: VegaTxState) => {
+const getTitle = (transaction: VegaTxState, t: ReturnType<typeof useT>) => {
   switch (transaction.status) {
     case VegaTxStatus.Requested:
       return t('Confirm transaction in wallet');

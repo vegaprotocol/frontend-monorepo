@@ -1,24 +1,18 @@
+import { type ReactNode } from 'react';
 import { render, waitFor, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMockData, VolumeType } from './orderbook-data';
 import { Orderbook, OrderbookMid } from './orderbook';
 import * as orderbookData from './orderbook-data';
 import { createResolutions, formatResolution } from './orderbook-controls';
+import { OrderbookRow } from './orderbook-row';
 
-function mockOffsetSize(width: number, height: number) {
-  Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', {
-    configurable: true,
-    value: () => ({ height, width }),
-  });
-  Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
-    configurable: true,
-    value: height,
-  });
-  Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
-    configurable: true,
-    value: width,
-  });
-}
+type AutoSizerChildern = (size: { width: number; height: number }) => ReactNode;
+
+jest.mock('react-virtualized-auto-sizer', () => {
+  return ({ children }: { children: AutoSizerChildern }) =>
+    children({ width: 800, height: 768 });
+});
 
 describe('Orderbook', () => {
   const params = {
@@ -33,11 +27,6 @@ describe('Orderbook', () => {
     resolution: 1,
   };
   const decimalPlaces = 3;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    mockOffsetSize(800, 768);
-  });
 
   it('lastTradedPrice should be in the middle', async () => {
     render(
@@ -149,18 +138,22 @@ describe('Orderbook', () => {
     });
     expect(screen.getByTestId('plus-button')).toBeDisabled();
   });
+});
 
+describe('OrderbookRow', () => {
   it('two columns', () => {
-    mockOffsetSize(200, 768);
-    const onClickSpy = jest.fn();
-    const mockedData = generateMockData(params);
     render(
-      <Orderbook
-        decimalPlaces={decimalPlaces}
+      <OrderbookRow
+        volume={10}
+        cumulativeVolume={10}
+        decimalPlaces={0}
         positionDecimalPlaces={0}
-        onClick={onClickSpy}
-        {...mockedData}
-        assetSymbol="USD"
+        priceFormatDecimalPlaces={0}
+        price="10"
+        onClick={jest.fn()}
+        type={VolumeType.bid}
+        width={200}
+        maxVol={10}
       />
     );
     screen.getAllByTestId('bid-rows-container').forEach((item) => {
@@ -169,16 +162,18 @@ describe('Orderbook', () => {
   });
 
   it('one column', () => {
-    mockOffsetSize(140, 768);
-    const onClickSpy = jest.fn();
-    const mockedData = generateMockData(params);
     render(
-      <Orderbook
-        decimalPlaces={decimalPlaces}
+      <OrderbookRow
+        volume={10}
+        cumulativeVolume={10}
+        decimalPlaces={0}
         positionDecimalPlaces={0}
-        onClick={onClickSpy}
-        {...mockedData}
-        assetSymbol="USD"
+        priceFormatDecimalPlaces={0}
+        price="10"
+        onClick={jest.fn()}
+        type={VolumeType.ask}
+        width={140}
+        maxVol={10}
       />
     );
     screen.getAllByTestId('ask-rows-container').forEach((item) => {

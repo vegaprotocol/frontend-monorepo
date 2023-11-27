@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import {
   Button,
   CopyWithTooltip,
@@ -13,6 +12,7 @@ import {
 import { useWithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
 import omit from 'lodash/omit';
 import { create } from 'zustand';
+import { useT } from './use-t';
 
 type WithdrawalApprovalDialogProps = {
   withdrawalId: string | undefined;
@@ -28,6 +28,7 @@ export const WithdrawalApprovalDialog = ({
   onChange,
   asJson,
 }: WithdrawalApprovalDialogProps) => {
+  const t = useT();
   return (
     <Dialog
       title={t('Save withdrawal details')}
@@ -48,8 +49,7 @@ export const WithdrawalApprovalDialog = ({
       <div className="pr-8">
         <p>
           {t(
-            `If the network is reset or has an outage, records of your withdrawal
-          may be lost. It is recommended that you save these details in a safe place so you can still complete your withdrawal.`
+            `If the network is reset or has an outage, records of your withdrawal may be lost. It is recommended that you save these details in a safe place so you can still complete your withdrawal.`
           )}
         </p>
         {withdrawalId ? (
@@ -80,16 +80,20 @@ type WithdrawalApprovalDialogContentProps = {
   asJson: boolean;
 };
 
-const NoDataContent = ({ msg = t('No data') }) => (
-  <div className="py-12" data-testid="splash">
-    <Splash>{msg}</Splash>
-  </div>
-);
+const NoDataContent = ({ msg }: { msg?: string }) => {
+  const t = useT();
+  return (
+    <div className="py-12" data-testid="splash">
+      <Splash>{msg || t('No data')}</Splash>
+    </div>
+  );
+};
 
 const WithdrawalApprovalDialogContent = ({
   withdrawalId,
   asJson,
 }: WithdrawalApprovalDialogContentProps) => {
+  const t = useT();
   const { data, loading } = useWithdrawalApprovalQuery({
     variables: {
       withdrawalId,

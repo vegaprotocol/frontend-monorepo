@@ -4,29 +4,26 @@ import { useEffect, useRef } from 'react';
 import { addDecimal } from '@vegaprotocol/utils';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
-import { t } from '@vegaprotocol/i18n';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 
 import { CollateralBridge } from '@vegaprotocol/smart-contracts';
-
 import { useEthereumConfig } from './use-ethereum-config';
 import { useWeb3React } from '@web3-react/core';
-
-import type {
-  WithdrawalApprovalQuery,
-  WithdrawalApprovalQueryVariables,
+import {
+  WithdrawalApprovalDocument,
+  type WithdrawalApprovalQuery,
+  type WithdrawalApprovalQueryVariables,
 } from './__generated__/WithdrawalApproval';
-
-import { WithdrawalApprovalDocument } from './__generated__/WithdrawalApproval';
-
 import { useEthTransactionStore } from './use-ethereum-transaction-store';
 import {
   ApprovalStatus,
   useEthWithdrawApprovalsStore,
   WithdrawalFailure,
 } from './use-ethereum-withdraw-approvals-store';
+import { useT } from './use-t';
 
 export const useEthWithdrawApprovalsManager = () => {
+  const t = useT();
   const getThreshold = useGetWithdrawThreshold();
   const getDelay = useGetWithdrawDelay();
   const { query } = useApolloClient();
@@ -53,9 +50,12 @@ export const useEthWithdrawApprovalsManager = () => {
     if (withdrawal.asset.source.__typename !== 'ERC20') {
       update(transaction.id, {
         status: ApprovalStatus.Error,
-        message: t(
-          `Invalid asset source: ${withdrawal.asset.source.__typename}`
-        ),
+        message: t(`Invalid asset source: {{source}}`, {
+          nsSeparator: '*',
+          replace: {
+            source: withdrawal.asset.source.__typename,
+          },
+        }),
         failureReason: WithdrawalFailure.InvalidAsset,
       });
       return;
@@ -166,5 +166,6 @@ export const useEthWithdrawApprovalsManager = () => {
     transaction,
     update,
     chainId,
+    t,
   ]);
 };

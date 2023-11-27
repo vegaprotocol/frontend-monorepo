@@ -11,12 +11,12 @@ import {
   Loader,
 } from '@vegaprotocol/ui-toolkit';
 import { useContracts } from '../../config/contracts/contracts-context';
-import type { FormEvent } from 'react';
-import type {
-  AddSignerBundle,
-  AddSignerBundleVariables,
+import { type FormEvent } from 'react';
+import {
+  type AddSignerBundle,
+  type AddSignerBundleVariables,
 } from '../__generated__/AddSignerBundle';
-import type { MultisigControl } from '@vegaprotocol/smart-contracts';
+import { type MultisigControl } from '@vegaprotocol/smart-contracts';
 
 export const ADD_SIGNER_QUERY = gql`
   query AddSignerBundle($nodeId: ID!) {

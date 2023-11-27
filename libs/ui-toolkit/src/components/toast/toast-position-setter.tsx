@@ -1,28 +1,27 @@
 import classNames from 'classnames';
-import { t } from '@vegaprotocol/i18n';
 import { IconNames } from '@blueprintjs/icons';
 import { Icon } from '../icon';
 import { ToastPosition, useToastsConfiguration, useToasts } from './use-toasts';
 import { useCallback } from 'react';
 import { Intent } from '../../utils/intent';
-
-const TEST_TOAST = {
-  id: 'test-toast',
-  intent: Intent.Primary,
-  content: <>{t('This is an example of a toast notification')}</>,
-  onClose: () => useToasts.getState().remove('test-toast'),
-};
+import { useT } from '../../use-t';
 
 export const ToastPositionSetter = () => {
+  const t = useT();
   const setPostion = useToastsConfiguration((store) => store.setPosition);
   const position = useToastsConfiguration((store) => store.position);
   const setToast = useToasts((store) => store.setToast);
   const handleChange = useCallback(
     (position: ToastPosition) => {
       setPostion(position);
-      setToast(TEST_TOAST);
+      setToast({
+        id: 'test-toast',
+        intent: Intent.Primary,
+        content: <>{t('This is an example of a toast notification')}</>,
+        onClose: () => useToasts.getState().remove('test-toast'),
+      });
     },
-    [setToast, setPostion]
+    [setToast, setPostion, t]
   );
   const buttonCssClasses =
     'flex items-center px-1 py-1 relative rounded bg-vega-clight-400 dark:bg-vega-cdark-400';

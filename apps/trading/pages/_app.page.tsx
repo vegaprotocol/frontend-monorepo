@@ -1,14 +1,14 @@
-import { useMemo } from 'react';
+import { useMemo, Suspense } from 'react';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
-import { t } from '@vegaprotocol/i18n';
 import {
-  envTriggerMapping,
+  useEnvTriggerMapping,
   Networks,
   NodeSwitcherDialog,
   useEnvironment,
   useInitializeEnv,
   useNodeSwitcherStore,
+  AppLoader,
 } from '@vegaprotocol/environment';
 import './styles.css';
 import { usePageTitleStore } from '../stores';
@@ -32,14 +32,16 @@ import { SSRLoader } from './ssr-loader';
 import { PartyActiveOrdersHandler } from './party-active-orders-handler';
 import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
-
-const DEFAULT_TITLE = t('Welcome to Vega trading!');
+import '../lib/i18n';
+import { useT } from '../lib/use-t';
 
 const Title = () => {
+  const t = useT();
+  const DEFAULT_TITLE = t('Welcome to Vega trading!');
   const { pageTitle } = usePageTitleStore((store) => ({
     pageTitle: store.pageTitle,
   }));
-
+  const envTriggerMapping = useEnvTriggerMapping();
   const { VEGA_ENV } = useEnvironment();
   const networkName = envTriggerMapping[VEGA_ENV];
 
@@ -47,7 +49,7 @@ const Title = () => {
     if (!pageTitle) return DEFAULT_TITLE;
     if (networkName) return `${pageTitle} [${networkName}]`;
     return pageTitle;
-  }, [pageTitle, networkName]);
+  }, [pageTitle, networkName, DEFAULT_TITLE]);
 
   return (
     <Head>
@@ -60,7 +62,7 @@ function AppBody({ Component }: AppProps) {
   const location = useLocation();
   const { VEGA_ENV } = useEnvironment();
   const gridClasses = classNames(
-    'h-full relative z-0 grid',
+    'grid relative h-full z-0',
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
   );
   return (
@@ -123,12 +125,14 @@ function VegaTradingApp(props: AppProps) {
   }
 
   return (
-    <HashRouter>
-      <Bootstrapper>
-        <AppBody {...props} />
-      </Bootstrapper>
-      <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
-    </HashRouter>
+    <Suspense fallback={<AppLoader />}>
+      <HashRouter>
+        <Bootstrapper>
+          <AppBody {...props} />
+        </Bootstrapper>
+        <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
+      </HashRouter>
+    </Suspense>
   );
 }
 

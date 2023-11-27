@@ -1,11 +1,12 @@
 import { ProposalState } from '@vegaprotocol/types';
-import { t } from '@vegaprotocol/i18n';
 import { Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
+import { useT } from '../use-t';
 
-export const getProposalDialogTitle = (
+export const useGetProposalDialogTitle = (
   status?: ProposalState
 ): string | undefined => {
+  const t = useT();
   if (!status) {
     return;
   }

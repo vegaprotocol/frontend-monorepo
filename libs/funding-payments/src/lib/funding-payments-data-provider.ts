@@ -1,4 +1,4 @@
-import type { PageInfo, Cursor } from '@vegaprotocol/data-provider';
+import { type PageInfo, type Cursor } from '@vegaprotocol/data-provider';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
@@ -6,11 +6,11 @@ import {
 } from '@vegaprotocol/data-provider';
 import type { Market } from '@vegaprotocol/markets';
 import { marketsMapProvider } from '@vegaprotocol/markets';
-import { FundingPaymentsDocument } from './__generated__/FundingPayments';
-import type {
-  FundingPaymentsQuery,
-  FundingPaymentsQueryVariables,
-  FundingPaymentFieldsFragment,
+import {
+  FundingPaymentsDocument,
+  type FundingPaymentsQueryVariables,
+  type FundingPaymentFieldsFragment,
+  type FundingPaymentsQuery,
 } from './__generated__/FundingPayments';
 
 export type FundingPayment = Omit<FundingPaymentFieldsFragment, 'market'> & {

@@ -1,4 +1,4 @@
-import type { Update } from '@vegaprotocol/data-provider';
+import { type Update } from '@vegaprotocol/data-provider';
 import { makeDataProvider } from '@vegaprotocol/data-provider';
 import { updateLevels } from './orderbook-data';
 import { captureException } from '@sentry/react';
@@ -6,11 +6,9 @@ import { captureException } from '@sentry/react';
 import {
   MarketDepthDocument,
   MarketDepthUpdateDocument,
-} from './__generated__/MarketDepth';
-import type {
-  MarketDepthQuery,
-  MarketDepthQueryVariables,
-  MarketDepthUpdateSubscription,
+  type MarketDepthQuery,
+  type MarketDepthQueryVariables,
+  type MarketDepthUpdateSubscription,
 } from './__generated__/MarketDepth';
 
 export const update: Update<

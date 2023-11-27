@@ -1,6 +1,5 @@
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { Filter, OrderListManager } from '@vegaprotocol/orders';
-import { t } from '@vegaprotocol/i18n';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useNavigateWithMeta } from '../../lib/hooks/use-market-click-handler';
@@ -9,8 +8,12 @@ import { persist } from 'zustand/middleware';
 import type { DataGridStore } from '../../stores/datagrid-store-slice';
 import { OrderStatus } from '@vegaprotocol/types';
 import { Links } from '../../lib/links';
+import { useT } from '../../lib/use-t';
 
-const resolveNoRowsMessage = (filter?: Filter) => {
+const resolveNoRowsMessage = (
+  filter: Filter | undefined,
+  t: ReturnType<typeof useT>
+) => {
   switch (filter) {
     case Filter.Open:
       return t('No open orders');
@@ -42,6 +45,7 @@ export interface OrderContainerProps {
 const AUTO_SIZE_COLUMNS = ['instrument-code'];
 
 export const OrdersContainer = ({ filter }: OrderContainerProps) => {
+  const t = useT();
   const { pubKey, isReadOnly } = useVegaWallet();
   const navigate = useNavigateWithMeta();
   const { gridState, updateGridState } = useOrderListGridState(filter);
@@ -56,7 +60,7 @@ export const OrdersContainer = ({ filter }: OrderContainerProps) => {
   if (!pubKey) {
     return <Splash>{t('Please connect Vega wallet')}</Splash>;
   }
-  const noRowsMessage = resolveNoRowsMessage(filter);
+  const noRowsMessage = resolveNoRowsMessage(filter, t);
 
   return (
     <OrderListManager

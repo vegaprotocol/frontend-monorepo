@@ -8,7 +8,6 @@ import {
 } from '@vegaprotocol/datagrid';
 import compact from 'lodash/compact';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
@@ -19,8 +18,11 @@ import {
 } from '@vegaprotocol/types';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
 import { ProposalActionsDropdown } from '../proposal-actions-dropdown';
+import { useT } from '../../use-t';
 
 export const useColumnDefs = () => {
+  const t = useT();
+
   const columnDefs: ColDef[] = useMemo(() => {
     return compact([
       {
@@ -124,7 +126,7 @@ export const useColumnDefs = () => {
         },
       },
     ]);
-  }, []);
+  }, [t]);
 
   return columnDefs;
 };

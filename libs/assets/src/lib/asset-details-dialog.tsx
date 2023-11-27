@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 import {
   Button,
   Dialog,
@@ -56,6 +56,7 @@ export const AssetDetailsDialog = ({
   onChange,
   asJson = false,
 }: AssetDetailsDialogProps) => {
+  const t = useT();
   const { data: asset } = useAssetDataProvider(assetId);
 
   const assetSymbol = asset?.symbol || '';
@@ -77,7 +78,7 @@ export const AssetDetailsDialog = ({
     </div>
   );
   const title = asset
-    ? t(`Asset details - ${asset.symbol}`)
+    ? t('Asset details - {{symbol}}', asset)
     : t('Asset not found');
 
   return (
@@ -100,8 +101,8 @@ export const AssetDetailsDialog = ({
       {content}
       <p className="my-4 text-xs">
         {t(
-          'There is 1 unit of the settlement asset (%s) to every 1 quote unit.',
-          [assetSymbol]
+          'There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit.',
+          { assetSymbol }
         )}
       </p>
       <div className="w-1/4">

@@ -1,14 +1,13 @@
 import type { Asset } from '@vegaprotocol/assets';
 import { AssetOption } from '@vegaprotocol/assets';
 import {
-  ethereumAddress,
-  minSafe,
+  useEthereumAddress,
+  useRequired,
+  useMinSafe,
   removeDecimal,
-  required,
   isAssetTypeERC20,
   formatNumber,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
   TradingFormGroup,
@@ -23,7 +22,6 @@ import {
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import { useEffect, type ButtonHTMLAttributes } from 'react';
-import type { ControllerRenderProps } from 'react-hook-form';
 import { formatDistanceToNow } from 'date-fns';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { WithdrawLimits } from './withdraw-limits';
@@ -34,6 +32,7 @@ import {
 } from '@vegaprotocol/web3';
 import { AssetBalance } from './asset-balance';
 import { DocsLinks } from '@vegaprotocol/environment';
+import { useT } from './use-t';
 
 export interface WithdrawalArgs {
   amount: string;
@@ -70,10 +69,11 @@ const WithdrawDelayNotification = ({
   symbol: string;
   decimals: number;
 }) => {
-  const replacements = [
+  const t = useT();
+  const replacements = {
     symbol,
-    delay ? formatDistanceToNow(Date.now() + delay * 1000) : ' ',
-  ];
+    delay: delay ? formatDistanceToNow(Date.now() + delay * 1000) : ' ',
+  };
   return (
     <Notification
       intent={Intent.Warning}
@@ -85,11 +85,17 @@ const WithdrawDelayNotification = ({
       }
       message={[
         threshold.isEqualTo(0)
-          ? t('All %s withdrawals are subject to a %s delay.', replacements)
-          : t('Withdrawals of %s %s or more will be delayed for %s.', [
-              formatNumber(threshold, decimals),
-              ...replacements,
-            ]),
+          ? t(
+              'All {{symbol}} withdrawals are subject to a {{delay}} delay.',
+              replacements
+            )
+          : t(
+              'Withdrawals of {{threshold}} {{symbol}} or more will be delayed for {{delay}}.',
+              {
+                threshold: formatNumber(threshold, decimals),
+                ...replacements,
+              }
+            ),
         DocsLinks?.WITHDRAWAL_LIMITS ? (
           <ExternalLink className="ml-1" href={DocsLinks.WITHDRAWAL_LIMITS}>
             {t('Read more')}
@@ -112,6 +118,10 @@ export const WithdrawForm = ({
   onSelectAsset,
   submitWithdraw,
 }: WithdrawFormProps) => {
+  const t = useT();
+  const ethereumAddress = useEthereumAddress();
+  const required = useRequired();
+  const minSafe = useMinSafe();
   const { account: address } = useWeb3React();
   const {
     register,
@@ -150,36 +160,6 @@ export const WithdrawForm = ({
     trigger('to');
   }, [address, setValue, trigger]);
 
-  const renderAssetsSelector = ({
-    field,
-  }: {
-    field: ControllerRenderProps<FormFields, 'asset'>;
-  }) => {
-    return (
-      <TradingRichSelect
-        data-testid="select-asset"
-        id="asset"
-        name="asset"
-        required
-        onValueChange={(value) => {
-          onSelectAsset(value);
-          field.onChange(value);
-        }}
-        placeholder={t('Please select an asset')}
-        value={selectedAsset?.id}
-        hasError={Boolean(errors.asset?.message)}
-      >
-        {assets.filter(isAssetTypeERC20).map((a) => (
-          <AssetOption
-            key={a.id}
-            asset={a}
-            balance={<AssetBalance asset={a} />}
-          />
-        ))}
-      </TradingRichSelect>
-    );
-  };
-
   const showWithdrawDelayNotification =
     Boolean(delay) &&
     Boolean(selectedAsset) &&
@@ -189,7 +169,7 @@ export const WithdrawForm = ({
     <>
       <div className="mb-4 text-sm">
         <p>{t('There are two steps required to make a withdrawal')}</p>
-        <ol className="pl-4 list-disc">
+        <ol className="list-disc pl-4">
           <li>{t('Step 1 - Release funds from Vega')}</li>
           <li>{t('Step 2 - Transfer funds to your Ethereum wallet')}</li>
         </ol>
@@ -208,7 +188,29 @@ export const WithdrawForm = ({
                 required: (value) => !!selectedAsset || required(value),
               },
             }}
-            render={renderAssetsSelector}
+            render={({ field }) => (
+              <TradingRichSelect
+                data-testid="select-asset"
+                id="asset"
+                name="asset"
+                required
+                onValueChange={(value) => {
+                  onSelectAsset(value);
+                  field.onChange(value);
+                }}
+                placeholder={t('Please select an asset')}
+                value={selectedAsset?.id}
+                hasError={Boolean(errors.asset?.message)}
+              >
+                {assets.filter(isAssetTypeERC20).map((a) => (
+                  <AssetOption
+                    key={a.id}
+                    asset={a}
+                    balance={<AssetBalance asset={a} />}
+                  />
+                ))}
+              </TradingRichSelect>
+            )}
           />
           {errors.asset?.message && (
             <TradingInputError intent="danger">
@@ -314,12 +316,13 @@ const UseButton = (props: UseButtonProps) => {
     <button
       {...props}
       type="button"
-      className="absolute top-0 right-0 ml-auto text-sm underline"
+      className="absolute right-0 top-0 ml-auto text-sm underline"
     />
   );
 };
 
 const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
+  const t = useT();
   const openDialog = useWeb3ConnectStore((state) => state.open);
   const { isActive, connector } = useWeb3React();
   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);

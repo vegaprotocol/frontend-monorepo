@@ -21,10 +21,10 @@ import {
   addDecimalsFormatNumberQuantum,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { Link } from 'react-router-dom';
 import { Links } from '../../lib/links';
+import { useT } from '../../lib/use-t';
 
 interface Props {
   marketId?: string;
@@ -39,6 +39,7 @@ export const MarketLiquiditySupplied = ({
   noUpdate = false,
   quantum,
 }: Props) => {
+  const t = useT();
   const [market, setMarket] = useState<MarketData>();
   const { params } = useNetworkParams([
     NetworkParams.market_liquidity_stakeToCcyVolume,

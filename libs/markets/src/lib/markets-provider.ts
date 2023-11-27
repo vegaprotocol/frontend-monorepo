@@ -5,29 +5,30 @@ import {
   marketDataErrorPolicyGuard,
   useDataProvider,
 } from '@vegaprotocol/data-provider';
-import type {
-  MarketsQuery,
-  MarketFieldsFragment,
+import {
+  MarketsDocument,
+  type MarketsQuery,
+  type MarketFieldsFragment,
 } from './__generated__/markets';
-import type { MarketsCandlesQueryVariables } from './__generated__/markets-candles';
+import { type MarketsCandlesQueryVariables } from './__generated__/markets-candles';
 
 import {
   marketsDataProvider,
   marketsLiveDataProvider,
   mapMarketDataUpdateToMarketData,
 } from './markets-data-provider';
-import { marketDataProvider } from './market-data-provider';
-import { marketsCandlesProvider } from './markets-candles-provider';
-import type { MarketData } from './market-data-provider';
-import type { MarketDataUpdateFieldsFragment } from './__generated__';
-import type { MarketCandles } from './markets-candles-provider';
+import { marketDataProvider, type MarketData } from './market-data-provider';
+import { type MarketDataUpdateFieldsFragment } from './__generated__';
+import {
+  marketsCandlesProvider,
+  type MarketCandles,
+} from './markets-candles-provider';
 import { useMemo } from 'react';
 import * as Schema from '@vegaprotocol/types';
 import {
   filterAndSortClosedMarkets,
   filterAndSortMarkets,
 } from './market-utils';
-import { MarketsDocument } from './__generated__/markets';
 import type { Candle } from './market-candles-provider';
 
 export type Market = MarketFieldsFragment;

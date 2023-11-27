@@ -3,16 +3,21 @@ import styles from './toast.module.css';
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
-import type { HTMLAttributes, HtmlHTMLAttributes, ReactNode } from 'react';
-import { useState } from 'react';
-import { forwardRef, useEffect } from 'react';
-import { useCallback } from 'react';
-import { useLayoutEffect } from 'react';
-import { useRef } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+  useRef,
+  type HTMLAttributes,
+  type HtmlHTMLAttributes,
+  type ReactNode,
+} from 'react';
 import { Intent } from '../../utils/intent';
 import { Icon, VegaIcon, VegaIconNames } from '../icon';
 import { Loader } from '../loader';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../use-t';
 
 export type ToastContent = JSX.Element | undefined;
 
@@ -58,8 +63,8 @@ export const Panel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
         ref={ref}
         data-testid="toast-panel"
         className={classNames(
-          'p-2 rounded mt-[10px]',
-          'font-mono text-[12px] leading-[16px] font-normal',
+          'mt-[10px] rounded p-2',
+          'font-mono text-[12px] font-normal leading-[16px]',
           '[&>h4]:font-bold',
           className
         )}
@@ -78,6 +83,7 @@ export const CollapsiblePanel = forwardRef<
   HTMLDivElement,
   CollapsiblePanelProps & HTMLAttributes<HTMLDivElement>
 >(({ children, className, actions, ...props }, ref) => {
+  const t = useT();
   const [collapsed, setCollapsed] = useState(true);
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
@@ -87,8 +93,8 @@ export const CollapsiblePanel = forwardRef<
       data-test
       className={classNames(
         'relative',
-        'p-2 rounded mt-[10px]',
-        'font-mono text-[12px] leading-[16px] font-normal',
+        'mt-[10px] rounded p-2',
+        'font-mono text-[12px] font-normal leading-[16px]',
         '[&>h4]:font-bold',
         'overflow-auto',
         {
@@ -110,7 +116,7 @@ export const CollapsiblePanel = forwardRef<
           data-panel-curtain
           className={classNames(
             'bg-gradient-to-b from-transparent to-inherit',
-            'absolute bottom-0 left-0 h-8 w-full pointer-events-none'
+            'pointer-events-none absolute bottom-0 left-0 h-8 w-full'
           )}
         ></div>
       )}
@@ -120,7 +126,7 @@ export const CollapsiblePanel = forwardRef<
           'absolute bottom-0 right-0',
           'p-2',
           'rounded-tl',
-          'flex align-middle gap-1'
+          'flex gap-1 align-middle'
         )}
       >
         {actions}
@@ -150,7 +156,7 @@ export const ToastHeading = forwardRef<
 >(({ children, className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={classNames('text-sm uppercase mb-1', className)}
+    className={classNames('mb-1 text-sm uppercase', className)}
     {...props}
   >
     {children}
@@ -237,7 +243,7 @@ export const Toast = ({
         }
       }}
       className={classNames(
-        'w-[320px] rounded-md overflow-hidden',
+        'w-[320px] overflow-hidden rounded-md',
         'shadow-[8px_8px_16px_0_rgba(0,0,0,0.4)]',
         'text-black dark:text-white',
         'font-alpha text-[14px] leading-[19px]',
@@ -289,7 +295,7 @@ export const Toast = ({
             intent === Intent.Danger,
         },
         // panels's progress bar colours
-        '[&_[data-progress-bar]]:mt-[10px] [&_[data-progress-bar]]:mb-[4px]',
+        '[&_[data-progress-bar]]:mb-[4px] [&_[data-progress-bar]]:mt-[10px]',
         {
           '[&_[data-progress-bar]]:bg-vega-light-200 [&_[data-progress-bar]]:dark:bg-vega-dark-200 ':
             intent === Intent.None,
@@ -322,7 +328,7 @@ export const Toast = ({
           type="button"
           data-testid="toast-close"
           onClick={closeToast}
-          className="absolute top-0 right-0 z-20 flex items-center p-2"
+          className="absolute right-0 top-0 z-20 flex items-center p-2"
         >
           <VegaIcon name={VegaIconNames.CROSS} size={12} />
         </button>
@@ -349,21 +355,21 @@ export const Toast = ({
           )}
         >
           {loader ? (
-            <div className="w-[15px] h-[15px]">
+            <div className="h-[15px] w-[15px]">
               <Loader size="small" forceTheme="dark" />
             </div>
           ) : (
             <Icon
               name={toastIconMapping[intent]}
               size={4}
-              className="!block !w-[14px] !h-[14px]"
+              className="!block !h-[14px] !w-[14px]"
             />
           )}
         </div>
         <div
           className={classNames(
             'relative',
-            'overflow-auto flex-1 p-4 pr-[40px] [&>p]:mb-[2.5px]'
+            'flex-1 overflow-auto p-4 pr-[40px] [&>p]:mb-[2.5px]'
           )}
           data-testid="toast-content"
         >
@@ -385,7 +391,7 @@ export const Toast = ({
                   'bg-vega-red-400 dark:bg-vega-red-600':
                     intent === Intent.Danger,
                 },
-                'absolute bottom-0 left-0 w-full h-[4px]',
+                'absolute bottom-0 left-0 h-[4px] w-full',
                 'animate-progress'
               )}
               style={{

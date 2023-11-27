@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import {
   Dialog,
   Intent,
@@ -9,8 +8,11 @@ import {
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useState, type ReactNode } from 'react';
+import classNames from 'classnames';
+import { useT } from '../../lib/use-t';
 
 export const Settings = () => {
+  const t = useT();
   const { theme, setTheme } = useThemeSwitcher();
   const [isApproved, setIsApproved] = useTelemetryApproval();
   const [open, setOpen] = useState(false);
@@ -84,6 +86,18 @@ export const Settings = () => {
           </div>
         </Dialog>
       </SettingsGroup>
+      <SettingsGroup inline={false} label={t('App information')}>
+        <dl className="text-sm grid grid-cols-2 gap-1">
+          {process.env.GIT_TAG && (
+            <>
+              <dt className="text-muted">{t('Version')}</dt>
+              <dd>{process.env.GIT_TAG}</dd>
+            </>
+          )}
+          <dt className="text-muted">{t('Git commit hash')}</dt>
+          <dd className="break-words">{process.env.GIT_COMMIT}</dd>
+        </dl>
+      </SettingsGroup>
     </div>
   );
 };
@@ -92,16 +106,22 @@ const SettingsGroup = ({
   label,
   helpText,
   children,
+  inline = true,
 }: {
   label: string;
-  helpText?: string;
   children: ReactNode;
+  helpText?: string;
+  inline?: boolean;
 }) => {
   return (
-    <div className="flex justify-between items-start mb-4">
-      <div className="w-3/4">
+    <div
+      className={classNames('mb-4 gap-2', {
+        'flex items-start justify-between gap-2': inline,
+      })}
+    >
+      <div className={classNames({ 'w-3/4': inline, 'mb-2': !inline })}>
         <label className="text-sm">{label}</label>
-        {helpText && <p className="text-muted text-xs">{helpText}</p>}
+        {helpText && <p className="text-xs text-muted">{helpText}</p>}
       </div>
       {children}
     </div>

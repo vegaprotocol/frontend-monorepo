@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import { Intent, TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
 import { GetStartedCheckList } from '../../components/welcome-dialog';
 import {
@@ -8,8 +7,10 @@ import {
 } from '../../components/welcome-dialog/use-get-onboarding-step';
 import { Links } from '../../lib/links';
 import classNames from 'classnames';
+import { useT } from '../../lib/use-t';
 
 export const DepositGetStarted = () => {
+  const t = useT();
   const onboardingDismissed = useOnboardingStore((store) => store.dismissed);
   const dismiss = useOnboardingStore((store) => store.dismiss);
   const step = useGetOnboardingStep();

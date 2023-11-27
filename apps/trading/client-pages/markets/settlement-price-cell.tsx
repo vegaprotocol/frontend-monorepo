@@ -1,10 +1,10 @@
 import { DApp, EXPLORER_ORACLE, useLinks } from '@vegaprotocol/environment';
-import { t } from '@vegaprotocol/i18n';
 import type { DataSourceFilterFragment } from '@vegaprotocol/markets';
 import { useOracleSpecBindingData } from '@vegaprotocol/markets';
 import { PropertyKeyType } from '@vegaprotocol/types';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { useT } from '../../lib/use-t';
 
 export interface SettlementPriceCellProps {
   oracleSpecId: string | undefined;
@@ -17,6 +17,7 @@ export const SettlementPriceCell = ({
   settlementDataSpecBinding,
   filter,
 }: SettlementPriceCellProps) => {
+  const t = useT();
   const linkCreator = useLinks(DApp.Explorer);
   const { property, loading } = useOracleSpecBindingData(
     oracleSpecId,

@@ -1,7 +1,8 @@
 import sortBy from 'lodash/sortBy';
 import * as Schema from '@vegaprotocol/types';
+import { Trans } from 'react-i18next';
 import { truncateByChars } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
+import { ns, useT } from './use-t';
 import {
   NetworkParams,
   useNetworkParams,
@@ -21,6 +22,7 @@ export const ALLOWED_ACCOUNTS = [
 ];
 
 export const TransferContainer = ({ assetId }: { assetId?: string }) => {
+  const t = useT();
   const { pubKey, pubKeys } = useVegaWallet();
   const { params } = useNetworkParams([
     NetworkParams.transfer_fee_factor,
@@ -50,16 +52,20 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   return (
     <>
       <p className="mb-4 text-sm" data-testid="transfer-intro-text">
-        {t('Transfer funds to another Vega key')}
-        {pubKey && (
-          <>
-            {t(' from ')}
-            <Lozenge className="font-mono">
-              {truncateByChars(pubKey || '')}
-            </Lozenge>
-          </>
+        {pubKey ? (
+          <Trans
+            i18nKey="TRANSFER_FUNDS_TO_ANOTHER_KNOWN_VEGA_KEY"
+            defaults="Transfer funds to another Vega key <0>{{pubKey}}</0>. If you are at all unsure, stop and seek advice."
+            ns={ns}
+            components={[<Lozenge className="font-mono">pubKey</Lozenge>]}
+            values={{ pubKey: truncateByChars(pubKey || '') }}
+          />
+        ) : (
+          t('TRANSFER_FUNDS_TO_ANOTHER_VEGA_KEY', {
+            defaultValue:
+              'Transfer funds to another Vega key. If you are at all unsure, stop and seek advice.',
+          })
         )}
-        {t('. If you are at all unsure, stop and seek advice.')}
       </p>
       <TransferForm
         pubKey={pubKey}

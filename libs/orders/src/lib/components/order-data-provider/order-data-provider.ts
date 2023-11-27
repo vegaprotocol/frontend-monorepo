@@ -5,20 +5,21 @@ import {
   makeDerivedDataProvider,
   defaultAppend as append,
 } from '@vegaprotocol/data-provider';
-import type { Market } from '@vegaprotocol/markets';
+import { type Market } from '@vegaprotocol/markets';
 import { marketsMapProvider } from '@vegaprotocol/markets';
-import type { PageInfo, Edge, Cursor } from '@vegaprotocol/data-provider';
+import { Cursor, type PageInfo, type Edge } from '@vegaprotocol/data-provider';
 import { OrderStatus } from '@vegaprotocol/types';
-import type {
-  OrderFieldsFragment,
-  OrderUpdateFieldsFragment,
-  OrdersQuery,
-  OrdersUpdateSubscription,
-  OrdersQueryVariables,
-  OrdersUpdateSubscriptionVariables,
+import {
+  OrdersDocument,
+  OrdersUpdateDocument,
+  type OrderFieldsFragment,
+  type OrdersQuery,
+  type OrdersUpdateSubscription,
+  type OrdersQueryVariables,
+  type OrdersUpdateSubscriptionVariables,
+  type OrderUpdateFieldsFragment,
 } from './__generated__/Orders';
-import { OrdersDocument, OrdersUpdateDocument } from './__generated__/Orders';
-import type { ApolloClient } from '@apollo/client';
+import { type ApolloClient } from '@apollo/client';
 
 export type Order = Omit<OrderFieldsFragment, 'market'> & {
   market?: Market;

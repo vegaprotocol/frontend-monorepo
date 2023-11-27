@@ -1,6 +1,6 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import { useFetch } from '@vegaprotocol/react-helpers';
-import type { TendermintBlockResponse } from '../types';
+import { type TendermintBlockResponse } from '../types';
 
 export const useBlockInfo = (blockHeight?: number, canFetch = true) => {
   const { TENDERMINT_URL } = useEnvironment();

@@ -1,5 +1,5 @@
 import { TradingButton as Button } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 
 export const Pagination = ({
   count,
@@ -14,16 +14,19 @@ export const Pagination = ({
   hasDisplayedRows: boolean;
   showRetentionMessage: boolean;
 }) => {
+  const t = useT();
   let rowMessage = '';
 
   if (count && !pageInfo?.hasNextPage) {
-    rowMessage = t('all %s rows loaded', count.toString());
+    rowMessage = t('paginationAllLoaded', {
+      replace: { count },
+      defaultValue: 'All {{count}} rows loaded',
+    });
   } else {
-    if (count === 1) {
-      rowMessage = t('%s row loaded', count.toString());
-    } else {
-      rowMessage = t('%s rows loaded', count.toString());
-    }
+    rowMessage = t('paginationLoaded', {
+      replace: { count },
+      defaultValue: '{{count}} rows loaded',
+    });
   }
 
   return (

@@ -1,13 +1,13 @@
 import sortBy from 'lodash/sortBy';
 import {
-  maxSafe,
-  required,
-  vegaPublicKey,
+  useMaxSafe,
+  useRequired,
+  useVegaPublicKey,
   addDecimal,
   formatNumber,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 import {
   TradingFormGroup,
   TradingInput,
@@ -65,6 +65,10 @@ export const TransferForm = ({
   accounts,
   minQuantumMultiple,
 }: TransferFormProps) => {
+  const t = useT();
+  const maxSafe = useMaxSafe();
+  const required = useRequired();
+  const vegaPublicKey = useVegaPublicKey();
   const {
     control,
     register,
@@ -294,7 +298,7 @@ export const TransferForm = ({
           </TradingInputError>
         )}
       </TradingFormGroup>
-      <TradingFormGroup label="To Vega key" labelFor="toVegaKey">
+      <TradingFormGroup label={t('To Vega key')} labelFor="toVegaKey">
         <AddressField
           onChange={() => {
             setValue('toVegaKey', '');
@@ -311,7 +315,10 @@ export const TransferForm = ({
                 {t('Please select')}
               </option>
               {pubKeys?.map((pk) => {
-                const text = pk === pubKey ? t('Current key: ') + pk : pk;
+                const text =
+                  pk === pubKey
+                    ? t('Current key: {{pubKey}}', { pubKey: pk }) + pk
+                    : pk;
 
                 return (
                   <option key={pk} value={pk}>
@@ -345,7 +352,7 @@ export const TransferForm = ({
           </TradingInputError>
         )}
       </TradingFormGroup>
-      <TradingFormGroup label="Amount" labelFor="amount">
+      <TradingFormGroup label={t('Amount')} labelFor="amount">
         <TradingInput
           id="amount"
           autoComplete="off"
@@ -405,7 +412,7 @@ export const TransferForm = ({
         {accountBalance && (
           <button
             type="button"
-            className="absolute top-0 right-0 ml-auto text-xs underline"
+            className="absolute right-0 top-0 ml-auto text-xs underline"
             onClick={() =>
               setValue('amount', accountBalance, {
                 shouldValidate: true,
@@ -467,6 +474,7 @@ export const TransferFee = ({
   fee?: string;
   decimals?: number;
 }) => {
+  const t = useT();
   if (!feeFactor || !amount || !transferAmount || !fee) return null;
   if (
     isNaN(Number(feeFactor)) ||
@@ -480,12 +488,12 @@ export const TransferFee = ({
   const totalValue = new BigNumber(transferAmount).plus(fee).toString();
 
   return (
-    <div className="flex flex-col mb-4 text-xs gap-2">
+    <div className="mb-4 flex flex-col gap-2 text-xs">
       <div className="flex flex-wrap items-center justify-between gap-1">
         <Tooltip
           description={t(
-            `The transfer fee is set by the network parameter transfer.fee.factor, currently set to %s`,
-            [feeFactor]
+            `The transfer fee is set by the network parameter transfer.fee.factor, currently set to {{feeFactor}}`,
+            { feeFactor }
           )}
         >
           <div>{t('Transfer fee')}</div>
@@ -540,6 +548,7 @@ export const AddressField = ({
   mode,
   onChange,
 }: AddressInputProps) => {
+  const t = useT();
   const isInput = mode === 'input';
   return (
     <>
@@ -548,7 +557,7 @@ export const AddressField = ({
         <button
           type="button"
           onClick={onChange}
-          className="absolute top-0 right-0 ml-auto text-xs underline"
+          className="absolute right-0 top-0 ml-auto text-xs underline"
         >
           {isInput ? t('Select from wallet') : t('Enter manually')}
         </button>

@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import type { Provider } from '../../oracle-schema';
 import {
   ButtonLink,
@@ -12,8 +11,10 @@ import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
 import classNames from 'classnames';
 import type { OracleMarketSpecFieldsFragment } from '../../__generated__/OracleMarketsSpec';
+import { useT } from '../../use-t';
 
-export const getVerifiedStatusIcon = (provider: Provider) => {
+export const useVerifiedStatusIcon = (provider: Provider) => {
+  const t = useT();
   const getIconIntent = () => {
     switch (provider.oracle.status) {
       case 'GOOD':
@@ -46,13 +47,12 @@ export const getVerifiedStatusIcon = (provider: Provider) => {
 
   return {
     ...getIconIntent(),
-    message: t(
-      'Verified since %s',
-      lastVerified.toLocaleDateString(undefined, {
+    message: t('Verified since {{lastVerified}}', {
+      lastVerified: lastVerified.toLocaleDateString(undefined, {
         year: 'numeric',
         month: 'long',
-      })
-    ),
+      }),
+    }),
   };
 };
 
@@ -65,7 +65,8 @@ export const OracleBasicProfile = ({
   markets?: OracleMarketSpecFieldsFragment[] | undefined;
   onClick?: (value?: boolean) => void;
 }) => {
-  const { icon, message, intent } = getVerifiedStatusIcon(provider);
+  const t = useT();
+  const { icon, message, intent } = useVerifiedStatusIcon(provider);
 
   const verifiedProofs = provider.proofs.filter(
     (proof) => proof.available === true
@@ -121,10 +122,9 @@ export const OracleBasicProfile = ({
           data-testid="signed-proofs"
           className="mb-2 text-sm dark:text-vega-light-300 text-vega-dark-300"
         >
-          {t('Involved in %s %s', [
-            oracleMarkets.length.toString(),
-            oracleMarkets.length !== 1 ? t('markets') : t('market'),
-          ])}
+          {t('involvedInMarkets', 'Involved in {{count}} markets', {
+            count: oracleMarkets.length,
+          })}
         </p>
       )}
       {links.length > 0 && (

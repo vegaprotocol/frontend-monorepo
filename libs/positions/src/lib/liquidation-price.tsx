@@ -1,7 +1,7 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useEstimatePositionQuery } from './__generated__/Positions';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../use-t';
 
 export const LiquidationPrice = ({
   marketId,
@@ -14,6 +14,7 @@ export const LiquidationPrice = ({
   collateralAvailable: string;
   decimalPlaces: number;
 }) => {
+  const t = useT();
   const { data: currentData, previousData } = useEstimatePositionQuery({
     variables: {
       marketId,
@@ -43,11 +44,11 @@ export const LiquidationPrice = ({
           <tbody>
             <tr>
               <th>{t('Worst case')}</th>
-              <td className="pl-2 font-mono text-right">{worstCase}</td>
+              <td className="pl-2 text-right font-mono">{worstCase}</td>
             </tr>
             <tr>
               <th>{t('Best case')}</th>
-              <td className="pl-2 font-mono text-right">{bestCase}</td>
+              <td className="pl-2 text-right font-mono">{bestCase}</td>
             </tr>
           </tbody>
         </table>
