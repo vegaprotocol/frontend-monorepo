@@ -29,6 +29,7 @@ export const PositionsManager = ({
 }: PositionsManagerProps) => {
   const { pubKeys, pubKey } = useVegaWallet();
   const create = useVegaTransactionStore((store) => store.create);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onClose = useCallback(
     ({ marketId, openVolume }: { marketId: string; openVolume: string }) =>
       create({
@@ -73,7 +74,7 @@ export const PositionsManager = ({
       pubKeys={pubKeys}
       rowData={data}
       onMarketClick={onMarketClick}
-      onClose={onClose}
+      // onClose={onClose}
       isReadOnly={isReadOnly}
       multipleKeys={partyIds.length > 1}
       overlayNoRowsTemplate={error ? error.message : t('No positions')}

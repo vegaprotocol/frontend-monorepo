@@ -27,7 +27,9 @@ jest.mock('@vegaprotocol/data-provider', () => ({
 }));
 
 describe('PositionsManager', () => {
-  it('should close position with max uint64', async () => {
+  // TODO: temporarily disable close position
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('should close position with max uint64', async () => {
     render(<PositionsManager partyIds={['partyId']} isReadOnly={false} />, {
       wrapper: MockedProvider,
     });
