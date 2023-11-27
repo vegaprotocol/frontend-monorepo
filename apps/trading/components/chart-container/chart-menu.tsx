@@ -59,7 +59,9 @@ export const ChartMenu = () => {
     <TradingDropdown
       trigger={
         <TradingDropdownTrigger className={triggerClasses}>
-          <TradingButton {...triggerButtonProps}>{chartlib}</TradingButton>
+          <TradingButton {...triggerButtonProps} className="capitalize">
+            {chartlib}
+          </TradingButton>
         </TradingDropdownTrigger>
       }
     >
