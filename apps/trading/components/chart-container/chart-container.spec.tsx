@@ -10,6 +10,7 @@ jest.mock('@vegaprotocol/candles-chart', () => ({
 }));
 
 jest.mock('@vegaprotocol/trading-view', () => ({
+  ...jest.requireActual('@vegaprotocol/trading-view'),
   TradingViewContainer: ({ marketId }: { marketId: string }) => (
     <div data-testid="tradingview">{marketId}</div>
   ),
@@ -44,7 +45,7 @@ describe('ChartContainer', () => {
     expect(screen.getByTestId('tradingview')).toHaveTextContent(marketId);
   });
 
-  it('renders pennant chart if sotred in settings', () => {
+  it('renders pennant chart if stored in settings', () => {
     useCandlesChartSettingsStore.setState({
       chartlib: 'pennant',
     });

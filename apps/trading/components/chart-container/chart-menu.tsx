@@ -19,13 +19,14 @@ import {
   TradingDropdownTrigger,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/environment';
+import { ALLOWED_TRADINGVIEW_HOSTNAMES } from '@vegaprotocol/trading-view';
 import { IconNames, type IconName } from '@blueprintjs/icons';
-import { useT } from '../../lib/use-t';
 import {
   useCandlesChartSettings,
   type Chartlib,
 } from './use-candles-chart-settings';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { useT } from '../../lib/use-t';
 
 const chartTypeIcon = new Map<ChartType, IconName>([
   [ChartType.AREA, IconNames.TIMELINE_AREA_CHART],
@@ -194,6 +195,10 @@ export const ChartMenu = () => {
       </TradingDropdown>
     </>
   );
+
+  if (!ALLOWED_TRADINGVIEW_HOSTNAMES.includes(window.location.hostname)) {
+    return pennantDropdowns;
+  }
 
   if (!CHARTING_LIBRARY_PATH) {
     return pennantDropdowns;

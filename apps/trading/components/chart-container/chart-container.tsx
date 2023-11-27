@@ -3,7 +3,10 @@ import {
   useCandlesChartSettings,
   STUDY_SIZE,
 } from './use-candles-chart-settings';
-import { TradingViewContainer } from '@vegaprotocol/trading-view';
+import {
+  TradingViewContainer,
+  ALLOWED_TRADINGVIEW_HOSTNAMES,
+} from '@vegaprotocol/trading-view';
 import { useEnvironment } from '@vegaprotocol/environment';
 
 /**
@@ -38,6 +41,10 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
       defaultStudySize={STUDY_SIZE}
     />
   );
+
+  if (!ALLOWED_TRADINGVIEW_HOSTNAMES.includes(window.location.hostname)) {
+    return pennantChart;
+  }
 
   if (!CHARTING_LIBRARY_PATH) {
     return pennantChart;
