@@ -73,7 +73,8 @@ export const PositionsManager = ({
       pubKeys={pubKeys}
       rowData={data}
       onMarketClick={onMarketClick}
-      onClose={onClose}
+      // TODO: temporarily disable close position
+      // onClose={onClose}
       isReadOnly={isReadOnly}
       multipleKeys={partyIds.length > 1}
       overlayNoRowsTemplate={error ? error.message : t('No positions')}
