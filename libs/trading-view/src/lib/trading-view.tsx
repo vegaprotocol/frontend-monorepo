@@ -42,7 +42,7 @@ export const TradingView = ({ marketId }: { marketId: string }) => {
   const datafeed = useDatafeed();
 
   useEffect(() => {
-    // @ts-ignore cant improt types as chartin_library is external
+    // @ts-ignore cant import types as chartin_library is external
     // eslint-disable-next-line
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: marketId,
@@ -50,12 +50,12 @@ export const TradingView = ({ marketId }: { marketId: string }) => {
       // eslint-disable-next-line
 
       datafeed,
-      // @ts-ignore cant improt types as chartin_library is external
+      // @ts-ignore cant import types as chartin_library is external
       interval: '1' as ResolutionString,
       container: chartContainerRef.current,
       library_path: 'http://localhost:8080/charting_library/',
       custom_css_url: '/trading-view-styles.css',
-      // @ts-ignore cant improt types as chartin_library is external
+      // @ts-ignore cant import types as chartin_library is external
       locale: 'en' as LanguageCode,
       disabled_features: [
         'use_localstorage_for_settings',
