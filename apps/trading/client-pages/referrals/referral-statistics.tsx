@@ -357,7 +357,10 @@ export const Statistics = ({
   );
 
   const eligibilityWarning = as === 'referee' && !isEligible && (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-1/2 lg:w-1/3">
+    <div
+      data-testid="referral-eligibility-warning"
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-1/2 lg:w-1/3"
+    >
       <h2 className="text-2xl mb-2">{t('Referral code no longer valid')}</h2>
       <p>
         {t(
@@ -368,7 +371,11 @@ export const Statistics = ({
   );
 
   return (
-    <div className="relative mx-auto mb-20">
+    <div
+      data-testid="referral-statistics"
+      data-as={as}
+      className="relative mx-auto mb-20"
+    >
       <div
         className={classNames('grid grid-cols-1 grid-rows-1 gap-5', {
           'opacity-20 pointer-events-none': as === 'referee' && !isEligible,

@@ -9,7 +9,7 @@ import { useReferral } from './use-referral';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useEffect } from 'react';
 import { useT } from '../../../lib/use-t';
-import { useNavigate } from 'react-router-dom';
+import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { Routes } from '../../../lib/links';
 import { useCurrentEpochInfoQuery } from './__generated__/Epoch';
 
@@ -41,6 +41,7 @@ const useNonEligibleReferralSet = () => {
 
 export const useReferralToasts = () => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const t = useT();
   const [setToast, hasToast, updateToast] = useToasts((store) => [
     store.setToast,
@@ -74,7 +75,14 @@ export const useReferralToasts = () => {
                 data-testid="toast-apply-code"
                 size="xs"
                 onClick={() => {
-                  navigate(Routes.REFERRALS_APPLY_CODE);
+                  const matched = matchPath(
+                    Routes.REFERRALS_APPLY_CODE,
+                    pathname
+                  );
+                  if (!matched) navigate(Routes.REFERRALS_APPLY_CODE);
+                  updateToast(NON_ELIGIBLE_REFERRAL_SET_TOAST_ID + epoch, {
+                    hidden: true,
+                  });
                 }}
               >
                 {t('Apply a new code')}
@@ -89,5 +97,15 @@ export const useReferralToasts = () => {
       };
       setToast(nonEligibleReferralToast);
     }
-  }, [data, epoch, hasToast, loading, navigate, setToast, t, updateToast]);
+  }, [
+    data,
+    epoch,
+    hasToast,
+    loading,
+    navigate,
+    pathname,
+    setToast,
+    t,
+    updateToast,
+  ]);
 };

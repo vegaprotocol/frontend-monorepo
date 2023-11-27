@@ -228,7 +228,10 @@ export const ApplyCodeForm = () => {
 
   return (
     <>
-      <div className="bg-vega-clight-800 dark:bg-vega-cdark-800 mx-auto w-2/3 max-w-md rounded-lg p-8">
+      <div
+        data-testid="referral-apply-code-form"
+        className="bg-vega-clight-800 dark:bg-vega-cdark-800 mx-auto w-2/3 max-w-md rounded-lg p-8"
+      >
         <h3 className="calt mb-4 text-center text-2xl">
           {t('Apply a referral code')}
         </h3>
