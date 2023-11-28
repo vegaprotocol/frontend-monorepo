@@ -20,6 +20,7 @@ import {
   ExternalLink,
   VegaIcon,
   VegaIconNames,
+  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import {
   volumePrefix,
@@ -38,6 +39,7 @@ import { DocsLinks } from '@vegaprotocol/environment';
 import { PositionActionsDropdown } from './position-actions-dropdown';
 import { LiquidationPrice } from './liquidation-price';
 import { useT } from '../use-t';
+import { MarginHealthChart } from '@vegaprotocol/accounts';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -322,7 +324,19 @@ export const PositionsTable = ({
               const lev = data?.currentLeverage ? data.currentLeverage : 1;
               const leverage = formatNumber(Math.max(1, lev), 1);
               return (
-                <StackedCell primary={margin} secondary={leverage + 'x'} />
+                <Tooltip
+                  description={
+                    <MarginHealthChart
+                      marketId={data.marketId}
+                      assetId={data.assetId}
+                      noTooltip
+                    />
+                  }
+                >
+                  <div>
+                    <StackedCell primary={margin} secondary={leverage + 'x'} />
+                  </div>
+                </Tooltip>
               );
             },
           },
@@ -340,12 +354,15 @@ export const PositionsTable = ({
                 return '-';
               }
               return (
-                <LiquidationPrice
-                  marketId={data.marketId}
-                  openVolume={data.openVolume}
-                  collateralAvailable={data.totalBalance}
-                  decimalPlaces={data.marketDecimalPlaces}
-                />
+                <div className="flex h-[45px] items-center">
+                  <LiquidationPrice
+                    className="block text-right grow"
+                    marketId={data.marketId}
+                    openVolume={data.openVolume}
+                    collateralAvailable={data.totalBalance}
+                    decimalPlaces={data.marketDecimalPlaces}
+                  />
+                </div>
               );
             },
           },

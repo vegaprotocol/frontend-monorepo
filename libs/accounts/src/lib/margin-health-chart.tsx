@@ -51,6 +51,7 @@ export const MarginHealthChartTooltip = ({
   collateralReleaseLevel,
   decimals,
   marginAccountBalance,
+  generalAccountBalance,
 }: {
   maintenanceLevel: string;
   searchLevel: string;
@@ -58,6 +59,7 @@ export const MarginHealthChartTooltip = ({
   collateralReleaseLevel: string;
   decimals: number;
   marginAccountBalance?: string;
+  generalAccountBalance?: string;
 }) => {
   const t = useT();
   const tooltipContent = [
@@ -95,7 +97,7 @@ export const MarginHealthChartTooltip = ({
     const balance = (
       <MarginHealthChartTooltipRow
         key={'balance'}
-        label={t('balance')}
+        label={t('margin account balance')}
         value={marginAccountBalance}
         decimals={decimals}
       />
@@ -110,6 +112,18 @@ export const MarginHealthChartTooltip = ({
       tooltipContent.push(balance);
     }
   }
+
+  if (generalAccountBalance) {
+    tooltipContent.push(
+      <MarginHealthChartTooltipRow
+        key={'general'}
+        label={t('general account balance')}
+        value={generalAccountBalance}
+        decimals={decimals}
+      />
+    );
+  }
+
   return (
     <div className="overflow-hidden" data-testid="margin-health-tooltip">
       {tooltipContent}
@@ -120,9 +134,11 @@ export const MarginHealthChartTooltip = ({
 export const MarginHealthChart = ({
   marketId,
   assetId,
+  noTooltip,
 }: {
   marketId: string;
   assetId: string;
+  noTooltip?: boolean;
 }) => {
   const { data: assetsMap } = useAssetsMapProvider();
   const { pubKey: partyId } = useVegaWallet();
@@ -146,11 +162,7 @@ export const MarginHealthChart = ({
   const maintenanceLevel = Number(data.maintenanceLevel);
   const searchLevel = Number(data.searchLevel);
   const marginAccountBalance = Number(rawMarginAccountBalance);
-  const generalAccountBalance = Number(rawGeneralAccountBalance);
-  const max = Math.max(
-    marginAccountBalance + generalAccountBalance,
-    collateralReleaseLevel
-  );
+  const max = collateralReleaseLevel;
 
   const red = maintenanceLevel / max;
   const orange = (searchLevel - maintenanceLevel) / max;
@@ -165,8 +177,70 @@ export const MarginHealthChart = ({
       initialLevel={data.initialLevel}
       collateralReleaseLevel={data.collateralReleaseLevel}
       marginAccountBalance={rawMarginAccountBalance}
+      generalAccountBalance={rawGeneralAccountBalance}
       decimals={decimals}
     />
+  );
+
+  const chart = (
+    <div
+      data-testid="margin-health-chart-track"
+      className="relative bg-vega-green-650"
+      style={{
+        height: '6px',
+        marginBottom: '1px',
+        display: 'flex',
+      }}
+    >
+      <div
+        data-testid="margin-health-chart-red"
+        className="bg-vega-red-550"
+        style={{
+          height: '100%',
+          width: `${red * 100}%`,
+        }}
+      ></div>
+      <div
+        data-testid="margin-health-chart-orange"
+        className="bg-vega-orange"
+        style={{
+          height: '100%',
+          width: `${orange * 100}%`,
+        }}
+      ></div>
+      <div
+        data-testid="margin-health-chart-yellow"
+        className="bg-vega-yellow"
+        style={{
+          height: '100%',
+          width: `${yellow * 100}%`,
+        }}
+      ></div>
+      <div
+        data-testid="margin-health-chart-green"
+        className="bg-vega-green-600"
+        style={{
+          height: '100%',
+          width: `${green * 100}%`,
+        }}
+      ></div>
+      {balanceMarker > 0 && balanceMarker < 100 && (
+        <div
+          data-testid="margin-health-chart-balance"
+          className="absolute bg-vega-blue"
+          style={{
+            height: '8px',
+            width: '8px',
+            top: '-1px',
+            transform: 'translate(-4px, 0px)',
+            borderRadius: '50%',
+            border: '1px solid white',
+            backgroundColor: 'blue',
+            left: `${balanceMarker * 100}%`,
+          }}
+        ></div>
+      )}
+    </div>
   );
 
   return (
@@ -188,66 +262,14 @@ export const MarginHealthChart = ({
         }}
         ns={ns}
       />
-      <Tooltip description={tooltip}>
-        <div
-          data-testid="margin-health-chart-track"
-          className="relative bg-vega-green-650"
-          style={{
-            height: '6px',
-            marginBottom: '1px',
-            display: 'flex',
-          }}
-        >
-          <div
-            data-testid="margin-health-chart-red"
-            className="bg-vega-red-550"
-            style={{
-              height: '100%',
-              width: `${red * 100}%`,
-            }}
-          ></div>
-          <div
-            data-testid="margin-health-chart-orange"
-            className="bg-vega-orange"
-            style={{
-              height: '100%',
-              width: `${orange * 100}%`,
-            }}
-          ></div>
-          <div
-            data-testid="margin-health-chart-yellow"
-            className="bg-vega-yellow"
-            style={{
-              height: '100%',
-              width: `${yellow * 100}%`,
-            }}
-          ></div>
-          <div
-            data-testid="margin-health-chart-green"
-            className="bg-vega-green-600"
-            style={{
-              height: '100%',
-              width: `${green * 100}%`,
-            }}
-          ></div>
-          {balanceMarker > 0 && balanceMarker < 100 && (
-            <div
-              data-testid="margin-health-chart-balance"
-              className="absolute bg-vega-blue"
-              style={{
-                height: '8px',
-                width: '8px',
-                top: '-1px',
-                transform: 'translate(-4px, 0px)',
-                borderRadius: '50%',
-                border: '1px solid white',
-                backgroundColor: 'blue',
-                left: `${balanceMarker * 100}%`,
-              }}
-            ></div>
-          )}
-        </div>
-      </Tooltip>
+      {noTooltip ? (
+        <>
+          {chart}
+          {tooltip}
+        </>
+      ) : (
+        <Tooltip description={tooltip}>{chart}</Tooltip>
+      )}
     </div>
   );
 };
