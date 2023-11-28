@@ -10,6 +10,7 @@ import {
   widget,
 } from '../charting_library';
 */
+import { useLanguage, useT } from './use-t';
 import { useDatafeed } from './use-datafeed';
 
 export const TradingViewContainer = ({
@@ -21,6 +22,7 @@ export const TradingViewContainer = ({
   libraryPath: string;
   libraryHash: string;
 }) => {
+  const t = useT();
   const scriptState = useScript(
     libraryPath + 'charting_library.standalone.js',
     libraryHash
@@ -31,7 +33,7 @@ export const TradingViewContainer = ({
   if (scriptState === 'error') {
     return (
       <Splash>
-        <p>Failed to initialize Trading view</p>
+        <p>{t('Failed to initialize Trading view')}</p>
       </Splash>
     );
   }
@@ -47,6 +49,7 @@ export const TradingView = ({
   libraryPath: string;
 }) => {
   const { theme } = useThemeSwitcher();
+  const language = useLanguage();
   const chartContainerRef =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
 
@@ -67,7 +70,7 @@ export const TradingView = ({
       library_path: libraryPath,
       custom_css_url: 'vega_styles.css',
       // @ts-ignore cant import types as chartin_library is external
-      locale: 'en' as LanguageCode,
+      locale: language as LanguageCode,
       disabled_features: [
         'use_localstorage_for_settings',
         'header_symbol_search',
