@@ -1,4 +1,5 @@
 import pytest
+import re
 import vega_sim.api.governance as governance
 from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService, PeggedOrder
@@ -10,6 +11,8 @@ from wallet_config import MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET
 
 @pytest.mark.usefixtures("vega", "page", "proposed_market", "risk_accepted")
 def test_market_lifecycle(proposed_market, vega: VegaService, page: Page):
+    # 7002-SORD-001
+    # 7002-SORD-002
     trading_mode = page.get_by_test_id("market-trading-mode").get_by_test_id(
         "item-value"
     )
@@ -18,12 +21,32 @@ def test_market_lifecycle(proposed_market, vega: VegaService, page: Page):
     # setup market in proposed step, without liquidity provided
     market_id = proposed_market
     page.goto(f"/#/markets/{market_id}")
-
+    # 6002-MDET-001
+    expect(page.get_by_test_id("header-title")).to_have_text("BTC:DAI_2023Futr")
+    # 6002-MDET-002
+    expect(page.get_by_test_id("market-expiry")).to_have_text("ExpiryNot time-based")
+    page.get_by_test_id("market-expiry").hover()
+    expect(page.get_by_test_id("expiry-tooltip").first).to_have_text("This market expires when triggered by its oracle, not on a set date.View oracle specification")
+    expect(page.get_by_test_id("expiry-tooltip").first.get_by_test_id("link")).to_have_attribute("href", re.compile('.*'))
+    # 6002-MDET-003
+    expect(page.get_by_test_id("market-price")).to_have_text("Mark Price0.00")
+    # 6002-MDET-004
+    expect(page.get_by_test_id("market-change")).to_have_text("Change (24h)0.00%0.00")
+    # 6002-MDET-005
+    expect(page.get_by_test_id("market-volume")).to_have_text("Volume (24h)-")
+    # 6002-MDET-008
+    expect(page.get_by_test_id("market-settlement-asset")).to_have_text("Settlement assettDAI")
+    expect(page.get_by_test_id("liquidity-supplied")).to_have_text("Liquidity supplied 0.00 (0.00%)")
+    page.get_by_test_id("liquidity-supplied").hover()
+    expect(page.get_by_test_id("liquidity-supplied-tooltip").first).to_have_text("Supplied stake0.00Target stake0.00View liquidity provision tableLearn about providing liquidity")
+    expect(page.get_by_test_id("liquidity-supplied-tooltip").first.get_by_test_id("link").first).to_have_text("View liquidity provision table")
     # check that market is in proposed state
     # 6002-MDET-006
     # 6002-MDET-007
     # 7002-SORD-061
     expect(trading_mode).to_have_text("No trading")
+    trading_mode.hover()
+    expect(page.get_by_test_id("trading-mode-tooltip").first).to_have_text("No trading enabled for this market.")
     expect(market_state).to_have_text("Proposed")
 
     # approve market
