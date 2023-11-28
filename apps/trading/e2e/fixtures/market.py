@@ -17,6 +17,7 @@ def setup_simple_market(
     custom_market_name=market_name,
     custom_asset_name="tDAI",
     custom_asset_symbol="tDAI",
+    custom_quantum=1
 ):
     for wallet in wallets:
         vega.create_key(wallet.name)
@@ -40,6 +41,7 @@ def setup_simple_market(
         symbol=custom_asset_symbol,
         decimals=5,
         max_faucet_amount=1e10,
+        quantum=custom_quantum,
     )
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
@@ -114,16 +116,19 @@ def setup_simple_successor_market(
     return market_id
 
 
-def setup_opening_auction_market(vega: VegaService, market_id: str = None, buy_orders = default_buy_orders, sell_orders = default_sell_orders, **kwargs):
-    if market_id is None or market_id not in vega.all_markets():
+def setup_opening_auction_market(vega: VegaService, market_id: str = None, buy_orders = default_buy_orders, sell_orders = default_sell_orders, add_liquidity = True, **kwargs):
+    if not market_exists(vega, market_id):
         market_id = setup_simple_market(vega, **kwargs)
 
-    submit_liquidity(vega, MM_WALLET.name, market_id)
+    if add_liquidity:
+        print("MAKING LIQUIDDD WOOO")
+        submit_liquidity(vega, MM_WALLET.name, market_id)
+
     submit_multiple_orders(
-        vega, MM_WALLET.name, market_id, "SIDE_SELL", buy_orders
+        vega, MM_WALLET.name, market_id, "SIDE_SELL", sell_orders
     )
     submit_multiple_orders(
-        vega, MM_WALLET2.name, market_id, "SIDE_BUY", default_sell_orders
+        vega, MM_WALLET2.name, market_id, "SIDE_BUY", buy_orders
     )
 
     vega.forward("10s")
@@ -140,9 +145,9 @@ def market_exists(vega: VegaService, market_id: str):
     return market_id in market_ids
 
 
-def setup_continuous_market(vega: VegaService, market_id: str = None, buy_orders = default_buy_orders, sell_orders = default_sell_orders, **kwargs): #Add sell orders and buy orders to put on the book
+def setup_continuous_market(vega: VegaService, market_id: str = None, buy_orders = default_buy_orders, sell_orders = default_sell_orders, add_liquidity = True, **kwargs): #Add sell orders and buy orders to put on the book
     if not market_exists(vega, market_id) or buy_orders != default_buy_orders or sell_orders != default_sell_orders:
-        market_id = setup_opening_auction_market(vega, buy_orders, sell_orders, **kwargs)
+        market_id = setup_opening_auction_market(vega, market_id, buy_orders, sell_orders, add_liquidity, **kwargs)
 
     submit_order(vega, "Key 1", market_id, "SIDE_BUY", sell_orders[0][0], sell_orders[0][1])
 

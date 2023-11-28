@@ -1,5 +1,10 @@
+import asyncio
 from collections import namedtuple
+import re
+import time
 from playwright.sync_api import Page
+from playwright.sync_api import Locator
+
 from vega_sim.null_service import VegaServiceNull
 from typing import Optional
 
@@ -46,3 +51,22 @@ def change_keys(page: Page, vega:VegaServiceNull, key_name):
     page.get_by_test_id("key-" + vega.wallet.public_key(key_name)).click()
     page.click(f'data-testid=key-{vega.wallet.public_key(key_name)} >> .inline-flex')
     page.reload()
+
+def element_contains_text(locator: Locator, expected_pattern, timeout=5):
+    start_time = time.time()
+    element_found = False
+
+    while time.time() - start_time < timeout:
+        try:
+            element_text = locator.text_content()
+            if re.search(expected_pattern, element_text.strip()):
+                element_found = True
+                break
+
+            time.sleep(0.1) 
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            break
+    
+    return element_found
+

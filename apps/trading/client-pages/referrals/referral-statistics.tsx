@@ -278,14 +278,14 @@ export const Statistics = ({
   );
 
   const currentBenefitTierTile = (
-    <StatTile title={t('Current tier')}>
+    <StatTile title={t('Current tier')} testId="current-tier">
       {isApplyCodePreview
         ? currentBenefitTierValue?.tier || benefitTiers[0]?.tier || 'None'
         : currentBenefitTierValue?.tier || 'None'}
     </StatTile>
   );
   const discountFactorTile = (
-    <StatTile title={t('Discount')}>
+    <StatTile title={t('Discount')} testId="discount">
       {isApplyCodePreview
         ? benefitTiers[0].discountFactor * 100
         : discountFactorValue * 100}
@@ -297,6 +297,7 @@ export const Statistics = ({
       title={t('Combined volume (last {{count}} epochs)', {
         count: details?.windowLength,
       })}
+      testId="combined-volume"
     >
       {compactNumFormat.format(runningVolumeValue)}
     </StatTile>
@@ -305,14 +306,14 @@ export const Statistics = ({
     <StatTile title={t('Epochs in set')}>{epochsValue}</StatTile>
   );
   const nextTierVolumeTile = (
-    <StatTile title={t('Volume to next tier')}>
+    <StatTile title={t('Volume to next tier')} testId="vol-to-next-tier">
       {nextBenefitTierVolumeValue <= 0
         ? '0'
         : compactNumFormat.format(nextBenefitTierVolumeValue)}
     </StatTile>
   );
   const nextTierEpochsTile = (
-    <StatTile title={t('Epochs to next tier')}>
+    <StatTile title={t('Epochs to next tier')} testId="epochs-to-next-tier">
       {nextBenefitTierEpochsValue <= 0 ? '0' : nextBenefitTierEpochsValue}
     </StatTile>
   );
