@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
-import { ExternalLink, Loader, Splash } from '@vegaprotocol/ui-toolkit';
+import { Link, Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { getAsset, marketDataProvider, useMarket } from '@vegaprotocol/markets';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid } from './trade-grid';
@@ -117,12 +117,13 @@ export const MarketPage = () => {
               defaults="Please choose another market from the <0>market list</0>"
               ns={ns}
               components={[
-                <ExternalLink
+                <Link
+                  className="underline underline-offset-4 "
                   onClick={() => navigate(Links.MARKETS())}
                   key="link"
                 >
                   market list
-                </ExternalLink>,
+                </Link>,
               ]}
             />
           </p>

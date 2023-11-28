@@ -43,7 +43,7 @@ export const OpenMarkets = () => {
         if (!data) return;
 
         // prevent navigating to the market page if any of the below cells are clicked
-        // event.preventDefault or event.stopPropagation dont seem to apply for aggird
+        // event.preventDefault or event.stopPropagation do not seem to apply for ag-grid
         const colId = column.getColId();
 
         if (
