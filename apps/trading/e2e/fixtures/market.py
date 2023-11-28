@@ -121,7 +121,6 @@ def setup_opening_auction_market(vega: VegaService, market_id: str = None, buy_o
         market_id = setup_simple_market(vega, **kwargs)
 
     if add_liquidity:
-        print("MAKING LIQUIDDD WOOO")
         submit_liquidity(vega, MM_WALLET.name, market_id)
 
     submit_multiple_orders(
