@@ -1,18 +1,18 @@
-import { useRef, useState } from 'react';
-import { format, subDays } from 'date-fns';
+import { useRef, useCallback } from 'react';
+import { subDays } from 'date-fns';
+import { Controller, useForm } from 'react-hook-form';
 import {
+  InputError,
   Intent,
-  Loader,
   TradingButton,
   TradingFormGroup,
   TradingInput,
   TradingSelect,
 } from '@vegaprotocol/ui-toolkit';
-import { z } from 'zod';
 import {
   formatForInput,
+  getDateTimeFormat,
   toNanoSeconds,
-  VEGA_ID_REGEX,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { localLoggerFactory } from '@vegaprotocol/logger';
@@ -35,18 +35,18 @@ const getProtoHost = (vegaurl: string) => {
   return `${loc.protocol}//${loc.host}`;
 };
 
-const downloadSchema = z.object({
-  protohost: z.string().url().nonempty(),
-  partyId: z.string().regex(VEGA_ID_REGEX).nonempty(),
-  assetId: z.string().regex(VEGA_ID_REGEX).nonempty(),
-  dateFrom: z.string().nonempty(),
-  dateTo: z.string().optional(),
-});
+type LedgerFormValues = {
+  assetId: string;
+  dateFrom: string;
+  dateTo?: string;
+};
 
-export const createDownloadUrl = (args: z.infer<typeof downloadSchema>) => {
-  // check args from form inputs
-  downloadSchema.parse(args);
-
+export const createDownloadUrl = (
+  args: LedgerFormValues & {
+    partyId: string;
+    protohost: string;
+  }
+) => {
   const params = new URLSearchParams();
   params.append('partyId', args.partyId);
   params.append('assetId', args.assetId);
@@ -71,114 +71,101 @@ interface Props {
 
 export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
   const now = useRef(new Date());
-  const [dateFrom, setDateFrom] = useState(() => {
-    return formatForInput(subDays(now.current, 7));
+  const { control, handleSubmit, watch } = useForm<LedgerFormValues>({
+    defaultValues: {
+      dateFrom: formatForInput(subDays(now.current, 7)),
+      dateTo: '',
+      assetId: Object.keys(assets)[0],
+    },
   });
-  const [dateTo, setDateTo] = useState('');
+  const dateTo = watch('dateTo');
   const maxFromDate = formatForInput(new Date(dateTo || now.current));
   const maxToDate = formatForInput(now.current);
-
-  const [assetId, setAssetId] = useState(Object.keys(assets)[0]);
   const protohost = getProtoHost(vegaUrl);
-  const disabled = Boolean(!assetId);
 
   const hasItem = useLedgerDownloadFile((store) => store.hasItem);
   const updateDownloadQueue = useLedgerDownloadFile(
     (store) => store.updateQueue
   );
 
-  const assetDropDown = (
-    <TradingSelect
-      id="select-ledger-asset"
-      value={assetId}
-      onChange={(e) => {
-        setAssetId(e.target.value);
-      }}
-      className="w-full"
-      data-testid="select-ledger-asset"
-    >
-      {Object.keys(assets).map((assetKey) => (
-        <option key={assetKey} value={assetKey}>
-          {assets[assetKey]}
-        </option>
-      ))}
-    </TradingSelect>
-  );
+  const startDownload = useCallback(
+    async (formValues: LedgerFormValues) => {
+      const link = createDownloadUrl({
+        protohost,
+        partyId,
+        ...formValues,
+      });
 
-  const link = createDownloadUrl({
-    protohost,
-    partyId,
-    assetId,
-    dateFrom,
-    dateTo,
-  });
+      const dateTimeFormatter = getDateTimeFormat();
+      const title = t('Downloading for %s from %s till %s', [
+        assets[formValues.assetId],
+        dateTimeFormatter.format(new Date(formValues.dateFrom)),
+        dateTimeFormatter.format(new Date(formValues.dateTo || Date.now())),
+      ]);
 
-  const startDownload = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const title = t('Downloading for %s from %s till %s', [
-      assets[assetId],
-      format(new Date(dateFrom), 'dd MMMM yyyy HH:mm'),
-      format(new Date(dateTo || Date.now()), 'dd MMMM yyyy HH:mm'),
-    ]);
-
-    const downloadStoreItem = {
-      title,
-      link,
-      isChanged: true,
-    };
-    if (hasItem(link)) {
-      updateDownloadQueue(downloadStoreItem);
-      return;
-    }
-    const ts = setTimeout(() => {
-      updateDownloadQueue({
-        ...downloadStoreItem,
-        intent: Intent.Warning,
-        isDelayed: true,
+      const downloadStoreItem = {
+        title,
+        link,
         isChanged: true,
-      });
-    }, 1000 * 30);
-
-    try {
-      updateDownloadQueue(downloadStoreItem);
-      const resp = await fetch(link);
-      if (!resp?.ok) {
-        if (resp?.status === 429) {
-          throw new Error('Too many requests. Try again later.');
-        }
-        throw new Error('Download of ledger entries failed');
+      };
+      if (hasItem(link)) {
+        updateDownloadQueue(downloadStoreItem);
+        return;
       }
-      const { headers } = resp;
-      const nameHeader = headers.get('content-disposition');
-      const filename = nameHeader?.split('=').pop() ?? DEFAULT_EXPORT_FILE_NAME;
-      updateDownloadQueue({
-        ...downloadStoreItem,
-        filename,
-      });
-      const blob = await resp.blob();
-      if (blob) {
+      const ts = setTimeout(() => {
         updateDownloadQueue({
           ...downloadStoreItem,
-          blob,
-          isDownloaded: true,
+          intent: Intent.Warning,
+          isDelayed: true,
           isChanged: true,
-          intent: Intent.Success,
         });
+      }, 1000 * 30);
+
+      try {
+        updateDownloadQueue(downloadStoreItem);
+        const resp = await fetch(link);
+        if (!resp?.ok) {
+          if (resp?.status === 429) {
+            throw new Error('Too many requests. Try again later.');
+          }
+          throw new Error('Download of ledger entries failed');
+        }
+        const { headers } = resp;
+        const nameHeader = headers.get('content-disposition');
+        const filename =
+          nameHeader?.split('=').pop() ?? DEFAULT_EXPORT_FILE_NAME;
+        updateDownloadQueue({
+          ...downloadStoreItem,
+          filename,
+        });
+        const blob = await resp.blob();
+        if (blob) {
+          updateDownloadQueue({
+            ...downloadStoreItem,
+            blob,
+            isDownloaded: true,
+            isChanged: true,
+            intent: Intent.Success,
+          });
+        }
+      } catch (err) {
+        localLoggerFactory({ application: 'ledger' }).error(
+          'Download file',
+          err
+        );
+        updateDownloadQueue({
+          ...downloadStoreItem,
+          intent: Intent.Danger,
+          isError: true,
+          isChanged: true,
+          errorMessage: (err as Error).message || undefined,
+        });
+      } finally {
+        clearTimeout(ts);
       }
-    } catch (err) {
-      localLoggerFactory({ application: 'ledger' }).error('Download file', err);
-      updateDownloadQueue({
-        ...downloadStoreItem,
-        intent: Intent.Danger,
-        isError: true,
-        isChanged: true,
-        errorMessage: (err as Error).message || undefined,
-      });
-    } finally {
-      clearTimeout(ts);
-    }
-  };
+    },
+    [assets, hasItem, partyId, protohost, updateDownloadQueue]
+  );
 
   if (!protohost || Object.keys(assets).length === 0) {
     return null;
@@ -187,49 +174,117 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
   const offset = new Date().getTimezoneOffset();
 
   return (
-    <form onSubmit={startDownload} className="p-4 w-[350px]">
+    <form
+      onSubmit={handleSubmit(startDownload)}
+      className="p-4 w-[350px]"
+      noValidate
+    >
       <h2 className="mb-4">{t('Export ledger entries')}</h2>
-      <TradingFormGroup label={t('Select asset')} labelFor="asset">
-        {assetDropDown}
-      </TradingFormGroup>
-      <TradingFormGroup label={t('Date from')} labelFor="date-from">
-        <TradingInput
-          type="datetime-local"
-          data-testid="date-from"
-          id="date-from"
-          value={dateFrom}
-          onChange={(e) => setDateFrom(e.target.value)}
-          max={maxFromDate}
-        />
-      </TradingFormGroup>
-      <TradingFormGroup label={t('Date to')} labelFor="date-to">
-        <TradingInput
-          type="datetime-local"
-          data-testid="date-to"
-          id="date-to"
-          value={dateTo}
-          onChange={(e) => setDateTo(e.target.value)}
-          max={maxToDate}
-        />
-      </TradingFormGroup>
+      <Controller
+        name="assetId"
+        control={control}
+        rules={{
+          required: t('You need to select an asset'),
+        }}
+        render={({ field, fieldState }) => (
+          <div className="mb-2">
+            <TradingFormGroup
+              label={t('Select asset')}
+              labelFor="asset"
+              compact
+            >
+              <TradingSelect
+                {...field}
+                id="select-ledger-asset"
+                className="w-full"
+                data-testid="select-ledger-asset"
+              >
+                {Object.keys(assets).map((assetKey) => (
+                  <option key={assetKey} value={assetKey}>
+                    {assets[assetKey]}
+                  </option>
+                ))}
+              </TradingSelect>
+            </TradingFormGroup>
+            {fieldState.error && (
+              <InputError>{fieldState.error.message}</InputError>
+            )}
+          </div>
+        )}
+      />
+      <Controller
+        name="dateFrom"
+        control={control}
+        rules={{
+          required: t('You need to provide a date from'),
+          max: {
+            value: maxFromDate,
+            message: dateTo
+              ? t('Date from cannot be greater than date to')
+              : t('Date from cannot be in the future'),
+          },
+          deps: ['dateTo'],
+        }}
+        render={({ field, fieldState }) => (
+          <div className="mb-2">
+            <TradingFormGroup
+              label={t('Date from')}
+              labelFor="date-from"
+              compact
+            >
+              <TradingInput
+                {...field}
+                type="datetime-local"
+                data-testid="date-from"
+                id="date-from"
+                max={maxFromDate}
+              />
+            </TradingFormGroup>
+            {fieldState.error && (
+              <InputError>{fieldState.error.message}</InputError>
+            )}
+          </div>
+        )}
+      />
+      <Controller
+        name="dateTo"
+        control={control}
+        rules={{
+          max: {
+            value: maxToDate,
+            message: t('Date to cannot be in the future'),
+          },
+        }}
+        render={({ field, fieldState }) => (
+          <div className="mb-2">
+            <TradingFormGroup label={t('Date to')} labelFor="date-to" compact>
+              <TradingInput
+                {...field}
+                type="datetime-local"
+                data-testid="date-to"
+                id="date-to"
+                max={maxToDate}
+              />
+            </TradingFormGroup>
+            {fieldState.error && (
+              <InputError>{fieldState.error.message}</InputError>
+            )}
+          </div>
+        )}
+      />
       <div className="relative text-sm" title={t('Download all to .csv file')}>
-        <TradingButton
-          fill
-          disabled={disabled}
-          type="submit"
-          data-testid="ledger-download-button"
-        >
+        <TradingButton fill type="submit" data-testid="ledger-download-button">
           {t('Download')}
         </TradingButton>
       </div>
-      {offset && (
+      {offset ? (
         <p className="text-xs text-neutral-400 mt-1">
           {t(
             'The downloaded file uses the UTC time zone for all listed times. Your time zone is UTC%s.',
             [toHoursAndMinutes(offset)]
           )}
         </p>
-      )}
+      ) : null}
     </form>
   );
 };

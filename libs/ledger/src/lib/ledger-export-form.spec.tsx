@@ -278,18 +278,4 @@ describe('createDownloadUrl', () => {
       )}&dateRange.endTimestamp=${toNanoSeconds(dateTo)}`
     );
   });
-
-  it('should throw if invalid args are provided', () => {
-    // invalid url
-    expect(() => {
-      // @ts-ignore override z.infer type
-      createDownloadUrl({ ...args, protohost: 'foo' });
-    }).toThrow();
-
-    // invalid partyId
-    expect(() => {
-      // @ts-ignore override z.infer type
-      createDownloadUrl({ ...args, partyId: 'z'.repeat(64) });
-    }).toThrow();
-  });
 });
