@@ -11,6 +11,7 @@ query ReferralSetStats($code: ID!, $epoch: Int) {
         rewardsMultiplier
         rewardsFactorMultiplier
         referrerTakerVolume
+        wasEligible
       }
     }
   }

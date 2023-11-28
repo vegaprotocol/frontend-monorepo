@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import classNames from 'classnames';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import type { ButtonHTMLAttributes, MouseEventHandler } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { RainbowButton } from './buttons';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useReferral } from './hooks/use-referral';
@@ -30,6 +30,19 @@ const validateCode = (value: string, t: ReturnType<typeof useT>) => {
     return t('Code must be be valid hex');
   }
   return true;
+};
+
+export const ApplyCodeFormContainer = () => {
+  const { pubKey } = useVegaWallet();
+  const { data: referee } = useReferral({ pubKey, role: 'referee' });
+  const { data: referrer } = useReferral({ pubKey, role: 'referrer' });
+
+  // go to main page if the current pubkey is already a referrer or referee
+  if (referee || referrer) {
+    return <Navigate to={Routes.REFERRALS} />;
+  }
+
+  return <ApplyCodeForm />;
 };
 
 export const ApplyCodeForm = () => {
@@ -55,13 +68,28 @@ export const ApplyCodeForm = () => {
   } = useForm();
   const [params] = useSearchParams();
 
-  const { data: referee } = useReferral({ pubKey, role: 'referee' });
-  const { data: referrer } = useReferral({ pubKey, role: 'referrer' });
-
   const codeField = watch('code');
   const { data: previewData, loading: previewLoading } = useReferral({
     code: validateCode(codeField, t) ? codeField : undefined,
   });
+
+  /**
+   * Validates the set a user tries to apply to.
+   */
+  const validateSet = useCallback(() => {
+    if (
+      codeField &&
+      !previewLoading &&
+      previewData &&
+      !previewData.isEligible
+    ) {
+      return t('The code is no longer valid.');
+    }
+    if (codeField && !previewLoading && !previewData) {
+      return t('The code is invalid');
+    }
+    return true;
+  }, [codeField, previewData, previewLoading, t]);
 
   useEffect(() => {
     const code = params.get('code');
@@ -144,11 +172,6 @@ export const ApplyCodeForm = () => {
     }
   }, [navigate, status]);
 
-  // go to main page if the current pubkey is already a referrer or referee
-  if (referee || referrer) {
-    return <Navigate to={Routes.REFERRALS} />;
-  }
-
   // show "code applied" message when successfully applied
   if (status === 'successful') {
     return (
@@ -205,7 +228,10 @@ export const ApplyCodeForm = () => {
 
   return (
     <>
-      <div className="bg-vega-clight-800 dark:bg-vega-cdark-800 mx-auto w-2/3 max-w-md rounded-lg p-8">
+      <div
+        data-testid="referral-apply-code-form"
+        className="bg-vega-clight-800 dark:bg-vega-cdark-800 mx-auto w-2/3 max-w-md rounded-lg p-8"
+      >
         <h3 className="calt mb-4 text-center text-2xl">
           {t('Apply a referral code')}
         </h3>
@@ -224,7 +250,11 @@ export const ApplyCodeForm = () => {
               hasError={Boolean(errors.code)}
               {...register('code', {
                 required: t('You have to provide a code to apply it.'),
-                validate: (value) => validateCode(value, t),
+                validate: (value) => {
+                  const err = validateCode(value, t);
+                  if (err !== true) return err;
+                  return validateSet();
+                },
               })}
               placeholder="Enter a code"
               className="bg-vega-clight-900 dark:bg-vega-cdark-700 mb-2"
@@ -238,18 +268,18 @@ export const ApplyCodeForm = () => {
           </InputError>
         )}
       </div>
-      {previewLoading && !previewData ? (
+      {validateCode(codeField, t) === true && previewLoading && !previewData ? (
         <div className="mt-10">
           <Loader />
         </div>
       ) : null}
-      {previewData ? (
+      {/* TODO: Re-check plural forms once i18n is updated */}
+      {previewData && previewData.isEligible ? (
         <div className="mt-10">
-          <h2 className="mb-5 text-2xl">
-            {t(
-              'You are joining the group shown, but will not have access to benefits until you have completed at least {{count}} epochs.',
-              { count: nextBenefitTierEpochsValue }
-            )}
+          <h2 className="text-2xl mb-5">
+            {t('referralApplyPreviewMessage', {
+              count: nextBenefitTierEpochsValue,
+            })}
           </h2>
           <Statistics data={previewData} program={program} as="referee" />
         </div>

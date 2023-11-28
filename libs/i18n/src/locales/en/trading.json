@@ -203,6 +203,8 @@
   "Ready to trade": "Ready to trade",
   "Ready to trade with real funds? <0>Switch to Mainnet</0>": "Ready to trade with real funds? <0>Switch to Mainnet</0>",
   "Redeem rewards": "Redeem rewards",
+  "referralApplyPreviewMessage": "You are joining the group shown, but will not have access to benefits until you have completed at least {{count}} epoch.",
+  "referralApplyPreviewMessage_plural": "You are joining the group shown, but will not have access to benefits until you have completed at least {{count}} epochs.",
   "Referral benefits": "Referral benefits",
   "Referral discount": "Referral discount",
   "referral-statistics-commission": "Commission earned in <0>qUSD</0> (last {{count}} epochs)",
