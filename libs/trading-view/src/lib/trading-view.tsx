@@ -28,7 +28,13 @@ export const TradingViewContainer = ({
     libraryHash
   );
 
-  if (scriptState === 'pending') return null;
+  if (scriptState === 'loading') {
+    return (
+      <Splash>
+        <p>{t('Loading Trading View')}</p>
+      </Splash>
+    );
+  }
 
   if (scriptState === 'error') {
     return (
@@ -64,9 +70,6 @@ export const TradingView = ({
       // eslint-disable-next-line
       const widgetOptions: ChartingLibraryWidgetOptions = {
         symbol: marketId,
-        // BEWARE: no trailing slash is expected in feed URL
-        // eslint-disable-next-line
-
         datafeed,
         // @ts-ignore cant import types as charting_library is external
         interval: '1' as ResolutionString,
@@ -75,6 +78,8 @@ export const TradingView = ({
         custom_css_url: 'vega_styles.css',
         // @ts-ignore cant import types as charting_library is external
         locale: language as LanguageCode,
+        // TODO: figure out why the 1T (tick) interval button is disabled
+        // enabled_features: ['tick_resolution'],
         disabled_features: [
           'header_symbol_search',
           'header_compare',
@@ -106,6 +111,7 @@ export const TradingView = ({
     [datafeed, marketId, language, libraryPath]
   );
 
+  // Update the trading view theme every time the app theme updates
   useEffect(() => {
     if (!widgetRef.current || !widgetRef.current._ready) return;
     widgetRef.current.changeTheme(theme);

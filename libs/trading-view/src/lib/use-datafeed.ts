@@ -60,6 +60,7 @@ export const useDatafeed = () => {
       onReady: (callback) => {
         setTimeout(() => callback(configurationData));
       },
+
       searchSymbols: () => {
         /* no op, we handle finding markets in app */
       },
@@ -129,6 +130,7 @@ export const useDatafeed = () => {
           onResolveErrorCallback('Cannot resolve symbol');
         }
       },
+
       getBars: async (
         // @ts-ignore cant improt types as chartin_library is external
         symbolInfo,

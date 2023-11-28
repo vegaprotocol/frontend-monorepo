@@ -5,9 +5,9 @@ describe('useScript', () => {
   it('appends a script to the body', async () => {
     const url = 'http://localhost:8080/foo.js';
 
-    const { result } = renderHook(() => useScript(url));
+    const { result } = renderHook(() => useScript(url, 'integrity-hash'));
 
-    expect(result.current).toBe('pending');
+    expect(result.current).toBe('loading');
 
     await waitFor(() => {
       const script = document.body.getElementsByTagName('script')[0];
