@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useScript, useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 /**
  * TODO: figure out how to import types
 import {
@@ -10,42 +9,8 @@ import {
   widget,
 } from '../charting_library';
 */
-import { useLanguage, useT } from './use-t';
+import { useLanguage } from './use-t';
 import { useDatafeed } from './use-datafeed';
-
-export const TradingViewContainer = ({
-  marketId,
-  libraryPath,
-  libraryHash,
-}: {
-  marketId: string;
-  libraryPath: string;
-  libraryHash: string;
-}) => {
-  const t = useT();
-  const scriptState = useScript(
-    libraryPath + 'charting_library.standalone.js',
-    libraryHash
-  );
-
-  if (scriptState === 'loading') {
-    return (
-      <Splash>
-        <p>{t('Loading Trading View')}</p>
-      </Splash>
-    );
-  }
-
-  if (scriptState === 'error') {
-    return (
-      <Splash>
-        <p>{t('Failed to initialize Trading view')}</p>
-      </Splash>
-    );
-  }
-
-  return <TradingView marketId={marketId} libraryPath={libraryPath} />;
-};
 
 export const TradingView = ({
   marketId,

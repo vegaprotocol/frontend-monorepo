@@ -5,3 +5,5 @@ export const ALLOWED_TRADINGVIEW_HOSTNAMES = [
   'vegaprotocol.eth',
   'vegaprotocol.eth.limo',
 ];
+
+export const CHARTING_LIBRARY_FILE = 'charting_library.standalone.js';
