@@ -1,6 +1,9 @@
 {
   "Date from": "Date from",
+  "Date from cannot be greater than date to": "Date from cannot be greater than date to",
+  "Date from cannot be in the future": "Date from cannot be in the future",
   "Date to": "Date to",
+  "Date to cannot be in the future": "Date to cannot be in the future",
   "Download": "Download",
   "Download all to .csv file": "Download all to .csv file",
   "Download has been started": "Download has been started",
@@ -13,6 +16,8 @@
   "Still in progress": "Still in progress",
   "The downloaded file uses the UTC time zone for all listed times. Your time zone is UTC{{offset}}.": "The downloaded file uses the UTC time zone for all listed times. Your time zone is UTC{{offset}}.",
   "Try again later": "Try again later",
+  "You need to provide a date from": "You need to provide a date from",
+  "You need to select an asset": "You need to select an asset",
   "You will be notified here when your file is ready.": "You will be notified here when your file is ready.",
   "Your file is ready": "Your file is ready"
 }

@@ -16,15 +16,12 @@ export const LedgerContainer = () => {
   });
 
   const assets = (data?.party?.accountsConnection?.edges ?? [])
-    .map<PartyAssetFieldsFragment>(
-      (item) => item?.node?.asset ?? ({} as PartyAssetFieldsFragment)
-    )
-    .reduce((aggr, item) => {
-      if ('id' in item && 'symbol' in item) {
-        aggr[item.id as string] = item.symbol as string;
-      }
-      return aggr;
-    }, {} as Record<string, string>);
+    .map((item) => item?.node?.asset)
+    .filter((asset): asset is PartyAssetFieldsFragment => !!asset?.id)
+    .reduce(
+      (aggr, item) => Object.assign(aggr, { [item.id]: item.symbol }),
+      {} as Record<string, string>
+    );
 
   if (!pubKey) {
     return (
