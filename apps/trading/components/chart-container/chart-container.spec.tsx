@@ -22,7 +22,10 @@ describe('ChartContainer', () => {
       chartlib: 'tradingview',
     });
 
-    useEnvironment.setState({ CHARTING_LIBRARY_PATH: undefined });
+    useEnvironment.setState({
+      CHARTING_LIBRARY_PATH: undefined,
+      CHARTING_LIBRARY_HASH: undefined,
+    });
 
     const marketId = 'market-id';
 
@@ -36,7 +39,10 @@ describe('ChartContainer', () => {
       chartlib: 'tradingview',
     });
 
-    useEnvironment.setState({ CHARTING_LIBRARY_PATH: 'dummy-path' });
+    useEnvironment.setState({
+      CHARTING_LIBRARY_PATH: 'dummy-path',
+      CHARTING_LIBRARY_HASH: 'hash',
+    });
 
     const marketId = 'market-id';
 
