@@ -52,6 +52,7 @@ cypress.env.json
 /apps/**/cypress/reports/
 /apps/**/cypress/downloads/
 /apps/**/fixtures/wallet/node**
+<<<<<<< HEAD
 
 # apps/trading/e2e
 __pycache__/
@@ -59,5 +60,4 @@ apps/trading/e2e/logs/
 apps/trading/e2e/.pytest_cache/
 apps/trading/e2e/traces/
 
-.nx/cache
-
+.nx/
