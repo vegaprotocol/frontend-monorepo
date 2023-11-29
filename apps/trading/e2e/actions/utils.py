@@ -1,8 +1,5 @@
 from collections import namedtuple
-import re
-import time
 from playwright.sync_api import Page
-from playwright.sync_api import Locator
 from vega_sim.service import VegaService
 
 from vega_sim.null_service import VegaServiceNull
@@ -59,21 +56,11 @@ def forward_time(vega: VegaService, forward_epoch: bool = False):
     if forward_epoch:
         next_epoch(vega)
 
-def element_contains_text(locator: Locator, expected_pattern, timeout=5):
-    start_time = time.time()
-    element_found = False
-
-    while time.time() - start_time < timeout:
-        try:
-            element_text = locator.text_content()
-            if re.search(expected_pattern, element_text.strip()):
-                element_found = True
-                break
-
-            time.sleep(0.1) 
-        except Exception as e:
-            print(f"Error occurred: {e}")
-            break
-    
-    return element_found
+def selector_contains_text(page: Page, selector, expected_text, timeout=5000):
+    try:
+        page.wait_for_selector(
+            f'{selector} >> text={expected_text}', timeout=timeout)
+        return True
+    except:
+        return False
 

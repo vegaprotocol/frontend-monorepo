@@ -196,6 +196,7 @@ export const Statistics = ({
           ).toString(),
         }
       )}
+      testId="base-commission-rate"
     >
       {baseCommissionValue * 100}%
     </StatTile>
@@ -206,6 +207,7 @@ export const Statistics = ({
       description={t('{{amount}} $VEGA staked', {
         amount: addDecimalsFormatNumber(stakeAvailable?.toString() || 0, 18),
       })}
+      testId="staking-multiplier"
     >
       {multiplier || t('None')}
     </StatTile>
@@ -220,13 +222,16 @@ export const Statistics = ({
             }%)`
           : undefined
       }
+      testId="final-commission-rate"
     >
       {finalCommissionValue * 100}%
     </StatTile>
   );
   const numberOfTradersValue = data.referees.length;
   const numberOfTradersTile = (
-    <StatTile title={t('Number of traders')}>{numberOfTradersValue}</StatTile>
+    <StatTile title={t('Number of traders')} testId="number-of-traders">
+      {numberOfTradersValue}
+    </StatTile>
   );
 
   const codeTile = (
@@ -241,6 +246,7 @@ export const Statistics = ({
       title={t('My volume (last {{count}} epochs)', {
         count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
       })}
+      testId="my-volume"
     >
       {compactNumFormat.format(referrerVolumeValue)}
     </StatTile>
@@ -255,6 +261,7 @@ export const Statistics = ({
         count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
       })}
       description={<QUSDTooltip />}
+      testId="total-commission"
     >
       {getNumberFormat(0).format(Number(totalCommissionValue))}
     </StatTile>
@@ -303,7 +310,9 @@ export const Statistics = ({
     </StatTile>
   );
   const epochsTile = (
-    <StatTile title={t('Epochs in set')}>{epochsValue}</StatTile>
+    <StatTile title={t('Epochs in set')} testId="epochs-in-set">
+      {epochsValue}
+    </StatTile>
   );
   const nextTierVolumeTile = (
     <StatTile title={t('Volume to next tier')} testId="vol-to-next-tier">
