@@ -3,11 +3,21 @@ import BigNumber from 'bignumber.js';
 import { useTranslation } from 'react-i18next';
 import { useVoteInformation } from '../../hooks';
 import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
-import { formatNumber, toBigNum } from '@vegaprotocol/utils';
+import { formatNumber } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import { CompactNumber } from '@vegaprotocol/react-helpers';
+
+export const CompactVotes = ({ number }: { number: BigNumber }) => (
+  <CompactNumber
+    number={number}
+    decimals={number.isGreaterThan(1000) ? 1 : 0}
+    compactAbove={1000}
+    compactDisplay="short"
+  />
+);
 
 interface VoteBreakdownProps {
   proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
@@ -198,10 +208,7 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
                     )}
                   >
                     <button>
-                      {yesEquityLikeShareWeight
-                        .dividedBy(toBigNum(10 ** 6, 0))
-                        .toFixed(1)}
-                      M
+                      <CompactVotes number={yesEquityLikeShareWeight} />
                     </button>
                   </Tooltip>
                   <span>
@@ -226,10 +233,7 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
                     )}
                   >
                     <button>
-                      {noEquityLikeShareWeight
-                        .dividedBy(toBigNum(10 ** 6, 0))
-                        .toFixed(1)}
-                      M
+                      <CompactVotes number={noEquityLikeShareWeight} />
                     </button>
                   </Tooltip>
                   <span>
@@ -279,10 +283,7 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
                     )}
                   >
                     <button>
-                      {totalEquityLikeShareWeight
-                        .dividedBy(toBigNum(10 ** 6, 0))
-                        .toFixed(1)}
-                      M
+                      <CompactVotes number={totalEquityLikeShareWeight} />
                     </button>
                   </Tooltip>
                   <span>
@@ -321,7 +322,7 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
               <span>{t('tokenVotesFor')}:</span>
               <Tooltip description={formatNumber(yesTokens, defaultDP)}>
                 <button data-testid="num-votes-for">
-                  {yesTokens.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
+                  <CompactVotes number={yesTokens} />
                 </button>
               </Tooltip>
               <span>
@@ -341,7 +342,7 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
               <span>{t('tokenVotesAgainst')}:</span>
               <Tooltip description={formatNumber(noTokens, defaultDP)}>
                 <button data-testid="num-votes-against">
-                  {noTokens.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
+                  <CompactVotes number={noTokens} />
                 </button>
               </Tooltip>
               <span>
@@ -384,7 +385,7 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
               <span>{t('totalTokensVoted')}:</span>
               <Tooltip description={formatNumber(totalTokensVoted, defaultDP)}>
                 <button data-testid="total-voted">
-                  {totalTokensVoted.dividedBy(toBigNum(10 ** 6, 0)).toFixed(1)}M
+                  <CompactVotes number={totalTokensVoted} />
                 </button>
               </Tooltip>
               <span data-testid="total-voted-percentage">
