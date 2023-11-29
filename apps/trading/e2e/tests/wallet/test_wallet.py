@@ -13,7 +13,7 @@ order_side_sell = "order-side-SIDE_SELL"
 market_order = "order-type-Market"
 tif = "order-tif"
 expire = "expire"
-
+api_request_match = r"http://localhost:\d+/api/v2/requests"
 
 @pytest.fixture(scope="module")
 def vega(request):
@@ -26,7 +26,7 @@ def continuous_market(vega):
     return setup_continuous_market(vega)
 
 def handle_route_connection_lost(route: Route, request):
-        if request.method == "POST" and re.match(r"http://localhost:\d+/api/v2/requests", request.url):
+        if request.method == "POST" and re.match(api_request_match, request.url):
             route.fulfill(
                 status=200,
                 headers={"Content-Type": "application/json"},
@@ -36,7 +36,7 @@ def handle_route_connection_lost(route: Route, request):
             route.continue_()
 
 def handle_route_connection_rejected(route: Route, request):
-        if request.method == "POST" and re.match(r"http://localhost:\d+/api/v2/requests", request.url):
+        if request.method == "POST" and re.match(api_request_match, request.url):
             custom_response = {
                 "jsonrpc": "2.0",
                 "error": {
@@ -55,7 +55,7 @@ def handle_route_connection_rejected(route: Route, request):
             route.continue_()
 
 def assert_connection_approve(route: Route, request, page:Page):
-        if request.method == "POST" and re.match(r"http://localhost:\d+/api/v2/requests", request.url):
+        if request.method == "POST" and re.match(api_request_match, request.url):
             expect(page.get_by_test_id("toast-content")).to_have_text("Please go to your Vega wallet application and approve or reject the transaction.")
         else:
             route.continue_()
