@@ -32,15 +32,19 @@ export const mapFormValuesToOrderSubmission = (
       ? toNanoSeconds(order.expiresAt)
       : undefined,
   postOnly:
-    order.type === Schema.OrderType.TYPE_MARKET ? false : order.postOnly,
-  reduceOnly:
-    order.type === Schema.OrderType.TYPE_LIMIT &&
-    ![
+    order.type === Schema.OrderType.TYPE_MARKET ||
+    [
       Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
       Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
     ].includes(order.timeInForce)
       ? false
-      : order.reduceOnly,
+      : order.postOnly,
+  reduceOnly: ![
+    Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+    Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+  ].includes(order.timeInForce)
+    ? false
+    : order.reduceOnly,
   icebergOpts:
     order.type === Schema.OrderType.TYPE_LIMIT &&
     isPersistentOrder(order.timeInForce) &&
