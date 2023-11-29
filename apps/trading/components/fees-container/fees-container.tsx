@@ -464,7 +464,7 @@ const VolumeTiers = ({
 
             return (
               <Tr key={i}>
-                <Td>{tiers.length - i}</Td>
+                <Td>{i + 1}</Td>
                 <Td>{formatPercentage(Number(tier.volumeDiscountFactor))}%</Td>
                 <Td>{formatNumber(tier.minimumRunningNotionalTakerVolume)}</Td>
                 <Td>{isUserTier ? formatNumber(lastEpochVolume) : ''}</Td>
@@ -531,7 +531,7 @@ const ReferralTiers = ({
 
             return (
               <Tr key={i}>
-                <Td>{tiers.length - i}</Td>
+                <Td>{i + 1}</Td>
                 <Td>{formatPercentage(Number(t.referralDiscountFactor))}%</Td>
                 <Td>{formatNumber(t.minimumRunningNotionalTakerVolume)}</Td>
                 <Td>{t.minimumEpochs}</Td>

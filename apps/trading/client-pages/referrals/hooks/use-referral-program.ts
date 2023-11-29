@@ -75,9 +75,9 @@ export const useReferralProgram = () => {
 
   const benefitTiers = sortBy(data.currentReferralProgram.benefitTiers, (t) =>
     Number(t.referralRewardFactor)
-  ).map((t, i, all) => {
+  ).map((t, i) => {
     return {
-      tier: all.length - i,
+      tier: i + 1, // sorted in asc order, hence first is the lowest tier
       rewardFactor: Number(t.referralRewardFactor),
       commission: Number(t.referralRewardFactor) * 100 + '%',
       discountFactor: Number(t.referralDiscountFactor),
