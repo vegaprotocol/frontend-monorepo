@@ -106,9 +106,6 @@ export const LiquidityTable = ({
 
     const feesAccruedTooltip = ({ value, data }: ITooltipParams) => {
       if (!value) return '-';
-      const newValue = new BigNumber(value)
-        .times(Number(stakeToCcyVolume) || 1)
-        .toString();
       let lessThanFull = false,
         lessThanMinimum = false;
       if (data.sla) {
@@ -153,7 +150,7 @@ export const LiquidityTable = ({
           ]
         );
       }
-      return addDecimalsFormatNumber(newValue, assetDecimalPlaces ?? 0);
+      return addDecimalsFormatNumber(value, assetDecimalPlaces ?? 0);
     };
 
     const stakeToCcyVolumeQuantumFormatter = ({
