@@ -218,13 +218,13 @@ const TiersTable = ({
         ...d,
         className: classNames({
           'from-vega-pink-400 dark:from-vega-pink-600 to-20%  bg-highlight':
-            d.tier === 1,
+            d.tier >= 3,
           'from-vega-purple-400 dark:from-vega-purple-600 to-20%  bg-highlight':
             d.tier === 2,
           'from-vega-blue-400 dark:from-vega-blue-600 to-20%  bg-highlight':
-            d.tier === 3,
+            d.tier === 1,
           'from-vega-orange-400 dark:from-vega-orange-600 to-20%  bg-highlight':
-            d.tier > 3,
+            d.tier == 0,
         }),
       }))}
     />

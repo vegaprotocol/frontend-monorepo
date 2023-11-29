@@ -36,6 +36,9 @@ export const AgGridThemed = ({
     <div className={wrapperClasses}>
       <AgGridReact
         defaultColDef={defaultColDef}
+        overlayLoadingTemplate={t('Loading...')}
+        overlayNoRowsTemplate={t('No data')}
+        suppressDragLeaveHidesColumns
         ref={gridRef}
         overlayLoadingTemplate={t('Loading...')}
         overlayNoRowsTemplate={t('No data')}
