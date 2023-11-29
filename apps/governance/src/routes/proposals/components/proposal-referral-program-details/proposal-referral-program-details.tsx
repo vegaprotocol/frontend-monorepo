@@ -114,7 +114,7 @@ export const ProposalReferralProgramDetails = ({
                 .map((benefitTier, index) => (
                   <div className="mb-4" key={index}>
                     <h4 className="font-semibold uppercase">
-                      Tier {index + 1}
+                      Tier {benefitTiers.length - index}
                     </h4>
                     {benefitTier.minimumEpochs && (
                       <KeyValueTableRow>

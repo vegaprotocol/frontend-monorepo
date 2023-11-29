@@ -36,7 +36,7 @@ export const FeesContainer = () => {
   const { data: markets, loading: marketsLoading } = useMarketList();
 
   const { data: programData, loading: programLoading } =
-    useDiscountProgramsQuery();
+    useDiscountProgramsQuery({ errorPolicy: 'ignore' });
 
   const volumeDiscountWindowLength =
     programData?.currentVolumeDiscountProgram?.windowLength || 1;
@@ -466,7 +466,7 @@ const VolumeTiers = ({
 
               return (
                 <Tr key={i}>
-                  <Td>{i + 1}</Td>
+                  <Td>{tiers.length - i}</Td>
                   <Td>
                     {formatPercentage(Number(tier.volumeDiscountFactor))}%
                   </Td>
@@ -541,7 +541,7 @@ const ReferralTiers = ({
 
               return (
                 <Tr key={i}>
-                  <Td>{i + 1}</Td>
+                  <Td>{tiers.length - i}</Td>
                   <Td>{formatPercentage(Number(t.referralDiscountFactor))}%</Td>
                   <Td>{formatNumber(t.minimumRunningNotionalTakerVolume)}</Td>
                   <Td>{t.minimumEpochs}</Td>

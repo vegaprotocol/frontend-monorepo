@@ -77,9 +77,9 @@ export const useReferralProgram = () => {
     Number(t.referralRewardFactor)
   )
     .reverse()
-    .map((t, i) => {
+    .map((t, i, all) => {
       return {
-        tier: i + 1,
+        tier: all.length - i,
         rewardFactor: Number(t.referralRewardFactor),
         commission: Number(t.referralRewardFactor) * 100 + '%',
         discountFactor: Number(t.referralDiscountFactor),

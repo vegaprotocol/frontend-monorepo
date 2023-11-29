@@ -31,6 +31,7 @@ import BigNumber from 'bignumber.js';
 import { t } from '@vegaprotocol/i18n';
 import maxBy from 'lodash/maxBy';
 import { DocsLinks } from '@vegaprotocol/environment';
+import minBy from 'lodash/minBy';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
@@ -124,7 +125,7 @@ export const Statistics = ({
   );
   const nextBenefitTierValue = currentBenefitTierValue
     ? benefitTiers.find((t) => t.tier === currentBenefitTierValue.tier - 1)
-    : maxBy(benefitTiers, (bt) => bt.tier); // max tier number is lowest tier
+    : minBy(benefitTiers, (bt) => bt.tier); //  min tier number is lowest tier
   const epochsValue =
     !isNaN(currentEpoch) && refereeInfo?.atEpoch
       ? currentEpoch - refereeInfo?.atEpoch
