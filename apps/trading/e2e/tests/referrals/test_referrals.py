@@ -1,23 +1,20 @@
 import re
 import pytest
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page
 from vega_sim.service import VegaService
 from conftest import init_vega
 from fixtures.market import setup_continuous_market, setup_simple_market
-from actions.utils import WalletConfig, change_keys, create_and_faucet_wallet, element_contains_text, forward_time, next_epoch
+from actions.utils import change_keys, create_and_faucet_wallet, element_contains_text, forward_time
 from actions.vega import submit_order, submit_liquidity
-from wallet_config import MM_WALLET, MM_WALLET2, TERMINATE_WALLET
+from wallet_config import MM_WALLET, PARTY_A, PARTY_B
 
-PARTY_A = WalletConfig("party_a", "party_a")
-PARTY_B = WalletConfig("party_b", "party_b")
+sell_orders = [[1, 111], [1, 111], [1, 112], [1, 112], [1, 113], [1, 113], [1, 114], [1, 114], [1, 115], [1, 115]]
+buy_orders = [[1, 106], [1, 107], [1, 108]]
 
 @pytest.fixture(scope="module")
 def vega(request):
     with init_vega(request) as vega:
         yield vega
-
-sell_orders = [[1, 111], [1, 111], [1, 112], [1, 112], [1, 113], [1, 113], [1, 114], [1, 114], [1, 115], [1, 115]]
-buy_orders = [[1, 106], [1, 107], [1, 108]]
 
 @pytest.fixture(scope="module")
 def continuous_market(vega):
