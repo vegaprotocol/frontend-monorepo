@@ -2,8 +2,6 @@ import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import { proposalListQuery, marketUpdateProposal } from '@vegaprotocol/mock';
 import * as Schema from '@vegaprotocol/types';
 
-const marketSummaryBlock = 'header-summary';
-
 describe('Market proposal notification', { tags: '@smoke' }, () => {
   before(() => {
     cy.setVegaWallet();
@@ -25,12 +23,13 @@ describe('Market proposal notification', { tags: '@smoke' }, () => {
     });
     cy.mockSubscription();
     cy.visit('/#/markets/market-0');
+    cy.getByTestId('Info').click();
     cy.wait('@MarketData');
-    cy.getByTestId(marketSummaryBlock).should('be.visible');
+    cy.getByTestId('sidebar-content').should('be.visible');
   });
 
   it('should display market proposal notification if proposal found', () => {
-    cy.getByTestId(marketSummaryBlock).within(() => {
+    cy.getByTestId('sidebar-content').within(() => {
       cy.getByTestId('market-proposal-notification').should(
         'contain.text',
         'Changes have been proposed for this market'

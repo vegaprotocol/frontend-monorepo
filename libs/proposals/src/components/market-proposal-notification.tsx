@@ -29,7 +29,7 @@ export const MarketProposalNotification = ({
       </div>
     );
     return (
-      <div className="border-l border-default pl-1 pr-1 pb-1 min-w-min whitespace-nowrap">
+      <div className="border-default min-w-min border-l pb-1 pl-1 pr-1">
         <Notification
           intent={Intent.Warning}
           message={message}

@@ -1,7 +1,6 @@
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { DocsLinks, useEnvironment } from '@vegaprotocol/environment';
 import { ButtonLink, ExternalLink, Link } from '@vegaprotocol/ui-toolkit';
-import { MarketProposalNotification } from '@vegaprotocol/proposals';
 import type { Market } from '@vegaprotocol/markets';
 import {
   addDecimalsFormatNumber,
@@ -144,7 +143,6 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
           />
         </HeaderStat>
       )}
-      <MarketProposalNotification marketId={market.id} />
     </>
   );
 };
