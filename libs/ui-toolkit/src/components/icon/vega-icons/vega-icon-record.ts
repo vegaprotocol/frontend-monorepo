@@ -31,6 +31,7 @@ import { IconPlus } from './svg-icons/icon-plus';
 import { IconQuestionMark } from './svg-icons/icon-question-mark';
 import { IconSearch } from './svg-icons/icon-search';
 import { IconStar } from './svg-icons/icon-star';
+import { IconSun } from './svg-icons/icon-sun';
 import { IconTick } from './svg-icons/icon-tick';
 import { IconTicket } from './svg-icons/icon-ticket';
 import { IconTransfer } from './svg-icons/icon-transfer';
@@ -75,6 +76,7 @@ export enum VegaIconNames {
   QUESTION_MARK = 'question-mark',
   SEARCH = 'search',
   STAR = 'star',
+  SUN = 'sun',
   TICK = 'tick',
   TICKET = 'ticket',
   TRANSFER = 'transfer',
@@ -125,6 +127,7 @@ export const VegaIconNameMap: Record<
   plus: IconPlus,
   search: IconSearch,
   star: IconStar,
+  sun: IconSun,
   tick: IconTick,
   ticket: IconTicket,
   transfer: IconTransfer,

@@ -86,13 +86,15 @@ export const Navbar = ({
       {/* Right section */}
       <div className="ml-auto flex items-center justify-end gap-2">
         <ProtocolUpgradeCountdown />
-        <ThemeSwitcher />
-        {supportedLngs.length > 1 ? (
-          <LanguageSelector
-            languages={supportedLngs}
-            onSelect={(language) => i18n.changeLanguage(language)}
-          />
-        ) : null}
+        <div className="flex">
+          <ThemeSwitcher />
+          {supportedLngs.length > 1 ? (
+            <LanguageSelector
+              languages={supportedLngs}
+              onSelect={(language) => i18n.changeLanguage(language)}
+            />
+          ) : null}
+        </div>
         <NavbarMobileButton
           onClick={() => {
             if (isConnected) {
