@@ -71,7 +71,7 @@ def test_referral_scenario(continuous_market, vega: VegaService, page: Page):
         staking_tiers=[
             {"minimum_staked_tokens": 100, "referral_reward_multiplier": 1},
             {"minimum_staked_tokens": 1000, "referral_reward_multiplier": 2},
-            {"minimum_staked_tokens": 10000, "referral_reward_multiplier": 2},
+            {"minimum_staked_tokens": 10000, "referral_reward_multiplier": 3},
         ],
         window_length=1,
     )
