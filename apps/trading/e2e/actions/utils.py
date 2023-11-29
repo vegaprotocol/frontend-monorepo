@@ -1,9 +1,9 @@
-import asyncio
 from collections import namedtuple
 import re
 import time
 from playwright.sync_api import Page
 from playwright.sync_api import Locator
+from vega_sim.service import VegaService
 
 from vega_sim.null_service import VegaServiceNull
 from typing import Optional
@@ -51,6 +51,13 @@ def change_keys(page: Page, vega:VegaServiceNull, key_name):
     page.get_by_test_id("key-" + vega.wallet.public_key(key_name)).click()
     page.click(f'data-testid=key-{vega.wallet.public_key(key_name)} >> .inline-flex')
     page.reload()
+
+def forward_time(vega: VegaService, forward_epoch: bool = False):
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+
+    if forward_epoch:
+        next_epoch(vega)
 
 def element_contains_text(locator: Locator, expected_pattern, timeout=5):
     start_time = time.time()
