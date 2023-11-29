@@ -170,7 +170,7 @@ html [data-theme='dark'] {
 
 .ag-theme-balham,
 .ag-theme-balham-dark {
-  --ag-grid-size: 5px; /* Used for compactness */
+  --ag-grid-size: 3px; /* Used for compactness */
   --ag-row-height: 36px;
   --ag-header-height: 28px;
 }
