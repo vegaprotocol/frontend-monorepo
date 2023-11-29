@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, LiHTMLAttributes, ReactNode } from 'react';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import {
   useEnvironment,
   DocsLinks,
@@ -28,8 +28,7 @@ import { VegaWalletMenu } from '../vega-wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { WalletIcon } from '../icons/wallet';
 import { ProtocolUpgradeCountdown } from '@vegaprotocol/proposals';
-import { useT } from '../../lib/use-t';
-import { I18nContext } from 'react-i18next';
+import { useT, useI18n } from '../../lib/use-t';
 import { supportedLngs } from '../../lib/i18n';
 
 type MenuState = 'wallet' | 'nav' | null;
@@ -42,7 +41,7 @@ export const Navbar = ({
   children?: ReactNode;
   theme?: Theme;
 }) => {
-  const { i18n } = useContext(I18nContext);
+  const i18n = useI18n();
   const t = useT();
   // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
