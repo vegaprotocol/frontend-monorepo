@@ -170,7 +170,7 @@ html [data-theme='dark'] {
 
 .ag-theme-balham,
 .ag-theme-balham-dark {
-  --ag-grid-size: 2px; /* Used for compactness */
+  --ag-grid-size: 3px; /* Used for compactness */
   --ag-row-height: 36px;
   --ag-header-height: 28px;
 }
@@ -184,7 +184,7 @@ html [data-theme='dark'] {
 
 /* Light variables */
 .ag-theme-balham {
-  --ag-background-color: transparent;
+  --ag-background-color: theme(colors.vega.clight.900);
   --ag-border-color: theme(colors.vega.clight.600);
   --ag-header-background-color: theme(colors.vega.clight.700);
   --ag-odd-row-background-color: transparent;
@@ -196,7 +196,7 @@ html [data-theme='dark'] {
 
 /* Dark variables */
 .ag-theme-balham-dark {
-  --ag-background-color: transparent;
+  --ag-background-color: theme(colors.vega.cdark.900);
   --ag-border-color: theme(colors.vega.cdark.600);
   --ag-header-background-color: theme(colors.vega.cdark.700);
   --ag-odd-row-background-color: transparent;
