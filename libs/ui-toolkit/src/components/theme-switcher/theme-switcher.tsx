@@ -18,7 +18,7 @@ export const ThemeSwitcher = ({
       type="button"
       onClick={() => setTheme()}
       className={classNames(
-        'flex justify-center items-center hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500 rounded-full w-8 h-8',
+        'flex justify-center items-center hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500 rounded-full w-7 h-7',
         className
       )}
       data-testid="theme-switcher"

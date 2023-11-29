@@ -26,7 +26,7 @@ export const LanguageSelector = ({
     <TradingDropdown
       trigger={
         <TradingDropdownTrigger data-testid="language-selector-trigger">
-          <button className="flex justify-center items-center hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500 p-1 rounded-full w-8 h-8">
+          <button className="flex justify-center items-center hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500 p-1 rounded-full w-7 h-7">
             <VegaIcon name={VegaIconNames.GLOBE} size={16} />
           </button>
         </TradingDropdownTrigger>
