@@ -32,7 +32,6 @@ import { SSRLoader } from './ssr-loader';
 import { PartyActiveOrdersHandler } from './party-active-orders-handler';
 import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
-import '../lib/i18n';
 import { useT } from '../lib/use-t';
 
 const Title = () => {
