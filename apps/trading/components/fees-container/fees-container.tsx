@@ -36,7 +36,7 @@ export const FeesContainer = () => {
   const { data: markets, loading: marketsLoading } = useMarketList();
 
   const { data: programData, loading: programLoading } =
-    useDiscountProgramsQuery();
+    useDiscountProgramsQuery({ errorPolicy: 'ignore' });
 
   const volumeDiscountWindowLength =
     programData?.currentVolumeDiscountProgram?.windowLength || 1;
@@ -459,25 +459,19 @@ const VolumeTiers = ({
           </tr>
         </THead>
         <tbody>
-          {Array.from(tiers)
-            .reverse()
-            .map((tier, i) => {
-              const isUserTier = tiers.length - 1 - tierIndex === i;
+          {Array.from(tiers).map((tier, i) => {
+            const isUserTier = tiers.length - 1 - tierIndex === i;
 
-              return (
-                <Tr key={i}>
-                  <Td>{i + 1}</Td>
-                  <Td>
-                    {formatPercentage(Number(tier.volumeDiscountFactor))}%
-                  </Td>
-                  <Td>
-                    {formatNumber(tier.minimumRunningNotionalTakerVolume)}
-                  </Td>
-                  <Td>{isUserTier ? formatNumber(lastEpochVolume) : ''}</Td>
-                  <Td>{isUserTier ? <YourTier /> : null}</Td>
-                </Tr>
-              );
-            })}
+            return (
+              <Tr key={i}>
+                <Td>{i + 1}</Td>
+                <Td>{formatPercentage(Number(tier.volumeDiscountFactor))}%</Td>
+                <Td>{formatNumber(tier.minimumRunningNotionalTakerVolume)}</Td>
+                <Td>{isUserTier ? formatNumber(lastEpochVolume) : ''}</Td>
+                <Td>{isUserTier ? <YourTier /> : null}</Td>
+              </Tr>
+            );
+          })}
         </tbody>
       </Table>
     </div>
@@ -518,37 +512,33 @@ const ReferralTiers = ({
           </tr>
         </THead>
         <tbody>
-          {Array.from(tiers)
-            .reverse()
-            .map((t, i) => {
-              const isUserTier = tiers.length - 1 - tierIndex === i;
+          {Array.from(tiers).map((t, i) => {
+            const isUserTier = tiers.length - 1 - tierIndex === i;
 
-              const requiredVolume = Number(
-                t.minimumRunningNotionalTakerVolume
+            const requiredVolume = Number(t.minimumRunningNotionalTakerVolume);
+            let unlocksIn = null;
+
+            if (
+              referralVolumeInWindow >= requiredVolume &&
+              epochsInSet < t.minimumEpochs
+            ) {
+              unlocksIn = (
+                <span className="text-muted">
+                  Unlocks in {t.minimumEpochs - epochsInSet} epochs
+                </span>
               );
-              let unlocksIn = null;
+            }
 
-              if (
-                referralVolumeInWindow >= requiredVolume &&
-                epochsInSet < t.minimumEpochs
-              ) {
-                unlocksIn = (
-                  <span className="text-muted">
-                    Unlocks in {t.minimumEpochs - epochsInSet} epochs
-                  </span>
-                );
-              }
-
-              return (
-                <Tr key={i}>
-                  <Td>{i + 1}</Td>
-                  <Td>{formatPercentage(Number(t.referralDiscountFactor))}%</Td>
-                  <Td>{formatNumber(t.minimumRunningNotionalTakerVolume)}</Td>
-                  <Td>{t.minimumEpochs}</Td>
-                  <Td>{isUserTier ? <YourTier /> : unlocksIn}</Td>
-                </Tr>
-              );
-            })}
+            return (
+              <Tr key={i}>
+                <Td>{i + 1}</Td>
+                <Td>{formatPercentage(Number(t.referralDiscountFactor))}%</Td>
+                <Td>{formatNumber(t.minimumRunningNotionalTakerVolume)}</Td>
+                <Td>{t.minimumEpochs}</Td>
+                <Td>{isUserTier ? <YourTier /> : unlocksIn}</Td>
+              </Tr>
+            );
+          })}
         </tbody>
       </Table>
     </div>
