@@ -29,7 +29,6 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 import BigNumber from 'bignumber.js';
 import { t } from '@vegaprotocol/i18n';
-import maxBy from 'lodash/maxBy';
 import { DocsLinks } from '@vegaprotocol/environment';
 import minBy from 'lodash/minBy';
 
