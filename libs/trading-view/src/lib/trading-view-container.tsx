@@ -2,7 +2,7 @@ import { useScript } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useT } from './use-t';
 import { TradingView } from './trading-view';
-import { CHARTING_LIBRARY_FILE } from './constants';
+import { CHARTING_LIBRARY_FILE, type ResolutionString } from './constants';
 
 export const TradingViewContainer = ({
   libraryPath,
@@ -14,7 +14,7 @@ export const TradingViewContainer = ({
   libraryPath: string;
   libraryHash: string;
   marketId: string;
-  interval: string;
+  interval: ResolutionString;
   onIntervalChange: (interval: string) => void;
 }) => {
   const t = useT();

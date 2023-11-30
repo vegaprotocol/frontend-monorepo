@@ -11,6 +11,7 @@ import {
 */
 import { useLanguage } from './use-t';
 import { useDatafeed } from './use-datafeed';
+import { type ResolutionString } from './constants';
 
 export const TradingView = ({
   marketId,
@@ -20,7 +21,7 @@ export const TradingView = ({
 }: {
   marketId: string;
   libraryPath: string;
-  interval: string; // ResolutionString
+  interval: ResolutionString;
   onIntervalChange: (interval: string) => void;
 }) => {
   const { theme } = useThemeSwitcher();
@@ -40,8 +41,7 @@ export const TradingView = ({
       const widgetOptions: ChartingLibraryWidgetOptions = {
         symbol: marketId,
         datafeed,
-        // @ts-ignore cant import types as charting_library is external
-        interval: interval as ResolutionString,
+        interval: interval,
         container: chartContainerRef.current,
         library_path: libraryPath,
         custom_css_url: 'vega_styles.css',

@@ -1,11 +1,14 @@
 import invert from 'lodash/invert';
-import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import { Interval as PennantInterval } from 'pennant';
 import { Interval } from '@vegaprotocol/types';
 import {
   TradingViewContainer,
   ALLOWED_TRADINGVIEW_HOSTNAMES,
+  TRADINGVIEW_INTERVAL_MAP,
 } from '@vegaprotocol/trading-view';
+import {
+  CandlesChartContainer,
+  PENNANT_INTERVAL_MAP,
+} from '@vegaprotocol/candles-chart';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { useChartSettings, STUDY_SIZE } from './use-chart-settings';
 
@@ -72,26 +75,6 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
       throw new Error('invalid chart lib');
     }
   }
-};
-
-const TRADINGVIEW_INTERVAL_MAP: Record<Interval, string | undefined> = {
-  [Interval.INTERVAL_BLOCK]: undefined, // TODO: add support for block ticks
-  [Interval.INTERVAL_I1M]: '1',
-  [Interval.INTERVAL_I5M]: '5',
-  [Interval.INTERVAL_I15M]: '15',
-  [Interval.INTERVAL_I1H]: '60',
-  [Interval.INTERVAL_I6H]: '360',
-  [Interval.INTERVAL_I1D]: '1D',
-};
-
-const PENNANT_INTERVAL_MAP: Record<Interval, PennantInterval | undefined> = {
-  [Interval.INTERVAL_BLOCK]: undefined, // TODO: add support for block ticks
-  [Interval.INTERVAL_I1M]: PennantInterval.I1M,
-  [Interval.INTERVAL_I5M]: PennantInterval.I5M,
-  [Interval.INTERVAL_I15M]: PennantInterval.I15M,
-  [Interval.INTERVAL_I1H]: PennantInterval.I1H,
-  [Interval.INTERVAL_I6H]: PennantInterval.I6H,
-  [Interval.INTERVAL_I1D]: PennantInterval.I1D,
 };
 
 const toTradingViewResolution = (interval: Interval) => {
