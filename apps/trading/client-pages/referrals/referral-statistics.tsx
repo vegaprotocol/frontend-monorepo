@@ -61,7 +61,7 @@ export const ReferralStatistics = () => {
   if (referrer?.code) {
     return (
       <>
-        <Statistics data={referrer} program={program} as="referrer" />;
+        <Statistics data={referrer} program={program} as="referrer" />
         <RefereesTable data={referrer} program={program} />
       </>
     );
@@ -207,6 +207,7 @@ export const Statistics = ({
           ).toString(),
         }
       )}
+      overrideWithNoProgram={!details}
     >
       {baseCommissionValue * 100}%
     </StatTile>
@@ -229,6 +230,7 @@ export const Statistics = ({
           })}
         </span>
       }
+      overrideWithNoProgram={!details}
     >
       {multiplier || t('None')}
     </StatTile>
@@ -243,6 +245,7 @@ export const Statistics = ({
             }%)`
           : undefined
       }
+      overrideWithNoProgram={!details}
     >
       {finalCommissionValue * 100}%
     </StatTile>
@@ -264,6 +267,7 @@ export const Statistics = ({
       title={t('myVolume', 'My volume (last {{count}} epochs)', {
         count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
       })}
+      overrideWithNoProgram={!details}
     >
       {compactNumFormat.format(referrerVolumeValue)}
     </StatTile>
@@ -274,7 +278,7 @@ export const Statistics = ({
     .reduce((all, r) => all.plus(r), new BigNumber(0));
   const totalCommissionTile = (
     <StatTile
-      title={t('totalCommission', 'Total commission (last {{count}}} epochs)', {
+      title={t('totalCommission', 'Total commission (last {{count}} epochs)', {
         count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
       })}
       description={<QUSDTooltip />}
@@ -310,6 +314,7 @@ export const Statistics = ({
             })
           : undefined
       }
+      overrideWithNoProgram={!details}
     >
       {isApplyCodePreview
         ? currentBenefitTierValue?.tier || benefitTiers[0]?.tier || 'None'
@@ -317,8 +322,8 @@ export const Statistics = ({
     </StatTile>
   );
   const discountFactorTile = (
-    <StatTile title={t('Discount')}>
-      {isApplyCodePreview
+    <StatTile title={t('Discount')} overrideWithNoProgram={!details}>
+      {isApplyCodePreview && benefitTiers.length >= 1
         ? benefitTiers[0].discountFactor * 100
         : discountFactorValue * 100}
       %
@@ -333,6 +338,7 @@ export const Statistics = ({
           count: details?.windowLength,
         }
       )}
+      overrideWithNoProgram={!details}
     >
       {compactNumFormat.format(runningVolumeValue)}
     </StatTile>
@@ -341,14 +347,14 @@ export const Statistics = ({
     <StatTile title={t('Epochs in set')}>{epochsValue}</StatTile>
   );
   const nextTierVolumeTile = (
-    <StatTile title={t('Volume to next tier')}>
+    <StatTile title={t('Volume to next tier')} overrideWithNoProgram={!details}>
       {nextBenefitTierVolumeValue <= 0
         ? '0'
         : compactNumFormat.format(nextBenefitTierVolumeValue)}
     </StatTile>
   );
   const nextTierEpochsTile = (
-    <StatTile title={t('Epochs to next tier')}>
+    <StatTile title={t('Epochs to next tier')} overrideWithNoProgram={!details}>
       {nextBenefitTierEpochsValue <= 0 ? '0' : nextBenefitTierEpochsValue}
     </StatTile>
   );

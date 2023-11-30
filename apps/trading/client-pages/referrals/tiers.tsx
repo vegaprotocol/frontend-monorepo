@@ -98,20 +98,28 @@ export const TiersContainer = () => {
 
   if ((!loading && !details) || error) {
     return (
-      <div className="text-base px-5 py-10 text-center">
+      <div className="bg-vega-clight-800 dark:bg-vega-cdark-800 text-black dark:text-white rounded-lg p-6 mt-1 mb-20 text-sm text-center">
         <Trans
           defaults="There are currently no active referral programs. Check the <0>Governance App</0> to see if there are any proposals in progress and vote."
           components={[
-            <ExternalLink href={governanceLink(TOKEN_PROPOSALS)} key="link">
+            <ExternalLink
+              href={governanceLink(TOKEN_PROPOSALS)}
+              key="link"
+              className="underline"
+            >
               {t('Governance App')}
             </ExternalLink>,
           ]}
           ns={ns}
-        />
+        />{' '}
         <Trans
           defaults="You can propose a new program via the <0>Docs</0>."
           components={[
-            <ExternalLink href={DocsLinks?.REFERRALS} key="link">
+            <ExternalLink
+              href={DocsLinks?.REFERRALS}
+              key="link"
+              className="underline"
+            >
               {t('Docs')}
             </ExternalLink>,
           ]}
