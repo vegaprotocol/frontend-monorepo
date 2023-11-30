@@ -1,3 +1,4 @@
+import minBy from 'lodash/minBy';
 import { CodeTile, StatTile } from './tile';
 import {
   VegaIcon,
@@ -28,7 +29,6 @@ import sortBy from 'lodash/sortBy';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 import BigNumber from 'bignumber.js';
-import maxBy from 'lodash/maxBy';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { useT, ns } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
@@ -128,7 +128,7 @@ export const useStats = ({
   );
   const nextBenefitTierValue = currentBenefitTierValue
     ? benefitTiers.find((t) => t.tier === currentBenefitTierValue.tier - 1)
-    : maxBy(benefitTiers, (bt) => bt.tier); // max tier number is lowest tier
+    : minBy(benefitTiers, (bt) => bt.tier); //  min tier number is lowest tier
   const epochsValue =
     !isNaN(currentEpoch) && refereeInfo?.atEpoch
       ? currentEpoch - refereeInfo?.atEpoch
