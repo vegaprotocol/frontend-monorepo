@@ -2,7 +2,10 @@ import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useCallback } from 'react';
 import { useRefereesQuery } from './__generated__/Referees';
 import compact from 'lodash/compact';
-import type { ReferralSetsQueryVariables } from './__generated__/ReferralSets';
+import type {
+  ReferralSetsQuery,
+  ReferralSetsQueryVariables,
+} from './__generated__/ReferralSets';
 import { useReferralSetsQuery } from './__generated__/ReferralSets';
 import { useStakeAvailable } from './use-stake-available';
 
@@ -117,4 +120,37 @@ export const useReferral = (args: UseReferralArgs) => {
     error: referralError || refereesError,
     refetch,
   };
+};
+
+const retrieveReferralSetData = (data: ReferralSetsQuery | undefined) =>
+  data?.referralSets.edges && data.referralSets.edges.length > 0
+    ? data.referralSets.edges[0]?.node
+    : undefined;
+
+export const useIsInReferralSet = (pubKey: string | null) => {
+  const [asRefereeVariables, asRefereeSkip] = prepareVariables({
+    pubKey,
+    role: 'referee',
+  });
+  const [asReferrerVariables, asReferrerSkip] = prepareVariables({
+    pubKey,
+    role: 'referrer',
+  });
+
+  const { data: asRefereeData } = useReferralSetsQuery({
+    variables: asRefereeVariables,
+    skip: asRefereeSkip,
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const { data: asReferrerData } = useReferralSetsQuery({
+    variables: asReferrerVariables,
+    skip: asReferrerSkip,
+    fetchPolicy: 'cache-and-network',
+  });
+
+  return Boolean(
+    retrieveReferralSetData(asRefereeData) ||
+      retrieveReferralSetData(asReferrerData)
+  );
 };

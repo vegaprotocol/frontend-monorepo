@@ -23,10 +23,20 @@ import {
   ABOUT_REFERRAL_DOCS_LINK,
   DISCLAIMER_REFERRAL_DOCS_LINK,
 } from './constants';
-import { useReferral } from './hooks/use-referral';
+import { useIsInReferralSet, useReferral } from './hooks/use-referral';
 import { useT } from '../../lib/use-t';
+import { Navigate } from 'react-router-dom';
+import { Routes } from '../../lib/links';
 
 export const CreateCodeContainer = () => {
+  const { pubKey } = useVegaWallet();
+  const isInReferralSet = useIsInReferralSet(pubKey);
+
+  // Navigate to the index page when already in the referral set.
+  if (isInReferralSet) {
+    return <Navigate to={Routes.REFERRALS} />;
+  }
+
   return <CreateCodeForm />;
 };
 

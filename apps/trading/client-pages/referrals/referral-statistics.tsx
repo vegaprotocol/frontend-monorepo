@@ -126,7 +126,7 @@ export const useStats = ({
       t.discountFactor === discountFactorValue
   );
   const nextBenefitTierValue = currentBenefitTierValue
-    ? benefitTiers.find((t) => t.tier === currentBenefitTierValue.tier - 1)
+    ? benefitTiers.find((t) => t.tier === currentBenefitTierValue.tier + 1)
     : minBy(benefitTiers, (bt) => bt.tier); //  min tier number is lowest tier
   const epochsValue =
     !isNaN(currentEpoch) && refereeInfo?.atEpoch
@@ -173,6 +173,7 @@ export const Statistics = ({
     discountFactorValue,
     currentBenefitTierValue,
     epochsValue,
+    nextBenefitTierValue,
     nextBenefitTierVolumeValue,
     nextBenefitTierEpochsValue,
   } = useStats({ data, program, as });
@@ -300,7 +301,16 @@ export const Statistics = ({
   );
 
   const currentBenefitTierTile = (
-    <StatTile title={t('Current tier')}>
+    <StatTile
+      title={t('Current tier')}
+      description={
+        nextBenefitTierValue?.tier
+          ? t('(Next tier: {{nextTier}})', {
+              nextTier: nextBenefitTierValue?.tier,
+            })
+          : undefined
+      }
+    >
       {isApplyCodePreview
         ? currentBenefitTierValue?.tier || benefitTiers[0]?.tier || 'None'
         : currentBenefitTierValue?.tier || 'None'}

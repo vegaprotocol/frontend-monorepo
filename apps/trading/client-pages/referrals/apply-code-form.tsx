@@ -13,7 +13,7 @@ import type { ButtonHTMLAttributes, MouseEventHandler } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { RainbowButton } from './buttons';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import { useReferral } from './hooks/use-referral';
+import { useIsInReferralSet, useReferral } from './hooks/use-referral';
 import { Routes } from '../../lib/links';
 import { useTransactionEventSubscription } from '@vegaprotocol/web3';
 import { Statistics, useStats } from './referral-statistics';
@@ -34,11 +34,10 @@ const validateCode = (value: string, t: ReturnType<typeof useT>) => {
 
 export const ApplyCodeFormContainer = () => {
   const { pubKey } = useVegaWallet();
-  const { data: referee } = useReferral({ pubKey, role: 'referee' });
-  const { data: referrer } = useReferral({ pubKey, role: 'referrer' });
+  const isInReferralSet = useIsInReferralSet(pubKey);
 
-  // go to main page if the current pubkey is already a referrer or referee
-  if (referee || referrer) {
+  // Navigate to the index page when already in the referral set.
+  if (isInReferralSet) {
     return <Navigate to={Routes.REFERRALS} />;
   }
 
