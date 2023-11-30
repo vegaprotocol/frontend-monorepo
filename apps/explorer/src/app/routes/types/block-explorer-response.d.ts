@@ -11,6 +11,8 @@ export interface BlockExplorerTransactionResult {
   cursor: string;
   command: components['schemas']['blockexplorerv1transaction'];
   signature: {
+    version: string;
+    algo: string;
     value: string;
   };
   error?: string;

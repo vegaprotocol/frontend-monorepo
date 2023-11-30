@@ -9,6 +9,7 @@ import { Time } from '../../../time';
 import { ChainResponseCode } from '../chain-response-code/chain-reponse.code';
 import { TxDataView } from '../../tx-data-view';
 import Hash from '../../../links/hash';
+import { Signature } from '../../../signature/signature';
 
 interface TxDetailsSharedProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -73,6 +74,12 @@ export const TxDetailsShared = ({
         <TableCell {...sharedHeaderProps}>{t('Block')}</TableCell>
         <TableCell>
           <BlockLink height={height} />
+        </TableCell>
+      </TableRow>
+      <TableRow modifier="bordered">
+        <TableCell {...sharedHeaderProps}>{t('Signature')}</TableCell>
+        <TableCell>
+          <Signature signature={txData.signature} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">

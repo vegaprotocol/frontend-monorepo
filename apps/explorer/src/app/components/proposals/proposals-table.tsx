@@ -8,7 +8,8 @@ import {
   type VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { type RowClickedEvent, ColDef } from 'ag-grid-community';
+import { ColDef } from 'ag-grid-community';
+import type { RowClickedEvent } from 'ag-grid-community';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import {
