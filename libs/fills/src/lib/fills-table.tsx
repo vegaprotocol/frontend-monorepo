@@ -1,10 +1,8 @@
 import { useMemo } from 'react';
-import type {
-  AgGridReact,
-  AgGridReactProps,
-  AgReactUiProps,
-} from 'ag-grid-react';
-import type { ITooltipParams, ColDef } from 'ag-grid-community';
+import type { AgGridReact } from 'ag-grid-react';
+import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
+import type { ColDef } from 'ag-grid-community';
+import type { ITooltipParams } from 'ag-grid-community';
 import {
   addDecimal,
   addDecimalsFormatNumber,
@@ -290,6 +288,7 @@ export const getRoleAndFees = ({
 }) => {
   let role: Role;
   let fees;
+
   if (data?.buyer.id === partyId) {
     if (data.aggressor === Schema.Side.SIDE_BUY) {
       role = TAKER;
@@ -315,7 +314,16 @@ export const getRoleAndFees = ({
   } else {
     return { role: '-', fees: undefined };
   }
-  return { role, fees };
+
+  // We make the assumption that the market state is active if the maker fee is zero on both sides
+  // This needs to be updated when we have a way to get the correct market state when that fill happened from the API
+  // because the maker fee factor can be set to 0 via governance
+  const marketState =
+    data?.buyerFee.makerFee === data.sellerFee.makerFee &&
+    new BigNumber(data?.buyerFee.makerFee).isZero()
+      ? Schema.MarketState.STATE_SUSPENDED
+      : Schema.MarketState.STATE_ACTIVE;
+  return { role, fees, marketState };
 };
 
 const FeesBreakdownTooltip = ({
@@ -329,16 +337,21 @@ const FeesBreakdownTooltip = ({
 
   const asset = getAsset(market);
 
-  const { role, fees } = getRoleAndFees({ data, partyId }) ?? {};
+  const { role, fees, marketState } = getRoleAndFees({ data, partyId }) ?? {};
   if (!fees) return null;
   const { infrastructureFee, liquidityFee, makerFee, totalFee } =
-    getFeesBreakdown(role, fees);
+    getFeesBreakdown(role, fees, marketState);
 
   return (
     <div
       data-testid="fee-breakdown-tooltip"
       className="z-20 max-w-sm px-4 py-2 text-sm text-black border rounded bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 break-word dark:text-white"
     >
+      <p className="mb-1 italic">
+        {t('If the market is %s', [
+          Schema.MarketStateMapping[marketState].toLowerCase(),
+        ])}
+      </p>
       {role === MAKER && (
         <>
           <p className="mb-1">{t('The maker will receive the maker fee.')}</p>
@@ -479,20 +492,35 @@ export const getTotalFeesDiscounts = (fees: TradeFeeFieldsFragment) => {
 
 export const getFeesBreakdown = (
   role: Role,
-  feesObj: TradeFeeFieldsFragment
+  feesObj: TradeFeeFieldsFragment,
+  marketState: Schema.MarketState = Schema.MarketState.STATE_ACTIVE
 ) => {
-  const makerFee =
-    role === MAKER
-      ? new BigNumber(feesObj.makerFee).times(-1).toString()
-      : feesObj.makerFee;
+  // If market is in auction we assume maker fee is zero
+  const isMarketActive = marketState === Schema.MarketState.STATE_ACTIVE;
 
-  const infrastructureFee = feesObj.infrastructureFee;
-  const liquidityFee = feesObj.liquidityFee;
+  // If role is taker, then these are the fees to be paid
+  let { makerFee, infrastructureFee, liquidityFee } = feesObj;
+
+  if (isMarketActive) {
+    if (role === MAKER) {
+      makerFee = new BigNumber(feesObj.makerFee).times(-1).toString();
+      infrastructureFee = '0';
+      liquidityFee = '0';
+    }
+  } else {
+    // If market is suspended (in monitoring auction), then half of the fees are paid
+    infrastructureFee = new BigNumber(infrastructureFee)
+      .dividedBy(2)
+      .toString();
+    liquidityFee = new BigNumber(liquidityFee).dividedBy(2).toString();
+    // maker fee is already zero
+  }
 
   const totalFee = new BigNumber(infrastructureFee)
     .plus(makerFee)
     .plus(liquidityFee)
     .toString();
+
   return {
     infrastructureFee,
     liquidityFee,
