@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import { useRef, useState, useEffect } from 'react';
-import { t } from '@vegaprotocol/i18n';
 import { Button } from '../button';
 import type { ReactNode } from 'react';
+import { useT } from '../../use-t';
 
 type ShowMoreProps = {
   children: ReactNode;
@@ -15,6 +15,7 @@ export const ShowMore = ({
   closedMaxHeightPx = 125,
   overlayColourOverrides,
 }: ShowMoreProps) => {
+  const t = useT();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [expanded, setExpanded] = useState(false);
 

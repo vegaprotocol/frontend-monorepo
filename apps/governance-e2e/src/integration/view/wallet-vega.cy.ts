@@ -302,14 +302,17 @@ context(
 
               cy.getByTestId(vegaWalletCurrencyTitle)
                 .contains(name)
-                .parent()
-                .siblings(txTimeout)
-                .should((elementAmount) => {
-                  const displayedAmount = parseFloat(elementAmount.text());
-                  // @ts-ignore clash between jest and cypress
-                  expect(displayedAmount).be.gte(expectedAmount);
+                .parent() // back to currency-title
+                .parent() // back to container
+                .within(() => {
+                  cy.get(
+                    '[data-account-type="account_type_general"] [data-value]'
+                  ).should((elementAmount) => {
+                    const displayedAmount = parseFloat(elementAmount.text());
+                    // @ts-ignore clash between jest and cypress
+                    expect(displayedAmount).be.gte(expectedAmount);
+                  });
                 });
-
               cy.getByTestId(vegaWalletCurrencyTitle)
                 .contains(name)
                 .parent()

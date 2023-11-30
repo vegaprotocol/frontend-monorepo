@@ -7,7 +7,7 @@ import {
   doesValueEquateToParam,
 } from '@vegaprotocol/proposals';
 import { useEnvironment, DocsLinks } from '@vegaprotocol/environment';
-import { validateJson } from '@vegaprotocol/utils';
+import { useValidateJson } from '@vegaprotocol/utils';
 import {
   NetworkParams,
   useNetworkParams,
@@ -39,6 +39,7 @@ export interface NewMarketProposalFormFields {
 const DOCS_LINK = '/new-market-proposal';
 
 export const ProposeNewMarket = () => {
+  const validateJson = useValidateJson();
   const {
     params,
     loading: networkParamsLoading,

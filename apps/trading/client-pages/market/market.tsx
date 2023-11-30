@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo } from 'react';
 import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
-import { ExternalLink, Loader, Splash } from '@vegaprotocol/ui-toolkit';
+import { Link, Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { getAsset, marketDataProvider, useMarket } from '@vegaprotocol/markets';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid } from './trade-grid';
@@ -12,6 +11,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Links } from '../../lib/links';
 import { ViewType, useSidebar } from '../../components/sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
+import { useT, ns } from '../../lib/use-t';
+import { Trans } from 'react-i18next';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
   return markPrice && decimalPlaces
@@ -57,6 +58,7 @@ const TitleUpdater = ({
 };
 
 export const MarketPage = () => {
+  const t = useT();
   const { marketId } = useParams();
   const navigate = useNavigate();
   const currentRouteId = useGetCurrentRouteId();
@@ -111,10 +113,19 @@ export const MarketPage = () => {
             {t('This market URL is not available any more.')}
           </p>
           <p className="justify-center text-sm">
-            {t(`Please choose another market from the`)}{' '}
-            <ExternalLink onClick={() => navigate(Links.MARKETS())}>
-              {t('market list')}
-            </ExternalLink>
+            <Trans
+              defaults="Please choose another market from the <0>market list</0>"
+              ns={ns}
+              components={[
+                <Link
+                  className="underline underline-offset-4 "
+                  onClick={() => navigate(Links.MARKETS())}
+                  key="link"
+                >
+                  market list
+                </Link>,
+              ]}
+            />
           </p>
         </span>
       </Splash>

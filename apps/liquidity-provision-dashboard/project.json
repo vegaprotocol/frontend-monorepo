@@ -82,15 +82,6 @@
         "jestConfig": "apps/liquidity-provision-dashboard/jest.config.ts"
       }
     },
-    "build-netlify": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "cp apps/liquidity-provision-dashboard/netlify.toml netlify.toml",
-          "nx build liquidity-provision-dashboard"
-        ]
-      }
-    },
     "build-spec": {
       "executor": "nx:run-commands",
       "outputs": [],

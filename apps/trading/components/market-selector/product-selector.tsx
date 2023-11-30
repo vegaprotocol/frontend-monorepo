@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { t } from '@vegaprotocol/i18n';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { Links } from '../../lib/links';
+import { useT } from '../../lib/use-t';
 
 // Make sure these match the available __typename properties on product
 export const Product = {
@@ -14,15 +14,6 @@ export const Product = {
 
 export type ProductType = keyof typeof Product;
 
-const ProductTypeMapping: {
-  [key in ProductType]: string;
-} = {
-  [Product.All]: 'All',
-  [Product.Future]: 'Futures',
-  [Product.Spot]: 'Spot',
-  [Product.Perpetual]: 'Perpetuals',
-};
-
 export const ProductSelector = ({
   product,
   onSelect,
@@ -30,6 +21,15 @@ export const ProductSelector = ({
   product: ProductType;
   onSelect: (product: ProductType) => void;
 }) => {
+  const t = useT();
+  const ProductTypeMapping: {
+    [key in ProductType]: string;
+  } = {
+    [Product.All]: t('All'),
+    [Product.Future]: t('Futures'),
+    [Product.Spot]: t('Spot'),
+    [Product.Perpetual]: t('Perpetuals'),
+  };
   return (
     <div className="flex mb-2">
       {Object.keys(Product).map((t) => {

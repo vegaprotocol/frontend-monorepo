@@ -1,7 +1,6 @@
 import throttle from 'lodash/throttle';
 import type { MarketData, Market } from '@vegaprotocol/markets';
 import { marketDataProvider } from '@vegaprotocol/markets';
-import { t } from '@vegaprotocol/i18n';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import { HeaderStat } from '../header';
@@ -9,8 +8,10 @@ import { useCallback, useRef, useState } from 'react';
 import * as constants from '../constants';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { useT } from '../../lib/use-t';
 
 export const MarketState = ({ market }: { market: Market | null }) => {
+  const t = useT();
   const [marketState, setMarketState] = useState<Schema.MarketState | null>(
     null
   );
@@ -41,7 +42,7 @@ export const MarketState = ({ market }: { market: Market | null }) => {
   return (
     <HeaderStat
       heading={t('Status')}
-      description={getMarketStateTooltip(marketState)}
+      description={useGetMarketStateTooltip(marketState)}
       testId="market-state"
     >
       {marketState ? Schema.MarketStateMapping[marketState] : '-'}
@@ -49,7 +50,8 @@ export const MarketState = ({ market }: { market: Market | null }) => {
   );
 };
 
-const getMarketStateTooltip = (state: Schema.MarketState | null) => {
+const useGetMarketStateTooltip = (state: Schema.MarketState | null) => {
+  const t = useT();
   if (state === Schema.MarketState.STATE_ACTIVE) {
     return t('Enactment date reached and usual auction exit checks pass');
   }
@@ -96,7 +98,7 @@ const getMarketStateTooltip = (state: Schema.MarketState | null) => {
     return (
       <p>
         {t(
-          `This market has been suspended via a governance vote and can be resumed or terminated by further votes.`
+          'This market has been suspended via a governance vote and can be resumed or terminated by further votes.'
         )}
         {DocsLinks && (
           <ExternalLink href={DocsLinks.MARKET_LIFECYCLE} className="ml-1">

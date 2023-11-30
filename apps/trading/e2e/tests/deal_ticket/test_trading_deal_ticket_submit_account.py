@@ -1,7 +1,7 @@
 import pytest
 from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService
-from actions.utils import wait_for_toast_confirmation
+from actions.utils import change_keys
 from conftest import init_vega
 from fixtures.market import setup_continuous_market
 
@@ -39,13 +39,11 @@ def test_should_display_info_and_button_for_deposit(continuous_market, vega: Veg
 def test_should_show_an_error_if_your_balance_is_zero(continuous_market, vega: VegaService, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     vega.create_key("key_empty")
-    page.get_by_test_id("manage-vega-wallet").click()
-    page.locator('[role="menuitemradio"]').nth(4).click()
-    page.reload()
+    change_keys(page, vega, "key_empty")
     page.get_by_test_id(order_size).fill("200")
     page.get_by_test_id(order_price).fill("20")
     # 7002-SORD-060
     expect(page.get_by_test_id(place_order)).to_be_enabled()
     # 7002-SORD-003
-    expect(page.get_by_test_id("deal-ticket-error-message-zero-balance")).to_have_text("You need tDAI in your wallet to trade in this market. Make a deposit")
+    expect(page.get_by_test_id("deal-ticket-error-message-zero-balance")).to_have_text("You need tDAI in your wallet to trade in this market.Make a deposit")
     expect(page.get_by_test_id(deal_ticket_deposit_dialog_button)).to_be_visible()    

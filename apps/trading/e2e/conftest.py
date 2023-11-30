@@ -6,8 +6,6 @@ import requests
 import time
 import docker
 import http.server
-import socketserver
-from threading import Thread
 
 
 from contextlib import contextmanager
@@ -18,6 +16,7 @@ from fixtures.market import (
     setup_simple_market,
     setup_opening_auction_market,
     setup_continuous_market,
+    setup_perps_market,
 )
 
 import sys
@@ -137,8 +136,11 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
             page.add_init_script(script=window_env)
             yield page
         finally:
-            if not os.path.exists("traces"):
-                os.makedirs("traces")
+            try:
+                if not os.path.exists("apps/trading/e2e/traces"):
+                    os.makedirs("apps/trading/e2e/traces")
+            except OSError as e:
+                print(f"Failed to create directory '{'apps/trading/e2e/traces'}': {e}")
 
             # Check whether this test failed or passed
             outcome = request.config.cache.get(request.node.nodeid, None)
@@ -241,3 +243,11 @@ def continuous_market(vega):
 @pytest.fixture(scope="function")
 def proposed_market(vega):
     return setup_simple_market(vega, approve_proposal=False)
+
+
+@pytest.fixture(scope="function")
+def perps_market(vega, request):
+    kwargs = {}
+    if hasattr(request, "param"):
+        kwargs.update(request.param)
+    return setup_perps_market(vega, **kwargs)

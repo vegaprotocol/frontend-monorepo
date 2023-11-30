@@ -77,12 +77,10 @@ export const DealTicketFeeDetails = ({
       label={
         <>
           {t('Fees')}
-          {totalDiscountFactor ? (
+          {totalDiscountFactor !== '0' ? (
             <Pill size="xxs" intent={Intent.Info} className="ml-1">
-              -
               {formatNumberPercentage(
-                new BigNumber(totalDiscountFactor).multipliedBy(100),
-                2
+                new BigNumber(totalDiscountFactor).multipliedBy(100)
               )}
             </Pill>
           ) : null}
@@ -105,10 +103,7 @@ export const DealTicketFeeDetails = ({
             )}
           </p>
           <FeesBreakdown
-            totalFeeAmount={feeEstimate?.totalFeeAmount}
-            referralDiscountFactor={feeEstimate?.referralDiscountFactor}
-            volumeDiscountFactor={feeEstimate?.volumeDiscountFactor}
-            fees={feeEstimate?.fees}
+            feeEstimate={feeEstimate}
             feeFactors={market.fees.factors}
             symbol={assetSymbol}
             decimals={assetDecimals}
@@ -299,7 +294,7 @@ export const DealTicketMarginDetails = ({
   const quoteName = getQuoteName(market);
 
   return (
-    <div className="flex flex-col w-full gap-2">
+    <div className="flex flex-col w-full gap-2 pt-2">
       <Accordion>
         <AccordionPanel
           itemId="margin"
@@ -307,7 +302,7 @@ export const DealTicketMarginDetails = ({
             <AccordionPrimitive.Trigger
               data-testid="accordion-toggle"
               className={classNames(
-                'w-full pt-2',
+                'w-full',
                 'flex items-center gap-2 text-xs',
                 'group'
               )}

@@ -1,6 +1,5 @@
 import { useProtocolUpgradeProposalLink } from '@vegaprotocol/environment';
 
-import { t } from '@vegaprotocol/i18n';
 import {
   ExternalLink,
   Intent,
@@ -14,6 +13,7 @@ import {
 } from '../lib';
 import { useLocalStorageSnapshot } from '@vegaprotocol/react-helpers';
 import { useBlockRising } from '../lib/protocol-upgrade-proposals/use-block-rising';
+import { useT } from '../use-t';
 
 /**
  * A flag determining whether to get the upgrade proposal data from local
@@ -22,6 +22,7 @@ import { useBlockRising } from '../lib/protocol-upgrade-proposals/use-block-risi
 const ALLOW_STORED_PROPOSAL_DATA = true;
 
 export const ProtocolUpgradeInProgressNotification = () => {
+  const t = useT();
   const { data, error } = useNextProtocolUpgradeProposal(undefined, true);
   const [nextUpgrade] = useLocalStorageSnapshot(
     NEXT_PROTOCOL_UPGRADE_PROPOSAL_SNAPSHOT
@@ -71,7 +72,9 @@ export const ProtocolUpgradeInProgressNotification = () => {
   return (
     <NotificationBanner intent={Intent.Danger} className={SHORT}>
       <div className="uppercase">
-        {t('The network is being upgraded to %s', vegaReleaseTag)}
+        {t('The network is being upgraded to {{vegaReleaseTag}}', {
+          vegaReleaseTag,
+        })}
       </div>
       <div>
         {t(

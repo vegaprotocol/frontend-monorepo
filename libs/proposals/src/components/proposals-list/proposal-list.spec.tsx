@@ -85,7 +85,6 @@ describe('ProposalsList', () => {
       'Settlement asset',
       'State',
       'Parent market',
-      'Voting',
       'Closing date',
       'Enactment date',
       '', // actions col

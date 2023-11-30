@@ -28,7 +28,7 @@ import { useOpenVolume } from '@vegaprotocol/positions';
 import {
   toBigNum,
   removeDecimal,
-  validateAmount,
+  useValidateAmount,
   toDecimal,
   formatForInput,
   formatValue,
@@ -140,6 +140,7 @@ export const DealTicket = ({
   onDeposit,
 }: DealTicketProps) => {
   const t = useT();
+  const validateAmount = useValidateAmount();
   const { pubKey, isReadOnly } = useVegaWallet();
   const setType = useDealTicketFormValues((state) => state.setType);
   const storedFormValues = useDealTicketFormValues(

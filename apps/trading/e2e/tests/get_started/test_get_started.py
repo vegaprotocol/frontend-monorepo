@@ -4,8 +4,8 @@ import json
 from vega_sim.service import VegaService
 from fixtures.market import setup_simple_market
 from conftest import init_vega
-from collections import namedtuple
 from actions.vega import submit_order
+from wallet_config import MM_WALLET, TERMINATE_WALLET, wallets
 import logging
 
 logger = logging.getLogger()
@@ -73,16 +73,6 @@ class TestGetStarted:
         page.add_init_script(script=window_env)
 
         page.reload()
-
-        # Defined namedtuples
-        WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
-
-        # Wallet Configurations
-        MM_WALLET = WalletConfig("mm", "pin")
-        MM_WALLET2 = WalletConfig("mm2", "pin2")
-        TERMINATE_WALLET = WalletConfig("FJMKnwfZdd48C8NqvYrG", "bY3DxwtsCstMIIZdNpKs")
-
-        wallets = [MM_WALLET, MM_WALLET2, TERMINATE_WALLET]
 
         mint_amount: float = 10e5
 

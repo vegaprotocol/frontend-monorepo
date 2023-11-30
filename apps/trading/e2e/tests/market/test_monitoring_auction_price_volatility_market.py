@@ -1,23 +1,11 @@
 import pytest
-from collections import namedtuple
 from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService
 from actions.vega import submit_order
 from fixtures.market import setup_simple_market
 from conftest import init_vega
-
 from actions.utils import wait_for_toast_confirmation
-
-
-# Defined namedtuples
-WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
-
-# Wallet Configurations
-MM_WALLET = WalletConfig("mm", "pin")
-MM_WALLET2 = WalletConfig("mm2", "pin2")
-TERMINATE_WALLET = WalletConfig("FJMKnwfZdd48C8NqvYrG", "bY3DxwtsCstMIIZdNpKs")
-
-wallets = [MM_WALLET, MM_WALLET2, TERMINATE_WALLET]
+from wallet_config import MM_WALLET, MM_WALLET2
 
 @pytest.fixture(scope="module")
 def vega(request):
@@ -94,7 +82,7 @@ def test_market_monitoring_auction_price_volatility_limit_order(page: Page, simp
     page.get_by_test_id("order-tif").select_option("Fill or Kill (FOK)")
     page.get_by_test_id("place-order").click()
 
-    expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_have_text("This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders")
+    expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_have_text("This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders.")
     expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_be_visible()
 
     expect(page.get_by_test_id("deal-ticket-warning-auction")).to_have_text("Any orders placed now will not trade until the auction ends")
@@ -124,8 +112,8 @@ def test_market_monitoring_auction_price_volatility_market_order(page: Page, sim
     # 7002-SORD-060
     page.get_by_test_id("place-order").click()
 
-    expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_have_text("This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders")
+    expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_have_text("This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders.")
     expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_be_visible()
 
-    expect(page.get_by_test_id("deal-ticket-error-message-type")).to_have_text("This market is in auction due to high price volatility. Only limit orders are permitted when market is in auction")
+    expect(page.get_by_test_id("deal-ticket-error-message-type")).to_have_text("This market is in auction due to high price volatility. Only limit orders are permitted when market is in auction.")
     expect(page.get_by_test_id("deal-ticket-error-message-type")).to_be_visible()

@@ -1,13 +1,14 @@
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { WelcomeDialogContent } from './welcome-dialog-content';
 import { useOnboardingStore } from './use-get-onboarding-step';
 import { VegaConnectDialog } from '@vegaprotocol/wallet';
 import { Connectors } from '../../lib/vega-connectors';
 import { RiskMessage } from './risk-message';
+import { useT } from '../../lib/use-t';
 
 export const WelcomeDialog = () => {
+  const t = useT();
   const { VEGA_ENV } = useEnvironment();
   const dismissed = useOnboardingStore((store) => store.dismissed);
   const dialogOpen = useOnboardingStore((store) => store.dialogOpen);

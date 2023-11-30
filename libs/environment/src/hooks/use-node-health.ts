@@ -64,29 +64,20 @@ export const useNodeHealth = () => {
       text = t(
         'Erroneous latency ( >{{errorLatency}} sec): {{blockUpdateLatency}} sec',
         {
-          nsSeparator: '|',
-          replace: {
-            errorLatency: (ERROR_LATENCY / 1000).toString(),
-            blockUpdateLatency: (blockUpdateMsLatency / 1000).toFixed(2),
-          },
+          errorLatency: (ERROR_LATENCY / 1000).toString(),
+          blockUpdateLatency: (blockUpdateMsLatency / 1000).toFixed(2),
         }
       );
       intent = Intent.Danger;
     } else if (blockDiff >= BLOCK_THRESHOLD) {
-      text = t('blocksBehind', {
-        defaultValue: '{{count}} Blocks behind',
-        replace: { count: blockDiff },
-      });
+      text = t('blocksBehind', '{{count}} Blocks behind', { count: blockDiff });
       intent = Intent.Warning;
     } else if (blockUpdateMsLatency > WARNING_LATENCY) {
       text = t(
         'Warning delay ( >{{warningLatency}} sec): {{blockUpdateLatency}} sec',
         {
-          nsSeparator: '|',
-          replace: {
-            warningLatency: (WARNING_LATENCY / 1000).toString(),
-            blockUpdateLatency: (blockUpdateMsLatency / 1000).toFixed(2),
-          },
+          warningLatency: (WARNING_LATENCY / 1000).toString(),
+          blockUpdateLatency: (blockUpdateMsLatency / 1000).toFixed(2),
         }
       );
       intent = Intent.Warning;

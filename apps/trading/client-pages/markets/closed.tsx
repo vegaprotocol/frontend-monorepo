@@ -8,7 +8,6 @@ import type {
 import { AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useMemo } from 'react';
-import { t } from '@vegaprotocol/i18n';
 import type { Asset } from '@vegaprotocol/types';
 import type { ProductType } from '@vegaprotocol/types';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
@@ -24,6 +23,7 @@ import { SettlementDateCell } from './settlement-date-cell';
 import { SettlementPriceCell } from './settlement-price-cell';
 import { MarketCodeCell } from './market-code-cell';
 import { MarketActionsDropdown } from './market-table-actions';
+import { useT } from '../../lib/use-t';
 
 type SettlementAsset = Pick<
   Asset,
@@ -127,6 +127,7 @@ const ClosedMarketsDataGrid = ({
   rowData: Row[];
   error: Error | undefined;
 }) => {
+  const t = useT();
   const handleOnSelect = useMarketClickHandler();
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
 
@@ -274,7 +275,7 @@ const ClosedMarketsDataGrid = ({
         },
       },
     ];
-  }, [openAssetDialog]);
+  }, [openAssetDialog, t]);
 
   return (
     <AgGrid

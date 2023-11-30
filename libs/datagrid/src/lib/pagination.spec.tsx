@@ -25,7 +25,7 @@ describe('Pagination', () => {
     const mockOnLoad = jest.fn();
     const count = 10;
     render(<Pagination {...props} count={count} onLoad={mockOnLoad} />);
-    expect(screen.getByText(`${count} rows loaded`)).toBeInTheDocument();
+    expect(screen.getByText('10 rows loaded')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Load more' }));
     expect(mockOnLoad).toHaveBeenCalled();
   });

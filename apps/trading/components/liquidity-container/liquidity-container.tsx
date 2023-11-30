@@ -1,6 +1,5 @@
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
-import { t } from '@vegaprotocol/i18n';
 import {
   lpAggregatedDataProvider,
   type Filter,
@@ -17,6 +16,7 @@ import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { useT } from '../../lib/use-t';
 
 export const LiquidityContainer = ({
   marketId,
@@ -25,6 +25,7 @@ export const LiquidityContainer = ({
   marketId: string | undefined;
   filter?: Filter;
 }) => {
+  const t = useT();
   const gridStore = useLiquidityStore((store) => store.gridStore);
   const updateGridStore = useLiquidityStore((store) => store.updateGridStore);
 

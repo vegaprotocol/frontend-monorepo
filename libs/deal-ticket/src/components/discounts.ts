@@ -15,6 +15,7 @@ export const getDiscountedFee = (
       discountedFee: feeAmount,
       volumeDiscount: '0',
       referralDiscount: '0',
+      totalDiscount: '0',
     };
   }
   const referralDiscount = new BigNumber(referralDiscountFactor || '0')
@@ -23,12 +24,14 @@ export const getDiscountedFee = (
   const volumeDiscount = new BigNumber(volumeDiscountFactor || '0')
     .multipliedBy((BigInt(feeAmount) - BigInt(referralDiscount)).toString())
     .toFixed(0, BigNumber.ROUND_FLOOR);
+  const totalDiscount = (
+    BigInt(referralDiscount) + BigInt(volumeDiscount)
+  ).toString();
   const discountedFee = (
-    BigInt(feeAmount || '0') -
-    BigInt(referralDiscount) -
-    BigInt(volumeDiscount)
+    BigInt(feeAmount || '0') - BigInt(totalDiscount)
   ).toString();
   return {
+    totalDiscount,
     referralDiscount,
     volumeDiscount,
     discountedFee,
@@ -39,16 +42,28 @@ export const getTotalDiscountFactor = (feeEstimate?: {
   volumeDiscountFactor?: string;
   referralDiscountFactor?: string;
 }) => {
-  if (!feeEstimate) {
-    return 0;
+  if (
+    !feeEstimate ||
+    (feeEstimate.referralDiscountFactor === '0' &&
+      feeEstimate.volumeDiscountFactor === '0')
+  ) {
+    return '0';
   }
-  const volumeFactor = Number(feeEstimate?.volumeDiscountFactor) || 0;
-  const referralFactor = Number(feeEstimate?.referralDiscountFactor) || 0;
-  if (!volumeFactor) {
-    return referralFactor;
+  const volumeFactor = new BigNumber(
+    feeEstimate?.volumeDiscountFactor || 0
+  ).minus(1);
+  const referralFactor = new BigNumber(
+    feeEstimate?.referralDiscountFactor || 0
+  ).minus(1);
+  if (volumeFactor.isZero()) {
+    return feeEstimate.referralDiscountFactor
+      ? `-${feeEstimate.referralDiscountFactor}`
+      : '0';
   }
-  if (!referralFactor) {
-    return volumeFactor;
+  if (referralFactor.isZero()) {
+    return feeEstimate.volumeDiscountFactor
+      ? `-${feeEstimate.volumeDiscountFactor}`
+      : '0';
   }
-  return 1 - (1 - volumeFactor) * (1 - referralFactor);
+  return volumeFactor.multipliedBy(referralFactor).minus(1).toString();
 };

@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import { usePrevious } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
 import type { Ref } from 'react';
@@ -9,6 +8,7 @@ import type { Toasts } from './use-toasts';
 import { ToastPosition, useToasts, useToastsConfiguration } from './use-toasts';
 
 import { Portal } from '@radix-ui/react-portal';
+import { useT } from '../../use-t';
 
 type ToastsContainerProps = {
   toasts: Toasts;
@@ -21,6 +21,7 @@ export const ToastsContainer = ({
   order = 'asc',
   showHidden = false,
 }: ToastsContainerProps) => {
+  const t = useT();
   const ref = useRef<HTMLDivElement>();
   const closeAll = useToasts((store) => store.closeAll);
   const position = useToastsConfiguration((store) => store.position);
@@ -55,17 +56,17 @@ export const ToastsContainer = ({
         'absolute z-20',
         { 'bottom-0 right-0': position === ToastPosition.BottomRight },
         { 'bottom-0 left-0': position === ToastPosition.BottomLeft },
-        { 'top-0 left-0': position === ToastPosition.TopLeft },
-        { 'top-0 right-0': position === ToastPosition.TopRight },
+        { 'left-0 top-0': position === ToastPosition.TopLeft },
+        { 'right-0 top-0': position === ToastPosition.TopRight },
         {
-          'top-0 left-[50%] translate-x-[-50%]':
+          'left-[50%] top-0 translate-x-[-50%]':
             position === ToastPosition.TopCenter,
         },
         {
           'bottom-0 left-[50%] translate-x-[-50%]':
             position === ToastPosition.BottomCenter,
         },
-        'max-w-full max-h-full overflow-x-hidden overflow-y-auto',
+        'max-h-full max-w-full overflow-y-auto overflow-x-hidden',
         {
           'p-4': validToasts.length > 0, // only apply padding when toasts showing, otherwise a small section of the screen is covered
           hidden: validToasts.length === 0,
@@ -89,9 +90,9 @@ export const ToastsContainer = ({
             })}
         <div
           className={classNames(
-            'absolute w-full top-[-38px] right-0 z-20',
+            'absolute right-0 top-[-38px] z-20 w-full',
             'transition-opacity',
-            'opacity-0 group-hover:opacity-50 hover:!opacity-100',
+            'opacity-0 hover:!opacity-100 group-hover:opacity-50',
             {
               hidden: validToasts.length === 0,
             }

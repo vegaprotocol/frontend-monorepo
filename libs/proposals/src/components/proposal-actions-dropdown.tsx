@@ -5,10 +5,11 @@ import {
   Link,
   ActionsDropdown,
 } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
+import { useT } from '../use-t';
 
 export const ProposalActionsDropdown = ({ id }: { id: string }) => {
+  const t = useT();
   const linkCreator = useLinks(DApp.Governance);
 
   return (

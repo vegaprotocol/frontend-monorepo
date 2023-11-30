@@ -6,7 +6,6 @@ import { create } from 'zustand';
 import { TransferContainer } from '@vegaprotocol/accounts';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { DepositContainer } from '@vegaprotocol/deposits';
-import { t } from '@vegaprotocol/i18n';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { TinyScroll, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { NodeHealthContainer } from '../node-health';
@@ -16,6 +15,7 @@ import { WithdrawContainer } from '../withdraw-container';
 import { GetStarted } from '../welcome-dialog';
 import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
+import { useT } from '../../lib/use-t';
 
 export enum ViewType {
   Order = 'Order',
@@ -51,6 +51,7 @@ type SidebarView =
     };
 
 export const Sidebar = ({ options }: { options?: ReactNode }) => {
+  const t = useT();
   const currentRouteId = useGetCurrentRouteId();
   const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
   const setViewAsDialogOpen = useViewAsDialog((state) => state.setOpen);
@@ -150,6 +151,7 @@ export const SidebarDivider = () => {
 };
 
 export const SidebarContent = () => {
+  const t = useT();
   const params = useParams();
   const currentRouteId = useGetCurrentRouteId();
 

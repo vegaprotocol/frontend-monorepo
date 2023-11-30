@@ -28,6 +28,22 @@ export const getAsset = (market: Partial<Market>) => {
   throw new Error('Failed to retrieve asset. Invalid product type');
 };
 
+export const getProductType = (market: Partial<Market>) => {
+  if (!market.tradableInstrument?.instrument.product) {
+    throw new Error(
+      'Failed to retrieve product type. Invalid tradable instrument'
+    );
+  }
+
+  const type = market.tradableInstrument.instrument.product.__typename;
+
+  if (!type) {
+    throw new Error('Failed to retrieve asset. Invalid product type');
+  }
+
+  return type;
+};
+
 export const getQuoteName = (market: Partial<Market>) => {
   if (!market.tradableInstrument?.instrument.product) {
     throw new Error(

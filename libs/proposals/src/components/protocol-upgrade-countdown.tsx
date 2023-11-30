@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import { useNextProtocolUpgradeProposal, useTimeToUpgrade } from '../lib';
 import { convertToCountdownString } from '@vegaprotocol/utils';
 import classNames from 'classnames';
@@ -9,6 +8,8 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useProtocolUpgradeProposalLink } from '@vegaprotocol/environment';
 import { useContext } from 'react';
+import { useT } from '../use-t';
+import { Trans } from 'react-i18next';
 
 export enum ProtocolUpgradeCountdownMode {
   IN_BLOCKS,
@@ -21,6 +22,7 @@ type ProtocolUpgradeCountdownProps = {
 export const ProtocolUpgradeCountdown = ({
   mode = ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING,
 }: ProtocolUpgradeCountdownProps) => {
+  const t = useT();
   const { theme } = useContext(NavigationContext);
   const { data, lastBlockHeight } = useNextProtocolUpgradeProposal();
 
@@ -45,12 +47,14 @@ export const ProtocolUpgradeCountdown = ({
   switch (mode) {
     case ProtocolUpgradeCountdownMode.IN_BLOCKS:
       countdown = (
-        <>
-          <span className={emphasis}>
-            {Number(data.upgradeBlockHeight) - Number(lastBlockHeight)}
-          </span>{' '}
-          {t('blocks')}
-        </>
+        <Trans
+          i18nKey="numberOfBlocks"
+          defaults="<0>{{count}}</0> blocks"
+          components={[<span className={emphasis}>count</span>]}
+          values={{
+            count: Number(data.upgradeBlockHeight) - Number(lastBlockHeight),
+          }}
+        />
       );
       break;
     case ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING:
@@ -61,7 +65,7 @@ export const ProtocolUpgradeCountdown = ({
           </span>
         ) : (
           <span
-            className={classNames('italic lowercase text-vega-orange-600', {
+            className={classNames('text-vega-orange-600 lowercase italic', {
               '!text-black': theme === 'yellow',
             })}
           >
@@ -80,20 +84,19 @@ export const ProtocolUpgradeCountdown = ({
       <div
         data-testid="protocol-upgrade-counter"
         className={classNames(
-          'flex flex-nowrap gap-1 items-center text-xs py-1 px-2 lg:px-4 h-8',
-          'border rounded',
+          'flex h-8 flex-nowrap items-center gap-1 px-2 py-1 text-xs lg:px-4',
+          'rounded border',
           'border-vega-orange-500 dark:border-vega-orange-500',
           'bg-vega-orange-300 dark:bg-vega-orange-700',
           'text-default',
           {
-            '!bg-transparent !border-black': theme === 'yellow',
+            '!border-black !bg-transparent': theme === 'yellow',
           }
         )}
       >
         <VegaIcon name={VegaIconNames.EXCLAIMATION_MARK} size={12} />{' '}
-        <span className="flex gap-1 flex-nowrap whitespace-nowrap">
-          <span>{t('Network upgrade in')} </span>
-          {countdown}
+        <span className="flex flex-nowrap gap-1 whitespace-nowrap">
+          <span>{t('Network upgrade in {{countdown}}', { countdown })} </span>
         </span>
       </div>
     </a>

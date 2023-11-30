@@ -19,6 +19,7 @@ export * from './indicator';
 export * from './input';
 export * from './input-error';
 export * from './key-value-table';
+export * from './language-selector';
 export * from './link';
 export * from './loader';
 export * from './lozenge';

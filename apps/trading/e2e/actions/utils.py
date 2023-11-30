@@ -1,5 +1,4 @@
 from collections import namedtuple
-
 from playwright.sync_api import Page
 from vega_sim.null_service import VegaServiceNull
 from typing import Optional
@@ -36,3 +35,14 @@ def next_epoch(vega: VegaServiceNull):
             )
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
+
+def truncate_middle(market_id, start=6, end=4):
+    if len(market_id) < 11:
+        return market_id
+    return market_id[:start] + '\u2026' + market_id[-end:]
+
+def change_keys(page: Page, vega:VegaServiceNull, key_name):
+    page.get_by_test_id("manage-vega-wallet").click()
+    page.get_by_test_id("key-" + vega.wallet.public_key(key_name)).click()
+    page.click(f'data-testid=key-{vega.wallet.public_key(key_name)} >> .inline-flex')
+    page.reload()

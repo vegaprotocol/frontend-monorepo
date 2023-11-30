@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import {
   getDateTimeFormat,
   resolveNetworkName,
@@ -13,12 +12,14 @@ import {
 import { useEthereumConfig } from './use-ethereum-config';
 import { Button, useToasts } from '@vegaprotocol/ui-toolkit';
 import { useWeb3ConnectStore } from './web3-connect-store';
+import { useT } from './use-t';
 
 export const VerificationStatus = ({
   state,
 }: {
   state: EthWithdrawalApprovalState;
 }) => {
+  const t = useT();
   const { config } = useEthereumConfig();
   const openDialog = useWeb3ConnectStore((state) => state.open);
   const remove = useToasts((state) => state.remove);
@@ -38,9 +39,14 @@ export const VerificationStatus = ({
     return state.failureReason === WithdrawalFailure.NoConnection ? (
       <>
         <p>
-          {t('To complete this withdrawal, connect the Ethereum wallet %s', [
-            truncateByChars(state.withdrawal.details?.receiverAddress || ' '),
-          ])}
+          {t(
+            'To complete this withdrawal, connect the Ethereum wallet {{receiverAddress}}',
+            {
+              receiverAddress: truncateByChars(
+                state.withdrawal.details?.receiverAddress || ' '
+              ),
+            }
+          )}
         </p>
         <Button
           onClick={() => {
@@ -56,9 +62,12 @@ export const VerificationStatus = ({
       <>
         <p>{t('Your Ethereum wallet is connected to the wrong network.')}</p>
         <p className="mt-2">
-          {t('Go to your Ethereum wallet and connect to the network %s', [
-            resolveNetworkName(config?.chain_id),
-          ])}
+          {t(
+            'Go to your Ethereum wallet and connect to the network {{networkName}}',
+            {
+              networkName: resolveNetworkName(config?.chain_id),
+            }
+          )}
         </p>
       </>
     );
@@ -75,7 +84,9 @@ export const VerificationStatus = ({
     return (
       <>
         <p>{t("The amount you're withdrawing has triggered a time delay")}</p>
-        <p>{t(`Cannot be completed until ${formattedTime}`)}</p>
+        <p>
+          {t(`Cannot be completed until {{time}}`, { time: formattedTime })}
+        </p>
       </>
     );
   }

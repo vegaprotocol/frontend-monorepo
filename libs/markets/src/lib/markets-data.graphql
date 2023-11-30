@@ -17,6 +17,7 @@ fragment MarketsDataFields on MarketData {
   suppliedStake
   auctionStart
   auctionEnd
+  openInterest
 }
 
 query MarketsData {

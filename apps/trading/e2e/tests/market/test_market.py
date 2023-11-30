@@ -1,22 +1,11 @@
 import pytest
-
-from collections import namedtuple
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService, PeggedOrder
+from vega_sim.service import VegaService
 from actions.vega import submit_order
-
+from wallet_config import MM_WALLET, MM_WALLET2
 import logging
 
 logger = logging.getLogger()
-
-
-# Wallet Configurations
-WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
-MM_WALLET = WalletConfig("mm", "pin")
-MM_WALLET2 = WalletConfig("mm2", "pin2")
-TERMINATE_WALLET = WalletConfig("FJMKnwfZdd48C8NqvYrG", "bY3DxwtsCstMIIZdNpKs")
-
-wallets = [MM_WALLET, MM_WALLET2, TERMINATE_WALLET]
 
 table_row_selector = (
     '[data-testid="tab-open-markets"] .ag-center-cols-container .ag-row'
@@ -85,7 +74,7 @@ def test_price_monitoring(simple_market, vega: VegaService, page: Page):
         time_in_force="TIME_IN_FORCE_GTC",
         volume=99,
     )
-
+    #6002-MDET-009
     expect(
         page.get_by_test_id(liquidity_supplied).get_by_test_id(item_value)
     ).to_have_text("0.00 (0.00%)")
@@ -203,6 +192,7 @@ def test_price_monitoring(simple_market, vega: VegaService, page: Page):
     # commented out because we have an issue #4233
     # expect(page.get_by_text("Opening auction")).to_be_hidden()
     
+    #6002-MDET-009
     expect(
         page.get_by_test_id(liquidity_supplied).get_by_test_id(item_value)
     ).to_have_text("50.00 (>100%)")

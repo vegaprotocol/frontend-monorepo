@@ -10,7 +10,7 @@ on:
     inputs:
       console-test-branch:
         type: choice
-        description: 'main: v0.72.14, develop: v0.73.4'
+        description: 'main: v0.73.5, develop: v0.73.5'
         options:
           - main
           - develop
@@ -215,7 +215,7 @@ jobs:
         if: always()
         with:
           name: playwright-trace
-          path: ./traces/
+          path: apps/trading/e2e/traces/
           retention-days: 15
       #----------------------------------------------
       #  -----  upload logs  -----

@@ -8,7 +8,7 @@ import {
   useProposalSubmit,
 } from '@vegaprotocol/proposals';
 import { useEnvironment, DocsLinks } from '@vegaprotocol/environment';
-import { validateJson } from '@vegaprotocol/utils';
+import { useValidateJson } from '@vegaprotocol/utils';
 import {
   NetworkParams,
   useNetworkParams,
@@ -53,6 +53,7 @@ export interface UpdateMarketProposalFormFields {
 const DOCS_LINK = '/update-market-proposal';
 
 export const ProposeUpdateMarket = () => {
+  const validateJson = useValidateJson();
   const {
     params,
     loading: networkParamsLoading,
@@ -260,7 +261,7 @@ export const ProposeUpdateMarket = () => {
               </FormGroup>
 
               {selectedMarket && (
-                <div className="mt-[-20px] mb-6">
+                <div className="mb-6 mt-[-20px]">
                   <KeyValueTable data-testid="update-market-details">
                     <KeyValueTableRow>
                       {t('MarketName')}

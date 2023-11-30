@@ -1,5 +1,4 @@
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { Panel } from '@vegaprotocol/ui-toolkit';
@@ -15,6 +14,7 @@ import {
 } from './use-ethereum-withdraw-approvals-store';
 import { ApprovalStatus } from './use-ethereum-withdraw-approvals-store';
 import { VerificationStatus } from './withdrawal-approval-status';
+import { useT } from './use-t';
 
 const intentMap: { [s in ApprovalStatus]: Intent } = {
   Pending: Intent.Warning,
@@ -29,6 +29,7 @@ const EthWithdrawalApprovalToastContent = ({
 }: {
   tx: EthWithdrawalApprovalState;
 }) => {
+  const t = useT();
   const isConnectionFailure =
     tx.failureReason &&
     [
@@ -54,14 +55,17 @@ const EthWithdrawalApprovalToastContent = ({
     title = t('Approved');
   }
 
-  const num = formatNumber(
+  const amount = formatNumber(
     toBigNum(tx.withdrawal.amount, tx.withdrawal.asset.decimals),
     tx.withdrawal.asset.decimals
   );
   const details = isConnectionFailure ? null : (
     <Panel>
       <strong>
-        {t('Withdraw')} {num} {tx.withdrawal.asset.symbol}
+        {t('Withdraw {{amount}} {{symbol}}', {
+          amount,
+          symbol: tx.withdrawal.asset.symbol,
+        })}
       </strong>
     </Panel>
   );

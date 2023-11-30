@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { LayoutPriority } from 'allotment';
 import { titlefy } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { useIncompleteWithdrawals } from '@vegaprotocol/withdraws';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import { usePageTitleStore } from '../../stores';
@@ -25,6 +24,7 @@ import { AccountsMenu } from '../../components/accounts-menu';
 import { DepositsMenu } from '../../components/deposits-menu';
 import { WithdrawalsMenu } from '../../components/withdrawals-menu';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
+import { useT } from '../../lib/use-t';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -39,6 +39,7 @@ const WithdrawalsIndicator = () => {
 };
 
 export const Portfolio = () => {
+  const t = useT();
   const currentRouteId = useGetCurrentRouteId();
   const { getView, setViews } = useSidebar();
   const view = getView(currentRouteId);
@@ -49,7 +50,7 @@ export const Portfolio = () => {
 
   useEffect(() => {
     updateTitle(titlefy([t('Portfolio')]));
-  }, [updateTitle]);
+  }, [updateTitle, t]);
 
   // Make transfer sidebar open by default
   useEffect(() => {

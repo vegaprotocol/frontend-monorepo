@@ -10,7 +10,6 @@ import {
   addDecimalsFormatNumber,
   getTimeFormat,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import {
   type ColDef,
   type CellClassParams,
@@ -20,6 +19,7 @@ import {
 import { type AgGridReactProps } from 'ag-grid-react';
 import { type Trade } from './trades-data-provider';
 import { Side } from '@vegaprotocol/types';
+import { useT } from './use-t';
 
 export const BUY_CLASS = 'text-market-green-600 dark:text-market-green';
 export const SELL_CLASS = 'text-market-red dark:text-market-red';
@@ -51,6 +51,7 @@ interface Props extends AgGridReactProps {
 }
 
 export const TradesTable = ({ onClick, ...props }: Props) => {
+  const t = useT();
   const columnDefs = useMemo<ColDef[]>(
     () => [
       {
@@ -118,7 +119,7 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
         },
       },
     ],
-    [onClick]
+    [onClick, t]
   );
   return (
     <AgGrid

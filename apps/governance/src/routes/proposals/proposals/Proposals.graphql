@@ -101,9 +101,16 @@ fragment ProposalFields on Proposal {
         instrument {
           name
           code
-          futureProduct {
-            settlementAsset {
-              symbol
+          product {
+            ... on FutureProduct {
+              settlementAsset {
+                symbol
+              }
+            }
+            ... on PerpetualProduct {
+              settlementAsset {
+                symbol
+              }
             }
           }
         }
@@ -164,7 +171,6 @@ query Proposals(
   $includeNewMarketProductFields: Boolean!
   $includeUpdateMarketStates: Boolean!
   $includeUpdateReferralPrograms: Boolean!
-  $includeUpdateVolumeDiscountPrograms: Boolean!
 ) {
   proposalsConnection {
     edges {
@@ -174,7 +180,6 @@ query Proposals(
         ...UpdateMarketStates @include(if: $includeUpdateMarketStates)
         ...UpdateReferralPrograms @include(if: $includeUpdateReferralPrograms)
         ...UpdateVolumeDiscountPrograms
-          @include(if: $includeUpdateVolumeDiscountPrograms)
       }
     }
   }

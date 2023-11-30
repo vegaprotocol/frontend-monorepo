@@ -21,6 +21,7 @@
   "DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT": "To cover the required margin, this amount will be drawn from your general ({{assetSymbol}}) account.",
   "Deposit {{assetSymbol}}": "Deposit {{assetSymbol}}",
   "Devnet": "Devnet",
+  "Discount": "Discount",
   "EST_TOTAL_MARGIN_TOOLTIP_TEXT": "Estimated total margin that will cover open positions, active orders and this order.",
   "Est. uncrossing price": "Est. uncrossing price",
   "Est. uncrossing vol": "Est. uncrossing vol",
@@ -78,6 +79,7 @@
   "Size": "Size",
   "Size cannot be lower than {{sizeStep}}": "Size cannot be lower than {{sizeStep}}",
   "sizeAtPrice-market": "market",
+  "Subtotal": "Subtotal",
   "Stagnet": "Stagnet",
   "Stop": "Stop",
   "Stop Limit": "Stop Limit",
@@ -104,7 +106,7 @@
   "Time in force": "Time in force",
   "TIME_IN_FORCE_SELECTOR_LIQUIDITY_MONITORING_AUCTION": "This market is in auction until it reaches <0>sufficient liquidity</0>. Until the auction ends, you can only place GFA, GTT, or GTC limit orders.",
   "TIME_IN_FORCE_SELECTOR_PRICE_MONITORING_AUCTION": "This market is in auction due to <0>high price volatility</0>. Until the auction ends, you can only place GFA, GTT, or GTC limit orders.",
-  "Total fees": "Total fees",
+  "Total": "Total",
   "Total margin available": "Total margin available",
   "TOTAL_MARGIN_AVAILABLE": "Total margin available = general {{assetSymbol}} balance ({{generalAccountBalance}} {{assetSymbol}}) + margin balance ({{marginAccountBalance}} {{assetSymbol}}) - maintenance level ({{marginMaintenance}} {{assetSymbol}}).",
   "Trading terminated": "Trading terminated",
@@ -128,5 +130,11 @@
   "You need to connect your own wallet to start trading on this market": "You need to connect your own wallet to start trading on this market",
   "You need to provide a minimum visible size": "You need to provide a minimum visible size",
   "You need to provide a peak size": "You need to provide a peak size",
-  "You need to provide a size": "You need to provide a size"
+  "You need to provide a size": "You need to provide a size",
+  "TIME_IN_FORCE_FOK": "Fill or Kill (FOK)",
+  "TIME_IN_FORCE_GFA": "Good for Auction (GFA)",
+  "TIME_IN_FORCE_GFN": "Good for Normal (GFN)",
+  "TIME_IN_FORCE_GTC": "Good 'til Cancelled (GTC)",
+  "TIME_IN_FORCE_GTT": "Good 'til Time (GTT)",
+  "TIME_IN_FORCE_IOC": "Immediate or Cancel (IOC)"
 }

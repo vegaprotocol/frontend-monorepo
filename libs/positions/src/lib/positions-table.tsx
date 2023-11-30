@@ -28,7 +28,6 @@ import {
   addDecimalsFormatNumber,
   addDecimalsFormatNumberQuantum,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { type Position } from './positions-data-providers';
 import {
   MarketTradingMode,
@@ -38,6 +37,7 @@ import {
 import { DocsLinks } from '@vegaprotocol/environment';
 import { PositionActionsDropdown } from './position-actions-dropdown';
 import { LiquidationPrice } from './liquidation-price';
+import { useT } from '../use-t';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -81,6 +81,7 @@ export const PositionsTable = ({
   pubKey,
   ...props
 }: Props) => {
+  const t = useT();
   return (
     <AgGrid
       overlayNoRowsTemplate={t('No positions')}
@@ -193,8 +194,8 @@ export const PositionsTable = ({
               switch (args.data.status) {
                 case PositionStatus.POSITION_STATUS_CLOSED_OUT:
                   secondaryTooltip = t(
-                    `You did not have enough %s collateral to meet the maintenance margin requirements for your position, so it was closed by the network.`,
-                    args.data.assetSymbol
+                    `You did not have enough {{assetSymbol}} collateral to meet the maintenance margin requirements for your position, so it was closed by the network.`,
+                    { assetSymbol: args.data.assetSymbol }
                   );
                   break;
                 case PositionStatus.POSITION_STATUS_ORDERS_CLOSED:
@@ -218,10 +219,9 @@ export const PositionsTable = ({
                       <p className="mb-2">{primaryTooltip}</p>
                       <p className="mb-2">{secondaryTooltip}</p>
                       <p className="mb-2">
-                        {t(
-                          'Status: %s',
-                          PositionStatusMapping[args.data.status]
-                        )}
+                        {t('Status: {{status}}', {
+                          status: PositionStatusMapping[args.data.status],
+                        })}
                       </p>
                       {POSITION_RESOLUTION_LINK && (
                         <ExternalLink href={POSITION_RESOLUTION_LINK}>
@@ -386,18 +386,22 @@ export const PositionsTable = ({
                   value={
                     <>
                       <p className="mb-2">
-                        {t('Realised PNL: %s', args.value)}
+                        {t('Realised PNL: {{value}}', {
+                          value: args.value,
+                        })}
                       </p>
                       <p className="mb-2">
                         {t(
-                          'Lifetime loss socialisation deductions: %s',
-                          lossesFormatted
+                          'Lifetime loss socialisation deductions: {{losses}}',
+                          {
+                            losses: lossesFormatted,
+                          }
                         )}
                       </p>
                       <p className="mb-2">
                         {t(
-                          `You received less %s in gains that you should have when the market moved in your favour. This occurred because one or more other trader(s) were closed out and did not have enough funds to cover their losses, and the market's insurance pool was empty.`,
-                          args.data.assetSymbol
+                          `You received less {{assetSymbol}} in gains that you should have when the market moved in your favour. This occurred because one or more other trader(s) were closed out and did not have enough funds to cover their losses, and the market's insurance pool was empty.`,
+                          { assetSymbol: args.data.assetSymbol }
                         )}
                       </p>
                       {LOSS_SOCIALIZATION_LINK && (
@@ -481,7 +485,15 @@ export const PositionsTable = ({
         return columnDefs.filter<ColDef>(
           (colDef: ColDef | null): colDef is ColDef => colDef !== null
         );
-      }, [isReadOnly, multipleKeys, onClose, onMarketClick, pubKey, pubKeys])}
+      }, [
+        isReadOnly,
+        multipleKeys,
+        onClose,
+        onMarketClick,
+        pubKey,
+        pubKeys,
+        t,
+      ])}
       {...props}
     />
   );

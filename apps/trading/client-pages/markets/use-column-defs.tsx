@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import type { ColDef, ValueFormatterParams } from 'ag-grid-community';
-import { t } from '@vegaprotocol/i18n';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
@@ -18,10 +17,12 @@ import type {
 import { MarketActionsDropdown } from './market-table-actions';
 import { calcCandleVolume, getAsset } from '@vegaprotocol/markets';
 import { MarketCodeCell } from './market-code-cell';
+import { useT } from '../../lib/use-t';
 
 const { MarketTradingMode, AuctionTrigger } = Schema;
 
 export const useColumnDefs = () => {
+  const t = useT();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return useMemo<ColDef[]>(
     () => [
@@ -49,6 +50,29 @@ export const useColumnDefs = () => {
       {
         headerName: t('Description'),
         field: 'tradableInstrument.instrument.name',
+      },
+      {
+        headerName: t('Settlement asset'),
+        field: 'tradableInstrument.instrument.product.settlementAsset.symbol',
+        cellRenderer: ({
+          data,
+        }: VegaICellRendererParams<
+          MarketMaybeWithData,
+          'tradableInstrument.instrument.product.settlementAsset.symbol'
+        >) => {
+          const value = data && getAsset(data);
+          return value ? (
+            <ButtonLink
+              onClick={(e) => {
+                openAssetDetailsDialog(value.id, e.target as HTMLElement);
+              }}
+            >
+              {value.symbol}
+            </ButtonLink>
+          ) : (
+            ''
+          );
+        },
       },
       {
         headerName: t('Trading mode'),
@@ -141,27 +165,21 @@ export const useColumnDefs = () => {
         },
       },
       {
-        headerName: t('Settlement asset'),
-        field: 'tradableInstrument.instrument.product.settlementAsset.symbol',
-        cellRenderer: ({
+        headerName: t('Open Interest'),
+        field: 'data.openInterest',
+        type: 'rightAligned',
+        valueFormatter: ({
           data,
-        }: VegaICellRendererParams<
+        }: VegaValueFormatterParams<
           MarketMaybeWithData,
-          'tradableInstrument.instrument.product.settlementAsset.symbol'
-        >) => {
-          const value = data && getAsset(data);
-          return value ? (
-            <ButtonLink
-              onClick={(e) => {
-                openAssetDetailsDialog(value.id, e.target as HTMLElement);
-              }}
-            >
-              {value.symbol}
-            </ButtonLink>
-          ) : (
-            ''
-          );
-        },
+          'data.openInterest'
+        >) =>
+          data?.data?.openInterest === undefined
+            ? '-'
+            : addDecimalsFormatNumber(
+                data?.data?.openInterest,
+                data?.positionDecimalPlaces
+              ),
       },
       {
         headerName: t('Spread'),
@@ -216,6 +234,6 @@ export const useColumnDefs = () => {
         },
       },
     ],
-    [openAssetDetailsDialog]
+    [openAssetDetailsDialog, t]
   );
 };

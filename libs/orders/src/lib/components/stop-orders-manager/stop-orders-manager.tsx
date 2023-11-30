@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import { useCallback, useEffect, useState } from 'react';
 import { StopOrdersTable } from '../stop-orders-table/stop-orders-table';
 import { type useDataGridEvents } from '@vegaprotocol/datagrid';
@@ -11,6 +10,7 @@ import {
   type StopOrdersQueryVariables,
 } from '../order-data-provider';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import { useT } from '../../use-t';
 
 export interface StopOrdersManagerProps {
   partyId: string;
@@ -27,6 +27,7 @@ export const StopOrdersManager = ({
   isReadOnly,
   gridProps,
 }: StopOrdersManagerProps) => {
+  const t = useT();
   const create = useVegaTransactionStore((state) => state.create);
   const [viewOrder, setViewOrder] = useState<Order | null>(null);
   const variables: StopOrdersQueryVariables = {

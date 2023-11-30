@@ -4,7 +4,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../lib/use-t';
 
 interface Props {
   telemetryValue: string;
@@ -15,6 +15,7 @@ export const TelemetryApproval = ({
   telemetryValue,
   setTelemetryValue,
 }: Props) => {
+  const t = useT();
   return (
     <div className="flex flex-col">
       <div className="mr-4" role="form">

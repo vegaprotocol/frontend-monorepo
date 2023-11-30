@@ -3,12 +3,13 @@ import { Intent, useToasts } from '@vegaprotocol/ui-toolkit';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useCallback, useEffect } from 'react';
 import { TelemetryApproval } from './telemetry-approval';
-import { t } from '@vegaprotocol/i18n';
 import { useOnboardingStore } from '../welcome-dialog/use-get-onboarding-step';
+import { useT } from '../../lib/use-t';
 
 const TELEMETRY_APPROVAL_TOAST_ID = 'telemetry_toast_id';
 
 export const Telemetry = () => {
+  const t = useT();
   const onboardingDissmissed = useOnboardingStore((store) => store.dismissed);
   const [telemetryValue, setTelemetryValue, isTelemetryNeeded, closeTelemetry] =
     useTelemetryApproval();
@@ -63,6 +64,7 @@ export const Telemetry = () => {
     hasToast,
     onApprovalClose,
     setTelemetryApprovalAndClose,
+    t,
   ]);
 
   return null;

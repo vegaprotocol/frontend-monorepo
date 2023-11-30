@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
-import BigNumber from 'bignumber.js';
 import type { ColDef } from 'ag-grid-community';
 import {
-  CenteredGridCellWrapper,
   COL_DEFS,
   DateRangeFilter,
   SetFilter,
@@ -10,33 +8,20 @@ import {
 } from '@vegaprotocol/datagrid';
 import compact from 'lodash/compact';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
-import {
-  NetworkParams,
-  useNetworkParams,
-} from '@vegaprotocol/network-parameters';
 import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import {
-  ProductTypeMapping,
-  ProductTypeShortName,
+  ProposalProductTypeShortName,
   ProposalStateMapping,
 } from '@vegaprotocol/types';
 import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
-import { VoteProgress } from '../voting-progress';
 import { ProposalActionsDropdown } from '../proposal-actions-dropdown';
+import { useT } from '../../use-t';
 
 export const useColumnDefs = () => {
-  const { params } = useNetworkParams([
-    NetworkParams.governance_proposal_market_requiredMajority,
-  ]);
-  const requiredMajorityPercentage = useMemo(() => {
-    const requiredMajority =
-      params?.governance_proposal_market_requiredMajority ?? 1;
-    return new BigNumber(requiredMajority).times(100);
-  }, [params?.governance_proposal_market_requiredMajority]);
+  const t = useT();
 
   const columnDefs: ColDef[] = useMemo(() => {
     return compact([
@@ -54,27 +39,38 @@ export const useColumnDefs = () => {
         }) => {
           if (!value || !data) return '-';
 
-          // TODO: update when we switch to ProductConfiguration
-          const productType = 'Future';
+          const getProductType = (data: ProposalListFieldsFragment) => {
+            if (
+              data.terms.__typename === 'ProposalTerms' &&
+              data.terms.change.__typename === 'NewMarket'
+            ) {
+              return data.terms.change.instrument.product?.__typename;
+            }
+            return undefined;
+          };
+
+          const productType = getProductType(data);
           return (
-            <StackedCell
-              primary={value}
-              secondary={
-                <span
-                  title={ProductTypeMapping[productType]}
-                  className="uppercase"
-                >
-                  {ProductTypeShortName[productType]}
-                </span>
-              }
-            />
+            productType && (
+              <StackedCell
+                primary={value}
+                secondary={
+                  <span
+                    title={ProposalProductTypeShortName[productType]}
+                    className="uppercase"
+                  >
+                    {ProposalProductTypeShortName[productType]}
+                  </span>
+                }
+              />
+            )
           );
         },
       },
       {
         colId: 'asset',
         headerName: t('Settlement asset'),
-        field: 'terms.change.instrument.futureProduct.settlementAsset.symbol',
+        field: 'terms.change.instrument.product.settlementAsset.symbol',
       },
       {
         colId: 'state',
@@ -93,32 +89,6 @@ export const useColumnDefs = () => {
         headerName: t('Parent market'),
         field: 'terms.change.successorConfiguration.parentMarketId',
         cellRenderer: 'ParentMarketCell',
-      },
-      {
-        colId: 'voting',
-        headerName: t('Voting'),
-        cellRenderer: ({
-          data,
-        }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
-          if (data) {
-            const yesTokens = new BigNumber(data.votes.yes.totalTokens);
-            const noTokens = new BigNumber(data.votes.no.totalTokens);
-            const totalTokensVoted = yesTokens.plus(noTokens);
-            const yesPercentage = totalTokensVoted.isZero()
-              ? new BigNumber(0)
-              : yesTokens.multipliedBy(100).dividedBy(totalTokensVoted);
-            return (
-              <CenteredGridCellWrapper>
-                <VoteProgress
-                  threshold={requiredMajorityPercentage}
-                  progress={yesPercentage}
-                />
-              </CenteredGridCellWrapper>
-            );
-          }
-          return '-';
-        },
-        filter: false,
       },
       {
         colId: 'closing-date',
@@ -156,7 +126,7 @@ export const useColumnDefs = () => {
         },
       },
     ]);
-  }, [requiredMajorityPercentage]);
+  }, [t]);
 
   return columnDefs;
 };

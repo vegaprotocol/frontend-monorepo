@@ -1,11 +1,10 @@
 import sortBy from 'lodash/sortBy';
 import {
-  maxSafe,
-  required,
-  vegaPublicKey,
+  useMaxSafe,
+  useRequired,
+  useVegaPublicKey,
   addDecimal,
   formatNumber,
-  addDecimalsFormatNumber,
   toBigNum,
 } from '@vegaprotocol/utils';
 import { useT } from './use-t';
@@ -67,6 +66,9 @@ export const TransferForm = ({
   minQuantumMultiple,
 }: TransferFormProps) => {
   const t = useT();
+  const maxSafe = useMaxSafe();
+  const required = useRequired();
+  const vegaPublicKey = useVegaPublicKey();
   const {
     control,
     register,
@@ -215,12 +217,7 @@ export const TransferForm = ({
                 <AssetOption
                   key={a.key}
                   asset={a}
-                  balance={
-                    <Balance
-                      balance={formatNumber(a.balance, a.decimals)}
-                      symbol={a.symbol}
-                    />
-                  }
+                  balance={<Balance balance={a.balance} symbol={a.symbol} />}
                 />
               ))}
             </TradingRichSelect>
@@ -287,8 +284,8 @@ export const TransferForm = ({
                   return (
                     <option value={id} key={id}>
                       {AccountTypeMapping[a.type]} (
-                      {addDecimalsFormatNumber(a.balance, a.asset.decimals)}{' '}
-                      {a.asset.symbol})
+                      {addDecimal(a.balance, a.asset.decimals)} {a.asset.symbol}
+                      )
                     </option>
                   );
                 })}
@@ -415,9 +412,9 @@ export const TransferForm = ({
         {accountBalance && (
           <button
             type="button"
-            className="absolute top-0 right-0 ml-auto text-xs underline"
+            className="absolute right-0 top-0 ml-auto text-xs underline"
             onClick={() =>
-              setValue('amount', parseFloat(accountBalance).toString(), {
+              setValue('amount', accountBalance, {
                 shouldValidate: true,
               })
             }
@@ -491,7 +488,7 @@ export const TransferFee = ({
   const totalValue = new BigNumber(transferAmount).plus(fee).toString();
 
   return (
-    <div className="flex flex-col mb-4 text-xs gap-2">
+    <div className="mb-4 flex flex-col gap-2 text-xs">
       <div className="flex flex-wrap items-center justify-between gap-1">
         <Tooltip
           description={t(
@@ -560,7 +557,7 @@ export const AddressField = ({
         <button
           type="button"
           onClick={onChange}
-          className="absolute top-0 right-0 ml-auto text-xs underline"
+          className="absolute right-0 top-0 ml-auto text-xs underline"
         >
           {isInput ? t('Select from wallet') : t('Enter manually')}
         </button>
