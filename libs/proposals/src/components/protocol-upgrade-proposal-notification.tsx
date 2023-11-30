@@ -43,6 +43,7 @@ export const ProtocolUpgradeProposalNotification = ({
     case ProtocolUpgradeCountdownMode.IN_BLOCKS:
       countdown = (
         <Trans
+          i18nKey="numberOfBlocks"
           defaults="<0>{{count}}</0> blocks"
           components={[<span className="text-vega-orange-500">count</span>]}
           values={{

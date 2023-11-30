@@ -216,12 +216,10 @@ const ApprovalTxFeedback = ({
               <p>
                 {t(
                   'You approved deposits of up to {{assetSymbol}} {{approvedAllowanceValue}}.',
-                  [
-                    {
-                      assetSymbol: selectedAsset?.symbol,
-                      approvedAllowanceValue,
-                    },
-                  ]
+                  {
+                    assetSymbol: selectedAsset?.symbol,
+                    approvedAllowanceValue,
+                  }
                 )}
               </p>
               {txLink && <p>{txLink}</p>}

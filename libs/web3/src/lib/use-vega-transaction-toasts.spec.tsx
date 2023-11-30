@@ -21,6 +21,7 @@ import type {
 } from './__generated__/Orders';
 import type { VegaStoredTxState } from './use-vega-transaction-store';
 import { VegaTxStatus } from './types';
+import { type TFunction } from 'i18next';
 
 jest.mock('@vegaprotocol/assets', () => {
   const A1 = {
@@ -418,7 +419,7 @@ describe('getVegaTransactionContentIntent', () => {
   });
 });
 describe('getOrderToastTitle', () => {
-  const t = (v: string) => v;
+  const t = ((v: string) => v) as TFunction<'web3', undefined>;
   it('should return the correct title', () => {
     expect(getOrderToastTitle(Types.OrderStatus.STATUS_ACTIVE, t)).toBe(
       'Order submitted'
@@ -495,7 +496,7 @@ describe('getRejectionReason', () => {
           marketId: '',
           remaining: '',
         },
-        (v) => v
+        ((v) => v) as TFunction<'web3', undefined>
       )
     ).toBe('Insufficient asset balance');
   });
@@ -515,7 +516,7 @@ describe('getRejectionReason', () => {
           marketId: '',
           remaining: '',
         },
-        (v) => v
+        ((v) => v) as TFunction<'web3', undefined>
       )
     ).toBe('Your {{timeInForce}} order was not filled and it has been stopped');
   });

@@ -220,10 +220,7 @@ export const PositionsTable = ({
                       <p className="mb-2">{secondaryTooltip}</p>
                       <p className="mb-2">
                         {t('Status: {{status}}', {
-                          nsSeparator: '*',
-                          replace: {
-                            status: PositionStatusMapping[args.data.status],
-                          },
+                          status: PositionStatusMapping[args.data.status],
                         })}
                       </p>
                       {POSITION_RESOLUTION_LINK && (
@@ -390,18 +387,14 @@ export const PositionsTable = ({
                     <>
                       <p className="mb-2">
                         {t('Realised PNL: {{value}}', {
-                          nsSeparator: '*',
-                          replace: { value: args.value },
+                          value: args.value,
                         })}
                       </p>
                       <p className="mb-2">
                         {t(
                           'Lifetime loss socialisation deductions: {{losses}}',
                           {
-                            nsSeparator: '*',
-                            replace: {
-                              losses: lossesFormatted,
-                            },
+                            losses: lossesFormatted,
                           }
                         )}
                       </p>

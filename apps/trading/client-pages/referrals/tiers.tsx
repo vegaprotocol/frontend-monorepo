@@ -208,9 +208,13 @@ const TiersTable = ({
         { name: 'discount', displayName: t('Referrer trading discount') },
         {
           name: 'volume',
-          displayName: t('Min. trading volume (last {{count}} epochs)', {
-            count: windowLength,
-          }),
+          displayName: t(
+            'minTradingVolume',
+            'Min. trading volume (last {{count}} epochs)',
+            {
+              count: windowLength,
+            }
+          ),
         },
         { name: 'epochs', displayName: t('Min. epochs') },
       ]}

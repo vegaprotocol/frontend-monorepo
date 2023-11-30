@@ -66,8 +66,11 @@ const EthTransactionDetails = ({ tx }: { tx: EthStoredTxState }) => {
           <>
             <p className="mt-[2px]">
               {t(
-                'Awaiting confirmations {{confirmations}}/{[requiredConfirmations}}',
-                tx
+                'Awaiting confirmations {{confirmations}}/{{requiredConfirmations}}',
+                {
+                  confirmations: tx.confirmations,
+                  requiredConfirmations: tx.requiredConfirmations,
+                }
               )}
             </p>
             <ProgressBar

@@ -51,10 +51,7 @@ export const useEthWithdrawApprovalsManager = () => {
       update(transaction.id, {
         status: ApprovalStatus.Error,
         message: t(`Invalid asset source: {{source}}`, {
-          nsSeparator: '*',
-          replace: {
-            source: withdrawal.asset.source.__typename,
-          },
+          source: withdrawal.asset.source.__typename,
         }),
         failureReason: WithdrawalFailure.InvalidAsset,
       });
