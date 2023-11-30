@@ -2,9 +2,9 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ChartMenu } from './chart-menu';
 import {
-  useCandlesChartSettingsStore,
+  useChartSettingsStore,
   DEFAULT_CHART_SETTINGS,
-} from './use-candles-chart-settings';
+} from './use-chart-settings';
 import { Overlay, Study, overlayLabels, studyLabels } from 'pennant';
 import { useEnvironment } from '@vegaprotocol/environment';
 
@@ -25,7 +25,7 @@ describe('ChartMenu', () => {
   it('shows trading view option if library path is set', async () => {
     useEnvironment.setState({ CHARTING_LIBRARY_PATH: 'dummy' });
 
-    useCandlesChartSettingsStore.setState({
+    useChartSettingsStore.setState({
       chartlib: 'tradingview',
     });
 
@@ -45,7 +45,7 @@ describe('ChartMenu', () => {
 
     await userEvent.click(pennantOption);
 
-    expect(useCandlesChartSettingsStore.getState().chartlib).toEqual('pennant');
+    expect(useChartSettingsStore.getState().chartlib).toEqual('pennant');
   });
 
   describe('tradingview', () => {
@@ -53,7 +53,7 @@ describe('ChartMenu', () => {
       useEnvironment.setState({ CHARTING_LIBRARY_PATH: 'dummy-path' });
 
       // clear store each time to avoid conditional testing of defaults
-      useCandlesChartSettingsStore.setState({
+      useChartSettingsStore.setState({
         chartlib: 'tradingview',
       });
     });
@@ -78,7 +78,7 @@ describe('ChartMenu', () => {
 
     beforeEach(() => {
       // clear store each time to avoid conditional testing of defaults
-      useCandlesChartSettingsStore.setState({
+      useChartSettingsStore.setState({
         chartlib: 'pennant',
         overlays: [],
         studies: [],
@@ -121,7 +121,7 @@ describe('ChartMenu', () => {
     });
 
     it('should render with the correct default studies and overlays', async () => {
-      useCandlesChartSettingsStore.setState({
+      useChartSettingsStore.setState({
         ...DEFAULT_CHART_SETTINGS,
         chartlib: 'pennant',
       });

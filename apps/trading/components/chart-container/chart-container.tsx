@@ -1,10 +1,7 @@
 import invert from 'lodash/invert';
 import { Interval } from 'pennant';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import {
-  useCandlesChartSettings,
-  STUDY_SIZE,
-} from './use-candles-chart-settings';
+import { useChartSettings, STUDY_SIZE } from './use-chart-settings';
 import {
   TradingViewContainer,
   ALLOWED_TRADINGVIEW_HOSTNAMES,
@@ -28,7 +25,7 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
     setStudies,
     setStudySizes,
     setOverlays,
-  } = useCandlesChartSettings();
+  } = useChartSettings();
 
   const pennantChart = (
     <CandlesChartContainer

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { ChartContainer } from './chart-container';
-import { useCandlesChartSettingsStore } from './use-candles-chart-settings';
+import { useChartSettingsStore } from './use-chart-settings';
 import { useEnvironment } from '@vegaprotocol/environment';
 
 jest.mock('@vegaprotocol/candles-chart', () => ({
@@ -18,7 +18,7 @@ jest.mock('@vegaprotocol/trading-view', () => ({
 
 describe('ChartContainer', () => {
   it('renders pennant if no library path is set', () => {
-    useCandlesChartSettingsStore.setState({
+    useChartSettingsStore.setState({
       chartlib: 'tradingview',
     });
 
@@ -35,7 +35,7 @@ describe('ChartContainer', () => {
   });
 
   it('renders trading view if library path is set', () => {
-    useCandlesChartSettingsStore.setState({
+    useChartSettingsStore.setState({
       chartlib: 'tradingview',
     });
 
@@ -52,7 +52,7 @@ describe('ChartContainer', () => {
   });
 
   it('renders pennant chart if stored in settings', () => {
-    useCandlesChartSettingsStore.setState({
+    useChartSettingsStore.setState({
       chartlib: 'pennant',
     });
 

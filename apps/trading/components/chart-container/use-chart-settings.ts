@@ -39,7 +39,7 @@ export const DEFAULT_CHART_SETTINGS = {
   studySizes: {},
 };
 
-export const useCandlesChartSettingsStore = create<
+export const useChartSettingsStore = create<
   StoredSettings & {
     setType: (type: ChartType) => void;
     setInterval: (interval: Interval) => void;
@@ -101,8 +101,8 @@ export const useCandlesChartSettingsStore = create<
   )
 );
 
-export const useCandlesChartSettings = () => {
-  const settings = useCandlesChartSettingsStore();
+export const useChartSettings = () => {
+  const settings = useChartSettingsStore();
 
   const interval: Interval = getValidItem(
     settings.interval,

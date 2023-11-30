@@ -22,10 +22,7 @@ import {
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ALLOWED_TRADINGVIEW_HOSTNAMES } from '@vegaprotocol/trading-view';
 import { IconNames, type IconName } from '@blueprintjs/icons';
-import {
-  useCandlesChartSettings,
-  type Chartlib,
-} from './use-candles-chart-settings';
+import { useChartSettings, type Chartlib } from './use-chart-settings';
 import { useT } from '../../lib/use-t';
 
 const chartTypeIcon = new Map<ChartType, IconName>([
@@ -48,7 +45,7 @@ export const ChartMenu = () => {
     setType,
     setStudies,
     setOverlays,
-  } = useCandlesChartSettings();
+  } = useChartSettings();
   const t = useT();
 
   const contentAlign = 'end';
