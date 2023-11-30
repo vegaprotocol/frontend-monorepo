@@ -348,7 +348,7 @@ const FeesBreakdownTooltip = ({
       className="z-20 max-w-sm px-4 py-2 text-sm text-black border rounded bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 break-word dark:text-white"
     >
       <p className="mb-1 italic">
-        {t('If the market is %s', [
+        {t('If the market was %s', [
           Schema.MarketStateMapping[marketState].toLowerCase(),
         ])}
       </p>
