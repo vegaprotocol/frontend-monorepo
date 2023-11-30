@@ -3,7 +3,7 @@ import { PositionsManager } from './positions-manager';
 import { positionsMarketsProvider } from './positions-data-providers';
 import { singleRow } from './positions.mock';
 import { MockedProvider } from '@apollo/client/testing';
-import { MAXGOINT64 } from '@vegaprotocol/utils';
+import { HALFMAXGOINT64 } from '@vegaprotocol/utils';
 
 const mockCreate = jest.fn();
 
@@ -41,6 +41,6 @@ describe('PositionsManager', () => {
 
     expect(
       mockCreate.mock.lastCall[0].batchMarketInstructions.submissions[0].size
-    ).toEqual(MAXGOINT64);
+    ).toEqual(HALFMAXGOINT64);
   });
 });

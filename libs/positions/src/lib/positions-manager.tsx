@@ -10,7 +10,7 @@ import { useT } from '../use-t';
 import { useCallback } from 'react';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
-import { MAXGOINT64 } from '@vegaprotocol/utils';
+import { HALFMAXGOINT64 } from '@vegaprotocol/utils';
 
 interface PositionsManagerProps {
   partyIds: string[];
@@ -49,7 +49,7 @@ export const PositionsManager = ({
               side: openVolume.startsWith('-')
                 ? Schema.Side.SIDE_BUY
                 : Schema.Side.SIDE_SELL,
-              size: MAXGOINT64, // improvement for avoiding leftovers filled in the meantime when close request has been sent
+              size: HALFMAXGOINT64, // improvement for avoiding leftovers filled in the meantime when close request has been sent
               reduceOnly: true,
             },
           ],
