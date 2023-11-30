@@ -1,3 +1,5 @@
+import invert from 'lodash/invert';
+import { Interval } from 'pennant';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import {
   useCandlesChartSettings,
@@ -22,6 +24,7 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
     overlays,
     studies,
     studySizes,
+    setInterval,
     setStudies,
     setStudySizes,
     setOverlays,
@@ -54,9 +57,13 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
     case 'tradingview': {
       return (
         <TradingViewContainer
-          marketId={marketId}
           libraryPath={CHARTING_LIBRARY_PATH}
           libraryHash={CHARTING_LIBRARY_HASH}
+          marketId={marketId}
+          interval={toTradingViewResolution(interval)}
+          onIntervalChange={(newInterval) => {
+            setInterval(fromTradingViewResolution(newInterval));
+          }}
         />
       );
     }
@@ -67,4 +74,30 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
       throw new Error('invalid chart lib');
     }
   }
+};
+
+const TRADINGVIEW_RESOLUTION_MAP: Record<Interval, string> = {
+  [Interval.I1M]: '1',
+  [Interval.I5M]: '5',
+  [Interval.I15M]: '15',
+  [Interval.I1H]: '60',
+  [Interval.I6H]: '360',
+  [Interval.I1D]: '1D',
+};
+
+const toTradingViewResolution = (interval: Interval) => {
+  return TRADINGVIEW_RESOLUTION_MAP[interval];
+};
+
+const fromTradingViewResolution = (resolution: string) => {
+  const obj = invert(TRADINGVIEW_RESOLUTION_MAP);
+  const interval = obj[resolution];
+
+  if (!interval) {
+    throw new Error(
+      `failed to convert resolution: ${resolution} to valid interval`
+    );
+  }
+
+  return interval as Interval;
 };

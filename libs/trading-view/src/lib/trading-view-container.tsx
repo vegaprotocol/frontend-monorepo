@@ -5,13 +5,17 @@ import { TradingView } from './trading-view';
 import { CHARTING_LIBRARY_FILE } from './constants';
 
 export const TradingViewContainer = ({
-  marketId,
   libraryPath,
   libraryHash,
+  marketId,
+  interval,
+  onIntervalChange,
 }: {
-  marketId: string;
   libraryPath: string;
   libraryHash: string;
+  marketId: string;
+  interval: string;
+  onIntervalChange: (interval: string) => void;
 }) => {
   const t = useT();
   const scriptState = useScript(
@@ -35,5 +39,12 @@ export const TradingViewContainer = ({
     );
   }
 
-  return <TradingView marketId={marketId} libraryPath={libraryPath} />;
+  return (
+    <TradingView
+      libraryPath={libraryPath}
+      marketId={marketId}
+      interval={interval}
+      onIntervalChange={onIntervalChange}
+    />
+  );
 };

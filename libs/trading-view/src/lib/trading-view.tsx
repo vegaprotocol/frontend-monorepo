@@ -15,9 +15,13 @@ import { useDatafeed } from './use-datafeed';
 export const TradingView = ({
   marketId,
   libraryPath,
+  interval,
+  onIntervalChange,
 }: {
   marketId: string;
   libraryPath: string;
+  interval: string; // ResolutionString
+  onIntervalChange: (interval: string) => void;
 }) => {
   const { theme } = useThemeSwitcher();
   const language = useLanguage();
@@ -37,7 +41,7 @@ export const TradingView = ({
         symbol: marketId,
         datafeed,
         // @ts-ignore cant import types as charting_library is external
-        interval: '1' as ResolutionString,
+        interval: interval as ResolutionString,
         container: chartContainerRef.current,
         library_path: libraryPath,
         custom_css_url: 'vega_styles.css',
@@ -63,6 +67,15 @@ export const TradingView = ({
 
       // @ts-ignore parent component loads TradingView onto window obj
       widgetRef.current = new window.TradingView.widget(widgetOptions);
+
+      widgetRef.current.onChartReady(() => {
+        widgetRef.current
+          .activeChart()
+          .onIntervalChanged()
+          .subscribe(null, (resolution: string) => {
+            onIntervalChange(resolution);
+          });
+      });
 
       return () => {
         if (!widgetRef.current) return;
