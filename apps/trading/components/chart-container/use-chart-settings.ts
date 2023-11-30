@@ -4,7 +4,6 @@ import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { Interval } from '@vegaprotocol/types';
 import { getValidItem, getValidSubset } from '@vegaprotocol/react-helpers';
-import { ENV } from '@vegaprotocol/environment';
 
 type StudySizes = { [S in Study]?: number };
 export type Chartlib = 'pennant' | 'tradingview';
@@ -30,9 +29,7 @@ const STUDY_ORDER: Study[] = [
 ];
 
 export const DEFAULT_CHART_SETTINGS = {
-  chartlib: ENV.CHARTING_LIBRARY_PATH
-    ? ('tradingview' as const)
-    : ('pennant' as const),
+  chartlib: 'pennant' as const,
   interval: Interval.INTERVAL_I15M,
   type: ChartType.CANDLE,
   overlays: [Overlay.MOVING_AVERAGE],
