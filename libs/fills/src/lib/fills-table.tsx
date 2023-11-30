@@ -345,7 +345,7 @@ const FeesBreakdownTooltip = ({
   return (
     <div
       data-testid="fee-breakdown-tooltip"
-      className="z-20 max-w-sm px-4 py-2 text-sm text-black border rounded bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 break-word dark:text-white"
+      className="z-20 max-w-sm px-4 py-2 text-xs text-black border rounded bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 break-word dark:text-white"
     >
       <p className="mb-1 italic">
         {t('If the market was %s', [
@@ -406,8 +406,8 @@ const FeesDiscountBreakdownTooltipItem = ({
 }) =>
   value && value !== '0' ? (
     <>
-      <dt className="col-span-1">{label}</dt>
-      <dd className="text-right col-span-1">
+      <dt className="col-span-2">{label}</dt>
+      <dd className="text-right col-span-2">
         {addDecimalsFormatNumber(value, asset.decimals)} {asset.symbol}
       </dd>
     </>
@@ -430,7 +430,7 @@ export const FeesDiscountBreakdownTooltip = ({
       data-testid="fee-discount-breakdown-tooltip"
       className="max-w-sm bg-vega-light-100 dark:bg-vega-dark-100 border border-vega-light-200 dark:border-vega-dark-200 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white"
     >
-      <dl className="grid grid-cols-2 gap-x-1">
+      <dl className="grid grid-cols-6 gap-x-1 text-xs">
         {(fees.infrastructureFeeReferralDiscount || '0') !== '0' ||
         (fees.infrastructureFeeVolumeDiscount || '0') !== '0' ? (
           <dt className="col-span-2">{t('Infrastructure Fee')}</dt>
