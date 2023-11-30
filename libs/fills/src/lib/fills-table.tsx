@@ -27,19 +27,11 @@ import type {
 import { forwardRef } from 'react';
 import BigNumber from 'bignumber.js';
 import type { Trade } from './fills-data-provider';
-import type {
-  FillFieldsFragment,
-  TradeFeeFieldsFragment,
-} from './__generated__/Fills';
 import { FillActionsDropdown } from './fill-actions-dropdown';
 import { getAsset } from '@vegaprotocol/markets';
+import { MAKER, TAKER, getFeesBreakdown, getRoleAndFees } from './fills.utils';
 
-const TAKER = 'Taker';
-const MAKER = 'Maker';
-
-export type Role = typeof TAKER | typeof MAKER | '-';
-
-export type Props = (AgGridReactProps | AgReactUiProps) & {
+type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 };
@@ -259,71 +251,11 @@ const formatFeeDiscount = (partyId: string) => {
   }: VegaValueFormatterParams<Trade, 'market'>) => {
     if (!market || !data) return '-';
     const asset = getAsset(market);
-    const { fees } = getRoleAndFees({ data, partyId });
-    if (!fees) return '-';
-
-    const total = getTotalFeesDiscounts(fees);
-    return addDecimalsFormatNumber(total, asset.decimals);
+    const { fees: newFees, role } = getRoleAndFees({ data, partyId });
+    if (!newFees) return '-';
+    const { totalFeeDiscount } = getFeesBreakdown(role, newFees);
+    return addDecimalsFormatNumber(totalFeeDiscount, asset.decimals);
   };
-};
-
-export const isEmptyFeeObj = (feeObj: Schema.TradeFee) => {
-  if (!feeObj) return true;
-  return (
-    feeObj.liquidityFee === '0' &&
-    feeObj.makerFee === '0' &&
-    feeObj.infrastructureFee === '0'
-  );
-};
-
-export const getRoleAndFees = ({
-  data,
-  partyId,
-}: {
-  data: Pick<
-    FillFieldsFragment,
-    'buyerFee' | 'sellerFee' | 'buyer' | 'seller' | 'aggressor'
-  >;
-  partyId?: string;
-}) => {
-  let role: Role;
-  let fees;
-
-  if (data?.buyer.id === partyId) {
-    if (data.aggressor === Schema.Side.SIDE_BUY) {
-      role = TAKER;
-      fees = data?.buyerFee;
-    } else if (data.aggressor === Schema.Side.SIDE_SELL) {
-      role = MAKER;
-      fees = data?.sellerFee;
-    } else {
-      role = '-';
-      fees = !isEmptyFeeObj(data?.buyerFee) ? data.buyerFee : data.sellerFee;
-    }
-  } else if (data?.seller.id === partyId) {
-    if (data.aggressor === Schema.Side.SIDE_SELL) {
-      role = TAKER;
-      fees = data?.sellerFee;
-    } else if (data.aggressor === Schema.Side.SIDE_BUY) {
-      role = MAKER;
-      fees = data?.buyerFee;
-    } else {
-      role = '-';
-      fees = !isEmptyFeeObj(data.sellerFee) ? data.sellerFee : data.buyerFee;
-    }
-  } else {
-    return { role: '-', fees: undefined };
-  }
-
-  // We make the assumption that the market state is active if the maker fee is zero on both sides
-  // This needs to be updated when we have a way to get the correct market state when that fill happened from the API
-  // because the maker fee factor can be set to 0 via governance
-  const marketState =
-    data?.buyerFee.makerFee === data.sellerFee.makerFee &&
-    new BigNumber(data?.buyerFee.makerFee).isZero()
-      ? Schema.MarketState.STATE_SUSPENDED
-      : Schema.MarketState.STATE_ACTIVE;
-  return { role, fees, marketState };
 };
 
 const FeesBreakdownTooltip = ({
@@ -347,11 +279,13 @@ const FeesBreakdownTooltip = ({
       data-testid="fee-breakdown-tooltip"
       className="z-20 max-w-sm px-4 py-2 text-sm text-black border rounded bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 break-word dark:text-white"
     >
-      <p className="mb-1 italic">
-        {t('If the market was %s', [
-          Schema.MarketStateMapping[marketState].toLowerCase(),
-        ])}
-      </p>
+      {marketState && (
+        <p className="mb-1 italic">
+          {t('If the market was %s', [
+            Schema.MarketStateMapping[marketState].toLowerCase(),
+          ])}
+        </p>
+      )}
       {role === MAKER && (
         <>
           <p className="mb-1">{t('The maker will receive the maker fee.')}</p>
@@ -406,8 +340,8 @@ const FeesDiscountBreakdownTooltipItem = ({
 }) =>
   value && value !== '0' ? (
     <>
-      <dt className="col-span-1">{label}</dt>
-      <dd className="text-right col-span-1">
+      <dt className="col-span-2">{label}</dt>
+      <dd className="text-right col-span-2">
         {addDecimalsFormatNumber(value, asset.decimals)} {asset.symbol}
       </dd>
     </>
@@ -422,7 +356,13 @@ export const FeesDiscountBreakdownTooltip = ({
   }
   const asset = getAsset(data.market);
 
-  const { fees } = getRoleAndFees({ data, partyId }) ?? {};
+  const {
+    fees: newFees,
+    marketState,
+    role,
+  } = getRoleAndFees({ data, partyId }) ?? {};
+  const fees = newFees && getFeesBreakdown(role, newFees, marketState);
+
   if (!fees) return null;
 
   return (
@@ -430,7 +370,7 @@ export const FeesDiscountBreakdownTooltip = ({
       data-testid="fee-discount-breakdown-tooltip"
       className="max-w-sm bg-vega-light-100 dark:bg-vega-dark-100 border border-vega-light-200 dark:border-vega-dark-200 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white"
     >
-      <dl className="grid grid-cols-2 gap-x-1">
+      <dl className="grid grid-cols-6 gap-x-1 text-xs">
         {(fees.infrastructureFeeReferralDiscount || '0') !== '0' ||
         (fees.infrastructureFeeVolumeDiscount || '0') !== '0' ? (
           <dt className="col-span-2">{t('Infrastructure Fee')}</dt>
@@ -474,57 +414,14 @@ export const FeesDiscountBreakdownTooltip = ({
           label={t('Volume Discount')}
           asset={asset}
         />
+
+        <dt className="col-span-2">{t('Total Fee Discount')}</dt>
+        <FeesDiscountBreakdownTooltipItem
+          value={fees.totalFeeDiscount}
+          label={''}
+          asset={asset}
+        />
       </dl>
     </div>
   );
-};
-
-export const getTotalFeesDiscounts = (fees: TradeFeeFieldsFragment) => {
-  return (
-    BigInt(fees.infrastructureFeeReferralDiscount || '0') +
-    BigInt(fees.infrastructureFeeVolumeDiscount || '0') +
-    BigInt(fees.liquidityFeeReferralDiscount || '0') +
-    BigInt(fees.liquidityFeeVolumeDiscount || '0') +
-    BigInt(fees.makerFeeReferralDiscount || '0') +
-    BigInt(fees.makerFeeVolumeDiscount || '0')
-  ).toString();
-};
-
-export const getFeesBreakdown = (
-  role: Role,
-  feesObj: TradeFeeFieldsFragment,
-  marketState: Schema.MarketState = Schema.MarketState.STATE_ACTIVE
-) => {
-  // If market is in auction we assume maker fee is zero
-  const isMarketActive = marketState === Schema.MarketState.STATE_ACTIVE;
-
-  // If role is taker, then these are the fees to be paid
-  let { makerFee, infrastructureFee, liquidityFee } = feesObj;
-
-  if (isMarketActive) {
-    if (role === MAKER) {
-      makerFee = new BigNumber(feesObj.makerFee).times(-1).toString();
-      infrastructureFee = '0';
-      liquidityFee = '0';
-    }
-  } else {
-    // If market is suspended (in monitoring auction), then half of the fees are paid
-    infrastructureFee = new BigNumber(infrastructureFee)
-      .dividedBy(2)
-      .toString();
-    liquidityFee = new BigNumber(liquidityFee).dividedBy(2).toString();
-    // maker fee is already zero
-  }
-
-  const totalFee = new BigNumber(infrastructureFee)
-    .plus(makerFee)
-    .plus(liquidityFee)
-    .toString();
-
-  return {
-    infrastructureFee,
-    liquidityFee,
-    makerFee,
-    totalFee,
-  };
 };
