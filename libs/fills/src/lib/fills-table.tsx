@@ -365,7 +365,7 @@ const FeesBreakdownTooltip = ({
       {role === TAKER && (
         <p className="mb-1">{t('Fees to be paid by the taker.')}</p>
       )}
-      {role === '-' && (
+      {(role === '-' || marketState === Schema.MarketState.STATE_SUSPENDED) && (
         <p className="mb-1">
           {t(
             'If the market is in monitoring auction, half of the infrastructure and liquidity fees will be paid.'
