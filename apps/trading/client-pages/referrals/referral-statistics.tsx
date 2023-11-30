@@ -10,7 +10,6 @@ import {
 
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { DEFAULT_AGGREGATION_DAYS, useReferral } from './hooks/use-referral';
-import { CreateCodeContainer } from './create-code-form';
 import classNames from 'classnames';
 import { Table } from './table';
 import {
@@ -32,7 +31,7 @@ import BigNumber from 'bignumber.js';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { useT, ns } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
-import { ApplyCodeForm } from './apply-code-form';
+import { ApplyCodeForm, ApplyCodeFormContainer } from './apply-code-form';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
@@ -53,7 +52,7 @@ export const ReferralStatistics = () => {
   if (referee?.code) {
     return (
       <>
-        <Statistics data={referee} program={program} as="referee" />;
+        <Statistics data={referee} program={program} as="referee" />
         {!referee.isEligible && <ApplyCodeForm />}
       </>
     );
@@ -68,7 +67,7 @@ export const ReferralStatistics = () => {
     );
   }
 
-  return <CreateCodeContainer />;
+  return <ApplyCodeFormContainer />;
 };
 
 export const useStats = ({

@@ -4,11 +4,10 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { HowItWorksTable } from './how-it-works-table';
 import { LandingBanner } from './landing-banner';
 import { TiersContainer } from './tiers';
 import { TabLink } from './buttons';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useMatch } from 'react-router-dom';
 import { Routes } from '../../lib/links';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useReferral } from './hooks/use-referral';
@@ -21,12 +20,13 @@ import { useT } from '../../lib/use-t';
 
 const Nav = () => {
   const t = useT();
+  const match = useMatch(Routes.REFERRALS_APPLY_CODE);
   return (
     <div className="flex justify-center border-b border-vega-cdark-500">
-      <TabLink end to={Routes.REFERRALS}>
-        {t('I want a code')}
+      <TabLink end to={match ? Routes.REFERRALS_APPLY_CODE : Routes.REFERRALS}>
+        {t('Apply code')}
       </TabLink>
-      <TabLink to={Routes.REFERRALS_APPLY_CODE}>{t('I have a code')}</TabLink>
+      <TabLink to={Routes.REFERRALS_CREATE_CODE}>{t('Create code')}</TabLink>
     </div>
   );
 };
@@ -95,15 +95,13 @@ export const Referrals = () => {
         <h2 className="text-2xl">{t('How it works')}</h2>
       </div>
       <div className="md:w-[60%] mx-auto">
-        <HowItWorksTable />
         <div className="mt-5">
           <TradingAnchorButton
             className="mx-auto w-max"
             href={REFERRAL_DOCS_LINK}
             target="_blank"
           >
-            {t('Read the terms')}{' '}
-            <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
+            {t('Read the docs')} <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
           </TradingAnchorButton>
         </div>
       </div>

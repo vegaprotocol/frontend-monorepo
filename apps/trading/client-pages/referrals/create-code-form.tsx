@@ -48,7 +48,7 @@ export const CreateCodeForm = () => {
       </h3>
       <p className="mb-4 text-center text-base">
         {t(
-          'Generate a referral code to share with your friends and start earning commission.'
+          'Generate a referral code to share with your friends and access the commission benefits of the current program.'
         )}
       </p>
 
@@ -268,7 +268,7 @@ const CreateCodeDialog = ({
       {(status === 'idle' || status === 'loading' || status === 'error') && (
         <p>
           {t(
-            'Generate a referral code to share with your friends and start earning commission.'
+            'Generate a referral code to share with your friends and access the commission benefits of the current program.'
           )}
         </p>
       )}

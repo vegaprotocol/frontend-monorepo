@@ -236,7 +236,9 @@ export const ApplyCodeForm = () => {
           {t('Apply a referral code')}
         </h3>
         <p className="mb-4 text-center text-base">
-          {t('Enter a referral code to get trading discounts.')}
+          {t(
+            'Apply a referral code to access the discount benefits of the current program.'
+          )}
         </p>
         <form
           className={classNames('flex w-full flex-col gap-4', {

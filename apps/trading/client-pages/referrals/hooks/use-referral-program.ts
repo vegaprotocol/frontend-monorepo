@@ -4,12 +4,6 @@ import sortBy from 'lodash/sortBy';
 import omit from 'lodash/omit';
 import { useReferralProgramQuery } from './__generated__/CurrentReferralProgram';
 
-const STAKING_TIERS_MAPPING: Record<number, string> = {
-  1: 'Tradestarter',
-  2: 'Mid level degen',
-  3: 'Reward hoarder',
-};
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MOCK = {
   data: {
@@ -96,7 +90,6 @@ export const useReferralProgram = () => {
   ).map((t, i) => {
     return {
       tier: i + 1,
-      label: STAKING_TIERS_MAPPING[i + 1],
       ...t,
     };
   });

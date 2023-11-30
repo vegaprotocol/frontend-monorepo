@@ -15,11 +15,16 @@ export const LandingBanner = () => {
         </div>
         <div className="pt-20 sm:w-[50%]">
           <h1 className="text-6xl font-alpha calt mb-10">
-            {t('Earn commission & stake rewards')}
+            {t('Vega Community Referral Program')}
           </h1>
+          <p className="text-lg mb-1">
+            {t(
+              'Referral programs can be proposed and created via Community governance.'
+            )}
+          </p>
           <p className="text-lg mb-10">
             {t(
-              'Invite friends and earn rewards from the trading fees they pay. Stake those rewards to earn multipliers on future rewards.'
+              'Once live, users can generate referral codes to share with their friends and earn commission on their trades, while referred traders can access fee discounts based on the running volume of the group.'
             )}
           </p>
         </div>
