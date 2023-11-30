@@ -93,7 +93,7 @@ export const Notification = ({
       </div>
       <div
         className={classNames(
-          'flex flex-col items-start overflow-hidden gap-0 mt-1',
+          'flex flex-col items-start overflow-hidden gap-0',
           'text-vega-clight-50 dark:text-vega-cdark-50',
           'font-alpha',
           { 'text-sm': size === 'small', 'text-base': size === 'medium' }

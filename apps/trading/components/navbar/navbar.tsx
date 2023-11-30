@@ -11,7 +11,13 @@ import {
 } from '@vegaprotocol/environment';
 import { useGlobalStore } from '../../stores';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
-import { VegaIconNames, VegaIcon, VLogo } from '@vegaprotocol/ui-toolkit';
+import {
+  VegaIconNames,
+  VegaIcon,
+  VLogo,
+  LanguageSelector,
+  ThemeSwitcher,
+} from '@vegaprotocol/ui-toolkit';
 import * as N from '@radix-ui/react-navigation-menu';
 import * as D from '@radix-ui/react-dialog';
 import { NavLink } from 'react-router-dom';
@@ -22,7 +28,8 @@ import { VegaWalletMenu } from '../vega-wallet';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { WalletIcon } from '../icons/wallet';
 import { ProtocolUpgradeCountdown } from '@vegaprotocol/proposals';
-import { useT } from '../../lib/use-t';
+import { useT, useI18n } from '../../lib/use-t';
+import { supportedLngs } from '../../lib/i18n';
 
 type MenuState = 'wallet' | 'nav' | null;
 type Theme = 'system' | 'yellow';
@@ -34,6 +41,7 @@ export const Navbar = ({
   children?: ReactNode;
   theme?: Theme;
 }) => {
+  const i18n = useI18n();
   const t = useT();
   // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
@@ -77,6 +85,15 @@ export const Navbar = ({
       {/* Right section */}
       <div className="ml-auto flex items-center justify-end gap-2">
         <ProtocolUpgradeCountdown />
+        <div className="flex">
+          <ThemeSwitcher />
+          {supportedLngs.length > 1 ? (
+            <LanguageSelector
+              languages={supportedLngs}
+              onSelect={(language) => i18n.changeLanguage(language)}
+            />
+          ) : null}
+        </div>
         <NavbarMobileButton
           onClick={() => {
             if (isConnected) {

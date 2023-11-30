@@ -65,7 +65,7 @@ export const FundingContainer = ({ marketId }: { marketId: string }) => {
           if (edge.node.endTime) {
             acc?.push({
               endTime: fromNanoSeconds(edge.node.endTime),
-              fundingRate: Number(edge.node.fundingRate) * 100,
+              fundingRate: Number(edge.node.fundingRate),
             });
           }
           return acc;
@@ -82,7 +82,8 @@ export const FundingContainer = ({ marketId }: { marketId: string }) => {
     <LineChart
       data={values}
       theme={theme}
-      priceFormat={(fundingRate) => `${fundingRate.toFixed(4)}%`}
+      priceFormat={(fundingRate) => `${(fundingRate * 100).toFixed(4)}%`}
+      yAxisTickFormat="%"
     />
   );
 };

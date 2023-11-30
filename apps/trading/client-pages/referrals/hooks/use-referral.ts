@@ -4,6 +4,7 @@ import { useRefereesQuery } from './__generated__/Referees';
 import compact from 'lodash/compact';
 import type { ReferralSetsQueryVariables } from './__generated__/ReferralSets';
 import { useReferralSetsQuery } from './__generated__/ReferralSets';
+import { useStakeAvailable } from './use-stake-available';
 
 export const DEFAULT_AGGREGATION_DAYS = 30;
 
@@ -62,6 +63,8 @@ export const useReferral = (args: UseReferralArgs) => {
       ? referralData.referralSets.edges[0]?.node
       : undefined;
 
+  const { isEligible } = useStakeAvailable(referralSet?.referrer);
+
   const {
     data: refereesData,
     loading: refereesLoading,
@@ -103,6 +106,7 @@ export const useReferral = (args: UseReferralArgs) => {
           referee: referee,
           referrerId: referralSet.referrer,
           createdAt: referralSet.createdAt,
+          isEligible,
           referees,
         }
       : undefined;

@@ -18,19 +18,15 @@ export const Pagination = ({
   let rowMessage = '';
 
   if (count && !pageInfo?.hasNextPage) {
-    rowMessage = t('paginationAllLoaded', {
-      replace: { count },
-      defaultValue: 'All {{count}} rows loaded',
+    rowMessage = t('paginationAllLoaded', 'all {{count}} rows loaded', {
+      count,
     });
   } else {
-    rowMessage = t('paginationLoaded', {
-      replace: { count },
-      defaultValue: '{{count}} rows loaded',
-    });
+    rowMessage = t('paginationLoaded', '{{count}} rows loaded', { count });
   }
 
   return (
-    <div className="flex items-center justify-between p-1 border-t border-default">
+    <div className="border-default flex items-center justify-between border-t p-1">
       <div className="text-xs">
         {false}
         {showRetentionMessage &&
@@ -47,7 +43,7 @@ export const Pagination = ({
         ) : null}
       </div>
       {count && hasDisplayedRows === false ? (
-        <div className="absolute text-xs top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-xs">
           {t('No rows matching selected filters')}
         </div>
       ) : null}

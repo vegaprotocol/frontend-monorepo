@@ -36,7 +36,7 @@ export const FeesContainer = () => {
   const { data: markets, loading: marketsLoading } = useMarketList();
 
   const { data: programData, loading: programLoading } =
-    useDiscountProgramsQuery();
+    useDiscountProgramsQuery({ errorPolicy: 'ignore' });
 
   const volumeDiscountWindowLength =
     programData?.currentVolumeDiscountProgram?.windowLength || 1;
@@ -317,7 +317,7 @@ export const CurrentVolume = ({
     <div className="flex flex-col gap-3 pt-4">
       <CardStat
         value={formatNumberRounded(new BigNumber(windowLengthVolume))}
-        text={t('Past {{count}} epochs', { count: windowLength })}
+        text={t('pastEpochs', 'Past {{count}} epochs', { count: windowLength })}
       />
       {requiredForNextTier > 0 && (
         <CardStat
@@ -344,9 +344,13 @@ const ReferralBenefits = ({
       <CardStat
         // all sets volume (not just current party)
         value={formatNumber(setRunningNotionalTakerVolume)}
-        text={t('Combined running notional over the {{count}} epochs', {
-          count: epochs,
-        })}
+        text={t(
+          'runningNotionalOverEpochs',
+          'Combined running notional over the {{count}} epochs',
+          {
+            count: epochs,
+          }
+        )}
       />
       <CardStat value={epochsInSet} text={t('epochs in referral set')} />
     </div>
@@ -453,31 +457,27 @@ const VolumeTiers = ({
             <Th>{t('Discount')}</Th>
             <Th>{t('Min. trading volume')}</Th>
             <Th>
-              {t('My volume (last {{count}} epochs)', { count: windowLength })}
+              {t('myVolume', 'My volume (last {{count}} epochs)', {
+                count: windowLength,
+              })}
             </Th>
             <Th />
           </tr>
         </THead>
         <tbody>
-          {Array.from(tiers)
-            .reverse()
-            .map((tier, i) => {
-              const isUserTier = tiers.length - 1 - tierIndex === i;
+          {Array.from(tiers).map((tier, i) => {
+            const isUserTier = tiers.length - 1 - tierIndex === i;
 
-              return (
-                <Tr key={i}>
-                  <Td>{i + 1}</Td>
-                  <Td>
-                    {formatPercentage(Number(tier.volumeDiscountFactor))}%
-                  </Td>
-                  <Td>
-                    {formatNumber(tier.minimumRunningNotionalTakerVolume)}
-                  </Td>
-                  <Td>{isUserTier ? formatNumber(lastEpochVolume) : ''}</Td>
-                  <Td>{isUserTier ? <YourTier /> : null}</Td>
-                </Tr>
-              );
-            })}
+            return (
+              <Tr key={i}>
+                <Td>{i + 1}</Td>
+                <Td>{formatPercentage(Number(tier.volumeDiscountFactor))}%</Td>
+                <Td>{formatNumber(tier.minimumRunningNotionalTakerVolume)}</Td>
+                <Td>{isUserTier ? formatNumber(lastEpochVolume) : ''}</Td>
+                <Td>{isUserTier ? <YourTier /> : null}</Td>
+              </Tr>
+            );
+          })}
         </tbody>
       </Table>
     </div>
@@ -520,37 +520,33 @@ const ReferralTiers = ({
           </tr>
         </THead>
         <tbody>
-          {Array.from(tiers)
-            .reverse()
-            .map((t, i) => {
-              const isUserTier = tiers.length - 1 - tierIndex === i;
+          {Array.from(tiers).map((t, i) => {
+            const isUserTier = tiers.length - 1 - tierIndex === i;
 
-              const requiredVolume = Number(
-                t.minimumRunningNotionalTakerVolume
+            const requiredVolume = Number(t.minimumRunningNotionalTakerVolume);
+            let unlocksIn = null;
+
+            if (
+              referralVolumeInWindow >= requiredVolume &&
+              epochsInSet < t.minimumEpochs
+            ) {
+              unlocksIn = (
+                <span className="text-muted">
+                  Unlocks in {t.minimumEpochs - epochsInSet} epochs
+                </span>
               );
-              let unlocksIn = null;
+            }
 
-              if (
-                referralVolumeInWindow >= requiredVolume &&
-                epochsInSet < t.minimumEpochs
-              ) {
-                unlocksIn = (
-                  <span className="text-muted">
-                    Unlocks in {t.minimumEpochs - epochsInSet} epochs
-                  </span>
-                );
-              }
-
-              return (
-                <Tr key={i}>
-                  <Td>{i + 1}</Td>
-                  <Td>{formatPercentage(Number(t.referralDiscountFactor))}%</Td>
-                  <Td>{formatNumber(t.minimumRunningNotionalTakerVolume)}</Td>
-                  <Td>{t.minimumEpochs}</Td>
-                  <Td>{isUserTier ? <YourTier /> : unlocksIn}</Td>
-                </Tr>
-              );
-            })}
+            return (
+              <Tr key={i}>
+                <Td>{i + 1}</Td>
+                <Td>{formatPercentage(Number(t.referralDiscountFactor))}%</Td>
+                <Td>{formatNumber(t.minimumRunningNotionalTakerVolume)}</Td>
+                <Td>{t.minimumEpochs}</Td>
+                <Td>{isUserTier ? <YourTier /> : unlocksIn}</Td>
+              </Tr>
+            );
+          })}
         </tbody>
       </Table>
     </div>

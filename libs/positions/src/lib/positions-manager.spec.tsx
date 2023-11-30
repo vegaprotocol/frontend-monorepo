@@ -6,14 +6,17 @@ import { MockedProvider } from '@apollo/client/testing';
 import { MAXGOINT64 } from '@vegaprotocol/utils';
 
 const mockCreate = jest.fn();
+
 jest.mock('@vegaprotocol/wallet', () => ({
   ...jest.requireActual('@vegaprotocol/wallet'),
   useVegaWallet: jest.fn(() => ({ pubKey: 'partyId' })),
 }));
+
 jest.mock('@vegaprotocol/web3', () => ({
   ...jest.requireActual('@vegaprotocol/web3'),
   useVegaTransactionStore: jest.fn(() => mockCreate),
 }));
+
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 const mockUseDataProvider = (args: any) => {
   if (args.dataProvider === positionsMarketsProvider) {
@@ -21,17 +24,20 @@ const mockUseDataProvider = (args: any) => {
   }
   return { data: [singleRow] };
 };
+
 jest.mock('@vegaprotocol/data-provider', () => ({
   ...jest.requireActual('@vegaprotocol/data-provider'),
   useDataProvider: jest.fn((args) => mockUseDataProvider(args)),
 }));
 
 describe('PositionsManager', () => {
-  it('should close position with max uint64', async () => {
+  // TODO: Close position temporarily disabled in https://github.com/vegaprotocol/frontend-monorepo/pull/5350
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('should close position with max uint64', async () => {
     render(<PositionsManager partyIds={['partyId']} isReadOnly={false} />, {
       wrapper: MockedProvider,
     });
-    expect(await screen.getByTestId('close-position')).toBeInTheDocument();
+    expect(await screen.findByTestId('close-position')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('close-position'));
 

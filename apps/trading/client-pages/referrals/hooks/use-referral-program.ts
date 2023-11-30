@@ -75,22 +75,20 @@ export const useReferralProgram = () => {
 
   const benefitTiers = sortBy(data.currentReferralProgram.benefitTiers, (t) =>
     Number(t.referralRewardFactor)
-  )
-    .reverse()
-    .map((t, i) => {
-      return {
-        tier: i + 1,
-        rewardFactor: Number(t.referralRewardFactor),
-        commission: Number(t.referralRewardFactor) * 100 + '%',
-        discountFactor: Number(t.referralDiscountFactor),
-        discount: Number(t.referralDiscountFactor) * 100 + '%',
-        minimumVolume: Number(t.minimumRunningNotionalTakerVolume),
-        volume: getNumberFormat(0).format(
-          Number(t.minimumRunningNotionalTakerVolume)
-        ),
-        epochs: Number(t.minimumEpochs),
-      };
-    });
+  ).map((t, i) => {
+    return {
+      tier: i + 1, // sorted in asc order, hence first is the lowest tier
+      rewardFactor: Number(t.referralRewardFactor),
+      commission: Number(t.referralRewardFactor) * 100 + '%',
+      discountFactor: Number(t.referralDiscountFactor),
+      discount: Number(t.referralDiscountFactor) * 100 + '%',
+      minimumVolume: Number(t.minimumRunningNotionalTakerVolume),
+      volume: getNumberFormat(0).format(
+        Number(t.minimumRunningNotionalTakerVolume)
+      ),
+      epochs: Number(t.minimumEpochs),
+    };
+  });
 
   const stakingTiers = sortBy(
     data.currentReferralProgram.stakingTiers,

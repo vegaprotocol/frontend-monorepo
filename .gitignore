@@ -59,5 +59,4 @@ apps/trading/e2e/logs/
 apps/trading/e2e/.pytest_cache/
 apps/trading/e2e/traces/
 
-.nx/cache
-
+.nx/

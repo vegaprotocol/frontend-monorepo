@@ -1,0 +1,10 @@
+query StakeAvailable($partyId: ID!) {
+  party(id: $partyId) {
+    stakingSummary {
+      currentStakeAvailable
+    }
+  }
+  networkParameter(key: "referralProgram.minStakedVegaTokens") {
+    value
+  }
+}

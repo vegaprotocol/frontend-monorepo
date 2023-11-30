@@ -6,7 +6,7 @@
   "Approved": "Approved",
   "Await Ethereum transaction": "Await Ethereum transaction",
   "Awaiting confirmation": "Awaiting confirmation",
-  "Awaiting confirmations {{confirmations}}/{[requiredConfirmations}}": "Awaiting confirmations {{confirmations}}/{[requiredConfirmations}}",
+  "Awaiting confirmations {{confirmations}}/{{requiredConfirmations}}": "Awaiting confirmations {{confirmations}}/{{requiredConfirmations}}",
   "Awaiting Ethereum transaction {{confirmations}}/{{requiredConfirmations}} confirmations...": "Awaiting Ethereum transaction {{confirmations}}/{{requiredConfirmations}} confirmations...",
   "Batch market instruction": "Batch market instruction",
   "Cancel all orders": "Cancel all orders",

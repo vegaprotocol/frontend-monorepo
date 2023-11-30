@@ -110,8 +110,7 @@ export const TransactionContent = ({
     return (
       <p className="break-all">
         {t('Error: {{errorMessage}}', {
-          nsSeparator: '*',
-          replace: { errorMessage },
+          errorMessage,
         })}
       </p>
     );

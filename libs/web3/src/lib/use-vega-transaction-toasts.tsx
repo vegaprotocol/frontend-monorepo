@@ -779,16 +779,10 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
           <p>
             {tx.order.status === Schema.OrderStatus.STATUS_STOPPED
               ? t('Your order has been stopped because: {{rejectionReason}}', {
-                  nsSeparator: '*',
-                  replace: {
-                    rejectionReason,
-                  },
+                  rejectionReason,
                 })
               : t('Your order has been rejected because: {{rejectionReason}}', {
-                  nsSeparator: '*',
-                  replace: {
-                    rejectionReason,
-                  },
+                  rejectionReason,
                 })}
           </p>
         ) : (

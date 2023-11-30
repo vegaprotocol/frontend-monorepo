@@ -1,7 +1,13 @@
-import { Switch, ToastPositionSetter } from '@vegaprotocol/ui-toolkit';
+import {
+  Dialog,
+  Intent,
+  Switch,
+  ToastPositionSetter,
+  TradingButton,
+} from '@vegaprotocol/ui-toolkit';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 
@@ -9,6 +15,7 @@ export const Settings = () => {
   const t = useT();
   const { theme, setTheme } = useThemeSwitcher();
   const [isApproved, setIsApproved] = useTelemetryApproval();
+  const [open, setOpen] = useState(false);
   return (
     <div>
       <SettingsGroup label={t('Dark mode')}>
@@ -32,6 +39,52 @@ export const Settings = () => {
       </SettingsGroup>
       <SettingsGroup label={t('Toast location')}>
         <ToastPositionSetter />
+      </SettingsGroup>
+      <SettingsGroup label={t('Reset to default')}>
+        <TradingButton
+          name="reset-to-defaults"
+          size="small"
+          intent={Intent.None}
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          {t('Reset')}
+        </TradingButton>
+        <Dialog open={open} title={t('Reset')}>
+          <div className="mb-4">
+            <p>
+              {t(
+                'You will lose all persisted settings and you will be logged out.'
+              )}
+            </p>
+            <p>
+              {t('Are you sure you want to reset all settings to default?')}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <TradingButton
+              name="reset-to-defaults-cancel"
+              intent={Intent.Primary}
+              onClick={() => {
+                localStorage.clear();
+                window.location.reload();
+              }}
+            >
+              {t('Yes, clear cache and refresh')}
+            </TradingButton>
+            <TradingButton
+              name="reset-to-defaults-cancel"
+              intent={Intent.None}
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              {t('No, keep settings')}
+            </TradingButton>
+          </div>
+        </Dialog>
       </SettingsGroup>
       <SettingsGroup inline={false} label={t('App information')}>
         <dl className="text-sm grid grid-cols-2 gap-1">

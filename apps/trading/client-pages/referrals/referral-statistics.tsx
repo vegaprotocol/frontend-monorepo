@@ -1,3 +1,4 @@
+import minBy from 'lodash/minBy';
 import { CodeTile, StatTile } from './tile';
 import {
   VegaIcon,
@@ -28,10 +29,10 @@ import sortBy from 'lodash/sortBy';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 import BigNumber from 'bignumber.js';
-import maxBy from 'lodash/maxBy';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { useT, ns } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
+import { ApplyCodeForm } from './apply-code-form';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
@@ -50,11 +51,21 @@ export const ReferralStatistics = () => {
   });
 
   if (referee?.code) {
-    return <Statistics data={referee} program={program} as="referee" />;
+    return (
+      <>
+        <Statistics data={referee} program={program} as="referee" />;
+        {!referee.isEligible && <ApplyCodeForm />}
+      </>
+    );
   }
 
   if (referrer?.code) {
-    return <Statistics data={referrer} program={program} as="referrer" />;
+    return (
+      <>
+        <Statistics data={referrer} program={program} as="referrer" />;
+        <RefereesTable data={referrer} program={program} />
+      </>
+    );
   }
 
   return <CreateCodeContainer />;
@@ -117,7 +128,7 @@ export const useStats = ({
   );
   const nextBenefitTierValue = currentBenefitTierValue
     ? benefitTiers.find((t) => t.tier === currentBenefitTierValue.tier - 1)
-    : maxBy(benefitTiers, (bt) => bt.tier); // max tier number is lowest tier
+    : minBy(benefitTiers, (bt) => bt.tier); //  min tier number is lowest tier
   const epochsValue =
     !isNaN(currentEpoch) && refereeInfo?.atEpoch
       ? currentEpoch - refereeInfo?.atEpoch
@@ -174,7 +185,7 @@ export const Statistics = ({
 
   const { benefitTiers } = useReferralProgram();
 
-  const { stakeAvailable } = useStakeAvailable();
+  const { stakeAvailable, isEligible } = useStakeAvailable();
   const { details } = program;
 
   const compactNumFormat = new Intl.NumberFormat(getUserLocale(), {
@@ -201,13 +212,25 @@ export const Statistics = ({
       {baseCommissionValue * 100}%
     </StatTile>
   );
+
   const stakingMultiplierTile = (
     <StatTile
       title={t('Staking multiplier')}
-      description={t('{{amount}} $VEGA staked', {
-        amount: addDecimalsFormatNumber(stakeAvailable?.toString() || 0, 18),
-      })}
       testId="staking-multiplier"
+      description={
+        <span
+          className={classNames({
+            'text-vega-red': !isEligible,
+          })}
+        >
+          {t('{{amount}} $VEGA staked', {
+            amount: addDecimalsFormatNumber(
+              stakeAvailable?.toString() || 0,
+              18
+            ),
+          })}
+        </span>
+      }
     >
       {multiplier || t('None')}
     </StatTile>
@@ -243,7 +266,7 @@ export const Statistics = ({
 
   const referrerVolumeTile = (
     <StatTile
-      title={t('My volume (last {{count}} epochs)', {
+      title={t('myVolume', 'My volume (last {{count}} epochs)', {
         count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
       })}
       testId="my-volume"
@@ -257,7 +280,7 @@ export const Statistics = ({
     .reduce((all, r) => all.plus(r), new BigNumber(0));
   const totalCommissionTile = (
     <StatTile
-      title={t('Total commission (last {{count}}} epochs)', {
+      title={t('totalCommission', 'Total commission (last {{count}}} epochs)', {
         count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
       })}
       description={<QUSDTooltip />}
@@ -301,9 +324,13 @@ export const Statistics = ({
   );
   const runningVolumeTile = (
     <StatTile
-      title={t('Combined volume (last {{count}} epochs)', {
-        count: details?.windowLength,
-      })}
+      title={t(
+        'runningNotionalOverEpochs',
+        'Combined volume (last {{count}} epochs)',
+        {
+          count: details?.windowLength,
+        }
+      )}
       testId="combined-volume"
     >
       {compactNumFormat.format(runningVolumeValue)}
@@ -343,28 +370,60 @@ export const Statistics = ({
     </>
   );
 
-  const [collapsed, setCollapsed] = useState(false);
-  const tableRef = useRef<HTMLTableElement>(null);
-  useLayoutEffect(() => {
-    if ((tableRef.current?.getBoundingClientRect().height || 0) > 384) {
-      setCollapsed(true);
-    }
-  }, []);
+  const eligibilityWarning = as === 'referee' && !isEligible && (
+    <div
+      data-testid="referral-eligibility-warning"
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-1/2 lg:w-1/3"
+    >
+      <h2 className="text-2xl mb-2">{t('Referral code no longer valid')}</h2>
+      <p>
+        {t(
+          'Your referral code is no longer valid as the referrer no longer meets the minimum requirements. Apply a new code to continue receiving discounts.'
+        )}
+      </p>
+    </div>
+  );
 
   return (
-    <>
-      {/* Stats tiles */}
+    <div
+      data-testid="referral-statistics"
+      data-as={as}
+      className="relative mx-auto mb-20"
+    >
       <div
-        className={classNames(
-          'grid grid-cols-1 grid-rows-1 gap-5 mx-auto mb-20'
-        )}
+        className={classNames('grid grid-cols-1 grid-rows-1 gap-5', {
+          'opacity-20 pointer-events-none': as === 'referee' && !isEligible,
+        })}
       >
         {as === 'referrer' && referrerTiles}
         {as === 'referee' && refereeTiles}
       </div>
 
+      {eligibilityWarning}
+    </div>
+  );
+};
+
+export const RefereesTable = ({
+  data,
+  program,
+}: {
+  data: NonNullable<ReturnType<typeof useReferral>['data']>;
+  program: ReturnType<typeof useReferralProgram>;
+}) => {
+  const t = useT();
+  const [collapsed, setCollapsed] = useState(false);
+  const tableRef = useRef<HTMLTableElement>(null);
+  const { details } = program;
+  useLayoutEffect(() => {
+    if ((tableRef.current?.getBoundingClientRect().height || 0) > 384) {
+      setCollapsed(true);
+    }
+  }, []);
+  return (
+    <>
       {/* Referees (only for referrer view) */}
-      {as === 'referrer' && data.referees.length > 0 && (
+      {data.referees.length > 0 && (
         <div className="mt-20 mb-20">
           <h2 className="mb-5 text-2xl">{t('Referees')}</h2>
           <div
@@ -394,15 +453,19 @@ export const Statistics = ({
                 { name: 'joined', displayName: t('Date Joined') },
                 {
                   name: 'volume',
-                  displayName: t('Volume (last {{count}} epochs)', {
-                    count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
-                  }),
+                  displayName: t(
+                    'volumeLastEpochs',
+                    'Volume (last {{count}} epochs)',
+                    {
+                      count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
+                    }
+                  ),
                 },
                 {
                   name: 'commission',
                   displayName: (
                     <Trans
-                      i18nKey="referral-statistics-commission"
+                      i18nKey="referralStatisticsCommission"
                       defaults="Commission earned in <0>qUSD</0> (last {{count}} epochs)"
                       values={{
                         count:
