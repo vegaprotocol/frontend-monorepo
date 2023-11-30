@@ -251,9 +251,9 @@ const formatFeeDiscount = (partyId: string) => {
   }: VegaValueFormatterParams<Trade, 'market'>) => {
     if (!market || !data) return '-';
     const asset = getAsset(market);
-    const { fees: newFees, role } = getRoleAndFees({ data, partyId });
-    if (!newFees) return '-';
-    const { totalFeeDiscount } = getFeesBreakdown(role, newFees);
+    const { fees: roleFees, role } = getRoleAndFees({ data, partyId });
+    if (!roleFees) return '-';
+    const { totalFeeDiscount } = getFeesBreakdown(role, roleFees);
     return addDecimalsFormatNumber(totalFeeDiscount, asset.decimals);
   };
 };
@@ -357,14 +357,12 @@ export const FeesDiscountBreakdownTooltip = ({
   const asset = getAsset(data.market);
 
   const {
-    fees: newFees,
+    fees: roleFees,
     marketState,
     role,
   } = getRoleAndFees({ data, partyId }) ?? {};
-  const fees = newFees && getFeesBreakdown(role, newFees, marketState);
-
-  if (!fees) return null;
-
+  if (!roleFees) return null;
+  const fees = getFeesBreakdown(role, roleFees, marketState);
   return (
     <div
       data-testid="fee-discount-breakdown-tooltip"
