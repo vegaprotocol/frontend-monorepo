@@ -1,12 +1,13 @@
 import invert from 'lodash/invert';
-import { Interval } from 'pennant';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import { useChartSettings, STUDY_SIZE } from './use-chart-settings';
+import { Interval as PennantInterval } from 'pennant';
+import { Interval } from '@vegaprotocol/types';
 import {
   TradingViewContainer,
   ALLOWED_TRADINGVIEW_HOSTNAMES,
 } from '@vegaprotocol/trading-view';
 import { useEnvironment } from '@vegaprotocol/environment';
+import { useChartSettings, STUDY_SIZE } from './use-chart-settings';
 
 /**
  * Renders either the pennant chart or the tradingview chart
@@ -30,7 +31,7 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
   const pennantChart = (
     <CandlesChartContainer
       marketId={marketId}
-      interval={interval}
+      interval={toPennantInterval(interval)}
       chartType={chartType}
       overlays={overlays}
       studies={studies}
@@ -73,22 +74,40 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
   }
 };
 
-const TRADINGVIEW_RESOLUTION_MAP: Record<Interval, string> = {
-  [Interval.I1M]: '1',
-  [Interval.I5M]: '5',
-  [Interval.I15M]: '15',
-  [Interval.I1H]: '60',
-  [Interval.I6H]: '360',
-  [Interval.I1D]: '1D',
+const TRADINGVIEW_INTERVAL_MAP: Record<Interval, string | undefined> = {
+  [Interval.INTERVAL_BLOCK]: undefined, // TODO: add support for block ticks
+  [Interval.INTERVAL_I1M]: '1',
+  [Interval.INTERVAL_I5M]: '5',
+  [Interval.INTERVAL_I15M]: '15',
+  [Interval.INTERVAL_I1H]: '60',
+  [Interval.INTERVAL_I6H]: '360',
+  [Interval.INTERVAL_I1D]: '1D',
+};
+
+const PENNANT_INTERVAL_MAP: Record<Interval, PennantInterval | undefined> = {
+  [Interval.INTERVAL_BLOCK]: undefined, // TODO: add support for block ticks
+  [Interval.INTERVAL_I1M]: PennantInterval.I1M,
+  [Interval.INTERVAL_I5M]: PennantInterval.I5M,
+  [Interval.INTERVAL_I15M]: PennantInterval.I15M,
+  [Interval.INTERVAL_I1H]: PennantInterval.I1H,
+  [Interval.INTERVAL_I6H]: PennantInterval.I6H,
+  [Interval.INTERVAL_I1D]: PennantInterval.I1D,
 };
 
 const toTradingViewResolution = (interval: Interval) => {
-  return TRADINGVIEW_RESOLUTION_MAP[interval];
+  const resolution = TRADINGVIEW_INTERVAL_MAP[interval];
+
+  if (!resolution) {
+    throw new Error(
+      `failed to convert interval: ${interval} to valid resolution`
+    );
+  }
+
+  return resolution;
 };
 
 const fromTradingViewResolution = (resolution: string) => {
-  const obj = invert(TRADINGVIEW_RESOLUTION_MAP);
-  const interval = obj[resolution];
+  const interval = invert(TRADINGVIEW_INTERVAL_MAP)[resolution];
 
   if (!interval) {
     throw new Error(
@@ -97,4 +116,16 @@ const fromTradingViewResolution = (resolution: string) => {
   }
 
   return interval as Interval;
+};
+
+const toPennantInterval = (interval: Interval) => {
+  const pennantInterval = PENNANT_INTERVAL_MAP[interval];
+
+  if (!pennantInterval) {
+    throw new Error(
+      `failed to convert interval: ${interval} to valid pennant interval`
+    );
+  }
+
+  return pennantInterval;
 };

@@ -1,10 +1,8 @@
 import {
   ChartType,
-  Interval,
   Overlay,
   Study,
   chartTypeLabels,
-  intervalLabels,
   overlayLabels,
   studyLabels,
 } from 'pennant';
@@ -19,11 +17,21 @@ import {
   TradingDropdownTrigger,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
+import { Interval } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ALLOWED_TRADINGVIEW_HOSTNAMES } from '@vegaprotocol/trading-view';
 import { IconNames, type IconName } from '@blueprintjs/icons';
 import { useChartSettings, type Chartlib } from './use-chart-settings';
 import { useT } from '../../lib/use-t';
+
+const INTERVALS = [
+  Interval.INTERVAL_I1M,
+  Interval.INTERVAL_I5M,
+  Interval.INTERVAL_I15M,
+  Interval.INTERVAL_I1H,
+  Interval.INTERVAL_I6H,
+  Interval.INTERVAL_I1D,
+];
 
 const chartTypeIcon = new Map<ChartType, IconName>([
   [ChartType.AREA, IconNames.TIMELINE_AREA_CHART],
@@ -71,12 +79,12 @@ export const ChartMenu = () => {
           }}
         >
           <TradingDropdownRadioItem inset value="tradingview">
-            Tradingview
+            {t('TradingView')}
             <TradingDropdownItemIndicator />
           </TradingDropdownRadioItem>
 
           <TradingDropdownRadioItem inset value="pennant">
-            Pennant
+            {t('Pennant')}
             <TradingDropdownItemIndicator />
           </TradingDropdownRadioItem>
         </TradingDropdownRadioGroup>
@@ -91,7 +99,7 @@ export const ChartMenu = () => {
           <TradingDropdownTrigger className={triggerClasses}>
             <TradingButton {...triggerButtonProps}>
               {t('Interval: {{interval}}', {
-                interval: intervalLabels[interval],
+                interval: t(interval),
               })}
             </TradingButton>
           </TradingDropdownTrigger>
@@ -104,13 +112,13 @@ export const ChartMenu = () => {
               setInterval(value as Interval);
             }}
           >
-            {Object.values(Interval).map((timeInterval) => (
+            {INTERVALS.map((timeInterval) => (
               <TradingDropdownRadioItem
                 key={timeInterval}
                 inset
                 value={timeInterval}
               >
-                {intervalLabels[timeInterval]}
+                {t(timeInterval)}
                 <TradingDropdownItemIndicator />
               </TradingDropdownRadioItem>
             ))}

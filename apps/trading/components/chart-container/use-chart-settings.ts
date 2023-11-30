@@ -1,8 +1,8 @@
-import { ChartType, Interval, Study } from 'pennant';
-import { Overlay } from 'pennant';
+import { ChartType, Overlay, Study } from 'pennant';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+import { Interval } from '@vegaprotocol/types';
 import { getValidItem, getValidSubset } from '@vegaprotocol/react-helpers';
 import { ENV } from '@vegaprotocol/environment';
 
@@ -11,6 +11,8 @@ export type Chartlib = 'pennant' | 'tradingview';
 
 interface StoredSettings {
   chartlib: Chartlib;
+  // For interval we use the enum from @vegaprotocol/types, this is to make mapping between different
+  // chart types easier and more consistent
   interval: Interval;
   type: ChartType;
   overlays: Overlay[];
@@ -28,11 +30,10 @@ const STUDY_ORDER: Study[] = [
 ];
 
 export const DEFAULT_CHART_SETTINGS = {
-  // default to tradingview if its set
   chartlib: ENV.CHARTING_LIBRARY_PATH
     ? ('tradingview' as const)
     : ('pennant' as const),
-  interval: Interval.I15M,
+  interval: Interval.INTERVAL_I15M,
   type: ChartType.CANDLE,
   overlays: [Overlay.MOVING_AVERAGE],
   studies: [Study.MACD, Study.VOLUME],
@@ -107,7 +108,7 @@ export const useChartSettings = () => {
   const interval: Interval = getValidItem(
     settings.interval,
     Object.values(Interval),
-    Interval.I15M
+    Interval.INTERVAL_I15M
   );
 
   const chartType: ChartType = getValidItem(
