@@ -32,7 +32,7 @@ import BigNumber from 'bignumber.js';
 import type { Trade } from './fills-data-provider';
 import { FillActionsDropdown } from './fill-actions-dropdown';
 import { getAsset } from '@vegaprotocol/markets';
-import { MAKER, TAKER, getFeesBreakdown, getRoleAndFees } from './fills.utils';
+import { MAKER, TAKER, getFeesBreakdown, getRoleAndFees } from './fills-utils';
 
 type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;

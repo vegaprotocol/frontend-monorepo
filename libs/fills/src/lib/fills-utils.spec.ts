@@ -1,4 +1,4 @@
-import { getFeesBreakdown } from './fills.utils';
+import { getFeesBreakdown } from './fills-utils';
 import * as Schema from '@vegaprotocol/types';
 
 describe('getFeesBreakdown', () => {
