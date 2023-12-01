@@ -2,27 +2,11 @@ import { renderHook } from '@testing-library/react';
 import { useVolumeStats } from './use-volume-stats';
 
 describe('useReferralStats', () => {
-  const statsList = {
-    edges: [
-      {
-        __typename: 'VolumeDiscountStatsEdge' as const,
-        node: {
-          __typename: 'VolumeDiscountStats' as const,
-          atEpoch: 9,
-          discountFactor: '0.1',
-          runningVolume: '100',
-        },
-      },
-      {
-        __typename: 'VolumeDiscountStatsEdge' as const,
-        node: {
-          __typename: 'VolumeDiscountStats' as const,
-          atEpoch: 10,
-          discountFactor: '0.3',
-          runningVolume: '200',
-        },
-      },
-    ],
+  const stats = {
+    __typename: 'VolumeDiscountStats' as const,
+    atEpoch: 10,
+    discountFactor: '0.05',
+    runningVolume: '200',
   };
 
   const program = {
@@ -44,7 +28,7 @@ describe('useReferralStats', () => {
   };
 
   it('returns correct default values', () => {
-    const { result } = renderHook(() => useVolumeStats());
+    const { result } = renderHook(() => useVolumeStats(10));
     expect(result.current).toEqual({
       volumeDiscount: 0,
       volumeInWindow: 0,
@@ -53,11 +37,18 @@ describe('useReferralStats', () => {
     });
   });
 
-  it('returns formatted data and tiers', () => {
-    const { result } = renderHook(() => useVolumeStats(statsList, program));
+  it('returns default values if no stat is not from previous epoch', () => {
+    const { result } = renderHook(() => useVolumeStats(11, stats, program));
+    expect(result.current).toEqual({
+      volumeDiscount: 0,
+      volumeInWindow: 0,
+      volumeTierIndex: -1,
+      volumeTiers: program.benefitTiers,
+    });
+  });
 
-    // should use stats from latest epoch
-    const stats = statsList.edges[1].node;
+  it('returns formatted data and tiers', () => {
+    const { result } = renderHook(() => useVolumeStats(10, stats, program));
 
     expect(result.current).toEqual({
       volumeDiscount: Number(stats.discountFactor),
@@ -65,31 +56,5 @@ describe('useReferralStats', () => {
       volumeTierIndex: 1,
       volumeTiers: program.benefitTiers,
     });
-  });
-
-  it.each([
-    { volume: '100', index: 0 },
-    { volume: '150', index: 0 },
-    { volume: '200', index: 1 },
-    { volume: '250', index: 1 },
-    { volume: '300', index: 2 },
-    { volume: '350', index: 2 },
-  ])('returns index: $index for the running volume: $volume', (obj) => {
-    const statsA = {
-      edges: [
-        {
-          __typename: 'VolumeDiscountStatsEdge' as const,
-          node: {
-            __typename: 'VolumeDiscountStats' as const,
-            atEpoch: 10,
-            discountFactor: '0.3',
-            runningVolume: obj.volume,
-          },
-        },
-      ],
-    };
-
-    const { result } = renderHook(() => useVolumeStats(statsA, program));
-    expect(result.current.volumeTierIndex).toBe(obj.index);
   });
 });

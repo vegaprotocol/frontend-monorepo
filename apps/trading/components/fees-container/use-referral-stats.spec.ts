@@ -2,46 +2,15 @@ import { renderHook } from '@testing-library/react';
 import { useReferralStats } from './use-referral-stats';
 
 describe('useReferralStats', () => {
-  const setStats = {
-    edges: [
-      {
-        __typename: 'ReferralSetStatsEdge' as const,
-        node: {
-          __typename: 'ReferralSetStats' as const,
-          atEpoch: 9,
-          discountFactor: '0.2',
-          referralSetRunningNotionalTakerVolume: '100',
-        },
-      },
-      {
-        __typename: 'ReferralSetStatsEdge' as const,
-        node: {
-          __typename: 'ReferralSetStats' as const,
-          atEpoch: 10,
-          discountFactor: '0.3',
-          referralSetRunningNotionalTakerVolume: '200',
-        },
-      },
-    ],
+  const stat = {
+    __typename: 'ReferralSetStats' as const,
+    atEpoch: 9,
+    discountFactor: '0.01',
+    referralSetRunningNotionalTakerVolume: '100',
   };
 
-  const sets = {
-    edges: [
-      {
-        node: {
-          atEpoch: 3,
-        },
-      },
-      {
-        node: {
-          atEpoch: 4,
-        },
-      },
-    ],
-  };
-
-  const epoch = {
-    id: '10',
+  const set = {
+    atEpoch: 4,
   };
 
   const program = {
@@ -78,102 +47,36 @@ describe('useReferralStats', () => {
     });
   });
 
-  it('returns formatted data and tiers', () => {
+  it('returns default values if set is not from previous epoch', () => {
     const { result } = renderHook(() =>
-      useReferralStats(setStats, sets, program, epoch)
+      useReferralStats(10, stat, set, program)
     );
-
-    // should use stats from latest epoch
-    const stats = setStats.edges[1].node;
-    const set = sets.edges[1].node;
-
     expect(result.current).toEqual({
-      referralDiscount: Number(stats.discountFactor),
-      referralVolumeInWindow: Number(
-        stats.referralSetRunningNotionalTakerVolume
-      ),
-      referralTierIndex: 1,
+      referralDiscount: 0,
+      referralVolumeInWindow: 0,
+      referralTierIndex: -1,
       referralTiers: program.benefitTiers,
-      epochsInSet: Number(epoch.id) - set.atEpoch,
+      epochsInSet: 0,
       code: undefined,
       isReferrer: false,
     });
   });
 
-  it.each([
-    { joinedAt: 2, index: -1 },
-    { joinedAt: 3, index: -1 },
-    { joinedAt: 4, index: 0 },
-    { joinedAt: 5, index: 0 },
-    { joinedAt: 6, index: 1 },
-    { joinedAt: 7, index: 1 },
-    { joinedAt: 8, index: 2 },
-    { joinedAt: 9, index: 2 },
-  ])('joined at epoch: $joinedAt should be index: $index', (obj) => {
-    const statsA = {
-      edges: [
-        {
-          __typename: 'ReferralSetStatsEdge' as const,
-          node: {
-            __typename: 'ReferralSetStats' as const,
-            atEpoch: 10,
-            discountFactor: '0.3',
-            referralSetRunningNotionalTakerVolume: '100000',
-          },
-        },
-      ],
-    };
-    const setsA = {
-      edges: [
-        {
-          node: {
-            atEpoch: Number(epoch.id) - obj.joinedAt,
-          },
-        },
-      ],
-    };
+  it('returns formatted data and tiers', () => {
     const { result } = renderHook(() =>
-      useReferralStats(statsA, setsA, program, epoch)
+      useReferralStats(9, stat, set, program)
     );
 
-    expect(result.current.referralTierIndex).toEqual(obj.index);
-  });
-
-  it.each([
-    { volume: '50', index: -1 },
-    { volume: '100', index: 0 },
-    { volume: '150', index: 0 },
-    { volume: '200', index: 1 },
-    { volume: '250', index: 1 },
-    { volume: '300', index: 2 },
-    { volume: '999', index: 2 },
-  ])('volume: $volume should be index: $index', (obj) => {
-    const statsA = {
-      edges: [
-        {
-          __typename: 'ReferralSetStatsEdge' as const,
-          node: {
-            __typename: 'ReferralSetStats' as const,
-            atEpoch: 10,
-            discountFactor: '0.3',
-            referralSetRunningNotionalTakerVolume: obj.volume,
-          },
-        },
-      ],
-    };
-    const setsA = {
-      edges: [
-        {
-          node: {
-            atEpoch: 1,
-          },
-        },
-      ],
-    };
-    const { result } = renderHook(() =>
-      useReferralStats(statsA, setsA, program, epoch)
-    );
-
-    expect(result.current.referralTierIndex).toEqual(obj.index);
+    expect(result.current).toEqual({
+      referralDiscount: Number(stat.discountFactor),
+      referralVolumeInWindow: Number(
+        stat.referralSetRunningNotionalTakerVolume
+      ),
+      referralTierIndex: 0,
+      referralTiers: program.benefitTiers,
+      epochsInSet: stat.atEpoch - set.atEpoch,
+      code: undefined,
+      isReferrer: false,
+    });
   });
 });

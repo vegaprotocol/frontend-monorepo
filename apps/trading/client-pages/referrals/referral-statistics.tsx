@@ -127,7 +127,7 @@ export const useStats = ({
       t.discountFactor === discountFactorValue
   );
   const nextBenefitTierValue = currentBenefitTierValue
-    ? benefitTiers.find((t) => t.tier === currentBenefitTierValue.tier - 1)
+    ? benefitTiers.find((t) => t.tier === currentBenefitTierValue.tier + 1)
     : minBy(benefitTiers, (bt) => bt.tier); //  min tier number is lowest tier
   const epochsValue =
     !isNaN(currentEpoch) && refereeInfo?.atEpoch
