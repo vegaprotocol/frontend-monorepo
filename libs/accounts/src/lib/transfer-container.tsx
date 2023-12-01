@@ -23,7 +23,7 @@ export const ALLOWED_ACCOUNTS = [
 
 export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   const t = useT();
-  const { pubKey, pubKeys } = useVegaWallet();
+  const { pubKey, pubKeys, isReadOnly } = useVegaWallet();
   const { params } = useNetworkParams([
     NetworkParams.transfer_fee_factor,
     NetworkParams.transfer_minTransferQuantumMultiple,
@@ -70,6 +70,7 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
       <TransferForm
         pubKey={pubKey}
         pubKeys={pubKeys ? pubKeys?.map((pk) => pk.publicKey) : null}
+        isReadOnly={isReadOnly}
         assetId={assetId}
         feeFactor={params.transfer_fee_factor}
         minQuantumMultiple={params.transfer_minTransferQuantumMultiple}

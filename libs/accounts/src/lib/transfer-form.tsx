@@ -45,6 +45,7 @@ interface Asset {
 export interface TransferFormProps {
   pubKey: string | null;
   pubKeys: string[] | null;
+  isReadOnly?: boolean;
   accounts: Array<{
     type: AccountType;
     balance: string;
@@ -59,6 +60,7 @@ export interface TransferFormProps {
 export const TransferForm = ({
   pubKey,
   pubKeys,
+  isReadOnly,
   assetId: initialAssetId,
   feeFactor,
   submitTransfer,
@@ -201,27 +203,33 @@ export const TransferForm = ({
         <Controller
           control={control}
           name="asset"
-          render={({ field }) => (
-            <TradingRichSelect
-              data-testid="select-asset"
-              id={field.name}
-              name={field.name}
-              onValueChange={(value) => {
-                field.onChange(value);
-                setValue('fromAccount', '');
-              }}
-              placeholder={t('Please select an asset')}
-              value={field.value}
-            >
-              {assets.map((a) => (
-                <AssetOption
-                  key={a.key}
-                  asset={a}
-                  balance={<Balance balance={a.balance} symbol={a.symbol} />}
-                />
-              ))}
-            </TradingRichSelect>
-          )}
+          render={({ field }) =>
+            assets.length > 0 ? (
+              <TradingRichSelect
+                data-testid="select-asset"
+                id={field.name}
+                name={field.name}
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  setValue('fromAccount', '');
+                }}
+                placeholder={t('Please select an asset')}
+                value={field.value}
+              >
+                {assets.map((a) => (
+                  <AssetOption
+                    key={a.key}
+                    asset={a}
+                    balance={<Balance balance={a.balance} symbol={a.symbol} />}
+                  />
+                ))}
+              </TradingRichSelect>
+            ) : (
+              <span className="text-xs text-vega-clight-100 dark:text-vega-cdark-100">
+                {t('No assets available')}
+              </span>
+            )
+          }
         />
         {errors.asset?.message && (
           <TradingInputError forInput="asset">
@@ -260,38 +268,43 @@ export const TransferForm = ({
 
                   const [type] = parseFromAccount(e.target.value);
 
-                // Enforce that if transferring from a vested rewards account it must go to
-                // the current connected general account
-                if (
-                  type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS &&
-                  pubKey
-                ) {
-                  setValue('toVegaKey', pubKey);
-                  setToVegaKeyMode('select');
-                  setIncludeFee(false);
-                }
-              }}
-            >
-              <option value="" disabled={true}>
-                {t('Please select')}
-              </option>
-              {accounts
-                .filter((a) => {
-                  if (!selectedAssetId) return true;
-                  return selectedAssetId === a.asset.id;
-                })
-                .map((a) => {
-                  const id = `${a.type}-${a.asset.id}`;
-                  return (
-                    <option value={id} key={id}>
-                      {AccountTypeMapping[a.type]} (
-                      {addDecimal(a.balance, a.asset.decimals)} {a.asset.symbol}
-                      )
-                    </option>
-                  );
-                })}
-            </TradingSelect>
-          )}
+                  // Enforce that if transferring from a vested rewards account it must go to
+                  // the current connected general account
+                  if (
+                    type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS &&
+                    pubKey
+                  ) {
+                    setValue('toVegaKey', pubKey);
+                    setToVegaKeyMode('select');
+                    setIncludeFee(false);
+                  }
+                }}
+              >
+                <option value="" disabled={true}>
+                  {t('Please select')}
+                </option>
+                {accounts
+                  .filter((a) => {
+                    if (!selectedAssetId) return true;
+                    return selectedAssetId === a.asset.id;
+                  })
+                  .map((a) => {
+                    const id = `${a.type}-${a.asset.id}`;
+                    return (
+                      <option value={id} key={id}>
+                        {AccountTypeMapping[a.type]} (
+                        {addDecimal(a.balance, a.asset.decimals)}{' '}
+                        {a.asset.symbol})
+                      </option>
+                    );
+                  })}
+              </TradingSelect>
+            ) : (
+              <span className="text-xs text-vega-clight-100 dark:text-vega-cdark-100">
+                {t('No accounts available')}
+              </span>
+            )
+          }
         />
         {errors.fromAccount?.message && (
           <TradingInputError forInput="fromAccount">
@@ -455,7 +468,7 @@ export const TransferForm = ({
           decimals={asset?.decimals}
         />
       )}
-      <TradingButton type="submit" fill={true}>
+      <TradingButton type="submit" fill={true} disabled={isReadOnly}>
         {t('Confirm transfer')}
       </TradingButton>
     </form>
