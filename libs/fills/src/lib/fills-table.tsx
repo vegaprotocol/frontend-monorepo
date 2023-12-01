@@ -1,6 +1,9 @@
 import { useMemo } from 'react';
-import type { AgGridReact } from 'ag-grid-react';
-import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
+import {
+  type AgGridReact,
+  type AgGridReactProps,
+  type AgReactUiProps,
+} from 'ag-grid-react';
 import type { ColDef } from 'ag-grid-community';
 import type { ITooltipParams } from 'ag-grid-community';
 import {
