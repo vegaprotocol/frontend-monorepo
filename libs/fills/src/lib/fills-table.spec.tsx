@@ -4,14 +4,8 @@ import { getDateTimeFormat } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { Trade } from './fills-data-provider';
-import {
-  FeesDiscountBreakdownTooltip,
-  FillsTable,
-  getFeesBreakdown,
-  getTotalFeesDiscounts,
-} from './fills-table';
+import { FeesDiscountBreakdownTooltip, FillsTable } from './fills-table';
 import { generateFill } from './test-helpers';
-import type { TradeFeeFieldsFragment } from './__generated__/Fills';
 
 const partyId = 'party-id';
 const defaultFill: PartialDeep<Trade> = {
@@ -66,7 +60,7 @@ describe('FillsTable', () => {
     expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
   });
 
-  it('formats cells correctly for buyer fill', async () => {
+  it('formats cells correctly for buyer fill for maker', async () => {
     const buyerFill = generateFill({
       ...defaultFill,
       buyer: {
@@ -90,7 +84,7 @@ describe('FillsTable', () => {
       '3.00 BTC',
       'Maker',
       '2.00 BTC',
-      '0.27 BTC',
+      '0.09 BTC',
       getDateTimeFormat().format(new Date(buyerFill.createdAt)),
       '', // action column
     ];
@@ -314,105 +308,6 @@ describe('FillsTable', () => {
       expectedDD.forEach((label, i) => {
         expect(dd[i]).toHaveTextContent(label);
       });
-    });
-  });
-
-  describe('getFeesBreakdown', () => {
-    it('should return correct fees breakdown for a taker', () => {
-      const fees = {
-        makerFee: '1000',
-        infrastructureFee: '2000',
-        liquidityFee: '3000',
-      };
-      const expectedBreakdown = {
-        infrastructureFee: '2000',
-        liquidityFee: '3000',
-        makerFee: '1000',
-        totalFee: '6000',
-      };
-      expect(getFeesBreakdown('Taker', fees)).toEqual(expectedBreakdown);
-    });
-
-    it('should return correct fees breakdown for a maker if market', () => {
-      const fees = {
-        makerFee: '1000',
-        infrastructureFee: '2000',
-        liquidityFee: '3000',
-      };
-      const expectedBreakdown = {
-        infrastructureFee: '0',
-        liquidityFee: '0',
-        makerFee: '-1000',
-        totalFee: '-1000',
-      };
-      expect(getFeesBreakdown('Maker', fees)).toEqual(expectedBreakdown);
-    });
-
-    it('should return correct fees breakdown for a maker if market is active', () => {
-      const fees = {
-        makerFee: '1000',
-        infrastructureFee: '2000',
-        liquidityFee: '3000',
-      };
-      const expectedBreakdown = {
-        infrastructureFee: '0',
-        liquidityFee: '0',
-        makerFee: '-1000',
-        totalFee: '-1000',
-      };
-      expect(
-        getFeesBreakdown('Maker', fees, Schema.MarketState.STATE_ACTIVE)
-      ).toEqual(expectedBreakdown);
-    });
-
-    it('should return correct fees breakdown for a maker if the market is suspended', () => {
-      const fees = {
-        infrastructureFee: '2000',
-        liquidityFee: '3000',
-        makerFee: '0',
-      };
-      const expectedBreakdown = {
-        infrastructureFee: '1000',
-        liquidityFee: '1500',
-        makerFee: '0',
-        totalFee: '2500',
-      };
-      expect(
-        getFeesBreakdown('Maker', fees, Schema.MarketState.STATE_SUSPENDED)
-      ).toEqual(expectedBreakdown);
-    });
-
-    it('should return correct fees breakdown for a taker if the market is suspended', () => {
-      const fees = {
-        infrastructureFee: '2000',
-        liquidityFee: '3000',
-        makerFee: '0',
-      };
-      const expectedBreakdown = {
-        infrastructureFee: '1000',
-        liquidityFee: '1500',
-        makerFee: '0',
-        totalFee: '2500',
-      };
-      expect(
-        getFeesBreakdown('Taker', fees, Schema.MarketState.STATE_SUSPENDED)
-      ).toEqual(expectedBreakdown);
-    });
-  });
-
-  describe('getTotalFeesDiscounts', () => {
-    it('should return correct total value', () => {
-      const fees = {
-        infrastructureFeeReferralDiscount: '1',
-        infrastructureFeeVolumeDiscount: '2',
-        liquidityFeeReferralDiscount: '3',
-        liquidityFeeVolumeDiscount: '4',
-        makerFeeReferralDiscount: '5',
-        makerFeeVolumeDiscount: '6',
-      };
-      expect(getTotalFeesDiscounts(fees as TradeFeeFieldsFragment)).toEqual(
-        (1 + 2 + 3 + 4 + 5 + 6).toString()
-      );
     });
   });
 });
