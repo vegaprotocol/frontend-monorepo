@@ -69,8 +69,13 @@ export const TradingView = ({
       widgetRef.current = new window.TradingView.widget(widgetOptions);
 
       widgetRef.current.onChartReady(() => {
-        widgetRef.current
-          .activeChart()
+        const activeChart = widgetRef.current.activeChart();
+
+        // Show volume study by default, second bool arg adds it as a overlay on top of the chart
+        activeChart.createStudy('volume', true);
+
+        // Subscribe to interval changes so it can be persisted in chart settings
+        activeChart
           .onIntervalChanged()
           .subscribe(null, (resolution: string) => {
             onIntervalChange(resolution);
