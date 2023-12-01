@@ -285,9 +285,9 @@ const FeesBreakdownTooltip = ({
     >
       {marketState && (
         <p className="mb-1 italic">
-          {t('If the market was %s', [
-            Schema.MarketStateMapping[marketState].toLowerCase(),
-          ])}
+          {t('If the market was {{state}}', {
+            state: Schema.MarketStateMapping[marketState].toLowerCase(),
+          })}
         </p>
       )}
       {role === MAKER && (
