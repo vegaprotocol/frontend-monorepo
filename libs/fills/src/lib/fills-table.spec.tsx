@@ -333,7 +333,7 @@ describe('FillsTable', () => {
       expect(getFeesBreakdown('Taker', fees)).toEqual(expectedBreakdown);
     });
 
-    it('should return correct fees breakdown for a maker', () => {
+    it('should return correct fees breakdown for a maker if market', () => {
       const fees = {
         makerFee: '1000',
         infrastructureFee: '2000',
@@ -346,6 +346,57 @@ describe('FillsTable', () => {
         totalFee: '-1000',
       };
       expect(getFeesBreakdown('Maker', fees)).toEqual(expectedBreakdown);
+    });
+
+    it('should return correct fees breakdown for a maker if market is active', () => {
+      const fees = {
+        makerFee: '1000',
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+      };
+      const expectedBreakdown = {
+        infrastructureFee: '0',
+        liquidityFee: '0',
+        makerFee: '-1000',
+        totalFee: '-1000',
+      };
+      expect(
+        getFeesBreakdown('Maker', fees, Schema.MarketState.STATE_ACTIVE)
+      ).toEqual(expectedBreakdown);
+    });
+
+    it('should return correct fees breakdown for a maker if the market is suspended', () => {
+      const fees = {
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+        makerFee: '0',
+      };
+      const expectedBreakdown = {
+        infrastructureFee: '1000',
+        liquidityFee: '1500',
+        makerFee: '0',
+        totalFee: '2500',
+      };
+      expect(
+        getFeesBreakdown('Maker', fees, Schema.MarketState.STATE_SUSPENDED)
+      ).toEqual(expectedBreakdown);
+    });
+
+    it('should return correct fees breakdown for a taker if the market is suspended', () => {
+      const fees = {
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+        makerFee: '0',
+      };
+      const expectedBreakdown = {
+        infrastructureFee: '1000',
+        liquidityFee: '1500',
+        makerFee: '0',
+        totalFee: '2500',
+      };
+      expect(
+        getFeesBreakdown('Taker', fees, Schema.MarketState.STATE_SUSPENDED)
+      ).toEqual(expectedBreakdown);
     });
   });
 

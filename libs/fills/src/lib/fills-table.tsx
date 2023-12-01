@@ -514,6 +514,7 @@ export const getFeesBreakdown = (
       .toString();
     liquidityFee = new BigNumber(liquidityFee).dividedBy(2).toString();
     // maker fee is already zero
+    makerFee = '0';
   }
 
   const totalFee = new BigNumber(infrastructureFee)
