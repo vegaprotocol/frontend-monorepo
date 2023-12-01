@@ -3,7 +3,7 @@ import { PositionsManager } from './positions-manager';
 import { positionsMarketsProvider } from './positions-data-providers';
 import { singleRow } from './positions.mock';
 import { MockedProvider } from '@apollo/client/testing';
-import { MAXGOINT64 } from '@vegaprotocol/utils';
+import { HALFMAXGOINT64 } from '@vegaprotocol/utils';
 
 const mockCreate = jest.fn();
 
@@ -31,9 +31,7 @@ jest.mock('@vegaprotocol/data-provider', () => ({
 }));
 
 describe('PositionsManager', () => {
-  // TODO: Close position temporarily disabled in https://github.com/vegaprotocol/frontend-monorepo/pull/5350
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('should close position with max uint64', async () => {
+  it('should close position with half of max uint64', async () => {
     render(<PositionsManager partyIds={['partyId']} isReadOnly={false} />, {
       wrapper: MockedProvider,
     });
@@ -43,6 +41,6 @@ describe('PositionsManager', () => {
 
     expect(
       mockCreate.mock.lastCall[0].batchMarketInstructions.submissions[0].size
-    ).toEqual(MAXGOINT64);
+    ).toEqual(HALFMAXGOINT64);
   });
 });
