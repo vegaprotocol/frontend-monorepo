@@ -11,6 +11,7 @@ import { useCallback } from 'react';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { HALFMAXGOINT64 } from '@vegaprotocol/utils';
+import { FLAGS } from '@vegaprotocol/environment';
 
 interface PositionsManagerProps {
   partyIds: string[];
@@ -30,6 +31,7 @@ export const PositionsManager = ({
   const t = useT();
   const { pubKeys, pubKey } = useVegaWallet();
   const create = useVegaTransactionStore((store) => store.create);
+  const disableClosePositionsButton = FLAGS.DISABLE_CLOSE_POSITION;
 
   const onClose = useCallback(
     ({ marketId, openVolume }: { marketId: string; openVolume: string }) =>
@@ -75,7 +77,7 @@ export const PositionsManager = ({
       pubKeys={pubKeys}
       rowData={data}
       onMarketClick={onMarketClick}
-      onClose={onClose}
+      onClose={disableClosePositionsButton ? undefined : onClose}
       isReadOnly={isReadOnly}
       multipleKeys={partyIds.length > 1}
       overlayNoRowsTemplate={error ? error.message : t('No positions')}
