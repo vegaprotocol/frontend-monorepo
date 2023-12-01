@@ -89,7 +89,6 @@ export const Tabs = ({
           ref={menuRef}
           className={classNames('flex-1 p-1', {
             'bg-vega-clight-700 dark:bg-vega-cdark-700': wrapped,
-            '': wrapped,
           })}
         >
           {Children.map(children, (child) => {
@@ -97,7 +96,7 @@ export const Tabs = ({
             return (
               <TabsPrimitive.Content
                 value={child.props.id}
-                className={classNames('flex flex-nowrap gap-1', {
+                className={classNames('flex items-center flex-nowrap gap-1', {
                   'justify-end': !wrapped,
                 })}
               >

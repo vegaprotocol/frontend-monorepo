@@ -6,6 +6,7 @@ import {
   overlayLabels,
   studyLabels,
 } from 'pennant';
+import { Trans } from 'react-i18next';
 import {
   TradingButton,
   TradingDropdown,
@@ -21,7 +22,7 @@ import { Interval } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ALLOWED_TRADINGVIEW_HOSTNAMES } from '@vegaprotocol/trading-view';
 import { IconNames, type IconName } from '@blueprintjs/icons';
-import { useChartSettings, type Chartlib } from './use-chart-settings';
+import { useChartSettings } from './use-chart-settings';
 import { useT } from '../../lib/use-t';
 
 const INTERVALS = [
@@ -60,39 +61,21 @@ export const ChartMenu = () => {
   const triggerClasses = 'text-xs';
   const triggerButtonProps = { size: 'extra-small' } as const;
 
-  const chartlibDropdown = (
-    <TradingDropdown
-      trigger={
-        <TradingDropdownTrigger className={triggerClasses}>
-          <TradingButton {...triggerButtonProps} className="capitalize">
-            {chartlib}
-          </TradingButton>
-        </TradingDropdownTrigger>
-      }
-    >
-      <TradingDropdownContent align={contentAlign}>
-        <TradingDropdownRadioGroup
-          value={chartlib}
-          className="capitalize"
-          onValueChange={(value) => {
-            setChartlib(value as Chartlib);
-          }}
-        >
-          <TradingDropdownRadioItem inset value="tradingview">
-            {t('TradingView')}
-            <TradingDropdownItemIndicator />
-          </TradingDropdownRadioItem>
-
-          <TradingDropdownRadioItem inset value="pennant">
-            {t('Pennant')}
-            <TradingDropdownItemIndicator />
-          </TradingDropdownRadioItem>
-        </TradingDropdownRadioGroup>
-      </TradingDropdownContent>
-    </TradingDropdown>
+  const isPennant = chartlib === 'pennant';
+  const commonMenuItems = (
+    <>
+      <TradingButton
+        onClick={() => {
+          setChartlib(isPennant ? 'tradingview' : 'pennant');
+        }}
+        size="extra-small"
+      >
+        {isPennant ? 'TradingView' : t('Vega chart')}
+      </TradingButton>
+    </>
   );
 
-  const pennantDropdowns = (
+  const pennantMenuItems = (
     <>
       <TradingDropdown
         trigger={
@@ -203,23 +186,40 @@ export const ChartMenu = () => {
     </>
   );
 
+  const tradingViewMenuItems = (
+    <p className="text-xs mr-2">
+      <Trans
+        i18nKey="Chart by <0>TradingView</0>"
+        components={[
+          // eslint-disable-next-line
+          <a className="underline" href="https://www.tradingview.com" />,
+        ]}
+      />
+    </p>
+  );
+
   if (!ALLOWED_TRADINGVIEW_HOSTNAMES.includes(window.location.hostname)) {
-    return pennantDropdowns;
+    return pennantMenuItems;
   }
 
   if (!CHARTING_LIBRARY_PATH) {
-    return pennantDropdowns;
+    return pennantMenuItems;
   }
 
   switch (chartlib) {
     case 'tradingview': {
-      return chartlibDropdown;
+      return (
+        <>
+          {tradingViewMenuItems}
+          {commonMenuItems}
+        </>
+      );
     }
     case 'pennant': {
       return (
         <>
-          {chartlibDropdown}
-          {pennantDropdowns}
+          {pennantMenuItems}
+          {commonMenuItems}
         </>
       );
     }
