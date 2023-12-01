@@ -78,10 +78,10 @@ export const getFeesBreakdown = (
   let {
     makerFeeVolumeDiscount,
     makerFeeReferralDiscount,
-    infrastructureFeeReferralDiscount,
     infrastructureFeeVolumeDiscount,
-    liquidityFeeReferralDiscount,
+    infrastructureFeeReferralDiscount,
     liquidityFeeVolumeDiscount,
+    liquidityFeeReferralDiscount,
   } = fees;
 
   if (isMarketActive) {
@@ -97,9 +97,9 @@ export const getFeesBreakdown = (
       liquidityFeeReferralDiscount = liquidityFeeReferralDiscount && '0';
       liquidityFeeVolumeDiscount = liquidityFeeVolumeDiscount && '0';
 
-      // maker discount fees should also be zero or we can leave them undefined
-      makerFeeReferralDiscount = makerFeeReferralDiscount && '0';
-      makerFeeVolumeDiscount = makerFeeVolumeDiscount && '0';
+      // maker discount fees should also be zero or we can leave them as they are defined
+      // makerFeeReferralDiscount = makerFeeReferralDiscount && '0';
+      // makerFeeVolumeDiscount = makerFeeVolumeDiscount && '0';
     }
   } else {
     // If market is suspended (in monitoring auction), then half of the fees are paid
@@ -108,6 +108,7 @@ export const getFeesBreakdown = (
       .toString();
     liquidityFee = new BigNumber(liquidityFee).dividedBy(2).toString();
     // maker fee is already zero
+    makerFee = '0';
 
     // discounts are also halved
     infrastructureFeeReferralDiscount =
@@ -123,6 +124,8 @@ export const getFeesBreakdown = (
       liquidityFeeVolumeDiscount &&
       new BigNumber(liquidityFeeVolumeDiscount).dividedBy(2).toString();
     // maker discount fees should already be zero
+    makerFeeReferralDiscount = makerFeeReferralDiscount && '0';
+    makerFeeVolumeDiscount = makerFeeVolumeDiscount && '0';
   }
 
   const totalFee = new BigNumber(infrastructureFee)

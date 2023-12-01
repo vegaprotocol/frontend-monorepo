@@ -1,6 +1,9 @@
 import { useMemo } from 'react';
-import type { AgGridReact } from 'ag-grid-react';
-import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
+import {
+  type AgGridReact,
+  type AgGridReactProps,
+  type AgReactUiProps,
+} from 'ag-grid-react';
 import type { ColDef } from 'ag-grid-community';
 import type { ITooltipParams } from 'ag-grid-community';
 import {
@@ -277,7 +280,7 @@ const FeesBreakdownTooltip = ({
   return (
     <div
       data-testid="fee-breakdown-tooltip"
-      className="z-20 max-w-sm px-4 py-2 text-sm text-black border rounded bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 break-word dark:text-white"
+      className="z-20 max-w-sm px-4 py-2 text-xs text-black border rounded bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 break-word dark:text-white"
     >
       {marketState && (
         <p className="mb-1 italic">
