@@ -225,7 +225,10 @@ export const TransferForm = ({
                 ))}
               </TradingRichSelect>
             ) : (
-              <span className="text-xs text-vega-clight-100 dark:text-vega-cdark-100">
+              <span
+                data-testid="no-assets-available"
+                className="text-xs text-vega-clight-100 dark:text-vega-cdark-100"
+              >
                 {t('No assets available')}
               </span>
             )
@@ -300,7 +303,10 @@ export const TransferForm = ({
                   })}
               </TradingSelect>
             ) : (
-              <span className="text-xs text-vega-clight-100 dark:text-vega-cdark-100">
+              <span
+                data-testid="no-accounts-available"
+                className="text-xs text-vega-clight-100 dark:text-vega-cdark-100"
+              >
                 {t('No accounts available')}
               </span>
             )
