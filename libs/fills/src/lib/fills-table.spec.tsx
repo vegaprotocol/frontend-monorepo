@@ -35,6 +35,7 @@ const defaultFill: PartialDeep<Trade> = {
   },
   createdAt: new Date('2022-02-02T14:00:00').toISOString(),
 };
+
 describe('FillsTable', () => {
   it('correct columns are rendered', async () => {
     // 7005-FILL-001
@@ -271,96 +272,147 @@ describe('FillsTable', () => {
       .find((c) => c.getAttribute('col-id') === 'size');
     expect(sizeCell).toHaveTextContent('3,000,000,000');
   });
-});
 
-describe('FeesDiscountBreakdownTooltip', () => {
-  it('shows all discounts', () => {
-    const data = generateFill({
-      ...defaultFill,
-      buyer: {
-        id: partyId,
-      },
-    });
-    const props = {
-      data,
-      partyId,
-      value: data.market,
-    } as Parameters<typeof FeesDiscountBreakdownTooltip>['0'];
-    const { container } = render(<FeesDiscountBreakdownTooltip {...props} />);
-    const dt = container.querySelectorAll('dt');
-    const dd = container.querySelectorAll('dd');
-    const expectedDt = [
-      'Infrastructure Fee',
-      'Referral Discount',
-      'Volume Discount',
-      'Liquidity Fee',
-      'Referral Discount',
-      'Volume Discount',
-      'Maker Fee',
-      'Referral Discount',
-      'Volume Discount',
-    ];
-    const expectedDD = [
-      '0.05 BTC',
-      '0.06 BTC',
-      '0.01 BTC',
-      '0.02 BTC',
-      '0.03 BTC',
-      '0.04 BTC',
-    ];
-    expectedDt.forEach((label, i) => {
-      expect(dt[i]).toHaveTextContent(label);
-    });
-    expectedDD.forEach((label, i) => {
-      expect(dd[i]).toHaveTextContent(label);
+  describe('FeesDiscountBreakdownTooltip', () => {
+    it('shows all discounts', () => {
+      const data = generateFill({
+        ...defaultFill,
+        buyer: {
+          id: partyId,
+        },
+      });
+      const props = {
+        data,
+        partyId,
+        value: data.market,
+      } as Parameters<typeof FeesDiscountBreakdownTooltip>['0'];
+      const { container } = render(<FeesDiscountBreakdownTooltip {...props} />);
+      const dt = container.querySelectorAll('dt');
+      const dd = container.querySelectorAll('dd');
+      const expectedDt = [
+        'Infrastructure Fee',
+        'Referral Discount',
+        'Volume Discount',
+        'Liquidity Fee',
+        'Referral Discount',
+        'Volume Discount',
+        'Maker Fee',
+        'Referral Discount',
+        'Volume Discount',
+      ];
+      const expectedDD = [
+        '0.05 BTC',
+        '0.06 BTC',
+        '0.01 BTC',
+        '0.02 BTC',
+        '0.03 BTC',
+        '0.04 BTC',
+      ];
+      expectedDt.forEach((label, i) => {
+        expect(dt[i]).toHaveTextContent(label);
+      });
+      expectedDD.forEach((label, i) => {
+        expect(dd[i]).toHaveTextContent(label);
+      });
     });
   });
-});
 
-describe('getFeesBreakdown', () => {
-  it('should return correct fees breakdown for a taker', () => {
-    const fees = {
-      makerFee: '1000',
-      infrastructureFee: '2000',
-      liquidityFee: '3000',
-    };
-    const expectedBreakdown = {
-      infrastructureFee: '2000',
-      liquidityFee: '3000',
-      makerFee: '1000',
-      totalFee: '6000',
-    };
-    expect(getFeesBreakdown('Taker', fees)).toEqual(expectedBreakdown);
+  describe('getFeesBreakdown', () => {
+    it('should return correct fees breakdown for a taker', () => {
+      const fees = {
+        makerFee: '1000',
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+      };
+      const expectedBreakdown = {
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+        makerFee: '1000',
+        totalFee: '6000',
+      };
+      expect(getFeesBreakdown('Taker', fees)).toEqual(expectedBreakdown);
+    });
+
+    it('should return correct fees breakdown for a maker if market', () => {
+      const fees = {
+        makerFee: '1000',
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+      };
+      const expectedBreakdown = {
+        infrastructureFee: '0',
+        liquidityFee: '0',
+        makerFee: '-1000',
+        totalFee: '-1000',
+      };
+      expect(getFeesBreakdown('Maker', fees)).toEqual(expectedBreakdown);
+    });
+
+    it('should return correct fees breakdown for a maker if market is active', () => {
+      const fees = {
+        makerFee: '1000',
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+      };
+      const expectedBreakdown = {
+        infrastructureFee: '0',
+        liquidityFee: '0',
+        makerFee: '-1000',
+        totalFee: '-1000',
+      };
+      expect(
+        getFeesBreakdown('Maker', fees, Schema.MarketState.STATE_ACTIVE)
+      ).toEqual(expectedBreakdown);
+    });
+
+    it('should return correct fees breakdown for a maker if the market is suspended', () => {
+      const fees = {
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+        makerFee: '0',
+      };
+      const expectedBreakdown = {
+        infrastructureFee: '1000',
+        liquidityFee: '1500',
+        makerFee: '0',
+        totalFee: '2500',
+      };
+      expect(
+        getFeesBreakdown('Maker', fees, Schema.MarketState.STATE_SUSPENDED)
+      ).toEqual(expectedBreakdown);
+    });
+
+    it('should return correct fees breakdown for a taker if the market is suspended', () => {
+      const fees = {
+        infrastructureFee: '2000',
+        liquidityFee: '3000',
+        makerFee: '0',
+      };
+      const expectedBreakdown = {
+        infrastructureFee: '1000',
+        liquidityFee: '1500',
+        makerFee: '0',
+        totalFee: '2500',
+      };
+      expect(
+        getFeesBreakdown('Taker', fees, Schema.MarketState.STATE_SUSPENDED)
+      ).toEqual(expectedBreakdown);
+    });
   });
 
-  it('should return correct fees breakdown for a maker', () => {
-    const fees = {
-      makerFee: '1000',
-      infrastructureFee: '2000',
-      liquidityFee: '3000',
-    };
-    const expectedBreakdown = {
-      infrastructureFee: '2000',
-      liquidityFee: '3000',
-      makerFee: '-1000',
-      totalFee: '4000',
-    };
-    expect(getFeesBreakdown('Maker', fees)).toEqual(expectedBreakdown);
-  });
-});
-
-describe('getTotalFeesDiscounts', () => {
-  it('should return correct total value', () => {
-    const fees = {
-      infrastructureFeeReferralDiscount: '1',
-      infrastructureFeeVolumeDiscount: '2',
-      liquidityFeeReferralDiscount: '3',
-      liquidityFeeVolumeDiscount: '4',
-      makerFeeReferralDiscount: '5',
-      makerFeeVolumeDiscount: '6',
-    };
-    expect(getTotalFeesDiscounts(fees as TradeFeeFieldsFragment)).toEqual(
-      (1 + 2 + 3 + 4 + 5 + 6).toString()
-    );
+  describe('getTotalFeesDiscounts', () => {
+    it('should return correct total value', () => {
+      const fees = {
+        infrastructureFeeReferralDiscount: '1',
+        infrastructureFeeVolumeDiscount: '2',
+        liquidityFeeReferralDiscount: '3',
+        liquidityFeeVolumeDiscount: '4',
+        makerFeeReferralDiscount: '5',
+        makerFeeVolumeDiscount: '6',
+      };
+      expect(getTotalFeesDiscounts(fees as TradeFeeFieldsFragment)).toEqual(
+        (1 + 2 + 3 + 4 + 5 + 6).toString()
+      );
+    });
   });
 });
