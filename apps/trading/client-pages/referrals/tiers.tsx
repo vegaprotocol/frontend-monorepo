@@ -261,9 +261,17 @@ const TiersTable = ({
         {
           name: 'commission',
           displayName: t('Referrer commission'),
-          tooltip: t('A percentage of commission earned by the referrer'),
+          tooltip: t(
+            "The proportion of the referee's taker fees to be rewarded to the referrer"
+          ),
         },
-        { name: 'discount', displayName: t('Referrer trading discount') },
+        {
+          name: 'discount',
+          displayName: t('Referee trading discount'),
+          tooltip: t(
+            "The proportion of the referee's taker fees to be discounted"
+          ),
+        },
         {
           name: 'volume',
           displayName: t(
@@ -273,8 +281,15 @@ const TiersTable = ({
               count: windowLength,
             }
           ),
+          tooltip: t('The minimum running notional for the given benefit tier'),
         },
-        { name: 'epochs', displayName: t('Min. epochs') },
+        {
+          name: 'epochs',
+          displayName: t('Min. epochs'),
+          tooltip: t(
+            'The minimum number of epochs the party needs to be in the referral set to be eligible for the benefit'
+          ),
+        },
       ]}
       className="bg-white dark:bg-vega-cdark-900"
       data={data.map((d) => ({
