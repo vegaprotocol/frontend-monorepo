@@ -5,7 +5,10 @@ import {
   type NodeCheckTimeUpdateSubscription,
 } from '../../utils/__generated__/NodeCheck';
 import { Networks } from '../../types';
-import { createMockClient, type RequestHandlerResponse } from 'mock-apollo-client';
+import {
+  createMockClient,
+  type RequestHandlerResponse,
+} from 'mock-apollo-client';
 
 export type MockRequestConfig = {
   hasError?: boolean;

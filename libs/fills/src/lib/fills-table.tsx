@@ -28,10 +28,6 @@ import {
 import { forwardRef } from 'react';
 import BigNumber from 'bignumber.js';
 import { type Trade } from './fills-data-provider';
-import {
-  type FillFieldsFragment,
-  type TradeFeeFieldsFragment,
-} from './__generated__/Fills';
 import { FillActionsDropdown } from './fill-actions-dropdown';
 import { getAsset } from '@vegaprotocol/markets';
 import { useT } from './use-t';
