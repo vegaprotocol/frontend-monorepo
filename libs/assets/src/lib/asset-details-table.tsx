@@ -18,7 +18,7 @@ type Rows = {
   key: AssetDetail;
   label: string;
   tooltip: string;
-  value: (asset: Asset) => ReactNode | undefined;
+  value: (asset: Asset, orignalAsset?: Asset) => ReactNode | undefined;
   valueTooltip?: (asset: Asset) => string | null | undefined;
 }[];
 
@@ -51,6 +51,21 @@ const num = (asset: Asset, n: string | undefined | null) => {
   if (typeof n === 'undefined' || n == null) return '';
   return addDecimalsFormatNumber(n, asset.decimals);
 };
+
+const Diff = ({
+  oldValue,
+  newValue,
+}: {
+  oldValue: ReactNode;
+  newValue: ReactNode;
+}) => (
+  <span className="flex gap-1">
+    <span className="line-through bg-vega-red-300 dark:bg-vega-red-600">
+      {oldValue}
+    </span>
+    <span className="bg-vega-green-300 dark:bg-vega-green-600">{newValue}</span>
+  </span>
+);
 
 export const useRows = () => {
   const t = useT();
@@ -103,7 +118,14 @@ export const useRows = () => {
         key: AssetDetail.QUANTUM,
         label: t('Quantum'),
         tooltip: t('The minimum economically meaningful amount of the asset'),
-        value: (asset) => num(asset, asset.quantum),
+        value: (asset, originalAsset) => {
+          const value = num(asset, asset.quantum);
+          if (originalAsset && originalAsset.quantum !== asset.quantum) {
+            const original = num(originalAsset, originalAsset.quantum);
+            return <Diff oldValue={original} newValue={value} />;
+          }
+          return value;
+        },
       },
       {
         key: AssetDetail.STATUS,
@@ -143,8 +165,24 @@ export const useRows = () => {
         tooltip: t('WITHDRAW_THRESHOLD_TOOLTIP_TEXT', {
           defaultValue: WITHDRAW_THRESHOLD_TOOLTIP_TEXT,
         }),
-        value: (asset) =>
-          num(asset, (asset.source as Schema.ERC20).withdrawThreshold),
+        value: (asset, originalAsset) => {
+          const value = num(
+            asset,
+            (asset.source as Schema.ERC20).withdrawThreshold
+          );
+          if (
+            originalAsset &&
+            (originalAsset.source as Schema.ERC20).withdrawThreshold !==
+              (asset.source as Schema.ERC20).withdrawThreshold
+          ) {
+            const original = num(
+              asset,
+              (originalAsset.source as Schema.ERC20).withdrawThreshold
+            );
+            return <Diff oldValue={original} newValue={value} />;
+          }
+          return value;
+        },
       },
       {
         key: AssetDetail.LIFETIME_LIMIT,
@@ -152,8 +190,26 @@ export const useRows = () => {
         tooltip: t(
           'The lifetime deposit limit per address. Note: this is a temporary measure that can be changed or removed through governance'
         ),
-        value: (asset) =>
-          num(asset, (asset.source as Schema.ERC20).lifetimeLimit),
+        value: (asset, originalAsset) => {
+          const value = num(
+            asset,
+            (asset.source as Schema.ERC20).lifetimeLimit
+          );
+
+          if (
+            originalAsset &&
+            (originalAsset.source as Schema.ERC20).lifetimeLimit !==
+              (asset.source as Schema.ERC20).lifetimeLimit
+          ) {
+            const original = num(
+              asset,
+              (originalAsset.source as Schema.ERC20).lifetimeLimit
+            );
+            return <Diff oldValue={original} newValue={value} />;
+          }
+
+          return value;
+        },
       },
       {
         key: AssetDetail.MAX_FAUCET_AMOUNT_MINT,
@@ -261,10 +317,13 @@ export const testId = (detail: AssetDetail, field: 'label' | 'value') =>
 
 export type AssetDetailsTableProps = {
   asset: Asset;
+  originalAsset?: Asset;
+
   omitRows?: AssetDetail[];
 } & Omit<KeyValueTableRowProps, 'children'>;
 export const AssetDetailsTable = ({
   asset,
+  originalAsset,
   omitRows = [],
   ...props
 }: AssetDetailsTableProps) => {
@@ -275,7 +334,7 @@ export const AssetDetailsTable = ({
 
   const details = useRows().map((r) => ({
     ...r,
-    value: r.value(asset),
+    value: r.value(asset, originalAsset),
     valueTooltip: r.valueTooltip?.(asset),
   }));
 

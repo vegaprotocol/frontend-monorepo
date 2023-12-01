@@ -7,8 +7,10 @@ import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 
 export const ProposalAssetDetails = ({
   asset,
+  originalAsset,
 }: {
   asset: AssetFieldsFragment;
+  originalAsset?: AssetFieldsFragment;
 }) => {
   const { t } = useTranslation();
   const [showAssetDetails, setShowAssetDetails] = useState(false);
@@ -27,6 +29,7 @@ export const ProposalAssetDetails = ({
         <div className="mb-10 pb-4">
           <AssetDetailsTable
             asset={asset}
+            originalAsset={originalAsset}
             omitRows={[
               AssetDetail.STATUS,
               AssetDetail.INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
