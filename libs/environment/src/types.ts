@@ -27,6 +27,7 @@ export type CosmicElevatorFlags = Pick<
   | 'UPDATE_MARKET_STATE'
   | 'GOVERNANCE_TRANSFERS'
   | 'VOLUME_DISCOUNTS'
+  | 'DISABLE_CLOSE_POSITION'
 >;
 export type Configuration = z.infer<typeof tomlConfigSchema>;
 export const CUSTOM_NODE_KEY = 'custom' as const;
