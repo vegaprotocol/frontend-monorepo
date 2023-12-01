@@ -84,7 +84,7 @@ describe('FillsTable', () => {
       '3.00 BTC',
       'Maker',
       '2.00 BTC',
-      '0.00 BTC',
+      '0.09 BTC',
       getDateTimeFormat().format(new Date(buyerFill.createdAt)),
       '', // action column
     ];

@@ -97,9 +97,7 @@ export const getFeesBreakdown = (
       liquidityFeeReferralDiscount = liquidityFeeReferralDiscount && '0';
       liquidityFeeVolumeDiscount = liquidityFeeVolumeDiscount && '0';
 
-      // maker discount fees should also be zero or we can leave them as they are defined
-      // makerFeeReferralDiscount = makerFeeReferralDiscount && '0';
-      // makerFeeVolumeDiscount = makerFeeVolumeDiscount && '0';
+      // we leave maker discount fees as they are defined
     }
   } else {
     // If market is suspended (in monitoring auction), then half of the fees are paid
