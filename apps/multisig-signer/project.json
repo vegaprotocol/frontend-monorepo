@@ -53,7 +53,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/multisig-signer/**/*.{ts,tsx,js,jsx}"]
@@ -63,23 +63,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/multisig-signer"],
       "options": {
-        "jestConfig": "apps/multisig-signer/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
-      }
-    },
-    "build-netlify": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "cp apps/multisig-signer/netlify.toml netlify.toml",
-          "nx build multisig-signer"
-        ]
+        "jestConfig": "apps/multisig-signer/jest.config.ts"
       }
     },
     "build-spec": {

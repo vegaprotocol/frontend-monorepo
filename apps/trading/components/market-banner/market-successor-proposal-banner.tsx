@@ -9,16 +9,17 @@ import {
   Intent,
   NotificationBanner,
 } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
 import * as Types from '@vegaprotocol/types';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { useT } from '../../lib/use-t';
 
 export const MarketSuccessorProposalBanner = ({
   marketId,
 }: {
   marketId?: string;
 }) => {
+  const t = useT();
   const { data: proposals } = useDataProvider({
     dataProvider: marketViewProposalsDataProvider,
     skip: !marketId,
@@ -57,9 +58,13 @@ export const MarketSuccessorProposalBanner = ({
             : t('Successors to this market have been proposed')}
         </div>
         <div>
-          {successors.length === 1
-            ? t('Check out the terms of the proposal and vote:')
-            : t('Check out the terms of the proposals and vote:')}{' '}
+          {t(
+            'checkOutProposalsAndVote',
+            'Check out the terms of the proposals and vote:',
+            {
+              count: successors.length,
+            }
+          )}{' '}
           {successors.map((item, i) => {
             const externalLink = tokenLink(
               TOKEN_PROPOSAL.replace(':id', item.id || '')

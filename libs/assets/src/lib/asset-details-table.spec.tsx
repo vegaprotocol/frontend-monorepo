@@ -1,10 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, renderHook } from '@testing-library/react';
 import * as Schema from '@vegaprotocol/types';
 import type { Asset } from './asset-data-provider';
 import {
   AssetDetail,
   AssetDetailsTable,
-  rows,
+  useRows,
   testId,
 } from './asset-details-table';
 import { generateBuiltinAsset, generateERC20Asset } from './test-helpers';
@@ -67,6 +67,8 @@ describe('AssetDetailsTable', () => {
   it.each(cases)(
     "displays the available asset's data of %p with correct labels",
     async (_type, asset, details) => {
+      const { result } = renderHook(() => useRows());
+      const rows = result.current;
       render(<AssetDetailsTable asset={asset} />);
       for (const detail of details) {
         expect(

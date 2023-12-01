@@ -11,8 +11,8 @@ import {
   MarketTradingMode,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
-import { t } from '@vegaprotocol/i18n';
 import { MarketProductPill } from '@vegaprotocol/datagrid';
+import { useT } from '../../lib/use-t';
 
 export const MarketSelectorItem = ({
   market,
@@ -52,6 +52,7 @@ const MarketData = ({
   market: MarketMaybeWithDataAndCandles;
   allProducts: boolean;
 }) => {
+  const t = useT();
   const { data } = useMarketDataUpdateSubscription({
     variables: {
       marketId: market.id,

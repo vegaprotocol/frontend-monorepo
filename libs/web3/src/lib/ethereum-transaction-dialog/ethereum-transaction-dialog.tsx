@@ -1,9 +1,9 @@
-import { t } from '@vegaprotocol/i18n';
 import { Button, Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { isEthereumError } from '../ethereum-error';
 import type { EthTxState, TxError } from '../use-ethereum-transaction';
 import { EthTxStatus } from '../use-ethereum-transaction';
 import { ConfirmRow, TxRow, ConfirmationEventRow } from './dialog-rows';
+import { useT } from '../use-t';
 
 export interface EthereumTransactionDialogProps {
   title: string;
@@ -20,13 +20,14 @@ export const EthereumTransactionDialog = ({
   onChange,
   requiredConfirmations = 1,
 }: EthereumTransactionDialogProps) => {
+  const t = useT();
   const { status, error, confirmations, txHash } = transaction;
   return (
     <Dialog
       open={transaction.dialogOpen}
       onChange={onChange}
       size="small"
-      {...getWrapperProps(title, status)}
+      {...getWrapperProps(title, status, t)}
     >
       <TransactionContent
         status={status}
@@ -44,11 +45,13 @@ export const getTransactionContent = ({
   transaction,
   requiredConfirmations,
   reset,
+  t,
 }: {
   title: string;
   transaction: EthTxState;
   requiredConfirmations?: number;
   reset: () => void;
+  t: ReturnType<typeof useT>;
 }) => {
   const { status, error, confirmations, txHash } = transaction;
   const content = ({ returnLabel }: { returnLabel?: string }) => (
@@ -75,7 +78,7 @@ export const getTransactionContent = ({
     </>
   );
   return {
-    ...getWrapperProps(title, status),
+    ...getWrapperProps(title, status, t),
     status,
     Content: content,
   };
@@ -94,6 +97,7 @@ export const TransactionContent = ({
   confirmations: number;
   requiredConfirmations?: number;
 }) => {
+  const t = useT();
   if (status === EthTxStatus.Error) {
     let errorMessage = '';
 
@@ -105,7 +109,9 @@ export const TransactionContent = ({
 
     return (
       <p className="break-all">
-        {t('Error')}: {errorMessage}
+        {t('Error: {{errorMessage}}', {
+          errorMessage,
+        })}
       </p>
     );
   }
@@ -128,7 +134,8 @@ export const TransactionContent = ({
 type WrapperProps = { title: string; icon?: JSX.Element; intent?: Intent };
 export const getWrapperProps = (
   title: string,
-  status: EthTxStatus
+  status: EthTxStatus,
+  t: ReturnType<typeof useT>
 ): WrapperProps => {
   const propsMap = {
     [EthTxStatus.Default]: {
@@ -137,17 +144,17 @@ export const getWrapperProps = (
       intent: undefined,
     },
     [EthTxStatus.Error]: {
-      title: t(`${title} failed`),
+      title: t(`{{title}} failed`, { title }),
       icon: <Icon name="warning-sign" />,
       intent: Intent.Danger,
     },
     [EthTxStatus.Requested]: {
-      title: t('Confirm transaction'),
+      title: t('Confirm transaction', { title }),
       icon: <Icon name="hand-up" />,
       intent: Intent.Warning,
     },
     [EthTxStatus.Pending]: {
-      title: t(`${title} pending`),
+      title: t(`{{title}} pending`, { title }),
       icon: (
         <span className="mt-1">
           <Loader size="small" />
@@ -156,12 +163,12 @@ export const getWrapperProps = (
       intent: Intent.None,
     },
     [EthTxStatus.Complete]: {
-      title: t(`${title} pending`),
+      title: t(`{{title}} pending`, { title }),
       icon: <Loader size="small" />,
       intent: Intent.None,
     },
     [EthTxStatus.Confirmed]: {
-      title: t(`${title} complete`),
+      title: t(`{{title}} complete`, { title }),
       icon: <Icon name="tick" />,
       intent: Intent.Success,
     },

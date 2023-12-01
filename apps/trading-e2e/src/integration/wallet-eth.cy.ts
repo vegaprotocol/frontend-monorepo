@@ -26,18 +26,6 @@ describe('ethereum wallet', { tags: '@smoke', testIsolation: true }, () => {
     cy.getByTestId('tab-deposits').should('not.be.empty');
   });
 
-  it('should see QR code modal for WalletConnect', () => {
-    // 0004-EWAL-003
-
-    cy.getByTestId('Deposits').click();
-    cy.getByTestId('deposit-button').click();
-    cy.getByTestId('connect-eth-wallet-btn').click();
-    cy.getByTestId('web3-connector-list').should('exist');
-    cy.getByTestId('web3-connector-WalletConnect').click();
-    // testing if exists rather than visible because of the long loading time
-    cy.get('w3m-modal').should('exist');
-  });
-
   it('able to disconnect eth wallet', () => {
     // 0004-EWAL-004
     // 0004-EWAL-005

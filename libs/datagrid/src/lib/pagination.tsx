@@ -1,5 +1,5 @@
 import { TradingButton as Button } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 
 export const Pagination = ({
   count,
@@ -14,20 +14,19 @@ export const Pagination = ({
   hasDisplayedRows: boolean;
   showRetentionMessage: boolean;
 }) => {
+  const t = useT();
   let rowMessage = '';
 
   if (count && !pageInfo?.hasNextPage) {
-    rowMessage = t('all %s rows loaded', count.toString());
+    rowMessage = t('paginationAllLoaded', 'all {{count}} rows loaded', {
+      count,
+    });
   } else {
-    if (count === 1) {
-      rowMessage = t('%s row loaded', count.toString());
-    } else {
-      rowMessage = t('%s rows loaded', count.toString());
-    }
+    rowMessage = t('paginationLoaded', '{{count}} rows loaded', { count });
   }
 
   return (
-    <div className="flex items-center justify-between p-1 border-t border-default">
+    <div className="border-default flex items-center justify-between border-t p-1">
       <div className="text-xs">
         {false}
         {showRetentionMessage &&
@@ -44,7 +43,7 @@ export const Pagination = ({
         ) : null}
       </div>
       {count && hasDisplayedRows === false ? (
-        <div className="absolute text-xs top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-xs">
           {t('No rows matching selected filters')}
         </div>
       ) : null}

@@ -1,5 +1,5 @@
 import { useApolloClient } from '@apollo/client';
-import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
+import { type CollateralBridge } from '@vegaprotocol/smart-contracts';
 import {
   EthTxStatus,
   useBridgeContract,
@@ -7,13 +7,15 @@ import {
 } from '@vegaprotocol/web3';
 import { useCallback, useEffect, useState } from 'react';
 import { localLoggerFactory } from '@vegaprotocol/logger';
-import { Erc20ApprovalDocument } from './__generated__/Erc20Approval';
-import type {
-  Erc20ApprovalQuery,
-  Erc20ApprovalQueryVariables,
+import {
+  Erc20ApprovalDocument,
+  type Erc20ApprovalQuery,
+  type Erc20ApprovalQueryVariables,
 } from './__generated__/Erc20Approval';
-import { PendingWithdrawalFragmentDoc } from './__generated__/Withdrawal';
-import type { PendingWithdrawalFragment } from './__generated__/Withdrawal';
+import {
+  PendingWithdrawalFragmentDoc,
+  type PendingWithdrawalFragment,
+} from './__generated__/Withdrawal';
 
 export const useCompleteWithdraw = () => {
   const { query, cache } = useApolloClient();

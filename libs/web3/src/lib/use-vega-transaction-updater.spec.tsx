@@ -1,23 +1,21 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import type { MockedResponse } from '@apollo/client/testing';
+import { type MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useVegaTransactionUpdater } from './use-vega-transaction-updater';
 import {
   OrderTxUpdateDocument,
   TransactionEventDocument,
   WithdrawalBusEventDocument,
-} from './__generated__/TransactionResult';
-import type {
-  OrderTxUpdateSubscription,
-  OrderTxUpdateFieldsFragment,
-  WithdrawalBusEventSubscription,
-  WithdrawalBusEventFieldsFragment,
-  TransactionEventSubscription,
-  TransactionEventFieldsFragment,
+  type OrderTxUpdateSubscription,
+  type OrderTxUpdateFieldsFragment,
+  type WithdrawalBusEventSubscription,
+  type WithdrawalBusEventFieldsFragment,
+  type TransactionEventSubscription,
+  type TransactionEventFieldsFragment,
 } from './__generated__/TransactionResult';
 
-import type { VegaTransactionStore } from './use-vega-transaction-store';
+import { type VegaTransactionStore } from './use-vega-transaction-store';
 import {
   AssetStatus,
   BusEventType,
@@ -76,6 +74,7 @@ const orderUpdate: OrderTxUpdateFieldsFragment = {
   createdAt: '2022-07-05T14:25:47.815283706Z',
   expiresAt: '2022-07-05T14:25:47.815283706Z',
   size: '10',
+  remaining: '10',
   price: '300000',
   timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
   side: Side.SIDE_BUY,

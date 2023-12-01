@@ -1,29 +1,33 @@
-import type { ApolloClient } from '@apollo/client';
-import type { Duration } from 'date-fns';
+import { type ApolloClient } from '@apollo/client';
+import { type Duration } from 'date-fns';
 import {
   add,
   differenceInDays,
   differenceInHours,
   differenceInMinutes,
 } from 'date-fns';
-import type { Candle, DataSource, PriceMonitoringBounds } from 'pennant';
+import {
+  type Candle,
+  type DataSource,
+  type PriceMonitoringBounds,
+} from 'pennant';
 import { Interval as PennantInterval } from 'pennant';
-
 import { addDecimal } from '@vegaprotocol/utils';
-import { ChartDocument } from './__generated__/Chart';
-import type { ChartQuery, ChartQueryVariables } from './__generated__/Chart';
+import {
+  ChartDocument,
+  type ChartQuery,
+  type ChartQueryVariables,
+} from './__generated__/Chart';
 import {
   CandlesDocument,
   CandlesEventsDocument,
+  type CandlesQuery,
+  type CandlesQueryVariables,
+  type CandlesEventsSubscription,
+  type CandlesEventsSubscriptionVariables,
+  type CandleFieldsFragment,
 } from './__generated__/Candles';
-import type {
-  CandlesQuery,
-  CandlesQueryVariables,
-  CandleFieldsFragment,
-  CandlesEventsSubscription,
-  CandlesEventsSubscriptionVariables,
-} from './__generated__/Candles';
-import type { Subscription } from 'zen-observable-ts';
+import { type Subscription } from 'zen-observable-ts';
 import * as Schema from '@vegaprotocol/types';
 
 const INTERVAL_TO_PENNANT_MAP = {

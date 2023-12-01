@@ -1,17 +1,17 @@
 import { marketDataErrorPolicyGuard } from '@vegaprotocol/data-provider';
 import { makeDataProvider } from '@vegaprotocol/data-provider';
-import type {
-  MarketsDataQuery,
-  MarketsDataQueryVariables,
+import {
+  MarketsDataDocument,
+  type MarketsDataQuery,
+  type MarketsDataQueryVariables,
 } from './__generated__/markets-data';
-import type {
-  MarketDataUpdateSubscription,
-  MarketDataUpdateFieldsFragment,
-  MarketDataUpdateSubscriptionVariables,
+import {
+  MarketDataUpdateDocument,
+  type MarketDataUpdateSubscription,
+  type MarketDataUpdateFieldsFragment,
+  type MarketDataUpdateSubscriptionVariables,
 } from './__generated__/market-data';
-import { MarketDataUpdateDocument } from './__generated__/market-data';
-import { MarketsDataDocument } from './__generated__/markets-data';
-import type { MarketData } from './market-data-provider';
+import { type MarketData } from './market-data-provider';
 
 const getData = (responseData: MarketsDataQuery | null): MarketData[] =>
   responseData?.marketsConnection?.edges

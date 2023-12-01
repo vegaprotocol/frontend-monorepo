@@ -1,8 +1,8 @@
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { ExternalLink, Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
 import { useUpdateProposal } from '../lib';
+import { useT } from '../use-t';
 
 type MarketProposalNotificationProps = {
   marketId?: string;
@@ -10,6 +10,7 @@ type MarketProposalNotificationProps = {
 export const MarketProposalNotification = ({
   marketId,
 }: MarketProposalNotificationProps) => {
+  const t = useT();
   const tokenLink = useLinks(DApp.Governance);
   const { data: proposal } = useUpdateProposal({
     id: marketId,

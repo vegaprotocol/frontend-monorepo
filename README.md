@@ -136,7 +136,7 @@ The [`docker`](./docker) subfolder has some docker configurations for easily set
 Using multistage dockerfile dist is compiled using [node](https://hub.docker.com/_/node) image and later packed to nginx as in [dist build](#dist-build). The multistage builds ensures consistent CPU architecture and build toolchains are used so that the result will be identical.
 
 ```bash
-docker build --build-arg APP=[YOUR APP] --build-arg NODE_VERSION=16.5.1 --build-arg ENV_NAME=mainnet -t [TAG] -f docker/node-inside-docker.Dockerfile .
+docker build --build-arg APP=[YOUR APP] --build-arg NODE_VERSION=20.9.1 --build-arg ENV_NAME=mainnet -t [TAG] -f docker/node-inside-docker.Dockerfile .
 ```
 
 ### Computing ipfs-hash of the build

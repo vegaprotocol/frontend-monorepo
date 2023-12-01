@@ -20,6 +20,8 @@ const generateTxs = (number: number): BlockExplorerTransactionResult[] => {
       '4b782482f587d291e8614219eb9a5ee9280fa2c58982dee71d976782a9be1964',
     type: 'Submit Order',
     signature: {
+      version: '1',
+      algo: 'vega/ed25519',
       value: '123',
     },
     code: 0,

@@ -4,7 +4,7 @@ import { VoteValue } from '@vegaprotocol/types';
 import { useEffect, useState } from 'react';
 import { useUserVoteQuery } from './__generated__/Vote';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
-import type { FinalizedVote } from '@vegaprotocol/proposals';
+import { type FinalizedVote } from '@vegaprotocol/proposals';
 
 export enum VoteState {
   NotCast = 'NotCast',

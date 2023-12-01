@@ -9,6 +9,7 @@ describe('DepthChart', () => {
         <DepthChartContainer marketId={'market-id'} />
       </MockedProvider>
     );
+    // 6006-DEPC-001
     expect(baseElement).toBeTruthy();
   });
 });

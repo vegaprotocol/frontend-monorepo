@@ -65,7 +65,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
@@ -79,23 +79,7 @@
         "{workspaceRoot}/coverage/apps/liquidity-provision-dashboard"
       ],
       "options": {
-        "jestConfig": "apps/liquidity-provision-dashboard/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
-      }
-    },
-    "build-netlify": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "cp apps/liquidity-provision-dashboard/netlify.toml netlify.toml",
-          "nx build liquidity-provision-dashboard"
-        ]
+        "jestConfig": "apps/liquidity-provision-dashboard/jest.config.ts"
       }
     },
     "build-spec": {

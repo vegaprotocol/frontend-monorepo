@@ -1,7 +1,8 @@
-import { t } from '@vegaprotocol/i18n';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { SunIcon, MoonIcon } from './icons';
 import { Toggle } from '../toggle';
+import { useT } from '../../use-t';
+import classNames from 'classnames';
+import { VegaIcon, VegaIconNames } from '../icon';
 
 export const ThemeSwitcher = ({
   className,
@@ -10,17 +11,21 @@ export const ThemeSwitcher = ({
   className?: string;
   withMobile?: boolean;
 }) => {
+  const t = useT();
   const { theme, setTheme } = useThemeSwitcher();
   const button = (
     <button
       type="button"
       onClick={() => setTheme()}
-      className={className}
+      className={classNames(
+        'flex justify-center items-center hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500 rounded-full w-7 h-7',
+        className
+      )}
       data-testid="theme-switcher"
       id="theme-switcher"
     >
-      {theme === 'dark' && <SunIcon />}
-      {theme === 'light' && <MoonIcon />}
+      {theme === 'dark' && <VegaIcon name={VegaIconNames.SUN} size={28} />}
+      {theme === 'light' && <VegaIcon name={VegaIconNames.MOON} size={28} />}
     </button>
   );
   const toggles = [
@@ -35,7 +40,7 @@ export const ThemeSwitcher = ({
   ];
   return withMobile ? (
     <>
-      <div className="flex grow gap-6 md:hidden whitespace-nowrap justify-between">
+      <div className="flex grow justify-between gap-6 whitespace-nowrap md:hidden">
         {button}{' '}
         <Toggle
           name="theme-switch"

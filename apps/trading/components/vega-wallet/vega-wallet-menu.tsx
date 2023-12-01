@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import {
   TradingButton as Button,
@@ -11,12 +10,14 @@ import { useCallback, useMemo } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { ViewType, useSidebar } from '../sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
+import { useT } from '../../lib/use-t';
 
 export const VegaWalletMenu = ({
   setMenu,
 }: {
   setMenu: (open: 'nav' | 'wallet' | null) => void;
 }) => {
+  const t = useT();
   const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
   const currentRouteId = useGetCurrentRouteId();
   const setViews = useSidebar((store) => store.setViews);
@@ -76,6 +77,7 @@ const KeypairListItem = ({
   isActive: boolean;
   onSelectItem: (pk: string) => void;
 }) => {
+  const t = useT();
   const [copied, setCopied] = useCopyTimeout();
 
   return (

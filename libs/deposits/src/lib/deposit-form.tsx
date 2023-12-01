@@ -1,16 +1,15 @@
 import type { Asset, AssetFieldsFragment } from '@vegaprotocol/assets';
 import { AssetOption } from '@vegaprotocol/assets';
 import {
-  ethereumAddress,
-  required,
-  vegaPublicKey,
-  minSafe,
-  maxSafe,
+  useEthereumAddress,
+  useRequired,
+  useVegaPublicKey,
+  useMinSafe,
+  useMaxSafe,
   addDecimal,
   isAssetTypeERC20,
   formatNumber,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
   TradingFormGroup,
@@ -43,6 +42,7 @@ import { FaucetNotification } from './faucet-notification';
 import { ApproveNotification } from './approve-notification';
 import { usePersistentDeposit } from './use-persistent-deposit';
 import { AssetBalance } from './asset-balance';
+import { useT } from './use-t';
 
 interface FormFields {
   asset: string;
@@ -84,6 +84,12 @@ export const DepositForm = ({
   approveTxId,
   isFaucetable,
 }: DepositFormProps) => {
+  const t = useT();
+  const ethereumAddress = useEthereumAddress();
+  const required = useRequired();
+  const vegaPublicKey = useVegaPublicKey();
+  const minSafe = useMinSafe();
+  const maxSafe = useMaxSafe();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const openDialog = useWeb3ConnectStore((store) => store.open);
   const { isActive, account } = useWeb3React();
@@ -284,7 +290,7 @@ export const DepositForm = ({
         )}
         {isActive && isFaucetable && selectedAsset && (
           <UseButton onClick={submitFaucet}>
-            {t(`Get ${selectedAsset.symbol}`)}
+            {t('Get {{assetSymbol}}', { assetSymbol: selectedAsset.symbol })}
           </UseButton>
         )}
         {!errors.asset?.message && selectedAsset && (
@@ -325,11 +331,11 @@ export const DepositForm = ({
                   const allowance = new BigNumber(balances?.allowance || 0);
                   if (value.isGreaterThan(allowance)) {
                     return t(
-                      "You can't deposit more than your approved deposit amount, %s %s",
-                      [
-                        formatNumber(allowance.toString()),
-                        selectedAsset?.symbol || ' ',
-                      ]
+                      "You can't deposit more than your approved deposit amount, {{amount}} {{assetSymbol}}",
+                      {
+                        amount: formatNumber(allowance.toString()),
+                        assetSymbol: selectedAsset?.symbol || ' ',
+                      }
                     );
                   }
                   return true;
@@ -347,11 +353,11 @@ export const DepositForm = ({
 
                   if (value.isGreaterThan(lifetimeLimit)) {
                     return t(
-                      "You can't deposit more than your remaining deposit allowance, %s %s",
-                      [
-                        formatNumber(lifetimeLimit.toString()),
-                        selectedAsset?.symbol || ' ',
-                      ]
+                      "You can't deposit more than your remaining deposit allowance, {{amount}} {{assetSymbol}}",
+                      {
+                        amount: formatNumber(lifetimeLimit.toString()),
+                        assetSymbol: selectedAsset?.symbol || ' ',
+                      }
                     );
                   }
                   return true;
@@ -361,8 +367,11 @@ export const DepositForm = ({
                   const balance = new BigNumber(balances?.balance || 0);
                   if (value.isGreaterThan(balance)) {
                     return t(
-                      "You can't deposit more than you have in your Ethereum wallet, %s %s",
-                      [formatNumber(balance), selectedAsset?.symbol || ' ']
+                      "You can't deposit more than you have in your Ethereum wallet,  {{amount}} {{assetSymbol}}",
+                      {
+                        amount: formatNumber(balance),
+                        assetSymbol: selectedAsset?.symbol || ' ',
+                      }
                     );
                   }
                   return true;
@@ -419,6 +428,7 @@ interface FormButtonProps {
 }
 
 const FormButton = ({ approved, selectedAsset }: FormButtonProps) => {
+  const t = useT();
   const { isActive, chainId } = useWeb3React();
   const desiredChainId = useWeb3ConnectStore((store) => store.desiredChainId);
   const invalidChain = isActive && chainId !== desiredChainId;
@@ -429,9 +439,9 @@ const FormButton = ({ approved, selectedAsset }: FormButtonProps) => {
           <Notification
             intent={Intent.Danger}
             testId="chain-error"
-            message={t(
-              `This app only works on ${getChainName(desiredChainId)}.`
-            )}
+            message={t('This app only works on {{chainId}}.', {
+              chainId: getChainName(desiredChainId),
+            })}
           />
         </div>
       )}
@@ -454,7 +464,7 @@ const UseButton = (props: UseButtonProps) => {
     <button
       {...props}
       type="button"
-      className="absolute top-0 right-0 ml-auto text-sm underline"
+      className="absolute right-0 top-0 ml-auto text-sm underline"
     />
   );
 };
@@ -464,6 +474,7 @@ const DisconnectEthereumButton = ({
 }: {
   onDisconnect: () => void;
 }) => {
+  const t = useT();
   const { connector } = useWeb3React();
   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
   const disconnect = useWeb3Disconnect(connector);
@@ -495,6 +506,7 @@ export const AddressField = ({
   input,
   onChange,
 }: AddressInputProps) => {
+  const t = useT();
   const [isInput, setIsInput] = useState(() => {
     if (pubKeys && pubKeys.length <= 1) {
       return true;
@@ -512,7 +524,7 @@ export const AddressField = ({
             setIsInput((curr) => !curr);
             onChange();
           }}
-          className="absolute top-0 right-0 ml-auto text-sm underline"
+          className="absolute right-0 top-0 ml-auto text-sm underline"
           data-testid="enter-pubkey-manually"
         >
           {isInput ? t('Select from wallet') : t('Enter manually')}

@@ -3,10 +3,9 @@ import {
   makeDerivedDataProvider,
 } from '@vegaprotocol/data-provider';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { AssetsDocument } from './__generated__/Assets';
+import { AssetsDocument, type AssetsQuery } from './__generated__/Assets';
 import { AssetStatus } from '@vegaprotocol/types';
-import type { AssetsQuery } from './__generated__/Assets';
-import type { Asset } from './asset-data-provider';
+import { type Asset } from './asset-data-provider';
 import { DENY_LIST } from './constants';
 
 export interface BuiltinAssetSource {

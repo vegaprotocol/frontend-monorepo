@@ -1,12 +1,13 @@
 import { sumFeesFactors } from '@vegaprotocol/markets';
-import type { TradeFee, FeeFactors } from '@vegaprotocol/types';
+import type { FeeFactors } from '@vegaprotocol/types';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import BigNumber from 'bignumber.js';
-import { getDiscountedFee } from '../discounts';
+import { getDiscountedFee, getTotalDiscountFactor } from '../discounts';
+import { useT } from '../../use-t';
+import { type useEstimateFees } from '../../hooks/use-estimate-fees';
 
 const formatValue = (
   value: string | number | null | undefined,
@@ -24,18 +25,16 @@ const FeesBreakdownItem = ({
   decimals,
 }: {
   label: string;
-  factor?: string;
+  factor?: string | number;
   value: string;
   symbol?: string;
   decimals: number;
 }) => (
   <>
     <dt className="col-span-2">{label}</dt>
-    {factor && (
-      <dd className="text-right col-span-1">
-        {formatNumberPercentage(new BigNumber(factor).times(100))}
-      </dd>
-    )}
+    <dd className="text-right col-span-1">
+      {factor ? formatNumberPercentage(new BigNumber(factor).times(100)) : ''}
+    </dd>
     <dd className="text-right col-span-3">
       {formatValue(value, decimals)} {symbol || ''}
     </dd>
@@ -43,58 +42,35 @@ const FeesBreakdownItem = ({
 );
 
 export const FeesBreakdown = ({
-  totalFeeAmount,
-  fees,
+  feeEstimate,
   feeFactors,
   symbol,
   decimals,
-  referralDiscountFactor,
-  volumeDiscountFactor,
 }: {
-  totalFeeAmount?: string;
-  fees?: TradeFee;
+  feeEstimate: ReturnType<typeof useEstimateFees>;
   feeFactors?: FeeFactors;
   symbol?: string;
   decimals: number;
-  referralDiscountFactor?: string;
-  volumeDiscountFactor?: string;
 }) => {
+  const t = useT();
+  const { fees, totalFeeAmount, referralDiscountFactor, volumeDiscountFactor } =
+    feeEstimate || {};
   if (!fees || !totalFeeAmount || totalFeeAmount === '0') return null;
 
-  const { discountedFee: discountedInfrastructureFee } = getDiscountedFee(
-    fees.infrastructureFee,
-    referralDiscountFactor,
-    volumeDiscountFactor
-  );
-
-  const { discountedFee: discountedLiquidityFee } = getDiscountedFee(
-    fees.liquidityFee,
-    referralDiscountFactor,
-    volumeDiscountFactor
-  );
-
-  const { discountedFee: discountedMakerFee } = getDiscountedFee(
-    fees.makerFee,
-    referralDiscountFactor,
-    volumeDiscountFactor
-  );
-
-  const {
-    discountedFee: discountedTotalFeeAmount,
-    volumeDiscount,
-    referralDiscount,
-  } = getDiscountedFee(
-    totalFeeAmount,
-    referralDiscountFactor,
-    volumeDiscountFactor
-  );
+  const totalDiscountFactor = getTotalDiscountFactor(feeEstimate);
+  const { discountedFee: discountedTotalFeeAmount, totalDiscount } =
+    getDiscountedFee(
+      totalFeeAmount,
+      referralDiscountFactor,
+      volumeDiscountFactor
+    );
 
   return (
     <dl className="grid grid-cols-6">
       <FeesBreakdownItem
         label={t('Infrastructure fee')}
         factor={feeFactors?.infrastructureFee}
-        value={discountedInfrastructureFee}
+        value={fees.infrastructureFee}
         symbol={symbol}
         decimals={decimals}
       />
@@ -102,7 +78,7 @@ export const FeesBreakdown = ({
       <FeesBreakdownItem
         label={t('Liquidity fee')}
         factor={feeFactors?.liquidityFee}
-        value={discountedLiquidityFee}
+        value={fees.liquidityFee}
         symbol={symbol}
         decimals={decimals}
       />
@@ -110,35 +86,50 @@ export const FeesBreakdown = ({
       <FeesBreakdownItem
         label={t('Maker fee')}
         factor={feeFactors?.makerFee}
-        value={discountedMakerFee}
+        value={fees.makerFee}
         symbol={symbol}
         decimals={decimals}
       />
-      {volumeDiscountFactor && volumeDiscount !== '0' && (
-        <FeesBreakdownItem
-          label={t('Volume discount')}
-          factor={volumeDiscountFactor}
-          value={volumeDiscount}
-          symbol={symbol}
-          decimals={decimals}
-        />
+      {totalDiscount && totalDiscount !== '0' ? (
+        <>
+          <FeesBreakdownItem
+            label={t('Subtotal')}
+            value={totalFeeAmount}
+            factor={
+              feeFactors ? sumFeesFactors(feeFactors)?.toString() : undefined
+            }
+            symbol={symbol}
+            decimals={decimals}
+          />
+          <div className="col-span-6 mt-2"></div>
+          <FeesBreakdownItem
+            label={t('Discount')}
+            factor={totalDiscountFactor}
+            value={`-${totalDiscount}`}
+            symbol={symbol}
+            decimals={decimals}
+          />
+          <FeesBreakdownItem
+            label={t('Total')}
+            value={discountedTotalFeeAmount}
+            symbol={symbol}
+            decimals={decimals}
+          />
+        </>
+      ) : (
+        <>
+          <div className="col-span-6 mt-2"></div>
+          <FeesBreakdownItem
+            label={t('Total')}
+            factor={
+              feeFactors ? sumFeesFactors(feeFactors)?.toString() : undefined
+            }
+            value={totalFeeAmount}
+            symbol={symbol}
+            decimals={decimals}
+          />
+        </>
       )}
-      {referralDiscountFactor && referralDiscount !== '0' && (
-        <FeesBreakdownItem
-          label={t('Referral discount')}
-          factor={referralDiscountFactor}
-          value={referralDiscount}
-          symbol={symbol}
-          decimals={decimals}
-        />
-      )}
-      <FeesBreakdownItem
-        label={t('Total fees')}
-        factor={feeFactors ? sumFeesFactors(feeFactors)?.toString() : undefined}
-        value={discountedTotalFeeAmount}
-        symbol={symbol}
-        decimals={decimals}
-      />
     </dl>
   );
 };

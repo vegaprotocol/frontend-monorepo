@@ -1,0 +1,21 @@
+{
+  "{{fee}} Fee": "{{fee}} Fee",
+  "Auction Trigger stake {{trigger}}": "Auction Trigger stake {{trigger}}",
+  "Collapse": "Collapse",
+  "Copied": "Copied",
+  "Dark mode": "Dark mode",
+  "Dismiss all toasts": "Dismiss all toasts",
+  "Dismiss all": "Dismiss all",
+  "Exit view as": "Exit view as",
+  "Expand": "Expand",
+  "Light mode": "Light mode",
+  "Loading...": "Loading...",
+  "No data": "No data",
+  "Providers greater than 2x target stake not shown": "Providers greater than 2x target stake not shown",
+  "Show more": "Show more",
+  "Something went wrong: {{errorMessage}}": "Something went wrong: {{errorMessage}}",
+  "Target stake {{target}}": "Target stake {{target}}",
+  "This is an example of a toast notification": "This is an example of a toast notification",
+  "Try again": "Try again",
+  "Viewing as Vega user: {{pubKey}}": "Viewing as Vega user: {{pubKey}}"
+}

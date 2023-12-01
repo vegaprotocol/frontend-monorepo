@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { isBrowserWalletInstalled } from '@vegaprotocol/wallet';
 import { truncateByChars } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import {
   VegaIcon,
   VegaIconNames,
@@ -23,8 +22,10 @@ import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import { ViewType, useSidebar } from '../sidebar';
 import classNames from 'classnames';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
+import { useT } from '../../lib/use-t';
 
 export const VegaWalletConnectButton = () => {
+  const t = useT();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
@@ -129,6 +130,7 @@ export const VegaWalletConnectButton = () => {
 };
 
 const KeypairItem = ({ pk, active }: { pk: PubKey; active: boolean }) => {
+  const t = useT();
   const [copied, setCopied] = useCopyTimeout();
 
   return (

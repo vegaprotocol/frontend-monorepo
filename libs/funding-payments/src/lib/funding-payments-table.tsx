@@ -1,17 +1,16 @@
 import { useMemo } from 'react';
-import type {
-  AgGridReact,
-  AgGridReactProps,
-  AgReactUiProps,
+import {
+  type AgGridReact,
+  type AgGridReactProps,
+  type AgReactUiProps,
 } from 'ag-grid-react';
-import type { ColDef } from 'ag-grid-community';
+import { type ColDef } from 'ag-grid-community';
 import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
   isNumeric,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 
 import {
   AgGrid,
@@ -30,6 +29,7 @@ import type { FundingPayment } from './funding-payments-data-provider';
 
 import { getAsset } from '@vegaprotocol/markets';
 import classNames from 'classnames';
+import { useT } from './use-t';
 
 const defaultColDef = {
   resizable: true,
@@ -56,6 +56,7 @@ const formatAmount = ({
 
 export const FundingPaymentsTable = forwardRef<AgGridReact, Props>(
   ({ onMarketClick, ...props }, ref) => {
+    const t = useT();
     const columnDefs = useMemo<ColDef[]>(
       () => [
         {
@@ -113,7 +114,7 @@ export const FundingPaymentsTable = forwardRef<AgGridReact, Props>(
           },
         },
       ],
-      [onMarketClick]
+      [onMarketClick, t]
     );
     return (
       <AgGrid

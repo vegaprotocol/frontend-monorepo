@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react';
 
-import type { GetRowIdParams, ColDef } from 'ag-grid-community';
+import { type GetRowIdParams, type ColDef } from 'ag-grid-community';
 import { t } from '@vegaprotocol/i18n';
 
-import type {
-  LiquidityProviderFeeShareFieldsFragment,
-  LiquidityProvisionFieldsFragment,
+import {
+  type LiquidityProviderFeeShareFieldsFragment,
+  type LiquidityProvisionFieldsFragment,
 } from '@vegaprotocol/liquidity';
 import { formatWithAsset } from '@vegaprotocol/liquidity';
 

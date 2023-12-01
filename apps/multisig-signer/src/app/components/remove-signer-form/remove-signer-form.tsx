@@ -11,12 +11,12 @@ import {
   Loader,
 } from '@vegaprotocol/ui-toolkit';
 import { useContracts } from '../../config/contracts/contracts-context';
-import type { FormEvent } from 'react';
-import type {
-  RemoveSignerBundle,
-  RemoveSignerBundleVariables,
+import { type FormEvent } from 'react';
+import {
+  type RemoveSignerBundle,
+  type RemoveSignerBundleVariables,
 } from '../__generated__/RemoveSignerBundle';
-import type { MultisigControl } from '@vegaprotocol/smart-contracts';
+import { type MultisigControl } from '@vegaprotocol/smart-contracts';
 
 const REMOVE_SIGNER_QUERY = gql`
   query RemoveSignerBundle($nodeId: ID!) {

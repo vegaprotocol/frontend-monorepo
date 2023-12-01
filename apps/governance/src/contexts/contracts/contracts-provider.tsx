@@ -9,7 +9,7 @@ import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 
 import { SplashLoader } from '../../components/splash-loader';
-import type { ContractsContextShape } from './contracts-context';
+import { type ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
 import { createDefaultProvider } from '../../lib/web3-connectors';
 import { useEthereumConfig } from '@vegaprotocol/web3';

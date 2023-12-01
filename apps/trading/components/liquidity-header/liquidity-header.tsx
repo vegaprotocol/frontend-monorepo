@@ -1,6 +1,6 @@
 import {
   getAsset,
-  tooltipMapping,
+  useTooltipMapping,
   useMarket,
   useStaticMarketData,
 } from '@vegaprotocol/markets';
@@ -9,7 +9,6 @@ import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import {
   CopyWithTooltip,
   ExternalLink,
@@ -24,8 +23,11 @@ import {
   usePaidFeesQuery,
 } from '@vegaprotocol/liquidity';
 import { useParams } from 'react-router-dom';
+import { useT } from '../../lib/use-t';
 
 export const LiquidityHeader = () => {
+  const t = useT();
+  const tooltipMapping = useTooltipMapping();
   const { marketId } = useParams();
   const { data: market } = useMarket(marketId);
   const { data: marketData } = useStaticMarketData(marketId);
@@ -60,10 +62,9 @@ export const LiquidityHeader = () => {
         marketId && (
           <HeaderTitle>
             {market.tradableInstrument.instrument.code &&
-              t(
-                '%s liquidity provision',
-                market.tradableInstrument.instrument.code
-              )}
+              t('{{instrumentCode}} liquidity provision', {
+                instrumentCode: market.tradableInstrument.instrument.code,
+              })}
           </HeaderTitle>
         )
       }
@@ -102,8 +103,8 @@ export const LiquidityHeader = () => {
       <HeaderStat
         heading={t('Fees paid')}
         description={t(
-          'The amount of fees paid to liquidity providers across the whole market during the last epoch %s.',
-          feesObject?.node.epoch.toString() || '-'
+          'The amount of fees paid to liquidity providers across the whole market during the last epoch {{epoch}}.',
+          { epoch: feesObject?.node.epoch.toString() || '-' }
         )}
         testId="fees-paid"
       >
@@ -122,7 +123,7 @@ export const LiquidityHeader = () => {
             <CopyWithTooltip text={marketId}>
               <button
                 data-testid="copy-eth-oracle-address"
-                className="uppercase text-right"
+                className="text-right uppercase"
               >
                 <span className="flex gap-1">
                   {truncateMiddle(marketId)}

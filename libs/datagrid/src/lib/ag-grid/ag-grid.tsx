@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import type { AgGridReactProps, AgGridReact } from 'ag-grid-react';
+import { type AgGridReactProps, type AgGridReact } from 'ag-grid-react';
 import { AgGridThemed } from './ag-grid-themed';
 
 type Props = AgGridReactProps & {

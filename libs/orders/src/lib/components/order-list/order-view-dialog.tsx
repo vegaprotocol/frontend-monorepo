@@ -2,7 +2,6 @@ import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -19,6 +18,7 @@ import type { Order } from '../order-data-provider';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
+import { useT } from '../../use-t';
 
 interface OrderViewDialogProps {
   isOpen: boolean;
@@ -33,6 +33,7 @@ export const OrderViewDialog = ({
   onChange,
   onMarketClick,
 }: OrderViewDialogProps) => {
+  const t = useT();
   const [, setCopied] = useCopyTimeout();
   return (
     <Dialog open={isOpen} title={t('Order details')} onChange={onChange}>
@@ -184,21 +185,21 @@ export const OrderViewDialog = ({
         <KeyValueTableRow key={'order-post-only'}>
           <div data-testid={'order-post-only-label'}>{t('Post only')}</div>
           <div data-testid={`order-post-only-value`}>
-            {order.postOnly ? t('Yes') : t('-')}
+            {order.postOnly ? t('Yes') : '-'}
           </div>
         </KeyValueTableRow>
 
         <KeyValueTableRow key={'order-reduce-only'}>
           <div data-testid={'order-reduce-only-label'}>{t('Reduce only')}</div>
           <div data-testid={`order-reduce-only-value`}>
-            {order.reduceOnly ? t('Yes') : t('-')}
+            {order.reduceOnly ? t('Yes') : '-'}
           </div>
         </KeyValueTableRow>
 
         <KeyValueTableRow key={'order-pegged'}>
           <div data-testid={'order-pegged-label'}>{t('Pegged')}</div>
           <div data-testid={`order-pegged-value`}>
-            {order.peggedOrder ? t('Yes') : t('-')}
+            {order.peggedOrder ? t('Yes') : '-'}
           </div>
         </KeyValueTableRow>
 
@@ -207,7 +208,7 @@ export const OrderViewDialog = ({
             {t('Liquidity provision')}
           </div>
           <div data-testid={`order-liquidity-provision-value`}>
-            {order.liquidityProvision ? t('Yes') : t('-')}
+            {order.liquidityProvision ? t('Yes') : '-'}
           </div>
         </KeyValueTableRow>
       </KeyValueTable>
@@ -217,7 +218,7 @@ export const OrderViewDialog = ({
           {t('Iceberg order')}
         </div>
         <div data-testid={`order-iceberg-order-value`}>
-          {order.icebergOrder ? t('Yes') : t('-')}
+          {order.icebergOrder ? t('Yes') : '-'}
         </div>
       </KeyValueTableRow>
       {order.icebergOrder && (

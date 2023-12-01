@@ -1,10 +1,11 @@
+import { memo, forwardRef, useMemo, type ForwardedRef } from 'react';
 import {
+  MAXGOINT64,
   addDecimalsFormatNumber,
   getDateTimeFormat,
   isNumeric,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import {
   ActionsDropdown,
@@ -14,8 +15,6 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import type { ForwardedRef } from 'react';
-import { memo, forwardRef, useMemo } from 'react';
 import {
   AgGrid,
   SetFilter,
@@ -25,17 +24,16 @@ import {
   MarketNameCell,
   OrderTypeCell,
   COL_DEFS,
+  type TypedDataAgGrid,
+  type VegaICellRendererParams,
+  type VegaValueFormatterParams,
+  type VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
-import type {
-  TypedDataAgGrid,
-  VegaICellRendererParams,
-  VegaValueFormatterParams,
-  VegaValueGetterParams,
-} from '@vegaprotocol/datagrid';
-import type { AgGridReact } from 'ag-grid-react';
-import type { Order } from '../order-data-provider';
+import { type AgGridReact } from 'ag-grid-react';
+import { type Order } from '../order-data-provider';
 import { Filter } from '../order-list-manager/order-list-manager';
-import type { ColDef } from 'ag-grid-community';
+import { type ColDef } from 'ag-grid-community';
+import { useT } from '../../use-t';
 
 const defaultColDef = {
   resizable: true,
@@ -70,6 +68,7 @@ export const OrderListTable = memo<
       },
       ref
     ) => {
+      const t = useT();
       const showAllActions = props.isReadOnly
         ? false
         : filter === undefined || filter === Filter.Open
@@ -144,11 +143,22 @@ export const OrderListTable = memo<
               if (!data?.market || !isNumeric(data.size)) {
                 return '-';
               }
+
               const prefix = data
                 ? data.side === Schema.Side.SIDE_BUY
                   ? '+'
                   : '-'
                 : '';
+
+              if (
+                data.size === MAXGOINT64 &&
+                data.timeInForce ===
+                  Schema.OrderTimeInForce.TIME_IN_FORCE_IOC &&
+                data.reduceOnly
+              ) {
+                return t('MAX');
+              }
+
               return (
                 prefix +
                 addDecimalsFormatNumber(
@@ -243,11 +253,14 @@ export const OrderListTable = memo<
               }
 
               const tifLabel = value ? Schema.OrderTimeInForceCode[value] : '';
-              const label = `${tifLabel}${
-                data?.postOnly ? t('. Post Only') : ''
-              }${data?.reduceOnly ? t('. Reduce only') : ''}`;
+              if (data?.postOnly) {
+                return t('{{tifLabel}}. Post Only', { tifLabel });
+              }
+              if (data?.reduceOnly) {
+                return t('{{tifLabel}}. Reduce only', { tifLabel });
+              }
 
-              return label;
+              return tifLabel;
             },
           },
           {
@@ -327,6 +340,7 @@ export const OrderListTable = memo<
           onOrderTypeClick,
           props.isReadOnly,
           showAllActions,
+          t,
         ]
       );
 

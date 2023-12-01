@@ -1,12 +1,13 @@
-import { t } from '@vegaprotocol/i18n';
 import { LedgerExportForm } from '@vegaprotocol/ledger';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { PartyAssetFieldsFragment } from '@vegaprotocol/assets';
 import { usePartyAssetsQuery } from '@vegaprotocol/assets';
+import { useT } from '../../lib/use-t';
 
 export const LedgerContainer = () => {
+  const t = useT();
   const VEGA_URL = useEnvironment((store) => store.VEGA_URL);
   const { pubKey } = useVegaWallet();
   const { data, loading } = usePartyAssetsQuery({

@@ -1,6 +1,5 @@
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import {
   ProposalChangeMapping,
   ProposalRejectionReasonMapping,
@@ -16,6 +15,8 @@ import {
   useOnProposalSubscription,
   type OnProposalFragmentFragment,
 } from './__generated__/Proposal';
+import { Trans } from 'react-i18next';
+import { useT } from '../../use-t';
 
 export const PROPOSAL_STATES_TO_TOAST = [
   ProposalState.STATE_DECLINED,
@@ -27,6 +28,7 @@ const CLOSE_AFTER = 0;
 type Proposal = OnProposalFragmentFragment;
 
 const ProposalDetails = ({ proposal }: { proposal: Proposal }) => {
+  const t = useT();
   const change = proposal.terms.change;
   switch (change.__typename) {
     case 'UpdateNetworkParameter':
@@ -43,8 +45,10 @@ const ProposalDetails = ({ proposal }: { proposal: Proposal }) => {
           {proposal.state === ProposalState.STATE_REJECTED &&
           proposal.rejectionReason ? (
             <p data-testid="proposal-toast-rejection-reason">
-              {t('Rejection reason:')}{' '}
-              {ProposalRejectionReasonMapping[proposal.rejectionReason]}
+              {t('Rejection reason: {{reason}}', {
+                reason:
+                  ProposalRejectionReasonMapping[proposal.rejectionReason],
+              })}
             </p>
           ) : null}
         </>
@@ -61,24 +65,30 @@ const UpdateNetworkParameterDetails = ({
   if (change.__typename !== 'UpdateNetworkParameter') return null;
   return (
     <p data-testid="proposal-toast-network-param" className="italic">
-      '{t('Update ')}
-      <span className="break-all">{change.networkParameter.key}</span>
-      {t(' to ')}
-      <span>{change.networkParameter.value}</span>'
+      <Trans
+        defaults="Update <0>{{key}}</0> to {{value}}"
+        values={change.networkParameter}
+        components={[<span className="break-all">key</span>]}
+      />
     </p>
   );
 };
 
 export const ProposalToastContent = ({ proposal }: { proposal: Proposal }) => {
+  const t = useT();
   const tokenLink = useLinks(DApp.Governance);
   const change = proposal.terms.change;
 
   // Generates toast's title,
   // e.g. Update market proposal enacted, New transfer proposal open, ...
-  const title = t('%s proposal %s', [
-    change.__typename ? ProposalChangeMapping[change.__typename] : 'Unknown',
-    ProposalStateMapping[proposal.state].toLowerCase(),
-  ]);
+  const title = change.__typename
+    ? t('{{proposalChange}} proposal {{proposalState}}', {
+        proposalChange: ProposalChangeMapping[change.__typename],
+        proposalState: ProposalStateMapping[proposal.state].toLowerCase(),
+      })
+    : t('Unknown proposal {{proposalState}}', {
+        proposalState: ProposalStateMapping[proposal.state].toLowerCase(),
+      });
 
   const enactment = Date.parse(proposal.terms.enactmentDatetime);
 
@@ -88,7 +98,9 @@ export const ProposalToastContent = ({ proposal }: { proposal: Proposal }) => {
       <ProposalDetails proposal={proposal} />
       {!isNaN(enactment) && (
         <p>
-          {t('Enactment date:')} {getDateTimeFormat().format(enactment)}
+          {t('Enactment date: {{date}}', {
+            date: getDateTimeFormat().format(enactment),
+          })}
         </p>
       )}
       <p>

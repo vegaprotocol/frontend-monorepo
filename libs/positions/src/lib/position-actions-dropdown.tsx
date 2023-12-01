@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import {
   ActionsDropdown,
   TradingDropdownItem,
@@ -6,8 +5,10 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import { useT } from '../use-t';
 
 export const PositionActionsDropdown = ({ assetId }: { assetId: string }) => {
+  const t = useT();
   const open = useAssetDetailsDialogStore((store) => store.open);
 
   return (

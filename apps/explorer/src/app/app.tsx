@@ -1,3 +1,4 @@
+import '../i18n';
 import {
   NetworkLoader,
   NodeFailure,
@@ -28,20 +29,24 @@ function App() {
   );
   return (
     <TendermintWebsocketProvider>
-      <NetworkLoader cache={DEFAULT_CACHE_CONFIG}>
-        <NodeGuard
-          skeleton={<div>{t('Loading')}</div>}
-          failure={<NodeFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />}
-        >
-          <Suspense fallback={splashLoading}>
-            <RouterProvider router={router} fallbackElement={splashLoading} />
-          </Suspense>
-        </NodeGuard>
-        <NodeSwitcherDialog
-          open={nodeSwitcherOpen}
-          setOpen={setNodeSwitcherOpen}
-        />
-      </NetworkLoader>
+      <Suspense fallback={splashLoading}>
+        <NetworkLoader cache={DEFAULT_CACHE_CONFIG}>
+          <NodeGuard
+            skeleton={<div>{t('Loading')}</div>}
+            failure={
+              <NodeFailure title={t(`Node: ${VEGA_URL} is unsuitable`)} />
+            }
+          >
+            <Suspense fallback={splashLoading}>
+              <RouterProvider router={router} fallbackElement={splashLoading} />
+            </Suspense>
+          </NodeGuard>
+          <NodeSwitcherDialog
+            open={nodeSwitcherOpen}
+            setOpen={setNodeSwitcherOpen}
+          />
+        </NetworkLoader>
+      </Suspense>
     </TendermintWebsocketProvider>
   );
 }

@@ -14,9 +14,9 @@ import {
   getDateTimeFormat,
   toNanoSeconds,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 import { useLedgerDownloadFile } from './ledger-download-store';
+import { useT } from './use-t';
 
 const DEFAULT_EXPORT_FILE_NAME = 'ledger_entries.csv';
 
@@ -70,6 +70,7 @@ interface Props {
 }
 
 export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
+  const t = useT();
   const now = useRef(new Date());
   const { control, handleSubmit, watch } = useForm<LedgerFormValues>({
     defaultValues: {
@@ -97,11 +98,16 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
       });
 
       const dateTimeFormatter = getDateTimeFormat();
-      const title = t('Downloading for %s from %s till %s', [
-        assets[formValues.assetId],
-        dateTimeFormatter.format(new Date(formValues.dateFrom)),
-        dateTimeFormatter.format(new Date(formValues.dateTo || Date.now())),
-      ]);
+      const title = t(
+        'Downloading for {{asset}} from {{startDate}} till {{endDate}}',
+        {
+          asset: assets[formValues.assetId],
+          startDate: dateTimeFormatter.format(new Date(formValues.dateFrom)),
+          endDate: dateTimeFormatter.format(
+            new Date(formValues.dateTo || Date.now())
+          ),
+        }
+      );
 
       const downloadStoreItem = {
         title,
@@ -164,7 +170,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
         clearTimeout(ts);
       }
     },
-    [assets, hasItem, partyId, protohost, updateDownloadQueue]
+    [assets, hasItem, partyId, protohost, t, updateDownloadQueue]
   );
 
   if (!protohost || Object.keys(assets).length === 0) {
@@ -280,8 +286,8 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
       {offset ? (
         <p className="text-xs text-neutral-400 mt-1">
           {t(
-            'The downloaded file uses the UTC time zone for all listed times. Your time zone is UTC%s.',
-            [toHoursAndMinutes(offset)]
+            'The downloaded file uses the UTC time zone for all listed times. Your time zone is UTC{{offset}}.',
+            { offset: toHoursAndMinutes(offset) }
           )}
         </p>
       ) : null}

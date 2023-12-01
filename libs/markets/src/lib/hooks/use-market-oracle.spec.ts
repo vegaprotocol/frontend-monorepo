@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { useMarketOracle } from './use-market-oracle';
-import type { MarketFieldsFragment } from '../__generated__/markets';
-import type { Provider } from '../oracle-schema';
+import { type MarketFieldsFragment } from '../__generated__/markets';
+import { type Provider } from '../oracle-schema';
 
 const ORACLE_PROOFS_URL = 'ORACLE_PROOFS_URL';
 
@@ -51,15 +51,15 @@ const mockMarket = jest.fn<{ data: MarketFieldsFragment | null }, unknown[]>(
 const mockOracleProofs = jest.fn<{ data?: Provider[] }, unknown[]>(() => ({}));
 
 jest.mock('@vegaprotocol/environment', () => ({
-  useEnvironment: jest.fn((args) => mockEnvironment()),
+  useEnvironment: jest.fn(() => mockEnvironment()),
 }));
 
 jest.mock('../markets-provider', () => ({
-  useMarket: jest.fn((args) => mockMarket()),
+  useMarket: jest.fn(() => mockMarket()),
 }));
 
 jest.mock('./use-oracle-proofs', () => ({
-  useOracleProofs: jest.fn((args) => mockOracleProofs()),
+  useOracleProofs: jest.fn(() => mockOracleProofs()),
 }));
 
 const marketId = 'marketId';

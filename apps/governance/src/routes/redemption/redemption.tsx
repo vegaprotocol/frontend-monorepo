@@ -21,9 +21,10 @@ import RoutesConfig from '../routes';
 interface FormFields {
   address: string;
 }
+type Params = { address: string };
 
 const RedemptionRouter = () => {
-  const { address } = useParams<{ address: string }>();
+  const { address } = useParams<Params>();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const validatePubkey = useCallback(
@@ -89,7 +90,7 @@ const RedemptionRouter = () => {
             {t('View connected Eth Wallet')}
           </Button>
         )}
-        <p className="py-4 flex justify-center">{t('OR')}</p>
+        <p className="flex justify-center py-4">{t('OR')}</p>
         <form
           onSubmit={handleSubmit(onSubmit)}
           data-testid="view-connector-form"

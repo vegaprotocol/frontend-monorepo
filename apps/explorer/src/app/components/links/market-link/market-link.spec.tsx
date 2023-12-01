@@ -91,6 +91,6 @@ describe('Market link component', () => {
     };
 
     const res = render(renderComponent('123', [mock]));
-    expect(await res.findByText('123')).toBeInTheDocument();
+    expect(await res.findByTitle('123')).toBeInTheDocument();
   });
 });

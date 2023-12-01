@@ -21,6 +21,8 @@ import { EthConnectPrompt } from '../../../components/eth-connect-prompt';
 import { useUserTrancheBalances } from '../hooks';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 
+type Params = { id: string };
+
 export const RedeemFromTranche = () => {
   const { account: address } = useWeb3React();
   const { vesting } = useContracts();
@@ -34,7 +36,7 @@ export const RedeemFromTranche = () => {
     tranches: state.tranches,
     getTranches: state.getTranches,
   }));
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<Params>();
   const numberId = Number(id);
   const tranche = React.useMemo(
     () => tranches?.find(({ tranche_id }) => tranche_id === numberId) || null,
@@ -86,7 +88,7 @@ export const RedeemFromTranche = () => {
             i18nKey="noVestingTokens"
             components={{
               tranchesLink: (
-                <Link className="underline text-white" to={Routes.SUPPLY} />
+                <Link className="text-white underline" to={Routes.SUPPLY} />
               ),
             }}
           />
@@ -128,13 +130,13 @@ export const RedeemFromTranche = () => {
                   components={{
                     stakingLink: (
                       <Link
-                        className="underline text-white"
+                        className="text-white underline"
                         to={Routes.VALIDATORS}
                       />
                     ),
                     governanceLink: (
                       <Link
-                        className="underline text-white"
+                        className="text-white underline"
                         to={Routes.PROPOSALS}
                       />
                     ),

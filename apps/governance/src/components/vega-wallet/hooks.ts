@@ -10,7 +10,7 @@ import noIcon from '../../images/token-no-icon.png';
 import vegaBlack from '../../images/vega_black.png';
 import vegaVesting from '../../images/vega_vesting.png';
 import { BigNumber } from '../../lib/bignumber';
-import type { WalletCardAssetProps } from '../wallet-card';
+import { type WalletCardAssetProps } from '../wallet-card';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import * as Schema from '@vegaprotocol/types';
@@ -21,12 +21,12 @@ import {
   toBigNum,
 } from '@vegaprotocol/utils';
 import { useAppState } from '../../contexts/app-state/app-state-context';
-import type {
-  DelegationsQuery,
-  DelegationsQueryVariables,
-  WalletDelegationFieldsFragment,
+import {
+  DelegationsDocument,
+  type DelegationsQuery,
+  type DelegationsQueryVariables,
+  type WalletDelegationFieldsFragment,
 } from './__generated__/Delegations';
-import { DelegationsDocument } from './__generated__/Delegations';
 import { isPartyNotFoundError } from '../../lib/party';
 
 export const usePollForDelegations = () => {
@@ -44,6 +44,7 @@ export const usePollForDelegations = () => {
   const [delegatedNodes, setDelegatedNodes] = React.useState<
     {
       nodeId: string;
+      // eslint-disable-next-line
       name: string;
       hasStakePending: boolean;
       currentEpochStake?: BigNumber;
@@ -113,6 +114,16 @@ export const usePollForDelegations = () => {
                     isAssetTypeERC20(a.asset) &&
                     a.asset.source.contractAddress === vegaToken.address;
 
+                  const isVesting =
+                    a.type === Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS ||
+                    a.type === Schema.AccountType.ACCOUNT_TYPE_VESTING_REWARDS;
+
+                  let icon = noIcon;
+                  if (isVega) {
+                    if (isVesting) icon = vegaVesting;
+                    else icon = vegaBlack;
+                  }
+
                   return {
                     isVega,
                     name: a.asset.name,
@@ -123,14 +134,7 @@ export const usePollForDelegations = () => {
                     balance: new BigNumber(
                       addDecimal(a.balance, a.asset.decimals)
                     ),
-                    image: isVega
-                      ? vegaBlack
-                      : a.type ===
-                          Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS ||
-                        a.type ===
-                          Schema.AccountType.ACCOUNT_TYPE_VESTING_REWARDS
-                      ? vegaVesting
-                      : noIcon,
+                    image: icon,
                     border: isVega,
                     address: isAssetTypeERC20(a.asset)
                       ? a.asset.source.contractAddress

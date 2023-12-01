@@ -1,4 +1,4 @@
-import { act, render, screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { OrderEditDialog } from './order-edit-dialog';
@@ -7,16 +7,14 @@ import { limitOrder } from '../mocks';
 describe('OrderEditDialog', () => {
   it('must be warned (pre-submit) if the input price has too many digits after the decimal place for the market', async () => {
     // 7003-MORD-013
-    await act(async () => {
-      render(
-        <OrderEditDialog
-          order={limitOrder}
-          onChange={jest.fn()}
-          isOpen={true}
-          onSubmit={jest.fn()}
-        />
-      );
-    });
+    render(
+      <OrderEditDialog
+        order={limitOrder}
+        onChange={jest.fn()}
+        isOpen={true}
+        onSubmit={jest.fn()}
+      />
+    );
     const editOrder = await screen.findByTestId('edit-order');
     const limitPrice = within(editOrder).getByLabelText('Price');
     await userEvent.type(limitPrice, '0.111111');

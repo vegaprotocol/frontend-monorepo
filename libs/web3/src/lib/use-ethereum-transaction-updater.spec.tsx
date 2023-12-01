@@ -1,16 +1,16 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import type { MockedResponse } from '@apollo/client/testing';
+import { type MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useEthTransactionUpdater } from './use-ethereum-transaction-updater';
 import { DepositBusEventDocument } from './__generated__/TransactionResult';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import type {
-  DepositBusEventSubscription,
-  DepositBusEventFieldsFragment,
+import {
+  type DepositBusEventSubscription,
+  type DepositBusEventFieldsFragment,
 } from './__generated__/TransactionResult';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import type { EthTransactionStore } from './use-ethereum-transaction-store';
+import { type VegaWalletContextShape } from '@vegaprotocol/wallet';
+import { type EthTransactionStore } from './use-ethereum-transaction-store';
 import { DepositStatus } from '@vegaprotocol/types';
 
 const pubKey = 'pubKey';

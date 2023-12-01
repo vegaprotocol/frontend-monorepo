@@ -6,8 +6,10 @@ import { useDocumentTitle } from '../../../../hooks/use-document-title';
 
 import { PartyAccounts } from '../components/party-accounts';
 
+type Params = { party: string };
+
 const PartyAccountsByAsset = () => {
-  const { party } = useParams<{ party: string }>();
+  const { party } = useParams<Params>();
 
   useDocumentTitle(['Public keys', party || '-']);
   const partyId = toNonHex(party ? party : '');

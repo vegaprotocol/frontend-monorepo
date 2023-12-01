@@ -4,8 +4,7 @@ import {
   type AgGridReactProps,
   type AgReactUiProps,
 } from 'ag-grid-react';
-import type { ColDef } from 'ag-grid-community';
-import type { ITooltipParams } from 'ag-grid-community';
+import { type ITooltipParams, type ColDef } from 'ag-grid-community';
 import {
   addDecimal,
   addDecimalsFormatNumber,
@@ -13,7 +12,6 @@ import {
   getDateTimeFormat,
   isNumeric,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import {
   AgGrid,
@@ -23,15 +21,20 @@ import {
   COL_DEFS,
   DateRangeFilter,
 } from '@vegaprotocol/datagrid';
-import type {
-  VegaValueFormatterParams,
-  VegaICellRendererParams,
+import {
+  type VegaValueFormatterParams,
+  type VegaICellRendererParams,
 } from '@vegaprotocol/datagrid';
 import { forwardRef } from 'react';
 import BigNumber from 'bignumber.js';
-import type { Trade } from './fills-data-provider';
+import { type Trade } from './fills-data-provider';
+import {
+  type FillFieldsFragment,
+  type TradeFeeFieldsFragment,
+} from './__generated__/Fills';
 import { FillActionsDropdown } from './fill-actions-dropdown';
 import { getAsset } from '@vegaprotocol/markets';
+import { useT } from './use-t';
 import { MAKER, TAKER, getFeesBreakdown, getRoleAndFees } from './fills-utils';
 
 type Props = (AgGridReactProps | AgReactUiProps) & {
@@ -41,6 +44,7 @@ type Props = (AgGridReactProps | AgReactUiProps) & {
 
 export const FillsTable = forwardRef<AgGridReact, Props>(
   ({ partyId, onMarketClick, ...props }, ref) => {
+    const t = useT();
     const columnDefs = useMemo<ColDef[]>(
       () => [
         {
@@ -137,7 +141,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           ...COL_DEFS.actions,
         },
       ],
-      [onMarketClick, partyId]
+      [onMarketClick, partyId, t]
     );
     return (
       <AgGrid
@@ -266,6 +270,7 @@ const FeesBreakdownTooltip = ({
   value: market,
   partyId,
 }: ITooltipParams<Trade, Trade['market']> & { partyId?: string }) => {
+  const t = useT();
   if (!market || !data) {
     return null;
   }
@@ -280,7 +285,7 @@ const FeesBreakdownTooltip = ({
   return (
     <div
       data-testid="fee-breakdown-tooltip"
-      className="z-20 max-w-sm px-4 py-2 text-xs text-black border rounded bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 break-word dark:text-white"
+      className="bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 break-word z-20 max-w-sm rounded border px-4 py-2 text-xs text-black dark:text-white"
     >
       {marketState && (
         <p className="mb-1 italic">
@@ -311,20 +316,20 @@ const FeesBreakdownTooltip = ({
       )}
       <dl className="grid grid-cols-2 gap-x-1">
         <dt className="col-span-1">{t('Infrastructure fee')}</dt>
-        <dd className="text-right col-span-1">
+        <dd className="col-span-1 text-right">
           {addDecimalsFormatNumber(infrastructureFee, asset.decimals)}{' '}
           {asset.symbol}
         </dd>
         <dt className="col-span-1">{t('Liquidity fee')}</dt>
-        <dd className="text-right col-span-1">
+        <dd className="col-span-1 text-right">
           {addDecimalsFormatNumber(liquidityFee, asset.decimals)} {asset.symbol}
         </dd>
         <dt className="col-span-1">{t('Maker fee')}</dt>
-        <dd className="text-right col-span-1">
+        <dd className="col-span-1 text-right">
           {addDecimalsFormatNumber(makerFee, asset.decimals)} {asset.symbol}
         </dd>
         <dt className="col-span-1">{t('Total fees')}</dt>
-        <dd className="text-right col-span-1">
+        <dd className="col-span-1 text-right">
           {addDecimalsFormatNumber(totalFee, asset.decimals)} {asset.symbol}
         </dd>
       </dl>
@@ -344,7 +349,7 @@ const FeesDiscountBreakdownTooltipItem = ({
   value && value !== '0' ? (
     <>
       <dt className="col-span-2">{label}</dt>
-      <dd className="text-right col-span-2">
+      <dd className="col-span-2 text-right">
         {addDecimalsFormatNumber(value, asset.decimals)} {asset.symbol}
       </dd>
     </>
@@ -354,6 +359,7 @@ export const FeesDiscountBreakdownTooltip = ({
   data,
   partyId,
 }: ITooltipParams<Trade, Trade['market']> & { partyId?: string }) => {
+  const t = useT();
   if (!data || !data.market) {
     return null;
   }
@@ -369,7 +375,7 @@ export const FeesDiscountBreakdownTooltip = ({
   return (
     <div
       data-testid="fee-discount-breakdown-tooltip"
-      className="max-w-sm bg-vega-light-100 dark:bg-vega-dark-100 border border-vega-light-200 dark:border-vega-dark-200 px-4 py-2 z-20 rounded text-sm break-word text-black dark:text-white"
+      className="bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 break-word z-20 max-w-sm rounded border px-4 py-2 text-sm text-black dark:text-white"
     >
       <dl className="grid grid-cols-6 gap-x-1 text-xs">
         {(fees.infrastructureFeeReferralDiscount || '0') !== '0' ||

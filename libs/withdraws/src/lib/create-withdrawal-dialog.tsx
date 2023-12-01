@@ -1,12 +1,13 @@
-import { t } from '@vegaprotocol/i18n';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { WithdrawFormContainer } from './withdraw-form-container';
 import { useWeb3ConnectStore } from '@vegaprotocol/web3';
 import { useWithdrawalDialog } from './withdrawal-dialog';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import { useT } from './use-t';
 
 export const CreateWithdrawalDialog = () => {
+  const t = useT();
   const { assetId, isOpen, open, close } = useWithdrawalDialog();
   const { pubKey } = useVegaWallet();
   const createTransaction = useVegaTransactionStore((state) => state.create);

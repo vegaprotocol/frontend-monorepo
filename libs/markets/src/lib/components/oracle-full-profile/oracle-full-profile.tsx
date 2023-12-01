@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import type { Provider } from '../../oracle-schema';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
 import {
@@ -10,14 +9,15 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { oracleStatuses } from '../oracle-banner/oracle-statuses';
+import { useOracleStatuses } from '../oracle-banner/oracle-statuses';
 import type { IconName } from '@blueprintjs/icons';
 import classNames from 'classnames';
-import { getLinkIcon, getVerifiedStatusIcon } from '../oracle-basic-profile';
+import { getLinkIcon, useVerifiedStatusIcon } from '../oracle-basic-profile';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { OracleMarketSpecFieldsFragment } from '../../__generated__/OracleMarketsSpec';
 import ReactMarkdown from 'react-markdown';
 import { useState } from 'react';
+import { useT } from '../../use-t';
 
 export const OracleProfileTitle = ({
   provider,
@@ -26,10 +26,11 @@ export const OracleProfileTitle = ({
   provider: Provider;
   parentProvider?: Provider;
 }) => {
+  const t = useT();
   // If this is a successor market, the parent provider will only have been passed
   // in if it differs from the current provider. If it is different, we'll just
   // show the change in name, not icons and proofs.
-  const { icon, intent } = getVerifiedStatusIcon(provider);
+  const { icon, intent } = useVerifiedStatusIcon(provider);
   const verifiedProofs = provider.proofs.filter(
     (proof) => proof.available === true
   );
@@ -55,10 +56,10 @@ export const OracleProfileTitle = ({
             'text-gray-700 dark:text-gray-300': intent === Intent.None,
             'text-vega-blue': intent === Intent.Primary,
             'text-vega-green dark:text-vega-green': intent === Intent.Success,
-            'text-yellow-600 dark:text-yellow': intent === Intent.Warning,
+            'dark:text-yellow text-yellow-600': intent === Intent.Warning,
             'text-vega-red': intent === Intent.Danger,
           },
-          'flex items-start align-text-bottom p-1'
+          'flex items-start p-1 align-text-bottom'
         )}
       >
         <Icon size={6} name={icon as IconName} />
@@ -67,23 +68,30 @@ export const OracleProfileTitle = ({
   );
 };
 
-const OracleStatus = ({ oracle }: { oracle: Provider['oracle'] }) => (
-  <div>
-    {t(`Oracle status`)}: {oracle.status}. {oracleStatuses[oracle.status]}
-    {oracle.status_reason ? (
-      <div>
-        <ReactMarkdown
-          className="react-markdown-container"
-          skipHtml={true}
-          disallowedElements={['img']}
-          linkTarget="_blank"
-        >
-          {oracle.status_reason}
-        </ReactMarkdown>
-      </div>
-    ) : null}
-  </div>
-);
+const OracleStatus = ({ oracle }: { oracle: Provider['oracle'] }) => {
+  const oracleStatuses = useOracleStatuses();
+  const t = useT();
+  return (
+    <div>
+      {t(`Oracle status: {{status}}. {{description}}`, {
+        status: oracle.status,
+        description: oracleStatuses[oracle.status],
+      })}
+      {oracle.status_reason ? (
+        <div>
+          <ReactMarkdown
+            className="react-markdown-container"
+            skipHtml={true}
+            disallowedElements={['img']}
+            linkTarget="_blank"
+          >
+            {oracle.status_reason}
+          </ReactMarkdown>
+        </div>
+      ) : null}
+    </div>
+  );
+};
 
 export const OracleFullProfile = ({
   provider,
@@ -94,7 +102,8 @@ export const OracleFullProfile = ({
   dataSourceSpecId: string;
   markets?: OracleMarketSpecFieldsFragment[] | undefined;
 }) => {
-  const { message } = getVerifiedStatusIcon(provider);
+  const t = useT();
+  const { message } = useVerifiedStatusIcon(provider);
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const [showMore, setShowMore] = useState(false);
 
@@ -140,10 +149,9 @@ export const OracleFullProfile = ({
             className="dark:text-vega-light-300 text-vega-dark-300 uppercase"
             data-testid="verified-accounts"
           >
-            {t('%s %s of ownership', [
-              provider.proofs.length.toString(),
-              provider.proofs.length === 1 ? 'proof' : 'proofs',
-            ])}
+            {t('proofsOfOwnership', '{{count}} proofs of ownership', {
+              count: provider.proofs.length,
+            })}
           </p>
           {provider.proofs.length > 0 ? (
             <div className="flex flex-col gap-1">
@@ -151,12 +159,12 @@ export const OracleFullProfile = ({
                 <ExternalLink
                   key={link.url}
                   href={link.url}
-                  className="flex align-items-bottom underline text-sm"
+                  className="align-items-bottom flex text-sm underline"
                 >
-                  <span className="pt-1 pr-1">
+                  <span className="pr-1 pt-1">
                     <VegaIcon name={getLinkIcon(link.type)} />
                   </span>
-                  <span className="underline capitalize">
+                  <span className="capitalize underline">
                     {link.type}{' '}
                     <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
                   </span>
@@ -166,22 +174,24 @@ export const OracleFullProfile = ({
                 <ExternalLink
                   key={'more-proofs'}
                   href={provider.github_link}
-                  className="flex align-items-bottom underline text-sm pt-2"
+                  className="align-items-bottom flex pt-2 text-sm underline"
                 >
                   {links.length > 0 ? (
                     <span className="underline">
-                      {t('And %s more %s', [
-                        signedMessageProofs.length.toString(),
-                        signedMessageProofs.length === 1 ? 'proof' : 'proofs',
-                      ])}{' '}
+                      {t('moreProofs', 'And {{count}} more proofs', {
+                        count: signedMessageProofs.length,
+                      })}{' '}
                       <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
                     </span>
                   ) : (
                     <span className="underline">
-                      {t('Verify %s %s of ownership', [
-                        signedMessageProofs.length.toString(),
-                        signedMessageProofs.length === 1 ? 'proof' : 'proofs',
-                      ])}{' '}
+                      {t(
+                        'verifyProofs',
+                        'Verify {{count}} proofs of ownership',
+                        {
+                          count: signedMessageProofs.length,
+                        }
+                      )}{' '}
                       <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
                     </span>
                   )}
@@ -194,7 +204,7 @@ export const OracleFullProfile = ({
             </p>
           )}
         </div>
-        <div className="col-span-1 gap-2 py-2 flex flex-col">
+        <div className="col-span-1 flex flex-col gap-2 py-2">
           <p className="dark:text-vega-light-300 text-vega-dark-300 uppercase">
             {t('Details')}
           </p>
@@ -215,20 +225,19 @@ export const OracleFullProfile = ({
       </div>
       <div>
         {oracleMarkets && (
-          <p className="dark:text-vega-light-300 text-vega-dark-300 uppercase mt-4">
-            {t('Oracle in %s %s', [
-              oracleMarkets.length.toString(),
-              oracleMarkets.length === 1 ? 'market' : 'markets',
-            ])}
+          <p className="dark:text-vega-light-300 text-vega-dark-300 mt-4 uppercase">
+            {t('oracleInMarkets', 'Oracle in {{count}} markets', {
+              count: oracleMarkets.length,
+            })}
           </p>
         )}
       </div>
       {oracleMarkets && oracleMarkets.length > 0 && (
         <div
           data-testid="oracle-markets"
-          className="border-vega-light-200 dark:border-vega-dark-200 border-solid border-2 py-4 px-2 rounded-lg my-2"
+          className="border-vega-light-200 dark:border-vega-dark-200 my-2 rounded-lg border-2 border-solid px-2 py-4"
         >
-          <div className="grid grid-cols-4 gap-1 uppercase mb-2 font-alpha calt dark:text-vega-light-300 text-vega-dark-300">
+          <div className="font-alpha calt dark:text-vega-light-300 text-vega-dark-300 mb-2 grid grid-cols-4 gap-1 uppercase">
             <div className="col-span-1">{t('Market')}</div>
             <div className="col-span-1">{t('Status')}</div>
             <div className="col-span-1">{t('Specifications')}</div>
@@ -236,7 +245,7 @@ export const OracleFullProfile = ({
           <div className="max-h-60 overflow-auto">
             {oracleMarkets?.map((market) => (
               <div
-                className="grid grid-cols-4 gap-1 capitalize mb-2 last:mb-0"
+                className="mb-2 grid grid-cols-4 gap-1 capitalize last:mb-0"
                 key={`oracle-market-${market.id}`}
               >
                 <div className="col-span-1">

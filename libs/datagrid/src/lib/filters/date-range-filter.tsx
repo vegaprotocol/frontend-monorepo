@@ -1,6 +1,6 @@
 import type { ChangeEvent } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
-import type * as Schema from '@vegaprotocol/types';
+import { type DateRange } from '@vegaprotocol/types';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import type { IDoesFilterPassParams, IFilterParams } from 'ag-grid-community';
 import {
@@ -14,12 +14,12 @@ import {
   isValid,
 } from 'date-fns';
 import { formatForInput } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { TradingInputError } from '@vegaprotocol/ui-toolkit';
+import { useT } from '../use-t';
 
-const defaultValue: Schema.DateRange = {};
+const defaultValue: DateRange = {};
 export interface DateRangeFilterProps extends IFilterParams {
-  defaultValue?: Schema.DateRange;
+  defaultValue?: DateRange;
   maxSubDays?: number;
   maxNextDays?: number;
   maxDaysRange?: number;
@@ -27,9 +27,10 @@ export interface DateRangeFilterProps extends IFilterParams {
 
 export const DateRangeFilter = forwardRef(
   (props: DateRangeFilterProps, ref) => {
+    const t = useT();
     const defaultDates = props?.defaultValue || defaultValue;
-    const [value, setValue] = useState<Schema.DateRange>(defaultDates);
-    const valueRef = useRef<Schema.DateRange>(value);
+    const [value, setValue] = useState<DateRange>(defaultDates);
+    const valueRef = useRef<DateRange>(value);
     const [error, setError] = useState<string>('');
     const [minStartDate, maxStartDate, minEndDate, maxEndDate] = useMemo(() => {
       const minStartDate =
@@ -105,26 +106,24 @@ export const DateRangeFilter = forwardRef(
           return { value: valueRef.current };
         },
 
-        setModel(model?: { value: Schema.DateRange } | null) {
+        setModel(model?: { value: DateRange } | null) {
           valueRef.current =
             model?.value || props?.defaultValue || defaultValue;
           setValue(valueRef.current);
         },
       };
     });
-    const validate = (
-      name: string,
-      timeValue: Date,
-      update?: Schema.DateRange
-    ) => {
+    const validate = (name: string, timeValue: Date, update?: DateRange) => {
       if (
         props.maxSubDays !== undefined &&
         isBefore(new Date(timeValue), subDays(Date.now(), props.maxSubDays + 1))
       ) {
         setError(
           t(
-            'The earliest data that can be queried is %s days ago.',
-            String(props.maxSubDays)
+            'The earliest data that can be queried is {{maxSubDays}} days ago.',
+            {
+              maxSubDays: String(props.maxSubDays),
+            }
           )
         );
         return false;
@@ -141,8 +140,8 @@ export const DateRangeFilter = forwardRef(
         ) {
           setError(
             t(
-              'The maximum time range that can be queried is %s days.',
-              String(props.maxDaysRange)
+              'The maximum time range that can be queried is {{maxDaysRange}} days.',
+              { maxDaysRange: String(props.maxDaysRange) }
             )
           );
           return false;
@@ -209,7 +208,7 @@ export const DateRangeFilter = forwardRef(
         <div className="ag-filter-apply-panel">
           <fieldset className="ag-simple-filter-body-wrapper">
             <label className="block" key="start">
-              <span className="block mb-1">{t('Start')}</span>
+              <span className="mb-1 block">{t('Start')}</span>
               <input
                 type="datetime-local"
                 name="start"
@@ -222,7 +221,7 @@ export const DateRangeFilter = forwardRef(
           </fieldset>
           <fieldset className="ag-simple-filter-body-wrapper">
             <label className="block" key="end">
-              <span className="block mb-1">{t('End')}</span>
+              <span className="mb-1 block">{t('End')}</span>
               <input
                 type="datetime-local"
                 name="end"

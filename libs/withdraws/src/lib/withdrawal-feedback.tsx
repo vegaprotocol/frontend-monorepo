@@ -1,6 +1,5 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import { addDecimalsFormatNumber, truncateByChars } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import {
   Button,
   KeyValueTable,
@@ -11,6 +10,8 @@ import { getChainName, useWeb3ConnectStore } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import { formatDistanceToNow } from 'date-fns';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
+import { useT } from './use-t';
+import { Trans } from 'react-i18next';
 
 export const WithdrawalFeedback = ({
   transaction,
@@ -23,6 +24,7 @@ export const WithdrawalFeedback = ({
   submitWithdraw: (withdrawalId: string) => void;
   availableTimestamp: number | null;
 }) => {
+  const t = useT();
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const isAvailable =
     availableTimestamp === null || Date.now() > availableTimestamp;
@@ -30,16 +32,20 @@ export const WithdrawalFeedback = ({
   return (
     <div>
       <p className="mb-2">
-        {t('Your funds have been unlocked for withdrawal')} -{' '}
-        <a
-          className="underline"
-          data-testid="tx-block-explorer"
-          href={`${VEGA_EXPLORER_URL}/txs/0x${transaction.txHash}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {t('View in block explorer')}
-        </a>
+        <Trans
+          defaults="Your funds have been unlocked for withdrawal - <0>View in block explorer<0>"
+          components={[
+            <a
+              className="underline"
+              data-testid="tx-block-explorer"
+              href={`${VEGA_EXPLORER_URL}/txs/0x${transaction.txHash}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              View in block explorer
+            </a>,
+          ]}
+        />
       </p>
       {withdrawal && (
         <KeyValueTable>
@@ -78,11 +84,9 @@ export const WithdrawalFeedback = ({
         <ActionButton withdrawal={withdrawal} submitWithdraw={submitWithdraw} />
       ) : (
         <p className="text-danger">
-          {t(
-            `Available to withdraw in ${formatDistanceToNow(
-              availableTimestamp
-            )}`
-          )}
+          {t('Available to withdraw in {{availableTimestamp}}', {
+            availableTimestamp: formatDistanceToNow(availableTimestamp),
+          })}
         </p>
       )}
     </div>
@@ -96,6 +100,7 @@ const ActionButton = ({
   withdrawal: WithdrawalFieldsFragment | null;
   submitWithdraw: (withdrawalId: string) => void;
 }) => {
+  const t = useT();
   const { isActive, chainId } = useWeb3React();
   const { open, desiredChainId } = useWeb3ConnectStore((store) => ({
     open: store.open,
@@ -115,7 +120,9 @@ const ActionButton = ({
     return (
       <>
         <p className="text-danger mb-2">
-          {t(`This app only works on ${chainName}. Please change chain.`)}
+          {t('This app only works on {{chainName}}. Please change chain.', {
+            chainName,
+          })}
         </p>
         <Button disabled={true}>{t('Withdraw funds')}</Button>
       </>

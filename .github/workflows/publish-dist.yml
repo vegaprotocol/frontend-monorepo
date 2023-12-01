@@ -93,7 +93,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions

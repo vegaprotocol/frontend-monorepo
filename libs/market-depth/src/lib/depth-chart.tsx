@@ -2,20 +2,20 @@ import { DepthChart } from 'pennant';
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { addDecimal, getNumberFormat } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketDepthProvider } from './market-depth-provider';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
-import type { MarketData } from '@vegaprotocol/markets';
-import type {
-  MarketDepthQuery,
-  MarketDepthUpdateSubscription,
-  PriceLevelFieldsFragment,
+import { type MarketData } from '@vegaprotocol/markets';
+import {
+  type MarketDepthQuery,
+  type MarketDepthUpdateSubscription,
+  type PriceLevelFieldsFragment,
 } from './__generated__/MarketDepth';
-import type { DepthChartProps } from 'pennant';
+import { type DepthChartProps } from 'pennant';
 import { parseLevel, updateLevels } from './depth-chart-utils';
+import { useT } from './use-t';
 
 interface DepthChartManagerProps {
   marketId: string;
@@ -39,6 +39,7 @@ const getMidPrice = (
 type DepthData = Pick<DepthChartProps, 'data' | 'midPrice'>;
 
 export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
+  const t = useT();
   const { theme } = useThemeSwitcher();
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const [depthData, setDepthData] = useState<DepthData | null>(null);
@@ -238,7 +239,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
           volumeFormat={volumeFormat}
           priceFormat={priceFormat}
           notEnoughDataText={
-            <span className="text-xs text-center">{t('No open orders')}</span>
+            <span className="text-center text-xs">{t('No open orders')}</span>
           }
         />
       )}

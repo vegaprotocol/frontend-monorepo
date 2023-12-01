@@ -1,5 +1,4 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { t } from '@vegaprotocol/i18n';
 import { CompactNumber } from '@vegaprotocol/react-helpers';
 import { WITHDRAW_THRESHOLD_TOOLTIP_TEXT } from '@vegaprotocol/assets';
 import {
@@ -9,6 +8,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import { formatDistanceToNow } from 'date-fns';
+import { useT } from './use-t';
 
 interface WithdrawLimitsProps {
   amount: string;
@@ -25,6 +25,7 @@ export const WithdrawLimits = ({
   delay,
   asset,
 }: WithdrawLimitsProps) => {
+  const t = useT();
   const delayTime =
     new BigNumber(amount).isGreaterThan(threshold) && delay
       ? formatDistanceToNow(Date.now() + delay * 1000)

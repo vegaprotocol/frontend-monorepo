@@ -4,24 +4,21 @@ import { marketsMapProvider } from '@vegaprotocol/markets';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
+  useDataProvider,
 } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
-import type { Market } from '@vegaprotocol/markets';
+import { type Market } from '@vegaprotocol/markets';
 import produce from 'immer';
-
+import { type IterableElement } from 'type-fest';
 import {
   AccountEventsDocument,
   AccountsDocument,
+  type AccountFieldsFragment,
+  type AccountsQuery,
+  type AccountEventsSubscription,
+  type AccountsQueryVariables,
 } from './__generated__/Accounts';
-
-import type { IterableElement } from 'type-fest';
-import type {
-  AccountFieldsFragment,
-  AccountsQuery,
-  AccountEventsSubscription,
-  AccountsQueryVariables,
-} from './__generated__/Accounts';
-import type { Asset } from '@vegaprotocol/assets';
+import { type Asset } from '@vegaprotocol/assets';
 
 const AccountType = Schema.AccountType;
 
@@ -218,3 +215,13 @@ export const aggregatedAccountDataProvider = makeDerivedDataProvider<
       (account) => account.asset.id === assetId
     ) || null
 );
+
+export const useAccounts = (partyId: string | null) => {
+  return useDataProvider({
+    dataProvider: accountsDataProvider,
+    variables: {
+      partyId: partyId || '',
+    },
+    skip: !partyId,
+  });
+};

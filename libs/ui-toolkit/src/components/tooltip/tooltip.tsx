@@ -68,6 +68,17 @@ export const Tooltip = ({
     children
   );
 
+export const TextChildrenTooltip = ({
+  children,
+  ...props
+}: Omit<TooltipProps, 'children'> & {
+  children: string | string[];
+}) => (
+  <Tooltip {...props}>
+    <span>{children}</span>
+  </Tooltip>
+);
+
 export const TooltipCellComponent = (props: ITooltipParams) => {
   return (
     <div className={tooltipContentClasses} role="tooltip">

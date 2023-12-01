@@ -18,11 +18,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Use Node.js 16
+      - name: Use Node.js 20
         id: Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.15.1
+          node-version-file: '.nvmrc'
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v4

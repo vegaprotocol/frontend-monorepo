@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import { useCallback, useEffect } from 'react';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
 import { useToasts, Intent } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
 import { subscribeWithSelector } from 'zustand/middleware';
+import { useT } from './use-t';
 
 type DownloadSettings = {
   title: string;
@@ -52,24 +52,31 @@ export const useLedgerDownloadFile = create<LedgerDownloadFileStore>()(
   }))
 );
 
-const ErrorContent = ({ message }: { message?: string }) => (
-  <>
-    <h4 className="mb-1 text-sm">{t('Something went wrong')}</h4>
-    <p>{message || t('Try again later')}</p>
-  </>
-);
+const ErrorContent = ({ message }: { message?: string }) => {
+  const t = useT();
+  return (
+    <>
+      <h4 className="mb-1 text-sm">{t('Something went wrong')}</h4>
+      <p>{message || t('Try again later')}</p>
+    </>
+  );
+};
 
-const InfoContent = ({ progress = false }) => (
-  <>
-    <p>{t('Please note this can take several minutes.')}</p>
-    <p>{t('You will be notified here when your file is ready.')}</p>
-    <h4 className="my-2">
-      {progress ? t('Still in progress') : t('Download has been started')}
-    </h4>
-  </>
-);
+const InfoContent = ({ progress = false }) => {
+  const t = useT();
+  return (
+    <>
+      <p>{t('Please note this can take several minutes.')}</p>
+      <p>{t('You will be notified here when your file is ready.')}</p>
+      <h4 className="my-2">
+        {progress ? t('Still in progress') : t('Download has been started')}
+      </h4>
+    </>
+  );
+};
 
 export const useLedgerDownloadManager = () => {
+  const t = useT();
   const queue = useLedgerDownloadFile((store) => store.queue);
   const updateQueue = useLedgerDownloadFile((store) => store.updateQueue);
   const removeItem = useLedgerDownloadFile((store) => store.removeItem);
@@ -88,48 +95,51 @@ export const useLedgerDownloadManager = () => {
     [removeToast, removeItem]
   );
 
-  const createToast = (item: DownloadSettings) => {
-    let content: ReactNode;
-    switch (true) {
-      case item.isError:
-        content = <ErrorContent message={item.errorMessage} />;
-        break;
-      case Boolean(item.blob):
-        content = (
+  const createToast = useCallback(
+    (item: DownloadSettings) => {
+      let content: ReactNode;
+      switch (true) {
+        case item.isError:
+          content = <ErrorContent message={item.errorMessage} />;
+          break;
+        case Boolean(item.blob):
+          content = (
+            <>
+              <h4 className="mb-1 text-sm">{t('Your file is ready')}</h4>
+              <a
+                onClick={() => onDownloadClose(item.link)}
+                href={URL.createObjectURL(item.blob as Blob)}
+                download={item.filename}
+                className="underline"
+              >
+                {t('Get file here')}
+              </a>
+            </>
+          );
+          break;
+        default:
+          content = <InfoContent progress={item.isDelayed} />;
+      }
+      const toast: Toast = {
+        id: item.link,
+        intent: item.intent || Intent.Primary,
+        content: (
           <>
-            <h4 className="mb-1 text-sm">{t('Your file is ready')}</h4>
-            <a
-              onClick={() => onDownloadClose(item.link)}
-              href={URL.createObjectURL(item.blob as Blob)}
-              download={item.filename}
-              className="underline"
-            >
-              {t('Get file here')}
-            </a>
+            <h3 className="mb-1 text-md uppercase">{item.title}</h3>
+            {content}
           </>
-        );
-        break;
-      default:
-        content = <InfoContent progress={item.isDelayed} />;
-    }
-    const toast: Toast = {
-      id: item.link,
-      intent: item.intent || Intent.Primary,
-      content: (
-        <>
-          <h3 className="mb-1 text-md uppercase">{item.title}</h3>
-          {content}
-        </>
-      ),
-      onClose: () => onDownloadClose(item.link),
-      loader: !item.isDownloaded && !item.isError,
-    };
-    if (hasToast(toast.id)) {
-      updateToast(toast.id, toast);
-    } else {
-      setToast(toast);
-    }
-  };
+        ),
+        onClose: () => onDownloadClose(item.link),
+        loader: !item.isDownloaded && !item.isError,
+      };
+      if (hasToast(toast.id)) {
+        updateToast(toast.id, toast);
+      } else {
+        setToast(toast);
+      }
+    },
+    [hasToast, setToast, onDownloadClose, updateToast, t]
+  );
 
   useEffect(() => {
     queue.forEach((item) => {

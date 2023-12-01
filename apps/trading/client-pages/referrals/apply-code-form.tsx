@@ -10,19 +10,19 @@ import { useForm } from 'react-hook-form';
 import classNames from 'classnames';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import type { ButtonHTMLAttributes, MouseEventHandler } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { RainbowButton } from './buttons';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useReferral } from './hooks/use-referral';
 import { Routes } from '../../lib/links';
 import { useTransactionEventSubscription } from '@vegaprotocol/web3';
-import { t } from '@vegaprotocol/i18n';
-import { Statistics } from './referral-statistics';
+import { Statistics, useStats } from './referral-statistics';
 import { useReferralProgram } from './hooks/use-referral-program';
+import { useT } from '../../lib/use-t';
 
 const RELOAD_DELAY = 3000;
 
-const validateCode = (value: string) => {
+const validateCode = (value: string, t: ReturnType<typeof useT>) => {
   const number = +`0x${value}`;
   if (!value || value.length !== 64) {
     return t('Code must be 64 characters in length');
@@ -32,7 +32,21 @@ const validateCode = (value: string) => {
   return true;
 };
 
+export const ApplyCodeFormContainer = () => {
+  const { pubKey } = useVegaWallet();
+  const { data: referee } = useReferral({ pubKey, role: 'referee' });
+  const { data: referrer } = useReferral({ pubKey, role: 'referrer' });
+
+  // go to main page if the current pubkey is already a referrer or referee
+  if (referee || referrer) {
+    return <Navigate to={Routes.REFERRALS} />;
+  }
+
+  return <ApplyCodeForm />;
+};
+
 export const ApplyCodeForm = () => {
+  const t = useT();
   const program = useReferralProgram();
   const navigate = useNavigate();
   const openWalletDialog = useVegaWalletDialogStore(
@@ -54,13 +68,28 @@ export const ApplyCodeForm = () => {
   } = useForm();
   const [params] = useSearchParams();
 
-  const { data: referee } = useReferral({ pubKey, role: 'referee' });
-  const { data: referrer } = useReferral({ pubKey, role: 'referrer' });
-
   const codeField = watch('code');
   const { data: previewData, loading: previewLoading } = useReferral({
-    code: validateCode(codeField) ? codeField : undefined,
+    code: validateCode(codeField, t) ? codeField : undefined,
   });
+
+  /**
+   * Validates the set a user tries to apply to.
+   */
+  const validateSet = useCallback(() => {
+    if (
+      codeField &&
+      !previewLoading &&
+      previewData &&
+      !previewData.isEligible
+    ) {
+      return t('The code is no longer valid.');
+    }
+    if (codeField && !previewLoading && !previewData) {
+      return t('The code is invalid');
+    }
+    return true;
+  }, [codeField, previewData, previewLoading, t]);
 
   useEffect(() => {
     const code = params.get('code');
@@ -132,6 +161,8 @@ export const ApplyCodeForm = () => {
       }),
   });
 
+  const { epochsValue, nextBenefitTierValue } = useStats({ program });
+
   // go to main page when successfully applied
   useEffect(() => {
     if (status === 'successful') {
@@ -141,16 +172,11 @@ export const ApplyCodeForm = () => {
     }
   }, [navigate, status]);
 
-  // go to main page if the current pubkey is already a referrer or referee
-  if (referee || referrer) {
-    return <Navigate to={Routes.REFERRALS} />;
-  }
-
   // show "code applied" message when successfully applied
   if (status === 'successful') {
     return (
-      <div className="w-1/2 mx-auto">
-        <h3 className="mb-5 text-xl text-center uppercase calt flex flex-row gap-2 justify-center items-center">
+      <div className="mx-auto w-1/2">
+        <h3 className="calt mb-5 flex flex-row items-center justify-center gap-2 text-center text-xl uppercase">
           <span className="text-vega-green-500">
             <VegaIcon name={VegaIconNames.TICK} size={20} />
           </span>{' '}
@@ -196,17 +222,24 @@ export const ApplyCodeForm = () => {
     };
   };
 
+  const nextBenefitTierEpochsValue = nextBenefitTierValue
+    ? nextBenefitTierValue.epochs - epochsValue
+    : 0;
+
   return (
     <>
-      <div className="w-2/3 max-w-md mx-auto bg-vega-clight-800 dark:bg-vega-cdark-800 p-8 rounded-lg">
-        <h3 className="mb-4 text-2xl text-center calt">
+      <div
+        data-testid="referral-apply-code-form"
+        className="bg-vega-clight-800 dark:bg-vega-cdark-800 mx-auto w-2/3 max-w-md rounded-lg p-8"
+      >
+        <h3 className="calt mb-4 text-center text-2xl">
           {t('Apply a referral code')}
         </h3>
         <p className="mb-4 text-center text-base">
           {t('Enter a referral code to get trading discounts.')}
         </p>
         <form
-          className={classNames('w-full flex flex-col gap-4', {
+          className={classNames('flex w-full flex-col gap-4', {
             'animate-shake': Boolean(errors.code),
           })}
           onSubmit={handleSubmit(onSubmit)}
@@ -217,28 +250,39 @@ export const ApplyCodeForm = () => {
               hasError={Boolean(errors.code)}
               {...register('code', {
                 required: t('You have to provide a code to apply it.'),
-                validate: validateCode,
+                validate: (value) => {
+                  const err = validateCode(value, t);
+                  if (err !== true) return err;
+                  return validateSet();
+                },
               })}
               placeholder="Enter a code"
-              className="mb-2 bg-vega-clight-900 dark:bg-vega-cdark-700"
+              className="bg-vega-clight-900 dark:bg-vega-cdark-700 mb-2"
             />
           </label>
           <RainbowButton variant="border" {...getButtonProps()} />
         </form>
         {errors.code && (
-          <InputError className="break-words overflow-auto">
+          <InputError className="overflow-auto break-words">
             {errors.code.message?.toString()}
           </InputError>
         )}
       </div>
-      {previewLoading && !previewData ? (
+      {validateCode(codeField, t) === true && previewLoading && !previewData ? (
         <div className="mt-10">
           <Loader />
         </div>
       ) : null}
-      {previewData ? (
+      {/* TODO: Re-check plural forms once i18n is updated */}
+      {previewData && previewData.isEligible ? (
         <div className="mt-10">
-          <h2 className="text-2xl mb-5">{t('You are joining')}</h2>
+          <h2 className="mb-5 text-2xl">
+            {t(
+              'youAreJoiningTheGroup',
+              'You are joining the group shown, but will not have access to benefits until you have completed at least {{count}} epochs.',
+              { count: nextBenefitTierEpochsValue }
+            )}
+          </h2>
           <Statistics data={previewData} program={program} as="referee" />
         </div>
       ) : null}

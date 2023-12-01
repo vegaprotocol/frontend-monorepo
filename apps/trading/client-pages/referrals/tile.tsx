@@ -7,7 +7,10 @@ import {
 import classNames from 'classnames';
 import type { HTMLAttributes, ReactNode } from 'react';
 import { Button } from './buttons';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../lib/use-t';
+import { Routes } from '../../lib/links';
+import { DApp, useLinks } from '@vegaprotocol/environment';
+import truncate from 'lodash/truncate';
 
 export const Tile = ({
   className,
@@ -62,10 +65,17 @@ export const CodeTile = ({
   createdAt?: string;
   className?: string;
 }) => {
+  const t = useT();
+  const consoleLink = useLinks(DApp.Console);
+  const applyCodeLink = consoleLink(
+    `#${Routes.REFERRALS_APPLY_CODE}?code=${code}`
+  );
   return (
     <StatTile
       title={t('Your referral code')}
-      description={createdAt ? t('(Created at: %s)', createdAt) : undefined}
+      description={
+        createdAt ? t('(Created at: {{createdAt}})', { createdAt }) : undefined
+      }
     >
       <div className="flex items-center justify-between gap-2">
         <Tooltip
@@ -86,10 +96,27 @@ export const CodeTile = ({
             {code}
           </div>
         </Tooltip>
-        <CopyWithTooltip text={code}>
+        <CopyWithTooltip text={code} description={t('Copy referral code')}>
           <Button className="text-sm no-underline !py-0 !px-0 h-fit !bg-transparent">
             <span className="sr-only">{t('Copy')}</span>
-            <VegaIcon size={24} name={VegaIconNames.COPY} />
+            <VegaIcon size={20} name={VegaIconNames.COPY} />
+          </Button>
+        </CopyWithTooltip>
+        <CopyWithTooltip
+          text={applyCodeLink}
+          description={
+            <>
+              {t('Copy shareable apply code link')}
+              {': '}
+              <a className="text-vega-blue-500 underline" href={applyCodeLink}>
+                {truncate(applyCodeLink, { length: 32 })}
+              </a>
+            </>
+          }
+        >
+          <Button className="text-sm no-underline !py-0 !px-0 h-fit !bg-transparent">
+            <span className="sr-only">{t('Copy')}</span>
+            <VegaIcon size={20} name={VegaIconNames.OPEN_EXTERNAL} />
           </Button>
         </CopyWithTooltip>
       </div>

@@ -1,8 +1,5 @@
-import { t } from '@vegaprotocol/i18n';
-
-export const WITHDRAW_THRESHOLD_TOOLTIP_TEXT = t(
-  "The maximum you can withdraw instantly. There's no limit on the size of a withdrawal, but all withdrawals over the threshold will have a delay time added to them"
-);
+export const WITHDRAW_THRESHOLD_TOOLTIP_TEXT =
+  "The maximum you can withdraw instantly. There's no limit on the size of a withdrawal, but all withdrawals over the threshold will have a delay time added to them";
 
 // List of defunct and no longer used assets that were created for various testnets
 export const DENY_LIST: Record<string, string[]> = {

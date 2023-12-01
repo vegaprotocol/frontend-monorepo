@@ -34,7 +34,7 @@ import {
   vegaWalletTeardown,
 } from '../../support/wallet-functions';
 import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
-import type { testFreeformProposal } from '../../support/common-interfaces';
+import { type testFreeformProposal } from '../../support/common-interfaces';
 
 const vegaWalletStakedBalances = 'vega-wallet-balance-staked-validators';
 const vegaWalletAssociatedBalance = 'associated-amount';
@@ -78,6 +78,7 @@ context(
       vegaWalletSetSpecifiedApprovalAmount('1000');
     });
 
+    // @ts-ignore clash between jest and cypress
     beforeEach('visit governance tab', function () {
       cy.clearLocalStorage();
       turnTelemetryOff();
@@ -301,6 +302,7 @@ context(
       cy.getByTestId(voteButtons).should('not.exist');
       cy.getByTestId('min-proposal-requirements').should(
         'have.text',
+        // @ts-ignore this is any
         `You must have at least ${this.minVoterBalance} VEGA associated to vote on this proposal`
       );
     });

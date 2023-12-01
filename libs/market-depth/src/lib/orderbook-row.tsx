@@ -118,7 +118,7 @@ const OrderBookRowCell = ({
 }) => {
   return (
     <button
-      className="overflow-hidden text-right text-ellipsis whitespace-nowrap hover:dark:bg-neutral-800 hover:bg-neutral-200"
+      className="overflow-hidden text-ellipsis whitespace-nowrap text-right hover:bg-neutral-200 hover:dark:bg-neutral-800"
       onClick={onClick}
     >
       {children}
@@ -140,7 +140,7 @@ const CumulationBar = ({
     <div
       data-testid={`${VolumeType.bid === type ? 'bid' : 'ask'}-bar`}
       className={classNames(
-        'absolute top-0 left-0 h-full',
+        'absolute left-0 top-0 h-full',
         type === VolumeType.bid
           ? 'bg-market-green/10 dark:bg-market-green/10'
           : 'bg-market-red/10 dark:bg-market-red/10'

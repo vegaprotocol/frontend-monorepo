@@ -4,11 +4,11 @@ import classNames from 'classnames';
 import { useProposalOfMarketQuery } from '@vegaprotocol/proposals';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import { ExternalLink, SimpleGrid } from '@vegaprotocol/ui-toolkit';
 import { compileGridData } from './compile-grid-data';
 import { useMarket, useStaticMarketData } from '@vegaprotocol/markets';
+import { useT } from '../../use-t';
 
 type TradingModeTooltipProps = {
   marketId?: string;
@@ -23,6 +23,7 @@ export const TradingModeTooltip = ({
   skip,
   skipGrid,
 }: TradingModeTooltipProps) => {
+  const t = useT();
   const { data: market } = useMarket(marketId);
   const { data: marketData } = useStaticMarketData(marketId, skip);
   const { marketTradingMode, trigger } = marketData || {};
@@ -43,7 +44,7 @@ export const TradingModeTooltip = ({
   );
 
   const compiledGrid =
-    !skipGrid && compileGridData(market, marketData, onSelect);
+    !skipGrid && compileGridData(t, market, marketData, onSelect);
 
   switch (marketTradingMode) {
     case Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS: {
@@ -88,10 +89,9 @@ export const TradingModeTooltip = ({
                   >
                     {`${
                       Schema.MarketTradingModeMapping[marketTradingMode]
-                    }: ${t(
-                      'Closing on %s',
-                      getDateTimeFormat().format(enactmentDate)
-                    )}`}
+                    }: ${t('Closing on {{time}}', {
+                      time: getDateTimeFormat().format(enactmentDate),
+                    })}`}
                   </span>
                 )}
                 <span>
@@ -118,7 +118,7 @@ export const TradingModeTooltip = ({
       return (
         <section data-testid="trading-mode-suspended-via-governance">
           {t(
-            `This market has been suspended via a governance vote and can be resumed or terminated by further votes.`
+            'This market has been suspended via a governance vote and can be resumed or terminated by further votes.'
           )}
           {DocsLinks && (
             <ExternalLink href={DocsLinks.MARKET_LIFECYCLE} className="ml-1">

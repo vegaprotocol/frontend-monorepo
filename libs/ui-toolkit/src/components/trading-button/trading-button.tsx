@@ -1,9 +1,9 @@
 import classNames from 'classnames';
-import { forwardRef } from 'react';
-import type {
-  AnchorHTMLAttributes,
-  ButtonHTMLAttributes,
-  ReactNode,
+import {
+  forwardRef,
+  type AnchorHTMLAttributes,
+  type ReactNode,
+  type ButtonHTMLAttributes,
 } from 'react';
 import { Intent } from '../../utils/intent';
 import { Link } from 'react-router-dom';
@@ -15,6 +15,7 @@ type TradingButtonProps = {
   icon?: ReactNode;
   subLabel?: ReactNode;
   fill?: boolean;
+  minimal?: boolean;
 };
 
 const getClassName = (
@@ -23,7 +24,11 @@ const getClassName = (
     subLabel,
     intent,
     fill,
-  }: Pick<TradingButtonProps, 'size' | 'subLabel' | 'intent' | 'fill'>,
+    minimal,
+  }: Pick<
+    TradingButtonProps,
+    'size' | 'subLabel' | 'intent' | 'fill' | 'minimal'
+  >,
   className?: string
 ) =>
   classNames(
@@ -41,27 +46,37 @@ const getClassName = (
     // colours
     {
       'bg-vega-yellow enabled:hover:bg-vega-yellow-550 dark:bg-vega-yellow dark:enabled:hover:bg-vega-yellow-450':
-        intent === Intent.Primary,
+        intent === Intent.Primary && !minimal,
       'bg-vega-clight-500 enabled:hover:bg-vega-clight-400 dark:bg-vega-cdark-500 dark:enabled:hover:bg-vega-cdark-400':
-        intent === Intent.None,
+        intent === Intent.None && !minimal,
       'bg-vega-blue-350 enabled:hover:bg-vega-blue-400 dark:bg-vega-blue-650 dark:enabled:hover:bg-vega-blue-600':
-        intent === Intent.Info,
+        intent === Intent.Info && !minimal,
       'bg-vega-orange-350 enabled:hover:bg-vega-orange-400 dark:bg-vega-orange-650 dark:enabled:hover:bg-vega-orange-600':
-        intent === Intent.Warning,
+        intent === Intent.Warning && !minimal,
       'bg-vega-red-350 enabled:hover:bg-vega-red-400 dark:bg-vega-red-650 dark:enabled:hover:bg-vega-red-600':
-        intent === Intent.Danger,
+        intent === Intent.Danger && !minimal,
       'bg-vega-green-350 enabled:hover:bg-vega-green-400 dark:bg-vega-green-650 dark:enabled:hover:bg-vega-green-600':
-        intent === Intent.Success,
-      'text-vega-clight-50 dark:text-vega-cdark-50': intent !== Intent.Primary,
-      'text-vega-clight-900 dark:text-vega-cdark-900':
-        intent === Intent.Primary,
+        intent === Intent.Success && !minimal,
+      // Minimal button
+      'bg-transparent enabled:hover:bg-vega-yellow-550 dark:enabled:hover:bg-vega-yellow-450':
+        intent === Intent.Primary && minimal,
+      'bg-transparent enabled:hover:bg-vega-clight-400 dark:enabled:hover:bg-vega-cdark-400':
+        intent === Intent.None && minimal,
+      'bg-transparent enabled:hover:bg-vega-blue-400 dark:enabled:hover:bg-vega-blue-600':
+        intent === Intent.Info && minimal,
+      'bg-transparent enabled:hover:bg-vega-orange-400 dark:enabled:hover:bg-vega-orange-600':
+        intent === Intent.Warning && minimal,
+      'bg-transparent enabled:hover:bg-vega-red-400 dark:enabled:hover:bg-vega-red-600':
+        intent === Intent.Danger && minimal,
+      'bg-transparent enabled:hover:bg-vega-green-400 dark:enabled:hover:bg-vega-green-600':
+        intent === Intent.Success && minimal,
     },
     // text
     {
       'text-vega-clight-50 dark:text-vega-cdark-50': intent !== Intent.Primary,
-      '!text-vega-clight-50': intent === Intent.Primary,
-      'text-vega-clight-100 dark:text-vega-cdark-100':
-        intent === Intent.Primary,
+
+      // If its primary the text must always be dark enough for a yellow background
+      'text-vega-clight-50': intent === Intent.Primary,
       '[&_[data-sub-label]]:text-vega-clight-100': intent === Intent.Primary,
     },
     { 'w-full': fill },
@@ -74,14 +89,14 @@ const Content = ({
   children,
 }: Pick<TradingButtonProps, 'icon' | 'subLabel' | 'children'>) => (
   <>
-    <span data-label className="leading-none font-alpha" key="children">
+    <span data-label className="font-alpha leading-none" key="children">
       {children}
     </span>
     {icon}
     {subLabel && (
       <span
         data-sub-label
-        className="font-mono text-xs leading-tight mt-0.5"
+        className="mt-0.5 font-mono text-xs leading-tight"
         key="trading-button-sub-label"
       >
         {subLabel}
@@ -99,6 +114,7 @@ export const TradingButton = forwardRef<
       size = 'medium',
       intent = Intent.None,
       type = 'button',
+      minimal = false,
       icon,
       children,
       className,
@@ -112,7 +128,10 @@ export const TradingButton = forwardRef<
       ref={ref}
       type={type}
       data-trading-button
-      className={getClassName({ size, subLabel, intent, fill }, className)}
+      className={getClassName(
+        { size, subLabel, intent, fill, minimal },
+        className
+      )}
       {...props}
     >
       <Content icon={icon} subLabel={subLabel} children={children} />
@@ -123,6 +142,7 @@ export const TradingButton = forwardRef<
 export const TradingAnchorButton = ({
   size = 'medium',
   intent = Intent.None,
+  minimal = false,
   icon,
   href,
   children,
@@ -133,7 +153,7 @@ export const TradingAnchorButton = ({
   TradingButtonProps & { href: string }) => (
   <Link
     to={href}
-    className={getClassName({ size, subLabel, intent }, className)}
+    className={getClassName({ size, subLabel, intent, minimal }, className)}
     {...props}
   >
     <Content icon={icon} subLabel={subLabel} children={children} />

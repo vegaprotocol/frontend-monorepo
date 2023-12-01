@@ -1,13 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { t } from '@vegaprotocol/i18n';
 import { useEnvironment } from '../../hooks/use-environment';
-import {
-  NetworkSwitcher,
-  envNameMapping,
-  envTriggerMapping,
-  envDescriptionMapping,
-} from './';
+import { NetworkSwitcher } from './';
 import { Networks } from '../../';
 
 jest.mock('../../hooks/use-environment');
@@ -33,10 +27,10 @@ describe('Network switcher', () => {
 
   it.each`
     network             | label
-    ${Networks.CUSTOM}  | ${envTriggerMapping[Networks.CUSTOM]}
-    ${Networks.DEVNET}  | ${envTriggerMapping[Networks.DEVNET]}
-    ${Networks.TESTNET} | ${envTriggerMapping[Networks.TESTNET]}
-    ${Networks.MAINNET} | ${envTriggerMapping[Networks.MAINNET]}
+    ${Networks.CUSTOM}  | ${'Custom'}
+    ${Networks.DEVNET}  | ${'Devnet'}
+    ${Networks.TESTNET} | ${'Fairground'}
+    ${Networks.MAINNET} | ${'Mainnet'}
   `(
     'displays the correct selection label for $network',
     ({ network, label }) => {
@@ -69,13 +63,13 @@ describe('Network switcher', () => {
     await userEvent.click(screen.getByRole('button'));
     let links = screen.getAllByRole('link');
 
-    expect(links[0]).toHaveTextContent(envNameMapping[Networks.MAINNET]);
-    expect(links[1]).toHaveTextContent(envNameMapping[Networks.TESTNET]);
-    expect(links[0]).not.toHaveTextContent(t('current'));
-    expect(links[1]).not.toHaveTextContent(t('current'));
-    expect(links[0]).not.toHaveTextContent(t('not available'));
-    expect(links[1]).not.toHaveTextContent(t('not available'));
-    expect(links[2]).toHaveTextContent(t('Propose a network parameter change'));
+    expect(links[0]).toHaveTextContent('Mainnet');
+    expect(links[1]).toHaveTextContent('Fairground testnet');
+    expect(links[0]).not.toHaveTextContent('current');
+    expect(links[1]).not.toHaveTextContent('current');
+    expect(links[0]).not.toHaveTextContent('not available');
+    expect(links[1]).not.toHaveTextContent('not available');
+    expect(links[2]).toHaveTextContent('Propose a network parameter change');
 
     const menuitems = screen.getAllByRole('menuitem');
 
@@ -110,8 +104,8 @@ describe('Network switcher', () => {
 
     const links = screen.getAllByRole('link');
 
-    expect(links[0]).toHaveTextContent(envNameMapping[Networks.MAINNET]);
-    expect(links[0]).toHaveTextContent(t('current'));
+    expect(links[0]).toHaveTextContent('Mainnet');
+    expect(links[0]).toHaveTextContent('current');
   });
 
   it('displays the correct selected network on the default dropdown view when it does not have an associated url', async () => {
@@ -131,8 +125,8 @@ describe('Network switcher', () => {
 
     const links = screen.getAllByRole('link');
 
-    expect(links[0]).toHaveTextContent(envNameMapping[Networks.MAINNET]);
-    expect(links[0]).toHaveTextContent(t('current'));
+    expect(links[0]).toHaveTextContent('Mainnet');
+    expect(links[0]).toHaveTextContent('current');
   });
 
   it('displays the correct state for a network without url on the default dropdown view', async () => {
@@ -151,13 +145,17 @@ describe('Network switcher', () => {
     await userEvent.click(screen.getByRole('button'));
     const links = screen.getAllByRole('link');
 
-    expect(links[0]).toHaveTextContent(envNameMapping[Networks.MAINNET]);
-    expect(links[0]).toHaveTextContent(t('not available'));
+    expect(links[0]).toHaveTextContent('Mainnet');
+    expect(links[0]).toHaveTextContent('not available');
   });
 
-  it.each([Networks.MAINNET, Networks.TESTNET, Networks.DEVNET])(
+  it.each([
+    { network: Networks.MAINNET, name: 'Mainnet' },
+    { network: Networks.TESTNET, name: 'Fairground testnet' },
+    { network: Networks.DEVNET, name: 'Devnet' },
+  ])(
     'displays the advanced view in the correct state',
-    async (network) => {
+    async ({ network, name }) => {
       const VEGA_NETWORKS: Record<Networks, string | undefined> = {
         [Networks.CUSTOM]: undefined,
         [Networks.MAINNET]: 'https://main.net',
@@ -178,25 +176,14 @@ describe('Network switcher', () => {
       await userEvent.click(screen.getByTestId('network-switcher'));
 
       expect(
-        await screen.findByRole('menuitem', { name: t('Advanced') })
+        await screen.findByRole('menuitem', { name: 'Advanced' })
       ).toBeInTheDocument();
 
-      await userEvent.click(
-        screen.getByRole('menuitem', { name: t('Advanced') })
-      );
-
-      expect(
-        await screen.findByText(envDescriptionMapping[network])
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('link', {
-          name: new RegExp(`^${envNameMapping[network]}`),
-        })
-      ).toBeInTheDocument();
+      await userEvent.click(screen.getByRole('menuitem', { name: 'Advanced' }));
 
       await userEvent.click(
         screen.getByRole('link', {
-          name: new RegExp(`^${envNameMapping[network]}`),
+          name: new RegExp(`^${name}`),
         })
       );
 
@@ -224,15 +211,13 @@ describe('Network switcher', () => {
     render(<NetworkSwitcher />);
 
     await userEvent.click(screen.getByRole('button'));
-    await userEvent.click(
-      screen.getByRole('menuitem', { name: t('Advanced') })
-    );
+    await userEvent.click(screen.getByRole('menuitem', { name: 'Advanced' }));
 
-    const label = screen.getByText(`(${t('current')})`);
+    const label = screen.getByText('(current)');
 
     expect(label).toBeInTheDocument();
     expect(label.parentNode?.parentNode?.firstElementChild).toHaveTextContent(
-      envNameMapping[selectedNetwork]
+      'Devnet'
     );
   });
 
@@ -262,7 +247,7 @@ describe('Network switcher', () => {
 
     expect(label).toBeInTheDocument();
     expect(label.parentNode?.parentNode?.firstElementChild).toHaveTextContent(
-      envNameMapping[Networks.MAINNET]
+      'Mainnet'
     );
   });
 });

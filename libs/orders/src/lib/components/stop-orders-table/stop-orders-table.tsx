@@ -3,9 +3,8 @@ import {
   getDateTimeFormat,
   isNumeric,
   toBigNum,
-  formatTrigger,
+  useFormatTrigger,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
 import * as Schema from '@vegaprotocol/types';
 import {
   ActionsDropdown,
@@ -35,6 +34,7 @@ import type {
 import type { StopOrder } from '../order-data-provider/stop-orders-data-provider';
 import type { ColDef } from 'ag-grid-community';
 import type { Order } from '../order-data-provider';
+import { useT } from '../../use-t';
 
 const defaultColDef = {
   resizable: true,
@@ -51,6 +51,8 @@ export type StopOrdersTableProps = TypedDataAgGrid<StopOrder> & {
 
 export const StopOrdersTable = memo(
   ({ onCancel, onMarketClick, onView, ...props }: StopOrdersTableProps) => {
+    const t = useT();
+    const formatTrigger = useFormatTrigger();
     const showAllActions = !props.isReadOnly;
     const columnDefs: ColDef[] = useMemo(
       () => [
@@ -176,7 +178,7 @@ export const StopOrdersTable = memo(
               {data.ocoLinkId && (
                 <Pill
                   size="xxs"
-                  className="uppercase ml-0.5"
+                  className="ml-0.5 uppercase"
                   title={t('One Cancels the Other')}
                 >
                   OCO
@@ -281,7 +283,15 @@ export const StopOrdersTable = memo(
           },
         },
       ],
-      [onCancel, onMarketClick, onView, props.isReadOnly, showAllActions]
+      [
+        onCancel,
+        onMarketClick,
+        onView,
+        props.isReadOnly,
+        showAllActions,
+        t,
+        formatTrigger,
+      ]
     );
 
     return (

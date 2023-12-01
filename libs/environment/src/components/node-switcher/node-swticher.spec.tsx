@@ -60,6 +60,7 @@ describe('NodeSwitcher', () => {
 
     const rows = screen.getAllByTestId('node-row');
     expect(rows).toHaveLength(nodes.length);
+    // 0006-NETW-014
     rows.forEach((r) => {
       const row = within(r);
       expect(row.getByTestId('response-time-cell')).toHaveTextContent(
@@ -86,7 +87,7 @@ describe('NodeSwitcher', () => {
       nodes,
     });
     render(<NodeSwitcher closeDialog={jest.fn()} />);
-
+    // 0006-NETW-013
     nodes.forEach((node) => {
       expect(
         screen.getByRole('radio', {
@@ -98,6 +99,7 @@ describe('NodeSwitcher', () => {
     expect(
       screen.getByRole('radio', { checked: false, name: 'Other' })
     ).toBeInTheDocument();
+    // 0006-NETW-020
     expect(
       screen.getByRole('button', { name: 'Connect to this node' })
     ).toHaveAttribute('disabled');
@@ -116,7 +118,7 @@ describe('NodeSwitcher', () => {
     expect(
       screen.getByRole('button', { name: 'Connect to this node' })
     ).toBeDisabled();
-
+    // 0006-NETW-018
     fireEvent.click(screen.getByRole('radio', { name: 'Other' }));
 
     fireEvent.change(screen.getByRole('textbox'), {
@@ -131,6 +133,7 @@ describe('NodeSwitcher', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Check' }));
 
     const customRow = within(screen.getByTestId('custom-row'));
+    // 0006-NETW-015
     expect(customRow.getByTestId('block-height-cell')).toBeInTheDocument();
 
     fireEvent.click(
@@ -163,6 +166,7 @@ describe('NodeSwitcher', () => {
         value: mockUrl,
       },
     });
+    // 0006-NETW-019
     expect(
       screen.getByRole('button', {
         name: 'Connect to this node',
@@ -171,4 +175,5 @@ describe('NodeSwitcher', () => {
   });
 
   it.todo('displays errors');
+  it.todo('connect to a node with "bad statuses - 0006-NETW-017');
 });

@@ -7,10 +7,10 @@ import {
   marketDataProvider,
   marketProvider,
 } from '@vegaprotocol/markets';
-import type {
-  MarketDepthQuery,
-  MarketDepthQueryVariables,
-  MarketDepthUpdateSubscription,
+import {
+  type MarketDepthQuery,
+  type MarketDepthQueryVariables,
+  type MarketDepthUpdateSubscription,
 } from './__generated__/MarketDepth';
 
 interface OrderbookManagerProps {

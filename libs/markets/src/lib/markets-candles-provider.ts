@@ -1,10 +1,10 @@
 import { makeDataProvider } from '@vegaprotocol/data-provider';
-import { MarketsCandlesDocument } from './__generated__/markets-candles';
-import type {
-  MarketsCandlesQuery,
-  MarketsCandlesQueryVariables,
+import {
+  MarketsCandlesDocument,
+  type MarketsCandlesQuery,
+  type MarketsCandlesQueryVariables,
 } from './__generated__/markets-candles';
-import type { Candle } from './market-candles-provider';
+import { type Candle } from './market-candles-provider';
 
 export interface MarketCandles {
   marketId: string;

@@ -1,7 +1,7 @@
 import { TradingOption, truncateMiddle } from '@vegaprotocol/ui-toolkit';
 import type { AssetFieldsFragment } from './__generated__/Asset';
 import classNames from 'classnames';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 import type { ReactNode } from 'react';
 
 type AssetOptionProps = {
@@ -15,8 +15,9 @@ export const Balance = ({
 }: {
   balance?: string;
   symbol: string;
-}) =>
-  balance ? (
+}) => {
+  const t = useT();
+  return balance ? (
     <div className="mt-1 font-alpha" data-testid="asset-balance">
       {balance} {symbol}
     </div>
@@ -25,6 +26,7 @@ export const Balance = ({
       {t('Fetching balance…')}
     </div>
   );
+};
 
 export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
   return (

@@ -1,4 +1,3 @@
-import { t } from '@vegaprotocol/i18n';
 import { WalletClient, WalletClientError } from '@vegaprotocol/wallet-client';
 import { clearConfig, getConfig, setConfig } from '../storage';
 import type { Transaction, VegaConnector } from './vega-connector';
@@ -7,19 +6,19 @@ import { WalletError } from './vega-connector';
 const VERSION = 'v2';
 
 export const ClientErrors = {
-  NO_SERVICE: new WalletError(t('No service'), 100),
-  INVALID_WALLET: new WalletError(t('Wallet version invalid'), 103),
+  NO_SERVICE: new WalletError('No service', 100),
+  INVALID_WALLET: new WalletError('Wallet version invalid', 103),
   WRONG_NETWORK: new WalletError(
-    t('Wrong network'),
+    'Wrong network',
     104,
-    t('App is configured to work with a different chain')
+    'App is configured to work with a different chain'
   ),
   UNKNOWN: new WalletError(
-    t('Something went wrong'),
+    'Something went wrong',
     105,
-    t('Unknown error occurred')
+    'Unknown error occurred'
   ),
-  NO_CLIENT: new WalletError(t('No client found.'), 106),
+  NO_CLIENT: new WalletError('No client found.', 106),
 } as const;
 
 export class JsonRpcConnector implements VegaConnector {
@@ -156,16 +155,10 @@ export class JsonRpcConnector implements VegaConnector {
     try {
       const result = await fetch(`${this._url}/api/${this.version}/methods`);
       if (!result.ok) {
-        const sent1 = t(
-          'The version of the wallet service running at %s is not supported.',
-          this._url as string
-        );
-        const sent2 = t(
-          'Update the wallet software to a version that expose the API %s.',
-          this.version
-        );
+        const sent1 = `The version of the wallet service running at ${this._url} is not supported.`;
+        const sent2 = `Update the wallet software to a version that expose the API ${this.version}.`;
         const data = `${sent1}\n ${sent2}`;
-        const title = t('Wallet version invalid');
+        const title = 'Wallet version invalid';
         throw new WalletError(title, ClientErrors.INVALID_WALLET.code, data);
       }
       return true;

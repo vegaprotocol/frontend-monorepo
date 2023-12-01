@@ -23,6 +23,8 @@ const txData: BlockExplorerTransactionResult = {
   type: 'type',
   command: {} as ValidatorHeartbeat,
   signature: {
+    version: '1',
+    algo: 'vega/ed25519',
     value: '123',
   },
 };

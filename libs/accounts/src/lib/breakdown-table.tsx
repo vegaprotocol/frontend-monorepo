@@ -3,14 +3,14 @@ import {
   addDecimalsFormatNumber,
   addDecimalsFormatNumberQuantum,
 } from '@vegaprotocol/utils';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 import { Intent, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
-import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
-import type { AccountFields } from './accounts-data-provider';
+import { type AgGridReact, type AgGridReactProps } from 'ag-grid-react';
+import { type AccountFields } from './accounts-data-provider';
 import { AccountTypeMapping } from '@vegaprotocol/types';
-import type {
-  VegaValueFormatterParams,
-  VegaICellRendererParams,
+import {
+  type VegaValueFormatterParams,
+  type VegaICellRendererParams,
 } from '@vegaprotocol/datagrid';
 import { ProgressBarCell } from '@vegaprotocol/datagrid';
 import { AgGrid, PriceCell } from '@vegaprotocol/datagrid';
@@ -31,6 +31,7 @@ interface BreakdownTableProps extends AgGridReactProps {
 
 const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
   ({ data }, ref) => {
+    const t = useT();
     const coldefs = useMemo(() => {
       const defs: ColDef[] = [
         {
@@ -53,7 +54,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
                 }
               />
             ) : (
-              'None'
+              t('None')
             );
           },
         },
@@ -126,7 +127,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         },
       ];
       return defs;
-    }, []);
+    }, [t]);
 
     return (
       <AgGrid

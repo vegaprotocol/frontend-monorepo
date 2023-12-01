@@ -1,11 +1,11 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import classNames from 'classnames';
-import type { ComponentProps, ReactNode } from 'react';
+import { type ComponentProps, type ReactNode } from 'react';
 import { forwardRef } from 'react';
 import { VegaIcon, VegaIconNames } from '../icon';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from '../../use-t';
 
 const itemClass = classNames(
   'relative flex gap-2 items-center rounded-sm p-2 text-sm',
@@ -76,7 +76,7 @@ export const DropdownMenuContent = forwardRef<
 >(({ className, sideOffset = 10, ...contentProps }, forwardedRef) => (
   <DropdownMenuPrimitive.Content
     ref={forwardedRef}
-    className="min-w-[290px] bg-vega-light-100 dark:bg-vega-dark-100 p-2 rounded z-20 text-black dark:text-white border border-vega-light-200 dark:border-vega-dark-200"
+    className="bg-vega-light-100 dark:bg-vega-dark-100 border-vega-light-200 dark:border-vega-dark-200 z-20 min-w-[290px] rounded border p-2 text-black dark:text-white"
     align="start"
     sideOffset={sideOffset}
     {...contentProps}
@@ -155,7 +155,7 @@ export const DropdownMenuSeparator = forwardRef<
     {...separatorProps}
     ref={forwardedRef}
     className={classNames(
-      'h-px my-1 mx-2 bg-vega-light-150 dark:bg-vega-dark-150',
+      'bg-vega-light-150 dark:bg-vega-dark-150 mx-2 my-1 h-px',
       className
     )}
   />
@@ -214,10 +214,13 @@ export const DropdownMenuCopyItem = ({
   value: string;
   text: string;
 }) => {
+  const t = useT();
   const [copied, setCopied] = useCopyTimeout();
 
   return (
     <CopyToClipboard text={value} onCopy={() => setCopied(true)}>
+      {/*
+      // @ts-ignore Not sure about this typescript error */}
       <DropdownMenuItem
         onClick={(e) => {
           e.preventDefault();

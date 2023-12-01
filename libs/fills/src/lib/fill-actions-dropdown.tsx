@@ -2,7 +2,7 @@ import {
   ActionsDropdown,
   TradingDropdownCopyItem,
 } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/i18n';
+import { useT } from './use-t';
 
 export const FillActionsDropdown = ({
   tradeId,
@@ -13,6 +13,7 @@ export const FillActionsDropdown = ({
   buyOrderId: string;
   sellOrderId: string;
 }) => {
+  const t = useT();
   return (
     <ActionsDropdown data-testid="fill-actions-content">
       <TradingDropdownCopyItem value={tradeId} text={t('Copy trade ID')} />
