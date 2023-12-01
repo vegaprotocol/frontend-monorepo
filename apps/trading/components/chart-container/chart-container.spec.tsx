@@ -4,6 +4,7 @@ import { useChartSettingsStore } from './use-chart-settings';
 import { useEnvironment } from '@vegaprotocol/environment';
 
 jest.mock('@vegaprotocol/candles-chart', () => ({
+  ...jest.requireActual('@vegaprotocol/candles-chart'),
   CandlesChartContainer: ({ marketId }: { marketId: string }) => (
     <div data-testid="pennant">{marketId}</div>
   ),

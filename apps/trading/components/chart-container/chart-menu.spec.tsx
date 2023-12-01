@@ -15,36 +15,22 @@ describe('ChartMenu', () => {
     render(<ChartMenu />);
 
     expect(
-      screen.queryByRole('button', { name: 'pennant' })
+      screen.queryByRole('button', { name: 'TradingView' })
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: 'tradingview' })
+      screen.queryByRole('button', { name: 'Vega chart' })
     ).not.toBeInTheDocument();
   });
 
-  it('shows trading view option if library path is set', async () => {
+  it('can switch between charts if library path', async () => {
     useEnvironment.setState({ CHARTING_LIBRARY_PATH: 'dummy' });
-
-    useChartSettingsStore.setState({
-      chartlib: 'tradingview',
-    });
 
     render(<ChartMenu />);
 
-    await userEvent.click(screen.getByRole('button', { name: 'tradingview' }));
+    await userEvent.click(screen.getByRole('button', { name: 'TradingView' }));
+    expect(useChartSettingsStore.getState().chartlib).toEqual('tradingview');
 
-    const pennantOption = screen.getByRole('menuitemradio', {
-      name: 'Pennant',
-    });
-    const tradingviewOption = screen.getByRole('menuitemradio', {
-      name: 'Tradingview',
-    });
-
-    expect(pennantOption).toBeInTheDocument();
-    expect(tradingviewOption).toBeInTheDocument();
-
-    await userEvent.click(pennantOption);
-
+    await userEvent.click(screen.getByRole('button', { name: 'Vega chart' }));
     expect(useChartSettingsStore.getState().chartlib).toEqual('pennant');
   });
 
@@ -58,12 +44,14 @@ describe('ChartMenu', () => {
       });
     });
 
-    it('only shows chartlib dropdown', () => {
+    it('only shows chartlib switch and attribution', () => {
       render(<ChartMenu />);
 
       const buttons = screen.getAllByRole('button');
       expect(buttons).toHaveLength(1);
-      expect(buttons[0]).toHaveTextContent('tradingview');
+      expect(buttons[0]).toHaveTextContent('Vega chart');
+
+      expect(screen.getByText('Chart by')).toBeInTheDocument();
     });
   });
 
