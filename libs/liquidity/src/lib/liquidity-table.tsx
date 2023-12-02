@@ -412,14 +412,9 @@ export const LiquidityTable = ({
               },
               'text-red-500': ({ data }: { data: LiquidityProvisionData }) => {
                 if (!data.sla) return false;
-                return (
-                  new BigNumber(
-                    data.sla.currentEpochFractionOfTimeOnBook
-                  ).isLessThan(data.commitmentMinTimeFraction) &&
-                  new BigNumber(
-                    data.sla.currentEpochFractionOfTimeOnBook
-                  ).isGreaterThan(0)
-                );
+                return new BigNumber(
+                  data.sla.currentEpochFractionOfTimeOnBook
+                ).isLessThan(data.commitmentMinTimeFraction);
               },
             },
           },
