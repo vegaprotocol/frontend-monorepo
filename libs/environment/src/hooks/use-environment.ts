@@ -19,6 +19,7 @@ import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
 import { tomlConfigSchema } from '../utils/validate-configuration';
 import uniq from 'lodash/uniq';
+import memoize from 'lodash/memoize';
 
 type Client = ReturnType<typeof createClient>;
 type ClientCollection = {
@@ -30,141 +31,16 @@ type EnvState = {
   error: string | null;
 };
 type Actions = {
+  setFeatureFlag: (flag: keyof FeatureFlags, enabled: boolean) => void;
   setUrl: (url: string) => void;
   initialize: () => Promise<void>;
 };
 export type Env = Environment & EnvState;
-export type EnvStore = Env & Actions;
+export type EnvStore = Env & FeatureFlags & Actions;
 
 const VERSION = 1;
 export const STORAGE_KEY = `vega_url_${VERSION}`;
 const SUBSCRIPTION_TIMEOUT = 3000;
-
-export const ENV = compileEnvVars();
-export const FLAGS = compileFeatureFlags();
-
-export const useEnvironment = create<EnvStore>()((set, get) => ({
-  ...compileEnvVars(),
-  ...compileFeatureFlags(),
-  nodes: [],
-  status: 'default',
-  error: null,
-  setUrl: (url) => {
-    set({ VEGA_URL: url, status: 'success', error: null });
-    LocalStorage.setItem(STORAGE_KEY, url);
-  },
-  initialize: async () => {
-    set({ status: 'pending' });
-
-    // validate env vars
-    try {
-      const rawVars = compileEnvVars();
-      const safeVars = envSchema.parse(rawVars);
-      set({ ...safeVars });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      const headline = 'Error processing the Vega environment';
-      set({
-        status: 'failed',
-        error: headline,
-      });
-      console.error(compileErrors(headline, err));
-      return;
-    }
-
-    const state = get();
-    const storedUrl = LocalStorage.getItem(STORAGE_KEY);
-
-    let nodes: string[] | undefined;
-    try {
-      nodes = await fetchConfig(state.VEGA_CONFIG_URL);
-      const enrichedNodes = uniq(
-        [...nodes, state.VEGA_URL, storedUrl].filter(Boolean) as string[]
-      );
-      set({ nodes: enrichedNodes });
-    } catch (err) {
-      console.warn(`Could not fetch node config from ${state.VEGA_CONFIG_URL}`);
-    }
-
-    // Node url found in localStorage, if its valid attempt to connect
-    if (storedUrl) {
-      if (isValidUrl(storedUrl)) {
-        set({ VEGA_URL: storedUrl, status: 'success' });
-        return;
-      } else {
-        LocalStorage.removeItem(STORAGE_KEY);
-      }
-    }
-
-    // VEGA_URL env var is set and is a valid url no need to proceed
-    if (state.VEGA_URL) {
-      set({ status: 'success' });
-      return;
-    }
-
-    // No url found in env vars or localStorage, AND no nodes were found in
-    // the config fetched from VEGA_CONFIG_URL, app initialization has failed
-    if (!nodes || !nodes.length) {
-      set({
-        status: 'failed',
-        error: `Failed to fetch node config from ${state.VEGA_CONFIG_URL}`,
-      });
-      return;
-    }
-
-    // Create a map of node urls to client instances
-    const clients: ClientCollection = {};
-    nodes.forEach((url) => {
-      clients[url] = createClient({
-        url,
-        cacheConfig: undefined,
-        retry: false,
-        connectToDevTools: false,
-      });
-    });
-
-    // Find a suitable node to connect to by attempting a query and a
-    // subscription, first to fulfill both will be the resulting url.
-    const url = await findNode(clients);
-
-    if (url !== null) {
-      set({
-        status: 'success',
-        VEGA_URL: url,
-      });
-      LocalStorage.setItem(STORAGE_KEY, url);
-    }
-    // Every node failed either to make a query or retrieve data from
-    // a subscription
-    else {
-      set({
-        status: 'failed',
-        error: 'No node found',
-      });
-      console.warn('No suitable vega node was found');
-    }
-  },
-}));
-
-/**
- * Initialize Vega app to dynamically select a node from the
- * VEGA_CONFIG_URL
- *
- * This can be omitted if you intend to only use a single node,
- * in those cases be sure to set NX_VEGA_URL
- */
-export const useInitializeEnv = () => {
-  const { initialize, status } = useEnvironment((store) => ({
-    status: store.status,
-    initialize: store.initialize,
-  }));
-
-  useEffect(() => {
-    if (status === 'default') {
-      initialize();
-    }
-  }, [status, initialize]);
-};
 
 /**
  * Fetch and validate a vega node configuration
@@ -269,11 +145,16 @@ const testSubscription = (client: Client) => {
   });
 };
 
+export const userControllableFeatureFlags: (keyof FeatureFlags)[] = [
+  'ICEBERG_ORDERS',
+  'STOP_ORDERS',
+];
+
 /**
  * Retrieve env vars, parsing where needed some type casting is needed
  * here to appease the environment store interface
  */
-function compileEnvVars() {
+const compileEnvVars = () => {
   const VEGA_ENV = windowOrDefault(
     'VEGA_ENV',
     process.env['NX_VEGA_ENV']
@@ -380,10 +261,24 @@ function compileEnvVars() {
   };
 
   return env;
-}
+};
 
-function compileFeatureFlags(): FeatureFlags {
-  const TRUTHY = ['1', 'true'];
+export const getUserEnabledFeatureFlags = memoize(
+  (): (keyof FeatureFlags)[] => {
+    if (typeof window !== 'undefined') {
+      const enabledFlags = window.localStorage.getItem('FEATURE_FLAGS');
+      if (enabledFlags) {
+        return (enabledFlags.split(',') as (keyof FeatureFlags)[]).filter(
+          (flag) => userControllableFeatureFlags.includes(flag)
+        );
+      }
+    }
+    return [];
+  }
+);
+
+const TRUTHY = ['1', 'true'];
+const compileFeatureFlags = (): FeatureFlags => {
   const COSMIC_ELEVATOR_FLAGS: CosmicElevatorFlags = {
     ICEBERG_ORDERS: TRUTHY.includes(
       windowOrDefault(
@@ -515,9 +410,9 @@ function compileFeatureFlags(): FeatureFlags {
     ...EXPLORER_FLAGS,
     ...GOVERNANCE_FLAGS,
   };
-}
+};
 
-function parseNetworks(value?: string) {
+const parseNetworks = (value?: string) => {
   if (value) {
     try {
       return JSON.parse(value);
@@ -526,34 +421,40 @@ function parseNetworks(value?: string) {
     }
   }
   return {};
-}
+};
 
 /**
  * Provides a fallback ethereum provider url for test purposes in some apps
  */
-function getEthereumProviderUrl(
+const getEthereumProviderUrl = (
   network: Networks | undefined,
   envvar: string | undefined
-) {
+) => {
   if (envvar) return envvar;
   return network === Networks.MAINNET
     ? 'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'
     : 'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8';
-}
+};
 /**
  * Provide a fallback etherscan url for test purposes in some apps
  */
-function getEtherscanUrl(
+const getEtherscanUrl = (
   network: Networks | undefined,
   envvar: string | undefined
-) {
+) => {
   if (envvar) return envvar;
   return network === Networks.MAINNET
     ? 'https://etherscan.io'
     : 'https://sepolia.etherscan.io';
-}
+};
 
-export function windowOrDefault(key: string, defaultValue?: string) {
+const windowOrDefault = (key: string, defaultValue?: string) => {
+  if (
+    userControllableFeatureFlags.includes(key as keyof FeatureFlags) &&
+    getUserEnabledFeatureFlags().includes(key as keyof FeatureFlags)
+  ) {
+    return TRUTHY[0];
+  }
   if (typeof window !== 'undefined') {
     // @ts-ignore avoid conflict in env
     if (window._env_ && window._env_[key]) {
@@ -562,4 +463,135 @@ export function windowOrDefault(key: string, defaultValue?: string) {
     }
   }
   return defaultValue || undefined;
-}
+};
+
+export const useEnvironment = create<EnvStore>()((set, get) => ({
+  ...compileEnvVars(),
+  ...compileFeatureFlags(),
+  nodes: [],
+  status: 'default',
+  error: null,
+  setFeatureFlag: (flag: keyof FeatureFlags, enabled: boolean) => {
+    if (userControllableFeatureFlags.includes(flag)) {
+      set({ [flag]: enabled });
+    }
+  },
+  setUrl: (url) => {
+    set({ VEGA_URL: url, status: 'success', error: null });
+    LocalStorage.setItem(STORAGE_KEY, url);
+  },
+  initialize: async () => {
+    set({ status: 'pending' });
+
+    // validate env vars
+    try {
+      const rawVars = compileEnvVars();
+      const safeVars = envSchema.parse(rawVars);
+      set({ ...safeVars });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      const headline = 'Error processing the Vega environment';
+      set({
+        status: 'failed',
+        error: headline,
+      });
+      console.error(compileErrors(headline, err));
+      return;
+    }
+
+    const state = get();
+    const storedUrl = LocalStorage.getItem(STORAGE_KEY);
+
+    let nodes: string[] | undefined;
+    try {
+      nodes = await fetchConfig(state.VEGA_CONFIG_URL);
+      const enrichedNodes = uniq(
+        [...nodes, state.VEGA_URL, storedUrl].filter(Boolean) as string[]
+      );
+      set({ nodes: enrichedNodes });
+    } catch (err) {
+      console.warn(`Could not fetch node config from ${state.VEGA_CONFIG_URL}`);
+    }
+
+    // Node url found in localStorage, if its valid attempt to connect
+    if (storedUrl) {
+      if (isValidUrl(storedUrl)) {
+        set({ VEGA_URL: storedUrl, status: 'success' });
+        return;
+      } else {
+        LocalStorage.removeItem(STORAGE_KEY);
+      }
+    }
+
+    // VEGA_URL env var is set and is a valid url no need to proceed
+    if (state.VEGA_URL) {
+      set({ status: 'success' });
+      return;
+    }
+
+    // No url found in env vars or localStorage, AND no nodes were found in
+    // the config fetched from VEGA_CONFIG_URL, app initialization has failed
+    if (!nodes || !nodes.length) {
+      set({
+        status: 'failed',
+        error: `Failed to fetch node config from ${state.VEGA_CONFIG_URL}`,
+      });
+      return;
+    }
+
+    // Create a map of node urls to client instances
+    const clients: ClientCollection = {};
+    nodes.forEach((url) => {
+      clients[url] = createClient({
+        url,
+        cacheConfig: undefined,
+        retry: false,
+        connectToDevTools: false,
+      });
+    });
+
+    // Find a suitable node to connect to by attempting a query and a
+    // subscription, first to fulfill both will be the resulting url.
+    const url = await findNode(clients);
+
+    if (url !== null) {
+      set({
+        status: 'success',
+        VEGA_URL: url,
+      });
+      LocalStorage.setItem(STORAGE_KEY, url);
+    }
+    // Every node failed either to make a query or retrieve data from
+    // a subscription
+    else {
+      set({
+        status: 'failed',
+        error: 'No node found',
+      });
+      console.warn('No suitable vega node was found');
+    }
+  },
+}));
+
+/**
+ * Initialize Vega app to dynamically select a node from the
+ * VEGA_CONFIG_URL
+ *
+ * This can be omitted if you intend to only use a single node,
+ * in those cases be sure to set NX_VEGA_URL
+ */
+export const useInitializeEnv = () => {
+  const { initialize, status } = useEnvironment((store) => ({
+    status: store.status,
+    initialize: store.initialize,
+  }));
+
+  useEffect(() => {
+    if (status === 'default') {
+      initialize();
+    }
+  }, [status, initialize]);
+};
+
+export const ENV = compileEnvVars();
+export const FLAGS = compileFeatureFlags();

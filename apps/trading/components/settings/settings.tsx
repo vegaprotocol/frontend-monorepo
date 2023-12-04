@@ -4,12 +4,31 @@ import {
   Switch,
   ToastPositionSetter,
   TradingButton,
+  TradingCheckbox,
 } from '@vegaprotocol/ui-toolkit';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useState, type ReactNode } from 'react';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
+import {
+  userControllableFeatureFlags,
+  useEnvironment,
+  type FeatureFlags,
+} from '@vegaprotocol/environment';
+
+const FeatureFlag = ({ flag }: { flag: keyof FeatureFlags }) => {
+  const env = useEnvironment();
+  return (
+    <div className="mb-2">
+      <TradingCheckbox
+        checked={env[flag]}
+        label={flag}
+        onCheckedChange={(checked) => env.setFeatureFlag(flag, !!checked)}
+      />
+    </div>
+  );
+};
 
 export const Settings = () => {
   const t = useT();
@@ -97,6 +116,11 @@ export const Settings = () => {
           <dt className="text-muted">{t('Git commit hash')}</dt>
           <dd className="break-words">{process.env.GIT_COMMIT}</dd>
         </dl>
+      </SettingsGroup>
+      <SettingsGroup inline={false} label={t('Experimental features')}>
+        {userControllableFeatureFlags.map((flag) => (
+          <FeatureFlag flag={flag} key={flag} />
+        ))}
       </SettingsGroup>
     </div>
   );
