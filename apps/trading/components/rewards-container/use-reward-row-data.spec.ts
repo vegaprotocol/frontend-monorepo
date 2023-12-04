@@ -99,15 +99,7 @@ describe('getRewards', () => {
     const rewards = getRewards(testData.rewards, testData.assets);
     expect(rewards).toEqual([
       {
-        asset: {
-          id: 'asset1',
-          name: 'USD (KRW)',
-          symbol: 'USD-KRW',
-          decimals: 6,
-          quantum: '1000000',
-          status: 'STATUS_ENABLED',
-          source: {},
-        },
+        asset: asset1,
         infrastructureFees: 31897424,
         staking: 0,
         priceTaking: 0,
@@ -121,15 +113,7 @@ describe('getRewards', () => {
         total: 31897424,
       },
       {
-        asset: {
-          id: 'asset2',
-          name: 'tDAI TEST',
-          symbol: 'tDAI',
-          decimals: 5,
-          quantum: '1',
-          status: 'STATUS_ENABLED',
-          source: {},
-        },
+        asset: asset2,
         infrastructureFees: 57,
         staking: 0,
         priceTaking: 0,
@@ -143,15 +127,7 @@ describe('getRewards', () => {
         total: 57,
       },
       {
-        asset: {
-          id: 'asset3',
-          name: 'Tether USD',
-          symbol: 'USDT',
-          decimals: 6,
-          quantum: '1000000',
-          status: 'STATUS_ENABLED',
-          source: {},
-        },
+        asset: asset3,
         infrastructureFees: 5501,
         staking: 0,
         priceTaking: 0,
@@ -165,15 +141,7 @@ describe('getRewards', () => {
         total: 11002,
       },
       {
-        asset: {
-          id: 'asset4',
-          name: 'USDT-T',
-          symbol: 'USDT-T',
-          decimals: 18,
-          quantum: '1',
-          status: 'STATUS_ENABLED',
-          source: {},
-        },
+        asset: asset4,
         infrastructureFees: 0,
         staking: 0,
         priceTaking: 0,
