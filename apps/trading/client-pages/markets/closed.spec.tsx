@@ -27,6 +27,7 @@ import {
   marketsDataQuery,
   createMarketsDataFragment,
 } from '@vegaprotocol/mock';
+import userEvent from '@testing-library/user-event';
 
 describe('Closed', () => {
   let originalNow: typeof Date.now;
@@ -169,13 +170,11 @@ describe('Closed', () => {
     Date.now = originalNow;
   });
 
-  it('renders correct headers', async () => {
+  const renderComponent = async (mocks: MockedResponse[]) => {
     await act(async () => {
       render(
         <MemoryRouter>
-          <MockedProvider
-            mocks={[marketsMock, marketsDataMock, oracleDataMock]}
-          >
+          <MockedProvider mocks={mocks}>
             <VegaWalletContext.Provider
               value={{ pubKey } as VegaWalletContextShape}
             >
@@ -185,6 +184,10 @@ describe('Closed', () => {
         </MemoryRouter>
       );
     });
+  };
+
+  it('renders correct headers', async () => {
+    await renderComponent([marketsMock, marketsDataMock, oracleDataMock]);
 
     const headers = screen.getAllByRole('columnheader');
     const expectedHeaders = [
@@ -202,23 +205,8 @@ describe('Closed', () => {
     expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
   });
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('renders correctly formatted and filtered rows', async () => {
-    await act(async () => {
-      render(
-        <MemoryRouter>
-          <MockedProvider
-            mocks={[marketsMock, marketsDataMock, oracleDataMock]}
-          >
-            <VegaWalletContext.Provider
-              value={{ pubKey } as VegaWalletContextShape}
-            >
-              <Closed />
-            </VegaWalletContext.Provider>
-          </MockedProvider>
-        </MemoryRouter>
-      );
-    });
+  it('renders correctly formatted and filtered rows', async () => {
+    await renderComponent([marketsMock, marketsDataMock, oracleDataMock]);
 
     const assetSymbol = getAsset(market).symbol;
 
@@ -292,21 +280,8 @@ describe('Closed', () => {
         },
       },
     };
-    await act(async () => {
-      render(
-        <MemoryRouter>
-          <MockedProvider
-            mocks={[mixedMarketsMock, marketsDataMock, oracleDataMock]}
-          >
-            <VegaWalletContext.Provider
-              value={{ pubKey } as VegaWalletContextShape}
-            >
-              <Closed />
-            </VegaWalletContext.Provider>
-          </MockedProvider>
-        </MemoryRouter>
-      );
-    });
+
+    await renderComponent([mixedMarketsMock, marketsDataMock, oracleDataMock]);
 
     // check that the number of rows in datagrid is 2
     const container = within(
@@ -338,44 +313,21 @@ describe('Closed', () => {
     );
   });
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('display market actions', async () => {
-    // TODO finish test to replace test_markets_content from apps/trading/e2e/tests/market/test_markets_actions.py
-    const mixedMarkets = [
+  it('display market actions', async () => {
+    // Use market with a succcessor Id as the actions dropdown will optionally
+    // show a link to the successor market
+    const marketsWithSuccessorAndParent = [
       {
-        // include as settled
         __typename: 'MarketEdge' as const,
         node: createMarketFragment({
           id: 'include-0',
           state: MarketState.STATE_SETTLED,
-        }),
-      },
-      {
-        // omit this market
-        __typename: 'MarketEdge' as const,
-        node: createMarketFragment({
-          id: 'discard-0',
-          state: MarketState.STATE_SUSPENDED,
-        }),
-      },
-      {
-        // include as terminated
-        __typename: 'MarketEdge' as const,
-        node: createMarketFragment({
-          id: 'include-1',
-          state: MarketState.STATE_TRADING_TERMINATED,
-        }),
-      },
-      {
-        // omit this market
-        __typename: 'MarketEdge' as const,
-        node: createMarketFragment({
-          id: 'discard-1',
-          state: MarketState.STATE_ACTIVE,
+          successorMarketID: 'successor',
+          parentMarketID: 'parent',
         }),
       },
     ];
-    const mixedMarketsMock: MockedResponse<MarketsQuery> = {
+    const mockWithSuccessorAndParent: MockedResponse<MarketsQuery> = {
       request: {
         query: MarketsDocument,
       },
@@ -383,50 +335,45 @@ describe('Closed', () => {
         data: {
           marketsConnection: {
             __typename: 'MarketConnection',
-            edges: mixedMarkets,
+            edges: marketsWithSuccessorAndParent,
           },
         },
       },
     };
-    await act(async () => {
-      render(
-        <MemoryRouter>
-          <MockedProvider
-            mocks={[mixedMarketsMock, marketsDataMock, oracleDataMock]}
-          >
-            <VegaWalletContext.Provider
-              value={{ pubKey } as VegaWalletContextShape}
-            >
-              <Closed />
-            </VegaWalletContext.Provider>
-          </MockedProvider>
-        </MemoryRouter>
-      );
-    });
+    await renderComponent([
+      mockWithSuccessorAndParent,
+      marketsDataMock,
+      oracleDataMock,
+    ]);
 
-    const container = within(
-      document.querySelector('.ag-body ag-layout-normal') as HTMLElement
+    const actionCell = screen
+      .getAllByRole('gridcell')
+      .find((el) => el.getAttribute('col-id') === 'market-actions');
+
+    await userEvent.click(
+      within(actionCell as HTMLElement).getByTestId('dropdown-menu')
     );
-    // eslint-disable-next-line no-console
-    console.log(container);
-    container.getByTestId('dropdown-menu').click();
 
-    await waitFor(() => {
-      // check rows length is correct
-      const rows = container.getAllByRole('row');
-      // eslint-disable-next-line no-console
-      console.log(rows);
-    });
+    expect(screen.getByRole('menu')).toBeInTheDocument();
 
-    // check that only included ids are shown
-    const cells = screen.getAllByRole('gridcell');
-    // eslint-disable-next-line no-console
-    console.log(cells);
-    expect(cells).toEqual(1);
+    expect(
+      screen.getByRole('menuitem', { name: 'Copy Market ID' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitem', { name: 'View on Explorer' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitem', { name: 'View settlement asset details' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitem', { name: 'View parent market' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitem', { name: 'View successor market' })
+    ).toBeInTheDocument();
   });
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('successor marked should be visible', async () => {
+  it('successor market should be visible', async () => {
     const marketsWithSuccessorID = [
       {
         __typename: 'MarketEdge' as const,
@@ -451,21 +398,11 @@ describe('Closed', () => {
       },
     };
 
-    await act(async () => {
-      render(
-        <MemoryRouter>
-          <MockedProvider
-            mocks={[mockWithSuccessors, marketsDataMock, oracleDataMock]}
-          >
-            <VegaWalletContext.Provider
-              value={{ pubKey } as VegaWalletContextShape}
-            >
-              <Closed />
-            </VegaWalletContext.Provider>
-          </MockedProvider>
-        </MemoryRouter>
-      );
-    });
+    await renderComponent([
+      mockWithSuccessors,
+      marketsDataMock,
+      oracleDataMock,
+    ]);
 
     const container = within(
       document.querySelector('.ag-center-cols-container') as HTMLElement
