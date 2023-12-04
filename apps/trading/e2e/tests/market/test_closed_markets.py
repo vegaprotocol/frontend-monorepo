@@ -58,7 +58,6 @@ class TestSettledMarket:
     def test_settled_rows(self, page: Page, create_settled_market):
         page.goto(f"/#/markets/all")
         page.get_by_test_id("Closed markets").click()
-
         row_selector = page.locator(
             '[data-testid="tab-closed-markets"] .ag-center-cols-container .ag-row'
         ).first
@@ -72,7 +71,7 @@ class TestSettledMarket:
         # 6001-MARK-009
         # 6001-MARK-008
         # 6001-MARK-010
-        pattern = r"(\d+)\s+months\s+ago"
+        pattern = r"(\d+)\s+(months|hours|days)\s+ago"
         date_text = row_selector.locator('[col-id="settlementDate"]').inner_text()
         assert re.match(pattern, date_text), f"Expected text to match pattern but got {date_text}"
        
