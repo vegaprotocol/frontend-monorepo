@@ -153,7 +153,8 @@ interface DataProviderParams<
   pagination?: {
     getPageInfo: GetPageInfo<QueryData>;
     append: Append<Data>;
-    first: number;
+    first?: number;
+    last?: number;
   };
   fetchPolicy?: FetchPolicy;
   resetDelay?: number;
