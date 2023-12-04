@@ -16,7 +16,6 @@ import {
   stakedTotalPercentage,
   ValidatorFields,
   ValidatorRenderer,
-  TotalPenaltiesRenderer,
   TotalStakeRenderer,
   StakeShareRenderer,
   PendingStakeRenderer,
@@ -241,13 +240,6 @@ export const StandbyPendingValidatorsTable = ({
         //   cellRenderer: StakeNeededForPromotionRenderer,
         //   width: 210,
         // },
-        {
-          field: ValidatorFields.TOTAL_PENALTIES,
-          headerName: t(ValidatorFields.TOTAL_PENALTIES).toString(),
-          headerTooltip: t('TotalPenaltiesDescription').toString(),
-          cellRenderer: TotalPenaltiesRenderer,
-          width: 120 + 210,
-        },
       ],
       []
     );
