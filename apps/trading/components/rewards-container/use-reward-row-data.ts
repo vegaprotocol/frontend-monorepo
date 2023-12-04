@@ -16,9 +16,10 @@ const REWARD_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN,
   AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY,
   AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING,
+  AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
 ];
 
-const getRewards = (
+export const getRewards = (
   rewards: Array<{
     rewardType: AccountType;
     assetId: string;
@@ -56,6 +57,9 @@ const getRewards = (
 
     return {
       asset,
+      infrastructureFees: totals.get(
+        AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE
+      ),
       staking: totals.get(AccountType.ACCOUNT_TYPE_GLOBAL_REWARD),
       priceTaking: totals.get(AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES),
       priceMaking: totals.get(
@@ -101,7 +105,8 @@ export const useRewardsRowData = ({
       assetId: r.asset.id,
       amount: r.amount,
     }));
-    return getRewards(rewards, assets);
+    const result = getRewards(rewards, assets);
+    return result;
   }
 
   const rewards = removePaginationWrapper(epochRewardSummaries?.edges);

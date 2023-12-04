@@ -147,7 +147,7 @@ export const RewardHistoryTable = ({
     epochRewardSummaries,
     partyRewards,
     assets,
-    partyId: isParty ? pubKey : null,
+    partyId: pubKey,
   });
 
   const columnDefs = useMemo<ColDef<RewardRow>[]>(() => {
@@ -196,6 +196,11 @@ export const RewardHistoryTable = ({
           return <StackedCell primary={value} secondary={data.asset.name} />;
         },
         sort: 'desc',
+      },
+      {
+        field: 'infrastructureFees',
+        valueFormatter: rewardValueFormatter,
+        cellRenderer: rewardCellRenderer,
       },
       {
         field: 'staking',
