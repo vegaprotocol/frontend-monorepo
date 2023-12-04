@@ -23,10 +23,13 @@ export const Heading = ({
       })}
     >
       <h1
-        className={classNames('font-alpha calt text-5xl break-words', {
-          'mt-0': !marginTop,
-          'mb-0': !marginBottom,
-        })}
+        className={classNames(
+          'font-alpha calt text-5xl [word-break:break-word]',
+          {
+            'mt-0': !marginTop,
+            'mb-0': !marginBottom,
+          }
+        )}
       >
         {title}
       </h1>
