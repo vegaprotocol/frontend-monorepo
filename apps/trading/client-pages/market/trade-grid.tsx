@@ -20,6 +20,7 @@ import {
 } from '../../components/market-banner';
 import { FLAGS } from '@vegaprotocol/environment';
 import { useT } from '../../lib/use-t';
+import { ErrorBoundary } from '../../components/error-boundary';
 
 interface TradeGridProps {
   market: Market | null;
@@ -62,28 +63,38 @@ const MainGrid = memo(
                     name={t('Chart')}
                     menu={<TradingViews.candles.menu />}
                   >
-                    <TradingViews.candles.component marketId={marketId} />
+                    <ErrorBoundary feature="chart">
+                      <TradingViews.candles.component marketId={marketId} />
+                    </ErrorBoundary>
                   </Tab>
                   <Tab id="depth" name={t('Depth')}>
-                    <TradingViews.depth.component marketId={marketId} />
+                    <ErrorBoundary feature="depth">
+                      <TradingViews.depth.component marketId={marketId} />
+                    </ErrorBoundary>
                   </Tab>
                   <Tab id="liquidity" name={t('Liquidity')}>
-                    <TradingViews.liquidity.component marketId={marketId} />
+                    <ErrorBoundary feature="liquidity">
+                      <TradingViews.liquidity.component marketId={marketId} />
+                    </ErrorBoundary>
                   </Tab>
                   {market &&
                   market.tradableInstrument.instrument.product.__typename ===
                     'Perpetual' ? (
                     <Tab id="funding-history" name={t('Funding history')}>
-                      <TradingViews.funding.component marketId={marketId} />
+                      <ErrorBoundary feature="funding-history">
+                        <TradingViews.funding.component marketId={marketId} />
+                      </ErrorBoundary>
                     </Tab>
                   ) : null}
                   {market &&
                   market.tradableInstrument.instrument.product.__typename ===
                     'Perpetual' ? (
                     <Tab id="funding-payments" name={t('Funding payments')}>
-                      <TradingViews.fundingPayments.component
-                        marketId={marketId}
-                      />
+                      <ErrorBoundary feature="funding-payments">
+                        <TradingViews.fundingPayments.component
+                          marketId={marketId}
+                        />
+                      </ErrorBoundary>
                     </Tab>
                   ) : null}
                 </Tabs>
@@ -96,10 +107,14 @@ const MainGrid = memo(
               <TradeGridChild>
                 <Tabs storageKey="console-trade-grid-main-right">
                   <Tab id="orderbook" name={t('Orderbook')}>
-                    <TradingViews.orderbook.component marketId={marketId} />
+                    <ErrorBoundary feature="orderbook">
+                      <TradingViews.orderbook.component marketId={marketId} />
+                    </ErrorBoundary>
                   </Tab>
                   <Tab id="trades" name={t('Trades')}>
-                    <TradingViews.trades.component marketId={marketId} />
+                    <ErrorBoundary feature="trades">
+                      <TradingViews.trades.component marketId={marketId} />
+                    </ErrorBoundary>
                   </Tab>
                 </Tabs>
               </TradeGridChild>
@@ -118,31 +133,43 @@ const MainGrid = memo(
                 name={t('Positions')}
                 menu={<TradingViews.positions.menu />}
               >
-                <TradingViews.positions.component />
+                <ErrorBoundary feature="positions">
+                  <TradingViews.positions.component />
+                </ErrorBoundary>
               </Tab>
               <Tab
                 id="open-orders"
                 name={t('Open')}
                 menu={<TradingViews.activeOrders.menu />}
               >
-                <TradingViews.activeOrders.component />
+                <ErrorBoundary feature="activeOrders">
+                  <TradingViews.activeOrders.component />
+                </ErrorBoundary>
               </Tab>
               <Tab id="closed-orders" name={t('Closed')}>
-                <TradingViews.closedOrders.component />
+                <ErrorBoundary feature="closedOrders">
+                  <TradingViews.closedOrders.component />
+                </ErrorBoundary>
               </Tab>
               <Tab id="rejected-orders" name={t('Rejected')}>
-                <TradingViews.rejectedOrders.component />
+                <ErrorBoundary feature="rejectedOrders">
+                  <TradingViews.rejectedOrders.component />
+                </ErrorBoundary>
               </Tab>
               <Tab
                 id="orders"
                 name={t('All')}
                 menu={<TradingViews.orders.menu />}
               >
-                <TradingViews.orders.component />
+                <ErrorBoundary feature="orders">
+                  <TradingViews.orders.component />
+                </ErrorBoundary>
               </Tab>
               {FLAGS.STOP_ORDERS ? (
                 <Tab id="stop-orders" name={t('Stop orders')}>
-                  <TradingViews.stopOrders.component />
+                  <ErrorBoundary feature="stop-orders">
+                    <TradingViews.stopOrders.component />
+                  </ErrorBoundary>
                 </Tab>
               ) : null}
               <Tab id="fills" name={t('Fills')}>
@@ -153,7 +180,11 @@ const MainGrid = memo(
                 name={t('Collateral')}
                 menu={<TradingViews.collateral.menu />}
               >
-                <TradingViews.collateral.component pinnedAsset={pinnedAsset} />
+                <ErrorBoundary feature="collateral">
+                  <TradingViews.collateral.component
+                    pinnedAsset={pinnedAsset}
+                  />
+                </ErrorBoundary>
               </Tab>
             </Tabs>
           </TradeGridChild>

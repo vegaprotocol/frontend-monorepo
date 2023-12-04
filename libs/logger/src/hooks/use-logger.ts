@@ -10,6 +10,7 @@ export interface LoggerProps extends LoggerConf {
 
 export const useLogger = ({ dsn, env, ...props }: LoggerProps) => {
   const logger = useRef<LocalLogger | null>(null);
+
   if (!logger.current) {
     logger.current = localLoggerFactory(props);
     if (dsn) {
