@@ -11,24 +11,13 @@ import {
   DealTicketType,
   useDealTicketFormValues,
 } from '../../hooks/use-form-values';
-import type { FeatureFlags } from '@vegaprotocol/environment';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 import { formatForInput } from '@vegaprotocol/utils';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
   DealTicketFeeDetails: () => <div data-testid="deal-ticket-fee-details" />,
 }));
-
-jest.mock('@vegaprotocol/environment', () => {
-  const actual = jest.requireActual('@vegaprotocol/environment');
-  return {
-    ...actual,
-    FLAGS: {
-      ...actual.FLAGS,
-      STOP_ORDERS: true,
-    } as FeatureFlags,
-  };
-});
 
 const marketPrice = '200';
 const market = generateMarket();
@@ -94,6 +83,7 @@ jest.mock('@vegaprotocol/data-provider', () => ({
 describe('StopOrder', () => {
   beforeEach(() => {
     localStorage.clear();
+    useFeatureFlags.setState({ flags: { STOP_ORDERS: true } });
   });
 
   afterEach(() => {

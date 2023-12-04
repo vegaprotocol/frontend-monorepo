@@ -11,7 +11,7 @@ import {
 } from '@vegaprotocol/markets';
 import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { DealTicket } from './deal-ticket';
-import { FLAGS } from '@vegaprotocol/environment';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 import { useT } from '../../use-t';
 
 interface DealTicketContainerProps {
@@ -24,6 +24,7 @@ export const DealTicketContainer = ({
   marketId,
   ...props
 }: DealTicketContainerProps) => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
   const showStopOrder = useDealTicketFormValues((state) =>
     isStopOrderType(state.formValues[marketId]?.type)
@@ -50,7 +51,7 @@ export const DealTicketContainer = ({
       reload={reload}
     >
       {market && marketData ? (
-        FLAGS.STOP_ORDERS && showStopOrder ? (
+        featureFlags.STOP_ORDERS && showStopOrder ? (
           <StopOrder
             market={market}
             marketPrice={marketPrice}

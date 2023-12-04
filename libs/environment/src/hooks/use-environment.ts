@@ -31,12 +31,11 @@ type EnvState = {
   error: string | null;
 };
 type Actions = {
-  setFeatureFlag: (flag: keyof FeatureFlags, enabled: boolean) => void;
   setUrl: (url: string) => void;
   initialize: () => Promise<void>;
 };
 export type Env = Environment & EnvState;
-export type EnvStore = Env & FeatureFlags & Actions;
+export type EnvStore = Env & Actions;
 
 const VERSION = 1;
 export const STORAGE_KEY = `vega_url_${VERSION}`;
@@ -465,17 +464,23 @@ const windowOrDefault = (key: string, defaultValue?: string) => {
   return defaultValue || undefined;
 };
 
+export const useFeatureFlags = create<{
+  flags: FeatureFlags;
+  setFeatureFlag: (flag: keyof FeatureFlags, enabled: boolean) => void;
+}>()((set, get) => ({
+  flags: compileFeatureFlags(),
+  setFeatureFlag: (flag: keyof FeatureFlags, enabled: boolean) => {
+    if (userControllableFeatureFlags.includes(flag)) {
+      set({ flags: { ...get().flags, [flag]: enabled } });
+    }
+  },
+}));
+
 export const useEnvironment = create<EnvStore>()((set, get) => ({
   ...compileEnvVars(),
-  ...compileFeatureFlags(),
   nodes: [],
   status: 'default',
   error: null,
-  setFeatureFlag: (flag: keyof FeatureFlags, enabled: boolean) => {
-    if (userControllableFeatureFlags.includes(flag)) {
-      set({ [flag]: enabled });
-    }
-  },
   setUrl: (url) => {
     set({ VEGA_URL: url, status: 'success', error: null });
     LocalStorage.setItem(STORAGE_KEY, url);
@@ -594,4 +599,3 @@ export const useInitializeEnv = () => {
 };
 
 export const ENV = compileEnvVars();
-export const FLAGS = compileFeatureFlags();

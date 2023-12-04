@@ -12,7 +12,7 @@ import {
   useNewTransferProposalDetails,
   useSuccessorMarketProposalDetails,
 } from '@vegaprotocol/proposals';
-import { FLAGS } from '@vegaprotocol/environment';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 import Routes from '../../../routes';
 import { Link } from 'react-router-dom';
 import type { VoteState } from '../vote-details/use-user-vote';
@@ -28,6 +28,7 @@ export const ProposalHeader = ({
   isListItem?: boolean;
   voteState?: VoteState | null;
 }) => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
   const { t } = useTranslation();
   const change = proposal?.terms.change;
 
@@ -54,13 +55,14 @@ export const ProposalHeader = ({
   switch (change?.__typename) {
     case 'NewMarket': {
       proposalType =
-        FLAGS.PRODUCT_PERPETUALS && change?.instrument?.product?.__typename
+        featureFlags.PRODUCT_PERPETUALS &&
+        change?.instrument?.product?.__typename
           ? `NewMarket${change?.instrument?.product?.__typename}`
           : 'NewMarket';
       fallbackTitle = t('NewMarketProposal');
       details = (
         <>
-          {FLAGS.SUCCESSOR_MARKETS && (
+          {featureFlags.SUCCESSOR_MARKETS && (
             <SuccessorCode proposalId={proposal?.id} />
           )}
           <span>
@@ -82,13 +84,13 @@ export const ProposalHeader = ({
     }
     case 'UpdateMarketState': {
       proposalType =
-        FLAGS.UPDATE_MARKET_STATE && change?.updateType
+        featureFlags.UPDATE_MARKET_STATE && change?.updateType
           ? t(change.updateType)
           : 'UpdateMarketState';
       fallbackTitle = t('UpdateMarketStateProposal');
       details = (
         <span>
-          {FLAGS.UPDATE_MARKET_STATE &&
+          {featureFlags.UPDATE_MARKET_STATE &&
           change?.market?.id &&
           change.updateType ? (
             <>
@@ -177,14 +179,14 @@ export const ProposalHeader = ({
     case 'NewTransfer':
       proposalType = 'NewTransfer';
       fallbackTitle = t('NewTransferProposal');
-      details = FLAGS.GOVERNANCE_TRANSFERS ? (
+      details = featureFlags.GOVERNANCE_TRANSFERS ? (
         <NewTransferSummary proposalId={proposal?.id} />
       ) : null;
       break;
     case 'CancelTransfer':
       proposalType = 'CancelTransfer';
       fallbackTitle = t('CancelTransferProposal');
-      details = FLAGS.GOVERNANCE_TRANSFERS ? (
+      details = featureFlags.GOVERNANCE_TRANSFERS ? (
         <CancelTransferSummary proposalId={proposal?.id} />
       ) : null;
       break;

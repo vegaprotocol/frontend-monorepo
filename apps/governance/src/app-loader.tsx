@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react';
 import { toBigNum } from '@vegaprotocol/utils';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useEagerConnect } from '@vegaprotocol/wallet';
-import { FLAGS, useEnvironment } from '@vegaprotocol/environment';
+import { useFeatureFlags, useEnvironment } from '@vegaprotocol/environment';
 import { useWeb3React } from '@web3-react/core';
 import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,21 +15,23 @@ import {
 } from './contexts/app-state/app-state-context';
 import { useContracts } from './contexts/contracts/contracts-context';
 import { useRefreshAssociatedBalances } from './hooks/use-refresh-associated-balances';
-import { Connectors } from './lib/vega-connectors';
+import { useConnectors } from './lib/vega-connectors';
 import { useSearchParams } from 'react-router-dom';
 
 const useVegaWalletEagerConnect = () => {
-  const vegaConnecting = useEagerConnect(Connectors);
+  const connectors = useConnectors();
+  const vegaConnecting = useEagerConnect(connectors);
   const { pubKey, connect } = useVegaWallet();
   const [searchParams] = useSearchParams();
   const [query] = React.useState(searchParams.get('address'));
   if (query && !pubKey) {
-    connect(Connectors['view']);
+    connect(connectors.view);
   }
   return vegaConnecting;
 };
 
 export const AppLoader = ({ children }: { children: React.ReactElement }) => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
   const { t } = useTranslation();
   const { account } = useWeb3React();
   const { VEGA_URL } = useEnvironment();
@@ -79,10 +81,16 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
       }
     };
 
-    if (!FLAGS.GOVERNANCE_NETWORK_DOWN) {
+    if (!featureFlags.GOVERNANCE_NETWORK_DOWN) {
       run();
     }
-  }, [token, appDispatch, staking, vesting]);
+  }, [
+    token,
+    appDispatch,
+    staking,
+    vesting,
+    featureFlags.GOVERNANCE_NETWORK_DOWN,
+  ]);
 
   React.useEffect(() => {
     if (account && pubKey) {
@@ -147,16 +155,16 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
     };
 
     // Only begin polling if network limits flag is set, as this is a new API not yet on mainnet 7/3/22
-    if (FLAGS.GOVERNANCE_NETWORK_LIMITS) {
+    if (featureFlags.GOVERNANCE_NETWORK_LIMITS) {
       getNetworkLimits();
     }
 
     return () => {
       stopPoll();
     };
-  }, [appDispatch, VEGA_URL, t]);
+  }, [appDispatch, VEGA_URL, t, featureFlags.GOVERNANCE_NETWORK_LIMITS]);
 
-  if (FLAGS.GOVERNANCE_NETWORK_DOWN) {
+  if (featureFlags.GOVERNANCE_NETWORK_DOWN) {
     return (
       <Splash>
         <SplashError />

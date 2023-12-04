@@ -50,7 +50,7 @@ import {
 import {
   DApp,
   EtherscanLink,
-  FLAGS,
+  useFeatureFlags,
   TOKEN_PROPOSAL,
   useEnvironment,
   useLinks,
@@ -189,12 +189,13 @@ export const KeyDetailsInfoPanel = ({
   market,
   parentMarket,
 }: MarketInfoProps) => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
   const { data: parentMarketIdData } = useParentMarketIdQuery({
     variables: {
       marketId: market.id,
     },
-    skip: !FLAGS.SUCCESSOR_MARKETS,
+    skip: !featureFlags.SUCCESSOR_MARKETS,
   });
 
   const { data: successorProposalDetails } =
@@ -202,7 +203,7 @@ export const KeyDetailsInfoPanel = ({
       variables: {
         proposalId: market.proposal?.id || '',
       },
-      skip: !FLAGS.SUCCESSOR_MARKETS || !market.proposal?.id,
+      skip: !featureFlags.SUCCESSOR_MARKETS || !market.proposal?.id,
     });
 
   // The following queries are needed as the parent market could also have been a successor market.
@@ -245,7 +246,7 @@ export const KeyDetailsInfoPanel = ({
       </KeyValueTable>
       <MarketInfoTable
         data={
-          FLAGS.SUCCESSOR_MARKETS
+          featureFlags.SUCCESSOR_MARKETS
             ? {
                 name: market.tradableInstrument.instrument.name,
                 parentMarketID:

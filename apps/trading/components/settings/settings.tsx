@@ -13,18 +13,25 @@ import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import {
   userControllableFeatureFlags,
-  useEnvironment,
+  useFeatureFlags,
   type FeatureFlags,
 } from '@vegaprotocol/environment';
 
-const FeatureFlag = ({ flag }: { flag: keyof FeatureFlags }) => {
-  const env = useEnvironment();
+const FeatureFlag = ({
+  flag,
+  label,
+}: {
+  flag: keyof FeatureFlags;
+  label: string;
+}) => {
+  const flags = useFeatureFlags((state) => state.flags);
+  const setFeatureFlag = useFeatureFlags((state) => state.setFeatureFlag);
   return (
     <div className="mb-2">
       <TradingCheckbox
-        checked={env[flag]}
-        label={flag}
-        onCheckedChange={(checked) => env.setFeatureFlag(flag, !!checked)}
+        checked={flags[flag]}
+        label={label}
+        onCheckedChange={(checked) => setFeatureFlag(flag, !!checked)}
       />
     </div>
   );
@@ -119,7 +126,7 @@ export const Settings = () => {
       </SettingsGroup>
       <SettingsGroup inline={false} label={t('Experimental features')}>
         {userControllableFeatureFlags.map((flag) => (
-          <FeatureFlag flag={flag} key={flag} />
+          <FeatureFlag flag={flag} key={flag} label={flag} />
         ))}
       </SettingsGroup>
     </div>

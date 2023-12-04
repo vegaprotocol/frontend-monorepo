@@ -14,7 +14,7 @@ import { Routes } from '../../routes/route-names';
 import { NetworkSwitcher } from '@vegaprotocol/environment';
 import type { Navigable } from '../../routes/router-config';
 import { isNavigable } from '../../routes/router-config';
-import { routerConfig } from '../../routes/router-config';
+import { useRouterConfig } from '../../routes/router-config';
 import { useMemo } from 'react';
 import compact from 'lodash/compact';
 import { Search } from '../search';
@@ -26,6 +26,7 @@ const routeToNavigationItem = (r: Navigable) => (
 );
 
 export const Header = () => {
+  const routerConfig = useRouterConfig();
   const isHome = Boolean(useMatch(Routes.HOME));
   const pages = routerConfig[0].children || [];
   const mainItems = compact(

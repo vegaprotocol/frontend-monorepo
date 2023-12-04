@@ -7,13 +7,14 @@ import {
   useVegaWallet,
 } from '@vegaprotocol/wallet';
 import { useGlobalStore } from '../stores';
-import { Connectors } from '../lib/vega-connectors';
+import { useConnectors } from '../lib/vega-connectors';
 import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
 
 export const MaybeConnectEagerly = () => {
   const { VEGA_ENV, SENTRY_DSN } = useEnvironment();
   const update = useGlobalStore((store) => store.update);
-  const eagerConnecting = useVegaEagerConnect(Connectors);
+  const connectors = useConnectors();
+  const eagerConnecting = useVegaEagerConnect(connectors);
   const [isTelemetryApproved] = useTelemetryApproval();
   useEthereumEagerConnect(
     isTelemetryApproved ? { dsn: SENTRY_DSN, env: VEGA_ENV } : {}
@@ -23,7 +24,7 @@ export const MaybeConnectEagerly = () => {
   const [searchParams] = useSearchParams();
   const [query] = useState(searchParams.get('address'));
   if (query && !pubKey) {
-    connect(Connectors['view']);
+    connect(connectors.view);
   }
   useEffect(() => {
     update({ eagerConnecting });

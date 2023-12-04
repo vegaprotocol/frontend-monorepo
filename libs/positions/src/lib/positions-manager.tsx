@@ -11,7 +11,7 @@ import { useCallback } from 'react';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { HALFMAXGOINT64 } from '@vegaprotocol/utils';
-import { FLAGS } from '@vegaprotocol/environment';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 
 interface PositionsManagerProps {
   partyIds: string[];
@@ -28,10 +28,11 @@ export const PositionsManager = ({
   gridProps,
   showClosed = false,
 }: PositionsManagerProps) => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
   const { pubKeys, pubKey } = useVegaWallet();
   const create = useVegaTransactionStore((store) => store.create);
-  const disableClosePositionsButton = FLAGS.DISABLE_CLOSE_POSITION;
+  const disableClosePositionsButton = featureFlags.DISABLE_CLOSE_POSITION;
 
   const onClose = useCallback(
     ({ marketId, openVolume }: { marketId: string; openVolume: string }) =>
