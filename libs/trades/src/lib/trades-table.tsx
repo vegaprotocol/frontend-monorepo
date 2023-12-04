@@ -59,6 +59,7 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
         field: 'price',
         type: 'rightAligned',
         cellClass: changeCellClass,
+        sortable: false,
         valueFormatter: ({
           value,
           data,
@@ -92,6 +93,7 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
         headerName: t('Size'),
         field: 'size',
         type: 'rightAligned',
+        sortable: false,
         valueFormatter: ({
           value,
           data,
@@ -111,6 +113,7 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
         field: 'createdAt',
         type: 'rightAligned',
         cellClass: 'text-right',
+        sortable: false,
         flex: 1, // make created at always fill remaining space
         valueFormatter: ({
           value,
