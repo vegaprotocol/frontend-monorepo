@@ -84,7 +84,7 @@ def test_markets_content(page: Page, create_markets):
     expect(row_selector.locator('[col-id="data.markPrice"]')).to_have_text("107.50")
 
     #  6001-MARK-040
-    expect(row_selector.locator('[col-id="data.candles"]')).to_have_text("0.00")
+    expect(row_selector.locator('[col-id="data.candles"]')).to_have_text("1")
 
     #  6001-MARK-042
     expect(
