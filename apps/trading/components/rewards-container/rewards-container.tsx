@@ -1,4 +1,5 @@
 import groupBy from 'lodash/groupBy';
+import uniq from 'lodash/uniq';
 import type { Account } from '@vegaprotocol/accounts';
 import { useAccounts } from '@vegaprotocol/accounts';
 import {
@@ -31,6 +32,7 @@ import { ViewType, useSidebar } from '../sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { RewardsHistoryContainer } from './rewards-history';
 import { useT } from '../../lib/use-t';
+import { useAssetsMapProvider } from '@vegaprotocol/assets';
 
 export const RewardsContainer = () => {
   const t = useT();
@@ -40,15 +42,21 @@ export const RewardsContainer = () => {
     NetworkParams.rewards_activityStreak_benefitTiers,
     NetworkParams.rewards_vesting_baseRate,
   ]);
+
   const { data: accounts, loading: accountsLoading } = useAccounts(pubKey);
+
+  const { data: assetMap } = useAssetsMapProvider();
 
   const { data: epochData } = useRewardsEpochQuery();
 
   // No need to specify the fromEpoch as it will by default give you the last
+  // Note activityStreak in query will fail
   const { data: rewardsData, loading: rewardsLoading } = useRewardsPageQuery({
     variables: {
       partyId: pubKey || '',
     },
+    // Inclusion of activity streak in query currently fails
+    errorPolicy: 'ignore',
   });
 
   if (!epochData?.epoch) return null;
@@ -56,18 +64,45 @@ export const RewardsContainer = () => {
   const loading = paramsLoading || accountsLoading || rewardsLoading;
 
   const rewardAccounts = accounts
-    ? accounts.filter((a) =>
-        [
-          AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
-          AccountType.ACCOUNT_TYPE_VESTING_REWARDS,
-        ].includes(a.type)
-      )
+    ? accounts
+        .filter((a) =>
+          [
+            AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
+            AccountType.ACCOUNT_TYPE_VESTING_REWARDS,
+          ].includes(a.type)
+        )
+        .filter((a) => new BigNumber(a.balance).isGreaterThan(0))
     : [];
 
-  const rewardAssetsMap = groupBy(
-    rewardAccounts.filter((a) => a.asset.id !== params.reward_asset),
-    'asset.id'
-  );
+  const accountsAssetMap = groupBy(rewardAccounts, 'asset.id');
+
+  const lockedBalances = rewardsData?.party?.vestingBalancesSummary
+    .lockedBalances
+    ? rewardsData.party.vestingBalancesSummary.lockedBalances.filter((b) =>
+        new BigNumber(b.balance).isGreaterThan(0)
+      )
+    : [];
+  const lockedAssetMap = groupBy(lockedBalances, 'asset.id');
+
+  const vestingBalances = rewardsData?.party?.vestingBalancesSummary
+    .vestingBalances
+    ? rewardsData.party.vestingBalancesSummary.vestingBalances.filter((b) =>
+        new BigNumber(b.balance).isGreaterThan(0)
+      )
+    : [];
+  const vestingAssetMap = groupBy(vestingBalances, 'asset.id');
+
+  // each asset reward pot is made up of:
+  // available to withdraw - ACCOUNT_TYPE_VESTED_REWARDS
+  // vesting               - vestingBalancesSummary.vestingBalances
+  // locked                - vestingBalancesSummary.lockedBalances
+  //
+  // there can be entires for the same asset in each list so we need a uniq list of assets
+  const assets = uniq([
+    ...Object.keys(accountsAssetMap),
+    ...Object.keys(lockedAssetMap),
+    ...Object.keys(vestingAssetMap),
+  ]);
 
   return (
     <div className="grid auto-rows-min grid-cols-6 gap-3">
@@ -117,28 +152,33 @@ export const RewardsContainer = () => {
       </Card>
 
       {/* Show all other reward pots, most of the time users will not have other rewards */}
-      {Object.keys(rewardAssetsMap).map((assetId) => {
-        const asset = rewardAssetsMap[assetId][0].asset;
-        return (
-          <Card
-            key={assetId}
-            title={t('{{assetSymbol}} Reward pot', {
-              assetSymbol: asset.symbol,
-            })}
-            className="lg:col-span-3 xl:col-span-2"
-            loading={loading}
-          >
-            <RewardPot
-              pubKey={pubKey}
-              accounts={accounts}
-              assetId={assetId}
-              vestingBalancesSummary={
-                rewardsData?.party?.vestingBalancesSummary
-              }
-            />
-          </Card>
-        );
-      })}
+      {assets
+        .filter((assetId) => assetId !== params.reward_asset)
+        .map((assetId) => {
+          const asset = assetMap ? assetMap[assetId] : null;
+
+          if (!asset) return null;
+
+          return (
+            <Card
+              key={assetId}
+              title={t('{{assetSymbol}} Reward pot', {
+                assetSymbol: asset.symbol,
+              })}
+              className="lg:col-span-3 xl:col-span-2"
+              loading={loading}
+            >
+              <RewardPot
+                pubKey={pubKey}
+                accounts={accounts}
+                assetId={assetId}
+                vestingBalancesSummary={
+                  rewardsData?.party?.vestingBalancesSummary
+                }
+              />
+            </Card>
+          );
+        })}
       <Card
         title={t('Rewards history')}
         className="lg:col-span-full"
@@ -313,14 +353,14 @@ export const RewardPot = ({
 export const Vesting = ({
   pubKey,
   baseRate,
-  multiplier = '1',
+  multiplier,
 }: {
   pubKey: string | null;
   baseRate: string;
   multiplier?: string;
 }) => {
   const t = useT();
-  const rate = new BigNumber(baseRate).times(multiplier);
+  const rate = new BigNumber(baseRate).times(multiplier || 1);
   const rateFormatted = formatPercentage(Number(rate));
   const baseRateFormatted = formatPercentage(Number(baseRate));
 
@@ -335,7 +375,7 @@ export const Vesting = ({
         {pubKey && (
           <tr>
             <CardTableTH>{t('Vesting multiplier')}</CardTableTH>
-            <CardTableTD>{multiplier}x</CardTableTD>
+            <CardTableTD>{multiplier ? `${multiplier}x` : '-'}</CardTableTD>
           </tr>
         )}
       </CardTable>
@@ -345,16 +385,16 @@ export const Vesting = ({
 
 export const Multipliers = ({
   pubKey,
-  streakMultiplier = '1',
-  hoarderMultiplier = '1',
+  streakMultiplier,
+  hoarderMultiplier,
 }: {
   pubKey: string | null;
   streakMultiplier?: string;
   hoarderMultiplier?: string;
 }) => {
   const t = useT();
-  const combinedMultiplier = new BigNumber(streakMultiplier).times(
-    hoarderMultiplier
+  const combinedMultiplier = new BigNumber(streakMultiplier || 1).times(
+    hoarderMultiplier || 1
   );
 
   if (!pubKey) {
@@ -375,11 +415,15 @@ export const Multipliers = ({
       <CardTable>
         <tr>
           <CardTableTH>{t('Streak reward multiplier')}</CardTableTH>
-          <CardTableTD>{streakMultiplier}x</CardTableTD>
+          <CardTableTD>
+            {streakMultiplier ? `${streakMultiplier}x` : '-'}
+          </CardTableTD>
         </tr>
         <tr>
           <CardTableTH>{t('Hoarder reward multiplier')}</CardTableTH>
-          <CardTableTD>{hoarderMultiplier}x</CardTableTD>
+          <CardTableTD>
+            {hoarderMultiplier ? `${hoarderMultiplier}x` : '-'}
+          </CardTableTD>
         </tr>
       </CardTable>
     </div>
