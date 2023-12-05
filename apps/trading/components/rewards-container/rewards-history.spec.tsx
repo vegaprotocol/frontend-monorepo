@@ -102,7 +102,7 @@ describe('RewardsHistoryTable', () => {
     const container = within(
       document.querySelector('.ag-center-cols-container') as HTMLElement
     );
-    const rows = container.getAllByRole('row', { hidden: true });
+    const rows = container.getAllByRole('row');
     expect(rows).toHaveLength(
       Object.keys(groupBy(rewardSummaries, 'node.assetId')).length
     );
@@ -118,13 +118,14 @@ describe('RewardsHistoryTable', () => {
       assets.asset2.name
     );
 
+    // First row
     const marketCreationCell = getCell(cells, 'marketCreation');
     expect(
       marketCreationCell.getByTestId('stack-cell-primary')
     ).toHaveTextContent('300');
     expect(
       marketCreationCell.getByTestId('stack-cell-secondary')
-    ).toHaveTextContent('100.00%');
+    ).toHaveTextContent('50.00%');
 
     const infrastructureFeesCell = getCell(cells, 'infrastructureFees');
     expect(
@@ -132,11 +133,12 @@ describe('RewardsHistoryTable', () => {
     ).toHaveTextContent('300');
     expect(
       infrastructureFeesCell.getByTestId('stack-cell-secondary')
-    ).toHaveTextContent('100.00%');
+    ).toHaveTextContent('50.00%');
 
     let totalCell = getCell(cells, 'total');
     expect(totalCell.getByText('600.00')).toBeInTheDocument();
 
+    // Second row
     row = within(rows[1]);
     cells = row.getAllByRole('gridcell');
 
