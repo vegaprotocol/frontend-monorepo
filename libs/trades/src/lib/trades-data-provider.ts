@@ -98,7 +98,6 @@ export const tradesProvider = makeDataProvider<
   pagination: {
     getPageInfo,
     append,
-    // first: MAX_TRADES,
     last: MAX_TRADES,
   },
   fetchPolicy: 'no-cache',
