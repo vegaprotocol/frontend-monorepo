@@ -124,6 +124,15 @@ export const StandbyPendingValidatorsTable = ({
             }
           }
 
+          const overstakingPenalty = calculateOverallPenalty(
+            id,
+            allNodesInPreviousEpoch
+          );
+          const totalPenalty = calculateOverstakedPenalty(
+            id,
+            allNodesInPreviousEpoch
+          );
+
           return {
             id,
             [ValidatorFields.RANKING_INDEX]: stakedTotalRanking,
@@ -153,14 +162,12 @@ export const StandbyPendingValidatorsTable = ({
               calculatesPerformancePenalty(performanceScore),
               2
             ),
-            [ValidatorFields.OVERSTAKING_PENALTY]: formatNumberPercentage(
-              calculateOverstakedPenalty(id, allNodesInPreviousEpoch),
-              2
-            ),
-            [ValidatorFields.TOTAL_PENALTIES]: formatNumberPercentage(
-              calculateOverallPenalty(id, allNodesInPreviousEpoch),
-              2
-            ),
+            [ValidatorFields.OVERSTAKING_PENALTY]: overstakingPenalty
+              ? formatNumberPercentage(overstakingPenalty, 2)
+              : '-',
+            [ValidatorFields.TOTAL_PENALTIES]: totalPenalty
+              ? formatNumberPercentage(totalPenalty, 2)
+              : '-',
             [ValidatorFields.PENDING_STAKE]: pendingStake,
             [ValidatorFields.STAKED_BY_USER]: stakedByUser
               ? formatNumber(toBigNum(stakedByUser, decimals), 2)

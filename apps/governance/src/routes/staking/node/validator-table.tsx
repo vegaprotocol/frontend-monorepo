@@ -266,7 +266,9 @@ export const ValidatorTable = ({
 
                 <Tooltip description={t('OverstakedPenaltyDescription')}>
                   <span data-testid="overstaking-penalty">
-                    {formatNumberPercentage(penalties.overstaked, 2)}
+                    {penalties.overstaked
+                      ? formatNumberPercentage(penalties.overstaked, 2)
+                      : '-'}
                   </span>
                 </Tooltip>
               </KeyValueTableRow>
@@ -285,7 +287,9 @@ export const ValidatorTable = ({
                 </span>
                 <span data-testid="total-penalties">
                   <strong>
-                    {formatNumberPercentage(penalties.overall, 2)}
+                    {penalties.overall
+                      ? formatNumberPercentage(penalties.overall, 2)
+                      : '-'}
                   </strong>
                 </span>
               </KeyValueTableRow>

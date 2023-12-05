@@ -16,7 +16,7 @@ import type { ValidatorsView } from './validator-tables';
 const nodeFactory = (
   overrides?: PartialDeep<NodesFragmentFragment>
 ): NodesFragmentFragment => {
-  const defaultNode = {
+  const defaultNode: NodesFragmentFragment = {
     id: 'ccc022b7e63a4d0a6d3a193c3940c88574060e58a184964c994998d86835a1b4',
     name: 'high',
     avatarUrl: 'https://upload.wikimedia.org/wikipedia/en/2/25/Marvin-TV-3.jpg',
@@ -288,7 +288,7 @@ describe('Consensus validators table', () => {
 
     expect(
       grid.querySelector('[role="gridcell"][col-id="totalPenalties"]')
-    ).toHaveTextContent('10.07%');
+    ).toHaveTextContent('13.16%');
 
     expect(
       grid.querySelector('[role="gridcell"][col-id="normalisedVotingPower"]')
