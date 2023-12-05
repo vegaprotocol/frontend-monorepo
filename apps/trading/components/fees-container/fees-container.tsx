@@ -312,16 +312,23 @@ export const CurrentVolume = ({
 }) => {
   const nextTier = tiers[tierIndex + 1];
   const requiredForNextTier = nextTier
-    ? Number(nextTier.minimumRunningNotionalTakerVolume) - windowLengthVolume
-    : 0;
+    ? new BigNumber(nextTier.minimumRunningNotionalTakerVolume).minus(
+        windowLengthVolume
+      )
+    : new BigNumber(0);
+  const currentVolume = new BigNumber(windowLengthVolume);
 
   return (
     <div>
       <Stat
-        value={formatNumberRounded(new BigNumber(windowLengthVolume))}
+        value={
+          currentVolume.isZero()
+            ? `<${formatNumberRounded(requiredForNextTier)}`
+            : formatNumberRounded(currentVolume)
+        }
         text={t('Past %s epochs', windowLength.toString())}
       />
-      {requiredForNextTier > 0 && (
+      {requiredForNextTier.isGreaterThan(0) && (
         <Stat
           value={formatNumber(requiredForNextTier)}
           text={t('Required for next tier')}
