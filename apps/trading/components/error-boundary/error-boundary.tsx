@@ -1,5 +1,6 @@
 import { LocalLogger, localLoggerFactory } from '@vegaprotocol/logger';
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { useT } from '../../lib/use-t';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -47,5 +48,6 @@ export class ErrorBoundary extends Component<
 }
 
 const DefaultFallback = () => {
-  return <p className="text-xs">Something went wrong</p>;
+  const t = useT();
+  return <p className="text-xs">{t('Something went wrong')}</p>;
 };
