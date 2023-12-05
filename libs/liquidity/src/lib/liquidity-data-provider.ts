@@ -9,13 +9,13 @@ import {
   LiquidityProvidersDocument,
   LiquidityProvisionsDocument,
   LiquidityProviderFieldsFragment,
-
+} from './__generated__/MarketLiquidity';
+import type {
+  LiquidityProvisionFieldsFragment,
   LiquidityProvidersQuery,
   LiquidityProvidersQueryVariables,
   LiquidityProvisionsQuery,
-  LiquidityProvisionsQueryVariables} from './__generated__/MarketLiquidity';
-import type {
-  LiquidityProvisionFieldsFragment
+  LiquidityProvisionsQueryVariables,
 } from './__generated__/MarketLiquidity';
 
 export type LiquidityProvisionFields = LiquidityProvisionFieldsFragment &
@@ -126,8 +126,8 @@ export const matchFilter = (filter: Filter, lp: LiquidityProvisionData) => {
 
 export interface LiquidityProvisionData
   extends Omit<LiquidityProvisionFields, '__typename'>,
-    Partial<LiquidityProviderFieldsFragment>,
-    Omit<Schema.LiquiditySLAParameters, '__typename'> {
+  Partial<LiquidityProviderFieldsFragment>,
+  Omit<Schema.LiquiditySLAParameters, '__typename'> {
   assetDecimalPlaces?: number;
   balance?: number;
   averageEntryValuation?: string;
