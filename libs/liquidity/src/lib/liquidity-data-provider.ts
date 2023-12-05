@@ -5,20 +5,17 @@ import {
 } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
-
 import {
   LiquidityProvidersDocument,
   LiquidityProvisionsDocument,
-
   LiquidityProviderFieldsFragment,
   LiquidityProvidersQuery,
   LiquidityProvidersQueryVariables,
   LiquidityProvisionsQuery,
-  LiquidityProvisionsQueryVariables} from './__generated__/MarketLiquidity';
-
-import type {
-  LiquidityProvisionFieldsFragment
+  LiquidityProvisionsQueryVariables,
 } from './__generated__/MarketLiquidity';
+
+import type { LiquidityProvisionFieldsFragment } from './__generated__/MarketLiquidity';
 
 export type LiquidityProvisionFields = LiquidityProvisionFieldsFragment &
   Schema.LiquiditySLAParameters & {
