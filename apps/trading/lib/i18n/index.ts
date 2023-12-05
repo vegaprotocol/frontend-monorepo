@@ -6,10 +6,10 @@ import type { HttpBackendOptions, RequestCallback } from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
-export const supportedLngs = ['en'];
+export const supportedLngs = ['en', 'zh'];
 
 const isInDev = process.env.NODE_ENV === 'development';
-const useLocize = isInDev && !!process.env.NX_USE_LOCIZE;
+const useLocize = true; // isInDev && !!process.env.NX_USE_LOCIZE;
 
 const backend = useLocize
   ? {
