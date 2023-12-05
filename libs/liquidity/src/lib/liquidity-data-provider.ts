@@ -5,6 +5,7 @@ import {
 } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
+
 import {
   LiquidityProvidersDocument,
   LiquidityProvisionsDocument,
@@ -14,6 +15,7 @@ import {
   LiquidityProvidersQueryVariables,
   LiquidityProvisionsQuery,
   LiquidityProvisionsQueryVariables} from './__generated__/MarketLiquidity';
+
 import type {
   LiquidityProvisionFieldsFragment
 } from './__generated__/MarketLiquidity';
