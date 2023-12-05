@@ -85,7 +85,9 @@ export const useStats = ({
   as?: 'referrer' | 'referee';
 }) => {
   const { benefitTiers } = program;
-  const { data: epochData } = useCurrentEpochInfoQuery();
+  const { data: epochData } = useCurrentEpochInfoQuery({
+    fetchPolicy: 'network-only',
+  });
   const { data: statsData } = useReferralSetStatsQuery({
     variables: {
       code: data?.code || '',
