@@ -19,6 +19,9 @@ import { useTransactionEventSubscription } from '@vegaprotocol/web3';
 import { Statistics, useStats } from './referral-statistics';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { useT } from '../../lib/use-t';
+import { useFundsAvailable } from './hooks/use-funds-available';
+import { ViewType, useSidebar } from '../../components/sidebar';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 const RELOAD_DELAY = 3000;
 
@@ -57,10 +60,15 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   );
 
   const [status, setStatus] = useState<
-    'requested' | 'failed' | 'successful' | null
+    'requested' | 'no-funds' | 'successful' | null
   >(null);
   const txHash = useRef<string | null>(null);
   const { isReadOnly, pubKey, sendTx } = useVegaWallet();
+  const { isEligible, requiredFunds } = useFundsAvailable();
+
+  const currentRouteId = useGetCurrentRouteId();
+  const setViews = useSidebar((s) => s.setViews);
+
   const {
     register,
     handleSubmit,
@@ -68,6 +76,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     setValue,
     setError,
     watch,
+    clearErrors,
   } = useForm();
   const [params] = useSearchParams();
 
@@ -75,6 +84,36 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const { data: previewData, loading: previewLoading } = useReferral({
     code: validateCode(codeField, t) ? codeField : undefined,
   });
+
+  /**
+   * Validates if a connected party can apply a code (min funds span protection)
+   */
+  const validateFundsAvailable = useCallback(() => {
+    if (requiredFunds && !isEligible) {
+      const err = t(
+        'Require minimum of {{requiredFunds}} to join a referral set to protect the network from spam.',
+        { replace: { requiredFunds } }
+      );
+      return err;
+    }
+    return true;
+  }, [isEligible, requiredFunds, t]);
+
+  useEffect(() => {
+    if (codeField) {
+      const err = validateFundsAvailable();
+      if (err !== true) {
+        setStatus('no-funds');
+        setError('code', {
+          type: 'required',
+          message: err,
+        });
+      } else {
+        setStatus(null);
+        clearErrors('code');
+      }
+    }
+  }, [clearErrors, codeField, isEligible, setError, validateFundsAvailable]);
 
   /**
    * Validates the set a user tries to apply to.
@@ -211,6 +250,18 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       };
     }
 
+    if (status === 'no-funds') {
+      return {
+        disabled: false,
+        children: t('Deposit funds'),
+        type: 'button' as ButtonHTMLAttributes<HTMLButtonElement>['type'],
+        onClick: ((event) => {
+          event.preventDefault();
+          setViews({ type: ViewType.Deposit }, currentRouteId);
+        }) as MouseEventHandler,
+      };
+    }
+
     if (status === 'requested') {
       return {
         disabled: true,
@@ -257,8 +308,10 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
               {...register('code', {
                 required: t('You have to provide a code to apply it.'),
                 validate: (value) => {
-                  const err = validateCode(value, t);
-                  if (err !== true) return err;
+                  const codeErr = validateCode(value, t);
+                  if (codeErr !== true) return codeErr;
+                  const fundsErr = validateFundsAvailable();
+                  if (fundsErr !== true) return fundsErr;
                   return validateSet();
                 },
               })}
