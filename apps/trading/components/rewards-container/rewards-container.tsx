@@ -34,6 +34,9 @@ import { RewardsHistoryContainer } from './rewards-history';
 import { useT } from '../../lib/use-t';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
 
+const USDT_MAINNET =
+  'bf1e88d19db4b3ca0d1d5bdb73718a01686b18cf731ca26adedf3c8b83802bba';
+
 export const RewardsContainer = () => {
   const t = useT();
   const { pubKey } = useVegaWallet();
@@ -74,7 +77,7 @@ export const RewardsContainer = () => {
         .filter((a) => new BigNumber(a.balance).isGreaterThan(0))
     : [];
 
-  const accountsAssetMap = groupBy(rewardAccounts, 'asset.id');
+  const rewardAccountsAssetMap = groupBy(rewardAccounts, 'asset.id');
 
   const lockedBalances = rewardsData?.party?.vestingBalancesSummary
     .lockedBalances
@@ -99,7 +102,7 @@ export const RewardsContainer = () => {
   //
   // there can be entires for the same asset in each list so we need a uniq list of assets
   const assets = uniq([
-    ...Object.keys(accountsAssetMap),
+    ...Object.keys(rewardAccountsAssetMap),
     ...Object.keys(lockedAssetMap),
     ...Object.keys(vestingAssetMap),
   ]);
@@ -126,6 +129,7 @@ export const RewardsContainer = () => {
         className="lg:col-span-3 xl:col-span-2"
         loading={loading}
       >
+        v
         <Vesting
           pubKey={pubKey}
           baseRate={params.rewards_vesting_baseRate}
@@ -158,6 +162,45 @@ export const RewardsContainer = () => {
           const asset = assetMap ? assetMap[assetId] : null;
 
           if (!asset) return null;
+
+          // Following code is for mitigating an issue due to a core bug where locked and vesting
+          // balances were incorrectly increased for infrastructure rewards for USDT on mainnet
+          //
+          // We don't want to incorrectly show the wring locked/vesting values, but we DO want to
+          // show the user that they have rewards available to withdraw
+          if (asset.id === USDT_MAINNET) {
+            const usdtAccounts = rewardAccountsAssetMap[assetId];
+            const vestedAccount = usdtAccounts?.find(
+              (a) => a.type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS
+            );
+
+            // No vested rewards available to withdraw, so skip over USDT
+            if (vestedAccount && Number(vestedAccount.balance) <= 0) {
+              return null;
+            }
+
+            return (
+              <Card
+                key={assetId}
+                title={t('{{assetSymbol}} Reward pot', {
+                  assetSymbol: asset.symbol,
+                })}
+                className="lg:col-span-3 xl:col-span-2"
+                loading={loading}
+              >
+                <RewardPot
+                  pubKey={pubKey}
+                  accounts={accounts}
+                  assetId={assetId}
+                  // Ensure that these values are shown as 0
+                  vestingBalancesSummary={{
+                    lockedBalances: [],
+                    vestingBalances: [],
+                  }}
+                />
+              </Card>
+            );
+          }
 
           return (
             <Card
