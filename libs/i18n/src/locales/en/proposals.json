@@ -7,8 +7,8 @@
   "Changes have been proposed for this market.": "Changes have been proposed for this market.",
   "Closing date": "Closing date",
   "Confirm transaction in wallet": "Confirm transaction in wallet",
-  "Enactment date: {{date}}": "Enactment date: {{date}}",
   "Enactment date": "Enactment date",
+  "Enactment date: {{date}}": "Enactment date: {{date}}",
   "estimated time to protocol upgrade": "estimated time to protocol upgrade",
   "estimating...": "estimating...",
   "Market": "Market",
@@ -41,8 +41,8 @@
   "Update <0>{{key}}</0> to {{value}}": "Update <0>{{key}}</0> to {{value}}",
   "View details": "View details",
   "View in block explorer": "View in block explorer",
-  "View proposal details": "View proposal details",
   "View proposal": "View proposal",
+  "View proposal details": "View proposal details",
   "Voting": "Voting",
   "Your transaction has been confirmed": "Your transaction has been confirmed"
 }
