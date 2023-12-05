@@ -8,9 +8,9 @@ import BigNumber from 'bignumber.js';
 import {
   LiquidityProvidersDocument,
   LiquidityProvisionsDocument,
-  LiquidityProviderFieldsFragment,
 } from './__generated__/MarketLiquidity';
 import type {
+  LiquidityProviderFieldsFragment,
   LiquidityProvisionFieldsFragment,
   LiquidityProvidersQuery,
   LiquidityProvidersQueryVariables,
