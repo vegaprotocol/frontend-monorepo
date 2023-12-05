@@ -1,5 +1,5 @@
 import { LocalLogger, localLoggerFactory } from '@vegaprotocol/logger';
-import { Component, type ReactNode } from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -31,25 +31,21 @@ export class ErrorBoundary extends Component<
     return { hasError: true };
   }
 
-  componentDidCatch(error: any, info: any) {
+  componentDidCatch(error: Error, info: ErrorInfo) {
     if (this.logger) {
-      this.logger.error(error, info);
+      this.logger.error(error.message, JSON.stringify(info));
     }
   }
 
   render() {
     if (this.state.hasError) {
-      if (this.props.fallback) {
-        return this.props.fallback;
-      }
-
-      return <Fallback />;
+      return this.props.fallback || <DefaultFallback />;
     }
 
     return this.props.children;
   }
 }
 
-const Fallback = () => {
+const DefaultFallback = () => {
   return <p className="text-xs">Something went wrong</p>;
 };
