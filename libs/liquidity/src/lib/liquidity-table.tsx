@@ -466,7 +466,7 @@ export const LiquidityTable = ({
             field: 'sla.lastEpochBondPenalty',
             type: 'rightAligned',
             headerTooltip: t(
-              `Penalty applied on a provider's bond penalty at the end of the last epoch. This percentage increased if an LP: had a shortfall and their bond needs to be used to cover it, did not meet the SLA, and/or reduced their commitment to the point that the market was below its target stake.`
+              `Penalty applied on a provider's bond penalty at the end of the last epoch. This percentage increased if an LP: had a shortfall and their bond needed to be used to cover it, did not meet the SLA, and/or reduced their commitment to the point that the market was below its target stake.`
             ),
             valueFormatter: percentageFormatter,
           },
