@@ -161,8 +161,12 @@ export const getLiquidityProvision = (
         (f) => liquidityProvision.party.id === f.partyId
       );
 
-      if (!liquidityProvider)
-        {return { ...liquidityProvision, partyId: liquidityProvision.party.id };}
+      if (!liquidityProvider) {
+        return {
+          ...liquidityProvision,
+          partyId: liquidityProvision.party.id,
+        };
+      }
 
       const accounts = compact(
         liquidityProvision.party.accountsConnection?.edges
