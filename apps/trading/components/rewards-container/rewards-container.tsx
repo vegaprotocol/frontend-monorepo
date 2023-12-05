@@ -70,7 +70,7 @@ export const RewardsContainer = () => {
   );
 
   return (
-    <div className="grid auto-rows-min grid-cols-6 gap-3 p-2">
+    <div className="grid auto-rows-min grid-cols-6 gap-3">
       {/* Always show reward information for vega */}
       <Card
         key={params.reward_asset}

@@ -68,6 +68,7 @@ describe('Navbar', () => {
       ['/portfolio', 'Portfolio'],
       ['/referrals', 'Referrals'],
       ['/fees', 'Fees'],
+      ['/rewards', 'Rewards'],
       [expect.stringContaining('governance'), 'Governance'],
     ];
 
@@ -102,6 +103,7 @@ describe('Navbar', () => {
       ['/portfolio', 'Portfolio'],
       ['/referrals', 'Referrals'],
       ['/fees', 'Fees'],
+      ['/rewards', 'Rewards'],
       [expect.stringContaining('governance'), 'Governance'],
     ];
     const links = menu.getAllByRole('link');
