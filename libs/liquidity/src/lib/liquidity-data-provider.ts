@@ -5,17 +5,15 @@ import {
 } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
-
 import {
   LiquidityProvidersDocument,
   LiquidityProvisionsDocument,
 } from './__generated__/MarketLiquidity';
-
 import type {
   LiquidityProviderFieldsFragment,
+  LiquidityProvisionFieldsFragment,
   LiquidityProvidersQuery,
   LiquidityProvidersQueryVariables,
-  LiquidityProvisionFieldsFragment,
   LiquidityProvisionsQuery,
   LiquidityProvisionsQueryVariables,
 } from './__generated__/MarketLiquidity';
@@ -163,7 +161,14 @@ export const getLiquidityProvision = (
       const liquidityProvider = liquidityProviders.find(
         (f) => liquidityProvision.party.id === f.partyId
       );
-      if (!liquidityProvider) return liquidityProvision;
+
+      if (!liquidityProvider) {
+        return {
+          ...liquidityProvision,
+          partyId: liquidityProvision.party.id,
+        };
+      }
+
       const accounts = compact(
         liquidityProvision.party.accountsConnection?.edges
       ).map((e) => e.node);
