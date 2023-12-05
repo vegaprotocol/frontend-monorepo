@@ -5,6 +5,7 @@ from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService, PeggedOrder
 import vega_sim.api.governance as governance
 from actions.vega import submit_order
+from actions.utils import next_epoch
 from wallet_config import MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET
 
 
@@ -58,9 +59,9 @@ def test_market_lifecycle(proposed_market, vega: VegaService, page: Page):
 
     # "wait" for market to be approved and enacted
     vega.forward("60s")
-    vega.wait_fn(1)
+    vega.wait_fn(10)
     vega.wait_for_total_catchup()
-
+    next_epoch(vega=vega)
     # check that market is in pending state
     expect(trading_mode).to_have_text("Opening auction")
     expect(market_state).to_have_text("Pending")
