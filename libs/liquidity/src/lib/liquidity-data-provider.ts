@@ -9,16 +9,13 @@ import BigNumber from 'bignumber.js';
 import {
   LiquidityProvidersDocument,
   LiquidityProvisionsDocument,
-} from './__generated__/MarketLiquidity';
-
-import type {
   LiquidityProviderFieldsFragment,
   LiquidityProvidersQuery,
   LiquidityProvidersQueryVariables,
-  LiquidityProvisionFieldsFragment,
   LiquidityProvisionsQuery,
   LiquidityProvisionsQueryVariables,
 } from './__generated__/MarketLiquidity';
+import type { LiquidityProvisionFieldsFragment } from './__generated__/MarketLiquidity';
 
 export type LiquidityProvisionFields = LiquidityProvisionFieldsFragment &
   Schema.LiquiditySLAParameters & {
@@ -163,7 +160,10 @@ export const getLiquidityProvision = (
       const liquidityProvider = liquidityProviders.find(
         (f) => liquidityProvision.party.id === f.partyId
       );
-      if (!liquidityProvider) return liquidityProvision;
+
+      if (!liquidityProvider)
+        {return { ...liquidityProvision, partyId: liquidityProvision.party.id };}
+
       const accounts = compact(
         liquidityProvision.party.accountsConnection?.edges
       ).map((e) => e.node);
