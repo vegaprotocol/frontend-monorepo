@@ -25,7 +25,7 @@ import compact from 'lodash/compact';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { useStakeAvailable } from './hooks/use-stake-available';
 import sortBy from 'lodash/sortBy';
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 import BigNumber from 'bignumber.js';
 import { DocsLinks } from '@vegaprotocol/environment';
@@ -38,16 +38,21 @@ export const ReferralStatistics = () => {
 
   const program = useReferralProgram();
 
-  const { data: referee } = useReferral({
+  const { data: referee, refetch: refereeRefetch } = useReferral({
     pubKey,
     role: 'referee',
     aggregationEpochs: program.details?.windowLength,
   });
-  const { data: referrer } = useReferral({
+  const { data: referrer, refetch: referrerRefetch } = useReferral({
     pubKey,
     role: 'referrer',
     aggregationEpochs: program.details?.windowLength,
   });
+
+  const refetch = useCallback(() => {
+    refereeRefetch();
+    referrerRefetch();
+  }, [refereeRefetch, referrerRefetch]);
 
   if (referee?.code) {
     return (
@@ -67,7 +72,7 @@ export const ReferralStatistics = () => {
     );
   }
 
-  return <ApplyCodeFormContainer />;
+  return <ApplyCodeFormContainer onSuccess={refetch} />;
 };
 
 export const useStats = ({
@@ -476,6 +481,7 @@ export const RefereesTable = ({
                         count:
                           details?.windowLength || DEFAULT_AGGREGATION_DAYS,
                       }}
+                      components={[<QUSDTooltip key="qusd" />]}
                       ns={ns}
                     />
                   ),

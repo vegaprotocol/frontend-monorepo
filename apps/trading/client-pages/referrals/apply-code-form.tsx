@@ -32,7 +32,11 @@ const validateCode = (value: string, t: ReturnType<typeof useT>) => {
   return true;
 };
 
-export const ApplyCodeFormContainer = () => {
+export const ApplyCodeFormContainer = ({
+  onSuccess,
+}: {
+  onSuccess?: () => void;
+}) => {
   const { pubKey } = useVegaWallet();
   const isInReferralSet = useIsInReferralSet(pubKey);
 
@@ -41,10 +45,10 @@ export const ApplyCodeFormContainer = () => {
     return <Navigate to={Routes.REFERRALS} />;
   }
 
-  return <ApplyCodeForm />;
+  return <ApplyCodeForm onSuccess={onSuccess} />;
 };
 
-export const ApplyCodeForm = () => {
+export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const t = useT();
   const program = useReferralProgram();
   const navigate = useNavigate();
@@ -166,10 +170,11 @@ export const ApplyCodeForm = () => {
   useEffect(() => {
     if (status === 'successful') {
       setTimeout(() => {
+        if (onSuccess) onSuccess();
         navigate(Routes.REFERRALS);
       }, RELOAD_DELAY);
     }
-  }, [navigate, status]);
+  }, [navigate, onSuccess, status]);
 
   // show "code applied" message when successfully applied
   if (status === 'successful') {
