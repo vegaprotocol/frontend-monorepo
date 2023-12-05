@@ -457,7 +457,7 @@ export const LiquidityTable = ({
             field: 'sla.lastEpochFeePenalty',
             type: 'rightAligned',
             headerTooltip: t(
-              'Penalty applied on the fees a liquidity provider collected in the last epoch. This number increases if an LP did not meet the SLA, or if they met it but other LPs outscored them in the previous epoch.'
+              'Penalty applied on the fees a liquidity provider collected in the last epoch. This percentage increased if an LP did not meet the SLA, or if they met it but other LPs outscored them in the previous epoch.'
             ),
             valueFormatter: percentageFormatter,
           },
