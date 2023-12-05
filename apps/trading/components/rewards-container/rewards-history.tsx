@@ -147,7 +147,7 @@ export const RewardHistoryTable = ({
     epochRewardSummaries,
     partyRewards,
     assets,
-    partyId: pubKey,
+    partyId: isParty ? pubKey : null,
   });
 
   const columnDefs = useMemo<ColDef<RewardRow>[]>(() => {
