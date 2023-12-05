@@ -310,16 +310,25 @@ export const CurrentVolume = ({
   const t = useT();
   const nextTier = tiers[tierIndex + 1];
   const requiredForNextTier = nextTier
-    ? Number(nextTier.minimumRunningNotionalTakerVolume) - windowLengthVolume
-    : 0;
+    ? new BigNumber(nextTier.minimumRunningNotionalTakerVolume).minus(
+        windowLengthVolume
+      )
+    : new BigNumber(0);
+  const currentVolume = new BigNumber(windowLengthVolume);
 
   return (
     <div className="flex flex-col gap-3 pt-4">
       <CardStat
-        value={formatNumberRounded(new BigNumber(windowLengthVolume))}
-        text={t('pastEpochs', 'Past {{count}} epochs', { count: windowLength })}
+        value={
+          currentVolume.isZero()
+            ? `<${formatNumberRounded(requiredForNextTier)}`
+            : formatNumberRounded(currentVolume)
+        }
+        text={t('pastEpochs', 'Past {{count}} epochs', {
+          count: windowLength,
+        })}
       />
-      {requiredForNextTier > 0 && (
+      {requiredForNextTier.isGreaterThan(0) && (
         <CardStat
           value={formatNumber(requiredForNextTier)}
           text={t('Required for next tier')}
