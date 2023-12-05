@@ -11,11 +11,7 @@ import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useState, type ReactNode } from 'react';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
-import {
-  userControllableFeatureFlags,
-  useFeatureFlags,
-  type FeatureFlags,
-} from '@vegaprotocol/environment';
+import { useFeatureFlags, type FeatureFlags } from '@vegaprotocol/environment';
 
 const FeatureFlag = ({
   flag,
@@ -125,9 +121,8 @@ export const Settings = () => {
         </dl>
       </SettingsGroup>
       <SettingsGroup inline={false} label={t('Experimental features')}>
-        {userControllableFeatureFlags.map((flag) => (
-          <FeatureFlag flag={flag} key={flag} label={flag} />
-        ))}
+        <FeatureFlag flag="STOP_ORDERS" label={'Stop orders'} />
+        <FeatureFlag flag="REFERRALS" label={'Referrals'} />
       </SettingsGroup>
     </div>
   );

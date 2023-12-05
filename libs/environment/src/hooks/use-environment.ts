@@ -19,7 +19,6 @@ import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
 import { tomlConfigSchema } from '../utils/validate-configuration';
 import uniq from 'lodash/uniq';
-import memoize from 'lodash/memoize';
 
 type Client = ReturnType<typeof createClient>;
 type ClientCollection = {
@@ -145,7 +144,7 @@ const testSubscription = (client: Client) => {
 };
 
 export const userControllableFeatureFlags: (keyof FeatureFlags)[] = [
-  'ICEBERG_ORDERS',
+  'REFERRALS',
   'STOP_ORDERS',
 ];
 
@@ -262,19 +261,46 @@ const compileEnvVars = () => {
   return env;
 };
 
-export const getUserEnabledFeatureFlags = memoize(
-  (): (keyof FeatureFlags)[] => {
-    if (typeof window !== 'undefined') {
-      const enabledFlags = window.localStorage.getItem('FEATURE_FLAGS');
-      if (enabledFlags) {
-        return (enabledFlags.split(',') as (keyof FeatureFlags)[]).filter(
-          (flag) => userControllableFeatureFlags.includes(flag)
-        );
-      }
-    }
+const featureFlagsLocalStorageKey = 'vega_feature_flags';
+let userEnabledFeatureFlags: (keyof FeatureFlags)[] | undefined = undefined;
+
+export const setUserEnabledFeatureFlag = (
+  flag: keyof FeatureFlags,
+  enabled = false
+) => {
+  const enabledFlags = getUserEnabledFeatureFlags();
+  if (enabled && !enabledFlags.includes(flag)) {
+    enabledFlags.push(flag);
+  }
+  if (!enabled && enabledFlags.includes(flag)) {
+    enabledFlags.splice(enabledFlags.indexOf(flag), 1);
+  }
+  userEnabledFeatureFlags = enabledFlags;
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem(
+      featureFlagsLocalStorageKey,
+      enabledFlags.join(',')
+    );
+  }
+};
+
+export const getUserEnabledFeatureFlags = (): (keyof FeatureFlags)[] => {
+  if (typeof window === 'undefined') {
     return [];
   }
-);
+  if (typeof userEnabledFeatureFlags !== 'undefined') {
+    return userEnabledFeatureFlags;
+  }
+  const enabledFlags = window.localStorage.getItem(featureFlagsLocalStorageKey);
+  userEnabledFeatureFlags = enabledFlags
+    ? uniq(
+        (enabledFlags.split(',') as (keyof FeatureFlags)[]).filter((flag) =>
+          userControllableFeatureFlags.includes(flag)
+        )
+      )
+    : [];
+  return userEnabledFeatureFlags;
+};
 
 const TRUTHY = ['1', 'true'];
 const compileFeatureFlags = (): FeatureFlags => {
@@ -404,11 +430,13 @@ const compileFeatureFlags = (): FeatureFlags => {
       ) as string
     ),
   };
-  return {
+  const flags = {
     ...COSMIC_ELEVATOR_FLAGS,
     ...EXPLORER_FLAGS,
     ...GOVERNANCE_FLAGS,
   };
+  getUserEnabledFeatureFlags().forEach((flag) => (flags[flag] = true));
+  return flags;
 };
 
 const parseNetworks = (value?: string) => {
@@ -448,12 +476,6 @@ const getEtherscanUrl = (
 };
 
 const windowOrDefault = (key: string, defaultValue?: string) => {
-  if (
-    userControllableFeatureFlags.includes(key as keyof FeatureFlags) &&
-    getUserEnabledFeatureFlags().includes(key as keyof FeatureFlags)
-  ) {
-    return TRUTHY[0];
-  }
   if (typeof window !== 'undefined') {
     // @ts-ignore avoid conflict in env
     if (window._env_ && window._env_[key]) {
@@ -471,6 +493,7 @@ export const useFeatureFlags = create<{
   flags: compileFeatureFlags(),
   setFeatureFlag: (flag: keyof FeatureFlags, enabled: boolean) => {
     if (userControllableFeatureFlags.includes(flag)) {
+      setUserEnabledFeatureFlag(flag, enabled);
       set({ flags: { ...get().flags, [flag]: enabled } });
     }
   },
