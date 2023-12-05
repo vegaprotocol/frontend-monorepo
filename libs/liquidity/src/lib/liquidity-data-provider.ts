@@ -9,13 +9,14 @@ import {
   LiquidityProvidersDocument,
   LiquidityProvisionsDocument,
   LiquidityProviderFieldsFragment,
+
   LiquidityProvidersQuery,
   LiquidityProvidersQueryVariables,
   LiquidityProvisionsQuery,
-  LiquidityProvisionsQueryVariables,
+  LiquidityProvisionsQueryVariables} from './__generated__/MarketLiquidity';
+import type {
+  LiquidityProvisionFieldsFragment
 } from './__generated__/MarketLiquidity';
-
-import type { LiquidityProvisionFieldsFragment } from './__generated__/MarketLiquidity';
 
 export type LiquidityProvisionFields = LiquidityProvisionFieldsFragment &
   Schema.LiquiditySLAParameters & {
