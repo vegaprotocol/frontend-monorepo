@@ -1,9 +1,4 @@
-/* eslint-disable @typescript-eslint/no-useless-constructor */
-
-// for some reason no-useless-constructor rule is triggered for this component
-// possible eslint bug
-
-import { LocalLogger, localLoggerFactory } from '@vegaprotocol/logger';
+import { localLoggerFactory, type LocalLogger } from '@vegaprotocol/logger';
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { useT } from '../../lib/use-t';
 
