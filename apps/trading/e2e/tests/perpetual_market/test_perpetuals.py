@@ -118,7 +118,6 @@ def test_perps_market_termination_proposed(page: Page, vega: VegaService):
 @pytest.mark.usefixtures("page","risk_accepted", "auth" )
 def test_perps_market_terminated(page: Page, vega: VegaService):
     perpetual_market = setup_perps_market(vega)
-    page.goto(f"/#/markets/{perpetual_market}") 
     vega.update_market_state(
         proposal_key=MM_WALLET.name,
         market_id=perpetual_market,
@@ -127,6 +126,11 @@ def test_perps_market_terminated(page: Page, vega: VegaService):
         approve_proposal = True,
         forward_time_to_enactment = True,
     )
+    vega.forward("10s")
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+
+    page.goto(f"/#/markets/{perpetual_market}") 
     expect(page.get_by_test_id("market-price")).to_have_text("Mark Price100.00")
     expect(page.get_by_test_id("market-change")).to_have_text("Change (24h)-")
     expect(page.get_by_test_id("market-volume")).to_have_text("Volume (24h)-")
