@@ -25,6 +25,7 @@ import { DepositsMenu } from '../../components/deposits-menu';
 import { WithdrawalsMenu } from '../../components/withdrawals-menu';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
+import { ErrorBoundary } from '../../components/error-boundary';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -72,19 +73,29 @@ export const Portfolio = () => {
                 name={t('Positions')}
                 menu={<PositionsMenu />}
               >
-                <PositionsContainer allKeys />
+                <ErrorBoundary feature="portfolio-positions">
+                  <PositionsContainer allKeys />
+                </ErrorBoundary>
               </Tab>
               <Tab id="orders" name={t('Orders')}>
-                <OrdersContainer />
+                <ErrorBoundary feature="portfolio-orders">
+                  <OrdersContainer />
+                </ErrorBoundary>
               </Tab>
               <Tab id="fills" name={t('Fills')}>
-                <FillsContainer />
+                <ErrorBoundary feature="portfolio-fills">
+                  <FillsContainer />
+                </ErrorBoundary>
               </Tab>
               <Tab id="funding-payments" name={t('Funding payments')}>
-                <FundingPaymentsContainer />
+                <ErrorBoundary feature="portfolio-funding-payments">
+                  <FundingPaymentsContainer />
+                </ErrorBoundary>
               </Tab>
               <Tab id="ledger-entries" name={t('Ledger entries')}>
-                <LedgerContainer />
+                <ErrorBoundary feature="portfolio-ledger">
+                  <LedgerContainer />
+                </ErrorBoundary>
               </Tab>
             </Tabs>
           </PortfolioGridChild>
@@ -101,10 +112,14 @@ export const Portfolio = () => {
                 name={t('Collateral')}
                 menu={<AccountsMenu />}
               >
-                <AccountsContainer />
+                <ErrorBoundary feature="portfolio-accounts">
+                  <AccountsContainer />
+                </ErrorBoundary>
               </Tab>
               <Tab id="deposits" name={t('Deposits')} menu={<DepositsMenu />}>
-                <DepositsContainer />
+                <ErrorBoundary feature="portfolio-deposit">
+                  <DepositsContainer />
+                </ErrorBoundary>
               </Tab>
               <Tab
                 id="withdrawals"
@@ -112,7 +127,9 @@ export const Portfolio = () => {
                 indicator={<WithdrawalsIndicator />}
                 menu={<WithdrawalsMenu />}
               >
-                <WithdrawalsContainer />
+                <ErrorBoundary feature="portfolio-deposit">
+                  <WithdrawalsContainer />
+                </ErrorBoundary>
               </Tab>
             </Tabs>
           </PortfolioGridChild>

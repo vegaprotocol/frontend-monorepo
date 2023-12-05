@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { LiquidityContainer } from '../../components/liquidity-container';
 import { useT } from '../../lib/use-t';
+import { ErrorBoundary } from '../../components/error-boundary';
 
 const enum LiquidityTabs {
   Active = 'active',
@@ -58,19 +59,28 @@ export const LiquidityViewContainer = ({
             name={t('My liquidity provision')}
             hidden={!pubKey}
           >
-            <LiquidityContainer
-              marketId={marketId}
-              filter={{ partyId: pubKey || undefined }}
-            />
+            <ErrorBoundary feature="liquidity-party">
+              <LiquidityContainer
+                marketId={marketId}
+                filter={{ partyId: pubKey || undefined }}
+              />
+            </ErrorBoundary>
           </Tab>
           <Tab id={LiquidityTabs.Active} name={t('Active')}>
-            <LiquidityContainer marketId={marketId} filter={{ active: true }} />
+            <ErrorBoundary feature="liquidity-active">
+              <LiquidityContainer
+                marketId={marketId}
+                filter={{ active: true }}
+              />
+            </ErrorBoundary>
           </Tab>
           <Tab id={LiquidityTabs.Inactive} name={t('Inactive')}>
-            <LiquidityContainer
-              marketId={marketId}
-              filter={{ active: false }}
-            />
+            <ErrorBoundary feature="liquidity-inactive">
+              <LiquidityContainer
+                marketId={marketId}
+                filter={{ active: false }}
+              />
+            </ErrorBoundary>
           </Tab>
         </Tabs>
       </div>
