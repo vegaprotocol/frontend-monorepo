@@ -4,7 +4,6 @@ import {
   Switch,
   ToastPositionSetter,
   TradingButton,
-  TradingCheckbox,
 } from '@vegaprotocol/ui-toolkit';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
@@ -13,23 +12,14 @@ import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { useFeatureFlags, type FeatureFlags } from '@vegaprotocol/environment';
 
-const FeatureFlag = ({
-  flag,
-  label,
-}: {
-  flag: keyof FeatureFlags;
-  label: string;
-}) => {
+const FeatureFlagSwitch = ({ flag }: { flag: keyof FeatureFlags }) => {
   const flags = useFeatureFlags((state) => state.flags);
   const setFeatureFlag = useFeatureFlags((state) => state.setFeatureFlag);
   return (
-    <div className="mb-2">
-      <TradingCheckbox
-        checked={flags[flag]}
-        label={label}
-        onCheckedChange={(checked) => setFeatureFlag(flag, !!checked)}
-      />
-    </div>
+    <Switch
+      onCheckedChange={(checked) => setFeatureFlag(flag, !!checked)}
+      checked={flags[flag]}
+    />
   );
 };
 
@@ -120,9 +110,11 @@ export const Settings = () => {
           <dd className="break-words">{process.env.GIT_COMMIT}</dd>
         </dl>
       </SettingsGroup>
-      <SettingsGroup inline={false} label={t('Experimental features')}>
-        <FeatureFlag flag="STOP_ORDERS" label={'Stop orders'} />
-        <FeatureFlag flag="REFERRALS" label={'Referrals'} />
+      <SettingsGroup label={t('Stop orders')} helpText={t('Stop orders')}>
+        <FeatureFlagSwitch flag="STOP_ORDERS" />
+      </SettingsGroup>
+      <SettingsGroup label={t('Referrals')} helpText={t('Referrals')}>
+        <FeatureFlagSwitch flag="REFERRALS" />
       </SettingsGroup>
     </div>
   );
@@ -146,7 +138,7 @@ const SettingsGroup = ({
       })}
     >
       <div className={classNames({ 'w-3/4': inline, 'mb-2': !inline })}>
-        <label className="text-sm">{label}</label>
+        <div className="text-sm">{label}</div>
         {helpText && <p className="text-xs text-muted">{helpText}</p>}
       </div>
       {children}
