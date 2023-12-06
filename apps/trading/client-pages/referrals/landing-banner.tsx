@@ -15,11 +15,11 @@ export const LandingBanner = () => {
         </div>
         <div className="pt-20 sm:w-[50%]">
           <h1 className="text-6xl font-alpha calt mb-10">
-            {t('Vega Community Referral Program')}
+            {t('Vega community referral program')}
           </h1>
           <p className="text-lg mb-1">
             {t(
-              'Referral programs can be proposed and created via Community governance.'
+              'Referral programs can be proposed and created via community governance.'
             )}
           </p>
           <p className="text-lg mb-10">

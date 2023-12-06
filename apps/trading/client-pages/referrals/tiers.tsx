@@ -113,14 +113,14 @@ export const TiersContainer = () => {
           ns={ns}
         />{' '}
         <Trans
-          defaults="You can propose a new program via the <0>Docs</0>."
+          defaults="Use the <0>docs</0> tutorial to propose a new program."
           components={[
             <ExternalLink
               href={DocsLinks?.REFERRALS}
               key="link"
               className="underline"
             >
-              {t('Docs')}
+              {t('docs')}
             </ExternalLink>,
           ]}
           ns={ns}
