@@ -34,8 +34,10 @@ import { RewardsHistoryContainer } from './rewards-history';
 import { useT } from '../../lib/use-t';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
 
-const USDT_MAINNET =
-  'bf1e88d19db4b3ca0d1d5bdb73718a01686b18cf731ca26adedf3c8b83802bba';
+const ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA = [
+  'bf1e88d19db4b3ca0d1d5bdb73718a01686b18cf731ca26adedf3c8b83802bba', // USDT mainnet
+  '8ba0b10971f0c4747746cd01ff05a53ae75ca91eba1d4d050b527910c983e27e', // USDT testnet
+];
 
 export const RewardsContainer = () => {
   const t = useT();
@@ -167,14 +169,14 @@ export const RewardsContainer = () => {
           //
           // We don't want to incorrectly show the wring locked/vesting values, but we DO want to
           // show the user that they have rewards available to withdraw
-          if (asset.id === USDT_MAINNET) {
-            const usdtAccounts = rewardAccountsAssetMap[assetId];
-            const vestedAccount = usdtAccounts?.find(
+          if (ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA.includes(asset.id)) {
+            const accountsForAsset = rewardAccountsAssetMap[asset.id];
+            const vestedAccount = accountsForAsset?.find(
               (a) => a.type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS
             );
 
             // No vested rewards available to withdraw, so skip over USDT
-            if (vestedAccount && Number(vestedAccount.balance) <= 0) {
+            if (!vestedAccount || Number(vestedAccount.balance) <= 0) {
               return null;
             }
 
