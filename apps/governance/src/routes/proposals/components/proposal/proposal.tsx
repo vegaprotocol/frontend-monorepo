@@ -65,10 +65,13 @@ export const Proposal = ({
     ? removePaginationWrapper(assetData.assetsConnection?.edges)[0]
     : undefined;
 
+  const originalAsset = asset;
+
   if (proposal.terms.change.__typename === 'UpdateAsset' && asset) {
     asset = {
       ...asset,
       quantum: proposal.terms.change.quantum,
+      source: { ...asset.source },
     };
 
     if (asset.source.__typename === 'ERC20') {
@@ -228,7 +231,7 @@ export const Proposal = ({
         proposal.terms.change.__typename === 'UpdateAsset') &&
         asset && (
           <div className="mb-4">
-            <ProposalAssetDetails asset={asset} />
+            <ProposalAssetDetails asset={asset} originalAsset={originalAsset} />
           </div>
         )}
 

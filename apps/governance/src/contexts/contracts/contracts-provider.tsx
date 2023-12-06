@@ -49,12 +49,8 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
             ? activeProvider
             : defaultProvider;
 
-        if (
-          account &&
-          activeProvider &&
-          typeof activeProvider.getSigner === 'function'
-        ) {
-          signer = provider.getSigner();
+        if (account && provider && typeof provider.getSigner === 'function') {
+          signer = provider.getSigner(account);
         }
 
         const tokenVestingAddress =

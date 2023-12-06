@@ -1,20 +1,24 @@
-import compact from 'lodash/compact';
-import maxBy from 'lodash/maxBy';
-import { getReferralBenefitTier } from './utils';
 import type { DiscountProgramsQuery, FeesQuery } from './__generated__/Fees';
-import { first } from 'lodash';
-
 export const useReferralStats = (
-  setStats?: FeesQuery['referralSetStats'],
-  setReferees?: FeesQuery['referralSetReferees'],
+  previousEpoch?: number,
+  referralStats?: NonNullable<
+    FeesQuery['referralSetStats']['edges']['0']
+  >['node'],
+  setReferees?: NonNullable<
+    FeesQuery['referralSetReferees']['edges']['0']
+  >['node'],
   program?: DiscountProgramsQuery['currentReferralProgram'],
-  epoch?: FeesQuery['epoch'],
-  setIfReferrer?: FeesQuery['referrer'],
-  setIfReferee?: FeesQuery['referee']
+  setIfReferrer?: NonNullable<FeesQuery['referrer']['edges']['0']>['node'],
+  setIfReferee?: NonNullable<FeesQuery['referee']['edges']['0']>['node']
 ) => {
   const referralTiers = program?.benefitTiers || [];
 
-  if (!setStats || !setReferees || !program || !epoch) {
+  if (
+    !previousEpoch ||
+    referralStats?.atEpoch !== previousEpoch ||
+    !program ||
+    !setReferees
+  ) {
     return {
       referralDiscount: 0,
       referralVolumeInWindow: 0,
@@ -26,41 +30,22 @@ export const useReferralStats = (
     };
   }
 
-  const setIfReferrerData = first(
-    compact(setIfReferrer?.edges).map((e) => e.node)
-  );
-  const setIfRefereeData = first(
-    compact(setIfReferee?.edges).map((e) => e.node)
-  );
-
-  const referralSetsStats = compact(setStats.edges).map((e) => e.node);
-  const referralSets = compact(setReferees.edges).map((e) => e.node);
-
-  const referralSet = maxBy(referralSets, (s) => s.atEpoch);
-  const referralStats = maxBy(referralSetsStats, (s) => s.atEpoch);
-
-  const epochsInSet = referralSet ? Number(epoch.id) - referralSet.atEpoch : 0;
-
   const referralDiscount = Number(referralStats?.discountFactor || 0);
   const referralVolumeInWindow = Number(
     referralStats?.referralSetRunningNotionalTakerVolume || 0
   );
 
-  const referralTierIndex = referralStats
-    ? getReferralBenefitTier(
-        epochsInSet,
-        Number(referralStats.referralSetRunningNotionalTakerVolume),
-        referralTiers
-      )
-    : -1;
+  const referralTierIndex = referralTiers.findIndex(
+    (tier) => tier.referralDiscountFactor === referralStats?.discountFactor
+  );
 
   return {
     referralDiscount,
     referralVolumeInWindow,
     referralTierIndex,
     referralTiers,
-    epochsInSet,
-    code: (setIfReferrerData || setIfRefereeData)?.id,
-    isReferrer: Boolean(setIfReferrerData),
+    epochsInSet: referralStats.atEpoch - setReferees.atEpoch,
+    code: (setIfReferrer || setIfReferee)?.id,
+    isReferrer: Boolean(setIfReferrer),
   };
 };

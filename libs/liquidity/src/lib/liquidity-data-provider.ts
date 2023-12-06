@@ -159,7 +159,14 @@ export const getLiquidityProvision = (
       const liquidityProvider = liquidityProviders.find(
         (f) => liquidityProvision.party.id === f.partyId
       );
-      if (!liquidityProvider) return liquidityProvision;
+
+      if (!liquidityProvider) {
+        return {
+          ...liquidityProvision,
+          partyId: liquidityProvision.party.id,
+        };
+      }
+
       const accounts = compact(
         liquidityProvision.party.accountsConnection?.edges
       ).map((e) => e.node);

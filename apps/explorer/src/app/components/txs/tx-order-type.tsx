@@ -80,6 +80,12 @@ export function getLabelForOrderType(
     if (command.orderSubmission.icebergOpts) {
       return 'Iceberg';
     }
+    if (command.orderSubmission.type === 'TYPE_MARKET') {
+      return 'Market order';
+    }
+    if (command.orderSubmission.type === 'TYPE_LIMIT') {
+      return 'Limit order';
+    }
   }
   return 'Order';
 }

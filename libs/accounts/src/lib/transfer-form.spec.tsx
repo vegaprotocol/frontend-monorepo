@@ -73,6 +73,28 @@ describe('TransferForm', () => {
     minQuantumMultiple: '1',
   };
 
+  const propsNoAssets = {
+    pubKey,
+    pubKeys: [
+      pubKey,
+      'a4b6e3de5d7ef4e31ae1b090be49d1a2ef7bcefff60cccf7658a0d4922651cce',
+    ],
+    feeFactor: '0.001',
+    submitTransfer: jest.fn(),
+    accounts: [],
+    minQuantumMultiple: '1',
+  };
+
+  it('renders no assets', async () => {
+    renderComponent(propsNoAssets);
+    expect(screen.getByTestId('no-assets-available')).toBeVisible();
+  });
+
+  it('renders no accounts', async () => {
+    renderComponent(propsNoAssets);
+    expect(screen.getByTestId('no-accounts-available')).toBeVisible();
+  });
+
   it.each([
     {
       targetText: 'Include transfer fee',

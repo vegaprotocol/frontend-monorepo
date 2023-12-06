@@ -25,6 +25,7 @@ describe('LocalLogger', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
   it('logger should be properly instantiate', () => {
     const logger = localLoggerFactory({});
     expect(logger).toBeInstanceOf(LocalLogger);
@@ -50,7 +51,7 @@ describe('LocalLogger', () => {
       logger[method]('test', 'test2');
       // eslint-disable-next-line no-console
       expect(console[consoleMethod]).toHaveBeenCalledWith(
-        `trading:${methodToLevel[i]}: `,
+        `trading:${methodToLevel[i]}:`,
         'test',
         'test2'
       );
@@ -110,7 +111,7 @@ describe('LocalLogger', () => {
 
     // eslint-disable-next-line no-console
     expect(console.debug).toHaveBeenCalledWith(
-      'trading:debug: ',
+      'trading:debug:',
       'test',
       'test1'
     );

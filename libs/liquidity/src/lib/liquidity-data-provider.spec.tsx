@@ -119,6 +119,8 @@ describe('getLiquidityProvision', () => {
         createdAt: '2022-12-16T09:28:29.071781Z',
         id: 'dde288688af2aeb5feb349dd72d3679a7a9be34c7375f6a4a48ef2f6140e7e59',
         fee: '0.001',
+        partyId:
+          'dde288688af2aeb5feb349dd72d3679a7a9be34c7375f6a4a48ef2f6140e7e59',
         party: {
           __typename: 'Party',
           accountsConnection: {

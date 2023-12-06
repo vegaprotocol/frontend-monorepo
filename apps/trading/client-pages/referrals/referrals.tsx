@@ -17,6 +17,7 @@ import { usePageTitleStore } from '../../stores';
 import { useEffect } from 'react';
 import { titlefy } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
+import { ErrorBoundary } from '../../components/error-boundary';
 
 const Nav = () => {
   const t = useT();
@@ -65,7 +66,7 @@ export const Referrals = () => {
   }, [updateTitle, t]);
 
   return (
-    <>
+    <ErrorBoundary feature="referrals">
       <LandingBanner />
 
       {showNav && <Nav />}
@@ -105,6 +106,6 @@ export const Referrals = () => {
           </TradingAnchorButton>
         </div>
       </div>
-    </>
+    </ErrorBoundary>
   );
 };

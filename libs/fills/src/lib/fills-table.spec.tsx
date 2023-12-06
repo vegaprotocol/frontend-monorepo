@@ -4,14 +4,8 @@ import { getDateTimeFormat } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { Trade } from './fills-data-provider';
-import {
-  FeesDiscountBreakdownTooltip,
-  FillsTable,
-  getFeesBreakdown,
-  getTotalFeesDiscounts,
-} from './fills-table';
+import { FeesDiscountBreakdownTooltip, FillsTable } from './fills-table';
 import { generateFill } from './test-helpers';
-import type { TradeFeeFieldsFragment } from './__generated__/Fills';
 
 const partyId = 'party-id';
 const defaultFill: PartialDeep<Trade> = {
@@ -35,6 +29,7 @@ const defaultFill: PartialDeep<Trade> = {
   },
   createdAt: new Date('2022-02-02T14:00:00').toISOString(),
 };
+
 describe('FillsTable', () => {
   it('correct columns are rendered', async () => {
     // 7005-FILL-001
@@ -65,7 +60,7 @@ describe('FillsTable', () => {
     expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
   });
 
-  it('formats cells correctly for buyer fill', async () => {
+  it('formats cells correctly for buyer fill for maker', async () => {
     const buyerFill = generateFill({
       ...defaultFill,
       buyer: {
@@ -89,7 +84,7 @@ describe('FillsTable', () => {
       '3.00 BTC',
       'Maker',
       '2.00 BTC',
-      '0.27 BTC',
+      '0.09 BTC',
       getDateTimeFormat().format(new Date(buyerFill.createdAt)),
       '', // action column
     ];
@@ -271,96 +266,48 @@ describe('FillsTable', () => {
       .find((c) => c.getAttribute('col-id') === 'size');
     expect(sizeCell).toHaveTextContent('3,000,000,000');
   });
-});
 
-describe('FeesDiscountBreakdownTooltip', () => {
-  it('shows all discounts', () => {
-    const data = generateFill({
-      ...defaultFill,
-      buyer: {
-        id: partyId,
-      },
+  describe('FeesDiscountBreakdownTooltip', () => {
+    it('shows all discounts', () => {
+      const data = generateFill({
+        ...defaultFill,
+        buyer: {
+          id: partyId,
+        },
+      });
+      const props = {
+        data,
+        partyId,
+        value: data.market,
+      } as Parameters<typeof FeesDiscountBreakdownTooltip>['0'];
+      const { container } = render(<FeesDiscountBreakdownTooltip {...props} />);
+      const dt = container.querySelectorAll('dt');
+      const dd = container.querySelectorAll('dd');
+      const expectedDt = [
+        'Infrastructure Fee',
+        'Referral Discount',
+        'Volume Discount',
+        'Liquidity Fee',
+        'Referral Discount',
+        'Volume Discount',
+        'Maker Fee',
+        'Referral Discount',
+        'Volume Discount',
+      ];
+      const expectedDD = [
+        '0.05 BTC',
+        '0.06 BTC',
+        '0.01 BTC',
+        '0.02 BTC',
+        '0.03 BTC',
+        '0.04 BTC',
+      ];
+      expectedDt.forEach((label, i) => {
+        expect(dt[i]).toHaveTextContent(label);
+      });
+      expectedDD.forEach((label, i) => {
+        expect(dd[i]).toHaveTextContent(label);
+      });
     });
-    const props = {
-      data,
-      partyId,
-      value: data.market,
-    } as Parameters<typeof FeesDiscountBreakdownTooltip>['0'];
-    const { container } = render(<FeesDiscountBreakdownTooltip {...props} />);
-    const dt = container.querySelectorAll('dt');
-    const dd = container.querySelectorAll('dd');
-    const expectedDt = [
-      'Infrastructure Fee',
-      'Referral Discount',
-      'Volume Discount',
-      'Liquidity Fee',
-      'Referral Discount',
-      'Volume Discount',
-      'Maker Fee',
-      'Referral Discount',
-      'Volume Discount',
-    ];
-    const expectedDD = [
-      '0.05 BTC',
-      '0.06 BTC',
-      '0.01 BTC',
-      '0.02 BTC',
-      '0.03 BTC',
-      '0.04 BTC',
-    ];
-    expectedDt.forEach((label, i) => {
-      expect(dt[i]).toHaveTextContent(label);
-    });
-    expectedDD.forEach((label, i) => {
-      expect(dd[i]).toHaveTextContent(label);
-    });
-  });
-});
-
-describe('getFeesBreakdown', () => {
-  it('should return correct fees breakdown for a taker', () => {
-    const fees = {
-      makerFee: '1000',
-      infrastructureFee: '2000',
-      liquidityFee: '3000',
-    };
-    const expectedBreakdown = {
-      infrastructureFee: '2000',
-      liquidityFee: '3000',
-      makerFee: '1000',
-      totalFee: '6000',
-    };
-    expect(getFeesBreakdown('Taker', fees)).toEqual(expectedBreakdown);
-  });
-
-  it('should return correct fees breakdown for a maker', () => {
-    const fees = {
-      makerFee: '1000',
-      infrastructureFee: '2000',
-      liquidityFee: '3000',
-    };
-    const expectedBreakdown = {
-      infrastructureFee: '2000',
-      liquidityFee: '3000',
-      makerFee: '-1000',
-      totalFee: '4000',
-    };
-    expect(getFeesBreakdown('Maker', fees)).toEqual(expectedBreakdown);
-  });
-});
-
-describe('getTotalFeesDiscounts', () => {
-  it('should return correct total value', () => {
-    const fees = {
-      infrastructureFeeReferralDiscount: '1',
-      infrastructureFeeVolumeDiscount: '2',
-      liquidityFeeReferralDiscount: '3',
-      liquidityFeeVolumeDiscount: '4',
-      makerFeeReferralDiscount: '5',
-      makerFeeVolumeDiscount: '6',
-    };
-    expect(getTotalFeesDiscounts(fees as TradeFeeFieldsFragment)).toEqual(
-      (1 + 2 + 3 + 4 + 5 + 6).toString()
-    );
   });
 });
