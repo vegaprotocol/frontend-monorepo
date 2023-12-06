@@ -357,10 +357,12 @@ export const LiquidityTable = ({
             },
           },
           {
-            headerName: t('Adjusted stake share'),
+            headerName: t('Adjusted stake'),
             field: 'feeShare.virtualStake',
             type: 'rightAligned',
-            headerTooltip: t('The virtual stake of the liquidity provider.'),
+            headerTooltip: t(
+              'The effective stake of the liquidity provider, adjusted for length of commitment and impact on equity like share.'
+            ),
 
             valueFormatter: assetDecimalsQuantumFormatter,
             tooltipValueGetter: assetDecimalsFormatter,
@@ -427,10 +429,12 @@ export const LiquidityTable = ({
             valueFormatter: percentageFormatter,
           },
           {
-            headerName: t('Live liquidity quality score (%)'),
+            headerName: t('Live liquidity score (%)'),
             field: 'feeShare.averageScore',
             type: 'rightAligned',
-            headerTooltip: t('The average score of the liquidity provider.'),
+            headerTooltip: t(
+              'The liquidity score of the provider, used to determine allocation of fees to the best performing LPs. Posting volume closer to the mid on both sides of the book will improve this score.'
+            ),
             valueFormatter: percentageFormatter,
           },
         ],
@@ -440,24 +444,30 @@ export const LiquidityTable = ({
         marryChildren: true,
         children: [
           {
-            headerName: t(`Last time on the book`),
+            headerName: t(`Last time on book`),
             field: 'sla.lastEpochFractionOfTimeOnBook',
             type: 'rightAligned',
-            headerTooltip: t('Last epoch fraction of time on the book.'),
+            headerTooltip: t(
+              'Fraction of time on the book at the end of the last epoch.'
+            ),
             valueFormatter: percentageFormatter,
           },
           {
             headerName: t(`Last fee penalty`),
             field: 'sla.lastEpochFeePenalty',
             type: 'rightAligned',
-            headerTooltip: t('Last epoch fee penalty.'),
+            headerTooltip: t(
+              'Penalty applied on the fees a liquidity provider collected in the last epoch. This percentage increased if an LP did not meet the SLA, or if they met it but other LPs outscored them in the previous epoch.'
+            ),
             valueFormatter: percentageFormatter,
           },
           {
             headerName: t(`Last bond penalty`),
             field: 'sla.lastEpochBondPenalty',
             type: 'rightAligned',
-            headerTooltip: t('Last epoch bond penalty.'),
+            headerTooltip: t(
+              `Penalty applied on a provider's bond penalty at the end of the last epoch. This percentage increased if an LP: had a shortfall and their bond needed to be used to cover it, did not meet the SLA, and/or reduced their commitment to the point that the market was below its target stake.`
+            ),
             valueFormatter: percentageFormatter,
           },
         ],
