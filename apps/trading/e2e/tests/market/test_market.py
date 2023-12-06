@@ -31,7 +31,7 @@ initial_spread: float = 0.1
 market_name = "BTC:DAI_2023"
 
 
-@pytest.mark.usefixtures("vega", "page", "simple_market", "risk_accepted")
+@pytest.mark.usefixtures("vega", "page", "simple_market", "risk_accepted", "auth")
 def test_price_monitoring(simple_market, vega: VegaService, page: Page):
     page.goto(f"/#/markets/all")
     expect(page.locator(table_row_selector).locator(trading_mode_col)).to_have_text(
@@ -109,9 +109,8 @@ def test_price_monitoring(simple_market, vega: VegaService, page: Page):
     expect(
         page.get_by_test_id(liquidity_supplied).get_by_test_id(item_value)
     ).to_have_text("100.00 (>100%)")
-
     vega.forward("10s")
-    vega.wait_fn(1)
+    vega.wait_fn(10)
     vega.wait_for_total_catchup()
     expect(
         page.get_by_test_id(liquidity_supplied).get_by_test_id(item_value)
