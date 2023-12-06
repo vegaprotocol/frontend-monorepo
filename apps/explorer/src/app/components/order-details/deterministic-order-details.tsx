@@ -6,6 +6,7 @@ import { Time } from '../time';
 import { sideText, statusText, tifFull, tifShort } from './lib/order-labels';
 import SizeInMarket from '../size-in-market/size-in-market';
 import { TxOrderPeggedReference } from '../txs/details/order/tx-order-peg';
+import { OrderTypeMapping } from '@vegaprotocol/types';
 
 export interface DeterministicOrderDetailsProps {
   id: string;
@@ -69,7 +70,7 @@ const DeterministicOrderDetails = ({
             <span className="mx-5 text-base">@</span>
             <PriceInMarket price={o.price} marketId={o.market.id} />
           </h2>
-          <p className="text-gray-200">
+          <p className="text-gray-400 dark:text-gray-600">
             In <MarketLink id={o.market.id} /> at <Time date={o.createdAt} />.
           </p>
           {o.peggedOrder ? (
@@ -83,13 +84,12 @@ const DeterministicOrderDetails = ({
               />
             </p>
           ) : null}
-
           {o.reference ? (
             <p className="text-gray-500 mt-4">
               <span>{t('Reference')}</span>: {o.reference}
             </p>
           ) : null}
-          <div className="grid md:grid-cols-4 gap-x-6 mt-4">
+          <div className="grid md:grid-cols-5 gap-x-6 mt-4">
             <div className="mb-12 md:mb-0">
               <h2 className="text-2xl font-bold text-dark mb-4">
                 {t('Status')}
@@ -114,6 +114,16 @@ const DeterministicOrderDetails = ({
                 {o.version}
               </h5>
             </div>
+            {o.type ? (
+              <div className="">
+                <h2 className="text-2xl font-bold text-dark mb-4">
+                  {t('Type')}
+                </h2>
+                <h5 className="text-lg font-medium text-gray-500 mb-0">
+                  {OrderTypeMapping[o.type]}
+                </h5>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
