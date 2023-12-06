@@ -10,7 +10,6 @@ import {
 
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { DEFAULT_AGGREGATION_DAYS, useReferral } from './hooks/use-referral';
-import { CreateCodeContainer } from './create-code-form';
 import classNames from 'classnames';
 import { Table } from './table';
 import {
@@ -26,34 +25,39 @@ import compact from 'lodash/compact';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { useStakeAvailable } from './hooks/use-stake-available';
 import sortBy from 'lodash/sortBy';
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 import BigNumber from 'bignumber.js';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { useT, ns } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
-import { ApplyCodeForm } from './apply-code-form';
+import { ApplyCodeForm, ApplyCodeFormContainer } from './apply-code-form';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
 
   const program = useReferralProgram();
 
-  const { data: referee } = useReferral({
+  const { data: referee, refetch: refereeRefetch } = useReferral({
     pubKey,
     role: 'referee',
     aggregationEpochs: program.details?.windowLength,
   });
-  const { data: referrer } = useReferral({
+  const { data: referrer, refetch: referrerRefetch } = useReferral({
     pubKey,
     role: 'referrer',
     aggregationEpochs: program.details?.windowLength,
   });
 
+  const refetch = useCallback(() => {
+    refereeRefetch();
+    referrerRefetch();
+  }, [refereeRefetch, referrerRefetch]);
+
   if (referee?.code) {
     return (
       <>
-        <Statistics data={referee} program={program} as="referee" />;
+        <Statistics data={referee} program={program} as="referee" />
         {!referee.isEligible && <ApplyCodeForm />}
       </>
     );
@@ -62,13 +66,13 @@ export const ReferralStatistics = () => {
   if (referrer?.code) {
     return (
       <>
-        <Statistics data={referrer} program={program} as="referrer" />;
+        <Statistics data={referrer} program={program} as="referrer" />
         <RefereesTable data={referrer} program={program} />
       </>
     );
   }
 
-  return <CreateCodeContainer />;
+  return <ApplyCodeFormContainer onSuccess={refetch} />;
 };
 
 export const useStats = ({
@@ -81,7 +85,9 @@ export const useStats = ({
   as?: 'referrer' | 'referee';
 }) => {
   const { benefitTiers } = program;
-  const { data: epochData } = useCurrentEpochInfoQuery();
+  const { data: epochData } = useCurrentEpochInfoQuery({
+    fetchPolicy: 'network-only',
+  });
   const { data: statsData } = useReferralSetStatsQuery({
     variables: {
       code: data?.code || '',
@@ -174,6 +180,7 @@ export const Statistics = ({
     discountFactorValue,
     currentBenefitTierValue,
     epochsValue,
+    nextBenefitTierValue,
     nextBenefitTierVolumeValue,
     nextBenefitTierEpochsValue,
   } = useStats({ data, program, as });
@@ -207,6 +214,7 @@ export const Statistics = ({
           ).toString(),
         }
       )}
+      overrideWithNoProgram={!details}
     >
       {baseCommissionValue * 100}%
     </StatTile>
@@ -229,6 +237,7 @@ export const Statistics = ({
           })}
         </span>
       }
+      overrideWithNoProgram={!details}
     >
       {multiplier || t('None')}
     </StatTile>
@@ -243,6 +252,7 @@ export const Statistics = ({
             }%)`
           : undefined
       }
+      overrideWithNoProgram={!details}
     >
       {finalCommissionValue * 100}%
     </StatTile>
@@ -264,6 +274,7 @@ export const Statistics = ({
       title={t('myVolume', 'My volume (last {{count}} epochs)', {
         count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
       })}
+      overrideWithNoProgram={!details}
     >
       {compactNumFormat.format(referrerVolumeValue)}
     </StatTile>
@@ -274,7 +285,7 @@ export const Statistics = ({
     .reduce((all, r) => all.plus(r), new BigNumber(0));
   const totalCommissionTile = (
     <StatTile
-      title={t('totalCommission', 'Total commission (last {{count}}} epochs)', {
+      title={t('totalCommission', 'Total commission (last {{count}} epochs)', {
         count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
       })}
       description={<QUSDTooltip />}
@@ -301,15 +312,25 @@ export const Statistics = ({
   );
 
   const currentBenefitTierTile = (
-    <StatTile title={t('Current tier')}>
+    <StatTile
+      title={t('Current tier')}
+      description={
+        nextBenefitTierValue?.tier
+          ? t('(Next tier: {{nextTier}})', {
+              nextTier: nextBenefitTierValue?.tier,
+            })
+          : undefined
+      }
+      overrideWithNoProgram={!details}
+    >
       {isApplyCodePreview
         ? currentBenefitTierValue?.tier || benefitTiers[0]?.tier || 'None'
         : currentBenefitTierValue?.tier || 'None'}
     </StatTile>
   );
   const discountFactorTile = (
-    <StatTile title={t('Discount')}>
-      {isApplyCodePreview
+    <StatTile title={t('Discount')} overrideWithNoProgram={!details}>
+      {isApplyCodePreview && benefitTiers.length >= 1
         ? benefitTiers[0].discountFactor * 100
         : discountFactorValue * 100}
       %
@@ -324,6 +345,7 @@ export const Statistics = ({
           count: details?.windowLength,
         }
       )}
+      overrideWithNoProgram={!details}
     >
       {compactNumFormat.format(runningVolumeValue)}
     </StatTile>
@@ -332,14 +354,14 @@ export const Statistics = ({
     <StatTile title={t('Epochs in set')}>{epochsValue}</StatTile>
   );
   const nextTierVolumeTile = (
-    <StatTile title={t('Volume to next tier')}>
+    <StatTile title={t('Volume to next tier')} overrideWithNoProgram={!details}>
       {nextBenefitTierVolumeValue <= 0
         ? '0'
         : compactNumFormat.format(nextBenefitTierVolumeValue)}
     </StatTile>
   );
   const nextTierEpochsTile = (
-    <StatTile title={t('Epochs to next tier')}>
+    <StatTile title={t('Epochs to next tier')} overrideWithNoProgram={!details}>
       {nextBenefitTierEpochsValue <= 0 ? '0' : nextBenefitTierEpochsValue}
     </StatTile>
   );
@@ -461,6 +483,7 @@ export const RefereesTable = ({
                         count:
                           details?.windowLength || DEFAULT_AGGREGATION_DAYS,
                       }}
+                      components={[<QUSDTooltip key="qusd" />]}
                       ns={ns}
                     />
                   ),

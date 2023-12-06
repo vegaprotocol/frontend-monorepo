@@ -75,10 +75,7 @@ export const useReferralToasts = () => {
                 data-testid="toast-apply-code"
                 size="xs"
                 onClick={() => {
-                  const matched = matchPath(
-                    Routes.REFERRALS_APPLY_CODE,
-                    pathname
-                  );
+                  const matched = matchPath(Routes.REFERRALS, pathname);
                   if (!matched) navigate(Routes.REFERRALS_APPLY_CODE);
                   updateToast(NON_ELIGIBLE_REFERRAL_SET_TOAST_ID + epoch, {
                     hidden: true,

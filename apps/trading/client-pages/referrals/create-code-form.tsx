@@ -19,14 +19,22 @@ import {
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
 import { useStakeAvailable } from './hooks/use-stake-available';
-import {
-  ABOUT_REFERRAL_DOCS_LINK,
-  DISCLAIMER_REFERRAL_DOCS_LINK,
-} from './constants';
-import { useReferral } from './hooks/use-referral';
+import { ABOUT_REFERRAL_DOCS_LINK } from './constants';
+import { useIsInReferralSet, useReferral } from './hooks/use-referral';
 import { useT } from '../../lib/use-t';
+import { Navigate } from 'react-router-dom';
+import { Routes } from '../../lib/links';
+import { useReferralProgram } from './hooks/use-referral-program';
 
 export const CreateCodeContainer = () => {
+  const { pubKey } = useVegaWallet();
+  const isInReferralSet = useIsInReferralSet(pubKey);
+
+  // Navigate to the index page when already in the referral set.
+  if (isInReferralSet) {
+    return <Navigate to={Routes.REFERRALS} />;
+  }
+
   return <CreateCodeForm />;
 };
 
@@ -48,7 +56,7 @@ export const CreateCodeForm = () => {
       </h3>
       <p className="mb-4 text-center text-base">
         {t(
-          'Generate a referral code to share with your friends and start earning commission.'
+          'Generate a referral code to share with your friends and access the commission benefits of the current program.'
         )}
       </p>
 
@@ -98,10 +106,7 @@ const CreateCodeDialog = ({
   const { stakeAvailable: currentStakeAvailable, requiredStake } =
     useStakeAvailable();
 
-  const { data: referralSets } = useReferral({
-    pubKey,
-    role: 'referrer',
-  });
+  const { details: programDetails } = useReferralProgram();
 
   const onSubmit = () => {
     if (isReadOnly || !pubKey) {
@@ -201,7 +206,7 @@ const CreateCodeDialog = ({
     );
   }
 
-  if (!referralSets) {
+  if (!programDetails) {
     return (
       <div className="flex flex-col gap-4">
         {(status === 'idle' || status === 'loading' || status === 'error') && (
@@ -237,7 +242,9 @@ const CreateCodeDialog = ({
           intent={Intent.Primary}
           onClick={() => onSubmit()}
           {...getButtonProps()}
-        ></TradingButton>
+        >
+          {t('Yes')}
+        </TradingButton>
         {status === 'idle' && (
           <TradingButton
             fill={true}
@@ -255,9 +262,6 @@ const CreateCodeDialog = ({
           <ExternalLink href={ABOUT_REFERRAL_DOCS_LINK}>
             {t('About the referral program')}
           </ExternalLink>
-          <ExternalLink href={DISCLAIMER_REFERRAL_DOCS_LINK}>
-            {t('Disclaimer')}
-          </ExternalLink>
         </div>
       </div>
     );
@@ -268,7 +272,7 @@ const CreateCodeDialog = ({
       {(status === 'idle' || status === 'loading' || status === 'error') && (
         <p>
           {t(
-            'Generate a referral code to share with your friends and start earning commission.'
+            'Generate a referral code to share with your friends and access the commission benefits of the current program.'
           )}
         </p>
       )}
@@ -298,9 +302,6 @@ const CreateCodeDialog = ({
       <div className="flex justify-center pt-5 mt-2 text-sm border-t gap-4 text-default border-default">
         <ExternalLink href={ABOUT_REFERRAL_DOCS_LINK}>
           {t('About the referral program')}
-        </ExternalLink>
-        <ExternalLink href={DISCLAIMER_REFERRAL_DOCS_LINK}>
-          {t('Disclaimer')}
         </ExternalLink>
       </div>
     </div>

@@ -13,7 +13,6 @@ export const useStakeAvailable = (pubKey?: string) => {
   const { data } = useStakeAvailableQuery({
     variables: { partyId: partyId || '' },
     skip: !partyId,
-    // TODO: remove when network params available
     errorPolicy: 'ignore',
   });
 

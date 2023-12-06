@@ -53,7 +53,7 @@ export const NotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="pt-32">
+    <LayoutWithSky className="pt-32">
       <div
         aria-hidden
         className="absolute top-64 right-[220px] md:right-[340px] max-sm:hidden"
@@ -75,6 +75,6 @@ export const NotFound = () => {
           {t('Go back and try again')}
         </RainbowButton>
       </p>
-    </div>
+    </LayoutWithSky>
   );
 };

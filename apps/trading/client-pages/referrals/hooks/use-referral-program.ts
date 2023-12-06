@@ -1,14 +1,8 @@
 import { getNumberFormat } from '@vegaprotocol/utils';
-import { addDays } from 'date-fns';
 import sortBy from 'lodash/sortBy';
 import omit from 'lodash/omit';
 import { useReferralProgramQuery } from './__generated__/CurrentReferralProgram';
-
-const STAKING_TIERS_MAPPING: Record<number, string> = {
-  1: 'Tradestarter',
-  2: 'Mid level degen',
-  3: 'Reward hoarder',
-};
+import BigNumber from 'bignumber.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MOCK = {
@@ -16,46 +10,76 @@ const MOCK = {
     currentReferralProgram: {
       id: 'abc',
       version: 1,
-      endOfProgramTimestamp: addDays(new Date(), 10).toISOString(),
-      windowLength: 10,
       benefitTiers: [
         {
-          minimumEpochs: 5,
-          minimumRunningNotionalTakerVolume: '30000',
-          referralDiscountFactor: '0.01',
-          referralRewardFactor: '0.01',
-        },
-        {
-          minimumEpochs: 5,
-          minimumRunningNotionalTakerVolume: '20000',
-          referralDiscountFactor: '0.05',
+          minimumEpochs: 1,
+          minimumRunningNotionalTakerVolume: '100000',
+          referralDiscountFactor: '0.1',
           referralRewardFactor: '0.05',
         },
         {
-          minimumEpochs: 5,
-          minimumRunningNotionalTakerVolume: '10000',
-          referralDiscountFactor: '0.001',
-          referralRewardFactor: '0.001',
+          minimumEpochs: 1,
+          minimumRunningNotionalTakerVolume: '1000000',
+          referralDiscountFactor: '0.1',
+          referralRewardFactor: '0.075',
+        },
+        {
+          minimumEpochs: 1,
+          minimumRunningNotionalTakerVolume: '5000000',
+          referralDiscountFactor: '0.1',
+          referralRewardFactor: '0.1',
+        },
+        {
+          minimumEpochs: 1,
+          minimumRunningNotionalTakerVolume: '25000000',
+          referralDiscountFactor: '0.1',
+          referralRewardFactor: '0.125',
+        },
+        {
+          minimumEpochs: 1,
+          minimumRunningNotionalTakerVolume: '75000000',
+          referralDiscountFactor: '0.1',
+          referralRewardFactor: '0.15',
+        },
+        {
+          minimumEpochs: 1,
+          minimumRunningNotionalTakerVolume: '150000000',
+          referralDiscountFactor: '0.07',
+          referralRewardFactor: '0.175',
         },
       ],
       stakingTiers: [
         {
-          minimumStakedTokens: '10000',
-          referralRewardMultiplier: '1',
+          minimumStakedTokens: '100000000000000000000',
+          referralRewardMultiplier: '1.025',
         },
         {
-          minimumStakedTokens: '20000',
-          referralRewardMultiplier: '2',
+          minimumStakedTokens: '1000000000000000000000',
+          referralRewardMultiplier: '1.05',
         },
         {
-          minimumStakedTokens: '30000',
-          referralRewardMultiplier: '3',
+          minimumStakedTokens: '5000000000000000000000',
+          referralRewardMultiplier: '1.1',
+        },
+        {
+          minimumStakedTokens: '50000000000000000000000',
+          referralRewardMultiplier: '1.2',
+        },
+        {
+          minimumStakedTokens: '250000000000000000000000',
+          referralRewardMultiplier: '1.25',
+        },
+        {
+          minimumStakedTokens: '500000000000000000000000',
+          referralRewardMultiplier: '1.3',
         },
       ],
+      endOfProgramTimestamp: '2024-12-31T01:00:00Z',
+      windowLength: 30,
     },
+    loading: false,
+    error: undefined,
   },
-  loading: false,
-  error: undefined,
 };
 
 export const useReferralProgram = () => {
@@ -79,9 +103,9 @@ export const useReferralProgram = () => {
     return {
       tier: i + 1, // sorted in asc order, hence first is the lowest tier
       rewardFactor: Number(t.referralRewardFactor),
-      commission: Number(t.referralRewardFactor) * 100 + '%',
+      commission: BigNumber(t.referralRewardFactor).times(100).toFixed(2) + '%',
       discountFactor: Number(t.referralDiscountFactor),
-      discount: Number(t.referralDiscountFactor) * 100 + '%',
+      discount: BigNumber(t.referralDiscountFactor).times(100).toFixed(2) + '%',
       minimumVolume: Number(t.minimumRunningNotionalTakerVolume),
       volume: getNumberFormat(0).format(
         Number(t.minimumRunningNotionalTakerVolume)
@@ -90,13 +114,11 @@ export const useReferralProgram = () => {
     };
   });
 
-  const stakingTiers = sortBy(
-    data.currentReferralProgram.stakingTiers,
-    (t) => t.referralRewardMultiplier
+  const stakingTiers = sortBy(data.currentReferralProgram.stakingTiers, (t) =>
+    parseFloat(t.referralRewardMultiplier)
   ).map((t, i) => {
     return {
       tier: i + 1,
-      label: STAKING_TIERS_MAPPING[i + 1],
       ...t,
     };
   });

@@ -1,0 +1,20 @@
+query FundsAvailable($partyId: ID!) {
+  party(id: $partyId) {
+    accountsConnection {
+      edges {
+        node {
+          balance
+          asset {
+            decimals
+            symbol
+            id
+          }
+        }
+      }
+    }
+  }
+  networkParameter(key: "spam.protection.applyReferral.min.funds") {
+    key
+    value
+  }
+}

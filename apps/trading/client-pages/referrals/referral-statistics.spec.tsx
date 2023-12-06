@@ -275,30 +275,34 @@ jest.mock('@vegaprotocol/wallet', () => {
 });
 
 describe('ReferralStatistics', () => {
-  it('displays create code when no data has been found for given pubkey', () => {
+  it('displays apply code when no data has been found for given pubkey', () => {
     const { queryByTestId } = render(
-      <MockedProvider mocks={[]} showWarnings={false}>
-        <ReferralStatistics />
-      </MockedProvider>
+      <MemoryRouter>
+        <MockedProvider mocks={[]} showWarnings={false}>
+          <ReferralStatistics />
+        </MockedProvider>
+      </MemoryRouter>
     );
 
-    expect(queryByTestId('referral-create-code-form')).toBeInTheDocument();
+    expect(queryByTestId('referral-apply-code-form')).toBeInTheDocument();
   });
 
   it('displays referrer stats when given pubkey is a referrer', async () => {
     const { queryByTestId } = render(
-      <MockedProvider
-        mocks={[
-          programMock,
-          referralSetAsReferrerMock,
-          noReferralSetAsRefereeMock,
-          stakeAvailableMock,
-          refereesMock,
-        ]}
-        showWarnings={false}
-      >
-        <ReferralStatistics />
-      </MockedProvider>
+      <MemoryRouter>
+        <MockedProvider
+          mocks={[
+            programMock,
+            referralSetAsReferrerMock,
+            noReferralSetAsRefereeMock,
+            stakeAvailableMock,
+            refereesMock,
+          ]}
+          showWarnings={false}
+        >
+          <ReferralStatistics />
+        </MockedProvider>
+      </MemoryRouter>
     );
 
     await waitFor(() => {
