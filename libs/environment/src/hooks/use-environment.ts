@@ -261,7 +261,7 @@ const compileEnvVars = () => {
   return env;
 };
 
-const featureFlagsLocalStorageKey = 'vega_feature_flags';
+export const featureFlagsLocalStorageKey = 'vega_feature_flags';
 let userEnabledFeatureFlags: (keyof FeatureFlags)[] | undefined = undefined;
 
 export const setUserEnabledFeatureFlag = (
@@ -284,18 +284,21 @@ export const setUserEnabledFeatureFlag = (
   }
 };
 
-export const getUserEnabledFeatureFlags = (): (keyof FeatureFlags)[] => {
+export const getUserEnabledFeatureFlags = (
+  refresh = false,
+  allowedFlags = userControllableFeatureFlags
+): (keyof FeatureFlags)[] => {
   if (typeof window === 'undefined') {
     return [];
   }
-  if (typeof userEnabledFeatureFlags !== 'undefined') {
+  if (typeof userEnabledFeatureFlags !== 'undefined' && !refresh) {
     return userEnabledFeatureFlags;
   }
   const enabledFlags = window.localStorage.getItem(featureFlagsLocalStorageKey);
   userEnabledFeatureFlags = enabledFlags
     ? uniq(
         (enabledFlags.split(',') as (keyof FeatureFlags)[]).filter((flag) =>
-          userControllableFeatureFlags.includes(flag)
+          allowedFlags.includes(flag)
         )
       )
     : [];
@@ -303,7 +306,7 @@ export const getUserEnabledFeatureFlags = (): (keyof FeatureFlags)[] => {
 };
 
 const TRUTHY = ['1', 'true'];
-const compileFeatureFlags = (): FeatureFlags => {
+export const compileFeatureFlags = (refresh = false): FeatureFlags => {
   const COSMIC_ELEVATOR_FLAGS: CosmicElevatorFlags = {
     ICEBERG_ORDERS: TRUTHY.includes(
       windowOrDefault(
@@ -435,7 +438,7 @@ const compileFeatureFlags = (): FeatureFlags => {
     ...EXPLORER_FLAGS,
     ...GOVERNANCE_FLAGS,
   };
-  getUserEnabledFeatureFlags().forEach((flag) => (flags[flag] = true));
+  getUserEnabledFeatureFlags(refresh).forEach((flag) => (flags[flag] = true));
   return flags;
 };
 
