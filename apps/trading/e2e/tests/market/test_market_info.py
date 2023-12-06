@@ -197,10 +197,10 @@ def test_market_info_risk_factors(page: Page):
     fields = [
         ["Long", "0.05153"],
         ["Short", "0.05422"],
-        ["Max Leverage Long", "19.036"],
-        ["Max Leverage Short", "18.111"],
-        ["Max Initial Leverage Long", "12.691"],
-        ["Max Initial Leverage Short", "12.074"],
+        ["Max Leverage Long", "19.406"],
+        ["Max Leverage Short", "18.445"],
+        ["Max Initial Leverage Long", "12.937"],
+        ["Max Initial Leverage Short", "12.297"],
     ]
     validate_info_section(page, fields)
 
