@@ -1159,9 +1159,9 @@ profile = ["pytest-profiling", "snakeviz"]
 
 [package.source]
 type = "git"
-url = "https://github.com/vegaprotocol/vega-market-sim.git"
-reference = "HEAD"
-resolved_reference = "fbcb974b2055bbc80169cdfd69987f087f9969fb"
+url = "https://github.com/vegaprotocol/vega-market-sim.git/"
+reference = "fix/genesis_panic"
+resolved_reference = "7ab04931924380db8000544b7f3d65fcb39b5467"
 
 [[package]]
 name = "websocket-client"
@@ -1342,4 +1342,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "d1231fe591b774e34b8f94a54cd02e4d7dae924c57785263841c3b0b0feed505"
+content-hash = "68ed0de55290a3b929d47eb7f7b031fb7e172261c7bbeb4f554b7c27a4462754"
