@@ -104,6 +104,10 @@
   list-style: circle;
 }
 
+.react-markdown-container a {
+  text-decoration: underline;
+}
+
 .jsondiffpatch-delta,
 .jsondiffpatch-delta pre {
   font-family: 'Roboto Mono', monospace !important;
