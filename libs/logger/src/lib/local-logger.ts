@@ -62,6 +62,7 @@ export class LocalLogger {
   }
   private tags: string[] = [];
   private _application = 'trading';
+
   constructor(conf: LoggerConf) {
     if (conf.application) {
       this._application = conf.application;
@@ -69,6 +70,7 @@ export class LocalLogger {
     this.tags = [...(conf.tags || [])];
     this._logLevel = conf.logLevel || this._logLevel;
   }
+
   public debug(...args: ConsoleArg[]) {
     this._log('debug', 'debug', args);
   }
@@ -101,7 +103,7 @@ export class LocalLogger {
     ) {
       // eslint-disable-next-line no-console
       console[logMethod].apply(console, [
-        `${this._application}:${level}: `,
+        `${this._application}:${level}:`,
         ...args,
       ]);
     }
