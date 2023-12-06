@@ -61,6 +61,14 @@ const rewardSummaries = [
       rewardType: AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
     },
   },
+  {
+    node: {
+      epoch: 7,
+      assetId: assets.asset2.id,
+      amount: '300',
+      rewardType: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
+    },
+  },
 ];
 
 const getCell = (cells: HTMLElement[], colId: string) => {
@@ -69,7 +77,7 @@ const getCell = (cells: HTMLElement[], colId: string) => {
   );
 };
 
-describe('RewarsHistoryTable', () => {
+describe('RewardsHistoryTable', () => {
   const props = {
     epochRewardSummaries: {
       edges: rewardSummaries,
@@ -88,7 +96,7 @@ describe('RewarsHistoryTable', () => {
     loading: false,
   };
 
-  it('Renders table with accounts summed up by asset', () => {
+  it('renders table with accounts summed up by asset', () => {
     render(<RewardHistoryTable {...props} />);
 
     const container = within(
@@ -110,17 +118,27 @@ describe('RewarsHistoryTable', () => {
       assets.asset2.name
     );
 
+    // First row
     const marketCreationCell = getCell(cells, 'marketCreation');
     expect(
       marketCreationCell.getByTestId('stack-cell-primary')
     ).toHaveTextContent('300');
     expect(
       marketCreationCell.getByTestId('stack-cell-secondary')
-    ).toHaveTextContent('100.00%');
+    ).toHaveTextContent('50.00%');
+
+    const infrastructureFeesCell = getCell(cells, 'infrastructureFees');
+    expect(
+      infrastructureFeesCell.getByTestId('stack-cell-primary')
+    ).toHaveTextContent('300');
+    expect(
+      infrastructureFeesCell.getByTestId('stack-cell-secondary')
+    ).toHaveTextContent('50.00%');
 
     let totalCell = getCell(cells, 'total');
-    expect(totalCell.getByText('300.00')).toBeInTheDocument();
+    expect(totalCell.getByText('600.00')).toBeInTheDocument();
 
+    // Second row
     row = within(rows[1]);
     cells = row.getAllByRole('gridcell');
 
