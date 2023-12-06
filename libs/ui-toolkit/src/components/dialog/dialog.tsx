@@ -37,8 +37,6 @@ export function Dialog({
     'w-full h-full'
   );
   const wrapperClasses = classNames(
-    // Positions the modal in the center of screen
-    'z-20 relative rounded top-[10vh]',
     // Dimensions
     'max-w-[90vw] p-4 md:p-8',
     // Need to apply background and text colors again as content is rendered in a portal
@@ -72,27 +70,34 @@ export function Dialog({
           onInteractOutside={onInteractOutside}
           data-testid={dataTestId}
         >
-          <div className={wrapperClasses}>
-            {onChange && (
-              <DialogPrimitives.Close
-                className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
-                data-testid="dialog-close"
-              >
-                <VegaIcon name={VegaIconNames.CROSS} size={24} />
-              </DialogPrimitives.Close>
+          <div
+            className={classNames(
+              // Positions the modal in the center of screen
+              'z-20 relative rounded top-[10vh] pb-[10vh]'
             )}
-            <div className="flex gap-4 max-w-full">
-              {icon && <div className="fill-current">{icon}</div>}
-              <div data-testid="dialog-content" className="flex-1 max-w-full">
-                {title && (
-                  <h1
-                    className="text-xl uppercase mb-4 pr-2"
-                    data-testid="dialog-title"
-                  >
-                    {title}
-                  </h1>
-                )}
-                <div>{children}</div>
+          >
+            <div className={wrapperClasses}>
+              {onChange && (
+                <DialogPrimitives.Close
+                  className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
+                  data-testid="dialog-close"
+                >
+                  <VegaIcon name={VegaIconNames.CROSS} size={24} />
+                </DialogPrimitives.Close>
+              )}
+              <div className="flex gap-4 max-w-full">
+                {icon && <div className="fill-current">{icon}</div>}
+                <div data-testid="dialog-content" className="flex-1 max-w-full">
+                  {title && (
+                    <h1
+                      className="text-xl uppercase mb-4 pr-2"
+                      data-testid="dialog-title"
+                    >
+                      {title}
+                    </h1>
+                  )}
+                  <div>{children}</div>
+                </div>
               </div>
             </div>
           </div>

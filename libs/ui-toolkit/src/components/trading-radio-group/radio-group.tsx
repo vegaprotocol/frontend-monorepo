@@ -57,12 +57,20 @@ interface RadioProps {
   value: string;
   label: string;
   disabled?: boolean;
+  className?: string;
 }
 
-export const TradingRadio = ({ id, value, label, disabled }: RadioProps) => {
+export const TradingRadio = ({
+  id,
+  value,
+  label,
+  disabled,
+  className,
+}: RadioProps) => {
   const wrapperClasses = classNames(
     'flex items-center gap-1.5 text-xs',
-    labelClasses
+    labelClasses,
+    className
   );
   const itemClasses = classNames(
     'flex justify-center items-center',
