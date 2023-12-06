@@ -2,10 +2,7 @@ import debounce from 'lodash/debounce';
 import { useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef, ValueFormatterFunc } from 'ag-grid-community';
-import {
-  useAssetsMapProvider,
-  type AssetFieldsFragment,
-} from '@vegaprotocol/assets';
+import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import {
   addDecimalsFormatNumberQuantum,
   formatNumberPercentage,
@@ -26,16 +23,16 @@ import { useT } from '../../lib/use-t';
 export const RewardsHistoryContainer = ({
   epoch,
   pubKey,
+  assets,
 }: {
   pubKey: string | null;
   epoch: number;
+  assets: Record<string, AssetFieldsFragment>;
 }) => {
   const [epochVariables, setEpochVariables] = useState(() => ({
     from: epoch - 1,
     to: epoch,
   }));
-
-  const { data: assets } = useAssetsMapProvider();
 
   // No need to specify the fromEpoch as it will by default give you the last
   const { refetch, data, loading } = useRewardsHistoryQuery({
@@ -154,10 +151,12 @@ export const RewardHistoryTable = ({
     const rewardValueFormatter: ValueFormatterFunc<RewardRow> = ({
       data,
       value,
+      ...rest
     }) => {
       if (!value || !data) {
         return '-';
       }
+
       return addDecimalsFormatNumberQuantum(
         value,
         data.asset.decimals,

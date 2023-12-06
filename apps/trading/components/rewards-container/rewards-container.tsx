@@ -62,7 +62,7 @@ export const RewardsContainer = () => {
     errorPolicy: 'ignore',
   });
 
-  if (!epochData?.epoch) return null;
+  if (!epochData?.epoch || !assetMap) return null;
 
   const loading = paramsLoading || accountsLoading || rewardsLoading;
 
@@ -129,7 +129,6 @@ export const RewardsContainer = () => {
         className="lg:col-span-3 xl:col-span-2"
         loading={loading}
       >
-        v
         <Vesting
           pubKey={pubKey}
           baseRate={params.rewards_vesting_baseRate}
@@ -230,6 +229,7 @@ export const RewardsContainer = () => {
         <RewardsHistoryContainer
           epoch={Number(epochData?.epoch.id)}
           pubKey={pubKey}
+          assets={assetMap}
         />
       </Card>
     </div>
