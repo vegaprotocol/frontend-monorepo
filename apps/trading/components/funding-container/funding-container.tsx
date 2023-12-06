@@ -40,6 +40,9 @@ const DateRange = {
   RANGE_ALL: 'All',
 };
 
+const priceFormat = (fundingRate: number) =>
+  `${(fundingRate * 100).toFixed(4)}%`;
+
 export const FundingContainer = ({ marketId }: { marketId: string }) => {
   const t = useT();
   const { theme } = useThemeSwitcher();
@@ -82,7 +85,7 @@ export const FundingContainer = ({ marketId }: { marketId: string }) => {
     <LineChart
       data={values}
       theme={theme}
-      priceFormat={(fundingRate) => `${(fundingRate * 100).toFixed(4)}%`}
+      priceFormat={priceFormat}
       yAxisTickFormat="%"
     />
   );
