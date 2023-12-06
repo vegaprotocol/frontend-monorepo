@@ -1,4 +1,7 @@
-import { getDateTimeFormat } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  getDateTimeFormat,
+} from '@vegaprotocol/utils';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { Table } from './table';
 import classNames from 'classnames';
@@ -15,6 +18,25 @@ import {
 } from '@vegaprotocol/environment';
 import { useT, ns } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
+
+// rainbow-ish order
+const TIER_COLORS: Array<ComponentProps<typeof Tag>['color']> = [
+  'pink',
+  'orange',
+  'yellow',
+  'green',
+  'blue',
+  'purple',
+];
+
+const getTierColor = (tier: number) => {
+  const tiers = Object.keys(TIER_COLORS).length;
+  let index = Math.abs(tier - 1);
+  if (tier >= tiers) {
+    index = index % tiers;
+  }
+  return TIER_COLORS[index];
+};
 
 const Loading = ({ variant }: { variant: 'large' | 'inline' }) => (
   <div
@@ -37,11 +59,27 @@ const StakingTier = ({
   minimumStakedTokens: string;
 }) => {
   const t = useT();
-  const color: Record<number, ComponentProps<typeof Tag>['color']> = {
-    1: 'green',
-    2: 'blue',
-    3: 'pink',
-  };
+  const minimum = addDecimalsFormatNumber(minimumStakedTokens, 18);
+
+  // TODO: Decide what to do with the multiplier images
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const multiplierImage = (
+    <div
+      aria-hidden
+      className={classNames(
+        'w-full max-w-[80px] h-full min-h-[80px]',
+        'bg-cover bg-right-bottom',
+        {
+          "bg-[url('/1x.png')]": tier === 1,
+          "bg-[url('/2x.png')]": tier === 2,
+          "bg-[url('/3x.png')]": tier === 3,
+        }
+      )}
+    >
+      <span className="sr-only">{`${referralRewardMultiplier}x multiplier`}</span>
+    </div>
+  );
+
   return (
     <div
       className={classNames(
@@ -54,30 +92,20 @@ const StakingTier = ({
       )}
     >
       <div
-        aria-hidden
-        className={classNames(
-          'w-full max-w-[80px] h-full min-h-[80px]',
-          'bg-cover bg-right-bottom',
-          {
-            "bg-[url('/1x.png')]": tier === 1,
-            "bg-[url('/2x.png')]": tier === 2,
-            "bg-[url('/3x.png')]": tier === 3,
-          }
-        )}
-      >
-        <span className="sr-only">{`${referralRewardMultiplier}x multiplier`}</span>
-      </div>
-      <div
         className={classNames(
           'p-3 flex flex-row min-h-[80px] h-full items-center'
         )}
       >
         <div>
-          <Tag color={color[tier]}>Multiplier {referralRewardMultiplier}x</Tag>
+          <Tag color={getTierColor(tier)}>
+            {t('Multiplier')} {referralRewardMultiplier}x
+          </Tag>
           <p className="mt-1 text-sm text-vega-clight-100 dark:text-vega-cdark-100">
-            {t('Stake a minimum of {{minimumStakedTokens}} $VEGA tokens', {
-              minimumStakedTokens,
-            })}
+            <Trans
+              defaults="Stake a minimum of <0>{{minimum}}</0> $VEGA tokens"
+              values={{ minimum }}
+              components={[<b key={minimum}></b>]}
+            />
           </p>
         </div>
       </div>
@@ -207,7 +235,7 @@ export const TiersContainer = () => {
             )}
           </p>
         </div>
-        <div className="flex flex-col justify-items-stretch lg:flex-row gap-5">
+        <div className="gap-5 grid lg:grid-cols-3">
           {loading || !stakingTiers || stakingTiers.length === 0 ? (
             <>
               <Loading variant="large" />
@@ -295,14 +323,20 @@ const TiersTable = ({
       data={data.map((d) => ({
         ...d,
         className: classNames({
-          'from-vega-pink-400 dark:from-vega-pink-600 to-20%  bg-highlight':
-            d.tier >= 3,
-          'from-vega-purple-400 dark:from-vega-purple-600 to-20%  bg-highlight':
-            d.tier === 2,
+          'from-vega-yellow-400 dark:from-vega-yellow-600 to-20%  bg-highlight':
+            'yellow' === getTierColor(d.tier),
+          'from-vega-green-400 dark:from-vega-green-600 to-20%  bg-highlight':
+            'green' === getTierColor(d.tier),
           'from-vega-blue-400 dark:from-vega-blue-600 to-20%  bg-highlight':
-            d.tier === 1,
+            'blue' === getTierColor(d.tier),
+          'from-vega-purple-400 dark:from-vega-purple-600 to-20%  bg-highlight':
+            'purple' === getTierColor(d.tier),
+          'from-vega-pink-400 dark:from-vega-pink-600 to-20%  bg-highlight':
+            'pink' === getTierColor(d.tier),
           'from-vega-orange-400 dark:from-vega-orange-600 to-20%  bg-highlight':
-            d.tier == 0,
+            'orange' === getTierColor(d.tier),
+          'from-vega-clight-200 dark:from-vega-cdark-200 to-20%  bg-highlight':
+            'none' === getTierColor(d.tier),
         }),
       }))}
     />
