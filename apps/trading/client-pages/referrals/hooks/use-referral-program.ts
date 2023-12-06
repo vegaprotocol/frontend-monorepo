@@ -2,6 +2,7 @@ import { getNumberFormat } from '@vegaprotocol/utils';
 import sortBy from 'lodash/sortBy';
 import omit from 'lodash/omit';
 import { useReferralProgramQuery } from './__generated__/CurrentReferralProgram';
+import BigNumber from 'bignumber.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MOCK = {
@@ -43,7 +44,7 @@ const MOCK = {
         {
           minimumEpochs: 1,
           minimumRunningNotionalTakerVolume: '150000000',
-          referralDiscountFactor: '0.1',
+          referralDiscountFactor: '0.07',
           referralRewardFactor: '0.175',
         },
       ],
@@ -102,9 +103,9 @@ export const useReferralProgram = () => {
     return {
       tier: i + 1, // sorted in asc order, hence first is the lowest tier
       rewardFactor: Number(t.referralRewardFactor),
-      commission: Number(t.referralRewardFactor) * 100 + '%',
+      commission: BigNumber(t.referralRewardFactor).times(100).toFixed(2) + '%',
       discountFactor: Number(t.referralDiscountFactor),
-      discount: Number(t.referralDiscountFactor) * 100 + '%',
+      discount: BigNumber(t.referralDiscountFactor).times(100).toFixed(2) + '%',
       minimumVolume: Number(t.minimumRunningNotionalTakerVolume),
       volume: getNumberFormat(0).format(
         Number(t.minimumRunningNotionalTakerVolume)
