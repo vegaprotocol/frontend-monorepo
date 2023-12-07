@@ -1,12 +1,11 @@
 import pytest
-import re
-import json
+
 from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService
 from actions.vega import submit_order
 from wallet_config import MM_WALLET
 from conftest import init_vega
-from actions.utils import next_epoch
+from actions.utils import next_epoch, change_keys
 from fixtures.market import setup_continuous_market
 
 class TestVolumeDiscountProgramTier1:
@@ -38,6 +37,9 @@ class TestVolumeDiscountProgramTier1:
         vega.wait_fn(1)
         vega.wait_for_total_catchup()
         next_epoch(vega=vega)
+        submit_order(vega, "Key 1", market_tier_1_volume_discount, "SIDE_BUY", 1, 110)
+        vega.wait_fn(1)
+        vega.wait_for_total_catchup()
         return market_tier_1_volume_discount
 
     @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
@@ -91,6 +93,28 @@ class TestVolumeDiscountProgramTier1:
         expect(row.locator('[col-id="liquidityFee"]')).to_have_text("0%")
         expect(row.locator('[col-id="totalFee"]')).to_have_text("10.05%")
 
+    @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
+    def test_deal_ticket_volume_discount_program_tier_1(self, market_tier_1_volume_discount, page: Page):
+        page.goto(f"/#/markets/{market_tier_1_volume_discount}")
+        page.get_by_test_id("order-size").fill("1")
+        page.get_by_test_id("order-price").fill("1")
+        expect(page.get_by_test_id("discount-pill")).to_have_text("-10%")
+        page.get_by_test_id("fees-text").hover()
+        page.pause()
+        tooltip = page.get_by_test_id("tooltip-content").first
+        expect(tooltip.get_by_test_id("infrastructure-fee-factor")).to_have_text("0.05%")
+        expect(tooltip.get_by_test_id("infrastructure-fee-value")).to_have_text("0.0005 tDAI")
+        expect(tooltip.get_by_test_id("liquidity-fee-factor")).to_have_text("0%")
+        expect(tooltip.get_by_test_id("liquidity-fee-value")).to_have_text("0.00 tDAI")
+        expect(tooltip.get_by_test_id("maker-fee-factor")).to_have_text("10%")
+        expect(tooltip.get_by_test_id("maker-fee-value")).to_have_text("0.10 tDAI")
+        expect(tooltip.get_by_test_id("subtotal-fee-factor")).to_have_text("10.05%")
+        expect(tooltip.get_by_test_id("subtotal-fee-value")).to_have_text("0.1005 tDAI")
+        expect(tooltip.get_by_test_id("discount-fee-factor")).to_have_text("-10%")
+        expect(tooltip.get_by_test_id("discount-fee-value")).to_have_text("-0.01005 tDAI")
+        expect(tooltip.get_by_test_id("total-fee-value")).to_have_text("0.09045 tDAI")
+       
+
 class TestVolumeDiscountProgramTier2:
 
     @pytest.fixture(scope="class")
@@ -124,6 +148,9 @@ class TestVolumeDiscountProgramTier2:
         vega.wait_fn(1)
         vega.wait_for_total_catchup()
         next_epoch(vega=vega)
+        submit_order(vega, "Key 1", market_tier_2_volume_discount, "SIDE_BUY", 1, 110)
+        vega.wait_fn(1)
+        vega.wait_for_total_catchup()
         return market_tier_2_volume_discount
 
     @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
@@ -174,6 +201,28 @@ class TestVolumeDiscountProgramTier2:
         expect(row.locator('[col-id="liquidityFee"]')).to_have_text("0%")
         expect(row.locator('[col-id="totalFee"]')).to_have_text("10.05%")
 
+    @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
+    def test_deal_ticket_volume_discount_program_tier_2(self, market_tier_2_volume_discount, page: Page):
+        page.goto(f"/#/markets/{market_tier_2_volume_discount}")
+        page.get_by_test_id("order-size").fill("1")
+        page.get_by_test_id("order-price").fill("1")
+        expect(page.get_by_test_id("discount-pill")).to_have_text("-20%")
+        page.get_by_test_id("fees-text").hover()
+        page.pause()
+        tooltip = page.get_by_test_id("tooltip-content").first
+        expect(tooltip.get_by_test_id("infrastructure-fee-factor")).to_have_text("0.05%")
+        expect(tooltip.get_by_test_id("infrastructure-fee-value")).to_have_text("0.0005 tDAI")
+        expect(tooltip.get_by_test_id("liquidity-fee-factor")).to_have_text("0%")
+        expect(tooltip.get_by_test_id("liquidity-fee-value")).to_have_text("0.00 tDAI")
+        expect(tooltip.get_by_test_id("maker-fee-factor")).to_have_text("10%")
+        expect(tooltip.get_by_test_id("maker-fee-value")).to_have_text("0.10 tDAI")
+        expect(tooltip.get_by_test_id("subtotal-fee-factor")).to_have_text("10.05%")
+        expect(tooltip.get_by_test_id("subtotal-fee-value")).to_have_text("0.1005 tDAI")
+        expect(tooltip.get_by_test_id("discount-fee-factor")).to_have_text("-20%")
+        expect(tooltip.get_by_test_id("discount-fee-value")).to_have_text("-0.0201 tDAI")
+        expect(tooltip.get_by_test_id("total-fee-value")).to_have_text("0.0804 tDAI")
+       
+
 class TestReferralDiscountProgramTier1:
 
     @pytest.fixture(scope="class")
@@ -215,6 +264,9 @@ class TestReferralDiscountProgramTier1:
         vega.wait_fn(1)
         vega.wait_for_total_catchup()
         next_epoch(vega=vega)
+        submit_order(vega, "Key 1", market_tier_1_referral_discount, "SIDE_BUY", 1, 110)
+        vega.wait_fn(1)
+        vega.wait_for_total_catchup()
         return market_tier_1_referral_discount
 
     @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
@@ -265,6 +317,26 @@ class TestReferralDiscountProgramTier1:
         expect(row.locator('[col-id="makerFee"]')).to_have_text("10%")
         expect(row.locator('[col-id="liquidityFee"]')).to_have_text("0%")
         expect(row.locator('[col-id="totalFee"]')).to_have_text("10.05%")
+
+    @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
+    def test_deal_ticket_referral_discount_program_tier_1(self, market_tier_1_referral_discount, page: Page):
+        page.goto(f"/#/markets/{market_tier_1_referral_discount}")
+        page.get_by_test_id("order-size").fill("1")
+        page.get_by_test_id("order-price").fill("1")
+        expect(page.get_by_test_id("discount-pill")).to_have_text("-10%")
+        page.get_by_test_id("fees-text").hover()
+        tooltip = page.get_by_test_id("tooltip-content").first
+        expect(tooltip.get_by_test_id("infrastructure-fee-factor")).to_have_text("0.05%")
+        expect(tooltip.get_by_test_id("infrastructure-fee-value")).to_have_text("0.0005 tDAI")
+        expect(tooltip.get_by_test_id("liquidity-fee-factor")).to_have_text("0%")
+        expect(tooltip.get_by_test_id("liquidity-fee-value")).to_have_text("0.00 tDAI")
+        expect(tooltip.get_by_test_id("maker-fee-factor")).to_have_text("10%")
+        expect(tooltip.get_by_test_id("maker-fee-value")).to_have_text("0.10 tDAI")
+        expect(tooltip.get_by_test_id("subtotal-fee-factor")).to_have_text("10.05%")
+        expect(tooltip.get_by_test_id("subtotal-fee-value")).to_have_text("0.1005 tDAI")
+        expect(tooltip.get_by_test_id("discount-fee-factor")).to_have_text("-10%")
+        expect(tooltip.get_by_test_id("discount-fee-value")).to_have_text("-0.01005 tDAI")
+        expect(tooltip.get_by_test_id("total-fee-value")).to_have_text("0.09045 tDAI")
 
 class TestReferralDiscountProgramTier2:
 
@@ -360,21 +432,45 @@ class TestReferralDiscountProgramTier2:
         expect(row.locator('[col-id="totalFee"]')).to_have_text("10.05%")
 
     @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
-    def test_fills_referral_discount_program_tier_2(self, vega:VegaService, market_tier_2_referral_discount, page: Page):
-        page.goto("/#/fees")
-        page.pause()
-        submit_order(vega, "Key 1", market_tier_2_referral_discount, "SIDE_BUY", 1, 110)
-        vega.wait_fn(1)
-        vega.wait_for_total_catchup()
-        page.pause()
-        expect(page.get_by_test_id("adjusted-fees")).to_have_text("8.04%-8.04%")
-        expect(page.get_by_test_id("total-fee-before-discount")).to_have_text("Total fee before discount10.05%-10.05%")
-        expect(page.get_by_test_id("infrastructure-fees")).to_have_text("Infrastructure0.05%")
-        expect(page.get_by_test_id("maker-fees")).to_have_text("Maker10%")
-        expect(page.get_by_test_id("liquidity-fees")).to_have_text("Liquidity0%-0%")
+    def test_fills_taker_referral_discount_program_tier_2(self, market_tier_2_referral_discount, page: Page):
+        page.goto(f"/#/markets/{market_tier_2_referral_discount}")
+        page.get_by_test_id("Fills").click()
+        row = page.get_by_test_id("tab-fills").locator(".ag-center-cols-container .ag-row").first
+        expect(row.locator('[col-id="code"]')).to_have_text("BTC:DAI_2023Futr")
+        expect(row.locator('[col-id="size"]')).to_have_text("+1")
+        expect(row.locator('[col-id="price"]')).to_have_text("103.50 tDAI")
+        expect(row.locator('[col-id="price_1"]')).to_have_text("103.50 tDAI")
+        expect(row.locator('[col-id="aggressor"]')).to_have_text("Taker")
+        expect(row.locator('[col-id="fee"]')).to_have_text("6.65712 tDAI")
+        expect(row.locator('[col-id="fee-discount"]')).to_have_text("2.08035 tDAI")
+    
+    @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
+    def test_fills_maker_referral_discount_program_tier_2(self, vega:VegaService, market_tier_2_referral_discount, page: Page):
+        page.goto(f"/#/markets/{market_tier_2_referral_discount}")
+        change_keys(page, vega, MM_WALLET.name)
+        page.get_by_test_id("Fills").click()
+        row = page.get_by_test_id("tab-fills").locator(".ag-center-cols-container .ag-row").first
+        expect(row.locator('[col-id="code"]')).to_have_text("BTC:DAI_2023Futr")
+        expect(row.locator('[col-id="size"]')).to_have_text("-1")
+        expect(row.locator('[col-id="price"]')).to_have_text("103.50 tDAI")
+        expect(row.locator('[col-id="price_1"]')).to_have_text("103.50 tDAI")
+        expect(row.locator('[col-id="aggressor"]')).to_have_text("Maker")
+        expect(row.locator('[col-id="fee"]')).to_have_text("-6.624 tDAI")
+        expect(row.locator('[col-id="fee-discount"]')).to_have_text("2.07 tDAI")
 
     @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
-    def test_deal_ticket_referral_discount_program_tier_2(self, vega:VegaService, market_tier_2_referral_discount, page: Page):
+    def test_fills_maker_fee_tooltip_discount_program_tier_2(self, vega:VegaService, market_tier_2_referral_discount, page: Page):
+        page.goto(f"/#/markets/{market_tier_2_referral_discount}")
+        change_keys(page, vega, MM_WALLET.name)
+        page.get_by_test_id("Fills").click()
+        row = page.get_by_test_id("tab-fills").locator(".ag-center-cols-container .ag-row").first
+        row.locator('[col-id="fee"]').hover()
+        expect(page.get_by_test_id("tooltip-content").first).to_have_text("")
+
+        
+
+    @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
+    def test_deal_ticket_referral_discount_program_tier_2(self, market_tier_2_referral_discount, page: Page):
         page.goto(f"/#/markets/{market_tier_2_referral_discount}")
         page.get_by_test_id("order-size").fill("1")
         page.get_by_test_id("order-price").fill("1")
