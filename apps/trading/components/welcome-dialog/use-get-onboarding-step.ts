@@ -10,6 +10,7 @@ import { positionsDataProvider } from '@vegaprotocol/positions';
 import { useGlobalStore } from '../../stores';
 
 const ONBOARDING_STORAGE_KEY = 'vega_onboarding';
+
 export const useOnboardingStore = create<{
   dialogOpen: boolean;
   walletDialogOpen: boolean;
@@ -20,7 +21,7 @@ export const useOnboardingStore = create<{
 }>()(
   persist(
     (set) => ({
-      dialogOpen: true,
+      dialogOpen: false,
       walletDialogOpen: false,
       dismissed: false,
       dismiss: () => set({ dismissed: true }),
