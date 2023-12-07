@@ -337,7 +337,11 @@ export const Statistics = ({
     </StatTile>
   );
   const discountFactorTile = (
-    <StatTile title={t('Discount')} testId="discount" overrideWithNoProgram={!details}>
+    <StatTile
+      title={t('Discount')}
+      testId="discount"
+      overrideWithNoProgram={!details}
+    >
       {isApplyCodePreview && benefitTiers.length >= 1
         ? benefitTiers[0].discountFactor * 100
         : discountFactorValue * 100}
@@ -365,14 +369,22 @@ export const Statistics = ({
     </StatTile>
   );
   const nextTierVolumeTile = (
-    <StatTile title={t('Volume to next tier')} testId="vol-to-next-tier" overrideWithNoProgram={!details}>
+    <StatTile
+      title={t('Volume to next tier')}
+      testId="vol-to-next-tier"
+      overrideWithNoProgram={!details}
+    >
       {nextBenefitTierVolumeValue <= 0
         ? '0'
         : compactNumFormat.format(nextBenefitTierVolumeValue)}
     </StatTile>
   );
   const nextTierEpochsTile = (
-    <StatTile title={t('Epochs to next tier')} testId="epochs-to-next-tier" overrideWithNoProgram={!details}>
+    <StatTile
+      title={t('Epochs to next tier')}
+      testId="epochs-to-next-tier"
+      overrideWithNoProgram={!details}
+    >
       {nextBenefitTierEpochsValue <= 0 ? '0' : nextBenefitTierEpochsValue}
     </StatTile>
   );
