@@ -84,7 +84,10 @@ export const FeesContainer = () => {
   );
 
   return (
-    <div className="grid auto-rows-min grid-cols-4 gap-3">
+    <div
+      className="grid auto-rows-min grid-cols-4 gap-3"
+      data-testid="fees-container"
+    >
       {isConnected && (
         <>
           <Card
@@ -124,7 +127,10 @@ export const FeesContainer = () => {
                 windowLength={volumeDiscountWindowLength}
               />
             ) : (
-              <p className="text-muted pt-3 text-sm">
+              <p
+                className="text-muted pt-3 text-sm"
+                data-testid="no-volume-discount"
+              >
                 {t('No volume discount program active')}
               </p>
             )}
@@ -133,17 +139,22 @@ export const FeesContainer = () => {
             title={t('Referral benefits')}
             className="sm:col-span-2"
             loading={loading}
+            data-testid="referral-benefits-card"
           >
             {isReferrer ? (
-              <ReferrerInfo code={code} />
+              <ReferrerInfo code={code} data-testid="referrer-info" />
             ) : isReferralProgramRunning ? (
               <ReferralBenefits
                 setRunningNotionalTakerVolume={referralVolumeInWindow}
                 epochsInSet={epochsInSet}
                 epochs={referralDiscountWindowLength}
+                data-testid="referral-benefits"
               />
             ) : (
-              <p className="text-muted pt-3 text-sm">
+              <p
+                className="text-muted pt-3 text-sm"
+                data-testid="no-referral-program"
+              >
                 {t('No referral program active')}
               </p>
             )}
@@ -154,6 +165,7 @@ export const FeesContainer = () => {
         title={t('Volume discount')}
         className="lg:col-span-full xl:col-span-2"
         loading={loading}
+        data-testid="volume-discount-card"
       >
         <VolumeTiers
           tiers={volumeTiers}
@@ -166,6 +178,7 @@ export const FeesContainer = () => {
         title={t('Referral discount')}
         className="lg:col-span-full xl:col-span-2"
         loading={loading}
+        data-testid="referral-discount-card"
       >
         <ReferralTiers
           tiers={referralTiers}
@@ -178,6 +191,7 @@ export const FeesContainer = () => {
         title={t('Fees by market')}
         className="lg:col-span-full"
         loading={marketsLoading}
+        data-testid="fees-by-market-card"
       >
         <MarketFees
           markets={markets}
@@ -245,7 +259,7 @@ export const TradingFees = ({
   }
 
   return (
-    <div className="pt-4">
+    <div className="pt-4" data-testid="trading-fees">
       <div className="leading-none">
         <p className="block text-3xl leading-none" data-testid="adjusted-fees">
           {minAdjustedTotal !== undefined && maxAdjustedTotal !== undefined
@@ -255,7 +269,7 @@ export const TradingFees = ({
             : `${formatPercentage(adjustedTotal)}%`}
         </p>
         <CardTable>
-          <tr className="text-default">
+          <tr className="text-default" data-testid="total-fee-before-discount">
             <CardTableTH>{t('Total fee before discount')}</CardTableTH>
             <CardTableTD>
               {minTotal !== undefined && maxTotal !== undefined
@@ -265,7 +279,7 @@ export const TradingFees = ({
                 : `${formatPercentage(total.toNumber())}%`}
             </CardTableTD>
           </tr>
-          <tr>
+          <tr data-testid="infrastructure-fees">
             <CardTableTH>{t('Infrastructure')}</CardTableTH>
             <CardTableTD>
               {formatPercentage(
@@ -274,14 +288,14 @@ export const TradingFees = ({
               %
             </CardTableTD>
           </tr>
-          <tr>
+          <tr data-testid="maker-fees">
             <CardTableTH>{t('Maker')}</CardTableTH>
             <CardTableTD>
               {formatPercentage(Number(params.market_fee_factors_makerFee))}%
             </CardTableTD>
           </tr>
           {minLiq && maxLiq && (
-            <tr>
+            <tr data-testid="liquidity-fees">
               <CardTableTH>{t('Liquidity')}</CardTableTH>
               <CardTableTD>
                 {formatPercentage(Number(minLiq.fees.factors.liquidityFee))}%
@@ -317,7 +331,7 @@ export const CurrentVolume = ({
   const currentVolume = new BigNumber(windowLengthVolume);
 
   return (
-    <div className="flex flex-col gap-3 pt-4">
+    <div className="flex flex-col gap-3 pt-4" data-testid="current-volume">
       <CardStat
         value={
           currentVolume.isZero()
@@ -327,11 +341,13 @@ export const CurrentVolume = ({
         text={t('pastEpochs', 'Past {{count}} epochs', {
           count: windowLength,
         })}
+        testId="past-epochs-volume"
       />
       {requiredForNextTier.isGreaterThan(0) && (
         <CardStat
           value={formatNumber(requiredForNextTier)}
           text={t('Required for next tier')}
+          testId="required-for-next-tier"
         />
       )}
     </div>
@@ -349,7 +365,7 @@ const ReferralBenefits = ({
 }) => {
   const t = useT();
   return (
-    <div className="flex flex-col gap-3 pt-4">
+    <div className="flex flex-col gap-3 pt-4" data-testid="referral-benefits">
       <CardStat
         // all sets volume (not just current party)
         value={formatNumber(setRunningNotionalTakerVolume)}
@@ -360,8 +376,13 @@ const ReferralBenefits = ({
             count: epochs,
           }
         )}
+        testId="running-notional-taker-volume"
       />
-      <CardStat value={epochsInSet} text={t('epochs in referral set')} />
+      <CardStat
+        value={epochsInSet}
+        text={t('epochs in referral set')}
+        testId="epochs-in-referral-set"
+      />
     </div>
   );
 };
@@ -389,7 +410,7 @@ const TotalDiscount = ({
   );
 
   return (
-    <div className="pt-4">
+    <div className="pt-4" data-testid="total-discount-card-stats">
       <CardStat
         description={
           <>
@@ -399,9 +420,10 @@ const TotalDiscount = ({
         }
         value={formatPercentage(totalDiscount) + '%'}
         highlight={true}
+        testId="total-discount"
       />
       <CardTable>
-        <tr>
+        <tr data-testid="volume-discount-row">
           <CardTableTH>{t('Volume discount')}</CardTableTH>
           <CardTableTD>
             {formatPercentage(volumeDiscount)}%
@@ -415,7 +437,7 @@ const TotalDiscount = ({
             )}
           </CardTableTD>
         </tr>
-        <tr>
+        <tr data-testid="referral-discount-row">
           <CardTableTH>{t('Referral discount')}</CardTableTH>
           <CardTableTD>
             {formatPercentage(referralDiscount)}%
@@ -461,29 +483,37 @@ const VolumeTiers = ({
     <div>
       <Table>
         <THead>
-          <tr>
-            <Th>{t('Tier')}</Th>
-            <Th>{t('Discount')}</Th>
-            <Th>{t('Min. trading volume')}</Th>
-            <Th>
+          <Tr>
+            <Th testId="tier-header">{t('Tier')}</Th>
+            <Th testId="discount-header">{t('Discount')}</Th>
+            <Th testId="min-volume-header">{t('Min. trading volume')}</Th>
+            <Th testId="my-volume-header">
               {t('myVolume', 'My volume (last {{count}} epochs)', {
                 count: windowLength,
               })}
             </Th>
-            <Th />
-          </tr>
+            <Th testId="actions-header" />
+          </Tr>
         </THead>
         <tbody>
           {Array.from(tiers).map((tier, i) => {
             const isUserTier = tierIndex === i;
 
             return (
-              <Tr key={i}>
-                <Td>{i + 1}</Td>
-                <Td>{formatPercentage(Number(tier.volumeDiscountFactor))}%</Td>
-                <Td>{formatNumber(tier.minimumRunningNotionalTakerVolume)}</Td>
-                <Td>{isUserTier ? formatNumber(lastEpochVolume) : ''}</Td>
-                <Td>{isUserTier ? <YourTier /> : null}</Td>
+              <Tr key={i} testId={`tier-row-${i}`}>
+                <Td testId={`tier-value-${i}`}>{i + 1}</Td>
+                <Td testId={`discount-value-${i}`}>
+                  {formatPercentage(Number(tier.volumeDiscountFactor))}%
+                </Td>
+                <Td testId={`min-volume-value-${i}`}>
+                  {formatNumber(tier.minimumRunningNotionalTakerVolume)}
+                </Td>
+                <Td testId={`my-volume-value-${i}`}>
+                  {isUserTier ? formatNumber(lastEpochVolume) : ''}
+                </Td>
+                <Td testId={`user-tier-${i}`}>
+                  {isUserTier ? <YourTier /> : null}
+                </Td>
               </Tr>
             );
           })}
@@ -520,39 +550,53 @@ const ReferralTiers = ({
     <div>
       <Table>
         <THead>
-          <tr>
-            <Th>{t('Tier')}</Th>
-            <Th>{t('Discount')}</Th>
-            <Th>{t('Min. trading volume')}</Th>
-            <Th>{t('Required epochs')}</Th>
-            <Th />
-          </tr>
+          <Tr>
+            <Th testId="tier-header">{t('Tier')}</Th>
+            <Th testId="discount-header">{t('Discount')}</Th>
+            <Th testId="min-volume-header">{t('Min. trading volume')}</Th>
+            <Th testId="required-epochs-header">{t('Required epochs')}</Th>
+            <Th testId="extra-header" />
+          </Tr>
         </THead>
         <tbody>
-          {Array.from(tiers).map((t, i) => {
+          {Array.from(tiers).map((tier, i) => {
             const isUserTier = tierIndex === i;
 
-            const requiredVolume = Number(t.minimumRunningNotionalTakerVolume);
+            const requiredVolume = Number(
+              tier.minimumRunningNotionalTakerVolume
+            );
             let unlocksIn = null;
 
             if (
               referralVolumeInWindow >= requiredVolume &&
-              epochsInSet < t.minimumEpochs
+              epochsInSet < tier.minimumEpochs
             ) {
               unlocksIn = (
                 <span className="text-muted">
-                  Unlocks in {t.minimumEpochs - epochsInSet} epochs
+                  Unlocks in {tier.minimumEpochs - epochsInSet} epochs
                 </span>
               );
             }
 
             return (
-              <Tr key={i}>
-                <Td>{i + 1}</Td>
-                <Td>{formatPercentage(Number(t.referralDiscountFactor))}%</Td>
-                <Td>{formatNumber(t.minimumRunningNotionalTakerVolume)}</Td>
-                <Td>{t.minimumEpochs}</Td>
-                <Td>{isUserTier ? <YourTier /> : unlocksIn}</Td>
+              <Tr key={i} testId={`tier-row-${i}`}>
+                <Td testId={`tier-value-${i}`}>{i + 1}</Td>
+                <Td testId={`discount-value-${i}`}>
+                  {formatPercentage(Number(tier.referralDiscountFactor))}%
+                </Td>
+                <Td testId={`min-volume-value-${i}`}>
+                  {formatNumber(tier.minimumRunningNotionalTakerVolume)}
+                </Td>
+                <Td testId={`required-epochs-value-${i}`}>
+                  {tier.minimumEpochs}
+                </Td>
+                <Td testId={`user-tier-or-unlocks-${i}`}>
+                  {isUserTier ? (
+                    <YourTier testId={`your-tier-${i}`} />
+                  ) : (
+                    unlocksIn
+                  )}
+                </Td>
               </Tr>
             );
           })}
@@ -562,11 +606,18 @@ const ReferralTiers = ({
   );
 };
 
-const YourTier = () => {
+interface YourTierProps {
+  testId?: string;
+}
+
+const YourTier = ({ testId }: YourTierProps) => {
   const t = useT();
 
   return (
-    <span className="bg-rainbow whitespace-nowrap rounded-xl px-4 py-1.5 text-white">
+    <span
+      className="bg-rainbow whitespace-nowrap rounded-xl px-4 py-1.5 text-white"
+      data-testid={testId}
+    >
       {t('Your tier')}
     </span>
   );

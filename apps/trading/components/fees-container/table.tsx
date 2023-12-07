@@ -3,21 +3,49 @@ import type { ReactNode } from 'react';
 
 const cellClass = 'px-4 py-2 text-xs font-normal text-left last:text-right';
 
-export const Th = ({ children }: { children?: ReactNode }) => {
+export const Th = ({
+  children,
+  testId,
+}: {
+  children?: ReactNode;
+  testId?: string;
+}) => {
   return (
-    <th className={classNames(cellClass, 'text-secondary leading-none py-3')}>
+    <th
+      className={classNames(cellClass, 'text-secondary leading-none py-3')}
+      data-testid={testId}
+    >
       {children}
     </th>
   );
 };
 
-export const Td = ({ children }: { children?: ReactNode }) => {
-  return <th className={cellClass}>{children}</th>;
+export const Td = ({
+  children,
+  testId,
+}: {
+  children?: ReactNode;
+  testId?: string;
+}) => {
+  return (
+    <td className={cellClass} data-testid={testId}>
+      {children}
+    </td>
+  );
 };
 
-export const Tr = ({ children }: { children?: ReactNode }) => {
+export const Tr = ({
+  children,
+  testId,
+}: {
+  children?: ReactNode;
+  testId?: string;
+}) => {
   return (
-    <tr className="hover:bg-vega-clight-600 dark:hover:bg-vega-cdark-700">
+    <tr
+      className="hover:bg-vega-clight-600 dark:hover:bg-vega-cdark-700"
+      data-testid={testId}
+    >
       {children}
     </tr>
   );
