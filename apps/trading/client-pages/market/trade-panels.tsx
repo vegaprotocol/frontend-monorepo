@@ -50,7 +50,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
       const Menu = viewCfg.menu;
 
       return (
-        <div className="flex gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
+        <div className="flex items-center justify-end gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
           <Menu />
         </div>
       );

@@ -63,16 +63,14 @@ export const ChartMenu = () => {
 
   const isPennant = chartlib === 'pennant';
   const commonMenuItems = (
-    <>
-      <TradingButton
-        onClick={() => {
-          setChartlib(isPennant ? 'tradingview' : 'pennant');
-        }}
-        size="extra-small"
-      >
-        {isPennant ? 'TradingView' : t('Vega chart')}
-      </TradingButton>
-    </>
+    <TradingButton
+      onClick={() => {
+        setChartlib(isPennant ? 'tradingview' : 'pennant');
+      }}
+      size="extra-small"
+    >
+      {isPennant ? 'TradingView' : t('Vega chart')}
+    </TradingButton>
   );
 
   const pennantMenuItems = (
@@ -187,12 +185,16 @@ export const ChartMenu = () => {
   );
 
   const tradingViewMenuItems = (
-    <p className="text-xs mr-2">
+    <p className="text-xs mr-2 whitespace-nowrap">
       <Trans
         i18nKey="Chart by <0>TradingView</0>"
         components={[
           // eslint-disable-next-line
-          <a className="underline" href="https://www.tradingview.com" />,
+          <a
+            className="underline"
+            target="_blank"
+            href="https://www.tradingview.com"
+          />,
         ]}
       />
     </p>
