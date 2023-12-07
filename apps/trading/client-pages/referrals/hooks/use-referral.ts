@@ -2,6 +2,7 @@ import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useCallback } from 'react';
 import { useRefereesQuery } from './__generated__/Referees';
 import compact from 'lodash/compact';
+import pick from 'lodash/pick';
 import type {
   ReferralSetsQuery,
   ReferralSetsQueryVariables,
@@ -119,6 +120,66 @@ export const useReferral = (args: UseReferralArgs) => {
     loading: referralLoading || refereesLoading,
     error: referralError || refereesError,
     refetch,
+  };
+};
+
+type Referee = NonNullable<
+  NonNullable<ReturnType<typeof useReferral>['data']>['referee']
+>;
+
+type RefereeProperties = (keyof Referee)[];
+
+const findReferee = (referee: Referee, referees: Referee[]) =>
+  referees.find((r) => r.refereeId === referee?.refereeId) || referee;
+
+const updateReferee = (
+  referee: Referee,
+  referees: Referee[],
+  properties: RefereeProperties
+) => ({
+  ...referee,
+  ...pick(findReferee(referee, referees), properties),
+});
+
+export const useUpdateReferees = (
+  referral: ReturnType<typeof useReferral>,
+  aggregationEpochs: number,
+  properties: RefereeProperties,
+  skip?: boolean
+): ReturnType<typeof useReferral> => {
+  const { data, loading, error, refetch } = useRefereesQuery({
+    variables: {
+      code: referral?.data?.code as string,
+      aggregationEpochs,
+    },
+    skip: skip || !referral?.data?.code,
+    fetchPolicy: 'cache-and-network',
+    context: { isEnlargedTimeout: true },
+  });
+  const refetchAll = useCallback(() => {
+    refetch();
+    referral.refetch();
+  }, [refetch, referral]);
+  if (!referral.data || skip) {
+    return referral;
+  }
+  const referees = compact(
+    removePaginationWrapper(data?.referralSetReferees.edges)
+  );
+
+  return {
+    data: data && {
+      ...referral.data,
+      referees: referral.data.referees.map((referee) =>
+        updateReferee(referee, referees, properties)
+      ),
+      referee:
+        referral.data.referee &&
+        updateReferee(referral.data.referee, referees, properties),
+    },
+    loading: loading || referral.loading,
+    error: error || referral.error,
+    refetch: refetchAll,
   };
 };
 
