@@ -17,7 +17,7 @@ import { ChartContainer, ChartMenu } from '../../components/chart-container';
 export type TradingView = keyof typeof TradingViews;
 
 export const TradingViews = {
-  candles: {
+  chart: {
     component: ChartContainer,
     menu: ChartMenu,
   },

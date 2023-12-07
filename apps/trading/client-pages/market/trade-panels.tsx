@@ -23,7 +23,7 @@ interface TradePanelsProps {
 
 export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
   const featureFlags = useFeatureFlags((state) => state.flags);
-  const [view, setView] = useState<TradingView>('candles');
+  const [view, setView] = useState<TradingView>('chart');
 
   const renderView = () => {
     const Component = TradingViews[view].component;
@@ -149,7 +149,7 @@ const useViewLabel = (view: TradingView) => {
   const t = useT();
 
   const labels = {
-    candles: t('Candles'),
+    chart: t('Chart'),
     depth: t('Depth'),
     liquidity: t('Liquidity'),
     funding: t('Funding'),

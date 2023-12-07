@@ -62,10 +62,10 @@ const MainGrid = memo(
                     id="chart"
                     overflowHidden
                     name={t('Chart')}
-                    menu={<TradingViews.candles.menu />}
+                    menu={<TradingViews.chart.menu />}
                   >
                     <ErrorBoundary feature="chart">
-                      <TradingViews.candles.component marketId={marketId} />
+                      <TradingViews.chart.component marketId={marketId} />
                     </ErrorBoundary>
                   </Tab>
                   <Tab id="depth" name={t('Depth')}>
