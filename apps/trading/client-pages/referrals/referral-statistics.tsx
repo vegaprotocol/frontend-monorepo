@@ -121,7 +121,7 @@ export const useStats = ({
     : 1;
   const finalCommissionValue = isNaN(multiplier)
     ? baseCommissionValue
-    : multiplier * baseCommissionValue;
+    : new BigNumber(multiplier).times(baseCommissionValue).toNumber();
 
   const discountFactorValue = refereeStats?.discountFactor
     ? Number(refereeStats.discountFactor)
@@ -242,19 +242,23 @@ export const Statistics = ({
       {multiplier || t('None')}
     </StatTile>
   );
+  const baseCommissionFormatted = BigNumber(baseCommissionValue)
+    .times(100)
+    .toString();
+  const finalCommissionFormatted = new BigNumber(finalCommissionValue)
+    .times(100)
+    .toString();
   const finalCommissionTile = (
     <StatTile
       title={t('Final commission rate')}
       description={
         !isNaN(multiplier)
-          ? `(${baseCommissionValue * 100}% ⨉ ${multiplier} = ${
-              finalCommissionValue * 100
-            }%)`
+          ? `(${baseCommissionFormatted}% ⨉ ${multiplier} = ${finalCommissionFormatted}%)`
           : undefined
       }
       overrideWithNoProgram={!details}
     >
-      {finalCommissionValue * 100}%
+      {finalCommissionFormatted}%
     </StatTile>
   );
   const numberOfTradersValue = data.referees.length;
