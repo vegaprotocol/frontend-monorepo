@@ -76,10 +76,7 @@ class TestVolumeDiscountProgramTier1:
         expect(page.get_by_test_id("min-volume-value-0")).to_have_text("100")
         expect(page.get_by_test_id("min-volume-value-1")).to_have_text("200")
         expect(page.get_by_test_id("my-volume-value-0")).to_have_text("103")
-         
-        tier_row_1 = page.get_by_test_id("tier-row-0")
-        user_tier = tier_row_1.get_by_test_id("user-tier-0")
-        expect(user_tier).to_be_visible()
+        expect(page.get_by_test_id("user-tier-0")).to_be_visible()
         expect(page.get_by_test_id("user-tier-0")).to_have_text("Your tier")
     
     
@@ -163,9 +160,7 @@ class TestVolumeDiscountProgramTier2:
         expect(page.get_by_test_id("min-volume-value-0")).to_have_text("100")
         expect(page.get_by_test_id("min-volume-value-1")).to_have_text("200")
         expect(page.get_by_test_id("my-volume-value-1")).to_have_text("206")  
-        tier_row_2 = page.get_by_test_id("tier-row-1")
-        user_tier = tier_row_2.get_by_test_id("user-tier-1")
-        expect(user_tier).to_be_visible()
+        expect(page.get_by_test_id("user-tier-1")).to_be_visible()
         expect(page.get_by_test_id("user-tier-1")).to_have_text("Your tier")
     
     @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
@@ -225,9 +220,7 @@ class TestReferralDiscountProgramTier1:
     @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
     def test_fees_page_referral_discount_program_tier_1_my_trading_fees(self, market_tier_1_referral_discount, page: Page):
         page.goto("/#/fees")
-        
-        page.pause()
-        expect(page.get_by_test_id("adjusted-fees")).to_have_text("8.04%-8.04%")
+        expect(page.get_by_test_id("adjusted-fees")).to_have_text("9.045%-9.045%")
         expect(page.get_by_test_id("total-fee-before-discount")).to_have_text("Total fee before discount10.05%-10.05%")
         expect(page.get_by_test_id("infrastructure-fees")).to_have_text("Infrastructure0.05%")
         expect(page.get_by_test_id("maker-fees")).to_have_text("Maker10%")
@@ -236,20 +229,20 @@ class TestReferralDiscountProgramTier1:
     @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
     def test_fees_page_referral_discount_program_tier_1_total_discount(self, market_tier_1_referral_discount, page: Page):
         page.goto("/#/fees")
-        expect(page.get_by_test_id("total-discount")).to_have_text("20%")
-        expect(page.get_by_test_id("volume-discount-row")).to_have_text("Volume discount20%")
-        expect(page.get_by_test_id("referral-discount-row")).to_have_text("Referral discount0%")
+        expect(page.get_by_test_id("total-discount")).to_have_text("10%")
+        expect(page.get_by_test_id("volume-discount-row")).to_have_text("Volume discount0%")
+        expect(page.get_by_test_id("referral-discount-row")).to_have_text("Referral discount10%")
         #page.get_by_test_id("icon-info").hover()
         #expect(page.get_by_test_id("tooltip-content").nth(0)).to_have_text("No active referral programme")
 
     @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
-    def test_fees_page_referral_discount_program_tier_1_my_current_volume(self, market_tier_1_referral_discount, page: Page):
+    def test_fees_page_referral_discount_program_tier_1_referral_benefits(self, market_tier_1_referral_discount, page: Page):
         page.goto("/#/fees")
-        expect(page.get_by_test_id("past-epochs-volume")).to_have_text("206")
-        expect(page.get_by_test_id("required-for-next-tier")).not_to_be_visible()
+        expect(page.get_by_test_id("running-notional-taker-volume")).to_have_text("103")
+        expect(page.get_by_test_id("epochs-in-referral-set")).to_have_text("1")
     
     @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
-    def test_fees_page_referral_discount_program_tier_1_volume_discount(self, market_tier_1_referral_discount, page: Page):
+    def test_fees_page_referral_discount_program_tier_1_referral_discount(self, market_tier_1_referral_discount, page: Page):
         page.goto("/#/fees")
         expect(page.get_by_test_id("tier-value-0")).to_have_text("1")
         expect(page.get_by_test_id("tier-value-1")).to_have_text("2")
@@ -257,19 +250,17 @@ class TestReferralDiscountProgramTier1:
         expect(page.get_by_test_id("discount-value-1")).to_have_text("20%")
         expect(page.get_by_test_id("min-volume-value-0")).to_have_text("100")
         expect(page.get_by_test_id("min-volume-value-1")).to_have_text("200")
-        expect(page.get_by_test_id("my-volume-value-1")).to_have_text("206")
-         
-        tier_row_2 = page.get_by_test_id("tier-row-1")
-        user_tier = tier_row_2.get_by_test_id("user-tier-1")
-        expect(user_tier).to_be_visible()
-        expect(page.get_by_test_id("user-tier-1")).to_have_text("Your tier")
+        expect(page.get_by_test_id("required-epochs-value-0")).to_have_text("1")
+        expect(page.get_by_test_id("required-epochs-value-1")).to_have_text("2")
+        expect(page.get_by_test_id("your-tier-0")).to_be_visible()
+        expect(page.get_by_test_id("your-tier-0")).to_have_text("Your tier")
     
     @pytest.mark.usefixtures("vega", "page", "risk_accepted", "auth")
     def test_fees_page_referral_discount_program_tier_1_fees_by_market(self, market_tier_1_referral_discount, page: Page):
         page.goto("/#/fees")
         row = page.locator(".ag-center-cols-container .ag-row")
         expect(row.locator('[col-id="code"]')).to_have_text("BTC:DAI_2023Futr")
-        expect(row.locator('[col-id="feeAfterDiscount"]')).to_have_text("8.04%")
+        expect(row.locator('[col-id="feeAfterDiscount"]')).to_have_text("9.045%")
         expect(row.locator('[col-id="infraFee"]')).to_have_text("0.05%")
         expect(row.locator('[col-id="makerFee"]')).to_have_text("10%")
         expect(row.locator('[col-id="liquidityFee"]')).to_have_text("0%")
