@@ -511,7 +511,7 @@ const VolumeTiers = ({
                 <Td testId={`my-volume-value-${i}`}>
                   {isUserTier ? formatNumber(lastEpochVolume) : ''}
                 </Td>
-                <Td testId={`user-tier-${i}`}>
+                <Td testId={`your-tier-${i}`}>
                   {isUserTier ? <YourTier /> : null}
                 </Td>
               </Tr>

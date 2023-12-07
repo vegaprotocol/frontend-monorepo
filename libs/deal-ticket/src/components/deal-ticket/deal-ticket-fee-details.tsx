@@ -76,9 +76,14 @@ export const DealTicketFeeDetails = ({
     <KeyValue
       label={
         <>
-          {t('Fees')}
+          <span data-testid="fees-text">{t('Fees')}</span>
           {totalDiscountFactor !== '0' ? (
-            <Pill size="xxs" intent={Intent.Info} className="ml-1">
+            <Pill
+              size="xxs"
+              intent={Intent.Info}
+              className="ml-1"
+              data-testid="discount-pill"
+            >
               {formatNumberPercentage(
                 new BigNumber(totalDiscountFactor).multipliedBy(100)
               )}
