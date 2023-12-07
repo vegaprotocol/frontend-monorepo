@@ -7,9 +7,9 @@ from actions.utils import change_keys, create_and_faucet_wallet, forward_time, s
 from actions.vega import submit_order, submit_liquidity
 from wallet_config import MM_WALLET, PARTY_A, PARTY_B
 
-sell_orders = [[1, 111], [1, 111], [1, 112], [1, 112], [
+SELL_ORDERS = [[1, 111], [1, 111], [1, 112], [1, 112], [
     1, 113], [1, 113], [1, 114], [1, 114], [1, 115], [1, 115]]
-buy_orders = [[1, 106], [1, 107], [1, 108]]
+BUY_ORDERS = [[1, 106], [1, 107], [1, 108]]
 
 
 @pytest.fixture(scope="module")
@@ -21,7 +21,7 @@ def vega(request):
 @pytest.fixture(scope="module")
 def continuous_market(vega):
     market = setup_simple_market(vega, custom_quantum=100000)
-    return setup_continuous_market(vega, market, buy_orders, sell_orders, add_liquidity=False)
+    return setup_continuous_market(vega, market, BUY_ORDERS, SELL_ORDERS, add_liquidity=False)
 
 
 def generate_referrer_expected_value_dic(expected_base_commission, expected_staking_multiplier, expected_final_commission_rate, expected_volume, expected_num_traders, expected_total_commission):
@@ -56,41 +56,41 @@ def check_tile_values(page: Page, expected_results: dict):
             page, selector, expected_text), f"Expected text '{expected_text}' not found in selector '{selector}'"
 
 
-@pytest.mark.usefixtures("page", "auth", "risk_accepted")
-def test_referral_scenario(continuous_market, vega: VegaService, page: Page):
+def create_benefit_tier(minimum_running_notional_taker_volume, minimum_epochs, referral_reward_factor, referral_discount_factor):
+    return {
+        "minimum_running_notional_taker_volume": minimum_running_notional_taker_volume,
+        "minimum_epochs": minimum_epochs,
+        "referral_reward_factor": referral_reward_factor,
+        "referral_discount_factor": referral_discount_factor,
+    }
+
+
+def create_staking_tier(minimum_staked_tokens, referral_reward_multiplier):
+    return {
+        "minimum_staked_tokens": minimum_staked_tokens,
+        "referral_reward_multiplier": referral_reward_multiplier,
+    }
+
+
+def setup_market_and_referral_scheme(vega: VegaService, continuous_market: str, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
 
     create_and_faucet_wallet(vega=vega, wallet=PARTY_A)
     create_and_faucet_wallet(vega=vega, wallet=PARTY_B)
     forward_time(vega)
 
+    benefit_tiers = []
+    staking_tiers = []
+    for i in range(1, 4):
+        benefit_tiers.append(create_benefit_tier(
+            i * 100, i, i * 0.01, i * 0.01))
+        staking_tiers.append(create_staking_tier(
+            i * 100, i))
+
     vega.update_referral_program(
         proposal_key=MM_WALLET.name,
-        benefit_tiers=[
-            {
-                "minimum_running_notional_taker_volume": 100,
-                "minimum_epochs": 1,
-                "referral_reward_factor": 0.01,
-                "referral_discount_factor": 0.01,
-            },
-            {
-                "minimum_running_notional_taker_volume": 200,
-                "minimum_epochs": 2,
-                "referral_reward_factor": 0.02,
-                "referral_discount_factor": 0.02,
-            },
-            {
-                "minimum_running_notional_taker_volume": 300,
-                "minimum_epochs": 3,
-                "referral_reward_factor": 0.03,
-                "referral_discount_factor": 0.03,
-            },
-        ],
-        staking_tiers=[
-            {"minimum_staked_tokens": 100, "referral_reward_multiplier": 1},
-            {"minimum_staked_tokens": 200, "referral_reward_multiplier": 2},
-            {"minimum_staked_tokens": 300, "referral_reward_multiplier": 3},
-        ],
+        benefit_tiers=benefit_tiers,
+        staking_tiers=staking_tiers,
         window_length=1,
     )
     forward_time(vega, True)
@@ -116,11 +116,15 @@ def test_referral_scenario(continuous_market, vega: VegaService, page: Page):
     submit_liquidity(vega, MM_WALLET.name, continuous_market, 100, 100)
     forward_time(vega)
 
+
+@pytest.mark.usefixtures("page", "auth", "risk_accepted")
+def test_referral_scenario(continuous_market, vega: VegaService, page: Page):
+    setup_market_and_referral_scheme(vega, continuous_market, page)
     change_keys(page, vega, PARTY_B.name)
     submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 1, 115)
     forward_time(vega, True)
     check_tile_values(page, generate_referral_expected_value_dic(
-        "110", "3", "1%", "1", "1"))
+        "110", "1", "1%", "1", "1"))
 
     change_keys(page, vega, PARTY_A.name)
     check_tile_values(page, generate_referrer_expected_value_dic(
@@ -140,7 +144,7 @@ def test_referral_scenario(continuous_market, vega: VegaService, page: Page):
     submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 3, 115)
     forward_time(vega, True)
     check_tile_values(page, generate_referral_expected_value_dic(
-        "331", "1", "3%", "3", "0"))
+        "331", "3", "3%", "3", "0"))
 
     change_keys(page, vega, PARTY_A.name)
     check_tile_values(page, generate_referrer_expected_value_dic(
