@@ -156,7 +156,14 @@ export const addDecimalsFixedFormatNumber = (
   return formatNumberFixed(x, formatDecimals);
 };
 
-export const formatNumberPercentage = (value: BigNumber, decimals?: number) => {
+export const formatNumberPercentage = (
+  value: BigNumber | null | undefined,
+  decimals?: number
+) => {
+  if (!value) {
+    return '-';
+  }
+
   const decimalPlaces =
     typeof decimals === 'undefined' ? value.dp() || 0 : decimals;
   return `${formatNumber(value, decimalPlaces)}%`;

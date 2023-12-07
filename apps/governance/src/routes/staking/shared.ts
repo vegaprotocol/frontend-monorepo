@@ -41,7 +41,7 @@ const calculateTheoreticalStakeScore = (
 };
 
 /**
- * Calculates overall penalty for a given nodsadase
+ * Calculates overall penalty for a given node
  * @param nodeId Id of a node for which a penalty is calculated
  * @param nodes A collection of all nodes - needed to calculate theoretical stake score
  * @returns %

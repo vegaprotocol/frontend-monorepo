@@ -221,12 +221,14 @@ export const ConsensusValidatorsTable = ({
               calculatesPerformancePenalty(performanceScore),
               2
             ),
-            [ValidatorFields.OVERSTAKING_PENALTY]: overstakingPenalty
-              ? formatNumberPercentage(overstakingPenalty, 2)
-              : '-',
-            [ValidatorFields.TOTAL_PENALTIES]: totalPenalty
-              ? formatNumberPercentage(totalPenalty, 2)
-              : '-',
+            [ValidatorFields.OVERSTAKING_PENALTY]: formatNumberPercentage(
+              overstakingPenalty,
+              2
+            ),
+            [ValidatorFields.TOTAL_PENALTIES]: formatNumberPercentage(
+              totalPenalty,
+              2
+            ),
             [ValidatorFields.PENDING_STAKE]: pendingStake,
             [ValidatorFields.STAKED_BY_USER]: stakedByUser
               ? formatNumber(toBigNum(stakedByUser, decimals), 2)
