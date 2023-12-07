@@ -150,7 +150,7 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
  * Initialize Vega app to dynamically select a node from the
  * VEGA_CONFIG_URL
  *
- * This can be ommitted if you intend to only use a single node,
+ * This can be omitted if you intend to only use a single node,
  * in those cases be sure to set NX_VEGA_URL
  */
 export const useInitializeEnv = () => {
@@ -414,6 +414,12 @@ function compileFeatureFlags(): FeatureFlags {
     ),
     REFERRALS: TRUTHY.includes(
       windowOrDefault('NX_REFERRALS', process.env['NX_REFERRALS']) as string
+    ),
+    DISABLE_CLOSE_POSITION: TRUTHY.includes(
+      windowOrDefault(
+        'NX_DISABLE_CLOSE_POSITION',
+        process.env['NX_DISABLE_CLOSE_POSITION']
+      ) as string
     ),
     UPDATE_MARKET_STATE: TRUTHY.includes(
       windowOrDefault(

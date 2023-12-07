@@ -42,19 +42,19 @@ export const FeesContainer = () => {
     programData?.currentVolumeDiscountProgram?.windowLength || 1;
   const referralDiscountWindowLength =
     programData?.currentReferralProgram?.windowLength || 1;
-
   const { data: feesData, loading: feesLoading } = useFeesQuery({
     variables: {
       partyId: pubKey || '',
-      volumeDiscountEpochs: volumeDiscountWindowLength,
-      referralDiscountEpochs: referralDiscountWindowLength,
     },
-    skip: !pubKey || !programData,
+    skip: !pubKey,
   });
+
+  const previousEpoch = (Number(feesData?.epoch.id) || 0) - 1;
 
   const { volumeDiscount, volumeTierIndex, volumeInWindow, volumeTiers } =
     useVolumeStats(
-      feesData?.volumeDiscountStats,
+      previousEpoch,
+      feesData?.volumeDiscountStats.edges?.[0]?.node,
       programData?.currentVolumeDiscountProgram
     );
 
@@ -67,12 +67,12 @@ export const FeesContainer = () => {
     code,
     isReferrer,
   } = useReferralStats(
-    feesData?.referralSetStats,
-    feesData?.referralSetReferees,
+    previousEpoch,
+    feesData?.referralSetStats.edges?.[0]?.node,
+    feesData?.referralSetReferees.edges?.[0]?.node,
     programData?.currentReferralProgram,
-    feesData?.epoch,
-    feesData?.referrer,
-    feesData?.referee
+    feesData?.referrer.edges?.[0]?.node,
+    feesData?.referee.edges?.[0]?.node
   );
 
   const loading = paramsLoading || feesLoading || programLoading;
@@ -310,16 +310,25 @@ export const CurrentVolume = ({
   const t = useT();
   const nextTier = tiers[tierIndex + 1];
   const requiredForNextTier = nextTier
-    ? Number(nextTier.minimumRunningNotionalTakerVolume) - windowLengthVolume
-    : 0;
+    ? new BigNumber(nextTier.minimumRunningNotionalTakerVolume).minus(
+        windowLengthVolume
+      )
+    : new BigNumber(0);
+  const currentVolume = new BigNumber(windowLengthVolume);
 
   return (
     <div className="flex flex-col gap-3 pt-4">
       <CardStat
-        value={formatNumberRounded(new BigNumber(windowLengthVolume))}
-        text={t('pastEpochs', 'Past {{count}} epochs', { count: windowLength })}
+        value={
+          currentVolume.isZero()
+            ? `<${formatNumberRounded(requiredForNextTier)}`
+            : formatNumberRounded(currentVolume)
+        }
+        text={t('pastEpochs', 'Past {{count}} epochs', {
+          count: windowLength,
+        })}
       />
-      {requiredForNextTier > 0 && (
+      {requiredForNextTier.isGreaterThan(0) && (
         <CardStat
           value={formatNumber(requiredForNextTier)}
           text={t('Required for next tier')}
@@ -466,7 +475,7 @@ const VolumeTiers = ({
         </THead>
         <tbody>
           {Array.from(tiers).map((tier, i) => {
-            const isUserTier = tiers.length - 1 - tierIndex === i;
+            const isUserTier = tierIndex === i;
 
             return (
               <Tr key={i}>
@@ -521,7 +530,7 @@ const ReferralTiers = ({
         </THead>
         <tbody>
           {Array.from(tiers).map((t, i) => {
-            const isUserTier = tiers.length - 1 - tierIndex === i;
+            const isUserTier = tierIndex === i;
 
             const requiredVolume = Number(t.minimumRunningNotionalTakerVolume);
             let unlocksIn = null;

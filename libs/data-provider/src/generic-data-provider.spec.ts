@@ -25,7 +25,7 @@ import {
 import { ApolloError } from '@apollo/client';
 import type { GraphQLErrors } from '@apollo/client/errors';
 import { GraphQLError } from 'graphql';
-import { Subscription, Observable } from 'zen-observable-ts';
+import { type Subscription, type Observable } from 'zen-observable-ts';
 import { waitFor } from '@testing-library/react';
 
 type Item = {

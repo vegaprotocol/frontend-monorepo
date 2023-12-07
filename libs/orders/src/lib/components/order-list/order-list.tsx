@@ -1,6 +1,6 @@
 import { memo, forwardRef, useMemo, type ForwardedRef } from 'react';
 import {
-  MAXGOINT64,
+  HALFMAXGOINT64,
   addDecimalsFormatNumber,
   getDateTimeFormat,
   isNumeric,
@@ -151,7 +151,7 @@ export const OrderListTable = memo<
                 : '';
 
               if (
-                data.size === MAXGOINT64 &&
+                data.size >= HALFMAXGOINT64 &&
                 data.timeInForce ===
                   Schema.OrderTimeInForce.TIME_IN_FORCE_IOC &&
                 data.reduceOnly

@@ -41,7 +41,7 @@ import {
   toBigNum,
   truncateByChars,
   useFormatTrigger,
-  MAXGOINT64,
+  HALFMAXGOINT64,
 } from '@vegaprotocol/utils';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
 import { useEthWithdrawApprovalsStore } from './use-ethereum-withdraw-approvals-store';
@@ -1014,7 +1014,7 @@ export const getVegaTransactionContentIntent = (tx: VegaStoredTxState) => {
     tx.order &&
     tx.order.status === Schema.OrderStatus.STATUS_STOPPED &&
     tx.order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_IOC &&
-    tx.order.size === MAXGOINT64 &&
+    tx.order.size >= HALFMAXGOINT64 &&
     // isClosePositionTransaction(tx) &&
     Intent.Success;
 

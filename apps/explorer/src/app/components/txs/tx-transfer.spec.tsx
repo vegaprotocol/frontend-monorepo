@@ -98,6 +98,8 @@ describe('TxDetailsTransfer', () => {
       },
     },
     signature: {
+      version: '1',
+      algo: 'vega/ed25519',
       value:
         '610c2e196a7d4fed4413b9e82af267b1ff3e30e943df3a3d28096fd60604d430d752fbaf6dd4f84d496be78885bb6118f40560bff7832c06bd7a3d67b718b700',
     },

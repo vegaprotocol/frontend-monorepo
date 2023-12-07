@@ -16,6 +16,7 @@ import { GetStarted } from '../welcome-dialog';
 import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
+import { ErrorBoundary } from '../error-boundary';
 
 export enum ViewType {
   Order = 'Order',
@@ -163,12 +164,14 @@ export const SidebarContent = () => {
     if (params.marketId) {
       return (
         <ContentWrapper>
-          <DealTicketContainer
-            marketId={params.marketId}
-            onDeposit={(assetId) =>
-              setViews({ type: ViewType.Deposit, assetId }, currentRouteId)
-            }
-          />
+          <ErrorBoundary feature="deal-ticket">
+            <DealTicketContainer
+              marketId={params.marketId}
+              onDeposit={(assetId) =>
+                setViews({ type: ViewType.Deposit, assetId }, currentRouteId)
+              }
+            />
+          </ErrorBoundary>
           <GetStarted />
         </ContentWrapper>
       );
@@ -181,7 +184,9 @@ export const SidebarContent = () => {
     if (params.marketId) {
       return (
         <ContentWrapper>
-          <MarketInfoAccordionContainer marketId={params.marketId} />
+          <ErrorBoundary feature="market-info">
+            <MarketInfoAccordionContainer marketId={params.marketId} />
+          </ErrorBoundary>
         </ContentWrapper>
       );
     } else {
@@ -192,7 +197,9 @@ export const SidebarContent = () => {
   if (view.type === ViewType.Deposit) {
     return (
       <ContentWrapper title={t('Deposit')}>
-        <DepositContainer assetId={view.assetId} />
+        <ErrorBoundary feature="deposit">
+          <DepositContainer assetId={view.assetId} />
+        </ErrorBoundary>
       </ContentWrapper>
     );
   }
@@ -200,7 +207,9 @@ export const SidebarContent = () => {
   if (view.type === ViewType.Withdraw) {
     return (
       <ContentWrapper title={t('Withdraw')}>
-        <WithdrawContainer assetId={view.assetId} />
+        <ErrorBoundary feature="withdraw">
+          <WithdrawContainer assetId={view.assetId} />
+        </ErrorBoundary>
       </ContentWrapper>
     );
   }
@@ -208,7 +217,9 @@ export const SidebarContent = () => {
   if (view.type === ViewType.Transfer) {
     return (
       <ContentWrapper title={t('Transfer')}>
-        <TransferContainer assetId={view.assetId} />
+        <ErrorBoundary feature="transfer">
+          <TransferContainer assetId={view.assetId} />
+        </ErrorBoundary>
       </ContentWrapper>
     );
   }
@@ -216,7 +227,9 @@ export const SidebarContent = () => {
   if (view.type === ViewType.Settings) {
     return (
       <ContentWrapper title={t('Settings')}>
-        <Settings />
+        <ErrorBoundary feature="settings">
+          <Settings />
+        </ErrorBoundary>
       </ContentWrapper>
     );
   }

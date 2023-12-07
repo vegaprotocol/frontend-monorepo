@@ -632,13 +632,9 @@ export const RiskFactorsInfoPanel = ({
 
     const { short, long } = market.riskFactors;
 
-    const maxLeverageLong = new BigNumber(1).dividedBy(
-      new BigNumber(market.linearSlippageFactor).plus(long)
-    );
+    const maxLeverageLong = new BigNumber(1).dividedBy(long);
 
-    const maxLeverageShort = new BigNumber(1).dividedBy(
-      new BigNumber(market.linearSlippageFactor).plus(short)
-    );
+    const maxLeverageShort = new BigNumber(1).dividedBy(short);
 
     const maxInitialLeverageLong = !market.tradableInstrument.marginCalculator
       ? undefined

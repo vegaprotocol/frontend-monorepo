@@ -35,13 +35,18 @@ type StatTileProps = {
   testId?: string;
   description?: ReactNode;
   children?: ReactNode;
+  overrideWithNoProgram?: boolean;
 };
 export const StatTile = ({
   title,
   description,
   children,
   testId,
+  overrideWithNoProgram = false,
 }: StatTileProps) => {
+  if (overrideWithNoProgram) {
+    return <NoProgramTile title={title} />;
+  }
   return (
     <Tile>
       <h3
@@ -58,6 +63,20 @@ export const StatTile = ({
           {description}
         </div>
       )}
+    </Tile>
+  );
+};
+
+export const NoProgramTile = ({ title }: Pick<StatTileProps, 'title'>) => {
+  const t = useT();
+  return (
+    <Tile title={title}>
+      <h3 className="mb-1 text-sm text-vega-clight-100 dark:text-vega-cdark-100 calt">
+        {title}
+      </h3>
+      <div className="text-xs text-vega-clight-300 dark:text-vega-cdark-300 leading-[3rem]">
+        {t('No active program')}
+      </div>
     </Tile>
   );
 };

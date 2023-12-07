@@ -13,12 +13,15 @@ import type { ButtonHTMLAttributes, MouseEventHandler } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { RainbowButton } from './buttons';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import { useReferral } from './hooks/use-referral';
+import { useIsInReferralSet, useReferral } from './hooks/use-referral';
 import { Routes } from '../../lib/links';
 import { useTransactionEventSubscription } from '@vegaprotocol/web3';
 import { Statistics, useStats } from './referral-statistics';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { useT } from '../../lib/use-t';
+import { useFundsAvailable } from './hooks/use-funds-available';
+import { ViewType, useSidebar } from '../../components/sidebar';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 
 const RELOAD_DELAY = 3000;
 
@@ -32,20 +35,23 @@ const validateCode = (value: string, t: ReturnType<typeof useT>) => {
   return true;
 };
 
-export const ApplyCodeFormContainer = () => {
+export const ApplyCodeFormContainer = ({
+  onSuccess,
+}: {
+  onSuccess?: () => void;
+}) => {
   const { pubKey } = useVegaWallet();
-  const { data: referee } = useReferral({ pubKey, role: 'referee' });
-  const { data: referrer } = useReferral({ pubKey, role: 'referrer' });
+  const isInReferralSet = useIsInReferralSet(pubKey);
 
-  // go to main page if the current pubkey is already a referrer or referee
-  if (referee || referrer) {
+  // Navigate to the index page when already in the referral set.
+  if (isInReferralSet) {
     return <Navigate to={Routes.REFERRALS} />;
   }
 
-  return <ApplyCodeForm />;
+  return <ApplyCodeForm onSuccess={onSuccess} />;
 };
 
-export const ApplyCodeForm = () => {
+export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const t = useT();
   const program = useReferralProgram();
   const navigate = useNavigate();
@@ -54,10 +60,15 @@ export const ApplyCodeForm = () => {
   );
 
   const [status, setStatus] = useState<
-    'requested' | 'failed' | 'successful' | null
+    'requested' | 'no-funds' | 'successful' | null
   >(null);
   const txHash = useRef<string | null>(null);
   const { isReadOnly, pubKey, sendTx } = useVegaWallet();
+  const { isEligible, requiredFunds } = useFundsAvailable();
+
+  const currentRouteId = useGetCurrentRouteId();
+  const setViews = useSidebar((s) => s.setViews);
+
   const {
     register,
     handleSubmit,
@@ -65,6 +76,7 @@ export const ApplyCodeForm = () => {
     setValue,
     setError,
     watch,
+    clearErrors,
   } = useForm();
   const [params] = useSearchParams();
 
@@ -72,6 +84,36 @@ export const ApplyCodeForm = () => {
   const { data: previewData, loading: previewLoading } = useReferral({
     code: validateCode(codeField, t) ? codeField : undefined,
   });
+
+  /**
+   * Validates if a connected party can apply a code (min funds span protection)
+   */
+  const validateFundsAvailable = useCallback(() => {
+    if (requiredFunds && !isEligible) {
+      const err = t(
+        'Require minimum of {{requiredFunds}} to join a referral set to protect the network from spam.',
+        { replace: { requiredFunds } }
+      );
+      return err;
+    }
+    return true;
+  }, [isEligible, requiredFunds, t]);
+
+  useEffect(() => {
+    if (codeField) {
+      const err = validateFundsAvailable();
+      if (err !== true) {
+        setStatus('no-funds');
+        setError('code', {
+          type: 'required',
+          message: err,
+        });
+      } else {
+        setStatus(null);
+        clearErrors('code');
+      }
+    }
+  }, [clearErrors, codeField, isEligible, setError, validateFundsAvailable]);
 
   /**
    * Validates the set a user tries to apply to.
@@ -167,10 +209,11 @@ export const ApplyCodeForm = () => {
   useEffect(() => {
     if (status === 'successful') {
       setTimeout(() => {
+        if (onSuccess) onSuccess();
         navigate(Routes.REFERRALS);
       }, RELOAD_DELAY);
     }
-  }, [navigate, status]);
+  }, [navigate, onSuccess, status]);
 
   // show "code applied" message when successfully applied
   if (status === 'successful') {
@@ -207,6 +250,18 @@ export const ApplyCodeForm = () => {
       };
     }
 
+    if (status === 'no-funds') {
+      return {
+        disabled: false,
+        children: t('Deposit funds'),
+        type: 'button' as ButtonHTMLAttributes<HTMLButtonElement>['type'],
+        onClick: ((event) => {
+          event.preventDefault();
+          setViews({ type: ViewType.Deposit }, currentRouteId);
+        }) as MouseEventHandler,
+      };
+    }
+
     if (status === 'requested') {
       return {
         disabled: true,
@@ -236,7 +291,9 @@ export const ApplyCodeForm = () => {
           {t('Apply a referral code')}
         </h3>
         <p className="mb-4 text-center text-base">
-          {t('Enter a referral code to get trading discounts.')}
+          {t(
+            'Apply a referral code to access the discount benefits of the current program.'
+          )}
         </p>
         <form
           className={classNames('flex w-full flex-col gap-4', {
@@ -251,8 +308,10 @@ export const ApplyCodeForm = () => {
               {...register('code', {
                 required: t('You have to provide a code to apply it.'),
                 validate: (value) => {
-                  const err = validateCode(value, t);
-                  if (err !== true) return err;
+                  const codeErr = validateCode(value, t);
+                  if (codeErr !== true) return codeErr;
+                  const fundsErr = validateFundsAvailable();
+                  if (fundsErr !== true) return fundsErr;
                   return validateSet();
                 },
               })}

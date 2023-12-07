@@ -1,15 +1,15 @@
-import compact from 'lodash/compact';
-import maxBy from 'lodash/maxBy';
-import { getVolumeTier } from './utils';
 import type { DiscountProgramsQuery, FeesQuery } from './__generated__/Fees';
 
 export const useVolumeStats = (
-  stats?: FeesQuery['volumeDiscountStats'],
+  previousEpoch: number,
+  lastEpochStats?: NonNullable<
+    FeesQuery['volumeDiscountStats']['edges']['0']
+  >['node'],
   program?: DiscountProgramsQuery['currentVolumeDiscountProgram']
 ) => {
   const volumeTiers = program?.benefitTiers || [];
 
-  if (!stats || !program) {
+  if (!lastEpochStats || lastEpochStats.atEpoch !== previousEpoch || !program) {
     return {
       volumeDiscount: 0,
       volumeTierIndex: -1,
@@ -18,11 +18,11 @@ export const useVolumeStats = (
     };
   }
 
-  const volumeStats = compact(stats.edges).map((e) => e.node);
-  const lastEpochStats = maxBy(volumeStats, (s) => s.atEpoch);
   const volumeDiscount = Number(lastEpochStats?.discountFactor || 0);
   const volumeInWindow = Number(lastEpochStats?.runningVolume || 0);
-  const volumeTierIndex = getVolumeTier(volumeInWindow, volumeTiers);
+  const volumeTierIndex = volumeTiers.findIndex(
+    (tier) => tier.volumeDiscountFactor === lastEpochStats?.discountFactor
+  );
 
   return {
     volumeDiscount,

@@ -13,10 +13,10 @@ import { type IterableElement } from 'type-fest';
 import {
   AccountEventsDocument,
   AccountsDocument,
-  AccountFieldsFragment,
-  AccountsQuery,
-  AccountEventsSubscription,
-  AccountsQueryVariables,
+  type AccountFieldsFragment,
+  type AccountsQuery,
+  type AccountEventsSubscription,
+  type AccountsQueryVariables,
 } from './__generated__/Accounts';
 import { type Asset } from '@vegaprotocol/assets';
 

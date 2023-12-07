@@ -7,7 +7,11 @@ import {
 } from '@vegaprotocol/data-provider';
 import { type Market } from '@vegaprotocol/markets';
 import { marketsMapProvider } from '@vegaprotocol/markets';
-import { Cursor, type PageInfo, type Edge } from '@vegaprotocol/data-provider';
+import {
+  type Cursor,
+  type PageInfo,
+  type Edge,
+} from '@vegaprotocol/data-provider';
 import { OrderStatus } from '@vegaprotocol/types';
 import {
   OrdersDocument,

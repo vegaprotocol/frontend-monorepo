@@ -10,8 +10,6 @@ export type DiscountProgramsQuery = { __typename?: 'Query', currentReferralProgr
 
 export type FeesQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
-  volumeDiscountEpochs: Types.Scalars['Int'];
-  referralDiscountEpochs: Types.Scalars['Int'];
 }>;
 
 
@@ -65,14 +63,11 @@ export type DiscountProgramsQueryHookResult = ReturnType<typeof useDiscountProgr
 export type DiscountProgramsLazyQueryHookResult = ReturnType<typeof useDiscountProgramsLazyQuery>;
 export type DiscountProgramsQueryResult = Apollo.QueryResult<DiscountProgramsQuery, DiscountProgramsQueryVariables>;
 export const FeesDocument = gql`
-    query Fees($partyId: ID!, $volumeDiscountEpochs: Int!, $referralDiscountEpochs: Int!) {
+    query Fees($partyId: ID!) {
   epoch {
     id
   }
-  volumeDiscountStats(
-    partyId: $partyId
-    pagination: {last: $volumeDiscountEpochs}
-  ) {
+  volumeDiscountStats(partyId: $partyId, pagination: {last: 1}) {
     edges {
       node {
         atEpoch
@@ -104,7 +99,7 @@ export const FeesDocument = gql`
       }
     }
   }
-  referralSetStats(partyId: $partyId, pagination: {last: $referralDiscountEpochs}) {
+  referralSetStats(partyId: $partyId, pagination: {last: 1}) {
     edges {
       node {
         atEpoch
@@ -129,8 +124,6 @@ export const FeesDocument = gql`
  * const { data, loading, error } = useFeesQuery({
  *   variables: {
  *      partyId: // value for 'partyId'
- *      volumeDiscountEpochs: // value for 'volumeDiscountEpochs'
- *      referralDiscountEpochs: // value for 'referralDiscountEpochs'
  *   },
  * });
  */

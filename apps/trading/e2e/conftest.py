@@ -12,6 +12,7 @@ from contextlib import contextmanager
 from vega_sim.null_service import VegaServiceNull
 from playwright.sync_api import Browser, Page
 from config import console_image_name, vega_version
+from datetime import datetime, timedelta
 from fixtures.market import (
     setup_simple_market,
     setup_opening_auction_market,
@@ -78,6 +79,7 @@ def init_vega(request=None):
         store_transactions=True,
         transactions_per_block=1000,
         seconds_per_block=seconds_per_block,
+        genesis_time= datetime.now() - timedelta(days=1),
     ) as vega:
         try:
             container = docker_client.containers.run(

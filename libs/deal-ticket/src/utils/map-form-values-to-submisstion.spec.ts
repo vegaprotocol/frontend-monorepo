@@ -98,4 +98,91 @@ describe('mapFormValuesToOrderSubmission', () => {
       ).size
     ).toEqual('1000');
   });
+
+  it.each([
+    { timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK, postOnly: false },
+    { timeInForce: OrderTimeInForce.TIME_IN_FORCE_GFA, postOnly: true },
+    { timeInForce: OrderTimeInForce.TIME_IN_FORCE_GFN, postOnly: true },
+    { timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC, postOnly: true },
+    { timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT, postOnly: true },
+    { timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC, postOnly: false },
+  ])(
+    'sets postOnly correctly when TIF is $timeInForce',
+    ({
+      timeInForce,
+      postOnly,
+    }: {
+      timeInForce: OrderTimeInForce;
+      postOnly: boolean;
+    }) => {
+      expect(
+        mapFormValuesToOrderSubmission(
+          {
+            type: OrderType.TYPE_LIMIT,
+            timeInForce,
+            postOnly: true,
+          } as OrderFormValues,
+          'marketId',
+          2,
+          2
+        ).postOnly
+      ).toEqual(postOnly);
+      // sets always false if type is market
+      expect(
+        mapFormValuesToOrderSubmission(
+          {
+            type: OrderType.TYPE_MARKET,
+            timeInForce,
+            postOnly: true,
+          } as OrderFormValues,
+          'marketId',
+          2,
+          2
+        ).postOnly
+      ).toEqual(false);
+    }
+  );
+
+  it.each([
+    { timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK, reduceOnly: true },
+    { timeInForce: OrderTimeInForce.TIME_IN_FORCE_GFA, reduceOnly: false },
+    { timeInForce: OrderTimeInForce.TIME_IN_FORCE_GFN, reduceOnly: false },
+    { timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC, reduceOnly: false },
+    { timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT, reduceOnly: false },
+    { timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC, reduceOnly: true },
+  ])(
+    'sets reduceOnly correctly when TIF is $timeInForce',
+    ({
+      timeInForce,
+      reduceOnly,
+    }: {
+      timeInForce: OrderTimeInForce;
+      reduceOnly: boolean;
+    }) => {
+      expect(
+        mapFormValuesToOrderSubmission(
+          {
+            type: OrderType.TYPE_MARKET,
+            timeInForce,
+            reduceOnly: true,
+          } as OrderFormValues,
+          'marketId',
+          2,
+          2
+        ).reduceOnly
+      ).toEqual(reduceOnly);
+      expect(
+        mapFormValuesToOrderSubmission(
+          {
+            type: OrderType.TYPE_LIMIT,
+            timeInForce,
+            reduceOnly: true,
+          } as OrderFormValues,
+          'marketId',
+          2,
+          2
+        ).reduceOnly
+      ).toEqual(reduceOnly);
+    }
+  );
 });

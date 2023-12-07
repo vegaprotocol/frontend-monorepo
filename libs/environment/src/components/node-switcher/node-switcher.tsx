@@ -89,30 +89,30 @@ export const NodeSwitcher = ({ closeDialog }: { closeDialog: () => void }) => {
                 <span className="text-right">{t('Block')}</span>
                 <span className="text-right">{t('Subscription')}</span>
               </LayoutRow>
-              <div>
-                {nodes.map((node, index) => {
-                  return (
-                    <LayoutRow key={node} dataTestId="node-row">
-                      <ApolloWrapper url={node}>
-                        <RowData
-                          id={index.toString()}
-                          url={node}
-                          highestBlock={highestBlock}
-                          onBlockHeight={handleHighestBlock}
-                        />
-                      </ApolloWrapper>
-                    </LayoutRow>
-                  );
-                })}
-                <CustomRowWrapper
-                  inputText={customUrlText}
-                  setInputText={setCustomUrlText}
-                  nodes={nodes}
-                  highestBlock={highestBlock}
-                  onBlockHeight={handleHighestBlock}
-                  nodeRadio={nodeRadio}
-                />
-              </div>
+            </div>
+            <div>
+              {nodes.map((node, index) => {
+                return (
+                  <LayoutRow key={node} dataTestId="node-row">
+                    <ApolloWrapper url={node}>
+                      <RowData
+                        id={index.toString()}
+                        url={node}
+                        highestBlock={highestBlock}
+                        onBlockHeight={handleHighestBlock}
+                      />
+                    </ApolloWrapper>
+                  </LayoutRow>
+                );
+              })}
+              <CustomRowWrapper
+                inputText={customUrlText}
+                setInputText={setCustomUrlText}
+                nodes={nodes}
+                highestBlock={highestBlock}
+                onBlockHeight={handleHighestBlock}
+                nodeRadio={nodeRadio}
+              />
             </div>
           </TradingRadioGroup>
           <div className="mt-4">

@@ -9,7 +9,7 @@ packages = [{include = "trading market-sim e2e"}]
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
 psutil = "^5.9.5"
-vega-sim = {git = "https://github.com/vegaprotocol/vega-market-sim.git"}
+vega-sim = {git = "https://github.com/vegaprotocol/vega-market-sim.git/", branch = "fix/genesis_panic"}
 pytest-playwright = "^0.4.2"
 docker = "^6.1.3"
 pytest-xdist = "^3.3.1"

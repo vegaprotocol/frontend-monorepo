@@ -14,7 +14,7 @@ import {
 } from './__generated__/Erc20Approval';
 import {
   PendingWithdrawalFragmentDoc,
-  PendingWithdrawalFragment,
+  type PendingWithdrawalFragment,
 } from './__generated__/Withdrawal';
 
 export const useCompleteWithdraw = () => {

@@ -16,18 +16,11 @@ query DiscountPrograms {
   }
 }
 
-query Fees(
-  $partyId: ID!
-  $volumeDiscountEpochs: Int!
-  $referralDiscountEpochs: Int!
-) {
+query Fees($partyId: ID!) {
   epoch {
     id
   }
-  volumeDiscountStats(
-    partyId: $partyId
-    pagination: { last: $volumeDiscountEpochs }
-  ) {
+  volumeDiscountStats(partyId: $partyId, pagination: { last: 1 }) {
     edges {
       node {
         atEpoch
@@ -59,10 +52,7 @@ query Fees(
       }
     }
   }
-  referralSetStats(
-    partyId: $partyId
-    pagination: { last: $referralDiscountEpochs }
-  ) {
+  referralSetStats(partyId: $partyId, pagination: { last: 1 }) {
     edges {
       node {
         atEpoch

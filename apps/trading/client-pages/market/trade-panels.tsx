@@ -1,19 +1,20 @@
-import type { PinnedAsset } from '@vegaprotocol/accounts';
-import type { Market } from '@vegaprotocol/markets';
+import { type PinnedAsset } from '@vegaprotocol/accounts';
+import { type Market } from '@vegaprotocol/markets';
 import { OracleBanner } from '@vegaprotocol/markets';
-import type { TradingView } from './trade-views';
-import { TradingViews } from './trade-views';
 import { useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
+import { FLAGS } from '@vegaprotocol/environment';
+import { Splash } from '@vegaprotocol/ui-toolkit';
+import { useT } from '../../lib/use-t';
 import {
   MarketSuccessorBanner,
   MarketSuccessorProposalBanner,
   MarketTerminationBanner,
 } from '../../components/market-banner';
-import { FLAGS } from '@vegaprotocol/environment';
-import { useT } from '../../lib/use-t';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { ErrorBoundary } from '../../components/error-boundary';
+import { type TradingView } from './trade-views';
+import { TradingViews } from './trade-views';
 
 interface TradePanelsProps {
   market: Market | null;
@@ -34,7 +35,11 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
 
     // Watch out here, we don't know what component is being rendered
     // so watch out for clashes in props
-    return <Component marketId={market?.id} pinnedAsset={pinnedAsset} />;
+    return (
+      <ErrorBoundary feature={view}>
+        <Component marketId={market?.id} pinnedAsset={pinnedAsset} />;
+      </ErrorBoundary>
+    );
   };
 
   const renderMenu = () => {
