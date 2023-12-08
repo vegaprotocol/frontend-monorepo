@@ -7,16 +7,22 @@ import { useLanguage } from './use-t';
 import { useDatafeed } from './use-datafeed';
 import { type ResolutionString } from './constants';
 
+export type OnAutoSaveNeededCallback = (data: { studies: string[] }) => void;
+
 export const TradingView = ({
   marketId,
   libraryPath,
   interval,
+  studies,
   onIntervalChange,
+  onAutoSaveNeeded,
 }: {
   marketId: string;
   libraryPath: string;
   interval: ResolutionString;
+  studies: string[];
   onIntervalChange: (interval: string) => void;
+  onAutoSaveNeeded: OnAutoSaveNeededCallback;
 }) => {
   const { isMobile } = useScreenDimensions();
   const { theme } = useThemeSwitcher();
@@ -69,17 +75,24 @@ export const TradingView = ({
       widgetRef.current.onChartReady(() => {
         widgetRef.current.applyOverrides(getOverrides(theme));
 
+        widgetRef.current.subscribe('onAutoSaveNeeded', () => {
+          const studies = widgetRef.current
+            .activeChart()
+            .getAllStudies()
+            .map((s: { id: string; name: string }) => s.name);
+          onAutoSaveNeeded({ studies });
+        });
+
         const activeChart = widgetRef.current.activeChart();
 
         // Show volume study by default, second bool arg adds it as a overlay on top of the chart
-        activeChart.createStudy('volume', true);
+        studies.forEach((study) => {
+          const asOverlay = study === 'Volume';
+          activeChart.createStudy(study, asOverlay);
+        });
 
         // Subscribe to interval changes so it can be persisted in chart settings
-        activeChart
-          .onIntervalChanged()
-          .subscribe(null, (resolution: string) => {
-            onIntervalChange(resolution);
-          });
+        activeChart.onIntervalChanged().subscribe(null, onIntervalChange);
       });
 
       return () => {
