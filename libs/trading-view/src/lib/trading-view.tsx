@@ -1,14 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-/**
- * TODO: figure out how to import types
 import {
-  type ChartingLibraryWidgetOptions,
-  type LanguageCode,
-  type ResolutionString,
-  widget,
-} from '../charting_library';
-*/
+  useScreenDimensions,
+  useThemeSwitcher,
+} from '@vegaprotocol/react-helpers';
 import { useLanguage } from './use-t';
 import { useDatafeed } from './use-datafeed';
 import { type ResolutionString } from './constants';
@@ -24,6 +18,7 @@ export const TradingView = ({
   interval: ResolutionString;
   onIntervalChange: (interval: string) => void;
 }) => {
+  const { isMobile } = useScreenDimensions();
   const { theme } = useThemeSwitcher();
   const language = useLanguage();
   const chartContainerRef =
@@ -36,17 +31,20 @@ export const TradingView = ({
 
   useEffect(
     () => {
-      // @ts-ignore cant import types as charting_library is external
-      // eslint-disable-next-line
-      const widgetOptions: ChartingLibraryWidgetOptions = {
+      const disableOnSmallScreens = isMobile ? ['left_toolbar'] : [];
+
+      const overrides = getOverrides(theme);
+
+      const widgetOptions = {
         symbol: marketId,
         datafeed,
         interval: interval,
         container: chartContainerRef.current,
         library_path: libraryPath,
         custom_css_url: 'vega_styles.css',
-        // @ts-ignore cant import types as charting_library is external
-        locale: language as LanguageCode,
+        // Trading view accepts just 'en' rather than 'en-US' which is what react-i18next provides
+        // https://www.tradingview.com/charting-library-docs/latest/core_concepts/Localization?_highlight=language#supported-languages
+        locale: language.split('-')[0],
         // TODO: figure out why the 1T (tick) interval button is disabled
         // enabled_features: ['tick_resolution'],
         disabled_features: [
@@ -54,14 +52,14 @@ export const TradingView = ({
           'header_compare',
           'show_object_tree',
           'timeframes_toolbar',
+          ...disableOnSmallScreens,
         ],
         fullscreen: false,
         autosize: true,
         theme,
-        overrides: {
-          // colors set here, trading view lets the user set a color
-          'paneProperties.background': theme === 'dark' ? '#05060C' : '#fff',
-          'paneProperties.backgroundType': 'solid',
+        overrides,
+        loading_screen: {
+          backgroundColor: overrides['paneProperties.background'],
         },
       };
 
@@ -69,6 +67,8 @@ export const TradingView = ({
       widgetRef.current = new window.TradingView.widget(widgetOptions);
 
       widgetRef.current.onChartReady(() => {
+        widgetRef.current.applyOverrides(getOverrides(theme));
+
         const activeChart = widgetRef.current.activeChart();
 
         // Show volume study by default, second bool arg adds it as a overlay on top of the chart
@@ -91,14 +91,29 @@ export const TradingView = ({
     // No theme in deps to avoid full chart reload when the theme changes
     // Instead the theme is changed programmitcally in a separate useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [datafeed, marketId, language, libraryPath]
+    [datafeed, marketId, language, libraryPath, isMobile]
   );
 
-  // Update the trading view theme every time the app theme updates
+  // Update the trading view theme every time the app theme updates, doen separately
+  // to avoid full chart reload
   useEffect(() => {
     if (!widgetRef.current || !widgetRef.current._ready) return;
-    widgetRef.current.changeTheme(theme);
+
+    // Calling changeTheme will reset the default dark/light background to the TV default
+    // so we need to re-apply the pane bg override. A promise is also required
+    // https://github.com/tradingview/charting_library/issues/6546#issuecomment-1139517908
+    widgetRef.current.changeTheme(theme).then(() => {
+      widgetRef.current.applyOverrides(getOverrides(theme));
+    });
   }, [theme]);
 
   return <div ref={chartContainerRef} className="w-full h-full" />;
+};
+
+const getOverrides = (theme: 'dark' | 'light') => {
+  return {
+    // colors set here, trading view lets the user set a color
+    'paneProperties.background': theme === 'dark' ? '#05060C' : '#fff',
+    'paneProperties.backgroundType': 'solid',
+  };
 };

@@ -198,9 +198,6 @@ export const useDatafeed = () => {
         onTick
 
         // subscriberUID,  // chart will subscribe and unsbuscribe when the parent market of the page changes so we don't need to use subscriberUID as of now
-
-        // TODO: figure out how/when we should use onResetCacheNeededCallback
-        // onResetCacheNeededCallback,
       ) => {
         if (!symbolInfo.ticker) {
           throw new Error('No symbolInfo.ticker');
