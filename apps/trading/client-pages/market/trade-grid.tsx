@@ -24,7 +24,7 @@ import { ErrorBoundary } from '../../components/error-boundary';
 
 interface TradeGridProps {
   market: Market | null;
-  pinnedAsset?: PinnedAsset;
+  pinnedAsset?: PinnedAsset | undefined;
 }
 
 const MainGrid = memo(
