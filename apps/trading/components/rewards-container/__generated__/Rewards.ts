@@ -10,6 +10,13 @@ export type RewardsPageQueryVariables = Types.Exact<{
 
 export type RewardsPageQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, vestingStats?: { __typename?: 'PartyVestingStats', rewardBonusMultiplier: string } | null, activityStreak?: { __typename?: 'PartyActivityStreak', rewardVestingMultiplier: string, rewardDistributionMultiplier: string } | null, vestingBalancesSummary: { __typename?: 'PartyVestingBalancesSummary', epoch?: number | null, vestingBalances?: Array<{ __typename?: 'PartyVestingBalance', balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null, lockedBalances?: Array<{ __typename?: 'PartyLockedBalance', balance: string, untilEpoch: number, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null } } | null };
 
+export type ActivityStreakQueryVariables = Types.Exact<{
+  partyId: Types.Scalars['ID'];
+}>;
+
+
+export type ActivityStreakQuery = { __typename?: 'Query', partiesConnection?: { __typename?: 'PartyConnection', edges: Array<{ __typename?: 'PartyEdge', node: { __typename?: 'Party', id: string, activityStreak?: { __typename?: 'PartyActivityStreak', activeFor: number, isActive: boolean, inactiveFor: number, rewardDistributionMultiplier: string, rewardVestingMultiplier: string, epoch: number, tradedVolume: string, openVolume: string } | null } }> } | null };
+
 export type RewardsHistoryQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
   epochRewardSummariesPagination?: Types.InputMaybe<Types.Pagination>;
@@ -91,6 +98,55 @@ export function useRewardsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type RewardsPageQueryHookResult = ReturnType<typeof useRewardsPageQuery>;
 export type RewardsPageLazyQueryHookResult = ReturnType<typeof useRewardsPageLazyQuery>;
 export type RewardsPageQueryResult = Apollo.QueryResult<RewardsPageQuery, RewardsPageQueryVariables>;
+export const ActivityStreakDocument = gql`
+    query ActivityStreak($partyId: ID!) {
+  partiesConnection(id: $partyId) {
+    edges {
+      node {
+        id
+        activityStreak {
+          activeFor
+          isActive
+          inactiveFor
+          rewardDistributionMultiplier
+          rewardVestingMultiplier
+          epoch
+          tradedVolume
+          openVolume
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useActivityStreakQuery__
+ *
+ * To run a query within a React component, call `useActivityStreakQuery` and pass it any options that fit your needs.
+ * When your component renders, `useActivityStreakQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useActivityStreakQuery({
+ *   variables: {
+ *      partyId: // value for 'partyId'
+ *   },
+ * });
+ */
+export function useActivityStreakQuery(baseOptions: Apollo.QueryHookOptions<ActivityStreakQuery, ActivityStreakQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ActivityStreakQuery, ActivityStreakQueryVariables>(ActivityStreakDocument, options);
+      }
+export function useActivityStreakLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ActivityStreakQuery, ActivityStreakQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ActivityStreakQuery, ActivityStreakQueryVariables>(ActivityStreakDocument, options);
+        }
+export type ActivityStreakQueryHookResult = ReturnType<typeof useActivityStreakQuery>;
+export type ActivityStreakLazyQueryHookResult = ReturnType<typeof useActivityStreakLazyQuery>;
+export type ActivityStreakQueryResult = Apollo.QueryResult<ActivityStreakQuery, ActivityStreakQueryVariables>;
 export const RewardsHistoryDocument = gql`
     query RewardsHistory($partyId: ID!, $epochRewardSummariesPagination: Pagination, $partyRewardsPagination: Pagination, $fromEpoch: Int, $toEpoch: Int) {
   epochRewardSummaries(

@@ -36,6 +36,26 @@ query RewardsPage($partyId: ID!) {
   }
 }
 
+query ActivityStreak($partyId: ID!) {
+  partiesConnection(id: $partyId) {
+    edges {
+      node {
+        id
+        activityStreak {
+          activeFor
+          isActive
+          inactiveFor
+          rewardDistributionMultiplier
+          rewardVestingMultiplier
+          epoch
+          tradedVolume
+          openVolume
+        }
+      }
+    }
+  }
+}
+
 query RewardsHistory(
   $partyId: ID!
   $epochRewardSummariesPagination: Pagination

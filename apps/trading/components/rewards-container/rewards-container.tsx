@@ -33,6 +33,7 @@ import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { RewardsHistoryContainer } from './rewards-history';
 import { useT } from '../../lib/use-t';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
+import { ActiveRewards, ActivityStreak } from './activity-rewards';
 
 const ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA = [
   'bf1e88d19db4b3ca0d1d5bdb73718a01686b18cf731ca26adedf3c8b83802bba', // USDT mainnet
@@ -56,6 +57,7 @@ export const RewardsContainer = () => {
 
   // No need to specify the fromEpoch as it will by default give you the last
   // Note activityStreak in query will fail
+
   const { data: rewardsData, loading: rewardsLoading } = useRewardsPageQuery({
     variables: {
       partyId: pubKey || '',
@@ -223,6 +225,30 @@ export const RewardsContainer = () => {
             </Card>
           );
         })}
+      <Card
+        title={t('Activity streak')}
+        className="lg:col-span-full"
+        loading={rewardsLoading}
+      >
+        <span className="flex flex-col mx-8">
+          <ActivityStreak
+            epoch={Number(epochData?.epoch.id)}
+            pubKey={pubKey}
+            assets={assetMap}
+          />
+        </span>
+      </Card>
+      <Card
+        title={t('Active rewards')}
+        className="lg:col-span-full"
+        loading={rewardsLoading}
+      >
+        <ActiveRewards
+          epoch={Number(epochData?.epoch.id)}
+          pubKey={pubKey}
+          assets={assetMap}
+        />
+      </Card>
       <Card
         title={t('Rewards history')}
         className="lg:col-span-full"
