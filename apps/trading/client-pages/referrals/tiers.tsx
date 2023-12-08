@@ -159,11 +159,11 @@ export const TiersContainer = () => {
 
   return (
     <>
-      <h2 className="text-3xl mt-10">{t('Current Program Details')}</h2>
+      <h2 className="text-3xl mt-10">{t('Current program details')}</h2>
       {details?.id && (
         <p>
           <Trans
-            defaults="As a result of <0>{{proposal}}</0> the program below is currently active on the Vega network."
+            defaults="As a result of governance proposal <0>{{proposal}}</0> the program below is currently active on the Vega network."
             values={{ proposal: truncateMiddle(details.id) }}
             components={[
               <ExternalLink

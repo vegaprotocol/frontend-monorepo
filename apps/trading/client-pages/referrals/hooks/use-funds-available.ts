@@ -1,7 +1,7 @@
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useFundsAvailableQuery } from './__generated__/FundsAvailable';
 import compact from 'lodash/compact';
-import sum from 'lodash/sum';
+import BigNumber from 'bignumber.js';
 
 /**
  * Gets the funds for given public key and required min for
@@ -24,14 +24,16 @@ export const useFundsAvailable = (pubKey?: string) => {
     ? compact(data.party?.accountsConnection?.edges?.map((e) => e?.node))
     : undefined;
   const requiredFunds = data
-    ? BigInt(data.networkParameter?.value || '0')
+    ? BigNumber(data.networkParameter?.value || '0')
     : undefined;
 
-  const sumOfFunds = sum(
-    fundsAvailable?.filter((fa) => fa.balance).map((fa) => BigInt(fa.balance))
-  );
+  const sumOfFunds =
+    fundsAvailable
+      ?.filter((fa) => fa.balance)
+      .reduce((sum, fa) => sum.plus(BigNumber(fa.balance)), BigNumber(0)) ||
+    BigNumber(0);
 
-  if (requiredFunds && sumOfFunds >= requiredFunds) {
+  if (requiredFunds && sumOfFunds.isGreaterThanOrEqualTo(requiredFunds)) {
     stopPolling();
   }
 
@@ -41,6 +43,6 @@ export const useFundsAvailable = (pubKey?: string) => {
     isEligible:
       fundsAvailable != null &&
       requiredFunds != null &&
-      sumOfFunds >= requiredFunds,
+      sumOfFunds.isGreaterThanOrEqualTo(requiredFunds),
   };
 };

@@ -1,17 +1,23 @@
 import { useEffect } from 'react';
-import { useMatch } from 'react-router-dom';
+import { matchPath, useLocation } from 'react-router-dom';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { VegaConnectDialog } from '@vegaprotocol/wallet';
 import { Connectors } from '../../lib/vega-connectors';
 import { useT } from '../../lib/use-t';
-import { Links } from '../../lib/links';
+import { Routes } from '../../lib/links';
 import { RiskMessage } from './risk-message';
 import { WelcomeDialogContent } from './welcome-dialog-content';
 import { useOnboardingStore } from './use-get-onboarding-step';
+import { ensureSuffix } from '@vegaprotocol/utils';
+
+/**
+ * A list of paths on which the welcome dialog should be omitted.
+ */
+const OMIT_ON_LIST = [ensureSuffix(Routes.REFERRALS, '/*')];
 
 export const WelcomeDialog = () => {
-  const isReferrals = useMatch(Links.REFERRALS());
+  const { pathname } = useLocation();
   const t = useT();
   const { VEGA_ENV } = useEnvironment();
   const dismissed = useOnboardingStore((store) => store.dismissed);
@@ -26,10 +32,14 @@ export const WelcomeDialog = () => {
   );
 
   useEffect(() => {
-    if (dismissed) return;
-    if (isReferrals) return;
+    const shouldOmit = OMIT_ON_LIST.map((path) =>
+      matchPath(path, pathname)
+    ).some((m) => !!m);
+
+    if (dismissed || shouldOmit) return;
+
     setDialogOpen(true);
-  }, [dismissed, isReferrals, setDialogOpen]);
+  }, [dismissed, pathname, setDialogOpen]);
 
   const content = walletDialogOpen ? (
     <VegaConnectDialog

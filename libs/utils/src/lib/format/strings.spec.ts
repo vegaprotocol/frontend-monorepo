@@ -4,6 +4,7 @@ import {
   shorten,
   titlefy,
   stripFullStops,
+  ensureSuffix,
 } from './strings';
 
 describe('truncateByChars', () => {
@@ -86,5 +87,17 @@ describe('stripFullStops', () => {
       const input = '';
       expect(stripFullStops(input)).toBe(input);
     });
+  });
+});
+
+describe('ensureSuffix', () => {
+  it.each([
+    ['', 'abc', 'abc'],
+    ['abc', '', 'abc'],
+    ['def', 'abc', 'abcdef'],
+    ['ąę', 'ae', 'aeąę'],
+    ['🥪', '🍞+🔪=', '🍞+🔪=🥪'],
+  ])('ensures "%s" at the end of "%s": "%s"', (suffix, input, expected) => {
+    expect(ensureSuffix(input, suffix)).toEqual(expected);
   });
 });

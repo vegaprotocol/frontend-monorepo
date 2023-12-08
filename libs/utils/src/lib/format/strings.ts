@@ -33,3 +33,9 @@ export function titlefy(words: (string | null | undefined)[]) {
 export function stripFullStops(input: string) {
   return input.replace(/\./g, '');
 }
+
+export function ensureSuffix(input: string, suffix: string) {
+  const maybeSuffix = input.substring(input.length - suffix.length);
+  if (maybeSuffix === suffix) return input;
+  return input + suffix;
+}

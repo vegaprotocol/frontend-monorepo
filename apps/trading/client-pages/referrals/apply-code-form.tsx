@@ -18,12 +18,34 @@ import { Routes } from '../../lib/links';
 import { useTransactionEventSubscription } from '@vegaprotocol/web3';
 import { Statistics, useStats } from './referral-statistics';
 import { useReferralProgram } from './hooks/use-referral-program';
-import { useT } from '../../lib/use-t';
+import { ns, useT } from '../../lib/use-t';
 import { useFundsAvailable } from './hooks/use-funds-available';
 import { ViewType, useSidebar } from '../../components/sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
+import { QUSDTooltip } from './qusd-tooltip';
+import { Trans } from 'react-i18next';
 
 const RELOAD_DELAY = 3000;
+
+const SPAM_PROTECTION_ERR = 'SPAM_PROTECTION_ERR';
+const SpamProtectionErr = ({
+  requiredFunds,
+}: {
+  requiredFunds?: string | number | bigint;
+}) => {
+  if (!requiredFunds) return null;
+  // eslint-disable-next-line react/jsx-no-undef
+  return (
+    <Trans
+      defaults="To protect the network from spam, you must have at least {{requiredFunds}} <0>qUSD</0> of any asset on the network to proceed."
+      values={{
+        requiredFunds,
+      }}
+      components={[<QUSDTooltip key="qusd" />]}
+      ns={ns}
+    />
+  );
+};
 
 const validateCode = (value: string, t: ReturnType<typeof useT>) => {
   const number = +`0x${value}`;
@@ -76,7 +98,6 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     setValue,
     setError,
     watch,
-    clearErrors,
   } = useForm();
   const [params] = useSearchParams();
 
@@ -90,32 +111,11 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
    */
   const validateFundsAvailable = useCallback(() => {
     if (requiredFunds && !isEligible) {
-      const err = t(
-        'To protect the network from spam, you must have at least {{requiredFunds}} qUSD of any asset on the network to proceed.',
-        {
-          requiredFunds,
-        }
-      );
+      const err = SPAM_PROTECTION_ERR;
       return err;
     }
     return true;
-  }, [isEligible, requiredFunds, t]);
-
-  useEffect(() => {
-    if (codeField) {
-      const err = validateFundsAvailable();
-      if (err !== true) {
-        setStatus('no-funds');
-        setError('code', {
-          type: 'required',
-          message: err,
-        });
-      } else {
-        setStatus(null);
-        clearErrors('code');
-      }
-    }
-  }, [clearErrors, codeField, isEligible, setError, validateFundsAvailable]);
+  }, [isEligible, requiredFunds]);
 
   /**
    * Validates the set a user tries to apply to.
@@ -139,6 +139,15 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     const code = params.get('code');
     if (code) setValue('code', code);
   }, [params, setValue]);
+
+  useEffect(() => {
+    const err = validateFundsAvailable();
+    if (err !== true) {
+      setStatus('no-funds');
+    } else {
+      setStatus(null);
+    }
+  }, [isEligible, validateFundsAvailable]);
 
   const onSubmit = ({ code }: FieldValues) => {
     if (isReadOnly || !pubKey || !code || code.length === 0) {
@@ -323,10 +332,26 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
           </label>
           <RainbowButton variant="border" {...getButtonProps()} />
         </form>
-        {errors.code && (
-          <InputError className="overflow-auto break-words">
-            {errors.code.message?.toString()}
+        {status === 'no-funds' ? (
+          <InputError intent="warning" className="overflow-auto break-words">
+            <span>
+              <SpamProtectionErr requiredFunds={requiredFunds?.toString()} />
+            </span>
           </InputError>
+        ) : (
+          errors.code && (
+            <InputError intent="warning" className="overflow-auto break-words">
+              {errors.code.message === SPAM_PROTECTION_ERR ? (
+                <span>
+                  <SpamProtectionErr
+                    requiredFunds={requiredFunds?.toString()}
+                  />
+                </span>
+              ) : (
+                errors.code.message?.toString()
+              )}
+            </InputError>
+          )
         )}
       </div>
       {validateCode(codeField, t) === true && previewLoading && !previewData ? (

@@ -4,8 +4,6 @@ import {
   VegaIcon,
   VegaIconNames,
   truncateMiddle,
-  ExternalLink,
-  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -28,10 +26,10 @@ import sortBy from 'lodash/sortBy';
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 import BigNumber from 'bignumber.js';
-import { DocsLinks } from '@vegaprotocol/environment';
 import { useT, ns } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
 import { ApplyCodeForm, ApplyCodeFormContainer } from './apply-code-form';
+import { QUSDTooltip } from './qusd-tooltip';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
@@ -517,30 +515,5 @@ export const RefereesTable = ({
         </div>
       )}
     </>
-  );
-};
-
-export const QUSDTooltip = () => {
-  const t = useT();
-  return (
-    <Tooltip
-      description={
-        <>
-          <p className="mb-1">
-            {t(
-              'qUSD provides a rough USD equivalent of balances across all assets using the value of "Quantum" for that asset'
-            )}
-          </p>
-          {DocsLinks && (
-            <ExternalLink href={DocsLinks.QUANTUM}>
-              {t('Find out more')}
-            </ExternalLink>
-          )}
-        </>
-      }
-      underline={true}
-    >
-      <span>{t('qUSD')}</span>
-    </Tooltip>
   );
 };
