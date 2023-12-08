@@ -91,8 +91,10 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const validateFundsAvailable = useCallback(() => {
     if (requiredFunds && !isEligible) {
       const err = t(
-        'Require minimum of {{requiredFunds}} to join a referral set to protect the network from spam.',
-        { replace: { requiredFunds } }
+        'To protect the network from spam, you must have at least {{requiredFunds}} qUSD of any asset on the network to proceed.',
+        {
+          requiredFunds,
+        }
       );
       return err;
     }
