@@ -143,10 +143,7 @@ const testSubscription = (client: Client) => {
   });
 };
 
-export const userControllableFeatureFlags: (keyof FeatureFlags)[] = [
-  'REFERRALS',
-  'STOP_ORDERS',
-];
+export const userControllableFeatureFlags: (keyof FeatureFlags)[] = [];
 
 /**
  * Retrieve env vars, parsing where needed some type casting is needed

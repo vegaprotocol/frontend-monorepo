@@ -12,7 +12,7 @@ import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { useFeatureFlags, type FeatureFlags } from '@vegaprotocol/environment';
 
-const FeatureFlagSwitch = ({ flag }: { flag: keyof FeatureFlags }) => {
+export const FeatureFlagSwitch = ({ flag }: { flag: keyof FeatureFlags }) => {
   const flags = useFeatureFlags((state) => state.flags);
   const setFeatureFlag = useFeatureFlags((state) => state.setFeatureFlag);
   return (
@@ -109,12 +109,6 @@ export const Settings = () => {
           <dt className="text-muted">{t('Git commit hash')}</dt>
           <dd className="break-words">{process.env.GIT_COMMIT}</dd>
         </dl>
-      </SettingsGroup>
-      <SettingsGroup label={t('Stop orders')} helpText={t('Stop orders')}>
-        <FeatureFlagSwitch flag="STOP_ORDERS" />
-      </SettingsGroup>
-      <SettingsGroup label={t('Referrals')} helpText={t('Referrals')}>
-        <FeatureFlagSwitch flag="REFERRALS" />
       </SettingsGroup>
     </div>
   );
