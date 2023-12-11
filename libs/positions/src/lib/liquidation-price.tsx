@@ -8,11 +8,13 @@ export const LiquidationPrice = ({
   openVolume,
   collateralAvailable,
   decimalPlaces,
+  className,
 }: {
   marketId: string;
   openVolume: string;
   collateralAvailable: string;
   decimalPlaces: number;
+  className?: string;
 }) => {
   const t = useT();
   const { data: currentData, previousData } = useEstimatePositionQuery({
@@ -39,22 +41,19 @@ export const LiquidationPrice = ({
 
   return (
     <Tooltip
+      align="end"
       description={
-        <table>
-          <tbody>
-            <tr>
-              <th>{t('Worst case')}</th>
-              <td className="pl-2 text-right font-mono">{worstCase}</td>
-            </tr>
-            <tr>
-              <th>{t('Best case')}</th>
-              <td className="pl-2 text-right font-mono">{bestCase}</td>
-            </tr>
-          </tbody>
-        </table>
+        <dl className="grid grid-cols-2">
+          <dt>{t('Worst case')}</dt>
+          <dd className="pl-2 text-right font-mono">{worstCase}</dd>
+          <dt className="font-normal">{t('Best case')}</dt>
+          <dd className="pl-2 text-right font-mono">{bestCase}</dd>
+        </dl>
       }
     >
-      <span data-testid="liquidation-price">{worstCase}</span>
+      <span data-testid="liquidation-price" className={className}>
+        {worstCase}
+      </span>
     </Tooltip>
   );
 };
