@@ -1,10 +1,6 @@
 import compact from 'lodash/compact';
-import { type Proposal, ProposalState, MarketState } from '@vegaprotocol/types';
-import {
-  ExternalLink,
-  Intent,
-  NotificationBanner,
-} from '@vegaprotocol/ui-toolkit';
+import { type Proposal, type ProposalState, MarketState } from '@vegaprotocol/types';
+import { Intent, NotificationBanner } from '@vegaprotocol/ui-toolkit';
 import {
   useSuccessorMarket,
   useMarketState,
@@ -12,9 +8,10 @@ import {
   type Market,
 } from '@vegaprotocol/markets';
 import { useState } from 'react';
-import { Trans } from 'react-i18next';
 import { useMarketProposals } from '@vegaprotocol/proposals';
 import { MarketSuspendedBanner } from './market-suspended-banner';
+import { MarketUpdateBanner } from './market-update-banner';
+import { MarketUpdateStateBanner } from './market-update-state-banner';
 
 type UpdateMarketBanner = {
   kind: 'UpdateMarket';
@@ -87,7 +84,7 @@ export const MarketBanner = ({ marketId }: { marketId: string }) => {
   const { data: marketState } = useMarketState(marketId);
 
   const { proposals: openProposals, loading: openLoading } =
-    useProposalsForMarket(marketId, ProposalState.STATE_OPEN);
+    useProposalsForMarket(marketId);
 
   // eslint-disable-next-line
   const { data: successorData, loading: successorLoading } =
@@ -133,23 +130,11 @@ const NotificationQueue = ({ notifications }: { notifications: Banner[] }) => {
 
     switch (n.kind) {
       case 'UpdateMarket': {
-        content = (
-          <p data-testid="market-proposal-notification">
-            <Trans
-              i18nKey="Changes have been proposed for this market. <0>View proposals</0>"
-              components={[
-                // TODO: Fix link
-                <ExternalLink key="view-link" href={'https://google.com'}>
-                  View proposals
-                </ExternalLink>,
-              ]}
-            />
-          </p>
-        );
+        content = <MarketUpdateBanner proposal={n.data} />;
         break;
       }
       case 'UpdateMarketState': {
-        content = <p>UpdateMarketState</p>;
+        content = <MarketUpdateStateBanner proposal={n.data} />;
         break;
       }
       case 'NewMarket': {
