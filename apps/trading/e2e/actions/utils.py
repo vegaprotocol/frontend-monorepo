@@ -1,12 +1,11 @@
 from collections import namedtuple
 from playwright.sync_api import Page
-from vega_sim.service import VegaService
-
 from vega_sim.null_service import VegaServiceNull
 from typing import Optional
 
 WalletConfig = namedtuple("WalletConfig", ["name", "passphrase"])
 ASSET_NAME = "tDAI"
+
 
 def wait_for_toast_confirmation(page: Page, timeout: int = 30000):
     page.wait_for_function("""
@@ -14,16 +13,19 @@ def wait_for_toast_confirmation(page: Page, timeout: int = 30000):
     document.querySelector('[data-testid="toast-content"]').innerText.includes('AWAITING CONFIRMATION')
     """, timeout=timeout)
 
+
 def create_and_faucet_wallet(
     vega: VegaServiceNull,
     wallet: WalletConfig,
     symbol: Optional[str] = None,
     amount: float = 1e4,
-    
+
 ):
-    asset_id = vega.find_asset_id(symbol=symbol if symbol is not None else ASSET_NAME)
+    asset_id = vega.find_asset_id(
+        symbol=symbol if symbol is not None else ASSET_NAME)
     vega.create_key(wallet.name)
     vega.mint(wallet.name, asset_id, amount)
+
 
 def next_epoch(vega: VegaServiceNull):
     forwards = 0
@@ -38,24 +40,30 @@ def next_epoch(vega: VegaServiceNull):
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
+
 def truncate_middle(market_id, start=6, end=4):
     if len(market_id) < 11:
         return market_id
     return market_id[:start] + '\u2026' + market_id[-end:]
 
-def change_keys(page: Page, vega:VegaServiceNull, key_name):
+
+def change_keys(page: Page, vega: VegaServiceNull, key_name):
     page.get_by_test_id("manage-vega-wallet").click()
     page.get_by_test_id("key-" + vega.wallet.public_key(key_name)).click()
-    page.click(f'data-testid=key-{vega.wallet.public_key(key_name)} >> .inline-flex')
+    page.click(
+        f'data-testid=key-{vega.wallet.public_key(key_name)} >> .inline-flex')
     page.reload()
 
-def forward_time(vega: VegaService, forward_epoch: bool = False):
+
+def forward_time(vega: VegaServiceNull, forward_epoch: bool = False):
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
     if forward_epoch:
         next_epoch(vega)
 
+
+# This is for when the element will initially load but contain an outdated value. It will wait for the element to contain the expected text, returning False after a timeout or exception
 def selector_contains_text(page: Page, selector, expected_text, timeout=5000):
     try:
         page.wait_for_selector(
@@ -63,4 +71,3 @@ def selector_contains_text(page: Page, selector, expected_text, timeout=5000):
         return True
     except:
         return False
-

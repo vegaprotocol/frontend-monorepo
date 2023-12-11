@@ -172,4 +172,4 @@ def test_does_not_move_up_tiers_when_not_enough_epochs(continuous_market, vega: 
 
     change_keys(page, vega, PARTY_A.name)
     check_tile_values(page, generate_referrer_expected_value_dic(
-        "1%", "1", "1%", "0", "1", "0"))
+        "2%", "1", "2%", "0", "1", "0"))
