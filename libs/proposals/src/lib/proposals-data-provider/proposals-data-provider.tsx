@@ -1,4 +1,4 @@
-import { type Update } from '@vegaprotocol/data-provider';
+import { useDataProvider, type Update } from '@vegaprotocol/data-provider';
 import { makeDataProvider } from '@vegaprotocol/data-provider';
 import produce from 'immer';
 import * as Types from '@vegaprotocol/types';
@@ -125,3 +125,17 @@ export const marketViewProposalsDataProvider = makeDataProvider<
   getData: getMarketProposalsData,
   getSubscriptionVariables: () => subscriptionVariables,
 });
+
+export const useMarketProposals = (
+  variables: {
+    inState?: Types.ProposalState;
+    proposalType?: Types.ProposalType;
+  },
+  skip?: boolean
+) => {
+  return useDataProvider({
+    dataProvider: marketViewProposalsDataProvider,
+    variables,
+    skip,
+  });
+};

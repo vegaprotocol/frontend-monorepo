@@ -109,6 +109,7 @@ export const MarketTerminationBanner = ({
   const proposalsLink =
     openProposals.length > 1 ? governanceLink(TOKEN_PROPOSALS) : undefined;
   let content: ReactNode;
+
   if (passedProposals.length) {
     const { date, duration, price } = getMessageVariables(passedProposals[0]);
     content = (

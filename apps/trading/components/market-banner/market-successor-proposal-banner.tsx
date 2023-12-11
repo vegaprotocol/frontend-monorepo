@@ -44,6 +44,7 @@ export const MarketSuccessorProposalBanner = ({
     }) ?? [];
   const [visible, setVisible] = useState(true);
   const tokenLink = useLinks(DApp.Governance);
+
   if (visible && successors.length) {
     return (
       <NotificationBanner
