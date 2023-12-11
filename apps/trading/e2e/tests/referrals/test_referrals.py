@@ -149,3 +149,9 @@ def test_referral_scenario(continuous_market, vega: VegaService, page: Page):
     change_keys(page, vega, PARTY_A.name)
     check_tile_values(page, generate_referrer_expected_value_dic(
         "3%", "1", "3%", "0", "1", "1"))
+
+    change_keys(page, vega, PARTY_B.name)
+    submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 1, 115)
+    forward_time(vega, True)
+    check_tile_values(page, generate_referral_expected_value_dic(
+        "110", "1", "1%", "1", "1"))
