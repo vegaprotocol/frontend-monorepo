@@ -10,7 +10,7 @@ import { removePaginationWrapper } from '@vegaprotocol/utils';
 import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
 import { ProposalState } from '@vegaprotocol/types';
-import { FLAGS } from '@vegaprotocol/environment';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 
 const orderByDate = (arr: ProposalFieldsFragment[]) =>
   orderBy(
@@ -33,15 +33,16 @@ export function getRejectedProposals(data?: ProposalFieldsFragment[] | null) {
 }
 
 export const RejectedProposalsContainer = () => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
   const { t } = useTranslation();
   const { data, loading, error } = useProposalsQuery({
     pollInterval: 5000,
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
     variables: {
-      includeNewMarketProductFields: !!FLAGS.PRODUCT_PERPETUALS,
-      includeUpdateMarketStates: !!FLAGS.UPDATE_MARKET_STATE,
-      includeUpdateReferralPrograms: !!FLAGS.REFERRALS,
+      includeNewMarketProductFields: !!featureFlags.PRODUCT_PERPETUALS,
+      includeUpdateMarketStates: !!featureFlags.UPDATE_MARKET_STATE,
+      includeUpdateReferralPrograms: !!featureFlags.REFERRALS,
     },
   });
 

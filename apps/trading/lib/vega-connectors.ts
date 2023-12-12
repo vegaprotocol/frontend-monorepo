@@ -1,4 +1,5 @@
-import { FLAGS } from '@vegaprotocol/environment';
+import { useFeatureFlags } from '@vegaprotocol/environment';
+import { useMemo } from 'react';
 import {
   JsonRpcConnector,
   ViewConnector,
@@ -18,13 +19,17 @@ if (typeof window !== 'undefined') {
   view = new ViewConnector();
 }
 
-export const snap = FLAGS.METAMASK_SNAPS
-  ? new SnapConnector(DEFAULT_SNAP_ID)
-  : undefined;
+export const snap = new SnapConnector(DEFAULT_SNAP_ID);
 
-export const Connectors = {
-  injected,
-  jsonRpc,
-  view,
-  snap,
+export const useConnectors = () => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
+  return useMemo(
+    () => ({
+      injected,
+      jsonRpc,
+      view,
+      snap: featureFlags.METAMASK_SNAPS ? snap : undefined,
+    }),
+    [featureFlags.METAMASK_SNAPS]
+  );
 };

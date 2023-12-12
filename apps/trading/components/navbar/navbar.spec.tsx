@@ -5,7 +5,7 @@ import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { Navbar } from './navbar';
 import { useGlobalStore } from '../../stores';
-import { ENV, FLAGS } from '@vegaprotocol/environment';
+import { ENV, useFeatureFlags } from '@vegaprotocol/environment';
 
 jest.mock('@vegaprotocol/proposals', () => ({
   ProtocolUpgradeCountdown: () => null,
@@ -48,8 +48,7 @@ describe('Navbar', () => {
 
   beforeAll(() => {
     useGlobalStore.setState({ marketId });
-    const mockedFLAGS = jest.mocked(FLAGS);
-    mockedFLAGS.REFERRALS = true;
+    useFeatureFlags.setState({ flags: { REFERRALS: true } });
     const mockedENV = jest.mocked(ENV);
     mockedENV.VEGA_TOKEN_URL = 'governance';
   });

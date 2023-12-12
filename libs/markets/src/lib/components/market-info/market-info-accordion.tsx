@@ -1,5 +1,5 @@
 import {
-  FLAGS,
+  useFeatureFlags,
   TokenStaticLinks,
   useEnvironment,
 } from '@vegaprotocol/environment';
@@ -90,6 +90,7 @@ export const MarketInfoAccordion = ({
   market,
   onSelect,
 }: MarketInfoAccordionProps) => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
   const { VEGA_TOKEN_URL } = useEnvironment();
   const headerClassName = 'uppercase text-lg';
@@ -352,7 +353,7 @@ export const MarketInfoAccordion = ({
                 </>
               }
             />
-            {FLAGS.SUCCESSOR_MARKETS && (
+            {featureFlags.SUCCESSOR_MARKETS && (
               <AccordionItem
                 itemId="succession-line"
                 title={t('Succession line')}

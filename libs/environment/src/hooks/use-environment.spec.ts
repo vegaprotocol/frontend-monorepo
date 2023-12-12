@@ -3,7 +3,13 @@ import { act } from 'react-dom/test-utils';
 import type { ClientOptions } from '@vegaprotocol/apollo-client';
 import { createClient } from '@vegaprotocol/apollo-client';
 import { Networks } from '../types';
-import { STORAGE_KEY, useEnvironment } from './use-environment';
+import {
+  STORAGE_KEY,
+  useEnvironment,
+  featureFlagsLocalStorageKey,
+  getUserEnabledFeatureFlags,
+  setUserEnabledFeatureFlag,
+} from './use-environment';
 
 const noop = () => {
   /* no op*/
@@ -457,5 +463,32 @@ describe('useEnvironment', () => {
     });
     expect(result.current.VEGA_URL).toBe(newUrl);
     expect(localStorage.getItem(STORAGE_KEY)).toBe(newUrl);
+  });
+});
+
+describe('getUserEnabledFeatureFlags', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+  it('reads enabled flags from local storage', () => {
+    localStorage.setItem(
+      featureFlagsLocalStorageKey,
+      'STOP_ORDERS,STOP_ORDERS,REFERRALS,BLAH'
+    );
+    const userEnabledFlags = getUserEnabledFeatureFlags(true, ['STOP_ORDERS']);
+    expect(userEnabledFlags).toEqual(['STOP_ORDERS']);
+  });
+});
+
+describe('setUserEnabledFeatureFlag', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+  it('saves enabled flags to local storage', () => {
+    setUserEnabledFeatureFlag('STOP_ORDERS', true);
+    expect(localStorage.getItem(featureFlagsLocalStorageKey)).toEqual(
+      'STOP_ORDERS'
+    );
+    expect(getUserEnabledFeatureFlags()).toEqual(['STOP_ORDERS']);
   });
 });
