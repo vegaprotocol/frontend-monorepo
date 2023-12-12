@@ -50,6 +50,7 @@ const configurationData = {
 } as const;
 
 export const useDatafeed = () => {
+  const hasHistory = useRef(false);
   const subRef = useRef<Subscription>();
   const client = useApolloClient();
 
@@ -181,6 +182,8 @@ export const useDatafeed = () => {
             );
           });
 
+          hasHistory.current = true;
+
           onHistoryCallback(bars, { noData: false });
         } catch (err) {
           onErrorCallback(
@@ -201,6 +204,13 @@ export const useDatafeed = () => {
       ) => {
         if (!symbolInfo.ticker) {
           throw new Error('No symbolInfo.ticker');
+        }
+
+        // Dont start the subscription if there is no candle history. This protects against a
+        // problem where drawing on the chart throws an error if there is no prior history, instead
+        // no you'll just get the no data message
+        if (!hasHistory.current) {
+          return;
         }
 
         subRef.current = client
