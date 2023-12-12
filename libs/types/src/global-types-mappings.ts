@@ -67,43 +67,6 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_NETWORK_TREASURY: 'Network treasury account',
 };
 
-// TODO get Candida to review this
-export const AccountTypeDescriptionMapping: {
-  [T in AccountType]: string;
-} = {
-  ACCOUNT_TYPE_BOND: 'Bond account',
-  ACCOUNT_TYPE_EXTERNAL: 'External account',
-  ACCOUNT_TYPE_GENERAL: 'General account',
-  ACCOUNT_TYPE_GLOBAL_INSURANCE: 'Global insurance account',
-  ACCOUNT_TYPE_GLOBAL_REWARD: 'Global reward account',
-  ACCOUNT_TYPE_INSURANCE: 'Insurance account',
-  ACCOUNT_TYPE_MARGIN: 'Margin account',
-  ACCOUNT_TYPE_PENDING_TRANSFERS: 'Pending transfers account',
-  ACCOUNT_TYPE_SETTLEMENT: 'Settlement account',
-  ACCOUNT_TYPE_HOLDING: 'Holding account',
-  ACCOUNT_TYPE_NETWORK_TREASURY: 'Network treasury account',
-  // If funds go to this account, show this description on the Active reward cards
-  ACCOUNT_TYPE_FEES_INFRASTRUCTURE: 'Get rewards from infrastructure fees.',
-  ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD:
-    'Get rewards for referring members.',
-  ACCOUNT_TYPE_FEES_LIQUIDITY: 'Get rewards from liquidity provision fees.',
-  ACCOUNT_TYPE_LP_LIQUIDITY_FEES: 'Get rewards for providing liquidity.',
-  ACCOUNT_TYPE_FEES_MAKER: 'Get rewards from maker fees.',
-  // Reward accounts
-  ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES:
-    'Get rewards for taking prices on the order book and paying fees.',
-  ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES:
-    'Get rewards for making prices on the order book and receiving fees.',
-  ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: 'Get rewards for providing liquidity.',
-  ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Get rewards for proposing markets.',
-  ACCOUNT_TYPE_REWARD_AVERAGE_POSITION: 'Get rewards for average position.',
-  ACCOUNT_TYPE_REWARD_RELATIVE_RETURN: 'Get rewards for relative return.',
-  ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY: 'Get rewards for return volatility.',
-  ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING: 'Get rewards for validator ranking.',
-  ACCOUNT_TYPE_VESTED_REWARDS: 'Get rewards for vested rewards.',
-  ACCOUNT_TYPE_VESTING_REWARDS: 'Get rewards for vesting rewards.',
-};
-
 /**
  * Status of a liquidity provision order
  */
@@ -619,15 +582,29 @@ export const GovernanceTransferKindMapping: GovernanceTransferKindMap = {
 type DispatchMetricLabel = {
   [T in DispatchMetric]: string;
 };
+
 export const DispatchMetricLabels: DispatchMetricLabel = {
-  DISPATCH_METRIC_LP_FEES_RECEIVED: 'Liquidity Provision fees received',
+  DISPATCH_METRIC_LP_FEES_RECEIVED: 'Liquidity provision fees received',
   DISPATCH_METRIC_MAKER_FEES_PAID: 'Price maker fees paid',
   DISPATCH_METRIC_MAKER_FEES_RECEIVED: 'Price maker fees earned',
-  DISPATCH_METRIC_MARKET_VALUE: 'Total market Value',
+  DISPATCH_METRIC_MARKET_VALUE: 'Total market value',
   DISPATCH_METRIC_AVERAGE_POSITION: 'Average position',
   DISPATCH_METRIC_RELATIVE_RETURN: 'Relative return',
   DISPATCH_METRIC_RETURN_VOLATILITY: 'Return volatility',
   DISPATCH_METRIC_VALIDATOR_RANKING: 'Validator ranking',
+};
+
+export const DispatchMetricDescription: DispatchMetricLabel = {
+  DISPATCH_METRIC_LP_FEES_RECEIVED: 'Get rewards for providing liquidity.',
+  DISPATCH_METRIC_MAKER_FEES_PAID:
+    'Get rewards for taking prices on the order book and paying fees.',
+  DISPATCH_METRIC_MAKER_FEES_RECEIVED:
+    'Get rewards for making prices on the order book.',
+  DISPATCH_METRIC_MARKET_VALUE: 'Get rewards for total market value',
+  DISPATCH_METRIC_AVERAGE_POSITION: 'Get rewards for Average position',
+  DISPATCH_METRIC_RELATIVE_RETURN: 'Get rewards for relative return',
+  DISPATCH_METRIC_RETURN_VOLATILITY: 'Get rewards for return volatility',
+  DISPATCH_METRIC_VALIDATOR_RANKING: 'Get rewards for validator ranking',
 };
 
 export const PositionStatusMapping: {
@@ -688,8 +665,6 @@ export const EntityScopeMapping: { [e in EntityScope]: string } = {
   /** Rewards must be distributed directly to eligible teams, and then amongst team members */
   ENTITY_SCOPE_TEAMS:
     'Rewards must be distributed directly to eligible teams, and then amongst team members',
-  /** Entity scope is unspecified */
-  ENTITY_SCOPE_UNSPECIFIED: 'Entity scope is unspecified',
 };
 
 export enum DistributionStrategyMapping {

@@ -1,8 +1,4 @@
-import {
-  useActiveRewardsQuery,
-  useActivityStreakQuery,
-} from './__generated__/Rewards';
-import { useReferralProgram } from '../../client-pages/referrals/hooks/use-referral-program';
+import { useActiveRewardsQuery } from './__generated__/Rewards';
 import { useT } from '../../lib/use-t';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import classNames from 'classnames';
@@ -17,9 +13,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { IconNames } from '@blueprintjs/icons';
 import {
-  AccountType,
-  AccountTypeDescriptionMapping,
-  AccountTypeMapping,
   DistributionStrategyDescriptionMapping,
   DistributionStrategyMapping,
   EntityScope,
@@ -29,6 +22,9 @@ import {
   type TransferNode,
   TransferStatus,
   TransferStatusMapping,
+  DispatchMetric,
+  DispatchMetricDescription,
+  DispatchMetricLabels,
 } from '@vegaprotocol/types';
 
 export const ActiveRewards = () => {
@@ -107,29 +103,6 @@ const StatusIndicator = ({
   );
 };
 
-export const ActivityStreaks = ({
-  pubKey,
-  epoch,
-}: {
-  pubKey: string | null;
-  epoch: number;
-}) => {
-  const { data } = useActivityStreakQuery({
-    variables: {
-      partyId: pubKey || '',
-    },
-  });
-  const { benefitTiers } = useReferralProgram();
-
-  const streaks = data?.partiesConnection?.edges?.map(
-    (edge) => edge?.node?.activityStreak
-  );
-
-  return streaks?.map((streak, i) => (
-    <ActivityStreak benefitTiers={benefitTiers} streak={streak} key={i} />
-  ));
-};
-
 export const ActiveRewardCard = ({
   transferNode,
 }: {
@@ -141,12 +114,17 @@ export const ActiveRewardCard = ({
   if (transfer.kind.__typename !== 'RecurringTransfer') {
     return null;
   }
+  const { dispatchStrategy } = transfer.kind;
+
+  if (!dispatchStrategy) {
+    return null;
+  }
 
   const { gradientClassName, mainClassName } = getGradientClasses(
-    transfer.toAccountType
+    dispatchStrategy.dispatchMetric
   );
 
-  const entityScope = transfer.kind.dispatchStrategy?.entityScope;
+  const entityScope = dispatchStrategy.entityScope;
 
   return (
     <div>
@@ -189,11 +167,11 @@ export const ActiveRewardCard = ({
 
                 <span>{transferNode.transfer.asset?.symbol}</span>
               </span>
-              {transfer.kind.dispatchStrategy?.distributionStrategy && (
+              {
                 <Tooltip
                   description={t(
                     DistributionStrategyDescriptionMapping[
-                      transfer.kind.dispatchStrategy?.distributionStrategy
+                      dispatchStrategy.distributionStrategy
                     ]
                   )}
                   underline={true}
@@ -201,12 +179,12 @@ export const ActiveRewardCard = ({
                   <span className="text-xs">
                     {
                       DistributionStrategyMapping[
-                        transfer.kind.dispatchStrategy?.distributionStrategy
+                        dispatchStrategy.distributionStrategy
                       ]
                     }
                   </span>
                 </Tooltip>
-              )}
+              }
             </div>
 
             <div className="flex flex-col gap-2 items-center text-center">
@@ -227,7 +205,7 @@ export const ActiveRewardCard = ({
           <span className="border-[0.5px] border-gray-700" />
 
           <span>
-            {AccountTypeMapping[transfer.toAccountType]} •{' '}
+            {DispatchMetricLabels[dispatchStrategy.dispatchMetric]} •{' '}
             {transfer.asset?.symbol} • {transfer.asset?.name}
           </span>
 
@@ -260,10 +238,11 @@ export const ActiveRewardCard = ({
             }
           </div>
 
-          <span className="text-muted text-sm">
-            {/* TODO get card description from transfer.toAccountType */}
-            {t(AccountTypeDescriptionMapping[transfer.toAccountType])}
-          </span>
+          {dispatchStrategy?.dispatchMetric && (
+            <span className="text-muted text-sm">
+              {t(DispatchMetricDescription[dispatchStrategy?.dispatchMetric])}
+            </span>
+          )}
 
           <span className="border-[0.5px] border-gray-700" />
 
@@ -347,63 +326,39 @@ export const ActiveRewardCard = ({
   );
 };
 
-const getGradientClasses = (to: AccountType) => {
-  switch (to) {
-    case AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES:
+const getGradientClasses = (d: DispatchMetric | undefined) => {
+  switch (d) {
+    case DispatchMetric.DISPATCH_METRIC_AVERAGE_POSITION:
       return {
         gradientClassName: 'from-vega-pink-500 to-vega-purple-400',
         mainClassName: 'from-vega-pink-400 dark:from-vega-pink-600 to-20%',
       };
-    case AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES:
+    case DispatchMetric.DISPATCH_METRIC_LP_FEES_RECEIVED:
       return {
         gradientClassName: 'from-vega-purple-500 to-vega-blue-400',
         mainClassName: 'from-vega-purple-400 dark:from-vega-purple-600 to-20%',
       };
-    case AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES:
-      return {
-        gradientClassName: 'from-vega-blue-500 to-vega-green-400',
-        mainClassName: 'from-vega-blue-400 dark:from-vega-blue-600 to-20%',
-      };
-    case AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS:
-      return {
-        gradientClassName: 'from-vega-green-500 to-vega-yellow-500',
-        mainClassName: 'from-vega-green-400 dark:from-vega-green-600 to-20%',
-      };
-    case AccountType.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION:
+    case DispatchMetric.DISPATCH_METRIC_MAKER_FEES_PAID:
       return {
         gradientClassName: 'from-vega-orange-500 to-vega-pink-400',
         mainClassName: 'from-vega-orange-400 dark:from-vega-orange-600 to-20%',
       };
-    case AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN:
-      return {
-        gradientClassName: 'from-vega-pink-500 to-vega-yellow-500',
-        mainClassName: 'from-vega-pink-400 dark:from-vega-pink-600 to-20%',
-      };
-    // again, this is a duplicate
-    case AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY:
-      return {
-        gradientClassName: 'from-vega-pink-500 to-vega-purple-400',
-        mainClassName: 'from-vega-pink-400 dark:from-vega-pink-600 to-20%',
-      };
-    case AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING:
-      return {
-        gradientClassName: 'from-vega-purple-500 to-vega-blue-400',
-        mainClassName: 'from-vega-purple-400 dark:from-vega-purple-600 to-20%',
-      };
-    case AccountType.ACCOUNT_TYPE_VESTED_REWARDS:
-      return {
-        gradientClassName: 'from-vega-blue-500 to-vega-green-400',
-        mainClassName: 'from-vega-blue-400 dark:from-vega-blue-600 to-20%',
-      };
-    case AccountType.ACCOUNT_TYPE_VESTING_REWARDS:
+    case DispatchMetric.DISPATCH_METRIC_MARKET_VALUE:
       return {
         gradientClassName: 'from-vega-green-500 to-vega-yellow-500',
         mainClassName: 'from-vega-green-400 dark:from-vega-green-600 to-20%',
       };
+    case DispatchMetric.DISPATCH_METRIC_RELATIVE_RETURN:
+    case DispatchMetric.DISPATCH_METRIC_RETURN_VOLATILITY:
+      return {
+        gradientClassName: 'from-vega-blue-500 to-vega-green-400',
+        mainClassName: 'from-vega-blue-400 dark:from-vega-blue-600 to-20%',
+      };
+    case DispatchMetric.DISPATCH_METRIC_VALIDATOR_RANKING:
     default:
       return {
-        gradientClassName: 'from-vega-orange-500 to-vega-pink-400',
-        mainClassName: 'from-vega-orange-400 dark:from-vega-orange-600 to-20%',
+        gradientClassName: 'from-vega-purple-500 to-vega-blue-400',
+        mainClassName: 'from-vega-purple-400 dark:from-vega-purple-600 to-20%',
       };
   }
 };
@@ -458,174 +413,5 @@ const EntityIcon = ({
         {iconName && <VegaIcon name={iconName} size={size} />}
       </span>
     </Tooltip>
-  );
-};
-
-export const ActivityStreak = ({
-  benefitTiers,
-  streak,
-}: {
-  benefitTiers:
-    | never[]
-    | {
-        tier: number;
-        rewardFactor: number;
-        commission: string;
-        discountFactor: number;
-        discount: string;
-        minimumVolume: number;
-        volume: string;
-        epochs: number;
-      }[];
-  streak:
-    | (
-        | {
-            __typename?: 'PartyActivityStreak' | undefined;
-            activeFor: number;
-            isActive: boolean;
-            inactiveFor: number;
-            rewardDistributionMultiplier: string;
-            rewardVestingMultiplier: string;
-            epoch: number;
-            tradedVolume: string;
-            openVolume: string;
-          }
-        | null
-        | undefined
-      )
-    | undefined;
-}) => {
-  const t = useT();
-  const progress = 30;
-  const total = 100;
-
-  const safeProgress = () => {
-    return (progress / total) * 100;
-  };
-
-  const progressBarHeight = 'h-10';
-
-  return (
-    <>
-      <div className="flex flex-col gap-1 w-full">
-        <div className="flex flex-col gap-1">
-          <div
-            className="grid"
-            style={{
-              gridTemplateColumns:
-                'repeat(' + benefitTiers.length + ', minmax(0, 1fr))',
-            }}
-          >
-            {benefitTiers.map((tier, index) => {
-              return (
-                <div key={index} className="flex justify-end -mr-10">
-                  <span className="flex flex-col items-center gap-1">
-                    <span className="flex flex-col items-center font-medium">
-                      <span className="text-sm">
-                        {t('Tier {{tier}}', {
-                          tier: tier.tier,
-                        })}
-                      </span>
-                      <span className="text-muted text-xs">
-                        {t('{{epochs}} epochs', {
-                          epochs: tier.epochs,
-                        })}
-                      </span>
-                    </span>
-
-                    <span
-                      className={classNames(
-                        'text-xs flex flex-col items-center justify-center px-2 py-1 rounded-lg text-white border',
-                        {
-                          'border-pink-600 bg-pink-900': tier.tier === 1,
-                          'border-purple-600 bg-purple-900': tier.tier === 2,
-                          'border-blue-600 bg-blue-900': tier.tier === 3,
-                        }
-                      )}
-                    >
-                      <span>
-                        {t('Reward {{reward}}x', {
-                          reward: tier.rewardFactor || '1.5',
-                        })}
-                      </span>
-                      <span>
-                        {t('Vesting {{vesting}}x', {
-                          vesting: '1.5',
-                        })}
-                      </span>
-                    </span>
-
-                    <span
-                      className={classNames(
-                        {
-                          'text-pink-500': tier.tier === 1,
-                          'text-purple-500': tier.tier === 2,
-                          'text-blue-500': tier.tier === 3,
-                        },
-                        'text-xl'
-                      )}
-                    >
-                      •
-                    </span>
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-1">
-          {benefitTiers.map((tier, index) => {
-            return (
-              <div
-                key={index}
-                className="bg-white dark:bg-gray-800 shadow-card rounded-[100px] grow"
-              >
-                <div
-                  className={classNames(
-                    'relative w-full rounded-[100px] bg-gray-200 dark:bg-gray-800',
-                    progressBarHeight
-                  )}
-                >
-                  <div
-                    className={classNames(
-                      'absolute left-0 top-0 h-full rounded-[100px] bg-gradient-to-r',
-                      {
-                        'from-vega-pink-600 to-vega-pink-500': tier.tier === 1,
-                        'from-vega-purple-600 to-vega-purple-500':
-                          tier.tier === 2,
-                        'from-vega-blue-600 to-vega-blue-500': tier.tier === 3,
-                      }
-                    )}
-                    style={{ width: safeProgress() + '%' }}
-                  ></div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="flex items-center gap-1">
-          <VegaIcon name={VegaIconNames.STREAK} />
-
-          <span className="flex flex-col text-xs">
-            <span>
-              {t('{{epochs}} epochs streak', {
-                // TODO here ir needs to be the current streak
-                epochs: streak?.activeFor,
-              })}
-            </span>
-            <span>
-              <span className="text-vega-pink-500">3 days</span>
-              &nbsp;to Tier 1{' '}
-            </span>
-          </span>
-        </div>
-      </div>
-      {/* <div>{JSON.stringify(stakingTiers)}</div>
-      <div>{JSON.stringify(details)}</div> */}
-      {/* <div>{JSON.stringify(benefitTiers)}</div> */}
-      {/* <div>{JSON.stringify(streak)}</div> */}
-    </>
   );
 };

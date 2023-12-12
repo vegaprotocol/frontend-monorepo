@@ -33,7 +33,8 @@ import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { RewardsHistoryContainer } from './rewards-history';
 import { useT } from '../../lib/use-t';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
-import { ActiveRewards, ActivityStreaks } from './activity-rewards';
+import { ActiveRewards } from './activity-rewards';
+import { ActivityStreaks } from './activity-streaks';
 
 const ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA = [
   'bf1e88d19db4b3ca0d1d5bdb73718a01686b18cf731ca26adedf3c8b83802bba', // USDT mainnet
