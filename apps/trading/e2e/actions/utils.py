@@ -46,3 +46,11 @@ def change_keys(page: Page, vega:VegaServiceNull, key_name):
     page.get_by_test_id("key-" + vega.wallet.public_key(key_name)).click()
     page.click(f'data-testid=key-{vega.wallet.public_key(key_name)} >> .inline-flex')
     page.reload()
+
+def forward_time(vega:VegaServiceNull, forward_epoch: bool = False):
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+
+    if forward_epoch:
+        next_epoch(vega)
+
