@@ -14,7 +14,7 @@ import { IconCopy } from './svg-icons/icon-copy';
 import { IconCross } from './svg-icons/icon-cross';
 import { IconDeposit } from './svg-icons/icon-deposit';
 import { IconEdit } from './svg-icons/icon-edit';
-import { IconExclaimationMark } from './svg-icons/icon-exclaimation-mark';
+import { IconExclamationMark } from './svg-icons/icon-exclamation-mark';
 import { IconEye } from './svg-icons/icon-eye';
 import { IconEyeOff } from './svg-icons/icon-eye-off';
 import { IconForum } from './svg-icons/icon-forum';
@@ -41,6 +41,9 @@ import { IconTwitter } from './svg-icons/icon-twitter';
 import { IconVote } from './svg-icons/icon-vote';
 import { IconWarning } from './svg-icons/icon-warning';
 import { IconWithdraw } from './svg-icons/icon-withdraw';
+import { IconMan } from './svg-icons/icon-man';
+import { IconTeam } from './svg-icons/icon-team';
+import { IconStreak } from './svg-icons/icon-streak';
 
 export enum VegaIconNames {
   ARROW_DOWN = 'arrow-down',
@@ -59,7 +62,7 @@ export enum VegaIconNames {
   CROSS = 'cross',
   DEPOSIT = 'deposit',
   EDIT = 'edit',
-  EXCLAIMATION_MARK = 'exclaimation-mark',
+  EXCLAMATION_MARK = 'exclamation-mark',
   EYE = 'eye',
   EYE_OFF = 'eye-off',
   FORUM = 'forum',
@@ -76,6 +79,7 @@ export enum VegaIconNames {
   QUESTION_MARK = 'question-mark',
   SEARCH = 'search',
   STAR = 'star',
+  STREAK = 'streak',
   SUN = 'sun',
   TICK = 'tick',
   TICKET = 'ticket',
@@ -86,6 +90,8 @@ export enum VegaIconNames {
   VOTE = 'vote',
   WITHDRAW = 'withdraw',
   WARNING = 'warning',
+  MAN = 'man',
+  TEAM = 'team',
 }
 
 export const VegaIconNameMap: Record<
@@ -102,7 +108,7 @@ export const VegaIconNameMap: Record<
   'chevron-right': IconChevronRight,
   'chevron-up': IconChevronUp,
   'eye-off': IconEyeOff,
-  'exclaimation-mark': IconExclaimationMark,
+  'exclamation-mark': IconExclamationMark,
   'open-external': IconOpenExternal,
   'question-mark': IconQuestionMark,
   'trend-down': IconTrendDown,
@@ -135,4 +141,7 @@ export const VegaIconNameMap: Record<
   vote: IconVote,
   withdraw: IconWithdraw,
   warning: IconWarning,
+  man: IconMan,
+  team: IconTeam,
+  streak: IconStreak,
 };
