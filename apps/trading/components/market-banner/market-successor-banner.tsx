@@ -4,16 +4,14 @@ import { isBefore, formatDuration, intervalToDuration } from 'date-fns';
 import {
   calcCandleVolume,
   useCandles,
-  useMarketState,
-  useSuccessorMarket,
   type Market,
+  useSuccessorMarketQuery,
 } from '@vegaprotocol/markets';
 import {
   addDecimalsFormatNumber,
   getMarketExpiryDate,
   isNumeric,
 } from '@vegaprotocol/utils';
-import * as Types from '@vegaprotocol/types';
 import { useT, ns } from '../../lib/use-t';
 import { Links } from '../../lib/links';
 
@@ -22,15 +20,15 @@ const getExpiryDate = (tags: string[], close?: string): Date | null => {
   return expiryDate || (close && new Date(close)) || null;
 };
 
-export const MarketSuccessorBanner = ({
-  market,
-}: {
-  market: Market | null;
-}) => {
+export const MarketSuccessorBanner = ({ market }: { market: Market }) => {
   const t = useT();
-  const { data: marketState } = useMarketState(market?.id);
-  const isSettled = marketState === Types.MarketState.STATE_SETTLED;
-  const { data: successorData, loading } = useSuccessorMarket(market?.id);
+  const { data } = useSuccessorMarketQuery({
+    variables: {
+      marketId: market.successorMarketID || '',
+    },
+    skip: !market.successorMarketID,
+  });
+  const successorMarket = data?.market;
 
   const expiry = market
     ? getExpiryDate(
@@ -40,12 +38,12 @@ export const MarketSuccessorBanner = ({
     : null;
 
   const duration =
-    expiry && isBefore(new Date(), expiry)
-      ? intervalToDuration({ start: new Date(), end: expiry })
+    expiry && isBefore(new Date(Date.now()), expiry)
+      ? intervalToDuration({ start: new Date(Date.now()), end: expiry })
       : null;
 
   const { oneDayCandles } = useCandles({
-    marketId: successorData?.id,
+    marketId: successorMarket?.id,
   });
 
   const candleVolume = oneDayCandles?.length
@@ -53,22 +51,18 @@ export const MarketSuccessorBanner = ({
     : null;
 
   const successorVolume =
-    candleVolume && isNumeric(successorData?.positionDecimalPlaces)
+    candleVolume && isNumeric(successorMarket?.positionDecimalPlaces)
       ? addDecimalsFormatNumber(
           candleVolume,
-          successorData?.positionDecimalPlaces as number
+          successorMarket?.positionDecimalPlaces as number
         )
       : null;
 
-  if (!loading && (isSettled || successorData)) {
+  if (successorMarket) {
     return (
       <div>
-        <div className="uppercase">
-          {successorData
-            ? t('This market has been succeeded')
-            : t('This market has been settled')}
-        </div>
-        {(duration || successorData) && (
+        <div className="uppercase">{t('This market has been succeeded')}</div>
+        {duration && (
           <div className="mt-1">
             {duration && (
               <span>
@@ -86,52 +80,51 @@ export const MarketSuccessorBanner = ({
                 })}
               </span>
             )}
-            {successorData && (
-              <>
-                {' '}
-                {successorVolume ? (
-                  <Trans
-                    defaults="The successor market <0>{{instrumentName}}</0> has a 24h trading volume of {{successorVolume}}"
-                    values={{
-                      successorVolume,
-                      instrumentName:
-                        successorData?.tradableInstrument.instrument.name,
-                    }}
-                    components={[
-                      <Link
-                        to={Links.MARKET(successorData.id)}
-                        key="link"
-                        target="_blank"
-                      >
-                        successor market name
-                      </Link>,
-                    ]}
-                  />
-                ) : (
-                  <Trans
-                    defaults="The successor market is <0>{{instrumentName}}</0>"
-                    values={{
-                      instrumentName:
-                        successorData?.tradableInstrument.instrument.name,
-                    }}
-                    components={[
-                      <Link
-                        to={Links.MARKET(successorData.id)}
-                        key="link"
-                        target="_blank"
-                      >
-                        successor market name
-                      </Link>,
-                    ]}
-                    ns={ns}
-                  />
-                )}
-              </>
-            )}
+            <>
+              {' '}
+              {successorVolume ? (
+                <Trans
+                  defaults="The successor market <0>{{instrumentName}}</0> has a 24h trading volume of {{successorVolume}}"
+                  values={{
+                    successorVolume,
+                    instrumentName:
+                      successorMarket?.tradableInstrument.instrument.name,
+                  }}
+                  components={[
+                    <Link
+                      to={Links.MARKET(successorMarket.id)}
+                      key="link"
+                      target="_blank"
+                    >
+                      successor market name
+                    </Link>,
+                  ]}
+                />
+              ) : (
+                <Trans
+                  defaults="The successor market is <0>{{instrumentName}}</0>"
+                  values={{
+                    instrumentName:
+                      successorMarket?.tradableInstrument.instrument.name,
+                  }}
+                  components={[
+                    <Link
+                      to={Links.MARKET(successorMarket.id)}
+                      key="link"
+                      target="_blank"
+                    >
+                      successor market name
+                    </Link>,
+                  ]}
+                  ns={ns}
+                />
+              )}
+            </>
           </div>
         )}
       </div>
     );
   }
-  return null;
+
+  return <p>{t('This market has been settled')}</p>;
 };

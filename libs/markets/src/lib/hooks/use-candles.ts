@@ -7,12 +7,13 @@ import { Interval } from '@vegaprotocol/types';
 export const useCandles = ({ marketId }: { marketId?: string }) => {
   const fiveDaysAgo = useFiveDaysAgo();
   const yesterday = useYesterday();
+  const since = new Date(fiveDaysAgo).toISOString();
   const { data, error } = useThrottledDataProvider({
     dataProvider: marketCandlesProvider,
     variables: {
       marketId: marketId || '',
       interval: Interval.INTERVAL_I1H,
-      since: new Date(fiveDaysAgo).toISOString(),
+      since,
     },
     skip: !marketId,
   });
@@ -22,6 +23,7 @@ export const useCandles = ({ marketId }: { marketId?: string }) => {
   const oneDayCandles = fiveDaysCandles?.filter((candle) =>
     isCandleLessThan24hOld(candle, yesterday)
   );
+
   return { oneDayCandles, error, fiveDaysCandles };
 };
 

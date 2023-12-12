@@ -1,155 +1,190 @@
 import { render, screen } from '@testing-library/react';
-import { MockedProvider } from '@apollo/react-testing';
+import { addDays, subDays, subHours } from 'date-fns';
+import { MockedProvider, type MockedResponse } from '@apollo/react-testing';
+import {
+  SuccessorMarketDocument,
+  MarketCandlesDocument,
+  MarketCandlesUpdateDocument,
+  type Market,
+  type SuccessorMarketQuery,
+  type SuccessorMarketQueryVariables,
+  type MarketCandlesQuery,
+  type MarketCandlesQueryVariables,
+  type MarketCandlesUpdateSubscription,
+  type MarketCandlesUpdateSubscriptionVariables,
+} from '@vegaprotocol/markets';
+import { MemoryRouter } from 'react-router-dom';
+import { createMarketFragment } from '@vegaprotocol/mock';
+import { Interval, MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import { MarketSuccessorBanner } from './market-successor-banner';
-import * as Types from '@vegaprotocol/types';
-import * as allUtils from '@vegaprotocol/utils';
-import type { Market } from '@vegaprotocol/markets';
-import type { PartialDeep } from 'type-fest';
-
-const market = {
-  id: 'marketId',
-  tradableInstrument: {
-    instrument: {
-      metadata: {
-        tags: [],
-      },
-    },
-  },
-  marketTimestamps: {
-    close: null,
-  },
-} as unknown as Market;
-
-let mockDataSuccessorMarket: PartialDeep<Market> | null = null;
-let mockDataMarketState: Market['state'] | null = null;
-jest.mock('@vegaprotocol/data-provider', () => ({
-  ...jest.requireActual('@vegaprotocol/data-provider'),
-  useDataProvider: jest.fn().mockImplementation((args) => {
-    if (args.skip) {
-      return {
-        data: null,
-        error: null,
-      };
-    }
-    return {
-      data: mockDataSuccessorMarket,
-      error: null,
-    };
-  }),
-}));
-jest.mock('@vegaprotocol/utils', () => ({
-  ...jest.requireActual('@vegaprotocol/utils'),
-  getMarketExpiryDate: jest.fn(),
-}));
-let mockCandles = {};
-jest.mock('@vegaprotocol/markets', () => ({
-  ...jest.requireActual('@vegaprotocol/markets'),
-  useMarketState: (marketId: string) =>
-    marketId
-      ? {
-          data: mockDataMarketState,
-        }
-      : { data: undefined },
-  useSuccessorMarket: (marketId: string) =>
-    marketId
-      ? {
-          data: mockDataSuccessorMarket,
-        }
-      : { data: undefined },
-  useCandles: () => mockCandles,
-}));
 
 describe('MarketSuccessorBanner', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    mockDataSuccessorMarket = {
-      id: 'successorMarketID',
-      state: Types.MarketState.STATE_ACTIVE,
-      tradingMode: Types.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-      tradableInstrument: {
-        instrument: {
-          name: 'Successor Market Name',
+  const now = 1701388800000;
+  const origDateNow = Date.now;
+
+  beforeAll(() => {
+    Date.now = () => now;
+  });
+
+  afterAll(() => {
+    Date.now = origDateNow;
+  });
+
+  const successorId = 'successor-id';
+  const successorName = 'successor-name';
+  const successorMock: MockedResponse<
+    SuccessorMarketQuery,
+    SuccessorMarketQueryVariables
+  > = {
+    request: {
+      query: SuccessorMarketDocument,
+      variables: {
+        marketId: successorId,
+      },
+    },
+    result: {
+      data: {
+        market: {
+          id: successorId,
+          state: MarketState.STATE_ACTIVE,
+          tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+          positionDecimalPlaces: 0,
+          tradableInstrument: {
+            instrument: {
+              name: successorName,
+              code: 'code',
+            },
+          },
+          proposal: {
+            id: 'proposal-id',
+          },
         },
       },
-    };
+    },
+  };
+
+  const since = subDays(new Date(now), 5).toISOString();
+  const successorCandlesMock: MockedResponse<
+    MarketCandlesQuery,
+    MarketCandlesQueryVariables
+  > = {
+    request: {
+      query: MarketCandlesDocument,
+      variables: {
+        marketId: successorId,
+        interval: Interval.INTERVAL_I1H,
+        since,
+      },
+    },
+    result: {
+      data: {
+        marketsConnection: {
+          edges: [
+            {
+              node: {
+                candlesConnection: {
+                  edges: [
+                    {
+                      node: {
+                        high: '100',
+                        low: '100',
+                        open: '100',
+                        close: '100',
+                        volume: '100',
+                        periodStart: subHours(new Date(now), 1).toISOString(),
+                      },
+                    },
+                    {
+                      node: {
+                        high: '100',
+                        low: '100',
+                        open: '100',
+                        close: '200',
+                        volume: '100',
+                        periodStart: subHours(new Date(now), 2).toISOString(),
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      },
+    },
+  };
+
+  const successorCandlesUpdateMock: MockedResponse<
+    MarketCandlesUpdateSubscription,
+    MarketCandlesUpdateSubscriptionVariables
+  > = {
+    request: {
+      query: MarketCandlesUpdateDocument,
+      variables: {
+        marketId: successorId,
+        interval: Interval.INTERVAL_I1H,
+        // @ts-ignore this query doesn't need the 'since' variable, but the data-provider
+        // uses all variables for both the query and the subscription so its needed here
+        // to match the mock
+        since,
+      },
+    },
+    result: {
+      data: {
+        candles: {
+          high: '100',
+          low: '100',
+          open: '100',
+          close: '100',
+          volume: '100',
+          periodStart: '2020-01-01T00:00:00',
+        },
+      },
+    },
+  };
+
+  const renderComponent = (market: Market, mocks?: MockedResponse[]) => {
+    return render(
+      <MemoryRouter>
+        <MockedProvider mocks={mocks}>
+          <MarketSuccessorBanner market={market} />
+        </MockedProvider>
+      </MemoryRouter>
+    );
+  };
+
+  it('shows that the market is settled if there is no successor', () => {
+    const market = createMarketFragment({ successorMarketID: undefined });
+    renderComponent(market);
+    expect(
+      screen.getByText('This market has been settled')
+    ).toBeInTheDocument();
   });
-  describe('should be hidden', () => {
-    it('when no market', () => {
-      const { container } = render(<MarketSuccessorBanner market={null} />, {
-        wrapper: MockedProvider,
-      });
-      expect(container).toBeEmptyDOMElement();
-    });
 
-    it('no successor market data', () => {
-      mockDataSuccessorMarket = null;
-      const { container } = render(<MarketSuccessorBanner market={market} />, {
-        wrapper: MockedProvider,
-      });
-      expect(container).toBeEmptyDOMElement();
+  it('shows that the market has been succeeded with an active market', async () => {
+    const market = createMarketFragment({
+      successorMarketID: successorId,
+      marketTimestamps: {
+        close: addDays(new Date(now), 1).toISOString(),
+      },
     });
-  });
-
-  describe('should be displayed', () => {
-    it('should be rendered', () => {
-      render(<MarketSuccessorBanner market={market} />, {
-        wrapper: MockedProvider,
-      });
-      expect(
-        screen.getByText('This market has been succeeded')
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('link', { name: 'Successor Market Name' })
-      ).toHaveAttribute('href', '/#/markets/successorMarketID');
-    });
-
-    it('no successor market data, market settled', () => {
-      mockDataSuccessorMarket = null;
-      mockDataMarketState = Types.MarketState.STATE_SETTLED;
-      render(<MarketSuccessorBanner market={market} />, {
-        wrapper: MockedProvider,
-      });
-      expect(
-        screen.getByText('This market has been settled')
-      ).toBeInTheDocument();
-    });
-
-    it('should display optionally successor volume', () => {
-      mockDataSuccessorMarket = {
-        ...mockDataSuccessorMarket,
-        positionDecimalPlaces: 3,
-      };
-      mockCandles = {
-        oneDayCandles: [
-          { volume: 123 },
-          { volume: 456 },
-          { volume: 789 },
-          { volume: 99999 },
-        ],
-      };
-
-      render(<MarketSuccessorBanner market={market} />, {
-        wrapper: MockedProvider,
-      });
-      expect(
-        screen.getByText('has a 24h trading volume of 101.367', {
-          exact: false,
-        })
-      ).toBeInTheDocument();
-    });
-
-    it('should display optionally duration', () => {
-      jest
-        .spyOn(allUtils, 'getMarketExpiryDate')
-        .mockReturnValue(
-          new Date(Date.now() + 24 * 60 * 60 * 1000 + 60 * 1000)
-        );
-      render(<MarketSuccessorBanner market={market} />, {
-        wrapper: MockedProvider,
-      });
-      expect(
-        screen.getByText(/^This market expires in 1 day/)
-      ).toBeInTheDocument();
-    });
+    renderComponent(market, [
+      successorMock,
+      successorCandlesMock,
+      successorCandlesUpdateMock,
+    ]);
+    expect(
+      await screen.findByText('This market has been succeeded')
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText(/has a 24h trading volume of 200$/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('This market expires in 1 day.')
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: successorName })).toHaveAttribute(
+      'href',
+      `/markets/${successorId}`
+    );
   });
 });
