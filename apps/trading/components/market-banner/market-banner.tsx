@@ -1,12 +1,9 @@
 import compact from 'lodash/compact';
-import { MarketState, ProposalType, ProposalState } from '@vegaprotocol/types';
+import { MarketState } from '@vegaprotocol/types';
 import { Intent, NotificationBanner } from '@vegaprotocol/ui-toolkit';
 import { useMarketState, useMarket, type Market } from '@vegaprotocol/markets';
 import { useState } from 'react';
-import {
-  useMarketProposals,
-  type MarketViewProposalFieldsFragment,
-} from '@vegaprotocol/proposals';
+import { type MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { MarketSuspendedBanner } from './market-suspended-banner';
 import { MarketUpdateBanner } from './market-update-banner';
 import { MarketUpdateStateBanner } from './market-update-state-banner';
@@ -119,6 +116,7 @@ const BannerQueue = ({
   banners: Banner[];
   market: Market;
 }) => {
+  // for showing banner by index
   const [index, setIndex] = useState(0);
 
   const banner = banners[index];
