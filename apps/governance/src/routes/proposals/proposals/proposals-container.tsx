@@ -17,7 +17,7 @@ import {
 } from './__generated__/Proposals';
 import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { useProtocolUpgradeProposalsQuery } from '@vegaprotocol/proposals';
-import { FLAGS } from '@vegaprotocol/environment';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 
 export function getNotRejectedProposals(data?: ProposalFieldsFragment[]) {
   return flow([
@@ -43,15 +43,16 @@ export function getNotRejectedProtocolUpgradeProposals<
 }
 
 export const ProposalsContainer = () => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
   const { t } = useTranslation();
   const { data, loading, error } = useProposalsQuery({
     pollInterval: 5000,
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
     variables: {
-      includeNewMarketProductFields: !!FLAGS.PRODUCT_PERPETUALS,
-      includeUpdateMarketStates: !!FLAGS.UPDATE_MARKET_STATE,
-      includeUpdateReferralPrograms: !!FLAGS.REFERRALS,
+      includeNewMarketProductFields: !!featureFlags.PRODUCT_PERPETUALS,
+      includeUpdateMarketStates: !!featureFlags.UPDATE_MARKET_STATE,
+      includeUpdateReferralPrograms: !!featureFlags.REFERRALS,
     },
   });
 

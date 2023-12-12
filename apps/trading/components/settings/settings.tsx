@@ -10,6 +10,18 @@ import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useState, type ReactNode } from 'react';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
+import { useFeatureFlags, type FeatureFlags } from '@vegaprotocol/environment';
+
+export const FeatureFlagSwitch = ({ flag }: { flag: keyof FeatureFlags }) => {
+  const flags = useFeatureFlags((state) => state.flags);
+  const setFeatureFlag = useFeatureFlags((state) => state.setFeatureFlag);
+  return (
+    <Switch
+      onCheckedChange={(checked) => setFeatureFlag(flag, !!checked)}
+      checked={flags[flag]}
+    />
+  );
+};
 
 export const Settings = () => {
   const t = useT();
@@ -120,7 +132,7 @@ const SettingsGroup = ({
       })}
     >
       <div className={classNames({ 'w-3/4': inline, 'mb-2': !inline })}>
-        <label className="text-sm">{label}</label>
+        <div className="text-sm">{label}</div>
         {helpText && <p className="text-xs text-muted">{helpText}</p>}
       </div>
       {children}

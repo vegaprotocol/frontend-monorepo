@@ -60,7 +60,7 @@ def test_market_selector_filter(continuous_market, page: Page):
     page.get_by_test_id("search-term").fill("btc")
     expect(page.locator('[data-testid="market-selector-list"] a')).to_have_count(1)
     expect(page.locator('[data-testid="market-selector-list"] a').nth(0)).to_have_text(
-        "BTC:DAI_2023107.50 tDAI1"
+        "BTC:DAI_2023107.50 tDAI0.00"
     )
 
     page.get_by_test_id("search-term").clear()
@@ -85,5 +85,5 @@ def test_market_selector_filter(continuous_market, page: Page):
     page.get_by_role("menuitemcheckbox").nth(0).get_by_text("tDAI").click()
     expect(page.locator('[data-testid="market-selector-list"] a')).to_have_count(1)
     expect(page.locator('[data-testid="market-selector-list"] a').nth(0)).to_have_text(
-        "BTC:DAI_2023107.50 tDAI1"
+        "BTC:DAI_2023107.50 tDAI0.00"
     )

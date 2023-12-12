@@ -12,7 +12,7 @@ import { useRefreshAfterEpoch } from '../../hooks/use-refresh-after-epoch';
 import { ProposalsListItem } from '../proposals/components/proposals-list-item';
 import { ProtocolUpgradeProposalsListItem } from '../proposals/components/protocol-upgrade-proposals-list-item/protocol-upgrade-proposals-list-item';
 import Routes from '../routes';
-import { ExternalLinks, FLAGS } from '@vegaprotocol/environment';
+import { ExternalLinks, useFeatureFlags } from '@vegaprotocol/environment';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useNodesQuery } from '../staking/home/__generated__/Nodes';
 import { useProposalsQuery } from '../proposals/proposals/__generated__/Proposals';
@@ -175,6 +175,7 @@ export const ValidatorDetailsLink = ({
 };
 
 const GovernanceHome = ({ name }: RouteChildProps) => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
   useDocumentTitle(name);
   const { t } = useTranslation();
   const {
@@ -186,9 +187,9 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
     variables: {
-      includeNewMarketProductFields: !!FLAGS.PRODUCT_PERPETUALS,
-      includeUpdateMarketStates: !!FLAGS.UPDATE_MARKET_STATE,
-      includeUpdateReferralPrograms: !!FLAGS.REFERRALS,
+      includeNewMarketProductFields: !!featureFlags.PRODUCT_PERPETUALS,
+      includeUpdateMarketStates: !!featureFlags.UPDATE_MARKET_STATE,
+      includeUpdateReferralPrograms: !!featureFlags.REFERRALS,
     },
   });
 

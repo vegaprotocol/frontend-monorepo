@@ -18,7 +18,7 @@ import { MarketModeValidationType } from '../../constants';
 import { DealTicketType } from '../../hooks/use-form-values';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import classNames from 'classnames';
-import { FLAGS } from '@vegaprotocol/environment';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 import { Trans } from 'react-i18next';
 import { useT, ns } from '../../use-t';
 
@@ -49,6 +49,7 @@ export const TypeToggle = ({
   value,
   onValueChange,
 }: Pick<TypeSelectorProps, 'onValueChange' | 'value'>) => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
   const options = useOptions();
   const toggles = useToggles();
@@ -57,8 +58,8 @@ export const TypeToggle = ({
     <RadioGroup.Root
       name="order-type"
       className={classNames('mb-2 grid h-8 leading-8 font-alpha text-xs', {
-        'grid-cols-3': FLAGS.STOP_ORDERS,
-        'grid-cols-2': !FLAGS.STOP_ORDERS,
+        'grid-cols-3': featureFlags.STOP_ORDERS,
+        'grid-cols-2': !featureFlags.STOP_ORDERS,
       })}
       value={value}
       onValueChange={onValueChange}
@@ -80,7 +81,7 @@ export const TypeToggle = ({
           </button>
         </RadioGroup.Item>
       ))}
-      {FLAGS.STOP_ORDERS && (
+      {featureFlags.STOP_ORDERS && (
         <TradingDropdown
           trigger={
             <TradingDropdownTrigger

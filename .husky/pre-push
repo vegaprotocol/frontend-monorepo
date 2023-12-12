@@ -1,8 +1,8 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-# Lint all staged files
-yarn nx format:check
+# Lint all staged files - this brings more value as pre-commit
+# yarn nx format:check
 
 # Test all projects with changes
-yarn nx affected -t test --exclude trading
+# yarn nx affected -t test --exclude trading

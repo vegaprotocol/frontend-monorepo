@@ -32,6 +32,7 @@ export const Tile = ({
 
 type StatTileProps = {
   title: string;
+  testId?: string;
   description?: ReactNode;
   children?: ReactNode;
   overrideWithNoProgram?: boolean;
@@ -40,6 +41,7 @@ export const StatTile = ({
   title,
   description,
   children,
+  testId,
   overrideWithNoProgram = false,
 }: StatTileProps) => {
   if (overrideWithNoProgram) {
@@ -47,10 +49,15 @@ export const StatTile = ({
   }
   return (
     <Tile>
-      <h3 className="mb-1 text-sm text-vega-clight-100 dark:text-vega-cdark-100 calt">
+      <h3
+        data-testid={testId}
+        className="mb-1 text-sm text-vega-clight-100 dark:text-vega-cdark-100 calt"
+      >
         {title}
       </h3>
-      <div className="text-5xl text-left">{children}</div>
+      <div data-testid={`${testId}-value`} className="text-5xl text-left">
+        {children}
+      </div>
       {description && (
         <div className="text-sm text-left text-vega-clight-100 dark:text-vega-cdark-100">
           {description}
