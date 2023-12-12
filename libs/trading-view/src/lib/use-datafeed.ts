@@ -26,7 +26,9 @@ import {
   type SymbolQuery,
   type SymbolQueryVariables,
 } from './__generated__/Symbol';
-import { toBigNum } from '@vegaprotocol/utils';
+import { getMarketExpiryDate, toBigNum } from '@vegaprotocol/utils';
+
+const EXCHANGE = 'VEGA';
 
 const resolutionMap: Record<string, Interval> = {
   '1T': Interval.INTERVAL_BLOCK,
@@ -42,7 +44,7 @@ const supportedResolutions = Object.keys(resolutionMap);
 
 const configurationData = {
   // only showing Vega ofc
-  exchanges: undefined,
+  exchanges: [EXCHANGE],
 
   // Represents the resolutions for bars supported by your datafeed
   // @ts-ignore cant import types as chartin_library is external
@@ -98,27 +100,43 @@ export const useDatafeed = () => {
             return;
           }
 
+          let type = 'undefined'; // https://www.tradingview.com/charting-library-docs/latest/api/modules/Charting_Library#symboltype
+          if (productType === 'Future' || productType === 'Perpetual') {
+            type = 'futures';
+          } else if (productType === 'Spot') {
+            type = 'spot';
+          }
+
+          const expirationDate = getMarketExpiryDate(instrument.metadata.tags);
+          const expirationTimestamp = expirationDate
+            ? Math.floor(expirationDate.getTime() / 1000)
+            : null;
+
           // @ts-ignore cant import types as chartin_library is external
           const symbolInfo: LibrarySymbolInfo = {
-            ticker: market.id,
+            ticker: market.id, // use ticker as our unique identifier so that code/name can be used for name/description
             name: instrument.code,
-            full_name: instrument.code,
-            listed_exchange: 'vega',
+            full_name: `${EXCHANGE}:${instrument.code}`,
+            description: instrument.name,
+            listed_exchange: EXCHANGE,
+            expired: productType === 'Perpetual' ? false : true,
+            expirationDate: expirationTimestamp,
 
             // @ts-ignore cant import types as chartin_library is external
             format: 'price' as SeriesFormat,
-            description: instrument.name,
-            type: 'futures', // TODO no hard code
+            type,
             session: '24x7',
             timezone: 'Etc/UTC',
-            exchange: '',
+            exchange: EXCHANGE,
             minmov: 1,
             pricescale: Number('1' + '0'.repeat(market.decimalPlaces)), // for number of decimal places
             visible_plots_set: 'ohlc',
             volume_precision: market.positionDecimalPlaces,
-            data_status: 'pulsed',
-            delay: 1000,
+            data_status: 'streaming',
+            delay: 1000, // around 1 block time
             has_intraday: true, // required for less than 1 day interval
+            has_empty_bars: true, // library will generate bars if there are gaps, useful for auctions
+            has_ticks: false, // switch to true when enabling block intervals
 
             // @ts-ignore required for data conversion
             vegaDecimalPlaces: market.decimalPlaces,

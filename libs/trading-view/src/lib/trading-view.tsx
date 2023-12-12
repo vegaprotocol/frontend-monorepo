@@ -51,8 +51,7 @@ export const TradingView = ({
         // Trading view accepts just 'en' rather than 'en-US' which is what react-i18next provides
         // https://www.tradingview.com/charting-library-docs/latest/core_concepts/Localization?_highlight=language#supported-languages
         locale: language.split('-')[0],
-        // TODO: figure out why the 1T (tick) interval button is disabled
-        // enabled_features: ['tick_resolution'],
+        enabled_features: ['tick_resolution'],
         disabled_features: [
           'header_symbol_search',
           'header_compare',

@@ -7,6 +7,9 @@ query Symbol($marketId: ID!) {
       instrument {
         code
         name
+        metadata {
+          tags
+        }
         product {
           ... on Future {
             __typename

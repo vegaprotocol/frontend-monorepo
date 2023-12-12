@@ -8,7 +8,7 @@ export type SymbolQueryVariables = Types.Exact<{
 }>;
 
 
-export type SymbolQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, name: string, product: { __typename: 'Future' } | { __typename: 'Perpetual' } | { __typename?: 'Spot' } } } } | null };
+export type SymbolQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', code: string, name: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null }, product: { __typename: 'Future' } | { __typename: 'Perpetual' } | { __typename?: 'Spot' } } } } | null };
 
 
 export const SymbolDocument = gql`
@@ -21,6 +21,9 @@ export const SymbolDocument = gql`
       instrument {
         code
         name
+        metadata {
+          tags
+        }
         product {
           ... on Future {
             __typename
