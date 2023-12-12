@@ -10,7 +10,7 @@ interface PersistedDeposit {
 }
 type PersistedDepositData = Record<string, PersistedDeposit>;
 
-const usePersistentDepositStore = create<{
+export const usePersistentDepositStore = create<{
   deposits: PersistedDepositData;
   saveValue: (entry: PersistedDeposit) => void;
   lastVisited?: PersistedDeposit;

@@ -13,3 +13,4 @@ export * from './use-get-deposit-maximum';
 export * from './use-get-deposited-amount';
 export * from './use-submit-approval';
 export * from './use-submit-faucet';
+export * from './use-persistent-deposit';
