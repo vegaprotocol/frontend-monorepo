@@ -1,17 +1,13 @@
-import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Trans } from 'react-i18next';
 import { isBefore, formatDuration, intervalToDuration } from 'date-fns';
-import type { Market } from '@vegaprotocol/markets';
 import {
   calcCandleVolume,
   useCandles,
   useMarketState,
   useSuccessorMarket,
+  type Market,
 } from '@vegaprotocol/markets';
-import {
-  ExternalLink,
-  Intent,
-  NotificationBanner,
-} from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
   getMarketExpiryDate,
@@ -19,7 +15,7 @@ import {
 } from '@vegaprotocol/utils';
 import * as Types from '@vegaprotocol/types';
 import { useT, ns } from '../../lib/use-t';
-import { Trans } from 'react-i18next';
+import { Links } from '../../lib/links';
 
 const getExpiryDate = (tags: string[], close?: string): Date | null => {
   const expiryDate = getMarketExpiryDate(tags);
@@ -35,8 +31,6 @@ export const MarketSuccessorBanner = ({
   const { data: marketState } = useMarketState(market?.id);
   const isSettled = marketState === Types.MarketState.STATE_SETTLED;
   const { data: successorData, loading } = useSuccessorMarket(market?.id);
-
-  const [visible, setVisible] = useState(true);
 
   const expiry = market
     ? getExpiryDate(
@@ -66,14 +60,9 @@ export const MarketSuccessorBanner = ({
         )
       : null;
 
-  if (!loading && (isSettled || successorData) && visible) {
+  if (!loading && (isSettled || successorData)) {
     return (
-      <NotificationBanner
-        intent={Intent.Primary}
-        onClose={() => {
-          setVisible(false);
-        }}
-      >
+      <div>
         <div className="uppercase">
           {successorData
             ? t('This market has been succeeded')
@@ -109,12 +98,13 @@ export const MarketSuccessorBanner = ({
                         successorData?.tradableInstrument.instrument.name,
                     }}
                     components={[
-                      <ExternalLink
-                        href={`/#/markets/${successorData?.id}`}
+                      <Link
+                        to={Links.MARKET(successorData.id)}
                         key="link"
+                        target="_blank"
                       >
                         successor market name
-                      </ExternalLink>,
+                      </Link>,
                     ]}
                   />
                 ) : (
@@ -125,12 +115,13 @@ export const MarketSuccessorBanner = ({
                         successorData?.tradableInstrument.instrument.name,
                     }}
                     components={[
-                      <ExternalLink
-                        href={`/#/markets/${successorData?.id}`}
+                      <Link
+                        to={Links.MARKET(successorData.id)}
                         key="link"
+                        target="_blank"
                       >
                         successor market name
-                      </ExternalLink>,
+                      </Link>,
                     ]}
                     ns={ns}
                   />
@@ -139,7 +130,7 @@ export const MarketSuccessorBanner = ({
             )}
           </div>
         )}
-      </NotificationBanner>
+      </div>
     );
   }
   return null;

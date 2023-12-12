@@ -1,41 +1,46 @@
 import compact from 'lodash/compact';
-import { type Proposal, type ProposalState, MarketState } from '@vegaprotocol/types';
+import { MarketState, ProposalType, ProposalState } from '@vegaprotocol/types';
 import { Intent, NotificationBanner } from '@vegaprotocol/ui-toolkit';
-import {
-  useSuccessorMarket,
-  useMarketState,
-  useMarket,
-  type Market,
-} from '@vegaprotocol/markets';
+import { useMarketState, useMarket, type Market } from '@vegaprotocol/markets';
 import { useState } from 'react';
-import { useMarketProposals } from '@vegaprotocol/proposals';
+import {
+  useMarketProposals,
+  type MarketViewProposalFieldsFragment,
+} from '@vegaprotocol/proposals';
 import { MarketSuspendedBanner } from './market-suspended-banner';
 import { MarketUpdateBanner } from './market-update-banner';
 import { MarketUpdateStateBanner } from './market-update-state-banner';
+import { MarketSuccessorBanner } from './market-successor-banner';
+import { MarketSuccessorProposalBanner } from './market-successor-proposal-banner';
+import {
+  useSuccessorMarketProposals,
+  useUpdateMarketProposals,
+  useUpdateMarketStateProposals,
+} from './use-market-proposals';
 
 type UpdateMarketBanner = {
   kind: 'UpdateMarket';
-  data: Proposal;
+  proposals: MarketViewProposalFieldsFragment[];
 };
 
 type UpdateMarketStateBanner = {
   kind: 'UpdateMarketState';
-  data: Proposal;
+  proposals: MarketViewProposalFieldsFragment[];
 };
 
 type NewMarketBanner = {
-  kind: 'NewMarket';
-  data: Proposal;
+  kind: 'NewMarket'; // aka a proposal of NewMarket which succeeds the current market
+  proposals: MarketViewProposalFieldsFragment[];
 };
 
 type SettledBanner = {
   kind: 'Settled';
-  data: Market;
+  market: Market;
 };
 
 type SuspendedBanner = {
   kind: 'Suspended';
-  data: Market;
+  market: Market;
 };
 
 type Banner =
@@ -45,137 +50,126 @@ type Banner =
   | SettledBanner
   | SuspendedBanner;
 
-const useProposalsForMarket = (marketId: string, inState?: ProposalState) => {
-  const { data, loading, error } = useMarketProposals({
-    inState,
-  });
-
-  const proposals = compact(data || []);
-
-  const proposalsForMarket = proposals.filter((p) => {
-    const change = p.terms.change;
-
-    if (
-      change.__typename === 'UpdateMarketState' &&
-      change.market.id === marketId
-    ) {
-      return true;
-    }
-
-    if (change.__typename === 'UpdateMarket' && change.marketId === marketId) {
-      return true;
-    }
-
-    if (
-      change.__typename === 'NewMarket' &&
-      change.successorConfiguration?.parentMarketId === marketId
-    ) {
-      return true;
-    }
-
-    return false;
-  });
-
-  return { data, loading, error, proposals: proposalsForMarket };
-};
-
 export const MarketBanner = ({ marketId }: { marketId: string }) => {
   const { data: market } = useMarket(marketId);
   const { data: marketState } = useMarketState(marketId);
 
-  const { proposals: openProposals, loading: openLoading } =
-    useProposalsForMarket(marketId);
+  const { proposals: successorProposals, loading: successorLoading } =
+    useSuccessorMarketProposals(marketId);
 
-  // eslint-disable-next-line
-  const { data: successorData, loading: successorLoading } =
-    useSuccessorMarket(marketId);
+  const { proposals: updateMarketProposals, loading: updateMarketLoading } =
+    useUpdateMarketProposals(marketId);
+
+  const {
+    proposals: updateMarketStateProposals,
+    loading: updateMarketStateLoading,
+  } = useUpdateMarketStateProposals(marketId);
 
   if (!market) {
     return null;
   }
 
-  if (openLoading || successorLoading) {
+  const loading =
+    successorLoading || updateMarketLoading || updateMarketStateLoading;
+
+  if (loading) {
     return null;
   }
 
-  // @ts-ignore ts can't infer that the typename will only evert match kind here
-  const banners: Banner[] = openProposals.map((p) => ({
-    kind: p.terms.change.__typename,
-    data: p,
-  }));
+  const banners = compact([
+    updateMarketStateProposals.length
+      ? {
+          kind: 'UpdateMarketState' as const,
+          proposals: updateMarketStateProposals,
+        }
+      : undefined,
+    updateMarketProposals.length
+      ? {
+          kind: 'UpdateMarket' as const,
+          proposals: updateMarketProposals,
+        }
+      : undefined,
+    successorProposals.length
+      ? {
+          kind: 'NewMarket' as const,
+          proposals: successorProposals,
+        }
+      : undefined,
+    marketState === MarketState.STATE_SETTLED
+      ? {
+          kind: 'Settled' as const,
+          market,
+        }
+      : undefined,
+    marketState === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
+      ? {
+          kind: 'Suspended' as const,
+          market,
+        }
+      : undefined,
+  ]);
 
-  if (marketState === MarketState.STATE_SETTLED) {
-    banners.unshift({
-      kind: 'Settled',
-      data: market,
-    });
-  } else if (marketState === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE) {
-    banners.unshift({
-      kind: 'Suspended',
-      data: market,
-    });
-  }
-
-  return <NotificationQueue notifications={banners as Banner[]} />;
+  return <BannerQueue banners={banners} market={market} />;
 };
 
-const NotificationQueue = ({ notifications }: { notifications: Banner[] }) => {
+const BannerQueue = ({
+  banners,
+  market,
+}: {
+  banners: Banner[];
+  market: Market;
+}) => {
   const [index, setIndex] = useState(0);
 
-  const n = notifications[index];
+  const banner = banners[index];
+  if (!banner) return null;
 
-  if (n) {
-    let content = null;
-    let intent = Intent.Primary;
+  let content = null;
 
-    switch (n.kind) {
-      case 'UpdateMarket': {
-        content = <MarketUpdateBanner proposal={n.data} />;
-        break;
-      }
-      case 'UpdateMarketState': {
-        content = <MarketUpdateStateBanner proposal={n.data} />;
-        break;
-      }
-      case 'NewMarket': {
-        intent = Intent.Primary;
-        content = <p>NewMarket</p>;
-        break;
-      }
-      case 'Settled': {
-        content = <p>Successor</p>;
-        break;
-      }
-      case 'Suspended': {
-        intent = Intent.Warning;
-        content = <MarketSuspendedBanner />;
-        break;
-      }
-      default: {
-        throw new Error('invalid banner kind');
-      }
+  switch (banner.kind) {
+    case 'UpdateMarket': {
+      content = <MarketUpdateBanner proposals={banner.proposals} />;
+      break;
     }
-    const showCount = notifications.length > 1;
-
-    const onClose = showCount
-      ? () => {
-          setIndex((x) => x + 1);
-        }
-      : undefined;
-
-    return (
-      <NotificationBanner intent={intent} onClose={onClose}>
-        <div className="flex justify-between">
-          {content}
-          {showCount ? (
-            <p>
-              {index + 1}/{notifications.length}
-            </p>
-          ) : null}
-        </div>
-      </NotificationBanner>
-    );
+    case 'UpdateMarketState': {
+      content = (
+        <MarketUpdateStateBanner proposals={banner.proposals} market={market} />
+      );
+      break;
+    }
+    case 'NewMarket': {
+      content = <MarketSuccessorProposalBanner proposals={banner.proposals} />;
+      break;
+    }
+    case 'Settled': {
+      content = <MarketSuccessorBanner market={market} />;
+      break;
+    }
+    case 'Suspended': {
+      content = <MarketSuspendedBanner />;
+      break;
+    }
+    default: {
+      return null;
+    }
   }
 
-  return null;
+  const showCount = banners.length > 1;
+
+  const onClose = () => {
+    setIndex((x) => x + 1);
+  };
+
+  return (
+    <NotificationBanner intent={Intent.Primary} onClose={onClose}>
+      <div className="flex justify-between">
+        {content}
+        {showCount ? (
+          <p>
+            {index + 1}/{banners.length}
+          </p>
+        ) : null}
+      </div>
+    </NotificationBanner>
+  );
 };

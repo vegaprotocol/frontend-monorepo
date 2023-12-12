@@ -1,24 +1,71 @@
-import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
+import sortBy from 'lodash/sortBy';
+import { format } from 'date-fns';
+import {
+  DApp,
+  TOKEN_PROPOSAL,
+  TOKEN_PROPOSALS,
+  useLinks,
+} from '@vegaprotocol/environment';
+import { MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { Trans } from 'react-i18next';
+import { ProposalState } from '@vegaprotocol/types';
+import { useT } from '../../lib/use-t';
 
 export const MarketUpdateBanner = ({
-  proposal,
+  proposals,
 }: {
-  proposal: { id: string };
+  proposals: MarketViewProposalFieldsFragment[];
 }) => {
-  const tokenLink = useLinks(DApp.Governance);
-  const proposalLink = tokenLink(TOKEN_PROPOSAL.replace(':id', proposal.id));
-  return (
-    <p data-testid="market-proposal-notification">
-      <Trans
-        i18nKey="Changes have been proposed for this market. <0>View proposals</0>"
-        components={[
-          <ExternalLink key="view-link" href={proposalLink}>
-            View proposals
-          </ExternalLink>,
-        ]}
-      />
-    </p>
+  const governanceLink = useLinks(DApp.Governance);
+  const t = useT();
+  const openProposals = sortBy(
+    proposals.filter((p) => p.state === ProposalState.STATE_OPEN),
+    (p) => p.terms.enactmentDatetime
   );
+  const passedProposals = sortBy(
+    proposals.filter((p) => p.state === ProposalState.STATE_PASSED),
+    (p) => p.terms.enactmentDatetime
+  );
+
+  let content = null;
+
+  if (passedProposals.length) {
+    const proposal = passedProposals[0];
+    const proposalLink = governanceLink(
+      TOKEN_PROPOSAL.replace(':id', proposal?.id || '')
+    );
+
+    content = (
+      <p>
+        {t('Proposal set to change market on {{date}}.', {
+          date: format(new Date(proposal.terms.enactmentDatetime), 'dd MMMM'),
+        })}
+        <ExternalLink href={proposalLink}>{t('View proposal')}</ExternalLink>,
+      </p>
+    );
+  } else if (openProposals.length > 1) {
+    content = (
+      <p>
+        {t('There are {{count}} open proposals to change this market', {
+          count: openProposals.length,
+        })}
+        <ExternalLink href={governanceLink(TOKEN_PROPOSALS)}>
+          {t('View proposals')}
+        </ExternalLink>
+      </p>
+    );
+  } else {
+    const proposal = openProposals[0];
+    const proposalLink = governanceLink(
+      TOKEN_PROPOSAL.replace(':id', proposal?.id || '')
+    );
+    content = (
+      <p>
+        {t('Changes have been proposed for this market.')}{' '}
+        <ExternalLink href={proposalLink}>{t('View proposal')}</ExternalLink>
+      </p>
+    );
+  }
+
+  return <div data-testid="market-proposal-notification">{content}</div>;
 };
