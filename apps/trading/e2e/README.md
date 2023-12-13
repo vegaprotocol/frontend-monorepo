@@ -90,7 +90,6 @@ docker build -f docker/node-outside-docker.Dockerfile --build-arg APP=trading --
 Before running make sure the docker daemon is running.
 
 To run a specific test, use the `-k` option followed by the name of the test.
-
 Run all tests:
 
 ```bash
@@ -119,6 +118,7 @@ yarn nx build trading
 
 ```bash
 yarn nx serve trading
+
 ```
 
 Once console is served you can use the flag --local-server
