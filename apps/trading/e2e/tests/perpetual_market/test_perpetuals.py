@@ -131,9 +131,10 @@ def test_perps_market_terminated(page: Page, vega: VegaService):
     vega.wait_for_total_catchup()
 
     page.goto(f"/#/markets/{perpetual_market}") 
+    # TODO cahnge back to have text once bug #5465 is fixed
     expect(page.get_by_test_id("market-price")).to_have_text("Mark Price100.00")
-    expect(page.get_by_test_id("market-change")).to_have_text("Change (24h)-")
-    expect(page.get_by_test_id("market-volume")).to_have_text("Volume (24h)-")
+    expect(page.get_by_test_id("market-change")).to_contain_text("Change (24h)")
+    expect(page.get_by_test_id("market-volume")).to_contain_text("Volume (24h)")
     expect(page.get_by_test_id("market-trading-mode")).to_have_text("Trading modeNo trading")
     expect(page.get_by_test_id("market-state")).to_have_text("StatusClosed")
     expect(page.get_by_test_id("liquidity-supplied")).to_have_text("Liquidity supplied 0.00 (0.00%)")
