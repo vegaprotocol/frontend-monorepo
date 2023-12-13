@@ -1,0 +1,24 @@
+query Symbol($marketId: ID!) {
+  market(id: $marketId) {
+    id
+    decimalPlaces
+    positionDecimalPlaces
+    tradableInstrument {
+      instrument {
+        code
+        name
+        metadata {
+          tags
+        }
+        product {
+          ... on Future {
+            __typename
+          }
+          ... on Perpetual {
+            __typename
+          }
+        }
+      }
+    }
+  }
+}

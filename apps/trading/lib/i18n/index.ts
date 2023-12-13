@@ -75,6 +75,7 @@ i18n
       'positions',
       'trades',
       'trading',
+      'trading-view',
       'ui-toolkit',
       'utils',
       'wallet',

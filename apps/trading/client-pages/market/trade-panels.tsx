@@ -23,7 +23,7 @@ interface TradePanelsProps {
 
 export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
   const featureFlags = useFeatureFlags((state) => state.flags);
-  const [view, setView] = useState<TradingView>('candles');
+  const [view, setView] = useState<TradingView>('chart');
 
   const renderView = () => {
     const Component = TradingViews[view].component;
@@ -50,7 +50,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
       const Menu = viewCfg.menu;
 
       return (
-        <div className="flex gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
+        <div className="flex items-center justify-end gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
           <Menu />
         </div>
       );
@@ -149,7 +149,7 @@ const useViewLabel = (view: TradingView) => {
   const t = useT();
 
   const labels = {
-    candles: t('Candles'),
+    chart: t('Chart'),
     depth: t('Depth'),
     liquidity: t('Liquidity'),
     funding: t('Funding'),
