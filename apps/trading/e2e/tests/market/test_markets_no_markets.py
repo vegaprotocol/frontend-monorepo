@@ -12,8 +12,8 @@ def vega(request):
 
 
 @pytest.fixture(scope="module")
-def page(vega, browser, request):
-    with init_page(vega, browser, request) as page:
+def page(vega, browser, request, local_server):
+    with init_page(vega, browser, request, local_server) as page:
         risk_accepted_setup(page)
         page.goto("/#/markets/all")
         yield page

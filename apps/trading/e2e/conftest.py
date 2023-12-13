@@ -7,7 +7,6 @@ import time
 import docker
 import http.server
 
-
 from contextlib import contextmanager
 from vega_sim.null_service import VegaServiceNull
 from playwright.sync_api import Browser, Page
@@ -102,11 +101,23 @@ def init_vega(request=None):
             logger.info(f"Removing container {container.id}")
             container.remove()
 
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--local-server", action="store_true", default=False,
+        help="Build and serve locally instead of using a container"
+    )
+
+@pytest.fixture(scope="session")
+def local_server(pytestconfig):
+    return pytestconfig.getoption("--local-server")
+
 @contextmanager
-def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRequest):
+def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRequest, local_server: bool):
+    server_port = "4200" if local_server else str(vega.console_port)
     with browser.new_context(
         viewport={"width": 1920, "height": 1080},
-        base_url=f"http://localhost:{vega.console_port}",
+        base_url=f"http://localhost:{server_port}",
     ) as context, context.new_page() as page:
         context.tracing.start(screenshots=True, snapshots=True, sources=True)
         try:
@@ -115,7 +126,7 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
             while attempts < 100:
                 try:
                     code = requests.get(
-                        f"http://localhost:{vega.console_port}/"
+                        f"http://localhost:{server_port}/"
                     ).status_code
                     if code == 200:
                         break
@@ -161,8 +172,8 @@ def vega(request):
 
 
 @pytest.fixture
-def page(vega, browser, request):
-    with init_page(vega, browser, request) as page_instance:
+def page(vega, browser, request, local_server):
+    with init_page(vega, browser, request, local_server) as page_instance:
         yield page_instance
 
 
