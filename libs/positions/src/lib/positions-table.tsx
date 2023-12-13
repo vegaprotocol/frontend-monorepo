@@ -1,5 +1,5 @@
 import { useMemo, type CSSProperties, type ReactNode } from 'react';
-import { type ColDef, type ITooltipParams } from 'ag-grid-community';
+import { type ColDef } from 'ag-grid-community';
 import {
   AgGrid,
   COL_DEFS,
@@ -20,6 +20,7 @@ import {
   ExternalLink,
   VegaIcon,
   VegaIconNames,
+  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import {
   volumePrefix,
@@ -148,15 +149,6 @@ export const PositionsTable = ({
                     data.positionDecimalPlaces
                   ).toNumber();
             },
-            tooltipValueGetter: ({ data }: ITooltipParams<Position>) => {
-              if (
-                !data ||
-                data.status === PositionStatus.POSITION_STATUS_UNSPECIFIED
-              ) {
-                return null;
-              }
-              return data.status;
-            },
             valueFormatter: ({
               data,
             }: VegaValueFormatterParams<Position, 'openVolume'>): string => {
@@ -170,68 +162,6 @@ export const PositionsTable = ({
               );
 
               return vol;
-            },
-            tooltipComponent: (args: ITooltipParams<Position>) => {
-              if (!args.data) {
-                return null;
-              }
-              const POSITION_RESOLUTION_LINK =
-                DocsLinks?.POSITION_RESOLUTION ?? '';
-              let primaryTooltip;
-              switch (args.data.status) {
-                case PositionStatus.POSITION_STATUS_CLOSED_OUT:
-                  primaryTooltip = t('Your position was closed.');
-                  break;
-                case PositionStatus.POSITION_STATUS_ORDERS_CLOSED:
-                  primaryTooltip = t('Your open orders were cancelled.');
-                  break;
-                case PositionStatus.POSITION_STATUS_DISTRESSED:
-                  primaryTooltip = t('Your position is distressed.');
-                  break;
-              }
-
-              let secondaryTooltip;
-              switch (args.data.status) {
-                case PositionStatus.POSITION_STATUS_CLOSED_OUT:
-                  secondaryTooltip = t(
-                    `You did not have enough {{assetSymbol}} collateral to meet the maintenance margin requirements for your position, so it was closed by the network.`,
-                    { assetSymbol: args.data.assetSymbol }
-                  );
-                  break;
-                case PositionStatus.POSITION_STATUS_ORDERS_CLOSED:
-                  secondaryTooltip = t(
-                    'The position was distressed, but removing open orders from the book brought the margin level back to a point where the open position could be maintained.'
-                  );
-                  break;
-                case PositionStatus.POSITION_STATUS_DISTRESSED:
-                  secondaryTooltip = t(
-                    'The position was distressed, but could not be closed out - orders were removed from the book, and the open volume will be closed out once there is sufficient volume on the book.'
-                  );
-                  break;
-                default:
-                  secondaryTooltip = t('Maintained by network');
-              }
-              return (
-                <TooltipCellComponent
-                  {...args}
-                  value={
-                    <>
-                      <p className="mb-2">{primaryTooltip}</p>
-                      <p className="mb-2">{secondaryTooltip}</p>
-                      <p className="mb-2">
-                        {t('Status: {{status}}', {
-                          status: PositionStatusMapping[args.data.status],
-                        })}
-                      </p>
-                      {POSITION_RESOLUTION_LINK && (
-                        <ExternalLink href={POSITION_RESOLUTION_LINK}>
-                          {t('Read more about position resolution')}
-                        </ExternalLink>
-                      )}
-                    </>
-                  }
-                />
-              );
             },
             cellRenderer: OpenVolumeCell,
           },
@@ -337,12 +267,15 @@ export const PositionsTable = ({
                 return '-';
               }
               return (
-                <LiquidationPrice
-                  marketId={data.marketId}
-                  openVolume={data.openVolume}
-                  collateralAvailable={data.totalBalance}
-                  decimalPlaces={data.marketDecimalPlaces}
-                />
+                <div className="flex h-[45px] items-center">
+                  <LiquidationPrice
+                    className="block text-right grow"
+                    marketId={data.marketId}
+                    openVolume={data.openVolume}
+                    collateralAvailable={data.totalBalance}
+                    decimalPlaces={data.marketDecimalPlaces}
+                  />
+                </div>
               );
             },
           },
@@ -354,13 +287,13 @@ export const PositionsTable = ({
             cellClass: 'font-mono text-right',
             filter: 'agNumberColumnFilter',
             valueGetter: realisedPNLValueGetter,
-            // @ts-ignore no type overlap, but the functions are identical
-            tooltipValueGetter: realisedPNLValueGetter,
-            tooltipComponent: (args: ITooltipParams) => {
+            cellRenderer: (
+              args: VegaICellRendererParams<Position, 'realisedPNL'>
+            ) => {
               const LOSS_SOCIALIZATION_LINK =
                 DocsLinks?.LOSS_SOCIALIZATION ?? '';
 
-              if (!args.data) {
+              if (!args.data || args.value === undefined) {
                 return null;
               }
 
@@ -371,7 +304,11 @@ export const PositionsTable = ({
               if (losses <= 0) {
                 // eslint-disable-next-line react/jsx-no-useless-fragment
                 return (
-                  <TooltipCellComponent {...args} value={args.valueFormatted} />
+                  <Tooltip description={args.valueFormatted} align="end">
+                    <div>
+                      <PNLCell {...args} />
+                    </div>
+                  </Tooltip>
                 );
               }
 
@@ -381,20 +318,24 @@ export const PositionsTable = ({
               );
 
               return (
-                <TooltipCellComponent
-                  {...args}
-                  value={
+                <Tooltip
+                  align="end"
+                  description={
                     <>
                       <p className="mb-2">
                         {t('Realised PNL: {{value}}', {
-                          value: args.value,
+                          nsSeparator: '*',
+                          replace: { value: args.value },
                         })}
                       </p>
                       <p className="mb-2">
                         {t(
                           'Lifetime loss socialisation deductions: {{losses}}',
                           {
-                            losses: lossesFormatted,
+                            nsSeparator: '*',
+                            replace: {
+                              losses: lossesFormatted,
+                            },
                           }
                         )}
                       </p>
@@ -411,7 +352,11 @@ export const PositionsTable = ({
                       )}
                     </>
                   }
-                />
+                >
+                  <div>
+                    <PNLCell {...args} />
+                  </div>
+                </Tooltip>
               );
             },
             valueFormatter: ({
@@ -428,7 +373,6 @@ export const PositionsTable = ({
             headerTooltip: t(
               'Profit or loss is realised whenever your position is reduced to zero and the margin is released back to your collateral balance. P&L excludes any fees paid.'
             ),
-            cellRenderer: PNLCell,
           },
           {
             headerName: t('Unrealised PNL'),
@@ -520,9 +464,65 @@ export const OpenVolumeCell = ({
   valueFormatted,
   data,
 }: VegaICellRendererParams<Position, 'openVolume'>) => {
+  const t = useT();
   if (!valueFormatted || !data || !data.notional) {
     return <>-</>;
   }
+
+  const POSITION_RESOLUTION_LINK = DocsLinks?.POSITION_RESOLUTION ?? '';
+  let primaryTooltip;
+  switch (data.status) {
+    case PositionStatus.POSITION_STATUS_CLOSED_OUT:
+      primaryTooltip = t('Your position was closed.');
+      break;
+    case PositionStatus.POSITION_STATUS_ORDERS_CLOSED:
+      primaryTooltip = t('Your open orders were cancelled.');
+      break;
+    case PositionStatus.POSITION_STATUS_DISTRESSED:
+      primaryTooltip = t('Your position is distressed.');
+      break;
+  }
+
+  let secondaryTooltip;
+  switch (data.status) {
+    case PositionStatus.POSITION_STATUS_CLOSED_OUT:
+      secondaryTooltip = t(
+        `You did not have enough {{assetSymbol}} collateral to meet the maintenance margin requirements for your position, so it was closed by the network.`,
+        { assetSymbol: data.assetSymbol }
+      );
+      break;
+    case PositionStatus.POSITION_STATUS_ORDERS_CLOSED:
+      secondaryTooltip = t(
+        'The position was distressed, but removing open orders from the book brought the margin level back to a point where the open position could be maintained.'
+      );
+      break;
+    case PositionStatus.POSITION_STATUS_DISTRESSED:
+      secondaryTooltip = t(
+        'The position was distressed, but could not be closed out - orders were removed from the book, and the open volume will be closed out once there is sufficient volume on the book.'
+      );
+      break;
+    default:
+      secondaryTooltip = t('Maintained by network');
+  }
+  const description = (
+    <>
+      <p className="mb-2">{primaryTooltip}</p>
+      <p className="mb-2">{secondaryTooltip}</p>
+      <p className="mb-2">
+        {t('Status: {{status}}', {
+          nsSeparator: '*',
+          replace: {
+            status: PositionStatusMapping[data.status],
+          },
+        })}
+      </p>
+      {POSITION_RESOLUTION_LINK && (
+        <ExternalLink href={POSITION_RESOLUTION_LINK}>
+          {t('Read more about position resolution')}
+        </ExternalLink>
+      )}
+    </>
+  );
 
   const notional = addDecimalsFormatNumber(
     data.notional,
@@ -539,16 +539,11 @@ export const OpenVolumeCell = ({
   }
 
   return (
-    <WarningCell
-      showIcon={
-        // not sure why but data.status has become a union of all the enum values
-        // rather than just being the enum itself
-        (data.status as PositionStatus) !==
-        PositionStatus.POSITION_STATUS_UNSPECIFIED
-      }
-    >
-      {cellContent}
-    </WarningCell>
+    <Tooltip description={description}>
+      <div>
+        <WarningCell showIcon>{cellContent}</WarningCell>
+      </div>
+    </Tooltip>
   );
 };
 
