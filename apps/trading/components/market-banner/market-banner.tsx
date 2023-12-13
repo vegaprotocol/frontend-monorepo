@@ -1,7 +1,7 @@
 import compact from 'lodash/compact';
 import { MarketState } from '@vegaprotocol/types';
 import { Intent, NotificationBanner } from '@vegaprotocol/ui-toolkit';
-import { useMarketState, useMarket, type Market } from '@vegaprotocol/markets';
+import { useMarketState, type Market } from '@vegaprotocol/markets';
 import { useState } from 'react';
 import { type MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { MarketSuspendedBanner } from './market-suspended-banner';
@@ -47,20 +47,19 @@ type Banner =
   | SettledBanner
   | SuspendedBanner;
 
-export const MarketBanner = ({ marketId }: { marketId: string }) => {
-  const { data: market } = useMarket(marketId);
-  const { data: marketState } = useMarketState(marketId);
+export const MarketBanner = ({ market }: { market: Market }) => {
+  const { data: marketState } = useMarketState(market.id);
 
   const { proposals: successorProposals, loading: successorLoading } =
-    useSuccessorMarketProposals(marketId);
+    useSuccessorMarketProposals(market.id);
 
   const { proposals: updateMarketProposals, loading: updateMarketLoading } =
-    useUpdateMarketProposals(marketId);
+    useUpdateMarketProposals(market.id);
 
   const {
     proposals: updateMarketStateProposals,
     loading: updateMarketStateLoading,
-  } = useUpdateMarketStateProposals(marketId);
+  } = useUpdateMarketStateProposals(market.id);
 
   if (!market) {
     return null;
@@ -159,7 +158,11 @@ const BannerQueue = ({
   };
 
   return (
-    <NotificationBanner intent={Intent.Primary} onClose={onClose}>
+    <NotificationBanner
+      intent={Intent.Primary}
+      onClose={onClose}
+      data-testid="market-banner"
+    >
       <div className="flex justify-between">
         {content}
         {showCount ? (

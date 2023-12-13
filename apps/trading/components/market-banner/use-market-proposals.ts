@@ -9,8 +9,9 @@ const isPending = (p: MarketViewProposalFieldsFragment) => {
     ProposalState.STATE_OPEN,
     ProposalState.STATE_PASSED,
   ].includes(p.state);
-  const isFuture = new Date(p.terms.enactmentDatetime).getTime() > Date.now();
-  return isOpenOrPassed && isFuture;
+  // const isFuture = new Date(p.terms.enactmentDatetime).getTime() > Date.now();
+  // return isOpenOrPassed && isFuture;
+  return isOpenOrPassed;
 };
 
 export const useUpdateMarketStateProposals = (

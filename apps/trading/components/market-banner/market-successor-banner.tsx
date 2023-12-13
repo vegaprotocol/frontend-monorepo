@@ -4,8 +4,8 @@ import { isBefore, formatDuration, intervalToDuration } from 'date-fns';
 import {
   calcCandleVolume,
   useCandles,
+  useSuccessorMarket,
   type Market,
-  useSuccessorMarketQuery,
 } from '@vegaprotocol/markets';
 import {
   addDecimalsFormatNumber,
@@ -22,13 +22,7 @@ const getExpiryDate = (tags: string[], close?: string): Date | null => {
 
 export const MarketSuccessorBanner = ({ market }: { market: Market }) => {
   const t = useT();
-  const { data } = useSuccessorMarketQuery({
-    variables: {
-      marketId: market.successorMarketID || '',
-    },
-    skip: !market.successorMarketID,
-  });
-  const successorMarket = data?.market;
+  const { data: successorMarket } = useSuccessorMarket(market.id);
 
   const expiry = market
     ? getExpiryDate(
@@ -61,25 +55,23 @@ export const MarketSuccessorBanner = ({ market }: { market: Market }) => {
   if (successorMarket) {
     return (
       <div>
-        <div className="uppercase">{t('This market has been succeeded')}</div>
+        <p>{t('This market has been succeeded')}</p>
         {duration && (
           <div className="mt-1">
-            {duration && (
-              <span>
-                {t('This market expires in {{duration}}.', {
-                  duration: formatDuration(duration, {
-                    format: [
-                      'years',
-                      'months',
-                      'weeks',
-                      'days',
-                      'hours',
-                      'minutes',
-                    ],
-                  }),
-                })}
-              </span>
-            )}
+            <span>
+              {t('This market expires in {{duration}}.', {
+                duration: formatDuration(duration, {
+                  format: [
+                    'years',
+                    'months',
+                    'weeks',
+                    'days',
+                    'hours',
+                    'minutes',
+                  ],
+                }),
+              })}
+            </span>
             <>
               {' '}
               {successorVolume ? (

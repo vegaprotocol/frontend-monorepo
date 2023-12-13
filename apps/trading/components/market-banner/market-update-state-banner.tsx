@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import sortBy from 'lodash/sortBy';
 import { format, formatDuration, intervalToDuration } from 'date-fns';
-import { MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { type MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { ProposalState } from '@vegaprotocol/types';
 import {
   DApp,
@@ -9,7 +9,7 @@ import {
   TOKEN_PROPOSALS,
   useLinks,
 } from '@vegaprotocol/environment';
-import { Market, getQuoteName } from '@vegaprotocol/markets';
+import { getQuoteName, type Market } from '@vegaprotocol/markets';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
@@ -54,13 +54,13 @@ export const MarketUpdateStateBanner = ({
     const { date, duration, price } = getMessageVariables(passedProposals[0]);
     content = (
       <>
-        <div className="uppercase mb-1">
+        <p className="uppercase mb-1">
           {t('Trading on Market {{name}} will stop on {{date}}', {
             name,
             date,
           })}
-        </div>
-        <div>
+        </p>
+        <p>
           {t(
             'You will no longer be able to hold a position on this market when it closes in {{duration}}.',
             { duration }
@@ -71,46 +71,44 @@ export const MarketUpdateStateBanner = ({
               price: addDecimalsFormatNumber(price, market.decimalPlaces),
               assetSymbol,
             })}
-        </div>
+        </p>
       </>
     );
   } else if (openProposals.length > 1) {
     content = (
       <>
-        <div className="uppercase mb-1">
+        <p className="uppercase mb-1">
           {t(
             'Trading on Market {{name}} may stop. There are open proposals to close this market',
             { name }
           )}
-        </div>
-        <div>
+        </p>
+        <p>
           <ExternalLink href={proposalsLink}>
             {t('View proposals')}
           </ExternalLink>
-        </div>
+        </p>
       </>
     );
   } else {
     const { date, price } = getMessageVariables(openProposals[0]);
     content = (
       <>
-        <div className="uppercase mb-1">
+        <p className="mb-1">
           {t(
             'Trading on Market {{name}} may stop on {{date}}. There is open proposal to close this market.',
             { name, date }
           )}
-        </div>
-        <div>
+        </p>
+        <p>
           {price &&
             assetSymbol &&
             t('Proposed final price is {{price}} {{assetSymbol}}.', {
               price: addDecimalsFormatNumber(price, market.decimalPlaces),
               assetSymbol,
-            })}
-        </div>
-        <div>
+            })}{' '}
           <ExternalLink href={proposalLink}>{t('View proposal')}</ExternalLink>
-        </div>
+        </p>
       </>
     );
   }

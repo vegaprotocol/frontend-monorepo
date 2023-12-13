@@ -192,7 +192,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
   return (
     <div className={wrapperClasses}>
       <div>
-        <MarketBanner marketId={market.id} />
+        <MarketBanner market={market} />
       </div>
       <div className="min-h-0 p-0.5">
         <MainGrid market={market} pinnedAsset={pinnedAsset} />
