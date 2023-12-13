@@ -12,7 +12,7 @@ import { useT } from './use-t';
 
 interface WithdrawLimitsProps {
   amount: string;
-  threshold: BigNumber;
+  threshold: BigNumber | undefined;
   balance: BigNumber;
   delay: number | undefined;
   asset: Asset;
@@ -27,7 +27,7 @@ export const WithdrawLimits = ({
 }: WithdrawLimitsProps) => {
   const t = useT();
   const delayTime =
-    new BigNumber(amount).isGreaterThan(threshold) && delay
+    threshold && delay && new BigNumber(amount).isGreaterThan(threshold)
       ? formatDistanceToNow(Date.now() + delay * 1000)
       : t('None');
 
@@ -48,21 +48,23 @@ export const WithdrawLimits = ({
         '-'
       ),
     },
-  ];
-  if (threshold.isFinite()) {
-    limits.push({
+    {
       key: 'WITHDRAWAL_THRESHOLD',
       label: t('Delayed withdrawal threshold'),
       tooltip: WITHDRAW_THRESHOLD_TOOLTIP_TEXT,
       rawValue: threshold,
-      value: <CompactNumber number={threshold} decimals={asset.decimals} />,
-    });
-  }
-  limits.push({
-    key: 'DELAY_TIME',
-    label: t('Delay time'),
-    value: delayTime,
-  });
+      value: threshold ? (
+        <CompactNumber number={threshold} decimals={asset.decimals} />
+      ) : (
+        '-'
+      ),
+    },
+    {
+      key: 'DELAY_TIME',
+      label: t('Delay time'),
+      value: threshold && delay ? delayTime : '-',
+    },
+  ];
 
   return (
     <KeyValueTable>

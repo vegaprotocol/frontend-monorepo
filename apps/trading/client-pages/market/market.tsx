@@ -72,17 +72,14 @@ export const MarketPage = () => {
   const { data, loading } = useMarket(marketId);
 
   useEffect(() => {
-    if (data?.id && data.id !== lastMarketId && !closed) {
+    if (data?.id && data.id !== lastMarketId) {
       update({ marketId: data.id });
     }
   }, [update, lastMarketId, data?.id]);
 
   useEffect(() => {
     if (largeScreen && view === undefined) {
-      setViews(
-        { type: closed ? ViewType.Info : ViewType.Order },
-        currentRouteId
-      );
+      setViews({ type: ViewType.Order }, currentRouteId);
     }
   }, [setViews, view, currentRouteId, largeScreen]);
 
