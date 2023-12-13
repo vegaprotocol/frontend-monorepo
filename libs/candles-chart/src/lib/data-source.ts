@@ -56,6 +56,7 @@ const defaultConfig = {
  */
 export class VegaDataSource implements DataSource {
   client: ApolloClient<object>;
+  from?: Date;
   marketId: string;
   partyId: null | string;
   _decimalPlaces = 0;
@@ -158,6 +159,7 @@ export class VegaDataSource implements DataSource {
    */
   async query(interval: PennantInterval, from: string) {
     try {
+      this.from = new Date(from);
       const { data } = await this.client.query<
         CandlesQuery,
         CandlesQueryVariables
@@ -215,7 +217,9 @@ export class VegaDataSource implements DataSource {
           this.decimalPlaces,
           this.positionDecimalPlaces
         );
-
+        if (!this.from || candle.date < this.from) {
+          return;
+        }
         onSubscriptionData(candle);
       }
     });
