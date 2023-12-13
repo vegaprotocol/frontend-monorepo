@@ -123,6 +123,21 @@ export class JsonRpcConnector implements VegaConnector {
     }
   }
 
+  async isAlive() {
+    if (this.client) {
+      try {
+        const keys = await this.client.ListKeys();
+        if (keys.result.keys.length > 0) {
+          return true;
+        }
+      } catch (err) {
+        return false;
+      }
+    }
+
+    return false;
+  }
+
   async disconnect() {
     if (!this.client) {
       throw ClientErrors.NO_CLIENT;

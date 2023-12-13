@@ -1,5 +1,12 @@
 import { LocalStorage } from '@vegaprotocol/utils';
-import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
+import {
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+  useEffect,
+} from 'react';
 import { WalletClientError } from '@vegaprotocol/wallet-client';
 import { type VegaWalletContextShape } from '.';
 import {
@@ -11,6 +18,11 @@ import { VegaWalletContext } from './context';
 import { WALLET_KEY, WALLET_RISK_ACCEPTED_KEY } from './storage';
 import { ViewConnector } from './connectors';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
+
+/**
+ * Determines the interval for checking if wallet connection is alive.
+ */
+const KEEP_ALIVE = 1000;
 
 type Networks =
   | 'MAINNET'
@@ -33,6 +45,7 @@ export interface VegaWalletConfig {
   vegaUrl: string;
   vegaWalletServiceUrl: string;
   links: VegaWalletLinks;
+  keepAlive?: number;
 }
 
 const ExternalLinks = {
@@ -44,6 +57,27 @@ interface VegaWalletProviderProps {
   children: ReactNode;
   config: VegaWalletConfig;
 }
+
+const useIsAlive = (connector: VegaConnector | null, interval: number) => {
+  const [alive, setAlive] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (!connector) {
+      return;
+    }
+
+    const i = setInterval(() => {
+      connector.isAlive().then((isAlive) => {
+        if (alive !== isAlive) setAlive(isAlive);
+      });
+    }, interval);
+    return () => {
+      clearInterval(i);
+    };
+  }, [alive, connector, interval]);
+
+  return alive;
+};
 
 export const VegaWalletProvider = ({
   children,
@@ -142,6 +176,19 @@ export const VegaWalletProvider = ({
   const [riskAcceptedValue] = useLocalStorage(WALLET_RISK_ACCEPTED_KEY);
   const acknowledgeNeeded =
     config.network === 'MAINNET' && riskAcceptedValue !== 'true';
+
+  const isAlive = useIsAlive(
+    connector.current && pubKey ? connector.current : null,
+    config.keepAlive != null ? config.keepAlive : KEEP_ALIVE
+  );
+  /**
+   * Force disconnect if connected and wallet is unreachable.
+   */
+  useEffect(() => {
+    if (isAlive === false) {
+      disconnect();
+    }
+  }, [disconnect, isAlive]);
 
   const contextValue = useMemo<VegaWalletContextShape>(() => {
     return {
