@@ -143,7 +143,11 @@ export class JsonRpcConnector implements VegaConnector {
       throw ClientErrors.NO_CLIENT;
     }
 
-    await this.client.DisconnectWallet();
+    try {
+      await this.client.DisconnectWallet();
+    } catch (err) {
+      // NOOP
+    }
     clearConfig();
   }
 

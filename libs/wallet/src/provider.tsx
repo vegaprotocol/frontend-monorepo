@@ -18,11 +18,7 @@ import { VegaWalletContext } from './context';
 import { WALLET_KEY, WALLET_RISK_ACCEPTED_KEY } from './storage';
 import { ViewConnector } from './connectors';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
-
-/**
- * Determines the interval for checking if wallet connection is alive.
- */
-const KEEP_ALIVE = 1000;
+import { DEFAULT_KEEP_ALIVE, useIsAlive } from './use-is-alive';
 
 type Networks =
   | 'MAINNET'
@@ -57,27 +53,6 @@ interface VegaWalletProviderProps {
   children: ReactNode;
   config: VegaWalletConfig;
 }
-
-const useIsAlive = (connector: VegaConnector | null, interval: number) => {
-  const [alive, setAlive] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    if (!connector) {
-      return;
-    }
-
-    const i = setInterval(() => {
-      connector.isAlive().then((isAlive) => {
-        if (alive !== isAlive) setAlive(isAlive);
-      });
-    }, interval);
-    return () => {
-      clearInterval(i);
-    };
-  }, [alive, connector, interval]);
-
-  return alive;
-};
 
 export const VegaWalletProvider = ({
   children,
@@ -179,7 +154,7 @@ export const VegaWalletProvider = ({
 
   const isAlive = useIsAlive(
     connector.current && pubKey ? connector.current : null,
-    config.keepAlive != null ? config.keepAlive : KEEP_ALIVE
+    config.keepAlive != null ? config.keepAlive : DEFAULT_KEEP_ALIVE
   );
   /**
    * Force disconnect if connected and wallet is unreachable.
@@ -212,6 +187,7 @@ export const VegaWalletProvider = ({
       sendTx,
       fetchPubKeys,
       acknowledgeNeeded,
+      isAlive,
     };
   }, [
     config,
@@ -224,6 +200,7 @@ export const VegaWalletProvider = ({
     sendTx,
     fetchPubKeys,
     acknowledgeNeeded,
+    isAlive,
   ]);
 
   return (

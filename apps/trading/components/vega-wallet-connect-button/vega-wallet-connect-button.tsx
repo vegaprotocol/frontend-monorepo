@@ -24,7 +24,13 @@ import classNames from 'classnames';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 
-export const VegaWalletConnectButton = () => {
+export const VegaWalletConnectButton = ({
+  intent = Intent.None,
+  onClick,
+}: {
+  intent?: Intent;
+  onClick?: () => void;
+}) => {
   const t = useT();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const openVegaWalletDialog = useVegaWalletDialogStore(
@@ -117,9 +123,12 @@ export const VegaWalletConnectButton = () => {
   return (
     <Button
       data-testid="connect-vega-wallet"
-      onClick={openVegaWalletDialog}
+      onClick={() => {
+        onClick?.();
+        openVegaWalletDialog();
+      }}
       size="small"
-      intent={Intent.None}
+      intent={intent}
       icon={<VegaIcon name={VegaIconNames.ARROW_RIGHT} size={14} />}
     >
       <span className="whitespace-nowrap uppercase">
