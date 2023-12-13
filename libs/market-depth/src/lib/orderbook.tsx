@@ -198,7 +198,7 @@ export const Orderbook = ({
             );
             return (
               <div
-                className="overflow-hidden grid"
+                className="overflow-hidden grid relative"
                 data-testid="orderbook-grid-element"
                 style={{
                   width,
