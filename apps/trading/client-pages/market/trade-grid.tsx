@@ -133,6 +133,7 @@ const MainGrid = memo(
                 id="positions"
                 name={t('Positions')}
                 menu={<TradingViews.positions.menu />}
+                settings={<TradingViews.positions.settings />}
               >
                 <ErrorBoundary feature="positions">
                   <TradingViews.positions.component />

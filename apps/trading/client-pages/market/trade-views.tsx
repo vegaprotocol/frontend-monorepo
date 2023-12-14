@@ -42,6 +42,7 @@ export const TradingViews = {
   positions: {
     component: PositionsContainer,
     menu: PositionsMenu,
+    settings: () => 'positions settings',
   },
   activeOrders: {
     component: () => <OrdersContainer filter={Filter.Open} />,

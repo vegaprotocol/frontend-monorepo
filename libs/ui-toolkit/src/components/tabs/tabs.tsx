@@ -7,6 +7,8 @@ import {
 import classNames from 'classnames';
 import type { ReactElement, ReactNode } from 'react';
 import { Children, isValidElement, useRef, useState } from 'react';
+import { VegaIcon } from '../icon/vega-icons/vega-icon';
+import { VegaIconNames } from '../icon/vega-icons/vega-icon-record';
 export interface TabsProps extends TabsPrimitive.TabsProps {
   children: (ReactElement<TabProps> | null)[];
 }
@@ -18,12 +20,10 @@ export const Tabs = ({
   onValueChange,
   ...props
 }: TabsProps) => {
-  const [activeTab, setActiveTab] = useState<string | undefined>(() => {
-    if (defaultValue) {
-      return defaultValue;
-    }
-    return children.find((v) => v)?.props.id;
-  });
+  const [settingsOpened, setSettingsOpened] = useState(false);
+  const [activeTab, setActiveTab] = useState<string | undefined>(
+    () => value || defaultValue || children.find((v) => v)?.props.id
+  );
 
   // Bunch of refs in order to detect wrapping in side the tabs so that we
   // can apply a bg color
@@ -38,11 +38,21 @@ export const Tabs = ({
     setWrapped(isWrapped(tabsRef.current, menuRef.current));
   });
 
+  const settings = children.find((c) => c?.props.id === activeTab)?.props
+    .settings;
+  const hasSettings = !!settings;
+
   return (
     <TabsPrimitive.Root
       {...props}
       value={value || activeTab}
-      onValueChange={onValueChange || setActiveTab}
+      onValueChange={(value) => {
+        setSettingsOpened(false);
+        setActiveTab(value);
+        if (onValueChange) {
+          onValueChange(value);
+        }
+      }}
       className="h-full grid grid-rows-[min-content_1fr]"
     >
       <div
@@ -87,7 +97,7 @@ export const Tabs = ({
         </TabsPrimitive.List>
         <div
           ref={menuRef}
-          className={classNames('flex-1 p-1', {
+          className={classNames('flex justify-end flex-1 p-1', {
             'bg-vega-clight-700 dark:bg-vega-cdark-700': wrapped,
           })}
         >
@@ -104,9 +114,17 @@ export const Tabs = ({
               </TabsPrimitive.Content>
             );
           })}
+          {hasSettings ? (
+            <button
+              className="ml-1 flex items-center justify-center h-6 w-6"
+              onClick={() => setSettingsOpened((v) => !v)}
+            >
+              <VegaIcon name={VegaIconNames.COG} size={16} />
+            </button>
+          ) : null}
         </div>
       </div>
-      <div className="h-full overflow-auto">
+      <div className="relative h-full overflow-auto">
         {Children.map(children, (child) => {
           if (!isValidElement(child) || child.props.hidden) return null;
           return (
@@ -121,6 +139,11 @@ export const Tabs = ({
             </TabsPrimitive.Content>
           );
         })}
+        {settingsOpened && !!settings ? (
+          <div className="absolute inset-0 bg-vega-clight-700 dark:bg-vega-cdark-700">
+            {settings}
+          </div>
+        ) : null}
       </div>
     </TabsPrimitive.Root>
   );
@@ -134,6 +157,7 @@ interface TabProps {
   hidden?: boolean;
   overflowHidden?: boolean;
   menu?: ReactNode;
+  settings?: ReactNode;
 }
 
 export const Tab = ({ children, ...props }: TabProps) => {
