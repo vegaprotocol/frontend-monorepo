@@ -223,8 +223,8 @@ def markets(vega: VegaService):
 
 
 @pytest.fixture(scope="module")
-def page(vega, browser, request):
-    with init_page(vega, browser, request) as page:
+def page(vega, browser, request, local_server):
+    with init_page(vega, browser, request, local_server) as page:
         risk_accepted_setup(page)
         auth_setup(vega, page)
         page.goto("/")

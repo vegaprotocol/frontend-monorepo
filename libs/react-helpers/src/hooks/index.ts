@@ -1,3 +1,4 @@
+export * from './use-copy-timeout';
 export * from './use-fetch';
 export * from './use-local-storage';
 export * from './use-mutation-observer';
@@ -11,4 +12,4 @@ export * from './use-theme-switcher';
 export * from './use-storybook-theme-observer';
 export * from './use-yesterday';
 export * from './use-previous';
-export * from './use-copy-timeout';
+export { useScript } from './use-script';

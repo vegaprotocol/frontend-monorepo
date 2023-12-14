@@ -3,7 +3,7 @@ import { matchPath, useLocation } from 'react-router-dom';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { VegaConnectDialog } from '@vegaprotocol/wallet';
-import { Connectors } from '../../lib/vega-connectors';
+import { useConnectors } from '../../lib/vega-connectors';
 import { useT } from '../../lib/use-t';
 import { Routes } from '../../lib/links';
 import { RiskMessage } from './risk-message';
@@ -20,6 +20,7 @@ export const WelcomeDialog = () => {
   const { pathname } = useLocation();
   const t = useT();
   const { VEGA_ENV } = useEnvironment();
+  const connectors = useConnectors();
   const dismissed = useOnboardingStore((store) => store.dismissed);
   const dialogOpen = useOnboardingStore((store) => store.dialogOpen);
   const dismiss = useOnboardingStore((store) => store.dismiss);
@@ -43,7 +44,7 @@ export const WelcomeDialog = () => {
 
   const content = walletDialogOpen ? (
     <VegaConnectDialog
-      connectors={Connectors}
+      connectors={connectors}
       riskMessage={<RiskMessage />}
       onClose={() => setWalletDialogOpen(false)}
       contentOnly

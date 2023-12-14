@@ -15,10 +15,11 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { useParentMarketIdQuery } from '@vegaprotocol/markets';
-import { FLAGS } from '@vegaprotocol/environment';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 import { useSuccessorMarketProposalDetails } from '@vegaprotocol/proposals';
 
 export const ProposalContainer = () => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
   const [
     mostRecentlyEnactedAssociatedMarketProposal,
     setMostRecentlyEnactedAssociatedMarketProposal,
@@ -59,9 +60,9 @@ export const ProposalContainer = () => {
     errorPolicy: 'ignore',
     variables: {
       proposalId: params.proposalId || '',
-      includeNewMarketProductField: !!FLAGS.PRODUCT_PERPETUALS,
-      includeUpdateMarketState: !!FLAGS.UPDATE_MARKET_STATE,
-      includeUpdateReferralProgram: !!FLAGS.REFERRALS,
+      includeNewMarketProductField: !!featureFlags.PRODUCT_PERPETUALS,
+      includeUpdateMarketState: !!featureFlags.UPDATE_MARKET_STATE,
+      includeUpdateReferralProgram: !!featureFlags.REFERRALS,
     },
     skip: !params.proposalId,
   });
@@ -120,7 +121,7 @@ export const ProposalContainer = () => {
     variables: {
       marketId: marketData?.id || '',
     },
-    skip: !FLAGS.SUCCESSOR_MARKETS || !isSuccessor || !marketData?.id,
+    skip: !featureFlags.SUCCESSOR_MARKETS || !isSuccessor || !marketData?.id,
   });
 
   const {
@@ -133,7 +134,7 @@ export const ProposalContainer = () => {
     variables: {
       marketId: parentMarketId?.market?.parentMarketID || '',
       skip:
-        !FLAGS.SUCCESSOR_MARKETS ||
+        !featureFlags.SUCCESSOR_MARKETS ||
         !isSuccessor ||
         !parentMarketId?.market?.parentMarketID,
     },

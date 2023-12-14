@@ -17,8 +17,8 @@ def vega():
 
 # setting up everything in this single fixture, as all of the tests need the same setup, so no point in creating separate ones
 @pytest.fixture(scope="module")
-def page(vega, browser, request):
-    with init_page(vega, browser, request) as page:
+def page(vega, browser, request, local_server):
+    with init_page(vega, browser, request,  local_server) as page:
         setup_continuous_market(vega)
         risk_accepted_setup(page)
         page.goto("/")

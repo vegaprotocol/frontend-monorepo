@@ -3,7 +3,7 @@ import { addDecimal } from '@vegaprotocol/utils';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 import * as Schema from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 import {
   useGetWithdrawDelay,
@@ -18,6 +18,7 @@ export const useWithdrawAsset = (
   assetId?: string
 ) => {
   const { asset, balance, min, threshold, delay, update } = useWithdrawStore();
+  const currentAssetId = useRef(asset?.id);
   const getThreshold = useGetWithdrawThreshold();
   const getDelay = useGetWithdrawDelay();
   const { param } = useNetworkParam(
@@ -54,6 +55,8 @@ export const useWithdrawAsset = (
             )
           )
         : new BigNumber(0);
+      currentAssetId.current = asset?.id;
+      update({ asset, balance, min, threshold: undefined, delay: undefined });
       // Query collateral bridge for threshold for selected asset
       // and subsequent delay if withdrawal amount is larger than it
       let threshold = new BigNumber(0);
@@ -66,9 +69,14 @@ export const useWithdrawAsset = (
         if (result[1] != null) delay = result[1];
       } catch (err) {
         logger.error('get withdraw asset data', err);
+      } finally {
+        if (currentAssetId.current === asset?.id) {
+          update({
+            threshold,
+            delay,
+          });
+        }
       }
-
-      update({ asset, balance, min, threshold, delay });
     },
     [
       assets,

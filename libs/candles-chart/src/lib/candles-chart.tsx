@@ -1,42 +1,51 @@
 import 'pennant/dist/style.css';
-import { CandlestickChart } from 'pennant';
+import {
+  CandlestickChart,
+  type Overlay,
+  type ChartType,
+  type Interval,
+  type Study,
+} from 'pennant';
 import { VegaDataSource } from './data-source';
 import { useApolloClient } from '@apollo/client';
 import { useMemo } from 'react';
 import debounce from 'lodash/debounce';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import {
-  STUDY_SIZE,
-  useCandlesChartSettings,
-} from './use-candles-chart-settings';
 import { useT } from './use-t';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 
 export type CandlesChartContainerProps = {
   marketId: string;
+  interval: Interval;
+  chartType: ChartType;
+  overlays: Overlay[];
+  studies: Study[];
+  studySizes: number[];
+  defaultStudySize: number;
+  setStudies: (studies?: Study[]) => void;
+  setStudySizes: (sizes: number[]) => void;
+  setOverlays: (overlays?: Overlay[]) => void;
 };
 
 const CANDLES_TO_WIDTH_FACTOR = 0.2;
 
 export const CandlesChartContainer = ({
   marketId,
+  interval,
+  chartType,
+  overlays,
+  studies,
+  studySizes,
+  defaultStudySize,
+  setStudies,
+  setStudySizes,
+  setOverlays,
 }: CandlesChartContainerProps) => {
   const client = useApolloClient();
   const { pubKey } = useVegaWallet();
   const { theme } = useThemeSwitcher();
   const t = useT();
-
-  const {
-    interval,
-    chartType,
-    overlays,
-    studies,
-    studySizes,
-    setStudies,
-    setStudySizes,
-    setOverlays,
-  } = useCandlesChartSettings();
 
   const handlePaneChange = useMemo(
     () =>
@@ -69,7 +78,7 @@ export const CandlesChartContainer = ({
                   </span>
                 ),
                 initialNumCandlesToDisplay: candlesCount,
-                studySize: STUDY_SIZE,
+                studySize: defaultStudySize,
                 studySizes,
               }}
               interval={interval}

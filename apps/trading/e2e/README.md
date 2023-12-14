@@ -87,10 +87,9 @@ docker build -f docker/node-outside-docker.Dockerfile --build-arg APP=trading --
 
 ## Running Tests 🧪
 
-Before running make sure the docker daemon is runnign so that the app can be served.
+Before running make sure the docker daemon is running.
 
 To run a specific test, use the `-k` option followed by the name of the test.
-
 Run all tests:
 
 ```bash
@@ -107,6 +106,25 @@ Run from anywhere:
 
 ```bash
 yarn trading:test -- "test_name" -s --headed
+```
+
+Run using your locally served console:
+
+Within one terminal
+
+```bash
+yarn nx build trading
+```
+
+```bash
+yarn nx serve trading
+
+```
+
+Once console is served you can use the flag --local-server
+
+```bash
+poetry run pytest -k "test_name" -s --headed --local-server
 ```
 
 ## Running Tests in Parallel 🔢

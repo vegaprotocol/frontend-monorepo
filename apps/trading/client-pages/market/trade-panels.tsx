@@ -4,7 +4,6 @@ import { OracleBanner } from '@vegaprotocol/markets';
 import { useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
-import { FLAGS } from '@vegaprotocol/environment';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import {
@@ -15,6 +14,7 @@ import {
 import { ErrorBoundary } from '../../components/error-boundary';
 import { type TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 
 interface TradePanelsProps {
   market: Market | null;
@@ -22,7 +22,8 @@ interface TradePanelsProps {
 }
 
 export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
-  const [view, setView] = useState<TradingView>('candles');
+  const featureFlags = useFeatureFlags((state) => state.flags);
+  const [view, setView] = useState<TradingView>('chart');
 
   const renderView = () => {
     const Component = TradingViews[view].component;
@@ -49,7 +50,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
       const Menu = viewCfg.menu;
 
       return (
-        <div className="flex gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
+        <div className="flex items-center justify-end gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
           <Menu />
         </div>
       );
@@ -61,7 +62,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_min-content_1fr_min-content]">
       <div>
-        {FLAGS.SUCCESSOR_MARKETS && (
+        {featureFlags.SUCCESSOR_MARKETS && (
           <>
             <MarketSuccessorBanner market={market} />
             <MarketSuccessorProposalBanner marketId={market?.id} />
@@ -148,7 +149,7 @@ const useViewLabel = (view: TradingView) => {
   const t = useT();
 
   const labels = {
-    candles: t('Candles'),
+    chart: t('Chart'),
     depth: t('Depth'),
     liquidity: t('Liquidity'),
     funding: t('Funding'),

@@ -6,7 +6,7 @@ import {
   Networks,
   DApp,
   useLinks,
-  FLAGS,
+  useFeatureFlags,
   useEnvNameMapping,
 } from '@vegaprotocol/environment';
 import { useGlobalStore } from '../../stores';
@@ -157,6 +157,7 @@ export const Navbar = ({
  * of the navigation
  */
 const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
   const envNameMapping = useEnvNameMapping();
   const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
@@ -201,7 +202,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
             {t('Portfolio')}
           </NavbarLink>
         </NavbarItem>
-        {FLAGS.REFERRALS && (
+        {featureFlags.REFERRALS && (
           <NavbarItem>
             <NavbarLink end={false} to={Links.REFERRALS()} onClick={onClick}>
               {t('Referrals')}

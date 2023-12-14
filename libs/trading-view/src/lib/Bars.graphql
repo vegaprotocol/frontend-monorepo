@@ -1,0 +1,40 @@
+fragment Bar on Candle {
+  periodStart
+  lastUpdateInPeriod
+  high
+  low
+  open
+  close
+  volume
+}
+
+query GetBars(
+  $marketId: ID!
+  $interval: Interval!
+  $since: String!
+  $to: String
+) {
+  market(id: $marketId) {
+    id
+    decimalPlaces
+    positionDecimalPlaces
+    candlesConnection(
+      interval: $interval
+      since: $since
+      to: $to
+      pagination: { last: 5000 }
+    ) {
+      edges {
+        node {
+          ...Bar
+        }
+      }
+    }
+  }
+}
+
+subscription LastBar($marketId: ID!, $interval: Interval!) {
+  candles(marketId: $marketId, interval: $interval) {
+    ...Bar
+  }
+}

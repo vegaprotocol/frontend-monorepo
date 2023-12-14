@@ -5,7 +5,7 @@ import { prepend0x } from '@vegaprotocol/smart-contracts';
 import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
 import type { Asset } from '@vegaprotocol/assets';
 import {
@@ -30,7 +30,7 @@ export const DepositManager = ({
   const { config } = useEthereumConfig();
   const [persistentDeposit, savePersistentDeposit] =
     usePersistentDeposit(initialAssetId);
-  const [assetId, setAssetId] = useState(persistentDeposit?.assetId);
+  const assetId = persistentDeposit?.assetId;
   const asset = assets.find((a) => a.id === assetId);
   const bridgeContract = useBridgeContract();
 
@@ -70,18 +70,19 @@ export const DepositManager = ({
     [savePersistentDeposit, persistentDeposit]
   );
 
+  useEffect(() => {
+    // When we change asset, also clear the tracked faucet/approve transactions so
+    // we dont render stale UI
+    approve.reset();
+    faucet.reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [assetId]);
+
   return (
     <DepositForm
       selectedAsset={asset}
       onDisconnect={reset}
-      onSelectAsset={(id) => {
-        setAssetId(id);
-        savePersistentDeposit({ assetId: id });
-        // When we change asset, also clear the tracked faucet/approve transactions so
-        // we dont render stale UI
-        approve.reset();
-        faucet.reset();
-      }}
+      onSelectAsset={(assetId) => savePersistentDeposit({ assetId })}
       handleAmountChange={onAmountChange}
       assets={sortBy(assets, 'name')}
       submitApprove={approve.perform}

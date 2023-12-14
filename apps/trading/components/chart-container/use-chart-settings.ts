@@ -1,18 +1,23 @@
-import { getValidItem, getValidSubset } from '@vegaprotocol/react-helpers';
-import { ChartType, Interval, Study } from 'pennant';
-import { Overlay } from 'pennant';
+import { ChartType, Overlay, Study } from 'pennant';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+import { Interval } from '@vegaprotocol/types';
+import { getValidItem, getValidSubset } from '@vegaprotocol/react-helpers';
 
 type StudySizes = { [S in Study]?: number };
+export type Chartlib = 'pennant' | 'tradingview';
 
 interface StoredSettings {
+  chartlib: Chartlib;
+  // For interval we use the enum from @vegaprotocol/types, this is to make mapping between different
+  // chart types easier and more consistent
   interval: Interval;
   type: ChartType;
   overlays: Overlay[];
   studies: Study[];
   studySizes: StudySizes;
+  tradingViewStudies: string[];
 }
 
 export const STUDY_SIZE = 90;
@@ -25,20 +30,24 @@ const STUDY_ORDER: Study[] = [
 ];
 
 export const DEFAULT_CHART_SETTINGS = {
-  interval: Interval.I15M,
+  chartlib: 'pennant' as const,
+  interval: Interval.INTERVAL_I15M,
   type: ChartType.CANDLE,
   overlays: [Overlay.MOVING_AVERAGE],
   studies: [Study.MACD, Study.VOLUME],
   studySizes: {},
+  tradingViewStudies: ['Volume'],
 };
 
-export const useCandlesChartSettingsStore = create<
+export const useChartSettingsStore = create<
   StoredSettings & {
     setType: (type: ChartType) => void;
     setInterval: (interval: Interval) => void;
     setOverlays: (overlays?: Overlay[]) => void;
     setStudies: (studies?: Study[]) => void;
     setStudySizes: (sizes: number[]) => void;
+    setChartlib: (lib: Chartlib) => void;
+    setTradingViewStudies: (studies: string[]) => void;
   }
 >()(
   persist(
@@ -81,6 +90,16 @@ export const useCandlesChartSettingsStore = create<
           });
         });
       },
+      setChartlib: (lib) => {
+        set((state) => {
+          state.chartlib = lib;
+        });
+      },
+      setTradingViewStudies: (studies: string[]) => {
+        set((state) => {
+          state.tradingViewStudies = studies;
+        });
+      },
     })),
     {
       name: 'vega_candles_chart_store',
@@ -88,13 +107,13 @@ export const useCandlesChartSettingsStore = create<
   )
 );
 
-export const useCandlesChartSettings = () => {
-  const settings = useCandlesChartSettingsStore();
+export const useChartSettings = () => {
+  const settings = useChartSettingsStore();
 
   const interval: Interval = getValidItem(
     settings.interval,
     Object.values(Interval),
-    Interval.I15M
+    Interval.INTERVAL_I15M
   );
 
   const chartType: ChartType = getValidItem(
@@ -122,15 +141,19 @@ export const useCandlesChartSettings = () => {
   });
 
   return {
+    chartlib: settings.chartlib,
     interval,
     chartType,
     overlays,
     studies,
     studySizes,
+    tradingViewStudies: settings.tradingViewStudies,
     setInterval: settings.setInterval,
     setType: settings.setType,
     setStudies: settings.setStudies,
     setOverlays: settings.setOverlays,
     setStudySizes: settings.setStudySizes,
+    setChartlib: settings.setChartlib,
+    setTradingViewStudies: settings.setTradingViewStudies,
   };
 };

@@ -18,7 +18,7 @@ import {
   MarketSuccessorProposalBanner,
   MarketTerminationBanner,
 } from '../../components/market-banner';
-import { FLAGS } from '@vegaprotocol/environment';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 
@@ -35,6 +35,7 @@ const MainGrid = memo(
     marketId: string;
     pinnedAsset?: PinnedAsset;
   }) => {
+    const featureFlags = useFeatureFlags((state) => state.flags);
     const t = useT();
     const { data: market } = useMarket(marketId);
     const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });
@@ -61,10 +62,10 @@ const MainGrid = memo(
                     id="chart"
                     overflowHidden
                     name={t('Chart')}
-                    menu={<TradingViews.candles.menu />}
+                    menu={<TradingViews.chart.menu />}
                   >
                     <ErrorBoundary feature="chart">
-                      <TradingViews.candles.component marketId={marketId} />
+                      <TradingViews.chart.component marketId={marketId} />
                     </ErrorBoundary>
                   </Tab>
                   <Tab id="depth" name={t('Depth')}>
@@ -165,7 +166,7 @@ const MainGrid = memo(
                   <TradingViews.orders.component />
                 </ErrorBoundary>
               </Tab>
-              {FLAGS.STOP_ORDERS ? (
+              {featureFlags.STOP_ORDERS ? (
                 <Tab id="stop-orders" name={t('Stop orders')}>
                   <ErrorBoundary feature="stop-orders">
                     <TradingViews.stopOrders.component />
@@ -196,6 +197,7 @@ const MainGrid = memo(
 MainGrid.displayName = 'MainGrid';
 
 export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
   const wrapperClasses = classNames(
     'h-full grid',
     'grid-rows-[min-content_1fr]'
@@ -204,7 +206,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
   return (
     <div className={wrapperClasses}>
       <div>
-        {FLAGS.SUCCESSOR_MARKETS && (
+        {featureFlags.SUCCESSOR_MARKETS && (
           <>
             <MarketSuccessorBanner market={market} />
             <MarketSuccessorProposalBanner marketId={market?.id} />

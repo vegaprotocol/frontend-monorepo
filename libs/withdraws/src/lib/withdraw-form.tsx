@@ -239,7 +239,7 @@ export const WithdrawForm = ({
             </TradingInputError>
           )}
         </TradingFormGroup>
-        {selectedAsset && threshold && (
+        {selectedAsset && (
           <div className="mb-4">
             <WithdrawLimits
               amount={amount}

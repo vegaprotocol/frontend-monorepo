@@ -26,7 +26,7 @@ import {
   ProposalCancelTransferDetails,
   ProposalTransferDetails,
 } from '../proposal-transfer';
-import { FLAGS } from '@vegaprotocol/environment';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 import { ProposalUpdateBenefitTiers } from '../proposal-update-benefit-tiers';
 
 export interface ProposalProps {
@@ -53,6 +53,7 @@ export const Proposal = ({
   originalMarketProposalRestData,
   mostRecentlyEnactedAssociatedMarketProposal,
 }: ProposalProps) => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
   const { t } = useTranslation();
   const { submit, Dialog, finalizedVote, transaction } = useVoteSubmit();
   const { voteState, voteDatetime } = useUserVote(proposal?.id, finalizedVote);
@@ -132,7 +133,7 @@ export const Proposal = ({
   }
 
   // Show governance transfer details only if the GOVERNANCE_TRANSFERS flag is on.
-  const governanceTransferDetails = FLAGS.GOVERNANCE_TRANSFERS && (
+  const governanceTransferDetails = featureFlags.GOVERNANCE_TRANSFERS && (
     <>
       {proposal.terms.change.__typename === 'NewTransfer' && (
         /** Governance New Transfer Details */

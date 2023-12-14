@@ -7,16 +7,16 @@ import {
   AppStateActionType,
   useAppState,
 } from '../../contexts/app-state/app-state-context';
-import { Connectors } from '../../lib/vega-connectors';
+import { useConnectors } from '../../lib/vega-connectors';
 import { RiskMessage } from './risk-message';
 
 export const VegaWalletDialogs = () => {
   const { appState, appDispatch } = useAppState();
-
+  const connectors = useConnectors();
   return (
     <>
       <VegaConnectDialog
-        connectors={Connectors}
+        connectors={connectors}
         riskMessage={<RiskMessage />}
       />
 
@@ -30,7 +30,7 @@ export const VegaWalletDialogs = () => {
         }
       />
 
-      <ViewAsDialog connector={Connectors.view} />
+      <ViewAsDialog connector={connectors.view} />
     </>
   );
 };

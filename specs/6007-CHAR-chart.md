@@ -1,6 +1,14 @@
 # Chart
 
-## Display options
+## Chart lib type
+
+- **Must** be able to view the Vega chart by default
+- **Must** be able to switch to the TradingView chart
+- **Must** have the interval persisted between chart types
+
+## Pennant chart
+
+### Display options
 
 - **Must** be able to change time interval from a list of intervals (<a name="6007-CHAR-001" href="#6007-CHAR-001">6007-CHAR-001</a>)
   - 1m
@@ -36,7 +44,7 @@
 - **Must** be able to add multiple overlays at the same time (<a name="6007-CHAR-008" href="#6007-CHAR-008">6007-CHAR-008</a>)
 - **Must** be able to close any overlays selected (<a name="6007-CHAR-009" href="#6007-CHAR-009">6007-CHAR-009</a>)
 
-## Price and Time
+### Price and Time
 
 - **Must** see details of price from where my mouse cursor is on the chart(<a name="6007-CHAR-010" href="#6007-CHAR-010">6007-CHAR-010</a>)
 
@@ -54,13 +62,13 @@
 - **Must** y axis shows price range(<a name="6007-CHAR-014" href="#6007-CHAR-014">6007-CHAR-014</a>)
 - **Must** show the last price line on the Y axis (<a name="6007-CHAR-015" href="#6007-CHAR-015">6007-CHAR-015</a>)
 
-# Display Types
+### Display Types
 
-## Mountain
+#### Mountain
 
 - **Must** show area line chart with the line being at the last price (<a name="6007-CHAR-016" href="#6007-CHAR-016">6007-CHAR-016</a>)
 
-## Candlestick
+#### Candlestick
 
 - **Must** body is green if the close is higher than the open (<a name="6007-CHAR-017" href="#6007-CHAR-017">6007-CHAR-017</a>)
 - **Must** body is red if the close is lower than the open (<a name="6007-CHAR-018" href="#6007-CHAR-018">6007-CHAR-018</a>)
@@ -69,11 +77,11 @@
 - **Must** show low price (<a name="6007-CHAR-021" href="#6007-CHAR-021">6007-CHAR-021</a>)
 - **Must** show close price (<a name="6007-CHAR-022" href="#6007-CHAR-022">6007-CHAR-022</a>)
 
-## Line
+#### Line
 
 - **Must** show line on the chart with the line being the the last price (<a name="6007-CHAR-023" href="#6007-CHAR-023">6007-CHAR-023</a>)
 
-## OHLC
+#### OHLC
 
 - **Must** show open price (<a name="6007-CHAR-024" href="#6007-CHAR-024">6007-CHAR-024</a>)
 - **Must** show high price (<a name="6007-CHAR-025" href="#6007-CHAR-025">6007-CHAR-025</a>)
@@ -82,63 +90,68 @@
 - **Must** show in green if the close is higher than the open (<a name="6007-CHAR-028" href="#6007-CHAR-028">6007-CHAR-028</a>)
 - **Must** show in red if the close is lower than the open (<a name="6007-CHAR-029" href="#6007-CHAR-029">6007-CHAR-029</a>)
 
-# Overlays
+### Overlays
 
-## Bollinger bands
+#### Bollinger bands
 
 - **Must** show upper band (<a name="6007-CHAR-030" href="#6007-CHAR-030">6007-CHAR-030</a>)
 - **Must** show lower band (<a name="6007-CHAR-031" href="#6007-CHAR-031">6007-CHAR-031</a>)
 - **Must** show band values at time of cursor position (<a name="6007-CHAR-032" href="#6007-CHAR-032">6007-CHAR-032</a>)
 
-## Envelope
+#### Envelope
 
 - **Must** show upper line (<a name="6007-CHAR-033" href="#6007-CHAR-033">6007-CHAR-033</a>)
 - **Must** show lower line (<a name="6007-CHAR-034" href="#6007-CHAR-034">6007-CHAR-034</a>)
 - **Must** show line values at time of cursor position (<a name="6007-CHAR-035" href="#6007-CHAR-035">6007-CHAR-035</a>)
 
-## EMA
+#### EMA
 
 - **Must** show line (<a name="6007-CHAR-036" href="#6007-CHAR-036">6007-CHAR-036</a>)
 - **Must** show line value at time of cursor position (<a name="6007-CHAR-037" href="#6007-CHAR-037">6007-CHAR-037</a>)
 
-## Moving Average
+#### Moving Average
 
 - **Must** show line (<a name="6007-CHAR-038" href="#6007-CHAR-038">6007-CHAR-038</a>)
 - **Must** show line value at time of cursor position (<a name="6007-CHAR-039" href="#6007-CHAR-039">6007-CHAR-039</a>)
 
-## Price monitoring bounds
+#### Price monitoring bounds
 
 - **Must** show min line (<a name="6007-CHAR-040" href="#6007-CHAR-040">6007-CHAR-040</a>)
 - **Must** show max line (<a name="6007-CHAR-041" href="#6007-CHAR-041">6007-CHAR-041</a>)
 - **Must** show reference line (<a name="6007-CHAR-042" href="#6007-CHAR-042">6007-CHAR-042</a>)
 - **Must** show line values at time of cursor position (<a name="6007-CHAR-043" href="#6007-CHAR-043">6007-CHAR-043</a>)
 
-# Studies
+### Studies
 
-## Eldar-ray
+#### Eldar-ray
 
 - **Must** show bear power line (<a name="6007-CHAR-044" href="#6007-CHAR-044">6007-CHAR-044</a>)
 - **Must** show bull power line (<a name="6007-CHAR-045" href="#6007-CHAR-045">6007-CHAR-045</a>)
 - **Must** show line values at time of cursor position (<a name="6007-CHAR-046" href="#6007-CHAR-046">6007-CHAR-046</a>)
 
-## Force index
+#### Force index
 
 - **Must** show force line (<a name="6007-CHAR-047" href="#6007-CHAR-047">6007-CHAR-047</a>)
 - **Must** show line value at time of cursor position (<a name="6007-CHAR-048" href="#6007-CHAR-048">6007-CHAR-048</a>)
 
-## MACD
+#### MACD
 
 - **Must** show MACD line (<a name="6007-CHAR-049" href="#6007-CHAR-049">6007-CHAR-049</a>)
 - **Must** show signal line (<a name="6007-CHAR-050" href="#6007-CHAR-050">6007-CHAR-050</a>)
 - **Must** show histogram (<a name="6007-CHAR-051" href="#6007-CHAR-051">6007-CHAR-051</a>)
 - **Must** show line values at time of cursor position (<a name="6007-CHAR-052" href="#6007-CHAR-052">6007-CHAR-052</a>)
 
-## RSI
+#### RSI
 
 - **Must** show RSI line (<a name="6007-CHAR-053" href="#6007-CHAR-053">6007-CHAR-053</a>)
 - **Must** show line value at time of cursor position (<a name="6007-CHAR-054" href="#6007-CHAR-054">6007-CHAR-054</a>)
 
-## Volume
+#### Volume
 
 - **Must** show volume bars (<a name="6007-CHAR-055" href="#6007-CHAR-055">6007-CHAR-055</a>)
 - **Must** show bar value at time of cursor position (<a name="6007-CHAR-056" href="#6007-CHAR-056">6007-CHAR-056</a>)
+
+## TradingView
+
+- **Must** persist interval in chart settings
+- **Must** must show an attribution to trading view

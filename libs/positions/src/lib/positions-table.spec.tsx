@@ -314,7 +314,9 @@ describe('Positions', () => {
       });
       const cells = screen.getAllByRole('gridcell');
       const cell = cells[1];
-      await userEvent.hover(cell);
+      const tooltipTrigger = cell.querySelector('[data-state="closed"]');
+      expect(tooltipTrigger).not.toBeNull();
+      await userEvent.hover(tooltipTrigger as Element);
       const tooltip = within(await screen.findByRole('tooltip'));
       expect(tooltip.getByText(data.text)).toBeInTheDocument();
     });
@@ -329,8 +331,9 @@ describe('Positions', () => {
       });
       const cells = screen.getAllByRole('gridcell');
       const cell = cells[5];
-
-      await userEvent.hover(cell);
+      const tooltipTrigger = cell.querySelector('[data-state="closed"]');
+      expect(tooltipTrigger).not.toBeNull();
+      await userEvent.hover(tooltipTrigger as Element);
       const tooltip = within(await screen.findByRole('tooltip'));
       expect(tooltip.getByText('Realised PNL: 1.23')).toBeInTheDocument();
       expect(

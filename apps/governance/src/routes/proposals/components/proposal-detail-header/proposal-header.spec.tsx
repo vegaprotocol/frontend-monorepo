@@ -19,7 +19,7 @@ import {
   mockWalletContext,
   createUserVoteQueryMock,
 } from '../../test-helpers/mocks';
-import { FLAGS } from '@vegaprotocol/environment';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 import { BrowserRouter } from 'react-router-dom';
 import { VoteState } from '../vote-details/use-user-vote';
 import { useNewTransferProposalDetails } from '@vegaprotocol/proposals';
@@ -62,8 +62,7 @@ describe('Proposal header', () => {
     jest.clearAllMocks();
   });
   it('Renders New market proposal', () => {
-    const mockedFlags = jest.mocked(FLAGS);
-    mockedFlags.SUCCESSOR_MARKETS = true;
+    useFeatureFlags.setState({ flags: { SUCCESSOR_MARKETS: true } });
     renderComponent(
       generateProposal({
         rationale: {

@@ -12,7 +12,8 @@ import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-web
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { DEFAULT_CACHE_CONFIG } from '@vegaprotocol/apollo-client';
 import { RouterProvider } from 'react-router-dom';
-import { router } from './routes/router-config';
+import { useRouterConfig } from './routes/router-config';
+import { createBrowserRouter } from 'react-router-dom';
 import { t } from '@vegaprotocol/i18n';
 import { Suspense } from 'react';
 
@@ -38,7 +39,10 @@ function App() {
             }
           >
             <Suspense fallback={splashLoading}>
-              <RouterProvider router={router} fallbackElement={splashLoading} />
+              <RouterProvider
+                router={createBrowserRouter(useRouterConfig())}
+                fallbackElement={splashLoading}
+              />
             </Suspense>
           </NodeGuard>
           <NodeSwitcherDialog
