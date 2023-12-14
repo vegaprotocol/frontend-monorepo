@@ -61,10 +61,6 @@ export const MarketBanner = ({ market }: { market: Market }) => {
     loading: updateMarketStateLoading,
   } = useUpdateMarketStateProposals(market.id);
 
-  if (!market) {
-    return null;
-  }
-
   const loading =
     successorLoading || updateMarketLoading || updateMarketStateLoading;
 

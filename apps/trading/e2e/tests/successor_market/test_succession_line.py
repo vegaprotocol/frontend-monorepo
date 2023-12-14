@@ -18,12 +18,6 @@ def test_succession_line(vega: VegaService, page: Page):
     successor_name = "successor market name"
     successor_id = propose_successor(vega, parent_market_id, tdai_id, successor_name)
 
-
-    # Check and close proposal open toast (it can cover the succession line part of market info)
-    # toast = page.get_by_test_id("toast-content")
-    # expect(toast.get_by_role("heading")).to_have_text("New market proposal open")
-    # toast.hover()
-
     # Check that the banner notifying about the successor proposal is shown
     banner = page.get_by_test_id("market-banner")
     expect(banner).to_be_attached()

@@ -5,13 +5,9 @@ import {
 import { ProposalState, ProposalType } from '@vegaprotocol/types';
 
 const isPending = (p: MarketViewProposalFieldsFragment) => {
-  const isOpenOrPassed = [
-    ProposalState.STATE_OPEN,
-    ProposalState.STATE_PASSED,
-  ].includes(p.state);
-  // const isFuture = new Date(p.terms.enactmentDatetime).getTime() > Date.now();
-  // return isOpenOrPassed && isFuture;
-  return isOpenOrPassed;
+  return [ProposalState.STATE_OPEN, ProposalState.STATE_PASSED].includes(
+    p.state
+  );
 };
 
 export const useUpdateMarketStateProposals = (
