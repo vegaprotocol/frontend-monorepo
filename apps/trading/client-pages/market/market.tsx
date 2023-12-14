@@ -9,8 +9,6 @@ import { TradeGrid } from './trade-grid';
 import { TradePanels } from './trade-panels';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Links } from '../../lib/links';
-import { ViewType, useSidebar } from '../../components/sidebar';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT, ns } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
 
@@ -61,9 +59,6 @@ export const MarketPage = () => {
   const t = useT();
   const { marketId } = useParams();
   const navigate = useNavigate();
-  const currentRouteId = useGetCurrentRouteId();
-  const { setViews, getView } = useSidebar();
-  const view = getView(currentRouteId);
   const { screenSize } = useScreenDimensions();
   const largeScreen = ['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize);
   const update = useGlobalStore((store) => store.update);
@@ -76,12 +71,6 @@ export const MarketPage = () => {
       update({ marketId: data.id });
     }
   }, [update, lastMarketId, data?.id]);
-
-  useEffect(() => {
-    if (largeScreen && view === undefined) {
-      setViews({ type: ViewType.Order }, currentRouteId);
-    }
-  }, [setViews, view, currentRouteId, largeScreen]);
 
   const pinnedAsset = data && getAsset(data);
 
