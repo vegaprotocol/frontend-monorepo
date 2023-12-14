@@ -1262,7 +1262,9 @@ export const DataSourceProof = ({
           {data.sourceType.sourceType?.conditions?.map((condition, i) => {
             if (!condition) return null;
             const dateFromUnixTimestamp = condition.value
-              ? getDateTimeFormat().format(new Date(parseInt(condition.value)))
+              ? getDateTimeFormat().format(
+                  new Date(parseInt(condition.value) * 1000)
+                )
               : '-';
             return (
               <p key={i}>
