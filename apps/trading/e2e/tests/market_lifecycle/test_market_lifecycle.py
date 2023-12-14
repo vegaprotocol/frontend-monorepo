@@ -4,10 +4,11 @@ import vega_sim.api.governance as governance
 from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService, PeggedOrder
 import vega_sim.api.governance as governance
+import vega_sim.proto.vega as vega_protos
 from actions.vega import submit_order
 from actions.utils import next_epoch
 from wallet_config import MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET
-
+from datetime import datetime, timedelta
 
 @pytest.mark.usefixtures("risk_accepted")
 def test_market_lifecycle(proposed_market, vega: VegaService, page: Page):
@@ -126,6 +127,18 @@ def test_market_lifecycle(proposed_market, vega: VegaService, page: Page):
     expect(trading_mode).to_have_text("Continuous")
     expect(market_state).to_have_text("Active")
 
+    proposal_id = vega.update_market_state(
+        market_id,
+        GOVERNANCE_WALLET.name,
+        vega_protos.governance.MarketStateUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE,
+        approve_proposal=False,
+        vote_enactment_time = datetime.now() + timedelta(weeks=1),
+        forward_time_to_enactment = False,
+        price=107,
+    )
+
+    # TODO assert that market upade banner is shown
+
     # put invalid oracle to trigger market termination
     governance.submit_oracle_data(
         wallet=vega.wallet,
@@ -181,19 +194,19 @@ def test_market_closing_banners(page: Page, continuous_market, vega: VegaService
         forward_time_to_enactment = False,
         price=110,
     )
-    
+
     expect(page.locator(".grow")).to_have_text("Trading on Market BTC:DAI_2023 may stop. There are open proposals to close this marketView proposals")
 
-    governance.approve_proposal( 
+    governance.approve_proposal(
         proposal_id=proposalID,
         wallet=vega.wallet,
         key_name="market_maker"
-        
+
     )
     vega.forward("60s")
     vega.wait_fn(10)
     vega.wait_for_total_catchup()
-  
+
     will_close_pattern = r"TRADING ON MARKET BTC:DAI_2023 WILL STOP ON \d+ \w+\nYou will no longer be able to hold a position on this market when it closes in \d+ days \d+ hours\. The final price will be 107\.00 BTC\."
     match_result = re.fullmatch(will_close_pattern, page.locator(".grow").inner_text())
     assert match_result is not None
