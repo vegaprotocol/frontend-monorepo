@@ -89,16 +89,11 @@ export const CardTable = (props: HTMLProps<HTMLTableElement>) => {
   );
 };
 
-interface CardTableTHProps extends HTMLProps<HTMLTableHeaderCellElement> {
-  testId?: string;
-}
-
-export const CardTableTH = ({ testId, ...props }: CardTableTHProps) => {
+export const CardTableTH = (props: HTMLProps<HTMLTableHeaderCellElement>) => {
   return (
     <th
       {...props}
       className={classNames('text-left font-normal', props.className)}
-      data-testid={testId}
     />
   );
 };

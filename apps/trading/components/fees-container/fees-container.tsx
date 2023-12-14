@@ -484,15 +484,15 @@ const VolumeTiers = ({
       <Table>
         <THead>
           <Tr>
-            <Th testId="tier-header">{t('Tier')}</Th>
-            <Th testId="discount-header">{t('Discount')}</Th>
-            <Th testId="min-volume-header">{t('Min. trading volume')}</Th>
-            <Th testId="my-volume-header">
+            <Th data-testid="tier-header">{t('Tier')}</Th>
+            <Th data-testid="discount-header">{t('Discount')}</Th>
+            <Th data-testid="min-volume-header">{t('Min. trading volume')}</Th>
+            <Th data-testid="my-volume-header">
               {t('myVolume', 'My volume (last {{count}} epochs)', {
                 count: windowLength,
               })}
             </Th>
-            <Th testId="actions-header" />
+            <Th data-testid="actions-header" />
           </Tr>
         </THead>
         <tbody>
@@ -500,18 +500,18 @@ const VolumeTiers = ({
             const isUserTier = tierIndex === i;
 
             return (
-              <Tr key={i} testId={`tier-row-${i}`}>
-                <Td testId={`tier-value-${i}`}>{i + 1}</Td>
-                <Td testId={`discount-value-${i}`}>
+              <Tr key={i} data-testid={`tier-row-${i}`}>
+                <Td data-testid={`tier-value-${i}`}>{i + 1}</Td>
+                <Td data-testid={`discount-value-${i}`}>
                   {formatPercentage(Number(tier.volumeDiscountFactor))}%
                 </Td>
-                <Td testId={`min-volume-value-${i}`}>
+                <Td data-testid={`min-volume-value-${i}`}>
                   {formatNumber(tier.minimumRunningNotionalTakerVolume)}
                 </Td>
-                <Td testId={`my-volume-value-${i}`}>
+                <Td data-testid={`my-volume-value-${i}`}>
                   {isUserTier ? formatNumber(lastEpochVolume) : ''}
                 </Td>
-                <Td testId={`your-tier-${i}`}>
+                <Td data-testid={`your-tier-${i}`}>
                   {isUserTier ? <YourTier /> : null}
                 </Td>
               </Tr>
@@ -551,11 +551,11 @@ const ReferralTiers = ({
       <Table>
         <THead>
           <Tr>
-            <Th testId="tier-header">{t('Tier')}</Th>
-            <Th testId="discount-header">{t('Discount')}</Th>
-            <Th testId="min-volume-header">{t('Min. trading volume')}</Th>
-            <Th testId="required-epochs-header">{t('Required epochs')}</Th>
-            <Th testId="extra-header" />
+            <Th data-testid="tier-header">{t('Tier')}</Th>
+            <Th data-testid="discount-header">{t('Discount')}</Th>
+            <Th data-testid="min-volume-header">{t('Min. trading volume')}</Th>
+            <Th data-testid="required-epochs-header">{t('Required epochs')}</Th>
+            <Th data-testid="extra-header" />
           </Tr>
         </THead>
         <tbody>
@@ -579,18 +579,18 @@ const ReferralTiers = ({
             }
 
             return (
-              <Tr key={i} testId={`tier-row-${i}`}>
-                <Td testId={`tier-value-${i}`}>{i + 1}</Td>
-                <Td testId={`discount-value-${i}`}>
+              <Tr key={i} data-testid={`tier-row-${i}`}>
+                <Td data-testid={`tier-value-${i}`}>{i + 1}</Td>
+                <Td data-testid={`discount-value-${i}`}>
                   {formatPercentage(Number(tier.referralDiscountFactor))}%
                 </Td>
-                <Td testId={`min-volume-value-${i}`}>
+                <Td data-testid={`min-volume-value-${i}`}>
                   {formatNumber(tier.minimumRunningNotionalTakerVolume)}
                 </Td>
-                <Td testId={`required-epochs-value-${i}`}>
+                <Td data-testid={`required-epochs-value-${i}`}>
                   {tier.minimumEpochs}
                 </Td>
-                <Td testId={`user-tier-or-unlocks-${i}`}>
+                <Td data-testid={`user-tier-or-unlocks-${i}`}>
                   {isUserTier ? (
                     <YourTier testId={`your-tier-${i}`} />
                   ) : (

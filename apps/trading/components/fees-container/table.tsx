@@ -3,48 +3,30 @@ import type { ReactNode } from 'react';
 
 const cellClass = 'px-4 py-2 text-xs font-normal text-left last:text-right';
 
-export const Th = ({
-  children,
-  testId,
-}: {
-  children?: ReactNode;
-  testId?: string;
-}) => {
+export const Th = ({ children, ...props }: { children?: ReactNode }) => {
   return (
     <th
       className={classNames(cellClass, 'text-secondary leading-none py-3')}
-      data-testid={testId}
+      {...props}
     >
       {children}
     </th>
   );
 };
 
-export const Td = ({
-  children,
-  testId,
-}: {
-  children?: ReactNode;
-  testId?: string;
-}) => {
+export const Td = ({ children, ...props }: { children?: ReactNode }) => {
   return (
-    <td className={cellClass} data-testid={testId}>
+    <th className={cellClass} {...props}>
       {children}
-    </td>
+    </th>
   );
 };
 
-export const Tr = ({
-  children,
-  testId,
-}: {
-  children?: ReactNode;
-  testId?: string;
-}) => {
+export const Tr = ({ children, ...props }: { children?: ReactNode }) => {
   return (
     <tr
       className="hover:bg-vega-clight-600 dark:hover:bg-vega-cdark-700"
-      data-testid={testId}
+      {...props}
     >
       {children}
     </tr>
