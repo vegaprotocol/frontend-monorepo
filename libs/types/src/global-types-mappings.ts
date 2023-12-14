@@ -601,7 +601,7 @@ export const DispatchMetricDescription: DispatchMetricLabel = {
   DISPATCH_METRIC_MAKER_FEES_RECEIVED:
     'Get rewards for making prices on the order book.',
   DISPATCH_METRIC_MARKET_VALUE: 'Get rewards for total market value',
-  DISPATCH_METRIC_AVERAGE_POSITION: 'Get rewards for Average position',
+  DISPATCH_METRIC_AVERAGE_POSITION: 'Get rewards for having an open position that is consistenly larger than that of other traders.',
   DISPATCH_METRIC_RELATIVE_RETURN: 'Get rewards for relative return',
   DISPATCH_METRIC_RETURN_VOLATILITY: 'Get rewards for having the least amount of variance in your returns while you have a position open during the rewards window.',
   DISPATCH_METRIC_VALIDATOR_RANKING: 'Get rewards for validator ranking',
