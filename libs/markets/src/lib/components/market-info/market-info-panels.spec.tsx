@@ -135,7 +135,7 @@ describe('MarketInfoPanels', () => {
       render(<DataSourceProof dataSourceSpecId={''} {...props} />);
       expect(screen.getByText('Internal conditions')).toBeInTheDocument();
       const dateFromUnixTimestamp = condition.value
-        ? getDateTimeFormat().format(new Date(parseInt(condition.value)))
+        ? getDateTimeFormat().format(new Date(parseInt(condition.value) * 1000))
         : '-';
       expect(
         screen.getByText(
