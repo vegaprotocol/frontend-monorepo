@@ -11,7 +11,6 @@ def hover_and_assert_tooltip(page: Page, element_text):
     element.hover()
     expect(page.get_by_role("tooltip")).to_be_visible()
 
-
 class TestIcebergOrdersValidations:
     @pytest.fixture(scope="class")
     def vega(self, request):
@@ -22,7 +21,7 @@ class TestIcebergOrdersValidations:
     def continuous_market(self, vega):
         return setup_continuous_market(vega)
 
-    @pytest.mark.usefixtures("page", "auth", "risk_accepted")
+    @pytest.mark.usefixtures("auth", "risk_accepted")
     def test_iceberg_submit(self, continuous_market, vega: VegaService, page: Page):
         page.goto(f"/#/markets/{continuous_market}")
         page.get_by_test_id("iceberg").click()
@@ -47,7 +46,7 @@ class TestIcebergOrdersValidations:
             (page.get_by_role("row").locator('[col-id="type"]')).nth(1)
         ).to_have_text("Limit (Iceberg)")
 
-@pytest.mark.usefixtures("vega", "page", "continuous_market", "auth", "risk_accepted")
+@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_iceberg_open_order(continuous_market, vega: VegaService, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
 

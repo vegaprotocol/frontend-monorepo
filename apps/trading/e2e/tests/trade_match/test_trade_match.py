@@ -4,10 +4,9 @@ from vega_sim.service import VegaService
 
 from actions.vega import submit_multiple_orders
 
+
 @pytest.mark.skip("tbd")
-@pytest.mark.usefixtures(
-    "page", "vega", "opening_auction_market", "auth", "risk_accepted"
-)
+@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_trade_match_table(opening_auction_market: str, vega: VegaService, page: Page):
     row_locator = ".ag-center-cols-container .ag-row"
     page.goto(f"/#/markets/{opening_auction_market}")
