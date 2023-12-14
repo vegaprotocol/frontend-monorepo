@@ -604,7 +604,7 @@ export const DispatchMetricDescription: DispatchMetricLabel = {
   DISPATCH_METRIC_AVERAGE_POSITION: 'Get rewards for having an open position that is consistenly larger than that of other traders.',
   DISPATCH_METRIC_RELATIVE_RETURN: 'Get rewards for having a high profit in relation to your position size.',
   DISPATCH_METRIC_RETURN_VOLATILITY: 'Get rewards for having the least amount of variance in your returns while you have a position open during the rewards window.',
-  DISPATCH_METRIC_VALIDATOR_RANKING: 'Get rewards for validator ranking',
+  DISPATCH_METRIC_VALIDATOR_RANKING: 'Get rewards if you run a validator node with a high ranking score.',
 };
 
 export const PositionStatusMapping: {
