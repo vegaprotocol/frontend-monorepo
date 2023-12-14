@@ -597,7 +597,7 @@ export const DispatchMetricLabels: DispatchMetricLabel = {
 export const DispatchMetricDescription: DispatchMetricLabel = {
   DISPATCH_METRIC_LP_FEES_RECEIVED: 'Get rewards for providing liquidity.',
   DISPATCH_METRIC_MAKER_FEES_PAID:
-    'Get rewards for taking prices on the order book and paying fees.',
+    'Get rewards for taking prices off the order book and paying fees.',
   DISPATCH_METRIC_MAKER_FEES_RECEIVED:
     'Get rewards for making prices on the order book.',
   DISPATCH_METRIC_MARKET_VALUE: 'Get rewards for total market value',
