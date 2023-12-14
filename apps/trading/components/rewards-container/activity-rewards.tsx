@@ -27,7 +27,7 @@ import {
   DispatchMetricLabels,
 } from '@vegaprotocol/types';
 
-export const ActiveRewards = () => {
+export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
   const { data: activeRewardsData } = useActiveRewardsQuery({
     variables: {
       isReward: true,
@@ -39,11 +39,22 @@ export const ActiveRewards = () => {
     .filter((node) => node.transfer.reference === 'reward');
 
   if (!transfers) return null;
+  // TODO: remove this console log
+  // eslint-disable-next-line no-console
+  console.log({ transfers });
 
   return (
     <div className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(343px,_1fr))]">
       {transfers.map((node, i) => {
-        return node && <ActiveRewardCard key={i} transferNode={node} />;
+        return (
+          node && (
+            <ActiveRewardCard
+              key={i}
+              transferNode={node}
+              currentEpoch={currentEpoch}
+            />
+          )
+        );
       })}
     </div>
   );
@@ -105,8 +116,10 @@ const StatusIndicator = ({
 
 export const ActiveRewardCard = ({
   transferNode,
+  currentEpoch,
 }: {
   transferNode: TransferNode;
+  currentEpoch: number;
 }) => {
   const t = useT();
 
@@ -216,7 +229,7 @@ export const ActiveRewardCard = ({
                 <span>
                   {t('{{epochs}} epochs', {
                     epochs: transfer.kind.endEpoch
-                      ? transfer.kind.endEpoch - transfer.kind.startEpoch
+                      ? transfer.kind.endEpoch - currentEpoch
                       : '-',
                   })}
                 </span>
@@ -226,12 +239,9 @@ export const ActiveRewardCard = ({
             {
               <span className="flex flex-col">
                 <span className="text-muted text-xs">{t('Assessed over')}</span>
-                {/* TODO what is assessed over? */}
                 <span>
                   {t('{{epochs}} epochs', {
-                    epochs: transfer.kind.endEpoch
-                      ? transfer.kind.endEpoch - transfer.kind.startEpoch
-                      : '-',
+                    epochs: transfer.kind.dispatchStrategy?.windowLength,
                   })}
                 </span>
               </span>
@@ -286,8 +296,7 @@ export const ActiveRewardCard = ({
 
             <span className="flex flex-col gap-1">
               <span className="flex items-center gap-1 text-muted">
-                {/* TODO what is staking requirement? Amount staked or staking requirement */}
-                {t('Amount staked')}{' '}
+                {t('Stake required')}{' '}
               </span>
               <span className="flex items-center gap-1">
                 {addDecimalsFormatNumber(
@@ -295,16 +304,16 @@ export const ActiveRewardCard = ({
                   transfer.asset?.decimals || 0
                 )}{' '}
                 {transfer.asset?.symbol}
-                <StatusIndicator
+                {/* <StatusIndicator
                   status={transfer.status}
                   reason={transfer.reason}
-                />
+                /> */}
               </span>
             </span>
 
             <span className="flex flex-col gap-1">
               <span className="flex items-center gap-1 text-muted">
-                {t('Average position')}{' '}
+                {t('Notional TWAP Requirement')}{' '}
               </span>
               <span className="flex items-center gap-1">
                 {addDecimalsFormatNumber(
@@ -313,10 +322,10 @@ export const ActiveRewardCard = ({
                   transfer.asset?.decimals || 0
                 )}{' '}
                 {transfer.asset?.symbol}
-                <StatusIndicator
+                {/* <StatusIndicator
                   status={transfer.status}
                   reason={transfer.reason}
-                />
+                /> */}
               </span>
             </span>
           </div>

@@ -20,6 +20,7 @@ import {
   type RewardsPageQuery,
   useRewardsPageQuery,
   useRewardsEpochQuery,
+  useActivityStreakQuery,
 } from './__generated__/Rewards';
 import {
   TradingButton,
@@ -34,7 +35,8 @@ import { RewardsHistoryContainer } from './rewards-history';
 import { useT } from '../../lib/use-t';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
 import { ActiveRewards } from './activity-rewards';
-import { ActivityStreaks } from './activity-streaks';
+import { ActivityStreak } from './activity-streaks';
+import { useReferralProgram } from '../../client-pages/referrals/hooks/use-referral-program';
 
 const ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA = [
   'bf1e88d19db4b3ca0d1d5bdb73718a01686b18cf731ca26adedf3c8b83802bba', // USDT mainnet
@@ -55,6 +57,17 @@ export const RewardsContainer = () => {
   const { data: assetMap } = useAssetsMapProvider();
 
   const { data: epochData } = useRewardsEpochQuery();
+
+  const { data: partyActivityStreak } = useActivityStreakQuery({
+    variables: {
+      partyId: pubKey || '',
+    },
+  });
+  const { benefitTiers } = useReferralProgram();
+
+  const streaks = partyActivityStreak?.partiesConnection?.edges?.map(
+    (edge) => edge?.node?.activityStreak
+  );
 
   // No need to specify the fromEpoch as it will by default give you the last
   // Note activityStreak in query will fail
@@ -225,20 +238,26 @@ export const RewardsContainer = () => {
             </Card>
           );
         })}
-      <Card
-        title={t('Activity streak')}
-        className="lg:col-span-full"
-        loading={rewardsLoading}
-      >
-        <span className="flex flex-col mx-8">
-          <ActivityStreaks
-            epoch={Number(epochData?.epoch.id)}
-            pubKey={pubKey}
-          />
-        </span>
-      </Card>
+      {pubKey && streaks && (
+        <Card
+          title={t('Activity streak')}
+          className="lg:col-span-full"
+          loading={rewardsLoading}
+        >
+          <span className="flex flex-col mx-8">
+            {streaks.map((streak, i) => (
+              <ActivityStreak
+                benefitTiers={benefitTiers}
+                currentEpoch={Number(epochData?.epoch.id)}
+                streak={streak}
+                key={i}
+              />
+            ))}
+          </span>
+        </Card>
+      )}
       <Card title={t('Active rewards')} className="lg:col-span-full">
-        <ActiveRewards />
+        <ActiveRewards currentEpoch={Number(epochData?.epoch.id)} />
       </Card>
       <Card
         title={t('Rewards history')}

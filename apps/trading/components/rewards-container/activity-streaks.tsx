@@ -1,35 +1,11 @@
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import { useReferralProgram } from '../../client-pages/referrals/hooks/use-referral-program';
 import { useT } from '../../lib/use-t';
 import classNames from 'classnames';
-import { useActivityStreakQuery } from './__generated__/Rewards';
-
-export const ActivityStreaks = ({
-  pubKey,
-  epoch,
-}: {
-  pubKey: string | null;
-  epoch: number;
-}) => {
-  const { data } = useActivityStreakQuery({
-    variables: {
-      partyId: pubKey || '',
-    },
-  });
-  const { benefitTiers } = useReferralProgram();
-
-  const streaks = data?.partiesConnection?.edges?.map(
-    (edge) => edge?.node?.activityStreak
-  );
-
-  return streaks?.map((streak, i) => (
-    <ActivityStreak benefitTiers={benefitTiers} streak={streak} key={i} />
-  ));
-};
 
 export const ActivityStreak = ({
   benefitTiers,
   streak,
+  currentEpoch,
 }: {
   benefitTiers:
     | never[]
@@ -60,6 +36,7 @@ export const ActivityStreak = ({
         | undefined
       )
     | undefined;
+  currentEpoch: number;
 }) => {
   const t = useT();
   const progress = 30;
@@ -70,6 +47,10 @@ export const ActivityStreak = ({
   };
 
   const progressBarHeight = 'h-10';
+
+  // TODO: remove this console log
+  // eslint-disable-next-line no-console
+  console.log({ streak, benefitTiers });
 
   return (
     <>
@@ -103,9 +84,12 @@ export const ActivityStreak = ({
                       className={classNames(
                         'text-xs flex flex-col items-center justify-center px-2 py-1 rounded-lg text-white border',
                         {
-                          'border-pink-600 bg-pink-900': tier.tier === 1,
-                          'border-purple-600 bg-purple-900': tier.tier === 2,
-                          'border-blue-600 bg-blue-900': tier.tier === 3,
+                          'border-pink-600 bg-pink-900':
+                            tier.tier === 1 || tier.tier === 4,
+                          'border-purple-600 bg-purple-900':
+                            tier.tier === 2 || tier.tier === 5,
+                          'border-blue-600 bg-blue-900':
+                            tier.tier === 3 || tier.tier === 6,
                         }
                       )}
                     >
@@ -124,9 +108,9 @@ export const ActivityStreak = ({
                     <span
                       className={classNames(
                         {
-                          'text-pink-500': tier.tier === 1,
-                          'text-purple-500': tier.tier === 2,
-                          'text-blue-500': tier.tier === 3,
+                          'text-pink-500': tier.tier === 1 || tier.tier === 4,
+                          'text-purple-500': tier.tier === 2 || tier.tier === 5,
+                          'text-blue-500': tier.tier === 3 || tier.tier === 6,
                         },
                         'text-xl'
                       )}
@@ -157,10 +141,12 @@ export const ActivityStreak = ({
                     className={classNames(
                       'absolute left-0 top-0 h-full rounded-[100px] bg-gradient-to-r',
                       {
-                        'from-vega-pink-600 to-vega-pink-500': tier.tier === 1,
+                        'from-vega-pink-600 to-vega-pink-500':
+                          tier.tier === 1 || tier.tier === 4,
                         'from-vega-purple-600 to-vega-purple-500':
-                          tier.tier === 2,
-                        'from-vega-blue-600 to-vega-blue-500': tier.tier === 3,
+                          tier.tier === 2 || tier.tier === 5,
+                        'from-vega-blue-600 to-vega-blue-500':
+                          tier.tier === 3 || tier.tier === 6,
                       }
                     )}
                     style={{ width: safeProgress() + '%' }}
