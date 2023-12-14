@@ -55,7 +55,7 @@ export const MarketUpdateStateBanner = ({
     content = (
       <>
         <p className="uppercase mb-1">
-          {t('Trading on Market {{name}} will stop on {{date}}', {
+          {t('Trading on market {{name}} will stop on {{date}}', {
             name,
             date,
           })}
@@ -79,7 +79,7 @@ export const MarketUpdateStateBanner = ({
       <>
         <p className="uppercase mb-1">
           {t(
-            'Trading on Market {{name}} may stop. There are open proposals to close this market',
+            'Trading on market {{name}} may stop. There are open proposals to close this market',
             { name }
           )}
         </p>
@@ -96,7 +96,7 @@ export const MarketUpdateStateBanner = ({
       <>
         <p className="mb-1">
           {t(
-            'Trading on Market {{name}} may stop on {{date}}. There is open proposal to close this market.',
+            'Trading on market {{name}} may stop on {{date}}. There is an open proposal to close this market.',
             { name, date }
           )}
         </p>
@@ -113,9 +113,7 @@ export const MarketUpdateStateBanner = ({
     );
   }
 
-  return (
-    <div data-testid={`termination-warning-banner-${market.id}`}>{content}</div>
-  );
+  return <div data-testid={`update-state-banner-${market.id}`}>{content}</div>;
 };
 
 const getMessageVariables = (proposal: MarketViewProposalFieldsFragment) => {

@@ -1,14 +1,13 @@
 import pytest
 import re
-import vega_sim.api.governance as governance
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService, PeggedOrder
-import vega_sim.api.governance as governance
-import vega_sim.proto.vega as vega_protos
+
 from actions.vega import submit_order
 from actions.utils import next_epoch
 from wallet_config import MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET
-from datetime import datetime, timedelta
+
+from vega_sim.service import VegaService, PeggedOrder, MarketStateUpdateType
+from vega_sim.api import governance
 
 @pytest.mark.usefixtures("risk_accepted")
 def test_market_lifecycle(proposed_market, vega: VegaService, page: Page):
@@ -127,17 +126,43 @@ def test_market_lifecycle(proposed_market, vega: VegaService, page: Page):
     expect(trading_mode).to_have_text("Continuous")
     expect(market_state).to_have_text("Active")
 
-    proposal_id = vega.update_market_state(
-        market_id,
-        GOVERNANCE_WALLET.name,
-        vega_protos.governance.MarketStateUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE,
-        approve_proposal=False,
-        vote_enactment_time = datetime.now() + timedelta(weeks=1),
-        forward_time_to_enactment = False,
-        price=107,
+    vega.update_market_state(
+        market_id = market_id,
+        proposal_key = MM_WALLET.name,
+        market_state = MarketStateUpdateType.Suspend,
+        forward_time_to_enactment = False
     )
 
-    # TODO assert that market upade banner is shown
+    expect(
+        page
+            .get_by_test_id("market-banner")
+            .get_by_test_id(f"update-state-banner-{market_id}")
+    ).to_be_visible()
+
+    vega.forward("60s")
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+
+    expect(
+        page.get_by_test_id("market-banner")
+    ).to_have_text("Market was suspended by governance")
+
+    # banner should not show after resume
+    vega.update_market_state(
+        market_id = market_id,
+        proposal_key = MM_WALLET.name,
+        market_state = MarketStateUpdateType.Resume,
+        forward_time_to_enactment = False
+    )
+
+    vega.forward("60s")
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+
+    expect(page.get_by_test_id("market-banner")).not_to_be_visible()
+
+    # TODO test update market, sim will currently auto approve and enacted
+    # a market update proposals
 
     # put invalid oracle to trigger market termination
     governance.submit_oracle_data(
@@ -166,6 +191,9 @@ def test_market_lifecycle(proposed_market, vega: VegaService, page: Page):
     # check market state is now settled
     expect(trading_mode).to_have_text("No trading")
     expect(market_state).to_have_text("Settled")
+    expect(
+        page.get_by_test_id("market-banner")
+    ).to_have_text("This market has been settled")
 
 
 """ @pytest.mark.usefixtures("page", "risk_accepted", "continuous_market")
