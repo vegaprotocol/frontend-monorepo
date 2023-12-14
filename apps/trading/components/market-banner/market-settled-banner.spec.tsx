@@ -16,9 +16,9 @@ import {
 import { MemoryRouter } from 'react-router-dom';
 import { createMarketFragment } from '@vegaprotocol/mock';
 import { Interval, MarketState, MarketTradingMode } from '@vegaprotocol/types';
-import { MarketSuccessorBanner } from './market-successor-banner';
+import { MarketSettledBanner } from './market-settled-banner';
 
-describe('MarketSuccessorBanner', () => {
+describe('MarketSettledBanner', () => {
   const now = 1701388800000;
   const origDateNow = Date.now;
 
@@ -147,7 +147,7 @@ describe('MarketSuccessorBanner', () => {
     return render(
       <MemoryRouter>
         <MockedProvider mocks={mocks}>
-          <MarketSuccessorBanner market={market} />
+          <MarketSettledBanner market={market} />
         </MockedProvider>
       </MemoryRouter>
     );

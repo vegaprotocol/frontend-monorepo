@@ -7,7 +7,7 @@ import { type MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { MarketSuspendedBanner } from './market-suspended-banner';
 import { MarketUpdateBanner } from './market-update-banner';
 import { MarketUpdateStateBanner } from './market-update-state-banner';
-import { MarketSuccessorBanner } from './market-successor-banner';
+import { MarketSettledBanner } from './market-settled-banner';
 import { MarketSuccessorProposalBanner } from './market-successor-proposal-banner';
 import {
   useSuccessorMarketProposals,
@@ -135,7 +135,7 @@ const BannerQueue = ({
       break;
     }
     case 'Settled': {
-      content = <MarketSuccessorBanner market={market} />;
+      content = <MarketSettledBanner market={market} />;
       break;
     }
     case 'Suspended': {

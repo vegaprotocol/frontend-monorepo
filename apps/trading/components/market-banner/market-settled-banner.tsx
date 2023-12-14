@@ -20,7 +20,7 @@ const getExpiryDate = (tags: string[], close?: string): Date | null => {
   return expiryDate || (close && new Date(close)) || null;
 };
 
-export const MarketSuccessorBanner = ({ market }: { market: Market }) => {
+export const MarketSettledBanner = ({ market }: { market: Market }) => {
   const t = useT();
   const { data: successorMarket } = useSuccessorMarket(market.id);
 
