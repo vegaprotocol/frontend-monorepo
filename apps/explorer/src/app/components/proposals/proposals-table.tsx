@@ -44,11 +44,11 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
   const gridRef = useRef<AgGridReact>(null);
   useLayoutEffect(() => {
     const showColumnsOnDesktop = () => {
-      gridRef.current?.columnApi.setColumnsVisible(
+      gridRef.current?.api.setColumnsVisible(
         ['voting', 'cDate', 'eDate', 'type'],
         window.innerWidth > BREAKPOINT_MD
       );
-      gridRef.current?.columnApi.setColumnWidth(
+      gridRef.current?.api.setColumnWidth(
         'actions',
         window.innerWidth > BREAKPOINT_MD ? 221 : 80
       );

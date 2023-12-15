@@ -65,18 +65,9 @@ export const DateRangeFilter = forwardRef(
     useImperativeHandle(ref, () => {
       return {
         doesFilterPass(params: IDoesFilterPassParams) {
-          const { api, colDef, column, columnApi, context } = props;
+          const { column } = props;
           const { node } = params;
-          const rowValue = props.valueGetter({
-            api,
-            colDef,
-            column,
-            columnApi,
-            context,
-            data: node.data,
-            getValue: (field) => node.data[field],
-            node,
-          });
+          const rowValue = props.getValue(node, column);
           if (
             value.start &&
             rowValue &&

@@ -8609,16 +8609,17 @@ aes-js@^3.1.2:
   resolved "https://registry.yarnpkg.com/aes-js/-/aes-js-3.1.2.tgz#db9aabde85d5caabbfc0d4f2a4446960f627146a"
   integrity sha512-e5pEa2kBnBOgR4Y/p20pskXI74UEz7de8ZGVo58asOtvSVG5YAbJeELPZxOmt+Bnz3rX753YKhfIn4X4l1PPRQ==
 
-ag-grid-community@^29.3.5:
-  version "29.3.5"
-  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-29.3.5.tgz#16897896d10fa3ecac79279aad50d3aaa17c5f33"
-  integrity sha512-LxUo21f2/CH31ACEs1C7Q/ggGGI1fQPSTB4aY5OThmM+lBkygZ7QszBE8jpfgWOIjvjdtcdIeQbmbjkHeMsA7A==
+ag-grid-community@^31.0.1, ag-grid-community@~31.0.1:
+  version "31.0.1"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-31.0.1.tgz#26022b29a7b90a0515076837d630ac9cd24cf28d"
+  integrity sha512-RZQlW1DTOJHsUR/tnbnTJQKgAnDlHi05YYyTe5AgNor/1TlX1hoYdcqrGsJjvcHQgTjeEgzWOL0yf+KcqXZzxg==
 
-ag-grid-react@^29.3.5:
-  version "29.3.5"
-  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-29.3.5.tgz#0eae8934d372c7751e98789542fc663aee0ad6ad"
-  integrity sha512-Eg0GJ8hEBuxdVaN5g+qITOzhw0MGL9avL0Oaajr+p7QRtq2pIFHLZSknWsCBzUTjidiu75WZMKwlZjtGEuafdQ==
+ag-grid-react@^31.0.1:
+  version "31.0.1"
+  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-31.0.1.tgz#c7e3cf029ea1b97ab7f1d5134c8bb0086b4d2aac"
+  integrity sha512-9nmYPsgH1YUDUDOTiyaFsysoNAx/y72ovFJKuOffZC1V7OrQMadyP6DbqGFWCqzzoLJOY7azOr51dDQzAIXLpw==
   dependencies:
+    ag-grid-community "~31.0.1"
     prop-types "^15.8.1"
 
 agent-base@5:
