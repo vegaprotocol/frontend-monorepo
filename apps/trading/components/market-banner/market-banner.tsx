@@ -1,7 +1,11 @@
 import compact from 'lodash/compact';
 import { MarketState } from '@vegaprotocol/types';
 import { Intent, NotificationBanner } from '@vegaprotocol/ui-toolkit';
-import { useMarketState, type Market } from '@vegaprotocol/markets';
+import {
+  useMarketState,
+  type Market,
+  useMaliciousOracle,
+} from '@vegaprotocol/markets';
 import { useState } from 'react';
 import { type MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { MarketSuspendedBanner } from './market-suspended-banner';
@@ -9,6 +13,7 @@ import { MarketUpdateBanner } from './market-update-banner';
 import { MarketUpdateStateBanner } from './market-update-state-banner';
 import { MarketSettledBanner } from './market-settled-banner';
 import { MarketSuccessorProposalBanner } from './market-successor-proposal-banner';
+import { MarketOracleBanner, type Oracle } from './market-oracle-banner';
 import {
   useSuccessorMarketProposals,
   useUpdateMarketProposals,
@@ -40,12 +45,18 @@ type SuspendedBanner = {
   market: Market;
 };
 
+type OracleBanner = {
+  kind: 'Oracle';
+  oracle: Oracle;
+};
+
 type Banner =
   | UpdateMarketBanner
   | UpdateMarketStateBanner
   | NewMarketBanner
   | SettledBanner
-  | SuspendedBanner;
+  | SuspendedBanner
+  | OracleBanner;
 
 export const MarketBanner = ({ market }: { market: Market }) => {
   const { data: marketState } = useMarketState(market.id);
@@ -61,8 +72,15 @@ export const MarketBanner = ({ market }: { market: Market }) => {
     loading: updateMarketStateLoading,
   } = useUpdateMarketStateProposals(market.id);
 
+  const { data: maliciousOracle, loading: oracleLoading } = useMaliciousOracle(
+    market.id
+  );
+
   const loading =
-    successorLoading || updateMarketLoading || updateMarketStateLoading;
+    successorLoading ||
+    updateMarketLoading ||
+    updateMarketStateLoading ||
+    oracleLoading;
 
   if (loading) {
     return null;
@@ -97,6 +115,12 @@ export const MarketBanner = ({ market }: { market: Market }) => {
       ? {
           kind: 'Suspended' as const,
           market,
+        }
+      : undefined,
+    maliciousOracle !== undefined
+      ? {
+          kind: 'Oracle' as const,
+          oracle: maliciousOracle,
         }
       : undefined,
   ]);
@@ -140,6 +164,11 @@ const BannerQueue = ({
     }
     case 'Suspended': {
       content = <MarketSuspendedBanner />;
+      break;
+    }
+    case 'Oracle': {
+      // @ts-ignore oracle cannot be undefined
+      content = <MarketOracleBanner oracle={banner.oracle} />;
       break;
     }
     default: {

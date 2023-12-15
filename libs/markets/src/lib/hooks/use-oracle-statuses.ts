@@ -1,4 +1,4 @@
-import { useT } from '../../use-t';
+import { useT } from '../use-t';
 
 export const useOracleStatuses = () => {
   const t = useT();

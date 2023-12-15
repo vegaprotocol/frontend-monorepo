@@ -15,8 +15,6 @@ import { TradingViews } from './trade-views';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { MarketBanner } from '../../components/market-banner';
-// TODO: handle oracle banner
-// import { OracleBanner } from '@vegaprotocol/markets';
 
 interface TradeGridProps {
   market: Market;
