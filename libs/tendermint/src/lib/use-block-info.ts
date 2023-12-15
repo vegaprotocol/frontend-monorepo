@@ -5,6 +5,8 @@ import type {
   TendermintErrorResponse,
 } from '../types';
 
+type TendermintResponse = TendermintBlockResponse | TendermintErrorResponse;
+
 export const useBlockInfo = (blockHeight?: number, canFetch = true) => {
   const { TENDERMINT_URL } = useEnvironment();
 
@@ -13,9 +15,11 @@ export const useBlockInfo = (blockHeight?: number, canFetch = true) => {
     TENDERMINT_URL && blockHeight && !isNaN(blockHeight) && canFetch
   );
 
-  const { state, refetch } = useFetch<
-    TendermintBlockResponse | TendermintErrorResponse
-  >(url, { cache: 'force-cache' }, canFetchData);
+  const { state, refetch } = useFetch<TendermintResponse>(
+    url,
+    { cache: 'force-cache' },
+    canFetchData
+  );
 
   return { state, refetch };
 };
