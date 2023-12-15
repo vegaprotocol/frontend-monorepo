@@ -17,7 +17,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   return <TradesManager marketId={marketId} gridProps={gridStoreCallbacks} />;
 };
 
-const useTradesStore = create<DataGridSlice>()(
+export const useTradesStore = create<DataGridSlice>()(
   persist(createDataGridSlice, {
     name: 'vega_trades_store',
   })

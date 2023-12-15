@@ -53,7 +53,7 @@ export const Tabs = ({
           onValueChange(value);
         }
       }}
-      className="h-full grid grid-rows-[min-content_1fr]"
+      className="h-full grid grid-rows-[min-content_1fr] relative"
     >
       <div
         ref={wrapperRef}
@@ -139,12 +139,24 @@ export const Tabs = ({
             </TabsPrimitive.Content>
           );
         })}
-        {settingsOpened && !!settings ? (
-          <div className="absolute inset-0 bg-vega-clight-700 dark:bg-vega-cdark-700">
-            {settings}
-          </div>
-        ) : null}
       </div>
+      {settingsOpened && !!settings ? (
+        <div className="absolute right-0 top-0 bottom-0 w-[280px] max-w-full bg-vega-clight-700 dark:bg-vega-cdark-700 z-10">
+          <div className="grid grid-rows-[32px_1fr]">
+            <div className="flex justify-end p-1">
+              <button
+                type="button"
+                data-testid="settings-close"
+                onClick={() => setSettingsOpened(false)}
+                className="flex items-center justify-center h-6 w-6"
+              >
+                <VegaIcon name={VegaIconNames.CROSS} size={12} />
+              </button>
+            </div>
+            <div className="relative h-full overflow-auto p-2">{settings}</div>
+          </div>
+        </div>
+      ) : null}
     </TabsPrimitive.Root>
   );
 };

@@ -61,7 +61,7 @@ describe('useDataGridEvents', () => {
 
     // column state was not updated, so the default width provided by the
     // col def should be set
-    expect(gridRef?.current?.columnApi.getColumnState()[0].width).toEqual(
+    expect(gridRef?.current?.api.getColumnState()[0].width).toEqual(
       gridProps.columnDefs[0].width
     );
     // no filters set
@@ -111,7 +111,7 @@ describe('useDataGridEvents', () => {
 
     await waitFor(() => {
       expect(gridRef?.current?.api.getFilterModel()['id']).toEqual(idFilter);
-      expect(gridRef?.current?.columnApi.getColumnState()[0]).toEqual(
+      expect(gridRef?.current?.api.getColumnState()[0]).toEqual(
         expect.objectContaining(colState)
       );
     });
@@ -130,7 +130,7 @@ describe('useDataGridEvents', () => {
 
     // Set col width multiple times
     await act(async () => {
-      gridRef?.current?.columnApi.setColumnWidth('id', newWidth);
+      gridRef?.current?.api.setColumnWidth('id', newWidth);
     });
 
     expect(callback).not.toHaveBeenCalled();
@@ -150,14 +150,14 @@ describe('useDataGridEvents', () => {
     };
 
     const { rerender } = setup(initialState, callback, ['id']);
-    jest.spyOn(gridRef?.current?.columnApi, 'autoSizeColumns');
+    if (gridRef?.current?.api) {
+      jest.spyOn(gridRef?.current?.api, 'autoSizeColumns');
+    }
     rerender(<TestComponent hookParams={[initialState, callback, ['id']]} />);
     act(() => {
-      gridRef?.current?.api.setRowData([{ id: 'test-id' }]);
+      gridRef?.current?.api.setGridOption('rowData', [{ id: 'test-id' }]);
       jest.advanceTimersByTime(GRID_EVENT_DEBOUNCE_TIME);
     });
-    expect(gridRef?.current?.columnApi.autoSizeColumns).toHaveBeenCalledWith([
-      'id',
-    ]);
+    expect(gridRef?.current?.api.autoSizeColumns).toHaveBeenCalledWith(['id']);
   });
 });

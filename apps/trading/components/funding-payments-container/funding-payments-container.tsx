@@ -45,7 +45,7 @@ export const FundingPaymentsContainer = ({
   );
 };
 
-const useFundingPaymentsStore = create<DataGridSlice>()(
+export const useFundingPaymentsStore = create<DataGridSlice>()(
   persist(createDataGridSlice, {
     name: 'vega_funding_payments_store',
   })
