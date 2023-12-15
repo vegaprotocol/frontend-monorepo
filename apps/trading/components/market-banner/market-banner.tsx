@@ -142,6 +142,7 @@ const BannerQueue = ({
   if (!banner) return null;
 
   let content = null;
+  let intent = Intent.Primary;
 
   switch (banner.kind) {
     case 'UpdateMarket': {
@@ -156,6 +157,7 @@ const BannerQueue = ({
     }
     case 'NewMarket': {
       content = <MarketSuccessorProposalBanner proposals={banner.proposals} />;
+      intent = Intent.Warning;
       break;
     }
     case 'Settled': {
@@ -164,11 +166,13 @@ const BannerQueue = ({
     }
     case 'Suspended': {
       content = <MarketSuspendedBanner />;
+      intent = Intent.Warning;
       break;
     }
     case 'Oracle': {
       // @ts-ignore oracle cannot be undefined
       content = <MarketOracleBanner oracle={banner.oracle} />;
+      intent = Intent.Danger;
       break;
     }
     default: {
@@ -184,7 +188,7 @@ const BannerQueue = ({
 
   return (
     <NotificationBanner
-      intent={Intent.Primary}
+      intent={intent}
       onClose={onClose}
       data-testid="market-banner"
     >
