@@ -5,6 +5,7 @@ import {
   SuccessorMarketDocument,
   MarketCandlesDocument,
   MarketCandlesUpdateDocument,
+  SuccessorMarketIdDocument,
   type Market,
   type SuccessorMarketQuery,
   type SuccessorMarketQueryVariables,
@@ -12,6 +13,8 @@ import {
   type MarketCandlesQueryVariables,
   type MarketCandlesUpdateSubscription,
   type MarketCandlesUpdateSubscriptionVariables,
+  type SuccessorMarketIdQuery,
+  type SuccessorMarketIdQueryVariables,
 } from '@vegaprotocol/markets';
 import { MemoryRouter } from 'react-router-dom';
 import { createMarketFragment } from '@vegaprotocol/mock';
@@ -30,8 +33,29 @@ describe('MarketSettledBanner', () => {
     Date.now = origDateNow;
   });
 
+  const marketId = 'market-0';
   const successorId = 'successor-id';
   const successorName = 'successor-name';
+
+  const successorMarketIdMock: MockedResponse<
+    SuccessorMarketIdQuery,
+    SuccessorMarketIdQueryVariables
+  > = {
+    request: {
+      query: SuccessorMarketIdDocument,
+      variables: {
+        marketId: marketId,
+      },
+    },
+    result: {
+      data: {
+        market: {
+          successorMarketID: successorId,
+        },
+      },
+    },
+  };
+
   const successorMock: MockedResponse<
     SuccessorMarketQuery,
     SuccessorMarketQueryVariables
@@ -154,8 +178,11 @@ describe('MarketSettledBanner', () => {
   };
 
   it('shows that the market is settled if there is no successor', () => {
-    const market = createMarketFragment({ successorMarketID: undefined });
-    renderComponent(market);
+    const market = createMarketFragment({
+      id: marketId,
+      successorMarketID: undefined,
+    });
+    renderComponent(market, [successorMarketIdMock, successorMock]);
     expect(
       screen.getByText('This market has been settled')
     ).toBeInTheDocument();
@@ -163,12 +190,14 @@ describe('MarketSettledBanner', () => {
 
   it('shows that the market has been succeeded with an active market', async () => {
     const market = createMarketFragment({
+      id: marketId,
       successorMarketID: successorId,
       marketTimestamps: {
         close: addDays(new Date(now), 1).toISOString(),
       },
     });
     renderComponent(market, [
+      successorMarketIdMock,
       successorMock,
       successorCandlesMock,
       successorCandlesUpdateMock,
