@@ -600,11 +600,16 @@ export const DispatchMetricDescription: DispatchMetricLabel = {
     'Get rewards for taking prices off the order book and paying fees.',
   DISPATCH_METRIC_MAKER_FEES_RECEIVED:
     'Get rewards for making prices on the order book.',
-  DISPATCH_METRIC_MARKET_VALUE: 'Get rewards if a market you proposed attracts a high trading volume.',
-  DISPATCH_METRIC_AVERAGE_POSITION: 'Get rewards for having an open position that is consistenly larger than that of other traders.',
-  DISPATCH_METRIC_RELATIVE_RETURN: 'Get rewards for having a high profit in relation to your position size.',
-  DISPATCH_METRIC_RETURN_VOLATILITY: 'Get rewards for having the least amount of variance in your returns while you have a position open during the rewards window.',
-  DISPATCH_METRIC_VALIDATOR_RANKING: 'Get rewards if you run a validator node with a high ranking score.',
+  DISPATCH_METRIC_MARKET_VALUE:
+    'Get rewards if a market you proposed attracts a high trading volume.',
+  DISPATCH_METRIC_AVERAGE_POSITION:
+    'Get rewards for having an open position that is consistently larger than that of other traders.',
+  DISPATCH_METRIC_RELATIVE_RETURN:
+    'Get rewards for having a high profit in relation to your position size.',
+  DISPATCH_METRIC_RETURN_VOLATILITY:
+    'Get rewards for having the least amount of variance in your returns while you have a position open during the rewards window.',
+  DISPATCH_METRIC_VALIDATOR_RANKING:
+    'Get rewards if you run a validator node with a high ranking score.',
 };
 
 export const PositionStatusMapping: {
