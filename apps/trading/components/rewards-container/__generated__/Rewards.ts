@@ -43,6 +43,13 @@ export type RewardsEpochQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 export type RewardsEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string } };
 
+export type VestingDetailsQueryVariables = Types.Exact<{
+  partyId: Types.Scalars['ID'];
+}>;
+
+
+export type VestingDetailsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', vestingStats?: { __typename?: 'PartyVestingStats', rewardBonusMultiplier: string, quantumBalance: string, epochSeq: number } | null } | null };
+
 
 export const RewardsPageDocument = gql`
     query RewardsPage($partyId: ID!) {
@@ -370,3 +377,42 @@ export function useRewardsEpochLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type RewardsEpochQueryHookResult = ReturnType<typeof useRewardsEpochQuery>;
 export type RewardsEpochLazyQueryHookResult = ReturnType<typeof useRewardsEpochLazyQuery>;
 export type RewardsEpochQueryResult = Apollo.QueryResult<RewardsEpochQuery, RewardsEpochQueryVariables>;
+export const VestingDetailsDocument = gql`
+    query VestingDetails($partyId: ID!) {
+  party(id: $partyId) {
+    vestingStats {
+      rewardBonusMultiplier
+      quantumBalance
+      epochSeq
+    }
+  }
+}
+    `;
+
+/**
+ * __useVestingDetailsQuery__
+ *
+ * To run a query within a React component, call `useVestingDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVestingDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVestingDetailsQuery({
+ *   variables: {
+ *      partyId: // value for 'partyId'
+ *   },
+ * });
+ */
+export function useVestingDetailsQuery(baseOptions: Apollo.QueryHookOptions<VestingDetailsQuery, VestingDetailsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<VestingDetailsQuery, VestingDetailsQueryVariables>(VestingDetailsDocument, options);
+      }
+export function useVestingDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<VestingDetailsQuery, VestingDetailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<VestingDetailsQuery, VestingDetailsQueryVariables>(VestingDetailsDocument, options);
+        }
+export type VestingDetailsQueryHookResult = ReturnType<typeof useVestingDetailsQuery>;
+export type VestingDetailsLazyQueryHookResult = ReturnType<typeof useVestingDetailsLazyQuery>;
+export type VestingDetailsQueryResult = Apollo.QueryResult<VestingDetailsQuery, VestingDetailsQueryVariables>;

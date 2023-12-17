@@ -1,28 +1,23 @@
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import { useT } from '../../lib/use-t';
+import { useT } from '../../../lib/use-t';
 import classNames from 'classnames';
+import { formatNumber } from '@vegaprotocol/utils';
+import BigNumber from 'bignumber.js';
 
 export const ActivityStreak = ({
-  benefitTiers,
+  tiers,
   streak,
-  currentEpoch,
 }: {
-  benefitTiers:
+  tiers:
     | never[]
     | {
-        tier: number;
-        rewardFactor: number;
-        commission: string;
-        discountFactor: number;
-        discount: string;
-        minimumVolume: number;
-        volume: string;
-        epochs: number;
+        minimum_activity_streak: number;
+        reward_multiplier: string;
+        vesting_multiplier: string;
       }[];
   streak:
     | (
         | {
-            __typename?: 'PartyActivityStreak' | undefined;
             activeFor: number;
             isActive: boolean;
             inactiveFor: number;
@@ -36,21 +31,38 @@ export const ActivityStreak = ({
         | undefined
       )
     | undefined;
-  currentEpoch: number;
 }) => {
   const t = useT();
-  const progress = 30;
-  const total = 100;
+  if (!streak?.activeFor) return null;
 
-  const safeProgress = () => {
-    return (progress / total) * 100;
+  const getUserTier = () => {
+    let userTier = 0,
+      i = 0;
+    do {
+      userTier = i;
+      i++;
+    } while (
+      i < tiers.length &&
+      tiers[i].minimum_activity_streak <= streak.activeFor
+    );
+    return userTier;
+  };
+
+  const userTierIndex = getUserTier();
+
+  const safeProgress = (i: number) => {
+    if (i < userTierIndex) return 100;
+    if (i > userTierIndex) return 0;
+    const progress = streak.activeFor;
+    const total = tiers[i].minimum_activity_streak;
+    if (new BigNumber(progress).isGreaterThan(total)) return 100;
+    return new BigNumber(progress)
+      .multipliedBy(100)
+      .dividedBy(total)
+      .toNumber();
   };
 
   const progressBarHeight = 'h-10';
-
-  // TODO: remove this console log
-  // eslint-disable-next-line no-console
-  console.log({ streak, benefitTiers });
 
   return (
     <>
@@ -60,22 +72,22 @@ export const ActivityStreak = ({
             className="grid"
             style={{
               gridTemplateColumns:
-                'repeat(' + benefitTiers.length + ', minmax(0, 1fr))',
+                'repeat(' + tiers.length + ', minmax(0, 1fr))',
             }}
           >
-            {benefitTiers.map((tier, index) => {
+            {tiers.map((tier, index) => {
               return (
                 <div key={index} className="flex justify-end -mr-10">
                   <span className="flex flex-col items-center gap-1">
                     <span className="flex flex-col items-center font-medium">
                       <span className="text-sm">
                         {t('Tier {{tier}}', {
-                          tier: tier.tier,
+                          tier: index + 1,
                         })}
                       </span>
                       <span className="text-muted text-xs">
                         {t('{{epochs}} epochs', {
-                          epochs: tier.epochs,
+                          epochs: formatNumber(tier.minimum_activity_streak),
                         })}
                       </span>
                     </span>
@@ -85,22 +97,22 @@ export const ActivityStreak = ({
                         'text-xs flex flex-col items-center justify-center px-2 py-1 rounded-lg text-white border',
                         {
                           'border-pink-600 bg-pink-900':
-                            tier.tier === 1 || tier.tier === 4,
+                            index === 0 || index === 3,
                           'border-purple-600 bg-purple-900':
-                            tier.tier === 2 || tier.tier === 5,
+                            index === 1 || index === 4,
                           'border-blue-600 bg-blue-900':
-                            tier.tier === 3 || tier.tier === 6,
+                            index === 2 || index === 5,
                         }
                       )}
                     >
                       <span>
                         {t('Reward {{reward}}x', {
-                          reward: tier.rewardFactor || '1.5',
+                          reward: tier.reward_multiplier,
                         })}
                       </span>
                       <span>
                         {t('Vesting {{vesting}}x', {
-                          vesting: '1.5',
+                          vesting: tier.vesting_multiplier,
                         })}
                       </span>
                     </span>
@@ -108,9 +120,9 @@ export const ActivityStreak = ({
                     <span
                       className={classNames(
                         {
-                          'text-pink-500': tier.tier === 1 || tier.tier === 4,
-                          'text-purple-500': tier.tier === 2 || tier.tier === 5,
-                          'text-blue-500': tier.tier === 3 || tier.tier === 6,
+                          'text-pink-500': index % 3 === 0,
+                          'text-purple-500': index % 3 === 1,
+                          'text-blue-500': index % 3 === 2,
                         },
                         'text-xl'
                       )}
@@ -125,7 +137,7 @@ export const ActivityStreak = ({
         </div>
 
         <div className="flex items-center gap-1">
-          {benefitTiers.map((tier, index) => {
+          {tiers.map((_tier, index) => {
             return (
               <div
                 key={index}
@@ -141,15 +153,13 @@ export const ActivityStreak = ({
                     className={classNames(
                       'absolute left-0 top-0 h-full rounded-[100px] bg-gradient-to-r',
                       {
-                        'from-vega-pink-600 to-vega-pink-500':
-                          tier.tier === 1 || tier.tier === 4,
+                        'from-vega-pink-600 to-vega-pink-500': index % 3 === 0,
                         'from-vega-purple-600 to-vega-purple-500':
-                          tier.tier === 2 || tier.tier === 5,
-                        'from-vega-blue-600 to-vega-blue-500':
-                          tier.tier === 3 || tier.tier === 6,
+                          index % 3 === 1,
+                        'from-vega-blue-600 to-vega-blue-500': index % 3 === 2,
                       }
                     )}
-                    style={{ width: safeProgress() + '%' }}
+                    style={{ width: safeProgress(index) + '%' }}
                   ></div>
                 </div>
               </div>
@@ -163,13 +173,25 @@ export const ActivityStreak = ({
           <span className="flex flex-col text-xs">
             <span>
               {t('{{epochs}} epochs streak', {
-                // TODO here ir needs to be the current streak
                 epochs: streak?.activeFor,
               })}
             </span>
             <span>
-              <span className="text-vega-pink-500">3 days</span>
-              &nbsp;to Tier 1{' '}
+              <span className="text-vega-pink-500">
+                {t('{{epochs}} epochs streak', {
+                  epochs:
+                    tiers[userTierIndex].minimum_activity_streak -
+                      streak.activeFor >=
+                    0
+                      ? tiers[userTierIndex].minimum_activity_streak -
+                        streak.activeFor
+                      : 0,
+                })}
+              </span>
+              &nbsp;{' '}
+              {t('to Tier {{userTier}}', {
+                userTier: userTierIndex + 1,
+              })}
             </span>
           </span>
         </div>

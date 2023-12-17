@@ -39,9 +39,6 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
     .filter((node) => node.transfer.reference === 'reward');
 
   if (!transfers) return null;
-  // TODO: remove this console log
-  // eslint-disable-next-line no-console
-  console.log({ transfers });
 
   return (
     <div className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(343px,_1fr))]">
@@ -130,6 +127,10 @@ export const ActiveRewardCard = ({
   const { dispatchStrategy } = transfer.kind;
 
   if (!dispatchStrategy) {
+    return null;
+  }
+
+  if (transfer.kind.endEpoch && transfer.kind.endEpoch < currentEpoch) {
     return null;
   }
 

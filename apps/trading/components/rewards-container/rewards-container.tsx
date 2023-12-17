@@ -21,6 +21,7 @@ import {
   useRewardsPageQuery,
   useRewardsEpochQuery,
   useActivityStreakQuery,
+  useVestingDetailsQuery,
 } from './__generated__/Rewards';
 import {
   TradingButton,
@@ -34,9 +35,9 @@ import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { RewardsHistoryContainer } from './rewards-history';
 import { useT } from '../../lib/use-t';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
-import { ActiveRewards } from './activity-rewards';
-import { ActivityStreak } from './activity-streaks';
-import { useReferralProgram } from '../../client-pages/referrals/hooks/use-referral-program';
+import { ActiveRewards } from './active-rewards';
+import { ActivityStreak } from './streaks/activity-streaks';
+import { RewardHoarderBonus } from './streaks/reward-hoarder-bonus';
 
 const ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA = [
   'bf1e88d19db4b3ca0d1d5bdb73718a01686b18cf731ca26adedf3c8b83802bba', // USDT mainnet
@@ -49,6 +50,7 @@ export const RewardsContainer = () => {
   const { params, loading: paramsLoading } = useNetworkParams([
     NetworkParams.reward_asset,
     NetworkParams.rewards_activityStreak_benefitTiers,
+    NetworkParams.rewards_vesting_benefitTiers,
     NetworkParams.rewards_vesting_baseRate,
   ]);
 
@@ -63,7 +65,20 @@ export const RewardsContainer = () => {
       partyId: pubKey || '',
     },
   });
-  const { benefitTiers } = useReferralProgram();
+
+  const { data: vestingDetails } = useVestingDetailsQuery({
+    variables: {
+      partyId: pubKey || '',
+    },
+  });
+
+  const { rewards_activityStreak_benefitTiers, rewards_vesting_benefitTiers } =
+    params || {};
+
+  const activityStreakBenefitTiers = JSON.parse(
+    rewards_activityStreak_benefitTiers
+  );
+  const vestingBenefitTiers = JSON.parse(rewards_vesting_benefitTiers);
 
   const streaks = partyActivityStreak?.partiesConnection?.edges?.map(
     (edge) => edge?.node?.activityStreak
@@ -239,17 +254,25 @@ export const RewardsContainer = () => {
           );
         })}
       {pubKey && streaks && (
-        <Card
-          title={t('Activity streak')}
-          className="lg:col-span-full"
-          loading={rewardsLoading}
-        >
+        <Card title={t('Activity streak')} className="lg:col-span-full">
           <span className="flex flex-col mx-8">
             {streaks.map((streak, i) => (
               <ActivityStreak
-                benefitTiers={benefitTiers}
-                currentEpoch={Number(epochData?.epoch.id)}
+                tiers={activityStreakBenefitTiers.tiers}
                 streak={streak}
+                key={i}
+              />
+            ))}
+          </span>
+        </Card>
+      )}
+      {pubKey && streaks && (
+        <Card title={t('Reward Hoarder Bonus')} className="lg:col-span-full">
+          <span className="flex flex-col mx-8">
+            {streaks.map((streak, i) => (
+              <RewardHoarderBonus
+                tiers={vestingBenefitTiers.tiers}
+                vestingDetails={vestingDetails?.party?.vestingStats}
                 key={i}
               />
             ))}

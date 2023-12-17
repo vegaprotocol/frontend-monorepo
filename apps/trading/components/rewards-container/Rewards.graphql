@@ -186,3 +186,13 @@ query RewardsEpoch {
     id
   }
 }
+
+query VestingDetails($partyId: ID!) {
+  party(id: $partyId) {
+    vestingStats {
+      rewardBonusMultiplier
+      quantumBalance
+      epochSeq
+    }
+  }
+}
