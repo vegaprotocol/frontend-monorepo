@@ -68,6 +68,19 @@ export class InjectedConnector implements VegaConnector {
     return res.keys;
   }
 
+  async isAlive() {
+    try {
+      const keys = await window.vega.listKeys();
+      if (keys.keys.length > 0) {
+        return true;
+      }
+    } catch (err) {
+      return false;
+    }
+
+    return false;
+  }
+
   disconnect() {
     clearConfig();
     return window.vega.disconnectWallet();

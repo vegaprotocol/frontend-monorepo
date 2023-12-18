@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import type { Transaction } from './connectors';
 import { ViewConnector, JsonRpcConnector } from './connectors';
 import { useVegaWallet } from './use-vega-wallet';
@@ -7,6 +7,7 @@ import { VegaWalletProvider } from './provider';
 import { LocalStorage } from '@vegaprotocol/utils';
 import type { ReactNode } from 'react';
 import { WALLET_KEY } from './storage';
+import { DEFAULT_KEEP_ALIVE } from './use-is-alive';
 
 const jsonRpcConnector = new JsonRpcConnector();
 const viewConnector = new ViewConnector();
@@ -35,6 +36,7 @@ const setup = (config?: Partial<VegaWalletConfig>) => {
 describe('VegaWalletProvider', () => {
   afterAll(() => {
     localStorage.clear();
+    jest.useRealTimers();
   });
 
   const mockPubKeys = [
@@ -81,6 +83,7 @@ describe('VegaWalletProvider', () => {
         browserList: expect.any(String),
         ...defaultConfig.links,
       },
+      isAlive: null,
     });
 
     // Connect
@@ -178,5 +181,28 @@ describe('VegaWalletProvider', () => {
       result.current.connect(viewConnector);
     });
     expect(result.current.isReadOnly).toBe(true);
+  });
+
+  it('sets isAlive to false if connection lost', async () => {
+    // setup and connect
+    jest.useFakeTimers();
+    jest
+      .spyOn(jsonRpcConnector, 'isAlive')
+      .mockImplementation(() => Promise.resolve(true));
+    const { result } = setup();
+    await act(async () => {
+      result.current.connect(jsonRpcConnector);
+    });
+    expect(result.current.isAlive).toEqual(null);
+
+    // loose connection
+    jest
+      .spyOn(jsonRpcConnector, 'isAlive')
+      .mockImplementation(() => Promise.resolve(false));
+    jest.advanceTimersByTime(DEFAULT_KEEP_ALIVE);
+
+    await waitFor(() => {
+      expect(result.current.isAlive).toEqual(false);
+    });
   });
 });

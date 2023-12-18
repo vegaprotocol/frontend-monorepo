@@ -167,6 +167,19 @@ export class SnapConnector implements VegaConnector {
     return res?.keys;
   }
 
+  async isAlive() {
+    try {
+      const keys = await this.listKeys();
+      if (keys.keys.length > 0) {
+        return true;
+      }
+    } catch (err) {
+      return false;
+    }
+
+    return false;
+  }
+
   async sendTx(pubKey: string, transaction: Transaction) {
     if (!this.nodeAddress) throw SnapConnectorErrors.NODE_ADDRESS_NOT_SET;
     if (!this.snapId) throw SnapConnectorErrors.SNAP_ID_NOT_SET;
