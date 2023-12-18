@@ -2,107 +2,40 @@ import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { Filter, OpenOrdersMenu } from '@vegaprotocol/orders';
 import {
   TradesContainer,
-  useTradesStore,
+  TradesSettings,
 } from '../../components/trades-container';
 import { OrderbookContainer } from '../../components/orderbook-container';
 import {
   FillsContainer,
-  useFillsStore,
+  FillsSettings,
 } from '../../components/fills-container';
 import {
   PositionsContainer,
-  usePositionsStore,
+  PositionsSettings,
 } from '../../components/positions-container';
 import {
   AccountsContainer,
-  useAccountStore,
+  AccountsSettings,
 } from '../../components/accounts-container';
 import { LiquidityContainer } from '../../components/liquidity-container';
 import { FundingContainer } from '../../components/funding-container';
 import {
   FundingPaymentsContainer,
-  useFundingPaymentsStore,
+  FundingPaymentsSettings,
 } from '../../components/funding-payments-container';
 import {
   OrdersContainer,
-  useOrderListStore,
+  OrdersSettings,
 } from '../../components/orders-container';
 import {
   StopOrdersContainer,
-  useStopOrdersStore,
+  StopOrdersSettings,
 } from '../../components/stop-orders-container';
 import { AccountsMenu } from '../../components/accounts-menu';
 import { PositionsMenu } from '../../components/positions-menu';
 import { ChartContainer, ChartMenu } from '../../components/chart-container';
-import { DataGridStore } from '../../stores/datagrid-store-slice';
-import { TradingButton as Button } from '@vegaprotocol/ui-toolkit';
 
 export type TradingView = keyof typeof TradingViews;
-
-const GridSettings = ({
-  updateGridStore,
-}: {
-  updateGridStore: (gridStore: DataGridStore) => void;
-}) => (
-  <Button
-    onClick={() =>
-      updateGridStore({
-        columnState: undefined,
-        filterModel: undefined,
-      })
-    }
-    size="extra-small"
-  >
-    reset
-  </Button>
-);
-
-const FundingPaymentsSettings = () => (
-  <GridSettings
-    updateGridStore={useFundingPaymentsStore((store) => store.updateGridStore)}
-  />
-);
-
-const FillsSettings = () => (
-  <GridSettings
-    updateGridStore={useFillsStore((store) => store.updateGridStore)}
-  />
-);
-
-const TradesSettings = () => (
-  <GridSettings
-    updateGridStore={useTradesStore((store) => store.updateGridStore)}
-  />
-);
-
-const AccountsSettings = () => (
-  <GridSettings
-    updateGridStore={useAccountStore((store) => store.updateGridStore)}
-  />
-);
-
-const PositionsSettings = () => (
-  <GridSettings
-    updateGridStore={usePositionsStore((store) => store.updateGridStore)}
-  />
-);
-
-const OrdersSettings = ({ filter }: { filter?: Filter }) => {
-  const updateGridState = useOrderListStore((state) => state.update);
-  return (
-    <GridSettings
-      updateGridStore={(gridStore: DataGridStore) =>
-        updateGridState(filter, gridStore)
-      }
-    />
-  );
-};
-
-const StopOrdersSettings = () => (
-  <GridSettings
-    updateGridStore={useStopOrdersStore((store) => store.updateGridStore)}
-  />
-);
 
 export const TradingViews = {
   chart: {

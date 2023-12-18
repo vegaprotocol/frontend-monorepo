@@ -107,13 +107,54 @@ describe('useDataGridEvents', () => {
       columnState: [colState],
     };
 
-    setup(initialState, jest.fn());
+    setup(initialState, jest.fn(), undefined);
 
     await waitFor(() => {
       expect(gridRef?.current?.api.getFilterModel()['id']).toEqual(idFilter);
       expect(gridRef?.current?.api.getColumnState()[0]).toEqual(
         expect.objectContaining(colState)
       );
+    });
+  });
+
+  it('applies default filter model', async () => {
+    const idFilter = {
+      filter: 1,
+      filterType: 'number',
+      type: 'equals',
+    };
+
+    setup({}, jest.fn(), undefined, {
+      id: idFilter,
+    });
+
+    await waitFor(() => {
+      expect(gridRef?.current?.api.getFilterModel()['id']).toEqual(idFilter);
+    });
+  });
+
+  it('default filter overwrites stored filter model', async () => {
+    const idFilter = {
+      filter: 1,
+      filterType: 'number',
+      type: 'equals',
+    };
+
+    setup(
+      {
+        filterModel: {
+          id: { ...idFilter, filter: 2 },
+        },
+      },
+      jest.fn(),
+      undefined,
+      {
+        id: idFilter,
+      }
+    );
+
+    await waitFor(() => {
+      expect(gridRef?.current?.api.getFilterModel()['id']).toEqual(idFilter);
     });
   });
 

@@ -9,6 +9,7 @@ import type { DataGridStore } from '../../stores/datagrid-store-slice';
 import { OrderStatus } from '@vegaprotocol/types';
 import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
+import { GridSettings } from '../grid-settings/grid-settings';
 
 const resolveNoRowsMessage = (
   filter: Filter | undefined,
@@ -190,4 +191,15 @@ export const useOrderListGridState = (filter: Filter | undefined) => {
   });
 
   return { gridState, updateGridState };
+};
+
+export const OrdersSettings = ({ filter }: { filter?: Filter }) => {
+  const updateGridState = useOrderListStore((state) => state.update);
+  return (
+    <GridSettings
+      updateGridStore={(gridStore: DataGridStore) =>
+        updateGridState(filter, gridStore)
+      }
+    />
+  );
 };
