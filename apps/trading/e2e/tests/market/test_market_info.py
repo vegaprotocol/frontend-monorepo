@@ -3,7 +3,6 @@ import pytest
 from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService
 from fixtures.market import setup_continuous_market
-
 from conftest import init_page, init_vega, risk_accepted_setup
 
 market_title_test_id = "accordion-title"
@@ -15,7 +14,6 @@ def vega():
         yield vega
 
 
-# setting up everything in this single fixture, as all of the tests need the same setup, so no point in creating separate ones
 @pytest.fixture(scope="module")
 def page(vega, browser, request, local_server):
     with init_page(vega, browser, request,  local_server) as page:
@@ -122,7 +120,9 @@ def test_market_info_instrument(page: Page):
 
 
 # @pytest.mark.skip("oracle test to be fixed")
-def test_market_info_oracle(page: Page, vega: VegaService):
+
+
+def test_market_info_oracle(page: Page):
     # 6002-MDET-203
     page.get_by_test_id(market_title_test_id).get_by_text("Oracle").click()
     expect(

@@ -4,7 +4,6 @@ from vega_sim.service import VegaService
 from actions.vega import submit_order
 from actions.utils import wait_for_toast_confirmation
 
-
 stop_order_btn = "order-type-Stop"
 stop_limit_order_btn = "order-type-StopLimit"
 stop_market_order_btn = "order-type-StopMarket"
@@ -50,7 +49,7 @@ def create_position(vega: VegaService, market_id):
     vega.wait_for_total_catchup
 
 
-@pytest.mark.usefixtures("page", "vega", "continuous_market", "auth", "risk_accepted")
+@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_order_market_oco_rejected(
     continuous_market, vega: VegaService, page: Page
 ):
@@ -127,7 +126,7 @@ def test_submit_stop_order_market_oco_rejected(
     assert trigger_price_list.sort() == trigger_value_list.sort()
 
 
-@pytest.mark.usefixtures("page", "vega", "continuous_market", "auth", "risk_accepted")
+@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_oco_market_order_triggered(
     continuous_market, vega: VegaService, page: Page
 ):
@@ -204,7 +203,7 @@ def test_submit_stop_oco_market_order_triggered(
     assert trigger_price_list.sort() == trigger_value_list.sort()
 
 
-@pytest.mark.usefixtures("page", "vega", "continuous_market", "auth", "risk_accepted")
+@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_oco_market_order_pending(
     continuous_market, vega: VegaService, page: Page
 ):  
@@ -236,7 +235,7 @@ def test_submit_stop_oco_market_order_pending(
         "PendingOCO"
     )
 
-@pytest.mark.usefixtures("page", "vega", "continuous_market", "auth", "risk_accepted")
+@pytest.mark.usefixtures("page", "continuous_market", "auth", "risk_accepted")
 def test_submit_stop_oco_limit_order_pending(
     continuous_market, vega: VegaService, page: Page
 ):
@@ -287,7 +286,7 @@ def test_submit_stop_oco_limit_order_pending(
     assert trigger_price_list.sort() == trigger_value_list.sort()
 
 
-@pytest.mark.usefixtures("page", "vega", "continuous_market", "auth", "risk_accepted")
+@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_oco_limit_order_cancel(
     continuous_market, vega: VegaService, page: Page
 ):
@@ -325,5 +324,3 @@ def test_submit_stop_oco_limit_order_cancel(
     expect(
         page.locator(".ag-center-cols-container").locator('[col-id="status"]').last
     ).to_have_text("CancelledOCO")
-
-

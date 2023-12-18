@@ -6,6 +6,7 @@ from conftest import init_vega
 from fixtures.market import setup_simple_market
 from wallet_config import MM_WALLET, MM_WALLET2
 
+
 @pytest.fixture(scope="module")
 def vega():
     with init_vega() as vega:
@@ -78,8 +79,9 @@ def verify_prices_descending(page: Page):
     prices = [float(price.text_content()) for price in prices_locator.all()]
     assert prices == sorted(prices, reverse=True)
 
+
 @pytest.mark.skip("tbd")
-@pytest.mark.usefixtures("page", "risk_accepted")
+@pytest.mark.usefixtures("risk_accepted")
 def test_orderbook_grid_content(setup_market, page: Page):
     vega = setup_market[0]
     market_id = setup_market[1]
@@ -138,7 +140,7 @@ def test_orderbook_grid_content(setup_market, page: Page):
     verify_prices_descending(page)
 
 
-@pytest.mark.usefixtures("page", "risk_accepted")
+@pytest.mark.usefixtures("risk_accepted")
 def test_orderbook_resolution_change(setup_market, page: Page):
     market_id = setup_market[1]
     # 6003-ORDB-008
@@ -188,7 +190,7 @@ def test_orderbook_resolution_change(setup_market, page: Page):
     #     verify_orderbook_grid(page, resolution[1])
 
 
-@pytest.mark.usefixtures("page", "risk_accepted")
+@pytest.mark.usefixtures("risk_accepted")
 def test_orderbook_price_size_copy(setup_market, page: Page):
     market_id = setup_market[1]
     # 6003-ORDB-009
@@ -206,8 +208,9 @@ def test_orderbook_price_size_copy(setup_market, page: Page):
         volume.click()
         expect(page.get_by_test_id("order-size")).to_have_value(volume.text_content())
 
+
 @pytest.mark.skip("tbd")
-@pytest.mark.usefixtures("page", "risk_accepted")
+@pytest.mark.usefixtures("risk_accepted")
 def test_orderbook_price_movement(setup_market, page: Page):
     vega = setup_market[0]
     market_id = setup_market[1]

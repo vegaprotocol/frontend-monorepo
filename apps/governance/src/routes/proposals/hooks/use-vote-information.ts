@@ -81,12 +81,7 @@ export const useVoteInformation = ({
     const yesPercentage = totalTokensVoted.isZero()
       ? new BigNumber(0)
       : yesTokens.multipliedBy(100).dividedBy(totalTokensVoted);
-
-    const yesLPPercentage = totalEquityLikeShareWeight.isZero()
-      ? new BigNumber(0)
-      : yesEquityLikeShareWeight
-          .multipliedBy(100)
-          .dividedBy(totalEquityLikeShareWeight);
+    const yesLPPercentage = yesEquityLikeShareWeight.multipliedBy(100);
 
     const noPercentage = totalTokensVoted.isZero()
       ? new BigNumber(0)

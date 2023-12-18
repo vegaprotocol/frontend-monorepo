@@ -9,10 +9,9 @@ def vega():
         yield vega
 
 
-@pytest.mark.usefixtures("page", "risk_accepted")
+@pytest.mark.usefixtures("risk_accepted")
 def test_share_usage_data(page: Page):
     page.goto("/")
-   # page.get_by_test_id("icon-cross").click()
     page.get_by_test_id("Settings").click()
     telemetry_switch = page.locator("#switch-settings-telemetry-switch")
     expect(telemetry_switch).to_have_attribute("data-state", "unchecked")
@@ -41,7 +40,7 @@ ICON_TO_TOAST = {
 }
 
 
-@pytest.mark.usefixtures("page", "risk_accepted")
+@pytest.mark.usefixtures("risk_accepted")
 def test_toast_positions(page: Page):
     page.goto("/")
     page.get_by_test_id("Settings").click()
@@ -52,7 +51,7 @@ def test_toast_positions(page: Page):
         expect(page.locator(f"[{toast_selector}]")).to_be_visible()
 
 
-@pytest.mark.usefixtures("page", "risk_accepted")
+@pytest.mark.usefixtures("risk_accepted")
 def test_dark_mode(page: Page):
     page.goto("/")
     page.get_by_test_id("Settings").click()

@@ -5,7 +5,7 @@ from fixtures.market import setup_continuous_market, setup_simple_successor_mark
 
 
 @pytest.fixture
-@pytest.mark.usefixtures("vega")
+@pytest.mark.usefixtures()
 def successor_market(vega: VegaService):
     parent_market_id = setup_continuous_market(vega)
     tdai_id = vega.find_asset_id(symbol="tDAI")
@@ -23,8 +23,7 @@ def successor_market(vega: VegaService):
     return successor_market_id
 
 
-
-@pytest.mark.usefixtures("page", "risk_accepted")
+@pytest.mark.usefixtures("risk_accepted")
 def test_succession_line(page: Page, successor_market):
     page.goto(f"/#/markets/{successor_market}")
     page.get_by_test_id("Info").click()
