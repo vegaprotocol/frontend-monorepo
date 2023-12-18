@@ -12,7 +12,7 @@
 # InfoItem = namedtuple('InfoItem', ['name', 'infoText'])
 
 # @pytest.mark.skip("temporary skip")
-# @pytest.mark.parametrize("vega", [120], indirect=True)
+# @pytest.mark.parametrize(, [120], indirect=True)
 # @pytest.mark.usefixtures("continuous_market","risk_accepted", "auth")
 # def test_trading_chart(continuous_market, vega: VegaService, page: Page):
 #     page.goto(f"/#/markets/{continuous_market}")

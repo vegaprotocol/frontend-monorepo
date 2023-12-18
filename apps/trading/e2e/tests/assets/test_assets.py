@@ -56,11 +56,12 @@ label_value_tooltip_pairs = [
 
 def tooltip(page: Page, index: int, test_id: str, tooltip: str):
     page.locator(f"data-testid={index}_{test_id}").hover()
-    expect(page.locator('[role="tooltip"]').locator("div")).to_have_text(tooltip)
+    expect(page.locator('[role="tooltip"]').locator(
+        "div")).to_have_text(tooltip)
     page.get_by_test_id("dialog-title").click()
 
 
-@pytest.mark.usefixtures("page", "continuous_market", "auth", "risk_accepted")
+@pytest.mark.usefixtures("continuous_market", "auth", "risk_accepted")
 def test_asset_details(page: Page):
     page.goto("/#/portfolio")
     page.locator('[data-testid="tab-collateral"] >> text=tDAI').click()
@@ -73,17 +74,22 @@ def test_asset_details(page: Page):
         value = pair.get("value", "")
         label_tooltip = pair.get("labelTooltip", "")
         value_tooltip = pair.get("valueToolTip", "")
-    
+
         if label == "ID":
-            expect(page.get_by_role("button", name="Copy id to clipboard")).to_be_visible()
-            asset_id_text = page.locator(f"[data-testid='{index}_value']").inner_text()
+            expect(page.get_by_role(
+                "button", name="Copy id to clipboard")).to_be_visible()
+            asset_id_text = page.locator(
+                f"[data-testid='{index}_value']").inner_text()
             pattern = r"^[0-9a-f]{6}\u2026[0-9a-f]{4}"
 
-            assert re.match(pattern, asset_id_text), f"Expected ID to match pattern but got {asset_id_text}"
+            assert re.match(
+                pattern, asset_id_text), f"Expected ID to match pattern but got {asset_id_text}"
 
         else:
-            expect(page.locator(f"[data-testid='{index}_label']")).to_have_text(label)
-            expect(page.locator(f"[data-testid='{index}_value']")).to_have_text(value)
+            expect(page.locator(
+                f"[data-testid='{index}_label']")).to_have_text(label)
+            expect(page.locator(
+                f"[data-testid='{index}_value']")).to_have_text(value)
 
         if label_tooltip:
             tooltip(page, index, "label", label_tooltip)

@@ -31,7 +31,7 @@ export const Tile = ({
 };
 
 type StatTileProps = {
-  title: string;
+  title: ReactNode;
   testId?: string;
   description?: ReactNode;
   children?: ReactNode;
@@ -70,7 +70,7 @@ export const StatTile = ({
 export const NoProgramTile = ({ title }: Pick<StatTileProps, 'title'>) => {
   const t = useT();
   return (
-    <Tile title={title}>
+    <Tile>
       <h3 className="mb-1 text-sm text-vega-clight-100 dark:text-vega-cdark-100 calt">
         {title}
       </h3>

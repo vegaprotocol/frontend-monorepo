@@ -56,6 +56,11 @@ export interface VegaWalletContextShape {
     chromeExtensionUrl: string;
     mozillaExtensionUrl: string;
   };
+
+  /**
+   * A flag determining whether the current connection is alive.
+   */
+  isAlive: boolean | null;
 }
 
 export const VegaWalletContext = createContext<

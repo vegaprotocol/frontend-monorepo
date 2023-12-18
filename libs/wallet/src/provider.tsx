@@ -1,5 +1,12 @@
 import { LocalStorage } from '@vegaprotocol/utils';
-import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
+import {
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+  useEffect,
+} from 'react';
 import { WalletClientError } from '@vegaprotocol/wallet-client';
 import { type VegaWalletContextShape } from '.';
 import {
@@ -11,6 +18,7 @@ import { VegaWalletContext } from './context';
 import { WALLET_KEY, WALLET_RISK_ACCEPTED_KEY } from './storage';
 import { ViewConnector } from './connectors';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
+import { DEFAULT_KEEP_ALIVE, useIsAlive } from './use-is-alive';
 
 type Networks =
   | 'MAINNET'
@@ -33,6 +41,7 @@ export interface VegaWalletConfig {
   vegaUrl: string;
   vegaWalletServiceUrl: string;
   links: VegaWalletLinks;
+  keepAlive?: number;
 }
 
 const ExternalLinks = {
@@ -143,6 +152,19 @@ export const VegaWalletProvider = ({
   const acknowledgeNeeded =
     config.network === 'MAINNET' && riskAcceptedValue !== 'true';
 
+  const isAlive = useIsAlive(
+    connector.current && pubKey ? connector.current : null,
+    config.keepAlive != null ? config.keepAlive : DEFAULT_KEEP_ALIVE
+  );
+  /**
+   * Force disconnect if connected and wallet is unreachable.
+   */
+  useEffect(() => {
+    if (isAlive === false) {
+      disconnect();
+    }
+  }, [disconnect, isAlive]);
+
   const contextValue = useMemo<VegaWalletContextShape>(() => {
     return {
       vegaUrl: config.vegaUrl,
@@ -165,6 +187,7 @@ export const VegaWalletProvider = ({
       sendTx,
       fetchPubKeys,
       acknowledgeNeeded,
+      isAlive,
     };
   }, [
     config,
@@ -177,6 +200,7 @@ export const VegaWalletProvider = ({
     sendTx,
     fetchPubKeys,
     acknowledgeNeeded,
+    isAlive,
   ]);
 
   return (

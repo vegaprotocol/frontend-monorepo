@@ -151,6 +151,27 @@ const MOCK_REFEREES: RefereesQuery = {
   },
 };
 
+const MOCK_REFEREES_30: RefereesQuery = {
+  referralSetReferees: {
+    __typename: 'ReferralSetRefereeConnection',
+    edges: [
+      {
+        node: {
+          atEpoch: 1,
+          joinedAt: '2023-11-21T14:17:09.257235Z',
+          refereeId:
+            '0987654321098765432109876543210987654321098765432109876543219876',
+          referralSetId:
+            '3772e570fbab89e50e563036b01dd949c554e5b5fe7908449672dfce9a8adffa',
+          totalRefereeGeneratedRewards: '12340',
+          totalRefereeNotionalTakerVolume: '56780',
+          __typename: 'ReferralSetReferee',
+        },
+      },
+    ],
+  },
+};
+
 const programMock: MockedResponse<ReferralProgramQuery> = {
   request: {
     query: ReferralProgramDocument,
@@ -262,6 +283,19 @@ const refereesMock: MockedResponse<RefereesQuery, RefereesQueryVariables> = {
   },
 };
 
+const refereesMock30: MockedResponse<RefereesQuery, RefereesQueryVariables> = {
+  request: {
+    query: RefereesDocument,
+    variables: {
+      code: MOCK_REFERRER_SET.referralSets.edges[0]?.node.id as string,
+      aggregationEpochs: 30,
+    },
+  },
+  result: {
+    data: MOCK_REFEREES_30,
+  },
+};
+
 jest.mock('@vegaprotocol/wallet', () => {
   return {
     ...jest.requireActual('@vegaprotocol/wallet'),
@@ -297,6 +331,7 @@ describe('ReferralStatistics', () => {
             noReferralSetAsRefereeMock,
             stakeAvailableMock,
             refereesMock,
+            refereesMock30,
           ]}
           showWarnings={false}
         >
@@ -312,6 +347,10 @@ describe('ReferralStatistics', () => {
       expect(queryByTestId('referral-statistics')).toBeInTheDocument();
       expect(queryByTestId('referral-statistics')?.dataset.as).toEqual(
         'referrer'
+      );
+      // gets commision from 30 epochs query
+      expect(queryByTestId('total-commission-value')).toHaveTextContent(
+        '12,340'
       );
     });
   });
