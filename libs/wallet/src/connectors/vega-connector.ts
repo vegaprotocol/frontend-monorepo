@@ -543,4 +543,9 @@ export interface VegaConnector {
     pubkey: string,
     transaction: Transaction
   ) => Promise<TransactionResponse | null>;
+
+  /**
+   * Checks if the connection to the connector is alive.
+   */
+  isAlive: () => Promise<boolean>;
 }

@@ -5,7 +5,7 @@ from playwright.sync_api import Page, expect
 from vega_sim.service import VegaService
 from conftest import init_vega
 from fixtures.market import setup_simple_market
-from wallet_config import MM_WALLET, MM_WALLET2, TERMINATE_WALLET, wallets
+from wallet_config import MM_WALLET
 
 row_selector = '[data-testid="tab-proposed-markets"] .ag-center-cols-container .ag-row'
 col_market_id = '[col-id="market"] [data-testid="stack-cell-primary"]'
@@ -15,6 +15,7 @@ col_market_id = '[col-id="market"] [data-testid="stack-cell-primary"]'
 def vega(request):
     with init_vega(request) as vega:
         yield vega
+
 
 @pytest.fixture(scope="module")
 def proposed_market(vega: VegaService):

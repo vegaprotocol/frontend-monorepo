@@ -2,7 +2,7 @@ import pytest
 from playwright.sync_api import expect, Page
 
 
-@pytest.mark.usefixtures("page", "continuous_market", "auth", "risk_accepted")
+@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_market_selector(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     expect(page.get_by_test_id("market-selector")).not_to_be_visible()
@@ -27,7 +27,7 @@ def test_market_selector(continuous_market, page: Page):
     expect(btc_market.locator('[data-testid="sparkline-svg"]')).not_to_be_visible
 
 
-@pytest.mark.usefixtures("page", "continuous_market", "simple_market", "auth", "risk_accepted")
+@pytest.mark.usefixtures("simple_market", "auth", "risk_accepted")
 @pytest.mark.parametrize(
     "simple_market",
     [
