@@ -33,7 +33,7 @@ export const RewardHoarderBonus = ({
     return userTier;
   };
   if (!tiers || tiers.length === 0) return null;
-  const userTierIndex = getUserTier() - 1;
+  const userTierIndex = getUserTier();
 
   // TODO: extract qUSD from the API
   const qAsset = 'qUSD';
