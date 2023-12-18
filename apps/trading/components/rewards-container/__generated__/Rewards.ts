@@ -50,6 +50,13 @@ export type VestingDetailsQueryVariables = Types.Exact<{
 
 export type VestingDetailsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', vestingStats?: { __typename?: 'PartyVestingStats', rewardBonusMultiplier: string, quantumBalance: string, epochSeq: number } | null } | null };
 
+export type MarketForRewardsQueryVariables = Types.Exact<{
+  marketId: Types.Scalars['ID'];
+}>;
+
+
+export type MarketForRewardsQuery = { __typename?: 'Query', market?: { __typename?: 'Market', tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null } } } } | null };
+
 
 export const RewardsPageDocument = gql`
     query RewardsPage($partyId: ID!) {
@@ -416,3 +423,47 @@ export function useVestingDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type VestingDetailsQueryHookResult = ReturnType<typeof useVestingDetailsQuery>;
 export type VestingDetailsLazyQueryHookResult = ReturnType<typeof useVestingDetailsLazyQuery>;
 export type VestingDetailsQueryResult = Apollo.QueryResult<VestingDetailsQuery, VestingDetailsQueryVariables>;
+export const MarketForRewardsDocument = gql`
+    query MarketForRewards($marketId: ID!) {
+  market(id: $marketId) {
+    tradableInstrument {
+      instrument {
+        id
+        name
+        code
+        metadata {
+          tags
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useMarketForRewardsQuery__
+ *
+ * To run a query within a React component, call `useMarketForRewardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMarketForRewardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMarketForRewardsQuery({
+ *   variables: {
+ *      marketId: // value for 'marketId'
+ *   },
+ * });
+ */
+export function useMarketForRewardsQuery(baseOptions: Apollo.QueryHookOptions<MarketForRewardsQuery, MarketForRewardsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MarketForRewardsQuery, MarketForRewardsQueryVariables>(MarketForRewardsDocument, options);
+      }
+export function useMarketForRewardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketForRewardsQuery, MarketForRewardsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MarketForRewardsQuery, MarketForRewardsQueryVariables>(MarketForRewardsDocument, options);
+        }
+export type MarketForRewardsQueryHookResult = ReturnType<typeof useMarketForRewardsQuery>;
+export type MarketForRewardsLazyQueryHookResult = ReturnType<typeof useMarketForRewardsLazyQuery>;
+export type MarketForRewardsQueryResult = Apollo.QueryResult<MarketForRewardsQuery, MarketForRewardsQueryVariables>;

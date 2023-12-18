@@ -254,7 +254,7 @@ export const RewardsContainer = () => {
           );
         })}
       {pubKey && streaks && (
-        <Card title={t('Activity streak')} className="lg:col-span-full">
+        <Card title={t('Activity Streak')} className="lg:col-span-full">
           <span className="flex flex-col mx-8">
             {streaks.map((streak, i) => (
               <ActivityStreak
@@ -279,9 +279,7 @@ export const RewardsContainer = () => {
           </span>
         </Card>
       )}
-      <Card title={t('Active rewards')} className="lg:col-span-full">
-        <ActiveRewards currentEpoch={Number(epochData?.epoch.id)} />
-      </Card>
+      <ActiveRewards currentEpoch={Number(epochData?.epoch.id)} />
       <Card
         title={t('Rewards history')}
         className="lg:col-span-full"

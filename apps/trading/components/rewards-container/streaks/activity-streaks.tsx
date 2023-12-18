@@ -48,6 +48,8 @@ export const ActivityStreak = ({
     return userTier;
   };
 
+  if (!tiers || tiers.length === 0) return null;
+
   const userTierIndex = getUserTier();
 
   const safeProgress = (i: number) => {
@@ -61,6 +63,11 @@ export const ActivityStreak = ({
       .dividedBy(total)
       .toNumber();
   };
+
+  const epochsStreak =
+    tiers[userTierIndex].minimum_activity_streak - streak.activeFor >= 0
+      ? tiers[userTierIndex].minimum_activity_streak - streak.activeFor
+      : 0;
 
   const progressBarHeight = 'h-10';
 
@@ -179,13 +186,7 @@ export const ActivityStreak = ({
             <span>
               <span className="text-vega-pink-500">
                 {t('{{epochs}} epochs streak', {
-                  epochs:
-                    tiers[userTierIndex].minimum_activity_streak -
-                      streak.activeFor >=
-                    0
-                      ? tiers[userTierIndex].minimum_activity_streak -
-                        streak.activeFor
-                      : 0,
+                  epochs: formatNumber(epochsStreak),
                 })}
               </span>
               &nbsp;{' '}

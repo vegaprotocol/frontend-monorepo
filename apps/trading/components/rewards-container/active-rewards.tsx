@@ -1,6 +1,9 @@
-import { useActiveRewardsQuery } from './__generated__/Rewards';
+import {
+  useActiveRewardsQuery,
+  useMarketForRewardsQuery,
+} from './__generated__/Rewards';
 import { useT } from '../../lib/use-t';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, formatNumber } from '@vegaprotocol/utils';
 import classNames from 'classnames';
 import {
   Icon,
@@ -25,9 +28,39 @@ import {
   DispatchMetric,
   DispatchMetricDescription,
   DispatchMetricLabels,
+  type RecurringTransfer,
 } from '@vegaprotocol/types';
+import { Card } from '../card/card';
+import { useMemo } from 'react';
+
+const isActiveReward = (node: TransferNode, currentEpoch: number) => {
+  const { transfer } = node;
+  if (transfer.kind.__typename !== 'RecurringTransfer') {
+    return false;
+  }
+  const { dispatchStrategy } = transfer.kind;
+
+  if (!dispatchStrategy) {
+    return false;
+  }
+
+  if (transfer.kind.endEpoch && transfer.kind.endEpoch < currentEpoch) {
+    return false;
+  }
+
+  if (transfer.status !== TransferStatus.STATUS_PENDING) {
+    return false;
+  }
+
+  if (node.transfer.reference !== 'reward') {
+    return false;
+  }
+
+  return true;
+};
 
 export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
+  const t = useT();
   const { data: activeRewardsData } = useActiveRewardsQuery({
     variables: {
       isReward: true,
@@ -36,27 +69,42 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
 
   const transfers = activeRewardsData?.transfersConnection?.edges
     ?.map((e) => e?.node as TransferNode)
-    .filter((node) => node.transfer.reference === 'reward');
+    .filter((node) => isActiveReward(node, currentEpoch));
 
-  if (!transfers) return null;
+  if (!transfers || !transfers.length) return null;
 
   return (
-    <div className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(343px,_1fr))]">
-      {transfers.map((node, i) => {
-        return (
-          node && (
-            <ActiveRewardCard
-              key={i}
-              transferNode={node}
-              currentEpoch={currentEpoch}
-            />
-          )
-        );
-      })}
-    </div>
+    <Card title={t('Active rewards')} className="lg:col-span-full">
+      <div className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(343px,_1fr))]">
+        {transfers.map((node, i) => {
+          const { transfer } = node;
+
+          if (!isActiveReward(node, currentEpoch)) {
+            return null;
+          }
+
+          if (transfer.kind.__typename !== 'RecurringTransfer') {
+            return null;
+          }
+
+          return (
+            node && (
+              <ActiveRewardCard
+                key={i}
+                transferNode={node}
+                kind={transfer.kind}
+                currentEpoch={currentEpoch}
+              />
+            )
+          );
+        })}
+      </div>
+    </Card>
   );
 };
 
+// This was built to be a status indicator for the rewards based on the transfer status
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StatusIndicator = ({
   status,
   reason,
@@ -114,23 +162,39 @@ const StatusIndicator = ({
 export const ActiveRewardCard = ({
   transferNode,
   currentEpoch,
+  kind,
 }: {
   transferNode: TransferNode;
   currentEpoch: number;
+  kind: RecurringTransfer;
 }) => {
   const t = useT();
 
   const { transfer } = transferNode;
-  if (transfer.kind.__typename !== 'RecurringTransfer') {
-    return null;
-  }
-  const { dispatchStrategy } = transfer.kind;
+  const { dispatchStrategy } = kind;
+  const marketIds = dispatchStrategy?.marketIdsInScope;
+
+  const { data: marketNameData } = useMarketForRewardsQuery({
+    variables: {
+      marketId: marketIds ? marketIds[0] : '',
+    },
+  });
+
+  const marketName = useMemo(() => {
+    if (marketNameData && marketIds && marketIds.length > 1) {
+      return 'Specific markets';
+    } else if (
+      marketNameData &&
+      marketIds &&
+      marketNameData &&
+      marketIds.length === 1
+    ) {
+      return marketNameData?.market?.tradableInstrument?.instrument?.name || '';
+    }
+    return '';
+  }, [marketIds, marketNameData]);
 
   if (!dispatchStrategy) {
-    return null;
-  }
-
-  if (transfer.kind.endEpoch && transfer.kind.endEpoch < currentEpoch) {
     return null;
   }
 
@@ -170,7 +234,7 @@ export const ActiveRewardCard = ({
             </div>
 
             <div className="flex flex-col gap-2 items-center text-center">
-              <span className="flex flex-col gap-1 font-alpha calt text-2xl shrink-1 text-center">
+              <span className="flex flex-col gap-1 font-alpha liga text-2xl shrink-1 text-center">
                 <span>
                   {addDecimalsFormatNumber(
                     transferNode.transfer.amount,
@@ -210,40 +274,44 @@ export const ActiveRewardCard = ({
               />
               <span className="text-muted text-xs whitespace-nowrap">
                 {t('{{lock}} epochs', {
-                  lock: transfer.kind.dispatchStrategy?.lockPeriod,
+                  lock: kind.dispatchStrategy?.lockPeriod,
                 })}
               </span>
             </div>
           </div>
 
           <span className="border-[0.5px] border-gray-700" />
-
+          {/* TODO use market symbol or market name */}
           <span>
-            {DispatchMetricLabels[dispatchStrategy.dispatchMetric]} •{' '}
-            {transfer.asset?.symbol} • {transfer.asset?.name}
+            {DispatchMetricLabels[dispatchStrategy.dispatchMetric]}
+            {marketName && ` • ${marketName}`}
           </span>
 
           <div className="flex items-center gap-8 flex-wrap">
-            {
+            {kind.endEpoch && (
               <span className="flex flex-col">
                 <span className="text-muted text-xs">{t('Ends in')}</span>
                 <span>
                   {t('{{epochs}} epochs', {
-                    epochs: transfer.kind.endEpoch
-                      ? transfer.kind.endEpoch - currentEpoch
+                    epochs: kind.endEpoch
+                      ? formatNumber(kind.endEpoch - currentEpoch)
                       : '-',
                   })}
                 </span>
               </span>
-            }
+            )}
 
             {
               <span className="flex flex-col">
                 <span className="text-muted text-xs">{t('Assessed over')}</span>
                 <span>
-                  {t('{{epochs}} epochs', {
-                    epochs: transfer.kind.dispatchStrategy?.windowLength,
-                  })}
+                  {dispatchStrategy.windowLength === 1
+                    ? t('{{epochs}} epoch', {
+                        epochs: formatNumber(dispatchStrategy.windowLength),
+                      })
+                    : t('{{epochs}} epoch(s)', {
+                        epochs: formatNumber(dispatchStrategy.windowLength),
+                      })}
                 </span>
               </span>
             }
@@ -264,10 +332,10 @@ export const ActiveRewardCard = ({
               </span>
 
               <span className="flex items-center gap-1">
-                {transfer.kind.dispatchStrategy?.teamScope && (
+                {kind.dispatchStrategy?.teamScope && (
                   <Tooltip
                     description={
-                      <span>{transfer.kind.dispatchStrategy?.teamScope}</span>
+                      <span>{kind.dispatchStrategy?.teamScope}</span>
                     }
                   >
                     <span className="flex items-center p-1 rounded-full border border-gray-600">
@@ -275,12 +343,10 @@ export const ActiveRewardCard = ({
                     </span>
                   </Tooltip>
                 )}
-                {transfer.kind.dispatchStrategy?.individualScope && (
+                {kind.dispatchStrategy?.individualScope && (
                   <Tooltip
                     description={
-                      <span>
-                        {transfer.kind.dispatchStrategy?.individualScope}
-                      </span>
+                      <span>{kind.dispatchStrategy?.individualScope}</span>
                     }
                   >
                     <span className="flex items-center p-1 rounded-full border border-gray-600">
@@ -288,10 +354,11 @@ export const ActiveRewardCard = ({
                     </span>
                   </Tooltip>
                 )}
-                <StatusIndicator
+                {/* Shows transfer status */}
+                {/* <StatusIndicator
                   status={transfer.status}
                   reason={transfer.reason}
-                />
+                /> */}
               </span>
             </span>
 
@@ -301,32 +368,24 @@ export const ActiveRewardCard = ({
               </span>
               <span className="flex items-center gap-1">
                 {addDecimalsFormatNumber(
-                  transfer.kind.dispatchStrategy?.stakingRequirement || 0,
+                  kind.dispatchStrategy?.stakingRequirement || 0,
                   transfer.asset?.decimals || 0
                 )}{' '}
                 {transfer.asset?.symbol}
-                {/* <StatusIndicator
-                  status={transfer.status}
-                  reason={transfer.reason}
-                /> */}
               </span>
             </span>
 
             <span className="flex flex-col gap-1">
               <span className="flex items-center gap-1 text-muted">
-                {t('Notional TWAP Requirement')}{' '}
+                {t('Notional TWAP')}{' '}
               </span>
               <span className="flex items-center gap-1">
                 {addDecimalsFormatNumber(
-                  transfer.kind.dispatchStrategy
+                  kind.dispatchStrategy
                     ?.notionalTimeWeightedAveragePositionRequirement || 0,
                   transfer.asset?.decimals || 0
                 )}{' '}
                 {transfer.asset?.symbol}
-                {/* <StatusIndicator
-                  status={transfer.status}
-                  reason={transfer.reason}
-                /> */}
               </span>
             </span>
           </div>
@@ -345,8 +404,8 @@ const getGradientClasses = (d: DispatchMetric | undefined) => {
       };
     case DispatchMetric.DISPATCH_METRIC_LP_FEES_RECEIVED:
       return {
-        gradientClassName: 'from-vega-purple-500 to-vega-blue-400',
-        mainClassName: 'from-vega-purple-400 dark:from-vega-purple-600 to-20%',
+        gradientClassName: 'from-vega-green-500 to-vega-yellow-500',
+        mainClassName: 'from-vega-green-400 dark:from-vega-green-600 to-20%',
       };
     case DispatchMetric.DISPATCH_METRIC_MAKER_FEES_PAID:
       return {
@@ -354,11 +413,11 @@ const getGradientClasses = (d: DispatchMetric | undefined) => {
         mainClassName: 'from-vega-orange-400 dark:from-vega-orange-600 to-20%',
       };
     case DispatchMetric.DISPATCH_METRIC_MARKET_VALUE:
-      return {
-        gradientClassName: 'from-vega-green-500 to-vega-yellow-500',
-        mainClassName: 'from-vega-green-400 dark:from-vega-green-600 to-20%',
-      };
     case DispatchMetric.DISPATCH_METRIC_RELATIVE_RETURN:
+      return {
+        gradientClassName: 'from-vega-purple-500 to-vega-blue-400',
+        mainClassName: 'from-vega-purple-400 dark:from-vega-purple-600 to-20%',
+      };
     case DispatchMetric.DISPATCH_METRIC_RETURN_VOLATILITY:
       return {
         gradientClassName: 'from-vega-blue-500 to-vega-green-400',
@@ -367,8 +426,8 @@ const getGradientClasses = (d: DispatchMetric | undefined) => {
     case DispatchMetric.DISPATCH_METRIC_VALIDATOR_RANKING:
     default:
       return {
-        gradientClassName: 'from-vega-purple-500 to-vega-blue-400',
-        mainClassName: 'from-vega-purple-400 dark:from-vega-purple-600 to-20%',
+        gradientClassName: 'from-vega-pink-500 to-vega-purple-400',
+        mainClassName: 'from-vega-pink-400 dark:from-vega-pink-600 to-20%',
       };
   }
 };

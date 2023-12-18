@@ -32,8 +32,11 @@ export const RewardHoarderBonus = ({
     );
     return userTier;
   };
-
+  if (!tiers || tiers.length === 0) return null;
   const userTierIndex = getUserTier() - 1;
+
+  // TODO: extract qUSD from the API
+  const qAsset = 'qUSD';
 
   const safeProgress = (i: number) => {
     if (i < userTierIndex) return 100;
@@ -71,9 +74,7 @@ export const RewardHoarderBonus = ({
                         })}
                       </span>
                       <span className="text-muted text-xs">
-                        {t('{{epochs}} qUSD', {
-                          epochs: formatNumber(tier.minimum_quantum_balance),
-                        })}
+                        {formatNumber(tier.minimum_quantum_balance)} {qAsset}
                       </span>
                     </span>
 
@@ -147,7 +148,9 @@ export const RewardHoarderBonus = ({
 
         <div className="flex items-center gap-1">
           <VegaIcon name={VegaIconNames.STREAK} />
-          <span>{vestingDetails.quantumBalance} qUSD</span>
+          <span>
+            {formatNumber(vestingDetails.quantumBalance)} {qAsset}
+          </span>
         </div>
       </div>
     </>

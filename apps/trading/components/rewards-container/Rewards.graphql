@@ -196,3 +196,18 @@ query VestingDetails($partyId: ID!) {
     }
   }
 }
+
+query MarketForRewards($marketId: ID!) {
+  market(id: $marketId) {
+    tradableInstrument {
+      instrument {
+        id
+        name
+        code
+        metadata {
+          tags
+        }
+      }
+    }
+  }
+}
