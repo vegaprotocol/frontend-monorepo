@@ -154,7 +154,7 @@ def test_price_monitoring(simple_market, vega: VegaService, page: Page):
 
     vega.forward("10s")
     vega.wait_fn(1)
-    vega.wait_for_total_catchup() 
+    vega.wait_for_total_catchup()
     expect(
         page.get_by_test_id(price_monitoring_bounds_row).first.get_by_text(
             "135.44204 BTC"
@@ -191,7 +191,7 @@ def test_price_monitoring(simple_market, vega: VegaService, page: Page):
     )
     # commented out because we have an issue #4233
     # expect(page.get_by_text("Opening auction")).to_be_hidden()
-    
+
     #6002-MDET-009
     expect(
         page.get_by_test_id(liquidity_supplied).get_by_test_id(item_value)
@@ -205,8 +205,8 @@ def test_auction_uncross_fees(continuous_market, vega: VegaService, page: Page):
     page.get_by_test_id("Fills").click()
     expect(page.locator(COL_ID_FEE)).to_have_text("0.00 tDAI")
     page.locator(COL_ID_FEE).hover()
-    expect(page.get_by_test_id("fee-breakdown-tooltip")).to_have_text("If the market was suspendedIf the market is in monitoring auction, half of the infrastructure and liquidity fees will be paid.Infrastructure fee0.00 tDAILiquidity fee0.00 tDAIMaker fee0.00 tDAITotal fees0.00 tDAI")
+    expect(page.get_by_test_id("fee-breakdown-tooltip")).to_have_text("If the market was suspendedDuring auction, half the infrastructure and liquidity fees will be paid.Infrastructure fee0.00 tDAILiquidity fee0.00 tDAIMaker fee0.00 tDAITotal fees0.00 tDAI")
     change_keys(page,vega, "market_maker")
     expect(page.locator(COL_ID_FEE)).to_have_text("0.00 tDAI")
     page.locator(COL_ID_FEE).hover()
-    expect(page.get_by_test_id("fee-breakdown-tooltip")).to_have_text("If the market was suspendedIf the market is in monitoring auction, half of the infrastructure and liquidity fees will be paid.Infrastructure fee0.00 tDAILiquidity fee0.00 tDAIMaker fee0.00 tDAITotal fees0.00 tDAI")
+    expect(page.get_by_test_id("fee-breakdown-tooltip")).to_have_text("If the market was suspendedDuring auction, half the infrastructure and liquidity fees will be paid.Infrastructure fee0.00 tDAILiquidity fee0.00 tDAIMaker fee0.00 tDAITotal fees0.00 tDAI")
