@@ -350,10 +350,10 @@ def test_fees_page_discount_program_discount(tier, discount_program, my_volume_t
 
 @pytest.mark.parametrize("tier, discount_program, fees_after_discount", [
     (1, "volume", "9.045%"),
-    #(2, "volume", "8.04%"),
-    #(1, "referral", "9.045%"),
-    #(2, "referral", "8.04%"),
-    #(2, "combo", "6.432%")
+    (2, "volume", "8.04%"),
+    (1, "referral", "9.045%"),
+    (2, "referral", "8.04%"),
+    (2, "combo", "6.432%")
 ])
 @pytest.mark.usefixtures("page", "risk_accepted", "auth")
 def test_fees_page_discount_program_fees_by_market(tier, discount_program, fees_after_discount, vega_instance, page: Page):
