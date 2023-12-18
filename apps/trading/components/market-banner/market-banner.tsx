@@ -192,7 +192,7 @@ const BannerQueue = ({
       onClose={onClose}
       data-testid="market-banner"
     >
-      <div className="flex justify-between">
+      <div className="flex items-center justify-between">
         {content}
         {showCount ? (
           <p>
