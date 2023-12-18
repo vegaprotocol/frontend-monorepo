@@ -5,7 +5,6 @@ from playwright.sync_api import expect, Page
 @pytest.mark.usefixtures("page", "continuous_market", "auth", "risk_accepted")
 def test_market_selector(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
-    page.pause()
     expect(page.get_by_test_id("market-selector")).not_to_be_visible()
     page.get_by_test_id("header-title").click()
     # 6001-MARK-066
