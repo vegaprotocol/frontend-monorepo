@@ -38,6 +38,7 @@ import { useAssetsMapProvider } from '@vegaprotocol/assets';
 import { ActiveRewards } from './active-rewards';
 import { ActivityStreak } from './streaks/activity-streaks';
 import { RewardHoarderBonus } from './streaks/reward-hoarder-bonus';
+import classNames from 'classnames';
 
 const ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA = [
   'bf1e88d19db4b3ca0d1d5bdb73718a01686b18cf731ca26adedf3c8b83802bba', // USDT mainnet
@@ -140,74 +141,98 @@ export const RewardsContainer = () => {
   ]);
 
   return (
-    <div className="grid auto-rows-min grid-cols-6 gap-3">
-      {/* Always show reward information for vega */}
-      <Card
-        key={params.reward_asset}
-        title={t('Vega Reward pot')}
-        className="lg:col-span-3 xl:col-span-2"
-        loading={loading}
-        highlight={true}
-      >
-        <RewardPot
-          pubKey={pubKey}
-          accounts={accounts}
-          assetId={params.reward_asset}
-          vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
-        />
-      </Card>
-      <Card
-        title={t('Vesting')}
-        className="lg:col-span-3 xl:col-span-2"
-        loading={loading}
-      >
-        <Vesting
-          pubKey={pubKey}
-          baseRate={params.rewards_vesting_baseRate}
-          multiplier={
-            rewardsData?.party?.activityStreak?.rewardVestingMultiplier
-          }
-        />
-      </Card>
-      <Card
-        title={t('Rewards multipliers')}
-        className="lg:col-span-3 xl:col-span-2"
-        loading={loading}
-        highlight={true}
-      >
-        <Multipliers
-          pubKey={pubKey}
-          hoarderMultiplier={
-            rewardsData?.party?.vestingStats?.rewardBonusMultiplier
-          }
-          streakMultiplier={
-            rewardsData?.party?.activityStreak?.rewardDistributionMultiplier
-          }
-        />
-      </Card>
+    <div className="grid auto-rows-min gap-3">
+      <div className="grid auto-rows-min grid-cols-6 gap-3">
+        {/* Always show reward information for vega */}
+        <Card
+          key={params.reward_asset}
+          title={t('Vega Reward pot')}
+          className="lg:col-span-3 xl:col-span-2"
+          loading={loading}
+          highlight={true}
+        >
+          <RewardPot
+            pubKey={pubKey}
+            accounts={accounts}
+            assetId={params.reward_asset}
+            vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
+          />
+        </Card>
+        <Card
+          title={t('Vesting')}
+          className="lg:col-span-3 xl:col-span-2"
+          loading={loading}
+        >
+          <Vesting
+            pubKey={pubKey}
+            baseRate={params.rewards_vesting_baseRate}
+            multiplier={
+              rewardsData?.party?.activityStreak?.rewardVestingMultiplier
+            }
+          />
+        </Card>
+        <Card
+          title={t('Rewards multipliers')}
+          className="lg:col-span-3 xl:col-span-2"
+          loading={loading}
+          highlight={true}
+        >
+          <Multipliers
+            pubKey={pubKey}
+            hoarderMultiplier={
+              rewardsData?.party?.vestingStats?.rewardBonusMultiplier
+            }
+            streakMultiplier={
+              rewardsData?.party?.activityStreak?.rewardDistributionMultiplier
+            }
+          />
+        </Card>
 
-      {/* Show all other reward pots, most of the time users will not have other rewards */}
-      {assets
-        .filter((assetId) => assetId !== params.reward_asset)
-        .map((assetId) => {
-          const asset = assetMap ? assetMap[assetId] : null;
+        {/* Show all other reward pots, most of the time users will not have other rewards */}
+        {assets
+          .filter((assetId) => assetId !== params.reward_asset)
+          .map((assetId) => {
+            const asset = assetMap ? assetMap[assetId] : null;
 
-          if (!asset) return null;
+            if (!asset) return null;
 
-          // Following code is for mitigating an issue due to a core bug where locked and vesting
-          // balances were incorrectly increased for infrastructure rewards for USDT on mainnet
-          //
-          // We don't want to incorrectly show the wring locked/vesting values, but we DO want to
-          // show the user that they have rewards available to withdraw
-          if (ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA.includes(asset.id)) {
-            const accountsForAsset = rewardAccountsAssetMap[asset.id];
-            const vestedAccount = accountsForAsset?.find(
-              (a) => a.type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS
-            );
+            // Following code is for mitigating an issue due to a core bug where locked and vesting
+            // balances were incorrectly increased for infrastructure rewards for USDT on mainnet
+            //
+            // We don't want to incorrectly show the wring locked/vesting values, but we DO want to
+            // show the user that they have rewards available to withdraw
+            if (ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA.includes(asset.id)) {
+              const accountsForAsset = rewardAccountsAssetMap[asset.id];
+              const vestedAccount = accountsForAsset?.find(
+                (a) => a.type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS
+              );
 
-            // No vested rewards available to withdraw, so skip over USDT
-            if (!vestedAccount || Number(vestedAccount.balance) <= 0) {
-              return null;
+              // No vested rewards available to withdraw, so skip over USDT
+              if (!vestedAccount || Number(vestedAccount.balance) <= 0) {
+                return null;
+              }
+
+              return (
+                <Card
+                  key={assetId}
+                  title={t('{{assetSymbol}} Reward pot', {
+                    assetSymbol: asset.symbol,
+                  })}
+                  className="lg:col-span-3 xl:col-span-2"
+                  loading={loading}
+                >
+                  <RewardPot
+                    pubKey={pubKey}
+                    accounts={accounts}
+                    assetId={assetId}
+                    // Ensure that these values are shown as 0
+                    vestingBalancesSummary={{
+                      lockedBalances: [],
+                      vestingBalances: [],
+                    }}
+                  />
+                </Card>
+              );
             }
 
             return (
@@ -223,74 +248,68 @@ export const RewardsContainer = () => {
                   pubKey={pubKey}
                   accounts={accounts}
                   assetId={assetId}
-                  // Ensure that these values are shown as 0
-                  vestingBalancesSummary={{
-                    lockedBalances: [],
-                    vestingBalances: [],
-                  }}
+                  vestingBalancesSummary={
+                    rewardsData?.party?.vestingBalancesSummary
+                  }
                 />
               </Card>
             );
-          }
-
-          return (
-            <Card
-              key={assetId}
-              title={t('{{assetSymbol}} Reward pot', {
-                assetSymbol: asset.symbol,
-              })}
-              className="lg:col-span-3 xl:col-span-2"
-              loading={loading}
-            >
-              <RewardPot
-                pubKey={pubKey}
-                accounts={accounts}
-                assetId={assetId}
-                vestingBalancesSummary={
-                  rewardsData?.party?.vestingBalancesSummary
-                }
-              />
-            </Card>
-          );
-        })}
-      {pubKey && streaks && (
-        <Card title={t('Activity Streak')} className="lg:col-span-full">
-          <span className="flex flex-col mx-8">
-            {streaks.map((streak, i) => (
-              <ActivityStreak
-                tiers={activityStreakBenefitTiers.tiers}
-                streak={streak}
-                key={i}
-              />
-            ))}
-          </span>
+          })}
+      </div>
+      <div className="grid auto-rows-min grid-cols-6 gap-3">
+        {pubKey && streaks && (
+          <Card
+            title={t('Activity Streak')}
+            className={classNames({
+              'lg:col-span-6 xl:col-span-3':
+                activityStreakBenefitTiers.tiers.length <= 4,
+              'col-span-6': activityStreakBenefitTiers.tiers.length > 4,
+            })}
+          >
+            <span className="flex flex-col mx-8">
+              {streaks.map((streak, i) => (
+                <ActivityStreak
+                  tiers={activityStreakBenefitTiers.tiers}
+                  streak={streak}
+                  key={i}
+                />
+              ))}
+            </span>
+          </Card>
+        )}
+        {pubKey && streaks && (
+          <Card
+            title={t('Reward Hoarder Bonus')}
+            className={classNames({
+              'lg:col-span-6 xl:col-span-3':
+                vestingBenefitTiers.tiers.length <= 4,
+              'col-span-6': vestingBenefitTiers.tiers.length > 4,
+            })}
+          >
+            <span className="flex flex-col mx-8">
+              {streaks.map((streak, i) => (
+                <RewardHoarderBonus
+                  tiers={vestingBenefitTiers.tiers}
+                  vestingDetails={vestingDetails?.party?.vestingStats}
+                  key={i}
+                />
+              ))}
+            </span>
+          </Card>
+        )}
+        <ActiveRewards currentEpoch={Number(epochData?.epoch.id)} />
+        <Card
+          title={t('Rewards history')}
+          className="lg:col-span-full"
+          loading={rewardsLoading}
+        >
+          <RewardsHistoryContainer
+            epoch={Number(epochData?.epoch.id)}
+            pubKey={pubKey}
+            assets={assetMap}
+          />
         </Card>
-      )}
-      {pubKey && streaks && (
-        <Card title={t('Reward Hoarder Bonus')} className="lg:col-span-full">
-          <span className="flex flex-col mx-8">
-            {streaks.map((streak, i) => (
-              <RewardHoarderBonus
-                tiers={vestingBenefitTiers.tiers}
-                vestingDetails={vestingDetails?.party?.vestingStats}
-                key={i}
-              />
-            ))}
-          </span>
-        </Card>
-      )}
-      <ActiveRewards currentEpoch={Number(epochData?.epoch.id)} />
-      <Card
-        title={t('Rewards history')}
-        className="lg:col-span-full"
-        loading={rewardsLoading}
-      >
-        <RewardsHistoryContainer
-          epoch={Number(epochData?.epoch.id)}
-          pubKey={pubKey}
-          assets={assetMap}
-        />
-      </Card>
+      </div>
     </div>
   );
 };
