@@ -1,6 +1,5 @@
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
 
 from conftest import init_page, init_vega, risk_accepted_setup
 
