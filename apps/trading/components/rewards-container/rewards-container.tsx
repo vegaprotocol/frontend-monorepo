@@ -260,11 +260,14 @@ export const RewardsContainer = () => {
         {pubKey && streaks && (
           <Card
             title={t('Activity Streak')}
-            className={classNames({
-              'lg:col-span-6 xl:col-span-3':
-                activityStreakBenefitTiers.tiers.length <= 4,
-              'col-span-6': activityStreakBenefitTiers.tiers.length > 4,
-            })}
+            className={classNames(
+              {
+                'lg:col-span-6 xl:col-span-3':
+                  activityStreakBenefitTiers.tiers.length <= 4,
+                'xl:col-span-6': activityStreakBenefitTiers.tiers.length > 4,
+              },
+              'hidden md:block'
+            )}
           >
             <span className="flex flex-col mx-8">
               {streaks.map((streak, i) => (
@@ -280,27 +283,27 @@ export const RewardsContainer = () => {
         {pubKey && streaks && (
           <Card
             title={t('Reward Hoarder Bonus')}
-            className={classNames({
-              'lg:col-span-6 xl:col-span-3':
-                vestingBenefitTiers.tiers.length <= 4,
-              'col-span-6': vestingBenefitTiers.tiers.length > 4,
-            })}
+            className={classNames(
+              {
+                'lg:col-span-6 xl:col-span-3':
+                  vestingBenefitTiers.tiers.length <= 4,
+                'xl:col-span-6': vestingBenefitTiers.tiers.length > 4,
+              },
+              'hidden md:block'
+            )}
           >
             <span className="flex flex-col mx-8">
-              {streaks.map((streak, i) => (
-                <RewardHoarderBonus
-                  tiers={vestingBenefitTiers.tiers}
-                  vestingDetails={vestingDetails?.party?.vestingStats}
-                  key={i}
-                />
-              ))}
+              <RewardHoarderBonus
+                tiers={vestingBenefitTiers.tiers}
+                vestingDetails={vestingDetails?.party?.vestingStats}
+              />
             </span>
           </Card>
         )}
         <ActiveRewards currentEpoch={Number(epochData?.epoch.id)} />
         <Card
           title={t('Rewards history')}
-          className="lg:col-span-full"
+          className="lg:col-span-full hidden md:block"
           loading={rewardsLoading}
         >
           <RewardsHistoryContainer

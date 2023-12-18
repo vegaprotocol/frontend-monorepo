@@ -318,7 +318,7 @@ export const ActiveRewardCard = ({
           </div>
 
           {dispatchStrategy?.dispatchMetric && (
-            <span className="text-muted text-sm">
+            <span className="text-muted text-sm h-[2rem]">
               {t(DispatchMetricDescription[dispatchStrategy?.dispatchMetric])}
             </span>
           )}
