@@ -105,8 +105,6 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
     yesLPPercentage,
     yesTokens,
     noTokens,
-    yesEquityLikeShareWeight,
-    noEquityLikeShareWeight,
     totalEquityLikeShareWeight,
     requiredMajorityPercentage,
     requiredMajorityLPPercentage,
@@ -202,42 +200,17 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
                 <div className="flex items-center gap-1">
                   <span>{t('liquidityProviderVotesFor')}:</span>
                   <Tooltip
-                    description={formatNumber(
-                      yesEquityLikeShareWeight,
-                      defaultDP
-                    )}
+                    description={
+                      <span>{yesLPPercentage.toFixed(defaultDP)}%</span>
+                    }
                   >
-                    <button>
-                      <CompactVotes number={yesEquityLikeShareWeight} />
-                    </button>
+                    <button>{yesLPPercentage.toFixed(0)}%</button>
                   </Tooltip>
-                  <span>
-                    (
-                    <Tooltip
-                      description={
-                        <span>{yesLPPercentage.toFixed(defaultDP)}%</span>
-                      }
-                    >
-                      <button>{yesLPPercentage.toFixed(0)}%</button>
-                    </Tooltip>
-                    )
-                  </span>
                 </div>
 
                 <div className="flex items-center gap-1">
                   <span>{t('liquidityProviderVotesAgainst')}:</span>
-                  <Tooltip
-                    description={formatNumber(
-                      noEquityLikeShareWeight,
-                      defaultDP
-                    )}
-                  >
-                    <button>
-                      <CompactVotes number={noEquityLikeShareWeight} />
-                    </button>
-                  </Tooltip>
                   <span>
-                    (
                     <Tooltip
                       description={
                         <span>{noLPPercentage.toFixed(defaultDP)}%</span>
@@ -245,7 +218,6 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
                     >
                       <button>{noLPPercentage.toFixed(0)}%</button>
                     </Tooltip>
-                    )
                   </span>
                 </div>
               </div>
@@ -282,13 +254,8 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
                       defaultDP
                     )}
                   >
-                    <button>
-                      <CompactVotes number={totalEquityLikeShareWeight} />
-                    </button>
+                    <span>{totalEquityLikeShareWeight.toString()}%</span>
                   </Tooltip>
-                  <span>
-                    ({totalEquityLikeShareWeight.toFixed(defaultDP)}%)
-                  </span>
                 </div>
               </div>
             </section>
