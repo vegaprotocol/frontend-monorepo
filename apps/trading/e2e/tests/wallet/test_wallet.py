@@ -16,6 +16,7 @@ expire = "expire"
 api_request_match = r"http://localhost:\d+/api/v2/requests"
 
 
+
 @pytest.fixture(scope="module")
 def vega(request):
     with init_vega(request) as vega:
@@ -25,6 +26,7 @@ def vega(request):
 @pytest.fixture(scope="module")
 def continuous_market(vega):
     return setup_continuous_market(vega)
+
 
 
 def handle_route_connection_lost(route: Route, request):
@@ -58,13 +60,18 @@ def handle_route_connection_rejected(route: Route, request):
         route.continue_()
 
 
-def assert_connection_approve(route: Route, request, page: Page):
+def assert_connection_approve(route, page: Page):
+    request = route.request
     if request.method == "POST" and re.match(api_request_match, request.url):
-        expect(page.get_by_test_id("toast-content")).to_have_text(
-            "Please go to your Vega wallet application and approve or reject the transaction."
-        )
+        try:
+            expect(page.get_by_test_id("toast-content")).to_have_text(
+                "Action requiredPlease go to your Vega wallet application and approve or reject the transaction."
+            )
+        finally:
+            route.continue_()
     else:
-        route.continue_()
+        route.continue_()  # Continue other requests
+
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
@@ -73,6 +80,10 @@ def test_wallet_connection_error(continuous_market, page: Page):
     page.route("**/*", handle_route_connection_lost)
     page.get_by_test_id("connect-vega-wallet").click()
     page.get_by_test_id("connector-jsonRpc").click()
+    expect(page.get_by_test_id("wallet-dialog-title")).to_have_text(
+        "Something went wrong"
+    )
+
     expect(page.get_by_test_id("wallet-dialog-title")).to_have_text(
         "Something went wrong"
     )
@@ -88,6 +99,9 @@ def test_wallet_connection_rejected(continuous_market, page: Page):
     page.route("**/*", handle_route_connection_rejected)
     page.get_by_test_id("connect-vega-wallet").click()
     page.get_by_test_id("connector-jsonRpc").click()
+    expect(page.get_by_test_id("dialog-content").nth(1)).to_have_text(
+        "User errorthe user rejected the wallet connectionTry againAbout the Vega wallet  | Supported browsers "
+    )
     expect(page.get_by_test_id("dialog-content").nth(1)).to_have_text(
         "User errorthe user rejected the wallet connectionTry againAbout the Vega wallet  | Supported browsers "
     )
@@ -127,8 +141,13 @@ def test_wallet_connection_approve(continuous_market, page: Page):
     # 0002-WCON-005
     # 0002-WCON-007
     # 0002-WCON-009
+
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(order_size).fill("10")
     page.get_by_test_id(order_price).fill("120")
-    page.route("**/*", assert_connection_approve)
+
+    page.route("**/*", lambda route: assert_connection_approve(route, page))
     page.get_by_test_id(place_order).click()
+    expect(page.get_by_test_id("toast-content")).to_have_text(
+        "Action requiredPlease go to your Vega wallet application and approve or reject the transaction."
+    )
