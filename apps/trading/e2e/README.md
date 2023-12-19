@@ -24,6 +24,12 @@ poetry shell
 
 5. **Install python dependencies**
 
+To make sure you are on the latest version of our market-sim branch.
+
+```bash
+poetry update vega-sim
+```
+
 ```bash
 poetry install
 ```
