@@ -113,7 +113,7 @@ def local_server(pytestconfig):
     return pytestconfig.getoption("--local-server")
 
 @contextmanager
-def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRequest, local_server: bool):
+def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRequest, local_server: bool = False):
     server_port = "4200" if local_server else str(vega.console_port)
     with browser.new_context(
         viewport={"width": 1920, "height": 1080},
