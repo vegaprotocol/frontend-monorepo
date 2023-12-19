@@ -4,7 +4,7 @@
 /** Load AlphaLyrae font */
 @font-face {
   font-family: AlphaLyrae;
-  src: url('/AlphaLyrae-Medium.woff2') format('woff2');
+  src: url('/AlphaLyrae.woff2') format('woff2');
 }
 
 @tailwind base;
