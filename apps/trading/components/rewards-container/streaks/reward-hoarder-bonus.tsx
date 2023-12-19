@@ -28,8 +28,18 @@ export const RewardHoarderBonus = ({
       i++;
     } while (
       i < tiers.length &&
-      tiers[i].minimum_quantum_balance <= vestingDetails.quantumBalance
+      new BigNumber(tiers[userTier].minimum_quantum_balance).isLessThan(
+        vestingDetails.quantumBalance
+      )
     );
+    if (
+      i === tiers.length &&
+      new BigNumber(
+        tiers[userTier].minimum_quantum_balance
+      ).isLessThanOrEqualTo(vestingDetails.quantumBalance)
+    ) {
+      userTier = i;
+    }
     return userTier;
   };
   if (!tiers || tiers.length === 0) return null;

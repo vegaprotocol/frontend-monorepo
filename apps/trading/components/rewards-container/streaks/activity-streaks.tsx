@@ -43,8 +43,14 @@ export const ActivityStreak = ({
       i++;
     } while (
       i < tiers.length &&
-      tiers[i].minimum_activity_streak <= streak.activeFor
+      tiers[userTier].minimum_activity_streak < streak.activeFor
     );
+    if (
+      i === tiers.length &&
+      tiers[userTier].minimum_activity_streak <= streak.activeFor
+    ) {
+      userTier = i;
+    }
     return userTier;
   };
 
@@ -65,7 +71,7 @@ export const ActivityStreak = ({
   };
 
   const epochsStreak =
-    tiers[userTierIndex].minimum_activity_streak - streak.activeFor >= 0
+    tiers[userTierIndex]?.minimum_activity_streak - streak.activeFor >= 0
       ? tiers[userTierIndex].minimum_activity_streak - streak.activeFor
       : 0;
 
