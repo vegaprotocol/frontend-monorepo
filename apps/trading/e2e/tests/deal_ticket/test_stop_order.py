@@ -261,8 +261,8 @@ def test_submit_stop_limit_order_cancel(
 
 class TestStopOcoValidation:
     @pytest.fixture(scope="class")
-    def vega(self, request):
-        with init_vega(request) as vega:
+    def vega(self, request, local_server):
+        with init_vega(request, local_server) as vega:
             yield vega
 
     @pytest.fixture(scope="class")

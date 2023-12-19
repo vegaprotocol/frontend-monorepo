@@ -11,8 +11,8 @@ import logging
 logger = logging.getLogger()
 
 @pytest.fixture(scope="class")
-def vega():
-    with init_vega() as vega:
+def vega(local_server):
+    with init_vega(local_server) as vega:
         yield vega
 
 @pytest.fixture(scope="class")

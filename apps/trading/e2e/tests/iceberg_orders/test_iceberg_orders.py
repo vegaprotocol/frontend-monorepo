@@ -13,8 +13,8 @@ def hover_and_assert_tooltip(page: Page, element_text):
 
 class TestIcebergOrdersValidations:
     @pytest.fixture(scope="class")
-    def vega(self, request):
-        with init_vega(request) as vega:
+    def vega(self, request, local_server):
+        with init_vega(request, local_server) as vega:
             yield vega
 
     @pytest.fixture(scope="class")

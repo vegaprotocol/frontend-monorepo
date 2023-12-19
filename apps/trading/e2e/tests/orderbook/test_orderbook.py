@@ -8,8 +8,8 @@ from wallet_config import MM_WALLET, MM_WALLET2
 
 
 @pytest.fixture(scope="module")
-def vega():
-    with init_vega() as vega:
+def vega(local_server):
+    with init_vega(local_server) as vega:
         yield vega
 
 

@@ -8,7 +8,7 @@ import docker
 import http.server
 
 from contextlib import contextmanager
-from vega_sim.null_service import VegaServiceNull
+from vega_sim.null_service import VegaServiceNull, Ports
 from playwright.sync_api import Browser, Page
 from config import console_image_name, vega_version
 from datetime import datetime, timedelta
@@ -58,7 +58,12 @@ class CustomHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
 
 # Start VegaServiceNull
 @contextmanager
-def init_vega(request=None):
+def init_vega(request=None, local_server: bool = False):
+    port_config = None
+    if local_server:
+        port_config = {
+            Ports.DATA_NODE_REST: 8001,
+        }
     default_seconds = 1
     seconds_per_block = default_seconds
     if request and hasattr(request, "param"):
@@ -70,21 +75,26 @@ def init_vega(request=None):
     )
     logger.info(f"Using console image: {console_image_name}")
     logger.info(f"Using vega version: {vega_version}")
-    with VegaServiceNull(
-        run_with_console=False,
-        launch_graphql=False,
-        retain_log_files=True,
-        use_full_vega_wallet=True,
-        store_transactions=True,
-        transactions_per_block=1000,
-        seconds_per_block=seconds_per_block,
-        genesis_time= datetime.now() - timedelta(days=1),
-    ) as vega:
+
+    vega_service_args = {
+        "run_with_console": False,
+        "launch_graphql": False,
+        "retain_log_files": True,
+        "use_full_vega_wallet": True,
+        "store_transactions": True,
+        "transactions_per_block": 1000,
+        "seconds_per_block": seconds_per_block,
+        "genesis_time": datetime.now() - timedelta(days=1)
+    }
+
+    if port_config is not None:
+        vega_service_args["port_config"] = port_config
+
+    with VegaServiceNull(**vega_service_args) as vega:
         try:
             container = docker_client.containers.run(
                 console_image_name, detach=True, ports={"80/tcp": vega.console_port}
             )
-            # docker setup
             logger.info(
                 f"Container {container.id} started",
                 extra={"worker_id": os.environ.get("PYTEST_XDIST_WORKER")},
@@ -97,7 +107,6 @@ def init_vega(request=None):
         finally:
             logger.info(f"Stopping container {container.id}")
             container.stop()
-            # Remove the container
             logger.info(f"Removing container {container.id}")
             container.remove()
 
@@ -166,8 +175,8 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
 
 
 @pytest.fixture
-def vega(request):
-    with init_vega(request) as vega:
+def vega(request, local_server):
+    with init_vega(request, local_server) as vega:
         yield vega
 
 

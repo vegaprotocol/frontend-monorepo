@@ -10,8 +10,8 @@ COL_ID_USED = ".ag-center-cols-container [col-id='used'] .ag-cell-value"
 
 
 @pytest.fixture(scope="module")
-def vega(request):
-    with init_vega(request) as vega:
+def vega(request, local_server):
+    with init_vega(request, local_server) as vega:
         yield vega
 
 
