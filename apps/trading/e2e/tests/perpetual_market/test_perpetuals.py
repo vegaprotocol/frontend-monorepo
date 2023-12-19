@@ -109,14 +109,15 @@ def test_perps_market_termination_proposed(page: Page, vega: VegaService):
         approve_proposal=True,
         forward_time_to_enactment=False,
     )
+
     vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     banner_text = page.get_by_test_id(
-        f"termination-warning-banner-{perpetual_market}"
+        f"update-state-banner-{perpetual_market}"
     ).text_content()
     pattern = re.compile(
-        r"Trading on Market BTC:DAI_Perpetual may stop on \d{2} [A-Za-z]+\. There is open proposal to close this market\.Proposed final price is 100\.00 BTC\.View proposal"
+        r"Trading on market BTC:DAI_Perpetual may stop on \d{2} [A-Za-z]+\. There is an open proposal to close this market\.Proposed final price is 100\.00 BTC\. View proposal"
     )
     assert pattern.search(
         banner_text
