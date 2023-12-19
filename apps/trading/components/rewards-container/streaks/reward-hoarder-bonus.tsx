@@ -65,34 +65,36 @@ export const RewardHoarderBonus = ({
           >
             {tiers.map((tier, index) => {
               return (
-                <div key={index} className="flex justify-end -mr-10">
-                  <span className="flex flex-col items-center gap-1">
-                    <span className="flex flex-col items-center font-medium">
-                      <span className="text-sm">
-                        {t('Tier {{tier}}', {
-                          tier: index + 1,
-                        })}
+                <div key={index} className="flex justify-end -mr-[2.95rem]">
+                  <span className="flex flex-col items-center gap-4 justify-between">
+                    <span className="flex flex-col items-center gap-1">
+                      <span className="flex flex-col items-center font-medium">
+                        <span className="text-sm">
+                          {t('Tier {{tier}}', {
+                            tier: index + 1,
+                          })}
+                        </span>
+                        <span className="text-muted text-xs">
+                          {formatNumber(tier.minimum_quantum_balance)} {qAsset}
+                        </span>
                       </span>
-                      <span className="text-muted text-xs">
-                        {formatNumber(tier.minimum_quantum_balance)} {qAsset}
-                      </span>
-                    </span>
 
-                    <span
-                      className={classNames(
-                        'text-xs flex flex-col items-center justify-center px-2 py-1 rounded-lg text-white border',
-                        {
-                          'border-pink-600 bg-pink-900': index % 3 === 0,
-                          'border-purple-600 bg-purple-900': index % 3 === 1,
-                          'border-blue-600 bg-blue-900': index % 3 === 2,
-                        }
-                      )}
-                    >
-                      <span>{t('Reward bonus')}</span>
-                      <span>
-                        {t('{{reward}}x', {
-                          reward: tier.reward_multiplier,
-                        })}
+                      <span
+                        className={classNames(
+                          'text-xs flex flex-col items-center justify-center px-2 py-1 rounded-lg text-white border',
+                          {
+                            'border-pink-600 bg-pink-900': index % 3 === 0,
+                            'border-purple-600 bg-purple-900': index % 3 === 1,
+                            'border-blue-600 bg-blue-900': index % 3 === 2,
+                          }
+                        )}
+                      >
+                        <span>{t('Reward bonus')}</span>
+                        <span>
+                          {t('{{reward}}x', {
+                            reward: tier.reward_multiplier,
+                          })}
+                        </span>
                       </span>
                     </span>
 
@@ -103,7 +105,7 @@ export const RewardHoarderBonus = ({
                           'text-purple-500': index % 3 === 1,
                           'text-blue-500': index % 3 === 2,
                         },
-                        'text-xl'
+                        'text-xl leading-[0]'
                       )}
                     >
                       •

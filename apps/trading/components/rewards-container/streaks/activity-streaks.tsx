@@ -84,46 +84,47 @@ export const ActivityStreak = ({
           >
             {tiers.map((tier, index) => {
               return (
-                <div key={index} className="flex justify-end -mr-10">
-                  <span className="flex flex-col items-center gap-1">
-                    <span className="flex flex-col items-center font-medium">
-                      <span className="text-sm">
-                        {t('Tier {{tier}}', {
-                          tier: index + 1,
-                        })}
+                <div key={index} className="flex justify-end -mr-[2.85rem]">
+                  <span className="flex flex-col items-center gap-4 justify-between">
+                    <span className="flex flex-col items-center gap-1">
+                      <span className="flex flex-col items-center font-medium">
+                        <span className="text-sm">
+                          {t('Tier {{tier}}', {
+                            tier: index + 1,
+                          })}
+                        </span>
+                        <span className="text-muted text-xs">
+                          {t('{{epochs}} epochs', {
+                            epochs: formatNumber(tier.minimum_activity_streak),
+                          })}
+                        </span>
                       </span>
-                      <span className="text-muted text-xs">
-                        {t('{{epochs}} epochs', {
-                          epochs: formatNumber(tier.minimum_activity_streak),
-                        })}
+
+                      <span
+                        className={classNames(
+                          'text-xs flex flex-col items-center justify-center px-2 py-1 rounded-lg text-white border',
+                          {
+                            'border-pink-600 bg-pink-900':
+                              index === 0 || index === 3,
+                            'border-purple-600 bg-purple-900':
+                              index === 1 || index === 4,
+                            'border-blue-600 bg-blue-900':
+                              index === 2 || index === 5,
+                          }
+                        )}
+                      >
+                        <span>
+                          {t('Reward {{reward}}x', {
+                            reward: tier.reward_multiplier,
+                          })}
+                        </span>
+                        <span>
+                          {t('Vesting {{vesting}}x', {
+                            vesting: tier.vesting_multiplier,
+                          })}
+                        </span>
                       </span>
                     </span>
-
-                    <span
-                      className={classNames(
-                        'text-xs flex flex-col items-center justify-center px-2 py-1 rounded-lg text-white border',
-                        {
-                          'border-pink-600 bg-pink-900':
-                            index === 0 || index === 3,
-                          'border-purple-600 bg-purple-900':
-                            index === 1 || index === 4,
-                          'border-blue-600 bg-blue-900':
-                            index === 2 || index === 5,
-                        }
-                      )}
-                    >
-                      <span>
-                        {t('Reward {{reward}}x', {
-                          reward: tier.reward_multiplier,
-                        })}
-                      </span>
-                      <span>
-                        {t('Vesting {{vesting}}x', {
-                          vesting: tier.vesting_multiplier,
-                        })}
-                      </span>
-                    </span>
-
                     <span
                       className={classNames(
                         {
@@ -131,7 +132,7 @@ export const ActivityStreak = ({
                           'text-purple-500': index % 3 === 1,
                           'text-blue-500': index % 3 === 2,
                         },
-                        'text-xl'
+                        'text-xl leading-[0]'
                       )}
                     >
                       •
