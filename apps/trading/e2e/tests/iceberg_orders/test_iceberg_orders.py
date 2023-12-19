@@ -66,16 +66,17 @@ def test_iceberg_open_order(continuous_market, vega: VegaService, page: Page):
     page.wait_for_selector(".ag-center-cols-container .ag-row")
 
     expect(
-        page.locator(".ag-center-cols-container .ag-row [col-id='remaining']")
+        page.locator(".ag-center-cols-container .ag-row [col-id='remaining']").first
     ).to_have_text("99")
     expect(
-        page.locator(".ag-center-cols-container .ag-row [col-id='size']")
+        page.locator(".ag-center-cols-container .ag-row [col-id='size']").first
     ).to_have_text("-102")
+    page.pause()
     expect(
-        page.locator(".ag-center-cols-container .ag-row [col-id='type'] ")
+        page.locator(".ag-center-cols-container .ag-row [col-id='type'] ").first
     ).to_have_text("Limit (Iceberg)")
     expect(
-        page.locator(".ag-center-cols-container .ag-row [col-id='status']")
+        page.locator(".ag-center-cols-container .ag-row [col-id='status']").first
     ).to_have_text("Active")
     expect(page.get_by_test_id("price-10100000")).to_be_visible
     expect(page.get_by_test_id("ask-vol-10100000")).to_have_text("3")
