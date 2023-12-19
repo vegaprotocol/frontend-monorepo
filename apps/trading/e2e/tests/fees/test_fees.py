@@ -111,8 +111,8 @@ def vega_referral_and_volume_discount(request):
 
 
 @pytest.fixture
-def page(vega_instance, browser, request):
-    with init_page(vega_instance, browser, request) as page_instance:
+def page(vega_instance, browser, request, local_server):
+    with init_page(vega_instance, browser, request, local_server) as page_instance:
         yield page_instance
 
 
