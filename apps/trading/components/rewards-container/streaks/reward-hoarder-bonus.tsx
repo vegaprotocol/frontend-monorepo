@@ -111,7 +111,7 @@ export const RewardHoarderBonus = ({
                           'text-green-500': index % 6 === 4,
                           'text-yellow-500': index % 6 === 5,
                         },
-                        'text-xl leading-[0]'
+                        'leading-[0] font-sans text-[48px]'
                       )}
                     >
                       •

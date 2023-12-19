@@ -13,7 +13,7 @@ export default function Document() {
         {/* preload fonts */}
         <link
           rel="preload"
-          href="/AlphaLyrae-Medium.woff"
+          href="/AlphaLyrae.woff2"
           as="font"
           type="font/woff"
         />

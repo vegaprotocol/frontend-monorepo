@@ -234,7 +234,7 @@ export const ActiveRewardCard = ({
             </div>
 
             <div className="flex flex-col gap-2 items-center text-center">
-              <span className="flex flex-col gap-1 font-alpha liga text-2xl shrink-1 text-center">
+              <span className="flex flex-col gap-1 text-2xl shrink-1 text-center font-alpha calt">
                 <span>
                   {addDecimalsFormatNumber(
                     transferNode.transfer.amount,
