@@ -269,7 +269,7 @@ export const RewardsContainer = () => {
               'hidden md:block'
             )}
           >
-            <span className="flex flex-col mx-8">
+            <span className="flex flex-col mr-8 pr-4">
               {streaks.map((streak, i) => (
                 <ActivityStreak
                   tiers={activityStreakBenefitTiers.tiers}
@@ -292,7 +292,7 @@ export const RewardsContainer = () => {
               'hidden md:block'
             )}
           >
-            <span className="flex flex-col mx-8">
+            <span className="flex flex-col mr-8 pr-4">
               <RewardHoarderBonus
                 tiers={vestingBenefitTiers.tiers}
                 vestingDetails={vestingDetails?.party?.vestingStats}

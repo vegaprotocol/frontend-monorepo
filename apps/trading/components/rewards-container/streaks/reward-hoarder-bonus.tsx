@@ -35,8 +35,8 @@ export const RewardHoarderBonus = ({
   if (!tiers || tiers.length === 0) return null;
   const userTierIndex = getUserTier();
 
-  // TODO: extract qUSD from the API
-  const qAsset = 'qUSD';
+  // There is only value to compare to the tiers that covers all the user' rewards across all assets
+  const qUSD = 'qUSD';
 
   const safeProgress = (i: number) => {
     if (i < userTierIndex) return 100;
@@ -75,7 +75,7 @@ export const RewardHoarderBonus = ({
                           })}
                         </span>
                         <span className="text-muted text-xs">
-                          {formatNumber(tier.minimum_quantum_balance)} {qAsset}
+                          {formatNumber(tier.minimum_quantum_balance)} {qUSD}
                         </span>
                       </span>
 
@@ -83,9 +83,12 @@ export const RewardHoarderBonus = ({
                         className={classNames(
                           'text-xs flex flex-col items-center justify-center px-2 py-1 rounded-lg text-white border',
                           {
-                            'border-pink-600 bg-pink-900': index % 3 === 0,
-                            'border-purple-600 bg-purple-900': index % 3 === 1,
-                            'border-blue-600 bg-blue-900': index % 3 === 2,
+                            'border-pink-600 bg-pink-900': index % 6 === 0,
+                            'border-purple-600 bg-purple-900': index % 6 === 1,
+                            'border-blue-600 bg-blue-900': index % 6 === 2,
+                            'border-orange-600 bg-orange-900': index % 6 === 3,
+                            'border-green-600 bg-green-900': index % 6 === 4,
+                            'border-yellow-600 bg-yellow-900': index % 6 === 5,
                           }
                         )}
                       >
@@ -101,9 +104,12 @@ export const RewardHoarderBonus = ({
                     <span
                       className={classNames(
                         {
-                          'text-pink-500': index % 3 === 0,
-                          'text-purple-500': index % 3 === 1,
-                          'text-blue-500': index % 3 === 2,
+                          'text-pink-500': index % 6 === 0,
+                          'text-purple-500': index % 6 === 1,
+                          'text-blue-500': index % 6 === 2,
+                          'text-orange-500': index % 6 === 3,
+                          'text-green-500': index % 6 === 4,
+                          'text-yellow-500': index % 6 === 5,
                         },
                         'text-xl leading-[0]'
                       )}
@@ -134,10 +140,18 @@ export const RewardHoarderBonus = ({
                     className={classNames(
                       'absolute left-0 top-0 h-full rounded-[100px] bg-gradient-to-r',
                       {
-                        'from-vega-pink-600 to-vega-pink-500': index % 3 === 0,
+                        'from-vega-dark-400 to-vega-dark-200':
+                          userTierIndex % 6 === 0,
+                        'from-vega-pink-600 to-vega-pink-500':
+                          userTierIndex % 6 === 1,
                         'from-vega-purple-600 to-vega-purple-500':
-                          index % 3 === 1,
-                        'from-vega-blue-600 to-vega-blue-500': index % 3 === 2,
+                          userTierIndex % 6 === 2,
+                        'from-vega-blue-600 to-vega-blue-500':
+                          userTierIndex % 6 === 3,
+                        'from-vega-orange-600 to-vega-orange-500':
+                          userTierIndex % 6 === 4,
+                        'from-vega-green-600 to-vega-green-500':
+                          userTierIndex % 6 === 5,
                       }
                     )}
                     style={{ width: safeProgress(index) + '%' }}
@@ -151,7 +165,7 @@ export const RewardHoarderBonus = ({
         <div className="flex items-center gap-1">
           <VegaIcon name={VegaIconNames.STREAK} />
           <span>
-            {formatNumber(vestingDetails.quantumBalance)} {qAsset}
+            {formatNumber(vestingDetails.quantumBalance)} {qUSD}
           </span>
         </div>
       </div>

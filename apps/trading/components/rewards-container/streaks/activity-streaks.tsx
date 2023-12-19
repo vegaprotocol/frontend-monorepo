@@ -104,12 +104,12 @@ export const ActivityStreak = ({
                         className={classNames(
                           'text-xs flex flex-col items-center justify-center px-2 py-1 rounded-lg text-white border',
                           {
-                            'border-pink-600 bg-pink-900':
-                              index === 0 || index === 3,
-                            'border-purple-600 bg-purple-900':
-                              index === 1 || index === 4,
-                            'border-blue-600 bg-blue-900':
-                              index === 2 || index === 5,
+                            'border-pink-600 bg-pink-900': index % 6 === 0,
+                            'border-purple-600 bg-purple-900': index % 6 === 1,
+                            'border-blue-600 bg-blue-900': index % 6 === 2,
+                            'border-orange-600 bg-orange-900': index % 6 === 3,
+                            'border-green-600 bg-green-900': index % 6 === 4,
+                            'border-yellow-600 bg-yellow-900': index % 6 === 5,
                           }
                         )}
                       >
@@ -128,9 +128,12 @@ export const ActivityStreak = ({
                     <span
                       className={classNames(
                         {
-                          'text-pink-500': index % 3 === 0,
-                          'text-purple-500': index % 3 === 1,
-                          'text-blue-500': index % 3 === 2,
+                          'text-pink-500': index % 6 === 0,
+                          'text-purple-500': index % 6 === 1,
+                          'text-blue-500': index % 6 === 2,
+                          'text-orange-500': index % 6 === 3,
+                          'text-green-500': index % 6 === 4,
+                          'text-yellow-500': index % 6 === 5,
                         },
                         'text-xl leading-[0]'
                       )}
@@ -161,10 +164,18 @@ export const ActivityStreak = ({
                     className={classNames(
                       'absolute left-0 top-0 h-full rounded-[100px] bg-gradient-to-r',
                       {
-                        'from-vega-pink-600 to-vega-pink-500': index % 3 === 0,
+                        'from-vega-dark-400 to-vega-dark-200':
+                          userTierIndex % 6 === 0,
+                        'from-vega-pink-600 to-vega-pink-500':
+                          userTierIndex % 6 === 1,
                         'from-vega-purple-600 to-vega-purple-500':
-                          index % 3 === 1,
-                        'from-vega-blue-600 to-vega-blue-500': index % 3 === 2,
+                          userTierIndex % 6 === 2,
+                        'from-vega-blue-600 to-vega-blue-500':
+                          userTierIndex % 6 === 3,
+                        'from-vega-orange-600 to-vega-orange-500':
+                          userTierIndex % 6 === 4,
+                        'from-vega-green-600 to-vega-green-500':
+                          userTierIndex % 6 === 5,
                       }
                     )}
                     style={{ width: safeProgress(index) + '%' }}
@@ -181,7 +192,7 @@ export const ActivityStreak = ({
           <span className="flex flex-col text-xs">
             <span>
               {t('{{epochs}} epochs streak', {
-                epochs: streak?.activeFor,
+                epochs: formatNumber(streak?.activeFor),
               })}
             </span>
             <span>
