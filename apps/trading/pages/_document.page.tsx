@@ -13,9 +13,9 @@ export default function Document() {
         {/* preload fonts */}
         <link
           rel="preload"
-          href="/AlphaLyrae-Medium.woff2"
+          href="/AlphaLyrae-Medium.woff"
           as="font"
-          type="font/woff2"
+          type="font/woff"
         />
 
         {/* icons */}

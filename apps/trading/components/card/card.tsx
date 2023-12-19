@@ -8,15 +8,18 @@ export const Card = ({
   className,
   loading = false,
   highlight = false,
+  testId,
 }: {
   children: ReactNode;
   title: string;
   className?: string;
   loading?: boolean;
   highlight?: boolean;
+  testId?: string;
 }) => {
   return (
     <div
+      data-testid={testId}
       className={classNames(
         'bg-vega-clight-800 dark:bg-vega-cdark-800 col-span-full p-0.5 lg:col-auto',
         'rounded-lg',

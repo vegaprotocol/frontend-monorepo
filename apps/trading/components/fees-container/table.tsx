@@ -3,21 +3,31 @@ import type { ReactNode } from 'react';
 
 const cellClass = 'px-4 py-2 text-xs font-normal text-left last:text-right';
 
-export const Th = ({ children }: { children?: ReactNode }) => {
+export const Th = ({ children, ...props }: { children?: ReactNode }) => {
   return (
-    <th className={classNames(cellClass, 'text-secondary leading-none py-3')}>
+    <th
+      className={classNames(cellClass, 'text-secondary leading-none py-3')}
+      {...props}
+    >
       {children}
     </th>
   );
 };
 
-export const Td = ({ children }: { children?: ReactNode }) => {
-  return <th className={cellClass}>{children}</th>;
+export const Td = ({ children, ...props }: { children?: ReactNode }) => {
+  return (
+    <th className={cellClass} {...props}>
+      {children}
+    </th>
+  );
 };
 
-export const Tr = ({ children }: { children?: ReactNode }) => {
+export const Tr = ({ children, ...props }: { children?: ReactNode }) => {
   return (
-    <tr className="hover:bg-vega-clight-600 dark:hover:bg-vega-cdark-700">
+    <tr
+      className="hover:bg-vega-clight-600 dark:hover:bg-vega-cdark-700"
+      {...props}
+    >
       {children}
     </tr>
   );
