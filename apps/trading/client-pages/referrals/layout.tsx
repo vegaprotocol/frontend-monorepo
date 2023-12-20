@@ -13,7 +13,7 @@ export const Layout = ({
     <div
       className={classNames(
         'max-w-[1440px]',
-        'mx-auto px-16 md:px-32 pb-32',
+        'mx-auto px-8 lg:px-32 pb-32',
         'relative z-0',
         className
       )}

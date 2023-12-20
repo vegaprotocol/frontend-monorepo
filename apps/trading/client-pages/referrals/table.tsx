@@ -66,7 +66,7 @@ export const Table = forwardRef<
         ref={ref}
         className={classNames(
           'w-full',
-          'border-separate border rounded-md border-spacing-0',
+          'border-separate border rounded-md border-spacing-0 overflow-hidden',
           BORDER_COLOR,
           GRADIENT,
           className

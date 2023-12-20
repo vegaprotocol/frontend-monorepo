@@ -19,9 +19,11 @@ export const Tile = ({
   return (
     <div
       className={classNames(
-        'rounded-lg overflow-hidden relative',
-        'bg-vega-clight-800 dark:bg-vega-cdark-800 text-black dark:text-white',
-        'p-6',
+        'text-black dark:text-white',
+        'overflow-hidden relative',
+        'p-3 md:p-6',
+        'rounded-lg',
+        'bg-vega-clight-800 dark:bg-vega-cdark-800',
         className
       )}
     >
@@ -55,7 +57,10 @@ export const StatTile = ({
       >
         {title}
       </h3>
-      <div data-testid={`${testId}-value`} className="text-5xl text-left">
+      <div
+        data-testid={`${testId}-value`}
+        className="text-2xl lg:text-5xl text-left"
+      >
         {children}
       </div>
       {description && (
@@ -119,7 +124,7 @@ export const CodeTile = ({
         >
           <div
             className={classNames(
-              'relative bg-rainbow bg-clip-text text-transparent text-5xl overflow-hidden',
+              'relative bg-rainbow bg-clip-text text-transparent text-2xl lg:text-5xl overflow-hidden',
               FADE_OUT_STYLE
             )}
           >

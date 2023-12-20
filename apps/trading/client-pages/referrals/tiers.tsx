@@ -198,7 +198,18 @@ export const TiersContainer = () => {
       </div>
 
       {/* Container */}
-      <div className="bg-vega-clight-800 dark:bg-vega-cdark-800 text-black dark:text-white rounded-lg p-6 mt-1 mb-20">
+      <div
+        className={classNames(
+          'md:bg-vega-clight-800',
+          'md:dark:bg-vega-cdark-800',
+          'md:text-black',
+          'md:dark:text-white',
+          'md:rounded-lg',
+          'md:p-6',
+          'mt-1',
+          'mb-20'
+        )}
+      >
         {/* Benefit tiers */}
         <div className="flex flex-col mb-5">
           <h3 className="text-2xl calt">{t('Benefit tiers')}</h3>
