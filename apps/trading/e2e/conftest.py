@@ -28,9 +28,9 @@ sys.stdout = sys.stderr
 docker_client = docker.from_env()
 logger = logging.getLogger()
 
-load_dotenv() 
+load_dotenv()
 
-    
+
 @pytest.hookimpl(tryfirst=True)
 def pytest_runtest_makereport(item, call):
     outcome = "passed" if call.excinfo is None else "failed"
@@ -51,17 +51,19 @@ def pytest_configure(config):
             level=config.getini("log_file_level"),
         )
 
+
 class CustomHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         # Set the path to your website's directory here
-        if self.path == '/':
-            self.path = 'dist/apps/trading/exported/index.html'
+        if self.path == "/":
+            self.path = "dist/apps/trading/exported/index.html"
         return http.server.SimpleHTTPRequestHandler.do_GET(self)
+
 
 # Start VegaServiceNull
 @contextmanager
 def init_vega(request=None):
-    local_server = os.getenv('LOCAL_SERVER', 'false').lower() == 'true'
+    local_server = os.getenv("LOCAL_SERVER", "false").lower() == "true"
     port_config = None
     if local_server:
         port_config = {
@@ -87,7 +89,7 @@ def init_vega(request=None):
         "store_transactions": True,
         "transactions_per_block": 1000,
         "seconds_per_block": seconds_per_block,
-        "genesis_time": datetime.now() - timedelta(days=1)
+        "genesis_time": datetime.now() - timedelta(days=1),
     }
 
     if port_config is not None:
@@ -113,9 +115,10 @@ def init_vega(request=None):
             logger.info(f"Removing container {container.id}")
             container.remove()
 
+
 @contextmanager
 def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRequest):
-    local_server = os.getenv('LOCAL_SERVER', 'false').lower() == 'true'
+    local_server = os.getenv("LOCAL_SERVER", "false").lower() == "true"
     server_port = "4200" if local_server else str(vega.console_port)
     with browser.new_context(
         viewport={"width": 1920, "height": 1080},
@@ -127,9 +130,7 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
             attempts = 0
             while attempts < 100:
                 try:
-                    code = requests.get(
-                        f"http://localhost:{server_port}/"
-                    ).status_code
+                    code = requests.get(f"http://localhost:{server_port}/").status_code
                     if code == 200:
                         break
                 except requests.exceptions.ConnectionError as e:
