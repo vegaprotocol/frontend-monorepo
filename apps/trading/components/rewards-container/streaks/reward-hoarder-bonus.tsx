@@ -53,10 +53,11 @@ export const RewardHoarderBonus = ({
     if (i > userTierIndex) return 0;
     const progress = vestingDetails.quantumBalance;
     const total = tiers[i].minimum_quantum_balance;
+    if (!total || total === '0') return 0;
     if (new BigNumber(progress).isGreaterThan(total)) return 100;
     return new BigNumber(progress)
       .multipliedBy(100)
-      .dividedBy(total)
+      .dividedBy(total || 1)
       .toNumber();
   };
 

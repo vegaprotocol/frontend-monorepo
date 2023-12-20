@@ -63,6 +63,7 @@ export const ActivityStreak = ({
     if (i > userTierIndex) return 0;
     const progress = streak.activeFor;
     const total = tiers[i].minimum_activity_streak;
+    if (!total) return 0;
     if (new BigNumber(progress).isGreaterThan(total)) return 100;
     return new BigNumber(progress)
       .multipliedBy(100)
