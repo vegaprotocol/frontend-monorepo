@@ -16,6 +16,8 @@ fragment MarketDataUpdateFields on ObservableMarketData {
       fundingPayment
       externalTwap
       internalTwap
+      seqNum
+      startTime
     }
   }
   indicativePrice
@@ -68,6 +70,8 @@ fragment MarketDataFields on MarketData {
       fundingPayment
       externalTwap
       internalTwap
+      seqNum
+      startTime
     }
   }
   indicativePrice

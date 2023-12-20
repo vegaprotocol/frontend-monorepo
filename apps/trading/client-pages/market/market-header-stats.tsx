@@ -15,10 +15,10 @@ import {
   getDataSourceSpecForSettlementSchedule,
   isMarketInAuction,
   marketInfoProvider,
-  useFundingPeriodsQuery,
   useFundingRate,
   useMarketTradingMode,
   useExternalTwap,
+  useFundingPeriodStartTime,
 } from '@vegaprotocol/markets';
 import { MarketState as State } from '@vegaprotocol/types';
 import { HeaderStat } from '../../components/header';
@@ -212,16 +212,9 @@ const useEvery = (marketId: string) => {
 };
 
 const useStartTime = (marketId: string) => {
-  const { data: fundingPeriods } = useFundingPeriodsQuery({
-    variables: {
-      marketId: marketId,
-      pagination: { first: 1 },
-    },
-  });
-  const node = fundingPeriods?.fundingPeriods.edges?.[0]?.node;
-  let startTime: number | undefined = undefined;
-  if (node && node.startTime && !node.endTime) {
-    startTime = fromNanoSeconds(node.startTime).getTime();
+  const { data: startTime } = useFundingPeriodStartTime(marketId);
+  if (startTime) {
+    return fromNanoSeconds(startTime).getTime();
   }
   return startTime;
 };

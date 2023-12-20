@@ -3683,6 +3683,10 @@ export type PerpetualData = {
   fundingRate?: Maybe<Scalars['String']>;
   /** Time-weighted average price calculated from data points for this period from the internal data source. */
   internalTwap?: Maybe<Scalars['String']>;
+  /** Funding period sequence number */
+  seqNum: Scalars['Int'];
+  /** Time at which the funding period started */
+  startTime: Scalars['Timestamp'];
 };
 
 export type PerpetualProduct = {

@@ -124,6 +124,16 @@ export const marketTradingModeProvider = makeDerivedDataProvider<
     (parts[0] as ReturnType<typeof getData>)?.marketTradingMode
 );
 
+export const fundingRateStartTimeProvider = makeDerivedDataProvider<
+  NonNullable<MarketDataFieldsFragment['productData']>['startTime'] | undefined,
+  never,
+  MarketDataQueryVariables
+>(
+  [marketDataProvider],
+  (parts, variables, prevData) =>
+    (parts[0] as ReturnType<typeof getData>)?.productData?.startTime
+);
+
 export const marketStateProvider = makeDerivedDataProvider<
   MarketDataFieldsFragment['marketState'] | undefined,
   never,
@@ -184,6 +194,17 @@ export const useStaticMarketData = (marketId?: string, skip?: boolean) => {
 export const useMarketTradingMode = (marketId?: string, skip?: boolean) => {
   return useDataProvider({
     dataProvider: marketTradingModeProvider,
+    variables: { marketId: marketId || '' },
+    skip: skip || !marketId,
+  });
+};
+
+export const useFundingPeriodStartTime = (
+  marketId?: string,
+  skip?: boolean
+) => {
+  return useDataProvider({
+    dataProvider: fundingRateStartTimeProvider,
     variables: { marketId: marketId || '' },
     skip: skip || !marketId,
   });
