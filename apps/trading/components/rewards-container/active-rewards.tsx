@@ -52,7 +52,7 @@ const isActiveReward = (node: TransferNode, currentEpoch: number) => {
     return false;
   }
 
-  if (node.transfer.reference !== 'reward') {
+  if (!node.transfer.reference?.includes('reward')) {
     return false;
   }
 
@@ -234,7 +234,7 @@ export const ActiveRewardCard = ({
             </div>
 
             <div className="flex flex-col gap-2 items-center text-center">
-              <span className="flex flex-col gap-1 text-2xl shrink-1 text-center font-alpha calt">
+              <span className="flex flex-col gap-1 text-2xl shrink-1 text-center font-glitch">
                 <span>
                   {addDecimalsFormatNumber(
                     transferNode.transfer.amount,
@@ -364,28 +364,26 @@ export const ActiveRewardCard = ({
 
             <span className="flex flex-col gap-1">
               <span className="flex items-center gap-1 text-muted">
-                {t('Stake required')}{' '}
+                {t('Staked VEGA')}{' '}
               </span>
               <span className="flex items-center gap-1">
                 {addDecimalsFormatNumber(
                   kind.dispatchStrategy?.stakingRequirement || 0,
                   transfer.asset?.decimals || 0
-                )}{' '}
-                {transfer.asset?.symbol}
+                )}
               </span>
             </span>
 
             <span className="flex flex-col gap-1">
               <span className="flex items-center gap-1 text-muted">
-                {t('Notional TWAP')}{' '}
+                {t('Average position')}{' '}
               </span>
               <span className="flex items-center gap-1">
                 {addDecimalsFormatNumber(
                   kind.dispatchStrategy
                     ?.notionalTimeWeightedAveragePositionRequirement || 0,
                   transfer.asset?.decimals || 0
-                )}{' '}
-                {transfer.asset?.symbol}
+                )}
               </span>
             </span>
           </div>

@@ -70,12 +70,6 @@ export const ActivityStreak = ({
       .dividedBy(total)
       .toNumber();
   };
-
-  const epochsStreak =
-    tiers[userTierIndex]?.minimum_activity_streak - streak.activeFor >= 0
-      ? tiers[userTierIndex].minimum_activity_streak - streak.activeFor
-      : 0;
-
   const progressBarHeight = 'h-10';
 
   return (
@@ -196,21 +190,10 @@ export const ActivityStreak = ({
         <div className="flex items-center gap-1">
           <VegaIcon name={VegaIconNames.STREAK} />
 
-          <span className="flex flex-col text-xs">
+          <span className="flex flex-col">
             <span>
               {t('{{epochs}} epochs streak', {
                 epochs: formatNumber(streak?.activeFor),
-              })}
-            </span>
-            <span>
-              <span className="text-vega-pink-500">
-                {t('{{epochs}} epochs streak', {
-                  epochs: formatNumber(epochsStreak),
-                })}
-              </span>
-              &nbsp;{' '}
-              {t('to Tier {{userTier}}', {
-                userTier: userTierIndex + 1,
               })}
             </span>
           </span>
