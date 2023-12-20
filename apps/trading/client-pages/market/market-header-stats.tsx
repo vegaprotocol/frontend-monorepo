@@ -15,10 +15,10 @@ import {
   getDataSourceSpecForSettlementSchedule,
   isMarketInAuction,
   marketInfoProvider,
+  useFundingPeriodsQuery,
   useFundingRate,
   useMarketTradingMode,
   useExternalTwap,
-  useFundingPeriodStartTime,
 } from '@vegaprotocol/markets';
 import { MarketState as State } from '@vegaprotocol/types';
 import { HeaderStat } from '../../components/header';
@@ -188,12 +188,11 @@ const useNow = () => {
   return now;
 };
 
-const useEvery = (marketId: string) => {
-  const { data: marketTradingMode } = useMarketTradingMode(marketId);
+const useEvery = (marketId: string, skip: boolean) => {
   const { data: marketInfo } = useDataProvider({
     dataProvider: marketInfoProvider,
     variables: { marketId },
-    skip: !marketTradingMode || isMarketInAuction(marketTradingMode),
+    skip,
   });
   let every: number | undefined = undefined;
   const sourceType =
@@ -211,10 +210,19 @@ const useEvery = (marketId: string) => {
   return every;
 };
 
-const useStartTime = (marketId: string) => {
-  const { data: startTime } = useFundingPeriodStartTime(marketId);
-  if (startTime) {
-    return fromNanoSeconds(startTime).getTime();
+const useStartTime = (marketId: string, skip: boolean) => {
+  const { data: fundingPeriods } = useFundingPeriodsQuery({
+    pollInterval: 5000,
+    skip,
+    variables: {
+      marketId: marketId,
+      pagination: { first: 1 },
+    },
+  });
+  const node = fundingPeriods?.fundingPeriods.edges?.[0]?.node;
+  let startTime: number | undefined = undefined;
+  if (node && node.startTime && !node.endTime) {
+    startTime = fromNanoSeconds(node.startTime).getTime();
   }
   return startTime;
 };
@@ -239,8 +247,10 @@ const useFormatCountdown = (
 
 export const FundingCountdown = ({ marketId }: { marketId: string }) => {
   const now = useNow();
-  const startTime = useStartTime(marketId);
-  const every = useEvery(marketId);
+  const { data: marketTradingMode } = useMarketTradingMode(marketId);
+  const skip = !marketTradingMode || isMarketInAuction(marketTradingMode);
+  const startTime = useStartTime(marketId, skip);
+  const every = useEvery(marketId, skip);
 
   return (
     <div data-testid="funding-countdown">
