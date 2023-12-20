@@ -15,8 +15,8 @@ tif = "order-tif"
 expire = "expire"
 
 @pytest.fixture(scope="module")
-def vega(request, local_server):
-    with init_vega(request, local_server) as vega:
+def vega(request):
+    with init_vega(request) as vega:
         yield vega
 
 @pytest.fixture(scope="module")

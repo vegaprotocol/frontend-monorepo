@@ -17,8 +17,8 @@ api_request_match = r"http://localhost:\d+/api/v2/requests"
 
 
 @pytest.fixture(scope="module")
-def vega(request, local_server):
-    with init_vega(request, local_server) as vega:
+def vega(request):
+    with init_vega(request) as vega:
         yield vega
 
 

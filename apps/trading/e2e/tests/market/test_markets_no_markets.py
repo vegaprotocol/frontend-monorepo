@@ -5,14 +5,14 @@ from conftest import init_page, init_vega, risk_accepted_setup
 
 
 @pytest.fixture(scope="module")
-def vega(request, local_server):
-    with init_vega(request, local_server) as vega:
+def vega(request):
+    with init_vega(request) as vega:
         yield vega
 
 
 @pytest.fixture(scope="module")
-def page(vega, browser, request, local_server):
-    with init_page(vega, browser, request, local_server) as page:
+def page(vega, browser, request):
+    with init_page(vega, browser, request) as page:
         risk_accepted_setup(page)
         page.goto("/#/markets/all")
         yield page

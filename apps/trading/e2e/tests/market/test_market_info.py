@@ -9,14 +9,14 @@ market_title_test_id = "accordion-title"
 
 
 @pytest.fixture(scope="module")
-def vega(local_server):
-    with init_vega(local_server) as vega:
+def vega():
+    with init_vega() as vega:
         yield vega
 
 
 @pytest.fixture(scope="module")
-def page(vega, browser, request, local_server):
-    with init_page(vega, browser, request,  local_server) as page:
+def page(vega, browser, request):
+    with init_page(vega, browser, request) as page:
         setup_continuous_market(vega)
         risk_accepted_setup(page)
         page.goto("/")

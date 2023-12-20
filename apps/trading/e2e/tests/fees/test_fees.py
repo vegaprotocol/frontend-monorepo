@@ -81,38 +81,38 @@ def market_ids():
 
 
 @pytest.fixture(scope="module")
-def vega_volume_discount_tier_1(request, local_server):
-    with init_vega(request, local_server) as vega_volume_discount_tier_1:
+def vega_volume_discount_tier_1(request):
+    with init_vega(request) as vega_volume_discount_tier_1:
         yield vega_volume_discount_tier_1
 
 
 @pytest.fixture(scope="module")
-def vega_volume_discount_tier_2(request, local_server):
-    with init_vega(request, local_server) as vega_volume_discount_tier_2:
+def vega_volume_discount_tier_2(request):
+    with init_vega(request) as vega_volume_discount_tier_2:
         yield vega_volume_discount_tier_2
 
 
 @pytest.fixture(scope="module")
-def vega_referral_discount_tier_1(request, local_server):
-    with init_vega(request, local_server) as vega_referral_discount_tier_1:
+def vega_referral_discount_tier_1(request):
+    with init_vega(request) as vega_referral_discount_tier_1:
         yield vega_referral_discount_tier_1
 
 
 @pytest.fixture(scope="module")
-def vega_referral_discount_tier_2(request, local_server):
-    with init_vega(request, local_server) as vega_referral_discount_tier_2:
+def vega_referral_discount_tier_2(request):
+    with init_vega(request) as vega_referral_discount_tier_2:
         yield vega_referral_discount_tier_2
 
 
 @pytest.fixture(scope="module")
-def vega_referral_and_volume_discount(request, local_server):
-    with init_vega(request, local_server) as vega_referral_and_volume_discount:
+def vega_referral_and_volume_discount(request):
+    with init_vega(request) as vega_referral_and_volume_discount:
         yield vega_referral_and_volume_discount
 
 
 @pytest.fixture
-def page(vega_instance, browser, request, local_server):
-    with init_page(vega_instance, browser, request, local_server) as page_instance:
+def page(vega_instance, browser, request):
+    with init_page(vega_instance, browser, request) as page_instance:
         yield page_instance
 
 

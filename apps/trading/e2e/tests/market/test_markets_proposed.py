@@ -12,8 +12,8 @@ col_market_id = '[col-id="market"] [data-testid="stack-cell-primary"]'
 
 
 @pytest.fixture(scope="module")
-def vega(request, local_server):
-    with init_vega(request, local_server) as vega:
+def vega(request):
+    with init_vega(request) as vega:
         yield vega
 
 

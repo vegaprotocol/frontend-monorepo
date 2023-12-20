@@ -6,7 +6,8 @@ import requests
 import time
 import docker
 import http.server
-
+import sys
+from dotenv import load_dotenv
 from contextlib import contextmanager
 from vega_sim.null_service import VegaServiceNull, Ports
 from playwright.sync_api import Browser, Page
@@ -19,7 +20,6 @@ from fixtures.market import (
     setup_perps_market,
 )
 
-import sys
 
 # Workaround for current xdist issue with displaying live logs from multiple workers
 # https://github.com/pytest-dev/pytest-xdist/issues/402
@@ -28,7 +28,9 @@ sys.stdout = sys.stderr
 docker_client = docker.from_env()
 logger = logging.getLogger()
 
+load_dotenv() 
 
+    
 @pytest.hookimpl(tryfirst=True)
 def pytest_runtest_makereport(item, call):
     outcome = "passed" if call.excinfo is None else "failed"
@@ -58,7 +60,8 @@ class CustomHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
 
 # Start VegaServiceNull
 @contextmanager
-def init_vega(request=None, local_server: bool = False):
+def init_vega(request=None):
+    local_server = os.getenv('LOCAL_SERVER', 'false').lower() == 'true'
     port_config = None
     if local_server:
         port_config = {
@@ -110,19 +113,9 @@ def init_vega(request=None, local_server: bool = False):
             logger.info(f"Removing container {container.id}")
             container.remove()
 
-
-def pytest_addoption(parser):
-    parser.addoption(
-        "--local-server", action="store_true", default=False,
-        help="Build and serve locally instead of using a container"
-    )
-
-@pytest.fixture(scope="session")
-def local_server(pytestconfig):
-    return pytestconfig.getoption("--local-server")
-
 @contextmanager
-def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRequest, local_server: bool):
+def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRequest):
+    local_server = os.getenv('LOCAL_SERVER', 'false').lower() == 'true'
     server_port = "4200" if local_server else str(vega.console_port)
     with browser.new_context(
         viewport={"width": 1920, "height": 1080},
@@ -175,14 +168,14 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
 
 
 @pytest.fixture
-def vega(request, local_server):
-    with init_vega(request, local_server) as vega:
+def vega(request):
+    with init_vega(request) as vega:
         yield vega
 
 
 @pytest.fixture
-def page(vega, browser, request, local_server):
-    with init_page(vega, browser, request, local_server) as page_instance:
+def page(vega, browser, request):
+    with init_page(vega, browser, request) as page_instance:
         yield page_instance
 
 

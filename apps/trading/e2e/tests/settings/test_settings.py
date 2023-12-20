@@ -4,8 +4,8 @@ from conftest import init_vega
 
 
 @pytest.fixture(scope="module")
-def vega(local_server):
-    with init_vega(local_server) as vega:
+def vega():
+    with init_vega() as vega:
         yield vega
 
 

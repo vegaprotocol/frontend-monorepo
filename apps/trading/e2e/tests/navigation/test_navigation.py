@@ -5,15 +5,15 @@ from conftest import init_page, init_vega
 
 
 @pytest.fixture(scope="module")
-def vega(local_server):
-    with init_vega(local_server) as vega:
+def vega():
+    with init_vega() as vega:
         yield vega
 
 
 # we can reuse single page instance in all tests
 @pytest.fixture(scope="module")
-def page(vega, browser, request, local_server):
-    with init_page(vega, browser, request, local_server) as page:
+def page(vega, browser, request):
+    with init_page(vega, browser, request) as page:
         yield page
 
 

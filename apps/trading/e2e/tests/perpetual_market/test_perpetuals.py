@@ -16,8 +16,8 @@ col_amount = '[col-id="amount"]'
 
 class TestPerpetuals:
     @pytest.fixture(scope="class")
-    def vega(self, request, local_server):
-        with init_vega(request, local_server) as vega:
+    def vega(self, request):
+        with init_vega(request) as vega:
             yield vega
 
     @pytest.fixture(scope="class")

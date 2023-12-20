@@ -9,8 +9,8 @@ order_tab = "tab-orders"
 
 
 @pytest.fixture(scope="module")
-def vega(request, local_server):
-    with init_vega(request, local_server) as vega:
+def vega(request):
+    with init_vega(request) as vega:
         yield vega
 
 
@@ -223,8 +223,8 @@ def markets(vega: VegaService):
 
 
 @pytest.fixture(scope="module")
-def page(vega, browser, request, local_server):
-    with init_page(vega, browser, request, local_server) as page:
+def page(vega, browser, request):
+    with init_page(vega, browser, request) as page:
         risk_accepted_setup(page)
         auth_setup(vega, page)
         page.goto("/")

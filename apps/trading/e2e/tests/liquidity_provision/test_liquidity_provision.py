@@ -7,8 +7,8 @@ from actions.utils import next_epoch, truncate_middle, change_keys
 
 
 @pytest.fixture(scope="module")
-def vega(request, local_server):
-    with init_vega(request, local_server) as vega:
+def vega(request):
+    with init_vega(request) as vega:
         yield vega
 
 
