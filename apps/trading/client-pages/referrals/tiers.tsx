@@ -3,11 +3,12 @@ import {
   getDateTimeFormat,
 } from '@vegaprotocol/utils';
 import { useReferralProgram } from './hooks/use-referral-program';
-import { Table } from './table';
+import { Table } from '../../components/table';
 import classNames from 'classnames';
 import { BORDER_COLOR, GRADIENT } from './constants';
-import { Tag } from './tag';
-import type { ComponentProps, ReactNode } from 'react';
+import { Tag } from '../../components/helpers/tag';
+import { getTierColor, getTierGradient } from '../../components/helpers/tiers';
+import type { ReactNode } from 'react';
 import { ExternalLink, truncateMiddle } from '@vegaprotocol/ui-toolkit';
 import {
   DApp,
@@ -18,25 +19,6 @@ import {
 } from '@vegaprotocol/environment';
 import { useT, ns } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
-
-// rainbow-ish order
-const TIER_COLORS: Array<ComponentProps<typeof Tag>['color']> = [
-  'pink',
-  'orange',
-  'yellow',
-  'green',
-  'blue',
-  'purple',
-];
-
-const getTierColor = (tier: number) => {
-  const tiers = Object.keys(TIER_COLORS).length;
-  let index = Math.abs(tier - 1);
-  if (tier >= tiers) {
-    index = index % tiers;
-  }
-  return TIER_COLORS[index];
-};
 
 const Loading = ({ variant }: { variant: 'large' | 'inline' }) => (
   <div
@@ -53,10 +35,12 @@ const StakingTier = ({
   tier,
   referralRewardMultiplier,
   minimumStakedTokens,
+  max,
 }: {
   tier: number;
   referralRewardMultiplier: string;
   minimumStakedTokens: string;
+  max?: number;
 }) => {
   const t = useT();
   const minimum = addDecimalsFormatNumber(minimumStakedTokens, 18);
@@ -97,7 +81,7 @@ const StakingTier = ({
         )}
       >
         <div>
-          <Tag color={getTierColor(tier)}>
+          <Tag color={getTierColor(tier, max)}>
             {t('Multiplier')} {referralRewardMultiplier}x
           </Tag>
           <p className="mt-1 text-sm text-vega-clight-100 dark:text-vega-cdark-100">
@@ -159,7 +143,9 @@ export const TiersContainer = () => {
 
   return (
     <>
-      <h2 className="text-3xl mt-10">{t('Current program details')}</h2>
+      <h2 className="text-3xl mt-10 font-alpha calt">
+        {t('Current program details')}
+      </h2>
       {details?.id && (
         <p>
           <Trans
@@ -272,6 +258,7 @@ const StakingTiers = ({
       <StakingTier
         key={i}
         tier={tier}
+        max={data.length}
         referralRewardMultiplier={referralRewardMultiplier}
         minimumStakedTokens={minimumStakedTokens}
       />
@@ -333,22 +320,7 @@ const TiersTable = ({
       className="bg-white dark:bg-vega-cdark-900"
       data={data.map((d) => ({
         ...d,
-        className: classNames({
-          'from-vega-yellow-400 dark:from-vega-yellow-600 to-20%  bg-highlight':
-            'yellow' === getTierColor(d.tier),
-          'from-vega-green-400 dark:from-vega-green-600 to-20%  bg-highlight':
-            'green' === getTierColor(d.tier),
-          'from-vega-blue-400 dark:from-vega-blue-600 to-20%  bg-highlight':
-            'blue' === getTierColor(d.tier),
-          'from-vega-purple-400 dark:from-vega-purple-600 to-20%  bg-highlight':
-            'purple' === getTierColor(d.tier),
-          'from-vega-pink-400 dark:from-vega-pink-600 to-20%  bg-highlight':
-            'pink' === getTierColor(d.tier),
-          'from-vega-orange-400 dark:from-vega-orange-600 to-20%  bg-highlight':
-            'orange' === getTierColor(d.tier),
-          'from-vega-clight-200 dark:from-vega-cdark-200 to-20%  bg-highlight':
-            'none' === getTierColor(d.tier),
-        }),
+        className: classNames(getTierGradient(d.tier, data.length)),
       }))}
     />
   );

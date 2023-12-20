@@ -8,35 +8,41 @@ import { useNavigateWithMeta } from '../../lib/hooks/use-market-click-handler';
 import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
 import { useMemo } from 'react';
+import { type ColDef } from 'ag-grid-community/dist/lib/entities/colDef';
 
-const useFeesTableColumnDefs = () => {
+const useFeesTableColumnDefs = (): ColDef[] => {
   const t = useT();
   return useMemo(
-    () => [
-      { field: 'code', cellRenderer: 'MarketCodeCell' },
-      {
-        field: 'feeAfterDiscount',
-        headerName: t('Total fee after discount'),
-        valueFormatter: ({ value }: { value: number }) => value + '%',
-      },
-      {
-        field: 'infraFee',
-        valueFormatter: ({ value }: { value: number }) => value + '%',
-      },
-      {
-        field: 'makerFee',
-        valueFormatter: ({ value }: { value: number }) => value + '%',
-      },
-      {
-        field: 'liquidityFee',
-        valueFormatter: ({ value }: { value: number }) => value + '%',
-      },
-      {
-        field: 'totalFee',
-        headerName: t('Total fee before discount'),
-        valueFormatter: ({ value }: { value: number }) => value + '%',
-      },
-    ],
+    () =>
+      [
+        {
+          field: 'code',
+          cellRenderer: 'MarketCodeCell',
+          pinned: 'left',
+        },
+        {
+          field: 'liquidityFee',
+          valueFormatter: ({ value }: { value: number }) => value + '%',
+        },
+        {
+          field: 'feeAfterDiscount',
+          headerName: t('Total fee after discount'),
+          valueFormatter: ({ value }: { value: number }) => value + '%',
+        },
+        {
+          field: 'totalFee',
+          headerName: t('Total fee before discount'),
+          valueFormatter: ({ value }: { value: number }) => value + '%',
+        },
+        {
+          field: 'infraFee',
+          valueFormatter: ({ value }: { value: number }) => value + '%',
+        },
+        {
+          field: 'makerFee',
+          valueFormatter: ({ value }: { value: number }) => value + '%',
+        },
+      ] as ColDef[],
     [t]
   );
 };
@@ -45,6 +51,8 @@ const feesTableDefaultColDef = {
   flex: 1,
   resizable: true,
   sortable: true,
+  suppressMovable: true,
+  pinned: false,
 };
 
 const components = {
@@ -61,6 +69,8 @@ export const MarketFees = ({
   volumeDiscount: number;
 }) => {
   const navigateWithMeta = useNavigateWithMeta();
+
+  const colDef = useFeesTableColumnDefs();
 
   const rows = compact(markets || []).map((m) => {
     const infraFee = new BigNumber(m.fees.factors.infrastructureFee);
@@ -88,9 +98,9 @@ export const MarketFees = ({
   });
 
   return (
-    <div className="border rounded-sm border-default">
+    <div className="border rounded-lg md:rounded-sm overflow-hidden border-default">
       <AgGrid
-        columnDefs={useFeesTableColumnDefs()}
+        columnDefs={colDef}
         rowData={rows}
         getRowId={({ data }) => data.id}
         defaultColDef={feesTableDefaultColDef}

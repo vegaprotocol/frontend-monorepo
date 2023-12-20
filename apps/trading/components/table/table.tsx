@@ -1,7 +1,10 @@
 import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import { forwardRef, type ReactNode, type HTMLAttributes } from 'react';
-import { BORDER_COLOR, GRADIENT } from './constants';
+
+export const BORDER_COLOR = 'border-vega-clight-500 dark:border-vega-cdark-500';
+export const GRADIENT =
+  'bg-gradient-to-b from-vega-clight-800 dark:from-vega-cdark-800 to-transparent';
 
 type TableColumnDefinition = {
   displayName?: ReactNode;
@@ -42,7 +45,7 @@ export const Table = forwardRef<
               key={name}
               col-id={name}
               className={classNames(
-                'px-5 py-3 text-sm  text-vega-clight-100 dark:text-vega-cdark-100 font-normal',
+                'px-5 py-3 text-xs  text-vega-clight-100 dark:text-vega-cdark-100 font-normal',
                 INNER_BORDER_STYLE
               )}
             >
@@ -85,7 +88,7 @@ export const Table = forwardRef<
               {columns.map(({ name, displayName, className }, j) => (
                 <td
                   className={classNames(
-                    'px-5 py-3 text-base',
+                    'px-5 py-3',
                     {
                       'max-md:flex max-md:flex-col max-md:justify-between':
                         !noCollapse,

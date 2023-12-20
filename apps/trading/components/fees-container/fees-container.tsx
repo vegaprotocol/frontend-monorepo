@@ -13,7 +13,7 @@ import { MarketFees } from './market-fees';
 import { useVolumeStats } from './use-volume-stats';
 import { useReferralStats } from './use-referral-stats';
 import { formatPercentage, getAdjustedFee } from './utils';
-import { Table, Td, Th, THead, Tr } from './table';
+import { Table as SimpleTable } from '../../components/table';
 import BigNumber from 'bignumber.js';
 import { Links } from '../../lib/links';
 import { Link } from 'react-router-dom';
@@ -24,6 +24,8 @@ import {
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
+import classNames from 'classnames';
+import { getTierGradient } from '../helpers/tiers';
 
 export const FeesContainer = () => {
   const t = useT();
@@ -166,6 +168,7 @@ export const FeesContainer = () => {
         className="lg:col-span-full xl:col-span-2"
         loading={loading}
         data-testid="volume-discount-card"
+        noBackgroundOnMobile={true}
       >
         <VolumeTiers
           tiers={volumeTiers}
@@ -179,12 +182,14 @@ export const FeesContainer = () => {
         className="lg:col-span-full xl:col-span-2"
         loading={loading}
         data-testid="referral-discount-card"
+        noBackgroundOnMobile={true}
       >
         <ReferralTiers
           tiers={referralTiers}
           tierIndex={referralTierIndex}
           epochsInSet={epochsInSet}
           referralVolumeInWindow={referralVolumeInWindow}
+          referralDiscountWindowLength={referralDiscountWindowLength}
         />
       </Card>
       <Card
@@ -192,6 +197,7 @@ export const FeesContainer = () => {
         className="lg:col-span-full"
         loading={marketsLoading}
         data-testid="fees-by-market-card"
+        noBackgroundOnMobile={true}
       >
         <MarketFees
           markets={markets}
@@ -477,7 +483,54 @@ const VolumeTiers = ({
 
   return (
     <div>
-      <Table>
+      <SimpleTable
+        className="bg-white dark:bg-vega-cdark-900"
+        columns={[
+          { name: 'tier', displayName: t('Tier') },
+          { name: 'discount', displayName: t('Discount') },
+          { name: 'minTradingVolume', displayName: t('Min. trading volume') },
+          {
+            name: 'myVolume',
+            displayName: t('myVolume', 'My volume (last {{count}} epochs)', {
+              count: windowLength,
+            }),
+          },
+          {
+            name: 'indicator',
+            className: 'max-md:hidden',
+          },
+        ]}
+        data={Array.from(tiers).map((tier, i) => {
+          const isUserTier = tierIndex === i;
+          const indicator = isUserTier ? <YourTier /> : null;
+          const tierIndicator = (
+            <div className="flex justify-between">
+              <span>{i + 1}</span>
+              <span className="md:hidden">{indicator}</span>
+            </div>
+          );
+          return {
+            tier: tierIndicator,
+            discount: (
+              <>{formatPercentage(Number(tier.volumeDiscountFactor))}%</>
+            ),
+            minTradingVolume: (
+              <>{formatNumber(tier.minimumRunningNotionalTakerVolume)}</>
+            ),
+            myVolume: isUserTier ? (
+              formatNumber(lastEpochVolume)
+            ) : (
+              <span className="md:hidden">-</span>
+            ),
+            indicator: indicator,
+            className: classNames(
+              getTierGradient(i + 1, tiers.length),
+              'text-xs'
+            ),
+          };
+        })}
+      />
+      {/* <Table>
         <THead>
           <Tr>
             <Th data-testid="tier-header">{t('Tier')}</Th>
@@ -514,7 +567,7 @@ const VolumeTiers = ({
             );
           })}
         </tbody>
-      </Table>
+      </Table> */}
     </div>
   );
 };
@@ -524,6 +577,7 @@ const ReferralTiers = ({
   tierIndex,
   epochsInSet,
   referralVolumeInWindow,
+  referralDiscountWindowLength,
 }: {
   tiers: Array<{
     referralDiscountFactor: string;
@@ -533,6 +587,7 @@ const ReferralTiers = ({
   tierIndex: number;
   epochsInSet: number;
   referralVolumeInWindow: number;
+  referralDiscountWindowLength: number;
 }) => {
   const t = useT();
 
@@ -544,7 +599,75 @@ const ReferralTiers = ({
 
   return (
     <div>
-      <Table>
+      <SimpleTable
+        className="bg-white dark:bg-vega-cdark-900"
+        columns={[
+          { name: 'tier', displayName: t('Tier') },
+          {
+            name: 'discount',
+            displayName: t('Discount'),
+            tooltip: t(
+              "The proportion of the referee's taker fees to be discounted"
+            ),
+          },
+          {
+            name: 'volume',
+            displayName: t(
+              'minTradingVolume',
+              'Min. trading volume (last {{count}} epochs)',
+              {
+                count: referralDiscountWindowLength,
+              }
+            ),
+            tooltip: t(
+              'The minimum running notional for the given benefit tier'
+            ),
+          },
+          {
+            name: 'epochs',
+            displayName: t('Min. epochs'),
+            tooltip: t(
+              'The minimum number of epochs the party needs to be in the referral set to be eligible for the benefit'
+            ),
+          },
+          { name: 'indicator', className: 'max-md:hidden' },
+        ]}
+        data={Array.from(tiers).map((tier, i) => {
+          const isUserTier = tierIndex === i;
+          const requiredVolume = Number(tier.minimumRunningNotionalTakerVolume);
+
+          const indicator = isUserTier ? (
+            <YourTier testId={`your-tier-${i}`} />
+          ) : referralVolumeInWindow >= requiredVolume &&
+            epochsInSet < tier.minimumEpochs ? (
+            <span className="text-muted text-xs">
+              Unlocks in {tier.minimumEpochs - epochsInSet} epochs
+            </span>
+          ) : null;
+
+          const tierIndicator = (
+            <div className="flex justify-between">
+              <span>{i + 1}</span>
+              <span className="md:hidden">{indicator}</span>
+            </div>
+          );
+
+          return {
+            tier: tierIndicator,
+            discount: (
+              <>{formatPercentage(Number(tier.referralDiscountFactor))}%</>
+            ),
+            volume: formatNumber(tier.minimumRunningNotionalTakerVolume),
+            epochs: tier.minimumEpochs,
+            indicator,
+            className: classNames(
+              getTierGradient(i + 1, tiers.length),
+              'text-xs'
+            ),
+          };
+        })}
+      />
+      {/* <Table>
         <THead>
           <Tr>
             <Th data-testid="tier-header">{t('Tier')}</Th>
@@ -597,7 +720,7 @@ const ReferralTiers = ({
             );
           })}
         </tbody>
-      </Table>
+      </Table> */}
     </div>
   );
 };
@@ -611,7 +734,7 @@ const YourTier = ({ testId }: YourTierProps) => {
 
   return (
     <span
-      className="bg-rainbow whitespace-nowrap rounded-xl px-4 py-1.5 text-white"
+      className="bg-rainbow whitespace-nowrap rounded-xl px-4 py-1.5 text-white text-xs"
       data-testid={testId}
     >
       {t('Your tier')}
