@@ -295,7 +295,9 @@ export const RewardPot = ({
     : [0];
   const totalVesting = BigNumber.sum.apply(null, vestingBalances);
 
-  const totalRewards = totalLocked.plus(totalVesting);
+  const totalRewards = totalLocked
+    .plus(totalVesting)
+    .plus(totalVestedRewardsByRewardAsset);
 
   let rewardAsset = undefined;
 
