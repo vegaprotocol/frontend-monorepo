@@ -76,16 +76,26 @@ export const useFetch = <T>(
             ...options,
             body: body ? body : options?.body,
           });
-          if (!response.ok) {
+
+          data = (await response.json()) as T;
+
+          if (!response.ok && !data) {
             throw new Error(response.statusText);
           }
 
-          data = (await response.json()) as T;
           // @ts-ignore - 'error' in data
-          if (data && 'error' in data) {
+          if (data && data.error) {
+            // Explicit check for TendermintErrorResponse style error
+            // @ts-ignore - 'error' in data
+            if (data.error.data) {
+              // @ts-ignore - 'error' in data
+
+              throw new Error(data.error.data);
+            }
             // @ts-ignore - data.error
             throw new Error(data.error);
           }
+
           if (cancelRequest.current) return;
 
           dispatch({ type: ActionType.FETCHED, payload: data });

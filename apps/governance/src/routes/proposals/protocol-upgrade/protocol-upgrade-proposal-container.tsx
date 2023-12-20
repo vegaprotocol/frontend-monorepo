@@ -95,7 +95,7 @@ export const ProtocolUpgradeProposalContainer = () => {
           time={
             pending && time ? (
               convertToCountdownString(time, '0:00:00:00')
-            ) : blockInfo?.result ? (
+            ) : blockInfo && 'result' in blockInfo && blockInfo?.result ? (
               <span title={blockInfo.result.block.header.time}>
                 {formatDateWithLocalTimezone(
                   new Date(blockInfo.result.block.header.time)
