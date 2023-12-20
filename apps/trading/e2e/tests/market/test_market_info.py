@@ -15,8 +15,8 @@ def vega():
 
 
 @pytest.fixture(scope="module")
-def page(vega, browser, request, local_server):
-    with init_page(vega, browser, request,  local_server) as page:
+def page(vega, browser, request):
+    with init_page(vega, browser, request) as page:
         setup_continuous_market(vega)
         risk_accepted_setup(page)
         page.goto("/")

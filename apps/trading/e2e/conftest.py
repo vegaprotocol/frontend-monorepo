@@ -6,9 +6,10 @@ import requests
 import time
 import docker
 import http.server
-
+import sys
+from dotenv import load_dotenv
 from contextlib import contextmanager
-from vega_sim.null_service import VegaServiceNull
+from vega_sim.null_service import VegaServiceNull, Ports
 from playwright.sync_api import Browser, Page
 from config import console_image_name, vega_version
 from datetime import datetime, timedelta
@@ -19,7 +20,6 @@ from fixtures.market import (
     setup_perps_market,
 )
 
-import sys
 
 # Workaround for current xdist issue with displaying live logs from multiple workers
 # https://github.com/pytest-dev/pytest-xdist/issues/402
@@ -27,6 +27,8 @@ sys.stdout = sys.stderr
 
 docker_client = docker.from_env()
 logger = logging.getLogger()
+
+load_dotenv()
 
 
 @pytest.hookimpl(tryfirst=True)
@@ -49,16 +51,24 @@ def pytest_configure(config):
             level=config.getini("log_file_level"),
         )
 
+
 class CustomHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         # Set the path to your website's directory here
-        if self.path == '/':
-            self.path = 'dist/apps/trading/exported/index.html'
+        if self.path == "/":
+            self.path = "dist/apps/trading/exported/index.html"
         return http.server.SimpleHTTPRequestHandler.do_GET(self)
+
 
 # Start VegaServiceNull
 @contextmanager
 def init_vega(request=None):
+    local_server = os.getenv("LOCAL_SERVER", "false").lower() == "true"
+    port_config = None
+    if local_server:
+        port_config = {
+            Ports.DATA_NODE_REST: 8001,
+        }
     default_seconds = 1
     seconds_per_block = default_seconds
     if request and hasattr(request, "param"):
@@ -70,21 +80,26 @@ def init_vega(request=None):
     )
     logger.info(f"Using console image: {console_image_name}")
     logger.info(f"Using vega version: {vega_version}")
-    with VegaServiceNull(
-        run_with_console=False,
-        launch_graphql=False,
-        retain_log_files=True,
-        use_full_vega_wallet=True,
-        store_transactions=True,
-        transactions_per_block=1000,
-        seconds_per_block=seconds_per_block,
-        genesis_time= datetime.now() - timedelta(days=1),
-    ) as vega:
+
+    vega_service_args = {
+        "run_with_console": False,
+        "launch_graphql": False,
+        "retain_log_files": True,
+        "use_full_vega_wallet": True,
+        "store_transactions": True,
+        "transactions_per_block": 1000,
+        "seconds_per_block": seconds_per_block,
+        "genesis_time": datetime.now() - timedelta(days=1),
+    }
+
+    if port_config is not None:
+        vega_service_args["port_config"] = port_config
+
+    with VegaServiceNull(**vega_service_args) as vega:
         try:
             container = docker_client.containers.run(
                 console_image_name, detach=True, ports={"80/tcp": vega.console_port}
             )
-            # docker setup
             logger.info(
                 f"Container {container.id} started",
                 extra={"worker_id": os.environ.get("PYTEST_XDIST_WORKER")},
@@ -97,23 +112,13 @@ def init_vega(request=None):
         finally:
             logger.info(f"Stopping container {container.id}")
             container.stop()
-            # Remove the container
             logger.info(f"Removing container {container.id}")
             container.remove()
 
 
-def pytest_addoption(parser):
-    parser.addoption(
-        "--local-server", action="store_true", default=False,
-        help="Build and serve locally instead of using a container"
-    )
-
-@pytest.fixture(scope="session")
-def local_server(pytestconfig):
-    return pytestconfig.getoption("--local-server")
-
 @contextmanager
-def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRequest, local_server: bool):
+def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRequest):
+    local_server = os.getenv("LOCAL_SERVER", "false").lower() == "true"
     server_port = "4200" if local_server else str(vega.console_port)
     with browser.new_context(
         viewport={"width": 1920, "height": 1080},
@@ -125,9 +130,7 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
             attempts = 0
             while attempts < 100:
                 try:
-                    code = requests.get(
-                        f"http://localhost:{server_port}/"
-                    ).status_code
+                    code = requests.get(f"http://localhost:{server_port}/").status_code
                     if code == 200:
                         break
                 except requests.exceptions.ConnectionError as e:
@@ -172,8 +175,8 @@ def vega(request):
 
 
 @pytest.fixture
-def page(vega, browser, request, local_server):
-    with init_page(vega, browser, request, local_server) as page_instance:
+def page(vega, browser, request):
+    with init_page(vega, browser, request) as page_instance:
         yield page_instance
 
 
