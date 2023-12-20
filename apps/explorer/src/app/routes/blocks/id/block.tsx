@@ -54,7 +54,7 @@ const Block = () => {
               </Button>
             </Link>
           </div>
-          {blockData && (
+          {blockData && 'result' in blockData && (
             <>
               <TableWithTbody className="mb-8">
                 <TableRow modifier="bordered">

@@ -7,6 +7,16 @@ export type TendermintBlockResponse = {
   };
 };
 
+export type TendermintErrorResponse = {
+  jsonrpc: string;
+  id: number;
+  error: {
+    code: number;
+    message: string;
+    data: string;
+  };
+};
+
 type Id = {
   hash: string;
   parts: {
@@ -34,7 +44,7 @@ type Header = {
   proposer_address: string;
 };
 
-type Block = {
+export type Block = {
   header: Header;
   data: {
     txs: string[];

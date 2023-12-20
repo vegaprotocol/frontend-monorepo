@@ -87,9 +87,9 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           colId: 'fee',
           field: 'market',
           valueFormatter: formatFee(partyId),
+          tooltipComponent: FeesBreakdownTooltip,
           type: 'rightAligned',
           tooltipField: 'market',
-          tooltipComponent: FeesBreakdownTooltip,
           tooltipComponentParams: { partyId },
         },
         {
@@ -97,13 +97,13 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           colId: 'fee-discount',
           field: 'market',
           valueFormatter: formatFeeDiscount(partyId),
-          type: 'rightAligned',
-          // return null to disable tooltip if fee discount is 0 or empty
           tooltipValueGetter: ({ valueFormatted, value }) => {
             return valueFormatted && /[1-9]/.test(valueFormatted)
               ? valueFormatted
               : null;
           },
+          type: 'rightAligned',
+          // return null to disable tooltip if fee discount is 0 or empty
           cellRenderer: ({
             value,
             valueFormatted,
@@ -146,7 +146,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
         overlayNoRowsTemplate={t('No fills')}
         getRowId={({ data }) => data?.id}
         tooltipShowDelay={0}
-        tooltipHideDelay={2000}
+        tooltipHideDelay={10000}
         components={{ MarketNameCell }}
         {...props}
       />
@@ -292,21 +292,27 @@ const FeesBreakdownTooltip = ({
       )}
       {role === MAKER && (
         <>
-          <p className="mb-1">{t('The maker will receive the maker fee.')}</p>
           <p className="mb-1">
             {t(
-              'If the market is active the maker will pay zero infrastructure and liquidity fees.'
+              `Fee revenue to be received by the maker, takers' fee discounts already applied.`
+            )}
+          </p>
+          <p className="mb-1">
+            {t(
+              'During continuous trading the maker pays no infrastructure and liquidity fees.'
             )}
           </p>
         </>
       )}
       {role === TAKER && (
-        <p className="mb-1">{t('Fees to be paid by the taker.')}</p>
+        <p className="mb-1">
+          {t('Fees to be paid by the taker; discounts are already applied.')}
+        </p>
       )}
       {(role === '-' || marketState === Schema.MarketState.STATE_SUSPENDED) && (
         <p className="mb-1">
           {t(
-            'If the market is in monitoring auction, half of the infrastructure and liquidity fees will be paid.'
+            'During auction, half the infrastructure and liquidity fees will be paid.'
           )}
         </p>
       )}

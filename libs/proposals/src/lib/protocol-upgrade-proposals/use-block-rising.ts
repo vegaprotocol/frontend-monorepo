@@ -68,10 +68,13 @@ export const useBlockRising = (skip = false) => {
         }
       );
 
-      const heights = compact([
-        ...results.map((r) => r?.blockHeight),
-        blockInfo?.result.block.header.height,
-      ]);
+      const heights = compact([...results.map((r) => r?.blockHeight)]);
+
+      // Handles TendermintErrorResponses
+      if (blockInfo && 'result' in blockInfo) {
+        heights.push(blockInfo.result.block.header.height);
+      }
+
       const current = max(heights);
       if (current && Number(current) > prev) {
         setBlock(Number(current));
