@@ -98,9 +98,7 @@ export const useVoteInformation = ({
     );
 
     const participationLPMet = requiredParticipationLP
-      ? totalEquityLikeShareWeight.isGreaterThan(
-          totalSupply.multipliedBy(requiredParticipationLP)
-        )
+      ? totalEquityLikeShareWeight.isGreaterThan(requiredParticipationLP)
       : false;
 
     const majorityMet = yesPercentage.isGreaterThanOrEqualTo(
@@ -115,9 +113,7 @@ export const useVoteInformation = ({
       .multipliedBy(100)
       .dividedBy(totalSupply);
 
-    const totalLPTokensPercentage = totalEquityLikeShareWeight
-      .multipliedBy(100)
-      .dividedBy(totalSupply);
+    const totalLPTokensPercentage = totalEquityLikeShareWeight;
 
     const willPassByTokenVote =
       participationMet &&

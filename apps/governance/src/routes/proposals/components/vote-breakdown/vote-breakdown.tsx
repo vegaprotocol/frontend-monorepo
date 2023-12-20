@@ -133,6 +133,7 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
         .multipliedBy(100),
       new BigNumber(100)
     );
+
   const willPass = willPassByTokenVote || willPassByLPVote;
   const updateMarketVotePassMethod = willPassByTokenVote
     ? t('byTokenVote')
@@ -204,7 +205,7 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
                       <span>{yesLPPercentage.toFixed(defaultDP)}%</span>
                     }
                   >
-                    <button>{yesLPPercentage.toFixed(0)}%</button>
+                    <button>{yesLPPercentage.toFixed(1)}%</button>
                   </Tooltip>
                 </div>
 
@@ -216,7 +217,7 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
                         <span>{noLPPercentage.toFixed(defaultDP)}%</span>
                       }
                     >
-                      <button>{noLPPercentage.toFixed(0)}%</button>
+                      <button>{noLPPercentage.toFixed(1)}%</button>
                     </Tooltip>
                   </span>
                 </div>
@@ -254,7 +255,7 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
                       defaultDP
                     )}
                   >
-                    <span>{totalEquityLikeShareWeight.toString()}%</span>
+                    <span>{totalEquityLikeShareWeight.toFixed(1)}%</span>
                   </Tooltip>
                 </div>
               </div>
