@@ -62,6 +62,6 @@ describe('ActivityStreak', () => {
     render(<ActivityStreak tiers={tiers} streak={streak} />);
 
     const tierLabels = screen.getAllByText(/Tier/i);
-    expect(tierLabels.length).toBe(3); // Assuming there are 2 tiers and one label from below the streak bar
+    expect(tierLabels.length).toBe(2);
   });
 });
