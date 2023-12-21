@@ -42,6 +42,10 @@ def verify_order_value(
     expect(element).to_be_visible()
     if is_regex:
         actual_text = element.text_content()
+
+        if actual_text is None:
+          raise Exception(f"no text found for test_id {test_id}")
+
         assert re.match(
             expected_text, actual_text
         ), f"Expected {expected_text}, but got {actual_text}"

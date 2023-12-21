@@ -1,13 +1,13 @@
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService, MarketStateUpdateType
+from vega_sim.null_service import VegaServiceNull
 from fixtures.market import setup_continuous_market
 from wallet_config import MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET
 from actions.vega import submit_multiple_orders, submit_order, submit_liquidity
 from actions.utils import next_epoch
 
 @pytest.mark.usefixtures("risk_accepted")
-def test_succession_line(vega: VegaService, page: Page):
+def test_succession_line(vega: VegaServiceNull, page: Page):
     parent_market_id = setup_continuous_market(vega)
     tdai_id = vega.find_asset_id(symbol="tDAI")
 
@@ -24,7 +24,7 @@ def test_succession_line(vega: VegaService, page: Page):
     expect(banner).to_be_attached()
     expect(banner.get_by_text("A successor to this market has been proposed")).to_be_visible()
 
-    next_epoch(vega=vega)
+    next_epoch(vega)
 
     # Banner should not show after market has enacted
     expect(page.get_by_test_id("market-banner")).not_to_be_attached()
@@ -33,12 +33,16 @@ def test_succession_line(vega: VegaService, page: Page):
     # shown in market info
     provide_successor_liquidity(vega, successor_id)
 
+    next_epoch(vega)
+
     page.goto(f"/#/markets/{successor_id}")
 
-    page.get_by_test_id("Info").click()
+    # Page reload required as the data provider doesnt receive the new market
+    # This also clears any toasts which can block the market info panel containing
+    # the succession line
+    page.reload()
 
-    # Close toasts if present due to proposals
-    page.get_by_role("button", name="Dismiss all").click()
+    page.get_by_test_id("Info").click()
 
     page.get_by_role("button", name="Succession line").click()
 
@@ -65,14 +69,14 @@ def test_succession_line(vega: VegaService, page: Page):
         market_id=parent_market_id,
     )
     next_epoch(vega=vega)
-    
+
     banner = page.get_by_test_id("market-banner")
     expect(banner).to_be_attached()
     expect(banner.get_by_text("This market has been succeeded")).to_be_visible()
 
 
 def propose_successor(
-    vega: VegaService, parent_market_id, tdai_id, market_name
+    vega: VegaServiceNull, parent_market_id, tdai_id, market_name
 ):
     market_id = vega.create_simple_market(
         market_name,
@@ -88,7 +92,7 @@ def propose_successor(
     return market_id
 
 def provide_successor_liquidity(
-    vega: VegaService, market_id
+    vega: VegaServiceNull, market_id
 ):
     submit_liquidity(vega, MM_WALLET.name, market_id)
     submit_multiple_orders(
