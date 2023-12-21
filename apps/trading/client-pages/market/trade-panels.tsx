@@ -55,7 +55,11 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
               className="ml-1 flex items-center justify-center h-6 w-6"
               onClick={() => setSettingsOpened((v) => !v)}
             >
-              <VegaIcon name={VegaIconNames.COG} size={16} />
+              {settingsOpened ? (
+                <VegaIcon name={VegaIconNames.CROSS} size={16} />
+              ) : (
+                <VegaIcon name={VegaIconNames.COG} size={16} />
+              )}
             </button>
           ) : null}
         </div>
@@ -64,7 +68,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
   };
 
   return (
-    <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
+    <div className="h-full grid grid-rows-[min-content_min-content_1fr_min-content]">
       <div>
         {featureFlags.SUCCESSOR_MARKETS && (
           <>
@@ -75,33 +79,19 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
         <MarketTerminationBanner market={market} />
         <OracleBanner marketId={market?.id || ''} />
       </div>
-      <div className="h-full grid grid-rows-[min-content_1fr] relative">
-        <div>{renderMenu()}</div>
-        <div className="h-full">
-          <AutoSizer>
-            {({ width, height }) => (
-              <div style={{ width, height }} className="overflow-auto">
-                {renderView()}
-              </div>
-            )}
-          </AutoSizer>
-        </div>
+      <div>{renderMenu()}</div>
+      <div className="h-full relative">
+        <AutoSizer>
+          {({ width, height }) => (
+            <div style={{ width, height }} className="overflow-auto">
+              {renderView()}
+            </div>
+          )}
+        </AutoSizer>
         {settingsOpened && 'settings' in viewCfg ? (
-          <div className="absolute right-0 top-0 bottom-0 w-[280px] max-w-full bg-vega-clight-700 dark:bg-vega-cdark-700 z-10">
-            <div className="grid grid-rows-[32px_1fr]">
-              <div className="flex justify-end p-1">
-                <button
-                  type="button"
-                  data-testid="settings-close"
-                  onClick={() => setSettingsOpened(false)}
-                  className="flex items-center justify-center h-6 w-6"
-                >
-                  <VegaIcon name={VegaIconNames.CROSS} size={12} />
-                </button>
-              </div>
-              <div className="relative h-full overflow-auto p-2">
-                <viewCfg.settings />
-              </div>
+          <div className="absolute right-0 top-0 bottom-0 w-[280px] max-w-full bg-vega-clight-700 dark:bg-vega-cdark-700 z-10 border-l border-default">
+            <div className="relative h-full overflow-auto p-2">
+              <viewCfg.settings />
             </div>
           </div>
         ) : null}

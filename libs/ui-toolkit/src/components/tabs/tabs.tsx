@@ -38,10 +38,6 @@ export const Tabs = ({
     setWrapped(isWrapped(tabsRef.current, menuRef.current));
   });
 
-  const settings = children.find((c) => c?.props.id === activeTab)?.props
-    .settings;
-  const hasSettings = !!settings;
-
   return (
     <TabsPrimitive.Root
       {...props}
@@ -111,17 +107,21 @@ export const Tabs = ({
                 })}
               >
                 {child.props.menu}
+                {isValidElement(child.props.settings) && (
+                  <button
+                    className="ml-1 flex items-center justify-center h-6 w-6"
+                    onClick={() => setSettingsOpened((v) => !v)}
+                  >
+                    {settingsOpened ? (
+                      <VegaIcon name={VegaIconNames.CROSS} size={16} />
+                    ) : (
+                      <VegaIcon name={VegaIconNames.COG} size={16} />
+                    )}
+                  </button>
+                )}
               </TabsPrimitive.Content>
             );
           })}
-          {hasSettings ? (
-            <button
-              className="ml-1 flex items-center justify-center h-6 w-6"
-              onClick={() => setSettingsOpened((v) => !v)}
-            >
-              <VegaIcon name={VegaIconNames.COG} size={16} />
-            </button>
-          ) : null}
         </div>
       </div>
       <div className="relative h-full overflow-auto">
@@ -136,27 +136,15 @@ export const Tabs = ({
               data-testid={`tab-${child.props.id}`}
             >
               {child.props.children}
+              {isValidElement(child.props.settings) && settingsOpened && (
+                <div className="absolute right-0 top-0 bottom-0 p-2 w-[280px] max-w-full border-l border-default bg-vega-clight-700 dark:bg-vega-cdark-700 z-10">
+                  {child.props.settings}
+                </div>
+              )}
             </TabsPrimitive.Content>
           );
         })}
       </div>
-      {settingsOpened && !!settings ? (
-        <div className="absolute right-0 top-0 bottom-0 w-[280px] max-w-full bg-vega-clight-700 dark:bg-vega-cdark-700 z-10">
-          <div className="grid grid-rows-[32px_1fr]">
-            <div className="flex justify-end p-1">
-              <button
-                type="button"
-                data-testid="settings-close"
-                onClick={() => setSettingsOpened(false)}
-                className="flex items-center justify-center h-6 w-6"
-              >
-                <VegaIcon name={VegaIconNames.CROSS} size={12} />
-              </button>
-            </div>
-            <div className="relative h-full overflow-auto p-2">{settings}</div>
-          </div>
-        </div>
-      ) : null}
     </TabsPrimitive.Root>
   );
 };
