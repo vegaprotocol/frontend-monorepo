@@ -1161,7 +1161,7 @@ profile = ["pytest-profiling", "snakeviz"]
 type = "git"
 url = "https://github.com/vegaprotocol/vega-market-sim.git/"
 reference = "fix/genesis_panic"
-resolved_reference = "7ab04931924380db8000544b7f3d65fcb39b5467"
+resolved_reference = "6cad0ac6adc30830be219047af0d725fed8a6998"
 
 [[package]]
 name = "websocket-client"
