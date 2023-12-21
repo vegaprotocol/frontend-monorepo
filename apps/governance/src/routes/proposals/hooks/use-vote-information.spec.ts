@@ -54,8 +54,8 @@ describe('use-vote-information', () => {
   it('returns all required vote information', () => {
     const yesVotes = 40;
     const noVotes = 60;
-    const yesEquityLikeShareWeight = '30';
-    const noEquityLikeShareWeight = '70';
+    const yesEquityLikeShareWeight = '0.30';
+    const noEquityLikeShareWeight = '0.70';
     // Note - giving a fixedTokenValue of 1 means a ratio of 1:1 votes to tokens, making sums easier :)
     const fixedTokenValue = 1000000000000000000;
 
@@ -195,10 +195,10 @@ describe('use-vote-information', () => {
   });
 
   it('correctly shows whether an update market proposal will pass by token or LP vote - both failing', () => {
-    const yesVotes = 20;
-    const noVotes = 70;
-    const yesEquityLikeShareWeight = '30';
-    const noEquityLikeShareWeight = '60';
+    const yesVotes = 0.2;
+    const noVotes = 0.7;
+    const yesEquityLikeShareWeight = '0.30';
+    const noEquityLikeShareWeight = '0.60';
     const fixedTokenValue = 1000000000000000000;
 
     const proposal = generateProposal({

@@ -281,8 +281,8 @@ describe('VoteBreakdown', () => {
   });
 
   it('Progress bar displays status -  LP majority', () => {
-    const yesVotesLP = 800;
-    const noVotesLP = 200;
+    const yesVotesLP = 0.8;
+    const noVotesLP = 0.2;
     const expectedProgress = (yesVotesLP / (yesVotesLP + noVotesLP)) * 100; // 80%
 
     renderComponent(
