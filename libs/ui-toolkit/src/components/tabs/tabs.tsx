@@ -9,6 +9,7 @@ import type { ReactElement, ReactNode } from 'react';
 import { Children, isValidElement, useRef, useState } from 'react';
 import { VegaIcon } from '../icon/vega-icons/vega-icon';
 import { VegaIconNames } from '../icon/vega-icons/vega-icon-record';
+import { Popover } from '../popover/popover';
 export interface TabsProps extends TabsPrimitive.TabsProps {
   children: (ReactElement<TabProps> | null)[];
 }
@@ -20,7 +21,6 @@ export const Tabs = ({
   onValueChange,
   ...props
 }: TabsProps) => {
-  const [settingsOpened, setSettingsOpened] = useState(false);
   const [activeTab, setActiveTab] = useState<string | undefined>(
     () => value || defaultValue || children.find((v) => v)?.props.id
   );
@@ -43,7 +43,6 @@ export const Tabs = ({
       {...props}
       value={value || activeTab}
       onValueChange={(value) => {
-        setSettingsOpened(false);
         setActiveTab(value);
         if (onValueChange) {
           onValueChange(value);
@@ -108,16 +107,19 @@ export const Tabs = ({
               >
                 {child.props.menu}
                 {isValidElement(child.props.settings) && (
-                  <button
-                    className="ml-1 flex items-center justify-center h-6 w-6"
-                    onClick={() => setSettingsOpened((v) => !v)}
-                  >
-                    {settingsOpened ? (
-                      <VegaIcon name={VegaIconNames.CROSS} size={16} />
-                    ) : (
-                      <VegaIcon name={VegaIconNames.COG} size={16} />
-                    )}
-                  </button>
+                  <Popover
+                    align="end"
+                    trigger={
+                      <span className="ml-1 flex items-center justify-center h-6 w-6">
+                        <VegaIcon name={VegaIconNames.COG} size={16} />
+                      </span>
+                    }
+                    children={
+                      <div className="p-2 lg:p-4 lg:min-w-[290px] flex justify-end">
+                        {child.props.settings}
+                      </div>
+                    }
+                  />
                 )}
               </TabsPrimitive.Content>
             );
@@ -136,11 +138,6 @@ export const Tabs = ({
               data-testid={`tab-${child.props.id}`}
             >
               {child.props.children}
-              {isValidElement(child.props.settings) && settingsOpened && (
-                <div className="absolute right-0 top-0 bottom-0 p-2 w-[280px] max-w-full border-l border-default bg-vega-clight-700 dark:bg-vega-cdark-700 z-10">
-                  {child.props.settings}
-                </div>
-              )}
             </TabsPrimitive.Content>
           );
         })}

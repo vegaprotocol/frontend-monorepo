@@ -27,7 +27,7 @@ export const MarketHeader = () => {
             title={
               <Popover
                 open={open}
-                onChange={setOpen}
+                onOpenChange={setOpen}
                 trigger={
                   <HeaderTitle>
                     <span>

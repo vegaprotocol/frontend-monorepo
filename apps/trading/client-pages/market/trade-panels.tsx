@@ -4,7 +4,12 @@ import { OracleBanner } from '@vegaprotocol/markets';
 import { useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
-import { Splash, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import {
+  Popover,
+  Splash,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import {
   MarketSuccessorBanner,
@@ -24,7 +29,6 @@ interface TradePanelsProps {
 export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
   const featureFlags = useFeatureFlags((state) => state.flags);
   const [view, setView] = useState<TradingView>('chart');
-  const [settingsOpened, setSettingsOpened] = useState(false);
   const viewCfg = TradingViews[view];
 
   const renderView = () => {
@@ -51,16 +55,18 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
         <div className="flex items-center justify-end gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
           {'menu' in viewCfg ? <viewCfg.menu /> : null}
           {'settings' in viewCfg ? (
-            <button
-              className="ml-1 flex items-center justify-center h-6 w-6"
-              onClick={() => setSettingsOpened((v) => !v)}
+            <Popover
+              align="end"
+              trigger={
+                <span className="ml-1 flex items-center justify-center h-6 w-6">
+                  <VegaIcon name={VegaIconNames.COG} size={16} />
+                </span>
+              }
             >
-              {settingsOpened ? (
-                <VegaIcon name={VegaIconNames.CROSS} size={16} />
-              ) : (
-                <VegaIcon name={VegaIconNames.COG} size={16} />
-              )}
-            </button>
+              <div className="p-4 flex justify-end">
+                <viewCfg.settings />
+              </div>
+            </Popover>
           ) : null}
         </div>
       );
@@ -88,13 +94,6 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
             </div>
           )}
         </AutoSizer>
-        {settingsOpened && 'settings' in viewCfg ? (
-          <div className="absolute right-0 top-0 bottom-0 w-[280px] max-w-full bg-vega-clight-700 dark:bg-vega-cdark-700 z-10 border-l border-default">
-            <div className="relative h-full overflow-auto p-2">
-              <viewCfg.settings />
-            </div>
-          </div>
-        ) : null}
       </div>
       <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
         {Object.keys(TradingViews)
@@ -126,7 +125,6 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
                 view={key}
                 isActive={isActive}
                 onClick={() => {
-                  setSettingsOpened(false);
                   setView(key);
                 }}
               />

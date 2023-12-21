@@ -4,28 +4,28 @@ export interface PopoverProps extends PopoverPrimitive.PopoverProps {
   trigger: React.ReactNode | string;
   children: React.ReactNode;
   open?: boolean;
-  onChange?: (open: boolean) => void;
-  sideOffset?: number;
-  alignOffset?: number;
+  sideOffset?: PopoverPrimitive.PopperContentProps['sideOffset'];
+  alignOffset?: PopoverPrimitive.PopperContentProps['alignOffset'];
+  align?: PopoverPrimitive.PopperContentProps['align'];
 }
 
 export const Popover = ({
   trigger,
   children,
-  open,
-  onChange,
   sideOffset = 17,
   alignOffset = 0,
+  align = 'start',
+  ...props
 }: PopoverProps) => {
   return (
-    <PopoverPrimitive.Root open={open} onOpenChange={(x) => onChange?.(x)}>
+    <PopoverPrimitive.Root {...props}>
       <PopoverPrimitive.Trigger data-testid="popover-trigger">
         {trigger}
       </PopoverPrimitive.Trigger>
       <PopoverPrimitive.Portal>
         <PopoverPrimitive.Content
           data-testid="popover-content"
-          align="start"
+          align={align}
           className="rounded bg-vega-clight-800 dark:bg-vega-cdark-800 text-default border border-default"
           sideOffset={sideOffset}
           alignOffset={alignOffset}
