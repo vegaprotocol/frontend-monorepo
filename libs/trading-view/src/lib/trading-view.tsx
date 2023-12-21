@@ -86,8 +86,7 @@ export const TradingView = ({
 
         // Show volume study by default, second bool arg adds it as a overlay on top of the chart
         studies.forEach((study) => {
-          const asOverlay = study === 'Volume';
-          activeChart.createStudy(study, asOverlay);
+          activeChart.createStudy(study);
         });
 
         // Subscribe to interval changes so it can be persisted in chart settings
@@ -127,5 +126,7 @@ const getOverrides = (theme: 'dark' | 'light') => {
     // colors set here, trading view lets the user set a color
     'paneProperties.background': theme === 'dark' ? '#05060C' : '#fff',
     'paneProperties.backgroundType': 'solid',
+    // hide market name within TV chart as its already above
+    'paneProperties.legendProperties.showSeriesTitle': false,
   };
 };
