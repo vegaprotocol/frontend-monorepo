@@ -52,12 +52,7 @@ export const RewardsContainer = () => {
 
   const { data: assetMap } = useAssetsMapProvider();
 
-  const { data: epochData } = useRewardsEpochQuery({
-    // polling here so that as rewards are are moved to ACCOUNT_TYPE_VESTED_REWARDS the vesting stats information stays
-    // almost up to sync with accounts updating from subscriptions. There is a chance the data could be out
-    // of sync for 10s if you happen to be on the page at the end of an epoch
-    pollInterval: 10000,
-  });
+  const { data: epochData } = useRewardsEpochQuery();
 
   // No need to specify the fromEpoch as it will by default give you the last
   // Note activityStreak in query will fail
@@ -67,6 +62,10 @@ export const RewardsContainer = () => {
     },
     // Inclusion of activity streak in query currently fails
     errorPolicy: 'ignore',
+    // polling here so that as rewards are are moved to ACCOUNT_TYPE_VESTED_REWARDS the vesting stats information stays
+    // almost up to sync with accounts updating from subscriptions. There is a chance the data could be out
+    // of sync for 10s if you happen to be on the page at the end of an epoch
+    pollInterval: 10000,
   });
 
   if (!epochData?.epoch || !assetMap) return null;
