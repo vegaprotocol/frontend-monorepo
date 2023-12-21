@@ -11,6 +11,7 @@ type TableColumnDefinition = {
   name: string;
   tooltip?: string;
   className?: string;
+  testId?: string;
 };
 
 type TableProps = {
@@ -85,7 +86,7 @@ export const Table = forwardRef<
                 'max-md:flex flex-col w-full': !noCollapse,
               })}
             >
-              {columns.map(({ name, displayName, className }, j) => (
+              {columns.map(({ name, displayName, className, testId }, j) => (
                 <td
                   className={classNames(
                     'px-5 py-3',
@@ -113,7 +114,7 @@ export const Table = forwardRef<
                       {displayName}
                     </span>
                   )}
-                  <span>{d[name]}</span>
+                  <span data-testid={`${testId || name}-${i}`}>{d[name]}</span>
                 </td>
               ))}
             </tr>

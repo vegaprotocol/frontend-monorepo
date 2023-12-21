@@ -486,18 +486,28 @@ const VolumeTiers = ({
       <SimpleTable
         className="bg-white dark:bg-vega-cdark-900"
         columns={[
-          { name: 'tier', displayName: t('Tier') },
-          { name: 'discount', displayName: t('Discount') },
-          { name: 'minTradingVolume', displayName: t('Min. trading volume') },
+          { name: 'tier', displayName: t('Tier'), testId: 'tier-value' },
+          {
+            name: 'discount',
+            displayName: t('Discount'),
+            testId: 'discount-value',
+          },
+          {
+            name: 'minTradingVolume',
+            displayName: t('Min. trading volume'),
+            testId: 'min-volume-value',
+          },
           {
             name: 'myVolume',
             displayName: t('myVolume', 'My volume (last {{count}} epochs)', {
               count: windowLength,
             }),
+            testId: 'my-volume-value',
           },
           {
             name: 'indicator',
             className: 'max-md:hidden',
+            testId: 'your-tier',
           },
         ]}
         data={Array.from(tiers).map((tier, i) => {
@@ -530,44 +540,6 @@ const VolumeTiers = ({
           };
         })}
       />
-      {/* <Table>
-        <THead>
-          <Tr>
-            <Th data-testid="tier-header">{t('Tier')}</Th>
-            <Th data-testid="discount-header">{t('Discount')}</Th>
-            <Th data-testid="min-volume-header">{t('Min. trading volume')}</Th>
-            <Th data-testid="my-volume-header">
-              {t('myVolume', 'My volume (last {{count}} epochs)', {
-                count: windowLength,
-              })}
-            </Th>
-            <Th data-testid="actions-header" />
-          </Tr>
-        </THead>
-        <tbody>
-          {Array.from(tiers).map((tier, i) => {
-            const isUserTier = tierIndex === i;
-
-            return (
-              <Tr key={i} data-testid={`tier-row-${i}`}>
-                <Td data-testid={`tier-value-${i}`}>{i + 1}</Td>
-                <Td data-testid={`discount-value-${i}`}>
-                  {formatPercentage(Number(tier.volumeDiscountFactor))}%
-                </Td>
-                <Td data-testid={`min-volume-value-${i}`}>
-                  {formatNumber(tier.minimumRunningNotionalTakerVolume)}
-                </Td>
-                <Td data-testid={`my-volume-value-${i}`}>
-                  {isUserTier ? formatNumber(lastEpochVolume) : ''}
-                </Td>
-                <Td data-testid={`your-tier-${i}`}>
-                  {isUserTier ? <YourTier /> : null}
-                </Td>
-              </Tr>
-            );
-          })}
-        </tbody>
-      </Table> */}
     </div>
   );
 };
@@ -602,13 +574,14 @@ const ReferralTiers = ({
       <SimpleTable
         className="bg-white dark:bg-vega-cdark-900"
         columns={[
-          { name: 'tier', displayName: t('Tier') },
+          { name: 'tier', displayName: t('Tier'), testId: 'tier-value' },
           {
             name: 'discount',
             displayName: t('Discount'),
             tooltip: t(
               "The proportion of the referee's taker fees to be discounted"
             ),
+            testId: 'discount-value',
           },
           {
             name: 'volume',
@@ -622,6 +595,7 @@ const ReferralTiers = ({
             tooltip: t(
               'The minimum running notional for the given benefit tier'
             ),
+            testId: 'min-volume-value',
           },
           {
             name: 'epochs',
@@ -629,8 +603,13 @@ const ReferralTiers = ({
             tooltip: t(
               'The minimum number of epochs the party needs to be in the referral set to be eligible for the benefit'
             ),
+            testId: 'required-epochs-value',
           },
-          { name: 'indicator', className: 'max-md:hidden' },
+          {
+            name: 'indicator',
+            className: 'max-md:hidden',
+            testId: 'user-tier-or-unlocks',
+          },
         ]}
         data={Array.from(tiers).map((tier, i) => {
           const isUserTier = tierIndex === i;
@@ -667,60 +646,6 @@ const ReferralTiers = ({
           };
         })}
       />
-      {/* <Table>
-        <THead>
-          <Tr>
-            <Th data-testid="tier-header">{t('Tier')}</Th>
-            <Th data-testid="discount-header">{t('Discount')}</Th>
-            <Th data-testid="min-volume-header">{t('Min. trading volume')}</Th>
-            <Th data-testid="required-epochs-header">{t('Required epochs')}</Th>
-            <Th data-testid="extra-header" />
-          </Tr>
-        </THead>
-        <tbody>
-          {Array.from(tiers).map((tier, i) => {
-            const isUserTier = tierIndex === i;
-
-            const requiredVolume = Number(
-              tier.minimumRunningNotionalTakerVolume
-            );
-            let unlocksIn = null;
-
-            if (
-              referralVolumeInWindow >= requiredVolume &&
-              epochsInSet < tier.minimumEpochs
-            ) {
-              unlocksIn = (
-                <span className="text-muted">
-                  Unlocks in {tier.minimumEpochs - epochsInSet} epochs
-                </span>
-              );
-            }
-
-            return (
-              <Tr key={i} data-testid={`tier-row-${i}`}>
-                <Td data-testid={`tier-value-${i}`}>{i + 1}</Td>
-                <Td data-testid={`discount-value-${i}`}>
-                  {formatPercentage(Number(tier.referralDiscountFactor))}%
-                </Td>
-                <Td data-testid={`min-volume-value-${i}`}>
-                  {formatNumber(tier.minimumRunningNotionalTakerVolume)}
-                </Td>
-                <Td data-testid={`required-epochs-value-${i}`}>
-                  {tier.minimumEpochs}
-                </Td>
-                <Td data-testid={`user-tier-or-unlocks-${i}`}>
-                  {isUserTier ? (
-                    <YourTier testId={`your-tier-${i}`} />
-                  ) : (
-                    unlocksIn
-                  )}
-                </Td>
-              </Tr>
-            );
-          })}
-        </tbody>
-      </Table> */}
     </div>
   );
 };
