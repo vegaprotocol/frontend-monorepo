@@ -154,7 +154,7 @@ export const RewardHoarderBonus = ({
                         'from-vega-dark-400 to-vega-dark-200':
                           userTierIndex === 0,
                         'from-vega-pink-600 to-vega-pink-500':
-                          userTierIndex % 6 === 0 || userTierIndex % 6 === 5,
+                          userTierIndex % 6 === 0,
                         'from-vega-purple-600 to-vega-purple-500':
                           userTierIndex % 6 === 1,
                         'from-vega-blue-600 to-vega-blue-500':
@@ -163,6 +163,8 @@ export const RewardHoarderBonus = ({
                           userTierIndex % 6 === 3,
                         'from-vega-green-600 to-vega-green-500':
                           userTierIndex % 6 === 4,
+                        'from-vega-yellow-600 to-vega-yellow-500':
+                          userTierIndex % 6 === 5,
                       }
                     )}
                     style={{ width: safeProgress(index) + '%' }}
