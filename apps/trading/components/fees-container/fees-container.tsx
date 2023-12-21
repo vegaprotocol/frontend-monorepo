@@ -333,11 +333,7 @@ export const CurrentVolume = ({
   return (
     <div className="flex flex-col gap-3 pt-4" data-testid="current-volume">
       <CardStat
-        value={
-          currentVolume.isZero()
-            ? `<${formatNumberRounded(requiredForNextTier)}`
-            : formatNumberRounded(currentVolume)
-        }
+        value={formatNumberRounded(currentVolume)}
         text={t('pastEpochs', 'Past {{count}} epochs', {
           count: windowLength,
         })}
