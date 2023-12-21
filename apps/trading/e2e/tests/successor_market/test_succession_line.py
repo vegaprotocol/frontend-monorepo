@@ -1,11 +1,12 @@
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.service import VegaService, MarketStateUpdateType
 from fixtures.market import setup_continuous_market
 from wallet_config import MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET
 from actions.vega import submit_multiple_orders, submit_order, submit_liquidity
+from actions.utils import next_epoch
 
-@pytest.mark.usefixtures("page", "risk_accepted")
+@pytest.mark.usefixtures("risk_accepted")
 def test_succession_line(vega: VegaService, page: Page):
     parent_market_id = setup_continuous_market(vega)
     tdai_id = vega.find_asset_id(symbol="tDAI")
@@ -23,9 +24,7 @@ def test_succession_line(vega: VegaService, page: Page):
     expect(banner).to_be_attached()
     expect(banner.get_by_text("A successor to this market has been proposed")).to_be_visible()
 
-    vega.forward("120s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+    next_epoch(vega=vega)
 
     # Banner should not show after market has enacted
     expect(page.get_by_test_id("market-banner")).not_to_be_attached()
@@ -45,7 +44,7 @@ def test_succession_line(vega: VegaService, page: Page):
 
     succession_item = page.get_by_test_id("succession-line-item")
 
-    expect(succession_item.first).to_contain_text(
+    expect(succession_item.nth(1)).to_contain_text(
         "successor market name"
     )
     expect(
@@ -58,18 +57,15 @@ def test_succession_line(vega: VegaService, page: Page):
         succession_item.last.get_by_test_id("icon-bullet")
     ).to_be_visible
 
+    page.goto(f"/#/markets/{parent_market_id}")
     # Settle parent market and check that successor banner is showing
     vega.submit_termination_and_settlement_data(
         settlement_key=GOVERNANCE_WALLET.name,
         settlement_price=100,
         market_id=parent_market_id,
     )
-    vega.forward("20s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-
-    page.goto(f"/#/markets/{parent_market_id}")
-
+    next_epoch(vega=vega)
+    
     banner = page.get_by_test_id("market-banner")
     expect(banner).to_be_attached()
     expect(banner.get_by_text("This market has been succeeded")).to_be_visible()
