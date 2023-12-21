@@ -1,4 +1,359 @@
-import pytest
+""" import pytest
+import vega_sim.proto.vega as vega_protos
+from playwright.sync_api import Page, expect
+from conftest import init_vega, init_page, auth_setup
+from fixtures.market import setup_continuous_market, market_exists
+from actions.utils import (
+    create_and_faucet_wallet,
+        next_epoch)
+from actions.vega import submit_order
+from wallet_config import MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET, PARTY_A, PARTY_B, PARTY_C
+from vega_sim.service import VegaService
+
+
+@pytest.fixture(scope="module")
+def market_ids():
+    return {
+        "vega_activity": "default_id",
+        "vega_hoarder": "default_id",
+        "vega_combo": "default_id",
+    }
+
+@pytest.fixture(scope="module")
+def vega_activity_tier_1(request):
+    with init_vega(request) as vega_activity_tier_1:
+        yield vega_activity_tier_1
+
+@pytest.fixture(scope="module")
+def vega_hoarder_tier_1(request):
+    with init_vega(request) as vega_hoarder_tier_1:
+        yield vega_hoarder_tier_1
+
+@pytest.fixture(scope="module")
+def vega_combo(request):
+    with init_vega(request) as vega_combo:
+        yield vega_combo
+
+
+@pytest.fixture
+def auth(vega_instance, page):
+    return auth_setup(vega_instance, page)
+
+
+@pytest.fixture
+def page(vega_instance, browser, request):
+    with init_page(vega_instance, browser, request) as page_instance:
+        yield page_instance
+
+
+@pytest.fixture
+def vega_instance(
+    reward_program,
+    vega_activity_tier_1,
+    vega_hoarder_tier_1,
+    vega_combo,
+):
+    if reward_program == "activity":
+        return vega_activity_tier_1
+    elif reward_program == "hoarder":
+        return (
+            vega_hoarder_tier_1
+        )
+    elif reward_program == "combo":
+        return vega_combo
+def setup_market_with_reward_program(vega: VegaService, reward_programs):
+    tDAI_market = setup_continuous_market(vega)
+
+    if "activity" in reward_programs:
+        vega.update_network_parameter(
+            proposal_key=MM_WALLET.name,
+            parameter="rewards.activityStreak.benefitTiers",
+            new_value=ACTIVITY_STREAKS,
+        )
+        vega.wait_fn(1)
+
+    if "hoarder" in reward_programs:
+        vega.update_network_parameter(
+            proposal_key=MM_WALLET.name,
+            parameter="rewards.vesting.benefitTiers",
+            new_value=VESTING,
+        )
+        vega.wait_fn(1)
+
+    tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
+    vega.update_network_parameter(
+        MM_WALLET.name, parameter="reward.asset", new_value=tDAI_asset_id
+    )
+
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup() 
+    return tDAI_market
+
+def set_market_reward_program(vega, reward_program, market_ids):
+    market_id_key = f"vega_{reward_program}"
+    if reward_program == "combo":
+        market_id_key = "combo"
+
+    market_id = market_ids.get(market_id_key, "default_id")
+
+    print(f"Checking if market exists: {market_id}")
+    if not market_exists(vega, market_id):
+        print(
+            f"Market doesn't exist for {reward_program}. Setting up new market."
+        )
+        
+        reward_programs = [reward_program]
+        if reward_program == "combo":
+            reward_programs = ["activity", "hoarder"]
+
+        market_id = setup_market_with_reward_program(vega, reward_programs)
+        market_ids[market_id_key] = market_id
+
+    print(f"Using market ID: {market_id}")
+    return market_ids
+
+
+ACTIVITY_STREAKS = """
+{
+    "tiers": [
+        {
+            "minimum_activity_streak": 1, 
+            "reward_multiplier": "2.0", 
+            "vesting_multiplier": "1.1"
+        },
+        {
+            "minimum_activity_streak": 2,
+            "reward_multiplier": "3.0",
+            "vesting_multiplier": "1.2"   
+        }
+    ]
+}
+"""
+VESTING = """
+{
+    "tiers": [
+        {
+            "minimum_quantum_balance": "10",
+            "reward_multiplier": "1.05"
+        },
+        {
+            "minimum_quantum_balance": "100",
+            "reward_multiplier": "1.10"   
+        }
+    ]
+}
+"""
+
+
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_activity_streak(vega_setup, vega: VegaService, page: Page):
+    tDAI_market, tBTC_market = vega_setup
+    page.goto(f"/#/rewards")
+    page.pause()
+    
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_A, amount=1e3)
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_B, amount=1e5)
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_C, amount=1e5)
+    vega.wait_for_total_catchup()
+    
+    tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
+    tBTC_asset_id = vega.find_asset_id(symbol="tBTC")
+    
+    vega.recurring_transfer(
+        from_key_name=PARTY_A.name,
+        from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
+        to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+        asset=tDAI_asset_id,
+        reference="reward",
+        asset_for_metric=tDAI_asset_id,
+        metric=vega_protos.vega.DISPATCH_METRIC_MAKER_FEES_PAID,
+        #lock_period= 5,
+        amount=100,
+        factor=1.0,
+    )
+    # Generate trades for non-zero metrics
+    vega.submit_order(
+        trading_key=PARTY_B.name,
+        market_id=tDAI_market,
+        order_type="TYPE_LIMIT",
+        time_in_force="TIME_IN_FORCE_GTC",
+        side="SIDE_SELL",
+        price=0.30,
+        volume=100,
+    )
+    vega.submit_order(
+        trading_key=PARTY_C.name,
+        market_id=tDAI_market,
+        order_type="TYPE_LIMIT",
+        time_in_force="TIME_IN_FORCE_GTC",
+        side="SIDE_BUY",
+        price=0.30,
+        volume=100,
+    )
+    vega.wait_for_total_catchup()
+    next_epoch(vega=vega)
+    next_epoch(vega=vega)
+
+    
+    vega.mint(key_name="Key 1", asset=tBTC_asset_id, amount=100000)
+    vega.mint(key_name=PARTY_B.name, asset=tBTC_asset_id, amount=10000000)
+    vega.mint(key_name=PARTY_C.name, asset=tBTC_asset_id, amount=10000000)
+    vega.mint(key_name=PARTY_A.name, asset=tBTC_asset_id, amount=100000)
+    vega.mint(key_name=MM_WALLET.name, asset=tBTC_asset_id, amount=100000)
+    vega.mint(key_name=MM_WALLET2.name, asset=tBTC_asset_id, amount=100000)
+    
+    vega.recurring_transfer(
+        from_key_name=PARTY_A.name,
+        from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
+        to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+        asset=tBTC_asset_id,
+        reference="reward",
+        #lock_period= 3,
+        asset_for_metric=tBTC_asset_id,
+        metric=vega_protos.vega.DISPATCH_METRIC_MAKER_FEES_PAID,
+        amount=100,
+        factor=1.0,
+    )
+    # Generate trades for non-zero metrics
+    vega.submit_order(
+        trading_key=PARTY_B.name,
+        market_id=tBTC_market,
+        order_type="TYPE_LIMIT",
+        time_in_force="TIME_IN_FORCE_GTC",
+        side="SIDE_SELL",
+        price=0.30,
+        volume=100,
+    )
+    vega.submit_order(
+        trading_key=PARTY_A.name,
+        market_id=tBTC_market,
+        order_type="TYPE_LIMIT",
+        time_in_force="TIME_IN_FORCE_GTC",
+        side="SIDE_BUY",
+        price=0.30,
+        volume=100,
+    )
+    vega.submit_order(
+        trading_key=PARTY_C.name,
+        market_id=tBTC_market,
+        order_type="TYPE_LIMIT",
+        time_in_force="TIME_IN_FORCE_GTC",
+        side="SIDE_SELL",
+        price=0.30,
+        volume=100,
+    )
+    vega.submit_order(
+        trading_key=PARTY_A.name,
+        market_id=tBTC_market,
+        order_type="TYPE_LIMIT",
+        time_in_force="TIME_IN_FORCE_GTC",
+        side="SIDE_BUY",
+        price=0.30,
+        volume=200,
+    )
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    next_epoch(vega=vega)
+    vega.forward("20s")
+    vega.wait_for_total_catchup()
+    page.pause()
+    next_epoch(vega=vega)
+    page.pause()
+    next_epoch(vega=vega)
+    page.pause()
+    next_epoch(vega=vega)
+    next_epoch(vega=vega)
+    next_epoch(vega=vega)
+    next_epoch(vega=vega)
+    next_epoch(vega=vega)
+    next_epoch(vega=vega)
+    next_epoch(vega=vega)
+    page.pause()
+    page.goto(f"/#/markets/{tBTC_market}")
+    page.pause()
+    expect()
+
+@pytest.mark.parametrize(
+    "reward_program",
+    [
+        ("activity" ),
+        ("hoarder"),
+        ("combo"),
+    ],
+)
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_reward_pot(vega_setup, vega: VegaService, page: Page):
+    expect()
+
+
+@pytest.mark.parametrize(
+    " activity_streak",
+    [
+        (0,1),
+        (1,1),
+    ],
+)
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_vesting(vega_setup, vega: VegaService, page: Page):
+    expect()
+
+@pytest.mark.parametrize(
+    " activity_streak, hoarder bonus",
+    [
+        (1,0 ),
+        (0,1),
+        (1,1),
+    ],
+)
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_reward_multiplier(vega_setup, vega: VegaService, page: Page):
+    expect()
+
+@pytest.mark.parametrize(
+    " activity_streak, hoarder bonus",
+    [
+        (1,0 ),
+        (0,1),
+        (1,1),
+    ],
+)
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_activity_streak(vega_setup, vega: VegaService, page: Page):
+    expect()
+
+
+@pytest.mark.parametrize(
+    " activity_streak, hoarder bonus",
+    [
+        (1,0 ),
+        (0,1),
+        (1,1),
+    ],
+)
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_hoarder_Bonus(vega_setup, vega: VegaService, page: Page):
+    expect()
+
+@pytest.mark.parametrize(
+    " activity_streak, hoarder bonus",
+    [
+        (1,0 ),
+        (0,1),
+        (1,1),
+    ],
+)
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_Rewards_history(vega_setup, vega: VegaService, page: Page):
+    expect()
+
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_redeem(vega_setup, vega: VegaService, page: Page):
+    expect()
+
+
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_redeem(vega_setup, vega: VegaService, page: Page):
+    expect() """import pytest
 import logging
 import vega_sim.proto.vega as vega_protos
 from typing import Tuple, Any
