@@ -1,7 +1,7 @@
 import pytest
 
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from wallet_config import MM_WALLET
 from conftest import init_vega, init_page, auth_setup
@@ -143,7 +143,7 @@ def auth(vega_instance, page):
     return auth_setup(vega_instance, page)
 
 
-def setup_market_with_volume_discount_program(vega: VegaService, tier: int):
+def setup_market_with_volume_discount_program(vega: VegaServiceNull, tier: int):
     market = setup_continuous_market(vega, custom_quantum=100000)
     vega.update_volume_discount_program(
         proposal_key=MM_WALLET.name,
@@ -169,7 +169,7 @@ def setup_market_with_volume_discount_program(vega: VegaService, tier: int):
     return market
 
 
-def setup_market_with_referral_discount_program(vega: VegaService, tier: int):
+def setup_market_with_referral_discount_program(vega: VegaServiceNull, tier: int):
     market = setup_continuous_market(vega, custom_quantum=100000)
     vega.update_referral_program(
         proposal_key=MM_WALLET.name,
@@ -208,7 +208,7 @@ def setup_market_with_referral_discount_program(vega: VegaService, tier: int):
     return market
 
 
-def setup_combined_market(vega: VegaService):
+def setup_combined_market(vega: VegaServiceNull):
     market = setup_continuous_market(vega, custom_quantum=100000)
     vega.update_volume_discount_program(
         proposal_key=MM_WALLET.name,

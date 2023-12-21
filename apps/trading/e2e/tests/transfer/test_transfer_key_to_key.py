@@ -1,7 +1,7 @@
 import pytest
 import re
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from actions.utils import (
     wait_for_toast_confirmation,
     create_and_faucet_wallet,
@@ -18,7 +18,7 @@ PARTY_C = WalletConfig("party_c", "party_c")
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
-def test_transfer_submit(continuous_market, vega: VegaService, page: Page):
+def test_transfer_submit(continuous_market, vega: VegaServiceNull, page: Page):
     # 1003-TRAN-001
     # 1003-TRAN-006
     # 1003-TRAN-007
@@ -64,7 +64,7 @@ def test_transfer_submit(continuous_market, vega: VegaService, page: Page):
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_transfer_vesting_below_minimum(
-    continuous_market, vega: VegaService, page: Page
+    continuous_market, vega: VegaServiceNull, page: Page
 ):
     vega.update_network_parameter(
         "market_maker",

@@ -1,7 +1,7 @@
 import pytest
 import re
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from vega_sim.service import MarketStateUpdateType
 from datetime import datetime, timedelta
 from conftest import init_vega
@@ -21,7 +21,7 @@ class TestPerpetuals:
             yield vega
 
     @pytest.fixture(scope="class")
-    def perps_market(self, vega: VegaService):
+    def perps_market(self, vega: VegaServiceNull):
         perps_market = setup_perps_market(vega)
         submit_multiple_orders(
             vega, MM_WALLET.name, perps_market, "SIDE_SELL", [[1, 110], [1, 105]]
@@ -96,7 +96,7 @@ class TestPerpetuals:
 
 
 @pytest.mark.usefixtures("risk_accepted", "auth")
-def test_perps_market_termination_proposed(page: Page, vega: VegaService):
+def test_perps_market_termination_proposed(page: Page, vega: VegaServiceNull):
     perpetual_market = setup_perps_market(vega)
     page.goto(f"/#/markets/{perpetual_market}")
     vega.update_market_state(
@@ -124,7 +124,7 @@ def test_perps_market_termination_proposed(page: Page, vega: VegaService):
 
 
 @pytest.mark.usefixtures("risk_accepted", "auth")
-def test_perps_market_terminated(page: Page, vega: VegaService):
+def test_perps_market_terminated(page: Page, vega: VegaServiceNull):
     perpetual_market = setup_perps_market(vega)
     vega.update_market_state(
         proposal_key=MM_WALLET.name,

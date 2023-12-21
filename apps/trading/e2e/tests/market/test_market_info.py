@@ -1,7 +1,7 @@
 import re
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from fixtures.market import setup_continuous_market
 from conftest import init_page, init_vega, risk_accepted_setup
 
@@ -88,7 +88,7 @@ def test_market_info_insurance_pool(page: Page):
     validate_info_section(page, fields)
 
 
-def test_market_info_key_details(page: Page, vega: VegaService):
+def test_market_info_key_details(page: Page, vega: VegaServiceNull):
     # 6002-MDET-201
     page.get_by_test_id(market_title_test_id).get_by_text("Key details").click()
     market_id = vega.find_market_id("BTC:DAI_2023")
@@ -136,7 +136,7 @@ def test_market_info_oracle(page: Page):
     # )
 
 
-def test_market_info_settlement_asset(page: Page, vega: VegaService):
+def test_market_info_settlement_asset(page: Page, vega: VegaServiceNull):
     # 6002-MDET-206
     page.get_by_test_id(market_title_test_id).get_by_text("Settlement asset").click()
     tdai_id = vega.find_asset_id("tDAI")
@@ -260,7 +260,7 @@ def test_market_info_liquidity_price_range(page: Page):
     validate_info_section(page, fields)
 
 
-def test_market_info_proposal(page: Page, vega: VegaService):
+def test_market_info_proposal(page: Page, vega: VegaServiceNull):
     # 6002-MDET-301
     page.get_by_test_id(market_title_test_id).get_by_text("Proposal").click()
     first_link = (
@@ -281,7 +281,7 @@ def test_market_info_proposal(page: Page, vega: VegaService):
     )
 
 
-def test_market_info_succession_line(page: Page, vega: VegaService):
+def test_market_info_succession_line(page: Page, vega: VegaServiceNull):
     page.get_by_test_id(market_title_test_id).get_by_text("Succession line").click()
     market_id = vega.find_market_id("BTC:DAI_2023")
     succession_line = page.get_by_test_id("succession-line-item")

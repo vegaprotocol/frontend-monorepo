@@ -1,7 +1,7 @@
 import pytest
 import re
 from playwright.sync_api import expect, Page
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 
 order_details = [
@@ -52,7 +52,7 @@ def verify_order_value(
 @pytest.mark.skip("tbd")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_order_details_are_correctly_displayed(
-    continuous_market, vega: VegaService, page: Page
+    continuous_market, vega: VegaServiceNull, page: Page
 ):
     page.goto(f"/#/markets/{continuous_market}")
     submit_order(vega, "Key 1", vega.all_markets()[0].id, "SIDE_SELL", 102, 101, 2, 1)

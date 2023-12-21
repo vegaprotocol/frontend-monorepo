@@ -1,13 +1,13 @@
 import pytest
 from playwright.sync_api import expect, Page
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 
 from actions.vega import submit_multiple_orders
 
 
 @pytest.mark.skip("tbd")
 @pytest.mark.usefixtures("auth", "risk_accepted")
-def test_trade_match_table(opening_auction_market: str, vega: VegaService, page: Page):
+def test_trade_match_table(opening_auction_market: str, vega: VegaServiceNull, page: Page):
     row_locator = ".ag-center-cols-container .ag-row"
     page.goto(f"/#/markets/{opening_auction_market}")
 
