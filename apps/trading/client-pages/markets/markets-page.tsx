@@ -16,6 +16,7 @@ import {
 } from '@vegaprotocol/environment';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
+import { MarketsSettings } from './markets-settings';
 
 export const MarketsPage = () => {
   const t = useT();
@@ -34,7 +35,11 @@ export const MarketsPage = () => {
     <div className="h-full pt-0.5 pb-3 px-1.5">
       <div className="h-full my-1 border rounded-sm border-default">
         <Tabs storageKey="console-markets">
-          <Tab id="open-markets" name={t('Open markets')}>
+          <Tab
+            id="open-markets"
+            name={t('Open markets')}
+            settings={<MarketsSettings />}
+          >
             <ErrorBoundary feature="markets-open">
               <OpenMarkets />
             </ErrorBoundary>
@@ -42,6 +47,7 @@ export const MarketsPage = () => {
           <Tab
             id="proposed-markets"
             name={t('Proposed markets')}
+            settings={<MarketsSettings />}
             menu={
               <TradingAnchorButton
                 size="extra-small"
@@ -56,7 +62,11 @@ export const MarketsPage = () => {
               <Proposed />
             </ErrorBoundary>
           </Tab>
-          <Tab id="closed-markets" name={t('Closed markets')}>
+          <Tab
+            id="closed-markets"
+            name={t('Closed markets')}
+            settings={<MarketsSettings />}
+          >
             <ErrorBoundary feature="markets-closed">
               <Closed />
             </ErrorBoundary>

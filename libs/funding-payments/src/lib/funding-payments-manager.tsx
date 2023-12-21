@@ -36,7 +36,7 @@ export const FundingPaymentsManager = ({
     dataProvider: fundingPaymentsWithMarketProvider,
     update: ({ data }) => {
       if (data?.length && gridRef.current?.api) {
-        gridRef.current?.api.setRowData(data);
+        gridRef.current?.api.setGridOption('rowData', data);
         return true;
       }
       return false;

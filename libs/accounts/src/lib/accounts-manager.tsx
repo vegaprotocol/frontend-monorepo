@@ -29,7 +29,7 @@ const AccountBreakdown = ({
     variables: { partyId, assetId },
     update: ({ data }) => {
       if (gridRef.current?.api && data?.breakdown) {
-        gridRef.current?.api.setRowData(data?.breakdown);
+        gridRef.current?.api.setGridOption('rowData', data?.breakdown);
         return true;
       }
       return false;

@@ -24,20 +24,27 @@ export const useDataGridEvents = (
   defaultFilterModel?: State['filterModel']
 ) => {
   const apiRef = useRef<GridApi | undefined>();
+  const hasStateRef = useRef(Boolean(state.columnState || state.filterModel));
 
   useEffect(() => {
     if (apiRef.current?.isDestroyed()) {
       apiRef.current = undefined;
     }
-    if (apiRef.current) {
+    const hasState = Boolean(state.columnState || state.filterModel);
+    if (apiRef.current && hasStateRef.current && !hasState) {
       if (!state.columnState) {
         apiRef.current.resetColumnState();
+        apiRef.current.sizeColumnsToFit();
+        if (autoSizeColumns?.length) {
+          apiRef.current.autoSizeColumns(autoSizeColumns);
+        }
       }
       if (!state.filterModel) {
         apiRef.current.setFilterModel(defaultFilterModel);
       }
     }
-  }, [state, defaultFilterModel]);
+    hasStateRef.current = hasState;
+  }, [state, defaultFilterModel, autoSizeColumns]);
 
   /**
    * Callback for filter events
