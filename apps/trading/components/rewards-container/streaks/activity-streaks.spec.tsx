@@ -62,6 +62,6 @@ describe('ActivityStreak', () => {
     render(<ActivityStreak tiers={tiers} streak={streak} />);
 
     const tierLabels = screen.getAllByText(/Tier/i);
-    expect(tierLabels.length).toBe(2);
+    expect(tierLabels.length).toBe(3); // 2 tiers + 1 label
   });
 });

@@ -51,6 +51,9 @@ export const ActivityStreak = ({
     ) {
       userTier = i;
     }
+    if (userTier > tiers.length - 1) {
+      userTier--;
+    }
     return userTier;
   };
 
@@ -194,8 +197,9 @@ export const ActivityStreak = ({
 
           <span className="flex flex-col">
             <span>
-              {t('{{epochs}} epochs streak', {
+              {t('{{epochs}} epochs streak (Tier {{tier}})', {
                 epochs: formatNumber(streak?.activeFor),
+                tier: userTierIndex + 1,
               })}
             </span>
           </span>

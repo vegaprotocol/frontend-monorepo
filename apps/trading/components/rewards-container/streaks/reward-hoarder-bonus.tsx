@@ -40,6 +40,9 @@ export const RewardHoarderBonus = ({
     ) {
       userTier = i;
     }
+    if (userTier > tiers.length - 1) {
+      userTier--;
+    }
     return userTier;
   };
   if (!tiers || tiers.length === 0) return null;
@@ -178,7 +181,8 @@ export const RewardHoarderBonus = ({
         <div className="flex items-center gap-1">
           <VegaIcon name={VegaIconNames.STREAK} />
           <span>
-            {formatNumber(vestingDetails.quantumBalance)} {qUSD}
+            {formatNumber(vestingDetails.quantumBalance)} {qUSD} (
+            {t('Tier {{tier}}', { tier: userTierIndex + 1 })})
           </span>
         </div>
       </div>
