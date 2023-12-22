@@ -33,9 +33,9 @@ export const ActivityStreak = ({
     | undefined;
 }) => {
   const t = useT();
-  if (!streak?.activeFor) return null;
 
   const getUserTier = () => {
+    if (!streak?.activeFor) return 0;
     let userTier = 0,
       i = 0;
     do {
@@ -64,7 +64,8 @@ export const ActivityStreak = ({
   const safeProgress = (i: number) => {
     if (i < userTierIndex) return 100;
     if (i > userTierIndex) return 0;
-    const progress = streak.activeFor;
+    if (!streak?.activeFor) return 0;
+    const progress = streak?.activeFor;
     const total = tiers[i].minimum_activity_streak;
     if (!total) return 0;
     if (new BigNumber(progress).isGreaterThan(total)) return 100;
@@ -198,7 +199,7 @@ export const ActivityStreak = ({
           <span className="flex flex-col">
             <span>
               {t('{{epochs}} epochs streak (Tier {{tier}})', {
-                epochs: formatNumber(streak?.activeFor),
+                epochs: formatNumber(streak?.activeFor || 0),
                 tier: userTierIndex + 1,
               })}
             </span>

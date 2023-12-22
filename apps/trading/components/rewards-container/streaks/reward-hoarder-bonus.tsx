@@ -18,11 +18,11 @@ export const RewardHoarderBonus = ({
   vestingDetails?: PartyVestingStats | null;
 }) => {
   const t = useT();
-  if (!vestingDetails) return null;
 
   const getUserTier = () => {
     let userTier = 0,
       i = 0;
+    if (!vestingDetails) return 0;
     do {
       userTier = i;
       i++;
@@ -54,6 +54,7 @@ export const RewardHoarderBonus = ({
   const safeProgress = (i: number) => {
     if (i < userTierIndex) return 100;
     if (i > userTierIndex) return 0;
+    if (!vestingDetails) return 0;
     const progress = vestingDetails.quantumBalance;
     const total = tiers[i].minimum_quantum_balance;
     if (!total || total === '0') return 0;
@@ -181,7 +182,7 @@ export const RewardHoarderBonus = ({
         <div className="flex items-center gap-1">
           <VegaIcon name={VegaIconNames.STREAK} />
           <span>
-            {formatNumber(vestingDetails.quantumBalance)} {qUSD} (
+            {formatNumber(vestingDetails?.quantumBalance || 0)} {qUSD} (
             {t('Tier {{tier}}', { tier: userTierIndex + 1 })})
           </span>
         </div>
