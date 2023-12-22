@@ -61,7 +61,7 @@ export const useVoteInformation = ({
     const noEquityLikeShareWeight = !proposal?.votes.no
       .totalEquityLikeShareWeight
       ? new BigNumber(0)
-      : new BigNumber(proposal.votes.no.totalEquityLikeShareWeight);
+      : new BigNumber(proposal.votes.no.totalEquityLikeShareWeight).times(100);
 
     const yesTokens = new BigNumber(
       addDecimal(proposal?.votes.yes.totalTokens ?? 0, decimals)
@@ -70,7 +70,7 @@ export const useVoteInformation = ({
     const yesEquityLikeShareWeight = !proposal?.votes.yes
       .totalEquityLikeShareWeight
       ? new BigNumber(0)
-      : new BigNumber(proposal.votes.yes.totalEquityLikeShareWeight);
+      : new BigNumber(proposal.votes.yes.totalEquityLikeShareWeight).times(100);
 
     const totalTokensVoted = yesTokens.plus(noTokens);
 
@@ -81,12 +81,7 @@ export const useVoteInformation = ({
     const yesPercentage = totalTokensVoted.isZero()
       ? new BigNumber(0)
       : yesTokens.multipliedBy(100).dividedBy(totalTokensVoted);
-
-    const yesLPPercentage = totalEquityLikeShareWeight.isZero()
-      ? new BigNumber(0)
-      : yesEquityLikeShareWeight
-          .multipliedBy(100)
-          .dividedBy(totalEquityLikeShareWeight);
+    const yesLPPercentage = yesEquityLikeShareWeight;
 
     const noPercentage = totalTokensVoted.isZero()
       ? new BigNumber(0)
@@ -103,9 +98,7 @@ export const useVoteInformation = ({
     );
 
     const participationLPMet = requiredParticipationLP
-      ? totalEquityLikeShareWeight.isGreaterThan(
-          totalSupply.multipliedBy(requiredParticipationLP)
-        )
+      ? totalEquityLikeShareWeight.isGreaterThan(requiredParticipationLP)
       : false;
 
     const majorityMet = yesPercentage.isGreaterThanOrEqualTo(
@@ -120,9 +113,7 @@ export const useVoteInformation = ({
       .multipliedBy(100)
       .dividedBy(totalSupply);
 
-    const totalLPTokensPercentage = totalEquityLikeShareWeight
-      .multipliedBy(100)
-      .dividedBy(totalSupply);
+    const totalLPTokensPercentage = totalEquityLikeShareWeight;
 
     const willPassByTokenVote =
       participationMet &&

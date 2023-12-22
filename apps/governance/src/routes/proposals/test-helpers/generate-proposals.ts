@@ -116,7 +116,8 @@ export const generateYesVotes = (
   fixedTokenValue?: number,
   totalEquityLikeShareWeight?: string
 ): Votes => {
-  const votes = Array.from(Array(numberOfVotes)).map(() => {
+  const votes = [];
+  for (let i = 0; i < numberOfVotes; i++) {
     const vote: Vote = {
       __typename: 'Vote',
       value: Schema.VoteValue.VALUE_YES,
@@ -152,8 +153,9 @@ export const generateYesVotes = (
       datetime: faker.date.past().toISOString(),
     };
 
-    return vote;
-  });
+    votes.push(vote);
+  }
+
   return {
     __typename: 'ProposalVoteSide',
     totalNumber: votes.length.toString(),
@@ -172,7 +174,8 @@ export const generateNoVotes = (
   fixedTokenValue?: number,
   totalEquityLikeShareWeight?: string
 ): Votes => {
-  const votes = Array.from(Array(numberOfVotes)).map(() => {
+  const votes = [];
+  for (let i = 0; i < numberOfVotes; i++) {
     const vote: Vote = {
       __typename: 'Vote',
       value: Schema.VoteValue.VALUE_NO,
@@ -207,8 +210,9 @@ export const generateNoVotes = (
       },
       datetime: faker.date.past().toISOString(),
     };
-    return vote;
-  });
+    votes.push(vote);
+  }
+
   return {
     __typename: 'ProposalVoteSide',
     totalNumber: votes.length.toString(),

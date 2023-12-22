@@ -7,6 +7,7 @@ import type {
   FetchResult,
   ErrorPolicy,
   ApolloQueryResult,
+  QueryOptions,
 } from '@apollo/client';
 import type { GraphQLErrors } from '@apollo/client/errors';
 import type { Subscription } from 'zen-observable-ts';
@@ -158,6 +159,7 @@ interface DataProviderParams<
   };
   fetchPolicy?: FetchPolicy;
   resetDelay?: number;
+  pollInterval?: number;
   additionalContext?: Record<string, unknown>;
   errorPolicyGuard?: (graphqlErrors: GraphQLErrors) => boolean;
   getQueryVariables?: (variables: Variables) => QueryVariables;
@@ -198,6 +200,7 @@ function makeDataProviderInternal<
   errorPolicyGuard,
   getQueryVariables,
   getSubscriptionVariables,
+  pollInterval,
 }: DataProviderParams<
   QueryData,
   Data,
@@ -222,6 +225,7 @@ function makeDataProviderInternal<
   let client: ApolloClient<object>;
   let subscription: Subscription[] | undefined;
   let pageInfo: PageInfo | null = null;
+  let watchQuerySubscription: Subscription | null = null;
 
   // notify single callback about current state, delta is passes optionally only if notify was invoked onNext
   const notify = (
@@ -243,34 +247,100 @@ function makeDataProviderInternal<
     callbacks.forEach((callback) => notify(callback, updateData));
   };
 
-  const call = (
+  const getQueryOptions = (
+    pagination?: Pagination,
+    policy?: ErrorPolicy
+  ): QueryOptions<OperationVariables, QueryData> => ({
+    query,
+    variables: {
+      ...(getQueryVariables ? getQueryVariables(variables) : variables),
+      ...(pagination && {
+        // let the variables pagination be prior to provider param
+        pagination: {
+          ...pagination,
+          ...(variables?.['pagination'] ?? null),
+        },
+      }),
+    },
+    fetchPolicy: fetchPolicy || 'no-cache',
+    context: additionalContext,
+    errorPolicy: policy || 'none',
+    pollInterval,
+  });
+
+  const onNext = (res: ApolloQueryResult<QueryData>) => {
+    data = getData(res.data, variables);
+    if (data && pagination) {
+      if (!(data instanceof Array)) {
+        throw new Error(
+          'data needs to be instance of Edge[] when using pagination'
+        );
+      }
+      pageInfo = pagination.getPageInfo(res.data);
+    }
+    // if there was some updates received from subscription during initial query loading apply them on just received data
+    if (update && data && updateQueue && updateQueue.length > 0) {
+      while (updateQueue.length) {
+        const delta = updateQueue.shift();
+        if (delta) {
+          setData(update(data, delta, reload, variables));
+        }
+      }
+    }
+    loaded = true;
+  };
+
+  const onError = (e: Error) => {
+    if (isNotFoundGraphQLError(e, ['party'])) {
+      data = getData(null, variables);
+      loaded = true;
+      return;
+    }
+    // if error will occur data provider stops subscription
+    error = e;
+    subscriptionUnsubscribe();
+  };
+
+  const onComplete = (isUpdate?: boolean) => {
+    loading = false;
+    notifyAll({ isUpdate });
+  };
+
+  const callWatchQuery = (pagination?: Pagination, policy?: ErrorPolicy) => {
+    let onNextCalled = false;
+    try {
+      watchQuerySubscription = client
+        .watchQuery(getQueryOptions(pagination, policy))
+        .subscribe(
+          (res) => {
+            onNext(res);
+            onComplete(onNextCalled);
+            onNextCalled = true;
+          },
+          (error) => {
+            onError(error as Error);
+            onComplete();
+          }
+        );
+    } catch (e) {
+      onError(e as Error);
+      onComplete();
+    }
+  };
+
+  const callQuery = (
     pagination?: Pagination,
     policy?: ErrorPolicy
   ): Promise<ApolloQueryResult<QueryData>> =>
     client
-      .query<QueryData>({
-        query,
-        variables: {
-          ...(getQueryVariables ? getQueryVariables(variables) : variables),
-          ...(pagination && {
-            // let the variables pagination be prior to provider param
-            pagination: {
-              ...pagination,
-              ...(variables?.['pagination'] ?? null),
-            },
-          }),
-        },
-        fetchPolicy: fetchPolicy || 'no-cache',
-        context: additionalContext,
-        errorPolicy: policy || 'none',
-      })
+      .query<QueryData>(getQueryOptions(pagination, policy))
       .catch((err) => {
         if (
           err.graphQLErrors &&
           errorPolicyGuard &&
           errorPolicyGuard(err.graphQLErrors)
         ) {
-          return call(pagination, 'ignore');
+          return callQuery(pagination, 'ignore');
         } else {
           throw err;
         }
@@ -294,7 +364,7 @@ function makeDataProviderInternal<
       }
     }
 
-    const res = await call(paginationVariables);
+    const res = await callQuery(paginationVariables);
 
     const insertionData = getData(res.data, variables);
     const insertionPageInfo = pagination.getPageInfo(res.data);
@@ -329,7 +399,7 @@ function makeDataProviderInternal<
             variables,
             fetchPolicy,
           })
-          .subscribe(onNext, onError)
+          .subscribe(subscriptionOnNext, subscriptionOnError)
       );
   };
 
@@ -347,39 +417,16 @@ function makeDataProviderInternal<
     const paginationVariables = pagination
       ? { first: pagination.first }
       : undefined;
+    if (pollInterval) {
+      callWatchQuery();
+      return;
+    }
     try {
-      const res = await call(paginationVariables);
-      data = getData(res.data, variables);
-      if (data && pagination) {
-        if (!(data instanceof Array)) {
-          throw new Error(
-            'data needs to be instance of Edge[] when using pagination'
-          );
-        }
-        pageInfo = pagination.getPageInfo(res.data);
-      }
-      // if there was some updates received from subscription during initial query loading apply them on just received data
-      if (update && data && updateQueue && updateQueue.length > 0) {
-        while (updateQueue.length) {
-          const delta = updateQueue.shift();
-          if (delta) {
-            setData(update(data, delta, reload, variables));
-          }
-        }
-      }
-      loaded = true;
+      onNext(await callQuery(paginationVariables));
     } catch (e) {
-      if (isNotFoundGraphQLError(e as Error, ['party'])) {
-        data = getData(null, variables);
-        loaded = true;
-        return;
-      }
-      // if error will occur data provider stops subscription
-      error = e as Error;
-      subscriptionUnsubscribe();
+      onError(e as Error);
     } finally {
-      loading = false;
-      notifyAll({ isUpdate });
+      onComplete(isUpdate);
     }
   };
 
@@ -399,7 +446,7 @@ function makeDataProviderInternal<
     }
   };
 
-  const onNext = ({
+  const subscriptionOnNext = ({
     data: subscriptionData,
   }: FetchResult<SubscriptionData>) => {
     if (!subscriptionData || !getDelta || !update) {
@@ -418,7 +465,7 @@ function makeDataProviderInternal<
     }
   };
 
-  const onError = (e: Error) => {
+  const subscriptionOnError = (e: Error) => {
     error = e;
     subscriptionUnsubscribe();
     notifyAll();
@@ -442,6 +489,9 @@ function makeDataProviderInternal<
   };
 
   const reset = () => {
+    if (watchQuerySubscription) {
+      watchQuerySubscription.unsubscribe();
+    }
     subscriptionUnsubscribe();
     initialized = false;
     data = null;
