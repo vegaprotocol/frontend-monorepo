@@ -16,7 +16,7 @@ bucket_name = ''
 if 'release/' in args.github_ref:
   if 'mainnet-mirror' in args.github_ref:
     env_name = 'mainnet-mirror'
-  if 'validators-testnet' in args.github_ref or 'validators-testnet' in args.github_ref:
+  elif 'validators-testnet' in args.github_ref or 'validator-testnet' in args.github_ref:
     env_name = 'validators-testnet'
   else:
     # remove prefixing release/ and take the first string limited by - which is supposed to be name of the environment for releasing (format: release/testnet-trading)
