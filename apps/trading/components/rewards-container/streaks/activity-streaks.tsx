@@ -198,10 +198,14 @@ export const ActivityStreak = ({
 
           <span className="flex flex-col">
             <span>
-              {t('{{epochs}} epochs streak (Tier {{tier}})', {
+              {t('{{epochs}} epochs streak', {
                 epochs: formatNumber(streak?.activeFor || 0),
-                tier: userTierIndex + 1,
-              })}
+              })}{' '}
+              {userTierIndex >= 0 &&
+                new BigNumber(
+                  tiers[0].minimum_activity_streak
+                ).isLessThanOrEqualTo(streak?.activeFor || 0) &&
+                t('(Tier {{tier}})', { tier: userTierIndex + 1 })}
             </span>
           </span>
         </div>

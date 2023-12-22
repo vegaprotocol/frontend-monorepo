@@ -182,8 +182,12 @@ export const RewardHoarderBonus = ({
         <div className="flex items-center gap-1">
           <VegaIcon name={VegaIconNames.STREAK} />
           <span>
-            {formatNumber(vestingDetails?.quantumBalance || 0)} {qUSD} (
-            {t('Tier {{tier}}', { tier: userTierIndex + 1 })})
+            {formatNumber(vestingDetails?.quantumBalance || 0)} {qUSD}{' '}
+            {userTierIndex >= 0 &&
+              new BigNumber(
+                tiers[0].minimum_quantum_balance
+              ).isLessThanOrEqualTo(vestingDetails?.quantumBalance || 0) &&
+              t('(Tier {{tier}})', { tier: userTierIndex + 1 })}
           </span>
         </div>
       </div>
