@@ -358,7 +358,6 @@
   "Average position": "Average position",
   "Individual": "Individual",
   "Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has": " Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has",
-  "Number of epochs after distribution to delay vesting of rewards by.": "Number of epochs after distribution to delay vesting of rewards by.",
   "Tier {{tier}}": "Tier {{tier}}",
   "Reward {{reward}}x": "Reward {{reward}}x",
   "Vesting {{vesting}}x": "Vesting {{vesting}}x",

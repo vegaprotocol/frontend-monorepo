@@ -33,6 +33,7 @@ import {
 } from '@vegaprotocol/types';
 import { Card } from '../card/card';
 import { useMemo, useState } from 'react';
+import { useAssetDataProvider } from '@vegaprotocol/assets';
 
 const isActiveReward = (node: TransferNode, currentEpoch: number) => {
   const { transfer } = node;
@@ -234,6 +235,10 @@ export const ActiveRewardCard = ({
     return '';
   }, [marketIds, marketNameData]);
 
+  const { data: dispatchAsset } = useAssetDataProvider(
+    dispatchStrategy?.dispatchMetricAssetId || ''
+  );
+
   if (!dispatchStrategy) {
     return null;
   }
@@ -309,7 +314,7 @@ export const ActiveRewardCard = ({
               <CardIcon
                 iconName={VegaIconNames.LOCK}
                 tooltip={t(
-                  'Number of epochs after distribution to delay vesting of rewards by.'
+                  'Number of epochs after distribution to delay vesting of rewards by'
                 )}
               />
               <span className="text-muted text-xs whitespace-nowrap">
@@ -324,7 +329,7 @@ export const ActiveRewardCard = ({
           {/* TODO use market symbol or market name */}
           <span>
             {DispatchMetricLabels[dispatchStrategy.dispatchMetric]}
-            {marketName && ` • ${marketName}`}
+            {marketName ? ` • ${marketName}` : ` • ${dispatchAsset?.name}`}
           </span>
 
           <div className="flex items-center gap-8 flex-wrap">
