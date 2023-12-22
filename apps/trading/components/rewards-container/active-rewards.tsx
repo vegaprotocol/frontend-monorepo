@@ -13,6 +13,7 @@ import {
   VegaIcon,
   VegaIconNames,
   type VegaIconSize,
+  TradingInput,
 } from '@vegaprotocol/ui-toolkit';
 import { IconNames } from '@blueprintjs/icons';
 import {
@@ -31,7 +32,7 @@ import {
   type RecurringTransfer,
 } from '@vegaprotocol/types';
 import { Card } from '../card/card';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 const isActiveReward = (node: TransferNode, currentEpoch: number) => {
   const { transfer } = node;
@@ -55,12 +56,40 @@ const isActiveReward = (node: TransferNode, currentEpoch: number) => {
   return true;
 };
 
+const applyFilter = (transfer: Transfer, filter: Filter) => {
+  if (
+    transfer.kind.__typename !== 'RecurringTransfer' ||
+    !transfer.kind.dispatchStrategy?.dispatchMetric
+  ) {
+    return false;
+  }
+  if (
+    DispatchMetricLabels[transfer.kind.dispatchStrategy.dispatchMetric]
+      .toLowerCase()
+      .includes(filter.searchTerm.toLowerCase()) ||
+    transfer.asset?.symbol
+      .toLowerCase()
+      .includes(filter.searchTerm.toLowerCase())
+  ) {
+    return true;
+  }
+  return false;
+};
+
+export type Filter = {
+  searchTerm: string;
+};
+
 export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
   const t = useT();
   const { data: activeRewardsData } = useActiveRewardsQuery({
     variables: {
       isReward: true,
     },
+  });
+
+  const [filter, setFilter] = useState<Filter>({
+    searchTerm: '',
   });
 
   const transfers = activeRewardsData?.transfersConnection?.edges
@@ -71,29 +100,44 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
 
   return (
     <Card title={t('Active rewards')} className="lg:col-span-full">
-      <div className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(343px,_1fr))] max-h-[600px] overflow-auto">
-        {transfers.map((node, i) => {
-          const { transfer } = node;
+      <div className="">
+        {transfers.length > 1 && (
+          <TradingInput
+            onChange={(e) =>
+              setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
+            }
+            value={filter.searchTerm}
+            type="text"
+            placeholder={t('Search by reward dispatch metric or asset name')}
+            data-testid="search-term"
+            className="mb-4 w-20"
+            prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
+          />
+        )}
+        <div className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(343px,_1fr))] max-h-[40rem] overflow-auto">
+          {transfers
+            .filter((n) => applyFilter(n.transfer, filter))
+            .map((node, i) => {
+              const { transfer } = node;
+              if (
+                transfer.kind.__typename !== 'RecurringTransfer' ||
+                !transfer.kind.dispatchStrategy?.dispatchMetric
+              ) {
+                return null;
+              }
 
-          if (!isActiveReward(node, currentEpoch)) {
-            return null;
-          }
-
-          if (transfer.kind.__typename !== 'RecurringTransfer') {
-            return null;
-          }
-
-          return (
-            node && (
-              <ActiveRewardCard
-                key={i}
-                transferNode={node}
-                kind={transfer.kind}
-                currentEpoch={currentEpoch}
-              />
-            )
-          );
-        })}
+              return (
+                node && (
+                  <ActiveRewardCard
+                    key={i}
+                    transferNode={node}
+                    kind={transfer.kind}
+                    currentEpoch={currentEpoch}
+                  />
+                )
+              );
+            })}
+        </div>
       </div>
     </Card>
   );
