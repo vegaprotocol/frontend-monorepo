@@ -52,10 +52,6 @@ const isActiveReward = (node: TransferNode, currentEpoch: number) => {
     return false;
   }
 
-  if (!node.transfer.reference?.includes('reward')) {
-    return false;
-  }
-
   return true;
 };
 
@@ -75,7 +71,7 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
 
   return (
     <Card title={t('Active rewards')} className="lg:col-span-full">
-      <div className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(343px,_1fr))]">
+      <div className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(343px,_1fr))] max-h-[600px] overflow-auto">
         {transfers.map((node, i) => {
           const { transfer } = node;
 
