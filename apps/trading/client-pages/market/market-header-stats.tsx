@@ -188,12 +188,11 @@ const useNow = () => {
   return now;
 };
 
-const useEvery = (marketId: string) => {
-  const { data: marketTradingMode } = useMarketTradingMode(marketId);
+const useEvery = (marketId: string, skip: boolean) => {
   const { data: marketInfo } = useDataProvider({
     dataProvider: marketInfoProvider,
     variables: { marketId },
-    skip: !marketTradingMode || isMarketInAuction(marketTradingMode),
+    skip,
   });
   let every: number | undefined = undefined;
   const sourceType =
@@ -211,8 +210,10 @@ const useEvery = (marketId: string) => {
   return every;
 };
 
-const useStartTime = (marketId: string) => {
+const useStartTime = (marketId: string, skip: boolean) => {
   const { data: fundingPeriods } = useFundingPeriodsQuery({
+    pollInterval: 5000,
+    skip,
     variables: {
       marketId: marketId,
       pagination: { first: 1 },
@@ -246,8 +247,10 @@ const useFormatCountdown = (
 
 export const FundingCountdown = ({ marketId }: { marketId: string }) => {
   const now = useNow();
-  const startTime = useStartTime(marketId);
-  const every = useEvery(marketId);
+  const { data: marketTradingMode } = useMarketTradingMode(marketId);
+  const skip = !marketTradingMode || isMarketInAuction(marketTradingMode);
+  const startTime = useStartTime(marketId, skip);
+  const every = useEvery(marketId, skip);
 
   return (
     <div data-testid="funding-countdown">
