@@ -35,7 +35,11 @@ import { Card } from '../card/card';
 import { useMemo, useState } from 'react';
 import { useAssetDataProvider } from '@vegaprotocol/assets';
 
-const isActiveReward = (node: TransferNode, currentEpoch: number) => {
+export type Filter = {
+  searchTerm: string;
+};
+
+export const isActiveReward = (node: TransferNode, currentEpoch: number) => {
   const { transfer } = node;
   if (transfer.kind.__typename !== 'RecurringTransfer') {
     return false;
@@ -57,7 +61,7 @@ const isActiveReward = (node: TransferNode, currentEpoch: number) => {
   return true;
 };
 
-const applyFilter = (transfer: Transfer, filter: Filter) => {
+export const applyFilter = (transfer: Transfer, filter: Filter) => {
   if (
     transfer.kind.__typename !== 'RecurringTransfer' ||
     !transfer.kind.dispatchStrategy?.dispatchMetric
@@ -75,10 +79,6 @@ const applyFilter = (transfer: Transfer, filter: Filter) => {
     return true;
   }
   return false;
-};
-
-export type Filter = {
-  searchTerm: string;
 };
 
 export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
@@ -248,7 +248,6 @@ export const ActiveRewardCard = ({
   );
 
   const entityScope = dispatchStrategy.entityScope;
-
   return (
     <div>
       <div
