@@ -9,7 +9,6 @@ def test_market_selector(continuous_market, page: Page):
     page.get_by_test_id("header-title").click()
     # 6001-MARK-066
     expect(page.get_by_test_id("market-selector")).to_be_visible()
-
     # 6001-MARK-021
     # 6001-MARK-022
     # 6001-MARK-024
@@ -17,7 +16,7 @@ def test_market_selector(continuous_market, page: Page):
     btc_market = page.locator('[data-testid="market-selector-list"] a')
     expect(btc_market.locator("h3")).to_have_text("BTC:DAI_2023Futr")
     expect(btc_market.locator('[data-testid="market-selector-volume"]')).to_have_text(
-        "0.00"
+        "1"
     )
     expect(btc_market.locator('[data-testid="market-selector-price"]')).to_have_text(
         "107.50 tDAI"
@@ -43,7 +42,6 @@ def test_market_selector_filter(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id("header-title").click()
     # 6001-MARK-027
-
     page.get_by_test_id("product-Spot").click()
     expect(page.get_by_test_id("market-selector-list")).to_contain_text(
         "Spot markets coming soon."
@@ -59,7 +57,7 @@ def test_market_selector_filter(continuous_market, page: Page):
     page.get_by_test_id("search-term").fill("btc")
     expect(page.locator('[data-testid="market-selector-list"] a')).to_have_count(1)
     expect(page.locator('[data-testid="market-selector-list"] a').nth(0)).to_have_text(
-        "BTC:DAI_2023107.50 tDAI0.00"
+        "BTC:DAI_2023107.50 tDAI1"
     )
 
     page.get_by_test_id("search-term").clear()
@@ -84,5 +82,5 @@ def test_market_selector_filter(continuous_market, page: Page):
     page.get_by_role("menuitemcheckbox").nth(0).get_by_text("tDAI").click()
     expect(page.locator('[data-testid="market-selector-list"] a')).to_have_count(1)
     expect(page.locator('[data-testid="market-selector-list"] a').nth(0)).to_have_text(
-        "BTC:DAI_2023107.50 tDAI0.00"
+        "BTC:DAI_2023107.50 tDAI1"
     )
