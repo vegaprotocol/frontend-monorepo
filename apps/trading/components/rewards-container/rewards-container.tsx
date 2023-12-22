@@ -280,7 +280,7 @@ export const RewardsContainer = () => {
             </span>
           </Card>
         )}
-        {pubKey && streaks && (
+        {pubKey && (
           <Card
             title={t('Reward Hoarder Bonus')}
             className={classNames(
