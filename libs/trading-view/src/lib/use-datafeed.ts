@@ -2,15 +2,6 @@ import { useEffect, useMemo, useRef } from 'react';
 import compact from 'lodash/compact';
 import { useApolloClient } from '@apollo/client';
 import { type Subscription } from 'zen-observable-ts';
-/*
- * TODO: figure out how we can get the chart types
-import {
-  type LibrarySymbolInfo,
-  type IBasicDataFeed,
-  type ResolutionString,
-  type SeriesFormat,
-} from '../charting_library/charting_library';
-*/
 import {
   GetBarsDocument,
   LastBarDocument,
@@ -27,6 +18,12 @@ import {
   type SymbolQueryVariables,
 } from './__generated__/Symbol';
 import { getMarketExpiryDate, toBigNum } from '@vegaprotocol/utils';
+import {
+  type IBasicDataFeed,
+  type DatafeedConfiguration,
+  type LibrarySymbolInfo,
+  type ResolutionString,
+} from '../charting-library';
 
 const EXCHANGE = 'VEGA';
 
@@ -42,12 +39,8 @@ const resolutionMap: Record<string, Interval> = {
 
 const supportedResolutions = Object.keys(resolutionMap);
 
-const configurationData = {
-  // only showing Vega ofc
-  exchanges: [EXCHANGE],
-
+const configurationData: DatafeedConfiguration = {
   // Represents the resolutions for bars supported by your datafeed
-  // @ts-ignore cant import types as chartin_library is external
   supported_resolutions: supportedResolutions as ResolutionString[],
 } as const;
 
@@ -57,9 +50,7 @@ export const useDatafeed = () => {
   const client = useApolloClient();
 
   const datafeed = useMemo(() => {
-    // @ts-ignore cant import types as chartin_library is external
     const feed: IBasicDataFeed = {
-      // @ts-ignore cant import types as chartin_library is external
       onReady: (callback) => {
         setTimeout(() => callback(configurationData));
       },
@@ -69,11 +60,8 @@ export const useDatafeed = () => {
       },
 
       resolveSymbol: async (
-        // @ts-ignore cant import types as chartin_library is external
         marketId,
-        // @ts-ignore cant import types as chartin_library is external
         onSymbolResolvedCallback,
-        // @ts-ignore cant import types as chartin_library is external
         onResolveErrorCallback
       ) => {
         try {
@@ -110,9 +98,8 @@ export const useDatafeed = () => {
           const expirationDate = getMarketExpiryDate(instrument.metadata.tags);
           const expirationTimestamp = expirationDate
             ? Math.floor(expirationDate.getTime() / 1000)
-            : null;
+            : undefined;
 
-          // @ts-ignore cant import types as chartin_library is external
           const symbolInfo: LibrarySymbolInfo = {
             ticker: market.id, // use ticker as our unique identifier so that code/name can be used for name/description
             name: instrument.code,
@@ -120,10 +107,9 @@ export const useDatafeed = () => {
             description: instrument.name,
             listed_exchange: EXCHANGE,
             expired: productType === 'Perpetual' ? false : true,
-            expirationDate: expirationTimestamp,
+            expiration_date: expirationTimestamp,
 
-            // @ts-ignore cant import types as chartin_library is external
-            format: 'price' as SeriesFormat,
+            format: 'price',
             type,
             session: '24x7',
             timezone: 'Etc/UTC',
@@ -151,15 +137,10 @@ export const useDatafeed = () => {
       },
 
       getBars: async (
-        // @ts-ignore cant import types as chartin_library is external
         symbolInfo,
-        // @ts-ignore cant import types as chartin_library is external
         resolution,
-        // @ts-ignore cant import types as chartin_library is external
         periodParams,
-        // @ts-ignore cant import types as chartin_library is external
         onHistoryCallback,
-        // @ts-ignore cant import types as chartin_library is external
         onErrorCallback
       ) => {
         if (!symbolInfo.ticker) {
@@ -211,13 +192,9 @@ export const useDatafeed = () => {
       },
 
       subscribeBars: (
-        // @ts-ignore cant import types as chartin_library is external
         symbolInfo,
-        // @ts-ignore cant import types as chartin_library is external
         resolution,
-        // @ts-ignore cant import types as chartin_library is external
         onTick
-
         // subscriberUID,  // chart will subscribe and unsbuscribe when the parent market of the page changes so we don't need to use subscriberUID as of now
       ) => {
         if (!symbolInfo.ticker) {

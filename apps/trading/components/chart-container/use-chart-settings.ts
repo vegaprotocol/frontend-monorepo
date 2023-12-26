@@ -9,6 +9,7 @@ type StudySizes = { [S in Study]?: number };
 export type Chartlib = 'pennant' | 'tradingview';
 
 interface StoredSettings {
+  state: object; // Don't see a better type provided from TradingView type definitions
   chartlib: Chartlib;
   // For interval we use the enum from @vegaprotocol/types, this is to make mapping between different
   // chart types easier and more consistent
@@ -17,7 +18,6 @@ interface StoredSettings {
   overlays: Overlay[];
   studies: Study[];
   studySizes: StudySizes;
-  tradingViewStudies: string[];
 }
 
 export const STUDY_SIZE = 90;
@@ -31,12 +31,12 @@ const STUDY_ORDER: Study[] = [
 
 export const DEFAULT_CHART_SETTINGS = {
   chartlib: 'tradingview' as const,
+  state: {},
   interval: Interval.INTERVAL_I15M,
   type: ChartType.CANDLE,
   overlays: [Overlay.MOVING_AVERAGE],
   studies: [Study.MACD, Study.VOLUME],
   studySizes: {},
-  tradingViewStudies: ['Volume'],
 };
 
 export const useChartSettingsStore = create<
@@ -47,7 +47,7 @@ export const useChartSettingsStore = create<
     setStudies: (studies?: Study[]) => void;
     setStudySizes: (sizes: number[]) => void;
     setChartlib: (lib: Chartlib) => void;
-    setTradingViewStudies: (studies: string[]) => void;
+    setState: (state: object) => void;
   }
 >()(
   persist(
@@ -95,10 +95,8 @@ export const useChartSettingsStore = create<
           state.chartlib = lib;
         });
       },
-      setTradingViewStudies: (studies: string[]) => {
-        set((state) => {
-          state.tradingViewStudies = studies;
-        });
+      setState: (state) => {
+        set({ state });
       },
     })),
     {
@@ -147,13 +145,13 @@ export const useChartSettings = () => {
     overlays,
     studies,
     studySizes,
-    tradingViewStudies: settings.tradingViewStudies,
     setInterval: settings.setInterval,
     setType: settings.setType,
     setStudies: settings.setStudies,
     setOverlays: settings.setOverlays,
     setStudySizes: settings.setStudySizes,
     setChartlib: settings.setChartlib,
-    setTradingViewStudies: settings.setTradingViewStudies,
+    state: settings.state,
+    setState: settings.setState,
   };
 };

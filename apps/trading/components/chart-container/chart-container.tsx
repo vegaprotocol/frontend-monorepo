@@ -25,12 +25,12 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
     overlays,
     studies,
     studySizes,
-    tradingViewStudies,
     setInterval,
     setStudies,
     setStudySizes,
     setOverlays,
-    setTradingViewStudies,
+    state,
+    setState,
   } = useChartSettings();
 
   const pennantChart = (
@@ -64,13 +64,13 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
           libraryHash={CHARTING_LIBRARY_HASH}
           marketId={marketId}
           interval={toTradingViewResolution(interval)}
-          studies={tradingViewStudies}
           onIntervalChange={(newInterval) => {
             setInterval(fromTradingViewResolution(newInterval));
           }}
-          onAutoSaveNeeded={(data: { studies: string[] }) => {
-            setTradingViewStudies(data.studies);
+          onAutoSaveNeeded={(data) => {
+            setState(data);
           }}
+          state={state}
         />
       );
     }
