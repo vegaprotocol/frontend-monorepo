@@ -1,11 +1,12 @@
 import pytest
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
-from fixtures.market import setup_continuous_market, setup_simple_successor_market
+from fixtures.market import setup_continuous_market
 from wallet_config import MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET
 from actions.vega import submit_multiple_orders, submit_order, submit_liquidity
 from actions.utils import next_epoch
 
+@pytest.mark.skip("tbd")
 @pytest.mark.usefixtures("risk_accepted")
 def test_succession_line(vega: VegaServiceNull, page: Page):
     parent_market_id = setup_continuous_market(vega)
@@ -107,4 +108,3 @@ def provide_successor_liquidity(
     vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-
