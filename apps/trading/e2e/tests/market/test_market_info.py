@@ -280,7 +280,8 @@ def test_market_info_proposal(page: Page, vega: VegaServiceNull):
         "href", re.compile(r"(\/proposals\/propose\/update-market)")
     )
 
-
+    
+@pytest.mark.skip("tbd-market-sim")
 def test_market_info_succession_line(page: Page, vega: VegaServiceNull):
     page.get_by_test_id(market_title_test_id).get_by_text("Succession line").click()
     market_id = vega.find_market_id("BTC:DAI_2023")
