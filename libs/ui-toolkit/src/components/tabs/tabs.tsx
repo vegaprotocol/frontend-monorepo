@@ -110,16 +110,15 @@ export const Tabs = ({
                   <Popover
                     align="end"
                     trigger={
-                      <span className="ml-1 flex items-center justify-center h-6 w-6">
+                      <span className="flex items-center justify-center h-6 w-6">
                         <VegaIcon name={VegaIconNames.COG} size={16} />
                       </span>
                     }
-                    children={
-                      <div className="p-2 lg:p-4 lg:min-w-[290px] flex justify-end">
-                        {child.props.settings}
-                      </div>
-                    }
-                  />
+                  >
+                    <div className="p-2 lg:p-4 lg:min-w-[290px] flex justify-end">
+                      {child.props.settings}
+                    </div>
+                  </Popover>
                 )}
               </TabsPrimitive.Content>
             );
