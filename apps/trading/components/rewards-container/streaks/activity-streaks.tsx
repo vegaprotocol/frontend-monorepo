@@ -3,6 +3,7 @@ import { useT } from '../../../lib/use-t';
 import classNames from 'classnames';
 import { formatNumber } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
+import type { PartyActivityStreak } from '@vegaprotocol/types';
 
 export const ActivityStreak = ({
   tiers,
@@ -15,22 +16,7 @@ export const ActivityStreak = ({
         reward_multiplier: string;
         vesting_multiplier: string;
       }[];
-  streak:
-    | (
-        | {
-            activeFor: number;
-            isActive: boolean;
-            inactiveFor: number;
-            rewardDistributionMultiplier: string;
-            rewardVestingMultiplier: string;
-            epoch: number;
-            tradedVolume: string;
-            openVolume: string;
-          }
-        | null
-        | undefined
-      )
-    | undefined;
+  streak?: PartyActivityStreak | null;
 }) => {
   const t = useT();
 
@@ -102,7 +88,7 @@ export const ActivityStreak = ({
                           })}
                         </span>
                         <span className="text-muted text-xs">
-                          {t('{{epochs}} epochs', {
+                          {t('{{count}} epochs', {
                             epochs: formatNumber(tier.minimum_activity_streak),
                           })}
                         </span>
@@ -201,8 +187,8 @@ export const ActivityStreak = ({
 
           <span className="flex flex-col">
             <span>
-              {t('{{epochs}} epochs streak', {
-                epochs: formatNumber(streak?.activeFor || 0),
+              {t('epochsStreak', '{{count}} epochs streak', {
+                count: streak?.activeFor || 0,
               })}{' '}
               {userTierIndex >= 0 &&
                 new BigNumber(

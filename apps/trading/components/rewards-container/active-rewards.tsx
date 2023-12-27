@@ -3,7 +3,7 @@ import {
   useMarketForRewardsQuery,
 } from './__generated__/Rewards';
 import { useT } from '../../lib/use-t';
-import { addDecimalsFormatNumber, formatNumber } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import classNames from 'classnames';
 import {
   Icon,
@@ -321,8 +321,8 @@ export const ActiveRewardCard = ({
                 )}
               />
               <span className="text-muted text-xs whitespace-nowrap">
-                {t('{{lock}} epochs', {
-                  lock: kind.dispatchStrategy?.lockPeriod,
+                {t('numberEpochs', '{{count}} epochs', {
+                  count: kind.dispatchStrategy?.lockPeriod,
                 })}
               </span>
             </div>
@@ -339,10 +339,8 @@ export const ActiveRewardCard = ({
               <span className="flex flex-col">
                 <span className="text-muted text-xs">{t('Ends in')}</span>
                 <span>
-                  {t('{{epochs}} epochs', {
-                    epochs: kind.endEpoch
-                      ? formatNumber(kind.endEpoch - currentEpoch)
-                      : '-',
+                  {t('numberEpochs', '{{count}} epochs', {
+                    count: kind.endEpoch - currentEpoch,
                   })}
                 </span>
               </span>
@@ -352,13 +350,9 @@ export const ActiveRewardCard = ({
               <span className="flex flex-col">
                 <span className="text-muted text-xs">{t('Assessed over')}</span>
                 <span>
-                  {dispatchStrategy.windowLength === 1
-                    ? t('{{epochs}} epoch', {
-                        epochs: formatNumber(dispatchStrategy.windowLength),
-                      })
-                    : t('{{epochs}} epoch(s)', {
-                        epochs: formatNumber(dispatchStrategy.windowLength),
-                      })}
+                  {t('numberEpochs', '{{count}} epochs', {
+                    count: dispatchStrategy.windowLength,
+                  })}
                 </span>
               </span>
             }
