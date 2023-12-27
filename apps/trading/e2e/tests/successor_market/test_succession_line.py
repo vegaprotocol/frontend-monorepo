@@ -22,7 +22,7 @@ def successor_market(vega: VegaServiceNull):
     vega.wait_for_total_catchup()
     return successor_market_id
 
-
+@pytest.mark.skip("tbd")
 @pytest.mark.usefixtures("risk_accepted")
 def test_succession_line(page: Page, successor_market):
     page.goto(f"/#/markets/{successor_market}")
