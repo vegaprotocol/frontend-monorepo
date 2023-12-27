@@ -1,6 +1,6 @@
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from conftest import init_vega
 from fixtures.market import setup_continuous_market
 
@@ -16,7 +16,7 @@ def vega(request):
 
 
 @pytest.fixture(scope="module")
-def continuous_market(vega: VegaService):
+def continuous_market(vega: VegaServiceNull):
     return setup_continuous_market(vega)
 
 

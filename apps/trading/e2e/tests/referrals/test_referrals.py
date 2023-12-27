@@ -1,6 +1,6 @@
 import pytest
-from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from playwright.sync_api import Page
+from vega_sim.null_service import VegaServiceNull
 from conftest import init_vega
 from fixtures.market import setup_continuous_market, setup_simple_market
 from actions.utils import change_keys, create_and_faucet_wallet, forward_time, selector_contains_text
@@ -72,7 +72,7 @@ def create_staking_tier(minimum_staked_tokens, referral_reward_multiplier):
     }
 
 
-def setup_market_and_referral_scheme(vega: VegaService, continuous_market: str, page: Page):
+def setup_market_and_referral_scheme(vega: VegaServiceNull, continuous_market: str, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
 
     create_and_faucet_wallet(vega=vega, wallet=PARTY_A)
@@ -118,7 +118,7 @@ def setup_market_and_referral_scheme(vega: VegaService, continuous_market: str, 
 
 
 @pytest.mark.usefixtures("page", "auth", "risk_accepted")
-def test_can_traverse_up_and_down_through_tiers(continuous_market, vega: VegaService, page: Page):
+def test_can_traverse_up_and_down_through_tiers(continuous_market, vega: VegaServiceNull, page: Page):
     setup_market_and_referral_scheme(vega, continuous_market, page)
     change_keys(page, vega, PARTY_B.name)
     submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 1, 115)
@@ -162,7 +162,7 @@ def test_can_traverse_up_and_down_through_tiers(continuous_market, vega: VegaSer
 
 
 @pytest.mark.usefixtures("page", "auth", "risk_accepted")
-def test_does_not_move_up_tiers_when_not_enough_epochs(continuous_market, vega: VegaService, page: Page):
+def test_does_not_move_up_tiers_when_not_enough_epochs(continuous_market, vega: VegaServiceNull, page: Page):
     setup_market_and_referral_scheme(vega, continuous_market, page)
     change_keys(page, vega, PARTY_B.name)
     submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 2, 115)
