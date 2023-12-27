@@ -672,6 +672,13 @@ export const EntityScopeMapping: { [e in EntityScope]: string } = {
     'Rewards must be distributed directly to eligible teams, and then amongst team members',
 };
 
+export const EntityScopeLabelMapping: { [e in EntityScope]: string } = {
+  /** Rewards must be distributed directly to eligible parties */
+  ENTITY_SCOPE_INDIVIDUALS: 'Individual',
+  /** Rewards must be distributed directly to eligible teams, and then amongst team members */
+  ENTITY_SCOPE_TEAMS: 'Team',
+};
+
 export enum DistributionStrategyMapping {
   /** Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has */
   DISTRIBUTION_STRATEGY_PRO_RATA = 'Pro rata',

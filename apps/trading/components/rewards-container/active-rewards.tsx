@@ -30,6 +30,7 @@ import {
   DispatchMetricDescription,
   DispatchMetricLabels,
   type RecurringTransfer,
+  EntityScopeLabelMapping,
 } from '@vegaprotocol/types';
 import { Card } from '../card/card';
 import { useMemo, useState } from 'react';
@@ -74,6 +75,9 @@ export const applyFilter = (transfer: Transfer, filter: Filter) => {
       .includes(filter.searchTerm.toLowerCase()) ||
     transfer.asset?.symbol
       .toLowerCase()
+      .includes(filter.searchTerm.toLowerCase()) ||
+    EntityScopeLabelMapping[transfer.kind.dispatchStrategy.entityScope]
+      .toLowerCase()
       .includes(filter.searchTerm.toLowerCase())
   ) {
     return true;
@@ -109,7 +113,9 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
             }
             value={filter.searchTerm}
             type="text"
-            placeholder={t('Search by reward dispatch metric or asset name')}
+            placeholder={t(
+              'Search by reward dispatch metric, entity scope or asset name'
+            )}
             data-testid="search-term"
             className="mb-4 w-20"
             prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
@@ -268,11 +274,7 @@ export const ActiveRewardCard = ({
               <EntityIcon transfer={transfer} />
               {entityScope && (
                 <span className="text-muted text-xs">
-                  {entityScope === EntityScope.ENTITY_SCOPE_TEAMS
-                    ? t('Team')
-                    : entityScope === EntityScope.ENTITY_SCOPE_INDIVIDUALS
-                    ? t('Individual')
-                    : t('Unspecified')}
+                  {EntityScopeLabelMapping[entityScope] || t('Unspecified')}
                 </span>
               )}
             </div>
