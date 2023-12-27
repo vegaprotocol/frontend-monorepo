@@ -970,7 +970,7 @@ export const LiquidityPriceRangeInfoPanel = ({
       />
       <p className="mb-2 mt-2 border-l-2 pl-2 text-xs">
         {t(
-          'The liquidity price range is a {{{liquidityPriceRange}} difference from the mid price.',
+          'The liquidity price range is a {{liquidityPriceRange}} difference from the mid price.',
           { liquidityPriceRange }
         )}
       </p>
