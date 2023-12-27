@@ -1,7 +1,7 @@
 import pytest
 import re
 import vega_sim.api.governance as governance
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from playwright.sync_api import Page, expect
 from fixtures.market import setup_continuous_market
 from conftest import init_vega
@@ -14,7 +14,7 @@ def vega():
 
 
 @pytest.fixture(scope="class")
-def create_settled_market(vega: VegaService):
+def create_settled_market(vega: VegaServiceNull):
     market_id = setup_continuous_market(vega)
     vega.submit_termination_and_settlement_data(
         settlement_key="FJMKnwfZdd48C8NqvYrG",
@@ -115,7 +115,7 @@ class TestSettledMarket:
 
 
 @pytest.mark.usefixtures("risk_accepted", "auth")
-def test_terminated_market_no_settlement_date(page: Page, vega: VegaService):
+def test_terminated_market_no_settlement_date(page: Page, vega: VegaServiceNull):
     setup_continuous_market(vega)
     print("I have started test_terminated_market_no_settlement_date")
     governance.submit_oracle_data(

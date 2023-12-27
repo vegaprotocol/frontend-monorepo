@@ -1,6 +1,6 @@
 import pytest
 from playwright.sync_api import expect, Page
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from conftest import init_vega
 from fixtures.market import setup_continuous_market
@@ -22,7 +22,7 @@ class TestIcebergOrdersValidations:
         return setup_continuous_market(vega)
 
     @pytest.mark.usefixtures("auth", "risk_accepted")
-    def test_iceberg_submit(self, continuous_market, vega: VegaService, page: Page):
+    def test_iceberg_submit(self, continuous_market, vega: VegaServiceNull, page: Page):
         page.goto(f"/#/markets/{continuous_market}")
         page.get_by_test_id("iceberg").click()
         page.get_by_test_id("order-peak-size").type("2")
@@ -47,7 +47,7 @@ class TestIcebergOrdersValidations:
         ).to_have_text("Limit (Iceberg)")
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
-def test_iceberg_open_order(continuous_market, vega: VegaService, page: Page):
+def test_iceberg_open_order(continuous_market, vega: VegaServiceNull, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
 
     submit_order(vega, "Key 1", continuous_market, "SIDE_SELL", 102, 101, 2, 1)

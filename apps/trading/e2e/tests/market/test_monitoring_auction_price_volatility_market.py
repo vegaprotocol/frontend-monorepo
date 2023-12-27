@@ -1,6 +1,6 @@
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from fixtures.market import setup_simple_market
 from conftest import init_vega
@@ -20,7 +20,7 @@ def simple_market(vega):
 
 
 @pytest.fixture(scope="module")
-def setup_market_monitoring_auction(vega: VegaService, simple_market):
+def setup_market_monitoring_auction(vega: VegaServiceNull, simple_market):
     vega.submit_liquidity(
         key_name=MM_WALLET.name,
         market_id=simple_market,
@@ -82,7 +82,7 @@ def setup_market_monitoring_auction(vega: VegaService, simple_market):
 
 @pytest.mark.usefixtures("risk_accepted", "auth", "setup_market_monitoring_auction")
 def test_market_monitoring_auction_price_volatility_limit_order(
-    page: Page, simple_market, vega: VegaService
+    page: Page, simple_market, vega: VegaServiceNull
 ):
     page.goto(f"/#/markets/{simple_market}")
     page.get_by_test_id("order-size").clear()
