@@ -1,6 +1,6 @@
 import pytest
 from playwright.sync_api import Page
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from actions.utils import change_keys
 
@@ -13,7 +13,7 @@ def check_pnl_color_value(element, expected_color, expected_value):
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
-def test_pnl(continuous_market, vega: VegaService, page: Page):
+def test_pnl(continuous_market, vega: VegaServiceNull, page: Page):
     page.set_viewport_size({"width": 1748, "height": 977})
     submit_order(vega, "Key 1", continuous_market, "SIDE_BUY", 1, 104.50000)
     vega.wait_fn(1)

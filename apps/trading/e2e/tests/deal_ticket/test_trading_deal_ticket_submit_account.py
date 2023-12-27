@@ -1,6 +1,6 @@
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from actions.utils import change_keys
 from conftest import init_vega
 from fixtures.market import setup_continuous_market
@@ -33,7 +33,7 @@ def test_should_display_info_and_button_for_deposit(continuous_market, page: Pag
     expect(page.get_by_test_id("sidebar-content")).to_contain_text("DepositFrom")
     
 @pytest.mark.usefixtures("auth", "risk_accepted")
-def test_should_show_an_error_if_your_balance_is_zero(continuous_market, vega: VegaService, page: Page):
+def test_should_show_an_error_if_your_balance_is_zero(continuous_market, vega: VegaServiceNull, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     vega.create_key("key_empty")
     change_keys(page, vega, "key_empty")
