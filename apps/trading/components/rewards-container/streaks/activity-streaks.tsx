@@ -38,22 +38,25 @@ export const ActivityStreak = ({
     if (!streak?.activeFor) return 0;
     let userTier = 0,
       i = 0;
-    do {
-      userTier = i;
-      i++;
-    } while (
+    while (
       i < tiers.length &&
       tiers[userTier].minimum_activity_streak < streak.activeFor
-    );
+    ) {
+      userTier = i;
+      i++;
+    }
+
     if (
       i === tiers.length &&
       tiers[userTier].minimum_activity_streak <= streak.activeFor
     ) {
       userTier = i;
     }
-    if (userTier > tiers.length - 1) {
+
+    if (userTier > tiers.length) {
       userTier--;
     }
+
     return userTier;
   };
 
@@ -71,7 +74,7 @@ export const ActivityStreak = ({
     if (new BigNumber(progress).isGreaterThan(total)) return 100;
     return new BigNumber(progress)
       .multipliedBy(100)
-      .dividedBy(total)
+      .dividedBy(total || 1)
       .toNumber();
   };
   const progressBarHeight = 'h-10';
@@ -172,17 +175,17 @@ export const ActivityStreak = ({
                         'from-vega-dark-400 to-vega-dark-200':
                           userTierIndex === 0,
                         'from-vega-pink-600 to-vega-pink-500':
-                          userTierIndex % 6 === 0,
-                        'from-vega-purple-600 to-vega-purple-500':
                           userTierIndex % 6 === 1,
-                        'from-vega-blue-600 to-vega-blue-500':
+                        'from-vega-purple-600 to-vega-purple-500':
                           userTierIndex % 6 === 2,
-                        'from-vega-orange-600 to-vega-orange-500':
+                        'from-vega-blue-600 to-vega-blue-500':
                           userTierIndex % 6 === 3,
-                        'from-vega-green-600 to-vega-green-500':
+                        'from-vega-orange-600 to-vega-orange-500':
                           userTierIndex % 6 === 4,
-                        'from-vega-yellow-600 to-vega-yellow-500':
+                        'from-vega-green-600 to-vega-green-500':
                           userTierIndex % 6 === 5,
+                        'from-vega-yellow-600 to-vega-yellow-500':
+                          userTierIndex % 6 === 0,
                       }
                     )}
                     style={{ width: safeProgress(index) + '%' }}

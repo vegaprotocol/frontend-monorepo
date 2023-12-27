@@ -6,8 +6,8 @@ import type { PartyVestingStats } from '@vegaprotocol/types';
 describe('RewardHoarderBonus', () => {
   it('renders null when vestingDetails is not provided', () => {
     const tiers: {
-      minimum_quantum_balance: '1000';
-      reward_multiplier: '1.5';
+      minimum_quantum_balance: string;
+      reward_multiplier: string;
     }[] = [];
     const vestingDetails = null;
     render(
@@ -19,8 +19,8 @@ describe('RewardHoarderBonus', () => {
 
   it('renders null when tiers are empty', () => {
     const tiers: {
-      minimum_quantum_balance: '1000';
-      reward_multiplier: '1.5';
+      minimum_quantum_balance: string;
+      reward_multiplier: string;
     }[] = [];
     const vestingDetails: PartyVestingStats = {
       epochSeq: 0,

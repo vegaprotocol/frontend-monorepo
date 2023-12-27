@@ -23,15 +23,16 @@ export const RewardHoarderBonus = ({
     let userTier = 0,
       i = 0;
     if (!vestingDetails) return 0;
-    do {
-      userTier = i;
-      i++;
-    } while (
+    while (
       i < tiers.length &&
       new BigNumber(tiers[userTier].minimum_quantum_balance).isLessThan(
         vestingDetails.quantumBalance
       )
-    );
+    ) {
+      userTier = i;
+      i++;
+    }
+
     if (
       i === tiers.length &&
       new BigNumber(
@@ -40,9 +41,11 @@ export const RewardHoarderBonus = ({
     ) {
       userTier = i;
     }
-    if (userTier > tiers.length - 1) {
+
+    if (userTier > tiers.length) {
       userTier--;
     }
+
     return userTier;
   };
   if (!tiers || tiers.length === 0) return null;
@@ -158,17 +161,17 @@ export const RewardHoarderBonus = ({
                         'from-vega-dark-400 to-vega-dark-200':
                           userTierIndex === 0,
                         'from-vega-pink-600 to-vega-pink-500':
-                          userTierIndex % 6 === 0,
-                        'from-vega-purple-600 to-vega-purple-500':
                           userTierIndex % 6 === 1,
-                        'from-vega-blue-600 to-vega-blue-500':
+                        'from-vega-purple-600 to-vega-purple-500':
                           userTierIndex % 6 === 2,
-                        'from-vega-orange-600 to-vega-orange-500':
+                        'from-vega-blue-600 to-vega-blue-500':
                           userTierIndex % 6 === 3,
-                        'from-vega-green-600 to-vega-green-500':
+                        'from-vega-orange-600 to-vega-orange-500':
                           userTierIndex % 6 === 4,
-                        'from-vega-yellow-600 to-vega-yellow-500':
+                        'from-vega-green-600 to-vega-green-500':
                           userTierIndex % 6 === 5,
+                        'from-vega-yellow-600 to-vega-yellow-500':
+                          userTierIndex % 6 === 0,
                       }
                     )}
                     style={{ width: safeProgress(index) + '%' }}
