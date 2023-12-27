@@ -261,7 +261,7 @@ export const RewardsContainer = () => {
           })}
       </div>
       <div className="grid auto-rows-min grid-cols-6 gap-3">
-        {pubKey && streaks && (
+        {pubKey && streaks && activityStreakBenefitTiers.tiers?.length > 0 && (
           <Card
             title={t('Activity Streak')}
             className={classNames(
@@ -284,7 +284,7 @@ export const RewardsContainer = () => {
             </span>
           </Card>
         )}
-        {pubKey && (
+        {pubKey && vestingBenefitTiers.tiers?.length > 0 && (
           <Card
             title={t('Reward Hoarder Bonus')}
             className={classNames(
