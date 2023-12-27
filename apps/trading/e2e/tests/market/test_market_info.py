@@ -260,7 +260,7 @@ def test_market_info_liquidity_price_range(page: Page):
     validate_info_section(page, fields)
 
 @pytest.mark.skip("tbd-market-sim")
-def test_market_info_proposal(page: Page, vega: VegaService):
+def test_market_info_proposal(page: Page, vega: VegaServiceNull):
     # 6002-MDET-301
     page.get_by_test_id(market_title_test_id).get_by_text("Proposal").click()
     first_link = (
