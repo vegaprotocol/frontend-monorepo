@@ -2,17 +2,16 @@ query RewardsPage($partyId: ID!) {
   party(id: $partyId) {
     id
     vestingStats {
-      # AKA hoarder reward multiplier
       rewardBonusMultiplier
+      quantumBalance
+      epochSeq
     }
     activityStreak {
-      # vesting multiplier
-      rewardVestingMultiplier
-      # AKA streak multiplier
-      rewardDistributionMultiplier
       activeFor
       isActive
       inactiveFor
+      rewardDistributionMultiplier
+      rewardVestingMultiplier
       epoch
       tradedVolume
       openVolume
@@ -110,26 +109,6 @@ query ActiveRewards(
   }
 }
 
-query ActivityStreak($partyId: ID!) {
-  partiesConnection(id: $partyId) {
-    edges {
-      node {
-        id
-        activityStreak {
-          activeFor
-          isActive
-          inactiveFor
-          rewardDistributionMultiplier
-          rewardVestingMultiplier
-          epoch
-          tradedVolume
-          openVolume
-        }
-      }
-    }
-  }
-}
-
 query RewardsHistory(
   $partyId: ID!
   $epochRewardSummariesPagination: Pagination
@@ -184,16 +163,6 @@ query RewardsHistory(
 query RewardsEpoch {
   epoch {
     id
-  }
-}
-
-query VestingDetails($partyId: ID!) {
-  party(id: $partyId) {
-    vestingStats {
-      rewardBonusMultiplier
-      quantumBalance
-      epochSeq
-    }
   }
 }
 

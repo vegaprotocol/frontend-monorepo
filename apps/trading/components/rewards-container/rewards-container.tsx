@@ -20,8 +20,6 @@ import {
   type RewardsPageQuery,
   useRewardsPageQuery,
   useRewardsEpochQuery,
-  useActivityStreakQuery,
-  useVestingDetailsQuery,
 } from './__generated__/Rewards';
 import {
   TradingButton,
@@ -61,18 +59,6 @@ export const RewardsContainer = () => {
 
   const { data: epochData } = useRewardsEpochQuery();
 
-  const { data: partyActivityStreak } = useActivityStreakQuery({
-    variables: {
-      partyId: pubKey || '',
-    },
-  });
-
-  const { data: vestingDetails } = useVestingDetailsQuery({
-    variables: {
-      partyId: pubKey || '',
-    },
-  });
-
   const { rewards_activityStreak_benefitTiers, rewards_vesting_benefitTiers } =
     params || {};
 
@@ -80,10 +66,6 @@ export const RewardsContainer = () => {
     rewards_activityStreak_benefitTiers
   );
   const vestingBenefitTiers = JSON.parse(rewards_vesting_benefitTiers);
-
-  const streaks = partyActivityStreak?.partiesConnection?.edges?.map(
-    (edge) => edge?.node?.activityStreak
-  );
 
   // No need to specify the fromEpoch as it will by default give you the last
   // Note activityStreak in query will fail
@@ -98,6 +80,9 @@ export const RewardsContainer = () => {
     // of sync for 10s if you happen to be on the page at the end of an epoch
     pollInterval: 10000,
   });
+
+  const partyActivityStreak = rewardsData?.party?.activityStreak;
+  const vestingDetails = rewardsData?.party?.vestingStats;
 
   if (!epochData?.epoch || !assetMap) return null;
 
@@ -261,7 +246,7 @@ export const RewardsContainer = () => {
           })}
       </div>
       <div className="grid auto-rows-min grid-cols-6 gap-3">
-        {pubKey && streaks && activityStreakBenefitTiers.tiers?.length > 0 && (
+        {pubKey && activityStreakBenefitTiers.tiers?.length > 0 && (
           <Card
             title={t('Activity Streak')}
             className={classNames(
@@ -274,13 +259,10 @@ export const RewardsContainer = () => {
             )}
           >
             <span className="flex flex-col mr-8 pr-4">
-              {streaks.map((streak, i) => (
-                <ActivityStreak
-                  tiers={activityStreakBenefitTiers.tiers}
-                  streak={streak}
-                  key={i}
-                />
-              ))}
+              <ActivityStreak
+                tiers={activityStreakBenefitTiers.tiers}
+                streak={partyActivityStreak}
+              />
             </span>
           </Card>
         )}
@@ -299,7 +281,7 @@ export const RewardsContainer = () => {
             <span className="flex flex-col mr-8 pr-4">
               <RewardHoarderBonus
                 tiers={vestingBenefitTiers.tiers}
-                vestingDetails={vestingDetails?.party?.vestingStats}
+                vestingDetails={vestingDetails}
               />
             </span>
           </Card>

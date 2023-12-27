@@ -8,7 +8,7 @@ export type RewardsPageQueryVariables = Types.Exact<{
 }>;
 
 
-export type RewardsPageQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, vestingStats?: { __typename?: 'PartyVestingStats', rewardBonusMultiplier: string } | null, activityStreak?: { __typename?: 'PartyActivityStreak', rewardVestingMultiplier: string, rewardDistributionMultiplier: string, activeFor: number, isActive: boolean, inactiveFor: number, epoch: number, tradedVolume: string, openVolume: string } | null, vestingBalancesSummary: { __typename?: 'PartyVestingBalancesSummary', epoch?: number | null, vestingBalances?: Array<{ __typename?: 'PartyVestingBalance', balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null, lockedBalances?: Array<{ __typename?: 'PartyLockedBalance', balance: string, untilEpoch: number, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null } } | null };
+export type RewardsPageQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, vestingStats?: { __typename?: 'PartyVestingStats', rewardBonusMultiplier: string, quantumBalance: string, epochSeq: number } | null, activityStreak?: { __typename?: 'PartyActivityStreak', activeFor: number, isActive: boolean, inactiveFor: number, rewardDistributionMultiplier: string, rewardVestingMultiplier: string, epoch: number, tradedVolume: string, openVolume: string } | null, vestingBalancesSummary: { __typename?: 'PartyVestingBalancesSummary', epoch?: number | null, vestingBalances?: Array<{ __typename?: 'PartyVestingBalance', balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null, lockedBalances?: Array<{ __typename?: 'PartyLockedBalance', balance: string, untilEpoch: number, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null } } | null };
 
 export type ActiveRewardsQueryVariables = Types.Exact<{
   isReward?: Types.InputMaybe<Types.Scalars['Boolean']>;
@@ -19,13 +19,6 @@ export type ActiveRewardsQueryVariables = Types.Exact<{
 
 
 export type ActiveRewardsQuery = { __typename?: 'Query', transfersConnection?: { __typename?: 'TransferConnection', edges?: Array<{ __typename?: 'TransferEdge', node: { __typename?: 'TransferNode', transfer: { __typename?: 'Transfer', amount: string, id: string, from: string, fromAccountType: Types.AccountType, to: string, toAccountType: Types.AccountType, reference?: string | null, status: Types.TransferStatus, timestamp: any, reason?: string | null, asset?: { __typename?: 'Asset', id: string, symbol: string, decimals: number, name: string, quantum: string, status: Types.AssetStatus } | null, kind: { __typename?: 'OneOffGovernanceTransfer' } | { __typename?: 'OneOffTransfer' } | { __typename?: 'RecurringGovernanceTransfer' } | { __typename?: 'RecurringTransfer', startEpoch: number, endEpoch?: number | null, dispatchStrategy?: { __typename?: 'DispatchStrategy', dispatchMetric: Types.DispatchMetric, dispatchMetricAssetId: string, marketIdsInScope?: Array<string> | null, entityScope: Types.EntityScope, individualScope?: Types.IndividualScope | null, teamScope?: Array<string | null> | null, nTopPerformers?: string | null, stakingRequirement: string, notionalTimeWeightedAveragePositionRequirement: string, windowLength: number, lockPeriod: number, distributionStrategy: Types.DistributionStrategy, rankTable?: Array<{ __typename?: 'RankTable', startRank: number, shareRatio: number } | null> | null } | null } }, fees?: Array<{ __typename?: 'TransferFee', transferId: string, amount: string, epoch: number } | null> | null } } | null> | null } | null };
-
-export type ActivityStreakQueryVariables = Types.Exact<{
-  partyId: Types.Scalars['ID'];
-}>;
-
-
-export type ActivityStreakQuery = { __typename?: 'Query', partiesConnection?: { __typename?: 'PartyConnection', edges: Array<{ __typename?: 'PartyEdge', node: { __typename?: 'Party', id: string, activityStreak?: { __typename?: 'PartyActivityStreak', activeFor: number, isActive: boolean, inactiveFor: number, rewardDistributionMultiplier: string, rewardVestingMultiplier: string, epoch: number, tradedVolume: string, openVolume: string } | null } }> } | null };
 
 export type RewardsHistoryQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -43,13 +36,6 @@ export type RewardsEpochQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 export type RewardsEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string } };
 
-export type VestingDetailsQueryVariables = Types.Exact<{
-  partyId: Types.Scalars['ID'];
-}>;
-
-
-export type VestingDetailsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', vestingStats?: { __typename?: 'PartyVestingStats', rewardBonusMultiplier: string, quantumBalance: string, epochSeq: number } | null } | null };
-
 export type MarketForRewardsQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
@@ -64,13 +50,15 @@ export const RewardsPageDocument = gql`
     id
     vestingStats {
       rewardBonusMultiplier
+      quantumBalance
+      epochSeq
     }
     activityStreak {
-      rewardVestingMultiplier
-      rewardDistributionMultiplier
       activeFor
       isActive
       inactiveFor
+      rewardDistributionMultiplier
+      rewardVestingMultiplier
       epoch
       tradedVolume
       openVolume
@@ -223,55 +211,6 @@ export function useActiveRewardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type ActiveRewardsQueryHookResult = ReturnType<typeof useActiveRewardsQuery>;
 export type ActiveRewardsLazyQueryHookResult = ReturnType<typeof useActiveRewardsLazyQuery>;
 export type ActiveRewardsQueryResult = Apollo.QueryResult<ActiveRewardsQuery, ActiveRewardsQueryVariables>;
-export const ActivityStreakDocument = gql`
-    query ActivityStreak($partyId: ID!) {
-  partiesConnection(id: $partyId) {
-    edges {
-      node {
-        id
-        activityStreak {
-          activeFor
-          isActive
-          inactiveFor
-          rewardDistributionMultiplier
-          rewardVestingMultiplier
-          epoch
-          tradedVolume
-          openVolume
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useActivityStreakQuery__
- *
- * To run a query within a React component, call `useActivityStreakQuery` and pass it any options that fit your needs.
- * When your component renders, `useActivityStreakQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useActivityStreakQuery({
- *   variables: {
- *      partyId: // value for 'partyId'
- *   },
- * });
- */
-export function useActivityStreakQuery(baseOptions: Apollo.QueryHookOptions<ActivityStreakQuery, ActivityStreakQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ActivityStreakQuery, ActivityStreakQueryVariables>(ActivityStreakDocument, options);
-      }
-export function useActivityStreakLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ActivityStreakQuery, ActivityStreakQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ActivityStreakQuery, ActivityStreakQueryVariables>(ActivityStreakDocument, options);
-        }
-export type ActivityStreakQueryHookResult = ReturnType<typeof useActivityStreakQuery>;
-export type ActivityStreakLazyQueryHookResult = ReturnType<typeof useActivityStreakLazyQuery>;
-export type ActivityStreakQueryResult = Apollo.QueryResult<ActivityStreakQuery, ActivityStreakQueryVariables>;
 export const RewardsHistoryDocument = gql`
     query RewardsHistory($partyId: ID!, $epochRewardSummariesPagination: Pagination, $partyRewardsPagination: Pagination, $fromEpoch: Int, $toEpoch: Int) {
   epochRewardSummaries(
@@ -384,45 +323,6 @@ export function useRewardsEpochLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type RewardsEpochQueryHookResult = ReturnType<typeof useRewardsEpochQuery>;
 export type RewardsEpochLazyQueryHookResult = ReturnType<typeof useRewardsEpochLazyQuery>;
 export type RewardsEpochQueryResult = Apollo.QueryResult<RewardsEpochQuery, RewardsEpochQueryVariables>;
-export const VestingDetailsDocument = gql`
-    query VestingDetails($partyId: ID!) {
-  party(id: $partyId) {
-    vestingStats {
-      rewardBonusMultiplier
-      quantumBalance
-      epochSeq
-    }
-  }
-}
-    `;
-
-/**
- * __useVestingDetailsQuery__
- *
- * To run a query within a React component, call `useVestingDetailsQuery` and pass it any options that fit your needs.
- * When your component renders, `useVestingDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useVestingDetailsQuery({
- *   variables: {
- *      partyId: // value for 'partyId'
- *   },
- * });
- */
-export function useVestingDetailsQuery(baseOptions: Apollo.QueryHookOptions<VestingDetailsQuery, VestingDetailsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<VestingDetailsQuery, VestingDetailsQueryVariables>(VestingDetailsDocument, options);
-      }
-export function useVestingDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<VestingDetailsQuery, VestingDetailsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<VestingDetailsQuery, VestingDetailsQueryVariables>(VestingDetailsDocument, options);
-        }
-export type VestingDetailsQueryHookResult = ReturnType<typeof useVestingDetailsQuery>;
-export type VestingDetailsLazyQueryHookResult = ReturnType<typeof useVestingDetailsLazyQuery>;
-export type VestingDetailsQueryResult = Apollo.QueryResult<VestingDetailsQuery, VestingDetailsQueryVariables>;
 export const MarketForRewardsDocument = gql`
     query MarketForRewards($marketId: ID!) {
   market(id: $marketId) {

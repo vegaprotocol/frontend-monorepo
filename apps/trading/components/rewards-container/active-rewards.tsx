@@ -280,8 +280,8 @@ export const ActiveRewardCard = ({
             </div>
 
             <div className="flex flex-col gap-2 items-center text-center">
-              <span className="flex flex-col gap-1 text-2xl shrink-1 text-center font-glitch">
-                <span>
+              <span className="flex flex-col gap-1 text-2xl shrink-1 text-center">
+                <span className="font-glitch">
                   {addDecimalsFormatNumber(
                     transferNode.transfer.amount,
                     transferNode.transfer.asset?.decimals || 0,
@@ -289,7 +289,9 @@ export const ActiveRewardCard = ({
                   )}
                 </span>
 
-                <span>{transferNode.transfer.asset?.symbol}</span>
+                <span className="font-alpha">
+                  {transferNode.transfer.asset?.symbol}
+                </span>
               </span>
               {
                 <Tooltip
@@ -327,7 +329,6 @@ export const ActiveRewardCard = ({
           </div>
 
           <span className="border-[0.5px] border-gray-700" />
-          {/* TODO use market symbol or market name */}
           <span>
             {DispatchMetricLabels[dispatchStrategy.dispatchMetric]}
             {marketName ? ` • ${marketName}` : ` • ${dispatchAsset?.name}`}
