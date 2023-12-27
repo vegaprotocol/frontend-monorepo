@@ -1,7 +1,7 @@
 import pytest
 from playwright.sync_api import expect, Page
 import json
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from fixtures.market import setup_simple_market
 from conftest import init_vega
 from actions.vega import submit_order
@@ -16,11 +16,11 @@ def vega():
         yield vega
 
 @pytest.fixture(scope="class")
-def simple_market(vega: VegaService):
+def simple_market(vega: VegaServiceNull):
     return setup_simple_market(vega)
 
 class TestGetStarted:
-    def test_get_started_interactive(self, vega: VegaService, page: Page):
+    def test_get_started_interactive(self, vega: VegaServiceNull, page: Page):
         page.goto("/")
         # 0007-FUGS-001
         expect(page.get_by_test_id("order-connect-wallet")).to_be_visible
@@ -166,7 +166,7 @@ class TestGetStarted:
         page.wait_for_selector('[data-testid="sidebar-content"]', state="visible")
         expect(page.get_by_test_id("get-started-banner")).not_to_be_visible()
 
-    def test_redirect_default_market(self, continuous_market, vega: VegaService, page: Page):
+    def test_redirect_default_market(self, continuous_market, vega: VegaServiceNull, page: Page):
         page.goto("/")
         # 0007-FUGS-012
         expect(page).to_have_url(
@@ -177,7 +177,7 @@ class TestGetStarted:
         expect(page.get_by_test_id("welcome-dialog")).not_to_be_visible()
 
 class TestBrowseAll: 
-    def test_get_started_browse_all(self, simple_market, vega: VegaService, page: Page):
+    def test_get_started_browse_all(self, simple_market, vega: VegaServiceNull, page: Page):
         page.goto("/")
         print(simple_market)
         page.get_by_test_id("browse-markets-button").click()

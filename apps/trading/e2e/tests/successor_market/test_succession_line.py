@@ -1,7 +1,7 @@
 import pytest
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
-from fixtures.market import setup_continuous_market
+from fixtures.market import setup_continuous_market, setup_simple_successor_market
 from wallet_config import MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET
 from actions.vega import submit_multiple_orders, submit_order, submit_liquidity
 from actions.utils import next_epoch

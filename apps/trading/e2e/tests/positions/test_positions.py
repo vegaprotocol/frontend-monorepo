@@ -1,13 +1,13 @@
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from fixtures.market import (
     setup_continuous_market,
 )
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
-def test_closed_market_position(vega: VegaService, page: Page):
+def test_closed_market_position(vega: VegaServiceNull, page: Page):
     market_id = setup_continuous_market(vega)
 
     vega.submit_termination_and_settlement_data(

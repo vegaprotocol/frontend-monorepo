@@ -1,6 +1,6 @@
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from actions.utils import wait_for_toast_confirmation
 
@@ -42,7 +42,7 @@ trigger_price_oco = "triggerPrice-oco"
 order_size_oco = "order-size-oco"
 order_limit_price_oco = "order-price-oco"
 
-def create_position(vega: VegaService, market_id):
+def create_position(vega: VegaServiceNull, market_id):
     submit_order(vega, "Key 1", market_id, "SIDE_SELL", 100, 110)
     submit_order(vega, "Key 1", market_id, "SIDE_BUY", 100, 110)
     vega.wait_fn(1)
@@ -51,7 +51,7 @@ def create_position(vega: VegaService, market_id):
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_order_market_oco_rejected(
-    continuous_market, vega: VegaService, page: Page
+    continuous_market, vega: VegaServiceNull, page: Page
 ):
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(stop_orders_tab).click()
@@ -128,7 +128,7 @@ def test_submit_stop_order_market_oco_rejected(
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_oco_market_order_triggered(
-    continuous_market, vega: VegaService, page: Page
+    continuous_market, vega: VegaServiceNull, page: Page
 ):
     create_position(vega, continuous_market)
     page.goto(f"/#/markets/{continuous_market}")
@@ -205,7 +205,7 @@ def test_submit_stop_oco_market_order_triggered(
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_oco_market_order_pending(
-    continuous_market, vega: VegaService, page: Page
+    continuous_market, vega: VegaServiceNull, page: Page
 ):  
     create_position(vega, continuous_market)
     page.goto(f"/#/markets/{continuous_market}")
@@ -237,7 +237,7 @@ def test_submit_stop_oco_market_order_pending(
 
 @pytest.mark.usefixtures("page", "continuous_market", "auth", "risk_accepted")
 def test_submit_stop_oco_limit_order_pending(
-    continuous_market, vega: VegaService, page: Page
+    continuous_market, vega: VegaServiceNull, page: Page
 ):
     create_position(vega, continuous_market)
     page.goto(f"/#/markets/{continuous_market}")
@@ -288,7 +288,7 @@ def test_submit_stop_oco_limit_order_pending(
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_oco_limit_order_cancel(
-    continuous_market, vega: VegaService, page: Page
+    continuous_market, vega: VegaServiceNull, page: Page
 ):
     create_position(vega, continuous_market)
     page.goto(f"/#/markets/{continuous_market}")

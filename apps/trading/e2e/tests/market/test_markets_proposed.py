@@ -2,7 +2,7 @@ import pytest
 import vega_sim.api.governance as governance
 import re
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from conftest import init_vega
 from fixtures.market import setup_simple_market
 from wallet_config import MM_WALLET
@@ -18,7 +18,7 @@ def vega(request):
 
 
 @pytest.fixture(scope="module")
-def proposed_market(vega: VegaService):
+def proposed_market(vega: VegaServiceNull):
     # setup market without liquidity provided
     market_id = setup_simple_market(vega, approve_proposal=False)
     # approve market

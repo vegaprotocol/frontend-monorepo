@@ -1,16 +1,16 @@
 import pytest
 import re
 from playwright.sync_api import Page, expect
-
+from vega_sim.null_service import VegaServiceNull
+from vega_sim.service import PeggedOrder, MarketStateUpdateType
+import vega_sim.api.governance as governance
 from actions.vega import submit_order
 from actions.utils import next_epoch
 from wallet_config import MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET
-
-from vega_sim.service import VegaService, PeggedOrder, MarketStateUpdateType
 from vega_sim.api import governance
 
 @pytest.mark.usefixtures("risk_accepted")
-def test_market_lifecycle(proposed_market, vega: VegaService, page: Page):
+def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
     # 7002-SORD-001
     # 7002-SORD-002
     trading_mode = page.get_by_test_id("market-trading-mode").get_by_test_id(
