@@ -2,11 +2,12 @@ import pytest
 import re
 import logging
 from playwright.sync_api import expect, Page
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from playwright.sync_api import expect
 from actions.vega import submit_order
 
 logger = logging.getLogger()
+
 
 # Could be turned into a helper function in the future.
 def verify_data_grid(page: Page, data_test_id, expected_pattern):
@@ -37,7 +38,7 @@ def verify_data_grid(page: Page, data_test_id, expected_pattern):
                 raise AssertionError(f"Pattern does not match: {expected} != {actual}")
 
 
-def submit_order(vega: VegaService, wallet_name, market_id, side, volume, price):
+def submit_order(vega: VegaServiceNull, wallet_name, market_id, side, volume, price):
     vega.submit_order(
         trading_key=wallet_name,
         market_id=market_id,
@@ -49,11 +50,9 @@ def submit_order(vega: VegaService, wallet_name, market_id, side, volume, price)
     )
 
 
-@pytest.mark.usefixtures(
-    "vega", "page", "opening_auction_market", "auth", "risk_accepted"
-)
+@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_limit_order_trade_open_order(
-    opening_auction_market, vega: VegaService, page: Page
+    opening_auction_market, vega: VegaServiceNull, page: Page
 ):
     market_id = opening_auction_market
     submit_order(vega, "Key 1", market_id, "SIDE_BUY", 1, 110)
@@ -80,7 +79,7 @@ def test_limit_order_trade_open_order(
     verify_data_grid(page, "Open", expected_open_order)
 
 
-@pytest.mark.usefixtures("vega", "page", "continuous_market", "auth", "risk_accepted")
+@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_limit_order_trade_open_position(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
 
@@ -148,7 +147,7 @@ def test_limit_order_trade_open_position(continuous_market, page: Page):
     expect(unrealisedPNL).to_have_text(position["unrealised_pnl"])
 
 
-@pytest.mark.usefixtures("vega", "page", "continuous_market", "auth", "risk_accepted")
+@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_limit_order_trade_order_trade_away(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     # Assert that the order is no longer on the orderbook

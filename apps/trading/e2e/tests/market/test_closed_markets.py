@@ -1,7 +1,7 @@
 import pytest
 import re
 import vega_sim.api.governance as governance
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from playwright.sync_api import Page, expect
 from fixtures.market import setup_continuous_market
 from conftest import init_vega
@@ -12,8 +12,9 @@ def vega():
     with init_vega() as vega:
         yield vega
 
+
 @pytest.fixture(scope="class")
-def create_settled_market(vega: VegaService):
+def create_settled_market(vega: VegaServiceNull):
     market_id = setup_continuous_market(vega)
     vega.submit_termination_and_settlement_data(
         settlement_key="FJMKnwfZdd48C8NqvYrG",
@@ -73,8 +74,9 @@ class TestSettledMarket:
         # 6001-MARK-010
         pattern = r"(\d+)\s+(months|hours|days)\s+ago"
         date_text = row_selector.locator('[col-id="settlementDate"]').inner_text()
-        assert re.match(pattern, date_text), f"Expected text to match pattern but got {date_text}"
-       
+        assert re.match(
+            pattern, date_text
+        ), f"Expected text to match pattern but got {date_text}"
 
         expected_pattern = re.compile(r"https://.*?/oracles/[a-f0-9]{64}")
         actual_href = row_selector.locator(
@@ -87,12 +89,12 @@ class TestSettledMarket:
         expect(row_selector.locator('[col-id="bestBidPrice"]')).to_have_text("0.00")
         # 6001-MARK-012
         expect(row_selector.locator('[col-id="bestOfferPrice"]')).to_have_text("0.00")
-        # 6001-MARK-013 
+        # 6001-MARK-013
         expect(row_selector.locator('[col-id="markPrice"]')).to_have_text("110.00")
         # 6001-MARK-014
         # 6001-MARK-015
         # 6001-MARK-016
-        #tbd currently we have value unknown 
+        # tbd currently we have value unknown
         # expect(row_selector.locator('[col-id="settlementDataOracleId"]')).to_have_text(
         #     "110.00"
         # )
@@ -107,11 +109,13 @@ class TestSettledMarket:
         # 6001-MARK-018
         expect(row_selector.locator('[col-id="settlementAsset"]')).to_have_text("tDAI")
         # 6001-MARK-020
-        assert re.match(pattern, date_text), f"Expected text to match pattern but got {date_text}"
+        assert re.match(
+            pattern, date_text
+        ), f"Expected text to match pattern but got {date_text}"
 
 
 @pytest.mark.usefixtures("risk_accepted", "auth")
-def test_terminated_market_no_settlement_date(page: Page, vega: VegaService):
+def test_terminated_market_no_settlement_date(page: Page, vega: VegaServiceNull):
     setup_continuous_market(vega)
     print("I have started test_terminated_market_no_settlement_date")
     governance.submit_oracle_data(

@@ -4,10 +4,15 @@ import {
   VegaIcon,
   VegaIconNames,
   truncateMiddle,
+  TextChildrenTooltip as Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { DEFAULT_AGGREGATION_DAYS, useReferral } from './hooks/use-referral';
+import {
+  DEFAULT_AGGREGATION_DAYS,
+  useReferral,
+  useUpdateReferees,
+} from './hooks/use-referral';
 import classNames from 'classnames';
 import { Table } from './table';
 import {
@@ -41,11 +46,17 @@ export const ReferralStatistics = () => {
     role: 'referee',
     aggregationEpochs: program.details?.windowLength,
   });
-  const { data: referrer, refetch: referrerRefetch } = useReferral({
-    pubKey,
-    role: 'referrer',
-    aggregationEpochs: program.details?.windowLength,
-  });
+
+  const { data: referrer, refetch: referrerRefetch } = useUpdateReferees(
+    useReferral({
+      pubKey,
+      role: 'referrer',
+      aggregationEpochs: program.details?.windowLength,
+    }),
+    DEFAULT_AGGREGATION_DAYS,
+    ['totalRefereeGeneratedRewards'],
+    DEFAULT_AGGREGATION_DAYS === program.details?.windowLength
+  );
 
   const refetch = useCallback(() => {
     refereeRefetch();
@@ -76,11 +87,9 @@ export const ReferralStatistics = () => {
 export const useStats = ({
   data,
   program,
-  as,
 }: {
   data?: NonNullable<ReturnType<typeof useReferral>['data']>;
   program: ReturnType<typeof useReferralProgram>;
-  as?: 'referrer' | 'referee';
 }) => {
   const { benefitTiers } = program;
   const { data: epochData } = useCurrentEpochInfoQuery({
@@ -181,7 +190,7 @@ export const Statistics = ({
     nextBenefitTierValue,
     nextBenefitTierVolumeValue,
     nextBenefitTierEpochsValue,
-  } = useStats({ data, program, as });
+  } = useStats({ data, program });
 
   const isApplyCodePreview = useMemo(
     () => data.referee === null,
@@ -293,11 +302,27 @@ export const Statistics = ({
     .reduce((all, r) => all.plus(r), new BigNumber(0));
   const totalCommissionTile = (
     <StatTile
-      title={t('totalCommission', 'Total commission (last {{count}} epochs)', {
-        count: details?.windowLength || DEFAULT_AGGREGATION_DAYS,
-      })}
-      description={<QUSDTooltip />}
       testId="total-commission"
+      title={
+        <Trans
+          i18nKey="totalCommission"
+          defaults="Total commission (<0>last {{count}} epochs</0>)"
+          values={{
+            count: DEFAULT_AGGREGATION_DAYS,
+          }}
+          components={[
+            <Tooltip
+              key="1"
+              description={t(
+                'Depending on data node retention you may not be able see the full 30 days'
+              )}
+            >
+              last 30 epochs
+            </Tooltip>,
+          ]}
+        />
+      }
+      description={<QUSDTooltip />}
     >
       {getNumberFormat(0).format(Number(totalCommissionValue))}
     </StatTile>
@@ -503,12 +528,21 @@ export const RefereesTable = ({
                   displayName: (
                     <Trans
                       i18nKey="referralStatisticsCommission"
-                      defaults="Commission earned in <0>qUSD</0> (last {{count}} epochs)"
+                      defaults="Commission earned in <0>qUSD</0> (<1>last {{count}} epochs</1>)"
+                      components={[
+                        <QUSDTooltip key="0" />,
+                        <Tooltip
+                          key="1"
+                          description={t(
+                            'Depending on data node retention you may not be able see the full 30 days'
+                          )}
+                        >
+                          last 30 epochs
+                        </Tooltip>,
+                      ]}
                       values={{
-                        count:
-                          details?.windowLength || DEFAULT_AGGREGATION_DAYS,
+                        count: DEFAULT_AGGREGATION_DAYS,
                       }}
-                      components={[<QUSDTooltip key="qusd" />]}
                       ns={ns}
                     />
                   ),

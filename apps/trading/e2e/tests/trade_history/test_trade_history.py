@@ -5,7 +5,7 @@ from playwright.sync_api import expect
 from actions.vega import submit_order
 from conftest import init_vega
 from playwright.sync_api import Page
-from vega_sim.null_service import VegaService
+from vega_sim.null_service import VegaServiceNull
 
 logger = logging.getLogger()
 
@@ -45,8 +45,10 @@ def verify_data_grid(page: Page, data_test_id, expected_pattern):
                 raise AssertionError(f"Pattern does not match: {expected} != {actual}")
 
 
-@pytest.mark.usefixtures("page", "continuous_market", "auth", "risk_accepted")
-def test_limit_order_new_trade_top_of_list(continuous_market, vega: VegaService, page: Page):
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_limit_order_new_trade_top_of_list(
+    continuous_market, vega: VegaServiceNull, page: Page
+):
     submit_order(vega, "Key 1", continuous_market, "SIDE_BUY", 1, 110)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
@@ -67,7 +69,7 @@ def test_limit_order_new_trade_top_of_list(continuous_market, vega: VegaService,
     verify_data_grid(page, "Trades", expected_trade)
 
 
-@pytest.mark.usefixtures("page", "continuous_market", "auth", "risk_accepted")
+@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_price_copied_to_deal_ticket(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id("Trades").click()

@@ -108,7 +108,7 @@
   "The fraction of the insurance pool balance that is carried over from the parent market to the successor.": "The fraction of the insurance pool balance that is carried over from the parent market to the successor.",
   "The ID of the market this market succeeds.": "The ID of the market this market succeeds.",
   "The length of time over which open interest is measured.": "The length of time over which open interest is measured.",
-  "The liquidity price range is a {{{liquidityPriceRange}} difference from the mid price.": "The liquidity price range is a {{{liquidityPriceRange}} difference from the mid price.",
+  "The liquidity price range is a {{liquidityPriceRange}} difference from the mid price.": "The liquidity price range is a {{liquidityPriceRange}} difference from the mid price.",
   "The lower bound for the probability of trading calculation, used to measure liquidity available on a market to determine if LPs are meeting their commitment. This is a network parameter.": "The lower bound for the probability of trading calculation, used to measure liquidity available on a market to determine if LPs are meeting their commitment. This is a network parameter.",
   "The market's liquidity requirement which is derived from the maximum open interest observed over a rolling time window.": "The market's liquidity requirement which is derived from the maximum open interest observed over a rolling time window.",
   "The maximum amount, as a fraction, that an LP's bond can be slashed by if they fail to reach the minimum SLA. This is a network parameter.": "The maximum amount, as a fraction, that an LP's bond can be slashed by if they fail to reach the minimum SLA. This is a network parameter.",

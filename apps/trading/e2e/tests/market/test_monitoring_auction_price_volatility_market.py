@@ -1,11 +1,12 @@
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from fixtures.market import setup_simple_market
 from conftest import init_vega
 from actions.utils import wait_for_toast_confirmation
 from wallet_config import MM_WALLET, MM_WALLET2
+
 
 @pytest.fixture(scope="module")
 def vega(request):
@@ -17,8 +18,9 @@ def vega(request):
 def simple_market(vega):
     return setup_simple_market(vega)
 
+
 @pytest.fixture(scope="module")
-def setup_market_monitoring_auction(vega: VegaService, simple_market):
+def setup_market_monitoring_auction(vega: VegaServiceNull, simple_market):
     vega.submit_liquidity(
         key_name=MM_WALLET.name,
         market_id=simple_market,
@@ -48,12 +50,18 @@ def setup_market_monitoring_auction(vega: VegaService, simple_market):
         volume=99,
     )
 
-
     # add orders to provide liquidity
     submit_order(vega, MM_WALLET.name, simple_market, "SIDE_BUY", 1, 1)
     submit_order(vega, MM_WALLET.name, simple_market, "SIDE_SELL", 1, 1)
-    submit_order(vega,MM_WALLET.name,simple_market, "SIDE_BUY",1,1 + 0.1 / 2,)
-    submit_order(vega,MM_WALLET.name,simple_market,"SIDE_SELL",1,1 + 0.1 / 2)
+    submit_order(
+        vega,
+        MM_WALLET.name,
+        simple_market,
+        "SIDE_BUY",
+        1,
+        1 + 0.1 / 2,
+    )
+    submit_order(vega, MM_WALLET.name, simple_market, "SIDE_SELL", 1, 1 + 0.1 / 2)
     submit_order(vega, MM_WALLET2.name, simple_market, "SIDE_SELL", 1, 1)
 
     vega.forward("10s")
@@ -71,9 +79,11 @@ def setup_market_monitoring_auction(vega: VegaService, simple_market):
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
-@pytest.mark.usefixtures("page", "risk_accepted", "simple_market", "auth", "setup_market_monitoring_auction")
-def test_market_monitoring_auction_price_volatility_limit_order(page: Page, simple_market, vega: VegaService):
-    
+
+@pytest.mark.usefixtures("risk_accepted", "auth", "setup_market_monitoring_auction")
+def test_market_monitoring_auction_price_volatility_limit_order(
+    page: Page, simple_market, vega: VegaServiceNull
+):
     page.goto(f"/#/markets/{simple_market}")
     page.get_by_test_id("order-size").clear()
     page.get_by_test_id("order-size").type("1")
@@ -82,10 +92,14 @@ def test_market_monitoring_auction_price_volatility_limit_order(page: Page, simp
     page.get_by_test_id("order-tif").select_option("Fill or Kill (FOK)")
     page.get_by_test_id("place-order").click()
 
-    expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_have_text("This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders.")
+    expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_have_text(
+        "This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders."
+    )
     expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_be_visible()
 
-    expect(page.get_by_test_id("deal-ticket-warning-auction")).to_have_text("Any orders placed now will not trade until the auction ends")
+    expect(page.get_by_test_id("deal-ticket-warning-auction")).to_have_text(
+        "Any orders placed now will not trade until the auction ends"
+    )
     expect(page.get_by_test_id("deal-ticket-warning-auction")).to_be_visible()
 
     page.get_by_test_id("order-tif").select_option("Good 'til Cancelled (GTC)")
@@ -103,8 +117,11 @@ def test_market_monitoring_auction_price_volatility_limit_order(page: Page, simp
         "BTC:DAI_2023Futr0+1LimitActive110.00GTC"
     )
 
-@pytest.mark.usefixtures("page", "risk_accepted", "simple_market", "auth", "setup_market_monitoring_auction")
-def test_market_monitoring_auction_price_volatility_market_order(page: Page, simple_market):
+
+@pytest.mark.usefixtures("risk_accepted", "auth", "setup_market_monitoring_auction")
+def test_market_monitoring_auction_price_volatility_market_order(
+    page: Page, simple_market
+):
     page.goto(f"/#/markets/{simple_market}")
     page.get_by_test_id("order-type-Market").click()
     page.get_by_test_id("order-size").clear()
@@ -112,8 +129,12 @@ def test_market_monitoring_auction_price_volatility_market_order(page: Page, sim
     # 7002-SORD-060
     page.get_by_test_id("place-order").click()
 
-    expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_have_text("This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders.")
+    expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_have_text(
+        "This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders."
+    )
     expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_be_visible()
 
-    expect(page.get_by_test_id("deal-ticket-error-message-type")).to_have_text("This market is in auction due to high price volatility. Only limit orders are permitted when market is in auction.")
+    expect(page.get_by_test_id("deal-ticket-error-message-type")).to_have_text(
+        "This market is in auction due to high price volatility. Only limit orders are permitted when market is in auction."
+    )
     expect(page.get_by_test_id("deal-ticket-error-message-type")).to_be_visible()

@@ -54,11 +54,21 @@ const WithdrawalsIndicator = () => {
   );
 };
 
-export const Portfolio = () => {
-  const t = useT();
+const SidebarViewInitializer = () => {
   const currentRouteId = useGetCurrentRouteId();
   const { getView, setViews } = useSidebar();
   const view = getView(currentRouteId);
+  // Make transfer sidebar open by default
+  useEffect(() => {
+    if (view === undefined) {
+      setViews({ type: ViewType.Transfer }, currentRouteId);
+    }
+  }, [view, setViews, currentRouteId]);
+  return null;
+};
+
+export const Portfolio = () => {
+  const t = useT();
 
   const { updateTitle } = usePageTitleStore((store) => ({
     updateTitle: store.updateTitle,
@@ -68,17 +78,11 @@ export const Portfolio = () => {
     updateTitle(titlefy([t('Portfolio')]));
   }, [updateTitle, t]);
 
-  // Make transfer sidebar open by default
-  useEffect(() => {
-    if (view === undefined) {
-      setViews({ type: ViewType.Transfer }, currentRouteId);
-    }
-  }, [view, setViews, currentRouteId]);
-
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
   const wrapperClasses = 'p-0.5 h-full max-h-full flex flex-col';
   return (
     <div className={wrapperClasses}>
+      <SidebarViewInitializer />
       <ResizableGrid vertical onChange={handleOnLayoutChange}>
         <ResizableGridPanel minSize={75}>
           <PortfolioGridChild>

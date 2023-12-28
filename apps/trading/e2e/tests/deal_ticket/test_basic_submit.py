@@ -1,6 +1,6 @@
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from datetime import datetime, timedelta
 from conftest import init_vega
 from fixtures.market import setup_continuous_market
@@ -14,20 +14,17 @@ market_order = "order-type-Market"
 tif = "order-tif"
 expire = "expire"
 
-
 @pytest.fixture(scope="module")
 def vega(request):
     with init_vega(request) as vega:
         yield vega
 
-
 @pytest.fixture(scope="module")
 def continuous_market(vega):
     return setup_continuous_market(vega)
 
-
-@pytest.mark.usefixtures("page", "auth", "risk_accepted")
-def test_limit_buy_order_GTT(continuous_market, vega: VegaService, page: Page):
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_limit_buy_order_GTT(continuous_market, vega: VegaServiceNull, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(tif).select_option("Good 'til Time (GTT)")
     page.get_by_test_id(order_size).fill("10")
@@ -54,9 +51,8 @@ def test_limit_buy_order_GTT(continuous_market, vega: VegaService, page: Page):
         "BTC:DAI_2023Futr10+10LimitFilled120.00GTT:"
     )
 
-
-@pytest.mark.usefixtures("page", "auth", "risk_accepted")
-def test_limit_buy_order(continuous_market, vega: VegaService, page: Page):
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_limit_buy_order(continuous_market, vega: VegaServiceNull, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     
     page.get_by_test_id(order_size).fill("10")
@@ -72,9 +68,8 @@ def test_limit_buy_order(continuous_market, vega: VegaService, page: Page):
         "BTC:DAI_2023Futr10+10LimitFilled120.00GTC"
     )
 
-
-@pytest.mark.usefixtures("page", "auth", "risk_accepted")
-def test_limit_sell_order(continuous_market, vega: VegaService, page: Page):
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_limit_sell_order(continuous_market, vega: VegaServiceNull, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(order_size).fill("10")
     page.get_by_test_id(order_price).fill("100")
@@ -97,9 +92,8 @@ def test_limit_sell_order(continuous_market, vega: VegaService, page: Page):
         "BTC:DAI_2023Futr10-10LimitFilled100.00GFN"
     )
 
-
-@pytest.mark.usefixtures("page", "auth", "risk_accepted")
-def test_market_sell_order(continuous_market, vega: VegaService, page: Page):
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_market_sell_order(continuous_market, vega: VegaServiceNull, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(market_order).click()
     page.get_by_test_id(order_size).fill("10")
@@ -122,9 +116,8 @@ def test_market_sell_order(continuous_market, vega: VegaService, page: Page):
         "BTC:DAI_2023Futr10-10MarketFilled-IOC"
     )
 
-
-@pytest.mark.usefixtures("page", "auth", "risk_accepted")
-def test_market_buy_order(continuous_market, vega: VegaService, page: Page):
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_market_buy_order(continuous_market, vega: VegaServiceNull, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(market_order).click()
     page.get_by_test_id(order_size).fill("10")

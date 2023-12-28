@@ -39,6 +39,11 @@ export class ViewConnector implements VegaConnector {
       },
     ]);
   }
+
+  async isAlive() {
+    return true;
+  }
+
   disconnect(): Promise<void> {
     clearConfig();
     this.pubkey = null;

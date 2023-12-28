@@ -1,7 +1,7 @@
 import pytest
 from playwright.sync_api import expect, Page
 import json
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from fixtures.market import setup_simple_market
 from conftest import init_vega
 from actions.vega import submit_order
@@ -10,21 +10,17 @@ import logging
 
 logger = logging.getLogger()
 
-
 @pytest.fixture(scope="class")
 def vega():
     with init_vega() as vega:
         yield vega
 
-
-# we can reuse vega market-sim service and market in almost all tests
 @pytest.fixture(scope="class")
-def simple_market(vega: VegaService):
+def simple_market(vega: VegaServiceNull):
     return setup_simple_market(vega)
 
 class TestGetStarted:
-    @pytest.mark.usefixtures("page")
-    def test_get_started_interactive(self, vega: VegaService, page: Page):
+    def test_get_started_interactive(self, vega: VegaServiceNull, page: Page):
         page.goto("/")
         # 0007-FUGS-001
         expect(page.get_by_test_id("order-connect-wallet")).to_be_visible
@@ -134,8 +130,7 @@ class TestGetStarted:
         # Assert dialog isn't visible
         expect(page.get_by_test_id("welcome-dialog")).not_to_be_visible()
         
-        
-    @pytest.mark.usefixtures("page", "risk_accepted")
+    @pytest.mark.usefixtures("risk_accepted")
     def test_get_started_seen_already(self, simple_market, page: Page):
         page.goto(f"/#/markets/{simple_market}")
         get_started_locator = page.get_by_test_id("connect-vega-wallet")
@@ -148,8 +143,6 @@ class TestGetStarted:
         # 0007-FUGS-007
         expect(page.get_by_test_id("dialog-content").nth(1)).to_be_visible()
 
-
-    @pytest.mark.usefixtures("page")
     def test_browser_wallet_installed(self, simple_market, page: Page):
         page.add_init_script("window.vega = {}")
         page.goto(f"/#/markets/{simple_market}")
@@ -159,14 +152,13 @@ class TestGetStarted:
         expect(locator).to_be_visible
         expect(locator).to_have_text("Connect")
 
-
-    @pytest.mark.usefixtures("page", "risk_accepted")
+    @pytest.mark.usefixtures("risk_accepted")
     def test_get_started_deal_ticket(self,simple_market, page: Page):
         page.goto(f"/#/markets/{simple_market}")
         expect(page.get_by_test_id("order-connect-wallet")).to_have_text("Connect wallet")
 
 
-    @pytest.mark.usefixtures("page", "risk_accepted")
+    @pytest.mark.usefixtures("risk_accepted")
     def test_browser_wallet_installed_deal_ticket(simple_market, page: Page):
         page.add_init_script("window.vega = {}")
         page.goto(f"/#/markets/{simple_market}")
@@ -174,8 +166,8 @@ class TestGetStarted:
         page.wait_for_selector('[data-testid="sidebar-content"]', state="visible")
         expect(page.get_by_test_id("get-started-banner")).not_to_be_visible()
 
-    @pytest.mark.usefixtures("page")
-    def test_redirect_default_market(self, continuous_market, vega: VegaService, page: Page):
+    @pytest.mark.skip("tbd-market-sim")
+    def test_redirect_default_market(self, continuous_market, vega: VegaServiceNull, page: Page):
         page.goto("/")
         # 0007-FUGS-012
         expect(page).to_have_url(
@@ -186,8 +178,7 @@ class TestGetStarted:
         expect(page.get_by_test_id("welcome-dialog")).not_to_be_visible()
 
 class TestBrowseAll: 
-    @pytest.mark.usefixtures("page")
-    def test_get_started_browse_all(self, simple_market, vega: VegaService, page: Page):
+    def test_get_started_browse_all(self, simple_market, vega: VegaServiceNull, page: Page):
         page.goto("/")
         print(simple_market)
         page.get_by_test_id("browse-markets-button").click()

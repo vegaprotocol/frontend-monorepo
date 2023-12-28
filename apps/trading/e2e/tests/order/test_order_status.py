@@ -1,6 +1,7 @@
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService, PeggedOrder
+from vega_sim.service import PeggedOrder
+from vega_sim.null_service import VegaServiceNull
 from conftest import auth_setup, init_page, init_vega, risk_accepted_setup
 from fixtures.market import setup_continuous_market, setup_simple_market
 from actions.utils import wait_for_toast_confirmation
@@ -15,7 +16,7 @@ def vega(request):
 
 
 @pytest.fixture(scope="module", autouse=True)
-def markets(vega: VegaService):
+def markets(vega: VegaServiceNull):
     market_1 = setup_continuous_market(
         vega,
         custom_market_name="market-1",
@@ -223,8 +224,8 @@ def markets(vega: VegaService):
 
 
 @pytest.fixture(scope="module")
-def page(vega, browser, request, local_server):
-    with init_page(vega, browser, request, local_server) as page:
+def page(vega, browser, request):
+    with init_page(vega, browser, request) as page:
         risk_accepted_setup(page)
         auth_setup(vega, page)
         page.goto("/")
@@ -357,7 +358,7 @@ def test_order_status_pegged_mid(page: Page):
     )
 
 
-def test_order_amend_order(vega: VegaService, page: Page):
+def test_order_amend_order(vega: VegaServiceNull, page: Page):
     #  7002-SORD-053
     #  7003-MORD-012
     #  7003-MORD-014
@@ -377,7 +378,7 @@ def test_order_amend_order(vega: VegaService, page: Page):
     )
 
 
-def test_order_cancel_single_order(vega: VegaService, page: Page):
+def test_order_cancel_single_order(vega: VegaServiceNull, page: Page):
     #  7003-MORD-009
     #  7003-MORD-010
     #  7003-MORD-011
@@ -394,7 +395,7 @@ def test_order_cancel_single_order(vega: VegaService, page: Page):
     )
 
 
-def test_order_cancel_all_orders(vega: VegaService, page: Page):
+def test_order_cancel_all_orders(vega: VegaServiceNull, page: Page):
     #  7003-MORD-009
     #  7003-MORD-010
     #  7003-MORD-011

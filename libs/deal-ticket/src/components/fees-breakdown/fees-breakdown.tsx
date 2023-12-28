@@ -23,19 +23,23 @@ const FeesBreakdownItem = ({
   value,
   symbol,
   decimals,
+  testId,
 }: {
   label: string;
   factor?: string | number;
   value: string;
   symbol?: string;
   decimals: number;
+  testId?: string;
 }) => (
   <>
-    <dt className="col-span-2">{label}</dt>
-    <dd className="text-right col-span-1">
+    <dt className="col-span-2" data-testid={`${testId}-label`}>
+      {label}
+    </dt>
+    <dd className="text-right col-span-1" data-testid={`${testId}-factor`}>
       {factor ? formatNumberPercentage(new BigNumber(factor).times(100)) : ''}
     </dd>
-    <dd className="text-right col-span-3">
+    <dd className="text-right col-span-3" data-testid={`${testId}-value`}>
       {formatValue(value, decimals)} {symbol || ''}
     </dd>
   </>
@@ -73,6 +77,7 @@ export const FeesBreakdown = ({
         value={fees.infrastructureFee}
         symbol={symbol}
         decimals={decimals}
+        testId="infrastructure-fee"
       />
 
       <FeesBreakdownItem
@@ -81,6 +86,7 @@ export const FeesBreakdown = ({
         value={fees.liquidityFee}
         symbol={symbol}
         decimals={decimals}
+        testId="liquidity-fee"
       />
 
       <FeesBreakdownItem
@@ -89,6 +95,7 @@ export const FeesBreakdown = ({
         value={fees.makerFee}
         symbol={symbol}
         decimals={decimals}
+        testId="maker-fee"
       />
       {totalDiscount && totalDiscount !== '0' ? (
         <>
@@ -100,6 +107,7 @@ export const FeesBreakdown = ({
             }
             symbol={symbol}
             decimals={decimals}
+            testId="subtotal-fee"
           />
           <div className="col-span-6 mt-2"></div>
           <FeesBreakdownItem
@@ -108,12 +116,14 @@ export const FeesBreakdown = ({
             value={`-${totalDiscount}`}
             symbol={symbol}
             decimals={decimals}
+            testId="discount-fee"
           />
           <FeesBreakdownItem
             label={t('Total')}
             value={discountedTotalFeeAmount}
             symbol={symbol}
             decimals={decimals}
+            testId="total-fee"
           />
         </>
       ) : (
@@ -127,6 +137,7 @@ export const FeesBreakdown = ({
             value={totalFeeAmount}
             symbol={symbol}
             decimals={decimals}
+            testId="full-total-fee"
           />
         </>
       )}

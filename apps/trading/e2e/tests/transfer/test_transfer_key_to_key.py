@@ -1,8 +1,14 @@
 import pytest
 import re
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
-from actions.utils import wait_for_toast_confirmation, create_and_faucet_wallet, WalletConfig, next_epoch, change_keys
+from vega_sim.null_service import VegaServiceNull
+from actions.utils import (
+    wait_for_toast_confirmation,
+    create_and_faucet_wallet,
+    WalletConfig,
+    next_epoch,
+    change_keys,
+)
 import vega_sim.proto.vega as vega_protos
 
 LIQ = WalletConfig("liq", "liq")
@@ -10,8 +16,9 @@ PARTY_A = WalletConfig("party_a", "party_a")
 PARTY_B = WalletConfig("party_b", "party_b")
 PARTY_C = WalletConfig("party_c", "party_c")
 
-@pytest.mark.usefixtures("page", "auth", "risk_accepted")
-def test_transfer_submit(continuous_market, vega: VegaService, page: Page):
+
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_transfer_submit(continuous_market, vega: VegaServiceNull, page: Page):
     # 1003-TRAN-001
     # 1003-TRAN-006
     # 1003-TRAN-007
@@ -19,38 +26,50 @@ def test_transfer_submit(continuous_market, vega: VegaService, page: Page):
     # 1003-TRAN-009
     # 1003-TRAN-010
     # 1003-TRAN-023
-    page.goto('/#/portfolio')
+    page.goto("/#/portfolio")
 
-    expect(page.get_by_test_id('transfer-form')).to_be_visible
-    page.get_by_test_id('select-asset').click()
-    expect(page.get_by_test_id('rich-select-option')).to_have_count(1)
+    expect(page.get_by_test_id("transfer-form")).to_be_visible
+    page.get_by_test_id("select-asset").click()
+    expect(page.get_by_test_id("rich-select-option")).to_have_count(1)
 
-    page.get_by_test_id('rich-select-option').click()
+    page.get_by_test_id("rich-select-option").click()
     page.select_option('[data-testid=transfer-form] [name="toVegaKey"]', index=2)
     page.select_option('[data-testid=transfer-form] [name="fromAccount"]', index=1)
 
     expected_asset_text = re.compile(r"tDAI tDAI999991.49731 tDAI.{6}….{4}")
-    actual_asset_text = page.get_by_test_id('select-asset').text_content().strip()
+    actual_asset_text = page.get_by_test_id("select-asset").text_content().strip()
 
-    assert expected_asset_text.search(actual_asset_text), f"Expected pattern not found in {actual_asset_text}"
+    assert expected_asset_text.search(
+        actual_asset_text
+    ), f"Expected pattern not found in {actual_asset_text}"
 
-    page.locator('[data-testid=transfer-form] input[name="amount"]').fill('1')
-    expect(page.locator('[data-testid=transfer-form] input[name="amount"]')).not_to_be_empty()
+    page.locator('[data-testid=transfer-form] input[name="amount"]').fill("1")
+    expect(
+        page.locator('[data-testid=transfer-form] input[name="amount"]')
+    ).not_to_be_empty()
 
     page.locator('[data-testid=transfer-form] [type="submit"]').click()
     wait_for_toast_confirmation(page)
     vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    expected_confirmation_text = re.compile(r"Transfer completeYour transaction has been confirmedView in block explorerTransferTo .{6}….{6}1\.00 tDAI")
-    actual_confirmation_text = page.get_by_test_id('toast-content').text_content()
-    assert expected_confirmation_text.search(actual_confirmation_text), f"Expected pattern not found in {actual_confirmation_text}"
+    expected_confirmation_text = re.compile(
+        r"Transfer completeYour transaction has been confirmedView in block explorerTransferTo .{6}….{6}1\.00 tDAI"
+    )
+    actual_confirmation_text = page.get_by_test_id("toast-content").text_content()
+    assert expected_confirmation_text.search(
+        actual_confirmation_text
+    ), f"Expected pattern not found in {actual_confirmation_text}"
 
 
-@pytest.mark.usefixtures("page", "auth", "risk_accepted")
-def test_transfer_vesting_below_minimum(continuous_market, vega: VegaService, page: Page):
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_transfer_vesting_below_minimum(
+    continuous_market, vega: VegaServiceNull, page: Page
+):
     vega.update_network_parameter(
-    "market_maker", parameter="transfer.minTransferQuantumMultiple", new_value="100000"
+        "market_maker",
+        parameter="transfer.minTransferQuantumMultiple",
+        new_value="100000",
     )
     vega.wait_for_total_catchup()
 
@@ -94,28 +113,34 @@ def test_transfer_vesting_below_minimum(continuous_market, vega: VegaService, pa
     vega.wait_for_total_catchup()
     next_epoch(vega=vega)
     next_epoch(vega=vega)
-    page.goto('/#/portfolio')
-    expect(page.get_by_test_id('transfer-form')).to_be_visible
+    page.goto("/#/portfolio")
+    expect(page.get_by_test_id("transfer-form")).to_be_visible
 
     change_keys(page, vega, "party_b")
-    page.get_by_test_id('select-asset').click()
-    page.get_by_test_id('rich-select-option').click()
+    page.get_by_test_id("select-asset").click()
+    page.get_by_test_id("rich-select-option").click()
 
-    option_value = page.locator('[data-testid="transfer-form"] [name="fromAccount"] option[value^="ACCOUNT_TYPE_VESTED_REWARDS"]').first.get_attribute("value")
+    option_value = page.locator(
+        '[data-testid="transfer-form"] [name="fromAccount"] option[value^="ACCOUNT_TYPE_VESTED_REWARDS"]'
+    ).first.get_attribute("value")
 
-    page.select_option('[data-testid="transfer-form"] [name="fromAccount"]', option_value)
+    page.select_option(
+        '[data-testid="transfer-form"] [name="fromAccount"]', option_value
+    )
 
-    page.locator('[data-testid=transfer-form] input[name="amount"]').fill('0.000001')
+    page.locator('[data-testid=transfer-form] input[name="amount"]').fill("0.000001")
     page.locator('[data-testid=transfer-form] [type="submit"]').click()
-    expect(page.get_by_test_id('input-error-text')).to_be_visible
-    expect(page.get_by_test_id('input-error-text')).to_have_text("Amount below minimum requirements for partial transfer. Use max to bypass")
+    expect(page.get_by_test_id("input-error-text")).to_be_visible
+    expect(page.get_by_test_id("input-error-text")).to_have_text(
+        "Amount below minimum requirements for partial transfer. Use max to bypass"
+    )
     vega.one_off_transfer(
         from_key_name=PARTY_B.name,
         to_key_name=PARTY_B.name,
-        from_account_type= vega_protos.vega.AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
-        to_account_type= vega_protos.vega.AccountType.ACCOUNT_TYPE_GENERAL,
-        asset= asset_id,
-        amount= 24.999999,
+        from_account_type=vega_protos.vega.AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
+        to_account_type=vega_protos.vega.AccountType.ACCOUNT_TYPE_GENERAL,
+        asset=asset_id,
+        amount=24.999999,
     )
     vega.forward("10s")
     vega.wait_fn(10)
@@ -127,6 +152,10 @@ def test_transfer_vesting_below_minimum(continuous_market, vega: VegaService, pa
     vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    expected_confirmation_text = re.compile(r"Transfer completeYour transaction has been confirmedView in block explorerTransferTo .{6}….{6}0\.00001 tDAI")
-    actual_confirmation_text = page.get_by_test_id('toast-content').text_content()
-    assert expected_confirmation_text.search(actual_confirmation_text), f"Expected pattern not found in {actual_confirmation_text}"
+    expected_confirmation_text = re.compile(
+        r"Transfer completeYour transaction has been confirmedView in block explorerTransferTo .{6}….{6}0\.00001 tDAI"
+    )
+    actual_confirmation_text = page.get_by_test_id("toast-content").text_content()
+    assert expected_confirmation_text.search(
+        actual_confirmation_text
+    ), f"Expected pattern not found in {actual_confirmation_text}"

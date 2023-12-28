@@ -1,6 +1,6 @@
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from actions.utils import wait_for_toast_confirmation
 
@@ -12,8 +12,8 @@ market_trading_mode = "market-trading-mode"
 
 
 @pytest.mark.skip("tbd")
-@pytest.mark.usefixtures("page", "vega", "continuous_market", "auth", "risk_accepted")
-def test_margin_and_fees_estimations(continuous_market, vega: VegaService, page: Page):
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_margin_and_fees_estimations(continuous_market, vega: VegaServiceNull, page: Page):
     # setup continuous trading market with one user buy trade
     market_id = continuous_market
     page.goto(f"/#/markets/{market_id}")

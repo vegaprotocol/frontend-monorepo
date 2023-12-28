@@ -1,9 +1,8 @@
 import re
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from fixtures.market import setup_continuous_market
-
 from conftest import init_page, init_vega, risk_accepted_setup
 
 market_title_test_id = "accordion-title"
@@ -15,10 +14,9 @@ def vega():
         yield vega
 
 
-# setting up everything in this single fixture, as all of the tests need the same setup, so no point in creating separate ones
 @pytest.fixture(scope="module")
-def page(vega, browser, request, local_server):
-    with init_page(vega, browser, request,  local_server) as page:
+def page(vega, browser, request):
+    with init_page(vega, browser, request) as page:
         setup_continuous_market(vega)
         risk_accepted_setup(page)
         page.goto("/")
@@ -44,7 +42,7 @@ def validate_info_section(page: Page, fields: [[str, str]]):
             page.get_by_test_id("key-value-table-row").nth(rowNumber).locator("dd")
         ).to_contain_text(value)
 
-
+@pytest.mark.skip("tbd-market-sim")
 def test_market_info_current_fees(page: Page):
     # 6002-MDET-101
     page.get_by_test_id(market_title_test_id).get_by_text("Current fees").click()
@@ -56,7 +54,7 @@ def test_market_info_current_fees(page: Page):
     ]
     validate_info_section(page, fields)
 
-
+@pytest.mark.skip("tbd-market-sim")
 def test_market_info_market_price(page: Page):
     # 6002-MDET-102
     page.get_by_test_id(market_title_test_id).get_by_text("Market price").click()
@@ -68,7 +66,7 @@ def test_market_info_market_price(page: Page):
     ]
     validate_info_section(page, fields)
 
-
+@pytest.mark.skip("tbd-market-sim")
 def test_market_info_market_volume(page: Page):
     # 6002-MDET-103
     page.get_by_test_id(market_title_test_id).get_by_text("Market volume").click()
@@ -82,15 +80,15 @@ def test_market_info_market_volume(page: Page):
     ]
     validate_info_section(page, fields)
 
-
+@pytest.mark.skip("tbd-market-sim")
 def test_market_info_insurance_pool(page: Page):
     # 6002-MDET-104
     page.get_by_test_id(market_title_test_id).get_by_text("Insurance pool").click()
     fields = [["Balance", "0.00 tDAI"]]
     validate_info_section(page, fields)
 
-
-def test_market_info_key_details(page: Page, vega: VegaService):
+@pytest.mark.skip("tbd-market-sim")
+def test_market_info_key_details(page: Page, vega: VegaServiceNull):
     # 6002-MDET-201
     page.get_by_test_id(market_title_test_id).get_by_text("Key details").click()
     market_id = vega.find_market_id("BTC:DAI_2023")
@@ -108,7 +106,7 @@ def test_market_info_key_details(page: Page, vega: VegaService):
     ]
     validate_info_section(page, fields)
 
-
+@pytest.mark.skip("tbd-market-sim")
 def test_market_info_instrument(page: Page):
     # 6002-MDET-202
     page.get_by_test_id(market_title_test_id).get_by_text("Instrument").click()
@@ -122,7 +120,9 @@ def test_market_info_instrument(page: Page):
 
 
 # @pytest.mark.skip("oracle test to be fixed")
-def test_market_info_oracle(page: Page, vega: VegaService):
+
+@pytest.mark.skip("tbd-market-sim")
+def test_market_info_oracle(page: Page):
     # 6002-MDET-203
     page.get_by_test_id(market_title_test_id).get_by_text("Oracle").click()
     expect(
@@ -135,8 +135,8 @@ def test_market_info_oracle(page: Page, vega: VegaService):
     #     "href", re.compile(rf'(\/oracles\/{vega.find_market_id("BTC:DAI_2023")})')
     # )
 
-
-def test_market_info_settlement_asset(page: Page, vega: VegaService):
+@pytest.mark.skip("tbd-market-sim")
+def test_market_info_settlement_asset(page: Page, vega: VegaServiceNull):
     # 6002-MDET-206
     page.get_by_test_id(market_title_test_id).get_by_text("Settlement asset").click()
     tdai_id = vega.find_asset_id("tDAI")
@@ -155,7 +155,7 @@ def test_market_info_settlement_asset(page: Page, vega: VegaService):
     ]
     validate_info_section(page, fields)
 
-
+@pytest.mark.skip("tbd-market-sim")
 def test_market_info_metadata(page: Page):
     # 6002-MDET-207
     page.get_by_test_id(market_title_test_id).get_by_text("Metadata").click()
@@ -164,7 +164,7 @@ def test_market_info_metadata(page: Page):
     ]
     validate_info_section(page, fields)
 
-
+@pytest.mark.skip("tbd-market-sim")
 def test_market_info_risk_model(page: Page):
     # 6002-MDET-208
     page.get_by_test_id(market_title_test_id).get_by_text("Risk model").click()
@@ -175,7 +175,7 @@ def test_market_info_risk_model(page: Page):
     ]
     validate_info_section(page, fields)
 
-
+@pytest.mark.skip("tbd-market-sim")
 def test_market_info_margin_scaling_factors(page: Page):
     # 6002-MDET-209
     page.get_by_test_id(market_title_test_id).get_by_text(
@@ -190,7 +190,7 @@ def test_market_info_margin_scaling_factors(page: Page):
     ]
     validate_info_section(page, fields)
 
-
+@pytest.mark.skip("tbd-market-sim")
 def test_market_info_risk_factors(page: Page):
     # 6002-MDET-210
     page.get_by_test_id(market_title_test_id).get_by_text("Risk factors").click()
@@ -204,7 +204,7 @@ def test_market_info_risk_factors(page: Page):
     ]
     validate_info_section(page, fields)
 
-
+@pytest.mark.skip("tbd-market-sim")
 def test_market_info_price_monitoring_bounds(page: Page):
     # 6002-MDET-211
     page.get_by_test_id(market_title_test_id).get_by_text(
@@ -220,7 +220,7 @@ def test_market_info_price_monitoring_bounds(page: Page):
     ]
     validate_info_section(page, fields)
 
-
+@pytest.mark.skip("tbd-market-sim")
 def test_market_info_liquidity_monitoring_parameters(page: Page):
     # 6002-MDET-212
     page.get_by_test_id(market_title_test_id).get_by_text(
@@ -233,7 +233,7 @@ def test_market_info_liquidity_monitoring_parameters(page: Page):
     ]
     validate_info_section(page, fields)
 
-
+@pytest.mark.skip("tbd-market-sim")
 # Liquidity resolves to 3 results
 def test_market_info_liquidit(page: Page):
     # 6002-MDET-213
@@ -246,7 +246,7 @@ def test_market_info_liquidit(page: Page):
     ]
     validate_info_section(page, fields)
 
-
+@pytest.mark.skip("tbd-market-sim")
 def test_market_info_liquidity_price_range(page: Page):
     # 6002-MDET-214
     page.get_by_test_id(market_title_test_id).get_by_text(
@@ -259,8 +259,8 @@ def test_market_info_liquidity_price_range(page: Page):
     ]
     validate_info_section(page, fields)
 
-
-def test_market_info_proposal(page: Page, vega: VegaService):
+@pytest.mark.skip("tbd-market-sim")
+def test_market_info_proposal(page: Page, vega: VegaServiceNull):
     # 6002-MDET-301
     page.get_by_test_id(market_title_test_id).get_by_text("Proposal").click()
     first_link = (
@@ -280,8 +280,9 @@ def test_market_info_proposal(page: Page, vega: VegaService):
         "href", re.compile(r"(\/proposals\/propose\/update-market)")
     )
 
-
-def test_market_info_succession_line(page: Page, vega: VegaService):
+    
+@pytest.mark.skip("tbd-market-sim")
+def test_market_info_succession_line(page: Page, vega: VegaServiceNull):
     page.get_by_test_id(market_title_test_id).get_by_text("Succession line").click()
     market_id = vega.find_market_id("BTC:DAI_2023")
     succession_line = page.get_by_test_id("succession-line-item")

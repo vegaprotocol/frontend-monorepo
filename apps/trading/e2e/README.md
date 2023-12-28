@@ -24,6 +24,12 @@ poetry shell
 
 5. **Install python dependencies**
 
+To make sure you are on the latest version of our market-sim branch.
+
+```bash
+poetry update vega-sim
+```
+
 ```bash
 poetry install
 ```
@@ -121,11 +127,7 @@ yarn nx serve trading
 
 ```
 
-Once console is served you can use the flag --local-server
-
-```bash
-poetry run pytest -k "test_name" -s --headed --local-server
-```
+Once console is served you can update the .env file to have local_server to true.
 
 ## Running Tests in Parallel 🔢
 

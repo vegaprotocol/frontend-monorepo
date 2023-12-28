@@ -69,11 +69,13 @@ describe('RewardPot', () => {
         balance: '100',
         asset: rewardAsset,
       },
+      // should include this in total:
       {
         type: AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
         balance: '100',
         asset: rewardAsset,
       },
+      // should include this in total:
       {
         type: AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
         balance: '50',
@@ -138,20 +140,20 @@ describe('RewardPot', () => {
 
     renderComponent(props);
 
-    expect(screen.getByTestId('total-rewards')).toHaveTextContent(
-      `7.00 ${rewardAsset.symbol}`
-    );
-
     expect(screen.getByText(/Locked/).nextElementSibling).toHaveTextContent(
       '2.50'
     );
     expect(screen.getByText(/Vesting/).nextElementSibling).toHaveTextContent(
       '4.50'
     );
-
     expect(
       screen.getByText(/Available to withdraw/).nextElementSibling
     ).toHaveTextContent('1.50');
+
+    // should be sum of the above
+    expect(screen.getByTestId('total-rewards')).toHaveTextContent(
+      `8.50 ${rewardAsset.symbol}`
+    );
   });
 });
 

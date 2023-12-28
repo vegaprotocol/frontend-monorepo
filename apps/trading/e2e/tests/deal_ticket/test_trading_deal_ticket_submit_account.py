@@ -1,11 +1,9 @@
 import pytest
 from playwright.sync_api import Page, expect
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from actions.utils import change_keys
 from conftest import init_vega
 from fixtures.market import setup_continuous_market
-
-
 
 order_size = "order-size"
 order_price = "order-price"
@@ -18,13 +16,12 @@ def vega(request):
     with init_vega(request) as vega:
         yield vega
 
-
 @pytest.fixture(scope="module")
 def continuous_market(vega):
     return setup_continuous_market(vega)
 
-@pytest.mark.usefixtures("page", "auth", "risk_accepted")
-def test_should_display_info_and_button_for_deposit(continuous_market, vega: VegaService, page: Page):
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_should_display_info_and_button_for_deposit(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(order_size).fill("200000")
     page.get_by_test_id(order_price).fill("20")
@@ -35,8 +32,8 @@ def test_should_display_info_and_button_for_deposit(continuous_market, vega: Veg
     page.get_by_test_id(deal_ticket_deposit_dialog_button).nth(0).click()
     expect(page.get_by_test_id("sidebar-content")).to_contain_text("DepositFrom")
     
-@pytest.mark.usefixtures("page", "auth", "risk_accepted")
-def test_should_show_an_error_if_your_balance_is_zero(continuous_market, vega: VegaService, page: Page):
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_should_show_an_error_if_your_balance_is_zero(continuous_market, vega: VegaServiceNull, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     vega.create_key("key_empty")
     change_keys(page, vega, "key_empty")

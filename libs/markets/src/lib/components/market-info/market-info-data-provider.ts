@@ -34,6 +34,7 @@ export const marketInfoProvider = makeDataProvider<
   query: MarketInfoDocument,
   getData,
   errorPolicyGuard: marketDataErrorPolicyGuard,
+  pollInterval: 5000,
 });
 
 export const marketInfoWithDataProvider = makeDerivedDataProvider<

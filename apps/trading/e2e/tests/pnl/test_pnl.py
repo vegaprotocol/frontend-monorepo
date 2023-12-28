@@ -1,8 +1,9 @@
 import pytest
 from playwright.sync_api import Page
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from actions.utils import change_keys
+
 
 def check_pnl_color_value(element, expected_color, expected_value):
     color = element.evaluate("element => getComputedStyle(element).color")
@@ -10,8 +11,9 @@ def check_pnl_color_value(element, expected_color, expected_value):
     assert color == expected_color, f"Unexpected color: {color}"
     assert value == expected_value, f"Unexpected value: {value}"
 
-@pytest.mark.usefixtures("vega", "page", "continuous_market", "auth", "risk_accepted")
-def test_pnl(continuous_market, vega: VegaService, page: Page):
+
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_pnl(continuous_market, vega: VegaServiceNull, page: Page):
     page.set_viewport_size({"width": 1748, "height": 977})
     submit_order(vega, "Key 1", continuous_market, "SIDE_BUY", 1, 104.50000)
     vega.wait_fn(1)
@@ -59,9 +61,13 @@ def test_pnl(continuous_market, vega: VegaService, page: Page):
 
     key_1_unrealised_pnl = key_1.query_selector('xpath=./div[@col-id="unrealisedPNL"]')
     key_1_realised_pnl = key_1.query_selector('xpath=./div[@col-id="realisedPNL"]')
-    key_mm_unrealised_pnl = key_mm.query_selector('xpath=./div[@col-id="unrealisedPNL"]')
+    key_mm_unrealised_pnl = key_mm.query_selector(
+        'xpath=./div[@col-id="unrealisedPNL"]'
+    )
     key_mm_realised_pnl = key_mm.query_selector('xpath=./div[@col-id="realisedPNL"]')
-    key_mm2_unrealised_pnl = key_mm2.query_selector('xpath=./div[@col-id="unrealisedPNL"]')
+    key_mm2_unrealised_pnl = key_mm2.query_selector(
+        'xpath=./div[@col-id="unrealisedPNL"]'
+    )
     key_mm2_realised_pnl = key_mm2.query_selector('xpath=./div[@col-id="realisedPNL"]')
     check_pnl_color_value(key_1_realised_pnl, "rgb(0, 0, 0)", "0.00")
     check_pnl_color_value(key_1_unrealised_pnl, "rgb(236, 0, 60)", "-4.00")

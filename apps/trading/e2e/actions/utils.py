@@ -55,13 +55,13 @@ def change_keys(page: Page, vega: VegaServiceNull, key_name):
     page.reload()
 
 
-def forward_time(vega: VegaServiceNull, forward_epoch: bool = False):
+def forward_time(vega:VegaServiceNull, forward_epoch: bool = False):
+
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
     if forward_epoch:
         next_epoch(vega)
-
 
 # This is for when the element will initially load but contain an outdated value. It will wait for the element to contain the expected text, returning False after a timeout or exception
 def selector_contains_text(page: Page, selector, expected_text, timeout=5000):
@@ -71,3 +71,4 @@ def selector_contains_text(page: Page, selector, expected_text, timeout=5000):
         return True
     except:
         return False
+

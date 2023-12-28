@@ -245,3 +245,11 @@ def setup_perps_market(
     vega.wait_for_total_catchup()
 
     return market_id
+
+
+def market_exists(vega: VegaService, market_id: str):
+    if market_id is None:
+        return False
+    all_markets = vega.all_markets() 
+    market_ids = [market.id for market in all_markets]
+    return market_id in market_ids
