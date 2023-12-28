@@ -206,14 +206,13 @@ def test_auction_uncross_fees(continuous_market, vega: VegaServiceNull, page: Pa
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id("Fills").click()
     expect(page.locator(COL_ID_FEE)).to_have_text("0.00 tDAI")
-    page.wait_for_timeout(1000)
-    page.locator(COL_ID_FEE).hover()
+    page.get_by_role("gridcell", name="0.00 tDAI").nth(0).hover()
     expect(page.get_by_test_id("fee-breakdown-tooltip")).to_have_text(
         "If the market was suspendedDuring auction, half the infrastructure and liquidity fees will be paid.Infrastructure fee0.00 tDAILiquidity fee0.00 tDAIMaker fee0.00 tDAITotal fees0.00 tDAI"
     )
     change_keys(page, vega, "market_maker")
     expect(page.locator(COL_ID_FEE)).to_have_text("0.00 tDAI")
-    page.locator(COL_ID_FEE).hover()
+    page.get_by_role("gridcell", name="0.00 tDAI").nth(0).hover()
     expect(page.get_by_test_id("fee-breakdown-tooltip")).to_have_text(
         "If the market was suspendedDuring auction, half the infrastructure and liquidity fees will be paid.Infrastructure fee0.00 tDAILiquidity fee0.00 tDAIMaker fee0.00 tDAITotal fees0.00 tDAI"
     )
