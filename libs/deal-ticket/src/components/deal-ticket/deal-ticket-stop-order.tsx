@@ -649,7 +649,6 @@ const formatTrigger = (
             Number(triggerTrailingPercentOffset) || 0
           ).toFixed(1),
         })
-  }
   }`;
 
 const SubmitButton = ({
