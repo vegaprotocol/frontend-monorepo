@@ -1,12 +1,6 @@
 export const IconStreak = ({ size = 14 }: { size: number }) => {
   return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      fill="fillCurrent"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="fillCurrent">
       <path d="M5.999 4H3.99902V5.99997H5.999V4Z" fill="fillCurrent" />
       <path
         d="M7.999 2.0001V0.00012207H5.99902V2.0001V4.00007H7.999V2.0001Z"
