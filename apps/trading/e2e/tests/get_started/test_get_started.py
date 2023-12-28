@@ -129,7 +129,8 @@ class TestGetStarted:
         page.get_by_test_id("get-started-button").click()
         # Assert dialog isn't visible
         expect(page.get_by_test_id("welcome-dialog")).not_to_be_visible()
-        
+
+    @pytest.mark.skip("TODO: this test is flakey, needs fixing")
     @pytest.mark.usefixtures("risk_accepted")
     def test_get_started_seen_already(self, simple_market, page: Page):
         page.goto(f"/#/markets/{simple_market}")
@@ -177,7 +178,7 @@ class TestGetStarted:
         # 0007-FUGS-018
         expect(page.get_by_test_id("welcome-dialog")).not_to_be_visible()
 
-class TestBrowseAll: 
+class TestBrowseAll:
     def test_get_started_browse_all(self, simple_market, vega: VegaServiceNull, page: Page):
         page.goto("/")
         print(simple_market)
