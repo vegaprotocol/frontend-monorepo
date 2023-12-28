@@ -15,7 +15,7 @@ const Template: ComponentStory<typeof Popover> = (args) => {
     <div>
       <Popover
         open={open}
-        onChange={setOpen}
+        onOpenChange={setOpen}
         trigger={<Button variant="primary">Trigger</Button>}
       >
         {args.children}

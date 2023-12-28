@@ -42,7 +42,7 @@ export const createDataGridSlice: StateCreator<DataGridSlice> = (set) => ({
   },
 });
 
-const useMarketsStore = create<DataGridSlice>()(
+export const useMarketsStore = create<DataGridSlice>()(
   persist(createDataGridSlice, {
     name: 'vega_market_list_store',
   })

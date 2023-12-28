@@ -9,6 +9,7 @@ import type { DataGridStore } from '../../stores/datagrid-store-slice';
 import { OrderStatus } from '@vegaprotocol/types';
 import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
+import { GridSettings } from '../grid-settings/grid-settings';
 
 const resolveNoRowsMessage = (
   filter: Filter | undefined,
@@ -38,6 +39,24 @@ export const FilterStatusValue = {
   [Filter.Rejected]: [OrderStatus.STATUS_REJECTED],
 };
 
+export const DefaultFilterModel = {
+  [Filter.Open]: {
+    status: {
+      value: FilterStatusValue[Filter.Open],
+    },
+  },
+  [Filter.Closed]: {
+    status: {
+      value: FilterStatusValue[Filter.Closed],
+    },
+  },
+  [Filter.Rejected]: {
+    status: {
+      value: FilterStatusValue[Filter.Rejected],
+    },
+  },
+};
+
 export interface OrderContainerProps {
   filter?: Filter;
 }
@@ -54,7 +73,8 @@ export const OrdersContainer = ({ filter }: OrderContainerProps) => {
     (newState) => {
       updateGridState(filter, newState);
     },
-    AUTO_SIZE_COLUMNS
+    AUTO_SIZE_COLUMNS,
+    filter && DefaultFilterModel[filter]
   );
 
   if (!pubKey) {
@@ -80,7 +100,7 @@ export const OrdersContainer = ({ filter }: OrderContainerProps) => {
 };
 
 export const STORAGE_KEY = 'vega_order_list_store';
-const useOrderListStore = create<{
+export const useOrderListStore = create<{
   open: DataGridStore;
   closed: DataGridStore;
   rejected: DataGridStore;
@@ -149,34 +169,19 @@ export const useOrderListGridState = (filter: Filter | undefined) => {
       case Filter.Open: {
         return {
           columnState: store.open.columnState,
-          filterModel: {
-            ...store.open.filterModel,
-            status: {
-              value: FilterStatusValue[Filter.Open],
-            },
-          },
+          filterModel: store.open.filterModel,
         };
       }
       case Filter.Closed: {
         return {
           columnState: store.closed.columnState,
-          filterModel: {
-            ...store.closed.filterModel,
-            status: {
-              value: FilterStatusValue[Filter.Closed],
-            },
-          },
+          filterModel: store.closed.filterModel,
         };
       }
       case Filter.Rejected: {
         return {
           columnState: store.rejected.columnState,
-          filterModel: {
-            ...store.rejected.filterModel,
-            status: {
-              value: FilterStatusValue[Filter.Rejected],
-            },
-          },
+          filterModel: store.rejected.filterModel,
         };
       }
       default: {
@@ -186,4 +191,15 @@ export const useOrderListGridState = (filter: Filter | undefined) => {
   });
 
   return { gridState, updateGridState };
+};
+
+export const OrdersSettings = ({ filter }: { filter?: Filter }) => {
+  const updateGridState = useOrderListStore((state) => state.update);
+  return (
+    <GridSettings
+      updateGridStore={(gridStore: DataGridStore) =>
+        updateGridState(filter, gridStore)
+      }
+    />
+  );
 };

@@ -35,7 +35,7 @@ export const StopOrdersContainer = () => {
   );
 };
 
-const useStopOrdersStore = create<DataGridSlice>()(
+export const useStopOrdersStore = create<DataGridSlice>()(
   persist(createDataGridSlice, {
     name: 'vega_stop_orders_store',
   })

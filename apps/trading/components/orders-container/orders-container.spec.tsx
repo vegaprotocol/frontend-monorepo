@@ -1,9 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import {
-  FilterStatusValue,
-  STORAGE_KEY,
-  useOrderListGridState,
-} from './orders-container';
+import { STORAGE_KEY, useOrderListGridState } from './orders-container';
 import { Filter } from '@vegaprotocol/orders';
 import { OrderType } from '@vegaprotocol/types';
 
@@ -15,31 +11,6 @@ describe('useOrderListGridState', () => {
   const setup = (filter: Filter | undefined) => {
     return renderHook(() => useOrderListGridState(filter));
   };
-
-  it.each(Object.values(Filter))(
-    'providers correct AgGrid filter for %s',
-    (filter) => {
-      const { result } = setup(filter);
-      expect(typeof result.current.updateGridState).toBe('function');
-      expect(result.current.gridState).toEqual({
-        columnState: undefined,
-        filterModel: {
-          status: {
-            value: FilterStatusValue[filter],
-          },
-        },
-      });
-    }
-  );
-
-  it('provides correct AgGrid filter for all', () => {
-    const { result } = setup(undefined);
-    expect(typeof result.current.updateGridState).toBe('function');
-    expect(result.current.gridState).toEqual({
-      columnState: undefined,
-      filterModel: undefined,
-    });
-  });
 
   it.each(Object.values(Filter))(
     'sets and stores column state and filters for %s',
@@ -59,12 +30,7 @@ describe('useOrderListGridState', () => {
 
       expect(result.current.gridState).toEqual({
         columnState: undefined,
-        filterModel: {
-          ...filterModel,
-          status: {
-            value: FilterStatusValue[filter],
-          },
-        },
+        filterModel,
       });
 
       const columnState = [{ colId: 'status', width: 200 }];
@@ -77,12 +43,7 @@ describe('useOrderListGridState', () => {
 
       expect(result.current.gridState).toEqual({
         columnState,
-        filterModel: {
-          ...filterModel,
-          status: {
-            value: FilterStatusValue[filter],
-          },
-        },
+        filterModel,
       });
 
       const storeKeyMap = {

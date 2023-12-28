@@ -7,8 +7,9 @@ import {
   type FirstDataRenderedEvent,
   type SortChangedEvent,
   type GridReadyEvent,
+  GridApi,
 } from 'ag-grid-community';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 type State = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,8 +20,32 @@ type State = {
 export const useDataGridEvents = (
   state: State,
   callback: (data: State) => void,
-  autoSizeColumns?: string[]
+  autoSizeColumns?: string[],
+  defaultFilterModel?: State['filterModel']
 ) => {
+  const apiRef = useRef<GridApi | undefined>();
+  const hasStateRef = useRef(Boolean(state.columnState || state.filterModel));
+
+  useEffect(() => {
+    if (apiRef.current?.isDestroyed()) {
+      apiRef.current = undefined;
+    }
+    const hasState = Boolean(state.columnState || state.filterModel);
+    if (apiRef.current && hasStateRef.current && !hasState) {
+      if (!state.columnState) {
+        apiRef.current.resetColumnState();
+        apiRef.current.sizeColumnsToFit();
+        if (autoSizeColumns?.length) {
+          apiRef.current.autoSizeColumns(autoSizeColumns);
+        }
+      }
+      if (!state.filterModel) {
+        apiRef.current.setFilterModel(defaultFilterModel);
+      }
+    }
+    hasStateRef.current = hasState;
+  }, [state, defaultFilterModel, autoSizeColumns]);
+
   /**
    * Callback for filter events
    */
@@ -39,11 +64,7 @@ export const useDataGridEvents = (
    * store callback unnecessarily
    */
   const onDebouncedColumnChange = useCallback(
-    ({
-      columnApi,
-      source,
-      finished,
-    }: ColumnResizedEvent | ColumnMovedEvent) => {
+    ({ api, source, finished }: ColumnResizedEvent | ColumnMovedEvent) => {
       if (!finished) return;
 
       // only call back on user interactions, and not events triggered from the api
@@ -57,7 +78,7 @@ export const useDataGridEvents = (
         return;
       }
 
-      const columnState = columnApi.getColumnState();
+      const columnState = api.getColumnState();
 
       callback({ columnState });
     },
@@ -68,8 +89,8 @@ export const useDataGridEvents = (
    * Callback for sort and visible events
    */
   const onColumnChange = useCallback(
-    ({ columnApi }: SortChangedEvent | ColumnVisibleEvent) => {
-      const columnState = columnApi.getColumnState();
+    ({ api }: SortChangedEvent | ColumnVisibleEvent) => {
+      const columnState = api.getColumnState();
       callback({ columnState });
     },
     [callback]
@@ -80,11 +101,11 @@ export const useDataGridEvents = (
    * State only applied if found, otherwise columns sized to fit available space
    */
   const onGridReady = useCallback(
-    ({ api, columnApi }: GridReadyEvent) => {
-      if (!api || !columnApi) return;
-
+    ({ api }: GridReadyEvent) => {
+      apiRef.current = api;
+      if (!api) return;
       if (state.columnState) {
-        columnApi.applyColumnState({
+        api.applyColumnState({
           state: state.columnState,
           applyOrder: true,
         });
@@ -92,18 +113,18 @@ export const useDataGridEvents = (
         api.sizeColumnsToFit();
       }
 
-      if (state.filterModel) {
-        api.setFilterModel(state.filterModel);
+      if (state.filterModel || defaultFilterModel) {
+        api.setFilterModel({ ...state.filterModel, ...defaultFilterModel });
       }
     },
-    [state]
+    [state, defaultFilterModel]
   );
 
   const onFirstDataRendered = useCallback(
-    ({ columnApi }: FirstDataRenderedEvent) => {
-      if (!columnApi) return;
+    ({ api }: FirstDataRenderedEvent) => {
+      if (!api) return;
       if (!state?.columnState && autoSizeColumns?.length) {
-        columnApi.autoSizeColumns(autoSizeColumns);
+        api.autoSizeColumns(autoSizeColumns);
       }
     },
     [state, autoSizeColumns]

@@ -19,18 +19,9 @@ export const SetFilter = forwardRef(
     useImperativeHandle(ref, () => {
       return {
         doesFilterPass(params: IDoesFilterPassParams) {
-          const { api, colDef, column, columnApi, context } = props;
+          const { column } = props;
           const { node } = params;
-          const getValue = props.valueGetter({
-            api,
-            colDef,
-            column,
-            columnApi,
-            context,
-            data: node.data,
-            getValue: (field) => node.data[field],
-            node,
-          });
+          const getValue = props.getValue(node, column);
           return Array.isArray(value)
             ? value.includes(getValue)
             : getValue === value;

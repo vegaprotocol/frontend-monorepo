@@ -4,7 +4,12 @@ import { OracleBanner } from '@vegaprotocol/markets';
 import { useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import {
+  Popover,
+  Splash,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import {
   MarketSuccessorBanner,
@@ -24,6 +29,7 @@ interface TradePanelsProps {
 export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
   const featureFlags = useFeatureFlags((state) => state.flags);
   const [view, setView] = useState<TradingView>('chart');
+  const viewCfg = TradingViews[view];
 
   const renderView = () => {
     const Component = TradingViews[view].component;
@@ -44,19 +50,27 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
   };
 
   const renderMenu = () => {
-    const viewCfg = TradingViews[view];
-
-    if ('menu' in viewCfg) {
-      const Menu = viewCfg.menu;
-
+    if ('menu' in viewCfg || 'settings' in viewCfg) {
       return (
         <div className="flex items-center justify-end gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
-          <Menu />
+          {'menu' in viewCfg ? <viewCfg.menu /> : null}
+          {'settings' in viewCfg ? (
+            <Popover
+              align="end"
+              trigger={
+                <span className="ml-1 flex items-center justify-center h-6 w-6">
+                  <VegaIcon name={VegaIconNames.COG} size={16} />
+                </span>
+              }
+            >
+              <div className="p-4 flex justify-end">
+                <viewCfg.settings />
+              </div>
+            </Popover>
+          ) : null}
         </div>
       );
     }
-
-    return null;
   };
 
   return (
@@ -72,7 +86,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
         <OracleBanner marketId={market?.id || ''} />
       </div>
       <div>{renderMenu()}</div>
-      <div className="h-full">
+      <div className="h-full relative">
         <AutoSizer>
           {({ width, height }) => (
             <div style={{ width, height }} className="overflow-auto">
@@ -110,7 +124,9 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
                 key={key}
                 view={key}
                 isActive={isActive}
-                onClick={() => setView(key)}
+                onClick={() => {
+                  setView(key);
+                }}
               />
             );
           })}
