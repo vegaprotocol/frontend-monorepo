@@ -11,5 +11,7 @@ GOVERNANCE_WALLET = WalletConfig(
     "FJMKnwfZdd48C8NqvYrG", "bY3DxwtsCstMIIZdNpKs")
 PARTY_A = WalletConfig("party_a", "party_a")
 PARTY_B = WalletConfig("party_b", "party_b")
+PARTY_C = WalletConfig("party_c", "party_c")
+PARTY_D = WalletConfig("party_d", "party_d")
 
-wallets = [MM_WALLET, MM_WALLET2, TERMINATE_WALLET, GOVERNANCE_WALLET]
+wallets = [MM_WALLET, MM_WALLET2, TERMINATE_WALLET, GOVERNANCE_WALLET, PARTY_A, PARTY_B, PARTY_C, PARTY_D]
