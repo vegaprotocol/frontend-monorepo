@@ -641,7 +641,6 @@ def test_fills_maker_fee_tooltip_discount_program(
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
     page.wait_for_timeout(100)
     row.locator(COL_FEE).hover()
-    page.get_by_role(FEE_BREAKDOWN_TOOLTIP).is_visible()
     expect(page.get_by_test_id(FEE_BREAKDOWN_TOOLTIP)).to_have_text(
         f"If the market was activeFee revenue to be received by the maker, takers' fee discounts already applied.During continuous trading the maker pays no infrastructure and liquidity fees.Infrastructure fee0.00 tDAILiquidity fee0.00 tDAIMaker fee-{fee} tDAITotal fees-{fee} tDAI"
     )
