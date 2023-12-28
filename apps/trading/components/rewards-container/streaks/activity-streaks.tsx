@@ -1,7 +1,6 @@
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
 import classNames from 'classnames';
-import { formatNumber } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import type { PartyActivityStreak } from '@vegaprotocol/types';
 
@@ -88,8 +87,8 @@ export const ActivityStreak = ({
                           })}
                         </span>
                         <span className="text-muted text-xs">
-                          {t('{{count}} epochs', {
-                            epochs: formatNumber(tier.minimum_activity_streak),
+                          {t('numberEpochs', '{{count}} epochs', {
+                            count: tier.minimum_activity_streak,
                           })}
                         </span>
                       </span>
@@ -194,7 +193,7 @@ export const ActivityStreak = ({
                 new BigNumber(
                   tiers[0].minimum_activity_streak
                 ).isLessThanOrEqualTo(streak?.activeFor || 0) &&
-                t('(Tier {{tier}})', { tier: userTierIndex + 1 })}
+                t('(Tier {{tier}})', { tier: userTierIndex })}
             </span>
           </span>
         </div>
