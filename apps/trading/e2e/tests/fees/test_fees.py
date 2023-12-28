@@ -639,7 +639,9 @@ def test_fills_maker_fee_tooltip_discount_program(
     change_keys(page, vega_instance, MM_WALLET.name)
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
+    page.wait_for_timeout(100)
     row.locator(COL_FEE).hover()
+    page.get_by_role(FEE_BREAKDOWN_TOOLTIP).is_visible()
     expect(page.get_by_test_id(FEE_BREAKDOWN_TOOLTIP)).to_have_text(
         f"If the market was activeFee revenue to be received by the maker, takers' fee discounts already applied.During continuous trading the maker pays no infrastructure and liquidity fees.Infrastructure fee0.00 tDAILiquidity fee0.00 tDAIMaker fee-{fee} tDAITotal fees-{fee} tDAI"
     )
@@ -676,6 +678,7 @@ def test_fills_taker_fee_tooltip_discount_program(
     page.goto(f"/#/markets/{market_id}")
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
+    page.wait_for_timeout(100)
     row.locator(COL_FEE).hover()
     expect(page.get_by_test_id(FEE_BREAKDOWN_TOOLTIP)).to_have_text(
         f"If the market was activeFees to be paid by the taker; discounts are already applied.Infrastructure fee{infra_fee} tDAILiquidity fee0.00 tDAIMaker fee{maker_fee} tDAITotal fees{total_fee} tDAI"
