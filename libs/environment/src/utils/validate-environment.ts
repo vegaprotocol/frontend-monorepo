@@ -84,6 +84,7 @@ const COSMIC_ELEVATOR_FLAGS = {
   GOVERNANCE_TRANSFERS: z.optional(z.boolean()),
   VOLUME_DISCOUNTS: z.optional(z.boolean()),
   DISABLE_CLOSE_POSITION: z.optional(z.boolean()),
+  TEAM_COMPETITION: z.optional(z.boolean()),
 };
 
 const EXPLORER_FLAGS = {
