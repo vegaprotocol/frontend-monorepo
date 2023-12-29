@@ -16,7 +16,7 @@ export const Routes = {
   REFERRALS: '/referrals',
   REFERRALS_APPLY_CODE: '/referrals/apply-code',
   REFERRALS_CREATE_CODE: '/referrals/create-code',
-  TEAMS: '/teams',
+  TEAM: '/team/:teamId',
   FEES: '/fees',
   REWARDS: '/rewards',
 } as const;
@@ -41,7 +41,7 @@ export const Links: ConsoleLinks = {
   REFERRALS: () => Routes.REFERRALS,
   REFERRALS_APPLY_CODE: () => Routes.REFERRALS_APPLY_CODE,
   REFERRALS_CREATE_CODE: () => Routes.REFERRALS_CREATE_CODE,
-  TEAMS: () => Routes.TEAMS,
+  TEAM: (teamId: string) => trimEnd(Routes.TEAM.replace(':teamId', teamId)),
   FEES: () => Routes.FEES,
   REWARDS: () => Routes.REWARDS,
 };
